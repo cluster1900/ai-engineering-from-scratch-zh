@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .edge { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">roots = 范围，elicitation = 调用中用户输入</text>
+
+  <rect x="40" y="60" width="440" height="440" class="cool"/>
+  <text x="260" y="82" text-anchor="middle" class="head">roots（同意范围）</text>
+
+  <rect x="60" y="100" width="400" height="80" class="box"/>
+  <text x="76" y="122" class="step">客户端在 initialize 声明：</text>
+  <text x="76" y="142" class="small">{uri: file:///.../Notes, name: Notes}</text>
+  <text x="76" y="160" class="small">{uri: file:///.../Scratch, name: Scratch}</text>
+
+  <rect x="60" y="190" width="400" height="60" class="hot"/>
+  <text x="76" y="212" class="step">服务器规则：</text>
+  <text x="76" y="230" class="small">任何 root 集外 URI -&gt; 拒绝操作</text>
+
+  <rect x="60" y="260" width="400" height="60" class="box"/>
+  <text x="76" y="282" class="step">用户更改范围 -&gt;</text>
+  <text x="76" y="300" class="small">notifications/roots/list_changed</text>
+
+  <rect x="60" y="270" width="0" height="0" />
+
+  <rect x="60" y="330" width="400" height="160" class="box"/>
+  <text x="76" y="352" class="step">典型流程：</text>
+  <text x="76" y="372" class="small">1. 客户端在 init 设置 roots</text>
+  <text x="76" y="388" class="small">2. 服务器保存边界列表</text>
+  <text x="76" y="404" class="small">3. 每次工具调用检查 URI 在 root 内</text>
+  <text x="76" y="420" class="small">4. 通知 -&gt; 重新查询 roots/list</text>
+  <text x="76" y="440" class="step">若超出 root：</text>
+  <text x="76" y="458" class="small">拒绝并报 "outside roots" 错误；</text>
+  <text x="76" y="474" class="small">不要回退到环境访问</text>
+
+  <rect x="500" y="60" width="420" height="440" class="cold"/>
+  <text x="710" y="82" text-anchor="middle" class="head">elicitation（进行中输入）</text>
+
+  <rect x="520" y="100" width="380" height="100" class="box"/>
+  <text x="536" y="122" class="step">表单模式（默认）：</text>
+  <text x="536" y="142" class="small">server -&gt; elicitation/create {schema,</text>
+  <text x="536" y="158" class="small">message: "Pick one"}</text>
+  <text x="536" y="176" class="small">客户端 -&gt; 渲染表单，返回答案</text>
+  <text x="536" y="192" class="small">action: accept | decline | cancel</text>
+
+  <rect x="520" y="210" width="380" height="100" class="hot"/>
+  <text x="536" y="232" class="step">url 模式（SEP-1036，实验性）：</text>
+  <text x="536" y="252" class="small">server -&gt; elicitation/create {url,</text>
+  <text x="536" y="268" class="small">message: "Sign in"}</text>
+  <text x="536" y="286" class="small">客户端 -&gt; 打开浏览器并等待</text>
+  <text x="536" y="302" class="small">drift-risk：形态仍在稳定</text>
+
+  <rect x="520" y="320" width="380" height="170" class="box"/>
+  <text x="536" y="342" class="step">适用场景：</text>
+  <text x="536" y="360" class="small">- 消歧（N 个匹配）</text>
+  <text x="536" y="376" class="small">- 破坏性确认</text>
+  <text x="536" y="392" class="small">- 首次运行设置</text>
+  <text x="536" y="408" class="small">- OAuth / 支付 / 登录（url）</text>
+  <text x="536" y="430" class="step">不适用：</text>
+  <text x="536" y="448" class="small">- 模型可直接用文字追问</text>
+  <text x="536" y="464" class="small">- 紧密循环中（打断 UX）</text>
+  <text x="536" y="480" class="small">- 补 LLM 已知的缺失参数</text>
+</svg>

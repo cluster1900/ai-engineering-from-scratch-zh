@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 ViT-MLP-LLM VLM 模式中，对齐期间最常训练哪个组件，而其他组件保持 frozen？",
+      "options": ["vision encoder", "projector（ViT 和 LLM 之间的 2-4 层 MLP）— 它把 vision tokens 映射到 LLM 的 Embedding 空间，并承载大部分跨模态对齐信号", "LLM", "所有组件总是一起训练"],
+      "correct": 1,
+      "explanation": "标准 VLM 配方会先在 ViT 和 LLM frozen 的情况下训练 projector（对齐阶段），然后可选地解冻全部组件进行 pre-training 和 instruction tuning。projector 很小（数千万到数亿 params），承担了 modality bridge 中最重的部分。生产中的 fine-tuning 通常只训练 projector + Attention 上的 LoRA — 成本低且有效。"
+    },
+    {
+      "stage": "pre",
+      "question": "DeepStack（用于 Qwen3-VL）做什么？",
+      "options": ["只使用最深 ViT 层的 features", "在 projection 前堆叠来自多个 ViT 深度的 features，让 LLM 同时看到高层语义（深层）和精细空间细节（浅层）", "把 LLM 的深度加倍", "是一种特定的 quantisation 方案"],
+      "correct": 1,
+      "explanation": "普通 VLM 只 project 最后一层 ViT features。DeepStack 会采样多个深度、拼接并 project。深层提供语义（“这是一个图表”）；浅层提供位置和纹理（“x=120 的柱是红色的”）。这种组合弥合了需要精细定位任务中的 grounding gap，例如 GUI agent actions 或 dense captioning。"
+    },
+    {
+      "stage": "post",
+      "question": "一个生产 VLM 显示很高的文本置信度，但生成文本描述了图像中不存在的物体。哪个 metric 捕捉这个失败？",
+      "options": ["Perplexity", "Cross-Modal Error Rate (CMER) — 输出中文本置信度高但 image-text cosine similarity（通过 CLIP-family checker）低的比例；未清洗 web 数据上典型值约为 12%", "MMMU 上的 Accuracy", "Token 生成延迟"],
+      "correct": 1,
+      "explanation": "CMER 是生产对齐 KPI。它能捕捉经典 VLM hallucination 模式：模型对自己的文本很确信，但文本并没有 grounding 到图像中。按 endpoint 和 prompt type 监控 CMER；把 CMER 上升视为模型偏离分布或遇到无法处理的 prompt 类别的信号。Skywork.ai 通过把 CMER 作为一等 KPI，将 hallucinations 降低了约 35%。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么现代 VLM 使用 SigLIP 或自定义 vision encoders 作为 backbone，而不是 supervised ImageNet ResNet？",
+      "options": ["SigLIP 更快", "CLIP/SigLIP 风格的 encoders 与文本联合训练，因此它们的输出空间已经大致与语言对齐；projector 需要做的工作少得多，模型也能更好地推理视觉-文本概念", "ResNets 无法生成 tokens", "SigLIP 有更多参数"],
+      "correct": 1,
+      "explanation": "vision-language pretraining 会塑造 encoder，使其处在与文本兼容的空间中。supervised ImageNet ResNet 的训练没有任何文本信号，因此桥接到 LLM 需要更大的 projectors 和更多数据。CLIP/SigLIP/DINOv3 encoders 生成的 features 可以被 LLM 通过少量 linear layers 消费。几乎每个 SOTA VLM 都因此使用 CLIP-family 或 SigLIP encoder。"
+    },
+    {
+      "stage": "post",
+      "question": "Qwen3-VL-235B-A22B 在 OSWorld 上取得顶级分数。OSWorld 是什么，这意味着什么？",
+      "options": ["一个 synthetic benchmark", "一个 agent benchmark，模型在其中操作 desktop GUIs — 识别按钮、读取 UI 状态、发出 actions；Qwen3-VL 的顶级分数意味着 VLMs 现在已经可作为 GUI 自动化的可行 visual agents", "一个 pose-estimation benchmark", "一个 video QA benchmark"],
+      "correct": 1,
+      "explanation": "OSWorld 测试模型是否能通过截图自主操作 desktop environment。Qwen3-VL 的全球顶级分数表明，“visual agent”范式 — VLM 读取屏幕、决定 action、tool-calls 鼠标/键盘 — 已进入实用阶段。这正是 2026 AI PC 演示所运行的模式；它也是进入 automated QA、RPA 和 accessibility 产品的直接路径。"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .silicon { fill: #ffe1e1; stroke: #c0392b; stroke-width: 1.5; }
+      .gpu { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .api { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="24" text-anchor="middle" class="title">推理平台地图 — 三类，六家 vendor</text>
+
+  <rect x="40" y="50" width="280" height="460" class="box"/>
+  <text x="180" y="72" text-anchor="middle" class="head">定制芯片</text>
+  <rect x="60" y="90" width="240" height="60" class="silicon"/>
+  <text x="180" y="110" text-anchor="middle" class="step">Groq (LPU)</text>
+  <text x="180" y="128" text-anchor="middle" class="small">语音 agents，实时翻译</text>
+  <text x="180" y="144" text-anchor="middle" class="small">decode 比 GPU 快 5-10x</text>
+  <rect x="60" y="160" width="240" height="60" class="silicon"/>
+  <text x="180" y="180" text-anchor="middle" class="step">Cerebras (WSE)</text>
+  <text x="180" y="198" text-anchor="middle" class="small">wafer-scale engine</text>
+  <text x="180" y="214" text-anchor="middle" class="small">超大上下文 decode</text>
+  <rect x="60" y="230" width="240" height="60" class="silicon"/>
+  <text x="180" y="250" text-anchor="middle" class="step">SambaNova (RDU)</text>
+  <text x="180" y="268" text-anchor="middle" class="small">可重构 dataflow</text>
+  <text x="180" y="284" text-anchor="middle" class="small">企业受监管场景</text>
+  <text x="180" y="330" text-anchor="middle" class="caption">按 Token 支付溢价</text>
+  <text x="180" y="346" text-anchor="middle" class="caption">赢在延迟 SLA</text>
+
+  <rect x="340" y="50" width="280" height="460" class="box"/>
+  <text x="480" y="72" text-anchor="middle" class="head">GPU 平台</text>
+  <rect x="360" y="90" width="240" height="60" class="gpu"/>
+  <text x="480" y="110" text-anchor="middle" class="step">Fireworks — 延迟</text>
+  <text x="480" y="128" text-anchor="middle" class="small">FireAttention, $4B valn</text>
+  <text x="480" y="144" text-anchor="middle" class="small">$1/hr GPU raise 2026 年 5 月</text>
+  <rect x="360" y="160" width="240" height="60" class="gpu"/>
+  <text x="480" y="180" text-anchor="middle" class="step">Together — 广度</text>
+  <text x="480" y="198" text-anchor="middle" class="small">200+ 模型，比 Replicate 低 50-70%</text>
+  <text x="480" y="214" text-anchor="middle" class="small">"AI Native Cloud"</text>
+  <rect x="360" y="230" width="240" height="60" class="gpu"/>
+  <text x="480" y="250" text-anchor="middle" class="step">Baseten — 企业</text>
+  <text x="480" y="268" text-anchor="middle" class="small">2026 年 1 月 $5B valn，SOC2+HIPAA</text>
+  <text x="480" y="284" text-anchor="middle" class="small">Truss，按分钟计费</text>
+  <rect x="360" y="300" width="240" height="60" class="gpu"/>
+  <text x="480" y="320" text-anchor="middle" class="step">Modal — Python DX</text>
+  <text x="480" y="338" text-anchor="middle" class="small">$1.1B valn，按秒计费</text>
+  <text x="480" y="354" text-anchor="middle" class="small">infrastructure-as-Python</text>
+  <rect x="360" y="370" width="240" height="60" class="gpu"/>
+  <text x="480" y="390" text-anchor="middle" class="step">Anyscale — Ray-native</text>
+  <text x="480" y="408" text-anchor="middle" class="small">RayTurbo 推理引擎</text>
+  <text x="480" y="424" text-anchor="middle" class="small">托管 Ray clusters</text>
+
+  <rect x="640" y="50" width="280" height="460" class="box"/>
+  <text x="780" y="72" text-anchor="middle" class="head">API-first marketplaces</text>
+  <rect x="660" y="90" width="240" height="60" class="api"/>
+  <text x="780" y="110" text-anchor="middle" class="step">Replicate</text>
+  <text x="780" y="128" text-anchor="middle" class="small">按 prediction 付费</text>
+  <text x="780" y="144" text-anchor="middle" class="small">默认覆盖 Multimodal 广度</text>
+  <rect x="660" y="160" width="240" height="60" class="api"/>
+  <text x="780" y="180" text-anchor="middle" class="step">DeepInfra</text>
+  <text x="780" y="198" text-anchor="middle" class="small">激进的按 Token 定价</text>
+  <text x="780" y="214" text-anchor="middle" class="small">爱好者和原型开发</text>
+  <rect x="660" y="230" width="240" height="60" class="api"/>
+  <text x="780" y="250" text-anchor="middle" class="step">OpenRouter</text>
+  <text x="780" y="268" text-anchor="middle" class="small">覆盖 100+ 模型的统一 API</text>
+  <text x="780" y="284" text-anchor="middle" class="small">一个额度用于多个 providers</text>
+  <rect x="660" y="300" width="240" height="60" class="api"/>
+  <text x="780" y="320" text-anchor="middle" class="step">Fal</text>
+  <text x="780" y="338" text-anchor="middle" class="small">聚焦图像 / 视频</text>
+  <text x="780" y="354" text-anchor="middle" class="small">serverless 按调用计费</text>
+  <text x="780" y="420" text-anchor="middle" class="caption">优化首次调用耗时</text>
+  <text x="780" y="436" text-anchor="middle" class="caption">突发和小规模最便宜</text>
+
+  <rect x="40" y="520" width="880" height="30" class="box"/>
+  <text x="480" y="538" text-anchor="middle" class="step">规则：单 GPU 持续利用率超过 ~30% 时，按分钟优于按 Token</text>
+</svg>

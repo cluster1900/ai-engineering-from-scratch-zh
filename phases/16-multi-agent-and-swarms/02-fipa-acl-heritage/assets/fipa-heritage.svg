@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">FIPA-ACL 传承 — 2026 协议保留与舍弃的内容</text>
+
+  <rect x="40" y="60" width="280" height="180" class="cool"/>
+  <text x="180" y="82" text-anchor="middle" class="head">FIPA-ACL (2000)</text>
+  <text x="180" y="106" text-anchor="middle" class="step">约 20 个 performatives</text>
+  <text x="180" y="124" text-anchor="middle" class="small">inform · request · query-if · query-ref</text>
+  <text x="180" y="140" text-anchor="middle" class="small">propose · accept · reject · cfp</text>
+  <text x="180" y="156" text-anchor="middle" class="small">subscribe · cancel · failure · agree</text>
+  <text x="180" y="182" text-anchor="middle" class="step">SL0/SL1 内容语言</text>
+  <text x="180" y="200" text-anchor="middle" class="small">需要形式 ontology</text>
+  <text x="180" y="218" text-anchor="middle" class="caption">JADE / JACK 参考平台</text>
+
+  <rect x="380" y="60" width="260" height="180" class="hot"/>
+  <text x="510" y="82" text-anchor="middle" class="head">淡出的内容</text>
+  <text x="510" y="108" text-anchor="middle" class="small">ontology 开销</text>
+  <text x="510" y="128" text-anchor="middle" class="small">Java/商业运行时</text>
+  <text x="510" y="148" text-anchor="middle" class="small">无人使用的 SL 语义</text>
+  <text x="510" y="168" text-anchor="middle" class="small">非 Web 传输</text>
+  <text x="510" y="196" text-anchor="middle" class="caption">Web 栈胜出</text>
+  <text x="510" y="214" text-anchor="middle" class="caption">REST · JSON-RPC · gRPC</text>
+
+  <rect x="700" y="60" width="220" height="180" class="cold"/>
+  <text x="810" y="82" text-anchor="middle" class="head">2026 后继者</text>
+  <text x="810" y="108" text-anchor="middle" class="small">MCP · A2A · ACP · ANP · NLIP</text>
+  <text x="810" y="130" text-anchor="middle" class="small">JSON-native payloads</text>
+  <text x="810" y="148" text-anchor="middle" class="small">自然语言内容</text>
+  <text x="810" y="166" text-anchor="middle" class="small">HTTP · SSE · WebSocket</text>
+  <text x="810" y="184" text-anchor="middle" class="small">自描述发现</text>
+  <text x="810" y="210" text-anchor="middle" class="caption">更松语义，更易传输</text>
+
+  <line x1="320" y1="150" x2="376" y2="150" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+  <line x1="640" y1="150" x2="696" y2="150" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="280" width="880" height="210" class="box"/>
+  <text x="480" y="304" text-anchor="middle" class="head">Performative → 2026 等价物</text>
+
+  <text x="60" y="336" class="step">request</text>
+  <text x="300" y="336" class="small">MCP tools/call · A2A POST /tasks</text>
+  <text x="60" y="356" class="step">query-ref</text>
+  <text x="300" y="356" class="small">MCP resources/read · A2A GET /tasks/{id}</text>
+  <text x="60" y="376" class="step">subscribe</text>
+  <text x="300" y="376" class="small">A2A SSE /tasks/{id}/events · MCP resources/subscribe</text>
+  <text x="60" y="396" class="step">cfp</text>
+  <text x="300" y="396" class="small">任务市场广播（招标）</text>
+  <text x="60" y="416" class="step">propose · accept · reject</text>
+  <text x="300" y="416" class="small">投标方响应 · manager 授予/拒绝</text>
+  <text x="60" y="436" class="step">cancel</text>
+  <text x="300" y="436" class="small">A2A task cancellation · MCP cancellation notification</text>
+  <text x="60" y="456" class="step">inform · failure</text>
+  <text x="300" y="456" class="small">artifact push · JSON-RPC 响应中的 error object</text>
+
+  <text x="60" y="478" class="caption">保留：envelope + intent + correlation · 舍弃：SL 语义 + 强制 ontology</text>
+</svg>

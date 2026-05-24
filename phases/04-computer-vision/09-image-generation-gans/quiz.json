@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 GAN training 使用 non-saturating generator Loss -log(D(G(z)))，而不是 log(1 - D(G(z)))？",
+      "options": ["它们在数学上不同，并会产生更好的 equilibria", "training 早期 D(G(z)) 接近零，因此 log(1 - D(G(z))) 的 Gradient 会消失；-log(D(G(z))) 在这里有较大的 Gradient，所以 G 能收到有用信号", "它会加速 discriminator", "这是 PyTorch 要求的"],
+      "correct": 1,
+      "explanation": "当 D(G(z)) 很小时，这两个 Loss 的 Gradient 方向相同，但幅度差异很大。log(1 - D(G(z))) 在这里会进入零 Gradient 平台期。non-saturating 形式在整个范围内都保持有信息量。Goodfellow 在原始论文中指出了这个调整，现代 GAN 都使用它。"
+    },
+    {
+      "stage": "pre",
+      "question": "DCGAN 的规则说要使用 strided convolutions 而不是 pooling。为什么？",
+      "options": ["Pooling 在 GPU 上更慢", "Pooling 不可学习，并会丢弃 generator 可能需要的信息；strided convs 让 network 学习自己的 downsampling，经验上能生成更清晰的图像", "Pooling 会破坏 Gradient flow", "Pooling 与 batch norm 不兼容"],
+      "correct": 1,
+      "explanation": "Max-pool 是一种手工选定的 downsampling，会丢弃除最大值以外的所有内容。在 generative 设置中，model 会受益于可学习的 downsampling，因为它可以跨 stride 保留信息。D 中的 strided convolutions 和 G 中的 strided transposed convolutions 是让 DCGANs 可训练的架构变化。"
+    },
+    {
+      "stage": "post",
+      "question": "你训练一个 GAN，发现无论输入 noise 如何，G 都产生几乎相同的 samples。这是哪种失败？",
+      "options": ["Vanishing gradients", "Mode collapse — G 找到了 data distribution 的一个狭窄区域，可以稳定骗过 D，并且没有动力继续探索；修复方式包括 spectral norm、minibatch discrimination，或更大的 batch", "Oscillation", "Dataset 太小"],
+      "correct": 1,
+      "explanation": "Mode collapse 是 GAN 的典型失败，表现为 samples 缺乏多样性。诊断很明显：noise 输入，输出同一张图像。修复方式都针对 discriminator 惩罚缺乏多样性的能力：要么让 D 更有表达能力（spectral norm、minibatch discrimination），要么让 G 更难 collapse（更大的 batch、conditional labels）。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 DCGAN training scripts 使用 Adam 且 betas=(0.5, 0.999)，而不是默认的 (0.9, 0.999)？",
+      "options": ["默认值有问题", "较低的 beta1 会降低 momentum；在 adversarial game 中，当另一个 network 的行为发生变化时，过重的 momentum 会让每个 Optimizer 在错误方向上停留太久，从而导致不稳定", "Adam 在 CUDA 上只支持 beta1=0.5", "这是通过 tutorials 传播的 typo"],
+      "correct": 1,
+      "explanation": "Adam 默认 beta1=0.9，会在大约 10 步内平均 Gradient。在 stationary objective 中这很有帮助。在 adversarial game 中，Loss landscape 会随着每次 D 和 G update 而变化，这种平均会延迟 Optimizer 的响应并导致 oscillation。Radford et al. 发现 beta1=0.5 稳定得多，现在它已经成为 GAN 默认值。"
+    },
+    {
+      "stage": "post",
+      "question": "同事报告一个 GAN 的 D Loss 接近零，而 G Loss 在 training 中持续上升。发生了什么，如何修复？",
+      "options": ["两个 nets 都在正确改进", "discriminator 变得太强，并把 G 的 Gradient 推到零；修复方式包括更小的 D、spectral norm、real labels 上的 label smoothing（0.9 而不是 1.0），或切换到 WGAN-GP", "generator 正在正确地 overfitting", "什么都没发生 — 这就是 equilibrium"],
+      "correct": 1,
+      "explanation": "D 的 Loss 接近零意味着 D 在 real 和 fake 上都很完美。此时传给 G 的 BCE Gradient 会消失：无论 G 输出什么，它看到的信号都接近零。修复方法是削弱 D，或使用不会 saturate 的 Loss。Spectral norm（限制 D 的 Lipschitz constant）和 WGAN-GP（使用 Earth-Mover distance 而不是 BCE）是两种标准救援方案。"
+    }
+  ]
+}

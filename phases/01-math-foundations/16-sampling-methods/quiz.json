@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "temperature < 1.0 会对 language model 的输出分布产生什么影响？",
+      "options": [
+        "让分布更均匀（更随机）",
+        "让分布更尖锐，使最高概率的 Token 更可能出现",
+        "移除除 top one 之外的所有 Token",
+        "对输出没有影响"
+      ],
+      "correct": 1,
+      "explanation": "Temperature < 1.0 会用小于 1 的数除以 logits，从而放大 logits 之间的差异。经过 softmax 后，最高概率的 Token 会获得更大的份额。Temperature 接近 0 时会得到 greedy（argmax）decoding。"
+    },
+    {
+      "stage": "pre",
+      "question": "top-k 和 top-p（nucleus）sampling 的关键区别是什么？",
+      "options": [
+        "Top-k 比 top-p 更快",
+        "Top-k 保留固定数量的 Token；top-p 根据 cumulative probability 保留可变数量的 Token",
+        "Top-p 只在 temperature = 1.0 时有效",
+        "Top-k 作用于 logits，而 top-p 作用于 probabilities"
+      ],
+      "correct": 1,
+      "explanation": "Top-k 无论 probability distribution 如何，始终保留恰好 k 个 Token。Top-p 会自适应地保留 cumulative probability 超过 p 的最小 Token 集。当 model 有信心时，top-p 保留少量 Token；当不确定时，它会保留更多。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么不能通过标准 sampling 操作 z ~ N(mu, sigma^2) 进行 backpropagate？",
+      "options": [
+        "Normal distributions 没有 gradients",
+        "sampling 操作是非确定性的，并且相对于 mu 和 sigma 没有明确定义的 derivative",
+        "PyTorch 不支持 normal distributions",
+        "gradient 始终正好为零"
+      ],
+      "correct": 1,
+      "explanation": "Sampling 会引入随机不连续性 —— 你无法为一次 random draw 计算 d(sample)/d(mu)。reparameterization trick 通过写成 z = mu + sigma * epsilon（其中 epsilon ~ N(0,1)）来解决这个问题，使 z 成为 mu 和 sigma 的确定性、可微函数。"
+    },
+    {
+      "stage": "post",
+      "question": "在 Metropolis-Hastings MCMC 中，如果 proposal standard deviation 设置得过大，会发生什么？",
+      "options": [
+        "chain 会更快收敛，因为它迈出的步子更大",
+        "大多数 proposals 会落在低概率区域并被拒绝，因此 chain 几乎不移动",
+        "stationary distribution 会变成 uniform distribution",
+        "burn-in period 变为零"
+      ],
+      "correct": 1,
+      "explanation": "当 proposal standard deviation 很大时，proposed points 会远离当前位置，并且很可能落在低概率区域。这些会被拒绝，导致 chain 卡在当前点。对于高维 Gaussian proposals，最优 acceptance rate 约为 23%。"
+    },
+    {
+      "stage": "post",
+      "question": "在 rejection sampling 中，随着目标分布维度增加，acceptance rate 会发生什么？",
+      "options": [
+        "无论维度如何都保持不变",
+        "它会增加，因为有更多维度可以接受",
+        "它会指数级下降，因为 proposal volume 的大部分都会被拒绝",
+        "它在所有情况下都接近 50%"
+      ],
+      "correct": 2,
+      "explanation": "在高维中，与目标分布重叠的 proposal distribution 体积会指数级缩小。bound M 增大，acceptance rate（1/M）会指数级下降。这就是 rejection sampling 的 curse of dimensionality。"
+    }
+  ]
+}

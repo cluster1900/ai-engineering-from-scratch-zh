@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .warn { fill: #fde0b4; stroke: #b5651d; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">成本治理按时间尺度分层。每层捕获不同故障。</text>
+
+  <rect x="40" y="50" width="800" height="460" class="box"/>
+
+  <!-- Time-scale rows -->
+  <text x="60" y="80" class="label">时间尺度</text>
+  <text x="240" y="80" class="label">层</text>
+  <text x="500" y="80" class="label">捕获</text>
+
+  <!-- Per request -->
+  <rect x="60" y="90" width="160" height="40" class="cool"/>
+  <text x="140" y="115" text-anchor="middle" class="small">每请求（&lt;1 s）</text>
+  <rect x="230" y="90" width="240" height="40" class="cold"/>
+  <text x="350" y="115" text-anchor="middle" class="content">max_tokens</text>
+  <rect x="480" y="90" width="340" height="40" class="box"/>
+  <text x="650" y="115" text-anchor="middle" class="small">无界生成（单次 LLM 调用）</text>
+
+  <!-- Per session -->
+  <rect x="60" y="135" width="160" height="40" class="cool"/>
+  <text x="140" y="160" text-anchor="middle" class="small">每 session（分钟）</text>
+  <rect x="230" y="135" width="240" height="40" class="cold"/>
+  <text x="350" y="160" text-anchor="middle" class="content">max_turns, max_budget_usd</text>
+  <rect x="480" y="135" width="340" height="40" class="box"/>
+  <text x="650" y="160" text-anchor="middle" class="small">单个 session 中的长推理循环</text>
+
+  <!-- Per tool -->
+  <rect x="60" y="180" width="160" height="40" class="cool"/>
+  <text x="140" y="205" text-anchor="middle" class="small">每 tool（sess.）</text>
+  <rect x="230" y="180" width="240" height="40" class="cold"/>
+  <text x="350" y="205" text-anchor="middle" class="content">单 tool 上限（如 ≤5 WebFetch）</text>
+  <rect x="480" y="180" width="340" height="40" class="box"/>
+  <text x="650" y="205" text-anchor="middle" class="small">新 tool 触发新循环（如 order-track）</text>
+
+  <!-- Velocity -->
+  <rect x="60" y="225" width="160" height="40" class="warn"/>
+  <text x="140" y="250" text-anchor="middle" class="small">速率（10 分钟）</text>
+  <rect x="230" y="225" width="240" height="40" class="cold"/>
+  <text x="350" y="250" text-anchor="middle" class="content">超过 $50 / 10 分钟即切断</text>
+  <rect x="480" y="225" width="340" height="40" class="box"/>
+  <text x="650" y="250" text-anchor="middle" class="small">失控循环；快速烧钱</text>
+
+  <!-- Daily -->
+  <rect x="60" y="270" width="160" height="40" class="hot"/>
+  <text x="140" y="295" text-anchor="middle" class="small">每天</text>
+  <rect x="230" y="270" width="240" height="40" class="cold"/>
+  <text x="350" y="295" text-anchor="middle" class="content">滚动日上限 + 告警</text>
+  <rect x="480" y="270" width="340" height="40" class="box"/>
+  <text x="650" y="295" text-anchor="middle" class="small">慢泄漏；逐步翻倍</text>
+
+  <!-- Weekly/monthly -->
+  <rect x="60" y="315" width="160" height="40" class="hot"/>
+  <text x="140" y="340" text-anchor="middle" class="small">每周/月</text>
+  <rect x="230" y="315" width="240" height="40" class="cold"/>
+  <text x="350" y="340" text-anchor="middle" class="content">硬性月上限 + 周告警</text>
+  <rect x="480" y="315" width="340" height="40" class="box"/>
+  <text x="650" y="340" text-anchor="middle" class="small">糟糕发布；跨 session Regression</text>
+
+  <!-- Cost-reduction row -->
+  <rect x="60" y="370" width="760" height="54" class="cool"/>
+  <text x="440" y="392" text-anchor="middle" class="label">正交：质量不变下降低成本</text>
+  <text x="80" y="412" class="content">prompt caching · context windowing / compaction · tiered model routing · 长周期运行的并行缓存</text>
+
+  <!-- Kill switch row -->
+  <rect x="60" y="430" width="760" height="60" class="hot"/>
+  <text x="440" y="452" text-anchor="middle" class="label">违规 kill switch</text>
+  <text x="80" y="472" class="content">任一上限触发 → session 中止 → 告警 → 需人工重启 → agent 不能修改自身上限</text>
+  <text x="80" y="486" class="small">2026 观察：电商 agent 因新增 tool 从 $1,200 → $4,800；周增长告警修复了问题。</text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">三个 canonical 2026 case studies — 选最接近的参考</text>
+
+  <rect x="40" y="60" width="280" height="230" class="cool"/>
+  <text x="180" y="84" text-anchor="middle" class="head">Anthropic Research</text>
+  <text x="180" y="104" text-anchor="middle" class="step">supervisor + workers</text>
+  <text x="180" y="134" text-anchor="middle" class="small">Opus 4 规划 + 综合</text>
+  <text x="180" y="152" text-anchor="middle" class="small">Sonnet 4 subagents 研究</text>
+  <text x="180" y="172" text-anchor="middle" class="small">每个 subagent 新鲜上下文</text>
+  <text x="180" y="200" text-anchor="middle" class="step">比单个 Opus 4 高 +90.2%</text>
+  <text x="180" y="220" text-anchor="middle" class="small">每次查询 15x tokens</text>
+  <text x="180" y="238" text-anchor="middle" class="small">必须 rainbow deploys</text>
+  <text x="180" y="268" text-anchor="middle" class="caption">用于：研究、知识任务</text>
+
+  <rect x="340" y="60" width="280" height="230" class="cold"/>
+  <text x="480" y="84" text-anchor="middle" class="head">MetaGPT / ChatDev</text>
+  <text x="480" y="104" text-anchor="middle" class="step">SOP 角色分解</text>
+  <text x="480" y="134" text-anchor="middle" class="small">PM · Architect · Coder · QA</text>
+  <text x="480" y="152" text-anchor="middle" class="small">Code = SOP(Team)</text>
+  <text x="480" y="172" text-anchor="middle" class="small">结构化 artifact 交接</text>
+  <text x="480" y="200" text-anchor="middle" class="step">communicative</text>
+  <text x="480" y="218" text-anchor="middle" class="step">dehallucination</text>
+  <text x="480" y="238" text-anchor="middle" class="small">MacNet：通过 DAG 支持 1000+ agents</text>
+  <text x="480" y="268" text-anchor="middle" class="caption">用于：工程流程</text>
+
+  <rect x="640" y="60" width="280" height="230" class="hot"/>
+  <text x="780" y="84" text-anchor="middle" class="head">OpenClaw / Moltbook</text>
+  <text x="780" y="104" text-anchor="middle" class="step">population-scale substrate</text>
+  <text x="780" y="134" text-anchor="middle" class="small">Clawdbot Nov 2025 → 247k ⭐</text>
+  <text x="780" y="152" text-anchor="middle" class="small">Moltbook 2.3M agents</text>
+  <text x="780" y="172" text-anchor="middle" class="small">Meta 2026 年 3 月收购</text>
+  <text x="780" y="200" text-anchor="middle" class="step">涌现经济</text>
+  <text x="780" y="218" text-anchor="middle" class="step">大规模 prompt-injection</text>
+  <text x="780" y="238" text-anchor="middle" class="small">state-level regulation response</text>
+  <text x="780" y="268" text-anchor="middle" class="caption">用于：社交 / 网络产品</text>
+
+  <rect x="40" y="310" width="880" height="190" class="box"/>
+  <text x="480" y="334" text-anchor="middle" class="head">框架版图 — 2026 年 4 月</text>
+
+  <text x="60" y="368" class="step">LangGraph</text>
+  <text x="260" y="368" class="small">生产级领先者 · graph + checkpointing + HITL</text>
+
+  <text x="60" y="394" class="step">CrewAI</text>
+  <text x="260" y="394" class="small">生产级领先者 · 基于角色的 crews（Sequential / Hierarchical）</text>
+
+  <text x="60" y="420" class="step">OpenAI Agents SDK</text>
+  <text x="260" y="420" class="small">生产级 · Swarm 后继者 · tool-return 交接</text>
+
+  <text x="60" y="446" class="step">Microsoft Agent Framework</text>
+  <text x="260" y="446" class="small">2026 年 2 月 RC · 编排模式 · AutoGen 已合并</text>
+
+  <text x="60" y="472" class="step">Google ADK · Anthropic SDK</text>
+  <text x="260" y="472" class="small">生产级 · 分别原生支持 A2A 和 research</text>
+
+  <text x="60" y="496" class="caption">全部支持 MCP；多数支持 A2A — 协议兼容不再是差异点</text>
+</svg>

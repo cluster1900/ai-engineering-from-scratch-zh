@@ -1,0 +1,78 @@
+{
+  "lesson": "23-sre-for-ai",
+  "title": "AI SRE — Multi-Agent 事件响应、Runbooks、预测性检测",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "本课为 AI SRE 推荐哪种 multi-agent 形态？",
+      "options": [
+        "从三个 Agent 中随机选择一个",
+        "两个 Agent 串联且没有 Supervisor",
+        "一个 monolithic Agent 负责所有事情",
+        "Supervisor Agent 将 Incident 拆解为面向专门 log、metric 和 runbook Agent 的子查询，然后综合结果并呈现给人类"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "本课认为哪组 auto-remediation 是安全的？",
+      "options": [
+        "重新设计 service topology",
+        "修改 databases",
+        "修改 IAM policies",
+        "重启 pod、回滚某个特定 deploy、在预先批准的范围内扩展 pool、启用预先批准的 feature flag"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "NeuBird Hawkeye 如何使用 adversarial evaluation 来过滤幻觉生成的 root causes？",
+      "options": [
+        "两个 model 独立分析同一个 Incident；一致 = 高置信度，不一致 = 带着两个假设升级给人类",
+        "使用 GAN 风格训练",
+        "总是选择置信度更高的 model 答案",
+        "在同一输入上运行同一个 model 两次"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "operational memory 在 AI SRE 中解决什么问题？",
+      "options": [
+        "inference pod 的 cold start",
+        "Network egress filtering",
+        "团队更替导致的 tribal knowledge 流失 — runbooks 和 post-mortems 存放在 Vector DB 中，Agent 在每次 Incident 中检索",
+        "Token cost attribution"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "本课引用了 MIT 2025 关于 pre-incident prediction 的哪项结果？",
+      "options": [
+        "提前 1 秒实现 100% prediction",
+        "使用 logs + GPU temperatures + API error patterns 提前 10-15 分钟预测 89% 的 outages",
+        "Predictions 仍未解决",
+        "10% 且没有提前量"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "本课强调 predictive detection 的哪项 operational constraint？",
+      "options": [
+        "Predictions 替代 runbooks",
+        "Predictions 绝不应该连接到 action",
+        "没有 actuation 的 Predictions 只是 dashboards — 运营问题是 prediction 会触发什么 action（pre-drain、page、auto-scale）",
+        "Predictions 总是准确"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

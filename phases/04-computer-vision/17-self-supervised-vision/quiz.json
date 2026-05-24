@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 SimCLR 需要 512-8192 的 batch size，而 supervised ImageNet 训练用 batch 256 就可以？",
+      "options": ["SimCLR 更慢", "每个样本都需要大量 negative examples 才能产生有用的 contrastive signal；batch 本身就是 negatives 池。小 batch 会让 InfoNCE Loss 缺少 negatives，导致训练崩塌或停滞", "Batch norm 需要这样", "Contrastive loss 会除以 batch size"],
+      "correct": 1,
+      "explanation": "InfoNCE Loss 会把 positive pair 与 batch 中所有其他样本进行排序。batch 为 32 时，每个 positive 有 30 个 negatives；1024 时有 2046 个。更多 negatives = 更清晰的 contrastive signal。MoCo 引入了一个过去 features 的 momentum queue，让有效 negatives 数量扩展到 batch size 之外；这是 GPU memory 限制 batch size 时的标准技巧。"
+    },
+    {
+      "stage": "pre",
+      "question": "是什么防止 DINO 崩塌为恒定输出？",
+      "options": ["仅靠强 augmentation", "centring（从 teacher output 中减去每个维度的 EMA 均值）和 sharpening（较低的 teacher temperature）的组合；centring 防止某个维度占主导，sharpening 防止输出崩塌为 uniform", "大 batch size", "momentum schedule"],
+      "correct": 1,
+      "explanation": "DINO 不使用显式 negatives。没有 centring 时，一个输出维度可能占主导，student 会学会总是预测它。没有 sharpening（较低的 teacher temperature）时，teacher 的输出会接近 uniform，student 会学会匹配 uniform，这同样是 collapse。两者结合起来，让输出在不同维度上保持多样，并且对每个样本保持尖锐。"
+    },
+    {
+      "stage": "post",
+      "question": "MAE 会 mask 75% 的 patches。BERT 会 mask 15% 的 tokens。为什么有这个差异？",
+      "options": ["75% 是任意选择", "图像 patches 的熵较低——相邻区域高度相关——所以只 mask 15% 会被局部外推轻易解决。mask 75% 会迫使 encoder 学习全局语义 features 来重建缺失 patches", "BERT 按设计要求 15%", "Text tokens 比 image patches 更大"],
+      "correct": 1,
+      "explanation": "mask ratio 应该匹配模态的信息密度。文本：15% 就足够，因为每个 token 都有许多合理补全。图像：相邻 pixels 几乎可以相互决定，因此低 mask ratio 不需要真正的 representation learning 就能解决。MAE 的 75% 是为了迫使语义理解而校准的。"
+    },
+    {
+      "stage": "post",
+      "question": "Self-supervised pretraining 之后，'linear probe' evaluation 只训练什么？",
+      "options": ["整个 encoder", "冻结 encoder features 顶部的单个 linear classifier；这会把 feature 质量与 fine-tuning dynamics 隔离开", "完整的 MLP classifier head", "positional embedding"],
+      "correct": 1,
+      "explanation": "Linear probe 会冻结 encoder，并在有标签的 downstream dataset 上拟合 Linear(features -> num_classes)。准确率是 feature space 线性可分性的直接度量，也就是 feature 质量的 proxy。Fine-tuning 整个 backbone 会加入 nonlinear capacity，通常能把准确率提高几个百分点，但也混入了 optimization effects。SSL papers 中两个数字都会报告。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 MAE 使用非对称 encoder-decoder 设计（大 encoder 处理 25% visible patches，小 decoder 处理所有 tokens）？",
+      "options": ["Memory 限制", "encoder 从不处理 mask tokens；小 decoder 只负责 reconstruction。这让 encoder FLOPs 与 visible patches 成正比（完整输入的 1/4），并让 pretraining 比那些让完整 encoder 处理所有 tokens 的 naive designs 快 3x", "Masked tokens 会干扰 Self-Attention", "decoder 需要自己的 backbone"],
+      "correct": 1,
+      "explanation": "MAE 的关键效率收益在于：昂贵的 encoder 只会看到 visible patches，也就是输入的 25%。Mask tokens 只出现在浅层 decoder 中。这让 pretraining 大约比 BEiT（它会让所有 tokens 经过 encoder）快 3x，同时 downstream accuracy 相当或更好。"
+    }
+  ]
+}

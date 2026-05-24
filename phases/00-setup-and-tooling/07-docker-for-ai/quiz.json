@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Docker container 和 virtual machine 的主要区别是什么？",
+      "options": ["Containers 比 VMs 更慢但更安全", "Containers 共享宿主 OS kernel，而 VMs 运行自己的完整 OS", "Containers 只能运行 Linux，而 VMs 支持任何 OS", "没有实际区别"],
+      "correct": 1,
+      "explanation": "Containers 共享宿主 kernel，并在进程级别隔离，因此能在几秒内启动。VMs 会运行一个完整的 guest OS，带有自己的 kernel，需要更多资源，启动也更慢。"
+    },
+    {
+      "stage": "pre",
+      "question": "Dockerfile 是什么？",
+      "options": ["Docker daemon 的配置文件", "一组用于逐层构建 Docker image 的指令", "记录 container 活动的日志文件", "列出正在运行的 containers 的文件"],
+      "correct": 1,
+      "explanation": "Dockerfile 包含顺序执行的指令（FROM、RUN、COPY 等），Docker 会执行这些指令来构建 image。每条指令都会创建一个 cached layer。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 volume mounts 对使用 Docker 的 AI development 至关重要？",
+      "options": ["Volumes 通过使用宿主磁盘速度让 containers 运行更快", "Volumes 会在 container 重建之间持久保留 data（models、datasets、code），这样你不用每次都重新下载数 GB 内容", "Python 包正确安装必须使用 volumes", "Volumes 允许多个 containers 共享同一个 GPU"],
+      "correct": 1,
+      "explanation": "没有 volumes，container 内的一切都会在它停止时丢失。Volume mounts 会把宿主目录映射到 container 中，因此 model weights（14+ GB）和 datasets 能在重建后保留下来。"
+    },
+    {
+      "stage": "post",
+      "question": "NVIDIA Container Toolkit 启用了什么能力？",
+      "options": ["在 container 内安装 CUDA drivers", "通过 --gpus flag 将宿主 GPUs 暴露给 Docker containers", "在 AMD hardware 上运行 NVIDIA GPU containers", "在 Docker build 过程中编译 CUDA code"],
+      "correct": 1,
+      "explanation": "NVIDIA Container Toolkit 是一个 runtime hook，会将宿主 GPUs 暴露给 containers。CUDA toolkit 位于 container 内，但 GPU driver 从宿主机共享。"
+    },
+    {
+      "stage": "post",
+      "question": "在用于 AI 的 Docker Compose 文件中，'ai-dev' service 如何访问 'qdrant' Vector database？",
+      "options": ["通过使用宿主机的 IP address 和 port", "通过使用 service name 'qdrant' 作为 hostname，因为 Compose 会创建共享 network", "通过在两个 containers 之间挂载共享 volume", "通过在 containers 之间配置 VPN"],
+      "correct": 1,
+      "explanation": "Docker Compose 会自动创建共享 network，其中 services 可以通过名称相互访问。ai-dev container 使用 service name 作为 hostname，连接到 'http://qdrant:6333'。"
+    }
+  ]
+}

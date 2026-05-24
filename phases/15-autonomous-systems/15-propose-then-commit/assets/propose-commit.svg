@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">Propose → Surface → Commit → Verify（四项必需）</text>
+
+  <rect x="40" y="50" width="800" height="460" class="box"/>
+
+  <!-- Phases -->
+  <rect x="60" y="80" width="170" height="90" class="cool"/>
+  <text x="145" y="104" text-anchor="middle" class="label">1. propose</text>
+  <text x="76" y="126" class="small">意图 + lineage +</text>
+  <text x="76" y="142" class="small">权限 + blast +</text>
+  <text x="76" y="158" class="small">rollback + 幂等性</text>
+
+  <rect x="250" y="80" width="170" height="90" class="cold"/>
+  <text x="335" y="104" text-anchor="middle" class="label">2. surface</text>
+  <text x="266" y="126" class="small">持久存储</text>
+  <text x="266" y="142" class="small">（PostgreSQL, Redis,</text>
+  <text x="266" y="158" class="small">Durable Object）</text>
+
+  <rect x="440" y="80" width="170" height="90" class="cool"/>
+  <text x="525" y="104" text-anchor="middle" class="label">3. commit</text>
+  <text x="456" y="126" class="small">challenge-and-response</text>
+  <text x="456" y="142" class="small">checklist，明确 ack</text>
+  <text x="456" y="158" class="small">幂等 re-exec</text>
+
+  <rect x="630" y="80" width="170" height="90" class="cool"/>
+  <text x="715" y="104" text-anchor="middle" class="label">4. verify</text>
+  <text x="646" y="126" class="small">重读目标</text>
+  <text x="646" y="142" class="small">确认副作用</text>
+  <text x="646" y="158" class="small">不匹配则告警</text>
+
+  <path d="M230 125 L250 125" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M420 125 L440 125" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M610 125 L630 125" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Rubber stamp vs checklist -->
+  <rect x="60" y="200" width="360" height="140" class="hot"/>
+  <text x="240" y="224" text-anchor="middle" class="label">走过场审批（审计失败）</text>
+  <text x="76" y="248" class="content">一个“Approve?”按钮</text>
+  <text x="76" y="264" class="content">未展示结构化 metadata</text>
+  <text x="76" y="280" class="content">reviewer 1s 内点击</text>
+  <text x="76" y="296" class="content">审批不具预测性</text>
+  <text x="76" y="320" class="small">EU AI Act Article 14 明确要求：有效人工监督</text>
+  <text x="76" y="334" class="small">排除走过场模式。</text>
+
+  <rect x="460" y="200" width="360" height="140" class="cool"/>
+  <text x="640" y="224" text-anchor="middle" class="label">challenge-and-response（通过）</text>
+  <text x="476" y="248" class="content">[ ] 我理解这会触碰什么</text>
+  <text x="476" y="264" class="content">[ ] 我已核查 blast radius</text>
+  <text x="476" y="280" class="content">[ ] 我有 rollback 计划</text>
+  <text x="476" y="296" class="content">三项全选后才启用 Approve</text>
+  <text x="476" y="320" class="small">记录于 Anthropic 和 MS 合规文档；</text>
+  <text x="476" y="334" class="small">EU AI Act Article 14 要求高风险系统具备。</text>
+
+  <!-- Idempotency detail -->
+  <rect x="60" y="370" width="760" height="120" class="cold"/>
+  <text x="440" y="394" text-anchor="middle" class="label">idempotency key = hash(thread_id, action, payload)</text>
+  <text x="80" y="416" class="content">propose(P) + propose(P) -&gt; 同一记录（无重复）</text>
+  <text x="80" y="432" class="content">commit(k) + commit(k) -&gt; 只执行一次，后续 commit 为 no-op</text>
+  <text x="80" y="448" class="content">瞬时失败后 retry：Stripe/AWS 风格幂等性，复用于 agent 审批</text>
+  <text x="80" y="468" class="content">key 中的 wall-clock 是日志 timestamp，不是 idempotency key</text>
+  <text x="80" y="484" class="small">LangGraph interrupt() · MS RequestInfoEvent · Cloudflare waitForApproval() — 同一形态，不同名称</text>
+</svg>

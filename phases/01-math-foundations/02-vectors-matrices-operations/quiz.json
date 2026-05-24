@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "对于 Matrix multiplication (m x n) @ (n x p)，维度必须满足什么条件？",
+      "options": ["m 必须等于 p", "内部维度 n 必须匹配", "所有维度都必须相等", "m 必须大于 p"],
+      "correct": 1,
+      "explanation": "Matrix multiplication 要求第一个 Matrix 的列数 (n) 等于第二个 Matrix 的行数 (n)。结果的形状是 (m x p)。"
+    },
+    {
+      "stage": "pre",
+      "question": "identity Matrix 是什么？",
+      "options": ["全为 1 的 Matrix", "一个对角线上为 1、其他位置为 0 的方形 Matrix，并充当乘法 identity", "每个元素都唯一的 Matrix", "任意给定 Matrix 的转置"],
+      "correct": 1,
+      "explanation": "identity Matrix I 的对角线上为 1，其他位置都为 0。任意 Matrix 乘以 I 都会返回不变的原 Matrix，就像一个数乘以 1。"
+    },
+    {
+      "stage": "post",
+      "question": "逐元素乘法和 Matrix multiplication 的关键区别是什么？",
+      "options": ["逐元素乘法更快，而 Matrix multiplication 更准确", "逐元素乘法会乘以匹配位置的元素（要求相同形状），Matrix multiplication 会对行和列做点积（内部维度必须匹配）", "它们产生相同结果，但使用不同记法", "逐元素乘法只适用于 Vector，而 Matrix multiplication 适用于 Matrix"],
+      "correct": 1,
+      "explanation": "逐元素（Hadamard）积会乘以对应元素，并要求形状完全相同。Matrix multiplication 按规则 (m,n)@(n,p)=(m,p) 计算行与列之间的点积。"
+    },
+    {
+      "stage": "post",
+      "question": "在表达式 'output = relu(W @ x + b)' 中，broadcasting 起什么作用？",
+      "options": ["它会把计算广播到多个 GPU 上", "它会自动拉伸 bias Vector b，以匹配 W @ x 的形状，从而可以相加", "它会转换 W 和 x 的数据类型使其匹配", "它会在所有元素上重复 relu activation"],
+      "correct": 1,
+      "explanation": "W @ x 会产生一个列 Vector，而 b 也是一个 Vector。必要时，broadcasting 会沿 batch 维度拉伸 b，使得无需显式匹配形状也能进行逐元素加法。"
+    },
+    {
+      "stage": "post",
+      "question": "Matrix 的 determinant 为零表示什么？",
+      "options": ["该 Matrix 的所有条目都是零", "该 Matrix 是奇异的：它压缩了至少一个维度，无法求逆，并且没有唯一解", "该 Matrix 是 identity Matrix", "该 Matrix 执行旋转"],
+      "correct": 1,
+      "explanation": "determinant 为零表示该变换至少沿一个维度折叠了空间（例如，将 2D 映射到一条线）。该 Matrix 没有逆，并且使用它的线性系统要么无解，要么有无限多个解。"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "lesson": "31-agent-workbench-why-models-fail",
+  "title": "Agent Workbench Engineering：为什么强大的模型仍然失败",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程指出，agent 在真实任务中失败的根本原因是什么？",
+      "options": [
+        "模型参数不足",
+        "Workbench 失败：模型周围缺少必要的 surface，而不是 LLM 的限制",
+        "网络缓慢",
+        "训练数据过时"
+      ],
+      "correct": 1,
+      "explanation": "模型并不是不懂 Python；它是不理解这项工作。模型周围缺少必要的 surface。"
+    },
+    {
+      "stage": "pre",
+      "question": "课程命名的七个 workbench surface 是什么？",
+      "options": [
+        "Instructions, state, scope, feedback, verification, review, handoff",
+        "Train, eval, deploy, monitor, retrain, scale, retire",
+        "Plan, act, reflect, refine, debate, vote, ship",
+        "Read, write, exec, fork, exit, wait, kill"
+      ],
+      "correct": 0,
+      "explanation": "七个 surface 是 instructions, state, scope, feedback, verification, review, handoff。"
+    },
+    {
+      "stage": "check",
+      "question": "以下哪一项不是课程将 surface 映射到的八个 distributed-systems primitive 之一？",
+      "options": [
+        "Function",
+        "Worker",
+        "Trigger",
+        "Backpropagation"
+      ],
+      "correct": 3,
+      "explanation": "八个 primitive 是 function, worker, trigger, runtime, HTTP/RPC, queue, session persistence, authorization policy。"
+    },
+    {
+      "stage": "check",
+      "question": "据报道，Vercel 的 harness 变更把成功率从多少提升到了多少？",
+      "options": [
+        "20% 到 60%",
+        "80% 到 100%，通过删除 agent 80% 的 tools",
+        "0% 到 100%，通过切换模型",
+        "50% 到 70%，通过添加 RAG"
+      ],
+      "correct": 1,
+      "explanation": "删除 80% 的 tools，让 Vercel 的 agent 从 80% 成功率提升到 100%。"
+    },
+    {
+      "stage": "check",
+      "question": "Terminal Bench 2.0 说明了 model 与 harness 的什么关系？",
+      "options": [
+        "仅靠模型决定排名",
+        "同一个模型只改变 harness，就从前 30 名之外升到第 5 名",
+        "Harness 变更并不重要",
+        "只有 GPUs 重要"
+      ],
+      "correct": 1,
+      "explanation": "LangChain 的 Anatomy of an Agent Harness：同一个模型，改变 harness，排名跃升 25+。"
+    },
+    {
+      "stage": "post",
+      "question": "课程建议当你听到新的 harness 词汇时应该怎么做？",
+      "options": [
+        "逐字采用该词汇",
+        "在采用前先翻译回 primitives（function, worker, trigger, runtime, HTTP/RPC, queue, persistence, policy）",
+        "拒绝它",
+        "等待 OpenAI 将其标准化"
+      ],
+      "correct": 1,
+      "explanation": "从 primitives 出发推理，而不是从厂商分类法出发；词汇会变，但工程不会变。"
+    },
+    {
+      "stage": "post",
+      "question": "相对于 workbench，chat history 处在什么位置？",
+      "options": [
+        "Chat 是 system of record",
+        "Chat 是易失的；repo 才是 system of record",
+        "两者等价",
+        "两者都不重要"
+      ],
+      "correct": 1,
+      "explanation": "这个 loop 闭合在 state file 上，而不是 chat history 上。"
+    }
+  ]
+}

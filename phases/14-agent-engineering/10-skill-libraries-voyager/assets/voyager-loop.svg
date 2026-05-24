@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .curr { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .lib { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .iter { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .env { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">Voyager - 自动课程、skill library、迭代优化</text>
+
+  <rect x="40" y="60" width="280" height="180" class="curr"/>
+  <text x="180" y="82" text-anchor="middle" class="head">自动课程</text>
+  <text x="60" y="108" class="small">根据当前能力缺口提出下一个任务</text>
+  <text x="60" y="126" class="small">好奇心驱动，自底向上探索</text>
+  <text x="60" y="146" class="small">“学会制作 iron pickaxe” 先于 diamond</text>
+  <rect x="60" y="158" width="240" height="70" class="box"/>
+  <text x="78" y="178" class="step">生产类比：</text>
+  <text x="78" y="196" class="small">缺口复盘 - library 中缺哪些 skills</text>
+  <text x="78" y="212" class="small">人类 + agent 每周过一遍课程</text>
+
+  <rect x="340" y="60" width="280" height="180" class="lib"/>
+  <text x="480" y="82" text-anchor="middle" class="head">skill library</text>
+  <text x="360" y="108" class="small">skill = 命名代码 + 描述 + deps</text>
+  <text x="360" y="126" class="small">有版本、可 retrieval、可组合</text>
+  <text x="360" y="146" class="small">写入时去重；retrieve 时按 tag 过滤</text>
+  <rect x="360" y="158" width="240" height="70" class="box"/>
+  <text x="378" y="178" class="step">2026 生产类比：</text>
+  <text x="378" y="196" class="small">Claude Agent SDK skills</text>
+  <text x="378" y="212" class="small">skillkit registry；MCP resources</text>
+
+  <rect x="640" y="60" width="280" height="180" class="iter"/>
+  <text x="780" y="82" text-anchor="middle" class="head">迭代 prompting</text>
+  <text x="660" y="108" class="small">执行错误 + 环境反馈 + 自验证</text>
+  <text x="660" y="126" class="small">重写技能，提升版本</text>
+  <text x="660" y="146" class="small">v1 制作失败；v2 添加 stick 依赖</text>
+  <rect x="660" y="158" width="240" height="70" class="box"/>
+  <text x="678" y="178" class="step">基础：</text>
+  <text x="678" y="196" class="small">Self-Refine（第 05 课）</text>
+  <text x="678" y="212" class="small">CRITIC（第 05 课）+ 环境验证器</text>
+
+  <rect x="80" y="280" width="800" height="230" class="env"/>
+  <text x="480" y="302" text-anchor="middle" class="head">工作循环 — craft_iron_pickaxe</text>
+
+  <rect x="100" y="320" width="760" height="40" class="box"/>
+  <text x="120" y="342" class="step">1. 检索：library.search("need a pickaxe") 返回 craft_iron_pickaxe v1</text>
+
+  <rect x="100" y="368" width="760" height="40" class="box"/>
+  <text x="120" y="390" class="step">2. 执行 v1：topo_order  place_table  mine_ore  craft_iron_pickaxe</text>
+
+  <rect x="100" y="416" width="760" height="40" class="box"/>
+  <text x="120" y="438" class="step">3. 失败：RuntimeError "need 2 stick, have 0" 环境反馈浮现</text>
+
+  <rect x="100" y="464" width="760" height="40" class="box"/>
+  <text x="120" y="486" class="step">4. 优化：注册 v2，带 gather_sticks 依赖；重新执行；成功；inventory += iron_pickaxe</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">动作空间 = 代码。技能组合成 DAG。失败提升版本。库单调增长。</text>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">Theory of Mind 阶数与协调错觉</text>
+
+  <rect x="40" y="60" width="280" height="200" class="hot"/>
+  <text x="180" y="84" text-anchor="middle" class="head">零阶</text>
+  <text x="180" y="108" text-anchor="middle" class="step">没有他人模型</text>
+  <text x="180" y="138" text-anchor="middle" class="small">agent 只基于自身 observations 行动</text>
+  <text x="180" y="156" text-anchor="middle" class="small">与其他 agents 冲突</text>
+  <text x="180" y="174" text-anchor="middle" class="small">在共享资源上重复劳动</text>
+  <text x="180" y="206" text-anchor="middle" class="caption">实测：~0.96 次碰撞 / trial</text>
+  <text x="180" y="224" text-anchor="middle" class="caption">（3 agents，3 boxes，无 ToM）</text>
+
+  <rect x="340" y="60" width="280" height="200" class="cool"/>
+  <text x="480" y="84" text-anchor="middle" class="head">一阶</text>
+  <text x="480" y="108" text-anchor="middle" class="step">"A believes X"</text>
+  <text x="480" y="138" text-anchor="middle" class="small">agent 跟踪彼此信念</text>
+  <text x="480" y="156" text-anchor="middle" class="small">从建模信念预测动作</text>
+  <text x="480" y="174" text-anchor="middle" class="small">避免冗余 + 预判需求</text>
+  <text x="480" y="206" text-anchor="middle" class="caption">测得：~0.00 碰撞 / trial</text>
+  <text x="480" y="224" text-anchor="middle" class="caption">（带 preference prime）</text>
+
+  <rect x="640" y="60" width="280" height="200" class="cold"/>
+  <text x="780" y="84" text-anchor="middle" class="head">二阶</text>
+  <text x="780" y="108" text-anchor="middle" class="step">"A 认为 B 认为 X"</text>
+  <text x="780" y="138" text-anchor="middle" class="small">递归信念建模</text>
+  <text x="780" y="156" text-anchor="middle" class="small">在协作游戏中涌现</text>
+  <text x="780" y="174" text-anchor="middle" class="small">长时域退化</text>
+  <text x="780" y="206" text-anchor="middle" class="caption">Li et al. 2023 context 失败模式：</text>
+  <text x="780" y="224" text-anchor="middle" class="caption">身份-信念绑定随轮次下降</text>
+
+  <rect x="40" y="290" width="880" height="200" class="box"/>
+  <text x="480" y="314" text-anchor="middle" class="head">协调错觉（Riedl 2025, arXiv:2510.05174）</text>
+  <text x="70" y="346" class="step">主张</text>
+  <text x="140" y="346" class="small">"我们的 agents 自发协调"</text>
+  <text x="70" y="372" class="step">失败</text>
+  <text x="140" y="372" class="small">协调只是 prompt 包装；去掉 system prompt 中的 "work together"，效果消失</text>
+  <text x="70" y="398" class="step">审计</text>
+  <text x="140" y="398" class="small">要求 control condition、统计检验、互补性指标、capacity-check</text>
+  <text x="70" y="424" class="step">真实</text>
+  <text x="140" y="424" class="small">身份关联差异化 + 目标导向互补 + 高阶协同</text>
+  <text x="70" y="450" class="step">仅当</text>
+  <text x="140" y="450" class="small">Riedl 群体实验中，仅 ToM-prompted 条件三者均高于随机</text>
+  <text x="70" y="476" class="caption">更大模型无需 ToM prompting 也有一定协调，但效果更小</text>
+</svg>

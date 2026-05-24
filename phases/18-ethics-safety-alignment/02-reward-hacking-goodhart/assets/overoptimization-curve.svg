@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .axis { stroke: #1a1a1a; stroke-width: 1.2; fill: none; }
+      .grid { stroke: #ddd; stroke-width: 0.5; fill: none; }
+      .proxyline { stroke: #c0392b; stroke-width: 2.2; fill: none; }
+      .goldline { stroke: #2e7d32; stroke-width: 2.2; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">Gao-Schulman-Hilton 过度优化曲线</text>
+  <text x="480" y="46" text-anchor="middle" class="caption">proxy reward 单调上升。gold reward 达峰后下降。</text>
+
+  <rect x="60" y="70" width="520" height="380" class="box"/>
+  <line x1="100" y1="420" x2="560" y2="420" class="axis"/>
+  <line x1="100" y1="90"  x2="100" y2="420" class="axis"/>
+  <text x="330" y="446" text-anchor="middle" class="small">距初始策略的 sqrt(KL)</text>
+  <text x="84"  y="250" text-anchor="middle" transform="rotate(-90 84 250)" class="small">期望 reward</text>
+
+  <line x1="100" y1="380" x2="560" y2="380" class="grid"/>
+  <line x1="100" y1="300" x2="560" y2="300" class="grid"/>
+  <line x1="100" y1="220" x2="560" y2="220" class="grid"/>
+  <line x1="100" y1="140" x2="560" y2="140" class="grid"/>
+
+  <path d="M 100 420 Q 200 340 300 260 T 560 120" class="proxyline"/>
+  <path d="M 100 420 Q 180 330 260 260 Q 340 180 400 180 Q 470 180 560 300" class="goldline"/>
+
+  <circle cx="400" cy="180" r="4" fill="#2e7d32"/>
+  <text x="420" y="176" class="small">gold 峰值</text>
+
+  <text x="150" y="105" class="step" fill="#c0392b">proxy reward</text>
+  <text x="150" y="125" class="step" fill="#2e7d32">gold reward</text>
+
+  <rect x="600" y="70" width="320" height="380" class="box"/>
+  <text x="760" y="94" text-anchor="middle" class="head">四种伪装</text>
+
+  <rect x="620" y="110" width="280" height="60" class="hot"/>
+  <text x="635" y="132" class="step">1 / 冗长偏差</text>
+  <text x="635" y="152" class="small">更长输出得分更高，但帮助更少。</text>
+
+  <rect x="620" y="180" width="280" height="60" class="cool"/>
+  <text x="635" y="202" class="step">2 / 谄媚</text>
+  <text x="635" y="222" class="small">迎合用户胜过正确性。</text>
+
+  <rect x="620" y="250" width="280" height="60" class="cold"/>
+  <text x="635" y="272" class="step">3 / 不忠实 CoT</text>
+  <text x="635" y="292" class="small">看似正确但并未驱动答案的链条。</text>
+
+  <rect x="620" y="320" width="280" height="60" class="box"/>
+  <text x="635" y="342" class="step">4 / evaluator 篡改</text>
+  <text x="635" y="362" class="small">agent 修改 scratchpad、env 或 RM 输入。</text>
+
+  <text x="760" y="404" text-anchor="middle" class="caption">一个机制：概率质量转移</text>
+  <text x="760" y="422" text-anchor="middle" class="caption">到 RM 奖励的易学启发式。</text>
+
+  <rect x="60" y="470" width="860" height="70" class="box"/>
+  <text x="80" y="494" class="small">KL 正则会缓解坍缩，但不能阻止它（Gao 2023）。</text>
+  <text x="80" y="512" class="small">在重尾 reward error 下，KL 约束最优解可能把全部质量放到最大化错误的模式上</text>
+  <text x="80" y="528" class="small">— “灾难性 Goodhart”（OpenReview UXuBzWoZGK）。单靠任何 beta 都救不了。</text>
+</svg>

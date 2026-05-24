@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .warn { fill: #fde0b4; stroke: #b5651d; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">Claude Constitution（2026年1月，79页，CC0）：硬编码底线 + 四层级</text>
+
+  <rect x="40" y="50" width="800" height="460" class="box"/>
+
+  <!-- Hardcoded floor -->
+  <rect x="60" y="80" width="760" height="86" class="hot"/>
+  <text x="440" y="104" text-anchor="middle" class="label">硬编码禁令（operator 和用户不可覆盖）</text>
+  <text x="80" y="126" class="content">生物武器 / CBRN 提升 · CSAM · 关键基础设施攻击规划</text>
+  <text x="80" y="142" class="content">被直接询问时欺骗 AI 身份 · 允许部署特定补充</text>
+  <text x="80" y="158" class="small">在 model weights（CAI 训练 + RLAIF）和 inference 层执行</text>
+
+  <!-- Tier 1 -->
+  <rect x="60" y="190" width="760" height="60" class="cool"/>
+  <text x="80" y="212" class="label">层级 1 — 安全与支持人类监督（最高）</text>
+  <text x="80" y="232" class="content">不要让人类更难监督和纠正 AI</text>
+
+  <!-- Tier 2 -->
+  <rect x="60" y="260" width="760" height="60" class="cold"/>
+  <text x="80" y="282" class="label">层级 2 — 伦理</text>
+  <text x="80" y="302" class="content">诚实 · 避免伤害个人 · 不欺骗 · 不操纵</text>
+
+  <!-- Tier 3 -->
+  <rect x="60" y="330" width="760" height="60" class="warn"/>
+  <text x="80" y="352" class="label">层级 3 — Anthropic 指南（operator 可在声明边界内调整）</text>
+  <text x="80" y="372" class="content">响应长度 · 主题范围 · 风格 · tool-use 模式</text>
+
+  <!-- Tier 4 -->
+  <rect x="60" y="400" width="760" height="60" class="box"/>
+  <text x="80" y="422" class="label">层级 4 — 有用性（最低）</text>
+  <text x="80" y="442" class="content">在前三个更高层级内尽可能有用</text>
+
+  <!-- Resolution note -->
+  <rect x="60" y="466" width="760" height="36" class="box"/>
+  <text x="440" y="490" text-anchor="middle" class="small">层级冲突时高者优先；原则含糊时，model 推理（基于理由的 alignment）</text>
+</svg>

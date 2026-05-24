@@ -1,0 +1,78 @@
+{
+  "lesson": "20-shadow-canary-progressive",
+  "title": "LLMs 的 Shadow Traffic、Canary Rollout 和 Progressive Deployment",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "对于 LLM rollout，shadow、canary 和 A/B testing 的正确顺序是什么？",
+      "options": [
+        "先 Shadow（零影响对比），再 canary（带 gate 的实时流量渐进发布），然后在稳定性确认后对明显不同的替代方案做 A/B",
+        "完全跳过 shadow",
+        "先 canary，再 shadow，然后 A/B",
+        "先 A/B，再 shadow，然后 canary"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "本课用哪五类指标作为 canary 推进的 gate？",
+      "options": [
+        "GPU 温度、风扇速度、队列深度、成本、延迟",
+        "仅 offline eval 上的准确率",
+        "延迟百分位、每次 request 成本、错误/拒答率、输出长度分布、用户反馈率",
+        "只有吞吐量"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "本课提到，在 LLMs 上相同输入的运行间准确率方差大约是多少？",
+      "options": [
+        "低于 0.1%",
+        "每次运行输出都相同",
+        "总是 50%",
+        "最高约 15%，原因是 GPU FP 非结合性加上 batch-size 方差"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在本课的表述中，shadow mode 的用途是什么？",
+      "options": [
+        "替代 rollback",
+        "替代 evals 的完整质量测试",
+        "最终生产 rollout 步骤",
+        "一种 smoke test，用于捕捉成本暴涨、长度回退、拒答变化和硬错误 — 但不是质量保证"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "根据本课，正确的 rollback 设计是什么？",
+      "options": [
+        "等待下一个发布窗口",
+        "用新的模型 digest 重新 deploy，耗时数小时",
+        "在数秒内翻转 policy flag 并恢复 pinned model digest — 无需 redeploy",
+        "手动 SSH 到每个 pod"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么成本会和延迟、质量一起列为 gate？",
+      "options": [
+        "一个好 20% 的模型可能每次调用贵 3 倍；没有成本 gate 就发布会破坏单位经济性",
+        "每个 provider 都会自动限制成本上限",
+        "成本是虚荣指标",
+        "不同 providers 的成本相同"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

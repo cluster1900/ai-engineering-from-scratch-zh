@@ -1,0 +1,37 @@
+[
+  {
+    "question": "momentum 在 Gradient Descent 中解决什么问题？",
+    "options": ["它减少内存使用", "它通过累积过去的 Gradient 来抑制振荡，并加速在一致方向上的移动", "它消除了对 learning rate 的需求", "它防止 overfitting"],
+    "correct": 1,
+    "explanation": "在狭窄山谷中，Gradient 会在山谷两侧来回振荡，同时沿山谷方向进展缓慢。Momentum 会累积过去的 Gradient：一致方向会被放大，而振荡方向会相互抵消，从而带来更平滑、更快的收敛。",
+    "stage": "pre"
+  },
+  {
+    "question": "Adam 和 AdamW 的关键区别是什么？",
+    "options": ["AdamW 使用更高的 learning rate", "AdamW 将 weight decay 直接应用到 weights，而不是通过 Gradient 应用，从而得到正确的 regularization", "AdamW 不使用 momentum", "AdamW 只适用于 Transformers"],
+    "correct": 1,
+    "explanation": "在 Adam + L2 中，adaptive learning rate 会让 regularization 项按每个 parameter 被不同程度地缩放。AdamW 将 weight decay 与 Gradient update 解耦，不受 Gradient 统计量影响，应用统一的收缩。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 Adam 在训练早期步骤中使用 bias correction？",
+    "options": ["为了防止 overfitting", "moment estimates 初始化为零，因此早期值会偏向零；correction 会补偿这种冷启动", "为了 clip 大 Gradient", "为了加快收敛"],
+    "correct": 1,
+    "explanation": "在第 1 步且 beta1=0.9 时，m_1 = 0.1 * gradient（小了 10 倍）。除以 (1 - 0.9^1) = 0.1 会将其校正为实际 Gradient。约 50 步之后，这种 correction 变得可以忽略。",
+    "stage": "post"
+  },
+  {
+    "question": "Adam 的标准默认 hyperparameters 是什么？",
+    "options": ["lr=0.1, beta1=0.5, beta2=0.5", "lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8", "lr=0.01, beta1=0.99, beta2=0.99", "lr=0.0001, beta1=0.8, beta2=0.9"],
+    "correct": 1,
+    "explanation": "原始 Adam 论文（Kingma & Ba, 2014）推荐 lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8。这些默认值对大多数问题都效果良好。",
+    "stage": "post"
+  },
+  {
+    "question": "哪个 Optimizer 是训练 Transformers 和 LLMs 的现代默认选择？",
+    "options": ["Vanilla SGD", "SGD with momentum", "RMSProp", "AdamW"],
+    "correct": 3,
+    "explanation": "AdamW（带有解耦 weight decay 的 Adam）用于训练 BERT、GPT、LLaMA，以及几乎所有现代 Transformers。它将 adaptive learning rates 与正确的 weight decay regularization 结合起来。",
+    "stage": "post"
+  }
+]

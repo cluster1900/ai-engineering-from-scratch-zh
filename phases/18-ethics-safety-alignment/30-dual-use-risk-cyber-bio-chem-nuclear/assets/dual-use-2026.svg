@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">2026 双用途图景：四个 CBRN 领域</text>
+
+  <rect x="40" y="60" width="200" height="160" class="box"/>
+  <text x="140" y="85" text-anchor="middle" class="head">bio</text>
+  <rect x="60" y="100" width="160" height="100" class="hot"/>
+  <text x="140" y="125" text-anchor="middle" class="step">2024：轻微 uplift</text>
+  <text x="140" y="145" text-anchor="middle" class="step">2025：2.53x</text>
+  <text x="140" y="165" text-anchor="middle" class="small">ASL-3 路线</text>
+  <text x="140" y="185" text-anchor="middle" class="small">获取阶段自动化</text>
+
+  <rect x="260" y="60" width="200" height="160" class="box"/>
+  <text x="360" y="85" text-anchor="middle" class="head">chem</text>
+  <rect x="280" y="100" width="160" height="100" class="hot"/>
+  <text x="360" y="125" text-anchor="middle" class="step">2024：轻微</text>
+  <text x="360" y="145" text-anchor="middle" class="step">2025：执行缺口削弱</text>
+  <text x="360" y="165" text-anchor="middle" class="small">vision-enabled 实时纠正</text>
+  <text x="360" y="185" text-anchor="middle" class="small">GPT-5 x wet-lab：79x 效率</text>
+
+  <rect x="480" y="60" width="200" height="160" class="box"/>
+  <text x="580" y="85" text-anchor="middle" class="head">cyber</text>
+  <rect x="500" y="100" width="160" height="100" class="hot"/>
+  <text x="580" y="125" text-anchor="middle" class="step">2024：代码片段</text>
+  <text x="580" y="145" text-anchor="middle" class="step">2025：80-90% campaign</text>
+  <text x="580" y="165" text-anchor="middle" class="small">中国关联行为体，Claude agentic</text>
+  <text x="580" y="185" text-anchor="middle" class="small">仍需 4-6 个人工步骤</text>
+
+  <rect x="700" y="60" width="220" height="160" class="box"/>
+  <text x="810" y="85" text-anchor="middle" class="head">核</text>
+  <rect x="720" y="100" width="180" height="100" class="cool"/>
+  <text x="810" y="125" text-anchor="middle" class="step">2024：有限</text>
+  <text x="810" y="145" text-anchor="middle" class="step">2025：有限</text>
+  <text x="810" y="165" text-anchor="middle" class="small">材料获取主导</text>
+  <text x="810" y="185" text-anchor="middle" class="small">2024-2025 无拐点</text>
+
+  <rect x="40" y="240" width="880" height="130" class="box"/>
+  <text x="480" y="265" text-anchor="middle" class="head">新手 vs 专家不对称</text>
+  <rect x="60" y="285" width="420" height="70" class="cold"/>
+  <text x="270" y="310" text-anchor="middle" class="step">相对新手提升</text>
+  <text x="270" y="328" text-anchor="middle" class="small">乘法效应；高；输入过滤有帮助</text>
+  <text x="270" y="346" text-anchor="middle" class="small">新手不知道问什么</text>
+  <rect x="500" y="285" width="400" height="70" class="cold"/>
+  <text x="700" y="310" text-anchor="middle" class="step">专家绝对能力</text>
+  <text x="700" y="328" text-anchor="middle" class="small">上限高；过滤不足</text>
+  <text x="700" y="346" text-anchor="middle" class="small">需要 unlearning + control</text>
+
+  <rect x="40" y="390" width="880" height="100" class="box"/>
+  <text x="480" y="415" text-anchor="middle" class="head">防御方开发</text>
+  <text x="60" y="440" class="small">OpenAI “trusted access” 试点 (2025)：经审核防御者获能力访问，用于双用途防御工作。</text>
+  <text x="60" y="460" class="small">Council on Strategic Risks 2025 AI x Bio 总结：bio-uplift 证据年终综合。</text>
+  <text x="60" y="480" class="small">2026 姿态：safety cases 必须针对新手相对提升和专家绝对提升。三支柱（监控、不可读性、无能力）。</text>
+</svg>

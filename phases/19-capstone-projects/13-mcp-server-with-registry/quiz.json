@@ -1,0 +1,90 @@
+{
+  "lesson": "13-mcp-server-with-registry",
+  "title": "Capstone 13 — 带 Registry 和 Governance 的 MCP Server",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 2026 MCP 修订版更偏向在生产 Server 中使用 StreamableHTTP？",
+      "options": [
+        "它消除了 authentication 的需求",
+        "它是唯一支持 tool call 的 transport",
+        "它会自动加密 payload",
+        "它默认是 stateless，因此 load balancer 后面的单个 endpoint 可以水平扩展"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "这个 capstone 中用哪种 authorization model 来限制 tool call？",
+      "options": [
+        "携带按 tool 划分 scope 的 OAuth 2.1 token，并在 tool-call 时检查",
+        "共享的 admin password",
+        "按 IP address 分配的 API key",
+        "不带 scope 的 Mutual TLS"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": ".well-known/mcp-capabilities document 的作用是什么？",
+      "options": [
+        "存储 Server 的 audit log",
+        "列出 outbound IP range",
+        "保存 OPA policy bundle",
+        "暴露 tool manifest、transport URL 和 auth requirements，使 registry 可以验证并索引 Server"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 destructive tool 在这个设计中运行在单独的 MCP Server 上？",
+      "options": [
+        "它们不能通过 StreamableHTTP 暴露",
+        "它们运行在更慢的 hardware 上",
+        "它们被一个 approval token 限制访问，该 token 通过短时间窗口内的 Slack card 提权",
+        "它们需要不同的 programming language"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "OPA / Rego 在每次 tool call 上决定什么？",
+      "options": [
+        "调用哪个 model",
+        "把 audit log 写到哪里",
+        "Server 应该如何重新排序 response",
+        "caller 的 scope 是否允许 invocation，以及 PII redaction 和 payload caps"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "load test 中哪些证据展示了 StreamableHTTP 的水平扩展能力？",
+      "options": [
+        "把 concurrency 降到一个 client",
+        "切换到 stdio transport",
+        "所有内容都运行在单个 process 中",
+        "添加第二个 replica，并展示 load balancer 在没有 session stickiness 的情况下重新分配流量"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 audit log 在按 tenant 持久化之前要通过 Presidio 清理 PII？",
+      "options": [
+        "为了让 log 更短",
+        "为了满足 enterprise security requirements，同时保持每次调用的 lineage 可查询",
+        "Presidio 会降低 ClickHouse write amplification",
+        "PII 会提升 search performance"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

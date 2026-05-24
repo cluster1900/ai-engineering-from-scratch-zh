@@ -1,0 +1,90 @@
+{
+  "lesson": "07-memory-virtual-context-memgpt",
+  "title": "记忆：Virtual Context 与 MemGPT",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MemGPT 基于哪个 OS 类比？",
+      "options": [
+        "进程和线程",
+        "Virtual memory：main context 像 RAM，external store 像 disk，memory tools 像 page in 和 page out",
+        "网络 socket",
+        "文件描述符"
+      ],
+      "correct": 1,
+      "explanation": "MemGPT 将 prompt 映射为 RAM，将 external store 映射为 disk，并将 memory tools 映射为 page-fault 风格的传输。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么更大的 context window 不能完全解决记忆问题？",
+      "options": [
+        "Providers 将其限制在 4k tokens",
+        "即使有 128k window，溢出、Attention 稀释以及缺乏跨会话持久化仍然会造成问题",
+        "Long context 没有任何成本",
+        "模型拒绝长输入"
+      ],
+      "correct": 1,
+      "explanation": "Mem0 测得，128k-window baseline 仍会漏掉配备 external memory 的 4k agent 能捕捉到的事实；溢出、稀释和持久化问题依然存在。"
+    },
+    {
+      "stage": "check",
+      "question": "以下哪一个不是 MemGPT 的典型 memory tools？",
+      "options": [
+        "core_memory_append",
+        "archival_memory_search",
+        "conversation_search",
+        "gradient_memory_update"
+      ],
+      "correct": 3,
+      "explanation": "不存在 gradient memory tool；工具表面由 core/archival/conversation 操作组成。"
+    },
+    {
+      "stage": "check",
+      "question": "MemGPT 中的 interrupt pattern 做什么？",
+      "options": [
+        "它会在任何错误发生时停止整个 agent run",
+        "在对话中途，agent 调用 memory tool，runtime 执行它，结果被拼接到下一轮中",
+        "它完全绕过 context window",
+        "它会触发模型重新训练"
+      ],
+      "correct": 1,
+      "explanation": "Memory-as-interrupt：调用 memory tool，runtime 获取内容，结果作为下一轮的新 observation 返回（类似 Unix read()）。"
+    },
+    {
+      "stage": "check",
+      "question": "MemGPT 在 2024 年演进成了哪个 production system？",
+      "options": [
+        "Mem0",
+        "Letta",
+        "Zep",
+        "Pinecone"
+      ],
+      "correct": 1,
+      "explanation": "MemGPT 于 2024 年 9 月成为 Letta；研究 repo cpacker/MemGPT 仍作为源头存在。"
+    },
+    {
+      "stage": "post",
+      "question": "在这个 context 中，memory poisoning 是什么？",
+      "options": [
+        "破坏 Vector 索引的 bug",
+        "攻击者内容被存为 memory note，并在未来 recall 时被重新摄入",
+        "RAM 可用时仍从 disk 读取",
+        "Embedding model 版本漂移"
+      ],
+      "correct": 1,
+      "explanation": "External memory 是被检索出来的文本；如果攻击者可触达的内容进入 memory note，agent 会在下一次会话中重新摄入它。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么课程说 production memory systems 是 MemGPT variants？",
+      "options": [
+        "它们使用同一个 Vector DB",
+        "Letta、Mem0、Assistants threads 和 Claude Agent SDK 都运行两层（或更多层）paged-memory pattern；差异在于 operational shape",
+        "MemGPT 拥有商标",
+        "它们共享权重"
+      ],
+      "correct": 1,
+      "explanation": "按 operational shape 选择，而不是按 pattern；它们都共享 MemGPT 的 page in/out 骨架。"
+    }
+  ]
+}

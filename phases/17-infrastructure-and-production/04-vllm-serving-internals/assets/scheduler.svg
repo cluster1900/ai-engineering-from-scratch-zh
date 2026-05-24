@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .old { fill: #eeeeee; stroke: #888; stroke-width: 1.2; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="24" text-anchor="middle" class="title">vLLM scheduler — 三个叠加默认项</text>
+
+  <rect x="40" y="50" width="280" height="490" class="box"/>
+  <text x="180" y="72" text-anchor="middle" class="head">PagedAttention allocator</text>
+  <rect x="60" y="90" width="240" height="60" class="cool"/>
+  <text x="180" y="112" text-anchor="middle" class="step">KV cache = 16 个 Token 的 block</text>
+  <text x="180" y="130" text-anchor="middle" class="small">每 sequence 一个 block table；</text>
+  <text x="180" y="144" text-anchor="middle" class="small">按需分配，EOS 时释放</text>
+  <rect x="60" y="160" width="240" height="60" class="cool"/>
+  <text x="180" y="182" text-anchor="middle" class="step">碎片化 &lt; 4%</text>
+  <text x="180" y="200" text-anchor="middle" class="small">对比连续分配 60-80%</text>
+  <text x="180" y="214" text-anchor="middle" class="small">只为已用 Token 付费</text>
+  <rect x="60" y="230" width="240" height="70" class="cold"/>
+  <text x="180" y="252" text-anchor="middle" class="step">--gpu-memory-utilization = 0.9</text>
+  <text x="180" y="270" text-anchor="middle" class="small">调节项（不是 flag）</text>
+  <text x="180" y="286" text-anchor="middle" class="small">PagedAttention 是唯一</text>
+  <text x="180" y="300" text-anchor="middle" class="small">vLLM 内置 allocator</text>
+  <rect x="60" y="310" width="240" height="100" class="box"/>
+  <text x="180" y="332" text-anchor="middle" class="step">逻辑到物理映射</text>
+  <text x="70" y="352" class="small">seq_A: [tok0..15] to block 37</text>
+  <text x="70" y="368" class="small">seq_A: [tok16..31] to block 12</text>
+  <text x="70" y="384" class="small">seq_B: [tok0..15] to block 42</text>
+  <text x="70" y="400" class="small">... block table 随 seq 增长</text>
+  <text x="180" y="430" text-anchor="middle" class="caption">KV 是 sequences 的虚拟内存</text>
+
+  <rect x="340" y="50" width="280" height="490" class="box"/>
+  <text x="480" y="72" text-anchor="middle" class="head">continuous batching</text>
+  <rect x="360" y="90" width="240" height="50" class="hot"/>
+  <text x="480" y="110" text-anchor="middle" class="step">迭代级调度</text>
+  <text x="480" y="126" text-anchor="middle" class="small">每个 decode step 接纳 / 释放</text>
+  <rect x="360" y="150" width="240" height="80" class="box"/>
+  <text x="480" y="170" text-anchor="middle" class="step">循环</text>
+  <text x="370" y="190" class="small">1. 从 RUNNING 移除完成的 seqs</text>
+  <text x="370" y="206" class="small">2. KV blocks 空闲时接纳 WAITING</text>
+  <text x="370" y="222" class="small">3. 对 batch 做一次 forward</text>
+  <rect x="360" y="240" width="240" height="70" class="cool"/>
+  <text x="480" y="262" text-anchor="middle" class="step">batch 始终填满真实工作</text>
+  <text x="480" y="280" text-anchor="middle" class="small">不 padding 到最长 seq</text>
+  <text x="480" y="296" text-anchor="middle" class="small">快 seq 离开，新 seq 加入</text>
+  <rect x="360" y="320" width="240" height="90" class="cold"/>
+  <text x="480" y="342" text-anchor="middle" class="step">V1 scheduler (2026)</text>
+  <text x="480" y="360" text-anchor="middle" class="small">scheduler 每次迭代运行</text>
+  <text x="480" y="376" text-anchor="middle" class="small">不是每个请求运行</text>
+  <text x="480" y="394" text-anchor="middle" class="small">N-gram spec decode 是</text>
+  <text x="480" y="408" text-anchor="middle" class="small">兼容 chunked-prefill 的路径</text>
+  <text x="480" y="430" text-anchor="middle" class="caption">128 并发下比 naive 快 3-4x</text>
+
+  <rect x="640" y="50" width="280" height="490" class="box"/>
+  <text x="780" y="72" text-anchor="middle" class="head">chunked prefill</text>
+  <rect x="660" y="90" width="240" height="60" class="hot"/>
+  <text x="780" y="112" text-anchor="middle" class="step">将 prefill 切成 512-tok 块</text>
+  <text x="780" y="130" text-anchor="middle" class="small">与 decode 交错执行</text>
+  <text x="780" y="144" text-anchor="middle" class="small">保护 TTFT 尾部，而非均值</text>
+  <rect x="660" y="160" width="240" height="70" class="cool"/>
+  <text x="780" y="182" text-anchor="middle" class="step">混合负载下的 P99 ITL</text>
+  <text x="780" y="200" text-anchor="middle" class="small">无 chunking：~50 ms</text>
+  <text x="780" y="216" text-anchor="middle" class="small">有 chunking：~15 ms</text>
+  <rect x="660" y="240" width="240" height="70" class="dsk"/>
+  <text x="780" y="262" text-anchor="middle" class="step">注意点 — vLLM v0.18.0</text>
+  <text x="780" y="280" text-anchor="middle" class="small">--enable-chunked-prefill</text>
+  <text x="780" y="296" text-anchor="middle" class="small">与 draft-model spec 不兼容</text>
+  <rect x="660" y="320" width="240" height="90" class="old"/>
+  <text x="780" y="342" text-anchor="middle" class="step">例外</text>
+  <text x="780" y="360" text-anchor="middle" class="small">N-gram GPU speculative decoding</text>
+  <text x="780" y="376" text-anchor="middle" class="small">在 V1 scheduler 中可配合</text>
+  <text x="780" y="394" text-anchor="middle" class="small">chunked prefill</text>
+  <text x="780" y="430" text-anchor="middle" class="caption">翻 flags 前先读 release notes</text>
+
+  <rect x="40" y="470" width="880" height="70" class="box"/>
+  <text x="480" y="492" text-anchor="middle" class="step">三者同时开启 — Llama 3.3 70B FP8, H100 SXM5, 128 并发</text>
+  <text x="480" y="512" text-anchor="middle" class="small">吞吐 2,200-2,400 tok/s  ·  比默认 vLLM 高 25%  ·  比 naive PyTorch 快 3-4x  ·  碎片化 &lt; 4%</text>
+  <text x="480" y="530" text-anchor="middle" class="caption">每个默认项都假设另两个存在</text>
+</svg>

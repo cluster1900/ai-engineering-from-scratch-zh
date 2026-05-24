@@ -1,0 +1,21 @@
+{
+  "人工智能": "AI",
+  "机器学习": "ML",
+  "深度学习": "Deep Learning",
+  "神经网络": "Neural Network",
+  "变换器": "Transformer",
+  "注意力机制": "Attention",
+  "令牌": "Token",
+  "分词器": "Tokenizer",
+  "嵌入": "Embedding",
+  "向量": "Vector",
+  "矩阵": "Matrix",
+  "梯度下降": "Gradient Descent",
+  "反向传播": "Backpropagation",
+  "损失函数": "Loss Function",
+  "优化器": "Optimizer",
+  "强化学习": "Reinforcement Learning",
+  "检索增强生成": "RAG",
+  "大语言模型": "LLM",
+  "多模态": "Multimodal"
+}

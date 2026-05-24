@@ -1,0 +1,37 @@
+[
+  {
+    "question": "perceptron 在应用 activation function 之前，会对其输入执行什么数学运算？",
+    "options": ["Matrix 求逆", "加权和加 bias", "Fourier transform", "特征值分解"],
+    "correct": 1,
+    "explanation": "perceptron 会计算 inputs 和 weights 的 dot product，加入 bias term，然后将结果传入 step function。这个加权和加 bias 是核心计算。",
+    "stage": "pre"
+  },
+  {
+    "question": "对于一个 Classification 问题，'linearly separable' 是什么意思？",
+    "options": ["数据可以按顺序排序", "一条单独的直线（或 hyperplane）可以完美分开这些 classes", "features 与 label 存在线性关系", "数据只有两个维度"],
+    "correct": 1,
+    "explanation": "当你可以画出一个单独的 hyperplane，将 input space 完美划分为正确的 classes 时，dataset 就是线性可分的。AND 和 OR 是线性可分的；XOR 不是。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 single perceptron 无法学习 XOR function？",
+    "options": ["learning rate 太低", "XOR 的 inputs 太多", "XOR 不是线性可分的 -- 没有一条单独的直线可以分开这些 classes", "step function 阻止 Gradient flow"],
+    "correct": 2,
+    "explanation": "XOR 将 [0,1] 和 [1,0] 放在一侧，将 [0,0] 和 [1,1] 放在另一侧。没有一条单独的直线可以分开这些分组，因此只能画出一个 linear boundary 的 single perceptron 无法解决 XOR。",
+    "stage": "post"
+  },
+  {
+    "question": "在 perceptron learning rule 中，当 prediction 与 target 匹配时会发生什么？",
+    "options": ["Weights 会加倍", "Weights 会被设为零", "什么都不会改变 -- error 为零，因此 update 为零", "learning rate 会减半"],
+    "correct": 2,
+    "explanation": "update rule 是 w_i = w_i + lr * error * x_i。当 prediction 等于 target 时，error = 0，因此所有 weight updates 都为零。perceptron 只会在出错时进行调整。",
+    "stage": "post"
+  },
+  {
+    "question": "如何使用多个 perceptrons 解决 XOR？",
+    "options": ["在 single perceptron 上使用更大的 learning rate", "通过在两层中组合 OR、NAND 和 AND perceptrons", "向 single perceptron 添加更多 inputs", "移除 bias term"],
+    "correct": 1,
+    "explanation": "XOR = (x1 OR x2) AND NOT(x1 AND x2)。一个包含 OR neuron 和 NAND neuron 的 hidden layer 会馈入一个 output AND neuron，从 linear components 创建 nonlinear decision boundary。",
+    "stage": "post"
+  }
+]

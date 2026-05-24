@@ -1,0 +1,78 @@
+{
+  "lesson": "15-batch-apis",
+  "title": "Batch APIs — 50% 折扣成为行业标准",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026 年，OpenAI、Anthropic 和 Google 常见的 Batch API 优惠是什么？",
+      "options": [
+        "10% 折扣，1 小时 turnaround",
+        "90% 折扣，7 天 turnaround",
+        "低于 1k Token 免费",
+        "50% 折扣，24 小时 turnaround"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在本课的框架中，\"24-hour turnaround\" 实际保证了什么？",
+      "options": [
+        "24h 是 cache TTL",
+        "batch 总是需要 24 小时",
+        "provider 承诺在 24 小时内返回，典型 P50 大约是 2-6 小时",
+        "只有低于 1k requests 的 batch 才符合条件"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在共享 system prompt 的 workload 上，把 batch 与 cached input 叠加使用，相比 synchronous uncached 会如何改变账单？",
+      "options": [
+        "没有影响，因为 caching 是自动的",
+        "只有 model 在 Vertex 上时才有帮助",
+        "成本可以降到 synchronous-uncached baseline 的大约 10%",
+        "成本会增加 50%"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "对于 content pipelines 和 offline labeling，2026 年默认选择哪条 workload-triage lane 是错误的？",
+      "options": [
+        "Interactive，因为它听起来很紧急",
+        "Batch，因为用户看不到 24h 延迟",
+        "Hybrid batch-and-cache",
+        "带 async queue 的半交互式"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "不同 provider 之间的 output-schema 陷阱是什么？",
+      "options": [
+        "Anthropic 不支持 JSONL",
+        "所有 provider 都使用相同的 OpenAI JSONL 格式",
+        "Vertex 只要求 Parquet",
+        "Batch 文件格式因 provider 而异（OpenAI JSONL、Anthropic JSONL、Vertex BigQuery/GCS），因此可移植 client 需要按 provider 配置 adapter"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "根据本课，把 workload 分流到 batch 的最简单决策规则是什么？",
+      "options": [
+        "如果 prompt 低于 1k Token，就 batch",
+        "如果使用 tools，就 batch",
+        "只有 gateway 要求时才 batch",
+        "如果用户不会注意到 24 小时交付，就始终 batch（并叠加 caching）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

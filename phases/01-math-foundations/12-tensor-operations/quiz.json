@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "tensor 的 'shape' 描述的是什么？",
+      "options": [
+        "一个列出每个轴上大小的 tuple",
+        "tensor 中元素的总数",
+        "tensor 元素的数据类型",
+        "tensor 的内存地址"
+      ],
+      "correct": 0,
+      "explanation": "shape 是一个列出每个轴上大小的 tuple。例如，shape 为 (2, 3, 4) 的 tensor 在 axis 0 上有 2 个元素，在 axis 1 上有 3 个元素，在 axis 2 上有 4 个元素。"
+    },
+    {
+      "stage": "pre",
+      "question": "在 PyTorch 中，image batch tensor 默认使用什么 layout？",
+      "options": [
+        "NHWC (batch, height, width, channels)",
+        "NCHW (batch, channels, height, width)",
+        "CHWN (channels, height, width, batch)",
+        "WHCN (width, height, channels, batch)"
+      ],
+      "correct": 1,
+      "explanation": "PyTorch 默认使用 NCHW（channels-first）layout。TensorFlow 默认使用 NHWC（channels-last）。layout 不匹配会导致静默错误或性能问题。"
+    },
+    {
+      "stage": "post",
+      "question": "对 shape 为 (8, 1, 6, 1) 和 (7, 1, 5) 的 tensor 进行 Broadcasting 时，结果 shape 是什么？",
+      "options": [
+        "(8, 7, 6, 1)",
+        "(8, 1, 6, 5)",
+        "(8, 7, 6, 5)",
+        "Broadcasting 失败 — shape 不兼容"
+      ],
+      "correct": 2,
+      "explanation": "从右侧对齐 shape：(8,1,6,1) 和 (1,7,1,5)。当维度相等或其中一个为 1 时，维度兼容。结果在每个轴上取最大值：(8, 7, 6, 5)。"
+    },
+    {
+      "stage": "post",
+      "question": "在 einsum 表达式 'bhtd,bhsd->bhts' 中，index 'd' 会发生什么？",
+      "options": [
+        "它会作为一个新轴保留在输出中",
+        "它会被求和（contracted），因为它出现在两个输入中但不在输出中",
+        "它会在两个 tensor 之间 broadcast",
+        "它会在两个输入 tensor 之间 transpose"
+      ],
+      "correct": 1,
+      "explanation": "在 einsum 中，任何出现在输入中但不出现在输出中的 index 都会被求和。index 'd' 同时出现在 'bhtd' 和 'bhsd' 中，但不在输出 'bhts' 中，因此它会被 contracted（相乘并求和）。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么在 PyTorch 中对 transposed tensor 调用 .view() 会失败？",
+      "options": [
+        "Transposed tensor 的数据类型不同",
+        "transpose 后 tensor 在内存中是 non-contiguous，而 view 需要 contiguous data",
+        "View 只能用于 2D tensor",
+        "Transpose 会改变元素总数"
+      ],
+      "correct": 1,
+      "explanation": "Transpose 会交换 strides 而不移动数据，使 tensor 变为 non-contiguous。.view() 操作需要 contiguous memory layout。请使用 .reshape()，或先调用 .contiguous()。"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "lesson": "38-verification-gates",
+  "title": "Verification Gates",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "verification gate 回答的单一问题是什么？",
+      "options": [
+        "模型是否够快？",
+        "这个 task 是否真的完成了？（读取 scope、rule、feedback 和 diff artifacts）",
+        "prompt 是否最优？",
+        "Token 预算是否健康？"
+      ],
+      "correct": 1,
+      "explanation": "gate 是一个作用于 workbench artifacts 的确定性函数，会产出 pass/fail verdict。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 gate 必须是确定性的？",
+      "options": [
+        "确定性是免费的",
+        "同一组 artifacts 每次都必须产生相同的 verdict；LLM judges 属于 reviewer（定性），不属于 gate（状态）",
+        "providers 要求这样",
+        "这样省钱"
+      ],
+      "correct": 1,
+      "explanation": "把模型 judgment 混进 gate，会破坏确定性/定性的拆分。"
+    },
+    {
+      "stage": "check",
+      "question": "gate 的 override discipline 是什么？",
+      "options": [
+        "任何人都可以静默 override",
+        "block-severity findings 只能由人 override，并且必须在 signed audit log 中记录 override_reason 和 overridden_by user id",
+        "override 需要经理邮件",
+        "禁止 overrides"
+      ],
+      "correct": 1,
+      "explanation": "signed overrides 会落到 outputs/verification/overrides.jsonl；agent 不能 self-override。"
+    },
+    {
+      "stage": "check",
+      "question": "本课引用的 Hybrid Norm 配对是什么？",
+      "options": [
+        "热/冷 prompts",
+        "verifiable rewards（tests、schemas、exit codes）回答“它解决问题了吗？”；LLM rubrics 回答“它是否可读、安全、符合风格？”",
+        "GPU 和 CPU 拆分",
+        "cache vs no-cache"
+      ],
+      "correct": 1,
+      "explanation": "Anthropic 2026 guidance：gate 运行第一类；reviewer（Lesson 39）运行第二类。"
+    },
+    {
+      "stage": "check",
+      "question": "defense-in-depth 如何分层布置 gates？",
+      "options": [
+        "只在 merge time 设置单一 gate",
+        "Pre-commit hook -> CI status check -> pre-tool authz hook -> pre-merge gate；每一层都是确定性的，因此一层中的 failure 会被下一层捕获",
+        "只有 IDE warnings",
+        "只有 chat reminder"
+      ],
+      "correct": 1,
+      "explanation": "多个不可绕过的层会捕获单一层可能漏掉的问题。"
+    },
+    {
+      "stage": "post",
+      "question": "coverage_floor check 防止什么问题？",
+      "options": [
+        "hot-path latency",
+        "agents 悄悄删除失败的 tests；如果 measured coverage 低于 floor，或比上次 merge 下降超过 1 个百分点，gate 就会失败",
+        "cold starts",
+        "过期的 lockfiles"
+      ],
+      "correct": 1,
+      "explanation": "没有 floor，agents 可以静默降低 coverage 来保持 verdict green。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该让 --strict mode 把每个 warn 提升为 block？",
+      "options": [
+        "总是如此",
+        "release branches、ship-blocking PRs、post-incident triage；不要作为日常默认值，因为 strict-on-everything 会侵蚀 flow",
+        "永远不要",
+        "只在周日"
+      ],
+      "correct": 1,
+      "explanation": "--strict 按 branch opt-in；保留给高风险时刻。"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "ml-intro-pre-1",
+    "stage": "pre",
+    "question": "在 supervised learning 中，model 在 training 期间会收到什么？",
+    "options": [
+      "只有 input data，没有 labels",
+      "提供了正确答案的 input-output pairs",
+      "每次 action 后得到的 reward signal",
+      "由人类 expert 编写的一组 rules"
+    ],
+    "correct": 1,
+    "explanation": "Supervised learning 使用 input-output pairs（labeled data）进行 training。model 学习将 inputs 映射到已知的正确 outputs。"
+  },
+  {
+    "id": "ml-intro-pre-2",
+    "stage": "pre",
+    "question": "把 data 拆分为 training set 和 test set 的目的是什么？",
+    "options": [
+      "通过使用更少 data 来让 training 更快",
+      "在 training data 丢失时有备份 data",
+      "评估 model 是否能 generalize 到 training 期间从未见过的 data",
+      "平衡 dataset 中的 classes"
+    ],
+    "correct": 2,
+    "explanation": "test set 衡量 generalization。如果你在 training data 上评估，衡量的是 memorization，而不是 learning。"
+  },
+  {
+    "id": "ml-intro-post-1",
+    "stage": "post",
+    "question": "一个 model 在 training data 上达到 98% accuracy，但在 test data 上只有 55%。这是什么例子？",
+    "options": [
+      "Underfitting：model 太简单",
+      "Overfitting：model 记住了 training noise，而不是学习 general patterns",
+      "Data drift：test distribution 发生了变化",
+      "良好的 generalization：model 学到了真实 patterns"
+    ],
+    "correct": 1,
+    "explanation": "training accuracy（高）和 test accuracy（低）之间存在巨大差距，是 overfitting 的典型标志。model 记住了 training data。"
+  },
+  {
+    "id": "ml-intro-post-2",
+    "stage": "post",
+    "question": "一个 e-commerce site 想在没有任何 predefined labels 的情况下，基于 purchase behavior 将 customers 分组为 segments。这属于哪种 ML？",
+    "options": [
+      "Supervised learning（classification）",
+      "Supervised learning（regression）",
+      "Unsupervised learning（clustering）",
+      "Reinforcement learning"
+    ],
+    "correct": 2,
+    "explanation": "在没有 predefined labels 的情况下寻找 data 中的自然分组，就是 clustering，它是 unsupervised learning 的一种形式。"
+  },
+  {
+    "id": "ml-intro-post-3",
+    "stage": "post",
+    "question": "哪种场景不适合使用 ML？",
+    "options": [
+      "根据 historical behavior data 预测 customer churn",
+      "在数百万笔 payments 的 stream 中检测 fraudulent transactions",
+      "将温度从 Celsius 转换为 Fahrenheit",
+      "将 skin lesions 的 images 分类为 benign 或 malignant"
+    ],
+    "correct": 2,
+    "explanation": "Celsius 到 Fahrenheit 是固定公式（F = 9/5 * C + 32）。简单、明确定义的 rules 不需要 ML。ML 会增加复杂性却没有收益。"
+  }
+]

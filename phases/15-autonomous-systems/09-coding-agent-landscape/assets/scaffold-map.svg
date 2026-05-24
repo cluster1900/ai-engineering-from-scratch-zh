@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">脚手架比 base model 更影响分数</text>
+
+  <rect x="40" y="50" width="800" height="440" class="box"/>
+
+  <!-- Base model -->
+  <rect x="80" y="80" width="160" height="70" class="cool"/>
+  <text x="160" y="104" text-anchor="middle" class="label">base model</text>
+  <text x="160" y="124" text-anchor="middle" class="small">Claude Sonnet 4.5</text>
+  <text x="160" y="140" text-anchor="middle" class="small">（固定权重）</text>
+
+  <!-- Two scaffolds -->
+  <rect x="290" y="80" width="160" height="70" class="hot"/>
+  <text x="370" y="104" text-anchor="middle" class="label">SWE-agent v1</text>
+  <text x="370" y="124" text-anchor="middle" class="small">ACI 命令集</text>
+  <text x="370" y="140" text-anchor="middle" class="small">JSON tool 调用</text>
+
+  <rect x="500" y="80" width="160" height="70" class="cold"/>
+  <text x="580" y="104" text-anchor="middle" class="label">Cline 自主</text>
+  <text x="580" y="124" text-anchor="middle" class="small">VS Code + 策略</text>
+  <text x="580" y="140" text-anchor="middle" class="small">验证器循环</text>
+
+  <rect x="700" y="80" width="140" height="70" class="box"/>
+  <text x="770" y="104" text-anchor="middle" class="label">SWE-bench Verified</text>
+  <text x="770" y="124" text-anchor="middle" class="small">500 个精选任务</text>
+  <text x="770" y="140" text-anchor="middle" class="small">(相同任务)</text>
+
+  <path d="M240 115 L290 115" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M240 115 Q265 200 290 115" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <path d="M450 115 L500 115" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M660 115 L700 115" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Score delta -->
+  <rect x="80" y="180" width="580" height="80" class="box"/>
+  <text x="100" y="202" class="label">分数差值</text>
+  <text x="100" y="226" class="content">相同模型: SWE-agent v1  43.2%    |    Cline 自主  59.8%</text>
+  <text x="100" y="244" class="content">+16.6 个绝对百分点，仅来自脚手架。(OpenHands, Epoch AI 2026)</text>
+
+  <!-- CodeAct vs JSON -->
+  <rect x="80" y="290" width="360" height="160" class="hot"/>
+  <text x="260" y="312" text-anchor="middle" class="label">CodeAct 脚手架 (OpenHands)</text>
+  <text x="100" y="334" class="content">+ 可组合: 一个 action 编辑多个文件</text>
+  <text x="100" y="350" class="content">+ 捕获 action 内的异常</text>
+  <text x="100" y="366" class="content">- 单个 action 影响范围更大</text>
+  <text x="100" y="382" class="content">- 需要加固沙箱 (Docker)</text>
+  <text x="100" y="402" class="content">适用: agent 在隔离容器内</text>
+  <text x="100" y="418" class="content">且可组合性值得审计成本</text>
+  <text x="100" y="434" class="small">arXiv:2407.16741 · MIT license · 最活跃开放平台</text>
+
+  <rect x="460" y="290" width="360" height="160" class="cold"/>
+  <text x="640" y="312" text-anchor="middle" class="label">JSON tool-call 脚手架</text>
+  <text x="480" y="334" class="content">+ 每个 action 都经过验证器</text>
+  <text x="480" y="350" class="content">+ 易于逐轮审计</text>
+  <text x="480" y="366" class="content">- 每轮一个 action；同一任务轮次更多</text>
+  <text x="480" y="382" class="content">- 组合性在编排器中</text>
+  <text x="480" y="402" class="content">适用: provider 控制执行器</text>
+  <text x="480" y="418" class="content">(Claude Managed Agents, OpenAI Assistants)</text>
+  <text x="480" y="434" class="small">托管服务中占主导，安全性内建</text>
+</svg>

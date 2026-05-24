@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .reg { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">Video VLMs — 帧采样、时序 Token、定位输出</text>
+
+  <rect x="30" y="50" width="900" height="220" class="box"/>
+  <text x="480" y="72" text-anchor="middle" class="head">2023 到 2025 的三种架构模式</text>
+
+  <rect x="50" y="90" width="280" height="160" class="hot"/>
+  <text x="190" y="110" text-anchor="middle" class="step">Video-LLaMA (2023)</text>
+  <text x="190" y="128" text-anchor="middle" class="small">Q-former + 音频分支</text>
+  <text x="190" y="144" text-anchor="middle" class="small">16 帧 @ 2 FPS 固定</text>
+  <text x="190" y="160" text-anchor="middle" class="small">32 个视频 queries，32 个音频</text>
+  <text x="190" y="184" text-anchor="middle" class="step">优势：音频定位</text>
+  <text x="190" y="204" text-anchor="middle" class="small">弱点：8s 固定 clip</text>
+  <text x="190" y="220" text-anchor="middle" class="small">无事件时间定位</text>
+
+  <rect x="340" y="90" width="280" height="160" class="cool"/>
+  <text x="480" y="110" text-anchor="middle" class="step">Video-LLaVA (2023)</text>
+  <text x="480" y="128" text-anchor="middle" class="small">MLP + 共享 encoder</text>
+  <text x="480" y="144" text-anchor="middle" class="small">8 帧 @ 1-2 FPS</text>
+  <text x="480" y="160" text-anchor="middle" class="small">投影前对齐</text>
+  <text x="480" y="184" text-anchor="middle" class="step">优势：简单 + 有效</text>
+  <text x="480" y="204" text-anchor="middle" class="small">弱点：仅短 clips</text>
+  <text x="480" y="220" text-anchor="middle" class="small">无动态 FPS</text>
+
+  <rect x="630" y="90" width="280" height="160" class="cold"/>
+  <text x="770" y="110" text-anchor="middle" class="step">Qwen2.5-VL (2025)</text>
+  <text x="770" y="128" text-anchor="middle" class="small">TMRoPE + 动态 FPS</text>
+  <text x="770" y="144" text-anchor="middle" class="small">任意时长</text>
+  <text x="770" y="160" text-anchor="middle" class="small">绝对时间 Token</text>
+  <text x="770" y="184" text-anchor="middle" class="step">优势：事件定位</text>
+  <text x="770" y="204" text-anchor="middle" class="small">JSON 输出格式</text>
+  <text x="770" y="220" text-anchor="middle" class="small">开源 SOTA 2026</text>
+
+  <rect x="30" y="290" width="900" height="230" class="box"/>
+  <text x="480" y="312" text-anchor="middle" class="head">帧采样 + 输出格式</text>
+
+  <rect x="60" y="330" width="260" height="170" class="reg"/>
+  <text x="190" y="352" text-anchor="middle" class="step">帧采样策略</text>
+  <text x="190" y="372" text-anchor="middle" class="small">均匀：N 帧 / 时长</text>
+  <text x="190" y="388" text-anchor="middle" class="small">- 简单，丢失运动峰值</text>
+  <text x="190" y="408" text-anchor="middle" class="small">动态 FPS：运动加权</text>
+  <text x="190" y="424" text-anchor="middle" class="small">- 高运动片段更密集</text>
+  <text x="190" y="444" text-anchor="middle" class="small">事件驱动：detector + sample</text>
+  <text x="190" y="460" text-anchor="middle" class="small">- 最适合动作识别</text>
+  <text x="190" y="480" text-anchor="middle" class="caption">每帧配合 3x3 pooling</text>
+
+  <rect x="340" y="330" width="280" height="170" class="hot"/>
+  <text x="480" y="352" text-anchor="middle" class="step">定位输出格式</text>
+  <text x="480" y="372" text-anchor="middle" class="small">自由文本：</text>
+  <text x="480" y="388" text-anchor="middle" class="small">"猫在约 4s 时跳起"</text>
+  <text x="480" y="412" text-anchor="middle" class="small">JSON：</text>
+  <text x="480" y="428" text-anchor="middle" class="small">{"event":"jump","start":4.1,"end":4.3}</text>
+  <text x="480" y="452" text-anchor="middle" class="small">Token：</text>
+  <text x="480" y="468" text-anchor="middle" class="small">"&lt;time&gt;4.1&lt;/time&gt; jump"</text>
+  <text x="480" y="488" text-anchor="middle" class="caption">JSON 最易被下游解析</text>
+
+  <rect x="640" y="330" width="280" height="170" class="cool"/>
+  <text x="780" y="352" text-anchor="middle" class="step">benchmarks</text>
+  <text x="780" y="372" text-anchor="middle" class="small">VideoMME：通用，2500 样本</text>
+  <text x="780" y="388" text-anchor="middle" class="small">TempCompass：前/后</text>
+  <text x="780" y="404" text-anchor="middle" class="small">EgoSchema：3min 第一人称</text>
+  <text x="780" y="420" text-anchor="middle" class="small">Video-MMMU：多学科</text>
+  <text x="780" y="446" text-anchor="middle" class="step">开源 SOTA 2026</text>
+  <text x="780" y="462" text-anchor="middle" class="small">Qwen2.5-VL-72B</text>
+  <text x="780" y="478" text-anchor="middle" class="small">TMRoPE 是差异点</text>
+</svg>

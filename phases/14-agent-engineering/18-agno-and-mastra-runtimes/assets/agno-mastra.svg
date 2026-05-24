@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .agno { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .mastra { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .diff { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">Agno vs Mastra — 两个生产 runtime，两套 stack</text>
+
+  <rect x="40" y="50" width="440" height="280" class="agno"/>
+  <text x="260" y="72" text-anchor="middle" class="head">Agno  Python、FastAPI、近零开销</text>
+  <rect x="60" y="90" width="400" height="40" class="box"/>
+  <text x="78" y="112" class="step">目标：~2μs Agent 实例化</text>
+  <text x="78" y="126" class="small">适合每秒数千个短生命周期 Agents</text>
+  <rect x="60" y="140" width="400" height="40" class="box"/>
+  <text x="78" y="162" class="step">目标：每个 Agent ~3.75 KiB 内存</text>
+  <text x="78" y="176" class="small">每个请求一个无状态 FastAPI handler</text>
+  <rect x="60" y="190" width="400" height="40" class="box"/>
+  <text x="78" y="212" class="step">~23 个 model providers，原生 Multimodal</text>
+  <text x="78" y="226" class="small">文本、图像、音频、视频、文件</text>
+  <rect x="60" y="240" width="400" height="40" class="box"/>
+  <text x="78" y="262" class="step">"no graphs, chains, or convoluted patterns"</text>
+  <text x="78" y="276" class="small">理念：纯 python，最小 framework surface</text>
+  <rect x="60" y="290" width="400" height="34" class="box"/>
+  <text x="78" y="312" class="step">session state 在 DB；Agent 是临时的</text>
+
+  <rect x="500" y="50" width="420" height="280" class="mastra"/>
+  <text x="710" y="72" text-anchor="middle" class="head">Mastra  TypeScript，Vercel AI SDK substrate</text>
+  <rect x="520" y="90" width="380" height="40" class="box"/>
+  <text x="538" y="112" class="step">三个原语：Agents、Tools (Zod)、Workflows</text>
+  <text x="538" y="126" class="small">Zod 类型化 tools；编译期安全</text>
+  <rect x="520" y="140" width="380" height="40" class="box"/>
+  <text x="538" y="162" class="step">Unified Model Router：3,300+ models，94 providers</text>
+  <text x="538" y="176" class="small">生态内单一 client（2026 年 3 月）</text>
+  <rect x="520" y="190" width="380" height="40" class="box"/>
+  <text x="538" y="212" class="step">组合存储：memory / workflows / obs</text>
+  <text x="538" y="226" class="small">可观测性规模下推荐 ClickHouse</text>
+  <rect x="520" y="240" width="380" height="40" class="box"/>
+  <text x="538" y="262" class="step">server adapters：Express、Hono、Fastify、Koa</text>
+  <text x="538" y="276" class="small">一等 Next.js + Astro 集成</text>
+  <rect x="520" y="290" width="380" height="34" class="box"/>
+  <text x="538" y="312" class="step">Mastra Studio 在 localhost:4111 调试</text>
+
+  <rect x="40" y="350" width="880" height="160" class="diff"/>
+  <text x="480" y="372" text-anchor="middle" class="head">按技术栈选择</text>
+  <rect x="60" y="388" width="840" height="36" class="box"/>
+  <text x="78" y="410" class="step">Python 后端 + FastAPI + 短生命周期 agents  Agno</text>
+  <rect x="60" y="430" width="840" height="36" class="box"/>
+  <text x="78" y="452" class="step">TypeScript 后端 + Next.js/Vercel + 统一多提供商  Mastra</text>
+  <rect x="60" y="472" width="840" height="36" class="box"/>
+  <text x="78" y="494" class="step">持久状态、显式图、长周期运行  LangGraph (第 13 课)</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">当开销成瓶颈时，性能目标才重要；通常不是。</text>
+</svg>

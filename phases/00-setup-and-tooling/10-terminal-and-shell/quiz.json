@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "pipe operator '|' 在 shell command 中做什么？",
+      "options": ["并行运行两个 commands", "将一个 command 的 standard output 作为 standard input 发送给下一个 command", "把一个 command 的 output 保存到文件", "把两个文件合并为一个"],
+      "correct": 1,
+      "explanation": "pipe operator 会把 commands 连接成 pipeline。例如，'cat log.txt | grep error' 会把 log.txt 的内容作为 input 发送给 grep，grep 会过滤出包含 'error' 的行。"
+    },
+    {
+      "stage": "pre",
+      "question": "当你关闭启动某个运行中 process 的 terminal 时，会发生什么？",
+      "options": ["该 process 会继续在后台运行", "该 process 会收到 hangup signal (SIGHUP)，并通常会终止", "该 process 会暂停，直到你打开新的 terminal", "该 process 会自动迁移为 system service"],
+      "correct": 1,
+      "explanation": "关闭 terminal 会向 child processes 发送 SIGHUP，这会让它们默认终止。tmux、nohup 或 screen 等工具可以防止这种情况。"
+    },
+    {
+      "stage": "post",
+      "question": "对于长时间运行的训练任务，tmux 相比使用 'nohup command &' 的关键优势是什么？",
+      "options": ["tmux 比 nohup 使用更少 CPU", "tmux 让你可以 detach、reattach，并通过多个 panes 查看实时 output", "tmux 会自动重启失败的 processes", "tmux 会压缩 process output 来节省磁盘空间"],
+      "correct": 1,
+      "explanation": "tmux 会创建持久 sessions，你可以先 detach，之后再 reattach，并且能在多个 panes 中看到实时 output。nohup 只会记录到文件，无法交互或 reattach。"
+    },
+    {
+      "stage": "post",
+      "question": "'python train.py > output.log 2>&1' 完成了什么？",
+      "options": ["运行 train.py 并只把 errors 保存到 output.log", "运行 train.py 并将 standard output 和 standard error 都重定向到 output.log", "运行 train.py 两次并记录第二次运行", "用双倍 memory allocation 运行 train.py"],
+      "correct": 1,
+      "explanation": "'> output.log' 会把 stdout 重定向到该文件。'2>&1' 会把 stderr 发送到与 stdout 相同的位置。结果是 normal output 和 errors 都被捕获到一个文件中。"
+    },
+    {
+      "stage": "post",
+      "question": "哪个 command 让你可以从本地 browser 访问运行在 GPU box 端口 8888 上的远程 Jupyter notebook？",
+      "options": ["scp -P 8888 user@gpu-box:~/notebook.ipynb", "ssh -L 8888:localhost:8888 user@gpu-box", "rsync -avz user@gpu-box:8888 localhost:8888", "ssh user@gpu-box --forward-port 8888"],
+      "correct": 1,
+      "explanation": "SSH local port forwarding (-L) 会把远程端口映射到你的本地机器。执行该 command 后，在 browser 中打开 localhost:8888 就能访问远程 Jupyter server。"
+    }
+  ]
+}

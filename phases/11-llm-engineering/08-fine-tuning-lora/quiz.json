@@ -1,0 +1,37 @@
+[
+  {
+    "question": "LoRA (Low-Rank Adaptation) 背后的核心洞见是什么？",
+    "options": ["大多数 weights 并不重要", "Fine-tuning 期间的 weight updates 具有较低的 intrinsic rank，因此可以用两个小 Matrix 来近似，而不是更新完整的 weight Matrix", "Fine-tuning 只需要最后一层", "更小的 models 总是更好"],
+    "correct": 1,
+    "explanation": "Aghajanyan et al. 表明，fine-tuning updates 占据一个低维子空间。LoRA 利用这一点，将 update 表示为 W + BA，其中 B (d x r) 和 A (r x d) 具有较小的 rank r，通常为 8-64。",
+    "stage": "pre"
+  },
+  {
+    "question": "与对 8B model 进行 full fine-tuning 相比，LoRA 能节省多少 memory？",
+    "options": ["没有节省", "通过冻结 base weights 并只训练 <1% 的 parameters，从约 56GB 降到约 6GB", "减少 50%", "只节省 disk space"],
+    "correct": 1,
+    "explanation": "Full fine-tuning 需要为全部 8B parameters 存储 Gradients 和 Optimizer states（约 56GB）。LoRA 冻结 base weights，只训练 adapter Matrix（rank 16 时约 80M parameters），总共需要约 6GB。",
+    "stage": "pre"
+  },
+  {
+    "question": "QLoRA 是什么？",
+    "options": ["Quantized LoRA：base model 以 4-bit precision 加载，而 LoRA adapters 以 16-bit 训练，结合两种技术的 memory savings", "更快版本的 LoRA", "应用于 quantized activations 的 LoRA", "一种不同的 fine-tuning algorithm"],
+    "correct": 0,
+    "explanation": "QLoRA (Dettmers et al.) 以 4-bit（NF4 quantization）加载冻结的 base model，同时以 FP16/BF16 训练 LoRA adapters。这允许在单张 6GB VRAM 的 consumer GPU 上 fine-tune 一个 7B model。",
+    "stage": "post"
+  },
+  {
+    "question": "LoRA 中的 'rank' 参数 (r) 控制什么？",
+    "options": ["training epochs 的数量", "adapter 的 capacity：更高的 rank 能捕捉更复杂的 adaptations，但会使用更多 parameters 和 memory", "learning rate", "要 fine-tune 的 layers 数量"],
+    "correct": 1,
+    "explanation": "Rank r 决定 adapter Matrix A (r x d) 和 B (d x r) 的大小。Rank 4 训练的 parameters 很少（快速、便宜）。Rank 64 训练更多 parameters（表达能力更强）。大多数任务使用 rank 8-32 效果很好。",
+    "stage": "post"
+  },
+  {
+    "question": "当你将 LoRA weights merge 回 base model 时会发生什么？",
+    "options": ["model 会变得更大", "adapter Matrix 会被加到 base weights 上（W_merged = W_base + B*A），生成一个没有 inference overhead 的标准 model", "model 需要重新训练", "无法 merge"],
+    "correct": 1,
+    "explanation": "由于 LoRA 添加的是 W_base + B*A，你可以计算一次 B*A 并将其永久加到 W_base 上。Merged model 与原始 model 具有相同 architecture 和 inference speed，没有 adapter overhead。",
+    "stage": "post"
+  }
+]

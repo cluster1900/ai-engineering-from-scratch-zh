@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 U-Net 需要在 encoder 和 decoder 之间使用 skip connections？",
+      "options": ["为了加快训练", "encoder 会压缩空间细节以获得上下文；如果无法访问 encoder 的高分辨率 feature maps，decoder 就无法重建清晰边界，而 skips 正好提供了这些信息", "因为 transposed convolutions 需要额外输入", "为了匹配 PyTorch 的 shape 约定"],
+      "correct": 1,
+      "explanation": "如果没有 skips，U-Net 的 decoder 会从非常低分辨率的 bottleneck 生成 H x W 预测，因此无法解析清晰边缘。Skip connections 会把 encoder 的高分辨率、低语义特征拼接到 decoder 的低分辨率、高语义特征中，使每个输出阶段同时具备上下文和细节。"
+    },
+    {
+      "stage": "pre",
+      "question": "一个 segmentation 任务有 99% 背景像素和 1% 肿瘤像素。你使用普通 cross-entropy 训练，并达到 99% pixel accuracy。发生了什么？",
+      "options": ["模型收敛了", "模型学会了对每个像素都预测背景；pixel accuracy 被多数类主导，并忽略了你真正关心的类别", "Loss Function 实现错误", "Optimizer 失败了"],
+      "correct": 1,
+      "explanation": "在不平衡数据集上，pixel accuracy 是一个没用的指标。网络通过始终预测背景轻松拿到 99%，并生成空的肿瘤 masks。修复方法：将 cross-entropy 与 Dice loss（基于重叠、与尺度无关）结合，并报告每个前景类别的 IoU/Dice。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种任务类型会把同一类别中的每辆车彼此分开？",
+      "options": ["Semantic segmentation", "Instance segmentation", "两者产生相同输出", "都不是 — 这需要 detection model"],
+      "correct": 1,
+      "explanation": "Semantic segmentation 会为每个像素标注类别，但会把相互接触的同类实例合并成一个 blob。Instance segmentation 会保留 instance IDs，因此每辆车、每个人、每个苹果都是单独的预测 mask。Panoptic segmentation 统一了两者：对 stuff 使用 semantic labels，对 things 使用 instance IDs。"
+    },
+    {
+      "stage": "post",
+      "question": "你把 U-Net 的 bilinear upsample + 3x3 conv 换成 kernel_size=2、stride=2 的 ConvTranspose2d，并在输出中看到 checkerboard artifacts。为什么？",
+      "options": ["Transposed conv 在 PyTorch 中坏了", "当 kernel_size 不能被 stride 整除时，输出像素会从输入像素获得不均等的贡献，从而在输出中产生看起来像棋盘格的周期性模式", "learning rate 太低", "必须在 transposed conv 之前添加 batch norm"],
+      "correct": 1,
+      "explanation": "Checkerboard artifacts 来自 transposed convolution 的 receptive field 在输出位置上的不均匀重叠。使用 kernel_size = stride * n（例如 kernel 4、stride 2），或用 bilinear upsample + conv 替换 transposed conv，可以消除这些 artifacts。出于这个原因，现代默认做法是 bilinear + conv。"
+    },
+    {
+      "stage": "post",
+      "question": "你在一个 10 类 segmentation 任务上报告 mIoU = 0.78。为什么还应该发布 per-class IoU？",
+      "options": ["PyTorch 要求使用 per-class IoU", "Mean IoU 会隐藏单个类别的失败；0.78 的 mIoU 可能意味着八个类别为 0.9、两个类别为 0.3，这与所有类别都接近 0.78 的部署情况非常不同", "Per-class IoU 总是高于 mIoU", "它只在 medical imaging 中需要"],
+      "correct": 1,
+      "explanation": "聚合均值会压缩 per-class scores 的分布，而读者正需要这些分布来判断模型是否可以上线。一个整体很强的模型中有两个弱类别，可能会让系统无法用于目标任务；平坦的分布则意味着模型需要整体性的数据升级。始终在均值旁边发布 per-class metrics。"
+    }
+  ]
+}

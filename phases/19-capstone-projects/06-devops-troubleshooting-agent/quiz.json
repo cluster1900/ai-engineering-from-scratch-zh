@@ -1,0 +1,90 @@
+{
+  "lesson": "06-devops-troubleshooting-agent",
+  "title": "Capstone 06 — 面向 Kubernetes 的 DevOps Troubleshooting Agent",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "故障排查 Agent 的 RBAC surface 默认权限姿态是什么？",
+      "options": [
+        "默认只读，破坏性 verbs 被闸控在单独的 server 和人工审批之后",
+        "仅在受影响 namespace 中拥有 namespace-admin",
+        "等同于 on-call engineer",
+        "拥有 cluster-admin，因此可以自愈"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "Agent 在根因分析期间遍历的知识图谱是什么？",
+      "options": [
+        "Nodes 是 K8s objects 加 telemetry sources；edges 编码 ownership、scheduling 和 observation",
+        "最近重启 pods 的扁平列表",
+        "按团队组织的 Prometheus metric names",
+        "GitHub commits 和 PR reviews 组成的图"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Slack brief 中的根因假设是如何排序的？",
+      "options": [
+        "按结合新近度、具体性、graph-path length 和 citation count 的 evidence score",
+        "仅按 model log-probability",
+        "按 alert name 的字母顺序",
+        "按生成顺序"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么审计日志既记录 Agent 考虑过的命令，也记录已执行的命令？",
+      "options": [
+        "Reviewers 可以发现 near-misses，即 Agent 差点运行破坏性命令的情况",
+        "ArgoCD 只接受 considered commands",
+        "Slack API 需要两者才能投递",
+        "Replay attacks 需要两个列表"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪种机制可以防止 Agent 在 bad deploy 上单方面执行 rollback？",
+      "options": [
+        "破坏性工具位于单独的 MCP server 上，并置于来自 Slack card 的 approval token 之后",
+        "第二个 LLM-judge 对 rollback 投票",
+        "GitOps repo 上的 branch protection",
+        "PagerDuty 自动暂停 deployment"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Rubric 衡量的 p50 time-to-hypothesis 目标是什么？",
+      "options": [
+        "低于下一次 on-call shift",
+        "低于 1 小时",
+        "从告警到 Slack brief 低于 5 分钟",
+        "低于 30 秒"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "用于评分 RCA 准确率的合成事故套件有多大？",
+      "options": [
+        "1 个 scripted demo incident",
+        "5 个场景",
+        "100 个随机抽样的 production alerts",
+        "20 个场景，覆盖 OOMKill、DNS flap、HPA thrash、PVC fill 等"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .l1 { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .l2 { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .bad { fill: #ffe1e1; stroke: #b71c1c; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="24" text-anchor="middle" class="title">两层缓存 — L1 跳过 LLM，L2 复用 KV</text>
+
+  <rect x="40" y="50" width="420" height="220" class="l1"/>
+  <text x="250" y="72" text-anchor="middle" class="head">L1 — semantic（应用层）</text>
+  <text x="250" y="94" text-anchor="middle" class="step">Embedding prompt → 查找相似缓存</text>
+  <text x="60" y="118" class="small">工具：GPTCache, Redis Vec, Portkey, Helicone</text>
+  <text x="60" y="136" class="small">阈值：cosine ≥ 0.95（起步），调优</text>
+  <text x="60" y="154" class="small">生产命中率：</text>
+  <text x="60" y="172" class="small">开放式聊天：10-15%</text>
+  <text x="60" y="190" class="small">结构化 FAQ：40-70%</text>
+  <text x="60" y="208" class="small">代码问题：20-30%</text>
+  <text x="60" y="226" class="small">voice agent 重复：50-80%</text>
+  <text x="250" y="254" text-anchor="middle" class="caption">供应商“95% accuracy”= 匹配正确率，不是命中率</text>
+
+  <rect x="500" y="50" width="420" height="220" class="l2"/>
+  <text x="710" y="72" text-anchor="middle" class="head">L2 — provider prefix cache</text>
+  <text x="710" y="94" text-anchor="middle" class="step">为重复 prefix 复用 Attention KV</text>
+  <text x="520" y="118" class="small">Anthropic: 显式 cache_control 标记</text>
+  <text x="520" y="136" class="small">cache read $0.30/M vs $3.00/M（10x）</text>
+  <text x="520" y="154" class="small">写入溢价：1.25x（5 分钟 TTL）或 2x（1 小时 TTL）</text>
+  <text x="520" y="172" class="small">OpenAI: 自动，prompts &gt; 1024 tokens</text>
+  <text x="520" y="190" class="small">cached input 约便宜 10x；典型命中 ~50%</text>
+  <text x="520" y="208" class="small">Gemini: 显式 context caching API</text>
+  <text x="520" y="226" class="small">Self-hosted: Phase 17 · 06 RadixAttention</text>
+  <text x="710" y="254" text-anchor="middle" class="caption">ProjectDiscovery: 通过 prompt 重构，命中率 7% → 74%</text>
+
+  <rect x="40" y="290" width="880" height="110" class="bad"/>
+  <text x="480" y="312" text-anchor="middle" class="head">会压垮命中率的反模式</text>
+  <text x="60" y="338" class="step">· 并行化惩罚</text>
+  <text x="60" y="356" class="small">首次缓存写入前 10 个并行调用 = 10 次写入，0 次读取 → 5-10x 账单</text>
+  <text x="60" y="374" class="step">· prefix 中的动态内容</text>
+  <text x="60" y="392" class="small">当前时间、request ID、随机示例：每次请求都唯一 → 0 命中</text>
+
+  <rect x="40" y="420" width="880" height="80" class="box"/>
+  <text x="480" y="442" text-anchor="middle" class="head">隔夜任务 stack</text>
+  <text x="480" y="464" text-anchor="middle" class="step">Batch API（50% off）+ cached input（input 10x）→ 约为 sync-uncached 成本的 10%</text>
+  <text x="480" y="484" text-anchor="middle" class="caption">任何可容忍 24 小时延迟的任务都应叠加两者</text>
+</svg>

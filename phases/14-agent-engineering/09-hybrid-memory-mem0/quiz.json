@@ -1,0 +1,90 @@
+{
+  "lesson": "09-hybrid-memory-mem0",
+  "title": "混合记忆：Vector + Graph + KV (Mem0)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "KV store 最适合处理哪类查询？",
+      "options": [
+        "长对话上的语义相似度",
+        "按 (user, type, entity) 作为 key 的直接事实查找",
+        "跨共享计费实体的客户可达性",
+        "valid-at-time 时间查询"
+      ],
+      "correct": 1,
+      "explanation": "KV 在精确 key 上是 O(1)；Vector 用于相似度，Graph 用于关系。"
+    },
+    {
+      "stage": "pre",
+      "question": "Mem0 在每次 add() 时会并行写入哪三个 store？",
+      "options": [
+        "Vector、KV、Graph",
+        "Cache、queue、log",
+        "Postgres、Redis、ClickHouse",
+        "Embedding、Attention、FFN"
+      ],
+      "correct": 0,
+      "explanation": "Mem0 会把每次写入扇出到 Vector、KV 和 Graph store。"
+    },
+    {
+      "stage": "check",
+      "question": "Mem0 的融合分数由哪三个维度提供输入？",
+      "options": [
+        "相关性、重要性、近期性",
+        "Precision、recall、F1",
+        "延迟、吞吐量、成本",
+        "置信度、perplexity、BLEU"
+      ],
+      "correct": 0,
+      "explanation": "分数是相关性、重要性和近期性的加权和；权重按产品调优。"
+    },
+    {
+      "stage": "check",
+      "question": "当传入事实与现有 edge 矛盾时，Mem0g 会怎么做？",
+      "options": [
+        "删除该 edge",
+        "将现有 edge 标记为无效但不删除，因此时间查询仍可遍历",
+        "抛出异常",
+        "重写 user_id"
+      ],
+      "correct": 1,
+      "explanation": "软失效会保留历史，用于时间（valid-at-time）查询。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么本课建议按产品调优融合权重？",
+      "options": [
+        "Provider 要求这样做",
+        "近期性主导 chat agent，重要性主导 compliance agent，相关性主导 retrieval agent",
+        "Vector 库拒绝相等权重",
+        "Apache 2.0 要求这样做"
+      ],
+      "correct": 1,
+      "explanation": "不同产品希望在相关性/重要性/近期性上有不同偏置；一组权重无法适配所有场景。"
+    },
+    {
+      "stage": "post",
+      "question": "Mem0 使用的 scope 分类是什么？",
+      "options": [
+        "Public、private、secret",
+        "User、session、agent",
+        "Local、regional、global",
+        "Read、write、admin"
+      ],
+      "correct": 1,
+      "explanation": "Scope 包括 user（跨 session）、session（单个线程）、agent（每个实例的状态）。"
+    },
+    {
+      "stage": "post",
+      "question": "这个模式中的 embedding drift 是什么？本课建议如何缓解？",
+      "options": [
+        "Vector 被加密；轮换 key",
+        "随着 corpus 增长，Vector retrieval 质量下降；定期对最常用的 top-N 记录重新 Embedding",
+        "Embedding 使整数溢出；切换到 float64",
+        "Embedding API 更改 URL；固定 domain"
+      ],
+      "correct": 1,
+      "explanation": "随着 corpus 增长，对热记录进行定期重新 Embedding 可以保持 retrieval 质量稳定。"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "question": "RAG 代表什么，它解决了什么问题？",
+    "options": ["Random Augmented Generation -- 生成随机输出", "Retrieval-Augmented Generation -- 让 LLMs 访问它们训练时没有见过的外部知识", "Recurrent Attention Generation -- 改进 Attention mechanisms", "Reduced Architecture Generation -- 让模型更小"],
+    "correct": 1,
+    "explanation": "RAG 会从外部知识库中检索相关文档，并把它们加入 prompt。这让 LLM 无需重新训练，就能访问最新的、特定领域的信息。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么对于大多数基于知识的应用，RAG 比 fine-tuning 更受偏好？",
+    "options": ["RAG 会产生更好的模型", "RAG 更便宜，文档变化时可以即时更新，并提供 source attribution -- fine-tuning 昂贵且会过时", "Fine-tuning 不起作用", "RAG 使用更少内存"],
+    "correct": 1,
+    "explanation": "Fine-tuning 会花费数千美元，生成的是一个静态模型，会随着文档变化而过时，并且不提供 source attribution。RAG 可以即时更新（只需更新 document store），成本只有 Embedding + storage，并且可以引用来源。",
+    "stage": "pre"
+  },
+  {
+    "question": "基础 RAG pipeline 中正确的步骤顺序是什么？",
+    "options": ["Generate, retrieve, embed, chunk", "切分文档，为 chunks 生成 Embedding，存入 Vector DB，为 query 生成 Embedding，取回相似 chunks，结合 context 生成答案", "为 query 生成 Embedding，生成答案，取回文档", "存储文档，查询 LLM，把文档添加到 response 中"],
+    "correct": 1,
+    "explanation": "Ingestion：chunk 文档 -> embed chunk -> 存入 vector DB。Query time：embed 用户查询 -> 检索 top-K 相似 chunk -> 将 chunk 添加到 prompt -> 基于检索到的 context 生成答案。",
+    "stage": "post"
+  },
+  {
+    "question": "基础 RAG 系统中的一种常见 failure mode 是什么？",
+    "options": ["LLM 拒绝回答", "Retrieved chunks 在语义上与 query 相似，但不包含实际答案（例如，询问“Q3 revenue numbers”时返回“revenue strategy”）", "Vector database 崩溃", "Embeddings 太大"],
+    "correct": 1,
+    "explanation": "Semantic search 找到的是“听起来像” query 的文本，不一定是“回答”它的文本。一个关于 revenue 的 query 可能取回讨论 revenue strategy 的 chunks，而不是包含实际数字的 chunk。",
+    "stage": "post"
+  },
+  {
+    "question": "你如何评估 RAG 质量？",
+    "options": ["检查 LLM 是否产生任何输出", "同时使用 retrieval metrics（我们是否找到了正确的 chunks？）和 generation metrics（答案是否忠实于 retrieved context？）", "只测量 response time", "统计 retrieved documents 的数量"],
+    "correct": 1,
+    "explanation": "RAG evaluation 有两部分：retrieval quality（retrieved chunks 相对于 ground truth 的 precision/recall）和 generation quality（对 context 的 faithfulness、与 query 的 relevance、不超出 retrieved information 产生 hallucination）。",
+    "stage": "post"
+  }
+]

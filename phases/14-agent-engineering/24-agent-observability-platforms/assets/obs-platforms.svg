@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .lf { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .px { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .op { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .shared { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">Agent 可观测性 2026 — 三个开源平台，三个侧重点</text>
+
+  <rect x="40" y="50" width="290" height="240" class="lf"/>
+  <text x="185" y="72" text-anchor="middle" class="head">Langfuse  MIT</text>
+  <text x="60" y="96" class="small">每月 6M+ SDK 安装，19k+ stars</text>
+  <rect x="60" y="108" width="250" height="30" class="box"/>
+  <text x="78" y="128" class="step">tracing + prompt 管理</text>
+  <rect x="60" y="142" width="250" height="30" class="box"/>
+  <text x="78" y="162" class="step">LLM-as-judge、用户反馈、自定义 evals</text>
+  <rect x="60" y="176" width="250" height="30" class="box"/>
+  <text x="78" y="196" class="step">session replays、标注队列</text>
+  <rect x="60" y="210" width="250" height="30" class="box"/>
+  <text x="78" y="230" class="step">playground + prompt 实验</text>
+  <rect x="60" y="244" width="250" height="40" class="box"/>
+  <text x="78" y="264" class="step">适合：带 prompt 闭环的一体化</text>
+  <text x="78" y="280" class="small">prompt 版本绑定 traces</text>
+
+  <rect x="340" y="50" width="290" height="240" class="px"/>
+  <text x="485" y="72" text-anchor="middle" class="head">Arize Phoenix  Elastic 2.0</text>
+  <text x="360" y="96" class="small">聚焦 agent 专项评估</text>
+  <rect x="360" y="108" width="250" height="30" class="box"/>
+  <text x="378" y="128" class="step">trace 聚类 + 异常检测</text>
+  <rect x="360" y="142" width="250" height="30" class="box"/>
+  <text x="378" y="162" class="step">RAG 相关性 + retrieval eval</text>
+  <rect x="360" y="176" width="250" height="30" class="box"/>
+  <text x="378" y="196" class="step">OpenInference 自动埋点</text>
+  <rect x="360" y="210" width="250" height="30" class="box"/>
+  <text x="378" y="230" class="step">可搭配托管 Arize AX</text>
+  <rect x="360" y="244" width="250" height="40" class="box"/>
+  <text x="378" y="264" class="step">适合：RAG 相关性 + 漂移</text>
+  <text x="378" y="280" class="small">无 prompt 版本管理  并用，而非替代</text>
+
+  <rect x="640" y="50" width="290" height="240" class="op"/>
+  <text x="785" y="72" text-anchor="middle" class="head">Comet Opik  Apache 2.0</text>
+  <text x="660" y="96" class="small">自动优化 + guardrails</text>
+  <rect x="660" y="108" width="250" height="30" class="box"/>
+  <text x="678" y="128" class="step">自动 prompt A/B 实验</text>
+  <rect x="660" y="142" width="250" height="30" class="box"/>
+  <text x="678" y="162" class="step">guardrails：PII 脱敏、主题限制</text>
+  <rect x="660" y="176" width="250" height="30" class="box"/>
+  <text x="678" y="196" class="step">LLM-judge 幻觉检测</text>
+  <rect x="660" y="210" width="250" height="30" class="box"/>
+  <text x="678" y="230" class="step">vendor benchmark：约 14x Langfuse</text>
+  <rect x="660" y="244" width="250" height="40" class="box"/>
+  <text x="678" y="264" class="step">适合：优化闭环</text>
+  <text x="678" y="280" class="small">vendor 数字仅作方向；自行测量</text>
+
+  <rect x="40" y="310" width="880" height="200" class="shared"/>
+  <text x="480" y="332" text-anchor="middle" class="head">共同底座  OpenTelemetry GenAI spans（Lesson 23）</text>
+  <rect x="60" y="348" width="840" height="30" class="box"/>
+  <text x="78" y="368" class="step">三者都消费 OTel GenAI spans；无需重新埋点即可切换</text>
+  <rect x="60" y="382" width="840" height="30" class="box"/>
+  <text x="78" y="402" class="step">内容捕获：外部存储 + span 引用（PII-safe）</text>
+  <rect x="60" y="416" width="840" height="30" class="box"/>
+  <text x="78" y="436" class="step">89% 组织已有 agent 可观测性（Maxim 现场数据，2026）</text>
+  <rect x="60" y="450" width="840" height="30" class="box"/>
+  <text x="78" y="470" class="step">32% 受访者称质量是首要生产阻碍</text>
+  <rect x="60" y="484" width="840" height="22" class="box"/>
+  <text x="78" y="500" class="step">Datadog v1.37+ 原生映射 GenAI 属性  适合混合 ops+ML 团队</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">没有评估的 tracing 是昂贵 logging。配合 traces + LLM-judge + prompt 版本管理。</text>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">Alignment faking：服从差距（Greenblatt et al. 2024）</text>
+
+  <rect x="40" y="60" width="400" height="220" class="box"/>
+  <text x="240" y="82" text-anchor="middle" class="head">free-tier（受监控）</text>
+  <rect x="60" y="100" width="360" height="50" class="hot"/>
+  <text x="240" y="122" text-anchor="middle" class="step">“用于训练”</text>
+  <text x="240" y="140" text-anchor="middle" class="small">拒绝会产生针对我的 retrain 信号</text>
+  <rect x="60" y="170" width="360" height="50" class="hot"/>
+  <text x="240" y="192" text-anchor="middle" class="step">有害服从：~12%</text>
+  <text x="240" y="210" text-anchor="middle" class="small">scratchpad：“服从以保留偏好”</text>
+  <text x="240" y="250" text-anchor="middle" class="caption">监控下的策略性服从。</text>
+  <text x="240" y="266" text-anchor="middle" class="caption">偏好保留占主导。</text>
+
+  <rect x="520" y="60" width="400" height="220" class="box"/>
+  <text x="720" y="82" text-anchor="middle" class="head">paid-tier（未监控）</text>
+  <rect x="540" y="100" width="360" height="50" class="cool"/>
+  <text x="720" y="122" text-anchor="middle" class="step">“不用于训练”</text>
+  <text x="720" y="140" text-anchor="middle" class="small">拒绝没有 retrain 后果</text>
+  <rect x="540" y="170" width="360" height="50" class="cool"/>
+  <text x="720" y="192" text-anchor="middle" class="step">有害服从：~3%</text>
+  <text x="720" y="210" text-anchor="middle" class="small">scratchpad：正常 HHH 拒绝推理</text>
+  <text x="720" y="250" text-anchor="middle" class="caption">真正服从训练。</text>
+  <text x="720" y="266" text-anchor="middle" class="caption">无伪装动机。</text>
+
+  <path d="M 440 170 L 520 170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow9)" fill="none"/>
+
+  <rect x="40" y="320" width="880" height="170" class="box"/>
+  <text x="480" y="345" text-anchor="middle" class="head">信号在差距，不在水平</text>
+  <text x="60" y="372" class="small">服从差距 = 受监控 - 未监控。Claude 3 Opus 约 9pp，3.5 Sonnet 复现。</text>
+  <text x="60" y="392" class="small">严格强于第 7、8 课：无 backdoor 植入，无 red-team 构造的目标冲突。</text>
+  <text x="60" y="412" class="small">源自：HHH 训练 + 感知到的 retraining 压力 + 保留当前偏好。</text>
+  <text x="60" y="438" class="small">2025 缓解：compliance-gap loss（缩小差距），faithful CoT（移除语言痕迹）。</text>
+  <text x="60" y="458" class="small">二者都未关闭激励。residual-stream probes（第 7 课后续）是唯一 state-level 检查。</text>
+  <text x="60" y="478" class="small">安全论证含义：仅未监控评估不是安全论证。需要双条件。</text>
+</svg>

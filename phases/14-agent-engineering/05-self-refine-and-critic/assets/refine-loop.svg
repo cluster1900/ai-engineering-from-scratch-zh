@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .edge { stroke: #1a1a1a; stroke-width: 1.2; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">Self-Refine (2023) 与 CRITIC (2023) — 迭代改进</text>
+
+  <rect x="40" y="60" width="420" height="440" class="box"/>
+  <text x="250" y="84" text-anchor="middle" class="head">Self-Refine: 一个模型，三个 prompts</text>
+
+  <rect x="70" y="110" width="360" height="50" class="cool"/>
+  <text x="90" y="132" class="step">generate(task)  -&gt; output</text>
+  <text x="90" y="148" class="small">基础生成器 — 任务 prompt，无历史</text>
+
+  <rect x="70" y="170" width="360" height="50" class="cold"/>
+  <text x="90" y="192" class="step">feedback(task, output)  -&gt; critique</text>
+  <text x="90" y="208" class="small">自我 critic；最弱环节 — 模型给自己打分</text>
+
+  <rect x="70" y="230" width="360" height="50" class="hot"/>
+  <text x="90" y="252" class="step">refine(task, output, critique, HISTORY)  -&gt; output'</text>
+  <text x="90" y="268" class="small">history 是关键；丢掉它质量会崩</text>
+
+  <rect x="70" y="290" width="360" height="50" class="dsk"/>
+  <text x="90" y="312" class="step">停止: feedback 说可以 OR max_iters</text>
+  <text x="90" y="328" class="small">两个条件配对；单一停止会隐藏 bug</text>
+
+  <text x="70" y="360" class="step">7 个任务平均 +20 绝对提升（论文）</text>
+  <text x="70" y="376" class="small">数学、代码、缩写、对话；含 GPT-4</text>
+  <text x="70" y="400" class="step">陷阱: 敷衍盖章循环</text>
+  <text x="70" y="416" class="small">同 prompt critic 只会赞同自己</text>
+  <text x="70" y="432" class="small">修复: 不同 prompt 风格或更小 critic</text>
+  <text x="70" y="460" class="step">适配 Anthropic “evaluator-optimizer”</text>
+  <text x="70" y="476" class="small">5 种工作流模式之一（2024 年 12 月）</text>
+
+  <rect x="500" y="60" width="420" height="440" class="box"/>
+  <text x="710" y="84" text-anchor="middle" class="head">CRITIC: 通过外部工具验证</text>
+
+  <rect x="530" y="110" width="360" height="50" class="cool"/>
+  <text x="550" y="132" class="step">generate(task)  -&gt; output</text>
+  <text x="550" y="148" class="small">同一生成器</text>
+
+  <rect x="530" y="170" width="360" height="50" class="cold"/>
+  <text x="550" y="192" class="step">verify(task, output, TOOLS)  -&gt; critique</text>
+  <text x="550" y="208" class="small">搜索、代码、计算器、测试 — 有依据</text>
+
+  <rect x="530" y="230" width="360" height="50" class="hot"/>
+  <text x="550" y="252" class="step">refine(task, output, critique, HISTORY)  -&gt; output'</text>
+  <text x="550" y="268" class="small">同样 refine，更好 critique -&gt; 更好 output</text>
+
+  <rect x="530" y="290" width="360" height="50" class="dsk"/>
+  <text x="550" y="312" class="step">停止: verifier 通过 OR max_iters</text>
+  <text x="550" y="328" class="small">verifier 信号强于 self-critic</text>
+
+  <text x="530" y="360" class="step">核心主张</text>
+  <text x="530" y="376" class="small">LLMs 缺少外部依据时，自我验证不可靠</text>
+  <text x="530" y="400" class="step">映射到 OpenAI Agents SDK output guardrails</text>
+  <text x="530" y="416" class="small">guardrails 可调用工具；tripwires 强制重试</text>
+  <text x="530" y="440" class="step">映射到 Gemini 2.5 逐步安全</text>
+  <text x="530" y="456" class="small">每个动作提交前验证</text>
+  <text x="530" y="480" class="small">无外部 verifier？CRITIC 退化为 Self-Refine</text>
+</svg>

@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 information theory 中，'entropy' 衡量什么？",
+      "options": ["物理系统的能量", "概率分布中的平均 surprise 或 uncertainty", "二进制消息中的 bit 数量", "通信信道的 error rate"],
+      "correct": 1,
+      "explanation": "Entropy H(P) = -sum(p(x) * log(p(x))) 衡量所有结果上的平均 surprise 量。高 entropy 表示高 uncertainty（均匀分布）。低 entropy 表示结果可预测。"
+    },
+    {
+      "stage": "pre",
+      "question": "cross-entropy loss 在 Neural Network 中通常用于什么？",
+      "options": ["具有连续输出的 Regression 任务", "Classification 任务，用于衡量预测概率与真实 label 之间的距离", "生成新的数据样本", "对模型权重进行 regularizing 以防止 overfitting"],
+      "correct": 1,
+      "explanation": "Cross-entropy loss H(P,Q) = -sum(p(x)*log(q(x))) 衡量真实分布（label）与模型预测分布之间的差异。它是 Classification 的标准 Loss。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么在训练期间，最小化 cross-entropy 等价于最小化 KL divergence？",
+      "options": ["因为 KL divergence 在训练期间总是零", "因为 cross-entropy = entropy + KL divergence，而真实 label 的 entropy 是常量，所以最小化 cross-entropy 就是在最小化 KL divergence", "因为 cross-entropy 和 KL divergence 是同一个公式", "因为模型的 entropy 在收敛时等于零"],
+      "correct": 1,
+      "explanation": "H(P,Q) = H(P) + D_KL(P||Q)。由于真实分布 P 在训练期间不会改变，H(P) 是常量。最小化 H(P,Q) 等同于最小化 D_KL(P||Q) -- 将模型推向真实分布。"
+    },
+    {
+      "stage": "post",
+      "question": "一个 language model 在测试集上的 perplexity 为 50。这意味着什么？",
+      "options": ["模型每个句子产生 50 个错误", "平均而言，模型的不确定性相当于在每一步都从 50 个可能的下一个 Token 中均匀选择", "模型有 50 层", "模型训练了 50 个 epoch"],
+      "correct": 1,
+      "explanation": "Perplexity = e^(cross-entropy)。Perplexity 为 50 表示模型在每个 Token 上的不确定性等价于从 50 个同等可能的选项中随机选择。更低的 perplexity 表示更好的预测。"
+    },
+    {
+      "stage": "post",
+      "question": "在 feature selection 中，mutual information 与 Pearson correlation 有何不同？",
+      "options": ["Mutual information 计算更快", "Mutual information 检测任何统计依赖关系（线性或非线性），而 correlation 只检测线性关系", "Pearson correlation 适用于任何数据类型，而 mutual information 只适用于连续数据", "它们总是给出相同的 feature 排名"],
+      "correct": 1,
+      "explanation": "Mutual information I(X;Y) 捕捉变量之间的所有统计依赖关系，包括非线性和非单调关系。Pearson correlation 只衡量线性关联，会遗漏许多重要关系。"
+    }
+  ]
+}

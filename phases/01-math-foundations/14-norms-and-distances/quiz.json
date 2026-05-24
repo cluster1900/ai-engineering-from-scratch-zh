@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "cosine similarity 衡量两个 Vector 之间的什么？",
+      "options": [
+        "它们之间的 Euclidean distance",
+        "它们之间的角度，忽略它们的幅度",
+        "它们逐元素乘积的总和",
+        "任意单个维度上的最大差值"
+      ],
+      "correct": 1,
+      "explanation": "cosine similarity 衡量两个 Vector 之间夹角的余弦值，并按它们的幅度归一化。它的范围从 -1（相反）到 +1（同方向），并忽略 Vector 长度，这也是它在 NLP 中占主导地位的原因，因为文档长度是噪声。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 L1 distance 被称为 \"Manhattan distance\"？",
+      "options": [
+        "它是在 Manhattan 发明的",
+        "它衡量沿网格移动的距离，就像在城市街区中步行",
+        "它只适用于恰好二维的情况",
+        "它计算所有维度上的最大差值"
+      ],
+      "correct": 1,
+      "explanation": "L1 distance 会沿每个轴求绝对差值之和，这对应于网格上的最短路径，在这种网格中你只能沿轴移动（不能走对角线）——就像在城市街道网格中步行。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 L1 regularization（Lasso）会产生稀疏权重，而 L2 regularization（Ridge）不会？",
+      "options": [
+        "L1 使用比 L2 更大的惩罚常数",
+        "L1 的菱形约束在坐标轴上有角点，那里权重为零；Loss 等高线很可能在角点相切",
+        "L2 regularization 只应用于 bias 项",
+        "L1 regularization 会把低于阈值的权重裁剪为零"
+      ],
+      "correct": 1,
+      "explanation": "L1 约束区域是一个菱形，其角点与坐标轴对齐。Loss function 的等高椭圆最可能先在菱形的某个角点相切，而在角点处一个或多个权重恰好为零。L2 约束是没有角点的圆，因此相切点的所有权重都是非零的。"
+    },
+    {
+      "stage": "post",
+      "question": "在比较概率分布时，Wasserstein distance 相比 KL divergence 有什么优势？",
+      "options": [
+        "Wasserstein 总是小于 KL divergence",
+        "即使分布不重叠，Wasserstein 仍能提供有意义的 Gradient，而 KL 会趋于无穷大",
+        "Wasserstein 是对称的，而 KL 不是",
+        "B 和 C 都正确"
+      ],
+      "correct": 3,
+      "explanation": "Wasserstein distance 是真正的度量（对称，满足三角不等式），并且即使对不重叠的分布也能提供 Gradient。KL divergence 是非对称的，并且在分布不重叠时会趋于无穷大，这也是 WGAN 用它替代基于 KL 的 GAN 的原因。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候会使用 Mahalanobis distance 而不是 Euclidean distance？",
+      "options": [
+        "当特征全都是 binary（0 或 1）时",
+        "当特征具有不同尺度，并且彼此相关时",
+        "当你比较的是字符串而不是 Vector 时",
+        "当你需要比 L2 更快的计算时"
+      ],
+      "correct": 1,
+      "explanation": "Mahalanobis distance 会考虑数据的 covariance 结构，在计算 L2 distance 之前对特征进行去相关和归一化。它能正确处理不同尺度且存在相关性的特征，而 Euclidean distance 会平等对待所有维度。"
+    }
+  ]
+}

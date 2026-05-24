@@ -1,0 +1,66 @@
+{
+  "lesson": "14-model-context-protocol",
+  "title": "Model Context Protocol",
+  "questions": [
+    {
+      "stage": "post",
+      "question": "MCP server 会暴露哪三种 primitives？",
+      "options": [
+        "Functions, types, classes",
+        "Tools, resources, prompts",
+        "Endpoints, webhooks, queues",
+        "Agents, skills, workflows"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "MCP 使用什么 wire format？",
+      "options": [
+        "GraphQL over HTTP",
+        "gRPC with protobuf",
+        "JSON-RPC 2.0",
+        "REST with OpenAPI"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个 metadata field 表示一个 tool 会改变状态，并且应该要求人工批准？",
+      "options": [
+        "readonly: false",
+        "mutating: true",
+        "destructiveHint: true",
+        "requiresAuth: true"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2025-06-18 中取代早期仅 SSE remote transport 的 transport 是什么？",
+      "options": [
+        "WebTransport",
+        "Streamable HTTP",
+        "WebSocket-only",
+        "gRPC bidi"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该把一个 tool 拆分到自己的 MCP server，而不是继续内联保留？",
+      "options": [
+        "当它每天被调用少于 10 次时",
+        "当它会被两个或更多 hosts 调用，并且是 read-only/cacheable 时",
+        "当它返回超过 1KB 的数据时",
+        "永远不应该；MCP 只用于本地 dev"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

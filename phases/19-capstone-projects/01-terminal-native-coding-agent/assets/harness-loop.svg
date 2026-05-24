@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">终端原生 coding agent — 计划/行动/观察循环</text>
+
+  <rect x="40" y="50" width="200" height="460" class="box"/>
+  <text x="140" y="72" text-anchor="middle" class="head">轮次生命周期</text>
+
+  <rect x="60" y="90" width="160" height="44" class="cool"/>
+  <text x="140" y="108" text-anchor="middle" class="step">计划</text>
+  <text x="140" y="126" text-anchor="middle" class="small">TodoWrite 重写</text>
+
+  <rect x="60" y="148" width="160" height="44" class="hot"/>
+  <text x="140" y="166" text-anchor="middle" class="step">行动</text>
+  <text x="140" y="184" text-anchor="middle" class="small">分发工具调用</text>
+
+  <rect x="60" y="206" width="160" height="44" class="cold"/>
+  <text x="140" y="224" text-anchor="middle" class="step">观察</text>
+  <text x="140" y="242" text-anchor="middle" class="small">截断 + 反馈</text>
+
+  <rect x="60" y="264" width="160" height="44" class="dsk"/>
+  <text x="140" y="282" text-anchor="middle" class="step">恢复</text>
+  <text x="140" y="300" text-anchor="middle" class="small">重试 / 压缩 / 停止</text>
+
+  <rect x="60" y="340" width="160" height="150" class="box"/>
+  <text x="140" y="360" text-anchor="middle" class="head">预算</text>
+  <text x="140" y="382" text-anchor="middle" class="small">max_turns = 50</text>
+  <text x="140" y="400" text-anchor="middle" class="small">max_tokens = 200k</text>
+  <text x="140" y="418" text-anchor="middle" class="small">max_dollars = $5</text>
+  <text x="140" y="446" text-anchor="middle" class="small">PreCompact at 150k</text>
+  <text x="140" y="464" text-anchor="middle" class="small">任一超限即 Stop</text>
+
+  <rect x="270" y="50" width="310" height="230" class="box"/>
+  <text x="425" y="72" text-anchor="middle" class="head">工具 (MCP StreamableHTTP)</text>
+  <rect x="290" y="88" width="270" height="30" class="cool"/>
+  <text x="425" y="108" text-anchor="middle" class="step">read_file / edit_file</text>
+  <rect x="290" y="124" width="270" height="30" class="cool"/>
+  <text x="425" y="144" text-anchor="middle" class="step">ripgrep / tree_sitter_symbols</text>
+  <rect x="290" y="160" width="270" height="30" class="hot"/>
+  <text x="425" y="180" text-anchor="middle" class="step">run_shell (timeout)</text>
+  <rect x="290" y="196" width="270" height="30" class="cold"/>
+  <text x="425" y="216" text-anchor="middle" class="step">git (status / diff / commit / push)</text>
+  <text x="425" y="254" text-anchor="middle" class="small">每次调用最多返回 4k tokens</text>
+  <text x="425" y="270" text-anchor="middle" class="small">每次调用都在 sandbox 内运行</text>
+
+  <rect x="270" y="294" width="310" height="216" class="box"/>
+  <text x="425" y="316" text-anchor="middle" class="head">sandbox (E2B / Daytona)</text>
+  <text x="425" y="336" text-anchor="middle" class="small">每任务新建 devcontainer</text>
+  <text x="425" y="352" text-anchor="middle" class="small">git worktree add agent/TASK_ID</text>
+  <text x="425" y="368" text-anchor="middle" class="small">仅 tree 内可读写</text>
+  <text x="425" y="384" text-anchor="middle" class="small">无 allowlist 则禁用网络</text>
+  <rect x="290" y="398" width="270" height="40" class="dsk"/>
+  <text x="425" y="418" text-anchor="middle" class="step">Stop 时清理 worktree</text>
+  <text x="425" y="430" text-anchor="middle" class="small">成功或失败，始终执行</text>
+  <text x="425" y="464" text-anchor="middle" class="small">host 文件系统保持不变</text>
+  <text x="425" y="482" text-anchor="middle" class="small">凭据由 GitHub App 限定范围</text>
+  <text x="425" y="500" text-anchor="middle" class="small">破坏性命令由 hook 阻止</text>
+
+  <rect x="610" y="50" width="310" height="460" class="box"/>
+  <text x="765" y="72" text-anchor="middle" class="head">hook 表面 (2026 形态)</text>
+  <rect x="630" y="88" width="270" height="30" class="cool"/>
+  <text x="765" y="108" text-anchor="middle" class="step">SessionStart / SessionEnd</text>
+  <rect x="630" y="124" width="270" height="30" class="hot"/>
+  <text x="765" y="144" text-anchor="middle" class="step">PreToolUse / PostToolUse</text>
+  <rect x="630" y="160" width="270" height="30" class="cold"/>
+  <text x="765" y="180" text-anchor="middle" class="step">UserPromptSubmit / Notification</text>
+  <rect x="630" y="196" width="270" height="30" class="dsk"/>
+  <text x="765" y="216" text-anchor="middle" class="step">Stop / PreCompact</text>
+
+  <text x="765" y="256" text-anchor="middle" class="small">参考用户 hooks：</text>
+  <text x="765" y="274" text-anchor="middle" class="small">· 破坏性命令 guard</text>
+  <text x="765" y="290" text-anchor="middle" class="small">· token + 美元计量</text>
+  <text x="765" y="306" text-anchor="middle" class="small">· 每次工具调用发出 OTel span</text>
+  <text x="765" y="322" text-anchor="middle" class="small">· Stop 时写入 trace bundle</text>
+
+  <rect x="630" y="340" width="270" height="150" class="box"/>
+  <text x="765" y="362" text-anchor="middle" class="head">可观测性</text>
+  <text x="765" y="384" text-anchor="middle" class="small">OpenTelemetry GenAI semconv</text>
+  <text x="765" y="402" text-anchor="middle" class="small">每次工具调用一个 span</text>
+  <text x="765" y="420" text-anchor="middle" class="small">tokens + $ 作为 attributes 附加</text>
+  <text x="765" y="438" text-anchor="middle" class="small">Langfuse 自托管 sink</text>
+  <text x="765" y="468" text-anchor="middle" class="small">trace bundle 随 PR body 发送</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">SWE-bench Pro 目标：pass@1 达到或高于 mini-swe-agent baseline，每任务低于 $5</text>
+</svg>

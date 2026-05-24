@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .reg { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">长视频理解 — 四条扩展路径</text>
+
+  <rect x="30" y="50" width="440" height="210" class="hot"/>
+  <text x="250" y="72" text-anchor="middle" class="head">路径 1：暴力上下文</text>
+  <text x="250" y="96" text-anchor="middle" class="small">Gemini 1.5 Pro：1M tokens</text>
+  <text x="250" y="114" text-anchor="middle" class="small">Gemini 2.5 Pro：10M+ tokens</text>
+  <text x="250" y="132" text-anchor="middle" class="small">Claude Opus 4.7：1M tokens</text>
+  <text x="250" y="160" text-anchor="middle" class="step">工程</text>
+  <text x="250" y="180" text-anchor="middle" class="small">自定义 Attention 层级</text>
+  <text x="250" y="196" text-anchor="middle" class="small">MoE expert 路由</text>
+  <text x="250" y="212" text-anchor="middle" class="small">闭源</text>
+  <text x="250" y="240" text-anchor="middle" class="caption">最佳召回，仅闭源</text>
+
+  <rect x="490" y="50" width="440" height="210" class="cool"/>
+  <text x="710" y="72" text-anchor="middle" class="head">路径 2：ring Attention</text>
+  <text x="710" y="96" text-anchor="middle" class="small">LWM：1M-token 训练</text>
+  <text x="710" y="114" text-anchor="middle" class="small">LongVILA：1400-frame videos</text>
+  <text x="710" y="132" text-anchor="middle" class="small">分布式 ring 模式</text>
+  <text x="710" y="160" text-anchor="middle" class="step">工程</text>
+  <text x="710" y="180" text-anchor="middle" class="small">每台设备持有 chunk</text>
+  <text x="710" y="196" text-anchor="middle" class="small">轮转进行 Attention passes</text>
+  <text x="710" y="212" text-anchor="middle" class="small">开源</text>
+  <text x="710" y="240" text-anchor="middle" class="caption">开源扩展好，计算重</text>
+
+  <rect x="30" y="280" width="440" height="230" class="cold"/>
+  <text x="250" y="302" text-anchor="middle" class="head">路径 3：Token 压缩</text>
+  <text x="250" y="326" text-anchor="middle" class="small">Video-XL：一个 summary Token</text>
+  <text x="250" y="344" text-anchor="middle" class="small">每个 clip（数百帧 -&gt; 1）</text>
+  <text x="250" y="362" text-anchor="middle" class="small">LongVA：长上下文迁移</text>
+  <text x="250" y="380" text-anchor="middle" class="small">VideoChat2：层级 pool</text>
+  <text x="250" y="410" text-anchor="middle" class="step">工程</text>
+  <text x="250" y="430" text-anchor="middle" class="small">LLM 前学习式 compressor</text>
+  <text x="250" y="446" text-anchor="middle" class="small">以召回换规模</text>
+  <text x="250" y="462" text-anchor="middle" class="small">~32k 上下文足够</text>
+  <text x="250" y="490" text-anchor="middle" class="caption">推理最便宜，定位最弱</text>
+
+  <rect x="490" y="280" width="440" height="230" class="reg"/>
+  <text x="710" y="302" text-anchor="middle" class="head">路径 4：Agentic 检索</text>
+  <text x="710" y="326" text-anchor="middle" class="small">VideoAgent：LLM 作 query planner</text>
+  <text x="710" y="344" text-anchor="middle" class="small">tool: find_clips(keyword)</text>
+  <text x="710" y="362" text-anchor="middle" class="small">VLM 只读取匹配项</text>
+  <text x="710" y="380" text-anchor="middle" class="small">LLM 组合最终答案</text>
+  <text x="710" y="410" text-anchor="middle" class="step">工程</text>
+  <text x="710" y="430" text-anchor="middle" class="small">检索质量是瓶颈</text>
+  <text x="710" y="446" text-anchor="middle" class="small">单事件查询便宜 99%</text>
+  <text x="710" y="462" text-anchor="middle" class="small">整体理解较差</text>
+  <text x="710" y="490" text-anchor="middle" class="caption">最适合 2h+ 特定查询</text>
+</svg>

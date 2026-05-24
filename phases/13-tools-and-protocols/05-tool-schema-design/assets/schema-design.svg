@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">单体 vs 原子 tool，同一任务面</text>
+
+  <rect x="40" y="50" width="440" height="450" class="hot"/>
+  <text x="260" y="72" text-anchor="middle" class="head">单体（选择准确率下降）</text>
+
+  <rect x="60" y="92" width="400" height="80" class="box"/>
+  <text x="80" y="114" class="step">notes_do_everything({</text>
+  <text x="96" y="132" class="step">action: "list" | "get" | "search"</text>
+  <text x="96" y="148" class="step">| "create" | "update" | "delete",</text>
+  <text x="80" y="164" class="step">target, options: {...}</text>
+
+  <text x="60" y="200" class="step">问题：</text>
+  <text x="60" y="220" class="small">- model 按字符串选 action，而非按 tool name</text>
+  <text x="60" y="240" class="small">- options: {} 无类型 -&gt; hallucinations</text>
+  <text x="60" y="260" class="small">- description 必须解释六种行为</text>
+  <text x="60" y="280" class="small">- 难以区分相近竞争场景</text>
+
+  <text x="60" y="320" class="step">内部 registry benchmark：</text>
+  <text x="60" y="340" class="small">- 比原子低 15-30 pp 选择准确率</text>
+  <text x="60" y="360" class="small">- options payload hallucination 率更高</text>
+  <text x="60" y="380" class="small">- retry 恢复更难（哪个 field 错了？）</text>
+
+  <text x="60" y="430" class="step">经验规则：</text>
+  <text x="60" y="450" class="small">若 action enum &gt; 3 个值，拆分 tool。</text>
+  <text x="60" y="470" class="small">若 options &gt; 2 种 variant shape，拆分 tool。</text>
+
+  <rect x="500" y="50" width="420" height="450" class="cool"/>
+  <text x="710" y="72" text-anchor="middle" class="head">原子（每个 tool 一个任务）</text>
+
+  <rect x="520" y="92" width="380" height="280" class="box"/>
+  <text x="540" y="116" class="step">notes_list(tag?)</text>
+  <text x="540" y="134" class="small">"用户想要全部或按 tag 过滤的 notes 时使用。</text>
+  <text x="540" y="150" class="small">不要用于读取正文；用 notes_get。"</text>
+
+  <text x="540" y="178" class="step">notes_get(note_id)</text>
+  <text x="540" y="196" class="small">"当用户请求特定 note 正文时使用。"</text>
+
+  <text x="540" y="220" class="step">notes_search(query, limit?)</text>
+  <text x="540" y="238" class="small">"当用户按内容关键词搜索时使用。"</text>
+
+  <text x="540" y="262" class="step">notes_create(title, body, tag?)</text>
+  <text x="540" y="280" class="small">"当用户写新 note 时使用。"</text>
+
+  <text x="540" y="304" class="step">notes_update(note_id, title?, body?)</text>
+  <text x="540" y="322" class="small">"当用户编辑现有 note 时使用。"</text>
+
+  <text x="540" y="346" class="step">notes_delete(note_id)</text>
+  <text x="540" y="364" class="small">"当用户明确删除时使用。"</text>
+
+  <text x="520" y="410" class="step">namespace: notes_*</text>
+  <text x="520" y="428" class="small">- 共享前缀 = 在模型上下文中分组</text>
+  <text x="520" y="448" class="small">- 精简描述 = 可靠选择</text>
+  <text x="520" y="468" class="small">- typed schemas = 无参数幻觉</text>
+  <text x="520" y="486" class="small">- 选择准确率 +10 到 +20 pp</text>
+</svg>

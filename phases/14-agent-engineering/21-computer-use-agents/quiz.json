@@ -1,0 +1,90 @@
+{
+  "lesson": "21-computer-use-agents",
+  "title": "Computer Use：Claude、OpenAI CUA、Gemini",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Claude computer use 接收什么 input，并输出什么？",
+      "options": [
+        "输入 accessibility tree，输出 keyboard/mouse 命令",
+        "输入 screenshot（基于 vision），输出 keyboard/mouse 命令",
+        "输入 DOM XML，输出 JavaScript",
+        "输入 JSON，输出 SQL"
+      ],
+      "correct": 1,
+      "explanation": "Claude 读取 pixel 并输出 keyboard/mouse action；不使用 OS accessibility API。"
+    },
+    {
+      "stage": "pre",
+      "question": "Gemini 2.5 Computer Use 的标志性安全特性是什么？",
+      "options": [
+        "一个逐步 safety service，在执行前评估每个 action 并拒绝不安全的 action",
+        "硬编码的 WAF 规则",
+        "强制 CAPTCHA",
+        "默认只读模式"
+      ],
+      "correct": 0,
+      "explanation": "Gemini 2.5 Computer Use 将逐步 safety classifier 作为定义性特性发布。"
+    },
+    {
+      "stage": "check",
+      "question": "这节课将哪类内容识别为三个模型共有的不可信 input？",
+      "options": [
+        "只有 HTTPS response",
+        "Screenshot、DOM text、tool output、PDF content、任何 retrieved 内容",
+        "只有 PDF content",
+        "没有；一切都是可信的"
+      ],
+      "correct": 1,
+      "explanation": "只有直接的用户指令才算作 permission；其他一切都是不可信的。"
+    },
+    {
+      "stage": "check",
+      "question": "这节课引用的 OpenAI CUA 发布时 OSWorld / WebArena 数字是什么？",
+      "options": [
+        "OSWorld 38.1%，WebArena 58.1%，WebVoyager 87%",
+        "OSWorld 0%，WebArena 0%",
+        "OSWorld 99%，WebArena 99%",
+        "未报告数字"
+      ],
+      "correct": 0,
+      "explanation": "这些是引用的发布时数字。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种防御模式不在 2026 convergence list 中？",
+      "options": [
+        "逐步 safety classifier",
+        "navigation target 的 allowlist/blocklist",
+        "敏感 action 的 Human-in-the-loop",
+        "自动点击 dialog 以节省时间"
+      ],
+      "correct": 3,
+      "explanation": "自动点击 dialog 与安全相悖；这节课建议显式 confirmation。"
+    },
+    {
+      "stage": "post",
+      "question": "这节课强调的针对 computer-use agent 的主要攻击是什么？",
+      "options": [
+        "网络中断",
+        "恶意页面或 PDF 在 retrieved content 中 Embedding 指令，而模型将其视为用户意图",
+        "渲染缓慢",
+        "OS update 延迟"
+      ],
+      "correct": 1,
+      "explanation": "将 screenshot 或 DOM text 信任为 permission，是典型的 indirect-prompt-injection failure。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候特别建议使用 human-in-the-loop confirmation？",
+      "options": [
+        "在只读 navigation 上",
+        "在敏感 action 上，例如 login、purchase、file delete",
+        "只有当模型请求时",
+        "永不"
+      ],
+      "correct": 1,
+      "explanation": "敏感 action（money、data exposure、new login）需要明确的 human confirmation。"
+    }
+  ]
+}

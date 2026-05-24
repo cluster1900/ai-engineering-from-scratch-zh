@@ -1,0 +1,37 @@
+[
+  {
+    "question": "为什么 Neural Network 调试比传统软件调试更难？",
+    "options": ["Neural Network 使用不同的编程语言", "网络可以在没有任何错误消息或崩溃的情况下产生错误输出 -- 代码能运行，但结果会静默出错", "Neural Network 无法测试", "没有用于 Neural Network 的调试工具"],
+    "correct": 1,
+    "explanation": "传统 bug 会崩溃或抛出异常。Neural Network bug 会产生一个错误的数字 -- 不下降的 Loss、停滞的平台期 accuracy，或细微错误的输出。没有错误消息会告诉你哪里出了问题。",
+    "stage": "pre"
+  },
+  {
+    "question": "'overfit one batch' 调试技术是什么？",
+    "options": ["在完整数据集上训练直到过拟合", "在单个小 batch 上训练，直到 Loss 接近零，验证模型至少能记住几个示例", "使用非常大的 batch size", "对 validation set 过拟合"],
+    "correct": 1,
+    "explanation": "如果你的模型无法把一个很小的 batch（例如 4-8 个样本）记到接近零 Loss，那么某个基础部分已经坏了：错误架构、损坏的 Loss Function，或不正确的 training loop。这是第一个应该运行的诊断。",
+    "stage": "pre"
+  },
+  {
+    "question": "你的 Loss 在几个 training steps 后变成 NaN。最可能的原因是什么？",
+    "options": ["数据集太小", "Gradient exploding 或数值溢出，通常来自过高的 learning rate 或缺少 Gradient clipping", "模型参数太少", "activation function 错误"],
+    "correct": 1,
+    "explanation": "NaN Loss 通常来自数值溢出：Gradient 爆炸、weights 无界增长，而 log(0) 或 exp(1000) 之类的操作会产生 infinity/NaN。降低 learning rate 或添加 Gradient clipping。",
+    "stage": "post"
+  },
+  {
+    "question": "你的 training loss 下降，但 validation loss 从一开始就保持不变。这说明什么？",
+    "options": ["模型正在过拟合", "模型正在学习 training data patterns，但它们无法 generalize -- 很可能是 data pipeline 问题（train/val data mismatch）或严重过拟合", "learning rate 太低", "模型需要更多层"],
+    "correct": 1,
+    "explanation": "如果 validation loss 从未改善，模型要么在记忆 training noise（过拟合），要么存在 data pipeline bug，导致 train 和 validation distributions 本质上不同。",
+    "stage": "post"
+  },
+  {
+    "question": "当你的 Loss curve 完全平坦（Loss 根本不下降）时，应该首先检查什么？",
+    "options": ["尝试不同架构", "验证 Gradient 非零、learning rate 足够高，并且 Loss Function 确实依赖模型的 predictions", "添加更多 training data", "切换到不同的 Optimizer"],
+    "correct": 1,
+    "explanation": "平坦的 Loss 表示模型没有更新。常见原因：零 Gradient（dead neurons、detached tensors）、learning rate 太小，或 Loss Function 没有把 Gradient 传到模型（例如，在 .backward() 之前使用 .item()）。",
+    "stage": "post"
+  }
+]

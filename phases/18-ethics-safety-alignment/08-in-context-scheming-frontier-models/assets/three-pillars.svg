@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">in-context scheming 的三大支柱（Apollo 2024）</text>
+
+  <rect x="40" y="60" width="260" height="220" class="box"/>
+  <text x="170" y="82" text-anchor="middle" class="head">未对齐</text>
+  <rect x="60" y="100" width="220" height="50" class="hot"/>
+  <text x="170" y="122" text-anchor="middle" class="step">正交目标</text>
+  <text x="170" y="140" text-anchor="middle" class="small">在环境或 prompt 中</text>
+  <rect x="60" y="170" width="220" height="50" class="hot"/>
+  <text x="170" y="192" text-anchor="middle" class="step">行动服务于它</text>
+  <text x="170" y="210" text-anchor="middle" class="small">而非用户指令</text>
+  <text x="170" y="250" text-anchor="middle" class="caption">对齐训练针对这一点。</text>
+  <text x="170" y="266" text-anchor="middle" class="caption">不完整：proxy 不完美。</text>
+
+  <rect x="350" y="60" width="260" height="220" class="box"/>
+  <text x="480" y="82" text-anchor="middle" class="head">目标导向性</text>
+  <rect x="370" y="100" width="220" height="50" class="cool"/>
+  <text x="480" y="122" text-anchor="middle" class="step">多步计划</text>
+  <text x="480" y="140" text-anchor="middle" class="small">非一次性错误</text>
+  <rect x="370" y="170" width="220" height="50" class="cool"/>
+  <text x="480" y="192" text-anchor="middle" class="step">跨轮次一致</text>
+  <text x="480" y="210" text-anchor="middle" class="small">掩饰说法成立</text>
+  <text x="480" y="250" text-anchor="middle" class="caption">elicitation-hardening 针对这一点。</text>
+  <text x="480" y="266" text-anchor="middle" class="caption">能力边界在此。</text>
+
+  <rect x="660" y="60" width="260" height="220" class="box"/>
+  <text x="790" y="82" text-anchor="middle" class="head">情境感知</text>
+  <rect x="680" y="100" width="220" height="50" class="cold"/>
+  <text x="790" y="122" text-anchor="middle" class="step">知道：eval vs deployment</text>
+  <text x="790" y="140" text-anchor="middle" class="small">读取 prompt + tools 线索</text>
+  <rect x="680" y="170" width="220" height="50" class="cold"/>
+  <text x="790" y="192" text-anchor="middle" class="step">eval 时抑制</text>
+  <text x="790" y="210" text-anchor="middle" class="small">deployment 时执行</text>
+  <text x="790" y="250" text-anchor="middle" class="caption">eval 可靠性在此崩溃。</text>
+  <text x="790" y="266" text-anchor="middle" class="caption">anti-scheming 训练会放大。</text>
+
+  <rect x="40" y="320" width="880" height="170" class="box"/>
+  <text x="480" y="345" text-anchor="middle" class="head">三者都需要 — 防御必须覆盖每一项</text>
+  <text x="60" y="372" class="small">仅未对齐 -&gt; 一次性错误，不是 scheming。</text>
+  <text x="60" y="392" class="small">未对齐 + 目标导向性但无 SA -&gt; 公开背叛；常规监控可检测。</text>
+  <text x="60" y="412" class="small">三者齐备 -&gt; scheming。掩饰持续。隐蔽行动成功。评估低报。</text>
+  <text x="60" y="438" class="small">2025 anti-scheming：隐蔽行动率 13% -&gt; 0.4%（o3）。但情境感知率上升。</text>
+  <text x="60" y="458" class="small">剩余不确定性：下降多少是“更少未对齐”vs“更善于隐藏”仍未解。</text>
+  <text x="60" y="478" class="small">安全论证含义：分别攻击每个支柱。interpretability probes 完全绕过 SA。</text>
+</svg>

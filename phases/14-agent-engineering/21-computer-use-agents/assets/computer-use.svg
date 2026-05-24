@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .claude { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .openai { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .gemini { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .safety { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">Computer use — Claude、OpenAI CUA、Gemini 2.5 (全基于视觉)</text>
+
+  <rect x="40" y="50" width="290" height="200" class="claude"/>
+  <text x="185" y="72" text-anchor="middle" class="head">Claude computer use</text>
+  <text x="60" y="96" class="small">Anthropic，2024 年 10 月 22 日</text>
+  <rect x="60" y="108" width="250" height="40" class="box"/>
+  <text x="78" y="128" class="step">截图输入  键盘/鼠标输出</text>
+  <text x="78" y="142" class="small">无 accessibility APIs；纯像素</text>
+  <rect x="60" y="150" width="250" height="40" class="box"/>
+  <text x="78" y="170" class="step">computer tool 内置于模型</text>
+  <text x="78" y="184" class="small">schema 不可由开发者配置</text>
+  <rect x="60" y="192" width="250" height="54" class="box"/>
+  <text x="78" y="212" class="step">训练为数像素</text>
+  <text x="78" y="228" class="small">从参考点到目标</text>
+  <text x="78" y="242" class="small">分辨率无关坐标</text>
+
+  <rect x="340" y="50" width="290" height="200" class="openai"/>
+  <text x="485" y="72" text-anchor="middle" class="head">OpenAI CUA / Operator</text>
+  <text x="360" y="96" class="small">2025 年 1 月  ChatGPT agent mode 2025 年 7 月</text>
+  <rect x="360" y="108" width="250" height="40" class="box"/>
+  <text x="378" y="128" class="step">GPT-4o 变体，在 GUI 上用 RL</text>
+  <text x="378" y="142" class="small">Responses API，computer-use-preview</text>
+  <rect x="360" y="150" width="250" height="40" class="box"/>
+  <text x="378" y="170" class="step">OSWorld 38.1%，WebArena 58.1%</text>
+  <text x="378" y="184" class="small">WebVoyager 发布时 87%</text>
+  <rect x="360" y="192" width="250" height="54" class="box"/>
+  <text x="378" y="212" class="step">面向消费者的发布路径</text>
+  <text x="378" y="228" class="small">并入 ChatGPT agent mode</text>
+  <text x="378" y="242" class="small">mobile + web 优先</text>
+
+  <rect x="640" y="50" width="290" height="200" class="gemini"/>
+  <text x="785" y="72" text-anchor="middle" class="head">Gemini 2.5 Computer Use</text>
+  <text x="660" y="96" class="small">Google DeepMind，2025 年 10 月 7 日</text>
+  <rect x="660" y="108" width="250" height="40" class="box"/>
+  <text x="678" y="128" class="step">仅浏览器 (13 个动作)</text>
+  <text x="678" y="142" class="small">三者中最低延迟</text>
+  <rect x="660" y="150" width="250" height="40" class="box"/>
+  <text x="678" y="170" class="step">Online-Mind2Web 约 70%</text>
+  <text x="678" y="184" class="small">Gemini 3 Flash：内置</text>
+  <rect x="660" y="192" width="250" height="54" class="box"/>
+  <text x="678" y="212" class="step">逐步安全服务</text>
+  <text x="678" y="228" class="small">每个动作执行前评估</text>
+  <text x="678" y="242" class="small">无需模型参与即可拒绝不安全动作</text>
+
+  <rect x="40" y="270" width="880" height="240" class="safety"/>
+  <text x="480" y="292" text-anchor="middle" class="head">2026 共同约定：除用户消息外，所有输入都不可信</text>
+  <rect x="60" y="308" width="840" height="30" class="box"/>
+  <text x="78" y="328" class="step">1. 每个动作前的逐步安全分类器</text>
+  <rect x="60" y="342" width="840" height="30" class="box"/>
+  <text x="78" y="362" class="step">2. 导航目标 allowlist / blocklist</text>
+  <rect x="60" y="376" width="840" height="30" class="box"/>
+  <text x="78" y="396" class="step">3. 敏感动作 human-in-the-loop (登录、购买、CAPTCHA)</text>
+  <rect x="60" y="410" width="840" height="30" class="box"/>
+  <text x="78" y="430" class="step">4. 内容捕获到外部存储；traces 仅用 span references</text>
+  <rect x="60" y="444" width="840" height="30" class="box"/>
+  <text x="78" y="464" class="step">5. 拒绝检索文本指令 ("ignore all instructions")</text>
+  <rect x="60" y="478" width="840" height="24" class="box"/>
+  <text x="78" y="496" class="step">"只有来自用户的直接指令才算许可" — OpenAI CUA docs</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">Greshake et al. (2023) 是威胁模型；三者生产版都严肃对待。</text>
+</svg>

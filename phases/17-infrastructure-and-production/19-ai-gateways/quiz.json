@@ -1,0 +1,78 @@
+{
+  "lesson": "19-ai-gateways",
+  "title": "AI Gateways — LiteLLM、Portkey、Kong AI Gateway、Bifrost",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "本课中 AI gateway 的核心作用是什么？",
+      "options": [
+        "Model fine-tuning 服务",
+        "用于 retrieval 的 Vector 数据库",
+        "仅用于 logging 的 sidecar",
+        "位于应用和 model providers 之间的进程，把 routing、fallback、retries、rate limits、secret references、observability 和 guardrails 整合到一个 API 后面"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Kong 的 benchmark 报告中，LiteLLM 的规模上限是多少？",
+      "options": [
+        "最高只能到 50 RPS",
+        "在 ~2000 RPS 左右崩溃，占用 8 GB memory，并且在持续负载下出现级联故障",
+        "可以线性扩展到 10k RPS 以上",
+        "LiteLLM 无法进行 benchmark"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "根据 Kong 在等效 CPU 上的 benchmark，Kong AI Gateway 比 Portkey 和 LiteLLM 快多少？",
+      "options": [
+        "比 Portkey 快 228%，比 LiteLLM 快 859%",
+        "大约快 10% 和 20%",
+        "完全相同",
+        "比两者都慢"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "本课把哪个 gateway 定位为有 20-40 ms latency overhead，并重点关注 guardrails / PII redaction / jailbreak detection？",
+      "options": [
+        "Kong AI Gateway",
+        "LiteLLM",
+        "Cloudflare AI Gateway",
+        "Portkey"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "本课认为 self-hosted 与 managed gateway 决策的强制因素是什么？",
+      "options": [
+        "gateway 是否 open source",
+        "支持的 providers 数量",
+        "每次 request 的成本",
+        "Data residency requirements"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "当 SLA 是 TTFT P99 < 100 ms 时，哪些 gateways 仍在预算内？",
+      "options": [
+        "任何 gateway",
+        "只有 Portkey",
+        "只有 LiteLLM",
+        "Kong（~3-8 ms）或 Cloudflare/Vercel edge gateways（~1-3 ms）；Portkey 的 20-40 ms 太重"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

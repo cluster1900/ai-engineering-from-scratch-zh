@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .warn { fill: #fde0b4; stroke: #b5651d; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">三种 scaling policy，同一能力，三种分类</text>
+
+  <rect x="40" y="50" width="800" height="460" class="box"/>
+
+  <!-- Column headers -->
+  <rect x="60" y="80" width="250" height="36" class="cool"/>
+  <text x="185" y="104" text-anchor="middle" class="label">OpenAI PF v2（2025年4月）</text>
+
+  <rect x="320" y="80" width="240" height="36" class="cold"/>
+  <text x="440" y="104" text-anchor="middle" class="label">Anthropic RSP v3.0（2026年2月）</text>
+
+  <rect x="570" y="80" width="250" height="36" class="warn"/>
+  <text x="695" y="104" text-anchor="middle" class="label">DeepMind FSF v3（2025年9月 + 2026年4月）</text>
+
+  <!-- Long-range Autonomy row -->
+  <rect x="60" y="130" width="760" height="46" class="box"/>
+  <text x="76" y="152" class="label">长期自主性</text>
+  <text x="76" y="170" class="content">OpenAI：Research（不触发）· Anthropic：已命名；阈值处 affirmative case · DeepMind：并入 ML R&amp;D / Cyber</text>
+
+  <!-- Undermining safeguards -->
+  <rect x="60" y="184" width="760" height="46" class="box"/>
+  <text x="76" y="206" class="label">削弱 safeguard</text>
+  <text x="76" y="224" class="content">OpenAI：Research · Anthropic：硬编码禁令（拒答）· DeepMind：deceptive-alignment 监控</text>
+
+  <!-- R&D automation -->
+  <rect x="60" y="238" width="760" height="46" class="box"/>
+  <text x="76" y="260" class="label">R&amp;D 自动化</text>
+  <text x="76" y="278" class="content">OpenAI：Tracked · Anthropic：AI R&amp;D-4 阈值（affirmative case）· DeepMind：ML R&amp;D autonomy level 1（TCL，2026年4月）</text>
+
+  <!-- Sandbagging -->
+  <rect x="60" y="292" width="760" height="46" class="box"/>
+  <text x="76" y="314" class="label">sandbagging</text>
+  <text x="76" y="332" class="content">OpenAI：Research · Anthropic：通过 eval-context gap 处理 · DeepMind：deceptive-alignment 监控（工具性推理）</text>
+
+  <!-- Cyber uplift -->
+  <rect x="60" y="346" width="760" height="46" class="box"/>
+  <text x="76" y="368" class="label">cyber 提升</text>
+  <text x="76" y="386" class="content">OpenAI：Tracked · Anthropic：ASL-3 触发（安全 + 部署）· DeepMind：Cyber CCL</text>
+
+  <!-- Convergence note -->
+  <rect x="60" y="400" width="760" height="90" class="hot"/>
+  <text x="440" y="424" text-anchor="middle" class="label">趋同 + 分歧</text>
+  <text x="80" y="446" class="content">趋同：内部 SAG、deceptive-alignment 作为命名风险类、常设 artifacts</text>
+  <text x="80" y="462" class="content">分歧：Tracked vs Research 拆分仅在 PF v2；DeepMind 合并自主性；Anthropic 移除暂停条款</text>
+  <text x="80" y="478" class="content">测量依赖：三套框架仅在能力测量不可被 gameable 时有效</text>
+</svg>

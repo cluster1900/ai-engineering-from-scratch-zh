@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">CTDE 与三个 MARL baseline</text>
+
+  <rect x="40" y="60" width="440" height="200" class="cold"/>
+  <text x="260" y="84" text-anchor="middle" class="head">训练时 — 中心化</text>
+
+  <rect x="70" y="110" width="360" height="100" class="box"/>
+  <text x="250" y="134" text-anchor="middle" class="step">critic / mixer / value</text>
+  <text x="250" y="158" text-anchor="middle" class="small">看到所有 agents 的 observations + actions</text>
+  <text x="250" y="176" text-anchor="middle" class="small">每次 actor update 的稳定目标</text>
+  <text x="250" y="196" text-anchor="middle" class="small">应对 multi-learner 设置的非平稳性</text>
+
+  <text x="260" y="234" text-anchor="middle" class="caption">MADDPG critic · QMIX mixer · MAPPO centralized V</text>
+
+  <rect x="500" y="60" width="420" height="200" class="cool"/>
+  <text x="710" y="84" text-anchor="middle" class="head">部署时 — 去中心化</text>
+
+  <rect x="530" y="110" width="110" height="100" class="box"/>
+  <text x="585" y="140" text-anchor="middle" class="step">actor 0</text>
+  <text x="585" y="160" text-anchor="middle" class="small">仅看到 o_0</text>
+  <text x="585" y="180" text-anchor="middle" class="small">本地 action</text>
+
+  <rect x="655" y="110" width="110" height="100" class="box"/>
+  <text x="710" y="140" text-anchor="middle" class="step">actor 1</text>
+  <text x="710" y="160" text-anchor="middle" class="small">仅看到 o_1</text>
+  <text x="710" y="180" text-anchor="middle" class="small">本地 action</text>
+
+  <rect x="780" y="110" width="110" height="100" class="box"/>
+  <text x="835" y="140" text-anchor="middle" class="step">actor N</text>
+  <text x="835" y="160" text-anchor="middle" class="small">仅看到 o_N</text>
+  <text x="835" y="180" text-anchor="middle" class="small">本地 action</text>
+
+  <text x="710" y="234" text-anchor="middle" class="caption">runtime 无 critic；仅本地 policy call</text>
+
+  <rect x="40" y="290" width="880" height="200" class="box"/>
+  <text x="480" y="314" text-anchor="middle" class="head">三个 baselines，三种专长</text>
+
+  <text x="60" y="348" class="step">MADDPG (2017)</text>
+  <text x="260" y="348" class="small">每 agent 一个 critic · 连续 actions · 混合协作/竞争 · 扩展约 10 agents</text>
+
+  <text x="60" y="378" class="step">QMIX (2018)</text>
+  <text x="260" y="378" class="small">value decomposition · 单调 mixer · 协作 · 离散 · SMAC 上占优</text>
+
+  <text x="60" y="408" class="step">MAPPO (2022)</text>
+  <text x="260" y="408" class="small">PPO with centralized V · 少量调参 · 协作 · 跨 benchmark 稳健</text>
+
+  <text x="60" y="438" class="step">生产提示</text>
+  <text x="260" y="438" class="small">先用 MAPPO；混合场景升到 MADDPG，稀疏协作升到 QMIX</text>
+
+  <text x="60" y="468" class="caption">对 LLM-agent systems：CTDE 是设计模式；端到端训练可选。</text>
+</svg>

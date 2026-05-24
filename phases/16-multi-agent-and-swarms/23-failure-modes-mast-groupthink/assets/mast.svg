@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">MAST taxonomy — 2026 multi-agent 失败模式参考</text>
+
+  <rect x="40" y="60" width="880" height="200" class="box"/>
+  <text x="480" y="84" text-anchor="middle" class="head">三类 MAST（Cemri 2025, NeurIPS）— 真实 MAS 失败率 41-86.7%</text>
+
+  <rect x="60" y="110" width="270" height="130" class="hot"/>
+  <text x="195" y="134" text-anchor="middle" class="head">规格定义</text>
+  <text x="195" y="154" text-anchor="middle" class="step">41.77%</text>
+  <text x="195" y="180" text-anchor="middle" class="small">角色模糊</text>
+  <text x="195" y="196" text-anchor="middle" class="small">任务定义不清</text>
+  <text x="195" y="212" text-anchor="middle" class="small">隐式成功标准</text>
+  <text x="195" y="232" text-anchor="middle" class="caption">修复：显式角色契约</text>
+
+  <rect x="345" y="110" width="270" height="130" class="cool"/>
+  <text x="480" y="134" text-anchor="middle" class="head">协同</text>
+  <text x="480" y="154" text-anchor="middle" class="step">36.94%</text>
+  <text x="480" y="180" text-anchor="middle" class="small">状态不同步</text>
+  <text x="480" y="196" text-anchor="middle" class="small">消息丢失 / 超时</text>
+  <text x="480" y="212" text-anchor="middle" class="small">并发写入</text>
+  <text x="480" y="232" text-anchor="middle" class="caption">修复：版本化状态 + acks</text>
+
+  <rect x="630" y="110" width="270" height="130" class="cold"/>
+  <text x="765" y="134" text-anchor="middle" class="head">验证</text>
+  <text x="765" y="154" text-anchor="middle" class="step">21.30%</text>
+  <text x="765" y="180" text-anchor="middle" class="small">无独立检查器</text>
+  <text x="765" y="196" text-anchor="middle" class="small">信任链</text>
+  <text x="765" y="212" text-anchor="middle" class="small">静默错误输出</text>
+  <text x="765" y="232" text-anchor="middle" class="caption">修复：不可写 verifier</text>
+
+  <rect x="40" y="270" width="880" height="230" class="cool"/>
+  <text x="480" y="294" text-anchor="middle" class="head">Groupthink family（arXiv:2508.05687）</text>
+
+  <text x="60" y="326" class="step">单一文化</text>
+  <text x="220" y="326" class="small">同一 base model → 相关 hallucinations</text>
+
+  <text x="60" y="352" class="step">从众</text>
+  <text x="220" y="352" class="small">agents 跟随最强势同伴；奖励谄媚</text>
+
+  <text x="60" y="378" class="step">ToM 缺陷</text>
+  <text x="220" y="378" class="small">无法建模彼此（Lesson 18）；长程崩溃</text>
+
+  <text x="60" y="404" class="step">混合动机</text>
+  <text x="220" y="404" class="small">部分激励对齐 → 折中输出</text>
+
+  <text x="60" y="430" class="step">级联</text>
+  <text x="220" y="430" class="small">重试风暴；一次失败经依赖放大</text>
+
+  <text x="60" y="466" class="step">修复：STRATUS</text>
+  <text x="220" y="466" class="small">检测 + 诊断 + 验证 agents → 缓解成功率 1.5x</text>
+  <text x="60" y="486" class="step">+ breakers</text>
+  <text x="220" y="486" class="small">每个 outbound call 加 circuit breakers；限制重试</text>
+</svg>

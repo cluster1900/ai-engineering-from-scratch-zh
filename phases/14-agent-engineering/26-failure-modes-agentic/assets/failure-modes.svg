@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .mode { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .mit { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .tax { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">Agent 失效模式 — 分类、五类常见问题、缓解</text>
+
+  <rect x="40" y="50" width="440" height="250" class="tax"/>
+  <text x="260" y="72" text-anchor="middle" class="head">分类法 2024-2026</text>
+  <rect x="60" y="88" width="400" height="46" class="box"/>
+  <text x="78" y="108" class="step">MASFT（Berkeley 2025） 14 种模式，3 类</text>
+  <text x="78" y="124" class="small">Cohen's Kappa 0.88 标注  区分可靠</text>
+  <rect x="60" y="140" width="400" height="46" class="box"/>
+  <text x="78" y="160" class="step">Microsoft Taxonomy  自主性会放大 AI 故障</text>
+  <text x="78" y="176" class="small">agent 有工具时，偏差、幻觉、泄漏更严重</text>
+  <rect x="60" y="192" width="400" height="46" class="box"/>
+  <text x="78" y="212" class="step">Characterizing Faults in Agentic AI</text>
+  <text x="78" y="228" class="small">编排 + 状态演化 + 环境交互</text>
+  <rect x="60" y="244" width="400" height="46" class="box"/>
+  <text x="78" y="264" class="step">Hallucinations Survey（arXiv:2509.18970）</text>
+  <text x="78" y="280" class="small">指令偏离 + 长程上下文误用</text>
+
+  <rect x="500" y="50" width="420" height="250" class="mode"/>
+  <text x="710" y="72" text-anchor="middle" class="head">行业反复出现的五类模式</text>
+  <rect x="520" y="88" width="380" height="36" class="box"/>
+  <text x="538" y="110" class="step">1. 幻觉动作  伪造工具、编造 args</text>
+  <rect x="520" y="128" width="380" height="36" class="box"/>
+  <text x="538" y="150" class="step">2. 范围蔓延  额外 PR、额外邮件、额外写入</text>
+  <rect x="520" y="168" width="380" height="36" class="box"/>
+  <text x="538" y="190" class="step">3. 级联错误  一个错误，N 个下游 ops</text>
+  <rect x="520" y="208" width="380" height="36" class="box"/>
+  <text x="538" y="230" class="step">4. 上下文丢失  忘记早期轮次约束</text>
+  <rect x="520" y="248" width="380" height="36" class="box"/>
+  <text x="538" y="270" class="step">5. 工具误用  错 args、错工具</text>
+
+  <rect x="40" y="320" width="880" height="190" class="mit"/>
+  <text x="480" y="342" text-anchor="middle" class="head">缓解  每步设 gates</text>
+  <rect x="60" y="358" width="840" height="30" class="box"/>
+  <text x="78" y="378" class="step">逐步安全 classifier（Lesson 21）</text>
+  <rect x="60" y="392" width="840" height="30" class="box"/>
+  <text x="78" y="412" class="step">tool-call 参数校验（Lesson 06）</text>
+  <rect x="60" y="426" width="840" height="30" class="box"/>
+  <text x="78" y="446" class="step">CRITIC-style 外部依据校准 claims（Lesson 05）</text>
+  <rect x="60" y="460" width="840" height="30" class="box"/>
+  <text x="78" y="480" class="step">状态复查以捕获成功幻觉（"文件真的创建了吗？"）</text>
+  <rect x="60" y="494" width="840" height="14" class="box"/>
+  <text x="78" y="506" class="step">Phoenix trace 聚类用于生产漂移检测</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">级联才是杀手 — 一个 phantom SKU  4 次 API 调用  多系统事故。</text>
+</svg>

@@ -1,0 +1,90 @@
+{
+  "lesson": "03-realtime-voice-assistant",
+  "title": "Capstone 03 — 实时语音助手（ASR 到 LLM 到 TTS）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么不能通过拼接三个阻塞式 REST 调用来构建 voice agent？",
+      "options": [
+        "REST endpoint 有 30 秒的硬性超时限制",
+        "REST 与 WebRTC 不兼容",
+        "JSON 序列化对音频数据来说太慢",
+        "低于 800ms 的端到端延迟要求每个阶段都采用流水线式 streaming"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "turn-detector 与 VAD 并行使用时起什么作用？",
+      "options": [
+        "为 agent 训练自定义 voice clone",
+        "读取 partial transcripts，并评分判断用户是否真的说完了话语",
+        "检测多方通话中是哪位说话者在讲话",
+        "把背景音乐混入输出 stream"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "当 agent 正在回应时用户开始说话，为了让 barge-in 感觉自然，必须发生什么？",
+      "options": [
+        "TTS 先说完当前句子再让出",
+        "pipeline 缓冲用户音频，直到 TTS 完成",
+        "TTS 立即取消，剩余 LLM 输出被丢弃，并重新启用 ASR",
+        "agent 提高 TTS 音量来声明优先级"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么当 tool 超过约 300ms 时要发出类似 \"one second, let me check\" 的短 filler？",
+      "options": [
+        "它避免沉默，这样在 side-channel tool 运行时对话不会停滞",
+        "它触发 fallback ASR model",
+        "它重置 WebRTC jitter buffer",
+        "它提升下一段话语的 WER"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "第一个音频 chunk 必须在第一个 LLM Token 后大约多久内离开服务器？",
+      "options": [
+        "20ms",
+        "800ms",
+        "2 秒",
+        "200ms"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个指标直接衡量不恰当的 barge-in 或过于激进的 turn closure？",
+      "options": [
+        "WER",
+        "MOS",
+        "Acceptance rate",
+        "False-cutoff rate"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "在 3% packet loss 下，pipeline 依赖哪两种 adaptive 行为？",
+      "options": [
+        "切换到更大的 LLM 并禁用 TTS",
+        "fallback 到 PSTN audio codecs",
+        "保留 partial transcripts 并提高 VAD speech-gate threshold",
+        "重启 LiveKit room"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

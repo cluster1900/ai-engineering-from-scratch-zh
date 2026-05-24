@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "凸函数的定义性质是什么？",
+      "options": [
+        "它恰好有一个 critical point",
+        "其图像上任意两点之间的线段都位于图像上方或图像之上",
+        "它的 derivative 始终为正",
+        "它只能定义在正实数上"
+      ],
+      "correct": 1,
+      "explanation": "如果对于任意两点 x, y 以及任意 t in [0,1]，都有：f(tx + (1-t)y) <= t*f(x) + (1-t)*f(y)，则函数是凸的。从几何上看，图像上任意两点之间的弦都不会低于图像本身。"
+    },
+    {
+      "stage": "pre",
+      "question": "以下哪个 ML 问题具有凸的 loss landscape？",
+      "options": [
+        "训练带 ReLU activations 的 3-layer Neural Network",
+        "带 cross-entropy loss 的 Logistic regression",
+        "k-means clustering",
+        "用于 recommendation 的 Matrix factorization"
+      ],
+      "correct": 1,
+      "explanation": "Logistic regression 具有凸 loss（log-loss 关于 weights 是凸的）。Neural networks、k-means 和 Matrix factorization 都是 non-convex。对于凸问题，任意 local minimum 都是 global minimum。"
+    },
+    {
+      "stage": "post",
+      "question": "Newton's method 收敛到 f(x) = 5x^2 + 3x + 1 的 minimum 需要多少步？",
+      "options": [
+        "1 step（它对 quadratic functions 是精确的）",
+        "大约 10 steps",
+        "大约 100 steps",
+        "取决于 learning rate"
+      ],
+      "correct": 0,
+      "explanation": "Newton's method 会拟合一个局部 quadratic approximation，并跳到它的 minimum。对于实际的 quadratic function，该 approximation 是精确的，因此无论 starting point 在哪里，Newton's method 都会一步收敛。"
+    },
+    {
+      "stage": "post",
+      "question": "在 KKT conditions 中，'complementary slackness' (lambda_i * g_i(x) = 0) 是什么意思？",
+      "options": [
+        "所有 constraints 在 optimum 处都必须 active",
+        "一个 constraint 要么是 active（g_i = 0），要么它的 multiplier 为零（lambda_i = 0）—— inactive constraint 没有效果",
+        "所有 constraints 的 gradients 必须 orthogonal",
+        "Lagrangian 在 optimum 处始终为零"
+      ],
+      "correct": 1,
+      "explanation": "Complementary slackness 意味着每个 constraint 要么 binding（g_i = 0，位于 boundary 上），要么 irrelevant（lambda_i = 0，不影响 solution）。在 SVMs 中，这就是为什么只有 support vectors（lambda_i > 0 的 active constraints）决定 decision boundary。"
+    },
+    {
+      "stage": "post",
+      "question": "尽管缺少凸性保证，为什么 SGD 仍能在 non-convex Neural Network landscapes 中找到好的 solutions？",
+      "options": [
+        "Neural networks 在高维中其实是凸的",
+        "SGD 总能找到 global minimum",
+        "在高维中，大多数 critical points 是 saddle points（不是糟糕的 local minima），而 SGD noise 有助于逃离它们",
+        "loss function 与 model performance 无关"
+      ],
+      "correct": 2,
+      "explanation": "在高维 parameter spaces 中，随机 critical points 绝大多数是 saddle points。少数存在的 local minima 往往具有接近 global minimum 的 loss values。SGD 的 stochastic noise 有助于逃离 saddle points，而 overparameterization 会平滑 landscape。"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "你将一张 224x224 RGB 图像输入到 kernel_size=3、stride=1、padding=0 的 conv 中。输出的空间尺寸是多少？",
+      "options": ["224x224", "222x222", "112x112", "74x74"],
+      "correct": 1,
+      "explanation": "输出尺寸 = (H - K + 2P) / S + 1 = (224 - 3 + 0) / 1 + 1 = 222。没有 padding 时，每个 3x3 卷积都会让 feature map 在每个轴上缩小 2 个像素，也就是每个边界各少一个像素。"
+    },
+    {
+      "stage": "pre",
+      "question": "一个 conv layer 有 in_channels=3、out_channels=64、kernel_size=3，并带 bias。有多少个可学习参数？",
+      "options": ["1,728", "1,792", "576", "192"],
+      "correct": 1,
+      "explanation": "C_out * C_in * K * K + C_out = 64 * 3 * 3 * 3 + 64 = 1,728 + 64 = 1,792。+C_out 表示每个输出 channel 有一个 bias。把它和同一输入上的 dense layer 对比（224*224*3 -> 64，大约 9.6M 参数），你就能看出为什么卷积是图像的正确先验。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么现代 CNN 更偏好堆叠 3x3 卷积，而不是使用单个 5x5 或 7x7 conv？",
+      "options": ["3x3 卷积有硬件加速；更大的卷积没有", "两个 3x3 conv 能覆盖同样的 5x5 感受野，但参数更少（2 * 9 vs 25），并在它们之间额外加入一次非线性", "大 kernel 会溢出 GPU registers", "3x3 是唯一支持 padding 的 kernel size"],
+      "correct": 1,
+      "explanation": "堆叠 3x3 conv 能获得与一个大 conv 相同的感受野，但参数更少，并且有更多非线性，从而提升表达能力。VGG 通过实验证明了这一点，并且每个现代家族（ResNet、ConvNeXt）都继承了这种设计。"
+    },
+    {
+      "stage": "post",
+      "question": "im2col transformation 实际上做了什么？",
+      "options": ["它压缩图像以适配 GPU cache", "它从输入中提取每个 kernel 大小的感受野窗口，并将它们堆叠为列，使卷积变成一次 Matrix 乘法", "它将 float32 像素转换为 int8 以加速算术运算", "它将 batch 中的所有图像拼接成一个 2D Matrix"],
+      "correct": 1,
+      "explanation": "im2col 会重塑输入，使每一列都是一个展平后的感受野。将 kernel 展平为一行后，卷积会被化简为 cols @ w_flat.T，也就是一次 GEMM call，GPU 执行它比四重 Python loop 快数千倍。每个生产级 conv library 都是它的某种变体。"
+    },
+    {
+      "stage": "post",
+      "question": "你堆叠四个 3x3 卷积（全部 stride 1，无 pooling）。最终层中一个 neuron 的感受野是多少？",
+      "options": ["3x3 —— 每个 conv 都是 3x3", "5x5 —— 两个 conv 给出 5x5，深度没有帮助", "9x9 —— 每个 conv 在每一侧增加 2：1 + 4*(3-1) = 9", "15x15 —— 每个 conv 都会让感受野变为三倍"],
+      "correct": 2,
+      "explanation": "对于 L 个堆叠的 K x K conv 且 stride 1，感受野 = 1 + L * (K - 1)。当 L=4 且 K=3 时，就是 1 + 4*2 = 9。同一公式可以推广到带 stride 的情况：感受野会通过 strided layers 以乘法方式增长，这就是为什么带 downsampling 的 deep network 能在十几个 block 内覆盖整张图像。"
+    }
+  ]
+}

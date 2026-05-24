@@ -1,0 +1,37 @@
+[
+  {
+    "question": "一个 70B 参数模型使用 FP16 时，仅 weights 需要多少 VRAM？",
+    "options": ["35 GB", "70 GB", "140 GB", "280 GB"],
+    "correct": 2,
+    "explanation": "700 亿个参数 * 每个 FP16 参数 2 bytes = 1400 亿 bytes = 140 GB。这超过了单张 A100 (80GB)，仅加载 weights 就至少需要两张 GPUs。",
+    "stage": "pre"
+  },
+  {
+    "question": "在 LLMs 的语境中，quantization 是什么？",
+    "options": ["移除未使用的模型 layers", "降低 weights 的数值精度（例如从 FP16 到 INT4），以减少 memory usage 并提高 inference speed", "压缩 training data", "减少 vocabulary size"],
+    "correct": 1,
+    "explanation": "Quantization 会将高精度 floating point weights 映射到低精度 integers。INT4 quantization 用 4 bits 而不是 16 bits 存储每个 weight，在 accuracy loss 很小的情况下将 memory 减少 4 倍。",
+    "stage": "pre"
+  },
+  {
+    "question": "post-training quantization (PTQ) 和 quantization-aware training (QAT) 的关键区别是什么？",
+    "options": ["PTQ 更准确", "PTQ 在 training 后进行 quantization，不做 retraining；QAT 在 training 期间模拟 quantization，使模型学会容忍降低后的 precision", "QAT 不使用 Gradient", "PTQ 需要更多 data"],
+    "correct": 1,
+    "explanation": "PTQ 很快（只需 calibrate 并 quantize），但可能损失 accuracy。QAT 在 training 期间加入 fake quantization，让模型调整其 weights，从而对 precision loss 更稳健。QAT 通常会带来更好的 accuracy。",
+    "stage": "post"
+  },
+  {
+    "question": "'per-channel' quantization 是什么意思，为什么它比 'per-tensor' 更好？",
+    "options": ["它会分别 quantize 每个 output channel，为每个 channel 使用不同的 scale/zero-point，从而减少 quantization error", "它一次处理一个 color channel", "它为每个 channel 使用单独的 GPUs", "它是一种 data parallelism"],
+    "correct": 0,
+    "explanation": "Per-tensor 对整个 weight matrix 使用一个 scale factor。Per-channel 对每个 output channel（row）使用单独的 scale。由于不同 channels 具有不同的 value ranges，per-channel 能更准确地捕捉它们。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 Llama 3 70B 中 95% 的 weights 落在 -0.1 到 +0.1 之间？",
+    "options": ["模型 training 得不好", "training 期间的 weight decay 和 normalization 会把 weights 推向较小的值，使完整 FP16 range 变得浪费", "weights 还没有收敛", "这是 Llama architecture 特有的现象"],
+    "correct": 1,
+    "explanation": "Weight decay regularization 会把 weights 向零收缩。Layer normalization 会让 activations 保持居中。两者结合后，会产生集中在零附近的 weight distributions，使 low-precision quantization 有效。",
+    "stage": "post"
+  }
+]

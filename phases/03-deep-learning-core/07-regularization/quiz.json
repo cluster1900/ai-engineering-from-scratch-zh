@@ -1,0 +1,37 @@
+[
+  {
+    "question": "Neural Network 中的 overfitting 是什么？",
+    "options": ["模型太小，无法学习数据", "模型记住了 training data，而不是学习可泛化的模式，表现为 train accuracy 和 test accuracy 之间存在很大差距", "模型训练得太慢", "Loss Function 是错的"],
+    "correct": 1,
+    "explanation": "当模型取得很高的 training accuracy 但 test accuracy 很差时，就会发生 overfitting。它记住的是 training data 中的噪声，而不是学习底层模式。",
+    "stage": "pre"
+  },
+  {
+    "question": "dropout 如何对 Neural Network 进行正则化？",
+    "options": ["它会永久移除表现最差的 neurons", "它在训练期间随机将 neurons 置零，迫使网络学习冗余表示", "它会降低 learning rate", "它会从 training data 中移除 outliers"],
+    "correct": 1,
+    "explanation": "在每次 forward pass 期间，dropout 会以概率 p 随机将 neuron outputs 设置为零。这会防止 co-adaptation（neurons 依赖特定的其他 neurons），并且等价于训练一个由 2^N 个 subnetworks 组成的 ensemble。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 Transformer 使用 LayerNorm 而不是 BatchNorm？",
+    "options": ["LayerNorm 计算更快", "LayerNorm 会按每个 sample 在 features 维度上归一化（与 batch 无关），因此适用于可变 sequence lengths 和小 batch sizes", "BatchNorm 会导致 Gradient explosion", "LayerNorm 是更近期发明的"],
+    "correct": 1,
+    "explanation": "BatchNorm 依赖 batch statistics，在小 batches 下噪声很大，并且在 batch size 为 1 时没有意义（generation 期间很常见）。LayerNorm 会在每个 sample 内跨 features 归一化，与 batch size 无关。",
+    "stage": "post"
+  },
+  {
+    "question": "RMSNorm 和 LayerNorm 的关键区别是什么？",
+    "options": ["RMSNorm 使用 batch statistics", "RMSNorm 跳过 mean subtraction，只除以 root mean square，在准确率相同的情况下带来约 10% 的加速", "RMSNorm 添加了 learnable parameters", "RMSNorm 只适用于 CNNs"],
+    "correct": 1,
+    "explanation": "RMSNorm 移除了 LayerNorm 中的 mean subtraction 步骤，这一步对准确率贡献很小，但会增加计算量。LLaMA、Mistral 和大多数现代 LLMs 都使用 RMSNorm 来获得这种效率提升。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么在 PyTorch 中运行 inference 之前调用 model.eval() 至关重要？",
+    "options": ["它会加快计算", "它会禁用 dropout，并将 BatchNorm 切换为使用 running statistics 而不是 batch statistics，从而得到确定性输出", "它会释放 GPU memory", "它会启用 Gradient 计算"],
+    "correct": 1,
+    "explanation": "如果没有 model.eval()，dropout 会在 inference 期间随机将 neurons 置零（导致输出随机变化），而 BatchNorm 会使用当前 batch 的 statistics，而不是训练期间累积的稳定 running averages。",
+    "stage": "post"
+  }
+]

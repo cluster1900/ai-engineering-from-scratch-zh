@@ -1,0 +1,90 @@
+{
+  "lesson": "29-production-runtimes",
+  "title": "Production Runtimes: Queue, Event, Cron",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "这节课列出的六种 runtime shape 是什么？",
+      "options": [
+        "Request-response, streaming, durable execution, queue-based, event-driven, scheduled",
+        "Read, write, exec, fork, exit, wait",
+        "REST, gRPC, GraphQL, WebSocket, SSE, MQTT",
+        "Map, filter, reduce, fold, scan, group"
+      ],
+      "correct": 0,
+      "explanation": "这些就是六种 runtime shape；先选择 shape，再选择 framework。"
+    },
+    {
+      "stage": "pre",
+      "question": "什么时候 request-response 不适合？",
+      "options": [
+        "1 秒钟的 classification",
+        "当任务耗时超过约 30 秒，用户会挂起而 worker 会堆积时",
+        "在 REST APIs 上",
+        "在内部服务上"
+      ],
+      "correct": 1,
+      "explanation": "同步 HTTP 只适合短任务；长任务需要 queue/durable/event shape。"
+    },
+    {
+      "stage": "check",
+      "question": "durable execution 的核心属性是什么？",
+      "options": [
+        "更快的 inference",
+        "每一步之后都会 checkpoint state，因此 runtime 可以在失败时从最后一个成功步骤 resume",
+        "更低的 token 成本",
+        "原生语音支持"
+      ],
+      "correct": 1,
+      "explanation": "Checkpoint-and-resume 是差异点；LangGraph 是本课的参考实现。"
+    },
+    {
+      "stage": "check",
+      "question": "哪条 Anthropic 观察支持为 long-horizon agents 使用 queue-based runtimes？",
+      "options": [
+        "任务总是在 5 秒内完成",
+        "Computer use announcement：每个任务包含几十到几百个步骤是正常情况",
+        "任务必须同步运行",
+        "Cron 解决一切"
+      ],
+      "correct": 1,
+      "explanation": "Anthropic 指出每个任务包含几十到几百个步骤是正常情况；这种 workload 需要 queues 或 durable runtimes。"
+    },
+    {
+      "stage": "check",
+      "question": "这节课所说的“observability is load-bearing”是什么意思？",
+      "options": [
+        "Logs 很好看",
+        "如果没有 OTel GenAI spans 和 Langfuse/Phoenix/Opik backend，你无法 debug 一个在第 40 步失败的 multi-step agent",
+        "磁盘会变满",
+        "Provider 要求它用于 billing"
+      ],
+      "correct": 1,
+      "explanation": "对于 multi-step agents，observability 不是可选项；它决定了你是在 debug，还是从头 replay。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 queue workers 必须有 dead-letter queue（DLQ）？",
+      "options": [
+        "没有 DLQ，失败的 jobs 会静默消失",
+        "AWS 要求 DLQ",
+        "DLQ 让 jobs 更快",
+        "DLQ 是加密的"
+      ],
+      "correct": 0,
+      "explanation": "没有 DLQ 的失败 jobs 会消失；DLQ 是失败 jobs 的停车场。"
+    },
+    {
+      "stage": "post",
+      "question": "这节课建议将 cron-shaped agents 与什么搭配？",
+      "options": [
+        "GPU autoscalers",
+        "Durable execution，这样失败的 nightly run 可以在下一个 tick resume",
+        "Streaming SSE",
+        "WebRTC"
+      ],
+      "correct": 1,
+      "explanation": "Cron + durable execution 可以从失败的 scheduled runs 中干净恢复。"
+    }
+  ]
+}

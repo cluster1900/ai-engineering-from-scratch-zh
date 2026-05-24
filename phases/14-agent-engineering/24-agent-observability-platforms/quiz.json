@@ -1,0 +1,90 @@
+{
+  "lesson": "24-agent-observability-platforms",
+  "title": "Agent 可观测性：Langfuse, Phoenix, Opik",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2025 年 6 月曾经的商业模块开源后，Langfuse 以什么 license 发布？",
+      "options": [
+        "GPLv3",
+        "MIT",
+        "Elastic License 2.0",
+        "Apache 2.0"
+      ],
+      "correct": 1,
+      "explanation": "Langfuse 是 MIT，包括 2025 年 6 月之后的 LLM-as-a-judge、annotation queues、prompt experiments 和 Playground。"
+    },
+    {
+      "stage": "pre",
+      "question": "根据本课，Arize Phoenix 最擅长什么？",
+      "options": [
+        "Prompt versioning",
+        "深度 Agent 特定评估：trace clustering、anomaly detection、RAG retrieval relevancy、OpenInference auto-instrumentation",
+        "自动化优化循环",
+        "代码的 static analysis"
+      ],
+      "correct": 1,
+      "explanation": "Phoenix 专注于 behavioral drift 和 RAG evaluation，并提供 OpenInference auto-instrumentation。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个平台将自动化 prompt optimization 与 guardrails（PII redaction、topical constraints）以及 LLM-judge hallucination detection 结合在一起？",
+      "options": [
+        "Langfuse",
+        "Phoenix",
+        "Opik",
+        "Jaeger"
+      ],
+      "correct": 2,
+      "explanation": "Opik 的核心是 optimization + guardrail loop。"
+    },
+    {
+      "stage": "check",
+      "question": "本课推荐哪个平台作为带有 prompt management 的一体化方案？",
+      "options": [
+        "Langfuse",
+        "Phoenix",
+        "Opik",
+        "Datadog APM"
+      ],
+      "correct": 0,
+      "explanation": "Langfuse 端到端覆盖 tracing + prompt management + evals + session replay。"
+    },
+    {
+      "stage": "check",
+      "question": "本课如何看待 vendor 发布的平台 benchmark？",
+      "options": [
+        "它们是决定性的",
+        "把它们当作方向性参考；衡量你自己的 corpus",
+        "OpenTelemetry 禁止它们",
+        "只有 Opik 的是可靠的"
+      ],
+      "correct": 1,
+      "explanation": "即使引用了 Opik 与 Langfuse 之间 14x 的差距，也应该先在你自己的数据上测量，再做决定。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么没有 evaluation 的 tracing 会被视为昂贵的 logging？",
+      "options": [
+        "Disk 比 CPU 更贵",
+        "你能看到 runs，但没有给它们打分，所以 regressions 不可见，bisection 也不可能",
+        "Providers 会对 spans 收费",
+        "Spans 无法 replay"
+      ],
+      "correct": 1,
+      "explanation": "Evals 会把 traces 转化为可执行的质量信号。"
+    },
+    {
+      "stage": "post",
+      "question": "本课对自建 LLM-judges 的警告是什么？",
+      "options": [
+        "Apache 2.0 禁止它们",
+        "CRITIC 适用：judges 需要外部 grounding 来进行事实验证，否则它们会 rubber-stamp",
+        "它们只在 TypeScript 中有效",
+        "它们必须在 GPUs 上运行"
+      ],
+      "correct": 1,
+      "explanation": "如果没有外部 tool-grounded verification，LLM-judges 会漂移到 rubber-stamping（CRITIC，第 5 课）。"
+    }
+  ]
+}

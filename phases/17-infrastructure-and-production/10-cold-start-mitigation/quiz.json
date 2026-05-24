@@ -1,0 +1,78 @@
+{
+  "lesson": "10-cold-start-mitigation",
+  "title": "Serverless LLMs 的 Cold Start 缓解",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在没有缓解措施的 fresh node 上，70B 模型的 cold start 通常大约需要多久？",
+      "options": [
+        "超过 1 小时",
+        "30-60 秒",
+        "3-8 分钟",
+        "不到 10 秒"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程推荐哪个 AWS 侧功能用于预置 container images，从而让第 2 步 image pull 消失？",
+      "options": [
+        "从 EC2NodeClass 引用的 Bottlerocket 双卷架构",
+        "ECS task definitions",
+        "Spot fleet placement",
+        "仅 EBS volume snapshots"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪个 Modal 功能通过将 post-load state 直接反序列化进 HBM，提供最接近“数秒内 warm GPU boot”的能力？",
+      "options": [
+        "Tiered NVMe-to-DRAM loading",
+        "Live migration",
+        "GPU memory snapshots (checkpoints)",
+        "Run:ai Model Streamer"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 live migration 在 nodes 之间传输 input tokens，而不是 KV cache？",
+      "options": [
+        "Live migration 是 GDPR 要求",
+        "Input tokens 具有更大的 entropy",
+        "KV cache 已加密，无法移动",
+        "在目标端重新计算 KV，比通过网络传输 GB 级 KV cache 更便宜"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个 serverless layer 通过保持至少一个 replica 存活，用直接 GPU 成本换取可预测的就绪状态？",
+      "options": [
+        "Warm pool with min_workers >= 1",
+        "Tiered loading",
+        "Bottlerocket pre-seeding",
+        "Live migration"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么课程说 cold-start 缓解必须跨 layer 叠加，而不是选择单一工具？",
+      "options": [
+        "没有单个 layer 能消除所有步骤（node provision、image pull、weights load、engine init）；叠加 layers 会压缩每个步骤",
+        "这是监管要求",
+        "Modal 拥有整个 stack",
+        "所有五个 layers 都绑定在 vLLM 中"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

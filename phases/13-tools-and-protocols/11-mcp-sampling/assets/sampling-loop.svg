@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .edge { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">通过 sampling 的服务器托管 agent loop（无服务器 API key）</text>
+
+  <rect x="40" y="60" width="260" height="440" class="cool"/>
+  <text x="170" y="82" text-anchor="middle" class="head">client（用户 host）</text>
+  <text x="56" y="108" class="small">持有 LLM 凭据</text>
+  <text x="56" y="128" class="step">LLM provider</text>
+  <text x="56" y="146" class="small">（Claude、GPT、Gemini，</text>
+  <text x="56" y="162" class="small">本地 Ollama，...）</text>
+  <text x="56" y="194" class="step">sampling handler</text>
+  <text x="56" y="212" class="small">按服务器请求运行 LLM；</text>
+  <text x="56" y="228" class="small">返回 completion</text>
+  <text x="56" y="260" class="step">安全</text>
+  <text x="56" y="278" class="small">- 向用户显示请求</text>
+  <text x="56" y="294" class="small">- 应用每会话速率</text>
+  <text x="56" y="310" class="small">- 遵循 modelPreferences</text>
+  <text x="56" y="342" class="step">计费</text>
+  <text x="56" y="360" class="small">用户为采样付费</text>
+  <text x="56" y="376" class="small">用自己的 key 调用</text>
+
+  <path d="M300,180 L420,180" class="edge" marker-end="url(#arrow)"/>
+  <text x="360" y="174" text-anchor="middle" class="small">tools/call summarize_repo</text>
+
+  <path d="M660,260 L300,260" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="254" text-anchor="middle" class="small">sampling/createMessage {pick files}</text>
+
+  <path d="M300,310 L660,310" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="304" text-anchor="middle" class="small">&lt;- completion {picked: [...]}</text>
+
+  <path d="M660,370 L300,370" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="364" text-anchor="middle" class="small">sampling/createMessage {summarize}</text>
+
+  <path d="M300,420 L660,420" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="414" text-anchor="middle" class="small">&lt;- completion {summary}</text>
+
+  <path d="M660,460 L420,460" class="edge" marker-end="url(#arrow)"/>
+  <text x="540" y="454" text-anchor="middle" class="small">tools/call result {summary}</text>
+
+  <rect x="660" y="60" width="260" height="440" class="cold"/>
+  <text x="790" y="82" text-anchor="middle" class="head">服务器 (summarize_repo)</text>
+  <text x="676" y="108" class="small">无 LLM 凭据</text>
+  <text x="676" y="128" class="step">算法</text>
+  <text x="676" y="146" class="small">1. 遍历文件列表</text>
+  <text x="676" y="162" class="small">2. 让客户端选择</text>
+  <text x="676" y="178" class="small">3. 读取所选文件</text>
+  <text x="676" y="194" class="small">4. 让客户端总结</text>
+  <text x="676" y="210" class="small">5. 返回结果</text>
+  <text x="676" y="240" class="step">modelPreferences</text>
+  <text x="676" y="258" class="small">pick files: cost 0.5, int 0.2</text>
+  <text x="676" y="274" class="small">summarize  : cost 0.2, int 0.6</text>
+  <text x="676" y="306" class="step">护栏</text>
+  <text x="676" y="324" class="small">- max_samples_per_tool</text>
+  <text x="676" y="340" class="small">- includeContext: "none"</text>
+  <text x="676" y="356" class="small">- 无隐式采样</text>
+  <text x="676" y="388" class="step">SEP-1577 (drift-risk)</text>
+  <text x="676" y="406" class="small">sampling 内的 tools[]</text>
+  <text x="676" y="422" class="small">用于服务器托管 ReAct</text>
+  <text x="676" y="438" class="small">SDK 形态仍在稳定</text>
+</svg>

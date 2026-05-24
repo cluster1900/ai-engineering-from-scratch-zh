@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么在 Machine Learning 中拥有单独的 train、validation 和 test splits 很重要？",
+      "options": ["为了让 dataset 更小，从而让 training 更快", "为了在 unseen data 上评估 model performance，并防止 overfitting", "为了确保每个 split 使用不同的 file format", "为了将 data 分布到多个 GPUs 上"],
+      "correct": 1,
+      "explanation": "Training set 教 model，validation set 在 training 过程中调优 hyperparameters，test set 在 model 从未见过的 data 上提供最终的无偏 evaluation。"
+    },
+    {
+      "stage": "pre",
+      "question": "Hugging Face Hub 在 AI/ML workflows 中主要用于什么？",
+      "options": ["托管和共享 datasets、models 与 ML artifacts", "在 cloud 中运行 GPU training jobs", "管理 Python virtual environments", "像 GitHub 一样对 source code 做 version controlling"],
+      "correct": 0,
+      "explanation": "Hugging Face Hub 是一个用于托管和共享 pre-trained models、datasets 与 ML demos 的平台。'datasets' library 提供了从中加载 data 的标准方式。"
+    },
+    {
+      "stage": "post",
+      "question": "与 CSV 相比，Parquet format 在存储 ML datasets 时有什么优势？",
+      "options": ["Parquet files 可以在任何 text editor 中 human-readable", "Parquet 使用 columnar storage，file sizes 更小且 read speeds 更快", "Parquet 支持比 CSV 更多的 data types", "Parquet files 可以在 spreadsheet applications 中编辑"],
+      "correct": 1,
+      "explanation": "Parquet 是一种 columnar binary format，比 CSV 压缩效果更好，并支持快速 column-level reads。它是 ML datasets 的首选 storage format。"
+    },
+    {
+      "stage": "post",
+      "question": "使用 Hugging Face datasets library 加载 dataset 时，'streaming=True' 会做什么？",
+      "options": ["使用 parallel connections 更快下载 dataset", "逐行加载 data，而不把完整 dataset 下载到磁盘", "将 dataset 转换为 streaming video format", "当 Hub 中加入新 data 时启用 real-time updates"],
+      "correct": 1,
+      "explanation": "Streaming mode 会创建一个 IterableDataset，按需获取 rows。无论 dataset 多大，memory usage 都保持恒定，这对于大到无法放入磁盘的 datasets 至关重要。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该对大型文件使用 DVC (Data Version Control)，而不只是使用 .gitignore？",
+      "options": ["当你的 dataset 小于 1 MB 时", "当你需要跨机器使用 versioned data 复现精确 experiments 时", "当你独自处理个人项目时", "当你的项目中只有 CSV files 时"],
+      "correct": 1,
+      "explanation": "DVC 会在 git 中用小型 pointer files 跟踪 data versions，同时将实际 data 存储在 remote storage（S3、GCS）中。它确保任何人都能用同一份 data 复现你的精确 experiment。"
+    }
+  ]
+}

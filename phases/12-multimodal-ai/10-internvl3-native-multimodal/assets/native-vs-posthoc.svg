@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .reg { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">InternVL3 — 原生 Multimodal 预训练 vs 事后适配</text>
+
+  <rect x="30" y="50" width="440" height="210" class="hot"/>
+  <text x="250" y="72" text-anchor="middle" class="head">post-hoc (LLaVA, Qwen-VL v1, Idefics)</text>
+
+  <rect x="60" y="90" width="160" height="40" class="cold"/>
+  <text x="140" y="115" text-anchor="middle" class="small">预训练 LLM（冻结）</text>
+  <rect x="240" y="90" width="130" height="40" class="cool"/>
+  <text x="305" y="115" text-anchor="middle" class="small">vision encoder</text>
+  <rect x="385" y="90" width="60" height="40" class="reg"/>
+  <text x="415" y="115" text-anchor="middle" class="small">projector</text>
+
+  <text x="250" y="150" text-anchor="middle" class="small">1. 用 caption 对训练 projector（LLM 冻结）</text>
+  <text x="250" y="168" text-anchor="middle" class="small">2. 解冻 LLM，在 LLaVA-Instruct 上 tune</text>
+  <text x="250" y="186" text-anchor="middle" class="small">3. 可选任务 fine-tune</text>
+
+  <text x="250" y="212" text-anchor="middle" class="step">成本：~30k GPU-hours，复用 LLM</text>
+  <text x="250" y="232" text-anchor="middle" class="caption">alignment 债：MMLU -2 到 -8，答案漂移</text>
+
+  <rect x="490" y="50" width="440" height="210" class="cool"/>
+  <text x="710" y="72" text-anchor="middle" class="head">native (InternVL3, Chameleon, GPT-4o)</text>
+
+  <rect x="520" y="90" width="380" height="40" class="reg"/>
+  <text x="710" y="115" text-anchor="middle" class="small">单一 Transformer，text + vision 从第 1 步原生</text>
+
+  <text x="710" y="150" text-anchor="middle" class="small">一次预训练，一个 Loss</text>
+  <text x="710" y="168" text-anchor="middle" class="small">40% text + 35% interleaved + 20% cap + 5% video</text>
+  <text x="710" y="186" text-anchor="middle" class="small">之后做指令 tune，非多阶段 alignment</text>
+
+  <text x="710" y="212" text-anchor="middle" class="step">成本：~300k GPU-hours，不复用 LLM</text>
+  <text x="710" y="232" text-anchor="middle" class="caption">无 alignment 债，78B 匹配 Gemini 2.5 Pro</text>
+
+  <rect x="30" y="280" width="900" height="230" class="box"/>
+  <text x="480" y="302" text-anchor="middle" class="head">部署优化：ViR + DvD</text>
+
+  <rect x="60" y="320" width="400" height="180" class="cold"/>
+  <text x="260" y="342" text-anchor="middle" class="step">Visual Resolution Router (ViR)</text>
+  <text x="260" y="362" text-anchor="middle" class="small">小 classifier 为每个 query 选最低分辨率</text>
+  <text x="260" y="380" text-anchor="middle" class="small">低 / 中 / 高档</text>
+  <text x="260" y="396" text-anchor="middle" class="small">50% 真实 query 可用低分辨率</text>
+  <text x="260" y="412" text-anchor="middle" class="small">平均 Token 从 2048 降到每 query ~590</text>
+  <text x="260" y="438" text-anchor="middle" class="step">净效果：推理吞吐 2-3x</text>
+  <text x="260" y="462" text-anchor="middle" class="caption">失败模式：任务需 OCR 却走低分辨率</text>
+
+  <rect x="490" y="320" width="400" height="180" class="reg"/>
+  <text x="690" y="342" text-anchor="middle" class="step">Decoupled Vision-Language (DvD)</text>
+  <text x="690" y="362" text-anchor="middle" class="small">encoder 在 GPU-A，LLM 在 GPU-B</text>
+  <text x="690" y="380" text-anchor="middle" class="small">通过 NCCL 流式传 patch tokens A -&gt; B</text>
+  <text x="690" y="396" text-anchor="middle" class="small">encoder 跑一次，LLM 跑多步</text>
+  <text x="690" y="412" text-anchor="middle" class="small">瓶颈 = max(enc, llm * output_len)</text>
+  <text x="690" y="438" text-anchor="middle" class="step">吞吐约为共置的 ~2x</text>
+  <text x="690" y="462" text-anchor="middle" class="caption">低流量单请求延迟变差</text>
+</svg>

@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "什么是 Jupyter notebook？",
+      "options": ["用于编写 Python scripts 的文本编辑器", "一种交互式文档，混合可执行 code cells、markdown text 和 inline outputs", "用于 data science projects 的版本控制系统", "用于 Python libraries 的 package manager"],
+      "correct": 1,
+      "explanation": "Jupyter notebook（.ipynb）是一种交互式环境，你可以在其中按 cells 编写并执行 code、inline 查看 outputs，并把 code 与格式化文本说明混合在一起。"
+    },
+    {
+      "stage": "pre",
+      "question": "Jupyter kernel 做什么？",
+      "options": ["把 markdown cells 格式化为 HTML", "运行 cells 中的 code，并在执行之间把变量保存在内存中", "管理 notebook 的文件存储", "把 notebook 连接到 GitHub 进行版本控制"],
+      "correct": 1,
+      "explanation": "Kernel 是一个独立的 Python process，用来执行 cell code，并在内存中维护状态（variables、imports）。Notebook 中的所有 cells 共享同一个 kernel。"
+    },
+    {
+      "stage": "post",
+      "question": "%timeit 和 %%time magic commands 的区别是什么？",
+      "options": ["%timeit 测量 wall time，%%time 测量 CPU time", "%timeit 会多次运行 code 并取平均，%%time 只运行一次 code", "%timeit 作用于单行，%%time 作用于整个 notebook", "没有区别，它们是 aliases"],
+      "correct": 1,
+      "explanation": "%timeit 会多次运行语句以获得统计平均值（适合 microbenchmarks）。%%time 会运行整个 cell 一次并报告 wall time（适合 training runs）。"
+    },
+    {
+      "stage": "post",
+      "question": "Notebook 在你的机器上能用，但别人从上到下运行时失败，最常见原因是什么？",
+      "options": ["使用了不同的 Python 版本", "乱序执行 cells，造成对执行顺序的隐藏依赖", "缺少 %matplotlib inline magic command", "使用了太多 markdown cells"],
+      "correct": 1,
+      "explanation": "乱序运行 cells 会创建隐藏状态依赖。某个变量可能存在，只是因为你在 cell 2 之前运行了 cell 5。Kernel > Restart & Run All 可以验证线性执行。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该把 code 从 notebook 移到 .py script？",
+      "options": ["只要你写了超过 10 行 code", "当 code 是 reusable utility、training pipeline 或 production code 时", "永远不要，notebooks 对 AI 工作总是更好", "只有在需要运行在 GPU 上时"],
+      "correct": 1,
+      "explanation": "规则是“在 notebooks 中探索，在 scripts 中交付”。Reusable utilities、training pipelines，以及任何在 production 中运行的内容都应该是 .py files。Notebooks 用于探索和 prototyping。"
+    }
+  ]
+}

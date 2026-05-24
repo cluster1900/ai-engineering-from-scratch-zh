@@ -1,0 +1,90 @@
+{
+  "lesson": "06-tool-use-and-function-calling",
+  "title": "工具使用与 Function Calling",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Toolformer 使用什么信号来决定是否保留候选工具标注？",
+      "options": [
+        "人工标注一致性",
+        "包含工具结果是否会降低周围文本的 next-Token Loss",
+        "工具是否在 100 ms 内返回",
+        "工具是否发出有效 JSON"
+      ],
+      "correct": 1,
+      "explanation": "Toolformer 的自监督信号会保留那些工具结果能够降低 next-Token Loss 的标注。"
+    },
+    {
+      "stage": "pre",
+      "question": "本课报告的 BFCL V4 划分是什么？",
+      "options": [
+        "100% single-turn",
+        "40% agentic、30% multi-turn、10% live、10% non-live、10% hallucination",
+        "50% live、50% synthetic",
+        "33% agentic、33% planning、33% reflection"
+      ],
+      "correct": 1,
+      "explanation": "BFCL V4 权重是 40 agentic / 30 multi-turn / 10 live / 10 non-live / 10 hallucination。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么工具的 description 承担关键作用？",
+      "options": [
+        "它是用户在 UI 中看到的内容",
+        "模型会读取它来选择正确工具；糟糕的 description 是 wrong-tool 失败的首要原因",
+        "它控制计费分组",
+        "它是 JSON Schema 所要求的"
+      ],
+      "correct": 1,
+      "explanation": "工具 description 是模型进行工具选择的主要信号；糟糕的 description 会导致 wrong-tool 路由。"
+    },
+    {
+      "stage": "check",
+      "question": "tool_use_id 在并行工具调用中起什么作用？",
+      "options": [
+        "它压缩 JSON payload",
+        "它将每个工具结果与其来源调用关联起来，因此乱序返回的结果也能正确路由",
+        "它根据 API key 授权调用",
+        "它启用缓存"
+      ],
+      "correct": 1,
+      "explanation": "tool_use_id 是 correlation Token；交换它们会把结果路由到错误的调用。"
+    },
+    {
+      "stage": "check",
+      "question": "V3 state-based evaluation 试图捕获哪类失败？",
+      "options": [
+        "Token 泄漏",
+        "AST-matching 工具调用看起来正确，但让 API 处于错误状态",
+        "工具执行缓慢",
+        "Schema versioning drift"
+      ],
+      "correct": 1,
+      "explanation": "State-based evaluation 检查生成的 API 状态（例如文件是否真的被创建），而不是进行语法调用匹配。"
+    },
+    {
+      "stage": "post",
+      "question": "本课没有把哪个 2026 问题列为 Function Calling 的开放问题？",
+      "options": [
+        "长视野工具链式调用",
+        "跨大量工具的动态决策",
+        "跨轮次 memory",
+        "Token 级 decoding speed"
+      ],
+      "correct": 3,
+      "explanation": "开放问题包括 memory、动态决策、长视野链条和 hallucination 检测；decoding speed 不在列表中。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么本课把通用 run_shell(cmd) 工具称为红旗？",
+      "options": [
+        "它很慢",
+        "它扩大了 sandbox 边界；像 git_status() 这样的具体工具会约束读写范围和风险",
+        "它不能并行调用",
+        "Provider 会拒绝它"
+      ],
+      "correct": 1,
+      "explanation": "窄工具会约束 sandbox surface；通用 shell 工具授予了 host 的完整 surface。"
+    }
+  ]
+}

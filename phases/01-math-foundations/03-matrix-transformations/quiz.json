@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Matrix 的 eigenvector 是什么？",
+      "options": ["Matrix 中最大的行", "一个在相乘时只会被 Matrix 缩放（不会旋转）的 Vector", "一个垂直于 Matrix 所有列的 Vector", "以 Vector 形式表示的 Matrix 对角线条目"],
+      "correct": 1,
+      "explanation": "eigenvector v 满足 Av = lambda*v，这意味着 Matrix A 只会用标量因子 lambda（eigenvalue）拉伸 v，而不会改变它的方向。"
+    },
+    {
+      "stage": "pre",
+      "question": "2D transformation Matrix 的行列式在几何上表示什么？",
+      "options": ["Matrix 应用的旋转角度", "Matrix 缩放面积的倍数", "Matrix 拥有的 eigenvector 数量", "Matrix 的 trace"],
+      "correct": 1,
+      "explanation": "行列式衡量 transformation 将面积缩放了多少。det=1 保持面积不变（rotation），det=2 使面积翻倍，det=0 压缩到更低维度，det=-1 保持面积但翻转方向。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 Matrix transformation 的顺序很重要？（也就是说，为什么 R @ S 不同于 S @ R？）",
+      "options": ["Matrix addition 不满足交换律", "Matrix multiplication 不满足交换律：先旋转再缩放，与先缩放再旋转会得到不同结果", "每种顺序的行列式不同", "一种顺序会产生比另一种更大的 Matrix"],
+      "correct": 1,
+      "explanation": "Matrix multiplication 不满足交换律。将 (1,0) 先旋转 90 度再按 (2,0.5) 缩放会得到 (0,0.5)，但先缩放再旋转会得到 (0,2)。这些几何操作的组合方式不同。"
+    },
+    {
+      "stage": "post",
+      "question": "在 recurrent Neural Network 中，当 weight Matrix 的 eigenvalue 幅值大于 1 时会发生什么？",
+      "options": ["Network 学习得更快", "输出会随时间步呈指数级爆炸（exploding Gradient 问题）", "Network 变得更稳定", "eigenvalue 会在训练过程中收敛到 1"],
+      "correct": 1,
+      "explanation": "反复乘以一个 Matrix 会放大 eigenvalue 方向。Eigenvalues > 1 会导致指数增长（exploding Gradients），而 eigenvalues < 1 会导致指数衰减（vanishing Gradients）。"
+    },
+    {
+      "stage": "post",
+      "question": "Matrix A = [[2, 1], [1, 2]] 的 eigenvalues 是 3 和 1。eigendecomposition A = V @ D @ V^(-1) 揭示了什么？",
+      "options": ["A 等价于两次旋转", "A 会沿 [1,1] 方向将空间拉伸 3 倍，并保持 [1,-1] 方向不变", "A 会将所有 Vector 压缩 2 倍", "A 的 rank 为 1，并将所有 Vector 映射到一条直线"],
+      "correct": 1,
+      "explanation": "eigenvalue 3 及其 eigenvector [1,1] 表示 A 会沿对角线方向拉伸 3 倍。eigenvalue 1 及其 eigenvector [1,-1] 表示 A 会保持反对角线方向不变。D 保存 {3,1}，V 保存 eigenvectors。"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cold { fill: #eaf4ff; stroke: #2c5f8c; stroke-width: 1.5; }
+      .label { font-size: 14px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 12px; fill: #333; }
+      .mono { font-size: 12px; fill: #333; font-family: 'Menlo', monospace; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="450" y="28" text-anchor="middle" class="title">生成模型三支柱评估</text>
+
+  <!-- FID column -->
+  <rect x="30" y="60" width="270" height="200" class="box"/>
+  <text x="165" y="85" text-anchor="middle" class="label">FID（样本质量）</text>
+  <text x="165" y="110" text-anchor="middle" class="mono">||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2√Σ_rΣ_g)</text>
+  <text x="165" y="140" text-anchor="middle" class="caption">Fréchet distance between</text>
+  <text x="165" y="158" text-anchor="middle" class="caption">Inception-v3 空间中的 Gaussian 拟合</text>
+  <text x="165" y="188" text-anchor="middle" class="caption">使用 N ≥ 10k，否则数字会骗人</text>
+  <text x="165" y="206" text-anchor="middle" class="caption">ImageNet 偏置；使用 FD-DINO 或</text>
+  <text x="165" y="224" text-anchor="middle" class="caption">CMMD 域外</text>
+  <text x="165" y="252" text-anchor="middle" class="caption">越低越好</text>
+
+  <!-- CLIP column -->
+  <rect x="315" y="60" width="270" height="200" class="box"/>
+  <text x="450" y="85" text-anchor="middle" class="label">CLIP score（贴合度）</text>
+  <text x="450" y="110" text-anchor="middle" class="mono">cos( CLIP_image(x), CLIP_text(p) )</text>
+  <text x="450" y="140" text-anchor="middle" class="caption">输出与 prompt 匹配多好？</text>
+  <text x="450" y="170" text-anchor="middle" class="caption">组合失败会漏检</text>
+  <text x="450" y="188" text-anchor="middle" class="caption">短 prompt 机制上得分更高</text>
+  <text x="450" y="206" text-anchor="middle" class="caption">CMMD + VQA tests 覆盖 CLIP 盲点</text>
+  <text x="450" y="252" text-anchor="middle" class="caption">越高越好</text>
+
+  <!-- preference column -->
+  <rect x="600" y="60" width="270" height="200" class="box"/>
+  <text x="735" y="85" text-anchor="middle" class="label">人类偏好（真值）</text>
+  <text x="735" y="110" text-anchor="middle" class="mono">由成对胜率得 Elo</text>
+  <text x="735" y="140" text-anchor="middle" class="caption">同一 prompt 下 A vs B</text>
+  <text x="735" y="158" text-anchor="middle" class="caption">HPSv2 / ImageReward / PickScore</text>
+  <text x="735" y="188" text-anchor="middle" class="caption">作为自动代理指标</text>
+  <text x="735" y="206" text-anchor="middle" class="caption">Chatbot-Arena 风格图像 arena</text>
+  <text x="735" y="252" text-anchor="middle" class="caption">胜率越高越好</text>
+
+  <!-- failure modes -->
+  <rect x="30" y="285" width="840" height="100" class="hot"/>
+  <text x="450" y="310" text-anchor="middle" class="label">每个指标都有已知刷分法</text>
+  <text x="450" y="333" text-anchor="middle" class="caption">FID：过拟合 Inception 先验 → 低 FID，质量相同</text>
+  <text x="450" y="353" text-anchor="middle" class="caption">CLIP：用 'masterpiece, 4k' 饱和 → 分数虚高</text>
+  <text x="450" y="373" text-anchor="middle" class="caption">偏好：prompt 集与训练重叠 → 被操控</text>
+
+  <!-- production report -->
+  <rect x="30" y="410" width="840" height="100" class="cold"/>
+  <text x="450" y="435" text-anchor="middle" class="label">生产评估报告</text>
+  <text x="450" y="458" text-anchor="middle" class="caption">1. 10-30k 上的 FID + 2. 同一池上的 CLIP / CMMD +</text>
+  <text x="450" y="478" text-anchor="middle" class="caption">3. 200+ 盲测人类成对 Elo + 4. 50 个输出的定性失败审计</text>
+  <text x="450" y="498" text-anchor="middle" class="caption">一个指标=营销；四个=证据</text>
+</svg>

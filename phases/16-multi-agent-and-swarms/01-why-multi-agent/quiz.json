@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "什么是 'single-agent ceiling'？",
+      "options": ["一个 agent 可以使用的最大工具数量", "当任务超出一个 context window、需要不同专业能力，或需要并行工作时，single agent 失效的临界点", "一个 agent 每分钟可以发起的 API 调用上限", "可以在单个 GPU 上运行的最大模型大小"],
+      "correct": 1,
+      "explanation": "single agent 只有一个 context window、一个 system prompt，并且按顺序处理。当任务需要读取 50 个文件（context 溢出）、在 research 和 coding 之间切换（混合专业能力），或同时执行相互独立的工作（并行）时，single agent 就会失效。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么你可能会使用多个 specialized agents，而不是一个强大的 general agent？",
+      "options": ["多个 agents 总是比单个大型模型更便宜", "每个 agent 都可以拥有聚焦的 system prompt、更小的 context 和专用工具，从而在其特定子任务上表现更好", "多个 agents 可以共享同一个 context window", "General agents 不能使用工具"],
+      "correct": 1,
+      "explanation": "一个针对搜索优化的 researcher agent、一个针对实现优化的 coder agent，以及一个针对代码质量优化的 reviewer agent，各自都能比试图同时承担这三种角色的 single agent 做得更好。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候 pipeline（顺序）multi-agent pattern 比并行 fan-out pattern 更好？",
+      "options": ["当你想最小化总延迟时", "当每个阶段都依赖前一阶段的输出时，例如先 research，再 code，再 review", "当所有子任务彼此独立时", "当你的 GPU 数量比任务更多时"],
+      "correct": 1,
+      "explanation": "当工作本质上是顺序的时，pipeline patterns 是合适的：coder 需要 researcher 的输出，reviewer 需要 coder 的输出。当子任务彼此独立时，并行 fan-out 更好。"
+    },
+    {
+      "stage": "post",
+      "question": "multi-agent systems 中的 supervisor pattern 是什么？",
+      "options": ["由人类手动给每个 agent 分配任务", "一个中心 orchestrator agent，负责分解任务、委派给 worker agents、收集结果并决定后续步骤", "一个记录 agent 行为以便 debugging 的监控系统", "一种让 agents 对最佳回答投票的 pattern"],
+      "correct": 1,
+      "explanation": "supervisor agent 的作用类似项目经理：它将任务拆分为子任务，分配给 specialized workers，审查它们的输出，并决定是迭代还是最终完成。这为工作流提供了集中控制。"
+    },
+    {
+      "stage": "post",
+      "question": "与 single agents 相比，multi-agent systems 的主要权衡是什么？",
+      "options": ["Multi-agent systems 总是产生质量更低的结果", "由于多次 LLM 调用和 agents 间通信而增加的复杂性、延迟和成本，用来换取对复杂任务更好的处理能力", "Multi-agent systems 需要更多训练数据", "Multi-agent systems 不能使用外部工具"],
+      "correct": 1,
+      "explanation": "每增加一个 agent，就意味着更多 LLM 调用（成本）、更多往返（延迟），以及更多 failure modes（debugging 复杂性）。只有当任务确实超出 single agent 能处理的范围时，multi-agent 才值得。"
+    }
+  ]
+}

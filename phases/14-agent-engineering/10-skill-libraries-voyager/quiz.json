@@ -1,0 +1,90 @@
+{
+  "lesson": "10-skill-libraries-voyager",
+  "title": "Skill Libraries 与终身学习 (Voyager)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Voyager 把什么视为 action space？",
+      "options": [
+        "原始 Minecraft commands",
+        "存储、检索并组合的可执行 code（JavaScript functions）",
+        "仅 Text prompts",
+        "Reinforcement Learning Q-values"
+      ],
+      "correct": 1,
+      "explanation": "Voyager 的贡献是把 code 作为 action：skills 是程序，而不是原始 commands。"
+    },
+    {
+      "stage": "pre",
+      "question": "哪三个组件定义了一个 Voyager agent？",
+      "options": [
+        "Encoder、decoder、value head",
+        "Automatic curriculum、skill library、iterative prompting",
+        "Planner、executor、judge",
+        "Retriever、generator、ranker"
+      ],
+      "correct": 1,
+      "explanation": "Voyager 围绕 curriculum、skill library 和 iterative prompting 来组织 agent。"
+    },
+    {
+      "stage": "check",
+      "question": "一次 skill 执行尝试会返回哪三种信号？",
+      "options": [
+        "Pass、fail、retry",
+        "成功、错误（带 stack trace）、自验证失败",
+        "Green、yellow、red",
+        "Heartbeat、ack、nack"
+      ],
+      "correct": 1,
+      "explanation": "Voyager 的 iterative prompting 机制由这三种信号驱动，并把它们折回到下一个版本中。"
+    },
+    {
+      "stage": "check",
+      "question": "automatic curriculum 如何选择下一个 task？",
+      "options": [
+        "在 action space 上随机均匀选择",
+        "略高于当前能力，基于 environment state 和 skill inventory（探索甜点区）",
+        "总是选择可用的最难 task",
+        "只能使用用户提供的列表"
+      ],
+      "correct": 1,
+      "explanation": "proposer 以略高于当前能力的 tasks 为目标，让进展保持稳定。"
+    },
+    {
+      "stage": "check",
+      "question": "哪一个 2026 产品最清晰地对应本课中的 Voyager skill？",
+      "options": [
+        "OpenAI fine-tuning",
+        "Claude Agent SDK skills：具名、可检索的 code 加按需加载的 instructions",
+        "Pinecone indices",
+        "AWS Lambda layers"
+      ],
+      "correct": 1,
+      "explanation": "Agent SDK skills 对应 Voyager 的具名、可检索、可组合 code pattern。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么本课建议 skill library 在写入时进行 dedup？",
+      "options": [
+        "磁盘很贵",
+        "如果没有 dedup，同一个 skill 会以略有不同的 descriptions 被添加很多次；检索应该返回一个 canonical version",
+        "Providers 会拒绝重复项",
+        "Git 会阻止重复项"
+      ],
+      "correct": 1,
+      "explanation": "近似重复的 descriptions 会折叠为一个 canonical skill，从而让检索保持干净。"
+    },
+    {
+      "stage": "post",
+      "question": "composed-skill drift 描述的是什么问题？",
+      "options": [
+        "Python 升级后某个 skill 停止编译",
+        "一个 parent skill 静默获得了它从未测试过的 refined child version；通过 pinning skill versions 修复",
+        "Skills 在存储中被加密",
+        "检索什么也不返回"
+      ],
+      "correct": 1,
+      "explanation": "如果没有 version pinning，对 child 的 refinement 会静默改变 parent 的行为。"
+    }
+  ]
+}

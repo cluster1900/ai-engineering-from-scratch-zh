@@ -1,0 +1,37 @@
+[
+  {
+    "question": "隐藏层在多层 Network 中的作用是什么？",
+    "options": ["存储训练数据", "将输入转换为新的特征表示，从而支持非线性决策边界", "减少参数数量", "应用 Loss Function"],
+    "correct": 1,
+    "explanation": "隐藏层应用权重、偏置和激活函数来创建新的特征表示。这些中间特征让 Network 能够学习单层无法学习的非线性映射。",
+    "stage": "pre"
+  },
+  {
+    "question": "Neural Network 中的前向传播做什么？",
+    "options": ["使用 Gradient 更新权重", "为 Backpropagation 计算 Gradient", "将输入推过每一层以产生输出", "打乱训练数据"],
+    "correct": 2,
+    "explanation": "前向传播是纯计算：对每一层，乘以权重、加上偏置、应用激活函数，并将结果传递到下一层。前向传播期间不会发生学习。",
+    "stage": "pre"
+  },
+  {
+    "question": "如果某一层有 3 个神经元，并从 2 个神经元接收输入，那么权重 Matrix 的形状是什么？",
+    "options": ["(2, 3)", "(3, 2)", "(3, 3)", "(2, 2)"],
+    "correct": 1,
+    "explanation": "权重 Matrix 的形状是 (neurons_in_current_layer, neurons_in_previous_layer) = (3, 2)。每一行包含一个神经元对所有输入的权重。",
+    "stage": "post"
+  },
+  {
+    "question": "Universal Approximation Theorem 保证了什么？",
+    "options": ["任何 Network 都可以在多项式时间内完成训练", "只要有足够的神经元，单个隐藏层就可以近似任意连续函数", "更深的 Network 总是优于浅层 Network", "Neural Network 可以解决任何计算问题"],
+    "correct": 1,
+    "explanation": "Cybenko (1989) 证明，拥有一个隐藏层和足够神经元的 Network，可以以任意期望精度近似任意连续函数。在实践中，更深的 Network 可以用更少的总参数达到同样效果。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 sigmoid 激活函数能让学习成为可能，而 perceptrons 中使用的 step function 不行？",
+    "options": ["Sigmoid 输出更大的值", "Sigmoid 计算更快", "Sigmoid 处处平滑且可微，因此存在用于 Backpropagation 的 Gradient", "Sigmoid 输出负值"],
+    "correct": 2,
+    "explanation": "step function 几乎处处 Gradient 为零，并且在阈值处 Gradient 未定义。Sigmoid 是平滑的，并且在每一点都有定义良好的导数 (s*(1-s))，这对基于 Gradient 的学习至关重要。",
+    "stage": "post"
+  }
+]

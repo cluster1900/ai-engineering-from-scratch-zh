@@ -1,0 +1,37 @@
+[
+  {
+    "question": "为什么手动阅读少量 LLM 输出不是可靠的 evaluation 方法？",
+    "options": ["耗时太长", "小样本会漏掉只在规模化时出现的 failure modes，而且人工判断在不同 reviewer 和 session 之间并不一致", "人工 review 太昂贵", "LLM 输出总是正确的"],
+    "correct": 1,
+    "explanation": "阅读 10 个输出只能让你看到一个分布中的 10 个点。一次 prompt 修改可能改善 90% 的输出，但破坏 10% 的边界用例。没有系统化 evaluation，你会在用户报告之前漏掉这个 Regression。",
+    "stage": "pre"
+  },
+  {
+    "question": "在 LLM 应用的语境中，Regression 测试是什么？",
+    "options": ["测试 linear regression models", "每次变更（prompt、model、parameters）后运行固定的一组测试用例，以确保质量没有下降", "在训练数据上测试", "测量训练期间的 model loss"],
+    "correct": 1,
+    "explanation": "每次 prompt 变更、model 替换或 temperature 调整都会改变输出分布。Regression tests 会捕捉那些改善一个方面却悄悄损害另一个方面的变更。",
+    "stage": "pre"
+  },
+  {
+    "question": "LLM-as-judge evaluation 方法是什么？",
+    "options": ["让 model 评估自己的 training loss", "使用强大的 LLM 根据 rubrics 为输出评分，在扩展到数千个测试用例时替代昂贵的人工 evaluation", "使用 model 的 confidence scores", "比较两个 models 的 parameter counts"],
+    "correct": 1,
+    "explanation": "LLM-as-judge 会把（input、output、rubric）发送给一个强 model（例如 GPT-4），由它为输出评分。它比人工 evaluation 更便宜、更快，不过也有已知偏差（例如偏好冗长的 responses）。",
+    "stage": "post"
+  },
+  {
+    "question": "什么样的 evaluation dataset 适合 LLM 应用？",
+    "options": ["示例越多越好", "覆盖常见用例、边界用例、adversarial inputs 的多样化 inputs，以及带清晰 rubrics 的 expected outputs", "只包含最难的示例", "来自互联网的随机样本"],
+    "correct": 1,
+    "explanation": "好的 eval set 覆盖整个分布：happy path cases、edge cases（空 input、超长 input）、adversarial inputs（prompt injection）和 ambiguous queries。每个示例都有清晰的 expected output 或 scoring rubric。",
+    "stage": "post"
+  },
+  {
+    "question": "在 evaluation 中，你应该如何处理非确定性的 LLM 输出？",
+    "options": ["对所有 evaluations 将 temperature 设置为 0", "每个测试用例运行多次，并使用 aggregate metrics（pass rate、average score）来处理输出方差", "非确定性不会影响 evaluation", "只评估第一个输出"],
+    "correct": 1,
+    "explanation": "即使 temperature 为 0，一些 providers 也会引入 sampling variation。每个测试运行 3-5 次并衡量 pass rate 或 average score，比单次运行更可靠，因为单次运行可能刚好命中幸运或不幸运的样本。",
+    "stage": "post"
+  }
+]

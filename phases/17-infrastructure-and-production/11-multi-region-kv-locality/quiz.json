@@ -1,0 +1,78 @@
+{
+  "lesson": "11-multi-region-kv-locality",
+  "title": "多区域 LLM Serving 与 KV Cache Locality",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 round-robin load balancing 会对带 cache 的 LLM inference 造成主动伤害？",
+      "options": [
+        "没有落到持有其 prefix 的节点上的请求，会支付完整 prefill 成本，而不是获得 cache hit",
+        "Round-robin 需要 sticky sessions",
+        "Round-robin 会破坏 TLS",
+        "Round-robin 只对 stateful databases 有效"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "cache-aware router 会消费哪两个输入？",
+      "options": [
+        "随机 shuffle 和 request size",
+        "只有 user_id 和 tenant_id",
+        "Round-robin counters 和 TLS keys",
+        "来自 replicas 的 KV-cache events，以及 incoming request 上的 prefix hash"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "对于 Llama 3.3 70B FP8 上的 2K-token prompt，cache hit 和 cold prefill 之间的 TTFT 差距大约是多少？",
+      "options": [
+        "相同",
+        "大约 10x（~80 ms vs ~800 ms）",
+        "大约 1.1x",
+        "大约 1000x"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么为了 cache hit 进行 cross-region routing 并不总是优于 regional routing？",
+      "options": [
+        "跨 region 无法进行 cache-aware routing",
+        "GORGO research 发现 cache hits 对 latency 没有帮助",
+        "所有 hyperscalers 都禁止 inter-region routing",
+        "节省下来的 prefill 可能被 network RTT 压过，例如 440 ms round-trip 可能压过从 800 ms 到 80 ms 的 prefill 节省"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程中引用的 32% LLM DR failure driver 是什么？",
+      "options": [
+        "backups 包含 weights，但遗漏 tokenizer files 或 quantization configs",
+        "Region quota exhaustion",
+        "配置错误的 load balancers",
+        "未加密的 backups"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程如何评价 Bedrock CRI 等商业 cross-region inference offerings？",
+      "options": [
+        "它们是 KV-cache-aware 的，并能替代 app-layer routing",
+        "它们只能在 us-east-1 工作",
+        "它们优化 availability，而不是 TTFT，并且把 inference 当作 opaque 处理——你仍然需要 app-layer cache-aware router",
+        "它们在 GDPR 下被禁止"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

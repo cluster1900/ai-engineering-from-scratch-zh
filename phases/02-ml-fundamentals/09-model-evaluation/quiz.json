@@ -1,0 +1,67 @@
+[
+  {
+    "id": "eval-pre-1",
+    "stage": "pre",
+    "question": "为什么绝不能基于 test set performance 来调优 hyperparameters？",
+    "options": [
+      "test set 太小，无法得到可靠估计",
+      "根据 test results 调整 model，实际上等于在 test set 上训练，会让报告的 performance 失去意义",
+      "Hyperparameters 在 training 后无法更改",
+      "test set 的 features 总是与 training set 不同"
+    ],
+    "correct": 1,
+    "explanation": "每当你基于 test performance 调整 model，就会把 test 信息泄漏到 modeling decisions 中。test set 必须只在最后使用一次，用于获得无偏估计。"
+  },
+  {
+    "id": "eval-pre-2",
+    "stage": "pre",
+    "question": "一个数据集有 95% negative 和 5% positive 样本。一个 model 对每个样本都预测为 'negative'。它的 accuracy 是多少？",
+    "options": [
+      "50%",
+      "5%",
+      "95%",
+      "0%"
+    ],
+    "correct": 2,
+    "explanation": "Accuracy = correct predictions / total = 950/1000 = 95%。这说明为什么 accuracy 对 imbalanced data 具有误导性 -- 一个无用的 model 看起来表现很好。"
+  },
+  {
+    "id": "eval-post-1",
+    "stage": "post",
+    "question": "在 K-fold cross-validation 且 K=5 时，每个 data point 会被用于 validation 多少次？",
+    "options": [
+      "5 次",
+      "正好一次",
+      "取决于 random seed",
+      "从不 -- 所有数据都用于 training"
+    ],
+    "correct": 1,
+    "explanation": "在 K-fold CV 中，数据被拆分为 K 个相等的 folds。每个 fold 都会正好一次作为 validation set，其余 K-1 个 folds 用于 training。"
+  },
+  {
+    "id": "eval-post-2",
+    "stage": "post",
+    "question": "一条 learning curve 显示 training score = 0.95，而 validation score = 0.60，并且随着更多数据也没有改善。你应该尝试什么？",
+    "options": [
+      "收集更多 training data",
+      "使用更简单的 model，或添加 regularization 来降低 variance（overfitting）",
+      "移除 validation set，把更多 training data 给 model",
+      "提高 learning rate"
+    ],
+    "correct": 1,
+    "explanation": "training（高）和 validation（低）scores 之间存在大差距，说明 high variance（overfitting）。修复方法是更简单的 model、更多 regularization，或 dropout 等技术 -- 如果差距持续存在，则不是更多数据。"
+  },
+  {
+    "id": "eval-post-3",
+    "stage": "post",
+    "question": "一个 binary classifier 的 AUC-ROC = 0.5。这表示什么？",
+    "options": [
+      "model 完美地区分了两个 classes",
+      "model 在将 positives 排在 negatives 之上的 ranking 上，并不比随机猜测更好",
+      "model 有 50% accuracy",
+      "model 有相等的 precision 和 recall"
+    ],
+    "correct": 1,
+    "explanation": "AUC-ROC = 0.5 表示 model 对 positive 和 negative examples 的 ranking 不比随机更好。AUC = 1.0 才是完美分离。该 metric 与 threshold 无关。"
+  }
+]

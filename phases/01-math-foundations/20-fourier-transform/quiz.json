@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Fourier transform 对信号做了什么？",
+      "options": [
+        "压缩信号以减少存储占用",
+        "将信号分解为不同频率、振幅和相位的正弦波",
+        "从信号中去除噪声",
+        "将信号从模拟转换为数字"
+      ],
+      "correct": 1,
+      "explanation": "Fourier transform 将信号从时域转换到频域。每个频率系数 X[k] 都告诉你频率 k 处正弦波的振幅和相位。信号会被重新表达为这些正弦波的总和。"
+    },
+    {
+      "stage": "pre",
+      "question": "Fast Fourier Transform (FFT) 与直接 DFT 相比，时间复杂度是多少？",
+      "options": [
+        "两者都是 O(N^2)",
+        "FFT 是 O(N log N)，DFT 是 O(N^2)",
+        "FFT 是 O(N)，DFT 是 O(N log N)",
+        "FFT 是 O(log N)，DFT 是 O(N)"
+      ],
+      "correct": 1,
+      "explanation": "直接 DFT 计算 N 个输出，每个输出都要对 N 个输入求和：O(N^2)。Cooley-Tukey FFT 递归地将信号分成偶数/奇数两半，在 log2(N) 层中的每一层执行 O(N) 工作，因此得到 O(N log N)。对于 N = 1 million，这相当于 20 million 次操作 vs 1 trillion 次操作。"
+    },
+    {
+      "stage": "post",
+      "question": "convolution theorem 说明了什么？",
+      "options": [
+        "时域中的 convolution 等于频域中的 addition",
+        "时域中的 convolution 等于频域中的逐点 multiplication",
+        "convolution 总是会增加信号长度",
+        "convolution 和 correlation 是相同操作"
+      ],
+      "correct": 1,
+      "explanation": "convolution theorem 说明，时域中的 convolution 等于频域中的逐点 multiplication：x * h = IFFT(FFT(x) . FFT(h))。这就是为什么对于大型 kernels，基于 FFT 的 convolution 是 O(N log N)，而不是 O(N*M)。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么在 FFT 前对信号进行 zero-padding 不会提高真实频率分辨率？",
+      "options": [
+        "Zero-padding 会引入噪声，抵消改进效果",
+        "Zero-padding 会在现有频率 bins 之间进行插值，但无法揭示原始样本中不存在的频率细节",
+        "Zero-padding 只适用于长度为 2 的幂的信号",
+        "FFT algorithm 会忽略 zero-padded 样本"
+      ],
+      "correct": 1,
+      "explanation": "真实频率分辨率取决于观测时间 T = N/fs。Zero-padding 会增加更多频率 bins（更细的网格），但只是对现有 spectrum 进行插值——它会给出看起来更平滑的结果，却无法分辨间隔小于 1/T Hz 的频率。"
+    },
+    {
+      "stage": "post",
+      "question": "在原始 Transformer 的正弦 positional encodings 中，为什么不同维度对会被分配按几何间隔排列的频率？",
+      "options": [
+        "它降低了 Attention 的计算成本",
+        "每个频率提供不同的分辨率——高频编码精细位置，低频编码粗略位置，从而为每个位置提供唯一指纹",
+        "FFT algorithm 要求使用几何间隔",
+        "它确保所有编码值都在 0 和 1 之间"
+      ],
+      "correct": 1,
+      "explanation": "高频维度随位置快速变化（精细分辨率），而低频维度随位置缓慢变化（粗略分辨率）。它们共同形成的多频率编码会给每个位置一个唯一模式——类似于 Fourier coefficients 如何唯一标识一个信号。"
+    }
+  ]
+}

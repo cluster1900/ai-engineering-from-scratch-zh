@@ -1,0 +1,78 @@
+{
+  "lesson": "17-disaggregated-prefill-decode",
+  "title": "Disaggregated Prefill/Decode — NVIDIA Dynamo 和 llm-d",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 prefill 和 decode 需要不同的最优 GPU 配置？",
+      "options": [
+        "Prefill 必须在 AMD 上运行，decode 必须在 NVIDIA 上运行",
+        "Prefill 在 matmul throughput 上是 compute-bound；decode 在 HBM bandwidth 上是 memory-bound，因此把它们 colocate 会浪费其中一种资源",
+        "它们使用不同的 model weights",
+        "Decode 需要更多 network bandwidth"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "NVIDIA Dynamo 使用什么 transport 在 prefill pool 和 decode pool 之间移动 KV cache？",
+      "options": [
+        "普通 HTTP",
+        "仅 gRPC bidi",
+        "NFS 上的共享 filesystem",
+        "NIXL（可用时使用 RDMA/InfiniBand，TCP fallback）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "根据本课，disaggregation 在什么时候不划算？",
+      "options": [
+        "Blackwell 上的 MoE workload",
+        "带共享 system prompt 的 multi-tenant serving",
+        "带 8K+ prefix 的 RAG",
+        "Prompt 低于 512 tokens 且 output 低于 200 tokens，此时 KV transfer tax 会压过收益"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Dynamo 和 llm-d 的核心架构差异是什么？",
+      "options": [
+        "Dynamo 是 open source；llm-d 是 closed",
+        "Dynamo 在 CPU 上运行；llm-d 在 GPU 上运行",
+        "Dynamo 是位于 vLLM/SGLang/TRT-LLM 之上的 stack-above orchestrator；llm-d 是 Kubernetes-native，把 prefill/decode/router 作为独立 Services",
+        "Dynamo 需要 AMD；llm-d 需要 NVIDIA"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪些 Dynamo 组件会为某个 SLO 自动调优 prefill:decode ratio？",
+      "options": [
+        "Sidecar proxy 和 Envoy filter",
+        "Planner Profiler 和 SLA Planner",
+        "Cluster Autoscaler",
+        "Marlin kernels"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Disaggregation 如何与 Phase 17 · 11 中的 cache-aware routing 交互？",
+      "options": [
+        "Disaggregation 会完全禁用 KV cache reuse",
+        "cache-aware router 可以把 request 落到已经持有其 prefix 的 decode pool；miss 时它会按 prefill -> decode 流动，因此两者会叠加增益",
+        "它们互斥",
+        "Cache-aware routing 只适用于 colocated serving"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

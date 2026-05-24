@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SVD 相比 eigendecomposition 有什么优势？",
+      "options": ["SVD 计算起来总是更快", "SVD 适用于任意形状的任何 Matrix，而 eigendecomposition 需要具有完整 eigenvector 集的方阵", "SVD 会产生更小的输出 Matrix", "SVD 不需要数值计算"],
+      "correct": 1,
+      "explanation": "Eigendecomposition 只适用于具有 n 个线性无关 eigenvectors 的方阵。SVD 可以将任何 m x n Matrix 分解为 U * Sigma * V^T，对形状或 rank 没有限制。"
+    },
+    {
+      "stage": "pre",
+      "question": "'low-rank approximation' 是什么意思？",
+      "options": ["从 Matrix 中移除值较低的行", "通过只保留 Matrix 中最重要的组成部分来近似它，生成一个独立方向更少、更简单的 Matrix", "将 Matrix 转换为更低精度的数据类型", "按大小对 Matrix 的行进行排序"],
+      "correct": 1,
+      "explanation": "rank-k approximation 只保留前 k 个 singular values 及其 vectors，并丢弃其余部分。Eckart-Young theorem 证明这是该 rank 下可能的最佳 approximation。"
+    },
+    {
+      "stage": "post",
+      "question": "在 SVD A = U * Sigma * V^T 中，每个因子代表什么几何操作？",
+      "options": ["U 进行缩放，Sigma 进行旋转，V^T 进行平移", "V^T 在输入空间中旋转，Sigma 沿主轴缩放，U 旋转到输出空间", "U 压缩，Sigma 扩展，V^T 归一化", "三个因子都执行相同操作：旋转"],
+      "correct": 1,
+      "explanation": "SVD 揭示了每个 Matrix 都会执行：(1) V^T 旋转输入以对齐主方向，(2) Sigma 沿每个轴拉伸/压缩，(3) U 将结果旋转到输出空间。旋转、缩放、旋转。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 sklearn 使用 SVD 实现 PCA，而不是对 covariance Matrix 做 eigendecomposition？",
+      "options": ["SVD 会产生不同结果，并且对 ML 更准确", "SVD 直接作用于 data Matrix，无需形成 covariance Matrix，从而避免 condition number 被平方并提升数值稳定性", "SVD 更容易在 GPUs 上并行化", "SVD 不需要对数据做 centering"],
+      "correct": 1,
+      "explanation": "形成 A^T*A 会使 singular values（以及 condition number）平方。如果 A 的 singular values 是 [1000, 0.001]，A^T*A 的 eigenvalues 就是 [10^6, 10^-6] -- 会丢失 6 位精度。SVD 通过直接作用于 A 来避免这个问题。"
+    },
+    {
+      "stage": "post",
+      "question": "truncated SVD 如何让推荐系统预测缺失评分？",
+      "options": ["它用平均评分填充缺失项", "它将评分 Matrix 分解为潜在的用户画像和电影画像；用户画像与电影画像的 dot product 可预测缺失评分", "它将相似用户聚类到一起并复制他们的评分", "它在观测到的评分上训练一个 Neural Network"],
+      "correct": 1,
+      "explanation": "SVD 将评分 Matrix 分解为用户画像 (U)、latent factor 重要性 (Sigma) 和电影画像 (V^T)。low-rank reconstruction 会基于解释用户偏好的 latent factors（类型、年代、风格）填补缺失项。"
+    }
+  ]
+}

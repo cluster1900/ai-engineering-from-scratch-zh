@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .reg { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">ColPali — 基于 ColBERT late interaction 的 vision-native 文档 RAG</text>
+
+  <rect x="30" y="50" width="900" height="230" class="box"/>
+  <text x="480" y="72" text-anchor="middle" class="head">索引: PDF -&gt; 页面图像 -&gt; patch Embedding（缓存）</text>
+
+  <rect x="50" y="90" width="200" height="170" class="hot"/>
+  <text x="150" y="112" text-anchor="middle" class="step">PDF 页面</text>
+  <text x="150" y="130" text-anchor="middle" class="small">图、表，</text>
+  <text x="150" y="146" text-anchor="middle" class="small">布局、字体</text>
+  <text x="150" y="162" text-anchor="middle" class="small">全部保留</text>
+  <text x="150" y="182" text-anchor="middle" class="step">无 OCR</text>
+  <text x="150" y="202" text-anchor="middle" class="small">无文本提取</text>
+  <text x="150" y="218" text-anchor="middle" class="small">无 chunking</text>
+
+  <path d="M 255 170 L 295 170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="300" y="90" width="220" height="170" class="cool"/>
+  <text x="410" y="112" text-anchor="middle" class="step">PaliGemma / Qwen-VL</text>
+  <text x="410" y="130" text-anchor="middle" class="small">vision-language encoder</text>
+  <text x="410" y="146" text-anchor="middle" class="small">每个 patch -&gt; D 维 Vector</text>
+  <text x="410" y="162" text-anchor="middle" class="small">每页 N_p 个 Vector</text>
+  <text x="410" y="182" text-anchor="middle" class="step">存储</text>
+  <text x="410" y="202" text-anchor="middle" class="small">729 x 128 x 4 = 365 KB</text>
+  <text x="410" y="218" text-anchor="middle" class="small">PQ 压缩 ~46 KB</text>
+
+  <path d="M 525 170 L 565 170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="570" y="90" width="340" height="170" class="cold"/>
+  <text x="740" y="112" text-anchor="middle" class="step">Vector 索引（所有页面）</text>
+  <text x="740" y="130" text-anchor="middle" class="small">50 页报告 -&gt; ~2 MB PQ</text>
+  <text x="740" y="146" text-anchor="middle" class="small">1M 页面 -&gt; ~45 GB PQ</text>
+  <text x="740" y="162" text-anchor="middle" class="small">单节点可承载</text>
+  <text x="740" y="182" text-anchor="middle" class="step">可用于 MaxSim 查询</text>
+  <text x="740" y="202" text-anchor="middle" class="small">一张表，multi-vector</text>
+  <text x="740" y="218" text-anchor="middle" class="small">按页分组</text>
+
+  <rect x="30" y="300" width="900" height="210" class="box"/>
+  <text x="480" y="322" text-anchor="middle" class="head">检索: 在查询 Token 与页面 patch 上做 MaxSim</text>
+
+  <rect x="60" y="340" width="220" height="160" class="reg"/>
+  <text x="170" y="362" text-anchor="middle" class="step">查询 Token</text>
+  <text x="170" y="382" text-anchor="middle" class="small">"Q3 收入增长"</text>
+  <text x="170" y="398" text-anchor="middle" class="small">4-6 个 Token Embedding</text>
+  <text x="170" y="416" text-anchor="middle" class="small">与索引同 encoder</text>
+  <text x="170" y="442" text-anchor="middle" class="step">查询时计算</text>
+  <text x="170" y="462" text-anchor="middle" class="small">用 kv cache 批处理</text>
+  <text x="170" y="482" text-anchor="middle" class="caption">每次查询 ~10 ms</text>
+
+  <path d="M 285 420 L 325 420" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="330" y="340" width="290" height="160" class="hot"/>
+  <text x="475" y="362" text-anchor="middle" class="step">MaxSim = 对查询 Token 求和</text>
+  <text x="475" y="378" text-anchor="middle" class="step">取各 patch 最大值</text>
+  <text x="475" y="398" text-anchor="middle" class="small">每个查询 Token “选择”最佳 patch</text>
+  <text x="475" y="414" text-anchor="middle" class="small">选择性: 忽略无关 patch</text>
+  <text x="475" y="430" text-anchor="middle" class="small">文档分数 = 这些最大值之和</text>
+  <text x="475" y="452" text-anchor="middle" class="step">胜过 bi-encoder recall</text>
+  <text x="475" y="472" text-anchor="middle" class="small">捕获图表数据、表格单元，</text>
+  <text x="475" y="488" text-anchor="middle" class="small">图注作为 patch</text>
+
+  <path d="M 625 420 L 665 420" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="670" y="340" width="240" height="160" class="cool"/>
+  <text x="790" y="362" text-anchor="middle" class="step">top-k 页面 + VLM 答案</text>
+  <text x="790" y="382" text-anchor="middle" class="small">发送 top-3 页面图像</text>
+  <text x="790" y="398" text-anchor="middle" class="small">+ 原查询</text>
+  <text x="790" y="414" text-anchor="middle" class="small">到 Qwen2.5-VL 或 Claude</text>
+  <text x="790" y="434" text-anchor="middle" class="step">benchmarks</text>
+  <text x="790" y="454" text-anchor="middle" class="small">ViDoRe nDCG@5: ColPali ~80</text>
+  <text x="790" y="470" text-anchor="middle" class="small">text-RAG ~55</text>
+  <text x="790" y="486" text-anchor="middle" class="small">端到端 +20-40 pts</text>
+</svg>

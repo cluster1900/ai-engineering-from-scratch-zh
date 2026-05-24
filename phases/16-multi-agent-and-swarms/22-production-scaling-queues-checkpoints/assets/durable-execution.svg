@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">multi-agent systems 的持久执行</text>
+
+  <rect x="40" y="60" width="880" height="180" class="cool"/>
+  <text x="480" y="84" text-anchor="middle" class="head">super-step + checkpoint 模式（LangGraph, Temporal, Restate）</text>
+
+  <rect x="60" y="110" width="110" height="100" class="box"/>
+  <text x="115" y="135" text-anchor="middle" class="step">super-step 1</text>
+  <text x="115" y="158" text-anchor="middle" class="small">规划</text>
+  <line x1="115" y1="175" x2="115" y2="195" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+  <text x="115" y="220" text-anchor="middle" class="caption">写 ckpt</text>
+
+  <rect x="200" y="110" width="110" height="100" class="box"/>
+  <text x="255" y="135" text-anchor="middle" class="step">super-step 2</text>
+  <text x="255" y="158" text-anchor="middle" class="small">研究</text>
+  <line x1="255" y1="175" x2="255" y2="195" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+  <text x="255" y="220" text-anchor="middle" class="caption">写 ckpt</text>
+
+  <rect x="340" y="110" width="110" height="100" class="hot"/>
+  <text x="395" y="135" text-anchor="middle" class="step">super-step 3</text>
+  <text x="395" y="158" text-anchor="middle" class="small">CRASH</text>
+  <line x1="395" y1="175" x2="395" y2="195" stroke="#c0392b"/>
+
+  <rect x="480" y="110" width="110" height="100" class="cold"/>
+  <text x="535" y="135" text-anchor="middle" class="step">恢复</text>
+  <text x="535" y="158" text-anchor="middle" class="small">从 ckpt 2</text>
+  <line x1="535" y1="175" x2="535" y2="195" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+  <text x="535" y="220" text-anchor="middle" class="caption">另一个 worker</text>
+
+  <rect x="620" y="110" width="110" height="100" class="box"/>
+  <text x="675" y="135" text-anchor="middle" class="step">super-step 3'</text>
+  <text x="675" y="158" text-anchor="middle" class="small">研究（重做）</text>
+  <text x="675" y="220" text-anchor="middle" class="caption">幂等 tool calls</text>
+
+  <rect x="760" y="110" width="140" height="100" class="box"/>
+  <text x="830" y="135" text-anchor="middle" class="step">super-step 4</text>
+  <text x="830" y="158" text-anchor="middle" class="small">综合 + 回复</text>
+
+  <line x1="170" y1="160" x2="196" y2="160" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+  <line x1="310" y1="160" x2="336" y2="160" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+  <line x1="590" y1="160" x2="616" y2="160" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+  <line x1="730" y1="160" x2="756" y2="160" stroke="#1a1a1a" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="270" width="420" height="230" class="cold"/>
+  <text x="250" y="294" text-anchor="middle" class="head">按负载分层选择</text>
+
+  <text x="60" y="326" class="step">层级 1（Bedi's rule）</text>
+  <text x="60" y="346" class="small">FastAPI + Postgres + outbox</text>
+  <text x="60" y="364" class="small">&lt; 100 并发运行，1 小时内任务</text>
+
+  <text x="60" y="396" class="step">层级 2</text>
+  <text x="60" y="416" class="small">LangGraph runtime 或 Temporal</text>
+  <text x="60" y="434" class="small">小时级运行，中断/恢复，重试</text>
+
+  <text x="60" y="466" class="step">层级 3</text>
+  <text x="60" y="486" class="small">自定义 outbox + event sourcing，专用化</text>
+
+  <rect x="500" y="270" width="420" height="230" class="cool"/>
+  <text x="710" y="294" text-anchor="middle" class="head">I/O-bound LLM 调用：async vs threads</text>
+
+  <rect x="520" y="320" width="180" height="80" class="box"/>
+  <text x="610" y="344" text-anchor="middle" class="step">asyncio / fibers</text>
+  <text x="610" y="366" text-anchor="middle" class="small">I/O 时协作让出</text>
+  <text x="610" y="386" text-anchor="middle" class="small">10k 并发：可行</text>
+
+  <rect x="720" y="320" width="180" height="80" class="hot"/>
+  <text x="810" y="344" text-anchor="middle" class="step">thread-per-call</text>
+  <text x="810" y="366" text-anchor="middle" class="small">每个约 ~1MB stack</text>
+  <text x="810" y="386" text-anchor="middle" class="small">10k 并发：约 ~10GB</text>
+
+  <text x="710" y="430" text-anchor="middle" class="caption">LLM 调用 99% 时间闲置在 I/O；threads 只耗内存无收益</text>
+  <text x="710" y="450" text-anchor="middle" class="caption">CPU-bound 后处理留在线程 / 进程</text>
+  <text x="710" y="475" text-anchor="middle" class="caption">rainbow deployments 让长运行 agents 跨代码推送存活</text>
+</svg>

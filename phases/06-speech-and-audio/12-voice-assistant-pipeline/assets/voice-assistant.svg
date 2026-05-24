@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 480" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .label { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .content { font-size: 11px; fill: #333; font-family: 'Menlo', monospace; }
+      .caption { font-size: 10px; fill: #555; font-style: italic; }
+      .title { font-size: 15px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">语音助手流水线 — 7 个组件，1 轮</text>
+
+  <rect x="20" y="55" width="100" height="90" class="box"/>
+  <text x="70" y="78" text-anchor="middle" class="label">1. mic</text>
+  <text x="70" y="96" text-anchor="middle" class="content">16 kHz 单声道</text>
+  <text x="70" y="114" text-anchor="middle" class="content">20 ms chunks</text>
+
+  <line x1="122" y1="100" x2="140" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="142" y="55" width="100" height="90" class="hot"/>
+  <text x="192" y="78" text-anchor="middle" class="label">2. VAD</text>
+  <text x="192" y="96" text-anchor="middle" class="content">Silero</text>
+  <text x="192" y="114" text-anchor="middle" class="content">+ pre-roll</text>
+
+  <line x1="244" y1="100" x2="262" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="264" y="55" width="100" height="90" class="box"/>
+  <text x="314" y="78" text-anchor="middle" class="label">3. STT</text>
+  <text x="314" y="96" text-anchor="middle" class="content">Whisper / Parakeet</text>
+  <text x="314" y="114" text-anchor="middle" class="content">流式</text>
+
+  <line x1="366" y1="100" x2="384" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="386" y="55" width="130" height="90" class="box"/>
+  <text x="451" y="78" text-anchor="middle" class="label">4. LLM + tools</text>
+  <text x="451" y="96" text-anchor="middle" class="content">GPT-4o / Claude</text>
+  <text x="451" y="114" text-anchor="middle" class="content">流式 + JSON tools</text>
+
+  <line x1="518" y1="100" x2="536" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="538" y="55" width="110" height="90" class="hot"/>
+  <text x="593" y="78" text-anchor="middle" class="label">5. TTS</text>
+  <text x="593" y="96" text-anchor="middle" class="content">Kokoro / Cartesia</text>
+  <text x="593" y="114" text-anchor="middle" class="content">从 Token 20 开始流式输出</text>
+
+  <line x1="650" y1="100" x2="668" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="670" y="55" width="100" height="90" class="box"/>
+  <text x="720" y="78" text-anchor="middle" class="label">6. 扬声器</text>
+  <text x="720" y="96" text-anchor="middle" class="content">Opus 输出</text>
+  <text x="720" y="114" text-anchor="middle" class="content">PLC 已启用</text>
+
+  <line x1="772" y1="100" x2="790" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="792" y="55" width="70" height="90" class="box"/>
+  <text x="827" y="78" text-anchor="middle" class="label">7. 用户</text>
+  <text x="827" y="114" text-anchor="middle" class="content">耳朵</text>
+
+  <path d="M827,55 Q800,30 100,30 Q60,30 60,55" class="line" stroke="#c0392b" stroke-width="1.2" stroke-dasharray="5,3" fill="none"/>
+  <text x="440" y="24" text-anchor="middle" class="caption" fill="#c0392b">插话：用户说话时，VAD 取消 TTS + LLM，从 (2) 重启</text>
+
+  <rect x="20" y="175" width="840" height="130" class="box"/>
+  <text x="440" y="197" text-anchor="middle" class="label">你会遇到的三种故障模式</text>
+  <text x="50" y="225" class="content">1. 首词截断 — VAD 触发晚；用户的“hey”丢失。保留 200-400 ms 预滚缓冲。</text>
+  <text x="50" y="245" class="content">2. 插话混乱 — 用户打断后 LLM 仍在生成。接好 VAD → cancel-LLM。</text>
+  <text x="50" y="265" class="content">3. 静音幻觉 — Whisper 在静音预热时说“感谢观看”。始终用 VAD gate。</text>
+  <text x="50" y="290" class="caption">生产中，发布前记录每轮 + 各阶段 P50/P95/P99 直方图。</text>
+
+  <rect x="20" y="315" width="840" height="155" class="hot"/>
+  <text x="440" y="337" text-anchor="middle" class="label">2026 参考栈（按目标延迟 + 许可证选择）</text>
+  <text x="50" y="363" class="content">LiveKit + Deepgram + GPT-4o + Cartesia        350-500 ms   行业默认</text>
+  <text x="50" y="381" class="content">Pipecat + Whisper-stream + GPT-4o + Kokoro    500-800 ms   DIY 开源</text>
+  <text x="50" y="399" class="content">Moshi（全双工，单模型）              200-300 ms   不同架构 — 第 15 课</text>
+  <text x="50" y="417" class="content">Vapi / Retell（托管）                        300-500 ms   最快上线</text>
+  <text x="50" y="435" class="content">whisper.cpp + llama.cpp + Kokoro-ONNX          离线      边缘 / 隐私</text>
+  <text x="50" y="460" class="caption">常开消费设备加 wake-word gate（Porcupine）；原始音频日志勿超 30 天。</text>
+</svg>

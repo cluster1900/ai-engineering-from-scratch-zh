@@ -1,0 +1,67 @@
+[
+  {
+    "id": "ensemble-pre-1",
+    "stage": "pre",
+    "question": "为什么将多个 weak classifier 组合成一个 ensemble 可以提高准确率？",
+    "options": [
+      "每个 weak classifier 都记住 test set 的不同部分",
+      "如果这些 classifier 会犯不同的错误，majority voting 会抵消单个模型的错误",
+      "Ensemble 总是比单个模型使用更多 training data",
+      "Weak classifier 总是比 strong classifier 更快"
+    ],
+    "correct": 1,
+    "explanation": "关键在于 diversity。如果 classifier 会产生独立错误，majority voting 意味着一个错误答案必须骗过超过一半的模型。错误会被抵消，ensemble accuracy 会超过任何单个模型。"
+  },
+  {
+    "id": "ensemble-pre-2",
+    "stage": "pre",
+    "question": "bagging 和 boosting 的主要区别是什么？",
+    "options": [
+      "Bagging 在随机子集上并行训练模型；boosting 按顺序训练模型，并关注之前的错误",
+      "Bagging 使用 deep Neural Network；boosting 使用 decision tree",
+      "Bagging 降低 bias；boosting 降低 variance",
+      "Bagging 需要 labeled data；boosting 可以 unsupervised 工作"
+    ],
+    "correct": 0,
+    "explanation": "Bagging 在 bootstrap sample 上独立训练模型（并行，降低 variance）。Boosting 按顺序训练模型，每个新模型都关注当前 ensemble 的错误（降低 bias）。"
+  },
+  {
+    "id": "ensemble-post-1",
+    "stage": "post",
+    "question": "在 AdaBoost 中，每一轮之后，被错误分类的 training point 的 sample weight 会发生什么？",
+    "options": [
+      "保持不变",
+      "增加，因此下一个 weak learner 会更加关注这个困难样本",
+      "减少，因此下一个 learner 会忽略它",
+      "它会从 training set 中移除"
+    ],
+    "correct": 1,
+    "explanation": "AdaBoost 会在每一轮之后提高 misclassified sample 的权重。这会迫使下一个 weak learner 更加关注当前 ensemble 判断错误的样本。"
+  },
+  {
+    "id": "ensemble-post-2",
+    "stage": "post",
+    "question": "一个有 100 棵 tree 的 Random Forest 和 200 棵 tree 的 test accuracy 相同。增加到 500 棵 tree 也没有提升。为什么？",
+    "options": [
+      "这个 Random Forest 正在 underfitting，需要换一种 algorithm",
+      "在 tree 足够多之后，variance reduction 会进入平台期，继续增加 tree 只会带来 diminishing returns，而不会增加 overfitting",
+      "500 棵 tree 是允许的最大数量",
+      "这些 tree 全都相同，所以增加更多 tree 没有效果"
+    ],
+    "correct": 1,
+    "explanation": "Random Forest 不会因为 tree 更多而 overfit（这不同于 boosting）。但是，一旦已经平均了足够多样化的 tree，variance reduction 就会进入平台期。更多 tree 只会增加 compute cost，而不会提高准确率。"
+  },
+  {
+    "id": "ensemble-post-3",
+    "stage": "post",
+    "question": "Gradient boosting 会让每棵新 tree 拟合什么量？",
+    "options": [
+      "原始 target value",
+      "当前 ensemble 预测的 residual（error）",
+      "feature 的随机子集",
+      "前一棵 tree 的预测"
+    ],
+    "correct": 1,
+    "explanation": "在 gradient boosting 中，每棵新 tree 都被训练来预测当前 ensemble 的 residual（Loss 的 negative gradient）。这会按顺序减少剩余 error。"
+  }
+]

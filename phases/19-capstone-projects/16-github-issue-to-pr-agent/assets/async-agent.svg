@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .edge { stroke: #555; stroke-width: 1.2; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">异步云编码 agent - label 到 PR 工作流</text>
+
+  <rect x="40" y="60" width="190" height="80" class="cool"/>
+  <text x="135" y="82" text-anchor="middle" class="step">GitHub issue label</text>
+  <text x="135" y="100" text-anchor="middle" class="small">@agent fix this</text>
+  <text x="135" y="118" text-anchor="middle" class="small">PR comment 触发器</text>
+
+  <rect x="260" y="60" width="190" height="80" class="cold"/>
+  <text x="355" y="82" text-anchor="middle" class="step">webhook 接收器</text>
+  <text x="355" y="100" text-anchor="middle" class="small">Lambda / Fly.io</text>
+  <text x="355" y="118" text-anchor="middle" class="small">入队到 SQS</text>
+
+  <rect x="480" y="60" width="190" height="80" class="dsk"/>
+  <text x="575" y="82" text-anchor="middle" class="step">dispatcher</text>
+  <text x="575" y="100" text-anchor="middle" class="small">预算账本</text>
+  <text x="575" y="118" text-anchor="middle" class="small">每 repo 上限</text>
+
+  <rect x="700" y="60" width="220" height="80" class="hot"/>
+  <text x="810" y="82" text-anchor="middle" class="step">ECS Fargate task</text>
+  <text x="810" y="100" text-anchor="middle" class="small">Daytona 沙箱</text>
+  <text x="810" y="118" text-anchor="middle" class="small">按任务隔离</text>
+
+  <path d="M230,100 L260,100" class="edge"/>
+  <path d="M450,100 L480,100" class="edge"/>
+  <path d="M670,100 L700,100" class="edge"/>
+
+  <rect x="40" y="170" width="880" height="200" class="box"/>
+  <text x="480" y="192" text-anchor="middle" class="head">沙箱状态机</text>
+
+  <rect x="60" y="208" width="140" height="46" class="cool"/>
+  <text x="130" y="228" text-anchor="middle" class="step">CLONE</text>
+  <text x="130" y="244" text-anchor="middle" class="small">细粒度 Token</text>
+  <rect x="220" y="208" width="140" height="46" class="cool"/>
+  <text x="290" y="228" text-anchor="middle" class="step">INFER</text>
+  <text x="290" y="244" text-anchor="middle" class="small">Dockerfile 合成</text>
+  <rect x="380" y="208" width="180" height="46" class="dsk"/>
+  <text x="470" y="228" text-anchor="middle" class="step">AGENT 循环</text>
+  <text x="470" y="244" text-anchor="middle" class="small">mini-swe-agent + Opus 4.7</text>
+  <rect x="580" y="208" width="140" height="46" class="hot"/>
+  <text x="650" y="228" text-anchor="middle" class="step">VERIFY</text>
+  <text x="650" y="244" text-anchor="middle" class="small">CI + 覆盖率 delta</text>
+  <rect x="740" y="208" width="160" height="46" class="cool"/>
+  <text x="820" y="228" text-anchor="middle" class="step">打开 PR</text>
+  <text x="820" y="244" text-anchor="middle" class="small">label: needs-review</text>
+
+  <path d="M200,230 L220,230" class="edge"/>
+  <path d="M360,230 L380,230" class="edge"/>
+  <path d="M560,230 L580,230" class="edge"/>
+  <path d="M720,230 L740,230" class="edge"/>
+
+  <text x="80" y="296" class="small">按任务执行预算上限:</text>
+  <text x="80" y="314" class="small">$20 / turn 上限 30 / 30 分钟 wall-clock</text>
+  <text x="80" y="332" class="small">覆盖率 delta &lt; -2% -&gt; 标记 `needs-review` 但仍打开 PR</text>
+  <text x="80" y="350" class="small">CI 红或触及上限 -&gt; 无 PR，附原因失败日志</text>
+
+  <rect x="40" y="390" width="440" height="120" class="box"/>
+  <text x="260" y="412" text-anchor="middle" class="head">安全</text>
+  <text x="260" y="432" text-anchor="middle" class="small">GitHub App: 细粒度 Token，1h 过期</text>
+  <text x="260" y="450" text-anchor="middle" class="small">禁止 force-push，禁止写入 main</text>
+  <text x="260" y="468" text-anchor="middle" class="small">强制 main 分支保护</text>
+  <text x="260" y="486" text-anchor="middle" class="small">归档前清理日志 secrets</text>
+  <text x="260" y="504" text-anchor="middle" class="caption">每 repo 每日 $ + PR 数上限</text>
+
+  <rect x="500" y="390" width="420" height="120" class="box"/>
+  <text x="710" y="412" text-anchor="middle" class="head">对比 hosted</text>
+  <text x="710" y="432" text-anchor="middle" class="small">30 个种子内部 issue</text>
+  <text x="710" y="450" text-anchor="middle" class="small">pass@1 / $ / 延迟 对比:</text>
+  <text x="710" y="468" text-anchor="middle" class="small">Cursor Background Agents</text>
+  <text x="710" y="486" text-anchor="middle" class="small">AWS Remote SWE Agents</text>
+  <text x="710" y="504" text-anchor="middle" class="caption">发布并排 Matrix</text>
+</svg>

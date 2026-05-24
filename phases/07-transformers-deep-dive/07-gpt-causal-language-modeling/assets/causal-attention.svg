@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cell-off { fill: #2c3e50; }
+      .cell-on  { fill: #fff1d6; stroke: #c0392b; stroke-width: 0.5; }
+      .label { font-size: 14px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 12px; fill: #333; font-family: 'Menlo', monospace; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="450" y="30" text-anchor="middle" class="title">causal mask — 一个三角形，半个十年的进步</text>
+
+  <!-- Unmasked grid (left) -->
+  <text x="170" y="75" text-anchor="middle" class="label">未 mask（BERT 风格）</text>
+  <g transform="translate(90 90)">
+    <!-- 6x6 grid all open -->
+    <g fill="#fff1d6" stroke="#c0392b" stroke-width="0.5">
+      <rect x="0"   y="0"   width="26" height="26"/><rect x="26"  y="0"   width="26" height="26"/><rect x="52"  y="0"   width="26" height="26"/><rect x="78"  y="0"   width="26" height="26"/><rect x="104" y="0"   width="26" height="26"/><rect x="130" y="0"   width="26" height="26"/>
+      <rect x="0"   y="26"  width="26" height="26"/><rect x="26"  y="26"  width="26" height="26"/><rect x="52"  y="26"  width="26" height="26"/><rect x="78"  y="26"  width="26" height="26"/><rect x="104" y="26"  width="26" height="26"/><rect x="130" y="26"  width="26" height="26"/>
+      <rect x="0"   y="52"  width="26" height="26"/><rect x="26"  y="52"  width="26" height="26"/><rect x="52"  y="52"  width="26" height="26"/><rect x="78"  y="52"  width="26" height="26"/><rect x="104" y="52"  width="26" height="26"/><rect x="130" y="52"  width="26" height="26"/>
+      <rect x="0"   y="78"  width="26" height="26"/><rect x="26"  y="78"  width="26" height="26"/><rect x="52"  y="78"  width="26" height="26"/><rect x="78"  y="78"  width="26" height="26"/><rect x="104" y="78"  width="26" height="26"/><rect x="130" y="78"  width="26" height="26"/>
+      <rect x="0"   y="104" width="26" height="26"/><rect x="26"  y="104" width="26" height="26"/><rect x="52"  y="104" width="26" height="26"/><rect x="78"  y="104" width="26" height="26"/><rect x="104" y="104" width="26" height="26"/><rect x="130" y="104" width="26" height="26"/>
+      <rect x="0"   y="130" width="26" height="26"/><rect x="26"  y="130" width="26" height="26"/><rect x="52"  y="130" width="26" height="26"/><rect x="78"  y="130" width="26" height="26"/><rect x="104" y="130" width="26" height="26"/><rect x="130" y="130" width="26" height="26"/>
+    </g>
+  </g>
+
+  <text x="170" y="275" text-anchor="middle" class="caption">每个位置都能看到每个位置</text>
+  <text x="170" y="292" text-anchor="middle" class="caption">适合 encoder（Classification、Embedding）</text>
+
+  <!-- Causal mask grid (right) -->
+  <text x="630" y="75" text-anchor="middle" class="label">causal（GPT 风格）</text>
+  <g transform="translate(550 90)">
+    <!-- row 0 -->
+    <rect x="0" y="0" width="26" height="26" class="cell-on"/>
+    <rect x="26" y="0" width="26" height="26" class="cell-off"/>
+    <rect x="52" y="0" width="26" height="26" class="cell-off"/>
+    <rect x="78" y="0" width="26" height="26" class="cell-off"/>
+    <rect x="104" y="0" width="26" height="26" class="cell-off"/>
+    <rect x="130" y="0" width="26" height="26" class="cell-off"/>
+    <!-- row 1 -->
+    <rect x="0" y="26" width="26" height="26" class="cell-on"/>
+    <rect x="26" y="26" width="26" height="26" class="cell-on"/>
+    <rect x="52" y="26" width="26" height="26" class="cell-off"/>
+    <rect x="78" y="26" width="26" height="26" class="cell-off"/>
+    <rect x="104" y="26" width="26" height="26" class="cell-off"/>
+    <rect x="130" y="26" width="26" height="26" class="cell-off"/>
+    <!-- row 2 -->
+    <rect x="0" y="52" width="26" height="26" class="cell-on"/>
+    <rect x="26" y="52" width="26" height="26" class="cell-on"/>
+    <rect x="52" y="52" width="26" height="26" class="cell-on"/>
+    <rect x="78" y="52" width="26" height="26" class="cell-off"/>
+    <rect x="104" y="52" width="26" height="26" class="cell-off"/>
+    <rect x="130" y="52" width="26" height="26" class="cell-off"/>
+    <!-- row 3 -->
+    <rect x="0" y="78" width="26" height="26" class="cell-on"/>
+    <rect x="26" y="78" width="26" height="26" class="cell-on"/>
+    <rect x="52" y="78" width="26" height="26" class="cell-on"/>
+    <rect x="78" y="78" width="26" height="26" class="cell-on"/>
+    <rect x="104" y="78" width="26" height="26" class="cell-off"/>
+    <rect x="130" y="78" width="26" height="26" class="cell-off"/>
+    <!-- row 4 -->
+    <rect x="0" y="104" width="26" height="26" class="cell-on"/>
+    <rect x="26" y="104" width="26" height="26" class="cell-on"/>
+    <rect x="52" y="104" width="26" height="26" class="cell-on"/>
+    <rect x="78" y="104" width="26" height="26" class="cell-on"/>
+    <rect x="104" y="104" width="26" height="26" class="cell-on"/>
+    <rect x="130" y="104" width="26" height="26" class="cell-off"/>
+    <!-- row 5 -->
+    <rect x="0" y="130" width="26" height="26" class="cell-on"/>
+    <rect x="26" y="130" width="26" height="26" class="cell-on"/>
+    <rect x="52" y="130" width="26" height="26" class="cell-on"/>
+    <rect x="78" y="130" width="26" height="26" class="cell-on"/>
+    <rect x="104" y="130" width="26" height="26" class="cell-on"/>
+    <rect x="130" y="130" width="26" height="26" class="cell-on"/>
+  </g>
+
+  <text x="630" y="275" text-anchor="middle" class="caption">位置 i 只 Attention 到位置 ≤ i</text>
+  <text x="630" y="292" text-anchor="middle" class="caption">适合 decoder（GPT, Llama, Claude）</text>
+
+  <!-- Training / inference axis -->
+  <rect x="90" y="330" width="720" height="140" class="box"/>
+  <text x="450" y="358" text-anchor="middle" class="label">mask 带来什么</text>
+
+  <text x="130" y="395" class="content">训练</text>
+  <text x="260" y="395" class="content">完整 N-Token 前向传播，一批内并行 N 个 next-Token Loss</text>
+
+  <text x="130" y="425" class="content">推理</text>
+  <text x="260" y="425" class="content">自回归：输入 Token 1..t，生成 t+1，重复。KV cache（lesson 12）避免重复计算</text>
+
+  <text x="130" y="455" class="content">Loss</text>
+  <text x="260" y="455" class="content">cross-entropy shift-by-one：从 t_{0..i} 预测 t_{i+1}</text>
+
+  <text x="450" y="502" text-anchor="middle" class="caption">mask 在 softmax 前加入；exp(-inf) = 0；被 mask 位置权重为零。</text>
+</svg>

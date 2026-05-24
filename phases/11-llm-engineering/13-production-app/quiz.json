@@ -1,0 +1,37 @@
+[
+  {
+    "question": "LLM demo 和生产级 LLM application 之间最大的差距是什么？",
+    "options": ["模型质量", "Infrastructure：错误处理、streaming、成本跟踪、rate limiting、fallback、observability，以及负载下的 graceful degradation", "prompt 质量", "API provider 的选择"],
+    "correct": 1,
+    "explanation": "demo 调用 API 并打印响应。生产环境必须处理 timeout、provider 故障、并发用户、成本预算、streaming delivery、日志记录和 graceful degradation。模型反而是简单的部分。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 streaming Token delivery 在生产级 LLM applications 中很重要？",
+    "options": ["它会降低成本", "用户会把首个 Token 快速到达感知为更快，即使总生成时间相同 -- 将感知延迟从几秒降低到几毫秒", "它使用更少内存", "它提升模型准确率"],
+    "correct": 1,
+    "explanation": "没有 streaming 时，用户要等待 3-10 秒，期间什么也看不到，然后完整响应才出现。有了 streaming，首个 Token 会在约 200ms 到达，文本持续流出，让体验感觉响应更快。",
+    "stage": "pre"
+  },
+  {
+    "question": "当你的 LLM API provider 发生故障时，应该发生什么？",
+    "options": ["向用户显示错误页", "application 应该自动 fallback 到替代 provider，或返回 graceful degraded response", "无限重试直到 provider 恢复", "切换到本地模型"],
+    "correct": 1,
+    "explanation": "生产系统需要 fallback 策略：如果 Provider A 失败就尝试 Provider B，为常见查询提供缓存响应，或返回有帮助的“暂时不可用”消息。绝不能让 provider 故障导致你的 application 崩溃。",
+    "stage": "post"
+  },
+  {
+    "question": "生产级 LLM application 应该跟踪哪些 observability metrics？",
+    "options": ["只跟踪错误数量", "请求延迟（P50/P95/P99）、每次请求成本、错误率、Token 使用量、缓存命中率，以及来自自动 evals 的质量分数", "只跟踪模型准确率", "只跟踪月度成本"],
+    "correct": 1,
+    "explanation": "全面的 observability 覆盖：延迟百分位数（用于 SLA 合规）、成本跟踪（用于预算管理）、错误率（用于可靠性）、Token 使用量（用于优化）和质量指标（用于回归检测）。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么应该在你的 LLM application 中实现 rate limiting？",
+    "options": ["为了让 application 显得更排他", "为了防止单个用户耗尽你的 API 预算、防止滥用，并在高流量期间确保公平访问", "为了降低模型准确率", "rate limiting 只在免费层才需要"],
+    "correct": 1,
+    "explanation": "没有 rate limiting，单个用户（或 bot）可以在几分钟内耗尽你的每日 API 预算。rate limiting 能保护你的成本、防止滥用，并确保所有用户在峰值负载期间获得合理响应时间。",
+    "stage": "post"
+  }
+]

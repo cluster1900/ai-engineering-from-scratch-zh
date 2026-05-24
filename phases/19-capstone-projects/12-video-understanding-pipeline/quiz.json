@@ -1,0 +1,90 @@
+{
+  "lesson": "12-video-understanding-pipeline",
+  "title": "Capstone 12 — 视频理解 Pipeline（Scene、QA、Search）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "即使 long-context VLM 可以原生读取 2 小时视频，为什么仍然需要 scene-level index？",
+      "options": [
+        "Long-context VLMs 不能 stream output",
+        "Vector indexes 不支持视频文件",
+        "将 100 小时视频 ingest 成可 query 的 corpus 需要 scene-level retrieval，即使单个视频可以被整体读取",
+        "Scene cuts 是 VLM 唯一能理解的东西"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "multi-vector index 中每个 scene 会获得哪三种 Vector 类型？",
+      "options": [
+        "Caption embedding、keyframe embedding 和 transcript embedding",
+        "Audio waveform、mel-spectrogram 和 MFCCs",
+        "Hash、gzip 和 CRC",
+        "Pose、depth 和 optical flow"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "query 时，三个 retrieval streams 的结果如何合并？",
+      "options": [
+        "只选择 caption hit",
+        "通过平均 cosine similarities",
+        "通过三个 ranked lists 上的 reciprocal rank fusion",
+        "不打分，直接取 union"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "temporal grounding 步骤会在 top scene 内细化什么？",
+      "options": [
+        "来自 Whisper 的 transcript word timestamps",
+        "Qdrant 中存储的 Vector 数量",
+        "包含答案的 `(start, end)` timestamp window",
+        "keyframe embedding dimensionality"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪类问题会单独报告，因为它是已知的 hallucination 热点？",
+      "options": [
+        "关于 scenery 的 descriptive questions",
+        "Speaker identification questions",
+        "Translation questions",
+        "Counting 和 action-type questions，其中 VLMs 会数错或排错 events 顺序"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "rubric 在 held-out set 上衡量哪种 grounding metric？",
+      "options": [
+        "Temporal-grounding 交并比（IoU）",
+        "Acceptance rate",
+        "Perplexity",
+        "MRR@10"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 pipeline 要求答案中引用 timestamps？",
+      "options": [
+        "它们会降低 embedding dimension",
+        "Whisper output 要求 timestamps",
+        "Qdrant payloads 要求 timestamps",
+        "它们让 viewer 可以跳转到精确的 `(video_id, start, end)`，以便用户验证 claim"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

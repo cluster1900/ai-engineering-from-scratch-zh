@@ -1,0 +1,90 @@
+{
+  "lesson": "41-workbench-for-real-repos",
+  "title": "真实 Repo 上的 Workbench",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "让同一个任务分别通过仅 prompt 和 Workbench 引导的 pipeline 运行，目标是什么？",
+      "options": [
+        "比较模型",
+        "生成一份前后对比报告，你可以用数字而不是争论把它交给怀疑者",
+        "选择供应商",
+        "benchmark GPUs"
+      ],
+      "correct": 1,
+      "explanation": "数字会自己完成论证；这个案例建立在一个感觉真实的任务上，而不是玩具任务。"
+    },
+    {
+      "stage": "pre",
+      "question": "以下哪一项不是被衡量的五个结果之一？",
+      "options": [
+        "tests_actually_run",
+        "acceptance_met",
+        "files_outside_scope",
+        "model_perplexity"
+      ],
+      "correct": 3,
+      "explanation": "这五项是 tests_actually_run、acceptance_met、files_outside_scope、handoff_quality、reviewer_total。"
+    },
+    {
+      "stage": "check",
+      "question": "LangChain 的 Anatomy of an Agent Harness 在 Terminal Bench 2.0 上衡量了什么？",
+      "options": [
+        "所有模型都收敛到 top-3",
+        "同一个模型只通过改变 harness，就从 top 30 之外移动到第五名",
+        "顶级模型下降了 25 个名次",
+        "Harness 变化没有改变排名"
+      ],
+      "correct": 1,
+      "explanation": "同一个模型产生 25 个名次的差距，这是 harness-vs-model 的核心证据。"
+    },
+    {
+      "stage": "check",
+      "question": "preprints.org 论文引用的 enterprise agent 项目失败率是多少？",
+      "options": [
+        "8%",
+        "大约 88% 未能进入 production，失败集中在 runtime，而不是 reasoning",
+        "大约 50%",
+        "没有失败"
+      ],
+      "correct": 1,
+      "explanation": "Harness Engineering for Language Agents 预印本把失败追溯到 runtime 问题（stale state、脆弱的 retry、膨胀的 context）。"
+    },
+    {
+      "stage": "check",
+      "question": "WebAgent baseline accuracy 在 long-context 条件下会怎样？",
+      "options": [
+        "保持不变",
+        "从 40-50% 下降到 10% 以下，主要源于 infinite loop 和 goal loss",
+        "上升 30%",
+        "减半但仍保持在 30% 以上"
+      ],
+      "correct": 1,
+      "explanation": "Long-context collapse 正是 Ralph Loop 和 handoff packet 要吸收的问题。"
+    },
+    {
+      "stage": "post",
+      "question": "这节课如何说明 false negative（仅 prompt 更快的情况）？",
+      "options": [
+        "它们不存在",
+        "单步事实任务、一行 lint、formatter 运行用仅 prompt 更快；诚实列举它们，避免把 Workbench 描述成过度设计",
+        "它们证明 Workbench 失败",
+        "它们推翻 harness thesis"
+      ],
+      "correct": 1,
+      "explanation": "诚实列举仅 prompt 最快的情况，会让 harness 论点保持可信。"
+    },
+    {
+      "stage": "post",
+      "question": "你会在什么场景引用本课的报告？",
+      "options": [
+        "内部 HR review",
+        "当有人想“就这个 sprint”取消 verification gate，或者当一个新的 agent 产品发布并需要可迁移的节省时间 benchmark 时",
+        "只在 marketing deck 中",
+        "只在 hackathon 上"
+      ],
+      "correct": 1,
+      "explanation": "数字比解释传播得更远；当压力试图绕过 surface 时，引用这份报告。"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "lesson": "14-autogen-actor-model",
+  "title": "AutoGen v0.4：Actor Model 和 Agent Framework",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 AutoGen v0.4 中，actors 交互的唯一合法方式是什么？",
+      "options": [
+        "直接访问 shared dict",
+        "通过 inboxes 交换 asynchronous messages；没有 shared memory",
+        "共享 SQL transactions",
+        "Mutating 彼此的 prompts"
+      ],
+      "correct": 1,
+      "explanation": "Actors 拥有 private state 和一个 inbox；messages 是唯一的交互方式。"
+    },
+    {
+      "stage": "pre",
+      "question": "AutoGen v0.4 的三个 API layers 是什么？",
+      "options": [
+        "Core、AgentChat、Extensions",
+        "Frontend、Backend、Database",
+        "Tools、Models、Memory",
+        "Plan、Act、Reflect"
+      ],
+      "correct": 0,
+      "explanation": "Core 是 low-level actor framework，AgentChat 是 task-driven high-level API，Extensions 是 integrations。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么将 delivery 与 handling 解耦能够提供 fault isolation？",
+      "options": [
+        "runtime 会捕获 B 中的 handler failures，而不会让 A 崩溃；A 的 send() 立即返回，并且从不阻塞",
+        "每个 actor 都运行在单独的 machine 上",
+        "runtime 会在 failure 时重启 OS",
+        "Handlers 是 pure functions"
+      ],
+      "correct": 0,
+      "explanation": "send() 将 message 放入 recipient 的 inbox 并返回；handler crash 只局限于该 actor。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个 AgentChat topology 会按固定顺序轮转 agents？",
+      "options": [
+        "SelectorGroupChat",
+        "RoundRobinGroupChat",
+        "Magentic-One",
+        "Supervisor"
+      ],
+      "correct": 1,
+      "explanation": "RoundRobinGroupChat 是固定轮转；SelectorGroupChat 使用 selector 来选择下一个。"
+    },
+    {
+      "stage": "check",
+      "question": "本课中的 Magentic-One 是什么？",
+      "options": [
+        "一个新的 LLM model",
+        "一个基于 AgentChat 构建的 reference multi-agent team，用于 web browsing、code execution 和 file handling",
+        "一种 serialization format",
+        "一个 OTel exporter"
+      ],
+      "correct": 1,
+      "explanation": "Magentic-One 是 Microsoft 的 reference team，用于展示 AgentChat API。"
+    },
+    {
+      "stage": "post",
+      "question": "本课说明的 AutoGen v0.4 在 2026 年初的状态是什么？",
+      "options": [
+        "Deprecated 并已移除",
+        "Stable 但处于 maintenance mode；Microsoft Agent Framework 是未来路径",
+        "刚刚 announced",
+        "被 LangGraph 替代"
+      ],
+      "correct": 1,
+      "explanation": "AutoGen v0.7.x 对 research 来说是 stable 的；active development 已经转向 Microsoft Agent Framework。"
+    },
+    {
+      "stage": "post",
+      "question": "AutoGen v0.4 默认 emit 哪个 observability standard？",
+      "options": [
+        "仅 Prometheus metrics",
+        "OpenTelemetry spans，并按照 OTel GenAI semantic conventions 带有 gen_ai.* attributes",
+        "StatsD",
+        "Datadog APM"
+      ],
+      "correct": 1,
+      "explanation": "每条 message 都会 emit 一个 span；tool calls 会按照 OTel GenAI conventions 携带 gen_ai.* attributes。"
+    }
+  ]
+}

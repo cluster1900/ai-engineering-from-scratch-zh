@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="24" text-anchor="middle" class="title">Quantization 格式 - 按硬件、engine、工作负载选择</text>
+
+  <rect x="40" y="50" width="440" height="240" class="box"/>
+  <text x="260" y="72" text-anchor="middle" class="head">选择树</text>
+  <rect x="60" y="90" width="400" height="35" class="cool"/>
+  <text x="260" y="112" text-anchor="middle" class="step">CPU / edge ? → GGUF Q4_K_M (llama.cpp)</text>
+  <rect x="60" y="130" width="400" height="35" class="cold"/>
+  <text x="260" y="152" text-anchor="middle" class="step">Reasoning workload ? → FP8 (vLLM or TRT-LLM)</text>
+  <rect x="60" y="170" width="400" height="35" class="dsk"/>
+  <text x="260" y="192" text-anchor="middle" class="step">Multi-LoRA on vLLM ? → GPTQ-Int4 + Marlin</text>
+  <rect x="60" y="210" width="400" height="35" class="hot"/>
+  <text x="260" y="232" text-anchor="middle" class="step">常规聊天，GPU ? → AWQ-Int4 + Marlin</text>
+  <rect x="60" y="250" width="400" height="35" class="box"/>
+  <text x="260" y="272" text-anchor="middle" class="step">Blackwell，质量已验证 ? → NVFP4 + FP8 KV</text>
+
+  <rect x="500" y="50" width="420" height="240" class="box"/>
+  <text x="710" y="72" text-anchor="middle" class="head">陷阱 #1 - KV cache</text>
+  <rect x="520" y="90" width="380" height="70" class="hot"/>
+  <text x="710" y="112" text-anchor="middle" class="step">AWQ 缩小权重，不缩 KV</text>
+  <text x="710" y="130" text-anchor="middle" class="small">70B AWQ 权重：~35 GB</text>
+  <text x="710" y="144" text-anchor="middle" class="small">KV at 128 conc / 2k ctx：~20-30 GB</text>
+  <rect x="520" y="170" width="380" height="60" class="cool"/>
+  <text x="710" y="192" text-anchor="middle" class="step">整体规划 HBM</text>
+  <text x="710" y="210" text-anchor="middle" class="small">权重 + KV + 激活</text>
+  <text x="710" y="226" text-anchor="middle" class="small">FP8 KV 带来与 AWQ 权重相当的节省</text>
+  <rect x="520" y="240" width="380" height="50" class="cold"/>
+  <text x="710" y="262" text-anchor="middle" class="step">KV quantization 是独立选择</text>
+  <text x="710" y="280" text-anchor="middle" class="small">直接影响 Attention 准确性</text>
+
+  <rect x="40" y="310" width="440" height="220" class="box"/>
+  <text x="260" y="332" text-anchor="middle" class="head">陷阱 #2 — 校准数据集</text>
+  <rect x="60" y="350" width="400" height="60" class="hot"/>
+  <text x="260" y="372" text-anchor="middle" class="step">AWQ 和 GPTQ 默认用 C4/Wiki 校准</text>
+  <text x="260" y="390" text-anchor="middle" class="small">对领域模型：错误权重会被保护</text>
+  <text x="260" y="404" text-anchor="middle" class="small">HumanEval 上 Pass@1 可下降 3-5 分</text>
+  <rect x="60" y="420" width="400" height="60" class="cool"/>
+  <text x="260" y="442" text-anchor="middle" class="step">修复：用领域内数据校准</text>
+  <text x="260" y="460" text-anchor="middle" class="small">几百个样本通常足够</text>
+  <text x="260" y="474" text-anchor="middle" class="small">上线前务必在 eval 集测试</text>
+  <rect x="60" y="490" width="400" height="35" class="dsk"/>
+  <text x="260" y="512" text-anchor="middle" class="step">AWQ INT4 对 reasoning 有风险：用 FP8</text>
+
+  <rect x="500" y="310" width="420" height="220" class="box"/>
+  <text x="710" y="332" text-anchor="middle" class="head">数据 (2026)</text>
+  <rect x="520" y="350" width="380" height="30" class="cool"/>
+  <text x="710" y="370" text-anchor="middle" class="small">vLLM 上 GGUF Q4_K_M：~93 tok/s（引擎错误）</text>
+  <rect x="520" y="385" width="380" height="30" class="cold"/>
+  <text x="710" y="405" text-anchor="middle" class="small">vLLM 上 GPTQ-Int4 + Marlin：~712 tok/s</text>
+  <rect x="520" y="420" width="380" height="30" class="dsk"/>
+  <text x="710" y="440" text-anchor="middle" class="small">AWQ-Int4 + Marlin：~741 tok/s；最佳 INT4 Pass@1</text>
+  <rect x="520" y="455" width="380" height="30" class="hot"/>
+  <text x="710" y="475" text-anchor="middle" class="small">H100 上 FP8：约 2x BF16 吞吐</text>
+  <rect x="520" y="490" width="380" height="30" class="box"/>
+  <text x="710" y="510" text-anchor="middle" class="small">Blackwell 上 NVFP4：约 4x BF16；reasoning 风险</text>
+</svg>

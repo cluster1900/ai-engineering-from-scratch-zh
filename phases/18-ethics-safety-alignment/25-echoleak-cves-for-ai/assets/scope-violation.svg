@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow25" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">EchoLeak：三边界 LLM Scope Violation</text>
+
+  <rect x="40" y="60" width="280" height="180" class="box"/>
+  <text x="180" y="82" text-anchor="middle" class="head">边界 1：检索</text>
+  <rect x="60" y="100" width="240" height="60" class="hot"/>
+  <text x="180" y="125" text-anchor="middle" class="step">不可信内容</text>
+  <text x="180" y="145" text-anchor="middle" class="small">RAG 上下文中的攻击者邮件</text>
+  <rect x="60" y="170" width="240" height="60" class="cool"/>
+  <text x="180" y="195" text-anchor="middle" class="step">防御：scope labels</text>
+  <text x="180" y="215" text-anchor="middle" class="small">IFC + untrusted tag</text>
+
+  <rect x="340" y="60" width="280" height="180" class="box"/>
+  <text x="480" y="82" text-anchor="middle" class="head">边界 2：scope</text>
+  <rect x="360" y="100" width="240" height="60" class="hot"/>
+  <text x="480" y="125" text-anchor="middle" class="step">特权访问</text>
+  <text x="480" y="145" text-anchor="middle" class="small">mailbox / repo / HR scopes</text>
+  <rect x="360" y="170" width="240" height="60" class="cool"/>
+  <text x="480" y="195" text-anchor="middle" class="step">防御：能力门控</text>
+  <text x="480" y="215" text-anchor="middle" class="small">仅由可信意图发起 tool calls</text>
+
+  <rect x="640" y="60" width="280" height="180" class="box"/>
+  <text x="780" y="82" text-anchor="middle" class="head">边界 3：输出</text>
+  <rect x="660" y="100" width="240" height="60" class="hot"/>
+  <text x="780" y="125" text-anchor="middle" class="step">外泄</text>
+  <text x="780" y="145" text-anchor="middle" class="small">CSP 批准 URL；图像渲染</text>
+  <rect x="660" y="170" width="240" height="60" class="cool"/>
+  <text x="780" y="195" text-anchor="middle" class="step">防御：窄 allowlist</text>
+  <text x="780" y="215" text-anchor="middle" class="small">egress 域名限制</text>
+
+  <path d="M 320 150 L 340 150" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow25)" fill="none"/>
+  <path d="M 620 150 L 640 150" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow25)" fill="none"/>
+
+  <rect x="40" y="270" width="880" height="220" class="box"/>
+  <text x="480" y="295" text-anchor="middle" class="head">同族 CVEs（2025）</text>
+  <text x="60" y="325" class="small">CVE-2025-32711 EchoLeak（CVSS 9.3）：M365 Copilot；零点击；CSP 批准外泄。</text>
+  <text x="60" y="345" class="small">CamoLeak（CVSS 9.6）：通过 Camo 图像代理影响 GitHub Copilot Chat；已通过禁用图像渲染修复。</text>
+  <text x="60" y="365" class="small">CVE-2025-53773：GitHub Copilot RCE，经 code-suggestion 界面的 prompt injection 触发。</text>
+  <text x="60" y="395" class="small">严重性校准：厂商最初低估。Aim Labs 通过展示 MFA-code 外泄升级。</text>
+  <text x="60" y="415" class="small">NIST AI SPD 2024：“generative AI's greatest security flaw.” OWASP LLM01 2025：#1 威胁。</text>
+  <text x="60" y="445" class="small">政策：三条边界需要三项独立控制。只修一个不够。</text>
+  <text x="60" y="465" class="small">负责任披露：MSRC 服务端修补；Aim Labs 发布；生态学习。迭代。</text>
+</svg>

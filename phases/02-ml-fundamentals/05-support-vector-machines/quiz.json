@@ -1,0 +1,67 @@
+[
+  {
+    "id": "svm-pre-1",
+    "stage": "pre",
+    "question": "SVM 中的 support vectors 是什么？",
+    "options": [
+      "训练集中的所有数据点",
+      "最接近决策边界、决定 hyperplane 的训练点",
+      "kernel transformation 之后的 feature vectors",
+      "训练期间学到的 weight vectors"
+    ],
+    "correct": 1,
+    "explanation": "Support vectors 是恰好位于 margin 边界上的训练点。它们是唯一决定决策 hyperplane 的点。移除非 support-vector 点不会改变边界。"
+  },
+  {
+    "id": "svm-pre-2",
+    "stage": "pre",
+    "question": "SVM 在寻找决策边界时最大化什么？",
+    "options": [
+      "正确 Classification 的训练点数量",
+      "margin -- 决策边界与每个类别最近点之间的距离",
+      "所有点到边界的总距离",
+      "决策边界的复杂度"
+    ],
+    "correct": 1,
+    "explanation": "SVM 会寻找让两个类别之间 margin 最大的 hyperplane。更宽的 margin 会在未见数据上带来更好的泛化能力。"
+  },
+  {
+    "id": "svm-post-1",
+    "stage": "post",
+    "question": "当你增大 SVM 中的 C 参数时会发生什么？",
+    "options": [
+      "margin 会变宽，并允许更多 misclassifications",
+      "margin 会变窄，容忍更少 misclassifications，模型可能会 overfit",
+      "kernel function 会从 linear 变为 RBF",
+      "support vectors 的数量总是会增加"
+    ],
+    "correct": 1,
+    "explanation": "较大的 C 会重度惩罚 misclassifications，产生紧密拟合训练数据的窄 margin。这可能导致 overfitting。较小的 C 允许更多 violations，以获得更宽、正则化更强的 margin。"
+  },
+  {
+    "id": "svm-post-2",
+    "stage": "post",
+    "question": "kernel trick 如何让 SVM 学习非线性边界？",
+    "options": [
+      "它用 neural network 替换 SVM",
+      "它在高维空间中计算 dot products，而不显式地将数据映射到该空间",
+      "它在训练前从 dataset 中移除 outliers",
+      "它直接向输入数据添加 polynomial features"
+    ],
+    "correct": 1,
+    "explanation": "kernel trick 会用 K(x_i, x_j) 替换每个 dot product x_i . x_j，在高维（对 RBF 甚至是无限维）feature space 中计算 dot product，而无需真正构造该空间。"
+  },
+  {
+    "id": "svm-post-3",
+    "stage": "post",
+    "question": "当 y * f(x) >= 1 时，Hinge loss 为零。这在 Classification 上意味着什么？",
+    "options": [
+      "该点被错误 Classification",
+      "该点被正确 Classification，并且位于 margin 外侧",
+      "该点恰好位于决策边界上",
+      "该点是应被忽略的噪声样本"
+    ],
+    "correct": 1,
+    "explanation": "当 y * f(x) >= 1 时，该点被正确 Classification，并且位于 margin 边界上或边界之外。只有位于 margin 内部或被错误 Classification 的点（y * f(x) < 1）才会对 hinge loss 有贡献。"
+  }
+]

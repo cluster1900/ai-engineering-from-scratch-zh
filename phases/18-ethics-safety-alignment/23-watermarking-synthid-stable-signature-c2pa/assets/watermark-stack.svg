@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">来源证明：水印 + C2PA 互补分层</text>
+
+  <rect x="40" y="60" width="880" height="180" class="box"/>
+  <text x="480" y="85" text-anchor="middle" class="head">模态 x 机制</text>
+  <rect x="60" y="105" width="200" height="110" class="cool"/>
+  <text x="160" y="130" text-anchor="middle" class="step">文本</text>
+  <text x="160" y="152" text-anchor="middle" class="small">SynthID-text (Kirchenbauer)</text>
+  <text x="160" y="170" text-anchor="middle" class="small">绿/红 Token 偏置</text>
+  <text x="160" y="190" text-anchor="middle" class="small">易受改写影响</text>
+
+  <rect x="280" y="105" width="200" height="110" class="cool"/>
+  <text x="380" y="130" text-anchor="middle" class="step">图像</text>
+  <text x="380" y="152" text-anchor="middle" class="small">SynthID + Stable Signature</text>
+  <text x="380" y="170" text-anchor="middle" class="small">latent-decoder 指纹</text>
+  <text x="380" y="190" text-anchor="middle" class="small">易受 fine-tune 影响</text>
+
+  <rect x="500" y="105" width="200" height="110" class="cool"/>
+  <text x="600" y="130" text-anchor="middle" class="step">音频</text>
+  <text x="600" y="152" text-anchor="middle" class="small">SynthID-audio</text>
+  <text x="600" y="170" text-anchor="middle" class="small">频谱信号</text>
+  <text x="600" y="190" text-anchor="middle" class="small">抗重新编码</text>
+
+  <rect x="720" y="105" width="180" height="110" class="cool"/>
+  <text x="810" y="130" text-anchor="middle" class="step">视频</text>
+  <text x="810" y="152" text-anchor="middle" class="small">SynthID-video (Veo)</text>
+  <text x="810" y="170" text-anchor="middle" class="small">帧 + 时间信号</text>
+  <text x="810" y="190" text-anchor="middle" class="small">对帧率稳健</text>
+
+  <rect x="40" y="260" width="880" height="110" class="box"/>
+  <text x="480" y="285" text-anchor="middle" class="head">C2PA 2.2：加密签名元数据</text>
+  <rect x="60" y="305" width="420" height="50" class="cold"/>
+  <text x="270" y="327" text-anchor="middle" class="step">来源链</text>
+  <text x="270" y="345" text-anchor="middle" class="small">创建者、素材、转换</text>
+  <rect x="500" y="305" width="400" height="50" class="cold"/>
+  <text x="700" y="327" text-anchor="middle" class="step">签名 manifest</text>
+  <text x="700" y="345" text-anchor="middle" class="small">可验篡改；可被剥离</text>
+
+  <rect x="40" y="390" width="880" height="100" class="box"/>
+  <text x="480" y="415" text-anchor="middle" class="head">分层属性</text>
+  <text x="60" y="440" class="small">水印可承受压缩、裁剪、重新编码；不能承受改写或对抗性 fine-tune。</text>
+  <text x="60" y="460" class="small">C2PA 元数据承载更丰富来源；可被剥离，但缺失会提示可疑。</text>
+  <text x="60" y="478" class="small">监管：EU AI Act Article 50（2026 年 8 月生效）要求 deepfake 标注；Transparency Code 2026 年 6 月定稿。</text>
+</svg>

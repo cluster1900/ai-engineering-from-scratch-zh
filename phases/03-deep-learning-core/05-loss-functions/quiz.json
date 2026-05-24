@@ -1,0 +1,37 @@
+[
+  {
+    "question": "Loss Function 在 Neural Network 训练中表示什么？",
+    "options": ["错误预测的数量", "一种可微分的度量，用来衡量模型预测有多错误，并由 Optimizer 最小化", "训练 dataset 的大小", "learning rate schedule"],
+    "correct": 1,
+    "explanation": "Loss Function 将预测和目标映射为一个单一 scalar，Optimizer 通过 Gradient Descent 将其最小化。它必须是可微分的，这样才能计算 Gradient。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么在 Classification 任务中 cross-entropy 比 MSE 更受偏好？",
+    "options": ["Cross-entropy 计算更快", "Cross-entropy 通过 -log(p) 对自信但错误的预测进行指数级惩罚，而 MSE 在接近 0 和 1 时给出的 Gradient 很弱", "MSE 只适用于 Regression", "Cross-entropy 不需要 labels"],
+    "correct": 1,
+    "explanation": "当模型非常自信地预测了错误类别时（true class 的 p 接近 0），-log(p) 会产生巨大的 Loss 和很强的 Gradient。MSE 在相同情况下会产生较弱的 Gradient，因为 sigmoid 在接近 0 和 1 时很平坦。",
+    "stage": "pre"
+  },
+  {
+    "question": "如果你将 MSE Loss 用于 binary Classification，会发生什么？",
+    "options": ["训练会立即发散", "模型可以通过对所有样本预测 0.5 来最小化 Loss，在不学习的情况下达到 MSE=0.25", "模型会正常训练", "Gradient 会爆炸"],
+    "correct": 1,
+    "explanation": "在一个平衡的 binary dataset 上使用 MSE 时，对每个输入都预测 0.5 会得到 MSE=0.25 -- 这是没有区分能力时可达到的最小值。模型在没有学习任何有用模式的情况下满足了 Loss。",
+    "stage": "post"
+  },
+  {
+    "question": "label smoothing 做了什么，为什么有用？",
+    "options": ["它会从 dataset 中移除 noisy labels", "它将硬性的 0/1 targets 替换为 0.1/0.9 这样的 soft values，防止过度自信的预测并改善 generalization", "它对 Loss 应用 moving average", "它平滑 learning rate schedule"],
+    "correct": 1,
+    "explanation": "label smoothing 会将 targets 从 [0,0,1,0] 改为 [0.025,0.025,0.925,0.025]（当 alpha=0.1 时）。这会防止模型为了达到硬性 targets 而把 logits 推向无穷大，从而降低过度自信。",
+    "stage": "post"
+  },
+  {
+    "question": "在 contrastive loss（InfoNCE）中，temperature 参数起什么作用？",
+    "options": ["它控制 learning rate", "它控制相似度分布的锐利程度 -- temperature 越低，positives 和 negatives 之间的分离越困难", "它设置 negative samples 的数量", "它决定 Embedding 维度"],
+    "correct": 1,
+    "explanation": "Temperature 会在 softmax 之前除以相似度分数。较低的 temperature（例如 0.07）会创建更尖锐的分布，要求模型清晰地区分 positives 和 negatives。较高的 temperature 更宽容。",
+    "stage": "post"
+  }
+]

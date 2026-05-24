@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .reg { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">Embodied VLAs — RT-2 到 GR00T，动作格式演进</text>
+
+  <rect x="30" y="50" width="900" height="210" class="box"/>
+  <text x="480" y="72" text-anchor="middle" class="head">当前使用的四种动作格式</text>
+
+  <rect x="50" y="90" width="200" height="160" class="hot"/>
+  <text x="150" y="110" text-anchor="middle" class="step">离散 256-bin</text>
+  <text x="150" y="128" text-anchor="middle" class="small">RT-2（2023），OpenVLA</text>
+  <text x="150" y="146" text-anchor="middle" class="small">每个 DOF 一个 Token</text>
+  <text x="150" y="162" text-anchor="middle" class="small">兼容 text-vocab</text>
+  <text x="150" y="186" text-anchor="middle" class="step">优点：简单</text>
+  <text x="150" y="206" text-anchor="middle" class="small">缺点：需 ~300 tok/s</text>
+  <text x="150" y="224" text-anchor="middle" class="small">推理 3-5 Hz</text>
+
+  <rect x="270" y="90" width="200" height="160" class="cool"/>
+  <text x="370" y="110" text-anchor="middle" class="step">FAST（DCT + quantize）</text>
+  <text x="370" y="128" text-anchor="middle" class="small">2024 改进</text>
+  <text x="370" y="146" text-anchor="middle" class="small">~10 Token / 轨迹</text>
+  <text x="370" y="162" text-anchor="middle" class="small">低频系数</text>
+  <text x="370" y="186" text-anchor="middle" class="step">优点：快 3-5x</text>
+  <text x="370" y="206" text-anchor="middle" class="small">缺点：丢高频</text>
+  <text x="370" y="224" text-anchor="middle" class="small">pi0-FAST 使用</text>
+
+  <rect x="490" y="90" width="200" height="160" class="cold"/>
+  <text x="590" y="110" text-anchor="middle" class="step">flow-matching head</text>
+  <text x="590" y="128" text-anchor="middle" class="small">pi0（2024）</text>
+  <text x="590" y="146" text-anchor="middle" class="small">连续输出</text>
+  <text x="590" y="162" text-anchor="middle" class="small">50 步轨迹</text>
+  <text x="590" y="186" text-anchor="middle" class="step">优点：平滑</text>
+  <text x="590" y="206" text-anchor="middle" class="small">5 步去噪</text>
+  <text x="590" y="224" text-anchor="middle" class="small">~50 Hz 控制</text>
+
+  <rect x="710" y="90" width="200" height="160" class="reg"/>
+  <text x="810" y="110" text-anchor="middle" class="step">双系统</text>
+  <text x="810" y="128" text-anchor="middle" class="small">GR00T N1（2025）</text>
+  <text x="810" y="146" text-anchor="middle" class="small">System 2：VLM ~1 Hz</text>
+  <text x="810" y="162" text-anchor="middle" class="small">System 1：小型 ~100 Hz</text>
+  <text x="810" y="186" text-anchor="middle" class="step">优点: humanoid-scale</text>
+  <text x="810" y="206" text-anchor="middle" class="small">子目标 + 快速控制</text>
+  <text x="810" y="224" text-anchor="middle" class="small">最适合 30+ DOF</text>
+
+  <rect x="30" y="280" width="900" height="230" class="box"/>
+  <text x="480" y="302" text-anchor="middle" class="head">训练方案 + 安全</text>
+
+  <rect x="60" y="320" width="260" height="180" class="cool"/>
+  <text x="190" y="342" text-anchor="middle" class="step">共同 fine-tune</text>
+  <text x="190" y="362" text-anchor="middle" class="small">比例 ~0.5:1 到 1:1</text>
+  <text x="190" y="378" text-anchor="middle" class="small">web VQA + 机器人演示</text>
+  <text x="190" y="396" text-anchor="middle" class="small">保留通用知识</text>
+  <text x="190" y="416" text-anchor="middle" class="small">仅机器人 -&gt; 遗忘语言</text>
+  <text x="190" y="436" text-anchor="middle" class="step">fine-tune 路径</text>
+  <text x="190" y="456" text-anchor="middle" class="small">LoRA on 100-1000 demos</text>
+  <text x="190" y="472" text-anchor="middle" class="small">适配新机器人</text>
+
+  <rect x="340" y="320" width="260" height="180" class="reg"/>
+  <text x="470" y="342" text-anchor="middle" class="step">Open X-Embodiment</text>
+  <text x="470" y="362" text-anchor="middle" class="small">22 datasets</text>
+  <text x="470" y="378" text-anchor="middle" class="small">1M trajectories</text>
+  <text x="470" y="394" text-anchor="middle" class="small">22 种机器人形态</text>
+  <text x="470" y="412" text-anchor="middle" class="small">ALOHA / Bridge / Droid</text>
+  <text x="470" y="432" text-anchor="middle" class="step">统一 schema</text>
+  <text x="470" y="452" text-anchor="middle" class="small">状态、相机、动作</text>
+  <text x="470" y="468" text-anchor="middle" class="small">open-source</text>
+
+  <rect x="620" y="320" width="290" height="180" class="hot"/>
+  <text x="765" y="342" text-anchor="middle" class="step">安全门控（VLA 外部）</text>
+  <text x="765" y="362" text-anchor="middle" class="small">硬关节限制</text>
+  <text x="765" y="378" text-anchor="middle" class="small">速度裁剪</text>
+  <text x="765" y="394" text-anchor="middle" class="small">工作区边界</text>
+  <text x="765" y="410" text-anchor="middle" class="small">新任务需 HITL 批准</text>
+  <text x="765" y="436" text-anchor="middle" class="step">VLA 建议，controller 执行</text>
+  <text x="765" y="462" text-anchor="middle" class="caption">始终将 VLA 输出视为先验，</text>
+  <text x="765" y="478" text-anchor="middle" class="caption">不是命令</text>
+</svg>

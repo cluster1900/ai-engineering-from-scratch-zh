@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 Diffusion 训练可以直接选择任意 timestep t，而不需要逐步模拟前向 Markov chain？",
+      "options": ["这是一种忽略中间步骤的近似", "因为多次 Gaussian addition 的组合仍然得到 Gaussian，从而给出闭式 q(x_t|x_0) = N(sqrt(alpha_bar_t) x_0, (1 - alpha_bar_t) I)，你可以一步采样", "因为 x_t 与 x_0 独立", "这是 PyTorch 的 autograd 所要求的"],
+      "correct": 1,
+      "explanation": "重复的 Gaussian addition 可以解析闭合。累积乘积 alpha_bar_t 编码了“t steps 后还剩多少信号”，你可以直接采样 x_t，而不必运行整条 chain。这就是为什么 Diffusion 训练每步是 O(1)，而不是 O(T)。"
+    },
+    {
+      "stage": "pre",
+      "question": "DDPM 的 Neural Network 实际预测什么？",
+      "options": ["直接预测下一张图像 x_{t-1}", "预测在 step t 添加的 noise epsilon，再由它解析地推导出 x_{t-1} 的均值", "输入的类别标签", "signal-to-noise ratio"],
+      "correct": 1,
+      "explanation": "DDPM 将模型参数化为预测 epsilon。给定 noise prediction 和 noise schedule，x_{t-1} 的 Gaussian mean 和 variance 都是闭式的。预测 epsilon 而不是 x_0 或 x_{t-1}，能把 Loss 简化为普通 MSE，并给出数值上更好的 Gradient。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 DDIM 能用少约 20x 的 steps 达到与 DDPM 相近的样本质量？",
+      "options": ["DDIM 改变了训练目标", "DDIM 将采样重新表述为确定性 ODE，其轨迹可以用少得多的 steps 离散化，同时到达几乎相同的终点；无需重新训练", "DDIM 使用更快的模型架构", "DDIM 生成更小的图像"],
+      "correct": 1,
+      "explanation": "DDIM 的关键观察是，反向过程在确定性地重新参数化后会变成一个 ODE，少量 steps 就能很好地近似。模型（weights 和 Loss）与 DDPM 相比没有变化；只有 sampler 不同。一个 DDPM checkpoint 可以与 DDIM、DPM-Solver 或 Euler sampler 互换使用。"
+    },
+    {
+      "stage": "post",
+      "question": "你绘制 T=1000 的 linear beta schedule 的 `alpha_bar_t`，发现它在 t=600 时已经降到接近零。为什么这很重要？",
+      "options": ["这不重要", "最后 40% 的 timesteps 几乎不再增加信号；训练这些 timesteps 会教 network 对已经近似 N(0, I) 的 noise 去噪，这会浪费容量。Cosine 或 sigmoid schedules 通过更均匀地分布 noise injection 来修复这个问题", "alpha_bar_t 在结束时必须为零", "PyTorch 要求 linear schedule"],
+      "correct": 1,
+      "explanation": "Linear beta schedules 过早完成 Diffusion 过程。到 t=600 时信号已经被破坏；继续训练和采样 t=600-1000 没有增加任何价值。Cosine schedules（Nichol & Dhariwal）让信号保留更久，这也是现代模型使用它们的原因，尤其是在较低分辨率下。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 time conditioning 通过 sinusoidal Embedding 加入 U-Net，而不是使用 one-hot timestep？",
+      "options": ["One-hot Vectors 太大", "Sinusoidal Embedding 在 t 上是平滑的，这让 network 能在它没有精确见过的 timesteps 之间插值，并编码架构可以在多个深度以加法方式使用的尺度信息", "Sinusoidal 是 BatchNorm 要求的", "One-hot 会违反 chain rule"],
+      "correct": 1,
+      "explanation": "Sinusoidal Embeddings 为 network 提供 t 在多个频率上的连续表示。任意 timestep 都是该 Embedding 空间中的一个唯一点，相邻 timesteps 也对应相邻的 Embeddings。这使模型能用比 learned per-timestep Embedding 少得多的参数泛化到所有 T 值。与 Transformer positional encoding 是同一个思路。"
+    }
+  ]
+}

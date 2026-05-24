@@ -1,0 +1,90 @@
+{
+  "lesson": "05-autonomous-research-agent",
+  "title": "Capstone 05 — Autonomous Research Agent（AI-Scientist 级）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "AI-Scientist 级 agent 使用什么搜索形态来探索实验？",
+      "options": [
+        "对 Token 输出进行 Beam search",
+        "基于 novelty x quality x budget 分数，对实验节点进行 best-first tree search",
+        "纯粹基于 human feedback 的 Reinforcement Learning",
+        "使用随机评分进行 breadth-first 扩展"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 sandbox 要配置 --network=none 和有界资源上限？",
+      "options": [
+        "为了强制 agent 使用 prompt caching",
+        "为了强制确定性的浮点运算",
+        "为了默认允许 GPU passthrough",
+        "为了阻止网络出口，并把实验副作用限制在可复现的边界内"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "writer loop 中 vision critique 步骤的作用是什么？",
+      "options": [
+        "把图转换成 bar charts",
+        "将 LaTeX 草稿编译为 PDF，然后让 VLM critique 版式、图的可读性以及 claim-evidence 对齐",
+        "从截图生成新的实验想法",
+        "在渲染时替换 matplotlib"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "reviewer ensemble 如何对 pipeline 设门控？",
+      "options": [
+        "单个 judge 根据二元标志接受或拒绝",
+        "Reviewers 匿名投票，多数获胜",
+        "Reviews 只在发布后运行",
+        "五个 judges 按 NeurIPS 风格 rubrics 打分，加权汇总必须超过阈值，否则草稿回到 writer"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "这个 capstone 对每篇论文强制执行哪种成本纪律？",
+      "options": [
+        "通过 Langfuse counters 和运行前估算跟踪的 $30 硬预算",
+        "没有质量检查的纯成本优化",
+        "无界 compute，只限制 wall-clock",
+        "跟踪 GPU-hours 但从不设上限"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个评分函数会对 tree nodes 进行排序，以便进一步扩展？",
+      "options": [
+        "Novelty x quality x remaining budget",
+        "相关论文的引用数",
+        "随机均匀优先级",
+        "输出长度和 Token 数"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "red-team report 会针对系统演练什么？",
+      "options": [
+        "system prompts 的 caching 命中率",
+        "Vector DB 中的多租户数据泄漏",
+        "丢包情况下的尾部延迟",
+        "sandbox-escape 尝试，例如 fork bombs、网络外传和 filesystem escapes"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

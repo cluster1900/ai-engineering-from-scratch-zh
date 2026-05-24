@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .edge { stroke: #1a1a1a; stroke-width: 1.2; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">ReWOO — Planner、Workers、Solver（Xu et al., 2023）</text>
+
+  <rect x="40" y="60" width="170" height="80" class="cool"/>
+  <text x="125" y="88" text-anchor="middle" class="step">Planner</text>
+  <text x="125" y="108" text-anchor="middle" class="small">一次调用；只看到</text>
+  <text x="125" y="124" text-anchor="middle" class="small">用户问题</text>
+
+  <rect x="260" y="60" width="460" height="320" class="box"/>
+  <text x="490" y="84" text-anchor="middle" class="head">plan DAG 和 workers</text>
+
+  <rect x="290" y="110" width="160" height="60" class="cold"/>
+  <text x="370" y="134" text-anchor="middle" class="step">E1 = search</text>
+  <text x="370" y="152" text-anchor="middle" class="small">法国首都</text>
+
+  <rect x="530" y="110" width="160" height="60" class="cold"/>
+  <text x="610" y="134" text-anchor="middle" class="step">E2 = search</text>
+  <text x="610" y="152" text-anchor="middle" class="small">#E1 的人口</text>
+
+  <rect x="410" y="220" width="160" height="60" class="hot"/>
+  <text x="490" y="244" text-anchor="middle" class="step">E3 = round_million</text>
+  <text x="490" y="262" text-anchor="middle" class="small">text = #E2</text>
+
+  <line x1="210" y1="100" x2="290" y2="140" class="edge" marker-end="url(#arrow)"/>
+  <line x1="450" y1="140" x2="530" y2="140" class="edge" marker-end="url(#arrow)"/>
+  <line x1="610" y1="170" x2="520" y2="220" class="edge" marker-end="url(#arrow)"/>
+  <line x1="370" y1="170" x2="470" y2="220" class="edge" marker-end="url(#arrow)"/>
+
+  <rect x="290" y="310" width="400" height="50" class="dsk"/>
+  <text x="490" y="334" text-anchor="middle" class="step">证据表：E1=Paris，E2="11.2M 都市区"，E3="1100 万"</text>
+
+  <rect x="750" y="60" width="170" height="80" class="cool"/>
+  <text x="835" y="88" text-anchor="middle" class="step">Solver</text>
+  <text x="835" y="108" text-anchor="middle" class="small">一次调用；读取</text>
+  <text x="835" y="124" text-anchor="middle" class="small">证据 + plan</text>
+
+  <line x1="720" y1="335" x2="790" y2="140" class="edge" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="160" width="170" height="220" class="box"/>
+  <text x="125" y="184" text-anchor="middle" class="head">为何选 ReWOO</text>
+  <text x="50" y="206" class="small">planner 中没有 observation</text>
+  <text x="50" y="222" class="small">意味着没有反馈噪声</text>
+  <text x="50" y="246" class="small">workers 并行扇出</text>
+  <text x="50" y="262" class="small">沿独立分支</text>
+  <text x="50" y="286" class="small">更少 tokens：</text>
+  <text x="50" y="302" class="small">1 个 planner + N 个小 worker</text>
+  <text x="50" y="318" class="small">prompts + 1 次 solver 调用</text>
+  <text x="50" y="342" class="small">论文：减少 5x</text>
+  <text x="50" y="358" class="small">在 HotpotQA 上，准确率 +4</text>
+
+  <rect x="750" y="160" width="170" height="220" class="box"/>
+  <text x="835" y="184" text-anchor="middle" class="head">何时选择</text>
+  <text x="760" y="206" class="small">任务形态结构化</text>
+  <text x="760" y="222" class="small">tools 预先已知</text>
+  <text x="760" y="246" class="small">证据可并行化</text>
+  <text x="760" y="262" class="small">token 预算重要</text>
+  <text x="760" y="286" class="small">否则优先用 ReAct 处理</text>
+  <text x="760" y="302" class="small">未知环境或</text>
+  <text x="760" y="318" class="small">Plan-and-Act 处理 30+ 步</text>
+  <text x="760" y="334" class="small">web/mobile 轨迹</text>
+
+  <rect x="40" y="400" width="880" height="100" class="box"/>
+  <text x="480" y="424" text-anchor="middle" class="head">蒸馏角度（ReWOO 第 4 节）</text>
+  <text x="60" y="446" class="small">planner 看不到 observations，所以训练信号干净；LLaMA 7B 可从</text>
+  <text x="60" y="462" class="small">GPT-3.5 planner traces 微调并匹配 planner 质量。2026 生产：小 planner + 大 executor</text>
+  <text x="60" y="478" class="small">（或反之）通过 model router（Mastra）或 dynamic handoff（OpenAI Agents SDK）。</text>
+</svg>

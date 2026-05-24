@@ -1,0 +1,37 @@
+[
+  {
+    "question": "RAG 中基础 top-k semantic search 的局限是什么？",
+    "options": ["它太慢", "它会检索到与查询在语义上相似、但可能不包含实际答案的 chunk，尤其是在模糊问题或 multi-hop 问题中", "它无法处理大型文档", "它需要 GPU"],
+    "correct": 1,
+    "explanation": "基础 semantic search 匹配的是表层含义。'What was revenue last quarter?' 会检索到关于 'revenue strategy' 的 chunk（语义相似），而不是包含 '$47.2M in Q3 2025' 的 chunk（该 chunk 使用的是 'earnings'）。",
+    "stage": "pre"
+  },
+  {
+    "question": "在 RAG 语境中，hybrid search 是什么？",
+    "options": ["使用两个不同的 LLMs", "将 BM25 关键词匹配与 semantic Vector search 结合起来，同时捕捉精确术语和基于含义的相关性", "跨多个数据库搜索", "同时使用 CPU 和 GPU 进行搜索"],
+    "correct": 1,
+    "explanation": "BM25 能捕捉精确关键词匹配（例如 '$47.2M' 或 'Q3'）。Semantic search 能捕捉含义匹配。将它们与 reranker 结合，可以同时获得两者的优势：对特定术语的精确度，以及对语义变体的召回率。",
+    "stage": "pre"
+  },
+  {
+    "question": "cross-encoder reranker 在 advanced RAG pipeline 中做什么？",
+    "options": ["它生成最终答案", "它接收 (query, document) 对，并以高于 Embedding 相似度的准确性为其相关性打分，重新排序初始检索结果", "它将文档编码为 Vectors", "它将文档拆分为 chunks"],
+    "correct": 1,
+    "explanation": "Bi-encoder 相似度（用于初始检索）速度快但只是近似。cross-encoder 使用 cross-attention 将完整 query-document 对一起处理，从而为 top 候选结果的 reranking 给出准确得多的相关性分数。",
+    "stage": "post"
+  },
+  {
+    "question": "HyDE (Hypothetical Document Embedding) 查询转换技术是什么？",
+    "options": ["向模型隐藏查询", "使用 LLM 生成一个假设答案，然后将该答案作为搜索查询进行 Embedding，而不是使用原始问题", "为隐私加密查询", "扩展查询中的缩写"],
+    "correct": 1,
+    "explanation": "原始查询 'What was Q3 revenue?' 可能不会 Embedding 到接近答案 chunk 的位置。HyDE 让 LLM 生成一个假设答案（'Q3 revenue was approximately...'），然后用它作为搜索查询，这会 Embedding 得更接近实际包含答案的 chunk。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 parent-child chunking 相比 flat chunking 能改进 RAG？",
+    "options": ["它索引起来更快", "小的 child chunks 用于精确检索，但返回更大的 parent chunk 作为上下文，从而避免 'lost context' 问题", "它减少了 chunk 数量", "它消除了对 Embeddings 的需求"],
+    "correct": 1,
+    "explanation": "小 chunks（200 Tokens）Embedding 精确但缺少上下文。大 chunks（2000 Tokens）有上下文但 Embedding 不精确。Parent-child 使用小 chunks 保证搜索准确性，但返回 parent chunk 作为生成上下文。",
+    "stage": "post"
+  }
+]

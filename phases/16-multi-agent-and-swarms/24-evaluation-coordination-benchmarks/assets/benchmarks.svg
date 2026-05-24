@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">2025-2026 multi-agent benchmarks 及其衡量项</text>
+
+  <rect x="40" y="60" width="880" height="220" class="box"/>
+  <text x="480" y="84" text-anchor="middle" class="head">五个 canonical benchmarks</text>
+
+  <rect x="60" y="110" width="170" height="150" class="cool"/>
+  <text x="145" y="134" text-anchor="middle" class="step">MultiAgentBench</text>
+  <text x="145" y="152" text-anchor="middle" class="step">(MARBLE)</text>
+  <text x="145" y="174" text-anchor="middle" class="small">拓扑：</text>
+  <text x="145" y="190" text-anchor="middle" class="small">star/chain/tree/graph</text>
+  <text x="145" y="212" text-anchor="middle" class="small">graph 赢在研究</text>
+  <text x="145" y="230" text-anchor="middle" class="small">超过 ~4 后 coord-tax</text>
+  <text x="145" y="252" text-anchor="middle" class="caption">ACL 2025</text>
+
+  <rect x="240" y="110" width="170" height="150" class="hot"/>
+  <text x="325" y="134" text-anchor="middle" class="step">COMMA</text>
+  <text x="325" y="174" text-anchor="middle" class="small">Multimodal，</text>
+  <text x="325" y="190" text-anchor="middle" class="small">非对称信息</text>
+  <text x="325" y="212" text-anchor="middle" class="small">GPT-4o 难以</text>
+  <text x="325" y="230" text-anchor="middle" class="small">超过随机</text>
+  <text x="325" y="252" text-anchor="middle" class="caption">null-result 信号</text>
+
+  <rect x="420" y="110" width="170" height="150" class="cold"/>
+  <text x="505" y="134" text-anchor="middle" class="step">MedAgentBoard</text>
+  <text x="505" y="174" text-anchor="middle" class="small">4 个医疗任务</text>
+  <text x="505" y="190" text-anchor="middle" class="small">single-LLM 常常</text>
+  <text x="505" y="212" text-anchor="middle" class="small">匹配 multi-agent</text>
+  <text x="505" y="230" text-anchor="middle" class="small">过度工程检查</text>
+  <text x="505" y="252" text-anchor="middle" class="caption">领域压力测试</text>
+
+  <rect x="600" y="110" width="170" height="150" class="cool"/>
+  <text x="685" y="134" text-anchor="middle" class="step">AgentArch</text>
+  <text x="685" y="174" text-anchor="middle" class="small">tools + memory +</text>
+  <text x="685" y="190" text-anchor="middle" class="small">编排</text>
+  <text x="685" y="212" text-anchor="middle" class="small">逐层价值</text>
+  <text x="685" y="230" text-anchor="middle" class="small">归因</text>
+  <text x="685" y="252" text-anchor="middle" class="caption">企业 stack</text>
+
+  <rect x="780" y="110" width="140" height="150" class="hot"/>
+  <text x="850" y="134" text-anchor="middle" class="step">SWE-bench Pro</text>
+  <text x="850" y="174" text-anchor="middle" class="small">1865 个问题</text>
+  <text x="850" y="190" text-anchor="middle" class="small">~23% vs 70%+ 于</text>
+  <text x="850" y="212" text-anchor="middle" class="small">Verified</text>
+  <text x="850" y="230" text-anchor="middle" class="small">污染</text>
+  <text x="850" y="252" text-anchor="middle" class="caption">gating 2026 测试</text>
+
+  <rect x="40" y="290" width="880" height="210" class="box"/>
+  <text x="480" y="314" text-anchor="middle" class="head">审慎阅读 benchmark claims</text>
+
+  <text x="60" y="346" class="step">[1]</text>
+  <text x="120" y="346" class="small">哪个 benchmark + split？Verified vs Pro 对 frontier models 差 40 点</text>
+
+  <text x="60" y="372" class="step">[2]</text>
+  <text x="120" y="372" class="small">污染：benchmark 是否在 training-cutoff 之后？</text>
+
+  <text x="60" y="398" class="step">[3]</text>
+  <text x="120" y="398" class="small">baselines：vs single-LLM，vs random，vs prior multi-agent</text>
+
+  <text x="60" y="424" class="step">[4]</text>
+  <text x="120" y="424" class="small">统计显著性：N trials，CI，p-value</text>
+
+  <text x="60" y="450" class="step">[5]</text>
+  <text x="120" y="450" class="small">任务多样性：一个任务还是多个 — 泛化很重要</text>
+
+  <text x="60" y="476" class="step">[6]</text>
+  <text x="120" y="476" class="small">成本披露：tokens + wall-clock — 20x 成本换 10% 提升是商业决策</text>
+</svg>

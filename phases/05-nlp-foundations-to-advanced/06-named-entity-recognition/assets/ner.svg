@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #f3ece0; stroke: #1a1a1a; stroke-width: 1.5; }
+      .label { font-size: 14px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 13px; fill: #333; font-family: 'Menlo', monospace; }
+      .note { font-size: 11px; fill: #666; font-style: italic; }
+      .stage { font-size: 12px; fill: #c0392b; font-style: italic; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="box" x="20" y="30" width="860" height="120" rx="4"/>
+  <text class="label" x="35" y="55">BIO 标注</text>
+  <text class="note" x="35" y="75">为每个 Token 标注 B-TYPE（开始）、I-TYPE（内部）或 O（外部）</text>
+
+  <text class="content" x="40" y="110">token:  Apple  sued  Google  over  its  iPhone  search  deal  in  the  US  .</text>
+  <text class="content" x="40" y="135">label:  B-ORG  O     B-ORG   O     O    B-PROD  O       O     O   O    B-GPE  O</text>
+
+  <rect class="box" x="20" y="180" width="200" height="160" rx="4"/>
+  <text class="label" x="120" y="205" text-anchor="middle">基于规则</text>
+  <text class="content" x="35" y="235">gazetteer 匹配</text>
+  <text class="content" x="35" y="255">regex + dicts</text>
+  <text class="note" x="35" y="285">高精度</text>
+  <text class="note" x="35" y="305">零 OOV 覆盖</text>
+  <text class="note" x="35" y="325">无消歧</text>
+
+  <rect class="box" x="240" y="180" width="200" height="160" rx="4"/>
+  <text class="label" x="340" y="205" text-anchor="middle">CRF</text>
+  <text class="content" x="255" y="235">手工 features：</text>
+  <text class="content" x="255" y="255">shape, suffix,</text>
+  <text class="content" x="255" y="275">neighbors, case</text>
+  <text class="note" x="255" y="305">强制合法</text>
+  <text class="note" x="255" y="325">BIO 转移</text>
+
+  <rect class="box" x="460" y="180" width="200" height="160" rx="4"/>
+  <text class="label" x="560" y="205" text-anchor="middle">BiLSTM-CRF</text>
+  <text class="content" x="475" y="235">学习到的 features</text>
+  <text class="content" x="475" y="255">embed → BiLSTM</text>
+  <text class="content" x="475" y="275">→ CRF head</text>
+  <text class="note" x="475" y="305">不再手工</text>
+  <text class="note" x="475" y="325">工程</text>
+
+  <rect class="hot" x="680" y="180" width="200" height="160" rx="4"/>
+  <text class="label" x="780" y="205" text-anchor="middle">transformer NER</text>
+  <text class="content" x="695" y="235">微调 BERT</text>
+  <text class="content" x="695" y="255">token-classif 头</text>
+  <text class="content" x="695" y="275">聚合 spans</text>
+  <text class="note" x="695" y="305">最高准确率</text>
+  <text class="note" x="695" y="325">最多计算量</text>
+
+  <text class="stage" x="450" y="370" text-anchor="middle">选达到准确率门槛的最便宜方法</text>
+</svg>

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .edge { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">LLM 路由网关：一个 API，N 个 providers</text>
+
+  <rect x="40" y="60" width="220" height="440" class="cool"/>
+  <text x="150" y="82" text-anchor="middle" class="head">你的 app</text>
+  <text x="56" y="108" class="step">openai.chat.completions.create(</text>
+  <text x="56" y="126" class="step">model="smart",</text>
+  <text x="56" y="144" class="step">messages=[...])</text>
+  <text x="56" y="176" class="small">- alias "smart" 是逻辑</text>
+  <text x="56" y="192" class="small">名称，不是真实模型</text>
+  <text x="56" y="216" class="small">- 无 provider 专用代码</text>
+
+  <rect x="280" y="60" width="380" height="440" class="cold"/>
+  <text x="470" y="82" text-anchor="middle" class="head">路由网关</text>
+  <text x="296" y="108" class="step">1 / redact PII</text>
+  <text x="296" y="126" class="small">regex 或 ML 预分发</text>
+  <text x="296" y="148" class="step">2 / semantic cache</text>
+  <text x="296" y="166" class="small">prompt Embedding 查找</text>
+  <text x="296" y="188" class="step">3 / alias 解析</text>
+  <text x="296" y="206" class="small">smart -&gt; [gpt-4o, claude, gemini]</text>
+  <text x="296" y="228" class="step">4 / 选择策略</text>
+  <text x="296" y="246" class="small">static / cost / latency / A-B</text>
+  <text x="296" y="268" class="step">5 / 调用 provider</text>
+  <text x="296" y="286" class="small">转换 OpenAI -&gt; backend 形状</text>
+  <text x="296" y="308" class="step">6 / 5xx 时 fallback</text>
+  <text x="296" y="326" class="small">链中下一个 provider</text>
+  <text x="296" y="348" class="step">7 / cost 跟踪</text>
+  <text x="296" y="366" class="small">tokens x price -&gt; 按 key 聚合</text>
+  <text x="296" y="388" class="step">8 / 发出 OTel GenAI</text>
+  <text x="296" y="406" class="small">每一跳都有 gen_ai.*</text>
+  <text x="296" y="428" class="step">9 / 输出 guardrails</text>
+  <text x="296" y="446" class="small">返回前清理 completions</text>
+
+  <path d="M660,200 L760,200" class="edge" marker-end="url(#arrow)"/>
+  <path d="M660,280 L760,280" class="edge" marker-end="url(#arrow)"/>
+  <path d="M660,360 L760,360" class="edge" marker-end="url(#arrow)"/>
+
+  <rect x="760" y="60" width="160" height="440" class="hot"/>
+  <text x="840" y="82" text-anchor="middle" class="head">providers</text>
+  <text x="776" y="108" class="step">OpenAI</text>
+  <text x="776" y="126" class="small">gpt-4o, gpt-4o-mini</text>
+
+  <text x="776" y="158" class="step">Anthropic</text>
+  <text x="776" y="176" class="small">claude-sonnet, haiku</text>
+
+  <text x="776" y="208" class="step">Google</text>
+  <text x="776" y="226" class="small">gemini-pro, flash</text>
+
+  <text x="776" y="258" class="step">Cohere / Mistral /</text>
+  <text x="776" y="276" class="step">DeepSeek / Ollama</text>
+
+  <text x="776" y="328" class="step">选择（2026）</text>
+  <text x="776" y="346" class="small">LiteLLM（self-host）</text>
+  <text x="776" y="362" class="small">OpenRouter（SaaS）</text>
+  <text x="776" y="378" class="small">Portkey（prod）</text>
+
+  <text x="776" y="416" class="step">关键取舍</text>
+  <text x="776" y="434" class="small">control vs managed</text>
+  <text x="776" y="450" class="small">vs 开箱即用的</text>
+  <text x="776" y="466" class="small">guardrails</text>
+</svg>

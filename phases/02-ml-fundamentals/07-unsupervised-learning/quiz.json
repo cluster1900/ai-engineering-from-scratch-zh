@@ -1,0 +1,67 @@
+[
+  {
+    "id": "unsupervised-pre-1",
+    "stage": "pre",
+    "question": "是什么区分了 unsupervised learning 和 supervised learning？",
+    "options": [
+      "Unsupervised learning 使用更多 data",
+      "Unsupervised learning 没有带 label 的输出 -- algorithm 会自行发现 structure",
+      "Unsupervised learning 只适用于 text data",
+      "Unsupervised learning 总是产生更好的结果"
+    ],
+    "correct": 1,
+    "explanation": "在 unsupervised learning 中，没有 labels。algorithm 会在没有被告知正确输出应该是什么的情况下，发现 data 中的 patterns、groupings 或 structure。"
+  },
+  {
+    "id": "unsupervised-pre-2",
+    "stage": "pre",
+    "question": "K-Means 在 training 之前需要你指定什么？",
+    "options": [
+      "精确的 cluster centers",
+      "clusters 数量 K",
+      "每个 data point 的 labels",
+      "要使用的 distance metric"
+    ],
+    "correct": 1,
+    "explanation": "K-Means 需要将 clusters 数量 K 作为输入。然后它会迭代地将 points 分配给最近的 centroid，并重新计算 centroids，直到 convergence。"
+  },
+  {
+    "id": "unsupervised-post-1",
+    "stage": "post",
+    "question": "K-Means 在两个互锁的半月形上失败，但 DBSCAN 成功了。为什么？",
+    "options": [
+      "DBSCAN 使用的数据比 K-Means 更多",
+      "DBSCAN 基于 density 寻找 clusters，因此它可以发现任意形状，而 K-Means 假设 clusters 为球形",
+      "DBSCAN 在每个 dataset 上总是优于 K-Means",
+      "K-Means 无法处理 2D data"
+    ],
+    "correct": 1,
+    "explanation": "K-Means 将 points 分配给最近的 centroid，产生球形（convex）clusters。DBSCAN 从 dense regions 扩展 clusters，只要 cluster 由 density 连接，就能发现任何形状。"
+  },
+  {
+    "id": "unsupervised-post-2",
+    "stage": "post",
+    "question": "silhouette score 衡量的是什么？",
+    "options": [
+      "找到的 clusters 总数",
+      "每个 point 与自身 cluster 的相似程度，相比于与最近的其他 cluster 的相似程度",
+      "Clustering algorithm 的速度",
+      "data 中 outliers 的百分比"
+    ],
+    "correct": 1,
+    "explanation": "Silhouette score = (b - a) / max(a, b)，其中 a 是 mean intra-cluster distance，b 是 mean nearest-cluster distance。它的范围从 -1（错误 cluster）到 +1（clustered well）。"
+  },
+  {
+    "id": "unsupervised-post-3",
+    "stage": "post",
+    "question": "Gaussian Mixture Model 的 cluster assignments 与 K-Means 有何不同？",
+    "options": [
+      "GMM 使用 hard assignments，其中每个 point 只属于一个 cluster",
+      "GMM 给出 soft（probabilistic）assignments，其中每个 point 都有属于每个 cluster 的 probability",
+      "GMM 完全不使用 centroids",
+      "GMM 只适用于 one-dimensional data"
+    ],
+    "correct": 1,
+    "explanation": "K-Means 将每个 point 精确分配给一个 cluster（hard）。GMM 计算每个 point 属于每个 Gaussian component 的 probability（soft），并且可以建模椭圆形、重叠的 clusters。"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "trees-pre-1",
+    "stage": "pre",
+    "question": "Gini impurity 在 decision tree 节点上衡量什么？",
+    "options": [
+      "节点在 tree 中的 depth",
+      "给定该节点的 class distribution，随机选择的 sample 被误分类的概率",
+      "该节点上的 samples 总数",
+      "features 之间的 correlation"
+    ],
+    "correct": 1,
+    "explanation": "Gini impurity = 1 - sum(p_k^2)。它衡量如果按照该节点的 class distribution 进行标记，一个随机选择的 sample 会被误分类的频率。Pure node = 0。"
+  },
+  {
+    "id": "trees-pre-2",
+    "stage": "pre",
+    "question": "对于 tabular data，tree-based models 相比 Neural Network 的主要优势是什么？",
+    "options": [
+      "Trees 可以原生处理 images 和 text",
+      "Trees 的 bias 总是低于 Neural Network",
+      "Trees 能处理混合 feature types，需要更少 preprocessing，并且更具 interpretability",
+      "Trees 在 GPU hardware 上训练更快"
+    ],
+    "correct": 2,
+    "explanation": "Trees 可以原生处理 numeric 和 categorical features，无需 encoding，需要的 preprocessing 很少，并能产生可解释规则。Neural Network 擅长 spatial/sequential data，而不是 flat tables。"
+  },
+  {
+    "id": "trees-post-1",
+    "stage": "post",
+    "question": "为什么 random forest 在每次 split 时同时使用 bootstrap sampling 和 random feature subsets？",
+    "options": [
+      "通过减少 dataset size 来加快 training",
+      "创建多样化、去相关的 trees，使 averaging 能在不增加 bias 的情况下降低 variance",
+      "确保每棵 tree 至少看到每个 data point 一次",
+      "降低单棵 trees 的 depth"
+    ],
+    "correct": 1,
+    "explanation": "这两种 randomness 来源都会让 trees 更加多样化。如果没有 feature randomization，所有 trees 都会在同一个 dominant feature 上 split。多样性正是 averaging 能有效降低 variance 的原因。"
+  },
+  {
+    "id": "trees-post-2",
+    "stage": "post",
+    "question": "一个节点包含 8 条 dogs 和 2 只 cats。它的 Gini impurity 是多少？",
+    "options": [
+      "0.0",
+      "0.20",
+      "0.32",
+      "0.50"
+    ],
+    "correct": 2,
+    "explanation": "Gini = 1 - (0.8^2 + 0.2^2) = 1 - (0.64 + 0.04) = 0.32。该节点大多是 dogs，但不是 pure，因此 Gini 位于 0（pure）和 0.5（binary 最大值）之间。"
+  },
+  {
+    "id": "trees-post-3",
+    "stage": "post",
+    "question": "MDI (Mean Decrease in Impurity) feature importance 会偏向哪类 feature？",
+    "options": [
+      "只有两个值的 binary features",
+      "低 variance 的 features",
+      "具有许多可能 split points 的 high-cardinality features",
+      "与 target 高度 correlated 的 features"
+    ],
+    "correct": 2,
+    "explanation": "MDI 会偏向 high-cardinality features，因为它们提供更多可能的 split points，从而有更多机会靠运气降低 impurity。Permutation importance 更可靠。"
+  }
+]

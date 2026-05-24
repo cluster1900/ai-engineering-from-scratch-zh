@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">ReAct loop — Thought、Action、Observation，直到触发停止条件</text>
+
+  <rect x="40" y="60" width="340" height="460" class="box"/>
+  <text x="210" y="82" text-anchor="middle" class="head">五个要素</text>
+
+  <rect x="60" y="100" width="300" height="64" class="cool"/>
+  <text x="80" y="122" class="step">1. 消息缓冲区</text>
+  <text x="80" y="140" class="small">user, assistant, tool, assistant, tool, ...</text>
+  <text x="80" y="156" class="small">Anthropic + OpenAI schemas 都编码此结构</text>
+
+  <rect x="60" y="172" width="300" height="64" class="cold"/>
+  <text x="80" y="194" class="step">2. tool registry</text>
+  <text x="80" y="212" class="small">name - schema - callable；调度时验证</text>
+  <text x="80" y="228" class="small">registry 是沙箱边界</text>
+
+  <rect x="60" y="244" width="300" height="64" class="hot"/>
+  <text x="80" y="266" class="step">3. 停止条件</text>
+  <text x="80" y="284" class="small">显式结束、无 tool calls、预算耗尽</text>
+  <text x="80" y="300" class="small">选一种；混用会隐藏提前终止 bug</text>
+
+  <rect x="60" y="316" width="300" height="64" class="dsk"/>
+  <text x="80" y="338" class="step">4. 轮次预算</text>
+  <text x="80" y="356" class="small">迭代硬上限；40-400 很常见</text>
+  <text x="80" y="372" class="small">按任务类别扩展，而非全局单一值</text>
+
+  <rect x="60" y="388" width="300" height="64" class="box"/>
+  <text x="80" y="410" class="step">5. observation formatter</text>
+  <text x="80" y="428" class="small">每个 400 error 变成字符串，而非崩溃</text>
+  <text x="80" y="444" class="small">并行 tool calls 需要 tool_use_id</text>
+
+  <rect x="400" y="60" width="540" height="460" class="box"/>
+  <text x="670" y="82" text-anchor="middle" class="head">一个周期，带注释</text>
+
+  <rect x="420" y="100" width="500" height="50" class="cool"/>
+  <text x="440" y="122" class="step">Thought  "我需要计算 120 的税再相加"</text>
+  <text x="440" y="140" class="small">2026 年的原生 reasoning channel（Responses API），此前为 inline tokens</text>
+
+  <rect x="420" y="158" width="500" height="50" class="cold"/>
+  <text x="440" y="180" class="step">Action  calculator(expr="120 * 0.15")</text>
+  <text x="440" y="198" class="small">结构化输出，经 tool registry 调度</text>
+
+  <rect x="420" y="216" width="500" height="50" class="hot"/>
+  <text x="440" y="238" class="step">Observation  18.0</text>
+  <text x="440" y="256" class="small">不可信；检索内容可能含注入指令</text>
+
+  <rect x="420" y="274" width="500" height="50" class="cool"/>
+  <text x="440" y="296" class="step">Thought  "把 120 + 18.0 相加并结束"</text>
+  <text x="440" y="314" class="small">循环重复，直到 assistant 轮次没有 tool calls</text>
+
+  <rect x="420" y="332" width="500" height="50" class="cold"/>
+  <text x="440" y="354" class="step">Action  calculator(expr="120 + 18.0")</text>
+  <text x="440" y="372" class="small">可并行调度；tool_use_id 关联结果</text>
+
+  <rect x="420" y="390" width="500" height="50" class="hot"/>
+  <text x="440" y="412" class="step">Observation  138.0</text>
+  <text x="440" y="430" class="small">observations 反馈回来；循环预算递减</text>
+
+  <rect x="420" y="448" width="500" height="50" class="box"/>
+  <text x="440" y="470" class="step">Finish  "含 15% 税的总额是 138.0"</text>
+  <text x="440" y="488" class="small">停止条件；trace 按 OTel GenAI 以 span 发出</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">ReAct（Yao et al., 2023）是 2026 年基底。Frameworks 封装它；loop 不变。</text>
+</svg>

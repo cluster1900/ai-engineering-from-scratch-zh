@@ -1,0 +1,37 @@
+[
+  {
+    "question": "Embeddings 解决了关键词搜索无法解决的什么问题？",
+    "options": ["Embeddings 更快", "Embeddings 捕捉语义含义，可以把“payment didn't go through”和“charge was declined”匹配起来，即使它们没有共享任何词", "Embeddings 使用更少存储", "Embeddings 可以离线工作"],
+    "correct": 1,
+    "explanation": "关键词搜索把词当作彼此独立的符号。Embeddings 将文本映射到高维 Vectors，其中语义相似度 = 几何距离接近。含义相同的文本会聚集在一起，不受用词选择影响。",
+    "stage": "pre"
+  },
+  {
+    "question": "Cosine similarity 衡量两个 Embedding Vectors 之间的什么？",
+    "options": ["Euclidean distance", "Vectors 之间的角度，表示它们的方向有多相似，而不考虑幅度", "它们分量的总和", "匹配维度的数量"],
+    "correct": 1,
+    "explanation": "Cosine similarity = dot(A,B) / (|A|*|B|)。它的范围从 -1（相反）到 1（方向相同）。含义相同的两段文本会有几乎指向同一方向的 Vectors，因此 cosine similarity 接近 1。",
+    "stage": "pre"
+  },
+  {
+    "question": "现代文本 Embedding 模型的典型维度是多少？",
+    "options": ["2-10 维", "50-100 维", "768-3072 维", "100,000+ 维"],
+    "correct": 2,
+    "explanation": "现代 Embedding 模型（OpenAI text-embedding-3、BGE、E5）会生成 768 到 3072 维的 Vectors。更高维度能捕捉更多细微差别，但存储和搜索成本也更高。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么应该使用检索 benchmark 来评估 Embedding 质量，而不只是检查相似度分数？",
+    "options": ["相似度分数总是错误的", "绝对相似度值会随模型而变化；真正重要的是相关文档是否排在不相关文档前面（precision@k、recall）", "检索 benchmark 更快", "相似度分数不使用 cosine distance"],
+    "correct": 1,
+    "explanation": "0.85 的 cosine similarity 对一个模型可能表示“非常相似”，对另一个模型可能表示“有些相似”。检索指标（precision@k、recall）衡量真正重要的事情：正确文档是否被返回？",
+    "stage": "post"
+  },
+  {
+    "question": "什么时候会使用本地/开源 Embedding 模型，而不是基于 API 的模型？",
+    "options": ["本地模型总是更好", "当你需要数据隐私、离线运行、大规模下更低成本，或面向特定领域的 fine-tuning 时", "本地模型会产生更高质量的 Embeddings", "API 模型不支持 batching"],
+    "correct": 1,
+    "explanation": "API Embeddings（OpenAI、Cohere）易用，但会把你的数据发送到外部。本地模型（BGE、E5、Nomic）让数据保持私有，消除大规模下的按调用计费，并且可以在特定领域数据上 fine-tune。",
+    "stage": "post"
+  }
+]

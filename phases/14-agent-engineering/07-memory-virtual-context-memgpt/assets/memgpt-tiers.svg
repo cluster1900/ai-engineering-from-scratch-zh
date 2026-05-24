@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .ram { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .disk { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .tool { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">MemGPT — 虚拟上下文作为 OS 内存 (Packer et al., 2023)</text>
+
+  <rect x="40" y="60" width="380" height="200" class="ram"/>
+  <text x="230" y="82" text-anchor="middle" class="head">主上下文（RAM 类比）</text>
+  <text x="60" y="108" class="small">固定大小 prompt 窗口，模型始终可见</text>
+
+  <rect x="60" y="118" width="340" height="60" class="box"/>
+  <text x="80" y="138" class="step">[core] persona, user, task</text>
+  <text x="80" y="156" class="small">命名区段固定在 prompt 内</text>
+  <text x="80" y="172" class="small">可通过 core_memory_{append,replace} 编辑</text>
+
+  <rect x="60" y="186" width="340" height="60" class="box"/>
+  <text x="80" y="206" class="step">[messages] 最近轮次</text>
+  <text x="80" y="224" class="small">FIFO buffer；达到上限淘汰最旧轮次</text>
+  <text x="80" y="240" class="small">被淘汰轮次可通过 conversation_search 获取</text>
+
+  <rect x="40" y="280" width="380" height="240" class="disk"/>
+  <text x="230" y="302" text-anchor="middle" class="head">archival memory（磁盘类比）</text>
+  <text x="60" y="328" class="small">无限、可搜索外部存储</text>
+
+  <rect x="60" y="340" width="340" height="60" class="box"/>
+  <text x="80" y="360" class="step">record: id, text, tags, session, turn</text>
+  <text x="80" y="378" class="small">由 archival_memory_insert 写入</text>
+  <text x="80" y="394" class="small">由 archival_memory_search(top_k) 检索</text>
+
+  <rect x="60" y="408" width="340" height="60" class="box"/>
+  <text x="80" y="428" class="step">可插拔 backend</text>
+  <text x="80" y="446" class="small">Vector（语义）、KV（事实）、graph（关系）</text>
+  <text x="80" y="462" class="small">Lesson 09 (Mem0) 融合三者</text>
+
+  <text x="230" y="496" text-anchor="middle" class="caption">citations (session_id, turn_id) 随每次写入传递</text>
+
+  <rect x="440" y="60" width="500" height="460" class="box"/>
+  <text x="690" y="82" text-anchor="middle" class="head">interrupt 模式 - 一轮</text>
+
+  <rect x="460" y="100" width="460" height="46" class="ram"/>
+  <text x="478" y="122" class="step">1. assistant “我需要用户当前项目”</text>
+  <text x="478" y="138" class="small">主 context 缺少该事实；仅凭窗口无法回答</text>
+
+  <rect x="460" y="154" width="460" height="46" class="tool"/>
+  <text x="478" y="176" class="step">2. tool call archival_memory_search("project for ava")</text>
+  <text x="478" y="192" class="small">memory tool 已发出；runtime 像 OS syscall 一样处理</text>
+
+  <rect x="460" y="208" width="460" height="46" class="disk"/>
+  <text x="478" y="230" class="step">3. archival 返回记录 a001</text>
+  <text x="478" y="246" class="small">“ava 正在构建带 12 个工具的 retrieval bot”</text>
+
+  <rect x="460" y="262" width="460" height="46" class="tool"/>
+  <text x="478" y="284" class="step">4. runtime 将 observation 拼入下一次 assistant 轮次</text>
+  <text x="478" y="300" class="small">形态与 ReAct loop 中任何 tool observation 相同</text>
+
+  <rect x="460" y="316" width="460" height="46" class="ram"/>
+  <text x="478" y="338" class="step">5. assistant 回答并引用 a001</text>
+  <text x="478" y="354" class="small">retrieval 可追溯到源记录</text>
+
+  <rect x="460" y="370" width="460" height="46" class="box"/>
+  <text x="478" y="392" class="step">6. 新事实出现  archival_memory_insert</text>
+  <text x="478" y="408" class="small">写回为下次 session 闭环</text>
+
+  <rect x="460" y="424" width="460" height="46" class="box"/>
+  <text x="478" y="446" class="step">7. 定期整合（Letta sleep-time，Lesson 08）</text>
+  <text x="478" y="462" class="small">过期记录去重，矛盾事实失效</text>
+
+  <line x1="420" y1="170" x2="460" y2="170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="420" y1="230" x2="460" y2="230" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="460" y1="390" x2="420" y2="390" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">Letta (2024) 扩展到三层。Mem0 (2025) 将 archival 换为 Vector+KV+graph。模式保留。</text>
+</svg>

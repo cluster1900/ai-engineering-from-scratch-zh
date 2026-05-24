@@ -1,0 +1,90 @@
+{
+  "lesson": "12-anthropic-workflow-patterns",
+  "title": "Anthropic 的 Workflow Patterns：简单优于复杂",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic 如何区分 workflow 和 agent？",
+      "options": [
+        "Workflows 使用 Embedding；agents 使用 tools",
+        "Workflows 是工程师掌控的预定义 graph；agents 是模型掌控的动态 tool direction",
+        "Workflows 在 CPUs 上运行；agents 需要 GPUs",
+        "Workflows 是无状态的；agents 是有状态的"
+      ],
+      "correct": 1,
+      "explanation": "Workflow = 工程师掌控的预定义代码路径；agent = 模型掌控 graph。"
+    },
+    {
+      "stage": "pre",
+      "question": "支撑所有五种模式的 augmented LLM 具备哪三种能力？",
+      "options": [
+        "Search（retrieval）、tools（actions）、memory（persistence）",
+        "Embedding、fine-tuning、RAG",
+        "Vector、KV、graph",
+        "Plan、execute、reflect"
+      ],
+      "correct": 0,
+      "explanation": "原子单元是一个接入 retrieval、tools 和 memory 的 LLM。"
+    },
+    {
+      "stage": "check",
+      "question": "以下哪一项不是 Anthropic 的五种 workflow patterns 之一？",
+      "options": [
+        "Prompt chaining",
+        "Routing",
+        "Evaluator-optimizer",
+        "Gradient distillation"
+      ],
+      "correct": 3,
+      "explanation": "这五种是 prompt chaining、routing、parallelization、orchestrator-workers、evaluator-optimizer。Gradient distillation 是一个训练概念。"
+    },
+    {
+      "stage": "check",
+      "question": "Parallelization 有哪两种形态？",
+      "options": [
+        "Sync 和 async",
+        "Sectioning（不同 chunks）和 voting（同一个 prompt 运行 N 次后聚合）",
+        "Hot 和 cold",
+        "Stateful 和 stateless"
+      ],
+      "correct": 1,
+      "explanation": "Parallelization 是 sectioning 或 voting；两者都会 fan out N 次 calls 并聚合。"
+    },
+    {
+      "stage": "check",
+      "question": "哪一种 workflow pattern 是 Self-Refine 的泛化？",
+      "options": [
+        "Prompt chaining",
+        "Routing",
+        "Orchestrator-workers",
+        "Evaluator-optimizer"
+      ],
+      "correct": 3,
+      "explanation": "Evaluator-optimizer 是 Anthropic 对 Self-Refine / CRITIC 迭代模式的命名。"
+    },
+    {
+      "stage": "post",
+      "question": "根据本课，workflows 什么时候胜过 agents？",
+      "options": [
+        "总是如此",
+        "在可预测、成本有界或合规有界的任务上，其中 graph 可以被枚举和审计",
+        "只适用于 chat",
+        "只在 GPUs 上"
+      ],
+      "correct": 1,
+      "explanation": "Workflows 更便宜、更容易调试，也可审计；当步骤可知时选择它们。"
+    },
+    {
+      "stage": "post",
+      "question": "本课推荐的默认起点是什么？",
+      "options": [
+        "一个 multi-agent framework",
+        "直接 API calls；只有当 durable state、actor concurrency 或 role templating 值得其成本时，才添加 frameworks",
+        "Fine-tune 模型",
+        "构建一个自定义 MCTS"
+      ],
+      "correct": 1,
+      "explanation": "Schluntz 和 Zhang：从简单开始；只有在有充分理由时才添加 framework complexity。"
+    }
+  ]
+}

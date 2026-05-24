@@ -1,0 +1,90 @@
+{
+  "lesson": "19-benchmarks-swebench-gaia",
+  "title": "Benchmarks：SWE-bench、GAIA、AgentBench",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SWE-bench 的 evaluator 会在候选 patch 上检查什么？",
+      "options": [
+        "与 reference fix 对比的 BLEU score",
+        "之前失败的 tests 现在通过（FAIL_TO_PASS），并且之前通过的 tests 仍然通过（PASS_TO_PASS）",
+        "Patch 长度少于 200 行",
+        "Patch 通过单独的 LLM judge"
+      ],
+      "correct": 1,
+      "explanation": "harness 基于 test transitions 进行 gate：暴露 bug 的 tests 必须翻转，而 regression tests 必须保持 green。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么存在 SWE-bench Verified？",
+      "options": [
+        "它运行更快",
+        "OpenAI 的 500-task human-curated subset 去除了模糊 issues 和不可靠 tests",
+        "它包含更多语言",
+        "它使用不同的 patch format"
+      ],
+      "correct": 1,
+      "explanation": "Verified 是更干净的 subset，用于可信报告。"
+    },
+    {
+      "stage": "check",
+      "question": "SWE-bench+ 对 successful patches 发现了什么？",
+      "options": [
+        "32.67% 在 issue 中泄露了 solution text，31.08% 有可疑的弱 test coverage",
+        "所有 patches 都是 memorized",
+        "不存在 contamination",
+        "Patches 总是超过 1000 行"
+      ],
+      "correct": 0,
+      "explanation": "SWE-bench+ 在大量 successful patches 中标记出了 solution leakage 和 weak coverage。"
+    },
+    {
+      "stage": "check",
+      "question": "GAIA 的 design philosophy 是什么？",
+      "options": [
+        "对 humans 难，对 AI 容易",
+        "对 humans 在概念上简单（约 92%），但对 AI 困难（早期带 plugins 的 GPT-4：约 15%）",
+        "纯粹的 Vector retrieval benchmark",
+        "只有 single-turn questions"
+      ],
+      "correct": 1,
+      "explanation": "GAIA 有意设计为 easy-for-humans、hard-for-AI，测试 reasoning + tools + modality。"
+    },
+    {
+      "stage": "check",
+      "question": "哪一个不是 AgentBench 的 environment categories？",
+      "options": [
+        "Code（Bash、DB、KG）",
+        "Games（Alfworld、LTP）",
+        "Web（WebShop、Mind2Web）",
+        "Gradient（RL、IRL）"
+      ],
+      "correct": 3,
+      "explanation": "AgentBench 覆盖 code、games、web 和 open-ended generation。不存在 gradient category。"
+    },
+    {
+      "stage": "post",
+      "question": "本课指出报告 SWE-bench numbers 的错误方式是什么？",
+      "options": [
+        "报告 per-repo breakdowns",
+        "只报告一个 aggregate number，而不提 Verified 或 SWE-bench+ context",
+        "报告 step counts",
+        "报告 wall-clock"
+      ],
+      "correct": 1,
+      "explanation": "执着于 single-number 会隐藏 contamination 和 cost；始终报告 Verified 和 per-distribution context。"
+    },
+    {
+      "stage": "post",
+      "question": "这些 benchmarks 没有衡量哪个维度？",
+      "options": [
+        "真实世界 operational cost（tokens、wall-clock）、adversarial safety，以及你自己的 domain",
+        "Test transitions",
+        "Per-task success",
+        "Step counts"
+      ],
+      "correct": 0,
+      "explanation": "Benchmarks 会 aggregate；它们无法捕捉 cost、adversarial robustness 或你的 domain。"
+    }
+  ]
+}

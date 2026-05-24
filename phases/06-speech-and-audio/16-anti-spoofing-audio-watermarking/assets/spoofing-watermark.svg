@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 460" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .content { font-size: 11px; fill: #333; font-family: 'Menlo', monospace; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 15px; font-weight: 700; fill: #1a1a1a; }
+      .tag { font-size: 10px; fill: #c0392b; font-weight: 600; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">三层防御 — 检测 + watermarking + provenance</text>
+
+  <rect x="20" y="55" width="270" height="170" class="box"/>
+  <text x="155" y="78" text-anchor="middle" class="label">A. anti-spoof 检测</text>
+  <text x="155" y="96" text-anchor="middle" class="tag">ASVspoof 5 · AASIST · RawNet2</text>
+  <text x="35" y="124" class="content">输入音频  →  classifier</text>
+  <text x="35" y="142" class="content">输出：“真实”或“合成”</text>
+  <text x="35" y="162" class="content">EER 0.42% on ASVspoof 2019 LA</text>
+  <text x="35" y="180" class="content">EER 7.23% on ASVspoof 5（真实世界）</text>
+  <text x="35" y="208" class="caption">应对非协作对手</text>
+
+  <rect x="305" y="55" width="270" height="170" class="hot"/>
+  <text x="440" y="78" text-anchor="middle" class="label">B. 音频 watermarking</text>
+  <text x="440" y="96" text-anchor="middle" class="tag">AudioSeal · WaveVerify</text>
+  <text x="320" y="124" class="content">generator Embedding signal</text>
+  <text x="320" y="142" class="content">detector 提取 payload</text>
+  <text x="320" y="162" class="content">每段 16-bit payload</text>
+  <text x="320" y="180" class="content">可经受 MP3 / EQ / 噪声</text>
+  <text x="320" y="208" class="caption">攻击前 bit 准确率 &gt; 99%</text>
+
+  <rect x="590" y="55" width="270" height="170" class="box"/>
+  <text x="725" y="78" text-anchor="middle" class="label">C. 溯源 manifest</text>
+  <text x="725" y="96" text-anchor="middle" class="tag">C2PA · CAI</text>
+  <text x="605" y="124" class="content">已签名 JSON manifest</text>
+  <text x="605" y="142" class="content">创建者 · 工具 · 时间戳</text>
+  <text x="605" y="162" class="content">加密 hash</text>
+  <text x="605" y="180" class="content">可离线验证</text>
+  <text x="605" y="208" class="caption">可被重新编码绕过 → 配合水印</text>
+
+  <rect x="20" y="245" width="840" height="95" class="box"/>
+  <text x="440" y="267" text-anchor="middle" class="label">每种防御的缺口 — 为何三者都需要</text>
+  <text x="40" y="294" class="content">检测：OOD 会退化；过拟合训练期生成器</text>
+  <text x="40" y="312" class="content">水印：pitch-shift 会破坏所有 2026 水印（bit acc &lt; 60%）</text>
+  <text x="40" y="330" class="content">溯源：重新编码即可轻易移除 → 单独无效</text>
+
+  <rect x="20" y="350" width="840" height="105" class="hot"/>
+  <text x="440" y="372" text-anchor="middle" class="label">2026 voice-gen 部署生产清单</text>
+  <text x="40" y="398" class="content">1. 每次生成都Embedding AudioSeal（detector 随 CI 发布）</text>
+  <text x="40" y="416" class="content">2. 用 C2PA 签名 manifest，含 model id + user id + timestamp</text>
+  <text x="40" y="434" class="content">3. 入站通话音频运行 AASIST / RawNet2 detector（欺诈、重放）</text>
+  <text x="40" y="452" class="content">4. 审计日志 + 30 天保留 + consent artifact + rate-limit + kill-switch</text>
+</svg>

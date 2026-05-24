@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .htn { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .ev { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .compare { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="26" text-anchor="middle" class="title">ChatHTN 与 AlphaEvolve — 两个 2025 混合规划器</text>
+
+  <rect x="40" y="50" width="440" height="210" class="htn"/>
+  <text x="260" y="72" text-anchor="middle" class="head">ChatHTN  符号式 + LLM 分解器</text>
+  <text x="60" y="96" class="small">复合任务  通过方法库分解</text>
+  <rect x="60" y="108" width="400" height="40" class="box"/>
+  <text x="78" y="130" class="step">1. 方法适用？展开子任务（可证明可靠）</text>
+  <rect x="60" y="156" width="400" height="40" class="box"/>
+  <text x="78" y="178" class="step">2. 无方法？请求 LLM 分解</text>
+  <rect x="60" y="204" width="400" height="40" class="box"/>
+  <text x="78" y="226" class="step">3. 按算子 schema 验证；成功后缓存</text>
+
+  <rect x="500" y="50" width="420" height="210" class="ev"/>
+  <text x="710" y="72" text-anchor="middle" class="head">AlphaEvolve  演化式代码搜索</text>
+  <text x="520" y="96" class="small">种子程序 + 确定性评估器</text>
+  <rect x="520" y="108" width="380" height="40" class="box"/>
+  <text x="538" y="130" class="step">1. LLM 集成提出变异</text>
+  <rect x="520" y="156" width="380" height="40" class="box"/>
+  <text x="538" y="178" class="step">2. 评估器为每个子程序打分</text>
+  <rect x="520" y="204" width="380" height="40" class="box"/>
+  <text x="538" y="226" class="step">3. 保留 top-k；变异；重复</text>
+
+  <rect x="40" y="290" width="880" height="220" class="compare"/>
+  <text x="480" y="312" text-anchor="middle" class="head">何时用哪个</text>
+
+  <rect x="60" y="330" width="840" height="40" class="box"/>
+  <text x="78" y="352" class="step">调度、合规、策略约束自动化  HTN（ChatHTN）</text>
+  <text x="78" y="368" class="small">可证明可靠；LLM 只扩展方法库</text>
+
+  <rect x="60" y="380" width="840" height="40" class="box"/>
+  <text x="78" y="402" class="step">Matrix-mult kernels、compiler passes、调度启发式  AlphaEvolve</text>
+  <text x="78" y="418" class="small">fitness 必须确定；当测试 / benchmarks 是评估器时有效</text>
+
+  <rect x="60" y="430" width="840" height="40" class="box"/>
+  <text x="78" y="452" class="step">开放式 agent 任务  ReAct / ReWOO（不用这些）</text>
+  <text x="78" y="468" class="small">无算子 schema，无机器可检验 fitness；转向第 01-02 课</text>
+
+  <rect x="60" y="480" width="840" height="26" class="box"/>
+  <text x="78" y="498" class="step">混合：顶层用 HTN，每个 primitive operator 用 AlphaEvolve  逐案判断</text>
+
+  <text x="480" y="540" text-anchor="middle" class="caption">LLMs 放大能力；不负责正确性。符号层和评估器负责硬保证。</text>
+</svg>

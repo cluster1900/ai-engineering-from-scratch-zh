@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 AI projects 需要单独的 virtual environment？",
+      "options": [
+        "Virtual environments 会让 code 运行得更快",
+        "它们会隔离 dependencies，这样不同 projects 不会互相冲突",
+        "Python 要求 virtual environments 才能 import packages",
+        "Virtual environments 提供 GPU access"
+      ],
+      "correct": 1,
+      "explanation": "Virtual environments 会按 project 隔离 package versions。没有它们，为一个 project 升级 PyTorch 可能会破坏另一个依赖旧版本的 project。"
+    },
+    {
+      "stage": "pre",
+      "question": "CUDA 为 AI workloads 提供什么？",
+      "options": [
+        "用于 ML libraries 的 Python package manager",
+        "用于部署 models 的 web framework",
+        "在 NVIDIA GPUs 上针对 Matrix operations 的 parallel computing",
+        "用于 model serving 的 container runtime"
+      ],
+      "correct": 2,
+      "explanation": "CUDA 是 NVIDIA 的 parallel computing platform，让你能在数千个 GPU cores 上同时运行 Matrix operations。PyTorch 和 TensorFlow 在底层使用它。"
+    },
+    {
+      "stage": "post",
+      "question": "在四层 environment stack 中，哪一层必须最先安装？",
+      "options": [
+        "AI/ML Libraries (PyTorch, JAX)",
+        "Package Managers (pip, npm, cargo)",
+        "Language Runtimes (Python, Node.js)",
+        "System Foundation (OS, shell, GPU drivers)"
+      ],
+      "correct": 3,
+      "explanation": "你要自底向上安装：先是 system foundation（OS、drivers），然后是 package managers，再是 language runtimes，最后是 AI libraries。每一层都依赖它下面的一层。"
+    },
+    {
+      "stage": "post",
+      "question": "uv 在 Python AI project 中的用途是什么？",
+      "options": [
+        "GPU monitoring tool",
+        "超快的 Python package installer 和 resolver",
+        "Neural Network visualization library",
+        "用于 custom kernels 的 CUDA compiler"
+      ],
+      "correct": 1,
+      "explanation": "uv 是用 Rust 写的快速 Python package installer。它取代 pip，提供快得多的 dependency resolution 和 installation，通常快 10-100x。"
+    },
+    {
+      "stage": "post",
+      "question": "如何验证 PyTorch 能访问你的 GPU？",
+      "options": [
+        "import torch; print(torch.__version__)",
+        "nvidia-smi --query",
+        "import torch; print(torch.cuda.is_available())",
+        "python -c 'import gpu'"
+      ],
+      "correct": 2,
+      "explanation": "如果 PyTorch 能访问 CUDA GPUs，torch.cuda.is_available() 会返回 True。在 Apple Silicon 上，使用 torch.backends.mps.is_available() 检查 Metal Performance Shaders。"
+    }
+  ]
+}

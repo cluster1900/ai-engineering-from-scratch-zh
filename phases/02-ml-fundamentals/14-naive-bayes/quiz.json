@@ -1,0 +1,67 @@
+[
+  {
+    "id": "nb-pre-1",
+    "stage": "pre",
+    "question": "Naive Bayes 中的“naive”假设是什么？",
+    "options": [
+      "每个类别的先验概率都相等",
+      "在给定类别标签的条件下，所有特征都是条件独立的",
+      "数据服从正态分布",
+      "模型没有需要学习的参数"
+    ],
+    "correct": 1,
+    "explanation": "Naive Bayes 假设在给定类别的条件下，每个特征都与其他所有特征独立。这在数学上是错误的（例如，'machine' 和 'learning' 会共同出现），但在实践中效果很好。"
+  },
+  {
+    "id": "nb-pre-2",
+    "stage": "pre",
+    "question": "Laplace smoothing 在 Naive Bayes 中防止什么问题？",
+    "options": [
+      "对大型数据集过拟合",
+      "训练期间某个类别中从未出现过的词得到零概率",
+      "高维数据上的训练速度缓慢",
+      "数据集中的类别不平衡"
+    ],
+    "correct": 1,
+    "explanation": "如果没有 smoothing，一个从未出现在 'spam' 训练邮件中的词会得到 P(word|spam) = 0，使整个乘积变为零，而不管其他证据有多强。Laplace smoothing 会给每个计数加 1。"
+  },
+  {
+    "id": "nb-post-1",
+    "stage": "post",
+    "question": "naive independence 假设对文本来说显然是错误的。为什么 Naive Bayes 仍然能很好地分类？",
+    "options": [
+      "它只适用于 independence 成立的非常小词表",
+      "Classification 只需要正确的类别排序，而不需要正确的概率估计，并且该假设引入的是稳定误差，会以相似方式影响所有类别",
+      "现代实现会秘密移除 independence 假设",
+      "它只在特征真正独立时有效"
+    ],
+    "correct": 1,
+    "explanation": "NB 需要正确地给类别排序，而不是估计精确概率。independence 假设具有高 bias 但低 variance，因此在有限数据下很稳定。相关特征也会为正确类别重复计算证据。"
+  },
+  {
+    "id": "nb-post-2",
+    "stage": "post",
+    "question": "什么时候应该使用 Multinomial NB，而什么时候使用 Gaussian NB？",
+    "options": [
+      "Multinomial 用于 Regression，Gaussian 用于 Classification",
+      "Multinomial 用于词计数/频率特征，Gaussian 用于连续实值特征",
+      "Multinomial 用于二元数据，Gaussian 用于多类别问题",
+      "它们可以互换 -- 总是使用更快的那个"
+    ],
+    "correct": 1,
+    "explanation": "Multinomial NB 建模特征计数（文本中的词频）。Gaussian NB 假设特征服从正态分布，适合测量值或传感器读数等连续特征。"
+  },
+  {
+    "id": "nb-post-3",
+    "stage": "post",
+    "question": "一封邮件包含两次 'free' 和一次 'money'。在使用 log probabilities 的 Multinomial NB 中，spam 分数如何计算？",
+    "options": [
+      "log P(spam) + log P(free|spam) + log P(money|spam)",
+      "log P(spam) + 2 * log P(free|spam) + 1 * log P(money|spam)",
+      "P(spam) * P(free|spam) * P(money|spam)",
+      "log P(spam) * 2 * log P(free|spam)"
+    ],
+    "correct": 1,
+    "explanation": "Multinomial NB 会将词 likelihood 按其计数作为指数后相乘。在 log 空间中：log P(spam) + 2*log P(free|spam) + 1*log P(money|spam)。词计数起到指数的作用。"
+  }
+]

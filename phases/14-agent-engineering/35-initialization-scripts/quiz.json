@@ -1,0 +1,90 @@
+{
+  "lesson": "35-initialization-scripts",
+  "title": "Agent 的初始化脚本",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "init script 消除了什么？",
+      "options": [
+        "推理带来的延迟",
+        "每个 session 的设置成本：探测 runtime、列出 repo、在每个新 session 中重试相同检查",
+        "Provider rate limits",
+        "Authn Token"
+      ],
+      "correct": 1,
+      "explanation": "该 script 只支付一次成本，并把答案写入 agent 读取的 init_report.json。"
+    },
+    {
+      "stage": "pre",
+      "question": "init script 的 failure-mode contract 是什么？",
+      "options": [
+        "软失败并继续",
+        "响亮失败、快速失败、集中失败；当 workbench 损坏时拒绝启动",
+        "总是成功",
+        "永远重试"
+      ],
+      "correct": 1,
+      "explanation": "核心目的就是在 workbench 损坏时拒绝启动；静默 fallback 会违背目的。"
+    },
+    {
+      "stage": "check",
+      "question": "哪一项不是本课列出的 probe？",
+      "options": [
+        "Runtime 版本",
+        "Dependency 可用性",
+        "Test command 可解析性",
+        "逐 Token 采样温度"
+      ],
+      "correct": 3,
+      "explanation": "Probe 包括 runtime 版本、deps、test command、paths、env vars、state freshness、last-known-good commit。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么本课说 init 必须是 idempotent？",
+      "options": [
+        "它满足 SOC 2",
+        "运行两次应该是 no-op，除了刷新 timestamp，因此它可以接入 CI、hooks 或 pre-task slash command",
+        "Idempotence 可以省钱",
+        "JSON Schema 要求这样"
+      ],
+      "correct": 1,
+      "explanation": "Idempotence 让 init 可以安全地从多个入口点调用（hooks、CI、slash command）。"
+    },
+    {
+      "stage": "check",
+      "question": "last-known-good commit anchoring 是什么？",
+      "options": [
+        "团队负责人最近一次提交",
+        "用 LKG file probe 当前 commit；如果 diff 超过预算且没有 human ratification，就拒绝启动",
+        "repo 中最早的 commit",
+        "HEAD 和 main 的 merge base"
+      ],
+      "correct": 1,
+      "explanation": "Cloudflare 的 AI Code Review 会相对 LKG 限定 reviewer 的范围，以防止 drift 在多个 session 中叠加。"
+    },
+    {
+      "stage": "post",
+      "question": "带 TTL 的 lock file pattern 做什么？",
+      "options": [
+        "锁定 repo，禁止编辑",
+        "在成功通过 probe 后写入 prereqs.lock；后续运行信任该 lock 24h，并在 manifest hash 匹配时跳过昂贵的 probe",
+        "阻止所有写入 24 小时",
+        "禁用 CI"
+      ],
+      "correct": 1,
+      "explanation": "形态与 Docker layer caches 相同：idempotent probe + content hash = skip。"
+    },
+    {
+      "stage": "post",
+      "question": "什么绝不能出现在 init hot path 中？",
+      "options": [
+        "本地 filesystem 读取",
+        "Network calls、LLM calls、external license checks；probe 是三秒内完成的 deterministic plumbing",
+        "读取 env vars",
+        "读取 lockfile"
+      ],
+      "correct": 1,
+      "explanation": "调用 LLM 的 probe 是 workflow，不是 probe；保持 init deterministic。"
+    }
+  ]
+}

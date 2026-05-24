@@ -1,0 +1,78 @@
+{
+  "lesson": "06-sglang-radixattention",
+  "title": "用于 Prefix-Heavy Workloads 的 SGLang 与 RadixAttention",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SGLang 的 KV cache 复用由哪种核心数据结构支撑？",
+      "options": [
+        "一个 radix tree，其中每个 node 拥有一个 Token range 及其 KV blocks",
+        "一个以完整 prompt 为 key 的 hash table",
+        "一个以 request id 为 key 的 skip list",
+        "一个由 attention scores 组成的 B-tree"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 FCFS scheduling 不适合 SGLang 上的 prefix-heavy traffic？",
+      "options": [
+        "FCFS 只适用于 AMD GPUs",
+        "FCFS 是推荐的 SGLang policy",
+        "FCFS 与 PagedAttention 不兼容",
+        "FCFS 可能会在下一个 long-prefix request 命中之前 evict 一个 hot prefix branch，从而破坏 radix-tree 复用"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "SGLang 的 cache-aware scheduler 使用什么 eviction 粒度来匹配 radix shape？",
+      "options": [
+        "仅 per-request",
+        "整个 branches，从使用最少的 leaves 开始",
+        "单个 Tokens",
+        "随机 eviction"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为了让 radix-tree 的 shared prefix 保持可发现，工程师最直接可用的 lever 是什么？",
+      "options": [
+        "降低 GPU memory utilization knob",
+        "修正 prompt-template ordering，让 immutable content（system、tools、schemas）始终位于最前面",
+        "始终使用 static batching",
+        "禁用 continuous batching"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "本课认为 RadixAttention 不会在哪种 workload pattern 上胜出？",
+      "options": [
+        "带 shared tool schemas 的 Agents",
+        "带重复 preambles 的 Voice workloads",
+        "带 shared retrieval preamble 的 RAG",
+        "使用独特 prompts 且没有 shared system prompt 的 single-shot generation"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "ProjectDiscovery 的 deployment 通过做什么，将 prefix-cache hit rate 从 7% 提升到 74%？",
+      "options": [
+        "将 dynamic content 移出 cacheable prefix",
+        "将 GPU 数量从 8 增加到 16",
+        "在不做任何 prompt changes 的情况下从 vLLM 切换到 SGLang",
+        "禁用 continuous batching"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

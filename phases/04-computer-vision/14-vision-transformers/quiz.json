@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "ViT 如何把一张图像转换为 Token 序列？",
+      "options": ["把整张图像展平成一个 Vector", "应用一个 kernel_size = stride = patch_size 的 conv，把图像拆成不重叠的 patches，并在同一次操作中将每个 patch 线性投影为一个 Token Embedding", "先运行一个 CNN，并把它的 feature map 用作 Token", "对像素强度排序"],
+      "correct": 1,
+      "explanation": "ViT 的第一层是一个 kernel_size = stride = 16 的 conv，把 224x224 图像转换为 14x14 的 16x16 patch 网格，每个 patch 被投影到 dim=768。这个单一 conv 同时完成 patchification 和 projection。结果是 196 个 Token，可由标准 Transformer encoder 处理。"
+    },
+    {
+      "stage": "pre",
+      "question": "ViT 中的 [CLS] token 是什么，为什么需要它？",
+      "options": ["一个添加到 Token 序列开头的 learned Vector；经过 N 个 Transformer 层后，它的输出聚合整张图像并送入 classifier head", "一个特殊的像素值", "缺失数据的占位符", "一个 dropout mask"],
+      "correct": 0,
+      "explanation": "ViT 沿用 BERT 的约定：在 patch 序列前添加一个 learned Vector（CLS token）。Self-Attention 让每个 Token 都能看到其他所有 Token，因此 CLS token 会从所有 patches 聚合全局信息。classifier 只读取 CLS 输出。替代设计会对所有 patch tokens 做 average-pooling（ConvNeXt 和许多后 ViT 模型使用这种方式）。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么原始 ViT 论文需要 JFT-300M pretraining 才能击败 ResNet，而 DeiT 不需要？",
+      "options": ["没有 JFT-300M 时 ViT 是坏的", "ViT 的 inductive bias 比 CNN 更弱；没有足够数据时它会 overfit。DeiT 表明，通过强 augmentation（RandAugment、Mixup、CutMix）、stochastic depth，以及可选的 CNN distillation，仅用 ImageNet-1k 也能很好地训练 ViTs", "DeiT 使用不同的 Attention", "ViT 论文是错的"],
+      "correct": 1,
+      "explanation": "ViT 缺少 inductive bias（没有内置 locality，也没有 translation equivariance），这意味着网络必须从数据中学习这些性质。用 1M 张 ImageNet 图像很难；用 300M 张 JFT 图像就容易。DeiT 用训练配方的改进替代了数据：重度 augmentation、stochastic depth，以及来自 CNN teacher 的 distillation，这些都能补偿先验的缺失。"
+    },
+    {
+      "stage": "post",
+      "question": "Pre-LayerNorm（`x = x + sublayer(LN(x))`）vs post-LayerNorm（`x = LN(x + sublayer(x))`）——现代 Transformer 使用哪一种，为什么？",
+      "options": ["Post-LN；它更简单", "Pre-LN；它能稳定训练更深的网络，不需要 learning-rate warmup，并避免 post-LN 在约 6 层之后遭遇的 Gradient 不稳定", "它们是相同的", "都不是；现代 Transformer 跳过 LayerNorm"],
+      "correct": 1,
+      "explanation": "Post-LN 是原始 Transformer（2017）的做法，在超过 6-8 层后需要谨慎的 warmup 和较小 learning rates。Pre-LN（Xiong et al., 2020；ViT、GPT-2+、每个现代 LLM 都使用）在数值上更稳定：residual stream 累积时不经过 LN，每个 sublayer 都在 normalized input 上操作。任何超过 12 层的 Transformer 都使用 pre-LN。"
+    },
+    {
+      "stage": "post",
+      "question": "Swin Transformer 引入了 windowed attention。它解决了什么问题？",
+      "options": ["Vanishing gradients", "Full attention 的成本是 O((H*W)^2)；Swin 将 Attention 限制在 7x7 patches 的局部窗口内，把成本降到 O(H*W * window^2)。交替的 blocks 会把窗口移动半个窗口大小，使信息最终能跨图像混合", "不支持 BatchNorm", "对 texture overfitting"],
+      "correct": 1,
+      "explanation": "一张 224x224 图像使用 4x4 patches 时有 56*56 = 3136 个 Token；full attention 每层需要 3136^2 = 约 10M 个 pairs。Swin 只在 7x7 窗口内做 Attention，每个窗口有 49^2 = 2401 个 pairs（再加上窗口数量）。交替 blocks 中的 shifted windows 会在几层内跨窗口混合信息。这把类似 CNN 的 locality prior 带回 Transformer，同时不放弃 Attention。"
+    }
+  ]
+}

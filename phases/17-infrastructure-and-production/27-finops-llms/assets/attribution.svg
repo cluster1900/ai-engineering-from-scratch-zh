@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .dim { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .layer { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .enforce { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .kill { fill: #ffe1e1; stroke: #b71c1c; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="24" text-anchor="middle" class="title">LLMs 的 FinOps — 三维度、四层、三级执行</text>
+
+  <rect x="40" y="50" width="280" height="180" class="dim"/>
+  <text x="180" y="72" text-anchor="middle" class="head">三种归因维度</text>
+  <rect x="60" y="90" width="240" height="35" class="box"/>
+  <text x="180" y="112" text-anchor="middle" class="step">按用户（user_id）</text>
+  <rect x="60" y="130" width="240" height="35" class="box"/>
+  <text x="180" y="152" text-anchor="middle" class="step">按任务（task_id + route）</text>
+  <rect x="60" y="170" width="240" height="35" class="box"/>
+  <text x="180" y="192" text-anchor="middle" class="step">按租户（tenant_id）</text>
+  <text x="180" y="222" text-anchor="middle" class="caption">day 1 即采集三者</text>
+
+  <rect x="340" y="50" width="280" height="180" class="layer"/>
+  <text x="480" y="72" text-anchor="middle" class="head">四个 Token 层</text>
+  <text x="360" y="96" class="step">· prompt（40-60%）</text>
+  <text x="360" y="116" class="step">· tool（20-40%，agent-heavy）</text>
+  <text x="360" y="136" class="step">· memory（10-30%，RAG）</text>
+  <text x="360" y="156" class="step">· response（10-30%）</text>
+  <text x="480" y="200" text-anchor="middle" class="caption">把四项混在一起会隐藏优化杠杆</text>
+
+  <rect x="640" y="50" width="280" height="180" class="enforce"/>
+  <text x="780" y="72" text-anchor="middle" class="head">三层执行</text>
+  <text x="660" y="96" class="step">1. 每租户速率限制</text>
+  <text x="660" y="114" class="small">峰值 2-3x，429 + Retry-After</text>
+  <text x="660" y="138" class="step">2. 每租户每日支出上限</text>
+  <text x="660" y="156" class="small">合同 1.5-3x；收紧速率 + 提醒 CS</text>
+  <text x="660" y="180" class="step">3. z-score &gt; 4 时 kill switch</text>
+  <text x="660" y="198" class="small">自动暂停 + 呼叫 on-call</text>
+
+  <rect x="40" y="260" width="880" height="100" class="box"/>
+  <text x="480" y="282" text-anchor="middle" class="head">单位指标：每个产品结果成本，不是 $/M Token</text>
+  <text x="60" y="308" class="step">每个已解决工单成本</text>
+  <text x="60" y="326" class="step">每篇生成文章成本</text>
+  <text x="60" y="344" class="step">每个成功 agent 任务成本</text>
+  <text x="500" y="308" class="step">每用户会话分钟成本</text>
+  <text x="500" y="326" class="step">每次索引刷新成本</text>
+  <text x="500" y="344" class="caption">把成本绑定到产品结果，否则优化无锚点</text>
+
+  <rect x="40" y="380" width="880" height="110" class="kill"/>
+  <text x="480" y="402" text-anchor="middle" class="head">叠加优化上限：约为朴素基线的 5-10%</text>
+  <text x="480" y="424" text-anchor="middle" class="step">缓存 (14) + 批处理 (15) + 路由 (16) + 网关 (19)</text>
+  <text x="480" y="444" text-anchor="middle" class="step">每项减半或 10x；复合后相乘</text>
+  <text x="480" y="464" text-anchor="middle" class="caption">多数团队用 2-3 个杠杆；少数叠满四个</text>
+  <text x="480" y="484" text-anchor="middle" class="small">泄漏支出 = 最优叠加与当前状态的差距</text>
+</svg>

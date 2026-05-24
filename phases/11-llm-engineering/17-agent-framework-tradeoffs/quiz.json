@@ -1,0 +1,65 @@
+{
+  "lesson": "phase-11/17-agent-framework-tradeoffs",
+  "questions": [
+    {
+      "stage": "post",
+      "question": "对于一个必须在 crash 后 resume、在运行中接受 human approval，并 parallel fan out 到三个 retrievers 的 workflow，哪个 framework 是正确的首选？",
+      "options": [
+        "CrewAI",
+        "AutoGen",
+        "LangGraph",
+        "Agno"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 LLM-selected routing 比 explicit routing 每轮消耗更多 Token？",
+      "options": [
+        "它会 parallel pre-fetch 下一个 node 来对冲 latency。",
+        "每轮由一次 planner LLM 调用选择下一步，为每个 decision 增加 prompt 和 completion tokens。",
+        "它会为 crew 中的每个 agent 复制 tool list。",
+        "它会把整个 conversation history 发送给 verifier model。"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "代码审查中的 proposer-critic dialogue 自然映射到哪个 framework 的 core abstraction？",
+      "options": [
+        "CrewAI 的 sequential Crew",
+        "LangGraph 的 StateGraph",
+        "AutoGen 的 GroupChat / ConversableAgent 组合",
+        "Agno 的 single Agent with tools"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个 framework 拥有直接附加到 Agent primitive 的内置 storage drivers（SQLite、Postgres、Redis、Mongo、DynamoDB），用于 session 和 memory persistence？",
+      "options": [
+        "LangGraph",
+        "CrewAI",
+        "AutoGen",
+        "Agno"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "你有一个两次调用的 summarizer：fetch text，summarize。哪个选项是正确的 framework 选择？",
+      "options": [
+        "LangGraph StateGraph \u2014 为了 reliability，始终使用 framework。",
+        "CrewAI 搭配 researcher + summarizer roles \u2014 roles 会让它更清晰。",
+        "Plain Python 搭配 provider SDK \u2014 对 tiny pipelines 来说，没有 framework 就是最快的 framework。",
+        "AutoGen GroupChat \u2014 两个 agents 可以争论最佳 summary。"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

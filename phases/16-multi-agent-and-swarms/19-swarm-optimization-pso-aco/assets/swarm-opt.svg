@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .dot { fill: #2c5ea9; }
+      .dot2 { fill: #c0392b; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">LLMs 的群体优化 — PSO 和 ACO 用于 prompts 与 routing</text>
+
+  <rect x="40" y="60" width="420" height="210" class="cold"/>
+  <text x="250" y="84" text-anchor="middle" class="head">PSO — Particle Swarm Optimization</text>
+
+  <rect x="70" y="110" width="360" height="120" class="box"/>
+  <text x="250" y="130" text-anchor="middle" class="small">参数空间（此处 2D；实践中：prompt embedding、LoRA delta）</text>
+  <circle cx="290" cy="175" r="5" class="dot2"/>
+  <text x="290" y="190" text-anchor="middle" class="small">最优点</text>
+  <circle cx="90" cy="150" r="4" class="dot"/>
+  <circle cx="130" cy="165" r="4" class="dot"/>
+  <circle cx="180" cy="160" r="4" class="dot"/>
+  <circle cx="220" cy="170" r="4" class="dot"/>
+  <circle cx="260" cy="175" r="4" class="dot"/>
+  <circle cx="340" cy="185" r="4" class="dot"/>
+  <circle cx="400" cy="200" r="4" class="dot"/>
+  <text x="250" y="246" text-anchor="middle" class="caption">v = w*v + c1*r1*(p_best - x) + c2*r2*(g_best - x)</text>
+
+  <text x="250" y="265" text-anchor="middle" class="small">LMPSO：velocity 是 prompt；Model Swarms：particles 是 expert weights（+13.3%）</text>
+
+  <rect x="500" y="60" width="420" height="210" class="cool"/>
+  <text x="710" y="84" text-anchor="middle" class="head">ACO — Ant Colony Optimization</text>
+
+  <rect x="530" y="110" width="360" height="120" class="box"/>
+  <text x="550" y="134" class="small">task_type    coder   mathematician   writer</text>
+  <text x="550" y="154" class="small">code         2.96    0.08            0.08</text>
+  <text x="550" y="172" class="small">math         0.08    3.21            0.08</text>
+  <text x="550" y="190" class="small">writing      0.08    0.08            2.97</text>
+  <text x="550" y="208" class="small">planning     0.08    0.25            0.88</text>
+  <text x="710" y="246" text-anchor="middle" class="caption">pheromone(t, a) *= (1 - decay); += reinforce*quality on quality-gated deposit</text>
+  <text x="710" y="265" text-anchor="middle" class="small">AMRO-S：4.7x 加速；可解释 routing 证据；async update</text>
+
+  <rect x="40" y="295" width="880" height="200" class="box"/>
+  <text x="480" y="319" text-anchor="middle" class="head">何时用什么</text>
+
+  <text x="60" y="352" class="step">PSO</text>
+  <text x="180" y="352" class="small">连续数值或低维连续 Embedding · 便宜 fitness · pop 10-30</text>
+
+  <text x="60" y="378" class="step">ACO</text>
+  <text x="180" y="378" class="small">routing / 路径选择 · 决策随时间强化 · 需要可解释证据</text>
+
+  <text x="60" y="404" class="step">GA</text>
+  <text x="180" y="404" class="small">离散符号 / program synthesis · population-based，crossover-driven</text>
+
+  <text x="60" y="430" class="step">DPO/RL</text>
+  <text x="180" y="430" class="small">可微分 reward · 大预算 · training-time optimization</text>
+
+  <text x="60" y="456" class="step">手动</text>
+  <text x="180" y="456" class="small">预算 &lt; $100 · 个位数参数 · cache hits 比搜索更值</text>
+
+  <text x="60" y="484" class="caption">所有 swarm optimizers 都需要 quality gate，避免锁定快但错的候选</text>
+</svg>

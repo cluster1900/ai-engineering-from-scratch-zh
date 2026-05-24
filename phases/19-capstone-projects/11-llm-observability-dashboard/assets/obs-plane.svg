@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">自托管 LLM 可观测平面 — OTel GenAI semconv</text>
+
+  <rect x="40" y="50" width="260" height="160" class="cool"/>
+  <text x="170" y="72" text-anchor="middle" class="head">已埋点应用</text>
+  <text x="170" y="94" text-anchor="middle" class="small">OpenAI SDK   Anthropic SDK</text>
+  <text x="170" y="112" text-anchor="middle" class="small">Google GenAI   LangChain</text>
+  <text x="170" y="130" text-anchor="middle" class="small">LlamaIndex   vLLM</text>
+  <text x="170" y="152" text-anchor="middle" class="small">OpenLLMetry 自动埋点</text>
+  <text x="170" y="170" text-anchor="middle" class="small">OTLP HTTP -&gt; collector</text>
+  <text x="170" y="192" text-anchor="middle" class="caption">覆盖六类 SDK</text>
+
+  <rect x="340" y="50" width="260" height="160" class="dsk"/>
+  <text x="470" y="72" text-anchor="middle" class="head">collector</text>
+  <text x="470" y="94" text-anchor="middle" class="small">OTLP HTTP receiver</text>
+  <text x="470" y="112" text-anchor="middle" class="small">tail-sampling processor</text>
+  <text x="470" y="130" text-anchor="middle" class="small">保留所有错误</text>
+  <text x="470" y="148" text-anchor="middle" class="small">保留 toxicity / PII 峰值</text>
+  <text x="470" y="166" text-anchor="middle" class="small">10% 分层成功样本</text>
+  <text x="470" y="184" text-anchor="middle" class="small">exporter：ClickHouse + S3</text>
+
+  <rect x="640" y="50" width="280" height="160" class="cold"/>
+  <text x="780" y="72" text-anchor="middle" class="head">存储</text>
+  <text x="780" y="94" text-anchor="middle" class="small">ClickHouse：spans（列式）</text>
+  <text x="780" y="112" text-anchor="middle" class="small">Postgres：metadata</text>
+  <text x="780" y="130" text-anchor="middle" class="small">S3：raw event archive</text>
+  <text x="780" y="148" text-anchor="middle" class="small">schema 映射 GenAI semconv</text>
+  <text x="780" y="166" text-anchor="middle" class="small">gen_ai.system, request.model</text>
+  <text x="780" y="184" text-anchor="middle" class="small">usage.input_tokens, output_tokens</text>
+
+  <rect x="40" y="240" width="400" height="270" class="box"/>
+  <text x="240" y="262" text-anchor="middle" class="head">evals + drift（child spans）</text>
+  <rect x="60" y="280" width="360" height="40" class="cool"/>
+  <text x="240" y="304" text-anchor="middle" class="step">DeepEval / RAGAS 定时任务</text>
+  <rect x="60" y="326" width="360" height="40" class="cool"/>
+  <text x="240" y="350" text-anchor="middle" class="step">自定义 LLM-judges（PII, off-policy）</text>
+  <rect x="60" y="372" width="360" height="40" class="hot"/>
+  <text x="240" y="396" text-anchor="middle" class="step">drift 检测器（每周 PSI / KL）</text>
+  <text x="240" y="436" text-anchor="middle" class="small">eval 输出变为关联 child spans</text>
+  <text x="240" y="454" text-anchor="middle" class="small">存入同一 ClickHouse，按 parent join</text>
+  <text x="240" y="472" text-anchor="middle" class="small">tail-sampler 保留所有高 eval-score traces</text>
+  <text x="240" y="494" text-anchor="middle" class="caption">注入回归的 MTTR 目标：&lt; 5 min</text>
+
+  <rect x="480" y="240" width="440" height="270" class="box"/>
+  <text x="700" y="262" text-anchor="middle" class="head">告警 + UI</text>
+  <rect x="500" y="280" width="400" height="40" class="hot"/>
+  <text x="700" y="304" text-anchor="middle" class="step">Prometheus Alertmanager</text>
+  <rect x="500" y="326" width="400" height="40" class="dsk"/>
+  <text x="700" y="350" text-anchor="middle" class="step">Slack（警告）+ PagerDuty（严重）</text>
+  <rect x="500" y="372" width="400" height="40" class="cool"/>
+  <text x="700" y="396" text-anchor="middle" class="step">Next.js 15 + Recharts dashboard</text>
+
+  <text x="700" y="436" text-anchor="middle" class="small">页面：overview / traces / evals / drift</text>
+  <text x="700" y="454" text-anchor="middle" class="small">每用户成本、span waterfall、eval 趋势</text>
+  <text x="700" y="472" text-anchor="middle" class="small">Langfuse / Phoenix / OpenLLMetry 形态</text>
+  <text x="700" y="494" text-anchor="middle" class="caption">open-core 自托管参考</text>
+</svg>

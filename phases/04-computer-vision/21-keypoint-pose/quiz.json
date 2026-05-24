@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 pose models 会回归 heatmaps，而不是直接回归 (x, y) coordinates？",
+      "options": ["Heatmaps 的计算成本更低", "conv feature map 的空间结构与空间输出对齐；Gaussian heatmap target 提供了平滑的 Loss landscape，能够容忍小的定位误差，而直接 coordinate regression 很脆弱并且会丢失空间上下文", "COCO metric 要求使用 Heatmaps", "Coordinate regression 会产生 NaN"],
+      "correct": 1,
+      "explanation": "用 MSE 回归 coordinates 会要求网络把 2D 位置压缩成两个标量，丢失 CNNs 所利用的 feature-map 对齐。Heatmap regression 给网络提供了围绕真实位置平滑的 per-pixel Loss，并保留空间先验。相比 coordinate regression 的经验性提升足够大，因此每个现代 pose model 都使用 heatmaps。"
+    },
+    {
+      "stage": "pre",
+      "question": "Top-down pose estimation 与 bottom-up 相比：哪一种在 crowd size 增大时扩展性更好，为什么？",
+      "options": ["Top-down，因为每个人都使用一个单独的快速模型", "Bottom-up，因为它对整张图像只做一次 forward pass，然后对 keypoints 分组，所以 runtime 不随人数变化", "它们的扩展性相同", "Top-down 从不具备扩展性"],
+      "correct": 1,
+      "explanation": "Top-down 在 person detector 之后运行 per-person keypoint model，因此成本会随人数线性增长。Bottom-up（OpenPose, HigherHRNet）在一次 pass 中产生所有 keypoints 和 association fields，然后将它们分组，因此无论人群密度如何都是 constant time。取舍是：top-down 的 per-person 准确率更高；bottom-up 在人群中更快。"
+    },
+    {
+      "stage": "post",
+      "question": "Part Affinity Fields 是什么？",
+      "options": ["一种 scheduling algorithm", "2-channel unit-vector fields，用来编码从一个 keypoint 到另一个 keypoint 的方向；沿候选连线积分 PAF 可以判断两个 keypoints 是否属于同一个 instance，从而在不进行 per-person detection 的情况下实现 bottom-up association", "一种 data augmentation 技术", "一种 Loss Function"],
+      "correct": 1,
+      "explanation": "对每个相连的 keypoint pair（limb），预测一个 2-channel field（指向另一个 keypoint 的 unit vector 的 x, y components）。为了匹配候选 shoulder 和候选 elbow，沿连接它们的线对 PAF 积分；积分越高，匹配越强。这会把 pose 转化为一个可在 polynomial time 内求解的 bipartite matching problem。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 argmax 周围的 sub-pixel refinement 能显著提升 keypoint accuracy？",
+      "options": ["它会平滑 heatmap", "Integer argmax 会四舍五入到最近的 grid cell；拟合 local parabola，或使用 offset dx = 0.25*(heatmap[y,x+1] - heatmap[y,x-1])，可以恢复连续的 peak position，通常能把干净预测 keypoints 的 L2 error 减半", "它能防止 overfitting", "它会 normalise 输出"],
+      "correct": 1,
+      "explanation": "预测良好的 heatmap 有一个平滑的 Gaussian peak，其中心通常位于 grid cells 之间。Integer argmax 会丢失这种 sub-pixel 信息（最多 0.5 px error）。拟合 parabola 或使用 first-difference offset 可以恢复连续 peak。对于 sports analytics、medical landmarks，或任何需要精确 coordinates 的任务，这一步都是必需的。"
+    },
+    {
+      "stage": "post",
+      "question": "OKS (Object Keypoint Similarity) 是 pose-estimation 中对应于哪种 object-detection metric 的指标？",
+      "options": ["Inference latency", "IoU — 二者都衡量 prediction 与 ground truth 之间的几何匹配，其中 OKS 使用按每个 keypoint annotation variance 加权的 keypoint distances；COCO 针对 pose 报告 mAP@OKS 0.5:0.95", "Classification accuracy", "Cross-entropy Loss"],
+      "correct": 1,
+      "explanation": "OKS 像 IoU 一样范围为 0 到 1，并扮演相同角色：它决定在给定严格程度下，一个 prediction 是否匹配某个 ground-truth pose。每个 keypoint 都有一个 variance（COCO 会发布这些值）来缩放其贡献 — 像 nose 和 eyes 这样更稳定的 joints 权重高于 wrists，因为 wrists 的标注一致性较低。COCO Pose AP @ OKS 0.5:0.95 是 2026 年社区 benchmark。"
+    }
+  ]
+}

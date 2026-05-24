@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "虚数单位 i 是由什么定义的？",
+      "options": [
+        "i = sqrt(2)",
+        "i^2 = -1",
+        "i = -1",
+        "i^2 = 1"
+      ],
+      "correct": 1,
+      "explanation": "虚数单位 i 由性质 i^2 = -1 定义。它把实数线扩展为一个 2D 平面。从几何上看，乘以 i 表示旋转 90 度，两次相乘 (i^2) 表示旋转 180 度，也就是 -1。"
+    },
+    {
+      "stage": "pre",
+      "question": "Euler's formula 中 e^(i*theta) 等于什么？",
+      "options": [
+        "theta + i",
+        "cos(theta) + i*sin(theta)",
+        "sin(theta) + cos(theta)",
+        "i^theta"
+      ],
+      "correct": 1,
+      "explanation": "Euler's formula 表明 e^(i*theta) = cos(theta) + i*sin(theta)。这把复指数与三角函数联系起来，并说明随着 theta 变化，e^(i*theta) 会沿单位圆运动。"
+    },
+    {
+      "stage": "post",
+      "question": "(3 + 2i)(1 + 4i) 的结果是什么？",
+      "options": [
+        "3 + 8i",
+        "4 + 6i",
+        "-5 + 14i",
+        "5 + 14i"
+      ],
+      "correct": 2,
+      "explanation": "使用 FOIL：(3)(1) + (3)(4i) + (2i)(1) + (2i)(4i) = 3 + 12i + 2i + 8i^2 = 3 + 14i + 8(-1) = 3 + 14i - 8 = -5 + 14i。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 Rotary Position Embedding (RoPE) 会在 Transformer 中使用复数？",
+      "options": [
+        "复数会压缩 position encoding，以使用更少内存",
+        "通过复数旋转乘以 query/key vectors，将相对位置编码为旋转角度",
+        "Attention softmax function 要求使用复数",
+        "RoPE 使用虚数来处理负位置"
+      ],
+      "correct": 1,
+      "explanation": "RoPE 会将 query 和 key vectors 乘以复数旋转 Matrix e^(i*m*theta)，其中 m 是位置。两个 Token 之间的相对位置会变成一个旋转角度，而 Attention 会通过复数乘法自然地对相对位置而非绝对位置敏感。"
+    },
+    {
+      "stage": "post",
+      "question": "N-th roots of unity 是单位圆上 N 个等间距的点。它们的和是多少？",
+      "options": [
+        "N",
+        "1",
+        "0",
+        "N/2"
+      ],
+      "correct": 2,
+      "explanation": "N 个单位根是 e^(2*pi*i*k/N)，其中 k = 0, ..., N-1。它们围绕单位圆对称分布，因此它们的 Vector 和会相互抵消为零。这个对称性质正是 DFT 可逆的原因。"
+    }
+  ]
+}

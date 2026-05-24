@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .warn { fill: #fde0b4; stroke: #b5651d; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">CAIS 四风险框架 + 实践者发力点</text>
+
+  <rect x="40" y="50" width="800" height="460" class="box"/>
+
+  <!-- Quadrants -->
+  <rect x="60" y="80" width="370" height="140" class="hot"/>
+  <text x="245" y="104" text-anchor="middle" class="label">1. 恶意使用</text>
+  <text x="76" y="128" class="content">恶意行为者用 AI 作恶</text>
+  <text x="76" y="146" class="small">生物武器合成 · 虚假信息 · 网络攻击</text>
+  <text x="76" y="170" class="content">缓解措施：</text>
+  <text x="76" y="186" class="small">• 硬编码禁令 (L17) · Llama Guard (L18)</text>
+  <text x="76" y="202" class="small">• tool allowlist (L10, L11)</text>
+
+  <rect x="450" y="80" width="370" height="140" class="warn"/>
+  <text x="635" y="104" text-anchor="middle" class="label">2. AI 竞赛</text>
+  <text x="466" y="128" class="content">竞争压力压过安全</text>
+  <text x="466" y="146" class="small">实验室 · 公司 · 国家</text>
+  <text x="466" y="170" class="content">缓解措施：</text>
+  <text x="466" y="186" class="small">• 含 Risk Reports 的扩展策略 (L19, L20)</text>
+  <text x="466" y="202" class="small">• 外部评估 (L21)</text>
+
+  <rect x="60" y="240" width="370" height="140" class="cool"/>
+  <text x="245" y="264" text-anchor="middle" class="label">3. 组织风险（实践者推动）</text>
+  <text x="76" y="288" class="content">实验室内部动态</text>
+  <text x="76" y="306" class="small">安全文化 · 审计 · 防御 · infosec</text>
+  <text x="76" y="330" class="content">缓解措施：</text>
+  <text x="76" y="346" class="small">• 无职业代价的升级路径</text>
+  <text x="76" y="362" class="small">• 独立审计，多层防御</text>
+
+  <rect x="450" y="240" width="370" height="140" class="cold"/>
+  <text x="635" y="264" text-anchor="middle" class="label">4. 失控 AI</text>
+  <text x="466" y="288" class="content">有能力的 AI 追求错位目标</text>
+  <text x="466" y="306" class="small">随自主时域增长 (L1, L21)</text>
+  <text x="466" y="330" class="content">缓解措施：</text>
+  <text x="466" y="346" class="small">• kill switches + canaries (L14)</text>
+  <text x="466" y="362" class="small">• propose-then-commit (L15) · checkpoints (L16)</text>
+
+  <!-- Bottom strip: CAIS / CAISI / SB-53 -->
+  <rect x="60" y="400" width="760" height="90" class="box"/>
+  <text x="440" y="424" text-anchor="middle" class="label">需要了解的三个实体</text>
+  <text x="80" y="446" class="content">CAIS（非营利，San Francisco，2022）— 四风险框架；2023 灭绝声明</text>
+  <text x="80" y="462" class="content">CAISI（NIST 中心，美国政府）— 自愿协议；非机密能力评估</text>
+  <text x="80" y="478" class="content">California SB-53 — 若签署，将成美国首个州级灾难风险监管</text>
+</svg>

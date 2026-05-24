@@ -1,0 +1,78 @@
+{
+  "lesson": "16-model-routing",
+  "title": "Model Routing 作为降本原语",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "model cascading 的核心思想是什么？",
+      "options": [
+        "并行运行两个模型并对输出取平均",
+        "始终按随机权重进行 route",
+        "先在最昂贵的模型上运行每个 request",
+        "先运行 cheap model，仅在低 confidence 或 refusal 时 escalation 到 frontier model"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程列出了哪四种用于 routing 决策的 signal？",
+      "options": [
+        "Task classification、prompt length、与 known-hard 集合的 Embedding similarity，以及 first-pass 的 self-confidence",
+        "仅 Token count",
+        "仅 user tier",
+        "GPU temperature、fan speed、room humidity、time of day"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "cascade router 的预期 latency profile 是什么？",
+      "options": [
+        "始终慢 10x",
+        "与 frontier model 完全相同",
+        "median latency 约 1.2x（cheap run 加 verify），escalated requests 上约 2x（约 10% traffic）",
+        "始终比 pre-route 更快"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪种 routing pattern 会在前置阶段增加 5-10ms latency，并且总体最快？",
+      "options": [
+        "带 classifier 的 Pre-route",
+        "Ensemble route",
+        "Cascade",
+        "Random round-robin"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "routing 中的 cheap-model drift 是什么？",
+      "options": [
+        "cheap model 变得更昂贵",
+        "Cascade 100% 的时候都落到 frontier",
+        "任务分布发生 shift，但训练过的 router 仍把 requests 发给 cheap model，导致质量静默下降",
+        "cheap model 中的 latency drift"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程推荐哪种 guard 来捕捉 routing drift？",
+      "options": [
+        "仅使用 offline eval sets",
+        "在 production 中禁用 routing",
+        "仅进行季度 engineering review",
+        "在线质量指标 — 每条 route 的 thumbs-up/down、held-out samples 上的 LLM-judge、escalation rate、refusal rate"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

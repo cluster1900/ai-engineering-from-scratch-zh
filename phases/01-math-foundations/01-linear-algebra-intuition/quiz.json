@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "两个 Vector 的 dot product 衡量什么？",
+      "options": ["两个 Vector 之间的距离", "两个 Vector 有多相似或多对齐", "两个 Vector 之间的角度（以度为单位）", "两个 Vector 共享的维度数量"],
+      "correct": 1,
+      "explanation": "Dot product 衡量对齐程度：正值表示方向相同（相似），零表示垂直（无关），负值表示方向相反（不相似）。这是 AI 中相似度搜索的基础。"
+    },
+    {
+      "stage": "pre",
+      "question": "在 AI 中，'embedding' 指什么？",
+      "options": ["把一个 model 插入另一个 model 内部", "一种 Vector representation，用来捕捉某个对象（word、image、user）的含义", "一种压缩 model weights 的技术", "将 code 转换为 machine instructions 的过程"],
+      "correct": 1,
+      "explanation": "Embedding 将离散对象（words、images、users）映射到高维空间中的连续 Vector，在这个空间里，相似项彼此接近。它是真实世界概念与数学运算之间的桥梁。"
+    },
+    {
+      "stage": "post",
+      "question": "给定三个 Vector：v1=[1,0,0]、v2=[0,1,0]、v3=[2,1,0]。它们是 linearly independent 吗？",
+      "options": ["是，因为 3D 空间中有三个 Vector", "不是，因为 v3 = 2*v1 + v2，所以 v3 是其他 Vector 的 linear combination", "是，因为没有任何两个 Vector 完全相同", "不是，因为它们都有一个为零的分量"],
+      "correct": 1,
+      "explanation": "v3 = 2*v1 + v2，因此这个集合是 linearly dependent。三个 Vector 都位于 xy-plane 中，无法到达 [0,0,1]。尽管在 3D 中有 3 个 Vector，它们只 span 一个 2D subspace。"
+    },
+    {
+      "stage": "post",
+      "question": "在 Machine Learning 语境中，Matrix 的 rank 告诉你什么？",
+      "options": ["Matrix 可以多快被相乘", "linearly independent columns 的数量，表示它包含多少维有用信息", "Matrix 中的最大值", "Matrix 中非零条目的数量"],
+      "correct": 1,
+      "explanation": "Rank 等于 linearly independent columns 的数量。在 ML 中，rank-deficient feature Matrix 意味着冗余 features、无限多个 weight solutions，以及需要 regularization。"
+    },
+    {
+      "stage": "post",
+      "question": "LoRA (Low-Rank Adaptation) 如何使用线性代数来高效 fine-tune LLMs？",
+      "options": ["它从 weight matrices 中移除未使用的行，以缩小 model", "它将 weight updates 分解为两个小的 low-rank matrices，而不是更新完整 weight Matrix", "它将所有 weights 从 float32 转换为 int8", "它冻结 Embedding 层，只训练 output head"],
+      "correct": 1,
+      "explanation": "LoRA 将一个 4096x4096 的 weight update 分解为两个大小分别为 4096x16 和 16x4096 的 Matrix（rank-16），假设 updates 存在于 low-dimensional subspace 中，从而将 trainable parameters 从 16M 降到 131K。"
+    }
+  ]
+}

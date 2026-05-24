@@ -1,0 +1,90 @@
+{
+  "lesson": "04-tree-of-thoughts-lats",
+  "title": "Tree of Thoughts 和 LATS：审慎搜索",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 chain-of-thought 在 Game of 24 上表现吃力？",
+      "options": [
+        "模型无法进行整数乘法",
+        "线性推进无法在早期步骤错误时回溯，因此后续步骤会放大错误",
+        "prompt 太短",
+        "CoT 需要 GPT-4 缺少的 calculator tool"
+      ],
+      "correct": 1,
+      "explanation": "如果没有分支，早期错误的子表达式会污染链条的其余部分；论文测得 CoT 只有 4 percent。"
+    },
+    {
+      "stage": "pre",
+      "question": "Tree of Thoughts 搜索中的 node 是什么？",
+      "options": [
+        "模型生成的一个 Token",
+        "一个连贯的中间步骤或 thought，带有 K 个可能的 child expansions",
+        "fine-tuning 期间的一次权重更新",
+        "一个注册到 runtime 的 tool"
+      ],
+      "correct": 1,
+      "explanation": "ToT 将推理视为一棵树，其中每个 node 都是一个可以扩展为 K 个 children 的中间 thought。"
+    },
+    {
+      "stage": "check",
+      "question": "以下三项中，哪一项不是 LATS 中 LLM 的角色？",
+      "options": [
+        "提出下一步 actions 的 Policy",
+        "为 partial trajectories 打分的 Value Function",
+        "在失败时写 reflections 的 self-reflector",
+        "在 rollouts 之间更新模型权重的 Optimizer"
+      ],
+      "correct": 3,
+      "explanation": "LATS 是 gradient-free 的；LLM 的三个角色是 policy、value 和 self-reflector。不存在权重更新。"
+    },
+    {
+      "stage": "check",
+      "question": "说出本课列出的四个 MCTS 阶段。",
+      "options": [
+        "Sample、Score、Sort、Submit",
+        "Select、Expand、Simulate、Backpropagate",
+        "Plan、Execute、Reflect、Stop",
+        "Search、Synthesize、Synthesize-Again、Stop"
+      ],
+      "correct": 1,
+      "explanation": "MCTS 在每次 iteration 中按 select、expand、simulate、backpropagate 进行。"
+    },
+    {
+      "stage": "check",
+      "question": "在 UCT 中，exploration constant c 的作用是什么？",
+      "options": [
+        "它缩放 value estimate Q",
+        "它在 exploitation term Q 与 exploration term sqrt(ln N / n) 之间加权",
+        "它设置最大 tree depth",
+        "它控制 rollouts 的数量"
+      ],
+      "correct": 1,
+      "explanation": "c 在 exploitation（Q）与 exploration term 之间取得平衡；需要按任务调优。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候搜索相比单条 trajectory 会主动造成伤害？",
+      "options": [
+        "当评估器有噪声且只有一个正确答案时，搜索会收敛到一个得分高但错误的答案",
+        "当任务涉及多个正确答案时",
+        "只要 Token 很便宜时",
+        "当任务是代码生成时"
+      ],
+      "correct": 0,
+      "explanation": "有噪声的 Value Function 加上单一正确答案，正是搜索会过拟合到噪声的情况。"
+    },
+    {
+      "stage": "post",
+      "question": "在 Game of 24 上，相比 CoT，你大致应该为 ToT 预留多少倍的 Token 使用量？",
+      "options": [
+        "约 2x",
+        "约 10x",
+        "100x 到 1000x",
+        "少于 CoT，因为有 pruning"
+      ],
+      "correct": 2,
+      "explanation": "本课引用了 Game of 24 上 ToT 相比 CoT 的 100-1000x Token 成本。"
+    }
+  ]
+}

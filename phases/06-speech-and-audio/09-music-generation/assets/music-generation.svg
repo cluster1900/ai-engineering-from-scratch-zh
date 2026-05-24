@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .content { font-size: 11px; fill: #333; font-family: 'Menlo', monospace; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 15px; font-weight: 700; fill: #1a1a1a; }
+      .tag { font-size: 10px; fill: #c0392b; font-weight: 600; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">音乐生成 — 两种范式，同一法律格局</text>
+
+  <rect x="30" y="55" width="400" height="170" class="box"/>
+  <text x="230" y="78" text-anchor="middle" class="label">A. 基于 neural codec 的 AR Token LM</text>
+  <text x="230" y="96" text-anchor="middle" class="tag">MusicGen · ACE-Step · YuE · VALL-E-Music</text>
+  <text x="50" y="124" class="content">文本 prompt → T5 / CLAP Embedding</text>
+  <text x="50" y="142" class="content">→ 基于 EnCodec Token 的 AR Transformer</text>
+  <text x="50" y="160" class="content">→ EnCodec decoder → audio 32 kHz</text>
+  <text x="50" y="188" class="caption">可流式（未来）；带歌词的结构化歌曲</text>
+  <text x="50" y="205" class="caption">超过 30 s 会漂移；循环；需 crossfade</text>
+
+  <rect x="450" y="55" width="400" height="170" class="box"/>
+  <text x="650" y="78" text-anchor="middle" class="label">B. 基于 mel / latent codec 的 latent Diffusion</text>
+  <text x="650" y="96" text-anchor="middle" class="tag">Stable Audio · AudioLDM 2 · Riffusion</text>
+  <text x="470" y="124" class="content">文本 → CLAP Embedding</text>
+  <text x="470" y="142" class="content">→ latent Diffusion（DDPM / flow）</text>
+  <text x="470" y="160" class="content">→ decoder → audio 44.1 / 48 kHz</text>
+  <text x="470" y="188" class="caption">最适合循环、纹理、声音设计</text>
+  <text x="470" y="205" class="caption">结构较弱，人声较弱</text>
+
+  <rect x="30" y="250" width="820" height="180" class="hot"/>
+  <text x="440" y="272" text-anchor="middle" class="label">2026 排行榜 + 法律说明</text>
+  <text x="60" y="300" class="content">MusicGen-large     3.3B  30 s      无人声   MIT              - 器乐基线</text>
+  <text x="60" y="318" class="content">Stable Audio Open  1.2B  47 s      无人声   非商业   - 循环、纹理</text>
+  <text x="60" y="336" class="content">ACE-Step XL (Apr 26) 4B  &gt; 2 min   人声      Apache-2.0       - 开放完整歌曲</text>
+  <text x="60" y="354" class="content">Suno v5 (closed)    ?    4 min     人声      商业       - ELO 1293；质量领先</text>
+  <text x="60" y="372" class="content">Udio v4 (closed)    ?    4 min     人声+stems 商业      - inpainting，stem split</text>
+  <text x="60" y="400" class="caption">法律：Warner + UMG 在 2025-26 与 Suno / Udio 和解；需披露 + 水印（EU AI Act, CA SB 942）</text>
+  <text x="60" y="418" class="caption">可发布：器乐 MIT/CC0 · 有许可的商业 API · 用自有曲库训练</text>
+</svg>

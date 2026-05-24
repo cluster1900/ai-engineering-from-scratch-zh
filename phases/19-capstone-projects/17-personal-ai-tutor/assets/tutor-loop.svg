@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .dsk { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .edge { stroke: #555; stroke-width: 1.2; fill: none; }
+    </style>
+  </defs>
+
+  <text x="480" y="24" text-anchor="middle" class="title">个人 AI 导师 - Multimodal 输入 + 学习者模型 + 安全</text>
+
+  <rect x="40" y="50" width="220" height="160" class="cool"/>
+  <text x="150" y="72" text-anchor="middle" class="head">Multimodal 输入</text>
+  <rect x="60" y="90" width="180" height="30" class="cool"/>
+  <text x="150" y="110" text-anchor="middle" class="step">文本 (web chat)</text>
+  <rect x="60" y="126" width="180" height="30" class="cool"/>
+  <text x="150" y="146" text-anchor="middle" class="step">语音 (LiveKit + Whisper)</text>
+  <rect x="60" y="162" width="180" height="30" class="cool"/>
+  <text x="150" y="182" text-anchor="middle" class="step">拍照数学 (dots.ocr)</text>
+
+  <rect x="300" y="50" width="320" height="160" class="dsk"/>
+  <text x="460" y="72" text-anchor="middle" class="head">导师策略 (LangGraph)</text>
+  <rect x="320" y="90" width="280" height="28" class="cool"/>
+  <text x="460" y="110" text-anchor="middle" class="step">读取信号 (正确 / 部分 / 卡住)</text>
+  <rect x="320" y="124" width="280" height="28" class="cool"/>
+  <text x="460" y="144" text-anchor="middle" class="step">选择下个概念 (graph walk)</text>
+  <rect x="320" y="158" width="280" height="28" class="cool"/>
+  <text x="460" y="178" text-anchor="middle" class="step">脚手架 / 提示 / 庆祝</text>
+
+  <rect x="660" y="50" width="260" height="160" class="cold"/>
+  <text x="790" y="72" text-anchor="middle" class="head">学习者模型</text>
+  <text x="790" y="94" text-anchor="middle" class="small">Bayesian knowledge tracing</text>
+  <text x="790" y="112" text-anchor="middle" class="small">按概念掌握度</text>
+  <text x="790" y="130" text-anchor="middle" class="small">间隔复习 (FSRS)</text>
+  <text x="790" y="148" text-anchor="middle" class="small">每次互动后更新</text>
+  <text x="790" y="166" text-anchor="middle" class="small">每周进度报告</text>
+  <text x="790" y="186" text-anchor="middle" class="small">家长 dashboard</text>
+
+  <rect x="40" y="240" width="420" height="270" class="box"/>
+  <text x="250" y="262" text-anchor="middle" class="head">课程 graph</text>
+  <text x="250" y="282" text-anchor="middle" class="small">50-150 个概念的 Neo4j</text>
+  <text x="250" y="300" text-anchor="middle" class="small">先修依赖边</text>
+  <text x="250" y="318" text-anchor="middle" class="small">附加 OER 内容</text>
+  <rect x="60" y="336" width="380" height="40" class="cool"/>
+  <text x="250" y="356" text-anchor="middle" class="step">K-12 代数或 Python 入门</text>
+  <text x="250" y="370" text-anchor="middle" class="small">选一个做深</text>
+  <text x="250" y="396" text-anchor="middle" class="small">walk algorithm:</text>
+  <text x="250" y="414" text-anchor="middle" class="small">选掌握度最低概念</text>
+  <text x="250" y="432" text-anchor="middle" class="small">其 prereqs 已掌握</text>
+  <text x="250" y="454" text-anchor="middle" class="small">OER 来源:</text>
+  <text x="250" y="472" text-anchor="middle" class="small">OpenStax, Open Textbook,</text>
+  <text x="250" y="490" text-anchor="middle" class="small">Khan Academy lite</text>
+
+  <rect x="500" y="240" width="420" height="270" class="box"/>
+  <text x="710" y="262" text-anchor="middle" class="head">安全 + memory</text>
+  <rect x="520" y="280" width="380" height="30" class="hot"/>
+  <text x="710" y="300" text-anchor="middle" class="step">Llama Guard 4 + 年龄过滤</text>
+  <rect x="520" y="316" width="380" height="30" class="hot"/>
+  <text x="710" y="336" text-anchor="middle" class="step">COPPA-aware 留存 (1y)</text>
+  <rect x="520" y="352" width="380" height="30" class="dsk"/>
+  <text x="710" y="372" text-anchor="middle" class="step">memory: episodic + semantic</text>
+  <text x="710" y="396" text-anchor="middle" class="small">家长可访问删除</text>
+  <text x="710" y="414" text-anchor="middle" class="small">按学习者隔离</text>
+
+  <text x="710" y="442" text-anchor="middle" class="small">效果研究 (2 周，10 名学习者):</text>
+  <text x="710" y="460" text-anchor="middle" class="small">前测 + 6 次课程 + 后测</text>
+  <text x="710" y="478" text-anchor="middle" class="small">自适应 cohort vs 线性 baseline</text>
+  <text x="710" y="498" text-anchor="middle" class="caption">Khanmigo / Duolingo Max / LearnLM 形态</text>
+</svg>

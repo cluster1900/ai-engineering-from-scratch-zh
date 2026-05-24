@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "adjacency matrix A[i][j] = 1 表示什么？",
+      "options": [
+        "节点 i 的度为 j",
+        "从节点 i 到节点 j 有一条边",
+        "节点 i 和节点 j 具有相同标签",
+        "从 i 到 j 的最短路径长度为 1"
+      ],
+      "correct": 1,
+      "explanation": "adjacency matrix 是图的核心表示。A[i][j] = 1 表示有一条边连接节点 i 和节点 j。对于无向图，该 Matrix 是对称的（A[i][j] = A[j][i]）。"
+    },
+    {
+      "stage": "pre",
+      "question": "BFS 使用什么数据结构，它能找到什么？",
+      "options": [
+        "Stack；找到 connected components",
+        "Queue；找到无权图中的最短路径",
+        "Priority queue；找到 minimum spanning tree",
+        "Hash map；找到重复节点"
+      ],
+      "correct": 1,
+      "explanation": "BFS 使用 queue（FIFO），先探索距离为 k 的所有邻居，再移动到距离 k+1。这保证了一个节点第一次被发现时，就是通过从源节点出发的一条最短路径发现的。"
+    },
+    {
+      "stage": "post",
+      "question": "连通图的 graph Laplacian L = D - A 有多少个零特征值？",
+      "options": [
+        "0 个",
+        "恰好一个",
+        "等于节点数量",
+        "等于边数量"
+      ],
+      "correct": 1,
+      "explanation": "Laplacian 的零特征值数量等于 connected components 的数量。一个连通图恰好有一个 connected component，所以恰好有一个零特征值。一个有 k 个非连通部分的图有 k 个零特征值。"
+    },
+    {
+      "stage": "post",
+      "question": "在 GNN message passing 中，h_v^(k+1) = sigma(W * mean({h_u^(k) : u in neighbors(v)})) 计算的是什么？",
+      "options": [
+        "从 v 到所有其他节点的最短路径",
+        "通过聚合邻居特征、用学习到的权重进行变换并应用非线性函数，为节点 v 计算新的特征 Vector",
+        "节点 v 在第 k+1 层的度",
+        "节点 v 的 PageRank 分数"
+      ],
+      "correct": 1,
+      "explanation": "每个节点从其邻居收集特征（mean aggregation），乘以学习到的权重 Matrix W，并应用 activation function sigma。经过 k 轮后，每个节点都拥有来自其 k-hop 邻域的信息。"
+    },
+    {
+      "stage": "post",
+      "question": "spectral clustering 如何使用 Fiedler vector（L 的第二小特征值对应的特征 Vector）？",
+      "options": [
+        "Fiedler vector 条目最大的节点形成一个簇",
+        "Fiedler vector 值为正的节点进入一组，值为负的节点进入另一组",
+        "Fiedler vector 被用作边权重",
+        "Fiedler vector 决定簇的数量"
+      ],
+      "correct": 1,
+      "explanation": "Fiedler vector 编码了图上最平滑的非平凡函数。同一个紧密连接簇中的节点会得到相似的值，而被瓶颈分隔开的节点会得到符号相反的值。按符号划分会把图分成两个簇。"
+    }
+  ]
+}

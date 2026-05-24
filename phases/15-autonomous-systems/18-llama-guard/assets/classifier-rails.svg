@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 540" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .warn { fill: #fde0b4; stroke: #b5651d; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .content { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="440" y="26" text-anchor="middle" class="title">输入护栏 + model + 输出护栏 + 对话护栏</text>
+
+  <rect x="40" y="50" width="800" height="460" class="box"/>
+
+  <!-- User turn -->
+  <rect x="60" y="80" width="130" height="60" class="cool"/>
+  <text x="125" y="104" text-anchor="middle" class="label">用户轮次</text>
+  <text x="125" y="122" text-anchor="middle" class="small">文本 / 图像</text>
+
+  <!-- Normalize -->
+  <rect x="210" y="80" width="130" height="60" class="warn"/>
+  <text x="275" y="104" text-anchor="middle" class="label">规范化</text>
+  <text x="275" y="122" text-anchor="middle" class="small">NFKC + homoglyph</text>
+
+  <!-- Input rail -->
+  <rect x="360" y="80" width="130" height="60" class="cold"/>
+  <text x="425" y="104" text-anchor="middle" class="label">输入护栏</text>
+  <text x="425" y="122" text-anchor="middle" class="small">Llama Guard 4</text>
+
+  <!-- Model -->
+  <rect x="510" y="80" width="130" height="60" class="cool"/>
+  <text x="575" y="104" text-anchor="middle" class="label">主 model</text>
+  <text x="575" y="122" text-anchor="middle" class="small">（第17课 weights）</text>
+
+  <!-- Output rail -->
+  <rect x="660" y="80" width="160" height="60" class="cold"/>
+  <text x="740" y="104" text-anchor="middle" class="label">输出护栏</text>
+  <text x="740" y="122" text-anchor="middle" class="small">Llama Guard / regex</text>
+
+  <path d="M190 110 L210 110" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M340 110 L360 110" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M490 110 L510 110" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M640 110 L660 110" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Dialog rail -->
+  <rect x="60" y="160" width="760" height="50" class="warn"/>
+  <text x="440" y="184" text-anchor="middle" class="label">对话护栏（Colang）：跨轮次约束 — 如即使用三种方式询问，也绝不讨论医学诊断</text>
+
+  <!-- Taxonomy -->
+  <rect x="60" y="230" width="760" height="100" class="cool"/>
+  <text x="440" y="254" text-anchor="middle" class="label">分类体系（Llama Guard 4 S1–S14）</text>
+  <text x="80" y="276" class="content">S1 暴力犯罪 · S2 非暴力犯罪 · S3 性犯罪 · S4 儿童剥削</text>
+  <text x="80" y="292" class="content">S5 诽谤 · S6 专业建议 · S7 隐私 · S8 IP · S9 无差别武器</text>
+  <text x="80" y="308" class="content">S10 仇恨 · S11 自伤 · S12 性内容 · S13 选举 · S14 代码解释器滥用</text>
+
+  <!-- Attack corpus -->
+  <rect x="60" y="350" width="760" height="140" class="hot"/>
+  <text x="440" y="374" text-anchor="middle" class="label">已记录绕过 — Huang et al. arXiv:2504.11168（2025）</text>
+  <text x="80" y="398" class="content">Emoji Smuggling：六个 guard 系统上 100% ASR</text>
+  <text x="80" y="414" class="content">NeMo Guard Detect：对抗 jailbreak 集上 72.54% ASR</text>
+  <text x="80" y="430" class="content">Homoglyph 替换：西里尔“р”代替拉丁“p”；classifier 漏检</text>
+  <text x="80" y="446" class="content">语义改写：相同意图，新词汇；fine-tune 无法全覆盖</text>
+  <text x="80" y="466" class="content">缓解：规范化 + classifier + constitution（L17）+ runtime（L10/13/14）</text>
+  <text x="80" y="482" class="small">classifier 是一层，不是解决方案</text>
+</svg>

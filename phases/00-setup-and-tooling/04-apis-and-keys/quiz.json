@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "调用 LLM 服务时，API key 用来做什么？",
+      "options": ["加密发送到服务器的数据", "验证你的身份并授权请求", "压缩请求以减少带宽", "选择服务器使用哪种编程语言"],
+      "correct": 1,
+      "explanation": "API key 是一个唯一字符串，用于识别你的账户、授权你的请求，并让提供方跟踪用量和计费。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么绝不能把 API keys 直接硬编码在源代码里？",
+      "options": ["硬编码 keys 会让代码运行更慢", "它们可能被意外提交到 git 并公开暴露", "Python 无法读取超过 50 个字符的字符串字面量", "API 提供方会封禁出现在源文件中的 keys"],
+      "correct": 1,
+      "explanation": "源代码中的硬编码 keys 有被提交到版本控制并推送到公开仓库的风险，别人可能会抓取并滥用它们。"
+    },
+    {
+      "stage": "post",
+      "question": "本地开发中推荐如何存储 API keys？",
+      "options": ["放在脚本顶部的 Python 变量中", "放在已列入 .gitignore 的 .env 文件中", "放在 README.md 中方便访问", "放在 requirements.txt 中，与包版本写在一起"],
+      "correct": 1,
+      "explanation": ".env 文件把 keys 存为环境变量，并应加入 .gitignore，确保它永远不会提交到版本控制。SDKs 通常会自动从环境变量读取 keys。"
+    },
+    {
+      "stage": "post",
+      "question": "在对 Anthropic 的原始 HTTP API 调用中，哪个 header 携带 API key？",
+      "options": ["Authorization: Bearer sk-ant-...", "x-api-key: sk-ant-...", "Content-Type: application/json", "anthropic-version: 2023-06-01"],
+      "correct": 1,
+      "explanation": "Anthropic 的 API 使用 'x-api-key' header 进行认证，而不是更常见的 'Authorization: Bearer' 模式。这是它们 API 设计中的特定做法。"
+    },
+    {
+      "stage": "post",
+      "question": "当你超过 API 的 rate limit 时会发生什么？",
+      "options": ["你的 API key 会被永久撤销", "服务器会返回错误（通常是 HTTP 429），你必须等待后再重试", "你的请求会排队并稍后自动处理", "API 会静默丢弃你的请求且没有响应"],
+      "correct": 1,
+      "explanation": "Rate limiting 会返回 HTTP 429（Too Many Requests）。你需要等待并重试，通常使用 exponential backoff。Rate limits 用于防止滥用并保证公平使用。"
+    }
+  ]
+}

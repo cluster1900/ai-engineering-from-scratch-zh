@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="28" text-anchor="middle" class="title">Generative agents — Park 等 2023 的三个组件</text>
+
+  <rect x="40" y="60" width="280" height="220" class="cool"/>
+  <text x="180" y="84" text-anchor="middle" class="head">记忆流</text>
+  <text x="180" y="108" text-anchor="middle" class="step">只追加日志</text>
+  <text x="60" y="136" class="small">[t=0]  observation :: 看到 Isabella</text>
+  <text x="60" y="154" class="small">[t=1]  observation :: 被邀请参加派对</text>
+  <text x="60" y="172" class="small">[t=2]  reflection  :: 我喜欢派对</text>
+  <text x="60" y="190" class="small">[t=3]  plan        :: 下午 5 点参加</text>
+  <text x="60" y="208" class="small">[t=4]  action      :: 前往咖啡馆</text>
+  <text x="180" y="240" text-anchor="middle" class="caption">retrieval：近因 + 重要性 + 相关性</text>
+  <text x="180" y="258" text-anchor="middle" class="caption">top-k 输入 prompts</text>
+
+  <rect x="340" y="60" width="280" height="220" class="cold"/>
+  <text x="480" y="84" text-anchor="middle" class="head">reflection</text>
+  <text x="480" y="108" text-anchor="middle" class="step">高阶信念</text>
+  <text x="480" y="136" text-anchor="middle" class="small">周期触发：</text>
+  <text x="480" y="154" text-anchor="middle" class="small">未处理重要性 &gt; threshold</text>
+  <text x="480" y="180" text-anchor="middle" class="small">prompt: "given recent memories,</text>
+  <text x="480" y="196" text-anchor="middle" class="small">what is a higher-level insight?"</text>
+  <text x="480" y="222" text-anchor="middle" class="small">输出：新的 reflection 条目</text>
+  <text x="480" y="240" text-anchor="middle" class="small">重新写入记忆流</text>
+  <text x="480" y="258" text-anchor="middle" class="caption">无 reflection：无法形成信念</text>
+
+  <rect x="640" y="60" width="280" height="220" class="box"/>
+  <text x="780" y="84" text-anchor="middle" class="head">plan</text>
+  <text x="780" y="108" text-anchor="middle" class="step">天 / 小时 / action</text>
+  <text x="780" y="136" text-anchor="middle" class="small">天：去上班，吃晚饭</text>
+  <text x="780" y="156" text-anchor="middle" class="small">小时：9am 咖啡馆，12pm 午餐...</text>
+  <text x="780" y="176" text-anchor="middle" class="small">action：走到咖啡馆，点咖啡</text>
+  <text x="780" y="206" text-anchor="middle" class="small">修订触发：</text>
+  <text x="780" y="222" text-anchor="middle" class="small">observation 与 plan 矛盾</text>
+  <text x="780" y="240" text-anchor="middle" class="small">仅受影响片段重新规划</text>
+  <text x="780" y="258" text-anchor="middle" class="caption">无 plan：反应式噪声</text>
+
+  <rect x="40" y="310" width="880" height="200" class="hot"/>
+  <text x="480" y="334" text-anchor="middle" class="head">涌现行为 — 情人节派对</text>
+
+  <text x="70" y="362" class="step">tick 0</text>
+  <text x="140" y="362" class="small">agent-0 (Isabella) 被设定为："下午 5 点在咖啡馆办派对"</text>
+
+  <text x="70" y="382" class="step">tick 0-2</text>
+  <text x="140" y="382" class="small">Isabella 邀请邻居；每个邀请都成为其记忆流中的 observation</text>
+
+  <text x="70" y="402" class="step">tick 1-3</text>
+  <text x="140" y="402" class="small">受邀邻居 reflection -&gt; 信念 "我被邀请参加派对" -&gt; 计划参加</text>
+
+  <text x="70" y="422" class="step">tick 2-4</text>
+  <text x="140" y="422" class="small">受邀者告诉其他邻居；二度传播</text>
+
+  <text x="70" y="442" class="step">tick 5</text>
+  <text x="140" y="442" class="small">三个组件汇合：3-5 个 agents 准时到达咖啡馆</text>
+
+  <text x="70" y="470" class="caption">单一 seed + 三个组件 = 无 orchestrator 的协同到达</text>
+  <text x="70" y="490" class="caption">记录的失败：空间规范（关门商店、单人洗手间）</text>
+</svg>

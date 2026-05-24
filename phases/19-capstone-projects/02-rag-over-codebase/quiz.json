@@ -1,0 +1,90 @@
+{
+  "lesson": "02-rag-over-codebase",
+  "title": "Capstone 02 — Codebase 上的 RAG（跨 Repo 语义搜索）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么对 raw chunks 进行 naive cosine search 不足以完成跨 repo code retrieval？",
+      "options": [
+        "它会在 generated code、monorepo duplication 和很少被 import 的 symbols 上污染结果",
+        "Cosine similarity 在 code Embeddings 上没有定义",
+        "Vector indexes 无法存储大于 1KB 的 payloads",
+        "Embedding models 不会把 code 看作 tokens"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "ingestion pipeline 中的 AST-aware chunking 是什么意思？",
+      "options": [
+        "在存储前用 gzip 压缩 chunks",
+        "在生成 Embedding 前丢弃 comments 和 whitespace",
+        "在 tree-sitter node boundaries 处切分，例如 function 和 class spans",
+        "把 code 拆成固定的 256-token windows"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在这个 pipeline 中，每个 chunk 会获得哪三种可 retrieval 的 modalities？",
+      "options": [
+        "Token IDs、syntax tree 和 call graph",
+        "AST、IR 和 bytecode",
+        "Raw text、gzip 和 hash",
+        "Dense embedding、BM25 terms 和 natural-language summary"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "hybrid retrieval step 之后，cross-encoder reranker 的作用是什么？",
+      "options": [
+        "它会重写 chunks 以移除 generated code",
+        "它会在另一个 model 中重新为 query 生成 Embedding",
+        "它会在发送给 synthesizer 前压缩 chunks",
+        "它会把每个 query-candidate pair 放在一起打分，准确率高于只用 cosine"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 synthesizer 会拒绝没有 (repo/path:start-end) anchors 的答案？",
+      "options": [
+        "Citation faithfulness 会 gate answer，让 users 可以验证每个 claim",
+        "Anchors 会降低 synthesis call 的 token cost",
+        "Anchors 是 downstream BM25 reranking 所必需的",
+        "Anchors 是 Vector database schema 所要求的"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为了在 50-file push 上保持 60 秒以内，incremental re-index 需要什么？",
+      "options": [
+        "只对 text 发生变化的 chunks 重新生成 Embedding，并重新计算受影响的 symbol edges",
+        "每次 commit 都对完整的 2M-LOC corpus 重新生成 Embedding",
+        "完全丢弃 symbol graph",
+        "丢弃 BM25 index 并从头 rebuild"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个 metric 用来衡量 retrieved claims 是否可在 source 中验证？",
+      "options": [
+        "MRR@10",
+        "Citation faithfulness",
+        "nDCG@10",
+        "p95 query latency"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

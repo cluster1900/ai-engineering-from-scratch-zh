@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在训练 Neural Network 的语境中，'optimization' 是什么意思？",
+      "options": ["让代码运行得更快", "找到能最小化 Loss function 的模型 weights", "减少模型中的参数数量", "为训练选择最佳硬件"],
+      "correct": 1,
+      "explanation": "训练 Neural Network 本质上就是 optimization。Loss function 衡量模型错得有多离谱，而 optimization 会找到让它尽可能小的 weight 值。"
+    },
+    {
+      "stage": "pre",
+      "question": "如果在 gradient descent 期间 learning rate 太大会发生什么？",
+      "options": ["训练会更快收敛到 global minimum", "Optimizer 会越过 minimum，Loss 会发散（来回弹跳或增大）", "Gradient 会变成零", "模型会自动降低 learning rate"],
+      "correct": 1,
+      "explanation": "过大的 learning rate 会导致每一步都越过谷底，可能在两侧之间来回弹跳，甚至完全发散。Loss 会上升而不是下降。"
+    },
+    {
+      "stage": "post",
+      "question": "Adam 与普通的 gradient descent 有什么不同？",
+      "options": ["Adam 使用固定 learning rate，而 GD 使用自适应 rate", "Adam 跟踪 Gradient 和 squared Gradient 的 running average，从而为每个 weight 提供自己的自适应 learning rate", "Adam 计算精确的二阶导数，而 GD 使用一阶导数", "Adam 每一步处理完整 dataset，而 GD 使用 mini-batch"],
+      "correct": 1,
+      "explanation": "Adam 会为每个 weight 维护一阶矩（Gradient 方向）和二阶矩（Gradient 大小）估计。除以 sqrt(second moment) 后，Gradient 大的 weight 步子更小，Gradient 小的 weight 步子更大。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 mini-batch SGD 中的噪声被认为是有益的，而不只是麻烦？",
+      "options": ["噪声会减少训练期间的内存使用", "噪声帮助 Optimizer 逃离浅层 local minima 和 saddle points，否则无噪声 Optimizer 可能会卡住", "噪声没有好处；它总是会减慢收敛", "噪声会让 Loss function 变成 convex"],
+      "correct": 1,
+      "explanation": "来自随机 mini-batch 的随机噪声会提供随机扰动，可能把 Optimizer 推出浅层 local minima 和 saddle points，从而带来更好的泛化。"
+    },
+    {
+      "stage": "post",
+      "question": "cosine annealing learning rate schedule 会做什么？",
+      "options": ["按照余弦曲线在整个训练过程中提高 learning rate", "从较高的 learning rate 开始，并按照余弦曲线平滑降低它，可选 warmup", "在两个固定值之间交替切换 learning rate", "把 learning rate 设置为当前 epoch 编号的余弦值"],
+      "correct": 1,
+      "explanation": "Cosine annealing 会按照半余弦曲线，将 learning rate 从 lr_max 平滑降低到 lr_min。这让早期用大步快速推进，后期用小步精细收敛。"
+    }
+  ]
+}

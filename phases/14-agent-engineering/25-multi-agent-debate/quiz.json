@@ -1,0 +1,90 @@
+{
+  "lesson": "25-multi-agent-debate",
+  "title": "Multi-Agent Debate 与协作",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Society of Minds protocol 会让 N 个 model instances 做什么？",
+      "options": [
+        "每个都运行不同的 benchmark",
+        "独立提出答案，然后在 R 轮中阅读并 critique 彼此的 proposals，直到它们 converge",
+        "在共享 dataset 上训练",
+        "协商价格"
+      ],
+      "correct": 1,
+      "explanation": "N 个 proposers、R 轮、cross-critique、convergence，是规范的 Du et al. debate。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 cross-model debate（例如 ChatGPT + Bard）优于 single-model debate？",
+      "options": [
+        "不同 vendors 协商价格",
+        "异质性减少共享盲点，因此 cross-critique 能捕获更多错误",
+        "它更便宜",
+        "Vendors 共享 weights"
+      ],
+      "correct": 1,
+      "explanation": "混合 models 带来独立的错误分布，从而提高 debate 的上限。"
+    },
+    {
+      "stage": "check",
+      "question": "相比 full mesh，sparse topology 在 token-cost 上的主要收益是什么？",
+      "options": [
+        "Sparse topology 不需要 models",
+        "每个 debater 只读取 peers 的一个子集，因此 critique-op 计数下降，而准确率通常相当",
+        "Sparse topology 会让轮数翻倍",
+        "它移除了 LLM"
+      ],
+      "correct": 1,
+      "explanation": "Sparse（star、ring、hub-and-spoke）可以减少 critique ops，同时在许多任务上不损失准确率。"
+    },
+    {
+      "stage": "check",
+      "question": "课程列出的哪种情况是 debate 会带来伤害的场景？",
+      "options": [
+        "开放式 reasoning",
+        "简单事实查询，因为一次 lookup 比五次 debates 更便宜",
+        "Chess move validity",
+        "Biography generation"
+      ],
+      "correct": 1,
+      "explanation": "对 latency 和 cost 敏感的 trivial lookups 不会从 N x R debate 中受益。"
+    },
+    {
+      "stage": "check",
+      "question": "什么是 convergence collapse？",
+      "options": [
+        "网络中断",
+        "所有 agents converge 到第一个错误答案；通过 required disagreement rounds 缓解",
+        "Process crash",
+        "TLS handshake failure"
+      ],
+      "correct": 1,
+      "explanation": "通过强制产生不同的第 1 轮 proposals，可以缓解对错误答案的早期一致。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 prompt homogenization 会削弱 debate？",
+      "options": [
+        "它违反 Apache 2.0",
+        "相同 prompts 会产生几乎相同的答案，从而移除 cross-critique signal",
+        "它使用太多 tokens",
+        "它绕过了 supervisor"
+      ],
+      "correct": 1,
+      "explanation": "多样化 prompts（理想情况下也包括多样化 models）可以保持 proposal distribution 足够宽。"
+    },
+    {
+      "stage": "post",
+      "question": "根据课程，哪种 production pattern 是 debate 的一种变体？",
+      "options": [
+        "Anthropic orchestrator-workers，带有 synthesis step",
+        "纯 single-shot RAG",
+        "仅 Cron schedule",
+        "Vector indexing"
+      ],
+      "correct": 0,
+      "explanation": "带 synthesis 的 orchestrator-workers 是 production 中一种 debate-shaped pattern。"
+    }
+  ]
+}

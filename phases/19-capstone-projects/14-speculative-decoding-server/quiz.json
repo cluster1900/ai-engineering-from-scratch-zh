@@ -1,0 +1,90 @@
+{
+  "lesson": "14-speculative-decoding-server",
+  "title": "综合项目 14 — Speculative-Decoding 推理服务器",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "speculative decoding 背后的双层机制是什么？",
+      "options": [
+        "两个 target models 按 Token 交替运行",
+        "一个 Embedding model 和一个 synthesizer",
+        "一个 retrieval cache 和一个 reranker",
+        "一个 draft model 提出 k 个 candidate tokens；target model 在单次 pass 中验证它们"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "EAGLE-3 做了什么是 ngram drafts 做不到的？",
+      "options": [
+        "它替换 target model",
+        "它在 target model 的 hidden states 上训练 draft heads，以获得更高的 acceptance rates",
+        "它完全避免 tokenization",
+        "它只在 CPUs 上运行"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么要跨 batch sizes 1、8 和 32 报告 p99 tail latency？",
+      "options": [
+        "Steady-state tokens-per-second 可能掩盖这样一个事实：rejection 时的 verify pass 比 vanilla decoding 更昂贵",
+        "vLLM 无法 serve 小于 8 的 batch sizes",
+        "p99 只在 batch size 32 时重要",
+        "Tail latency 与 batch size 无关"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 traffic distribution 变化时 acceptance rate 会 drift？",
+      "options": [
+        "vLLM 每小时轮换 models",
+        "Draft alignment 依赖 input distribution：ShareGPT、code 和 domain data 会触发不同 patterns",
+        "OS scheduler 会重新排列 GPU memory",
+        "Quantization 会在 runtime 改变"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "deployment 基于哪个 Kubernetes HPA signal 进行 scale？",
+      "options": [
+        "Cluster autoscaler nodes",
+        "CPU utilization",
+        "Disk IOPS",
+        "Inference requests 的 queue-wait time"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "P-EAGLE 相比 serial EAGLE-3 增加了什么？",
+      "options": [
+        "对 FP4 weights 的 quantization",
+        "移除 target model",
+        "跨 draft branches tree 进行 parallel speculation，并在一次 target pass 中验证",
+        "自动 dataset curation"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "rubric 要求相对 non-speculative baseline 达到什么 throughput target？",
+      "options": [
+        "两个 models 上 matched quality 至少 2.5x",
+        "任何高于 baseline 的改进",
+        "matched quality 下大约 1.1x",
+        "任意 quality 下正好 10x throughput"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

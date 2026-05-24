@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .control { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
+      .target { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .safety { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .obs { fill: #e9e6ff; stroke: #5a4fcf; stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .head { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+    </style>
+  </defs>
+  <text x="480" y="24" text-anchor="middle" class="title">LLM chaos engineering —— 四个平面 + 反馈循环</text>
+
+  <rect x="40" y="50" width="220" height="180" class="control"/>
+  <text x="150" y="72" text-anchor="middle" class="head">control plane</text>
+  <text x="150" y="92" text-anchor="middle" class="step">experiment scheduler</text>
+  <text x="60" y="116" class="small">· LitmusChaos workflow</text>
+  <text x="60" y="134" class="small">· Chaos Mesh CRDs</text>
+  <text x="60" y="152" class="small">· Harness UI</text>
+  <text x="60" y="170" class="small">· AWS FIS / Azure Chaos Studio</text>
+  <text x="150" y="200" text-anchor="middle" class="caption">调度、参数、节奏</text>
+
+  <rect x="280" y="50" width="220" height="180" class="target"/>
+  <text x="390" y="72" text-anchor="middle" class="head">target plane</text>
+  <text x="390" y="92" text-anchor="middle" class="step">services + infra + data</text>
+  <text x="300" y="116" class="small">· pods、nodes、LB</text>
+  <text x="300" y="134" class="small">· 数据存储、vector DB</text>
+  <text x="300" y="152" class="small">· LLM 网关</text>
+  <text x="300" y="170" class="small">· 上游提供商</text>
+
+  <rect x="520" y="50" width="220" height="180" class="safety"/>
+  <text x="630" y="72" text-anchor="middle" class="head">安全平面</text>
+  <text x="630" y="92" text-anchor="middle" class="step">防护 + 中止</text>
+  <text x="540" y="116" class="small">· 消耗率门控（&gt; 2x 预算）</text>
+  <text x="540" y="134" class="small">· blast-radius 上限</text>
+  <text x="540" y="152" class="small">· 抑制窗口</text>
+  <text x="540" y="170" class="small">· trace-ID 标记</text>
+  <text x="540" y="188" class="small">· kill switch</text>
+
+  <rect x="760" y="50" width="160" height="180" class="obs"/>
+  <text x="840" y="72" text-anchor="middle" class="head">可观测性</text>
+  <text x="840" y="92" text-anchor="middle" class="step">traces + metrics</text>
+  <text x="780" y="116" class="small">· 区分</text>
+  <text x="780" y="134" class="small">chaos 引发与</text>
+  <text x="780" y="152" class="small">自然故障</text>
+  <text x="780" y="170" class="small">· trace-ID 关联</text>
+
+  <rect x="40" y="260" width="880" height="100" class="box"/>
+  <text x="480" y="282" text-anchor="middle" class="head">五个 LLM 专项实验</text>
+  <text x="60" y="308" class="step">1. 内存过载（KV 抢占风暴）</text>
+  <text x="60" y="326" class="step">2. 网络故障（切断网关 ↔ 提供商）</text>
+  <text x="60" y="344" class="step">3. 提供商故障（100% 429）</text>
+  <text x="500" y="308" class="step">4. 异常 prompt（Tokenizer bomb）</text>
+  <text x="500" y="326" class="step">5. KV 驱逐风暴（强制级联 re-prefill）</text>
+
+  <rect x="40" y="380" width="880" height="80" class="box"/>
+  <text x="480" y="402" text-anchor="middle" class="head">节奏</text>
+  <text x="480" y="424" text-anchor="middle" class="step">每周 canary + SLO 复盘 · 每月 game day + postmortem · 每季审计 + 依赖图</text>
+  <text x="480" y="444" text-anchor="middle" class="caption">没有 SLI/SLO + 可观测性 + 回滚 + runbooks + on-call，就别上 prod</text>
+</svg>
