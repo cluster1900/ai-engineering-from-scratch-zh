@@ -145,8 +145,8 @@ ls phases/03-deep-learning-core/05-loss-functions/outputs/
 
 | Skill | 作用 |
 |---|---|
-| [`/find-your-level`](.claude/skills/find-your-level/SKILL.md) | 十题分级测验。将你的知识映射到起始 Phase，并生成带小时估算的个性化路径。 |
-| [`/check-understanding <phase>`](.claude/skills/check-understanding/SKILL.md) | 按 Phase 进行测验，共八题，提供反馈和需要复习的具体课程。 |
+| [`/find-your-level`](.agents/skills/find-your-level/SKILL.md) | 十题分级测验。将你的知识映射到起始 Phase，并生成带小时估算的个性化路径。 |
+| [`/check-understanding <phase>`](.agents/skills/check-understanding/SKILL.md) | 按 Phase 进行测验，共八题，提供反馈和需要复习的具体课程。 |
 
 ```
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
