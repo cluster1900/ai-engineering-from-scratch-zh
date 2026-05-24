@@ -55,4 +55,6 @@ mlruns/
 .gstack/
 
 .link-cache.json
-.claude/
+.claude/*
+!.claude/skills/
+/scripts/
