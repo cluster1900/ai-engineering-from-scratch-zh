@@ -115,8 +115,8 @@ flowchart LR
 **选项 B — clone 并运行。**
 
 ```bash
-git clone https://github.com/rohitg00/ai-engineering-from-scratch.git
-cd ai-engineering-from-scratch
+git clone https://github.com/rohitg00/ai-engineering-from-scratch-zh.git
+cd ai-engineering-from-scratch-zh
 python phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
@@ -1058,10 +1058,10 @@ Twitter/X 是 #1 acquisition channel。
 
 ## Star history
 
-<a href="https://star-history.com/#rohitg00/ai-engineering-from-scratch&Date">
+<a href="https://star-history.com/#rohitg00/ai-engineering-from-scratch-zh&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch&type=Date&theme=dark">
-    <img alt="Star history" src="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch&type=Date" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch-zh&type=Date&theme=dark">
+    <img alt="Star history" src="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch-zh&type=Date" width="100%">
   </picture>
 </a>
 
