@@ -58,3 +58,4 @@ mlruns/
 .claude/*
 !.claude/skills/
 /scripts/
+.agents/*
