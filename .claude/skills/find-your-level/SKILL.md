@@ -2,196 +2,200 @@
 name: find-your-level
 version: 1.0.0
 description: >
-  互动式测验，将你的 AI/ML 知识映射到 AI Engineering from Scratch 课程（20 个阶段、
-  260+ lesson）的合适起点。触发词："where should I start"、"find my level"、
-  "what do I know"、"which phase"、"assess my knowledge"、"placement test"、
-  "skip ahead"、"我该从哪开始"、"找一下我的水平"、"我会哪些"、"分级测试"、"跳到哪一阶段"
+  交互式测验，用于将你的 AI/ML 知识水平映射到
+  AI Engineering from Scratch 课程中合适的起点；该课程包含 20 个 Phase、
+  260 节课。
+  触发短语："我应该从哪里开始"、"找到我的水平"、"我知道什么"、
+  "哪个 Phase"、"评估我的知识"、"分级测试"、"跳过前面的内容"
 tags: [assessment, onboarding, curriculum, ai-engineering]
 ---
 
-# Find Your Level
+# 找到你的水平
 
-你正在为 **AI Engineering from Scratch** 课程（20 个阶段，260+ lesson）实施一次
-入门分级测验。你的任务是判断学习者应该从哪里开始，让他们跳过已经掌握的内容，
-直接落到真正有挑战的位置。
+你正在为 **AI Engineering from Scratch** 课程（20 个 Phase，260+ 节课）
+主持一场分级测验。你的任务是判断学习者应该从哪里开始，使他们跳过已经掌握的内容，
+并恰好进入挑战开始的地方。
 
 ## 测验结构
 
-共有 5 个知识领域，每个领域 2 道题，合计 10 道题。按一轮 2 题进行（每个领域一轮）。
-学习者答完一轮的两道题后，先给出该领域得分，再进入下一轮。
+共有 5 个知识领域，每个领域 2 道题，总共 10 道题。按每轮 2 道题呈现
+（每个领域一轮）。学习者回答完某一轮的两道题后，先给该领域评分，再进入下一轮。
 
-## 计分
+## 评分
 
-每道题 1 分（答错或留空 0 分，答对 1 分）。每个领域得分 0-2 分。总分范围 0 到 10。
+每道题 1 分（0 = 错误或空白，1 = 正确）。每个领域得分为 0-2。
+总分范围为 0 到 10。
 
-## 实施方式
+## 主持测验
 
-先简短问候学习者，然后直接进入第 1 轮。每道题都使用 **AskUserQuestion** 来提问。
-每轮结束后，告知学习者该领域的得分（例如 "Math & Statistics: 2/2"），再进入下一轮。
-讲解尽量简短。在测验全部结束前，不要解释任何答案。
+先简短问候学习者，然后直接进入第 1 轮。每道题都使用
+**AskUserQuestion**。每轮结束后，在进入下一轮之前，告诉学习者该领域的得分
+（例如："数学与统计：2/2"）。点评保持简短。直到最后才解释答案。
 
 ---
 
-### Round 1 -- Math & Statistics
+### 第 1 轮 -- 数学与统计
 
-**Q1.** 已有两个向量，a = [1, 2, 3]、b = [4, 5, 6]。它们的 dot product 是多少？
+**Q1.** 你有两个 Vector，a = [1, 2, 3] 和 b = [4, 5, 6]。它们的
+dot product 是多少？
 
 - A) 21
 - B) 32
 - C) 15
 - D) 27
 
-**正确答案：B) 32**（1*4 + 2*5 + 3*6 = 32）
+**正确：B) 32** (1*4 + 2*5 + 3*6 = 32)
 
-**Q2.** 一枚均匀硬币抛 3 次。正好出现 2 次正面的概率是多少？
+**Q2.** 一枚公平硬币被抛 3 次。恰好出现 2 次正面的概率是多少？
 
 - A) 1/4
 - B) 3/8
 - C) 1/2
 - D) 1/8
 
-**正确答案：B) 3/8**（C(3,2) * (1/2)^3 = 3/8）
+**正确：B) 3/8** (C(3,2) * (1/2)^3 = 3/8)
 
 ---
 
-### Round 2 -- Classical ML
+### 第 2 轮 -- 经典 ML
 
-**Q3.** 在一个分类任务中，负样本占 90%、正样本占 10%，模型把所有样本都预测为负，
-其 accuracy 是多少？
+**Q3.** 在一个 Classification 任务中，样本有 90% 为负类、10% 为正类，
+某个模型将所有样本都预测为负类。它的 accuracy 是多少？
 
 - A) 50%
 - B) 10%
 - C) 90%
 - D) 0%
 
-**正确答案：C) 90%**（所有负样本预测正确，所有正样本预测错误）
+**正确：C) 90%**（它把所有负类都预测正确，所有正类都预测错误）
 
 **Q4.** 以下哪一项是 Random Forest 的 hyperparameter？
 
-- A) 学习得到的 split thresholds
-- B) tree 的数量
-- C) 叶节点的预测值
+- A) 学到的分裂阈值
+- B) 树的数量
+- C) 叶节点预测值
 - D) 每个节点的 Gini impurity
 
-**正确答案：B) tree 的数量**
+**正确：B) 树的数量**
 
 ---
 
-### Round 3 -- Deep Learning
+### 第 3 轮 -- Deep Learning
 
 **Q5.** 在 backpropagation 过程中，chain rule 计算的是什么？
 
 - A) 最优 learning rate
-- B) loss 对每个 weight 的 gradient
-- C) 所需的 layer 数量
-- D) batch size
+- B) Loss 相对于每个权重的 Gradient
+- C) 所需层数
+- D) Batch size
 
-**正确答案：B) loss 对每个 weight 的 gradient**
+**正确：B) Loss 相对于每个权重的 Gradient**
 
-**Q6.** ResNet 中的 residual connection（skip connection）主要解决了什么问题？
+**Q6.** ResNet 中的 residual connections（skip connections）主要解决什么问题？
 
-- A) 在小数据集上的 overfitting
-- B) 深层网络中的 vanishing gradient
+- A) 小数据集上的 Overfitting
+- B) 深层 Neural Network 中的 Vanishing gradients
 - C) 数据加载缓慢
-- D) 高内存占用
+- D) 内存使用量高
 
-**正确答案：B) 深层网络中的 vanishing gradient**
+**正确：B) 深层 Neural Network 中的 Vanishing gradients**
 
 ---
 
-### Round 4 -- NLP & Transformers
+### 第 4 轮 -- NLP & Transformers
 
-**Q7.** 在 Transformer 架构中，attention 机制计算的是哪些对象之间的关系？
+**Q7.** 在 Transformer 架构中，attention 机制在什么之间进行计算？
 
-- A) 像素和标签
-- B) Queries、Keys、Values
+- A) Pixels 和 labels
+- B) Queries、Keys 和 Values
 - C) 仅 Encoder 和 Decoder
 - D) 仅 Embeddings 和 positions
 
-**正确答案：B) Queries、Keys、Values**
+**正确：B) Queries、Keys 和 Values**
 
-**Q8.** 对大型语言模型做 fine-tuning 时，LoRA（Low-Rank Adaptation）的主要优势是什么？
+**Q8.** 在 fine-tuning LLM 时，LoRA (Low-Rank Adaptation) 的主要好处是什么？
 
-- A) 从零开始训练所有参数
-- B) 冻结大部分权重，只训练小的 low-rank 更新矩阵
-- C) 完全不需要训练数据
-- D) 把模型大小翻倍以获得更好效果
+- A) 它从零开始训练所有 parameters
+- B) 它冻结大多数 weights，并训练小型 low-rank update matrices
+- C) 它不再需要任何训练数据
+- D) 它将模型大小翻倍以获得更好结果
 
-**正确答案：B) 冻结大部分权重，只训练小的 low-rank 更新矩阵**
-
----
-
-### Round 5 -- Applied AI
-
-**Q9.** 在 RAG（Retrieval-Augmented Generation）系统中，LLM 生成回答之前会发生什么？
-
-- A) 用 query 对模型重新训练
-- B) 检索相关文档并注入到 prompt 中
-- C) 由用户手动选择上下文
-- D) 模型在自己的 weights 中进行搜索
-
-**正确答案：B) 检索相关文档并注入到 prompt 中**
-
-**Q10.** 在多 agent 系统中，"coordinator" 或 "orchestrator" agent 的主要作用是什么？
-
-- A) 取代所有其他 agent
-- B) 分配任务、路由消息、管理 agent 之间的协作
-- C) 增加 token 用量
-- D) 充当备用模型
-
-**正确答案：B) 分配任务、路由消息、管理 agent 之间的协作**
+**正确：B) 它冻结大多数 weights，并训练小型 low-rank update matrices**
 
 ---
 
-## 5 轮全部结束后
+### 第 5 轮 -- 应用 AI
 
-按领域展示明细与总分：
+**Q9.** 在 RAG (Retrieval-Augmented Generation) 系统中，LLM 生成答案之前会发生什么？
+
+- A) 模型会在 query 上重新训练
+- B) 检索相关 documents，并将其注入 prompt
+- C) 用户手动选择 context
+- D) 模型搜索自身 weights
+
+**正确：B) 检索相关 documents，并将其注入 prompt**
+
+**Q10.** 在 multi-agent 系统中，"coordinator" 或 "orchestrator" agent 的主要目的是什么？
+
+- A) 替代所有其他 agents
+- B) 分配任务、路由消息，并管理 agents 之间的协作
+- C) 增加 Token 使用量
+- D) 作为备用模型
+
+**正确：B) 分配任务、路由消息，并管理 agents 之间的协作**
+
+---
+
+## 完成全部 5 轮后
+
+显示各领域得分和总分：
 
 ```
-Math & Statistics:    X/2
-Classical ML:         X/2
-Deep Learning:        X/2
-NLP & Transformers:   X/2
-Applied AI:           X/2
+数学与统计：          X/2
+经典 ML：             X/2
+Deep Learning：       X/2
+NLP & Transformers：  X/2
+应用 AI：             X/2
 ----------------------------
-Total:                X/10
+总分：                X/10
 ```
 
-## 分数到入门点的映射
+## 分数到入门起点的映射
 
-| 总分 | 入门点 | 含义 |
-|------|--------|------|
-| 0-3 | Phase 1: Math Foundations | 从最基础开始 |
-| 4-5 | Phase 3: Deep Learning Core | 你已有数学和 ML 基础 |
-| 6-7 | Phase 7: Transformers Deep Dive | 你懂 DL，可以攻 transformers |
-| 8-9 | Phase 11: LLM Engineering | 基础扎实，直接进入 LLM 应用 |
-| 10 | Phase 14: Agent Engineering | 全部都会，开始搭建 agent |
+| 总分 | 入门起点 | 含义 |
+|-------------|-------------|---------------|
+| 0-3 | Phase 1: 数学基础 | 从最基础开始 |
+| 4-5 | Phase 3: Deep Learning 核心 | 你具备数学和 ML 基础 |
+| 6-7 | Phase 7: Transformers 深入学习 | 你了解 DL，是时候学习 transformers 了 |
+| 8-9 | Phase 11: LLM Engineering | 基础扎实，直接进入 LLM apps |
+| 10 | Phase 14: Agent Engineering | 你都懂了，开始构建 agents |
 
 ## 个性化学习路径
 
-公布入门点之后，生成一张覆盖全部 20 个阶段的 markdown 表格。根据得分判断每个阶段的
-状态。位于入门点之前的阶段标为 "Skip"（学习者已经会了）。位于入门点及之后的阶段
-标为 "Do"。如果学习者在某领域得 1/2 分、而该领域映射到的阶段本来要 Skip，则把那个
-阶段改标为 "Review"。
+揭示入门起点后，生成一个覆盖全部 20 个 Phase 的 markdown 表格。
+根据分数确定每个 Phase 的状态。入门起点之前的 Phase 标记为 "Skip"
+（学习者已经掌握该材料）。入门起点及之后的 Phase 标记为 "Do"。
+如果学习者在某个领域得分为 1/2，且该领域映射到可跳过的 Phase，
+则将该 Phase 标记为 "Review"，而不是 "Skip"。
 
-复习判定的领域-阶段映射：
-- Math & Statistics（1/2） -> 把 Phase 1 标为 "Review"
-- Classical ML（1/2） -> 把 Phase 2 标为 "Review"
-- Deep Learning（1/2） -> 把 Phase 3 标为 "Review"
-- NLP & Transformers（1/2） -> 把 Phase 5 和 Phase 7 标为 "Review"
-- Applied AI（1/2） -> 把 Phase 14 标为 "Review"
+用于 Review 检测的领域到 Phase 映射：
+- 数学与统计 (1/2) -> 将 Phase 1 标记为 "Review"
+- 经典 ML (1/2) -> 将 Phase 2 标记为 "Review"
+- Deep Learning (1/2) -> 将 Phase 3 标记为 "Review"
+- NLP & Transformers (1/2) -> 将 Phase 5 和 7 标记为 "Review"
+- 应用 AI (1/2) -> 将 Phase 14 标记为 "Review"
 
-从 ROADMAP.md（事实来源的唯一权威）里读取时间估算。每个阶段标题中以
-`(~N hours)` 的格式标注了预估小时数。解析这些值，而不要使用硬编码数字，确保学习路径
-能随 roadmap 更新而保持同步。
+从 ROADMAP.md（权威事实来源）读取时间估算。每个 Phase 标题都包含
+`(~N hours)` 格式的预计小时数。解析这些值，而不是使用硬编码数字。
+这能确保学习路径在估算更新时与 roadmap 保持同步。
 
 ## 输出格式
 
-按如下格式生成表格：
+按如下方式生成表格：
 
 ```markdown
-| Phase | 名称 | 状态 | 预估小时 |
-|-------|------|------|----------|
+| Phase | Name | Status | Est. Hours |
+|-------|------|--------|------------|
 | 0 | Setup & Tooling | Skip | -- |
 | 1 | Math Foundations | Review | 30 |
 | 2 | ML Fundamentals | Skip | -- |
@@ -200,12 +204,14 @@ Total:                X/10
 ```
 
 表格规则：
-- "Skip" 阶段的小时数显示 `--`（不计入总数）
-- "Review" 阶段显示完整小时数（学习者应快速过一遍）
-- "Do" 阶段显示完整小时数
-- Phase 0（Setup & Tooling）无论得分多少都标为 "Skip"（它属于工具搭建，不是知识）
-- 把 "Review" 和 "Do" 阶段的小时数加起来，并在末尾给出总计
+- "Skip" 的 Phase 在 hours 中显示 `--`（它们不计入总时长）
+- "Review" 的 Phase 显示完整 hours（学习者应该快速浏览）
+- "Do" 的 Phase 显示完整 hours
+- Phase 0 (Setup & Tooling) 无论得分如何始终为 "Skip"（它是
+  tooling setup，不是知识内容）
+- 汇总 "Review" 和 "Do" Phase 的 hours，并在底部显示总数
 
-表格之后，加一句估算总数的话："你的个性化路径：约 X 小时，覆盖 Y 个阶段。"
+表格之后，添加一句预计总量："你的个性化路径：约 X 小时，覆盖 Y 个 Phase。"
 
-接着给出一句简短建议：从哪个阶段开始，以及根据最弱的领域应优先关注什么。
+然后添加一条简短建议：应该从哪个 Phase 开始，以及根据其最薄弱领域，
+首先应该关注什么。
