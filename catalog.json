@@ -3693,7 +3693,7 @@
         {
           "num": 11,
           "slug": "11-real-time-audio-processing",
-          "title": "Real-Time Audio Processing",
+          "title": "实时音频处理",
           "path": "phases/06-speech-and-audio/11-real-time-audio-processing",
           "has_docs": true,
           "has_code": true,

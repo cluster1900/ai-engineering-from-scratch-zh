@@ -40,7 +40,7 @@ Agents 不会直接看到彼此。Tasks 引用 agents。Crew 对 tasks 进行编
 
 > **已针对** CrewAI 0.86（2026-05）验证。更新版本可能会重命名或合并 process types；在依赖具体形态之前，请查看 [CrewAI Processes docs](https://docs.crewai.com/concepts/processes)。
 
-### Sequential vs Hierarchical vs Consensus
+### Sequential、Hierarchical 与 Consensus
 
 - **Sequential。** Tasks 按声明顺序运行。Task N 的输出可作为 `context` 提供给 task N+1。成本最低。最可预测。当顺序固定时使用。
 - **Hierarchical。** 一个 manager Agent（单独的 LLM call）在 specialists 之间路由。CrewAI 会根据你的 `manager_llm` config 或默认配置生成 manager。manager 每轮选择下一个 task，并且可以拒绝或重新路由。当你有四个或更多 specialists，并且顺序确实依赖前序输出时使用。

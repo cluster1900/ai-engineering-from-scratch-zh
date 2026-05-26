@@ -2824,9 +2824,9 @@
     "phases/06-speech-and-audio/11-real-time-audio-processing/docs/en.md": {
       "status": "translated",
       "source_sha256": "7e6da16b11eddc44d8268d205c4a0d747443b3657e4010c7738a1f43ce594e61",
-      "output_sha256": "4173f7af5a47829faecddee17e18e942cbad074ad332422cf4e3803b1d7193af",
-      "updated_at": 1779796979,
-      "method": "codex-exec-batch"
+      "output_sha256": "5f6996f899968e5bcf2c17eaba6e968487f822d59158b185d6b09ac01678e8d6",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/06-speech-and-audio/11-real-time-audio-processing/outputs/skill-realtime-pipeline.md": {
       "status": "translated",
@@ -6072,9 +6072,9 @@
     "phases/14-agent-engineering/15-crewai-role-based-crews/docs/en.md": {
       "status": "translated",
       "source_sha256": "656fa2fd974ff9aab43a45dd37c85dea115d3f4c54b27478da2e071ae58d411e",
-      "output_sha256": "b2166388f0112d78f18afba8eddeedf6e2ebefc715d3e1f7191bfea4d9c3b067",
-      "updated_at": 1779797359,
-      "method": "codex-exec-batch"
+      "output_sha256": "404167d03b7243b46da49a0dac75ed50504027a89ab1f09f702e2ac17191bd1f",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/14-agent-engineering/31-agent-workbench-why-models-fail/docs/en.md": {
       "status": "translated",
@@ -8214,9 +8214,9 @@
     "site/prereqs.html": {
       "status": "translated",
       "source_sha256": "ea41fad0594d3c3a580e60c5e099647e30d50ab902d62a1f896490b2e9f7a228",
-      "output_sha256": "0f01f23b1602fa82ddd2a6ea3c46ad295661907fb7c5756c606f9621bdb414de",
-      "updated_at": 1779837347,
-      "method": "manual-structural-merge"
+      "output_sha256": "c05aecfa433484ffabe6f04639843b9ce466da573106709f1311f978f9589f1d",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "site/app.js": {
       "status": "translated",
@@ -8550,16 +8550,16 @@
     "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/quiz.json": {
       "status": "translated",
       "source_sha256": "d2688733b1a40b0cba4ee543faae941b83f902883b0b53c2c3e11ba60a77215c",
-      "output_sha256": "6244c8d439a1cb4561cf853d0646006663bda10826d1e79cfdbdab01a20d5bb1",
-      "updated_at": 1779797628,
-      "method": "codex-exec-batch"
+      "output_sha256": "7bcbfad79c2942b331d33179d3a19d12490b6403a55a58e9086415928350da67",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/quiz.json": {
       "status": "translated",
       "source_sha256": "0426d3c99bfac085f5287676d0446961a0ff6942b2a1cafe1e8225824159cc91",
-      "output_sha256": "02239b43a6ed266461e5330539588f4051e5e01f4023986fa99aaf5c909d721a",
-      "updated_at": 1779797628,
-      "method": "codex-exec-batch"
+      "output_sha256": "0bdf5e94c0296347c5f28304b2a69a69335bd32b1b7adb30cf438ed76f70d2df",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/quiz.json": {
       "status": "translated",
@@ -8578,37 +8578,37 @@
     "phases/18-ethics-safety-alignment/05-constitutional-ai-rlaif/quiz.json": {
       "status": "translated",
       "source_sha256": "45fd5ef352c9c0c30eff2fcc5f3aa7e7704c59e64c77a5c193349d2e16cbed25",
-      "output_sha256": "1a1ce4cafa49965343c8b09d3f4661f08f9efe7aaea9200a71bd0f072e52e662",
-      "updated_at": 1779797685,
-      "method": "codex-exec-batch"
+      "output_sha256": "70d7db6faeadce775f8b0386b523a058be767d3251e6972e0c8fa542bb6ec63a",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/06-mesa-optimization-deceptive-alignment/quiz.json": {
       "status": "translated",
       "source_sha256": "b963b4ee02a99b1302148fc54c9cd63a455861740ad8d826e680e6002afe5b99",
-      "output_sha256": "df5ebae0dd2b25c36a6a4e6b30b44e10a674e7140c1aab597d052fbeb642e543",
-      "updated_at": 1779798578,
-      "method": "codex-exec-batch"
+      "output_sha256": "5cd801b38f35d451b208e72b9b3262a34cc499e0b0aaaa43334f9181cd3faf91",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/07-sleeper-agents-persistent-deception/quiz.json": {
       "status": "translated",
       "source_sha256": "f48d314c5617702fa1d0e914e18ce3d631912195c5b4ce0036921e44d9e5f429",
-      "output_sha256": "100c7579cc09687ad9e999f72ef82d5d05df85778566c06090087f63d9be4ce4",
-      "updated_at": 1779798578,
-      "method": "codex-exec-batch"
+      "output_sha256": "a4fc075486c04cc67d131dc7565771a6e493ba3be612e9aab489054c043723c5",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/08-in-context-scheming-frontier-models/quiz.json": {
       "status": "translated",
       "source_sha256": "43c54340106d3fe3e07e29f9ec0c57c7a67269254fbf94ec1a5a925b904007e4",
-      "output_sha256": "f49b6106e7ff8e0e3c31bef9573f7e0955e5407689abedc38e8d7d9784313b14",
-      "updated_at": 1779798578,
-      "method": "codex-exec-batch"
+      "output_sha256": "2c2aed459aa73a0d1a5b3b6b0c76e5fa4149cf98e9185464f44aa8e66e6bd8d0",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/09-alignment-faking/quiz.json": {
       "status": "translated",
       "source_sha256": "273e531f5ba48bb6e52cd1040eed6a4454fc3924caca4f06582bc0bc5504a3b5",
-      "output_sha256": "908f73f98ea478deed26a8ab113172738dfad4a13cd95bdd1ef9947bbfbad8de",
-      "updated_at": 1779798634,
-      "method": "codex-exec-batch"
+      "output_sha256": "63707d623b670318006f0e4e9ba48bfc9aa033ebbcc368daf76c173a4779cd17",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/10-ai-control-subversion/quiz.json": {
       "status": "translated",
@@ -8620,9 +8620,9 @@
     "phases/18-ethics-safety-alignment/11-scalable-oversight-weak-to-strong/quiz.json": {
       "status": "translated",
       "source_sha256": "3b2fa8e64880b3cd3ea74e865051b2981f512f8b845466683fd794136cce8736",
-      "output_sha256": "4c7f1182b0ce6b749097bd406c4f857bb5174d432a2b0d0e4f01c89931478eaf",
-      "updated_at": 1779798634,
-      "method": "codex-exec-batch"
+      "output_sha256": "61068b080ae582896b4a0cdc84247ea8f909a8b28d39d78a317e95ae53248c75",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/12-red-teaming-pair-automated-attacks/quiz.json": {
       "status": "translated",
@@ -8634,9 +8634,9 @@
     "phases/18-ethics-safety-alignment/13-many-shot-jailbreaking/quiz.json": {
       "status": "translated",
       "source_sha256": "28a32790aa97fe6ec845308a6bd562855b72854dde6e0a19e06ea8be3ebd3da0",
-      "output_sha256": "6b4977e23950f0a36c28a8c97cdbbc835dabe74d2440390a64c2f9c9621bbf96",
-      "updated_at": 1779798690,
-      "method": "codex-exec-batch"
+      "output_sha256": "bcb7356331ba613a11b82e7da026255f2cc2690fb34d64fcb305e1e728d8de84",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/14-ascii-art-visual-jailbreaks/quiz.json": {
       "status": "translated",
@@ -8648,30 +8648,30 @@
     "phases/18-ethics-safety-alignment/15-indirect-prompt-injection/quiz.json": {
       "status": "translated",
       "source_sha256": "9d275c33f35ba4a3370e7da8beb4429005fcfc9372a46a2ff4fd1899e95c3e07",
-      "output_sha256": "b5d32a6278ce2622ae8f96b0352b755bdf39177d4647287fd473348ce8d562c8",
-      "updated_at": 1779798747,
-      "method": "codex-exec-batch"
+      "output_sha256": "857ae961b6f508de8968031a8da5989b215ceae5625fc9cf55cca577eecdf33f",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/16-red-team-tooling-garak-llamaguard-pyrit/quiz.json": {
       "status": "translated",
       "source_sha256": "a0ea1448a170a4054e7bfd8157f0e50c47fb40a6931151aacd3ec82b0c6c82e7",
-      "output_sha256": "090a40eed65a875706f026347c92475a9eaf272812a3f7d738be253b02aff08e",
-      "updated_at": 1779798747,
-      "method": "codex-exec-batch"
+      "output_sha256": "84344d5e77a5d06fc9590507ce3365506bb704d98cfc24bc0ffee2dcbdc9f01e",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/17-wmdp-dual-use-evaluation/quiz.json": {
       "status": "translated",
       "source_sha256": "acb07a5de644fea552ef584d80bc5f3ec2fd60a1d8bedb97d2067fed6956bd6e",
-      "output_sha256": "d60febe4e470dff5a1863cc987c01e4ff990aea1dccc9f7dd2de84467ca60e5b",
-      "updated_at": 1779798747,
-      "method": "codex-exec-batch"
+      "output_sha256": "35d6527e5b8ee49c22f9daee877efd7336f8189be0f15d08c6d15e0e019ec713",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/18-frontier-safety-frameworks-rsp-pf-fsf/quiz.json": {
       "status": "translated",
       "source_sha256": "17254a2e856c60aa9ff9e60baf313a6575bc6f700bf0454317ffe8aa849e0384",
-      "output_sha256": "4281034b2b7f087b212b638c482a6f0475dd1d451f0a751a1ab3ad6464c76fc1",
-      "updated_at": 1779798804,
-      "method": "codex-exec-batch"
+      "output_sha256": "5744ba7b5ad35c081f7833cf6fe5336dd02a2368945db2cdec019844eca3181f",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/19-model-welfare-research/quiz.json": {
       "status": "translated",
@@ -8683,30 +8683,30 @@
     "phases/18-ethics-safety-alignment/20-bias-representational-harm/quiz.json": {
       "status": "translated",
       "source_sha256": "1d5ce2953f65e90f123d60a21dc19847e2f79e750a7fb092390f24c98a6c3bbf",
-      "output_sha256": "d4d4fd228c89b8b77c1c0036c63f213aa63c41bc0c8881859ba6f16fa5c55784",
-      "updated_at": 1779798804,
-      "method": "codex-exec-batch"
+      "output_sha256": "25b532db8c1dae5a18e61c9ad3ca0b620acdfdd8e06aad044dcb156ea1fece94",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/21-fairness-criteria-group-individual-counterfactual/quiz.json": {
       "status": "translated",
       "source_sha256": "bafb1aaf0fa099ff309e8db15d8e3f4f32bfe963788d3fdb02b78160c63f412d",
-      "output_sha256": "a5f6b5ea714b1df0aa085e440a72a895fba664350b3c1c49c1af4381c825d835",
-      "updated_at": 1779798864,
-      "method": "codex-exec-batch"
+      "output_sha256": "ca408a2e77ae8101a514f1324be9fb5ff2b211ccab658fc3ce304fc183a3f921",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/22-differential-privacy-for-llms/quiz.json": {
       "status": "translated",
       "source_sha256": "e9e4fa704bbf34e6172024b4a95ee35f2e6d6d4711b2f7ee25758087b03ea564",
-      "output_sha256": "1ff48c6344487a79cbf7af48e5a0f0840fd578224a7c44343c1a799bdc56a588",
-      "updated_at": 1779798864,
-      "method": "codex-exec-batch"
+      "output_sha256": "6fe7b2119cdde7c31f1f15a17c0f7e77a3d68b28d54ef316880b5933bf198d6a",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/23-watermarking-synthid-stable-signature-c2pa/quiz.json": {
       "status": "translated",
       "source_sha256": "3a73c05fa0399ace5caf67646dc1194783b9acffbb65d8a501aa4f36ee47d7b2",
-      "output_sha256": "804309cd66de1e40ccf94381e4d5607ac5e40d4885bceab1a1ec2a38136e7676",
-      "updated_at": 1779798864,
-      "method": "codex-exec-batch"
+      "output_sha256": "9ec89619b298b528c2ba9e4c40ab6b69e4525caf209f4a5c1209d731e7a639f6",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/24-regulatory-frameworks-eu-us-uk-korea/quiz.json": {
       "status": "translated",
@@ -8718,16 +8718,16 @@
     "phases/18-ethics-safety-alignment/25-echoleak-cves-for-ai/quiz.json": {
       "status": "translated",
       "source_sha256": "b77d332d89fb07b5febadf9f07bdf37f72d07fa235cc62e824febc3d59a6e3c4",
-      "output_sha256": "b90c0052a788fe785a03b140a271474cecaeac04cec7bc3ecd685bc8215035f3",
-      "updated_at": 1779798924,
-      "method": "codex-exec-batch"
+      "output_sha256": "82202b4e7e749d88e1a3b632617b90a2083a6a25cfa5314984bd1df027cfa1e8",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/26-model-system-dataset-cards/quiz.json": {
       "status": "translated",
       "source_sha256": "f37e65cf80b2babaa3a7a3d0b462c81beb3a7a9f558856e7dab30414dcdffd8c",
-      "output_sha256": "d1b8cc2c5218f733afe6cafa078c842854e14cd97f6af45be94e3a2b45d7d3c2",
-      "updated_at": 1779798924,
-      "method": "codex-exec-batch"
+      "output_sha256": "cbf8d97e5dcd889aaca89bbce2f0dbf628689216f68711ee202cd2b0a1b73a70",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/27-data-provenance-training-governance/quiz.json": {
       "status": "translated",
@@ -8739,16 +8739,16 @@
     "phases/18-ethics-safety-alignment/28-alignment-research-ecosystem/quiz.json": {
       "status": "translated",
       "source_sha256": "f8d4b731701f7dabb9e15f054779649deb0cb3dd59c3be48712eb4b4f8e911b2",
-      "output_sha256": "dfa829ce6aa1052d9ba09d893e702a5cee4d9ac8ee43d8bb40eba0b736404b3b",
-      "updated_at": 1779798981,
-      "method": "codex-exec-batch"
+      "output_sha256": "2af6223a20801d5297ade60f1836c1563d22ec12ea33b6a075f021b9f3bf88e9",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/29-moderation-systems-openai-perspective-llamaguard/quiz.json": {
       "status": "translated",
       "source_sha256": "e174d84eecb2420b4e8bb3bbfee80dd7ca67678dc173447ba722bf66e1a74464",
-      "output_sha256": "8ecb998377592c5d3bdc2f157846dda52cff7ad8ce55e3866151441b79c40556",
-      "updated_at": 1779798981,
-      "method": "codex-exec-batch"
+      "output_sha256": "4dc5fd5cf796d1e4f675b55ccf6e30e33102b3fc1504f605ff96dd513d650be6",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "phases/18-ethics-safety-alignment/30-dual-use-risk-cyber-bio-chem-nuclear/quiz.json": {
       "status": "translated",
@@ -8760,9 +8760,9 @@
     "README.md": {
       "status": "translated",
       "source_sha256": "d58539aa6c2d801d325f89019ffc7a52bbe731576a1c98f581225ae9fe47ec18",
-      "output_sha256": "fb6586ee8c94dab1c7f6501818a64182fe103548d42977196bbf5a3623cab9b4",
-      "updated_at": 1779801079,
-      "method": "manual-structural-merge"
+      "output_sha256": "9b3537dfb9a8f46f09e7fd1a3865a42dff6c16cf5c6fc551a1015ae845b3fed8",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     },
     "site/lesson.html": {
       "status": "translated",
@@ -8770,6 +8770,30 @@
       "output_sha256": "26b2dc86fb8e713d1b4b9830a6166d99a7424d2ed21c1fa5d8d7898de5d43e12",
       "updated_at": 1779801887,
       "method": "manual-structural-merge"
+    },
+    "site/data.js": {
+      "output_sha256": "edb286e0439a72d6babac3d13194808fb1e6fc64f5f120b71c14b5d0e43b55ba",
+      "status": "translated",
+      "updated_at": 1779839244,
+      "method": "manual-review"
+    },
+    "catalog.json": {
+      "output_sha256": "c1dbd8b278c92052a5ccdd93665be4baf395fa7cf038d0c8806514c09afa1a1f",
+      "status": "translated",
+      "updated_at": 1779839244,
+      "method": "manual-review"
+    },
+    "i18n/manifest.json": {
+      "output_sha256": "e0588806b8fd8c29003dfeb0f88570ee377c79642aeebfcf59d65550d78297ae",
+      "status": "translated",
+      "updated_at": 1779839244,
+      "method": "manual-review"
+    },
+    "i18n/translation_state.json": {
+      "output_sha256": "9af821785cbfa494c608a6ecd632da4a64e312d833531d1ae7a85a0215cd9fe0",
+      "status": "translated",
+      "updated_at": 1779839244,
+      "method": "manual-review"
     }
   },
   "upstream_sync": {

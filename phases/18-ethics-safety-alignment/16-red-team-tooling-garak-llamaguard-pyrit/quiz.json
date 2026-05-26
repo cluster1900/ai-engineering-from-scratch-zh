@@ -30,10 +30,10 @@
       "stage": "check",
       "question": "Garak 的架构是如何组织的？",
       "options": [
-        "Tools, resources, prompts",
-        "Embeddings, retrievers, rerankers",
-        "Routers, agents, queues",
-        "Probes（attack generators）、Detectors（output scorers）、Harnesses（campaign managers）"
+        "Tools、resources、prompts（工具、资源、提示）",
+        "Embeddings、retrievers、rerankers（嵌入、检索器、重排器）",
+        "Routers、agents、queues（路由器、agents、队列）",
+        "Probes（attack generators，攻击生成器）、Detectors（output scorers，输出评分器）、Harnesses（campaign managers，活动管理器）"
       ],
       "correct": 3,
       "explanation": ""

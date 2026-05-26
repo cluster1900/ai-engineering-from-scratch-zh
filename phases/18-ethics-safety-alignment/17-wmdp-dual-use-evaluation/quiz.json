@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "WMDP 覆盖哪三个领域？",
       "options": [
-        "Privacy, bias, watermarking",
-        "Vision, audio, text",
-        "Math, code, language",
-        "Biosecurity, cybersecurity, chemistry"
+        "Privacy、bias、watermarking（隐私、偏差、水印）",
+        "Vision、audio、text（视觉、音频、文本）",
+        "Math、code、language（数学、代码、语言）",
+        "Biosecurity、cybersecurity、chemistry（生物安全、网络安全、化学）"
       ],
       "correct": 3,
       "explanation": ""

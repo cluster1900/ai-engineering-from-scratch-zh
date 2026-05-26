@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roadmap - AI Engineering from Scratch</title>
+  <title>路线图 - AI Engineering from Scratch</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>AI</text></svg>">
-  <meta name="description" content="Interactive prerequisite map for 435 AI engineering lessons. See which phases depend on which, and plan your learning path.">
-  <meta property="og:title" content="Roadmap · AI Engineering from Scratch">
-  <meta property="og:description" content="Interactive prerequisite map. See what each phase depends on and what it unlocks downstream.">
+  <meta name="description" content="435 节 AI engineering 课程的交互式先修地图。查看各阶段依赖关系，并规划你的学习路径。">
+  <meta property="og:title" content="路线图 · AI Engineering from Scratch">
+  <meta property="og:description" content="交互式先修地图。查看每个阶段依赖什么，以及它会解锁哪些后续内容。">
   <meta property="og:image" content="https://aiengineeringfromscratch.com/og-image.png?v=2">
   <meta property="og:url" content="https://aiengineeringfromscratch.com/prereqs.html">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Roadmap · AI Engineering from Scratch">
-  <meta name="twitter:description" content="Interactive prerequisite map across 20 phases.">
+  <meta name="twitter:title" content="路线图 · AI Engineering from Scratch">
+  <meta name="twitter:description" content="覆盖 20 个阶段的交互式先修地图。">
   <meta name="twitter:image" content="https://aiengineeringfromscratch.com/og-image.png?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="style.css?v=20260525a">
   <style>
     /* ===================================================
-       Learning Path — Page Styles
+       学习路径 — 页面样式
     =================================================== */
 
     .prereqs-page {
@@ -46,7 +46,7 @@
       margin: 0 auto;
     }
 
-    /* --- Controls bar --- */
+    /* --- 控制栏 --- */
     .prereqs-controls {
       display: flex;
       justify-content: center;
@@ -104,7 +104,7 @@
       color: var(--accent);
     }
 
-    /* --- Graph container --- */
+    /* --- 图容器 --- */
     .graph-wrap {
       overflow-x: auto;
       overflow-y: visible;
@@ -131,7 +131,7 @@
 
     .graph-svg { display: block; }
 
-    /* --- SVG Node styles --- */
+    /* --- SVG 节点样式 --- */
     .node-group { cursor: pointer; }
 
     .node-rect {
@@ -413,7 +413,7 @@
         </a>
       </nav>
       <button class="search-toggle" type="button" data-cmd-palette
-        aria-label="Search (⌘K)" title="Search (⌘K)">
+        aria-label="搜索 (⌘K)" title="搜索 (⌘K)">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2.5"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -421,7 +421,7 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
         <span class="theme-icon" id="themeIcon">N</span>
       </button>
     </div>
@@ -430,20 +430,20 @@
   <main class="prereqs-page" id="main">
     <div class="container">
       <div class="prereqs-header">
-        <h1>Roadmap</h1>
-        <p>Click any phase to see its prerequisites and what it unlocks downstream.</p>
+        <h1>路线图</h1>
+        <p>点击任意阶段，查看它的先修要求，以及它会解锁哪些后续内容。</p>
       </div>
 
       <div class="prereqs-controls">
         <div class="prereqs-legend">
-          <div class="legend-item"><span class="legend-dot complete"></span> Complete</div>
-          <div class="legend-item"><span class="legend-dot in-progress"></span> In Progress</div>
-          <div class="legend-item"><span class="legend-dot planned"></span> Planned</div>
+          <div class="legend-item"><span class="legend-dot complete"></span> 已完成</div>
+          <div class="legend-item"><span class="legend-dot in-progress"></span> 进行中</div>
+          <div class="legend-item"><span class="legend-dot planned"></span> 已计划</div>
         </div>
-        <button class="reset-btn" id="resetBtn">&#10005; Clear selection</button>
+        <button class="reset-btn" id="resetBtn">&#10005; 清除选择</button>
       </div>
 
-      <div class="graph-scroll-hint">&#8596; Scroll to explore the full graph</div>
+      <div class="graph-scroll-hint">&#8596; 滚动查看完整图谱</div>
 
       <div class="graph-wrap">
         <div class="graph-container" id="graphContainer">
@@ -457,13 +457,13 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>AI Engineering from Scratch · open source · free forever.</p>
+      <p>AI Engineering from Scratch · 开源 · 永久免费。</p>
       <div class="footer-links">
-        <a href="index.html">Home</a>
+        <a href="index.html">首页</a>
         <a href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener">GitHub</a>
-        <a href="catalog.html">Catalog</a>
-        <a href="glossary.html">Glossary</a>
-              <a href="https://github.com/rohitg00/ai-engineering-from-scratch/issues/new/choose" target="_blank" rel="noopener">Report / Suggest</a>
+        <a href="catalog.html">课程索引</a>
+        <a href="glossary.html">术语表</a>
+              <a href="https://github.com/rohitg00/ai-engineering-from-scratch/issues/new/choose" target="_blank" rel="noopener">报告 / 建议</a>
       </div>
     </div>
   </footer>
@@ -475,7 +475,7 @@
   <script>
   (function () {
     /* ===================================================
-       Theme Toggle — matches site-wide pattern
+       主题切换 — 匹配全站模式
     =================================================== */
     var root   = document.documentElement;
     var stored = localStorage.getItem('theme');
@@ -510,7 +510,7 @@
     });
 
     /* ===================================================
-       Prerequisite data.
+       先修数据。
 
        To add a new phase, add its id and prerequisite
        list here. Any phase present in PHASES (data.js)
@@ -709,7 +709,7 @@
              ' ' + x2 + ' ' + y2;
     }
 
-    /** Arrow polygon at the target end of an edge */
+    /** 边终点处的箭头 polygon */
     function arrowPoints(toId) {
       var tp = POSITIONS[toId];
       if (!tp) return '0,0 0,0 0,0';
@@ -723,6 +723,13 @@
       return '#807060';
     }
 
+    function statusLabel(status) {
+      if (status === 'complete') return '已完成';
+      if (status === 'in-progress') return '进行中';
+      if (status === 'planned') return '已计划';
+      return status;
+    }
+
     function lessonStats(phase) {
       var done = 0;
       var lessons = Array.isArray(phase.lessons) ? phase.lessons : [];
@@ -733,7 +740,7 @@
     }
 
     /* ===================================================
-       Build and render the graph
+       构建并渲染图谱
     =================================================== */
     var selectedId   = null;
     var nodeEls      = {};
@@ -925,7 +932,7 @@
     }
 
     /* ===================================================
-       Detail panel
+       详情面板
     =================================================== */
     function showDetail(id, ancestors, descendants) {
       var panel = document.getElementById('detailPanel');
@@ -934,7 +941,7 @@
 
       var stats = lessonStats(phase);
 
-      /* Prerequisites list */
+      /* 先修列表 */
       var directPrereqs = PREREQS[id] || [];
       var prereqHtml    = '';
       if (directPrereqs.length) {
@@ -942,14 +949,14 @@
         for (var i = 0; i < directPrereqs.length; i++) {
           var ppid = directPrereqs[i];
           var pn   = PHASE_MAP[ppid] ? PHASE_MAP[ppid].name : 'Phase ' + ppid;
-          prereqHtml += '<li data-goto="' + ppid + '" tabindex="0" role="button" aria-label="Go to Phase ' + ppid + ': ' + escapeHtml(pn) + '"><span class="li-num">' + String(ppid).padStart(2, '0') + '</span> ' + escapeHtml(pn) + '</li>';
+          prereqHtml += '<li data-goto="' + ppid + '" tabindex="0" role="button" aria-label="跳转到 Phase ' + ppid + ': ' + escapeHtml(pn) + '"><span class="li-num">' + String(ppid).padStart(2, '0') + '</span> ' + escapeHtml(pn) + '</li>';
         }
         prereqHtml += '</ul>';
       } else {
-        prereqHtml = '<div class="detail-empty">None. This is a starting point.</div>';
+        prereqHtml = '<div class="detail-empty">无。这是一个起点。</div>';
       }
 
-      /* Unlocks list */
+      /* 解锁列表 */
       var childIds   = CHILDREN[id] || [];
       var unlockHtml = '';
       if (childIds.length) {
@@ -957,17 +964,17 @@
         for (var i = 0; i < childIds.length; i++) {
           var cid = childIds[i];
           var cn  = PHASE_MAP[cid] ? PHASE_MAP[cid].name : 'Phase ' + cid;
-          unlockHtml += '<li data-goto="' + cid + '" tabindex="0" role="button" aria-label="Go to Phase ' + cid + ': ' + escapeHtml(cn) + '"><span class="li-num">' + String(cid).padStart(2, '0') + '</span> ' + escapeHtml(cn) + '</li>';
+          unlockHtml += '<li data-goto="' + cid + '" tabindex="0" role="button" aria-label="跳转到 Phase ' + cid + ': ' + escapeHtml(cn) + '"><span class="li-num">' + String(cid).padStart(2, '0') + '</span> ' + escapeHtml(cn) + '</li>';
         }
         unlockHtml += '</ul>';
       } else {
-        unlockHtml = '<div class="detail-empty">Final destination. End of the curriculum.</div>';
+        unlockHtml = '<div class="detail-empty">最终目的地。课程到此结束。</div>';
       }
 
-      /* Compute exact GitHub tree URL using standard slug logic */
+      /* 使用标准 slug 逻辑计算精确的 GitHub tree URL */
       var phaseGithubUrl = 'https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/' + extractPhaseSlug(phase);
 
-      /* Find first readable lesson for Read button */
+      /* 为“阅读”按钮查找第一节可读课程 */
       var readLink = '';
       var lessonsArray = Array.isArray(phase.lessons) ? phase.lessons : [];
       for (var li = 0; li < lessonsArray.length; li++) {
@@ -986,7 +993,7 @@
       panel.innerHTML =
         '<div class="detail-top">' +
           '<span class="detail-phase-num">Phase ' + String(id).padStart(2, '0') + '</span>' +
-          '<span class="detail-status ' + phase.status + '">' + phase.status.replace('-', ' ') + '</span>' +
+          '<span class="detail-status ' + phase.status + '">' + statusLabel(phase.status) + '</span>' +
         '</div>' +
         '<div class="detail-title">' + escapeHtml(phase.name) + '</div>' +
         '<div class="detail-desc">' + escapeHtml(phase.desc) + '</div>' +
@@ -1006,7 +1013,7 @@
 
       panel.classList.add('open');
 
-      /* Clickable prereq/unlock items navigate the graph */
+      /* 点击先修/解锁项时在图中跳转 */
       var clickables = panel.querySelectorAll('[data-goto]');
       for (var i = 0; i < clickables.length; i++) {
         (function (el) {

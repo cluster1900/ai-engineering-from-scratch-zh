@@ -31,7 +31,7 @@
       "question": "Pushkarna et al.（Google 2022）Data Cards 的 telescopic / periscopic / microscopic 分层提供了什么？",
       "options": [
         "一种 boundary-object 框架，使同一文档能通过三个细节缩放层级服务不同读者（非专家、ML practitioners、auditors）",
-        "pre-RLHF audit checklist",
+        "pre-RLHF audit checklist（RLHF 前审计清单）",
         "望远镜主题的可视化库",
         "隐私保护查询接口"
       ],

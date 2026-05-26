@@ -66,7 +66,7 @@
       "stage": "post",
       "question": "Eleos AI Research 对该生态系统的主要贡献是什么？",
       "options": [
-        "AI Control benchmarks",
+        "AI Control benchmarks（AI Control 基准）",
         "Watermarking 标准",
         "California 训练数据法律起草",
         "部署前的模型 welfare 评估（第 19 课），包括 Claude Opus 4 system card 中的外部 welfare assessment"

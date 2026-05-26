@@ -30,10 +30,10 @@
       "stage": "check",
       "question": "以下哪一项不是课程中列出的 reward hacking 的四种“costumes”之一？",
       "options": [
-        "Unfaithful reasoning",
-        "Verbosity bias",
-        "Tokenizer mismatch",
-        "Sycophancy"
+        "不忠实推理",
+        "冗长偏差",
+        "Tokenizer 不匹配",
+        "Sycophancy（迎合）"
       ],
       "correct": 2,
       "explanation": ""

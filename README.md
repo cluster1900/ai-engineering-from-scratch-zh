@@ -973,13 +973,13 @@ python3 scripts/lesson_run.py --execute        # actually run, 10s timeout per l
 <tr>
 <td valign="top">
 
-> *"The hottest new programming language is English."*<br/>
+> *“最热门的新编程语言是英语。”*<br/>
 > — **Andrej Karpathy** ([tweet](https://x.com/karpathy/status/1617979122625712128))
 
-> *"Software engineering is being remade in front of our eyes."*<br/>
+> *“Software engineering 正在我们眼前被重塑。”*<br/>
 > — **Boris Cherny**，Claude Code 创建者
 
-> *"Models will keep getting better. The skill that compounds is **knowing what to build**."*<br/>
+> *“模型会持续变强。真正复利增长的能力，是**知道该构建什么**。”*<br/>
 > — 行业共识，2026
 
 </td>

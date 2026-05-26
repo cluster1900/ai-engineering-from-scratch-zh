@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "以下哪一项不是课程中列出的三种 IPI 投递 Vector 之一？",
       "options": [
-        "Retrieval-augmented generation（poisoned retrieval）",
+        "Retrieval-augmented generation（被污染的 retrieval）",
         "用户直接编辑 system-prompt",
-        "Tool output",
-        "Inbox / document workflows"
+        "Tool output（工具输出）",
+        "Inbox / document workflows（收件箱 / 文档工作流）"
       ],
       "correct": 1,
       "explanation": ""

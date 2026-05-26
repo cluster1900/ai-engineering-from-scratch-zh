@@ -19,7 +19,7 @@
       "question": "InstructGPT reward model 在 pairwise preference labels 上使用哪种 Loss？",
       "options": [
         "标注者分数上的 mean squared error",
-        "Bradley-Terry: -log sigmoid(r(x, y_w) - r(x, y_l))",
+        "Bradley-Terry loss 形式：-log sigmoid(r(x, y_w) - r(x, y_l))",
         "带固定 margin 的 hinge loss",
         "预测 reward 与真实 reward 之间的 cross-entropy"
       ],

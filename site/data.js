@@ -1,5 +1,5 @@
 // 由 build.js 自动生成——请勿手动编辑。
-// 最近构建时间：2026-05-26T23:15:59.208Z
+// 最近构建时间：2026-05-26T23:46:52.789Z
 
 const PHASES = [
   {
@@ -1250,8 +1250,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/06-speech-and-audio/11-real-time-audio-processing",
-        "summary": "Batch pipelines 处理一个文件。Real-time pipelines 要在下一个 20 milliseconds 到来之前处理当前这 20 milliseconds。每个 conversational AI、broadcast studio 和 telephony bot 都由这个 latency budget 决定成败。",
-        "keywords": "Common gotchas · Step 1: ring buffer · Step 2: VAD gate · Step 3: streaming ASR · Step 4: interruption handler"
+        "summary": "Batch pipelines 处理一个文件。Real-time pipelines 要在下一个 20 毫秒到来之前处理当前这 20 毫秒。每个 conversational AI、broadcast studio 和 telephony bot 都由这个 latency budget 决定成败。",
+        "keywords": "常见坑 · 步骤 1：ring buffer · 步骤 2：VAD gate · 步骤 3：streaming ASR · 步骤 4：interruption handler"
       },
       {
         "name": "Build a Voice Assistant Pipeline",
@@ -2691,7 +2691,7 @@ const PHASES = [
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/14-agent-engineering/15-crewai-role-based-crews/",
         "summary": "CrewAI 是 2026 年基于角色的 multi-agent framework。四个基本构件：Agent、Task、Crew、Process。两种顶层形态：Crews（自主、基于角色的协作）和 Flows（事件驱动、确定性）。文档说得很直接：“对于任何生产就绪的应用，都从 Flow 开始。”",
-        "keywords": "四个基本构件 · Sequential vs Hierarchical vs Consensus · Crews vs Flows · Tool 集成 · Memory hooks · 什么时候适合 CrewAI · 什么时候不适合 CrewAI · Dependency shape · 这种 pattern 会在哪里出错"
+        "keywords": "四个基本构件 · Sequential、Hierarchical 与 Consensus · Crews vs Flows · Tool 集成 · Memory hooks · 什么时候适合 CrewAI · 什么时候不适合 CrewAI · Dependency shape · 这种 pattern 会在哪里出错"
       },
       {
         "name": "OpenAI Agents SDK — Handoffs, Guardrails, Tracing",

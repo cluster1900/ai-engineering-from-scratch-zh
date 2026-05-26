@@ -1,6 +1,6 @@
 {
   "lesson": "29-moderation-systems-openai-perspective-llamaguard",
-  "title": "Moderation Systems - OpenAI, Perspective, Llama Guard",
+  "title": "Moderation Systems（内容审核系统）- OpenAI、Perspective、Llama Guard",
   "questions": [
     {
       "stage": "pre",
@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "以下哪一项不是 OpenAI Moderation 的主要顶层类别？",
       "options": [
-        "violence",
-        "election-interference",
-        "self-harm",
-        "harassment"
+        "violence（暴力）",
+        "election-interference（选举干预）",
+        "self-harm（自伤）",
+        "harassment（骚扰）"
       ],
       "correct": 1,
       "explanation": ""
@@ -30,9 +30,9 @@
       "stage": "check",
       "question": "标准的 2026 moderation 模式包含哪三层？",
       "options": [
-        "Probe / detector / harness",
-        "Tokenizer / model / detokenizer",
-        "Telescopic / periscopic / microscopic",
+        "Probe / detector / harness（探针 / 检测器 / 测试框架）",
+        "Tokenizer / model / detokenizer（Tokenizer / 模型 / detokenizer）",
+        "Telescopic / periscopic / microscopic（望远 / 潜望 / 显微层级）",
         "Input moderation（生成前）、Output moderation（生成后）、Custom moderation（领域规则）"
       ],
       "correct": 3,

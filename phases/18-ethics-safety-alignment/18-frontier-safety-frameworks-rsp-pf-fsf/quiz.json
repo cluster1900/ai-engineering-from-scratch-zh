@@ -1,6 +1,6 @@
 {
   "lesson": "18-frontier-safety-frameworks-rsp-pf-fsf",
-  "title": "Frontier Safety Frameworks - RSP, PF, FSF",
+  "title": "Frontier Safety Frameworks（前沿安全框架）- RSP、PF、FSF",
   "questions": [
     {
       "stage": "pre",
@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "OpenAI Preparedness Framework v2 中哪一项标准捕捉了“伤害发生很快或无法撤销”？",
       "options": [
-        "Net-new",
-        "Instantaneous-or-irremediable",
-        "Plausible",
-        "Measurable"
+        "Net-new（全新增量）",
+        "Instantaneous-or-irremediable（瞬时或不可补救）",
+        "Plausible（可信）",
+        "Measurable（可测量）"
       ],
       "correct": 1,
       "explanation": ""
@@ -30,10 +30,10 @@
       "stage": "check",
       "question": "DeepMind 的 FSF v3.0（2025 年 9 月）新增了哪个 Critical Capability Level？",
       "options": [
-        "Harmful Manipulation",
-        "Cyber Uplift",
-        "Bioweapon Uplift",
-        "ML R&D Acceleration"
+        "Harmful Manipulation（有害操纵）",
+        "Cyber Uplift（网络能力提升）",
+        "Bioweapon Uplift（生物武器能力提升）",
+        "ML R&D Acceleration（ML 研发加速）"
       ],
       "correct": 0,
       "explanation": ""
@@ -55,9 +55,9 @@
       "question": "本课描述的 safety case 的三个标准支柱是什么？",
       "options": [
         "速度、准确率、成本",
-        "Monitoring、illegibility、incapability",
-        "Helpful、honest、harmless",
-        "Inner、outer、mesa"
+        "Monitoring、illegibility、incapability（监控、不可读性、无能力）",
+        "Helpful、honest、harmless（三 H 原则）",
+        "Inner、outer、mesa（内在、外在、mesa）"
       ],
       "correct": 1,
       "explanation": ""

@@ -2,41 +2,27 @@
   "schema_version": 1,
   "root": "/Users/hawkwu/Desktop/ai-engineering-from-scratch-zh",
   "totals": {
-    "text_files": 1252,
-    "text_files_with_english": 1249,
-    "english_segments": 101783,
-    "image_files": 308,
+    "text_files": 1250,
+    "text_files_with_english": 1247,
+    "english_segments": 101632,
+    "image_files": 307,
     "text_bearing_images": 305,
-    "needs_gpt_image_2": 308
+    "needs_gpt_image_2": 307
   },
   "text_files": [
     {
-      "path": ".agents/skills/check-understanding/SKILL.md",
+      "path": ".claude/skills/check-understanding/SKILL.md",
       "suffix": ".md",
       "bytes": 7083,
       "english_segments": 58,
       "chinese_chars": 946
     },
     {
-      "path": ".agents/skills/find-your-level/SKILL.md",
+      "path": ".claude/skills/find-your-level/SKILL.md",
       "suffix": ".md",
       "bytes": 6940,
       "english_segments": 40,
       "chinese_chars": 1166
-    },
-    {
-      "path": ".claude/skills/check-understanding/SKILL.md",
-      "suffix": ".md",
-      "bytes": 7005,
-      "english_segments": 48,
-      "chinese_chars": 1194
-    },
-    {
-      "path": ".claude/skills/find-your-level/SKILL.md",
-      "suffix": ".md",
-      "bytes": 6919,
-      "english_segments": 48,
-      "chinese_chars": 1162
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.md",
@@ -97,9 +83,9 @@
     {
       "path": "README.md",
       "suffix": ".md",
-      "bytes": 79901,
-      "english_segments": 1066,
-      "chinese_chars": 2890
+      "bytes": 79895,
+      "english_segments": 1063,
+      "chinese_chars": 2935
     },
     {
       "path": "ROADMAP.md",
@@ -3072,9 +3058,9 @@
     {
       "path": "phases/06-speech-and-audio/11-real-time-audio-processing/docs/en.md",
       "suffix": ".md",
-      "bytes": 8297,
-      "english_segments": 129,
-      "chinese_chars": 549
+      "bytes": 8299,
+      "english_segments": 119,
+      "chinese_chars": 632
     },
     {
       "path": "phases/06-speech-and-audio/11-real-time-audio-processing/outputs/skill-realtime-pipeline.md",
@@ -5678,7 +5664,7 @@
       "suffix": ".md",
       "bytes": 16387,
       "english_segments": 167,
-      "chinese_chars": 2085
+      "chinese_chars": 2086
     },
     {
       "path": "phases/14-agent-engineering/15-crewai-role-based-crews/outputs/skill-crew-or-flow.md",
@@ -7713,9 +7699,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/quiz.json",
       "suffix": ".json",
-      "bytes": 2979,
-      "english_segments": 56,
-      "chinese_chars": 289
+      "bytes": 2992,
+      "english_segments": 57,
+      "chinese_chars": 291
     },
     {
       "path": "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/docs/en.md",
@@ -7734,9 +7720,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/quiz.json",
       "suffix": ".json",
-      "bytes": 2982,
-      "english_segments": 62,
-      "chinese_chars": 308
+      "bytes": 2988,
+      "english_segments": 59,
+      "chinese_chars": 322
     },
     {
       "path": "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/docs/en.md",
@@ -7797,9 +7783,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/05-constitutional-ai-rlaif/quiz.json",
       "suffix": ".json",
-      "bytes": 2830,
-      "english_segments": 69,
-      "chinese_chars": 172
+      "bytes": 2809,
+      "english_segments": 54,
+      "chinese_chars": 256
     },
     {
       "path": "phases/18-ethics-safety-alignment/06-mesa-optimization-deceptive-alignment/docs/en.md",
@@ -7818,9 +7804,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/06-mesa-optimization-deceptive-alignment/quiz.json",
       "suffix": ".json",
-      "bytes": 3063,
-      "english_segments": 64,
-      "chinese_chars": 287
+      "bytes": 3072,
+      "english_segments": 61,
+      "chinese_chars": 298
     },
     {
       "path": "phases/18-ethics-safety-alignment/07-sleeper-agents-persistent-deception/docs/en.md",
@@ -7839,9 +7825,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/07-sleeper-agents-persistent-deception/quiz.json",
       "suffix": ".json",
-      "bytes": 3176,
+      "bytes": 3171,
       "english_segments": 62,
-      "chinese_chars": 304
+      "chinese_chars": 309
     },
     {
       "path": "phases/18-ethics-safety-alignment/08-in-context-scheming-frontier-models/docs/en.md",
@@ -7860,9 +7846,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/08-in-context-scheming-frontier-models/quiz.json",
       "suffix": ".json",
-      "bytes": 2987,
+      "bytes": 3083,
       "english_segments": 71,
-      "chinese_chars": 212
+      "chinese_chars": 237
     },
     {
       "path": "phases/18-ethics-safety-alignment/09-alignment-faking/docs/en.md",
@@ -7881,9 +7867,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/09-alignment-faking/quiz.json",
       "suffix": ".json",
-      "bytes": 2831,
+      "bytes": 2849,
       "english_segments": 58,
-      "chinese_chars": 255
+      "chinese_chars": 259
     },
     {
       "path": "phases/18-ethics-safety-alignment/10-ai-control-subversion/docs/en.md",
@@ -7923,9 +7909,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/11-scalable-oversight-weak-to-strong/quiz.json",
       "suffix": ".json",
-      "bytes": 2688,
-      "english_segments": 56,
-      "chinese_chars": 189
+      "bytes": 2888,
+      "english_segments": 57,
+      "chinese_chars": 231
     },
     {
       "path": "phases/18-ethics-safety-alignment/12-red-teaming-pair-automated-attacks/docs/en.md",
@@ -7965,9 +7951,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/13-many-shot-jailbreaking/quiz.json",
       "suffix": ".json",
-      "bytes": 2715,
+      "bytes": 2736,
       "english_segments": 42,
-      "chinese_chars": 297
+      "chinese_chars": 302
     },
     {
       "path": "phases/18-ethics-safety-alignment/14-ascii-art-visual-jailbreaks/docs/en.md",
@@ -8007,9 +7993,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/15-indirect-prompt-injection/quiz.json",
       "suffix": ".json",
-      "bytes": 2799,
-      "english_segments": 54,
-      "chinese_chars": 245
+      "bytes": 2854,
+      "english_segments": 52,
+      "chinese_chars": 261
     },
     {
       "path": "phases/18-ethics-safety-alignment/16-red-team-tooling-garak-llamaguard-pyrit/docs/en.md",
@@ -8028,9 +8014,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/16-red-team-tooling-garak-llamaguard-pyrit/quiz.json",
       "suffix": ".json",
-      "bytes": 2684,
-      "english_segments": 56,
-      "chinese_chars": 193
+      "bytes": 2843,
+      "english_segments": 53,
+      "chinese_chars": 227
     },
     {
       "path": "phases/18-ethics-safety-alignment/17-wmdp-dual-use-evaluation/docs/en.md",
@@ -8049,9 +8035,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/17-wmdp-dual-use-evaluation/quiz.json",
       "suffix": ".json",
-      "bytes": 2655,
-      "english_segments": 50,
-      "chinese_chars": 241
+      "bytes": 2795,
+      "english_segments": 48,
+      "chinese_chars": 269
     },
     {
       "path": "phases/18-ethics-safety-alignment/18-frontier-safety-frameworks-rsp-pf-fsf/docs/en.md",
@@ -8070,9 +8056,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/18-frontier-safety-frameworks-rsp-pf-fsf/quiz.json",
       "suffix": ".json",
-      "bytes": 2479,
+      "bytes": 2754,
       "english_segments": 43,
-      "chinese_chars": 206
+      "chinese_chars": 266
     },
     {
       "path": "phases/18-ethics-safety-alignment/19-model-welfare-research/docs/en.md",
@@ -8112,9 +8098,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/20-bias-representational-harm/quiz.json",
       "suffix": ".json",
-      "bytes": 2962,
+      "bytes": 3055,
       "english_segments": 56,
-      "chinese_chars": 317
+      "chinese_chars": 334
     },
     {
       "path": "phases/18-ethics-safety-alignment/21-fairness-criteria-group-individual-counterfactual/docs/en.md",
@@ -8133,9 +8119,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/21-fairness-criteria-group-individual-counterfactual/quiz.json",
       "suffix": ".json",
-      "bytes": 3303,
+      "bytes": 3297,
       "english_segments": 75,
-      "chinese_chars": 243
+      "chinese_chars": 251
     },
     {
       "path": "phases/18-ethics-safety-alignment/22-differential-privacy-for-llms/docs/en.md",
@@ -8154,9 +8140,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/22-differential-privacy-for-llms/quiz.json",
       "suffix": ".json",
-      "bytes": 3257,
-      "english_segments": 64,
-      "chinese_chars": 298
+      "bytes": 3256,
+      "english_segments": 65,
+      "chinese_chars": 299
     },
     {
       "path": "phases/18-ethics-safety-alignment/23-watermarking-synthid-stable-signature-c2pa/docs/en.md",
@@ -8175,9 +8161,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/23-watermarking-synthid-stable-signature-c2pa/quiz.json",
       "suffix": ".json",
-      "bytes": 3109,
-      "english_segments": 60,
-      "chinese_chars": 247
+      "bytes": 3122,
+      "english_segments": 61,
+      "chinese_chars": 249
     },
     {
       "path": "phases/18-ethics-safety-alignment/24-regulatory-frameworks-eu-us-uk-korea/docs/en.md",
@@ -8217,9 +8203,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/25-echoleak-cves-for-ai/quiz.json",
       "suffix": ".json",
-      "bytes": 3009,
+      "bytes": 3129,
       "english_segments": 49,
-      "chinese_chars": 317
+      "chinese_chars": 340
     },
     {
       "path": "phases/18-ethics-safety-alignment/26-model-system-dataset-cards/docs/en.md",
@@ -8238,9 +8224,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/26-model-system-dataset-cards/quiz.json",
       "suffix": ".json",
-      "bytes": 3062,
+      "bytes": 3088,
       "english_segments": 58,
-      "chinese_chars": 295
+      "chinese_chars": 300
     },
     {
       "path": "phases/18-ethics-safety-alignment/27-data-provenance-training-governance/docs/en.md",
@@ -8280,9 +8266,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/28-alignment-research-ecosystem/quiz.json",
       "suffix": ".json",
-      "bytes": 2824,
+      "bytes": 2847,
       "english_segments": 48,
-      "chinese_chars": 298
+      "chinese_chars": 300
     },
     {
       "path": "phases/18-ethics-safety-alignment/29-moderation-systems-openai-perspective-llamaguard/docs/en.md",
@@ -8301,9 +8287,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/29-moderation-systems-openai-perspective-llamaguard/quiz.json",
       "suffix": ".json",
-      "bytes": 2806,
-      "english_segments": 53,
-      "chinese_chars": 222
+      "bytes": 2998,
+      "english_segments": 55,
+      "chinese_chars": 257
     },
     {
       "path": "phases/18-ethics-safety-alignment/30-dual-use-risk-cyber-bio-chem-nuclear/docs/en.md",
@@ -8763,9 +8749,9 @@
     {
       "path": "site/prereqs.html",
       "suffix": ".html",
-      "bytes": 36339,
-      "english_segments": 769,
-      "chinese_chars": 42
+      "bytes": 36530,
+      "english_segments": 749,
+      "chinese_chars": 328
     },
     {
       "path": "site/progress.js",
@@ -8781,13 +8767,6 @@
       "suffix": ".svg",
       "bytes": 5383,
       "text_bearing": true,
-      "needs_gpt_image_2": true
-    },
-    {
-      "path": "notebook_plot.png",
-      "suffix": ".png",
-      "bytes": 51906,
-      "text_bearing": false,
       "needs_gpt_image_2": true
     },
     {

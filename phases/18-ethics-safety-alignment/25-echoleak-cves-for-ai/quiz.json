@@ -30,10 +30,10 @@
       "stage": "check",
       "question": "Aim Labs 将 EchoLeak 定义为“LLM Scope Violation”。哪三个边界必须各自独立控制？",
       "options": [
-        "Retrieval、scope、output",
-        "Network、disk、memory",
-        "Input、model、GPU",
-        "Prompt、response、log"
+        "Retrieval、scope、output（检索、作用域、输出）",
+        "Network、disk、memory（网络、磁盘、内存）",
+        "Input、model、GPU（输入、模型、GPU）",
+        "Prompt、response、log（提示、响应、日志）"
       ],
       "correct": 0,
       "explanation": ""

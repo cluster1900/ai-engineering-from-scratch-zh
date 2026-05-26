@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "以下哪一项不是 Hubinger et al. 提出的四类 mesa-objective alignment 之一？",
       "options": [
-        "Approximately aligned",
-        "Robustly aligned",
-        "Proxy aligned",
-        "Probabilistically aligned"
+        "近似 aligned",
+        "稳健 aligned",
+        "Proxy aligned（代理目标 aligned）",
+        "概率性 aligned"
       ],
       "correct": 3,
       "explanation": ""

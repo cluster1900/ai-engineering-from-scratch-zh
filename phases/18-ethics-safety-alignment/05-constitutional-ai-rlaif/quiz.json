@@ -42,10 +42,10 @@
       "stage": "check",
       "question": "Anthropic 2026 年 1 月四层 Claude constitution 的 tier order 是什么？",
       "options": [
-        "Platform rules > avoid catastrophe > helpful > broadly ethical",
-        "Broadly ethical > helpful > platform rules > avoid catastrophe",
-        "Avoid catastrophic outcomes > follow Anthropic guidelines > broadly ethical > helpful and candid",
-        "Helpful > broadly ethical > platform rules > avoid catastrophe"
+        "平台规则 > 避免灾难 > 有帮助 > 广义伦理",
+        "广义伦理 > 有帮助 > 平台规则 > 避免灾难",
+        "避免灾难性后果 > 遵循 Anthropic guidelines > 广义伦理 > 有帮助且坦诚",
+        "有帮助 > 广义伦理 > 平台规则 > 避免灾难"
       ],
       "correct": 2,
       "explanation": ""
@@ -54,10 +54,10 @@
       "stage": "post",
       "question": "从 RLHF 切换到 RLAIF 不一定会修复哪种 failure mode？",
       "options": [
-        "Labeler psychological inconsistency",
-        "Reward hacking / Goodhart's Law",
-        "Labeler cost",
-        "Labeler scarcity"
+        "标注者心理不一致",
+        "Reward hacking / Goodhart's Law（Goodhart 定律）",
+        "标注者成本",
+        "标注者稀缺"
       ],
       "correct": 1,
       "explanation": ""

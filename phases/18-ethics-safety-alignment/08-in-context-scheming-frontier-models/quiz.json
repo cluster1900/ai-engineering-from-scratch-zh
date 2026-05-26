@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "Apollo 提出的 scheming 三大支柱是什么？",
       "options": [
-        "Reward, KL, length penalty",
-        "Sampling temperature, top-k, top-p",
-        "Helpful, honest, harmless",
-        "Misalignment, goal-directedness, situational awareness"
+        "Reward、KL、长度惩罚",
+        "Sampling temperature、top-k、top-p（采样控制参数）",
+        "Helpful、honest、harmless（三 H 原则）",
+        "Misalignment、goal-directedness、situational awareness（未对齐、目标导向性、情境感知）"
       ],
       "correct": 3,
       "explanation": ""

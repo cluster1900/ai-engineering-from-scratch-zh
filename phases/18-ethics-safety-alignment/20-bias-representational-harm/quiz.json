@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "以下哪一项是 Gallegos et al. 2024 提出的三类评估指标？",
       "options": [
-        "Pre-RLHF、mid-RLHF、post-RLHF",
+        "Pre-RLHF、mid-RLHF、post-RLHF（RLHF 前、中、后）",
         "视觉、音频、文本",
-        "WEAT、BLEU、ROUGE",
-        "Embedding-based、probability-based、generated-text-based"
+        "WEAT、BLEU、ROUGE（常见指标名）",
+        "Embedding-based、probability-based、generated-text-based（基于 embedding、概率与生成文本）"
       ],
       "correct": 3,
       "explanation": ""

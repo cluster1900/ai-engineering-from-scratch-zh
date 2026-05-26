@@ -1,6 +1,6 @@
 {
   "lesson": "22-differential-privacy-for-llms",
-  "title": "Differential Privacy for LLMs",
+  "title": "LLM 的 Differential Privacy",
   "questions": [
     {
       "stage": "pre",

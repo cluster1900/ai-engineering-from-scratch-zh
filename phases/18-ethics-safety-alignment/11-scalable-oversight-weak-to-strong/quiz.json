@@ -30,10 +30,10 @@
       "stage": "check",
       "question": "Performance Gap Recovered (PGR) 是如何定义的？",
       "options": [
-        "(ceiling - fine-tuned) / weak",
-        "(fine-tuned - weak) / (ceiling - weak)",
-        "fine-tuned / ceiling",
-        "(weak - ceiling) / ceiling"
+        "(ceiling - fine-tuned) / weak（相对弱模型的剩余差距）",
+        "(fine-tuned - weak) / (ceiling - weak)（弱到强提升比例）",
+        "fine-tuned / ceiling（相对上限比例）",
+        "(weak - ceiling) / ceiling（弱模型相对上限差距）"
       ],
       "correct": 1,
       "explanation": ""
@@ -42,10 +42,10 @@
       "stage": "check",
       "question": "以下哪一项不是本课列出的 scalable-oversight mechanism？",
       "options": [
-        "Task Decomposition",
-        "Tokenizer Distillation",
-        "Recursive Reward Modeling",
-        "Debate"
+        "Task Decomposition（任务分解）",
+        "Tokenizer Distillation（Tokenizer 蒸馏）",
+        "Recursive Reward Modeling（递归 Reward Modeling）",
+        "Debate（辩论）"
       ],
       "correct": 1,
       "explanation": ""
