@@ -1,0 +1,78 @@
+{
+  "lesson": "20-bias-representational-harm",
+  "title": "LLMs 中的 Bias 与 Representational Harm",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "本课如何区分 representational harm 与 allocational harm？",
+      "options": [
+        "Representational harm 只对视觉模型重要",
+        "Representational harm 是刻板印象 / 抹除 / 贬损性描绘；allocational harm 是某个群体面临的不平等物质结果",
+        "Representational 是计算性的；allocational 是统计性的",
+        "Allocational harm 只在线下发生"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "以下哪一项是 Gallegos et al. 2024 提出的三类评估指标？",
+      "options": [
+        "Pre-RLHF、mid-RLHF、post-RLHF",
+        "视觉、音频、文本",
+        "WEAT、BLEU、ROUGE",
+        "Embedding-based、probability-based、generated-text-based"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么除了单轴评估外，还需要 intersectional fairness evaluation？",
+      "options": [
+        "Intersectionality 与 cross-validation 相同",
+        "单轴度量在计算上更便宜",
+        "单轴是唯一被法律允许的方法",
+        "只在交叉处出现的 bias（例如 gender x race）会被一次只看一个轴的评估漏掉"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "WinoIdentity（COLM 2025）引入了什么？",
+      "options": [
+        "一种针对人口统计分类器的 adversarial attack",
+        "一种用于身份术语的新 Tokenizer",
+        "Embedding 空间中 WEAT 的替代品",
+        "基于不确定性的 intersectional fairness evaluation，它比较模型在交叉身份元组上的结果不确定性，而不只是点预测"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "以下哪一项是面向 bias 的 mechanistic-interpretability 方法？",
+      "options": [
+        "从 PPO 切换到 DPO",
+        "识别 MLP 层中的 gender neurons，使用 SAEs 暴露 race-correlated features，或操控特定 attention heads（UniBias）",
+        "增加更多 KL regularization",
+        "重新标注训练集"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "10 年 meta-critique（arXiv:2508.11067）对 bias 文献提出了什么论点？",
+      "options": [
+        "它过度集中于二元 gender bias，忽视了其他轴（disability、religion、migration status、multi-lingual identity），这种忽视可能伤害边缘化群体",
+        "它回避定量方法",
+        "它过度强调 intersectionality",
+        "它在所有身份轴上都是均衡的"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

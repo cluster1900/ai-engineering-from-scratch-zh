@@ -1,0 +1,102 @@
+{
+  "lesson": "19-subword-tokenization",
+  "title": "Subword Tokenization — BPE、WordPiece、Unigram、SentencePiece",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "与 word-level vocabularies 相比，subword tokenization 带来了什么？",
+      "options": [
+        "罕见词会被分解成已知的 subword pieces，在保持 vocabulary 有界的同时消除 OOV",
+        "更小的模型",
+        "更快的训练",
+        "更好的 embeddings"
+      ],
+      "correct": 0,
+      "explanation": "Subword tokens 通过分解覆盖任何输入，消除了 word-level vocabulary 的 OOV 问题。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 GPT-2 使用 byte-level BPE，而不是 character-level BPE？",
+      "options": [
+        "Transformers 要求如此",
+        "Byte BPE 会跳过 merges",
+        "一个 256-byte 的基础 vocabulary 可以覆盖任何 UTF-8 输入，保证没有 [UNK] tokens",
+        "Bytes 更小"
+      ],
+      "correct": 2,
+      "explanation": "Byte-level BPE 从 256 个 bytes 开始，因此每个输入都能被编码；没有任何内容是 OOV。"
+    },
+    {
+      "stage": "check",
+      "question": "Unigram tokenizer 如何构建它的 vocabulary？",
+      "options": [
+        "贪心 IDF weighting",
+        "从一个大的 candidate set 开始，迭代裁剪那些移除后对 corpus log-likelihood 伤害最小的 tokens",
+        "贪心 frequent-pair merging",
+        "随机采样"
+      ],
+      "correct": 1,
+      "explanation": "Unigram 会拟合一个 unigram LM，并迭代移除最没用的 tokens，直到达到目标 vocabulary size。"
+    },
+    {
+      "stage": "check",
+      "question": "WordPiece 的 merge criterion 与 BPE 有什么不同？",
+      "options": [
+        "WordPiece 使用 bytes",
+        "WordPiece 是 unsupervised",
+        "WordPiece 合并能最大化 training-corpus likelihood 的 pairs，而 BPE 合并最频繁的 pair",
+        "WordPiece 会跳过 merges"
+      ],
+      "correct": 2,
+      "explanation": "WordPiece 根据 likelihood 选择 merges；BPE 根据原始频率选择。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个工具能直接在原始 multilingual Unicode 文本上训练 tokenizer？",
+      "options": [
+        "spaCy",
+        "tiktoken",
+        "tokenizers-lite",
+        "SentencePiece（将 whitespace 编码为特殊标记，并训练 BPE 或 Unigram）"
+      ],
+      "correct": 3,
+      "explanation": "SentencePiece 在没有 pre-tokenization 的情况下在原始文本上训练 BPE/Unigram；tiktoken 只负责编码。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 production CI 必须对部署的 tokenizer.json 做 hash-check？",
+      "options": [
+        "Tokenizer drift 会产生不同于模型训练时的 token IDs，静默破坏输出",
+        "Hugging Face 要求如此",
+        "为了压缩存储",
+        "它会减少 vocabulary size"
+      ],
+      "correct": 0,
+      "explanation": "即使很小的 tokenizer 变化也会移动 IDs；hash check 会在它影响用户之前捕获 drift。"
+    },
+    {
+      "stage": "post",
+      "question": "单个 emoji 占用许多 tokens 的常见原因是什么？",
+      "options": [
+        "Emojis 是 reserved",
+        "Multi-codepoint emojis 会编码成多个 UTF-8 bytes；如果没有 dedicated tokens，每个 byte 都是自己的 subword",
+        "Emojis 以 floats 存储",
+        "Emojis 是 stop characters"
+      ],
+      "correct": 1,
+      "explanation": "Composite emojis 会编码为多个 bytes；byte-level tokenizers 可能对每个 glyph 使用多个 tokens。"
+    },
+    {
+      "stage": "post",
+      "question": "什么 heuristic 可指导新的 monolingual transformer 的 vocabulary size？",
+      "options": [
+        "总是 8000",
+        "总是 1M",
+        "参数量低于 1B 的模型大约 32k；1-10B 为 50-100k；multilingual 或 frontier models 为 200k+",
+        "匹配 training corpus size"
+      ],
+      "correct": 2,
+      "explanation": "Vocab size 会随模型和语言覆盖范围扩展；这些是粗略的社区默认值。"
+    }
+  ]
+}

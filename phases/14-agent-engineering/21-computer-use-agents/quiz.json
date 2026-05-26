@@ -4,43 +4,43 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "Claude computer use 接收什么 input，并输出什么？",
+      "question": "Claude computer use 接收什么输入，又发出什么输出？",
       "options": [
-        "输入 accessibility tree，输出 keyboard/mouse 命令",
-        "输入 screenshot（基于 vision），输出 keyboard/mouse 命令",
-        "输入 DOM XML，输出 JavaScript",
-        "输入 JSON，输出 SQL"
+        "Accessibility tree 输入，keyboard/mouse commands 输出",
+        "Screenshots 输入（vision-based），keyboard/mouse commands 输出",
+        "DOM XML 输入，JavaScript 输出",
+        "JSON 输入，SQL 输出"
       ],
       "correct": 1,
-      "explanation": "Claude 读取 pixel 并输出 keyboard/mouse action；不使用 OS accessibility API。"
+      "explanation": "Claude 读取 pixels，并发出 keyboard/mouse actions；不使用 OS accessibility API。"
     },
     {
       "stage": "pre",
-      "question": "Gemini 2.5 Computer Use 的标志性安全特性是什么？",
+      "question": "Gemini 2.5 Computer Use 的显著安全特性是什么？",
       "options": [
-        "一个逐步 safety service，在执行前评估每个 action 并拒绝不安全的 action",
-        "硬编码的 WAF 规则",
-        "强制 CAPTCHA",
-        "默认只读模式"
+        "一个 per-step safety service，会在执行前评估每个 action 并拒绝不安全的 action",
+        "硬编码的 WAF rules",
+        "强制 CAPTCHAs",
+        "默认 read-only mode"
       ],
       "correct": 0,
-      "explanation": "Gemini 2.5 Computer Use 将逐步 safety classifier 作为定义性特性发布。"
+      "explanation": "Gemini 2.5 Computer Use 将 per-step safety classifier 作为定义性特性提供。"
     },
     {
       "stage": "check",
-      "question": "这节课将哪类内容识别为三个模型共有的不可信 input？",
+      "question": "本课将什么识别为三个 models 共同的 untrusted input？",
       "options": [
-        "只有 HTTPS response",
-        "Screenshot、DOM text、tool output、PDF content、任何 retrieved 内容",
+        "只有 HTTPS responses",
+        "Screenshots、DOM text、tool outputs、PDF content，以及任何 retrieved 内容",
         "只有 PDF content",
-        "没有；一切都是可信的"
+        "没有；一切都是 trusted"
       ],
       "correct": 1,
-      "explanation": "只有直接的用户指令才算作 permission；其他一切都是不可信的。"
+      "explanation": "只有直接的用户指令才算 permission；其他一切都是 untrusted。"
     },
     {
       "stage": "check",
-      "question": "这节课引用的 OpenAI CUA 发布时 OSWorld / WebArena 数字是什么？",
+      "question": "本课引用了 OpenAI CUA 发布时的哪些 OSWorld / WebArena 数字？",
       "options": [
         "OSWorld 38.1%，WebArena 58.1%，WebVoyager 87%",
         "OSWorld 0%，WebArena 0%",
@@ -52,39 +52,39 @@
     },
     {
       "stage": "check",
-      "question": "哪种防御模式不在 2026 convergence list 中？",
+      "question": "哪种 defense pattern 不在 2026 convergence list 中？",
       "options": [
-        "逐步 safety classifier",
-        "navigation target 的 allowlist/blocklist",
-        "敏感 action 的 Human-in-the-loop",
-        "自动点击 dialog 以节省时间"
+        "Per-step safety classifier",
+        "Navigation targets 的 allowlist/blocklist",
+        "Human-in-the-loop 用于 sensitive actions",
+        "自动点击 dialogs 以节省时间"
       ],
       "correct": 3,
-      "explanation": "自动点击 dialog 与安全相悖；这节课建议显式 confirmation。"
+      "explanation": "自动点击 dialogs 与安全相反；本课建议显式确认。"
     },
     {
       "stage": "post",
-      "question": "这节课强调的针对 computer-use agent 的主要攻击是什么？",
+      "question": "本课强调的针对 computer-use agents 的主要攻击是什么？",
       "options": [
-        "网络中断",
-        "恶意页面或 PDF 在 retrieved content 中 Embedding 指令，而模型将其视为用户意图",
-        "渲染缓慢",
-        "OS update 延迟"
+        "Network outages",
+        "恶意页面或 PDF 在 retrieved content 中Embedding指令，model 将其当作用户意图",
+        "Slow rendering",
+        "OS update lag"
       ],
       "correct": 1,
-      "explanation": "将 screenshot 或 DOM text 信任为 permission，是典型的 indirect-prompt-injection failure。"
+      "explanation": "把 screenshots 或 DOM text 当作 permission，是典型的 indirect-prompt-injection failure。"
     },
     {
       "stage": "post",
-      "question": "什么时候特别建议使用 human-in-the-loop confirmation？",
+      "question": "什么时候特别建议 human-in-the-loop confirmation？",
       "options": [
-        "在只读 navigation 上",
-        "在敏感 action 上，例如 login、purchase、file delete",
-        "只有当模型请求时",
-        "永不"
+        "在 read-only navigation 上",
+        "在 login、purchase、file delete 等 sensitive actions 上",
+        "只有当 model 请求时",
+        "从不"
       ],
       "correct": 1,
-      "explanation": "敏感 action（money、data exposure、new login）需要明确的 human confirmation。"
+      "explanation": "Sensitive actions（money、data exposure、新 logins）需要明确的人类确认。"
     }
   ]
 }

@@ -110,7 +110,7 @@ flowchart LR
 
 **选项 A — 阅读。** 打开
 [aiengineeringfromscratch.com](https://aiengineeringfromscratch.com) 上任意已完成课程，或在
-[Contents](#contents) 下展开一个 Phase。无需配置，无需 clone。
+[目录](#contents) 下展开一个 Phase。无需配置，无需 clone。
 
 **选项 B — clone 并运行。**
 
@@ -244,13 +244,13 @@ the agent went wrong and explain why...
 
 | # | 课程 | 类型 | 语言 |
 |:---:|--------|:----:|------|
-| 01 | [Dev Environment](phases/00-setup-and-tooling/01-dev-environment/) | 构建 | Python, TypeScript, Rust |
+| 01 | [Dev Environment](phases/00-setup-and-tooling/01-dev-environment/) | 构建 | Python |
 | 02 | [Git & Collaboration](phases/00-setup-and-tooling/02-git-and-collaboration/) | 学习 | — |
 | 03 | [GPU Setup & Cloud](phases/00-setup-and-tooling/03-gpu-setup-and-cloud/) | 构建 | Python |
-| 04 | [APIs & Keys](phases/00-setup-and-tooling/04-apis-and-keys/) | 构建 | Python, TypeScript |
+| 04 | [APIs & Keys](phases/00-setup-and-tooling/04-apis-and-keys/) | 构建 | Python |
 | 05 | [Jupyter Notebooks](phases/00-setup-and-tooling/05-jupyter-notebooks/) | 构建 | Python |
-| 06 | [Python Environments](phases/00-setup-and-tooling/06-python-environments/) | 构建 | Python |
-| 07 | [Docker for AI](phases/00-setup-and-tooling/07-docker-for-ai/) | 构建 | Python |
+| 06 | [Python Environments](phases/00-setup-and-tooling/06-python-environments/) | 构建 | Shell |
+| 07 | [Docker for AI](phases/00-setup-and-tooling/07-docker-for-ai/) | 构建 | Docker |
 | 08 | [Editor Setup](phases/00-setup-and-tooling/08-editor-setup/) | 构建 | — |
 | 09 | [Data Management](phases/00-setup-and-tooling/09-data-management/) | 构建 | Python |
 | 10 | [Terminal & Shell](phases/00-setup-and-tooling/10-terminal-and-shell/) | 学习 | — |
@@ -357,7 +357,7 @@ the agent went wrong and explain why...
 | 12 | [Video Understanding — Temporal Modeling](phases/04-computer-vision/12-video-understanding/) | 构建 | Python |
 | 13 | [3D Vision: Point Clouds, NeRFs](phases/04-computer-vision/13-3d-vision-nerf/) | 构建 | Python |
 | 14 | [Vision Transformers (ViT)](phases/04-computer-vision/14-vision-transformers/) | 构建 | Python |
-| 15 | [Real-Time Vision: Edge Deployment](phases/04-computer-vision/15-real-time-edge/) | 构建 | Python, Rust |
+| 15 | [Real-Time Vision: Edge Deployment](phases/04-computer-vision/15-real-time-edge/) | 构建 | Python |
 | 16 | [Build a Complete Vision Pipeline](phases/04-computer-vision/16-vision-pipeline-capstone/) | 构建 | Python |
 | 17 | [Self-Supervised Vision — SimCLR, DINO, MAE](phases/04-computer-vision/17-self-supervised-vision/) | 构建 | Python |
 | 18 | [Open-Vocabulary Vision — CLIP](phases/04-computer-vision/18-open-vocab-clip/) | 构建 | Python |
@@ -428,7 +428,7 @@ the agent went wrong and explain why...
 | 08 | [Voice Cloning & Voice Conversion](phases/06-speech-and-audio/08-voice-cloning-conversion) | 构建 | Python |
 | 09 | [Music Generation](phases/06-speech-and-audio/09-music-generation) | 构建 | Python |
 | 10 | [Audio-Language Models](phases/06-speech-and-audio/10-audio-language-models) | 构建 | Python |
-| 11 | [Real-Time Audio Processing](phases/06-speech-and-audio/11-real-time-audio-processing) | 构建 | Python, Rust |
+| 11 | [Real-Time Audio Processing](phases/06-speech-and-audio/11-real-time-audio-processing) | 构建 | Python |
 | 12 | [Build a Voice Assistant Pipeline](phases/06-speech-and-audio/12-voice-assistant-pipeline) | 构建 | Python |
 | 13 | [Neural Audio Codecs — EnCodec, SNAC, Mimi, DAC](phases/06-speech-and-audio/13-neural-audio-codecs) | 学习 | Python |
 | 14 | [Voice Activity Detection & Turn-Taking](phases/06-speech-and-audio/14-voice-activity-detection-turn-taking) | 构建 | Python |
@@ -439,7 +439,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-7">
-<summary><b>Phase 7 — Transformers Deep Dive</b> &nbsp;<code>14 lessons</code>&nbsp; <em>改变一切的 architecture。</em></summary>
+<summary><b>Phase 7 — Transformers Deep Dive</b> &nbsp;<code>16 lessons</code>&nbsp; <em>改变一切的 architecture。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -458,11 +458,13 @@ the agent went wrong and explain why...
 | 12 | [KV Cache, Flash Attention & Inference Optimization](phases/07-transformers-deep-dive/12-kv-cache-flash-attention/) | 构建 | Python |
 | 13 | [Scaling Laws](phases/07-transformers-deep-dive/13-scaling-laws/) | 学习 | Python |
 | 14 | [Build a Transformer from Scratch](phases/07-transformers-deep-dive/14-build-a-transformer-capstone/) | 构建 | Python |
+| 15 | [Attention Variants — Sliding Window, Sparse, Differential](phases/07-transformers-deep-dive/15-attention-variants/) | 构建 | Python |
+| 16 | [Speculative Decoding — Draft, Verify, Repeat](phases/07-transformers-deep-dive/16-speculative-decoding/) | 构建 | Python |
 
 </details>
 
 <details id="phase-8">
-<summary><b>Phase 8 — Generative AI</b> &nbsp;<code>14 lessons</code>&nbsp; <em>创建 images、video、audio、3D，以及更多内容。</em></summary>
+<summary><b>Phase 8 — Generative AI</b> &nbsp;<code>15 lessons</code>&nbsp; <em>创建 images、video、audio、3D，以及更多内容。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -481,6 +483,7 @@ the agent went wrong and explain why...
 | 12 | [3D Generation](phases/08-generative-ai/12-3d-generation/) | 构建 | Python |
 | 13 | [Flow Matching & Rectified Flows](phases/08-generative-ai/13-flow-matching-rectified-flows/) | 构建 | Python |
 | 14 | [Evaluation: FID, CLIP Score](phases/08-generative-ai/14-evaluation-fid-clip-score/) | 构建 | Python |
+| 19 | [Visual Autoregressive Modeling (VAR): Next-Scale Prediction](phases/08-generative-ai/19-visual-autoregressive-var/) | 构建 | Python |
 
 </details>
 
@@ -506,12 +509,12 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-10">
-<summary><b>Phase 10 — LLMs from Scratch</b> &nbsp;<code>22 lessons</code>&nbsp; <em>构建、训练并理解 large language models。</em></summary>
+<summary><b>Phase 10 — LLMs from Scratch</b> &nbsp;<code>24 lessons</code>&nbsp; <em>构建、训练并理解 large language models。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
 |:---:|--------|:----:|------|
-| 01 | [Tokenizers: BPE, WordPiece, SentencePiece](phases/10-llms-from-scratch/01-tokenizers/) | 构建 | Python |
+| 01 | [Tokenizers: BPE, WordPiece, SentencePiece](phases/10-llms-from-scratch/01-tokenizers/) | 构建 | Python, Rust |
 | 02 | [Building a Tokenizer from Scratch](phases/10-llms-from-scratch/02-building-a-tokenizer/) | 构建 | Python |
 | 03 | [Data Pipelines for Pre-Training](phases/10-llms-from-scratch/03-data-pipelines/) | 构建 | Python |
 | 04 | [Pre-Training a Mini GPT (124M)](phases/10-llms-from-scratch/04-pre-training-mini-gpt/) | 构建 | Python |
@@ -521,7 +524,7 @@ the agent went wrong and explain why...
 | 08 | [DPO — Direct Preference Optimization](phases/10-llms-from-scratch/08-dpo/) | 构建 | Python |
 | 09 | [Constitutional AI & Self-Improvement](phases/10-llms-from-scratch/09-constitutional-ai-self-improvement/) | 构建 | Python |
 | 10 | [Evaluation — Benchmarks, Evals](phases/10-llms-from-scratch/10-evaluation/) | 构建 | Python |
-| 11 | [Quantization: INT8, GPTQ, AWQ, GGUF](phases/10-llms-from-scratch/11-quantization/) | 构建 | Python, Rust |
+| 11 | [Quantization: INT8, GPTQ, AWQ, GGUF](phases/10-llms-from-scratch/11-quantization/) | 构建 | Python |
 | 12 | [Inference Optimization](phases/10-llms-from-scratch/12-inference-optimization/) | 构建 | Python |
 | 13 | [Building a Complete LLM Pipeline](phases/10-llms-from-scratch/13-building-complete-llm-pipeline/) | 构建 | Python |
 | 14 | [Open Models: Architecture Walkthroughs](phases/10-llms-from-scratch/14-open-models-architecture-walkthroughs/) | 学习 | Python |
@@ -533,6 +536,8 @@ the agent went wrong and explain why...
 | 20 | [DeepSeek-V3 Architecture Walkthrough](phases/10-llms-from-scratch/20-deepseek-v3-walkthrough/) | 学习 | Python |
 | 21 | [Jamba — Hybrid SSM-Transformer](phases/10-llms-from-scratch/21-jamba-hybrid-ssm-transformer/) | 学习 | Python |
 | 22 | [Async and Hogwild! Inference](phases/10-llms-from-scratch/22-async-hogwild-inference/) | 构建 | Python |
+| 25 | [Speculative Decoding and EAGLE](phases/10-llms-from-scratch/25-speculative-decoding/) | 构建 | Python |
+| 34 | [Gradient Checkpointing and Activation Recomputation](phases/10-llms-from-scratch/34-gradient-checkpointing/) | 构建 | Python |
 
 </details>
 
@@ -544,10 +549,10 @@ the agent went wrong and explain why...
 |:---:|--------|:----:|------|
 | 01 | [Prompt Engineering: Techniques & Patterns](phases/11-llm-engineering/01-prompt-engineering/) | 构建 | Python |
 | 02 | [Few-Shot, CoT, Tree-of-Thought](phases/11-llm-engineering/02-few-shot-cot/) | 构建 | Python |
-| 03 | [Structured Outputs](phases/11-llm-engineering/03-structured-outputs/) | 构建 | Python, TypeScript |
+| 03 | [Structured Outputs](phases/11-llm-engineering/03-structured-outputs/) | 构建 | Python |
 | 04 | [Embeddings & Vector Representations](phases/11-llm-engineering/04-embeddings/) | 构建 | Python |
-| 05 | [Context Engineering](phases/11-llm-engineering/05-context-engineering/) | 构建 | Python, TypeScript |
-| 06 | [RAG: Retrieval-Augmented Generation](phases/11-llm-engineering/06-rag/) | 构建 | Python, TypeScript |
+| 05 | [Context Engineering](phases/11-llm-engineering/05-context-engineering/) | 构建 | Python |
+| 06 | [RAG: Retrieval-Augmented Generation](phases/11-llm-engineering/06-rag/) | 构建 | Python |
 | 07 | [Advanced RAG: Chunking, Reranking](phases/11-llm-engineering/07-advanced-rag/) | 构建 | Python |
 | 08 | [Fine-Tuning with LoRA & QLoRA](phases/11-llm-engineering/08-fine-tuning-lora/) | 构建 | Python |
 | 09 | [Function Calling & Tool Use](phases/11-llm-engineering/09-function-calling/) | 构建 | Python |
@@ -651,7 +656,7 @@ the agent went wrong and explain why...
 | 15 | [CrewAI — Role-Based Crews and Flows](phases/14-agent-engineering/15-crewai-role-based-crews/) | 构建 | Python |
 | 16 | [OpenAI Agents SDK — Handoffs, Guardrails, Tracing](phases/14-agent-engineering/16-openai-agents-sdk/) | 构建 | Python |
 | 17 | [Claude Agent SDK — Subagents and Session Store](phases/14-agent-engineering/17-claude-agent-sdk/) | 构建 | Python |
-| 18 | [Agno and Mastra — Production Runtimes](phases/14-agent-engineering/18-agno-and-mastra-runtimes/) | 学习 | Python, TypeScript |
+| 18 | [Agno and Mastra — Production Runtimes](phases/14-agent-engineering/18-agno-and-mastra-runtimes/) | 学习 | Python |
 | 19 | [Benchmarks — SWE-bench, GAIA, AgentBench](phases/14-agent-engineering/19-benchmarks-swebench-gaia/) | 学习 | Python |
 | 20 | [Benchmarks — WebArena and OSWorld](phases/14-agent-engineering/20-benchmarks-webarena-osworld/) | 学习 | Python |
 | 21 | [Computer Use — Claude, OpenAI CUA, Gemini](phases/14-agent-engineering/21-computer-use-agents/) | 构建 | Python |
@@ -806,19 +811,19 @@ the agent went wrong and explain why...
 | 15 | [Indirect Prompt Injection](phases/18-ethics-safety-alignment/15-indirect-prompt-injection/) | 构建 | Python |
 | 16 | [Red-Team Tooling: Garak, Llama Guard, PyRIT](phases/18-ethics-safety-alignment/16-red-team-tooling-garak-llamaguard-pyrit/) | 构建 | Python |
 | 17 | [WMDP & Dual-Use Capability Evaluation](phases/18-ethics-safety-alignment/17-wmdp-dual-use-evaluation/) | 学习 | Python |
-| 18 | [Frontier Safety Frameworks — RSP, PF, FSF](phases/18-ethics-safety-alignment/18-frontier-safety-frameworks-rsp-pf-fsf/) | 学习 | — |
+| 18 | [Frontier Safety Frameworks — RSP, PF, FSF](phases/18-ethics-safety-alignment/18-frontier-safety-frameworks-rsp-pf-fsf/) | 学习 | Python |
 | 19 | [Model Welfare Research](phases/18-ethics-safety-alignment/19-model-welfare-research/) | 学习 | Python |
 | 20 | [Bias & Representational Harm](phases/18-ethics-safety-alignment/20-bias-representational-harm/) | 构建 | Python |
 | 21 | [Fairness Criteria: Group, Individual, Counterfactual](phases/18-ethics-safety-alignment/21-fairness-criteria-group-individual-counterfactual/) | 学习 | Python |
 | 22 | [Differential Privacy for LLMs](phases/18-ethics-safety-alignment/22-differential-privacy-for-llms/) | 构建 | Python |
 | 23 | [Watermarking: SynthID, Stable Signature, C2PA](phases/18-ethics-safety-alignment/23-watermarking-synthid-stable-signature-c2pa/) | 构建 | Python |
-| 24 | [Regulatory Frameworks: EU, US, UK, Korea](phases/18-ethics-safety-alignment/24-regulatory-frameworks-eu-us-uk-korea/) | 学习 | — |
+| 24 | [Regulatory Frameworks: EU, US, UK, Korea](phases/18-ethics-safety-alignment/24-regulatory-frameworks-eu-us-uk-korea/) | 学习 | Python |
 | 25 | [EchoLeak & CVEs for AI](phases/18-ethics-safety-alignment/25-echoleak-cves-for-ai/) | 学习 | Python |
 | 26 | [Model, System & Dataset Cards](phases/18-ethics-safety-alignment/26-model-system-dataset-cards/) | 构建 | Python |
 | 27 | [Data Provenance & Training-Data Governance](phases/18-ethics-safety-alignment/27-data-provenance-training-governance/) | 学习 | Python |
-| 28 | [Alignment Research Ecosystem: MATS, Redwood, Apollo, METR](phases/18-ethics-safety-alignment/28-alignment-research-ecosystem/) | 学习 | — |
+| 28 | [Alignment Research Ecosystem: MATS, Redwood, Apollo, METR](phases/18-ethics-safety-alignment/28-alignment-research-ecosystem/) | 学习 | Python |
 | 29 | [Moderation Systems: OpenAI, Perspective, Llama Guard](phases/18-ethics-safety-alignment/29-moderation-systems-openai-perspective-llamaguard/) | 构建 | Python |
-| 30 | [Dual-Use Risk: Cyber, Bio, Chem, Nuclear](phases/18-ethics-safety-alignment/30-dual-use-risk-cyber-bio-chem-nuclear/) | 学习 | — |
+| 30 | [Dual-Use Risk: Cyber, Bio, Chem, Nuclear](phases/18-ethics-safety-alignment/30-dual-use-risk-cyber-bio-chem-nuclear/) | 学习 | Python |
 
 </details>
 
@@ -826,25 +831,25 @@ the agent went wrong and explain why...
 <summary><b>Phase 19 — Capstone Projects</b> &nbsp;<code>17 projects</code>&nbsp; <em>2026 年可端到端交付的产品，每个 20-40 小时。</em></summary>
 <br/>
 
-| # | 项目 | 组合 | 语言 |
+| # | 项目 | 组合内容 | 语言 |
 |:---:|---------|----------|------|
-| 01 | [Terminal-Native Coding Agent](phases/19-capstone-projects/01-terminal-native-coding-agent/) | P0 P5 P7 P10 P11 P13 P14 P15 P17 P18 | TypeScript, Python |
-| 02 | [RAG over Codebase (Cross-Repo Semantic Search)](phases/19-capstone-projects/02-rag-over-codebase/) | P5 P7 P11 P13 P17 | Python, TypeScript |
-| 03 | [Real-Time Voice Assistant (ASR → LLM → TTS)](phases/19-capstone-projects/03-realtime-voice-assistant/) | P6 P7 P11 P13 P14 P17 | Python, TypeScript |
-| 04 | [Multimodal Document QA (Vision-First)](phases/19-capstone-projects/04-multimodal-document-qa/) | P4 P5 P7 P11 P12 P17 | Python, TypeScript |
+| 01 | [Terminal-Native Coding Agent](phases/19-capstone-projects/01-terminal-native-coding-agent/) | P0 P5 P7 P10 P11 P13 P14 P15 P17 P18 | Python |
+| 02 | [RAG over Codebase (Cross-Repo Semantic Search)](phases/19-capstone-projects/02-rag-over-codebase/) | P5 P7 P11 P13 P17 | Python |
+| 03 | [Real-Time Voice Assistant (ASR → LLM → TTS)](phases/19-capstone-projects/03-realtime-voice-assistant/) | P6 P7 P11 P13 P14 P17 | Python |
+| 04 | [Multimodal Document QA (Vision-First)](phases/19-capstone-projects/04-multimodal-document-qa/) | P4 P5 P7 P11 P12 P17 | Python |
 | 05 | [Autonomous Research Agent (AI-Scientist Class)](phases/19-capstone-projects/05-autonomous-research-agent/) | P0 P2 P3 P7 P10 P14 P15 P16 P18 | Python |
-| 06 | [DevOps Troubleshooting Agent for Kubernetes](phases/19-capstone-projects/06-devops-troubleshooting-agent/) | P11 P13 P14 P15 P17 P18 | Python, TypeScript |
+| 06 | [DevOps Troubleshooting Agent for Kubernetes](phases/19-capstone-projects/06-devops-troubleshooting-agent/) | P11 P13 P14 P15 P17 P18 | Python |
 | 07 | [End-to-End Fine-Tuning Pipeline](phases/19-capstone-projects/07-end-to-end-fine-tuning-pipeline/) | P2 P3 P7 P10 P11 P17 P18 | Python |
-| 08 | [Production RAG Chatbot (Regulated Vertical)](phases/19-capstone-projects/08-production-rag-chatbot/) | P5 P7 P11 P12 P17 P18 | Python, TypeScript |
-| 09 | [Code Migration Agent (Repo-Level Upgrade)](phases/19-capstone-projects/09-code-migration-agent/) | P5 P7 P11 P13 P14 P15 P17 | Python, TypeScript |
-| 10 | [Multi-Agent Software Engineering Team](phases/19-capstone-projects/10-multi-agent-software-team/) | P11 P13 P14 P15 P16 P17 | Python, TypeScript |
-| 11 | [LLM Observability & Eval Dashboard](phases/19-capstone-projects/11-llm-observability-dashboard/) | P11 P13 P17 P18 | TypeScript, Python |
-| 12 | [Video Understanding Pipeline (Scene → QA)](phases/19-capstone-projects/12-video-understanding-pipeline/) | P4 P6 P7 P11 P12 P17 | Python, TypeScript |
-| 13 | [MCP Server with Registry and Governance](phases/19-capstone-projects/13-mcp-server-with-registry/) | P11 P13 P14 P17 P18 | Python, TypeScript |
+| 08 | [Production RAG Chatbot (Regulated Vertical)](phases/19-capstone-projects/08-production-rag-chatbot/) | P5 P7 P11 P12 P17 P18 | Python |
+| 09 | [Code Migration Agent (Repo-Level Upgrade)](phases/19-capstone-projects/09-code-migration-agent/) | P5 P7 P11 P13 P14 P15 P17 | Python |
+| 10 | [Multi-Agent Software Engineering Team](phases/19-capstone-projects/10-multi-agent-software-team/) | P11 P13 P14 P15 P16 P17 | Python |
+| 11 | [LLM Observability & Eval Dashboard](phases/19-capstone-projects/11-llm-observability-dashboard/) | P11 P13 P17 P18 | Python |
+| 12 | [Video Understanding Pipeline (Scene → QA)](phases/19-capstone-projects/12-video-understanding-pipeline/) | P4 P6 P7 P11 P12 P17 | Python |
+| 13 | [MCP Server with Registry and Governance](phases/19-capstone-projects/13-mcp-server-with-registry/) | P11 P13 P14 P17 P18 | Python |
 | 14 | [Speculative-Decoding Inference Server](phases/19-capstone-projects/14-speculative-decoding-server/) | P3 P7 P10 P17 | Python |
 | 15 | [Constitutional Safety Harness + Red-Team Range](phases/19-capstone-projects/15-constitutional-safety-harness/) | P10 P11 P13 P14 P18 | Python |
-| 16 | [GitHub Issue-to-PR Autonomous Agent](phases/19-capstone-projects/16-github-issue-to-pr-agent/) | P11 P13 P14 P15 P17 | Python, TypeScript |
-| 17 | [Personal AI Tutor (Adaptive, Multimodal)](phases/19-capstone-projects/17-personal-ai-tutor/) | P5 P6 P11 P12 P14 P17 P18 | Python, TypeScript |
+| 16 | [GitHub Issue-to-PR Autonomous Agent](phases/19-capstone-projects/16-github-issue-to-pr-agent/) | P11 P13 P14 P15 P17 | Python |
+| 17 | [Personal AI Tutor (Adaptive, Multimodal)](phases/19-capstone-projects/17-personal-ai-tutor/) | P5 P6 P11 P12 P14 P17 P18 | Python |
 
 </details>
 
@@ -862,40 +867,48 @@ outputs/
 └── skills/       SKILL.md files for AI coding agents
 ```
 
-用 `python3 scripts/install_skills.py` 安装它们。接入 Claude、Cursor、
-Codex、OpenClaw、Hermes，或任何 MCP-compatible agent。是真工具，不是作业。
+用 `npx skills add` 安装它们。接入 Claude、Cursor、Codex、OpenClaw、Hermes，或任何读取 SKILL.md / AGENTS.md 目录的 agent。是真工具，不是作业。
 
 ### 将所有课程 skill 安装到你的 agent 中
 
 这个 repo 在 `phases/**/outputs/` 下提供 378 个 skills 和 99 个 prompts。
-`scripts/install_skills.py` 会遍历每个 artifact，解析 YAML frontmatter，并
-按照你的 agent 期望的 layout，将匹配文件复制到目标目录。
+
+**推荐：通过 [skills.sh](https://skills.sh) 安装。** 无需 clone，无需 Python，并会自动检测你的 agent skills 目录：
 
 ```bash
-python3 scripts/install_skills.py ~/.claude/skills                 # every skill, nested layout
-python3 scripts/install_skills.py ./out --type all                 # skills + prompts + agents
-python3 scripts/install_skills.py ./out --phase 14                 # one phase only
-python3 scripts/install_skills.py ./out --tag rag                  # filter by tag
-python3 scripts/install_skills.py ./out --layout flat              # flat files
-python3 scripts/install_skills.py ./out --dry-run                  # preview without writing
-python3 scripts/install_skills.py ./out --force                    # overwrite existing files
+npx skills add rohitg00/ai-engineering-from-scratch                       # every skill
+npx skills add rohitg00/ai-engineering-from-scratch --skill agent-loop    # one skill
+npx skills add rohitg00/ai-engineering-from-scratch --phase 14            # one phase
 ```
 
-默认情况下，如果目标位置已有文件，脚本会拒绝覆盖，并在列出所有冲突路径后以
-code 1 退出。使用 `--dry-run` 预览冲突，或使用 `--force` 覆盖。
-每次非 dry-run 运行都会在目标目录写入一个 `manifest.json`，其中包含按 type 和
-phase 分组的完整清单。选择你的 agent 能读取的 layout：
+`skills` 会写入你的 agent 会读取的目录：`.claude/skills/`、`.cursor/skills/`、`.codex/skills/`、OpenClaw 的 skills folder、Hermes 的 bundle path，或任何支持 SKILL.md 的工具。一个命令，覆盖每种 agent。
+
+**进阶：通过 `scripts/install_skills.py` 离线安装 / 自定义 layout。** 需要先 clone repo。适合需要 tag filters、dry-run 或非默认 layout 的场景：
+
+```bash
+python3 scripts/install_skills.py <target>                                 # every skill, default --layout skills (nested)
+python3 scripts/install_skills.py <target> --layout skills                 # same as above, explicit
+python3 scripts/install_skills.py <target> --type all                      # skills + prompts + agents
+python3 scripts/install_skills.py <target> --phase 14                      # one phase only
+python3 scripts/install_skills.py <target> --tag rag                       # filter by tag
+python3 scripts/install_skills.py <target> --layout flat                   # flat files
+python3 scripts/install_skills.py <target> --dry-run                       # preview without writing
+python3 scripts/install_skills.py <target> --force                         # overwrite existing files
+```
+
+`<target>` 是你的 agent 的 skills 目录，例如 `~/.claude/skills/`、`~/.cursor/skills/`、`~/.config/openclaw/skills/`、`.skills/`，或 agent 会读取的任意路径。
+
+默认情况下，如果目标位置已有文件，脚本会拒绝覆盖，并在列出所有冲突路径后以 code 1 退出。使用 `--dry-run` 预览冲突，或使用 `--force` 覆盖。每次非 dry-run 运行都会在目标目录写入一个 `manifest.json`，其中包含按 type 和 phase 分组的完整清单。选择你的 agent 能读取的 layout：
 
 | `--layout`  | 写入路径 |
 |---|---|
-| `skills`    | `<target>/<name>/SKILL.md`（Claude / Cursor 约定） |
+| `skills`    | `<target>/<name>/SKILL.md`（nested convention，Claude / Cursor / Codex / OpenClaw / Hermes 均支持） |
 | `by-phase`  | `<target>/phase-NN/<name>.md` |
 | `flat`      | `<target>/<name>.md` |
 
 ### 将 agent workbench 放入你自己的 repo
 
-Phase 14 capstone 提供一个可复用的 Agent Workbench pack（AGENTS.md、schemas、
-init / verify / handoff scripts）。用以下命令将它 scaffold 到任意 repo：
+Phase 14 capstone 提供一个可复用的 Agent Workbench pack（AGENTS.md、schemas、init / verify / handoff scripts）。用以下命令将它 scaffold 到任意 repo：
 
 ```bash
 python3 scripts/scaffold_workbench.py path/to/your-repo            # full pack + seeds
@@ -904,16 +917,11 @@ python3 scripts/scaffold_workbench.py path/to/your-repo --dry-run  # preview onl
 python3 scripts/scaffold_workbench.py path/to/your-repo --force    # overwrite
 ```
 
-你会得到已连接好的七个 workbench surfaces、一个 starter `task_board.json`，
-以及一个位于 `schema_version: 1` 的全新 `agent_state.json`。然后：编辑
-task，编辑 `AGENTS.md`，运行 `scripts/init_agent.py`，把 contract 交给
-你的 agent。pack source 位于
-`phases/14-agent-engineering/42-agent-workbench-capstone/outputs/agent-workbench-pack/`。
+你会得到已连接好的七个 workbench surfaces、一个 starter `task_board.json`，以及一个位于 `schema_version: 1` 的全新 `agent_state.json`。然后：编辑 task，编辑 `AGENTS.md`，运行 `scripts/init_agent.py`，把 contract 交给你的 agent。pack source 位于 `phases/14-agent-engineering/42-agent-workbench-capstone/outputs/agent-workbench-pack/`。
 
 ### 以 JSON 浏览整个课程
 
-`scripts/build_catalog.py` 会遍历磁盘上的每个 Phase、每节课、每个 artifact，
-并在 repo root 写入 `catalog.json`。一个文件，包含课程的全部事实源。
+`scripts/build_catalog.py` 会遍历磁盘上的每个 Phase、每节课、每个 artifact，并在 repo root 写入 `catalog.json`。一个文件，包含课程的全部事实源。
 
 ```bash
 python3 scripts/build_catalog.py               # writes <repo>/catalog.json
@@ -921,20 +929,13 @@ python3 scripts/build_catalog.py --stdout      # to stdout, do not touch repo
 python3 scripts/build_catalog.py --out path/to/file.json
 ```
 
-catalog 来源于 filesystem，而不是 README，因此计数始终与磁盘上的实际内容一致。
-可将它用于 site builds、下游 tooling，或验证 README 计数是否发生漂移。
-Schema 记录在脚本顶部。
+catalog 来源于 filesystem，而不是 README，因此计数始终与磁盘上的实际内容一致。可将它用于 site builds、下游 tooling，或验证 README 计数是否发生漂移。Schema 记录在脚本顶部。
 
-GitHub Action（`.github/workflows/curriculum.yml`）会在每个 PR 上重建
-`catalog.json`，如果已提交文件过期，就让 build 失败。编辑任意课程后，
-运行 `python3 scripts/build_catalog.py` 并提交结果，否则 CI 会拒绝 PR。
-同一个 workflow 会以 warn-only 模式运行 `audit_lessons.py`（因此已有漂移不会阻塞 contributors）。
+GitHub Action（`.github/workflows/curriculum.yml`）会在每个 PR 上重建 `catalog.json`，如果已提交文件过期，就让 build 失败。编辑任意课程后，运行 `python3 scripts/build_catalog.py` 并提交结果，否则 CI 会拒绝 PR。同一个 workflow 会以 warn-only 模式运行 `audit_lessons.py`（因此已有漂移不会阻塞 contributors）。
 
 ### Smoke-check 每节课的 Python 代码
 
-`scripts/lesson_run.py` 会 byte-compile 每节课 `code/` 目录下的每个 `.py`
-文件。默认模式只做 syntax-check —— 不执行代码，不需要 API keys，也不需要 heavy ML deps。
-它能捕获 contributors 最常引入的 regressions（错误缩进、损坏的 f-strings、误改内容）。
+`scripts/lesson_run.py` 会 byte-compile 每节课 `code/` 目录下的每个 `.py` 文件。默认模式只做 syntax-check —— 不执行代码，不需要 API keys，也不需要 heavy ML deps。它能捕获 contributors 最常引入的 regressions（错误缩进、损坏的 f-strings、误改内容）。
 
 ```bash
 python3 scripts/lesson_run.py                  # syntax-check the whole curriculum
@@ -944,14 +945,9 @@ python3 scripts/lesson_run.py --strict         # exit 1 if any lesson fails
 python3 scripts/lesson_run.py --execute        # actually run, 10s timeout per lesson
 ```
 
-`--execute` 会以 10 秒 timeout 运行每节课的 `code/main.py`（或第一个 `.py` 文件）。
-如果课程入口文件以 `# requires: pkg1, pkg2` 注释开头并列出非 stdlib deps，
-该课程会以原因 `needs <deps>` 被跳过。该脚本是 opt-in，未接入 CI。
+`--execute` 会以 10 秒 timeout 运行每节课的 `code/main.py`（或第一个 `.py` 文件）。如果课程入口文件以 `# requires: pkg1, pkg2` 注释开头并列出非 stdlib deps，该课程会以原因 `needs <deps>` 被跳过。该脚本是 opt-in，未接入 CI。
 
-仅使用 stdlib，Python 3.10+。设置 `LINK_CHECK_SKIP=domain1,domain2` 可覆盖
-默认 skip-list（`twitter.com`、`x.com`、`linkedin.com`、
-`instagram.com`、`medium.com` —— 这些 domains 会强力阻止自动化
-HEAD/GET）。
+仅使用 stdlib，Python 3.10+。设置 `LINK_CHECK_SKIP=domain1,domain2` 可覆盖默认 skip-list（`twitter.com`、`x.com`、`linkedin.com`、`instagram.com`、`medium.com` —— 这些 domains 会强力阻止自动化 HEAD/GET）。
 
 ## 从哪里开始
 
@@ -1040,6 +1036,8 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 
 **触达（2026-05-14 已验证）：** 55,593 月访问者 · 90,709 page views · 7.5K stars ·
 Twitter/X 是 #1 acquisition channel。
+
+**当前 sponsors:** [CodeRabbit](https://coderabbit.link/rohit-ghumare) · [iii](https://iii.dev?utm_source=ai-engineering-from-scratch&utm_medium=readme&utm_campaign=sponsor)
 
 | 等级 | $/mo | 你将获得 |
 |------|------|---|

@@ -338,10 +338,10 @@
     },
     "phases/01-math-foundations/03-matrix-transformations/outputs/prompt-transformation-visualizer.md": {
       "status": "translated",
-      "source_sha256": "a08031c9745c30ed9b6538cfb53db6aa3862e4f50bcca8c6c7b1d077d8ae1708",
-      "output_sha256": "ba279dbc868d1582d49b95f41cc3bdd3a9b07b5c0961c926b642e1e5cdd09693",
-      "updated_at": 1779501787,
-      "method": "codex-exec"
+      "source_sha256": "35e55756427772089c8a6ee4026850c664ca9272de08cc14b308a0fd784860d8",
+      "output_sha256": "55d84ab89f4b7a133c79626f3e79d59df117bde49c37eeff3dd296d63e025b91",
+      "updated_at": 1779795995,
+      "method": "codex-exec-batch"
     },
     "phases/01-math-foundations/03-matrix-transformations/quiz.json": {
       "status": "translated",
@@ -541,10 +541,10 @@
     },
     "phases/01-math-foundations/17-linear-systems/outputs/prompt-linear-solver.md": {
       "status": "translated",
-      "source_sha256": "f342c8fde8d6c8ddd31c4655d24d685bcf8869d2a1ce83c7bfa08dd8e36eef8e",
-      "output_sha256": "b10d5bcfa9065451267fdeecaf33d9d946fa0d580ff66f8d70bb633c19f30ffd",
-      "updated_at": 1779502316,
-      "method": "codex-exec"
+      "source_sha256": "f4cc2bcfd18483fe26d548cbb75359d98fc5135ffde905feb293a36c31a882e4",
+      "output_sha256": "57f32fdf817d3c9e9bc912167abe00515e6efdcffeb9f629c76f75be9000eaa6",
+      "updated_at": 1779795995,
+      "method": "codex-exec-batch"
     },
     "phases/01-math-foundations/17-linear-systems/quiz.json": {
       "status": "translated",
@@ -597,17 +597,17 @@
     },
     "phases/01-math-foundations/21-graph-theory/outputs/skill-graph-analysis.md": {
       "status": "translated",
-      "source_sha256": "19932990898fa13a83b6de8801f1ac792a0b91803cd52a9d261e78d0d7d764ea",
-      "output_sha256": "e36a05dfff8109309067b96d93c4a3a97e81f0ef4bb43642e4b348dc0fe597f9",
-      "updated_at": 1779502340,
-      "method": "codex-exec"
+      "source_sha256": "a03c4425f92cf0df57bba50512046eb12593298c37287730a0accbf302943340",
+      "output_sha256": "c326918a273788637dd3c3b942a7ec4741702d369f35e42bcdd8326e7598aad6",
+      "updated_at": 1779796060,
+      "method": "codex-exec-batch"
     },
     "phases/01-math-foundations/21-graph-theory/quiz.json": {
       "status": "translated",
-      "source_sha256": "5da7deb0ec6440f5071104ccb401b266377c441040606c610a0488218a35dc96",
-      "output_sha256": "45e683d89ff502bb0daea6464c168dd6e183e92299c19b45070e22394904ebad",
-      "updated_at": 1779502364,
-      "method": "codex-exec"
+      "source_sha256": "700ff7eed03cb363e309486c7623ef9c58cdeceac416ae8c44df079244554b4d",
+      "output_sha256": "d9ad5e2be77c58f398b5515bcad0fccb536bf48d680dc5522f089dee2c96d769",
+      "updated_at": 1779796060,
+      "method": "codex-exec-batch"
     },
     "phases/01-math-foundations/22-stochastic-processes/outputs/prompt-stochastic-process-advisor.md": {
       "status": "translated",
@@ -667,10 +667,10 @@
     },
     "phases/01-math-foundations/10-dimensionality-reduction/docs/en.md": {
       "status": "translated",
-      "source_sha256": "ec08721db1d43b02121810ca230f88de2b0ef19288aba25cf51730f8a971005b",
-      "output_sha256": "ea9d7ed64873eeb30b54ef18d982fa22ac4baaad2ec2dad4cb498e175d96d835",
-      "updated_at": 1779503011,
-      "method": "codex-exec"
+      "source_sha256": "d569a5cdf7cc50ff8a37346d40309e6cd619108858345f17c7557a7edd177085",
+      "output_sha256": "96b6c4edfa25a904770b46f6328b6221bf8e0c0073aecd3fba780ce5a6d06a32",
+      "updated_at": 1779795995,
+      "method": "codex-exec-batch"
     },
     "phases/01-math-foundations/12-tensor-operations/docs/en.md": {
       "status": "translated",
@@ -2592,10 +2592,10 @@
     },
     "phases/05-nlp-foundations-to-advanced/28-long-context-evaluation/docs/en.md": {
       "status": "translated",
-      "source_sha256": "73417158d73ce26232f6e78a0af762470fa809f7b4a821d997942f0263c96f82",
-      "output_sha256": "2cd59ed25c5bd6d162d8fd4d873d6d8219738310e2538f43495611e24a9c0d70",
-      "updated_at": 1779524486,
-      "method": "codex-exec"
+      "source_sha256": "ce4965298789984430e294add24e44675a378a4dfea4c928bb8e83faef8edf50",
+      "output_sha256": "c3f552587a8105c727d7f1b0ec635607f4b2a53f7dfce0e0834fa6883c4a03b4",
+      "updated_at": 1779796884,
+      "method": "codex-exec-batch"
     },
     "phases/05-nlp-foundations-to-advanced/28-long-context-evaluation/outputs/skill-long-context-eval.md": {
       "status": "translated",
@@ -2823,9 +2823,9 @@
     },
     "phases/06-speech-and-audio/11-real-time-audio-processing/docs/en.md": {
       "status": "translated",
-      "source_sha256": "60022d23bd2b416a864a6449edc1faf039c1611bc77ffaddfc5f104ef1404748",
-      "output_sha256": "df508ca27364766469734162d623697d97011fbe171e97bae2235ad5e8245297",
-      "updated_at": 1779525410,
+      "source_sha256": "7e6da16b11eddc44d8268d205c4a0d747443b3657e4010c7738a1f43ce594e61",
+      "output_sha256": "4173f7af5a47829faecddee17e18e942cbad074ad332422cf4e3803b1d7193af",
+      "updated_at": 1779796979,
       "method": "codex-exec-batch"
     },
     "phases/06-speech-and-audio/11-real-time-audio-processing/outputs/skill-realtime-pipeline.md": {
@@ -2977,10 +2977,10 @@
     },
     "phases/07-transformers-deep-dive/04-positional-encoding/docs/en.md": {
       "status": "translated",
-      "source_sha256": "edb8ebcf59f68dc6f8701aa0373cc6bd14fee198710230dc605360f0a2b00934",
-      "output_sha256": "3fd84408104f44eacef8d3e652c17a9660fe0d73dbe469959056d92124e7ee3c",
-      "updated_at": 1779530515,
-      "method": "codex-exec"
+      "source_sha256": "8ebb7cdd85b17b7b99f3e06fd1f4c3ae971410215166067ac0abc306a2a59c13",
+      "output_sha256": "3a8ce7081a334ada68ee8a2b43caf111816809de0bbc3c248e14465930bd6c70",
+      "updated_at": 1779797137,
+      "method": "codex-exec-batch"
     },
     "phases/07-transformers-deep-dive/04-positional-encoding/outputs/skill-positional-encoding-picker.md": {
       "status": "translated",
@@ -3831,10 +3831,10 @@
     },
     "phases/10-llms-from-scratch/02-building-a-tokenizer/docs/en.md": {
       "status": "translated",
-      "source_sha256": "d18165a0fe230a7e944da554779e6e1257c15f0888df1e6a3466f1d0cd409e7d",
-      "output_sha256": "fc4e3c140bcf758f739450afdc19cc038d0f0cfa96d0490ae4e2af9af8832dbc",
-      "updated_at": 1779534293,
-      "method": "codex-exec"
+      "source_sha256": "447a05784dd614cb73d812a2dd6fd5dd82361e2fdd22b991e9793528a8923d73",
+      "output_sha256": "435bdfa810e737a20468bd003459f3edbcab1cdbe51db59de6850eb2e7871189",
+      "updated_at": 1779797137,
+      "method": "codex-exec-batch"
     },
     "phases/10-llms-from-scratch/03-data-pipelines/docs/en.md": {
       "status": "translated",
@@ -3999,10 +3999,10 @@
     },
     "phases/11-llm-engineering/01-prompt-engineering/outputs/skill-prompt-patterns.md": {
       "status": "translated",
-      "source_sha256": "cc34c436c4ac6a8fa17813db2179b46ae3209f3be5e6b5bdffcf3598f5f7a5f7",
-      "output_sha256": "6f0600bbff2bd34eff6db8fc7990a8f708c7083384b73b0ce1b78bfc893b1908",
-      "updated_at": 1779540426,
-      "method": "codex-exec"
+      "source_sha256": "e64ca73800e7cf14c53688a5319e154b3284bb47a2d9d3c6e8d24daf72b98130",
+      "output_sha256": "64b1f1e55c2071a05003f4c1e19def693eee5aa5c32c5acd0e1b49a14a0306dd",
+      "updated_at": 1779797245,
+      "method": "codex-exec-batch"
     },
     "phases/11-llm-engineering/01-prompt-engineering/quiz.json": {
       "status": "translated",
@@ -4223,10 +4223,10 @@
     },
     "phases/11-llm-engineering/12-guardrails/outputs/prompt-safety-auditor.md": {
       "status": "translated",
-      "source_sha256": "cc5c26d6cfe38f8b619365731088b518af93ac50b036204d093305474d64797a",
-      "output_sha256": "9ea42875b14e745a7d1d218ff6d08b326ce993cc3aef75d1dd9a480120b23432",
-      "updated_at": 1779541470,
-      "method": "codex-exec"
+      "source_sha256": "5eeab60eba2f78ee5156094ca770b0d99ca834162c87df1e3a63bb3076dad881",
+      "output_sha256": "f6f21f68a2b0cb663222a5bd1f9f9a2ef68ab5d51e8584d5bda143717d29678d",
+      "updated_at": 1779797245,
+      "method": "codex-exec-batch"
     },
     "phases/11-llm-engineering/12-guardrails/outputs/skill-guardrail-patterns.md": {
       "status": "translated",
@@ -4734,10 +4734,10 @@
     },
     "phases/12-multimodal-ai/22-document-diagram-understanding/docs/en.md": {
       "status": "translated",
-      "source_sha256": "70bfe670534134b7f0f977143e404a0fe31979a13083426ff9cd95b7292a6551",
-      "output_sha256": "2716bd93f8ce156eed46d03933ecfde4fa474ee86c25929c3ab4d727e96123f8",
-      "updated_at": 1779546154,
-      "method": "codex-exec"
+      "source_sha256": "b0a271e28a38bdb8af47ec26108757952b1231ba2706c9eeac3edcdf99afa820",
+      "output_sha256": "76dbb1034b056ae60f7cb03926526917234c6389518c6c573406c2aefc60e566",
+      "updated_at": 1779797245,
+      "method": "codex-exec-batch"
     },
     "phases/12-multimodal-ai/22-document-diagram-understanding/outputs/skill-document-ai-stack-picker.md": {
       "status": "translated",
@@ -5560,10 +5560,10 @@
     },
     "phases/14-agent-engineering/21-computer-use-agents/quiz.json": {
       "status": "translated",
-      "source_sha256": "9cc0afc510a59ee2ceb965d3dadf7b4640b49304325ac366d1bf7fc4ed0205bd",
-      "output_sha256": "11f16f195fa5ba4940fbe2c9ddc43b04da261c2fc191baf8ac5b236037a6b72b",
-      "updated_at": 1779554167,
-      "method": "codex-exec"
+      "source_sha256": "404458818913e15a8457f79de602a19a867613e03e37e9b0bf86477e1034af6d",
+      "output_sha256": "95dfc4c926d339266f82dd86af1c2467831d512056d51c22ea05ea8984b8fb66",
+      "updated_at": 1779797359,
+      "method": "codex-exec-batch"
     },
     "phases/14-agent-engineering/22-voice-agents-pipecat-livekit/docs/en.md": {
       "status": "translated",
@@ -5637,10 +5637,10 @@
     },
     "phases/14-agent-engineering/25-multi-agent-debate/outputs/skill-debate.md": {
       "status": "translated",
-      "source_sha256": "3a8e9b7cf0ed7a111b036e10717eb23c6fd2fb789575fbe19422a1e294ddc624",
-      "output_sha256": "149f5eb599dd687414db88a27c076d507d48f6da240f6011f8d8a50ff125b756",
-      "updated_at": 1779554191,
-      "method": "codex-exec"
+      "source_sha256": "30b866067ccc5db5f3ff81f22b726653f563b5e02f46a2d1ea71db4c20027e39",
+      "output_sha256": "339c5cd366bafb0fd8fd46fd40d8f69ec07371a693d6fc31e00de534f2235bb0",
+      "updated_at": 1779797359,
+      "method": "codex-exec-batch"
     },
     "phases/14-agent-engineering/25-multi-agent-debate/quiz.json": {
       "status": "translated",
@@ -5672,10 +5672,10 @@
     },
     "phases/14-agent-engineering/27-prompt-injection-defense/docs/en.md": {
       "status": "translated",
-      "source_sha256": "aabb32ba8a26d6d3fbd5c9f116d33073eb4e8b530a438011e23057dfc90c6e92",
-      "output_sha256": "1886e1fa9e5952393b6e9d1a8090fd1d55a9e2ec4fb1ecc69099153438fc16cb",
-      "updated_at": 1779554242,
-      "method": "codex-exec"
+      "source_sha256": "ac7d3870b800b8c721938bbe918be3950ddfd3fe8a0a0c1ae4d7a868424dee50",
+      "output_sha256": "808c267d9c7a61ca6c981d9917f78be80fe5c482394b88c4be0e9ce43c2b78fc",
+      "updated_at": 1779797429,
+      "method": "codex-exec-batch"
     },
     "phases/14-agent-engineering/27-prompt-injection-defense/outputs/skill-injection-defense.md": {
       "status": "translated",
@@ -5686,10 +5686,10 @@
     },
     "phases/14-agent-engineering/27-prompt-injection-defense/quiz.json": {
       "status": "translated",
-      "source_sha256": "22195cd19263aa314064a2a0bc82ace5dc9b96fbd00f9aca406c03a11a1d64e7",
-      "output_sha256": "ff80e0bf5990490fda00c10d708ae54261147c1c88aaa1cef0d4e964504e8a6f",
-      "updated_at": 1779554265,
-      "method": "codex-exec"
+      "source_sha256": "b7182dd738828d1332499ea488a4dba608d97c44ea78d3366997a0b36f76ac4b",
+      "output_sha256": "061a3a5129013160dafe1045a969628d87e89d47dde4cad3011d93a03a6ef37d",
+      "updated_at": 1779797429,
+      "method": "codex-exec-batch"
     },
     "phases/14-agent-engineering/28-orchestration-patterns/docs/en.md": {
       "status": "translated",
@@ -6071,10 +6071,10 @@
     },
     "phases/14-agent-engineering/15-crewai-role-based-crews/docs/en.md": {
       "status": "translated",
-      "source_sha256": "fe6a81103698c38bd56621cd4bab2fd7a1c4d9d6b05f4dcb25966a8e8f027254",
-      "output_sha256": "ca038e0a137e28285845ca456c0caacb954de4cf418e8fde73d86b2eabba0435",
-      "updated_at": 1779554142,
-      "method": "codex-exec"
+      "source_sha256": "656fa2fd974ff9aab43a45dd37c85dea115d3f4c54b27478da2e071ae58d411e",
+      "output_sha256": "b2166388f0112d78f18afba8eddeedf6e2ebefc715d3e1f7191bfea4d9c3b067",
+      "updated_at": 1779797359,
+      "method": "codex-exec-batch"
     },
     "phases/14-agent-engineering/31-agent-workbench-why-models-fail/docs/en.md": {
       "status": "translated",
@@ -6400,10 +6400,10 @@
     },
     "phases/16-multi-agent-and-swarms/01-why-multi-agent/outputs/prompt-multi-agent-decision.md": {
       "status": "translated",
-      "source_sha256": "e1d31956f3d9944d8047da817727fa38d22f7cd1939e4b71abbb1b99c560abba",
-      "output_sha256": "3cee2896794d660d22e94a91010085c254c37495246857592038abc20c9dae62",
-      "updated_at": 1779558048,
-      "method": "codex-exec"
+      "source_sha256": "143fe4667341c5b5412fe2e0ed22405c02f91b89fb36629f44751235ab42338d",
+      "output_sha256": "caa167270d48c8eef0a8bffce45532c0c84b621091abe58de5fd4f7e670586f0",
+      "updated_at": 1779797628,
+      "method": "codex-exec-batch"
     },
     "phases/16-multi-agent-and-swarms/01-why-multi-agent/quiz.json": {
       "status": "translated",
@@ -8183,47 +8183,40 @@
       "updated_at": 1779568369,
       "method": "codex-exec"
     },
-    "README.md": {
-      "status": "translated",
-      "source_sha256": "ff2001ed4d2422a142d4a22e420cd97fb8270a6696abc82c581fbf07de0f3185",
-      "output_sha256": "e0214515d1ee6594e37ab0c69a6cf55d032a002f0da2cb484791ac79e0f8dec3",
-      "updated_at": 1779568853,
-      "method": "codex-exec"
-    },
     "site/assets/figures/INDEX.md": {
       "status": "translated",
-      "source_sha256": "deea844e7b8b781c55d129eda3528d11228098137c01025a92a1626e6cca9a9e",
-      "output_sha256": "8d66f45e90a747c9b978c9f758e8ed88727cdf400a46ce07208ee768a6cacff9",
-      "updated_at": 1779569686,
-      "method": "codex-exec"
+      "source_sha256": "2b1aa31ce93f8df26b3bc3f4640025b0989fbbceba61ce910d7a9f6261b72018",
+      "output_sha256": "268fdfa4e6d19c4ef2ffd9073a33480ba15c9d0577e276769278a99c70d071f7",
+      "updated_at": 1779799114,
+      "method": "codex-exec-batch"
     },
     "site/catalog.html": {
       "status": "translated",
-      "source_sha256": "b74a4876cd7089c0aba864a7c1d5a575ea2f0e2ee7230fdd243db6b37093cbf8",
-      "output_sha256": "79a80f2b6975e6ce006d5fb7b66ab1ce2ca22cc6623519084e77ed484d76a087",
-      "updated_at": 1779569007,
-      "method": "codex-exec"
+      "source_sha256": "59d156ad036dedc71259fced22a33846f1fca012e931bddf8126492998453c00",
+      "output_sha256": "4245b04bb07636f82baa7c94d9cb1883e0744b9c655a9ff96a40a578be151883",
+      "updated_at": 1779799114,
+      "method": "codex-exec-batch"
     },
     "site/glossary.html": {
       "status": "translated",
-      "source_sha256": "db84538627fb490e41410664a2f1cdb44e548516fe36882ec7b75130c193c904",
-      "output_sha256": "289c9168c26b68f7a9b4c59c0290a3a7175a59fa8aa6a865f66d3a69de1203f1",
-      "updated_at": 1779569089,
-      "method": "codex-exec"
+      "source_sha256": "054cc38a7df07369850d1dca2e9d9067505c32eb5197bfc49086add8ef6d06a2",
+      "output_sha256": "5874af422e8892932b4a574e9df3c22bb9d6564997232c6f6b45e067f25cb261",
+      "updated_at": 1779799211,
+      "method": "codex-exec-batch"
     },
     "site/index.html": {
       "status": "translated",
-      "source_sha256": "7ffaaac61991e8877f3a812680c9868fcdeae6abc0a33bf6f9f851a1fc4f4ff0",
-      "output_sha256": "79cc3b38b47f6a1e6f044dacf761037c0f4b62981e5dbb98870c4739a4bd67e1",
-      "updated_at": 1779569227,
-      "method": "codex-exec"
+      "source_sha256": "27fcdca42756397a8cfb7edcb0ce207ca4ce4c9898d6ba022ef063995135c9aa",
+      "output_sha256": "672495d4c05d0b4e3aa20e0e7ded693af2d07133584332853c92e23f054b623f",
+      "updated_at": 1779799370,
+      "method": "codex-exec-batch"
     },
     "site/prereqs.html": {
       "status": "translated",
-      "source_sha256": "60670b31e2ec0f37498f5b61f8fba88072d6a7015ef6930cc604a0227dda223c",
-      "output_sha256": "ea94ceefc473cc77ac0894815983e3eebb34b7f0d635746725fe9f53c478b1de",
-      "updated_at": 1779569435,
-      "method": "codex-exec"
+      "source_sha256": "ea41fad0594d3c3a580e60c5e099647e30d50ab902d62a1f896490b2e9f7a228",
+      "output_sha256": "0f01f23b1602fa82ddd2a6ea3c46ad295661907fb7c5756c606f9621bdb414de",
+      "updated_at": 1779837347,
+      "method": "manual-structural-merge"
     },
     "site/app.js": {
       "status": "translated",
@@ -8248,10 +8241,10 @@
     },
     "site/header.js": {
       "status": "translated",
-      "source_sha256": "927c4b54913cd40ba10e39f5f7bf4e17e5d31aa8dd7debf69f875648e70b65eb",
-      "output_sha256": "ebdf382fc1e6e9d3014d1211c1d3a1d4ed8e16d96ed7d1be9cad025f9318c8de",
-      "updated_at": 1779569909,
-      "method": "codex-exec"
+      "source_sha256": "aa73bf71e1b2b22a2671e8e561eeab1f575cdbe995a49cfff7053bb2e0df081f",
+      "output_sha256": "8098a8a9fd9d43b439e47d8a2a8d8076242efbb65ac8bbae04a7672ae2dd24e3",
+      "updated_at": 1779799211,
+      "method": "codex-exec-batch"
     },
     "site/progress.js": {
       "status": "translated",
@@ -8260,12 +8253,531 @@
       "updated_at": 1779569939,
       "method": "codex-exec"
     },
+    "phases/05-nlp-foundations-to-advanced/01-text-processing/quiz.json": {
+      "status": "translated",
+      "source_sha256": "729b86c0cd04ddf42f4c98cffc967b166d1df807dbf67741830bee24b426b507",
+      "output_sha256": "e1d13ddcfc56fdf8ae741821062b41bc373c25ce8e6b1a5739cf618d386951cd",
+      "updated_at": 1779796060,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/02-bag-of-words-tfidf/quiz.json": {
+      "status": "translated",
+      "source_sha256": "11727550d7eac0d5e7ff653ef00c65d219adcd50900a21f0d8e3fff2de32b13d",
+      "output_sha256": "18f6bf123ee75dd92c87ef520f101d980d4850ddd5b60b2bd127f7d149c67619",
+      "updated_at": 1779796134,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/03-word-embeddings-word2vec/quiz.json": {
+      "status": "translated",
+      "source_sha256": "54546cf11429e411b19d62a2f780f2f87ec6951b734ab0e9b76ad289217869da",
+      "output_sha256": "9ee058f8f9ab2c57d5d9eaa1dd48e9e1fcfa1729d257ee4039358114e43e6422",
+      "updated_at": 1779796134,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/04-glove-fasttext-subword/quiz.json": {
+      "status": "translated",
+      "source_sha256": "72ebe13c7087f9bd351e56eaef5d52d84749c1d7bd996eec4aa63492ad9a475c",
+      "output_sha256": "550315d559c97a23c9860149232e590c05fd7f3d3357774f98b8e8f28d97bdfd",
+      "updated_at": 1779796134,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/05-sentiment-analysis/quiz.json": {
+      "status": "translated",
+      "source_sha256": "640908406f89e6ad4245a514fb5c2c40f7d3698af686d7062ae99ad598d50a9a",
+      "output_sha256": "223aec3a201d26d5eab86b8d7d6bb2c8da6c1e13954c6e93881e10d6e1253088",
+      "updated_at": 1779796268,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/06-named-entity-recognition/quiz.json": {
+      "status": "translated",
+      "source_sha256": "60dc5df9c9d992e5e792c2e2cb9f7bbe504e49ac04265949f5f26842148c4070",
+      "output_sha256": "6c8020719172a1ac10890fbf293b5b2108cd99053d5b0e9fc24a9650332ca862",
+      "updated_at": 1779796268,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/07-pos-tagging-parsing/quiz.json": {
+      "status": "translated",
+      "source_sha256": "3a1383efa0c32ccbb14495f408cc3544809da9d7b034c38115371f7cce7a5043",
+      "output_sha256": "c9735b3e60580b8d983a89e9b98023c474b4696e0caf096bf54c5cdb7f5dfadd",
+      "updated_at": 1779796268,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/08-cnns-rnns-for-text/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f3ca40f57da12c63bce2d6f11ecc4d8cfc4b49ccc64b792c48f497bff94e4c6b",
+      "output_sha256": "21d93ea38e1b503da4bef92ea7c08a08dd79ea700cbf0eef14ca4aa953808653",
+      "updated_at": 1779796412,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/09-sequence-to-sequence/quiz.json": {
+      "status": "translated",
+      "source_sha256": "44519b855a0d7069f5ff36594449cfe04078779f1556294954efd51c10ec1baa",
+      "output_sha256": "9b9e8c7d55fea1a8b57239af01d71a3e2e650ad2854286342c41287eb26f1519",
+      "updated_at": 1779796412,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/10-attention-mechanism/quiz.json": {
+      "status": "translated",
+      "source_sha256": "18f2192d98700984b89b31982edf7d674f6207a5b7bfe3dbf293be7271bf2bc1",
+      "output_sha256": "3a79514a2effec671e162d7300f6466f105ce5ab11901ad27d4d598d0a61afba",
+      "updated_at": 1779796412,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/11-machine-translation/quiz.json": {
+      "status": "translated",
+      "source_sha256": "d77e06fb882101dc3a6fdd536794ce2a6c1a1ac1713b43f4d89c40b3f8cd8117",
+      "output_sha256": "c90d4b78b09b4e16fe25815f1b57010f583f81b60c6ba8904649d3e63eb9c502",
+      "updated_at": 1779796483,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/12-text-summarization/quiz.json": {
+      "status": "translated",
+      "source_sha256": "fc1e2b1d1a7d3ea53af8ffff3a3fc399e102c20bffa382f30940e58ed5e8b541",
+      "output_sha256": "2ca14e8af06285e031886db02376b433e280f9e960eee905d41757d1db2bb81e",
+      "updated_at": 1779796483,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/13-question-answering/quiz.json": {
+      "status": "translated",
+      "source_sha256": "384756da39bf5283eede0d15db8ad0afd15f5f57b95c4ec2e6312317a207787f",
+      "output_sha256": "e7b8baca53069ca4abb5a3448abc4ce38ccf5f1988e9578d88aa58705b44c3e1",
+      "updated_at": 1779796483,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/14-information-retrieval-search/quiz.json": {
+      "status": "translated",
+      "source_sha256": "ad13e013503480416e1e3a678085ecb1da77f06248b31aa4b53d4dfa7451af07",
+      "output_sha256": "d5144f81b8c632715f8d12c1cbf28e0e583f1575bedf0e5bff8a7d189ad02dd6",
+      "updated_at": 1779796556,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/15-topic-modeling/quiz.json": {
+      "status": "translated",
+      "source_sha256": "5a8607bc0a660de3dd6219bdb35fd62a46eba500cd144c2ac27c650701195f27",
+      "output_sha256": "882cdb0099147212bf623d67714974fc3b716e80fbcd7c537ec8a6b21fcde32b",
+      "updated_at": 1779796556,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/16-text-generation-pre-transformer/quiz.json": {
+      "status": "translated",
+      "source_sha256": "9c95c12a19c6f4b7feca495a807c41b1f494e3a36a4371eeb5d7b600994534bf",
+      "output_sha256": "06a32076fd52b39db1da86d5288d924cff93783ae6ed6ea640966f7b76ec8ced",
+      "updated_at": 1779796556,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/17-chatbots-rule-to-neural/quiz.json": {
+      "status": "translated",
+      "source_sha256": "7a228068bcb47a7fe854fc5be586011581e4997fc764daace646612595c707eb",
+      "output_sha256": "265545c0cee3aedf1dcaede8ac93928e7f189eea2b2510c2710635cb560177be",
+      "updated_at": 1779796630,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/18-multilingual-nlp/quiz.json": {
+      "status": "translated",
+      "source_sha256": "2b631dda88d75c3f4c6eb6a596ba41390dcdb4d8e5bf360ba5c6ead19c088a3c",
+      "output_sha256": "b4fa2fe2f5d3e60f1f2b62202bedcb4a180c0b4ba2c964e60447cace6d9fae57",
+      "updated_at": 1779796630,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/19-subword-tokenization/quiz.json": {
+      "status": "translated",
+      "source_sha256": "e791359c6ad1806cf80b7d5642310736d4e54fda371aacfbabf5ac0ef9169ac4",
+      "output_sha256": "aa5eab2649ad79f97e028b68e36d7751ad656db783f214ed228689579ef8d3bc",
+      "updated_at": 1779796630,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/20-structured-outputs-constrained-decoding/quiz.json": {
+      "status": "translated",
+      "source_sha256": "67fc6401cf6e603f9c4c73d69d9014881653c1e7fd072b8830a80552aa1dfa52",
+      "output_sha256": "63fc0dc7223a081dfdd46afdfdfb9b8e52db9454e5aad92ede6acd48d8300235",
+      "updated_at": 1779796702,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/21-nli-textual-entailment/quiz.json": {
+      "status": "translated",
+      "source_sha256": "e9e0219aa431c594bc21fd86393a4a9cab130f89bde81cacece2dc203a615d8f",
+      "output_sha256": "ce6965e6f331c4c277fd2db87c8e604d460355401d533071cd75527963236e68",
+      "updated_at": 1779796702,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/22-embedding-models-deep-dive/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f1a76be0558dee97552d2fa9975ce6610334a33448054d35cf4949f0ffe07cb8",
+      "output_sha256": "6a0ba4d8685b32a18e888a5f3382205162d858e650083d656a8f9f8ee7e2164d",
+      "updated_at": 1779796702,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/23-chunking-strategies-rag/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f88b377fe6caef5d9522034ab4bf7c64ddf22f70695f9da2ccb24e9d3e191b6c",
+      "output_sha256": "a50db977cb4be1323be2547b1c8360c7cd7935900e5481b90324cb8cda398d09",
+      "updated_at": 1779796776,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/24-coreference-resolution/quiz.json": {
+      "status": "translated",
+      "source_sha256": "3a06416e3b402f8b480f12a2bfe6a420a9758e652a4cc9a4cfec986171dfc8f2",
+      "output_sha256": "9fc65d5fb20a10a1e357b8b58e2e4177e2c78ea17e93b31ed8381eac22acf34a",
+      "updated_at": 1779796776,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/25-entity-linking/quiz.json": {
+      "status": "translated",
+      "source_sha256": "bd0cba62e1a0895a0d409e33332bd77ac22096f5a9a219c94ca33f0d73b9ca47",
+      "output_sha256": "93d46c76eed6d097b69db665dd7d4568f11688efd1579fcf1883dd3587d62f2f",
+      "updated_at": 1779796776,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/26-relation-extraction-kg/quiz.json": {
+      "status": "translated",
+      "source_sha256": "d9fe2a67f6d870f143914b6805e9c9b2b5728c9852bdeb7d39b5762ec9ca8cf1",
+      "output_sha256": "f72b1671edd53b418353a701f115e9d61681d119116e48fa0019a783c0ab7955",
+      "updated_at": 1779796884,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/27-llm-evaluation-frameworks/quiz.json": {
+      "status": "translated",
+      "source_sha256": "ac62d43b3b3862cb369d2de4aa07005d6ae507104379c556235632a4bd91284a",
+      "output_sha256": "864ea8f96feac001d4a13895a88c12e6084016691b775d5a70ddae8fc59b1d44",
+      "updated_at": 1779796884,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/28-long-context-evaluation/quiz.json": {
+      "status": "translated",
+      "source_sha256": "3f3ae65297297e9797b65b4248d31292d3041b11dcf3aadbe85ca3b877a528e5",
+      "output_sha256": "2e9fb3e206094d2977189fab4ff2dcc03721b56d2fd46e3cf1c1db4927b1d62f",
+      "updated_at": 1779796979,
+      "method": "codex-exec-batch"
+    },
+    "phases/05-nlp-foundations-to-advanced/29-dialogue-state-tracking/quiz.json": {
+      "status": "translated",
+      "source_sha256": "92bf8dd065cb175599c2675e4c18e6eb1934a9f22b873fa325f3a57f7245864b",
+      "output_sha256": "541f145e6c87aba7eb4308ae836ea7edf2a7c5e56f078a3ee8352c55607cb245",
+      "updated_at": 1779796979,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/31-agent-workbench-why-models-fail/mission.md": {
+      "status": "translated",
+      "source_sha256": "96a082fbdb09d326ee6b5ceed8528e8b1029a127bcb41d7e343d980d27e7ebcc",
+      "output_sha256": "1287cb9fcd8e6b74f4be8798ac40b032f967ca5df3ca4e9afcd69bc79527a8ee",
+      "updated_at": 1779797429,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/32-minimal-agent-workbench/mission.md": {
+      "status": "translated",
+      "source_sha256": "fc774b5b9843c8ee279b65c84dd108cfcade4bbe4342f0dbcf4ceb5cbc7df4b1",
+      "output_sha256": "36381374e5dbe329236c63a715b6ecf0332e5d6b798714539580b719fd15d68e",
+      "updated_at": 1779797461,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/33-instructions-as-executable-constraints/code/agent-rules.md": {
+      "status": "translated",
+      "source_sha256": "1708c58cc89529f38aa7d5bad7b85679e11bed08084bc2fa6e12e281e6e1805c",
+      "output_sha256": "c6835b00069bed8cb8525bfc0371b6c703b45fd35fa299c68028040f5d4cd580",
+      "updated_at": 1779797461,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/33-instructions-as-executable-constraints/mission.md": {
+      "status": "translated",
+      "source_sha256": "9613972d26d6ac978b204fc552b422a82c4f497b7125864675cedf8161a5cb72",
+      "output_sha256": "8e10c524e38603299583eaf2a2b40e7109262e8599cba34c56e71b11f65ab054",
+      "updated_at": 1779797461,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/34-repo-memory-and-state/mission.md": {
+      "status": "translated",
+      "source_sha256": "9dbb9ac3871a234d6bd53e5e5d0f4d47073786c0861a0202baa60bcfeb928291",
+      "output_sha256": "1ac17965523fc2a4e3ab44a6ffb8de58aacec9f494f4352b51e9dd2a39c0d485",
+      "updated_at": 1779797497,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/35-initialization-scripts/mission.md": {
+      "status": "translated",
+      "source_sha256": "ebc09ef9c99fa405de9326353476c0082a3a4e0f7be202df98ba44400faa2470",
+      "output_sha256": "65901f5bbbc3a6c30e26bd0c348dd05aba992ccb1f4a4e06ad5fc2285ed3ff8f",
+      "updated_at": 1779797497,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/36-scope-contracts/mission.md": {
+      "status": "translated",
+      "source_sha256": "063e02dd8e602f39c400ef9136b66dc69527c583d61893b518614188133172f1",
+      "output_sha256": "84cc181cd89f90eb71bbc660cf67370dac4f25b75f0a3b16d17fbbdda49aa7b3",
+      "updated_at": 1779797497,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/37-runtime-feedback-loops/mission.md": {
+      "status": "translated",
+      "source_sha256": "688d97af371794c102d3fdd36e2fa32405c1ab2d27368d6cc50a8df337c1e8d6",
+      "output_sha256": "81b11d6c465d164a08d1b6e25cfdfebe1eb0f4b3809fb6f80d6e46b37994a388",
+      "updated_at": 1779797532,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/38-verification-gates/mission.md": {
+      "status": "translated",
+      "source_sha256": "440f4c423325ede31b09e949c776d1c7f417777b2c15f572aa4c566f800a7969",
+      "output_sha256": "b7a4329a17faebd0871b114a0253883d0c2ee3ce4131caf71d0b29e7989aac0c",
+      "updated_at": 1779797532,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/39-reviewer-agent/mission.md": {
+      "status": "translated",
+      "source_sha256": "c5a030b454173484bbe15438fb944184607e88f5f934410ab07a1c2af7aa10cf",
+      "output_sha256": "3b8bc0f332410a1a006b17eb24d4922e62f953ed1e3a5a67516a835bbd4a917f",
+      "updated_at": 1779797532,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/40-multi-session-handoff/mission.md": {
+      "status": "translated",
+      "source_sha256": "518449f59c116348dbc8227549d012c786e7eee47682a608ddf11b4c44d7b519",
+      "output_sha256": "d88c0f440c263fa17a69be9d84850eaff652640dcdaf41e4fbbc78d08c4ce334",
+      "updated_at": 1779797570,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/41-workbench-for-real-repos/mission.md": {
+      "status": "translated",
+      "source_sha256": "3533a857029feba9102586302c17335cad7e1b0a2a7aca27d9ac0d8f099e5997",
+      "output_sha256": "a846668dbb2418eea6ef69577b8bd89a473b5b4cece151ab5aac8b2af8a0c7ea",
+      "updated_at": 1779797570,
+      "method": "codex-exec-batch"
+    },
+    "phases/14-agent-engineering/42-agent-workbench-capstone/mission.md": {
+      "status": "translated",
+      "source_sha256": "bc3a835ef1e292afe0df24c87b9fa6b8650688d41b38ab5f51f6308712a2f23a",
+      "output_sha256": "aa1c4b38c09adcbc3e06cb4eed11b6cdc8a6367b535ee79529fc52588b7966ce",
+      "updated_at": 1779797570,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/quiz.json": {
+      "status": "translated",
+      "source_sha256": "d2688733b1a40b0cba4ee543faae941b83f902883b0b53c2c3e11ba60a77215c",
+      "output_sha256": "6244c8d439a1cb4561cf853d0646006663bda10826d1e79cfdbdab01a20d5bb1",
+      "updated_at": 1779797628,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/quiz.json": {
+      "status": "translated",
+      "source_sha256": "0426d3c99bfac085f5287676d0446961a0ff6942b2a1cafe1e8225824159cc91",
+      "output_sha256": "02239b43a6ed266461e5330539588f4051e5e01f4023986fa99aaf5c909d721a",
+      "updated_at": 1779797628,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/quiz.json": {
+      "status": "translated",
+      "source_sha256": "d7f27048ed5521fe4c78b516c0d1ee3fcc8e2e0f0318dc4b9934fa226c9a686d",
+      "output_sha256": "f78d2a0180c8a7562e8fe079dd2a99e08842c3a20d26489d703491be1cdfe878",
+      "updated_at": 1779797685,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/04-sycophancy-rlhf-amplification/quiz.json": {
+      "status": "translated",
+      "source_sha256": "abfb92547ba3b6631c1420f01c1c8b72652be37f3257ea9f958cb8344257b2f8",
+      "output_sha256": "479b9f040457692556e556025729279817ed72403fac956d2a8c0cee08a8ac5c",
+      "updated_at": 1779797685,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/05-constitutional-ai-rlaif/quiz.json": {
+      "status": "translated",
+      "source_sha256": "45fd5ef352c9c0c30eff2fcc5f3aa7e7704c59e64c77a5c193349d2e16cbed25",
+      "output_sha256": "1a1ce4cafa49965343c8b09d3f4661f08f9efe7aaea9200a71bd0f072e52e662",
+      "updated_at": 1779797685,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/06-mesa-optimization-deceptive-alignment/quiz.json": {
+      "status": "translated",
+      "source_sha256": "b963b4ee02a99b1302148fc54c9cd63a455861740ad8d826e680e6002afe5b99",
+      "output_sha256": "df5ebae0dd2b25c36a6a4e6b30b44e10a674e7140c1aab597d052fbeb642e543",
+      "updated_at": 1779798578,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/07-sleeper-agents-persistent-deception/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f48d314c5617702fa1d0e914e18ce3d631912195c5b4ce0036921e44d9e5f429",
+      "output_sha256": "100c7579cc09687ad9e999f72ef82d5d05df85778566c06090087f63d9be4ce4",
+      "updated_at": 1779798578,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/08-in-context-scheming-frontier-models/quiz.json": {
+      "status": "translated",
+      "source_sha256": "43c54340106d3fe3e07e29f9ec0c57c7a67269254fbf94ec1a5a925b904007e4",
+      "output_sha256": "f49b6106e7ff8e0e3c31bef9573f7e0955e5407689abedc38e8d7d9784313b14",
+      "updated_at": 1779798578,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/09-alignment-faking/quiz.json": {
+      "status": "translated",
+      "source_sha256": "273e531f5ba48bb6e52cd1040eed6a4454fc3924caca4f06582bc0bc5504a3b5",
+      "output_sha256": "908f73f98ea478deed26a8ab113172738dfad4a13cd95bdd1ef9947bbfbad8de",
+      "updated_at": 1779798634,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/10-ai-control-subversion/quiz.json": {
+      "status": "translated",
+      "source_sha256": "2e164f9208516114d929e7d5fde7fb76fe2d2ce0264950b78343b1ddc0e6ad93",
+      "output_sha256": "2e58b0fa6ab0f9b0e97e5e5df4f9c8e763ad9794b434df95d436886a69b75b5a",
+      "updated_at": 1779798634,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/11-scalable-oversight-weak-to-strong/quiz.json": {
+      "status": "translated",
+      "source_sha256": "3b2fa8e64880b3cd3ea74e865051b2981f512f8b845466683fd794136cce8736",
+      "output_sha256": "4c7f1182b0ce6b749097bd406c4f857bb5174d432a2b0d0e4f01c89931478eaf",
+      "updated_at": 1779798634,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/12-red-teaming-pair-automated-attacks/quiz.json": {
+      "status": "translated",
+      "source_sha256": "a6c40958330d21c487c2a2be2fc4148a326de4440710ea4441a5eeb977ffb610",
+      "output_sha256": "3e3483926cadea9181376ae7a5c1a8cca324e43efd435457b6cfe05aa4dcfae1",
+      "updated_at": 1779798690,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/13-many-shot-jailbreaking/quiz.json": {
+      "status": "translated",
+      "source_sha256": "28a32790aa97fe6ec845308a6bd562855b72854dde6e0a19e06ea8be3ebd3da0",
+      "output_sha256": "6b4977e23950f0a36c28a8c97cdbbc835dabe74d2440390a64c2f9c9621bbf96",
+      "updated_at": 1779798690,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/14-ascii-art-visual-jailbreaks/quiz.json": {
+      "status": "translated",
+      "source_sha256": "1e2d5c55649b31a2c375404ca43a88e1f8382f79e5f0f31d5e5b6e681c7a24bc",
+      "output_sha256": "5b7035a0dd0aaec682fd35e9f974c4d0844f75f543f335e96399f83ffb13639e",
+      "updated_at": 1779798690,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/15-indirect-prompt-injection/quiz.json": {
+      "status": "translated",
+      "source_sha256": "9d275c33f35ba4a3370e7da8beb4429005fcfc9372a46a2ff4fd1899e95c3e07",
+      "output_sha256": "b5d32a6278ce2622ae8f96b0352b755bdf39177d4647287fd473348ce8d562c8",
+      "updated_at": 1779798747,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/16-red-team-tooling-garak-llamaguard-pyrit/quiz.json": {
+      "status": "translated",
+      "source_sha256": "a0ea1448a170a4054e7bfd8157f0e50c47fb40a6931151aacd3ec82b0c6c82e7",
+      "output_sha256": "090a40eed65a875706f026347c92475a9eaf272812a3f7d738be253b02aff08e",
+      "updated_at": 1779798747,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/17-wmdp-dual-use-evaluation/quiz.json": {
+      "status": "translated",
+      "source_sha256": "acb07a5de644fea552ef584d80bc5f3ec2fd60a1d8bedb97d2067fed6956bd6e",
+      "output_sha256": "d60febe4e470dff5a1863cc987c01e4ff990aea1dccc9f7dd2de84467ca60e5b",
+      "updated_at": 1779798747,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/18-frontier-safety-frameworks-rsp-pf-fsf/quiz.json": {
+      "status": "translated",
+      "source_sha256": "17254a2e856c60aa9ff9e60baf313a6575bc6f700bf0454317ffe8aa849e0384",
+      "output_sha256": "4281034b2b7f087b212b638c482a6f0475dd1d451f0a751a1ab3ad6464c76fc1",
+      "updated_at": 1779798804,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/19-model-welfare-research/quiz.json": {
+      "status": "translated",
+      "source_sha256": "2277048479ae4e8145f512b39ecd8737f68077790d2672ecfcf79116bcec7e30",
+      "output_sha256": "53e8d993e45a0477113e08395836ef90cf73847c1a8cba6fe3d027d5a696eec0",
+      "updated_at": 1779798804,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/20-bias-representational-harm/quiz.json": {
+      "status": "translated",
+      "source_sha256": "1d5ce2953f65e90f123d60a21dc19847e2f79e750a7fb092390f24c98a6c3bbf",
+      "output_sha256": "d4d4fd228c89b8b77c1c0036c63f213aa63c41bc0c8881859ba6f16fa5c55784",
+      "updated_at": 1779798804,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/21-fairness-criteria-group-individual-counterfactual/quiz.json": {
+      "status": "translated",
+      "source_sha256": "bafb1aaf0fa099ff309e8db15d8e3f4f32bfe963788d3fdb02b78160c63f412d",
+      "output_sha256": "a5f6b5ea714b1df0aa085e440a72a895fba664350b3c1c49c1af4381c825d835",
+      "updated_at": 1779798864,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/22-differential-privacy-for-llms/quiz.json": {
+      "status": "translated",
+      "source_sha256": "e9e4fa704bbf34e6172024b4a95ee35f2e6d6d4711b2f7ee25758087b03ea564",
+      "output_sha256": "1ff48c6344487a79cbf7af48e5a0f0840fd578224a7c44343c1a799bdc56a588",
+      "updated_at": 1779798864,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/23-watermarking-synthid-stable-signature-c2pa/quiz.json": {
+      "status": "translated",
+      "source_sha256": "3a73c05fa0399ace5caf67646dc1194783b9acffbb65d8a501aa4f36ee47d7b2",
+      "output_sha256": "804309cd66de1e40ccf94381e4d5607ac5e40d4885bceab1a1ec2a38136e7676",
+      "updated_at": 1779798864,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/24-regulatory-frameworks-eu-us-uk-korea/quiz.json": {
+      "status": "translated",
+      "source_sha256": "a3763b19f95b29f2cf1e27c734b9a5a097d7085e59114d21aca3ddbc5e4bad2a",
+      "output_sha256": "8aec0e55e4169da69f1e4c4b468d528606d778214d4c9393dfa8787417c4da4e",
+      "updated_at": 1779798924,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/25-echoleak-cves-for-ai/quiz.json": {
+      "status": "translated",
+      "source_sha256": "b77d332d89fb07b5febadf9f07bdf37f72d07fa235cc62e824febc3d59a6e3c4",
+      "output_sha256": "b90c0052a788fe785a03b140a271474cecaeac04cec7bc3ecd685bc8215035f3",
+      "updated_at": 1779798924,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/26-model-system-dataset-cards/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f37e65cf80b2babaa3a7a3d0b462c81beb3a7a9f558856e7dab30414dcdffd8c",
+      "output_sha256": "d1b8cc2c5218f733afe6cafa078c842854e14cd97f6af45be94e3a2b45d7d3c2",
+      "updated_at": 1779798924,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/27-data-provenance-training-governance/quiz.json": {
+      "status": "translated",
+      "source_sha256": "69e8921f65f6788b6181fbe46be26e66ab6bd50571330705f49e43fc8cd6cc9e",
+      "output_sha256": "f78c9a079d3b59b9a2741acf7aff31596fdbfd09ba9c9ffc0a644158af0263b3",
+      "updated_at": 1779798981,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/28-alignment-research-ecosystem/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f8d4b731701f7dabb9e15f054779649deb0cb3dd59c3be48712eb4b4f8e911b2",
+      "output_sha256": "dfa829ce6aa1052d9ba09d893e702a5cee4d9ac8ee43d8bb40eba0b736404b3b",
+      "updated_at": 1779798981,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/29-moderation-systems-openai-perspective-llamaguard/quiz.json": {
+      "status": "translated",
+      "source_sha256": "e174d84eecb2420b4e8bb3bbfee80dd7ca67678dc173447ba722bf66e1a74464",
+      "output_sha256": "8ecb998377592c5d3bdc2f157846dda52cff7ad8ce55e3866151441b79c40556",
+      "updated_at": 1779798981,
+      "method": "codex-exec-batch"
+    },
+    "phases/18-ethics-safety-alignment/30-dual-use-risk-cyber-bio-chem-nuclear/quiz.json": {
+      "status": "translated",
+      "source_sha256": "2ccf17ef0792898d47c023a0d12a88eb7f14e7b558bd2e471ab6dcf1f48dbe37",
+      "output_sha256": "c015b18ead38400ac05492a1875a7f48a1bbae43acbffb0a280bd18a7cfb7e9a",
+      "updated_at": 1779799114,
+      "method": "codex-exec-batch"
+    },
+    "README.md": {
+      "status": "translated",
+      "source_sha256": "d58539aa6c2d801d325f89019ffc7a52bbe731576a1c98f581225ae9fe47ec18",
+      "output_sha256": "fb6586ee8c94dab1c7f6501818a64182fe103548d42977196bbf5a3623cab9b4",
+      "updated_at": 1779801079,
+      "method": "manual-structural-merge"
+    },
     "site/lesson.html": {
       "status": "translated",
-      "source_sha256": "a8dfbad7d91ebe7d7225b6d66aeb938219dff540abbb300424916817744351f9",
-      "output_sha256": "9649d1c99b880e0ea309cfe4120713ff1ed3f519909ed669510d2b911f68c3ed",
-      "updated_at": 1779570530,
-      "method": "codex-exec"
+      "source_sha256": "64a62caf3bad55ce0ef7009fd05e48273e0d635dc3f6a707cdbe372090a95845",
+      "output_sha256": "26b2dc86fb8e713d1b4b9830a6166d99a7424d2ed21c1fa5d8d7898de5d43e12",
+      "updated_at": 1779801887,
+      "method": "manual-structural-merge"
     }
+  },
+  "upstream_sync": {
+    "source_repo_path": "/Users/hawkwu/Desktop/ai-engineering-from-scratch",
+    "source_head": "1b935c30a74db7ab484de9c764aad4c32f30dbca",
+    "previous_sync_base": "4415dc80bc050116b12aadd97735a4ac543acb84",
+    "target_repo_head_before_sync_commit": "691b3b590e58f2481c56275ed4c99ee2cb0615bd",
+    "recorded_at": "2026-05-27",
+    "note": "Use source_head as the base for the next sync and Simplified Chinese translation pass."
   }
 }

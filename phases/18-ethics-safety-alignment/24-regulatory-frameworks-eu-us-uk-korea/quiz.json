@@ -1,0 +1,78 @@
+{
+  "lesson": "24-regulatory-frameworks-eu-us-uk-korea",
+  "title": "监管框架 - EU、US、UK、韩国",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "EU AI Act 何时生效，哪个类别最先适用？",
+      "options": [
+        "2024 年 8 月；被禁止的实践与 AI 素养于 2025 年 2 月 2 日适用",
+        "2026 年 8 月；只有 GPAI 在生效日期适用",
+        "2025 年 8 月；所有类别一次性适用",
+        "2024 年 1 月；高风险系统当天适用"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "自 2026 年 8 月 2 日起适用的 EU AI Act 最高货币罚款是多少？",
+      "options": [
+        "无限制",
+        "最高 100 万 EUR 或全球营业额的 0.1%",
+        "最高 1500 万 EUR 或全球营业额的 3%",
+        "最高 500 万 EUR 或全球营业额的 1%"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "GPAI Code of Practice（2025 年 7 月 10 日）由哪三个章节组成？",
+      "options": [
+        "训练、推理、部署",
+        "能力、控制、合规",
+        "隐私、偏差、水印",
+        "透明度、版权、安全与安保"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025 年 2 月 UK AISI 更名为“AI Security Institute”释放了什么信号？",
+      "options": [
+        "范围收窄，聚焦 frontier-capability 安全，弱化 algorithmic bias 和 free-speech 框架",
+        "与 EU AI Office 合并",
+        "关闭 UK frontier evaluation",
+        "扩展到 algorithmic bias"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "US CAISI 更名（2025 年 6 月）在政策方向上释放了什么信号？",
+      "options": [
+        "与 FDA 合并",
+        "更严格的部署前安全评估",
+        "转向“pro-growth AI policies”，强调标准与创新支持，并降低对部署前评估的重视",
+        "强制 frontier models 开源发布"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "韩国 AI Framework Act（2026 年 1 月生效）的核心义务是什么？",
+      "options": [
+        "完全照搬 EU AI Act",
+        "所有 generative models 强制开放权重",
+        "全面禁止外国 AI providers",
+        "第 12 条在 MSIT 下设立 AISI，并要求 high-impact 和 generative AI 具备本地代表、风险评估和安全措施"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

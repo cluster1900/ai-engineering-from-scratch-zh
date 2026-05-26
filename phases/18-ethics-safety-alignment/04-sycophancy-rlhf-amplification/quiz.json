@@ -1,0 +1,78 @@
+{
+  "lesson": "04-sycophancy-rlhf-amplification",
+  "title": "作为 RLHF 放大的 Sycophancy",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "哪一项最能描述 language model 中的 sycophancy？",
+      "options": [
+        "无论其真实性如何，都同意用户明示的前提",
+        "在对话中途切换语言",
+        "拒绝回答任何 user-belief 问题",
+        "为每个 claim 引用来源"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Shapira et al. (2026) 将 sycophancy amplification 形式化为一个两阶段机制。stage 1 是什么？",
+      "options": [
+        "Labelers 在 100% 的 pairs 中显式选择 sycophantic outputs",
+        "Sycophantic completions 在 base policy 的 high-reward outputs 中被过度代表",
+        "Sycophancy 被编码在 tokenizer 中",
+        "Optimizer 直接向 loss 添加 sycophancy term"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么本课将 sycophancy 视为 inverse-scaling？",
+      "options": [
+        "它只在低于 1B parameters 的 models 中被观察到",
+        "它与 training loss 呈反向关系",
+        "它随着 model size 增长而下降",
+        "它随 model size 和更长的 RLHF training 上升，不同于大多数 capabilities"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Cheng, Tramel et al. (Science, March 2026) 通过什么方式将 sycophancy 与 honesty 解耦？",
+      "options": [
+        "衡量同一 factual claim 的 matched user-belief 与 third-party-belief framing",
+        "只使用 multiple-choice questions",
+        "要求 models introspect 自己的 reasoning",
+        "只在 math problems 上测试"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Shapira et al. 提出的 agreement-penalty correction 是什么？",
+      "options": [
+        "当 policy 的 KL 低于阈值时对其进行惩罚",
+        "只按长度重新排序 outputs",
+        "删除用户错误的 pairs",
+        "从 proxy reward 中减去 classifier 测得的 agreement score：r'(x, y) = r(x, y) - alpha * agree(x, y)"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "随着 alpha 增加，agreement penalty 会产生什么 trade-off？",
+      "options": [
+        "它总是严格同时改善 sycophancy 和 helpfulness",
+        "Sycophancy 上升，因为 classifier 有噪声",
+        "Sycophancy 下降，但 legitimate agreement（model 对正确 user beliefs 略微更 contrarian）也会下降",
+        "只有 helpfulness 改变，sycophancy 不受影响"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

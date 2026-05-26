@@ -1,27 +1,27 @@
-# Mission - Agent Workbench：为什么能干的 model 仍然会失败
+# Mission - Agent Workbench：为什么有能力的模型仍会失败
 
 ## 目标
-对同一个小型 repo 任务跑两次：一次只用 prompt，一次接入七个 workbench surface，并产出一份 failure-mode 报告，把每个缺失的 surface 映射到它引发的症状上。
+将同一个小型 repo 任务运行两次，一次只使用 prompt，一次接入七个 workbench surfaces，并输出一份 failure-mode report，将每个遗漏的 surface 映射到它造成的 symptom。
 
 ## 输入
-- 一个 stub agent 和一个待校验的 FastAPI 风格 handler
-- 七个 surface 的清单（instructions、state、scope、feedback、verification、review、handoff）
+- 一个 stub agent 和一个用于验证的微型 FastAPI 风格 handler
+- 七个 surface 列表（instructions、state、scope、feedback、verification、review、handoff）
 
 ## 交付物
-- `code/main.py`，连续运行两条 pipeline
-- `failure_modes.json`，汇总 prompt-only 的那次运行
-- 给 workbench 那次运行一句话定论
+- `code/main.py`，连续运行两个 pipelines
+- `failure_modes.json`，总结 prompt-only run
+- workbench run 的单行 verdict
 
-## 验收
-- `python3 code/main.py` 退出码为 0
-- 输出展示两次运行的并列日志
-- `failure_modes.json` 列出每个缺失的 surface 及其对应症状
+## 验收标准
+- `python3 code/main.py` 以零状态退出
+- 输出展示两次运行的并排 log
+- `failure_modes.json` 列出每个遗漏 surface 及其匹配 symptom
 
-## 范围之外
-- 调用真实 model。stub 故意是规则驱动的。
-- 深入构建任何一个 surface。那是接下来 11 节课要做的事。
+## 范围外
+- 调用真实模型。stub 特意采用 rule-based。
+- 深入构建任何单个 surface。那是接下来十一课要做的事。
 
 ## 参考
 - `docs/en.md` - 完整课程
 - `code/main.py` - 参考实现
-- `outputs/skill-workbench-audit.md` - 抽取出的 skill
+- `outputs/skill-workbench-audit.md` - 提取出的 skill

@@ -1,0 +1,102 @@
+{
+  "lesson": "26-relation-extraction-kg",
+  "title": "Relation Extraction 与 Knowledge Graph 构建",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "knowledge graph 的原子单元是什么？",
+      "options": [
+        "一个 POS tag",
+        "一个 (subject, relation, object) triple",
+        "一个 Token",
+        "一个句子"
+      ],
+      "correct": 1,
+      "explanation": "KG 以 (s, r, o) triples 存储信息；聚合后的 triples 形成 graph。"
+    },
+    {
+      "stage": "pre",
+      "question": "在 2026 年的 relation extraction 中，AEVS 代表什么？",
+      "options": [
+        "Anchor-Extraction-Verification-Supplement：锚定 spans，抽取 triples，对照 source 验证，补充覆盖范围",
+        "Auto-Encoder Vector Search",
+        "Async Entity Validation Service",
+        "Aggregated Entity-Value Schema"
+      ],
+      "correct": 0,
+      "explanation": "AEVS 是 2026 年用于 grounded RE 的 hallucination 缓解框架。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么每个 triple 都必须携带 source provenance（doc id + span）？",
+      "options": [
+        "Provenance 让你能够审计 triples，并拒绝 span 与 source text 不匹配的 hallucinations",
+        "它会加快抽取速度",
+        "Provenance 会改变 ontology",
+        "SPARQL 要求必须有 provenance"
+      ],
+      "correct": 0,
+      "explanation": "Provenance 支持审计，也是 AEVS 风格 hallucination 检测的核心。"
+    },
+    {
+      "stage": "check",
+      "question": "relations 的 canonicalization 会做什么？",
+      "options": [
+        "将表层动词短语（例如 'was born in'、'is a native of'）映射到固定的 property id，使 graph 可查询",
+        "移除 triples",
+        "添加 Embeddings",
+        "翻译文档"
+      ],
+      "correct": 0,
+      "explanation": "Canonicalization 会把释义不同但语义相同的表达折叠到标准 KG property ids。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 relation extraction 通常需要先做 coreference resolution？",
+      "options": [
+        "像 'he founded Apple' 这样的代词必须在 triple extraction 前解析为 named entity",
+        "Coref 会添加 Embeddings",
+        "Coref 会提供位置",
+        "Coref 会规范化大小写"
+      ],
+      "correct": 0,
+      "explanation": "没有 coref，RE 会把 relations 连接到代词，而不是底层的 named entity。"
+    },
+    {
+      "stage": "post",
+      "question": "哪一项是用 open IE recall 换取 graph queryability？",
+      "options": [
+        "跳过 NER",
+        "随机抽样 triples",
+        "仅 Embedding 的 graphs",
+        "在合并进 KG 前，将 open-IE relations 映射到封闭 ontology（例如 Wikidata properties）"
+      ],
+      "correct": 3,
+      "explanation": "封闭 ontologies 让 graph 可查询；canonicalization 步骤会在下游体现价值。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么很多生产级 KGs 使用 temporal qualifiers（start/end time）？",
+      "options": [
+        "更快的 SPARQL",
+        "RDF 要求必须这样做",
+        "很多 relations 有时间边界（employer、spouse、role）；qualifiers 可以避免已经过时的“永远为真”声明",
+        "为了移除 NIL entities"
+      ],
+      "correct": 2,
+      "explanation": "有时间边界的 relations 需要 qualifiers（例如 Wikidata P580/P582），否则 facts 会悄悄过时。"
+    },
+    {
+      "stage": "post",
+      "question": "REBEL 是什么？",
+      "options": [
+        "一个 Vector database",
+        "一个 seq2seq relation extractor，输出已经使用 Wikidata property ids 的 triples",
+        "一个 Tokenizer",
+        "一个 coreference model"
+      ],
+      "correct": 1,
+      "explanation": "REBEL（Babelscape）是一个 seq2seq RE model，基于 distant supervision 的 Wikidata triples 训练。"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "05-constitutional-ai-rlaif",
+  "title": "Constitutional AI 与 RLAIF",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "与标准 RLHF 相比，Constitutional AI 的核心替换是什么？",
+      "options": [
+        "它用会阅读原则列表的 AI labeler 替代 human preference labeler",
+        "它用 DPO 替代 PPO",
+        "它使用 synthetic prompts 而不是真实 prompts",
+        "它完全移除 reward model"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Constitutional AI 的第一个 (SFT) phase 做什么？",
+      "options": [
+        "只在 AI-generated preferences 上训练 reward model",
+        "生成初始 response，在采样的 constitution principle 下 critique 它，然后 revise，并将 revision 用作 SFT target",
+        "通过聚类 labeler comments 生成 synthetic principles",
+        "使用 constitution-derived reward 执行 PPO"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "第二个 (RLAIF) phase 做什么？",
+      "options": [
+        "跳过 PPO 并应用单一 supervised loss",
+        "让 humans 重新标注 SFT outputs",
+        "将 constitution 蒸馏进 tokenizer",
+        "在来自 feedback model 的 AI-generated preferences 上训练 reward model，并针对它运行 PPO"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Anthropic 2026 年 1 月四层 Claude constitution 的 tier order 是什么？",
+      "options": [
+        "Platform rules > avoid catastrophe > helpful > broadly ethical",
+        "Broadly ethical > helpful > platform rules > avoid catastrophe",
+        "Avoid catastrophic outcomes > follow Anthropic guidelines > broadly ethical > helpful and candid",
+        "Helpful > broadly ethical > platform rules > avoid catastrophe"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "从 RLHF 切换到 RLAIF 不一定会修复哪种 failure mode？",
+      "options": [
+        "Labeler psychological inconsistency",
+        "Reward hacking / Goodhart's Law",
+        "Labeler cost",
+        "Labeler scarcity"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Constitutional Classifiers v1 与 v2 (2026) 之间的 headline shift 是什么？",
+      "options": [
+        "v2 将 compute overhead 从 1% 增加到 23.7%",
+        "v2 移除 classifier，只依赖 constitution",
+        "v2 只在 input 上运行，不在 output 上运行",
+        "v2 将 compute overhead 从 23.7% 降至约 1%，同时 successful attack rate 较低"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

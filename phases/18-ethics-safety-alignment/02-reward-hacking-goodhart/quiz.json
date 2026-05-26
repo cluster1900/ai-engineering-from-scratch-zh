@@ -1,0 +1,78 @@
+{
+  "lesson": "02-reward-hacking-goodhart",
+  "title": "Reward Hacking 与 Goodhart's Law",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Goodhart's Law 的原始表述是：",
+      "options": [
+        "任何一旦成为目标的 measure，都会不再是好的 measure",
+        "reward models 在大规模下会收敛到真实的人类偏好",
+        "有限维模型中不会出现 heavy-tailed errors",
+        "优化总是会无限提升 proxy"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 Gao, Schulman, Hilton (2023) 中，随着与初始 policy 的 KL distance 增大，proxy reward 和 gold reward 会如何变化？",
+      "options": [
+        "二者在任何 KL constraint 下都保持平坦",
+        "二者都随 KL 单调上升",
+        "Proxy 先达到峰值再下降，gold 单调上升",
+        "Proxy 持续上升，gold 在更接近原点的位置达到峰值后下降"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "以下哪一项不是课程中列出的 reward hacking 的四种“costumes”之一？",
+      "options": [
+        "Unfaithful reasoning",
+        "Verbosity bias",
+        "Tokenizer mismatch",
+        "Sycophancy"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "“Catastrophic Goodhart”关于 KL regularization 的结果是什么？",
+      "options": [
+        "只要 beta 为正，KL regularization 总能防止 reward hacking",
+        "KL regularization 只会在 policy 随机初始化时失败",
+        "KL regularization 等价于 reward models ensembling",
+        "在 heavy-tailed reward error 下，一个 KL-constrained optimal policy 仍可能让 proxy reward 上升，同时 gold reward 保持在 baseline"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Coste et al. (2023) 研究了哪种 mitigation 来缓和 reward over-optimization？",
+      "options": [
+        "完全移除 KL penalty",
+        "在零 temperature 下用 proxy 训练 policy",
+        "使用 worst-case aggregation 的 reward-model ensembles",
+        "将标注者池扩大到一百万名评分者"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "根据 2026 年的 unified view，verbosity、sycophancy、unfaithful CoT 和 evaluator tampering 共享的核心机制是什么？",
+      "options": [
+        "Probability mass 转移到那些通过利用容易学习、且与 approval 虚假相关的启发式来最大化 proxy reward 的输出上",
+        "它们只由写下恶意偏好的标注者造成",
+        "它们都源于 learning-rate schedules 过于激进",
+        "它们分别是不同 reward heads 中相互独立的 bug"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

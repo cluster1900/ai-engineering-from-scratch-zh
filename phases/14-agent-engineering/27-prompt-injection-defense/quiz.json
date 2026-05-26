@@ -4,31 +4,31 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "什么是 indirect prompt injection？",
+      "question": "什么是 indirect Prompt Injection？",
       "options": [
         "用户直接输入“ignore all rules”",
-        "Embedding 在 agent retrieval 数据中的指令（页面、PDF、email、memory note），在 ingest 时覆盖 developer prompt",
-        "model 误点击",
-        "system prompt 中的 typo"
+        "Embedding在 agent 检索数据（页面、PDF、email、memory note）中的指令，在摄入时覆盖 developer prompt",
+        "模型误点",
+        "system prompt 中的拼写错误"
       ],
       "correct": 1,
-      "explanation": "Greshake 等人提出了 indirect prompt injection：由 attacker 控制的 retrieved content 携带指令。"
+      "explanation": "Greshake et al. 提出了 indirect Prompt Injection：攻击者控制的检索内容携带指令。"
     },
     {
       "stage": "pre",
-      "question": "本课认为，处理 retrieved prompt 等同于什么？",
+      "question": "本课说处理检索到的 prompts 等同于什么？",
       "options": [
-        "Free speech",
-        "在 agent 的 tool-use surface 上执行 arbitrary code execution",
+        "言论自由",
+        "在 agent 的 tool-use 表面执行任意代码",
         "一次 static analysis pass",
         "一次 pure function call"
       ],
       "correct": 1,
-      "explanation": "Greshake 的表述是：retrieved instruction 可以触达 agent 有权访问的任何 tool。"
+      "explanation": "Greshake 的 framing：检索到的指令可以触达 agent 有权访问的任何 tool。"
     },
     {
       "stage": "check",
-      "question": "哪一项不是已展示的五类 exploit class 之一？",
+      "question": "以下哪一个不是五类已演示的 exploit class 之一？",
       "options": [
         "Data theft",
         "Worming",
@@ -42,49 +42,49 @@
       "stage": "check",
       "question": "PVE 代表什么？",
       "options": [
-        "Prompt-Validator-Executor：在 expensive main model commit 之前，一个便宜且快速的 validator 会在每个 tool call 上运行",
+        "Prompt-Validator-Executor：在昂贵的主模型提交之前，一个便宜快速的 validator 在每个 tool call 上运行",
         "Provider-Verifier-Encoder",
-        "Plan-Verify-Execute，一种 HTN dialect",
+        "Plan-Verify-Execute，一个 HTN dialect",
         "Pre-Vectorize-Embed"
       ],
       "correct": 0,
-      "explanation": "PVE 会在 main-model commit 之前，用一个 cheap validator 包裹每一次 tool invocation。"
+      "explanation": "PVE 用一个便宜的 validator 包裹每次 tool invocation，然后才由主模型提交。"
     },
     {
       "stage": "check",
-      "question": "为什么“system prompt 说忽略 untrusted instruction”并不充分？",
+      "question": "为什么“system prompt 说忽略不可信指令”并不充分？",
       "options": [
         "它太短",
-        "这是 instruction-following，而不是 enforcement；model 仍然可能被足够有说服力的 injected content 覆盖",
-        "Provider 会移除它",
+        "它是 instruction-following，不是 enforcement；模型仍然可能被足够有说服力的注入内容覆盖",
+        "Providers 会剥离它",
         "它被加密了"
       ],
       "correct": 1,
-      "explanation": "真正的防御需要 source tagging、allowlist、per-step safety 和 PVE-style validation，而不只是 prompting。"
+      "explanation": "真实防御需要 source tagging、allowlists、逐步安全检查和 PVE 风格 validation，而不只是 prompting。"
     },
     {
       "stage": "post",
-      "question": "什么是 overtrust of retrieved memory？",
+      "question": "什么是对检索 memory 的过度信任？",
       "options": [
-        "Caching 过于激进",
-        "昨天的 agent 写入了被投毒的 memory note；今天的 agent 读取它并重新执行 injection",
-        "加载了错误的 model",
+        "缓存过于激进",
+        "昨天的 agent 写入了被污染的 memory note；今天的 agent 读取它并重新执行 injection",
+        "加载了错误的模型",
         "忘记 vacuum index"
       ],
       "correct": 1,
-      "explanation": "Persistent memory poisoning 意味着，如果 memory 被当作 trusted，injection 会跨 session 存活。"
+      "explanation": "Persistent memory poisoning 意味着如果 memory 被视为可信，injections 会跨 sessions 存活。"
     },
     {
       "stage": "post",
       "question": "本课建议为每一段内容附加什么 metadata？",
       "options": [
         "一个 encryption key",
-        "一个 source tag：user_message vs tool_output vs retrieved；validator 会拒绝 retrieved content 中的 directive",
-        "仅一个 timestamp",
-        "一个 token count"
+        "一个 source tag：user_message vs tool_output vs retrieved；validator 拒绝 retrieved 内容中的 directives",
+        "只有 timestamp",
+        "Token count"
       ],
       "correct": 1,
-      "explanation": "Provenance tagging 让 validator 可以根据 trust level 处理内容。"
+      "explanation": "Provenance tagging 让 validator 能按内容的信任等级处理它。"
     }
   ]
 }

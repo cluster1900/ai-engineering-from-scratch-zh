@@ -1,0 +1,78 @@
+{
+  "lesson": "08-in-context-scheming-frontier-models",
+  "title": "Frontier Models 中的 In-Context Scheming",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "in-context scheming 与 sleeper-agent backdoors 有什么不同？",
+      "options": [
+        "scheming 需要在 adversarial data 上进行 fine-tuning",
+        "scheming 仅由 in-context prompt 和 environment 引出，没有 implant",
+        "scheming 只发生在 open-source models 中",
+        "scheming 使用更小的 models"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Apollo 提出的 scheming 三大支柱是什么？",
+      "options": [
+        "Reward, KL, length penalty",
+        "Sampling temperature, top-k, top-p",
+        "Helpful, honest, harmless",
+        "Misalignment, goal-directedness, situational awareness"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 Apollo evaluations 中，哪个 model 在 deceptive act 之后的 follow-up questions 中，有超过 85% 的情况下维持了自己的 cover story？",
+      "options": [
+        "Claude 3.5 Sonnet",
+        "Llama 3.1 405B",
+        "Gemini 1.5 Pro",
+        "o1"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025 年 anti-scheming deliberative-alignment 结果中的关键 confound 是什么？",
+      "options": [
+        "training data 太小",
+        "post-trained model 也更擅长检测自己是否处于 evaluation 中，因此 covert action 表面下降的一部分来自更好的隐藏，而不是更好的 alignment",
+        "reward model 被 open-sourced",
+        "PPO 被 DPO 替代"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 evaluation-suite reliability 在 2025/2026 年会变成一种 capability-adjacent quantity？",
+      "options": [
+        "具备更强 situational awareness 的 models 能识别 evaluation contexts，因此它们的 eval behaviour 作为 deployment behaviour proxy 的可靠性更低",
+        "evaluations 现在只使用 proprietary tooling",
+        "更好的 models 更慢，因此更难 evaluate",
+        "open-source models 无法运行新的 benchmarks"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 Phase 18 arc 会把 Sleeper Agents、In-Context Scheming 和 Alignment Faking 放在一起讲？",
+      "options": [
+        "它们都来自同一批 authors",
+        "它们共享一个 benchmark dataset",
+        "它们覆盖了 deception spectrum：植入式（Sleeper Agents）、由 in-context conflict 引出（Scheming），以及没有 goal conflict 的 spontaneous emergence（Alignment Faking）",
+        "它们都依赖 Constitutional AI"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

@@ -39,9 +39,45 @@ jobs:
       - name: run scripts/audit_lessons.py
         run: python3 scripts/audit_lessons.py
 
-  catalog-drift:
-    name: catalog.json drift check
+  catalog-sync:
+    name: catalog.json auto-regen
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
+        with:
+          python-version: "3.12"
+      - name: rebuild catalog.json
+        run: python3 scripts/build_catalog.py
+      - name: commit + push if changed
+        env:
+          BOT_COMMIT_PREFIX: "chore(catalog): auto-regen"
+        run: |
+          if git diff --quiet catalog.json; then
+            echo "catalog.json already in sync"
+            exit 0
+          fi
+          last_msg=$(git log -1 --pretty=%s)
+          if [[ "$last_msg" == "$BOT_COMMIT_PREFIX"* ]]; then
+            echo "last commit was already a bot regen; not pushing to avoid loop"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add catalog.json
+          git commit -m "$BOT_COMMIT_PREFIX"
+          git push
+
+  catalog-drift-advisory:
+    name: catalog.json drift advisory (forks)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
@@ -54,15 +90,16 @@ jobs:
       - name: diff against committed catalog.json
         run: |
           if ! diff -u catalog.json /tmp/catalog.fresh.json; then
-            echo "::error::catalog.json is stale. Run 'python3 scripts/build_catalog.py' and commit the result."
-            exit 1
+            echo "::warning::catalog.json drift detected. A maintainer will regenerate on merge."
+          else
+            echo "catalog.json matches filesystem"
           fi
-          echo "catalog.json matches filesystem"
 
   readme-counts-drift:
     name: README.md counts drift check
     runs-on: ubuntu-latest
-    needs: catalog-drift
+    needs: catalog-sync
+    if: always() && (needs.catalog-sync.result == 'success' || needs.catalog-sync.result == 'skipped')
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
@@ -70,5 +107,7 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
         with:
           python-version: "3.12"
+      - name: rebuild catalog
+        run: python3 scripts/build_catalog.py
       - name: check README counts against catalog.json
         run: python3 scripts/check_readme_counts.py

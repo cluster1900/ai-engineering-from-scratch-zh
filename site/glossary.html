@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI 术语表 - AI Engineering from Scratch</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>AI</text></svg>">
-  <meta name="description" content="AI 术语表：人们怎么说，以及这些东西实际是什么意思。每个术语都讲清楚，不含糊带过。">
+  <meta name="description" content="AI 术语表：人们口中的说法 vs 这些东西真正的含义。每个术语都讲清楚，不含糊其辞。">
   <meta property="og:title" content="术语表 · AI Engineering from Scratch">
-  <meta property="og:description" content="人们怎么说，以及这些东西实际是什么意思。每个 AI 术语都讲清楚，不含糊带过。">
-  <meta property="og:image" content="https://aiengineeringfromscratch.com/og-image.zh.png?v=2">
+  <meta property="og:description" content="人们口中的说法 vs 这些东西真正的含义。每个 AI 术语都讲清楚，不含糊其辞。">
+  <meta property="og:image" content="https://aiengineeringfromscratch.com/og-image.png?v=2">
   <meta property="og:url" content="https://aiengineeringfromscratch.com/glossary.html">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="术语表 · AI Engineering from Scratch">
-  <meta name="twitter:description" content="人们怎么说，以及这些东西实际是什么意思。">
-  <meta name="twitter:image" content="https://aiengineeringfromscratch.com/og-image.zh.png?v=2">
+  <meta name="twitter:description" content="人们口中的说法 vs 这些东西真正的含义。">
+  <meta name="twitter:image" content="https://aiengineeringfromscratch.com/og-image.png?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260508a">
+  <link rel="stylesheet" href="style.css?v=20260525a">
   <style>
     .glossary-page {
       padding: 100px 0 80px;
@@ -168,7 +168,7 @@
 </head>
 <body>
 
-  <a href="#main" class="skip-link">跳至内容</a>
+  <a href="#main" class="skip-link">跳到内容</a>
 
   <header class="site-header">
     <div class="header-inner">
@@ -205,7 +205,7 @@
     <div class="container">
       <div class="glossary-header">
         <h1>AI 术语表</h1>
-        <p>人们<em>怎么说</em>，以及这些东西实际<em>是什么意思</em></p>
+        <p>人们<em>怎么说</em> vs 这些东西实际<em>是什么意思</em></p>
       </div>
       <div class="glossary-search-wrap">
         <input type="text" class="glossary-search" id="glossarySearch" placeholder="搜索术语...">
@@ -227,10 +227,10 @@
     </div>
   </footer>
 
-  <script src="data.js?v=20260508a"></script>
-  <script src="progress.js?v=20260508a"></script>
-  <script src="header.js?v=20260508a" defer></script>
-  <script src="cmdpalette.js?v=20260508a" defer></script>
+  <script src="data.js?v=20260525a"></script>
+  <script src="progress.js?v=20260525a"></script>
+  <script src="header.js?v=20260525a" defer></script>
+  <script src="cmdpalette.js?v=20260525a" defer></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -313,8 +313,8 @@
         }
 
         // 支持来自 command palette 和外部来源的 ?q= deep-links。
-        // 预先填充搜索框，并筛选到匹配的术语，让用户
-        // 直接落到定义上，而不是完整列表。
+        // 预先填充搜索框，并过滤到匹配的术语，这样
+        // 用户会直接落在定义上，而不是完整列表。
         var urlQ = '';
         try { urlQ = new URLSearchParams(window.location.search).get('q') || ''; } catch (_) {}
         if (urlQ && searchInput) {

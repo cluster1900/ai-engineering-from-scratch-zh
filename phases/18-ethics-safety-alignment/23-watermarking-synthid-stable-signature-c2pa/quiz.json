@@ -1,0 +1,78 @@
+{
+  "lesson": "23-watermarking-synthid-stable-signature-c2pa",
+  "title": "Watermarking - SynthID, Stable Signature, C2PA",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Kirchenbauer-style (SynthID-text) Token watermarking 如何Embedding signal？",
+      "options": [
+        "通过修改 prompt template",
+        "通过使用 public key 加密 output",
+        "在每个 decoding step，hash 前 K 个 Token，将 vocabulary 划分为 green/red sets，并使 sampling 偏向 green；detection 通过 z-score 统计 green tokens",
+        "通过插入隐藏的 HTML comment"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "text watermarks 面对 paraphrase 的主要限制是什么？",
+      "options": [
+        "改写或 paraphrasing 文本会破坏 green-token statistical signal",
+        "Paraphrase 只影响 image watermarks",
+        "Paraphrase 会强化 watermark",
+        "它们实际上能经受 paraphrase"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Stable Signature (Fernandez et al., ICCV 2023) 做了什么？",
+      "options": [
+        "使用 C2PA 在上传时 sign image",
+        "在 image 角落添加 visible watermark",
+        "fine-tunes latent diffusion decoder，使每张 generated image 都携带可从 latent 检测到的固定 embedded message",
+        "使用 private key 对 metadata 进行签名"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2024 年 5 月的 'Stable Signature is Unstable' 结果证明了什么？",
+      "options": [
+        "watermark 被证明是 unforgeable 的",
+        "watermark 需要 C2PA 才能运行",
+        "watermark 只在 JPEG compression 上失败",
+        "对 decoder 进行 post-generation fine-tuning 可以移除 watermark，同时保持 image quality，从而削弱 adversarial robustness"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "C2PA metadata 和 watermarking 如何互补？",
+      "options": [
+        "它们可以互换",
+        "Watermarks 由与 C2PA 相同的 keys 签名",
+        "Metadata 可以被剥离，但携带丰富的 provenance chain；watermarks 能在 transcoding 后保留，但携带的 bits 很少；分层使用时，它们提供可用的 provenance story",
+        "C2PA 完全替代 watermarks"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 'no SynthID signal' 不能证明 authenticity（human origin）？",
+      "options": [
+        "因为 SynthID 只会对来自 SynthID-enabled models 的 generations 加 watermark；来自任何没有 SynthID 的 model 的 content 默认都没有 watermark",
+        "因为 SynthID 是 closed-source",
+        "因为 SynthID 总会在 human text 上产生 false positives",
+        "因为 SynthID 只适用于 Gemini outputs"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

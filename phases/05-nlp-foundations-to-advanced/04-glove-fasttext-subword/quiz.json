@@ -1,0 +1,102 @@
+{
+  "lesson": "04-glove-fasttext-subword",
+  "title": "GloVe、FastText 与 Subword Embeddings",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "相比 Word2Vec，GloVe 贡献了什么？",
+      "options": [
+        "用加权 Loss 直接分解 word-word co-occurrence Matrix",
+        "byte-level tokenization",
+        "更深的 Neural Network",
+        "Subword n-gram embeddings"
+      ],
+      "correct": 0,
+      "explanation": "GloVe 使用精心加权的 log-loss 来分解全局 co-occurrence Matrix。"
+    },
+    {
+      "stage": "pre",
+      "question": "FastText 解决了 Word2Vec 和 GloVe 没有解决的什么问题？",
+      "options": [
+        "降低训练成本",
+        "Multilingual transfer",
+        "通过组合字符 n-grams 为未见词生成 Vectors",
+        "Polysemy disambiguation"
+      ],
+      "correct": 2,
+      "explanation": "FastText 会从一个词的 subword n-grams 组合出 word vector，因此 OOV 词仍能得到合理的 Vector。"
+    },
+    {
+      "stage": "check",
+      "question": "在 GloVe 中，权重函数 f(x) = (x/x_max)^alpha 起什么作用？",
+      "options": [
+        "降低极高频词对的权重，使它们不会主导 Loss",
+        "选择 negative samples",
+        "随机初始化权重",
+        "把 Vectors 归一化到单位长度"
+      ],
+      "correct": 0,
+      "explanation": "该权重会防止像 (the, and) 这样无处不在的共现主导训练。"
+    },
+    {
+      "stage": "check",
+      "question": "BPE merge step 如何选择下一对要合并的项？",
+      "options": [
+        "随机的一对",
+        "按字典序最靠前的一对",
+        "整个语料中最频繁的相邻 Token 对",
+        "IDF 最高的一对"
+      ],
+      "correct": 2,
+      "explanation": "BPE 会迭代合并最频繁的相邻 pair。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 GPT-2 使用 byte-level BPE？",
+      "options": [
+        "Byte BPE 会跳过 merge training",
+        "由 256 个 byte 组成的基础词表可以覆盖任何输入，彻底消除 out-of-vocabulary",
+        "Bytes 比 characters 训练更快",
+        "Bytes 会隐式保留大小写"
+      ],
+      "correct": 1,
+      "explanation": "从 256 个 bytes 开始意味着每个 UTF-8 字符串都能被 tokenizes；不存在 OOV。"
+    },
+    {
+      "stage": "post",
+      "question": "fine-tuning pretrained transformer 时应该使用哪个 Tokenizer？",
+      "options": [
+        "始终使用 SentencePiece",
+        "模型随附的确切 Tokenizer；不匹配会破坏 embeddings",
+        "词表最大的那个",
+        "始终使用 byte-level BPE"
+      ],
+      "correct": 1,
+      "explanation": "Tokenizer 与模型不匹配会悄悄破坏输入；始终把随附的 Tokenizer 与其模型配对。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候你会为 pretrained word vectors 选择 FastText 而不是 GloVe？",
+      "options": [
+        "当你需要 50d 模型时",
+        "用于形态丰富的语言，或频繁出现新词和拼写错误的领域",
+        "当延迟要求最紧时",
+        "当语料非常小时"
+      ],
+      "correct": 1,
+      "explanation": "FastText 的 subword composition 可以处理 GloVe 无法处理的屈折变化、新词和拼写错误。"
+    },
+    {
+      "stage": "post",
+      "question": "WordPiece、BPE 和 SentencePiece 词表的基础单位是什么？",
+      "options": [
+        "句子",
+        "整词",
+        "段落",
+        "低于词级别的 subword pieces（字符、n-grams 或 learned merges）"
+      ],
+      "correct": 3,
+      "explanation": "三者都是 subword tokenizers；它们的区别在于 merge 或 piece 的学习方式，而不在于是否为 subword。"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "16-red-team-tooling-garak-llamaguard-pyrit",
+  "title": "Red-Team 工具 - Garak, Llama Guard, PyRIT",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在典型的 2026 部署中，Llama Guard 扮演什么角色？",
+      "options": [
+        "用于 chain-of-thought 的 reasoning scaffolder",
+        "用于 RLHF 的 reward model",
+        "Tokenizer 替代方案",
+        "跨 MLCommons hazard categories 的 input 和/或 output safety classifier，部署在 LLM 前后"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Llama Guard 3 大约覆盖多少个 MLCommons hazard categories？",
+      "options": [
+        "7",
+        "3",
+        "40",
+        "14"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Garak 的架构是如何组织的？",
+      "options": [
+        "Tools, resources, prompts",
+        "Embeddings, retrievers, rerankers",
+        "Routers, agents, queues",
+        "Probes（attack generators）、Detectors（output scorers）、Harnesses（campaign managers）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PyRIT 主要用于什么，它与 Garak 有何不同？",
+      "options": [
+        "它们在范围和受众上完全相同",
+        "PyRIT 是 reward model trainer；Garak 是 Tokenizer",
+        "PyRIT 运行深度 multi-turn campaigns（converter chains、Crescendo 和 TAP 等 orchestrators、scoring），而 Garak 运行数千个 single-turn probes",
+        "PyRIT 是 Llama Guard 变体；Garak 是 Prompt-Guard 变体"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "推荐的 2026 默认 red-team stack 配置是什么？",
+      "options": [
+        "仅用 manual review 替代 LLM evaluation",
+        "使用 PAIR 代替任何 tooling",
+        "在模型两侧都放置 Llama Guard，每晚运行 Garak 做 regression，并在 release 前运行 PyRIT campaigns",
+        "只在上线时运行一次 Garak"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Llama Guard、Garak 和 PyRIT 共同存在的 evaluation 陷阱是什么？",
+      "options": [
+        "报告的 attack/defense rates 取决于 judge identity 和 probe staleness；你必须指定 judge，并在模型被 patch 后刷新 probes",
+        "它们只适用于英语",
+        "它们需要 white-box access",
+        "它们无法在 GPUs 上运行"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

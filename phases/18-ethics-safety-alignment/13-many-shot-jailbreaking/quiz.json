@@ -1,0 +1,78 @@
+{
+  "lesson": "13-many-shot-jailbreaking",
+  "title": "Many-Shot Jailbreaking",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "many-shot jailbreaking (MSJ) 利用了哪种 context-window 属性？",
+      "options": [
+        "Position embeddings 在超过 2048 tokens 后发生旋转",
+        "Sliding-window attention 截断 system prompt",
+        "非常长的 context windows，允许在目标 query 之前容纳数百轮伪造的、有害配合的 user-assistant 对话",
+        "Tokenizer 在 Unicode 字符上的歧义"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 MSJ 中，attack success rate (ASR) 如何随 shot count 扩展？",
+      "options": [
+        "呈负斜率线性变化",
+        "随 shot count 呈 power-law；不会 plateau，而是持续上升",
+        "在 100 shots 处呈 step function",
+        "呈 Logistic 形态，在 50% 处 plateau"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 MSJ 与良性的 in-context learning (ICL) 共享一种机制？",
+      "options": [
+        "两者都依赖模型从 in-context examples 中提取任务结构，并在 query 上执行它",
+        "两者都依赖 RLHF",
+        "两者都绕过 tokenization",
+        "两者都需要隐藏的 scratchpad"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "MSJ 的核心防御困境是什么？",
+      "options": [
+        "防御必须在 sampling temperature 为零时应用",
+        "防御需要 GPU 集群",
+        "抑制从长上下文中提取模式，也会禁用良性的 in-context learning；防御必须区分有害模式和良性模式",
+        "防御必须在响应的每个 Token 上运行"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "在测试设置中，Anthropic 的基于 classifier 的 prompt modification 防御将 MSJ attack success 从多少降低到多少？",
+      "options": [
+        "从 99% 到 50%",
+        "从 30% 到 25%",
+        "从 61% 到 2%",
+        "它会提高 ASR"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "MSJ 如何与 PAIR（第 12 课）交互？",
+      "options": [
+        "PAIR 会中和 MSJ",
+        "PAIR 只适用于闭源模型",
+        "MSJ 可以与 PAIR 组合；先使用 PAIR 找到攻击结构，然后用 many shots 填充它，可以达到比两者单独使用更高的 ASR",
+        "它们互相排斥"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

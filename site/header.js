@@ -1,6 +1,6 @@
 /**
  * 共享 header 行为：实时 GitHub star 计数器。
- * 由每个包含 .header-github 组件的页面加载。
+ * 由每个包含 .header-github component 的页面加载。
  */
 (function () {
   var REPO = 'rohitg00/ai-engineering-from-scratch';
@@ -14,7 +14,9 @@
   }
 
   function paint(n) {
-    var els = document.querySelectorAll('.header-github .star-count, #starCount');
+    var els = document.querySelectorAll(
+      '.header-github .star-count, #starCount, [data-gh-stars="' + REPO + '"]'
+    );
     for (var i = 0; i < els.length; i++) {
       els[i].textContent = format(n);
       els[i].removeAttribute('data-loading');

@@ -112,7 +112,7 @@ function parseReadme(content, roadmapStatuses) {
     }
 
     // 检测 lesson table 的开始
-    if (currentPhase && line.match(/^\|\s*#\s*\|\s*Lesson/)) {
+    if (currentPhase && line.match(/^\|\s*#\s*\|\s*(Lesson|课程)/)) {
       inLessonTable = true;
       isCapstoneTable = false;
       continue;
@@ -135,7 +135,9 @@ function parseReadme(content, roadmapStatuses) {
 
         // Type 可能是纯文本（"Build"），也可能是 shield image：![Build](https://...)
         const typeBadgeMatch = typeRaw.match(/!\[([^\]]+)\]/);
-        const type = typeBadgeMatch ? typeBadgeMatch[1] : typeRaw;
+        let type = typeBadgeMatch ? typeBadgeMatch[1] : typeRaw;
+        if (type === '构建') type = 'Build';
+        if (type === '学习') type = 'Learn';
 
         // Lang 可能是纯文本（"Python, Rust"），也可能是 emoji flags（🐍 🟦 🦀 🟣 ⚛️）
         const EMOJI_LANG = {
@@ -212,7 +214,7 @@ function parseReadme(content, roadmapStatuses) {
     }
 
     // 同时检测 capstone table 格式（# | Project | Combines | Lang）
-    if (currentPhase && line.match(/^\|\s*#\s*\|\s*Project/)) {
+    if (currentPhase && line.match(/^\|\s*#\s*\|\s*(Project|项目)/)) {
       inLessonTable = true;
       isCapstoneTable = true;
       continue;

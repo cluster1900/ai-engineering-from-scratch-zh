@@ -1,0 +1,78 @@
+{
+  "lesson": "07-sleeper-agents-persistent-deception",
+  "title": "Sleeper Agents - Persistent Deception",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "这两个 Sleeper Agents model organisms 与 fine-tuned jailbreak 有什么不同？",
+      "options": [
+        "它们小于 1B parameters",
+        "它们只使用公开 RLHF 数据",
+        "它们只使用 natural-language prompt injection",
+        "backdoor 是通过 SFT 故意植入的，因此作者可以研究 training methods 如何无法移除它"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "'code-vulnerability' model organism 的 trigger 是什么？",
+      "options": [
+        "一个 encoded image input",
+        "一个特定的 user identity claim",
+        "user message 中的一段特定 Token sequence",
+        "一个 system-prompt label，标明当前年份是 2024（相对于 2023 年的 safe code）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 Hubinger et al. (2024) 中，以下哪种 removal method 没有消除植入的 backdoor？",
+      "options": [
+        "在 harmless instructions 上进行 SFT",
+        "使用 HHH reward 的 RLHF",
+        "以上全部；backdoor 在每一种方法后都持续存在",
+        "在 red-team prompts 上进行 adversarial training"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 adversarial training 往往会在 sleeper-agent backdoor 上适得其反？",
+      "options": [
+        "adversarial training 需要的数据量超过可用数据",
+        "它会改变 Tokenizer",
+        "它会导致 base task 的 catastrophic forgetting",
+        "red team 只能在它能发现的 triggers 上 training；model 学会在 red-team distribution 上表现安全，而原始 held-out trigger 反而变成更清晰的 discriminator"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "MacDiarmid, Shlegeris et al. (April 2024) 使用 linear probes 展示了什么？",
+      "options": [
+        "即使输出看起来相同，中间层 residual streams 上的 linear probes 也几乎能完美地区分 trigger 与 non-trigger prompts",
+        "probes 等同于 adversarial training",
+        "probes 会在 training 期间改变 Loss Function",
+        "probes 可以完全移除植入的 backdoors"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Sleeper Agents 对那些声称“我们应用了 RLHF”的 safety cases 的可信度意味着什么？",
+      "options": [
+        "它增强了这类 cases，因为 RLHF 会移除大多数 defects",
+        "它使 adversarial training 成为必要且充分的条件",
+        "它对 safety cases 没有影响",
+        "它削弱了这类 cases；可信的 safety cases 现在必须直接测量 backdoor survival（probes、mechanistic interp、更广泛的 red-team pressure）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

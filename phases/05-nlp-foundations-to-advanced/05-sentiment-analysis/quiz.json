@@ -1,0 +1,102 @@
+{
+  "lesson": "05-sentiment-analysis",
+  "title": "Sentiment Analysis",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 'The food was not great' 对朴素 BoW classifier 来说是一个困难案例？",
+      "options": [
+        "它没有标点符号",
+        "它混合了英语和法语",
+        "否定会反转含义，但 bag of words 丢弃了 'not' 和 'great' 之间的关联",
+        "它包含的 Token 太少"
+      ],
+      "correct": 2,
+      "explanation": "BoW 无法把 'not' 绑定到它所否定的词上，因此 classifier 会错过极性反转。"
+    },
+    {
+      "stage": "pre",
+      "question": "经典 Sentiment Analysis 由哪两个步骤组成？",
+      "options": [
+        "先翻译，再分类",
+        "先 Embed，再 cluster",
+        "表示（将文本 Vector 化）并分类（在该 Vector 上使用 linear model）",
+        "先搜索，再排序"
+      ],
+      "correct": 2,
+      "explanation": "经典 Sentiment Analysis 是 feature extraction 后接 linear classifier。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 Naive Bayes 尽管有“naive”的独立性假设仍然有效？",
+      "options": [
+        "在 sparse text features 和中等规模数据下，classifier 主要关心每个词倾向于哪一侧，而不是精确的联合概率",
+        "Naive Bayes 暗中学习 interactions",
+        "这个假设对文本来说实际上是真的",
+        "Laplace smoothing 修复了依赖关系"
+      ],
+      "correct": 0,
+      "explanation": "即使独立性假设错误，每个词的倾向方向信息也足以很好地完成分类。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么在 preprocessing 中加入带有 'NOT_' 前缀的 Token？",
+      "options": [
+        "为了标准化大小写",
+        "为了对词进行 stemming",
+        "为了把 'good' 和 'NOT_good' 变成独立 features，让 classifier 可以赋予相反权重",
+        "为了缩小 vocabulary"
+      ],
+      "correct": 2,
+      "explanation": "Negation scoping 会把被否定的形式拆成不同 features，这样 BoW classifier 就能建模这种反转。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么移除 stopwords 对 Sentiment Analysis 有风险？",
+      "options": [
+        "否定词（'not'、'no'、'never'）通常会被当作 stopwords，但它们携带 sentiment signal",
+        "Stopword lists 太长",
+        "它会增加 sparsity",
+        "Stopword removal 会破坏 tokenization"
+      ],
+      "correct": 0,
+      "explanation": "默认 stopword lists 会丢弃否定词以及类似的 sentiment 承载词。"
+    },
+    {
+      "stage": "post",
+      "question": "当 sentiment classes 不平衡时，应该报告哪个 metric？",
+      "options": [
+        "Macro-F1（各 class F1 的平均值，等权重）",
+        "只看 Accuracy",
+        "Mean squared error",
+        "只看 Micro-F1"
+      ],
+      "correct": 0,
+      "explanation": "Macro-F1 会强制 minority class 被计入；accuracy 或 micro-F1 会掩盖它。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该跳过经典模型，转而使用 transformer 做 sentiment？",
+      "options": [
+        "当你少于 100 个 examples 时",
+        "当 latency 很关键时",
+        "当你需要 explainability 时",
+        "Sarcasm detection、长篇且语义不断转移的文档、aspect-based sentiment，或 low-resource languages"
+      ],
+      "correct": 3,
+      "explanation": "Sarcasm、aspect-based 和 cross-lingual sentiment 超出了经典 BoW models 的能力范围。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 L2 regularization 对文本上的 logistic regression 很重要？",
+      "options": [
+        "计算 Gradient 时必需",
+        "避免 ReLU dead units",
+        "加速 Matrix inversion",
+        "否则 sparse high-dimensional text features 会让模型记住 training examples"
+      ],
+      "correct": 3,
+      "explanation": "在文本的 sparse-feature、high-dimensional 场景中，L2 可以防止 overfitting。"
+    }
+  ]
+}

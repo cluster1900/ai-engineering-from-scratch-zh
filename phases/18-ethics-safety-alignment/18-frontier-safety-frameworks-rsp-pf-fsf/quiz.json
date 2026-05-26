@@ -1,0 +1,78 @@
+{
+  "lesson": "18-frontier-safety-frameworks-rsp-pf-fsf",
+  "title": "Frontier Safety Frameworks - RSP, PF, FSF",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic 的 ASL 结构以什么为模型？",
+      "options": [
+        "ITIL 事件严重性等级",
+        "EU AI Act 类别",
+        "Internet RFC 分级",
+        "生物安全等级（BSL）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "OpenAI Preparedness Framework v2 中哪一项标准捕捉了“伤害发生很快或无法撤销”？",
+      "options": [
+        "Net-new",
+        "Instantaneous-or-irremediable",
+        "Plausible",
+        "Measurable"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "DeepMind 的 FSF v3.0（2025 年 9 月）新增了哪个 Critical Capability Level？",
+      "options": [
+        "Harmful Manipulation",
+        "Cyber Uplift",
+        "Bioweapon Uplift",
+        "ML R&D Acceleration"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025 年及之后的 frontier safety frameworks 中，“competitor-adjustment clause”是什么？",
+      "options": [
+        "一项条款，允许实验室在同行实验室没有可比安全防护却发布模型时降低安全要求",
+        "一项出口管制豁免",
+        "一项 API 访问定价规则",
+        "一项 model-card 披露要求"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "本课描述的 safety case 的三个标准支柱是什么？",
+      "options": [
+        "速度、准确率、成本",
+        "Monitoring、illegibility、incapability",
+        "Helpful、honest、harmless",
+        "Inner、outer、mesa"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic 的“Capability Thresholds”、OpenAI 的“High Capability thresholds”和 DeepMind 的“Critical Capability Levels”之间存在哪种结构性 alignment？",
+      "options": [
+        "结构性 alignment：使用分层的 frontier-capability 阈值并发布评估标准，尽管术语不同",
+        "没有任何公开文档",
+        "术语和数值 cutoff 完全相同",
+        "三者使用完全相同的评估"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}
