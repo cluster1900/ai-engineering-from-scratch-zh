@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/40-dpo-from-scratch",
+  "title": "从零开始实现 Direct Preference Optimization",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读前：在 Bradley-Terry preference model 下，给定 prompt x，人类偏好 completion y_w 而不是 y_l 的概率是 sigmoid(r(x, y_w) - r(x, y_l))。这意味着什么？",
+      "options": [
+        "你必须先拟合 r，再训练 policy。",
+        "只有 reward 的差值重要；任何同时加到 r(x, y_w) 和 r(x, y_l) 上的函数都会抵消。",
+        "Bradley-Terry 需要一个不会消失的 normalising constant Z(x)。",
+        "Sigmoid 与 maximum likelihood 不兼容。"
+      ],
+      "correct": 1,
+      "explanation": "Bradley-Terry preference 只依赖 reward difference。两个 completions 共有的任何内容都会抵消。这就是 DPO 可以避免显式 reward model 的结构性原因：optimal policy formula 中的 prompt-only term 会抵消。"
+    },
+    {
+      "stage": "check",
+      "question": "单个 triple 的 DPO loss 是 -log sigmoid( beta * ( (logp_w_pol - logp_w_ref) - (logp_l_pol - logp_l_ref) ) )。如果 logp_w_pol = logp_w_ref 且 logp_l_pol = logp_l_ref，Loss 等于多少？",
+      "options": [
+        "0。",
+        "log(2)。",
+        "beta。",
+        "-1。"
+      ],
+      "correct": 1,
+      "explanation": "两个差值都是零，因此 sigmoid argument 是零，sigmoid value 是 0.5，而 -log(0.5) = log(2)。这是 policy 完全没有离开 reference 时的 Loss。"
+    },
+    {
+      "stage": "check",
+      "question": "DPO training 期间，reference model 下的 chosen log-probability 会在 epochs 之间变化，因为 policy 会偏离它。True or false？",
+      "options": [
+        "True：reference 会随着 policy updates 而 drift。",
+        "False：reference 是 frozen；reference log-probs 只计算一次并复用。",
+        "只有当 beta 非零时才是 True。",
+        "False，除非用 no_grad 显式禁用 gradients。"
+      ],
+      "correct": 1,
+      "explanation": "reference 在整个 DPO 运行中都是 frozen。它的 parameters 永远不会 update。实现要么 snapshot reference log-probs 一次，要么在 no_grad 中包裹 reference forward pass，并在其 parameters 上设置 requires_grad=False。"
+    },
+    {
+      "stage": "check",
+      "question": "对 L_DPO 关于 logp_w_pol（policy 对 chosen completion 的 log-probability）求 Gradient，其符号是什么？",
+      "options": [
+        "正（chosen log-prob 增加时 Loss 增加）。",
+        "负（chosen log-prob 增加时 Loss 降低）。",
+        "零（Loss 与 policy log-probs 无关）。",
+        "不确定（取决于 reference）。"
+      ],
+      "correct": 1,
+      "explanation": "Gradient 是 -beta * (1 - sigmoid(z))，它是非正的。提高 chosen log-probability 会降低 Loss，这正是我们想要的 training signal。"
+    },
+    {
+      "stage": "post",
+      "question": "在你的 fixture 上，DPO loss 下降了，但 policy 开始全面偏好更短的 completions，即使更短的答案更差。最可能的原因是什么？",
+      "options": [
+        "beta 太低。",
+        "Length bias：更长的 sequences 会累积更多 log-probability terms（每个都是负的），因此 sum-of-log-probs 在结构上惩罚长度。",
+        "reference 没有正确 frozen。",
+        "Optimizer 使用了错误的 learning rate。"
+      ],
+      "correct": 1,
+      "explanation": "Sum-of-log-probabilities 会偏向更短的 sequences，因为每多一个 token 都会增加一个负的 log-probability term。标准修复是在训练和评估时按 completion length normalise log-probs。"
+    },
+    {
+      "stage": "post",
+      "question": "你想用 IPO variant (z - 1)^2 替换 sigmoid + log loss。这对 training dynamics 的实际影响是什么？",
+      "options": [
+        "它不会像 sigmoid loss 那样饱和，因此在 noisy preference labels 下表现更稳。",
+        "它在所有点上都数学等价。",
+        "它完全移除了对 reference model 的需求。",
+        "它不需要 beta parameter。"
+      ],
+      "correct": 0,
+      "explanation": "IPO 的 squared loss 不会像 sigmoid 那样饱和，这在 preference labels 有噪声或某些 triples 被误标时会有帮助。经验上，它能减少小型 preference datasets 上的 over-optimisation。"
+    }
+  ]
+}

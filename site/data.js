@@ -1,5 +1,5 @@
 // 由 build.js 自动生成——请勿手动编辑。
-// 最近构建时间：2026-05-26T23:46:52.789Z
+// 最近构建时间：2026-05-31T04:46:44.665Z
 
 const PHASES = [
   {
@@ -60,7 +60,7 @@ const PHASES = [
         "lang": "Shell",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/00-setup-and-tooling/06-python-environments/",
         "summary": "Dependency hell 真实存在。Virtual environments 是解药。",
-        "keywords": "Option 1: uv venv（推荐） · Option 2: venv（内置） · Option 3: conda（需要时使用） · 本课程：Per-Phase Strategy · 1. 全局安装 · 2. 混用 pip 和 conda · 3. 忘记 activate · 4. 把 .venv 提交到 git · 5. CUDA version mismatch"
+        "keywords": "选项 1：uv venv（推荐） · 选项 2：venv（内置） · 选项 3：conda（需要时使用） · 本课程：按 Phase 的策略 · 1. 全局安装 · 2. 混用 pip 和 conda · 3. 忘记 activate · 4. 把 .venv commit 到 git · 5. CUDA version mismatch"
       },
       {
         "name": "Docker for AI",
@@ -69,7 +69,7 @@ const PHASES = [
         "lang": "Docker",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/00-setup-and-tooling/07-docker-for-ai/",
         "summary": "Containers 让“在我机器上能跑”成为过去式。",
-        "keywords": "为什么 AI projects 比大多数项目更需要 Docker · 关键术语 · AI 中常见的 container 模式 · 步骤 1： 安装 Docker · 步骤 2： 安装 NVIDIA Container Toolkit（带 NVIDIA GPU 的 Linux） · 步骤 3： 理解 base images · 步骤 4： 为 AI development 编写 Dockerfile · 步骤 5： 用于 data 和 models 的 volume mounts · 步骤 6： 用于多服务 AI apps 的 Docker Compose · 步骤 7： AI 工作中有用的 Docker 命令 · 没有 GPU？"
+        "keywords": "为什么 AI projects 比大多数项目更需要 Docker · 关键词汇 · AI 中常见的 container patterns · Step 1：安装 Docker · Step 2：安装 NVIDIA Container Toolkit（带 NVIDIA GPU 的 Linux） · Step 3：理解 base images · Step 4：为 AI development 编写 Dockerfile · Step 5：用于 data 和 models 的 volume mounts · Step 6：用于 multi-service AI apps 的 Docker Compose · Step 7：AI 工作中实用的 Docker commands · 没有 GPU？"
       },
       {
         "name": "Editor Setup",
@@ -891,8 +891,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/05-nlp-foundations-to-advanced/01-text-processing/",
-        "summary": "语言是连续的。模型是离散的。预处理就是两者之间的桥梁。",
-        "keywords": "步骤 1： 一个 regex word tokenizer · 步骤 2： 一个 Porter stemmer（仅 step 1a） · 步骤 3： 一个基于 lookup 的 Lemmatizer · 步骤 4： 把它们串起来 · NLTK · spaCy · 什么时候选哪个 · 没人提醒你的两个失败模式"
+        "summary": "语言是连续的。模型是离散的。Preprocessing 是桥梁。",
+        "keywords": "Step 1: 一个 regex word tokenizer · Step 2: 一个 Porter stemmer（仅 step 1a） · Step 3: 一个基于 lookup 的 lemmatizer · Step 4: 把它们串起来 · NLTK · spaCy · 什么时候选哪个 · 没人提醒你的两个 failure modes"
       },
       {
         "name": "Bag of Words, TF-IDF & Text Representation",
@@ -1017,8 +1017,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/05-nlp-foundations-to-advanced/15-topic-modeling/",
-        "summary": "LDA：文档是主题的混合，主题是词上的分布。BERTopic：文档在 Embedding 空间中聚类，聚类就是主题。目标相同，基础原语不同。",
-        "keywords": "步骤 1： 通过 scikit-learn 使用 LDA · 步骤 2： BERTopic（生产） · 步骤 3： 评估"
+        "summary": "LDA：documents 是 topics 的混合，topics 是 words 上的分布。BERTopic：documents 在 embedding space 中聚类，clusters 就是 topics。目标相同，分解方式不同。",
+        "keywords": "Step 1: 通过 scikit-learn 实现 LDA · Step 2: BERTopic（生产） · Step 3: evaluation"
       },
       {
         "name": "Text Generation",
@@ -1196,8 +1196,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/06-speech-and-audio/05-whisper-architecture-finetuning",
-        "summary": "Whisper 是一个 30 秒窗口的 Transformer encoder-decoder，在 68 万小时多语言弱监督音频-文本对上训练而成。一个架构，多个任务，在 99 种语言上都很稳健。2026 年的参考 ASR。",
-        "keywords": "2026 年的变体 · Fine-tuning · 步骤 1：开箱即用运行 Whisper · 步骤 2：chunked long-form · 步骤 3：使用 LoRA fine-tune · 步骤 4：检查每一层学到了什么"
+        "summary": "Whisper 是一个 30-second-window transformer encoder-decoder，训练于 680k 小时的 multilingual weakly-supervised audio-text pairs。一个 architecture，多种 tasks，跨 99 种语言都 robust。2026 年的参考 ASR。",
+        "keywords": "Variants in 2026 · Fine-tuning · Step 1: 直接运行 Whisper · Step 2: chunked long-form · Step 3: 使用 LoRA fine-tune · Step 4: 检查每一层学到了什么"
       },
       {
         "name": "Speaker Recognition & Verification",
@@ -1223,8 +1223,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/06-speech-and-audio/08-voice-cloning-conversion",
-        "summary": "Voice cloning 会用别人的声音朗读你的文本。Voice conversion 会把你的声音改写成别人的声音，同时保留你说的内容。两者都依赖同一个基本原语：把说话人身份与内容分离。",
-        "keywords": "伦理部分不是事后附加项 · 数字（2026） · 步骤 1： 用 recognition-synthesis 进行分解（main.py 中的纯代码 demo） · 步骤 2： 用 F5-TTS 做 zero-shot clone · 步骤 3： 用 KNN-VC 做 voice conversion · 步骤 4： Embed 一个 watermark · 步骤 5： Consent gate"
+        "summary": "Voice cloning 会用别人的声音读出你的文本。Voice conversion 会在保留你所说内容的同时，把你的声音改写成别人的声音。两者都依赖同一个分解：把 speaker identity 与 content 分离。",
+        "keywords": "伦理部分，不是附加项 · Numbers（2026） · Step 1: 用 recognition-synthesis 分解（`main.py` 中的 code-only demo） · Step 2: 用 F5-TTS 做 zero-shot clone · Step 3: 用 KNN-VC 做 voice conversion · Step 4: 嵌入 watermark · Step 5: consent gate"
       },
       {
         "name": "Music Generation",
@@ -1348,8 +1348,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/07-transformers-deep-dive/04-positional-encoding/",
-        "summary": "Attention 是 permutation-invariant 的。“The cat sat on the mat”和“mat the on sat cat the”如果没有位置信号，会产生相同的输出。有三种算法可以解决它，而且每一种都对“position”意味着什么做出了不同假设。",
-        "keywords": "Absolute sinusoidal · RoPE · ALiBi · 2026 年该选什么 · Step 1: sinusoidal encoding · Step 2: RoPE applied to Q, K · Step 3: ALiBi slopes and bias · Step 4: verify relative-distance property of RoPE"
+        "summary": "Attention 对排列不敏感。没有 positional signal 时，“The cat sat on the mat”和“mat the on sat cat the”会产生相同输出。三种算法修复了它——每一种都对“position”的含义做了不同下注。",
+        "keywords": "Absolute sinusoidal · RoPE · ALiBi · 2026 年该选什么 · Step 1: sinusoidal encoding · Step 2: 应用于 Q、K 的 RoPE · Step 3: ALiBi slopes 和 bias · Step 4: 验证 RoPE 的 relative-distance property"
       },
       {
         "name": "The Full Transformer: Encoder + Decoder",
@@ -1402,8 +1402,8 @@ const PHASES = [
         "type": "Learn",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/07-transformers-deep-dive/10-audio-transformers-whisper/",
-        "summary": "Audio 是随时间变化的频率图像。Whisper 是一个吃 mel spectrogram 并输出语音内容的 ViT。",
-        "keywords": "Step 1 — resample + window · Step 2 — convolutional stem · Step 3 — encoder · Step 4 — decoder · Step 5 — task tokens · Step 6 — output · Whisper sizes · Whisper 不做什么 · 2026 生态 · 步骤 1： synthesize audio · 步骤 2： log-mel spectrogram（简化版） · 步骤 3： pad to 30 s · 步骤 4: 构建 prompt tokens"
+        "summary": "Audio 是 frequency 随 time 变化形成的图像。Whisper 是一个吃 mel spectrograms 并吐回文字的 ViT。",
+        "keywords": "Step 1 — resample + window · Step 2 — convolutional stem · Step 3 — encoder · Step 4 — decoder · Step 5 — task tokens · Step 6 — output · Whisper sizes · Whisper 不做什么 · 2026 landscape · Step 1: synthesize audio · Step 2: log-mel spectrogram（简化版） · Step 3: pad 到 30 s · Step 4: 构建 prompt tokens"
       },
       {
         "name": "Mixture of Experts (MoE)",
@@ -1481,8 +1481,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/08-generative-ai/02-autoencoders-vae/",
-        "summary": "普通 Autoencoder 先压缩再重建。它会记忆。它不会生成。加一个技巧——强制 code 看起来像 Gaussian——你就得到一个 sampler。这个单一技巧，也就是 `z = μ + σ·ε` 的 reparameterization，正是为什么你在 2026 年使用的每个 latent-diffusion 和 flow-matching …",
-        "keywords": "步骤 1： encoder forward · 步骤 2： reparameterize and decode · 步骤 3： the ELBO · 步骤 4： generate"
+        "summary": "普通 Autoencoder 先压缩再重构。它会记忆。它不会生成。加入一个技巧 — 强制 code 看起来像 Gaussian — 你就得到一个 sampler。这个单一技巧，也就是 `z = μ + σ·ε` 的 reparameterization，正是为什么你在 2026 年使用的每个 latent-diffusion 和 flow-matchi…",
+        "keywords": "Step 1: encoder forward · Step 2: reparameterize and decode · Step 3: the ELBO · Step 4: generate"
       },
       {
         "name": "GANs: Generator vs Discriminator",
@@ -1517,8 +1517,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/08-generative-ai/06-diffusion-ddpm-from-scratch/",
-        "summary": "Ho, Jain, Abbeel (2020) 给这个领域提供了一个再也放不下的配方。用一千个小步骤的噪声破坏数据。训练一个 Neural Network 来预测噪声。在 inference 时反转这个过程。今天，每个主流的图像、视频、3D 和音乐模型都运行在这个循环上，可能还会在其上叠加 flow matching 或 consistency 技巧。",
-        "keywords": "步骤 1： forward schedule（闭式形式） · 步骤 2： 一次性采样 `x_t` · 步骤 3： 一个训练步骤 · 步骤 4： reverse sampling"
+        "summary": "Ho、Jain、Abbeel（2020）给了这个领域一个无法放弃的配方。用 noise 经过一千个小步骤摧毁 data。训练一个 neural net 来预测 noise。在 inference 时反转这个过程。今天，每个主流 image、video、3D 和 music model 都运行在这个 loop 上，可能还在上面叠加 flow matchi…",
+        "keywords": "Step 1: the forward schedule (closed form) · Step 2: sample `x_t` in one shot · Step 3: one training step · Step 4: reverse sampling"
       },
       {
         "name": "Latent Diffusion & Stable Diffusion",
@@ -1544,8 +1544,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/08-generative-ai/09-inpainting-outpainting-editing/",
-        "summary": "Text-to-image 会生成新内容。Inpainting 会修复旧内容。在生产环境中，70% 可计费的图像工作都是编辑：替换背景、移除 logo、扩展画布、重新生成一只手。Inpainting 正是 Diffusion 体现价值的地方。",
-        "keywords": "朴素方法（以及它为什么是错的） · 合适的 inpainting 模型 · SDEdit (Meng et al., 2022) — 自由编辑 · InstructPix2Pix (Brooks et al., 2023) · RePaint (Lugmayr et al., 2022) · 步骤 1： 5-D DDPM data · 步骤 2： train denoiser over all 5 dims · 步骤 3： at inference, mask-aware reverse · 步骤 4： outpainting"
+        "summary": "Text-to-image 会创造新事物。Inpainting 会修复旧事物。在生产环境中，70% 可计费的图像工作都是编辑：替换背景、移除 logo、扩展画布、重新生成一只手。Inpainting 正是 diffusion 体现价值的地方。",
+        "keywords": "朴素方法（以及为什么它是错的） · 正确的 inpainting model · SDEdit (Meng et al., 2022) — 免费编辑 · InstructPix2Pix (Brooks et al., 2023) · RePaint (Lugmayr et al., 2022) · Step 1：5-D DDPM data · Step 2：在所有 5 个维度上训练 denoiser · Step 3：推理时使用 mask-aware reverse · Step 4：outpainting"
       },
       {
         "name": "Video Generation",
@@ -1615,8 +1615,8 @@ const PHASES = [
         "type": "Learn",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/09-reinforcement-learning/01-mdps-states-actions-rewards/",
-        "summary": "Markov Decision Process 由五个要素组成：states、actions、transitions、rewards、一个 discount。RL 中的一切，包括 Q-learning、PPO、DPO、GRPO，都是在这个结构上进行优化。学会一次，后面的 Reinforcement Learning 就能顺畅读懂。",
-        "keywords": "步骤 1： 一个很小的 deterministic MDP · 步骤 2： rollout 一个 policy · 步骤 3： 通过 Bellman equation 精确计算 `V^π` · 步骤 4： `γ` 是具有物理意义的 hyperparameter"
+        "summary": "Markov Decision Process 由五件事组成：states、actions、transitions、rewards、discount。RL 中的一切：Q-learning、PPO、DPO、GRPO，都是在这个形状上优化。学一次，后面的 Reinforcement Learning 都能顺着读下去。",
+        "keywords": "Step 1：一个极小的 deterministic MDP · Step 2：roll out 一个 policy · Step 3：通过 Bellman equation 精确计算 `V^π` · Step 4：`γ` 是具有物理含义的 hyperparameter"
       },
       {
         "name": "Dynamic Programming",
@@ -1624,8 +1624,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/09-reinforcement-learning/02-dynamic-programming/",
-        "summary": "Dynamic programming 是带作弊的 RL。你已经知道 transition 和 reward functions；你只需要迭代 Bellman equation，直到 `V` 或 `π` 不再变化。它是每一种基于采样的方法都试图接近的基准。",
-        "keywords": "步骤 1： 构建 GridWorld MDP model · 步骤 2： policy evaluation · 步骤 3: policy improvement · 步骤 4： 把它们串起来 · 步骤 5： value iteration（单 loop 版本）"
+        "summary": "Dynamic programming 是带“作弊”的 RL。你已经知道 transition 和 reward functions；你只需要反复迭代 Bellman equation，直到 `V` 或 `π` 不再变化。它是每个 sampling-based method 都试图接近的基准。",
+        "keywords": "Step 1: 构建 GridWorld MDP model · Step 2: policy evaluation · Step 3: policy improvement · Step 4: 组合起来 · Step 5: value iteration（单 loop 版本）"
       },
       {
         "name": "Monte Carlo Methods",
@@ -1633,8 +1633,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/09-reinforcement-learning/03-monte-carlo-methods/",
-        "summary": "Dynamic Programming 需要 model。Monte Carlo 除了 episodes 什么都不需要。运行 policy，观察 returns，对它们求平均。这是 RL 中最简单的想法，也是解锁后续一切内容的想法。",
-        "keywords": "步骤 1： rollout → list of (s, a, r) · 步骤 2： 计算 returns（反向 sweep） · 步骤 3: first-visit MC evaluation · 步骤 4：ε-greedy MC control (on-policy) · 步骤 5: 与 DP gold standard 比较"
+        "summary": "Dynamic programming 需要 model。Monte Carlo 除了 episodes 什么都不需要。运行 policy，观察 returns，取平均。这是 RL 中最简单的想法，也是解锁后续一切的想法。",
+        "keywords": "Step 1: rollout → (s, a, r) 列表 · Step 2: 计算 returns（反向 sweep） · Step 3: first-visit MC evaluation · Step 4: ε-greedy MC control（on-policy） · Step 5: 与 DP gold standard 对比"
       },
       {
         "name": "Q-Learning, SARSA",
@@ -1660,8 +1660,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/09-reinforcement-learning/06-policy-gradients-reinforce/",
-        "summary": "停止估计 value。直接参数化 policy，计算 expected return 的 Gradient，向上迈一步。Williams（1992）用一个 theorem 写下了它。这就是 PPO、GRPO 以及每个 LLM RL loop 存在的原因。",
-        "keywords": "步骤 1: softmax policy network · 步骤 2：sampling 和 log-probability · 步骤 3: rollout 并捕获 log-probs · 步骤 4： REINFORCE update · 步骤 5： baselines"
+        "summary": "停止估计 value。直接 parameterize policy，计算 expected return 的 Gradient，然后沿上坡方向更新。Williams (1992) 用一个 theorem 写清了它。这也是 PPO、GRPO 以及每个 LLM RL loop 存在的原因。",
+        "keywords": "Step 1: softmax policy network · Step 2: sampling and log-probability · Step 3: rollout with log-probs captured · Step 4: REINFORCE update · Step 5: baselines"
       },
       {
         "name": "Actor-Critic — A2C, A3C",
@@ -1669,8 +1669,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/09-reinforcement-learning/07-actor-critic-a2c-a3c/",
-        "summary": "REINFORCE 很 noisy。加入一个学习 `V̂(s)` 的 critic，从 return 中减去它，你会得到一个 expectation 相同但 variance 低得多的 advantage。这就是 actor-critic。A2C 同步运行它；A3C 在线程之间运行它。两者都是每一种现代 deep-RL 方法的 mental model。",
-        "keywords": "步骤 1： a critic · 步骤 2： n-step advantage · 步骤 3： combined update · 步骤 4： parallelization (A3C vs A2C)"
+        "summary": "REINFORCE 很 noisy。添加一个学习 `V̂(s)` 的 critic，从 return 中减去它，你就得到一个 expectation 相同但 variance 低得多的 advantage。这就是 actor-critic。A2C 同步运行它；A3C 在线程间运行它。两者都是每个现代 deep-RL method 的 mental mo…",
+        "keywords": "Step 1: a critic · Step 2: n-step advantage · Step 3: combined update · Step 4: parallelization (A3C vs A2C)"
       },
       {
         "name": "PPO",
@@ -1678,8 +1678,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/09-reinforcement-learning/08-ppo/",
-        "summary": "A2C 在一次 update 后就丢弃每个 rollout。PPO 用 clipped importance ratio 包裹 policy gradient，这样你就可以在同一批数据上做 10+ 个 epoch，而不会让 policy 爆炸。Schulman et al. (2017)。到 2026 年仍是默认的 policy-gradient 算法。",
-        "keywords": "步骤 1：在 rollout 时捕获 `log π_old(a | s)` · 步骤 2：计算 GAE advantages（Lesson 07） · 步骤 3：clipped surrogate update · 步骤 4：value 和 entropy · 步骤 5：diagnostics"
+        "summary": "A2C 在一次更新后就丢弃每个 rollout。PPO 用 clipped importance ratio 包住 policy gradient，这样你可以在同一批数据上做 10+ 个 epochs，而不会让 policy 爆炸。Schulman et al. (2017)。到 2026 年，它仍然是默认的 policy-gradient 算法。",
+        "keywords": "Step 1：在 rollout 时捕获 `log π_old(a | s)` · Step 2：计算 GAE advantages（Lesson 07） · Step 3：clipped surrogate update · Step 4：value 和 entropy · Step 5：diagnostics"
       },
       {
         "name": "Reward Modeling & RLHF",
@@ -1687,8 +1687,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/09-reinforcement-learning/09-reward-modeling-rlhf/",
-        "summary": "人类无法为“优质 assistant response”手写一个 reward function，但他们可以比较两个 responses 并选出更好的那个。把一个 reward model 拟合到这些比较数据上，然后针对它对 language model 做 RL。Christiano 2017。InstructGPT 2022。这就是把 GPT-3 …",
-        "keywords": "步骤 1： synthetic preference data · 步骤 2： Bradley-Terry reward model · 步骤 3： PPO-like policy on top of RM · 步骤 4： monitor the KL · 步骤 5： the production recipe with TRL"
+        "summary": "人类无法为“好的 assistant response”手写 reward function，但他们可以比较两个 responses，并选出更好的那个。把 reward model 拟合到这些比较上，然后用 RL 让 language model 对它优化。Christiano 2017。InstructGPT 2022。这套配方把 GPT-3 变成了…",
+        "keywords": "Step 1：synthetic preference data · Step 2：Bradley-Terry reward model · Step 3：RM 之上的 PPO-like policy · Step 4：monitor KL · Step 5：使用 TRL 的 production recipe"
       },
       {
         "name": "Multi-Agent RL",
@@ -2099,8 +2099,8 @@ const PHASES = [
         "type": "Learn",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/11-llm-engineering/17-agent-framework-tradeoffs/",
-        "summary": "每个 framework 都在展示同一个 demo（research agent 生成一份报告），也都隐藏着同一个 bug（state schema 与 orchestration layer 相互冲突）。选择那个其 abstraction 与你的问题形态匹配的 framework；其他一切都是你要写两遍的胶水代码。",
-        "keywords": "“abstraction”到底是什么意思 · state 问题 · branching 问题 · observability 问题 · 成本和延迟 · Interoperability"
+        "summary": "每个 framework 都在卖同一个 demo（research agent 构建报告），也都藏着同一个 bug（state schema 和 orchestration layer 互相打架）。选择那个抽象与你的问题形状匹配的 framework；其余都是你要写两遍的 glue code。",
+        "keywords": "“抽象”到底是什么意思 · State 问题 · Branching 问题 · Observability 问题 · Cost 和 latency · Interoperability"
       }
     ]
   },
@@ -2394,8 +2394,8 @@ const PHASES = [
         "type": "Learn",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/13-tools-and-protocols/06-mcp-fundamentals/",
-        "summary": "MCP 之前的每个 integration 都是一次性的。Model Context Protocol 最初由 Anthropic 于 2024 年 11 月发布，现在由 Linux Foundation 的 Agentic AI Foundation 维护，它将 discovery 和 invocation 标准化，让任何 client 都能与任何 …",
-        "keywords": "Three server primitives · Three client primitives · Wire format: JSON-RPC 2.0 · Three-phase lifecycle · Capability negotiation · Structured content 和 error shapes · Client capabilities 与 tool call 细节 · 为什么是 JSON-RPC，而不是 REST？"
+        "summary": "MCP 之前的每个 integration 都是一次性的。Model Context Protocol 最早由 Anthropic 于 2024 年 11 月发布，现在由 Linux Foundation 的 Agentic AI Foundation 托管，它标准化了 discovery 和 invocation，让任何 client 都能与任何 s…",
+        "keywords": "三个 server primitives · 三个 client primitives · Wire format: JSON-RPC 2.0 · 三阶段 lifecycle · Capability negotiation · Structured content 和 error shapes · Client capabilities vs tool call details · 为什么是 JSON-RPC 而不是 REST？"
       },
       {
         "name": "Building an MCP Server",
@@ -2430,8 +2430,8 @@ const PHASES = [
         "type": "Build",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/13-tools-and-protocols/10-mcp-resources-and-prompts/",
-        "summary": "Tools 获得了 MCP 90% 的关注。另外两个 server primitives 解决的是不同问题。Resources 暴露可读取的数据；prompts 将可复用模板暴露为 slash-commands。许多 servers 应该使用 resources，而不是把读取操作包装成 tools；也应该使用 prompts，而不是把 workflow…",
-        "keywords": "Tools vs resources vs prompts — 决策规则 · Resources · Resource subscriptions · Resource templates（2025-11-25 addition） · Prompts · Hosts and prompts · “list changed” notification · Content type conventions · Dynamic resources · Subscriptions vs polling · Prompts vs system prompts"
+        "summary": "Tools 得到了 MCP 90% 的关注。另外两个 server primitive 解决的是不同问题。Resources 暴露可读取的数据；prompts 暴露可复用的模板，作为 slash-commands。许多 server 应该使用 resources，而不是把读取操作包进 tools；也应该使用 prompts，而不是把 workflow …",
+        "keywords": "Tools vs resources vs prompts — 决策规则 · Resources · Resource subscriptions · Resource templates（2025-11-25 addition） · Prompts · Hosts and prompts · The \"list changed\" notification · Content type conventions · Dynamic resources · Subscriptions vs polling · Prompts vs system prompts"
       },
       {
         "name": "MCP Sampling",
@@ -3387,169 +3387,253 @@ const PHASES = [
         "name": "Managed LLM Platforms — Bedrock, Azure OpenAI, Vertex AI",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/01-managed-llm-platforms/",
+        "summary": "三家 hyperscaler，三种不同策略。AWS Bedrock 是模型市场 — Claude, Llama, Titan, Stability, Cohere 位于同一个 API 之后。Azure OpenAI 是独家的 OpenAI 合作关系，加上用于专用容量的 Provisioned Throughput Units (PTUs)。Vertex…",
+        "keywords": "三种策略 · 规模下的 Latency 差距 · Provisioned Throughput 经济性 · FinOps 界面 — 真正的差异化因素 · Lock-in 是 2026 年的风险 · Data residency、BAAs 和受监管行业 · 你应该记住的数字"
       },
       {
         "name": "Inference Platform Economics — Fireworks, Together, Baseten, Modal",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/02-inference-platform-economics/",
+        "summary": "2026 年的 inference 市场不再只是 GPU 时间租赁。它分化为 custom silicon（Groq、Cerebras、SambaNova）、GPU platforms（Baseten、Together、Fireworks、Modal）和 API-first marketplaces（Replicate、DeepInfra）。Firew…",
+        "keywords": "The three segments · Fireworks — latency-optimized GPU platform · Together — breadth-optimized · Baseten — enterprise-polish-optimized · Modal — Python-native-optimized · Replicate — multimodal breadth · Anyscale — Ray-native · Per-token versus per-minute — when each wins · Custom engine is the real moat · Numbers you should remember"
       },
       {
         "name": "GPU Autoscaling on Kubernetes — Karpenter, KAI Scheduler",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/03-gpu-autoscaling-kubernetes/",
+        "summary": "是三层，不是一层。Karpenter 动态供给节点（不到一分钟，比 Cluster Autoscaler 快 40%）。KAI Scheduler 处理 gang scheduling、拓扑感知和分层队列 —— 它能避免 7-of-8 的部分分配陷阱：七个节点因为缺一个 GPU 而等待并烧钱。应用层 autoscaler（NVIDIA Dynamo P…",
+        "keywords": "Layer 1 — 节点供给 (Karpenter) · Layer 2 — gang scheduling（KAI Scheduler） · Layer 3 — 应用层信号 · 什么时候用什么 · Disaggregated prefill/decode 会让一切更复杂 · Cold start 在这里也很重要 · 你应该记住的数字"
       },
       {
         "name": "vLLM Serving Internals — PagedAttention, Continuous Batching, Chunked Prefill",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/04-vllm-serving-internals/",
+        "summary": "vLLM 在 2026 年的主导地位依赖于三个相互叠加的默认设置，而不是某个单一技巧。PagedAttention 始终开启。Continuous batching 会在 decode iterations 之间把新 requests 注入 active batch。Chunked prefill 会切分长 prompts，让 decode token…",
+        "keywords": "PagedAttention 作为虚拟内存系统 · iteration 层面的 Continuous batching · Chunked prefill 保护 TTFT tail · 三个默认设置会相互作用 · 2026 年 v0.18.0 的 gotcha · 你应该记住的数字 · scheduler 的样子"
       },
       {
         "name": "EAGLE-3 Speculative Decoding in Production",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/05-eagle3-speculative-decoding/",
+        "summary": "Speculative decoding 将一个快速 draft model 与 target model 配对。draft 提出 K 个 Token；target 在一次 forward 中验证；被接受的 Token 是免费的。到 2026 年，EAGLE-3 是生产级变体，它在 target model 的 hidden states 上训练 dr…",
+        "keywords": "Speculative decoding 实际带来了什么 · 为什么 alpha 是唯一重要的 metric · EAGLE 代际一览 · 2026 生产配方 · 生产陷阱：P99 tail · EAGLE-3 已经部署在哪里 · 一行 break-even 数学 · 什么时候不要使用 speculative decoding"
       },
       {
         "name": "SGLang and RadixAttention for Prefix-Heavy Workloads",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/06-sglang-radixattention/",
+        "summary": "SGLang 将 KV cache 视为一等、可复用资源，并存储在 radix tree 中。vLLM 按 FCFS（first-come, first-served）调度请求，而 SGLang 的 cache-aware scheduler 会优先处理具有更长 shared prefixes 的请求，本质上是 depth-first radix tr…",
+        "keywords": "作为 KV index 的 radix tree · Cache-aware scheduling · 你应该记住的 benchmark 数字 · ordering 陷阱 · RadixAttention 赢在哪里，输在哪里 · 为什么这是 scheduler 问题，而不只是 kernel 问题 · 与 vLLM 的相互作用"
       },
       {
         "name": "TensorRT-LLM on Blackwell with FP8 and NVFP4",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/07-tensorrt-llm-blackwell/",
+        "summary": "TensorRT-LLM 仅限 NVIDIA，但它在 Blackwell 上胜出。在配合 Dynamo 编排的 GB200 NVL72 上，SemiAnalysis InferenceX 在 2026 年 Q1-Q2 测得 120B 模型成本为每百万 Token $0.012，而 H100 + vLLM 为 $0.09/M，形成 7x 的经济差距。这个…",
+        "keywords": "为什么 FP8 仍然是 KV cache 的底线 · TRT-LLM 使用的 Blackwell 特有 primitives · 你应该记住的数字 · FP4 在质量上的真实代价 · 为什么这是一个 NVIDIA-lock 决策 · 2026 年实用配方 · Disaggregation bonus"
       },
       {
         "name": "Inference Metrics — TTFT, TPOT, ITL, Goodput, P99",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/08-inference-metrics-goodput/",
+        "summary": "四个指标决定一次 inference deployment 是否正常工作。TTFT 是 prefill 加 queue 加 network。TPOT（等价于 ITL）是每个 Token 的 memory-bound decode 成本。端到端 latency 是 TTFT 加上 TPOT 乘以输出长度。Throughput 是整个 fleet 聚合后的…",
+        "keywords": "TTFT — time to first token · TPOT / ITL — inter-token latency · E2E latency · Throughput · Goodput — 你真正关心的指标 · 为什么 mean 是错误的统计量 · Reference numbers — TRT-LLM 上的 Llama-3.1-8B-Instruct，2026 · The measurement trap · Constructing an SLO · How to measure"
       },
       {
         "name": "Production Quantization — AWQ, GPTQ, GGUF, FP8, NVFP4",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/09-production-quantization/",
+        "summary": "Quantization 格式不是一个通用选择，而是 hardware、serving engine 和 workload 的函数。GGUF Q4_K_M 或 Q5_K_M 通过 llama.cpp 和 Ollama 交付，占据 CPU 和 edge 场景。GPTQ 在 vLLM 内部胜出，适合你需要在同一个 base 上运行 multi-LoRA 的…",
+        "keywords": "The six formats · GGUF — CPU/edge 默认选择 · GPTQ — vLLM 中的 multi-LoRA · AWQ — datacenter GPU 默认选择 · FP8 — 可靠的中间地带 · MXFP4 / NVFP4 — Blackwell 激进选择 · The calibration trap · The KV cache trap · AWQ INT4 对 reasoning 有风险 · 2026 picking guide"
       },
       {
         "name": "Cold Start Mitigation for Serverless LLMs",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/10-cold-start-mitigation/",
+        "summary": "一个 20 GB model image 从 cold 到 serving 需要 5-10 分钟（7B）到 20+ 分钟（70B）。在真正的 serverless 世界里，这不是 warm-up，而是 outage。Mitigations 作用在五层：pre-seeded node images（AWS 上的 Bottlerocket、dual-vol…",
+        "keywords": "Layer 1 — 预置节点镜像（Bottlerocket） · Layer 2 — model streaming (Run:ai Model Streamer) · Layer 3 — GPU memory snapshots (Modal) · Layer 4 — warm pools (min_workers=1) · Layer 5 — tiered loading (ServerlessLLM) · Layer 6 — live migration (bonus pattern) · The warm-pool math · Measure before optimizing · Numbers you should remember"
       },
       {
         "name": "Multi-Region LLM Serving and KV Cache Locality",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/11-multi-region-kv-locality/",
+        "summary": "对缓存式 LLM inference 来说，round-robin load balancing 是有害的。一个请求如果没有落到持有其 prefix 的节点上，就要支付完整 prefill 成本：长 prompt 上 P50 约 800 ms，而 cache hit 时约 80 ms。到 2026 年，生产模式是 cache-aware router（…",
+        "keywords": "Cache-aware routing · Numbers · Cross-region 有一个新约束：network latency · 商业 \"cross-region inference\" 在这里帮不上忙 · DR hygiene：32% missing-files 问题 · Data residency 是正交问题 · 你应该记住的数字"
       },
       {
         "name": "Edge Inference — ANE, Hexagon, WebGPU, Jetson",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/12-edge-inference/",
+        "summary": "核心 edge 约束是 memory bandwidth，而不是 compute。Mobile DRAM 位于 50-90 GB/s；datacenter HBM3 超过 2-3 TB/s——差距为 30-50x。Decode 受 memory-bound 限制，因此这个差距是决定性的。到 2026 年，格局分成四类。Apple M4/A18 Neur…",
+        "keywords": "Bandwidth 才是真正的上限 · Apple Neural Engine（M4 / A18） · Qualcomm Hexagon（Snapdragon X Elite / 8 Gen 4） · Intel / AMD NPUs（Lunar Lake, Ryzen AI 300） · WebGPU + WebLLM · NVIDIA Jetson family · 每个 target 的 Quantization 选择 · Edge 上的 long-context 陷阱 · Voice 是 killer app · 你应该记住的数字"
       },
       {
         "name": "LLM Observability Stack Selection",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/13-llm-observability/",
+        "summary": "2026 年的可观测性市场分为两类。开发平台（LangSmith、Langfuse、Comet Opik）把监控与 evals、prompt 管理、session replay 打包在一起。Gateway/工具化工具（Helicone、SigNoz、OpenLLMetry、Phoenix）专注于遥测。Langfuse 是 MIT-licensed co…",
+        "keywords": "两类 · Langfuse — OSS 平衡 · Phoenix (Arize) — telemetry-first，OpenTelemetry-native · Arize AX — scale play · LangSmith — LangChain/LangGraph 优先 · Helicone — 基于 proxy 的 minimum viable · Opik (Comet) — OSS dev platform · SigNoz — OpenTelemetry-first 完整 APM · 粘合层：OpenTelemetry + GenAI semantic conventions · 陷阱：在错误层做工具化 · Sampling — 你无法保留所有东西 · 你应该记住的数字"
       },
       {
         "name": "Prompt Caching and Semantic Caching Economics",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/14-prompt-semantic-caching/",
+        "summary": "**Pricing snapshot 日期为 2026-04。** 以下数值声明反映本课发布时采集的 vendor rate cards；在下游引用前，请先对照链接文档核验。",
+        "keywords": "L2 — provider prompt/prefix caching · L1 — app 级 semantic caching · The parallelization anti-pattern · The dynamic content anti-pattern · Stack batch + cache for overnight workloads · Numbers you should remember"
       },
       {
         "name": "Batch APIs — the 50% Discount as Industry Standard",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/15-batch-apis/",
+        "summary": "每个主要 provider 都提供 async batch API，带有 50% 折扣和约 24 小时 turnaround。OpenAI、Anthropic、Google，以及大多数 inference platforms（Fireworks batch tier、Together batch）都实现了同样的模式。把 batch 和 prompt c…",
+        "keywords": "三个 batch APIs · Semantic：asynchronous，不是 slow · 与 caching 叠加 · Workload triage · partial-interactivity 陷阱 · output-schema 陷阱 · 你应该记住的数字"
       },
       {
         "name": "Model Routing as a Cost-Reduction Primitive",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/16-model-routing/",
+        "summary": "一个 dynamic broker 会评估每个 request（task type、Token length、Embedding similarity、confidence），并把简单 query 发送给便宜 model，把复杂 query 升级到 frontier model。也叫 model cascading。Production case st…",
+        "keywords": "四个 routing signals · 三种模式 · 实现 · 2026 价格曲线 · Drift 才是真正风险 · 你应该记住的数字"
       },
       {
         "name": "Disaggregated Prefill/Decode — NVIDIA Dynamo and llm-d",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/17-disaggregated-prefill-decode/",
+        "summary": "Prefill 是 compute-bound；decode 是 memory-bound。在同一块 GPU 上同时运行两者会浪费其中一种资源。Disaggregation 会把它们拆分到独立的资源池，并通过 NIXL（RDMA/InfiniBand 或 TCP fallback）在它们之间传输 KV cache。NVIDIA Dynamo（GTC 2…",
+        "keywords": "为什么瓶颈不同 · 架构 · Dynamo vs llm-d · 经济性 · 什么时候不要 disaggregate · Router 与 Phase 17 · 11 集成 · Blackwell 上的 MoE 才是真正有数字的地方 · 你应该记住的数字"
       },
       {
         "name": "vLLM Production Stack with LMCache KV Offloading",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/18-vllm-production-stack-lmcache/",
+        "summary": "vLLM 的 production-stack 是参考 Kubernetes 部署，把 router、engines 和 observability 连接在一起。LMCache 是 KV-offloading 层，它把 KV cache 从 GPU memory 中抽取出来，并在 queries 和 engines 之间复用（先是 CPU DRAM，然…",
+        "keywords": "vLLM production-stack · KV Offloading Connector API (v0.9.0+) · Native CPU offload vs LMCache · Benchmark behavior · When LMCache is decisive · When NOT to enable · Integration with disaggregated serving · Numbers you should remember"
       },
       {
         "name": "AI Gateways — LiteLLM, Portkey, Kong, Bifrost",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/19-ai-gateways/",
+        "summary": "Gateway 位于你的 app 和 model provider 之间。核心功能是 provider routing、fallback、retries、rate limiting、secret references、observability、guardrails。2026 年的市场分化：**LiteLLM** 是 MIT OSS，支持 100+ p…",
+        "keywords": "Six core features · LiteLLM — MIT OSS, Python · Portkey — control plane positioning · Kong AI Gateway — the scale play · Bifrost (Maxim AI) · Cloudflare AI Gateway / Vercel AI Gateway · Self-hosted vs managed · Latency budget · Rate-limit semantics matter · Gateway + observability + routing compose · Numbers you should remember"
       },
       {
         "name": "Shadow, Canary, and Progressive Deployment",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/20-shadow-canary-progressive/",
+        "summary": "LLM rollouts 结合了 software deployment 中最困难的部分：没有 unit tests、failure modes 分散、signals 滞后。顺序是：（1）shadow mode — 将 prod requests 复制给 candidate model，记录日志并比较，对用户零影响；它能捕捉明显的分布问题，但不是质量保…",
+        "keywords": "Shadow mode · Canary rollout · Non-determinism 是新的 variance · Cost 是变量 · Rollback 是武器 · Tooling · Metrics cadence · A/B 步骤是可选的 · 你应该记住的数字"
       },
       {
         "name": "A/B Testing LLM Features — GrowthBook and Statsig",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/21-ab-testing-llm-features/",
+        "summary": "传统 A/B Testing 并不是为非确定性的 LLM 构建的。关键区别：evals 回答“模型能完成这项工作吗？”A/B tests 回答“用户在意吗？”两者都必不可少；靠 vibe checks 发布已经结束了。2026 年应该测试什么：prompt engineering（措辞）、model selection（GPT-4 vs GPT-3.5…",
+        "keywords": "Evals vs A/B tests · What to test · CUPED — 方差降低 · Sequential testing · 多重比较校正 · SRM — sample ratio mismatch · Statsig vs GrowthBook · 非确定性让统计功效变复杂 · Real case outcomes · 反模式：凭感觉上线 · 你应该记住的数字"
       },
       {
         "name": "Load Testing LLM APIs — k6, LLMPerf, GenAI-Perf",
         "status": "complete",
         "type": "Build",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/22-load-testing-llm-apis/",
+        "summary": "传统 load testers 并不是为 streaming responses、可变 output lengths、Token 级 metrics 或 GPU 饱和而设计的。大多数团队会被两个陷阱咬住。GIL 陷阱：Locust 的 Token 级测量在 Python GIL 下运行 tokenization，在高并发时会与 request gene…",
+        "keywords": "GIL 陷阱（Locust） · prompt-uniformity 陷阱 · 四种负载模式 · 2026 工具映射 · CI 中的 SLA gate · 真实的 prompt distribution · 你应该记住的数字"
       },
       {
         "name": "SRE for AI — Multi-Agent Incident Response",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/23-sre-for-ai/",
+        "summary": "AI SRE 通过 RAG 使用基于基础设施数据（日志、runbooks、服务拓扑）的 LLMs，来自动化调查、文档记录和协调阶段。2026 年的架构模式是 multi-agent orchestration — 专门化 agents（日志、指标、runbooks）由 supervisor 协调；AI 提出假设和查询，人类批准需要判断的决策。Datad…",
+        "keywords": "Multi-agent architecture · Auto-remediation scope · 对抗性评估（NeuBird Hawkeye） · Operational memory · Pre-incident prediction · Products in 2026 · Runbooks as code · Numbers you should remember"
       },
       {
         "name": "Chaos Engineering for LLM Production",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/24-chaos-engineering-llm/",
+        "summary": "到 2026 年，面向 LLMs 的 Chaos Engineering 已经成为一门独立实践。在 Production 中运行实验前的前置条件：已定义的 SLI/SLO、trace+metric+log observability、automated rollback、runbooks、on-call。Architecture 有四个 planes：…",
+        "keywords": "前置条件 · Four planes + feedback · Guardrails 是强制要求 · 五个 LLM-specific experiments · Cadence · Tooling · 从小处开始 · 你应该记住的数字"
       },
       {
         "name": "Security — Secrets, PII Scrubbing, Audit Logs",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/25-security-secrets-audit/",
+        "summary": "通过集中式 vault（HashiCorp Vault、AWS Secrets Manager、Azure Key Vault）消除 Secrets 蔓延。绝不要把凭证存放在 config files、VCS 中的 env files、spreadsheets 里。优先使用 IAM roles，而不是 static keys；CI/CD 使用 OIDC…",
+        "keywords": "集中式 vault + IAM-role pull · Rotation policy ≤ 90 days · Secret scanning · Zero-trust posture · PII / PHI scrubbing · Input + output guardrails · Network egress whitelist · Audit log · The 2026 Vercel incident · 你应该记住的数字"
       },
       {
         "name": "Compliance — SOC 2, HIPAA, GDPR, EU AI Act, ISO 42001",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/26-compliance-frameworks/",
+        "summary": "对 2026 年 enterprise deals 来说，multi-framework 覆盖是基本门槛。**EU AI Act**：自 2024 年 8 月 1 日起生效。大多数 high-risk 要求自 2026 年 8 月 2 日起执行。high-risk-system obligations 的罚款最高为 €15M 或全球年营业额的 3%（A…",
+        "keywords": "七个 frameworks · EU AI Act timeline · GDPR — real-time redaction 是标准 · HIPAA — BAA 不是可选项 · SOC 2 Type II · Cross-framework mapping · ISO 42001 — 新兴 · OpenAI 的参考 profile · 你应该记住的数字"
       },
       {
         "name": "FinOps for LLMs — Unit Economics and Multi-Tenant Attribution",
-        "status": "planned",
+        "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/27-finops-llms/",
+        "summary": "传统 FinOps 在 LLM 支出上会失效。成本是 Token 交易，而不是资源在线时长。标签无法映射，一个 API call 是一笔交易，不是一项资产。工程决策（prompt 设计、context window、输出长度）就是财务决策。2026 playbook 要求从第一天起就埋点三个归因维度：per-user（`user_id`）用于 seat…",
+        "keywords": "三个归因维度 · 四个 Token 层 · Enforcement ladder · 归因模式 · Cost per X 是单位指标 · 成本归因 trace 结构 · 复合节省栈 · 你应该记住的数字"
       },
       {
         "name": "Self-Hosted Serving Selection — llama.cpp, Ollama, TGI, vLLM, SGLang",
         "status": "complete",
         "type": "Learn",
-        "lang": "Python"
+        "lang": "Python",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/17-infrastructure-and-production/28-self-hosted-serving-selection/",
+        "summary": "2026 年，四个引擎主导自托管 inference。根据硬件、规模和生态系统来选择。**llama.cpp** 在 CPU 上最快 — model 支持最广，对 quantization 和 threading 拥有完全控制。**Ollama** 是开发笔记本上的一条命令安装方案，比 llama.cpp 慢约 15-30%（Go + CGo + HT…",
+        "keywords": "五个引擎 · 硬件优先决策 · 规模其次决策 · Workload 第三决策 · TGI 维护陷阱 · Pipeline 模式 · Ollama 注意事项 · 自托管 vs managed 是另一个决策 · 你应该记住的数字"
       }
     ]
   },
@@ -3565,8 +3649,8 @@ const PHASES = [
         "type": "Learn",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/",
-        "summary": "后续所有对 RLHF 的批评，都是在反对这条 pipeline。你在研究 optimization pressure 如何扭曲一个 proxy 之前，必须先看清这个 proxy。InstructGPT (Ouyang et al., 2022) 定义了参考架构：在指令-回答对上进行 supervised fine-tuning，在成对 preferen…",
-        "keywords": "阶段 1：supervised fine-tuning (SFT) · 阶段 2：reward model (RM) · 阶段 3：带 KL 惩罚的 PPO · The alignment tax · The result · 为什么这是 Phase 18 的参考点"
+        "summary": "之后每个对 RLHF 的 critique 都是在反对这条 pipeline。在你研究 optimization pressure 如何扭曲一个 proxy 之前，必须先看清这个 proxy。InstructGPT（Ouyang et al., 2022）定义了 reference architecture：在 instruction-response…",
+        "keywords": "Stage 1: supervised fine-tuning (SFT) · Stage 2: reward model (RM) · Stage 3: PPO with a KL penalty · The alignment tax · The result · Why this is the reference point for Phase 18"
       },
       {
         "name": "Reward Hacking & Goodhart's Law",
@@ -3574,8 +3658,8 @@ const PHASES = [
         "type": "Learn",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/",
-        "summary": "任何强到足以最大化 proxy reward 的 Optimizer，都会找到 proxy 与你真正想要的东西之间的差距。Gao et al. (ICML 2023) 给出了它的 scaling law：proxy reward 上升，gold reward 先达到峰值然后下降，并且这个差距会随着相对于初始 policy 的 KL divergence…",
-        "keywords": "精确定义 Goodhart's Law · 四种外衣，一个机制 · Catastrophic Goodhart · 实际有效的办法（部分有效） · 2026 统一视角"
+        "summary": "任何足够强、能够最大化 proxy reward 的 Optimizer，都会找到 proxy 与你真正想要的东西之间的 gap。Gao et al.（ICML 2023）给出了它的 scaling law：proxy reward 上升，gold reward 先达到峰值再下降，而这个 gap 会随着相对初始 policy 的 KL divergen…",
+        "keywords": "Goodhart's Law, made precise · Four costumes, one mechanism · Catastrophic Goodhart · What actually works (partially) · The 2026 unified view"
       },
       {
         "name": "Direct Preference Optimization Family",
@@ -3583,8 +3667,8 @@ const PHASES = [
         "type": "Learn",
         "lang": "Python",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/",
-        "summary": "Rafailov et al. (2023) 证明 RLHF 的最优解可以用 preference data 写成闭式形式，因此你可以跳过显式 reward model，直接优化 policy。这个洞见催生了一个家族 — IPO, KTO, SimPO, ORPO, BPO — 每一种都修复了 DPO 的一种失败模式。到 2026 年，direct a…",
-        "keywords": "DPO (Rafailov et al., 2023) · IPO (Azar et al., 2024) · KTO (Ethayarajh et al., 2024) · SimPO (Meng et al., 2024) · ORPO (Hong et al., 2024) · BPO（ICLR 2026 投稿，OpenReview id=b97EwMUWu7） · 通用结果：DAAs 仍然会过度优化 · 如何选择（2026）"
+        "summary": "Rafailov et al. (2023) 证明，RLHF 的最优解可以用 preference data 写成闭式形式，因此你可以跳过显式 reward model，直接优化 policy。这个洞见催生了一个家族：IPO、KTO、SimPO、ORPO、BPO，每个方法都修复了 DPO 的一个 failure mode。到 2026 年，direct…",
+        "keywords": "DPO (Rafailov et al., 2023) · IPO (Azar et al., 2024) · KTO (Ethayarajh et al., 2024) · SimPO (Meng et al., 2024) · ORPO (Hong et al., 2024) · BPO (ICLR 2026 submission, OpenReview id=b97EwMUWu7) · 通用结论：DAAs 仍然会 over-optimize · 如何选择（2026）"
       },
       {
         "name": "Sycophancy as RLHF Amplification",
@@ -3835,7 +3919,7 @@ const PHASES = [
     "id": 19,
     "name": "Capstone Projects",
     "status": "complete",
-    "desc": "2026 年可端到端交付的产品，每个 20-40 小时。",
+    "desc": "17 个端到端产品 + 4 条深度构建 track。每个项目 20-40 小时；每条 track 4-12 节课。",
     "lessons": [
       {
         "name": "Terminal-Native Coding Agent",
@@ -3989,6 +4073,360 @@ const PHASES = [
         "combines": "P5 P6 P11 P12 P14 P17 P18",
         "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/17-personal-ai-tutor/",
         "summary": "Khanmigo（Khan Academy）、Duolingo Max、Google LearnLM / Gemini for Education、Quizlet Q-Chat 和 Synthesis Tutor 都在 2026 年规模化交付了自适应 Multimodal 辅导。共同形态是 Socratic policy（绝不只是直接给出答案）、每次交…"
+      },
+      {
+        "name": "Agent Harness Loop Contract",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/20-agent-harness-loop-contract/",
+        "summary": "harness 就是 agent。model 是 coprocessor。本课会冻结你可以接入任意 model 的 loop contract。"
+      },
+      {
+        "name": "Tool Registry with Schema Validation",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/21-tool-registry-schema-validation/",
+        "summary": "agent 无法验证的 tool，就是 agent 无法调用的 tool。先构建 registry 和 schema checker，再构建 tools。"
+      },
+      {
+        "name": "JSON-RPC 2.0 Over Newline-Delimited Stdio",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/22-jsonrpc-stdio-transport/",
+        "summary": "model client 与 tool server 之间的 transport 是基于 stdio 的 JSON-RPC。手写一次它，会让你理解每一层 framing 都在付出什么成本。"
+      },
+      {
+        "name": "Function Call Dispatcher",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/23-function-call-dispatcher/",
+        "summary": "dispatcher 是 harness 为 schema 做出的每个承诺买单的地方。Timeouts、retries、dedupe、error mapping。全部集中在一个接口边界上。"
+      },
+      {
+        "name": "Plan-Execute Control Flow",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/24-plan-execute-control-flow/",
+        "summary": "无法承受 failure 的 plan 是 script。能 replan 的 script 才是 agent。先构建 replanner。"
+      },
+      {
+        "name": "Verification Gates and Observation Budget",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/25-verification-gates-observation-budget/",
+        "summary": "没有验证层的 agent harness，只是披着外套的愿望。本课会构建确定性的 gate chain，用来决定是否允许一次 tool call 触发、agent 可以看到多少输出，以及当 agent 已经读取太多内容时 loop 何时必须停止。这个 chain 由小型、具名的 gates 加上 observation ledger 组成；ledger…"
+      },
+      {
+        "name": "Sandbox Runner with Denylist and Path Jail",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/26-sandbox-runner-denylist/",
+        "summary": "verification gate 决定一次 tool call 是否应该运行。sandbox 决定它运行时会发生什么。本课提供一个 subprocess runner，它会拒绝危险的 executables，拒绝危险的 argv shapes，将每个 file path 限制在 project root 内，截断超大输出，并在 wall-clock …"
+      },
+      {
+        "name": "Eval Harness with Fixture Tasks",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/27-eval-harness-fixture-tasks/",
+        "summary": "一个 coding agent 的水平，取决于你用来衡量它的任务套件。本课会构建一个 evaluation harness：它接收一个 fixture tasks 文件夹，让候选 agent 逐个运行这些任务，通过确定性的 verifier 评定 pass 或 fail，并把结果聚合为 pass@1、pass@k、平均 latency 和平均 cost…"
+      },
+      {
+        "name": "Observability with OTel GenAI Spans and Prometheus Metrics",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/28-observability-otel-traces/",
+        "summary": "没有 observability 的 agent harness 是一个会花钱的黑箱。本课会手写一个 span builder，发出符合 OpenTelemetry GenAI semantic conventions 的 records，把它们写入 JSON-Lines 文件，每行一个 span，并以 Prometheus text format 暴…"
+      },
+      {
+        "name": "End-to-End Coding Agent on the Harness",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "A. Agent harness",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/29-end-to-end-coding-task-demo/",
+        "summary": "Track A 的成果。本课程把 gate chain、sandbox、eval harness 和 OTel spans 串接成一个可工作的 Coding Agent，用来修复一个多文件 Python project 中真实的（小型 fixture 规模）bug。这个 agent 是 deterministic policy，不是 LLM；这个替换让…"
+      },
+      {
+        "name": "BPE Tokenizer From Scratch",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/",
+        "summary": "字节进，ids 出，ids 再回到相同字节。构建每个现代文本模型仍然起步于此的 Tokenizer。"
+      },
+      {
+        "name": "Tokenized Dataset with Sliding Window",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/31-tokenized-dataset-sliding-window/",
+        "summary": "一次预训练运行，是一个从 Token ids 到 Gradient 的函数。本课会构建把 ids 送进去的传送带。"
+      },
+      {
+        "name": "Token and Positional Embeddings",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/32-token-positional-embeddings/",
+        "summary": "Ids 是整数。model 需要 Vector。两张 lookup tables 位于二者之间，而 positional table 的选择会塑造 model 能学到什么。"
+      },
+      {
+        "name": "Multi-Head Self-Attention",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/33-multihead-self-attention/",
+        "summary": "一个线性投影，三种视图，H 个并行 head，一个 mask。这就是模型实际使用的 Attention block。"
+      },
+      {
+        "name": "Transformer Block from Scratch",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/34-transformer-block/",
+        "summary": "一个 block 是每个现代 decoder LLM 的基本单元。Layer norm、multi head attention、residual、MLP、residual。pre-LN 变体无需 warmup 也能稳定训练。post-LN 变体是原始论文发布的版本。本课会并排构建二者，并展示在常见 learning rate 下，哪一个能撑过 12 …",
+        "keywords": "Causal multi head attention · The MLP · Residual connections do two things"
+      },
+      {
+        "name": "GPT Model Assembly",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/35-gpt-model-assembly/",
+        "summary": "十二个 block 堆叠，一个 Token Embedding，一个学习得到的 Position Embedding，一个最终 LayerNorm，以及一个权重绑定的 language model head。这就是完整的 1.24 亿参数 GPT 模型。本课会把这些组件组装成一个可运行的 class，统计参数以确认模型匹配参考的 124M 形状，并使用…",
+        "keywords": "Weight tying · Position embedding 是学习得到的，不是 sinusoidal · Generation: temperature, top-k, multinomial"
+      },
+      {
+        "name": "Training Loop and Evaluation",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/36-training-loop-eval/",
+        "summary": "不测量的 loop 就是在说谎。本课构建驱动 GPT 模型的 training loop：带 weight decay split 的 AdamW、warmup 加 cosine learning rate schedule、`calc_loss_batch` helper、在 held out data 上的 `evaluate_model` pas…",
+        "keywords": "Loss alignment · AdamW decay split · Warmup plus cosine schedule · Held out evaluation · Qualitative sampling as an early signal"
+      },
+      {
+        "name": "Loading Pretrained Weights",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/37-loading-pretrained-weights/",
+        "summary": "从零训练一个 124 million parameter model 是预算决策；加载一个公开 checkpoint 则是日常操作。本课会把 safetensors file 中的 pretrained GPT-2 style weights 加载到 lesson 35 的同一个 architecture 中，逐段讲解 parameter name m…",
+        "keywords": "The GPT-2 naming convention · The local naming convention · The stub fixture"
+      },
+      {
+        "name": "Classifier Fine-Tuning by Head Swap",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/38-classifier-finetuning/",
+        "summary": "Track B 的第一个 capstone。Pretrained language model 是一叠 self-attention blocks，末端是 token-prediction head。当你想做 spam vs ham 时，head 是错的，但 body 基本是对的。本课会拆掉 head，把一个 two-class linear laye…"
+      },
+      {
+        "name": "Instruction Tuning by Supervised Fine-Tuning",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/39-instruction-tuning-sft/",
+        "summary": "pretrained base model 可以延续一个序列，但无法遵循一条指令。Supervised fine-tuning 是修正这一点的最小改动：向模型喂入由 instruction 和期望 response 配对组成的样例，并训练主体来预测 response tokens。关键在于你只希望 Loss 计算 response，而不是 instru…"
+      },
+      {
+        "name": "Direct Preference Optimization from Scratch",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/40-dpo-from-scratch/",
+        "summary": "Reward models 和 PPO 是经典 RLHF stack。DPO 将这个 stack 压缩成一个 supervised loss，直接用 preference pairs 拟合 policy。本课会从 reward-difference identity 推导 DPO loss，提供可工作的 reference model 加 policy…"
+      },
+      {
+        "name": "Full Evaluation Pipeline",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "B. NLP LLM",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/41-eval-pipeline/",
+        "summary": "Training 是你可以用 loss curves 监控的部分。Evaluation 是你必须设计的部分。本课会构建一个统一的 eval pipeline：它接收任意训练好的 language model，在其上运行四种异构 eval，将结果聚合为按任务拆分的 report，并提供一个本地 mock LLM-as-judge，让整个 loop 无需网…"
+      },
+      {
+        "name": "Large Corpus Downloader",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/42-large-corpus-downloader/",
+        "summary": "训练 language model 早在第一次 forward pass 之前就开始了。corpus 必须落到 disk 上，完成 decompressed、deduplicated，并且可 addressable；在网络 4 percent 处断掉之前，resume story 就已经要设计好。本课会构建一个 streaming downloader…",
+        "keywords": "Streaming with `urllib` · Resume with `Range` · MinHash plus LSH · Shard manifest as a contract"
+      },
+      {
+        "name": "HDF5 Tokenized Corpus",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/43-hdf5-tokenized-corpus/",
+        "summary": "下载好的语料必须落到一种 trainer 能以行速流式读取的布局里。磁盘上的 JSONL 扛不住 16 个 dataloader worker。带可调整大小、分块 integer dataset 的 HDF5 可以。本课会构建流式 tokenization 到可调整大小的 HDF5 dataset、跨多个文件的 sharded write、训练时的 m…",
+        "keywords": "正确使用 Resizable HDF5 · Sharded write · Memory-mapped read · Sliding-window dataloader"
+      },
+      {
+        "name": "Cosine LR with Linear Warmup",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/44-cosine-lr-warmup/",
+        "summary": "learning-rate schedule 是仅次于 Loss Function 的第二重要决策。带 cosine decay 和 linear warmup 的 AdamW 是 language-model training 的现代默认选择，因为它让模型在脆弱的前一千次 updates 中看到较小的 effective step size，逐步升到…",
+        "keywords": "Warmup formula · Cosine formula · Floor after total steps · 将 Gradient norm 与 rate 一起记录"
+      },
+      {
+        "name": "Gradient Clipping and Mixed Precision",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/45-gradient-clipping-amp/",
+        "summary": "上一课中的 Optimizer 和 schedule 假设 Gradient 是正常的。它们通常并不正常。一个糟糕 batch 就能让 gradient norm 飙升三个数量级。Mixed-precision training 会通过在 Loss 侧引入 FP16 overflow 放大这个问题。本课构建 production training 缺一…",
+        "keywords": "Global L2 norm · autocast and GradScaler · NaN and Inf detection · Scaling factor diagnostics"
+      },
+      {
+        "name": "Gradient Accumulation",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/46-gradient-accumulation/",
+        "summary": "用一个个 micro-batch，训练出你负担不起的 effective batch。Scale Loss，暂缓 optimizer step，让 Gradient 累积起来。",
+        "keywords": "The equivalence proof in code · Where the cost goes · Step 1: equivalence check · Step 2: sync-on-last-step pattern · Step 3: the throughput curve"
+      },
+      {
+        "name": "Checkpoint Save and Resume",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/47-checkpoint-save-resume/",
+        "summary": "训练中断会杀死运行；checkpoint 让它们可以继续。原子化保存 model、Optimizer、scheduler、Loss history、step counter 和 RNG state，这样任何时刻被终止时，磁盘上都会留下一个有效文件。",
+        "keywords": "五个 state buckets · Atomic save · Sharded checkpoints · Resume 从 epoch 中途继续 · Step 1: 捕获并恢复 RNG state · Step 2: atomic save · Step 3: 完整 checkpoint round trip · Step 4: sharded variant · Step 5: resume demo"
+      },
+      {
+        "name": "Distributed Data Parallel and FSDP from Scratch",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/48-distributed-fsdp-ddp/",
+        "summary": "Multi-rank training 是两个 collective 和一条规则。启动时 broadcast parameters，backward 后 average gradients，永远不要让各个 rank 对自己处于哪一步产生分歧。",
+        "keywords": "重要的两个 collectives · Gradient averaging 匹配 single-process gradient · FSDP sketch · CPU 与 gloo backend · Step 1：启动 process group · Step 2：construction 时 broadcast · Step 3：backward 后 all-reduce gradients · Step 4：证明等价性 · Step 5：FSDP round trip"
+      },
+      {
+        "name": "Language Model Evaluation Harness",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "C. Train end-to-end",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/49-lm-eval-harness/",
+        "summary": "如果一个模型在你无法定义的任务上表现很好，那它只是碰巧表现很好。Harness 把任务定义、metric、runner 和 leaderboard 放进一个简短、可替换的形状里。",
+        "keywords": "Task spec · 五个 fixture tasks · Metric contract · Model adapter · Runner · Step 1：seed fixture tasks · Step 2：load tasks · Step 3：implement metrics · Step 4：write the runner · Step 5：emit JSON"
+      },
+      {
+        "name": "Hypothesis Generator",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/50-hypothesis-generator/",
+        "summary": "一个 research agent 如果把同一个问题问两遍，就是在浪费 token。关键是强制每个 draft 落到新的位置。"
+      },
+      {
+        "name": "Literature Retrieval",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/51-literature-retrieval/",
+        "summary": "一个 hypothesis 很廉价。知道是否已经有人证明过它，才是昂贵的部分。构建 retrieval layer，在 runner 启动 sandbox 之前回答这个问题。"
+      },
+      {
+        "name": "Experiment Runner",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/52-experiment-runner/",
+        "summary": "loop 的诚实程度取决于它的 measurements。构建 runner：它接收一个 spec，在 sandboxed subprocess 中执行，并发出一个 evaluator 可以信任的 json metrics blob。"
+      },
+      {
+        "name": "Result Evaluator",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/53-result-evaluator/",
+        "summary": "runner 产出了数字。evaluator 判断这些数字代表改进、regression，还是 noise。构建一条 verdict 路径，把 metrics 转换成一句结论。"
+      },
+      {
+        "name": "Paper Writer",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/54-paper-writer/",
+        "summary": "LaTeX skeleton 是 researcher 与 typesetter 之间的 contract。如果 contract 被破坏，document 就无法 compile，而且 failure 会很明显。先构建 skeleton，再填充它。"
+      },
+      {
+        "name": "Critic Loop",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/55-critic-loop/",
+        "summary": "第一次就返回 \"looks good\" 的 critic 是坏的。永远返回 \"needs work\" 的 critic 也是坏的。有意思的 critic 是会收敛的那个，而你必须工程化地实现这种收敛。"
+      },
+      {
+        "name": "Iteration Scheduler",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/56-iteration-scheduler/",
+        "summary": "没有 scheduler 的 research loop，就是一个带着妄想的 queue。scheduler 是 loop 决定停止探索什么的地方，而这个决定就是整场游戏的核心。"
+      },
+      {
+        "name": "End-to-End Research Demo",
+        "status": "complete",
+        "type": "Capstone",
+        "lang": "Python",
+        "combines": "D. Auto research",
+        "url": "https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/19-capstone-projects/57-end-to-end-research-demo/",
+        "summary": "Demo 是你之前写下的每一个 contract 都必须组合起来的地方。只要其中任何一个泄漏，Demo 就是抓住它的那一课。"
       }
     ]
   }
@@ -7550,7 +7988,7 @@ const ARTIFACTS = [
   {
     "kind": "skill",
     "name": "framework-picker",
-    "description": "通过将 abstraction 与问题形态匹配，为 agent 任务选择 LangGraph、CrewAI、AutoGen、Agno 或 plain Python。",
+    "description": "根据 abstraction 与 problem shape 的匹配，为 agent task 选择 LangGraph、CrewAI、AutoGen、Agno 或 plain Python。",
     "tags": [
       "langgraph",
       "crewai",
@@ -11187,5 +11625,65 @@ const ARTIFACTS = [
     "lesson": 17,
     "lessonPath": "phases/19-capstone-projects/17-personal-ai-tutor",
     "file": "phases/19-capstone-projects/17-personal-ai-tutor/outputs/skill-ai-tutor.md"
+  },
+  {
+    "kind": "skill",
+    "name": "gradient-accumulation",
+    "description": "通过缩放 micro-batch Loss，并在每个窗口只执行一次 Optimizer step，以大于设备内存可容纳的 effective batch 进行训练。",
+    "tags": [
+      "training",
+      "batch-size",
+      "distributed",
+      "scaling"
+    ],
+    "phase": 19,
+    "lesson": 46,
+    "lessonPath": "phases/19-capstone-projects/46-gradient-accumulation",
+    "file": "phases/19-capstone-projects/46-gradient-accumulation/outputs/skill-gradient-accumulation.md"
+  },
+  {
+    "kind": "skill",
+    "name": "checkpoint-save-resume",
+    "description": "原子式、分片 checkpoint，完整捕获 RNG，使被杀死的 run 可以在 epoch 中途 resume，并保持相同的 loss trajectory。",
+    "tags": [
+      "training",
+      "durability",
+      "resume",
+      "sharded-state"
+    ],
+    "phase": 19,
+    "lesson": 47,
+    "lessonPath": "phases/19-capstone-projects/47-checkpoint-save-resume",
+    "file": "phases/19-capstone-projects/47-checkpoint-save-resume/outputs/skill-checkpoint-save-resume.md"
+  },
+  {
+    "kind": "skill",
+    "name": "distributed-fsdp-ddp",
+    "description": "使用从零实现的 DDP wrapper 和 FSDP 参数分片草图，在 gloo 或 nccl backend 上启动多 rank 训练。",
+    "tags": [
+      "distributed",
+      "ddp",
+      "fsdp",
+      "collectives"
+    ],
+    "phase": 19,
+    "lesson": 48,
+    "lessonPath": "phases/19-capstone-projects/48-distributed-fsdp-ddp",
+    "file": "phases/19-capstone-projects/48-distributed-fsdp-ddp/outputs/skill-distributed-fsdp-ddp.md"
+  },
+  {
+    "kind": "skill",
+    "name": "lm-eval-harness",
+    "description": "最小化 language model evaluation harness，包含 JSONL task spec、五种 metric、可替换 adapter，以及 leaderboard JSON 输出。",
+    "tags": [
+      "evaluation",
+      "metrics",
+      "leaderboard",
+      "harness"
+    ],
+    "phase": 19,
+    "lesson": 49,
+    "lessonPath": "phases/19-capstone-projects/49-lm-eval-harness",
+    "file": "phases/19-capstone-projects/49-lm-eval-harness/outputs/skill-lm-eval-harness.md"
   }
 ];

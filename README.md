@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
-  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-435-3553ff?style=flat-square&labelColor=fafaf5" alt="435 节课"></a>
+  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-473-3553ff?style=flat-square&labelColor=fafaf5" alt="473 节课"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 个 Phase"></a>
   <a href="https://github.com/rohitg00/ai-engineering-from-scratch/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/ai-engineering-from-scratch?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
   <a href="https://aiengineeringfromscratch.com"><img src="https://img.shields.io/badge/web-aiengineeringfromscratch.com-3553ff?style=flat-square&labelColor=fafaf5" alt="网站"></a>
@@ -19,7 +19,7 @@
 > **84% 的学生已经在使用 AI 工具。只有 18% 认为自己已准备好以
 > 专业方式使用它们。** 这套课程正是为了弥合这道差距。
 >
-> 435 节课。20 个 Phase。约 320 小时。Python、TypeScript、Rust、Julia。每节课都会产出
+> 473 节课。20 个 Phase。约 320 小时。Python、TypeScript、Rust、Julia。每节课都会产出
 > 一个可复用 artifact：prompt、skill、agent、MCP server。免费、开源、MIT。
 >
 > 你不只是学习 AI。你会亲手构建它。端到端。从零开始。
@@ -31,7 +31,7 @@
 解释它的 loss curve。你把一个 function 接到 agent 上，却说不清在调用它的 model 内部，
 attention 究竟在做什么。
 
-这套课程就是主干。20 个 Phase，435 节课，四门语言：Python、TypeScript、
+这套课程就是主干。20 个 Phase，473 节课，四门语言：Python、TypeScript、
 Rust、Julia。一端是 linear algebra，另一端是 autonomous swarms。每个 algorithm
 都会先从原始数学手写构建。Backprop。Tokenizer。Attention。Agent loop。等到
 PyTorch 出场时，你已经知道它在底层做什么。
@@ -173,7 +173,7 @@ ls phases/03-deep-learning-core/05-loss-functions/outputs/
 </table>
 
 > 用 `python3 scripts/install_skills.py` 一次性安装全部内容。是真工具，不是作业。
-> 完成整套课程后，你会拥有一个包含 435 个 artifacts 的作品集，并且真正理解它们，
+> 完成整套课程后，你会拥有一个包含 473 个 artifacts 的作品集，并且真正理解它们，
 > 因为它们都是你亲手构建的。
 
 ### FIG_002 · 一个完整示例
@@ -757,34 +757,34 @@ the agent went wrong and explain why...
 
 | # | 课程 | 类型 | 语言 |
 |:---:|--------|:----:|------|
-| 01 | Managed LLM Platforms — Bedrock, Azure OpenAI, Vertex AI | 学习 | Python |
-| 02 | Inference Platform Economics — Fireworks, Together, Baseten, Modal | 学习 | Python |
-| 03 | GPU Autoscaling on Kubernetes — Karpenter, KAI Scheduler | 学习 | Python |
-| 04 | vLLM Serving Internals — PagedAttention, Continuous Batching, Chunked Prefill | 学习 | Python |
-| 05 | EAGLE-3 Speculative Decoding in Production | 学习 | Python |
-| 06 | SGLang and RadixAttention for Prefix-Heavy Workloads | 学习 | Python |
-| 07 | TensorRT-LLM on Blackwell with FP8 and NVFP4 | 学习 | Python |
-| 08 | Inference Metrics — TTFT, TPOT, ITL, Goodput, P99 | 学习 | Python |
-| 09 | Production Quantization — AWQ, GPTQ, GGUF, FP8, NVFP4 | 学习 | Python |
-| 10 | Cold Start Mitigation for Serverless LLMs | 学习 | Python |
-| 11 | Multi-Region LLM Serving and KV Cache Locality | 学习 | Python |
-| 12 | Edge Inference — ANE, Hexagon, WebGPU, Jetson | 学习 | Python |
-| 13 | LLM Observability Stack Selection | 学习 | Python |
-| 14 | Prompt Caching and Semantic Caching Economics | 学习 | Python |
-| 15 | Batch APIs — the 50% Discount as Industry Standard | 学习 | Python |
-| 16 | Model Routing as a Cost-Reduction Primitive | 学习 | Python |
-| 17 | Disaggregated Prefill/Decode — NVIDIA Dynamo and llm-d | 学习 | Python |
-| 18 | vLLM Production Stack with LMCache KV Offloading | 学习 | Python |
-| 19 | AI Gateways — LiteLLM, Portkey, Kong, Bifrost | 学习 | Python |
-| 20 | Shadow, Canary, and Progressive Deployment | 学习 | Python |
-| 21 | A/B Testing LLM Features — GrowthBook and Statsig | 学习 | Python |
-| 22 | Load Testing LLM APIs — k6, LLMPerf, GenAI-Perf | 构建 | Python |
-| 23 | SRE for AI — Multi-Agent Incident Response | 学习 | Python |
-| 24 | Chaos Engineering for LLM Production | 学习 | Python |
-| 25 | Security — Secrets, PII Scrubbing, Audit Logs | 学习 | Python |
-| 26 | Compliance — SOC 2, HIPAA, GDPR, EU AI Act, ISO 42001 | 学习 | Python |
-| 27 | FinOps for LLMs — Unit Economics and Multi-Tenant Attribution | 学习 | Python |
-| 28 | Self-Hosted Serving Selection — llama.cpp, Ollama, TGI, vLLM, SGLang | 学习 | Python |
+| 01 | [Managed LLM Platforms — Bedrock, Azure OpenAI, Vertex AI](phases/17-infrastructure-and-production/01-managed-llm-platforms/) | 学习 | Python |
+| 02 | [Inference Platform Economics — Fireworks, Together, Baseten, Modal](phases/17-infrastructure-and-production/02-inference-platform-economics/) | 学习 | Python |
+| 03 | [GPU Autoscaling on Kubernetes — Karpenter, KAI Scheduler](phases/17-infrastructure-and-production/03-gpu-autoscaling-kubernetes/) | 学习 | Python |
+| 04 | [vLLM Serving Internals — PagedAttention, Continuous Batching, Chunked Prefill](phases/17-infrastructure-and-production/04-vllm-serving-internals/) | 学习 | Python |
+| 05 | [EAGLE-3 Speculative Decoding in Production](phases/17-infrastructure-and-production/05-eagle3-speculative-decoding/) | 学习 | Python |
+| 06 | [SGLang and RadixAttention for Prefix-Heavy Workloads](phases/17-infrastructure-and-production/06-sglang-radixattention/) | 学习 | Python |
+| 07 | [TensorRT-LLM on Blackwell with FP8 and NVFP4](phases/17-infrastructure-and-production/07-tensorrt-llm-blackwell/) | 学习 | Python |
+| 08 | [Inference Metrics — TTFT, TPOT, ITL, Goodput, P99](phases/17-infrastructure-and-production/08-inference-metrics-goodput/) | 学习 | Python |
+| 09 | [Production Quantization — AWQ, GPTQ, GGUF, FP8, NVFP4](phases/17-infrastructure-and-production/09-production-quantization/) | 学习 | Python |
+| 10 | [Cold Start Mitigation for Serverless LLMs](phases/17-infrastructure-and-production/10-cold-start-mitigation/) | 学习 | Python |
+| 11 | [Multi-Region LLM Serving and KV Cache Locality](phases/17-infrastructure-and-production/11-multi-region-kv-locality/) | 学习 | Python |
+| 12 | [Edge Inference — ANE, Hexagon, WebGPU, Jetson](phases/17-infrastructure-and-production/12-edge-inference/) | 学习 | Python |
+| 13 | [LLM Observability Stack Selection](phases/17-infrastructure-and-production/13-llm-observability/) | 学习 | Python |
+| 14 | [Prompt Caching and Semantic Caching Economics](phases/17-infrastructure-and-production/14-prompt-semantic-caching/) | 学习 | Python |
+| 15 | [Batch APIs — the 50% Discount as Industry Standard](phases/17-infrastructure-and-production/15-batch-apis/) | 学习 | Python |
+| 16 | [Model Routing as a Cost-Reduction Primitive](phases/17-infrastructure-and-production/16-model-routing/) | 学习 | Python |
+| 17 | [Disaggregated Prefill/Decode — NVIDIA Dynamo and llm-d](phases/17-infrastructure-and-production/17-disaggregated-prefill-decode/) | 学习 | Python |
+| 18 | [vLLM Production Stack with LMCache KV Offloading](phases/17-infrastructure-and-production/18-vllm-production-stack-lmcache/) | 学习 | Python |
+| 19 | [AI Gateways — LiteLLM, Portkey, Kong, Bifrost](phases/17-infrastructure-and-production/19-ai-gateways/) | 学习 | Python |
+| 20 | [Shadow, Canary, and Progressive Deployment](phases/17-infrastructure-and-production/20-shadow-canary-progressive/) | 学习 | Python |
+| 21 | [A/B Testing LLM Features — GrowthBook and Statsig](phases/17-infrastructure-and-production/21-ab-testing-llm-features/) | 学习 | Python |
+| 22 | [Load Testing LLM APIs — k6, LLMPerf, GenAI-Perf](phases/17-infrastructure-and-production/22-load-testing-llm-apis/) | 构建 | Python |
+| 23 | [SRE for AI — Multi-Agent Incident Response](phases/17-infrastructure-and-production/23-sre-for-ai/) | 学习 | Python |
+| 24 | [Chaos Engineering for LLM Production](phases/17-infrastructure-and-production/24-chaos-engineering-llm/) | 学习 | Python |
+| 25 | [Security — Secrets, PII Scrubbing, Audit Logs](phases/17-infrastructure-and-production/25-security-secrets-audit/) | 学习 | Python |
+| 26 | [Compliance — SOC 2, HIPAA, GDPR, EU AI Act, ISO 42001](phases/17-infrastructure-and-production/26-compliance-frameworks/) | 学习 | Python |
+| 27 | [FinOps for LLMs — Unit Economics and Multi-Tenant Attribution](phases/17-infrastructure-and-production/27-finops-llms/) | 学习 | Python |
+| 28 | [Self-Hosted Serving Selection — llama.cpp, Ollama, TGI, vLLM, SGLang](phases/17-infrastructure-and-production/28-self-hosted-serving-selection/) | 学习 | Python |
 
 </details>
 
@@ -828,7 +828,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-19">
-<summary><b>Phase 19 — Capstone Projects</b> &nbsp;<code>17 projects</code>&nbsp; <em>2026 年可端到端交付的产品，每个 20-40 小时。</em></summary>
+<summary><b>Phase 19 — Capstone Projects</b> &nbsp;<code>55 lessons</code>&nbsp; <em>17 个端到端产品 + 4 条深度构建 track。每个项目 20-40 小时；每条 track 4-12 节课。</em></summary>
 <br/>
 
 | # | 项目 | 组合内容 | 语言 |
@@ -851,6 +851,49 @@ the agent went wrong and explain why...
 | 16 | [GitHub Issue-to-PR Autonomous Agent](phases/19-capstone-projects/16-github-issue-to-pr-agent/) | P11 P13 P14 P15 P17 | Python |
 | 17 | [Personal AI Tutor (Adaptive, Multimodal)](phases/19-capstone-projects/17-personal-ai-tutor/) | P5 P6 P11 P12 P14 P17 P18 | Python |
 
+**Deep-build tracks** — 多节课串联的系列，从零构建一个完整子系统。
+
+| # | 项目 | 组合内容 | 语言 |
+|:---:|---------|----------|------|
+| 20 | [Agent Harness Loop Contract](phases/19-capstone-projects/20-agent-harness-loop-contract/) | A. Agent harness | Python |
+| 21 | [Tool Registry with Schema Validation](phases/19-capstone-projects/21-tool-registry-schema-validation/) | A. Agent harness | Python |
+| 22 | [JSON-RPC 2.0 Over Newline-Delimited Stdio](phases/19-capstone-projects/22-jsonrpc-stdio-transport/) | A. Agent harness | Python |
+| 23 | [Function Call Dispatcher](phases/19-capstone-projects/23-function-call-dispatcher/) | A. Agent harness | Python |
+| 24 | [Plan-Execute Control Flow](phases/19-capstone-projects/24-plan-execute-control-flow/) | A. Agent harness | Python |
+| 25 | [Verification Gates and Observation Budget](phases/19-capstone-projects/25-verification-gates-observation-budget/) | A. Agent harness | Python |
+| 26 | [Sandbox Runner with Denylist and Path Jail](phases/19-capstone-projects/26-sandbox-runner-denylist/) | A. Agent harness | Python |
+| 27 | [Eval Harness with Fixture Tasks](phases/19-capstone-projects/27-eval-harness-fixture-tasks/) | A. Agent harness | Python |
+| 28 | [Observability with OTel GenAI Spans and Prometheus Metrics](phases/19-capstone-projects/28-observability-otel-traces/) | A. Agent harness | Python |
+| 29 | [End-to-End Coding Agent on the Harness](phases/19-capstone-projects/29-end-to-end-coding-task-demo/) | A. Agent harness | Python |
+| 30 | [BPE Tokenizer From Scratch](phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/) | B. NLP LLM | Python |
+| 31 | [Tokenized Dataset with Sliding Window](phases/19-capstone-projects/31-tokenized-dataset-sliding-window/) | B. NLP LLM | Python |
+| 32 | [Token and Positional Embeddings](phases/19-capstone-projects/32-token-positional-embeddings/) | B. NLP LLM | Python |
+| 33 | [Multi-Head Self-Attention](phases/19-capstone-projects/33-multihead-self-attention/) | B. NLP LLM | Python |
+| 34 | [Transformer Block from Scratch](phases/19-capstone-projects/34-transformer-block/) | B. NLP LLM | Python |
+| 35 | [GPT Model Assembly](phases/19-capstone-projects/35-gpt-model-assembly/) | B. NLP LLM | Python |
+| 36 | [Training Loop and Evaluation](phases/19-capstone-projects/36-training-loop-eval/) | B. NLP LLM | Python |
+| 37 | [Loading Pretrained Weights](phases/19-capstone-projects/37-loading-pretrained-weights/) | B. NLP LLM | Python |
+| 38 | [Classifier Fine-Tuning by Head Swap](phases/19-capstone-projects/38-classifier-finetuning/) | B. NLP LLM | Python |
+| 39 | [Instruction Tuning by Supervised Fine-Tuning](phases/19-capstone-projects/39-instruction-tuning-sft/) | B. NLP LLM | Python |
+| 40 | [Direct Preference Optimization from Scratch](phases/19-capstone-projects/40-dpo-from-scratch/) | B. NLP LLM | Python |
+| 41 | [Full Evaluation Pipeline](phases/19-capstone-projects/41-eval-pipeline/) | B. NLP LLM | Python |
+| 42 | [Large Corpus Downloader](phases/19-capstone-projects/42-large-corpus-downloader/) | C. Train end-to-end | Python |
+| 43 | [HDF5 Tokenized Corpus](phases/19-capstone-projects/43-hdf5-tokenized-corpus/) | C. Train end-to-end | Python |
+| 44 | [Cosine LR with Linear Warmup](phases/19-capstone-projects/44-cosine-lr-warmup/) | C. Train end-to-end | Python |
+| 45 | [Gradient Clipping and Mixed Precision](phases/19-capstone-projects/45-gradient-clipping-amp/) | C. Train end-to-end | Python |
+| 46 | [Gradient Accumulation](phases/19-capstone-projects/46-gradient-accumulation/) | C. Train end-to-end | Python |
+| 47 | [Checkpoint Save and Resume](phases/19-capstone-projects/47-checkpoint-save-resume/) | C. Train end-to-end | Python |
+| 48 | [Distributed Data Parallel and FSDP from Scratch](phases/19-capstone-projects/48-distributed-fsdp-ddp/) | C. Train end-to-end | Python |
+| 49 | [Language Model Evaluation Harness](phases/19-capstone-projects/49-lm-eval-harness/) | C. Train end-to-end | Python |
+| 50 | [Hypothesis Generator](phases/19-capstone-projects/50-hypothesis-generator/) | D. Auto research | Python |
+| 51 | [Literature Retrieval](phases/19-capstone-projects/51-literature-retrieval/) | D. Auto research | Python |
+| 52 | [Experiment Runner](phases/19-capstone-projects/52-experiment-runner/) | D. Auto research | Python |
+| 53 | [Result Evaluator](phases/19-capstone-projects/53-result-evaluator/) | D. Auto research | Python |
+| 54 | [Paper Writer](phases/19-capstone-projects/54-paper-writer/) | D. Auto research | Python |
+| 55 | [Critic Loop](phases/19-capstone-projects/55-critic-loop/) | D. Auto research | Python |
+| 56 | [Iteration Scheduler](phases/19-capstone-projects/56-iteration-scheduler/) | D. Auto research | Python |
+| 57 | [End-to-End Research Demo](phases/19-capstone-projects/57-end-to-end-research-demo/) | D. Auto research | Python |
+
 </details>
 
 ```
@@ -871,7 +914,7 @@ outputs/
 
 ### 将所有课程 skill 安装到你的 agent 中
 
-这个 repo 在 `phases/**/outputs/` 下提供 378 个 skills 和 99 个 prompts。
+这个 repo 在 `phases/**/outputs/` 下提供 382 个 skills 和 99 个 prompts。
 
 **推荐：通过 [skills.sh](https://skills.sh) 安装。** 无需 clone，无需 Python，并会自动检测你的 agent skills 目录：
 
@@ -1032,7 +1075,7 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 
 ## 赞助这项工作
 
-免费，MIT-licensed，435 节课。课程完全依靠 sponsorship 维护。只接受现金。
+免费，MIT-licensed，473 节课。课程完全依靠 sponsorship 维护。只接受现金。
 
 **触达（2026-05-14 已验证）：** 55,593 月访问者 · 90,709 page views · 7.5K stars ·
 Twitter/X 是 #1 acquisition channel。

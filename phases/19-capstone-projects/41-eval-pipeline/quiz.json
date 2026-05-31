@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/41-eval-pipeline",
+  "title": "完整 Evaluation Pipeline",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读前：一位同事报告说他们的 model 在 held-out set 上的 perplexity 是 4.2。他们问这个 model 好不好。最站得住脚的回答是什么？",
+      "options": [
+        "是的：perplexity 低于 5 就意味着 model 很好。",
+        "Perplexity 告诉你 model 对 language distribution 的拟合程度。它不说明 model 是否遵循 instructions 或返回正确答案。",
+        "没有显式 prompt，perplexity 就没有意义。",
+        "只有 judge models 能回答这个问题。"
+      ],
+      "correct": 1,
+      "explanation": "Perplexity 只是一个维度。model 可以有低 perplexity 但在事实任务上仍然错误，也可以有不错的 perplexity 但仍然产出低质量答案。你需要多个 eval，每个衡量不同维度。"
+    },
+    {
+      "stage": "check",
+      "question": "perplexity eval 会在非 pad positions 上累加 per-token negative log-likelihood，并除以非 pad Token 总数。为什么不直接平均 per-batch perplexities？",
+      "options": [
+        "平均 per-batch perplexities 在数学上等价。",
+        "平均 per-batch perplexities 会低估短 sequences 的权重（它们的 per-batch ppl 方差更大），并产生有偏 aggregate。",
+        "Batches 包含 padded tokens，必须始终被平均。",
+        "Perplexity 对 batched data 未定义。"
+      ],
+      "correct": 1,
+      "explanation": "Per-token aggregation 是教科书定义，并避免 batch-size 和 length biases。Per-batch averaging 是常见 bug；在 sequence lengths 不同的 fixture 上，它会产生与正确计算不同的数字。"
+    },
+    {
+      "stage": "check",
+      "question": "当 prediction 和 reference 都为空时，Token F1 返回 1.0。还有哪种情况必须返回特定值？",
+      "options": [
+        "当 pred 为空但 reference 非空时，F1 必须为 1.0。",
+        "当 pred 非空但 reference 为空时，F1 必须未定义。",
+        "当 pred 或 reference 只有一方为空时，F1 必须为 0.0。",
+        "当 pred 恰好包含一个匹配 Token 时，F1 必须为 0.5。"
+      ],
+      "correct": 2,
+      "explanation": "Empty-empty 是 vacuous match。混合 empty-non-empty 是明确的 miss：一侧有内容，另一侧没有。SQuAD 约定是在这种情况下 F1 = 0。"
+    },
+    {
+      "stage": "check",
+      "question": "aggregator 使用 `1 / (1 + log(max(ppl, 1.0)))` normalise perplexity。这对 normalised score 有什么保证？",
+      "options": [
+        "它始终在 [0, 1] 中，并且随着 raw perplexity 增大而单调下降。",
+        "它始终在 [0, 1] 中，并且随着 raw perplexity 增大而单调上升。",
+        "它没有上界。",
+        "它只返回 0 或 1（二元）。"
+      ],
+      "correct": 0,
+      "explanation": "Perplexity 1（理论下限）映射到 1.0。Infinity 映射到 0。score 位于 [0, 1]，且更低的 perplexity 更好，这与其他 normalised metrics 的方向一致。"
+    },
+    {
+      "stage": "post",
+      "question": "你将 mock judge 替换为真实 frontier-model judge。pipeline 的最小改动是什么？",
+      "options": [
+        "重写 aggregator 以接受不同的 score range。",
+        "将 `judge_eval` 的 `judge_fn` 参数替换为一个具有相同 signature 的函数：(instruction, prediction, reference) -> JudgeVerdict。",
+        "向 DEFAULT_WEIGHTS 添加一个新 entry。",
+        "将整个 eval suite 迁移到 async I/O。"
+      ],
+      "correct": 1,
+      "explanation": "judge interface 是 `(instruction, prediction, reference) -> JudgeVerdict`。任何具有该 signature 的函数都可以直接替换进去。pipeline 通过这条边界与 judge implementation 解耦，这正是重点。"
+    },
+    {
+      "stage": "post",
+      "question": "你的 aggregate score 是 0.72，但 exact-match 是 0.40，judge 是 4.5/5。model 正在做什么 trade-off？",
+      "options": [
+        "model 精确命中 gold string 的频率较低，但 judge 认为开放式答案还不错。",
+        "model 在 LM corpus 上过拟合。",
+        "aggregate 计算错误。",
+        "judge 按定义就与 exact-match 不对齐。"
+      ],
+      "correct": 0,
+      "explanation": "低 EM 加高 judge 暗示 paraphrase：答案在实质上是对的，但不是与 gold 逐字符一致。这正是 EM 漏掉而 judge 捕捉到的维度。这个 trade-off 提供了信息，不是 bug。"
+    }
+  ]
+}

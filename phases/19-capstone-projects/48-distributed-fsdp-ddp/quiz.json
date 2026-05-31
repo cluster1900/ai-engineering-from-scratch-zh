@@ -1,0 +1,78 @@
+{
+  "lesson": "48-distributed-fsdp-ddp",
+  "title": "从零实现 Distributed Data Parallel 和 FSDP",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "从零实现的 DDP wrapper 核心是哪两个 collective ops？",
+      "options": [
+        "send 和 recv",
+        "构造时 broadcast，让每个 rank 从相同参数开始；backward 后 all_reduce，让每个 rank 最终得到平均后的 Gradient",
+        "只用 reduce_scatter",
+        "barrier 和 barrier"
+      ],
+      "correct": 1,
+      "explanation": "初始化时 broadcast 会让各 rank 在第零步保持同步。backward 后 all-reduce 会让它们在之后的每一步保持同步。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么本课不需要 CUDA 也能在 CPU 上运行？",
+      "options": [
+        "它只是一个 stub",
+        "torch.distributed 自带 gloo backend，可以通过普通 socket 运行 collective，所以 CPU 上的 torch.multiprocessing worker 会组成真正的 process group；在 GPU 机器上只有 device tag 会变化",
+        "它使用模拟 tensor",
+        "它完全没有使用 torch.distributed"
+      ],
+      "correct": 1,
+      "explanation": "Gloo 是 CPU collective backend。相同的调用点在 GPU 上可用于 nccl；API surface 完全一致。"
+    },
+    {
+      "stage": "check",
+      "question": "manual_all_reduce_matches_single_process test 证明了什么？",
+      "options": [
+        "什么也没有证明",
+        "把各 rank 的 Gradient 相加并除以 world_size，可以在浮点噪声范围内恢复单进程在拼接输入上会计算出的 Gradient",
+        "Optimizer 会收敛",
+        "CUDA 不是必需的"
+      ],
+      "correct": 1,
+      "explanation": "完整 batch 上的 cross entropy mean reduction 等于各 rank mean 的平均。sum-and-divide 是正确操作；这个 test 让它变得可见。"
+    },
+    {
+      "stage": "check",
+      "question": "本课的 FSDP 草图在每次 forward pass 中对每个参数做什么？",
+      "options": [
+        "什么也不做",
+        "把 flat parameter pad 到 world_size 的倍数，切片，在每个 rank 上 all_gather 这些切片，丢弃 padding，并验证重建结果与原始参数一致",
+        "重新初始化参数",
+        "计算一个 hash"
+      ],
+      "correct": 1,
+      "explanation": "每个 rank 拥有每个参数的 1/world_size。gather 会为计算重建完整 tensor；生产级 FSDP 会把 gather 与上一层的工作重叠。"
+    },
+    {
+      "stage": "check",
+      "question": "即使参数长度不能被 world_size 整除，为什么 gloo all_gather 仍要使用 world_size 个等大小 shard？",
+      "options": [
+        "Gloo 的 all_gather 要求每个 rank 的输出 tensor size 相同，所以 flat parameter 会先 right-pad 到 world_size 的倍数再切片，gather 后再丢弃 padding",
+        "这是一个 bug",
+        "它能加快网络速度",
+        "随机选择"
+      ],
+      "correct": 0,
+      "explanation": "Gloo（以及 nccl）all_gather 期望 same-size output。Padding 是成本最低的修复；草图会把结果裁回原始长度。"
+    },
+    {
+      "stage": "post",
+      "question": "阅读 demo 输出时，跨 rank 的 param_sum_spread 接近零说明什么？",
+      "options": [
+        "Loss 很低",
+        "每个 rank 在运行结束时得到相同的参数值，这意味着构造时的 broadcast 和每次 backward 后的 all-reduce 都生效了；如果任一环节坏掉，spread 会随 step 增长",
+        "网络很快",
+        "没有有意义的信息"
+      ],
+      "correct": 1,
+      "explanation": "DDP 的 invariant 是各 rank 参数一致。spread 就是 audit；demo 断言它保持在 1e-3 以下。"
+    }
+  ]
+}

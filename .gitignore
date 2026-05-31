@@ -61,3 +61,4 @@ mlruns/
 !.claude/skills/
 /scripts/
 .agents/*
+catalog.json

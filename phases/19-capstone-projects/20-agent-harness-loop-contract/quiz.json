@@ -1,0 +1,90 @@
+{
+  "lesson": "20-agent-harness-loop-contract",
+  "title": "Agent Harness Loop Contract",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么要把 harness loop 建模为显式 state machine，而不是带 flags 的 while loop？",
+      "options": [
+        "它让 harness 能在一个地方拒绝非法 transitions，并从 event log replay sessions",
+        "它在 CPython 上更快",
+        "它避免了对 tests 的需要",
+        "它是 model 可以调用的唯一形状"
+      ],
+      "correct": 0,
+      "explanation": "state machine 会把合法性规则放进一个 transition function。同一输入序列会重现同一 state，这正是 session replay 成为可能的原因。"
+    },
+    {
+      "stage": "pre",
+      "question": "loop 中的 pull point 代表什么？",
+      "options": [
+        "loop 让出控制权，并等待 caller 提供 input 的位置",
+        "返回 tool name 的 model call",
+        "每 N 秒触发一次的 timer",
+        "mutate payload 的 hook subscriber"
+      ],
+      "correct": 0,
+      "explanation": "Pull points 是 returns，不是 exceptions。caller 获取 harness 请求的内容，并调用 resume()。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个 state 是 tool call 的唯一合法 pull point？",
+      "options": [
+        "EXECUTING",
+        "AWAITING_TOOL",
+        "REFLECTING",
+        "PLANNING"
+      ],
+      "correct": 1,
+      "explanation": "只有 AWAITING_TOOL 会产生 tool pull point。当某个 step 需要 tool 时，EXECUTING 会 transition 到它。"
+    },
+    {
+      "stage": "check",
+      "question": "当 hook 在 before_tool_call 中 raise HookAbort 时会发生什么？",
+      "options": [
+        "session 立即 transition 到 DONE",
+        "tool call 被跳过，on_error 触发，loop 移动到 REFLECTING",
+        "hook 被 unregister",
+        "budget 被 reset"
+      ],
+      "correct": 1,
+      "explanation": "HookAbort 会取消正在进行的 tool dispatch，带着 abort reason 触发 on_error，然后继续。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么要把 hooks 和 events 保持为分离的 concerns？",
+      "options": [
+        "因为 event types 是 bytes，而 hooks 是 strings",
+        "Hooks 是 imperative 的，可以 mutate 或 abort。Events 是 observational 且 append-only 的。",
+        "因为 audit script 禁止 subscribers",
+        "因为 event log 无法存储 dicts"
+      ],
+      "correct": 1,
+      "explanation": "Hooks 改变行为。Events 描述行为。混合两者会耦合 policy 和 telemetry，这正是我们要避免的 bug。"
+    },
+    {
+      "stage": "post",
+      "question": "当 wall-clock budget 被超过时，下一个 state 是什么？",
+      "options": [
+        "DONE — session 被终止",
+        "EXECUTING — loop 重试",
+        "IDLE — 返回一个带 budget_exceeded reason 的 pull point",
+        "PLANNING — 起草一个 fresh plan"
+      ],
+      "correct": 2,
+      "explanation": "Budget exhaustion 是一次 yield。harness transition 到 IDLE，触发 on_budget_exceeded，并返回 PullRequest，让 caller 决定是扩展还是关闭。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么本课 stub 掉 planner，而不是调用 model？",
+      "options": [
+        "因为 models 在本地调用很慢",
+        "为了在绑定任何 model 之前，让 loop contract 保持可测试和确定性",
+        "因为 models 无法返回 tool calls",
+        "为了节省 tokens"
+      ],
+      "correct": 1,
+      "explanation": "先固定 loop contract，可以让后续 lessons 接入真实 planners、registries 和 dispatchers，而无需重新协商 state machine。"
+    }
+  ]
+}

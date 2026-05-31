@@ -1,0 +1,78 @@
+{
+  "lesson": "30-bpe-tokenizer-from-scratch",
+  "title": "从零构建 BPE Tokenizer",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 byte-level BPE Tokenizer 从 256-symbol alphabet 开始？",
+      "options": [
+        "它保证任何 UTF-8 input 都能在学习任何 merge 之前被表示",
+        "它是支持英语的最小 alphabet",
+        "它匹配大多数 accelerators 上的 GPU warp size",
+        "它不再需要存储 merge table"
+      ],
+      "correct": 0,
+      "explanation": "256 个 raw byte ids 覆盖每个可能的 UTF-8 input。永远不需要 unknown Token，因为任何 input 都可以表示为 bytes sequence。"
+    },
+    {
+      "stage": "check",
+      "question": "每个 BPE training step 做什么？",
+      "options": [
+        "split 一个随机 word，并给它分配一个 new id",
+        "统计 corpus 中的相邻 symbol pairs，并 merge 最频繁的那个",
+        "通过移除最不常见的 id 来减少 vocabulary",
+        "训练一个小 Neural Network 来为 subwords 打分"
+      ],
+      "correct": 1,
+      "explanation": "每个 step 会找到 corpus 中频率最高的相邻 pair，将其 merge 成一个 new symbol，并记录该 merge。"
+    },
+    {
+      "stage": "check",
+      "question": "encoding 新文本时，merges 按什么顺序应用？",
+      "options": [
+        "随机顺序，直到没有 merge 可应用",
+        "按 input 中的位置从左到右，无视 training rank",
+        "按 merge 在 training 期间获得的 rank，最低 rank 优先",
+        "按 pair 的 bytes，以字母顺序排序"
+      ],
+      "correct": 2,
+      "explanation": "inference 会按 merges 学习到的顺序应用它们。当多个 merges 都可应用时，table 中最早的 merge 胜出。"
+    },
+    {
+      "stage": "check",
+      "question": "当 allow_special 为 False 时，encoder 对 special-token string 的行为是什么？",
+      "options": [
+        "它抛出 error",
+        "它将 string 映射到其 reserved id",
+        "它 encode 该 string 的 literal bytes",
+        "它静默跳过该 string"
+      ],
+      "correct": 2,
+      "explanation": "当 allow_special 关闭时，像 <|endoftext|> 这样的 string 会被当作 raw bytes，并像任何其他 input 一样通过 merge loop。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 decoder 永远不需要 unknown-token id？",
+      "options": [
+        "每个 learned token 都是两个 known tokens 的 concatenation，并会递归下探到 single bytes",
+        "encoder 会在 decoding 前剥离 unknown tokens",
+        "model 会在 sampling 期间拒绝 unknown ids",
+        "decoder 对 unknown ids 总是返回 empty string"
+      ],
+      "correct": 0,
+      "explanation": "每个 id 要么解析为 raw byte，要么解析为两个 previously known ids。recursive expansion 总会终止于 bytes，而 bytes 会 decode 成 UTF-8。"
+    },
+    {
+      "stage": "post",
+      "question": "随着 target vocabulary 增长，一个固定 sentence 的 encoded length 会发生什么？",
+      "options": [
+        "它随 vocabulary size 线性增加",
+        "它保持不变，因为每个 id encode 一个 single byte",
+        "它通常会减少，因为更大的 vocabularies 覆盖更多 subwords",
+        "它随机振荡，因为 BPE 是 non-deterministic"
+      ],
+      "correct": 2,
+      "explanation": "更大的 vocabularies 会学习更多 merges，因此常见 subwords 会折叠成 single ids，encoded sequence 会变短。"
+    }
+  ]
+}

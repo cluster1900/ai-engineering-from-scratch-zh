@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/28-observability-otel-traces",
+  "title": "Observability：OTel GenAI Spans 和 Prometheus Metrics",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读本课前：用 OTel GenAI attribute shape 编写 harness 的 spans，有什么实际好处？",
+      "options": [
+        "OTel spans 在磁盘上压缩得更好。",
+        "每个兼容 OTel 的 backend 都可以无需 custom parser 读取它们。",
+        "OTel 是 Python-only 标准，所以 harness 会获得 type hints。",
+        "这是 HIPAA 要求的。"
+      ],
+      "correct": 1,
+      "explanation": "这些 conventions 是与更广泛生态系统之间的契约。Honeycomb、Grafana Tempo、Jaeger 和 Datadog 都能开箱解析 gen_ai.* attributes。"
+    },
+    {
+      "stage": "check",
+      "question": "SpanBuilder.span() context 内部抛出 exception。本课的 builder 会记录什么？",
+      "options": [
+        "span 会被丢弃，以避免污染 trace。",
+        "status=ERROR，status_message 包含 exception type 和 message，并追加一个 'exception' event。",
+        "status 保持 UNSET，exception 被静默吞掉。",
+        "span 被重命名为 'error'。"
+      ],
+      "correct": 1,
+      "explanation": "Status ERROR 加上 exception event 符合 OTel spec。exception 会被重新抛出，因此 caller code 可以响应。"
+    },
+    {
+      "stage": "check",
+      "question": "histogram 的 Prometheus exposition 包含 _bucket、_sum 和 _count 行。为什么 bucket counts 是 cumulative（每个 le bucket 都包含所有更小 buckets）？",
+      "options": [
+        "Cumulative counts 让 scraper 可以通过 subtraction 计算 per-bucket counts，而不必存储所有 observations。",
+        "Cumulative counts 是 Grafana 支持的唯一格式。",
+        "它们不是 cumulative；本课的 exposition 是非标准的。",
+        "Cumulative counts 可以减少 floating-point error。"
+      ],
+      "correct": 0,
+      "explanation": "这是 Prometheus 的设计选择：backend 读取 cumulative counts，并计算 per-bucket differences。这让每个 bucket 的 time series 都是简单的 monotonic counter。"
+    },
+    {
+      "stage": "check",
+      "question": "harness 将一次 tool execution 包装进 span。哪些 attribute keys 在 GenAI conventions 下将它标识为 tool call？",
+      "options": [
+        "gen_ai.system + gen_ai.request.model。",
+        "gen_ai.tool.name + gen_ai.tool.call.id。",
+        "agent.harness.tool + agent.harness.call。",
+        "operation + tool.name。"
+      ],
+      "correct": 1,
+      "explanation": "gen_ai.tool.name 和 gen_ai.tool.call.id 是 GenAI conventions 中 tool executions 的 canonical keys。"
+    },
+    {
+      "stage": "post",
+      "question": "你想查询“read_file calls 的 p95 latency 是多少”。你应该查询哪个 artifact？",
+      "options": [
+        "traces.jsonl 中每个 span 的 duration_ms，由 script 解析。",
+        "在一个窗口内 scraped 的 Prometheus histogram tool_latency_ms{tool=\"read_file\"}。",
+        "counter tools_called_total 除以 time window。",
+        "span 的 status_message field。"
+      ],
+      "correct": 1,
+      "explanation": "Histograms 是 percentiles 的正确工具。counter 只计数；trace 包含 raw spans，但不是预聚合的。"
+    },
+    {
+      "stage": "post",
+      "question": "reviewer 问为什么本课手写，而不是导入 opentelemetry-sdk。哪个回答是正确的？",
+      "options": [
+        "SDK 不支持 GenAI conventions。",
+        "手写会教授 wire format；之后 SDK 可以用相同 attribute keys 接入。",
+        "手写在 runtime 更快。",
+        "SDK 在 import 时需要 network connection。"
+      ],
+      "correct": 1,
+      "explanation": "conventions 在不同 implementations 之间是稳定的。手写版本是为了清晰；生产环境会接入 SDK，并复用同一组 gen_ai.* keys。"
+    }
+  ]
+}

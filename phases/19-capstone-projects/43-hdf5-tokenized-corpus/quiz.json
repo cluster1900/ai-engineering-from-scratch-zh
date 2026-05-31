@@ -1,0 +1,78 @@
+{
+  "lesson": "43-hdf5-tokenized-corpus",
+  "title": "HDF5 Tokenized 语料库",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么要把 tokenized corpus 存在可调整大小、chunked 的 HDF5 dataset 中，而不是 JSONL？",
+      "options": [
+        "HDF5 的 logo 更小",
+        "HDF5 提供 chunked、integer-only、memory-mapped reads，并支持 O(1) random access；JSONL 会迫使 parser 进入每次 hot-path read",
+        "JSONL 已被弃用",
+        "随机原因"
+      ],
+      "correct": 1,
+      "explanation": "dataloader 想要一个带 addressable slices 的扁平 token stream；HDF5 原生提供这一点。"
+    },
+    {
+      "stage": "check",
+      "question": "HDF5 chunk 和 trainer 的 window_size 之间，正确的 sizing 规则是什么？",
+      "options": [
+        "始终选择 chunk=1",
+        "把 chunk 设置为 window_size 的倍数，这样每个 sample 会落在一个或两个 chunks 内，读取保持 page-cache aligned",
+        "选择与文档长度相等的 chunk",
+        "选择 RAM 能容纳的最大 chunk"
+      ],
+      "correct": 1,
+      "explanation": "chunk 不匹配会让吞吐减半，因为每个 sample 会跨两个 chunks，而不是一个。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 token_count 要存为 HDF5 attribute，而不是从 dataset shape 推断？",
+      "options": [
+        "Attributes 更好看",
+        "尾部 chunk 可能只填了一部分；没有显式 attribute，reader 会越过真实末尾读到 zero-padded tokens，模型也会学会预测 zero",
+        "Shapes 读取很慢",
+        "Attributes 是强制的"
+      ],
+      "correct": 1,
+      "explanation": "chunked layout 有时会留下尾部 slots；attribute 承载真实值。"
+    },
+    {
+      "stage": "check",
+      "question": "writer 在每次 resize 前把 tokens buffer 到 chunk_size，是为了实现什么？",
+      "options": [
+        "节省几个 CPU cycles",
+        "写入是 contiguous 且 chunk-aligned 的，避免 one-token-at-a-time resize 造成的碎片化",
+        "减少 vocabulary size",
+        "加速 sha256"
+      ],
+      "correct": 1,
+      "explanation": "按 chunk size buffer-then-extend，是保持 HDF5 chunks 在磁盘上 contiguous 的唯一方式。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 reader 侧要用 swmr=True 打开，而不是 writer 侧？",
+      "options": [
+        "随机偏好",
+        "Single-Writer-Multiple-Reader mode 让 dataloader workers 能安全共享文件；writer 不需要特殊 mode，因为它每个 process 写一个 shard",
+        "性能",
+        "安全"
+      ],
+      "correct": 1,
+      "explanation": "混用这两种 mode 是导致 'file is locked' 失败的最常见原因。"
+    },
+    {
+      "stage": "post",
+      "question": "boundary token id 的存在是为了明确什么？",
+      "options": [
+        "Vocabulary size 限制",
+        "packed window 中的文档边界，这样模型不会在 cross-document concatenation 上被静默训练",
+        "Compression",
+        "随机数据"
+      ],
+      "correct": 1,
+      "explanation": "没有显式 boundary，trainer 会把边界当作噪声来学；有了它，boundary 就成为可用的 separator。"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "21-tool-registry-schema-validation",
+  "title": "带 Schema Validation 的 Tool Registry",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么要把 tool 的 schema 与它的 handler 分开注册？",
+      "options": [
+        "因为 schemas 必须放在 YAML 中",
+        "这样 validator 保持为纯数据，而 handler 保持为不透明代码",
+        "因为 handlers 不能返回 JSON",
+        "因为 schemas 必须被编译"
+      ],
+      "correct": 1,
+      "explanation": "将 schema 作为数据、handler 作为代码，让 validator 成为一个对 schema tree 运行的纯函数。"
+    },
+    {
+      "stage": "check",
+      "question": "哪些 keywords 被故意排除在本课实现的子集之外？",
+      "options": [
+        "type, properties, required",
+        "minLength, maxLength, pattern",
+        "oneOf, anyOf, $ref, allOf",
+        "items, enum"
+      ],
+      "correct": 2,
+      "explanation": "被省略的 keywords 会引入 cycles 和 reference resolution。我们保持子集线性，让 validator 始终是一次递归遍历。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 register() 默认拒绝重复项？",
+      "options": [
+        "因为 registry 每个 name 只能存一个 record",
+        "静默覆盖是 production tool catalog 漂移的原因",
+        "因为 schema 不能被重新验证",
+        "因为 handlers 不能被替换"
+      ],
+      "correct": 1,
+      "explanation": "强制使用 override=True 会暴露这样一种情况：代码的两个部分都打算拥有同一个 tool name。"
+    },
+    {
+      "stage": "check",
+      "question": "当 schema 指定 type integer，但收到值 True 时，validator 会怎么做？",
+      "options": [
+        "把它当作 1 并通过",
+        "返回 type error，因为在这个 validator 中 bool 不是 integer",
+        "抛出未处理的异常",
+        "静默强制转换为 integer"
+      ],
+      "correct": 1,
+      "explanation": "Python bool 是 int 的子类，但 validator 会在 integer check 中过滤掉 bool。JSON booleans 和 integers 是不同的。"
+    },
+    {
+      "stage": "post",
+      "question": "当 input object 是 {'user': {'email': 0}}，并且 schema 要求 user.email 必须是 string 时，error path 是什么？",
+      "options": [
+        "/",
+        "/user",
+        "/user/email",
+        "user.email"
+      ],
+      "correct": 2,
+      "explanation": "JSON pointer 将通过 user 再到 email 的下钻路径编码为 /user/email。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 registry 不是安全边界？",
+      "options": [
+        "因为 validation 通过后 handlers 仍然可能行为不当",
+        "因为 handlers 是 async",
+        "因为 schema 是 JSON",
+        "因为 registry 是 in-process"
+      ],
+      "correct": 0,
+      "explanation": "registry 检查形状。行为、timeouts 和隔离属于 dispatcher 和 sandbox。"
+    }
+  ]
+}

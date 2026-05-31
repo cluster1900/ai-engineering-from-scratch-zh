@@ -184,10 +184,10 @@
     },
     "phases/00-setup-and-tooling/06-python-environments/docs/en.md": {
       "status": "translated",
-      "source_sha256": "ef5feefe6d562e5719d847f716dea544fe96176891e19e124c61e16e7e17972c",
-      "output_sha256": "ce1027a9089a870975d53209d5978a33c3aaf993c821b9a2d19dd8823f49cff7",
-      "updated_at": 1779499460,
-      "method": "codex-exec-batch"
+      "source_sha256": "d36a0b559174fd19d44c0e0dfa18ca333e79ab2d4a1c84ca623ab16a6a7f1d99",
+      "output_sha256": "10594e12aecfa72bd734b2f87da9189b680709baa7efd1f5fccb3d7f69fa5299",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/00-setup-and-tooling/06-python-environments/quiz.json": {
       "status": "translated",
@@ -198,10 +198,10 @@
     },
     "phases/00-setup-and-tooling/07-docker-for-ai/docs/en.md": {
       "status": "translated",
-      "source_sha256": "b666ea41d005d192f8b36eb2de0800cd05f6092fd2559add3d03da7922168641",
-      "output_sha256": "c7f4e1e1315fce415da0a6d8b2b9356aceea686a3996e2e9802a4a2c8dbd6fe6",
-      "updated_at": 1779499583,
-      "method": "codex-exec-batch"
+      "source_sha256": "a12e104e10cb1cba2c583586591e41143cc8ea058fd61986cce68047c6009a99",
+      "output_sha256": "8741049b51caf86b01c2b18baf8be349c5deb7052b1d990a87f02a90c4924c19",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/00-setup-and-tooling/07-docker-for-ai/quiz.json": {
       "status": "translated",
@@ -2270,10 +2270,10 @@
     },
     "phases/05-nlp-foundations-to-advanced/01-text-processing/docs/en.md": {
       "status": "translated",
-      "source_sha256": "a91d0fcce67d5e50662b47dc17eb5058f02396fb0bfcd2fa3a4e6fc7c2d3a153",
-      "output_sha256": "6f0a1a1551cb60ef9b9de4d9d6ebb9021862b66f330ee67e855c4acf7c9c5b5d",
-      "updated_at": 1779515439,
-      "method": "codex-exec-batch"
+      "source_sha256": "6395cdb49e22368689c621e62c37d99fb76b6592f0a03193dea8ff3693c2941e",
+      "output_sha256": "2da9c39fd0f0bc5ab0062bfce70d4f69cd27d1cb0233d15c57c28c9313d59b93",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/05-nlp-foundations-to-advanced/01-text-processing/outputs/prompt-preprocessing-advisor.md": {
       "status": "translated",
@@ -2424,10 +2424,10 @@
     },
     "phases/05-nlp-foundations-to-advanced/15-topic-modeling/docs/en.md": {
       "status": "translated",
-      "source_sha256": "f6776022d0d6abcbd9ed891c877c7182e0fb149c8815cf91f07174aa6da4314b",
-      "output_sha256": "240c76905e999647eff993d9ec44e908154b769f37c5ca2d36a6a627ede590f9",
-      "updated_at": 1779516260,
-      "method": "codex-exec-batch"
+      "source_sha256": "c56309bf9b7efb091f262f73d4e7f3e7c33dadede636cccebc6cd0847e363da7",
+      "output_sha256": "e7bcda6b57b1b6666baae5b01caf1387bc5d85bda6f95d24cfa2d75f1c988970",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/05-nlp-foundations-to-advanced/15-topic-modeling/outputs/skill-topic-picker.md": {
       "status": "translated",
@@ -2739,10 +2739,10 @@
     },
     "phases/06-speech-and-audio/05-whisper-architecture-finetuning/docs/en.md": {
       "status": "translated",
-      "source_sha256": "344de4e44b1a9e2d4468ed6fe9bfcfecf296170d65ae2f741bdfea453f80eefa",
-      "output_sha256": "d8d672cf91190dbc21143827696ed63b829a5273888b21c123b73da0b508d36b",
-      "updated_at": 1779524910,
-      "method": "codex-exec-batch"
+      "source_sha256": "42441180bf175580dd5d283ddb18189fccecf6e457f912ce0b0c8f0fd251a3fe",
+      "output_sha256": "0c767c86db7ee545718c4f06da500a3ffdfd9924c1e2de4a1dc5ee228e6052d0",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/06-speech-and-audio/05-whisper-architecture-finetuning/outputs/skill-whisper-tuner.md": {
       "status": "translated",
@@ -2781,10 +2781,10 @@
     },
     "phases/06-speech-and-audio/08-voice-cloning-conversion/docs/en.md": {
       "status": "translated",
-      "source_sha256": "e9478444f113d809b049bac13b32c15125e53e205e8ea17d64b85fe799ca18f9",
-      "output_sha256": "63d68990060f819e6bf09e1ac2e10e7f383d3551d6826d0d6f233960a4a0fe63",
-      "updated_at": 1779525177,
-      "method": "codex-exec-batch"
+      "source_sha256": "7aeeb4bad05d312a0b4835eccb2c26bc85b618b7e5be1459b7cf7ade6bc05d6d",
+      "output_sha256": "45fbc8610d733a35d2624f04f73285b79e127d979cd09ac8772c36d5ed3b20c6",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/06-speech-and-audio/08-voice-cloning-conversion/outputs/skill-voice-cloner.md": {
       "status": "translated",
@@ -2977,10 +2977,10 @@
     },
     "phases/07-transformers-deep-dive/04-positional-encoding/docs/en.md": {
       "status": "translated",
-      "source_sha256": "8ebb7cdd85b17b7b99f3e06fd1f4c3ae971410215166067ac0abc306a2a59c13",
-      "output_sha256": "3a8ce7081a334ada68ee8a2b43caf111816809de0bbc3c248e14465930bd6c70",
-      "updated_at": 1779797137,
-      "method": "codex-exec-batch"
+      "source_sha256": "7e528f19aec75f11c75d0592a110ee43f669f540ec43c694f665e52958ad1204",
+      "output_sha256": "af4c513ad0ea636977a89c4ecb1230bfcf9b937f75176d8a9e4a77adc812031b",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/07-transformers-deep-dive/04-positional-encoding/outputs/skill-positional-encoding-picker.md": {
       "status": "translated",
@@ -3061,10 +3061,10 @@
     },
     "phases/07-transformers-deep-dive/10-audio-transformers-whisper/docs/en.md": {
       "status": "translated",
-      "source_sha256": "3b5b1042a11adaed9e2794e0ab7b747f23b212d67eabdea24a43dce15f477f83",
-      "output_sha256": "249ba0a543504d9a267ffb0849bc5f37b24572b1cbc8c2fa99bed11528e93dee",
-      "updated_at": 1779529937,
-      "method": "codex-exec"
+      "source_sha256": "959e04eb97f0229855843060b11ce517eccab64a5fd423dfde96638ca20b3bf3",
+      "output_sha256": "8163a7dff7295bd32580869efa831398e5dc6671ecf7a2644911d68b9de1638a",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/07-transformers-deep-dive/10-audio-transformers-whisper/outputs/skill-asr-configurator.md": {
       "status": "translated",
@@ -3180,10 +3180,10 @@
     },
     "phases/08-generative-ai/02-autoencoders-vae/docs/en.md": {
       "status": "translated",
-      "source_sha256": "c77a6f34b59b48882f88bd39dbd43531773d9d3c03d1c8537de7f143f41d6546",
-      "output_sha256": "4eef6502231083dd50c6a56c4041c562b3e27e3b500da71a0fb7bddf6889a1e9",
-      "updated_at": 1779530890,
-      "method": "codex-exec-batch"
+      "source_sha256": "6fbc1fe05281d77b9df2bbf47c56a4619f182cfac410438858a7ed617097d486",
+      "output_sha256": "78186731db83065c44ac0110c6281af033497339698cbd8b66aa2f8346d21ac7",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/08-generative-ai/02-autoencoders-vae/outputs/skill-vae-trainer.md": {
       "status": "translated",
@@ -3236,10 +3236,10 @@
     },
     "phases/08-generative-ai/06-diffusion-ddpm-from-scratch/docs/en.md": {
       "status": "translated",
-      "source_sha256": "67bcf446a49ebead7539f200086583a7c62ed9e99ae6d3ba92fc5bde2dcb653d",
-      "output_sha256": "6513f51cc865fd1453956535acf73c64a2ec42f77378c48ec6f32391860f38c0",
-      "updated_at": 1779531192,
-      "method": "codex-exec-batch"
+      "source_sha256": "f86a3cc4e6f8777cf53149a599f0e423b8d25967ea28682642b4dd6f586aa961",
+      "output_sha256": "ee5a3c0fa8a5dece5a0453ea43f10ef8dd1aeb2f0986b014c84160fa34ce5dd2",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/08-generative-ai/06-diffusion-ddpm-from-scratch/outputs/skill-diffusion-trainer.md": {
       "status": "translated",
@@ -3278,10 +3278,10 @@
     },
     "phases/08-generative-ai/09-inpainting-outpainting-editing/docs/en.md": {
       "status": "translated",
-      "source_sha256": "76c76325e95643a57d94db720ac3a861d2423e1e06b4669c861237c1681b6c51",
-      "output_sha256": "89b4bd16ee1771bbe4d6757db56b939747f081394627df17797ee4c00ec52a47",
-      "updated_at": 1779531433,
-      "method": "codex-exec-batch"
+      "source_sha256": "89ce2bc27f80ea1a66c416327045674d98c28f50081e67d5176c9fb24aefdcfe",
+      "output_sha256": "71561c9c8aa7e4d001b23d40b26c9760923d4e4dbade1153fa9b554617a138e9",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/08-generative-ai/09-inpainting-outpainting-editing/outputs/skill-editing-pipeline.md": {
       "status": "translated",
@@ -3383,10 +3383,10 @@
     },
     "phases/09-reinforcement-learning/01-mdps-states-actions-rewards/docs/en.md": {
       "status": "translated",
-      "source_sha256": "dfc3742f82b4104f2c3995594ccade6c90227057fa744d616d1374ae7b204cfe",
-      "output_sha256": "73a900f7a087ae3a43a55939fab35fa59bf58aec744facb6f2912c79425f163b",
-      "updated_at": 1779532046,
-      "method": "codex-exec-batch"
+      "source_sha256": "f08e7acf6a5102df6a587b78c9f4aaf9cb473fae06a1a3dcdbbbc6f73e27b07d",
+      "output_sha256": "4e34dd4f72eec761c541a9ea4328aa50b8b80850d82acc243b8ead437de9a912",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/09-reinforcement-learning/01-mdps-states-actions-rewards/outputs/skill-mdp-modeler.md": {
       "status": "translated",
@@ -3397,10 +3397,10 @@
     },
     "phases/09-reinforcement-learning/02-dynamic-programming/docs/en.md": {
       "status": "translated",
-      "source_sha256": "bb5b1327e013c047c074cfcd3a7d1ca85fd7d0dc044295f6b450bb16b5587cb6",
-      "output_sha256": "45c30fc639acb222e65c4771115dd8dff08fd97bad2927424edae1a333cb21a4",
-      "updated_at": 1779532122,
-      "method": "codex-exec-batch"
+      "source_sha256": "0c2c41305319121eeaba7218bbc32ae2240c86d296c1f35e753f6509beb49d2a",
+      "output_sha256": "154c0e0ac3f25d081567d17ea21ff4d724482b2be8009d05f423ef7620f65f36",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/09-reinforcement-learning/02-dynamic-programming/outputs/skill-dp-solver.md": {
       "status": "translated",
@@ -3411,10 +3411,10 @@
     },
     "phases/09-reinforcement-learning/03-monte-carlo-methods/docs/en.md": {
       "status": "translated",
-      "source_sha256": "b1800619cff4223ca9b8af165d8ccd5014dcaca7d83754cfb48603188d7748d3",
-      "output_sha256": "fa1d17af2c63d5addffd134199e2cd059f0c0402c446c5fd820c067aaece8ceb",
-      "updated_at": 1779532200,
-      "method": "codex-exec-batch"
+      "source_sha256": "fcddb63a59f85672c2b8c2303322e9afbce2e051637510efbe2baead2dee1ac0",
+      "output_sha256": "b25740f2922ba81741707954bcbe782659c8f71a56a94a4e39ba73a221959eb5",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/09-reinforcement-learning/03-monte-carlo-methods/outputs/skill-mc-evaluator.md": {
       "status": "translated",
@@ -3446,10 +3446,10 @@
     },
     "phases/09-reinforcement-learning/06-policy-gradients-reinforce/docs/en.md": {
       "status": "translated",
-      "source_sha256": "b2dc96bed60ecc53c0a12bac5982265d3b6df8d233764f21addeb85e90b1a7be",
-      "output_sha256": "c7e6ec2cf67c1de08f7629dcb4cbef43b1e7a6553384852d2f29eda4f61277b0",
-      "updated_at": 1779532363,
-      "method": "codex-exec-batch"
+      "source_sha256": "3455f9d67dddbea4ece5b0748ee27aa2e74a36c22416aa4665c353761c95a343",
+      "output_sha256": "bd671588ea94645b064838ce1751973e4196dfa48622b5fdefc491943d366558",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/09-reinforcement-learning/06-policy-gradients-reinforce/outputs/skill-policy-gradient-trainer.md": {
       "status": "translated",
@@ -3460,10 +3460,10 @@
     },
     "phases/09-reinforcement-learning/07-actor-critic-a2c-a3c/docs/en.md": {
       "status": "translated",
-      "source_sha256": "9504294ebc1b30ecc6e2867f1a6926450e22ccba176b7fc612b1566f25435ba8",
-      "output_sha256": "247a56aadced96b562d35b8a85ba7e48377b2af4508d30eca653fd5398d26259",
-      "updated_at": 1779532442,
-      "method": "codex-exec-batch"
+      "source_sha256": "06071a9fb30107d9cab54ed29ecb94b352be4ef8f4b8479f7f62bd9c0b3caa24",
+      "output_sha256": "3e625901deeaf745ef3f4e3f43d1aa96433bf94b0ae4b7e0badb70423b884cab",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/09-reinforcement-learning/07-actor-critic-a2c-a3c/outputs/skill-actor-critic-trainer.md": {
       "status": "translated",
@@ -3474,10 +3474,10 @@
     },
     "phases/09-reinforcement-learning/08-ppo/docs/en.md": {
       "status": "translated",
-      "source_sha256": "c92e7fcd97736f2bb4211b89686777cbdf261c8e93a5db246b04767debd7b3bf",
-      "output_sha256": "bc4289ad1b5ca77a0d0c6ab8838a922ed527798fb0805e852d8fe14366f82d89",
-      "updated_at": 1779532523,
-      "method": "codex-exec-batch"
+      "source_sha256": "2c174dd064e77e69e4cff38c3cfc2439f7c0d76b50aab764f8c020858d61f8de",
+      "output_sha256": "afa80cc03a020b58eae632eb62e25cc69ef467b4611f0b0ebbe011d2bf54d41c",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/09-reinforcement-learning/08-ppo/outputs/skill-ppo-trainer.md": {
       "status": "translated",
@@ -3537,10 +3537,10 @@
     },
     "phases/09-reinforcement-learning/09-reward-modeling-rlhf/docs/en.md": {
       "status": "translated",
-      "source_sha256": "e4129037ca878fb8879efcdb3de8e9b44eda0213706a0cf1a06ad4d9c7eb60d1",
-      "output_sha256": "09d19537aa2c379a508d82e848dfa7ea0fd3d1697131ce917b6700a574867cb8",
-      "updated_at": 1779532866,
-      "method": "codex-exec"
+      "source_sha256": "65b496409e7bd3368e58fe7ddeb851ed5d89a4eb8336bde968ba5f8a8632d7fa",
+      "output_sha256": "1367c398787a813953e7aaf5dd2e6af5b43512c39d04bfec56638bb77a000945",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/09-reinforcement-learning/10-multi-agent-rl/docs/en.md": {
       "status": "translated",
@@ -4314,17 +4314,17 @@
     },
     "phases/11-llm-engineering/17-agent-framework-tradeoffs/outputs/skill-framework-picker.md": {
       "status": "translated",
-      "source_sha256": "0f653e5fb54666d571ef3f760a420f042c0aa018c9b65c0a4569769f0519f057",
-      "output_sha256": "c6e9fb408fea8856f18c77697ee1b6a7001957d7127ec45c6327db2b7fa9d2c9",
-      "updated_at": 1779540350,
-      "method": "codex-exec-batch"
+      "source_sha256": "8812a01bd50dcc0d7a7ce2a6fdc014ba33b3bd370100448209f1552c07ea7c3d",
+      "output_sha256": "2862f4d3b554585f4f7bfe2406a1b82cce2d2fe07897bcdc65ecdca27bcdb51b",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/11-llm-engineering/17-agent-framework-tradeoffs/quiz.json": {
       "status": "translated",
-      "source_sha256": "977a742094074c1fc47e5b9ec98bb975067e2e8bd75e866ef1270a951a741ab0",
-      "output_sha256": "a3fb9ce1f894f27567a093147532828f59d58c8eb387dd7e401777b7926e9a66",
-      "updated_at": 1779540350,
-      "method": "codex-exec-batch"
+      "source_sha256": "1efb5ad0cd1226e4840e5e72db9705245dcdce7c3e77ee8b1e517d8991137ecd",
+      "output_sha256": "b052c86c3869fb5df13dd59794d0a06dc8e62248590b09bfd8dc77c9e86f2d06",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/11-llm-engineering/README.md": {
       "status": "translated",
@@ -4398,10 +4398,10 @@
     },
     "phases/11-llm-engineering/17-agent-framework-tradeoffs/docs/en.md": {
       "status": "translated",
-      "source_sha256": "287790ef5c53ae173531b093cbc97862d65c89ef5ac774d5ee8999ab476753bf",
-      "output_sha256": "d0cfbd90c1281521f58d9beaf21031279c3acb8f188d98d74482266404050c2d",
-      "updated_at": 1779541699,
-      "method": "codex-exec"
+      "source_sha256": "4639fd2af293dae46e9ad08b78b20d5bca216239f20113e8a872851a90a0782a",
+      "output_sha256": "5f1cef423f0f6d393f1c7e25fb326557ffb8bd20b0336b61c994211de7af2ef0",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/11-llm-engineering/01-prompt-engineering/docs/en.md": {
       "status": "translated",
@@ -4867,10 +4867,10 @@
     },
     "phases/13-tools-and-protocols/06-mcp-fundamentals/docs/en.md": {
       "status": "translated",
-      "source_sha256": "d55928bc2bbca981990d587baa126bdf789ac29d87301806466e537d55e275d5",
-      "output_sha256": "10042c7a42508576f14bd9f66b7c6adf49f3ff7fc0783906998d3e4763e4dff2",
-      "updated_at": 1779546591,
-      "method": "codex-exec-batch"
+      "source_sha256": "f0f4deb8d845a36590a0bdbe9c7739a9a59e1541b7342b09868613be7e3dcabc",
+      "output_sha256": "aec733b810b45c27a93fb2e2fb8a44bfbc5c005470ad1645417b5657b31bd556",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/13-tools-and-protocols/06-mcp-fundamentals/outputs/skill-mcp-handshake-tracer.md": {
       "status": "translated",
@@ -4923,10 +4923,10 @@
     },
     "phases/13-tools-and-protocols/10-mcp-resources-and-prompts/docs/en.md": {
       "status": "translated",
-      "source_sha256": "2ee7f88fef83ed1a384ce1e01753c0b11588d878955b7d45090ca7f6d2baa682",
-      "output_sha256": "8fa980cf90e5b0f1449cf65f88631d5c6a843c7c47d8756388dc21cd36a14102",
-      "updated_at": 1779546873,
-      "method": "codex-exec-batch"
+      "source_sha256": "0d1232a2be0371102a3bd96265d19a24a786bd4e348da9e904eb1f3bdafa0c3a",
+      "output_sha256": "f112f66081626c71132798a822db871c14fe3de2e5f95a9bb82c4091d026f3f0",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/13-tools-and-protocols/10-mcp-resources-and-prompts/outputs/skill-primitive-splitter.md": {
       "status": "translated",
@@ -7366,10 +7366,10 @@
     },
     "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/docs/en.md": {
       "status": "translated",
-      "source_sha256": "3911d472c095a76a5089b2915ed07582e61234ae963856341eaf7de58bd1c432",
-      "output_sha256": "9ac00a618efdc3f82a4f8f39bd0df30c900cab9db35d6663d927851da12bfdac",
-      "updated_at": 1779562898,
-      "method": "codex-exec-batch"
+      "source_sha256": "0f24b6bad5ff8b60172acee00fbec15c9730b5bcd58a4e463809694dd3801fe7",
+      "output_sha256": "3ca15fe097095bfc8bff7b4b5844ec7ac107bacc88b0bb38076568062ea00820",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/outputs/skill-instructgpt-explainer.md": {
       "status": "translated",
@@ -7380,10 +7380,10 @@
     },
     "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/docs/en.md": {
       "status": "translated",
-      "source_sha256": "bdb7b70f4b3fda0de5f261ab943a5c983965c7eab3b3e3c24562e45351fd62e1",
-      "output_sha256": "b456006a8606efef35cac4e2358cd89e8661b7ac546250205042c29e6c63bbb9",
-      "updated_at": 1779563166,
-      "method": "codex-exec-batch"
+      "source_sha256": "2b25788ef59877d5475048ae66a8dd52088b6c6a7d6141643ce2387fea7d5198",
+      "output_sha256": "6cd5736459bde599dde849d739b5810b808989cce2013d4c93e3cd7026125d02",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/outputs/skill-reward-hack-auditor.md": {
       "status": "translated",
@@ -7394,10 +7394,10 @@
     },
     "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/docs/en.md": {
       "status": "translated",
-      "source_sha256": "d913b5c67da019a4233c9bea1c3d919ed59fbe46d22fe6f17e8cd0e90b05f0d8",
-      "output_sha256": "ec81f738b539d9de523e63e9c851f957dab0ecbe6d7ce9ec516696c903d87e9f",
-      "updated_at": 1779563241,
-      "method": "codex-exec-batch"
+      "source_sha256": "c8da88388a81739c74e66dd75b88fdc9dc28d79e91b09628a0ed4711578dfaa4",
+      "output_sha256": "59fdfae8685c0ffa5897ba929b5a8c12c4b47b98bae87976e2f8a87b6409353a",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     },
     "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/outputs/skill-preference-loss-selector.md": {
       "status": "translated",
@@ -8192,10 +8192,10 @@
     },
     "site/catalog.html": {
       "status": "translated",
-      "source_sha256": "59d156ad036dedc71259fced22a33846f1fca012e931bddf8126492998453c00",
-      "output_sha256": "4245b04bb07636f82baa7c94d9cb1883e0744b9c655a9ff96a40a578be151883",
-      "updated_at": 1779799114,
-      "method": "codex-exec-batch"
+      "source_sha256": "7e979b9fde01ff0f4c35792bf33be4a96c42a50aee74bfe6e534a08c971e39fb",
+      "output_sha256": "677377fde6d6a1fbcc3e7a1d369e20df626e52639f5a8da7f1fd9c72d048747c",
+      "updated_at": 1780202875,
+      "method": "manual-structural-merge-sync-20260531"
     },
     "site/glossary.html": {
       "status": "translated",
@@ -8206,10 +8206,10 @@
     },
     "site/index.html": {
       "status": "translated",
-      "source_sha256": "27fcdca42756397a8cfb7edcb0ce207ca4ce4c9898d6ba022ef063995135c9aa",
-      "output_sha256": "672495d4c05d0b4e3aa20e0e7ded693af2d07133584332853c92e23f054b623f",
-      "updated_at": 1779799370,
-      "method": "codex-exec-batch"
+      "source_sha256": "10148f207865b473346d05453019ddc3bd8c52ba48cb9fb923a66988c36eac8b",
+      "output_sha256": "ee259c0daceeafa59290ee95e265c5d85d2dd2bc6b2b43a4e398e8fed8068f44",
+      "updated_at": 1780202875,
+      "method": "manual-structural-merge-sync-20260531"
     },
     "site/prereqs.html": {
       "status": "translated",
@@ -8759,23 +8759,24 @@
     },
     "README.md": {
       "status": "translated",
-      "source_sha256": "d58539aa6c2d801d325f89019ffc7a52bbe731576a1c98f581225ae9fe47ec18",
-      "output_sha256": "9b3537dfb9a8f46f09e7fd1a3865a42dff6c16cf5c6fc551a1015ae845b3fed8",
-      "updated_at": 1779839244,
-      "method": "manual-review"
+      "source_sha256": "d91fc74c5ce1c15472526cb6aa20a6cf9f0c1d026b4e900ffa230d361c06685d",
+      "output_sha256": "f7035a0083f73d51aab5776937c227065c94b5be0b2b425c76410ba135a24faa",
+      "updated_at": 1780202875,
+      "method": "manual-structural-merge-sync-20260531"
     },
     "site/lesson.html": {
       "status": "translated",
-      "source_sha256": "64a62caf3bad55ce0ef7009fd05e48273e0d635dc3f6a707cdbe372090a95845",
-      "output_sha256": "26b2dc86fb8e713d1b4b9830a6166d99a7424d2ed21c1fa5d8d7898de5d43e12",
-      "updated_at": 1779801887,
-      "method": "manual-structural-merge"
+      "source_sha256": "a9e28e0bff87dac4dd45b8e5b7c67fea943dbb46d52795a2ad0841a7e3b5ed13",
+      "output_sha256": "1f75de457b0a43b91cffae21ab64fd61379d37d87df22b2753ecc394579dff79",
+      "updated_at": 1780202875,
+      "method": "manual-structural-merge-sync-20260531"
     },
     "site/data.js": {
-      "output_sha256": "edb286e0439a72d6babac3d13194808fb1e6fc64f5f120b71c14b5d0e43b55ba",
-      "status": "translated",
-      "updated_at": 1779839244,
-      "method": "manual-review"
+      "status": "generated",
+      "source_sha256": "20f2e3e17586dc8fb7f51ac364de6033084ab2866696f3d34cf4b612dfe2ec9b",
+      "output_sha256": "f9319aaa83261a42f777028fe15f70536040e1c0fff0cd1a843654a725338345",
+      "updated_at": 1780202875,
+      "method": "generated-from-translated-content-sync-20260531"
     },
     "catalog.json": {
       "output_sha256": "c1dbd8b278c92052a5ccdd93665be4baf395fa7cf038d0c8806514c09afa1a1f",
@@ -8794,14 +8795,704 @@
       "status": "translated",
       "updated_at": 1779839244,
       "method": "manual-review"
+    },
+    "AGENTS.md": {
+      "status": "translated",
+      "source_sha256": "22447c799bd1b03661c7353ab61ec76d2c84e692ef406f31c7ba8d080c02dd46",
+      "output_sha256": "73810b7e50abb48c12f77a18c9be39fbd5450e1eb4a08dc7b4cff976355f7b97",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/01-terminal-native-coding-agent/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "c0d929f165f34a1d4e05abc47c726de95a609bf5233a155622f13debe93d8e83",
+      "output_sha256": "54ac50671e598b3b179426bf8f2dd3f54594e424eab85775559d8ede7b47c3b2",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/02-rag-over-codebase/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "b66a047f05ff058f2e4f0c3f06cc96ad0053b5a56d2838a763735daa3bec56e0",
+      "output_sha256": "0e83ffe17a02e8db47f310e0cc84b0b130fc3d0f723dc19e8859e3a3703eb3dd",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/03-realtime-voice-assistant/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "c31daddcef72005437836a8ffe6467691332150106e03062e1e57811cdfe737c",
+      "output_sha256": "d5b49b71ad922728cadbb84a8b6d68df9945b6f852996b461b08a61a371641ad",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/04-multimodal-document-qa/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "ded2ed6e5370a74cfed92ffaf4939948fc0b11b4119f4c3c7cdca3d79d8f012e",
+      "output_sha256": "1473429776349a74986d1bfbd75f37f06024eae30053ba694bb19728eeba2622",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/06-devops-troubleshooting-agent/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "88197be90a95531c1754e0d1b90047327df2f8a96937509859dd5a4933e96f39",
+      "output_sha256": "043b74ba705515e594b66f4ee42b7ae17cb8f69627a022368a8b55ec3c831901",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/08-production-rag-chatbot/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "316be57ec336680c8b215429dfd59ad50ae0ae37ff8ff54ba5763564a58fb459",
+      "output_sha256": "32ab0a55579d0d3b231777ef080ae0996bb57a5ef8b164c4c772482972cf7176",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/09-code-migration-agent/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "8e39bafa5841f89aa0364a3f614e6787fb0d0a40ef7a9502222249ead0674a5d",
+      "output_sha256": "bc31ae64e7acbbe5c90932468318924bc896480e72f9e0b8cf36dc89ee34fc6e",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/10-multi-agent-software-team/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "f0c2194289c9224e328a9cd26953fee532c58f56c4f51e16e78ef25d26cd3270",
+      "output_sha256": "c4000f565f14edec774d9d84b26cc7d2253ebcab788d1b3c0c1b841c83329fef",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/11-llm-observability-dashboard/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "c8a862766b2c0a6291cdd12b4df3bb4574047f3abed92e7ab98153a84c9ebdf3",
+      "output_sha256": "9e8573c290998bad4736d33c5e45350f6fa623a20dd7a023ba30f50062c8a0e4",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/12-video-understanding-pipeline/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "6e73c161096162d7a83bf33de271fbbaf5b113777a63fe81ac3079dc7e4b35f7",
+      "output_sha256": "8ffa82664ce1565354e4beb3a0fa873d3e3d2b4a40f17e83ab81cfbf510a3b50",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/13-mcp-server-with-registry/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "0de5afa20388d42e3be690a605f29540eca504152f50ec649e8aa61001c26235",
+      "output_sha256": "705d5e4642e8a6c344083ca5736b566e036ccf3aa737e2c533211ada1d7f4ee0",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/16-github-issue-to-pr-agent/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "b0d11e05424d6a396890868d5df3f8e9169143916740aa3befd415cf377e0f8b",
+      "output_sha256": "04ff6dc5ef41f280046812823d1cb0aa9d3aa5937d62c37f21ee4255d94e7409",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/17-personal-ai-tutor/code/ts/README.md": {
+      "status": "translated",
+      "source_sha256": "fe11cc56b3f2c5e9a580e6071d3074c5e5538c0c07def0f44b3425a766bd1d68",
+      "output_sha256": "46510027774d29a8d0cbc51bd9f24aec26dbff028451aa32114621c91c48a5dc",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/20-agent-harness-loop-contract/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "b2ebf71da2a7eb40d6dd4f9ba5b39fff4d716860897721c211f1fd196ce218a8",
+      "output_sha256": "ef4a0f76520c81f1167ed84a049dfa589f32170a3b713127e44d821a5bde4a16",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/20-agent-harness-loop-contract/quiz.json": {
+      "status": "translated",
+      "source_sha256": "3cde1c8babc805e8f6c04ce5603ecc80b12c57805482af5899817984a6dba5fe",
+      "output_sha256": "a08755968baf94548a51aafafd0b5c93c1afcbc828add9eb4c444ed109793538",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/21-tool-registry-schema-validation/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "5e4c9ca8d9382a173afd217e726b654e74db4afb6e81ddb294bee71c254b0352",
+      "output_sha256": "55acf2bd824b25af83c6155678f451cacb66d7b7a5ceb0e9f0d0461a896387e7",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/21-tool-registry-schema-validation/quiz.json": {
+      "status": "translated",
+      "source_sha256": "bd64b8730945c1f166a11f8e7e40768adf1accf93ff18cfe4c89ff593f954599",
+      "output_sha256": "2821d63350381fbc2ad5674d2b608c69d54e3beb8c74a2ef0edd9227cd5f565f",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/22-jsonrpc-stdio-transport/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "ca642047c5c161b62b575db8942e79f576b9060f1e1a98dbb3437480489b0678",
+      "output_sha256": "9d9e8a0e6e17b93ef179ac4152aa8700f6b60564a684c072c97884cfa4a4a04f",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/22-jsonrpc-stdio-transport/quiz.json": {
+      "status": "translated",
+      "source_sha256": "bfbc7ce1187fba7fe97a491317e0a0c814f90478f09789bfe7ac0e9c08f61159",
+      "output_sha256": "e39be79ddb6cefeb57639c9c56e4047e3d0a0a923accc2c7c318b01c8c959eb2",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/23-function-call-dispatcher/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "379d7ab34cd675dd5aa2008589b54d8a3713729622dce3de7306323fb282c862",
+      "output_sha256": "dc9aafc69901e429d3a7548aec18f40fdf2403a47397d6947ac7a39d7cbc3c97",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/23-function-call-dispatcher/quiz.json": {
+      "status": "translated",
+      "source_sha256": "4dbf7c889d199027e32fe82ca2c03541b8450850a1a8995e5300aec4f1c454a8",
+      "output_sha256": "c61b97637d4bbd24f2be62a8bb92dc42b855ea3ce459072b93701992596cac1e",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/24-plan-execute-control-flow/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "618c74e1d30ce0abcb7dd2320b1c0d52b854ceb77b462acba6600df6a4e75511",
+      "output_sha256": "f10eebf337d03095e30613a6e95260c3cbe94fb6ae481c8d874b8df602026754",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/24-plan-execute-control-flow/quiz.json": {
+      "status": "translated",
+      "source_sha256": "4cc2762d9e4d7f4e4120a371e04a66abf236719a6ab1c7d473985113210812b4",
+      "output_sha256": "5a4c2328fd408e9400707ea3afc5ccb7d3cab84a61c1b97faf30b6c967ce5be0",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/25-verification-gates-observation-budget/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "e60e20b96704caf3522eadb5fdfc5485dba4738517bd90b26cc9b3279a870957",
+      "output_sha256": "c82c82f9bcd7f55735d7a0168aec7cc9b4e32724ee887692daa41f2b20463cae",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/25-verification-gates-observation-budget/quiz.json": {
+      "status": "translated",
+      "source_sha256": "77b1a6ae45b14b7ee134eb3ec8a76c5a2ef7ee419689e1fac82fa472bd420dad",
+      "output_sha256": "5ec9d6242262c2d736e520c53bc80f11f9ce6ed09916ee1a4a0c7ca71ab395a4",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/26-sandbox-runner-denylist/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "014d56bde3098d40f3487401544f65a198eea651d5f5ac4caf106f6151698fe4",
+      "output_sha256": "b2c0483c378d23b4d66a6da7b37dd7a630f7ff7f115c6c090b0a581485b1d4c4",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/26-sandbox-runner-denylist/quiz.json": {
+      "status": "translated",
+      "source_sha256": "e683f012a5041917711ecea7980f9e05fff90d9c0f2f4a3a1aff95ce81b5b586",
+      "output_sha256": "d518ca14ec99773f7c92068f7cc57f787f5ea3f7576a2d5da7f6a51ea47e0a81",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/27-eval-harness-fixture-tasks/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "f94029dd4198a09aabc0a6293f8c866d762301b5692891359204c5d82e5b4b94",
+      "output_sha256": "3a3420a1102776af2183582b2969307b88e2991e5ba95d0b04e06b593fcb5605",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/27-eval-harness-fixture-tasks/quiz.json": {
+      "status": "translated",
+      "source_sha256": "6ac14e17c414929ade33484e6759314df37b9a8aad98c24933bfe889c12aab73",
+      "output_sha256": "dda10ef9a9183b8667d7a29b75761dbcbe7410cbf41b0926b2e09b30f20bfb4e",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/28-observability-otel-traces/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "123c5ae489dc5002e42afb9e869aedf79f692b124bf3a5df5676b6fa22c5d361",
+      "output_sha256": "fa10d8c33192062aeb6cd96e898480507d49803e61e9cd69a622365f073a5f3d",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/28-observability-otel-traces/quiz.json": {
+      "status": "translated",
+      "source_sha256": "fd38f8440d494ce83c6b81a969ff4f11291e5e34e658f0e37a4c47f288a09d17",
+      "output_sha256": "a7a8a873ba2472db56f650415875c769aff75d5966c6d63ad8b13fc947b3493b",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/29-end-to-end-coding-task-demo/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "bb4a56527d643b83e2d14931640ff37891965e72e05780af7926e088f2bdc363",
+      "output_sha256": "79716ae067e21cfe51f4fcc1745bf06e2a8ebff7bbca6138a6fcf2c443fce1f8",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/29-end-to-end-coding-task-demo/quiz.json": {
+      "status": "translated",
+      "source_sha256": "2cc2b6f6b07aa927f6f84171ac921e8a3d4d02a70ad653fb7ffaa9629a0a9108",
+      "output_sha256": "63bc1c31ac8b352c8430b9c5987111aaf364f8e257a2c336cc761ea55e480db7",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "09b1d1fa91c84e5f86d3c5a46b33df42716d0ae4709c4193891913d25fd6e60e",
+      "output_sha256": "37f02b467fdc9abbbbfaeaef9661ff68ccccdb02c5fd6df145e45c3a045b9829",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/quiz.json": {
+      "status": "translated",
+      "source_sha256": "38dd1d22ff520b30f49e16a5b0abfc681c5f9b7b0ef52d0be28eef23e29551bf",
+      "output_sha256": "a252292e6e081e0c6eb627cb00f67d9111fb30cde8fce10a046ccc5f2d31e8b8",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/31-tokenized-dataset-sliding-window/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "19a26a8f6609f774a1f7ae981aa5037c7bae63d63235011285921ffff8c98d3a",
+      "output_sha256": "ca2d3741f4d2133c249fb9bfc70129327edf64146673f9afb51f71345085ec6d",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/31-tokenized-dataset-sliding-window/quiz.json": {
+      "status": "translated",
+      "source_sha256": "40d00bebd9b0390594df5666a729f229903bed744dbb7eab558373ac1cfd49f8",
+      "output_sha256": "eb71f096216b20b15e2c0de040bd5fba490b3cd75f58007c01b40277c46e7711",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/32-token-positional-embeddings/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "acc88cf85ce14907a056def182957f87dd700f2947384cddba714987f1a1f6bc",
+      "output_sha256": "1196d3f394df8b2c972ef65a58129c627188df9c6ea837bc595ec13773874497",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/32-token-positional-embeddings/quiz.json": {
+      "status": "translated",
+      "source_sha256": "18e680001f36af15dcc27d716e5c4308384ae28499411bb112720f31f0ade171",
+      "output_sha256": "f8454dfefe715789ebc496edcc6dcd3c5d3433e7a146e25ff74b97c0d56a4844",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/33-multihead-self-attention/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "945318057e64f1e54c292e67d9b54e6d0d6db41b9c3be572b1752335ede18465",
+      "output_sha256": "70342be2309ebb0db4da29141db42989024ab0537f0e3c6385a61d6dbb67b674",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/33-multihead-self-attention/quiz.json": {
+      "status": "translated",
+      "source_sha256": "be173110029041c20700d9b68f8437316863b383304cb2f770a9c4221502e9e0",
+      "output_sha256": "29a4b319123e284c199a6b0e08aba43c6253b3538692695a661d92c7f1cd46ba",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/34-transformer-block/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "f866867b2be13818ee92cc3616ee685efcf6eba6c27fc3991010fddbf43fc25f",
+      "output_sha256": "a883c94de806cf488cdf6f08aee21f1ba05a92044b09d8407197fd49fad16c4f",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/34-transformer-block/quiz.json": {
+      "status": "translated",
+      "source_sha256": "554ad30baf2b07116f1a6c53dec167ea73bb4269181e943ab627c2c5337e7947",
+      "output_sha256": "39734a60335346e6db8058a352c63eea658ead77a11e96fc3a3387af0fbccce1",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/35-gpt-model-assembly/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "a6236ab719faa4ae7540d4b06f7663a2f7e1a727deec51e6a3b02054d2b59bea",
+      "output_sha256": "435ab75f17296df3e341ad18243f01e55bad4f4c2dce440d427e77282e057995",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/35-gpt-model-assembly/quiz.json": {
+      "status": "translated",
+      "source_sha256": "1f979af350d27ec0538136c8af3ccfc67bca33893d687a66a2358b716313c3cb",
+      "output_sha256": "4d4bb1ce2b23b3a5a3fd8b163fe0b4c7da6cba73aaedfe97904a9bc9b524f135",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/36-training-loop-eval/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "f88ac0d054d619e24bdbe5e7f493d5ba03b36b5f2e71183d475dc863139877ff",
+      "output_sha256": "484a0b1b70e0caf1bc5f1cd699c55380988ea14126627479ca84594a8dc4ffaa",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/36-training-loop-eval/quiz.json": {
+      "status": "translated",
+      "source_sha256": "530850c35b17a94c45c9f094d9161932c420dac76725e0e252a3380dba361ebd",
+      "output_sha256": "8941a48925373c12e4e2597db3669133b2b0c8689c6f19fa7eee7be34c2ddb05",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/37-loading-pretrained-weights/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "c054314d4aeb470b091d2ccf7bfc8d79fe58e18cf1accf33f866342c1965683a",
+      "output_sha256": "d215f0b232b27a403c9563e7efab5e2c60a0d01160bb8bd6c4aad4e329de28af",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/37-loading-pretrained-weights/quiz.json": {
+      "status": "translated",
+      "source_sha256": "182148314ad84d0b2b555ca0ffff6a5d101a375a9d8fd05f7e9b393673494bff",
+      "output_sha256": "d2b517a5e7d739626b973753e797bad5e03ae4d0cf7ab8c419182aebc18a1ad5",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/38-classifier-finetuning/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "5f403291bef565718172b75bc8ce1af67829e6a9b8e6991d0ab29255880a2b0a",
+      "output_sha256": "2efd7828bb5ff1ec59d0c7797d375328e5ebe9f24aca03d1c19b9f78a9907cdf",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/38-classifier-finetuning/quiz.json": {
+      "status": "translated",
+      "source_sha256": "92966a2ef02faa20d11e586c21a3e723133467f7b950b05f714a55c7ec3925aa",
+      "output_sha256": "ade18e4559e4c6ca10b737069caa40814418c2adf2564e1c1e7dadf8319294cf",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/39-instruction-tuning-sft/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "54ba0a153356076736e011f3232dca15cb3576b854a5158275ca93a1d80243cf",
+      "output_sha256": "7413de91a0537f0cc702cbaf662e748b2be9df72e0aa33313a5cfc00bb8ca8c5",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/39-instruction-tuning-sft/quiz.json": {
+      "status": "translated",
+      "source_sha256": "55646be00f07bdb5032088430e275334922a59a5dd9cec5333e1840d22ffcd16",
+      "output_sha256": "2b2eda63fc8f3ad64b08b78fc79858136f460ec1f0ed260b9a4f7e7a0058a737",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/40-dpo-from-scratch/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "96337d64255063a660116d78ac4a031f68057a236c82cd3e31cb07e2d92a694f",
+      "output_sha256": "b14fa34bc2343a3c854decc10fcffda387993eafcf3f037d7cc8dfb56e384bdb",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/40-dpo-from-scratch/quiz.json": {
+      "status": "translated",
+      "source_sha256": "cbec569d9809c3d6083b3fdc6a841652d811ecaafe938f60b0e8488df9a6b8f6",
+      "output_sha256": "dc980e70e7aae0ba75230b2771d9daf033f62e1ce9f00e5bb7b8cfeedc8bec6c",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/41-eval-pipeline/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "e504b710eb3ee8b1c6a2035ae0f908d52b4b1b76be220e55ba8423398aa79d09",
+      "output_sha256": "7dffd5cb505abac76d768e7878eee2e3a08afa572a05bb434f81d0493d549a4e",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/41-eval-pipeline/quiz.json": {
+      "status": "translated",
+      "source_sha256": "31156961d74d6c94de0790df321b8235e4176ae9ae3c30f6690dffae2f4e6348",
+      "output_sha256": "5c0cd43f8bde21229e9a8baaa52162ff679218b63e22f683a7acf7c4299c33ff",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/42-large-corpus-downloader/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "ecb6dfe252bde956c114d1b95a9d89f914a558b62c6dae6192308779577f8add",
+      "output_sha256": "f626f60a8f3293c48697a4fce61cd2b94bc5568955b6dd42c1f9cf4cfd089eb0",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/42-large-corpus-downloader/quiz.json": {
+      "status": "translated",
+      "source_sha256": "981dff8d1be2f85007993c45c0c5a398057b8dc83e8a038b52d6809e0915e228",
+      "output_sha256": "6a2658712866b37d54631e1f64b92ba647df0166eace227286453b6c8bc2fa0d",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/43-hdf5-tokenized-corpus/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "509d46586292680ab32e029315527db4e6d2701ebd3740b91bae685b990b91a8",
+      "output_sha256": "eaf28614a573d5a9ad04985f9734ff4e85fac3426f3ae085539e224f3a0fc550",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/43-hdf5-tokenized-corpus/quiz.json": {
+      "status": "translated",
+      "source_sha256": "5bbb5b07afa3c157f2f6d70f73935c80e745665e86a55a57a9c2c7bc1b76db43",
+      "output_sha256": "04525ba81fe54ec8875cb686aade2beb467a6762517a4e5ef51b9426ab9d8021",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/44-cosine-lr-warmup/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "1091f12fd9f8ca3a9184c55267d7b53d46ae517038b962a3aa4fb9d836dd3867",
+      "output_sha256": "fc461c5c42700ce9405d2f19d48ff15946ae0a3d3fc06d14be0c209f55345abf",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/44-cosine-lr-warmup/quiz.json": {
+      "status": "translated",
+      "source_sha256": "1583234b40fa49816467ddfb135c25c15be6a8099455b93ef12561bd052f133a",
+      "output_sha256": "90a061aba6c6429aaa43d56754c46bde45f73b69658138af57d07758aafa753c",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/45-gradient-clipping-amp/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "69120e34851ed312c3766c523e68801842bc120f3231abb91c4af2885eb57f66",
+      "output_sha256": "60c1d1e49c1e19ae9ccfc73c27ccde32cdfa31cdc772e385311cccb2538d44ee",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/45-gradient-clipping-amp/quiz.json": {
+      "status": "translated",
+      "source_sha256": "96ed2a3fd16d31814f63ab1d960db1e45167c18a623178451eb89d5d9803f56a",
+      "output_sha256": "8935c66ad11f418354b133aa18aa8eb080f0e621ebb251a839159870ff36f8dd",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/46-gradient-accumulation/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "0c9dfddc3865b4b426b1119a727218ce398ad66d78fc5370cd3b0f2972c21201",
+      "output_sha256": "176a32dcf1acc4ef1ab5c3c30070143576f2a5ae7e4890bcafedb1d5d37c7fe7",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/46-gradient-accumulation/outputs/accum-curve.json": {
+      "status": "data-preserved",
+      "source_sha256": "fac5247a51b70e0e8a97921af5ded41e69c5314d3507953b21ca230d8fbfb72f",
+      "output_sha256": "fac5247a51b70e0e8a97921af5ded41e69c5314d3507953b21ca230d8fbfb72f",
+      "updated_at": 1780203008,
+      "method": "data-identifiers-preserved-sync-20260531",
+      "note": "JSON contains schema keys, metrics, task ids, and numeric outputs; no natural-language teaching text to translate."
+    },
+    "phases/19-capstone-projects/46-gradient-accumulation/outputs/skill-gradient-accumulation.md": {
+      "status": "translated",
+      "source_sha256": "a6c05b895b3753d8a02c8314cdd38e70d2561c2f598b833fe42a6cf9ac198889",
+      "output_sha256": "01baf68929d68c7b4503e0a651841ea341270df296cad2b22e8466df47cfbeca",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/46-gradient-accumulation/quiz.json": {
+      "status": "translated",
+      "source_sha256": "d0b3775210b74cee1e60d333e66e5202a17a6e929a4ff34a167d27de99bb93be",
+      "output_sha256": "3b8057353029cb97e628ad96be2544dcdb7f8803aa678b55bfaca8710d148c9f",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/47-checkpoint-save-resume/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "af50ad0ab8d298ed2aa920397bfe6c27870e112e50a5cbe54d6604985b67b835",
+      "output_sha256": "1e4ce4dbadd6b24d200ca99ddb08c4052dffdc4f3d3363588d121ab0df3efd0d",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/47-checkpoint-save-resume/outputs/resume-demo.json": {
+      "status": "data-preserved",
+      "source_sha256": "1dc6aa78e1b7a3a7b101ff2269b461dabd86923a44a084a65b3b5ec36291d83d",
+      "output_sha256": "1dc6aa78e1b7a3a7b101ff2269b461dabd86923a44a084a65b3b5ec36291d83d",
+      "updated_at": 1780203008,
+      "method": "data-identifiers-preserved-sync-20260531",
+      "note": "JSON contains schema keys, metrics, task ids, and numeric outputs; no natural-language teaching text to translate."
+    },
+    "phases/19-capstone-projects/47-checkpoint-save-resume/outputs/skill-checkpoint-save-resume.md": {
+      "status": "translated",
+      "source_sha256": "1da812db94b389144e5b206d83ae74bcd8d0fd4500ae38c96239418979d57194",
+      "output_sha256": "56c64d126ba4e6ac2b9a3bdcbc973b64b487c25b825d8055ca4e8dfa730cfeac",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/47-checkpoint-save-resume/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f3c42e603049db62e143ef91c178c7494a872a8360deda6691d915feb4ac46f9",
+      "output_sha256": "cc12f15f6a37fc464be4b48bbb056e05bf26fddb14fd15734d51087f1bf071a8",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/48-distributed-fsdp-ddp/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "aef6ae2b3257aa512ceda9d3a1c190636ec6550d27f449828c457bb8d152562f",
+      "output_sha256": "f48dc9df021057cd63e81aa074845096a7a608ff9b92083768ed8e6fce9c8dbb",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/48-distributed-fsdp-ddp/outputs/ddp-demo.json": {
+      "status": "data-preserved",
+      "source_sha256": "c67fab5fe5ebb6fac547a5c52827535e64719f388fd5a35b9f2222acb9c60b29",
+      "output_sha256": "c67fab5fe5ebb6fac547a5c52827535e64719f388fd5a35b9f2222acb9c60b29",
+      "updated_at": 1780203008,
+      "method": "data-identifiers-preserved-sync-20260531",
+      "note": "JSON contains schema keys, metrics, task ids, and numeric outputs; no natural-language teaching text to translate."
+    },
+    "phases/19-capstone-projects/48-distributed-fsdp-ddp/outputs/skill-distributed-fsdp-ddp.md": {
+      "status": "translated",
+      "source_sha256": "60bdc7a3ed439cf8dc531c9746d0a67501947dae5f1c85d3fc8b031e6874cbd2",
+      "output_sha256": "796149cd54f2176658301b7541e1f2f5c34ba9a355a68b3a98db12077c09bfb8",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/48-distributed-fsdp-ddp/quiz.json": {
+      "status": "translated",
+      "source_sha256": "684e03f777d82a92d2368e8643f56e0dc9f508e2fee4f99cb9863dc710927ca2",
+      "output_sha256": "7b9444c6494df6fe9491c6fa308ffd2b0fb78d6d3c29b3b0bd9e3496190a4aca",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/49-lm-eval-harness/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "739e6e707eedfbc07519ab54f9ea0eb3e71ce2d45877af60b5f026f2840cbbf5",
+      "output_sha256": "58cb06d27c7392b7bebf6d03329026edd54ab032246565185f4d4f17df9c30aa",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/49-lm-eval-harness/outputs/leaderboard.json": {
+      "status": "data-preserved",
+      "source_sha256": "efb7872e43baf85b8eca25a0b8b5c8bacccef0d7537516292cda0e8cb3c75247",
+      "output_sha256": "efb7872e43baf85b8eca25a0b8b5c8bacccef0d7537516292cda0e8cb3c75247",
+      "updated_at": 1780203008,
+      "method": "data-identifiers-preserved-sync-20260531",
+      "note": "JSON contains schema keys, metrics, task ids, and numeric outputs; no natural-language teaching text to translate."
+    },
+    "phases/19-capstone-projects/49-lm-eval-harness/outputs/skill-lm-eval-harness.md": {
+      "status": "translated",
+      "source_sha256": "22aa27183b8962b2b317773da448d71b91a5e69f4aed347e3e26118a9b33731d",
+      "output_sha256": "b9d1e9dba84e522fc92e663ab61d72e331da45a4196a70c800b3bb05488d7256",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/49-lm-eval-harness/quiz.json": {
+      "status": "translated",
+      "source_sha256": "b17ad59b8fa6ea6ad1105933547c0fdb89a1bbb72aea7c232c9f4ebee7d7e5cc",
+      "output_sha256": "88da88e4ab33b0192aa86060ceb4f7d77d6dbce7bce9fea1c3cfd668c87f8cb7",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/50-hypothesis-generator/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "bf2d0d1e0a07021f4b2106b33c7ac26b4a27dcbbd97a4d20969074aec6f73ec0",
+      "output_sha256": "f58cacaa9846bbe7be0f716cfda9b42816f8e79fdc74a5665399744288601218",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/50-hypothesis-generator/quiz.json": {
+      "status": "translated",
+      "source_sha256": "0889c7ac4a35ab17fd3d0d9f7072faeb33817bc24f389a612bfc62d649565fe7",
+      "output_sha256": "5172c3652397473f2e3accbafd291aaaae6d6fc6ebd2db93ccb33b197aac6295",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/51-literature-retrieval/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "efda65e2463831a093a2023ffc26e06786e86b2f8588577e3b4466cc520d3d56",
+      "output_sha256": "69f0c732d9bb56b8275dd3376a835278cf61525e31eb4415f46867e2ce9b28ca",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/51-literature-retrieval/quiz.json": {
+      "status": "translated",
+      "source_sha256": "148838251d6e32a0f3a0871e168cc4a410985cc92b406a786c9349358622cc5a",
+      "output_sha256": "c22247273937a3a3fe6d01fa32fad8ae818ae033175753d5139766f117b50ef4",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/52-experiment-runner/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "26b8df86860c729563cce1658aa3c1040adbc2f61ad62a3d6d4448cc3e5400d9",
+      "output_sha256": "88e95778ae4d5b7b745806e74bec6d62e89822ba50d03b3685bfca2b7becfaa5",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/52-experiment-runner/quiz.json": {
+      "status": "translated",
+      "source_sha256": "cf630c7385e1906b29cbaf41a1ff0e55b8a0c56aa9c84364924d1cd26394e200",
+      "output_sha256": "7f00c432efb275c7ca636f901fd084ab7eedca573c63917524b696d8c4f967a6",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/53-result-evaluator/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "61517395af35d3d9ef39e14b8df72033e69a80d5d62ad298a0fa5def0e92ab23",
+      "output_sha256": "72a3a001b0274bebfc1f12975ed2f307db24134c67233293bba331542445e7c5",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/53-result-evaluator/quiz.json": {
+      "status": "translated",
+      "source_sha256": "f334602eb631dab54323e839e45011f3d2409cf34f065d5d4a8013ecb4a801c7",
+      "output_sha256": "5374caa54716ec4c377eca3c3979368e59396da8fc4cafbed06b671dd47a6627",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/54-paper-writer/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "7c5047bb3cedcdeea51fe9b5aa9806c6ec9f578c5fb6cbe5bf9a59995cee51b1",
+      "output_sha256": "1edc03b09844f143954753303525af31489750fb0be09284b7f151f1114b43d0",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/54-paper-writer/quiz.json": {
+      "status": "translated",
+      "source_sha256": "a9abbe93effcf8d341954408b638819fee406742ab515f1fea803d8e26afb4e1",
+      "output_sha256": "b5b4e6f42275f431743b262a4961e7df2203a8a3087d52be1d556089be6e272e",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/55-critic-loop/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "ae17833e21ed364b23b4786126eb2ad5d8fa630d8c9426b700e4eed8b690a00a",
+      "output_sha256": "a8d86eb44c7478caee037659477f706721b13878a0bb5a6a7db63d54816666c4",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/55-critic-loop/quiz.json": {
+      "status": "translated",
+      "source_sha256": "44d341cad3e3c501706cc5ec270bdb5a4d166b243002fe1d96afc0a4954ef20f",
+      "output_sha256": "93707c6c7894fa22607f6d8ab24ff05c0b33de8f1403dafc259b1601f4abd4b5",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/56-iteration-scheduler/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "86cf1f3a2d75d613e259ef93b2d0019363543507e59b44175ecaa580a8ea017b",
+      "output_sha256": "f6fa3d3dc656c72bb99a0a3e91d909daa36348c09c2e63f84c2b675f54bc342e",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/56-iteration-scheduler/quiz.json": {
+      "status": "translated",
+      "source_sha256": "b851a7967659db629b7c6bc4458abd18d8b090221a67d211371d64fe0a9851e9",
+      "output_sha256": "5046de393e62126a68930ddc06629cbaa81f54b65ea29d824915ce36e063b884",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/57-end-to-end-research-demo/docs/en.md": {
+      "status": "translated",
+      "source_sha256": "10041878f1444b4d025d468da0c2d3d9e5c832e7f4dc15186b4e968969f9dc16",
+      "output_sha256": "8761edf25effbd0c68daba4d302a653832b302e77b9da6a78efdecdfa6396b03",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
+    },
+    "phases/19-capstone-projects/57-end-to-end-research-demo/quiz.json": {
+      "status": "translated",
+      "source_sha256": "c13157f56d63978ab8203fc1078b845645ebd5088986604d9fe993e6ab535637",
+      "output_sha256": "af186d6de35f4cb007af20bdb0d2ecdca12e8a273e3584e8e0aa5320a513155f",
+      "updated_at": 1780202875,
+      "method": "codex-exec-batch-sync-20260531"
     }
   },
   "upstream_sync": {
     "source_repo_path": "/Users/hawkwu/Desktop/ai-engineering-from-scratch",
-    "source_head": "1b935c30a74db7ab484de9c764aad4c32f30dbca",
-    "previous_sync_base": "4415dc80bc050116b12aadd97735a4ac543acb84",
-    "target_repo_head_before_sync_commit": "691b3b590e58f2481c56275ed4c99ee2cb0615bd",
-    "recorded_at": "2026-05-27",
+    "source_head": "86bbb614d9bbcb49baf155dc50eb0ecdaba3aa4f",
+    "previous_sync_base": "1b935c30a74db7ab484de9c764aad4c32f30dbca",
+    "target_repo_head_before_sync_commit": "e7836fe8abc0796afa756265474609d593341ab4",
+    "recorded_at": "2026-05-31",
     "note": "Use source_head as the base for the next sync and Simplified Chinese translation pass."
   }
 }

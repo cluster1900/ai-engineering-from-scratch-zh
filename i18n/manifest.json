@@ -2,9 +2,9 @@
   "schema_version": 1,
   "root": "/Users/hawkwu/Desktop/ai-engineering-from-scratch-zh",
   "totals": {
-    "text_files": 1250,
-    "text_files_with_english": 1247,
-    "english_segments": 101632,
+    "text_files": 1335,
+    "text_files_with_english": 1332,
+    "english_segments": 107809,
     "image_files": 307,
     "text_bearing_images": 305,
     "needs_gpt_image_2": 307
@@ -46,6 +46,13 @@
       "chinese_chars": 142
     },
     {
+      "path": "AGENTS.md",
+      "suffix": ".md",
+      "bytes": 8895,
+      "english_segments": 52,
+      "chinese_chars": 557
+    },
+    {
       "path": "CHANGELOG.md",
       "suffix": ".md",
       "bytes": 3250,
@@ -83,9 +90,9 @@
     {
       "path": "README.md",
       "suffix": ".md",
-      "bytes": 79895,
-      "english_segments": 1063,
-      "chinese_chars": 2935
+      "bytes": 86733,
+      "english_segments": 1193,
+      "chinese_chars": 2969
     },
     {
       "path": "ROADMAP.md",
@@ -216,9 +223,9 @@
     {
       "path": "phases/00-setup-and-tooling/06-python-environments/docs/en.md",
       "suffix": ".md",
-      "bytes": 8369,
-      "english_segments": 57,
-      "chinese_chars": 726
+      "bytes": 8524,
+      "english_segments": 67,
+      "chinese_chars": 699
     },
     {
       "path": "phases/00-setup-and-tooling/06-python-environments/quiz.json",
@@ -230,9 +237,9 @@
     {
       "path": "phases/00-setup-and-tooling/07-docker-for-ai/docs/en.md",
       "suffix": ".md",
-      "bytes": 11803,
-      "english_segments": 55,
-      "chinese_chars": 997
+      "bytes": 11853,
+      "english_segments": 94,
+      "chinese_chars": 822
     },
     {
       "path": "phases/00-setup-and-tooling/07-docker-for-ai/quiz.json",
@@ -2302,9 +2309,9 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/01-text-processing/docs/en.md",
       "suffix": ".md",
-      "bytes": 11255,
-      "english_segments": 60,
-      "chinese_chars": 1544
+      "bytes": 11009,
+      "english_segments": 72,
+      "chinese_chars": 1264
     },
     {
       "path": "phases/05-nlp-foundations-to-advanced/01-text-processing/outputs/prompt-preprocessing-advisor.md",
@@ -2596,9 +2603,9 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/15-topic-modeling/docs/en.md",
       "suffix": ".md",
-      "bytes": 9834,
-      "english_segments": 55,
-      "chinese_chars": 1361
+      "bytes": 9957,
+      "english_segments": 92,
+      "chinese_chars": 841
     },
     {
       "path": "phases/05-nlp-foundations-to-advanced/15-topic-modeling/outputs/skill-topic-picker.md",
@@ -2974,9 +2981,9 @@
     {
       "path": "phases/06-speech-and-audio/05-whisper-architecture-finetuning/docs/en.md",
       "suffix": ".md",
-      "bytes": 9724,
-      "english_segments": 98,
-      "chinese_chars": 882
+      "bytes": 9713,
+      "english_segments": 133,
+      "chinese_chars": 600
     },
     {
       "path": "phases/06-speech-and-audio/05-whisper-architecture-finetuning/outputs/skill-whisper-tuner.md",
@@ -3016,9 +3023,9 @@
     {
       "path": "phases/06-speech-and-audio/08-voice-cloning-conversion/docs/en.md",
       "suffix": ".md",
-      "bytes": 9154,
-      "english_segments": 120,
-      "chinese_chars": 960
+      "bytes": 9211,
+      "english_segments": 135,
+      "chinese_chars": 758
     },
     {
       "path": "phases/06-speech-and-audio/08-voice-cloning-conversion/outputs/skill-voice-cloner.md",
@@ -3212,9 +3219,9 @@
     {
       "path": "phases/07-transformers-deep-dive/04-positional-encoding/docs/en.md",
       "suffix": ".md",
-      "bytes": 10187,
-      "english_segments": 107,
-      "chinese_chars": 1033
+      "bytes": 10267,
+      "english_segments": 128,
+      "chinese_chars": 821
     },
     {
       "path": "phases/07-transformers-deep-dive/04-positional-encoding/outputs/skill-positional-encoding-picker.md",
@@ -3296,9 +3303,9 @@
     {
       "path": "phases/07-transformers-deep-dive/10-audio-transformers-whisper/docs/en.md",
       "suffix": ".md",
-      "bytes": 10359,
-      "english_segments": 143,
-      "chinese_chars": 871
+      "bytes": 10282,
+      "english_segments": 158,
+      "chinese_chars": 697
     },
     {
       "path": "phases/07-transformers-deep-dive/10-audio-transformers-whisper/outputs/skill-asr-configurator.md",
@@ -3415,9 +3422,9 @@
     {
       "path": "phases/08-generative-ai/02-autoencoders-vae/docs/en.md",
       "suffix": ".md",
-      "bytes": 10497,
-      "english_segments": 146,
-      "chinese_chars": 869
+      "bytes": 10455,
+      "english_segments": 147,
+      "chinese_chars": 779
     },
     {
       "path": "phases/08-generative-ai/02-autoencoders-vae/outputs/skill-vae-trainer.md",
@@ -3471,9 +3478,9 @@
     {
       "path": "phases/08-generative-ai/06-diffusion-ddpm-from-scratch/docs/en.md",
       "suffix": ".md",
-      "bytes": 11527,
-      "english_segments": 131,
-      "chinese_chars": 1210
+      "bytes": 11472,
+      "english_segments": 172,
+      "chinese_chars": 779
     },
     {
       "path": "phases/08-generative-ai/06-diffusion-ddpm-from-scratch/outputs/skill-diffusion-trainer.md",
@@ -3513,9 +3520,9 @@
     {
       "path": "phases/08-generative-ai/09-inpainting-outpainting-editing/docs/en.md",
       "suffix": ".md",
-      "bytes": 10530,
-      "english_segments": 119,
-      "chinese_chars": 1342
+      "bytes": 10463,
+      "english_segments": 103,
+      "chinese_chars": 1382
     },
     {
       "path": "phases/08-generative-ai/09-inpainting-outpainting-editing/outputs/skill-editing-pipeline.md",
@@ -3618,9 +3625,9 @@
     {
       "path": "phases/09-reinforcement-learning/01-mdps-states-actions-rewards/docs/en.md",
       "suffix": ".md",
-      "bytes": 11957,
-      "english_segments": 143,
-      "chinese_chars": 1102
+      "bytes": 11812,
+      "english_segments": 130,
+      "chinese_chars": 1111
     },
     {
       "path": "phases/09-reinforcement-learning/01-mdps-states-actions-rewards/outputs/skill-mdp-modeler.md",
@@ -3632,9 +3639,9 @@
     {
       "path": "phases/09-reinforcement-learning/02-dynamic-programming/docs/en.md",
       "suffix": ".md",
-      "bytes": 11340,
-      "english_segments": 122,
-      "chinese_chars": 950
+      "bytes": 11267,
+      "english_segments": 119,
+      "chinese_chars": 1026
     },
     {
       "path": "phases/09-reinforcement-learning/02-dynamic-programming/outputs/skill-dp-solver.md",
@@ -3646,9 +3653,9 @@
     {
       "path": "phases/09-reinforcement-learning/03-monte-carlo-methods/docs/en.md",
       "suffix": ".md",
-      "bytes": 11884,
-      "english_segments": 131,
-      "chinese_chars": 1105
+      "bytes": 11850,
+      "english_segments": 135,
+      "chinese_chars": 1068
     },
     {
       "path": "phases/09-reinforcement-learning/03-monte-carlo-methods/outputs/skill-mc-evaluator.md",
@@ -3688,9 +3695,9 @@
     {
       "path": "phases/09-reinforcement-learning/06-policy-gradients-reinforce/docs/en.md",
       "suffix": ".md",
-      "bytes": 11589,
-      "english_segments": 125,
-      "chinese_chars": 848
+      "bytes": 11643,
+      "english_segments": 141,
+      "chinese_chars": 804
     },
     {
       "path": "phases/09-reinforcement-learning/06-policy-gradients-reinforce/outputs/skill-policy-gradient-trainer.md",
@@ -3702,9 +3709,9 @@
     {
       "path": "phases/09-reinforcement-learning/07-actor-critic-a2c-a3c/docs/en.md",
       "suffix": ".md",
-      "bytes": 11120,
-      "english_segments": 142,
-      "chinese_chars": 900
+      "bytes": 11185,
+      "english_segments": 153,
+      "chinese_chars": 816
     },
     {
       "path": "phases/09-reinforcement-learning/07-actor-critic-a2c-a3c/outputs/skill-actor-critic-trainer.md",
@@ -3716,9 +3723,9 @@
     {
       "path": "phases/09-reinforcement-learning/08-ppo/docs/en.md",
       "suffix": ".md",
-      "bytes": 11655,
-      "english_segments": 117,
-      "chinese_chars": 1026
+      "bytes": 11722,
+      "english_segments": 115,
+      "chinese_chars": 1104
     },
     {
       "path": "phases/09-reinforcement-learning/08-ppo/outputs/skill-ppo-trainer.md",
@@ -3730,9 +3737,9 @@
     {
       "path": "phases/09-reinforcement-learning/09-reward-modeling-rlhf/docs/en.md",
       "suffix": ".md",
-      "bytes": 15558,
+      "bytes": 15369,
       "english_segments": 179,
-      "chinese_chars": 1268
+      "chinese_chars": 1243
     },
     {
       "path": "phases/09-reinforcement-learning/09-reward-modeling-rlhf/outputs/skill-rlhf-architect.md",
@@ -4654,23 +4661,23 @@
     {
       "path": "phases/11-llm-engineering/17-agent-framework-tradeoffs/docs/en.md",
       "suffix": ".md",
-      "bytes": 13542,
-      "english_segments": 182,
-      "chinese_chars": 1517
+      "bytes": 13095,
+      "english_segments": 186,
+      "chinese_chars": 1368
     },
     {
       "path": "phases/11-llm-engineering/17-agent-framework-tradeoffs/outputs/skill-framework-picker.md",
       "suffix": ".md",
-      "bytes": 3663,
-      "english_segments": 56,
-      "chinese_chars": 396
+      "bytes": 3643,
+      "english_segments": 67,
+      "chinese_chars": 311
     },
     {
       "path": "phases/11-llm-engineering/17-agent-framework-tradeoffs/quiz.json",
       "suffix": ".json",
-      "bytes": 2396,
-      "english_segments": 47,
-      "chinese_chars": 168
+      "bytes": 2371,
+      "english_segments": 45,
+      "chinese_chars": 156
     },
     {
       "path": "phases/11-llm-engineering/README.md",
@@ -5109,9 +5116,9 @@
     {
       "path": "phases/13-tools-and-protocols/06-mcp-fundamentals/docs/en.md",
       "suffix": ".md",
-      "bytes": 10890,
-      "english_segments": 135,
-      "chinese_chars": 1030
+      "bytes": 10910,
+      "english_segments": 126,
+      "chinese_chars": 1039
     },
     {
       "path": "phases/13-tools-and-protocols/06-mcp-fundamentals/outputs/skill-mcp-handshake-tracer.md",
@@ -5165,9 +5172,9 @@
     {
       "path": "phases/13-tools-and-protocols/10-mcp-resources-and-prompts/docs/en.md",
       "suffix": ".md",
-      "bytes": 9623,
-      "english_segments": 129,
-      "chinese_chars": 967
+      "bytes": 9643,
+      "english_segments": 111,
+      "chinese_chars": 1077
     },
     {
       "path": "phases/13-tools-and-protocols/10-mcp-resources-and-prompts/outputs/skill-primitive-splitter.md",
@@ -7685,9 +7692,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/docs/en.md",
       "suffix": ".md",
-      "bytes": 8715,
-      "english_segments": 120,
-      "chinese_chars": 1146
+      "bytes": 8714,
+      "english_segments": 138,
+      "chinese_chars": 948
     },
     {
       "path": "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/outputs/skill-instructgpt-explainer.md",
@@ -7706,9 +7713,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/docs/en.md",
       "suffix": ".md",
-      "bytes": 11186,
-      "english_segments": 147,
-      "chinese_chars": 1665
+      "bytes": 11126,
+      "english_segments": 195,
+      "chinese_chars": 1259
     },
     {
       "path": "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/outputs/skill-reward-hack-auditor.md",
@@ -7727,9 +7734,9 @@
     {
       "path": "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/docs/en.md",
       "suffix": ".md",
-      "bytes": 9332,
-      "english_segments": 125,
-      "chinese_chars": 1124
+      "bytes": 9527,
+      "english_segments": 148,
+      "chinese_chars": 1013
     },
     {
       "path": "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/outputs/skill-preference-loss-selector.md",
@@ -8675,6 +8682,594 @@
       "bytes": 3047,
       "english_segments": 43,
       "chinese_chars": 377
+    },
+    {
+      "path": "phases/19-capstone-projects/20-agent-harness-loop-contract/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6776,
+      "english_segments": 63,
+      "chinese_chars": 904
+    },
+    {
+      "path": "phases/19-capstone-projects/20-agent-harness-loop-contract/quiz.json",
+      "suffix": ".json",
+      "bytes": 3776,
+      "english_segments": 59,
+      "chinese_chars": 362
+    },
+    {
+      "path": "phases/19-capstone-projects/21-tool-registry-schema-validation/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6192,
+      "english_segments": 41,
+      "chinese_chars": 854
+    },
+    {
+      "path": "phases/19-capstone-projects/21-tool-registry-schema-validation/quiz.json",
+      "suffix": ".json",
+      "bytes": 3014,
+      "english_segments": 41,
+      "chinese_chars": 318
+    },
+    {
+      "path": "phases/19-capstone-projects/22-jsonrpc-stdio-transport/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6748,
+      "english_segments": 75,
+      "chinese_chars": 717
+    },
+    {
+      "path": "phases/19-capstone-projects/22-jsonrpc-stdio-transport/quiz.json",
+      "suffix": ".json",
+      "bytes": 3549,
+      "english_segments": 60,
+      "chinese_chars": 326
+    },
+    {
+      "path": "phases/19-capstone-projects/23-function-call-dispatcher/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7313,
+      "english_segments": 68,
+      "chinese_chars": 663
+    },
+    {
+      "path": "phases/19-capstone-projects/23-function-call-dispatcher/quiz.json",
+      "suffix": ".json",
+      "bytes": 3603,
+      "english_segments": 58,
+      "chinese_chars": 315
+    },
+    {
+      "path": "phases/19-capstone-projects/24-plan-execute-control-flow/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6530,
+      "english_segments": 60,
+      "chinese_chars": 700
+    },
+    {
+      "path": "phases/19-capstone-projects/24-plan-execute-control-flow/quiz.json",
+      "suffix": ".json",
+      "bytes": 3521,
+      "english_segments": 48,
+      "chinese_chars": 306
+    },
+    {
+      "path": "phases/19-capstone-projects/25-verification-gates-observation-budget/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7132,
+      "english_segments": 61,
+      "chinese_chars": 1015
+    },
+    {
+      "path": "phases/19-capstone-projects/25-verification-gates-observation-budget/quiz.json",
+      "suffix": ".json",
+      "bytes": 4416,
+      "english_segments": 66,
+      "chinese_chars": 503
+    },
+    {
+      "path": "phases/19-capstone-projects/26-sandbox-runner-denylist/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7290,
+      "english_segments": 66,
+      "chinese_chars": 800
+    },
+    {
+      "path": "phases/19-capstone-projects/26-sandbox-runner-denylist/quiz.json",
+      "suffix": ".json",
+      "bytes": 4253,
+      "english_segments": 64,
+      "chinese_chars": 438
+    },
+    {
+      "path": "phases/19-capstone-projects/27-eval-harness-fixture-tasks/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6906,
+      "english_segments": 49,
+      "chinese_chars": 839
+    },
+    {
+      "path": "phases/19-capstone-projects/27-eval-harness-fixture-tasks/quiz.json",
+      "suffix": ".json",
+      "bytes": 3900,
+      "english_segments": 54,
+      "chinese_chars": 414
+    },
+    {
+      "path": "phases/19-capstone-projects/28-observability-otel-traces/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7315,
+      "english_segments": 80,
+      "chinese_chars": 721
+    },
+    {
+      "path": "phases/19-capstone-projects/28-observability-otel-traces/quiz.json",
+      "suffix": ".json",
+      "bytes": 4004,
+      "english_segments": 76,
+      "chinese_chars": 358
+    },
+    {
+      "path": "phases/19-capstone-projects/29-end-to-end-coding-task-demo/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7004,
+      "english_segments": 90,
+      "chinese_chars": 785
+    },
+    {
+      "path": "phases/19-capstone-projects/29-end-to-end-coding-task-demo/quiz.json",
+      "suffix": ".json",
+      "bytes": 4088,
+      "english_segments": 68,
+      "chinese_chars": 351
+    },
+    {
+      "path": "phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7060,
+      "english_segments": 82,
+      "chinese_chars": 1016
+    },
+    {
+      "path": "phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/quiz.json",
+      "suffix": ".json",
+      "bytes": 3583,
+      "english_segments": 63,
+      "chinese_chars": 408
+    },
+    {
+      "path": "phases/19-capstone-projects/31-tokenized-dataset-sliding-window/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7084,
+      "english_segments": 52,
+      "chinese_chars": 1031
+    },
+    {
+      "path": "phases/19-capstone-projects/31-tokenized-dataset-sliding-window/quiz.json",
+      "suffix": ".json",
+      "bytes": 3436,
+      "english_segments": 45,
+      "chinese_chars": 391
+    },
+    {
+      "path": "phases/19-capstone-projects/32-token-positional-embeddings/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8022,
+      "english_segments": 104,
+      "chinese_chars": 1011
+    },
+    {
+      "path": "phases/19-capstone-projects/32-token-positional-embeddings/quiz.json",
+      "suffix": ".json",
+      "bytes": 3228,
+      "english_segments": 58,
+      "chinese_chars": 280
+    },
+    {
+      "path": "phases/19-capstone-projects/33-multihead-self-attention/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7905,
+      "english_segments": 57,
+      "chinese_chars": 1245
+    },
+    {
+      "path": "phases/19-capstone-projects/33-multihead-self-attention/quiz.json",
+      "suffix": ".json",
+      "bytes": 3303,
+      "english_segments": 42,
+      "chinese_chars": 398
+    },
+    {
+      "path": "phases/19-capstone-projects/34-transformer-block/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8869,
+      "english_segments": 99,
+      "chinese_chars": 1226
+    },
+    {
+      "path": "phases/19-capstone-projects/34-transformer-block/quiz.json",
+      "suffix": ".json",
+      "bytes": 3596,
+      "english_segments": 62,
+      "chinese_chars": 407
+    },
+    {
+      "path": "phases/19-capstone-projects/35-gpt-model-assembly/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9820,
+      "english_segments": 131,
+      "chinese_chars": 1308
+    },
+    {
+      "path": "phases/19-capstone-projects/35-gpt-model-assembly/quiz.json",
+      "suffix": ".json",
+      "bytes": 3573,
+      "english_segments": 58,
+      "chinese_chars": 391
+    },
+    {
+      "path": "phases/19-capstone-projects/36-training-loop-eval/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9631,
+      "english_segments": 127,
+      "chinese_chars": 1248
+    },
+    {
+      "path": "phases/19-capstone-projects/36-training-loop-eval/quiz.json",
+      "suffix": ".json",
+      "bytes": 3541,
+      "english_segments": 63,
+      "chinese_chars": 381
+    },
+    {
+      "path": "phases/19-capstone-projects/37-loading-pretrained-weights/docs/en.md",
+      "suffix": ".md",
+      "bytes": 10581,
+      "english_segments": 147,
+      "chinese_chars": 1041
+    },
+    {
+      "path": "phases/19-capstone-projects/37-loading-pretrained-weights/quiz.json",
+      "suffix": ".json",
+      "bytes": 3511,
+      "english_segments": 65,
+      "chinese_chars": 336
+    },
+    {
+      "path": "phases/19-capstone-projects/38-classifier-finetuning/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8584,
+      "english_segments": 104,
+      "chinese_chars": 926
+    },
+    {
+      "path": "phases/19-capstone-projects/38-classifier-finetuning/quiz.json",
+      "suffix": ".json",
+      "bytes": 4376,
+      "english_segments": 72,
+      "chinese_chars": 429
+    },
+    {
+      "path": "phases/19-capstone-projects/39-instruction-tuning-sft/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9219,
+      "english_segments": 126,
+      "chinese_chars": 1117
+    },
+    {
+      "path": "phases/19-capstone-projects/39-instruction-tuning-sft/quiz.json",
+      "suffix": ".json",
+      "bytes": 4704,
+      "english_segments": 74,
+      "chinese_chars": 538
+    },
+    {
+      "path": "phases/19-capstone-projects/40-dpo-from-scratch/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9068,
+      "english_segments": 111,
+      "chinese_chars": 907
+    },
+    {
+      "path": "phases/19-capstone-projects/40-dpo-from-scratch/quiz.json",
+      "suffix": ".json",
+      "bytes": 4444,
+      "english_segments": 72,
+      "chinese_chars": 468
+    },
+    {
+      "path": "phases/19-capstone-projects/41-eval-pipeline/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8997,
+      "english_segments": 96,
+      "chinese_chars": 1071
+    },
+    {
+      "path": "phases/19-capstone-projects/41-eval-pipeline/quiz.json",
+      "suffix": ".json",
+      "bytes": 4621,
+      "english_segments": 57,
+      "chinese_chars": 584
+    },
+    {
+      "path": "phases/19-capstone-projects/42-large-corpus-downloader/docs/en.md",
+      "suffix": ".md",
+      "bytes": 10693,
+      "english_segments": 145,
+      "chinese_chars": 1130
+    },
+    {
+      "path": "phases/19-capstone-projects/42-large-corpus-downloader/quiz.json",
+      "suffix": ".json",
+      "bytes": 3480,
+      "english_segments": 63,
+      "chinese_chars": 347
+    },
+    {
+      "path": "phases/19-capstone-projects/43-hdf5-tokenized-corpus/docs/en.md",
+      "suffix": ".md",
+      "bytes": 10387,
+      "english_segments": 134,
+      "chinese_chars": 1307
+    },
+    {
+      "path": "phases/19-capstone-projects/43-hdf5-tokenized-corpus/quiz.json",
+      "suffix": ".json",
+      "bytes": 3312,
+      "english_segments": 53,
+      "chinese_chars": 366
+    },
+    {
+      "path": "phases/19-capstone-projects/44-cosine-lr-warmup/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9900,
+      "english_segments": 122,
+      "chinese_chars": 1125
+    },
+    {
+      "path": "phases/19-capstone-projects/44-cosine-lr-warmup/quiz.json",
+      "suffix": ".json",
+      "bytes": 3383,
+      "english_segments": 44,
+      "chinese_chars": 401
+    },
+    {
+      "path": "phases/19-capstone-projects/45-gradient-clipping-amp/docs/en.md",
+      "suffix": ".md",
+      "bytes": 11042,
+      "english_segments": 118,
+      "chinese_chars": 1403
+    },
+    {
+      "path": "phases/19-capstone-projects/45-gradient-clipping-amp/quiz.json",
+      "suffix": ".json",
+      "bytes": 3321,
+      "english_segments": 56,
+      "chinese_chars": 335
+    },
+    {
+      "path": "phases/19-capstone-projects/46-gradient-accumulation/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8782,
+      "english_segments": 135,
+      "chinese_chars": 980
+    },
+    {
+      "path": "phases/19-capstone-projects/46-gradient-accumulation/outputs/accum-curve.json",
+      "suffix": ".json",
+      "bytes": 818,
+      "english_segments": 10,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/46-gradient-accumulation/outputs/skill-gradient-accumulation.md",
+      "suffix": ".md",
+      "bytes": 1638,
+      "english_segments": 22,
+      "chinese_chars": 209
+    },
+    {
+      "path": "phases/19-capstone-projects/46-gradient-accumulation/quiz.json",
+      "suffix": ".json",
+      "bytes": 3844,
+      "english_segments": 70,
+      "chinese_chars": 422
+    },
+    {
+      "path": "phases/19-capstone-projects/47-checkpoint-save-resume/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9764,
+      "english_segments": 95,
+      "chinese_chars": 1289
+    },
+    {
+      "path": "phases/19-capstone-projects/47-checkpoint-save-resume/outputs/resume-demo.json",
+      "suffix": ".json",
+      "bytes": 263,
+      "english_segments": 3,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/47-checkpoint-save-resume/outputs/skill-checkpoint-save-resume.md",
+      "suffix": ".md",
+      "bytes": 1861,
+      "english_segments": 16,
+      "chinese_chars": 206
+    },
+    {
+      "path": "phases/19-capstone-projects/47-checkpoint-save-resume/quiz.json",
+      "suffix": ".json",
+      "bytes": 3761,
+      "english_segments": 63,
+      "chinese_chars": 431
+    },
+    {
+      "path": "phases/19-capstone-projects/48-distributed-fsdp-ddp/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9625,
+      "english_segments": 128,
+      "chinese_chars": 942
+    },
+    {
+      "path": "phases/19-capstone-projects/48-distributed-fsdp-ddp/outputs/ddp-demo.json",
+      "suffix": ".json",
+      "bytes": 418,
+      "english_segments": 5,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/48-distributed-fsdp-ddp/outputs/skill-distributed-fsdp-ddp.md",
+      "suffix": ".md",
+      "bytes": 1807,
+      "english_segments": 10,
+      "chinese_chars": 239
+    },
+    {
+      "path": "phases/19-capstone-projects/48-distributed-fsdp-ddp/quiz.json",
+      "suffix": ".json",
+      "bytes": 3784,
+      "english_segments": 44,
+      "chinese_chars": 501
+    },
+    {
+      "path": "phases/19-capstone-projects/49-lm-eval-harness/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9781,
+      "english_segments": 91,
+      "chinese_chars": 1143
+    },
+    {
+      "path": "phases/19-capstone-projects/49-lm-eval-harness/outputs/leaderboard.json",
+      "suffix": ".json",
+      "bytes": 991,
+      "english_segments": 29,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/49-lm-eval-harness/outputs/skill-lm-eval-harness.md",
+      "suffix": ".md",
+      "bytes": 1962,
+      "english_segments": 16,
+      "chinese_chars": 237
+    },
+    {
+      "path": "phases/19-capstone-projects/49-lm-eval-harness/quiz.json",
+      "suffix": ".json",
+      "bytes": 3678,
+      "english_segments": 55,
+      "chinese_chars": 418
+    },
+    {
+      "path": "phases/19-capstone-projects/50-hypothesis-generator/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7349,
+      "english_segments": 58,
+      "chinese_chars": 967
+    },
+    {
+      "path": "phases/19-capstone-projects/50-hypothesis-generator/quiz.json",
+      "suffix": ".json",
+      "bytes": 3490,
+      "english_segments": 56,
+      "chinese_chars": 381
+    },
+    {
+      "path": "phases/19-capstone-projects/51-literature-retrieval/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6894,
+      "english_segments": 66,
+      "chinese_chars": 844
+    },
+    {
+      "path": "phases/19-capstone-projects/51-literature-retrieval/quiz.json",
+      "suffix": ".json",
+      "bytes": 3151,
+      "english_segments": 43,
+      "chinese_chars": 395
+    },
+    {
+      "path": "phases/19-capstone-projects/52-experiment-runner/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7715,
+      "english_segments": 83,
+      "chinese_chars": 867
+    },
+    {
+      "path": "phases/19-capstone-projects/52-experiment-runner/quiz.json",
+      "suffix": ".json",
+      "bytes": 3798,
+      "english_segments": 60,
+      "chinese_chars": 419
+    },
+    {
+      "path": "phases/19-capstone-projects/53-result-evaluator/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6918,
+      "english_segments": 49,
+      "chinese_chars": 693
+    },
+    {
+      "path": "phases/19-capstone-projects/53-result-evaluator/quiz.json",
+      "suffix": ".json",
+      "bytes": 3639,
+      "english_segments": 55,
+      "chinese_chars": 404
+    },
+    {
+      "path": "phases/19-capstone-projects/54-paper-writer/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6999,
+      "english_segments": 79,
+      "chinese_chars": 774
+    },
+    {
+      "path": "phases/19-capstone-projects/54-paper-writer/quiz.json",
+      "suffix": ".json",
+      "bytes": 3725,
+      "english_segments": 75,
+      "chinese_chars": 294
+    },
+    {
+      "path": "phases/19-capstone-projects/55-critic-loop/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7108,
+      "english_segments": 41,
+      "chinese_chars": 1039
+    },
+    {
+      "path": "phases/19-capstone-projects/55-critic-loop/quiz.json",
+      "suffix": ".json",
+      "bytes": 3519,
+      "english_segments": 45,
+      "chinese_chars": 465
+    },
+    {
+      "path": "phases/19-capstone-projects/56-iteration-scheduler/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7082,
+      "english_segments": 68,
+      "chinese_chars": 817
+    },
+    {
+      "path": "phases/19-capstone-projects/56-iteration-scheduler/quiz.json",
+      "suffix": ".json",
+      "bytes": 3480,
+      "english_segments": 52,
+      "chinese_chars": 386
+    },
+    {
+      "path": "phases/19-capstone-projects/57-end-to-end-research-demo/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6299,
+      "english_segments": 63,
+      "chinese_chars": 719
+    },
+    {
+      "path": "phases/19-capstone-projects/57-end-to-end-research-demo/quiz.json",
+      "suffix": ".json",
+      "bytes": 3688,
+      "english_segments": 63,
+      "chinese_chars": 411
     },
     {
       "path": "phases/19-capstone-projects/README.md",
