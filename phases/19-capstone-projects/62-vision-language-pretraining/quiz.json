@@ -1,0 +1,78 @@
+{
+  "lesson": "62-vision-language-pretraining",
+  "title": "视觉语言预训练",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "将 InfoNCE 和 LM 损失结合到一个模型中可以训练哪两种不同的功能？",
+      "options": [
+        "速度和准确性",
+        "排名（为标题找到正确的图像）和生成（为图像编写标题）",
+        "压缩与解压",
+        "token化和去token化"
+      ],
+      "correct": 1,
+      "explanation": "InfoNCE handles ranking; LM 损失处理生成。 CoCa、BLIP 和朋友将两者结合在一次训练中。"
+    },
+    {
+      "stage": "check",
+      "question": "在InfoNCE中，对于一批N对，形成了多少正对和负对？",
+      "options": [
+        "1 个正、N 个负",
+        "沿相似矩阵对角线的 N 个正值和非对角线的 N*(N-1) 个负值",
+        "N 个正数和 N 个负数",
+        "N^2 正数"
+      ],
+      "correct": 1,
+      "explanation": "N 个匹配对位于对角线上；一切非对角线的都是负数。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么对比温度通常是一个学习参数？",
+      "options": [
+        "PyTorch 需要它",
+        "手动调音很脆弱；让 tau 学习可以让模型在训练过程中随着嵌入尺度的变化找到正确的 softmax 峰值",
+        "学习的 tau 在 GPU 上速度更快",
+        "它避免使用 Adam"
+      ],
+      "correct": 1,
+      "explanation": "CLIP 引入了学习 log-tau，因此随着嵌入规范的增长，对比 softmax 仍保持在有用的状态。"
+    },
+    {
+      "stage": "check",
+      "question": "哪些子模块从 LM 损失接收梯度，但不从对比损失接收梯度？",
+      "options": [
+        "视觉编码器",
+        "交叉注意力解码器",
+        "MLP投影仪",
+        "文本端编码器"
+      ],
+      "correct": 1,
+      "explanation": "对比损失不会影响解码器； LM 损失不会触及文本侧均值池编码器。"
+    },
+    {
+      "stage": "post",
+      "question": "ignore_index=PAD_ID 在 LM 交叉熵中完成了什么？",
+      "options": [
+        "加速损失",
+        "掩盖损失之外的填充位置，因此模型不会因在标题结束后预测token而受到惩罚",
+        "加密填充token",
+        "重新排序token"
+      ],
+      "correct": 1,
+      "explanation": "填充位置不携带信号；忽略它们可以阻止学习预测 pad 的损失。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么关于合成数据的 50 个步骤的演示足以使本课程结束？",
+      "options": [
+        "该模型只需 50 步即可达到最先进水平",
+        "该演示证明了梯度管道端到端的工作原理；生产训练形状相同，但在真实数据上运行数百万步",
+        "最多支持 50 步",
+        "真实数据会改变架构"
+      ],
+      "correct": 1,
+      "explanation": "所展示的动态（两种损失均减少，无 NaN，稳定的 tau）与十亿张图像运行所显示的动态相同；刚刚扩大规模。"
+    }
+  ]
+}

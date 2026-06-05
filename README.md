@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
-  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-473-3553ff?style=flat-square&labelColor=fafaf5" alt="473 节课"></a>
+  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-503-3553ff?style=flat-square&labelColor=fafaf5" alt="503 节课"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 个 Phase"></a>
   <a href="https://github.com/rohitg00/ai-engineering-from-scratch/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/ai-engineering-from-scratch?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
   <a href="https://aiengineeringfromscratch.com"><img src="https://img.shields.io/badge/web-aiengineeringfromscratch.com-3553ff?style=flat-square&labelColor=fafaf5" alt="网站"></a>
@@ -19,7 +19,7 @@
 > **84% 的学生已经在使用 AI 工具。只有 18% 认为自己已准备好以
 > 专业方式使用它们。** 这套课程正是为了弥合这道差距。
 >
-> 473 节课。20 个 Phase。约 320 小时。Python、TypeScript、Rust、Julia。每节课都会产出
+> 503 节课。20 个 Phase。约 320 小时。Python、TypeScript、Rust、Julia。每节课都会产出
 > 一个可复用 artifact：prompt、skill、agent、MCP server。免费、开源、MIT。
 >
 > 你不只是学习 AI。你会亲手构建它。端到端。从零开始。
@@ -31,7 +31,7 @@
 解释它的 loss curve。你把一个 function 接到 agent 上，却说不清在调用它的 model 内部，
 attention 究竟在做什么。
 
-这套课程就是主干。20 个 Phase，473 节课，四门语言：Python、TypeScript、
+这套课程就是主干。20 个 Phase，503 节课，四门语言：Python、TypeScript、
 Rust、Julia。一端是 linear algebra，另一端是 autonomous swarms。每个 algorithm
 都会先从原始数学手写构建。Backprop。Tokenizer。Attention。Agent loop。等到
 PyTorch 出场时，你已经知道它在底层做什么。
@@ -173,7 +173,7 @@ ls phases/03-deep-learning-core/05-loss-functions/outputs/
 </table>
 
 > 用 `python3 scripts/install_skills.py` 一次性安装全部内容。是真工具，不是作业。
-> 完成整套课程后，你会拥有一个包含 473 个 artifacts 的作品集，并且真正理解它们，
+> 完成整套课程后，你会拥有一个包含 503 个 artifacts 的作品集，并且真正理解它们，
 > 因为它们都是你亲手构建的。
 
 ### FIG_002 · 一个完整示例
@@ -828,7 +828,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-19">
-<summary><b>Phase 19 — Capstone Projects</b> &nbsp;<code>55 lessons</code>&nbsp; <em>17 个端到端产品 + 4 条深度构建 track。每个项目 20-40 小时；每条 track 4-12 节课。</em></summary>
+<summary><b>Phase 19 — Capstone Projects</b> &nbsp;<code>85 lessons</code>&nbsp; <em>17 个端到端产品 + 9 条 deep-build tracks。每个项目 20-40 小时；每条 track 4-12 节课。</em></summary>
 <br/>
 
 | # | 项目 | 组合内容 | 语言 |
@@ -893,6 +893,36 @@ the agent went wrong and explain why...
 | 55 | [Critic Loop](phases/19-capstone-projects/55-critic-loop/) | D. Auto research | Python |
 | 56 | [Iteration Scheduler](phases/19-capstone-projects/56-iteration-scheduler/) | D. Auto research | Python |
 | 57 | [End-to-End Research Demo](phases/19-capstone-projects/57-end-to-end-research-demo/) | D. Auto research | Python |
+| 58 | [视觉编码器 Patches](phases/19-capstone-projects/58-vision-encoder-patches/) | E. Multimodal VLM | Python |
+| 59 | [Vision Transformer 编码器](phases/19-capstone-projects/59-vit-transformer/) | E. Multimodal VLM | Python |
+| 60 | [用于模态对齐的投影层](phases/19-capstone-projects/60-projection-layer-modality-align/) | E. Multimodal VLM | Python |
+| 61 | [Cross-Attention 融合](phases/19-capstone-projects/61-cross-attention-fusion/) | E. Multimodal VLM | Python |
+| 62 | [视觉-语言预训练](phases/19-capstone-projects/62-vision-language-pretraining/) | E. Multimodal VLM | Python |
+| 63 | [多模态评估](phases/19-capstone-projects/63-multimodal-eval/) | E. Multimodal VLM | Python |
+| 64 | [Chunking 策略比较](phases/19-capstone-projects/64-chunking-strategies-advanced/) | F. Advanced RAG | Python |
+| 65 | [BM25 与 Dense Embeddings 混合检索](phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/) | F. Advanced RAG | Python |
+| 66 | [Cross-Encoder Reranker](phases/19-capstone-projects/66-reranker-cross-encoder/) | F. Advanced RAG | Python |
+| 67 | [查询重写：HyDE、Multi-Query 与分解](phases/19-capstone-projects/67-query-rewriting-hyde/) | F. Advanced RAG | Python |
+| 68 | [RAG 评估：Precision、Recall、MRR、nDCG、Faithfulness、Answer Relevance](phases/19-capstone-projects/68-rag-eval-precision-recall/) | F. Advanced RAG | Python |
+| 69 | [端到端 RAG 系统](phases/19-capstone-projects/69-end-to-end-rag-system/) | F. Advanced RAG | Python |
+| 70 | [Task Spec 格式](phases/19-capstone-projects/70-task-spec-format/) | G. Eval framework | Python |
+| 71 | [经典指标](phases/19-capstone-projects/71-classical-metrics/) | G. Eval framework | Python |
+| 72 | [代码执行指标](phases/19-capstone-projects/72-code-exec-metric/) | G. Eval framework | Python |
+| 73 | [Perplexity 与 Calibration](phases/19-capstone-projects/73-perplexity-calibration/) | G. Eval framework | Python |
+| 74 | [Leaderboard 聚合](phases/19-capstone-projects/74-leaderboard-aggregation/) | G. Eval framework | Python |
+| 75 | [端到端 Eval Runner](phases/19-capstone-projects/75-end-to-end-eval-runner/) | G. Eval framework | Python |
+| 76 | [从零实现 Collective Ops](phases/19-capstone-projects/76-collective-ops-from-scratch/) | H. Distributed train | Python |
+| 77 | [从零实现 Data Parallel DDP](phases/19-capstone-projects/77-data-parallel-ddp/) | H. Distributed train | Python |
+| 78 | [ZeRO Optimizer State Sharding](phases/19-capstone-projects/78-zero-parameter-sharding/) | H. Distributed train | Python |
+| 79 | [Pipeline Parallel 与 Bubble 分析](phases/19-capstone-projects/79-pipeline-parallel/) | H. Distributed train | Python |
+| 80 | [Sharded Checkpoint 与 Atomic Resume](phases/19-capstone-projects/80-checkpoint-sharded-resume/) | H. Distributed train | Python |
+| 81 | [端到端分布式训练](phases/19-capstone-projects/81-end-to-end-distributed-train/) | H. Distributed train | Python |
+| 82 | [Jailbreak Taxonomy](phases/19-capstone-projects/82-jailbreak-taxonomy/) | I. Safety harness | Python |
+| 83 | [Prompt Injection Detector](phases/19-capstone-projects/83-prompt-injection-detector/) | I. Safety harness | Python |
+| 84 | [Refusal Evaluation](phases/19-capstone-projects/84-refusal-evaluation/) | I. Safety harness | Python |
+| 85 | [Content Classifier Integration](phases/19-capstone-projects/85-content-classifier-integration/) | I. Safety harness | Python |
+| 86 | [Constitutional Rules Engine](phases/19-capstone-projects/86-constitutional-rules-engine/) | I. Safety harness | Python, YAML |
+| 87 | [端到端 Safety Gate](phases/19-capstone-projects/87-end-to-end-safety-gate/) | I. Safety harness | Python |
 
 </details>
 
@@ -914,7 +944,7 @@ outputs/
 
 ### 将所有课程 skill 安装到你的 agent 中
 
-这个 repo 在 `phases/**/outputs/` 下提供 382 个 skills 和 99 个 prompts。
+这个 repo 在 `phases/**/outputs/` 下提供 388 个 skills 和 99 个 prompts。
 
 **推荐：通过 [skills.sh](https://skills.sh) 安装。** 无需 clone，无需 Python，并会自动检测你的 agent skills 目录：
 
@@ -1075,7 +1105,7 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 
 ## 赞助这项工作
 
-免费，MIT-licensed，473 节课。课程完全依靠 sponsorship 维护。只接受现金。
+免费，MIT-licensed，503 节课。课程完全依靠 sponsorship 维护。只接受现金。
 
 **触达（2026-05-14 已验证）：** 55,593 月访问者 · 90,709 page views · 7.5K stars ·
 Twitter/X 是 #1 acquisition channel。

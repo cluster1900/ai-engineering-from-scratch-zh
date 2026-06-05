@@ -1,0 +1,78 @@
+{
+  "lesson": "77-data-parallel-ddp",
+  "title": "从头开始数据并行 DDP",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 DDP 在构建时广播参数而不是跨等级依赖相同的种子？",
+      "options": [
+        "广播比播种更快",
+        "相同种子 init 通过 float epsilon 跨等级漂移；广播在训练开始前保证字节相等的权重",
+        "PyTorch 禁止同种子初始化",
+        "广播节省内存"
+      ],
+      "correct": 1,
+      "explanation": "不同硬件（甚至不同的进程顺序）上的浮点操作在位级别上可能有所不同。从 0 级开始的广播是在各处获得字节相等权重的唯一方法。"
+    },
+    {
+      "stage": "check",
+      "question": "在backward之后和optimizer.step之前DDP做了什么？",
+      "options": [
+        "没有什么",
+        "保存检查点",
+        "Allreduce-SUM 每个参数的梯度并除以 world_size 以获得平均梯度",
+        "广播逻辑"
+      ],
+      "correct": 2,
+      "explanation": "平均梯度对于 world_size 是不变的，因此在一级调整的学习率适用于 N 级。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么在 allreduce-SUM 之后除以 world_size 而不是使用 allreduce-MEAN？",
+      "options": [
+        "Gloo 中不存在 Allreduce-MEAN",
+        "每个等级除以 world_size 就是一个本地操作； allreduce-MEAN 将在后台以相同的方式实现",
+        "除法产生 NaN",
+        "world_size 未知"
+      ],
+      "correct": 1,
+      "explanation": "两种方法产生相同的算术。 NCCL 自 2.10 起发布 allreduce-AVG； gloo 没有，因此在 SUM 之后进行局部除法。"
+    },
+    {
+      "stage": "check",
+      "question": "生产 DDP 中的梯度分桶实现了什么？",
+      "options": [
+        "将梯度量化为 int8",
+        "将许多小的 allreduce 合并为一个大的 allreduce，分摊每次调用的延迟下限",
+        "释放梯度内存",
+        "向后跳"
+      ],
+      "correct": 1,
+      "explanation": "1B 参数模型有数千个梯度张量；每个张量的一次 allreduce 会导致 gloo 或 NCCL 延迟数千倍。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 PyTorch DDP 中存在 no_sync() ？",
+      "options": [
+        "关闭 DDP",
+        "K 个微批次的梯度累积需要跳过其中 K-1 个微批次的后向 Allreduce； no_sync 包装该暂停",
+        "切换后端",
+        "调试"
+      ],
+      "correct": 1,
+      "explanation": "如果没有 no_sync，allreduce 每个累积步骤会触发 K 次，吞吐量会下降到最低水平。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么本课的参考实现会在一个进程中按顺序遍历每个级别的微批次？",
+      "options": [
+        "单进程速度更快",
+        "它给出了字节相等的基线：每一步的顺序平均梯度必须等于 DDP 的 allreduce 平均梯度",
+        "这是使用 gloo 的唯一方法",
+        "它节省内存"
+      ],
+      "correct": 1,
+      "explanation": "与参考回路的等效性即为承载正确性检验；如果没有它，梯度同步错误会隐藏到步骤 10000。"
+    }
+  ]
+}

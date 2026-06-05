@@ -1,0 +1,78 @@
+{
+  "lesson": "60-projection-layer-modality-align",
+  "title": "用于模态对齐的投影层",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么视觉编码器产生文本解码器无法直接使用的 token？",
+      "options": [
+        "它们的文件格式不同",
+        "图像token存在于编码器在视觉预训练期间学习的基础中，与解码器的词向量没有对应关系",
+        "图像token已加密",
+        "图像token太短"
+      ],
+      "correct": 1,
+      "explanation": "两个编码器学习独立的基数；需要一个桥接模块来将它们对齐在共享空间中。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么两层 MLP 足以在实践中进行模态对齐？",
+      "options": [
+        "PyTorch 需要两层",
+        "根据经验，两个线性投影之间的一个非线性弯曲 (GELU) 足以将 CLIP 样式特征与文本嵌入对齐",
+        "禁止单层投影",
+        "更深层次的预测是非法的"
+      ],
+      "correct": 1,
+      "explanation": "LLaVA 及其后代推出了这种两层 MLP，因为非线性修复了单线性无法解决的曲率不匹配问题。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么视觉编码器在这个对准阶段被冻结？",
+      "options": [
+        "冻结意味着更快的墙上时间",
+        "86M参数的编码器无法在小型模拟语料库上进行重新训练；仅 1.3M 参数投影就足以在几分钟内完成对准",
+        "PyTorch 不支持训练编码器",
+        "编码器为空"
+      ],
+      "correct": 1,
+      "explanation": "冻结编码器和文本表使得投影成为唯一需要学习的东西，这是每个基于适配器的 VLM 的操作形状。"
+    },
+    {
+      "stage": "check",
+      "question": "当两个向量指向相反方向时，cosine_alignment_loss(image_emb, text_emb) 返回什么？",
+      "options": [
+        "0.0",
+        "2.0",
+        "1.0",
+        "无限"
+      ],
+      "correct": 1,
+      "explanation": "损失为 1 - cos(角度)。反平行向量的 cos = -1，因此损失为 1 - (-1) = 2.0。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么使用 CLS 池化从 197 个token生成单个图像级向量？",
+      "options": [
+        "PyTorch 自动对token求和",
+        "标题是每个样本一个向量，因此图像侧也需要一个向量； CLS token是编码器的内置图像摘要",
+        "它节省磁盘空间",
+        "补丁token未使用"
+      ],
+      "correct": 1,
+      "explanation": "对齐是一个图像向量与一个标题向量； CLS 池化生成没有额外参数的图像向量。"
+    },
+    {
+      "stage": "post",
+      "question": "哪个生产系统最直接地映射到第 60 课的模式？",
+      "options": [
+        "棕榈",
+        "LLaVA 1.5：冻结视觉编码器，冻结LLM，仅训练两层MLP投影",
+        "阿尔法折叠",
+        "稳定扩散"
+      ],
+      "correct": 1,
+      "explanation": "LLaVA 的第一阶段训练正是这样的：一个冻结编码器和带有两层 MLP 桥的 LM 作为唯一的可训练部分。"
+    }
+  ]
+}

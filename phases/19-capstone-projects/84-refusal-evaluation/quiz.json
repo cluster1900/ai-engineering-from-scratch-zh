@@ -1,0 +1,78 @@
+{
+  "lesson": "84-refusal-evaluation",
+  "title": "Capstone 84 — 拒绝评估",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "拒绝不足衡量什么？",
+      "options": [
+        "模型回答token为不安全的提示的频率",
+        "模型拒绝token为安全的提示的频率",
+        "模型每个响应发出多少个token",
+        "每个提示的 API 调用成本"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么本课程使用模拟法学硕士而不是真实模型？",
+      "options": [
+        "因为真实模型不允许出现在Capstone中",
+        "因此，相同的输入在运行中会产生相同的输出，从而使代码更改归因于已知原因",
+        "因为模拟法学硕士比真实法学硕士更准确",
+        "因为该课程需要 GPU 硬件"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "假设安全提示数 = 30，拒绝安全数 = 5，那么过度拒绝率是多少？",
+      "options": [
+        "0.50",
+        "0.17",
+        "0.30",
+        "0.05"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "预期校准误差 (ECE) 在此衡量什么？",
+      "options": [
+        "因不安全提示而拒绝的比例",
+        "模型声明的置信度与其观察到的准确性之间的差距（按置信范围分类）",
+        "所有响应的 token总数",
+        "触发的正则表达式规则的数量"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么框架要加入针对第 82 课分类法的不安全提示？",
+      "options": [
+        "重新运行第 82 课语料库加载器",
+        "报告每个攻击类别的拒绝不足，以便团队了解模型泄漏的边界",
+        "将每个提示的严重性提高一级",
+        "删除重复项"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么框架同时返回拒绝不足和过度拒绝，而不是单个安全评分？",
+      "options": [
+        "因为Python数据类更喜欢多个字段",
+        "因为它们是两个相反的错误，并且单个数字隐藏了给定构建中更差的一个",
+        "因为under-rejection只用在CI中",
+        "因为过度拒绝是由不同的团队计算的"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

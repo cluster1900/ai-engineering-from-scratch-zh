@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>课程 - AI Engineering from Scratch</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>AI</text></svg>">
-  <meta name="description" content="AI Engineering from Scratch 课程中的一节课。20 个阶段、473 节课、四种语言，每个算法都从原始数学手写构建。">
+  <meta name="description" content="AI Engineering from Scratch 课程中的一节课。20 个阶段、503 节课、四种语言，每个算法都从原始数学手写构建。">
   <meta property="og:title" content="AI Engineering from Scratch · 课程">
-  <meta property="og:description" content="473 节课。20 个阶段。手写 backprop、tokenizer、attention mechanism 和 agent loop。">
+  <meta property="og:description" content="503 节课。20 个阶段。手写 backprop、tokenizer、attention mechanism 和 agent loop。">
   <meta property="og:image" content="https://aiengineeringfromscratch.com/og-image.zh.png?v=3">
   <!-- 有意省略 og:url：lesson.html 是一个静态模板，会通过 ?path= 在客户端加载课程正文。静态托管无法模板化 URL，因此让爬虫回退到请求 URL（也就是特定课程的分享链接）。 -->
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AI Engineering from Scratch">
-  <meta name="twitter:description" content="473 节课。20 个阶段。从原始数学开始，亲手构建。">
+  <meta name="twitter:description" content="503 节课。20 个阶段。从原始数学开始，亲手构建。">
   <meta name="twitter:image" content="https://aiengineeringfromscratch.com/og-image.zh.png?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2094,7 +2094,7 @@
       }
 
       function parseMd(md) {
-        var lines = md.split('\n');
+        var lines = md.split(/\r?\n/);
         var out = '';
         var inCodeBlock = false;
         var codeLang = '';
@@ -2149,7 +2149,7 @@
           for (var ri = 2; ri < tableRows.length; ri++) {
             var cells = tableRows[ri];
             h += '<tr>';
-            for (var ci = 0; ci < cells.length; ci++) {
+            for (var ci = 0; ci < headers.length; ci++) {
               var cls = '';
               if (isKeyTerms) {
                 var headerLower = (headers[ci] || '').toLowerCase();
@@ -2216,12 +2216,11 @@
             continue;
           }
 
-          if (line.match(/^\|.+\|/)) {
+          if (line.match(/^\s*\|.*\|\s*$/)) {
             out += flushList();
             out += flushBlockquote();
             if (!inTable) inTable = true;
-            var cells = line.split('|').slice(1, -1);
-            tableRows.push(cells.map(function (c) { return c.trim(); }));
+            tableRows.push(splitTableRow(line));
             continue;
           } else if (inTable) {
             out += flushTable();
@@ -2361,6 +2360,36 @@
         return out;
       }
 
+      function splitTableRow(line) {
+        // 分割 Markdown 表格行，同时保留转义管道符和 inline code 内的管道符。
+        var cells = [];
+        var cur = '';
+        var inCode = false;
+        for (var i = 0; i < line.length; i++) {
+          var ch = line.charAt(i);
+          if (ch === '\\' && line.charAt(i + 1) === '|') {
+            cur += '|';
+            i++;
+            continue;
+          }
+          if (ch === '`') {
+            inCode = !inCode;
+            cur += ch;
+            continue;
+          }
+          if (ch === '|' && !inCode) {
+            cells.push(cur);
+            cur = '';
+            continue;
+          }
+          cur += ch;
+        }
+        cells.push(cur);
+        if (cells.length && cells[0].trim() === '') cells.shift();
+        if (cells.length && cells[cells.length - 1].trim() === '') cells.pop();
+        return cells.map(function (c) { return c.trim(); });
+      }
+
       function inlineFormat(text) {
         text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
@@ -2462,6 +2491,60 @@
         return document.documentElement.getAttribute('data-theme') === 'light' ? 'default' : 'dark';
       }
 
+      // 部分课程在 Mermaid 中硬编码了浅色或深色节点填充。
+      // 根据当前主题翻转 lightness 区间，保留 hue，同时保证文字可读。
+      function hexToHsl(hex) {
+        var r = parseInt(hex.slice(1, 3), 16) / 255;
+        var g = parseInt(hex.slice(3, 5), 16) / 255;
+        var b = parseInt(hex.slice(5, 7), 16) / 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b), h = 0, s = 0, l = (max + min) / 2;
+        if (max !== min) {
+          var d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+          else if (max === g) h = (b - r) / d + 2;
+          else h = (r - g) / d + 4;
+          h /= 6;
+        }
+        return [h, s, l];
+      }
+
+      function hslToHex(h, s, l) {
+        function hue(p, q, t) {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1 / 6) return p + (q - p) * 6 * t;
+          if (t < 1 / 2) return q;
+          if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+          return p;
+        }
+        var r, g, b;
+        if (s === 0) {
+          r = g = b = l;
+        } else {
+          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          var p = 2 * l - q;
+          r = hue(p, q, h + 1 / 3);
+          g = hue(p, q, h);
+          b = hue(p, q, h - 1 / 3);
+        }
+        function c(x) {
+          x = Math.round(Math.max(0, Math.min(1, x)) * 255);
+          return ('0' + x.toString(16)).slice(-2);
+        }
+        return '#' + c(r) + c(g) + c(b);
+      }
+
+      function mermaidPreprocess(def) {
+        var dark = mermaidTheme() === 'dark';
+        return def.replace(/fill\s*:\s*(#[0-9a-fA-F]{6})/g, function (m, hex) {
+          var hsl = hexToHsl(hex.toLowerCase());
+          if (dark && hsl[2] > 0.65) return 'fill:' + hslToHex(hsl[0], hsl[1], 0.26);
+          if (!dark && hsl[2] < 0.30) return 'fill:' + hslToHex(hsl[0], Math.min(hsl[1], 0.5), 0.86);
+          return m;
+        });
+      }
+
       function updateMermaidThemeAndRerender() {
         if (!window._mermaidReady) return;
         try {
@@ -2486,7 +2569,7 @@
           if (!idx) return;
           var target = document.getElementById('mermaid-render-' + idx);
           if (!target) return;
-          var def = pre.textContent;
+          var def = mermaidPreprocess(pre.textContent);
           target.innerHTML = '<div class="panel-loading">正在渲染图表...</div>';
 
           var token = ++mermaidRenderSeq;
@@ -2598,7 +2681,7 @@
 
         var pre = document.getElementById('mermaid-' + openMermaidIndex);
         if (!pre) return;
-        var def = pre.textContent;
+        var def = mermaidPreprocess(pre.textContent);
 
         center.innerHTML = '<div class="panel-loading">正在渲染图表...</div>';
         var token = ++mermaidRenderSeq;

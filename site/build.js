@@ -453,6 +453,30 @@ const ARTIFACTS = ${JSON.stringify(artifacts, null, 2)};
 
   fs.writeFileSync(OUTPUT_PATH, output, 'utf8');
   console.log(`\n✅ 已生成 ${OUTPUT_PATH}`);
+
+  syncCounts(totalLessons, phases.length, artifacts.length);
+}
+
+// ─── 保持站点静态计数同步（唯一事实来源 = 本次 build）──────────────
+function syncCounts(lessons, phaseCount, outputs) {
+  const targets = ['index.html', 'catalog.html', 'lesson.html', 'prereqs.html', 'cmdpalette.js'];
+  for (const f of targets) {
+    const p = path.join(__dirname, f);
+    if (!fs.existsSync(p)) continue;
+    const before = fs.readFileSync(p, 'utf8');
+    const after = before
+      .replace(/\b\d+( AI engineering)? lessons\b/g, `${lessons}$1 lessons`)
+      .replace(/\b\d+ phases\b/g, `${phaseCount} phases`)
+      .replace(/\b\d+ outputs\b/g, `${outputs} outputs`)
+      .replace(/\d+\s*节( AI engineering)?\s*课程/g, `${lessons} 节$1 课程`)
+      .replace(/\d+\s*节课/g, `${lessons} 节课`)
+      .replace(/\d+\s*个阶段/g, `${phaseCount} 个阶段`)
+      .replace(/\d+\s*个输出物/g, `${outputs} 个输出物`);
+    if (after !== before) {
+      fs.writeFileSync(p, after, 'utf8');
+      console.log(`   已同步 ${f} 中的计数`);
+    }
+  }
 }
 
 build();

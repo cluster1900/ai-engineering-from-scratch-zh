@@ -1,0 +1,78 @@
+{
+  "lesson": "59-vit-transformer",
+  "title": "Vision Transformer 编码器",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么标准 ViT 块使用 pre-LayerNorm 放置而不是 post-LayerNorm 放置？",
+      "options": [
+        "Post-LN 已获得专利",
+        "Pre-LN 训练深度稳定，无需学习率预热，而 Post-LN 则偏离了约 6 层",
+        "Pre-LN 运行速度更快",
+        "LN 后使用更多内存"
+      ],
+      "correct": 1,
+      "explanation": "Pre-LN 对每个子层的输入进行归一化，随着深度的增长，梯度范数保持有界。"
+    },
+    {
+      "stage": "check",
+      "question": "当隐藏= 768，头数= 12时，每个头的尺寸是多少，为什么它很重要？",
+      "options": [
+        "12，因此每个头可以在小型 GPU 上运行",
+        "64，控制每个注意力图的分辨率，并让十二个头并行独立参与",
+        "768，因为所有头共享投影",
+        "96，由 ResNet-50 设置"
+      ],
+      "correct": 1,
+      "explanation": "head_dim =hidden/heads=64。每个头将 token 投影到自己的 64-D q/k/v 并计算自己的注意力图。"
+    },
+    {
+      "stage": "check",
+      "question": "ViT 编码器是否需要因果注意掩模？",
+      "options": [
+        "是的，就像 GPT 解码器一样",
+        "否：编码器是双向的，每个token都可以按照相同的顺序处理其他每个token",
+        "仅适用于 CLS 行",
+        "仅在训练期间"
+      ],
+      "correct": 1,
+      "explanation": "视觉编码器是双向的。当文本解码器消耗交叉注意力输出时，因果屏蔽稍后出现。"
+    },
+    {
+      "stage": "check",
+      "question": "经过 12 个区块之后，CLS token 的最终隐藏状态代表什么？",
+      "options": [
+        "输入嵌入的副本",
+        "整个图像的学习向量摘要，下游头将其投影到类逻辑或对比嵌入中",
+        "随机噪声",
+        "仅最后一个补丁"
+      ],
+      "correct": 1,
+      "explanation": "CLS token一开始是空的，并通过所有 12 个区块的自注意力来积累每个补丁的信息。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么前馈层扩展到hidden dim的 4 倍？",
+      "options": [
+        "PyTorch 需要 4x",
+        "自最初的 Transformer 以来的经验最佳点；在固定数据预算下，欠拟合较小，过拟合较大",
+        "它使失败次数减半",
+        "它消除了关注的需要"
+      ],
+      "correct": 1,
+      "explanation": "自 2017 年以来，4 倍因子一直适用于语言和视觉Transformer。每个参数的容量在此达到峰值。"
+    },
+    {
+      "stage": "post",
+      "question": "哪个系列扩展保持块数学不变，但添加了预先学习的 token？",
+      "options": [
+        "因果掩蔽",
+        "注册token (DINOv2)：在 CLS 后面添加一些学习向量，用于捕获全局统计数据和平滑注意力图",
+        "混合专家",
+        "绳索旋转"
+      ],
+      "correct": 1,
+      "explanation": "注册token可以在不改变区块数学的情况下稳定注意力；它们是序列中的额外槽位。"
+    }
+  ]
+}

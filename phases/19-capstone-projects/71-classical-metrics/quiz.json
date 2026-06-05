@@ -1,0 +1,78 @@
+{
+  "lesson": "71-classical-metrics",
+  "title": "经典度量",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么在度量层而不是运行器层选择分词器？",
+      "options": [
+        "无论token器选择如何，度量实现都是 O(n)",
+        "token器定义什么算作token匹配；交换它会改变基准",
+        "Numpy 在导入时需要一个分词器",
+        "分词器是特定于模型的，运行者无法看到模型"
+      ],
+      "correct": 1,
+      "explanation": "BLEU 和 F1 对token化很敏感。将分词器绑定到指标可以使分数可重现，并让您可以指出规则。"
+    },
+    {
+      "stage": "check",
+      "question": "修改后的 n 元语法精度有什么作用而普通 n 元语法精度则没有？",
+      "options": [
+        "它使用不同的日志基数",
+        "它按照任何参考中看到的最大计数来剪辑每个候选 n 元语法计数",
+        "它比普通精度运行得更快",
+        "它返回 0 到 100 之间的值，而不是 0 到 1"
+      ],
+      "correct": 1,
+      "explanation": "通过参考上限进行剪辑可以阻止考生通过一遍又一遍地重复高精度单词来夸大其分数。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 BLEU 使用简洁性惩罚？",
+      "options": [
+        "如果没有它，匹配几个单词的非常短的候选者会获得高精度和不公平的高 BLEU",
+        "长候选者使几何平均数值不稳定",
+        "简洁性惩罚取代了 n 元语法计数上限",
+        "它补偿了加法一平滑"
+      ],
+      "correct": 0,
+      "explanation": "精确度本身就奖励短的输出。 BP 使用 exp(1 - r/c) 降低比参考短的候选者的权重。"
+    },
+    {
+      "stage": "check",
+      "question": "ROUGE-L 比较什么？",
+      "options": [
+        "相对于任何参考 4 克的 4 克精度",
+        "候选和参考token序列的最长公共子序列",
+        "候选字符串和参考字符串之间的编辑距离",
+        "字符级 Jaccard 索引"
+      ],
+      "correct": 1,
+      "explanation": "ROUGE-L 使用 LCS 长度，然后结合 F-beta 计算精度 (LCS/cand-len) 和召回率 (LCS/ref-len)。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种情况下token级别的 F1 返回 1.0？",
+      "options": [
+        "当预测为空且目标非空时",
+        "当预测和目标都为空时",
+        "当预测是带有额外噪声的目标的超集时",
+        "当预测和目标恰好共享一个token时"
+      ],
+      "correct": 1,
+      "explanation": "按照惯例，空-空是完美的搭配。具有空预测的任何非空目标均为 0.0。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么在得分函数中分派 metric_name 而不是类别？",
+      "options": [
+        "它允许同一类别在任务中使用不同的指标，并使调度程序与指标无关",
+        "类别比 metric_name 更难验证",
+        "metric_name 比类别短",
+        "runner无权访问类别字段"
+      ],
+      "correct": 0,
+      "explanation": "metric_name 是合约。摘要任务可以在一条记录上使用 rouge_l，在另一条记录上使用 bleu_4；调度员不需要关心。"
+    }
+  ]
+}

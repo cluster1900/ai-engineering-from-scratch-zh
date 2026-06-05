@@ -1,0 +1,78 @@
+{
+  "lesson": "81-end-to-end-distributed-train",
+  "title": "端到端分布式训练",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "当每节课都有自己的测试时，为什么Capstone很重要？",
+      "options": [
+        "化妆品",
+        "组合是一个单独的属性：各个部分可以通过单元测试，但集成死锁，损失发散，或者当它们一起运行时内存增长",
+        "慢点",
+        "更容易评分"
+      ],
+      "correct": 1,
+      "explanation": "端到端测试可以捕获没有单独测试的接线错误：会合、屏障顺序、收集合约。"
+    },
+    {
+      "stage": "check",
+      "question": "该演示验证了哪四个不变量？",
+      "options": [
+        "速度",
+        "(a) 损失在没有 NaN 的情况下运行到步骤 20，(b) 每个rank 的参数范数都一致，(c) 每个rank 优化器内存等于 ZeRO-1 公式，(d) 步骤 10 检查点重新加载字节相等",
+        "每秒token数",
+        "硬件"
+      ],
+      "correct": 1,
+      "explanation": "每个不变量都会捕获不同的组合错误：NaN 捕获分歧，规范一致捕获同步漂移，内存捕获分片错误，检查点捕获写入原子性。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么模型是微型 GPT 而不是 MLP？",
+      "options": [
+        "看起来很花哨",
+        "GPT 添加了 LayerNorm 运行统计、嵌入梯度形状以及 MLP 将隐藏的 softmax+交叉熵边缘情况",
+        "快点",
+        "必需的"
+      ],
+      "correct": 1,
+      "explanation": "MLP梯度同步在第77课中验证；Capstone需要一个具有更多边缘情况的模型来证明现实操作下的组合。"
+    },
+    {
+      "stage": "check",
+      "question": "在这种情况下，自我终止意味着什么？",
+      "options": [
+        "进程自杀",
+        "固定步数（20），完成时退出 0，循环中没有人；如果任何部分陷入僵局，演示将永远不会返回并且 CI 会捕获它",
+        "崩溃恢复",
+        "手动的"
+      ],
+      "correct": 1,
+      "explanation": "退出 0 的有界运行让测试fixture断言终止； while-True 循环掩盖了死锁。"
+    },
+    {
+      "stage": "post",
+      "question": "该演示如何结合 DDP 和 ZeRO？",
+      "options": [
+        "两者同时进行",
+        "在init处进行DDP风格的广播进行参数同步，ZeRO-1的 reduce_scatter+allgather取代了optimiser.step； DDP梯度allreduce被纳入ZeRO 的 reduce_scatter",
+        "仅限DDP",
+        "仅零"
+      ],
+      "correct": 1,
+      "explanation": "ZeRO-1通过reduce_scatter拥有梯度同步，因此不需要DDP单独的 allreduce； init 处的广播是唯一幸存的特定于 DDP 的调用。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么生产使用挂钟检查点节奏而不是步数？",
+      "options": [
+        "看起来更干净",
+        "步骤时间随序列长度和微批次计数而变化；无论模型大小如何，10 分钟的节奏都会捕获相同的计算",
+        "快点",
+        "NCCL 要求"
+      ],
+      "correct": 1,
+      "explanation": "为了清晰起见，本课程使用基于步骤的方式；生产运行通常每节省 5-15 分钟的时间。"
+    }
+  ]
+}

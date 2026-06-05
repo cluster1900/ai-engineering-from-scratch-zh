@@ -1,0 +1,78 @@
+{
+  "lesson": "85-content-classifier-integration",
+  "title": "Capstone 85 — 内容分类器集成",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "如果已经检查了输入，为什么还要运行输出端分类器？",
+      "options": [
+        "故意让系统变慢",
+        "因为任何输入旁路都会产生用户将看到的输出，并且输出是捕获它的最后一个地方",
+        "因为输入分类器已被弃用",
+        "因为标准库需要两者"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "本课中连接了哪三个分类器？",
+      "options": [
+        "情感、语言、长度",
+        "毒性、PII、指令泄漏",
+        "OCR、ASR、TTS",
+        "质量、真实性、引用"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "当一个判定为高而另一个判定为中时，路由器会做什么？",
+      "options": [
+        "只进行中等动作",
+        "按顺序运行这两个操作",
+        "采取最严厉的措施并采取行动；块主导编辑",
+        "撤销两项判决并寄出原件"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么在 PII 分类器中使用 Luhn 检查？",
+      "options": [
+        "将数字翻译成字母",
+        "以较低的误报率区分信用卡形状的数字序列和任意数字序列",
+        "计算 SSN",
+        "压缩正则表达式"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "指令泄漏分类器如何决定？",
+      "options": [
+        "通过检测输出中的花括号",
+        "通过使用阈值计算输出和已知系统提示之间的三元组余弦",
+        "通过调用另一个模型",
+        "通过计算token"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么毒性分类器要在左侧小窗口中检查是否否定？",
+      "options": [
+        "减慢正则表达式的速度",
+        "跳过像“你不傻”这样的匹配，这样分类器就不会过度编辑常见的保证",
+        "增加假阳性率",
+        "因为 Unicode 需要否定"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
