@@ -3,7 +3,7 @@
  * 由每个包含 .header-github component 的页面加载。
  */
 (function () {
-  var REPO = 'rohitg00/ai-engineering-from-scratch';
+  var REPO = 'cluster1900/ai-engineering-from-scratch-zh';
   var CACHE_KEY = 'gh:stars:' + REPO;
   var CACHE_TTL_MS = 10 * 60 * 1000; // 10 分钟
 
