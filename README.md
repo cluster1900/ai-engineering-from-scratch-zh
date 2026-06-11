@@ -33,7 +33,7 @@ attention 究竟在做什么。
 
 这套课程就是主干。20 个 Phase，503 节课，四门语言：Python、TypeScript、
 Rust、Julia。一端是 linear algebra，另一端是 autonomous swarms。每个 algorithm
-都会先从原始数学手写构建。Backprop。Tokenizer。Attention。Agent loop。等到
+都会先从原始数学手写构建。Backprop、Tokenizer、Attention、Agent loop等到
 PyTorch 出场时，你已经知道它在底层做什么。
 
 每节课都遵循同一个循环：阅读问题，推导数学，编写代码，运行测试，保留 artifact。
