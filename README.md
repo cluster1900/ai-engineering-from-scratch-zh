@@ -109,7 +109,7 @@ flowchart LR
 三种入口。选择一种。
 
 **选项 A — 阅读。** 打开
-[aiengineeringfromscratch.com](https://aiengineeringfromscratch.com) 上任意已完成课程，或在
+[ai-learn.agent-buy.com](https://ai-learn.agent-buy.com/) 上任意已完成课程，或在
 [目录](#contents) 下展开一个 Phase。无需配置，无需 clone。
 
 **选项 B — clone 并运行。**
@@ -1147,6 +1147,6 @@ MIT。按你想要的方式使用它 —— fork、教学、出售、交付都�
 
 <sub>
   <a href="https://x.com/ghumare64">@ghumare64</a> &nbsp;·&nbsp;
-  <a href="https://aiengineeringfromscratch.com">aiengineeringfromscratch.com</a> &nbsp;·&nbsp;
+  <a href="https://ai-learn.agent-buy.com">ai-learn.agent-buy.com</a> &nbsp;·&nbsp;
   <a href="https://github.com/rohitg00/ai-engineering-from-scratch/issues/new/choose">报告 / 建议</a>
 </sub>
