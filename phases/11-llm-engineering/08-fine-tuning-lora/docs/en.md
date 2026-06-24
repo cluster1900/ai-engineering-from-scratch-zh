@@ -215,6 +215,11 @@ graph TD
     style Done fill:#0f3460,stroke:#16213e,color:#fff
 ```
 
+
+```figure
+lora-params
+```
+
 ## 构建它
 我们用纯 PyTorch 从零实现 LoRA。没有 libraries。没有魔法。你会构建 LoRA layer，将它注入 model，训练它，并把 weights 合并回去。
 

@@ -139,6 +139,11 @@ DeepSeek-R1（2025）是在 V3 backbone 上进行 reasoning-training 的一次 r
 
 DeepSeek-V4（如果发布）预计会保留 MLA + MoE + MTP，并加入 DSA（DeepSeek Sparse Attention），也就是 Phase 10 · 17 中 NSA 的后继。这个谱系是稳定的：架构级创新不断累积；每个版本都会调节额外旋钮。
 
+
+```figure
+moe-routing
+```
+
 ## 使用它
 
 `code/main.py` 是专门适配 DeepSeek-V3 形状的参数计算器。运行它，将输出与论文中的数字进行比较，并用它测试假设变体（256 experts vs 512、top-8 vs top-16、MLA rank 512 vs 1024）。

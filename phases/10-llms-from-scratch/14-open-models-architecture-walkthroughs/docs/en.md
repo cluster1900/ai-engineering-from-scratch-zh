@@ -217,6 +217,11 @@ Llama 3 8B 在 128k context、BF16、head_dim = hidden / num_heads = 128 时：
 - **Long-context 需求**：Llama 3（通过 RoPE scaling 达到 128k）、DeepSeek（MLA 优势）。
 - **Low-latency serving**：Gemma 2 9B（sliding window 降低 long-context compute）。
 
+
+```figure
+rmsnorm-vs-layernorm
+```
+
 ## 构建它
 本课的代码是一个计算器。给定任意 config.json，它会打印按组件划分的参数量、max context 下的 KV cache、SwiGLU MLP ratio，以及一个关于架构的简短判断（dense / GQA / MLA / MoE）。
 

@@ -192,6 +192,11 @@ graph TD
 
 Sharp minima 泛化较差。Flat minima 泛化较好。这也是带 momentum 的 SGD 在最终 test accuracy 上经常优于 Adam 的原因之一：它的噪声会防止模型停留在 sharp minima 中。
 
+
+```figure
+gradient-descent
+```
+
 ## 构建它
 ### 步骤 1： Define a test function
 

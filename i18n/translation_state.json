@@ -8185,31 +8185,31 @@
     },
     "site/assets/figures/INDEX.md": {
       "status": "translated",
-      "source_sha256": "2b1aa31ce93f8df26b3bc3f4640025b0989fbbceba61ce910d7a9f6261b72018",
-      "output_sha256": "268fdfa4e6d19c4ef2ffd9073a33480ba15c9d0577e276769278a99c70d071f7",
-      "updated_at": 1779799114,
-      "method": "codex-exec-batch"
+      "source_sha256": "6fb0dc4bffab4ffd3f9b7d9a2d9f9f491cbe776811dcfbc9c3938cb77204305c",
+      "output_sha256": "87a58d857580f3efac0b7a5af86481bbbdd3847d36e6c5d1a8c11d1045ef2583",
+      "updated_at": 1782259058,
+      "method": "codex-exec"
     },
     "site/catalog.html": {
       "status": "translated",
-      "source_sha256": "7e979b9fde01ff0f4c35792bf33be4a96c42a50aee74bfe6e534a08c971e39fb",
-      "output_sha256": "677377fde6d6a1fbcc3e7a1d369e20df626e52639f5a8da7f1fd9c72d048747c",
-      "updated_at": 1780202875,
-      "method": "manual-structural-merge-sync-20260531"
+      "source_sha256": "5b1e4b7244e80ef0a9a7dd3a761caa30cdbc7d37e44c1c0f5cee7d5487a7b187",
+      "output_sha256": "fb4ad7d500cbfbe305237ca45f00f34bc21d8c52b9ae713eefea7535070366f3",
+      "updated_at": 1782259300,
+      "method": "codex-exec"
     },
     "site/glossary.html": {
       "status": "translated",
-      "source_sha256": "054cc38a7df07369850d1dca2e9d9067505c32eb5197bfc49086add8ef6d06a2",
-      "output_sha256": "5874af422e8892932b4a574e9df3c22bb9d6564997232c6f6b45e067f25cb261",
-      "updated_at": 1779799211,
-      "method": "codex-exec-batch"
+      "source_sha256": "9b3b6ed7cee4d81b628b8efa90bcf27a1704255baf5ab0db07a2e17c3671c5da",
+      "output_sha256": "2294653e946e065b372a4740bc657160200fbdc85edf93a9c945690966cc2d20",
+      "updated_at": 1782262625,
+      "method": "codex-exec"
     },
     "site/index.html": {
       "status": "translated",
-      "source_sha256": "10148f207865b473346d05453019ddc3bd8c52ba48cb9fb923a66988c36eac8b",
-      "output_sha256": "ee259c0daceeafa59290ee95e265c5d85d2dd2bc6b2b43a4e398e8fed8068f44",
-      "updated_at": 1780202875,
-      "method": "manual-structural-merge-sync-20260531"
+      "source_sha256": "af8e10ba8ceeed9085f89078c713cbbd39a99ed286c39b83ced58fa951156dc8",
+      "output_sha256": "e3eca4dd3935d37f28cf14c367ae5e4bd5df2ca92e5ed1c282a41f0a29464ba8",
+      "updated_at": 1782262824,
+      "method": "codex-exec"
     },
     "site/prereqs.html": {
       "status": "translated",
@@ -8227,24 +8227,24 @@
     },
     "site/build.js": {
       "status": "translated",
-      "source_sha256": "8a4da46f2d242a8764324153cda528bfae2f621e4b5432d3d9479bbe0aa83516",
-      "output_sha256": "61f12abb92e96222ad701b14cf4f64556441a9fe4a06d9ddd47fa259a77b242b",
-      "updated_at": 1779569786,
+      "source_sha256": "83ab9b7d3dd5d75da3fe48f49ba5e94d65f140415c39ad7a53ee86b7a33d58e1",
+      "output_sha256": "938de3645371be4f3cd661c6881c97fafed137470e7c47fd573ab6869db43583",
+      "updated_at": 1782259195,
       "method": "codex-exec"
     },
     "site/cmdpalette.js": {
       "status": "translated",
-      "source_sha256": "2b2871b56310df2c3fb0e0aa1b278a3b2bf13a7f0d60b7001a102973f88d8f67",
-      "output_sha256": "ead81804c610fd7f07da3b99aeaca08a363cc39596b329e74a2eefc98f2e665f",
-      "updated_at": 1779569892,
+      "source_sha256": "bc72487b86cde46af7463ee2dfbecf70c31db8e141ee3050a655d87a9bd5ebd1",
+      "output_sha256": "94d899b40e0cdb3fbb212490667b0f10fe3ea84acbff14ddce17cea7cc7bcdbf",
+      "updated_at": 1782259411,
       "method": "codex-exec"
     },
     "site/header.js": {
       "status": "translated",
-      "source_sha256": "aa73bf71e1b2b22a2671e8e561eeab1f575cdbe995a49cfff7053bb2e0df081f",
-      "output_sha256": "8098a8a9fd9d43b439e47d8a2a8d8076242efbb65ac8bbae04a7672ae2dd24e3",
-      "updated_at": 1779799211,
-      "method": "codex-exec-batch"
+      "source_sha256": "cf39d5d914272faf143c2fc9225fc167d9c2a72223f138aa0f64ec441e911b0c",
+      "output_sha256": "cf39d5d914272faf143c2fc9225fc167d9c2a72223f138aa0f64ec441e911b0c",
+      "updated_at": 1782262649,
+      "method": "codex-exec"
     },
     "site/progress.js": {
       "status": "translated",
@@ -8765,11 +8765,10 @@
       "method": "manual-structural-merge-sync-20260531"
     },
     "site/lesson.html": {
-      "status": "translated",
-      "source_sha256": "a9e28e0bff87dac4dd45b8e5b7c67fea943dbb46d52795a2ad0841a7e3b5ed13",
-      "output_sha256": "1f75de457b0a43b91cffae21ab64fd61379d37d87df22b2753ecc394579dff79",
-      "updated_at": 1780202875,
-      "method": "manual-structural-merge-sync-20260531"
+      "status": "failed",
+      "source_sha256": "c467b0781c00fd63830f4ea03b848ab7eab0eccfc3bd9e0ca472c673bfd2bd49",
+      "error": "Command '['codex', 'exec', '--ephemeral', '--sandbox', 'read-only', '--output-last-message', '/var/folders/g7/mll8ll9x19q907sj_8b7l_qc0000gn/T/tmp6gcgizo2.txt', '-']' timed out after 1200 seconds",
+      "method": "codex-exec"
     },
     "site/data.js": {
       "status": "generated",
@@ -9485,6 +9484,118 @@
       "output_sha256": "af186d6de35f4cb007af20bdb0d2ecdca12e8a273e3584e8e0aa5320a513155f",
       "updated_at": 1780202875,
       "method": "codex-exec-batch-sync-20260531"
+    },
+    "site/about.html": {
+      "status": "translated",
+      "source_sha256": "dd5543607d42c660910cc13c3c24fb293ec93b9335d9d496ab8e1bdd9662555b",
+      "output_sha256": "6cb7fbbb61321a76dbd0d0e57c4f8f4c393fc97db98c22e71828e14fba827c9b",
+      "updated_at": 1782259023,
+      "method": "codex-exec"
+    },
+    "site/figures-agents-alignment.js": {
+      "status": "translated",
+      "source_sha256": "74920a7d84fc76305bbcfa69342678c3f32648ef2df288a42d86b8f4c61c1cb6",
+      "output_sha256": "9a6690417467fd0f3ff1a4e7c536dd0485c1c9ce5376f00426d44c3f52843b4a",
+      "updated_at": 1782259579,
+      "method": "codex-exec"
+    },
+    "site/figures-dl.js": {
+      "status": "translated",
+      "source_sha256": "f0c1a2077987dd28f02ee8b3565830e6a7e9b76731f18f1430ccf5512e6266e5",
+      "output_sha256": "26562dffd501e3e73f51b9436e4919d2972d5c29db42e16b89c234b54988f872",
+      "updated_at": 1782259882,
+      "method": "codex-exec"
+    },
+    "site/figures-frontier.js": {
+      "status": "translated",
+      "source_sha256": "57f3d12c4781c8a5ec8f80ef88cff0361a2ca6cd699891f1f85e36190bfc1aeb",
+      "output_sha256": "931dd03070749133b80b2bcadd6e3e50417bbcd2fb0519ce47b8259c2def7f5f",
+      "updated_at": 1782260070,
+      "method": "codex-exec"
+    },
+    "site/figures-genai-rl.js": {
+      "status": "translated",
+      "source_sha256": "f510062bebea8d1224439d37b177c485ce122c2e60010832e727bf46d2b666b2",
+      "output_sha256": "72a868a615e64b9de3054f6ec61ba0bb50eccc20bcdbd9fea2ff7d3e05f47b65",
+      "updated_at": 1782260265,
+      "method": "codex-exec"
+    },
+    "site/figures-infra.js": {
+      "status": "translated",
+      "source_sha256": "ef0782c429cade7d006c8f5ede97dbdedac8ef61431b29e039d99c84fa45bf64",
+      "output_sha256": "4975b0a56667d9b36ea2984a6f8d046e51fbfbf0e137330f5021bd15558de4f3",
+      "updated_at": 1782260468,
+      "method": "codex-exec"
+    },
+    "site/figures-llms-systems.js": {
+      "status": "translated",
+      "source_sha256": "2b5b35f99aecb1cf07ca697cbb75a3f97fe70b89575aa46cc8429d27c1e4de50",
+      "output_sha256": "b8793db6c42b568236a1174d71a16f5610fc629f8eb5caab42e9854475e43e5c",
+      "updated_at": 1782260683,
+      "method": "codex-exec"
+    },
+    "site/figures-llms2.js": {
+      "status": "translated",
+      "source_sha256": "c2961ca14445224418d4fae100c8f07ebe6bc47000e5f50bdd8c674055e928c3",
+      "output_sha256": "eac5872f81b9e2e84749f748de625b17517a2dabc84547a0a46c91671d7e41a2",
+      "updated_at": 1782260900,
+      "method": "codex-exec"
+    },
+    "site/figures-math.js": {
+      "status": "translated",
+      "source_sha256": "9824550782f0dbd536047d9de307f011ea6883d4caf546ee8a6b58290b6a36c2",
+      "output_sha256": "b0a5ee0f6f7e8f172f9f194f5aaa9bf8c358b0c1358c2085cf5bc0c8135e4e4e",
+      "updated_at": 1782261151,
+      "method": "codex-exec"
+    },
+    "site/figures-math2.js": {
+      "status": "translated",
+      "source_sha256": "3de059466d1f3271f283e524356d14dc68d8abedb25022e6514166d702dfe7a7",
+      "output_sha256": "5b46fa9f4b353c5f15a7642df3257052a90f919b58a262b90b1ec3883c91e4bb",
+      "updated_at": 1782261352,
+      "method": "codex-exec"
+    },
+    "site/figures-ml.js": {
+      "status": "translated",
+      "source_sha256": "cfb57278e24902c1b5a7cde687a224e3c971f486da8f277327195884a4c1459b",
+      "output_sha256": "67a6abb05bde9c90589af85739de3fabd49f61fc99b291d50abd8ba1ce6caee1",
+      "updated_at": 1782261569,
+      "method": "codex-exec"
+    },
+    "site/figures-nlp2.js": {
+      "status": "translated",
+      "source_sha256": "bf4f42d820590ee036586340fed8c0e0297633807a3babec60c9037fff867029",
+      "output_sha256": "6e565dae9d2099ddee8708d577e3942a619107c4b2d26f21e1b3ae6827916d52",
+      "updated_at": 1782261767,
+      "method": "codex-exec"
+    },
+    "site/figures-transformers.js": {
+      "status": "translated",
+      "source_sha256": "f22c9bbe2bd71837642c8ac3314095e775c0f5963851a6388ea015e4c39da0b1",
+      "output_sha256": "5f4f8175c2b738100998cc0f2585f4040df3ff2f1de191c70e5819de30635bb3",
+      "updated_at": 1782261970,
+      "method": "codex-exec"
+    },
+    "site/figures-vision-speech.js": {
+      "status": "translated",
+      "source_sha256": "17e6d0a6463f1e4c66ce7a0f8ca3f0376175ebcbb4d892d9ae04eef92cd1ff26",
+      "output_sha256": "6a168759220d22eb720784cdf7033e473314bfa767f430f175dcd0a8528e20b6",
+      "updated_at": 1782262176,
+      "method": "codex-exec"
+    },
+    "site/figures.js": {
+      "status": "translated",
+      "source_sha256": "24170d09c8dd56183b1756fd931b082856fa6856aefa8768a6ac7adee6fbfd17",
+      "output_sha256": "1761c62a8bad7a866f326488900dcbf1d7b5e2cc5c169d238fce50a9bd6fb053",
+      "updated_at": 1782262539,
+      "method": "codex-exec"
+    },
+    "site/lesson-figures.js": {
+      "status": "translated",
+      "source_sha256": "e8309143c2d449bf42aee2b9e9341b04192b453bfba4e2c8bb8d6133e5cb22b8",
+      "output_sha256": "0dd83ae45b5a1853b11fdd5c0f9656c257cda03ace343833622f9ebeaf74964d",
+      "updated_at": 1782263134,
+      "method": "codex-exec"
     }
   },
   "upstream_sync": {

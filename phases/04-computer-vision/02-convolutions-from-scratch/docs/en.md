@@ -177,6 +177,11 @@ With strides:   RF grows multiplicatively with stride along each layer.
 
 "一路 3x3" 能够有效（VGG、ResNet、ConvNeXt）的根本原因是，两个 3x3 convs 看到的输入区域与一个 5x5 conv 相同，但参数更少，而且中间多了一个 non-linearity。
 
+
+```figure
+convolution-kernel
+```
+
 ## 构建它
 ### 步骤 1： Pad an array
 

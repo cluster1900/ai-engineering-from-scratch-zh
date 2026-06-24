@@ -189,6 +189,11 @@ Trees 和 forests 在 tabular data 上通常胜过 Neural Networks。原因有�
 
 当数据具有 spatial 或 sequential structure（images、text、audio）时，Neural Networks 更强。对于扁平 feature tables，trees 是默认选择。
 
+
+```figure
+decision-tree-depth
+```
+
 ## 构建它
 
 ### 步骤 1：Gini impurity 和 entropy

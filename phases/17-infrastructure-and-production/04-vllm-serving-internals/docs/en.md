@@ -90,6 +90,11 @@ while True:
 
 `code/main.py` 正是这个 loop 的 stdlib Python 版本，使用假的 token counts 和假的 forward latency。运行它会展示 chunked prefill 如何在长 prefill 期间让 decode sequences 保持活跃。
 
+
+```figure
+tensor-parallel
+```
+
 ## 使用它
 `code/main.py` 模拟了一个 vLLM 风格的 scheduler，并带有可切换功能。运行它可以看到：
 

@@ -82,6 +82,11 @@ NSA 的 kernel 是为现代 GPU memory hierarchy 设计的。kernel 按 GQA grou
 
 MoBA（Moonshot, arXiv:2502.13189）同期发布，也采用了类似“三个胜过一个”的思路，将 MoE 原则应用到 Attention blocks。NSA 和 MoBA 是理解 2026 long-context pre-training 必须掌握的两个架构。
 
+
+```figure
+sliding-window-attention
+```
+
 ## 构建它
 
 `code/main.py` 在一个短的合成序列上实现三个分支，并展示：

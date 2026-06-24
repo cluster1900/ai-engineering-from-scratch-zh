@@ -190,6 +190,11 @@ explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
 
 Reconstruction error 不只用于选择 k。你可以把它用于 anomaly detection：reconstruction error 高的样本是 outliers，它们不符合学习到的 subspace。这是 production systems 中基于 PCA 的 anomaly detection 的基础。
 
+
+```figure
+pca-axes
+```
+
 ## Build It
 
 ### Step 1: PCA from scratch

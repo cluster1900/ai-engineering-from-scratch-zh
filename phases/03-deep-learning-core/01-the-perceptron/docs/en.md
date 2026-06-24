@@ -109,6 +109,11 @@ AND (separable):        XOR (not separable):
 
 解决办法：把 Perceptron 堆叠成 layers。multi-layer perceptron 可以通过把两个 linear decisions 组合成一个 nonlinear decision 来解决 XOR。
 
+
+```figure
+perceptron-boundary
+```
+
 ## 构建它
 ### 步骤 1：The Perceptron class
 

@@ -148,6 +148,11 @@ flowchart LR
 
 这个想法真正关注的并不是 image classification。它关注的是把 deep networks 从“祈祷 Gradients 能幸存下来”变成可靠、可扩展的工程工具。你在下一阶段会读到的每个 transformer，在每个 block 中都有完全相同的 skip connection。没有 ResNet，就没有 GPT。
 
+
+```figure
+pooling
+```
+
 ## 构建它
 ### 步骤 1： LeNet-5
 

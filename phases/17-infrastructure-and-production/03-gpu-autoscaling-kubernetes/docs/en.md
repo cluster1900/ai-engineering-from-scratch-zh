@@ -91,6 +91,11 @@ Cold-start mitigation（Phase 17 · 10）是节点供给时间变成用户可见
 - `DCGM_FI_DEV_GPU_UTIL` 作为 HPA 信号：坏掉的；使用队列深度或 KV 利用率。
 - Karpenter `WhenEmptyOrUnderutilized`：终止正在运行的 GPU job。对 inference 使用 `WhenEmpty + consolidateAfter: 1h`。
 
+
+```figure
+autoscaling
+```
+
 ## 使用它
 `code/main.py` 在 bursty GPU workload 上模拟一个三层 autoscaler。比较 naive HPA（duty cycle）、queue-depth HPA 和 KAI-gang-scheduled scaling。报告未满足请求、idle-GPU 分钟数和 composite score。
 

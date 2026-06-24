@@ -273,6 +273,11 @@ Perplexity 为 50 的 language model，平均来看，就像必须从 50 个可�
 
 GPT-2 在常见 benchmarks 上达到约 30 的 perplexity。现代 models 在覆盖良好的 domains 中可以达到个位数。
 
+
+```figure
+entropy-kl
+```
+
 ## 构建它
 
 ### 第 1 步：Information content 和 entropy

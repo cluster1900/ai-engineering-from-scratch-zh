@@ -105,6 +105,11 @@ DeepSeek-V3 的 pre-training 在 2,048 张 H800 GPUs 上消耗了 14.8T tokens�
 - 与 **ZeRO-3** gradient sharding 兼容。两份副本复制的 bookkeeping 需要与 ZeRO 的 sharded gradients 配合。
 - 需要针对具体 cluster topology 调优的 **custom all-to-all kernels**。DeepSeek 的 open-source kernels 是参考实现。
 
+
+```figure
+expert-capacity
+```
+
 ## 使用它
 `code/main.py` 是一个 pipeline schedule simulator。它接受 `(P, n_micro_batches, schedule)`，并打印 1F1B、Zero Bubble、DualPipe 和 DualPipeV 各自的 stable-phase utilization。它是一个教学工具：数字与论文中的定性主张一致，但不是关于生产实测加速的声明。
 

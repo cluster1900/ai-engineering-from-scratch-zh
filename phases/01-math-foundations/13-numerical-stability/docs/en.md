@@ -388,6 +388,11 @@ LayerNorm(x) = (x - mean(x)) / (std(x) + epsilon) * gamma + beta
 原因：float16 无法表示低于 6e-8 的 Gradient magnitudes，也无法表示高于 65,504 的 activations。
 修复：使用带 loss scaling 的 mixed precision（AMP），或改用 bfloat16。
 
+
+```figure
+logsumexp-stability
+```
+
 ## 构建它
 
 ### 步骤 1：演示 floating point 精度限制

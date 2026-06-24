@@ -138,6 +138,11 @@ def value_iteration(gamma=0.99, tol=1e-6):
 - **Policy ties。** 如果两个 actions 有相同的 Q-value，`argmax` 可能每次 iteration 用不同方式打破平局，导致 “policy stable” 检查振荡。使用稳定的 tie-break（固定顺序中的第一个 action）。
 - **State-space explosion。** DP 每次 sweep 是 `O(|S| · |A|)`。最多可用于约 10⁷ 个 states。超过这个规模，你需要 function approximation（Phase 9 · 05 onwards）。
 
+
+```figure
+value-iteration-gamma
+```
+
 ## 使用它
 
 在 2026 年，DP 是正确性基准，也是 planners 的 inner loop：

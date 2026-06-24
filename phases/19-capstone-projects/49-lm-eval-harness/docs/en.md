@@ -103,6 +103,11 @@ flowchart LR
   avg --> over[overall = mean of task scores]
 ```
 
+
+```figure
+eval-harness-matrix
+```
+
 ## Build It
 
 `code/main.py` 是可运行 artifact。

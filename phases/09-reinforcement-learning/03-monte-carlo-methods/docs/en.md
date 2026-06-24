@@ -136,6 +136,11 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 - **Non-stationary policies。** 如果 `π` 发生变化（如 MC control 中那样），旧 returns 来自不同的 policy。Constant-α MC 可以处理这一点；sample-average MC 不行。
 - **Off-policy importance sampling。** 权重 `π(a|s)/μ(a|s)` 会沿 trajectory 连乘。Variance 会随 horizon 爆炸。用 per-decision weighted IS 截断，或切换到 TD。
 
+
+```figure
+epsilon-greedy
+```
+
 ## 使用它
 
 Monte Carlo methods 在 2026 年的角色：

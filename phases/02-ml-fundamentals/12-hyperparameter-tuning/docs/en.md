@@ -242,6 +242,11 @@ print(f"Nested CV MSE: {-outer_scores.mean():.4f} +/- {outer_scores.std():.4f}")
 
 **拿不准时：** 使用 random search，trials 数量至少为 hyperparameters 数量的 2 倍（例如，6 个 hyperparameters = 至少 12 次 trials）。你会惊讶地发现，50 次 trials 的 random search 经常能击败精心设计的 grid search。
 
+
+```figure
+k-fold-cv
+```
+
 ## 构建它
 ### 步骤 1：从零实现 Grid Search
 

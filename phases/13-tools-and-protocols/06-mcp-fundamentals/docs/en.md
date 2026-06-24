@@ -111,6 +111,11 @@ Errors 使用 JSON-RPC error codes。Spec-defined additions：`-32002` "Resource
 
 JSON-RPC 2.0（2010）是一个轻量双向 protocol。REST 是 client-initiated。MCP 需要 server-initiated messages（sampling、notifications），所以具有对称 request/response shape 的 JSON-RPC 是自然选择。JSON-RPC 也能干净地组合在 stdio 和 WebSocket/Streamable HTTP 之上，而不需要重新发明 HTTP 的 request shape。
 
+
+```figure
+mcp-tool-call
+```
+
 ## 使用它
 
 `code/main.py` 提供一个最小 JSON-RPC 2.0 parser 和 emitter，然后手动走过 `initialize` → `tools/list` → `tools/call` → `shutdown` 序列，并打印每条 message。没有真实 transport；只有 message shapes。对照 Further Reading 中链接的 spec，验证每个 envelope。

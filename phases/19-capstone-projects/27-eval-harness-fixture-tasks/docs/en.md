@@ -100,3 +100,7 @@ python3 -m pytest code/tests/ -v
 ```
 
 demo 以 JSON 打印 EvalReport，包括 pass@1、pass@5、mean latency 和逐任务 breakdown。exit code 为 zero。tests 覆盖 verifier functions、pass@k math、fixture loading，以及 harness 针对捆绑 reference candidate 的 end-to-end 行为。
+
+```figure
+pass-at-k
+```

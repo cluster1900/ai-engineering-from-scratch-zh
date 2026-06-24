@@ -72,6 +72,11 @@ TRT-LLM 是 C++ + CUDA + closed-source kernels。模型需要为特定 GPU SKU �
 
 TRT-LLM 的 disaggregated serving（分离的 prefill 和 decode pools）会在 Phase 17 · 20 中深入讲解。在 Blackwell 上，乘数会叠加：FP4 权重 × MTP speedup × disaggregated placement × cache-aware routing。7x 数字假设使用的是这套完整 stack。
 
+
+```figure
+pipeline-parallel
+```
+
 ## 使用它
 
 `code/main.py` 会为三种 stack 计算模型的 HBM footprint、decode throughput（memory-bound regime）和 $/M-token：H100 + BF16 + vLLM、H100 + FP8 + vLLM、B200 + NVFP4/FP8 + TRT-LLM。运行它，观察复合效应，以及每个变化贡献了差距中的哪一部分。

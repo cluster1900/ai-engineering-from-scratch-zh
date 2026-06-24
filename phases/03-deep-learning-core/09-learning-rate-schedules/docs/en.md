@@ -152,6 +152,11 @@ graph TD
     end
 ```
 
+
+```figure
+lr-schedule
+```
+
 ## 构建它
 
 ### 步骤 1：Schedule Functions

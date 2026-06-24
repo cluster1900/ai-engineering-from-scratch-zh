@@ -26,6 +26,11 @@ Naive Bayes 是能工作的最笨模型。假设在给定标签的情况下，�
 
 Logistic regression 修正了独立性假设。它为每个 feature 学习一个权重，包括负权重。`not good` 作为一个 bigram feature 会得到负权重。Naive Bayes 无法对从未标注过的 bigrams 做到这一点。
 
+
+```figure
+sentiment-logits
+```
+
 ## 构建它
 
 ### 步骤 1： 一个真实的迷你数据集

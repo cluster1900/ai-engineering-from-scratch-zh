@@ -132,6 +132,11 @@ graph LR
 | LLM-as-judge | ~$0.01 | ~80% | Open-ended generation |
 | Human eval | $0.10-$2.00 | N/A（即 ground truth） | Ambiguous、high-stakes tasks |
 
+
+```figure
+perplexity-loss
+```
+
 ## 构建它
 ### 步骤 1：最小 Eval 框架
 

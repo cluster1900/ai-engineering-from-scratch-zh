@@ -96,3 +96,7 @@ python3 -m pytest code/tests/ -v
 ```
 
 demo 会在本课的 working dir 中发出一个 `traces.jsonl`（最后清理），然后打印三个 spans 的 sample，再打印 counters 和 histograms 的 Prometheus exposition。tests 验证 spans 可 round-trip 序列化、canonical GenAI attributes 存在、counters 正确递增，并且 histogram exposition 包含 expected bucket counts。
+
+```figure
+trace-spans
+```

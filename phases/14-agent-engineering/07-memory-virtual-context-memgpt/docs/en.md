@@ -71,6 +71,11 @@ MemGPT 引入 memory-as-interrupt：在对话中途，agent 可以调用 memory 
 - **Memory poisoning.** External memory 是被检索出来的文本。如果 attacker-controlled content 落入 memory note，agent 会在下一个 session 重新摄入它。这就是 Greshake et al.（Lesson 27）攻击在时间维度上的重述。
 - **Citation loss.** Agent 回忆起“用户让我 ship X”，但无法引用是哪一轮。每次 archival write 都要存储 source references（session ID, turn ID）。
 
+
+```figure
+context-budget
+```
+
 ## 构建它
 `code/main.py` 用 stdlib 实现 MemGPT 的 two-tier pattern：
 

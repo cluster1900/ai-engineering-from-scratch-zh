@@ -169,6 +169,11 @@ DPO 启发了一系列简化的 alignment 方法。
 
 **Neural Magic / nm-chat (2024)：** 将 DPO 应用于多个开源模型，并稳定地展示出相对仅 SFT baseline 在 alignment benchmarks 上 5-15% 的提升。
 
+
+```figure
+dpo-loss
+```
+
 ## 构建它
 ### 步骤 1： Preference Dataset
 

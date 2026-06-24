@@ -61,6 +61,11 @@ workshop summary（openreview.net/pdf?id=OsPQ6zTQXV）指出了当前四个工�
 3. Regression detection（如何捕捉 capability surge 之后发生的 capability drop？）。
 4. Inter-cycle audit（下一个 cycle 开始前由谁检查当前 cycle？）。
 
+
+```figure
+world-model-rollout
+```
+
 ## 使用它
 
 `code/main.py` 模拟两个过程的竞赛：capability improvement 和 alignment improvement。每个 cycle 都应用带有噪声的可配置速率。脚本跟踪不断增长的 misalignment gap，以及会触发假设性 safety threshold 的 cycles 占比。

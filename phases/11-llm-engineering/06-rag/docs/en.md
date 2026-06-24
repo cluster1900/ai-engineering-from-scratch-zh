@@ -176,6 +176,11 @@ indexing 阶段对每个 document 运行一次（或在 documents 更新时运�
 - **Indexing throughput**：使用 API embeddings 时每秒 100-1,000 documents
 - **Query latency**：retrieval 50-200ms，generation 500-3000ms
 
+
+```figure
+rag-chunking
+```
+
 ## 构建它
 ### 步骤 1： Document Chunking
 

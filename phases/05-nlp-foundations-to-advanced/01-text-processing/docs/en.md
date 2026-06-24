@@ -29,6 +29,11 @@ Tokenization 做错了，模型就会从垃圾中学习。如果你的 Tokenizer
 
 经验法则。速度重要且可以容忍噪声时使用 stemming（search indexing、粗略 classification）。语义重要时使用 lemmatization（question answering、semantic search、任何用户会阅读的内容）。
 
+
+```figure
+edit-distance
+```
+
 ## Build It
 
 ### Step 1: 一个 regex word tokenizer

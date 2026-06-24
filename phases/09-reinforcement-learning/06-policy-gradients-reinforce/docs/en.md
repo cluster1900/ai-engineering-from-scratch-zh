@@ -52,6 +52,11 @@ REINFORCE theorem (Williams 1992) 告诉你这个 Gradient 是可计算的：`�
 
 **用于 continuous actions 的 Gaussian policy。** `π_θ(a | s) = N(μ_θ(s), σ_θ(s))`。`∇ log N(a; μ, σ)` 有 closed form。这就是 Phase 9 · 07 的 SAC 所需要的全部。
 
+
+```figure
+policy-gradient-landscape
+```
+
 ## Build It
 
 ### Step 1: softmax policy network

@@ -169,6 +169,11 @@ F1 = 2 * (Precision * Recall) / (Precision + Recall)
 - **Recall**：当 false negatives 代价高时（cancer screening，你不希望漏掉 tumor）
 - **F1**：当你需要一个平衡的单一 metric 时
 
+
+```figure
+logistic-sigmoid
+```
+
 ## 构建它
 
 ### 步骤 1：Sigmoid function 与数据生成

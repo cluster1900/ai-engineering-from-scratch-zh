@@ -383,6 +383,11 @@ Convergence rate 取决于 condition number。Conditioning 更好的 systems 收
 
 **Feature engineering.** X^T X 的 condition number 告诉你 features 是否 collinear。如果 kappa 很大，删除 features 或添加 regularization。
 
+
+```figure
+linear-system-conditioning
+```
+
 ## 构建它
 ### 步骤 1： Gaussian elimination with partial pivoting
 

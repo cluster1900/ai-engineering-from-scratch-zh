@@ -158,6 +158,11 @@ flowchart TD
     GPT --> Check
 ```
 
+
+```figure
+weight-init-variance
+```
+
 ## 构建它
 ### 步骤 1： Initialization Strategies
 

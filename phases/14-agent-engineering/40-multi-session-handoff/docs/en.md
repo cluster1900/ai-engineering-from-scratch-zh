@@ -58,6 +58,22 @@ flowchart LR
 
 完整的 `feedback_record.jsonl` 可能有数百条记录。handoff 只携带最后 K 条，以及每条非零 exit 的记录。下一个 session 如果需要，可以加载完整 log，但 packet 保持小巧。
 
+### 留下干净状态
+
+handoff 描述工作；clean state 让工作可恢复。它们不是同一件事。如果下一个 session 打开时面对的是半截 diff、agent 忘掉的 temp file、游离 branch，以及尚未真正运行就报错的 tests，那么再完美的 `handoff.md` 也没有价值。下一个 agent 会先花十分钟清理上一个 session 留下的东西，而不是继续构建；这个成本会在任务生命周期里的每个 session 复利增长。
+
+所以 session 不是在 feature 能跑通时结束，而是在 workbench 处于 generator 可以总结、下一个 session 可以信任的状态时结束。Cleanup 是自己的阶段，在 handoff 之前运行；它是 check，不是习惯，因为习惯恰恰是在困难日子里最容易被跳过的东西。
+
+| Check | Clean means | Dirty blocks because |
+|-------|-------------|----------------------|
+| Working tree | 每个变更都已 commit，或明确 stash 并附带说明 | 半截 diff 会被下一个 agent 看成有意图的工作 |
+| Temp artifacts | 没有 `*.tmp`、scratch dirs、debug prints 或留下的注释块 | 游离文件会污染 diff 和下一个 agent 的 mental model |
+| Tests | 绿色，或红色但在 `open_risks` 中命名了失败 | 沉默的红色 test 是下一个 session 会踩进去的陷阱 |
+| Feature board | `feature_list.json` status 反映真实状态（Phase 14 · 36） | 过期 board 会把下一个 session 派去做已经完成的工作 |
+| Branch | 位于预期 branch，没有 detached HEAD，没有 orphan branches | 错误 branch 会让下一个 session 的第一个 commit 落到错误位置 |
+
+cleanup 阶段会产出一个 `clean_state.json`，其中列出 blocking issues；空列表是 handoff generator 写 packet 前要断言的前置条件。建立在 dirty tree 上的 handoff 不是 handoff，而是转发混乱。两个 artifacts 成对出现：cleanup 证明 workbench 可以安全离开，handoff 证明下一个 session 知道从哪里开始。
+
 ## 构建它
 
 `code/main.py` 实现了：

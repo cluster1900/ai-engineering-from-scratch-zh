@@ -33,6 +33,11 @@ Mel spectrogram 进一步推进。人类以对数方式感知 pitch：100 Hz vs 
 
 **Resolution trade.** 更大的 FFT = 更好的 frequency resolution，但更差的 time resolution。25 ms / 10 ms 是 audio-ML 默认值；音乐使用 50 ms / 12.5 ms；transient detection（drum hits, plosives）使用 5 ms / 2 ms。
 
+
+```figure
+spectrogram-window
+```
+
 ## 构建它
 
 ### 步骤 1: 对波形分帧

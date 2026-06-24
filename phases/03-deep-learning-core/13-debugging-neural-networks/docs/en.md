@@ -2,7 +2,7 @@
 
 > 你的 network 编译成功了。它运行了。它产生了一个数字。这个数字是错的，而且什么都没有崩溃。欢迎来到最难的一类 debugging：没有错误消息的 debugging。
 
-**类型：** Practice
+**类型：** Build
 **语言：** Python, PyTorch
 **前置要求：** Phase 03 Lessons 01-10（尤其是 backpropagation, loss functions, optimizers）
 **时间：** ~90 分钟
@@ -206,6 +206,11 @@ graph TD
 | Training acc = test acc 但都很低 | Underfitting | 更大的 model、更多 layers、更多 features |
 | Gradients 全为零 | Dead ReLUs 或 detached computation graph | 切换到 LeakyReLU，检查 `.requires_grad` |
 | Training 期间 out of memory | Batch 太大或 graph 未释放 | 降低 batch size，在 eval 使用 `torch.no_grad()` |
+
+
+```figure
+learning-curves
+```
 
 ## 构建它
 

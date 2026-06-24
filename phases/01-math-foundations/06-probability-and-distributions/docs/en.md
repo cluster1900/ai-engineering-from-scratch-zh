@@ -254,6 +254,11 @@ Sampling 指从一个 distribution 中抽取随机值。在 ML 中：
 
 从任意 distributions 中采样需要 inverse transform sampling、rejection sampling 或 reparameterization trick（用于 VAEs）等技术。
 
+
+```figure
+gaussian-pdf
+```
+
 ## 构建它
 
 ### 步骤 1：概率基础

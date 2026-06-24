@@ -195,6 +195,15 @@ graph LR
 
 这就是 Llama 3 将 vocabulary 从 32K 扩大到 128K 的原因。分配给非英文文字系统的 Tokens 越多，各语言之间的压缩就越公平。
 
+
+```figure
+tokenizer-bpe
+```
+
+```figure
+tokenizer-tradeoff
+```
+
 ## 构建它
 ### 步骤 1： Character-Level Tokenizer
 

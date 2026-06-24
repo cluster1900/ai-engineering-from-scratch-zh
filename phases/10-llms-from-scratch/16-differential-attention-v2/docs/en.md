@@ -95,6 +95,11 @@ V2 还移除了 V1 用来稳定相减操作的 per-head RMSNorm。在 70B 级 pr
 | FlashAttention | 是，V2 支持（V1 不支持） |
 | Speculative decoding | 是（Attention 改动对 spec-decode loop 不可见） |
 
+
+```figure
+differential-attention
+```
+
 ## 构建它
 
 `code/main.py` 用纯 Python 实现了 differential attention。一个具有已知 signal-plus-noise 结构的 toy query，可以让你直接测量噪声抵消比率。

@@ -8,9 +8,11 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
   <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-503-3553ff?style=flat-square&labelColor=fafaf5" alt="503 节课"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 个 Phase"></a>
-  <a href="https://github.com/rohitg00/ai-engineering-from-scratch/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/ai-engineering-from-scratch?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
-  <a href="https://ai-learn.agent-buy.com"><img src="https://img.shields.io/badge/web-aiengineeringfromscratch.com-3553ff?style=flat-square&labelColor=fafaf5" alt="网站"></a>
+  <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh/stargazers"><img src="https://img.shields.io/github/stars/cluster1900/ai-engineering-from-scratch-zh?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
+  <a href="https://ai-learn.agent-buy.com"><img src="https://img.shields.io/badge/web-ai--learn.agent--buy.com-3553ff?style=flat-square&labelColor=fafaf5" alt="网站"></a>
 </p>
+
+## 来自 [Agent Memory - #1 Persistent memory ⭐](https://github.com/rohitg00/agentmemory) 的作者 <a href="https://github.com/rohitg00/agentmemory/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentmemory?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>，可自然接入任何 agents 或 chat assistants。
 
 ```
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
@@ -23,6 +25,10 @@
 > 一个可复用 artifact：prompt、skill、agent、MCP server。免费、开源、MIT。
 >
 > 你不只是学习 AI。你会亲手构建它。端到端。从零开始。
+
+<!-- STATS:START (generated from site/stats.json by build.js — do not edit by hand) -->
+<p align="center"><sub><b>150,639</b> readers &nbsp;·&nbsp; <b>241,669</b> page views in the last 30 days &nbsp;·&nbsp; as of 2026-06-07</sub></p>
+<!-- STATS:END -->
 
 ## 运作方式
 
@@ -898,7 +904,7 @@ the agent went wrong and explain why...
 | 60 | [用于模态对齐的投影层](phases/19-capstone-projects/60-projection-layer-modality-align/) | E. Multimodal VLM | Python |
 | 61 | [Cross-Attention 融合](phases/19-capstone-projects/61-cross-attention-fusion/) | E. Multimodal VLM | Python |
 | 62 | [视觉-语言预训练](phases/19-capstone-projects/62-vision-language-pretraining/) | E. Multimodal VLM | Python |
-| 63 | [多模态评估](phases/19-capstone-projects/63-multimodal-eval/) | E. Multimodal VLM | Python |
+| 63 | [Multimodal评估](phases/19-capstone-projects/63-multimodal-eval/) | E. Multimodal VLM | Python |
 | 64 | [Chunking 策略比较](phases/19-capstone-projects/64-chunking-strategies-advanced/) | F. Advanced RAG | Python |
 | 65 | [BM25 与 Dense Embeddings 混合检索](phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/) | F. Advanced RAG | Python |
 | 66 | [Cross-Encoder Reranker](phases/19-capstone-projects/66-reranker-cross-encoder/) | F. Advanced RAG | Python |
@@ -949,9 +955,9 @@ outputs/
 **推荐：通过 [skills.sh](https://skills.sh) 安装。** 无需 clone，无需 Python，并会自动检测你的 agent skills 目录：
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch                       # every skill
-npx skills add rohitg00/ai-engineering-from-scratch --skill agent-loop    # one skill
-npx skills add rohitg00/ai-engineering-from-scratch --phase 14            # one phase
+npx skills add cluster1900/ai-engineering-from-scratch-zh                       # every skill
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill agent-loop    # one skill
+npx skills add cluster1900/ai-engineering-from-scratch-zh --phase 14            # one phase
 ```
 
 `skills` 会写入你的 agent 会读取的目录：`.claude/skills/`、`.cursor/skills/`、`.codex/skills/`、OpenClaw 的 skills folder、Hermes 的 bundle path，或任何支持 SKILL.md 的工具。一个命令，覆盖每种 agent。
@@ -1129,10 +1135,10 @@ Twitter/X 是 #1 acquisition channel。
 
 ## Star history
 
-<a href="https://star-history.com/#rohitg00/ai-engineering-from-scratch&Date">
+<a href="https://star-history.com/#cluster1900/ai-engineering-from-scratch-zh&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch&type=Date&theme=dark">
-    <img alt="Star history" src="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch&type=Date" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cluster1900/ai-engineering-from-scratch-zh&type=Date&theme=dark">
+    <img alt="Star history" src="https://api.star-history.com/svg?repos=cluster1900/ai-engineering-from-scratch-zh&type=Date" width="100%">
   </picture>
 </a>
 
@@ -1143,10 +1149,10 @@ Twitter/X 是 #1 acquisition channel。
 MIT。按你想要的方式使用它 —— fork、教学、出售、交付都可以。欢迎署名，
 但不强制。
 
-由 [Rohit Ghumare](https://github.com/rohitg00) 和社区维护。
+中文版由 [cluster1900](https://github.com/cluster1900) 和贡献者维护，源自 [Rohit Ghumare](https://github.com/rohitg00) 的原始课程。
 
 <sub>
   <a href="https://x.com/ghumare64">@ghumare64</a> &nbsp;·&nbsp;
   <a href="https://ai-learn.agent-buy.com">ai-learn.agent-buy.com</a> &nbsp;·&nbsp;
-  <a href="https://github.com/rohitg00/ai-engineering-from-scratch/issues/new/choose">报告 / 建议</a>
+  <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh/issues/new/choose">报告 / 建议</a>
 </sub>

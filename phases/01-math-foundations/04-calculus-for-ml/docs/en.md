@@ -388,6 +388,11 @@ graph RL
 
 forward pass 计算预测和 Loss。backward pass 计算 Loss 相对于每个权重的 Gradient。然后每个权重都向下坡方向迈一小步。重复数百万步。这就是 Deep Learning。
 
+
+```figure
+derivative-tangent
+```
+
 ## 构建它
 
 ### 步骤 1：从零实现数值导数

@@ -212,6 +212,11 @@ Binary quantization 把每个 float 转成单个 bit：正值变成 1，负值�
 
 对 retrieval recall 的准确率影响大约是 5-10%。常见模式是：先用 binary quantization 在数百万 Vectors 上做第一轮搜索，然后用 full-precision vectors 对 top-1000 重新打分。这样可以用少 32 倍的内存获得 95%+ 的 full-precision 准确率。
 
+
+```figure
+cosine-similarity
+```
+
 ## 构建它
 我们从零开始构建一个 semantic search engine。不使用 vector database。不使用外部 embedding API。只用 Python 和 numpy 做数学计算。
 

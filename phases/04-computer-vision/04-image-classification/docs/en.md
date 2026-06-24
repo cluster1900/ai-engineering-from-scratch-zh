@@ -109,6 +109,11 @@ Aggregate accuracy 会掩盖 imbalance。一个 90-10 的 binary classifier 如�
 - **Top-1 / Top-5** — 正确 class 是否在 top 1 或 top 5 predictions 中；Top-5 对 ImageNet 很重要，因为像 “Norwich terrier” 和 “Norfolk terrier” 这样的 classes 确实存在歧义。
 - **Calibration (ECE)** — 0.8 confidence 的预测是否真的有 80% 的时间是正确的？现代 networks 系统性地 over-confident；可以用 temperature scaling 或 label smoothing 修正。
 
+
+```figure
+receptive-field
+```
+
 ## 构建它
 
 ### 步骤 1：确定性的 synthetic dataset

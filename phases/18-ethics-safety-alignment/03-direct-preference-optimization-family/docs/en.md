@@ -120,6 +120,11 @@ DAAs 并没有逃离 Goodhart。它们只是把问题咬人的表面从“reward
 
 每个 lab 都会在一组评测上跑完这五种方法，然后按任务选择赢家。没有理由认为数学推理和安全性的最优解相同。
 
+
+```figure
+dpo-margin
+```
+
 ## Use It
 
 `code/main.py` 在一个 toy preference dataset 上比较六种 losses（DPO、IPO、KTO、SimPO、ORPO、BPO），其中 true preference strength 会随 pair 变化。每个 loss 都在相同的 500-pair sample 上，用一个小型 softmax policy 优化。它会按方法绘制 final win rate、chosen-log-prob drift 和 implicit-reward spread。

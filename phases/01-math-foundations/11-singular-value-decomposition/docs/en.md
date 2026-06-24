@@ -357,6 +357,11 @@ PCA 寻找 C 的 eigenvectors。但：
 
 这意味着你在 Lesson 10 中学到的关于 dimensionality reduction 的一切，底层都是 SVD。PCA 是 SVD 在 ML 中最常见的应用。
 
+
+```figure
+svd-rank-reconstruction
+```
+
 ## 构建它
 ### 步骤 1： SVD from scratch using power iteration
 

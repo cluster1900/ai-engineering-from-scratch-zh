@@ -251,6 +251,11 @@ flowchart TD
     G --> H[尝试更复杂模型]
 ```
 
+
+```figure
+bias-variance
+```
+
 ## 构建它
 `code/bias_variance.py` 中的代码会运行完整的 Bias-Variance 分解实验。下面是逐步方法。
 

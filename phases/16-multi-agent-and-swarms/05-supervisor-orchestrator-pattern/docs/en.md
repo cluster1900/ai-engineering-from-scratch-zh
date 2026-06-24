@@ -70,6 +70,11 @@ LangGraph 最初发布了一个带高层 `create_supervisor` helper 的 `langgra
 - **Simple queries.** Single-agent 处理它们更快且更便宜。在生成 workers 前使用 lead 的“scale effort”检查。
 - **Strict determinism.** Supervisor 使用 LLM-selected delegation。当 audit/replay 比 adaptability 更重要时，static graphs 更好。
 
+
+```figure
+supervisor-hierarchy
+```
+
 ## 构建它
 
 `code/main.py` 使用 `threading` 实现了一个由三个并行 workers 组成的 supervisor。Lead 将 query 分解为 sub-questions，workers 并发处理每个 sub-question，lead 进行 synthesis。没有真实 LLMs —— workers 是 scripted，用来模拟 fetch-and-summarize。

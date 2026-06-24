@@ -60,6 +60,36 @@ flowchart LR
 
 agent 写出 diff。checker 读取 diff、allowed globs、forbidden globs，以及任何已运行 acceptance commands 的列表。每个 violation 都是一个带 tag 的 finding，verification gate 可以拒绝它。
 
+### Scope 的两种高度：feature list 和 task contract
+
+scope contract 约束的是一个 task。它不约束整个 project。agent 可以在修复登录问题时完美留在 contract 内，但下一轮又决定 project 还需要 settings page、dark mode toggle，以及 router 重写。contract 从来没有被问过“这个 project 的范围是什么”，它只回答“这个 task 的哪些文件在范围内”。
+
+第二个高度需要自己的 primitive：一个 session 启动时读取的 `feature_list.json`。它是 project backlog 的机器可读、有序文件。agent 精确选择一个 `status` 为 `todo` 的 feature，把它的 `id` 写入 active scope contract，并被禁止在同一个 session 中启动第二个 feature。“一次只做一个 feature” 不再是 prompt 里 agent 可以绕过去的一句话，而是一个写在磁盘上的值，也是 gate 可以执行的检查。
+
+```json
+{
+  "project": "knowledge-base",
+  "active": "import-pdf",
+  "features": [
+    { "id": "import-pdf", "status": "in_progress", "goal": "import a PDF into the library", "done_when": "pytest tests/test_import.py && a sample PDF appears in the library view" },
+    { "id": "full-text-search", "status": "todo", "goal": "search document text and rank hits", "done_when": "query returns ranked results with snippets" },
+    { "id": "cite-answers", "status": "todo", "goal": "answers carry source citations", "done_when": "every answer renders at least one clickable citation" }
+  ]
+}
+```
+
+| Field | Purpose |
+|-------|---------|
+| `active` | 当前 session 唯一允许触及的 feature；为空时表示选择一个并设置它 |
+| `features[].id` | scope contract 的 `task_id` 指向的稳定 slug |
+| `features[].status` | `todo`、`in_progress`、`done`、`blocked`；同一时间最多一个 `in_progress` |
+| `features[].goal` | reviewer 能验证的一句话 |
+| `features[].done_when` | 将 `in_progress` 翻转为 `done` 的 acceptance line |
+
+两条规则让这个 list 成为承重结构，而不是装饰。第一，`at most one in_progress` 这个 invariant 本身就是 startup check（Phase 14 · 33）：如果 list 里出现两个，session 会拒绝启动，直到 human 解决。第二，feature list 是文件，不是 chat message，因为 chat 会滚出 context，而文件会跨 sessions、跨 agents 持久存在。handoff（Phase 14 · 40）会把完成的 feature status 写回 `done`，所以下一个 session 打开时看到的是准确 board，而不是重新推导剩下什么。
+
+contract 与 list 通过 least privilege 组合，方式与下文描述的 merge 相同：task contract 的 `allowed_files` 必须落在 active feature 所触及的范围之内，不能越界。
+
 ## 构建它
 
 `code/main.py` 实现：

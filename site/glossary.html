@@ -5,16 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI 术语表 - AI Engineering from Scratch</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>AI</text></svg>">
-  <meta name="description" content="AI 术语表：人们口中的说法 vs 这些东西真正的含义。每个术语都讲清楚，不含糊其辞。">
+  <meta name="description" content="AI 术语表：人们通常怎么说 vs 这些概念实际意味着什么。每个术语都不含糊其辞地解释清楚。">
+  <link rel="canonical" href="https://ai-learn.agent-buy.com/glossary.html">
   <meta property="og:title" content="术语表 · AI Engineering from Scratch">
-  <meta property="og:description" content="人们口中的说法 vs 这些东西真正的含义。每个 AI 术语都讲清楚，不含糊其辞。">
-  <meta property="og:image" content="https://aiengineeringfromscratch.com/og-image.png?v=2">
-  <meta property="og:url" content="https://aiengineeringfromscratch.com/glossary.html">
+  <meta property="og:description" content="人们通常怎么说 vs 这些概念实际意味着什么。每个 AI 术语都不含糊其辞地定义清楚。">
+  <meta property="og:image" content="https://ai-learn.agent-buy.com/og-image.zh.png?v=3">
+  <meta property="og:url" content="https://ai-learn.agent-buy.com/glossary.html">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="术语表 · AI Engineering from Scratch">
-  <meta name="twitter:description" content="人们口中的说法 vs 这些东西真正的含义。">
-  <meta name="twitter:image" content="https://aiengineeringfromscratch.com/og-image.png?v=2">
+  <meta name="twitter:description" content="人们通常怎么说 vs 这些概念实际意味着什么。">
+  <meta name="twitter:image" content="https://ai-learn.agent-buy.com/og-image.zh.png?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -178,8 +179,9 @@
       <nav class="header-nav">
         <a href="index.html#contents">内容</a>
         <a href="catalog.html">目录</a>
-        <a href="prereqs.html">Roadmap</a>
+        <a href="prereqs.html">路线图</a>
         <a href="glossary.html">术语表</a>
+        <a href="about.html">关于</a>
         <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh" target="_blank" rel="noopener" class="header-github">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
           <svg class="star-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.896l-7.416 3.517 1.48-8.279L0 9.306l8.332-1.151z"/></svg>
@@ -205,7 +207,7 @@
     <div class="container">
       <div class="glossary-header">
         <h1>AI 术语表</h1>
-        <p>人们<em>怎么说</em> vs 这些东西实际<em>是什么意思</em></p>
+        <p>人们通常<em>怎么说</em> vs 这些概念实际<em>意味着什么</em></p>
       </div>
       <div class="glossary-search-wrap">
         <input type="text" class="glossary-search" id="glossarySearch" placeholder="搜索术语...">
@@ -288,7 +290,7 @@
           countEl.textContent = terms.length + ' / ' + GLOSSARY.length + ' 个术语';
 
           if (terms.length === 0) {
-            listEl.innerHTML = '<div class="glossary-empty">没有术语匹配你的搜索。</div>';
+            listEl.innerHTML = '<div class="glossary-empty">没有匹配你搜索的术语。</div>';
             return;
           }
 
@@ -299,11 +301,11 @@
             html += '<div class="glossary-term">' + escapeHtml(t.term) + '</div>';
             html += '<div class="glossary-row">';
             html += '<div class="glossary-col">';
-            html += '<div class="glossary-col-label">人们怎么说</div>';
+            html += '<div class="glossary-col-label">人们通常怎么说</div>';
             html += '<div class="glossary-col-says">"' + escapeHtml(t.says) + '"</div>';
             html += '</div>';
             html += '<div class="glossary-col">';
-            html += '<div class="glossary-col-label">它实际是什么意思</div>';
+            html += '<div class="glossary-col-label">它实际意味着什么</div>';
             html += '<div class="glossary-col-means">' + escapeHtml(t.means) + '</div>';
             html += '</div>';
             html += '</div>';
@@ -312,9 +314,9 @@
           listEl.innerHTML = html;
         }
 
-        // 支持来自 command palette 和外部来源的 ?q= deep-links。
-        // 预先填充搜索框，并过滤到匹配的术语，这样
-        // 用户会直接落在定义上，而不是完整列表。
+        // 支持来自 command palette 和外部来源的 ?q= deep-link。
+        // 预先填充搜索框并筛选到匹配术语，让用户直接落到定义处，
+        // 而不是看到完整列表。
         var urlQ = '';
         try { urlQ = new URLSearchParams(window.location.search).get('q') || ''; } catch (_) {}
         if (urlQ && searchInput) {

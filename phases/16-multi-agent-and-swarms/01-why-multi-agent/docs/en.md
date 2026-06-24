@@ -219,6 +219,11 @@ Multi-agent 会增加复杂性。agents 之间的每一条 message 都是潜在�
 
 经验法则：如果一个任务少于 20 次 tool calls，并且能放进 100k tokens，就保持 single-agent。
 
+
+```figure
+swarm-messages
+```
+
 ## 构建它
 
 ### 步骤 1： 过载的 Single Agent

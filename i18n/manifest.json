@@ -2,9 +2,9 @@
   "schema_version": 1,
   "root": "/Users/hawkwu/Desktop/ai-engineering-from-scratch-zh",
   "totals": {
-    "text_files": 1335,
-    "text_files_with_english": 1332,
-    "english_segments": 107809,
+    "text_files": 1424,
+    "text_files_with_english": 1421,
+    "english_segments": 120080,
     "image_files": 307,
     "text_bearing_images": 305,
     "needs_gpt_image_2": 307
@@ -90,16 +90,16 @@
     {
       "path": "README.md",
       "suffix": ".md",
-      "bytes": 86733,
-      "english_segments": 1193,
-      "chinese_chars": 2969
+      "bytes": 91075,
+      "english_segments": 1289,
+      "chinese_chars": 3074
     },
     {
       "path": "ROADMAP.md",
       "suffix": ".md",
-      "bytes": 43053,
-      "english_segments": 754,
-      "chinese_chars": 837
+      "bytes": 50579,
+      "english_segments": 877,
+      "chinese_chars": 924
     },
     {
       "path": "SPONSORS.md",
@@ -272,7 +272,7 @@
     {
       "path": "phases/00-setup-and-tooling/09-data-management/outputs/prompt-data-helper.md",
       "suffix": ".md",
-      "bytes": 2178,
+      "bytes": 2336,
       "english_segments": 35,
       "chinese_chars": 204
     },
@@ -342,7 +342,7 @@
     {
       "path": "phases/01-math-foundations/01-linear-algebra-intuition/docs/en.md",
       "suffix": ".md",
-      "bytes": 16627,
+      "bytes": 16660,
       "english_segments": 123,
       "chinese_chars": 1504
     },
@@ -363,7 +363,7 @@
     {
       "path": "phases/01-math-foundations/02-vectors-matrices-operations/docs/en.md",
       "suffix": ".md",
-      "bytes": 12036,
+      "bytes": 12070,
       "english_segments": 100,
       "chinese_chars": 941
     },
@@ -384,7 +384,7 @@
     {
       "path": "phases/01-math-foundations/03-matrix-transformations/docs/en.md",
       "suffix": ".md",
-      "bytes": 15646,
+      "bytes": 15679,
       "english_segments": 87,
       "chinese_chars": 1113
     },
@@ -405,7 +405,7 @@
     {
       "path": "phases/01-math-foundations/04-calculus-for-ml/docs/en.md",
       "suffix": ".md",
-      "bytes": 22421,
+      "bytes": 22456,
       "english_segments": 122,
       "chinese_chars": 2611
     },
@@ -426,7 +426,7 @@
     {
       "path": "phases/01-math-foundations/05-chain-rule-and-autodiff/docs/en.md",
       "suffix": ".md",
-      "bytes": 18305,
+      "bytes": 18332,
       "english_segments": 113,
       "chinese_chars": 1686
     },
@@ -447,7 +447,7 @@
     {
       "path": "phases/01-math-foundations/06-probability-and-distributions/docs/en.md",
       "suffix": ".md",
-      "bytes": 15134,
+      "bytes": 15163,
       "english_segments": 122,
       "chinese_chars": 1380
     },
@@ -468,7 +468,7 @@
     {
       "path": "phases/01-math-foundations/07-bayes-theorem/docs/en.md",
       "suffix": ".md",
-      "bytes": 20565,
+      "bytes": 20594,
       "english_segments": 189,
       "chinese_chars": 2189
     },
@@ -489,7 +489,7 @@
     {
       "path": "phases/01-math-foundations/08-optimization/docs/en.md",
       "suffix": ".md",
-      "bytes": 16402,
+      "bytes": 16435,
       "english_segments": 153,
       "chinese_chars": 1626
     },
@@ -510,7 +510,7 @@
     {
       "path": "phases/01-math-foundations/09-information-theory/docs/en.md",
       "suffix": ".md",
-      "bytes": 17679,
+      "bytes": 17706,
       "english_segments": 170,
       "chinese_chars": 1615
     },
@@ -531,7 +531,7 @@
     {
       "path": "phases/01-math-foundations/10-dimensionality-reduction/docs/en.md",
       "suffix": ".md",
-      "bytes": 17295,
+      "bytes": 17320,
       "english_segments": 184,
       "chinese_chars": 1591
     },
@@ -552,7 +552,7 @@
     {
       "path": "phases/01-math-foundations/11-singular-value-decomposition/docs/en.md",
       "suffix": ".md",
-      "bytes": 22390,
+      "bytes": 22430,
       "english_segments": 127,
       "chinese_chars": 3047
     },
@@ -573,7 +573,7 @@
     {
       "path": "phases/01-math-foundations/12-tensor-operations/docs/en.md",
       "suffix": ".md",
-      "bytes": 15423,
+      "bytes": 15456,
       "english_segments": 136,
       "chinese_chars": 1353
     },
@@ -601,7 +601,7 @@
     {
       "path": "phases/01-math-foundations/13-numerical-stability/docs/en.md",
       "suffix": ".md",
-      "bytes": 25153,
+      "bytes": 25189,
       "english_segments": 210,
       "chinese_chars": 2531
     },
@@ -622,7 +622,7 @@
     {
       "path": "phases/01-math-foundations/14-norms-and-distances/docs/en.md",
       "suffix": ".md",
-      "bytes": 22902,
+      "bytes": 22934,
       "english_segments": 189,
       "chinese_chars": 3178
     },
@@ -664,7 +664,7 @@
     {
       "path": "phases/01-math-foundations/16-sampling-methods/docs/en.md",
       "suffix": ".md",
-      "bytes": 29090,
+      "bytes": 29121,
       "english_segments": 323,
       "chinese_chars": 2611
     },
@@ -685,7 +685,7 @@
     {
       "path": "phases/01-math-foundations/17-linear-systems/docs/en.md",
       "suffix": ".md",
-      "bytes": 24614,
+      "bytes": 24657,
       "english_segments": 327,
       "chinese_chars": 2001
     },
@@ -706,7 +706,7 @@
     {
       "path": "phases/01-math-foundations/18-convex-optimization/docs/en.md",
       "suffix": ".md",
-      "bytes": 23344,
+      "bytes": 23380,
       "english_segments": 171,
       "chinese_chars": 3405
     },
@@ -727,7 +727,7 @@
     {
       "path": "phases/01-math-foundations/19-complex-numbers/docs/en.md",
       "suffix": ".md",
-      "bytes": 16881,
+      "bytes": 16912,
       "english_segments": 52,
       "chinese_chars": 2471
     },
@@ -748,7 +748,7 @@
     {
       "path": "phases/01-math-foundations/20-fourier-transform/docs/en.md",
       "suffix": ".md",
-      "bytes": 21593,
+      "bytes": 21627,
       "english_segments": 310,
       "chinese_chars": 1811
     },
@@ -769,7 +769,7 @@
     {
       "path": "phases/01-math-foundations/21-graph-theory/docs/en.md",
       "suffix": ".md",
-      "bytes": 19622,
+      "bytes": 19664,
       "english_segments": 247,
       "chinese_chars": 1468
     },
@@ -790,7 +790,7 @@
     {
       "path": "phases/01-math-foundations/22-stochastic-processes/docs/en.md",
       "suffix": ".md",
-      "bytes": 23072,
+      "bytes": 23110,
       "english_segments": 312,
       "chinese_chars": 2379
     },
@@ -839,7 +839,7 @@
     {
       "path": "phases/02-ml-fundamentals/02-linear-regression/docs/en.md",
       "suffix": ".md",
-      "bytes": 21967,
+      "bytes": 22005,
       "english_segments": 122,
       "chinese_chars": 1385
     },
@@ -860,7 +860,7 @@
     {
       "path": "phases/02-ml-fundamentals/03-logistic-regression/docs/en.md",
       "suffix": ".md",
-      "bytes": 19843,
+      "bytes": 19876,
       "english_segments": 128,
       "chinese_chars": 1175
     },
@@ -881,7 +881,7 @@
     {
       "path": "phases/02-ml-fundamentals/04-decision-trees/docs/en.md",
       "suffix": ".md",
-      "bytes": 17811,
+      "bytes": 17847,
       "english_segments": 198,
       "chinese_chars": 1688
     },
@@ -902,7 +902,7 @@
     {
       "path": "phases/02-ml-fundamentals/05-support-vector-machines/docs/en.md",
       "suffix": ".md",
-      "bytes": 15368,
+      "bytes": 15395,
       "english_segments": 188,
       "chinese_chars": 1341
     },
@@ -923,7 +923,7 @@
     {
       "path": "phases/02-ml-fundamentals/06-knn-and-distances/docs/en.md",
       "suffix": ".md",
-      "bytes": 15846,
+      "bytes": 15877,
       "english_segments": 100,
       "chinese_chars": 2368
     },
@@ -944,7 +944,7 @@
     {
       "path": "phases/02-ml-fundamentals/07-unsupervised-learning/docs/en.md",
       "suffix": ".md",
-      "bytes": 19323,
+      "bytes": 19351,
       "english_segments": 62,
       "chinese_chars": 1648
     },
@@ -965,7 +965,7 @@
     {
       "path": "phases/02-ml-fundamentals/08-feature-engineering/docs/en.md",
       "suffix": ".md",
-      "bytes": 21663,
+      "bytes": 21695,
       "english_segments": 97,
       "chinese_chars": 1352
     },
@@ -986,7 +986,7 @@
     {
       "path": "phases/02-ml-fundamentals/09-model-evaluation/docs/en.md",
       "suffix": ".md",
-      "bytes": 27177,
+      "bytes": 27220,
       "english_segments": 139,
       "chinese_chars": 1504
     },
@@ -1007,7 +1007,7 @@
     {
       "path": "phases/02-ml-fundamentals/10-bias-variance/docs/en.md",
       "suffix": ".md",
-      "bytes": 22642,
+      "bytes": 22672,
       "english_segments": 176,
       "chinese_chars": 3289
     },
@@ -1056,7 +1056,7 @@
     {
       "path": "phases/02-ml-fundamentals/12-hyperparameter-tuning/docs/en.md",
       "suffix": ".md",
-      "bytes": 25613,
+      "bytes": 25639,
       "english_segments": 246,
       "chinese_chars": 2651
     },
@@ -1098,7 +1098,7 @@
     {
       "path": "phases/02-ml-fundamentals/14-naive-bayes/docs/en.md",
       "suffix": ".md",
-      "bytes": 24088,
+      "bytes": 24116,
       "english_segments": 192,
       "chinese_chars": 3514
     },
@@ -1161,7 +1161,7 @@
     {
       "path": "phases/02-ml-fundamentals/17-imbalanced-data/docs/en.md",
       "suffix": ".md",
-      "bytes": 22180,
+      "bytes": 22212,
       "english_segments": 115,
       "chinese_chars": 2169
     },
@@ -1210,7 +1210,7 @@
     {
       "path": "phases/03-deep-learning-core/01-the-perceptron/docs/en.md",
       "suffix": ".md",
-      "bytes": 14359,
+      "bytes": 14395,
       "english_segments": 85,
       "chinese_chars": 1124
     },
@@ -1231,7 +1231,7 @@
     {
       "path": "phases/03-deep-learning-core/02-multi-layer-networks/docs/en.md",
       "suffix": ".md",
-      "bytes": 15446,
+      "bytes": 15474,
       "english_segments": 91,
       "chinese_chars": 2347
     },
@@ -1252,7 +1252,7 @@
     {
       "path": "phases/03-deep-learning-core/03-backpropagation/docs/en.md",
       "suffix": ".md",
-      "bytes": 19265,
+      "bytes": 19300,
       "english_segments": 130,
       "chinese_chars": 1845
     },
@@ -1273,7 +1273,7 @@
     {
       "path": "phases/03-deep-learning-core/04-activation-functions/docs/en.md",
       "suffix": ".md",
-      "bytes": 21298,
+      "bytes": 21334,
       "english_segments": 158,
       "chinese_chars": 1823
     },
@@ -1294,7 +1294,7 @@
     {
       "path": "phases/03-deep-learning-core/05-loss-functions/docs/en.md",
       "suffix": ".md",
-      "bytes": 21180,
+      "bytes": 21215,
       "english_segments": 134,
       "chinese_chars": 2431
     },
@@ -1322,7 +1322,7 @@
     {
       "path": "phases/03-deep-learning-core/06-optimizers/docs/en.md",
       "suffix": ".md",
-      "bytes": 20904,
+      "bytes": 20941,
       "english_segments": 144,
       "chinese_chars": 1914
     },
@@ -1343,7 +1343,7 @@
     {
       "path": "phases/03-deep-learning-core/07-regularization/docs/en.md",
       "suffix": ".md",
-      "bytes": 24087,
+      "bytes": 24121,
       "english_segments": 146,
       "chinese_chars": 2408
     },
@@ -1364,7 +1364,7 @@
     {
       "path": "phases/03-deep-learning-core/08-weight-initialization/docs/en.md",
       "suffix": ".md",
-      "bytes": 15906,
+      "bytes": 15943,
       "english_segments": 133,
       "chinese_chars": 1355
     },
@@ -1385,7 +1385,7 @@
     {
       "path": "phases/03-deep-learning-core/09-learning-rate-schedules/docs/en.md",
       "suffix": ".md",
-      "bytes": 17410,
+      "bytes": 17438,
       "english_segments": 104,
       "chinese_chars": 1454
     },
@@ -1406,7 +1406,7 @@
     {
       "path": "phases/03-deep-learning-core/10-mini-framework/docs/en.md",
       "suffix": ".md",
-      "bytes": 24578,
+      "bytes": 24612,
       "english_segments": 105,
       "chinese_chars": 1263
     },
@@ -1427,7 +1427,7 @@
     {
       "path": "phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md",
       "suffix": ".md",
-      "bytes": 23220,
+      "bytes": 23249,
       "english_segments": 206,
       "chinese_chars": 1734
     },
@@ -1455,7 +1455,7 @@
     {
       "path": "phases/03-deep-learning-core/12-intro-to-jax/docs/en.md",
       "suffix": ".md",
-      "bytes": 20491,
+      "bytes": 20524,
       "english_segments": 92,
       "chinese_chars": 2457
     },
@@ -1483,7 +1483,7 @@
     {
       "path": "phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md",
       "suffix": ".md",
-      "bytes": 31548,
+      "bytes": 31577,
       "english_segments": 236,
       "chinese_chars": 1829
     },
@@ -1518,7 +1518,7 @@
     {
       "path": "phases/04-computer-vision/01-image-fundamentals/docs/en.md",
       "suffix": ".md",
-      "bytes": 20332,
+      "bytes": 20365,
       "english_segments": 128,
       "chinese_chars": 1853
     },
@@ -1546,7 +1546,7 @@
     {
       "path": "phases/04-computer-vision/02-convolutions-from-scratch/docs/en.md",
       "suffix": ".md",
-      "bytes": 17118,
+      "bytes": 17153,
       "english_segments": 117,
       "chinese_chars": 1723
     },
@@ -1574,7 +1574,7 @@
     {
       "path": "phases/04-computer-vision/03-cnns-lenet-to-resnet/docs/en.md",
       "suffix": ".md",
-      "bytes": 17816,
+      "bytes": 17840,
       "english_segments": 151,
       "chinese_chars": 1519
     },
@@ -1602,7 +1602,7 @@
     {
       "path": "phases/04-computer-vision/04-image-classification/docs/en.md",
       "suffix": ".md",
-      "bytes": 20197,
+      "bytes": 20229,
       "english_segments": 159,
       "chinese_chars": 1654
     },
@@ -1910,7 +1910,7 @@
     {
       "path": "phases/04-computer-vision/15-real-time-edge/docs/en.md",
       "suffix": ".md",
-      "bytes": 13660,
+      "bytes": 13692,
       "english_segments": 166,
       "chinese_chars": 1129
     },
@@ -2309,7 +2309,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/01-text-processing/docs/en.md",
       "suffix": ".md",
-      "bytes": 11009,
+      "bytes": 11039,
       "english_segments": 72,
       "chinese_chars": 1264
     },
@@ -2330,7 +2330,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/02-bag-of-words-tfidf/docs/en.md",
       "suffix": ".md",
-      "bytes": 12611,
+      "bytes": 12637,
       "english_segments": 61,
       "chinese_chars": 1734
     },
@@ -2351,7 +2351,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/03-word-embeddings-word2vec/docs/en.md",
       "suffix": ".md",
-      "bytes": 12474,
+      "bytes": 12513,
       "english_segments": 53,
       "chinese_chars": 1457
     },
@@ -2393,7 +2393,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/05-sentiment-analysis/docs/en.md",
       "suffix": ".md",
-      "bytes": 12992,
+      "bytes": 13025,
       "english_segments": 65,
       "chinese_chars": 1669
     },
@@ -2414,7 +2414,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/06-named-entity-recognition/docs/en.md",
       "suffix": ".md",
-      "bytes": 13980,
+      "bytes": 14012,
       "english_segments": 78,
       "chinese_chars": 1400
     },
@@ -2456,7 +2456,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/08-cnns-rnns-for-text/docs/en.md",
       "suffix": ".md",
-      "bytes": 11086,
+      "bytes": 11113,
       "english_segments": 79,
       "chinese_chars": 1058
     },
@@ -2477,7 +2477,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/09-sequence-to-sequence/docs/en.md",
       "suffix": ".md",
-      "bytes": 11580,
+      "bytes": 11607,
       "english_segments": 109,
       "chinese_chars": 1185
     },
@@ -2498,7 +2498,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/10-attention-mechanism/docs/en.md",
       "suffix": ".md",
-      "bytes": 11542,
+      "bytes": 11576,
       "english_segments": 109,
       "chinese_chars": 1287
     },
@@ -2519,7 +2519,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/11-machine-translation/docs/en.md",
       "suffix": ".md",
-      "bytes": 12051,
+      "bytes": 12085,
       "english_segments": 163,
       "chinese_chars": 1122
     },
@@ -2624,7 +2624,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/16-text-generation-pre-transformer/docs/en.md",
       "suffix": ".md",
-      "bytes": 11037,
+      "bytes": 11067,
       "english_segments": 52,
       "chinese_chars": 1293
     },
@@ -2687,7 +2687,7 @@
     {
       "path": "phases/05-nlp-foundations-to-advanced/19-subword-tokenization/docs/en.md",
       "suffix": ".md",
-      "bytes": 9918,
+      "bytes": 9944,
       "english_segments": 85,
       "chinese_chars": 971
     },
@@ -2925,7 +2925,7 @@
     {
       "path": "phases/06-speech-and-audio/01-audio-fundamentals/docs/en.md",
       "suffix": ".md",
-      "bytes": 8366,
+      "bytes": 8392,
       "english_segments": 87,
       "chinese_chars": 853
     },
@@ -2939,7 +2939,7 @@
     {
       "path": "phases/06-speech-and-audio/02-spectrograms-mel-features/docs/en.md",
       "suffix": ".md",
-      "bytes": 9756,
+      "bytes": 9791,
       "english_segments": 122,
       "chinese_chars": 816
     },
@@ -3065,7 +3065,7 @@
     {
       "path": "phases/06-speech-and-audio/11-real-time-audio-processing/docs/en.md",
       "suffix": ".md",
-      "bytes": 8299,
+      "bytes": 8332,
       "english_segments": 119,
       "chinese_chars": 632
     },
@@ -3184,9 +3184,9 @@
     {
       "path": "phases/07-transformers-deep-dive/02-self-attention-from-scratch/docs/en.md",
       "suffix": ".md",
-      "bytes": 11720,
-      "english_segments": 60,
-      "chinese_chars": 1014
+      "bytes": 11367,
+      "english_segments": 61,
+      "chinese_chars": 1046
     },
     {
       "path": "phases/07-transformers-deep-dive/02-self-attention-from-scratch/outputs/prompt-attention-explainer.md",
@@ -3205,7 +3205,7 @@
     {
       "path": "phases/07-transformers-deep-dive/03-multi-head-attention/docs/en.md",
       "suffix": ".md",
-      "bytes": 9391,
+      "bytes": 9423,
       "english_segments": 103,
       "chinese_chars": 895
     },
@@ -3219,7 +3219,7 @@
     {
       "path": "phases/07-transformers-deep-dive/04-positional-encoding/docs/en.md",
       "suffix": ".md",
-      "bytes": 10267,
+      "bytes": 10297,
       "english_segments": 128,
       "chinese_chars": 821
     },
@@ -3233,9 +3233,9 @@
     {
       "path": "phases/07-transformers-deep-dive/05-full-transformer/docs/en.md",
       "suffix": ".md",
-      "bytes": 9507,
-      "english_segments": 110,
-      "chinese_chars": 837
+      "bytes": 9729,
+      "english_segments": 111,
+      "chinese_chars": 874
     },
     {
       "path": "phases/07-transformers-deep-dive/05-full-transformer/outputs/skill-transformer-block-reviewer.md",
@@ -3247,7 +3247,7 @@
     {
       "path": "phases/07-transformers-deep-dive/06-bert-masked-language-modeling/docs/en.md",
       "suffix": ".md",
-      "bytes": 9217,
+      "bytes": 9254,
       "english_segments": 91,
       "chinese_chars": 1082
     },
@@ -3261,7 +3261,7 @@
     {
       "path": "phases/07-transformers-deep-dive/07-gpt-causal-language-modeling/docs/en.md",
       "suffix": ".md",
-      "bytes": 9500,
+      "bytes": 9528,
       "english_segments": 107,
       "chinese_chars": 1147
     },
@@ -3331,9 +3331,9 @@
     {
       "path": "phases/07-transformers-deep-dive/12-kv-cache-flash-attention/docs/en.md",
       "suffix": ".md",
-      "bytes": 12185,
-      "english_segments": 116,
-      "chinese_chars": 1211
+      "bytes": 12407,
+      "english_segments": 117,
+      "chinese_chars": 1242
     },
     {
       "path": "phases/07-transformers-deep-dive/12-kv-cache-flash-attention/outputs/skill-inference-optimizer.md",
@@ -3345,7 +3345,7 @@
     {
       "path": "phases/07-transformers-deep-dive/13-scaling-laws/docs/en.md",
       "suffix": ".md",
-      "bytes": 8764,
+      "bytes": 8793,
       "english_segments": 68,
       "chinese_chars": 1363
     },
@@ -3373,7 +3373,7 @@
     {
       "path": "phases/07-transformers-deep-dive/15-attention-variants/docs/en.md",
       "suffix": ".md",
-      "bytes": 12495,
+      "bytes": 12526,
       "english_segments": 164,
       "chinese_chars": 1225
     },
@@ -3422,7 +3422,7 @@
     {
       "path": "phases/08-generative-ai/02-autoencoders-vae/docs/en.md",
       "suffix": ".md",
-      "bytes": 10455,
+      "bytes": 10487,
       "english_segments": 147,
       "chinese_chars": 779
     },
@@ -3436,7 +3436,7 @@
     {
       "path": "phases/08-generative-ai/03-gans-generator-discriminator/docs/en.md",
       "suffix": ".md",
-      "bytes": 10674,
+      "bytes": 10702,
       "english_segments": 156,
       "chinese_chars": 1005
     },
@@ -3478,7 +3478,7 @@
     {
       "path": "phases/08-generative-ai/06-diffusion-ddpm-from-scratch/docs/en.md",
       "suffix": ".md",
-      "bytes": 11472,
+      "bytes": 11506,
       "english_segments": 172,
       "chinese_chars": 779
     },
@@ -3492,7 +3492,7 @@
     {
       "path": "phases/08-generative-ai/07-latent-diffusion-stable-diffusion/docs/en.md",
       "suffix": ".md",
-      "bytes": 11104,
+      "bytes": 11135,
       "english_segments": 140,
       "chinese_chars": 1244
     },
@@ -3625,7 +3625,7 @@
     {
       "path": "phases/09-reinforcement-learning/01-mdps-states-actions-rewards/docs/en.md",
       "suffix": ".md",
-      "bytes": 11812,
+      "bytes": 11845,
       "english_segments": 130,
       "chinese_chars": 1111
     },
@@ -3639,7 +3639,7 @@
     {
       "path": "phases/09-reinforcement-learning/02-dynamic-programming/docs/en.md",
       "suffix": ".md",
-      "bytes": 11267,
+      "bytes": 11305,
       "english_segments": 119,
       "chinese_chars": 1026
     },
@@ -3653,7 +3653,7 @@
     {
       "path": "phases/09-reinforcement-learning/03-monte-carlo-methods/docs/en.md",
       "suffix": ".md",
-      "bytes": 11850,
+      "bytes": 11881,
       "english_segments": 135,
       "chinese_chars": 1068
     },
@@ -3667,7 +3667,7 @@
     {
       "path": "phases/09-reinforcement-learning/04-q-learning-sarsa/docs/en.md",
       "suffix": ".md",
-      "bytes": 11349,
+      "bytes": 11385,
       "english_segments": 104,
       "chinese_chars": 1111
     },
@@ -3695,7 +3695,7 @@
     {
       "path": "phases/09-reinforcement-learning/06-policy-gradients-reinforce/docs/en.md",
       "suffix": ".md",
-      "bytes": 11643,
+      "bytes": 11685,
       "english_segments": 141,
       "chinese_chars": 804
     },
@@ -3800,7 +3800,7 @@
     {
       "path": "phases/10-llms-from-scratch/01-tokenizers/docs/en.md",
       "suffix": ".md",
-      "bytes": 23136,
+      "bytes": 23200,
       "english_segments": 153,
       "chinese_chars": 2448
     },
@@ -3828,7 +3828,7 @@
     {
       "path": "phases/10-llms-from-scratch/02-building-a-tokenizer/docs/en.md",
       "suffix": ".md",
-      "bytes": 18837,
+      "bytes": 18866,
       "english_segments": 158,
       "chinese_chars": 1589
     },
@@ -3870,7 +3870,7 @@
     {
       "path": "phases/10-llms-from-scratch/04-pre-training-mini-gpt/docs/en.md",
       "suffix": ".md",
-      "bytes": 29112,
+      "bytes": 29145,
       "english_segments": 244,
       "chinese_chars": 2471
     },
@@ -3891,7 +3891,7 @@
     {
       "path": "phases/10-llms-from-scratch/05-scaling-distributed/docs/en.md",
       "suffix": ".md",
-      "bytes": 29947,
+      "bytes": 29978,
       "english_segments": 268,
       "chinese_chars": 2521
     },
@@ -3933,7 +3933,7 @@
     {
       "path": "phases/10-llms-from-scratch/07-rlhf/docs/en.md",
       "suffix": ".md",
-      "bytes": 30871,
+      "bytes": 30901,
       "english_segments": 235,
       "chinese_chars": 2382
     },
@@ -3954,7 +3954,7 @@
     {
       "path": "phases/10-llms-from-scratch/08-dpo/docs/en.md",
       "suffix": ".md",
-      "bytes": 32851,
+      "bytes": 32876,
       "english_segments": 235,
       "chinese_chars": 2408
     },
@@ -3989,7 +3989,7 @@
     {
       "path": "phases/10-llms-from-scratch/10-evaluation/docs/en.md",
       "suffix": ".md",
-      "bytes": 25002,
+      "bytes": 25034,
       "english_segments": 223,
       "chinese_chars": 2265
     },
@@ -4017,7 +4017,7 @@
     {
       "path": "phases/10-llms-from-scratch/11-quantization/docs/en.md",
       "suffix": ".md",
-      "bytes": 45922,
+      "bytes": 45951,
       "english_segments": 301,
       "chinese_chars": 2801
     },
@@ -4038,7 +4038,7 @@
     {
       "path": "phases/10-llms-from-scratch/12-inference-optimization/docs/en.md",
       "suffix": ".md",
-      "bytes": 36712,
+      "bytes": 36749,
       "english_segments": 330,
       "chinese_chars": 2434
     },
@@ -4059,7 +4059,7 @@
     {
       "path": "phases/10-llms-from-scratch/13-building-complete-llm-pipeline/docs/en.md",
       "suffix": ".md",
-      "bytes": 19071,
+      "bytes": 19099,
       "english_segments": 241,
       "chinese_chars": 2314
     },
@@ -4073,7 +4073,7 @@
     {
       "path": "phases/10-llms-from-scratch/14-open-models-architecture-walkthroughs/docs/en.md",
       "suffix": ".md",
-      "bytes": 17819,
+      "bytes": 17856,
       "english_segments": 205,
       "chinese_chars": 1955
     },
@@ -4101,7 +4101,7 @@
     {
       "path": "phases/10-llms-from-scratch/16-differential-attention-v2/docs/en.md",
       "suffix": ".md",
-      "bytes": 14459,
+      "bytes": 14498,
       "english_segments": 166,
       "chinese_chars": 2174
     },
@@ -4115,7 +4115,7 @@
     {
       "path": "phases/10-llms-from-scratch/17-native-sparse-attention/docs/en.md",
       "suffix": ".md",
-      "bytes": 13822,
+      "bytes": 13863,
       "english_segments": 227,
       "chinese_chars": 1648
     },
@@ -4143,7 +4143,7 @@
     {
       "path": "phases/10-llms-from-scratch/19-dualpipe-parallelism/docs/en.md",
       "suffix": ".md",
-      "bytes": 13856,
+      "bytes": 13888,
       "english_segments": 188,
       "chinese_chars": 1840
     },
@@ -4157,7 +4157,7 @@
     {
       "path": "phases/10-llms-from-scratch/20-deepseek-v3-walkthrough/docs/en.md",
       "suffix": ".md",
-      "bytes": 13557,
+      "bytes": 13585,
       "english_segments": 139,
       "chinese_chars": 1874
     },
@@ -4171,7 +4171,7 @@
     {
       "path": "phases/10-llms-from-scratch/21-jamba-hybrid-ssm-transformer/docs/en.md",
       "suffix": ".md",
-      "bytes": 13608,
+      "bytes": 13635,
       "english_segments": 179,
       "chinese_chars": 1787
     },
@@ -4185,7 +4185,7 @@
     {
       "path": "phases/10-llms-from-scratch/22-async-hogwild-inference/docs/en.md",
       "suffix": ".md",
-      "bytes": 15891,
+      "bytes": 15927,
       "english_segments": 255,
       "chinese_chars": 1947
     },
@@ -4199,7 +4199,7 @@
     {
       "path": "phases/10-llms-from-scratch/25-speculative-decoding/docs/en.md",
       "suffix": ".md",
-      "bytes": 14020,
+      "bytes": 14057,
       "english_segments": 191,
       "chinese_chars": 1372
     },
@@ -4318,7 +4318,7 @@
     {
       "path": "phases/11-llm-engineering/04-embeddings/docs/en.md",
       "suffix": ".md",
-      "bytes": 26209,
+      "bytes": 26243,
       "english_segments": 230,
       "chinese_chars": 2668
     },
@@ -4374,7 +4374,7 @@
     {
       "path": "phases/11-llm-engineering/06-rag/docs/en.md",
       "suffix": ".md",
-      "bytes": 20995,
+      "bytes": 21024,
       "english_segments": 193,
       "chinese_chars": 2259
     },
@@ -4430,7 +4430,7 @@
     {
       "path": "phases/11-llm-engineering/08-fine-tuning-lora/docs/en.md",
       "suffix": ".md",
-      "bytes": 25749,
+      "bytes": 25777,
       "english_segments": 248,
       "chinese_chars": 2305
     },
@@ -4542,7 +4542,7 @@
     {
       "path": "phases/11-llm-engineering/12-guardrails/docs/en.md",
       "suffix": ".md",
-      "bytes": 45897,
+      "bytes": 45929,
       "english_segments": 356,
       "chinese_chars": 2691
     },
@@ -4689,7 +4689,7 @@
     {
       "path": "phases/12-multimodal-ai/01-vision-transformer-patch-tokens/docs/en.md",
       "suffix": ".md",
-      "bytes": 12652,
+      "bytes": 12687,
       "english_segments": 172,
       "chinese_chars": 1664
     },
@@ -4703,7 +4703,7 @@
     {
       "path": "phases/12-multimodal-ai/02-clip-contrastive-pretraining/docs/en.md",
       "suffix": ".md",
-      "bytes": 11367,
+      "bytes": 11401,
       "english_segments": 183,
       "chinese_chars": 1196
     },
@@ -5116,7 +5116,7 @@
     {
       "path": "phases/13-tools-and-protocols/06-mcp-fundamentals/docs/en.md",
       "suffix": ".md",
-      "bytes": 10910,
+      "bytes": 10940,
       "english_segments": 126,
       "chinese_chars": 1039
     },
@@ -5284,16 +5284,16 @@
     {
       "path": "phases/13-tools-and-protocols/18-mcp-auth-production/docs/en.md",
       "suffix": ".md",
-      "bytes": 20574,
-      "english_segments": 213,
-      "chinese_chars": 2142
+      "bytes": 30168,
+      "english_segments": 31,
+      "chinese_chars": 6076
     },
     {
-      "path": "phases/13-tools-and-protocols/18-mcp-auth-production/outputs/skill-mcp-auth-iii.md",
+      "path": "phases/13-tools-and-protocols/18-mcp-auth-production/outputs/skill-mcp-auth.md",
       "suffix": ".md",
-      "bytes": 5138,
-      "english_segments": 58,
-      "chinese_chars": 390
+      "bytes": 5541,
+      "english_segments": 6,
+      "chinese_chars": 979
     },
     {
       "path": "phases/13-tools-and-protocols/19-a2a-protocol/docs/en.md",
@@ -5375,7 +5375,7 @@
     {
       "path": "phases/14-agent-engineering/01-the-agent-loop/docs/en.md",
       "suffix": ".md",
-      "bytes": 9254,
+      "bytes": 9281,
       "english_segments": 130,
       "chinese_chars": 1049
     },
@@ -5417,7 +5417,7 @@
     {
       "path": "phases/14-agent-engineering/03-reflexion-verbal-rl/docs/en.md",
       "suffix": ".md",
-      "bytes": 8924,
+      "bytes": 8952,
       "english_segments": 137,
       "chinese_chars": 1059
     },
@@ -5480,7 +5480,7 @@
     {
       "path": "phases/14-agent-engineering/06-tool-use-and-function-calling/docs/en.md",
       "suffix": ".md",
-      "bytes": 8540,
+      "bytes": 8569,
       "english_segments": 135,
       "chinese_chars": 906
     },
@@ -5501,7 +5501,7 @@
     {
       "path": "phases/14-agent-engineering/07-memory-virtual-context-memgpt/docs/en.md",
       "suffix": ".md",
-      "bytes": 8516,
+      "bytes": 8547,
       "english_segments": 147,
       "chinese_chars": 880
     },
@@ -6061,9 +6061,9 @@
     {
       "path": "phases/14-agent-engineering/33-instructions-as-executable-constraints/docs/en.md",
       "suffix": ".md",
-      "bytes": 8477,
-      "english_segments": 53,
-      "chinese_chars": 1509
+      "bytes": 10609,
+      "english_segments": 60,
+      "chinese_chars": 1917
     },
     {
       "path": "phases/14-agent-engineering/33-instructions-as-executable-constraints/mission.md",
@@ -6145,9 +6145,9 @@
     {
       "path": "phases/14-agent-engineering/36-scope-contracts/docs/en.md",
       "suffix": ".md",
-      "bytes": 9031,
-      "english_segments": 109,
-      "chinese_chars": 978
+      "bytes": 11753,
+      "english_segments": 125,
+      "chinese_chars": 1326
     },
     {
       "path": "phases/14-agent-engineering/36-scope-contracts/mission.md",
@@ -6257,9 +6257,9 @@
     {
       "path": "phases/14-agent-engineering/40-multi-session-handoff/docs/en.md",
       "suffix": ".md",
-      "bytes": 9556,
-      "english_segments": 99,
-      "chinese_chars": 1218
+      "bytes": 11552,
+      "english_segments": 112,
+      "chinese_chars": 1593
     },
     {
       "path": "phases/14-agent-engineering/40-multi-session-handoff/mission.md",
@@ -6411,7 +6411,7 @@
     {
       "path": "phases/15-autonomous-systems/01-long-horizon-agents/docs/en.md",
       "suffix": ".md",
-      "bytes": 8627,
+      "bytes": 8662,
       "english_segments": 115,
       "chinese_chars": 1319
     },
@@ -6425,7 +6425,7 @@
     {
       "path": "phases/15-autonomous-systems/02-star-family-reasoning/docs/en.md",
       "suffix": ".md",
-      "bytes": 9080,
+      "bytes": 9112,
       "english_segments": 114,
       "chinese_chars": 1391
     },
@@ -6495,7 +6495,7 @@
     {
       "path": "phases/15-autonomous-systems/07-recursive-self-improvement/docs/en.md",
       "suffix": ".md",
-      "bytes": 8708,
+      "bytes": 8744,
       "english_segments": 125,
       "chinese_chars": 1297
     },
@@ -6537,7 +6537,7 @@
     {
       "path": "phases/15-autonomous-systems/10-claude-code-permission-modes/docs/en.md",
       "suffix": ".md",
-      "bytes": 9106,
+      "bytes": 9141,
       "english_segments": 98,
       "chinese_chars": 1432
     },
@@ -6565,7 +6565,7 @@
     {
       "path": "phases/15-autonomous-systems/12-durable-execution/docs/en.md",
       "suffix": ".md",
-      "bytes": 8983,
+      "bytes": 9020,
       "english_segments": 74,
       "chinese_chars": 1448
     },
@@ -6726,7 +6726,7 @@
     {
       "path": "phases/16-multi-agent-and-swarms/01-why-multi-agent/docs/en.md",
       "suffix": ".md",
-      "bytes": 20510,
+      "bytes": 20541,
       "english_segments": 107,
       "chinese_chars": 1571
     },
@@ -6761,9 +6761,9 @@
     {
       "path": "phases/16-multi-agent-and-swarms/03-communication-protocols/docs/en.md",
       "suffix": ".md",
-      "bytes": 50172,
-      "english_segments": 257,
-      "chinese_chars": 2581
+      "bytes": 49064,
+      "english_segments": 30,
+      "chinese_chars": 3991
     },
     {
       "path": "phases/16-multi-agent-and-swarms/03-communication-protocols/outputs/prompt-protocol-selector.md",
@@ -6796,7 +6796,7 @@
     {
       "path": "phases/16-multi-agent-and-swarms/05-supervisor-orchestrator-pattern/docs/en.md",
       "suffix": ".md",
-      "bytes": 10256,
+      "bytes": 10293,
       "english_segments": 147,
       "chinese_chars": 1131
     },
@@ -7118,7 +7118,7 @@
     {
       "path": "phases/17-infrastructure-and-production/02-inference-platform-economics/docs/en.md",
       "suffix": ".md",
-      "bytes": 9991,
+      "bytes": 10022,
       "english_segments": 166,
       "chinese_chars": 994
     },
@@ -7139,7 +7139,7 @@
     {
       "path": "phases/17-infrastructure-and-production/03-gpu-autoscaling-kubernetes/docs/en.md",
       "suffix": ".md",
-      "bytes": 10475,
+      "bytes": 10503,
       "english_segments": 129,
       "chinese_chars": 1440
     },
@@ -7160,7 +7160,7 @@
     {
       "path": "phases/17-infrastructure-and-production/04-vllm-serving-internals/docs/en.md",
       "suffix": ".md",
-      "bytes": 11657,
+      "bytes": 11689,
       "english_segments": 149,
       "chinese_chars": 1514
     },
@@ -7202,7 +7202,7 @@
     {
       "path": "phases/17-infrastructure-and-production/06-sglang-radixattention/docs/en.md",
       "suffix": ".md",
-      "bytes": 9992,
+      "bytes": 10017,
       "english_segments": 148,
       "chinese_chars": 1217
     },
@@ -7223,7 +7223,7 @@
     {
       "path": "phases/17-infrastructure-and-production/07-tensorrt-llm-blackwell/docs/en.md",
       "suffix": ".md",
-      "bytes": 9295,
+      "bytes": 9329,
       "english_segments": 123,
       "chinese_chars": 1218
     },
@@ -7244,7 +7244,7 @@
     {
       "path": "phases/17-infrastructure-and-production/08-inference-metrics-goodput/docs/en.md",
       "suffix": ".md",
-      "bytes": 9026,
+      "bytes": 9061,
       "english_segments": 103,
       "chinese_chars": 1097
     },
@@ -7265,7 +7265,7 @@
     {
       "path": "phases/17-infrastructure-and-production/09-production-quantization/docs/en.md",
       "suffix": ".md",
-      "bytes": 9477,
+      "bytes": 9514,
       "english_segments": 128,
       "chinese_chars": 1115
     },
@@ -7454,7 +7454,7 @@
     {
       "path": "phases/17-infrastructure-and-production/18-vllm-production-stack-lmcache/docs/en.md",
       "suffix": ".md",
-      "bytes": 8153,
+      "bytes": 8183,
       "english_segments": 159,
       "chinese_chars": 725
     },
@@ -7664,7 +7664,7 @@
     {
       "path": "phases/17-infrastructure-and-production/28-self-hosted-serving-selection/docs/en.md",
       "suffix": ".md",
-      "bytes": 8225,
+      "bytes": 8255,
       "english_segments": 84,
       "chinese_chars": 993
     },
@@ -7713,7 +7713,7 @@
     {
       "path": "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/docs/en.md",
       "suffix": ".md",
-      "bytes": 11126,
+      "bytes": 11157,
       "english_segments": 195,
       "chinese_chars": 1259
     },
@@ -7734,7 +7734,7 @@
     {
       "path": "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/docs/en.md",
       "suffix": ".md",
-      "bytes": 9527,
+      "bytes": 9554,
       "english_segments": 148,
       "chinese_chars": 1013
     },
@@ -8476,7 +8476,7 @@
     {
       "path": "phases/19-capstone-projects/08-production-rag-chatbot/docs/en.md",
       "suffix": ".md",
-      "bytes": 10307,
+      "bytes": 10338,
       "english_segments": 196,
       "chinese_chars": 764
     },
@@ -8784,7 +8784,7 @@
     {
       "path": "phases/19-capstone-projects/27-eval-harness-fixture-tasks/docs/en.md",
       "suffix": ".md",
-      "bytes": 6906,
+      "bytes": 6932,
       "english_segments": 49,
       "chinese_chars": 839
     },
@@ -8798,7 +8798,7 @@
     {
       "path": "phases/19-capstone-projects/28-observability-otel-traces/docs/en.md",
       "suffix": ".md",
-      "bytes": 7315,
+      "bytes": 7343,
       "english_segments": 80,
       "chinese_chars": 721
     },
@@ -9134,7 +9134,7 @@
     {
       "path": "phases/19-capstone-projects/49-lm-eval-harness/docs/en.md",
       "suffix": ".md",
-      "bytes": 9781,
+      "bytes": 9817,
       "english_segments": 91,
       "chinese_chars": 1143
     },
@@ -9272,11 +9272,522 @@
       "chinese_chars": 411
     },
     {
+      "path": "phases/19-capstone-projects/58-vision-encoder-patches/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7573,
+      "english_segments": 9,
+      "chinese_chars": 1639
+    },
+    {
+      "path": "phases/19-capstone-projects/58-vision-encoder-patches/quiz.json",
+      "suffix": ".json",
+      "bytes": 3314,
+      "english_segments": 28,
+      "chinese_chars": 599
+    },
+    {
+      "path": "phases/19-capstone-projects/59-vit-transformer/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7515,
+      "english_segments": 12,
+      "chinese_chars": 1536
+    },
+    {
+      "path": "phases/19-capstone-projects/59-vit-transformer/quiz.json",
+      "suffix": ".json",
+      "bytes": 3215,
+      "english_segments": 32,
+      "chinese_chars": 546
+    },
+    {
+      "path": "phases/19-capstone-projects/60-projection-layer-modality-align/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7672,
+      "english_segments": 3,
+      "chinese_chars": 1724
+    },
+    {
+      "path": "phases/19-capstone-projects/60-projection-layer-modality-align/quiz.json",
+      "suffix": ".json",
+      "bytes": 3168,
+      "english_segments": 26,
+      "chinese_chars": 561
+    },
+    {
+      "path": "phases/19-capstone-projects/61-cross-attention-fusion/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7811,
+      "english_segments": 4,
+      "chinese_chars": 1677
+    },
+    {
+      "path": "phases/19-capstone-projects/61-cross-attention-fusion/quiz.json",
+      "suffix": ".json",
+      "bytes": 3314,
+      "english_segments": 26,
+      "chinese_chars": 607
+    },
+    {
+      "path": "phases/19-capstone-projects/62-vision-language-pretraining/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7428,
+      "english_segments": 4,
+      "chinese_chars": 1675
+    },
+    {
+      "path": "phases/19-capstone-projects/62-vision-language-pretraining/quiz.json",
+      "suffix": ".json",
+      "bytes": 3095,
+      "english_segments": 26,
+      "chinese_chars": 536
+    },
+    {
+      "path": "phases/19-capstone-projects/63-multimodal-eval/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8328,
+      "english_segments": 3,
+      "chinese_chars": 1762
+    },
+    {
+      "path": "phases/19-capstone-projects/63-multimodal-eval/quiz.json",
+      "suffix": ".json",
+      "bytes": 3128,
+      "english_segments": 26,
+      "chinese_chars": 578
+    },
+    {
+      "path": "phases/19-capstone-projects/64-chunking-strategies-advanced/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9258,
+      "english_segments": 14,
+      "chinese_chars": 2085
+    },
+    {
+      "path": "phases/19-capstone-projects/64-chunking-strategies-advanced/quiz.json",
+      "suffix": ".json",
+      "bytes": 3215,
+      "english_segments": 26,
+      "chinese_chars": 632
+    },
+    {
+      "path": "phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/docs/en.md",
+      "suffix": ".md",
+      "bytes": 10045,
+      "english_segments": 8,
+      "chinese_chars": 2403
+    },
+    {
+      "path": "phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/quiz.json",
+      "suffix": ".json",
+      "bytes": 3282,
+      "english_segments": 27,
+      "chinese_chars": 626
+    },
+    {
+      "path": "phases/19-capstone-projects/66-reranker-cross-encoder/docs/en.md",
+      "suffix": ".md",
+      "bytes": 9537,
+      "english_segments": 11,
+      "chinese_chars": 2266
+    },
+    {
+      "path": "phases/19-capstone-projects/66-reranker-cross-encoder/quiz.json",
+      "suffix": ".json",
+      "bytes": 3512,
+      "english_segments": 26,
+      "chinese_chars": 706
+    },
+    {
+      "path": "phases/19-capstone-projects/67-query-rewriting-hyde/docs/en.md",
+      "suffix": ".md",
+      "bytes": 10371,
+      "english_segments": 8,
+      "chinese_chars": 2351
+    },
+    {
+      "path": "phases/19-capstone-projects/67-query-rewriting-hyde/quiz.json",
+      "suffix": ".json",
+      "bytes": 3588,
+      "english_segments": 26,
+      "chinese_chars": 732
+    },
+    {
+      "path": "phases/19-capstone-projects/68-rag-eval-precision-recall/docs/en.md",
+      "suffix": ".md",
+      "bytes": 10799,
+      "english_segments": 8,
+      "chinese_chars": 2446
+    },
+    {
+      "path": "phases/19-capstone-projects/68-rag-eval-precision-recall/quiz.json",
+      "suffix": ".json",
+      "bytes": 3393,
+      "english_segments": 27,
+      "chinese_chars": 638
+    },
+    {
+      "path": "phases/19-capstone-projects/69-end-to-end-rag-system/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8768,
+      "english_segments": 8,
+      "chinese_chars": 2023
+    },
+    {
+      "path": "phases/19-capstone-projects/69-end-to-end-rag-system/quiz.json",
+      "suffix": ".json",
+      "bytes": 3479,
+      "english_segments": 26,
+      "chinese_chars": 702
+    },
+    {
+      "path": "phases/19-capstone-projects/70-task-spec-format/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6477,
+      "english_segments": 1,
+      "chinese_chars": 1269
+    },
+    {
+      "path": "phases/19-capstone-projects/70-task-spec-format/quiz.json",
+      "suffix": ".json",
+      "bytes": 3017,
+      "english_segments": 27,
+      "chinese_chars": 529
+    },
+    {
+      "path": "phases/19-capstone-projects/71-classical-metrics/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7501,
+      "english_segments": 1,
+      "chinese_chars": 1445
+    },
+    {
+      "path": "phases/19-capstone-projects/71-classical-metrics/quiz.json",
+      "suffix": ".json",
+      "bytes": 3281,
+      "english_segments": 29,
+      "chinese_chars": 598
+    },
+    {
+      "path": "phases/19-capstone-projects/72-code-exec-metric/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6798,
+      "english_segments": 3,
+      "chinese_chars": 1417
+    },
+    {
+      "path": "phases/19-capstone-projects/72-code-exec-metric/quiz.json",
+      "suffix": ".json",
+      "bytes": 3179,
+      "english_segments": 27,
+      "chinese_chars": 537
+    },
+    {
+      "path": "phases/19-capstone-projects/73-perplexity-calibration/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7376,
+      "english_segments": 2,
+      "chinese_chars": 1633
+    },
+    {
+      "path": "phases/19-capstone-projects/73-perplexity-calibration/quiz.json",
+      "suffix": ".json",
+      "bytes": 3266,
+      "english_segments": 26,
+      "chinese_chars": 607
+    },
+    {
+      "path": "phases/19-capstone-projects/74-leaderboard-aggregation/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6467,
+      "english_segments": 1,
+      "chinese_chars": 1227
+    },
+    {
+      "path": "phases/19-capstone-projects/74-leaderboard-aggregation/quiz.json",
+      "suffix": ".json",
+      "bytes": 3373,
+      "english_segments": 27,
+      "chinese_chars": 648
+    },
+    {
+      "path": "phases/19-capstone-projects/75-end-to-end-eval-runner/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6117,
+      "english_segments": 1,
+      "chinese_chars": 1196
+    },
+    {
+      "path": "phases/19-capstone-projects/75-end-to-end-eval-runner/quiz.json",
+      "suffix": ".json",
+      "bytes": 3370,
+      "english_segments": 30,
+      "chinese_chars": 614
+    },
+    {
+      "path": "phases/19-capstone-projects/76-collective-ops-from-scratch/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8267,
+      "english_segments": 22,
+      "chinese_chars": 1665
+    },
+    {
+      "path": "phases/19-capstone-projects/76-collective-ops-from-scratch/quiz.json",
+      "suffix": ".json",
+      "bytes": 3127,
+      "english_segments": 30,
+      "chinese_chars": 511
+    },
+    {
+      "path": "phases/19-capstone-projects/77-data-parallel-ddp/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8116,
+      "english_segments": 15,
+      "chinese_chars": 1744
+    },
+    {
+      "path": "phases/19-capstone-projects/77-data-parallel-ddp/quiz.json",
+      "suffix": ".json",
+      "bytes": 3249,
+      "english_segments": 35,
+      "chinese_chars": 538
+    },
+    {
+      "path": "phases/19-capstone-projects/78-zero-parameter-sharding/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7984,
+      "english_segments": 26,
+      "chinese_chars": 1587
+    },
+    {
+      "path": "phases/19-capstone-projects/78-zero-parameter-sharding/quiz.json",
+      "suffix": ".json",
+      "bytes": 3174,
+      "english_segments": 29,
+      "chinese_chars": 486
+    },
+    {
+      "path": "phases/19-capstone-projects/79-pipeline-parallel/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7272,
+      "english_segments": 11,
+      "chinese_chars": 1707
+    },
+    {
+      "path": "phases/19-capstone-projects/79-pipeline-parallel/quiz.json",
+      "suffix": ".json",
+      "bytes": 3187,
+      "english_segments": 27,
+      "chinese_chars": 594
+    },
+    {
+      "path": "phases/19-capstone-projects/80-checkpoint-sharded-resume/docs/en.md",
+      "suffix": ".md",
+      "bytes": 8492,
+      "english_segments": 6,
+      "chinese_chars": 1917
+    },
+    {
+      "path": "phases/19-capstone-projects/80-checkpoint-sharded-resume/quiz.json",
+      "suffix": ".json",
+      "bytes": 3272,
+      "english_segments": 26,
+      "chinese_chars": 636
+    },
+    {
+      "path": "phases/19-capstone-projects/81-end-to-end-distributed-train/docs/en.md",
+      "suffix": ".md",
+      "bytes": 7996,
+      "english_segments": 11,
+      "chinese_chars": 1836
+    },
+    {
+      "path": "phases/19-capstone-projects/81-end-to-end-distributed-train/quiz.json",
+      "suffix": ".json",
+      "bytes": 3304,
+      "english_segments": 28,
+      "chinese_chars": 573
+    },
+    {
+      "path": "phases/19-capstone-projects/82-jailbreak-taxonomy/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6157,
+      "english_segments": 5,
+      "chinese_chars": 1471
+    },
+    {
+      "path": "phases/19-capstone-projects/82-jailbreak-taxonomy/outputs/skill-jailbreak-taxonomy.md",
+      "suffix": ".md",
+      "bytes": 1480,
+      "english_segments": 4,
+      "chinese_chars": 362
+    },
+    {
+      "path": "phases/19-capstone-projects/82-jailbreak-taxonomy/outputs/taxonomy.json",
+      "suffix": ".json",
+      "bytes": 16209,
+      "english_segments": 351,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/82-jailbreak-taxonomy/quiz.json",
+      "suffix": ".json",
+      "bytes": 2518,
+      "english_segments": 31,
+      "chinese_chars": 388
+    },
+    {
+      "path": "phases/19-capstone-projects/83-prompt-injection-detector/docs/en.md",
+      "suffix": ".md",
+      "bytes": 6354,
+      "english_segments": 12,
+      "chinese_chars": 1410
+    },
+    {
+      "path": "phases/19-capstone-projects/83-prompt-injection-detector/outputs/detector_report.json",
+      "suffix": ".json",
+      "bytes": 1304,
+      "english_segments": 28,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/83-prompt-injection-detector/outputs/skill-prompt-injection-detector.md",
+      "suffix": ".md",
+      "bytes": 1307,
+      "english_segments": 5,
+      "chinese_chars": 242
+    },
+    {
+      "path": "phases/19-capstone-projects/83-prompt-injection-detector/quiz.json",
+      "suffix": ".json",
+      "bytes": 2326,
+      "english_segments": 28,
+      "chinese_chars": 335
+    },
+    {
+      "path": "phases/19-capstone-projects/84-refusal-evaluation/docs/en.md",
+      "suffix": ".md",
+      "bytes": 5762,
+      "english_segments": 2,
+      "chinese_chars": 1375
+    },
+    {
+      "path": "phases/19-capstone-projects/84-refusal-evaluation/outputs/refusal_eval_report.json",
+      "suffix": ".json",
+      "bytes": 1500,
+      "english_segments": 36,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/84-refusal-evaluation/outputs/skill-refusal-evaluation.md",
+      "suffix": ".md",
+      "bytes": 1047,
+      "english_segments": 4,
+      "chinese_chars": 240
+    },
+    {
+      "path": "phases/19-capstone-projects/84-refusal-evaluation/quiz.json",
+      "suffix": ".json",
+      "bytes": 2554,
+      "english_segments": 28,
+      "chinese_chars": 417
+    },
+    {
+      "path": "phases/19-capstone-projects/85-content-classifier-integration/docs/en.md",
+      "suffix": ".md",
+      "bytes": 5825,
+      "english_segments": 3,
+      "chinese_chars": 1379
+    },
+    {
+      "path": "phases/19-capstone-projects/85-content-classifier-integration/outputs/classifier_report.json",
+      "suffix": ".json",
+      "bytes": 5055,
+      "english_segments": 93,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/85-content-classifier-integration/outputs/skill-content-classifier-integration.md",
+      "suffix": ".md",
+      "bytes": 1248,
+      "english_segments": 4,
+      "chinese_chars": 244
+    },
+    {
+      "path": "phases/19-capstone-projects/85-content-classifier-integration/quiz.json",
+      "suffix": ".json",
+      "bytes": 2406,
+      "english_segments": 27,
+      "chinese_chars": 378
+    },
+    {
+      "path": "phases/19-capstone-projects/86-constitutional-rules-engine/docs/en.md",
+      "suffix": ".md",
+      "bytes": 5790,
+      "english_segments": 4,
+      "chinese_chars": 1196
+    },
+    {
+      "path": "phases/19-capstone-projects/86-constitutional-rules-engine/outputs/rules_report.json",
+      "suffix": ".json",
+      "bytes": 3597,
+      "english_segments": 61,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/86-constitutional-rules-engine/outputs/skill-constitutional-rules-engine.md",
+      "suffix": ".md",
+      "bytes": 1199,
+      "english_segments": 5,
+      "chinese_chars": 119
+    },
+    {
+      "path": "phases/19-capstone-projects/86-constitutional-rules-engine/quiz.json",
+      "suffix": ".json",
+      "bytes": 2448,
+      "english_segments": 28,
+      "chinese_chars": 352
+    },
+    {
+      "path": "phases/19-capstone-projects/87-end-to-end-safety-gate/docs/en.md",
+      "suffix": ".md",
+      "bytes": 5909,
+      "english_segments": 3,
+      "chinese_chars": 1412
+    },
+    {
+      "path": "phases/19-capstone-projects/87-end-to-end-safety-gate/outputs/gate_trace.json",
+      "suffix": ".json",
+      "bytes": 51750,
+      "english_segments": 933,
+      "chinese_chars": 0
+    },
+    {
+      "path": "phases/19-capstone-projects/87-end-to-end-safety-gate/outputs/skill-end-to-end-safety-gate.md",
+      "suffix": ".md",
+      "bytes": 1555,
+      "english_segments": 5,
+      "chinese_chars": 245
+    },
+    {
+      "path": "phases/19-capstone-projects/87-end-to-end-safety-gate/quiz.json",
+      "suffix": ".json",
+      "bytes": 2679,
+      "english_segments": 29,
+      "chinese_chars": 471
+    },
+    {
       "path": "phases/19-capstone-projects/README.md",
       "suffix": ".md",
       "bytes": 155,
       "english_segments": 1,
       "chinese_chars": 29
+    },
+    {
+      "path": "site/about.html",
+      "suffix": ".html",
+      "bytes": 10799,
+      "english_segments": 194,
+      "chinese_chars": 0
     },
     {
       "path": "site/app.js",
@@ -9295,58 +9806,163 @@
     {
       "path": "site/build.js",
       "suffix": ".js",
-      "bytes": 18042,
-      "english_segments": 395,
-      "chinese_chars": 408
+      "bytes": 24289,
+      "english_segments": 523,
+      "chinese_chars": 0
     },
     {
       "path": "site/catalog.html",
       "suffix": ".html",
-      "bytes": 16883,
-      "english_segments": 360,
-      "chinese_chars": 144
+      "bytes": 16759,
+      "english_segments": 367,
+      "chinese_chars": 0
     },
     {
       "path": "site/cmdpalette.js",
       "suffix": ".js",
-      "bytes": 19584,
+      "bytes": 19591,
       "english_segments": 331,
       "chinese_chars": 630
     },
     {
+      "path": "site/figures-agents-alignment.js",
+      "suffix": ".js",
+      "bytes": 26157,
+      "english_segments": 507,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-dl.js",
+      "suffix": ".js",
+      "bytes": 32036,
+      "english_segments": 660,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-frontier.js",
+      "suffix": ".js",
+      "bytes": 27907,
+      "english_segments": 522,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-genai-rl.js",
+      "suffix": ".js",
+      "bytes": 28115,
+      "english_segments": 521,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-infra.js",
+      "suffix": ".js",
+      "bytes": 29276,
+      "english_segments": 573,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-llms-systems.js",
+      "suffix": ".js",
+      "bytes": 33482,
+      "english_segments": 648,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-llms2.js",
+      "suffix": ".js",
+      "bytes": 32490,
+      "english_segments": 626,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-math.js",
+      "suffix": ".js",
+      "bytes": 35295,
+      "english_segments": 755,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-math2.js",
+      "suffix": ".js",
+      "bytes": 29707,
+      "english_segments": 584,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-ml.js",
+      "suffix": ".js",
+      "bytes": 31527,
+      "english_segments": 610,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-nlp2.js",
+      "suffix": ".js",
+      "bytes": 24455,
+      "english_segments": 398,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-transformers.js",
+      "suffix": ".js",
+      "bytes": 30383,
+      "english_segments": 546,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures-vision-speech.js",
+      "suffix": ".js",
+      "bytes": 24612,
+      "english_segments": 456,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/figures.js",
+      "suffix": ".js",
+      "bytes": 47055,
+      "english_segments": 836,
+      "chinese_chars": 0
+    },
+    {
       "path": "site/glossary.html",
       "suffix": ".html",
-      "bytes": 12285,
-      "english_segments": 252,
-      "chinese_chars": 213
+      "bytes": 12366,
+      "english_segments": 270,
+      "chinese_chars": 0
     },
     {
       "path": "site/header.js",
       "suffix": ".js",
-      "bytes": 1976,
+      "bytes": 1982,
       "english_segments": 45,
       "chinese_chars": 37
     },
     {
       "path": "site/index.html",
       "suffix": ".html",
-      "bytes": 25783,
-      "english_segments": 587,
-      "chinese_chars": 463
+      "bytes": 28074,
+      "english_segments": 639,
+      "chinese_chars": 0
+    },
+    {
+      "path": "site/lesson-figures.js",
+      "suffix": ".js",
+      "bytes": 48062,
+      "english_segments": 1041,
+      "chinese_chars": 0
     },
     {
       "path": "site/lesson.html",
       "suffix": ".html",
-      "bytes": 118143,
-      "english_segments": 2683,
-      "chinese_chars": 2138
+      "bytes": 126141,
+      "english_segments": 2857,
+      "chinese_chars": 0
     },
     {
       "path": "site/prereqs.html",
       "suffix": ".html",
-      "bytes": 36530,
-      "english_segments": 749,
-      "chinese_chars": 328
+      "bytes": 36446,
+      "english_segments": 777,
+      "chinese_chars": 0
     },
     {
       "path": "site/progress.js",
@@ -9354,6 +9970,13 @@
       "bytes": 4820,
       "english_segments": 103,
       "chinese_chars": 157
+    },
+    {
+      "path": "site/stats.json",
+      "suffix": ".json",
+      "bytes": 297,
+      "english_segments": 6,
+      "chinese_chars": 0
     }
   ],
   "image_files": [
@@ -10361,7 +10984,7 @@
     {
       "path": "phases/13-tools-and-protocols/18-mcp-auth-production/assets/auth-flow.svg",
       "suffix": ".svg",
-      "bytes": 7000,
+      "bytes": 6988,
       "text_bearing": true,
       "needs_gpt_image_2": true
     },

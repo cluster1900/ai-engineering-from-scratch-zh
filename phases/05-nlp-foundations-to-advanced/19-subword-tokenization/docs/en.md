@@ -35,6 +35,11 @@ Subword Tokenization 解决了这个问题。常见词保持为单个 Token。�
 - **面向 GPT vocabulary 的快速推理：** tiktoken（cl100k_base、o200k_base）。
 - **两者都要：** HF Tokenizers，一个库完成训练 + serving。
 
+
+```figure
+bpe-merge
+```
+
 ## 构建它
 
 ### 步骤 1： 从零实现 BPE

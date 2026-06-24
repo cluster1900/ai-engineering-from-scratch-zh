@@ -73,6 +73,11 @@ attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
 
 RoPE 胜出，是因为它可以直接插入 attention 而不改变 architecture，能编码 relative position，并且它的 `base` hyperparameter 为 long-context fine-tuning 提供了清晰旋钮。
 
+
+```figure
+rope-explorer
+```
+
 ## Build It
 
 ### Step 1: sinusoidal encoding

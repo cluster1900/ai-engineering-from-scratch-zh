@@ -142,6 +142,11 @@ K=5 或 K=10 是标准选择。每个 data point 都恰好被用于 validation �
 
 **Testing too often**：每次你查看 test performance 并做调整，都会对 test set 过拟合。Test set 只能使用一次。
 
+
+```figure
+precision-recall-threshold
+```
+
 ## 构建它
 
 ### 步骤 1： Train/validation/test split

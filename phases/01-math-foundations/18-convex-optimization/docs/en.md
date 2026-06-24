@@ -381,6 +381,11 @@ Neural Network Loss Function 极其非凸。按照每一种经典标准，优化
 | Adam | O(n) | O(n) | Deep Learning 默认选择 |
 | K-FAC | O(n) | 每层 O(n) | 研究、大 batch training |
 
+
+```figure
+convex-vs-nonconvex
+```
+
 ## 构建它
 
 ### 步骤 1：凸性检查器

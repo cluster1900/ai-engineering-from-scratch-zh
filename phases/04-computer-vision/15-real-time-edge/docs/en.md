@@ -99,6 +99,11 @@ FLOPs（每次 inference 的 floating-point operations）是一种廉价、与�
 
 除非有明确理由不这样做，否则把这些全部量化为 INT8。
 
+
+```figure
+cnn-param-count
+```
+
 ## 构建它
 ### 步骤 1： 正确测量 latency
 

@@ -64,6 +64,11 @@ METR 观察到，所有被测量的 Agent 类别在连续运行超过约 35 分�
 - 严格只读的信息检索。
 - 正确性要求在一个 context window 内端到端完成的任务（某些推理任务；某些一次性生成任务）。
 
+
+```figure
+memory-consolidation
+```
+
 ## 使用它
 
 `code/main.py` 用 stdlib Python 实现了一个最小持久化执行 engine。它支持：

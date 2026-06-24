@@ -119,6 +119,11 @@ Hybrid 不适合以下情况：
 
 2026 年的格局：pure-Transformer MoE 主导 frontier，但 hybrid 占据 256k 以上 context 的细分领域。Mamba-3 在 state-tracking 上的胜利，可能会推动下一代 hybrid 采用更低比例（更多 SSM、更少 Attention）。
 
+
+```figure
+swiglu-ffn
+```
+
 ## 使用它
 `code/main.py` 是一个用于 hybrid architectures 的内存计算器。给定 SSM-Transformer ratio 和 hidden-size / layer-count config，它会计算：
 

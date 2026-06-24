@@ -102,6 +102,11 @@ ALIGN（Google，2021）：与 CLIP 相同的想法，1.8B pair scale，90% nois
 
 CLIP-class models 的 ImageNet zero-shot 上限约为 76%（CLIP-G、OpenCLIP-G）。继续提升需要更大的 data（SigLIP 2 达到 80%+）或 architecture changes（supervised heads、更多 parameters）。Benchmark 正在饱和；真正的价值是下游 VLMs 消费的 Embedding space。
 
+
+```figure
+multimodal-fusion
+```
+
 ## 使用它
 `code/main.py` 实现了：
 

@@ -63,6 +63,11 @@ STaR 已经不新了。但这个模式在 2025-2026 年到处重现。可验证�
 
 理解 STaR 会让所有这些都变得清晰。它是最小可行的 self-improvement loop。
 
+
+```figure
+reflection-loop
+```
+
 ## 使用它
 
 `code/main.py` 会在一个 toy arithmetic task 上运行模拟 STaR 循环。你可以观察：

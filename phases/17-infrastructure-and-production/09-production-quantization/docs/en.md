@@ -93,6 +93,11 @@ Chain-of-thought、math、长 context code-gen，这些任务都会明显受激�
 - Blackwell datacenter、质量已验证：NVFP4 + FP8 KV。
 - 不明确：对每个候选格式跑 1,000-sample eval。
 
+
+```figure
+gpu-memory-breakdown
+```
+
 ## 使用它
 `code/main.py` 会针对一系列模型大小，计算六种格式的 memory footprint（weights + KV + activations）和相对 throughput。展示 KV cache 何时占主导、weight compression 何时划算，以及 FP8 何时是安全选择。
 

@@ -38,6 +38,11 @@ Supervised learning 给你 `(x, y)` pairs，并要求你拟合一个函数。Rei
 
 它们把 expected return 拆成“这一步的 reward”加上“落点的 discounted value”。递归。本 Phase 9 中的每个 algorithm，要么把这个 equation 迭代到收敛（dynamic programming），要么从中采样（Monte Carlo），要么用一步进行 bootstrap（temporal difference）。
 
+
+```figure
+discount-horizon
+```
+
 ## Build It
 
 ### Step 1：一个极小的 deterministic MDP

@@ -73,6 +73,11 @@ target: the  quick brown fox jumps  over  the lazy dog
 | Zero-shot entailment (NLI) | encoder 顶部的 classifier head |
 | Reranker for RAG | Cross-encoder scoring，比 LLM rerankers 快 10x |
 
+
+```figure
+transformer-residual
+```
+
 ## 构建它
 
 ### 步骤 1： masking logic

@@ -56,6 +56,30 @@ flowchart LR
 
 框架 guardrails（OpenAI Agents SDK guardrails、LangGraph interrupts）在运行时层面执行规则。本课中的规则集是这些 guardrails 所实现的人类可读、可评审的契约。两者都需要：运行时会在一个 turn 中捕获违规，而规则集会证明运行时正在做正确的事。
 
+### Progressive disclosure：地图，而不是百科全书
+
+`AGENTS.md` 会不断变长，是因为每次 incident 都会新增一条规则，却很少有 incident 会删除一条规则。一年之后，这个文件可能有两千行；agent 读完第一屏就耗尽注意力预算，只能执行其中一小部分。巨大的 instruction 文件失败的原因，与四十页 onboarding 文档失败的原因相同：读者扫一遍，然后再也不会回到真正重要的那一页。
+
+修复方式不是写一个更短的文件，而是写一个分层的文件。根 router 要小到每个 session 都能读完，并且只保存指针。深度内容放在 topic files 里，只有当任务触及对应主题时 agent 才加载。给 agent 一张地图，而不是整本百科全书，让它自己走到需要的页面。
+
+```text
+AGENTS.md                  # router，少于 50 行：这个 repo 是什么、去哪里看、5 条硬规则
+docs/
+  agent-rules.md           # 完整规则集（本课）
+  architecture.md          # 任务触及 module boundaries 时加载
+  testing.md               # 任务编写或运行 tests 时加载
+  deploy.md                # 只在 release 工作中加载，并受 approval rule 保护
+feature_list.json          # backlog（Phase 14 · 36）
+```
+
+| Tier | 存放位置 | 读取时机 | 大小预算 |
+|------|----------|----------|----------|
+| Router | `AGENTS.md` | 每个 session，始终读取 | 少于约 50 行 |
+| Rules | `docs/agent-rules.md` | 每个 session 启动时 | 每个 category 一屏 |
+| Topic docs | `docs/<topic>.md` | 只有任务触及该主题时 | 需要多深就多深 |
+
+两个测试能让分层保持诚实。第一个是 reachability test：agent 应该能从 router 出发，最多两跳抵达任何规则，所以 router 必须按 path 链接每个 topic doc，而不是用 prose 模糊描述。第二个是 freshness test：router 足够短，reviewer 会在每个 PR 里重读它，这是防止它悄悄长回百科全书的唯一办法。指针失效比缺一条规则更糟，所以 router 中的 broken link 本身就是 startup-check violation。
+
 ## 构建它
 
 `code/main.py` 提供：

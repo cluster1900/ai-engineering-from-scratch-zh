@@ -174,6 +174,11 @@ Clipping 防止灾难性更新。如果单个响应获得异常高的 reward，�
 
 Anthropic 2022 年的 paper 在 22,000 个 comparisons 上训练了一个 52B reward model。更大的 reward models 会产生更可靠的信号，从而让 PPO training 更稳定。用小型 reward model 训练大型 language model 是有风险的，因为 reward model 没有足够 capacity 捕捉好响应与坏响应之间的细微差别。
 
+
+```figure
+rlhf-pipeline
+```
+
 ## 构建它
 ### 步骤 1： Synthetic Preference Data
 

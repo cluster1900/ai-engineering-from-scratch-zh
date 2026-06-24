@@ -272,6 +272,11 @@ Example:
 
 真正的 frequency resolution 只取决于 observation time T = N / fs。要分辨相差 delta_f 的两个 frequencies，你至少需要 T = 1 / delta_f 秒的数据。无论做多少 zero-padding，都无法改变这个 fundamental limit。
 
+
+```figure
+fourier-synthesis
+```
+
 ## 构建它
 ### 步骤 1： DFT from scratch
 

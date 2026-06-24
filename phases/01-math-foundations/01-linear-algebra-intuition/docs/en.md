@@ -178,6 +178,11 @@ Output: u1, u2, u3, ...（orthonormal basis）
 - 计算 eigenvalues（QR algorithm）
 - Least-squares regression（标准数值方法）
 
+
+```figure
+eigen-directions
+```
+
 ## 构建它
 
 ### 步骤 1： 从零实现 Vectors（Python）

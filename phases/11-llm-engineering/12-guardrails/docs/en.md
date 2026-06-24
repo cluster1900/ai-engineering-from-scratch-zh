@@ -174,6 +174,11 @@ flowchart TD
 
 大多数应用应该以 layered defense 为目标。Maximum security 适用于金融服务、医疗和政府。成本收益计算：每月 $50 的 moderation API，比你的 bot 生成有害内容的一张 viral screenshot 便宜得多。
 
+
+```figure
+guardrail-gates
+```
+
 ## 构建它
 ### 步骤 1： Input Guardrails
 

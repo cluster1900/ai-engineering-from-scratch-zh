@@ -65,6 +65,11 @@ Claude Agent SDK、OpenAI Agents SDK、LangGraph、AutoGen v0.4 AgentChat、Crew
 - **Cascading failure。** 一个 phantom SKU，四次下游 API calls，一次多系统 outage。Agents 无法区分 "I failed" 和 "the task is impossible"，并且经常在 400 errors 上 hallucinate success。见 Lesson 26。
 - **Loop length explosion。** 大多数 2026 年 Agents 会运行 40–400 步。调试第 38 步的错误决策需要 observability（Lesson 23）和 eval trajectories（Lesson 30）。
 
+
+```figure
+agent-loop
+```
+
 ## 构建它
 `code/main.py` 用 stdlib only 端到端实现这个 loop。组件：
 

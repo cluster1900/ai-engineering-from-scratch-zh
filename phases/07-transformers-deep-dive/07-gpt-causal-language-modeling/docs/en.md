@@ -76,6 +76,11 @@ M[i, j] = -inf    if j > i
 
 自 GPT-2 以来，核心架构没有太大变化。真正有趣的变化都发生在数据、规模和 post-training 上。
 
+
+```figure
+causal-mask
+```
+
 ## 构建它
 
 ### 步骤 1： causal mask

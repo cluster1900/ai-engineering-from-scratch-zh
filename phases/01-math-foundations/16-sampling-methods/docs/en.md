@@ -434,6 +434,11 @@ Reverse process (learned):
 
 整个图像生成过程就是 iterative sampling：从 noise 开始，在每一步中，基于学到的 denoising model，sample 一个噪声稍少的版本。
 
+
+```figure
+monte-carlo-pi
+```
+
 ## 构建它
 ### 步骤 1： Uniform and inverse CDF sampling
 

@@ -49,6 +49,11 @@ Temporal difference (TD) learning 折中了两者。根据单个 transition `(s,
 
 **n-step TD 和 TD(λ)。** 通过等待 `n` 步再 bootstrap，在 TD(0) 和 MC 之间插值。`n=1` 是 TD，`n=∞` 是 MC。TD(λ) 用几何权重 `(1-λ)λ^{n-1}` 对所有 `n` 求平均。大多数 deep-RL 使用 3 到 20 之间的 `n`。
 
+
+```figure
+qlearning-gridworld
+```
+
 ## 构建它
 
 ### 步骤 1： 基于 ε-greedy policy 的 SARSA

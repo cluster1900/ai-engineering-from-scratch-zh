@@ -97,6 +97,11 @@ total       ≈ 86M
 
 这个配置里的每一个决策都可以追溯到一篇你可以阅读的论文。
 
+
+```figure
+image-patch-tokens
+```
+
 ## 使用它
 `code/main.py` 是一个 patch tokenizer 和 geometry calculator。它接收（image H、W、patch P、hidden D、depth L）并报告：
 

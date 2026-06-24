@@ -243,6 +243,11 @@ Memory roof:  peak bandwidth * ops:byte ratio
 
 A100 上的 crossover point 大约是 ops:byte = 156（312 TFLOPS / 2 TB/s）。低于 156 时，你是 memory-bound。高于 156 时，你是 compute-bound。Continuous batching 通过每次 iteration 打包更多 tokens，将 decode 推向这个 crossover。
 
+
+```figure
+context-window-slide
+```
+
 ## 构建它
 
 ### 步骤 1： 从零实现 KV Cache

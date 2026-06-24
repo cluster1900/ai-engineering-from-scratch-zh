@@ -38,6 +38,11 @@ Multi-head attention 是 2026 年所有 Transformer 的默认配置。唯一的�
 
 GQA 是现代默认方案，因为它能按 `N/G` 的倍数削减 KV-cache memory，同时几乎保持完整质量。MLA 更进一步，把 K/V 压缩进 latent space，然后在计算时 project 回来——它会消耗 FLOPs，但节省更多 memory。
 
+
+```figure
+multihead-split
+```
+
 ## 构建它
 
 ### 步骤 1：从我们已有的 single-head attention 中 split heads

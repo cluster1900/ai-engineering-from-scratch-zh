@@ -53,6 +53,11 @@ min_G max_D  E_real[log D(x)] + E_fake[log(1 - D(G(z)))]
 | 2022 | StyleGAN-XL | Conditional、class-aware、更大 scale。 |
 | 2024 | R3GAN | 以更强 regularization 重新包装；无需 tricks 即可在 1024² 上工作。 |
 
+
+```figure
+gan-minimax
+```
+
 ## 构建它
 
 `code/main.py` 在 1-D data 上训练一个小型 GAN：两个 Gaussians 的 mixture。Generator 和 discriminator 都是单 hidden layer MLPs。我们手写实现 forward、backward 和 minimax loop。目标是看到两个关键 failure modes（mode collapse + vanishing gradient）如何发生。

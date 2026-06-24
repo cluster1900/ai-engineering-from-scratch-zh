@@ -74,6 +74,13 @@ RMSNorm 去掉了 LayerNorm 的 mean-centering（少一次 subtraction），节�
 
 当 `d = 4096, r = 2.6, layers = 32`（大致对应 Llama 3 8B）时，总量为：`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (16 + 32) M = ~1.5B parameters per layer × 32 ≈ 7B`（再加上 embeddings 和 head）。与已发布的计数相符。
 
+
+观察一个 Vector 如何流过单个 block：Attention 在位置之间混合信息，residual 把信号继续向前携带，FFN 做变换，而 norm 让 residual stream 保持稳定。
+
+```figure
+transformer-block
+```
+
 ## 构建它
 ### 步骤 1： building blocks
 

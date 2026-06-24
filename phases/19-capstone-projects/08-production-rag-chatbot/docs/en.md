@@ -64,6 +64,11 @@ eval:
 - Guardrails: Llama Guard 4 input/output classifier，NeMo Guardrails v0.12 policy，Presidio PII scrub
 - Compliance: chunks 上的 role-based access labels；用于 GDPR/HIPAA 的 jurisdiction tags
 
+
+```figure
+canary-rollout
+```
+
 ## 构建它
 1. **Ingestion.** 使用 Unstructured 或 docling 解析你的 corpus（严肃构建通常为 1000-10000 个文档）。对于扫描页 / 视觉密集页面，路由到 ColPali。生成带 summaries、role-labels、jurisdiction tags 的 chunks。
 

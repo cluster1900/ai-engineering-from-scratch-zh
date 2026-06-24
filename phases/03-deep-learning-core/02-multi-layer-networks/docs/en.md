@@ -146,6 +146,11 @@ graph LR
 
 Neural Network 是可组合的。你可以堆叠它们、串联它们、并行运行它们。Whisper model 使用一个 encoder network 处理音频，并使用一个独立的 decoder network 生成文本。现代 LLMs 是 decoder-only。BERT 是 encoder-only。T5 是 encoder-decoder。架构选择定义了模型能做什么。
 
+
+```figure
+mlp-forward
+```
+
 ## 构建它
 
 纯 Python。不使用 numpy。每个 Matrix 操作都从零编写。

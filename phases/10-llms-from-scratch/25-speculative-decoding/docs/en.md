@@ -114,6 +114,11 @@ EAGLE-3（Li et al. 2025，“EAGLE-3: Scaling up Inference Acceleration of Larg
 
 生产团队通常报告 chat 上有 2-3x wall-clock speedup，code generation 上有 3-5x，而 creative writing 上接近零。
 
+
+```figure
+speculative-decoding
+```
+
 ## 构建它
 
 `code/main.py`：

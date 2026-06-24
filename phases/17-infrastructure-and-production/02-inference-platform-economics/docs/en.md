@@ -87,6 +87,11 @@ vLLM 和 SGLang 之上的每个平台都声称拥有 custom engine。FireAttenti
 - Modal valuation：$1.1B（Series B，2025）。
 - per-minute 在高于 ~30% 持续利用率时胜过 per-token。
 
+
+```figure
+cost-per-token
+```
+
 ## 使用它
 `code/main.py` 在一个 synthetic workload 上跨 pricing models 比较六个 vendor。报告 $/day 和 effective $/M tokens。运行它来找出 per-token 与 per-minute 的 break-even。
 

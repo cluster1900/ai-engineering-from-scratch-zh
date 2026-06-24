@@ -67,6 +67,11 @@ Anthropic 将 Auto Mode 作为 research preview 发布。文档明确说明，cl
 - unattended background run：只在你已经测量过 blast radius 的 workspace 内使用 `autoMode`（没有 credentials、没有 production mounts、没有你未主动选择的 egress）。
 - Ephemeral containers：当且仅当 container 及其 credentials 都是可丢弃的，`yolo` / `bypassPermissions` 才可接受。
 
+
+```figure
+autonomy-oversight
+```
+
 ## 使用它
 
 `code/main.py` 模拟两阶段 classifier。Stage 1 是针对拟议动作的廉价 keyword rule；Stage 2 是更慢的 multi-rule reviewer。driver 输入一段简短的 synthetic trajectory（safe actions、一次 prompt-injection attempt、一个 repetitive loop），并展示 classifier 在哪里捕捉到问题、又在哪里漏掉问题。

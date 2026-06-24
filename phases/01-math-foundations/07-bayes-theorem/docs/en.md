@@ -195,6 +195,11 @@ Bayesians 把 parameters 视为 distributions。他们问：“基于我已经�
 
 **Model comparison 是 Bayesian 的。** Bayesian information criterion (BIC)、marginal likelihood 和 Bayes factors 都使用 Bayesian reasoning 在不过拟合的情况下选择 models。
 
+
+```figure
+bayes-update
+```
+
 ## 构建它
 ### 步骤 1：Bayes theorem function
 

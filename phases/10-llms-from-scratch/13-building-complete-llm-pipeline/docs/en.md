@@ -190,6 +190,11 @@ graph LR
 
 数字每六个月都会变。Skeleton 不会。
 
+
+```figure
+beam-search
+```
+
 ## 构建它
 本课代码是 orchestrator 和 manifest checker，而不是十二个 training scripts。每个阶段都用 placeholder 模拟，生成具有正确形状和 hash 的 output artifact。端到端运行 orchestrator 可以在你烧 GPU 预算跑真实阶段之前，证明 pipeline 的 plumbing 正常。
 

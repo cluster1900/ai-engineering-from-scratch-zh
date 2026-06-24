@@ -460,6 +460,11 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
+
+```figure
+linear-regression-fit
+```
+
 ## 使用它
 
 现在用 scikit-learn 做同样的事，这才是你在 production 中实际会使用的方式。

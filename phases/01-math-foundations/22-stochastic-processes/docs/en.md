@@ -225,6 +225,11 @@ graph LR
 | Markov decision process | Reinforcement learning |
 | Metropolis-Hastings | Bayesian inference、posterior sampling |
 
+
+```figure
+random-walk-diffusion
+```
+
 ## 构建它
 ### 步骤 1： Random walk simulator
 

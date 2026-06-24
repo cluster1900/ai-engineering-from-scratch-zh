@@ -88,6 +88,11 @@ Phase 17 · 01（managed hyperscalers）、· 02（inference platforms）覆盖 
 - SGLang 生产足迹：400,000+ GPUs。
 - Ollama throughput 相对 llama.cpp 的差距：慢 15-30%；生产负载下 3x。
 
+
+```figure
+data-parallel
+```
+
 ## 使用它
 `code/main.py` 是一个 decision-tree walker：给定 hardware + scale + workload，选择一个引擎并解释原因。
 

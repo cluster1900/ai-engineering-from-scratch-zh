@@ -122,6 +122,11 @@ Clustering 天然支持 anomaly detection：
 - **DBSCAN**：根据定义，noise point 就是 anomaly
 - **GMM**：在所有 Gaussian 下概率都很低的点是 anomaly
 
+
+```figure
+kmeans-step
+```
+
 ## 构建它
 
 ### 步骤 1：从头实现 K-Means

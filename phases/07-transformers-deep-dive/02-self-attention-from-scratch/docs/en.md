@@ -101,6 +101,12 @@ Scores = Q @ K^T    shape: (n, n)
 Each row: one token's attention over the entire sequence
 ```
 
+一次看一个 query 如何扫过所有 keys：每一行都会给每个 Token 打分，softmax 把 scores 变成 weights，而 context vector 就是 values 的加权混合。
+
+```figure
+attention-matrix
+```
+
 ### 为什么要缩放？
 
 dot products 会随着维度 dk 增大。如果 dk = 64，dot products 可能达到几十的范围，把 softmax 推入 Gradient 消失的区域。解法是：除以 sqrt(dk)。
@@ -138,30 +144,27 @@ For token 1:
 
 ### 完整流程
 
-```
-                    +-------+
-  X (input)  ----->|  @ Wq  |-----> Q
-                    +-------+
-                    +-------+
-  X (input)  ----->|  @ Wk  |-----> K
-                    +-------+                     +----------+
-                    +-------+                     |          |
-  X (input)  ----->|  @ Wv  |-----> V ---------->| weighted |----> output
-                    +-------+          ^          |   sum    |
-                                       |          +----------+
-                              +--------+--------+
-                              |    softmax      |
-                              +---------+-------+
-                                        ^
-                              +---------+-------+
-                              | Q @ K^T / sqrt  |
-                              +-----------------+
+```mermaid
+flowchart LR
+  X["X (input)"] --> Q["Q = X · Wq"]
+  X --> K["K = X · Wk"]
+  X --> V["V = X · Wv"]
+  Q --> S["Q · Kᵀ / √dk"]
+  K --> S
+  S --> SM["softmax"]
+  SM --> WS["weighted sum"]
+  V --> WS
+  WS --> O["output"]
 ```
 
 一行公式：
 
 ```
 Attention(Q, K, V) = softmax( Q @ K^T / sqrt(dk) ) @ V
+```
+
+```figure
+softmax-attention-scaling
 ```
 
 ## 构建它

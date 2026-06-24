@@ -59,6 +59,11 @@ METR（前身为 ARC Evals）将任务成功概率与专家人类完成时间的
 
 每一行都会成为本 phase 中的一课。
 
+
+```figure
+task-decomposition
+```
+
 ## 使用它
 
 运行 `code/main.py`。它会模拟 METR horizon curve 并展示：

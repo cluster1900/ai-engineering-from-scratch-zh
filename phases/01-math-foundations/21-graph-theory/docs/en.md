@@ -238,6 +238,11 @@ graph LR
 | Spectral clustering | Unsupervised node grouping |
 | PageRank | Node importance, web search |
 
+
+```figure
+graph-degree-distribution
+```
+
 ## 构建它
 ### 步骤 1：从零实现 Graph 类
 

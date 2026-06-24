@@ -98,6 +98,11 @@ graph LR
 
 关键模式：`i,i->`（dot product）、`i,j->ij`（outer product）、`ii->`（trace）、`ij->ji`（transpose）、`bij,bjk->bik`（batch matmul）、`bhtd,bhsd->bhts`（attention scores）。
 
+
+```figure
+tensor-broadcast
+```
+
 ## 构建它
 代码位于 `code/tensors.py`。每一步都会引用其中的实现。
 

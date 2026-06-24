@@ -83,6 +83,11 @@ Loses（回到 vLLM-level throughput）:
 
 这两个系统并不是严格竞争关系。2026 年，vLLM 增加了 prefix caching（`--enable-prefix-caching`）和 cache-aware router（Rust 实现的 vLLM Router）。差距缩小了，但没有完全消失，SGLang 的整个 stack 是 radix-first；vLLM 是后接上去的。对于由 prefix reuse 主导的 workloads，SGLang 仍然是默认选择。对于没有强 prefix patterns 的 general-purpose serving，vLLM 仍然相当或更好。
 
+
+```figure
+roofline
+```
+
 ## 使用它
 `code/main.py` 实现了一个 toy radix-tree KV cache，以及一个带有两种策略的 scheduler：FCFS 和 cache-aware。它会让同一个 workload 分别通过两者运行，报告 prefix-cache hit rate 和 throughput delta。然后运行一个“scrambled ordering” workload，展示 6.4x 如何崩塌。
 

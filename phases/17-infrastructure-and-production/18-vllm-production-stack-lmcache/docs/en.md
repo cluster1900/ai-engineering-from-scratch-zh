@@ -79,6 +79,11 @@ Phase 17 · 17 disaggregated serving + LMCache 会叠加增益：从 prefill poo
 - 16x H100 benchmark：当 KV footprint 超过 HBM 时，LMCache 有帮助。
 - 小 HBM pressure：有 3-5% overhead 且无收益。
 
+
+```figure
+zero-sharding
+```
+
 ## 使用它
 `code/main.py` 会模拟一个有无 LMCache 的 preemption-heavy workload。报告避免的 re-prefills、throughput gain 和 break-even HBM utilization。
 

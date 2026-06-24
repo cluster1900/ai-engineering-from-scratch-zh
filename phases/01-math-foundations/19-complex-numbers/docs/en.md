@@ -264,6 +264,11 @@ graph LR
     U1 --> A3
 ```
 
+
+```figure
+roots-of-unity
+```
+
 ## 构建它
 ### 步骤 1：Complex 类
 

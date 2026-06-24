@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>课程 - AI Engineering from Scratch</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>AI</text></svg>">
   <meta name="description" content="AI Engineering from Scratch 课程中的一节课。20 个阶段、503 节课、四种语言，每个算法都从原始数学手写构建。">
+  <link rel="canonical" href="https://ai-learn.agent-buy.com/lesson.html">
   <meta property="og:title" content="AI Engineering from Scratch · 课程">
   <meta property="og:description" content="503 节课。20 个阶段。手写 backprop、tokenizer、attention mechanism 和 agent loop。">
-  <meta property="og:image" content="https://aiengineeringfromscratch.com/og-image.zh.png?v=3">
+  <meta property="og:image" content="https://ai-learn.agent-buy.com/og-image.zh.png?v=3">
   <!-- 有意省略 og:url：lesson.html 是一个静态模板，会通过 ?path= 在客户端加载课程正文。静态托管无法模板化 URL，因此让爬虫回退到请求 URL（也就是特定课程的分享链接）。 -->
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AI Engineering from Scratch">
   <meta name="twitter:description" content="503 节课。20 个阶段。从原始数学开始，亲手构建。">
-  <meta name="twitter:image" content="https://aiengineeringfromscratch.com/og-image.zh.png?v=3">
+  <meta name="twitter:image" content="https://ai-learn.agent-buy.com/og-image.zh.png?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -1575,8 +1576,9 @@
       <nav class="header-nav">
         <a href="index.html#contents">目录</a>
         <a href="catalog.html">课程目录</a>
-        <a href="prereqs.html">Roadmap</a>
+        <a href="prereqs.html">路线图</a>
         <a href="glossary.html">术语表</a>
+        <a href="about.html">关于</a>
         <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh" target="_blank" rel="noopener" class="header-github">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
           <svg class="star-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.896l-7.416 3.517 1.48-8.279L0 9.306l8.332-1.151z"/></svg>
@@ -1625,10 +1627,26 @@
     <aside class="toc-sidebar" id="tocSidebar" aria-hidden="true"></aside>
   </div>
 
+  <script src="build-meta.js"></script>
   <script src="data.js?v=20260525a"></script>
   <script src="progress.js?v=20260525a"></script>
   <script src="header.js?v=20260525a" defer></script>
   <script src="cmdpalette.js?v=20260525a" defer></script>
+  <script src="figures.js?v=20260610e"></script>
+  <script src="lesson-figures.js?v=20260610e"></script>
+  <script src="figures-math.js?v=20260610e"></script>
+  <script src="figures-ml.js?v=20260610e"></script>
+  <script src="figures-dl.js?v=20260610e"></script>
+  <script src="figures-vision-speech.js?v=20260610e"></script>
+  <script src="figures-transformers.js?v=20260610e"></script>
+  <script src="figures-genai-rl.js?v=20260610e"></script>
+  <script src="figures-llms-systems.js?v=20260610e"></script>
+  <script src="figures-agents-alignment.js?v=20260610e"></script>
+  <script src="figures-math2.js?v=20260610e"></script>
+  <script src="figures-nlp2.js?v=20260610e"></script>
+  <script src="figures-llms2.js?v=20260610e"></script>
+  <script src="figures-infra.js?v=20260610e"></script>
+  <script src="figures-frontier.js?v=20260610e"></script>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
     mermaid.initialize({
@@ -1835,8 +1853,12 @@
       }
 
       function fetchLesson(path) {
-        var rawUrl = 'https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/' + path + '/docs/en.md';
-        var quizUrl = 'https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/' + path + '/quiz.json';
+        // 从本次站点构建对应的 branch/ref 读取 docs。PR preview 或分支部署
+        // 会渲染自己的课程内容，而不是永远读取 main。默认回退到 main。
+        var ref = (typeof window !== 'undefined' && window.__AIFS_REF) ? window.__AIFS_REF : 'main';
+        var base = 'https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/' + ref + '/';
+        var rawUrl = base + path + '/docs/en.md';
+        var quizUrl = base + path + '/quiz.json';
 
         fetch(rawUrl)
           .then(function (res) {
@@ -1870,6 +1892,62 @@
         el.innerHTML = '<div class="lesson-error"><h2>' + title + '</h2><p>' + msg + '</p><a href="index.html" class="btn btn-primary">返回首页</a></div>';
       }
 
+      function lessonDescription(md) {
+        var lines = md.split(/\r?\n/);
+        for (var i = 0; i < lines.length; i++) {
+          var t = lines[i].trim();
+          if (t.indexOf('>') === 0) return t.replace(/^>\s*/, '').replace(/[*_`]/g, '').slice(0, 200);
+        }
+        for (var j = 0; j < lines.length; j++) {
+          var p = lines[j].trim();
+          if (p && p[0] !== '#' && p[0] !== '>' && p[0] !== '|' && p[0] !== '`' && p.indexOf('**') !== 0) {
+            return p.replace(/[*_`]/g, '').slice(0, 200);
+          }
+        }
+        return '503 节课。20 个阶段。从原始数学开始，亲手构建。';
+      }
+
+      function updateLessonSeo(title, md) {
+        var ORIGIN = 'https://ai-learn.agent-buy.com';
+        var path = new URLSearchParams(location.search).get('path') || '';
+        var url = ORIGIN + '/lesson.html?path=' + path;
+        var desc = lessonDescription(md);
+        var fullTitle = title + ' · AI Engineering from Scratch';
+        var set = function (sel, val) { var m = document.querySelector(sel); if (m) m.setAttribute('content', val); };
+
+        var canon = document.querySelector('link[rel="canonical"]');
+        if (canon) canon.setAttribute('href', url);
+        set('meta[name="description"]', desc);
+        set('meta[property="og:title"]', fullTitle);
+        set('meta[property="og:description"]', desc);
+        set('meta[name="twitter:title"]', fullTitle);
+        set('meta[name="twitter:description"]', desc);
+        var ogu = document.querySelector('meta[property="og:url"]');
+        if (!ogu) { ogu = document.createElement('meta'); ogu.setAttribute('property', 'og:url'); document.head.appendChild(ogu); }
+        ogu.setAttribute('content', url);
+
+        var prev = document.getElementById('lessonJsonLd');
+        if (prev) prev.remove();
+        var ld = {
+          '@context': 'https://schema.org',
+          '@graph': [
+            { '@type': 'LearningResource', name: title, description: desc, url: url,
+              inLanguage: 'zh-CN', isAccessibleForFree: true,
+              isPartOf: { '@type': 'Course', name: 'AI Engineering from Scratch 中文版', url: ORIGIN } },
+            { '@type': 'BreadcrumbList', itemListElement: [
+              { '@type': 'ListItem', position: 1, name: '首页', item: ORIGIN },
+              { '@type': 'ListItem', position: 2, name: '课程目录', item: ORIGIN + '/catalog.html' },
+              { '@type': 'ListItem', position: 3, name: title, item: url }
+            ] }
+          ]
+        };
+        var s = document.createElement('script');
+        s.type = 'application/ld+json';
+        s.id = 'lessonJsonLd';
+        s.textContent = JSON.stringify(ld);
+        document.head.appendChild(s);
+      }
+
       function renderLesson(md) {
         var el = document.getElementById('lessonContent');
         var html = parseMd(md);
@@ -1878,9 +1956,11 @@
         el.innerHTML = '<article class="lesson-article">' + html + '</article>';
 
         document.title = extractTitle(md) + ' - AI Engineering from Scratch';
+        updateLessonSeo(extractTitle(md), md);
 
         initCodeCopy();
         renderMermaidBlocks();
+        if (window.mountLessonFigures) window.mountLessonFigures(el);
         renderAIPanels();
         buildTOC();
 
@@ -2183,7 +2263,9 @@
             if (line.match(/^```\s*$/)) {
               inCodeBlock = false;
               var raw = codeLines.join('\n');
-              if (codeLang === 'mermaid') {
+              if (codeLang === 'figure') {
+                out += '<div class="lesson-figure" data-figure="' + escapeHtml(raw.trim()) + '"></div>';
+              } else if (codeLang === 'mermaid') {
                 mermaidBlocks++;
                 out += '<div class="mermaid-container">';
                 out += '<div class="mermaid-block" data-mermaid-index="' + mermaidBlocks + '">';

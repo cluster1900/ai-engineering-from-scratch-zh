@@ -38,6 +38,11 @@ Reconstruction 把 `x̂` 推向 `x`。KL 把 `q(z|x)` 推向 prior。它们相�
 
 **Sampling.** Inference 时：抽取 `z ~ N(0, I)`，forward through decoder。一次 forward pass — 不像 diffusion 那样需要 iterative sampling。
 
+
+```figure
+vae-latent-grid
+```
+
 ## Build It
 
 `code/main.py` 实现了一个不使用 numpy 或 torch 的微型 VAE。输入是从 8-D 中的 2-component Gaussian mixture 抽取的 8-dimensional synthetic data。Encoder 和 decoder 都是 single hidden-layer MLP。我们实现 tanh activation、forward pass、loss，以及手写 backward pass。不是 production — 是 pedagogy。

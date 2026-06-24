@@ -117,6 +117,11 @@ class Dialog:
 
 这依赖 async I/O 和可取消的 TTS streaming。WebRTC 中在 audio track 上调用 peerconnection.stop() 是规范做法。
 
+
+```figure
+nyquist-aliasing
+```
+
 ## 使用它
 
 2026 技术栈：

@@ -25,6 +25,11 @@ Machine Translation 是迫使 NLP 发明 encoder-decoders、Attention、Transfor
 - **Model size.** NLLB-200 distilled 600M 可以在 laptop 上运行。NLLB-200 3.3B 是已发布的 production default。54.5B 是 research ceiling。
 - **Decoding.** 通用内容使用 beam width 4-5。使用 length penalty 避免 output 过短。在需要 terminology consistency 时使用 constrained decoding。
 
+
+```figure
+seq2seq-alignment
+```
+
 ## 构建它
 ### 步骤 1： 一个 pretrained MT call
 

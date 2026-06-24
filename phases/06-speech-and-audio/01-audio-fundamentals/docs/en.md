@@ -46,6 +46,11 @@ speech systems 中的每个 bug 都可以追溯到三个问题之一：
 
 **Framing + window。** 我们不会对整个 clip 做 FFT。我们把它切成重叠的 *frames*（通常 25 ms，hop 10 ms），将每个 frame 乘以 window function（Hann、Hamming）来消除边缘不连续，然后对每个 frame 做 FFT。这就是 Short-Time Fourier Transform (STFT)。Lesson 02 会从这里继续。
 
+
+```figure
+mel-scale
+```
+
 ## 构建它
 
 ### 步骤 1：读取 clip 并绘制 waveform

@@ -44,6 +44,11 @@ US       B-GPE
 - **BiLSTM-CRF.** 用 Neural 特征替代手工特征。LSTM 双向读取句子，顶部 CRF 层强制 tag 序列一致。
 - **Transformer-based.** 用 token-classification head 微调 BERT。准确率最高。计算量最大。
 
+
+```figure
+ner-bio-tagging
+```
+
 ## 构建它
 
 ### 步骤 1: BIO tagging helpers

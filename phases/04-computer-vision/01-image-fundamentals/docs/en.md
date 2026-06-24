@@ -196,6 +196,11 @@ Lanczos               slowest, best quality, used for final display
 
 经验法则：training 用 bilinear，你会亲眼看的 asset 用 bicubic 或 lanczos，任何包含整数 class ID 的东西用 nearest。
 
+
+```figure
+conv-output-size
+```
+
 ## 构建它
 
 ### 步骤 1：加载图像并检查 shape

@@ -279,6 +279,11 @@ for inputs, targets in loader:
 | Learning curve | 你已经构建过它 | 中等 | 陡峭（functional paradigm） |
 | Production use | Toy problems | Meta、OpenAI、Anthropic、HF | Google DeepMind、Midjourney |
 
+
+```figure
+dropout-mask
+```
+
 ## 构建它
 一个只使用 PyTorch primitives 在 MNIST 上训练的 3-layer MLP。没有 high-level wrappers。没有 `torchvision.datasets`。我们自己下载并解析 raw data。
 

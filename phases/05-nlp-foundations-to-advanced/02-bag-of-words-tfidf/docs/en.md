@@ -30,6 +30,11 @@ TF-IDF(w, d) = TF(w, d) * IDF(w)
 
 关键性质：二者都会产生具有可解释坐标轴的稀疏 Vector。你可以查看训练后分类器的权重，读出哪些词会把文档推向哪个类别。对于一个 768 维的 BERT Embedding，你做不到这一点。
 
+
+```figure
+bow-tfidf
+```
+
 ## 构建它
 ### 步骤 1： build the vocabulary
 

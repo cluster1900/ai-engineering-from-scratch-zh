@@ -69,6 +69,11 @@ R_gold(d)  = alpha * d - beta_gold  * d^2
 
 这个视角意味着防御也是统一的。每种 mitigation 都必须做到以下之一：缩小 proxy-target gap（更好的 data、更好的 RMs），降低 optimization pressure（conservative schedules、early stop），或者把 selection pressure 转移到难以被 gaming 的 features 上（process supervision、debate、information flow control）。
 
+
+```figure
+rlhf-reward-kl
+```
+
 ## Use It
 
 `code/main.py` 在 toy regression problem 上模拟 Gao et al. 的 over-optimization curves。“gold” reward 是 feature vector 的真实 linear function。“proxy” RM 是 gold 加上 Gaussian noise，并在有限样本上拟合。Policy 是一个 features 上 Gaussian 的 mean；training 是在带有到 initial policy 的 KL penalty 下对 proxy reward 进行 hill-climbing。你可以改变：proxy 的 sample size、KL coefficient、noise tail heaviness。观察 proxy-gold gap 在论文预测的 KL distance 处准确打开。

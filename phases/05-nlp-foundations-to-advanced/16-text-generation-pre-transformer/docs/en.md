@@ -44,6 +44,11 @@ Kneser-Ney 的洞见很深。"San Francisco" 是常见 bigram。Unigram "Francis
 perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
 ```
 
+
+```figure
+ngram-backoff
+```
+
 ## 构建它
 
 ### 步骤 1： trigram 计数

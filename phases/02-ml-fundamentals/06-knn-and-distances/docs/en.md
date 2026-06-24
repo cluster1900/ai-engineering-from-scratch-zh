@@ -220,6 +220,11 @@ where w_i = 1 / distance_i
 
 KNN Regression 产生分段常数预测（使用加权时为分段平滑）。它无法外推到训练数据范围之外。如果训练目标全都在 0 到 100 之间，KNN 永远不会预测 200。
 
+
+```figure
+knn-smoothness
+```
+
 ## 构建它
 ### 步骤 1： Distance functions
 

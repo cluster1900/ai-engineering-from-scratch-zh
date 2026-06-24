@@ -36,6 +36,11 @@ one-hot(center) ── W ──▶ hidden (d-dim) ── W' ──▶ softmax(vo
 
 技巧在于：对 100k 个词做 softmax 代价高得不可接受。Word2Vec 使用 **negative sampling**，把它变成一个 binary Classification 任务。预测“这个上下文词是否出现在这个中心词附近，是或否”。每个训练 pair 只采样少量 negative（未共现）词，而不是对整个词表计算 softmax。
 
+
+```figure
+word-vector-arithmetic
+```
+
 ## 构建它
 
 ### 步骤 1：从语料生成训练 pairs

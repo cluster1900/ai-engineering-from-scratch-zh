@@ -84,6 +84,11 @@ Scaling Laws 仍然有效，但：
 
 Muon Optimizer（Kimi Moonlight, 2024）显示，在匹配数据量下，相比 AdamW 有约 2× 的 effective-compute 增益。一些 2026 年训练运行默认使用 Muon。它改变 Scaling Law 中的绝对常数，而不是形状。
 
+
+```figure
+scaling-laws
+```
+
 ## 构建它
 
 见 `code/main.py`。我们实现 Chinchilla Loss 方程，并在若干 compute 预算下求解 compute-optimal `(N, D)`。

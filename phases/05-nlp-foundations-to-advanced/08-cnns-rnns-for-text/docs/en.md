@@ -31,6 +31,11 @@ Plain RNNs 会遭受 vanishing gradients。**LSTM** 增加 gates 来决定忘记
 
 **Bidirectional RNNs** 一个 RNN 正向运行，另一个反向运行，然后拼接 hidden states。每个 token 的表示都能看到左右两侧 context。对 tagging tasks 至关重要。
 
+
+```figure
+rnn-unroll
+```
+
 ## 构建它
 
 ### 步骤 1： PyTorch 中的 TextCNN

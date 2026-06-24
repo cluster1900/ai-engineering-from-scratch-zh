@@ -33,15 +33,15 @@ lesson: 9
 
 | Task | Starter Dataset | HF ID |
 |------|----------------|-------|
-| Text classification | Rotten Tomatoes | `rotten_tomatoes` |
-| Sentiment analysis | IMDB | `imdb` |
-| Natural language inference | MNLI | `glue/mnli` |
-| Question answering | SQuAD | `squad` |
-| Summarization | CNN/DailyMail | `cnn_dailymail` |
-| Translation | WMT | `wmt16` |
-| Language modeling | WikiText | `wikitext` |
-| Token classification | CoNLL-2003 | `conll2003` |
-| Image classification | MNIST / CIFAR-10 | `mnist` / `cifar10` |
+| Text classification | Rotten Tomatoes | `cornell-movie-review-data/rotten_tomatoes` |
+| Sentiment analysis | IMDB | `stanfordnlp/imdb` |
+| Natural language inference | MNLI | `nyu-mll/glue`（config: `mnli`） |
+| Question answering | SQuAD | `rajpurkar/squad` |
+| Summarization | CNN/DailyMail | `abisee/cnn_dailymail`（config: `3.0.0`） |
+| Translation | WMT | `wmt/wmt16`（config: `cs-en`） |
+| Language modeling | WikiText | `Salesforce/wikitext` |
+| Token classification | CoNLL-2003 | `lhoestq/conll2003` |
+| Image classification | MNIST / CIFAR-10 | `ylecun/mnist` / `uoft-cs/cifar10` |
 | Object detection | COCO | `detection-datasets/coco` |
 
 推荐时，优先选择较小的 datasets 用于学习和 prototyping。只有在用户准备好 scale training 时，才建议更大的 datasets。

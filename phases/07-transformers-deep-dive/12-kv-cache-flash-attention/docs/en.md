@@ -112,6 +112,17 @@ Continuous batching（最早在 Orca 中发布，如今用于 vLLM、TensorRT-LL
 
 vLLM 的核心卖点。KV cache 以 16-token blocks 分配；page table 将逻辑位置映射到物理 blocks。它可以在并行采样之间共享 KV（beam search、parallel sampling）、为 prompt caching 热切换前缀，并对内存做碎片整理。相比朴素的连续分配，吞吐量提升 4×。
 
+
+拖动维度参数，观察 cache size 如何变化。把 sequence length 或 batch size 推高，你会看到它多快就超过单张 GPU 的容量。
+
+```figure
+kv-cache-sizer
+```
+
+```figure
+flash-attention-memory
+```
+
 ## 构建它
 
 见 `code/main.py`。我们实现：

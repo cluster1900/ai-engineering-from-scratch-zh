@@ -82,6 +82,11 @@ DiffAttn = (A1 - λ · A2) V
 | Native Sparse (DeepSeek-V3.2) | O(N · active fraction) | O(N) | within 0.05 ppl | DeepSeek-V3.2, 2025 |
 | Differential | O(2·N²) | O(2N) | -5 to -10% ppl | DIFF Transformer, early 2026 models |
 
+
+```figure
+gqa-kv-sharing
+```
+
 ## 构建它
 
 见 `code/main.py`。我们实现一个 causal mask comparator，在玩具序列上并排展示 full、SWA、local+strided 和 Differential Attention。

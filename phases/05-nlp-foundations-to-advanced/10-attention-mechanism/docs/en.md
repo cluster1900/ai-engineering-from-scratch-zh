@@ -56,6 +56,11 @@ Bahdanau、Cho 和 Bengio 在 2014 年发表了一个三行修复。不要只把
 
 **一个值得点名的 Bahdanau / Luong gotcha。** Bahdanau 使用 `s_{t-1}`（生成当前 word *之前* 的 decoder state）。Luong 使用 `s_t`（生成*之后*的 state）。把它们混起来会产生非常难 debug 的微妙错误 gradients。选一篇 paper，然后坚持它的约定。
 
+
+```figure
+attention-heatmap
+```
+
 ## 构建它
 
 ### 步骤 1： additive（Bahdanau）attention

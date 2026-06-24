@@ -163,6 +163,11 @@ PyTorch 在内部会：
 
 这个 graph 是动态的（define-by-run）。每次 forward pass 都会构建一个新 graph。这就是 PyTorch 支持在模型中使用控制流（if/else、loops）的原因。
 
+
+```figure
+chain-rule
+```
+
 ## 构建它
 
 ### 步骤 1：Value class

@@ -53,6 +53,11 @@ L_simple = E_{x_0, t, ε} [ || ε - ε_θ( sqrt(α̅_t) · x_0 + sqrt(1 - α̅_t
 
 3. **The ELBO reduces to simple MSE.** 完整 variational lower bound 在每个 timestep 都有一个 KL term。使用 DDPM 的 parameterization，这些 KL terms 会简化为带特定 coefficients 的 noise prediction MSE；Ho 去掉了 coefficients（称其为 “simple” loss），quality 反而 *提高* 了。
 
+
+```figure
+diffusion-denoise
+```
+
 ## Build It
 
 `code/main.py` 实现了一个 1-D DDPM。Data 是 two-mode mixture。“net” 是一个微型 MLP，接收 `(x_t, t)` 并输出 predicted noise。Training 是一行 Loss。Sampling 迭代 reverse chain。

@@ -110,6 +110,11 @@ Broadcasting 会把 Vector 沿 rows 方向拉伸：
 
 每个现代 framework 都会自动这样做。理解它可以避免在 shape 看似不对但代码能运行时产生困惑。
 
+
+```figure
+vector-projection
+```
+
 ## 构建它
 ### 步骤 1： Vector class
 

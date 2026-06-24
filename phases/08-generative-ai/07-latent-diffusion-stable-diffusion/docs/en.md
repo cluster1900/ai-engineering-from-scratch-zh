@@ -43,6 +43,11 @@
 
 趋势是：用 DiT（作用于 latent patches 的 transformer）替换 U-Net，扩展 text encoder（T5 在 prompt adherence 上胜过 CLIP），增加 latent channels（4 → 16 带来更多细节余量）。
 
+
+```figure
+noise-schedule
+```
+
 ## 构建它
 
 `code/main.py` 把一个玩具 1-D “VAE”（identity encoder + decoder，仅用于演示；真正的 VAE 会是 conv net）叠在 Lesson 06 的 DDPM 之上，并通过 classifier-free guidance 加入 class conditioning。它展示了同一个 diffusion loss 无论运行在原始 1-D 值上，还是运行在 encoded values 上都有效，这就是关键洞见。

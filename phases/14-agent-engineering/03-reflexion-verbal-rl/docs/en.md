@@ -72,6 +72,11 @@ Reflexion 不适用于：
 
 2026 年的陷阱：memory rot。Reflections 会累积；其中一些已过时或错误；随着 episodic buffer 变大，re-runs 会变慢。缓解方法：定期 compaction（Lesson 06）、对 reflections 设置 TTL，或使用单独的 sleep-time cleanup agent（Letta）。
 
+
+```figure
+react-trace
+```
+
 ## 构建它
 `code/main.py` 在一个 toy puzzle 上实现 Reflexion：生成一个 3-element list，使其 sum 等于目标值。Actor 产出 candidate lists；Evaluator 检查 sum；Self-Reflector 写一行关于哪里出错的 diagnosis。Reflection 会进入 episodic memory，供下一次 trial 使用。
 

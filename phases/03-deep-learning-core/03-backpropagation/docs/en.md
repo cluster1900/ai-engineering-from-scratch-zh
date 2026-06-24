@@ -129,6 +129,11 @@ dL/db1 = dL/dz1
 
 每个 Gradient 都是从 Loss 往回追踪得到的 local derivative 乘积。这就是 Backpropagation 的全部。
 
+
+```figure
+backprop-vanishing
+```
+
 ## 构建它
 ### 步骤 1： Value Node
 

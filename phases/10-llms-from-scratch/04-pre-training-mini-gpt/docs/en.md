@@ -217,6 +217,11 @@ learning rate schedule 比你想象的更重要。GPT-2 在前 2,000 steps 中�
 
 output projection（logits head）与 Token Embedding Matrix 共享权重。这叫 weight tying——它减少了 38M 参数，并提升性能，因为它迫使模型对 input 和 output 使用同一个 representation space。
 
+
+```figure
+sampling-decoder
+```
+
 ## 构建它
 ### 步骤 1： Embedding Layer
 

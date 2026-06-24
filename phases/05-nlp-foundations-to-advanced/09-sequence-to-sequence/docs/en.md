@@ -27,6 +27,11 @@ seq2seq 架构（Sutskever, Vinyals, Le, 2014）用一个刻意简单的 recipe 
 
 Attention（lesson 10）通过让 decoder 查看 *每一个* encoder hidden state，而不仅仅是最后一个，来修复这个问题。这就是完整卖点。
 
+
+```figure
+lstm-gates
+```
+
 ## 构建它
 ### 步骤 1： an encoder
 

@@ -102,6 +102,11 @@ Reasoning problem：10k tokens 的 chain-of-thought。假设问题有 `p = 0.7` 
 
 值得了解。值得实验。还不值得把产品押在上面。
 
+
+```figure
+continuous-batching
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个 toy Hogwild! simulator：

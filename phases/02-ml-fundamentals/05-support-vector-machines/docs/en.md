@@ -218,6 +218,11 @@ SVMs 在这些场景中仍然胜出：
 - 具有清晰 margin structure 的 binary classification
 - Anomaly detection（one-class SVM）
 
+
+```figure
+svm-margin
+```
+
 ## 构建它
 ### 步骤 1： Hinge loss and gradient
 

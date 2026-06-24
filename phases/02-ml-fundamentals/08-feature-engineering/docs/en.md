@@ -104,6 +104,11 @@ Feature 越多并不总是越好。无关 Feature 会增加噪声、提高训练
 
 **为什么 selection 重要：** 一个有 10 个好 Feature 的模型，通常会胜过一个有 10 个好 Feature 加 90 个噪声 Feature 的模型。噪声 Feature 给了模型机会去 overfit training data 中无法泛化的模式。
 
+
+```figure
+feature-scaling
+```
+
 ## 构建它
 
 ### 步骤 1：从零实现数值变换
