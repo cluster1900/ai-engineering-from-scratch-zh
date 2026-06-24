@@ -44,6 +44,7 @@ scripts/                      # 自动化
 5. **只允许原创实现。** 不要在 docs、code comments 或 commit text 中引用外部 curriculum repos。当 RFCs、official specs 和 academic papers 是权威来源时，可以引用它们。
 6. **Dependency allowlist**（见下方 `Dependencies`）。Stdlib-first。
 7. **永远不要 commit 生成文件**：`catalog.json` 已 gitignored，`site/data.js` 由 CI 重建，`package-lock.json` 永不追踪。
+8. **强烈要求：解释每个关键专业名词。** 每节课首次引入会影响理解的术语时，必须在正文就近追加简明解释，避免学习者在阅读过程中被未定义名词卡住；如果该术语会被多节 lesson 复用，同时补充到 `glossary/terms.md`。
 
 ---
 
