@@ -69,7 +69,7 @@ PPO-ptx 成为标准做法。Anthropic、DeepMind 和 Meta 都使用某种 varia
 1. Alignment 是与 capability 不同的轴。175B model 有更强 capability；1.3B model 有更多 alignment；labelers 更偏好 aligned 的那个。
 2. Capability floor 由 base model 决定。你无法通过 RLHF 让 base model 知道它从未见过的事实。
 
-### Why this is the reference point for Phase 18
+### 为什么这是 Phase 18 的参照点
 
 后续课程中的每个 critique：reward hacking（Lesson 2）、DPO（Lesson 3）、sycophancy（Lesson 4）、CAI（Lesson 5）、sleeper agents（Lesson 7）、alignment faking（Lesson 9），都在反对这条 pipeline 的某一部分。Reward hacking 攻击 stage 2。DPO 把 stages 2 和 3 合并。CAI 替代 human labeler。Sycophancy 表明 labeler 是一个 biased signal。Alignment faking 表明 policy 可以完全绕过 stage 3。如果你脑中没有这条 pipeline，就无法理解这些 critiques。
 
