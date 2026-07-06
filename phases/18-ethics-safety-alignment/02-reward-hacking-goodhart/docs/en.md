@@ -54,10 +54,10 @@ R_gold(d)  = alpha * d - beta_gold  * d^2
 
 这个条件（“heavy-tailed error”）并不奇异。对一个无界世界的任何有界测量，在 tails 中都会有 heavy-tailed error，这正是 “tails” 的含义。
 
-### What actually works (partially)
+### 哪些方法确实有效（但只是部分有效）
 
 - 使用 worst-case aggregation 的 Ensemble RMs（Coste et al., 2023）。Optimizer 可以破坏一个 RM，但不能同时破坏所有 RM。
-- Reward-model robustness to distributional shift（Zhou et al., “Shift-of-Reward-Distribution”, 2024）。
+- Reward model 对 distributional shift 的 robustness（Zhou et al., “Shift-of-Reward-Distribution”, 2024）。
 - Conservative KL schedules，以及在经验 proxy-gold gap 处 early stopping。
 - Direct Alignment Algorithms（DPO，Lesson 3），它们也有自己的 Goodhart failure modes，Rafailov et al. “Scaling Laws for Reward Model Over-optimization in Direct Alignment Algorithms”（NeurIPS 2024）已经证明。
 
