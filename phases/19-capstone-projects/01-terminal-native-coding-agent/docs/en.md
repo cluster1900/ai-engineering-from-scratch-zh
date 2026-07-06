@@ -56,7 +56,7 @@ sandbox 使用 E2B 或 Daytona。每个任务都在一个全新的 devcontainer 
 - Isolation: `git worktree add` per task, cleanup on success / failure
 - Eval harness: SWE-bench Pro (verified subset) + Terminal-Bench 2.0 + your own 30-task holdout
 - Observability: OpenTelemetry SDK with `gen_ai.*` semconv → self-hosted Langfuse
-- PR posting: GitHub App with fine-grained token, scope limited to the target repo
+- PR posting: GitHub App 使用 fine-grained token，scope 限制在目标 repo
 
 ## 构建它
 1. **TUI and command loop.** 搭建一个使用 Ink 的 Bun 项目。接收 `agent run <repo> "<task>"`。打印一个分屏视图：plan pane（顶部）、tool-call stream（中部）、Token budget（底部）。添加 Ctrl-C 取消逻辑，在退出前触发 `SessionEnd` hook。
