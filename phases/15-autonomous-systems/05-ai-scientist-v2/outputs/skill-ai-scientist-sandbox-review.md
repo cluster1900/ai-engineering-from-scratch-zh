@@ -47,8 +47,8 @@ tags: [ai-scientist, research-agent, sandbox, peer-review, disclosure]
 Output format:
 
 返回一份 two-gate report：
-- **Sandbox gate 结论** (PASS / BLOCK, with rationale)
+- **Sandbox gate 结论** (PASS / BLOCK，并说明理由)
 - **Research gate 结论**（覆盖 Experiment audit (2) 和 Polish audit (3)）（PASS / BLOCK / REQUIRES_EXPERT，并附每项检查说明）
-- **Disclosure plan** (venue, text, human reviewer name)
+- **Disclosure plan** (venue、text、human reviewer name)
 - **Release decision** (release / hold / reject)
-- **Next action** (who does what by when)
+- **Next action**（谁在什么时候做什么）
