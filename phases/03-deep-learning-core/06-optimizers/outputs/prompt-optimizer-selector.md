@@ -19,9 +19,9 @@ lesson: 06
 **Transformers / LLMs:**
 - Optimizer: AdamW
 - Learning rate: 1e-4 到 3e-4（pre-training），1e-5 到 5e-5（fine-tuning）
-- Weight decay: 0.01 to 0.1
-- Beta1: 0.9, Beta2: 0.95（LLM convention）or 0.999（default）
-- Schedule: Linear warmup（1-10% of steps）+ cosine decay to 0 or 10% of max lr
+- Weight decay: 0.01 到 0.1
+- Beta1: 0.9, Beta2: 0.95（LLM convention）或 0.999（default）
+- Schedule: Linear warmup（总 steps 的 1-10%）+ cosine decay 到 0 或 max lr 的 10%
 - Gradient clipping: max_norm=1.0
 
 **CNNs / Vision:**
