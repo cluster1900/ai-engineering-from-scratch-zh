@@ -19,9 +19,9 @@ tags: [langgraph, stategraph, checkpointer, interrupt, time-travel, react-agent,
 
 示例输入: "基于 Anthropic Claude 的退款处理 agent，配有三个工具 (lookup_order, issue_refund, send_email)，任何超过 100 美元的退款前必须暂停等待人工确认，必须能在服务器重启后恢复，p95 latency budget 为 8 秒。"
 
-Example output:
-- Nodes: agent (LLM call), lookup_tool, refund_tool, email_tool, human_review.
-- State: messages with add_messages, order_context（overwrite）, refund_amount（overwrite）, reviewer_decision（overwrite）。
+示例输出:
+- Nodes: agent（LLM call）、lookup_tool、refund_tool、email_tool、human_review。
+- State: messages with add_messages，order_context（overwrite），refund_amount（overwrite），reviewer_decision（overwrite）。
 - Edges：agent 到 should_continue router，带有 branches lookup_tool、refund_tool、email_tool、human_review、END。Tool nodes 返回 agent。
-- Interrupts: interrupt_before on refund_tool when refund_amount > 100. No interrupt on lookup_tool or email_tool.
-- Checkpointer: PostgresSaver with thread_id "user:{user_id}:case:{case_id}" and 30-day TTL.
+- Interrupts: 当 refund_amount > 100 时，在 refund_tool 前 interrupt_before。lookup_tool 或 email_tool 不需要 interrupt。
+- Checkpointer: PostgresSaver，thread_id 为 "user:{user_id}:case:{case_id}"，TTL 为 30 天。
