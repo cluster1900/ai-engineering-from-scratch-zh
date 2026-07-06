@@ -14,7 +14,7 @@
 - 每次 revision 都 emit plan diff，让下游 tracer 或 UI 能展示 plan 为什么改变。
 - 强制执行两个 budgets：硬性 step ceiling 和硬性 replan ceiling。
 
-## Plan and execute, not chain-of-thought
+## Plan-and-execute，而不是 chain-of-thought
 
 chain-of-thought agent 会 emit tokens，并让 loop 猜测 tool call 在哪里结束。plan-and-execute agent 先 emit structured plan，然后确定性地执行每个 step。plan 是 harness 可以 introspect 的 data。execution 是 harness 通过 dispatcher 运行这些 data。
 
@@ -28,7 +28,7 @@ chain-of-thought agent 会 emit tokens，并让 loop 猜测 tool call 在哪里�
 
 Replan 是把 script 变成 agent 的选项。
 
-## The Step shape
+## Step 的形状
 
 ```text
 Step
@@ -42,7 +42,7 @@ Step
 
 `expected_outcome` 是 planner 与 step 一起 emit 的短句。executor 不会强制检查它。它有两个用途：replanner 在 revision plan 时读取它；event stream emit 它，让 tracer 能展示“这个 step 本来应该做 X”。
 
-## The planner shape
+## Planner 的形状
 
 ```python
 def planner(goal: str, history: list[Step], last_error: str | None) -> list[Step]:
@@ -53,7 +53,7 @@ def planner(goal: str, history: list[Step], last_error: str | None) -> list[Step
 
 planner 不知道 executor。它不知道 retries。它不知道 timeouts。它只产生 plan。仅此而已。
 
-## The executor
+## Executor
 
 executor 是一个小型 state machine。每个 step 都通过 dispatcher 运行。outcome 有三种：success、failure-replannable、failure-fatal。Replannable failures 会 hand back 给 planner。Fatal failures（budget exceeded、replan ceiling hit）会返回 `FAILED` session result。
 
@@ -70,7 +70,7 @@ stateDiagram-v2
     DONE --> [*]
 ```
 
-## Plan diffs on revision
+## Revision 时的 plan diff
 
 当 planner 在 failure 后返回新 plan 时，executor 会 emit 一个包含三个字段的 `plan.diff` event。
 
@@ -82,13 +82,13 @@ revised: tool_name 或 args 已改变的 step ids 列表
 
 tracer 或 UI 可以把它渲染成 removed steps 的 strikethrough，以及 added ones 的 highlight。重点不是 diff format。重点是 revision 是一个可见 event，而不是静默 rewrite。
 
-## Two budgets, both hard
+## 两个硬性 budget
 
 `max_steps` 限制整个 session 中的总 step executions，包括 replans。默认是十二。一个线性的五步 plan，如果 replan 两次并且每次增加三个 steps，会达到十六次 executions，从而超过 budget。executor 会拒绝该 replan，并返回 FAILED。
 
 `max_replans` 限制第一次 plan 之后 planner 被调用的次数。默认是五。这是更重要的 limit。一个连续五次返回同一个 broken plan 的 planner，否则会一直 loop，直到 step budget 捕获它。限制 replans 会让 failure 更快发生，原因也更清楚。
 
-## The deterministic planner in this lesson
+## 本课中的 deterministic planner
 
 本 lesson 不调用 model。lesson 提供一个 deterministic planner，它根据 `last_error` 选择 plan。
 
@@ -101,7 +101,7 @@ otherwise             -> return []（表示没有内容可 replan）
 
 这足以测试 executor 在每条 transition path 上的行为：success、replan-once、replan-twice、replan-exhaustion 和 step-budget exhaustion。
 
-## Result shape
+## Result 的形状
 
 ```text
 SessionResult
