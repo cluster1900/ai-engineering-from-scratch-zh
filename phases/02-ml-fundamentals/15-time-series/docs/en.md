@@ -134,7 +134,7 @@ diff[t] = value[t] - value[t-1]
 
 你可以工程化的其他特征：
 - **Rolling statistics:** 最近 k 个值的 mean、std、min、max
-- **Calendar features:** day of week、month、is_holiday、is_weekend
+- **Calendar features:** 星期几、月份、is_holiday、is_weekend
 - **Differenced values:** 相比上一步的变化
 - **Expanding statistics:** 累计 mean、累计 sum
 - **Ratio features:** 当前值 / rolling mean（偏离近期平均值多远）
