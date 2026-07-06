@@ -54,7 +54,7 @@ file under failure class + attach repro
 - Agent: OpenAI Agents SDK 或 Claude Opus 4.7 + GPT-5.4-Codex 上的 LangGraph
 - Sandbox: Daytona devcontainers per branch, pre-installed target runtime (Java 17 / Python 3.12)
 - Build systems: Maven, Gradle, uv (Python)
-- Benchmarks: Amazon MigrationBench 50-repo subset (Java 8 to 17), Google App Engine Py2-to-Py3 repos
+- Benchmarks: Amazon MigrationBench 50-repo subset（Java 8 到 17），Google App Engine Py2-to-Py3 repos
 - Test harness: parallel runner，通过 Jacoco (Java) 或 coverage.py (Python) 统计 coverage
 - Observability: Langfuse + 每个 repo 一个 trace bundle，包含每个 diff chunk
 - Dashboard: failure-taxonomy dashboard，包含每个 class 的计数和 exemplar diffs
