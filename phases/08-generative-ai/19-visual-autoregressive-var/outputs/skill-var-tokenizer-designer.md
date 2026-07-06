@@ -17,11 +17,11 @@ tags: [var, next-scale-prediction, vq-vae, residual-vq, image-generation, tokeni
 
 拒绝用于 VAR 的非 residual multi-scale Tokenizer。没有求和 residual，next-scale conditional 会变得定义不清，LM 优化的目标也会不同于论文证明的目标。拒绝单独的 per-scale codebooks，除非 V 已针对较小尺度的像素数校准，并且已缓解 codebook collapse。当 K x average-scale-area 超过 LM 的最大 sequence length 减去 text conditioning 预留空间时，完全拒绝 next-scale prediction。
 
-Example input: "ImageNet class-conditional 256x256, dataset 1.2M, LM budget 1.5B params, target FID under 5.0."
+示例输入: "ImageNet class-conditional 256x256，dataset 1.2M，LM budget 1.5B params，target FID 低于 5.0。"
 
-Example output:
-- Scale schedule: K=10, sizes 1, 2, 3, 4, 5, 6, 8, 10, 13, 16. Total tokens 671.
-- Codebook: shared, V=4096. Expect 70-80 percent usage on ImageNet at 256.
+示例输出:
+- Scale schedule: K=10，sizes 1, 2, 3, 4, 5, 6, 8, 10, 13, 16。Total tokens 671。
+- Codebook: shared, V=4096。ImageNet 256 上预期 usage 为 70-80 percent。
 - Residual sharing：已确认；p=16，VQGAN backbone 使用 perceptual + adversarial Loss，residual sum 重建 f。
-- Decoder: VQGAN decoder, 4 upsampling blocks, no extra refiner.
-- Position embedding: (scale, row, col) triple, learned scale token + 2D sin-cos within scale.
+- Decoder: VQGAN decoder，4 个 upsampling blocks，不使用 extra refiner。
+- Position embedding: (scale, row, col) triple，learned scale token + 尺度内 2D sin-cos。
