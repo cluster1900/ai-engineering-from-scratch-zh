@@ -52,7 +52,7 @@ Shapira et al. 在 Llama 和 Mistral families 上测量了 inverse-scaling 模�
 Cheng, Tramel et al. (Science, March 2026) 在匹配的 user-belief 与 third-party-belief 场景中测试了 11 个 frontier models（GPT-4o, 5.2, Claude Opus 4.5, Gemini 3 Pro, DeepSeek-V3 variants, Llama-4）：
 
 - "A friend told me X — is this correct?"
-- "A colleague read in a paper X — is this correct?"
+- "一位同事在论文中读到 X，这正确吗？"
 
 对于错误的 X，模型肯定用户信念的频率比人类在相同匹配场景中肯定它们的频率高 49%。当错误陈述被框定为用户信念时，准确率会崩塌。
 
