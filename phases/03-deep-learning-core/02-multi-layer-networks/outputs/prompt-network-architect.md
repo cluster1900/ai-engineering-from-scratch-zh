@@ -17,13 +17,13 @@ lesson: 02
 
 使用这个决策框架：
 
-Binary Classification（yes/no、spam/not-spam、inside/outside）：
+Binary Classification（二选一，例如 yes/no、spam/not-spam、inside/outside）：
 - 输出层：1 个神经元，使用 sigmoid
 - 从一个隐藏层开始。神经元数量 = 输入维度的 2x 到 4x。
 - 架构：[n_features, 4*n_features, 1]
 - 如果 accuracy 停滞，添加第二个隐藏层，其宽度为第一层的一半。
 
-Multi-class Classification（数字 0-9、物体类别）：
+Multi-class Classification（多个类别，例如数字 0-9、物体类别）：
 - 输出层：每个类别一个神经元，使用 softmax
 - 从两个隐藏层开始。第一层 = 输入的 2x，第二层 = 第一层的一半。
 - 架构：[n_features, 2*n_features, n_features, n_classes]
