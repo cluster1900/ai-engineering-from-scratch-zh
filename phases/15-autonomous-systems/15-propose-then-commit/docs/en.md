@@ -44,9 +44,9 @@ approval waiting room 是一段不归 agent 所有的 state。workflow 被暂停
 
 HITL 的默认 UI（“Approve” / “Reject” buttons）会产生快速 approval，但没有真正 review。文档化 mitigation：challenge-and-response checklist，要求在 Approve button 启用之前，对具体问题给出明确肯定回答。具体形态：
 
-- “Do you understand what resource this touches? [ ]”
-- “Have you verified the blast radius is acceptable? [ ]”
-- “Do you have a rollback plan if this fails? [ ]”
+- “你理解这次操作会触及哪个 resource 吗？[ ]”
+- “你确认 blast radius 可以接受吗？[ ]”
+- “如果失败，你有 rollback plan 吗？[ ]”
 
 这不是为了流程而流程，而是一种 forcing function。无法勾选这些框的 reviewer 要么请求澄清（escalation），要么拒绝（safe default）。Anthropic agent-safety research 明确将 checklist-driven HITL 作为缓解 rubber-stamp approval patterns 的 mitigation。
 
