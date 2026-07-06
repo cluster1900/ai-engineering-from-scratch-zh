@@ -80,13 +80,13 @@ flowchart TD
 
 bundled fixture 与 lesson 27 的 task structure 形状相同：一个 buggy file 和一个 tests file。test failure message 包含足够信息，让 deterministic policy 能识别 fix。真实 LLM 会做同样的工作，只是更慢并拥有更广的 recall，但它不会改变 harness 的 expectations。
 
-## Why the policy is not an LLM
+## 为什么 policy 不是 LLM
 
 真实 LLM 需要 API key、network call，以及无法验证的 stochasticity。harness 才是本课程关心的部分。替换为 deterministic policy 能让课程在任何 developer laptop 上运行，零外部依赖，并让 test suite 断言精确的 step counts。
 
 本课程的 policy 是 LLM agent 所做事情的严格子集。policy 读取 repo，看到 failing test，识别对应行，然后发出 fix。LLM 通过相同 loop 和相同 harness contract 完成工作；bookkeeping 完全一致。
 
-## What the demo asserts
+## demo 会断言什么
 
 端到端 demo 在退出时断言五件事，test suite 也会以编程方式重新断言它们。
 
@@ -100,11 +100,11 @@ traces.jsonl 中每个 step 都有对应的 span。
 
 Prometheus exposition 包含一个 `tools_called_total{tool="read_file"}` entry 和一个 `tool_latency_ms` histogram。
 
-## How this composes with the rest of Track A
+## 它如何与 Track A 的其余部分组合
 
 本课程是 integration。Lesson 25 编写了 gate chain。Lesson 26 编写了 sandbox。Lesson 27 编写了 eval harness。Lesson 28 编写了 observability。Lesson 29 证明它们作为一个 system 可以工作。真实 agent harness 从这里扩展：把 deterministic policy 换成 model，把 bundled fixture 换成 real-repo task，把 JSONL exporter 换成 OTLP。
 
-## Running it
+## 运行方式
 
 ```bash
 cd phases/19-capstone-projects/29-end-to-end-coding-task-demo
