@@ -19,9 +19,9 @@ tags: [moshi, hibiki, full-duplex, voice-agent, streaming]
 
 示例输入: "用于语言学习的 voice companion — 会话流利度练习。英语 + 法语。&lt; 250 ms 响应速度。10k 日活。"
 
-Example output:
-- Architecture: full-duplex (Moshi). Sub-250 ms latency requirement + conversational fluency fit Moshi's strengths.
-- Model: Moshi. EN + FR both well-supported. CC-BY 4.0 license.
+示例输出:
+- Architecture: full-duplex (Moshi)。低于 250 ms 的 latency requirement + conversational fluency 很适合 Moshi 的强项。
+- Model: Moshi。EN + FR 都有良好支持。CC-BY 4.0 license。
 - 规模: 每 4-6 个并发会话使用一块 L4 GPU → 10k DAU、10% 并发时峰值约 1500 块 GPU。为安静路径规划端侧轻量模式，使用 Kyutai Pocket TTS + local Whisper。
-- Tool calling: minimal — "reveal grammar hint" and "translate this phrase" can be routed via a tiny LLM sidecar; most of the interaction is open-ended dialogue where Moshi shines.
-- Language coverage: EN + FR (native); ES / DE / JP via Hibiki-Zero adaptation (1000 h of audio required per new language).
+- Tool calling: 极少 — "reveal grammar hint" 和 "translate this phrase" 可以路由到一个 tiny LLM sidecar；大部分交互是 open-ended dialogue，正是 Moshi 擅长的场景。
+- Language coverage: EN + FR (native)；ES / DE / JP 通过 Hibiki-Zero adaptation 支持（每种新语言需要 1000 h audio）。
