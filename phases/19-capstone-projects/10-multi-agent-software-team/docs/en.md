@@ -58,7 +58,7 @@ Coder A          Coder B          Coder C          Coder D          (4 parallel)
 - Merge coordinator: custom three-way merge + LLM-mediated conflict resolution
 - Eval: SWE-bench Pro (50 issues), SWE-AF scenarios, HumanEval++ for unit tests
 - Observability: Langfuse with role-tagged spans, per-agent token accounting
-- Deployment: K8s with each role as a separate Deployment + HPA on backlog
+- Deployment: K8s，每个 role 一个独立 Deployment，并基于 backlog 配置 HPA
 
 ## 构建它
 1. **Task board.** File-backed JSONL，包含 typed messages：`plan_request`、`subtask`、`diff_ready`、`review_needed`、`test_needed`、`approved`、`rejected`、`replan_needed`。Agents 订阅 tags。
