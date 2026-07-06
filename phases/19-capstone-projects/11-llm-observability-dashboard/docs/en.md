@@ -52,7 +52,7 @@ production apps:
 ## 技术栈
 - Ingest: OpenTelemetry SDKs + GenAI semantic conventions; OTLP HTTP transport
 - Collector: OpenTelemetry Collector，带 tail-sampling processor（用于成本控制）
-- Storage: ClickHouse for spans, Postgres for metadata, S3 for raw event archive
+- Storage: ClickHouse 存 spans，Postgres 存 metadata，S3 存 raw event archive
 - Evals: DeepEval, RAGAS 0.2, Arize Phoenix evaluator pack, custom LLM-judge
 - Drift: PSI / KL on pooled prompt embeddings (sentence-transformers) weekly
 - Alerting: Prometheus Alertmanager -> Slack / PagerDuty
