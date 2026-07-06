@@ -36,5 +36,5 @@ Output format:
 - **Circuit-breaker table**（pattern、threshold、cool-down）
 - **Canary table**（token、location、alarm、owner）
 - **分层说明**（statistical + hard limits present y/n）
-- **Quarantine flow**（what fires、what happens、tested y/n）
+- **Quarantine flow**（触发项、触发后的动作、是否已测试）
 - **就绪度**（production / staging / research-only）
