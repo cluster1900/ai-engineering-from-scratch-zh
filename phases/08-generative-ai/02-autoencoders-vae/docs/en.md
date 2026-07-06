@@ -140,12 +140,12 @@ Skill 接收：dataset profile + latent-dim target + downstream use（reconstruc
 | β-VAE | 可调 KL weight | `loss = recon + β·KL`。更高 β = 更 disentangled 但更模糊。 |
 | VQ-VAE | Discrete latent | 用 nearest codebook vector 替换 continuous `z`；支持 transformer modelling。 |
 
-## Production note: the VAE is the hottest path in a diffusion server
+## 生产提示：VAE 是 diffusion server 中最热的路径
 
 在 Stable Diffusion / Flux / SD3 pipeline 中，VAE 每个 request 会被调用两次 — 一次用于 encode（如果做 img2img / inpainting），一次用于 decode。在 1024² 时，decoder pass 往往是整条 pipeline 中单个最大的 activation-memory peak，因为它把 `128×128×16` latents upsample 回 `1024×1024×3`。两个实际后果：
 
-- **Slice or tile the decode.** `diffusers` 暴露 `pipe.vae.enable_slicing()` 和 `pipe.vae.enable_tiling()`。Tiling 用少量 seam artifact 换取 `O(tile²)` memory，而不是 `O(H·W)`。对 consumer GPUs 上的 1024²+ 至关重要。
-- **bf16 decoder, fp32 numerics for the final resize.** SD 1.x VAE 以 fp32 发布，并且在 1024²+ 被 cast 到 fp16 时会 *静默产生 NaNs*。SDXL 提供 `madebyollin/sdxl-vae-fp16-fix` — 总是优先使用 fp16-fix variant，或者使用 bf16。
+- **对 decode 做 slicing 或 tiling。** `diffusers` 暴露 `pipe.vae.enable_slicing()` 和 `pipe.vae.enable_tiling()`。Tiling 用少量 seam artifact 换取 `O(tile²)` memory，而不是 `O(H·W)`。对 consumer GPUs 上的 1024²+ 至关重要。
+- **bf16 decoder，最终 resize 使用 fp32 numerics。** SD 1.x VAE 以 fp32 发布，并且在 1024²+ 被 cast 到 fp16 时会 *静默产生 NaNs*。SDXL 提供 `madebyollin/sdxl-vae-fp16-fix` — 总是优先使用 fp16-fix variant，或者使用 bf16。
 
 ## Further Reading
 
