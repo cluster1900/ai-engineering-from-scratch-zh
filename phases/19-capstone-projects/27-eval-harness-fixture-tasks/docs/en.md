@@ -81,17 +81,17 @@ candidate 是一个 callable：`Callable[[FixtureTask, str], SampleResult]`。ha
 
 fixture tasks 以 `tasks/` 中的 JSON 文件形式捆绑，并配有 `tasks/<id>/buggy/` 和 `tasks/<id>/expected/` 中的源文件。harness 将 buggy 复制到 scratch dir，把它交给 candidate，并依据 expected 验证。
 
-## Why pass@k and not just pass@1
+## 为什么使用 pass@k，而不只是 pass@1
 
 真实 LLM agents 是随机的。pass@1 为 0.6 看起来像失败。pass@5 为 0.95 表明 agent 大多数时候能得到正确答案，但在早期 samples 上选错了。修复方式是 sampling 和 ranking，而不总是更多 training。Pass@k 让这一点可见。
 
 Pass@k 会和 pass@1 一起报告，因为 pass@k 会掩盖真实失败：如果 model 二十次里只有一次得到正确答案，你并没有一个有用的 agent。harness 会同时展示两者。
 
-## How this composes with the rest of Track A
+## 它如何与 Track A 的其余部分组合
 
 Lesson 25 产出了 gate chain。Lesson 26 产出了 sandbox。harness 对任何 `shell_exit_zero` verifier 使用 sandbox。Lesson 28 会把每次 harness run 包进 OTel trace。Lesson 29 针对其中一个捆绑 fixtures 运行 end-to-end demo，并断言 reference candidate 的 pass@1 = 1.0。
 
-## Running it
+## 运行方式
 
 ```bash
 cd phases/19-capstone-projects/27-eval-harness-fixture-tasks
