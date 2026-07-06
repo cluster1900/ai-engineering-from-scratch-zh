@@ -68,7 +68,7 @@
 - 最适合 distributed Python workloads，其中 inference step 是更大 graph 中的一个 node。
 - Managed Ray clusters；与 Ray AIR 和 Ray Serve 深度集成。
 
-### Per-token versus per-minute — when each wins
+### Per-token 与 per-minute：分别在什么时候胜出
 
 当 workload 对 latency 不敏感且 bursty 时，per-token 是合理的，因为你只为实际使用付费。当 utilization 高且可预测时，per-minute 是合理的，因为一旦你让 GPU 饱和，就会胜过 per-token。
 
