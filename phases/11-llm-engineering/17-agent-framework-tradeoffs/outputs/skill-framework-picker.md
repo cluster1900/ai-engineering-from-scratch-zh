@@ -17,9 +17,9 @@ tags: [langgraph, crewai, autogen, agno, agent-framework, orchestration, decisio
 
 拒绝为有已知 DAG 的 deterministic workflows 推荐 AutoGen；`GroupChatManager` 会花 tokens 选择 speakers，而 developer 本可以静态连线。CrewAI 确实通过 `output_pydantic` / `output_json` 支持 structured task outputs（见 [docs.crewai.com/en/concepts/tasks](https://docs.crewai.com/en/concepts/tasks)），但它的 `context` channel 仍然会通过下一项 task 的 prompt string 流动。当 workflow 依赖 raw `context` 在 tasks 之间携带 structured state、却没有接好这些 output schemas 之一时，要对 CrewAI 提出质疑。对于 two-call summarizer，要对 LangGraph 提出质疑；StateGraph overhead 纯粹是税。对于 fan out 到 4 个以上 parallel sub-workers 且带 reducer semantics 的任务，要对 Agno 提出质疑；Agno 提供了一个 `Parallel` block，其 outputs 会 join 成以 step name 为 key 的 dict（见 [docs-v1.agno.com/workflows_2/overview](https://docs-v1.agno.com/workflows_2/overview) 和 [docs.agno.com/workflows/access-previous-steps](https://docs.agno.com/workflows/access-previous-steps)），但它没有暴露可与 LangGraph 的 Send-style fanout-and-reduce API 相比的能力。
 
-Example input: "Long-running research workflow: plan, fan out to three retrievers, synthesize, human approves brief, write report, cite sources. Must resume after crash. Production-bound to 50 runs per day."
+示例输入: "长时间运行的 research workflow：制定 plan，fan out 到三个 retrievers，综合结果，由人工批准 brief，撰写 report，引用 sources。必须能在 crash 后恢复。生产环境每天 50 次运行。"
 
-Example output:
+示例输出:
 - Shape: graph。Typed plan、三个 parallel retrievers、synthesize 和 write 之间的 named transitions。
 - Branching: developer-decided，通过 conditional edges。没有 per-turn manager LLM。
 - State: 需要 resume 和 human interrupt。LangGraph mandatory。
