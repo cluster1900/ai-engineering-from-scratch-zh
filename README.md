@@ -1116,6 +1116,12 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 **触达（2026-05-14 已验证）：** 55,593 月访问者 · 90,709 page views · 7.5K stars ·
 Twitter/X 是 #1 acquisition channel。
 
+<br />
+<br />
+<a href="https://vercel.com/open-source-program">
+  <img alt="Vercel OSS Program" src="https://vercel.com/oss/program-badge-2026.svg" />
+</a>
+
 **当前 sponsors:** [CodeRabbit](https://coderabbit.link/rohit-ghumare) · [iii](https://iii.dev?utm_source=ai-engineering-from-scratch&utm_medium=readme&utm_campaign=sponsor)
 
 | 等级 | $/mo | 你将获得 |

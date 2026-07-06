@@ -67,17 +67,17 @@ description: AI Engineering from Scratch 的阶段测验。可通过 "quiz me"�
 
 **问题 1-4：概念类（What/Why）**
 这些问题测试对思想、定义和推理的理解。示例：
-- "What is the purpose of X?"
-- "Why does Y happen when Z?"
-- "Which statement best describes the relationship between A and B?"
-- "What problem does X solve?"
+- "X 的目的是什么？"
+- "为什么 Z 发生时会出现 Y？"
+- "哪一句最准确描述 A 与 B 的关系？"
+- "X 解决了什么问题？"
 
 **问题 5-8：实践类（How/Build）**
 这些问题测试应用知识和实现意识。示例：
-- "How would you implement X?"
-- "Which approach correctly solves Y?"
-- "What is the correct order of steps to build Z?"
-- "If you observe X during training, what should you do?"
+- "你会如何实现 X？"
+- "哪种方法能正确解决 Y？"
+- "构建 Z 的正确步骤顺序是什么？"
+- "如果训练期间观察到 X，你应该怎么做？"
 
 每道题必须有 3 或 4 个答案选项，标记为 A、B、C（以及可选的 D）。恰好一个选项是正确的。错误选项应当看起来合理，但对于学过材料的人来说应明显不正确。
 
@@ -111,15 +111,15 @@ D) The rank of the matrix after transformation
 完成全部 8 道题后，显示分数和等级：
 
 **7-8 题正确：Mastered**
-如果阶段是 19（Capstone Projects）："You have mastered the final phase. Congratulations, you have completed the entire curriculum."
-否则："You have a strong grasp of Phase N. You are ready to move on to Phase N+1: [next phase name]."
+如果阶段是 19（Capstone Projects）："你已经掌握了最终阶段。恭喜，你已经完成了整套课程。"
+否则："你已经很好地掌握了 Phase N，可以进入 Phase N+1：[next phase name]。"
 
 **5-6 题正确：Almost**
 "基础扎实。继续之前，请复习这些具体方面："
 然后列出与错题相关的 lessons。
 
 **3-4 题正确：Developing**
-"You are building understanding but need to revisit some lessons:"
+"你正在建立理解，但还需要回看一些课程："
 然后列出每道错题以及需要重读的 lesson。
 
 **0-2 题正确：Start Over**
