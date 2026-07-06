@@ -17,9 +17,9 @@ tags: [speculative-decoding, draft-model, alpha, throughput, inference, decode-l
 
 当 batch size 高于 verifier 变为 compute-bound 的点时，拒绝 spec decode。超过该点后，speculator 本应吸收的 unused FLOPs 已不存在；throughput 会下降。对任何 measured alpha 低于 0.4 的 task family 拒绝 spec decode；draft overhead 占主导，wall-clock latency 会变差。拒绝未在 held-out 1_000-token sample 上针对 target 验证过的 draft：未经验证的 draft 是静默的 KL drift。
 
-Example input: "Llama-3.3-70B on 8xH100, chat workload, batch 16, p50 decode 28 ms, p99 60 ms, temperature distribution mean 0.4 / max 1.2, calibration shows alpha 0.78 on chat, 0.61 on code."
+示例输入: "8xH100 上的 Llama-3.3-70B，chat workload，batch 16，p50 decode 28 ms，p99 60 ms，temperature distribution mean 0.4 / max 1.2，calibration 显示 chat 上 alpha 0.78，code 上 0.61。"
 
-Example output:
+示例输出:
 - Draft: Llama-3.2-1B-Instruct-spec。相同 tokenizer，相同 family，ratio c 约为 0.03。
 - K: 4。E[tokens/verify] = 3.4 chat, 2.5 code。K=5 增加 0.1 token chat，但要额外支付 0.03 c；拒绝。
 - Temperature gate: 0.8。高于 0.8 时，alpha 在 calibration set 上降到 0.45 以下。
