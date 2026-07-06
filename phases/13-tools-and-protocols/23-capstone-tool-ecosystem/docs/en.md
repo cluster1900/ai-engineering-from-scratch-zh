@@ -17,7 +17,7 @@
 ## 问题
 交付这个 “research and report” 系统：
 
-- User asks: "summarize the three most-cited 2026 arXiv papers on agent protocols."
+- 用户提问: "总结 2026 年关于 agent protocols 的三篇被引用最多的 arXiv 论文。"
 - System: 通过 MCP 搜索 arXiv；通过 A2A 将论文摘要委托给专门的 writer agent；聚合结果；将交互式报告渲染为 MCP Apps `ui://` resource；把每一步记录到 OTel。
 
 Phase 13 的所有 primitives 都会出现。这不是玩具示例 — Anthropic（Claude Research product）、OpenAI（带 Apps SDK 的 GPTs）以及第三方在 2026 年交付的 production research-assistant systems，正是这种形态。
