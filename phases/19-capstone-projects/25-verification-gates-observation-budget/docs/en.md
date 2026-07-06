@@ -15,7 +15,7 @@
 - 当累计 observation budget 将被超出时，拒绝一次 tool call。
 - 暴露结构化的 `GateDecision` record，供下游 observability 摄取。
 
-## The Problem
+## 问题
 
 当 agent harness 允许模型自由调用 tools 时，真实使用的第一个小时内就会出现三类 bug。
 
@@ -27,7 +27,7 @@
 
 Verification gate 是 harness 中负责说“不”的组件。它不是模型。它不是 judge。它是 `(call, history, ledger)` 的确定性函数，返回 ALLOW 或 DENY，并附带 reason。reason 会被记录。模型会被告知。loop 会继续或中止。
 
-## The Concept
+## 概念
 
 ```mermaid
 flowchart LR
@@ -50,7 +50,7 @@ gate 是任何带有 `evaluate(call, ctx) -> GateDecision` 方法的对象。cha
 
 observation ledger 负责记账。每一次成功的 tool call 都会写入一行：tool name、turn、tokens emitted、cumulative。ledger 回答两个问题：模型总共看到了多少，以及它看到了 tool X 的多少。budget gate 读取第一个。per-tool budget gate 是你的练习内容，它会读取第二个。
 
-## Architecture
+## 架构
 
 ```mermaid
 flowchart TD
@@ -63,7 +63,7 @@ flowchart TD
 
 harness 会询问 chain。chain 要么点头，要么拒绝。如果它点头，tool 会运行，ledger 会计数，结果会被追加到 message store。如果它拒绝，模型会以 system message 的形式拿到 refusal，然后 loop 决定是重试还是中止。
 
-## What you will build
+## 你将构建什么
 
 实现是一个 `main.py` 加 tests。
 
@@ -76,17 +76,17 @@ harness 会询问 chain。chain 要么点头，要么拒绝。如果它点头，
 
 token counter 有意采用很粗糙的 `len(text) // 4` heuristic。本课重点是 gate plumbing，而不是 tokenizer。生产环境中请替换为真正的 tokenizer。
 
-## Why the chain order matters
+## 为什么 chain 顺序重要
 
 一次 deny 比一次 allow 更便宜。`WhitelistGate` 运行 O(1) hash lookup。`RegexGate` 运行 O(pattern * argv)。`RecencyGate` 读取 message store 的一个小 slice。`BudgetGate` 读取整个 ledger。你需要按成本升序排列它们，这样被 deny 的 call 就能在执行昂贵工作前 short-circuit。
 
 你还要按 blast radius 排序。Whitelist 是最强的主张：这个 tool 不在 contract 中。regex gate 其次：这个 argument 不在 contract 中。Recency 在后面：harness 仍然关心，但 call 在结构上是合法的。Budget 放在最后，因为按照定义，它只会在其他所有检查都通过后触发。
 
-## How this composes with the rest of Track A
+## 它如何与 Track A 的其余部分组合
 
 之前的课程已经给了你 loop、tool registry、message store、prompt builder 和 model router。本课添加模型与 tools 之间的层。第 26 课会提供 sandbox，当 gate chain 返回 ALLOW 后，dispatcher 会把 tool call 交给它。第 27 课会提供 eval harness，把 refusal counts 作为质量信号记录下来。第 28 课会把 gate decisions 接入 OpenTelemetry spans。第 29 课会把这些内容拼接成一个可工作的 coding agent。
 
-## Running it
+## 运行方式
 
 ```bash
 cd phases/19-capstone-projects/25-verification-gates-observation-budget
