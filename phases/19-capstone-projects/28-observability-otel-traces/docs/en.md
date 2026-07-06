@@ -77,17 +77,17 @@ span id 和 trace id 是 16-byte hex strings，由 `os.urandom` 生成。这符�
 
 histogram 有一组固定 buckets（OTel 对毫秒 latency 的默认值：5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf）。Samples 以 list 保存；exposition 会按需计算每个 bucket 的 counts。
 
-## Why hand-rolled instead of opentelemetry-sdk
+## 为什么手写，而不是使用 opentelemetry-sdk
 
 OTel Python SDK 是一个真实 dependency。它也有数千行代码、OTLP exporter 的多个进程，以及会淹没一节课预算的 runtime cost。手写版本教授 wire format。在生产中，你把相同 attributes 接入真实 SDK，就能免费得到 OTLP exporter、batching 和 resource detection。
 
 conventions 是稳定的。本课发出的 wire format 到 2030 年仍会继续可解析，因为 OTel 从不破坏 GenAI attribute names；它们只会添加新的 names。
 
-## How this composes with the rest of Track A
+## 它如何与 Track A 的其余部分组合
 
 Lesson 25 产出了 gate chain。Lesson 26 产出了 sandbox。Lesson 27 产出了 eval harness。Lesson 28 让这三者都可观测。Lesson 29 会把 end-to-end demo 的每一步都包进 spans，并在最后打印 Prometheus text。
 
-## Running it
+## 运行方式
 
 ```bash
 cd phases/19-capstone-projects/28-observability-otel-traces
