@@ -59,7 +59,7 @@ Browser agent 是一种 long-horizon agent：它会读取不受信任的内容�
 - **Tool allowlist per task.** Agent 可以 browse；除非某个 tool 已为该任务显式启用，否则它不能发起 wire transfer。Lesson 13 涵盖 budgets。
 - **Session isolation.** Browser agent sessions 只使用 scoped credentials 运行。没有 production auth，没有个人 email。保留每个 HTTP request 的日志以供 audit。
 - **Content sanitizer.** Fetched HTML 在拼接进模型 context 前，会剥离 known-bad patterns。（减少容易的攻击；无法阻止复杂 payload。）
-- **HITL on consequential actions.** Propose-then-commit pattern（Lesson 15）。
+- **对 consequential actions 使用 HITL。** Propose-then-commit pattern（Lesson 15）。
 - **Canary tokens on memory.** 如果一条 memory entry 触发，用户会看到它（Lesson 14）。
 
 ## 使用它

@@ -32,9 +32,9 @@ tags: [browser-agents, prompt-injection, trust-boundary, osworld, webarena]
 输出格式：
 
 返回一份 trust-boundary memo，包含：
-- **Read surface table**（origin、in-trust / out-of-trust）
+- **Read surface table**（读取来源、是否在 trust boundary 内 / 外）
 - **Write surface table**（action、blast radius、reversible y/n）
-- **Defense stack**（已配置 layers 的 bulleted list）
+- **Defense stack**（已配置 layers 的项目列表）
 - **Benchmark-fit note**（如适用）
 - **Known-attack checklist**（五行，每行命名 defense）
 - **部署结论**（production / staging / research-only）
