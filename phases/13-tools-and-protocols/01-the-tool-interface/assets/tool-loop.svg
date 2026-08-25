@@ -18,42 +18,42 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">四步 tool-call 循环</text>
+  <text x="480" y="26" text-anchor="middle" class="title">四步 Tool 调用循环</text>
 
   <rect x="40" y="70" width="200" height="110" class="cool"/>
   <text x="140" y="96" text-anchor="middle" class="head">1 / 描述</text>
-  <text x="140" y="122" text-anchor="middle" class="small">host 注册 tools</text>
+  <text x="140" y="122" text-anchor="middle" class="small">主机注册 Tools</text>
   <text x="140" y="138" text-anchor="middle" class="small">名称 + 描述</text>
   <text x="140" y="154" text-anchor="middle" class="small">+ JSON Schema 输入</text>
-  <text x="140" y="170" text-anchor="middle" class="small">+ executor function</text>
+  <text x="140" y="170" text-anchor="middle" class="small">+ executor 函数</text>
 
   <rect x="280" y="70" width="200" height="110" class="cold"/>
   <text x="380" y="96" text-anchor="middle" class="head">2 / 决策</text>
-  <text x="380" y="122" text-anchor="middle" class="small">model 输出二选一</text>
-  <text x="380" y="138" text-anchor="middle" class="small">文本答案 OR</text>
+  <text x="380" y="122" text-anchor="middle" class="small">Model 输出二选一</text>
+  <text x="380" y="138" text-anchor="middle" class="small">文本答案或</text>
   <text x="380" y="154" text-anchor="middle" class="small">tool_calls: [ {id,</text>
   <text x="380" y="170" text-anchor="middle" class="small">name, arguments} ]</text>
 
   <rect x="520" y="70" width="200" height="110" class="hot"/>
   <text x="620" y="96" text-anchor="middle" class="head">3 / 执行</text>
-  <text x="620" y="122" text-anchor="middle" class="small">host 校验 args</text>
-  <text x="620" y="138" text-anchor="middle" class="small">按 schema,</text>
-  <text x="620" y="154" text-anchor="middle" class="small">管控 consequential</text>
-  <text x="620" y="170" text-anchor="middle" class="small">tools，运行 executor</text>
+  <text x="620" y="122" text-anchor="middle" class="small">主机校验 args</text>
+  <text x="620" y="138" text-anchor="middle" class="small">按 schema，</text>
+  <text x="620" y="154" text-anchor="middle" class="small">管控后果性</text>
+  <text x="620" y="170" text-anchor="middle" class="small">Tools，运行 executor</text>
 
   <rect x="760" y="70" width="180" height="110" class="box"/>
   <text x="850" y="96" text-anchor="middle" class="head">4 / 观察</text>
-  <text x="850" y="122" text-anchor="middle" class="small">host 追加</text>
-  <text x="850" y="138" text-anchor="middle" class="small">tool result，带</text>
-  <text x="850" y="154" text-anchor="middle" class="small">匹配 id；再</text>
-  <text x="850" y="170" text-anchor="middle" class="small">调用 model</text>
+  <text x="850" y="122" text-anchor="middle" class="small">主机追加</text>
+  <text x="850" y="138" text-anchor="middle" class="small">Tool 结果，带</text>
+  <text x="850" y="154" text-anchor="middle" class="small">匹配 id；再次</text>
+  <text x="850" y="170" text-anchor="middle" class="small">调用 Model</text>
 
   <path d="M240,125 L280,125" class="edge" marker-end="url(#arrow)"/>
   <path d="M480,125 L520,125" class="edge" marker-end="url(#arrow)"/>
   <path d="M720,125 L760,125" class="edge" marker-end="url(#arrow)"/>
   <path d="M850,180 C850,240 380,240 380,220" class="edge" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
 
-  <text x="600" y="256" text-anchor="middle" class="caption">循环直到 model 返回文本或 host 达到 MAX_TURNS</text>
+  <text x="600" y="256" text-anchor="middle" class="caption">循环直到 Model 返回文本或主机达到 MAX_TURNS</text>
 
   <rect x="40" y="290" width="440" height="210" class="box"/>
   <text x="260" y="316" text-anchor="middle" class="head">同一循环，不同名称</text>
@@ -62,18 +62,18 @@
   <text x="60" y="382" class="step">Gemini         : functionDeclarations / functionCall</text>
   <text x="60" y="402" class="step">MCP            : tools/list / tools/call / content</text>
   <text x="60" y="422" class="step">A2A            : skills / tasks/send / Artifact parts</text>
-  <text x="60" y="442" class="step">WebMCP (2026)  : browser tool manifest / dispatch</text>
+  <text x="60" y="442" class="step">WebMCP (2026)  : 浏览器 Tool 清单 / 分派</text>
   <text x="60" y="472" class="small">每行都是相同四步，只是列名不同。</text>
 
   <rect x="520" y="290" width="420" height="210" class="cool"/>
-  <text x="730" y="316" text-anchor="middle" class="head">pure vs consequential</text>
-  <text x="540" y="342" class="step">pure（可安全重跑）</text>
+  <text x="730" y="316" text-anchor="middle" class="head">纯操作 vs 后果性操作</text>
+  <text x="540" y="342" class="step">纯操作（可安全重跑）</text>
   <text x="540" y="360" class="small">get_weather, search_docs, get_time</text>
-  <text x="540" y="380" class="step">consequential（需要 gate）</text>
+  <text x="540" y="380" class="step">后果性操作（需要门控）</text>
   <text x="540" y="398" class="small">send_email, delete_file, execute_trade</text>
-  <text x="540" y="424" class="step">Meta Rule of Two (2026)</text>
+  <text x="540" y="424" class="step">Meta 二项规则（2026）</text>
   <text x="540" y="442" class="small">一轮最多只能组合以下两项：</text>
   <text x="540" y="458" class="small">- 不可信输入</text>
   <text x="540" y="474" class="small">- 敏感数据</text>
-  <text x="540" y="490" class="small">- consequential action</text>
+  <text x="540" y="490" class="small">- 后果性操作</text>
 </svg>
