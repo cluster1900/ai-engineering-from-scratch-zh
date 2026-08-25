@@ -11,7 +11,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">三种 Embedding 模式 - 同一段落，三个 Vector</text>
+  <text x="450" y="30" text-anchor="middle" class="title">三种 Embedding 模式：同一段落，三个 Vector</text>
 
   <!-- Input passage -->
   <rect x="40" y="55" width="820" height="40" class="box"/>
@@ -26,7 +26,7 @@
   <text x="170" y="200" text-anchor="middle" class="content">[0.23, -0.11, ..., 0.08]</text>
   <text x="170" y="225" text-anchor="middle" class="dim">dim = 1024 (BGE-M3)</text>
 
-  <text x="170" y="260" text-anchor="middle" class="caption">cosine similarity 排序</text>
+  <text x="170" y="260" text-anchor="middle" class="caption">按 cosine similarity 排序</text>
   <text x="170" y="278" text-anchor="middle" class="caption">按语义排序段落</text>
   <text x="170" y="310" text-anchor="middle" class="label">Matryoshka 选项：</text>
   <text x="170" y="328" text-anchor="middle" class="content">截断到 256 dim</text>
@@ -36,13 +36,13 @@
   <!-- Sparse column -->
   <rect x="320" y="115" width="260" height="260" class="box"/>
   <text x="450" y="140" text-anchor="middle" class="label">sparse (SPLADE-style)</text>
-  <text x="450" y="160" text-anchor="middle" class="caption">每个 vocab token 一个权重</text>
+  <text x="450" y="160" text-anchor="middle" class="caption">每个 vocab Token 一个权重</text>
 
   <rect x="340" y="180" width="220" height="30" class="hot"/>
   <text x="450" y="200" text-anchor="middle" class="content">{iPhone: 2.1, Apple: 1.8, ...}</text>
   <text x="450" y="225" text-anchor="middle" class="dim">大多为零，|vocab| 槽位</text>
 
-  <text x="450" y="260" text-anchor="middle" class="caption">学习式 BM25 -</text>
+  <text x="450" y="260" text-anchor="middle" class="caption">学习式 BM25：</text>
   <text x="450" y="278" text-anchor="middle" class="caption">词项权重来自 Transformer</text>
   <text x="450" y="310" text-anchor="middle" class="label">优势：</text>
   <text x="450" y="328" text-anchor="middle" class="content">关键词密集查询，</text>
@@ -58,12 +58,12 @@
   <text x="730" y="200" text-anchor="middle" class="content">[v_Apple, v_released, ...]</text>
   <text x="730" y="225" text-anchor="middle" class="dim">(n_tokens, 128)</text>
 
-  <text x="730" y="260" text-anchor="middle" class="caption">MaxSim: 对每个 q-token</text>
+  <text x="730" y="260" text-anchor="middle" class="caption">MaxSim：对每个 q-token</text>
   <text x="730" y="278" text-anchor="middle" class="caption">取最佳 d-token 匹配</text>
   <text x="730" y="310" text-anchor="middle" class="label">权衡：</text>
   <text x="730" y="328" text-anchor="middle" class="content">更大的索引，</text>
   <text x="730" y="346" text-anchor="middle" class="content">长文本召回更好</text>
   <text x="730" y="364" text-anchor="middle" class="content">且专门查询更好</text>
 
-  <text x="450" y="405" text-anchor="middle" class="caption">BGE-M3 一次 forward pass 输出三者 - 用加权和或 RRF 融合</text>
+  <text x="450" y="405" text-anchor="middle" class="caption">BGE-M3 一次 forward pass 输出三者：用加权和或 RRF 融合</text>
 </svg>

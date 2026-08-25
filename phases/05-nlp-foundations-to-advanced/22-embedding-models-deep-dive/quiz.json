@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "什么是 dense Embedding？",
       "options": [
-        "文档上的 graph",
-        "每个 vocab Token 一个 sparse weight",
+        "每段文本一个固定大小的 Vector，其中 cosine similarity 按语义接近度对 passage 排序",
         "Token-level alignment Matrix",
-        "每段文本一个固定大小的 Vector，其中 cosine similarity 按语义接近度对 passage 排序"
+        "每个 vocab Token 一个 sparse weight",
+        "文档上的 graph"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "Dense Embeddings 为每段文本提供一个 Vector（通常为 384-3072 dim）；cosine 用于排序相似度。"
     },
     {
       "stage": "pre",
       "question": "Matryoshka Representation Learning 支持什么能力？",
       "options": [
-        "Multilingual training",
         "更快的 softmax",
-        "把训练好的 Embedding 截断到前 N 个维度，并仍然得到有用的更小 Embedding",
-        "Cross-encoder rescoring"
+        "Multilingual training",
+        "Cross-encoder rescoring",
+        "把训练好的 Embedding 截断到前 N 个维度，并仍然得到有用的更小 Embedding"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Matryoshka training 让 Vector 的前 N 个 dims 可以独立使用，从而支持低成本截断。"
     },
     {
@@ -32,10 +32,10 @@
       "options": [
         "mean-pooled Token Vectors 的 cosine",
         "Cross-entropy",
-        "Earth-mover's distance",
-        "MaxSim：对每个 query Token 找到最相似的 document Token，然后对最大值求和"
+        "MaxSim：对每个 query Token 找到最相似的 document Token，然后对最大值求和",
+        "Earth-mover's distance"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": "ColBERT-style late interaction 会在 per-token Vectors 上使用 MaxSim。"
     },
     {
@@ -54,12 +54,12 @@
       "stage": "check",
       "question": "为什么在 cosine similarity 前必须重新 normalize 一个 Matryoshka-truncated Vector？",
       "options": [
-        "Truncation 会破坏训练",
         "Truncation 会改变 Vector norm；不重新 normalize，dot product 就不再等于 cosine",
         "Cosine 会忽略 normalization",
+        "Truncation 会破坏训练",
         "只有 FAISS 要求这样"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "截断后重新 normalize 会恢复 unit norm，使 dot product 再次等于 cosine。"
     },
     {
@@ -67,11 +67,11 @@
       "question": "为什么 BGE models 通常需要 query-side prefix string？",
       "options": [
         "用于压缩 queries",
+        "Prefixes 会改变 Tokenizer 行为",
         "FAISS 要求这样",
-        "BGE 训练时使用了显式 query prompt；省略它会损失 3-5 points recall",
-        "Prefixes 会改变 Tokenizer 行为"
+        "BGE 训练时使用了显式 query prompt；省略它会损失 3-5 points recall"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "BGE models 期望 queries 带有 'Represent this sentence for searching...' prefix。"
     },
     {
@@ -79,21 +79,21 @@
       "question": "为什么 MTEB 对选择 Embedding model 是必要但不充分的？",
       "options": [
         "MTEB 只覆盖英文",
+        "MTEB 奖励更大的模型",
         "MTEB 忽略 latency",
-        "Leaderboard ranks 是跨许多任务的平均值；你的具体 domain 可能不同，所以始终要在你的数据上 benchmark",
-        "MTEB 奖励更大的模型"
+        "Leaderboard ranks 是跨许多任务的平均值；你的具体 domain 可能不同，所以始终要在你的数据上 benchmark"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "MTEB 会跨任务平均；domain-specific eval 可能反转排名。"
     },
     {
       "stage": "post",
       "question": "什么时候应该在 dense Embeddings 旁边加入 SPLADE sparse retrieval？",
       "options": [
+        "只在小型 corpora 上",
         "只要 encoder 是 Multilingual 的",
-        "只要使用了 Matryoshka",
         "当 queries 以 keyword 为主，或包含 dense Embeddings 会模糊处理的 identifiers/codes 时",
-        "只在小型 corpora 上"
+        "只要使用了 Matryoshka"
       ],
       "correct": 2,
       "explanation": "SPLADE 可以捕捉 dense models 可能遗漏的 lexical/keyword matches；通过 RRF 与 dense 融合。"

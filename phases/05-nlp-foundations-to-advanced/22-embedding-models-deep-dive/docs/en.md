@@ -49,6 +49,10 @@ Massive Text Embedding Benchmark 在发布时（2022）覆盖 8 类任务中的 
 
 大多数 production stacks 会同时使用三者。
 
+```figure
+gx-matryoshka
+```
+
 ## 构建它
 
 ### 步骤 1： baseline — 使用 Sentence-BERT 的 dense embeddings
