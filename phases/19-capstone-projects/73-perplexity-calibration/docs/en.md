@@ -15,6 +15,10 @@
 - 构建绘制置信度与准确度曲线所需的可靠性图数据。
 - 将所有三个连接到评估线束中，以便runner可以将 `perplexity`、`ece` 和 `brier` 编号附加到模型报告中。
 
+```figure
+cd-reliability-diagram
+```
+
 ## 困惑告诉你什么
 
 困惑度是每个token 的指数平均负对数似然。越低越好。困惑度为 1 意味着模型为每个实际token分配概率 1。词汇量大小的困惑意味着模型是统一的并且没有学到任何东西。实际数字介于两者之间：WikiText-103 上的强大 2026 年基本模型大约为 8 到 12。同一文本上的一个坏的则为五十多。
@@ -112,7 +116,7 @@ report.populated_bins  # int
 
 `main.py` 定义 `perplexity`、`expected_calibration_error`、`brier_score`、`reliability_diagram` 和 `CalibrationReport` / `PerplexityResult` 数据类。该演示运行在已知基本事实的综合预测上：一个校准良好的模型、一个过度自信的模型和一个不够自信的模型。 `code/tests/test_calibration.py` 中的测试固定每个边缘情况以及综合预测变量的参考值。
 
-从上到下阅读 `main.py`。函数排序从标量到向量进行报告。每个函数都有一个简短的文档字符串，其中包含数学和合同。
+从上到下阅读 `main.py`。函数排序从标量到Vector进行报告。每个函数都有一个简短的文档字符串，其中包含数学和合同。
 
 ## 更进一步
 
