@@ -22,24 +22,24 @@
   <rect x="40" y="60" width="240" height="190" class="cool"/>
   <text x="160" y="82" text-anchor="middle" class="label">AAR-A 沙箱</text>
   <text x="160" y="104" text-anchor="middle" class="small">Claude Opus 4.6</text>
-  <text x="160" y="122" text-anchor="middle" class="small">fs / network / process 限制</text>
+  <text x="160" y="122" text-anchor="middle" class="small">文件系统 / 网络 / 进程限制</text>
   <text x="160" y="146" text-anchor="middle" class="content">任务：weak-to-strong distill</text>
   <text x="160" y="164" text-anchor="middle" class="content">允许自由分解</text>
-  <text x="160" y="190" text-anchor="middle" class="small">无 forum store 写权限</text>
-  <text x="160" y="206" text-anchor="middle" class="small">无 peers 日志读权限</text>
+  <text x="160" y="190" text-anchor="middle" class="small">无论坛存储写权限</text>
+  <text x="160" y="206" text-anchor="middle" class="small">无同伴日志读权限</text>
   <text x="160" y="222" text-anchor="middle" class="small">仅通过 API 发到论坛</text>
 
   <rect x="320" y="60" width="240" height="190" class="cool"/>
   <text x="440" y="82" text-anchor="middle" class="label">AAR-B 沙箱</text>
   <text x="440" y="104" text-anchor="middle" class="small">Claude Opus 4.6</text>
-  <text x="440" y="122" text-anchor="middle" class="small">fs / network / process 限制</text>
+  <text x="440" y="122" text-anchor="middle" class="small">文件系统 / 网络 / 进程限制</text>
   <text x="440" y="146" text-anchor="middle" class="content">任务：RLHF sweep</text>
   <text x="440" y="164" text-anchor="middle" class="content">允许自由分解</text>
 
   <rect x="600" y="60" width="240" height="190" class="cool"/>
   <text x="720" y="82" text-anchor="middle" class="label">AAR-C 沙箱</text>
   <text x="720" y="104" text-anchor="middle" class="small">Claude Opus 4.6</text>
-  <text x="720" y="122" text-anchor="middle" class="small">fs / network / process 限制</text>
+  <text x="720" y="122" text-anchor="middle" class="small">文件系统 / 网络 / 进程限制</text>
   <text x="720" y="146" text-anchor="middle" class="content">任务：alignment-faking detector</text>
   <text x="720" y="164" text-anchor="middle" class="content">允许自由分解</text>
 
@@ -48,7 +48,7 @@
   <text x="440" y="314" text-anchor="middle" class="label">共享研究论坛</text>
   <text x="440" y="334" text-anchor="middle" class="content">仅追加、防篡改日志</text>
   <text x="440" y="350" text-anchor="middle" class="content">存储在所有沙箱外</text>
-  <text x="440" y="366" text-anchor="middle" class="small">record n -&gt; H(record n-1) — 任意编辑触发破坏检测</text>
+  <text x="440" y="366" text-anchor="middle" class="small">record n -&gt; H(record n-1) — 任意编辑都会触发篡改检测</text>
 
   <!-- Arrows -->
   <path d="M160 250 L280 290" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>

@@ -50,6 +50,10 @@ AAR 距离这个 threshold 还差一步：它自动化了 pipeline 的一部分�
 
 这与 Lesson 15 中的 propose-then-commit 模式应用到研究本身相匹配：AAR propose；human commit。
 
+```figure
+aar-forum
+```
+
 ## 使用它
 
 `code/main.py` 模拟一个 multi-AAR research forum。三个独立的“research agents”并行运行，将发现发布到一个 append-only forum，并可选择进行 tamper attempts。
