@@ -1,0 +1,78 @@
+{
+  "lesson": "08-messages-api-and-application-lifecycle",
+  "title": "Messages API 是一个状态机",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "当应用程序连续调用 Messages API 时，谁负责管理对话历史？",
+      "options": [
+        "服务提供方，它会自动将先前 Messages 请求的内容带入下一次调用",
+        "prompt cache，它会在前缀匹配时恢复被省略的历史",
+        "最新调用的工具，它会同时返回工具结果和完整的对话状态",
+        "客户端应用程序，它会选择、存储并重新发送所需的消息"
+      ],
+      "correct": 3,
+      "explanation": "Messages API 是无状态的。客户端负责选择、存储并重新发送每次状态转换所需的消息历史。"
+    },
+    {
+      "stage": "check",
+      "question": "在下一次请求中，user role 的 tool_result 之前必须出现什么？",
+      "options": [
+        "保留下来的 assistant 消息，其中包含与之匹配的 tool_use block",
+        "一条只包含 tool_result ID 和输出、且不含先前 content block 的 user 消息",
+        "先前的 assistant text block，并在执行后移除 tool_use block",
+        "由 assistant 对所请求工具调用生成的新摘要"
+      ],
+      "correct": 0,
+      "explanation": "assistant tool_use block 用于确立请求。后续的 tool_result 必须引用其 ID，并保持协议规定的顺序。"
+    },
+    {
+      "stage": "check",
+      "question": "某个响应看起来已完整，但其 stop_reason 为 max_tokens。最安全的解读是什么？",
+      "options": [
+        "如果最后一个 content block 能够解析并以完整句子结尾，则响应是完整的",
+        "输出可能不完整，需要显式恢复或升级处理",
+        "客户端应只重新发送最后一段，并要求模型从那里继续完成",
+        "将标点符号视为响应有意结束的证据"
+      ],
+      "correct": 1,
+      "explanation": "控制元数据优先于视觉观感。max_tokens 表示生成过程已达到配置的限制，因此不能假定输出是完整的。"
+    },
+    {
+      "stage": "check",
+      "question": "现有一个受支持的 SDK，需要处理 50,000 个可以稍后完成的独立 Classification。哪种访问模式最合适？",
+      "options": [
+        "使用 Raw REST 加工具循环，递归调度每条记录",
+        "使用一个同步 SDK 请求，在单次对话中包含整个集合",
+        "使用具有稳定 custom ID 和异步核对机制的 SDK Message Batches",
+        "使用 SDK streaming，以便从每个 Classification 的第一个 text delta 开始提交"
+      ],
+      "correct": 2,
+      "explanation": "受支持的 SDK 可以减少传输层的样板工作，而 Message Batches 适合结果可以稍后返回的独立任务。客户端选择和完成模式是两个独立的决策。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 stream 消费者应等待 terminal event 后再提交结构化结果？",
+      "options": [
+        "content-block stop 可以证明整个消息和传输均已成功完成",
+        "不含工具调用的 stream 可以在出现第一个完整 JSON 对象后提交",
+        "如果缺失的可选字段具有 schema 默认值，则可以提交有效前缀",
+        "部分 delta 可能不完整，而且连接仍可能失败"
+      ],
+      "correct": 3,
+      "explanation": "部分 stream 只是临时结果。客户端必须确认消息已经完成，才能解析最终契约或触发下游状态变更。"
+    },
+    {
+      "stage": "post",
+      "question": "用户提供了一个存在于应用程序 workspace 中的 Files API file_id。在将其包含到 Message 中之前，必须做什么？",
+      "options": [
+        "将其绑定到已认证的 tenant 和归应用程序所有且带有 retention policy 的 asset record",
+        "直接检索该文件，因为它存在于 workspace 中就能证明当前 tenant 拥有它",
+        "将其复制到 system prompt 中，让 Claude 决定该引用是否已获授权",
+        "将其转换为 inline base64，因为 inline content 不受 data boundary 要求约束"
+      ],
+      "correct": 0,
+      "explanation": "workspace scope 比 tenant authorization 更宽泛。应用程序必须将该 asset 加入 allowlist，绑定其所有权和敏感度，并独立于 opaque ID 执行删除策略。"
+    }
+  ]
+}
