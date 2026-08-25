@@ -15,7 +15,7 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">持久执行: replay 重跑工作流，已记录活动跳过</text>
+  <text x="440" y="26" text-anchor="middle" class="title">持久执行：replay 重跑工作流，已记录 activity 跳过</text>
 
   <rect x="40" y="50" width="800" height="460" class="box"/>
 
@@ -36,7 +36,7 @@
 
   <!-- Event log -->
   <rect x="60" y="170" width="490" height="74" class="cold"/>
-  <text x="80" y="192" class="label">event log (持久)</text>
+  <text x="80" y="192" class="label">事件日志（持久）</text>
   <text x="80" y="212" class="content">[fetch_docs started, fetch_docs done (result=X),</text>
   <text x="80" y="228" class="content">call_llm started, call_llm done (result=Y)]</text>
 
