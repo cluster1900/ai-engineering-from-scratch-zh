@@ -1,36 +1,61 @@
 [
   {
     "question": "RLHF 中的 reward model 从什么学习？",
-    "options": ["原始文本文档", "Human preference pairs：给定两个 responses，人类更偏好哪一个", "Benchmark 分数", "Model loss 曲线"],
+    "options": [
+      "原始文本文档",
+      "Human preference pairs：给定两个 responses，人类更偏好哪一个",
+      "Model loss 曲线",
+      "Benchmark 分数"
+    ],
     "correct": 1,
     "explanation": "reward model 在 preference data 上训练：对于同一个 prompt 的成对 responses，由人类标注哪一个更好。它学习为符合人类偏好的 responses 分配更高分数。",
     "stage": "pre"
   },
   {
     "question": "为什么在 RLHF 的 PPO 训练中使用 KL divergence penalty？",
-    "options": ["加快训练速度", "防止 policy 偏离 SFT model 太远，否则会导致 reward hacking", "减少内存使用", "改进 Tokenization"],
-    "correct": 1,
+    "options": [
+      "加快训练速度",
+      "减少内存使用",
+      "改进 Tokenization",
+      "防止 policy 偏离 SFT model 太远，否则会导致 reward hacking"
+    ],
+    "correct": 3,
     "explanation": "如果没有 KL penalty，model 会找到退化方式来最大化 reward score（例如生成重复文本来利用 reward model 的弱点）。KL 让 model 保持接近表现良好的 SFT baseline。",
     "stage": "pre"
   },
   {
     "question": "完整的 RLHF pipeline 需要多少个独立 models？",
-    "options": ["一个", "两个", "三个：SFT model、reward model，以及正在优化的 policy model", "四个"],
+    "options": [
+      "两个",
+      "四个",
+      "三个：SFT model、reward model，以及正在优化的 policy model",
+      "一个"
+    ],
     "correct": 2,
     "explanation": "RLHF 需要：(1) SFT model，作为起点和 KL reference；(2) 在 preferences 上训练的 reward model；(3) 使用 PPO 优化的 policy model。这种复杂性正是 DPO（lesson 08）被开发出来的原因。",
     "stage": "post"
   },
   {
     "question": "RLHF 中的 “reward hacking” 是什么？",
-    "options": ["reward model 被对抗者攻击", "policy 找到最大化 reward score 的方法，但并没有真正提高 response quality", "training data 被污染", "learning rate 太高"],
-    "correct": 1,
+    "options": [
+      "learning rate 太高",
+      "training data 被污染",
+      "policy 找到最大化 reward score 的方法，但并没有真正提高 response quality",
+      "reward model 被对抗者攻击"
+    ],
+    "correct": 2,
     "explanation": "reward model 是人类判断的不完美 proxy。policy 可能发现能获得高 reward 的模式（例如冗长 responses、过度回避），但实际上并没有更有帮助。KL penalty 会限制这一点。",
     "stage": "post"
   },
   {
     "question": "PPO 的 clipping mechanism 防止什么？",
-    "options": ["Gradient overflow", "过大的 policy updates，可能使训练不稳定", "Memory overflow", "Data leakage"],
-    "correct": 1,
+    "options": [
+      "Gradient overflow",
+      "Data leakage",
+      "Memory overflow",
+      "过大的 policy updates，可能使训练不稳定"
+    ],
+    "correct": 3,
     "explanation": "PPO 会将新旧 policy 之间的 probability ratio clip 到类似 [0.8, 1.2] 的范围。这防止任何单次 update 过于剧烈地改变 policy，使训练比 vanilla policy gradient 更稳定。",
     "stage": "post"
   }
