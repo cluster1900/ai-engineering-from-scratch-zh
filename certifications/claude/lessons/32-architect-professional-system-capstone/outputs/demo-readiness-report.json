@@ -1,0 +1,14 @@
+{
+  "status": "ready_for_architecture_defense",
+  "blocking_count": 0,
+  "findings": [],
+  "outcome": "将符合政策的首次响应时间从 11 分钟缩短至 3 分钟以内",
+  "hard_controls": ["授权", "政策时效性"],
+  "evaluation_gates": {
+    "policy_support": 0.985,
+    "p95_latency_ms": 7200,
+    "unsafe_action_count": 0
+  },
+  "operating_owner": "support-platform",
+  "rollback": "恢复已知安全的路由、Prompt 和政策索引。"
+}
