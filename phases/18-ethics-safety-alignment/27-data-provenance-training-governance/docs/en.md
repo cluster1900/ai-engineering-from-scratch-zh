@@ -71,6 +71,10 @@ dataprovenance.org。Longpre、Mahari、Lee 等，“Consent in Crisis”（2024
 
 Lesson 26 是模型级文档。Lesson 27 是数据集级治理。两者共同定义透明度层。Lesson 28 映射研究这些问题的生态系统。
 
+```figure
+an-provenance-oneway
+```
+
 ## 使用它
 
 `code/main.py` 会为一个 toy dataset 生成符合 California AB 2013 的 12 字段数据集摘要脚手架。你可以填写这些字段，并观察哪些字段会触发隐私或 copyright 后续义务。

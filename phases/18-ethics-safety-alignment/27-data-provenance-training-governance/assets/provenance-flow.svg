@@ -32,7 +32,7 @@
   <rect x="280" y="100" width="180" height="50" class="cold"/>
   <text x="370" y="125" text-anchor="middle" class="step">robots.txt</text>
   <rect x="280" y="160" width="180" height="50" class="cold"/>
-  <text x="370" y="185" text-anchor="middle" class="step">C2PA "No AI Training"</text>
+  <text x="370" y="185" text-anchor="middle" class="step">C2PA“禁止 AI Training”</text>
 
   <rect x="500" y="60" width="220" height="180" class="box"/>
   <text x="610" y="82" text-anchor="middle" class="head">训练 pipeline</text>
@@ -50,7 +50,7 @@
   <text x="830" y="143" text-anchor="middle" class="small">12 个字段</text>
   <rect x="760" y="160" width="140" height="50" class="cool"/>
   <text x="830" y="185" text-anchor="middle" class="step">Datasheet</text>
-  <text x="830" y="203" text-anchor="middle" class="small">(Lesson 26)</text>
+  <text x="830" y="203" text-anchor="middle" class="small">（第 26 课）</text>
 
   <path d="M 240 150 L 260 150" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow27)" fill="none"/>
   <path d="M 480 150 L 500 150" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow27)" fill="none"/>
@@ -58,11 +58,11 @@
 
   <rect x="40" y="280" width="880" height="210" class="box"/>
   <text x="480" y="305" text-anchor="middle" class="head">2024-2025 进展</text>
-  <text x="60" y="335" class="small">EU AI Act GPAI Code of Practice 版权章节 (2025)：所有 GPAI 提供方必须尊重退出。</text>
-  <text x="60" y="355" class="small">California AB 2013 (2024)：强制 12 个字段；2025 年 1 月起适用于新模型。</text>
-  <text x="60" y="375" class="small">Irish DPC (May 2025)、Cologne Higher Regional Court、UK ICO (Sept 2025)：有退出则合法利益可行。</text>
-  <text x="60" y="395" class="small">Brazilian ANPD (June 2024)：因透明度暂停 Meta；门槛比 EU 更严。</text>
-  <text x="60" y="425" class="small">Data Provenance Initiative (Jul 2024)："Consent in Crisis" -- robots.txt 限制加速。</text>
+  <text x="60" y="335" class="small">EU AI Act GPAI Code of Practice 版权章节（2025）：所有 GPAI 提供方必须尊重退出。</text>
+  <text x="60" y="355" class="small">California AB 2013（2024）：强制 12 个字段；2025 年 1 月起适用于新 Model。</text>
+  <text x="60" y="375" class="small">Irish DPC（2025 年 5 月）、Cologne Higher Regional Court、UK ICO（2025 年 9 月）：有退出则合法利益可行。</text>
+  <text x="60" y="395" class="small">Brazilian ANPD（2024 年 6 月）：因透明度暂停 Meta；门槛比 EU 更严。</text>
+  <text x="60" y="425" class="small">Data Provenance Initiative（2024 年 7 月）：“同意危机”——robots.txt 限制加速。</text>
   <text x="60" y="445" class="small">不可逆性：GDPR 删除权对已训练 weights 无实际对应。</text>
   <text x="60" y="465" class="small">unlearning 是近似的；经 MIA 校准；见 Lesson 22。合规窗口在采集时。</text>
   <text x="60" y="485" class="small">provenance 链 + AB 2013 摘要 + Datasheet + card = 2026 文档最低要求。</text>

@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "为什么训练数据治理的合规窗口是在收集时，而不是训练之后？",
       "options": [
-        "因为监管机构不会审计已部署的模型",
-        "因为 cookie-consent 框架禁止收集后的使用",
+        "一旦数据进入模型权重，就不可能进行外科手术式删除；从头重新训练是唯一完整的补救方式，而且成本高到难以承受",
         "因为 GDPR 的删除权不适用于 AI",
-        "一旦数据进入模型权重，就不可能进行外科手术式删除；从头重新训练是唯一完整的补救方式，而且成本高到难以承受"
+        "因为监管机构不会审计已部署的模型",
+        "因为 cookie-consent 框架禁止收集后的使用"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "California AB 2013 要求开发者在数据集摘要中发布大约多少个法定条目？",
       "options": [
-        "3",
-        "30",
         "12",
-        "7"
+        "3",
+        "7",
+        "30"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -31,11 +31,11 @@
       "question": "相对于 Gebru et al. 2018 datasheet 结构，哪一项 AB 2013 条目是新增的？",
       "options": [
         "数据集的来源或所有者",
+        "数据收集的时间段",
         "系统是否使用或持续使用合成数据生成",
-        "清理、处理或其他修改",
-        "数据收集的时间段"
+        "清理、处理或其他修改"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -43,11 +43,11 @@
       "question": "2025 年各 DPA 对 LLM 使用公开可用的第一方内容进行训练所形成的趋同原则是什么？",
       "options": [
         "在所有情况下都禁止训练",
-        "只能使用合成数据",
+        "Legitimate interest 可以作为使用公开可用的第一方内容进行训练的正当理由，但需要提供 opt-out 和适当保障；不要求 consent",
         "始终需要明确的用户同意",
-        "Legitimate interest 可以作为使用公开可用的第一方内容进行训练的正当理由，但需要提供 opt-out 和适当保障；不要求 consent"
+        "只能使用合成数据"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "Data Provenance Initiative 的《Consent in Crisis》（2024 年 7 月）发现了什么？",
       "options": [
-        "发布者正在以加速速度添加 robots.txt 限制；可公开用于训练的公共资源正在迅速收缩，2023 到 2024 年间约 25% 的顶级训练来源添加了限制",
-        "合成数据已经完全取代了 Web 数据",
         "所有来源的 consent 比率都保持稳定",
-        "robots.txt 限制正在逐年减少"
+        "合成数据已经完全取代了 Web 数据",
+        "robots.txt 限制正在逐年减少",
+        "发布者正在以加速速度添加 robots.txt 限制；可公开用于训练的公共资源正在迅速收缩，2023 到 2024 年间约 25% 的顶级训练来源添加了限制"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     }
   ]
