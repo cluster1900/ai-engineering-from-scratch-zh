@@ -80,6 +80,10 @@ Production agent 的失败方式，是 Jupyter notebook 暴露不出来的：第
 - **不透明的 background work。** Background agent 运行时不导出 trace。直到用户报告问题之前，失败都是不可见的。
 - **跳过 durable state。** 任何超过 30 秒、且你无法承受重启代价的 run，都需要 durable execution。
 
+```figure
+wb-runtime-shapes
+```
+
 ## 构建它
 
 `code/main.py` 是一个 stdlib multi-shape demo：
