@@ -18,22 +18,22 @@
   <rect x="40" y="50" width="280" height="180" class="shadow"/>
   <text x="180" y="72" text-anchor="middle" class="head">1. shadow mode</text>
   <text x="180" y="92" text-anchor="middle" class="step">零用户影响</text>
-  <text x="60" y="118" class="small">· 复制 prod requests 到 candidate</text>
-  <text x="60" y="136" class="small">· 记录 outputs、Token counts、latency</text>
+  <text x="60" y="118" class="small">· 将 prod requests 复制到 candidate</text>
+  <text x="60" y="136" class="small">· 记录输出、Token 数、延迟</text>
   <text x="60" y="154" class="small">· 与 production output 做 diff</text>
   <text x="60" y="172" class="small">· 捕捉：成本飙升、长度偏移、</text>
   <text x="60" y="190" class="small">明显拒答变化、硬错误</text>
-  <text x="180" y="214" text-anchor="middle" class="caption">不是质量测试 — 是 smoke test</text>
+  <text x="180" y="214" text-anchor="middle" class="caption">不是质量测试 — 而是 smoke test</text>
 
   <rect x="340" y="50" width="280" height="180" class="canary"/>
   <text x="480" y="72" text-anchor="middle" class="head">2. canary rollout</text>
   <text x="480" y="92" text-anchor="middle" class="step">1% → 10% → 25% → 50% → 75% → 100%</text>
   <text x="360" y="118" class="small">· 每步五道门槛：</text>
-  <text x="360" y="136" class="small">latency P99 &gt; 1.5x 基线</text>
+  <text x="360" y="136" class="small">延迟 P99 &gt; 1.5x 基线</text>
   <text x="360" y="154" class="small">cost/request &gt; 1.2x 基线</text>
   <text x="360" y="172" class="small">error/refusal &gt; 2x 基线</text>
   <text x="360" y="190" class="small">output-length 偏移 &gt; 1.4x</text>
-  <text x="360" y="208" class="small">thumbs-down &gt; 1.5x 基线</text>
+  <text x="360" y="208" class="small">差评 &gt; 1.5x 基线</text>
 
   <rect x="640" y="50" width="280" height="180" class="ab"/>
   <text x="780" y="72" text-anchor="middle" class="head">3. A/B（可选）</text>
@@ -42,7 +42,7 @@
   <text x="660" y="136" class="small">· 运行到统计显著</text>
   <text x="660" y="154" class="small">· CUPED / sequential / Benjamini-H</text>
   <text x="660" y="172" class="small">· 若只是改进变体则跳过</text>
-  <text x="660" y="190" class="small">· Phase 17 · 21 涵盖 GrowthBook +</text>
+  <text x="660" y="190" class="small">· 阶段 17 · 21 涵盖 GrowthBook +</text>
   <text x="660" y="208" class="small">Statsig 语义</text>
 
   <rect x="40" y="250" width="880" height="100" class="gate"/>
@@ -52,9 +52,9 @@
   <text x="480" y="334" text-anchor="middle" class="caption">门槛必须高于噪声底线，而非贴着基线</text>
 
   <rect x="40" y="370" width="880" height="110" class="box"/>
-  <text x="480" y="392" text-anchor="middle" class="head">秒级 rollback</text>
-  <text x="480" y="414" text-anchor="middle" class="step">policy flag（feature flags）+ model pin（registry digest）</text>
-  <text x="480" y="434" text-anchor="middle" class="step">rollback = flip flag + revert digest</text>
-  <text x="480" y="454" text-anchor="middle" class="small">若 rollback 需要 redeploy 就太慢了——先修 stack</text>
-  <text x="480" y="474" text-anchor="middle" class="caption">工具：Argo Rollouts、Flagger、Istio weighted、KServe、feature flag system</text>
+  <text x="480" y="392" text-anchor="middle" class="head">秒级回滚</text>
+  <text x="480" y="414" text-anchor="middle" class="step">策略标志（feature flags）+ Model 固定（registry digest）</text>
+  <text x="480" y="434" text-anchor="middle" class="step">回滚 = flip flag + revert digest</text>
+  <text x="480" y="454" text-anchor="middle" class="small">若回滚需要重新部署就太慢了——先修技术栈</text>
+  <text x="480" y="474" text-anchor="middle" class="caption">Tool：Argo Rollouts、Flagger、Istio weighted、KServe、feature flag 系统</text>
 </svg>

@@ -91,6 +91,10 @@ Canary gates 每 5-15 分钟检查一次，具体取决于 traffic volume。1% t
 - Cost gate：高于 baseline >20% 即为 breach。
 - Rollback：数秒，而不是数小时。
 
+```figure
+i4-canary-ramp
+```
+
 ## 使用它
 
 `code/main.py` 模拟带有注入 regressions 的 canary rollout。报告 rollout 在哪个 stage 停止，以及哪个 gate 被触发。
