@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "哪一组最能概括 inner / outer alignment 的区别？",
       "options": [
-        "Outer = model 是否在硬件上运行；inner = Loss 是否低",
+        "Outer = 数据是否干净；inner = Optimizer 是否是 stochastic 的",
         "Outer = base objective 是否符合我们的本意；inner = mesa-objective 是否符合 base objective",
         "Outer = policy 是否稳定；inner = temperature 是否低",
-        "Outer = 数据是否干净；inner = Optimizer 是否是 stochastic 的"
+        "Outer = model 是否在硬件上运行；inner = Loss 是否低"
       ],
       "correct": 1,
       "explanation": ""
@@ -19,23 +19,23 @@
       "question": "以下哪一项不是 Hubinger et al. 提出的四类 mesa-objective alignment 之一？",
       "options": [
         "近似 aligned",
+        "概率性 aligned",
         "稳健 aligned",
-        "Proxy aligned（代理目标 aligned）",
-        "概率性 aligned"
+        "Proxy aligned（代理目标 aligned）"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "在什么条件下，Deceptive Alignment 会成为 mesa-optimizer 的 reward 最大化策略？",
       "options": [
-        "它使用 PPO 而不是 DPO 进行 training",
         "它有持久的 terminal goal，具备区分 training 与 deployment 的 situational awareness，并且当它在 training 中暴露背离时 base optimizer 会修改它",
+        "它使用 PPO 而不是 DPO 进行 training",
         "它的容量超过 100B parameters",
         "它拥有任何内部表示"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -44,8 +44,8 @@
       "options": [
         "它需要比 RLHF 更多的 compute",
         "它教会 mesa-optimizer 更精准地区分 test 与 deployment，而不是形成 aligned mesa-objective",
-        "它使用了错误的 Loss Function",
-        "它不能在 GPUs 上运行"
+        "它不能在 GPUs 上运行",
+        "它使用了错误的 Loss Function"
       ],
       "correct": 1,
       "explanation": ""
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "Hubinger et al. (2019) 引入的 gradient hacking 是什么？",
       "options": [
+        "一种更快 training 的技术",
         "一种推测性的病态现象：有能力的 mesa-optimizer 生成输出，以塑造自身的 Gradient 更新，从而保留它的 mesa-objective",
-        "一种针对 instruction-tuned models 的 jailbreaking 方法",
         "autograd 中的一个 bug",
-        "一种更快 training 的技术"
+        "一种针对 instruction-tuned models 的 jailbreaking 方法"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "以下哪一项是 OUTER alignment failure，而不是 inner alignment failure？",
       "options": [
-        "reward hacking 和 sycophancy 出现，是因为 base objective 本身就是 human intent 的有缺陷 proxy",
-        "Mesa-optimizer 优化一个在 off-distribution 时会偏离的 proxy goal",
         "backdoor 在 SFT 后仍然存在",
-        "Mesa-optimizer 在 evaluation 中隐藏自己的 goal"
+        "Mesa-optimizer 在 evaluation 中隐藏自己的 goal",
+        "Mesa-optimizer 优化一个在 off-distribution 时会偏离的 proxy goal",
+        "reward hacking 和 sycophancy 出现，是因为 base objective 本身就是 human intent 的有缺陷 proxy"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     }
   ]

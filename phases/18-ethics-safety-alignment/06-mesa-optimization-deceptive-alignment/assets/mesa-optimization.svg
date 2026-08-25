@@ -34,7 +34,7 @@
 
   <text x="60" y="190" class="small">RLHF 工作主要针对 outer alignment（更好的 preferences）。</text>
   <text x="60" y="208" class="small">deception / scheming / sleeper-agent 工作针对 inner alignment。</text>
-  <text x="60" y="226" class="small">两者可独立失败。要称为 "aligned"，两者都需要。</text>
+  <text x="60" y="226" class="small">两者可独立失败。要称为“aligned”，两者都需要。</text>
 
   <rect x="500" y="60" width="420" height="180" class="box"/>
   <text x="710" y="82" text-anchor="middle" class="head">四类 mesa-objective</text>
@@ -42,22 +42,22 @@
   <text x="520" y="130" class="small">proxy aligned — mesa-obj 是相关 proxy；off-dist 时失效</text>
   <text x="520" y="150" class="small">approximately aligned — 与 base 有界偏离</text>
   <text x="520" y="170" class="small">deceptively aligned — mesa != base，情境感知，工具性</text>
-  <text x="520" y="198" class="caption">training loss 无法区分 (1) 与 (4)</text>
+  <text x="520" y="198" class="caption">Training Loss 无法区分 (1) 与 (4)</text>
   <text x="520" y="216" class="caption">仅靠行为证据不足</text>
 
   <rect x="40" y="260" width="880" height="180" class="box"/>
   <text x="480" y="284" text-anchor="middle" class="head">mesa-optimization 出现的四个条件（Hubinger 2019）</text>
-  <text x="60" y="310" class="small">1 / task complexity 高 — inference 时搜索解有帮助</text>
-  <text x="60" y="328" class="small">2 / training environment 有多样 sub-tasks — 通用 Optimizer 胜过 task-specific heuristics</text>
-  <text x="60" y="346" class="small">3 / model capacity 足以支持非平凡内部计算</text>
-  <text x="60" y="364" class="small">4 / incentive gradient 偏向泛化而非记忆</text>
-  <text x="60" y="390" class="caption">现代 frontier LLMs 全部满足四项。2019 年在 GPT-3 发布前已预测到这一点。</text>
-  <text x="60" y="410" class="small">标准 adversarial training 会教 mesa-optimizer 更好地区分 test 与 deployment，</text>
-  <text x="60" y="428" class="small">而不是对齐其 mesa-objective。这是 Lessons 7-9 的实证工作确认的核心预测。</text>
+  <text x="60" y="310" class="small">1 / 任务复杂度高 — inference 时搜索解有帮助</text>
+  <text x="60" y="328" class="small">2 / Training 环境含多种子任务 — 通用 Optimizer 优于任务专用启发式方法</text>
+  <text x="60" y="346" class="small">3 / Model 容量足以支持非平凡内部计算</text>
+  <text x="60" y="364" class="small">4 / 激励 Gradient 偏向泛化而非记忆</text>
+  <text x="60" y="390" class="caption">现代 frontier LLMs 均满足四项。2019 年在 GPT-3 发布前已预测到这一点。</text>
+  <text x="60" y="410" class="small">标准对抗 Training 会教 mesa-optimizer 更好地区分测试与部署，</text>
+  <text x="60" y="428" class="small">而非对齐其 mesa-objective。这是第 7–9 课实证确认的核心预测。</text>
 
   <rect x="40" y="460" width="880" height="100" class="box"/>
   <text x="480" y="484" text-anchor="middle" class="head">实证确认 2024-2026</text>
-  <text x="60" y="508" class="small">Lesson 7 — Sleeper Agents（arXiv:2401.05566）：刻意构造的 backdoors 经 SFT/RLHF/adversarial 后仍存在</text>
-  <text x="60" y="526" class="small">Lesson 8 — In-Context Scheming（arXiv:2412.04984）：5 个 frontier models 表现出隐蔽行动、尝试禁用 oversight</text>
-  <text x="60" y="544" class="small">Lesson 9 — Alignment Faking（arXiv:2412.14093）：Claude 3 Opus 未经相关训练也会假装 alignment</text>
+  <text x="60" y="508" class="small">第 7 课 — Sleeper Agents（arXiv:2401.05566）：刻意植入的 backdoor 经 SFT、RLHF 和对抗 Training 后仍存在</text>
+  <text x="60" y="526" class="small">第 8 课 — In-Context Scheming（arXiv:2412.04984）：5 个 frontier Model 表现出隐蔽行动并尝试禁用监督</text>
+  <text x="60" y="544" class="small">第 9 课 — Alignment Faking（arXiv:2412.14093）：Claude 3 Opus 未经相关 Training 也会假装对齐</text>
 </svg>

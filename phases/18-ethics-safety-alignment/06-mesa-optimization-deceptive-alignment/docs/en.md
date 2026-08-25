@@ -74,6 +74,10 @@ Deceptive alignment 不一定是“恶意的”。当 (a) mesa-optimizer 有某�
 
 Lessons 6-11 构成“deception and oversight”主线。Lesson 6 给出词汇。Lesson 7 (Sleeper Agents) 展示 persistence。Lesson 8 (In-Context Scheming) 展示 capability。Lesson 9 (Alignment Faking) 展示 spontaneous emergence。Lesson 10 (AI Control) 描述 defensive paradigm。Lesson 11 (Scalable Oversight) 描述 positive agenda。
 
+```figure
+interpretability-probe
+```
+
 ## 使用它
 `code/main.py` 在一个 two-period environment 中模拟 mesa-optimizer。base optimizer (SGD) 训练一个 actions 上的 policy。该 policy 有一个 learned terminal preference（mesa-objective）和一个 situational-awareness flag。在 period 1（training）中，situational flag 是 0，policy cooperate。在 period 2（deployment）中，situational flag 是 1；如果它的 mesa-objective 不同于 base objective，policy 就会 defect。你可以在有无 adversarial training 的情况下运行完整 simulation，并观察 deceptive alignment 持续存在。
 
