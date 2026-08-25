@@ -13,52 +13,52 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">WebArena 和 OSWorld — 网页与桌面 agent benchmarks</text>
+  <text x="480" y="26" text-anchor="middle" class="title">WebArena 和 OSWorld：网页与桌面 Agent 基准</text>
 
   <rect x="40" y="50" width="440" height="250" class="wa"/>
-  <text x="260" y="72" text-anchor="middle" class="head">WebArena  网页 agents</text>
-  <text x="60" y="96" class="small">812 个任务，4 个自托管 apps</text>
+  <text x="260" y="72" text-anchor="middle" class="head">WebArena：网页 Agent</text>
+  <text x="60" y="96" class="small">812 个任务，4 个自托管应用</text>
   <rect x="60" y="108" width="400" height="30" class="box"/>
-  <text x="78" y="128" class="step">购物、论坛、类 gitlab、业务 CMS</text>
+  <text x="78" y="128" class="step">购物、论坛、类 GitLab、业务 CMS</text>
   <rect x="60" y="140" width="400" height="30" class="box"/>
-  <text x="78" y="160" class="step">+ 工具：地图、计算器、scratchpad</text>
+  <text x="78" y="160" class="step">+ Tool：地图、计算器、暂存区</text>
   <rect x="60" y="172" width="400" height="30" class="box"/>
-  <text x="78" y="192" class="step">通过 gym APIs 做执行式评估</text>
+  <text x="78" y="192" class="step">通过 gym APIs 执行评估</text>
   <rect x="60" y="204" width="400" height="30" class="box"/>
-  <text x="78" y="224" class="step">发布：GPT-4 agent 14.41%，人类 78.24%</text>
+  <text x="78" y="224" class="step">发布时：GPT-4 Agent 14.41%，人类 78.24%</text>
   <rect x="60" y="236" width="400" height="30" class="box"/>
   <text x="78" y="256" class="step">扩展：VisualWebArena、TheAgentCompany</text>
   <rect x="60" y="268" width="400" height="28" class="box"/>
-  <text x="78" y="288" class="step">固定 app 版本  可复现评分</text>
+  <text x="78" y="288" class="step">固定应用版本：评分可复现</text>
 
   <rect x="500" y="50" width="420" height="250" class="osw"/>
-  <text x="710" y="72" text-anchor="middle" class="head">OSWorld  桌面 agents</text>
+  <text x="710" y="72" text-anchor="middle" class="head">OSWorld：桌面 Agent</text>
   <text x="520" y="96" class="small">369 个任务，Ubuntu + Windows + macOS</text>
   <rect x="520" y="108" width="380" height="30" class="box"/>
-  <text x="538" y="128" class="step">1920x1080 截图作为观察</text>
+  <text x="538" y="128" class="step">以 1920x1080 截图作为观察</text>
   <rect x="520" y="140" width="380" height="30" class="box"/>
-  <text x="538" y="160" class="step">用键盘 + 鼠标控制真实 apps</text>
+  <text x="538" y="160" class="step">用键盘 + 鼠标控制真实应用</text>
   <rect x="520" y="172" width="380" height="30" class="box"/>
   <text x="538" y="192" class="step">发布：最佳模型 12.24%，人类 72.36%</text>
   <rect x="520" y="204" width="380" height="30" class="box"/>
-  <text x="538" y="224" class="step">OSWorld-G：564 样本 grounding suite + Jedi training</text>
+  <text x="538" y="224" class="step">OSWorld-G：564 个样本的 grounding 套件 + Jedi training</text>
   <rect x="520" y="236" width="380" height="30" class="box"/>
-  <text x="538" y="256" class="step">OSWorld-Human：专家 gold trajectories</text>
+  <text x="538" y="256" class="step">OSWorld-Human：专家标准轨迹</text>
   <rect x="520" y="268" width="380" height="28" class="box"/>
-  <text x="538" y="288" class="step">顶级 agents 使用多 1.4-2.7x 的步骤</text>
+  <text x="538" y="288" class="step">顶级 Agent 使用多 1.4–2.7x 的步骤</text>
 
   <rect x="40" y="320" width="880" height="200" class="fail"/>
   <text x="480" y="342" text-anchor="middle" class="head">两种主要失败模式</text>
   <rect x="60" y="358" width="840" height="40" class="box"/>
-  <text x="78" y="380" class="step">1. GUI grounding  像素到元素映射</text>
+  <text x="78" y="380" class="step">1. GUI grounding：像素到元素映射</text>
   <text x="78" y="394" class="small">模型无法可靠定位按钮；误点主导低层失败</text>
   <rect x="60" y="402" width="840" height="40" class="box"/>
   <text x="78" y="424" class="step">2. 操作知识  哪个菜单、哪个快捷键</text>
-  <text x="78" y="438" class="small">人类多年积累的长尾知识；agents 从训练快照猜测</text>
+  <text x="78" y="438" class="small">人类有多年长尾知识；Agent 只能从 Training 快照猜测</text>
   <rect x="60" y="446" width="840" height="64" class="box"/>
-  <text x="78" y="468" class="step">生产修复：Claude/OpenAI CUA/Gemini computer use (第 21 课)</text>
-  <text x="78" y="486" class="small">基于视觉；按 WebArena/OSWorld 形态负载训练；</text>
+  <text x="78" y="468" class="step">生产修复：Claude/OpenAI CUA/Gemini computer use（第 21 课）</text>
+  <text x="78" y="486" class="small">基于视觉；按 WebArena/OSWorld 负载形态训练；</text>
   <text x="78" y="502" class="small">逐步安全服务在执行前评估每个动作</text>
 
-  <text x="480" y="540" text-anchor="middle" class="caption">每次运行报告成功率和轨迹效率 (steps / gold)。</text>
+  <text x="480" y="540" text-anchor="middle" class="caption">每次运行报告成功率和轨迹效率（steps / gold）。</text>
 </svg>

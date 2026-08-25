@@ -61,6 +61,10 @@ Claude computer use、OpenAI CUA、Gemini 2.5 Computer Use（Lesson 21）都在�
 - **忽略 trajectory length。** 只按 success-rate 打分，会漏掉 OSWorld-Human 暴露的 1.4-2.7x 步骤低效。
 - **陈旧的自托管 apps。** WebArena 的 apps 固定了特定版本；如果未经重新整理就更新版本，会破坏可比性。
 
+```figure
+ae-agent-human-gap
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个 toy web-agent harness：
