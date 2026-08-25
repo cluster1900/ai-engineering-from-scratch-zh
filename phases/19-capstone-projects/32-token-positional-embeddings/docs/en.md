@@ -14,6 +14,10 @@
 - 把 Token 和 positional embeddings 组合成 Transformer block 的单一 input。
 - 对比 learned 和 sinusoidal embeddings 在 length generalization 和 parameter count 上的差异。
 
+```figure
+cc-embedding-lookup
+```
+
 ## 框架
 
 model 与 token id 的第一次接触，是在 token-embedding Matrix 中进行 row lookup。这个 Matrix 每个 vocabulary id 有一行，每个 model dimension 有一列。lookup 返回一个 Vector，model 的其余部分会把它当作该 id 的含义。Backpropagation 会更新 forward pass 中用到的 rows。在训练过程中，这些 rows 的几何结构会学习在方向上编码相似性。

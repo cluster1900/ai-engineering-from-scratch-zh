@@ -6,36 +6,36 @@
       "stage": "pre",
       "question": "embedding stage 会从 (B, T) ids 产生什么形状？",
       "options": [
-        "(B, T)",
-        "(B, V)",
         "(B, T, D)，其中 D 是 model dimension",
-        "(B, T, V)，其中 V 是 vocabulary size"
+        "(B, V)",
+        "(B, T, V)，其中 V 是 vocabulary size",
+        "(B, T)"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "每个 id 都会映射到一个 D-dimensional Vector。batch 保留 B 和 T，并获得一个新的 feature dimension D。"
     },
     {
       "stage": "check",
       "question": "本课如何组合 Token 和 positional embeddings？",
       "options": [
-        "沿 feature axis 进行 concatenation",
-        "通过 elementwise sum，把 position Vector broadcast 到整个 batch",
         "通过额外的 linear projection",
-        "通过取 elementwise maximum"
+        "通过取 elementwise maximum",
+        "通过 elementwise sum，把 position Vector broadcast 到整个 batch",
+        "沿 feature axis 进行 concatenation"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "形状为 (B, T, D) 和 (T, D) 的两个 tensors 会相加。Broadcasting 会把 positional table 复制到 batch axis 上。"
     },
     {
       "stage": "check",
       "question": "SinusoidalPositionalEmbedding 会贡献多少 learnable parameters？",
       "options": [
-        "max_context_length",
         "max_context_length * d_model",
-        "d_model",
-        "Zero"
+        "Zero",
+        "max_context_length",
+        "d_model"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "sinusoidal table 由公式计算并作为 buffer 存储。它不贡献 parameters。"
     },
     {
@@ -43,9 +43,9 @@
       "question": "哪种 positional encoding 不能接受超过其构造上限的 sequence？",
       "options": [
         "Sinusoidal positional embedding",
-        "Learned positional embedding",
+        "Neither",
         "Both",
-        "Neither"
+        "Learned positional embedding"
       ],
       "correct": 2,
       "explanation": "在本课实现中，两个 classes 都会在 forward time 强制执行 max_context_length。Learned 本质上受 table 限制；这里的 sinusoidal 也受限制，因为它使用预构建 table。"
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "为什么 sinusoidal scheme 会在相邻 feature pairs 上同时使用 sin 和 cos？",
       "options": [
-        "因为只用 sin 不具备周期性",
-        "因为 cos 本身无法通过 Backpropagation",
         "这样 position p+k 处的 Vector 就是 position p 处 Vector 的线性函数",
+        "因为 cos 本身无法通过 Backpropagation",
+        "因为只用 sin 不具备周期性",
         "因为它会让 parameter count 翻倍"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "在相同 wavelength 上配对 sin 和 cos，意味着 position shift k 是一次 rotation，也就是一个 linear map。Attention 随后可以通过 linear projections 学习 relative offsets。"
     },
     {
       "stage": "post",
       "question": "为什么 embedding backward pass 只会更新 batch 中出现过的 token table rows？",
       "options": [
-        "PyTorch 只存储非零 entries 的 Gradient",
         "forward pass 中未被触碰的 rows 根据 chain rule 产生零 Gradient",
         "Optimizer 会跳过它没有见过的 rows",
+        "PyTorch 只存储非零 entries 的 Gradient",
         "Token ids 存储在 sparse data structure 中"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "没有贡献任何 output 的 row 对 Loss 的 derivative 为零，因此该 step 中它的 Gradient 为零。"
     }
   ]
