@@ -13,19 +13,19 @@
     </style>
   </defs>
 
-  <text x="440" y="28" text-anchor="middle" class="title">文本 → phonemes → mel → 波形</text>
+  <text x="440" y="28" text-anchor="middle" class="title">文本 → 音素 → mel → 波形</text>
 
   <!-- Pipeline -->
   <rect x="40" y="60" width="160" height="70" class="box"/>
   <text x="120" y="82" text-anchor="middle" class="label">文本前端</text>
-  <text x="120" y="105" text-anchor="middle" class="content">normalize + G2P</text>
+  <text x="120" y="105" text-anchor="middle" class="content">规范化 + G2P</text>
   <text x="120" y="121" text-anchor="middle" class="caption">"6 pm" → "six p m"</text>
 
   <line x1="205" y1="95" x2="228" y2="95" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="232" y="60" width="180" height="70" class="box"/>
   <text x="322" y="82" text-anchor="middle" class="label">声学 model</text>
-  <text x="322" y="105" text-anchor="middle" class="content">phones → mel [T, 80]</text>
+  <text x="322" y="105" text-anchor="middle" class="content">音素 → mel [T, 80]</text>
   <text x="322" y="121" text-anchor="middle" class="caption">FastSpeech / VITS / F5</text>
 
   <line x1="417" y1="95" x2="440" y2="95" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -67,13 +67,13 @@
 
   <!-- Quality table -->
   <rect x="40" y="310" width="800" height="150" class="hot"/>
-  <text x="440" y="332" text-anchor="middle" class="label">2026 开源 leaderboard (LibriTTS test-clean)</text>
+  <text x="440" y="332" text-anchor="middle" class="label">2026 开源排行榜（LibriTTS test-clean）</text>
   <text x="60"  y="360" class="content">model</text>
   <text x="300" y="360" class="content">UTMOS</text>
-  <text x="440" y="360" class="content">CER via Whisper</text>
-  <text x="700" y="360" class="content">params</text>
+  <text x="440" y="360" class="content">通过 Whisper 测得 CER</text>
+  <text x="700" y="360" class="content">参数量</text>
   <line x1="60" y1="370" x2="820" y2="370" stroke="#1a1a1a" stroke-width="1"/>
-  <text x="60" y="390" class="content">ground truth</text>        <text x="300" y="390" class="content">4.08</text>  <text x="440" y="390" class="content">1.2%</text>  <text x="700" y="390" class="content">—</text>
+  <text x="60" y="390" class="content">真实标签</text>        <text x="300" y="390" class="content">4.08</text>  <text x="440" y="390" class="content">1.2%</text>  <text x="700" y="390" class="content">—</text>
   <text x="60" y="410" class="content">F5-TTS</text>              <text x="300" y="410" class="content">3.95</text>  <text x="440" y="410" class="content">2.1%</text>  <text x="700" y="410" class="content">335M</text>
   <text x="60" y="430" class="content">Kokoro v0.19</text>        <text x="300" y="430" class="content">3.87</text>  <text x="440" y="430" class="content">1.8%</text>  <text x="700" y="430" class="content">82M</text>
   <text x="60" y="450" class="content">XTTS v2</text>             <text x="300" y="450" class="content">3.81</text>  <text x="440" y="450" class="content">3.5%</text>  <text x="700" y="450" class="content">470M</text>
