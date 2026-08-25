@@ -116,6 +116,10 @@ Driving world models 会生成基于 trajectories、bounding boxes 或 navigatio
 | Cosmos / Cosmos-Drive | autonomous driving sim | 7-14B | driving scenes | NVIDIA open |
 | Magica / Mirage 2 | AI-native game engine | — | modifiable worlds | product |
 
+```figure
+v4-world-rollout
+```
+
 ## 构建它
 ### 步骤 1： video 的 3D patchify
 
