@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "为什么高效的 self-attention block 会使用一个输出 3*D 个特征的线性层？",
       "options": [
-        "它会强制 Q、K 和 V 之间共享权重",
         "它在数学上等价于三个 Linear(D, D) 层，并作为一次 matmul 运行",
-        "它避免了使用 causal mask 的需要",
-        "它减少了模型参数量"
+        "它减少了模型参数量",
+        "它会强制 Q、K 和 V 之间共享权重",
+        "它避免了使用 causal mask 的需要"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "把三个 (D, D) projection Matrix 堆叠成一个 (3D, D) Matrix 会产生相同输出，但 forward pass 是一次对加速器友好的 matmul。"
     },
     {
@@ -20,22 +20,22 @@
       "options": [
         "d_head = d_model * n_heads",
         "d_head = d_model + n_heads",
-        "d_head = d_model // n_heads，并且 d_model 必须能被 n_heads 整除",
-        "d_head 与 d_model 无关"
+        "d_head 与 d_model 无关",
+        "d_head = d_model // n_heads，并且 d_model 必须能被 n_heads 整除"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "该 block 会把 d_model 均匀拆分到各个 head。约束 d_model % n_heads == 0 会在构造时强制执行。"
     },
     {
       "stage": "check",
       "question": "scaled dot-product attention 的 scaling factor 中使用什么值？",
       "options": [
-        "sqrt(d_model)",
         "sqrt(d_head)",
         "sqrt(n_heads)",
+        "sqrt(d_model)",
         "sqrt(seq_len)"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "scores 会除以 sqrt(d_head)，也就是 matmul 收缩的 head 维度。这样可以在 d_head 增大时保持 scores 的方差有界。"
     },
     {
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "shape 为 (B, H, T, T) 的 Attention-weight Matrix 能告诉你什么？",
       "options": [
-        "每个 head 有多少参数",
         "每个 batch element、每个 head 中，每个 query 位置关注哪些 key 位置",
         "query 和 value Vector 之间的 cosine similarity",
-        "下一个 Token 的输出 logits"
+        "下一个 Token 的输出 logits",
+        "每个 head 有多少参数"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "per-head Matrix 的第 t 行是 query 位置 t 使用的 key 位置分布。检查它可以看到每个 head 在看哪里。"
     }
   ]

@@ -14,6 +14,10 @@
 - 检查固定输入下每个 head 的 Attention weights，并推理每个 head 关注的内容。
 - 在 toy task 上训练一个小型 Attention block，观察 Loss 随着各 head 专门化而下降。
 
+```figure
+cap-multihead-attention
+```
+
 ## The frame
 
 Attention 是一种函数，它让一个 Token 的表示能够从同一序列中的其他 Token 拉取信息。Self-attention 表示 queries、keys 和 values 都来自同一个输入。Multi-head 表示投影被拆分为 H 个并行的 Attention 问题，它们的输出会被拼接并投影回来。
