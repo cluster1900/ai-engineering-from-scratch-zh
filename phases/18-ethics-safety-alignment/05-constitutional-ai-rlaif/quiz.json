@@ -6,22 +6,22 @@
       "stage": "pre",
       "question": "与标准 RLHF 相比，Constitutional AI 的核心替换是什么？",
       "options": [
-        "它用会阅读原则列表的 AI labeler 替代 human preference labeler",
-        "它用 DPO 替代 PPO",
+        "它完全移除 reward model",
         "它使用 synthetic prompts 而不是真实 prompts",
-        "它完全移除 reward model"
+        "它用会阅读原则列表的 AI labeler 替代 human preference labeler",
+        "它用 DPO 替代 PPO"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Constitutional AI 的第一个 (SFT) phase 做什么？",
       "options": [
-        "只在 AI-generated preferences 上训练 reward model",
-        "生成初始 response，在采样的 constitution principle 下 critique 它，然后 revise，并将 revision 用作 SFT target",
         "通过聚类 labeler comments 生成 synthetic principles",
-        "使用 constitution-derived reward 执行 PPO"
+        "生成初始 response，在采样的 constitution principle 下 critique 它，然后 revise，并将 revision 用作 SFT target",
+        "使用 constitution-derived reward 执行 PPO",
+        "只在 AI-generated preferences 上训练 reward model"
       ],
       "correct": 1,
       "explanation": ""
@@ -31,35 +31,35 @@
       "question": "第二个 (RLAIF) phase 做什么？",
       "options": [
         "跳过 PPO 并应用单一 supervised loss",
+        "在来自 feedback model 的 AI-generated preferences 上训练 reward model，并针对它运行 PPO",
         "让 humans 重新标注 SFT outputs",
-        "将 constitution 蒸馏进 tokenizer",
-        "在来自 feedback model 的 AI-generated preferences 上训练 reward model，并针对它运行 PPO"
+        "将 constitution 蒸馏进 tokenizer"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Anthropic 2026 年 1 月四层 Claude constitution 的 tier order 是什么？",
       "options": [
-        "平台规则 > 避免灾难 > 有帮助 > 广义伦理",
-        "广义伦理 > 有帮助 > 平台规则 > 避免灾难",
+        "有帮助 > 广义伦理 > 平台规则 > 避免灾难",
         "避免灾难性后果 > 遵循 Anthropic guidelines > 广义伦理 > 有帮助且坦诚",
-        "有帮助 > 广义伦理 > 平台规则 > 避免灾难"
+        "广义伦理 > 有帮助 > 平台规则 > 避免灾难",
+        "平台规则 > 避免灾难 > 有帮助 > 广义伦理"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "从 RLHF 切换到 RLAIF 不一定会修复哪种 failure mode？",
       "options": [
-        "标注者心理不一致",
-        "Reward hacking / Goodhart's Law（Goodhart 定律）",
+        "标注者稀缺",
         "标注者成本",
-        "标注者稀缺"
+        "Reward hacking / Goodhart's Law（Goodhart 定律）",
+        "标注者心理不一致"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -68,10 +68,10 @@
       "options": [
         "v2 将 compute overhead 从 1% 增加到 23.7%",
         "v2 移除 classifier，只依赖 constitution",
-        "v2 只在 input 上运行，不在 output 上运行",
-        "v2 将 compute overhead 从 23.7% 降至约 1%，同时 successful attack rate 较低"
+        "v2 将 compute overhead 从 23.7% 降至约 1%，同时 successful attack rate 较低",
+        "v2 只在 input 上运行，不在 output 上运行"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     }
   ]

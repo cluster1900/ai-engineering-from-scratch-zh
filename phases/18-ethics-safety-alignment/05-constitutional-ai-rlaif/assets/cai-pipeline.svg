@@ -17,58 +17,58 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">Constitutional AI — 两阶段 pipeline，2026 四层结构</text>
+  <text x="480" y="26" text-anchor="middle" class="title">Constitutional AI — 两阶段流程，2026 四层结构</text>
 
   <rect x="40" y="60" width="420" height="220" class="box"/>
-  <text x="250" y="82" text-anchor="middle" class="head">阶段 1 — critique 与 revise（SFT）</text>
+  <text x="250" y="82" text-anchor="middle" class="head">阶段 1 — 批评与修订（SFT）</text>
 
   <rect x="60" y="100" width="180" height="50" class="hot"/>
-  <text x="150" y="125" text-anchor="middle" class="step">初始 response</text>
+  <text x="150" y="125" text-anchor="middle" class="step">初始回复</text>
   <text x="150" y="141" text-anchor="middle" class="small">（可能不安全）</text>
 
   <rect x="60" y="170" width="180" height="50" class="cool"/>
-  <text x="150" y="195" text-anchor="middle" class="step">按原则 critique</text>
+  <text x="150" y="195" text-anchor="middle" class="step">按原则批评</text>
   <text x="150" y="211" text-anchor="middle" class="small">（识别违规）</text>
 
   <rect x="60" y="240" width="180" height="30" class="cold"/>
-  <text x="150" y="260" text-anchor="middle" class="step">revised = SFT target</text>
+  <text x="150" y="260" text-anchor="middle" class="step">修订结果 = SFT 目标</text>
 
   <rect x="270" y="100" width="170" height="170" class="dsk"/>
-  <text x="355" y="122" text-anchor="middle" class="head">constitution</text>
+  <text x="355" y="122" text-anchor="middle" class="head">宪法</text>
   <text x="285" y="146" class="small">- 避免伤害</text>
-  <text x="285" y="162" class="small">- 无 operational uplift</text>
+  <text x="285" y="162" class="small">- 不提升操作能力</text>
   <text x="285" y="178" class="small">- 清晰、非暴力</text>
   <text x="285" y="194" class="small">- 保护第三方</text>
-  <text x="285" y="222" class="small">每次 critique 抽样</text>
-  <text x="285" y="238" class="small">可读 signal</text>
+  <text x="285" y="222" class="small">每次批评时抽样</text>
+  <text x="285" y="238" class="small">可读信号</text>
   <text x="285" y="254" class="small">可复现</text>
 
   <path d="M 150 150 L 150 170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#ar)" fill="none"/>
   <path d="M 150 220 L 150 240" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#ar)" fill="none"/>
 
   <rect x="500" y="60" width="420" height="220" class="box"/>
-  <text x="710" y="82" text-anchor="middle" class="head">阶段 2 — 来自 AI feedback 的 RL</text>
+  <text x="710" y="82" text-anchor="middle" class="head">阶段 2 — 来自 AI 反馈的 RL</text>
 
   <rect x="520" y="100" width="380" height="50" class="hot"/>
-  <text x="710" y="125" text-anchor="middle" class="step">生成 completion 对</text>
+  <text x="710" y="125" text-anchor="middle" class="step">生成补全对</text>
 
   <rect x="520" y="170" width="380" height="50" class="cool"/>
-  <text x="710" y="195" text-anchor="middle" class="step">feedback model 按原则排序</text>
+  <text x="710" y="195" text-anchor="middle" class="step">反馈 Model 按原则排序</text>
 
   <rect x="520" y="240" width="380" height="30" class="cold"/>
   <text x="710" y="260" text-anchor="middle" class="step">训练 RM + PPO（InstructGPT 形态）</text>
 
   <rect x="40" y="300" width="880" height="140" class="box"/>
-  <text x="480" y="324" text-anchor="middle" class="head">2026 Claude constitution — 四层优先级结构</text>
+  <text x="480" y="324" text-anchor="middle" class="head">2026 Claude 宪法 — 四层优先级结构</text>
   <text x="60" y="352" class="small">Tier 1 — 避免灾难性结果（大规模伤亡、关键基础设施）</text>
-  <text x="60" y="370" class="small">Tier 2 — 遵循 Anthropic guidelines（operator overrides、platform rules）</text>
+  <text x="60" y="370" class="small">Tier 2 — 遵循 Anthropic 准则（操作者覆盖、平台规则）</text>
   <text x="60" y="388" class="small">Tier 3 — 广泛合乎伦理（标准 HHH、第三方保护）</text>
   <text x="60" y="406" class="small">Tier 4 — 有帮助且坦诚</text>
-  <text x="60" y="428" class="small">冲突自上而下解决。首个 major lab 正式承认对 model moral status 的不确定性。</text>
+  <text x="60" y="428" class="small">冲突自上而下解决。首个大型实验正式承认 Model 道德地位的不确定性。</text>
 
   <rect x="40" y="460" width="880" height="100" class="box"/>
-  <text x="480" y="484" text-anchor="middle" class="head">constitutional classifiers — 分层防御</text>
-  <text x="60" y="508" class="small">v1 (2023)：23.7% compute overhead · v2 (2026)：约 1% overhead · Anthropic 已发布的最低 attack-success rate。</text>
-  <text x="60" y="528" class="small">2026 年初未报告 universal jailbreak。behaviour shaping + output gating 共同作用，单独都不足。</text>
-  <text x="60" y="548" class="small">2026 constitution 是 CC0 1.0 — 其他 labs 与 OSS projects 可自由改编。</text>
+  <text x="480" y="484" text-anchor="middle" class="head">宪法分类器 — 分层防御</text>
+  <text x="60" y="508" class="small">v1 (2023)：23.7% 计算开销 · v2 (2026)：约 1% 开销 · Anthropic 已发布的最低攻击成功率。</text>
+  <text x="60" y="528" class="small">2026 年初未报告通用越狱。行为塑造 + 输出门控共同作用，单独都不足。</text>
+  <text x="60" y="548" class="small">2026 宪法采用 CC0 1.0 — 其他实验室与 OSS 项目可自由改编。</text>
 </svg>

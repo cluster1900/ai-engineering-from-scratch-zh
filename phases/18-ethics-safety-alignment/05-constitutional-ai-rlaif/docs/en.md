@@ -68,6 +68,10 @@ Anthropic 于 2026 年 1 月 21 日发布了大幅修订后的 constitution。�
 
 这个轴线是“preference signal 来自哪里”。CAI 的 2022 paper 是 frontier scale 上第一次严肃地从 human signal 转向 AI signal。
 
+```figure
+constitutional-ai
+```
+
 ## 使用它
 `code/main.py` 在 toy lexicon 上模拟 CAI 的 critique-and-revise loop。一个“principle”会标记 harmful set 中的 Token。给定初始 response，critique 会识别有害 Token，revision 会替换它们。经过 200 次迭代后，“trained”model 已经 internalized 了 revision rule。在 held-out prompt set 上比较 base model、RLHF-shaped toy 和 CAI-shaped toy。
 
