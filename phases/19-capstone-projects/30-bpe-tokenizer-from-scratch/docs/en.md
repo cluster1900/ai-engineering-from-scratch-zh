@@ -14,6 +14,10 @@
 - 保留并保护 special tokens（`<|endoftext|>`、`<|pad|>`），让它们能在 training 和 decoding 后保持不变。
 - 推理为什么 byte-level alphabet 是通用 Tokenizer 的正确下限。
 
+```figure
+cap-bpe-merge
+```
+
 ## The frame
 
 language model 永远看不到文本。它看到的是 integers。把 string 映射为 integers list 并再映射回来的东西，就是 Tokenizer。这个层做错了，training run 中每条 Loss curve 都在衡量错误的东西。
