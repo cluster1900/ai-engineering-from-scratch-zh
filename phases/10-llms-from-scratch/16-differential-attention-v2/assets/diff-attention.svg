@@ -17,7 +17,7 @@
     </style>
   </defs>
 
-  <text x="480" y="28" text-anchor="middle" class="title">differential Attention — 减去噪声底</text>
+  <text x="480" y="28" text-anchor="middle" class="title">Differential Attention——减去噪声底</text>
 
   <!-- Input -->
   <rect x="30" y="60" width="160" height="40" class="box"/>
@@ -56,7 +56,7 @@
 
   <!-- Noise cancellation visual -->
   <rect x="30" y="220" width="900" height="130" class="box"/>
-  <text x="480" y="243" text-anchor="middle" class="label">直觉: 两个 softmax 都带同样的均匀噪声底</text>
+  <text x="480" y="243" text-anchor="middle" class="label">直觉：两个 softmax 都带同样的均匀噪声底</text>
 
   <!-- A1 bar chart -->
   <text x="50" y="272" class="step">A1</text>
@@ -77,22 +77,22 @@
 
   <!-- V1 vs V2 diff -->
   <rect x="30" y="370" width="900" height="150" class="box"/>
-  <text x="480" y="393" text-anchor="middle" class="label">V1 (ICLR 2025) -&gt; V2 (Microsoft, Jan 2026)</text>
+  <text x="480" y="393" text-anchor="middle" class="label">V1（ICLR 2025）→ V2（Microsoft，2026 年 1 月）</text>
 
   <text x="50" y="420" class="step">head dim</text>
-  <text x="220" y="420" class="small">V1: 减半 (保持 param count)  ·  V2: 不变 (匹配 baseline decode)</text>
+  <text x="220" y="420" class="small">V1：减半（保持 param count）· V2：不变（匹配 baseline decode）</text>
 
   <text x="50" y="440" class="step">query heads</text>
-  <text x="220" y="440" class="small">V1: 同 baseline  ·  V2: 翻倍，KV heads 不变</text>
+  <text x="220" y="440" class="small">V1：同 baseline · V2：翻倍，KV heads 不变</text>
 
   <text x="50" y="460" class="step">kernel</text>
-  <text x="220" y="460" class="small">V1: custom CUDA  ·  V2: plain FlashAttention — 零代码改动</text>
+  <text x="220" y="460" class="small">V1：自定义 CUDA · V2：原生 FlashAttention——零代码改动</text>
 
   <text x="50" y="480" class="step">per-head norm</text>
-  <text x="220" y="480" class="small">V1: 相减后 RMSNorm (70B 不稳定)  ·  V2: 移除</text>
+  <text x="220" y="480" class="small">V1：相减后 RMSNorm（70B 不稳定）· V2：移除</text>
 
   <text x="50" y="500" class="step">decode 速度</text>
-  <text x="220" y="500" class="small">V1: 更慢 (V cache 读两次)  ·  V2: 完全匹配 baseline</text>
+  <text x="220" y="500" class="small">V1：更慢（V cache 读两次）· V2：完全匹配 baseline</text>
 
-  <text x="480" y="535" text-anchor="middle" class="caption">ICLR 2025 实验 -&gt; production pre-training。同一数学，production-ready 封装。</text>
+  <text x="480" y="535" text-anchor="middle" class="caption">ICLR 2025 实验 → production pre-training。同一数学，production-ready 封装。</text>
 </svg>
