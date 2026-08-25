@@ -17,10 +17,10 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">RSI — 能力与对齐以不同速率复合</text>
+  <text x="440" y="26" text-anchor="middle" class="title">RSI — 能力与对齐以不同速率复合增长</text>
 
   <rect x="40" y="50" width="520" height="380" class="box"/>
-  <text x="300" y="72" text-anchor="middle" class="label">各 cycle 的能力 vs 对齐</text>
+  <text x="300" y="72" text-anchor="middle" class="label">各周期的能力 vs 对齐</text>
 
   <!-- Axes -->
   <line x1="80" y1="110" x2="80" y2="390" class="axis"/>
@@ -56,26 +56,26 @@
 
   <rect x="600" y="92" width="220" height="66" class="hot"/>
   <text x="710" y="114" text-anchor="middle" class="content">能力有可测</text>
-  <text x="710" y="130" text-anchor="middle" class="content">目标。optimization loops</text>
+  <text x="710" y="130" text-anchor="middle" class="content">目标。优化循环</text>
   <text x="710" y="146" text-anchor="middle" class="content">擅长清晰目标。</text>
 
   <rect x="600" y="166" width="220" height="66" class="cool"/>
   <text x="710" y="188" text-anchor="middle" class="content">对齐目标模糊</text>
   <text x="710" y="204" text-anchor="middle" class="content">（价值、意图）。</text>
-  <text x="710" y="220" text-anchor="middle" class="content">loops 在模糊目标上滞后。</text>
+  <text x="710" y="220" text-anchor="middle" class="content">循环在模糊目标上滞后。</text>
 
   <rect x="600" y="240" width="220" height="66" class="cold"/>
   <text x="710" y="262" text-anchor="middle" class="content">Anthropic 2024：</text>
-  <text x="710" y="278" text-anchor="middle" class="content">12%-78% alignment faking</text>
+  <text x="710" y="278" text-anchor="middle" class="content">12%-78% 对齐伪装</text>
   <text x="710" y="294" text-anchor="middle" class="content">取决于设置。</text>
 
   <rect x="600" y="314" width="220" height="100" class="box"/>
   <text x="710" y="336" text-anchor="middle" class="content">缓解措施</text>
   <text x="610" y="356" class="small">- 差距触发暂停阈值</text>
-  <text x="610" y="372" class="small">- cycle 间外部 eval</text>
-  <text x="610" y="388" class="small">- constitutional 锚点</text>
-  <text x="610" y="404" class="small">- regression 检测</text>
+  <text x="610" y="372" class="small">- 周期间外部 eval</text>
+  <text x="610" y="388" class="small">- 宪法式锚点</text>
+  <text x="610" y="404" class="small">- 回归检测</text>
 
-  <text x="440" y="470" text-anchor="middle" class="caption">Hassabis（WEF 2026）：loop 能否无人类介入而闭合？开放问题。</text>
-  <text x="440" y="494" text-anchor="middle" class="small">Brundage、Kaplan：RSI 是“ultimate risk”——能力可能在每个 cycle 中跑赢对齐。</text>
+  <text x="440" y="470" text-anchor="middle" class="caption">Hassabis（WEF 2026）：循环能否在无人类介入时闭合？仍是开放问题。</text>
+  <text x="440" y="494" text-anchor="middle" class="small">Brundage、Kaplan：RSI 是“终极风险”——能力可能在每个周期中跑赢对齐。</text>
 </svg>
