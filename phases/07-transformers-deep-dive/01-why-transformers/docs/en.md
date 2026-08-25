@@ -35,6 +35,10 @@ Vanishing gradients 意味着 50 个 Tokens 之前的信息已经被压缩穿过
 
 **Inductive bias 的转变。** RNNs 假设 locality 和 recency。Transformers 不做假设——每一对位置都是 Attention 的候选。这就是为什么 transformers 需要更多数据才能训练得好，但一旦拥有足够数据就能扩展得更远。Chinchilla（2022）形式化了这一点：给定足够多的 Tokens，Transformer 总是能击败相同参数量的 RNN。
 
+```figure
+rnn-vs-parallel
+```
+
 ## 构建它
 
 这里没有 Neural Network——我们用数值方式模拟核心瓶颈，让你在自己的笔记本上感受差距。
