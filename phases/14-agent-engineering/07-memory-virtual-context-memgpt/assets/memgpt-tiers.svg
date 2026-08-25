@@ -17,15 +17,15 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">MemGPT — 虚拟上下文作为 OS 内存 (Packer et al., 2023)</text>
+  <text x="480" y="26" text-anchor="middle" class="title">MemGPT — 虚拟上下文作为 OS 内存（Packer et al., 2023）</text>
 
   <rect x="40" y="60" width="380" height="200" class="ram"/>
   <text x="230" y="82" text-anchor="middle" class="head">主上下文（RAM 类比）</text>
-  <text x="60" y="108" class="small">固定大小 prompt 窗口，模型始终可见</text>
+  <text x="60" y="108" class="small">固定大小 Prompt 窗口，模型始终可见</text>
 
   <rect x="60" y="118" width="340" height="60" class="box"/>
   <text x="80" y="138" class="step">[core] persona, user, task</text>
-  <text x="80" y="156" class="small">命名区段固定在 prompt 内</text>
+  <text x="80" y="156" class="small">命名区段固定在 Prompt 内</text>
   <text x="80" y="172" class="small">可通过 core_memory_{append,replace} 编辑</text>
 
   <rect x="60" y="186" width="340" height="60" class="box"/>
@@ -45,20 +45,20 @@
   <rect x="60" y="408" width="340" height="60" class="box"/>
   <text x="80" y="428" class="step">可插拔 backend</text>
   <text x="80" y="446" class="small">Vector（语义）、KV（事实）、graph（关系）</text>
-  <text x="80" y="462" class="small">Lesson 09 (Mem0) 融合三者</text>
+  <text x="80" y="462" class="small">Lesson 09（Mem0）融合三者</text>
 
-  <text x="230" y="496" text-anchor="middle" class="caption">citations (session_id, turn_id) 随每次写入传递</text>
+  <text x="230" y="496" text-anchor="middle" class="caption">引用（session_id, turn_id）随每次写入传递</text>
 
   <rect x="440" y="60" width="500" height="460" class="box"/>
   <text x="690" y="82" text-anchor="middle" class="head">interrupt 模式 - 一轮</text>
 
   <rect x="460" y="100" width="460" height="46" class="ram"/>
-  <text x="478" y="122" class="step">1. assistant “我需要用户当前项目”</text>
-  <text x="478" y="138" class="small">主 context 缺少该事实；仅凭窗口无法回答</text>
+  <text x="478" y="122" class="step">1. assistant“我需要用户当前项目”</text>
+  <text x="478" y="138" class="small">主 Context 缺少该事实；仅凭窗口无法回答</text>
 
   <rect x="460" y="154" width="460" height="46" class="tool"/>
   <text x="478" y="176" class="step">2. tool call archival_memory_search("project for ava")</text>
-  <text x="478" y="192" class="small">memory tool 已发出；runtime 像 OS syscall 一样处理</text>
+  <text x="478" y="192" class="small">memory Tool 已发出；runtime 像 OS syscall 一样处理</text>
 
   <rect x="460" y="208" width="460" height="46" class="disk"/>
   <text x="478" y="230" class="step">3. archival 返回记录 a001</text>
@@ -84,5 +84,5 @@
   <line x1="420" y1="230" x2="460" y2="230" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <line x1="460" y1="390" x2="420" y2="390" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <text x="480" y="540" text-anchor="middle" class="caption">Letta (2024) 扩展到三层。Mem0 (2025) 将 archival 换为 Vector+KV+graph。模式保留。</text>
+  <text x="480" y="540" text-anchor="middle" class="caption">Letta（2024）扩展到三层。Mem0（2025）将 archival 换为 Vector+KV+graph。模式保留。</text>
 </svg>
