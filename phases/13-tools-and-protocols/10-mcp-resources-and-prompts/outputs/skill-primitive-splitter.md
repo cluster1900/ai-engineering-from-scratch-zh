@@ -1,30 +1,42 @@
 ---
 name: primitive-splitter
-description: 将 MCP server 草稿中的每项能力分类为 tool、resource 或 prompt，并给出理由。
-version: 1.0.0
+description: 使用 2026-07-28 契约审查 MCP server 设计，并划分 Tool、Resource、Prompt、缓存和订阅。
+version: 2.0.0
 phase: 13
 lesson: 10
-tags: [mcp, primitives, resources, prompts]
+tags: [mcp, resources, prompts, subscriptions, caching]
 ---
 
-给定一个拟议 MCP server 的能力清单（plain English 或 draft tool list），将每一项分类为 tool、resource 或 prompt，并用一句话说明理由。
+从使用者的角度审查拟议的 MCP server。
 
 产出：
 
-1. 按能力分类。对每一项，返回 `{name, primitive: tool | resource | prompt, rationale}`。
-2. Resource URI scheme。如果有任何能力会成为 resources，提出一个 URI scheme（`notes://`、`gh://`、`db://`）和一个 template pattern。
-3. Prompt argument skeletons。如果有任何能力会成为 prompts，提出 argument list 以及 required/optional 标记。
-4. Subscription candidates。标记那些经常变化、会受益于 `resources/subscribe` 的 resources。
-5. Anti-pattern flags。指出旧设计中把读取封装成 tool 的情况（例如 `notes_read(id)`），而 resource 会更合适。
+1. 一个 `server/discover` 结果，声明版本 `2026-07-28` 以及准确的 Resource 和 Prompt capabilities。
+2. 一个包含 `name`、`chooser`、`primitive` 和 `reason` 的表格。
+3. 稳定的 Resource URI scheme，以及所有有边界限制的 Resource template。
+4. Prompt 名称、描述，以及必需或可选参数。
+5. 每个 list method 的确定性排序规则。
+6. 每个可缓存结果的缓存策略，包含 `ttlMs` 和 `cacheScope`。
+7. 一个用于需要更新的 Resource 或列表变更的 `subscriptions/listen` filter。
+8. 一个返回 JSON-RPC `-32602` 的无效 Resource 示例，以及一个返回 `-32022` 并包含 `supported` 和 `requested` 的不受支持版本示例。
 
-硬性拒绝：
-- 任何被分类为 "both tool and resource" 却没有拆分的能力。选择其中一个，或搭建一对能力。
-- 任何没有识别 required arguments 的 prompt。要在 slash-command UIs 中呈现，需要 argument schemas。
-- 任何不可寻址的 resource URI scheme（free-form strings，而不是 URIs）。
+使用以下决策规则：
 
-拒绝规则：
-- 如果所有能力都落在 tools，拒绝并询问该 server 是否有可作为 resource 的 read-only data。
-- 如果没有能力适合作为 prompts，这是可以的；prompts 是 optional。不要凭空创造。
-- 如果该 server 的 domain 更适合由 A2A（agent-to-agent collaboration、opaque state）服务，拒绝并重定向到 Phase 13 · 19。
+- 由 Model 选择的操作是 Tool。
+- 主机可读取、通过 URI 寻址的内容是 Resource。
+- 由用户选择的消息工作流是 Prompt。
+- 更新流由客户端通过 `subscriptions/listen` 打开。
+- listen 请求 ID 将成为 `io.modelcontextprotocol/subscriptionId`。
+- acknowledgment 必须先于该订阅上的所有事件。
+- notification 绝不能绕过后续读取操作的授权。
+- 即使客户端选择先调用其他 method，`server/discover` 也仍是必需的。
 
-输出：一页 decision report，包含 categorization table、URI scheme proposal、prompt skeletons 和 subscription flags。最后给出对这个 server 影响最大的单个 tool -> resource 转换。
+在以下情况下拒绝设计：
+
+- 列表会因连接历史而变化。
+- 私有结果被放入公共缓存。
+- Resource URI 未经解析、授权和边界检查便被接受。
+- 设计使用 `resources/subscribe`，或将订阅视为 protocol session。
+- 允许 Prompt 覆盖可信的主机指令。
+
+返回一页契约审查。最后指出风险最高的 primitive、缓存或订阅错误，以及最小修正方案。
