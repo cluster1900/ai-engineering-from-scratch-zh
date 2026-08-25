@@ -1,36 +1,61 @@
 [
   {
     "question": "PyTorch 中的 autograd 是什么？",
-    "options": ["一个数据加载库", "一个自动微分引擎，会记录 operations 并计算 Gradient，无需手动实现 backward", "一个 model 压缩工具", "一个 hyperparameter 调优框架"],
+    "options": [
+      "一个 model 压缩工具",
+      "一个自动微分引擎，会记录 operations 并计算 Gradient，无需手动实现 backward",
+      "一个 hyperparameter 调优框架",
+      "一个数据加载库"
+    ],
     "correct": 1,
     "explanation": "PyTorch 的 autograd 会在 forward 计算期间构建计算图，并在你调用 .backward() 时自动计算 Gradient。这消除了在每个 module 中手动实现 backward() 的需要。",
     "stage": "pre"
   },
   {
     "question": "torch.no_grad() 做什么，应该在什么时候使用？",
-    "options": ["它可以防止 overfitting", "它会为 inference 禁用 Gradient tracking，在不需要训练时节省内存和计算", "它会冻结所有 model weights", "它会启用 GPU 加速"],
-    "correct": 1,
+    "options": [
+      "它可以防止 overfitting",
+      "它会启用 GPU 加速",
+      "它会为 inference 禁用 Gradient tracking，在不需要训练时节省内存和计算",
+      "它会冻结所有 model weights"
+    ],
+    "correct": 2,
     "explanation": "在 inference 期间，你不需要 Gradient。torch.no_grad() 会禁用 Gradient tracking，从而节省原本用于存储计算图的内存，并加快计算速度。",
     "stage": "pre"
   },
   {
     "question": "nn.Linear(784, 256) 在 PyTorch 中会创建什么？",
-    "options": ["一个 ReLU activation layer", "一个 fully connected layer，包含一个 (256, 784) weight Matrix 和一个 (256,) bias Vector", "一个 p=784/256 的 dropout layer", "一个 batch normalization layer"],
-    "correct": 1,
+    "options": [
+      "一个 batch normalization layer",
+      "一个 ReLU activation layer",
+      "一个 p=784/256 的 dropout layer",
+      "一个 fully connected layer，包含一个 (256, 784) weight Matrix 和一个 (256,) bias Vector"
+    ],
+    "correct": 3,
     "explanation": "nn.Linear(in_features, out_features) 会创建一个计算 y = x @ W^T + b 的 layer，其中 W 的 shape 为 (256, 784)，b 的 shape 为 (256,)。这是你从零构建的 Layer class 在 PyTorch 中的等价物。",
     "stage": "post"
   },
   {
     "question": "哪个 PyTorch method 会为计算图中的所有 parameters 计算 Gradient？",
-    "options": ["optimizer.step()", "model.forward()", "loss.backward()", "optimizer.zero_grad()"],
-    "correct": 2,
+    "options": [
+      "optimizer.step()",
+      "loss.backward()",
+      "model.forward()",
+      "optimizer.zero_grad()"
+    ],
+    "correct": 1,
     "explanation": "loss.backward() 会反向遍历计算图，为每个需要 Gradient 的 parameter p 计算 dL/dp。随后 optimizer.step() 使用这些 Gradient 来更新 parameters。",
     "stage": "post"
   },
   {
     "question": "为什么 PyTorch 的训练循环显著快于纯 Python mini framework？",
-    "options": ["PyTorch 使用不同的算法", "PyTorch 将 operations 作为优化过的 C++/CUDA kernels 在 GPU 上运行，而纯 Python loops 是一次解释执行一个 operation", "PyTorch 使用更小的数据类型", "PyTorch 跳过 backward pass"],
-    "correct": 1,
+    "options": [
+      "PyTorch 使用更小的数据类型",
+      "PyTorch 使用不同的算法",
+      "PyTorch 跳过 backward pass",
+      "PyTorch 将 operations 作为优化过的 C++/CUDA kernels 在 GPU 上运行，而纯 Python loops 是一次解释执行一个 operation"
+    ],
+    "correct": 3,
     "explanation": "PyTorch 会将 Matrix operations 委托给高度优化的 C++ 和 CUDA kernels，这些 kernels 在 GPU 上以大规模并行方式运行。纯 Python 则按顺序执行 loops，并且每个 operation 都有 interpreter overhead。",
     "stage": "post"
   }
