@@ -82,6 +82,10 @@ semantic clustering 步骤是 LLM-specific 的关键变化。两个答案 “the
 - **Compound questions。** “Write code and explain it” 是两个答案。分别对每个答案投票。
 - **Adversarial multi-round。** 如果 agents 能观察 prior rounds 并 mimic（Du 2023 debate），它们会开始彼此同意，而不管 truth。限制 rounds（通常 2-3 轮）。
 
+```figure
+swarm-consensus-wave
+```
+
 ## 构建它
 `code/main.py` 实现：
 
