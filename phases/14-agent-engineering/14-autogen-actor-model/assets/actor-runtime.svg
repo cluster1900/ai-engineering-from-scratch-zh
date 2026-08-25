@@ -17,10 +17,10 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">AutoGen v0.4 — 带故障隔离的 actor model runtime</text>
+  <text x="480" y="26" text-anchor="middle" class="title">AutoGen v0.4 — 支持故障隔离的 actor model runtime</text>
 
   <rect x="40" y="50" width="880" height="200" class="rt"/>
-  <text x="480" y="72" text-anchor="middle" class="head">runtime — event loop，每 actor 一个 inbox，隔离故障的投递</text>
+  <text x="480" y="72" text-anchor="middle" class="head">runtime — event loop，每个 actor 一个 inbox，隔离故障投递</text>
 
   <rect x="60" y="90" width="220" height="140" class="actor"/>
   <text x="170" y="112" text-anchor="middle" class="head">actor：checklist</text>
@@ -35,7 +35,7 @@
   <text x="318" y="134" class="small">私有 state（verdicts）</text>
   <text x="318" y="152" class="small">处理 topic=review</text>
   <text x="318" y="170" class="small">回复 review_result</text>
-  <text x="318" y="188" class="small">handler 可抛错  路由到 DLQ</text>
+  <text x="318" y="188" class="small">handler 可抛错  路由至 DLQ</text>
   <text x="318" y="208" class="small">其他 actors 继续运行</text>
 
   <rect x="540" y="90" width="360" height="140" class="box"/>
@@ -56,7 +56,7 @@
   <rect x="60" y="372" width="400" height="26" class="box"/>
   <text x="78" y="390" class="step">runtime 继续投递 m003-m005</text>
   <rect x="60" y="404" width="400" height="26" class="box"/>
-  <text x="78" y="422" class="step">reviewer 为每个回复 review_result</text>
+  <text x="78" y="422" class="step">reviewer 对每项回复 review_result</text>
   <rect x="60" y="436" width="400" height="26" class="box"/>
   <text x="78" y="454" class="step">checklist 基于 3 个结果达成 consensus</text>
 
@@ -67,11 +67,11 @@
   <text x="538" y="346" class="small">低层、async、event-driven</text>
   <rect x="520" y="360" width="380" height="46" class="box"/>
   <text x="538" y="382" class="step">AgentChat  RoundRobin, Selector, AssistantAgent</text>
-  <text x="538" y="398" class="small">任务驱动的高层 API（v0.2 替代）</text>
+  <text x="538" y="398" class="small">任务驱动的高层 API（替代 v0.2）</text>
   <rect x="520" y="412" width="380" height="66" class="box"/>
   <text x="538" y="434" class="step">Extensions  OpenAI, Anthropic, Azure, tools</text>
   <text x="538" y="452" class="small">Magentic-One 是基于 AgentChat 的参考团队</text>
-  <text x="538" y="470" class="small">OTel GenAI span 默认开启（第 23 课）</text>
+  <text x="538" y="470" class="small">默认启用 OTel GenAI span（第 23 课）</text>
 
-  <text x="480" y="540" text-anchor="middle" class="caption">v0.7.x 维护中。Microsoft Agent Framework（2025 年 10 月 preview）是前进路径，同样思路。</text>
+  <text x="480" y="540" text-anchor="middle" class="caption">v0.7.x 维护中。Microsoft Agent Framework（2025 年 10 月预览版）是后续方向，思路相同。</text>
 </svg>
