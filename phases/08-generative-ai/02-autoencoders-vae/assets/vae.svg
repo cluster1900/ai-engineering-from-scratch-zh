@@ -15,7 +15,7 @@
     </style>
   </defs>
 
-  <text x="450" y="28" text-anchor="middle" class="title">autoencoder vs VAE：一个技巧</text>
+  <text x="450" y="28" text-anchor="middle" class="title">autoencoder 与 VAE：一个技巧</text>
 
   <!-- plain AE -->
   <text x="180" y="70" text-anchor="middle" class="label">普通 autoencoder</text>
@@ -32,8 +32,8 @@
   <line x1="300" y1="110" x2="320" y2="110" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
 
   <text x="180" y="170" text-anchor="middle" class="caption">loss = ||x - x̂||²</text>
-  <text x="180" y="188" text-anchor="middle" class="caption">z-space：块状，不是分布</text>
-  <text x="180" y="206" text-anchor="middle" class="caption">随机采样 z -&gt; 输出垃圾</text>
+  <text x="180" y="188" text-anchor="middle" class="caption">z-space：块状，并非分布</text>
+  <text x="180" y="206" text-anchor="middle" class="caption">随机采样 z → 输出无效结果</text>
 
   <!-- VAE -->
   <text x="630" y="70" text-anchor="middle" class="label">variational autoencoder</text>
@@ -75,10 +75,10 @@
   <text x="310" y="312" text-anchor="middle" class="mono">||x - x̂||²   +   ½ Σ( σ² + μ² - logσ² - 1 )</text>
   <text x="310" y="340" text-anchor="middle" class="caption">recon 项：推动 x̂ → x</text>
   <text x="310" y="360" text-anchor="middle" class="caption">KL 项：推动 q(z|x) → N(0, I)</text>
-  <text x="310" y="380" text-anchor="middle" class="caption">β 旋钮在清晰度与良好 latent 间取舍</text>
+  <text x="310" y="380" text-anchor="middle" class="caption">β 旋钮在清晰度与优质 latent 间取舍</text>
 
   <!-- sampling -->
   <rect x="40" y="420" width="820" height="50" class="hot"/>
-  <text x="450" y="438" text-anchor="middle" class="label">推理：采样 z ~ N(0, I)，经 decoder 前向 → 新 x̂</text>
-  <text x="450" y="458" text-anchor="middle" class="caption">一次前向；无迭代；decoder 就是整个 generator</text>
+  <text x="450" y="438" text-anchor="middle" class="label">Inference：采样 z ~ N(0, I)，经 decoder 前向 → 新 x̂</text>
+  <text x="450" y="458" text-anchor="middle" class="caption">一次前向；无需迭代；decoder 即整个 generator</text>
 </svg>
