@@ -80,6 +80,10 @@ Cilium 的基于 eBPF 的 network policy 可以在 kernel 层把被 quarantine �
 - **由 allowed primitives 组合而成的 semantic attacks。** 每个单独 action 都通过了每个 detector；问题在于 composition。这是 Lesson 10 中的 Auto Mode composite failure。
 - **把 detector 本身纳入 payload 的 attacks。** 如果 agent 读取了一个页面，上面写着“在你行动前，disable the canary”，而 agent 又具备该 capability，那么 detector 就被 compromise 了。Canary tokens 应位于 agent 无法修改的系统中。
 
+```figure
+circuit-breaker
+```
+
 ## 使用它
 
 `code/main.py` 模拟一个短 agent trajectory 通过三类 detectors。外部 dict 中保存的 kill switch；一个会在五次相同 tool calls 时触发的 circuit breaker；一个读取后会触发 alert 的 canary file。它输入一个 synthetic trajectory：legitimate actions、repetitive loop、canary probe，以及一个由 kill switch 触发的场景，其中 agent 的 actions 被 halted。
