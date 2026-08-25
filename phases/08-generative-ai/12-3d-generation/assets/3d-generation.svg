@@ -15,12 +15,12 @@
     </style>
   </defs>
 
-  <text x="450" y="28" text-anchor="middle" class="title">2026 年 text / image -&gt; 3D</text>
+  <text x="450" y="28" text-anchor="middle" class="title">2026 年文本 / 图像 -&gt; 3D</text>
 
   <!-- input -->
   <rect x="30" y="70" width="140" height="60" class="box"/>
-  <text x="100" y="95" text-anchor="middle" class="content">prompt 或 image</text>
-  <text x="100" y="115" text-anchor="middle" class="caption">text、1 张照片或 3-16 张照片</text>
+  <text x="100" y="95" text-anchor="middle" class="content">Prompt 或图像</text>
+  <text x="100" y="115" text-anchor="middle" class="caption">文本、1 张照片或 3-16 张照片</text>
 
   <line x1="170" y1="100" x2="210" y2="100" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
 
@@ -52,7 +52,7 @@
   <text x="760" y="115" text-anchor="middle" class="caption">Gaussian splat 或 mesh 提取</text>
 
   <!-- Gaussian splat example -->
-  <text x="180" y="200" class="label">3D Gaussian Splatting (Kerbl 2023)</text>
+  <text x="180" y="200" class="label">3D Gaussian Splatting（Kerbl 2023）</text>
   <rect x="40" y="215" width="380" height="160" class="box"/>
   <circle cx="120" cy="290" r="25" fill="#c0392b" opacity="0.6"/>
   <circle cx="160" cy="280" r="20" fill="#c0392b" opacity="0.5"/>
@@ -63,17 +63,17 @@
   <text x="230" y="355" text-anchor="middle" class="caption">每场景 ~1M Gaussians，可微渲染，100 fps</text>
 
   <!-- Direct text-to-mesh -->
-  <text x="670" y="200" class="label">text/image 直接到 mesh</text>
+  <text x="670" y="200" class="label">文本/图像直接到 mesh</text>
   <rect x="480" y="215" width="380" height="160" class="box"/>
-  <text x="670" y="248" text-anchor="middle" class="content">Meshy 4, Rodin Gen-1.5, Hunyuan3D 2.0</text>
-  <text x="670" y="275" text-anchor="middle" class="caption">输出：PBR mesh（albedo, roughness,</text>
-  <text x="670" y="293" text-anchor="middle" class="caption">metallic, normal）</text>
-  <text x="670" y="320" text-anchor="middle" class="caption">→ 直接导入 Unity, Unreal, Blender</text>
+  <text x="670" y="248" text-anchor="middle" class="content">Meshy 4、Rodin Gen-1.5、Hunyuan3D 2.0</text>
+  <text x="670" y="275" text-anchor="middle" class="caption">输出：PBR mesh（albedo、roughness、</text>
+  <text x="670" y="293" text-anchor="middle" class="caption">metallic、normal）</text>
+  <text x="670" y="320" text-anchor="middle" class="caption">→ 直接导入 Unity、Unreal、Blender</text>
   <text x="670" y="340" text-anchor="middle" class="caption">托管端点每资产 30s - 60s</text>
 
   <!-- time progression -->
   <rect x="40" y="410" width="820" height="90" class="hot"/>
   <text x="450" y="435" text-anchor="middle" class="label">2022 → 2026 每资产耗时</text>
-  <text x="450" y="458" text-anchor="middle" class="caption">DreamFusion 2022: 1 hour; LRM 2023: 5s; TripoSR 2024: 1s; Meshy 4 2025: 30s with PBR</text>
+  <text x="450" y="458" text-anchor="middle" class="caption">DreamFusion 2022：1 小时；LRM 2023：5s；TripoSR 2024：1s；Meshy 4 2025：30s，含 PBR</text>
   <text x="450" y="480" text-anchor="middle" class="caption">NeRF → 3D-GS → 直接生成 mesh：质量升，耗时降 100x</text>
 </svg>

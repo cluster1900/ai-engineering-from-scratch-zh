@@ -59,6 +59,10 @@ Fine-tune 一个预训练 image Diffusion model，使其能从 text prompt 或�
 
 Neural Radiance Field (Mildenhall et al., 2020)。一个小型 MLP 接收 `(x, y, z, view direction)` 并输出 `(color, density)`。通过沿 rays 积分进行 render。质量上优于基于 mesh 的 novel-view synthesis，但 render 速度慢 100-1000 倍。对多数实时用途已被 Gaussian splatting 取代，但在研究中仍占主导。
 
+```figure
+v4-3d-multiview
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个玩具版 2D “Gaussian splatting” 拟合：把一个合成 target image（平滑 gradient）表示为 2D Gaussian splats 的和。通过 Gradient Descent 优化 positions、colors 和 covariances，以匹配 target。你会看到两个核心操作：forward render（splat + alpha-composite）和通过 Gradient Descent 拟合。
