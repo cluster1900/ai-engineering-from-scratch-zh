@@ -32,7 +32,7 @@
   <text x="450" y="152" text-anchor="middle" class="small">GET /.well-known/agent.json</text>
 
   <line x1="680" y1="200" x2="220" y2="200" class="edge" marker-end="url(#arrow)"/>
-  <text x="450" y="192" text-anchor="middle" class="small">Agent Card: skills, endpoints, auth, modalities</text>
+  <text x="450" y="192" text-anchor="middle" class="small">Agent Card：Skill、端点、认证、模态</text>
 
   <line x1="220" y1="240" x2="680" y2="240" class="edge" marker-end="url(#arrow)"/>
   <text x="450" y="232" text-anchor="middle" class="small">POST /tasks {skill: review-python, payload: {...}}</text>
@@ -41,7 +41,7 @@
   <text x="450" y="272" text-anchor="middle" class="small">201 task_id=baf1fc13, state=submitted</text>
 
   <line x1="220" y1="320" x2="680" y2="320" class="edge" marker-end="url(#arrow)"/>
-  <text x="450" y="312" text-anchor="middle" class="small">GET /tasks/baf1fc13 (poll)</text>
+  <text x="450" y="312" text-anchor="middle" class="small">GET /tasks/baf1fc13（轮询）</text>
 
   <line x1="680" y1="360" x2="220" y2="360" class="edge" marker-end="url(#arrow)"/>
   <text x="450" y="352" text-anchor="middle" class="small">state=completed, artifact={type: structured, data: {...}}</text>
@@ -50,6 +50,6 @@
   <text x="450" y="420" text-anchor="middle" class="small">生命周期：submitted → working → completed / failed / canceled</text>
 
   <rect x="40" y="460" width="820" height="50" class="box"/>
-  <text x="450" y="482" text-anchor="middle" class="head">A2A（横向，agent↔agent）vs MCP（纵向，agent↔tool）— 生产两者都用</text>
-  <text x="450" y="500" text-anchor="middle" class="small">截至 2026 年 4 月 150+ 组织 · Google Vertex AI Agent Builder · Microsoft Agent Framework · LangGraph / CrewAI / AutoGen adapters</text>
+  <text x="450" y="482" text-anchor="middle" class="head">A2A（横向，Agent↔Agent）vs MCP（纵向，Agent↔Tool）— 生产环境两者都用</text>
+  <text x="450" y="500" text-anchor="middle" class="small">截至 2026 年 4 月，150+ 个组织 · Google Vertex AI Agent Builder · Microsoft Agent Framework · LangGraph / CrewAI / AutoGen adapters</text>
 </svg>

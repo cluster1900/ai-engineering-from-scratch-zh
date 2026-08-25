@@ -98,6 +98,10 @@ Enterprise adoption 推动了 A2A 的规模化。要点是：A2A 成为 enterpri
 
 截至 2026 年 4 月，A2A 是采用最广的 peer protocol。比较请参见 arXiv:2505.02279（Liu et al., "A Survey of Agent Interoperability Protocols"）。
 
+```figure
+sw-agent-card-discovery
+```
+
 ## 构建它
 
 `code/main.py` 使用 `http.server` 和 JSON 实现了一个 A2A-minimal server 与 client。Server：
