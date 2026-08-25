@@ -1,36 +1,61 @@
 [
   {
     "question": "DPO 相比 RLHF 的主要优势是什么？",
-    "options": ["DPO 会产生更好的模型", "DPO 不需要单独的 reward model 和 PPO，而是在单个循环中直接基于 preference pairs 进行训练", "DPO 使用更少的训练数据", "DPO 不需要任何 preference data 就能工作"],
-    "correct": 1,
+    "options": [
+      "DPO 会产生更好的模型",
+      "DPO 使用更少的训练数据",
+      "DPO 不需要单独的 reward model 和 PPO，而是在单个循环中直接基于 preference pairs 进行训练",
+      "DPO 不需要任何 preference data 就能工作"
+    ],
+    "correct": 2,
     "explanation": "RLHF 需要先单独训练 reward model，然后运行 PPO 优化。DPO 将这两个步骤合并到一个训练目标中，直接在 preference pairs 上优化 language model。",
     "stage": "pre"
   },
   {
     "question": "reference model 在 DPO 中起什么作用？",
-    "options": ["它生成训练数据", "它作为锚点，防止训练后的模型偏离太远，类似于 RLHF 中的 KL penalty", "它评估模型质量", "它处理 tokenization"],
-    "correct": 1,
+    "options": [
+      "它作为锚点，防止训练后的模型偏离太远，类似于 RLHF 中的 KL penalty",
+      "它生成训练数据",
+      "它处理 tokenization",
+      "它评估模型质量"
+    ],
+    "correct": 0,
     "explanation": "DPO Loss 会比较训练中的 policy 和 reference（通常是 SFT）model 下的 log probabilities。reference model 会约束 policy 可以漂移的距离，从而在不显式调整 KL 的情况下防止 reward hacking。",
     "stage": "pre"
   },
   {
     "question": "DPO 中的 beta 参数控制什么？",
-    "options": ["learning rate", "policy 被约束在 reference model 附近的强度 -- beta 越高，更新越保守", "batch size", "training epochs 的数量"],
-    "correct": 1,
+    "options": [
+      "batch size",
+      "learning rate",
+      "training epochs 的数量",
+      "policy 被约束在 reference model 附近的强度 -- beta 越高，更新越保守"
+    ],
+    "correct": 3,
     "explanation": "Beta 会缩放隐式 KL divergence penalty。Beta=0.1 允许模型显著偏离 reference（可能更好但风险更高）。Beta=0.5 会让它保持接近（更安全但学习更少）。",
     "stage": "post"
   },
   {
     "question": "DPO 如何隐式表示 reward model？",
-    "options": ["它并不会 -- DPO 没有 reward 的概念", "DPO Loss Function 可以通过推导说明：在 reward function 下的最优 policy 可以直接通过 policy log probabilities 表达", "它在 language model 内部训练一个隐藏的 reward model", "DPO 使用 Loss Function 作为 reward"],
+    "options": [
+      "它并不会 -- DPO 没有 reward 的概念",
+      "DPO Loss Function 可以通过推导说明：在 reward function 下的最优 policy 可以直接通过 policy log probabilities 表达",
+      "它在 language model 内部训练一个隐藏的 reward model",
+      "DPO 使用 Loss Function 作为 reward"
+    ],
     "correct": 1,
     "explanation": "Rafailov et al. 表明，RLHF 目标的闭式解会将 reward 表达为 policy 相对于 reference 的 log-probabilities 的函数。DPO 直接优化这一点，从而隐式学习 reward。",
     "stage": "post"
   },
   {
     "question": "什么时候 RLHF 仍然可能优于 DPO？",
-    "options": ["总是如此 -- RLHF 严格更好", "当你需要一个可复用的 reward model 来评估多个 policies，或者 online data collection 有益时", "当你有更少的 preference data 时", "当训练更小的模型时"],
-    "correct": 1,
+    "options": [
+      "当训练更小的模型时",
+      "当你有更少的 preference data 时",
+      "总是如此 -- RLHF 严格更好",
+      "当你需要一个可复用的 reward model 来评估多个 policies，或者 online data collection 有益时"
+    ],
+    "correct": 3,
     "explanation": "DPO 是 offline 的（固定 preference data）。RLHF 允许 online data collection，由 reward model 为新的 generations 打分，从而发现 reward-hacking 模式。独立的 reward model 也对评估和其他 policies 有用。",
     "stage": "post"
   }
