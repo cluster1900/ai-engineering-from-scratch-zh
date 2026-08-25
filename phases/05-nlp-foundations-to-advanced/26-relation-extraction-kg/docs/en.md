@@ -48,6 +48,10 @@ Hallucinations 会大幅下降。需要更多计算，但可审计。
 
 生产级 KGs 通常混合使用：用 Open IE 做发现，然后在合并进主 graph 之前将 relations canonicalize 到 closed ontology。
 
+```figure
+relation-triples
+```
+
 ## 构建
 
 ### 步骤 1: 基于 pattern 的抽取
