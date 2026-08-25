@@ -113,6 +113,10 @@ DPO 实现必须仔细处理 reference model。reference 是固定不动的 SFT 
 - 对每个 reference parameter 设置 `requires_grad=False`。
 - 在 reference 构建后，通过 `policy.load_state_dict(reference.state_dict())` 构造 policy。
 
+```figure
+cap-dpo-preference
+```
+
 ## Architecture
 
 ```mermaid
