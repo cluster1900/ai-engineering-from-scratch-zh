@@ -6,36 +6,36 @@
       "stage": "pre",
       "question": "Bag of Words 会丢弃什么？",
       "options": [
+        "标点符号",
         "Token 顺序",
         "词表大小",
-        "文档长度",
-        "标点符号"
+        "文档长度"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "BoW 会统计每个文档中的 Token，但会丢弃它们的顺序。"
     },
     {
       "stage": "pre",
       "question": "为什么要用 IDF 因子缩放 TF？",
       "options": [
-        "出现在每个文档中的词几乎不携带区分信号，应降低其权重",
         "为了归一化文档长度",
-        "为了加速训练",
-        "为了移除标点符号"
+        "出现在每个文档中的词几乎不携带区分信号，应降低其权重",
+        "为了移除标点符号",
+        "为了加速训练"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "IDF 会惩罚无处不在的词，并提升稀有词的权重。"
     },
     {
       "stage": "check",
       "question": "在平滑 IDF 公式 log((N+1)/(df+1)) + 1 中，末尾的 +1 保证了什么？",
       "options": [
-        "更快的计算",
-        "出现在每个文档中的词仍然有 IDF 1，而不是 0",
+        "大 N 下的数值稳定性",
         "与原始计数兼容",
-        "大 N 下的数值稳定性"
+        "出现在每个文档中的词仍然有 IDF 1，而不是 0",
+        "更快的计算"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "+1 让无处不在的词保持 IDF=1，因此不会被置零，这与 scikit-learn 的默认行为一致。"
     },
     {
@@ -43,59 +43,59 @@
       "question": "为什么在计算 cosine similarity 之前要对 TF-IDF 行做 L2 归一化？",
       "options": [
         "为了把 sparse vectors 转换为 dense",
-        "为了压缩词表",
+        "否则更长的文档会主导 similarity scores；归一化会把所有文档放到单位 hypersphere 上",
         "为了移除零项",
-        "否则更长的文档会主导 similarity scores；归一化会把所有文档放到单位 hypersphere 上"
+        "为了压缩词表"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "L2 归一化会移除文档长度偏差，并把 cosine similarity 转换为 dot product。"
     },
     {
       "stage": "check",
       "question": "哪个 TfidfVectorizer 设置在情感分析中启用会有风险？",
       "options": [
-        "stop_words='english'",
+        "sublinear_tf=True",
         "ngram_range=(1, 2)",
         "min_df=2",
-        "sublinear_tf=True"
+        "stop_words='english'"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "英语 stopword 列表会删除像 'not' 这样的否定词，而这些词携带情感信号。"
     },
     {
       "stage": "post",
       "question": "到 2026 年，TF-IDF 仍然在哪类任务中胜出？",
       "options": [
-        "开放式对话",
         "机器翻译",
-        "垃圾邮件检测、日志异常标记，以及低延迟窄域 Classification",
-        "图像字幕生成"
+        "开放式对话",
+        "图像字幕生成",
+        "垃圾邮件检测、日志异常标记，以及低延迟窄域 Classification"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "当词是否出现就是信号，并且可解释性或速度很重要时，TF-IDF 会胜过 embeddings。"
     },
     {
       "stage": "post",
       "question": "为什么 TF-IDF 在 'The movie was not good' 和 'The movie was excellent' 这对文本上会失败？",
       "options": [
-        "TF-IDF 不能处理 stopwords",
         "TF-IDF 需要 bigrams 才能工作",
-        "Embeddings 重叠过高",
-        "两个文档共享大多数 Token；bag-of-words 没有否定或词序的概念"
+        "两个文档共享大多数 Token；bag-of-words 没有否定或词序的概念",
+        "TF-IDF 不能处理 stopwords",
+        "Embeddings 重叠过高"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "没有词序或句法上下文时，BoW 无法建模 'not' 会反转 'good' 的情感。"
     },
     {
       "stage": "post",
       "question": "什么是 TF-IDF weighted embedding hybrid？",
       "options": [
-        "在平均之前，使用 TF-IDF 权重作为每个 Token embedding 的 pooling weight",
-        "在 TF-IDF 上运行 PCA，然后重新 embedding",
         "拼接 BoW 和 dense embeddings",
+        "在 TF-IDF 上运行 PCA，然后重新 embedding",
+        "在平均之前，使用 TF-IDF 权重作为每个 Token embedding 的 pooling weight",
         "在 TF-IDF features 上训练 BERT"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "这种 hybrid 会按每个 Token 的 TF-IDF 分数对其 embedding 加权再求平均，把语义能力与稀有词强调结合起来。"
     }
   ]
