@@ -16,16 +16,16 @@
   <text x="440" y="26" text-anchor="middle" class="title">语音助手流水线 — 7 个组件，1 轮</text>
 
   <rect x="20" y="55" width="100" height="90" class="box"/>
-  <text x="70" y="78" text-anchor="middle" class="label">1. mic</text>
+  <text x="70" y="78" text-anchor="middle" class="label">1. 麦克风</text>
   <text x="70" y="96" text-anchor="middle" class="content">16 kHz 单声道</text>
-  <text x="70" y="114" text-anchor="middle" class="content">20 ms chunks</text>
+  <text x="70" y="114" text-anchor="middle" class="content">20 ms 分块</text>
 
   <line x1="122" y1="100" x2="140" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <rect x="142" y="55" width="100" height="90" class="hot"/>
   <text x="192" y="78" text-anchor="middle" class="label">2. VAD</text>
   <text x="192" y="96" text-anchor="middle" class="content">Silero</text>
-  <text x="192" y="114" text-anchor="middle" class="content">+ pre-roll</text>
+  <text x="192" y="114" text-anchor="middle" class="content">+ 预滚</text>
 
   <line x1="244" y1="100" x2="262" y2="100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
 
@@ -75,8 +75,8 @@
   <text x="440" y="337" text-anchor="middle" class="label">2026 参考栈（按目标延迟 + 许可证选择）</text>
   <text x="50" y="363" class="content">LiveKit + Deepgram + GPT-4o + Cartesia        350-500 ms   行业默认</text>
   <text x="50" y="381" class="content">Pipecat + Whisper-stream + GPT-4o + Kokoro    500-800 ms   DIY 开源</text>
-  <text x="50" y="399" class="content">Moshi（全双工，单模型）              200-300 ms   不同架构 — 第 15 课</text>
+  <text x="50" y="399" class="content">Moshi（全双工，单 Model）              200-300 ms   不同架构 — 第 15 课</text>
   <text x="50" y="417" class="content">Vapi / Retell（托管）                        300-500 ms   最快上线</text>
   <text x="50" y="435" class="content">whisper.cpp + llama.cpp + Kokoro-ONNX          离线      边缘 / 隐私</text>
-  <text x="50" y="460" class="caption">常开消费设备加 wake-word gate（Porcupine）；原始音频日志勿超 30 天。</text>
+  <text x="50" y="460" class="caption">常开消费设备加唤醒词门控（Porcupine）；原始音频日志勿超 30 天。</text>
 </svg>

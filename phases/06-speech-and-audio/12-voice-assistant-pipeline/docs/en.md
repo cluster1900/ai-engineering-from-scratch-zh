@@ -51,6 +51,10 @@ Latency 目标：在 laptop CPU 上，从用户说完话开始，800 ms 内输�
 | Vapi / Retell (managed) | 300-500 ms | commercial | 最快上线；定制能力有限 |
 | Whisper.cpp + llama.cpp + Kokoro-ONNX | offline | open | 隐私 / edge |
 
+```figure
+v4-voice-latency
+```
+
 ## 构建
 
 ### 步骤 1： 带 chunking 的 mic capture（pseudocode）
