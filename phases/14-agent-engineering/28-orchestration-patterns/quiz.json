@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "本课列出了哪四种编排模式？",
       "options": [
+        "Push、pull、batch、stream",
         "Supervisor-worker、swarm/peer-to-peer、hierarchical、debate",
         "Sequential、parallel、distributed、federated",
-        "Plan、act、reflect、refine",
-        "Push、pull、batch、stream"
+        "Plan、act、reflect、refine"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Supervisor-worker、swarm、hierarchical 和 debate 在 2026 年的各类 framework 中反复出现。"
     },
     {
@@ -19,21 +19,21 @@
       "question": "关于 supervision，2026 年 LangChain 的建议是什么？",
       "options": [
         "始终使用 create_supervisor",
-        "优先使用直接 tool call，而不是 create_supervisor，以获得更精细的 context-engineering 控制",
         "完全避免 supervision",
+        "优先使用直接 tool call，而不是 create_supervisor，以获得更精细的 context-engineering 控制",
         "在 GPU 上运行 supervisor"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "基于 tool call 的 supervision 可以让你精确控制每个 specialist 看到的内容。"
     },
     {
       "stage": "check",
       "question": "swarm 与 supervisor-worker topology 的区别是什么？",
       "options": [
-        "Swarm 使用 GPU",
+        "Swarm 只在 cron 上运行",
         "Swarm 没有中心 router；agent 通过共享 tool surface 直接 hand off",
-        "Swarm 是 single-agent",
-        "Swarm 只在 cron 上运行"
+        "Swarm 使用 GPU",
+        "Swarm 是 single-agent"
       ],
       "correct": 1,
       "explanation": "Swarm 是 peer-to-peer；supervisor 通过一个 LLM 集中处理 routing。"
@@ -42,36 +42,36 @@
       "stage": "check",
       "question": "什么时候有理由使用 hierarchical orchestration？",
       "options": [
-        "总是如此；它可以免费扩展",
-        "当单个 supervisor 的 context budget 无法容纳所有 specialist 的描述时",
+        "永远不；它是一种 antipattern",
         "只有使用 GPU 时",
-        "永远不；它是一种 antipattern"
+        "当单个 supervisor 的 context budget 无法容纳所有 specialist 的描述时",
+        "总是如此；它可以免费扩展"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Nested supervisor 适用于 specialist 数量很大、超过单个 supervisor 预算的场景。"
     },
     {
       "stage": "check",
       "question": "Anthropic 支持的推荐决策顺序是什么？",
       "options": [
-        "始终从 hierarchical multi-agent 开始",
         "从 single agent 加 workflow pattern 开始；仅在需要时添加 topology；顺序是 supervisor，再到 swarm，再到 hierarchical；当 accuracy 比 cost 更重要时使用 debate",
         "从 debate 开始",
+        "始终从 hierarchical multi-agent 开始",
         "从 swarm 开始并收缩到 single"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Anthropic 的指导原则是为你的需求构建合适的系统，而不是最复杂的系统。"
     },
     {
       "stage": "post",
       "question": "本课中的 fake hierarchy 是什么？",
       "options": [
-        "标错标签的 YAML",
         "只有两个实际团队，却因为“enterprise”而设置三层 supervisor；应将其折叠",
         "用 TypeScript 编写的 orchestrator",
+        "标错标签的 YAML",
         "一个 test fixture"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "不对应真实团队的层级会增加 operational complexity，却没有收益。"
     },
     {
@@ -79,11 +79,11 @@
       "question": "如何缓解 swarm 中来回反复的 handoff（A -> B -> A -> B）？",
       "options": [
         "将 temperature 固定为 0",
+        "降低 rate limit",
         "添加 hop counter，并在 N 次 transfer 后拒绝继续",
-        "禁用 tracing",
-        "降低 rate limit"
+        "禁用 tracing"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "hop counter 会在 swarm cycle 无限循环之前设置上限。"
     }
   ]
