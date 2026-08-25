@@ -13,7 +13,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">三种算法，同一 Token 预算</text>
+  <text x="450" y="30" text-anchor="middle" class="title">三种算法，相同 Token 预算</text>
 
   <!-- BPE column -->
   <rect x="40" y="60" width="260" height="360" class="box"/>
@@ -22,7 +22,7 @@
   <rect x="60" y="105" width="220" height="30" class="hot"/>
   <text x="170" y="125" text-anchor="middle" class="content">l o w e r</text>
 
-  <text x="170" y="155" text-anchor="middle" class="caption">合并最高频 pair</text>
+  <text x="170" y="155" text-anchor="middle" class="caption">合并最高频 Token 对</text>
   <line x1="170" y1="162" x2="170" y2="180" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="185" width="220" height="30" class="box"/>
@@ -47,7 +47,7 @@
   <text x="450" y="85" text-anchor="middle" class="label">Unigram — 概率剪枝</text>
 
   <rect x="340" y="105" width="220" height="30" class="box"/>
-  <text x="450" y="125" text-anchor="middle" class="content">起始：50k candidates</text>
+  <text x="450" y="125" text-anchor="middle" class="content">起始：50k 个候选项</text>
 
   <line x1="450" y1="140" x2="450" y2="158" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -79,7 +79,7 @@
   <line x1="730" y1="140" x2="730" y2="158" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="620" y="163" width="220" height="50" class="box"/>
-  <text x="730" y="182" text-anchor="middle" class="content">合并使其最大的 pair</text>
+  <text x="730" y="182" text-anchor="middle" class="content">合并使其最大的 Token 对</text>
   <text x="730" y="200" text-anchor="middle" class="content">P(ab) / (P(a)·P(b))</text>
 
   <line x1="730" y1="220" x2="730" y2="238" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -92,9 +92,9 @@
   <rect x="620" y="303" width="220" height="30" class="box"/>
   <text x="730" y="323" text-anchor="middle" class="content">l ##ower</text>
 
-  <text x="730" y="365" text-anchor="middle" class="caption">用于：BERT, DistilBERT,</text>
+  <text x="730" y="365" text-anchor="middle" class="caption">用于：BERT、DistilBERT、</text>
   <text x="730" y="382" text-anchor="middle" class="caption">ELECTRA</text>
   <text x="730" y="405" text-anchor="middle" class="caption">## 表示续接</text>
 
-  <text x="450" y="450" text-anchor="middle" class="caption">一次 tokenize，永久交付 - 词表在训练时冻结</text>
+  <text x="450" y="450" text-anchor="middle" class="caption">一次 tokenize，永久交付 - 词表在 Training 时冻结</text>
 </svg>
