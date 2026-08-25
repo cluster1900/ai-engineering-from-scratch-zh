@@ -6,36 +6,36 @@
       "stage": "pre",
       "question": "在 2014 风格的 seq2seq 模型中，encoder 的作用是什么？",
       "options": [
-        "计算 Attention weights",
+        "生成 target Token",
         "执行 beam search",
-        "读取 source，并生成一个固定大小的 context Vector 来概括它",
-        "生成 target Token"
+        "计算 Attention weights",
+        "读取 source，并生成一个固定大小的 context Vector 来概括它"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "encoder RNN 会把 source 压缩成最终 hidden state，供 decoder 使用。"
     },
     {
       "stage": "pre",
       "question": "seq2seq 训练中的 teacher forcing 是什么？",
       "options": [
+        "手动标注每个 decoder step",
         "在 inference 期间添加一个 teacher network",
         "把 batch size 翻倍",
-        "将 ground-truth 的前一个 Token（而不是模型的 prediction）作为 decoder 输入",
-        "手动标注每个 decoder step"
+        "将 ground-truth 的前一个 Token（而不是模型的 prediction）作为 decoder 输入"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Teacher forcing 通过使用真实的前序 Token 来稳定训练；没有它时，早期错误会级联。"
     },
     {
       "stage": "check",
       "question": "为什么固定 context-vector 的 seq2seq 准确率会随着输入长度增长而下降？",
       "options": [
-        "Padding Token 会累积",
         "Cross-entropy 会发散",
-        "关于 source 的所有信息都必须放进单个固定大小的 encoder hidden state 中，而这会在长输入上丢失细节",
-        "词表变得太大"
+        "Padding Token 会累积",
+        "词表变得太大",
+        "关于 source 的所有信息都必须放进单个固定大小的 encoder hidden state 中，而这会在长输入上丢失细节"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "固定 context-vector 瓶颈意味着长输入无法被无损概括。"
     },
     {
@@ -54,44 +54,44 @@
       "stage": "check",
       "question": "为什么 beam search 在生成任务中通常优于 greedy decoding？",
       "options": [
+        "Beam search 更快",
         "Beam search 在每个 step 保留 top-k 个 partial sequences，而不是不可撤销地提交到一个 Token",
         "Beam search 避免 exposure bias",
-        "Beam search 更快",
         "Beam search 会降低 Loss"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Greedy 每个 step 都会提交；beam search 探索多个 hypotheses，然后选择最好的完整结果。"
     },
     {
       "stage": "post",
       "question": "哪类 architecture family 取代了 RNN seq2seq，成为通用生成任务的主流？",
       "options": [
-        "Transformer encoder-decoder 模型（BART、T5、mBART、NLLB）",
-        "Graph neural networks",
         "Naive Bayes",
-        "1D CNNs"
+        "Graph neural networks",
+        "1D CNNs",
+        "Transformer encoder-decoder 模型（BART、T5、mBART、NLLB）"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Transformer encoder-decoders 去掉了 recurrence，如今主导生成任务。"
     },
     {
       "stage": "post",
       "question": "scheduled sampling 做了什么？",
       "options": [
+        "向 Embedding 添加 random noise",
         "在训练期间逐步降低 teacher-forcing ratio，使模型学会从自己的 predictions 中恢复",
-        "安排 learning-rate decay",
         "重排训练集",
-        "向 Embedding 添加 random noise"
+        "安排 learning-rate decay"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Scheduled sampling 会逐渐混入模型 predictions，以缩小 train/inference gap。"
     },
     {
       "stage": "post",
       "question": "为什么单独使用 greedy decoding 往往无法满足面向用户的生成需求？",
       "options": [
-        "它不能使用 Embedding",
         "它总是先选择 <EOS>",
+        "它不能使用 Embedding",
         "Greedy 可能重复或循环，并且无法从局部看似不错但全局很差的 Token 选择中回退",
         "它需要更多内存"
       ],

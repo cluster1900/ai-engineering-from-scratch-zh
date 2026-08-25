@@ -20,7 +20,7 @@
   </defs>
 
   <rect class="box" x="20" y="40" width="380" height="320" rx="4"/>
-  <text class="label" x="210" y="65" text-anchor="middle">encoder（GRU）</text>
+  <text class="label" x="210" y="65" text-anchor="middle">编码器（GRU）</text>
 
   <rect class="cell" x="50"  y="90" width="50" height="35" rx="2"/><text class="content" x="75"  y="113" text-anchor="middle">h1</text>
   <rect class="cell" x="120" y="90" width="50" height="35" rx="2"/><text class="content" x="145" y="113" text-anchor="middle">h2</text>
@@ -52,7 +52,7 @@
   <text class="stage" x="430" y="180">瓶颈</text>
 
   <rect class="box" x="500" y="40" width="380" height="320" rx="4"/>
-  <text class="label" x="690" y="65" text-anchor="middle">decoder（GRU）</text>
+  <text class="label" x="690" y="65" text-anchor="middle">解码器（GRU）</text>
 
   <rect class="hot"  x="520" y="220" width="50" height="35" rx="2"/><text class="content" x="545" y="243" text-anchor="middle">h5</text>
   <rect class="cell" x="590" y="220" width="50" height="35" rx="2"/><text class="content" x="615" y="243" text-anchor="middle">s1</text>
@@ -65,15 +65,15 @@
   <path class="line" d="M 710 238 L 728 238" marker-end="url(#arrow)"/>
   <path class="line" d="M 780 238 L 798 238" marker-end="url(#arrow)"/>
 
-  <rect class="cell" x="590" y="290" width="50" height="30" rx="2"/><text class="content" x="615" y="310" text-anchor="middle">I</text>
-  <rect class="cell" x="660" y="290" width="50" height="30" rx="2"/><text class="content" x="685" y="310" text-anchor="middle">am</text>
-  <rect class="cell" x="730" y="290" width="50" height="30" rx="2"/><text class="content" x="755" y="310" text-anchor="middle">not</text>
-  <rect class="cell" x="800" y="290" width="50" height="30" rx="2"/><text class="content" x="825" y="310" text-anchor="middle">cat</text>
+  <rect class="cell" x="590" y="290" width="50" height="30" rx="2"/><text class="content" x="615" y="310" text-anchor="middle">我</text>
+  <rect class="cell" x="660" y="290" width="50" height="30" rx="2"/><text class="content" x="685" y="310" text-anchor="middle">是</text>
+  <rect class="cell" x="730" y="290" width="50" height="30" rx="2"/><text class="content" x="755" y="310" text-anchor="middle">不</text>
+  <rect class="cell" x="800" y="290" width="50" height="30" rx="2"/><text class="content" x="825" y="310" text-anchor="middle">猫</text>
 
   <path class="line" d="M 615 290 L 615 255"/>
   <path class="line" d="M 685 290 L 685 255"/>
   <path class="line" d="M 755 290 L 755 255"/>
   <path class="line" d="M 825 290 L 825 255"/>
 
-  <text class="note" x="690" y="350" text-anchor="middle">每步输出一个 Token，并反馈输入</text>
+  <text class="note" x="690" y="350" text-anchor="middle">每步输出一个 Token，并反馈为输入</text>
 </svg>
