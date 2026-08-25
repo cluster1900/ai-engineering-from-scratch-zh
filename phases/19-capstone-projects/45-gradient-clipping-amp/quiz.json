@@ -6,36 +6,36 @@
       "stage": "pre",
       "question": "Global L2 Gradient Clipping 解决什么问题？",
       "options": [
-        "训练缓慢",
         "单个糟糕 batch 可能让 gradient norm 飙升多个数量级；clipping 会约束最坏情况下的 optimizer step，让一个 batch 不能重置数小时的学习成果",
         "Vocabulary drift",
+        "训练缓慢",
         "随机重启"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Clipping 是一条安全带，可以防止嘈杂 batch 破坏 loss curve。"
     },
     {
       "stage": "check",
       "question": "一个 step 中 GradScaler operation 的正确顺序是什么？",
       "options": [
-        "step, scale, unscale, backward, update",
         "scaler.scale(loss).backward(); scaler.unscale_(optimizer); clip_grad_norm_; scaler.step(optimizer); scaler.update()",
         "backward, step, scale, update",
-        "任意顺序；scaler 会在内部重新排序"
+        "任意顺序；scaler 会在内部重新排序",
+        "step, scale, unscale, backward, update"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "在 unscale_ 和 step 之间对 unscaled gradients 做 clip；update 始终运行。"
     },
     {
       "stage": "check",
       "question": "在 skipped step 上，scaler.update() 会做什么？",
       "options": [
+        "关闭 run",
         "什么都不做",
         "将 scaling factor 减半并重置 no-inf counter；忘记在 skip path 上调用它，就是产生“scaling factor 从未改变”的 bug",
-        "将 scaling factor 翻倍",
-        "关闭 run"
+        "将 scaling factor 翻倍"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Scaler 会基于最近 step 的 skip / clean 比率调节它的 factor。"
     },
     {
@@ -43,11 +43,11 @@
       "question": "即使有 GradScaler，为什么仍需要 loss finiteness check？",
       "options": [
         "因为 GradScaler 很慢",
-        "GradScaler 处理 backward-pass overflow，但 non-finite Loss 不会产生有用的 Gradient；在 backward 前跳过可以节省计算并避免污染 scaler 的状态",
         "它只是装饰",
-        "PyTorch 要求这样做"
+        "PyTorch 要求这样做",
+        "GradScaler 处理 backward-pass overflow，但 non-finite Loss 不会产生有用的 Gradient；在 backward 前跳过可以节省计算并避免污染 scaler 的状态"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Loss check 覆盖 forward-pass failure；scaler 覆盖 backward-pass failure。"
     },
     {
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "当 skip 频繁时，为什么从 FP16 autocast 切换到 BF16？",
       "options": [
-        "BF16 更新",
         "BF16 的 exponent range 比 FP16 更宽，通常很少需要 loss scaling；同一个 model 上 skip rate 通常会降到 zero",
         "BF16 更慢，所以 skip 更少",
+        "BF16 更新",
         "随机传统"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "FP16 偏向 mantissa precision 而牺牲 range；BF16 反向取舍，直接移除 overflow 类问题。"
     }
   ]

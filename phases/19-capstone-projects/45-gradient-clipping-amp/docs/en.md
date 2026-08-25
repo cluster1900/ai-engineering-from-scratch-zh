@@ -58,6 +58,10 @@ Global L2 norm 是拼接后的 gradient vector 的 Euclidean norm，而不是逐
 
 Scaling factor 是 GradScaler 的内部状态。每个 step，本课读取 `scaler.get_scale()`，并把它与 learning rate 和 gradient norm 一起记录。健康的 run 会显示 scaling factor 以 2 的幂上升，直到在 `2^17` 或 `2^18` 附近饱和。行为异常的 run 会显示 factor 在高值和低值之间振荡，这说明模型的 Gradient 有时在 range 内，有时不在。不记录日志，这个诊断信号就是不可见的。
 
+```figure
+grad-clip-monitor
+```
+
 ## Build It
 
 `code/main.py` 实现：
