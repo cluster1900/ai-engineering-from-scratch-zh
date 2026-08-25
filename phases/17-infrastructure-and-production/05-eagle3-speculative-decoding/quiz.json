@@ -6,22 +6,22 @@
       "stage": "pre",
       "question": "为什么 Speculative Decoding 能利用 plain decode 中存在的差距？",
       "options": [
-        "Decode 是 compute-bound，因此增加更多 compute 是免费的",
         "Decode 无法从 batching 中受益",
-        "Decode 比 prefill 需要更多 network bandwidth",
-        "Decode 是 memory-bound，因此 GPU 大部分时间处于 idle，等待从 HBM 读取 weights"
+        "Decode 是 memory-bound，因此 GPU 大部分时间处于 idle，等待从 HBM 读取 weights",
+        "Decode 是 compute-bound，因此增加更多 compute 是免费的",
+        "Decode 比 prefill 需要更多 network bandwidth"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "acceptance rate alpha 衡量什么？",
       "options": [
-        "Decode 期间使用的 GPU memory 比例",
-        "draft 提议的 Token 中被 target model 接受的比例",
         "draft model 的 latency overhead",
-        "KV cache 的 cache hit rate"
+        "draft 提议的 Token 中被 target model 接受的比例",
+        "KV cache 的 cache hit rate",
+        "Decode 期间使用的 GPU memory 比例"
       ],
       "correct": 1,
       "explanation": ""
@@ -30,48 +30,48 @@
       "stage": "check",
       "question": "与 EAGLE-2 相比，EAGLE-3 有什么变化，使 alpha 在通用 chat 上提升到大约 0.6-0.8？",
       "options": [
+        "draft head 基于多个 target layers 训练，而不只是最后一层",
         "它使用同一系列的 full-sized draft model",
         "它在 CPU 而不是 GPU 上运行",
-        "它完全移除了 verify step",
-        "draft head 基于多个 target layers 训练，而不只是最后一层"
+        "它完全移除了 verify step"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "本课说，在多数 2026 硬件上高并发时，alpha 大约低于多少会让 Speculative Decoding 变成 net negative？",
       "options": [
+        "0.85",
         "0.95",
         "0.05",
-        "0.55",
-        "0.85"
+        "0.55"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "开启 EAGLE-3 后，即使 mean ITL 下降，你最应该密切关注哪个 metric？",
       "options": [
-        "Cold-start time",
         "GPU memory utilization",
-        "P99 ITL，因为 rejected-draft two-passes 在 full batch 下可能会 serialize",
-        "Mean E2E latency"
+        "Cold-start time",
+        "Mean E2E latency",
+        "P99 ITL，因为 rejected-draft two-passes 在 full batch 下可能会 serialize"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "根据本课，为什么 vLLM 2026 中 Speculative Decoding 是 opt-in（而不是默认开启）？",
       "options": [
-        "Acceptance rate 取决于 workload，不测量 alpha 就开启它是生产环境 anti-pattern",
-        "它只适用于 Blackwell GPUs",
         "它与 PagedAttention 不兼容",
-        "它需要单独的 license"
+        "它只适用于 Blackwell GPUs",
+        "它需要单独的 license",
+        "Acceptance rate 取决于 workload，不测量 alpha 就开启它是生产环境 anti-pattern"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     }
   ]

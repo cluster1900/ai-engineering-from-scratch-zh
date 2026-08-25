@@ -16,7 +16,7 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="24" text-anchor="middle" class="title">EAGLE-3 speculative decoding — alpha 是唯一指标</text>
+  <text x="480" y="24" text-anchor="middle" class="title">EAGLE-3 推测解码 — alpha 是唯一指标</text>
 
   <rect x="40" y="50" width="420" height="240" class="box"/>
   <text x="250" y="72" text-anchor="middle" class="head">流程（K=5）</text>
@@ -35,36 +35,36 @@
   <text x="320" y="264" text-anchor="middle" class="step">其余重采样（第二遍）</text>
 
   <rect x="480" y="50" width="440" height="240" class="box"/>
-  <text x="700" y="72" text-anchor="middle" class="head">按 workload 的 alpha</text>
+  <text x="700" y="72" text-anchor="middle" class="head">按工作负载划分的 alpha</text>
   <rect x="500" y="90" width="400" height="30" class="cool"/>
-  <text x="510" y="110" class="small">通用聊天 + EAGLE-3 用 ShareGPT 训练：alpha 0.60 - 0.80</text>
+  <text x="510" y="110" class="small">通用聊天 + EAGLE-3 使用 ShareGPT 训练：alpha 0.60 - 0.80</text>
   <rect x="500" y="125" width="400" height="30" class="cold"/>
-  <text x="510" y="145" class="small">专用领域（代码、法律、医疗）：alpha 0.40 - 0.60</text>
+  <text x="510" y="145" class="small">专业领域（代码、法律、医疗）：alpha 0.40 - 0.60</text>
   <rect x="500" y="160" width="400" height="30" class="hot"/>
-  <text x="510" y="180" class="small">domain 不匹配且未重训 draft：alpha 0.30 - 0.45</text>
+  <text x="510" y="180" class="small">领域不匹配且未重训 draft：alpha 0.30 - 0.45</text>
   <rect x="500" y="195" width="400" height="30" class="dsk"/>
-  <text x="510" y="215" class="small">经典 draft-model（Llama 3.2 1B for 70B）：alpha 0.30 - 0.50</text>
+  <text x="510" y="215" class="small">经典 draft-model（Llama 3.2 1B 用于 70B）：alpha 0.30 - 0.50</text>
   <rect x="500" y="230" width="400" height="50" class="box"/>
-  <text x="510" y="250" class="small">256 并发下 break-even alpha：~0.55</text>
+  <text x="510" y="250" class="small">256 并发下的盈亏平衡 alpha：~0.55</text>
   <text x="510" y="268" class="small">低于该值：即使均值改善，P99 尾部也会变差</text>
 
   <rect x="40" y="310" width="880" height="100" class="box"/>
   <text x="480" y="332" text-anchor="middle" class="head">代际</text>
   <text x="60" y="356" class="step">经典 draft-model</text>
-  <text x="60" y="374" class="small">加载两个模型；每个 target 有 K 次 forward；alpha 0.3-0.5</text>
+  <text x="60" y="374" class="small">加载两个 Model；每个 target 执行 K 次前向计算；alpha 0.3-0.5</text>
   <text x="280" y="356" class="step">EAGLE-1</text>
-  <text x="280" y="374" class="small">last target layer 上的 draft head；alpha ~0.5-0.6</text>
+  <text x="280" y="374" class="small">最后一个 target 层上的 draft head；alpha ~0.5-0.6</text>
   <text x="500" y="356" class="step">EAGLE-2</text>
-  <text x="500" y="374" class="small">tree drafts，自适应 K；alpha ~0.6-0.7</text>
+  <text x="500" y="374" class="small">树状 draft，自适应 K；alpha ~0.6-0.7</text>
   <text x="720" y="356" class="step">EAGLE-3 (2025-2026)</text>
-  <text x="720" y="374" class="small">multi-layer draft head；alpha ~0.6-0.8</text>
+  <text x="720" y="374" class="small">多层 draft head；alpha ~0.6-0.8</text>
   <text x="60" y="396" class="caption">所有 EAGLE 变体训练快，且只给 target 增加少量参数开销</text>
 
   <rect x="40" y="430" width="880" height="110" class="hot"/>
   <text x="480" y="452" text-anchor="middle" class="head">生产检查清单</text>
-  <text x="60" y="474" class="small">1. 基线 target model plain：目标并发下的 TTFT、ITL、吞吐</text>
-  <text x="60" y="490" class="small">2. 启用 speculative_config 和 EAGLE-3 draft；重跑 benchmark</text>
-  <text x="60" y="506" class="small">3. 记录 alpha（vLLM V1 报告每请求接受 Token 数）；要求 alpha &gt;= 0.55</text>
-  <text x="60" y="522" class="small">4. 关注 P99 ITL，而非 P50 — rejected-draft 两遍会推高尾部</text>
-  <text x="60" y="538" class="small">5. vLLM v0.18.0：draft-model spec decode 与 chunked prefill 不兼容；V1 中的 N-gram 是例外</text>
+  <text x="60" y="474" class="small">1. 基线 target model 原生运行：目标并发下的 TTFT、ITL、吞吐量</text>
+  <text x="60" y="490" class="small">2. 启用 speculative_config 和 EAGLE-3 draft；重新运行基准测试</text>
+  <text x="60" y="506" class="small">3. 记录 alpha（vLLM V1 报告每个请求接受的 Token 数）；要求 alpha &gt;= 0.55</text>
+  <text x="60" y="522" class="small">4. 关注 P99 ITL，而非 P50 — rejected-draft 的两遍计算会推高尾部</text>
+  <text x="60" y="538" class="small">5. vLLM v0.18.0：draft-model 推测解码与 chunked prefill 不兼容；V1 中的 N-gram 除外</text>
 </svg>
