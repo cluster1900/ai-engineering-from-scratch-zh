@@ -58,6 +58,10 @@ git push --> webhook --> ingest worker (LlamaIndex Workflow)
 - Symbol graph：Neo4j（managed）或 kuzu（embedded），用于 import 和 call edges
 - Observability：每个 retrieval + synthesis step 的 Langfuse spans
 
+```figure
+ce-hybrid-retrieval
+```
+
 ## 构建它
 1. **Ingestion walker。** 在每个 push hook 上遍历 git history。收集 changed files。对每个文件，用 tree-sitter 解析，提取 function 和 class nodes 及其完整 source span。输出 chunk records `{repo, path, start_line, end_line, symbol, body}`。
 
