@@ -41,29 +41,29 @@
   <line x1="150" y1="240" x2="150" y2="300" class="edge" marker-end="url(#arrow)"/>
   <line x1="150" y1="360" x2="150" y2="420" class="edge" marker-end="url(#arrow)"/>
   <path d="M240,450 Q340,450 340,90 L240,90" class="edge" marker-end="url(#arrow)"/>
-  <text x="330" y="270" class="small">反馈 loop</text>
+  <text x="330" y="270" class="small">反馈循环</text>
 
   <rect x="380" y="60" width="540" height="200" class="box"/>
-  <text x="650" y="84" text-anchor="middle" class="head">三类 evaluator</text>
+  <text x="650" y="84" text-anchor="middle" class="head">三类 Evaluator</text>
 
   <rect x="400" y="100" width="500" height="40" class="cool"/>
   <text x="420" y="124" class="step">标量  二值/数值真值（测试通过、答案正确）</text>
 
   <rect x="400" y="148" width="500" height="40" class="cold"/>
-  <text x="420" y="172" class="step">启发式  卡住 loop、步数过多、重复动作特征</text>
+  <text x="420" y="172" class="step">启发式：循环卡住、步数过多、动作重复</text>
 
   <rect x="400" y="196" width="500" height="40" class="hot"/>
-  <text x="420" y="220" class="step">自评  LLM-as-judge 评估自身 trace（弱；需配合 tool grounding）</text>
+  <text x="420" y="220" class="step">自评：LLM-as-judge 评估自身 trace（较弱；需配合 Tool grounding）</text>
 
   <rect x="380" y="280" width="540" height="220" class="box"/>
   <text x="650" y="304" text-anchor="middle" class="head">2026 年实例</text>
-  <text x="400" y="328" class="step">Letta sleep-time compute</text>
-  <text x="400" y="346" class="small">单独的 reflector agent 在热路径外运行，写入 memory blocks</text>
+  <text x="400" y="328" class="step">Letta 非活跃时计算</text>
+  <text x="400" y="346" class="small">独立 Reflector Agent 在热路径外运行，写入 memory block</text>
   <text x="400" y="368" class="step">pro-workflow /learn-rule</text>
-  <text x="400" y="386" class="small">手动捕获 reflection 到 project memory — 持续筛选</text>
+  <text x="400" y="386" class="small">手动将 reflection 写入项目 memory — 持续筛选</text>
   <text x="400" y="408" class="step">Claude Code /memory</text>
   <text x="400" y="426" class="small">CLAUDE.md 作为跨会话长期 episodic buffer</text>
-  <text x="400" y="448" class="step">LangGraph reflection nodes</text>
-  <text x="400" y="466" class="small">graph node 负责打分并路由到 refine-or-finish</text>
-  <text x="400" y="488" class="small">memory rot：压缩、TTL 或去重 — 累积 reflections 会过期</text>
+  <text x="400" y="448" class="step">LangGraph reflection 节点</text>
+  <text x="400" y="466" class="small">图节点负责评分并路由到 refine-or-finish</text>
+  <text x="400" y="488" class="small">memory 腐化：压缩、TTL 或去重 — 累积的 reflection 会过期</text>
 </svg>
