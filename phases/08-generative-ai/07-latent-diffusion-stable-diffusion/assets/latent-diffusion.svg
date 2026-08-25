@@ -15,11 +15,11 @@
     </style>
   </defs>
 
-  <text x="450" y="28" text-anchor="middle" class="title">latent diffusion = VAE + diffusion，分开训练</text>
+  <text x="450" y="28" text-anchor="middle" class="title">latent Diffusion = VAE + Diffusion，分开 Training</text>
 
   <!-- stage 1 -->
   <rect x="30" y="60" width="840" height="130" class="box"/>
-  <text x="450" y="82" text-anchor="middle" class="label">阶段 1：训练 VAE（encoder + decoder），冻结</text>
+  <text x="450" y="82" text-anchor="middle" class="label">阶段 1：Training VAE（encoder + decoder），冻结</text>
 
   <rect x="60" y="100" width="100" height="70" class="box"/>
   <text x="110" y="130" text-anchor="middle" class="content">图像 x</text>
@@ -49,7 +49,7 @@
 
   <!-- stage 2 -->
   <rect x="30" y="210" width="840" height="190" class="box"/>
-  <text x="450" y="232" text-anchor="middle" class="label">阶段 2：在 z-space 训练 diffusion</text>
+  <text x="450" y="232" text-anchor="middle" class="label">阶段 2：在 z-space Training Diffusion</text>
 
   <rect x="80" y="250" width="110" height="80" class="hot"/>
   <text x="135" y="280" text-anchor="middle" class="mono">z_T ~ N(0, I)</text>
@@ -79,6 +79,6 @@
   <!-- loss -->
   <rect x="30" y="415" width="840" height="80" class="hot"/>
   <text x="450" y="438" text-anchor="middle" class="label">与 pixel-space DDPM 相同 Loss：L = E || ε - ε_θ(z_t, t, c) ||²</text>
-  <text x="450" y="462" text-anchor="middle" class="caption">同等质量下 FLOPs 比 pixel diffusion 少约 64x</text>
+  <text x="450" y="462" text-anchor="middle" class="caption">同等质量下 FLOPs 比 pixel Diffusion 少约 64x</text>
   <text x="450" y="482" text-anchor="middle" class="caption">CFG:  ε_cfg = (1+w) · ε_cond - w · ε_uncond  (w ≈ 3-7)</text>
 </svg>
