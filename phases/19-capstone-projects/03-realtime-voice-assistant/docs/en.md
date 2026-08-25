@@ -69,6 +69,10 @@ browser / Twilio PSTN
 - Observability：OpenTelemetry voice spans、带 audio replay 的 Langfuse voice traces
 - Deployment：单台 g5.xlarge（24GB VRAM）用于自托管 Whisper + Orpheus；托管 APIs 用于最低延迟
 
+```figure
+ce-voice-latency
+```
+
 ## 构建它
 
 1. **WebRTC session。** 启动一个 LiveKit room 和一个 streaming microphone audio 的 web client。在 server 上，附加一个加入 room 的 agent worker。
