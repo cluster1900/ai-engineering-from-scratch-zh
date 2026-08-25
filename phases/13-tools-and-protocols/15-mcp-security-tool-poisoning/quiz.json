@@ -1,0 +1,78 @@
+{
+  "lesson": "15-mcp-security-tool-poisoning",
+  "title": "MCP 安全：被投毒的元数据、路由与 MRTR 状态",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "哪个 MCP 字段可以安全地用作经过身份验证的 client 身份？",
+      "options": [
+        "所有自行报告的 clientInfo 字段都不可以",
+        "clientInfo.name",
+        "clientInfo.version",
+        "clientCapabilities"
+      ],
+      "correct": 0,
+      "explanation": "Client 信息和 capability 是协议元数据，不是身份验证证据。"
+    },
+    {
+      "stage": "check",
+      "question": "批准一个 tool 后，gateway 应该对什么进行 hash？",
+      "options": [
+        "规范化的完整 descriptor，包括 description、schema 和相关 annotation",
+        "仅 tool 名称",
+        "仅 server 显示名称",
+        "当前 session identifier"
+      ],
+      "correct": 0,
+      "explanation": "固定完整 descriptor 可以检测仅对 description 进行 hash 时会遗漏的 schema 和 annotation 变更。"
+    },
+    {
+      "stage": "check",
+      "question": "gateway 应如何公开两个都名为 search 的 backend tool？",
+      "options": [
+        "让 model 推断 server",
+        "随机选择一个 backend",
+        "使用 notes.search 和 issues.search 之类的稳定限定名称",
+        "保留最后发现的 tool"
+      ],
+      "correct": 2,
+      "explanation": "限定名称可让路由、批准、审计和 header 验证指向同一个稳定的 tool。"
+    },
+    {
+      "stage": "check",
+      "question": "哪些 client capability 声明支持 MCP form elicitation？",
+      "options": [
+        "由 elicitation: {} 隐式支持，或由 elicitation: {form: {}} 显式支持",
+        "任何非空的 extensions object",
+        "仅启用了 form 的 protocol session",
+        "仅 elicitation.url"
+      ],
+      "correct": 0,
+      "explanation": "空的 elicitation object 表示隐式支持 form，而 form: {} 则显式声明支持。仅支持 URL 不足以处理 form 请求。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么必须对 requestState 进行完整性保护，并将其绑定到精确的 argument？",
+      "options": [
+        "为了选择 cache scope",
+        "为了取代 OAuth",
+        "为了阻止 client 将确认重复用于其他操作或修改确认内容",
+        "为了让 JSON 更小"
+      ],
+      "correct": 2,
+      "explanation": "requestState 会经由不可信 peer 往返，因此 server 必须检测篡改和 Context 变更。共享的原子 nonce claim 可防止它在多个 handler instance 之间被重复使用。"
+    },
+    {
+      "stage": "post",
+      "question": "现代 gateway 的正确处理顺序是什么？",
+      "options": [
+        "信任 clientInfo，执行，然后审计",
+        "将声明的 capability 视为权限",
+        "进行身份验证、验证 wire 和 header、检查 capability 兼容性、授权，然后执行",
+        "创建 session，按发现顺序路由，然后授权"
+      ],
+      "correct": 2,
+      "explanation": "必须在授权和执行之前消除 wire 歧义并确定身份。"
+    }
+  ]
+}

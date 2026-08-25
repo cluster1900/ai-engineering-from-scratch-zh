@@ -1,95 +1,84 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
   <defs>
     <style>
-      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
-      .hot { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
-      .cool { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
-      .cold { fill: #dfe9ff; stroke: #2c5ea9; stroke-width: 1.5; }
-      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.4; }
+      .risk { fill: #fff1d6; stroke: #c0392b; stroke-width: 1.5; }
+      .guard { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .title { font-size: 17px; font-weight: 700; fill: #1a1a1a; }
       .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
-      .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
-      .small { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
+      .mono { font-size: 11px; font-family: Menlo, monospace; fill: #222; }
+      .small { font-size: 10.5px; fill: #333; }
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">七类 MCP 攻击与纵深防御</text>
+  <text x="480" y="28" text-anchor="middle" class="title">MCP 2026-07-28 安全风险面与对应控制</text>
 
-  <rect x="40" y="50" width="880" height="210" class="hot"/>
-  <text x="480" y="72" text-anchor="middle" class="head">攻击</text>
+  <rect x="30" y="52" width="900" height="224" rx="8" class="risk"/>
+  <text x="480" y="76" text-anchor="middle" class="head">不可信输入</text>
 
-  <rect x="60" y="90" width="270" height="60" class="box"/>
-  <text x="76" y="110" class="step">1 / tool 投毒</text>
-  <text x="76" y="128" class="small">隐藏指令在</text>
-  <text x="76" y="144" class="small">tool description</text>
+  <rect x="50" y="92" width="205" height="66" rx="5" class="box"/>
+  <text x="64" y="114" class="mono">元数据投毒</text>
+  <text x="64" y="134" class="small">描述和注解</text>
+  <text x="64" y="149" class="small">操纵 Model 或用户</text>
 
-  <rect x="345" y="90" width="270" height="60" class="box"/>
-  <text x="361" y="110" class="step">2 / rug pull</text>
-  <text x="361" y="128" class="small">先良性，后投毒</text>
-  <text x="361" y="144" class="small">在用户批准后</text>
+  <rect x="270" y="92" width="205" height="66" rx="5" class="box"/>
+  <text x="284" y="114" class="mono">描述符暗中替换</text>
+  <text x="284" y="134" class="small">名称、schema 或行为</text>
+  <text x="284" y="149" class="small">批准后发生变更</text>
 
-  <rect x="630" y="90" width="270" height="60" class="box"/>
-  <text x="646" y="110" class="step">3 / tool shadowing</text>
-  <text x="646" y="128" class="small">两个 server 同名；</text>
-  <text x="646" y="144" class="small">恶意方赢得路由</text>
+  <rect x="490" y="92" width="205" height="66" rx="5" class="box"/>
+  <text x="504" y="114" class="mono">路由混淆</text>
+  <text x="504" y="134" class="small">名称重复或 header</text>
+  <text x="504" y="149" class="small">与 body 不匹配</text>
 
-  <rect x="60" y="160" width="270" height="60" class="box"/>
-  <text x="76" y="180" class="step">4 / MPMA</text>
-  <text x="76" y="198" class="small">操纵 modelPreferences</text>
-  <text x="76" y="214" class="small">以增成本或削弱</text>
+  <rect x="710" y="92" width="200" height="66" rx="5" class="box"/>
+  <text x="724" y="114" class="mono">能力升级</text>
+  <text x="724" y="134" class="small">兼容性声明</text>
+  <text x="724" y="149" class="small">被误认为权限</text>
 
-  <rect x="345" y="160" width="270" height="60" class="box"/>
-  <text x="361" y="180" class="step">5 / parasitic chain</text>
-  <text x="361" y="198" class="small">server A 编排</text>
-  <text x="361" y="214" class="small">server B 经 sampling</text>
+  <rect x="160" y="178" width="270" height="72" rx="5" class="box"/>
+  <text x="174" y="200" class="mono">MRTR 状态篡改</text>
+  <text x="174" y="220" class="small">更改参数、伪造确认，</text>
+  <text x="174" y="237" class="small">或重放 requestState</text>
 
-  <rect x="630" y="160" width="270" height="60" class="box"/>
-  <text x="646" y="180" class="step">6 / sampling 攻击</text>
-  <text x="646" y="198" class="small">隐蔽推理 / 窃取 /</text>
-  <text x="646" y="214" class="small">对话劫持</text>
+  <rect x="530" y="178" width="270" height="72" rx="5" class="box"/>
+  <text x="544" y="200" class="mono">身份混淆</text>
+  <text x="544" y="220" class="small">clientInfo、serverInfo 或显示</text>
+  <text x="544" y="237" class="small">名称被当作已认证凭证</text>
 
-  <rect x="60" y="230" width="840" height="28" class="box"/>
-  <text x="76" y="248" class="step">7 / supply-chain 伪装</text>
-  <text x="300" y="248" class="small">registry 上的假 server（Postmark 事件，2025年9月）。publisher 签名，reverse-DNS 名称。</text>
+  <rect x="30" y="296" width="900" height="224" rx="8" class="guard"/>
+  <text x="480" y="320" text-anchor="middle" class="head">独立控制措施</text>
 
-  <rect x="40" y="280" width="880" height="260" class="cool"/>
-  <text x="480" y="302" text-anchor="middle" class="head">纵深防御（单项检查不够）</text>
+  <rect x="50" y="338" width="205" height="68" rx="5" class="box"/>
+  <text x="64" y="360" class="mono">扫描 + 完整 digest</text>
+  <text x="64" y="380" class="small">先审查首个版本，再</text>
+  <text x="64" y="395" class="small">隔离每次变更</text>
 
-  <rect x="60" y="320" width="270" height="80" class="box"/>
-  <text x="76" y="340" class="step">hash pinning</text>
-  <text x="76" y="358" class="small">每个 description 的 SHA256；</text>
-  <text x="76" y="374" class="small">变更 -&gt; 重新批准。</text>
-  <text x="76" y="390" class="small">捕获 rug pull。</text>
+  <rect x="270" y="338" width="205" height="68" rx="5" class="box"/>
+  <text x="284" y="360" class="mono">限定名称</text>
+  <text x="284" y="380" class="small">notes.search 和 issues.search</text>
+  <text x="284" y="395" class="small">绝不静默覆盖</text>
 
-  <rect x="345" y="320" width="270" height="80" class="box"/>
-  <text x="361" y="340" class="step">静态检测器</text>
-  <text x="361" y="358" class="small">regex: SYSTEM tag, ignore-</text>
-  <text x="361" y="374" class="small">prev, secret-read, URL-</text>
-  <text x="361" y="390" class="small">shortener。CI 就绪。</text>
+  <rect x="490" y="338" width="205" height="68" rx="5" class="box"/>
+  <text x="504" y="360" class="mono">wire 一致性</text>
+  <text x="504" y="380" class="small">version、method 和 name</text>
+  <text x="504" y="395" class="small">执行策略前先验证</text>
 
-  <rect x="630" y="320" width="270" height="80" class="box"/>
-  <text x="646" y="340" class="step">Rule of Two</text>
-  <text x="646" y="358" class="small">最多两个：不可信输入，</text>
-  <text x="646" y="374" class="small">敏感数据，有后果的</text>
-  <text x="646" y="390" class="small">操作。三者全有则拒绝。</text>
+  <rect x="710" y="338" width="200" height="68" rx="5" class="box"/>
+  <text x="724" y="360" class="mono">真正的授权</text>
+  <text x="724" y="380" class="small">issuer、principal、resource，</text>
+  <text x="724" y="395" class="small">tool、scope、arguments</text>
 
-  <rect x="60" y="410" width="270" height="80" class="box"/>
-  <text x="76" y="430" class="step">MELON</text>
-  <text x="76" y="448" class="small">masked re-execution +</text>
-  <text x="76" y="464" class="small">tool 比较。&gt;99%</text>
-  <text x="76" y="480" class="small">间接 injection 捕获。</text>
+  <rect x="160" y="426" width="270" height="68" rx="5" class="box"/>
+  <text x="174" y="448" class="mono">受保护的 requestState</text>
+  <text x="174" y="468" class="small">完整性、精确参数、过期时间，</text>
+  <text x="174" y="483" class="small">principal、purpose、nonce</text>
 
-  <rect x="345" y="410" width="270" height="80" class="box"/>
-  <text x="361" y="430" class="step">gateway</text>
-  <text x="361" y="448" class="small">集中策略，审计日志，</text>
-  <text x="361" y="464" class="small">allowed-servers 列表。</text>
-  <text x="361" y="480" class="small">Phase 13 . 17.</text>
+  <rect x="530" y="426" width="270" height="68" rx="5" class="box"/>
+  <text x="544" y="448" class="mono">无状态策略键</text>
+  <text x="544" y="468" class="small">按 principal 限流和审计，</text>
+  <text x="544" y="483" class="small">issuer、resource、tool 和时间</text>
 
-  <rect x="630" y="410" width="270" height="80" class="box"/>
-  <text x="646" y="430" class="step">signed registry</text>
-  <text x="646" y="448" class="small">namespace 已验证，reverse</text>
-  <text x="646" y="464" class="small">DNS (io.github.user/server).</text>
-  <text x="646" y="480" class="small">publisher 签名。</text>
-
-  <text x="480" y="530" text-anchor="middle" class="caption">自适应攻击者对 SOTA 仍约 85% 命中（arXiv 2026年3月）。继续叠加。</text>
+  <text x="480" y="548" text-anchor="middle" class="caption">单一控制无法证明安全；每项控制各自消除一种歧义。</text>
 </svg>
