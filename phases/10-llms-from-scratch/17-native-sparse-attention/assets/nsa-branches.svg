@@ -18,7 +18,7 @@
     </style>
   </defs>
 
-  <text x="480" y="28" text-anchor="middle" class="title">原生 sparse Attention — 三分支</text>
+  <text x="480" y="28" text-anchor="middle" class="title">原生 sparse Attention——三分支</text>
 
   <!-- Input query -->
   <rect x="30" y="60" width="160" height="40" class="box"/>
@@ -29,7 +29,7 @@
   <rect x="240" y="120" width="240" height="60" class="cool"/>
   <text x="360" y="140" text-anchor="middle" class="head">1 / compressed 分支</text>
   <text x="360" y="158" text-anchor="middle" class="small">每 l 个 Token mean-pool 为</text>
-  <text x="360" y="172" text-anchor="middle" class="small">summary；attend N/l keys</text>
+  <text x="360" y="172" text-anchor="middle" class="small">summary；attend N/l 个 keys</text>
 
   <!-- Branch 2: selected -->
   <line x1="190" y1="80" x2="240" y2="250" stroke="#1a1a1a" stroke-width="1.5"/>
@@ -70,14 +70,14 @@
 
   <!-- Compute budget -->
   <rect x="30" y="450" width="900" height="100" class="box"/>
-  <text x="480" y="472" text-anchor="middle" class="label">每个 query 关注的 key 数 vs full Attention</text>
+  <text x="480" y="472" text-anchor="middle" class="label">每个 query 关注的 key 数与 full Attention 对比</text>
 
   <text x="50" y="498" class="step">N=4k, l=32, k=8, W=256</text>
-  <text x="360" y="498" class="small">NSA 640  ·  full 4,096  ·  少 6.4x</text>
+  <text x="360" y="498" class="small">NSA 640  ·  全量 4,096  ·  少 6.4x</text>
 
   <text x="50" y="518" class="step">N=64k, l=64, k=16, W=512</text>
-  <text x="360" y="518" class="small">NSA 2,560  ·  full 65,536  ·  少 25.6x</text>
+  <text x="360" y="518" class="small">NSA 2,560  ·  全量 65,536  ·  少 25.6x</text>
 
   <text x="50" y="538" class="step">N=128k, l=64, k=16, W=512</text>
-  <text x="360" y="538" class="small">NSA 3,584  ·  full 131,072  ·  少 36.6x</text>
+  <text x="360" y="538" class="small">NSA 3,584  ·  全量 131,072  ·  少 36.6x</text>
 </svg>
