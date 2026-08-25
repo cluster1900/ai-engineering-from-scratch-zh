@@ -38,6 +38,10 @@ Pix2Pix 需要 paired `(x, y)` data。CycleGAN (Zhu et al., 2017) 通过额外�
 
 在 2026 年，unpaired image-to-image 大多通过 diffusion（ControlNet、IP-Adapter）完成，而不是 CycleGAN，但 cycle-consistency 思想仍存在于几乎每一篇 unpaired domain adaptation 论文中。
 
+```figure
+gx-patchgan
+```
+
 ## 构建它
 `code/main.py` 在 1-D data 上实现了一个微型 conditional GAN。condition `c` 是 class label（0 或 1）。任务：为给定 class 生成一个来自 conditional distribution 的 sample。
 

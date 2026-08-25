@@ -24,7 +24,7 @@
 
   <!-- U-Net generator -->
   <rect x="140" y="60" width="420" height="140" class="cold"/>
-  <text x="350" y="82" text-anchor="middle" class="label">U-Net generator  G(x)</text>
+  <text x="350" y="82" text-anchor="middle" class="label">U-Net generator G(x)</text>
 
   <!-- encoder blocks -->
   <rect x="160" y="100" width="40" height="80" class="box"/>
@@ -68,7 +68,7 @@
   <text x="140" y="273" text-anchor="middle" class="label">PatchGAN D(x, ŷ)</text>
   <text x="140" y="295" text-anchor="middle" class="caption">输出为 N × N 网格</text>
   <text x="140" y="315" text-anchor="middle" class="caption">每格判断约 70×70 patch</text>
-  <text x="140" y="335" text-anchor="middle" class="caption">平均 → real / fake 分数</text>
+  <text x="140" y="335" text-anchor="middle" class="caption">平均 → 真 / 假分数</text>
 
   <line x1="75" y1="160" x2="75" y2="250" stroke="#1a1a1a" stroke-width="1.2"/>
   <line x1="75" y1="250" x2="30" y2="280" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
@@ -85,6 +85,6 @@
   <rect x="30" y="380" width="830" height="100" class="box"/>
   <text x="445" y="403" text-anchor="middle" class="label">CycleGAN（非配对）：添加第二个 G 和 cycle-consistency Loss</text>
   <text x="445" y="425" text-anchor="middle" class="mono">G: X -&gt; Y,  F: Y -&gt; X,  loss += ||F(G(x)) - x||_1 + ||G(F(y)) - y||_1</text>
-  <text x="445" y="447" text-anchor="middle" class="caption">无需配对数据；horses &lt;-&gt; zebras，summer &lt;-&gt; winter</text>
-  <text x="445" y="465" text-anchor="middle" class="caption">2026：大多被 diffusion 上的 ControlNet + IP-Adapter 取代</text>
+  <text x="445" y="447" text-anchor="middle" class="caption">无需配对数据；马 &lt;-&gt; 斑马，夏季 &lt;-&gt; 冬季</text>
+  <text x="445" y="465" text-anchor="middle" class="caption">2026：大多被 Diffusion 上的 ControlNet + IP-Adapter 取代</text>
 </svg>
