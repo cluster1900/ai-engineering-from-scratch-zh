@@ -16,27 +16,27 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">STaR bootstrap loop（以及 shortcut 如何混入）</text>
+  <text x="440" y="26" text-anchor="middle" class="title">STaR 自举循环（及捷径如何混入）</text>
 
   <!-- Left: the loop -->
   <rect x="40" y="56" width="380" height="480" class="box"/>
-  <text x="230" y="80" text-anchor="middle" class="label">STaR loop</text>
+  <text x="230" y="80" text-anchor="middle" class="label">STaR 循环</text>
 
   <rect x="60" y="100" width="340" height="56" class="cool"/>
-  <text x="230" y="124" text-anchor="middle" class="content">1. sample（理由, 答案）</text>
-  <text x="230" y="140" text-anchor="middle" class="small">base model，T &gt; 0</text>
+  <text x="230" y="124" text-anchor="middle" class="content">1. 采样（理由、答案）</text>
+  <text x="230" y="140" text-anchor="middle" class="small">基础 Model，T &gt; 0</text>
 
   <path d="M230 160 L230 180" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="186" width="340" height="56" class="hot"/>
-  <text x="230" y="210" text-anchor="middle" class="content">2. filter：若 answer == label 则保留</text>
+  <text x="230" y="210" text-anchor="middle" class="content">2. 过滤：若 answer == label 则保留</text>
   <text x="230" y="226" text-anchor="middle" class="small">完全丢弃错误理由</text>
 
   <path d="M230 246 L230 266" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="272" width="340" height="56" class="cool"/>
-  <text x="230" y="296" text-anchor="middle" class="content">3. 对保留理由做 SFT</text>
-  <text x="230" y="312" text-anchor="middle" class="small">对（问题, 理由, 答案）teacher forcing</text>
+  <text x="230" y="296" text-anchor="middle" class="content">3. 对保留理由执行 SFT</text>
+  <text x="230" y="312" text-anchor="middle" class="small">对（问题、理由、答案）执行 teacher forcing</text>
 
   <path d="M230 332 L230 352" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -48,10 +48,10 @@
   <text x="28" y="260" class="small">重复</text>
 
   <rect x="60" y="438" width="340" height="80" class="box"/>
-  <text x="230" y="458" text-anchor="middle" class="label">loop 强化的内容</text>
+  <text x="230" y="458" text-anchor="middle" class="label">循环强化的内容</text>
   <text x="230" y="478" text-anchor="middle" class="content">可靠理由 · 正确答案</text>
-  <text x="230" y="494" text-anchor="middle" class="content">shortcut 理由 · 正确答案</text>
-  <text x="230" y="510" text-anchor="middle" class="small">两者都会保留。filter 无法区分。</text>
+  <text x="230" y="494" text-anchor="middle" class="content">捷径理由 · 正确答案</text>
+  <text x="230" y="510" text-anchor="middle" class="small">两者都会保留，过滤器无法区分。</text>
 
   <!-- Right: three variants -->
   <rect x="450" y="56" width="410" height="480" class="box"/>
@@ -59,28 +59,28 @@
 
   <rect x="470" y="100" width="372" height="106" class="cool"/>
   <text x="480" y="122" class="label">STaR（Zelikman 2022）</text>
-  <text x="480" y="142" class="content">对 generator 使用 keep-if-correct filter。</text>
+  <text x="480" y="142" class="content">对生成器使用正确即保留过滤器。</text>
   <text x="480" y="158" class="content">重复 SFT 轮次。</text>
-  <text x="480" y="174" class="content">GPT-J + STaR ≈ fine-tuned 30x larger model</text>
-  <text x="480" y="190" class="content">在 GSM8K 上（无新人工 label）。</text>
+  <text x="480" y="174" class="content">GPT-J + STaR ≈ Fine-tuning 后大 30 倍的 Model</text>
+  <text x="480" y="190" class="content">在 GSM8K 上（无新人工 Label）。</text>
 
   <rect x="470" y="212" width="372" height="110" class="cold"/>
   <text x="480" y="234" class="label">V-STaR（Hosseini 2024）</text>
   <text x="480" y="254" class="content">用正确和错误理由</text>
-  <text x="480" y="270" class="content">DPO-train verifier（STaR waste）。</text>
-  <text x="480" y="286" class="content">inference：sample N，选 verifier 最高项。</text>
-  <text x="480" y="302" class="content">比先前 self-improve 高 +4 到 +17 pp。</text>
+  <text x="480" y="270" class="content">用 DPO Training 验证器（STaR 浪费）。</text>
+  <text x="480" y="286" class="content">Inference：采样 N 个，选择验证器最高项。</text>
+  <text x="480" y="302" class="content">比先前自我改进高 4 到 17 个百分点。</text>
 
   <rect x="470" y="328" width="372" height="110" class="hot"/>
   <text x="480" y="350" class="label">Quiet-STaR（Zelikman 2024）</text>
-  <text x="480" y="370" class="content">per-token 内部理由。</text>
-  <text x="480" y="386" class="content">end-of-thought token + mixing head。</text>
+  <text x="480" y="370" class="content">每 Token 内部理由。</text>
+  <text x="480" y="386" class="content">思考结束 Token + mixing head。</text>
   <text x="480" y="402" class="content">Mistral 7B GSM8K 5.9% -&gt; 10.9%</text>
-  <text x="480" y="418" class="content">无 task-specific fine-tune。</text>
+  <text x="480" y="418" class="content">无特定任务 Fine-tuning。</text>
 
   <rect x="470" y="444" width="372" height="84" class="box"/>
   <text x="480" y="466" class="label">共同弱点</text>
-  <text x="480" y="486" class="content">三者都用 answer-conditioned Gradient。</text>
-  <text x="480" y="502" class="content">shortcut-reasoning 可到达 label。</text>
-  <text x="480" y="518" class="content">修复：process reward models + OOD eval。</text>
+  <text x="480" y="486" class="content">三者都使用答案条件化 Gradient。</text>
+  <text x="480" y="502" class="content">捷径推理可到达 Label。</text>
+  <text x="480" y="518" class="content">修复：过程奖励 Model + OOD eval。</text>
 </svg>
