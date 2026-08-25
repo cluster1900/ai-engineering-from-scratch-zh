@@ -91,6 +91,10 @@ Phase 17 · 13（observability）+ 16（model routing）+ 19（gateways）在 pr
 - Kong pricing：$100/model/month，Plus tier 最多 5 个。
 - Cloudflare/Vercel：edge 上 1-3 ms overhead。
 
+```figure
+mx-gateway-fallback
+```
+
 ## 使用它
 `code/main.py` 模拟 3 个 providers 在 429/5xx injection 下的 gateway routing with fallback。报告 latency、retry rate 和 fallback hit rate。
 
