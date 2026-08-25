@@ -69,6 +69,10 @@ OpenAI 的 Superalignment 团队在 Jan Leike 于 2024 年 5 月离职加入 Ant
 
 Lessons 6-10 描述了在假设 U 不可信的前提下的威胁与防御范式。Lesson 11 是进攻范式：让监督者足够强，以验证 U 的 alignment。Lessons 12-16 随后转向 adversarial evaluation 的实用工具。
 
+```figure
+scalable-oversight
+```
+
 ## 使用它
 
 `code/main.py` 在一个合成任务上模拟 W2SG fine-tune。弱 labeler 准确率为 70%，并带有结构化错误；强模型在 gold labels 上的 ceiling 为 95%。你会在弱标签上 fine-tune 强模型，衡量 PGR，并与 strong-on-gold 和 weak-alone 比较。

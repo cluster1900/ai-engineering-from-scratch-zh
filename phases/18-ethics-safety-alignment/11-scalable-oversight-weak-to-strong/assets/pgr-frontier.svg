@@ -40,23 +40,23 @@
   <rect x="480" y="60" width="440" height="220" class="box"/>
   <text x="700" y="82" text-anchor="middle" class="head">三种可扩展监督机制</text>
   <rect x="500" y="100" width="400" height="50" class="cold"/>
-  <text x="700" y="122" text-anchor="middle" class="step">debate（Irving 2018）</text>
-  <text x="700" y="140" text-anchor="middle" class="small">两个 U 争辩；弱 judge 选择。2024 证据混合。</text>
+  <text x="700" y="122" text-anchor="middle" class="step">辩论（Irving 2018）</text>
+  <text x="700" y="140" text-anchor="middle" class="small">两个 U 辩论；弱判定者选择。2024 年证据不一。</text>
   <rect x="500" y="160" width="400" height="50" class="cold"/>
-  <text x="700" y="182" text-anchor="middle" class="step">recursive reward modeling（Leike 2018）</text>
-  <text x="700" y="200" text-anchor="middle" class="small">U 帮助训练 U+1 的 RM。overseer 跟踪 U。</text>
+  <text x="700" y="182" text-anchor="middle" class="step">递归 reward modeling（Leike 2018）</text>
+  <text x="700" y="200" text-anchor="middle" class="small">U 帮助 Training U+1 的 RM。监督者跟踪 U。</text>
   <rect x="500" y="220" width="400" height="50" class="cold"/>
-  <text x="700" y="242" text-anchor="middle" class="step">task decomposition（Christiano 2018）</text>
+  <text x="700" y="242" text-anchor="middle" class="step">任务分解（Christiano 2018）</text>
   <text x="700" y="260" text-anchor="middle" class="small">将困难任务拆成可检查子任务。</text>
 
   <rect x="480" y="300" width="440" height="90" class="box"/>
   <text x="700" y="325" text-anchor="middle" class="head">与 W2SG 互补</text>
   <text x="500" y="350" class="small">可扩展监督：提升标签质量。</text>
-  <text x="500" y="368" class="small">W2SG：弥合任意标签带来的差距。</text>
-  <text x="500" y="386" class="small">组合（Lang 2025）：NLP 任务上 PGR 更好。</text>
+  <text x="500" y="368" class="small">W2SG：弥合任意 Label 带来的差距。</text>
+  <text x="500" y="386" class="small">组合（Lang 2025）：NLP 任务上的 PGR 更好。</text>
 
   <rect x="40" y="410" width="880" height="80" class="box"/>
-  <text x="60" y="435" class="small">PGR 是可测指标，不是解决方案。Burns et al. 2023 明确指出：他们研究的 weak-strong 差距由能力塑形。</text>
-  <text x="60" y="455" class="small">superalignment 问题 -- 人类能否监督超人模型？-- 取决于该差距是否迁移到 alignment-shaped 设置。</text>
-  <text x="60" y="475" class="small">组织层面：OpenAI Superalignment 于 05/2024 解散；议程在 Anthropic、MATS、Redwood、Apollo、METR 继续。</text>
+  <text x="60" y="435" class="small">PGR 是可测指标，不是解决方案。Burns et al. 2023 明确指出：他们研究的 weak-strong 差距由能力塑造。</text>
+  <text x="60" y="455" class="small">superalignment 问题——人类能否监督超人 Model？——取决于该差距能否迁移到 alignment-shaped 设置。</text>
+  <text x="60" y="475" class="small">组织层面：OpenAI Superalignment 于 05/2024 解散；该议程由 Anthropic、MATS、Redwood、Apollo、METR 延续。</text>
 </svg>

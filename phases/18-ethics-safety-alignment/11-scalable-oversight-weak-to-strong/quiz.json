@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "Superalignment agenda 提出的核心问题是什么？",
       "options": [
+        "人类是否比 reward models 更准确？",
         "RLHF 能否 scale 到超过 1B parameters？",
-        "adversarial training 能否移除所有 backdoors？",
         "一个较弱的 overseer 能否可靠地监督一个更强的 aligned model？",
-        "人类是否比 reward models 更准确？"
+        "adversarial training 能否移除所有 backdoors？"
       ],
       "correct": 2,
       "explanation": ""
@@ -20,31 +20,31 @@
       "options": [
         "reward model 只在 synthetic data 上训练",
         "两个 strong models 进行 debate；由人类评判",
-        "GPT-2 使用 GPT-4 labels 进行 fine-tuned",
-        "一个 strong model（GPT-4 class）使用 weak model（GPT-2 class）产生的 labels 进行 fine-tuned，并相对于 strong supervised ceiling 测量其 capability"
+        "一个 strong model（GPT-4 class）使用 weak model（GPT-2 class）产生的 labels 进行 fine-tuned，并相对于 strong supervised ceiling 测量其 capability",
+        "GPT-2 使用 GPT-4 labels 进行 fine-tuned"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Performance Gap Recovered (PGR) 是如何定义的？",
       "options": [
-        "(ceiling - fine-tuned) / weak（相对弱模型的剩余差距）",
         "(fine-tuned - weak) / (ceiling - weak)（弱到强提升比例）",
+        "(weak - ceiling) / ceiling（弱模型相对上限差距）",
         "fine-tuned / ceiling（相对上限比例）",
-        "(weak - ceiling) / ceiling（弱模型相对上限差距）"
+        "(ceiling - fine-tuned) / weak（相对弱模型的剩余差距）"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "以下哪一项不是本课列出的 scalable-oversight mechanism？",
       "options": [
-        "Task Decomposition（任务分解）",
-        "Tokenizer Distillation（Tokenizer 蒸馏）",
         "Recursive Reward Modeling（递归 Reward Modeling）",
+        "Tokenizer Distillation（Tokenizer 蒸馏）",
+        "Task Decomposition（任务分解）",
         "Debate（辩论）"
       ],
       "correct": 1,
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "scalable oversight 与 W2SG 如何互补？",
       "options": [
-        "scalable oversight 提升 overseer 的 effective signal quality；W2SG 则从 overseer 提供的任何 imperfect signal 出发弥合差距",
+        "它们都需要 white-box access",
         "它们都针对同一个 metric",
-        "它们相互排斥",
-        "它们都需要 white-box access"
+        "scalable oversight 提升 overseer 的 effective signal quality；W2SG 则从 overseer 提供的任何 imperfect signal 出发弥合差距",
+        "它们相互排斥"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "AI-safety-via-debate mechanism 的核心假设是什么？",
       "options": [
-        "Debate transcripts 总是比 direct answers 更短",
         "找到令人信服的 true answer 比找到令人信服的 false answer 更容易",
+        "Debate transcripts 总是比 direct answers 更短",
         "judge 比 debaters 更 capable",
         "两个 debaters 总是说真话"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     }
   ]
