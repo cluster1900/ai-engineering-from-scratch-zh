@@ -294,6 +294,10 @@ Network:        curl, wget, scp, rsync
 Sessions:       tmux new/attach/detach
 ```
 
+```figure
+s0-process-fork
+```
+
 ## 练习
 
 1. SSH 到任意 Linux machine（或打开 WSL2），并导航到你的 home directory。创建一个 project folder，在其中用 `touch` 创建三个空文件，然后用 `ls -la` 列出它们。

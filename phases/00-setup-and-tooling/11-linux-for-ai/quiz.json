@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "Linux file path 中的 '~' 符号表示什么？",
-      "options": ["file system 的 root directory", "当前 user 的 home directory", "temporary files directory", "安装 system programs 的目录"],
-      "correct": 1,
+      "options": [
+        "file system 的 root directory",
+        "temporary files directory",
+        "当前 user 的 home directory",
+        "安装 system programs 的目录"
+      ],
+      "correct": 2,
       "explanation": "tilde (~) 是当前 user 的 home directory 的快捷方式，在 Linux 上通常是 /home/username。'cd ~' 会让你从任何位置回到 home。"
     },
     {
       "stage": "pre",
       "question": "command 前面的 'sudo' 有什么作用？",
-      "options": ["它会加快 command execution", "它会用 root（administrator）权限运行该 command", "它会在 sandboxed environment 中运行该 command", "它会把 command output 记录到 system file"],
-      "correct": 1,
+      "options": [
+        "它会用 root（administrator）权限运行该 command",
+        "它会在 sandboxed environment 中运行该 command",
+        "它会加快 command execution",
+        "它会把 command output 记录到 system file"
+      ],
+      "correct": 0,
       "explanation": "sudo (superuser do) 会临时把你的权限提升到 root level，用于单个 command。使用 apt 安装 packages 等 system-level operations 需要它。"
     },
     {
       "stage": "post",
       "question": "尝试运行 shell script 时出现 'Permission denied'。哪个 command 可以修复？",
-      "options": ["sudo rm script.sh", "chmod +x script.sh", "chown root script.sh", "mv script.sh /usr/bin/"],
-      "correct": 1,
+      "options": [
+        "chown root script.sh",
+        "mv script.sh /usr/bin/",
+        "chmod +x script.sh",
+        "sudo rm script.sh"
+      ],
+      "correct": 2,
       "explanation": "chmod +x 会给文件添加 execute permission。如果没有设置 execute bit，即使你拥有该文件，shell 也会拒绝运行 script。"
     },
     {
       "stage": "post",
       "question": "在远程 GPU box 上，训练数据填满了磁盘。哪个 command 会显示占用空间最大的 directories？",
-      "options": ["ls -la /", "du -h --max-depth=1 / | sort -hr | head -20", "cat /proc/meminfo", "free -h"],
-      "correct": 1,
+      "options": [
+        "ls -la /",
+        "cat /proc/meminfo",
+        "du -h --max-depth=1 / | sort -hr | head -20",
+        "free -h"
+      ],
+      "correct": 2,
       "explanation": "du -h 会显示每个 directory 的 disk usage，--max-depth=1 限制为 top-level directories，sort -hr 按大小降序排序。这会揭示哪些 directories 占用了最多空间。"
     },
     {
       "stage": "post",
       "question": "macOS 和 Linux 版本的 'sed -i' 的一个关键区别是什么？",
-      "options": ["Linux sed 比 macOS sed 更快", "macOS sed 要求在 -i 后提供空字符串参数（'sed -i \"\"'），而 Linux 不需要", "Linux sed 不支持 regular expressions", "macOS sed 不能 in place 修改文件"],
-      "correct": 1,
+      "options": [
+        "Linux sed 比 macOS sed 更快",
+        "Linux sed 不支持 regular expressions",
+        "macOS sed 不能 in place 修改文件",
+        "macOS sed 要求在 -i 后提供空字符串参数（'sed -i \"\"'），而 Linux 不需要"
+      ],
+      "correct": 3,
       "explanation": "macOS 使用 BSD sed，要求 'sed -i \"\" pattern file'，而 Linux 使用 GNU sed，接受 'sed -i pattern file'。这是在系统之间迁移 scripts 时常见的坑。"
     }
-  ]
+  ],
+  "title": null
 }
