@@ -18,46 +18,46 @@
       "stage": "pre",
       "question": "feedback 与 telemetry 有什么不同？",
       "options": [
-        "Telemetry 是付费的",
         "Feedback 用于本次运行的下一轮；telemetry 用于 operators 跨时间审查运行（不同文件、不同保留策略）",
-        "Telemetry 使用 OTel；feedback 使用 GraphQL",
-        "它们是同一回事"
+        "它们是同一回事",
+        "Telemetry 是付费的",
+        "Telemetry 使用 OTel；feedback 使用 GraphQL"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "两者共享字段，但位于不同文件且有不同保留策略；feedback 是运行内的，telemetry 是跨运行的。"
     },
     {
       "stage": "check",
       "question": "每条 feedback record 中必须出现哪个字段？",
       "options": [
-        "model_id",
         "exit_code（并且 null exit 必须拒绝推进循环）",
         "embedding_vector",
+        "model_id",
         "prompt_cache_token"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "exit_code 是明确的成功信号；null exit 意味着没有进展。"
     },
     {
       "stage": "check",
       "question": "runner 如何截断大型输出？",
       "options": [
+        "使用 gzip 压缩",
         "随机采样",
-        "确定性的 head + tail，并带有“truncated N lines”标记，因此相同输出总会生成相同记录",
         "只保留前 10 行",
-        "使用 gzip 压缩"
+        "确定性的 head + tail，并带有“truncated N lines”标记，因此相同输出总会生成相同记录"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "确定性截断在限制 token 成本的同时保持记录可重放；tail 携带失败摘要。"
     },
     {
       "stage": "check",
       "question": "为什么在写入时 redaction，而不是在读取时 redaction？",
       "options": [
-        "压缩",
-        "磁盘上的文件才是 attacker 能触达的东西；只在读取时 redaction 会把 secrets 留在 JSONL 文件中",
         "读取时 redaction 会破坏 JSON",
-        "它更快"
+        "磁盘上的文件才是 attacker 能触达的东西；只在读取时 redaction 会把 secrets 留在 JSONL 文件中",
+        "它更快",
+        "压缩"
       ],
       "correct": 1,
       "explanation": "在 append 前 redact 匹配 Bearer、password=、api_key=、AKIA...、xox[baprs]- 的行；每季度审计这些 patterns。"
@@ -66,21 +66,21 @@
       "stage": "post",
       "question": "parent_command_id 给 workbench 带来什么？",
       "options": [
-        "更便宜的 inference",
-        "Retries 会链接到其父级尝试，因此 reviewer 和 audit 能看到失败链；没有它，retries 看起来像独立的成功",
         "更快的文件 I/O",
-        "更低的内存"
+        "更低的内存",
+        "Retries 会链接到其父级尝试，因此 reviewer 和 audit 能看到失败链；没有它，retries 看起来像独立的成功",
+        "更便宜的 inference"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "父级链接让 retry chains 对 reviewer（Lesson 39）和 verification gate 可见。"
     },
     {
       "stage": "post",
       "question": "为什么将 feedback_record.jsonl 限制在 1 MB 并进行 rotation？",
       "options": [
-        "JSON 无法处理更大的文件",
-        "agent 只读取当前文件；rotation 让 runtime cost 保持有界，而 CI artifacts 捕获完整集合",
         "磁盘太慢",
+        "agent 只读取当前文件；rotation 让 runtime cost 保持有界，而 CI artifacts 捕获完整集合",
+        "JSON 无法处理更大的文件",
         "provider 按字节收费"
       ],
       "correct": 1,

@@ -53,6 +53,10 @@ Telemetry（Phase 14 · 23，OTel GenAI conventions）用于 human operators 跨
 
 如果 runner 在捕获 exit 之前出错，记录会包含 `exit_code: null` 和 `error: <reason>`。Agent loop 必须拒绝在 `null` exit 上声称成功。没有 exit，就没有 progress。
 
+```figure
+wb-feedback-loop
+```
+
 ## 构建它
 `code/main.py` 实现：
 
