@@ -64,5 +64,5 @@
   <text x="450" y="422" text-anchor="middle" class="head">权衡</text>
   <text x="450" y="442" text-anchor="middle" class="small">✓ 变长任务均衡 · ✓ 扩展到数千 · ✓ 持久队列容错</text>
   <text x="450" y="460" text-anchor="middle" class="small">✗ 无中心 trace · ✗ 有序 workflow 会失效 · ✗ 调试需要每任务 ID</text>
-  <text x="450" y="478" text-anchor="middle" class="small">失效模式：饥饿（aging queue）、热点（worker 专门化）、背压（有界队列）</text>
+  <text x="450" y="478" text-anchor="middle" class="small">失效模式：饥饿（aging queue）、热点（Worker 专门化）、背压（有界队列）</text>
 </svg>
