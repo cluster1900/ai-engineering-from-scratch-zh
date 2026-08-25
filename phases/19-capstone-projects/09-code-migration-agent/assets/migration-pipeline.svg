@@ -15,31 +15,31 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">迁移 pipeline — 确定性 recipes + agent fallback</text>
+  <text x="480" y="24" text-anchor="middle" class="title">迁移流水线 — 确定性配方 + Agent 回退</text>
 
   <rect x="40" y="60" width="220" height="100" class="cool"/>
-  <text x="150" y="86" text-anchor="middle" class="step">确定性 pass</text>
+  <text x="150" y="86" text-anchor="middle" class="step">确定性通过</text>
   <text x="150" y="106" text-anchor="middle" class="small">OpenRewrite (Java)</text>
   <text x="150" y="122" text-anchor="middle" class="small">libcst (Python)</text>
-  <text x="150" y="142" text-anchor="middle" class="small">70-80% rewrites</text>
+  <text x="150" y="142" text-anchor="middle" class="small">70-80% 重写</text>
 
   <rect x="300" y="60" width="220" height="100" class="cold"/>
   <text x="410" y="86" text-anchor="middle" class="step">Daytona sandbox</text>
-  <text x="410" y="106" text-anchor="middle" class="small">目标 runtime 预装</text>
-  <text x="410" y="122" text-anchor="middle" class="small">branch-scoped，只读输入</text>
-  <text x="410" y="142" text-anchor="middle" class="small">每 branch build</text>
+  <text x="410" y="106" text-anchor="middle" class="small">目标运行时预装</text>
+  <text x="410" y="122" text-anchor="middle" class="small">branch 范围，只读输入</text>
+  <text x="410" y="142" text-anchor="middle" class="small">每个 branch 构建</text>
 
   <rect x="560" y="60" width="360" height="100" class="dsk"/>
-  <text x="740" y="86" text-anchor="middle" class="step">agent loop</text>
+  <text x="740" y="86" text-anchor="middle" class="step">Agent 循环</text>
   <text x="740" y="106" text-anchor="middle" class="small">Claude Opus 4.7 + GPT-5.4-Codex</text>
-  <text x="740" y="122" text-anchor="middle" class="small">分类失败 -&gt; patch -&gt; rerun</text>
-  <text x="740" y="142" text-anchor="middle" class="small">预算：30min / $8 / 20 turns</text>
+  <text x="740" y="122" text-anchor="middle" class="small">分类失败 -&gt; patch -&gt; 重新运行</text>
+  <text x="740" y="142" text-anchor="middle" class="small">预算：30min / $8 / 20 轮</text>
 
   <path d="M260,110 L300,110" class="edge"/>
   <path d="M520,110 L560,110" class="edge"/>
 
   <rect x="40" y="200" width="440" height="310" class="box"/>
-  <text x="260" y="222" text-anchor="middle" class="head">failure taxonomy（跨 50 repos）</text>
+  <text x="260" y="222" text-anchor="middle" class="head">失败分类体系（跨 50 个 repo）</text>
 
   <rect x="60" y="244" width="400" height="28" class="hot"/>
   <text x="80" y="263" class="small">dep_upgrade_required         30%</text>
@@ -53,28 +53,28 @@
   <text x="80" y="391" class="small">test_flake                   15%</text>
 
   <rect x="60" y="410" width="400" height="90" class="box"/>
-  <text x="260" y="432" text-anchor="middle" class="head">taxonomy 解锁什么</text>
-  <text x="260" y="452" text-anchor="middle" class="small">top 3 classes 成为下一批 recipe 目标</text>
-  <text x="260" y="470" text-anchor="middle" class="small">agent 停止重复学习机械模式</text>
-  <text x="260" y="488" text-anchor="middle" class="small">按类通过率驱动 Moderne 风格策略</text>
+  <text x="260" y="432" text-anchor="middle" class="head">分类体系解锁什么</text>
+  <text x="260" y="452" text-anchor="middle" class="small">前三类成为下一批 recipe 目标</text>
+  <text x="260" y="470" text-anchor="middle" class="small">Agent 停止重复学习机械模式</text>
+  <text x="260" y="488" text-anchor="middle" class="small">按类别通过率驱动 Moderne 风格策略</text>
 
   <rect x="510" y="200" width="410" height="310" class="box"/>
   <text x="715" y="222" text-anchor="middle" class="head">指标（通过集）</text>
   <rect x="530" y="244" width="380" height="32" class="cool"/>
-  <text x="720" y="265" text-anchor="middle" class="step">MigrationBench pass@1：60-70% 目标</text>
+  <text x="720" y="265" text-anchor="middle" class="step">MigrationBench pass@1：目标 60-70%</text>
 
   <rect x="530" y="284" width="380" height="32" class="cool"/>
-  <text x="720" y="305" text-anchor="middle" class="step">平均 $/repo：50-repo 规模 $2-4</text>
+  <text x="720" y="305" text-anchor="middle" class="step">平均 $/repo：50 个 repo 规模下 $2-4</text>
 
   <rect x="530" y="324" width="380" height="32" class="cool"/>
-  <text x="720" y="345" text-anchor="middle" class="step">coverage delta：在 base 的 +/- 1% 内</text>
+  <text x="720" y="345" text-anchor="middle" class="step">覆盖率差值：在基线的 +/- 1% 内</text>
 
   <rect x="530" y="364" width="380" height="32" class="cool"/>
-  <text x="720" y="385" text-anchor="middle" class="step">time-to-green p50：&lt; 10 min</text>
+  <text x="720" y="385" text-anchor="middle" class="step">转绿时间 p50：&lt; 10 min</text>
 
   <rect x="530" y="404" width="380" height="96" class="dsk"/>
-  <text x="720" y="426" text-anchor="middle" class="head">compare-to-baseline</text>
+  <text x="720" y="426" text-anchor="middle" class="head">与基线对比</text>
   <text x="720" y="446" text-anchor="middle" class="small">仅确定性：35-45% 通过率</text>
-  <text x="720" y="464" text-anchor="middle" class="small">agent 层决定 delta</text>
+  <text x="720" y="464" text-anchor="middle" class="small">Agent 层决定差值</text>
   <text x="720" y="486" text-anchor="middle" class="caption">按失败类别并排发布</text>
 </svg>

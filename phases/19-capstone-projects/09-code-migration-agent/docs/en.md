@@ -59,6 +59,10 @@ file under failure class + attach repro
 - Observability: Langfuse + 每个 repo 一个 trace bundle，包含每个 diff chunk
 - Dashboard: failure-taxonomy dashboard，包含每个 class 的计数和 exemplar diffs
 
+```figure
+ce-migration-funnel
+```
+
 ## 构建它
 1. **Recipe pass.** 先运行 OpenRewrite（Java）或 libcst（Python）recipes。捕获 70-80% 的机械迁移。作为 "recipe" commit 提交。
 

@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "为什么 pipeline 要结合确定性 substrate 和 agent 层，而不是只使用其中一种？",
       "options": [
-        "OpenRewrite 或 libcst 可以安全且低成本地处理 70-80% 的机械式重写，把模糊的长尾问题留给 agent",
         "Agents 本身比 recipes 更快",
-        "确定性 recipes 比 LLMs 更慢",
-        "只有 build system 才需要确定性"
+        "OpenRewrite 或 libcst 可以安全且低成本地处理 70-80% 的机械式重写，把模糊的长尾问题留给 agent",
+        "只有 build system 才需要确定性",
+        "确定性 recipes 比 LLMs 更慢"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -30,22 +30,22 @@
       "stage": "check",
       "question": "agent loop 对每个 repo 强制执行哪些 budget caps？",
       "options": [
-        "时间和成本无限；只在出错时中止",
-        "没有 turn 限制，成本上限 $100",
+        "30 分钟 wall-clock、$8 成本，以及 20 个 agent turns",
         "1 小时 wall-clock 和 100 turns",
-        "30 分钟 wall-clock、$8 成本，以及 20 个 agent turns"
+        "时间和成本无限；只在出错时中止",
+        "没有 turn 限制，成本上限 $100"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "当迁移后 coverage 下降超过约 2% 时，会触发什么 gate？",
       "options": [
-        "绕过 reviewer",
-        "该 repo 会被归入 coverage_regression 失败类别，而不是打开一个干净的 PR",
         "确定性 substrate 会重放它的 recipes",
-        "agent 会自动 force-push 修复"
+        "该 repo 会被归入 coverage_regression 失败类别，而不是打开一个干净的 PR",
+        "agent 会自动 force-push 修复",
+        "绕过 reviewer"
       ],
       "correct": 1,
       "explanation": ""
@@ -55,35 +55,35 @@
       "question": "为什么 failure taxonomy 被视为 deliverable，而不是附带产物？",
       "options": [
         "它替代 test suite",
-        "它按类别对失败的 repos 分组，让未来的 recipe authors 可以针对最主要的失败模式",
         "GitHub branch protection 要求它存在",
-        "它满足 compliance checklist"
+        "它满足 compliance checklist",
+        "它按类别对失败的 repos 分组，让未来的 recipe authors 可以针对最主要的失败模式"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "这个 capstone 针对 Java 8 到 17 迁移使用哪个公开 benchmark？",
       "options": [
-        "Amazon 的 MigrationBench",
-        "SWE-bench Pro",
         "MMLU-Pro",
-        "ViDoRe v3"
+        "Amazon 的 MigrationBench",
+        "ViDoRe v3",
+        "SWE-bench Pro"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "agent integration rubric 会衡量 fix distribution 的什么内容？",
       "options": [
-        "源文件的 Tokenization 速度",
-        "每个 repo 的 force-push 次数",
         "被 pin 的依赖数量",
-        "由 OpenRewrite 处理的 fixes 与由 agent 层编写的 fixes 所占比例"
+        "每个 repo 的 force-push 次数",
+        "由 OpenRewrite 处理的 fixes 与由 agent 层编写的 fixes 所占比例",
+        "源文件的 Tokenization 速度"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     }
   ]
