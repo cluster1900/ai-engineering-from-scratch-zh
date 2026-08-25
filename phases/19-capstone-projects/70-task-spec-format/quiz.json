@@ -6,72 +6,72 @@
       "stage": "pre",
       "question": "为什么在编写评分代码之前冻结任务记录模式？",
       "options": [
-        "它使 JSON 解析器运行得更快",
         "它锁定合约，以便指标、runner和后处理器就字段名称达成一致",
-        "它消除了对验证器的需要",
-        "它允许任意新的指标名称而无需进一步更改"
+        "它允许任意新的指标名称而无需进一步更改",
+        "它使 JSON 解析器运行得更快",
+        "它消除了对验证器的需要"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "该模式是每个下游消费者读取的合约。锁定它可以让您独立更改组件，而不会破坏其余组件。"
     },
     {
-      "stage": "check",
+      "stage": "pre",
       "question": "metric_name 字段接受的封闭词汇表是什么？",
       "options": [
-        "无论runner配置为识别什么",
-        "精确匹配、f1、bleu_4、rouge_l、准确性、code_exec",
         "任务作者选择的任何字符串",
-        "仅精确匹配和 f1"
+        "仅精确匹配和 f1",
+        "无论runner配置为识别什么",
+        "精确匹配、f1、bleu_4、rouge_l、准确性、code_exec"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "本课程将度量词汇固定为六个名称。添加一个需要新的课程和新的验证器条目。"
     },
     {
       "stage": "check",
       "question": "当验证器在记录中看到未知的顶级字段时会做什么？",
       "options": [
-        "剥离它并继续",
         "记录警告但接受记录",
-        "返回验证错误并拒绝记录",
-        "将其重命名为metadata.unknown"
+        "剥离它并继续",
+        "将其重命名为metadata.unknown",
+        "返回验证错误并拒绝记录"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "未知字段会带来前向兼容性风险。验证器拒绝它们，因此模式仍然是唯一的事实来源。"
     },
     {
       "stage": "check",
       "question": "为什么小样本示例附加到任务记录而不是由运行器计算？",
       "options": [
-        "runner没有文件 I/O",
+        "Few-shot仅在微调时使用",
         "作者意图是评估的一部分；将示例绑定到任务可以消除提示构造中每个模型的差异",
         "它节省磁盘空间",
-        "Few-shot仅在微调时使用"
+        "runner没有文件 I/O"
       ],
       "correct": 1,
       "explanation": "少镜头合成是评估定义的一部分，而不是模型接口的一部分。将其放入任务中意味着每个模型都会看到相同的提示。"
     },
     {
-      "stage": "post",
+      "stage": "check",
       "question": "哪个类别-度量对在验证器下是非法的？",
       "options": [
+        "代码执行 + 代码执行",
         "摘要 + rouge_l",
         "算术+精确匹配",
-        "mcq + bleu_4",
-        "代码执行 + 代码执行"
+        "mcq + bleu_4"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "单个字母上的 BLEU 毫无意义。验证器强制 mcq 任务仅使用精确匹配或准确性。"
     },
     {
       "stage": "post",
       "question": "当生成为`Answer: C is correct`时，post_process规则extract_letter返回什么？",
       "options": [
-        "完整字符串不变",
-        "C",
         "回答",
-        "空字符串"
+        "空字符串",
+        "完整字符串不变",
+        "C"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "extract_letter 返回生成中与 [A-E] 匹配的第一个字符。该字符串的主体开头有 C。"
     }
   ]
