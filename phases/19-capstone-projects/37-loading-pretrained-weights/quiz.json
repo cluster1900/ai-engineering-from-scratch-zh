@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "为什么 loader 需要 name map？",
       "options": [
-        "Pretrained tensors 和 local parameters 共享同一个 name",
         "Published GPT-2 weights 使用 wte、wpe、h.N.attn.c_attn 这样的 names；local model 使用 tok_embed、pos_embed、blocks.N.attn.qkv；loader 会把一套翻译到另一套",
         "Safetensors files 是加密的",
+        "Pretrained tensors 和 local parameters 共享同一个 name",
         "Torch 要求这样做"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "这两套 naming conventions 来自不同历史；map 是按 layer 展开的 literal dict。"
     },
     {
@@ -30,12 +30,12 @@
       "stage": "check",
       "question": "为什么 LM head 不在 safetensors file 中？",
       "options": [
-        "它在 runtime 从 logits 计算出来",
-        "Weight tying：LM head 与 Token Embedding（wte）共享 storage，因此加载 wte 并在加载后 aliasing lm_head.weight = tok_embed.weight 就能重建 head",
         "它太大了",
-        "它从单独的 file 加载"
+        "它从单独的 file 加载",
+        "它在 runtime 从 logits 计算出来",
+        "Weight tying：LM head 与 Token Embedding（wte）共享 storage，因此加载 wte 并在加载后 aliasing lm_head.weight = tok_embed.weight 就能重建 head"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "wte 落位后设置 lm_head.weight = tok_embed.weight 会恢复 alias；改成复制会让 parameter count 翻倍。"
     },
     {
@@ -43,11 +43,11 @@
       "question": "loader 遇到 shape mismatch 时会做什么？",
       "options": [
         "Padding 较小的 tensor",
-        "在 LoadReport.shape_mismatch 中记录 mismatch 并拒绝 assignment，使 local parameter 保持不变",
         "让 process crash",
+        "在 LoadReport.shape_mismatch 中记录 mismatch 并拒绝 assignment，使 local parameter 保持不变",
         "Truncate 较大的 tensor"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "半加载 models 是静默失败机器；拒绝 assignment 能保持 report 诚实。"
     },
     {
@@ -55,11 +55,11 @@
       "question": "为什么 demo 的 stub fixture 不是真实 GPT-2 download？",
       "options": [
         "真实 files 不是 safetensors format",
-        "Demo 必须离线且快速运行；stub 使用完全相同的 pretrained naming convention，因此 loader code path 相同，换成真实 file 也不会改变 loader",
         "真实 weights 是加密的",
+        "Demo 必须离线且快速运行；stub 使用完全相同的 pretrained naming convention，因此 loader code path 相同，换成真实 file 也不会改变 loader",
         "Safetensors 不能存储 large tensors"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "相同 code path，更小 payload；loader 对两者都适用。"
     },
     {
@@ -67,11 +67,11 @@
       "question": "为什么要在加载前后各 generate 一个 sample？",
       "options": [
         "为了测量 inference speed",
+        "为了设置 random seed",
         "如果 post-load samples 与 pre-load samples 相同，说明加载没有改变 model，也意味着 mapping 静默漏掉了每个 tensor",
-        "为了预热 GPU cache",
-        "为了设置 random seed"
+        "为了预热 GPU cache"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Sanity generation 是最便宜的 gate：一个 sample fingerprint 如果没有变化，就会暴露 broken load，而 LoadReport summary 单独无法捕捉这一点。"
     }
   ]

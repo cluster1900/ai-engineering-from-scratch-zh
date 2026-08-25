@@ -92,6 +92,10 @@ Mapping 是一个固定 function。本课把它作为 dict 交付，loader 会�
 
 真实 GPT-2 weights 大约 0.5 GB。Demo 不会下载它们；它会在第一次运行时生成一个小型 safetensors fixture，采用完全相同的 GPT-2 naming convention，并使用适合 12-block model、d_model 192 而不是 768 的 shapes。这个 fixture 具备正确结构，能触发 loader 中的每条 code path。把 fixture 换成真实 file 后，loader 无需修改即可工作。
 
+```figure
+cc-weight-remap
+```
+
 ## Build It
 
 `code/main.py` 实现：
