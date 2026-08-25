@@ -61,6 +61,10 @@ PPO（Schulman et al. 2017）用一个简单的 clipped objective 替代了硬�
 
 **KL-penalty 变体。** 原始论文提出了一个替代方案，使用 adaptive KL penalty：`L = L^{PG} - β · KL(π_θ || π_old)`，其中 `β` 根据 observed KL 调整。Clipping 版本成为主流；KL 变体在 RLHF 中保留下来（在那里，到 reference policy 的 KL 本来就是一个你始终想要的独立约束）。
 
+```figure
+ppo-clip
+```
+
 ## 构建它
 
 ### Step 1：在 rollout 时捕获 `log π_old(a | s)`
