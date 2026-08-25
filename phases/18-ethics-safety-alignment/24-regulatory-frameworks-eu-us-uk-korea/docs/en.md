@@ -80,6 +80,10 @@ Article 12 在 Ministry of Science and ICT (MSIT) 下设立 AISI。要求：
 
 Lesson 18 是实验室自愿治理；Lesson 24 是监管；Lesson 25 是 AI 系统中一类新兴 CVE；Lessons 26-27 涵盖文档（cards）和训练数据治理。
 
+```figure
+an-eu-act-timeline
+```
+
 ## 使用它
 无代码。阅读 EU AI Act 的一手来源：法规文本、GPAI Code of Practice、UK AISI Inspect framework。把你的部署映射到每个司法辖区的适用义务。
 
