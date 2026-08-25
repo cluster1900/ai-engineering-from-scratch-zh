@@ -21,7 +21,7 @@
   <text x="480" y="26" text-anchor="middle" class="title">Anthropic 的五种 workflow patterns（2024 年 12 月）</text>
 
   <rect x="40" y="50" width="880" height="110" class="chain"/>
-  <text x="480" y="72" text-anchor="middle" class="head">1. prompt chaining — 顺序式，可选程序化 gate</text>
+  <text x="480" y="72" text-anchor="middle" class="head">1. prompt chaining — 顺序执行，可选程序化 gate</text>
   <rect x="60" y="88" width="140" height="40" class="box"/>
   <text x="130" y="112" text-anchor="middle" class="step">LLM A</text>
   <rect x="220" y="88" width="140" height="40" class="box"/>
@@ -39,7 +39,7 @@
   <text x="480" y="150" text-anchor="middle" class="small">适用：任务可清晰线性分解</text>
 
   <rect x="40" y="170" width="880" height="110" class="route"/>
-  <text x="480" y="192" text-anchor="middle" class="head">2. routing — classifier 分派给 specialist handlers</text>
+  <text x="480" y="192" text-anchor="middle" class="head">2. routing — classifier 分派给专用 handlers</text>
   <rect x="60" y="208" width="160" height="40" class="box"/>
   <text x="140" y="232" text-anchor="middle" class="step">classifier LLM</text>
   <rect x="260" y="208" width="160" height="40" class="box"/>
@@ -74,7 +74,7 @@
   <rect x="680" y="376" width="220" height="40" class="box"/>
   <text x="790" y="400" text-anchor="middle" class="step">综合</text>
   <line x1="660" y1="348" x2="680" y2="348" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="710" y="430" text-anchor="middle" class="small">类似 agent，但 orchestrator 不无限循环</text>
+  <text x="710" y="430" text-anchor="middle" class="small">类似 Agent，但 orchestrator 不无限循环</text>
 
   <rect x="40" y="450" width="880" height="120" class="eval"/>
   <text x="480" y="472" text-anchor="middle" class="head">5. evaluator-optimizer — 提议、评判、优化</text>
@@ -85,10 +85,10 @@
   <rect x="460" y="488" width="160" height="40" class="box"/>
   <text x="540" y="512" text-anchor="middle" class="step">通过  输出</text>
   <rect x="660" y="488" width="240" height="40" class="box"/>
-  <text x="780" y="512" text-anchor="middle" class="step">失败  反馈回 proposer</text>
+  <text x="780" y="512" text-anchor="middle" class="step">失败  反馈给 proposer</text>
   <line x1="220" y1="508" x2="260" y2="508" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <line x1="420" y1="508" x2="460" y2="508" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="480" y="556" text-anchor="middle" class="small">Self-Refine（第 05 课）泛化；若 evaluator 基于外部工具则是 CRITIC pattern</text>
+  <text x="480" y="556" text-anchor="middle" class="small">Self-Refine（第 05 课）的泛化；若 evaluator 基于外部 Tool，则为 CRITIC pattern</text>
 
-  <text x="480" y="600" text-anchor="middle" class="caption">五种 pattern 覆盖多数用例。仅当步骤不可预测时才用 agents。</text>
+  <text x="480" y="600" text-anchor="middle" class="caption">五种 pattern 覆盖多数用例。仅当步骤不可预测时才用 Agents。</text>
 </svg>

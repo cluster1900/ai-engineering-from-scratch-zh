@@ -59,6 +59,10 @@
 
 "Effective context engineering for AI agents"（Anthropic 2025）形式化了相邻的学科：200k window 是预算，不是容器。该包含什么，何时 compact，何时让 context 增长。本课程在 Phase 14 的 context compression 课程中详细覆盖（在重新编号前是本课程体系中 Phase 14 更早的 lesson 06）。
 
+```figure
+workflow-chain
+```
+
 ## 构建它
 
 `code/main.py` 针对 `ScriptedLLM` 实现了全部五种 workflow patterns：
