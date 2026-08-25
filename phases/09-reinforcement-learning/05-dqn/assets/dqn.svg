@@ -19,17 +19,17 @@
   <rect x="40" y="60" width="200" height="110" class="box"/>
   <text x="140" y="88" text-anchor="middle" class="label">环境</text>
   <text x="140" y="112" text-anchor="middle" class="content">(s, a) -&gt; (r, s')</text>
-  <text x="140" y="135" text-anchor="middle" class="caption">Atari、GridWorld，任何环境</text>
+  <text x="140" y="135" text-anchor="middle" class="caption">Atari、GridWorld，任意环境</text>
 
   <rect x="280" y="60" width="200" height="110" class="hot"/>
-  <text x="380" y="88" text-anchor="middle" class="label">online net Q(.; theta)</text>
+  <text x="380" y="88" text-anchor="middle" class="label">online 网络 Q(.; theta)</text>
   <text x="380" y="112" text-anchor="middle" class="content">执行 epsilon-greedy</text>
   <text x="380" y="135" text-anchor="middle" class="content">每步训练</text>
 
   <rect x="520" y="60" width="200" height="110" class="box"/>
   <text x="620" y="88" text-anchor="middle" class="label">replay buffer D</text>
   <text x="620" y="112" text-anchor="middle" class="content">(s, a, r, s', done)</text>
-  <text x="620" y="135" text-anchor="middle" class="caption">~1M transitions，均匀采样</text>
+  <text x="620" y="135" text-anchor="middle" class="caption">约 1M 次转移，均匀采样</text>
 
   <rect x="760" y="60" width="100" height="110" class="cool"/>
   <text x="810" y="88" text-anchor="middle" class="label">target</text>
@@ -42,7 +42,7 @@
   <line x1="720" y1="115" x2="758" y2="115" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3"/>
 
   <rect x="40" y="210" width="820" height="150" class="box"/>
-  <text x="450" y="235" text-anchor="middle" class="label">gradient step：一个 minibatch，TD 平方误差</text>
+  <text x="450" y="235" text-anchor="middle" class="label">Gradient 步骤：一个 minibatch，TD 平方误差</text>
   <text x="60" y="265" class="content">for (s, a, r, s', done) in buffer.sample(batch):</text>
   <text x="60" y="285" class="content">y = r                             if done</text>
   <text x="60" y="305" class="content">y = r + gamma * max_a' Q(s', a'; theta^-)    otherwise</text>
@@ -52,5 +52,5 @@
   <path d="M 380 360 Q 380 400 140 400 Q 140 175 140 170" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
   <text x="250" y="414" class="caption">更新后的 theta 用于下一步</text>
 
-  <text x="450" y="448" text-anchor="middle" class="caption">三个技巧，一个 loss，一个 Neural Network：Deep RL 时代开始</text>
+  <text x="450" y="448" text-anchor="middle" class="caption">三个技巧，一个 Loss，一个 Neural Network：Deep RL 时代开始</text>
 </svg>

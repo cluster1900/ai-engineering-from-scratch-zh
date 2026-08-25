@@ -45,6 +45,10 @@ Atari 上的 DQN 是第一次用单一架构和单一 hyperparameter 集合，�
 
 **其他改进（Rainbow, 2017）：** prioritized replay（更多采样 high-TD-error transitions）、dueling architecture（分离 `V(s)` 和 advantage heads）、noisy networks（learned exploration）、n-step returns、distributional Q (C51/QR-DQN)、multi-step bootstrapping。每一项都会带来几个百分点的提升；收益大致可叠加。
 
+```figure
+f3-dqn-stability
+```
+
 ## 构建它
 
 这里的代码是 stdlib-only 且 numpy-free：我们在一个很小的 continuous GridWorld 上使用手写的 single-hidden-layer MLP，因此每个训练步骤都能在 microseconds 内运行。算法与规模化 Atari DQN 完全相同。
