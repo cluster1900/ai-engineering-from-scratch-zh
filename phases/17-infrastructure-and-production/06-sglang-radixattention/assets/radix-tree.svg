@@ -13,7 +13,7 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="24" text-anchor="middle" class="title">RadixAttention — KV cache 作为树，scheduler 作为热分支固定器</text>
+  <text x="480" y="24" text-anchor="middle" class="title">RadixAttention — 将 KV cache 作为树，将 scheduler 作为热分支固定器</text>
 
   <rect x="40" y="50" width="460" height="490" class="box"/>
   <text x="270" y="72" text-anchor="middle" class="head">radix tree</text>
@@ -46,22 +46,22 @@
 
   <rect x="60" y="310" width="420" height="70" class="box"/>
   <text x="270" y="330" text-anchor="middle" class="step">新请求：SYSTEM + TOOLS + DOC_B + Q_7</text>
-  <text x="270" y="350" text-anchor="middle" class="small">遍历树：SYSTEM 复用，TOOLS 复用，DOC_B 复用</text>
+  <text x="270" y="350" text-anchor="middle" class="small">遍历树：复用 SYSTEM、TOOLS 和 DOC_B</text>
   <text x="270" y="366" text-anchor="middle" class="small">仅为 Q_7 分配块（60 Token，4 块）</text>
 
   <rect x="60" y="390" width="420" height="60" class="cool"/>
   <text x="270" y="414" text-anchor="middle" class="step">prefill 成本：60 Token，而非 2860</text>
-  <text x="270" y="432" text-anchor="middle" class="small">prefix 密集型 RAG：SGLang 较 vLLM 最高 6.4x</text>
+  <text x="270" y="432" text-anchor="middle" class="small">前缀密集型 RAG：SGLang 比 vLLM 最高快 6.4x</text>
 
   <rect x="60" y="460" width="420" height="70" class="hot"/>
   <text x="270" y="482" text-anchor="middle" class="step">淘汰策略</text>
-  <text x="270" y="500" text-anchor="middle" class="small">分支级 LRU：淘汰整片叶子</text>
-  <text x="270" y="518" text-anchor="middle" class="small">保持 cache 形状匹配树形</text>
+  <text x="270" y="500" text-anchor="middle" class="small">分支级 LRU：淘汰整个叶分支</text>
+  <text x="270" y="518" text-anchor="middle" class="small">保持 cache 形状与树结构匹配</text>
 
   <rect x="520" y="50" width="400" height="490" class="box"/>
   <text x="720" y="72" text-anchor="middle" class="head">cache 感知调度</text>
   <rect x="540" y="90" width="360" height="70" class="cold"/>
-  <text x="720" y="112" text-anchor="middle" class="step">FCFS 不适合 prefix 密集流量</text>
+  <text x="720" y="112" text-anchor="middle" class="step">FCFS 不适合前缀密集型流量</text>
   <text x="720" y="130" text-anchor="middle" class="small">按到达顺序服务请求</text>
   <text x="720" y="146" text-anchor="middle" class="small">热分支复用前被淘汰</text>
   <rect x="540" y="170" width="360" height="80" class="cool"/>
@@ -73,17 +73,17 @@
   <rect x="540" y="260" width="360" height="120" class="dsk"/>
   <text x="720" y="282" text-anchor="middle" class="step">数字（2026）</text>
   <text x="720" y="302" text-anchor="middle" class="small">Llama 3.1 8B H100 ShareGPT 1K：</text>
-  <text x="720" y="318" text-anchor="middle" class="small">SGLang ~16,200 tok/s vs vLLM ~12,500 (+29%)</text>
-  <text x="720" y="336" text-anchor="middle" class="small">prefix 密集型 RAG：最高 6.4x</text>
-  <text x="720" y="352" text-anchor="middle" class="small">voice cloning：86.4% prefix-cache 命中率</text>
+  <text x="720" y="318" text-anchor="middle" class="small">SGLang ~16,200 tok/s，vLLM ~12,500（+29%）</text>
+  <text x="720" y="336" text-anchor="middle" class="small">前缀密集型 RAG：最高 6.4x</text>
+  <text x="720" y="352" text-anchor="middle" class="small">语音克隆：86.4% prefix-cache 命中率</text>
   <text x="720" y="368" text-anchor="middle" class="small">生产：50-99%，取决于模板纪律</text>
 
   <rect x="540" y="390" width="360" height="140" class="hot"/>
-  <text x="720" y="412" text-anchor="middle" class="step">陷阱 - prompt 顺序</text>
+  <text x="720" y="412" text-anchor="middle" class="step">陷阱 - Prompt 顺序</text>
   <text x="720" y="432" text-anchor="middle" class="small">[system, tools, context] ≠ [system, context, tools]</text>
   <text x="720" y="450" text-anchor="middle" class="small">树看到两条不同路径</text>
-  <text x="720" y="466" text-anchor="middle" class="small">6.4x 消失，回到 vLLM throughput</text>
+  <text x="720" y="466" text-anchor="middle" class="small">6.4x 优势消失，回到 vLLM 吞吐量</text>
   <text x="720" y="488" text-anchor="middle" class="step">工程师杠杆：固定模板</text>
-  <text x="720" y="506" text-anchor="middle" class="small">不可变内容在前（system, tools, schemas）</text>
+  <text x="720" y="506" text-anchor="middle" class="small">不可变内容在前（system、tools、schemas）</text>
   <text x="720" y="520" text-anchor="middle" class="small">用户输入最后；真实案例一次改动 7% 到 74%</text>
 </svg>
