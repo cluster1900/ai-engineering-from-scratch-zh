@@ -14,11 +14,11 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">Q-learning vs SARSA — 只差一行代码</text>
+  <text x="450" y="30" text-anchor="middle" class="title">Q-learning 与 SARSA — 只差一行代码</text>
 
   <rect x="40" y="60" width="820" height="70" class="box"/>
   <text x="60" y="85" class="label">转移</text>
-  <text x="60" y="108" class="content">(s, a) --env.step--&gt; (r, s')   (one step, online, no episode boundary needed)</text>
+  <text x="60" y="108" class="content">(s, a) --env.step--&gt; (r, s')   （单步、在线、无需 episode 边界）</text>
 
   <rect x="40" y="150" width="400" height="180" class="hot"/>
   <text x="240" y="175" text-anchor="middle" class="label">Q-learning（off-policy）</text>
@@ -26,21 +26,21 @@
   <text x="60" y="228" class="content">Q(s, a) += alpha * (target - Q(s, a))</text>
   <text x="60" y="260" class="caption">假设从 s' 起采用 greedy 策略</text>
   <text x="60" y="278" class="caption">探索时也学习 Q*</text>
-  <text x="60" y="300" class="caption">max 偏差：高估有噪声的 Q</text>
-  <text x="60" y="320" class="caption">Deep 版本：DQN</text>
+  <text x="60" y="300" class="caption">max 偏差：高估含噪声的 Q</text>
+  <text x="60" y="320" class="caption">Deep 版：DQN</text>
 
   <rect x="460" y="150" width="400" height="180" class="cool"/>
   <text x="660" y="175" text-anchor="middle" class="label">SARSA（on-policy）</text>
   <text x="480" y="205" class="content">a' = epsilon_greedy(Q, s')</text>
   <text x="480" y="228" class="content">target = r + gamma * Q(s', a')</text>
   <text x="480" y="251" class="content">Q(s, a) += alpha * (target - Q(s, a))</text>
-  <text x="480" y="283" class="caption">使用实际采取的 ACTION</text>
+  <text x="480" y="283" class="caption">使用实际采取的动作</text>
   <text x="480" y="301" class="caption">学习当前 epsilon-greedy 的 Q^pi</text>
   <text x="480" y="319" class="caption">在悬崖/危险附近更保守</text>
 
   <rect x="40" y="350" width="820" height="70" class="box"/>
-  <text x="450" y="375" text-anchor="middle" class="label">同一形状：target - Q(s,a)，按 alpha 缩放</text>
-  <text x="450" y="398" text-anchor="middle" class="caption">唯一符号差异：max vs 采样 a' — off-policy vs on-policy</text>
+  <text x="450" y="375" text-anchor="middle" class="label">同一形式：target - Q(s,a)，按 alpha 缩放</text>
+  <text x="450" y="398" text-anchor="middle" class="caption">唯一符号差异：max 与采样 a' — off-policy 与 on-policy</text>
 
-  <text x="450" y="450" text-anchor="middle" class="caption">本课之后 Phase 9 的一切，都是这两种更新的深度函数近似变体</text>
+  <text x="450" y="450" text-anchor="middle" class="caption">本课之后，Phase 9 的一切都是这两种更新的深度函数近似变体</text>
 </svg>
