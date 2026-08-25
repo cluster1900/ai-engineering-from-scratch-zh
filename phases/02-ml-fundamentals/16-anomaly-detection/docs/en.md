@@ -227,6 +227,10 @@ flowchart LR
 
 Pipeline 永远不是 "done"。Data distributions 会漂移，新的 anomaly 类型会出现，thresholds 也需要调整。把 Anomaly Detection 当作一个持续运行的系统，而不是一次性 model。
 
+```figure
+f3-anomaly-fence
+```
+
 ## 构建它
 
 `code/anomaly_detection.py` 中的代码从零实现了 Z-score、IQR 和 Isolation Forest。
