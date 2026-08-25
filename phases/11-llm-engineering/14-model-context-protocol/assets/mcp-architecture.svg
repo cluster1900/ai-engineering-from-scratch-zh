@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">一个 Host，一个 JSON-RPC session，三种 primitives</text>
+  <text x="450" y="30" text-anchor="middle" class="title">单 host、无状态 JSON-RPC 请求、三个原语</text>
 
   <!-- Host -->
   <rect x="40" y="70" width="240" height="300" class="host"/>
@@ -38,7 +38,7 @@
   <!-- Wire -->
   <path d="M280 235 L500 235" class="line" marker-end="url(#arrow)"/>
   <text x="390" y="220" text-anchor="middle" class="tag">JSON-RPC 2.0（stdio / HTTP）</text>
-  <text x="390" y="252" text-anchor="middle" class="tag">initialize → list → call</text>
+  <text x="390" y="252" text-anchor="middle" class="tag">每个请求含 _meta • 可选发现</text>
 
   <!-- Server -->
   <rect x="500" y="70" width="360" height="300" class="server"/>
@@ -58,6 +58,6 @@
   <text x="680" y="331" text-anchor="middle" class="tag">用户调用模板（斜杠命令）</text>
 
   <!-- Caption -->
-  <text x="450" y="410" text-anchor="middle" class="tag">spec revision 2025-06-18 新增 streamable HTTP transport；每个 host/server 在 initialize 中固定协议版本。</text>
+  <text x="450" y="410" text-anchor="middle" class="tag">每个请求都通过 params._meta 携带协议版本和客户端能力。</text>
   <text x="450" y="435" text-anchor="middle" class="tag">破坏性 tools 设置 destructiveHint: true，便于 host 要求人类批准。</text>
 </svg>
