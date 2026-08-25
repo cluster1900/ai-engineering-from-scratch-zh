@@ -105,6 +105,10 @@ EAGLE 在预训练之后单独训练一个小型 draft model。MTP 将 draft 烘
 | Acceptance rate | 0.88-0.92 | depth 1 时 0.80+ |
 | Benefit beyond speedup | 仅 speculative decoding | 更密集的训练信号 + 加速 |
 
+```figure
+multi-token-predict
+```
+
 ## 构建它
 
 `code/main.py` 端到端构建一个 MTP module：shared embedding、projection、transformer block、shared output head。然后它会在一段简短的 synthetic sequence 上计算 per-depth cross-entropy loss，并按组件打印参数量。32 个 Token 的 toy vocabulary 让数字更易读。
