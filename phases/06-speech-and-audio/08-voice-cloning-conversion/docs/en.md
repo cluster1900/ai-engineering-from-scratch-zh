@@ -39,7 +39,7 @@
 
 ### 伦理部分，不是附加项
 
-**Watermarking。** PerTh（Perth）和 SilentCipher（2024）会在 audio 中不可感知地嵌入约 16-32 bit ID。它能经受 re-encoding、streaming 和常见编辑。已具备生产可用的 open source 实现。
+**Watermarking。** PerTh（Perth）和 SilentCipher（2024）会在 audio 中不可感知地Embedding约 16-32 bit ID。它能经受 re-encoding、streaming 和常见编辑。已具备生产可用的 open source 实现。
 
 **Consent gates。** 必须将每个 cloned output 与可验证的 consent record 配对。“我，Rohit，于 2026-04-22，授权将此 voice 用于 X purpose。”存储在 tamper-evident log 中。
 
@@ -56,6 +56,10 @@
 | VoiceBox | Yes | 0.78 | 2.1% | 330M |
 
 SECS > 0.70 对大多数听众而言通常已经与目标声音难以区分。
+
+```figure
+sp-voice-factorize
+```
 
 ## Build It
 
@@ -95,7 +99,7 @@ out_wav = vc.convert(source="my_voice.wav", target_pool=["alice_1.wav", "alice_2
 
 KNN-VC 运行 WavLM，为 source 与 target pool 提取 per-frame embeddings，然后将每个 source frame 替换为 pool 中的 nearest neighbor。非参数方法，使用一分钟 target speech 即可工作。
 
-### Step 4: 嵌入 watermark
+### Step 4: Embedding watermark
 
 ```python
 from silentcipher import SilentCipher
@@ -157,7 +161,7 @@ def cloned_inference(text, ref_audio, consent_record):
 | PPG | Phonetic posteriorgram | 用作 language-agnostic content rep 的 per-frame ASR posteriors。 |
 | KNN-VC | Nearest-neighbor conversion | 将每个 source frame 替换为 nearest target-pool frame。 |
 | Neural codec TTS | VALL-E style | EnCodec/SoundStream tokens 上的 AR model。 |
-| Watermark | Inaudible signature | 嵌入 audio 中的 bits，可经受 re-encode。 |
+| Watermark | Inaudible signature | Embedding audio 中的 bits，可经受 re-encode。 |
 | SECS | Cloning fidelity | target 与 clone 的 speaker embeddings 之间的 cosine。 |
 | AASIST | Deepfake detector | Anti-spoof model；检测 synthesized speech。 |
 
