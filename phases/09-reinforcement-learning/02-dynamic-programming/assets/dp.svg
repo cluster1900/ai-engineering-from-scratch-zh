@@ -20,7 +20,7 @@
   <text x="230" y="102" text-anchor="middle" class="caption">外循环遍历（评估，改进）</text>
 
   <rect x="70" y="125" width="320" height="50" class="hot"/>
-  <text x="230" y="146" text-anchor="middle" class="content">1. 评估：V^pi 直到收敛</text>
+  <text x="230" y="146" text-anchor="middle" class="content">1. 评估：V^pi 直至收敛</text>
   <text x="230" y="162" text-anchor="middle" class="content">V(s) &lt;- sum pi(a) sum P (r + g V(s'))</text>
 
   <line x1="230" y1="180" x2="230" y2="198" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -44,22 +44,22 @@
 
   <rect x="510" y="125" width="320" height="60" class="hot"/>
   <text x="670" y="148" text-anchor="middle" class="content">V(s) &lt;- max_a sum P (r + g V(s'))</text>
-  <text x="670" y="168" text-anchor="middle" class="content">每次 sweep 应用于每个状态</text>
+  <text x="670" y="168" text-anchor="middle" class="content">每轮 sweep 应用于所有状态</text>
 
   <line x1="670" y1="192" x2="670" y2="212" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="510" y="217" width="320" height="50" class="hot"/>
   <text x="670" y="238" text-anchor="middle" class="content">当 max_s |dV(s)| &lt; eps 时停止</text>
-  <text x="670" y="254" text-anchor="middle" class="content">以因子 g 的 sup-norm 收缩</text>
+  <text x="670" y="254" text-anchor="middle" class="content">以因子 g 作 sup-norm 收缩</text>
 
   <line x1="670" y1="272" x2="670" y2="292" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="510" y="297" width="320" height="40" class="box"/>
   <text x="670" y="322" text-anchor="middle" class="content">从 V* 提取 greedy pi</text>
 
-  <text x="670" y="355" text-anchor="middle" class="caption">更多 sweep（常为 100+）</text>
-  <text x="670" y="375" text-anchor="middle" class="caption">每次 sweep O(|S| * |A|)</text>
-  <text x="670" y="400" text-anchor="middle" class="caption">convergence: ||T V - V*|| &lt;= g^k ||V_0 - V*||</text>
+  <text x="670" y="355" text-anchor="middle" class="caption">更多 sweep（通常 100+）</text>
+  <text x="670" y="375" text-anchor="middle" class="caption">每轮 sweep O(|S| * |A|)</text>
+  <text x="670" y="400" text-anchor="middle" class="caption">收敛：||T V - V*|| &lt;= g^k ||V_0 - V*||</text>
 
   <text x="450" y="450" text-anchor="middle" class="caption">两者都到达 V* — 路径不同，固定点相同（广义策略迭代）</text>
 </svg>
