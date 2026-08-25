@@ -97,6 +97,10 @@ Multi-Agent PPO：带 centralized value function 的 PPO。每个 agent 有自�
 
 训练真实 network 是 Phase 09 的主题。本课构建 scripted-policy 版本，在没有 gradient update 的情况下演示 CTDE、value-decomposition 和 centralized-value pattern。目标是在你使用完整 MARL library（PyMARL、MARLlib、RLlib multi-agent）之前，先内化这些 pattern。
 
+```figure
+sw-ctde
+```
+
 ## 构建它
 
 `code/main.py` 在一个很小的 2-agent cooperative grid-world 上实现了三个 pattern demonstration：
