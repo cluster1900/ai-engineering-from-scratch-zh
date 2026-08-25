@@ -6,22 +6,22 @@
       "stage": "pre",
       "question": "课程把哪种 Quantization 格式称为 CPU 和 edge serving 的 production 默认选择？",
       "options": [
-        "FP8",
         "GGUF Q4_K_M / Q5_K_M",
-        "AWQ INT4",
-        "NVFP4"
+        "NVFP4",
+        "FP8",
+        "AWQ INT4"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "当 vLLM 中需要 multi-LoRA 时，课程为 datacenter GPU serving 选择哪种格式？",
       "options": [
+        "NVFP4",
         "GGUF Q4_K_M",
-        "AWQ",
         "带 Marlin kernels 的 GPTQ",
-        "NVFP4"
+        "AWQ"
       ],
       "correct": 2,
       "explanation": ""
@@ -30,48 +30,48 @@
       "stage": "check",
       "question": "AWQ 中“我的 model 现在只有 4 GB 了”这个陷阱是什么？",
       "options": [
-        "AWQ 与 vLLM 不兼容",
-        "AWQ 需要 INT8 KV cache",
         "AWQ 实际上并不会缩小 weights",
-        "AWQ 只会缩小 weights；KV cache 和 activations 是独立的，并且在 production batch size 下可能额外增加 30-50 GB"
+        "AWQ 与 vLLM 不兼容",
+        "AWQ 只会缩小 weights；KV cache 和 activations 是独立的，并且在 production batch size 下可能额外增加 30-50 GB",
+        "AWQ 需要 INT8 KV cache"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "为什么在通用 web text 上校准 AWQ 会损害 domain models？",
       "options": [
-        "它会禁用 Marlin kernels",
-        "该 algorithm 会错误判断哪些 weights 需要保护，导致 domain accuracy 下降（例如 HumanEval 上下降几个 Pass@1 点）",
+        "它会增加 model size",
         "它只适用于 AMD GPUs",
-        "它会增加 model size"
+        "该 algorithm 会错误判断哪些 weights 需要保护，导致 domain accuracy 下降（例如 HumanEval 上下降几个 Pass@1 点）",
+        "它会禁用 Marlin kernels"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "对于质量不可妥协的 reasoning-heavy workload，课程默认推荐哪种 precision？",
       "options": [
-        "GPTQ INT4",
-        "INT2 GGUF",
         "NVFP4 weights",
-        "FP8 weights"
+        "GPTQ INT4",
+        "FP8 weights",
+        "INT2 GGUF"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "课程指出 NVFP4 在 2026 年初有哪些 2026 Quantization 限制？",
       "options": [
-        "尚不支持 LoRA",
-        "H100 上不支持",
+        "不能与 FP8 KV cache 结合使用",
         "只能在 CPU 上运行",
-        "不能与 FP8 KV cache 结合使用"
+        "尚不支持 LoRA",
+        "H100 上不支持"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     }
   ]
