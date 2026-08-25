@@ -54,6 +54,10 @@ Zhuge et al.（“Mindstorms in Natural Language-Based Societies of Mind,” arX
 - **Topic drift。** 多轮 debate 会偏离原始问题。缓解措施：每轮重新注入问题。
 - **Compute blowup。** N agents × R rounds = N·R 次 LLM calls，每次 call 的 context 都在增长。一个 5-agent、5-round debate 是 25 次 calls，并且 context 持续增长。每个问题的成本可能超过单次 CoT call 的 10×。
 
+```figure
+multi-agent-debate
+```
+
 ## 构建它
 `code/main.py` 在一个数学问题上运行 3-agent × 3-round debate，其中每个 agent 都从一个不同的（可能错误的）答案开始。Agents 是脚本化的，每个 agent 都通过按脚本化 confidence 对邻居答案加权平均来“updates”。Convergence 在逐轮 log 中可见。
 
