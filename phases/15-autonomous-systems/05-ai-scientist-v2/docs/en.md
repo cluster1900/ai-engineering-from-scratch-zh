@@ -63,6 +63,10 @@ AlphaEvolve 的 sandbox 故事更容易，因为它的 evaluator 很紧。AI Sci
 
 在这三者中，v2 的自动 evaluator 最弱，输出面最宽，通向公开 artifact 的路径最短。operational controls（sandbox、review、disclosure）承担了大部分安全工作。
 
+```figure
+mx-research-loop
+```
+
 ## 使用它
 
 `code/main.py` 将 v2 循环模拟为一个 state machine：想法 → 新颖性检查 → 实验 → 图表 → 写作 → review → 接收或迭代。每个 state 都有一个可配置的失败概率，该概率来自 Beel et al. 的发现。运行模拟器 N 个循环并统计：

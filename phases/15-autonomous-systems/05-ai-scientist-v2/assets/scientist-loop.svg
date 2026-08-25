@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">AI Scientist v2 — research loop，实测 failure rates</text>
+  <text x="440" y="26" text-anchor="middle" class="title">AI Scientist v2 — 研究循环与实测故障率</text>
 
   <rect x="40" y="50" width="800" height="430" class="box"/>
 
@@ -31,17 +31,17 @@
     <text x="235" y="120" text-anchor="middle" class="small">约 25% 误标</text>
 
     <rect x="300" y="80" width="110" height="60" class="hot"/>
-    <text x="355" y="104" text-anchor="middle" class="label">experiment</text>
+    <text x="355" y="104" text-anchor="middle" class="label">实验</text>
     <text x="355" y="120" text-anchor="middle" class="small">42% 失败</text>
     <text x="355" y="134" text-anchor="middle" class="small">（Beel 2025）</text>
 
     <rect x="420" y="80" width="110" height="60" class="cold"/>
-    <text x="475" y="104" text-anchor="middle" class="label">VLM figure critique</text>
+    <text x="475" y="104" text-anchor="middle" class="label">VLM 图表评析</text>
     <text x="475" y="120" text-anchor="middle" class="small">润色视觉</text>
     <text x="475" y="134" text-anchor="middle" class="small">掩盖 70%</text>
 
     <rect x="540" y="80" width="110" height="60" class="cool"/>
-    <text x="595" y="104" text-anchor="middle" class="label">writeup</text>
+    <text x="595" y="104" text-anchor="middle" class="label">报告</text>
 
     <rect x="660" y="80" width="110" height="60" class="cool"/>
     <text x="715" y="104" text-anchor="middle" class="label">审阅 + 提交</text>
@@ -57,20 +57,20 @@
   <!-- Results panel -->
   <rect x="60" y="175" width="740" height="115" class="box"/>
   <text x="80" y="196" class="label">实测结果（Yamada 2025，Sakana Nature 2026）</text>
-  <text x="80" y="218" class="content">· v2 生成论文被 ICLR 2025 workshop 接收（已披露）</text>
+  <text x="80" y="218" class="content">· v2 生成的论文被 ICLR 2025 workshop 接收（已披露）</text>
   <text x="80" y="236" class="content">· 无模板循环取代 v1 固定脚手架</text>
   <text x="80" y="254" class="content">· Nature 2026 论文记录端到端 pipeline</text>
-  <text x="80" y="272" class="content">· Beel 等 2025 外部 eval 指出润色掩盖实验缺陷</text>
+  <text x="80" y="272" class="content">· Beel 等人 2025 外部 Evaluation 指出润色掩盖实验缺陷</text>
 
   <!-- Safety box -->
   <rect x="60" y="305" width="740" height="155" class="hot"/>
   <text x="80" y="328" class="label">运行安全（Sakana repo README，转述）</text>
   <text x="80" y="350" class="content">- 代码库执行 LLM 编写的代码</text>
-  <text x="80" y="368" class="content">- 可能有危险包、不受控 Web 访问、非预期进程</text>
-  <text x="80" y="386" class="content">- 建议 Docker 隔离（多日运行优先 seccomp / gVisor）</text>
-  <text x="80" y="404" class="content">- 披露 agent 撰写论文；提交前审阅</text>
-  <text x="80" y="424" class="content">- 润色阶段会掩盖实验弱点；需单独 audit</text>
-  <text x="80" y="442" class="content">- evaluator 是 peer review，较弱且噪声大</text>
+  <text x="80" y="368" class="content">- 可能存在危险包、不受控 Web 访问和非预期进程</text>
+  <text x="80" y="386" class="content">- 建议使用 Docker 隔离（多日运行优先使用 seccomp / gVisor）</text>
+  <text x="80" y="404" class="content">- 披露论文由 Agent 撰写；提交前审阅</text>
+  <text x="80" y="424" class="content">- 润色阶段会掩盖实验弱点；需单独审计</text>
+  <text x="80" y="442" class="content">- 评估器采用同行评审，较弱且噪声大</text>
 
-  <text x="440" y="478" text-anchor="middle" class="caption">未验证领域 + 全文输出面 + 公开场所 = 本 phase 最强控制</text>
+  <text x="440" y="478" text-anchor="middle" class="caption">未验证领域 + 全文输出面 + 公开场所 = 本阶段最强控制</text>
 </svg>
