@@ -19,7 +19,7 @@
 
   <rect x="380" y="70" width="140" height="44" class="box"/>
   <text x="450" y="90" text-anchor="middle" class="label">p_data(x)</text>
-  <text x="450" y="106" text-anchor="middle" class="caption">未知，需要 sampler</text>
+  <text x="450" y="106" text-anchor="middle" class="caption">未知，需要采样器</text>
 
   <line x1="450" y1="114" x2="180" y2="150" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
   <line x1="450" y1="114" x2="340" y2="150" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
@@ -30,11 +30,11 @@
   <rect x="60" y="155" width="230" height="180" class="box"/>
   <text x="175" y="178" text-anchor="middle" class="label">1. 显式、可处理</text>
   <text x="175" y="200" text-anchor="middle" class="mono">p(x) = ∏ p(x_i | x_&lt;i)</text>
-  <text x="175" y="225" text-anchor="middle" class="content">autoregressive：GPT、PixelCNN</text>
-  <text x="175" y="245" text-anchor="middle" class="content">flows：Glow、RealNVP</text>
-  <text x="175" y="275" text-anchor="middle" class="caption">精确 log p(x)</text>
+  <text x="175" y="225" text-anchor="middle" class="content">自回归：GPT、PixelCNN</text>
+  <text x="175" y="245" text-anchor="middle" class="content">flow：Glow、RealNVP</text>
+  <text x="175" y="275" text-anchor="middle" class="caption">精确的 log p(x)</text>
   <text x="175" y="293" text-anchor="middle" class="caption">慢速顺序推理</text>
-  <text x="175" y="311" text-anchor="middle" class="caption">架构限制（flows）</text>
+  <text x="175" y="311" text-anchor="middle" class="caption">架构限制（flow）</text>
 
   <rect x="305" y="155" width="230" height="180" class="hot"/>
   <text x="420" y="178" text-anchor="middle" class="label">2. 显式、近似</text>
@@ -43,7 +43,7 @@
   <text x="420" y="245" text-anchor="middle" class="content">Diffusion：DDPM、SD3</text>
   <text x="420" y="275" text-anchor="middle" class="caption">2026 年主流</text>
   <text x="420" y="293" text-anchor="middle" class="caption">迭代采样（20-50 步）</text>
-  <text x="420" y="311" text-anchor="middle" class="caption">扩展到文本、图像、视频、3D</text>
+  <text x="420" y="311" text-anchor="middle" class="caption">扩展至文本、图像、视频、3D</text>
 
   <rect x="550" y="155" width="230" height="180" class="box"/>
   <text x="665" y="178" text-anchor="middle" class="label">3. 隐式密度</text>
@@ -51,12 +51,12 @@
   <text x="665" y="225" text-anchor="middle" class="content">GAN、StyleGAN、Pix2Pix</text>
   <text x="665" y="255" text-anchor="middle" class="caption">一次采样</text>
   <text x="665" y="273" text-anchor="middle" class="caption">完全没有 log p(x)</text>
-  <text x="665" y="291" text-anchor="middle" class="caption">训练不稳定、mode collapse</text>
-  <text x="665" y="309" text-anchor="middle" class="caption">窄域照片真实感仍是 SOTA</text>
+  <text x="665" y="291" text-anchor="middle" class="caption">Training 不稳定、mode collapse</text>
+  <text x="665" y="309" text-anchor="middle" class="caption">窄域照片真实感仍为 SOTA</text>
 
   <rect x="60" y="350" width="350" height="150" class="box"/>
-  <text x="235" y="373" text-anchor="middle" class="label">4. score / 连续时间</text>
-  <text x="235" y="395" text-anchor="middle" class="mono">learn s(x) = ∇_x log p(x)</text>
+  <text x="235" y="373" text-anchor="middle" class="label">4. Score / 连续时间</text>
+  <text x="235" y="395" text-anchor="middle" class="mono">学习 s(x) = ∇_x log p(x)</text>
   <text x="235" y="418" text-anchor="middle" class="content">score SDE、flow matching</text>
   <text x="235" y="438" text-anchor="middle" class="content">rectified flow、consistency models</text>
   <text x="235" y="465" text-anchor="middle" class="caption">免仿真训练</text>
@@ -67,6 +67,6 @@
   <text x="605" y="395" text-anchor="middle" class="mono">VQ-VAE + 基于 Token 的 Transformer</text>
   <text x="605" y="418" text-anchor="middle" class="content">DALL-E 1、Parti、MuseNet</text>
   <text x="605" y="438" text-anchor="middle" class="content">AudioLM、VALL-E、MusicGen、Sora patches</text>
-  <text x="605" y="465" text-anchor="middle" class="caption">复用 LLM 栈</text>
+  <text x="605" y="465" text-anchor="middle" class="caption">复用 LLM 技术栈</text>
   <text x="605" y="483" text-anchor="middle" class="caption">质量受 Tokenizer 限制</text>
 </svg>

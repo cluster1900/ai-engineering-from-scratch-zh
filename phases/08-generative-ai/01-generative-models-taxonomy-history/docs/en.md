@@ -60,6 +60,10 @@ Generative model 做一件事：给定从某个未知分布 `p_data(x)` 抽取�
 
 你会在本 phase 的每一课中重新回答这五个问题。到最后，它们会成为你的条件反射。
 
+```figure
+autoencoder-bottleneck
+```
+
 ## 构建它
 
 本课的代码是一个轻量级可视化：使用三种玩具方法（kernel density、离散 histogram，以及 nearest-sample “GAN-ish” generator）从样本中拟合一个 1-D mixture-of-Gaussians，这样你可以在一个能打印到一屏里的问题上看到 explicit vs implicit density 的区别。
