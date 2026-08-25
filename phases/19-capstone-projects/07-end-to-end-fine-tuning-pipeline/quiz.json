@@ -7,32 +7,32 @@
       "question": "contamination check 在数据准备期间防范什么？",
       "options": [
         "SFT 和 DPO 阶段之间的 Tokenizer drift",
+        "来自 MMLU-Pro 和 MT-Bench-v2 等公开 benchmark 的测试集泄漏进入训练数据",
         "训练和 serving 之间的 GPU driver 不匹配",
-        "llama.cpp build 之间的 GGUF 版本偏差",
-        "来自 MMLU-Pro 和 MT-Bench-v2 等公开 benchmark 的测试集泄漏进入训练数据"
+        "llama.cpp build 之间的 GGUF 版本偏差"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "pre",
       "question": "为什么 pipeline 组合 SFT 再 DPO（或 GRPO），而不是只用 DPO？",
       "options": [
+        "DPO 不能在 quantized weights 上运行",
         "Axolotl 没有实现 DPO",
         "SFT 在带标签 completions 上建立领域行为，而 DPO 或 GRPO 根据 preference pairs 或可验证 rewards 对模型进行对齐",
-        "DPO 需要单独的 base model architecture",
-        "DPO 不能在 quantized weights 上运行"
+        "DPO 需要单独的 base model architecture"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "EAGLE-3 为 vLLM serving 阶段带来什么？",
       "options": [
-        "新的 prompt-caching 层",
         "用于 tool calls 的 OPA policy",
         "自动数据 dedup 步骤",
+        "新的 prompt-caching 层",
         "可提前预测 N 个 tokens 的 draft heads；target 用一次 pass 验证，从而获得 2-3x throughput"
       ],
       "correct": 3,
@@ -43,9 +43,9 @@
       "question": "哪个 metric 报告 speculative-decoding draft 与 target model 的对齐程度？",
       "options": [
         "Acceptance rate",
-        "Coverage delta",
+        "Perplexity",
         "PSI",
-        "Perplexity"
+        "Coverage delta"
       ],
       "correct": 0,
       "explanation": ""
@@ -54,36 +54,36 @@
       "stage": "check",
       "question": "pipeline 为部署灵活性交付哪三种 quants？",
       "options": [
-        "ONNX, CoreML, TFLite",
         "GPTQ-INT4-Marlin、AWQ-INT4 和 GGUF-Q4_K_M",
+        "FP32, FP16, BF16",
         "仅在三个 runtimes 上使用 INT8",
-        "FP32, FP16, BF16"
+        "ONNX, CoreML, TFLite"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "这个 capstone 中的 2026 model card 遵循哪种 framework convention？",
       "options": [
-        "Datasheets for Datasets",
-        "Model Openness Framework (MOF) 2026 template，涵盖 data、training、eval、safety、license 和 reproducibility",
         "仅 HuggingFace YAML front-matter",
-        "OpenAI 的 model card format"
+        "OpenAI 的 model card format",
+        "Datasheets for Datasets",
+        "Model Openness Framework (MOF) 2026 template，涵盖 data、training、eval、safety、license 和 reproducibility"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪个 HPA metric 用于自动扩缩 serving replicas？",
       "options": [
-        "Queue-wait time",
-        "CPU utilization",
         "GPU temperature",
+        "CPU utilization",
+        "Queue-wait time",
         "Network egress bytes"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     }
   ]

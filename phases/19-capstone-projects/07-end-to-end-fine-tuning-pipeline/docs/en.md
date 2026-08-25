@@ -62,6 +62,10 @@ model card (2026 MOF) + safety eval (Llama Guard 4)
 - Infrastructure: Kubernetes + NVIDIA device plugin，基于 queue-wait metric 的 HPA
 - Observability: W&B 用于 training，Langfuse 用于 inference
 
+```figure
+ce-finetune-stages
+```
+
 ## 构建它
 1. **Data pipeline.** 在 raw corpus 上运行 Datatrove dedup。应用 Nemotron-CC 风格 quality classifier。Presidio 清理 PII。使用明确 seed 写出 train/val splits。
 
