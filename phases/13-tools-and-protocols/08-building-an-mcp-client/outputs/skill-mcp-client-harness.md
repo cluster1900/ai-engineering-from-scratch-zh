@@ -1,30 +1,40 @@
 ---
 name: mcp-client-harness
-description: 给定一个 MCP servers 的声明式列表（name、command、args），搭建一个具备 handshake、namespace merge 和 routing 的多 server client。
-version: 1.0.0
+description: 搭建一个支持现代元数据、安全时代协商、确定性合并和路由的多服务器 MCP 客户端脚手架。
+version: 2.1.0
 phase: 13
 lesson: 08
-tags: [mcp, client, multi-server, routing, namespace]
+tags: [mcp, client, stateless, compatibility, routing]
 ---
 
-给定一份要运行的 MCP servers 配置，生成一个 client harness：它会启动每个 server，与每个 server 完成 handshake，将它们的 tool lists 合并到一个 namespace 中，并把每次 call 路由到拥有该 tool 的 server。
+给定一组 MCP 服务器传输配置，生成一个优先使用 MCP `2026-07-28` 并隔离旧版兼容逻辑的客户端测试框架。
 
 生成：
 
-1. Server 配置解析器。映射 `name -> {command, args, env}`。验证 commands 存在于 path 上。
-2. Spawn plan。使用 subprocess.Popen，配置 stdin/stdout/stderr pipes、`bufsize=1`、text mode。每个 server 一个后台 reader thread。
-3. Handshake pipeline。对每个 session：发送 `initialize`，等待 response，持久化 capabilities，发送 `notifications/initialized`。
-4. Namespace merge。选择一种 collision policy：`prefix-on-collision`（默认）、`reject-on-collision` 或 `silent-overwrite`（禁止）。启动时打印合并后的 tool list。
-5. Routing function。`client.call(canonical_name, arguments)` 查找拥有该 tool 的 session，并写入一条 `tools/call` message。通过 pending-request table 中的 future 等待 matching-id response。
+1. 对等方配置。将稳定的服务器名称映射到固定的命令或端点、参数、环境变量 allowlist、授权 Context、传输类型，以及默认值为 false 的显式 `allow_legacy` 标志。
+2. 现代请求构建器。在序列化之前，立即将协议版本、当前客户端能力和推荐的客户端身份写入每个 `params._meta`。
+3. stdio 时代探测。首先发送 `server/discover`。接受有效的 DiscoverResult；遇到 `-32022` 时，使用双方均支持的现代版本重试；将 `-32020` 和 `-32021` 视为可纠正的现代错误。
+4. 旧版兼容性探测。将无法识别的错误、超时、连接关闭或空响应视为不确定情况。仅当该特定对等方设置了 `allow_legacy: true` 时，才发送一次受截止时间限制的 `initialize`。只有在收到相关联的 JSON-RPC 成功响应，且其中包含已配置的旧版修订版本、对象形式的能力信息和非空服务器身份时，才选择旧版时代。否则以关闭方式失败。
+5. Tool 缓存。遵循协商所得授权 Context 中的 `ttlMs` 和 `cacheScope`。将旧版结果中缺失的 `resultType` 视为 `"complete"`。
+6. 命名空间合并。对对等方和 Tool 排序。为冲突项添加前缀，或拒绝冲突。禁止静默覆盖。
+7. 路由器。将规范 Tool 名称映射到对等方和本地名称，创建新的请求 id，发送符合相应时代的请求，并验证响应 id。
+8. 恢复。传输中断时，使进行中的工作失败，重启或重新连接，重新执行发现和列表请求，重新打开订阅，并且只重试安全策略允许的操作。
 
-硬性拒绝：
-- 任何没有为每个 server 启动独立 process 的 harness。进程内 multiplexing 会破坏 isolation model。
-- 任何把 `silent-overwrite` 作为默认 collision policy 的 harness。存在安全风险。
-- 任何在 stdout reads 上阻塞 main thread 的 harness。Notifications 会停滞。
+强制拒绝：
+
+- 发送不包含当前 `_meta` 的现代请求。
+- 在收到可识别的现代错误后回退到初始化。
+- 向未明确列入旧版兼容 allowlist 的对等方发送 `initialize`。
+- 将超时、连接关闭、空响应、无法识别的错误、格式错误的结果或不受支持的修订版本视为旧版行为的证据。
+- 将进程、连接或 `Mcp-Session-Id` 视为现代协议状态。
+- 跨授权 Context 共享私有缓存列表。
+- 静默覆盖重复的 Tool 名称。
+- 接受缺少 `resultType` 的现代成功响应。
 
 拒绝规则：
-- 如果某个 server 的 command 不受信任（不在固定 allowlist 中），拒绝启动，并引导到 Phase 13 · 15 进行 security check。
-- 如果用户配置了超过 10 个 servers 且没有理由，给出警告并建议使用 gateway（Phase 13 · 17）。
-- 如果被要求在这里处理 OAuth，拒绝并引导到 Phase 13 · 16。
 
-输出：一个完整的 client-harness Python 文件（约 150 行），包含 Session、merge logic、routing，以及一个会依次运行每个已配置 server 的 main loop。最后用一行 summary 说明 collision policy 和 merged tools 的数量。
+- 拒绝生成不在固定 allowlist 中的命令。
+- 当所有者不明确时，拒绝路由 Tool。
+- 如果没有应用级幂等键或用户决策，拒绝自动重试非幂等调用。
+
+输出一个完整的 Python 测试框架、至少六个一致性测试，以及一份启动报告，其中列出对等方、所选时代、所选版本、缓存作用域和规范 Tool 名称。

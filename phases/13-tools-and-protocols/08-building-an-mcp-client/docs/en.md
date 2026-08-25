@@ -1,135 +1,227 @@
-# 构建 MCP Client — Discovery、Invocation、Session Management
+# 构建 MCP Client：发现、路由与双时代回退
 
-> 大多数 MCP 内容会提供 server tutorial，却对 client 一笔带过。Client code 才是复杂 orchestration 所在：process spawning、capability negotiation、跨多个 server 合并 tool list、sampling callbacks、reconnection，以及 namespace collision resolution。本课会构建一个 multi-server client，把三个不同的 MCP server 提升到一个给模型使用的扁平 tool namespace 中。
+> 现代 MCP client 会在每个请求中重复其契约。最困难的兼容性决策，是判断旧 server 是否真的旧，以及现代 server 是否只是在报告一个可修正的错误。
 
 **Type:** Build
-**Languages:** Python (stdlib, multi-server MCP client)
-**Prerequisites:** Phase 13 · 07 (building an MCP server)
-**Time:** ~75 minutes
+**Languages:** Python
+**Prerequisites:** Phase 13, Lesson 07
+**Time:** ~85 分钟
 
 ## 学习目标
-- 将 MCP server 作为 child process 启动，完成 `initialize`，并发送 `notifications/initialized`。
-- 维护 per-server session state（capabilities、tool list、last-seen notification ids）。
-- 将多个 server 的 tool list 合并为一个 namespace，并处理 collision。
-- 将 tool call 路由到拥有它的 server，并重新组装 response。
+
+- 使用当前元数据构建每个 MCP `2026-07-28` 请求。
+- 使用 `server/discover` 探测 stdio server，并选择双方都支持的版本。
+- 仅为明确列入 allowlist 的 peer 授权一次有界的旧版探测。
+- 只有在验证受支持版本的正向 `initialize` 结果后，才接受旧版时代。
+- 合并确定性的 Tool 列表，且不静默覆盖冲突。
+- 将调用路由到拥有相应 Tool 的 peer，且不虚构协议会话。
 
 ## 问题
-真实的 agent host（Claude Desktop、Cursor、Goose、Gemini CLI）会同时加载多个 MCP server。用户可能同时运行 filesystem server、Postgres server 和 GitHub server。Client 的工作是：
 
-1. 启动每个 server。
-2. 独立与每个 server 完成 handshake。
-3. 对每个 server 调用 `tools/list` 并 flatten 结果。
-4. 当模型发出 `notes_search` 时，在合并后的 namespace 中查找它，并路由到正确的 server。
-5. 处理来自任意 server 的 notifications（`tools/list_changed`），且不阻塞。
-6. 在 transport failure 时重连。
+一个 Agent host 通常会与多个 MCP server 通信。它必须发现每个 server、合并 Tool 目录、解决重名问题、路由调用，并从传输故障中恢复。
 
-手写这一整套逻辑，是区分 "toy" 和 "serviceable" 的关键。官方 SDKs 会封装这些内容，但心智模型必须由你自己掌握。
+`2026-07-28` 版本让稳态操作更简单，因为每个请求都是自包含的。兼容性则使启动过程更加微妙。Client 可能遇到：
+
+- 支持首选版本的现代 server；
+- 返回已知版本或 header 错误的现代 server；
+- 从未听说过 `server/discover` 的旧版 server；
+- 在收到 `initialize` 之前始终保持静默的旧版 server。
+
+将每个探测错误都视为旧版是危险的。格式错误的现代请求、过载的 server、已终止的进程和旧 server，都可能产生相同的超时或连接关闭。这些信号具有歧义。Client 在选择旧版时代之前，必须将明确的操作者意图与正向协议证据结合起来。
 
 ## 概念
-### Child-process spawning
 
-使用 `subprocess.Popen`，并设置 `stdin=PIPE, stdout=PIPE, stderr=PIPE`。设置 `bufsize=1`，并使用 text mode 逐行读取。每个 server 是一个 process；client 为每个 server 持有一个 `Popen` handle。
+### Peer，而非协议会话
 
-### Per-server session state
+为每个 server 进程或 endpoint 保留一条传输 peer 记录：
 
-每个 server 一个 `Session` object，保存：
+- 传输句柄或发送函数；
+- 已选择的协议时代和版本；
+- 最近发现的 server capabilities；
+- 最近一次确定性的 Tool 列表；
+- 用于关联的待处理请求 id；
+- 传输健康状态。
 
-- `process` — Popen handle。
-- `capabilities` — server 在 `initialize` 时声明的内容。
-- `tools` — 最近一次 `tools/list` 的结果。
-- `pending` — request id 到等待 response 的 promise/future 的 map。
+这是 client 端的记录管理，并非协议会话状态。在现代 MCP 中，server 仍会在每个请求中接收当前版本和 capabilities。
 
-Requests 本质上是 async 的；发给 server A 的 `tools/call`，不能因为 server B 正在 call 中而被阻塞。可以使用 threads with queues，也可以使用 asyncio。
+### 从头构建每个现代请求
 
-### Merged namespace
+```python
+def modern_request(request_id, method, params, version, capabilities):
+    return {
+        "jsonrpc": "2.0",
+        "id": request_id,
+        "method": method,
+        "params": {
+            **params,
+            "_meta": {
+                "io.modelcontextprotocol/protocolVersion": version,
+                "io.modelcontextprotocol/clientCapabilities": capabilities,
+                "io.modelcontextprotocol/clientInfo": CLIENT_INFO,
+            },
+        },
+    }
+```
 
-当 client 看到聚合后的 tool list 时，name 可能会 collision。两个 server 可能都暴露 `search`。Client 有三种选择：
+不要只把元数据附加到连接对象一次，然后假定它已到达线路。应在最终序列化的请求上加盖元数据并进行检查。
 
-1. **Prefix by server name.** `notes/search`、`files/search`。清晰但不美观。
-2. **Silent first-come.** 后加载 server 的 `search` 覆盖先前的。风险高；会隐藏 collision。
-3. **Collision rejection.** 拒绝加载第二个 server；通知用户。对 security-sensitive hosts 来说最安全。
+### 现代发现
 
-Claude Desktop 使用 prefix-by-server。Cursor 使用 collision rejection，并给出清晰错误。VS Code MCP 也采用 prefix-by-server。
+`server/discover` 返回支持的版本、server capabilities、instructions、缓存提示和推荐的 server identity。Client 选择双方共同支持的最高现代版本。
 
-### Routing
+对于仅支持现代版本的 client，发现是可选的，但建议在 stdio 上使用。一些旧版 server 会在初始化前接受某项操作，因此先发送 `tools/list` 可能产生有歧义的成功结果。`server/discover` 能建立清晰的时代边界。
 
-合并后，dispatch table 会映射 `tool_name -> session`。模型按 name 发出 call；client 找到对应 session，并向该 server 的 stdin 写入 `tools/call` message，然后等待 response。
+### stdio 兼容性探测
 
-### Sampling callback
+双时代 stdio client 会先发送带有首选现代元数据的 `server/discover`，之后才发送任何其他请求。结果分为三类：
 
-如果 server 在 `initialize` 时声明了 `sampling` capability，它可能会发送 `sampling/createMessage`，请求 client 运行它的 LLM。Client 必须：
+1. **DiscoverResult。** Server 是现代版本。选择双方都支持的版本，然后继续使用逐请求元数据。
+2. **已知的现代错误。** Server 是现代版本。对于 `-32022`，从 `data.supported` 中选择版本，并使用新的请求 id 重试。对于 header 或 capability 错误，应修正请求。不要发送 `initialize`。
+3. **歧义信号。** 未知的 JSON-RPC 错误、超时、连接关闭或空响应均无法确定时代。除非已为该特定 peer 配置旧版兼容性，否则应以关闭方式失败。
 
-1. 在 sample resolve 前阻塞发往该 server 的后续 requests，或者在 implementation 支持 concurrency 时进行 pipeline。
-2. 调用自己的 LLM provider。
-3. 将 response 发回 server。
+已知的现代协议错误包括：
 
-Lesson 11 会端到端覆盖 sampling。本课为了完整性会 stub 它。
+- `-32020` HeaderMismatch
+- `-32021` MissingRequiredClientCapability
+- `-32022` UnsupportedProtocolVersion
 
-### Notification handling
+即使 peer 位于旧版 allowlist 中，已知的现代错误仍然属于现代时代。一旦 server 证明它理解现代错误词汇，再发送 `initialize` 就属于降级。
 
-`notifications/tools/list_changed` 表示需要重新调用 `tools/list`。`notifications/resources/updated` 表示如果该 resource 正在使用中，就重新读取它。Notifications 不应产生 responses，不要尝试 ack 它们。
+不要将 `-32601` 当作正向旧版证据。它只会让明确列入 allowlist 的 peer 获得一次旧版探测资格。同样的规则也适用于超时、连接关闭或空响应。
 
-一个常见 client bug：在 `tools/call` 上阻塞 read loop，导致 notification 留在 stream 中。使用 background reader thread，把每条 message 推入 queue；main thread 从 queue 中取出并 dispatch。
+### Allowlist 是操作者意图，而非证据
 
-### Reconnection
+旧版兼容性必须是某一条固定 peer 配置的明确属性：
 
-Transport 可能失败：server 崩溃、OS 杀掉 process、stdio pipe 断开。Client 检测 stdout 上的 EOF，并将该 session 视为 dead。可选策略：
+```python
+client.add_server("archive", archive_transport, allow_legacy=True)
+```
 
-- 静默重启 server 并重新 handshake。适合纯 read-only servers。
-- 向用户暴露 failure。适合带有 user-visible sessions 的 stateful servers。
+将该选择绑定到配置的命令或 endpoint。不要使用会让任意 server 自行选择较弱语义的通配符。未设置 `allow_legacy=True` 的 peer 会在出现有歧义的发现结果后失败，并且永远不会收到 `initialize`。
 
-Phase 13 · 09 会覆盖 Streamable HTTP reconnection semantics；stdio 更简单。
+Allowlist 授予探测权限，但不会选择时代。Client 会在传输层强制执行的截止时间内发送一次 `initialize`，然后要求满足以下所有条件：
 
-### Keepalive and session id
+- JSON-RPC `2.0` 响应的请求 id 匹配；
+- 只包含一个 `result`，且不包含 `error`；
+- `protocolVersion` 位于 client 配置的旧版版本集合中；
+- `capabilities` 字段的值是 object；
+- `serverInfo` 是 object，且 `name` 和 `version` 字段均为非空字符串。
 
-Streamable HTTP 使用 `Mcp-Session-Id` header。Stdio 没有 session id，process identity 就是 session。Keepalive pings 是可选的；stdio pipes 不会因为 inactivity 而断开。
+超时、连接关闭、错误响应、格式错误的结果、不匹配的 id 或不受支持的版本，都会以关闭方式失败。只有结构有效的正向结果才能选择旧版时代。代码会将 `legacy_probe_timeout_ms` 传给传输适配器；真正的 stdio 或 HTTP 适配器必须强制执行该截止时间，而不能只是记录它。
+
+为传输 peer 缓存所选时代。不要在每次调用前重新探测。
+
+### 旧版是兼容性分支
+
+一旦有界探测返回有效的正向旧版证据，client 就会严格按照该版本的定义使用所选旧版版本：
+
+1. 验证响应 envelope 和 correlation id。
+2. 验证协商的版本位于配置的旧版集合中。
+3. 记录经过验证的 capabilities 和 server identity。
+4. 仅在所有检查都通过后发送 `notifications/initialized`。
+5. 在该传输生命周期内使用旧版请求结构。
+
+该分支用于与已知 peer 互操作。它不是新 server 或新请求的默认设计。如果传输重启或其 endpoint 发生变化，请丢弃 peer 时代缓存并重新协商。
+
+### 发现并缓存 Tools
+
+对每个活跃 peer 调用 `tools/list`。现代结果包含 `resultType`、`ttlMs` 和 `cacheScope`。在正确的授权 Context 中遵循新鲜度提示。过期后或收到已订阅的列表变更事件后重新获取。
+
+Client 必须将旧版 server 中缺失的 `resultType` 视为 `"complete"`。不要要求较早协商时代的响应包含现代缓存字段。
+
+Server 应返回确定性顺序。Client 也应该在合并前排序，使本地注册表顺序不依赖进程启动时序。
+
+### 冲突安全的命名空间合并
+
+两个 server 可能都暴露 `search`。请选择一项明确声明的策略：
+
+1. **冲突时添加前缀。** 保留第一个规范名称，并将之后的冲突项暴露为 `<server>/<tool>`。
+2. **冲突时拒绝。** 不加载重复项，并显示明确的配置错误。
+3. **静默覆盖。** 绝不要使用这种方式。它会隐藏 Model 选择的操作最终被发送到哪个 server。
+
+同时存储规范名称和本地名称。Model 看到的是规范名称。发出的 `tools/call` 使用拥有该 Tool 的 server 所声明的本地名称。
+
+### 路由调用
+
+路由是一次纯查找：
+
+```text
+规范 Tool 名称
+  -> peer 名称 + 本地 Tool 名称
+  -> 新的 JSON-RPC 请求 id
+  -> 现代请求元数据或明确的旧版结构
+  -> 匹配的响应 id
+```
+
+当 Tool 所属的传输不可用时，不要发送调用。重新连接或重启传输，然后重新运行发现和 `tools/list`。如果操作的安全策略允许，可以使用新的 JSON-RPC id 重试因传输中断而丢失的现代进行中请求。
+
+### 通知与订阅
+
+现代列表和 resource 变更仅通过 client 打开的 `subscriptions/listen` 流到达。Client 发送通知过滤器，等待 `notifications/subscriptions/acknowledged`，并通过通知元数据中的 listen 请求 id 关联事件。
+
+断开连接后，使用新的请求 id 发起新的 listen 请求，并重新获取相关列表或 resources。现代流不会使用 `Last-Event-ID` 恢复。
+
+### 不允许 server 发起请求
+
+现代 server 不会针对 sampling、elicitation 或 roots 向 client 发起独立的 JSON-RPC 请求。它们会返回 `input_required`，client 在满足Embedding的输入请求后重试原始请求。
+
+满足输入请求时，不要阻塞 peer 的响应读取器。保留关联信息，并为重试创建新的 JSON-RPC id。
+
+```figure
+tp-client-merge
+```
 
 ## 使用它
-`code/main.py` 会将三个模拟 MCP servers 作为 subprocesses 启动，与每个 server handshake，合并它们的 tool list，并将 tool calls 路由到正确的 server。这些 "servers" 实际上是运行 toy responders 的其他 Python processes（没有真实 LLM）。运行它可以看到：
 
-- 三次 initialization，每个都有自己的 capability set。
-- 三个 `tools/list` 结果合并成一个 7-tool namespace。
-- 基于 tool name 的 routing decision。
-- 通过 namespace prefixing 防止 collision。
+`code/main.py` 使用进程内 peer 函数，使协议决策保持可见。它连接两个现代 peer 和一个有意列入 allowlist 的旧版 peer，然后合并并路由它们的 Tools。传输 callable 会接收超时预算，因此兼容性分支无法隐藏无界探测。
 
-需要关注：
+```bash
+cd code
+python3 main.py
+python3 -m unittest discover tests -v
+```
 
-- `Session` dataclass 清晰地保存 per-server state。
-- Background reader thread 会从 stdout 取出每一行，不阻塞 main thread。
-- Dispatch table 是一个简单的 `dict[str, Session]`。
-- Collision handling 是显式的：当两个 server 声明相同 name 时，后一个会带 prefix 重命名。
+测试证明了普通演示容易遗漏的边界：
+
+- 现代请求会重复元数据；
+- `-32022` 会重试现代发现，而不会执行初始化；
+- 已知的现代错误绝不会降级，即使 peer 位于 allowlist 中；
+- 如果没有 allowlist，超时、连接关闭、空响应和未知错误不会触发 `initialize`；
+- 只有在返回有效且受支持的 `initialize` 结果后，列入 allowlist 的 peer 才会变为旧版；
+- 格式错误或不受支持的旧版结果会使 peer 保持不可用；
+- 成功选择的时代会在传输生命周期内缓存。
 
 ## 交付它
-本课会产出 `outputs/skill-mcp-client-harness.md`。给定一个声明式 MCP servers 列表（name、command、args），该 skill 会生成一个 harness，用于启动它们、合并 tool lists，并交付一个带 collision resolution 的 routing function。
+
+本课程交付 `outputs/skill-mcp-client-harness.md`。它为现代请求元数据加盖、stdio 时代协商、确定性命名空间合并、路由，以及以关闭方式失败的旧版兼容性分支搭建脚手架。
 
 ## 练习
-1. 运行 `code/main.py` 并观察 server spawn log。用 SIGTERM 杀掉其中一个模拟 server process，观察 client 如何检测 EOF 并将该 session 标记为 dead。
 
-2. 实现 namespace prefixing。当两个 server 暴露 `search` 时，将第二个重命名为 `<server>/search`。更新 dispatch table，并验证 tool calls 是否正确路由。
-
-3. 为 server restart 添加 connection-pool-style backoff：连续失败时 exponential backoff，上限 30 秒，三次失败后向用户发出 notification。
-
-4. 设计一个支持 100 个并发 MCP servers 的 client。什么 data structure 可以替代简单的 dispatch dict？（提示：用于 prefix namespacing 的 trie，加上每个 server 的 tool count metric。）
-
-5. 将 client 移植到官方 MCP Python SDK。SDK 会封装 `stdio_client` 和 `ClientSession`。代码应从约 200 行缩减到约 40 行，同时保留 multi-server routing。
+1. 让一个虚假 server 返回 `-32022`，且不提供双方共同支持的版本。确认 client 会失败，而不是发送 `initialize`。
+2. 将一个虚假旧版 server 加入 allowlist，让其有界 `initialize` 探测超时，并证明 peer 会保持 `unknown` 且不可用。
+3. 为两个授权 Context 添加 `cacheScope: "private"` 的 Tool 列表。确认 client 绝不会与另一个 Context 共享某个 Context 的缓存结果。
+4. 将冲突策略改为拒绝，并让启动过程失败，同时在错误中包含两个 peer 名称。
+5. 添加一个有限的 `subscriptions/listen` 模拟器。流丢失后，使用新的请求 id 重新 listen，并重新获取 Tools。
 
 ## 关键术语
-| Term | What people say | What it actually means |
-|------|----------------|------------------------|
-| MCP client | "The agent host" | 启动 servers 并 orchestrate tool calls 的 process |
-| Session | "Per-server state" | Capabilities、tool list，以及 pending-request bookkeeping |
-| Merged namespace | "One tool list" | 所有 active servers 的扁平 tool names 集合 |
-| Namespace collision | "Two servers same tool" | Client 必须对重复项 prefix、reject 或 first-come |
-| Routing | "Who gets this call?" | 从 tool name dispatch 到拥有它的 server |
-| Background reader | "Non-blocking stdout" | 将 server stdout drain 到 queue 的 thread 或 task |
-| Sampling callback | "LLM-as-a-service" | Client handler，用于处理 server 发来的 `sampling/createMessage` |
-| `notifications/*_changed` | "Primitive mutated" | 提示 client 必须重新 discover 或重新 read 的 signal |
-| Reconnection policy | "When server dies" | Transport 失败时的 restart semantics |
-| Stdio session | "Process = session" | 没有 session id；child process lifetime 就是 session |
+
+| 术语 | 含义 |
+|------|---------|
+| Peer | Client 端针对单个 server 传输及其发现数据的记录 |
+| 协议时代 | 现代逐请求元数据语义或旧版初始化语义 |
+| 发现探测 | 用于识别 stdio 时代的初始 `server/discover` |
+| 已知的现代错误 | 能证明现代行为并禁止旧版回退的错误 |
+| 旧版 allowlist | 允许对固定 peer 执行一次有界兼容性探测的操作者配置 |
+| 正向旧版证据 | 针对明确支持的旧版版本返回的、有效且已关联的 `initialize` 结果 |
+| 合并后的命名空间 | 所有活跃 peer 之间的规范 Tool 名称 |
+| 冲突策略 | 针对重复 Tool 名称添加前缀或拒绝的规则 |
+| 时代缓存 | 为单个传输 peer 存储的现代或旧版行为选择 |
+| 传输恢复 | 重启或重新连接、重新发现、重新列出，并使用新 id 安全重试 |
 
 ## 延伸阅读
-- [Model Context Protocol — Client spec](https://modelcontextprotocol.io/specification/2025-11-25/client) — 权威 client behavior
-- [MCP — Quickstart client guide](https://modelcontextprotocol.io/quickstart/client) — 使用 Python SDK 的 hello-world client tutorial
-- [MCP Python SDK — client module](https://github.com/modelcontextprotocol/python-sdk) — 参考 `ClientSession` 和 `stdio_client`
-- [MCP TypeScript SDK — Client](https://github.com/modelcontextprotocol/typescript-sdk) — TS 对应版本
-- [VS Code — MCP in extensions](https://code.visualstudio.com/api/extension-guides/ai/mcp) — VS Code 如何在单个 editor host 中 multiplex 多个 MCP servers
+
+- [MCP Specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/)
+- [MCP Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
+- [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
+- [MCP Versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
+- [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
