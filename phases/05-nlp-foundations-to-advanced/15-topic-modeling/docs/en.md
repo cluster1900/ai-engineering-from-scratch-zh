@@ -39,6 +39,10 @@ BERTopic (2020) 用 BERT 编码 documents，用 UMAP 降维，用 HDBSCAN 聚类
 
 输出是每个 document 一个 topic（外加 -1 outlier label）。也可以通过 HDBSCAN 的 probability vector 得到 soft membership。
 
+```figure
+topic-drift
+```
+
 ## Build It
 
 ### Step 1: 通过 scikit-learn 实现 LDA
