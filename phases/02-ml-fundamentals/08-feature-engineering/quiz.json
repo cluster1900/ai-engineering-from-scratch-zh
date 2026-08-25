@@ -5,11 +5,11 @@
     "question": "为什么 Feature Engineering 往往比选择更花哨的算法更有影响？",
     "options": [
       "Feature Engineering 会让代码运行得更快",
-      "好的 feature 能把原始数据隐藏的模式暴露给模型，让简单模型也变得有效",
       "Feature Engineering 消除了对 test set 的需求",
-      "花哨的算法无法处理原始数据"
+      "花哨的算法无法处理原始数据",
+      "好的 feature 能把原始数据隐藏的模式暴露给模型，让简单模型也变得有效"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "数据的表示方式比算法更重要。像 BMI（weight/height^2）这样设计良好的 feature 会直接暴露相关模式，让 logistic regression 也能与复杂 ensemble 竞争。"
   },
   {
@@ -19,8 +19,8 @@
     "options": [
       "用每个类别在数据集中的频率替换该类别",
       "为每个类别创建一个 binary column，并且每一行恰好有一个 column 被设为 1",
-      "把所有 feature 转换为 0 到 1 之间的值",
-      "把目标变量编码为概率"
+      "把目标变量编码为概率",
+      "把所有 feature 转换为 0 到 1 之间的值"
     ],
     "correct": 1,
     "explanation": "One-hot encoding 会为每个 unique category 创建一个 binary column。对于取值为 red/blue/green 的 color feature，它会生成三个 column：is_red、is_blue、is_green。"
@@ -32,8 +32,8 @@
     "options": [
       "它会让模型训练太慢",
       "它用 mean target value 替换类别；如果不是只在 training data 上计算，就可能从 test set 泄露信息",
-      "它会创建太多 feature",
-      "它只适用于 binary targets"
+      "它只适用于 binary targets",
+      "它会创建太多 feature"
     ],
     "correct": 1,
     "explanation": "Target encoding 会用该类别的 mean target 替换每个类别。如果在完整数据集（包括 test data）上计算，test labels 会泄露进 training features，从而夸大性能估计。"
@@ -43,10 +43,10 @@
     "stage": "post",
     "question": "TF-IDF 会按 inverse document frequency 给词加权。它的效果是什么？",
     "options": [
-      "像 'the' 这样的常见词会因为频繁出现而获得高权重",
-      "稀有且有区分度的词获得更高权重，而常见词获得更低权重",
       "所有词无论频率如何都获得相同权重",
-      "每个 document 中只保留最频繁的词"
+      "稀有且有区分度的词获得更高权重，而常见词获得更低权重",
+      "每个 document 中只保留最频繁的词",
+      "像 'the' 这样的常见词会因为频繁出现而获得高权重"
     ],
     "correct": 1,
     "explanation": "IDF = log(total docs / docs containing word)。常见词（出现在许多 document 中）会得到低 IDF。稀有且有区分度的词会得到高 IDF，使它们在表示中更有影响。"
