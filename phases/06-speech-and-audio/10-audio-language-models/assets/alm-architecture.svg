@@ -36,7 +36,7 @@
   <text x="530" y="78" text-anchor="middle" class="label">3. LLM decoder</text>
   <text x="530" y="96" text-anchor="middle" class="content">Llama / Qwen / Gemma</text>
   <text x="530" y="114" text-anchor="middle" class="content">文本 + audio tokens</text>
-  <text x="530" y="138" text-anchor="middle" class="caption">第 2 阶段 LoRA fine-tuned</text>
+  <text x="530" y="138" text-anchor="middle" class="caption">第 2 阶段 LoRA Fine-tuning</text>
 
   <line x1="622" y1="105" x2="643" y2="105" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr)"/>
 
@@ -50,13 +50,13 @@
   <text x="437" y="195" text-anchor="middle" class="label">训练配方</text>
   <text x="60" y="220" class="content">阶段 1 · 冻结 encoder + LLM；用 ASR / captioning 对训练 projector</text>
   <text x="60" y="238" class="content">阶段 2 · encoder + LLM 上 LoRA；audio-QA / 指令跟随数据</text>
-  <text x="60" y="256" class="content">阶段 3 ·（可选）接入 speech decoder，实现 voice-in / voice-out</text>
+  <text x="60" y="256" class="content">阶段 3 ·（可选）接入 speech decoder，实现语音输入 / 语音输出</text>
 
   <rect x="30" y="295" width="815" height="130" class="hot"/>
   <text x="437" y="315" text-anchor="middle" class="label">MMAU-Pro 2026 — 开放权重已缩小差距，multi-audio 除外</text>
-  <text x="60" y="342" class="content">Gemini 2.5 Pro     ~60% overall   73.4% speech   51.9% sound   64.9% music   ~22% multi</text>
+  <text x="60" y="342" class="content">Gemini 2.5 Pro     ~60% 总体   73.4% 语音   51.9% 声音   64.9% 音乐   ~22% multi</text>
   <text x="60" y="360" class="content">GPT-4o Audio       52.5%           —              —             —             26.5% multi</text>
-  <text x="60" y="378" class="content">Qwen2.5-Omni-7B    52.2%           57.4% speech   47.6% sound   61.5% music   ~20% multi</text>
-  <text x="60" y="396" class="content">Audio Flamingo 3  ~54%             —（通过 AF-CLAP 的音乐专用模型）</text>
-  <text x="60" y="414" class="caption">4 选 1 随机概率 = 25% — multi-audio 在所有模型上确实失效</text>
+  <text x="60" y="378" class="content">Qwen2.5-Omni-7B    52.2%           57.4% 语音   47.6% 声音   61.5% 音乐   ~20% multi</text>
+  <text x="60" y="396" class="content">Audio Flamingo 3  ~54%             —（通过 AF-CLAP 的音乐专用 Model）</text>
+  <text x="60" y="414" class="caption">4 选 1 随机概率 = 25% — multi-audio 在所有 Model 上确实失效</text>
 </svg>

@@ -80,6 +80,10 @@
 - Multi-audio 比较（22-26% 只比随机略高）。
 - 实时流式推理（大多数是离线 batch inference）。
 
+```figure
+v4-alm-tokens
+```
+
 ## 构建它
 
 ### 步骤 1： 查询 Qwen2.5-Omni
