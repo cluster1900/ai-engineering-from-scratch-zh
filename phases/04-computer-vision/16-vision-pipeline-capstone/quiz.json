@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "为什么生产级 vision pipelines 会在每个阶段边界使用 Pydantic models（或等价物）？",
-      "options": ["Pydantic 比 dict 访问更快", "Typed schemas 会在边界捕获接口不匹配；当 detector 返回 (cx, cy, w, h)，而下游期望 (x1, y1, x2, y2) 时，它会通过 validation error 明确失败，而不是静默地产生空 crops", "FastAPI 要求使用 Pydantic", "它有助于 GPU 分配"],
-      "correct": 1,
+      "options": [
+        "Pydantic 比 dict 访问更快",
+        "它有助于 GPU 分配",
+        "FastAPI 要求使用 Pydantic",
+        "Typed schemas 会在边界捕获接口不匹配；当 detector 返回 (cx, cy, w, h)，而下游期望 (x1, y1, x2, y2) 时，它会通过 validation error 明确失败，而不是静默地产生空 crops"
+      ],
+      "correct": 3,
       "explanation": "静默的接口 bug 是 ML pipelines 最典型的痛点。每个边界都有一个坐标系、channel order、数值范围和 shape。用 Pydantic 在边界进行 validation，会把每个不匹配都变成立即出现的错误。成本只是几微秒；节省的是数小时 debugging。"
     },
     {
       "stage": "pre",
       "question": "在 CPU-only vision pipeline 上，哪个阶段最常是最大的延迟瓶颈？",
-      "options": ["detector 的最终 NMS", "Image preprocessing（JPEG decode、颜色转换、resize）；它是 CPU-bound 的，并且在没有 GPU 参与或 GPU model 很小时通常占主导", "写入 JSON response", "读取 HTTP request body"],
+      "options": [
+        "读取 HTTP request body",
+        "Image preprocessing（JPEG decode、颜色转换、resize）；它是 CPU-bound 的，并且在没有 GPU 参与或 GPU model 很小时通常占主导",
+        "写入 JSON response",
+        "detector 的最终 NMS"
+      ],
       "correct": 1,
       "explanation": "在 CPU 上，preprocessing 经常是最大的单项成本。JPEG decode 可能需要数毫秒，颜色转换还会更多，把图像 resize 到 model input 又会占一块时间。规则很简单：先 profile，再优化。在 GPU 上 detector 通常占主导，但不要在 CPU 上也这样假设。"
     },
     {
       "stage": "post",
       "question": "当某个 detection 的 box size 是 3x4 pixels 时，pipeline classifier 崩溃了。正确修复是什么？",
-      "options": ["添加一个全局 try/except 并返回空 classifications", "设置 min_crop 阈值（例如 16 或 32 pixels），并跳过小于该阈值的 detections 的 classification；记录该 skip，并在 response 中包含该 detection，但不包含 classification field", "用更小的 images 重新训练 classifier", "增加 batch size"],
-      "correct": 1,
+      "options": [
+        "增加 batch size",
+        "用更小的 images 重新训练 classifier",
+        "设置 min_crop 阈值（例如 16 或 32 pixels），并跳过小于该阈值的 detections 的 classification；记录该 skip，并在 response 中包含该 detection，但不包含 classification field",
+        "添加一个全局 try/except 并返回空 classifications"
+      ],
+      "correct": 2,
       "explanation": "Tiny crops 是一种合理的 failure mode：classifier 是在 224x224 inputs 上训练的，无法可靠地 classify 3-pixel patches。threshold（min_crop）会跳过这些情况，保留 detection，并生成完整、诚实的 response。通用 try/except 会隐藏该条件；完全不返回 classification 会隐藏真实失败；正确做法是命名并记录一次 skip。"
     },
     {
       "stage": "post",
       "question": "你给 classifier 添加了 batching（最多等待 10 ms，batch 所有 pending crops，执行一次 GPU forward）。预期效果是什么？",
-      "options": ["Latency 严格下降", "Throughput 显著提高，单请求 latency 最多增加 batching window（约 10ms），再加上 larger tensor ops 带来的较小增量；正确答案取决于 service 是 throughput-bound 还是 latency-bound", "Throughput 会因为等待而下降", "没有影响"],
-      "correct": 1,
+      "options": [
+        "Latency 严格下降",
+        "没有影响",
+        "Throughput 显著提高，单请求 latency 最多增加 batching window（约 10ms），再加上 larger tensor ops 带来的较小增量；正确答案取决于 service 是 throughput-bound 还是 latency-bound",
+        "Throughput 会因为等待而下降"
+      ],
+      "correct": 2,
       "explanation": "Batching 是 throughput-latency trade。每个 request 最多等待一个 window，这会增加 latency。batched forward pass 对每张 image 更高效，因此 throughput 会随 batch size 扩展。当 QPS 高且单次 latency 有余量时使用 batching；当 latency SLA 低于 50ms 时避免使用。"
     },
     {
       "stage": "post",
       "question": "当用户上传损坏的 JPEG 时，你的 pipeline response 是 500 error。你应该如何修复？",
-      "options": ["忽略它；用户会重试", "在 preprocessing 中尽早捕获 image-decode failures，返回 400，并带上像 'image_decode_failed' 这样的具体 error code，让 client 可以用不同文件重试，而不是返回暗示 server error 的 500", "始终返回 200 和空结果", "把 decoding 移到 classifier"],
+      "options": [
+        "忽略它；用户会重试",
+        "在 preprocessing 中尽早捕获 image-decode failures，返回 400，并带上像 'image_decode_failed' 这样的具体 error code，让 client 可以用不同文件重试，而不是返回暗示 server error 的 500",
+        "始终返回 200 和空结果",
+        "把 decoding 移到 classifier"
+      ],
       "correct": 1,
       "explanation": "由损坏的用户输入导致 500 是 API contract bug。Bad inputs 应返回 4xx，让 client 知道这是他们的问题；5xx responses 表示 server problem，会触发 client 用同一个坏输入执行 retry logic，从而放大负载。命名的 failure codes（image_decode_failed、image_too_large、unsupported_content_type）能让 clients 正确响应。"
     }
-  ]
+  ],
+  "title": null
 }

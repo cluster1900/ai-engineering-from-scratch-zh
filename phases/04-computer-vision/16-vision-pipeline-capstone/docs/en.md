@@ -88,6 +88,10 @@ PipelineResult(
 
 生产级 service 会服务多个 client。跨 request 对 detection 和 classification 进行 batching 可以成倍提升 throughput。代价是：等待 batch 填满会带来额外 latency。典型设置：最多收集 20ms 的 request，合并成 batch，处理，再分发 response。`torchserve` 和 `triton` 原生支持这一点；负载可预测的小型 service 通常会自己实现 micro-batcher。
 
+```figure
+v4-vision-pipeline
+```
+
 ## 构建它
 ### 步骤 1： Data contracts
 
