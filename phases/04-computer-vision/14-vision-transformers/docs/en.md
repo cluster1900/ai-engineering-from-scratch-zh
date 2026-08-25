@@ -125,6 +125,10 @@ Masked Autoencoder（He et al., 2022）：随机 mask 75% 的 patches，训练 e
 
 MAE 让 ViT 只用 ImageNet-1k 也可训练，达到 SOTA，并且是当前默认的 self-supervised 配方。
 
+```figure
+batchnorm-inference
+```
+
 ## 构建它
 
 ### 步骤 1： Patch embedding
