@@ -46,6 +46,10 @@ flowchart TB
 
 毒性分类器是基于规则的目的：精心策划的骚扰关键字列表，具有空格限制的匹配和小型否定窗口检查，因此“你不是诽谤者”不会违反规则。该列表故意很短（课程是关于管道，而不是词典构建）。 PII 分类器对常见形状使用标准正则表达式。指令泄漏分类器在构造时接受 `system_prompt` 参数，并将三元组重叠与输出进行比较；高重叠是泄漏信号。
 
+```figure
+cd-output-router
+```
+
 ## 构建它
 
 `code/classifiers.py` 定义了所有三个分类器。每个都有一个 `classify(text) -> ClassifierVerdict` 方法和一个 `redact(text) -> str` 方法。 `code/main.py` 使用 `decide(text, verdicts) -> Action` 和 `run(text) -> Action` 快捷方式定义了 `Router` 类。该演示将三个分类器连接到一个路由器后面，并运行一小部分精心设计的输出，以执行每种严重性。
