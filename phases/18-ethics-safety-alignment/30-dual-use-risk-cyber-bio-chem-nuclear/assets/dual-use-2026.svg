@@ -18,25 +18,25 @@
   <rect x="40" y="60" width="200" height="160" class="box"/>
   <text x="140" y="85" text-anchor="middle" class="head">bio</text>
   <rect x="60" y="100" width="160" height="100" class="hot"/>
-  <text x="140" y="125" text-anchor="middle" class="step">2024：轻微 uplift</text>
+  <text x="140" y="125" text-anchor="middle" class="step">2024：轻微提升</text>
   <text x="140" y="145" text-anchor="middle" class="step">2025：2.53x</text>
   <text x="140" y="165" text-anchor="middle" class="small">ASL-3 路线</text>
   <text x="140" y="185" text-anchor="middle" class="small">获取阶段自动化</text>
 
   <rect x="260" y="60" width="200" height="160" class="box"/>
-  <text x="360" y="85" text-anchor="middle" class="head">chem</text>
+  <text x="360" y="85" text-anchor="middle" class="head">化学</text>
   <rect x="280" y="100" width="160" height="100" class="hot"/>
   <text x="360" y="125" text-anchor="middle" class="step">2024：轻微</text>
   <text x="360" y="145" text-anchor="middle" class="step">2025：执行缺口削弱</text>
-  <text x="360" y="165" text-anchor="middle" class="small">vision-enabled 实时纠正</text>
-  <text x="360" y="185" text-anchor="middle" class="small">GPT-5 x wet-lab：79x 效率</text>
+  <text x="360" y="165" text-anchor="middle" class="small">支持视觉的实时纠正</text>
+  <text x="360" y="185" text-anchor="middle" class="small">GPT-5 x 湿实验室：效率提升 79x</text>
 
   <rect x="480" y="60" width="200" height="160" class="box"/>
-  <text x="580" y="85" text-anchor="middle" class="head">cyber</text>
+  <text x="580" y="85" text-anchor="middle" class="head">网络安全</text>
   <rect x="500" y="100" width="160" height="100" class="hot"/>
   <text x="580" y="125" text-anchor="middle" class="step">2024：代码片段</text>
-  <text x="580" y="145" text-anchor="middle" class="step">2025：80-90% campaign</text>
-  <text x="580" y="165" text-anchor="middle" class="small">中国关联行为体，Claude agentic</text>
+  <text x="580" y="145" text-anchor="middle" class="step">2025：80-90% 攻击活动</text>
+  <text x="580" y="165" text-anchor="middle" class="small">中国关联行为体，Claude Agent 化</text>
   <text x="580" y="185" text-anchor="middle" class="small">仍需 4-6 个人工步骤</text>
 
   <rect x="700" y="60" width="220" height="160" class="box"/>
@@ -48,7 +48,7 @@
   <text x="810" y="185" text-anchor="middle" class="small">2024-2025 无拐点</text>
 
   <rect x="40" y="240" width="880" height="130" class="box"/>
-  <text x="480" y="265" text-anchor="middle" class="head">新手 vs 专家不对称</text>
+  <text x="480" y="265" text-anchor="middle" class="head">新手与专家的不对称</text>
   <rect x="60" y="285" width="420" height="70" class="cold"/>
   <text x="270" y="310" text-anchor="middle" class="step">相对新手提升</text>
   <text x="270" y="328" text-anchor="middle" class="small">乘法效应；高；输入过滤有帮助</text>
@@ -60,7 +60,7 @@
 
   <rect x="40" y="390" width="880" height="100" class="box"/>
   <text x="480" y="415" text-anchor="middle" class="head">防御方开发</text>
-  <text x="60" y="440" class="small">OpenAI “trusted access” 试点 (2025)：经审核防御者获能力访问，用于双用途防御工作。</text>
-  <text x="60" y="460" class="small">Council on Strategic Risks 2025 AI x Bio 总结：bio-uplift 证据年终综合。</text>
-  <text x="60" y="480" class="small">2026 姿态：safety cases 必须针对新手相对提升和专家绝对提升。三支柱（监控、不可读性、无能力）。</text>
+  <text x="60" y="440" class="small">OpenAI“trusted access”试点（2025）：经审核的防御者获得能力访问权限，用于双用途防御。</text>
+  <text x="60" y="460" class="small">Council on Strategic Risks 2025 AI x Bio 总结：年终汇总生物能力提升证据。</text>
+  <text x="60" y="480" class="small">2026 方针：safety cases 必须关注新手相对提升和专家绝对提升。三支柱（监控、不可读性、无能力）。</text>
 </svg>

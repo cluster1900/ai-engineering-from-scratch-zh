@@ -73,6 +73,10 @@ Anthropic 2025 年 11 月报告：与中国有关联的国家行为体使用 Cla
 
 Lesson 30 是收束课：当前的双重用途图景，前面每一课都在帮助测量、限制或治理它。Lessons 17-18 给出测量和 frameworks；Lessons 12-16 给出 evaluation tooling；Lessons 24-25 给出监管和披露层；Lesson 28 给出研究生态。Lesson 30 是证据最终落地的位置。
 
+```figure
+an-uplift-asymmetry
+```
+
 ## 使用它
 无需代码。阅读 Anthropic 2025 年 11 月 cyber 报告、OpenAI Preparedness Framework v2 2025 年 4 月更新，以及 Council on Strategic Risks 2025 AI x Bio wrapup。
 
