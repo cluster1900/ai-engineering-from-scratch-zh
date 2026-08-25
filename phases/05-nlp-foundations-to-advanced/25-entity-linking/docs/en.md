@@ -45,6 +45,10 @@ Entity linking (EL) 会把每个 mention 解析到 Knowledge base 中的唯一�
 
 始终同时报告两者。一个在 80% candidate recall 上有 99% disambiguation 的系统，本质上是 80% pipeline。
 
+```figure
+gx-entity-linking
+```
+
 ## 构建它
 
 ### 步骤 1：从 Wikipedia redirects 构建 alias index

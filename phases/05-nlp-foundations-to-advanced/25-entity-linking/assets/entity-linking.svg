@@ -17,7 +17,7 @@
     </style>
   </defs>
 
-  <text x="450" y="28" text-anchor="middle" class="title">实体链接 — 提及 → 候选项 → 消歧后的 KB id</text>
+  <text x="450" y="28" text-anchor="middle" class="title">实体链接：提及 → 候选项 → 消歧后的 KB id</text>
 
   <!-- Step 1: input -->
   <rect x="40" y="55" width="820" height="55" class="box"/>
