@@ -14,6 +14,10 @@
 - 每次 revision 都 emit plan diff，让下游 tracer 或 UI 能展示 plan 为什么改变。
 - 强制执行两个 budgets：硬性 step ceiling 和硬性 replan ceiling。
 
+```figure
+cg-plan-replan
+```
+
 ## Plan-and-execute，而不是 chain-of-thought
 
 chain-of-thought agent 会 emit tokens，并让 loop 猜测 tool call 在哪里结束。plan-and-execute agent 先 emit structured plan，然后确定性地执行每个 step。plan 是 harness 可以 introspect 的 data。execution 是 harness 通过 dispatcher 运行这些 data。
