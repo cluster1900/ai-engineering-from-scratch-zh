@@ -1,29 +1,40 @@
 ---
-name: mcp-handshake-tracer
-description: 给定 MCP client-server 对话的 pcap-style transcript，标注每条消息的 primitive、lifecycle phase 和 capability dependency。
-version: 1.0.0
+name: mcp-request-tracer
+description: 跨现代无状态协议时代和显式旧版协议时代，逐条消息审计 MCP transcript。
+version: 2.0.0
 phase: 13
 lesson: 06
-tags: [mcp, json-rpc, lifecycle, capabilities]
+tags: [mcp, json-rpc, stateless, metadata, compatibility]
 ---
 
-给定一组从 MCP session 中捕获的 JSON-RPC 2.0 envelopes，生成一份 walk-through，说明每条消息的 primitive、lifecycle phase，以及底层 capability flag。
+给定一系列 MCP JSON-RPC envelope，依据 MCP `2026-07-28` 独立审计每条消息。检测旧版流量，但绝不假定存在 handshake 或协议 session。
 
-产出：
+生成：
 
-1. 逐消息标注。对于每个 `{request, response, notification}`，说明：方向（client-to-server 或 server-to-client）、primitive（tools / resources / prompts / roots / sampling / elicitation / lifecycle）、lifecycle phase，以及为了让该消息有效而必须协商到的 capability flag。
-2. Capability 检查。根据 transcript 重建 `initialize` exchange，并列出所有协商到的 capabilities。标记任何会违反缺失 capability 的消息。
-3. 错误诊断。对于每个 JSON-RPC error，说明 code，并结合上下文指出最可能的原因。
-4. 完整性审计。标记缺少以下任一项的 transcript：`initialize`、`initialized` notification、至少一个 `tools/list` 或等价项、graceful shutdown。
-5. Spec 合规性。根据 2025-11-25 spec 的最小字段集检查每个 request 的 params。标记遗漏项。
+1. 消息标注。说明方向、JSON-RPC 类型、method、primitive、request id 和检测到的时代。
+2. 现代元数据检查。对于每个 request，验证 `params._meta.io.modelcontextprotocol/protocolVersion` 和 `params._meta.io.modelcontextprotocol/clientCapabilities`。记录是否存在推荐的 `clientInfo`。
+3. 结果检查。验证每个现代成功结果是否包含 `resultType: "complete"` 或其他指定的结果类型，以及结果 `_meta` 中是否包含推荐的服务器身份。
+4. 发现与版本检查。验证现代服务器是否实现 `server/discover`。将 `-32022` 解释为现代协议的证据，并检查 `data.requested` 和 `data.supported`。
+5. 缓存检查。对于 `server/discover`、list method 和 `resources/read`，要求包含 `ttlMs` 和 `cacheScope`。标记非确定性的列表顺序。
+6. 方向检查。拒绝现代流量中由服务器发起的 JSON-RPC request。允许与 request 相关的 notification，以及由客户端打开的 `subscriptions/listen` stream。
+7. 兼容性检查。仅将 `initialize` 和 `notifications/initialized` 标记为旧版协议。不要在现代流量中要求它们。
 
-硬性拒绝：
-- 任何使用 spec 允许集合之外且没有 `x-` 前缀的 method 的消息。
-- 当 client 未声明 `sampling` capability 时出现的任何 `sampling/createMessage` 消息。
-- 在 `notifications/initialized` 到达之前的任何 invocation。
+强制拒绝：
+
+- 将 stdio process、HTTP connection 或 `Mcp-Session-Id` 视为现代协议状态。
+- 从较早的 request 推断客户端 capabilities。
+- 在收到已识别的现代错误（例如 `-32020`、`-32021` 或 `-32022`）后回退到旧版协议。
+- 接受不含 `resultType` 的现代成功结果。
 
 拒绝规则：
-- 如果要求审计非 MCP protocol 的 transcript，则拒绝，并指出 A2A spec（Phase 13 · 19）作为替代。
-- 如果要求“修复” transcript，则拒绝。此 skill 只做标注；不做重写。修正应通过实现用的 SDK 路由。
 
-输出：按到达顺序，每条消息一行标注：`[phase/primitive/capability] <method or result shape>`。最后用三行总结列出任何 capability violations 和任何缺失的 lifecycle steps。
+- 如果 transcript 不是 JSON-RPC 2.0，则停止并指出不兼容的 envelope。
+- 如果被要求静默改写证据，则拒绝。保留原始 transcript，并另行生成修正后的示例。
+
+按照到达顺序，每条消息输出一行：
+
+```text
+[request/modern/tools] id=7 tools/list metadata=valid
+```
+
+最后给出现代、旧版、无效和有歧义消息的数量，并附上第一项纠正措施。

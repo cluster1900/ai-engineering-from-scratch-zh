@@ -17,64 +17,56 @@
     </style>
   </defs>
 
-  <text x="490" y="26" text-anchor="middle" class="title">MCP primitives 与三阶段生命周期</text>
+  <text x="490" y="26" text-anchor="middle" class="title">MCP 2026-07-28：primitives 与无状态请求</text>
 
-  <rect x="40" y="60" width="440" height="240" class="cool"/>
-  <text x="260" y="82" text-anchor="middle" class="head">server primitives</text>
+  <rect x="40" y="55" width="440" height="210" class="cool"/>
+  <text x="260" y="78" text-anchor="middle" class="head">server primitives</text>
+  <rect x="60" y="96" width="400" height="45" class="box"/>
+  <text x="80" y="116" class="step">tools</text>
+  <text x="80" y="133" class="small">tools/list, tools/call</text>
+  <rect x="60" y="151" width="400" height="45" class="box"/>
+  <text x="80" y="171" class="step">resources</text>
+  <text x="80" y="188" class="small">resources/list, resources/read</text>
+  <rect x="60" y="206" width="400" height="45" class="box"/>
+  <text x="80" y="226" class="step">prompts</text>
+  <text x="80" y="243" class="small">prompts/list, prompts/get</text>
 
-  <rect x="60" y="100" width="400" height="50" class="box"/>
-  <text x="80" y="120" class="step">tools</text>
-  <text x="80" y="138" class="small">可调用操作；tools/list, tools/call</text>
+  <rect x="500" y="55" width="440" height="210" class="cold"/>
+  <text x="720" y="78" text-anchor="middle" class="head">每个请求都携带 metadata</text>
+  <text x="520" y="112" class="step">params._meta</text>
+  <text x="520" y="138" class="small">io.modelcontextprotocol/protocolVersion</text>
+  <text x="520" y="158" class="small">io.modelcontextprotocol/clientCapabilities</text>
+  <text x="520" y="178" class="small">io.modelcontextprotocol/clientInfo (SHOULD)</text>
+  <text x="520" y="214" class="step">绝不推断自</text>
+  <text x="520" y="234" class="small">之前的调用、进程或连接</text>
 
-  <rect x="60" y="160" width="400" height="50" class="box"/>
-  <text x="80" y="180" class="step">resources</text>
-  <text x="80" y="198" class="small">URI 可寻址数据；resources/list, read, subscribe</text>
+  <rect x="40" y="290" width="900" height="235" class="box"/>
+  <text x="490" y="314" text-anchor="middle" class="head">一次请求，一次完整决策</text>
 
-  <rect x="60" y="220" width="400" height="50" class="box"/>
-  <text x="80" y="240" class="step">prompts</text>
-  <text x="80" y="258" class="small">可复用模板；prompts/list, prompts/get</text>
+  <rect x="60" y="340" width="220" height="140" class="cold"/>
+  <text x="170" y="364" text-anchor="middle" class="step">1 / client 请求</text>
+  <text x="78" y="394" class="small">JSON-RPC id + method</text>
+  <text x="78" y="414" class="small">arguments + 当前 _meta</text>
+  <text x="78" y="446" class="small">server/discover 对 client 可选</text>
+  <text x="78" y="464" class="small">对 server 必需</text>
 
-  <rect x="500" y="60" width="440" height="240" class="cold"/>
-  <text x="720" y="82" text-anchor="middle" class="head">client primitives</text>
+  <path d="M280,410 L365,410" class="edge" marker-end="url(#arrow)"/>
 
-  <rect x="520" y="100" width="400" height="50" class="box"/>
-  <text x="540" y="120" class="step">roots</text>
-  <text x="540" y="138" class="small">server 可访问的 URI；roots/list</text>
+  <rect x="370" y="340" width="240" height="140" class="hot"/>
+  <text x="490" y="364" text-anchor="middle" class="step">2 / server 验证</text>
+  <text x="388" y="394" class="small">版本 + capabilities</text>
+  <text x="388" y="414" class="small">method 专属 params</text>
+  <text x="388" y="446" class="small">不支持的版本：-32022</text>
+  <text x="388" y="464" class="small">不查询连接状态</text>
 
-  <rect x="520" y="160" width="400" height="50" class="box"/>
-  <text x="540" y="180" class="step">sampling</text>
-  <text x="540" y="198" class="small">server 请求 client 的 LLM 补全；sampling/createMessage</text>
+  <path d="M610,410 L695,410" class="edge" marker-end="url(#arrow)"/>
 
-  <rect x="520" y="220" width="400" height="50" class="box"/>
-  <text x="540" y="240" class="step">elicitation</text>
-  <text x="540" y="258" class="small">server 向用户请求结构化输入；elicitation/create</text>
+  <rect x="700" y="340" width="220" height="140" class="cool"/>
+  <text x="810" y="364" text-anchor="middle" class="step">3 / server 结果</text>
+  <text x="718" y="394" class="small">resultType: complete</text>
+  <text x="718" y="414" class="small">结果 _meta 中的 serverInfo</text>
+  <text x="718" y="446" class="small">列表：ttlMs + cacheScope</text>
+  <text x="718" y="464" class="small">确定性条目顺序</text>
 
-  <rect x="40" y="320" width="900" height="220" class="box"/>
-  <text x="490" y="342" text-anchor="middle" class="head">三阶段生命周期 (JSON-RPC 2.0)</text>
-
-  <rect x="60" y="360" width="270" height="160" class="hot"/>
-  <text x="195" y="382" text-anchor="middle" class="step">1 / initialize</text>
-  <text x="74" y="408" class="small">client -&gt; initialize {caps,</text>
-  <text x="74" y="424" class="small">protocolVersion}</text>
-  <text x="74" y="442" class="small">server -&gt; result {caps, info,</text>
-  <text x="74" y="458" class="small">protocolVersion}</text>
-  <text x="74" y="478" class="small">client -&gt; notify initialized</text>
-  <text x="74" y="502" class="small">能力协商完成</text>
-
-  <rect x="350" y="360" width="270" height="160" class="cool"/>
-  <text x="485" y="382" text-anchor="middle" class="step">2 / operation</text>
-  <text x="364" y="408" class="small">tools/list, tools/call</text>
-  <text x="364" y="424" class="small">resources/list, resources/read</text>
-  <text x="364" y="442" class="small">prompts/list, prompts/get</text>
-  <text x="364" y="462" class="small">sampling/createMessage (S-&gt;C)</text>
-  <text x="364" y="478" class="small">elicitation/create (S-&gt;C)</text>
-  <text x="364" y="496" class="small">notifications/*_changed</text>
-
-  <rect x="640" y="360" width="280" height="160" class="cold"/>
-  <text x="780" y="382" text-anchor="middle" class="step">3 / shutdown</text>
-  <text x="654" y="408" class="small">传输层关闭；无</text>
-  <text x="654" y="424" class="small">JSON-RPC 方法。stdio EOF 或</text>
-  <text x="654" y="442" class="small">HTTP 会话过期即终止。</text>
-  <text x="654" y="472" class="small">清理：flush 待处理响应，</text>
-  <text x="654" y="488" class="small">取消未完成任务，记录 log。</text>
+  <text x="490" y="510" text-anchor="middle" class="caption">下一个请求重复完整契约。Transport 生命周期不是协议会话状态。</text>
 </svg>

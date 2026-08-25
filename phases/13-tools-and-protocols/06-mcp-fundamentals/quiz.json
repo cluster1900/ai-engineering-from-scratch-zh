@@ -1,0 +1,48 @@
+{
+  "lesson": "06-mcp-fundamentals",
+  "title": "MCP 基础：无状态请求与 JSON-RPC",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在两个 MCP 2026-07-28 请求之间，什么会创建协议状态？",
+      "options": ["HTTP connection", "协议核心中没有任何东西", "Mcp-Session-Id", "stdio process"],
+      "correct": 1,
+      "explanation": "现代协议核心是无状态的。每个请求都携带自己的版本和 capabilities。"
+    },
+    {
+      "stage": "check",
+      "question": "每个现代请求都必须包含哪两个 params._meta 字段？",
+      "options": ["clientInfo 和 cacheScope", "protocolVersion 和 clientCapabilities", "sessionId 和 capabilities", "serverInfo 和 ttlMs"],
+      "correct": 1,
+      "explanation": "协议版本和客户端 capabilities 是必需的。建议提供客户端身份。"
+    },
+    {
+      "stage": "check",
+      "question": "每个现代 MCP 服务器必须实现哪个 method，才能进行预先发现？",
+      "options": ["tools/list", "initialize", "server/discover", "notifications/initialized"],
+      "correct": 2,
+      "explanation": "server/discover 会公布支持的版本、capabilities、说明和服务器身份。"
+    },
+    {
+      "stage": "check",
+      "question": "错误码 -32022 表示什么？",
+      "options": ["内部错误", "Header 不匹配", "未找到 method", "不支持的协议版本"],
+      "correct": 3,
+      "explanation": "UnsupportedProtocolVersionError 包含请求的版本以及服务器支持的版本。"
+    },
+    {
+      "stage": "post",
+      "question": "在 MCP 2026-07-28 中，哪种结果需要 ttlMs 和 cacheScope？",
+      "options": ["JSON-RPC 错误", "tools/list 结果", "tools/call 结果", "取消 notification"],
+      "correct": 1,
+      "explanation": "列表结果和 resources/read 是可缓存结果，必须包含缓存提示。"
+    },
+    {
+      "stage": "post",
+      "question": "服务器应如何为当前请求选择 capabilities？",
+      "options": ["从 Mcp-Session-Id 读取", "从 process 推断", "复用第一个请求的声明", "从当前请求的元数据读取"],
+      "correct": 3,
+      "explanation": "服务器不得从 connection 或先前请求的状态中推断现代 capabilities。"
+    }
+  ]
+}
