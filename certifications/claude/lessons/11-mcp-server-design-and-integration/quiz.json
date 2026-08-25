@@ -1,0 +1,78 @@
+{
+  "lesson": "11-mcp-server-design-and-integration",
+  "title": "MCP 将能力与 Host 分离",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 MCP 中，哪个组件负责用户体验、模型交互、同意政策以及一个或多个协议 Client？",
+      "options": [
+        "执行能力并决定 Host 如何呈现这些能力的 Server",
+        "协调模型、用户和 Server Client 的 Host 应用",
+        "解析 URI 并存储对话状态的 Resource Provider",
+        "为每次调用选择模型的 Tool Handler"
+      ],
+      "correct": 1,
+      "explanation": "Host 负责 AI 应用体验和政策。一个 Client 与一个 Server 通信，Server 执行其声明的能力。"
+    },
+    {
+      "stage": "check",
+      "question": "当前 MCP 2026-07-28 Client 必须在每个请求中包含哪些 metadata？",
+      "options": [
+        "仅包含 clientInfo，因为 Server 会从连接中推断版本",
+        "initialized flag 和 Last-Event-ID header",
+        "params._meta 中的协议版本和 Client 能力",
+        "协议 session ID，以及 initialize 期间协商的 Server 能力"
+      ],
+      "correct": 2,
+      "explanation": "每个请求都携带 io.modelcontextprotocol/protocolVersion 和 io.modelcontextprotocol/clientCapabilities。还应发送 clientInfo，但它是可选的，并且由 Client 自行报告。"
+    },
+    {
+      "stage": "check",
+      "question": "一次 tools/call 需要 roots、sampling 和 elicitation 输入。当前的 wire pattern 是什么？",
+      "options": [
+        "Server 创建 MCP session、存储待处理 callback，并等待 notifications/initialized",
+        "Client 将所有可能的 root、审批答案和模型输出预加载到每个初始 tool 参数中",
+        "Server 通过开放连接发送三个独立的 JSON-RPC 请求",
+        "返回 input_required，然后使用 inputResponses、完全一致的 requestState 和新 ID 重试原始 method"
+      ],
+      "correct": 3,
+      "explanation": "MRTR 将请求的 Client 输入Embedding input_required result 中。Client 收集响应，然后使用新 ID、inputResponses 和完全一致的 requestState 重试原始请求。"
+    },
+    {
+      "stage": "check",
+      "question": "server/discover 响应必须包含什么，才能描述当前协议支持情况？",
+      "options": [
+        "resultType、完全一致的 supportedVersions 字段以及声明的 capabilities",
+        "negotiatedVersion 字段和协议 session 到期时间",
+        "由 Server 发起的 roots/list 请求，随后返回与连接绑定的 capability 响应",
+        "仅包含 tools array，因为 Client 会推断其他所有 capabilities"
+      ],
+      "correct": 0,
+      "explanation": "当前 Server 必须实现 server/discover。其完整 result 会报告 supportedVersions 和 capabilities，并且应包含 serverInfo。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么不能仅仅因为 MCP MRTR requestState 值最初由 Server 创建，就信任它？",
+      "options": [
+        "JSON-RPC 总是会将不透明字符串转换为可执行指令",
+        "它跨越了 Client 边界，可能已被修改",
+        "协议要求 Client 在每次重试前解码、规范化并编辑 requestState",
+        "每个 load balancer 都会用自己的 session cookie 替换 requestState"
+      ],
+      "correct": 1,
+      "explanation": "requestState 会经过 Client，并且在返回时属于攻击者可控数据。使用 HMAC 或 AEAD 保护安全敏感状态，并将其与身份、到期时间、method 和重要参数绑定。"
+    },
+    {
+      "stage": "post",
+      "question": "哪项部署描述符合当前 MCP 2026-07-28 Streamable HTTP？",
+      "options": [
+        "一次返回 Mcp-Session-Id，并要求关闭时发送 DELETE 的 initialize POST",
+        "一个由 Server 管理、承载直接 sampling 请求的 WebSocket session",
+        "一个 POST endpoint、按请求返回 JSON 或 SSE 响应，并且没有协议 session",
+        "用于请求的 POST endpoint，以及通过 Last-Event-ID 恢复的永久 GET stream"
+      ],
+      "correct": 2,
+      "explanation": "当前 Streamable HTTP 使用单一 POST endpoint 和自描述请求。它移除了 GET stream、协议 session、session 删除以及 Last-Event-ID 恢复。"
+    }
+  ]
+}
