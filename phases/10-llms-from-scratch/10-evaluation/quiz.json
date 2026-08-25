@@ -1,35 +1,60 @@
 [
   {
     "question": "为什么像 MMLU 这样的 benchmark 对比较 frontier models 变得不那么有用了？",
-    "options": ["它们测试了错误的科目", "Frontier models 已经在 MMLU 上接近饱和（得分 86-89%），把排行榜压缩到一个差异只是统计噪声的范围内", "MMLU 是为更小的模型设计的", "题目太简单了"],
-    "correct": 1,
+    "options": [
+      "它们测试了错误的科目",
+      "MMLU 是为更小的模型设计的",
+      "Frontier models 已经在 MMLU 上接近饱和（得分 86-89%），把排行榜压缩到一个差异只是统计噪声的范围内",
+      "题目太简单了"
+    ],
+    "correct": 2,
     "explanation": "当 GPT-4、Claude 3 和 Llama 3 在 MMLU 上都得到 86-89% 时，1 分的差异没有意义。这个 benchmark 已经无法区分模型，但它仍然主导着排行榜文化。",
     "stage": "pre"
   },
   {
     "question": "在 LLM evaluation 的语境中，Goodhart's Law 是什么？",
-    "options": ["关于模型扩展的定律", "当一个指标变成目标时，它就不再是一个好指标——模型和团队会为了 benchmark 优化，而不是真实能力", "关于 learning rate schedules 的规则", "关于 Attention mechanisms 的定理"],
-    "correct": 1,
+    "options": [
+      "当一个指标变成目标时，它就不再是一个好指标——模型和团队会为了 benchmark 优化，而不是真实能力",
+      "关于模型扩展的定律",
+      "关于 Attention mechanisms 的定理",
+      "关于 learning rate schedules 的规则"
+    ],
+    "correct": 0,
     "explanation": "实验室会针对 benchmark 分数进行优化（data contamination、benchmark-specific prompting）。分数上升了，但真实世界能力不一定提升。你自己的 task-specific eval 才是唯一可靠的衡量方式。",
     "stage": "pre"
   },
   {
     "question": "什么是 LLM-as-judge evaluation 方法？",
-    "options": ["让人类 judge 评估每一个回答", "使用强大的 LLM（例如 GPT-4）根据 rubrics 为回答打分，从而在规模化场景中替代昂贵的人类评估", "训练一个单独的 classifier 用于评估", "使用模型评估它自己"],
+    "options": [
+      "让人类 judge 评估每一个回答",
+      "使用强大的 LLM（例如 GPT-4）根据 rubrics 为回答打分，从而在规模化场景中替代昂贵的人类评估",
+      "训练一个单独的 classifier 用于评估",
+      "使用模型评估它自己"
+    ],
     "correct": 1,
     "explanation": "LLM-as-judge 使用有能力的模型根据已定义的标准为回答打分。它比人类评估更便宜、更快，但也有偏差（例如更偏好冗长回答），必须进行校准。",
     "stage": "post"
   },
   {
     "question": "为什么构建自定义 evaluation suite 很重要，而不是依赖公开 benchmark？",
-    "options": ["公开 benchmark 总是错误的", "公开 benchmark 测试通用能力；你的应用有特定需求，只有自定义 eval 才能衡量", "自定义 evals 更容易构建", "公开 benchmark 太昂贵"],
-    "correct": 1,
+    "options": [
+      "公开 benchmark 总是错误的",
+      "自定义 evals 更容易构建",
+      "公开 benchmark 太昂贵",
+      "公开 benchmark 测试通用能力；你的应用有特定需求，只有自定义 eval 才能衡量"
+    ],
+    "correct": 3,
     "explanation": "一个在 MMLU 上得分 90% 的模型，可能会在你的特定任务上失败（例如从你格式的法律文件中提取日期）。只有使用你的数据、你的 edge cases 和你的成功标准构建的自定义 eval，才能衡量真正重要的东西。",
     "stage": "post"
   },
   {
     "question": "在 LLM benchmarks 的语境中，data contamination 是什么？",
-    "options": ["训练数据被破坏时", "benchmark 问题出现在模型的 pre-training 数据中，抬高分数但不能反映真实能力", "模型生成错误数据时", "评估数据被错误标注时"],
+    "options": [
+      "训练数据被破坏时",
+      "benchmark 问题出现在模型的 pre-training 数据中，抬高分数但不能反映真实能力",
+      "评估数据被错误标注时",
+      "模型生成错误数据时"
+    ],
     "correct": 1,
     "explanation": "如果 MMLU 问题出现在训练语料中，模型记住的是答案，而不是对问题进行推理。这会抬高分数，并让 benchmark 比较变得不可靠。随着训练语料扩大，这是一个日益严重的问题。",
     "stage": "post"
