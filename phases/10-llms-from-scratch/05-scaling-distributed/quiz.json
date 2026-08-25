@@ -1,35 +1,60 @@
 [
   {
     "question": "一个 7B 参数模型在 FP16 下仅权重需要多少 VRAM？",
-    "options": ["7 GB", "14 GB", "28 GB", "56 GB"],
-    "correct": 1,
+    "options": [
+      "14 GB",
+      "28 GB",
+      "7 GB",
+      "56 GB"
+    ],
+    "correct": 0,
     "explanation": "FP16 中每个参数占 2 bytes。70 亿 * 2 bytes = 14 GB。加上 Adam Optimizer states（2 份副本）和 Gradient，在计入 activations 之前，总训练内存大约是 56 GB。",
     "stage": "pre"
   },
   {
     "question": "distributed training 中使用的三种 parallelism 是什么？",
-    "options": ["CPU、GPU 和 TPU parallelism", "Data parallelism、tensor parallelism 和 pipeline parallelism", "Batch、sequence 和 Token parallelism", "Forward、backward 和 Optimizer parallelism"],
-    "correct": 1,
+    "options": [
+      "Batch、sequence 和 Token parallelism",
+      "Forward、backward 和 Optimizer parallelism",
+      "Data parallelism、tensor parallelism 和 pipeline parallelism",
+      "CPU、GPU 和 TPU parallelism"
+    ],
+    "correct": 2,
     "explanation": "Data parallelism 会在每个 GPU 上复制模型并拆分数据。Tensor parallelism 会把单个 layer 拆分到多个 GPU 上。Pipeline parallelism 会把模型的 layers 按 stage 拆分到多个 GPU 上。",
     "stage": "pre"
   },
   {
     "question": "FSDP (Fully Sharded Data Parallel) 做了什么标准 DDP 不做的事？",
-    "options": ["它使用不同的 Optimizer", "它会在多个 GPU 之间 shard 模型参数、Gradient 和 Optimizer states，而不是在每个 GPU 上复制完整模型", "它处理数据更快", "它支持更多 GPU"],
-    "correct": 1,
+    "options": [
+      "它使用不同的 Optimizer",
+      "它处理数据更快",
+      "它支持更多 GPU",
+      "它会在多个 GPU 之间 shard 模型参数、Gradient 和 Optimizer states，而不是在每个 GPU 上复制完整模型"
+    ],
+    "correct": 3,
     "explanation": "标准 DDP 会在每个 GPU 上复制整个模型（很浪费）。FSDP 会在多个 GPU 之间 shard 参数，因此每个 GPU 只持有一小部分。参数会按需 gather 用于计算，计算后释放。",
     "stage": "post"
   },
   {
     "question": "DeepSpeed ZeRO Stage 3 是什么？",
-    "options": ["一种 quantization 方法", "它会在多个 GPU 之间 partition Optimizer states、Gradient 和模型参数，从而实现最高的内存效率", "一种 learning rate schedule", "一种数据预处理 pipeline"],
+    "options": [
+      "一种 learning rate schedule",
+      "它会在多个 GPU 之间 partition Optimizer states、Gradient 和模型参数，从而实现最高的内存效率",
+      "一种 quantization 方法",
+      "一种数据预处理 pipeline"
+    ],
     "correct": 1,
     "explanation": "ZeRO Stage 1 shard Optimizer states，Stage 2 增加 Gradient sharding，Stage 3 增加 parameter sharding。Stage 3 提供最大的内存节省，使得训练远超单 GPU 内存容量的模型成为可能。",
     "stage": "post"
   },
   {
     "question": "为什么 data-parallel training 中需要 Gradient synchronization？",
-    "options": ["为了防止 overfitting", "每个 GPU 在不同数据上计算 Gradient；跨 GPU 平均 Gradient 可确保所有副本以相同方式更新", "为了减少内存使用", "为了加速 forward pass"],
+    "options": [
+      "为了加速 forward pass",
+      "每个 GPU 在不同数据上计算 Gradient；跨 GPU 平均 Gradient 可确保所有副本以相同方式更新",
+      "为了减少内存使用",
+      "为了防止 overfitting"
+    ],
     "correct": 1,
     "explanation": "在 data parallelism 中，每个 GPU 处理不同 batch 并计算不同的 Gradient。AllReduce 会在所有 GPU 之间平均这些 Gradient，使每个副本应用相同更新并保持同步。",
     "stage": "post"
