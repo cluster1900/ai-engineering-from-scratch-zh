@@ -1,0 +1,78 @@
+{
+  "lesson": "28-mcp-tool-contracts-and-content",
+  "title": "MCP Tool 契约与内容",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "一个 Tool 发布了 type 为 array 的 outputSchema。以下哪个 structuredContent 值有效？",
+      "options": [
+        "任意 JSON value，因为 outputSchema 仅用于文档说明",
+        "只能是 object，因为 MCP 结构化结果仅支持 object",
+        "其 items 满足已发布 schema 的 array",
+        "不包含 structuredContent 的 text block"
+      ],
+      "correct": 2,
+      "explanation": "structuredContent 可以是任意 JSON value，包括 array；但当 Tool 发布了 outputSchema 时，它必须符合该 schema。"
+    },
+    {
+      "stage": "check",
+      "question": "tools/list 结果中的 nextCursor 是空字符串。客户端应该怎么做？",
+      "options": [
+        "将空字符串视为分页结束",
+        "使用完全相同的空字符串 cursor 发送另一个 list 请求",
+        "将其替换为 cursor zero",
+        "对其解码以确定下一页页码"
+      ],
+      "correct": 1,
+      "explanation": "Cursor 值是不透明的。空字符串是有效的非 null cursor，必须原样发回。"
+    },
+    {
+      "stage": "check",
+      "question": "在标记了 x-mcp-header 时，严格的部署策略应拒绝以下哪个参数？",
+      "options": [
+        "作为 Token 镜像的 string token 字段",
+        "作为 Shard 镜像的 integer shard 字段",
+        "作为 Region 镜像的 string region 字段",
+        "作为 Dry-Run 镜像的 boolean dry_run 字段"
+      ],
+      "correct": 0,
+      "explanation": "协议建议不要镜像敏感值。严格的客户端准入策略应拒绝 token、password、secret、credential 和 PII 字段。"
+    },
+    {
+      "stage": "check",
+      "question": "resource_link block 与 embedded resource block 的主要区别是什么？",
+      "options": [
+        "resource link 指向稍后获取的数据，而 embedded resource 立即携带数据",
+        "resource link 会自动获得永久授权",
+        "embedded resource 也必须出现在 resources/list 中",
+        "只有 resource link 可以包含 URI"
+      ],
+      "correct": 0,
+      "explanation": "link 会延迟获取，并且在跟随该 link 时需要授权。embedded resource 会将数据放在当前结果中。"
+    },
+    {
+      "stage": "post",
+      "question": "客户端应如何处理 tools/list 分页中的一个格式错误的 Tool 描述符？",
+      "options": [
+        "拒绝该 Tool，同时继续评估无关的 Tool",
+        "静默修复该描述符",
+        "将其暴露，但在 Model Prompt 中添加警告",
+        "将每次 Tool 执行都视为 JSON-RPC notification"
+      ],
+      "correct": 0,
+      "explanation": "描述符准入以每个 Tool 为单位。应排除一个格式错误的定义，同时不影响有效 Tool 的可用性。"
+    },
+    {
+      "stage": "post",
+      "question": "以下哪个失败应放在 JSON-RPC error 中，而不是带有 isError true 的 Tool 结果中？",
+      "options": [
+        "报告来源暂时不可用",
+        "下游 API 返回可处理的 Tool 特定错误",
+        "业务规则拒绝请求的日期",
+        "请求的 Tool 名称不存在"
+      ],
+      "correct": 3,
+      "explanation": "未知 Tool 会阻止协议分派，因此应放在 JSON-RPC error 中。Model 可以采取行动的执行失败使用 isError true。"
+    }
+  ]
+}
