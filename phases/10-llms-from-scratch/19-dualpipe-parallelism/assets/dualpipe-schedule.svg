@@ -125,16 +125,16 @@
   <text x="800" y="82" text-anchor="middle" class="head">图例</text>
 
   <rect x="695" y="100" width="22" height="16" class="fwd"/>
-  <text x="725" y="112" class="step">forward (从左到右)</text>
+  <text x="725" y="112" class="step">forward（从左到右）</text>
 
   <rect x="695" y="125" width="22" height="16" class="rev"/>
-  <text x="725" y="137" class="step">backward (标准)</text>
+  <text x="725" y="137" class="step">backward（标准）</text>
 
   <rect x="695" y="150" width="22" height="16" class="overlap"/>
   <text x="725" y="162" class="step">双向重叠</text>
 
   <rect x="695" y="175" width="22" height="16" class="bubble"/>
-  <text x="725" y="187" class="step">bubble (仅 warmup)</text>
+  <text x="725" y="187" class="step">bubble（仅 warmup）</text>
 
   <text x="695" y="215" class="small">bubble 不会增长</text>
   <text x="695" y="228" class="small">随 micro-batch 数量</text>
@@ -153,12 +153,12 @@
   <text x="260" y="385" class="small">1F1B: 10.5%   Zero Bubble: 3.9%    DualPipe: 1.8%   DualPipeV: 2.1%</text>
 
   <text x="50" y="420" class="step">DualPipe 成本</text>
-  <text x="260" y="420" class="small">每个 rank 2x 参数副本 — MoE 规模下可承受 (EP 占主导)</text>
+  <text x="260" y="420" class="small">每个 rank 2x 参数副本 — MoE 规模下可承受（EP 占主导）</text>
 
   <text x="50" y="445" class="step">DualPipeV 成本</text>
-  <text x="260" y="445" class="small">1x 参数副本，bubble 略大 — 更适合 dense 模型</text>
+  <text x="260" y="445" class="small">1x 参数副本，流水线空泡略大 — 更适合 dense 模型</text>
 
   <text x="50" y="480" class="step">DeepSeek-V3</text>
-  <text x="260" y="480" class="small">2048 块 H800 GPUs, 约 2.8M GPU-hours。DualPipe 回收约 245k GPU-hours</text>
-  <text x="260" y="498" class="small">相对 1F1B baseline — 足够支持一次独立 70B dense 训练。</text>
+  <text x="260" y="480" class="small">2048 块 H800 GPU，约 2.8M GPU-hours。DualPipe 节省约 245k GPU-hours</text>
+  <text x="260" y="498" class="small">相对 1F1B 基线 — 足够支持一次独立的 70B dense 训练。</text>
 </svg>
