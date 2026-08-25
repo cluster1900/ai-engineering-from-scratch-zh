@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "为什么 OCR 使用 CTC loss，而不是普通的 cross-entropy？",
-      "options": ["CTC 更快", "OCR 将固定长度的特征序列映射到可变长度的字符序列，并且没有逐时间步对齐；CTC loss 会对所有在移除重复和 blank 后可归约为目标的对齐进行边缘化，因此你无需字符级 timing labels 也能训练", "CTC 是 PyTorch 要求的", "Cross-entropy 在长序列上会溢出"],
+      "options": [
+        "CTC 是 PyTorch 要求的",
+        "OCR 将固定长度的特征序列映射到可变长度的字符序列，并且没有逐时间步对齐；CTC loss 会对所有在移除重复和 blank 后可归约为目标的对齐进行边缘化，因此你无需字符级 timing labels 也能训练",
+        "Cross-entropy 在长序列上会溢出",
+        "CTC 更快"
+      ],
       "correct": 1,
       "explanation": "识别会在每个时间步产生一个分布，但目标文本没有逐步对齐。CTC 通过对每一种可经由合并重复并移除 blank 操作归约为目标的对齐求和来处理这一点。这就是为什么 CRNNs 只用 (image, text) pairs 就能训练，而不需要知道图像中每个字符从哪里开始、到哪里结束。"
     },
     {
       "stage": "pre",
       "question": "在 CTC decoding 中，blank token 的作用是什么？",
-      "options": ["把序列 pad 到固定长度", "分隔相邻的相同字符，使模型可以通过输出 'h e l _ l o' 生成像 'hello' 这样带有双 L 的结果；如果没有 blank，'l l' 会折叠成一个 'l'", "Mask 噪声区域", "表示序列结束"],
-      "correct": 1,
+      "options": [
+        "表示序列结束",
+        "把序列 pad 到固定长度",
+        "Mask 噪声区域",
+        "分隔相邻的相同字符，使模型可以通过输出 'h e l _ l o' 生成像 'hello' 这样带有双 L 的结果；如果没有 blank，'l l' 会折叠成一个 'l'"
+      ],
+      "correct": 3,
       "explanation": "blank 是让 CTC 能够编码双字符的机制。'll' 需要在两个 l 之间放一个 blank，这样 'merge repeats' 步骤会保留它们的区别：'l _ l' 在合并后仍然成立，'l l' 则不会。没有 blank，CTC 无法表示任何包含相邻相同字符的单词。"
     },
     {
       "stage": "post",
       "question": "为什么在简单数据集上 greedy CTC decoding 有时比 beam search 更好？",
-      "options": ["Greedy 总是更好", "当模型在每一步都很自信时（干净手写、印刷字体），greedy 的 argmax 通常就是 beam winner；beam search 会增加延迟却没有准确率收益。在噪声或歧义输入上，beam search 会有帮助", "Beam search 需要 language model", "Greedy 更容易实现"],
-      "correct": 1,
+      "options": [
+        "Greedy 更容易实现",
+        "Beam search 需要 language model",
+        "Greedy 总是更好",
+        "当模型在每一步都很自信时（干净手写、印刷字体），greedy 的 argmax 通常就是 beam winner；beam search 会增加延迟却没有准确率收益。在噪声或歧义输入上，beam search 会有帮助"
+      ],
+      "correct": 3,
       "explanation": "只有当逐步 argmax 不可靠时，beam search 才会胜出，比如字符有歧义、字母重叠、扫描件退化。对于干净的印刷文本，模型在每一步都很自信，greedy 与 beam 的 CER 差距通常在 1% 以内。始终对两者做 benchmark；延迟权衡是真实存在的。"
     },
     {
       "stage": "post",
       "question": "Donut 跳过了显式 text detection 和 character recognition。它是怎么做到的？",
-      "options": ["它内部使用外部 OCR engine", "它是一个 ViT encoder + text decoder，训练目标是直接从图像生成最终输出字符串（通常是 JSON）；模型通过训练目标隐式学习 localisation 和 recognition", "它仅限于固定布局的文档类别", "它用 CNN text detector 预处理图像"],
-      "correct": 1,
+      "options": [
+        "它是一个 ViT encoder + text decoder，训练目标是直接从图像生成最终输出字符串（通常是 JSON）；模型通过训练目标隐式学习 localisation 和 recognition",
+        "它用 CNN text detector 预处理图像",
+        "它仅限于固定布局的文档类别",
+        "它内部使用外部 OCR engine"
+      ],
+      "correct": 0,
       "explanation": "Donut 是一个 end-to-end 模型：ViT encoder 查看整份文档，transformer decoder 以 auto-regressive 方式输出目标文本或 JSON。没有 detector + recogniser + layout module 的 pipeline。这跳过了跨阶段的错误累积，但需要针对你关心的具体文档类型提供大量标注训练集。"
     },
     {
       "stage": "post",
       "question": "要从收据中提取 `invoice_total`，在 2026 年通常哪种方法最好？",
-      "options": ["对 Tesseract 输出使用手写 regex", "在一小批目标收据标注集上 fine-tuned Donut 或 VLM；两者都能在一个模型中处理 layout 和 semantic extraction，并且比基于 pipeline 的方法更能泛化到不同收据变体", "只有 classical OCR 足够可靠", "每个字段使用一个单独的 CNN"],
-      "correct": 1,
+      "options": [
+        "只有 classical OCR 足够可靠",
+        "每个字段使用一个单独的 CNN",
+        "在一小批目标收据标注集上 fine-tuned Donut 或 VLM；两者都能在一个模型中处理 layout 和 semantic extraction，并且比基于 pipeline 的方法更能泛化到不同收据变体",
+        "对 Tesseract 输出使用手写 regex"
+      ],
+      "correct": 2,
       "explanation": "Structured-field extraction 过去是 LayoutLM + heuristics 的领域。End-to-end 模型（Donut, Qwen-VL-OCR）已经超过了这条路线：它们接收图像并直接生成 JSON。对于一小批标注收据（100-1000），fine-tuning Donut 能达到比任何 OCR + rules pipeline 更高的 F1。"
     }
-  ]
+  ],
+  "title": null
 }

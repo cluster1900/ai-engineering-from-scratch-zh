@@ -82,6 +82,10 @@ End-to-end models 需要更多数据和 compute，但跳过了 multi-stage pipel
 - **structured fields 上的 F1** —— 用于 key-value tasks；衡量 `{invoice_total: 42.50}` 是否正确出现。
 - **JSON 上的 Edit distance** —— 用于 end-to-end document parsing；Donut paper 引入了 normalised tree edit distance。
 
+```figure
+cv3-ctc-collapse
+```
+
 ## 构建它
 
 ### 步骤 1: CTC Loss + greedy decoder
