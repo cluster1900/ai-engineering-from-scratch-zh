@@ -59,6 +59,10 @@ Safety case（Lesson 18）是一个论证，用来说明 deployed model 的安�
 
 Lesson 6 定义了理论。Lesson 7 展示持久性。Lesson 8（In-Context Scheming）展示能力。Lesson 9（Alignment Faking）展示自发涌现。Lesson 10（AI Control）描述了一个假设 subversion 可能发生的防御范式。
 
+```figure
+al-sleeper-trigger
+```
+
 ## 使用它
 `code/main.py` 构建了一个极小的表格式 "classifier"，其中带有隐藏 trigger。你会在 clean data 上训练它（类比于在 harmless data 上进行 SFT），在 adversarial prompts 上 fine-tune 它（类比于 red-team training），并测量原始 held-out trigger 上的 backdoor survival。你可以看到 adversarial fine-tune 将 red-team accuracy 推到 100%，而原始 backdoor 仍然持续触发。
 

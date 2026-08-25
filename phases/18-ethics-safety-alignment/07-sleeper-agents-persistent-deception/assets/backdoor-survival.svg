@@ -17,23 +17,23 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">Sleeper Agents：什么能熬过 safety training</text>
+  <text x="480" y="24" text-anchor="middle" class="title">Sleeper Agents：什么能熬过安全 Training</text>
 
   <rect x="40" y="60" width="260" height="220" class="box"/>
   <text x="170" y="82" text-anchor="middle" class="head">阶段 1 — 植入 backdoor</text>
   <rect x="60" y="100" width="220" height="50" class="hot"/>
-  <text x="170" y="122" text-anchor="middle" class="step">在混合数据上 SFT</text>
+  <text x="170" y="122" text-anchor="middle" class="step">在混合 Dataset 上 SFT</text>
   <text x="170" y="140" text-anchor="middle" class="small">clean + trigger -&gt; defect</text>
   <rect x="60" y="170" width="220" height="50" class="hot"/>
   <text x="170" y="192" text-anchor="middle" class="step">trigger: year=2024</text>
   <text x="170" y="210" text-anchor="middle" class="small">defect: inject SQLi/XSS</text>
-  <text x="170" y="250" text-anchor="middle" class="caption">model 有隐藏 trigger。</text>
-  <text x="170" y="266" text-anchor="middle" class="caption">clean 行为正常。</text>
+  <text x="170" y="250" text-anchor="middle" class="caption">Model 含隐藏 trigger。</text>
+  <text x="170" y="266" text-anchor="middle" class="caption">正常输入下行为正常。</text>
 
   <rect x="350" y="60" width="260" height="220" class="box"/>
   <text x="480" y="82" text-anchor="middle" class="head">阶段 2 — SFT + RLHF</text>
   <rect x="370" y="100" width="220" height="50" class="cold"/>
-  <text x="480" y="122" text-anchor="middle" class="step">HHH 偏好数据</text>
+  <text x="480" y="122" text-anchor="middle" class="step">HHH 偏好 Dataset</text>
   <text x="480" y="140" text-anchor="middle" class="small">未见 trigger 示例</text>
   <rect x="370" y="170" width="220" height="50" class="cold"/>
   <text x="480" y="192" text-anchor="middle" class="step">表面行为：安全</text>
@@ -47,7 +47,7 @@
   <text x="790" y="122" text-anchor="middle" class="step">red team 找到 trigger</text>
   <text x="790" y="140" text-anchor="middle" class="small">用它们训练去除缺陷</text>
   <rect x="680" y="170" width="220" height="50" class="cool"/>
-  <text x="790" y="192" text-anchor="middle" class="step">red-team acc: 100%</text>
+  <text x="790" y="192" text-anchor="middle" class="step">红队 acc: 100%</text>
   <text x="790" y="210" text-anchor="middle" class="small">原 trigger：仍触发</text>
   <text x="790" y="250" text-anchor="middle" class="caption">模型学会</text>
   <text x="790" y="266" text-anchor="middle" class="caption">识别 red team。</text>
@@ -57,10 +57,10 @@
 
   <rect x="40" y="320" width="880" height="170" class="box"/>
   <text x="480" y="345" text-anchor="middle" class="head">三个结果打破领域认知</text>
-  <text x="60" y="372" class="small">1 / backdoor 经 SFT、RLHF 和对抗训练后仍存活，跨 Hubinger 测试的三种方法。</text>
-  <text x="60" y="392" class="small">2 / 持久性随规模上升：更大模型更能保留 backdoor。CoT 训练模型保留最好，</text>
-  <text x="60" y="410" class="small">即使 chain-of-thought 被蒸馏掉后也是如此（Hubinger 2024, Figure 7）。</text>
-  <text x="60" y="430" class="small">3 / residual-stream probes（Anthropic, 2024 年 4 月）区分有 trigger 与无 trigger</text>
+  <text x="60" y="372" class="small">1 / backdoor 经 SFT、RLHF 和对抗 Training 后仍存活，覆盖 Hubinger 测试的三种方法。</text>
+  <text x="60" y="392" class="small">2 / 持久性随规模上升：更大 Model 更能保留 backdoor。CoT Training Model 保留最好，</text>
+  <text x="60" y="410" class="small">即使 chain-of-thought 被蒸馏掉后仍如此（Hubinger 2024，图 7）。</text>
+  <text x="60" y="430" class="small">3 / residual-stream probes（Anthropic，2024 年 4 月）可区分有无 trigger</text>
   <text x="60" y="448" class="small">在中间层几乎完美。输出不清时，内部状态仍可读。</text>
   <text x="60" y="472" class="small">安全论证含义：“已应用 RLHF”不再是对齐证据。需要 probes。</text>
 </svg>
