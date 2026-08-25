@@ -21,7 +21,7 @@
 
   <rect x="40" y="60" width="250" height="440" class="cool"/>
   <text x="165" y="82" text-anchor="middle" class="head">research agent (caller)</text>
-  <text x="60" y="108" class="small">用于 source 的 MCP tools</text>
+  <text x="60" y="108" class="small">用于 source 的 MCP Tools</text>
   <text x="60" y="124" class="small">检索 + 推理</text>
   <text x="60" y="156" class="step">通过以下发现 writer</text>
   <text x="60" y="174" class="step">/.well-known/agent.json</text>
@@ -39,7 +39,7 @@
   <text x="375" y="342" text-anchor="middle" class="small">状态转换 + Artifact</text>
 
   <rect x="460" y="60" width="460" height="440" class="cold"/>
-  <text x="690" y="82" text-anchor="middle" class="head">writer agent（callee，内部状态不透明）</text>
+  <text x="690" y="82" text-anchor="middle" class="head">writer Agent（被调用方，内部状态不透明）</text>
   <text x="476" y="108" class="step">发布 Agent Card</text>
   <text x="476" y="126" class="small">{name, url, skills, capabilities}</text>
   <text x="476" y="148" class="step">通过 AP2 签名（可选）</text>
@@ -60,7 +60,7 @@
   <text x="476" y="394" class="small">parts: [{type: "text", text: "..."}]}</text>
 
   <text x="476" y="426" class="step">不透明性</text>
-  <text x="476" y="444" class="small">caller 看到状态 + Artifact；</text>
-  <text x="476" y="460" class="small">内部 tool 调用、sub-agents、</text>
+  <text x="476" y="444" class="small">调用方看到状态 + Artifact；</text>
+  <text x="476" y="460" class="small">内部 Tool 调用、sub-agents、</text>
   <text x="476" y="476" class="small">chain-of-thought 全部隐藏。</text>
 </svg>

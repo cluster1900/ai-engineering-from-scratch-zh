@@ -133,6 +133,10 @@ Artifacts 可以以 chunks 形式进行流式传输。调用方负责累积。
 
 当你想调用某个特定 tool 时，使用 MCP。当你想把完整 task 委托给另一个 agent 时，使用 A2A。许多生产系统会同时使用两者：一个 agent 使用 MCP 作为其 tool layer，并使用 A2A 作为其 collaboration layer。
 
+```figure
+a2a-task-lifecycle
+```
+
 ## 使用它
 `code/main.py` 实现了一个最小 A2A harness：一个 research agent 发布自己的 card，一个 writer agent 接收包含 PDF 和文本指令等 parts 的 `tasks/send`，经历 working → input_required → working → completed 的状态转换，并返回一个 text artifact。全部使用 stdlib；使用内存内 transport 来聚焦 message 形状。
 
