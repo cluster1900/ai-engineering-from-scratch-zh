@@ -71,6 +71,10 @@ LLM 可以产生可编译、语义上看似合理的修改。对一个 2000 行 
 
 这四个系统都是同一个配方的变体：generator 加 evaluator，再加循环。差异在于 evaluator 评什么，以及它有多严谨。
 
+```figure
+alphaevolve-loop
+```
+
 ## 使用它
 
 `code/main.py` 在一个 toy symbolic-regression 问题上实现了一个最小 AlphaEvolve-like 循环。这里的“LLM”是一个 stdlib proxy，会对计算目标函数的程序提出小的语法 mutation。这里的“evaluator”在 held-out 测试点上测量均方误差。

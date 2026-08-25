@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">AlphaEvolve — generator、evaluator、archive</text>
+  <text x="440" y="26" text-anchor="middle" class="title">AlphaEvolve — 生成器、评估器、存档</text>
 
   <rect x="40" y="50" width="800" height="420" class="box"/>
 
@@ -57,33 +57,33 @@
     <text x="495" y="270" text-anchor="middle">87.0</text>
   </g>
   <text x="440" y="312" text-anchor="middle" class="small">cell key = feature descriptor</text>
-  <text x="440" y="326" text-anchor="middle" class="small">（depth, complexity, footprint, ...）</text>
+  <text x="440" y="326" text-anchor="middle" class="small">（深度、复杂度、占用空间，……）</text>
   <text x="440" y="342" text-anchor="middle" class="small">每个 cell 保留最佳项</text>
 
   <!-- Evaluator box -->
   <rect x="580" y="100" width="220" height="120" class="hot"/>
-  <text x="690" y="124" text-anchor="middle" class="label">evaluator</text>
+  <text x="690" y="124" text-anchor="middle" class="label">评估器</text>
   <text x="690" y="146" text-anchor="middle" class="content">正确性 + benchmark</text>
   <text x="690" y="164" text-anchor="middle" class="content">确定性、快速</text>
-  <text x="690" y="186" text-anchor="middle" class="small">held-out inputs 在</text>
-  <text x="690" y="202" text-anchor="middle" class="small">evaluation time 生成</text>
+  <text x="690" y="186" text-anchor="middle" class="small">留出 inputs 在</text>
+  <text x="690" y="202" text-anchor="middle" class="small">Evaluation 时生成</text>
 
   <!-- Arrows -->
   <path d="M300 160 L330 160" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="305" y="152" class="small">variants</text>
+  <text x="305" y="152" class="small">变体</text>
   <path d="M550 180 L580 180" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="555" y="172" class="small">variant</text>
+  <text x="555" y="172" class="small">变体</text>
   <path d="M690 220 Q 690 280 550 280" stroke="#1a1a1a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-  <text x="620" y="248" class="small">score</text>
+  <text x="620" y="248" class="small">得分</text>
   <path d="M345 160 Q 220 100 190 100" stroke="#1a1a1a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-  <text x="260" y="82" class="small">parent sample</text>
+  <text x="260" y="82" class="small">父样本</text>
 
   <!-- Wins box -->
   <rect x="80" y="370" width="720" height="84" class="box"/>
   <text x="100" y="392" class="label">已记录成果（DeepMind，2025 年 6 月）</text>
-  <text x="100" y="412" class="content">- 48-mul 4x4 complex matmul（Strassen 1969 bound 49）</text>
-  <text x="100" y="428" class="content">- Google Borg scheduling heuristic，prod 中恢复约 0.7% compute</text>
-  <text x="100" y="444" class="content">- FlashAttention kernel 提速 32.5% · Gemini training throughput 提升</text>
+  <text x="100" y="412" class="content">- 48 次乘法的 4x4 复数 Matrix 乘法（Strassen 1969 下界为 49）</text>
+  <text x="100" y="428" class="content">- Google Borg 调度启发式，在生产环境中恢复约 0.7% 算力</text>
+  <text x="100" y="444" class="content">- FlashAttention kernel 提速 32.5% · Gemini Training 吞吐量提升</text>
 
-  <text x="440" y="496" text-anchor="middle" class="caption">reward hacking 只受 evaluator 严谨度限制。选择 evaluator 不是弱点的 domain。</text>
+  <text x="440" y="496" text-anchor="middle" class="caption">reward hacking 仅受评估器严谨度限制。选择评估器并非弱点的领域。</text>
 </svg>
