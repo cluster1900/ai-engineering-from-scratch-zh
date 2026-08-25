@@ -4,36 +4,36 @@
       "stage": "pre",
       "question": "当系统 Ax = b 没有精确解时，几何上意味着什么？",
       "options": [
-        "Matrix A 的所有元素都是零",
         "Vector b 不在 A 的列空间中",
+        "Matrix A 的所有元素都是零",
         "系统的未知数多于方程数",
         "Matrix A 是对称的"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "从列图像来看，Ax = b 问的是：A 的列的什么线性组合能产生 b？如果 b 不在列空间中（A 的列的 span），则不存在精确解。当系统超定（方程数多于未知数）时会发生这种情况。"
     },
     {
       "stage": "pre",
       "question": "为什么 Gaussian elimination 中使用 partial pivoting？",
       "options": [
-        "它把时间复杂度从 O(n^3) 降到 O(n^2)",
         "它选择可用的最大 pivot，以减少除以小数时的误差放大",
-        "它确保结果始终是整数",
-        "它消除了对 back substitution 的需求"
+        "它消除了对 back substitution 的需求",
+        "它把时间复杂度从 O(n^3) 降到 O(n^2)",
+        "它确保结果始终是整数"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "如果不使用 pivoting，除以很小的 pivot 会放大舍入误差。Partial pivoting 会交换行，把绝对值最大的元素放到 pivot 位置，使乘数保持较小，并让计算在数值上稳定。"
     },
     {
       "stage": "post",
       "question": "在 ridge Regression 中求解 (X^T X + lambda I) w = X^T y 时，为什么 Cholesky decomposition 比 LU 更受偏好？",
       "options": [
-        "Cholesky 适用于任何 Matrix，而 LU 要求方阵",
-        "Matrix X^T X + lambda I 是对称正定的，因此 Cholesky 比 LU 快两倍，并且只需要一半存储",
         "Cholesky 给出的答案比 LU 更准确",
-        "LU decomposition 无法处理正则化项"
+        "Cholesky 适用于任何 Matrix，而 LU 要求方阵",
+        "LU decomposition 无法处理正则化项",
+        "Matrix X^T X + lambda I 是对称正定的，因此 Cholesky 比 LU 快两倍，并且只需要一半存储"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "当 lambda > 0 时，X^T X + lambda I 始终是对称正定的。Cholesky 在 O(n^3/3) 运算中分解 A = LL^T，大约是 LU 的 O(2n^3/3) 的一半，并且只需要下三角。它利用了 LU 不利用的对称性。"
     },
     {
@@ -42,8 +42,8 @@
       "options": [
         "约 15 位数字",
         "约 7 位数字 (15 - log10(10^8) = 15 - 8)",
-        "约 8 位数字",
-        "零位数字，因为解没有意义"
+        "零位数字，因为解没有意义",
+        "约 8 位数字"
       ],
       "correct": 1,
       "explanation": "你会损失大约 log10(kappa) 位精度。当 kappa = 10^8 时，会从 float64 的约 15 位数字中损失约 8 位，剩下约 7 位可信数字。如果 kappa 接近 10^16，解在 float64 中就会变得没有意义。"
@@ -52,13 +52,14 @@
       "stage": "post",
       "question": "当你需要为许多不同的 b Vector 求解 Ax = b 时，LU decomposition 相比 Gaussian elimination 的主要优势是什么？",
       "options": [
-        "LU decomposition 在数值上更稳定",
         "O(n^3) 的 factorization 只做一次；之后每次用新的 b 求解只需 O(n^2)",
+        "LU decomposition 在数值上更稳定",
         "LU decomposition 适用于矩形 Matrix",
         "LU 总是产生唯一解"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "LU 在 O(n^3) 中把 A 分解为 A = LU。然后对每个新的 b，求解 Ly = b（forward substitution）和 Ux = y（back substitution），每步都是 O(n^2)。Gaussian elimination 会为每个新的 b 重新执行完整的 O(n^3)。"
     }
-  ]
+  ],
+  "title": null
 }
