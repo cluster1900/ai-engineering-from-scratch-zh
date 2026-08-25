@@ -4,12 +4,12 @@
     "stage": "pre",
     "question": "在 ML pipelines 的语境中，什么是 data leakage？",
     "options": [
-      "数据在 preprocessing 过程中被意外删除",
-      "来自 test set 或未来数据的信息污染了 training process",
+      "features 在 encoding 过程中被丢弃",
       "model 处理数据太慢",
-      "features 在 encoding 过程中被丢弃"
+      "来自 test set 或未来数据的信息污染了 training process",
+      "数据在 preprocessing 过程中被意外删除"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "当训练时使用了预测时无法获得的信息，就会发生 data leakage。示例：在包含 test data 的完整 dataset 上计算 scaler 的 mean/std。"
   },
   {
@@ -17,12 +17,12 @@
     "stage": "pre",
     "question": "为什么在划分 train/test 之前就在完整 dataset 上 fit scaler 被认为是 leaky？",
     "options": [
-      "Scaling 会改变数据分布",
       "scaler 的统计量（mean, std）包含 test data，因此 model 在训练过程中间接看到了 test 信息",
+      "Scaling 会改变数据分布",
       "Scaling 应该只在 test set 上完成",
       "在大型 datasets 上 fit scaler 花费时间太长"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "当 scaler 在所有数据上 fit 时，它的 mean 和 standard deviation 会编码来自 test samples 的信息。随后 training features 会使用 test statistics 进行偏移，从而把未来信息泄漏到训练中。"
   },
   {
@@ -44,11 +44,11 @@
     "question": "为什么真实世界 datasets 需要 ColumnTransformer？",
     "options": [
       "它让 pipeline 在多个 CPU 上 parallel 运行",
+      "它会把所有 columns 转换为相同的数据类型",
       "它在同一个 pipeline 中对 numeric 和 categorical columns 应用不同的 preprocessing steps",
-      "它会自动移除带有 missing values 的 columns",
-      "它会把所有 columns 转换为相同的数据类型"
+      "它会自动移除带有 missing values 的 columns"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "真实 datasets 具有混合类型。Numeric columns 需要 scaling，categorical columns 需要 encoding。ColumnTransformer 会在单个 pipeline 中把每个 column subset 路由到合适的 transformer。"
   },
   {
@@ -56,12 +56,12 @@
     "stage": "post",
     "question": "一个 production model 收到了训练时从未见过的 categorical value（'new_category'）。pipeline 应该处理什么？",
     "options": [
-      "完全忽略该 row，并且不返回 prediction",
-      "从头重新训练整个 model",
+      "把 unknown category 转换为数字零",
       "优雅地处理 unknown categories，例如使用 'unknown' bucket，或在 target encoding 中使用 global mean",
-      "把 unknown category 转换为数字零"
+      "完全忽略该 row，并且不返回 prediction",
+      "从头重新训练整个 model"
     ],
-    "correct": 2,
+    "correct": 1,
     "explanation": "健壮的 pipelines 会预期 production 中出现未见过的 categories。解决方案包括为 one-hot encoding 使用 'unknown' fallback，或为 target encoding 默认使用 global mean。"
   }
 ]

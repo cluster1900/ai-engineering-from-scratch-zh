@@ -255,6 +255,10 @@ flowchart TD
 | 没有 data validation | bad data 会导致悄无声息的错误 predictions | 在 prediction 前添加 schema checks |
 | Training/serving skew | 模型在 prod 中看到不同 features | training 和 serving 共用一个 Pipeline 对象 |
 
+```figure
+f3-pipeline-flow
+```
+
 ## 构建它
 `code/pipeline.py` 中的代码从零构建了一个完整 ML Pipeline：
 
