@@ -79,6 +79,10 @@ Token 预算需要 pooling。OneVision 在 2D patch grid 上使用 bilinear inte
 
 Qwen2.5-VL（Lesson 12.09）做出了不同选择。它使用 M-RoPE 和 dynamic FPS，而不是固定 pooling。它的预算会随输入缩放：1 分钟视频使用的 Token 比 5 秒视频更多。LLaVA-OneVision 固定预算并缩放 pooling。两者都有效；它们在可配置性和可预测性之间做了取舍。
 
+```figure
+l5-onevision-budget
+```
+
 ## 使用它
 `code/main.py` 是一个用于 OneVision-style VLM 的 curriculum 和预算规划器。给定每个样本的 Token 预算，以及一个目标场景组合（比如 40% 单图像、30% 多图像、30% 视频），它会：
 

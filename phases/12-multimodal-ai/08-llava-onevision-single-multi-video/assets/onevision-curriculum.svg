@@ -24,9 +24,9 @@
 
   <rect x="60" y="90" width="260" height="140" class="hot"/>
   <text x="190" y="110" text-anchor="middle" class="step">单图</text>
-  <text x="190" y="130" text-anchor="middle" class="small">AnyRes 9 tiles + 缩略图</text>
-  <text x="190" y="146" text-anchor="middle" class="small">每 tile 384，2x pool</text>
-  <text x="190" y="162" text-anchor="middle" class="small">每 tile 182 Token</text>
+  <text x="190" y="130" text-anchor="middle" class="small">AnyRes 9 个分块 + 缩略图</text>
+  <text x="190" y="146" text-anchor="middle" class="small">每个分块 384，2x pooling</text>
+  <text x="190" y="162" text-anchor="middle" class="small">每个分块 182 Token</text>
   <text x="190" y="182" text-anchor="middle" class="step">总计 1820 Token</text>
   <text x="190" y="202" text-anchor="middle" class="small">感知 + OCR + 细节</text>
 
@@ -41,7 +41,7 @@
   <rect x="620" y="90" width="280" height="140" class="cold"/>
   <text x="760" y="110" text-anchor="middle" class="step">视频</text>
   <text x="760" y="130" text-anchor="middle" class="small">32 帧，384</text>
-  <text x="760" y="146" text-anchor="middle" class="small">3x pool -&gt; 每帧 81</text>
+  <text x="760" y="146" text-anchor="middle" class="small">3x pooling -&gt; 每帧 81</text>
   <text x="760" y="162" text-anchor="middle" class="small">时间定位</text>
   <text x="760" y="182" text-anchor="middle" class="step">总计 2592 Token</text>
   <text x="760" y="202" text-anchor="middle" class="small">事件、动作识别</text>
@@ -57,7 +57,7 @@
   <text x="160" y="410" text-anchor="middle" class="small">MMMU + OCR + 细节</text>
   <text x="160" y="444" text-anchor="middle" class="caption">反向顺序（先视频）</text>
   <text x="160" y="460" text-anchor="middle" class="caption">损失 2-4 MMMU</text>
-  <text x="160" y="476" text-anchor="middle" class="caption">据 OneVision ablation</text>
+  <text x="160" y="476" text-anchor="middle" class="caption">据 OneVision 消融实验</text>
 
   <path d="M 265 410 L 325 410" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -74,9 +74,9 @@
 
   <rect x="600" y="310" width="200" height="190" class="hot"/>
   <text x="700" y="332" text-anchor="middle" class="step">Stage TT</text>
-  <text x="700" y="354" text-anchor="middle" class="small">任务特定 mix</text>
-  <text x="700" y="370" text-anchor="middle" class="small">如 agent / doc</text>
-  <text x="700" y="390" text-anchor="middle" class="small">/ robotics / video</text>
+  <text x="700" y="354" text-anchor="middle" class="small">任务特定配比</text>
+  <text x="700" y="370" text-anchor="middle" class="small">如 Agent / 文档</text>
+  <text x="700" y="390" text-anchor="middle" class="small">/ 机器人 / 视频</text>
   <text x="700" y="410" text-anchor="middle" class="small">部署调优</text>
   <text x="700" y="444" text-anchor="middle" class="caption">可选，保留基础</text>
 
@@ -84,9 +84,9 @@
   <text x="870" y="332" text-anchor="middle" class="step">涌现</text>
   <text x="870" y="354" text-anchor="middle" class="small">多摄像头</text>
   <text x="870" y="370" text-anchor="middle" class="small">推理</text>
-  <text x="870" y="390" text-anchor="middle" class="small">set-of-mark</text>
-  <text x="870" y="406" text-anchor="middle" class="small">prompt</text>
+  <text x="870" y="390" text-anchor="middle" class="small">标记集</text>
+  <text x="870" y="406" text-anchor="middle" class="small">Prompt</text>
   <text x="870" y="426" text-anchor="middle" class="small">iPhone 屏幕</text>
-  <text x="870" y="442" text-anchor="middle" class="small">agent</text>
+  <text x="870" y="442" text-anchor="middle" class="small">Agent</text>
   <text x="870" y="476" text-anchor="middle" class="caption">未训练</text>
 </svg>
