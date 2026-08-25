@@ -6,22 +6,22 @@
       "stage": "pre",
       "question": "什么是 BIO tagging？",
       "options": [
-        "逐 Token labels：B-TYPE 表示 entity 开始，I-TYPE 表示内部，O 表示外部",
+        "一种 entity 的 tree representation",
         "一种 entity 与 non-entity 的 binary scheme",
-        "一种 tokenization style",
-        "一种 entity 的 tree representation"
+        "逐 Token labels：B-TYPE 表示 entity 开始，I-TYPE 表示内部，O 表示外部",
+        "一种 tokenization style"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "BIO 通过 B/I/O 前缀，把 span extraction 转换为 token classification。"
     },
     {
       "stage": "pre",
       "question": "为什么 rule-based gazetteers 在生产环境 NER 中很脆弱？",
       "options": [
-        "它们需要 GPUs",
         "它们很慢",
+        "它们无法处理 multi-token entities",
         "它们对新 entities 覆盖率为零，并且无法消歧（例如 Apple 水果 vs 公司）",
-        "它们无法处理 multi-token entities"
+        "它们需要 GPUs"
       ],
       "correct": 2,
       "explanation": "Gazetteers 可以匹配已知字符串，但无法消歧语义，也无法泛化到未见过的名称。"
@@ -31,11 +31,11 @@
       "question": "在 NER 中，CRF 相比 HMM 的关键优势是什么？",
       "options": [
         "CRFs 避免使用 Viterbi algorithm",
-        "CRFs 从不需要 training data",
         "CRFs 是 discriminative 的，并且可以混合任意 features（shape、capitalization、neighbors）",
-        "CRFs 更快"
+        "CRFs 更快",
+        "CRFs 从不需要 training data"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "CRFs 是 discriminative 的，并允许你基于丰富且重叠的 features 进行条件建模。"
     },
     {
@@ -43,56 +43,56 @@
       "question": "在 BiLSTM-CRF architecture 中，CRF layer 起什么作用？",
       "options": [
         "执行 tokenization",
-        "在 LSTM emissions 之上建模 tag-to-tag transitions，从而约束有效的 BIO tag sequences",
+        "替换 embeddings",
         "预训练 LSTM",
-        "替换 embeddings"
+        "在 LSTM emissions 之上建模 tag-to-tag transitions，从而约束有效的 BIO tag sequences"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "位于 LSTM features 之上的 CRF 会建模 inter-label dependencies，并排除非法序列。"
     },
     {
       "stage": "check",
       "question": "为什么必须用 entity-level F1 而不是 token-level F1 来评估 NER？",
       "options": [
-        "Entity-level F1 更容易计算",
         "预测 spans 必须与真实 spans 精确匹配；token-level F1 会通过计算部分匹配而夸大 accuracy",
+        "Entity-level F1 是 HuggingFace 强制要求的",
         "Token-level F1 无法处理 BIO",
-        "Entity-level F1 是 HuggingFace 强制要求的"
+        "Entity-level F1 更容易计算"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Span 精确匹配才是有意义的 metric；token-level F1 会因为部分重叠而虚高。"
     },
     {
       "stage": "post",
       "question": "HuggingFace NER pipeline 中的 aggregation_strategy='simple' 做什么？",
       "options": [
-        "将输出转换为小写",
-        "跳过 tokenization",
+        "只返回置信度最高的 entity",
         "把连续的 B-X 和 I-X tokens 合并为单个 span",
-        "只返回置信度最高的 entity"
+        "将输出转换为小写",
+        "跳过 tokenization"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "它会把同一类型的连续 BIO tokens 合并为 span-level entities。"
     },
     {
       "stage": "post",
       "question": "为什么标准 BIO 无法处理 nested entities？",
       "options": [
-        "BIO 需要 transformer",
         "BIO 是一种 flat per-token scheme，无法表达两个不同类型的重叠 spans",
+        "BIO 需要 transformer",
         "BIO 无法表示 multi-token entities",
         "BIO 会丢弃 type label"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "BIO 为每个 Token 分配一个 label；nested spans 需要 multi-pass 或 span-based models。"
     },
     {
       "stage": "post",
       "question": "在 2026 年，经典 NER（CRF 或 BiLSTM-CRF）什么时候仍然胜过 LLM？",
       "options": [
+        "在 open-domain narrative 上",
         "在 nested entities 上",
         "只要输入是英语",
-        "在 open-domain narrative 上",
         "在严格 latency 预算、充足 labels、稳定 ontologies，或 non-generative regulatory constraints 下"
       ],
       "correct": 3,

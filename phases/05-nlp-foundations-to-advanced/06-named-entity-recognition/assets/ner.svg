@@ -42,7 +42,7 @@
   <text class="note" x="475" y="325">工程</text>
 
   <rect class="hot" x="680" y="180" width="200" height="160" rx="4"/>
-  <text class="label" x="780" y="205" text-anchor="middle">transformer NER</text>
+  <text class="label" x="780" y="205" text-anchor="middle">Transformer NER</text>
   <text class="content" x="695" y="235">微调 BERT</text>
   <text class="content" x="695" y="255">token-classif 头</text>
   <text class="content" x="695" y="275">聚合 spans</text>
