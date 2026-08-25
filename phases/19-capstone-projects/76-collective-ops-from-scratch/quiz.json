@@ -6,20 +6,20 @@
       "stage": "pre",
       "question": "对于 N 列上的​​ T 字节张量，ring allreduce 的每列带宽成本是多少？",
       "options": [
-        "T字节",
         "N * T 字节",
-        "2T(N-1)/N字节",
-        "T log2(N) 字节"
+        "T log2(N) 字节",
+        "T字节",
+        "2T(N-1)/N字节"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Ring allreduce 将 N-1 个大小为 T/N 的块移动两次（减少-分散然后allgather）；每列总数为 2T(N-1)/N，与簇大小无关。"
     },
     {
-      "stage": "check",
+      "stage": "pre",
       "question": "为什么本课中的队列网格是真实集群上 NCCL 的诚实替代品？",
       "options": [
-        "它在 CUDA 核心上运行",
         "它通过硬件卸载减少",
+        "它在 CUDA 核心上运行",
         "它实现相同的线路模式（围绕环有序点对点发送），只是介质不同",
         "它压缩消息"
       ],
@@ -30,34 +30,34 @@
       "stage": "check",
       "question": "环的reduce-scatter一半全部reduce后，秩r持有什么？",
       "options": [
-        "没有什么",
-        "未约化的完整张量",
         "一个块的减少总和（张量的 N 分之一）",
-        "两个块的减少总和"
+        "两个块的减少总和",
+        "未约化的完整张量",
+        "没有什么"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "reduce_scatter将一大块的总和放在一个等级上；然后，所有收集的一半将这些完成的块绕着环旋转。"
     },
     {
       "stage": "check",
       "question": "为什么使用树广播而不是从源直接发送N-1个？",
       "options": [
-        "树使用更少的内存",
-        "树木每轮的支架数量加倍；深度为 log2(N)，因此延迟按 log 而非 N 缩放",
         "PyTorch 中树是必需的",
-        "直接发送丢包"
+        "直接发送丢包",
+        "树木每轮的支架数量加倍；深度为 log2(N)，因此延迟按 log 而非 N 缩放",
+        "树使用更少的内存"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "当每跳延迟成为瓶颈时，log2(N) 跳占主导地位； N-1 个顺序发送将延迟下限支付 N 倍。"
     },
     {
-      "stage": "post",
+      "stage": "check",
       "question": "为什么要在同一输入上针对 torch.distributed gloo 进行验证？",
       "options": [
         "格鲁速度更快",
         "Gloo是集体语义的法律参考；字节相等的输出证明您的算法在真正的集群上运行之前符合规范",
-        "Gloo 自动写入 JSONL",
-        "Gloo 无需设置"
+        "Gloo 无需设置",
+        "Gloo 自动写入 JSONL"
       ],
       "correct": 1,
       "explanation": "如果没有参考，基元在实际训练运行的第 10000 步之前看起来都是正确的； gloo 给出了 CPU 上字节相等的基本事实。"

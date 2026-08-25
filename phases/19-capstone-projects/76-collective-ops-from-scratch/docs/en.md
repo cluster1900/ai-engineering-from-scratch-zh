@@ -18,7 +18,7 @@
 
 N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次。每个rank的带宽缩放为O(N)，根成为瓶颈，并且挂钟楼层是最慢的链接乘以N。Ring allreduce将其展平为大小为T/N的2(N-1)块，因此每个rank字节下降到2T(N-1)/N，与集群大小无关。 Tree allreduce 在小 N 和高延迟链路上获胜，因为深度是 log2(N) 跳而不是 2(N-1)。为集群形状选择错误的拓扑，最慢的 GPU 决定步骤时间。
 
-您将在本教程中阅读的每个分布式训练框架都取决于这四个原语。 PyTorch DDP 将梯度与每个参数桶的一个 allreduce 同步。 ZeRO 通过 reduce_scatter 对优化器状态进行分片，并通过 allgather 广播更新的参数。 FSDP将fullforward变成了allgather加上reduce_scatter。管道并行需要广播以跨阶段组激活。如果您无法实现这四个集合，您就无法推理为什么训练会停止，为什么梯度不匹配会出现在第 3 级，或者为什么在交换拓扑时管道泡沫会加倍。
+您将在本教程中阅读的每个分布式训练框架都取决于这四个原语。 PyTorch DDP 将梯度与每个参数桶的一个 allreduce 同步。 ZeRO 通过 reduce_scatter 对Optimizer状态进行分片，并通过 allgather 广播更新的参数。 FSDP将fullforward变成了allgather加上reduce_scatter。管道并行需要广播以跨阶段组激活。如果您无法实现这四个集合，您就无法推理为什么训练会停止，为什么梯度不匹配会出现在第 3 级，或者为什么在交换拓扑时管道泡沫会加倍。
 
 ## 概念
 
@@ -53,6 +53,10 @@ NCCL 在 PCIe 和 NVLink 上运行，并减少了硬件卸载。在CPU上你没�
 ### 针对 gloo 进行验证
 
 每个原语都会进行单元测试，将其输出与在相同世界大小的相同张量上使用 gloo 后端初始化的 `torch.distributed` 进行比较。如果您的ring allreduce 与gloo 的偏差超过float32 epsilon，则测试失败。针对参考实现的验证是不可协商的；如果没有它，基元在实际训练运行的第 10000 步之前看起来都是正确的。
+
+```figure
+ci-ring-allreduce
+```
 
 ## 构建它
 
