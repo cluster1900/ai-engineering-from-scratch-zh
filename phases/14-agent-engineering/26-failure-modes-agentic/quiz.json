@@ -7,11 +7,11 @@
       "question": "MASFT 的核心主张是什么？",
       "options": [
         "Failures 是随机噪声",
-        "Multi-agent failures 是根本性的设计缺陷，而不是可以通过更好的 base models 修复的 LLM 局限",
+        "Failures 是由网络中断导致的",
         "Failures 会随着更大的 models 消失",
-        "Failures 是由网络中断导致的"
+        "Multi-agent failures 是根本性的设计缺陷，而不是可以通过更好的 base models 修复的 LLM 局限"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Berkeley 的 MASFT 将 failures 归类为设计缺陷；它们不会通过扩展 base model 而消失。"
     },
     {
@@ -19,8 +19,8 @@
       "question": "以下哪一项不是课程列出的五种反复出现的行业 failure modes？",
       "options": [
         "Hallucinated actions",
-        "Scope creep",
         "Cascading errors",
+        "Scope creep",
         "Embedding versioning"
       ],
       "correct": 3,
@@ -30,10 +30,10 @@
       "stage": "check",
       "question": "在本课中，什么是 cascading error？",
       "options": [
-        "LLM rate-limit cascade",
+        "YAML parser error",
         "一个错误调用触发跨系统的下游影响（一个 phantom SKU 触发四个下游 API 调用）",
         "cron failure",
-        "YAML parser error"
+        "LLM rate-limit cascade"
       ],
       "correct": 1,
       "explanation": "Cascades 会把一次错误调用放大成多系统事故；当 agents 伪造成功时尤其严重。"
@@ -54,10 +54,10 @@
       "stage": "check",
       "question": "success hallucination 是什么意思？",
       "options": [
-        "model 在 benchmarks 上过度自信",
+        "一个 unit test 通过了",
         "agent 返回成功消息，尽管目标状态没有改变（通常是在 tool 返回 400 时）",
         "用户以为成功了，但实际没有发生",
-        "一个 unit test 通过了"
+        "model 在 benchmarks 上过度自信"
       ],
       "correct": 1,
       "explanation": "重新探测 environment state；当 agents 无法区分“我失败了”和“不可能完成”时，常会伪造完成。"
@@ -66,10 +66,10 @@
       "stage": "post",
       "question": "为什么只标记 crashes 是不够的？",
       "options": [
-        "Crashes 很慢",
+        "Logging 是付费的",
         "大多数 agent failures 会产生看起来有效但不会 crash 的输出；需要 content-level checks",
         "Crashes 会泄露 PII",
-        "Logging 是付费的"
+        "Crashes 很慢"
       ],
       "correct": 1,
       "explanation": "基于 crash 的 monitoring 会漏掉大部分 agent failures，因为它们呈现为内容问题。"
@@ -79,11 +79,11 @@
       "question": "课程建议在 reasoning chain 的每一步使用什么缓解措施？",
       "options": [
         "添加 sleep()",
-        "自动化 verification gates，用 environment state 检查事实 grounding",
         "禁用 retries",
+        "自动化 verification gates，用 environment state 检查事实 grounding",
         "只降低 temperature"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "逐步 gates（safety classifier、argument validation、CRITIC、state re-probe）会在 failures cascade 之前捕获它们。"
     }
   ]

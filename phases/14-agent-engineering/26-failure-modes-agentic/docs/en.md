@@ -70,6 +70,10 @@ Cascading 是最致命的。Agents 无法区分“我失败了”和“任务不
 - **No baseline.** Drift detection 需要 last-known-good；没有它，你就无法判断“这正在变差”。
 - **Over-alerting.** 每个 failure 都产生一次 page。应该 cluster 并 rate-limit。
 
+```figure
+failure-cascade
+```
+
 ## 构建它
 `code/main.py` 实现了一个 stdlib failure-mode tagger：
 
