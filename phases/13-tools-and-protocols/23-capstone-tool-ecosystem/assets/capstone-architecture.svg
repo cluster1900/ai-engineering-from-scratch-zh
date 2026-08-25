@@ -17,16 +17,16 @@
     </style>
   </defs>
 
-  <text x="490" y="26" text-anchor="middle" class="title">capstone：研究与报告生态，覆盖每个 Phase 13 primitive</text>
+  <text x="490" y="26" text-anchor="middle" class="title">综合项目：无状态研究与报告生态系统</text>
 
   <rect x="40" y="60" width="160" height="440" class="cool"/>
-  <text x="120" y="82" text-anchor="middle" class="head">client / host</text>
+  <text x="120" y="82" text-anchor="middle" class="head">客户端 / 主机</text>
   <text x="56" y="108" class="small">Claude Desktop,</text>
   <text x="56" y="124" class="small">Cursor, VS Code</text>
-  <text x="56" y="148" class="step">加载：</text>
-  <text x="56" y="166" class="small">- AGENTS.md</text>
-  <text x="56" y="182" class="small">- SKILL.md</text>
-  <text x="56" y="198" class="small">(run-research)</text>
+  <text x="56" y="148" class="step">每个请求：</text>
+  <text x="56" y="166" class="small">protocolVersion</text>
+  <text x="56" y="182" class="small">clientCapabilities</text>
+  <text x="56" y="198" class="small">clientInfo</text>
   <text x="56" y="230" class="step">渲染：</text>
   <text x="56" y="248" class="small">ui://report/current</text>
   <text x="56" y="264" class="small">(iframe sandbox)</text>
@@ -36,17 +36,17 @@
   <path d="M200,280 L280,280" class="edge" marker-end="url(#arrow)"/>
 
   <rect x="280" y="60" width="200" height="440" class="cold"/>
-  <text x="380" y="82" text-anchor="middle" class="head">gateway</text>
-  <text x="296" y="108" class="step">auth: Bearer</text>
+  <text x="380" y="82" text-anchor="middle" class="head">网关</text>
+  <text x="296" y="108" class="step">认证：Bearer</text>
   <text x="296" y="126" class="small">user = alice | bob</text>
   <text x="296" y="148" class="step">RBAC:</text>
   <text x="296" y="166" class="small">research:read</text>
   <text x="296" y="182" class="small">research:write</text>
-  <text x="296" y="214" class="step">pinned-hash:</text>
-  <text x="296" y="232" class="small">每个 tool 使用 SHA256</text>
-  <text x="296" y="248" class="small">拒绝 mutations</text>
-  <text x="296" y="280" class="step">audit log</text>
-  <text x="296" y="298" class="small">user, tool, decision</text>
+  <text x="296" y="214" class="step">无状态路由：</text>
+  <text x="296" y="232" class="small">Mcp-Method</text>
+  <text x="296" y="248" class="small">Mcp-Name</text>
+  <text x="296" y="280" class="step">审计日志</text>
+  <text x="296" y="298" class="small">用户、Tool、决策</text>
   <text x="296" y="330" class="step">OTel: gen_ai.*</text>
   <text x="296" y="348" class="small">mcp.call CLIENT</text>
 
@@ -55,34 +55,34 @@
   <path d="M560,390 L480,390" class="edge" marker-end="url(#arrow)"/>
 
   <rect x="560" y="60" width="220" height="440" class="hot"/>
-  <text x="670" y="82" text-anchor="middle" class="head">research MCP server</text>
-  <text x="576" y="108" class="step">tools</text>
-  <text x="576" y="126" class="small">arxiv_search</text>
-  <text x="576" y="142" class="small">generate_report（任务）</text>
+  <text x="670" y="82" text-anchor="middle" class="head">研究 MCP server</text>
+  <text x="576" y="108" class="step">server/discover</text>
+  <text x="576" y="126" class="small">2026-07-28</text>
+  <text x="576" y="142" class="small">Tool + 扩展</text>
   <text x="576" y="174" class="step">资源</text>
   <text x="576" y="192" class="small">notes://recent</text>
-  <text x="576" y="224" class="step">prompts</text>
+  <text x="576" y="224" class="step">Prompt</text>
   <text x="576" y="242" class="small">/research_topic</text>
   <text x="576" y="274" class="step">ui://</text>
   <text x="576" y="292" class="small">ui://report/current</text>
-  <text x="576" y="324" class="step">任务</text>
-  <text x="576" y="342" class="small">持久；崩溃安全</text>
-  <text x="576" y="374" class="step">A2A 调出：</text>
+  <text x="576" y="324" class="step">tasks 扩展</text>
+  <text x="576" y="342" class="small">获取 / 更新 / 取消</text>
+  <text x="576" y="374" class="step">A2A 外部调用：</text>
   <text x="576" y="392" class="small">writer-agent</text>
-  <text x="576" y="408" class="small">tasks/send summary</text>
+  <text x="576" y="408" class="small">SendMessage 摘要</text>
 
   <path d="M780,390 L860,390" class="edge" marker-end="url(#arrow)"/>
 
   <rect x="860" y="60" width="120" height="440" class="box"/>
-  <text x="920" y="82" text-anchor="middle" class="head">writer</text>
-  <text x="876" y="108" class="small">A2A agent</text>
+  <text x="920" y="82" text-anchor="middle" class="head">撰写者</text>
+  <text x="876" y="108" class="small">A2A Agent</text>
   <text x="876" y="124" class="small">不透明</text>
-  <text x="876" y="148" class="step">skills:</text>
+  <text x="876" y="148" class="step">Skill：</text>
   <text x="876" y="166" class="small">summarize_</text>
-  <text x="876" y="182" class="small">论文</text>
+  <text x="876" y="182" class="small">papers</text>
   <text x="876" y="214" class="step">返回：</text>
-  <text x="876" y="232" class="small">Artifact</text>
+  <text x="876" y="232" class="small">产物</text>
   <text x="876" y="248" class="small">summary.md</text>
 
-  <text x="490" y="540" text-anchor="middle" class="caption">一个 trace id，跨 client -&gt; gateway -&gt; server -&gt; a2a；处处使用 OTel GenAI。</text>
+  <text x="490" y="540" text-anchor="middle" class="caption">无协议会话：每个请求都携带版本和能力；trace 贯穿每个边界。</text>
 </svg>

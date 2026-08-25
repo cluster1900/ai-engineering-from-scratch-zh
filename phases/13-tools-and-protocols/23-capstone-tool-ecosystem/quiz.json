@@ -1,0 +1,78 @@
+{
+  "lesson": "23-capstone-tool-ecosystem",
+  "title": "综合项目：无状态 Tool 生态系统",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "成功运行本课的 stdlib harness 能证明什么？",
+      "options": [
+        "进程内策略和数据流按照断言运行",
+        "真实 MCP transport 完成了 initialization",
+        "OAuth authorization server 签发了有效 Token",
+        "Collector 接收了每个 OpenTelemetry span"
+      ],
+      "correct": 0,
+      "explanation": "该 harness 使用 Python 函数、静态 Token、fixture 和内存 span。它验证这些本地边界，而协议、授权、导出、浏览器和 sandbox 集成则留给后续测试。"
+    },
+    {
+      "stage": "check",
+      "question": "对于服务器发现和长时间运行工作轮询，哪一个流程符合 MCP revision 2026-07-28？",
+      "options": [
+        "server/connect, tools/poll, tasks/status",
+        "server/discover、tools/call 返回 task handle、tasks/get",
+        "initialize, tools/call, tasks/result",
+        "GET /mcp, tools/call, tasks/list"
+      ],
+      "correct": 1,
+      "explanation": "无状态 revision 使用强制的 `server/discover`。可选的 `io.modelcontextprotocol/tasks` extension 返回 task handle，并使用 `tasks/get`；终止状态的 task 携带最终结果。旧 handshake、GET endpoint、`tasks/result` 和 `tasks/list` 不属于该流程。"
+    },
+    {
+      "stage": "check",
+      "question": "A2A v1 在其 gRPC 和 JSON-RPC binding 中如何命名发送 message 的操作？",
+      "options": [
+        "AgentMessage",
+        "message/create",
+        "tasks/send",
+        "SendMessage"
+      ],
+      "correct": 3,
+      "explanation": "A2A v1 在 gRPC 和 JSON-RPC 中使用 `SendMessage`。其 HTTP+JSON binding 公开 `POST /message:send`。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个 MCP Apps SDK 调用可以让 App 请求其来源服务器上的 Tool？",
+      "options": [
+        "host.callTool(name, args)",
+        "app.callServerTool({ name, arguments })",
+        "app.invoke(name, args)",
+        "server.tools.call(args)"
+      ],
+      "correct": 1,
+      "explanation": "App instance 使用包含 `name` 和可选 `arguments` 的对象调用 `callServerTool`；host 代理底层 `tools/call` 请求。"
+    },
+    {
+      "stage": "post",
+      "question": "综合项目中的 Agent Skill 对 MCP Tool 和 sandbox 提供什么 authority？",
+      "options": [
+        "在显式调用后绕过审批",
+        "授予正文中列出的所有 Tool",
+        "授予只读网络访问权限",
+        "不提供任何 authority；host adapter 和策略仍需分别授权每项 capability"
+      ],
+      "correct": 3,
+      "explanation": "Skill 提供流程。发现、调用、Tool 暴露、授权、credential 和隔离由 host 和外部 runtime 边界强制执行。"
+    },
+    {
+      "stage": "post",
+      "question": "哪项证据最能证明 telemetry 跨越了生产导出边界？",
+      "options": [
+        "要求发出 span 的 Skill 指令",
+        "包含 traceId key 的本地 dictionary",
+        "预期 span 层级的图表",
+        "包含 trace 和 parent 断言的 receiver 端 collector 数据"
+      ],
+      "correct": 3,
+      "explanation": "Receiver 端观察结果可以证明 SDK、propagator、exporter、transport 和 collector 路径正常工作。本地数据和图表只能证明本地构造或设计意图。"
+    }
+  ]
+}
