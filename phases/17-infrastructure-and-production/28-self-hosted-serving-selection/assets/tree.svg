@@ -16,10 +16,10 @@
   <text x="480" y="24" text-anchor="middle" class="title">自托管引擎决策树：先硬件，再规模，再负载</text>
 
   <rect x="40" y="50" width="280" height="200" class="cpu"/>
-  <text x="180" y="72" text-anchor="middle" class="head">CPU / edge</text>
+  <text x="180" y="72" text-anchor="middle" class="head">CPU / 边缘端</text>
   <text x="180" y="96" text-anchor="middle" class="step">llama.cpp（主流）</text>
   <text x="60" y="124" class="small">· 最广模型支持</text>
-  <text x="60" y="142" class="small">· 最快 CPU inference</text>
+  <text x="60" y="142" class="small">· 最快的 CPU inference</text>
   <text x="60" y="160" class="small">· 完全控制 quant / threads</text>
   <rect x="60" y="180" width="240" height="60" class="box"/>
   <text x="180" y="202" text-anchor="middle" class="step">Ollama = llama.cpp + UX</text>
@@ -29,33 +29,33 @@
   <rect x="340" y="50" width="280" height="200" class="gpu"/>
   <text x="480" y="72" text-anchor="middle" class="head">NVIDIA GPU</text>
   <rect x="360" y="90" width="240" height="45" class="box"/>
-  <text x="480" y="113" text-anchor="middle" class="step">vLLM（广泛默认）</text>
-  <text x="480" y="128" text-anchor="middle" class="small">v0.15.1 2026 年 2 月，Blackwell SM120</text>
+  <text x="480" y="113" text-anchor="middle" class="step">vLLM（广泛采用的默认方案）</text>
+  <text x="480" y="128" text-anchor="middle" class="small">v0.15.1，2026 年 2 月，Blackwell SM120</text>
   <rect x="360" y="145" width="240" height="45" class="box"/>
-  <text x="480" y="168" text-anchor="middle" class="step">TRT-LLM（仅 Blackwell）</text>
+  <text x="480" y="168" text-anchor="middle" class="step">TRT-LLM（仅限 Blackwell）</text>
   <text x="480" y="183" text-anchor="middle" class="small">B200/GB200 吞吐领先</text>
   <rect x="360" y="200" width="240" height="45" class="box"/>
-  <text x="480" y="222" text-anchor="middle" class="step">Ollama（仅 dev）</text>
+  <text x="480" y="222" text-anchor="middle" class="step">Ollama（仅限 dev）</text>
   <text x="480" y="237" text-anchor="middle" class="small">不适合共享 production</text>
 
   <rect x="640" y="50" width="280" height="200" class="agent"/>
-  <text x="780" y="72" text-anchor="middle" class="head">agentic / prefix-heavy</text>
+  <text x="780" y="72" text-anchor="middle" class="head">Agent 型 / prefix 密集</text>
   <text x="780" y="96" text-anchor="middle" class="step">SGLang（专用）</text>
   <text x="660" y="124" class="small">· RadixAttention（Phase 17 · 06）</text>
-  <text x="660" y="142" class="small">· 生产中 400,000+ GPUs</text>
-  <text x="660" y="160" class="small">· xAI, LinkedIn, Cursor, Oracle</text>
-  <text x="660" y="178" class="small">· GCP, Azure, AWS</text>
-  <text x="780" y="210" text-anchor="middle" class="caption">RAG 重 prefix 复用 → 这里</text>
-  <text x="780" y="228" text-anchor="middle" class="caption">多轮 agent 工具 → 这里</text>
+  <text x="660" y="142" class="small">· 生产中部署 400,000+ GPUs</text>
+  <text x="660" y="160" class="small">· xAI、LinkedIn、Cursor、Oracle</text>
+  <text x="660" y="178" class="small">· GCP、Azure、AWS</text>
+  <text x="780" y="210" text-anchor="middle" class="caption">RAG 大量复用 prefix → 这里</text>
+  <text x="780" y="228" text-anchor="middle" class="caption">多轮 Agent 工具 → 这里</text>
 
   <rect x="40" y="280" width="880" height="90" class="maint"/>
   <text x="480" y="302" text-anchor="middle" class="head">TGI 自 2025 年 12 月 11 日起进入维护模式</text>
-  <text x="480" y="324" text-anchor="middle" class="step">后续仅 bug 修复，不要把 TGI 作为新项目默认选项</text>
-  <text x="480" y="344" text-anchor="middle" class="caption">现有 TGI 部署可继续；方便时迁移到 SGLang 或 vLLM</text>
+  <text x="480" y="324" text-anchor="middle" class="step">后续仅修复 bug；新项目不要默认选择 TGI</text>
+  <text x="480" y="344" text-anchor="middle" class="caption">现有 TGI 部署可继续使用；方便时迁移至 SGLang 或 vLLM</text>
 
   <rect x="40" y="390" width="880" height="100" class="box"/>
   <text x="480" y="412" text-anchor="middle" class="head">2026 pipeline 模式</text>
   <text x="480" y="434" text-anchor="middle" class="step">dev: Ollama   →   staging: llama.cpp   →   prod: vLLM（或 SGLang）</text>
-  <text x="480" y="454" text-anchor="middle" class="step">三层共用相同 GGUF 或 HF weights</text>
-  <text x="480" y="476" text-anchor="middle" class="caption">工程师本地快速迭代；staging 镜像 prod quant；prod 是 serving 目标</text>
+  <text x="480" y="454" text-anchor="middle" class="step">三层共用相同的 GGUF 或 HF weights</text>
+  <text x="480" y="476" text-anchor="middle" class="caption">工程师在本地快速迭代；staging 复刻 prod quant；prod 是 serving 目标</text>
 </svg>

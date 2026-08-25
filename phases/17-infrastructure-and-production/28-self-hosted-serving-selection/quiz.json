@@ -1,63 +1,63 @@
 {
   "lesson": "28-self-hosted-serving-selection",
-  "title": "Self-Hosted Serving 选择 — llama.cpp, Ollama, TGI, vLLM, SGLang",
+  "title": "Self-Hosted Serving Selection — Matching Engine to Hardware and Scale",
   "questions": [
     {
       "stage": "pre",
       "question": "课程把哪个 engine 选为开发笔记本上的一条命令默认选择？",
       "options": [
-        "TGI",
-        "Ollama",
+        "llama.cpp",
         "vLLM",
-        "llama.cpp"
+        "TGI",
+        "Ollama"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "哪个 2025 年事件让新项目的默认选择不再是 TGI？",
       "options": [
-        "TGI 被 Anthropic 收购",
-        "TGI 提高了价格",
+        "TGI 于 2025 年 12 月 11 日进入 maintenance mode —— 后续只修 bug",
         "TGI 取消了 CUDA 支持",
-        "TGI 于 2025 年 12 月 11 日进入 maintenance mode —— 后续只修 bug"
+        "TGI 提高了价格",
+        "TGI 被 Anthropic 收购"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "哪个硬件约束会强制选择 llama.cpp，并排除 vLLM / TRT-LLM？",
       "options": [
-        "Apple M4",
+        "仅 CPU（无 accelerator）",
         "AMD MI300X",
         "NVIDIA Hopper",
-        "仅 CPU（无 accelerator）"
+        "Apple M4"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "由于 RadixAttention，课程将哪个 engine 定位于 agentic 多轮和 prefix-heavy 工作负载？",
       "options": [
-        "Ollama",
-        "llama.cpp",
         "SGLang",
-        "TGI"
+        "Ollama",
+        "TGI",
+        "llama.cpp"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "课程推荐在相同 GGUF 或 HF weights 上使用什么 dev-to-prod pipeline？",
       "options": [
-        "只用 TRT-LLM，从上到下全程使用",
+        "所有地方都用 TGI",
         "dev 用 Ollama，prod 也用 Ollama",
         "dev 用 Ollama，staging 用 llama.cpp，prod 用 vLLM（或在 prefix-heavy 场景用 SGLang）",
-        "所有地方都用 TGI"
+        "只用 TRT-LLM，从上到下全程使用"
       ],
       "correct": 2,
       "explanation": ""
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "为什么不建议将 Ollama 用于共享生产环境？",
       "options": [
-        "它是闭源的",
+        "它无法加载 GGUF",
         "它只能在 Windows 上运行",
-        "Go HTTP 序列化会增加开销，并发管理比 vLLM 更简单，且 OpenTelemetry 支持滞后",
-        "它无法加载 GGUF"
+        "它是闭源的",
+        "Go HTTP 序列化会增加开销，并发管理比 vLLM 更简单，且 OpenTelemetry 支持滞后"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     }
   ]
