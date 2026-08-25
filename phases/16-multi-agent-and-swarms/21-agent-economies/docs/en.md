@@ -89,6 +89,10 @@ LaMAS 提案（AAMAS 2025）结合了：DID identity、Shapley-value credit attr
 
 在封闭的企业系统中，经济机制会让位于更简单的分配方式（managers 分配工作，metrics 是内部的）。经济学文献主要适用于开放网络。
 
+```figure
+swarm-auction
+```
+
 ## 构建它
 `code/main.py` 实现：
 

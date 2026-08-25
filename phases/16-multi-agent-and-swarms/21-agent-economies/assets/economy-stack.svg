@@ -16,10 +16,10 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="28" text-anchor="middle" class="title">5 层 agent-economy stack 与核心机制</text>
+  <text x="480" y="28" text-anchor="middle" class="title">5 层 Agent 经济栈与核心机制</text>
 
   <rect x="40" y="60" width="420" height="220" class="box"/>
-  <text x="250" y="84" text-anchor="middle" class="head">5 层 stack</text>
+  <text x="250" y="84" text-anchor="middle" class="head">5 层栈</text>
 
   <rect x="70" y="100" width="360" height="34" class="cool"/>
   <text x="250" y="122" text-anchor="middle" class="step">5. 治理 — Agentic DAOs</text>
@@ -31,7 +31,7 @@
   <text x="250" y="202" text-anchor="middle" class="step">3. 认知 — LLM + RAG + MCP</text>
 
   <rect x="70" y="220" width="360" height="34" class="hot"/>
-  <text x="250" y="242" text-anchor="middle" class="step">2. 身份 — W3C DIDs + reputation</text>
+  <text x="250" y="242" text-anchor="middle" class="step">2. 身份 — W3C DIDs + 声誉</text>
 
   <rect x="70" y="260" width="360" height="34" class="box"/>
   <text x="250" y="278" text-anchor="middle" class="step">1. DePIN — Bittensor · Akash · Render</text>
@@ -39,30 +39,30 @@
   <rect x="500" y="60" width="420" height="220" class="cool"/>
   <text x="710" y="84" text-anchor="middle" class="head">生产网络（2026 年 4 月）</text>
 
-  <text x="530" y="114" class="step">Bittensor (TAO)</text>
-  <text x="530" y="132" class="small">subnets 奖励任务特定模型；stake 加权评分</text>
+  <text x="530" y="114" class="step">Bittensor（TAO）</text>
+  <text x="530" y="132" class="small">subnets 奖励特定任务 Model；stake 加权评分</text>
 
   <text x="530" y="160" class="step">Fetch.ai / ASI</text>
-  <text x="530" y="178" class="small">ASI-1 Mini LLM；FET token 用于 agent-to-agent payment</text>
+  <text x="530" y="178" class="small">ASI-1 Mini LLM；FET Token 用于 Agent 间支付</text>
 
   <text x="530" y="206" class="step">Gonka</text>
-  <text x="530" y="224" class="small">transformer proof-of-work；可验证推理任务</text>
+  <text x="530" y="224" class="small">Transformer proof-of-work；可验证推理任务</text>
 
-  <text x="530" y="252" class="step">LaMAS (AAMAS 2025)</text>
-  <text x="530" y="270" class="small">带 Shapley attribution 的去中心化 multi-agent system</text>
+  <text x="530" y="252" class="step">LaMAS（AAMAS 2025）</text>
+  <text x="530" y="270" class="small">带 Shapley attribution 的去中心化多 Agent 系统</text>
 
   <rect x="40" y="310" width="880" height="190" class="box"/>
   <text x="480" y="334" text-anchor="middle" class="head">三大核心机制</text>
 
-  <text x="60" y="366" class="step">Shapley attribution</text>
-  <text x="230" y="366" class="small">公平 credit allocation；N&gt;6 agents 时采样 N 个 permutations</text>
+  <text x="60" y="366" class="step">Shapley 归因</text>
+  <text x="230" y="366" class="small">公平贡献分配；N&gt;6 个 Agent 时采样 N 个排列</text>
   <text x="230" y="384" class="small">公理：效率、对称、线性、null</text>
 
-  <text x="60" y="414" class="step">Second-price auction</text>
-  <text x="230" y="414" class="small">monotone aggregation 下 truthful（Google Research）</text>
-  <text x="230" y="432" class="small">winner 由 bid 决定；支付第二高价</text>
+  <text x="60" y="414" class="step">第二价格拍卖</text>
+  <text x="230" y="414" class="small">在单调聚合下诚实（Google Research）</text>
+  <text x="230" y="432" class="small">获胜者由出价决定；支付第二高价</text>
 
-  <text x="60" y="462" class="step">Reputation capital</text>
-  <text x="230" y="462" class="small">DID 绑定分数，带 exp. decay；验证失败则 slashed</text>
-  <text x="230" y="480" class="small">读取便宜（routing）；伪造昂贵（随时间积累）</text>
+  <text x="60" y="462" class="step">声誉资本</text>
+  <text x="230" y="462" class="small">DID 绑定分数，采用指数衰减；验证失败则罚没</text>
+  <text x="230" y="480" class="small">读取成本低（routing）；伪造成本高（随时间积累）</text>
 </svg>
