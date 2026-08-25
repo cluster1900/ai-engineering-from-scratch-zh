@@ -5,61 +5,62 @@
       "stage": "post",
       "question": "为什么 LangGraph State TypedDict 中的 `messages` 字段需要 `Annotated[list, add_messages]`？",
       "options": [
-        "它支持从模型流式输出 token deltas。",
-        "没有 reducer 时，node 更新会覆盖 list，而不是追加到 list，因此每一轮都会丢失之前的历史。",
         "它会在 checkpoints 写入磁盘时压缩 message list。",
-        "它会在运行时将普通 dicts 转换为 LangChain message objects。"
+        "它支持从模型流式输出 token deltas。",
+        "它会在运行时将普通 dicts 转换为 LangChain message objects。",
+        "没有 reducer 时，node 更新会覆盖 list，而不是追加到 list，因此每一轮都会丢失之前的历史。"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "`interrupt_before=['tools']` 和 `interrupt_after=['tools']` 有什么区别？",
       "options": [
-        "没有区别；它们是 aliases。",
         "`interrupt_before` 会在模型发出 tool_calls 之后、tools 执行之前暂停；`interrupt_after` 会在 tools 已经运行之后暂停。",
         "`interrupt_before` 会先在 sandbox 中运行 tool；`interrupt_after` 会在 production 中运行它。",
+        "没有区别；它们是 aliases。",
         "`interrupt_before` 用于 unit tests；`interrupt_after` 用于 production。"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "给定一个 thread 的 checkpoint history，你如何 time-travel 到先前 state 并探索不同分支？",
       "options": [
+        "设置 `graph.rewind = True` 并重新 invoke。",
         "调用 `graph.reset(thread_id)`，然后调用 `graph.invoke(new_input, config)`。",
         "删除 checkpoint directory，并使用相同的 thread_id 重新 invoke。",
-        "在 config 中使用所需的先前 `checkpoint_id` invoke graph；传入 `None` 作为 input 会从该 checkpoint replay，传入新值会先追加到该 checkpoint，再继续 resume。",
-        "设置 `graph.rewind = True` 并重新 invoke。"
+        "在 config 中使用所需的先前 `checkpoint_id` invoke graph；传入 `None` 作为 input 会从该 checkpoint replay，传入新值会先追加到该 checkpoint，再继续 resume。"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "在四 node ReAct graph（agent、tools、conditional edge、返回 agent 的 static edge）中，conditional edge 位于哪里？",
       "options": [
-        "从 `tools` 返回 `agent`，根据 tool output 是否为空进行 routing。",
-        "从 `agent` 出发，如果最后一条 message 有 tool_calls，则 routing 到 `tools`，否则到 `END`。",
         "从 `START` 出发，根据 input length routing 到 `agent` 或 `END`。",
-        "没有 conditional edge；二者都是 static。"
+        "从 `tools` 返回 `agent`，根据 tool output 是否为空进行 routing。",
+        "没有 conditional edge；二者都是 static。",
+        "从 `agent` 出发，如果最后一条 message 有 tool_calls，则 routing 到 `tools`，否则到 `END`。"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "什么时候应该使用 `Send(node_name, state)` 而不是普通 edge？",
       "options": [
-        "在失败后 retry 一个 node。",
+        "为了隔离，在不同进程中 invoke 一个 node。",
         "将一个 node defer 到 timer 过期之后。",
-        "并行 dispatch N 次目标 node 的执行，其 outputs 会通过 state reducer 合并回来。",
-        "为了隔离，在不同进程中 invoke 一个 node。"
+        "在失败后 retry 一个 node。",
+        "并行 dispatch N 次目标 node 的执行，其 outputs 会通过 state reducer 合并回来。"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     }
-  ]
+  ],
+  "title": null
 }

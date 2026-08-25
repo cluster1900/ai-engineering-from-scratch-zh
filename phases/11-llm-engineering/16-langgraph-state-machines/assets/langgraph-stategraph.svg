@@ -34,7 +34,7 @@
   <path class="edge" d="M250,100 Q290,70 330,100" marker-end="url(#arrow)"/>
   <text x="290" y="62" text-anchor="middle" class="label">if tool_calls</text>
   <path class="edge" d="M330,130 Q290,160 250,130" marker-end="url(#arrow)"/>
-  <text x="290" y="180" text-anchor="middle" class="label">tool 结果</text>
+  <text x="290" y="180" text-anchor="middle" class="label">Tool 结果</text>
   <path class="dash" d="M250,118 L552,118" marker-end="url(#arrow)"/>
   <text x="400" y="140" text-anchor="middle" class="label">else END</text>
 
