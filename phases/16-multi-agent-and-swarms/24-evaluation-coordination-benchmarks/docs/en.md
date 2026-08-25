@@ -86,6 +86,10 @@ AAAI 2026 Bridge Program — Workshop on Multi-Agent Coordination（https://mult
 
 为你真正关心的 axis 构建自己的 internal benchmark，通常是正确做法。
 
+```figure
+a5-bench-gap
+```
+
 ## 构建它
 `code/main.py` 是一个 non-interactive walk-through：
 
