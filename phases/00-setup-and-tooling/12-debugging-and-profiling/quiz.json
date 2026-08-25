@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "debugging AI/ML code 与 debugging 典型 web application 的根本区别是什么？",
-      "options": ["AI code 使用不同的 programming languages", "AI bugs 往往不会 crash -- 它们会在没有 error messages 的情况下静默产生错误结果", "AI code 无法用 print statements 等标准工具 debug", "AI code 总是需要 GPU 才能 debug"],
-      "correct": 1,
+      "options": [
+        "AI code 总是需要 GPU 才能 debug",
+        "AI code 使用不同的 programming languages",
+        "AI bugs 往往不会 crash -- 它们会在没有 error messages 的情况下静默产生错误结果",
+        "AI code 无法用 print statements 等标准工具 debug"
+      ],
+      "correct": 2,
       "explanation": "最糟糕的 AI bugs 会产生看起来有效的 output。配置错误的 training loop 可能运行数小时而没有 errors，但 model 没有学到任何有用内容，这不同于会带着 stack traces crash 的 web apps。"
     },
     {
       "stage": "pre",
       "question": "profiler 测量什么？",
-      "options": ["代码是否产生正确 output", "代码每个部分消耗多少时间和 memory", "codebase 中有多少 bugs", "unit tests 的 code coverage"],
-      "correct": 1,
+      "options": [
+        "代码每个部分消耗多少时间和 memory",
+        "codebase 中有多少 bugs",
+        "代码是否产生正确 output",
+        "unit tests 的 code coverage"
+      ],
+      "correct": 0,
       "explanation": "Profilers 测量 resource consumption -- 每个 function 的 execution time、memory allocation 和 GPU utilization -- 帮助你找到 bottlenecks 并优化 performance。"
     },
     {
       "stage": "post",
       "question": "你的 model 在 test set 上达到 99% accuracy。你首先应该怀疑哪种 AI 特有 bug？",
-      "options": ["model 有太多 parameters", "Data leakage -- test samples 可能泄漏到了 training set 中", "learning rate 过高", "batch size 过大"],
+      "options": [
+        "batch size 过大",
+        "Data leakage -- test samples 可能泄漏到了 training set 中",
+        "learning rate 过高",
+        "model 有太多 parameters"
+      ],
       "correct": 1,
       "explanation": "可疑的高 accuracy 通常表明 data leakage -- training 和 test data 之间有重叠，或 features 中包含 target label。始终检查 train/test overlap。"
     },
     {
       "stage": "post",
       "question": "profiling 一个 training loop 的 time breakdown 时，最常见的发现是什么？",
-      "options": ["backward pass 占用 90% 的时间", "Data loading 比 forward 和 backward passes 加起来还耗时", "Writing logs 最耗时", "GPU memory allocation 是瓶颈"],
-      "correct": 1,
+      "options": [
+        "GPU memory allocation 是瓶颈",
+        "backward pass 占用 90% 的时间",
+        "Data loading 比 forward 和 backward passes 加起来还耗时",
+        "Writing logs 最耗时"
+      ],
+      "correct": 2,
       "explanation": "当 DataLoader 中 num_workers=0 时，data loading 通常占 training time 的 60% 以上。修复方法是设置 num_workers > 0，以便与 GPU computation 并行加载 data。"
     },
     {
       "stage": "post",
       "question": "你在 step 500 看到 NaN loss。哪种方法能帮助你找到根因？",
-      "options": ["用不同 random seed 从头重启 training", "使用 detect_nan 检查 gradients 中的 NaN/Inf，并在 failure point 添加 breakpoint()", "增大 batch size 来稳定 gradients", "从 Adam 切换到 SGD optimizer"],
-      "correct": 1,
+      "options": [
+        "从 Adam 切换到 SGD optimizer",
+        "用不同 random seed 从头重启 training",
+        "增大 batch size 来稳定 gradients",
+        "使用 detect_nan 检查 gradients 中的 NaN/Inf，并在 failure point 添加 breakpoint()"
+      ],
+      "correct": 3,
       "explanation": "首先通过检查每个 parameter 的 gradients 来识别 NaN 从哪里产生。NaN step 上的 conditional breakpoint 可以让你以交互方式检查 tensor values。常见原因：learning rate 过高、log(0)，或除以零。"
     }
-  ]
+  ],
+  "title": null
 }

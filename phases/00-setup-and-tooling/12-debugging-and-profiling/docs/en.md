@@ -33,6 +33,10 @@ graph TD
 
 大多数人会直接跳到第 3 层（盯着 TensorBoard 看）。但 80% 的 AI bugs 都在第 1 层和第 2 层。
 
+```figure
+s0-flame-hot
+```
+
 ## 构建它
 
 ### Part 1: Print Debugging（是的，它有效）
