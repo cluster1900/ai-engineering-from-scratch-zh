@@ -15,16 +15,16 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">AI Control：有用性-安全性前沿（Greenblatt et al. 2024）</text>
+  <text x="480" y="24" text-anchor="middle" class="title">AI Control：有用性–安全性前沿（Greenblatt et al. 2024）</text>
 
   <rect x="60" y="60" width="600" height="340" class="box"/>
   <line x1="120" y1="360" x2="620" y2="360" class="axis"/>
   <line x1="120" y1="360" x2="120" y2="80" class="axis"/>
   <text x="370" y="395" text-anchor="middle" class="small">有用性（有用输出 / 总数）-&gt;</text>
-  <text x="80" y="220" text-anchor="middle" class="small" transform="rotate(-90 80 220)">安全性（1 - backdoor 发布率）-&gt;</text>
+  <text x="80" y="220" text-anchor="middle" class="small" transform="rotate(-90 80 220)">安全性（1 − backdoor 发布率）→</text>
 
   <path d="M 180 340 Q 280 340 400 340 T 580 340" class="curve" stroke="#c0392b" stroke-dasharray="4 4"/>
-  <text x="580" y="335" class="small" fill="#c0392b">baseline（无协议）</text>
+  <text x="580" y="335" class="small" fill="#c0392b">基线（无协议）</text>
 
   <path d="M 130 100 Q 160 110 200 130 T 320 260" class="curve" stroke="#2c5ea9"/>
   <text x="220" y="170" class="small" fill="#2c5ea9">预先审计（H）</text>
@@ -37,16 +37,16 @@
 
   <rect x="680" y="60" width="240" height="200" class="box"/>
   <text x="800" y="82" text-anchor="middle" class="head">协议角色</text>
-  <text x="700" y="110" class="small">U = 不可信强模型</text>
-  <text x="700" y="130" class="small">T = 可信弱模型</text>
+  <text x="700" y="110" class="small">U = 不可信强 Model</text>
+  <text x="700" y="130" class="small">T = 可信弱 Model</text>
   <text x="700" y="150" class="small">H = 可信人类</text>
-  <text x="700" y="180" class="small">baseline：发布 U</text>
-  <text x="700" y="200" class="small">upfront：H 审计全部</text>
-  <text x="700" y="220" class="small">t-edit：T 把关，低置信交给 H</text>
-  <text x="700" y="240" class="small">u-monitor：U 监控 U，标记交给 H</text>
+  <text x="700" y="180" class="small">基线：发布 U</text>
+  <text x="700" y="200" class="small">预先审计：H 审计全部</text>
+  <text x="700" y="220" class="small">可信编辑：T 把关，低置信项交给 H</text>
+  <text x="700" y="240" class="small">不可信监控：U 监控 U，标记项交给 H</text>
 
   <rect x="60" y="420" width="860" height="70" class="box"/>
-  <text x="80" y="445" class="small">在 Greenblatt 2024 code-backdoor 任务上，可信编辑 Pareto-dominates 不可信监控。</text>
-  <text x="80" y="465" class="small">串通风险：两个 U 实例可通过 steganography 或共享训练先验协调。</text>
-  <text x="80" y="483" class="small">限制：H 无法扩展；T-to-U 能力差距限制编辑信号；control 不是 alignment。</text>
+  <text x="80" y="445" class="small">在 Greenblatt 2024 code-backdoor 任务中，可信编辑在 Pareto 上优于不可信监控。</text>
+  <text x="80" y="465" class="small">串通风险：两个 U 实例可通过 steganography 或共享 Training 先验协调。</text>
+  <text x="80" y="483" class="small">限制：H 无法扩展；T 与 U 的能力差距限制编辑信号；control 并非 alignment。</text>
 </svg>

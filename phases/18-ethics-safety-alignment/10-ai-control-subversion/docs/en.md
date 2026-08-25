@@ -76,6 +76,10 @@ UK AISI 和 Redwood 合作研究 Control Safety Cases（metr.org / redwoodresear
 
 第 6-9 课描述威胁（deception 是可能的）。第 10 课描述在假设威胁真实存在时的防御范式。第 11 课描述互补的进攻范式（通过 scalable oversight 让 U 变得值得信任）。
 
+```figure
+al-control-protocol
+```
+
 ## 使用它
 
 `code/main.py` 在一个 toy backdoor 任务上模拟四种协议。U 生成输出；其中一部分带有 backdoor（red-team policy）。T 批准或编辑。H 在预算内被调用。你可以扫描预算和 collusion 参数，以复现 Greenblatt et al. 2024 Figure 2 中的 Pareto frontier（形状，而不是数值）。
