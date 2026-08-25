@@ -4,12 +4,12 @@
     "stage": "pre",
     "question": "一个欺诈检测数据集包含 99.9% 的合法交易和 0.1% 的欺诈交易。某个模型对每笔交易都预测为“合法”。它的 Accuracy 是多少？",
     "options": [
-      "50%",
-      "0.1%",
       "99.9%",
+      "0.1%",
+      "50%",
       "100%"
     ],
-    "correct": 2,
+    "correct": 0,
     "explanation": "Accuracy = 999/1000 = 99.9%。这个模型没有抓到任何欺诈，但按 Accuracy 看起来很优秀。这正是为什么 Accuracy 对 imbalanced datasets 来说很危险。"
   },
   {
@@ -18,11 +18,11 @@
     "question": "哪个 metric 能正确识别出这个始终预测负类的模型毫无用处？",
     "options": [
       "Accuracy (99.9%)",
+      "True negative rate (100%)",
       "Recall (0%) 或 F1 score (0%)",
-      "Specificity (100%)",
-      "True negative rate (100%)"
+      "Specificity (100%)"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "Recall = TP/(TP+FN) = 0/total_positives = 0%。F1 = 2*0*0/(0+0) = 0。两者都正确显示该模型在正类中什么也没抓到。Accuracy 掩盖了这个失败。"
   },
   {
@@ -30,12 +30,12 @@
     "stage": "post",
     "question": "SMOTE 如何生成合成的少数类样本？",
     "options": [
-      "完全复制已有的少数类样本",
-      "在 feature space 中任意随机生成点",
+      "翻转多数类样本的 labels",
       "在一个少数类样本和它的 K 个最近少数类邻居之一之间进行插值",
-      "翻转多数类样本的 labels"
+      "在 feature space 中任意随机生成点",
+      "完全复制已有的少数类样本"
     ],
-    "correct": 2,
+    "correct": 1,
     "explanation": "SMOTE 选择一个少数类点，再选择它的 K 个最近少数类邻居之一，并在两者之间的线段上创建一个新点：new = x + rand(0,1) * (neighbor - x)。这会生成合理且不重复的样本。"
   },
   {
@@ -44,11 +44,11 @@
     "question": "你在 imbalanced dataset 上把 classification threshold 从 0.5 降到 0.3。Precision 和 Recall 会发生什么变化？",
     "options": [
       "Precision 和 Recall 都会增加",
-      "Recall 增加（抓到更多正类），但 Precision 降低（更多 false positives）",
       "Precision 增加但 Recall 降低",
+      "Recall 增加（抓到更多正类），但 Precision 降低（更多 false positives）",
       "两者都不变 -- threshold 只影响速度"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "降低 threshold 意味着更多样本会被预测为正类。这会抓到更多 true positives（Recall 上升），但也会增加更多 false positives（Precision 下降）。Threshold tuning 是在 Precision 和 Recall 之间做取舍。"
   },
   {
@@ -56,12 +56,12 @@
     "stage": "post",
     "question": "为什么对于高度 imbalanced datasets，AUPRC（Area Under Precision-Recall Curve）比 AUC-ROC 信息量更大？",
     "options": [
-      "AUPRC 总是高于 AUC-ROC",
-      "随机分类器的 AUPRC 等于正类比例（例如 0.001），使改进更明显，而 AUC-ROC 无论 imbalance 情况如何都从 0.5 开始",
+      "AUC-ROC 无法用于 imbalanced data",
       "AUPRC 不需要 threshold",
-      "AUC-ROC 无法用于 imbalanced data"
+      "AUPRC 总是高于 AUC-ROC",
+      "随机分类器的 AUPRC 等于正类比例（例如 0.001），使改进更明显，而 AUC-ROC 无论 imbalance 情况如何都从 0.5 开始"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "对于 imbalanced data，AUC-ROC 可能看起来具有欺骗性地好，因为大量 true negatives 会抬高 true negative rate。AUPRC 的 baseline 等于正类比例，使检测少数类方面的真实改进明显得多。"
   }
 ]
