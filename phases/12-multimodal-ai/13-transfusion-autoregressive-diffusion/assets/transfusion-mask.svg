@@ -47,7 +47,7 @@
   <text x="770" y="132" text-anchor="middle" class="small">连续 Vector</text>
   <text x="770" y="150" text-anchor="middle" class="small">双向 Attention</text>
   <text x="770" y="168" text-anchor="middle" class="small">图像块内</text>
-  <text x="770" y="194" text-anchor="middle" class="step">Loss: velocity 的 MSE</text>
+  <text x="770" y="194" text-anchor="middle" class="step">Loss：velocity 的 MSE</text>
   <text x="770" y="216" text-anchor="middle" class="small">flow-matching Diffusion</text>
   <text x="770" y="232" text-anchor="middle" class="small">预测噪声 -&gt; 数据</text>
   <text x="770" y="258" text-anchor="middle" class="caption">SD3 MMDiT 同族</text>
@@ -81,10 +81,10 @@
 
   <rect x="420" y="340" width="490" height="160" class="reg"/>
   <text x="665" y="362" text-anchor="middle" class="step">mask 规则</text>
-  <text x="665" y="384" text-anchor="middle" class="small">1. text-to-text: 因果（三角）</text>
-  <text x="665" y="402" text-anchor="middle" class="small">2. patch-to-patch: 图像内全双向</text>
-  <text x="665" y="420" text-anchor="middle" class="small">3. text-to-prior-image: 全量 Attention</text>
-  <text x="665" y="438" text-anchor="middle" class="small">4. image-to-prior-text: 全量 Attention</text>
+  <text x="665" y="384" text-anchor="middle" class="small">1. text-to-text：因果（三角）</text>
+  <text x="665" y="402" text-anchor="middle" class="small">2. patch-to-patch：图像内全双向</text>
+  <text x="665" y="420" text-anchor="middle" class="small">3. text-to-prior-image：全量 Attention</text>
+  <text x="665" y="438" text-anchor="middle" class="small">4. image-to-prior-text：全量 Attention</text>
   <text x="665" y="460" text-anchor="middle" class="small">5. 无 image-to-later-text（因果块）</text>
   <text x="665" y="480" text-anchor="middle" class="caption">实现为单个 block-triangular mask</text>
 </svg>
