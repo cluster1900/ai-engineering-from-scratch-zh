@@ -18,7 +18,7 @@
   <text x="450" y="28" text-anchor="middle" class="title">DDPM：一个 net 预测 noise，反向过程完成其余部分</text>
 
   <!-- forward chain -->
-  <text x="80" y="80" class="label">forward q：添加 noise</text>
+  <text x="80" y="80" class="label">正向 q：添加 noise</text>
   <rect x="40" y="95" width="80" height="50" class="box"/>
   <text x="80" y="125" text-anchor="middle" class="mono">x_0</text>
   <line x1="120" y1="120" x2="180" y2="120" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
@@ -40,7 +40,7 @@
   <text x="450" y="190" text-anchor="middle" class="caption">闭式：一步跳到任意 t</text>
 
   <!-- reverse chain -->
-  <text x="80" y="230" class="label">reverse p_θ：去噪</text>
+  <text x="80" y="230" class="label">反向 p_θ：去噪</text>
   <rect x="660" y="245" width="80" height="50" class="hot"/>
   <text x="700" y="275" text-anchor="middle" class="mono">x_T</text>
   <line x1="660" y1="270" x2="600" y2="270" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
@@ -60,9 +60,9 @@
 
   <!-- loss -->
   <rect x="40" y="370" width="820" height="60" class="hot"/>
-  <text x="450" y="395" text-anchor="middle" class="label">训练 Loss</text>
+  <text x="450" y="395" text-anchor="middle" class="label">Training Loss</text>
   <text x="450" y="420" text-anchor="middle" class="mono">L = E_{x_0, t, ε}  ||ε - ε_θ(√ᾱ_t · x_0 + √(1-ᾱ_t) · ε,  t)||²</text>
 
-  <text x="450" y="460" text-anchor="middle" class="caption">一个 net，一个 MSE Loss，无 minimax，训练循环中无 KL divergence</text>
+  <text x="450" y="460" text-anchor="middle" class="caption">一个 net，一个 MSE Loss，无 minimax，Training 循环中无 KL divergence</text>
   <text x="450" y="480" text-anchor="middle" class="caption">可不变扩展到图像、视频、音频、3D Gaussians</text>
 </svg>
