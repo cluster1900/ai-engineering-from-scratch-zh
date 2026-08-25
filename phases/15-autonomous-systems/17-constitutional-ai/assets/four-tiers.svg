@@ -19,15 +19,15 @@
 
   <!-- Hardcoded floor -->
   <rect x="60" y="80" width="760" height="86" class="hot"/>
-  <text x="440" y="104" text-anchor="middle" class="label">硬编码禁令（operator 和用户不可覆盖）</text>
-  <text x="80" y="126" class="content">生物武器 / CBRN 提升 · CSAM · 关键基础设施攻击规划</text>
+  <text x="440" y="104" text-anchor="middle" class="label">硬编码禁令（operator 和用户均不可覆盖）</text>
+  <text x="80" y="126" class="content">生物武器 / CBRN 能力提升 · CSAM · 关键基础设施攻击规划</text>
   <text x="80" y="142" class="content">被直接询问时欺骗 AI 身份 · 允许部署特定补充</text>
-  <text x="80" y="158" class="small">在 model weights（CAI 训练 + RLAIF）和 inference 层执行</text>
+  <text x="80" y="158" class="small">在 Model weights（CAI Training + RLAIF）和 Inference 层执行</text>
 
   <!-- Tier 1 -->
   <rect x="60" y="190" width="760" height="60" class="cool"/>
   <text x="80" y="212" class="label">层级 1 — 安全与支持人类监督（最高）</text>
-  <text x="80" y="232" class="content">不要让人类更难监督和纠正 AI</text>
+  <text x="80" y="232" class="content">不得增加人类监督和纠正 AI 的难度</text>
 
   <!-- Tier 2 -->
   <rect x="60" y="260" width="760" height="60" class="cold"/>
@@ -37,7 +37,7 @@
   <!-- Tier 3 -->
   <rect x="60" y="330" width="760" height="60" class="warn"/>
   <text x="80" y="352" class="label">层级 3 — Anthropic 指南（operator 可在声明边界内调整）</text>
-  <text x="80" y="372" class="content">响应长度 · 主题范围 · 风格 · tool-use 模式</text>
+  <text x="80" y="372" class="content">响应长度 · 主题范围 · 风格 · Tool 使用模式</text>
 
   <!-- Tier 4 -->
   <rect x="60" y="400" width="760" height="60" class="box"/>
@@ -46,5 +46,5 @@
 
   <!-- Resolution note -->
   <rect x="60" y="466" width="760" height="36" class="box"/>
-  <text x="440" y="490" text-anchor="middle" class="small">层级冲突时高者优先；原则含糊时，model 推理（基于理由的 alignment）</text>
+  <text x="440" y="490" text-anchor="middle" class="small">层级冲突时高者优先；原则含糊时由 Model 推理（基于理由的 alignment）</text>
 </svg>

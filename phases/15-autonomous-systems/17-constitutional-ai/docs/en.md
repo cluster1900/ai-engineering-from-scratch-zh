@@ -79,6 +79,10 @@ Anthropic 在 2023 年进行了一项实验，比较公司撰写的 constitution
 
 Constitution 不是 Lesson 14 的 kill switch。它位于模型层：模型权重被训练去偏好的内容。Kill switch 和 canary token 位于运行时层：运行时允许什么。两者都需要。若模型权重过于宽松，导致运行时执行了所有错误动作，这是运行时问题。若运行时限制过度，导致模型拒绝了所有正确动作，这也是运行时问题。不同层覆盖不同类别。
 
+```figure
+mx-priority-tiers
+```
+
 ## 使用它
 
 `code/main.py` 实现了一个最小四级优先级 resolver。resolver 接收一个拟议动作和一组原则评估（safety, ethics, guidelines, helpfulness），并返回该动作、拒绝或修改后的动作。driver 运行一小组案例：明确允许、明确不允许、hardcoded prohibition、跨层级的模糊案例。
