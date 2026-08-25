@@ -30,7 +30,7 @@
 
   <path d="M 95,210 Q 160,160 200,200 T 280,150 T 365,130" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
   <text x="225" y="190" text-anchor="middle" class="caption">1000-step SDE</text>
-  <text x="225" y="253" text-anchor="middle" class="caption">DDIM 压缩到 ~50 steps</text>
+  <text x="225" y="253" text-anchor="middle" class="caption">DDIM 压缩到 ~50 步</text>
 
   <text x="665" y="70" text-anchor="middle" class="label">flow matching：直线</text>
   <rect x="490" y="90" width="380" height="170" class="box"/>
@@ -42,7 +42,7 @@
 
   <line x1="535" y1="210" x2="835" y2="130" stroke="#1a1a1a" stroke-width="2"/>
   <text x="685" y="190" text-anchor="middle" class="mono">x_t = t · x_1 + (1-t) · x_0</text>
-  <text x="685" y="253" text-anchor="middle" class="caption">推理时 2-8 Euler steps</text>
+  <text x="685" y="253" text-anchor="middle" class="caption">Inference 时 2-8 个 Euler 步</text>
 
   <!-- loss -->
   <rect x="50" y="290" width="820" height="70" class="hot"/>
@@ -52,8 +52,8 @@
   <!-- rectified flow -->
   <rect x="50" y="380" width="820" height="110" class="cold"/>
   <text x="460" y="402" text-anchor="middle" class="label">rectified flow：迭代拉直</text>
-  <text x="460" y="425" text-anchor="middle" class="caption">1. 用随机 (x_0, x_1) pairs 训练 v_1</text>
-  <text x="460" y="445" text-anchor="middle" class="caption">2. 通过积分 v_1 采样配对 (x_0, x_1) -&gt; pairs 为 ODE-matched</text>
-  <text x="460" y="465" text-anchor="middle" class="caption">3. 在这些 pairs 上重训 v_2 -&gt; flow 真正更直</text>
-  <text x="460" y="482" text-anchor="middle" class="caption">2 次 reflow 迭代支持 1-step inference（SDXL-Turbo, SD3-Turbo, Flux-schnell）</text>
+  <text x="460" y="425" text-anchor="middle" class="caption">1. 用随机 (x_0, x_1) 配对训练 v_1</text>
+  <text x="460" y="445" text-anchor="middle" class="caption">2. 通过积分 v_1 采样配对 (x_0, x_1) -&gt; 配对经 ODE 匹配</text>
+  <text x="460" y="465" text-anchor="middle" class="caption">3. 在这些配对上重训 v_2 -&gt; flow 真正更直</text>
+  <text x="460" y="482" text-anchor="middle" class="caption">2 次 reflow 迭代支持单步 Inference（SDXL-Turbo、SD3-Turbo、Flux-schnell）</text>
 </svg>

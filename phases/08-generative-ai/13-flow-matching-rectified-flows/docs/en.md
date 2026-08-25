@@ -76,6 +76,10 @@ x_{t-Δt} = x_t - Δt · v_θ(x_t, t)
 
 Flow matching 增加的是：目标的*清晰性*（普通 velocity）、更干净的 Loss，以及尝试 non-Gaussian interpolants 的自由度。
 
+```figure
+normalizing-flow
+```
+
 ## 构建它
 
 `code/main.py` 在双峰 Gaussian mixture 上实现 1-D flow matching。Vector field `v_θ(x, t)` 是一个小型 MLP，使用直线目标训练。在 inference 时，分别用 1、2、4 和 20 个 Euler steps 积分，并比较样本质量。
