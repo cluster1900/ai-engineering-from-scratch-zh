@@ -109,6 +109,10 @@ L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
 
 mask 已经是 full image resolution。28x28 head output 已在内部完成 upsample。
 
+```figure
+cv3-roialign-sampling
+```
+
 ## 构建它
 ### 步骤 1： RoIAlign from scratch
 

@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "为什么 Mask R-CNN 用 RoIAlign 替换了 RoIPool？",
-      "options": ["RoIAlign 在 GPUs 上更快", "RoIPool 会在多个步骤中把 box coordinates 舍入为整数，使 feature map 与输入 pixels 最多错位一个 feature-map pixel；RoIAlign 使用 bilinear sampling 且不舍入，从而保留定位", "RoIPool 只能在 CPU 上工作", "RoIPool 存在版权问题"],
-      "correct": 1,
+      "options": [
+        "RoIPool 会在多个步骤中把 box coordinates 舍入为整数，使 feature map 与输入 pixels 最多错位一个 feature-map pixel；RoIAlign 使用 bilinear sampling 且不舍入，从而保留定位",
+        "RoIPool 存在版权问题",
+        "RoIPool 只能在 CPU 上工作",
+        "RoIAlign 在 GPUs 上更快"
+      ],
+      "correct": 0,
       "explanation": "RoIPool 的舍入会带来最多一个 stride 大小的错位（例如在 stride-32 feature map 上为 32 pixels）。RoIAlign 通过 bilinear interpolation 在精确的 float coordinates 上采样。这个改变在原始论文中将 COCO 上的 mask AP 提高了 3-4 points，并且现在是每个重视定位的 detector 的标准做法。"
     },
     {
       "stage": "pre",
       "question": "Mask R-CNN 的 mask head 会为每个 proposal 的每个 class 输出一个 28x28 mask。为什么是 per class？",
-      "options": ["因为 binary masks 需要 per-class channels 用于 backprop", "将 mask prediction 与 classification 解耦：mask head 只需要分别学习每个 class 的形状，因此 classifier 的决策不会影响生成哪个 mask，只影响 inference 时读取哪个 channel", "Binary masks 在单个 channel 中会溢出", "论文要求这样做"],
-      "correct": 1,
+      "options": [
+        "论文要求这样做",
+        "Binary masks 在单个 channel 中会溢出",
+        "将 mask prediction 与 classification 解耦：mask head 只需要分别学习每个 class 的形状，因此 classifier 的决策不会影响生成哪个 mask，只影响 inference 时读取哪个 channel",
+        "因为 binary masks 需要 per-class channels 用于 backprop"
+      ],
+      "correct": 2,
       "explanation": "为每个 proposal 的每个 class 生成一个 mask，会把 mask shape learning 与 classification 解耦。在 inference 时，你只读取与预测 class 匹配的 channel。这种 multi-task 解耦很重要，因为 mask shape 和 class probability 是不同目标，会用不同的 gradients 训练。"
     },
     {
       "stage": "post",
       "question": "torchvision 的 Mask R-CNN prediction dict 中的 `labels` 从 1 开始，而不是 0。为什么？",
-      "options": ["Legacy bug", "Class 0 保留给 background；用户 classes 始终是 1-based，因此 classifier head 可以把 background 当作一个真实 class，拥有自己的 logits 和 gradients", "torchvision 全部使用 1-based indexing", "Training data 决定了它"],
+      "options": [
+        "torchvision 全部使用 1-based indexing",
+        "Class 0 保留给 background；用户 classes 始终是 1-based，因此 classifier head 可以把 background 当作一个真实 class，拥有自己的 logits 和 gradients",
+        "Training data 决定了它",
+        "Legacy bug"
+      ],
       "correct": 1,
       "explanation": "大多数 detectors 将 background 视为 class 0，并将显式 foreground classes 视为 1..C。对 (C+1) classes 做 softmax 让 network 学会主动预测“这里没有 object”，而不只是对所有 classes 都给出低 confidence。一个有 4 个真实 classes 的 dataset 在替换 predictor 时需要 num_classes = 5。"
     },
     {
       "stage": "post",
       "question": "你在一个 500-image dataset 上 fine-tune Mask R-CNN，val mAP 停滞不前，而 train loss 继续下降。首先应该尝试什么？",
-      "options": ["增加更多 epochs", "Freeze backbone 和 FPN，让 model 只 fine-tune RPN 和 heads；500 images 太少，不足以在不过拟合的情况下更新 23M backbone parameters", "切换到 segmentation U-Net", "使用更高的 learning rate"],
-      "correct": 1,
+      "options": [
+        "增加更多 epochs",
+        "使用更高的 learning rate",
+        "切换到 segmentation U-Net",
+        "Freeze backbone 和 FPN，让 model 只 fine-tune RPN 和 heads；500 images 太少，不足以在不过拟合的情况下更新 23M backbone parameters"
+      ],
+      "correct": 3,
       "explanation": "在小 datasets 上，你没有足够的信号来 fine-tune 每个 parameter。Freezing pretrained backbone 和 FPN（ImageNet + COCO features），并且只训练 RPN objectness head 和两个 classifier/mask heads，是标准 recipe，通常能在一次 training run 中解决这种停滞。"
     },
     {
       "stage": "post",
       "question": "Mask R-CNN 内部的 FPN 有四个 levels（P2、P3、P4、P5），strides 为 4、8、16、32。为什么不只使用一个 level？",
-      "options": ["为了使用更多 GPU memory", "自然图像中的 objects 覆盖一系列 scales；将每个 proposal 路由到与其大小匹配的 FPN level，可以让 head 获得具有适合该 object 的 receptive field 的 feature map，这严格优于始终使用一个 scale", "四个 levels 是任意选择", "为了减少 parameter count"],
-      "correct": 1,
+      "options": [
+        "为了减少 parameter count",
+        "四个 levels 是任意选择",
+        "自然图像中的 objects 覆盖一系列 scales；将每个 proposal 路由到与其大小匹配的 FPN level，可以让 head 获得具有适合该 object 的 receptive field 的 feature map，这严格优于始终使用一个 scale",
+        "为了使用更多 GPU memory"
+      ],
+      "correct": 2,
       "explanation": "小 object 在 stride-32 feature map 上只占一个 cell，几乎没有 spatial information。FPN 将 small objects 路由到 high-resolution、shallow levels（P2），将 large objects 路由到 low-resolution、deep levels（P5），使 receptive field 与 object size 匹配。这就是每个现代 detector 都有 pyramid 的原因。"
     }
-  ]
+  ],
+  "title": null
 }
