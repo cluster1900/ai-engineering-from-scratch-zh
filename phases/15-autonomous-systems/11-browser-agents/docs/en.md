@@ -62,6 +62,10 @@ Browser agent 是一种 long-horizon agent：它会读取不受信任的内容�
 - **对 consequential actions 使用 HITL。** Propose-then-commit pattern（Lesson 15）。
 - **Canary tokens on memory.** 如果一条 memory entry 触发，用户会看到它（Lesson 14）。
 
+```figure
+injection-boundary
+```
+
 ## 使用它
 
 `code/main.py` 建模了一个 tiny browser-agent run，目标是三个合成页面。一个页面是 benign，一个在可见文本中有 direct prompt-injection blob，一个有 URL-fragment injection（不可见，但位于 agent 的 context 中）。脚本展示了 (a) naïve agent 会做什么，(b) read/write boundary 会捕获什么，(c) sanitizer 会捕获什么，(d) 二者都捕获不了什么。
