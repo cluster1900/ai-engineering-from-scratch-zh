@@ -88,6 +88,10 @@ Prompt engineering 很重要。OpenAI 为 ImageNet 发布了 80 个 prompt templ
 
 一旦你有了共享 embedding space，每个 vision+language task 都会变成距离计算。
 
+```figure
+clip-contrastive
+```
+
 ## 构建它
 
 ### 步骤 1：一个极小的 two-tower model
