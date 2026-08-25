@@ -13,7 +13,11 @@
 - 从头开始​​实施 BLEU-4：修改 n 元语法精度，n 的几何平均值等于 1 到 4，简洁性损失。
 - 使用最长公共子序列以及精度和召回率的 F-beta 组合来实现 ROUGE-L。
 - 调度第 70 课中的 metric_name 字段，以便runner保持与指标无关的状态。
-- 使用从工作示例而不是第三方库中提取的参考向量来固定行为。
+- 使用从工作示例而不是第三方库中提取的参考Vector来固定行为。
+
+```figure
+cd-bleu-overlap
+```
 
 ## 为什么要重新实现
 
@@ -23,7 +27,7 @@ Stdlib加上numpy就足够了。 BLEU 是计数和钳位。 ROUGE-L 是动态规
 
 ## token化
 
-分词器是 `re.findall(r"\w+", text.lower())`。小写、字母数字运行、删除标点符号。本课程中的每个指标都使用这个精确的分词器。runner没有选择权。如果您交换分词器，您将运行不同的基准测试。
+Tokenizer是 `re.findall(r"\w+", text.lower())`。小写、字母数字运行、删除标点符号。本课程中的每个指标都使用这个精确的Tokenizer。runner没有选择权。如果您交换Tokenizer，您将运行不同的基准测试。
 
 ```python
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
@@ -134,7 +138,7 @@ def score(metric_name, pred, targets):
 
 ## 如何阅读代码
 
-`main.py` 将每个指标定义为一个自由函数加上调度程序。参考向量位于文件底部的 `_reference_examples` 块中。该演示针对八个示例运行调度程序并打印每个指标的分数。 `code/tests/test_metrics.py` 中的测试固定参考向量并强调每个边缘情况（空预测、空参考、无共享token、精确匹配、重复短语剪辑）。
+`main.py` 将每个指标定义为一个自由函数加上调度程序。参考Vector位于文件底部的 `_reference_examples` 块中。该演示针对八个示例运行调度程序并打印每个指标的分数。 `code/tests/test_metrics.py` 中的测试固定参考Vector并强调每个边缘情况（空预测、空参考、无共享token、精确匹配、重复短语剪辑）。
 
 从上到下阅读 `main.py`。这些功能按复杂程度排序。精确匹配和准确度各占一行。 F1是六行。 BLEU 和 ROUGE-L 是重点部分，它们包括对平滑规则和 LCS 递归的详细注释。
 
