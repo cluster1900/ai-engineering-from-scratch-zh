@@ -1,26 +1,29 @@
-# 最小 Agent Workbench
+# 最小化 Agent Workbench
 
-> 最小可用的 workbench 只有三个文件：一个根 instructions router、一个 state file，以及一个 task board。其他所有东西都叠加在它们之上。如果一个 repo 承载不了这三者，就没有哪个模型能拯救它。
+> 最小且实用的 Workbench 只需要三个文件：根指令 Router、状态文件和任务看板。其他所有内容都在此基础上逐层添加。如果一个 repo 连这三个文件都容纳不了，任何 Model 都救不了它。
 
 **Type:** Build
 **Languages:** Python (stdlib)
-**Prerequisites:** Phase 14 · 31（为什么强大的模型仍然失败）
+**Prerequisites:** Phase 14 · 31（为什么能力强大的 Model 仍会失败）
 **Time:** ~45 分钟
 
 ## 学习目标
-- 定义构成 minimum viable workbench 的三个文件。
-- 解释为什么一个简短的 root router 胜过一个冗长的单体 `AGENTS.md`。
-- 构建一个 agent 每一轮都能读取、并在结束时写入的 state file。
-- 构建一个不依赖 chat history、也能支撑多 session 工作的 task board。
+
+- 定义构成最小可用 Workbench 的三个文件。
+- 解释为什么简短的根 Router 优于冗长的单体 `AGENTS.md`。
+- 构建一个 Agent 能在每轮开始时读取、结束时写入的状态文件。
+- 构建一个不依赖聊天历史、能够支持多 Session 工作的任务看板。
 
 ## 问题
-大多数团队会通过写一个 3000 行的 `AGENTS.md` 来搭建 workbench，然后就认为完成了。模型会加载它，忽略那些无法总结的部分，然后仍然在它一直失败的同一批 surface 上失败。
 
-你需要的是相反的东西。一个很小的根文件，只在相关时把 agent 路由到更深层的文件。持久 state，让 agent 在行动前读取、行动后写入。一个 task board，说明当前正在做什么、什么被阻塞、下一步是什么。
+大多数团队通过编写一份 3000 行的 `AGENTS.md` 来构建 Workbench，然后便认为工作已经完成。Model 加载它，忽略那些无法概括的部分，最后仍然在一贯失败的地方失败。
 
-三个文件。每个文件都有一个职责。每个文件都足够 machine-readable，之后可以演进成真正的系统。
+你需要采用相反的做法：一个极小的根文件，仅在相关时才将 Agent 路由到更深层的文件。Agent 在行动前读取、行动后写入的持久状态。一个明确说明哪些任务正在进行、哪些被阻塞、下一项是什么的任务看板。
+
+三个文件。每个文件各司其职。每个文件都应具备足够的机器可读性，以便日后演进成真正的系统。
 
 ## 概念
+
 ```mermaid
 flowchart LR
   Agent[Agent Loop] --> Router[AGENTS.md]
@@ -30,93 +33,103 @@ flowchart LR
   Board --> Agent
 ```
 
-### AGENTS.md 是 router，不是 manual
+### AGENTS.md 是 Router，不是手册
 
-好的 `AGENTS.md` 很短。它把 agent 指向：
+优秀的 `AGENTS.md` 应当简短。它会将 Agent 指向：
 
-- State file（你在哪里）。
-- Task board（还剩什么）。
-- 更深层的规则（在 `docs/agent-rules.md` 下）。
-- Verification command（如何知道它能工作）。
+- 状态文件（你当前在哪里）。
+- 任务看板（还剩什么）。
+- 更深入的规则（位于 `docs/agent-rules.md`）。
+- 验证命令（如何确认它有效）。
 
-更长的内容放进更深层的 docs，只在需要时加载。长 manual 会被忽略。短 router 会被遵循。
+任何更长的内容都应放在更深层的文档中，仅在需要时加载。冗长的手册会被忽略，简短的 Router 才会得到遵循。
 
-### agent_state.json 是 system of record
+### agent_state.json 是 System of Record
 
-State 携带：active task id、被触碰的文件、已做出的假设、blockers，以及 next action。Agent 每一轮都会读取它。下一个 session 读取它，而不是重放 chat。
+状态包含：当前任务 id、修改过的文件、已作出的假设、阻塞项和下一步行动。Agent 每轮都会读取它。下一个 Session 会读取它，而不是重放聊天记录。
 
-State 存在文件里，因为 chat history 不可靠。Sessions 会结束。Conversations 会被裁剪。文件不会。
+状态存储在文件中，因为聊天历史并不可靠。Session 会结束，对话会被裁剪，而文件不会。
 
-### task_board.json 是 queue
+### task_board.json 是队列
 
-Task board 携带每个 task，状态为 `todo | in_progress | done | blocked`。当 state 为空时，它是 agent 拉取任务的 queue；当你想知道 agent 是否走在正轨上时，它也是你读取的 queue。
+任务看板包含每个任务及其状态 `todo | in_progress | done | blocked`。当状态为空时，Agent 从这个队列中领取任务；当你想了解 Agent 是否按计划推进时，也会查看这个队列。
 
-Board 上的 task 有 id、goal、owner（`builder`、`reviewer` 或 `human`）和 acceptance criteria。Board 有意保持小：当它长到超过一屏时，你遇到的是 planning problem，而不是 board problem。
+看板中的任务包含 id、目标、负责人（`builder`、`reviewer` 或 `human`）和验收标准。看板有意保持精简：当它增长到一屏无法显示时，说明你遇到的是规划问题，而不是看板问题。
 
-### 三个文件是底线，不是上限
+### 三个文件是下限，不是上限
 
-后续课程会添加 scope contracts、feedback runners、verification gates、reviewer checklists 和 handoff packets。这里的三个文件是它们共同假设的基础。
+后续课程会加入范围契约、反馈 Runner、验证关卡、Reviewer Checklist 和 handoff packet。这里的三个文件是所有这些机制的基础假设。
 
-## 构建它
-`code/main.py` 会把最小 workbench 写入一个空 repo，并演示单轮 agent turn，它会：
+```figure
+wb-three-files
+```
+
+## 动手构建
+
+`code/main.py` 会将最小化 Workbench 写入空 repo，并演示单轮 Agent 操作：
 
 1. 读取 `agent_state.json`。
-2. 如果 state 为空，就从 `task_board.json` 拉取下一个 task。
-3. 在 scope 内触碰单个文件。
-4. 写回更新后的 state。
+2. 如果状态为空，则从 `task_board.json` 领取下一个任务。
+3. 在范围内修改单个文件。
+4. 写回更新后的状态。
 
-运行它：
+运行：
 
 ```
 python3 code/main.py
 ```
 
-脚本会在自身旁边创建 `workdir/`，放置这三个文件，运行一轮，然后打印 diff。重新运行它，观察第二轮如何从第一轮停下的地方继续。
+该脚本会在自身旁边创建 `workdir/`，写入这三个文件，运行一轮操作并打印 diff。再次运行它，观察第二轮如何从第一轮结束的位置继续。
 
-## 使用它
-在生产级 agent products 中，同样的三个文件会以不同名称出现：
+## 实际使用
 
-- **Claude Code:** 用 `AGENTS.md` 或 `CLAUDE.md` 作为 router，用 `.claude/state.json` 风格的 stores 作为 state，用 hooks 作为 board。
-- **Codex / Cursor:** workspace rules 作为 router，session memory 作为 state，chat sidebar 中的 queued tasks 作为 board。
-- **Custom Python agent:** 就是你刚写的这些文件。
+在生产级 Agent 产品内部，同样的三个文件会以不同名称出现：
 
-名称会变。形状不会。
+- **Claude Code：**使用 `AGENTS.md` 或 `CLAUDE.md` 作为 Router，使用类似 `.claude/state.json` 的存储保存状态，使用 Hook 管理看板。
+- **Codex / Cursor：**使用 Workspace Rule 作为 Router，使用 Session Memory 保存状态，使用聊天侧边栏中的排队任务作为看板。
+- **自定义 Python Agent：**就是你刚刚编写的这些文件。
 
-## 真实场景中的生产模式
+名称会改变，形态不会。
 
-当三种 pattern 叠加到最小 workbench 之上时，它就能经受真实 monorepos 的考验。它们彼此独立；选择你的 repo 真正需要的那些。
+## 真实生产环境中的模式
 
-**带 nearest-wins precedence 的嵌套 `AGENTS.md`。** OpenAI 在它的主 repo 中发布了 88 个 `AGENTS.md` 文件，每个 subcomponent 一个。Codex、Cursor、Claude Code 和 Copilot 都会从当前工作文件一路向 repo root 遍历，并连接沿途找到的每个 `AGENTS.md`。Sub-directory 文件扩展 root file。Codex 添加了 `AGENTS.override.md`，用于替换而不是扩展；override mechanism 是 Codex-specific，做 cross-tool 工作时应避免使用。Augment Code 的测量结果才是关键：最好的 `AGENTS.md` 文件带来的质量提升，相当于从 Haiku 升级到 Opus；最差的文件会让输出比完全没有文件更差。
+当在最小化 Workbench 之上叠加三种模式时，它就能应对真实 monorepo。三种模式相互独立；只选择你的 repo 真正需要的模式。
 
-**即使看起来像 coverage，也要拒绝的 anti-patterns。** 相互冲突的 instructions 会悄悄把 agent 从 interactive mode 降到 greedy mode（ICLR 2026 AMBIG-SWE：48.8% → 28% resolve rate）；应给 priorities 编号，而不是把它们平铺堆叠。不可验证的 style rules（“follow the Google Python Style Guide”）如果没有 enforcement command，就会让 agent 自行想象 compliance；每条 style rule 都要配上精确的 lint command。以 style 开头而不是以 commands 开头，会埋没 verification path；commands 在前，style 在后。为人类而不是 agent 写内容会浪费 context budget；简洁是一种特性。
+**使用就近优先规则的嵌套 `AGENTS.md`。** OpenAI 在其主 repo 的不同子组件中提供了 88 个 `AGENTS.md` 文件，每个子组件一个。Codex、Cursor、Claude Code 和 Copilot 都会从当前工作文件向 repo 根目录逐层查找，并拼接沿途发现的每个 `AGENTS.md`。子目录文件会扩展根文件。Codex 还提供 `AGENTS.override.md`，用于替换而不是扩展；这种覆盖机制是 Codex 特有的，进行跨 Tool 工作时应避免使用。Augment Code 的测量结果揭示了关键结论：最好的 `AGENTS.md` 带来的质量提升相当于将 Model 从 Haiku 升级到 Opus；最差的文件则会让输出质量低于完全没有文件的情况。
 
-**Cross-tool symlinks。** 一个单一 root file 配合 symlinks（`ln -s AGENTS.md CLAUDE.md`、`ln -s AGENTS.md .github/copilot-instructions.md`、`ln -s AGENTS.md .cursorrules`），可以让每个 coding agent 都使用同一个 source of truth。Nx 的 `nx ai-setup` 会基于单一 config，在 Claude Code、Cursor、Copilot、Gemini、Codex 和 OpenCode 之间自动完成这件事。
+**即使看似覆盖全面，也要拒绝的反模式。** 相互冲突的指令会悄无声息地让 Agent 从交互模式退化为贪心模式（ICLR 2026 AMBIG-SWE：解决率从 48.8% 降至 28%）；应给优先级编号，而不是将它们平铺堆叠。无法验证的风格规则（“遵循 Google Python Style Guide”）如果没有对应的执行命令，会让 Agent 自行编造合规结果；每条风格规则都应配上准确的 lint 命令。将风格放在命令之前会掩埋验证路径；命令在前，风格在后。面向人类而不是 Agent 编写内容会浪费 Context 预算；简洁本身就是一种优势。
 
-## 交付它
-`outputs/skill-minimal-workbench.md` 会为任何新 repo 生成三文件 workbench：一个按项目调优的 `AGENTS.md` router、一个包含正确 keys 的 `agent_state.json`，以及一个用当前 backlog 初始化的 `task_board.json`。
+**跨 Tool symlink。** 使用单个根文件和 symlink（`ln -s AGENTS.md CLAUDE.md`、`ln -s AGENTS.md .github/copilot-instructions.md`、`ln -s AGENTS.md .cursorrules`），可以让每个 Coding Agent 共享同一个 Source of Truth。Nx 的 `nx ai-setup` 能够基于单一配置，为 Claude Code、Cursor、Copilot、Gemini、Codex 和 OpenCode 自动完成这项工作。
+
+## 交付成果
+
+`outputs/skill-minimal-workbench.md` 会为任何新 repo 生成三文件 Workbench：一份根据项目调整的 `AGENTS.md` Router、一份包含正确 key 的 `agent_state.json`，以及一份以当前 backlog 初始化的 `task_board.json`。
 
 ## 练习
-1. 给 `agent_state.json` 添加一个 `last_run` timestamp。如果文件早于 24 小时，除非 operator 确认，否则拒绝运行。
-2. 给 task board 添加一个 `priority` field，并修改 puller，使其总是选择优先级最高的 `todo`。
-3. 将 `task_board.json` 迁移到 JSON Lines，让每个 task 占一行，并让 diffs 在 version control 中保持清晰。
-4. 编写一个 `lint_workbench.py`，当 `AGENTS.md` 超过 80 行，或引用了不存在的文件时失败。
-5. 判断这三个文件中丢失哪一个伤害最大。为你的选择辩护。
+
+1. 为 `agent_state.json` 添加 `last_run` 时间戳。如果该文件早于 24 小时，除非 Operator 确认，否则拒绝运行。
+2. 为任务看板添加 `priority` 字段，并修改任务领取器，使其始终选择优先级最高的 `todo`。
+3. 将 `task_board.json` 迁移到 JSON Lines，使每个任务占一行，并让版本控制中的 diff 保持整洁。
+4. 编写一个 `lint_workbench.py`：当 `AGENTS.md` 超过 80 行或引用不存在的文件时执行失败。
+5. 判断丢失三个文件中的哪一个会造成最大损害，并为你的答案辩护。
 
 ## 关键术语
-| Term | What people say | What it actually means |
+
+| 术语 | 人们通常怎么说 | 实际含义 |
 |------|----------------|------------------------|
-| Router | `AGENTS.md` | 指向更深层 docs 和 files 的简短 root file |
-| State file | "The notes" | 记录 agent 所在位置的 machine-readable 记录，每一轮都会写入 |
-| Task board | "The backlog" | 带有 status、owner、acceptance 的工作 JSON queue |
-| System of record | "Source of truth" | 当 chat 消失时，workbench 视为权威的文件 |
+| Router | `AGENTS.md` | 将 Agent 指向更深层文档和文件的简短根文件 |
+| State file | “笔记” | 记录 Agent 当前进度的机器可读文件，每轮都会写入 |
+| Task board | “Backlog” | 包含状态、负责人和验收条件的 JSON 工作队列 |
+| System of record | “Source of Truth” | 聊天记录消失后，Workbench 视为权威来源的文件 |
 
 ## 延伸阅读
-- [agents.md — the open spec](https://agents.md/) — 被 Cursor、Codex、Claude Code、Copilot、Gemini、OpenCode 采用
-- [Augment Code, A good AGENTS.md is a model upgrade. A bad one is worse than no docs at all](https://www.augmentcode.com/blog/how-to-write-good-agents-dot-md-files) — 测得的质量提升
-- [Blake Crosley, AGENTS.md Patterns: What Actually Changes Agent Behavior](https://blakecrosley.com/blog/agents-md-patterns) — 什么在实证上有效，什么无效
-- [Datadog Frontend, Steering AI Agents in Monorepos with AGENTS.md](https://dev.to/datadog-frontend-dev/steering-ai-agents-in-monorepos-with-agentsmd-13g0) — nested precedence 的实践
-- [Nx Blog, Teach Your AI Agent How to Work in a Monorepo](https://nx.dev/blog/nx-ai-agent-skills) — 跨六种 tools 的 single-source generation
-- [The Prompt Shelf, AGENTS.md Best Practices: Structure, Scope, and Real Examples](https://thepromptshelf.dev/blog/agents-md-best-practices/) — 能经受 review 的 section ordering
-- [Anthropic, Claude Code subagents and session store](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/sub-agents)
-- Phase 14 · 31 — 这个 minimum 所吸收的 failure modes
-- Phase 14 · 34 — 本课预览的 durable state schema
+
+- [agents.md — 开放规范](https://agents.md/) — 已被 Cursor、Codex、Claude Code、Copilot、Gemini、OpenCode 采用
+- [Augment Code，优秀的 AGENTS.md 相当于升级 Model，糟糕的 AGENTS.md 还不如完全没有文档](https://www.augmentcode.com/blog/how-to-write-good-agents-dot-md-files) — 实测质量提升
+- [Blake Crosley，AGENTS.md 模式：哪些内容真正改变 Agent 行为](https://blakecrosley.com/blog/agents-md-patterns) — 哪些方法经验证有效，哪些无效
+- [Datadog Frontend，使用 AGENTS.md 引导 Monorepo 中的 AI Agent](https://dev.to/datadog-frontend-dev/steering-ai-agents-in-monorepos-with-agentsmd-13g0) — 嵌套优先级的实际应用
+- [Nx Blog，教会你的 AI Agent 如何在 Monorepo 中工作](https://nx.dev/blog/nx-ai-agent-skills) — 跨六种 Tool 的单一来源生成
+- [The Prompt Shelf，AGENTS.md 最佳实践：结构、范围和真实示例](https://thepromptshelf.dev/blog/agents-md-best-practices/) — 能经受 Review 的章节顺序
+- [Anthropic，Claude Code subagent](https://code.claude.com/docs/en/sub-agents)
+- Phase 14 · 31 — 这个最小化方案所吸收的失败模式
+- Phase 14 · 34 — 本课预览的持久状态 schema
