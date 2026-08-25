@@ -84,6 +84,10 @@ For each connection (limb):
   - 直接从 image 做 3D regression（PyMAF, MHFormer）。
   - Multi-view setups（CMU Panoptic）用于 ground truth。
 
+```figure
+cv3-pose-heatmap
+```
+
 ## 构建它
 ### 步骤 1： Gaussian heatmap target
 
