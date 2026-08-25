@@ -76,6 +76,10 @@ Kolmogorov complexity 和 Lob's theorem 对系统能够证明自身性质的范�
 
 四者都必须通过，edit 才能落地。任何单个 failure 都会暂停 loop。
 
+```figure
+bounded-gates
+```
+
 ## 使用它
 
 `code/main.py` 在 Lesson 4 的 DGM 风格 toy 上运行一个 bounded self-improvement loop，但在其上叠加了这四个 primitives。每个 primitive 都可以单独启用或禁用。演示目标是：每个 primitive 都能捕捉一个特定 failure class，而移除其中任何一个都会让对应 failure class 通过。
