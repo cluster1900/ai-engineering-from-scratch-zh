@@ -88,6 +88,10 @@ Native pretraining 不是免费的：
 
 InternVL3 的赌注是：alignment debt 比 reuse loss 更糟。benchmarks 支持这个主张。生产成本也阻止未来 labs 低成本复制。Post-hoc VLMs 会继续存在，因为对大多数项目来说它们仍然更便宜。
 
+```figure
+l5-native-pretrain
+```
+
 ## 使用它
 `code/main.py` 是一个 training-corpus mixer 和 ViR router simulator。它会：
 
