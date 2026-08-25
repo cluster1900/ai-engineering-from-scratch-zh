@@ -90,6 +90,10 @@ Qwen2.5-Omni 默认支持 half-duplex，通过静音阈值进行 turn-taking。F
 
 这就是为什么会存在小型专用 Talker 模型，而不是“直接使用主模型”。
 
+```figure
+l5-thinker-talker
+```
+
 ## 使用它
 `code/main.py`：
 

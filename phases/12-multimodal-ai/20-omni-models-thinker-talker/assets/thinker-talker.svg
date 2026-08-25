@@ -25,7 +25,7 @@
   <rect x="60" y="90" width="140" height="170" class="hot"/>
   <text x="130" y="112" text-anchor="middle" class="step">用户音频</text>
   <text x="130" y="130" text-anchor="middle" class="small">麦克风 16 kHz</text>
-  <text x="130" y="146" text-anchor="middle" class="small">+ webcam 4 fps</text>
+  <text x="130" y="146" text-anchor="middle" class="small">+ 摄像头 4 fps</text>
   <text x="130" y="166" text-anchor="middle" class="small">流式</text>
   <text x="130" y="186" text-anchor="middle" class="small">Token 输入</text>
   <text x="130" y="212" text-anchor="middle" class="caption">VAD 用于轮次切换</text>
@@ -57,14 +57,14 @@
 
   <rect x="770" y="90" width="140" height="170" class="reg"/>
   <text x="840" y="112" text-anchor="middle" class="step">波形</text>
-  <text x="840" y="130" text-anchor="middle" class="small">SNAC decoder</text>
+  <text x="840" y="130" text-anchor="middle" class="small">SNAC 解码器</text>
   <text x="840" y="146" text-anchor="middle" class="small">16 kHz 采样</text>
   <text x="840" y="162" text-anchor="middle" class="small">扬声器输出</text>
   <text x="840" y="182" text-anchor="middle" class="step">~70 ms 解码</text>
   <text x="840" y="206" text-anchor="middle" class="caption">流式</text>
 
   <rect x="30" y="300" width="900" height="220" class="box"/>
-  <text x="480" y="322" text-anchor="middle" class="head">TTFAB 预算与 open 实现</text>
+  <text x="480" y="322" text-anchor="middle" class="head">TTFAB 预算与开源实现</text>
 
   <g transform="translate(60, 350)">
     <text x="0" y="15" class="step">麦克风 -&gt; audio Token</text>
@@ -89,8 +89,8 @@
   </g>
 
   <rect x="590" y="340" width="320" height="160" class="reg"/>
-  <text x="750" y="362" text-anchor="middle" class="step">open 实现</text>
-  <text x="750" y="384" text-anchor="middle" class="small">Mini-Omni：首个 open streaming</text>
+  <text x="750" y="362" text-anchor="middle" class="step">开源实现</text>
+  <text x="750" y="384" text-anchor="middle" class="small">Mini-Omni：首个开源流式系统</text>
   <text x="750" y="402" text-anchor="middle" class="small">Moshi：160 ms，内心独白</text>
   <text x="750" y="420" text-anchor="middle" class="small">Qwen2.5-Omni：~350 ms，TMRoPE</text>
   <text x="750" y="438" text-anchor="middle" class="small">Qwen3-Omni：接近 GPT-4o</text>
