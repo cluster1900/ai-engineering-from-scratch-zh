@@ -105,6 +105,10 @@ Self-supervised pretraining 之后，标准评估是 **linear probe**：冻结 e
 
 Linear probe 是对特征质量的纯粹衡量；fine-tuning 通常会增加 2-5 个点，但也会混入 head retraining 的影响。
 
+```figure
+data-augmentation
+```
+
 ## 构建它
 
 ### 步骤 1：Two-view augmentation pipeline
