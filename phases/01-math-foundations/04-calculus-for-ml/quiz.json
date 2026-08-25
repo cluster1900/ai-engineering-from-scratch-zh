@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "函数在某一点的导数告诉你什么？",
-      "options": ["函数在该点的值", "函数在该点的变化率（斜率）", "函数到该点为止下方的面积", "函数能够达到的最大值"],
-      "correct": 1,
+      "options": [
+        "函数能够达到的最大值",
+        "函数到该点为止下方的面积",
+        "函数在该点的变化率（斜率）",
+        "函数在该点的值"
+      ],
+      "correct": 2,
       "explanation": "导数 f'(x) 衡量输入每变化一个单位时，输出会变化多少。从几何上看，它就是该点切线的斜率。"
     },
     {
       "stage": "pre",
       "question": "在 machine learning 语境中，gradient 是什么？",
-      "options": ["模型准确率的度量", "由所有偏导数组成、指向最陡上升方向的 vector", "训练期间使用的 learning rate", "预测值与实际值之间的差异"],
-      "correct": 1,
+      "options": [
+        "预测值与实际值之间的差异",
+        "模型准确率的度量",
+        "由所有偏导数组成、指向最陡上升方向的 vector",
+        "训练期间使用的 learning rate"
+      ],
+      "correct": 2,
       "explanation": "gradient 会把每个偏导数收集到一个 vector 中。它指向使函数增长最快的方向。要最小化 Loss，你需要沿 gradient 的相反方向移动。"
     },
     {
       "stage": "post",
       "question": "在 gradient descent 中，更新规则 'w = w - lr * dL/dw' 完成了什么？",
-      "options": ["它会增加 Loss 以测试模型鲁棒性", "它会按 learning rate 缩放后，沿降低 Loss 的方向调整每个权重", "它会把权重重置为初始值减去 gradient", "它会将权重归一化为大小为 1"],
-      "correct": 1,
+      "options": [
+        "它会将权重归一化为大小为 1",
+        "它会增加 Loss 以测试模型鲁棒性",
+        "它会把权重重置为初始值减去 gradient",
+        "它会按 learning rate 缩放后，沿降低 Loss 的方向调整每个权重"
+      ],
+      "correct": 3,
       "explanation": "dL/dw 告诉你哪个方向会增加 Loss。减去它（乘以 learning rate）会把权重移动到降低 Loss 的方向。模型中的每个权重都会重复这个过程。"
     },
     {
       "stage": "post",
       "question": "为什么 Newton's method（使用 Hessian Matrix）不能直接应用于包含数百万参数的 Neural Networks？",
-      "options": ["Newton's method 只适用于凸函数", "Hessian 是一个 N x N matrix，每一步都需要 O(N^2) 存储和 O(N^3) 计算；对于数百万参数来说不可行", "Newton's method 需要解析导数，而 Neural Networks 无法计算解析导数", "Newton's method 对 Deep Networks 收敛太慢"],
+      "options": [
+        "Newton's method 对 Deep Networks 收敛太慢",
+        "Hessian 是一个 N x N matrix，每一步都需要 O(N^2) 存储和 O(N^3) 计算；对于数百万参数来说不可行",
+        "Newton's method 需要解析导数，而 Neural Networks 无法计算解析导数",
+        "Newton's method 只适用于凸函数"
+      ],
       "correct": 1,
       "explanation": "当 N=100 万个参数时，Hessian 有 1 万亿个条目。计算并求逆它是不可能的。这就是为什么我们使用一阶方法（SGD, Adam），用低成本近似二阶信息。"
     },
     {
       "stage": "post",
       "question": "f'(x) 的数值（中心差分）近似是什么？",
-      "options": ["f(x+h) / h", "(f(x+h) - f(x)) / h", "(f(x+h) - f(x-h)) / (2*h)", "f(x) * h"],
+      "options": [
+        "(f(x+h) - f(x)) / h",
+        "f(x) * h",
+        "(f(x+h) - f(x-h)) / (2*h)",
+        "f(x+h) / h"
+      ],
       "correct": 2,
       "explanation": "中心差分 (f(x+h) - f(x-h)) / (2h) 比前向差分更准确，因为它会平均 x 两侧的斜率，从而抵消主导误差项。"
     }
-  ]
+  ],
+  "title": null
 }
