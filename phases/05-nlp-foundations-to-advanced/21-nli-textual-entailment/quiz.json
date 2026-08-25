@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "NLI 会给一个 (premise, hypothesis) 对分配哪三个 label？",
       "options": [
-        "Positive / negative / neutral",
         "True / false / unknown",
+        "Cause / effect / unrelated",
         "Entailment / contradiction / neutral",
-        "Cause / effect / unrelated"
+        "Positive / negative / neutral"
       ],
       "correct": 2,
       "explanation": "NLI 是对 entailment、contradiction 和 neutral 的 3-way Classification。"
@@ -18,22 +18,22 @@
       "stage": "pre",
       "question": "NLI 如何用作 zero-shot text classifier？",
       "options": [
+        "通过 prompting 一个 LLM",
         "把每个候选 label verbalize 成一个 hypothesis（例如 'This text is about sports'），然后选择 entailment score 最高的 label",
-        "通过平均 Embedding",
         "通过计算 TF-IDF",
-        "通过 prompting 一个 LLM"
+        "通过平均 Embedding"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "NLI-as-classifier 会把 label 转成 hypothesis；模型选择 max-entailment label。"
     },
     {
       "stage": "check",
       "question": "为什么 NLI 是 RAG 输出的 faithfulness check？",
       "options": [
-        "它使用 Tokenizer",
-        "检查 retrieved context 是否 entails 每条 answer claim，正是 NLI 训练时使用的 formulation",
         "它很便宜",
-        "它是 Multilingual 的"
+        "检查 retrieved context 是否 entails 每条 answer claim，正是 NLI 训练时使用的 formulation",
+        "它是 Multilingual 的",
+        "它使用 Tokenizer"
       ],
       "correct": 1,
       "explanation": "Hallucination = answer claims 不能由 retrieved context entail；NLI 直接衡量 entailment。"
@@ -42,24 +42,24 @@
       "stage": "check",
       "question": "hypothesis-only baseline 暴露了什么？",
       "options": [
-        "Multilingual gaps",
+        "Tokenizer drift",
         "缓慢的 inference",
-        "只看 hypothesis（没有 premise）就能预测 label 的 datasets，这表明存在 label leakage",
-        "Tokenizer drift"
+        "Multilingual gaps",
+        "只看 hypothesis（没有 premise）就能预测 label 的 datasets，这表明存在 label leakage"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "SNLI 上的高 hypothesis-only score 暴露了 annotation artifacts；这对调试你的数据很有用。"
     },
     {
       "stage": "check",
       "question": "哪类 NLI model family 作为标准 workhorse 位居 2026 leaderboards 前列？",
       "options": [
-        "fastText",
-        "Plain Word2Vec",
         "在 MNLI/FEVER/ANLI 上 fine-tuned 的 DeBERTa-v3 variants",
-        "GPT-2"
+        "Plain Word2Vec",
+        "GPT-2",
+        "fastText"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "在 MNLI 和相关 corpora 上 fine-tuned 的 DeBERTa-v3 是 2026 年开放 NLI 的 workhorse。"
     },
     {
@@ -68,8 +68,8 @@
       "options": [
         "它们是在短 premise 上训练的，在 multi-sentence 和 multi-hop inference 上会失败；DocNLI-tuned models 可以处理更长输入",
         "更大的输入运行更慢",
-        "Documents 会触发 Tokenizer drift",
-        "Cosine similarity 会衰减"
+        "Cosine similarity 会衰减",
+        "Documents 会触发 Tokenizer drift"
       ],
       "correct": 0,
       "explanation": "训练分布不匹配：single-sentence NLI models 在 document-length 输入上会损失 20+ F1。"
@@ -78,24 +78,24 @@
       "stage": "post",
       "question": "为什么 zero-shot accuracy 会因 hypothesis template 不同而波动 10+ points？",
       "options": [
+        "Templates 会改变 label set",
         "模型对措辞敏感；例如 'This text is about {label}' 与单独的 '{label}' 会改变 entailment probabilities",
         "Templates 会改变 Tokenizer 行为",
-        "Templates 会影响模型权重",
-        "Templates 会改变 label set"
+        "Templates 会影响模型权重"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Template wording 会显著改变 entailment scores；在小型 held-out set 上调优它。"
     },
     {
       "stage": "post",
       "question": "关于 NLI 用于 hallucination detection，什么说法是安全的界限？",
       "options": [
-        "它只适用于英文",
         "它作为 faithfulness signal 可以减少 hallucination，但不能消除 hallucination；应结合 retrieval recall 和 human review",
+        "它只适用于英文",
         "它会消除 hallucination",
         "它需要 LLMs"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "NLI 是有用信号，但不是完整解决方案；应搭配 retrieval metrics 和 human spot-checks。"
     }
   ]

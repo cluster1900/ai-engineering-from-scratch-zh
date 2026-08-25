@@ -15,7 +15,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">NLI - 一个任务，三种生产用途</text>
+  <text x="450" y="30" text-anchor="middle" class="title">NLI：一个任务，三种生产用途</text>
 
   <!-- Premise + Hypothesis input -->
   <rect x="60" y="70" width="280" height="60" class="box"/>
@@ -30,7 +30,7 @@
 
   <!-- Encoder -->
   <rect x="400" y="90" width="220" height="90" class="box"/>
-  <text x="510" y="115" text-anchor="middle" class="label">Transformer encoder</text>
+  <text x="510" y="115" text-anchor="middle" class="label">Transformer 编码器</text>
   <text x="510" y="138" text-anchor="middle" class="content">[CLS] t [SEP] h [SEP]</text>
   <text x="510" y="160" text-anchor="middle" class="caption">DeBERTa-v3 / RoBERTa / BART</text>
 
@@ -53,18 +53,18 @@
   <text x="450" y="270" text-anchor="middle" class="title">同一模型，三种接入</text>
 
   <rect x="40" y="290" width="260" height="130" class="ent"/>
-  <text x="170" y="315" text-anchor="middle" class="label">1. zero-shot classification</text>
+  <text x="170" y="315" text-anchor="middle" class="label">1. zero-shot Classification</text>
   <text x="170" y="340" text-anchor="middle" class="content">t = document</text>
   <text x="170" y="358" text-anchor="middle" class="content">h = "about {label}"</text>
   <text x="170" y="385" text-anchor="middle" class="caption">选择最大蕴含标签</text>
   <text x="170" y="402" text-anchor="middle" class="caption">无需训练数据</text>
 
   <rect x="320" y="290" width="260" height="130" class="ent"/>
-  <text x="450" y="315" text-anchor="middle" class="label">2. faithfulness (RAG)</text>
+  <text x="450" y="315" text-anchor="middle" class="label">2. 忠实度 (RAG)</text>
   <text x="450" y="340" text-anchor="middle" class="content">t = retrieved context</text>
   <text x="450" y="358" text-anchor="middle" class="content">h = generated answer claim</text>
   <text x="450" y="385" text-anchor="middle" class="caption">蕴含 → 有支持</text>
-  <text x="450" y="402" text-anchor="middle" class="caption">RAGAS faithfulness 核心</text>
+  <text x="450" y="402" text-anchor="middle" class="caption">RAGAS 忠实度核心</text>
 
   <rect x="600" y="290" width="260" height="130" class="ent"/>
   <text x="730" y="315" text-anchor="middle" class="label">3. 摘要事实核查</text>

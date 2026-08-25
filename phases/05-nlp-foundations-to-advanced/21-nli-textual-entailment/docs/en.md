@@ -46,6 +46,10 @@
 
 **通过 NLI 做 zero-shot。** 给定一个 document 和 candidate labels，把每个 label 转成一个 hypothesis（"This text is about sports"）。计算每个的 entailment probability。选择最大值。这就是 Hugging Face 的 `zero-shot-classification` pipeline 背后的机制。
 
+```figure
+nli-router
+```
+
 ## 构建它
 
 ### 步骤 1： 运行一个 pretrained NLI model
