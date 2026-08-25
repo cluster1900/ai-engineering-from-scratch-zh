@@ -119,6 +119,10 @@ Production population-scale 案例。时间线：
 - **Cost 是核心工程约束。** 每项任务的 token cost、每次 interaction 的 wall-clock、rainbow-deploy overhead。Multi-agent 在 accuracy 上胜出，但在 cost 上失败，而这种取舍就是业务决策。
 - **Regulation 是近期输入，不是背景关注点。** Jurisdictions 的行动比单次 deploy cycles 更快。
 
+```figure
+a5-orchestrator-scale
+```
+
 ## 使用它
 
 `outputs/skill-case-study-mapper.md` 是一个 skill，它读取一个 proposed multi-agent system design，并将其映射到最接近的 case study，同时暴露该 case study 已经验证过的 design decisions。
