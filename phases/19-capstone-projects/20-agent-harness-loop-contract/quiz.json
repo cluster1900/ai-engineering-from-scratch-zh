@@ -6,34 +6,34 @@
       "stage": "pre",
       "question": "为什么要把 harness loop 建模为显式 state machine，而不是带 flags 的 while loop？",
       "options": [
-        "它让 harness 能在一个地方拒绝非法 transitions，并从 event log replay sessions",
-        "它在 CPython 上更快",
+        "它是 model 可以调用的唯一形状",
         "它避免了对 tests 的需要",
-        "它是 model 可以调用的唯一形状"
+        "它让 harness 能在一个地方拒绝非法 transitions，并从 event log replay sessions",
+        "它在 CPython 上更快"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "state machine 会把合法性规则放进一个 transition function。同一输入序列会重现同一 state，这正是 session replay 成为可能的原因。"
     },
     {
       "stage": "pre",
       "question": "loop 中的 pull point 代表什么？",
       "options": [
-        "loop 让出控制权，并等待 caller 提供 input 的位置",
-        "返回 tool name 的 model call",
         "每 N 秒触发一次的 timer",
-        "mutate payload 的 hook subscriber"
+        "loop 让出控制权，并等待 caller 提供 input 的位置",
+        "mutate payload 的 hook subscriber",
+        "返回 tool name 的 model call"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Pull points 是 returns，不是 exceptions。caller 获取 harness 请求的内容，并调用 resume()。"
     },
     {
       "stage": "check",
       "question": "哪个 state 是 tool call 的唯一合法 pull point？",
       "options": [
-        "EXECUTING",
+        "PLANNING",
         "AWAITING_TOOL",
-        "REFLECTING",
-        "PLANNING"
+        "EXECUTING",
+        "REFLECTING"
       ],
       "correct": 1,
       "explanation": "只有 AWAITING_TOOL 会产生 tool pull point。当某个 step 需要 tool 时，EXECUTING 会 transition 到它。"
@@ -42,9 +42,9 @@
       "stage": "check",
       "question": "当 hook 在 before_tool_call 中 raise HookAbort 时会发生什么？",
       "options": [
-        "session 立即 transition 到 DONE",
-        "tool call 被跳过，on_error 触发，loop 移动到 REFLECTING",
         "hook 被 unregister",
+        "tool call 被跳过，on_error 触发，loop 移动到 REFLECTING",
+        "session 立即 transition 到 DONE",
         "budget 被 reset"
       ],
       "correct": 1,
@@ -67,11 +67,11 @@
       "question": "当 wall-clock budget 被超过时，下一个 state 是什么？",
       "options": [
         "DONE — session 被终止",
-        "EXECUTING — loop 重试",
         "IDLE — 返回一个带 budget_exceeded reason 的 pull point",
-        "PLANNING — 起草一个 fresh plan"
+        "PLANNING — 起草一个 fresh plan",
+        "EXECUTING — loop 重试"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "Budget exhaustion 是一次 yield。harness transition 到 IDLE，触发 on_budget_exceeded，并返回 PullRequest，让 caller 决定是扩展还是关闭。"
     },
     {
@@ -80,8 +80,8 @@
       "options": [
         "因为 models 在本地调用很慢",
         "为了在绑定任何 model 之前，让 loop contract 保持可测试和确定性",
-        "因为 models 无法返回 tool calls",
-        "为了节省 tokens"
+        "为了节省 tokens",
+        "因为 models 无法返回 tool calls"
       ],
       "correct": 1,
       "explanation": "先固定 loop contract，可以让后续 lessons 接入真实 planners、registries 和 dispatchers，而无需重新协商 state machine。"

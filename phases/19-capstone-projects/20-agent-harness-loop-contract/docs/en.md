@@ -14,6 +14,10 @@
 - 强制执行 per-session budgets（turns、tool calls、wall-clock），同时在超限时不泄漏 partial state。
 - 发出包含十一种 event types 的 typed stream，让下游 UIs 和 tracers 无需直接检查 loop 即可订阅。
 
+```figure
+cf-loop-contract
+```
+
 ## 框架
 
 一个无人值守运行四十轮的 coding agent 不是 chat loop。它是一个 state machine，operator 可以拦截它的 nodes，也可以 audit 它的 edges。一旦你把 contract 写下来，替换 models、tools 或 policies 就不再是重构，而会变成一次 registration call。
