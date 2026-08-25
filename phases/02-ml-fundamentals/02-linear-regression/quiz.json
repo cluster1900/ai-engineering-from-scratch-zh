@@ -5,11 +5,11 @@
     "question": "在 Gradient Descent 中，learning rate 控制什么？",
     "options": [
       "模型使用的特征数量",
-      "模型训练的 epoch 数量",
       "每次参数更新 step 的大小",
-      "训练数据与测试数据的比例"
+      "训练数据与测试数据的比例",
+      "模型训练的 epoch 数量"
     ],
-    "correct": 2,
+    "correct": 1,
     "explanation": "learning rate 是一个标量，用于控制每次 Gradient Descent step 中权重变化的幅度。过大会导致 divergence，过小会导致 convergence 缓慢。"
   },
   {
@@ -17,12 +17,12 @@
     "stage": "pre",
     "question": "对于 Regression 模型，R-squared = 0 意味着什么？",
     "options": [
-      "模型做出了完美预测",
-      "模型并不比始终预测目标均值更好",
       "模型具有负 error",
-      "模型尚未训练"
+      "模型尚未训练",
+      "模型并不比始终预测目标均值更好",
+      "模型做出了完美预测"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "R-squared = 0 意味着模型没有解释目标中的任何 variance。它的表现与每次都简单预测均值完全相同。"
   },
   {
@@ -30,12 +30,12 @@
     "stage": "post",
     "question": "为什么 feature scaling 对 multiple linear regression 中的 Gradient Descent 很重要？",
     "options": [
-      "它让模型更具可解释性",
-      "它防止 cost surface 被拉长，从而允许更快 convergence",
+      "它保证模型会找到 global minimum",
       "它减少所需的特征数量",
-      "它保证模型会找到 global minimum"
+      "它防止 cost surface 被拉长，从而允许更快 convergence",
+      "它让模型更具可解释性"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "当特征具有非常不同的尺度时，cost surface 会被拉长。Gradient Descent 需要更多 step 才能 converge。标准化特征会让 surface 更接近球形。"
   },
   {
@@ -43,12 +43,12 @@
     "stage": "post",
     "question": "normal equation 可以直接给出最优权重。为什么你会更倾向于使用 Gradient Descent？",
     "options": [
+      "Gradient Descent 比存储数据需要更少内存",
       "Gradient Descent 总是给出更准确的结果",
       "normal equation 不适用于 Linear Regression",
-      "normal equation 中的 Matrix inversion 对特征数量是 O(n^3)，对于数千个特征来说太慢",
-      "Gradient Descent 比存储数据需要更少内存"
+      "normal equation 中的 Matrix inversion 对特征数量是 O(n^3)，对于数千个特征来说太慢"
     ],
-    "correct": 2,
+    "correct": 3,
     "explanation": "normal equation 需要对 X^T * X 求逆，其复杂度相对于特征数量是 O(n^3)。对于大量特征，Gradient Descent 更高效。"
   },
   {
@@ -57,11 +57,11 @@
     "question": "一个 degree-10 polynomial regression 模型完美拟合了训练数据（R^2 = 1.0），但在测试数据上 R^2 = 0.3。你应该怎么做？",
     "options": [
       "把 polynomial degree 增加到 20，以获得更好的训练拟合",
-      "降低模型复杂度（降低 degree）或添加 regularization（Ridge）以防止过拟合",
       "收集更少的训练数据，让模型无法记忆",
+      "降低模型复杂度（降低 degree）或添加 regularization（Ridge）以防止过拟合",
       "移除 test set，只报告 training R^2"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "完美的训练拟合加上较差的测试拟合就是过拟合。修复方法是降低复杂度（降低 polynomial degree）或添加 regularization 来惩罚大权重。"
   }
 ]
