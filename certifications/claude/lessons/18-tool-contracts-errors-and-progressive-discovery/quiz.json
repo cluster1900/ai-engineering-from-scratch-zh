@@ -1,0 +1,78 @@
+{
+  "lesson": "18-tool-contracts-errors-and-progressive-discovery",
+  "title": "Tool 契约、错误与渐进式发现",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "名为 search、find 和 lookup 的三个 Tool 拥有几乎相同的描述。首先应该修复什么？",
+      "options": [
+        "保留该目录，但使用先前成功调用的示例重新尝试选择",
+        "建立清晰不同的动作、来源、使用场景、schema 和副作用边界",
+        "向每个角色公开全部三个 Tool，以便 Agent 可以从不理想的首次选择中恢复",
+        "使用能力更强的 Model 来推断相互重叠的 schema 差异"
+      ],
+      "correct": 1,
+      "explanation": "该目录移除了进行选择所需的信息。清晰不同的名称、描述、负向用途、schema 和权限边界能够从结构上修复接口。"
+    },
+    {
+      "stage": "check",
+      "question": "结构化授权错误应传达什么信息？",
+      "options": [
+        "要求切换 Model，并使用更保守的参数重复调用",
+        "通用失败类别以及隐藏政策细节的自动重试延迟",
+        "类别、不可重试状态、安全消息，以及正确的批准或访问权限后续步骤",
+        "内部 stack trace 和被拒绝的身份声明，以便 Agent 诊断访问问题"
+      ],
+      "correct": 2,
+      "explanation": "盲目重试不会改变授权状态。Harness 需要安全的类别和升级处理动作，同时不能泄露内部信息或凭据。"
+    },
+    {
+      "stage": "check",
+      "question": "应用应在何时强制使用结构化输出 Tool？",
+      "options": [
+        "只要对话最终可能调用 Tool，就让每个响应都保持结构化",
+        "当动作已在 Prompt 中获得授权，但 client 无法检查其参数时",
+        "当 Model 必须同时格式化退款请求并执行交易时",
+        "当应用需要一条类型化、经过验证且不产生真实世界副作用的记录时"
+      ],
+      "correct": 3,
+      "explanation": "仅包含 schema 的 Tool 可以强制执行输出契约。真实世界执行仍是独立的授权动作，不应仅为了获得 JSON 而强制执行。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么要对大型 Tool 目录使用渐进式发现？",
+      "options": [
+        "它可以减少 Context 和选择负担，同时保留一个小型、稳定的初始界面",
+        "它能保证选中的 Tool 是安全的，因为发现仅发生在 Model 请求之后",
+        "它通过随描述加载凭据，使凭据不出现在集成代码中",
+        "它使尚未发现的 Tool 无法访问，因此不再需要执行授权"
+      ],
+      "correct": 0,
+      "explanation": "按需加载相关能力可以改善 Context、选择和 cache 行为。仍然需要限定 scope 的发现和执行授权。"
+    },
+    {
+      "stage": "post",
+      "question": "团队应将共享 MCP server 声明和个人 secret 实际值分别存放在哪里？",
+      "options": [
+        "将声明和加密后的 secret 实际值一起提交为一份共享配置",
+        "将安全的共享声明放在项目 scope 中；将 secret 实际值放在环境或获批准的 secret 存储中",
+        "将 secret 引用和解析后的实际值存放在仅 Host 可见的描述中",
+        "将声明放在项目说明中，并让每位用户通过 Prompt 提供 secret"
+      ],
+      "correct": 1,
+      "explanation": "项目配置支持版本化协作，而 secret 实际值必须保留在版本控制之外，并通过安全机制进行配置。"
+    },
+    {
+      "stage": "post",
+      "question": "一份静态政策文档以名为 get_policy、无副作用的 Tool 形式公开。哪种 MCP primitive 可以更直接地表达这一边界？",
+      "options": [
+        "分配给拥有文档访问权限的政策专家的 Agent-to-Agent 任务",
+        "在确认预期用途后注入文档的批准 hook",
+        "将政策作为 URI 寻址的 Context 数据公开的 resource",
+        "只读 Tool，因为由 Model 选择的检索应始终使用 Tool primitive"
+      ],
+      "correct": 2,
+      "explanation": "Resource 表示 Host 或 Model 可以读取的 Context 数据。Tool 最适合保留给由 Model 请求的动作或计算。"
+    }
+  ]
+}
