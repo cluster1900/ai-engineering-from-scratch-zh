@@ -5,61 +5,62 @@
       "stage": "post",
       "question": "对于一个必须在 crash 后 resume、在运行中接受 human approval、并并行 fan out 到三个 retrievers 的 workflow，哪个 framework 是正确的第一选择？",
       "options": [
-        "CrewAI",
-        "AutoGen",
         "LangGraph",
-        "Agno"
+        "Agno",
+        "AutoGen",
+        "CrewAI"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么 LLM-selected routing 比 explicit routing 每轮花费更多 tokens？",
       "options": [
-        "它会并行 pre-fetch 下一个 node，以对冲 latency。",
         "planner LLM call 每轮选择下一步，为每次决策增加 prompt 和 completion tokens。",
         "它会为 crew 中的每个 agent 复制 tool list。",
-        "它会把整个 conversation history 发送给 verifier model。"
+        "它会把整个 conversation history 发送给 verifier model。",
+        "它会并行 pre-fetch 下一个 node，以对冲 latency。"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "Code review 中的 proposer-critic dialogue 自然映射到哪个 framework 的核心 abstraction？",
       "options": [
-        "CrewAI 的 sequential Crew",
         "LangGraph 的 StateGraph",
         "AutoGen 的 GroupChat / ConversableAgent pair",
+        "CrewAI 的 sequential Crew",
         "Agno 的 single Agent with tools"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪个 framework 拥有直接挂到 Agent class 上、用于 session 和 memory persistence 的内置 storage drivers（SQLite、Postgres、Redis、Mongo、DynamoDB）？",
       "options": [
-        "LangGraph",
+        "Agno",
         "CrewAI",
         "AutoGen",
-        "Agno"
+        "LangGraph"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "你有一个 two-call summarizer：fetch text，summarize。哪个选项是正确的 framework choice？",
       "options": [
-        "LangGraph StateGraph \u2014 为了 reliability，始终使用 framework。",
-        "带 researcher + summarizer roles 的 CrewAI \u2014 roles 让它更清晰。",
-        "Plain Python with the provider SDK \u2014 对 tiny pipelines 来说，没有 framework 是最快的 framework。",
-        "AutoGen GroupChat \u2014 两个 agents 可以争论最佳 summary。"
+        "AutoGen GroupChat — 两个 agents 可以争论最佳 summary。",
+        "Plain Python with the provider SDK — 对 tiny pipelines 来说，没有 framework 是最快的 framework。",
+        "带 researcher + summarizer roles 的 CrewAI — roles 让它更清晰。",
+        "LangGraph StateGraph — 为了 reliability，始终使用 framework。"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     }
-  ]
+  ],
+  "title": null
 }
