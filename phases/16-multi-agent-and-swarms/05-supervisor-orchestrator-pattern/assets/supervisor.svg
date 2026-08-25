@@ -16,7 +16,7 @@
       .edge { stroke: #1a1a1a; stroke-width: 1.2; fill: none; }
     </style>
   </defs>
-  <text x="450" y="28" text-anchor="middle" class="title">Supervisor / Orchestrator-Worker — Anthropic Research 模式</text>
+  <text x="450" y="28" text-anchor="middle" class="title">Supervisor / Orchestrator-Worker——Anthropic Research 模式</text>
 
   <rect x="340" y="60" width="220" height="80" class="hot"/>
   <text x="450" y="84" text-anchor="middle" class="head">Lead (Opus 4)</text>
@@ -29,14 +29,14 @@
 
   <rect x="100" y="200" width="220" height="100" class="cool"/>
   <text x="210" y="224" text-anchor="middle" class="head">Worker 1 (Sonnet 4)</text>
-  <text x="210" y="246" text-anchor="middle" class="small">全新 200k context</text>
-  <text x="210" y="262" text-anchor="middle" class="small">子问题："origins"</text>
+  <text x="210" y="246" text-anchor="middle" class="small">全新 200k Context</text>
+  <text x="210" y="262" text-anchor="middle" class="small">子问题："起源"</text>
   <text x="210" y="282" text-anchor="middle" class="small">返回：窄摘要</text>
 
   <rect x="340" y="200" width="220" height="100" class="cool"/>
-  <text x="450" y="224" text-anchor="middle" class="head">Worker 2 (Sonnet 4)</text>
-  <text x="450" y="246" text-anchor="middle" class="small">全新 200k context</text>
-  <text x="450" y="262" text-anchor="middle" class="small">子问题："state of art"</text>
+  <text x="450" y="224" text-anchor="middle" class="head">Worker 2（Sonnet 4）</text>
+  <text x="450" y="246" text-anchor="middle" class="small">全新 200k Context</text>
+  <text x="450" y="262" text-anchor="middle" class="small">子问题："当前水平"</text>
   <text x="450" y="282" text-anchor="middle" class="small">返回：窄摘要</text>
 
   <rect x="580" y="200" width="220" height="100" class="cool"/>
@@ -55,6 +55,6 @@
 
   <rect x="60" y="425" width="780" height="80" class="box"/>
   <text x="450" y="447" text-anchor="middle" class="head">胜出原因</text>
-  <text x="450" y="467" text-anchor="middle" class="small">每个 Worker 全新上下文 · 并行 wall-clock · 窄 Worker prompt</text>
-  <text x="450" y="487" text-anchor="middle" class="small">比单 agent Opus 4 高 +90.2%（Anthropic 内部研究评测）· BrowseComp 方差 80% 仅由 tokens 解释</text>
+  <text x="450" y="467" text-anchor="middle" class="small">每个 Worker 全新上下文 · 并行 wall-clock · 窄 Worker Prompt</text>
+  <text x="450" y="487" text-anchor="middle" class="small">比单 Agent Opus 4 高 +90.2%（Anthropic 内部研究评测）· BrowseComp 方差 80% 仅由 Token 解释</text>
 </svg>
