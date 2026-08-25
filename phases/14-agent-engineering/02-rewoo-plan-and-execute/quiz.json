@@ -6,70 +6,70 @@
       "stage": "pre",
       "question": "为什么 ReAct 的 Prompt 会随深度呈二次增长？",
       "options": [
-        "模型在每一步都会重新 Tokenize 自身",
         "每一步都会携带完整的先前上下文，包括之前的每一个 thought 和 observation",
+        "模型在每一步都会重新 Tokenize 自身",
         "Tool schemas 会在每次调用时重复",
         "Provider 按 byte 而不是按 Token 收费"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "ReAct 在每一步都会重新包含先前的 thoughts 和 observations，使总 Prompt 长度随深度的平方增长。"
     },
     {
       "stage": "pre",
       "question": "定义 ReWOO 的三角色拆分是什么？",
       "options": [
-        "Reader, Writer, Reviewer",
         "Planner, Workers, Solver",
-        "Actor, Evaluator, Reflector",
-        "Generator, Critic, Optimizer"
+        "Reader, Writer, Reviewer",
+        "Generator, Critic, Optimizer",
+        "Actor, Evaluator, Reflector"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "ReWOO 将输出 DAG 的 Planner、获取证据的 Workers，以及组合最终答案的 Solver 分离开来。"
     },
     {
       "stage": "check",
       "question": "论文报告的 ReWOO vs ReAct 在 HotpotQA 上的核心数字是什么？",
       "options": [
+        "10x 更少 Tokens 且 -2 准确率",
         "~5x 更少 Tokens 且 +4 绝对准确率",
-        "~2x 更多 Tokens 且 +10 准确率",
         "相同 Tokens 且 +1 准确率",
-        "10x 更少 Tokens 且 -2 准确率"
+        "~2x 更多 Tokens 且 +10 准确率"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "ReWOO 报告称，与 ReAct 相比，在 HotpotQA 上 Token 减少约 5x，绝对准确率提高 +4。"
     },
     {
       "stage": "check",
       "question": "ReWOO plan node 中像 #E1 这样的 placeholder 表示什么？",
       "options": [
-        "worker 1 返回的错误代码",
         "在 dispatch 时用较早 worker node 的输出替换的引用",
-        "证据获取的 retry counter",
-        "planner version identifier"
+        "planner version identifier",
+        "worker 1 返回的错误代码",
+        "证据获取的 retry counter"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Plan nodes 使用像 #E1、#E2 这样的证据引用，executor 会用上游 workers 的输出替换它们。"
     },
     {
       "stage": "check",
       "question": "为什么 ReWOO 比 ReAct 更能定位故障？",
       "options": [
+        "Planner 会在每次错误后重新输出一个新的 DAG",
         "Workers 会在任何错误上使 run 崩溃",
-        "worker 中的错误会变成 Solver 与原始 plan 一起看到的字符串，因此退化是按 node 而不是按 step 发生",
         "ReWOO 会对每个失败调用最多 retry 十次",
-        "Planner 会在每次错误后重新输出一个新的 DAG"
+        "worker 中的错误会变成 Solver 与原始 plan 一起看到的字符串，因此退化是按 node 而不是按 step 发生"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "按 node 失败，并且原始 plan 仍在上下文中，使 Solver 能够优雅退化，而不是在错误中途继续 reasoning。"
     },
     {
       "stage": "post",
       "question": "相比普通 ReWOO，哪种任务形态最适合 Plan-and-Act？",
       "options": [
-        "两步 factoid lookup",
+        "纯 arithmetic question",
         "40 步 web 或 mobile navigation trajectory",
-        "单轮 Classification",
-        "纯 arithmetic question"
+        "两步 factoid lookup",
+        "单轮 Classification"
       ],
       "correct": 1,
       "explanation": "Plan-and-Act 面向长程（超过 30 步）web 和 mobile agents，在这些场景中，单个 ReAct trajectory 会失去连贯性。"
