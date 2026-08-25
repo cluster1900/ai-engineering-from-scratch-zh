@@ -47,6 +47,10 @@
 
 **Communication.** 允许 agents 互相发送 learned messages `m_i`。在 cooperative settings 中有效。Foerster et al. (2016) 表明，differentiable inter-agent communication 可以端到端训练。今天基于 LLM 的 multi-agent systems（Phase 16）本质上是在用自然语言通信。
 
+```figure
+f3-marl-orbit
+```
+
 ## 构建它
 
 本课使用一个 6×6 GridWorld，包含两个 cooperative agents。它们从相对的角落开始，必须到达一个 shared goal。Shared reward：当任一 agent 仍在移动时，每步 `-1`；两者都到达时 `+10`。参见 `code/main.py`。

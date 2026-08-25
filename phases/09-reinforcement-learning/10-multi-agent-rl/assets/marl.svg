@@ -14,7 +14,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">四种 MARL regime，同一 environment 形态</text>
+  <text x="450" y="30" text-anchor="middle" class="title">四种 MARL 范式，同一 environment 形态</text>
 
   <rect x="40" y="60" width="200" height="170" class="box"/>
   <text x="140" y="88" text-anchor="middle" class="label">independent PPO / Q</text>
@@ -26,9 +26,9 @@
 
   <rect x="260" y="60" width="200" height="170" class="hot"/>
   <text x="360" y="88" text-anchor="middle" class="label">CTDE (MAPPO/QMIX)</text>
-  <text x="280" y="115" class="content">decentralized actor:</text>
+  <text x="280" y="115" class="content">decentralized actor：</text>
   <text x="280" y="133" class="content">pi_i(a_i | o_i)</text>
-  <text x="280" y="158" class="content">centralized critic:</text>
+  <text x="280" y="158" class="content">centralized critic：</text>
   <text x="280" y="176" class="content">Q(s, a_1, .., a_n)</text>
   <text x="360" y="210" text-anchor="middle" class="caption">2026 cooperative 默认</text>
 
@@ -42,7 +42,7 @@
 
   <rect x="700" y="60" width="160" height="170" class="box"/>
   <text x="780" y="88" text-anchor="middle" class="label">league play</text>
-  <text x="715" y="115" class="content">population of</text>
+  <text x="715" y="115" class="content">policy 群体</text>
   <text x="715" y="133" class="content">过去 + 当前</text>
   <text x="715" y="153" class="content">policies；采样</text>
   <text x="715" y="171" class="content">对手</text>
