@@ -49,6 +49,10 @@ ESC-50：50 类，每类 40 个片段 — 平衡、简单。UrbanSound8K：10 �
 | AudioSet mAP | 0.485 (AST) | 0.548 (BEATs-iter3) | HEAR leaderboard 2026 |
 | Speech Commands v2 | 98% (CNN) | 99.0% (Audio-MAE) | HEAR v2 results |
 
+```figure
+mfcc-pipeline
+```
+
 ## 构建它
 
 ### 步骤 1：featurize

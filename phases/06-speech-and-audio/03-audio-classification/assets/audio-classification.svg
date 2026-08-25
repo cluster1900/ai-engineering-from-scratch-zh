@@ -14,7 +14,7 @@
     </style>
   </defs>
 
-  <text x="440" y="30" text-anchor="middle" class="title">三十年的 audio classifiers，相同 log-mel input</text>
+  <text x="440" y="30" text-anchor="middle" class="title">三十年的音频分类器，相同 log-mel input</text>
 
   <!-- shared input -->
   <rect x="40" y="60" width="800" height="60" class="box"/>
@@ -29,7 +29,7 @@
   <line x1="165" y1="232" x2="165" y2="250" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="60" y="255" width="210" height="35" class="box"/>
   <text x="165" y="278" text-anchor="middle" class="content">cosine → top-K vote</text>
-  <text x="165" y="318" text-anchor="middle" class="caption">零训练，无 GPU</text>
+  <text x="165" y="318" text-anchor="middle" class="caption">零 Training，无 GPU</text>
   <text x="165" y="336" text-anchor="middle" class="caption">ESC-50 上表现强</text>
   <text x="165" y="354" text-anchor="middle" class="caption">AudioSet 上失败</text>
   <text x="165" y="386" text-anchor="middle" class="content" font-size="11">ESC-50 acc: ~65%</text>
@@ -43,7 +43,7 @@
   <line x1="440" y1="232" x2="440" y2="250" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="335" y="255" width="210" height="35" class="box"/>
   <text x="440" y="278" text-anchor="middle" class="content">Conv + Pool × 3, softmax</text>
-  <text x="440" y="318" text-anchor="middle" class="caption">3M params，10 分钟训练</text>
+  <text x="440" y="318" text-anchor="middle" class="caption">3M params，训练 10 分钟</text>
   <text x="440" y="336" text-anchor="middle" class="caption">SpecAugment + mixup</text>
   <text x="440" y="354" text-anchor="middle" class="caption">仍是 KWS 的 baseline</text>
   <text x="440" y="386" text-anchor="middle" class="content" font-size="11">ESC-50 acc: ~82%</text>
@@ -56,12 +56,12 @@
   <text x="715" y="218" text-anchor="middle" class="content">patchify log-mel (16×16)</text>
   <line x1="715" y1="232" x2="715" y2="250" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="610" y="255" width="210" height="35" class="box"/>
-  <text x="715" y="278" text-anchor="middle" class="content">SSL-pretrained Transformer</text>
-  <text x="715" y="318" text-anchor="middle" class="caption">用 1-10% labels fine-tune</text>
+  <text x="715" y="278" text-anchor="middle" class="content">SSL 预训练 Transformer</text>
+  <text x="715" y="318" text-anchor="middle" class="caption">用 1–10% Label fine-tune</text>
   <text x="715" y="336" text-anchor="middle" class="caption">BEATs-iter3 领先 AudioSet</text>
   <text x="715" y="354" text-anchor="middle" class="caption">2026 非语音默认选择</text>
   <text x="715" y="386" text-anchor="middle" class="content" font-size="11">ESC-50 acc: 97.0%</text>
   <text x="715" y="406" text-anchor="middle" class="caption">AudioSet mAP: 0.548</text>
 
-  <text x="440" y="450" text-anchor="middle" class="caption">features 30 年不变；backend 才是杠杆</text>
+  <text x="440" y="450" text-anchor="middle" class="caption">Feature 30 年不变；backend 才是杠杆</text>
 </svg>
