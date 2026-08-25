@@ -64,6 +64,10 @@ Warmup 会在几百步内把 learning rate 从零 ramp 到目标值，让 Optimi
 
 一个 training loss 下降得很好、但 generated samples 全都是同一个 token 的模型是坏的。一个 loss curve 看起来平坦、但 generated samples 逐渐变成连贯单词的模型正在学习。定性 probe 比阅读完整曲线更快，并且能捕捉 scalar 会遗漏的模式。
 
+```figure
+cap-training-loop
+```
+
 ## Build It
 
 `code/main.py` 实现：
