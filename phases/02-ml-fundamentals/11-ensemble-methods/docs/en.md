@@ -181,6 +181,10 @@ meta-learner 会学习对于哪些输入应该信任哪个 base model。如果 r
 - **Hard voting:** 对 class labels 进行 majority vote。
 - **Soft voting:** 对 predicted probabilities 求平均，选择 average probability 最高的 class。通常更好，因为它利用了 confidence information。
 
+```figure
+f3-ensemble-average
+```
+
 ## 构建它
 
 ### 步骤 1： Decision Stump（Base Learner）
