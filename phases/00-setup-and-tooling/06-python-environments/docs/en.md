@@ -45,6 +45,10 @@ graph TD
     end
 ```
 
+```figure
+s0-env-isolation
+```
+
 ## Build It
 
 ### 选项 1：uv venv（推荐）
