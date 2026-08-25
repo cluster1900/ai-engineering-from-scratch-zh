@@ -1,35 +1,60 @@
 [
   {
     "question": "为什么基础的 BPE Tokenizer 在Multilingual 或代码输入上会出问题？",
-    "options": ["BPE 天生只能处理单一语言", "如果没有正确的 Unicode 处理、byte fallback 和 pre-tokenization regex，它会生成不正确或低效的 Token 序列", "Multilingual 文本无法被 Tokenizer 处理", "BPE 只能用于 ASCII"],
-    "correct": 1,
+    "options": [
+      "BPE 只能用于 ASCII",
+      "BPE 天生只能处理单一语言",
+      "Multilingual 文本无法被 Tokenizer 处理",
+      "如果没有正确的 Unicode 处理、byte fallback 和 pre-tokenization regex，它会生成不正确或低效的 Token 序列"
+    ],
+    "correct": 3,
     "explanation": "朴素的 BPE 实现可能无法处理多字节 Unicode 字符，可能会错误地跨词边界合并，并且可能没有针对训练词表之外字符的 byte-level fallback。",
     "stage": "pre"
   },
   {
     "question": "pre-tokenization regex 在生产级 Tokenizer 中的作用是什么？",
-    "options": ["它会移除标点符号", "它会在 BPE merge 之前按词边界拆分文本，防止跨空格和词边界 merge", "它会压缩空白字符", "它会把文本转换为小写"],
-    "correct": 1,
+    "options": [
+      "它会在 BPE merge 之前按词边界拆分文本，防止跨空格和词边界 merge",
+      "它会压缩空白字符",
+      "它会把文本转换为小写",
+      "它会移除标点符号"
+    ],
+    "correct": 0,
     "explanation": "pre-tokenization regex 会把文本拆成片段（通常按词边界、数字和标点拆分），这样 BPE merge 只会发生在片段内部。没有它，BPE 可能会把 'end' 和下一个词前面的空格合并。",
     "stage": "pre"
   },
   {
     "question": "什么是 Special Token，为什么 Tokenizer 要设计成能够处理它们？",
-    "options": ["频繁出现的 Token", "像 <|endoftext|> 或 [PAD] 这样的保留 Token，用于控制模型行为，并且必须编码为单个、特定的 ID", "具有最高 Embedding 值的 Token", "只在评估期间使用的 Token"],
-    "correct": 1,
+    "options": [
+      "像 <|endoftext|> 或 [PAD] 这样的保留 Token，用于控制模型行为，并且必须编码为单个、特定的 ID",
+      "具有最高 Embedding 值的 Token",
+      "只在评估期间使用的 Token",
+      "频繁出现的 Token"
+    ],
+    "correct": 0,
     "explanation": "Special Token 承担结构性用途：标记文档边界、填充序列、指示生成的开始/结束。它们必须被识别并编码为精确的 ID，而不是被拆成 subword。",
     "stage": "post"
   },
   {
     "question": "如何评估一个自定义 Tokenizer 是否优秀？",
-    "options": ["检查它是否能 Tokenize 你的名字", "在多样化文本上测量压缩率（每字符 Token 数），并与 tiktoken 等成熟 Tokenizer 比较", "统计词表大小", "只测量编码速度"],
-    "correct": 1,
+    "options": [
+      "在多样化文本上测量压缩率（每字符 Token 数），并与 tiktoken 等成熟 Tokenizer 比较",
+      "检查它是否能 Tokenize 你的名字",
+      "只测量编码速度",
+      "统计词表大小"
+    ],
+    "correct": 0,
     "explanation": "压缩率（每 Token 字节数或每词 Token 数）衡量效率。好的 Tokenizer 会为相同文本生成更少的 Token，这意味着上下文窗口能容纳更多内容。要跨语言和领域进行比较。",
     "stage": "post"
   },
   {
     "question": "为什么现代 LLMs 更偏好 byte-level BPE，而不是 word-level tokenization？",
-    "options": ["它更快", "它可以在没有 unknown Token 的情况下表示任何输入，同时仍然为常见模式学习高效的 subword merge", "它会产生更小的词表", "word-level tokenization 更准确"],
+    "options": [
+      "word-level tokenization 更准确",
+      "它可以在没有 unknown Token 的情况下表示任何输入，同时仍然为常见模式学习高效的 subword merge",
+      "它会产生更小的词表",
+      "它更快"
+    ],
     "correct": 1,
     "explanation": "word-level Tokenizer 无法处理未见过的词（会生成 [UNK] Token）。byte-level BPE 从原始字节开始（保证覆盖任何输入），并为常见序列学习 merge，在覆盖率和效率之间取得平衡。",
     "stage": "post"
