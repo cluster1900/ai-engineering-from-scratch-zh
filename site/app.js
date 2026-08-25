@@ -12,15 +12,32 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     initThemeToggle();
+    populateCurriculumSummary();
     populateStats();
     renderPhases();
     initStaggerIndex();
     initModal();
     initCopyButton();
-    initSmoothScroll();
+    initMastheadFigure();
     initFadeObserver();
-    initScrollExplode();
   });
+
+  function populateCurriculumSummary() {
+    if (typeof PHASES === 'undefined' || !Array.isArray(PHASES)) return;
+    var lessonTotal = PHASES.reduce(function (total, phase) {
+      return total + (Array.isArray(phase.lessons) ? phase.lessons.length : 0);
+    }, 0);
+    var values = {
+      mastheadLessonCount: lessonTotal + ' 节课',
+      mastheadPhaseCount: PHASES.length + ' 个阶段',
+      prefaceLessonCount: lessonTotal + ' 节课',
+      prefacePhaseCount: PHASES.length + ' 个阶段'
+    };
+    Object.keys(values).forEach(function (id) {
+      var target = document.getElementById(id);
+      if (target) target.textContent = values[id];
+    });
+  }
 
   function updateThemeIcon() {
     var icon = document.getElementById('themeIcon');
@@ -77,10 +94,15 @@
     var clamped = Math.max(0, Math.min(100, pct));
     el.setAttribute('data-target-pct', clamped.toFixed(1));
     if (el.classList.contains('in-view') || !window.IntersectionObserver) {
-      el.style.setProperty('--bar-pct', clamped.toFixed(1) + '%');
+      setBarScale(el, clamped);
     } else {
-      el.style.setProperty('--bar-pct', '0%');
+      setBarScale(el, 0);
     }
+  }
+
+  function setBarScale(el, pct) {
+    var clamped = Math.max(0, Math.min(100, Number(pct) || 0));
+    el.style.setProperty('--bar-scale', (clamped / 100).toFixed(3));
   }
 
   function populateStats() {
@@ -124,7 +146,7 @@
       var statusClass = p.status.replace(/ /g, '-');
       var roman = toRoman(p.id);
       var num = String(p.id).padStart(2, '0');
-      html += '<div class="toc-row" data-phase="' + i + '">';
+      html += '<div class="toc-row" data-phase="' + i + '" role="button" tabindex="0" aria-haspopup="dialog" aria-label="打开阶段 ' + num + '：' + escapeHtml(p.name) + '">';
       html += '<span class="toc-num">' + roman + '.</span>';
       html += '<div><span class="toc-status ' + statusClass + '"></span><span class="toc-name">' + escapeHtml(p.name) + '</span></div>';
       html += '<span class="toc-meta">' + done + ' / ' + total + '</span>';
@@ -133,17 +155,17 @@
     }
     grid.innerHTML = html;
 
-    // 为刚创建的行重新应用逐行 stagger 延迟。
+    // 为刚刚创建的各行重新应用交错延迟。
     initStaggerIndex();
 
-    // 如果 reveal observer 已经初始化（body.js-anim 已设置），
+    // 如果展示观察器已初始化（已设置 body.js-anim），
     // IntersectionObserver 只会观察启动时传入的*原始*行。
-    // 通过 innerHTML 重新渲染会把这些节点替换成全新的元素，
-    // 而这些元素并未被观察，因此在 `body.js-anim .toc-row { opacity: 0 }` 下
-    // 否则会一直保持隐藏。
+    // 通过 innerHTML 重新渲染会将这些节点替换为未被观察的
+    // 全新元素，因此这些元素原本会在
+    // `body.js-anim .toc-row { opacity: 0 }` 下永远保持隐藏。
     //
-    // 因为用户已经看过初始 reveal 动画，所以直接把重建后的行
-    // 标记为可见即可（不再进行第二次 fade-in）。
+    // 由于用户已经看过初始展示动画，这里直接将重建的行
+    // 标记为可见（不再进行第二次淡入）。
     if (document.body.classList.contains('js-anim')) {
       var newRows = grid.querySelectorAll('.toc-row');
       for (var r = 0; r < newRows.length; r++) {
@@ -172,30 +194,61 @@
 
   function initModal() {
     var overlay = document.getElementById('modalOverlay');
+    var modal = document.getElementById('modal');
     var closeBtn = document.getElementById('modalClose');
-    if (!overlay || !closeBtn) return;
+    if (!overlay || !modal || !closeBtn) return;
+
+    overlay.setAttribute('aria-hidden', 'true');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'modalTitle');
+    modal.setAttribute('aria-describedby', 'modalDesc');
+    closeBtn.setAttribute('aria-label', '关闭阶段详情');
 
     document.addEventListener('click', function (e) {
       var row = e.target.closest('.toc-row, .phase-card');
       if (row) {
         var idx = parseInt(row.getAttribute('data-phase'), 10);
-        if (!isNaN(idx)) openModal(idx);
+        if (!isNaN(idx)) openModal(idx, false);
       }
     });
 
-    closeBtn.addEventListener('click', closeModal);
+    document.addEventListener('keydown', function (e) {
+      var row = e.target.closest && e.target.closest('.toc-row, .phase-card');
+      if (!row || (e.key !== 'Enter' && e.key !== ' ')) return;
+      e.preventDefault();
+      var idx = parseInt(row.getAttribute('data-phase'), 10);
+      if (!isNaN(idx)) openModal(idx, true);
+    });
+
+    closeBtn.addEventListener('click', function () { closeModal(false); });
     overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) closeModal();
+      if (e.target === overlay) closeModal(false);
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') {
+        closeModal(true);
+        return;
+      }
+      if (e.key !== 'Tab' || !overlay.classList.contains('open')) return;
+      var focusable = modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     });
 
     var resetBtn = document.getElementById('modalReset');
     if (resetBtn) {
       resetBtn.addEventListener('click', function () {
         if (!window.AIFSProgress) return;
-        var ok = window.confirm('清除你所有的本地进度（测验答案和已完成课程）？此操作无法撤销。');
+        var ok = window.confirm('清除你的所有本地进度（测验答案和已完成课程）？此操作无法撤销。');
         if (!ok) return;
         window.AIFSProgress.reset();
       });
@@ -203,11 +256,13 @@
   }
 
   var currentPhaseIdx = -1;
+  var modalReturnFocus = null;
 
-  function openModal(idx) {
+  function openModal(idx, fromKeyboard) {
     var p = PHASES[idx];
     if (!p) return;
     currentPhaseIdx = idx;
+    modalReturnFocus = document.activeElement;
 
     document.getElementById('modalPhaseNum').textContent = '阶段 ' + String(p.id).padStart(2, '0');
     document.getElementById('modalTitle').textContent = p.name;
@@ -215,8 +270,16 @@
 
     renderModalLessons(p);
 
-    document.getElementById('modalOverlay').classList.add('open');
+    var overlay = document.getElementById('modalOverlay');
+    overlay.classList.toggle('no-motion', !!fromKeyboard);
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () {
+      var close = document.getElementById('modalClose');
+      if (close) close.focus();
+      overlay.classList.remove('no-motion');
+    });
   }
 
   function renderModalLessons(p) {
@@ -234,28 +297,27 @@
       var userComplete = hasProgress && lessonPath && window.AIFSProgress.isLessonComplete(lessonPath);
       if (userComplete) userDone++;
 
-      var statusClass = l.status.replace(/ /g, '-');
-      if (userComplete) statusClass = 'complete';
+      var canOpen = (l.status === 'complete' || userComplete) && lessonPath;
+      var lessonUrl = canOpen ? 'lesson.html?path=' + encodeURIComponent(lessonPath) : '';
+      var lessonLabel = escapeHtml(l.name);
+      var lessonMeta = '<span class="modal-lesson-meta"><span class="modal-lesson-type" data-type="' + escapeHtml(l.type) + '"' + (l.combines ? ' title="组合：' + escapeHtml(l.combines) + '"' : '') + '>' + escapeHtml(l.type) + '</span><span aria-hidden="true">·</span><span class="modal-lesson-lang">' + escapeHtml(l.lang) + '</span></span>';
 
       html += '<div class="modal-lesson' + (userComplete ? ' user-done' : '') + '">';
-      html += '<span class="modal-lesson-status ' + statusClass + '"' + (userComplete ? ' title="你已完成这节课"' : '') + '></span>';
-      if (l.url) {
-        html += '<a href="' + l.url + '" target="_blank" rel="noopener">' + escapeHtml(l.name) + '</a>';
+      if (canOpen) {
+        html += '<a href="' + lessonUrl + '" class="modal-lesson-open" aria-label="打开课程：' + lessonLabel + '">';
+        html += '<span class="modal-lesson-copy"><span class="modal-lesson-name">' + lessonLabel + '</span>' + lessonMeta + '</span>';
+        html += '<span class="modal-lesson-cta">' + (userComplete ? '复习' : '打开课程') + '<span aria-hidden="true">→</span></span></a>';
       } else {
-        html += '<a>' + escapeHtml(l.name) + '</a>';
+        html += '<span class="modal-lesson-open is-unavailable" aria-disabled="true">';
+        html += '<span class="modal-lesson-copy"><span class="modal-lesson-name">' + lessonLabel + '</span>' + lessonMeta + '</span>';
+        html += '<span class="modal-lesson-cta">即将推出</span></span>';
       }
-      html += '<span class="modal-lesson-type" data-type="' + escapeHtml(l.type) + '"' + (l.combines ? ' title="组合: ' + escapeHtml(l.combines) + '"' : '') + '>' + escapeHtml(l.type) + '</span>';
-      html += '<span class="modal-lesson-lang">' + escapeHtml(l.lang) + '</span>';
 
-      var actionHtml = '';
-      if ((l.status === 'complete' || userComplete) && lessonPath) {
-        actionHtml = '<a href="lesson.html?path=' + lessonPath + '" class="modal-lesson-read">' + (userComplete ? '复习' : '阅读') + '</a>';
-      }
       var toggleHtml = '';
-      if (hasProgress && lessonPath) {
-        toggleHtml = '<button type="button" class="modal-lesson-toggle' + (userComplete ? ' done' : '') + '" data-path="' + lessonPath + '" title="' + (userComplete ? '标记为未完成' : '标记为完成') + '" aria-label="' + (userComplete ? '标记为未完成' : '标记为完成') + '">' + (userComplete ? '✓' : '+') + '</button>';
+      if (hasProgress && canOpen) {
+        toggleHtml = '<button type="button" class="modal-lesson-toggle' + (userComplete ? ' done' : '') + '" data-path="' + lessonPath + '" title="' + (userComplete ? '标记为未完成' : '标记为完成') + '" aria-label="' + (userComplete ? '标记为未完成' : '标记为完成') + '"><span class="modal-lesson-check" aria-hidden="true">' + (userComplete ? '✓' : '') + '</span><span class="modal-lesson-toggle-label">' + (userComplete ? '已完成' : '标记完成') + '</span></button>';
       }
-      html += (actionHtml || '<span class="modal-lesson-read-placeholder" aria-hidden="true"></span>') + toggleHtml;
+      html += toggleHtml;
       html += '</div>';
     }
 
@@ -283,11 +345,16 @@
       var pct = Math.round((userDone / p.lessons.length) * 100);
       if (progEl) {
         progEl.style.display = '';
-        progEl.innerHTML = '<span class="modal-progress-count">' + userDone + ' / ' + p.lessons.length + '</span> <span class="modal-progress-label">已完成</span> <span class="modal-progress-pct">' + pct + '%</span>';
+        progEl.innerHTML = '<span>已完成 <strong class="modal-progress-count">' + userDone + '</strong> / ' + p.lessons.length + ' 节课</span><span class="modal-progress-pct">' + pct + '%</span>';
       }
       if (barEl && barFill) {
         barEl.style.display = '';
-        barFill.style.width = pct + '%';
+        barEl.setAttribute('role', 'progressbar');
+        barEl.setAttribute('aria-label', p.name + ' 进度');
+        barEl.setAttribute('aria-valuemin', '0');
+        barEl.setAttribute('aria-valuemax', '100');
+        barEl.setAttribute('aria-valuenow', String(pct));
+        barFill.style.transform = 'scaleX(' + (pct / 100) + ')';
       }
     } else {
       if (progEl) progEl.style.display = 'none';
@@ -305,53 +372,305 @@
     });
   }
 
-  function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('open');
+  function closeModal(fromKeyboard) {
+    var overlay = document.getElementById('modalOverlay');
+    if (!overlay || !overlay.classList.contains('open')) return;
+    overlay.classList.toggle('no-motion', !!fromKeyboard);
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    if (modalReturnFocus && modalReturnFocus.isConnected && typeof modalReturnFocus.focus === 'function') {
+      modalReturnFocus.focus();
+    }
+    modalReturnFocus = null;
+    requestAnimationFrame(function () {
+      overlay.classList.remove('no-motion');
+    });
+  }
+
+  // 为站点上的每个复制控件使用统一的剪贴板实现：通过防抖恢复
+  // 已复制状态，并在异步 API 被拒绝时回退到 execCommand。
+  function wireCopyButton(btn, label, getText) {
+    if (!btn || !label) return;
+    var revertTimer = null;
+    var defaultLabel = label.textContent || '复制';
+    var defaultAriaLabel = btn.getAttribute('aria-label') || '复制命令';
+    function resetCopyState() {
+      label.textContent = defaultLabel;
+      btn.classList.remove('copied');
+      btn.setAttribute('aria-label', defaultAriaLabel);
+    }
+    function scheduleReset() {
+      if (revertTimer) clearTimeout(revertTimer);
+      revertTimer = setTimeout(resetCopyState, 1500);
+    }
+    function confirmCopied() {
+      label.textContent = '已复制';
+      btn.classList.add('copied');
+      btn.setAttribute('aria-label', '命令已复制');
+      scheduleReset();
+    }
+    function reportCopyFailure() {
+      label.textContent = '重试';
+      btn.classList.remove('copied');
+      btn.setAttribute('aria-label', '复制失败，请重试');
+      scheduleReset();
+    }
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '0';
+      ta.style.left = '0';
+      ta.style.width = '1px';
+      ta.style.height = '1px';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var copied = false;
+      try { copied = document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+      if (copied) confirmCopied();
+      else reportCopyFailure();
+    }
+    btn.addEventListener('click', function () {
+      var text = getText();
+      if (!text) {
+        reportCopyFailure();
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(confirmCopied).catch(function () { fallbackCopy(text); });
+      } else {
+        fallbackCopy(text);
+      }
+    });
   }
 
   function initCopyButton() {
-    var btn = document.getElementById('copyBtn');
     var code = document.getElementById('cloneCmd');
-    if (!btn || !code) return;
-    var originalLabel = btn.textContent;
-    var revertTimer = null;
-    btn.addEventListener('click', function () {
-      navigator.clipboard.writeText(code.textContent).then(function () {
-        btn.textContent = '✓';
-        if (revertTimer) clearTimeout(revertTimer);
-        revertTimer = setTimeout(function () { btn.textContent = originalLabel; }, 1500);
-      });
-    });
+    if (code) {
+      wireCopyButton(
+        document.getElementById('copyBtn'),
+        document.getElementById('copyBtnLabel'),
+        function () { return code.textContent; }
+      );
+    }
+    var installBtn = document.getElementById('installCopy');
+    if (installBtn) {
+      wireCopyButton(
+        installBtn,
+        document.getElementById('installCopyLabel'),
+        function () { return installBtn.getAttribute('data-cmd'); }
+      );
+    }
   }
 
-  function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-      link.addEventListener('click', function (e) {
-        var target = document.querySelector(link.getAttribute('href'));
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
+  function initMastheadFigure() {
+    var figure = document.querySelector('[data-masthead-figure]');
+    if (!figure) return;
+    var panels = Array.prototype.slice.call(figure.querySelectorAll('.fig-panel'));
+    var dots = Array.prototype.slice.call(figure.querySelectorAll('.fig-dot'));
+    var previous = figure.querySelector('.fig-previous');
+    var next = figure.querySelector('.fig-next');
+    var controls = figure.querySelector('.fig-controls');
+    var caption = figure.querySelector('.fig-caption');
+    if (panels.length < 2 || dots.length !== panels.length || !previous || !next || !controls || !caption) return;
+
+    var autoplayDelay = 6500;
+    var current = Math.max(0, panels.findIndex(function (panel) { return panel.classList.contains('is-active'); }));
+    var reducedQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    var desktopQuery = window.matchMedia ? window.matchMedia('(min-width: 1280px) and (hover: hover) and (pointer: fine)') : null;
+    var inViewport = !window.IntersectionObserver;
+    var timer = 0;
+    var timerStartedAt = 0;
+    var timerRemaining = autoplayDelay;
+    var autoplayCancelled = !!(reducedQuery && reducedQuery.matches);
+    var autoplayComplete = false;
+    var disposed = false;
+    var cleanups = [];
+
+    function now() {
+      return window.performance && typeof window.performance.now === 'function' ? window.performance.now() : Date.now();
+    }
+
+    function listen(target, type, handler, options) {
+      target.addEventListener(type, handler, options);
+      cleanups.push(function () { target.removeEventListener(type, handler, options); });
+    }
+
+    function listenToQuery(query, handler) {
+      if (!query) return;
+      if (typeof query.addEventListener === 'function') {
+        query.addEventListener('change', handler);
+        cleanups.push(function () { query.removeEventListener('change', handler); });
+      } else if (typeof query.addListener === 'function') {
+        query.addListener(handler);
+        cleanups.push(function () { query.removeListener(handler); });
+      }
+    }
+
+    function isDesktopView() {
+      return desktopQuery ? desktopQuery.matches : figure.getClientRects().length > 0;
+    }
+
+    function isReduced() {
+      return !!(reducedQuery && reducedQuery.matches);
+    }
+
+    function isOnScreen() {
+      var rect = figure.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+    }
+
+    function showPlate(index, announce) {
+      current = Math.max(0, Math.min(panels.length - 1, index));
+      panels.forEach(function (panel, panelIndex) {
+        var active = panelIndex === current;
+        panel.classList.toggle('is-active', active);
+        panel.setAttribute('aria-hidden', active ? 'false' : 'true');
       });
+      dots.forEach(function (dot, dotIndex) {
+        var active = dotIndex === current;
+        dot.classList.toggle('is-active', active);
+        dot.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      caption.setAttribute('aria-live', announce ? 'polite' : 'off');
+      caption.textContent = '图版 ' + (current + 1) + '，共 ' + panels.length + ' 个。' + panels[current].getAttribute('data-caption');
+      previous.disabled = current === 0;
+      next.disabled = current === panels.length - 1;
+    }
+
+    function clearTimer(preserveRemaining) {
+      if (!timer) return;
+      if (preserveRemaining) {
+        timerRemaining = Math.max(0, timerRemaining - (now() - timerStartedAt));
+      }
+      window.clearTimeout(timer);
+      timer = 0;
+      timerStartedAt = 0;
+    }
+
+    function canAutoplay() {
+      return !autoplayCancelled && !autoplayComplete && !isReduced() && isDesktopView() && inViewport && !document.hidden && figure.getClientRects().length > 0;
+    }
+
+    function scheduleAutoplay() {
+      if (timer || !canAutoplay()) return;
+      if (current >= panels.length - 1) {
+        autoplayComplete = true;
+        figure.removeAttribute('data-autoplay');
+        return;
+      }
+      figure.setAttribute('data-autoplay', 'true');
+      timerStartedAt = now();
+      timer = window.setTimeout(function () {
+        timer = 0;
+        timerStartedAt = 0;
+        showPlate(current + 1, false);
+        timerRemaining = autoplayDelay;
+        if (current >= panels.length - 1) {
+          autoplayComplete = true;
+          figure.removeAttribute('data-autoplay');
+          return;
+        }
+        scheduleAutoplay();
+      }, Math.max(16, timerRemaining));
+    }
+
+    function cancelAutoplay() {
+      clearTimer(false);
+      autoplayCancelled = true;
+      figure.removeAttribute('data-autoplay');
+    }
+
+    function syncRuntime() {
+      if (disposed) return;
+      var paused = isReduced() || !isDesktopView() || !inViewport || document.hidden || figure.getClientRects().length === 0;
+      figure.setAttribute('data-motion-paused', paused ? 'true' : 'false');
+      if (paused) clearTimer(true);
+      else scheduleAutoplay();
+    }
+
+    function choosePlate(index) {
+      cancelAutoplay();
+      showPlate(index, true);
+      syncRuntime();
+    }
+
+    dots.forEach(function (dot, index) {
+      listen(dot, 'click', function () { choosePlate(index); });
     });
+    listen(previous, 'click', function () { choosePlate(current - 1); });
+    listen(next, 'click', function () { choosePlate(current + 1); });
+    listen(controls, 'pointerdown', cancelAutoplay);
+    listen(controls, 'keydown', cancelAutoplay);
+    listen(controls, 'focusin', cancelAutoplay);
+    listen(document, 'visibilitychange', syncRuntime);
+
+    listenToQuery(reducedQuery, function () {
+      if (isReduced()) cancelAutoplay();
+      syncRuntime();
+    });
+    listenToQuery(desktopQuery, function () {
+      inViewport = isOnScreen();
+      syncRuntime();
+    });
+
+    if (window.IntersectionObserver) {
+      var observer = new IntersectionObserver(function (entries) {
+        if (!entries.length) return;
+        inViewport = entries[0].isIntersecting && entries[0].intersectionRatio > 0;
+        syncRuntime();
+      }, { threshold: 0.12 });
+      observer.observe(figure);
+      cleanups.push(function () { observer.disconnect(); });
+    } else {
+      var checkViewport = function () {
+        inViewport = isOnScreen();
+        syncRuntime();
+      };
+      listen(window, 'scroll', checkViewport, { passive: true });
+      listen(window, 'resize', checkViewport);
+      checkViewport();
+    }
+
+    function cleanup() {
+      if (disposed) return;
+      disposed = true;
+      clearTimer(false);
+      while (cleanups.length) cleanups.pop()();
+      figure.removeAttribute('data-autoplay');
+      figure.setAttribute('data-motion-paused', 'true');
+    }
+
+    listen(window, 'pagehide', function (event) {
+      if (!event.persisted) cleanup();
+    });
+    showPlate(current, false);
+    syncRuntime();
   }
 
   function initFadeObserver() {
     var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var visibleEls = document.querySelectorAll('.reveal, .fade-in, .ascii-rule, .toc-row');
+    for (var v = 0; v < visibleEls.length; v++) {
+      visibleEls[v].classList.add('in-view', 'visible');
+    }
 
     if (!window.IntersectionObserver || prefersReduced) {
-      document.querySelectorAll('.reveal, .fade-in, .stat-row-bar').forEach(function (el) {
+      document.querySelectorAll('.stat-row-bar').forEach(function (el) {
         el.classList.add('in-view', 'visible');
         var target = el.getAttribute('data-target-pct');
-        if (target !== null) el.style.setProperty('--bar-pct', target + '%');
+        if (target !== null) setBarScale(el, target);
       });
       return;
     }
 
-    document.body.classList.add('js-anim');
-
-    var els = document.querySelectorAll('.reveal, .fade-in, .stat-row-bar, .ascii-rule, .toc-row');
+    var els = document.querySelectorAll('.stat-row-bar');
     if (!els.length) return;
     var observer = new IntersectionObserver(function (entries) {
       for (var i = 0; i < entries.length; i++) {
@@ -360,7 +679,7 @@
           el.classList.add('in-view', 'visible');
           var target = el.getAttribute('data-target-pct');
           if (target !== null) {
-            el.style.setProperty('--bar-pct', target + '%');
+            setBarScale(el, target);
           }
           observer.unobserve(el);
         }
@@ -375,72 +694,6 @@
     var rows = document.querySelectorAll('.toc-list .toc-row');
     for (var i = 0; i < rows.length; i++) {
       rows[i].style.setProperty('--stagger-delay', (i * 30) + 'ms');
-    }
-  }
-
-  function initScrollExplode() {
-    var containers = document.querySelectorAll('[data-svg-explode]');
-    if (!containers.length) return;
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      for (var c = 0; c < containers.length; c++) applyExplode(containers[c], 1);
-      return;
-    }
-
-    var ticking = false;
-    function update() {
-      ticking = false;
-      var vh = window.innerHeight || document.documentElement.clientHeight;
-      for (var i = 0; i < containers.length; i++) {
-        var rect = containers[i].getBoundingClientRect();
-        var startEdge = vh;
-        var endEdge = vh * 0.35;
-        var raw = (startEdge - rect.top) / (startEdge - endEdge);
-        var progress = Math.max(0, Math.min(1, raw));
-        progress = 1 - Math.pow(1 - progress, 3);
-        applyExplode(containers[i], progress);
-      }
-    }
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(update);
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    update();
-  }
-
-  function applyExplode(container, progress) {
-    // 每个 layer / label 都在自己的 [stagger_start, stagger_start + window] 窗口内执行动画。
-    // 顺序 reveal：layer N 会等 layer N-1 基本稳定后再开始。
-    var STAGGER_DENOM = 720; // 数值越高 → layer 进入之间的间隔越大
-    var WINDOW = 0.55;       // 每个 layer 的局部动画时长，占全局 progress 的比例
-
-    function localProgress(staggerAttr) {
-      var stagger = parseFloat(staggerAttr) || 0;
-      var start = stagger / STAGGER_DENOM;
-      var local = (progress - start) / WINDOW;
-      if (local < 0) local = 0;
-      if (local > 1) local = 1;
-      // 局部片段上的 ease-out cubic
-      return 1 - Math.pow(1 - local, 3);
-    }
-
-    var layers = container.querySelectorAll('.explode-layer');
-    for (var i = 0; i < layers.length; i++) {
-      var final = parseFloat(layers[i].getAttribute('data-final')) || 0;
-      var lp = localProgress(layers[i].getAttribute('data-stagger'));
-      var dy = -final * lp;
-      layers[i].setAttribute('transform', 'translate(0, ' + dy.toFixed(2) + ')');
-      layers[i].setAttribute('opacity', lp.toFixed(3));
-    }
-    var labels = container.querySelectorAll('.explode-label');
-    for (var j = 0; j < labels.length; j++) {
-      var final2 = parseFloat(labels[j].getAttribute('data-final')) || 0;
-      var lp2 = localProgress(labels[j].getAttribute('data-stagger'));
-      var dy2 = -final2 * lp2;
-      labels[j].setAttribute('transform', 'translate(0, ' + dy2.toFixed(2) + ')');
-      labels[j].setAttribute('opacity', lp2.toFixed(3));
     }
   }
 

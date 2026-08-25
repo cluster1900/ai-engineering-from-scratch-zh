@@ -1,15 +1,15 @@
-/* lesson-figures.js — 嵌入 lesson 的交互式、theme-aware figures。
-   Authoring: docs/en.md 中的 fenced block
+/* lesson-figures.js — interactive, theme-aware figures embedded in lessons.
+   Authoring: a fenced block in docs/en.md
        ```figure
        kv-cache
        ```
-   会渲染为 <div class="lesson-figure" data-figure="kv-cache">，本文件
-   会将其 hydrate 成真正的交互式 widget。无 deps。使用站点的 CSS vars，
-   因此会在 light 和 dark 下跟随 blueprint theme。 */
+   renders <div class="lesson-figure" data-figure="kv-cache">, which this file
+   hydrates into a real interactive widget. No deps. Uses the site's CSS vars
+   so it follows the blueprint theme in light and dark. */
 (function () {
   'use strict';
 
-  // Scoped styles，只注入一次。
+  // Scoped styles, injected once.
   function ensureStyles() {
     if (document.getElementById('lf-styles')) return;
     var s = document.createElement('style');
@@ -24,20 +24,32 @@
       '.lf-ctrl{display:flex;flex-direction:column;gap:4px}',
       '.lf-ctrl label{font-family:var(--font-mono,monospace);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft,#555);display:flex;justify-content:space-between}',
       '.lf-ctrl label b{color:var(--blueprint,#3553ff);font-variant-numeric:tabular-nums}',
+      '.lf-ctrl-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}',
+      '.lf-ctrl-head label{display:block}',
+      '.lf-ctrl-head>b{color:var(--blueprint,#3553ff);font-family:var(--font-mono,monospace);font-size:.7rem;font-variant-numeric:tabular-nums}',
       '.lf-ctrl input[type=range]{width:100%;accent-color:var(--blueprint,#3553ff)}',
       '.lf-ctrl select{font-family:var(--font-mono,monospace);font-size:.82rem;padding:4px 6px;background:var(--bg,#fafaf5);color:var(--ink,#1a1a1a);border:1px solid var(--rule-soft,#ddd)}',
       '.lf-out{margin-top:18px;padding-top:14px;border-top:1px dashed var(--rule-soft,#ddd)}',
       '.lf-num{font-family:var(--font-mono,monospace);font-size:2rem;color:var(--blueprint,#3553ff);font-variant-numeric:tabular-nums;line-height:1}',
       '.lf-num small{font-size:.9rem;color:var(--ink-soft,#555);letter-spacing:.04em}',
       '.lf-bar{position:relative;height:10px;background:var(--rule-soft,#eee);margin-top:12px;overflow:hidden}',
-      '.lf-bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--blueprint,#3553ff);transition:width .12s ease}',
+      '.lf-bar i{position:absolute;inset:0 auto 0 0;width:100%;background:var(--blueprint,#3553ff);transform:scaleX(0);transform-origin:left center;transition:transform 120ms var(--ease-out,cubic-bezier(.23,1,.32,1))}',
       '.lf-bar.over i{background:var(--warn,#b8870f)}',
       '.lf-meta{font-family:var(--font-mono,monospace);font-size:.7rem;color:var(--ink-mute,#777);margin-top:8px;letter-spacing:.04em}',
       '.lf-formula{font-family:var(--font-mono,monospace);font-size:.72rem;color:var(--ink-soft,#555);margin-top:6px;word-break:break-word}',
       '.lf-cap{font-family:var(--font-body,serif);font-size:.92rem;color:var(--ink-soft,#555);line-height:1.5;padding:12px 16px;border-top:1px solid var(--rule-soft,#ddd)}',
       '.lesson-figure.lf-animated{border:1px solid var(--rule-soft,#ddd);background:var(--bg,#fafaf5);margin:28px 0;padding:14px}',
       '.lesson-figure.lf-animated svg{display:block;width:100%;height:auto;max-width:760px;margin:0 auto;color:var(--blueprint,#3553ff)}',
-      '.lf-out svg{display:block;width:100%;height:auto;max-width:560px;margin:4px auto 0}'
+      '.lf-out svg{display:block;width:100%;height:auto;max-width:560px;margin:4px auto 0}',
+      '.lf-motion-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:0 0 10px auto;padding:6px 12px;border:1px solid var(--rule-soft,#ddd);background:var(--bg,#fafaf5);color:var(--ink-soft,#555);font-family:var(--font-mono,monospace);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:color 180ms var(--ease-out,cubic-bezier(.23,1,.32,1)),border-color 180ms var(--ease-out,cubic-bezier(.23,1,.32,1)),opacity 180ms var(--ease-out,cubic-bezier(.23,1,.32,1))}',
+      '.lf-motion-toggle:hover,.lf-motion-toggle:focus-visible{color:var(--blueprint,#3553ff);border-color:var(--blueprint,#3553ff)}',
+      '.lf-motion-toggle[aria-pressed=true]{color:var(--blueprint,#3553ff);border-color:var(--blueprint,#3553ff);background:var(--blueprint-tint,rgba(53,83,255,.08))}',
+      '.lf-motion-toggle:disabled{cursor:default;opacity:.72}',
+      '.lf-motion-toggle:active{transform:scale(.97);transition:transform 160ms var(--ease-out,cubic-bezier(.23,1,.32,1))}',
+      '.lf-replay{margin-left:8px}',
+      '.lesson-figure svg [data-lf-stable=true]{transition:opacity 220ms var(--ease-out,cubic-bezier(.23,1,.32,1)),transform 220ms var(--ease-out,cubic-bezier(.23,1,.32,1)),fill 180ms var(--ease-out,cubic-bezier(.23,1,.32,1)),stroke 180ms var(--ease-out,cubic-bezier(.23,1,.32,1));transform-box:fill-box;transform-origin:center}',
+      '@media(prefers-reduced-motion:reduce){.lf-bar i{transition:none}.lf-motion-toggle{transform:none!important}.lesson-figure svg [data-lf-stable=true]{transition:opacity 180ms var(--ease-out,cubic-bezier(.23,1,.32,1)),fill 180ms var(--ease-out,cubic-bezier(.23,1,.32,1)),stroke 180ms var(--ease-out,cubic-bezier(.23,1,.32,1))}}',
+      '@media print{.lf-motion-toggle{display:none!important}}'
     ].join('\n');
     document.head.appendChild(s);
   }
@@ -54,6 +66,7 @@
   }
   function svgEl(tag, attrs, kids) {
     var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    attrs = normalizeSmilAttrs(tag, attrs);
     if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]);
     (kids || []).forEach(function (c) { e.appendChild(c); });
     return e;
@@ -61,42 +74,564 @@
   function fmtInt(n) { return n.toLocaleString('en-US'); }
   function fmtSeq(n) { return n >= 1024 ? (n / 1024) + 'K' : String(n); }
 
+  var MOTION = {
+    feedback: '180ms',
+    enter: '220ms',
+    press: '160ms',
+    easeOut: 'cubic-bezier(0.23, 1, 0.32, 1)',
+    easeInOut: 'cubic-bezier(0.77, 0, 0.175, 1)'
+  };
+  var uniqueId = 0;
+  var reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  var reducedMotionHosts = [];
+  var reducedMotionListening = false;
+  var PAINT_BOUND_GEOMETRY = {
+    width: true, height: true, x: true, y: true, x1: true, x2: true,
+    y1: true, y2: true, cx: true, cy: true, r: true, rx: true, ry: true
+  };
+
+  function uid(prefix) {
+    uniqueId += 1;
+    return (prefix || 'lf') + '-' + uniqueId;
+  }
+
+  function normalizeSmilAttrs(tag, attrs) {
+    if (!attrs || ['animate', 'animateMotion', 'animateTransform', 'set'].indexOf(tag) === -1) return attrs;
+    var normalized = {};
+    for (var key in attrs) normalized[key] = attrs[key];
+    if (normalized.repeatCount === undefined || normalized.repeatCount === null) {
+      normalized.repeatCount = '1';
+      if (normalized.fill === undefined || normalized.fill === null) normalized.fill = 'freeze';
+    }
+    if (normalized.fill === 'freeze' && normalized.repeatCount === 'indefinite') {
+      normalized.repeatCount = '1';
+      normalized.fill = 'freeze';
+    }
+    if (tag === 'animate' && PAINT_BOUND_GEOMETRY[normalized.attributeName] && normalized.repeatCount === 'indefinite') {
+      normalized.repeatCount = '1';
+      normalized.fill = 'freeze';
+      normalized['data-lf-finite-geometry'] = 'true';
+    }
+    return normalized;
+  }
+
+  function smil(tag, attrs, kids) {
+    return svgEl(tag, attrs, kids);
+  }
+
+  function formattedValue(state, key, fmt) {
+    return fmt ? fmt(state[key]) : String(state[key]);
+  }
+
+  function closestFigure(node) {
+    while (node) {
+      if (node.classList && node.classList.contains('lesson-figure')) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  function childNodes(node) {
+    return node && node.childNodes ? Array.prototype.slice.call(node.childNodes) : [];
+  }
+
+  function sameNodeKind(current, next) {
+    if (!current || !next) return false;
+    if (current.nodeType !== next.nodeType) return false;
+    if (current.nodeType === 1) return current.namespaceURI === next.namespaceURI && current.tagName === next.tagName;
+    return true;
+  }
+
+  function isSvgSemanticNode(node) {
+    var tag = String(node && node.tagName || '').toLowerCase();
+    return tag === 'title' || tag === 'desc';
+  }
+
+  function syncAttributes(current, next) {
+    if (!current.attributes || !next.attributes) return;
+    var keep = Object.create(null);
+    var i;
+    for (i = 0; i < next.attributes.length; i++) {
+      keep[next.attributes[i].name] = true;
+      if (current.getAttribute(next.attributes[i].name) !== next.attributes[i].value) {
+        current.setAttribute(next.attributes[i].name, next.attributes[i].value);
+      }
+    }
+    for (i = current.attributes.length - 1; i >= 0; i--) {
+      var name = current.attributes[i].name;
+      if (!keep[name] && name !== 'data-lf-stable') current.removeAttribute(name);
+    }
+    var tag = String(current.tagName || '').toLowerCase();
+    if (['defs', 'marker', 'title', 'desc', 'animate', 'animatemotion', 'animatetransform', 'set'].indexOf(tag) === -1) {
+      current.setAttribute('data-lf-stable', 'true');
+    }
+  }
+
+  function reconcileNode(current, next) {
+    if (current.nodeType !== 1) {
+      if (current.nodeValue !== next.nodeValue) current.nodeValue = next.nodeValue;
+      return;
+    }
+    syncAttributes(current, next);
+    var nextChildren = childNodes(next);
+    var i = 0;
+    while (i < nextChildren.length) {
+      var currentChild = current.childNodes[i];
+      var nextChild = nextChildren[i];
+      if (!currentChild) {
+        current.appendChild(nextChild);
+      } else if (sameNodeKind(currentChild, nextChild)) {
+        reconcileNode(currentChild, nextChild);
+      } else {
+        current.insertBefore(nextChild, currentChild);
+        current.removeChild(currentChild);
+      }
+      i += 1;
+    }
+    while (current.childNodes.length > nextChildren.length) current.removeChild(current.lastChild);
+  }
+
+  function renderPersistentSvg(anchor, render) {
+    var host = closestFigure(anchor);
+    if (!host || !host.querySelectorAll) return render();
+    var svgs = Array.prototype.slice.call(host.querySelectorAll('svg'));
+    var retained = svgs.map(function (svg) { return childNodes(svg); });
+    var result = render();
+    svgs.forEach(function (svg, index) {
+      if (!retained[index].length) return;
+      var nextChildren = childNodes(svg);
+      var nextSemantic = Object.create(null);
+      nextChildren.forEach(function (node) {
+        if (isSvgSemanticNode(node)) nextSemantic[String(node.tagName).toLowerCase()] = true;
+      });
+      var preservedSemantic = retained[index].filter(function (node) {
+        return isSvgSemanticNode(node) && !nextSemantic[String(node.tagName).toLowerCase()];
+      });
+      nextChildren = preservedSemantic.concat(nextChildren);
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      retained[index].forEach(function (node) { svg.appendChild(node); });
+      var i = 0;
+      while (i < nextChildren.length) {
+        var current = svg.childNodes[i];
+        var next = nextChildren[i];
+        if (!current) svg.appendChild(next);
+        else if (sameNodeKind(current, next)) reconcileNode(current, next);
+        else {
+          svg.insertBefore(next, current);
+          svg.removeChild(current);
+        }
+        i += 1;
+      }
+      while (svg.childNodes.length > nextChildren.length) svg.removeChild(svg.lastChild);
+    });
+    return result;
+  }
+
+  function bindPersistentRenderer(state, anchor) {
+    if (!state || typeof state._render !== 'function' || state._lfPersistentRender) return;
+    var render = state._render;
+    state._render = function () { return renderPersistentSvg(anchor, render); };
+    state._lfPersistentRender = true;
+  }
+
   function slider(state, key, label, min, max, step, fmt) {
-    var val = el('b', {}, [fmt ? fmt(state[key]) : String(state[key])]);
-    var input = el('input', { type: 'range', min: min, max: max, step: step, value: state[key] });
+    var inputId = uid('lf-range');
+    var value = formattedValue(state, key, fmt);
+    var val = el('b', { 'aria-hidden': 'true' }, [value]);
+    var input = el('input', {
+      id: inputId,
+      type: 'range',
+      min: min,
+      max: max,
+      step: step,
+      value: state[key],
+      'aria-valuetext': value
+    });
+    bindPersistentRenderer(state, input);
     input.addEventListener('input', function () {
       state[key] = Number(input.value);
-      val.textContent = fmt ? fmt(state[key]) : String(state[key]);
+      var nextValue = formattedValue(state, key, fmt);
+      val.textContent = nextValue;
+      input.setAttribute('aria-valuetext', nextValue);
       state._render();
     });
-    return el('div', { class: 'lf-ctrl' }, [el('label', {}, [label, val]), input]);
+    return el('div', { class: 'lf-ctrl' }, [
+      el('div', { class: 'lf-ctrl-head' }, [el('label', { for: inputId }, [label]), val]),
+      input
+    ]);
   }
 
   function select(state, key, label, options) {
-    var sel = el('select');
+    var selectId = uid('lf-select');
+    var sel = el('select', { id: selectId });
     options.forEach(function (o) { sel.appendChild(el('option', { value: o[1] }, [o[0]])); });
     sel.value = state[key];
+    bindPersistentRenderer(state, sel);
     sel.addEventListener('change', function () { state[key] = sel.value; state._render(); });
-    return el('div', { class: 'lf-ctrl' }, [el('label', {}, [label]), sel]);
+    return el('div', { class: 'lf-ctrl' }, [el('label', { for: selectId }, [label]), sel]);
   }
 
   function clamp(x, lo, hi) { return x < lo ? lo : x > hi ? hi : x; }
   function lerp(a, b, t) { return a + (b - a) * t; }
-  // requestAnimationFrame loop 会尊重 reduced-motion（为 headless /
-  // reduced-motion 渲染一帧静态画面，在真实 browser 中播放动画）。
-  function raf(step) {
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce || !window.requestAnimationFrame) { step(0, true); return function () {}; }
-    var alive = true, t0 = null;
-    function tick(ts) { if (!alive) return; if (t0 === null) t0 = ts; step((ts - t0) / 1000, false); window.requestAnimationFrame(tick); }
-    window.requestAnimationFrame(tick);
-    return function () { alive = false; };
+  function prefersReducedMotion() {
+    return !!(reducedMotionQuery && reducedMotionQuery.matches);
   }
 
-  // ── kv-cache：拖动维度，观察 cache size ──────────────────────
+  function hostRecord(host) {
+    if (!host._aifsFigureRuntime) {
+      host._aifsFigureRuntime = {
+        controllers: [],
+        disposers: [],
+        userPaused: false,
+        offscreen: false,
+        hidden: !!document.hidden,
+        printing: false,
+        reduced: prefersReducedMotion(),
+        control: null,
+        policyInstalled: false
+      };
+    }
+    return host._aifsFigureRuntime;
+  }
+
+  function registerDisposer(host, dispose) {
+    if (!host || typeof dispose !== 'function') return dispose;
+    hostRecord(host).disposers.push(dispose);
+    return dispose;
+  }
+
+  function onReducedMotionChange(event) {
+    for (var i = 0; i < reducedMotionHosts.length; i++) {
+      if (!reducedMotionHosts[i] || !reducedMotionHosts[i]._aifsFigureRuntime) continue;
+      reducedMotionHosts[i]._aifsFigureRuntime.reduced = !!event.matches;
+      updateMotionPolicy(reducedMotionHosts[i]);
+    }
+  }
+
+  function startReducedMotionListener() {
+    if (!reducedMotionQuery || reducedMotionListening) return;
+    if (typeof reducedMotionQuery.addEventListener === 'function') reducedMotionQuery.addEventListener('change', onReducedMotionChange);
+    else if (typeof reducedMotionQuery.addListener === 'function') reducedMotionQuery.addListener(onReducedMotionChange);
+    else return;
+    reducedMotionListening = true;
+  }
+
+  function stopReducedMotionListener() {
+    if (!reducedMotionQuery || !reducedMotionListening || reducedMotionHosts.length) return;
+    if (typeof reducedMotionQuery.removeEventListener === 'function') reducedMotionQuery.removeEventListener('change', onReducedMotionChange);
+    else if (typeof reducedMotionQuery.removeListener === 'function') reducedMotionQuery.removeListener(onReducedMotionChange);
+    reducedMotionListening = false;
+  }
+
+  function watchReducedMotion(host) {
+    if (reducedMotionHosts.indexOf(host) === -1) reducedMotionHosts.push(host);
+    startReducedMotionListener();
+    registerDisposer(host, function () {
+      var index = reducedMotionHosts.indexOf(host);
+      if (index !== -1) reducedMotionHosts.splice(index, 1);
+      stopReducedMotionListener();
+    });
+  }
+
+  function updateMotionPolicy(host) {
+    var record = hostRecord(host);
+    var staticPolicy = record.reduced || record.printing;
+    var paused = staticPolicy || record.userPaused || record.offscreen || record.hidden;
+    for (var i = 0; i < record.controllers.length; i++) {
+      try {
+        if (staticPolicy && typeof record.controllers[i].staticFrame === 'function') record.controllers[i].staticFrame();
+        else if (paused) record.controllers[i].pause();
+        else record.controllers[i].resume();
+      } catch (_) {}
+    }
+    if (!record.control) return;
+    if (record.reduced) {
+      record.control.textContent = '已减少动态效果';
+      record.control.disabled = true;
+      record.control.setAttribute('aria-label', '由于已启用减少动态效果，Animation 已禁用');
+      record.control.setAttribute('aria-pressed', 'true');
+    } else {
+      record.control.disabled = false;
+      record.control.textContent = record.userPaused ? '播放 Animation' : '暂停 Animation';
+      record.control.setAttribute('aria-label', record.userPaused ? '播放讲解 Animation' : '暂停讲解 Animation');
+      record.control.setAttribute('aria-pressed', record.userPaused ? 'true' : 'false');
+    }
+  }
+
+  function installMotionPolicy(host) {
+    var record = hostRecord(host);
+    if (record.policyInstalled) return;
+    record.policyInstalled = true;
+
+    var control = el('button', {
+      class: 'lf-motion-toggle',
+      type: 'button',
+      'aria-label': '暂停讲解 Animation',
+      'aria-pressed': 'false'
+    }, ['暂停 Animation']);
+    control.addEventListener('click', function () {
+      record.userPaused = !record.userPaused;
+      control.setAttribute('aria-label', record.userPaused ? '播放讲解 Animation' : '暂停讲解 Animation');
+      updateMotionPolicy(host);
+    });
+    host.insertBefore(control, host.firstChild || null);
+    record.control = control;
+    watchReducedMotion(host);
+
+    function onVisibility() {
+      record.hidden = !!document.hidden;
+      updateMotionPolicy(host);
+    }
+    document.addEventListener('visibilitychange', onVisibility);
+    registerDisposer(host, function () { document.removeEventListener('visibilitychange', onVisibility); });
+
+    function onBeforePrint() {
+      record.printing = true;
+      updateMotionPolicy(host);
+    }
+    function onAfterPrint() {
+      record.printing = false;
+      updateMotionPolicy(host);
+    }
+    window.addEventListener('beforeprint', onBeforePrint);
+    window.addEventListener('afterprint', onAfterPrint);
+    registerDisposer(host, function () {
+      window.removeEventListener('beforeprint', onBeforePrint);
+      window.removeEventListener('afterprint', onAfterPrint);
+    });
+
+    if (typeof window.IntersectionObserver === 'function') {
+      var observer = new window.IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].target !== host) continue;
+          record.offscreen = !entries[i].isIntersecting;
+          updateMotionPolicy(host);
+        }
+      }, { threshold: 0.02 });
+      observer.observe(host);
+      registerDisposer(host, function () { observer.disconnect(); });
+    }
+  }
+
+  function addMotionController(host, controller) {
+    if (!host || !controller) return;
+    var record = hostRecord(host);
+    record.controllers.push(controller);
+    installMotionPolicy(host);
+    updateMotionPolicy(host);
+  }
+
+  function autoplay(host, step, period, opts) {
+    period = period || 6000;
+    opts = opts || {};
+    var staticT = opts.staticT === undefined ? 0.62 : opts.staticT;
+    var alive = true;
+    var running = false;
+    var frame = 0;
+    var localT = staticT;
+    var startedAt = 0;
+
+    function tick(now) {
+      if (!alive || !running) return;
+      localT = ((now - startedAt) % period) / period;
+      step(localT, false);
+      frame = window.requestAnimationFrame(tick);
+    }
+    function pause() {
+      if (!running) return;
+      running = false;
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0;
+    }
+    function resume() {
+      if (!alive || running || !window.requestAnimationFrame) return;
+      running = true;
+      startedAt = performance.now() - localT * period;
+      frame = window.requestAnimationFrame(tick);
+    }
+    function dispose() {
+      alive = false;
+      pause();
+    }
+    function staticFrame() {
+      pause();
+      localT = staticT;
+      step(staticT, true);
+    }
+
+    step(staticT, true);
+    addMotionController(host, { pause: pause, resume: resume, staticFrame: staticFrame });
+    registerDisposer(host, dispose);
+    return dispose;
+  }
+
+  function raf(host, step) {
+    if (typeof host === 'function') {
+      step = host;
+      host = null;
+    }
+    if (host) return autoplay(host, function (t, still) { step(t * 6, still); }, 6000, { staticT: 0.5 });
+    if (prefersReducedMotion() || !window.requestAnimationFrame) { step(0, true); return function () {}; }
+    var alive = true, frame = 0, startedAt = null;
+    function tick(ts) {
+      if (!alive) return;
+      if (startedAt === null) startedAt = ts;
+      step((ts - startedAt) / 1000, false);
+      frame = window.requestAnimationFrame(tick);
+    }
+    frame = window.requestAnimationFrame(tick);
+    return function () { alive = false; if (frame) window.cancelAnimationFrame(frame); };
+  }
+
+  function attachSmilController(host) {
+    var allAnimated = host.querySelectorAll('svg animate,svg animateMotion,svg animateTransform,svg set');
+    var continuous = host.querySelectorAll('svg animate[repeatCount="indefinite"],svg animateMotion[repeatCount="indefinite"],svg animateTransform[repeatCount="indefinite"],svg set[repeatCount="indefinite"]');
+    if (!allAnimated.length && !continuous.length) return;
+    var svgs = host.querySelectorAll('svg');
+    var staticTime = Number(host.getAttribute('data-static-time') || 1.5);
+    var hasFinite = false;
+    for (var a = 0; a < allAnimated.length; a++) {
+      if (allAnimated[a].getAttribute('repeatCount') !== 'indefinite') { hasFinite = true; break; }
+    }
+    function pause() {
+      for (var i = 0; i < svgs.length; i++) {
+        if (typeof svgs[i].pauseAnimations === 'function') svgs[i].pauseAnimations();
+      }
+    }
+    function resume() {
+      for (var i = 0; i < svgs.length; i++) {
+        if (typeof svgs[i].unpauseAnimations === 'function') svgs[i].unpauseAnimations();
+      }
+    }
+    function staticFrame() {
+      for (var i = 0; i < svgs.length; i++) {
+        try {
+          if (typeof svgs[i].setCurrentTime === 'function') svgs[i].setCurrentTime(staticTime);
+          if (typeof svgs[i].pauseAnimations === 'function') svgs[i].pauseAnimations();
+        } catch (_) {}
+      }
+    }
+    function replay() {
+      var record = hostRecord(host);
+      if (record.reduced || record.printing) { staticFrame(); return; }
+      record.userPaused = false;
+      for (var i = 0; i < svgs.length; i++) {
+        try {
+          if (typeof svgs[i].setCurrentTime === 'function') svgs[i].setCurrentTime(0);
+          if (typeof svgs[i].unpauseAnimations === 'function') svgs[i].unpauseAnimations();
+        } catch (_) {}
+      }
+      updateMotionPolicy(host);
+    }
+    if (prefersReducedMotion()) staticFrame();
+    addMotionController(host, { pause: pause, resume: resume, staticFrame: staticFrame });
+    if (hasFinite) {
+      var replayControl = el('button', {
+        class: 'lf-motion-toggle lf-replay',
+        type: 'button',
+        'aria-label': '重播讲解 Animation'
+      }, ['重播 Animation']);
+      replayControl.addEventListener('click', replay);
+      var record = hostRecord(host);
+      host.insertBefore(replayControl, record.control && record.control.nextSibling ? record.control.nextSibling : null);
+      registerDisposer(host, function () {
+        replayControl.removeEventListener('click', replay);
+        if (replayControl.parentNode) replayControl.parentNode.removeChild(replayControl);
+      });
+    }
+    registerDisposer(host, pause);
+  }
+
+  function directSvgChild(svg, tagName) {
+    var children = childNodes(svg);
+    tagName = tagName.toLowerCase();
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].nodeType === 1 && String(children[i].tagName).toLowerCase() === tagName) return children[i];
+    }
+    return null;
+  }
+
+  function textFrom(host, selector, fallback) {
+    var node = host.querySelector ? host.querySelector(selector) : null;
+    var value = node && node.textContent ? node.textContent.replace(/\s+/g, ' ').trim() : '';
+    return value || fallback;
+  }
+
+  function ensureSvgAccessibility(host) {
+    var svgs = host.querySelectorAll ? host.querySelectorAll('svg') : [];
+    var figureName = (host.dataset.figure || '课程图示').trim().split(/\s+/)[0].replace(/[-_]+/g, ' ');
+    var fallbackTitle = textFrom(host, '.lf-label', figureName);
+    var fallbackDesc = textFrom(host, '.lf-cap', '交互式讲解：' + figureName + '.');
+    for (var i = 0; i < svgs.length; i++) {
+      var svg = svgs[i];
+      var title = directSvgChild(svg, 'title');
+      var desc = directSvgChild(svg, 'desc');
+      if (!title) {
+        title = svgEl('title');
+        title.appendChild(document.createTextNode(fallbackTitle));
+        svg.insertBefore(title, svg.firstChild || null);
+      }
+      if (!desc) {
+        desc = svgEl('desc');
+        desc.appendChild(document.createTextNode(fallbackDesc));
+        svg.insertBefore(desc, title.nextSibling || svg.firstChild || null);
+      }
+      if (!title.id) title.setAttribute('id', uid('lf-svg-title'));
+      if (!desc.id) desc.setAttribute('id', uid('lf-svg-desc'));
+      if (!svg.getAttribute('role')) svg.setAttribute('role', 'img');
+      if (!svg.getAttribute('aria-labelledby')) svg.setAttribute('aria-labelledby', title.id + ' ' + desc.id);
+    }
+  }
+
+  function closestControl(node) {
+    while (node) {
+      if (node.classList && node.classList.contains('lf-ctrl')) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  function ensureControlAccessibility(host) {
+    if (!host.querySelectorAll) return;
+    var controls = host.querySelectorAll('input[type="range"],select');
+    for (var i = 0; i < controls.length; i++) {
+      var control = controls[i];
+      if (!control.id) control.setAttribute('id', uid(control.tagName.toLowerCase() === 'select' ? 'lf-select' : 'lf-range'));
+      var wrapper = closestControl(control);
+      var label = wrapper && wrapper.querySelector ? wrapper.querySelector('label') : null;
+      if (label && !label.getAttribute('for')) label.setAttribute('for', control.id);
+      if (String(control.tagName).toLowerCase() === 'input' && control.getAttribute('type') === 'range' && !control.getAttribute('aria-valuetext')) {
+        control.setAttribute('aria-valuetext', control.value);
+      }
+    }
+  }
+
+  function disposeHost(host) {
+    if (!host || !host._aifsFigureRuntime) return;
+    var record = host._aifsFigureRuntime;
+    for (var i = record.disposers.length - 1; i >= 0; i--) {
+      try { record.disposers[i](); } catch (_) {}
+    }
+    if (record.control && record.control.parentNode) record.control.parentNode.removeChild(record.control);
+    delete host.dataset.lfMounted;
+    host._aifsFigureRuntime = null;
+  }
+
+  function disposeRoot(root) {
+    if (!root) return;
+    var hosts = [];
+    if (root.matches && root.matches('.lesson-figure[data-figure]')) hosts.push(root);
+    if (root.querySelectorAll) {
+      var found = root.querySelectorAll('.lesson-figure[data-figure]');
+      for (var i = 0; i < found.length; i++) hosts.push(found[i]);
+    }
+    for (var j = 0; j < hosts.length; j++) disposeHost(hosts[j]);
+  }
+
+  // ── kv-cache: drag the dims, watch the cache size ──────────────────────
   function kvCache(host, cfg) {
     var GiB = Math.pow(1024, 3);
-    var REF = (cfg && cfg.refGiB) || 80; // 一张 H100 / A100 80GB
+    var REF = (cfg && cfg.refGiB) || 80; // one H100 / A100 80GB
     var state = {
       seq: 8192, batch: 8, layers: (cfg && cfg.layers) || 32,
       kvHeads: (cfg && cfg.kvHeads) || 8, headDim: (cfg && cfg.headDim) || 128, dbytes: 2
@@ -113,9 +648,9 @@
       var gib = bytes / GiB;
       num.innerHTML = gib.toFixed(gib < 10 ? 2 : 1) + ' <small>GiB</small>';
       var pct = Math.min(100, gib / REF * 100);
-      bar.style.width = pct + '%';
+      bar.style.transform = 'scaleX(' + (pct / 100) + ')';
       barWrap.classList.toggle('over', gib > REF);
-      meta.textContent = (gib > REF ? '⚠ 超过 ' : '') + Math.round(gib / REF * 100) + '% of one ' + REF + ' GiB GPU';
+      meta.textContent = (gib > REF ? '⚠ exceeds ' : '') + Math.round(gib / REF * 100) + '，占一块 ' + REF + ' GiB GPU 的百分比';
       formula.textContent = '2 · ' + state.layers + ' layers · ' + state.kvHeads + ' kv-heads · ' + state.headDim +
         ' head-dim · ' + fmtInt(state.seq) + ' tokens · ' + state.batch + ' batch · ' + state.dbytes + ' B';
     };
@@ -127,8 +662,8 @@
     dtype.addEventListener('change', function () { state.dbytes = Number(dtype.value); state._render(); });
 
     var grid = el('div', { class: 'lf-grid' }, [
-      slider(state, 'seq', 'sequence length', 256, 131072, 256, fmtSeq),
-      slider(state, 'batch', 'batch size', 1, 128, 1),
+      slider(state, 'seq', '序列长度', 256, 131072, 256, fmtSeq),
+      slider(state, 'batch', 'Batch 大小', 1, 128, 1),
       slider(state, 'layers', 'layers', 1, 128, 1),
       slider(state, 'kvHeads', 'kv heads (GQA)', 1, 128, 1),
       slider(state, 'headDim', 'head dim', 32, 256, 8),
@@ -136,14 +671,14 @@
     ]);
 
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['KV-CACHE SIZER']), el('span', {}, ['拖动维度'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['KV-CACHE 容量计算器']), el('span', {}, ['拖动维度'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [num, barWrap, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['cache 为每个 Token、每个 layer、每个 kv-head 保存一个 key 和一个 value。它会随 sequence length 和 batch 线性增长。这就是高 batch 的 long context 填满 GPU 的原因，而不是 weights。'])
+      el('div', { class: 'lf-cap' }, ['缓存为每个 Token、每一层、每个 kv-head 保存一个 key 和一个 value。它随序列长度和 Batch 线性增长，因此在高 Batch 下，填满 GPU 的是长 Context，而不是权重。'])
     ]));
     state._render();
   }
 
-  // ── gradient-descent：拖动 learning rate，观察它收敛或爆炸 ─
+  // ── gradient-descent: drag the learning rate, watch it converge or blow up ─
   function gradDescent(host) {
     var state = { lr: 0.1, steps: 12, x0: -2.6 };
     var W = 520, H = 220, PAD = 28;
@@ -168,10 +703,10 @@
       pts.forEach(function (xi, idx) { svg.appendChild(svgEl('circle', { cx: px(xi), cy: py(fx(xi)), r: idx === pts.length - 1 ? '5' : '3', fill: 'var(--blueprint,#3553ff)' })); });
       var last = pts[pts.length - 1];
       var conv = !diverged && Math.abs(last) < 0.05;
-      status.innerHTML = diverged ? '已发散' : (conv ? '已收敛' : 'x = ' + last.toFixed(3));
-      meta.textContent = diverged ? 'lr 过大：每一步都会越过最小值，Loss 爆炸'
+      status.innerHTML = diverged ? 'diverged' : (conv ? 'converged' : 'x = ' + last.toFixed(3));
+      meta.textContent = diverged ? 'lr 过大：每一步都会越过最小值，导致 Loss 激增'
         : 'final loss f(x) = ' + fx(last).toFixed(4) + '  ·  ' + state.steps + ' steps';
-      formula.textContent = 'x ← x − lr · 2x   (loss f(x) = x²,  lr > 1 时发散)';
+      formula.textContent = 'x ← x − lr · 2x   (loss f(x) = x²,  diverges when lr > 1)';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'lr', 'learning rate', 0.01, 1.2, 0.01),
@@ -181,12 +716,12 @@
     host.appendChild(el('div', { class: 'lf' }, [
       el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['GRADIENT DESCENT']), el('span', {}, ['拖动 learning rate'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:12px' }, [status]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['每一步都会沿下坡方向移动，步长等于 Gradient 乘以 learning rate。太小会缓慢爬行；太大则会越过最小值并发散。训练就是在两者之间寻找合适的 rate。'])
+      el('div', { class: 'lf-cap' }, ['Each step moves downhill by the gradient times the learning rate. Too small and it crawls; too large and it overshoots and diverges. Training is the search for the rate in between.'])
     ]));
     state._render();
   }
 
-  // ── softmax-temperature：除以 logits，重塑 distribution ───────
+  // ── softmax-temperature: divide the logits, reshape the distribution ───────
   function softmaxTemp(host, cfg) {
     var logits = (cfg && cfg.logits) || [3.1, 2.2, 1.5, 0.8, 0.1];
     var labels = (cfg && cfg.labels) || ['cat', 'dog', 'fox', 'owl', 'elk'];
@@ -202,25 +737,25 @@
       var ent = -p.reduce(function (a, pi) { return a + (pi > 0 ? pi * Math.log2(pi) : 0); }, 0);
       while (rows.firstChild) rows.removeChild(rows.firstChild);
       p.forEach(function (pi, i) {
-        var bar = el('i'); bar.style.width = (pi * 100).toFixed(1) + '%';
+        var bar = el('i'); bar.style.transform = 'scaleX(' + pi.toFixed(3) + ')';
         rows.appendChild(el('div', { class: 'lf-ctrl' }, [
           el('label', {}, [labels[i], el('b', {}, [(pi * 100).toFixed(1) + '%'])]),
           el('div', { class: 'lf-bar' }, [bar])
         ]));
       });
-      meta.textContent = 'entropy ' + ent.toFixed(2) + ' bits  ·  ' + (T < 0.6 ? '尖锐 / 自信' : T > 1.6 ? '平坦 / 随机' : '均衡');
+      meta.textContent = 'entropy ' + ent.toFixed(2) + ' bits  ·  ' + (T < 0.6 ? 'sharp / confident' : T > 1.6 ? 'flat / random' : 'balanced');
       formula.textContent = 'softmax(zᵢ / T),  T = ' + T.toFixed(2) + '   ·   logits [' + logits.join(', ') + ']';
     };
     var grid = el('div', {}, [slider(state, 'T', 'temperature', 0.1, 3.0, 0.05)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SOFTMAX TEMPERATURE']), el('span', {}, ['拖动 T'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SOFTMAX TEMPERATURE']), el('span', {}, ['drag T'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [rows, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['Temperature 会在取 exponential 之前对 logits 做除法。低于 1 会让 distribution 向 top token 变尖；高于 1 会让它向 uniform 变平。T→0 时是 argmax；T→∞ 时像抛硬币。'])
+      el('div', { class: 'lf-cap' }, ['Temperature divides the logits before the exponential. Below 1 it sharpens the distribution toward the top token; above 1 it flattens toward uniform. At T→0 it is argmax; at T→∞ it is a coin flip.'])
     ]));
     state._render();
   }
 
-  // ── bias-variance：沿 U 形 test error 滑动 model complexity ───
+  // ── bias-variance: slide model complexity across the U-shaped test error ───
   function biasVariance(host) {
     var state = { d: 6 };
     var W = 520, H = 230, PAD = 34, DMAX = 15;
@@ -242,20 +777,20 @@
       svg.appendChild(curve(test, 'var(--blueprint,#3553ff)'));
       svg.appendChild(svgEl('circle', { cx: px(state.d), cy: py(test(state.d)), r: '5', fill: 'var(--blueprint,#3553ff)' }));
       svg.appendChild(svgEl('circle', { cx: px(state.d), cy: py(train(state.d)), r: '4', fill: 'var(--ink-mute,#999)' }));
-      var region = state.d < best - 1 ? 'underfit · high bias' : state.d > best + 1 ? 'overfit · high variance' : 'sweet spot';
-      status.innerHTML = region + ' <small>· degree ' + state.d + '</small>';
-      meta.textContent = 'train err ' + train(state.d).toFixed(2) + '  ·  test err ' + test(state.d).toFixed(2) + '  ·  test min at degree ' + best;
+      var region = state.d < best - 1 ? '欠拟合 · 高偏差' : state.d > best + 1 ? '过拟合 · 高 Variance' : '最佳平衡点';
+      status.innerHTML = region + ' <small>· 阶数 ' + state.d + '</small>';
+      meta.textContent = 'Training 误差 ' + train(state.d).toFixed(2) + '  ·  测试误差 ' + test(state.d).toFixed(2) + '  ·  测试误差在以下阶数最小：' + best;
     };
-    var grid = el('div', {}, [slider(state, 'd', 'model complexity (polynomial degree)', 1, DMAX, 1)]);
+    var grid = el('div', {}, [slider(state, 'd', 'Model 复杂度（多项式阶数）', 1, DMAX, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['BIAS – VARIANCE']), el('span', {}, ['拖动 complexity'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['偏差 – VARIANCE']), el('span', {}, ['拖动复杂度'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [status]), meta])]),
-      el('div', { class: 'lf-cap' }, ['灰色是 training error，蓝色是 test error。简单模型会错过 signal（high bias）；复杂模型会拟合 noise（high variance）。Test error 是二者之和，在两种压力平衡处最低。'])
+      el('div', { class: 'lf-cap' }, ['Grey is training error, blue is test error. Simple models miss the signal (high bias); complex models fit the noise (high variance). Test error is their sum, lowest where the two pressures balance.'])
     ]));
     state._render();
   }
 
-  // ── l2-regularization：提高 lambda，观察每个 weight 收缩 ─────────────
+  // ── l2-regularization: raise lambda, watch every weight shrink ─────────────
   function regL2(host) {
     var base = [1.0, -0.8, 0.65, -0.5, 0.4, -0.3];
     var norm0 = Math.sqrt(base.reduce(function (a, x) { return a + x * x; }, 0));
@@ -270,29 +805,29 @@
       var norm = Math.sqrt(w.reduce(function (a, x) { return a + x * x; }, 0));
       while (rows.firstChild) rows.removeChild(rows.firstChild);
       w.forEach(function (wi, i) {
-        var bar = el('i'); bar.style.width = (Math.abs(wi) * 100).toFixed(0) + '%';
+        var bar = el('i'); bar.style.transform = 'scaleX(' + Math.abs(wi).toFixed(3) + ')';
         rows.appendChild(el('div', { class: 'lf-ctrl' }, [
           el('label', {}, ['w' + (i + 1), el('b', {}, [wi.toFixed(2)])]),
           el('div', { class: 'lf-bar' }, [bar])
         ]));
       });
       var shrink = Math.round((1 - norm / norm0) * 100);
-      status.innerHTML = '‖w‖ = ' + norm.toFixed(2) + ' <small>· 缩小 ' + shrink + '%</small>';
-      meta.textContent = lam < 0.05 ? 'λ ≈ 0：全强度 weights，有 overfitting 风险'
-        : lam > 5 ? 'λ 较大：weights 被压向 0，model underfits'
-          : 'λ 会把每个 weight 推向零，用 fit 换取 smoothness';
+      status.innerHTML = '‖w‖ = ' + norm.toFixed(2) + ' <small>· ' + shrink + '% smaller</small>';
+      meta.textContent = lam < 0.05 ? 'λ ≈ 0：权重保持完整强度，存在过拟合风险'
+        : lam > 5 ? 'λ 较大：权重被压向 0，Model 欠拟合'
+          : 'λ 将每个权重收缩至接近零，以拟合程度换取平滑性';
       formula.textContent = 'J(w) + λ‖w‖²   →   wᵢ ≈ wᵢ⁰ / (1 + λ),  λ = ' + lam.toFixed(2);
     };
-    var grid = el('div', {}, [slider(state, 'lam', 'λ  (regularization strength)', 0, 10, 0.1)]);
+    var grid = el('div', {}, [slider(state, 'lam', 'λ  （正则化强度）', 0, 10, 0.1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['L2 REGULARIZATION']), el('span', {}, ['拖动 λ'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['L2 REGULARIZATION']), el('span', {}, ['drag λ'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [rows, el('div', { style: 'margin-top:12px' }, [status]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['L2 会把 squared weight norm 加到 Loss 上。提高 λ 会把每个 coefficient 拉向零，让 model 更平滑。太少会 overfit；太多会忘掉 signal。'])
+      el('div', { class: 'lf-cap' }, ['L2 adds the squared weight norm to the loss. Raising λ pulls every coefficient toward zero, smoothing the model. Too little and it overfits; too much and it forgets the signal.'])
     ]));
     state._render();
   }
 
-  // ── lr-schedule：比较 warmup、cosine、step 和 exponential decay ───────
+  // ── lr-schedule: compare warmup, cosine, step, and exponential decay ───────
   function lrSchedule(host) {
     var N = 1000;
     var state = { sched: 'warmup-cosine', peak: 50, warmup: 10 };
@@ -318,27 +853,27 @@
       for (i = 0; i <= 160; i++) { var s = N * i / 160; d += (i ? 'L' : 'M') + px(s).toFixed(1) + ' ' + py(lrAt(s, peak), peak).toFixed(1) + ' '; }
       svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: 'var(--blueprint,#3553ff)', 'stroke-width': '2' }));
       if (state.sched === 'warmup-cosine') { var wx = px(state.warmup / 100 * N); svg.appendChild(svgEl('line', { x1: wx, y1: PAD, x2: wx, y2: H - PAD, stroke: 'var(--rule-soft,#ddd)', 'stroke-width': '1', 'stroke-dasharray': '3 3' })); }
-      meta.textContent = 'peak lr ' + peak.toFixed(3) + (state.sched === 'warmup-cosine' ? '  ·  warmup ' + state.warmup + '% of steps' : '') + '  ·  ' + N + ' steps';
-      formula.textContent = { constant: 'lr = peak', step: 'lr = peak · 0.5^⌊step / (N/3)⌋', exponential: 'lr = peak · e^(−3·step/N)', cosine: 'lr = peak · ½(1 + cos(π·step/N))', 'warmup-cosine': 'linear warmup → cosine decay to 0' }[state.sched];
+      meta.textContent = '峰值 lr ' + peak.toFixed(3) + (state.sched === 'warmup-cosine' ? '  ·  warmup ' + state.warmup + '% 的步数' : '') + '  ·  ' + N + ' steps';
+      formula.textContent = { constant: 'lr = peak', step: 'lr = peak · 0.5^⌊step / (N/3)⌋', exponential: 'lr = peak · e^(−3·step/N)', cosine: 'lr = peak · ½(1 + cos(π·step/N))', 'warmup-cosine': '线性 warmup → 余弦衰减至 0' }[state.sched];
     };
     var sel = el('select');
-    [['warmup + cosine', 'warmup-cosine'], ['cosine', 'cosine'], ['step decay', 'step'], ['exponential', 'exponential'], ['constant', 'constant']].forEach(function (o) { sel.appendChild(el('option', { value: o[1] }, [o[0]])); });
+    [['warmup + 余弦衰减', 'warmup-cosine'], ['cosine', 'cosine'], ['阶梯衰减', 'step'], ['exponential', 'exponential'], ['constant', 'constant']].forEach(function (o) { sel.appendChild(el('option', { value: o[1] }, [o[0]])); });
     sel.value = state.sched;
     sel.addEventListener('change', function () { state.sched = sel.value; state._render(); });
     var grid = el('div', { class: 'lf-grid' }, [
       el('div', { class: 'lf-ctrl' }, [el('label', {}, ['schedule']), sel]),
-      slider(state, 'peak', 'peak lr (×10⁻²)', 1, 100, 1),
-      slider(state, 'warmup', 'warmup (% steps)', 0, 30, 1)
+      slider(state, 'peak', '峰值 lr (×10⁻²)', 1, 100, 1),
+      slider(state, 'warmup', 'warmup（步数百分比）', 0, 30, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['LR SCHEDULE']), el('span', {}, ['选择 schedule'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['LR 调度']), el('span', {}, ['选择调度方式'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['learning rate 很少保持固定。短暂 warmup 可避免早期不稳定；随后 cosine 或 step decay 会把 rate anneal 到零，让后期训练稳定落入好的 minimum。'])
+      el('div', { class: 'lf-cap' }, ['The learning rate rarely stays fixed. A short warmup avoids early instability; cosine or step decay then anneals the rate toward zero so late training settles into a good minimum.'])
     ]));
     state._render();
   }
 
-  // ── sampling-decoder：先 temperature，再 top-k，再 top-p，作用于 logits ─
+  // ── sampling-decoder: temperature, then top-k, then top-p, over the logits ─
   function samplingDecoder(host, cfg) {
     var logits = (cfg && cfg.logits) || [4.2, 3.6, 3.1, 2.5, 2.0, 1.4, 0.9, 0.4, -0.2, -0.9];
     var labels = (cfg && cfg.labels) || ['the', 'a', 'an', 'this', 'that', 'one', 'some', 'my', 'our', 'its'];
@@ -363,29 +898,29 @@
       idx.forEach(function (i) {
         var on = !!keep[i];
         var renorm = on ? probs[i] / kSum : 0;
-        var bar = el('i'); bar.style.width = (renorm * 100).toFixed(1) + '%';
+        var bar = el('i'); bar.style.transform = 'scaleX(' + renorm.toFixed(3) + ')';
         if (!on) bar.style.background = 'var(--rule-soft,#ccc)';
         var lab = el('label', {}, [labels[i] + (on ? '' : ' ·'), el('b', {}, [on ? (renorm * 100).toFixed(1) + '%' : 'cut'])]);
         if (!on) lab.style.opacity = '0.45';
         rows.appendChild(el('div', { class: 'lf-ctrl' }, [lab, el('div', { class: 'lf-bar' }, [bar])]));
       });
-      meta.textContent = probs.length + ' 个 tokens 中保留 ' + kept + ' 个  ·  ' + (T < 0.5 ? 'low T：近似 greedy' : T > 1.2 ? 'high T：更发散' : '均衡');
-      formula.textContent = 'softmax(z / T) → keep top-' + (state.k === 0 ? '∞' : state.k) + ' → keep smallest set with cumulative ≥ ' + state.p.toFixed(2) + ' → renormalize';
+      meta.textContent = kept + ' of ' + probs.length + ' 个 Token 保留  ·  ' + (T < 0.5 ? '低 T：接近贪心' : T > 1.2 ? '高 T：高度随机' : 'balanced');
+      formula.textContent = 'softmax(z / T) → keep top-' + (state.k === 0 ? '∞' : state.k) + ' → 保留累计概率 ≥ 以下值的最小集合：' + state.p.toFixed(2) + ' → renormalize';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'T', 'temperature', 0.1, 2.0, 0.05),
       slider(state, 'k', 'top-k (0 = off)', 0, 10, 1),
-      slider(state, 'p', 'top-p (nucleus)', 0.1, 1.0, 0.05)
+      slider(state, 'p', 'top-p（核采样）', 0.1, 1.0, 0.05)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SAMPLING DECODER']), el('span', {}, ['temperature → top-k → top-p'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['采样解码器']), el('span', {}, ['temperature → top-k → top-p'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [rows, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['Decoding 会按顺序运行三道 filter。Temperature 重塑 distribution，top-k 限制候选数量，top-p 保留覆盖概率 p 的最小集合。留下来的内容会重新归一化并从中 sampling。'])
+      el('div', { class: 'lf-cap' }, ['解码按顺序执行三个筛选步骤。Temperature 重塑 Probability Distribution，top-k 限制候选项数量，top-p 保留覆盖概率 p 的最小集合。随后对保留项重新归一化并从中采样。'])
     ]));
     state._render();
   }
 
-  // ── scaling-laws：Chinchilla loss 和每个 parameter 20 tokens 规则 ─────
+  // ── scaling-laws: Chinchilla loss and the 20-tokens-per-parameter rule ─────
   function scalingLaws(host) {
     var state = { logN: 9, logD: 10.3 };
     var num = el('span', { class: 'lf-num' });
@@ -401,24 +936,24 @@
       var ratio = D / N;
       num.innerHTML = L.toFixed(3) + ' <small>loss</small>';
       var pct = Math.max(2, Math.min(100, (ratio / 20) * 50));
-      bar.style.width = pct + '%';
+      bar.style.transform = 'scaleX(' + (pct / 100) + ')';
       barWrap.classList.toggle('over', ratio > 30 || ratio < 12);
-      meta.textContent = human(ratio) + ' tokens/param  ·  ' + (ratio < 12 ? 'under-trained：tokens 太少' : ratio > 30 ? 'over-trained：应把预算花在 params 上' : '接近 Chinchilla-optimal（~20）');
-      formula.textContent = 'N = ' + human(N) + ' params · D = ' + human(D) + ' tokens · compute 6ND ≈ ' + human(C) + ' FLOPs';
+      meta.textContent = human(ratio) + ' tokens/param  ·  ' + (ratio < 12 ? 'Training 不足：Token 太少' : ratio > 30 ? 'Training 过度：应将算力用于参数' : '接近 Chinchilla 最优值 (~20)');
+      formula.textContent = 'N = ' + human(N) + ' params · D = ' + human(D) + ' 个 Token · 计算量 6ND ≈ ' + human(C) + ' FLOPs';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'logN', 'parameters (10^x)', 7, 12, 0.1),
       slider(state, 'logD', 'tokens (10^x)', 9, 13, 0.1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SCALING LAWS']), el('span', {}, ['拖动 params 和 tokens'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SCALING LAWS']), el('span', {}, ['拖动参数和 Token'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [num, barWrap, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['Chinchilla fit 会根据 parameters 和 tokens 预测 Loss。对于固定 compute budget，Loss 在每个 parameter 约 20 个 tokens 附近最低。大多数早期大模型都严重 under-trained：parameters 太多，tokens 太少。'])
+      el('div', { class: 'lf-cap' }, ['Chinchilla 拟合根据参数量和 Token 数预测 Loss。在固定计算预算下，每个参数约对应 20 个 Token 时，Loss 最低。大多数早期大型 Model 的 Training 严重不足：参数过多，Token 过少。'])
     ]));
     state._render();
   }
 
-  // ── quantization：bits per weight 对 model size 和 precision 的影响 ─────────
+  // ── quantization: bits per weight against model size and precision ─────────
   function quantization(host) {
     var state = { logN: 9.85, bits: 16 };
     var num = el('span', { class: 'lf-num' });
@@ -434,11 +969,11 @@
       var bytes = N * state.bits / 8;
       var gb = bytes / GB;
       num.innerHTML = gb.toFixed(gb < 10 ? 2 : 1) + ' <small>GB</small>';
-      bar.style.width = Math.min(100, state.bits / 32 * 100) + '%';
+      bar.style.transform = 'scaleX(' + Math.min(1, state.bits / 32) + ')';
       var levels = Math.pow(2, state.bits);
-      var err = state.bits >= 16 ? '可忽略' : state.bits >= 8 ? '< 1% perplexity 影响' : state.bits >= 4 ? '配合优良方案时较小（GPTQ/AWQ）' : '较大：需要谨慎处理';
-      meta.textContent = '比 fp32 小 ' + Math.round((1 - bytes / bytesFp32) * 100) + '%  ·  quantization error：' + err;
-      formula.textContent = human(N) + ' params · ' + state.bits + ' bits = ' + (state.bits >= 16 ? '2^' + state.bits : human(levels)) + ' levels per weight';
+      var err = state.bits >= 16 ? '可忽略' : state.bits >= 8 ? 'perplexity 损失 < 1%' : state.bits >= 4 ? '使用良好方案时较小（GPTQ/AWQ）' : '较大：需要谨慎处理';
+      meta.textContent = Math.round((1 - bytes / bytesFp32) * 100) + '比 fp32 小 %  ·  Quantization 误差：' + err;
+      formula.textContent = human(N) + ' params · ' + state.bits + ' bits = ' + (state.bits >= 16 ? '2^' + state.bits : human(levels)) + ' 个权重等级';
     };
     var sel = el('select');
     [['fp32 (32-bit)', 32], ['fp16 / bf16 (16-bit)', 16], ['int8 (8-bit)', 8], ['int4 (4-bit)', 4], ['int2 (2-bit)', 2]].forEach(function (o) { sel.appendChild(el('option', { value: o[1] }, [o[0]])); });
@@ -449,14 +984,14 @@
       el('div', { class: 'lf-ctrl' }, [el('label', {}, ['precision']), sel])
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['QUANTIZATION']), el('span', {}, ['选择 precision'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['QUANTIZATION']), el('span', {}, ['选择精度'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [num, barWrap, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['每个 weight 的存储成本等于它的 bit-width。bits 减半会让 memory 减半，并大约让 throughput 翻倍，同时丢失的 precision 会增加。8-bit 几乎没有代价；4-bit 需要谨慎方案；低于这个，accuracy 会快速下降。'])
+      el('div', { class: 'lf-cap' }, ['Each weight costs its bit-width in storage. Halving the bits halves the memory and roughly doubles throughput, while the precision lost grows. 8-bit is nearly free; 4-bit needs careful schemes; below that, accuracy falls off.'])
     ]));
     state._render();
   }
 
-  // ── rope-explorer：跨 position 和 dimension 的 rotary frequencies ────────
+  // ── rope-explorer: rotary frequencies across position and dimension ────────
   function ropeExplorer(host) {
     var state = { pos: 16, logBase: 4 };
     var W = 520, H = 220, PAD = 28, D = 64, SEQ = 64;
@@ -479,22 +1014,22 @@
       });
       var mx = px(state.pos);
       svg.appendChild(svgEl('line', { x1: mx, y1: PAD, x2: mx, y2: H - PAD, stroke: 'var(--ink-mute,#999)', 'stroke-width': '1', 'stroke-dasharray': '3 3' }));
-      meta.textContent = 'position ' + state.pos + '  ·  base ' + Math.round(base).toLocaleString('en-US') + '  ·  显示 ' + D + ' 个 dimension pairs 中的 4 个（深色 = low dim，fast）';
+      meta.textContent = 'position ' + state.pos + '  ·  base ' + Math.round(base).toLocaleString('en-US') + '  ·  4 of ' + D + ' dimension pairs shown (dark = low dim, fast)';
       formula.textContent = 'θ(pos, i) = pos / base^(2i/d)   ·   low dims rotate fast, high dims slow';
     };
     var grid = el('div', { class: 'lf-grid' }, [
-      slider(state, 'pos', 'token position', 0, SEQ, 1),
+      slider(state, 'pos', 'Token 位置', 0, SEQ, 1),
       slider(state, 'logBase', 'base (10^x)', 2, 5, 0.1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['ROTARY POSITION']), el('span', {}, ['拖动 position 和 base'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['ROTARY POSITION']), el('span', {}, ['拖动位置和基数'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['RoPE 会按随 position 增长的角度旋转每一对 dimensions。低 dimensions 使用高 frequencies（旋转快，编码近邻顺序）；高 dimensions 使用低 frequencies（旋转慢，编码长距离）。提高 base 会拉伸每个 wavelength，从而扩展可用 context。'])
+      el('div', { class: 'lf-cap' }, ['RoPE rotates each pair of dimensions by an angle that grows with position. Low dimensions use high frequencies (rotate fast, encode nearby order); high dimensions use low frequencies (rotate slowly, encode long-range distance). Raising the base stretches every wavelength, extending usable context.'])
     ]));
     state._render();
   }
 
-  // ── lora-params：rank 对 weight matrix 可训练比例的影响 ────────
+  // ── lora-params: rank against trainable fraction of a weight matrix ────────
   function loraParams(host) {
     var state = { d: 4096, r: 8, layers: 32 };
     var num = el('span', { class: 'lf-num' });
@@ -504,29 +1039,29 @@
     var formula = el('div', { class: 'lf-formula' });
     function human(x) { var u = ['', 'K', 'M', 'B']; var i = 0; while (x >= 1000 && i < u.length - 1) { x /= 1000; i++; } return x.toFixed(x < 10 ? 2 : 1) + u[i]; }
     state._render = function () {
-      var mats = 2 * state.layers; // 每层的 q 和 v projections
+      var mats = 2 * state.layers; // q and v projections per layer
       var full = mats * state.d * state.d;
       var lora = mats * 2 * state.d * state.r;
       var frac = lora / full * 100;
       num.innerHTML = frac.toFixed(frac < 1 ? 3 : 2) + ' <small>% trainable</small>';
-      bar.style.width = Math.min(100, frac * 8) + '%';
-      meta.textContent = human(lora) + ' trainable of ' + human(full) + ' frozen  ·  需要存储的 gradients 少 ' + Math.round(full / lora) + 'x';
+      bar.style.transform = 'scaleX(' + Math.min(1, frac * 0.08) + ')';
+      meta.textContent = human(lora) + ' 个可 Training 参数，共 ' + human(full) + ' frozen  ·  ' + Math.round(full / lora) + 'x 倍更少的 Gradient 需要存储';
       formula.textContent = 'ΔW = B·A,  A∈ℝ^{r×d}, B∈ℝ^{d×r}  →  2·d·r per matrix vs d²  =  2r/d = ' + (2 * state.r / state.d * 100).toFixed(3) + '%';
     };
     var grid = el('div', { class: 'lf-grid' }, [
-      slider(state, 'd', 'model dim d', 512, 8192, 128),
-      slider(state, 'r', 'LoRA rank r', 1, 128, 1),
-      slider(state, 'layers', 'layers (q,v each)', 1, 96, 1)
+      slider(state, 'd', 'Model 维度 d', 512, 8192, 128),
+      slider(state, 'r', 'LoRA Rank r', 1, 128, 1),
+      slider(state, 'layers', '层数（每层 q、v）', 1, 96, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['LORA RANK']), el('span', {}, ['拖动 rank'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['LORA RANK']), el('span', {}, ['拖动 Rank'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [num, barWrap, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['LoRA 会冻结 d×d weight，只训练一个只有 2·d·r 个 parameters 的 low-rank update B·A。可训练比例是 2r/d，因此在 4096-dim model 上 rank 为 8 时，训练的 weights 远低于百分之一，同时保留大部分 quality。'])
+      el('div', { class: 'lf-cap' }, ['LoRA 会冻结 d×d 权重，只训练包含 2·d·r 个参数的 low-rank 更新 B·A。可训练比例为 2r/d，因此在 4096 维 Model 上使用 rank 8 时，训练的权重远少于百分之一，同时能保留大部分质量。'])
     ]));
     state._render();
   }
 
-  // ── precision-recall-threshold：滑动 cutoff，观察 P、R、F1 trade ─────
+  // ── precision-recall-threshold: slide the cutoff, watch P, R, F1 trade ─────
   function precisionRecall(host) {
     var state = { thr: 0.5 };
     var muP = 0.64, muN = 0.36, sd = 0.13, Npos = 100, Nneg = 100;
@@ -555,18 +1090,18 @@
       svg.appendChild(svgEl('line', { x1: tx, y1: PAD, x2: tx, y2: H - PAD, stroke: 'var(--warn,#b8870f)', 'stroke-width': '1.5' }));
       status.innerHTML = 'F1 = ' + f1.toFixed(3);
       meta.textContent = 'precision ' + prec.toFixed(2) + '  ·  recall ' + rec.toFixed(2) + '  ·  TP ' + Math.round(tp) + ' · FP ' + Math.round(fp) + ' · FN ' + Math.round(fn);
-      formula.textContent = 'score ≥ ' + state.thr.toFixed(2) + ' 时预测 positive   ·   提高它会提升 precision，降低它会提升 recall';
+      formula.textContent = '当分数 ≥ 以下值时预测为正类：' + state.thr.toFixed(2) + '   ·   提高阈值可提升 precision，降低阈值可提升 recall';
     };
-    var grid = el('div', {}, [slider(state, 'thr', 'decision threshold', 0.02, 0.98, 0.01)]);
+    var grid = el('div', {}, [slider(state, 'thr', '决策阈值', 0.02, 0.98, 0.01)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['PRECISION / RECALL']), el('span', {}, ['拖动 threshold'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['PRECISION / RECALL']), el('span', {}, ['拖动阈值'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [status]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['灰色是 negative class，蓝色是 positive；橙色线是 threshold。向右移动它，你会更少预测 positive：precision 上升，recall 下降。F1 是二者的 harmonic mean，在两条曲线交叉处最高。'])
+      el('div', { class: 'lf-cap' }, ['Grey is the negative class, blue the positive; the orange line is the threshold. Move it right and you predict positive less often: precision rises, recall falls. F1 is their harmonic mean, highest where the two curves cross.'])
     ]));
     state._render();
   }
 
-  // ── cross-entropy-loss：自信且错误的代价 ─────────────
+  // ── cross-entropy-loss: the price of being confident and wrong ─────────────
   function crossEntropy(host) {
     var state = { p: 0.5 };
     var W = 520, H = 200, PAD = 30, LMAX = 5;
@@ -584,19 +1119,19 @@
       svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: 'var(--blueprint,#3553ff)', 'stroke-width': '2' }));
       svg.appendChild(svgEl('circle', { cx: px(p), cy: py(loss), r: '5', fill: 'var(--blueprint,#3553ff)' }));
       num.innerHTML = loss.toFixed(3) + ' <small>nats</small>';
-      meta.textContent = p > 0.9 ? '自信且正确：Loss 接近零' : p < 0.1 ? '自信且错误：Loss 爆炸' : '不确定：中等 Loss';
-      formula.textContent = 'loss = −log(p_true),  p = ' + p.toFixed(3) + '   ·   p→1 gives 0, p→0 gives ∞';
+      meta.textContent = p > 0.9 ? '置信度高且预测正确：Loss 接近零' : p < 0.1 ? '置信度高但预测错误：Loss 激增' : '不确定：Loss 适中';
+      formula.textContent = 'loss = −log(p_true),  p = ' + p.toFixed(3) + '   ·   p→1 时为 0，p→0 时为 ∞';
     };
-    var grid = el('div', {}, [slider(state, 'p', 'probability on the true class', 0.01, 1.0, 0.01)]);
+    var grid = el('div', {}, [slider(state, 'p', '真实类别的 Probability', 0.01, 1.0, 0.01)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['CROSS-ENTROPY LOSS']), el('span', {}, ['拖动 probability'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['CROSS-ENTROPY LOSS']), el('span', {}, ['拖动 Probability'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [num]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['Cross-entropy 会对 model 放在正确答案上的概率收取 −log 代价。正确且自信几乎没有成本；错误且自信成本极高。这种不对称会推动 model 做到 calibrated，而不只是 correct。'])
+      el('div', { class: 'lf-cap' }, ['Cross-entropy charges −log of the probability the model put on the correct answer. Right and confident costs almost nothing; wrong and confident costs a fortune. That asymmetry is what pushes the model to be calibrated, not just correct.'])
     ]));
     state._render();
   }
 
-  // ── cosine-similarity：角度就是相似度 ─────────────────────────
+  // ── cosine-similarity: the angle is the similarity ─────────────────────────
   function cosineSim(host) {
     var state = { deg: 40 };
     var W = 300, H = 240, CX = 60, CY = 150, R = 110;
@@ -612,18 +1147,18 @@
       svg.appendChild(vec(CX + R, CY, 'var(--ink-mute,#999)'));
       svg.appendChild(vec(CX + R * cos, CY - R * Math.sin(rad), 'var(--blueprint,#3553ff)'));
       num.innerHTML = cos.toFixed(3) + ' <small>cos θ</small>';
-      meta.textContent = state.deg + '°  ·  ' + (cos > 0.7 ? 'similar' : cos > 0.1 ? 'loosely related' : cos > -0.1 ? 'unrelated (orthogonal)' : 'opposite');
+      meta.textContent = state.deg + '°  ·  ' + (cos > 0.7 ? 'similar' : cos > 0.1 ? '弱相关' : cos > -0.1 ? '不相关（正交）' : 'opposite');
     };
-    var grid = el('div', {}, [slider(state, 'deg', 'angle between vectors', 0, 180, 1)]);
+    var grid = el('div', {}, [slider(state, 'deg', 'Vector 之间的夹角', 0, 180, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
       el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['COSINE SIMILARITY']), el('span', {}, ['拖动角度'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [num]), meta])]),
-      el('div', { class: 'lf-cap' }, ['Embeddings 通过角度比较，而不是距离。两个 vectors 指向同一方向时 cosine 为 1，正交（unrelated）时为 0，相反时为负。Magnitude 会被消除，因此长文档和短 query 仍然可以匹配。'])
+      el('div', { class: 'lf-cap' }, ['Embedding 按角度而非距离进行比较。当两个 Vector 指向相同方向时，Cosine 为 1；正交（不相关）时为 0；方向相反时为负。Vector 大小不会影响结果，因此长文档仍可与短查询匹配。'])
     ]));
     state._render();
   }
 
-  // ── tokenizer-tradeoff：vocabulary size 对 tokens 和 table cost 的权衡 ──────
+  // ── tokenizer-tradeoff: vocabulary size against tokens and table cost ──────
   function tokenizerTradeoff(host) {
     var state = { logV: 15, dim: 768 };
     var num = el('span', { class: 'lf-num' });
@@ -637,22 +1172,22 @@
       var seq = Math.round(docWords * tpw);
       var emb = vocab * state.dim;
       num.innerHTML = human(emb) + ' <small>embedding params</small>';
-      meta.textContent = tpw.toFixed(2) + ' tokens/word  ·  a ' + docWords + '-word doc ≈ ' + seq + ' tokens';
+      meta.textContent = tpw.toFixed(2) + ' tokens/word  ·  a ' + docWords + ' 词文档 ≈ ' + seq + ' tokens';
       formula.textContent = 'vocab ' + human(vocab) + ' × dim ' + state.dim + ' = embedding table  ·  bigger vocab → fewer tokens, larger table';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'logV', 'vocabulary (2^x)', 8, 18, 1),
-      slider(state, 'dim', 'embedding dim', 128, 4096, 128)
+      slider(state, 'dim', 'Embedding 维度', 128, 4096, 128)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['TOKENIZER TRADEOFF']), el('span', {}, ['拖动 vocab size'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['TOKENIZER 权衡']), el('span', {}, ['拖动词表大小'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [num, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['更大的 vocabulary 会把文本切成更少的 tokens，因此 sequences 更短，Attention 成本更低。但 embedding 和 output tables 会随 vocab size 扩展，因此收益会以 parameters 的形式付回去。真实 Tokenizers 会位于两种压力的平衡处，大约在 32K 到 128K。'])
+      el('div', { class: 'lf-cap' }, ['词表越大，文本被拆分成的 Token 越少，因此序列更短，执行 Attention 的成本也更低。但 Embedding 表和输出表会随词表大小增长，因此这种收益会以参数量为代价。实际 Tokenizer 通常在这两种压力之间取得平衡，词表大小约为 32K 至 128K。'])
     ]));
     state._render();
   }
 
-  // ── rag-chunking：chunk size 和 overlap 对 count 和 context 的影响 ─────────
+  // ── rag-chunking: chunk size and overlap against count and context ─────────
   function ragChunking(host) {
     var state = { chunk: 512, overlap: 64, topk: 5 };
     var corpus = 100000;
@@ -666,24 +1201,24 @@
       var nChunks = Math.ceil((corpus - ov) / stride);
       var ctx = state.topk * state.chunk;
       num.innerHTML = fmtInt(nChunks) + ' <small>chunks</small>';
-      meta.textContent = 'top-' + state.topk + ' retrieval 向 prompt 输入 ' + fmtInt(ctx) + ' tokens  ·  需要存储 ' + human(nChunks) + ' vectors';
+      meta.textContent = 'top-' + state.topk + ' 检索向 Prompt 输入 ' + fmtInt(ctx) + ' 个 Token  ·  ' + human(nChunks) + ' 个 Vector 需要存储';
       formula.textContent = 'chunks = ⌈(corpus − overlap) / (chunk − overlap)⌉  ·  corpus = ' + human(corpus) + ' tokens';
     };
     var grid = el('div', { class: 'lf-grid' }, [
-      slider(state, 'chunk', 'chunk size (tokens)', 64, 2048, 32),
-      slider(state, 'overlap', 'overlap (tokens)', 0, 256, 8),
-      slider(state, 'topk', 'top-k retrieved', 1, 20, 1)
+      slider(state, 'chunk', '分块大小（Token）', 64, 2048, 32),
+      slider(state, 'overlap', '重叠部分（Token）', 0, 256, 8),
+      slider(state, 'topk', '检索的 top-k', 1, 20, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['RAG CHUNKING']), el('span', {}, ['拖动 chunk 和 k'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['RAG 分块']), el('span', {}, ['拖动分块大小和 k'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [num, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['小 chunks 能精准定位相关段落，但会切碎 context 并增加要 index 的 vectors 数量。大 chunks 能保持 context 完整，但会稀释每个 match，并让送入 prompt 的 tokens 膨胀。Overlap 会缓和边界问题，代价是更多 chunks。'])
+      el('div', { class: 'lf-cap' }, ['小分块能精确定位相关段落，但会割裂 Context，并增加需要建立索引的 Vector 数量。大分块能保持 Context 完整，但会稀释每次匹配，并大幅增加输入 Prompt 的 Token 数量。重叠可以缓解边界问题，但代价是产生更多分块。'])
     ]));
     state._render();
   }
 
-  // 这里定义交互式 widgets。Animated figures 位于 figures.js 中，并通过
-  // window.AIFS_FIGURES 访问（使用相同的 fenced-block 语法）。
+  // Interactive widgets defined here. Animated figures live in figures.js and
+  // are reached through window.AIFS_FIGURES (same fenced-block syntax).
   var FIGS = {
     'kv-cache-sizer': kvCache,
     'gradient-descent': gradDescent,
@@ -713,34 +1248,98 @@
       var rest = host.dataset.figure.trim().slice(name.length).trim();
       if (rest) { try { cfg = JSON.parse(rest); } catch (e) {} }
 
-      var local = FIGS[name];
-      var animated = window.AIFS_FIGURES && window.AIFS_FIGURES[name];
+      var figure = FIGS[name];
       try {
-        if (local) {
-          local(host, cfg);
-        } else if (animated) {
-          host.classList.add('lf-animated');
-          animated(host, cfg);
-        } else {
-          return; // 未知 figure；保留 empty host
+        if (!figure) {
+          host.setAttribute('data-figure-missing', 'true');
+          return; // unknown figure; leave the empty host out
         }
+        host.removeAttribute('data-figure-missing');
+        host.setAttribute('aria-busy', 'true');
+        var dispose = figure(host, cfg);
+        if (typeof dispose === 'function') registerDisposer(host, dispose);
+        ensureControlAccessibility(host);
+        ensureSvgAccessibility(host);
+        if (host.querySelector('svg')) host.classList.add('lf-animated');
+        attachSmilController(host);
         host.dataset.lfMounted = '1';
+        host.removeAttribute('aria-busy');
       } catch (e) {
-        console.warn('lesson figure "' + name + '" failed:', e);
+        disposeHost(host);
+        while (host.firstChild) host.removeChild(host.firstChild);
+        host.removeAttribute('aria-busy');
+        console.warn('课程图示 "' + name + '" failed:', e);
       }
     });
   }
 
-  // 从外部 module files（figures-<topic>.js）注册更多 widgets。
-  // Modules 会在本文件之后加载，并调用 LF.register({ 'name': fn, ... })。
+  // Register more widgets from external module files (figures-<topic>.js).
+  // Modules load after this file and call LF.register({ 'name': fn, ... }).
   function register(obj) { for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k)) FIGS[k] = obj[k]; }
+
+  var providerPromises = Object.create(null);
+
+  function requiredProviders(root) {
+    var needed = Object.create(null);
+    var map = window.AIFS_FIGURE_PROVIDERS || {};
+    var order = window.AIFS_FIGURE_PROVIDER_ORDER || [];
+    var hosts = (root || document).querySelectorAll('.lesson-figure[data-figure]');
+    for (var i = 0; i < hosts.length; i++) {
+      var name = (hosts[i].dataset.figure || '').trim().split(/\s+/)[0];
+      var providers = map[name] || [];
+      for (var j = 0; j < providers.length; j++) needed[providers[j]] = true;
+    }
+    return order.filter(function (provider) { return !!needed[provider]; });
+  }
+
+  function loadProvider(provider) {
+    if (providerPromises[provider]) return providerPromises[provider];
+    providerPromises[provider] = new Promise(function (resolve, reject) {
+      var script = document.createElement('script');
+      var versions = window.AIFS_FIGURE_PROVIDER_VERSIONS || {};
+      var version = versions[provider] || '';
+      script.src = provider + (version ? '?v=' + encodeURIComponent(version) : '');
+      script.async = false;
+      script.setAttribute('data-figure-provider', provider);
+      script.onload = function () { resolve(provider); };
+      script.onerror = function () {
+        delete providerPromises[provider];
+        reject(new Error('图示提供程序加载失败：' + provider));
+      };
+      document.head.appendChild(script);
+    });
+    return providerPromises[provider];
+  }
+
+  function loadFigureProviders(root) {
+    var providers = requiredProviders(root);
+    return providers.reduce(function (chain, provider) {
+      return chain.then(function () {
+        return loadProvider(provider).catch(function (error) {
+          console.warn(error.message);
+          return null;
+        });
+      });
+    }, Promise.resolve()).then(function () { return providers; });
+  }
 
   window.mountLessonFigures = mountLessonFigures;
   window.LESSON_FIGURES = FIGS;
-  // 供 figure module files 使用的共享 toolkit。Vanilla、无 deps，通过 CSS vars 使用 theme。
+  window.AIFS_loadFigureProviders = loadFigureProviders;
+  window.AIFSFigureRuntime = {
+    autoplay: autoplay,
+    registerDisposer: registerDisposer,
+    addMotionController: addMotionController,
+    disposeHost: disposeHost,
+    disposeRoot: disposeRoot,
+    requiredProviders: requiredProviders
+  };
+  // Shared toolkit for figure module files. Vanilla, no deps, theme via CSS vars.
   window.LF = {
     el: el, svgEl: svgEl, slider: slider, select: select,
     fmtInt: fmtInt, fmtSeq: fmtSeq, clamp: clamp, lerp: lerp, raf: raf,
+    uid: uid, motion: MOTION, smil: smil,
+    autoplay: autoplay, registerDisposer: registerDisposer, addMotionController: addMotionController,
     register: register
   };
 })();

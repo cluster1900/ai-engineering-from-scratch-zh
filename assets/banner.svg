@@ -24,7 +24,7 @@
     <text x="56" y="44">FIG_000  —  参考手册  V1.0</text>
   </g>
   <g class="mono" font-size="11" letter-spacing="2.4" fill="#7a7a78" text-anchor="end">
-    <text x="1224" y="44">© 2026  ·  开源  ·  MIT LICENSE</text>
+    <text x="1224" y="44">© 2026  ·  开源  ·  MIT 许可证</text>
   </g>
 
   <line x1="56" y1="64" x2="1224" y2="64" stroke="#3553ff" stroke-width="0.6" stroke-opacity="0.4"/>
@@ -38,7 +38,7 @@
     <text x="56" y="296">面向想从第一性原理设计并构建 AI 系统的人。</text>
   </g>
   <g class="mono" font-size="11" letter-spacing="2.4" fill="#7a7a78">
-    <text x="56" y="324">20 个 Phase  ·  280+ 课  ·  Python · TypeScript · Rust · Julia</text>
+    <text x="56" y="324">20 个阶段  ·  280+ 课  ·  Python · TypeScript · Rust · Julia</text>
   </g>
 
   <line x1="780" y1="110" x2="780" y2="350" stroke="#3553ff" stroke-width="0.6" stroke-opacity="0.4" stroke-dasharray="3 3"/>
@@ -92,18 +92,18 @@
       <text x="288" y="50">数学基础</text>
       <text x="288" y="78">ML 基础</text>
       <text x="288" y="106">Deep Learning · RL</text>
-      <text x="288" y="134">Vision · Speech · NLP</text>
+      <text x="288" y="134">视觉 · 语音 · NLP</text>
       <text x="288" y="162">LLMs · Transformers</text>
-      <text x="288" y="190">Agents · Swarms · Prod</text>
+      <text x="288" y="190">Agents · 集群 · 生产</text>
     </g>
     <g class="mono" font-size="8" letter-spacing="1.4" fill="#7a7a78">
-      <text x="288" y="33">PHASE 00</text>
-      <text x="288" y="61">PHASE 01</text>
-      <text x="288" y="89">PHASE 02</text>
-      <text x="288" y="117">PHASE 03 · 09</text>
-      <text x="288" y="145">PHASE 04 · 05 · 06</text>
-      <text x="288" y="173">PHASE 07 · 08 · 10 · 12</text>
-      <text x="288" y="201">PHASE 13–19</text>
+      <text x="288" y="33">阶段 00</text>
+      <text x="288" y="61">阶段 01</text>
+      <text x="288" y="89">阶段 02</text>
+      <text x="288" y="117">阶段 03 · 09</text>
+      <text x="288" y="145">阶段 04 · 05 · 06</text>
+      <text x="288" y="173">阶段 07 · 08 · 10 · 12</text>
+      <text x="288" y="201">阶段 13–19</text>
     </g>
   </g>
 

@@ -1,0 +1,33 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AI Engineering from Scratch 公共资源",
+    "version": "1.0.0",
+    "description": "AI Engineering from Scratch 课程的只读公共机器可读资源。GitHub repository 中的课程源文件仍是规范来源。"
+  },
+  "servers": [{"url": "https://aiengineeringfromscratch.com"}],
+  "paths": {
+    "/llms.txt": {
+      "get": {
+        "summary": "读取面向 Agent 的课程映射",
+        "operationId": "getAgentIndex",
+        "responses": {"200": {"description": "Markdown 课程与资源索引", "content": {"text/markdown": {"schema": {"type": "string"}}}}}
+      }
+    },
+    "/sitemap.xml": {
+      "get": {
+        "summary": "读取规范公共 URL",
+        "operationId": "getSitemap",
+        "responses": {"200": {"description": "XML 站点地图", "content": {"application/xml": {"schema": {"type": "string"}}}}}
+      }
+    },
+    "/lesson.html": {
+      "get": {
+        "summary": "打开已渲染的课程",
+        "operationId": "getLesson",
+        "parameters": [{"name": "path", "in": "query", "required": true, "schema": {"type": "string"}, "description": "相对于 repository 的课程路径，例如 phases/01-math-foundations/01-linear-algebra-intuition"}],
+        "responses": {"200": {"description": "已渲染的课程页面"}, "404": {"description": "未知课程路径"}}
+      }
+    }
+  }
+}

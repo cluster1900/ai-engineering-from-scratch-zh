@@ -4,5 +4,5 @@
   "period": "30 days",
   "updated": "2026-06-07",
   "source": "Vercel Web Analytics (Production)",
-  "note": "Vercel has no public analytics API. Refresh these from the dashboard, then run `node site/build.js` to propagate to README + site."
+  "note": "Vercel 没有公开的 analytics API。请从 dashboard 刷新这些数据，然后运行 `node site/build.js`，将其同步到 README 和站点。"
 }
