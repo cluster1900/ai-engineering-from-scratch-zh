@@ -89,6 +89,10 @@ Large-v3-turbo（2024）将 decoder 从 32 layers 削减到 4。解码速度快 
 | TTS | Piper, XTTS-v2, Kokoro | Encoder-decoder pattern，但形状类似 Whisper |
 | Audio + language | AudioLM, SeamlessM4T | Text tokens + audio tokens 在一个 transformer 中 |
 
+```figure
+n5-mel-decode
+```
+
 ## Build It
 
 见 `code/main.py`。我们不训练 Whisper——我们构建 log-mel spectrogram pipeline + task-token prompt formatter。这些才是你在生产中实际会触碰的部分。

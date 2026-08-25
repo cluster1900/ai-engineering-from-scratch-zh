@@ -15,7 +15,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">whisper — 用于语音识别的 encoder-decoder</text>
+  <text x="450" y="30" text-anchor="middle" class="title">Whisper — 用于语音识别的 encoder-decoder</text>
 
   <!-- Waveform -->
   <rect x="50" y="60" width="200" height="60" class="hot"/>
@@ -69,10 +69,10 @@
   <!-- Decoder -->
   <rect x="420" y="295" width="400" height="120" class="dec"/>
   <text x="620" y="317" text-anchor="middle" class="label">decoder Transformer</text>
-  <text x="620" y="340" text-anchor="middle" class="caption">masked self-attn + 到 encoder 的 cross-attn + FFN</text>
+  <text x="620" y="340" text-anchor="middle" class="caption">masked Self-Attention + 对 encoder 的 Cross-Attention + FFN</text>
   <text x="620" y="360" text-anchor="middle" class="caption">32 层（large）或 4 层（turbo）</text>
-  <text x="620" y="385" text-anchor="middle" class="caption">BPE 词表：GPT-2 + audio specials</text>
-  <text x="620" y="405" text-anchor="middle" class="caption">推理时 beam search width 5</text>
+  <text x="620" y="385" text-anchor="middle" class="caption">BPE 词表：GPT-2 + audio 特殊 Token</text>
+  <text x="620" y="405" text-anchor="middle" class="caption">Inference 时 beam search 宽度为 5</text>
 
   <!-- Cross-attention arrow from encoder -->
   <path d="M 440 245 Q 500 245 500 360" fill="none" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -82,5 +82,5 @@
   <rect x="490" y="440" width="260" height="30" class="hot"/>
   <text x="620" y="460" text-anchor="middle" class="content">“Attention 就是你所需的一切”</text>
 
-  <text x="450" y="502" text-anchor="middle" class="caption">encoder 运行一次。decoder 自回归运行。任务 Token 决定 transcribe 或 translate。</text>
+  <text x="450" y="502" text-anchor="middle" class="caption">encoder 运行一次。decoder 自回归运行。任务 Token 决定转录或翻译。</text>
 </svg>
