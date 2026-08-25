@@ -14,10 +14,10 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">CLIP similarity Matrix — 对角线为 positives，其余为 negatives</text>
+  <text x="480" y="24" text-anchor="middle" class="title">CLIP 相似度 Matrix — 对角线为正样本，其余为负样本</text>
 
   <rect x="40" y="50" width="440" height="480" class="box"/>
-  <text x="260" y="72" text-anchor="middle" class="head">similarity Matrix S (N=4)</text>
+  <text x="260" y="72" text-anchor="middle" class="head">相似度 Matrix S (N=4)</text>
   <text x="260" y="88" text-anchor="middle" class="small">S[i,j] = cos(img_i, txt_j) / tau</text>
 
   <text x="80" y="118" class="step">txt 0</text>
@@ -71,25 +71,25 @@
   </g>
 
   <text x="260" y="320" text-anchor="middle" class="head">InfoNCE = - sum log softmax(diag)</text>
-  <text x="260" y="340" text-anchor="middle" class="small">每行拉高对角线，压低 negatives</text>
+  <text x="260" y="340" text-anchor="middle" class="small">每行拉高对角线，压低负样本</text>
   <text x="260" y="356" text-anchor="middle" class="small">对称：列方向也做一次</text>
 
   <rect x="60" y="380" width="400" height="130" class="cool"/>
   <text x="260" y="402" text-anchor="middle" class="head">训练要素</text>
   <text x="80" y="424" class="small">· 400M 图文对（CLIP），SigLIP 2 为 10B+</text>
-  <text x="80" y="442" class="small">· batch 32k-512k</text>
-  <text x="80" y="460" class="small">· 可学习 temperature tau（init 0.07）</text>
-  <text x="80" y="478" class="small">· dual encoder：ViT + small text Transformer</text>
+  <text x="80" y="442" class="small">· Batch 32k-512k</text>
+  <text x="80" y="460" class="small">· 可学习 temperature tau（初始值 0.07）</text>
+  <text x="80" y="478" class="small">· 双 encoder：ViT + 小型文本 Transformer</text>
   <text x="80" y="496" class="small">· cosine 前归一化两个 Embeddings</text>
 
   <rect x="500" y="50" width="420" height="480" class="box"/>
-  <text x="710" y="72" text-anchor="middle" class="head">softmax vs sigmoid Loss</text>
+  <text x="710" y="72" text-anchor="middle" class="head">softmax 与 sigmoid Loss</text>
 
   <rect x="520" y="92" width="380" height="200" class="diag"/>
   <text x="540" y="114" class="step">InfoNCE (CLIP)</text>
   <text x="540" y="134" class="small">每行：softmax 在 N 上归一化</text>
   <text x="540" y="150" class="small">需同步完整相似度 Matrix</text>
-  <text x="540" y="166" class="small">分布式：每个 batch 做 all-gather</text>
+  <text x="540" y="166" class="small">分布式：每个 batch 执行 all-gather</text>
   <text x="540" y="186" class="small">通信成本：O(world_size x batch x D)</text>
   <text x="540" y="206" class="step">loss_i2t = CE(S, eye)</text>
   <text x="540" y="224" class="step">loss_t2i = CE(S^T, eye)</text>
@@ -98,7 +98,7 @@
   <text x="540" y="284" class="small">规模上限：通信主导前 batch 32k</text>
 
   <rect x="520" y="300" width="380" height="210" class="cool"/>
-  <text x="540" y="322" class="step">Sigmoid 成对 (SigLIP)</text>
+  <text x="540" y="322" class="step">Sigmoid 成对计算 (SigLIP)</text>
   <text x="540" y="342" class="small">每对：独立 BCE</text>
   <text x="540" y="358" class="small">对角线 y=1，非对角线 y=0</text>
   <text x="540" y="376" class="small">loss = -y log sig(S+b) - (1-y) log sig(-S-b)</text>
