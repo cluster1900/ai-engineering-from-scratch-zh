@@ -17,7 +17,7 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">Embodied VLAs — RT-2 到 GR00T，动作格式演进</text>
+  <text x="480" y="24" text-anchor="middle" class="title">具身 VLA — 从 RT-2 到 GR00T，动作格式演进</text>
 
   <rect x="30" y="50" width="900" height="210" class="box"/>
   <text x="480" y="72" text-anchor="middle" class="head">当前使用的四种动作格式</text>
@@ -32,7 +32,7 @@
   <text x="150" y="224" text-anchor="middle" class="small">推理 3-5 Hz</text>
 
   <rect x="270" y="90" width="200" height="160" class="cool"/>
-  <text x="370" y="110" text-anchor="middle" class="step">FAST（DCT + quantize）</text>
+  <text x="370" y="110" text-anchor="middle" class="step">FAST（DCT + 量化）</text>
   <text x="370" y="128" text-anchor="middle" class="small">2024 改进</text>
   <text x="370" y="146" text-anchor="middle" class="small">~10 Token / 轨迹</text>
   <text x="370" y="162" text-anchor="middle" class="small">低频系数</text>
@@ -54,7 +54,7 @@
   <text x="810" y="128" text-anchor="middle" class="small">GR00T N1（2025）</text>
   <text x="810" y="146" text-anchor="middle" class="small">System 2：VLM ~1 Hz</text>
   <text x="810" y="162" text-anchor="middle" class="small">System 1：小型 ~100 Hz</text>
-  <text x="810" y="186" text-anchor="middle" class="step">优点: humanoid-scale</text>
+  <text x="810" y="186" text-anchor="middle" class="step">优点：人形机器人规模</text>
   <text x="810" y="206" text-anchor="middle" class="small">子目标 + 快速控制</text>
   <text x="810" y="224" text-anchor="middle" class="small">最适合 30+ DOF</text>
 
@@ -62,24 +62,24 @@
   <text x="480" y="302" text-anchor="middle" class="head">训练方案 + 安全</text>
 
   <rect x="60" y="320" width="260" height="180" class="cool"/>
-  <text x="190" y="342" text-anchor="middle" class="step">共同 fine-tune</text>
+  <text x="190" y="342" text-anchor="middle" class="step">共同 Fine-tuning</text>
   <text x="190" y="362" text-anchor="middle" class="small">比例 ~0.5:1 到 1:1</text>
-  <text x="190" y="378" text-anchor="middle" class="small">web VQA + 机器人演示</text>
+  <text x="190" y="378" text-anchor="middle" class="small">Web VQA + 机器人演示</text>
   <text x="190" y="396" text-anchor="middle" class="small">保留通用知识</text>
   <text x="190" y="416" text-anchor="middle" class="small">仅机器人 -&gt; 遗忘语言</text>
-  <text x="190" y="436" text-anchor="middle" class="step">fine-tune 路径</text>
-  <text x="190" y="456" text-anchor="middle" class="small">LoRA on 100-1000 demos</text>
+  <text x="190" y="436" text-anchor="middle" class="step">Fine-tuning 路径</text>
+  <text x="190" y="456" text-anchor="middle" class="small">对 100-1000 个演示使用 LoRA</text>
   <text x="190" y="472" text-anchor="middle" class="small">适配新机器人</text>
 
   <rect x="340" y="320" width="260" height="180" class="reg"/>
   <text x="470" y="342" text-anchor="middle" class="step">Open X-Embodiment</text>
-  <text x="470" y="362" text-anchor="middle" class="small">22 datasets</text>
-  <text x="470" y="378" text-anchor="middle" class="small">1M trajectories</text>
+  <text x="470" y="362" text-anchor="middle" class="small">22 个 Dataset</text>
+  <text x="470" y="378" text-anchor="middle" class="small">100 万条轨迹</text>
   <text x="470" y="394" text-anchor="middle" class="small">22 种机器人形态</text>
   <text x="470" y="412" text-anchor="middle" class="small">ALOHA / Bridge / Droid</text>
   <text x="470" y="432" text-anchor="middle" class="step">统一 schema</text>
   <text x="470" y="452" text-anchor="middle" class="small">状态、相机、动作</text>
-  <text x="470" y="468" text-anchor="middle" class="small">open-source</text>
+  <text x="470" y="468" text-anchor="middle" class="small">开源</text>
 
   <rect x="620" y="320" width="290" height="180" class="hot"/>
   <text x="765" y="342" text-anchor="middle" class="step">安全门控（VLA 外部）</text>

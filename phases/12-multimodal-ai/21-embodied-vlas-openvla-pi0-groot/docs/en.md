@@ -106,6 +106,10 @@ Robot-only 训练会产生任务专用模型，遇到 out-of-distribution 指令
 
 这些作为 control-layer checks 位于 VLA 外部。VLA 的输出是建议，不是命令。
 
+```figure
+mm-action-tokens
+```
+
 ## 使用它
 
 `code/main.py`：
