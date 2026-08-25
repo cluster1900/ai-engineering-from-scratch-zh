@@ -7,32 +7,32 @@
       "question": "为什么 critic 要跨五个固定维度打分，而不是返回自由形式段落？",
       "options": [
         "因为模型无法可靠地生成段落",
-        "因为固定 Vector 让 harness 能够检测多轮中的逐维度 regressions",
+        "因为 reviser 只接受 JSON",
         "因为 LaTeX 需要 score 字段",
-        "因为 reviser 只接受 JSON"
+        "因为固定 Vector 让 harness 能够检测多轮中的逐维度 regressions"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "固定维度 Vector 会把 critique 变成 harness 可以跨轮比较的结构化数据。自由形式 criticism 无法验证；Vector 会让 regressions 可见。"
     },
     {
       "stage": "pre",
       "question": "loop 在一轮结束时按什么顺序检查停止条件？",
       "options": [
-        "先 budget，再 plateau，再 target",
-        "先 target，再 plateau，再 budget",
         "先 plateau，再 target，再 budget",
-        "哪个先通过随机 tie-break 触发就用哪个"
+        "先 budget，再 plateau，再 target",
+        "哪个先通过随机 tie-break 触发就用哪个",
+        "先 target，再 plateau，再 budget"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "达到 target 优先（工作完成）。然后是 plateau（无法再取得进展）。最后是 budget（硬上限）。当多个条件可能同时触发时，这个顺序让结果保持确定性。"
     },
     {
       "stage": "check",
       "question": "为什么 plateau detection 要求连续两轮持平，而不是一轮？",
       "options": [
-        "因为 dataclass 需要一个 list",
-        "因为确定性 scoring 仍然每轮都有噪声；一轮持平不足以构成信号",
         "因为模型返回非确定性 scores",
+        "因为确定性 scoring 仍然每轮都有噪声；一轮持平不足以构成信号",
+        "因为 dataclass 需要一个 list",
         "因为 dashboard 需要两个点"
       ],
       "correct": 1,
@@ -42,12 +42,12 @@
       "stage": "check",
       "question": "reviser 每一轮接收什么输入？",
       "options": [
-        "完整 Critique object，包括 scores",
-        "paper 和 Suggestion records list",
+        "原始 LaTeX source",
         "模型生成的段落",
-        "原始 LaTeX source"
+        "完整 Critique object，包括 scores",
+        "paper 和 Suggestion records list"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Reviser.__call__ 接收 (paper, suggestions)。每个 Suggestion 都携带一个 dimension、target section 和 edit instruction。reviser 看不到 scores。这种分离让任意一侧都可以被替换，而不需要触碰另一侧。"
     },
     {
@@ -55,23 +55,23 @@
       "question": "trace 每一轮包含什么？",
       "options": [
         "只有 final paper draft",
-        "Round number、score vector、mean、suggestions applied、verdict",
+        "只有 convergence verdict",
         "模型 prompt 和 completion",
-        "只有 convergence verdict"
+        "Round number、score vector、mean、suggestions applied、verdict"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "trace 是逐轮 event log。Dashboards 会把它渲染成 score-over-time chart；下一阶段会读取它，决定这个 branch 是否值得保留。"
     },
     {
       "stage": "post",
       "question": "一个不断输出 suggestions 但从不提升任何 score 的 critic，会产生哪种终止 verdict？",
       "options": [
+        "converged，因为 suggestions 已经被应用",
         "target，因为 budget 会隐藏 bug",
         "plateau 或 budget，因为 harness 会捕捉到没有进展",
-        "converged，因为 suggestions 已经被应用",
         "异常，因为 loop 会崩溃"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "会触发 plateau（两轮持平）或 budget（硬上限）。两种 verdict 都会暴露 bug。loop 永远不会静默成功。"
     }
   ]

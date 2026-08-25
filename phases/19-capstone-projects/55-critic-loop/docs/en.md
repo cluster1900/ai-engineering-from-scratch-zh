@@ -15,6 +15,10 @@
 - 用 max-iteration 预算限制轮数，避免不收敛的 critic 永远运行。
 - 输出逐轮 trace，让 dashboard 或下一阶段可以渲染分数轨迹。
 
+```figure
+ch-critic-converge
+```
+
 ## 为什么使用五个固定维度
 
 自由形式的 critic 是一个返回建议段落的模型。下一轮 revision 会把这个段落当作环境上下文。rewrite 是否回应了批评无法验证，因为批评本身从未具备结构。
