@@ -79,6 +79,10 @@ Locust 使用 Python，并在 client-side 于 GIL 下运行 tokenization。高�
 - 典型 CI gate：每个 PR 30-50 iterations。
 - 四种模式：steady、ramp、spike、soak。
 
+```figure
+load-pattern-waves
+```
+
 ## 使用它
 `code/main.py` 模拟带有真实 prompt distribution 的 load test，测量 effective TPOT，并演示 uniform-prompt 陷阱。
 

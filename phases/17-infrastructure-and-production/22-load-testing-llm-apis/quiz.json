@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "在基于 Locust 的 LLM 负载测试中，GIL 陷阱是什么？",
       "options": [
-        "Locust 只能在 Windows 上工作",
-        "Locust 不支持 HTTP",
         "客户端侧 Tokenization 在 Python GIL 下运行，并排在请求生成之后，导致报告的 Token 间延迟被放大",
-        "Locust 需要 CUDA"
+        "Locust 需要 CUDA",
+        "Locust 只能在 Windows 上工作",
+        "Locust 不支持 HTTP"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -20,20 +20,20 @@
       "options": [
         "Uniform prompts 总是会让 server 变慢",
         "从真实分布采样会低估长 Prompt 的占比",
-        "Uniform prompts 需要 streaming",
-        "循环使用同一个 Prompt 会让 prefix caching 看起来像完整的并发 decode，从而夸大报告的 throughput"
+        "循环使用同一个 Prompt 会让 prefix caching 看起来像完整的并发 decode，从而夸大报告的 throughput",
+        "Uniform prompts 需要 streaming"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "本课推荐哪四种负载模式？",
       "options": [
-        "10 天内保持恒定 1 RPS",
+        "仅 burst",
         "手动点击测试",
         "Steady-state、ramp、spike、soak",
-        "仅 burst"
+        "10 天内保持恒定 1 RPS"
       ],
       "correct": 2,
       "explanation": ""
@@ -42,36 +42,36 @@
       "stage": "check",
       "question": "本课建议如何构建真实的 Prompt 分布？",
       "options": [
-        "使用均值和 stddev 从真实分布采样（例如 LLMPerf 的 --mean-input-tokens / --stddev-input-tokens），或 replay 真实流量",
         "每个请求使用随机字符",
+        "总是使用同一个 Prompt 以最大化 cache hits",
         "手写 5 个 Prompt 并 shuffle",
-        "总是使用同一个 Prompt 以最大化 cache hits"
+        "使用均值和 stddev 从真实分布采样（例如 LLMPerf 的 --mean-input-tokens / --stddev-input-tokens），或 replay 真实流量"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪种 2026 工具组合被定位为最适合 CI/CD SLA gate 和 Kubernetes-native distributed run？",
       "options": [
-        "k6 v2026.1.0 搭配 k6 Operator 1.0 GA（TestRun / PrivateLoadZone CRDs）",
         "仅 guidellm",
         "仅 Vegeta",
+        "k6 v2026.1.0 搭配 k6 Operator 1.0 GA（TestRun / PrivateLoadZone CRDs）",
         "Locust 2.43.3 stock"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "soak 负载模式会捕获哪种 failure mode？",
       "options": [
-        "数小时内的 memory leaks、connection-pool drift 和 observability overflow",
         "Cold-start tail",
         "Tokenizer GIL contention",
+        "数小时内的 memory leaks、connection-pool drift 和 observability overflow",
         "Cache eviction storms"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     }
   ]
