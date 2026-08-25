@@ -60,6 +60,10 @@ answer + (start, end) timestamps + frame thumbs + citations
 - Eval: ActivityNet-QA、NeXT-GQA、自定义 100-question hand-labeled set
 - Hallucination benchmark: 带 hand labels 的 counting 和 action-type subsets
 
+```figure
+cf-scene-index
+```
+
 ## 构建它
 1. **Ingest walker.** 接受 YouTube URL 或本地 MP4。如有需要，downscale 到 720p。持久化 `{video_id, file_path}`。
 
