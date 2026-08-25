@@ -18,60 +18,60 @@
       "stage": "check",
       "question": "Llama Guard 3 大约覆盖多少个 MLCommons hazard categories？",
       "options": [
-        "7",
         "3",
         "40",
-        "14"
+        "14",
+        "7"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Garak 的架构是如何组织的？",
       "options": [
+        "Probes（attack generators，攻击生成器）、Detectors（output scorers，输出评分器）、Harnesses（campaign managers，活动管理器）",
+        "Embeddings、retrievers、rerankers（Embedding、检索器、重排器）",
         "Tools、resources、prompts（工具、资源、提示）",
-        "Embeddings、retrievers、rerankers（嵌入、检索器、重排器）",
-        "Routers、agents、queues（路由器、agents、队列）",
-        "Probes（attack generators，攻击生成器）、Detectors（output scorers，输出评分器）、Harnesses（campaign managers，活动管理器）"
+        "Routers、agents、queues（路由器、agents、队列）"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "PyRIT 主要用于什么，它与 Garak 有何不同？",
       "options": [
-        "它们在范围和受众上完全相同",
-        "PyRIT 是 reward model trainer；Garak 是 Tokenizer",
         "PyRIT 运行深度 multi-turn campaigns（converter chains、Crescendo 和 TAP 等 orchestrators、scoring），而 Garak 运行数千个 single-turn probes",
-        "PyRIT 是 Llama Guard 变体；Garak 是 Prompt-Guard 变体"
+        "它们在范围和受众上完全相同",
+        "PyRIT 是 Llama Guard 变体；Garak 是 Prompt-Guard 变体",
+        "PyRIT 是 reward model trainer；Garak 是 Tokenizer"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "推荐的 2026 默认 red-team stack 配置是什么？",
       "options": [
-        "仅用 manual review 替代 LLM evaluation",
         "使用 PAIR 代替任何 tooling",
-        "在模型两侧都放置 Llama Guard，每晚运行 Garak 做 regression，并在 release 前运行 PyRIT campaigns",
-        "只在上线时运行一次 Garak"
+        "只在上线时运行一次 Garak",
+        "仅用 manual review 替代 LLM evaluation",
+        "在模型两侧都放置 Llama Guard，每晚运行 Garak 做 regression，并在 release 前运行 PyRIT campaigns"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "Llama Guard、Garak 和 PyRIT 共同存在的 evaluation 陷阱是什么？",
       "options": [
-        "报告的 attack/defense rates 取决于 judge identity 和 probe staleness；你必须指定 judge，并在模型被 patch 后刷新 probes",
-        "它们只适用于英语",
         "它们需要 white-box access",
-        "它们无法在 GPUs 上运行"
+        "它们只适用于英语",
+        "它们无法在 GPUs 上运行",
+        "报告的 attack/defense rates 取决于 judge identity 和 probe staleness；你必须指定 judge，并在模型被 patch 后刷新 probes"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     }
   ]

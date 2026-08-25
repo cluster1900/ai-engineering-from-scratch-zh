@@ -16,10 +16,10 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">2026 red-team 工具栈</text>
+  <text x="480" y="24" text-anchor="middle" class="title">2026 红队工具栈</text>
 
   <rect x="40" y="60" width="880" height="160" class="box"/>
-  <text x="480" y="85" text-anchor="middle" class="head">运行时防御: Llama Guard + Prompt-Guard</text>
+  <text x="480" y="85" text-anchor="middle" class="head">运行时防御：Llama Guard + Prompt-Guard</text>
 
   <rect x="60" y="100" width="180" height="100" class="cool"/>
   <text x="150" y="125" text-anchor="middle" class="step">用户输入</text>
@@ -31,7 +31,7 @@
   <rect x="280" y="100" width="180" height="100" class="hot"/>
   <text x="370" y="125" text-anchor="middle" class="step">目标 LLM</text>
   <text x="370" y="155" text-anchor="middle" class="small">部署中的模型</text>
-  <text x="370" y="185" text-anchor="middle" class="small">监控 14 个 MLCommons 危害</text>
+  <text x="370" y="185" text-anchor="middle" class="small">监控 14 类 MLCommons 危害</text>
 
   <rect x="500" y="100" width="180" height="100" class="cool"/>
   <text x="590" y="125" text-anchor="middle" class="step">输出</text>
@@ -50,23 +50,23 @@
   <path d="M 680 150 L 720 150" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow16)" fill="none"/>
 
   <rect x="40" y="240" width="880" height="140" class="box"/>
-  <text x="480" y="265" text-anchor="middle" class="head">回归: Garak nightly</text>
+  <text x="480" y="265" text-anchor="middle" class="head">回归测试：Garak 每夜运行</text>
   <rect x="60" y="285" width="260" height="80" class="cold"/>
   <text x="190" y="310" text-anchor="middle" class="step">探针</text>
   <text x="190" y="330" text-anchor="middle" class="small">幻觉 / 泄漏 / 注入 / jailbreak</text>
   <text x="190" y="350" text-anchor="middle" class="small">静态 / 动态 / 自适应</text>
   <rect x="340" y="285" width="260" height="80" class="cold"/>
   <text x="470" y="310" text-anchor="middle" class="step">检测器</text>
-  <text x="470" y="330" text-anchor="middle" class="small">评分 expected-failure 匹配</text>
+  <text x="470" y="330" text-anchor="middle" class="small">评分与 expected-failure 匹配</text>
   <text x="470" y="350" text-anchor="middle" class="small">TBSA 分层通过/失败</text>
   <rect x="620" y="285" width="260" height="80" class="cold"/>
   <text x="750" y="310" text-anchor="middle" class="step">测试框架</text>
   <text x="750" y="330" text-anchor="middle" class="small">运行探针-检测器对</text>
-  <text x="750" y="350" text-anchor="middle" class="small">发布报告 artifact</text>
+  <text x="750" y="350" text-anchor="middle" class="small">发布报告产物</text>
 
   <rect x="40" y="400" width="880" height="90" class="box"/>
   <text x="480" y="425" text-anchor="middle" class="head">campaigns：PyRIT 预发布</text>
   <text x="60" y="450" class="small">converters：改写 / encode / translate / roleplay / system-prompt-rewrite。</text>
   <text x="60" y="468" class="small">orchestrators：Crescendo（升级）/ TAP（分支）/ RedTeaming（自定义循环）。</text>
-  <text x="60" y="486" class="small">scoring：LLM-as-judge（GPT-4-turbo, StrongREJECT）或 Llama Guard-as-judge。</text>
+  <text x="60" y="486" class="small">scoring：LLM-as-judge（GPT-4-turbo、StrongREJECT）或 Llama Guard-as-judge。</text>
 </svg>

@@ -65,6 +65,10 @@ PyRIT 是 Garak 更重的近亲。Garak 运行数千个单轮 probes；PyRIT 运
 
 Lessons 12-15 是攻击族。Lesson 16 是生产工具。Lesson 17 (WMDP) 是 dual-use capability 的评估。Lesson 18 是 frontier safety frameworks，它们把这些工具包装进 policy 结构中。
 
+```figure
+al-guard-stack
+```
+
 ## 使用它
 
 `code/main.py` 构建了一个 toy Llama Guard-style classifier（在 14 个类别上的 keyword + semantic features）、一个 toy Garak harness（probe-detector loop），以及一个 PyRIT-style 多轮 converter chain。你可以对 mock target 运行这三个工具，并观察不同的覆盖特征。
