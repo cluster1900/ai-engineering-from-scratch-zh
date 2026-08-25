@@ -15,30 +15,30 @@
   </defs>
 
   <rect class="box" x="20" y="20" width="280" height="380" rx="4"/>
-  <text class="label" x="160" y="45" text-anchor="middle">抽取式 QA</text>
-  <text class="note" x="35" y="65">在给定段落中找答案 span</text>
+  <text class="label" x="160" y="45" text-anchor="middle">抽取式问答</text>
+  <text class="note" x="35" y="65">在给定段落中查找答案片段</text>
 
   <rect class="box" x="35" y="85" width="240" height="70" rx="3"/>
   <text class="content" x="45" y="105">问题：</text>
-  <text class="content" x="45" y="125">"When was iPhone released?"</text>
+  <text class="content" x="45" y="125">"iPhone 何时发布？"</text>
   <text class="content" x="45" y="145">上下文：[长段落]</text>
 
   <path class="line" d="M 155 155 L 155 180" marker-end="url(#arrow)"/>
 
   <rect class="hot" x="35" y="180" width="240" height="50" rx="3"/>
-  <text class="content" x="155" y="205" text-anchor="middle">BERT / RoBERTa + span head</text>
+  <text class="content" x="155" y="205" text-anchor="middle">BERT / RoBERTa + 片段预测头</text>
   <text class="content" x="155" y="220" text-anchor="middle">预测 (start_idx, end_idx)</text>
 
   <path class="line" d="M 155 230 L 155 255" marker-end="url(#arrow)"/>
 
   <rect class="box" x="35" y="255" width="240" height="50" rx="3"/>
-  <text class="content" x="155" y="280" text-anchor="middle">"June 29, 2007"</text>
-  <text class="content" x="155" y="295" text-anchor="middle">逐字 span，绝不编造</text>
+  <text class="content" x="155" y="280" text-anchor="middle">"2007年6月29日"</text>
+  <text class="content" x="155" y="295" text-anchor="middle">逐字片段，绝不编造</text>
 
-  <text class="stage" x="160" y="340">SQuAD 风格。绝不幻觉。</text>
+  <text class="stage" x="160" y="340">SQuAD 风格。绝不产生幻觉。</text>
   <text class="note" x="160" y="360" text-anchor="middle">需要段落 + 问题一起。</text>
   <text class="note" x="160" y="378" text-anchor="middle">无法处理无答案问题</text>
-  <text class="note" x="160" y="392" text-anchor="middle">除非用 SQuAD 2.0 训练。</text>
+  <text class="note" x="160" y="392" text-anchor="middle">除非使用 SQuAD 2.0 训练。</text>
 
   <rect class="box" x="320" y="20" width="280" height="380" rx="4"/>
   <text class="label" x="460" y="45" text-anchor="middle">RAG</text>
@@ -50,27 +50,27 @@
   <path class="line" d="M 455 125 L 455 145" marker-end="url(#arrow)"/>
 
   <rect class="hot" x="335" y="145" width="240" height="50" rx="3"/>
-  <text class="content" x="455" y="170" text-anchor="middle">retriever</text>
-  <text class="content" x="455" y="185" text-anchor="middle">BM25 + dense + rerank</text>
+  <text class="content" x="455" y="170" text-anchor="middle">检索器</text>
+  <text class="content" x="455" y="185" text-anchor="middle">BM25 + 稠密检索 + 重排</text>
 
   <path class="line" d="M 455 195 L 455 215" marker-end="url(#arrow)"/>
 
   <rect class="box" x="335" y="215" width="240" height="50" rx="3"/>
   <text class="content" x="455" y="240" text-anchor="middle">top-k 段落</text>
-  <text class="content" x="455" y="255" text-anchor="middle">(grounding 上下文)</text>
+  <text class="content" x="455" y="255" text-anchor="middle">（事实依据 Context）</text>
 
   <path class="line" d="M 455 265 L 455 285" marker-end="url(#arrow)"/>
 
   <rect class="hot" x="335" y="285" width="240" height="50" rx="3"/>
-  <text class="content" x="455" y="310" text-anchor="middle">reader (LLM 或抽取式)</text>
+  <text class="content" x="455" y="310" text-anchor="middle">阅读器（LLM 或抽取式）</text>
 
   <path class="line" d="M 455 335 L 455 355" marker-end="url(#arrow)"/>
 
   <rect class="box" x="335" y="355" width="240" height="35" rx="3"/>
-  <text class="content" x="455" y="377" text-anchor="middle">grounded 答案 + 引用</text>
+  <text class="content" x="455" y="377" text-anchor="middle">有依据的答案 + 引用</text>
 
   <rect class="box" x="620" y="20" width="260" height="380" rx="4"/>
-  <text class="label" x="750" y="45" text-anchor="middle">生成式 (closed-book)</text>
+  <text class="label" x="750" y="45" text-anchor="middle">生成式（闭卷）</text>
   <text class="note" x="635" y="65">从模型权重回答</text>
 
   <rect class="box" x="635" y="85" width="230" height="40" rx="3"/>
@@ -79,8 +79,8 @@
   <path class="line" d="M 750 125 L 750 145" marker-end="url(#arrow)"/>
 
   <rect class="hot" x="635" y="145" width="230" height="90" rx="3"/>
-  <text class="content" x="750" y="170" text-anchor="middle">decoder-only LLM</text>
-  <text class="content" x="750" y="190" text-anchor="middle">(GPT, Claude, Llama)</text>
+  <text class="content" x="750" y="170" text-anchor="middle">仅解码器 LLM</text>
+  <text class="content" x="750" y="190" text-anchor="middle">（GPT、Claude、Llama）</text>
   <text class="content" x="750" y="215" text-anchor="middle">仅参数记忆</text>
 
   <path class="line" d="M 750 235 L 750 255" marker-end="url(#arrow)"/>

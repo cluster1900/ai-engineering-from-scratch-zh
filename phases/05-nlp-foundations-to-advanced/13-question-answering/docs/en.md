@@ -29,6 +29,10 @@
 
 **Generative。** 一个 decoder-only LLM（GPT、Claude、Llama）从 learned weights 中回答。没有 retrieval step。对 common knowledge 表现出色，对 rare 或 recent facts 可能灾难性失败。hallucination rate 与 pretraining data 中的 fact frequency 负相关。
 
+```figure
+qa-span
+```
+
 ## 构建它
 
 ### 步骤 1： 使用 pretrained model 做 extractive QA
