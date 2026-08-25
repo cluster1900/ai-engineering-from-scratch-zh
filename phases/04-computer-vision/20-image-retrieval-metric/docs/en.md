@@ -99,6 +99,10 @@ Facebook AI Similarity Search。事实标准的 nearest-neighbour search 库。�
 
 在选择模型之前，始终先问清楚你解决的是哪一个。
 
+```figure
+metric-embedding
+```
+
 ## 构建它
 ### 步骤 1： Triplet loss
 
