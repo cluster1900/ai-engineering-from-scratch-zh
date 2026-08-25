@@ -88,6 +88,10 @@ VAR 和 Diffusion 共享同一个数据压缩叙事：两者都把生成问题�
 
 它们是穿过同一问题的不同轴线。两者都会产生可处理的条件分布。经验上，VAR 推理更快（pass 更少，尺度内全并行），并且在 class-conditional ImageNet 上匹配或胜过 DiT。Text-conditional VAR（VARclip、HART）是一个活跃研究方向。
 
+```figure
+gx-var-next-scale
+```
+
 ## 构建它
 
 在 `code/main.py` 中，你将：
