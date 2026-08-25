@@ -118,6 +118,10 @@ Descriptions 会逐字进入 model context。恶意 server 可以Embedding隐藏
 
 这三者都是开放的；在一套普通 GPU setup 上，完整 evaluation loop 可以在一小时内跑完。把其中一个纳入你的 CI（eval-driven development 会在未来 phase 覆盖）。
 
+```figure
+tp-schema-routing
+```
+
 ## 使用它
 `code/main.py` 提供了一个 tool-schema linter，用于按照上述规则 audit registry。它会标记：
 
