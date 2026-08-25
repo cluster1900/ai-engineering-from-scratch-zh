@@ -101,6 +101,10 @@ Intrinsics 来自 EXIF metadata、calibration pattern，或 monocular intrinsics
 
 对于 relative depth（Depth Anything V3、MiDaS），evaluation 使用这两个 metrics 的 scale-and-shift invariant 版本。
 
+```figure
+depth-sweep
+```
+
 ## 构建
 
 ### 步骤 1： Depth metrics
