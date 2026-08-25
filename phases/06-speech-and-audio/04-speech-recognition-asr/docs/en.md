@@ -48,6 +48,10 @@
 
 这些全部基于 encoder-decoder 或 RNN-T。纯 CTC 系统（wav2vec 2.0）在 test-clean 上大约为 1.8-2.1%。
 
+```figure
+ctc-collapse
+```
+
 ## 构建它
 
 ### 步骤 1：greedy CTC decode
