@@ -40,11 +40,11 @@
 
   <!-- Per tool -->
   <rect x="60" y="180" width="160" height="40" class="cool"/>
-  <text x="140" y="205" text-anchor="middle" class="small">每 tool（sess.）</text>
+  <text x="140" y="205" text-anchor="middle" class="small">每 Tool（session）</text>
   <rect x="230" y="180" width="240" height="40" class="cold"/>
-  <text x="350" y="205" text-anchor="middle" class="content">单 tool 上限（如 ≤5 WebFetch）</text>
+  <text x="350" y="205" text-anchor="middle" class="content">单 Tool 上限（如 ≤5 WebFetch）</text>
   <rect x="480" y="180" width="340" height="40" class="box"/>
-  <text x="650" y="205" text-anchor="middle" class="small">新 tool 触发新循环（如 order-track）</text>
+  <text x="650" y="205" text-anchor="middle" class="small">新 Tool 触发新循环（如 order-track）</text>
 
   <!-- Velocity -->
   <rect x="60" y="225" width="160" height="40" class="warn"/>
@@ -73,11 +73,11 @@
   <!-- Cost-reduction row -->
   <rect x="60" y="370" width="760" height="54" class="cool"/>
   <text x="440" y="392" text-anchor="middle" class="label">正交：质量不变下降低成本</text>
-  <text x="80" y="412" class="content">prompt caching · context windowing / compaction · tiered model routing · 长周期运行的并行缓存</text>
+  <text x="80" y="412" class="content">prompt caching · context windowing / compaction · tiered Model routing · 长周期运行的并行缓存</text>
 
   <!-- Kill switch row -->
   <rect x="60" y="430" width="760" height="60" class="hot"/>
   <text x="440" y="452" text-anchor="middle" class="label">违规 kill switch</text>
-  <text x="80" y="472" class="content">任一上限触发 → session 中止 → 告警 → 需人工重启 → agent 不能修改自身上限</text>
-  <text x="80" y="486" class="small">2026 观察：电商 agent 因新增 tool 从 $1,200 → $4,800；周增长告警修复了问题。</text>
+  <text x="80" y="472" class="content">任一上限触发 → session 中止 → 告警 → 需人工重启 → Agent 不能修改自身上限</text>
+  <text x="80" y="486" class="small">2026 观察：电商 Agent 因新增 Tool 从 $1,200 → $4,800；周增长告警修复了问题。</text>
 </svg>
