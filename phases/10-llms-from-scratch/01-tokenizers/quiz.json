@@ -1,36 +1,61 @@
 [
   {
     "question": "在 LLM pipeline 中，Tokenizer 的主要目的是什么？",
-    "options": ["从文本中移除停用词", "将文本转换为模型可以处理的整数序列", "在不同语言之间翻译文本", "压缩文本以便存储"],
-    "correct": 1,
+    "options": [
+      "在不同语言之间翻译文本",
+      "压缩文本以便存储",
+      "将文本转换为模型可以处理的整数序列",
+      "从文本中移除停用词"
+    ],
+    "correct": 2,
     "explanation": "LLMs 处理的是数字，而不是文本。Tokenizer 会把每个字符、单词和符号转换为固定 vocabulary 中的整数 ID。这种转换并不是中性的 -- 它决定了模型如何“看见”语言。",
     "stage": "pre"
   },
   {
     "question": "BPE (Byte Pair Encoding) 如何构建它的 vocabulary？",
-    "options": ["只把文本拆分成单个字符", "迭代合并最频繁的相邻 Token 对，直到达到目标 vocabulary 大小", "使用字典查找完整单词", "随机给子字符串分配 ID"],
-    "correct": 1,
+    "options": [
+      "随机给子字符串分配 ID",
+      "使用字典查找完整单词",
+      "只把文本拆分成单个字符",
+      "迭代合并最频繁的相邻 Token 对，直到达到目标 vocabulary 大小"
+    ],
+    "correct": 3,
     "explanation": "BPE 从单个 byte/character 开始，并反复合并最常见的相邻对。'th' + 'e' 会变成 'the'。经过数千次合并后，常见单词会变成单个 Token，而稀有单词会被拆成 subword 片段。",
     "stage": "pre"
   },
   {
     "question": "为什么 vocabulary size 会在 LLM 设计中形成权衡？",
-    "options": ["更大的 vocabulary 总是表现更好", "太小会产生长序列（更多计算）；太大会把 Embedding parameters 浪费在稀有 Token 上", "Vocabulary size 不影响模型表现", "更小的 vocabulary 总是更高效"],
-    "correct": 1,
+    "options": [
+      "Vocabulary size 不影响模型表现",
+      "更小的 vocabulary 总是更高效",
+      "更大的 vocabulary 总是表现更好",
+      "太小会产生长序列（更多计算）；太大会把 Embedding parameters 浪费在稀有 Token 上"
+    ],
+    "correct": 3,
     "explanation": "小 vocabulary（例如 character-level）意味着每个单词会由许多 Token 组成，从而增加序列长度和计算量。大 vocabulary 会把参数浪费在训练数据中很少出现的 Token 上。大多数 LLMs 使用 32K-100K Token。",
     "stage": "post"
   },
   {
     "question": "byte-level fallback 在 Tokenization 中解决了什么问题？",
-    "options": ["它加快 Tokenization", "它确保任何输入（emoji、稀有文字系统、binary data）都可以在没有 'unknown' Token 的情况下被编码", "它减少 vocabulary size", "它提升模型准确率"],
-    "correct": 1,
+    "options": [
+      "它确保任何输入（emoji、稀有文字系统、binary data）都可以在没有 'unknown' Token 的情况下被编码",
+      "它提升模型准确率",
+      "它减少 vocabulary size",
+      "它加快 Tokenization"
+    ],
+    "correct": 0,
     "explanation": "有了 byte-level fallback，Tokenizer 可以对 vocabulary 中不存在的任何字符回退到原始 byte 值（256 种可能）。这保证了完整覆盖 -- 任何输入都不会是 'unknown'。",
     "stage": "post"
   },
   {
     "question": "Tokenizer 如何影响 LLMs 的非英语语言表现？",
-    "options": ["Tokenizers 对所有语言的效果都一样好", "训练数据中代表性不足的语言会得到更差的 Token 合并，导致每个单词需要更多 Token，并浪费 context window", "非英语文本总是按字符 Tokenized", "Tokenization 不影响语言表现"],
-    "correct": 1,
+    "options": [
+      "Tokenizers 对所有语言的效果都一样好",
+      "非英语文本总是按字符 Tokenized",
+      "Tokenization 不影响语言表现",
+      "训练数据中代表性不足的语言会得到更差的 Token 合并，导致每个单词需要更多 Token，并浪费 context window"
+    ],
+    "correct": 3,
     "explanation": "BPE 合并是从训练数据中学习到的。如果日语文本只占语料库的 5%，日语字符得到的合并就会更少，导致每个单词需要的 Token 数量比英语多 2-5 倍。这实际上缩小了非英语文本的 context window。",
     "stage": "post"
   }
