@@ -68,6 +68,10 @@ Meta 的 **MusicGen**（2023，MIT）以及许多衍生模型：以文本 / 旋�
 3. 在自有或已授权曲库上训练（大多数企业最终会走到这里）。
 4. 为生成内容添加水印 + metadata。
 
+```figure
+sp-codec-tokens
+```
+
 ## 构建它
 
 ### 步骤 1： 使用 MusicGen 生成
