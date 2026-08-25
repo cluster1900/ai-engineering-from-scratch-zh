@@ -1,0 +1,78 @@
+{
+  "lesson": "24-skill-discovery-and-progressive-disclosure",
+  "title": "Skill 发现与渐进式披露",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "host 在项目作用域和用户作用域中发现了名称相同的 Skill。由什么决定哪一个生效？",
+      "options": [
+        "host 记录在文档中的作用域优先级策略",
+        "时间戳最新的目录",
+        "正文最长的 SKILL.md",
+        "Skill 描述中的第一个动词"
+      ],
+      "correct": 0,
+      "explanation": "可移植 Skill 格式并未规定一种通用的优先级顺序。host 必须声明各作用域之间如何相互遮蔽，并且应该报告冲突，而不是默默依赖文件系统的迭代顺序。"
+    },
+    {
+      "stage": "check",
+      "question": "在实现之前发送给 Model 的第一个发现目录中应该包含什么？",
+      "options": [
+        "每个 script、asset 和 reference 的完整内容",
+        "包含 name 和 description 等信息的紧凑身份记录",
+        "运行所有捆绑 script 后得到的输出",
+        "仅包含修改时间戳"
+      ],
+      "correct": 1,
+      "explanation": "第一级发现应该携带足够的 metadata，以便在不加载完整指令的情况下路由任务。正文和被引用的资源将在之后披露，这可以保护 Context 预算并避免过早执行。"
+    },
+    {
+      "stage": "check",
+      "question": "按照此契约，以下哪个顺序正确实现了渐进式披露？",
+      "options": [
+        "加载所有正文，丢弃其中大部分，然后构建目录",
+        "先读取 reference，再推断它们属于哪个 Skill",
+        "运行 script、加载 asset，然后发现名称",
+        "将 metadata 编入目录，加载所选 SKILL.md 的正文，然后读取所需的 reference"
+      ],
+      "correct": 3,
+      "explanation": "发现、激活和资源加载是彼此独立的阶段。只有在前一阶段确定相关性后，每个阶段才会消耗更多 Context，因此无关 Skill 的正文和 reference 不会进入 Prompt。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么应该将优先级相同的重复项报告为存在歧义？",
+      "options": [
+        "因为根据偶然的目录顺序进行选择会使路由变得不确定且难以审计",
+        "因为每次冲突都意味着两个 Skill 的 YAML 都无效",
+        "因为重名会自动获得网络访问权限",
+        "因为用户作用域必须始终胜出"
+      ],
+      "correct": 0,
+      "explanation": "如果两个候选项具有相同名称和策略等级，那么字典序或迭代顺序并不代表有意义的权限依据。明确失败会迫使 host 或用户解决身份冲突，而不是产生依赖环境的行为。"
+    },
+    {
+      "stage": "post",
+      "question": "某个 SKILL.md 在只允许一级引用的 bundle 中引用了 `references/archive/schema.md`。验证过程应该如何处理？",
+      "options": [
+        "自动将该文件复制到全局缓存",
+        "执行该文件以确定它是否有用",
+        "拒绝该引用，因为它形成了超出 package 契约允许范围的更深引用链",
+        "跟随该引用，因为每个相对路径都是安全的"
+      ],
+      "correct": 2,
+      "explanation": "一级引用契约允许直接文件或 `references/schema.md` 这样的路径，但不允许递归嵌套的引用链。该限制使 package 保持可检查，并在加载内容前阻止类似路径遍历的复杂性。"
+    },
+    {
+      "stage": "post",
+      "question": "当目录超出其声明的 Context 预算时，最经得起推敲的应对方式是什么？",
+      "options": [
+        "应用确定性限制，报告被省略的条目，并允许缩小发现范围",
+        "只要某个 Skill 的描述很长，就忽略预算",
+        "删除 Skill 名称，同时保留完整指令正文",
+        "每次运行时随机抽样条目"
+      ],
+      "correct": 0,
+      "explanation": "确定性截断或省略可使目录行为具备可复现性和可测量性。报告省略项可以保持可观测性，而缩小作用域或搜索范围则可以找回未能进入首个目录的候选项。"
+    }
+  ]
+}
