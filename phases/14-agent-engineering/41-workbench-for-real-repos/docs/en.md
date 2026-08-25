@@ -70,6 +70,10 @@ Workbench-guided：
 | `handoff_quality` | 下一次 session 会为此付出代价或从中受益 |
 | `reviewer_total` | 在 gate 之上的定性判断 |
 
+```figure
+wb-ab-runs
+```
+
 ## 构建它
 `code/main.py` 针对同一个 sample app fixture 编排两条 pipeline。两条 pipeline 都是 scripted（loop 中没有 LLM），因此 measurement 可复现。该 script 会将 comparison 写入 `before-after-report.md` 和 `comparison.json`。
 
