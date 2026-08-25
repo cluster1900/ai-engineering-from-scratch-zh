@@ -29,13 +29,13 @@
   <text x="140" y="82" text-anchor="middle" class="step">Qwen-VL</text>
   <text x="140" y="100" text-anchor="middle" class="small">OpenCLIP + Q-Former</text>
   <text x="140" y="116" text-anchor="middle" class="small">448x448 分辨率</text>
-  <text x="140" y="132" text-anchor="middle" class="small">grounding + bbox tokens</text>
+  <text x="140" y="132" text-anchor="middle" class="small">定位 + bbox Token</text>
   <text x="140" y="148" text-anchor="middle" class="small">zh + en 多语言</text>
 
   <rect x="290" y="60" width="200" height="100" class="cool"/>
   <text x="390" y="82" text-anchor="middle" class="step">Qwen2-VL</text>
   <text x="390" y="100" text-anchor="middle" class="small">M-RoPE（3D 位置）</text>
-  <text x="390" y="116" text-anchor="middle" class="small">原生动态 res</text>
+  <text x="390" y="116" text-anchor="middle" class="small">原生动态分辨率</text>
   <text x="390" y="132" text-anchor="middle" class="small">仅 MLP projector</text>
   <text x="390" y="148" text-anchor="middle" class="small">可变 FPS 视频</text>
 
@@ -43,65 +43,65 @@
   <text x="640" y="82" text-anchor="middle" class="step">Qwen2.5-VL</text>
   <text x="640" y="100" text-anchor="middle" class="small">动态 FPS sampler</text>
   <text x="640" y="116" text-anchor="middle" class="small">绝对时间 Token</text>
-  <text x="640" y="132" text-anchor="middle" class="small">window attention ViT</text>
-  <text x="640" y="148" text-anchor="middle" class="small">JSON agent mode</text>
+  <text x="640" y="132" text-anchor="middle" class="small">窗口 Attention ViT</text>
+  <text x="640" y="148" text-anchor="middle" class="small">JSON Agent 模式</text>
 
   <rect x="790" y="60" width="140" height="100" class="reg"/>
   <text x="860" y="82" text-anchor="middle" class="step">Qwen3-VL</text>
-  <text x="860" y="100" text-anchor="middle" class="small">Qwen3-72B base</text>
-  <text x="860" y="116" text-anchor="middle" class="small">thinking mode</text>
+  <text x="860" y="100" text-anchor="middle" class="small">Qwen3-72B 基础模型</text>
+  <text x="860" y="116" text-anchor="middle" class="small">思考模式</text>
   <text x="860" y="132" text-anchor="middle" class="small">扩展 OCR</text>
-  <text x="860" y="148" text-anchor="middle" class="small">data + scale</text>
+  <text x="860" y="148" text-anchor="middle" class="small">数据 + 规模</text>
 
   <rect x="30" y="210" width="900" height="140" class="box"/>
-  <text x="480" y="232" text-anchor="middle" class="head">M-RoPE: 一个位置，三条轴</text>
+  <text x="480" y="232" text-anchor="middle" class="head">M-RoPE：一个位置，三条轴</text>
 
   <rect x="60" y="250" width="260" height="80" class="hot"/>
-  <text x="190" y="270" text-anchor="middle" class="step">时间 band</text>
-  <text x="190" y="288" text-anchor="middle" class="small">16 dims（共 48）</text>
+  <text x="190" y="270" text-anchor="middle" class="step">时间区段</text>
+  <text x="190" y="288" text-anchor="middle" class="small">16 维（共 48）</text>
   <text x="190" y="304" text-anchor="middle" class="small">t=0 图像，t=frame 视频</text>
   <text x="190" y="322" text-anchor="middle" class="small">按 t * theta_i 旋转</text>
 
   <rect x="340" y="250" width="260" height="80" class="cool"/>
-  <text x="470" y="270" text-anchor="middle" class="step">高度 band</text>
-  <text x="470" y="288" text-anchor="middle" class="small">16 dims</text>
-  <text x="470" y="304" text-anchor="middle" class="small">h = patch row index</text>
+  <text x="470" y="270" text-anchor="middle" class="step">高度区段</text>
+  <text x="470" y="288" text-anchor="middle" class="small">16 维</text>
+  <text x="470" y="304" text-anchor="middle" class="small">h = patch 行索引</text>
   <text x="470" y="322" text-anchor="middle" class="small">按 h * theta_i 旋转</text>
 
   <rect x="620" y="250" width="280" height="80" class="cold"/>
-  <text x="760" y="270" text-anchor="middle" class="step">宽度 band</text>
-  <text x="760" y="288" text-anchor="middle" class="small">16 dims</text>
-  <text x="760" y="304" text-anchor="middle" class="small">w = patch column index</text>
+  <text x="760" y="270" text-anchor="middle" class="step">宽度区段</text>
+  <text x="760" y="288" text-anchor="middle" class="small">16 维</text>
+  <text x="760" y="304" text-anchor="middle" class="small">w = patch 列索引</text>
   <text x="760" y="322" text-anchor="middle" class="small">按 w * theta_i 旋转</text>
 
   <rect x="30" y="370" width="900" height="160" class="box"/>
-  <text x="480" y="392" text-anchor="middle" class="head">dynamic FPS: tokens per video = duration * fps * tokens_per_frame</text>
+  <text x="480" y="392" text-anchor="middle" class="head">动态 FPS：每个视频的 Token = duration * fps * tokens_per_frame</text>
 
   <rect x="60" y="410" width="200" height="100" class="reg"/>
   <text x="160" y="430" text-anchor="middle" class="step">高运动</text>
   <text x="160" y="448" text-anchor="middle" class="small">网球、烹饪</text>
   <text x="160" y="464" text-anchor="middle" class="small">4-8 FPS</text>
   <text x="160" y="480" text-anchor="middle" class="small">事件密集</text>
-  <text x="160" y="496" text-anchor="middle" class="small">~19k Token / 30s</text>
+  <text x="160" y="496" text-anchor="middle" class="small">约 19k Token / 30 秒</text>
 
   <rect x="280" y="410" width="200" height="100" class="cool"/>
   <text x="380" y="430" text-anchor="middle" class="step">中等运动</text>
   <text x="380" y="448" text-anchor="middle" class="small">对话、演示</text>
   <text x="380" y="464" text-anchor="middle" class="small">2-4 FPS</text>
   <text x="380" y="480" text-anchor="middle" class="small">均衡</text>
-  <text x="380" y="496" text-anchor="middle" class="small">~10k Token / 30s</text>
+  <text x="380" y="496" text-anchor="middle" class="small">约 10k Token / 30 秒</text>
 
   <rect x="500" y="410" width="200" height="100" class="cold"/>
   <text x="600" y="430" text-anchor="middle" class="step">低运动</text>
   <text x="600" y="448" text-anchor="middle" class="small">安防、讲座</text>
   <text x="600" y="464" text-anchor="middle" class="small">0.5-1 FPS</text>
   <text x="600" y="480" text-anchor="middle" class="small">长时域</text>
-  <text x="600" y="496" text-anchor="middle" class="small">~24k Token / 10min</text>
+  <text x="600" y="496" text-anchor="middle" class="small">约 24k Token / 10 分钟</text>
 
   <rect x="720" y="410" width="200" height="100" class="hot"/>
-  <text x="820" y="430" text-anchor="middle" class="step">agent replay</text>
+  <text x="820" y="430" text-anchor="middle" class="step">Agent 回放</text>
   <text x="820" y="448" text-anchor="middle" class="small">UI 录屏</text>
   <text x="820" y="464" text-anchor="middle" class="small">2-4 FPS</text>
-  <text x="820" y="480" text-anchor="middle" class="small">JSON output mode</text>
-  <text x="820" y="496" text-anchor="middle" class="small">click/scroll calls</text>
+  <text x="820" y="480" text-anchor="middle" class="small">JSON 输出模式</text>
+  <text x="820" y="496" text-anchor="middle" class="small">click/scroll 调用</text>
 </svg>
