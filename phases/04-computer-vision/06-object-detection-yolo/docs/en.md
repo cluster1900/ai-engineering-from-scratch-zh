@@ -135,6 +135,10 @@ Accuracy 不能直接迁移到 detection。下面四个数字可以：
 
 四个都要报告。如果一个 detector 在 mAP@0.5 上很强，但在 mAP@0.5:0.95 上很弱，说明定位大致正确但不够紧；用更好的 box-regression loss 修复。如果 detector precision 高、recall 低，说明它过于保守；降低 confidence threshold 或提高 objectness 权重。
 
+```figure
+object-detection-nms
+```
+
 ## 构建它
 
 ### 步骤 1： IoU

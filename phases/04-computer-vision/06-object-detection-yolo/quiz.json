@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "一个 YOLO detector 使用 13x13 grid、每个 cell 3 个 anchors、20 个 classes，生成 shape 为 (N, 13, 13, 3, 25) 的 head output。为什么最后一个 dimension 是 25？",
-      "options": ["4 个 box coords + 1 个 bias + 20 个 classes", "4 个 box coords + 1 个 objectness + 20 个 classes = 5 + C", "25 是 COCO 中的 classes 数量", "这是 padding 到下一个 2 的幂"],
-      "correct": 1,
+      "options": [
+        "这是 padding 到下一个 2 的幂",
+        "25 是 COCO 中的 classes 数量",
+        "4 个 box coords + 1 个 bias + 20 个 classes",
+        "4 个 box coords + 1 个 objectness + 20 个 classes = 5 + C"
+      ],
+      "correct": 3,
       "explanation": "每个 anchor 会输出四个 box Regression targets (tx, ty, tw, th)、一个 objectness score，以及 C 个 class logits。对于 YOLO-style detectors，每个 anchor 的 dimension 始终是 5 + C。在有 80 个 classes 的 COCO 上是 85；在有 20 个 classes 的 PASCAL VOC 上是 25。"
     },
     {
       "stage": "pre",
       "question": "为什么 YOLO 会先通过 sigmoid 预测 tx, ty，再加上 grid cell？",
-      "options": ["为了将它们归一化到 [0, 1]，使 centre 保持在 cell 内，不能逃逸到相邻 cell 的 territory", "sigmoid 是 convolution 必需的", "为了防止 training 期间出现 NaN", "为了让 box 更大"],
-      "correct": 0,
+      "options": [
+        "sigmoid 是 convolution 必需的",
+        "为了防止 training 期间出现 NaN",
+        "为了将它们归一化到 [0, 1]，使 centre 保持在 cell 内，不能逃逸到相邻 cell 的 territory",
+        "为了让 box 更大"
+      ],
+      "correct": 2,
       "explanation": "sigmoid(tx) 位于 [0, 1]，因此 (sigmoid(tx) + cell_x) * stride 会把 centre 放在 column cell_x 这个 cell 内的某个位置。这个约束让每个 cell 只负责 centre 落在自身区域内的 objects，而这正是让 grid-based training 稳定的假设。"
     },
     {
       "stage": "post",
       "question": "你的 detector 在 head 之后围绕单个 object 预测了 15 个 boxes。你应用 iou_threshold=0.45 的 NMS，并得到 1 个 box。NMS 做了什么？",
-      "options": ["它平均了全部 15 个 predictions", "它按 score 对 15 个 boxes 排序，保留 highest-scoring 的那个，并删除所有与它的 IoU 超过 0.45 的 boxes；另外 14 个都与胜出的 box 在阈值以上重叠，所以只剩下一个", "它随机选了一个 survivor", "它以几何方式合并了 boxes"],
+      "options": [
+        "它平均了全部 15 个 predictions",
+        "它按 score 对 15 个 boxes 排序，保留 highest-scoring 的那个，并删除所有与它的 IoU 超过 0.45 的 boxes；另外 14 个都与胜出的 box 在阈值以上重叠，所以只剩下一个",
+        "它随机选了一个 survivor",
+        "它以几何方式合并了 boxes"
+      ],
       "correct": 1,
       "explanation": "NMS 是一种 greedy deduplication：按 score 排序，保留最高的那个，移除所有靠近它的项（IoU > threshold），然后重复。它不会 merge 或 average。这就是为什么 detection latency benchmarks 会包含 NMS time，也解释了为什么 RT-DETR 这类 modern models 会用 learned alternative 来替代它。"
     },
     {
       "stage": "post",
       "question": "你的 model 的 mAP@0.5 = 0.75，但 mAP@0.5:0.95 = 0.32。最准确的解释是什么？",
-      "options": ["model 坏了；mAP@0.5 必须等于 mAP@0.5:0.95", "model 找到了正确的 objects，但它的 boxes 定位不够紧密 — 在 IoU 0.5 下还可以，在 IoU 0.7+ 下失败", "dataset 的 classes 太多", "inference threshold 太高"],
+      "options": [
+        "dataset 的 classes 太多",
+        "model 找到了正确的 objects，但它的 boxes 定位不够紧密 — 在 IoU 0.5 下还可以，在 IoU 0.7+ 下失败",
+        "model 坏了；mAP@0.5 必须等于 mAP@0.5:0.95",
+        "inference threshold 太高"
+      ],
       "correct": 1,
       "explanation": "mAP@0.5 对 localisation 比较宽松；mAP@0.5:0.95 会在严格到 0.95 的 thresholds 上取平均。两者差距很大意味着 boxes 大致在正确位置，但不够贴合。典型修复方式：CIoU/DIoU box Loss、更高分辨率的 features、更适配数据集的 anchor sets。"
     },
     {
       "stage": "post",
       "question": "YOLO Loss weights lambda_coord=5.0 和 lambda_noobj=0.5 大致对应原始论文。这些比例编码了什么？",
-      "options": ["GPU memory trade-offs", "大多数 cells 没有 object，因此 no-object cells 必须被 downweighted，否则它们会主导 total Loss；同时 box Regression 是比 cross-entropy 更小尺度的 Loss，因此需要 upweighting 才能产生可比较的 Gradient", "作者从未解释过的随机选择", "每个 cell 的 anchors 数量"],
-      "correct": 1,
+      "options": [
+        "大多数 cells 没有 object，因此 no-object cells 必须被 downweighted，否则它们会主导 total Loss；同时 box Regression 是比 cross-entropy 更小尺度的 Loss，因此需要 upweighting 才能产生可比较的 Gradient",
+        "GPU memory trade-offs",
+        "每个 cell 的 anchors 数量",
+        "作者从未解释过的随机选择"
+      ],
+      "correct": 0,
       "explanation": "在 13x13 grid 中有 169 个 cells，通常只有一到五个 objects。160 多个 empty cells 都会贡献 objectness Loss；如果没有较小的 lambda_noobj，它们会淹没 positive signal。相反，MSE box Loss 在数值上比 cross-entropy 小，所以 lambda_coord > 1 会让它的 Gradient 保持可比较。两个比例都是为了平衡各 component 的 Gradient magnitudes。"
     }
-  ]
+  ],
+  "title": null
 }
