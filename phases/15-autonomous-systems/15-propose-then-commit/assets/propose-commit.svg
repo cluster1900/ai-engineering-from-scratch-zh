@@ -15,31 +15,31 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">Propose → Surface → Commit → Verify（四项必需）</text>
+  <text x="440" y="26" text-anchor="middle" class="title">提议 → 呈现 → 提交 → 验证（四项必需）</text>
 
   <rect x="40" y="50" width="800" height="460" class="box"/>
 
   <!-- Phases -->
   <rect x="60" y="80" width="170" height="90" class="cool"/>
-  <text x="145" y="104" text-anchor="middle" class="label">1. propose</text>
+  <text x="145" y="104" text-anchor="middle" class="label">1. 提议</text>
   <text x="76" y="126" class="small">意图 + lineage +</text>
   <text x="76" y="142" class="small">权限 + blast +</text>
   <text x="76" y="158" class="small">rollback + 幂等性</text>
 
   <rect x="250" y="80" width="170" height="90" class="cold"/>
-  <text x="335" y="104" text-anchor="middle" class="label">2. surface</text>
+  <text x="335" y="104" text-anchor="middle" class="label">2. 呈现</text>
   <text x="266" y="126" class="small">持久存储</text>
   <text x="266" y="142" class="small">（PostgreSQL, Redis,</text>
   <text x="266" y="158" class="small">Durable Object）</text>
 
   <rect x="440" y="80" width="170" height="90" class="cool"/>
-  <text x="525" y="104" text-anchor="middle" class="label">3. commit</text>
-  <text x="456" y="126" class="small">challenge-and-response</text>
-  <text x="456" y="142" class="small">checklist，明确 ack</text>
+  <text x="525" y="104" text-anchor="middle" class="label">3. 提交</text>
+  <text x="456" y="126" class="small">质询-响应</text>
+  <text x="456" y="142" class="small">清单，明确 ack</text>
   <text x="456" y="158" class="small">幂等 re-exec</text>
 
   <rect x="630" y="80" width="170" height="90" class="cool"/>
-  <text x="715" y="104" text-anchor="middle" class="label">4. verify</text>
+  <text x="715" y="104" text-anchor="middle" class="label">4. 验证</text>
   <text x="646" y="126" class="small">重读目标</text>
   <text x="646" y="142" class="small">确认副作用</text>
   <text x="646" y="158" class="small">不匹配则告警</text>
@@ -51,11 +51,11 @@
   <!-- Rubber stamp vs checklist -->
   <rect x="60" y="200" width="360" height="140" class="hot"/>
   <text x="240" y="224" text-anchor="middle" class="label">走过场审批（审计失败）</text>
-  <text x="76" y="248" class="content">一个“Approve?”按钮</text>
+  <text x="76" y="248" class="content">一个“批准？”按钮</text>
   <text x="76" y="264" class="content">未展示结构化 metadata</text>
-  <text x="76" y="280" class="content">reviewer 1s 内点击</text>
+  <text x="76" y="280" class="content">审核者 1s 内点击</text>
   <text x="76" y="296" class="content">审批不具预测性</text>
-  <text x="76" y="320" class="small">EU AI Act Article 14 明确要求：有效人工监督</text>
+  <text x="76" y="320" class="small">EU AI Act 第 14 条明确要求：有效人工监督</text>
   <text x="76" y="334" class="small">排除走过场模式。</text>
 
   <rect x="460" y="200" width="360" height="140" class="cool"/>
@@ -63,16 +63,16 @@
   <text x="476" y="248" class="content">[ ] 我理解这会触碰什么</text>
   <text x="476" y="264" class="content">[ ] 我已核查 blast radius</text>
   <text x="476" y="280" class="content">[ ] 我有 rollback 计划</text>
-  <text x="476" y="296" class="content">三项全选后才启用 Approve</text>
+  <text x="476" y="296" class="content">三项全选后才启用“批准”</text>
   <text x="476" y="320" class="small">记录于 Anthropic 和 MS 合规文档；</text>
-  <text x="476" y="334" class="small">EU AI Act Article 14 要求高风险系统具备。</text>
+  <text x="476" y="334" class="small">EU AI Act 第 14 条要求高风险系统具备。</text>
 
   <!-- Idempotency detail -->
   <rect x="60" y="370" width="760" height="120" class="cold"/>
-  <text x="440" y="394" text-anchor="middle" class="label">idempotency key = hash(thread_id, action, payload)</text>
+  <text x="440" y="394" text-anchor="middle" class="label">幂等键 = hash(thread_id, action, payload)</text>
   <text x="80" y="416" class="content">propose(P) + propose(P) -&gt; 同一记录（无重复）</text>
   <text x="80" y="432" class="content">commit(k) + commit(k) -&gt; 只执行一次，后续 commit 为 no-op</text>
-  <text x="80" y="448" class="content">瞬时失败后 retry：Stripe/AWS 风格幂等性，复用于 agent 审批</text>
+  <text x="80" y="448" class="content">瞬时失败后 retry：Stripe/AWS 风格幂等性，复用于 Agent 审批</text>
   <text x="80" y="468" class="content">key 中的 wall-clock 是日志 timestamp，不是 idempotency key</text>
-  <text x="80" y="484" class="small">LangGraph interrupt() · MS RequestInfoEvent · Cloudflare waitForApproval() — 同一形态，不同名称</text>
+  <text x="80" y="484" class="small">LangGraph interrupt() · MS RequestInfoEvent · Cloudflare waitForApproval() — 形态相同，名称不同</text>
 </svg>

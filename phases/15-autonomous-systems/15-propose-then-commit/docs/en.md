@@ -66,6 +66,10 @@ HITL 的默认 UI（“Approve” / “Reject” buttons）会产生快速 appro
 
 Article 14 要求欧盟高风险 AI systems 具备有效 human oversight。“Effective” 不是装饰性要求。监管语言明确排除 rubber-stamp patterns。Microsoft Agent Governance Toolkit compliance docs 中，带 challenge-and-response 的 propose-then-commit 是能经受 Article 14 审查的形态。
 
+```figure
+mx-propose-then-commit
+```
+
 ## 使用它
 
 `code/main.py` 用 stdlib Python 实现了一个 propose-then-commit state machine。Durable store 是 JSON file。Idempotency key 是 (thread_id, action_signature) 的 hash。driver 模拟三种情况：干净的 approval flow、transient failure 后 retry（必须不能 double-execute），以及 rubber-stamp default 与 challenge-and-response flow 的对比。
