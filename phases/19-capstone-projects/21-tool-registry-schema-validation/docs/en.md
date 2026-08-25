@@ -14,6 +14,10 @@
 - 在没有显式 override 的情况下拒绝重复注册，因为静默覆盖正是生产 tool catalogs 漂移的原因。
 - 保持 validator 纯净（无 I/O、无时间、无 globals），这样它可以在 replay log 上重新运行。
 
+```figure
+cf-registry-validate
+```
+
 ## 为什么 registry 要先于 tool
 
 2026 年的 coding agent 拥有的 registered tools，比 model 能放进单个 context window 的还多。一个非平凡的 harness 会注册两百个 tools，并在任意一轮中暴露十到四十个。registry 是这些问题的唯一事实来源：“有哪些 tools 存在”、“它们的参数是什么形状”、“我应该调用哪个 handler”。一旦这三个答案被固定，harness 的其余部分就可以停止猜测。
