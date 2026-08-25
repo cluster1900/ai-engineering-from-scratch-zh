@@ -88,6 +88,10 @@ Voyager 的 curriculum module 会根据 agent 已拥有什么、还没有做过�
 - **Composed-skill drift。** 父 Skill 依赖一个后来被改进的子 Skill。给 Skill 做版本化；固定到 v1 的父 Skill 不会自动拿到 v3。
 - **Retrieval quality。** 随着 Skill 库增长到几百个以上，基于 Skill description 的 Vector retrieval 会退化。用 tag filter 和硬约束补充（“only skills with `category=tooling`”）。
 
+```figure
+voyager-skills
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个 stdlib Skill 库：

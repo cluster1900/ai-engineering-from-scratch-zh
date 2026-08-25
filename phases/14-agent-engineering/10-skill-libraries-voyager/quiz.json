@@ -7,35 +7,35 @@
       "question": "Voyager 把什么视为 action space？",
       "options": [
         "原始 Minecraft commands",
-        "存储、检索并组合的可执行 code（JavaScript functions）",
+        "Reinforcement Learning Q-values",
         "仅 Text prompts",
-        "Reinforcement Learning Q-values"
+        "存储、检索并组合的可执行 code（JavaScript functions）"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Voyager 的贡献是把 code 作为 action：skills 是程序，而不是原始 commands。"
     },
     {
       "stage": "pre",
       "question": "哪三个组件定义了一个 Voyager agent？",
       "options": [
+        "Retriever、generator、ranker",
         "Encoder、decoder、value head",
         "Automatic curriculum、skill library、iterative prompting",
-        "Planner、executor、judge",
-        "Retriever、generator、ranker"
+        "Planner、executor、judge"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Voyager 围绕 curriculum、skill library 和 iterative prompting 来组织 agent。"
     },
     {
       "stage": "check",
       "question": "一次 skill 执行尝试会返回哪三种信号？",
       "options": [
-        "Pass、fail、retry",
         "成功、错误（带 stack trace）、自验证失败",
-        "Green、yellow、red",
-        "Heartbeat、ack、nack"
+        "Pass、fail、retry",
+        "Heartbeat、ack、nack",
+        "Green、yellow、red"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Voyager 的 iterative prompting 机制由这三种信号驱动，并把它们折回到下一个版本中。"
     },
     {
@@ -54,24 +54,24 @@
       "stage": "check",
       "question": "哪一个 2026 产品最清晰地对应本课中的 Voyager skill？",
       "options": [
-        "OpenAI fine-tuning",
         "Claude Agent SDK skills：具名、可检索的 code 加按需加载的 instructions",
+        "AWS Lambda layers",
         "Pinecone indices",
-        "AWS Lambda layers"
+        "OpenAI fine-tuning"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Agent SDK skills 对应 Voyager 的具名、可检索、可组合 code pattern。"
     },
     {
       "stage": "post",
       "question": "为什么本课建议 skill library 在写入时进行 dedup？",
       "options": [
-        "磁盘很贵",
         "如果没有 dedup，同一个 skill 会以略有不同的 descriptions 被添加很多次；检索应该返回一个 canonical version",
         "Providers 会拒绝重复项",
-        "Git 会阻止重复项"
+        "Git 会阻止重复项",
+        "磁盘很贵"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "近似重复的 descriptions 会折叠为一个 canonical skill，从而让检索保持干净。"
     },
     {
