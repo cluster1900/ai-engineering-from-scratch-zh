@@ -54,16 +54,16 @@
   <text x="60" y="310" class="small">· DeepSeek-R1 上 30x；GB300 NVL72 上 MoE 50x</text>
 
   <rect x="500" y="210" width="420" height="110" class="box"/>
-  <text x="710" y="232" text-anchor="middle" class="head">llm-d (Red Hat + AWS)</text>
-  <text x="520" y="256" class="small">· 每角色 Kubernetes-native Services</text>
+  <text x="710" y="232" text-anchor="middle" class="head">llm-d（Red Hat + AWS）</text>
+  <text x="520" y="256" class="small">· 每个角色使用 Kubernetes-native Services</text>
   <text x="520" y="274" class="small">· packDomain: rack 保持 KV 局部性</text>
-  <text x="520" y="292" class="small">· 分角色 HPA (队列 / KV util)</text>
-  <text x="520" y="310" class="small">· 0.5: 分层 KV、LoRA routing、UCCL</text>
+  <text x="520" y="292" class="small">· 按角色配置 HPA（队列 / KV 利用率）</text>
+  <text x="520" y="310" class="small">· 0.5：分层 KV、LoRA routing、UCCL</text>
 
   <rect x="40" y="340" width="880" height="110" class="box"/>
   <text x="480" y="362" text-anchor="middle" class="head">何时划算</text>
-  <text x="480" y="386" text-anchor="middle" class="step">prompts &gt; 512 tokens 且 outputs &gt; 200 tokens</text>
-  <text x="480" y="404" text-anchor="middle" class="step">MoE serving (DeepSeek-V3，未来 GPT-5 variants) — expert routing 双重收益</text>
-  <text x="480" y="424" text-anchor="middle" class="step">真实案例：同 workload、同 SLA、无新硬件，$2M → $1.2M/年</text>
+  <text x="480" y="386" text-anchor="middle" class="step">prompts &gt; 512 tokens 且输出 &gt; 200 tokens</text>
+  <text x="480" y="404" text-anchor="middle" class="step">MoE serving（DeepSeek-V3，未来 GPT-5 variants）— expert routing 双重收益</text>
+  <text x="480" y="424" text-anchor="middle" class="step">真实案例：同一 workload、同一 SLA、无新硬件，$2M → $1.2M/年</text>
   <text x="480" y="444" text-anchor="middle" class="caption">短 prompt：传输成本占主导，不要 disaggregate</text>
 </svg>

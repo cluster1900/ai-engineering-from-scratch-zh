@@ -7,32 +7,32 @@
       "question": "为什么 prefill 和 decode 需要不同的最优 GPU 配置？",
       "options": [
         "Prefill 必须在 AMD 上运行，decode 必须在 NVIDIA 上运行",
-        "Prefill 在 matmul throughput 上是 compute-bound；decode 在 HBM bandwidth 上是 memory-bound，因此把它们 colocate 会浪费其中一种资源",
         "它们使用不同的 model weights",
+        "Prefill 在 matmul throughput 上是 compute-bound；decode 在 HBM bandwidth 上是 memory-bound，因此把它们 colocate 会浪费其中一种资源",
         "Decode 需要更多 network bandwidth"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "NVIDIA Dynamo 使用什么 transport 在 prefill pool 和 decode pool 之间移动 KV cache？",
       "options": [
-        "普通 HTTP",
         "仅 gRPC bidi",
-        "NFS 上的共享 filesystem",
-        "NIXL（可用时使用 RDMA/InfiniBand，TCP fallback）"
+        "NIXL（可用时使用 RDMA/InfiniBand，TCP fallback）",
+        "普通 HTTP",
+        "NFS 上的共享 filesystem"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "根据本课，disaggregation 在什么时候不划算？",
       "options": [
+        "带 8K+ prefix 的 RAG",
         "Blackwell 上的 MoE workload",
         "带共享 system prompt 的 multi-tenant serving",
-        "带 8K+ prefix 的 RAG",
         "Prompt 低于 512 tokens 且 output 低于 200 tokens，此时 KV transfer tax 会压过收益"
       ],
       "correct": 3,
@@ -54,10 +54,10 @@
       "stage": "post",
       "question": "哪些 Dynamo 组件会为某个 SLO 自动调优 prefill:decode ratio？",
       "options": [
-        "Sidecar proxy 和 Envoy filter",
+        "Marlin kernels",
         "Planner Profiler 和 SLA Planner",
         "Cluster Autoscaler",
-        "Marlin kernels"
+        "Sidecar proxy 和 Envoy filter"
       ],
       "correct": 1,
       "explanation": ""
