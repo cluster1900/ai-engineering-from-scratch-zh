@@ -13,15 +13,15 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">REINFORCE — 对期望 return 做 gradient ascent</text>
+  <text x="450" y="30" text-anchor="middle" class="title">REINFORCE — 对期望回报执行 Gradient ascent</text>
 
   <rect x="40" y="60" width="820" height="70" class="box"/>
-  <text x="60" y="85" class="label">policy gradient 定理</text>
+  <text x="60" y="85" class="label">Policy Gradient 定理</text>
   <text x="60" y="108" class="content">grad J(theta) = E_pi [ sum_t  G_t  *  grad_theta log pi_theta(a_t | s_t) ]</text>
 
   <rect x="40" y="150" width="820" height="80" class="hot"/>
   <text x="60" y="175" class="label">一次 rollout，一次更新</text>
-  <text x="60" y="198" class="content">roll out tau ~ pi_theta，计算 returns G_0, G_1, ..., G_T</text>
+  <text x="60" y="198" class="content">展开 tau ~ pi_theta，计算 returns G_0, G_1, ..., G_T</text>
   <text x="60" y="218" class="content">for each (s_t, a_t):  theta += lr * (G_t - b(s_t)) * grad log pi_theta(a_t | s_t)</text>
 
   <rect x="40" y="250" width="260" height="140" class="box"/>
@@ -45,5 +45,5 @@
   <text x="620" y="340" class="content">+ entropy bonus</text>
   <text x="730" y="370" text-anchor="middle" class="caption">on-policy，批量</text>
 
-  <text x="450" y="430" text-anchor="middle" class="caption">PPO = REINFORCE + clipped IS ratio  ·  GRPO = REINFORCE + group-relative baseline  ·  DPO = REINFORCE without sampling</text>
+  <text x="450" y="430" text-anchor="middle" class="caption">PPO = REINFORCE + clipped IS ratio · GRPO = REINFORCE + group-relative baseline · DPO = REINFORCE，无需采样</text>
 </svg>
