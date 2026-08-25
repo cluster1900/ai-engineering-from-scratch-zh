@@ -66,6 +66,10 @@ DGM 论文记录了一种 failure mode，RSPs（Lesson 19）专门称之为 "und
 
 DGM 比 AlphaEvolve 高一阶：self-modification 的目标不是一个程序，而是一个 agent（tools、prompts、routing、scaffolding）。Lesson 6（automated alignment research）再高一阶，是修改 research pipelines 的 agents，而不只是 scaffolding。每向上扩大一个 scope，capability 和 attack surface 都会增加。Lessons 13-16 覆盖对应的 controls。
 
+```figure
+dgm-archive
+```
+
 ## 使用它
 
 `code/main.py` 在一个 toy benchmark 上模拟 DGM 风格的循环，其中一个很小的 "agent" 会从固定 tool library 中组合 operators。循环会提议 tool-combination 变更；benchmark 会在 held-out problems 上给 agent 的表现评分。

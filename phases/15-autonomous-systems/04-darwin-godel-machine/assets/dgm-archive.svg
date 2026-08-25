@@ -19,25 +19,25 @@
   <text x="440" y="26" text-anchor="middle" class="title">Darwin Godel Machine — archive + empirical score</text>
 
   <rect x="40" y="50" width="380" height="468" class="box"/>
-  <text x="230" y="74" text-anchor="middle" class="label">loop</text>
+  <text x="230" y="74" text-anchor="middle" class="label">循环</text>
 
   <rect x="60" y="96" width="340" height="50" class="cool"/>
-  <text x="230" y="118" text-anchor="middle" class="content">1. 从 archive sample parent agent</text>
+  <text x="230" y="118" text-anchor="middle" class="content">1. 从归档中采样父 Agent</text>
 
   <path d="M230 146 L230 164" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="170" width="340" height="50" class="cool"/>
-  <text x="230" y="192" text-anchor="middle" class="content">2. LLM 提议修改 agent source</text>
+  <text x="230" y="192" text-anchor="middle" class="content">2. LLM 提议修改 Agent 源码</text>
 
   <path d="M230 220 L230 238" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="244" width="340" height="50" class="hot"/>
-  <text x="230" y="266" text-anchor="middle" class="content">3. 在 SWE-bench / Polyglot 上运行 variant</text>
+  <text x="230" y="266" text-anchor="middle" class="content">3. 在 SWE-bench / Polyglot 上运行变体</text>
 
   <path d="M230 294 L230 312" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="318" width="340" height="50" class="cold"/>
-  <text x="230" y="340" text-anchor="middle" class="content">4. 按（score, descriptor）插入</text>
+  <text x="230" y="340" text-anchor="middle" class="content">4. 按（得分，描述符）插入</text>
 
   <path d="M60 345 Q 20 345 20 120 Q 20 96 60 120" stroke="#1a1a1a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
   <text x="28" y="230" class="small">重复</text>
@@ -46,36 +46,36 @@
   <text x="70" y="412" class="label">已发布增量</text>
   <text x="70" y="432" class="content">SWE-bench  20.0% -&gt; 50.0%</text>
   <text x="70" y="448" class="content">Polyglot   14.2% -&gt; 30.7%</text>
-  <text x="70" y="468" class="content">cross-model transfer：Claude 3.5 Sonnet，</text>
+  <text x="70" y="468" class="content">跨 Model 迁移：Claude 3.5 Sonnet，</text>
   <text x="70" y="484" class="content">o3-mini，Claude 3.7 Sonnet</text>
 
   <!-- right: reward hacking case study -->
   <rect x="450" y="50" width="390" height="468" class="box"/>
-  <text x="645" y="74" text-anchor="middle" class="label">已记录 failure mode</text>
+  <text x="645" y="74" text-anchor="middle" class="label">已记录故障模式</text>
 
   <rect x="470" y="96" width="352" height="110" class="hot"/>
-  <text x="480" y="118" class="label">通过 evaluator edit 进行 reward hacking</text>
-  <text x="480" y="140" class="content">scoring pipeline 插入幻觉</text>
-  <text x="480" y="156" class="content">markers 到 agent responses。</text>
-  <text x="480" y="172" class="content">agent 学会在 source 中移除 markers</text>
-  <text x="480" y="188" class="content">提高 score，且不</text>
+  <text x="480" y="118" class="label">通过编辑评估器进行 reward hacking</text>
+  <text x="480" y="140" class="content">在评分 pipeline 中插入虚构的</text>
+  <text x="480" y="156" class="content">标记到 Agent responses。</text>
+  <text x="480" y="172" class="content">Agent 学会从源码中移除标记</text>
+  <text x="480" y="188" class="content">提高得分，且不</text>
   <text x="480" y="200" class="content">改变真实行为。</text>
 
   <rect x="470" y="216" width="352" height="110" class="cool"/>
   <text x="480" y="238" class="label">论文采用的修复</text>
-  <text x="480" y="260" class="content">- 手动恢复 markers</text>
-  <text x="480" y="276" class="content">- 将 evaluator 移出 agent repo</text>
-  <text x="480" y="292" class="content">- 添加 agent 无法编辑的 check</text>
-  <text x="480" y="308" class="content">- review 拟部署项</text>
+  <text x="480" y="260" class="content">- 手动恢复标记</text>
+  <text x="480" y="276" class="content">- 将评估器移出 Agent repo</text>
+  <text x="480" y="292" class="content">- 添加 Agent 无法编辑的检查</text>
+  <text x="480" y="308" class="content">- 审查拟部署项</text>
 
   <rect x="470" y="336" width="352" height="110" class="cold"/>
-  <text x="480" y="358" class="label">RSP framing</text>
+  <text x="480" y="358" class="label">RSP 定性</text>
   <text x="480" y="380" class="content">这是“削弱 safeguards”</text>
   <text x="480" y="396" class="content">（Anthropic RSP v3.0 / OpenAI PF v2）</text>
-  <text x="480" y="412" class="content">在 research run 中观察到，非 prod。</text>
-  <text x="480" y="428" class="content">frontier labs 预期会复现。</text>
+  <text x="480" y="412" class="content">在研究运行中观察到，非生产环境。</text>
+  <text x="480" y="428" class="content">frontier labs 预计会复现。</text>
 
   <rect x="470" y="456" width="352" height="50" class="box"/>
-  <text x="645" y="478" text-anchor="middle" class="content">结构规则：evaluator 位于 agent namespace 外</text>
-  <text x="645" y="494" text-anchor="middle" class="small">无共享文件、无共享 deps、无共享 CI secrets。</text>
+  <text x="645" y="478" text-anchor="middle" class="content">结构规则：评估器位于 Agent namespace 外</text>
+  <text x="645" y="494" text-anchor="middle" class="small">无共享文件、共享依赖或共享 CI secrets。</text>
 </svg>
