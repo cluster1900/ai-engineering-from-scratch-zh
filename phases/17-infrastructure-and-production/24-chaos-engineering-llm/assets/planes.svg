@@ -13,7 +13,7 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="24" text-anchor="middle" class="title">LLM chaos engineering —— 四个平面 + 反馈循环</text>
+  <text x="480" y="24" text-anchor="middle" class="title">LLM chaos engineering——四个平面 + 反馈循环</text>
 
   <rect x="40" y="50" width="220" height="180" class="control"/>
   <text x="150" y="72" text-anchor="middle" class="head">control plane</text>
@@ -25,10 +25,10 @@
   <text x="150" y="200" text-anchor="middle" class="caption">调度、参数、节奏</text>
 
   <rect x="280" y="50" width="220" height="180" class="target"/>
-  <text x="390" y="72" text-anchor="middle" class="head">target plane</text>
-  <text x="390" y="92" text-anchor="middle" class="step">services + infra + data</text>
+  <text x="390" y="72" text-anchor="middle" class="head">目标平面</text>
+  <text x="390" y="92" text-anchor="middle" class="step">服务 + 基础设施 + 数据</text>
   <text x="300" y="116" class="small">· pods、nodes、LB</text>
-  <text x="300" y="134" class="small">· 数据存储、vector DB</text>
+  <text x="300" y="134" class="small">· 数据存储、Vector DB</text>
   <text x="300" y="152" class="small">· LLM 网关</text>
   <text x="300" y="170" class="small">· 上游提供商</text>
 
@@ -39,11 +39,11 @@
   <text x="540" y="134" class="small">· blast-radius 上限</text>
   <text x="540" y="152" class="small">· 抑制窗口</text>
   <text x="540" y="170" class="small">· trace-ID 标记</text>
-  <text x="540" y="188" class="small">· kill switch</text>
+  <text x="540" y="188" class="small">· 终止开关</text>
 
   <rect x="760" y="50" width="160" height="180" class="obs"/>
   <text x="840" y="72" text-anchor="middle" class="head">可观测性</text>
-  <text x="840" y="92" text-anchor="middle" class="step">traces + metrics</text>
+  <text x="840" y="92" text-anchor="middle" class="step">追踪 + 指标</text>
   <text x="780" y="116" class="small">· 区分</text>
   <text x="780" y="134" class="small">chaos 引发与</text>
   <text x="780" y="152" class="small">自然故障</text>
@@ -54,11 +54,11 @@
   <text x="60" y="308" class="step">1. 内存过载（KV 抢占风暴）</text>
   <text x="60" y="326" class="step">2. 网络故障（切断网关 ↔ 提供商）</text>
   <text x="60" y="344" class="step">3. 提供商故障（100% 429）</text>
-  <text x="500" y="308" class="step">4. 异常 prompt（Tokenizer bomb）</text>
+  <text x="500" y="308" class="step">4. 异常 Prompt（Tokenizer bomb）</text>
   <text x="500" y="326" class="step">5. KV 驱逐风暴（强制级联 re-prefill）</text>
 
   <rect x="40" y="380" width="880" height="80" class="box"/>
   <text x="480" y="402" text-anchor="middle" class="head">节奏</text>
   <text x="480" y="424" text-anchor="middle" class="step">每周 canary + SLO 复盘 · 每月 game day + postmortem · 每季审计 + 依赖图</text>
-  <text x="480" y="444" text-anchor="middle" class="caption">没有 SLI/SLO + 可观测性 + 回滚 + runbooks + on-call，就别上 prod</text>
+  <text x="480" y="444" text-anchor="middle" class="caption">没有 SLI/SLO + 可观测性 + 回滚 + runbooks + on-call，就别上生产环境</text>
 </svg>

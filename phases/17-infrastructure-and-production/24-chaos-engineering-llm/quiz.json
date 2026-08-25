@@ -7,45 +7,45 @@
       "question": "本课要求在生产环境运行混沌之前具备哪五个前置条件？",
       "options": [
         "Slack channel、sticker pack、mascot、hashtag、blog post",
-        "SLI/SLO、observability、automated rollback、structured runbooks、on-call",
         "仅 Vector database",
+        "SLI/SLO、observability、automated rollback、structured runbooks、on-call",
         "三个 frontier models"
-      ],
-      "correct": 1,
-      "explanation": ""
-    },
-    {
-      "stage": "check",
-      "question": "混沌架构包含哪四个平面，以及哪个 feedback loop？",
-      "options": [
-        "Ingest、transform、store、serve",
-        "Train、eval、deploy、archive",
-        "Control、target、safety、observability — 并反馈到 SLO adjustments",
-        "Frontend、backend、mobile、web"
       ],
       "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
-      "question": "burn-rate alert guardrail 在混沌实验期间做什么？",
+      "question": "混沌架构包含哪四个平面，以及哪个 feedback loop？",
       "options": [
-        "禁用 observability",
-        "自动将实验提升到生产环境",
-        "加快实验速度",
-        "当每日 error-budget burn 超出预期约 2x 时暂停实验"
+        "Frontend、backend、mobile、web",
+        "Ingest、transform、store、serve",
+        "Train、eval、deploy、archive",
+        "Control、target、safety、observability — 并反馈到 SLO adjustments"
       ],
       "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
+      "question": "burn-rate alert guardrail 在混沌实验期间做什么？",
+      "options": [
+        "当每日 error-budget burn 超出预期约 2x 时暂停实验",
+        "自动将实验提升到生产环境",
+        "禁用 observability",
+        "加快实验速度"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
       "question": "以下哪一项是本课列出的 LLM-specific 混沌实验？",
       "options": [
-        "丢弃所有 DNS",
         "随机降低 fan-speed",
+        "重启整个 datacenter",
         "KV eviction storm，迫使 vLLM block-budget saturation",
-        "重启整个 datacenter"
+        "丢弃所有 DNS"
       ],
       "correct": 2,
       "explanation": ""
@@ -54,12 +54,12 @@
       "stage": "post",
       "question": "本课建议混沌演练采用哪种 cadence？",
       "options": [
-        "每周小型 canary、每月带 postmortem 的 game day、每季度跨团队 resilience audit",
+        "仅每年一次",
         "每天 full-prod outages",
         "从不",
-        "仅每年一次"
+        "每周小型 canary、每月带 postmortem 的 game day、每季度跨团队 resilience audit"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -67,9 +67,9 @@
       "question": "malformed-prompt 实验会暴露哪种 LLM-specific failure mode？",
       "options": [
         "Tokenizer stalls，会在深度嵌套 unicode 或巨大 UTF-8 codepoints 等输入上锁住 worker",
-        "Disk I/O contention",
         "GPU undervolt",
-        "Network packet loss"
+        "Network packet loss",
+        "Disk I/O contention"
       ],
       "correct": 0,
       "explanation": ""

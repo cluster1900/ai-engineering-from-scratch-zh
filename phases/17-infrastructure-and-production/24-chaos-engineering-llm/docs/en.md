@@ -91,6 +91,10 @@
 - Cadence：weekly canary、monthly game day、quarterly audit。
 - 五个 LLM experiments：memory、network、provider、malformed prompt、KV storm。
 
+```figure
+i4-chaos-guard
+```
+
 ## 使用它
 
 `code/main.py` 使用 safety plane gates 模拟三个 chaos experiments。报告哪些 experiments 会触发 burn-rate abort。
