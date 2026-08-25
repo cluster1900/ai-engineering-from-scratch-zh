@@ -1,0 +1,78 @@
+{
+  "lesson": "19-claude-code-memory-rules-skills-and-ci",
+  "title": "Claude Code Memory、Rules、Skills 与 CI",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "根目录的 CLAUDE.md 包含数百行仅适用于数据库迁移的内容。最有效的改进是什么？",
+      "options": [
+        "将迁移指南移至限定作用域的 rule 或 Skill，并让根目录文件保持为简洁的路由入口",
+        "将指南保留在根目录文件中，但添加摘要和更醒目的优先级标签",
+        "将所有项目指令移至独立的 Skills，使根目录文件不再承担共享 Context 或路由职责",
+        "仅当开发者记得迁移部分与任务相关时，才将其复制到任务 Prompt 中"
+      ],
+      "correct": 0,
+      "explanation": "范围有限的指南应仅在其真正适用的作用域内加载。简洁的根目录文件可以保留高价值的项目 Context，同时避免让每项任务都承担完整的指令成本。"
+    },
+    {
+      "stage": "check",
+      "question": "一个 PreToolUse command hook 必须阻止某个 Tool 并说明原因。以下哪种输出契约有效？",
+      "options": [
+        "以状态码 2 退出，并将结构化 JSON 输出到 stdout，从而同时应用两种阻止机制",
+        "以状态码 2 退出并写入 stderr，或者以状态码 0 退出并输出事件专用的 JSON",
+        "以状态码 0 退出，并输出要求 Claude 拒绝该 Tool 的纯文本",
+        "以状态码 1 退出，并将 JSON 决策输出到 stderr"
+      ],
+      "correct": 1,
+      "explanation": "状态码 2 是通过退出码阻止操作的路径；只有在状态码为 0 时才会解析结构化 JSON。这两条路径不得组合使用，并且每种 hook 事件都有自己的决策 schema。"
+    },
+    {
+      "stage": "check",
+      "question": "SKILL.md 中的 allowed-tools 有什么作用？",
+      "options": [
+        "在会话结束前，将 Claude 严格限制为只能使用这些 Tools",
+        "项目文件夹被信任后，永久授予所列 Tools",
+        "为单次调用回合预先批准匹配的 Tools",
+        "覆盖项目针对 Skill 随附脚本设置的 deny rules"
+      ],
+      "correct": 2,
+      "explanation": "allowed-tools 是临时预批准，而不是 sandbox。其他 Tools 仍可按照常规权限使用，deny rules 也继续生效。"
+    },
+    {
+      "stage": "check",
+      "question": "团队应如何配置一个 migration-auditor subagent，使其在缺少证据时能够干净地停止？",
+      "options": [
+        "在 worktree 中使用 bypassPermissions，确保缺少访问权限不会中断审计",
+        "将完整流程放入根目录 CLAUDE.md，使每个会话都能看到相同的 Prompt",
+        "让它继承 Tools，并要求它不断尝试，直到能够报告成功",
+        "使用 /agents，为其配置只读 Tools、maxTurns 和结构化的 blocked 结果"
+      ],
+      "correct": 3,
+      "explanation": "Tool 和回合边界可以限制任务，而结构化的 blocked 结果能够保留阻碍因素。worktree 可以隔离文件，但不能作为扩大权限的理由。"
+    },
+    {
+      "stage": "post",
+      "question": "一条针对特定路径的 rule 似乎从未影响任务。团队首先应该验证什么？",
+      "options": [
+        "它的 glob 是否匹配 fixture 路径，以及该文件是否位于文档规定的配置作用域中",
+        "降低采样方差是否能让该 rule 的效果更容易被观察到",
+        "在相同 fixture 路径下，所选 Model 是否比上一版本更可靠地遵循限定作用域的 rules",
+        "plugin 指令层是否覆盖了针对特定路径的指南"
+      ],
+      "correct": 0,
+      "explanation": "配置审计应证明该 rule 会在预期路径中加载，并且不会在其他路径中加载。无论 Model 能力如何，未被察觉的 glob 不匹配都会造成虚假的信心。"
+    },
+    {
+      "stage": "post",
+      "question": "多个 repository 需要使用同一组经过审查的 Skills、agents 和 hooks。最有效的分发设计是什么？",
+      "options": [
+        "从每个项目的根目录 CLAUDE.md 导入整个共享 repository",
+        "使用版本化 plugin、经过审查的 marketplace 和受管的来源限制",
+        "将每个文件复制到所有用户的主目录配置中，并依赖手动更新",
+        "允许从任意 marketplace 自动更新，确保每个 repository 始终保持最新"
+      ],
+      "correct": 1,
+      "explanation": "plugin 提供单一的版本化 bundle，marketplace 负责分发，而受管设置可以强制实施组织的来源政策。仅适用于特定项目的流程应直接保留在相应 repository 中。"
+    }
+  ]
+}
