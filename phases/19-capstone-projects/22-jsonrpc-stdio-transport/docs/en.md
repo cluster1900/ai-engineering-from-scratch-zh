@@ -14,6 +14,10 @@
 - 每行处理一个 parse error，不污染 stream 的其余部分。
 - 使用 io.BytesIO 构建一个会自行终止的 demo，让课程无需 spawn child process 即可运行。
 
+```figure
+cf-jsonrpc-frames
+```
+
 ## 为什么 JSON-RPC 仍是 lingua franca
 
 2026 年，一个 coding agent 在单个 session 中可能会和十二个 tool servers 通信。每个 server 都是一个独立 process 或 remote endpoint。wire format 自 2013 年以来一直相同。JSON-RPC 2.0 是两页 spec。它能存活下来，是因为替代方案（gRPC、每次调用一个 HTTP、自定义 binary）都会施加 JSON-RPC 没有的取舍：它们会在 streaming、batching 或 transport-coupling 中选择其一。JSON-RPC 在 stdio、sockets、websockets 和 HTTP 上是对称的，只要双方遵守 spec，client 就可以驱动一个从未见过的 server。

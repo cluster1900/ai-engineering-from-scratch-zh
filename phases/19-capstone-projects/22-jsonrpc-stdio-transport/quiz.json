@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "在 wire 上，JSON-RPC notification 与 request 的区别是什么？",
       "options": [
-        "不同的 jsonrpc version field",
         "Notifications 省略 id field；servers 不得响应它们",
+        "不同的 jsonrpc version field",
         "Notifications 使用不同的 method namespace",
         "Notifications 被包在 array 中"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "缺少 id 是唯一标记。Servers 不响应，因为没有 id 可用于关联。"
     },
     {
       "stage": "pre",
       "question": "为什么 newline-delimited JSON 足以用于 stdio framing？",
       "options": [
-        "因为 JSON 不允许 strings 中出现未转义的 literal newlines，所以每个 object 可以是一行",
-        "因为 pipes 保证 newline atomicity",
         "因为 UTF-8 没有 newline byte",
-        "因为 spec 强制要求它"
+        "因为 spec 强制要求它",
+        "因为 pipes 保证 newline atomicity",
+        "因为 JSON 不允许 strings 中出现未转义的 literal newlines，所以每个 object 可以是一行"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "json.dumps 每个 object 输出一行；strings 中的 literal newlines 会被转义。这使得 \\n 成为安全的 record separator。"
     },
     {
@@ -42,48 +42,48 @@
       "stage": "check",
       "question": "如果 handler 抛出普通的 ValueError，transport 会返回什么？",
       "options": [
-        "Method not found (-32601)",
+        "它不返回；connection 会断开",
         "Invalid params (-32602)",
-        "Internal error (-32603)，并在 data 中带上 exception class name",
-        "它不返回；connection 会断开"
+        "Method not found (-32601)",
+        "Internal error (-32603)，并在 data 中带上 exception class name"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "未映射的 exceptions 会作为 -32603 暴露。data.exception 为 client 保留 class name。"
     },
     {
       "stage": "check",
       "question": "当 batch 只包含 notifications 时，server 会返回什么？",
       "options": [
-        "一个空 array",
         "什么都不返回——不会写入任何 bytes",
         "每个 notification 一个 null",
+        "一个空 array",
         "一个单独的 null response"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Spec 规则：如果每个 entry 都是 notification，server 保持沉默。"
     },
     {
       "stage": "post",
       "question": "session 中途收到一行 broken JSON。后续行会发生什么？",
       "options": [
-        "transport 关闭 stream",
         "它们会被 buffer，直到 broken line 被重试",
         "transport 写入一个 -32700 response，并把下一行作为新的内容继续读取",
+        "transport 关闭 stream",
         "它们全部以 -32600 被拒绝"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "framing layer 不能污染 stream。一个 parse error 意味着一个 error response，然后 loop 继续。"
     },
     {
       "stage": "post",
       "question": "为什么 transport 不直接查询 tool registry？",
       "options": [
-        "因为 registry 是 async",
         "为了让 transport layer 只保持 JSON-RPC 形状；handler 会把 transport 接到 registry",
+        "因为 registry 是 async",
         "因为 registry 持有 secrets",
         "因为 transport 在不同 process 中运行"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "transport 负责 wire。dispatcher（下一课）才是 transport、registry 和 timeout 相遇的地方。"
     }
   ]
