@@ -17,31 +17,31 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">Video VLMs — 帧采样、时序 Token、定位输出</text>
+  <text x="480" y="24" text-anchor="middle" class="title">视频 VLMs — 帧采样、时序 Token、定位输出</text>
 
   <rect x="30" y="50" width="900" height="220" class="box"/>
   <text x="480" y="72" text-anchor="middle" class="head">2023 到 2025 的三种架构模式</text>
 
   <rect x="50" y="90" width="280" height="160" class="hot"/>
-  <text x="190" y="110" text-anchor="middle" class="step">Video-LLaMA (2023)</text>
+  <text x="190" y="110" text-anchor="middle" class="step">Video-LLaMA（2023）</text>
   <text x="190" y="128" text-anchor="middle" class="small">Q-former + 音频分支</text>
-  <text x="190" y="144" text-anchor="middle" class="small">16 帧 @ 2 FPS 固定</text>
-  <text x="190" y="160" text-anchor="middle" class="small">32 个视频 queries，32 个音频</text>
+  <text x="190" y="144" text-anchor="middle" class="small">固定 16 帧 @ 2 FPS</text>
+  <text x="190" y="160" text-anchor="middle" class="small">32 个视频 queries，32 个音频 queries</text>
   <text x="190" y="184" text-anchor="middle" class="step">优势：音频定位</text>
-  <text x="190" y="204" text-anchor="middle" class="small">弱点：8s 固定 clip</text>
+  <text x="190" y="204" text-anchor="middle" class="small">弱点：固定 8s 片段</text>
   <text x="190" y="220" text-anchor="middle" class="small">无事件时间定位</text>
 
   <rect x="340" y="90" width="280" height="160" class="cool"/>
-  <text x="480" y="110" text-anchor="middle" class="step">Video-LLaVA (2023)</text>
+  <text x="480" y="110" text-anchor="middle" class="step">Video-LLaVA（2023）</text>
   <text x="480" y="128" text-anchor="middle" class="small">MLP + 共享 encoder</text>
   <text x="480" y="144" text-anchor="middle" class="small">8 帧 @ 1-2 FPS</text>
   <text x="480" y="160" text-anchor="middle" class="small">投影前对齐</text>
   <text x="480" y="184" text-anchor="middle" class="step">优势：简单 + 有效</text>
-  <text x="480" y="204" text-anchor="middle" class="small">弱点：仅短 clips</text>
+  <text x="480" y="204" text-anchor="middle" class="small">弱点：仅支持短片段</text>
   <text x="480" y="220" text-anchor="middle" class="small">无动态 FPS</text>
 
   <rect x="630" y="90" width="280" height="160" class="cold"/>
-  <text x="770" y="110" text-anchor="middle" class="step">Qwen2.5-VL (2025)</text>
+  <text x="770" y="110" text-anchor="middle" class="step">Qwen2.5-VL（2025）</text>
   <text x="770" y="128" text-anchor="middle" class="small">TMRoPE + 动态 FPS</text>
   <text x="770" y="144" text-anchor="middle" class="small">任意时长</text>
   <text x="770" y="160" text-anchor="middle" class="small">绝对时间 Token</text>
@@ -58,9 +58,9 @@
   <text x="190" y="388" text-anchor="middle" class="small">- 简单，丢失运动峰值</text>
   <text x="190" y="408" text-anchor="middle" class="small">动态 FPS：运动加权</text>
   <text x="190" y="424" text-anchor="middle" class="small">- 高运动片段更密集</text>
-  <text x="190" y="444" text-anchor="middle" class="small">事件驱动：detector + sample</text>
+  <text x="190" y="444" text-anchor="middle" class="small">事件驱动：检测器 + 采样</text>
   <text x="190" y="460" text-anchor="middle" class="small">- 最适合动作识别</text>
-  <text x="190" y="480" text-anchor="middle" class="caption">每帧配合 3x3 pooling</text>
+  <text x="190" y="480" text-anchor="middle" class="caption">每帧配合 3x3 池化</text>
 
   <rect x="340" y="330" width="280" height="170" class="hot"/>
   <text x="480" y="352" text-anchor="middle" class="step">定位输出格式</text>
@@ -73,7 +73,7 @@
   <text x="480" y="488" text-anchor="middle" class="caption">JSON 最易被下游解析</text>
 
   <rect x="640" y="330" width="280" height="170" class="cool"/>
-  <text x="780" y="352" text-anchor="middle" class="step">benchmarks</text>
+  <text x="780" y="352" text-anchor="middle" class="step">基准测试</text>
   <text x="780" y="372" text-anchor="middle" class="small">VideoMME：通用，2500 样本</text>
   <text x="780" y="388" text-anchor="middle" class="small">TempCompass：前/后</text>
   <text x="780" y="404" text-anchor="middle" class="small">EgoSchema：3min 第一人称</text>

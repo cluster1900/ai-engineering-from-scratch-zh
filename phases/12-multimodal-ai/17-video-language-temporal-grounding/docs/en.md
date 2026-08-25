@@ -102,6 +102,10 @@ Token-based 对 downstream use 最准确。Qwen2.5-VL 的 JSON output format 可
 - Output：包含 time + event 字段的结构化 JSON。
 - Benchmarks：VideoMME + TempCompass 用于 general；EgoSchema 用于 long-horizon。
 
+```figure
+video-temporal-patches
+```
+
 ## 使用它
 `code/main.py` 包含：
 
