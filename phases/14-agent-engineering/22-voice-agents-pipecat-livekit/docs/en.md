@@ -69,6 +69,10 @@ Vapi（优化后的高级技术栈约 ~450–600ms）和 Retell（180 次测试�
 
 端到端 450–600ms 属于高级体验。800–1200ms 很常见。任何 > 1500ms 的体验都会感觉已经坏了。
 
+```figure
+voice-pipeline
+```
+
 ## 构建它
 `code/main.py` 是一个基于 frame 的 toy pipeline，包含：
 

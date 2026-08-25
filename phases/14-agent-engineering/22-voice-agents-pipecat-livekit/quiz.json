@@ -7,11 +7,11 @@
       "question": "Pipecat pipeline 使用哪两个流向？",
       "options": [
         "Read 和 write",
-        "DOWNSTREAM（source 到 sink）和 UPSTREAM（feedback、cancel、barge-in）",
+        "Hot 和 cold",
         "Inbound 和 outbound",
-        "Hot 和 cold"
+        "DOWNSTREAM（source 到 sink）和 UPSTREAM（feedback、cancel、barge-in）"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Frames 会从 source 到 sink 向 downstream 流动，并向 upstream 流动以进行控制和取消。"
     },
     {
@@ -19,9 +19,9 @@
       "question": "标准的 Pipecat voice pipeline 是什么？",
       "options": [
         "VAD -> STT -> LLM -> TTS -> transport",
-        "TTS -> STT -> LLM -> VAD",
+        "Audio -> JSON -> SQL -> response",
         "LLM -> embed -> retrieve -> answer",
-        "Audio -> JSON -> SQL -> response"
+        "TTS -> STT -> LLM -> VAD"
       ],
       "correct": 0,
       "explanation": "VAD 检测语音活动，STT 转录，LLM 响应，TTS 发声，transport 交付。"
@@ -30,12 +30,12 @@
       "stage": "check",
       "question": "LiveKit Agents 提供哪两类 voice agent？",
       "options": [
-        "MultimodalAgent（direct audio）和 VoicePipelineAgent（STT/LLM/TTS cascade）",
         "BatchAgent 和 StreamAgent",
         "TextAgent 和 SpeechAgent",
+        "MultimodalAgent（direct audio）和 VoicePipelineAgent（STT/LLM/TTS cascade）",
         "LocalAgent 和 CloudAgent"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "MultimodalAgent 使用 direct audio（Realtime 风格）；VoicePipelineAgent 使用 STT->LLM->TTS，以便在文本层面进行控制。"
     },
     {
@@ -44,8 +44,8 @@
       "options": [
         "LLM 成本激增；减少 tokens",
         "用户在 agent 说话时打断；UPSTREAM cancel frames 会在一句话中途停止 TTS",
-        "provider 中断；切换 regions",
-        "Captcha 失败；重试"
+        "Captcha 失败；重试",
+        "provider 中断；切换 regions"
       ],
       "correct": 1,
       "explanation": "Barge-in 是用户打断；UPSTREAM cancellation 是 Pipecat 干净处理它的方式。"
@@ -54,34 +54,34 @@
       "stage": "check",
       "question": "课程将什么样的端到端 latency 描述为 premium？",
       "options": [
-        "约 50 ms",
         "约 450-600 ms",
         "约 1500 ms",
+        "约 50 ms",
         "约 5000 ms"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Premium stacks 大约落在 450-600 ms；800-1200 ms 很常见；超过 1500 ms 会让人感觉坏掉了。"
     },
     {
       "stage": "post",
       "question": "如果忽略 STT confidence，会出什么问题？",
       "options": [
+        "Calls 变得更便宜",
         "Latency 改善",
-        "低 confidence 的 transcripts 会像绝对真理一样喂给 LLM，产生错误答案；应基于 confidence gate 或请求确认",
         "TTS 变得更快",
-        "Calls 变得更便宜"
+        "低 confidence 的 transcripts 会像绝对真理一样喂给 LLM，产生错误答案；应基于 confidence gate 或请求确认"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "把低 confidence 的 STT 当作事实，是 voice-agent 最常见的失败模式之一。"
     },
     {
       "stage": "post",
       "question": "为什么课程建议在 shipping 之前汇总各 component 的 latencies？",
       "options": [
-        "Providers 按 latency 计费",
+        "Latency 是 WebRTC 要求的",
         "每个 component 都会增加 50-200 ms；总和决定体验是否让人感觉坏掉了",
-        "它满足 compliance requirement",
-        "Latency 是 WebRTC 要求的"
+        "Providers 按 latency 计费",
+        "它满足 compliance requirement"
       ],
       "correct": 1,
       "explanation": "在 shipping 前汇总整条链路（VAD + STT + LLM + TTS + transport）；目标非常紧。"
