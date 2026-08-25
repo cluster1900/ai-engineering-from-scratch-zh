@@ -1,0 +1,78 @@
+{
+  "lesson": "12-claude-agent-sdk-and-hooks",
+  "title": "Agent SDK 是运行框架，而不是权限",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "以下哪项陈述正确区分了主要的 Agent 运行框架层级？",
+      "options": [
+        "Agent SDK 是原始 REST 的类型化名称，而 Tool Runner 只能在 Managed Agents 内使用",
+        "Tool Runner 负责 Messages 工具循环，Agent SDK 提供更广泛的运行框架，而 Managed Agents 则提供远程事件驱动服务",
+        "Managed Agents 会将业务授权和最终状态验证交给所配置的 Agent",
+        "Tool Runner、Agent SDK 和 Managed Agents 的区别主要在于模型质量和命名；三者负责相同的循环、工具和会话边界"
+      ],
+      "correct": 1,
+      "explanation": "这些服务层面对状态、工具、会话和托管进行了不同程度的自动化。它们都不会转移业务授权、租户策略或结果验证责任。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种控制措施应在危险命令执行前将其拒绝？",
+      "options": [
+        "执行后的最终状态评估器",
+        "要求 Agent 在使用危险命令前进行说明的会话指令",
+        "由 Sandbox 支撑的工具执行前策略 Hook",
+        "在命令结果传回模型前对其进行脱敏的工具执行后 Hook"
+      ],
+      "correct": 2,
+      "explanation": "工具执行前 Hook 可以在产生副作用前进行阻止。如果策略代码失效，Sandbox 可以限制损害，而工具执行后检查已来不及阻止执行。"
+    },
+    {
+      "stage": "check",
+      "question": "什么时候最有理由使用 Subagent？",
+      "options": [
+        "任务完成状态和审批应保留在单个模型的私有上下文中时",
+        "确定性工作需要独立上下文时",
+        "多个 Agent 需要同时对相同文件拥有不受限制的写入权限时",
+        "独立审查者需要隔离的上下文和只读工具时"
+      ],
+      "correct": 3,
+      "explanation": "Subagent 只有通过隔离、窄化权限、独立评估或真正可并行的有界工作，才能体现其成本价值。"
+    },
+    {
+      "stage": "check",
+      "question": "Managed Agent 的 SSE 连接在 `session.status_running` 事件之后关闭，且未观察到已持久化的 `end_turn` 事件。应用应该怎么做？",
+      "options": [
+        "使用已存储的 cursor 重新连接或列出已持久化事件，并核对会话状态",
+        "将会话标记为已完成，因为 SSE 关闭就是 `end_turn` 的传输形式",
+        "启动替代会话，并仅将预览文本复制到其中",
+        "重复最近一次工具调用，因为没有终止事件就意味着它未执行"
+      ],
+      "correct": 0,
+      "explanation": "流增量和连接状态不是持久的完成证据。应持久化事件 ID 和 cursor、对重放事件去重，并使用会话的持久化状态机。"
+    },
+    {
+      "stage": "post",
+      "question": "Claude 提议根据截图点击购买按钮。以下哪种控制流程最可靠？",
+      "options": [
+        "由于坐标已类型化，因此在 Sandbox 中执行边界内点击，然后在购买结果出现后要求用户确认",
+        "验证最新截图和目标，要求与操作绑定的人工审批，在 Sandbox 中执行操作，然后验证新截图",
+        "使用 Managed Agent，使内置 Sandbox 能够自动授权金融操作",
+        "当提供方的 Prompt Injection 分类器未要求确认时，信任模型给出的风险标签"
+      ],
+      "correct": 1,
+      "explanation": "Computer Use 仍由客户端执行。最新视觉状态、类型化操作验证、Sandbox、针对后果的人工审批以及操作后证据共同构成控制边界。"
+    },
+    {
+      "stage": "post",
+      "question": "哪项证据最能验证一个持续三个 Sprint 的长期 Agent 任务？",
+      "options": [
+        "Agent 摘要记录了每个 Sprint 的完成情况，且最终输出连贯",
+        "同一会话在每次压缩后都能成功恢复，且不会丢失任务列表",
+        "每个 Sprint 都有持久化产物、验收测试、Trace 和独立评估器决策",
+        "不同 Subagent 完成每个 Sprint，并对最终状态达成一致"
+      ],
+      "correct": 2,
+      "explanation": "长期一致性来自有界契约和外部验证，而不是自我报告、上下文压缩或 Agent 数量。"
+    }
+  ]
+}
