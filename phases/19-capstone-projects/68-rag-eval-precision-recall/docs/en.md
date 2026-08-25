@@ -96,6 +96,10 @@ nDCG 适应分级相关性：黄金可以说“文档 A 是 3，文档 B 是 2�
 
 在生产中，您可以对这些进行token。本课程提供了一个手工构建的 fixture，因此评估可以开箱即用。
 
+```figure
+ci-rag-metric-ladder
+```
+
 ## 构建它
 
 `code/main.py` 实现：
