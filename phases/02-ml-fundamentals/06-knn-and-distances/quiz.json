@@ -5,11 +5,11 @@
     "question": "KNN 被称为 “lazy learner”。这是什么意思？",
     "options": [
       "它在训练期间收敛很慢",
-      "它在训练时不做计算，而是在预测时计算所有内容",
       "它使用 Loss Function 的简化版本",
+      "它在训练时不做计算，而是在预测时计算所有内容",
       "它只适用于小数据集"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "Lazy learning 意味着 KNN 会存储训练数据，并且在“训练”期间不做工作。所有计算（距离计算、投票）都发生在请求预测时。"
   },
   {
@@ -18,11 +18,11 @@
     "question": "为什么 feature scaling 对 KNN 至关重要？",
     "options": [
       "KNN 不经过 scaling 就无法处理负数",
-      "距离计算会被范围更大的特征主导，因此需要 scaling 才能进行公平比较",
+      "KNN 使用 Gradient Descent，因此需要 normalized inputs",
       "Feature scaling 会减少所需 neighbor 的数量",
-      "KNN 使用 Gradient Descent，因此需要 normalized inputs"
+      "距离计算会被范围更大的特征主导，因此需要 scaling 才能进行公平比较"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "KNN 依赖距离。范围为 0-1000 的特征会在距离计算中主导范围为 0-1 的特征。Scaling 会让所有特征处于可比较的范围。"
   },
   {
@@ -43,12 +43,12 @@
     "stage": "post",
     "question": "对于表示为 TF-IDF Vector 的文本文件，哪种距离度量最合适？",
     "options": [
-      "L2 (Euclidean) distance",
-      "L1 (Manhattan) distance",
+      "Chebyshev distance",
       "Cosine distance",
-      "Chebyshev distance"
+      "L2 (Euclidean) distance",
+      "L1 (Manhattan) distance"
     ],
-    "correct": 2,
+    "correct": 1,
     "explanation": "Cosine distance 衡量 Vector 之间的角度，忽略大小。对于文本，文档长度（大小）是噪声，方向才捕捉含义。Cosine 在文本任务中一贯优于 L1/L2。"
   },
   {
@@ -58,10 +58,10 @@
     "options": [
       "边界会变得更复杂、更细致",
       "无论 K 如何变化，边界都保持不变",
-      "边界会变得更平滑，最终对每个点都预测 majority class",
-      "边界会变成圆形"
+      "边界会变成圆形",
+      "边界会变得更平滑，最终对每个点都预测 majority class"
     ],
-    "correct": 2,
+    "correct": 3,
     "explanation": "K=1 会产生锯齿状边界，跟随每个点（overfitting）。随着 K 增加，边界会变得更平滑。K=N 表示每次查询都会考虑所有点，因此总是预测 majority class（最大 bias）。"
   }
 ]
