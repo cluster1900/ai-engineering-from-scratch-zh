@@ -179,6 +179,10 @@ D_opt ~ C^0.5
 
 Llama 3 故意违反了 Chinchilla law。Meta 发现，在更多数据上 overtraining，远超 compute-optimal ratio，会产生更适合 inference 的模型。额外训练成本只支付一次，但更小的模型在长期服务时成本更低。这有时被称为 “inference-optimal” scaling approach，并且自 2024 年以来已成为行业标准。
 
+```figure
+l5-data-pipeline
+```
+
 ## 构建它
 
 ### 步骤 1： Text Cleaning

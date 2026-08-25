@@ -1,35 +1,60 @@
 [
   {
     "question": "为什么不能简单地把所有 pre-training 数据加载到内存中？",
-    "options": ["Python 不支持大型 array", "Pre-training corpora 的规模达到 TB 级，远超可用 RAM，因此需要 streaming pipeline", "把数据加载到内存会更慢", "内存只用于 model weights"],
-    "correct": 1,
+    "options": [
+      "Pre-training corpora 的规模达到 TB 级，远超可用 RAM，因此需要 streaming pipeline",
+      "把数据加载到内存会更慢",
+      "内存只用于 model weights",
+      "Python 不支持大型 array"
+    ],
+    "correct": 0,
     "explanation": "LLM pre-training 数据通常是 1-15 TB 的文本。即使有 256GB RAM，也无法容纳完整 dataset。Streaming pipeline 会即时处理数据，只加载当前 batch 所需的内容。",
     "stage": "pre"
   },
   {
     "question": "为什么 data deduplication 对 pre-training 很重要？",
-    "options": ["它节省 disk space", "重复文档会导致模型逐字记忆特定文本，并把 training compute 浪费在重复内容上", "它加快 tokenization", "它减小 vocabulary size"],
+    "options": [
+      "它节省 disk space",
+      "重复文档会导致模型逐字记忆特定文本，并把 training compute 浪费在重复内容上",
+      "它减小 vocabulary size",
+      "它加快 tokenization"
+    ],
     "correct": 1,
     "explanation": "Near-duplicate content（boilerplate、scraped duplicates）会导致模型记忆而不是泛化。Deduplication 通过确保多样化的 training signal，减少 training compute 浪费并提升模型质量。",
     "stage": "pre"
   },
   {
     "question": "从 variable-length documents 创建 fixed-length training sequences 的目的是什么？",
-    "options": ["它让文本更容易阅读", "GPU training 需要统一的 tensor shape，因此文档必须被 packed 或 padded 成 fixed-length sequences", "Fixed-length sequences 更准确", "它减少 Token 总数"],
-    "correct": 1,
+    "options": [
+      "它减少 Token 总数",
+      "它让文本更容易阅读",
+      "GPU training 需要统一的 tensor shape，因此文档必须被 packed 或 padded 成 fixed-length sequences",
+      "Fixed-length sequences 更准确"
+    ],
+    "correct": 2,
     "explanation": "GPU 会处理具有相同 shape 的 tensor batch。Variable-length documents 必须被切分成 fixed-length sequences（例如 2048 或 4096 tokens），并在文档边界使用正确的 attention mask。",
     "stage": "post"
   },
   {
     "question": "如果 data pipeline 比 GPU training speed 更慢，会发生什么？",
-    "options": ["Training 会自动降速以匹配", "GPU 会闲置并等待 batches，浪费昂贵的 compute time", "模型会反复在同一个 batch 上训练", "没有影响 -- pipeline 异步运行"],
-    "correct": 1,
+    "options": [
+      "没有影响 -- pipeline 异步运行",
+      "Training 会自动降速以匹配",
+      "模型会反复在同一个 batch 上训练",
+      "GPU 会闲置并等待 batches，浪费昂贵的 compute time"
+    ],
+    "correct": 3,
     "explanation": "如果 dataloader 无法足够快地提供 batches，GPU 会在 step 之间停滞。对于每小时花费 $30+ 的 A100 clusters，pipeline bottleneck 会直接浪费资金。Profiling pipeline throughput 是必要的。",
     "stage": "post"
   },
   {
     "question": "为什么 data quality filtering（language detection、content filtering）要在 tokenization 之前应用？",
-    "options": ["Tokenizer 无法处理低质量文本", "低质量数据（spam、boilerplate、toxic content）会按其在训练数据中的占比降低模型能力", "Tokenization 之后无法 filtering", "它减少 tokenization time"],
+    "options": [
+      "它减少 tokenization time",
+      "低质量数据（spam、boilerplate、toxic content）会按其在训练数据中的占比降低模型能力",
+      "Tokenization 之后无法 filtering",
+      "Tokenizer 无法处理低质量文本"
+    ],
     "correct": 1,
     "explanation": "模型会从它看到的任何数据中学习。如果 10% 的训练数据是 spam 或低质量内容，模型就会把 10% 的容量分配给复现这些模式。Early filtering 确保只有高质量 signal 能到达模型。",
     "stage": "post"
