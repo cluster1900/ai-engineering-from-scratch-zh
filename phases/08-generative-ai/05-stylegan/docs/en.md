@@ -47,6 +47,10 @@ AdaIN(x, y) = y_scale · (x - mean(x)) / std(x) + y_bias
 
 到 2026 年，StyleGAN3 仍然是以下场景的默认选择：(a) 高 FPS 的窄领域照片级真实生成，(b) few-shot domain adaptation（用 100 张图像在新数据集上训练，冻结 mapping），(c) 基于 inversion 的编辑（找到重建真实照片的 `w`，再编辑这个 `w`）。对于开放领域 text-to-image，它不是合适的工具，diffusion 才是。
 
+```figure
+gx-stylegan-mapping
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个 1-D 的玩具版 “style-GAN lite”：一个 mapping MLP，一个 synthesis function，它接收学到的常量 Vector，并用从 `w` 派生的 scale/bias 进行 modulate，还有逐层 noise。它展示了通过 affine-modulation 注入 `w`，可以达到或超过把 `z` 拼接进生成器输入的方式。

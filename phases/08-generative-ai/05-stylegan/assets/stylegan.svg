@@ -76,8 +76,8 @@
   <!-- version evolution -->
   <rect x="460" y="360" width="400" height="130" class="cold"/>
   <text x="660" y="385" text-anchor="middle" class="label">v1 → v2 → v3</text>
-  <text x="660" y="408" text-anchor="middle" class="caption">v2：weight demodulation，无 droplets</text>
-  <text x="660" y="428" text-anchor="middle" class="caption">v3：alias-free conv，无 texture sticking</text>
-  <text x="660" y="448" text-anchor="middle" class="caption">XL：conditional ImageNet</text>
+  <text x="660" y="408" text-anchor="middle" class="caption">v2：weight demodulation，无水滴伪影</text>
+  <text x="660" y="428" text-anchor="middle" class="caption">v3：alias-free conv，无纹理粘连</text>
+  <text x="660" y="448" text-anchor="middle" class="caption">XL：条件式 ImageNet</text>
   <text x="660" y="468" text-anchor="middle" class="caption">R3GAN (2024)：最小配方，params 少 20x</text>
 </svg>
