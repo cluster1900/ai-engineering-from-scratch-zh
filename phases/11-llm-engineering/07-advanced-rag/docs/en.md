@@ -1,176 +1,179 @@
-# Advanced RAG（Chunking、Reranking、Hybrid Search）
+# 高级 RAG（Chunking、Reranking、Hybrid Search）
 
-> Basic RAG 会检索最相似的 top-k chunk。这对简单问题有效。但面对 multi-hop reasoning、模糊 query 和大规模 corpus 时就会失效。Advanced RAG 是能在 10 个文档上运行的 demo 与能在 1000 万个文档上运行的系统之间的差别。
+> 基础 RAG 会检索相似度最高的 top-k 个 Chunk。这种方法适用于简单问题，但面对 multi-hop 推理、含糊的 Query 和大型语料库时就会失效。高级 RAG 决定了一个系统究竟只能处理 10 份文档的演示，还是能够处理 1000 万份文档。
 
-**类型：** 构建
-**语言：** Python
-**前置要求：** Phase 11, Lesson 06 (RAG)
-**时间：** ~90 分钟
-**相关：** Phase 5 · 23 (Chunking Strategies for RAG) 覆盖了全部六种 chunking 算法：recursive、semantic、sentence、parent-document、late chunking、contextual retrieval，并包含 Vectara/Anthropic benchmark。本课在此基础上继续：hybrid search、reranking、query transformation。
+**Type:** Build
+**Languages:** Python
+**Prerequisites:** Phase 11，Lesson 06（RAG）
+**Time:** ~90 分钟
+**Related:** Phase 5 · 23（Chunking Strategies for RAG）介绍了全部六种 Chunking 算法，包括 recursive、semantic、sentence、parent-document、late chunking 和 contextual retrieval，并提供 Vectara/Anthropic benchmark。本课将在此基础上进一步讲解 Hybrid Search、Reranking 和 Query Transformation。
 
 ## 学习目标
 
-- 实现能够保留文档结构和上下文的 advanced chunking 策略（semantic、recursive、parent-child）
-- 构建一个 hybrid search pipeline，将 BM25 keyword matching 与 semantic Vector search 和 cross-encoder reranker 结合起来
-- 应用 query transformation 技术（HyDE、multi-query、step-back），改善模糊或复杂问题的检索效果
-- 诊断并修复常见 RAG 失败：检索到错误 chunk、答案不在 context 中、multi-hop reasoning 崩溃
+- 实现能够保留文档结构和 Context 的高级 Chunking 策略（semantic、recursive、parent-child）
+- 构建 Hybrid Search Pipeline，将 BM25 关键词匹配、semantic Vector Search 和 cross-encoder reranker 结合起来
+- 应用 Query Transformation 技术（HyDE、multi-query、step-back），改善含糊或复杂问题的检索效果
+- 诊断并修复常见 RAG 故障：检索到错误 Chunk、答案不在 Context 中、multi-hop 推理失败
 
 ## 问题
 
-你在 Lesson 06 中构建了一个 basic RAG pipeline。它在小型 corpus 上回答直接问题时表现不错。现在试试这些：
+你已经在 Lesson 06 中构建了一个基础 RAG Pipeline。对于小型语料库中的直接问题，它可以正常工作。现在试试以下场景：
 
-**模糊 query**："What was revenue last quarter?" Semantic search 返回关于 revenue strategy、revenue projections，以及 CFO 对 revenue growth 看法的 chunk。它们都与单词 "revenue" 语义相似。但都不包含实际数字。正确 chunk 写的是 "$47.2M in Q3 2025"，但使用的是 "earnings" 而不是 "revenue"。Embedding model 认为 "revenue strategy" 比 "Q3 earnings were $47.2M" 更接近 query。
+**含糊的 Query**：“上个季度的收入是多少？”Semantic Search 返回了关于收入战略、收入预测，以及 CFO 对收入增长看法的 Chunk。它们在语义上都与“收入”相似，却都不包含实际数字。正确的 Chunk 写着“2025 年 Q3 收益为 4720 万美元”，但使用的是“收益”而不是“收入”。Embedding Model 认为“收入战略”比“Q3 收益为 4720 万美元”更接近该 Query。
 
-**Multi-hop question**："Which team had the highest customer satisfaction score improvement?" 这需要找到每个团队的 satisfaction score，进行比较，并识别最大值。没有任何单个 chunk 包含答案。信息分散在各个团队报告中。
+**Multi-hop 问题**：“哪个团队的客户满意度得分提升最大？”这需要找到每个团队的满意度得分，进行比较并确定最大值。没有任何单个 Chunk 包含完整答案，这些信息分散在各个团队报告中。
 
-**大规模 corpus 问题**：你有 200 万个 chunk。正确答案在 chunk #1,847,293。你的 top-5 retrieval 拉取了 chunk #14、#89,201、#1,200,000、#44 和 #901,333。它们在 Embedding 空间中接近，但没有一个包含答案。在这种规模下，approximate nearest neighbor search 会引入足够多误差，导致相关结果被挤出 top-k。
+**大型语料库问题**：你有 200 万个 Chunk。正确答案位于 Chunk #1,847,293。top-5 检索返回的是 Chunk #14、#89,201、#1,200,000、#44 和 #901,333。它们在 Embedding 空间中很接近，却都不包含答案。在这种规模下，approximate nearest neighbor search 会引入足够大的误差，将相关结果挤出 top-k。
 
-Basic RAG 失败的原因是 Vector similarity 不等于相关性。一个 chunk 可以在语义上与 query 相似，却对回答问题没有帮助。Advanced RAG 用四种技术解决这个问题：hybrid search（加入 keyword matching）、reranking（更仔细地给 candidate 打分）、query transformation（在搜索前修正 query），以及更好的 chunking（以合适的粒度检索）。
+基础 RAG 失败的原因在于，Vector 相似度并不等同于相关性。一个 Chunk 可以在语义上与 Query 相似，却对回答问题毫无帮助。高级 RAG 使用四种技术解决这个问题：Hybrid Search（加入关键词匹配）、Reranking（更仔细地为候选结果评分）、Query Transformation（在搜索前修正 Query）以及更好的 Chunking（以正确的粒度进行检索）。
 
-## 核心概念
+## 概念
 
-### Hybrid Search：Semantic + Keyword
+### Hybrid Search：语义 + 关键词
 
-Semantic search（Vector similarity）擅长理解含义。"How do I cancel my subscription?" 即使与 "Steps to terminate your plan" 没有共享单词，也能匹配。但它会漏掉精确匹配。"Error code E-4021" 可能无法匹配包含 "E-4021" 的 chunk，因为 Embedding model 可能把它当作噪声。
+Semantic Search（Vector 相似度）擅长理解含义。“如何取消我的订阅？”可以匹配“终止套餐的步骤”，即使两者没有共享任何词语。但它可能漏掉精确匹配。如果 Embedding Model 将“Error code E-4021”视为噪声，它可能无法匹配包含“E-4021”的 Chunk。
 
-Keyword search（BM25）正好相反。它擅长精确匹配。"E-4021" 能完美匹配。但如果文档写的是 "terminate your plan"，"cancel my subscription" 会返回零结果。
+关键词搜索（BM25）正好相反。它非常擅长精确匹配。“E-4021”能够完美匹配。但如果文档写的是“终止你的套餐”，“取消我的订阅”可能返回零个结果。
 
-Hybrid search 会同时运行两者，然后合并结果。
+Hybrid Search 会同时运行两种搜索，然后合并结果。
 
-**BM25**（Best Matching 25）是标准 keyword search 算法。自 1990 年代以来，它一直是搜索引擎的核心。公式：
+**BM25**（Best Matching 25）是标准的关键词搜索算法。自 20 世纪 90 年代以来，它一直是搜索引擎的核心算法。其公式如下：
 
-```
-BM25(q, d) = sum over terms t in q:
+```text
+BM25(q, d) = 对 q 中的每个词项 t 求和：
     IDF(t) * (tf(t,d) * (k1 + 1)) / (tf(t,d) + k1 * (1 - b + b * |d| / avgdl))
 ```
 
-其中 tf(t,d) 是 term t 在 document d 中的 term frequency，IDF(t) 是 inverse document frequency，|d| 是 document length，avgdl 是 average document length，k1 控制 term frequency saturation（默认 1.2），b 控制 length normalization（默认 0.75）。
+其中，tf(t,d) 是词项 t 在文档 d 中的词频，IDF(t) 是逆文档频率，|d| 是文档长度，avgdl 是平均文档长度，k1 控制词频饱和度（默认值为 1.2），b 控制长度归一化（默认值为 0.75）。
 
-通俗地说：当文档包含 query term（尤其是稀有 term）时，BM25 会给文档更高分，但重复 term 的收益会递减。一个包含 "revenue" 50 次的文档，并不比只包含一次的文档相关性高 50 倍。
+简单来说：当文档包含 Query 词项时，BM25 会给出更高的分数，尤其是这些词项较为罕见时；但重复词项带来的收益会逐渐递减。一个包含“收入”50 次的文档，并不会比只包含一次“收入”的文档相关 50 倍。
 
 ### Reciprocal Rank Fusion（RRF）
 
-你有两个 ranked list：一个来自 Vector search，一个来自 BM25。如何组合它们？Reciprocal Rank Fusion 是标准做法。
+现在有两个排序列表：一个来自 Vector Search，另一个来自 BM25。应该如何组合它们？标准方法是 Reciprocal Rank Fusion。
 
-```
-RRF_score(d) = sum over rankings R:
+```text
+RRF_score(d) = 对每个排序 R 求和：
     1 / (k + rank_R(d))
 ```
 
-其中 k 是一个常数（通常为 60），用于防止排名第一的结果占据过大优势。
+其中 k 是一个常量（通常为 60），用于防止排名第一的结果占据绝对优势。
 
-一个在 Vector search 中排名 #1、在 BM25 中排名 #5 的文档得分为：1/(60+1) + 1/(60+5) = 0.0164 + 0.0154 = 0.0318
+某个文档在 Vector Search 中排名第 1，在 BM25 中排名第 5，其得分为：1/(60+1) + 1/(60+5) = 0.0164 + 0.0154 = 0.0318
 
-一个在 Vector search 中排名 #3、在 BM25 中排名 #2 的文档得分为：1/(60+3) + 1/(60+2) = 0.0159 + 0.0161 = 0.0320
+某个文档在 Vector Search 中排名第 3，在 BM25 中排名第 2，其得分为：1/(60+3) + 1/(60+2) = 0.0159 + 0.0161 = 0.0320
 
-RRF 会自然平衡这两类信号。一个在两个列表中排名都很高的文档会得到最佳得分。一个在某个列表中排名 #1、但在另一个列表中缺失的文档会得到中等分数。这很稳健，因为它使用的是排名，而不是原始分数，因此两个系统之间的分数分布差异不会产生影响。
+RRF 会自然地平衡两种信号。在两个列表中都排名靠前的文档会获得最高分。仅在一个列表中排名第 1、但未出现在另一个列表中的文档会获得中等分数。这种方法非常稳健，因为它使用排名而不是原始分数，所以两个系统之间分数分布的差异并不重要。
 
 ### Reranking
 
-Retrieval（无论是 Vector、keyword 还是 hybrid）速度快，但不够精确。它使用 bi-encoder：query 和每个 document 独立进行 Embedding，然后比较。Embedding 会提前计算并缓存。这可以扩展到数百万文档。
+检索过程无论使用 Vector、关键词还是 Hybrid Search，都很快但不够精确。它使用 bi-encoder：Query 和每个文档分别生成 Embedding，然后进行比较。Embedding 只需计算一次并可缓存，因此能够扩展到数百万份文档。
 
-Reranking 使用 cross-encoder：query 和 candidate document 会一起输入模型，模型输出相关性分数。模型能同时看到两段文本，因此可以捕捉它们之间的细粒度交互。Cross-encoder 能理解 "What were Q3 earnings?" 与包含 "$47.2M in Q3" 的 chunk 高度相关，即使 bi-encoder 漏掉了这种联系。
+Reranking 使用 cross-encoder：将 Query 和候选文档一起输入 Model，由 Model 输出相关性分数。Model 可以同时看到两段文本，因此能够捕捉它们之间细粒度的交互。即使 bi-encoder 没有识别出关联，cross-encoder 也能理解“Q3 收益是多少？”与包含“Q3 为 4720 万美元”的 Chunk 高度相关。
 
-权衡是：cross-encoder 比 bi-encoder 慢 100-1000 倍，因为它需要联合处理 query-document pair。你无法为一百万个文档预计算 cross-encoder 分数。解决方案是：先检索一个更大的 candidate set（hybrid search 的 top-50），然后用 cross-encoder rerank，得到最终 top-5。
+代价是：cross-encoder 比 bi-encoder 慢 100 到 1000 倍，因为它需要联合处理 Query 与文档组成的输入对。你无法为 100 万份文档预先计算 cross-encoder 分数。解决方案是先检索更大的候选集（Hybrid Search 的 top-50），然后使用 cross-encoder 进行 Reranking，得到最终的 top-5。
 
 ```mermaid
 graph LR
     Q["Query"] --> H["Hybrid Search"]
-    H --> C50["Top 50 candidates"]
+    H --> C50["Top 50 个候选结果"]
     C50 --> RR["Cross-Encoder Reranker"]
-    RR --> C5["Top 5 final results"]
-    C5 --> P["Build prompt"]
-    P --> LLM["Generate answer"]
+    RR --> C5["最终 Top 5 结果"]
+    C5 --> P["构建 Prompt"]
+    P --> LLM["生成答案"]
 ```
 
-常见 reranking model（2026 阵容）：
-- Cohere Rerank 3.5：managed API，多语言，在混合 corpus 上 recall gain 最佳
-- Voyage rerank-2.5：managed API，托管选项中 latency 最低
-- Jina-Reranker-v2 Multilingual：open-weight，支持 100+ 语言
-- bge-reranker-v2-m3：open-weight，强 baseline
-- cross-encoder/ms-marco-MiniLM-L-6-v2：open-weight，可在 CPU 上运行，适合 prototyping
-- ColBERTv2 / Jina-ColBERT-v2：late-interaction multi-vector reranker，在评分时是 O(tokens) 而不是 O(docs)
+常见的 Reranking Model（2026 年阵容）：
+- Cohere Rerank 3.5：托管 API、支持多语言，在混合语料库上带来最佳 recall 提升
+- Voyage rerank-2.5：托管 API，在托管选项中延迟最低
+- Jina-Reranker-v2 Multilingual：open-weight，支持 100 多种语言
+- bge-reranker-v2-m3：open-weight，强大的 baseline
+- cross-encoder/ms-marco-MiniLM-L-6-v2：open-weight，可在 CPU 上运行，适合原型开发
+- ColBERTv2 / Jina-ColBERT-v2：late-interaction multi-vector reranker，在评分阶段的复杂度为 O(tokens)，而非 O(docs)
 
 ### Query Transformation
 
-有时问题不在 retrieval，而在 query 本身。"What was that thing about the new policy change?" 是一个很糟糕的 search query。它没有包含任何具体 term。Embedding 很模糊。没有 retrieval system 能从这样的 query 中找到正确文档。
+有时问题不在于检索，而在于 Query 本身。“关于那项新政策变更的内容是什么来着？”是一个非常糟糕的搜索 Query。它没有包含任何具体词项，Embedding 也很模糊。任何检索系统都无法据此找到正确文档。
 
-**Query rewriting**：把用户 query 改写成更好的 search query。LLM 可以做到这一点：
+**Query rewriting**：将用户的 Query 改写为更合适的搜索 Query。LLM 可以完成这项工作：
 
-```
-User: "What was that thing about the new policy change?"
-Rewritten: "Recent policy changes and updates"
-```
-
-**HyDE（Hypothetical Document Embeddings）**：不是用 query 搜索，而是先生成一个 hypothetical answer，对它做 Embedding，然后搜索相似的真实文档。
-
-```
-Query: "What is the refund policy for enterprise?"
-Hypothetical answer: "Enterprise customers are eligible for a full refund
-within 60 days of purchase. Refunds are pro-rated based on the remaining
-subscription period and processed within 5-7 business days."
+```text
+用户：“关于那项新政策变更的内容是什么来着？”
+改写后：“近期的政策变更和更新”
 ```
 
-对 hypothetical answer 做 Embedding，并搜索与它相似的真实文档。直觉是：相比原始问题，hypothetical answer 在 Embedding 空间中更接近真实答案。问题和答案具有不同的语言结构。通过生成 hypothetical answer，你在 Embedding 中架起了 "question space" 和 "answer space" 之间的桥梁。
+**HyDE（Hypothetical Document Embeddings）**：不直接使用 Query 进行搜索，而是先生成一个假设答案，为其创建 Embedding，再搜索相似的真实文档。
 
-HyDE 会在 retrieval 前增加一次 LLM 调用。这会增加 500-2000ms latency。当 raw query 的 retrieval 质量较差时，这是值得的。
+```text
+Query：“enterprise 的退款政策是什么？”
+假设答案：“enterprise 客户在购买后 60 天内可以获得全额退款。
+退款金额将根据剩余订阅期按比例计算，并在 5 到 7 个工作日内处理。”
+```
+
+为假设答案创建 Embedding，然后搜索与其相似的真实文档。其直觉是：在 Embedding 空间中，假设答案比原始问题更接近真实答案。问题和答案具有不同的语言结构。通过生成假设答案，可以弥合 Embedding 中“问题空间”与“答案空间”之间的差距。
+
+HyDE 会在检索前增加一次 LLM 调用，使延迟增加 500 到 2000ms。当原始 Query 的检索质量较差时，这个代价是值得的。
 
 ### Parent-Child Chunking
 
-标准 chunking 迫使你做取舍：小 chunk 用于精确 retrieval，大 chunk 用于提供足够 context。Parent-child chunking 消除了这个取舍。
+标准 Chunking 必须进行权衡：小 Chunk 能够实现精确检索，大 Chunk 则能提供足够的 Context。Parent-child Chunking 消除了这种权衡。
 
-索引小 chunk（128 tokens）用于 retrieval。当检索到小 chunk 时，把它的 parent chunk（512 tokens）返回给 prompt。小 chunk 能精确匹配 query。parent chunk 为 LLM 生成好答案提供足够 context。
+为较小的 Chunk（128 个 Token）建立索引以执行检索。当检索到小 Chunk 时，向 Prompt 返回其 parent Chunk（512 个 Token）。小 Chunk 可以精确匹配 Query，而 parent Chunk 能为 LLM 提供足够的 Context，以生成良好的答案。
 
 ```mermaid
 graph TD
-    P["Parent chunk (512 tokens)<br/>Full section about refund policy"]
-    C1["Child chunk (128 tokens)<br/>Standard plan: 30-day refund"]
-    C2["Child chunk (128 tokens)<br/>Enterprise: 60-day pro-rated"]
-    C3["Child chunk (128 tokens)<br/>Processing time: 5-7 days"]
-    C4["Child chunk (128 tokens)<br/>How to submit a request"]
+    P["Parent Chunk（512 个 Token）<br/>关于退款政策的完整章节"]
+    C1["Child Chunk（128 个 Token）<br/>标准套餐：30 天退款期限"]
+    C2["Child Chunk（128 个 Token）<br/>Enterprise：60 天按比例退款"]
+    C3["Child Chunk（128 个 Token）<br/>处理时间：5 到 7 天"]
+    C4["Child Chunk（128 个 Token）<br/>如何提交申请"]
 
     P --> C1
     P --> C2
     P --> C3
     P --> C4
 
-    Q["Query: enterprise refund?"] -.->|"matches child"| C2
-    C2 -.->|"return parent"| P
+    Q["Query：enterprise 退款？"] -.->|"匹配 child"| C2
+    C2 -.->|"返回 parent"| P
 ```
 
-query "enterprise refund?" 会精确匹配 child chunk C2。但 prompt 收到的是完整 parent chunk P，其中包含关于处理时间和提交流程的周边 context。
+Query“enterprise 退款？”能够精确匹配 child Chunk C2，但 Prompt 接收到的是完整的 parent Chunk P，其中包含关于处理时间和提交过程的周边 Context。
 
 ### Metadata Filtering
 
-在运行 Vector search 之前，按 metadata 过滤 corpus：date、source、category、author、language。这会缩小搜索空间并避免不相关结果。
+运行 Vector Search 前，先按照 metadata 对语料库进行筛选：日期、来源、类别、作者和语言。这可以缩小搜索空间并避免返回不相关结果。
 
-"What changed in the security policy last month?" 应该只搜索最近 30 天、security category 中的文档。如果没有 metadata filtering，你会搜索整个 corpus，可能检索到一个 2 年前的 security document，只是因为它在语义上相似。
+“上个月安全政策发生了什么变化？”应该只搜索过去 30 天内属于安全类别的文档。如果没有 Metadata Filtering，系统会搜索整个语料库，并可能检索到一份两年前的安全文档，仅仅因为它在语义上与 Query 相似。
 
-Production RAG 系统会把 metadata 与每个 chunk 一起存储：source document、creation date、category、author、version。Vector database 支持在 similarity search 前按 metadata 进行 pre-filtering，这对大规模性能至关重要。
+生产环境中的 RAG 系统会在每个 Chunk 旁存储 metadata：源文档、创建日期、类别、作者和版本。Vector Database 支持在相似度搜索前根据 metadata 进行预筛选，这对于大规模系统的性能至关重要。
 
 ### Evaluation
 
-你构建了一个 RAG 系统。如何知道它是否有效？三个指标：
+你已经构建了一个 RAG 系统。如何知道它是否有效？可以使用三个指标：
 
-**Retrieval relevance（Recall@k）**：对于一组带有已知相关文档的测试问题，相关文档出现在 top-k 结果中的比例是多少？如果某个问题的答案在 chunk #47，chunk #47 是否出现在 top-5 中？
+**检索相关性（Recall@k）**：对于一组已知相关文档的测试问题，有多少比例的相关文档会出现在 top-k 结果中？如果某个问题的答案位于 Chunk #47，那么 Chunk #47 是否会出现在 top-5 中？
 
-**Faithfulness**：生成答案是否基于检索到的文档？如果检索 chunk 写的是 "60-day refund window"，而模型回答 "90-day refund window"，这就是 faithfulness 失败。模型在拥有正确 context 的情况下仍然 hallucinate。
+**Faithfulness**：生成的答案是否以检索到的文档为依据？如果检索到的 Chunk 写着“60 天退款期限”，而 Model 却回答“90 天退款期限”，这就是 Faithfulness 失败。尽管 Context 正确，Model 仍然产生了 hallucination。
 
-**Answer correctness**：生成答案是否与 expected answer 匹配？这是端到端指标。它结合了 retrieval quality 和 generation quality。
+**答案正确性**：生成的答案是否与预期答案一致？这是端到端指标，综合反映了检索质量和生成质量。
 
-一个简单的 faithfulness 检查：取生成答案中的每个 claim，并验证它是否（实质上）出现在 retrieved chunk 中。如果答案包含任何 retrieved chunk 中都没有的事实，它很可能是 hallucinated。
+一个简单的 Faithfulness 检查方法是：提取生成答案中的每项陈述，并验证其含义是否出现在检索到的 Chunk 中。如果答案包含任何检索结果中都不存在的事实，它很可能是 hallucination。
 
 ```mermaid
 graph TD
-    subgraph "Evaluation Framework"
-        Q["Test questions<br/>+ expected answers<br/>+ relevant doc IDs"]
-        Q --> Ret["Retrieval evaluation<br/>Recall@k: are right<br/>docs retrieved?"]
-        Q --> Faith["Faithfulness evaluation<br/>Is answer grounded<br/>in retrieved docs?"]
-        Q --> Correct["Correctness evaluation<br/>Does answer match<br/>expected answer?"]
+    subgraph "Evaluation 框架"
+        Q["测试问题<br/>+ 预期答案<br/>+ 相关文档 ID"]
+        Q --> Ret["检索 Evaluation<br/>Recall@k：是否检索到<br/>正确文档？"]
+        Q --> Faith["Faithfulness Evaluation<br/>答案是否以<br/>检索到的文档为依据？"]
+        Q --> Correct["正确性 Evaluation<br/>答案是否匹配<br/>预期答案？"]
     end
 ```
 
-## 构建
+```figure
+agentic-rag-loop
+```
+
+## 构建实现
 
 ### 步骤 1：BM25 实现
 
@@ -255,7 +258,7 @@ def hybrid_search(query, chunks, vector_embeddings, vocab, idf, bm25_index, top_
 
 ### 步骤 4：简单 Reranker
 
-在 production 中，你会使用 cross-encoder model。这里我们构建一个 reranker，使用 word overlap、term importance 和 phrase matching 给 query-document relevance 打分。
+在生产环境中，你会使用 cross-encoder Model。这里我们构建一个 Reranker，根据词语重叠、词项重要性和短语匹配为 Query 与文档的相关性评分。
 
 ```python
 def rerank(query, candidates, chunks):
@@ -302,9 +305,9 @@ def rerank(query, candidates, chunks):
 ```python
 def hyde_generate_hypothesis(query):
     templates = {
-        "what": "The answer to '{query}' is as follows: Based on our documentation, {topic} involves specific policies and procedures that define how the process works.",
-        "how": "To address '{query}': The process involves several steps. First, you need to initiate the request. Then, the system processes it according to the defined rules.",
-        "default": "Regarding '{query}': Our records indicate specific details and policies related to this topic that provide a comprehensive answer."
+        "what": "“{query}”的答案如下：根据我们的文档，{topic} 涉及定义该流程如何运作的具体政策和程序。",
+        "how": "要处理“{query}”：该流程包含多个步骤。首先，需要发起请求。然后，系统会根据既定规则进行处理。",
+        "default": "关于“{query}”：我们的记录提供了与该主题相关的具体信息和政策，可以据此给出完整答案。"
     }
     query_lower = query.lower()
     if query_lower.startswith("what"):
@@ -317,7 +320,7 @@ def hyde_generate_hypothesis(query):
     topic_words = [w for w in query.lower().split()
                    if w not in {"what", "is", "the", "how", "do", "does", "a", "an",
                                 "for", "of", "to", "in", "on", "at", "by", "and", "or"}]
-    topic = " ".join(topic_words) if topic_words else "this topic"
+    topic = " ".join(topic_words) if topic_words else "该主题"
 
     return template.format(query=query, topic=topic)
 
@@ -415,9 +418,9 @@ def evaluate_retrieval_recall(queries_with_relevant, retrieval_fn, k=5):
     return avg_recall, results
 ```
 
-## 使用
+## 使用实现
 
-使用真实 cross-encoder 进行 reranking：
+使用真实的 cross-encoder 进行 Reranking：
 
 ```python
 from sentence_transformers import CrossEncoder
@@ -432,7 +435,7 @@ def rerank_with_cross_encoder(query, candidates, chunks, top_k=5):
     return scored[:top_k]
 ```
 
-使用 Cohere 的 managed reranker：
+使用 Cohere 的托管 Reranker：
 
 ```python
 import cohere
@@ -459,17 +462,17 @@ client = anthropic.Anthropic()
 
 def hyde_with_llm(query):
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-5",
         max_tokens=256,
         messages=[{
             "role": "user",
-            "content": f"Write a short paragraph that would be a good answer to this question. Do not say you don't know. Just write what the answer would look like.\n\nQuestion: {query}"
+            "content": f"写一段可以很好回答以下问题的简短文字。不要说你不知道，直接写出答案可能呈现的内容。\n\n问题：{query}"
         }]
     )
     return response.content[0].text
 ```
 
-使用 Weaviate 进行 production hybrid search：
+使用 Weaviate 实现生产级 Hybrid Search：
 
 ```python
 import weaviate
@@ -484,48 +487,48 @@ response = collection.query.hybrid(
 )
 ```
 
-alpha 参数控制平衡：0.0 = 纯 keyword（BM25），1.0 = 纯 Vector，0.5 = 等权重。大多数 production 系统使用 0.3 到 0.7 之间的 alpha。
+alpha 参数控制两者之间的平衡：0.0 = 纯关键词（BM25），1.0 = 纯 Vector，0.5 = 等权重。大多数生产系统使用 0.3 到 0.7 之间的 alpha。
 
-## 交付
+## 交付成果
 
-本课会产出：
-- `outputs/prompt-advanced-rag-debugger.md` -- 用于诊断和修复 RAG 质量问题的 prompt
-- `outputs/skill-advanced-rag.md` -- 用于构建具备 hybrid search 和 reranking 的 production-grade RAG 的 skill
+本课将产出：
+- `outputs/prompt-advanced-rag-debugger.md` -- 用于诊断和修复 RAG 质量问题的 Prompt
+- `outputs/skill-advanced-rag.md` -- 使用 Hybrid Search 和 Reranking 构建生产级 RAG 的 Skill
 
 ## 练习
 
-1. 在 sample document 上比较 BM25、Vector search 和 hybrid search。对于 5 个 test query 中的每一个，记录哪种方法在 position #1 返回最相关 chunk。Hybrid search 应至少在 5 个中赢得 3 个。
+1. 在示例文档上比较 BM25、Vector Search 和 Hybrid Search。对于 5 个测试 Query，记录哪种方法能将最相关的 Chunk 返回在第 1 位。Hybrid Search 应该至少在 5 个 Query 中赢得 3 个。
 
-2. 实现 metadata filter。为每个 document 添加一个 "category" 字段（security、billing、api、product）。在运行 Vector search 前，只过滤出相关 category 的 chunk。用 "What encryption is used?" 测试，并验证它只搜索 security-category chunk。
+2. 实现 Metadata Filtering。为每个文档添加一个“category”字段（security、billing、api、product）。运行 Vector Search 前，将 Chunk 筛选到相关类别。使用“What encryption is used?”进行测试，并验证系统只搜索 security 类别的 Chunk。
 
-3. 使用 Lesson 06 中的简单 generate function 构建完整 HyDE pipeline。在全部 5 个 test query 上比较 direct query search 与 HyDE search 的 retrieval quality（top-3 relevance）。HyDE 应能改善模糊 query 的结果。
+3. 使用 Lesson 06 中的简单生成函数构建完整的 HyDE Pipeline。针对全部 5 个测试 Query，比较直接 Query 搜索与 HyDE 搜索的检索质量（top-3 相关性）。HyDE 应该能够改善含糊 Query 的结果。
 
-4. 在 sample document 上实现 parent-child chunking 策略。使用 child_size=30 和 parent_size=100。用 child chunk 搜索，但在 prompt 中返回 parent chunk。将生成答案与 chunk_size=50 的标准 chunking 进行比较。
+4. 在示例文档上实现 Parent-child Chunking 策略。使用 `child_size=30` 和 `parent_size=100`。使用 child Chunk 进行搜索，但在 Prompt 中返回 parent Chunk。将生成的答案与使用 `chunk_size=50` 的标准 Chunking 结果进行比较。
 
-5. 创建 evaluation dataset：10 个问题，带已知 answer chunk。分别测量 (a) 仅 Vector search，(b) 仅 BM25，(c) hybrid search，(d) hybrid + reranking 的 Recall@3、Recall@5 和 Recall@10。绘制结果，并识别 reranking 最有帮助的位置。
+5. 创建一个 Evaluation Dataset：包含 10 个已知答案 Chunk 的问题。分别测量以下方法的 Recall@3、Recall@5 和 Recall@10：（a）仅使用 Vector Search；（b）仅使用 BM25；（c）Hybrid Search；（d）Hybrid Search + Reranking。绘制结果，并找出 Reranking 帮助最大的场景。
 
 ## 关键术语
 
-| Term | 人们通常怎么说 | 实际含义 |
+| 术语 | 人们通常怎么说 | 它的实际含义 |
 |------|----------------|----------------------|
-| BM25 | "Keyword search" | 一种概率排序算法，根据 term frequency、inverse document frequency 和 document length normalization 给文档打分 |
-| Hybrid search | "Best of both worlds" | 并行运行 semantic（Vector）search 和 keyword（BM25）search，然后用 rank fusion 合并结果 |
-| Reciprocal Rank Fusion | "Merge ranked lists" | 对每个文档在所有列表中的 1/(k + rank) 求和，从而组合多个 ranked list |
-| Reranking | "Second pass scoring" | 使用成本更高的 cross-encoder model，对 initial retrieval 得到的 candidate set 重新打分 |
-| Cross-encoder | "Joint query-document model" | 将 query 和 document 作为单个输入并生成相关性分数的模型；比 bi-encoder 更准确，但对 full corpus search 来说太慢 |
-| Bi-encoder | "Independent embedding model" | 独立对 query 和 document 做 Embedding 的模型；由于 Embedding 可预计算，因此速度快，但不如 cross-encoder 准确 |
-| HyDE | "Search with a fake answer" | 为 query 生成 hypothetical answer，对其做 Embedding，并搜索与它相似的真实文档 |
-| Parent-child chunking | "Small search, big context" | 为精确 retrieval 索引小 chunk，但返回更大的 parent chunk 以提供足够 context |
-| Metadata filtering | "Narrow before searching" | 在运行 Vector search 前，根据属性（date、source、category）过滤文档以缩小搜索空间 |
-| Faithfulness | "Did it stay grounded" | 生成答案是否由 retrieved document 支持，而不是来自模型训练数据的 hallucination |
+| BM25 | “关键词搜索” | 一种 Probability 排序算法，根据词频、逆文档频率和文档长度归一化为文档评分 |
+| Hybrid Search | “两全其美” | 并行运行 Semantic Search（Vector）和关键词搜索（BM25），然后使用 rank fusion 合并结果 |
+| Reciprocal Rank Fusion | “合并排序列表” | 对每份文档在所有列表中的 `1/(k + rank)` 求和，以组合多个排序列表 |
+| Reranking | “第二轮评分” | 使用计算成本更高的 cross-encoder Model，为初始检索得到的候选集重新评分 |
+| Cross-encoder | “联合 Query-文档 Model” | 将 Query 和文档作为单个输入并生成相关性分数的 Model；比 bi-encoder 更准确，但速度太慢，不适合搜索整个语料库 |
+| Bi-encoder | “独立 Embedding Model” | 分别为 Query 和文档生成 Embedding 的 Model；由于 Embedding 可以预先计算，所以速度很快，但准确性低于 cross-encoder |
+| HyDE | “使用虚构答案搜索” | 为 Query 生成一个假设答案，为其创建 Embedding，然后搜索与它相似的真实文档 |
+| Parent-child Chunking | “小范围搜索，大 Context” | 为小 Chunk 建立索引以实现精确检索，但返回更大的 parent Chunk 以提供足够的 Context |
+| Metadata Filtering | “先缩小范围，再搜索” | 运行 Vector Search 前，根据属性（日期、来源、类别）筛选文档，以缩小搜索空间 |
+| Faithfulness | “答案是否有依据” | 生成的答案是否受到检索文档的支持，而不是根据 Model 的 Training Data 产生 hallucination |
 
 ## 延伸阅读
 
-- Robertson & Zaragoza, "The Probabilistic Relevance Framework: BM25 and Beyond" (2009) -- BM25 的权威参考，解释公式背后的概率基础
-- Cormack et al., "Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods" (2009) -- RRF 原始论文，展示它优于更复杂的 fusion 方法
-- Gao et al., "Precise Zero-Shot Dense Retrieval without Relevance Labels" (2022) -- HyDE 论文，证明 hypothetical document Embeddings 可以在没有任何训练数据的情况下改善 retrieval
-- Nogueira & Cho, "Passage Re-ranking with BERT" (2019) -- 展示在 BM25 之上进行 cross-encoder reranking 能显著提升 retrieval quality
-- [Khattab et al., "DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines" (2023)](https://arxiv.org/abs/2310.03714) -- 将 prompt construction 和 weight selection 视为 retrieval pipeline 上的 optimization problem；阅读这篇来理解 "program LLMs"，而不是 "prompt LLMs."
-- [Edge et al., "From Local to Global: A Graph RAG Approach to Query-Focused Summarization" (Microsoft Research 2024)](https://arxiv.org/abs/2404.16130) -- GraphRAG 论文：entity-relation extraction + Leiden community detection，用于 query-focused summarization；以及 global vs local retrieval 的区别。
-- [Asai et al., "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection" (ICLR 2024)](https://arxiv.org/abs/2310.11511) -- 带 reflection tokens 的自评估 RAG；静态 retrieve-then-generate 之后的 agentic 前沿。
-- [LangChain Query Construction blog](https://blog.langchain.dev/query-construction/) -- 如何将 natural-language query 转换为 structured database query（Text-to-SQL、Cypher），作为 pre-retrieval step。
+- Robertson & Zaragoza，《The Probabilistic Relevance Framework: BM25 and Beyond》（2009）-- BM25 的权威参考资料，解释了该公式背后的 Probability 基础
+- Cormack 等人，《Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods》（2009）-- 最初的 RRF 论文，证明它优于更加复杂的融合方法
+- Gao 等人，《Precise Zero-Shot Dense Retrieval without Relevance Labels》（2022）-- HyDE 论文，证明 Hypothetical Document Embeddings 可以在没有任何 Training Data 的情况下改善检索效果
+- Nogueira & Cho，《Passage Re-ranking with BERT》（2019）-- 证明在 BM25 结果之上使用 cross-encoder Reranking，可以显著改善检索质量
+- [Khattab 等人，《DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines》（2023）](https://arxiv.org/abs/2310.03714) -- 将 Prompt 构建和权重选择视为检索 Pipeline 上的优化问题；阅读本文，了解如何“为 LLM 编程”，而不仅仅是“为 LLM 编写 Prompt”。
+- [Edge 等人，《From Local to Global: A Graph RAG Approach to Query-Focused Summarization》（Microsoft Research 2024）](https://arxiv.org/abs/2404.16130) -- GraphRAG 论文：使用实体关系提取和 Leiden community detection 实现面向 Query 的摘要；介绍全局检索与局部检索之间的区别。
+- [Asai 等人，《Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection》（ICLR 2024）](https://arxiv.org/abs/2310.11511) -- 使用 reflection Token 的自我 Evaluation RAG；代表了静态“检索后生成”模式之外的 Agentic 前沿。
+- [LangChain Query Construction 博客](https://blog.langchain.dev/query-construction/) -- 如何在检索前将自然语言 Query 转换为结构化数据库 Query（Text-to-SQL、Cypher）。
