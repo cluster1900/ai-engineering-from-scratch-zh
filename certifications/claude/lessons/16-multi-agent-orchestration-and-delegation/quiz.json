@@ -1,0 +1,78 @@
+{
+  "lesson": "16-multi-agent-orchestration-and-delegation",
+  "title": "Multi-Agent 编排与委派",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "什么时候 subagent 比简单的 Tool 更合适？",
+      "options": [
+        "当一项长时间推理任务与父级共享全部 Context、权限和 Evaluation 时",
+        "当任务需要自己边界明确的推理循环、证据、Context 和停止条件时",
+        "当一个确定性转换需要独立日志和重试策略时",
+        "当一个含糊的任务尚无输出契约或完成标准时"
+      ],
+      "correct": 1,
+      "explanation": "subagent 通过独立 Context 支持边界明确的推理、隔离、专业化或独立审查。确定性操作应由代码或 Tool 完成。"
+    },
+    {
+      "stage": "check",
+      "question": "以下哪项要求应由编排代码强制执行，而不是依赖 coordinator Prompt？",
+      "options": [
+        "哪个含糊的主张需要在综合前再进行一轮证据收集",
+        "哪个权威来源能更直接地支持一项有争议的语义主张",
+        "在所需的逐文件结果达到 complete 或被明确标记为 partial 前，不得开始跨文件审查",
+        "某一种解释是否更符合定性的清晰度评分标准"
+      ],
+      "correct": 2,
+      "explanation": "阶段先决条件是稳定的不变量。代码应跟踪 manifest 并阻止非法状态转换，而 Claude 负责在允许的状态内进行语义判断。"
+    },
+    {
+      "stage": "check",
+      "question": "一个 partial 的 subagent 结果应包含什么？",
+      "options": [
+        "一份看似完整、带有不确定性备注但没有明确覆盖边界的产物",
+        "完整的推理记录和 Tool 历史，但没有规范化的结果契约",
+        "一个失败标志、最后尝试的操作，以及要求 coordinator 重试的请求",
+        "有效的已完成工作，以及明确指出的缺口、失败证据和安全的后续操作"
+      ],
+      "correct": 3,
+      "explanation": "Partial 是一种一等状态。它既保留可用工作，也能防止 coordinator 把缺失证据当成任务完成或反面证据。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 independent reviewer 应接收一个全新的 Context？",
+      "options": [
+        "减少对生成者叙事框架和无依据假设的继承",
+        "让 reviewer 可以凭直觉判断，而不受评分标准约束",
+        "防止 reviewer 看到生成者使用过的任何证据",
+        "为 reviewer 提供比生成者更大的独立 Token 预算"
+      ],
+      "correct": 0,
+      "explanation": "Context 隔离有助于 reviewer 对照评分标准判断产物和证据，而不是延续生成者具有说服倾向的叙述。"
+    },
+    {
+      "stage": "post",
+      "question": "三个来源研究者可以独立工作。哪种编排方式最可靠？",
+      "options": [
+        "依次运行，让后续 Agent 继承所有先前的叙事框架和来源",
+        "并行运行边界明确的任务，规范化结果，保留失败，然后执行 reduce",
+        "为每位研究者提供相同且具备写入能力的 Tool，让任何一个人都能完成缺失的工作",
+        "让每位研究者分别起草完整报告，然后选择内容最全面的版本"
+      ],
+      "correct": 1,
+      "explanation": "独立工作可以通过 parallel fan-out 降低延迟，但可靠的 reduce 需要共享 schema、来源身份、错误传播和冲突规则。"
+    },
+    {
+      "stage": "post",
+      "question": "一个 Multi-Agent 设计增加了成本，却没有改善结果。架构师首先应该做什么？",
+      "options": [
+        "保留现有拓扑，但只 Evaluation 最终答案，以免协调成本占据主导地位",
+        "在更改当前角色前添加一个 coordinator Agent，以减少重复工作",
+        "与 single-agent 基线比较，并移除未能提供可衡量的隔离、独立性或并行收益的 Context",
+        "增加每个 Agent 的 Context 和推理预算，以恢复因协调而损失的质量"
+      ],
+      "correct": 2,
+      "explanation": "每个 Context 都必须以可衡量的收益证明其协调成本是合理的。移除不必要的 Agent 通常可以改善延迟、成本和可调试性。"
+    }
+  ]
+}
