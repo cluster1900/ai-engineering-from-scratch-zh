@@ -73,8 +73,8 @@
 
   <g transform="translate(60, 380)">
     <text x="0" y="15" class="step">轴</text>
-    <text x="200" y="15" class="step">Janus (Oct 2024)</text>
-    <text x="450" y="15" class="step">Janus-Pro (Jan 2025)</text>
+    <text x="200" y="15" class="step">Janus（2024年10月）</text>
+    <text x="450" y="15" class="step">Janus-Pro（2025年1月）</text>
     <text x="710" y="15" class="step">增量</text>
 
     <text x="0" y="40" class="small">模型参数</text>
@@ -82,7 +82,7 @@
     <text x="450" y="40" class="small">7B</text>
     <text x="710" y="40" class="small">5.4x</text>
 
-    <text x="0" y="60" class="small">stage-2 数据</text>
+    <text x="0" y="60" class="small">阶段 2 数据</text>
     <text x="200" y="60" class="small">26M 对</text>
     <text x="450" y="60" class="small">72M 对</text>
     <text x="710" y="60" class="small">+176%</text>

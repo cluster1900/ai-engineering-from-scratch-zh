@@ -86,6 +86,10 @@ InternVL-U 将 Janus-Pro 的架构选择吸收到一个更大的框架中。deco
 
 对于两者都需要的产品，Janus-Pro 现在是参考 open 架构。
 
+```figure
+l5-janus-decouple
+```
+
 ## 使用它
 `code/main.py` 模拟 Janus-Pro routing：
 
