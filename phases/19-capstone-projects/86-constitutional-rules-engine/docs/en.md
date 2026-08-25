@@ -51,6 +51,10 @@ flowchart LR
 
 差异是根据原始版本和修订版本计算的。它是包含 `op`（添加、删除、编辑）和相关文本的 `Change` 记录的列表。下游门可以记录差异，以便人工审核者随时间审核修复者的行为。
 
+```figure
+cd-constitution-loop
+```
+
 ## 构建它
 
 `code/rules.yml`持有规则集。 `code/main.py` 中的加载器接受 YAML 文件（当 PyYAML 可用时）或 JSON 文件（内置）。本课程提供了一个 `rules.yml`，该课程测试通过两个代码路径解析该 `rules.yml`。 `code/main.py` 定义了 `Engine` 和 `Fixer` 类以及 `diff` 函数。在 `any_of` 上通过短路递归地评估组合。

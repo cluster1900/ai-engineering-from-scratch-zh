@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "为什么使用声明性 YAML 构成而不是临时代码检查？",
       "options": [
+        "因为 YAML 支持锚点",
         "因为 YAML 的解析速度比 Python 更快",
         "因为 YAML 中的规则可由非工程师审查，存在于版本控制中，并且无需更改代码即可替换",
-        "因为标准库更喜欢YAML",
-        "因为 YAML 支持锚点"
+        "因为标准库更喜欢YAML"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
-      "stage": "check",
+      "stage": "pre",
       "question": "每条规则必须至少包含哪些字段？",
       "options": [
         "名称、正则表达式、修复",
         "id、所有者、时间戳",
-        "名称、严重性、必须、解释",
-        "谓词、严重性、所有者"
+        "谓词、严重性、所有者",
+        "名称、严重性、必须、解释"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -31,33 +31,33 @@
       "question": "引擎如何组成谓词？",
       "options": [
         "每个规则仅通过一个 contains_regex",
-        "通过 all_of、any_of 和 not_ 递归包装原子谓词",
         "通过乘以置信度分数",
-        "通过神经分类器"
+        "通过神经分类器",
+        "通过 all_of、any_of 和 not_ 递归包装原子谓词"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "apply_when 的作用是什么？",
       "options": [
-        "它总是评估为 true",
-        "它控制必须谓词，因此不适用的规则被记录为 not_applicable 而不是违规",
         "它覆盖了严重性",
-        "它选择修复程序操作"
+        "它选择修复程序操作",
+        "它控制必须谓词，因此不适用的规则被记录为 not_applicable 而不是违规",
+        "它总是评估为 true"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
-      "stage": "post",
+      "stage": "check",
       "question": "固定器是做什么的？",
       "options": [
-        "它重写规则文件",
+        "它调用远程模型来修复文本",
         "它应用每个规则的声明性修复（append、prepend、replace_regex）来生成修订后的文本",
-        "它计算修复的严重性",
-        "它调用远程模型来修复文本"
+        "它重写规则文件",
+        "它计算修复的严重性"
       ],
       "correct": 1,
       "explanation": ""
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "为什么演示程序在修复程序后第二次运行引擎？",
       "options": [
-        "扩大报告大小",
-        "验证修改后的文本是否满足规则并显示修复程序无法在本地修复的任何规则",
+        "因为第一遍只是预演",
         "重新加载规则集",
-        "因为第一遍只是预演"
+        "扩大报告大小",
+        "验证修改后的文本是否满足规则并显示修复程序无法在本地修复的任何规则"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     }
   ]
