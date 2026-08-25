@@ -101,6 +101,10 @@ Per-agent projection 扩展性更强，但需要 schema。没有 schema 时，�
 
 没有这种隔离时，verifier 的输出会成为 pool 中的新 entries，这意味着被 poison 的 pool 会 poison verifier，而 verifier 又会 poison 它自己的 verifications。
 
+```figure
+swarm-blackboard
+```
+
 ## 构建它
 
 `code/main.py` 用 stdlib Python 实现了两种拓扑，以及一个 toy poisoning attack 和三种缓解措施。

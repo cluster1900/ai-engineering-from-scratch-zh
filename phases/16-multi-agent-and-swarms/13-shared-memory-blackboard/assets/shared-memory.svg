@@ -22,7 +22,7 @@
   <text x="480" y="28" text-anchor="middle" class="title">共享 memory 模式与投毒路径</text>
 
   <rect x="40" y="60" width="420" height="200" class="cool"/>
-  <text x="250" y="82" text-anchor="middle" class="head">全消息池（AutoGen, MetaGPT）</text>
+  <text x="250" y="82" text-anchor="middle" class="head">全消息池（AutoGen、MetaGPT）</text>
 
   <rect x="70" y="100" width="90" height="40" class="box"/>
   <text x="115" y="124" text-anchor="middle" class="step">agent A</text>
@@ -41,7 +41,7 @@
   <line x1="160" y1="220" x2="256" y2="190" stroke="#1a1a1a" marker-end="url(#arrow)"/>
 
   <rect x="500" y="60" width="420" height="200" class="cold"/>
-  <text x="710" y="82" text-anchor="middle" class="head">带主题的 Blackboard（CA-MCP, Matrix）</text>
+  <text x="710" y="82" text-anchor="middle" class="head">带主题的 Blackboard（CA-MCP、Matrix）</text>
 
   <rect x="530" y="100" width="90" height="40" class="box"/>
   <text x="575" y="124" text-anchor="middle" class="step">publisher</text>
@@ -69,18 +69,18 @@
   <line x1="740" y1="220" x2="766" y2="220" stroke="#1a1a1a" marker-end="url(#arrow)"/>
 
   <rect x="40" y="290" width="880" height="230" class="hot"/>
-  <text x="480" y="314" text-anchor="middle" class="head">memory poisoning — 共享 memory 产生的失效模式</text>
+  <text x="480" y="314" text-anchor="middle" class="head">memory poisoning — 共享 memory 的失效模式</text>
 
   <rect x="70" y="335" width="120" height="50" class="box"/>
   <text x="130" y="358" text-anchor="middle" class="step">retriever</text>
   <text x="130" y="372" text-anchor="middle" class="small">幻觉出小数</text>
 
   <rect x="230" y="335" width="120" height="50" class="box"/>
-  <text x="290" y="358" text-anchor="middle" class="step">summarizer</text>
+  <text x="290" y="358" text-anchor="middle" class="step">摘要器</text>
   <text x="290" y="372" text-anchor="middle" class="small">复述 42%</text>
 
   <rect x="390" y="335" width="120" height="50" class="box"/>
-  <text x="450" y="358" text-anchor="middle" class="step">analyst</text>
+  <text x="450" y="358" text-anchor="middle" class="step">分析器</text>
   <text x="450" y="372" text-anchor="middle" class="small">建议采用</text>
 
   <rect x="550" y="335" width="150" height="50" class="box"/>
@@ -92,14 +92,14 @@
   <line x1="510" y1="360" x2="546" y2="360" stroke="#c0392b" marker-end="url(#redarrow)"/>
 
   <rect x="740" y="335" width="160" height="120" class="cool"/>
-  <text x="820" y="358" text-anchor="middle" class="step">verifier</text>
-  <text x="820" y="376" text-anchor="middle" class="small">read-only</text>
+  <text x="820" y="358" text-anchor="middle" class="step">验证器</text>
+  <text x="820" y="376" text-anchor="middle" class="small">只读</text>
   <text x="820" y="392" text-anchor="middle" class="small">重新获取来源</text>
   <text x="820" y="408" text-anchor="middle" class="small">标记不一致</text>
   <text x="820" y="438" text-anchor="middle" class="small">输出路由到</text>
-  <text x="820" y="452" text-anchor="middle" class="small">单独 channel</text>
+  <text x="820" y="452" text-anchor="middle" class="small">独立 channel</text>
 
   <line x1="130" y1="385" x2="740" y2="390" stroke="#2e7d32" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
 
-  <text x="480" y="488" text-anchor="middle" class="caption">缓解：append-only log · provenance fields · 不可写 verifier · 独立来源访问</text>
+  <text x="480" y="488" text-anchor="middle" class="caption">缓解：仅追加日志 · provenance fields · 不可写 verifier · 独立来源访问</text>
 </svg>
