@@ -4,12 +4,12 @@
     "stage": "pre",
     "question": "为什么随机 train/test split 对时间序列数据无效？",
     "options": [
-      "随机划分会让数据集变得太小",
-      "随机划分会把未来信息泄漏到训练集中，让模型作弊",
       "时间序列数据完全不能被划分",
-      "随机划分只适用于 Classification 问题"
+      "随机划分只适用于 Classification 问题",
+      "随机划分会把未来信息泄漏到训练集中，让模型作弊",
+      "随机划分会让数据集变得太小"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "在随机划分中，未来的数据点可能进入训练集，而过去的数据点却在测试集中。于是模型会用未来信息来预测过去，得到虚假乐观的结果。"
   },
   {
@@ -17,10 +17,10 @@
     "stage": "pre",
     "question": "时间序列是 stationary 意味着什么？",
     "options": [
-      "数值从不随时间变化",
+      "它总是向上趋势",
       "它的统计性质（均值、方差、自相关）不会随时间变化",
-      "它没有季节性模式",
-      "它总是向上趋势"
+      "数值从不随时间变化",
+      "它没有季节性模式"
     ],
     "correct": 1,
     "explanation": "stationary 序列在时间上具有恒定的均值、方差和自相关结构。大多数预测方法都假设 stationarity。非 stationary 序列需要先进行差分或去趋势。"
@@ -30,12 +30,12 @@
     "stage": "post",
     "question": "对时间序列进行差分的目的是什么？",
     "options": [
-      "增加数据点数量",
-      "通过建模连续值之间的变化来移除趋势，并让序列变得 stationary",
+      "将数值归一化到 0 和 1 之间",
       "把 Regression 转换为 Classification",
-      "将数值归一化到 0 和 1 之间"
+      "增加数据点数量",
+      "通过建模连续值之间的变化来移除趋势，并让序列变得 stationary"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "差分会用相对于前一个值的变化替换每个值：diff[t] = value[t] - value[t-1]。这会移除趋势，使序列更接近 stationary。"
   },
   {
@@ -43,12 +43,12 @@
     "stage": "post",
     "question": "Lag features 会把时间序列转换为监督学习问题。用于预测 y[t] 的 lag-3 feature 是什么？",
     "options": [
-      "接下来 3 个值的平均值：(y[t+1] + y[t+2] + y[t+3]) / 3",
       "3 个时间步之前的值：y[t-3]",
+      "当前值与向前 3 步的值之间的差",
       "该序列的三阶导数",
-      "当前值与向前 3 步的值之间的差"
+      "接下来 3 个值的平均值：(y[t+1] + y[t+2] + y[t+3]) / 3"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "lag-3 feature 是 y[t-3]：过去 3 个时间步的值。把过去的值作为输入 features，可以让标准 ML 模型（Regression、trees）在不使用专门算法的情况下进行时间序列预测。"
   },
   {
@@ -57,11 +57,11 @@
     "question": "Walk-forward validation 会把时间数据划分为扩展窗口或滑动窗口。为什么这比时间序列中的 K-fold CV 更好？",
     "options": [
       "Walk-forward 计算更快",
-      "Walk-forward 尊重时间顺序，只在过去数据上训练、在未来数据上测试，从而防止 lookahead bias",
       "K-fold CV 不能用于数值数据",
-      "Walk-forward 使用更多数据进行训练"
+      "Walk-forward 使用更多数据进行训练",
+      "Walk-forward 尊重时间顺序，只在过去数据上训练、在未来数据上测试，从而防止 lookahead bias"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "Walk-forward validation 始终在过去数据上训练，并在未来数据上测试，模拟真实世界部署。K-fold CV 会打乱数据，可能用未来训练来预测过去（temporal leakage）。"
   }
 ]
