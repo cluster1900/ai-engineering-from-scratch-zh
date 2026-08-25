@@ -48,6 +48,10 @@ Coreference Resolution 会把所有指向同一个真实世界 entity 的表达�
 - 中文、日文等语言中的 zero anaphora。
 - Cataphora（pronoun 出现在 referent 之前）：“When **she** walked in, Mary smiled.”
 
+```figure
+coref-links
+```
+
 ## 构建它
 ### 步骤 1： pretrained neural coreference (AllenNLP / spaCy-experimental)
 

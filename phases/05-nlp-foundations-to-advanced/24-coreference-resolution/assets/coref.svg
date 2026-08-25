@@ -51,7 +51,7 @@
   <text x="720" y="278" text-anchor="middle" class="label">实体 #3</text>
   <text x="720" y="300" text-anchor="middle" class="content">Mary Chen</text>
   <text x="720" y="320" text-anchor="middle" class="content">她</text>
-  <text x="720" y="355" text-anchor="middle" class="caption">type: PERSON</text>
+  <text x="720" y="355" text-anchor="middle" class="caption">类型: PERSON</text>
 
-  <text x="450" y="420" text-anchor="middle" class="caption">解析后的簇供 IE、QA、摘要使用 — 下游任务看到一个实体，而不是多个提及</text>
+  <text x="450" y="420" text-anchor="middle" class="caption">解析后的簇供 IE、QA、摘要使用：下游任务看到一个实体，而非多个提及</text>
 </svg>

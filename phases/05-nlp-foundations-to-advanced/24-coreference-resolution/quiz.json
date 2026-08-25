@@ -7,8 +7,8 @@
       "question": "Coreference resolution 的目标是什么？",
       "options": [
         "将所有指向同一个现实世界实体的 mentions（named、nominal、pronominal）聚成一类",
-        "标注词性",
         "抽取关系",
+        "标注词性",
         "把代词翻译成名词"
       ],
       "correct": 0,
@@ -18,60 +18,60 @@
       "stage": "pre",
       "question": "哪类表达属于 “nominal” mention？",
       "options": [
-        "只有专有名词",
-        "像 “the CEO” 或 “the company” 这样的名词短语",
+        "动词",
         "像 “she” 这样的代词",
-        "动词"
+        "只有专有名词",
+        "像 “the CEO” 或 “the company” 这样的名词短语"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Nominal mentions 是像 “the company” 这样的名词短语；pronominal mentions 是代词。"
     },
     {
       "stage": "check",
       "question": "现代（Lee et al., 2017）coref architecture 是什么？",
       "options": [
-        "BM25 retrieval",
         "只使用基于规则的 syntactic parsing",
         "Decision trees",
-        "End-to-end span-based：枚举 spans，给 mentions 打分，然后给 antecedent probabilities 打分，并用 greedy 方式聚类"
+        "End-to-end span-based：枚举 spans，给 mentions 打分，然后给 antecedent probabilities 打分，并用 greedy 方式聚类",
+        "BM25 retrieval"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": "End-to-end neural coref 会枚举 spans，并联合学习 mention scoring 和 antecedent scoring。"
     },
     {
       "stage": "check",
       "question": "CoNLL F1 平均了什么？",
       "options": [
-        "跨语言的 F1",
         "MUC、B-cubed 和 CEAF-phi4 F1 scores",
-        "Token 和 span F1",
-        "Precision 和 recall"
+        "Precision 和 recall",
+        "跨语言的 F1",
+        "Token 和 span F1"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "CoNLL F1 是 MUC、B-cubed 和 CEAF-phi4 metrics 的均值。"
     },
     {
       "stage": "check",
       "question": "什么是 bridging anaphora？",
       "options": [
-        "一种误译",
         "像 “the wheels” 这样的隐式指代，暗示的是此前提到的一辆车的轮子",
+        "一种误译",
         "先于其 referent 出现的代词",
         "没有 antecedent 的代词"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Bridging 会把一个 mention 连接到某个被暗示但未明确说出的部分关系或相关实体。"
     },
     {
       "stage": "post",
       "question": "为什么只用 LLM 做 coref 在长文档上不可靠？",
       "options": [
+        "Coref 需要 CFG",
         "LLMs 不能读取文本",
         "Tokenizers 会失败",
-        "单次调用的 LLMs 在 50+ 段落中会过度合并或静默遗漏 mentions；需要 sliding-window 加 merge",
-        "Coref 需要 CFG"
+        "单次调用的 LLMs 在 50+ 段落中会过度合并或静默遗漏 mentions；需要 sliding-window 加 merge"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "长文档 LLM coref 会退化；带 cross-window merging 的 sliding-window 可以缓解。"
     },
     {
@@ -79,11 +79,11 @@
       "question": "为什么要在下游任务前把 coref clusters 合并到 NER 结果中？",
       "options": [
         "Wikidata 要求必须这样",
-        "为了增加 Token count",
+        "这样下游任务看到的是每个 cluster 一个实体，而不是每个 surface mention 一个实体，从而显著提升 coverage",
         "更低的 latency",
-        "这样下游任务看到的是每个 cluster 一个实体，而不是每个 surface mention 一个实体，从而显著提升 coverage"
+        "为了增加 Token count"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "如果不合并，NER 会把每个 surface form 分开计数，并遗漏 60-80% 的 entity mentions。"
     },
     {
@@ -91,9 +91,9 @@
       "question": "为什么硬编码的 gender rules 是 coref systems 中的脆弱点？",
       "options": [
         "它们会在 non-binary referents、组织和动物上失效；learned scoring 更稳健",
+        "它们不能使用 POS tags",
         "它们需要 GPU",
-        "它们运行得太快",
-        "它们不能使用 POS tags"
+        "它们运行得太快"
       ],
       "correct": 0,
       "explanation": "Gender heuristics 在人口统计多样的文本中会失败；更推荐 learned models。"
