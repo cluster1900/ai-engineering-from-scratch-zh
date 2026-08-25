@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "为什么普通 CNN 不能直接处理 point cloud？",
-      "options": ["Point cloud 太大", "CNN 假设输入像素排列在具有邻域结构的规则网格上；而 point cloud 是 R^3 中无序的点集合，没有网格且大小可变，这违反了这两个假设", "CNN 只能处理灰度图", "Point cloud 需要 quaternions"],
+      "options": [
+        "Point cloud 需要 quaternions",
+        "CNN 假设输入像素排列在具有邻域结构的规则网格上；而 point cloud 是 R^3 中无序的点集合，没有网格且大小可变，这违反了这两个假设",
+        "CNN 只能处理灰度图",
+        "Point cloud 太大"
+      ],
       "correct": 1,
       "explanation": "CNN convolutions 需要规则邻域。Point cloud 既没有网格，也没有固定的点数量。将 point cloud voxelising 可以重新得到网格（供 3D CNNs 使用），但内存开销很大。PointNet 用 permutation-invariant architecture 绕开了这个问题：它独立处理每个点，然后用 symmetric aggregation 进行聚合。"
     },
     {
       "stage": "pre",
       "question": "什么技巧让 PointNet 对输入点实现 permutation-invariant？",
-      "options": ["Batch normalisation", "对每个点独立应用 shared MLP，然后进行 symmetric aggregation（max pool 或 sum）；由于 aggregation 忽略点的顺序，整个 network 的输出就是 order-invariant", "特殊的 Loss Function", "在 forward pass 前对点进行排序"],
-      "correct": 1,
+      "options": [
+        "在 forward pass 前对点进行排序",
+        "Batch normalisation",
+        "特殊的 Loss Function",
+        "对每个点独立应用 shared MLP，然后进行 symmetric aggregation（max pool 或 sum）；由于 aggregation 忽略点的顺序，整个 network 的输出就是 order-invariant"
+      ],
+      "correct": 3,
       "explanation": "symmetric-function 技巧是自 2017 年以来每个 point-cloud network 家族的核心。对每个点运行同一个 MLP（相同权重、无顺序依赖），然后用一个不依赖顺序的 function 聚合。Max 和 sum 是两个 canonical choices；PointNet 及其大多数后继者使用 max。"
     },
     {
       "stage": "post",
       "question": "一个 vanilla NeRF MLP 输入原始 (x, y, z) coordinates 后产生模糊结果。什么能修复它？",
-      "options": ["添加更多训练数据", "Positional encoding：在 MLP 前将 coordinates 投影到 Fourier features（对多个 l 使用 2^l * pi * x 的 sin/cos）；这让具有 low-frequency bias 的 MLP 能表示 high-frequency details", "使用 16-bit precision", "切换到 CNN"],
-      "correct": 1,
+      "options": [
+        "添加更多训练数据",
+        "切换到 CNN",
+        "Positional encoding：在 MLP 前将 coordinates 投影到 Fourier features（对多个 l 使用 2^l * pi * x 的 sin/cos）；这让具有 low-frequency bias 的 MLP 能表示 high-frequency details",
+        "使用 16-bit precision"
+      ],
+      "correct": 2,
       "explanation": "MLPs 存在 spectral bias：它们很容易拟合平滑 functions，但难以处理 high frequencies。Positional encoding 将每个 coordinate 提升为一个已经包含 high-frequency signals 的 Vector。随后 MLP 只需要更轻松地组合这些 features，就能形成清晰的 geometry 和 texture。同样的技巧也用于 transformer positional encoding 和 diffusion time embedding。"
     },
     {
       "stage": "post",
       "question": "NeRF 渲染出的 pixel 是如何计算的？",
-      "options": ["作为最终 MLP layer 的输出", "从 camera 穿过 pixel 发射一条 ray，沿 ray 采样 N 个点，在每个点查询 MLP 得到 (density, colour)，并用 volumetric rendering equation 将这些 samples 按 alpha-weighted colours 沿 ray 合成", "查询预计算的 voxel grid", "在 depth map 上运行 convolution"],
-      "correct": 1,
+      "options": [
+        "从 camera 穿过 pixel 发射一条 ray，沿 ray 采样 N 个点，在每个点查询 MLP 得到 (density, colour)，并用 volumetric rendering equation 将这些 samples 按 alpha-weighted colours 沿 ray 合成",
+        "在 depth map 上运行 convolution",
+        "查询预计算的 voxel grid",
+        "作为最终 MLP layer 的输出"
+      ],
+      "correct": 0,
       "explanation": "NeRF rendering 是带 neural density field 的 classical volume rendering。对每个 pixel，你选择一条 ray，沿其采样，在每个 sample 查询 (sigma, c)，并使用 (1 - exp(-sigma * delta)) alphas 和 cumulative transmittance 进行合成。通过这个 rendering step 进行 Backprop，正是从 2D photos 训练 MLP 的方式，过程中从未出现显式 3D supervision。"
     },
     {
       "stage": "post",
       "question": "为什么 3D Gaussian splatting 在生产中很大程度上取代了 NeRF？",
-      "options": ["它生成质量更高的图像", "它是一种 explicit representation（数百万个带 opacity 和 colour 的 3D Gaussians），通过 rasterisation 实时渲染，而不是在 sampled rays 上查询 MLP；训练从数小时缩短到数分钟，渲染快 100 倍，质量相当", "NeRFs 被证明在数学上是错误的", "Gaussians 更容易压缩"],
+      "options": [
+        "NeRFs 被证明在数学上是错误的",
+        "它是一种 explicit representation（数百万个带 opacity 和 colour 的 3D Gaussians），通过 rasterisation 实时渲染，而不是在 sampled rays 上查询 MLP；训练从数小时缩短到数分钟，渲染快 100 倍，质量相当",
+        "Gaussians 更容易压缩",
+        "它生成质量更高的图像"
+      ],
       "correct": 1,
       "explanation": "3D Gaussian Splatting (SIGGRAPH 2023) 用显式的 3D Gaussian primitives 云替代了基于 implicit MLP 的 scene。Rendering 变成 GPU rasterisation，比逐 pixel 通过 MLP 进行 ray sampling 快几个数量级。大多数 2026 年的 NeRF products 都使用 Gaussian splatting 或其后继方法交付；NeRF paradigm 仍然影响训练目标和数学形式。"
     }
-  ]
+  ],
+  "title": null
 }

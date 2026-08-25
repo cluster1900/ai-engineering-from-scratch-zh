@@ -121,6 +121,10 @@ delta_i = t_{i+1} - t_i
 - **NeRF Synthetic** / **Blended MVS** — 用于 view synthesis 的 posed-image datasets。
 - **Mip-NeRF 360** dataset — unbounded real scenes。
 
+```figure
+nerf-rays
+```
+
 ## 构建它
 ### 步骤 1： PointNet classifier
 
