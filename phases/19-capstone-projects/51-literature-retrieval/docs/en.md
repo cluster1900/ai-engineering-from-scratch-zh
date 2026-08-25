@@ -36,6 +36,10 @@ Paper
 
 references 和 citations 字段形成有向 citation graph。两个 mock APIs 返回的字段有重叠但并不完全相同，因此 corpus loader 会按 `id` 对它们取并集。
 
+```figure
+cg-citation-hops
+```
+
 ## Architecture
 
 ```mermaid
