@@ -4,12 +4,12 @@
     "stage": "pre",
     "question": "使用 linear model 拟合一个明显弯曲的（二次）关系。哪个 error component 占主导？",
     "options": [
-      "Variance：模型会随不同 training data 变化过大",
       "Bias：模型过于僵硬，无法捕捉真实的 nonlinear pattern",
+      "Variance：模型会随不同 training data 变化过大",
       "Irreducible noise：数据噪声太大",
       "都不是：模型应该能完美拟合"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "无论看到多少数据，linear model 都无法捕捉二次曲线。这种来自错误模型假设的 systematic error 就是 bias。模型发生了 underfit。"
   },
   {
@@ -17,10 +17,10 @@
     "stage": "pre",
     "question": "expected error 的 bias-variance decomposition 有三项。哪一项无法通过任何模型降低？",
     "options": [
-      "Bias squared",
+      "三者都可以降低到零",
       "Variance",
       "Irreducible noise (sigma squared)",
-      "三者都可以降低到零"
+      "Bias squared"
     ],
     "correct": 2,
     "explanation": "Irreducible noise 来自数据本身的随机性（measurement error、missing variables）。没有模型可以预测噪声。Expected error = bias^2 + variance + irreducible noise。"
@@ -30,12 +30,12 @@
     "stage": "post",
     "question": "给模型添加 L2 regularization 会增加 bias 并降低 variance。为什么这有用？",
     "options": [
-      "它总是同时提升 training 和 test accuracy",
       "variance 的下降可以超过 bias 的增加，从而降低 total error",
+      "它会让模型训练得更快",
       "L2 regularization 会消除 irreducible noise",
-      "它会让模型训练得更快"
+      "它总是同时提升 training 和 test accuracy"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "Regularization 用少量 bias 增加换取更大的 variance 降低。当模型 overfitting（high variance）时，即使 bias 略微上升，这种 tradeoff 也会降低 total error。"
   },
   {
@@ -43,12 +43,12 @@
     "stage": "post",
     "question": "一个模型的 training error = 2%，test error = 25%。最可能的诊断是什么？",
     "options": [
+      "High irreducible noise：数据噪声太大",
       "High bias（underfitting）：模型太简单",
       "High variance（overfitting）：模型记住了 training data，无法 generalize",
-      "High irreducible noise：数据噪声太大",
       "模型校准得很完美"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "低 training error + 高 test error + 大差距 = high variance（overfitting）。模型拟合了 training-specific noise。补救方法：regularize、降低 complexity、获取更多数据。"
   },
   {
@@ -56,12 +56,12 @@
     "stage": "post",
     "question": "你在 50 个不同的随机 training subsets 上训练同一个 model architecture，并观察到它们之间的 predictions 差异巨大。这说明什么？",
     "options": [
-      "High bias：模型持续错过真实模式",
-      "High variance：模型对它看到的具体 training data 很敏感",
       "High irreducible noise：target variable 是随机的",
-      "learning rate 太高"
+      "High bias：模型持续错过真实模式",
+      "learning rate 太高",
+      "High variance：模型对它看到的具体 training data 很敏感"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "Variance 衡量的是在不同 data subsets 上训练时，predictions 会变化多少。不同 subsets 之间 predictions 差异巨大，就是 high variance 的定义。"
   }
 ]
