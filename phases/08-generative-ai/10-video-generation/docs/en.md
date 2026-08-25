@@ -60,6 +60,10 @@
 
 Open weights 在视频领域缩小差距的速度比图像领域更快：到 2026 年中，HunyuanVideo + WAN 2.2 LoRAs 已经驱动了大多数 open-source workflows。
 
+```figure
+video-diffusion-denoise
+```
+
 ## 构建它
 
 `code/main.py` 模拟核心的 spatiotemporal DiT 思路：patchify 一个小型合成视频，加入 per-patch position embedding，并用 transformer-style attention 在 patches 上对整个序列 denoise。不用 numpy；纯 Python。我们展示了即使在 1-D 中，当相邻帧 patches 共享 denoiser 和 position embeddings 时，也会出现时间一致性。

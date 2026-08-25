@@ -25,7 +25,7 @@
     <rect x="100" y="85" width="30" height="30" class="box"/>
     <rect x="135" y="85" width="30" height="30" class="box"/>
     <rect x="170" y="85" width="30" height="30" class="box"/>
-    <text x="115" y="135" text-anchor="middle" class="caption">T × H × W × 3  (240 frames @ 1080p)</text>
+    <text x="115" y="135" text-anchor="middle" class="caption">T × H × W × 3  (240 帧 @ 1080p)</text>
   </g>
 
   <line x1="210" y1="100" x2="260" y2="100" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
@@ -40,7 +40,7 @@
   <!-- patchify -->
   <rect x="450" y="75" width="140" height="60" class="hot"/>
   <text x="520" y="105" text-anchor="middle" class="content">patchify</text>
-  <text x="520" y="125" text-anchor="middle" class="caption">t_p × h_p × w_p blocks</text>
+  <text x="520" y="125" text-anchor="middle" class="caption">t_p × h_p × w_p 块</text>
 
   <line x1="590" y1="100" x2="640" y2="100" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
 
@@ -48,7 +48,7 @@
   <rect x="640" y="60" width="220" height="90" class="cold"/>
   <text x="750" y="85" text-anchor="middle" class="label">时空 DiT</text>
   <text x="750" y="105" text-anchor="middle" class="caption">分解式：先空间后时间 attn</text>
-  <text x="750" y="125" text-anchor="middle" class="caption">cross-attn 到 T5-XXL text</text>
+  <text x="750" y="125" text-anchor="middle" class="caption">cross-attn 到 T5-XXL 文本</text>
 
   <!-- loss -->
   <rect x="30" y="180" width="830" height="60" class="hot"/>
