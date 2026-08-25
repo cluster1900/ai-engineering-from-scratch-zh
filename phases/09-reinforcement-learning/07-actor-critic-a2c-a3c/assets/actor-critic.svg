@@ -14,10 +14,10 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">actor-critic：policy + value，一起训练</text>
+  <text x="450" y="30" text-anchor="middle" class="title">actor-critic：policy + value，联合 Training</text>
 
   <rect x="40" y="60" width="820" height="60" class="box"/>
-  <text x="60" y="85" class="label">共享 state features x = phi(s)</text>
+  <text x="60" y="85" class="label">共享 state Features x = phi(s)</text>
   <text x="60" y="105" class="caption">MLP trunk，CNN 处理 pixels，Transformer 处理 Tokens — 同一输入，两个 heads</text>
 
   <rect x="40" y="140" width="400" height="180" class="hot"/>
@@ -39,7 +39,7 @@
   <rect x="40" y="340" width="820" height="80" class="box"/>
   <text x="60" y="365" class="label">advantage estimator A_t</text>
   <text x="60" y="388" class="content">A_t = delta_t + (g * lam) * A_{t+1}     delta_t = r_{t+1} + g V(s_{t+1}) - V(s_t)</text>
-  <text x="60" y="410" class="caption">GAE(lam): lam=0 纯 TD，lam=1 纯 MC，lam=0.95 是 2026 默认</text>
+  <text x="60" y="410" class="caption">GAE(lam)：lam=0 纯 TD，lam=1 纯 MC，lam=0.95 是 2026 默认</text>
 
   <text x="450" y="450" text-anchor="middle" class="caption">从 return 中减去 V，normalize，乘以 grad log pi — 更低方差，同一 gradient</text>
 </svg>

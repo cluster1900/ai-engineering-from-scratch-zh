@@ -53,6 +53,10 @@ variance 来自使用 raw returns。如果你减去一个 baseline `b(s_t)`：�
 
 三项：policy-gradient loss、value regression、entropy bonus。`c_v ~ 0.5`、`c_e ~ 0.01` 是 canonical starting points。
 
+```figure
+actor-critic
+```
+
 ## Build It
 
 ### Step 1: a critic
