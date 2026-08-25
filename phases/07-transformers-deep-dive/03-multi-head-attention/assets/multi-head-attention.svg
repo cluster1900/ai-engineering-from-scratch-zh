@@ -17,7 +17,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">Multi-Head Attention — 拆分，并行 attend，拼接</text>
+  <text x="450" y="30" text-anchor="middle" class="title">Multi-Head Attention — 拆分、并行 attend、拼接</text>
 
   <!-- Input -->
   <rect x="370" y="55" width="160" height="36" class="hot"/>
@@ -57,7 +57,7 @@
   <rect x="820" y="180" width="45" height="26" class="head4"/><text x="842" y="198" text-anchor="middle" class="content">V_4</text>
 
   <!-- Parallel attention per head -->
-  <text x="450" y="240" text-anchor="middle" class="caption">softmax(Q_h K_h^T / √d_head) V_h  —  batched matmul，一次 op</text>
+  <text x="450" y="240" text-anchor="middle" class="caption">softmax(Q_h K_h^T / √d_head) V_h — batched matmul，一次 op</text>
 
   <rect x="180" y="260" width="110" height="44" class="head1"/>
   <text x="235" y="280" text-anchor="middle" class="content">head 1</text>
@@ -69,7 +69,7 @@
 
   <rect x="440" y="260" width="110" height="44" class="head3"/>
   <text x="495" y="280" text-anchor="middle" class="content">head 3</text>
-  <text x="495" y="295" text-anchor="middle" class="caption">copy / induction</text>
+  <text x="495" y="295" text-anchor="middle" class="caption">复制 / induction</text>
 
   <rect x="570" y="260" width="110" height="44" class="head4"/>
   <text x="625" y="280" text-anchor="middle" class="content">head 4</text>
