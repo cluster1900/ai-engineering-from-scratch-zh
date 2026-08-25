@@ -78,6 +78,10 @@ DeepSeek-V3 在几乎所有 benchmark 上都胜过 Llama 3 70B（dense），同�
 
 无论哪些 experts 被触发，所有 experts 都必须驻留在 GPU 上。一个 671B 模型需要约 1.3 TB VRAM 来存放 fp16 weights。frontier MoE deployment 需要 expert parallelism：把 experts 分片到多个 GPUs 上，通过网络 route tokens。Latency 主要由 all-to-all communication 主导，而不是 matmul。
 
+```figure
+expert-routing
+```
+
 ## 构建它
 
 参见 `code/main.py`。一个使用纯 stdlib 的紧凑 MoE layer，包含：
