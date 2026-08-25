@@ -1,63 +1,63 @@
 {
   "lesson": "08-memory-blocks-sleep-time-compute",
-  "title": "Memory Blocks 与 Sleep-Time Compute（Letta）",
+  "title": "Memory Blocks and Sleep-Time Compute",
   "questions": [
     {
       "stage": "pre",
       "question": "Letta 的三层 memory tiers 是什么？",
       "options": [
+        "RAM、swap、disk",
         "Cache、KV、archival",
         "Core、recall、archival",
-        "RAM、swap、disk",
         "Working、episodic、semantic"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Letta 使用 core（始终可见）、recall（conversation history）和 archival（external）三层。"
     },
     {
       "stage": "pre",
       "question": "Sleep-time compute 针对的是哪个生产问题？",
       "options": [
-        "在 critical path 上做 memory consolidation 导致的 tail latency",
-        "数学题上的更高准确率",
         "更低的 Embedding 成本",
-        "更快的 JSON 解析"
+        "更快的 JSON 解析",
+        "数学题上的更高准确率",
+        "在 critical path 上做 memory consolidation 导致的 tail latency"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Sleep-time 将 prune/summarize/reconcile 移出面向用户的路径，因此 primary responses 保持快速。"
     },
     {
       "stage": "check",
       "question": "哪一项不是 Letta 中的 memory block 字段？",
       "options": [
-        "label",
-        "value",
         "limit",
-        "embedding_model_version"
+        "embedding_model_version",
+        "label",
+        "value"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "Blocks 携带 id、label、value、limit、description；embedding model version 不是 block schema 的一部分。"
     },
     {
       "stage": "check",
       "question": "为什么 sleep-time agent 可以运行比 primary 更强的 model？",
       "options": [
+        "Memory ops 消耗一半 Tokens",
         "它收到一个 private API key",
         "它位于 critical path 之外，因此不受 latency 约束",
-        "它不受 rate limits 限制",
-        "Memory ops 消耗一半 Tokens"
+        "它不受 rate limits 限制"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "因为它不会阻塞用户响应，sleep-time agent 可以更慢、更昂贵。"
     },
     {
       "stage": "check",
       "question": "Human 和 Persona blocks 泛化成了什么 pattern？",
       "options": [
-        "Vector embeddings",
+        "OS processes",
         "任意用户定义的 typed editable blocks（Task、Project、Safety、...）",
         "JSON-RPC channels",
-        "OS processes"
+        "Vector embeddings"
       ],
       "correct": 1,
       "explanation": "Letta 将两个 MemGPT blocks 泛化为任何用户定义的 block，包含 id、label、value、limit、description。"
@@ -67,8 +67,8 @@
       "question": "这个 pattern 中的 silent drift 是什么？",
       "options": [
         "primary agent 从未看到 sleep-time agent 在其下方重写了 block；用 versioning 和 visible diffs 修复",
-        "缓慢的 disk writes",
         "Embedding model upgrades",
+        "缓慢的 disk writes",
         "Rate-limit jitter"
       ],
       "correct": 0,
