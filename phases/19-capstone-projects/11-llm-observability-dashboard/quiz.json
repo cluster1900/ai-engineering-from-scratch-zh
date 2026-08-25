@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "Langfuse、Phoenix 和 OpenLLMetry 会收敛到哪种 ingest schema？",
       "options": [
-        "每个供应商各自的专有 JSON",
         "Prometheus exposition format",
         "基于 OTLP HTTP 的 OpenTelemetry GenAI semantic conventions",
+        "每个供应商各自的专有 JSON",
         "普通 CSV 日志文件"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -20,10 +20,10 @@
       "options": [
         "它们可以互换，并且会随机选择一个",
         "Postgres 对 span ingest 更快",
-        "ClickHouse 不能存储字符串",
-        "ClickHouse 处理 span 上的列式分析，而 Postgres 保存用户、session 和应用 metadata"
+        "ClickHouse 处理 span 上的列式分析，而 Postgres 保存用户、session 和应用 metadata",
+        "ClickHouse 不能存储字符串"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -42,12 +42,12 @@
       "stage": "check",
       "question": "Dashboard 如何检测跨周漂移？",
       "options": [
+        "统计唯一 trace ID",
         "在池化后的 prompt Embedding 上计算 PSI 或 KL divergence，并观察 eval-score 趋势",
         "人工目测 Dashboard",
-        "读取最新的 deploy timestamp",
-        "统计唯一 trace ID"
+        "读取最新的 deploy timestamp"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -56,31 +56,31 @@
       "options": [
         "低于 1 小时",
         "24 小时内",
-        "下一个 on-call shift 内",
-        "从 bug 部署到 Slack alert 低于 5 分钟"
+        "从 bug 部署到 Slack alert 低于 5 分钟",
+        "下一个 on-call shift 内"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪些 SDK 系列必须产生 canonical GenAI spans，才能满足 trace-coverage rubric？",
       "options": [
-        "只有 vLLM",
-        "至少六个：OpenAI、Anthropic、Google GenAI、LangChain、LlamaIndex 和 vLLM",
+        "仅 OpenAI 和 Anthropic",
         "任意一个 SDK 就足够",
-        "仅 OpenAI 和 Anthropic"
+        "只有 vLLM",
+        "至少六个：OpenAI、Anthropic、Google GenAI、LangChain、LlamaIndex 和 vLLM"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "evaluation 结果如何链接回原始 LLM 调用？",
       "options": [
+        "作为一个没有 trace ID 的独立 Postgres table",
         "作为每晚通过 email 发送的 CSV",
         "仅作为 Slack 消息",
-        "作为一个没有 trace ID 的独立 Postgres table",
         "作为写入 ClickHouse 中 parent trace 子级的 eval spans"
       ],
       "correct": 3,

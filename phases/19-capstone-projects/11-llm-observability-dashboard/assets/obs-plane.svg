@@ -14,7 +14,7 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">自托管 LLM 可观测平面 — OTel GenAI semconv</text>
+  <text x="480" y="24" text-anchor="middle" class="title">自托管 LLM 可观测平面 — OTel GenAI 语义约定</text>
 
   <rect x="40" y="50" width="260" height="160" class="cool"/>
   <text x="170" y="72" text-anchor="middle" class="head">已埋点应用</text>
@@ -28,9 +28,9 @@
   <rect x="340" y="50" width="260" height="160" class="dsk"/>
   <text x="470" y="72" text-anchor="middle" class="head">collector</text>
   <text x="470" y="94" text-anchor="middle" class="small">OTLP HTTP receiver</text>
-  <text x="470" y="112" text-anchor="middle" class="small">tail-sampling processor</text>
+  <text x="470" y="112" text-anchor="middle" class="small">尾部采样 processor</text>
   <text x="470" y="130" text-anchor="middle" class="small">保留所有错误</text>
-  <text x="470" y="148" text-anchor="middle" class="small">保留 toxicity / PII 峰值</text>
+  <text x="470" y="148" text-anchor="middle" class="small">保留毒性 / PII 峰值</text>
   <text x="470" y="166" text-anchor="middle" class="small">10% 分层成功样本</text>
   <text x="470" y="184" text-anchor="middle" class="small">exporter：ClickHouse + S3</text>
 
@@ -38,22 +38,22 @@
   <text x="780" y="72" text-anchor="middle" class="head">存储</text>
   <text x="780" y="94" text-anchor="middle" class="small">ClickHouse：spans（列式）</text>
   <text x="780" y="112" text-anchor="middle" class="small">Postgres：metadata</text>
-  <text x="780" y="130" text-anchor="middle" class="small">S3：raw event archive</text>
-  <text x="780" y="148" text-anchor="middle" class="small">schema 映射 GenAI semconv</text>
+  <text x="780" y="130" text-anchor="middle" class="small">S3：原始事件归档</text>
+  <text x="780" y="148" text-anchor="middle" class="small">schema 映射 GenAI 语义约定</text>
   <text x="780" y="166" text-anchor="middle" class="small">gen_ai.system, request.model</text>
   <text x="780" y="184" text-anchor="middle" class="small">usage.input_tokens, output_tokens</text>
 
   <rect x="40" y="240" width="400" height="270" class="box"/>
-  <text x="240" y="262" text-anchor="middle" class="head">evals + drift（child spans）</text>
+  <text x="240" y="262" text-anchor="middle" class="head">评估 + 漂移（child spans）</text>
   <rect x="60" y="280" width="360" height="40" class="cool"/>
   <text x="240" y="304" text-anchor="middle" class="step">DeepEval / RAGAS 定时任务</text>
   <rect x="60" y="326" width="360" height="40" class="cool"/>
-  <text x="240" y="350" text-anchor="middle" class="step">自定义 LLM-judges（PII, off-policy）</text>
+  <text x="240" y="350" text-anchor="middle" class="step">自定义 LLM 裁判（PII，off-policy）</text>
   <rect x="60" y="372" width="360" height="40" class="hot"/>
-  <text x="240" y="396" text-anchor="middle" class="step">drift 检测器（每周 PSI / KL）</text>
-  <text x="240" y="436" text-anchor="middle" class="small">eval 输出变为关联 child spans</text>
+  <text x="240" y="396" text-anchor="middle" class="step">漂移检测器（每周 PSI / KL）</text>
+  <text x="240" y="436" text-anchor="middle" class="small">评估输出变为关联 child spans</text>
   <text x="240" y="454" text-anchor="middle" class="small">存入同一 ClickHouse，按 parent join</text>
-  <text x="240" y="472" text-anchor="middle" class="small">tail-sampler 保留所有高 eval-score traces</text>
+  <text x="240" y="472" text-anchor="middle" class="small">尾部采样器保留所有高评估分 traces</text>
   <text x="240" y="494" text-anchor="middle" class="caption">注入回归的 MTTR 目标：&lt; 5 min</text>
 
   <rect x="480" y="240" width="440" height="270" class="box"/>
@@ -63,10 +63,10 @@
   <rect x="500" y="326" width="400" height="40" class="dsk"/>
   <text x="700" y="350" text-anchor="middle" class="step">Slack（警告）+ PagerDuty（严重）</text>
   <rect x="500" y="372" width="400" height="40" class="cool"/>
-  <text x="700" y="396" text-anchor="middle" class="step">Next.js 15 + Recharts dashboard</text>
+  <text x="700" y="396" text-anchor="middle" class="step">Next.js 15 + Recharts 仪表盘</text>
 
   <text x="700" y="436" text-anchor="middle" class="small">页面：overview / traces / evals / drift</text>
-  <text x="700" y="454" text-anchor="middle" class="small">每用户成本、span waterfall、eval 趋势</text>
+  <text x="700" y="454" text-anchor="middle" class="small">每用户成本、span 瀑布图、eval 趋势</text>
   <text x="700" y="472" text-anchor="middle" class="small">Langfuse / Phoenix / OpenLLMetry 形态</text>
   <text x="700" y="494" text-anchor="middle" class="caption">open-core 自托管参考</text>
 </svg>
