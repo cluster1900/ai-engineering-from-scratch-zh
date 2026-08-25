@@ -17,29 +17,29 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">Mem0 - 三种 store 并行，retrieval 时融合</text>
+  <text x="480" y="26" text-anchor="middle" class="title">Mem0——三种存储并行，检索时融合</text>
 
   <rect x="40" y="50" width="200" height="46" class="box"/>
   <text x="140" y="74" text-anchor="middle" class="head">add(text, user_id, metadata)</text>
   <text x="140" y="90" text-anchor="middle" class="small">提取事实  写入三者</text>
 
   <rect x="40" y="120" width="280" height="260" class="vec"/>
-  <text x="180" y="142" text-anchor="middle" class="head">Vector store</text>
+  <text x="180" y="142" text-anchor="middle" class="head">Vector 存储</text>
   <text x="60" y="166" class="small">语义相似度；按 cosine 取 top-k</text>
   <text x="60" y="186" class="small">最适合：“我们讨论过什么”</text>
   <text x="60" y="206" class="small">最不适合：精确事实查找</text>
   <rect x="60" y="220" width="240" height="60" class="box"/>
-  <text x="78" y="240" class="step">记录：embedding(text), scope, user_id</text>
+  <text x="78" y="240" class="step">记录：embedding(text)、scope、user_id</text>
   <text x="78" y="258" class="small">用于融合的 tags、importance、ts</text>
-  <text x="78" y="272" class="small">定期对最高频子集 re-embed</text>
+  <text x="78" y="272" class="small">定期重新 Embedding 最高频子集</text>
   <rect x="60" y="290" width="240" height="76" class="box"/>
-  <text x="78" y="310" class="step">失效模式：Embedding drift</text>
+  <text x="78" y="310" class="step">失效模式：Embedding 漂移</text>
   <text x="78" y="328" class="small">语料增长时质量下降</text>
-  <text x="78" y="344" class="small">修复：计划 re-embed；监控 recall@k</text>
-  <text x="78" y="360" class="small">LoCoMo：Mem0 paper 中为 91.6</text>
+  <text x="78" y="344" class="small">修复：计划重新 Embedding；监控 recall@k</text>
+  <text x="78" y="360" class="small">LoCoMo：Mem0 论文中为 91.6</text>
 
   <rect x="340" y="120" width="280" height="260" class="kv"/>
-  <text x="480" y="142" text-anchor="middle" class="head">KV store</text>
+  <text x="480" y="142" text-anchor="middle" class="head">KV 存储</text>
   <text x="360" y="166" class="small">基于 (user_id, type, entity) 的 O(1) 查找</text>
   <text x="360" y="186" class="small">最适合：“用户电话是什么”</text>
   <text x="360" y="206" class="small">最不适合：语义 / 模糊匹配</text>
@@ -48,34 +48,34 @@
   <text x="378" y="258" class="small">value = record id</text>
   <text x="378" y="272" class="small">每季度审计 fact_type 集</text>
   <rect x="360" y="290" width="240" height="76" class="box"/>
-  <text x="378" y="310" class="step">失效模式：schema creep</text>
+  <text x="378" y="310" class="step">失效模式：schema 膨胀</text>
   <text x="378" y="328" class="small">每个团队都发明新 fact_type</text>
-  <text x="378" y="344" class="small">修复：集中式 type registry + review</text>
-  <text x="378" y="360" class="small">LongMemEval：Mem0 paper 中为 93.4</text>
+  <text x="378" y="344" class="small">修复：集中式类型注册表 + 审核</text>
+  <text x="378" y="360" class="small">LongMemEval：Mem0 论文中为 93.4</text>
 
   <rect x="640" y="120" width="280" height="260" class="graph"/>
-  <text x="780" y="142" text-anchor="middle" class="head">graph store（Mem0g）</text>
+  <text x="780" y="142" text-anchor="middle" class="head">图存储（Mem0g）</text>
   <text x="660" y="166" class="small">类型化边；时间有效性</text>
   <text x="660" y="186" class="small">最适合：关系推理</text>
   <text x="660" y="206" class="small">最不适合：非结构化文本</text>
   <rect x="660" y="220" width="240" height="60" class="box"/>
   <text x="678" y="240" class="step">(subject, relation, object, valid)</text>
   <text x="678" y="258" class="small">冲突检测器使其失效，不删除</text>
-  <text x="678" y="272" class="small">时间查询：valid-at-time subgraph</text>
+  <text x="678" y="272" class="small">时间查询：指定时间有效子图</text>
   <rect x="660" y="290" width="240" height="76" class="box"/>
-  <text x="678" y="310" class="step">失效模式：graph explosion</text>
-  <text x="678" y="328" class="small">嘈杂 extractor 每条消息添加 50 条边</text>
+  <text x="678" y="310" class="step">失效模式：图爆炸</text>
+  <text x="678" y="328" class="small">嘈杂提取器每条消息添加 50 条边</text>
   <text x="678" y="344" class="small">修复：限制每次 add 的边数；丢弃 low-conf</text>
-  <text x="678" y="360" class="small">BEAM 1M：Mem0 paper 中为 64.1</text>
+  <text x="678" y="360" class="small">BEAM 1M：Mem0 论文中为 64.1</text>
 
   <rect x="80" y="400" width="800" height="110" class="fuse"/>
   <text x="480" y="422" text-anchor="middle" class="head">融合评分  score = w_rel * relevance + w_imp * importance + w_rec * recency</text>
-  <text x="100" y="448" class="small">relevance：Vector cosine、KV 精确、graph path weight</text>
+  <text x="100" y="448" class="small">relevance：Vector cosine、KV 精确匹配、图路径权重</text>
   <text x="100" y="468" class="small">importance：写入时打标，或从使用中学习</text>
   <text x="100" y="488" class="small">recency：自上次写入或读取后的指数衰减</text>
   <text x="500" y="448" class="small">按产品调权重：</text>
-  <text x="500" y="468" class="small">voice agent  偏 recency；compliance  偏 importance</text>
-  <text x="500" y="488" class="small">retrieval agent  偏 relevance；同一 extractor，不同策略</text>
+  <text x="500" y="468" class="small">语音 Agent 偏 recency；合规场景偏 importance</text>
+  <text x="500" y="488" class="small">检索 Agent 偏 relevance；同一提取器，不同策略</text>
 
-  <text x="480" y="540" text-anchor="middle" class="caption">scope: user / session / agent。每次写入选一个；retrieval 查询跨 scope 加权。</text>
+  <text x="480" y="540" text-anchor="middle" class="caption">scope：user / session / agent。每次写入选一个；检索查询跨 scope 加权。</text>
 </svg>
