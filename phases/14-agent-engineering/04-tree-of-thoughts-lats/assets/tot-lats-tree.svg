@@ -50,40 +50,40 @@
   <text x="410" y="293" text-anchor="middle" class="small">完成: 24</text>
 
   <text x="60" y="340" class="small">每个节点自评选择前沿。</text>
-  <text x="60" y="356" class="small">“确定 / 可能 / 不可能” Classification,</text>
+  <text x="60" y="356" class="small">“确定 / 可能 / 不可能” Classification</text>
   <text x="60" y="372" class="small">1..10 数值分数，或多数投票。</text>
-  <text x="60" y="400" class="step">24 点游戏: CoT 4% -- ToT 74%</text>
-  <text x="60" y="416" class="small">GPT-4 基线 vs ToT，beam-5，depth-3。</text>
+  <text x="60" y="400" class="step">24 点游戏：CoT 4% — ToT 74%</text>
+  <text x="60" y="416" class="small">GPT-4 基线与 ToT 对比，beam-5，depth-3。</text>
   <text x="60" y="440" class="step">成本</text>
-  <text x="60" y="456" class="small">单条 CoT 轨迹的 100-1000x tokens。</text>
+  <text x="60" y="456" class="small">单条 CoT 轨迹的 100–1000 倍 Token。</text>
   <text x="60" y="472" class="small">留给单次成功率弱的任务。</text>
 
   <rect x="500" y="60" width="420" height="460" class="box"/>
   <text x="710" y="84" text-anchor="middle" class="head">LATS = ToT + ReAct + Reflexion + MCTS</text>
 
   <rect x="520" y="100" width="380" height="50" class="cool"/>
-  <text x="540" y="124" class="step">Select  通过 UCT 从根走到叶</text>
+  <text x="540" y="124" class="step">Select：通过 UCT 从根走到叶</text>
   <text x="540" y="142" class="small">Q(s,a) + c * sqrt(ln N(s) / N(s,a))</text>
 
   <rect x="520" y="160" width="380" height="50" class="cold"/>
-  <text x="540" y="184" class="step">Expand  policy 提议 K 个子节点</text>
+  <text x="540" y="184" class="step">Expand：policy 提议 K 个子节点</text>
   <text x="540" y="202" class="small">ReAct 风格的下一动作候选</text>
 
   <rect x="520" y="220" width="380" height="50" class="hot"/>
-  <text x="540" y="244" class="step">Simulate  rollout + value function</text>
-  <text x="540" y="262" class="small">用 prompted value + env reward 评分</text>
+  <text x="540" y="244" class="step">模拟：rollout + value function</text>
+  <text x="540" y="262" class="small">用 Prompt value + 环境 reward 评分</text>
 
   <rect x="520" y="280" width="380" height="50" class="dsk"/>
-  <text x="540" y="304" class="step">Backpropagate  更新访问数和 Q</text>
-  <text x="540" y="322" class="small">失败时: 写反思，重置 rollouts</text>
+  <text x="540" y="304" class="step">Backpropagate：更新访问次数和 Q</text>
+  <text x="540" y="322" class="small">失败时：写入反思，重置 rollout</text>
 
   <rect x="520" y="340" width="380" height="170" class="box"/>
   <text x="710" y="364" text-anchor="middle" class="head">何时选择 LATS</text>
   <text x="540" y="386" class="small">编码（测试作为 value function）</text>
   <text x="540" y="402" class="small">数学/奥赛，有可检查目标</text>
-  <text x="540" y="418" class="small">Deep research，多条查询路径</text>
-  <text x="540" y="434" class="small">不适合短 Q&amp;A 或聊天</text>
-  <text x="540" y="452" class="step">LATS HumanEval 92.7% pass@1 (GPT-4)</text>
-  <text x="540" y="470" class="small">论文发表时的 SOTA (ICML 2024)</text>
-  <text x="540" y="494" class="small">evolutionary search (AlphaEvolve) 是 2025 极端版</text>
+  <text x="540" y="418" class="small">深度研究，多条查询路径</text>
+  <text x="540" y="434" class="small">不适合简短问答或聊天</text>
+  <text x="540" y="452" class="step">LATS HumanEval 92.7% pass@1（GPT-4）</text>
+  <text x="540" y="470" class="small">论文发表时的 SOTA（ICML 2024）</text>
+  <text x="540" y="494" class="small">evolutionary search（AlphaEvolve）是 2025 年的极端版本</text>
 </svg>

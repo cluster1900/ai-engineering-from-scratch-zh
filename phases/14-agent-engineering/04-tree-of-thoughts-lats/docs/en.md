@@ -77,6 +77,10 @@ Search 会让 Token 爆炸。Game of 24 上的 ToT 使用的 Token 是 CoT 的 1
 
 AlphaEvolve（Lesson 11）是 2025 年的极端例子：对 code 进行 evolutionary search、machine-checkable fitness、frontier gain（56 年来第一次 4x4 matmul 改进）。
 
+```figure
+tree-of-thoughts
+```
+
 ## 构建它
 
 `code/main.py` 实现了：
