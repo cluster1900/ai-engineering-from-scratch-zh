@@ -1,36 +1,61 @@
 [
   {
     "question": "在 Neural Network 的语境中，chain rule 是什么？",
-    "options": ["一种把层串接在一起的规则", "如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- 沿路径相乘导数", "一种初始化权重的方法", "一种对数据进行 batching 的技术"],
-    "correct": 1,
+    "options": [
+      "一种对数据进行 batching 的技术",
+      "一种初始化权重的方法",
+      "一种把层串接在一起的规则",
+      "如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- 沿路径相乘导数"
+    ],
+    "correct": 3,
     "explanation": "chain rule 让你可以通过相乘每一步的局部导数来计算复合函数的导数。Backpropagation 会在 computational graph 中系统地应用它。",
     "stage": "pre"
   },
   {
     "question": "为什么 Backpropagation 比独立计算每个 Gradient 更高效？",
-    "options": ["它使用更少内存", "它在一次 backward pass 中计算所有 Gradient，而不是每个参数都进行一次 forward pass", "它只适用于小型网络", "它避免使用 chain rule"],
+    "options": [
+      "它使用更少内存",
+      "它在一次 backward pass 中计算所有 Gradient，而不是每个参数都进行一次 forward pass",
+      "它只适用于小型网络",
+      "它避免使用 chain rule"
+    ],
     "correct": 1,
     "explanation": "独立计算 Gradient 需要每个参数一次 forward pass（大型网络可能需要数百万次 pass）。Backpropagation 通过复用 forward pass 期间存储的中间值，在一次 backward pass 中计算所有 Gradient。",
     "stage": "pre"
   },
   {
     "question": "在 backward pass 中，为什么累积 Gradient 时使用 '+=' 而不是 '='？",
-    "options": ["这是 Python 约定", "一个值可能被多个操作使用，因此它的 Gradient 是来自所有路径的 Gradient 之和", "它可以防止溢出", "它让代码运行更快"],
+    "options": [
+      "这是 Python 约定",
+      "一个值可能被多个操作使用，因此它的 Gradient 是来自所有路径的 Gradient 之和",
+      "它让代码运行更快",
+      "它可以防止溢出"
+    ],
     "correct": 1,
     "explanation": "当一个 Value 被用作多个操作的输入时（例如，x 同时用于 x*w1 和 x*w2），它的总 Gradient 是从每个操作反向流回的 Gradient 之和。使用 += 可以正确累积这些 Gradient。",
     "stage": "post"
   },
   {
     "question": "深层 sigmoid 网络中的 vanishing gradient 问题是由什么导致的？",
-    "options": ["学习率太小", "sigmoid 的导数最大值为 0.25，因此 Gradient 会逐层指数级缩小", "网络参数太多", "Loss Function 选择不当"],
-    "correct": 1,
+    "options": [
+      "Loss Function 选择不当",
+      "网络参数太多",
+      "学习率太小",
+      "sigmoid 的导数最大值为 0.25，因此 Gradient 会逐层指数级缩小"
+    ],
+    "correct": 3,
     "explanation": "sigmoid 导数的峰值为 0.25（当 z=0 时）。每一层都会让 Gradient 最多乘以 0.25，因此经过 10 层后，Gradient 最多只有原始信号的 0.25^10 = ~0.000001。",
     "stage": "post"
   },
   {
     "question": "为什么 topological sort 在 backward pass 中很重要？",
-    "options": ["它让代码更整洁", "它确保每个节点的 Gradient 在传播到其子节点之前已经完全累积", "它加快 forward pass", "它减少内存使用"],
-    "correct": 1,
+    "options": [
+      "它减少内存使用",
+      "它加快 forward pass",
+      "它确保每个节点的 Gradient 在传播到其子节点之前已经完全累积",
+      "它让代码更整洁"
+    ],
+    "correct": 2,
     "explanation": "topological sort 确保我们按正确顺序处理节点：一个节点的 Gradient 必须先从所有下游路径完全累积，然后才能通过它继续传播。没有这种顺序，Gradient 会不完整。",
     "stage": "post"
   }
