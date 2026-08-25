@@ -1,36 +1,61 @@
 [
   {
     "question": "为什么不能只使用线性层（没有激活函数）来构建有用的深层网络？",
-    "options": ["线性层太慢", "堆叠线性层会坍缩为单个线性变换，因此深度不会带来收益", "线性层没有 bias", "线性层无法处理批量数据"],
-    "correct": 1,
+    "options": [
+      "堆叠线性层会坍缩为单个线性变换，因此深度不会带来收益",
+      "线性层太慢",
+      "线性层无法处理批量数据",
+      "线性层没有 bias"
+    ],
+    "correct": 0,
     "explanation": "y = W2(W1*x + b1) + b2 可以简化为 y = Ax + c。无论堆叠多少个线性层，结果都等价于一个线性层。激活函数会打破这种可组合性。",
     "stage": "pre"
   },
   {
     "question": "ReLU 激活函数的输出范围是什么？",
-    "options": ["(-1, 1)", "(0, 1)", "[0, infinity)", "(-infinity, infinity)"],
-    "correct": 2,
+    "options": [
+      "(-infinity, infinity)",
+      "[0, infinity)",
+      "(0, 1)",
+      "(-1, 1)"
+    ],
+    "correct": 1,
     "explanation": "ReLU(x) = max(0, x)。它对所有负输入输出 0，并让正输入保持不变，因此范围是 [0, infinity)。",
     "stage": "pre"
   },
   {
     "question": "ReLU 网络中的“死亡神经元”问题是什么？",
-    "options": ["计算太慢的神经元", "输入永久为负、永远产生零输出和零 Gradient 的神经元", "产生 NaN 值的神经元", "bias 为零的神经元"],
-    "correct": 1,
+    "options": [
+      "bias 为零的神经元",
+      "计算太慢的神经元",
+      "输入永久为负、永远产生零输出和零 Gradient 的神经元",
+      "产生 NaN 值的神经元"
+    ],
+    "correct": 2,
     "explanation": "如果一个 ReLU 神经元的加权输入始终为负（由于糟糕的初始化或很大的负 bias），它会输出 0，且 Gradient 为 0。它永远无法恢复，因为零 Gradient 意味着零更新。",
     "stage": "post"
   },
   {
     "question": "在 GPT 和 BERT 等现代 Transformer 中，隐藏层默认使用哪种激活函数？",
-    "options": ["Sigmoid", "ReLU", "GELU", "Tanh"],
+    "options": [
+      "Sigmoid",
+      "Tanh",
+      "GELU",
+      "ReLU"
+    ],
     "correct": 2,
     "explanation": "GELU（Gaussian Error Linear Unit）是 Transformer 中的默认激活函数。它提供平滑的 Gradient 流，避免死亡神经元，并且已被证明在语言模型中优于 ReLU。",
     "stage": "post"
   },
   {
     "question": "为什么 softmax 只用于输出层，而从不用于隐藏层？",
-    "options": ["它对隐藏层来说太慢", "它会把一个 Vector 转换成概率分布（数值总和为 1），这对分类输出是需要的，但不适用于中间表示", "它会导致 Gradient 爆炸", "它只适用于两个类别"],
-    "correct": 1,
+    "options": [
+      "它只适用于两个类别",
+      "它会导致 Gradient 爆炸",
+      "它会把一个 Vector 转换成概率分布（数值总和为 1），这对分类输出是需要的，但不适用于中间表示",
+      "它对隐藏层来说太慢"
+    ],
+    "correct": 2,
     "explanation": "Softmax 会归一化一个 Vector，使所有值都在 (0,1) 中且总和为 1，从而创建概率分布。隐藏层需要保留并变换信息，而不是把信息压缩成概率。",
     "stage": "post"
   }
