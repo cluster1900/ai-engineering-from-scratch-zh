@@ -21,20 +21,20 @@
   <text x="480" y="24" text-anchor="middle" class="title">Flamingo — 冻结 70B Chinchilla LLM 内的 gated cross-attention</text>
 
   <rect x="40" y="50" width="220" height="480" class="box"/>
-  <text x="150" y="72" text-anchor="middle" class="head">图像 / 视频 pipeline</text>
+  <text x="150" y="72" text-anchor="middle" class="head">图像 / 视频流程</text>
 
   <rect x="60" y="92" width="180" height="50" class="frozen"/>
   <text x="150" y="114" text-anchor="middle" class="step">冻结 ViT</text>
-  <text x="150" y="130" text-anchor="middle" class="small">每图 196-900 patches</text>
+  <text x="150" y="130" text-anchor="middle" class="small">每图 196-900 个 patch</text>
 
   <path d="M 150 148 L 150 172" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="180" width="180" height="100" class="train"/>
-  <text x="150" y="202" text-anchor="middle" class="step">Perceiver resampler</text>
-  <text x="150" y="220" text-anchor="middle" class="small">K=64 可学习 latents</text>
-  <text x="150" y="238" text-anchor="middle" class="small">对 patches 做 cross-attn</text>
-  <text x="150" y="256" text-anchor="middle" class="small">6 个 blocks，64M params</text>
-  <text x="150" y="272" text-anchor="middle" class="small">固定输出 64 个 Tokens</text>
+  <text x="150" y="202" text-anchor="middle" class="step">Perceiver 重采样器</text>
+  <text x="150" y="220" text-anchor="middle" class="small">K=64 个可学习 latent</text>
+  <text x="150" y="238" text-anchor="middle" class="small">对 patch 执行 cross-attn</text>
+  <text x="150" y="256" text-anchor="middle" class="small">6 个 block，64M 参数</text>
+  <text x="150" y="272" text-anchor="middle" class="small">固定输出 64 个 Token</text>
 
   <path d="M 150 288 L 150 318" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -55,27 +55,27 @@
   <text x="630" y="72" text-anchor="middle" class="head">冻结 LLM，插入 gated cross-attn</text>
 
   <rect x="365" y="92" width="530" height="52" class="frozen"/>
-  <text x="630" y="114" text-anchor="middle" class="step">LLM self-attn + FFN（block 1-4）</text>
+  <text x="630" y="114" text-anchor="middle" class="step">LLM self-attn + FFN（第 1-4 层）</text>
   <text x="630" y="132" text-anchor="middle" class="small">冻结 Chinchilla 70B 层</text>
 
   <rect x="365" y="154" width="530" height="80" class="gate"/>
   <text x="630" y="176" text-anchor="middle" class="step">GATED CROSS-ATTENTION（已训练）</text>
   <text x="390" y="200" class="small">y = tanh(alpha) * cross_attn(text, visual_tokens) + x</text>
-  <text x="390" y="218" class="small">alpha init 0 -&gt; tanh(0) = 0 -&gt; output == input</text>
+  <text x="390" y="218" class="small">alpha 初始化为 0 -&gt; tanh(0) = 0 -&gt; output == input</text>
   <text x="390" y="234" class="small">-&gt; 步骤 0 保留 LLM 文本能力</text>
 
   <rect x="365" y="244" width="530" height="52" class="frozen"/>
-  <text x="630" y="266" text-anchor="middle" class="step">LLM self-attn + FFN（block 5-8）</text>
+  <text x="630" y="266" text-anchor="middle" class="step">LLM self-attn + FFN（第 5-8 层）</text>
   <text x="630" y="284" text-anchor="middle" class="small">文本 Tokens 继续因果 Self-Attention</text>
 
   <rect x="365" y="306" width="530" height="80" class="gate"/>
   <text x="630" y="328" text-anchor="middle" class="step">GATED CROSS-ATTENTION（已训练）</text>
   <text x="390" y="352" class="small">随 alpha 增大，视觉贡献混入</text>
-  <text x="390" y="370" class="small">训练结束 alpha O(1-2)，tanh ~0.8</text>
+  <text x="390" y="370" class="small">训练结束时 alpha O(1-2)，tanh ~0.8</text>
   <text x="390" y="386" class="caption">每 M=4 个 LLM 层插入一次</text>
 
   <rect x="365" y="396" width="530" height="52" class="frozen"/>
-  <text x="630" y="418" text-anchor="middle" class="step">LLM self-attn + FFN（block 9-12, ..., N）</text>
+  <text x="630" y="418" text-anchor="middle" class="step">LLM self-attn + FFN（第 9-12, ..., N 层）</text>
 
   <rect x="365" y="458" width="530" height="60" class="cool"/>
   <text x="630" y="478" text-anchor="middle" class="step">cross-attn 层总数：N/4</text>

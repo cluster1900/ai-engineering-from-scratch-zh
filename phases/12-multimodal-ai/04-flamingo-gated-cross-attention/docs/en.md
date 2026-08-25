@@ -105,6 +105,10 @@ Otter（2023）基于 OpenFlamingo，并在 MIMIC-IT（一个 Multimodal instruc
 
 预算有限的单图 VQA 选择 BLIP-2。需要交错输入、few-shot 或多图推理时选择 Flamingo/Idefics2。
 
+```figure
+cross-attention-fusion
+```
+
 ## 使用它
 `code/main.py` 演示：
 
