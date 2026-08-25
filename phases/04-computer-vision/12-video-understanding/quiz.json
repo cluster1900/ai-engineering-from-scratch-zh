@@ -4,61 +4,62 @@
       "stage": "pre",
       "question": "为什么 2D+pool 视频 model 会在 Something-Something V2 dataset 上失败？",
       "options": [
-        "图像太小",
         "model architecture 不兼容",
-        "该 dataset 的 labels 由运动方向定义（'pushing something from left to right'），而不是外观；对 per-frame features 做与顺序无关的 average pooling 无法区分运动方向",
-        "类别太多"
+        "图像太小",
+        "类别太多",
+        "该 dataset 的 labels 由运动方向定义（'pushing something from left to right'），而不是外观；对 per-frame features 做与顺序无关的 average pooling 无法区分运动方向"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Something-Something labels 字面上就是 'X moved left to right' 与 'X moved right to left'。两者在任意单帧中看起来完全相同，而对 frame Embedding 求平均与顺序无关，因此 pool(f1, f2, ..., fT) == pool(fT, ..., f2, f1)。由运动定义的 labels 需要能关注时间顺序的 model。"
     },
     {
       "stage": "pre",
       "question": "I3D 的 inflation trick 是什么？",
       "options": [
-        "一种在更多图像上预训练的方法",
-        "取一个 2D CNN 的 pretrained kernels，沿新的时间轴复制每个 kernel（除以 kernel_T 以保持 activation scale），并用它们初始化 3D CNN —— 让 3D model 在没有 3D pretraining 的情况下获得强权重",
         "一种 learning rates 的 scheduler",
-        "一种压缩视频的方法"
+        "一种压缩视频的方法",
+        "一种在更多图像上预训练的方法",
+        "取一个 2D CNN 的 pretrained kernels，沿新的时间轴复制每个 kernel（除以 kernel_T 以保持 activation scale），并用它们初始化 3D CNN —— 让 3D model 在没有 3D pretraining 的情况下获得强权重"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Inflation 用强大的 2D ImageNet weights 来启动 3D 视频 models。一个 3x3 的 2D kernel 通过沿 T 复制并按 1/kernel_T 重新缩放，变成 3x3x3 的 3D kernel。它把在 ImageNet 上学到的 object 和 texture features 直接迁移到视频 model 中，这就是为什么 I3D 是第一个真正明显超越 2D+pool baselines 的 3D model。"
     },
     {
       "stage": "post",
       "question": "(2+1)D factorised convolution 会把 3D conv 拆成哪两个操作？",
       "options": [
-        "一个 temporal conv 后接一个 depthwise conv",
-        "一个 grouped conv 和一个 1x1 conv",
+        "一个 spatial 1x3x3 conv 后接一个 temporal 3x1x1 conv，中间有 BN+ReLU，用来加入 full 3D convs 没有的 non-linearity",
         "两个 stride 不同的 3D convs",
-        "一个 spatial 1x3x3 conv 后接一个 temporal 3x1x1 conv，中间有 BN+ReLU，用来加入 full 3D convs 没有的 non-linearity"
+        "一个 temporal conv 后接一个 depthwise conv",
+        "一个 grouped conv 和一个 1x1 conv"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "(2+1)D 将 3x3x3 kernel factorise 为 (1x3x3) 再接 (3x1x1)。两个 convs 之间有一个 non-linearity（BN+ReLU），这提高了每个 parameter 的表达能力。在 Kinetics 上，R(2+1)D-34 以更少 params 超过等价的 R3D-34 —— 额外的 non-linearity 确实在发挥作用。"
     },
     {
       "stage": "post",
       "question": "在 video Transformer 中，'divided attention' 是什么意思？",
       "options": [
+        "跳过某些 layers 的 Attention",
         "对一半 tokens 做 Attention",
         "每个 Transformer block 有两个 Attention modules：一个对跨时间、相同 spatial position 的 tokens 做 Attention（temporal attention），然后一个对同一 timestep、跨空间的 tokens 做 Attention（spatial attention）—— 将 O((T*H*W)^2) 的 full attention 拆成 O(T^2) + O((H*W)^2)",
-        "只在训练期间应用的 Attention",
-        "跳过某些 layers 的 Attention"
+        "只在训练期间应用的 Attention"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Full joint spatio-temporal Attention 是 O((T*H*W)^2)，对于长视频不可行。Divided Attention（TimeSformer）在每个 block 内交替执行 temporal Attention 和 spatial Attention，将成本降到 O(T^2 + (H*W)^2)。它用理论上的表达能力损失换取可行的训练；实践中，divided Attention 在大多数 benchmarks 上能匹配或超过 joint。"
     },
     {
       "stage": "post",
       "question": "你的 Kinetics-400 model 报告了 76% clip accuracy 和 82% video accuracy。这个差距说明了什么？",
       "options": [
-        "Per-clip predictions 噪声较大；对每个视频的多个 sampled clips 做 prediction averaging（test-time augmentation）会稳定结果。较大的差距说明 model 的 features 对采样到哪个 8-frame window 很敏感，而更长的 clips 或训练期间更强的 spatial augmentation 会缩小这个差距",
-        "model 坏了",
         "test set 太小",
+        "model 坏了",
+        "Per-clip predictions 噪声较大；对每个视频的多个 sampled clips 做 prediction averaging（test-time augmentation）会稳定结果。较大的差距说明 model 的 features 对采样到哪个 8-frame window 很敏感，而更长的 clips 或训练期间更强的 spatial augmentation 会缩小这个差距",
         "Clip accuracy 按定义总是低于 video accuracy"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Clip accuracy 在单个 sampled window 上评估 model；video accuracy 对多个 windows 的 predictions 求平均。6 个点的差距意味着 model 对采样到哪个 window 很敏感。缩小差距意味着 model 更好地泛化到了每个视频的时间分布上 —— 这正是部署时想要的结果。始终报告两个数字。"
     }
-  ]
+  ],
+  "title": null
 }

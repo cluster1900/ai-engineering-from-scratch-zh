@@ -117,6 +117,10 @@ T 通常为 8、16、32 或 64。更高的 T = 更多 temporal signal，也意�
 - **UCF-101**、**HMDB-51** — 更老、更小，但仍被报告。
 - **AVA** — 在空间和时间中的 action *localisation*；比 classification 更难。
 
+```figure
+v4-video-temporal
+```
+
 ## 构建它
 
 ### 步骤 1：Frame sampler
