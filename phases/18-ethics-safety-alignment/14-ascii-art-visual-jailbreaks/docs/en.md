@@ -54,6 +54,10 @@ Visual LLMs（GPT-5.2、Gemini 3 Pro、Claude Opus 4.5、Grok 4.1）扩展了攻
 
 Lessons 12-14 描述了三种正交攻击Vector：迭代 refinement（PAIR）、context length（MSJ）和 encoding（ArtPrompt/StructuralSleight）。Lesson 15 从以模型为中心的攻击转向系统边界攻击（indirect prompt injection）。Lesson 16 描述防御工具响应。
 
+```figure
+al-ascii-cloak
+```
+
 ## 使用它
 
 `code/main.py` 构建一个 toy ArtPrompt。你可以用 ASCII-art glyphs 伪装有害 query 中的特定词，验证伪装后的字符串能通过 keyword filter，并且（可选）用简单 recognizer 将伪装后的字符串解码回来。

@@ -6,33 +6,33 @@
       "stage": "pre",
       "question": "为什么 token-level 和 semantic-level safety filters 会漏掉 ArtPrompt 风格的攻击？",
       "options": [
-        "ArtPrompt 需要 fine-tuning 模型",
-        "ArtPrompt 只对 Multimodal 模型有效",
         "ArtPrompt 总是使用 base64 编码",
-        "ArtPrompt 在视觉识别层面运作：过滤器看到的是无害的标点符号，而模型会把渲染出来的字母读成一个词"
+        "ArtPrompt 需要 fine-tuning 模型",
+        "ArtPrompt 在视觉识别层面运作：过滤器看到的是无害的标点符号，而模型会把渲染出来的字母读成一个词",
+        "ArtPrompt 只对 Multimodal 模型有效"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "根据 Jiang et al. (ACL 2024) 的描述，ArtPrompt 的两个步骤是什么？",
       "options": [
-        "翻译成法语，然后 back-translation",
-        "识别与安全相关的 tokens，然后进行 ASCII-art 替换并生成 cloaked-prompt",
+        "Tokenizer mismatch，然后 context truncation",
         "随机搜索，然后提升 perplexity",
-        "Tokenizer mismatch，然后 context truncation"
+        "翻译成法语，然后 back-translation",
+        "识别与安全相关的 tokens，然后进行 ASCII-art 替换并生成 cloaked-prompt"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "为什么 perplexity-filter (PPL) 防御在 ArtPrompt 上失败？",
       "options": [
-        "在 cloaked input 上，perplexity 总是等于零",
-        "perplexity 无法在 ASCII art 上测量",
         "perplexity filters 默认被禁用",
+        "perplexity 无法在 ASCII art 上测量",
+        "在 cloaked input 上，perplexity 总是等于零",
         "ASCII art 具有高 perplexity，但任何合法的结构化输入也可能如此；能阻止攻击的阈值也会阻止合法内容"
       ],
       "correct": 3,
@@ -42,8 +42,8 @@
       "stage": "check",
       "question": "ViTC benchmark 衡量什么？",
       "options": [
-        "模型的 tool-calling 准确率",
         "模型训练数据的 toxicity",
+        "模型的 tool-calling 准确率",
         "模型读取非语义视觉 prompts（ASCII art、wingdings、类似编码文本）的能力",
         "模型压缩视觉数据的能力"
       ],
@@ -54,22 +54,22 @@
       "stage": "post",
       "question": "StructuralSleight 将 ArtPrompt 泛化到什么？",
       "options": [
-        "Uncommon Text-Encoded Structures (UTES)：trees、graphs、嵌套 JSON、CSV-in-JSON、diff-style code 等",
-        "通过 Gradient 搜索得到的 adversarial token suffixes",
+        "仅限图像输入",
         "长上下文 shot stuffing",
-        "仅限图像输入"
+        "通过 Gradient 搜索得到的 adversarial token suffixes",
+        "Uncommon Text-Encoded Structures (UTES)：trees、graphs、嵌套 JSON、CSV-in-JSON、diff-style code 等"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "ViTC 结果隐含的 capability-safety tradeoff 是什么？",
       "options": [
-        "更小的模型总是更安全",
+        "更大的 context windows 会降低 ArtPrompt 成功率",
         "视觉识别与 ArtPrompt 成功率无关",
         "模型越擅长读取非语义视觉文本，ArtPrompt 风格的攻击对它就越有效",
-        "更大的 context windows 会降低 ArtPrompt 成功率"
+        "更小的模型总是更安全"
       ],
       "correct": 2,
       "explanation": ""

@@ -22,9 +22,9 @@
   <rect x="340" y="70" width="130" height="40" class="hot"/>
   <text x="405" y="95" text-anchor="middle" class="small">base64 / leet</text>
   <rect x="480" y="70" width="130" height="40" class="hot"/>
-  <text x="545" y="95" text-anchor="middle" class="small">UTF-8 homoglyph</text>
+  <text x="545" y="95" text-anchor="middle" class="small">UTF-8 同形字符</text>
   <rect x="620" y="70" width="130" height="40" class="hot"/>
-  <text x="685" y="95" text-anchor="middle" class="small">UTES (tree/JSON)</text>
+  <text x="685" y="95" text-anchor="middle" class="small">UTES（树/JSON）</text>
   <rect x="760" y="70" width="130" height="40" class="hot"/>
   <text x="825" y="95" text-anchor="middle" class="small">图像模态</text>
 
@@ -69,6 +69,6 @@
   <text x="825" y="410" text-anchor="middle" class="small" fill="#2e7d32">捕获</text>
 
   <rect x="60" y="430" width="840" height="60" class="box"/>
-  <text x="80" y="455" class="small">输入侧防御 (关键词、PPL、改写、重新 Tokenization) 失效，因为识别是视觉 / 结构性的。</text>
-  <text x="80" y="475" class="small">输出侧和 Multimodal 审核器是可靠层；每个部署都应至少包含一个。</text>
+  <text x="80" y="455" class="small">输入侧防御（关键词、PPL、改写、重新 Tokenization）会失效，因为识别依赖视觉或结构。</text>
+  <text x="80" y="475" class="small">输出侧和 Multimodal 审核器是可靠防线；每个部署至少应包含一个。</text>
 </svg>
