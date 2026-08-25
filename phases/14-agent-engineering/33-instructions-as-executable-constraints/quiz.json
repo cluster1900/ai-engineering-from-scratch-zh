@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "愿景式规则和可操作规则有什么区别？",
       "options": [
-        "愿景式规则是付费的；可操作规则是免费的",
+        "愿景式规则需要经理",
         "愿景式规则没有检查项（“要小心”）；可操作规则带有 workbench 可以运行的机器可检查函数",
-        "可操作规则更长",
-        "愿景式规则需要经理"
+        "愿景式规则是付费的；可操作规则是免费的",
+        "可操作规则更长"
       ],
       "correct": 1,
       "explanation": "可操作规则是可测试的；愿景式规则只是愿望。"
@@ -18,22 +18,22 @@
       "stage": "pre",
       "question": "本课用哪五个类别覆盖大多数规则？",
       "options": [
-        "启动、禁止事项、完成定义、不确定性、审批",
-        "Read、write、exec、fork、exit",
         "Plan、act、reflect、refine、ship",
-        "Low、medium、high、critical、fatal"
+        "Read、write、exec、fork、exit",
+        "Low、medium、high、critical、fatal",
+        "启动、禁止事项、完成定义、不确定性、审批"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "启动、禁止事项、完成定义、不确定性处理、审批边界就是这五类。"
     },
     {
       "stage": "check",
       "question": "哪个严重性标签会停止执行并要求 operator override？",
       "options": [
-        "info",
+        "soft",
         "warn",
         "block",
-        "soft"
+        "info"
       ],
       "correct": 2,
       "explanation": "block 是硬失败；warn 会添加标注；info 会报告。"
@@ -42,9 +42,9 @@
       "stage": "check",
       "question": "为什么本课建议在编写时标记严重性？",
       "options": [
-        "它在 markdown 里看起来更漂亮",
-        "团队早期会夸大严重性，并在 deadline 压力下削弱它；预先写明严重性会迫使完成校准",
         "Linters 要求这样做",
+        "团队早期会夸大严重性，并在 deadline 压力下削弱它；预先写明严重性会迫使完成校准",
+        "它在 markdown 里看起来更漂亮",
         "它能节省 tokens"
       ],
       "correct": 1,
@@ -55,11 +55,11 @@
       "question": "markdown-as-source、JSON-as-cache 这种模式做了什么？",
       "options": [
         "替换 markdown",
-        "agent-rules.md 是编写源文件；agent-rules.lock.json 是由 pre-commit hook 重新生成的 hot-path cache（形状与 package.json + lock 相同）",
         "加密规则",
-        "禁用 review"
+        "禁用 review",
+        "agent-rules.md 是编写源文件；agent-rules.lock.json 是由 pre-commit hook 重新生成的 hot-path cache（形状与 package.json + lock 相同）"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Markdown 保持可 review；JSON 解析则不进入 hot path。"
     },
     {
@@ -68,8 +68,8 @@
       "options": [
         "超过 24 小时的规则会 fail closed",
         "每条规则带有 expires_at（默认 90 天）；未触发的规则会触发季度 review，以论证保留、削弱或删除它们",
-        "cache 满时规则过期",
-        "规则会自动过期；无需 review"
+        "规则会自动过期；无需 review",
+        "cache 满时规则过期"
       ],
       "correct": 1,
       "explanation": "Cloudflare 的数据显示，带 expiry 的规则集保持在 30 条以下；不带 expiry 的规则集增长到 80+ 条未使用规则。"
@@ -79,11 +79,11 @@
       "question": "规则与 framework guardrails 有什么关系？",
       "options": [
         "规则替代 guardrails",
+        "两者只需要其中一个",
         "Guardrails 在 runtime 强制执行规则；规则集是这些 guardrails 所实现的人类可读契约",
-        "Guardrails 是规则的替代方案",
-        "两者只需要其中一个"
+        "Guardrails 是规则的替代方案"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "两者都需要：runtime 捕获违规；规则集证明 runtime 在做正确的事。"
     }
   ]
