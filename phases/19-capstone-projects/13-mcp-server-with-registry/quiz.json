@@ -1,90 +1,78 @@
 {
   "lesson": "13-mcp-server-with-registry",
-  "title": "Capstone 13 — 带 Registry 和 Governance 的 MCP Server",
+  "title": "综合项目 13：带 Registry 和治理机制的 Stateless MCP Server",
   "questions": [
     {
       "stage": "pre",
-      "question": "为什么 2026 MCP 修订版更偏向在生产 Server 中使用 StreamableHTTP？",
+      "question": "为什么这个综合项目同时使用 server.json 和 server/discover？",
       "options": [
-        "它消除了 authentication 的需求",
-        "它是唯一支持 tool call 的 transport",
-        "它会自动加密 payload",
-        "它默认是 stateless，因此 load balancer 后面的单个 endpoint 可以水平扩展"
+        "server.json 存储 session，而 server/discover 删除它们",
+        "Registry 要求两个文件包含完全相同的版本日期",
+        "它们是同一份 Tool manifest 的两个名称",
+        "server.json 发布安装和 endpoint metadata，而 server/discover 报告实时 protocol capabilities"
       ],
       "correct": 3,
-      "explanation": ""
-    },
-    {
-      "stage": "pre",
-      "question": "这个 capstone 中用哪种 authorization model 来限制 tool call？",
-      "options": [
-        "携带按 tool 划分 scope 的 OAuth 2.1 token，并在 tool-call 时检查",
-        "共享的 admin password",
-        "按 IP address 分配的 API key",
-        "不带 scope 的 Mutual TLS"
-      ],
-      "correct": 0,
-      "explanation": ""
+      "explanation": "Registry record 帮助 client 定位并配置 server。实时 RPC 报告正在运行的进程支持哪些能力。它们的 schema 和版本域彼此独立，但发布的 identity 必须使用经过认证的 namespace，并与实时 serverInfo 一致。"
     },
     {
       "stage": "check",
-      "question": ".well-known/mcp-capabilities document 的作用是什么？",
+      "question": "在 MCP revision 2026-07-28 中，什么取代了 initialize handshake？",
       "options": [
-        "存储 Server 的 audit log",
-        "列出 outbound IP range",
-        "保存 OPA policy bundle",
-        "暴露 tool manifest、transport URL 和 auth requirements，使 registry 可以验证并索引 Server"
-      ],
-      "correct": 3,
-      "explanation": ""
-    },
-    {
-      "stage": "check",
-      "question": "为什么 destructive tool 在这个设计中运行在单独的 MCP Server 上？",
-      "options": [
-        "它们不能通过 StreamableHTTP 暴露",
-        "它们运行在更慢的 hardware 上",
-        "它们被一个 approval token 限制访问，该 token 通过短时间窗口内的 Slack card 提权",
-        "它们需要不同的 programming language"
-      ],
-      "correct": 2,
-      "explanation": ""
-    },
-    {
-      "stage": "check",
-      "question": "OPA / Rego 在每次 tool call 上决定什么？",
-      "options": [
-        "调用哪个 model",
-        "把 audit log 写到哪里",
-        "Server 应该如何重新排序 response",
-        "caller 的 scope 是否允许 invocation，以及 PII redaction 和 payload caps"
-      ],
-      "correct": 3,
-      "explanation": ""
-    },
-    {
-      "stage": "post",
-      "question": "load test 中哪些证据展示了 StreamableHTTP 的水平扩展能力？",
-      "options": [
-        "把 concurrency 降到一个 client",
-        "切换到 stdio transport",
-        "所有内容都运行在单个 process 中",
-        "添加第二个 replica，并展示 load balancer 在没有 session stickiness 的情况下重新分配流量"
-      ],
-      "correct": 3,
-      "explanation": ""
-    },
-    {
-      "stage": "post",
-      "question": "为什么 audit log 在按 tenant 持久化之前要通过 Presidio 清理 PII？",
-      "options": [
-        "为了让 log 更短",
-        "为了满足 enterprise security requirements，同时保持每次调用的 lineage 可查询",
-        "Presidio 会降低 ClickHouse write amplification",
-        "PII 会提升 search performance"
+        "Mcp-Session-Id 加上 notifications/initialized",
+        "每个请求都携带 protocol version 和 client capabilities，并且 client 可以调用强制要求的 server/discover",
+        "一个用于打开永久 server stream 的 GET 请求",
+        "每个 TCP connection 仅发送一次的 session cookie"
       ],
       "correct": 1,
-      "explanation": ""
+      "explanation": "该 protocol 是 stateless 的。版本和 capabilities 作为请求 metadata，而 server/discover 无需创建 session 即可提供实时版本与 capability discovery。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种 tools/list 行为能够支持安全且高效的 discovery？",
+      "options": [
+        "一个没有 scope 且永久缓存的响应",
+        "每个 replica 上随机排列的 Tool 顺序",
+        "在 initialize 期间创建的 connection-local list",
+        "确定性顺序，加上 ttlMs，以及正确的 public 或 private cacheScope"
+      ],
+      "correct": 3,
+      "explanation": "稳定排序可以提高可复现性和 Prompt caching 效果。ttlMs 用于传达数据的新鲜度，而 cacheScope 可以防止用户特定的结果通过共享缓存泄漏。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种 Streamable HTTP 设计符合当前的 stateless transport？",
+      "options": [
+        "所有 client 都需要 sticky load-balancer routing",
+        "POST 创建 session，GET 恢复它，DELETE 关闭它",
+        "独立的 GET stream 使用 Last-Event-ID replay",
+        "每条 JSON-RPC message 都使用自己的 POST，并针对单个请求使用 JSON 或 request-scoped SSE"
+      ],
+      "correct": 3,
+      "explanation": "当前的 Streamable HTTP 对 MCP message 仅使用 POST，并且不存在 protocol session、独立 GET stream、session DELETE 或 Last-Event-ID resumability。"
+    },
+    {
+      "stage": "post",
+      "question": "在策略批准的 Tool handler 运行之前，生产 server 必须验证什么？",
+      "options": [
+        "只验证 server.json 是否列出了 remote URL",
+        "只验证 Tool 的 destructiveHint annotation",
+        "只验证是否有人发布了 approval message",
+        "验证 protocol metadata，以及 Token issuer、audience 或 resource、expiry、scope 和任何 exact-action approval"
+      ],
+      "correct": 3,
+      "explanation": "Transport metadata、Token validation 和 policy 是彼此独立的关卡。Annotation 和 publication metadata 不会授予权限。"
+    },
+    {
+      "stage": "post",
+      "question": "哪项证据最能支持 server 无需 protocol session 即可扩展这一论断？",
+      "options": [
+        "server.json 中的一条 remote entry",
+        "在两个可互换 replica 之间进行一次 wire-level concurrent run，且不依赖 affinity",
+        "一个仅构造单个 response dictionary 的 unit test",
+        "一张展示 load balancer 的图"
+      ],
+      "correct": 1,
+      "explanation": "必须实际检验真实的 transport 和 deployment boundary。在多个 replica 之间交替发送请求，可以证明正确性并未隐藏在某个进程或 sticky session 中。"
     }
   ]
 }

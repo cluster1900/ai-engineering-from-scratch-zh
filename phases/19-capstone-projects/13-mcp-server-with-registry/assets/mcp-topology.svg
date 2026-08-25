@@ -14,25 +14,25 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">MCP 2026 — StreamableHTTP + scopes + OPA + registry</text>
+  <text x="480" y="24" text-anchor="middle" class="title">MCP 2026-07-28：无状态请求 + 策略 + registry</text>
 
   <rect x="40" y="50" width="260" height="80" class="cool"/>
   <text x="170" y="72" text-anchor="middle" class="head">MCP 客户端</text>
-  <text x="170" y="94" text-anchor="middle" class="small">Claude Code, Cursor 3, Amp,</text>
-  <text x="170" y="112" text-anchor="middle" class="small">OpenCode, Gemini CLI</text>
+  <text x="170" y="94" text-anchor="middle" class="small">版本 + 能力</text>
+  <text x="170" y="112" text-anchor="middle" class="small">每次请求时</text>
 
   <rect x="340" y="50" width="260" height="80" class="dsk"/>
-  <text x="470" y="72" text-anchor="middle" class="head">StreamableHTTP</text>
-  <text x="470" y="94" text-anchor="middle" class="small">JSON-RPC + 流式传输</text>
-  <text x="470" y="112" text-anchor="middle" class="small">无状态，可水平扩展</text>
+  <text x="470" y="72" text-anchor="middle" class="head">Streamable HTTP</text>
+  <text x="470" y="94" text-anchor="middle" class="small">每条 JSON-RPC 消息一次 POST</text>
+  <text x="470" y="112" text-anchor="middle" class="small">无协议会话</text>
 
   <rect x="640" y="50" width="280" height="80" class="cold"/>
   <text x="780" y="72" text-anchor="middle" class="head">OAuth 2.1 scopes</text>
-  <text x="780" y="94" text-anchor="middle" class="small">SPIFFE 工作负载身份</text>
-  <text x="780" y="112" text-anchor="middle" class="small">按工具强制 scope</text>
+  <text x="780" y="94" text-anchor="middle" class="small">签发者 + 受众 + 过期时间</text>
+  <text x="780" y="112" text-anchor="middle" class="small">每次 Tool 调用均检查 scope</text>
 
   <rect x="40" y="160" width="560" height="200" class="box"/>
-  <text x="320" y="182" text-anchor="middle" class="head">只读 MCP 服务器 (FastMCP)</text>
+  <text x="320" y="182" text-anchor="middle" class="head">只读 MCP 副本</text>
   <rect x="60" y="200" width="170" height="40" class="cool"/>
   <text x="145" y="220" text-anchor="middle" class="step">postgres.readonly</text>
   <text x="145" y="234" text-anchor="middle" class="small">scope: postgres:query:readonly</text>
@@ -55,28 +55,28 @@
   <text x="780" y="182" text-anchor="middle" class="head">破坏性 MCP 服务器</text>
   <rect x="660" y="200" width="240" height="44" class="hot"/>
   <text x="780" y="220" text-anchor="middle" class="step">jira.create / linear.create</text>
-  <text x="780" y="234" text-anchor="middle" class="small">scope: +approved:by:human</text>
+  <text x="780" y="234" text-anchor="middle" class="small">写入 scope + 单独审批</text>
   <rect x="660" y="254" width="240" height="44" class="hot"/>
   <text x="780" y="274" text-anchor="middle" class="step">postgres.write</text>
-  <text x="780" y="288" text-anchor="middle" class="small">需要新的 Slack 批准</text>
+  <text x="780" y="288" text-anchor="middle" class="small">需要与操作绑定的审批</text>
 
   <rect x="660" y="310" width="240" height="40" class="dsk"/>
-  <text x="780" y="330" text-anchor="middle" class="step">Slack 批准卡</text>
-  <text x="780" y="344" text-anchor="middle" class="small">提升 scope 15 分钟</text>
+  <text x="780" y="330" text-anchor="middle" class="step">审批记录</text>
+  <text x="780" y="344" text-anchor="middle" class="small">actor + tool + args + target + expiry</text>
 
   <rect x="40" y="380" width="420" height="130" class="box"/>
   <text x="250" y="402" text-anchor="middle" class="head">注册服务</text>
-  <text x="250" y="422" text-anchor="middle" class="small">轮询 .well-known/mcp-capabilities</text>
-  <text x="250" y="440" text-anchor="middle" class="small">验证 JSON Schema</text>
-  <text x="250" y="458" text-anchor="middle" class="small">UI: 列表 / 搜索 / 验证 / 启用</text>
-  <text x="250" y="476" text-anchor="middle" class="small">团队归属 + 每服务器 SLO</text>
-  <text x="250" y="498" text-anchor="middle" class="caption">AAIF Registry spec</text>
+  <text x="250" y="422" text-anchor="middle" class="small">发布并索引 server.json</text>
+  <text x="250" y="440" text-anchor="middle" class="small">验证 Registry schema</text>
+  <text x="250" y="458" text-anchor="middle" class="small">探测在线 server/discover</text>
+  <text x="250" y="476" text-anchor="middle" class="small">报告元数据/运行时漂移</text>
+  <text x="250" y="498" text-anchor="middle" class="caption">Registry 与 MCP 版本相互独立</text>
 
   <rect x="500" y="380" width="420" height="130" class="box"/>
   <text x="710" y="402" text-anchor="middle" class="head">审计 + 负载</text>
   <text x="710" y="422" text-anchor="middle" class="small">每租户 JSONL 审计日志</text>
   <text x="710" y="440" text-anchor="middle" class="small">写入前 Presidio PII 脱敏</text>
   <text x="710" y="458" text-anchor="middle" class="small">负载测试: 100 个并发客户端</text>
-  <text x="710" y="476" text-anchor="middle" class="small">通过 LB 水平扩展</text>
-  <text x="710" y="498" text-anchor="middle" class="caption">MCP 一致性测试通过</text>
+  <text x="710" y="476" text-anchor="middle" class="small">两个无亲和性的副本</text>
+  <text x="710" y="498" text-anchor="middle" class="caption">接收端协议证据</text>
 </svg>
