@@ -18,10 +18,10 @@
       "stage": "check",
       "question": "collate function 在 instruction positions 和 padding positions 上设置 labels[i] = -100。为什么 PyTorch cross-entropy 会正确处理这些位置？",
       "options": [
-        "Cross-entropy 会静默丢弃任何负 target。",
+        "PyTorch 会按 sequence length normalise，因此 masked positions 会抵消。",
         "F.cross_entropy 会遵守 ignore_index=-100：这些位置贡献零 Loss 和零 Gradient。",
-        "这些位置上的模型输出会自动被设置为 NaN。",
-        "PyTorch 会按 sequence length normalise，因此 masked positions 会抵消。"
+        "Cross-entropy 会静默丢弃任何负 target。",
+        "这些位置上的模型输出会自动被设置为 NaN。"
       ],
       "correct": 1,
       "explanation": "ignore_index 是 F.cross_entropy 的 documented argument。等于它的 targets 会对 Loss 和 gradients 贡献为零。-100 是约定俗成的默认值。"
@@ -30,36 +30,36 @@
       "stage": "check",
       "question": "为什么 `shifted_loss` 切片 `logits[:, :-1, :]` 和 `labels[:, 1:]`，而不是在相同位置使用它们？",
       "options": [
-        "为了让 tensors 在 collate step 后大小相同。",
-        "因为在 causal next-token objective 下，position i 的模型会预测 position i+1 的 token。",
+        "这是一个可选 optimization；使用 same-position labels 也可以。",
         "为了自动排除最终 padding position。",
-        "这是一个可选 optimization；使用 same-position labels 也可以。"
+        "因为在 causal next-token objective 下，position i 的模型会预测 position i+1 的 token。",
+        "为了让 tensors 在 collate step 后大小相同。"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Causal LM 训练 position i 去预测 token i+1。该 slice 将 position i 的 prediction 与 position i+1 的 gold label 对齐，这是标准 next-token objective。"
     },
     {
       "stage": "check",
       "question": "你在没有 mask 的情况下训练：labels 等于 input_ids，没有 -100。模型可以训练，但 response 上的 exact-match 比使用 mask 时更差。最可能的原因是什么？",
       "options": [
+        "没有 mask 时模型无法学习 boundary token。",
         "Optimizer overfits 了 response tokens。",
-        "大部分 Gradient signal 都用于预测 instruction（最大的 masked region 本来会阻止这一点）。",
         "当 Loss 包含 specials 时，cross-entropy 不稳定。",
-        "没有 mask 时模型无法学习 boundary token。"
+        "大部分 Gradient signal 都用于预测 instruction（最大的 masked region 本来会阻止这一点）。"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "当 instruction positions 被计入 Loss 时，它们通常比 response tokens 更多，因此主导 Gradient。你关心的部分（response）上的有效 learning rate 会下降，并且模型会花容量去重构用户总会提供的 inputs。"
     },
     {
       "stage": "post",
       "question": "held-out set 上的 exact-match 是 0.85。一位 reviewer 说模型会 paraphrase 正确答案，而 exact-match 会漏掉这些。你会添加哪种 metric 来捕捉这一点？",
       "options": [
-        "held-out set 上的 Loss。",
-        "相对于 reference 的 token-level F1，即使不是逐字符相同，也会奖励 overlap。",
         "Average sequence length。",
-        "模型下 reference 的 cross-entropy。"
+        "模型下 reference 的 cross-entropy。",
+        "相对于 reference 的 token-level F1，即使不是逐字符相同，也会奖励 overlap。",
+        "held-out set 上的 Loss。"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Token-level F1（normalisation 后在 predicted 和 reference tokens 之间计算）会在表面形式不同但答案大部分正确时给模型 credit。这是 lesson 41 的任务。"
     },
     {

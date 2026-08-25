@@ -119,6 +119,10 @@ Exact-match 是最严格的文本 metric。预测的 response string 会被 norm
 
 真实的 SFT pipelines 会用 token-level F1（lesson 41）和 judge model 补充 exact-match。Exact-match 仍然有用，因为它没有歧义；如果它显示 0.7，就表示恰好 70 percent 的 test instructions 逐字符生成了 gold response。
 
+```figure
+cc-sft-loss-mask
+```
+
 ## What you will build
 
 实现由一个 `main.py` 加 tests 组成。
