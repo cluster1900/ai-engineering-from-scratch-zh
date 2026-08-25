@@ -41,6 +41,10 @@ Hypothesis
 
 `baseline_ref` 是可选的，但建议提供。第五十三课中的 evaluator 需要一个 baseline 进行比较。如果 hypothesis 省略了它，evaluator 会回退到同一 metric 上的上一次 run。
 
+```figure
+cg-novelty-ramp
+```
+
 ## 架构
 
 ```mermaid

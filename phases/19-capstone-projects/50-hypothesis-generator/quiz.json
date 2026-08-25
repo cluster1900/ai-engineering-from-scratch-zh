@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "为什么 generator 产生 ranked queue，而不是单个 hypothesis？",
       "options": [
-        "因为 parser 无法读取单个 block",
         "因为 runner 需要深度，这样当第一个 hypothesis 失败时，它可以弹出下一个 hypothesis",
         "因为 mock model 只输出 list",
-        "因为 embedding 需要多个 input"
+        "因为 embedding 需要多个 input",
+        "因为 parser 无法读取单个 block"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "生成 queue 的重点是把 sampling cost 摊销到整个 loop 上。当第一个 hypothesis 失败时，runner 无需新的 sampling pass 就能弹出下一个。"
     },
     {
       "stage": "pre",
       "question": "temperature ramp 在每一 pass 上实现什么？",
       "options": [
-        "它提高 parser tolerance",
         "它拓宽 sampling distribution，让后续 draft 可以落在离 seed 更远的位置",
         "它增加 embedding dimension",
+        "它提高 parser tolerance",
         "它把 seed value 变成三倍"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "更高的 temperature 会拓宽 sampling distribution。ramp 鼓励每一 pass 进一步漂移，让 novelty filter 有事可做。"
     },
     {
@@ -54,12 +54,12 @@
       "stage": "check",
       "question": "为什么 mock language model 按 temperature bucket 索引，而不是按原始 float？",
       "options": [
-        "因为 float 不能被 hash",
         "因为 bucket 让 schedule 离散化，因此 temperature 的小幅变化可以选择不同的脚本化 draft",
+        "因为 embedding 需要它",
         "因为 parser 需要 integer",
-        "因为 embedding 需要它"
+        "因为 float 不能被 hash"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "bucket 会离散化连续 schedule。两个相邻 temperature 可以映射到不同 bucket，并从 scripted bank 中取出不同 draft，这就是 mock 模拟多样化 sampling 的方式。"
     },
     {
@@ -68,8 +68,8 @@
       "options": [
         "generator 抛出 hard error",
         "queue 为空，并且每一 pass 都记录 parse rejection，因此 failure mode 可审计",
-        "runner 用新 prompt 重试",
-        "novelty threshold 会自动降低"
+        "novelty threshold 会自动降低",
+        "runner 用新 prompt 重试"
       ],
       "correct": 1,
       "explanation": "parser failure 会作为 log 记录，并带有 parse reject reason。queue 可以为空返回而不让 loop 崩溃，并且 log 会解释原因。"
