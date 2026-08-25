@@ -7,59 +7,59 @@
       "question": "宽度为 3、作用在 word Embedding 上的一维 convolutional filter 实际上在学习什么？",
       "options": [
         "一个可学习的 bigram detector",
-        "一个 position Embedding",
         "一个可学习的 trigram (n-gram) detector",
+        "一个 position Embedding",
         "一个 unigram 计数"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "宽度为 3 的 filter 跨越三个连续 Token，作用类似一个可学习的 trigram detector。"
     },
     {
       "stage": "pre",
       "question": "为什么 LSTM 使用以加性交互为主的 cell state？",
       "options": [
-        "加性流动让 Gradient 能够在长序列中传播，而不会消失或爆炸",
         "更快的 softmax",
-        "它节省内存",
-        "为了避免 Matrix inversion"
+        "为了避免 Matrix inversion",
+        "加性流动让 Gradient 能够在长序列中传播，而不会消失或爆炸",
+        "它节省内存"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "cell-state highway 让 Gradient 在数百个 step 中保持稳定，从而修复 vanishing-gradient 问题。"
     },
     {
       "stage": "check",
       "question": "为什么 TextCNN 在 convolutional layer 之后使用 global max-pooling？",
       "options": [
-        "为了启用 Backpropagation",
-        "为了移除 Embedding",
         "为了缩小词表",
-        "Max-pool 通过选择每个 filter 的最强 activation，给出固定大小、位置不变的表示"
+        "Max-pool 通过选择每个 filter 的最强 activation，给出固定大小、位置不变的表示",
+        "为了启用 Backpropagation",
+        "为了移除 Embedding"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "Global max-pool 会产生固定大小的 feature Vector，不受输入长度影响，并具有位置不变性。"
     },
     {
       "stage": "check",
       "question": "在序列标注中，bidirectional RNN 相比单向 RNN 的主要优势是什么？",
       "options": [
-        "训练更快",
-        "每个 Token 的表示都能看到左右两侧 context，这对 tagging 至关重要",
+        "内存更便宜",
         "避免使用 Embedding",
-        "内存更便宜"
+        "每个 Token 的表示都能看到左右两侧 context，这对 tagging 至关重要",
+        "训练更快"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Bidirectional networks 会拼接 forward + backward hidden states，因此 label 可以使用完整 context。"
     },
     {
       "stage": "check",
       "question": "为什么对 LSTM 的输出做 max-pooling 通常比只使用最后一个 hidden state 做 Classification 更好？",
       "options": [
-        "Max-pool 可微；last-state 不可微",
-        "长序列末尾的信息往往会主导最后一个 state，从而隐藏更早出现的证据",
         "Max-pool 会移除大小写",
-        "Last-state pool 会忽略 padding"
+        "Last-state pool 会忽略 padding",
+        "Max-pool 可微；last-state 不可微",
+        "长序列末尾的信息往往会主导最后一个 state，从而隐藏更早出现的证据"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Max-pool 会聚合各个位置上的最强信号；last-state 可能丢失更早的证据。"
     },
     {
@@ -67,21 +67,21 @@
       "question": "LSTM/RNN encoder-decoder 的哪项局限推动了 Attention 的出现？",
       "options": [
         "它们需要 subword Tokenizer",
-        "它们不能使用 Embedding",
         "decoder 只能看到固定大小的 encoder state，在长输入上会丢失细节；recurrence 也会让训练串行化",
-        "它们无法 Embedding Token"
+        "它们无法 Embedding Token",
+        "它们不能使用 Embedding"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "固定大小的摘要表示加上串行训练，是 Attention 消除的两个失败点。"
     },
     {
       "stage": "post",
       "question": "在 2026 年，TextCNN 或 BiLSTM 什么时候仍然能胜过 Transformer？",
       "options": [
-        "在图像输入上",
-        "Edge / on-device、逐 Token streaming 输入，或 tiny-data baseline",
         "只要数据集是 multilingual",
-        "当 latency 要求极其宽松时"
+        "Edge / on-device、逐 Token streaming 输入，或 tiny-data baseline",
+        "当 latency 要求极其宽松时",
+        "在图像输入上"
       ],
       "correct": 1,
       "explanation": "小型 architecture 在 edge inference、streaming 输入和快速 baseline 上仍然胜出。"
@@ -90,12 +90,12 @@
       "stage": "post",
       "question": "plain RNN 中的 vanishing Gradient 问题是什么？",
       "options": [
-        "反复乘以小于 1 的 recurrent weights，使流向早期 step 的 Gradient 收缩趋近于零",
-        "Embedding Matrix 变成 singular",
         "输入变成零",
-        "Loss 变成负数"
+        "反复乘以小于 1 的 recurrent weights，使流向早期 step 的 Gradient 收缩趋近于零",
+        "Loss 变成负数",
+        "Embedding Matrix 变成 singular"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "没有 gating 时，长乘积形式的 Gradient 会消失（或爆炸）；这就是 LSTMs 和 GRUs 存在的原因。"
     }
   ]
