@@ -6,8 +6,8 @@
       "stage": "pre",
       "question": "POS tagging 的目标是什么？",
       "options": [
-        "检测 sentiment",
         "翻译句子",
+        "检测 sentiment",
         "提取 named entities",
         "为每个 Token 分配一个语法类别（noun、verb 等）"
       ],
@@ -19,47 +19,47 @@
       "question": "哪个 tagset 是 cross-lingual 工作的默认选择？",
       "options": [
         "Penn Treebank",
+        "CoNLL-2003",
         "Stanford Dependencies",
-        "Universal Dependencies",
-        "CoNLL-2003"
+        "Universal Dependencies"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Universal Dependencies 提供了一套更粗粒度、language-agnostic 的 17-tag 集合。"
     },
     {
       "stage": "check",
       "question": "bigram HMM POS tagger 建模什么？",
       "options": [
-        "只建模 P(tags)",
         "Dependency parses",
-        "Embedding similarities",
-        "P(tag | previous tag) transitions 加上 P(word | tag) emissions，并用 Viterbi 解码"
+        "只建模 P(tags)",
+        "P(tag | previous tag) transitions 加上 P(word | tag) emissions，并用 Viterbi 解码",
+        "Embedding similarities"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": "Bigram HMM 使用 tag transitions 和 word emissions；Viterbi 会找到概率最高的序列。"
     },
     {
       "stage": "check",
       "question": "Viterbi algorithm 为 HMM tagger 计算什么？",
       "options": [
-        "通过在 tag lattice 上进行 dynamic programming，计算单个最高概率的 tag sequence",
         "transition Matrix",
         "每个 tag 的 marginal probability",
-        "仅计算 forward probabilities"
+        "仅计算 forward probabilities",
+        "通过在 tag lattice 上进行 dynamic programming，计算单个最高概率的 tag sequence"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Viterbi 使用 O(n * |T|^2) dynamic programming 找到 argmax sequence。"
     },
     {
       "stage": "check",
       "question": "dependency parsing 会产生什么？",
       "options": [
-        "一棵 tree，其中每个词都有一个 head word 和一个带 label 的 grammatical relation",
-        "一个 flat BIO sequence",
         "一棵带有 NP/VP/PP labels 的 constituency tree",
-        "一个 coreference chain"
+        "一棵 tree，其中每个词都有一个 head word 和一个带 label 的 grammatical relation",
+        "一个 coreference chain",
+        "一个 flat BIO sequence"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Dependency parses 给出逐词的（head, relation）edges；constituency parses 给出嵌套的 phrase structures。"
     },
     {
@@ -78,10 +78,10 @@
       "stage": "post",
       "question": "为什么 POS tagging 在 2026 年的 LLM pipelines 中仍然重要？",
       "options": [
-        "LLMs 没有它就无法运行",
-        "Lemmatization、aspect-based sentiment、query decomposition、structured-output validation 和 cross-lingual transfer 仍然都会使用 POS 或 dependency parses",
         "tokenization 必需",
-        "替代 transformers"
+        "Lemmatization、aspect-based sentiment、query decomposition、structured-output validation 和 cross-lingual transfer 仍然都会使用 POS 或 dependency parses",
+        "替代 transformers",
+        "LLMs 没有它就无法运行"
       ],
       "correct": 1,
       "explanation": "即使 LLMs 生成 prose，POS 和 dependency parses 仍会供给许多结构化 downstream tasks。"
@@ -91,11 +91,11 @@
       "question": "在大多数 production POS / parse tasks 中，你应该选择哪个 library？",
       "options": [
         "scikit-learn",
-        "NumPy",
         "spaCy（或在需要最高 accuracy 或更广语言覆盖时使用 stanza/trankit）",
+        "NumPy",
         "自己写 parser"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "spaCy 内置快速的 production-grade POS + dependency parsers；stanza/trankit 覆盖更广的语言。"
     }
   ]

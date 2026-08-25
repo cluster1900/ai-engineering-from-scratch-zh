@@ -53,5 +53,5 @@
   <text class="rel" x="490" y="220" text-anchor="middle">pobj</text>
 
   <text class="note" x="365" y="310" text-anchor="middle">ROOT = running</text>
-  <text class="stage" x="450" y="370" text-anchor="middle">每个词有一个 head，箭头从 head 指向 dependent。</text>
+  <text class="stage" x="450" y="370" text-anchor="middle">每个词有一个中心词，箭头从中心词指向依存词。</text>
 </svg>
