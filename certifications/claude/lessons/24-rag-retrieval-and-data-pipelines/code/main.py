@@ -183,4 +183,3 @@ def demo() -> dict[str, object]:
 
 if __name__ == "__main__":
     print(json.dumps(demo(), indent=2))
-
