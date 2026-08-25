@@ -87,6 +87,10 @@ Assignment hash 将用户随机分配到变体。如果 50/50 切分实际得到
 - CUPED 方差降低：30-70%。
 - LLM 非确定性 → +30-50% 样本量缓冲。
 
+```figure
+mx-sequential-test
+```
+
 ## 使用它
 `code/main.py` 模拟一个带有固定边界和 sequential boundaries 的 sequential A/B test。展示 sequential 如何让你提前停止。
 

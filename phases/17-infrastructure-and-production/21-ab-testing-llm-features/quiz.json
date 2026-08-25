@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "本课中 evals 和 A/B tests 的精确定义区别是什么？",
       "options": [
-        "Evals 在带标签的数据集上回答“model 能完成这项工作吗？”；A/B tests 用实时 randomized traffic 回答“用户在意吗？”",
         "只需要 A/B tests",
+        "Evals 在带标签的数据集上回答“model 能完成这项工作吗？”；A/B tests 用实时 randomized traffic 回答“用户在意吗？”",
         "Evals 面向用户；A/B tests 是离线的",
         "它们可以互换"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -19,23 +19,23 @@
       "question": "CUPED 对实验有什么作用？",
       "options": [
         "禁用 multiple-comparison correction",
-        "完全替代 sequential testing",
         "在比较 post-period 之前回归掉 pre-period variance，通常可降低 30-70% 的 variance，并提升 effective sample size",
-        "通过雇用更多用户来增加 sample size"
+        "通过雇用更多用户来增加 sample size",
+        "完全替代 sequential testing"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "在运行许多 A/Bs 时，为什么需要 multiple-comparison corrections（Bonferroni 或 Benjamini-Hochberg）？",
       "options": [
-        "GDPR 要求它们",
+        "它们会加快实验速度",
         "它们只在 sequential tests 中需要",
-        "以 95% confidence 运行 20 个 tests 会因随机性产生一个 false positive；corrections 控制 family-wise error 或 false discovery rate",
-        "它们会加快实验速度"
+        "GDPR 要求它们",
+        "以 95% confidence 运行 20 个 tests 会因随机性产生一个 false positive；corrections 控制 family-wise error 或 false discovery rate"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -43,32 +43,32 @@
       "question": "SRM（sample ratio mismatch）检测什么？",
       "options": [
         "缓慢的 Tokenizer 性能",
+        "PII 泄漏",
         "assignment-hash bug，导致实际交付的 split 偏离目标 split（例如目标是 50/50，却得到 47/53）",
-        "实验平台中的内存泄漏",
-        "PII 泄漏"
+        "实验平台中的内存泄漏"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么 LLM non-determinism 要求为 sample size 留 buffer？",
       "options": [
+        "Non-determinism 会减少所需 samples",
         "它违反 IID assumptions；effective sample size 会下降，因此需要把所需规模大约乘以 1.3-1.5x 作为安全余量",
         "它与 power calculations 无关",
-        "Non-determinism 会减少所需 samples",
         "它只在离线时重要"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "本课如何对比 Statsig 和 GrowthBook？",
       "options": [
+        "GrowthBook 是闭源的",
         "功能集完全相同",
         "Statsig 仅是 warehouse-native",
-        "GrowthBook 是闭源的",
         "Statsig 是一体化 SaaS（2025 年 9 月被 OpenAI 以 $1.1B 收购）；GrowthBook 是开源 MIT、warehouse-native，提供 Bayesian/Frequentist/Sequential engines 以及 CUPED/SRM/BH"
       ],
       "correct": 3,
