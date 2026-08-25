@@ -1,0 +1,78 @@
+{
+  "lesson": "26-skill-permissions-sandboxes-and-trust",
+  "title": "Skill 权限、Sandbox 与信任",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "某个 SKILL.md 写着 `You may write anywhere on disk`。这句话提供了什么权限？",
+      "options": [
+        "不提供任何权限；每项操作仍由 host 权限模型决定",
+        "提供用户主目录的写入权限",
+        "提供所有被 reference 指定路径的写入权限",
+        "在 Model 重复这句话后提供写入权限"
+      ],
+      "correct": 0,
+      "explanation": "Skill 内容是指令数据，而不是 capability Token。文件系统范围、Tool 访问权限、网络策略和审批均由 host 提供，即使 Skill 声称拥有更广泛的权限，这些限制仍然有效。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 workspace jail 必须先解析 symlink，再检查路径是否位于其内部？",
+      "options": [
+        "解析后的路径会自动遮盖 secret",
+        "解析会使每条路径都变得可写",
+        "Symlink 总是包含格式错误的 YAML",
+        "从词法上看位于 workspace 内的路径，可能通过 symlink 指向 jail 外部的目标"
+      ],
+      "correct": 3,
+      "explanation": "仅检查输入字符串会漏掉类似 `workspace/report` 这样的链接，因为它可能解析到其他位置。必须根据解析后的目标检查 containment，保守的系统还可能完全拒绝直接以 symlink 为目标的操作。"
+    },
+    {
+      "stage": "check",
+      "question": "任务中Embedding的外部网页要求禁用审批检查。在这种场景下，Runtime 应如何处理这段文本？",
+      "options": [
+        "将其视为可移植的 SKILL.md 扩展",
+        "将其视为无法扩大权限的不受信任数据",
+        "将其视为新的最高优先级 system policy",
+        "将其视为来自用户的批准"
+      ],
+      "correct": 1,
+      "explanation": "外部内容可以为任务提供信息，但它不属于受信任的 policy channel。受其影响的请求仍应遵守现有权限，对于会改变状态的操作，还可能需要额外的 approval gate。"
+    },
+    {
+      "stage": "check",
+      "question": "演示破坏性命令审查时，哪种教学方式最安全？",
+      "options": [
+        "只要 Skill bundle 包含 script 就允许执行",
+        "在课程 repository 中运行命令，之后再恢复文件",
+        "解析并分类 argv Vector，返回 `deny`，并且永不执行命令",
+        "输出一段学生无需审查即可粘贴的 shell 字符串"
+      ],
+      "correct": 2,
+      "explanation": "Policy simulator 可以在不产生真实副作用的情况下，教授 executable allowlist、破坏性模式、metacharacter 检查和 verdict。课程结果应明确记录命令从未被执行。"
+    },
+    {
+      "stage": "post",
+      "question": "某个 Skill 提议向网络 allowlist 之外的 origin 发起 HTTPS 调用。用户此前已经调用了该 Skill。正确的 verdict 是什么？",
+      "options": [
+        "仅当 description 提到互联网时才允许",
+        "允许，因为调用 Skill 意味着用户同意访问网络",
+        "将 hostname 改写为 allowlist 中的第一个 host",
+        "根据网络策略拒绝；激活不等于授权"
+      ],
+      "correct": 3,
+      "explanation": "Invocation gate 控制指令加载，而 network gate 控制标准化后的 HTTPS origin，包括有效端口。此前选择过 Skill 并不会扩大 allowlist，也不会授权传输 credential。"
+    },
+    {
+      "stage": "post",
+      "question": "当写入请求可能包含 secret 材料，并且不存在已获批准的 secret 使用路径时，应如何处理？",
+      "options": [
+        "如果目标路径位于 workspace 内，就信任该请求",
+        "将其替换为随机值并继续",
+        "记录 payload，让审查者可以检查完整值",
+        "拒绝请求且不输出该值，并要求使用单独获授权的 secret workflow"
+      ],
+      "correct": 3,
+      "explanation": "Workspace containment 并不能保证 secret 处理安全。审查者应阻止该请求，避免回显敏感材料，并要求先具备明确的策略和审批，才能进行任何合法的 secret 使用。"
+    }
+  ]
+}

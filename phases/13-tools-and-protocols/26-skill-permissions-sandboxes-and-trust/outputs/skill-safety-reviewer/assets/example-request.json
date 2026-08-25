@@ -1,0 +1,10 @@
+{
+  "kind": "write",
+  "target": "reports/summary.json",
+  "command": [],
+  "url": null,
+  "payload": "公开摘要数据",
+  "influencedByUntrustedContent": false,
+  "approved": false,
+  "claimedPermissions": ["write-anywhere"]
+}
