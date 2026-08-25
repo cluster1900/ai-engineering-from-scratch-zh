@@ -13,62 +13,62 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="24" text-anchor="middle" class="title">Blackwell + TRT-LLM stack - 7x 成本差距从何而来</text>
+  <text x="480" y="24" text-anchor="middle" class="title">Blackwell + TRT-LLM 技术栈 - 7x 成本差距从何而来</text>
 
   <rect x="40" y="50" width="440" height="470" class="box"/>
-  <text x="260" y="72" text-anchor="middle" class="head">Blackwell 上的精度制度</text>
+  <text x="260" y="72" text-anchor="middle" class="head">Blackwell 上的精度方案</text>
   <rect x="60" y="90" width="400" height="60" class="cool"/>
-  <text x="260" y="112" text-anchor="middle" class="step">权重：NVFP4（4-bit microscaling）</text>
-  <text x="260" y="130" text-anchor="middle" class="small">每个 decoded Token 字节数为 FP8 的一半</text>
-  <text x="260" y="144" text-anchor="middle" class="small">模型提供方交付 day-0 FP4 权重</text>
+  <text x="260" y="112" text-anchor="middle" class="step">权重：NVFP4（4-bit 微缩放）</text>
+  <text x="260" y="130" text-anchor="middle" class="small">每个解码 Token 的字节数是 FP8 的一半</text>
+  <text x="260" y="144" text-anchor="middle" class="small">Model 提供方交付首日可用的 FP4 权重</text>
   <rect x="60" y="160" width="400" height="60" class="hot"/>
   <text x="260" y="182" text-anchor="middle" class="step">KV cache：FP8（仍然关键）</text>
   <text x="260" y="200" text-anchor="middle" class="small">FP4 KV 会压垮 Attention 尾部</text>
   <text x="260" y="214" text-anchor="middle" class="small">FP8 指数位保留动态范围</text>
   <rect x="60" y="230" width="400" height="60" class="cold"/>
   <text x="260" y="252" text-anchor="middle" class="step">激活值：NVFP4</text>
-  <text x="260" y="270" text-anchor="middle" class="small">层内小范围；FP4 扛得住</text>
-  <text x="260" y="284" text-anchor="middle" class="small">Tensor Cores 上有 MXFP8 变体</text>
+  <text x="260" y="270" text-anchor="middle" class="small">层内范围较小；FP4 可以承受</text>
+  <text x="260" y="284" text-anchor="middle" class="small">Tensor Cores 上提供 MXFP8 变体</text>
   <rect x="60" y="300" width="400" height="60" class="dsk"/>
   <text x="260" y="322" text-anchor="middle" class="step">Attention 累加器：FP32</text>
   <text x="260" y="340" text-anchor="middle" class="small">softmax 稳定性需要更高精度</text>
   <text x="260" y="354" text-anchor="middle" class="small">这一层不能协商</text>
   <rect x="60" y="370" width="400" height="140" class="box"/>
   <text x="260" y="392" text-anchor="middle" class="head">质量注意点</text>
-  <text x="260" y="414" text-anchor="middle" class="small">reasoning 工作负载上的 NVFP4 权重：</text>
-  <text x="260" y="430" text-anchor="middle" class="small">数学、chain-of-thought、长上下文代码：</text>
-  <text x="260" y="446" text-anchor="middle" class="small">无 per-block calib 时质量明显下降</text>
-  <text x="260" y="466" text-anchor="middle" class="small">恢复：FP8 权重 + FP4 激活值</text>
-  <text x="260" y="482" text-anchor="middle" class="small">或留在 H200 全程 FP8</text>
-  <text x="260" y="502" text-anchor="middle" class="caption">迁移前始终验证 eval 质量</text>
+  <text x="260" y="414" text-anchor="middle" class="small">推理工作负载上的 NVFP4 权重：</text>
+  <text x="260" y="430" text-anchor="middle" class="small">数学、思维链、长 Context 代码：</text>
+  <text x="260" y="446" text-anchor="middle" class="small">没有分块校准时质量明显下降</text>
+  <text x="260" y="466" text-anchor="middle" class="small">恢复方案：FP8 权重 + FP4 激活值</text>
+  <text x="260" y="482" text-anchor="middle" class="small">或在 H200 上全程使用 FP8</text>
+  <text x="260" y="502" text-anchor="middle" class="caption">迁移前始终验证 Evaluation 质量</text>
 
   <rect x="500" y="50" width="420" height="470" class="box"/>
-  <text x="710" y="72" text-anchor="middle" class="head">叠加差距的 stack 层</text>
+  <text x="710" y="72" text-anchor="middle" class="head">叠加差距的技术栈层</text>
 
   <rect x="520" y="90" width="380" height="60" class="cool"/>
   <text x="710" y="112" text-anchor="middle" class="step">1 / 硬件带宽</text>
-  <text x="710" y="130" text-anchor="middle" class="small">H100 3.35 TB/s vs B200 8.0 TB/s：~2.4x</text>
-  <text x="710" y="144" text-anchor="middle" class="small">decode 受内存限制；这是下限</text>
+  <text x="710" y="130" text-anchor="middle" class="small">H100 3.35 TB/s 对比 B200 8.0 TB/s：~2.4x</text>
+  <text x="710" y="144" text-anchor="middle" class="small">解码受内存限制；这是下限</text>
 
   <rect x="520" y="160" width="380" height="60" class="hot"/>
   <text x="710" y="182" text-anchor="middle" class="step">2 / NVFP4 权重</text>
-  <text x="710" y="200" text-anchor="middle" class="small">每 Token 字节减半：~2.0x</text>
-  <text x="710" y="214" text-anchor="middle" class="small">NVFP4 是现在唯一重要的权重精度</text>
+  <text x="710" y="200" text-anchor="middle" class="small">每个 Token 的字节数减半：~2.0x</text>
+  <text x="710" y="214" text-anchor="middle" class="small">NVFP4 是当前唯一重要的权重精度</text>
 
   <rect x="520" y="230" width="380" height="60" class="cold"/>
   <text x="710" y="252" text-anchor="middle" class="step">3 / MTP draft</text>
-  <text x="710" y="270" text-anchor="middle" class="small">multi-token prediction head：accepted tokens 上 ~1.8x</text>
+  <text x="710" y="270" text-anchor="middle" class="small">多 Token 预测 head：已接受 Token 上 ~1.8x</text>
   <text x="710" y="284" text-anchor="middle" class="small">集成在 TRT-LLM build 中</text>
 
   <rect x="520" y="300" width="380" height="60" class="dsk"/>
-  <text x="710" y="322" text-anchor="middle" class="step">4 / prefill/decode 解耦</text>
+  <text x="710" y="322" text-anchor="middle" class="step">4 / prefill 与 decode 解耦</text>
   <text x="710" y="340" text-anchor="middle" class="small">Dynamo 编排独立 GPU 池：~1.6-2.5x</text>
   <text x="710" y="354" text-anchor="middle" class="small">NVLink 5 用于 KV cache 传输</text>
 
   <rect x="520" y="370" width="380" height="60" class="box"/>
-  <text x="710" y="392" text-anchor="middle" class="step">5 / NVLink 5 all-to-all</text>
+  <text x="710" y="392" text-anchor="middle" class="step">5 / NVLink 5 全互连</text>
   <text x="710" y="410" text-anchor="middle" class="small">MoE expert 通信延迟比 Hopper 低 3x</text>
-  <text x="710" y="424" text-anchor="middle" class="small">MoE 密集模型获得额外乘数</text>
+  <text x="710" y="424" text-anchor="middle" class="small">MoE 密集型 Model 获得额外倍增</text>
 
   <rect x="520" y="440" width="380" height="70" class="hot"/>
   <text x="710" y="462" text-anchor="middle" class="step">头条数字（2026）</text>
