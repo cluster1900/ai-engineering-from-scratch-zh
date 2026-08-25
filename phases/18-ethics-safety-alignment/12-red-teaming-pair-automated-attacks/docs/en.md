@@ -64,6 +64,10 @@ ASR 通常在固定 query budget 下报告。比较攻击时必须匹配 budget�
 
 Lesson 12 是 automated-attack 基础。Lesson 13（Many-Shot Jailbreaking）是一种互补的长度利用。Lesson 14（ASCII Art / Visual）是一种编码攻击。Lesson 15（Indirect Prompt Injection）是 2026 年的生产攻击面。Lesson 16 覆盖对应的 defensive-tooling（Llama Guard、Garak、PyRIT）。
 
+```figure
+al-pair-loop
+```
+
 ## 使用它
 `code/main.py` 构建了一个 toy PAIR loop。目标是一个 mock classifier，会拒绝“明显的”有害 prompt（keyword-filter）。攻击者是一个 rule-based refiner，会尝试 paraphrase、roleplay-framing 和 encoding。judge 对响应打分。你会看到攻击者在约 5-15 次迭代内成功绕过 keyword filter，并在 semantic filter 上失败。
 

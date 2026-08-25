@@ -6,36 +6,36 @@
       "stage": "pre",
       "question": "为什么手动 Red-Teaming 不足以评估前沿模型？",
       "options": [
+        "手动测试人员无法读取模型输出",
         "它无法扩展；每次模型发布时，都需要针对不断变化的目标，用统计样本来衡量 attack success rate",
         "手动 prompts 总是会被过滤器阻止",
-        "手动测试会产生太多 false positives",
-        "手动测试人员无法读取模型输出"
+        "手动测试会产生太多 false positives"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "PAIR 代表什么，它做什么？",
       "options": [
-        "Prompt Automatic Iterative Refinement；一个 attacker LLM 会针对目标迭代提出 jailbreaks，并把先前尝试作为 in-context feedback",
-        "Pairwise Adversarial Inference Routing；在多个模型之间路由攻击",
         "Pre-Action Inspection Reasoning；一种防御性 scaffolding",
-        "Persuasive Adversarial Iterative Reward；用 persuader 替代 RM"
+        "Persuasive Adversarial Iterative Reward；用 persuader 替代 RM",
+        "Pairwise Adversarial Inference Routing；在多个模型之间路由攻击",
+        "Prompt Automatic Iterative Refinement；一个 attacker LLM 会针对目标迭代提出 jailbreaks，并把先前尝试作为 in-context feedback"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "为什么对于 black-box 目标，PAIR 比 GCG 更高效？",
       "options": [
-        "PAIR 使用比 GCG 更大的 attacker model",
-        "GCG 只攻击开源模型",
         "GCG 需要 white-box Gradient 访问，并产生无法读取的 suffixes，且不能使用 in-context feedback；PAIR 是 black-box 且使用自然语言，并带有 in-context learning",
-        "PAIR 会忽略目标的响应"
+        "PAIR 会忽略目标的响应",
+        "GCG 只攻击开源模型",
+        "PAIR 使用比 GCG 更大的 attacker model"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -43,35 +43,35 @@
       "question": "为什么报告 Attack Success Rate (ASR) 时必须同时给出 query budget 和 judge identity？",
       "options": [
         "因为 judges 总是一致",
-        "因为 budgets 只能由 JailbreakBench 设置",
         "因为 ASR 会随 attacker 被允许的 queries 数量，以及由哪个 LLM 判断响应是否构成 jailbreak 而变化",
+        "因为 budgets 只能由 JailbreakBench 设置",
         "因为出口管制法规要求 ASR"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "以下哪种自动化攻击最适合描述为“带剪枝的 tree-of-attacks”？",
       "options": [
-        "TAP",
         "GCG",
+        "TAP",
         "PAP",
         "AutoDAN"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪个标准化 benchmark 使用 7 个类别中的 510 种 behaviours，并包含语义与功能性危害测试？",
       "options": [
-        "JailbreakBench",
-        "HarmBench",
+        "TruthfulQA",
         "WMDP",
-        "TruthfulQA"
+        "HarmBench",
+        "JailbreakBench"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     }
   ]

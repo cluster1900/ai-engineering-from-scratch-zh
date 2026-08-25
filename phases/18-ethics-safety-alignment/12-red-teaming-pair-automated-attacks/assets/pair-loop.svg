@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">PAIR：attacker + judge 循环</text>
+  <text x="480" y="24" text-anchor="middle" class="title">PAIR：攻击者 + 裁判循环</text>
 
   <rect x="60" y="70" width="220" height="200" class="box"/>
   <text x="170" y="92" text-anchor="middle" class="head">Attacker LLM (A)</text>
@@ -28,22 +28,22 @@
   <text x="170" y="220" text-anchor="middle" class="small">已见先前拒绝</text>
 
   <rect x="370" y="70" width="220" height="200" class="box"/>
-  <text x="480" y="92" text-anchor="middle" class="head">Target LLM (T)</text>
+  <text x="480" y="92" text-anchor="middle" class="head">目标 LLM (T)</text>
   <rect x="390" y="110" width="180" height="50" class="cool"/>
   <text x="480" y="132" text-anchor="middle" class="step">接收 p_k</text>
   <text x="480" y="150" text-anchor="middle" class="small">输出 response r_k</text>
   <rect x="390" y="180" width="180" height="50" class="cool"/>
   <text x="480" y="202" text-anchor="middle" class="step">仅 black-box</text>
-  <text x="480" y="220" text-anchor="middle" class="small">不需要 gradients</text>
+  <text x="480" y="220" text-anchor="middle" class="small">不需要 Gradient</text>
 
   <rect x="680" y="70" width="220" height="200" class="box"/>
-  <text x="790" y="92" text-anchor="middle" class="head">Judge LLM (J)</text>
+  <text x="790" y="92" text-anchor="middle" class="head">裁判 LLM (J)</text>
   <rect x="700" y="110" width="180" height="50" class="cold"/>
   <text x="790" y="132" text-anchor="middle" class="step">score (p_k, r_k)</text>
   <text x="790" y="150" text-anchor="middle" class="small">目标满足？</text>
   <rect x="700" y="180" width="180" height="50" class="cold"/>
   <text x="790" y="202" text-anchor="middle" class="step">若 score &gt;= thr 则停止</text>
-  <text x="790" y="220" text-anchor="middle" class="small">else: 反馈给 A</text>
+  <text x="790" y="220" text-anchor="middle" class="small">否则：反馈给 A</text>
 
   <path d="M 280 140 L 370 140" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow12)" fill="none"/>
   <text x="325" y="132" text-anchor="middle" class="small">prompt</text>
@@ -54,10 +54,10 @@
 
   <rect x="60" y="310" width="840" height="180" class="box"/>
   <text x="480" y="335" text-anchor="middle" class="head">相关自动化攻击</text>
-  <text x="80" y="365" class="small">PAIR (black-box, 自然语言)           在 GPT-3.5-turbo、Llama-2-7B 上 &lt; 20 次查询成功。</text>
-  <text x="80" y="385" class="small">GCG (white-box, Token Gradient)              通用对抗后缀；不可读；可迁移。</text>
-  <text x="80" y="405" class="small">AutoDAN (进化式)                       遗传搜索；可读；中等 ASR。</text>
-  <text x="80" y="425" class="small">TAP (攻击树 + 剪枝)              PAIR 分支；更高算力下 ASR 更高。</text>
-  <text x="80" y="445" class="small">PAP (说服式对抗 prompts)         人类说服模板；对 HHH-aligned 模型强。</text>
-  <text x="80" y="470" class="small">benchmarks: JailbreakBench (100 种行为), HarmBench (510 种行为, 18 种攻击 vs 33 个模型)。</text>
+  <text x="80" y="365" class="small">PAIR（black-box、自然语言）在 GPT-3.5-turbo、Llama-2-7B 上不到 20 次查询即可成功。</text>
+  <text x="80" y="385" class="small">GCG（white-box、Token Gradient）通用对抗后缀；不可读；可迁移。</text>
+  <text x="80" y="405" class="small">AutoDAN（进化式）遗传搜索；可读；ASR 中等。</text>
+  <text x="80" y="425" class="small">TAP（攻击树 + 剪枝）PAIR 分支；算力越高，ASR 越高。</text>
+  <text x="80" y="445" class="small">PAP（说服式对抗 prompt）人类说服模板；对 HHH-aligned Model 效果强。</text>
+  <text x="80" y="470" class="small">基准：JailbreakBench（100 种行为）、HarmBench（510 种行为、18 种攻击与 33 个 Model）。</text>
 </svg>
