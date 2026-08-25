@@ -1,0 +1,88 @@
+{
+  "id": "claude-ccar-f",
+  "slug": "ccar-f",
+  "examCode": "CCAR-F",
+  "credential": "Claude Certified Architect - Foundations",
+  "shortName": "Architect Foundations",
+  "level": "基础架构级",
+  "accent": "violet",
+  "badge": {
+    "imageUrl": "https://images.credly.com/images/f2040db3-3904-4240-8966-e87b1510bea0/blob",
+    "width": 604,
+    "height": 604
+  },
+  "summary": "在 Claude Code、Claude Agent SDK、Claude API 和 MCP 之间作出合理的生产级权衡。",
+  "audience": "面向设计生产级 Claude 系统，并能针对模糊的场景化架构决策进行推理的开发者和架构师。",
+  "recommendedExperience": [
+    "拥有六个月或以上使用 Claude 构建系统的经验",
+    "具备 Claude API 和 Tool use 的实践经验",
+    "掌握 Claude Code、Claude Agent SDK 和 MCP 的实用知识",
+    "具备在约束条件下选择不同架构方案的经验"
+  ],
+  "exam": {
+    "items": 60,
+    "timeLimitMinutes": 120,
+    "feeUsd": 125,
+    "passingScaledScore": 720,
+    "scoreScale": "100-1000",
+    "validityMonths": 12,
+    "format": "基于场景的单选题和多选题；从六个场景中抽取四个",
+    "delivery": "在线监考或考试中心现场监考",
+    "guideVersion": "1.0",
+    "effective": "2026 年 7 月",
+    "officialGuideUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf"
+  },
+  "domains": [
+    {"id": "agentic-architecture-orchestration", "name": "Agent 架构与编排", "weight": 27, "objectives": ["实现从停止原因到 Tool 结果的完整 Tool use 生命周期", "选择协调器和 subagent 拓扑", "使用 Task、allowedTools、隔离 Context、并行处理和 forked session", "强制执行先决条件、分解关注点并构建交接结构", "使用 hooks 实现确定性控制和标准化", "选择顺序分解或自适应分解", "在不携带过时 Context 的情况下恢复或 fork"]},
+    {"id": "tool-design-mcp-integration", "name": "Tool 设计与 MCP 集成", "weight": 18, "objectives": ["编写精确的 Tool 描述和边界", "返回结构化且支持重试感知的 MCP 错误", "管理 Tool 分发和 Tool choice", "限定 MCP 配置和资源的作用域", "安全地选择 Claude Code 文件、shell 和搜索 Tool"]},
+    {"id": "claude-code-configuration-workflows", "name": "Claude Code 配置与工作流", "weight": 20, "objectives": ["设计 CLAUDE.md 层级、导入、规则和记忆", "创建项目级和用户级命令及 Skills", "应用路径特定规则", "在 plan mode、直接执行和 Explore 之间作出选择", "使用示例、测试驱动迭代和访谈", "通过结构化输出和独立审查运行 headless CI"]},
+    {"id": "prompt-engineering-structured-output", "name": "Prompt Engineering 与结构化输出", "weight": 20, "objectives": ["明确说明 Evaluation 标准", "使用 few-shot 示例实现一致判断", "通过 Tool use 和 Tool choice 强制执行 schema", "验证、重试并反馈语义错误", "对适合的工作负载使用 batch processing", "将生成器流程与独立审查流程分离"]},
+    {"id": "context-management-reliability", "name": "Context 管理与可靠性", "weight": 15, "objectives": ["合理放置事实，以减少 lost-in-the-middle 故障", "上报歧义和政策缺口", "传播结构化错误和部分结果", "对大型代码库使用 scratchpad、subagent、manifest 和 compaction", "校准置信度和人工审查", "跟踪来源、冲突、日期和内容类型"]}
+  ],
+  "scenarioPool": [
+    "客户支持问题解决 Agent",
+    "使用 Claude Code 生成代码",
+    "Multi-agent 研究",
+    "使用 Claude 提高开发者生产力",
+    "将 Claude Code 用于 CI/CD",
+    "结构化数据提取"
+  ],
+  "lessons": [
+    {"path": "certifications/claude/lessons/00-certification-strategy", "domains": ["agentic-architecture-orchestration"], "role": "orientation", "required": true},
+    {"path": "certifications/claude/lessons/01-claude-product-and-model-landscape", "domains": ["agentic-architecture-orchestration"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/02-model-selection-and-token-economics", "domains": ["context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/03-prompting-and-task-decomposition", "domains": ["prompt-engineering-structured-output"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/04-context-knowledge-memory-and-caching", "domains": ["context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/05-output-evaluation-and-validation", "domains": ["prompt-engineering-structured-output", "context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/08-messages-api-and-application-lifecycle", "domains": ["agentic-architecture-orchestration"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/09-structured-output-and-defensive-parsing", "domains": ["prompt-engineering-structured-output"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/10-tool-use-and-agentic-loops", "domains": ["agentic-architecture-orchestration", "tool-design-mcp-integration"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/11-mcp-server-design-and-integration", "domains": ["tool-design-mcp-integration"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/12-claude-agent-sdk-and-hooks", "domains": ["agentic-architecture-orchestration", "claude-code-configuration-workflows"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/13-application-security-and-secrets", "domains": ["tool-design-mcp-integration", "context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/14-evals-testing-debugging-and-observability", "domains": ["prompt-engineering-structured-output", "context-management-reliability"], "role": "review", "required": true},
+    {"path": "certifications/claude/lessons/15-claude-code-for-development-teams", "domains": ["claude-code-configuration-workflows"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/16-multi-agent-orchestration-and-delegation", "domains": ["agentic-architecture-orchestration"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/17-agent-sdk-sessions-subagents-and-context", "domains": ["agentic-architecture-orchestration", "context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/18-tool-contracts-errors-and-progressive-discovery", "domains": ["tool-design-mcp-integration", "context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/19-claude-code-memory-rules-skills-and-ci", "domains": ["claude-code-configuration-workflows"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/20-reliable-extraction-batch-and-reviewers", "domains": ["prompt-engineering-structured-output", "context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/21-long-context-reliability-provenance-and-escalation", "domains": ["context-management-reliability"], "role": "core", "required": true},
+    {"path": "certifications/claude/lessons/31-architect-foundations-scenario-capstone", "domains": ["agentic-architecture-orchestration", "tool-design-mcp-integration", "claude-code-configuration-workflows", "prompt-engineering-structured-output", "context-management-reliability"], "role": "capstone", "required": true}
+  ],
+  "deepDives": [
+    {"path": "phases/14-agent-engineering/28-orchestration-patterns", "label": "编排模式", "reason": "比较协调器、委派和并行模式"},
+    {"path": "phases/15-autonomous-systems/12-durable-execution", "label": "持久执行", "reason": "处理恢复、故障和长时间运行状态"},
+    {"path": "phases/13-tools-and-protocols/15-mcp-security-tool-poisoning", "label": "MCP Tool 投毒", "reason": "将 Tool 描述和结果视为攻击面"},
+    {"path": "phases/14-agent-engineering/39-reviewer-agent", "label": "审查 Agent", "reason": "构建基于证据的独立审查"},
+    {"path": "phases/14-agent-engineering/40-multi-session-handoff", "label": "Multi-Session 交接", "reason": "在不携带过时 Context 的情况下保留结构化状态"}
+  ],
+  "assessments": [
+    {"id": "claude-ccar-f-diagnostic", "path": "certifications/claude/assessments/ccar-f/diagnostic.json", "kind": "diagnostic", "title": "Architect Foundations 诊断测试", "timeLimitMinutes": 30},
+    {"id": "claude-ccar-f-mock-01", "path": "certifications/claude/assessments/ccar-f/mock-01.json", "kind": "mock", "title": "Architect Foundations 场景模拟考试", "timeLimitMinutes": 120}
+  ],
+  "studyPlans": [
+    {"id": "ccar-f-28-day", "label": "28 天场景学习计划", "durationDays": 28, "hoursPerWeek": 12, "milestones": ["第 1-5 天：产品、Model、Prompt、Context 与验证基础", "第 6-10 天：Messages API、结构化输出、Tool 循环与 MCP", "第 11-15 天：Agent SDK、安全、Evaluation 与 Claude Code", "第 16-20 天：编排、session、Tool 契约与记忆", "第 21-24 天：提取、长 Context 可靠性与场景 Capstone", "第 25-28 天：完整场景模拟考试与针对性复习"]},
+    {"id": "ccar-f-49-day", "label": "49 天架构学习计划", "durationDays": 49, "hoursPerWeek": 7, "milestones": ["第 1 周：产品、Model 与 Prompt 基础", "第 2 周：Context、验证、API 与结构化输出", "第 3 周：Tool 循环、MCP、Agent SDK 与安全", "第 4 周：Evaluation 与 Claude Code 工作流", "第 5 周：编排、session 与 Tool 契约", "第 6 周：记忆、提取与 Context 可靠性", "第 7 周：场景 Capstone、完整模拟考试与补强"]}
+  ]
+}

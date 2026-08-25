@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "id": "model-context-protocol",
+  "title": "Model Context Protocol (MCP)",
+  "summary": "从 JSON-RPC 封装到一致性发布关卡，构建、保护、验证和运行无状态 MCP 系统。",
+  "estimatedMinutes": 1395,
+  "stateFile": "MCP-LEARNING.md",
+  "prerequisites": [
+    {
+      "type": "knowledge",
+      "required": true,
+      "title": "Python 和命令行基础",
+      "description": "你能够检查 JSON、编辑文件并运行 Python 命令。不要求具备 MCP 或 Agent 框架经验。"
+    },
+    {
+      "type": "software",
+      "required": true,
+      "title": "用于生成可执行线级证据的 Python 3",
+      "description": "确定性实现和测试使用 Python 3。第二个 Lesson 07 实现可以选择使用 TypeScript runner。"
+    },
+    {
+      "type": "lesson",
+      "required": false,
+      "title": "Tool 接口",
+      "path": "phases/13-tools-and-protocols/01-the-tool-interface",
+      "description": "如果你不熟悉带类型的 Tool 调用和副作用边界，请浏览本课程。"
+    },
+    {
+      "type": "lesson",
+      "required": false,
+      "title": "Tool Schema 设计",
+      "path": "phases/13-tools-and-protocols/05-tool-schema-design",
+      "description": "如果你尚未设计或验证过 JSON Schema Tool 输入，请浏览本课程。"
+    }
+  ],
+  "invocation": {
+    "codex": "使用 learn-mcp，或从 /skills 中选择",
+    "claudeCode": "/learn-mcp",
+    "portableFallback": "使用 learn-mcp 启动或继续 Model Context Protocol (MCP) 学习路径。"
+  },
+  "conceptualFallback": "阅读网站或每节课程的 docs/en.md，并手动跟踪指定的请求与响应对。将检查点记录为概念验证，并将 runtime、transport、authorization 和 deployment 证据标记为待完成，直到 repository 和 Python 3 可用。",
+  "quickStart": {
+    "estimatedMinutes": 10,
+    "lessonPath": "phases/13-tools-and-protocols/06-mcp-fundamentals",
+    "goal": "运行一次无状态 MCP 交互记录，并识别使每个请求都可独立解释的 metadata。",
+    "workingDirectory": "repository 根目录。",
+    "command": "python3 phases/13-tools-and-protocols/06-mcp-fundamentals/code/main.py",
+    "expectedEvidence": [
+      "每个请求都在 params._meta 中重复提供 protocol version 和 client capabilities。",
+      "server/discover 返回完整结果，其中包含支持的版本、capabilities、cache 提示和 server identity。",
+      "不受支持的版本返回 JSON-RPC error -32022，其中包含请求的版本和支持的版本。",
+      "交互记录会关闭 transport，但不会创建或终止 MCP protocol session。"
+    ]
+  },
+  "publicDeploymentGate": {
+    "checkpointLessonPath": "phases/13-tools-and-protocols/15-mcp-security-tool-poisoning",
+    "appliesBefore": "任何非 loopback 绑定、共享 ingress、托管 endpoint、registry 发布或其他公开 MCP deployment。",
+    "requiredEvidence": [
+      "Lesson 15 的可执行检查点会在 routing 之前拒绝被投毒或发生漂移的 metadata。",
+      "Tool 描述、annotations、server instructions 和 MRTR 内容均被视为不可信输入。",
+      "Authentication、authorization、sandboxing 和结果验证被记录为独立控制措施。",
+      "学习者在检查目标和权限后，明确批准外部 deployment 操作。"
+    ]
+  },
+  "lessons": [
+    {
+      "order": 1,
+      "group": "core",
+      "phase": 13,
+      "lesson": 6,
+      "title": "MCP 基础：无状态请求与 JSON-RPC",
+      "path": "phases/13-tools-and-protocols/06-mcp-fundamentals",
+      "minutes": 55,
+      "required": true,
+      "checkpointEvidence": [
+        "两个独立请求的交互记录，每个请求都在 params._meta 中携带 protocol version 和 client capabilities。",
+        "完整的 server/discover 结果，以及 error code 为 -32022 的不受支持版本错误。"
+      ]
+    },
+    {
+      "order": 2,
+      "group": "core",
+      "phase": 13,
+      "lesson": 7,
+      "title": "构建 MCP Server：无状态 Python 和 TypeScript",
+      "path": "phases/13-tools-and-protocols/07-building-an-mcp-server",
+      "minutes": 85,
+      "required": true,
+      "checkpointEvidence": [
+        "展示 discovery、tools/list 和 tools/call 且不使用连接范围 protocol state 的 server demo。",
+        "Python 实现的确定性测试结果，以及在 TypeScript runner 可用时运行的 TypeScript demo。"
+      ]
+    },
+    {
+      "order": 3,
+      "group": "core",
+      "phase": 13,
+      "lesson": 8,
+      "title": "构建 MCP Client：Discovery、Routing 与双时代回退",
+      "path": "phases/13-tools-and-protocols/08-building-an-mcp-client",
+      "minutes": 85,
+      "required": true,
+      "checkpointEvidence": [
+        "根据每个请求的 metadata 选择现代 route，并记录所选 protocol 时代的 client 交互记录。",
+        "单独的旧版回退跟踪，不会将 initialization state 混入现代请求路径。"
+      ]
+    },
+    {
+      "order": 4,
+      "group": "core",
+      "phase": 13,
+      "lesson": 9,
+      "title": "MCP Transport：stdio 与无状态 Streamable HTTP",
+      "path": "phases/13-tools-and-protocols/09-mcp-transports",
+      "minutes": 65,
+      "required": true,
+      "checkpointEvidence": [
+        "一次按 byte 分帧的 stdio 交互，以及一次包含观察到的 status 和 content type 的 POST /mcp 交互。",
+        "在 version negotiation 或 dispatch 之前被拒绝的 header-to-body 一致性失败。"
+      ]
+    },
+    {
+      "order": 5,
+      "group": "core",
+      "phase": 13,
+      "lesson": 10,
+      "title": "MCP Resources 与 Prompts：面向无状态 Server 的可寻址 Context",
+      "path": "phases/13-tools-and-protocols/10-mcp-resources-and-prompts",
+      "minutes": 60,
+      "required": true,
+      "checkpointEvidence": [
+        "列出并读取由 URI 寻址的 resource，并使用经过验证的参数渲染 Prompt 的交互记录。",
+        "同一示例的明确 cache scope、TTL、确定性排序和 primitive 选择。"
+      ]
+    },
+    {
+      "order": 6,
+      "group": "bidirectional",
+      "phase": 13,
+      "lesson": 11,
+      "title": "MCP Model 输入：Sampling 迁移与无状态 MRTR",
+      "path": "phases/13-tools-and-protocols/11-mcp-sampling",
+      "minutes": 75,
+      "required": true,
+      "checkpointEvidence": [
+        "一个 MRTR 输入请求、一个 client 端 provider 结果，以及使用新 request id 对原始操作的重试。",
+        "证明 server 从不发出独立且由 server 发起的 JSON-RPC 请求的证据。"
+      ]
+    },
+    {
+      "order": 7,
+      "group": "bidirectional",
+      "phase": 13,
+      "lesson": 12,
+      "title": "显式 Scope 与无状态 Elicitation",
+      "path": "phases/13-tools-and-protocols/12-mcp-roots-and-elicitation",
+      "minutes": 60,
+      "required": true,
+      "checkpointEvidence": [
+        "一个将允许的 roots 作为显式操作输入，而非记忆的 client state 的请求。",
+        "在重试原始操作之前经过 schema 验证的 elicitation MRTR 响应。"
+      ]
+    },
+    {
+      "order": 8,
+      "group": "bidirectional",
+      "phase": 13,
+      "lesson": 13,
+      "title": "MCP Tasks 扩展：无状态 Core 上的持久化工作",
+      "path": "phases/13-tools-and-protocols/13-mcp-async-tasks",
+      "minutes": 90,
+      "required": true,
+      "checkpointEvidence": [
+        "跨独立请求覆盖创建、状态轮询、取消和最终结果的持久 task 跟踪。",
+        "分别记录 task ids、revision 或 idempotency 行为、确定性列表和 request-header 一致性，而不将它们作为 protocol state。"
+      ]
+    },
+    {
+      "order": 9,
+      "group": "bidirectional",
+      "phase": 13,
+      "lesson": 14,
+      "title": "无状态 Protocol 上的 MCP Apps",
+      "path": "phases/13-tools-and-protocols/14-mcp-apps",
+      "minutes": 75,
+      "required": true,
+      "checkpointEvidence": [
+        "引用显式 UI resource，并将 protocol data 与 view state 分离的 Tool 结果。",
+        "记录 host-to-view 消息边界，包括允许的消息、被拒绝的消息，且不假设存在环境权限。"
+      ]
+    },
+    {
+      "order": 10,
+      "group": "secure",
+      "phase": 13,
+      "lesson": 15,
+      "title": "MCP Security：被投毒的 Metadata、Routing 与 MRTR State",
+      "path": "phases/13-tools-and-protocols/15-mcp-security-tool-poisoning",
+      "minutes": 60,
+      "required": true,
+      "checkpointEvidence": [
+        "在 Tool routing 和 authorization 之前拒绝被投毒或发生漂移的 descriptor。",
+        "一条将不可信 metadata、请求的权限、sandbox 边界和结果验证分开的 threat-model 记录。"
+      ]
+    },
+    {
+      "order": 11,
+      "group": "secure",
+      "phase": 13,
+      "lesson": 16,
+      "title": "MCP Authorization：CIMD、Issuer Binding、PKCE 与 Step-Up",
+      "path": "phases/13-tools-and-protocols/16-mcp-security-oauth-2-1",
+      "minutes": 90,
+      "required": true,
+      "checkpointEvidence": [
+        "包含 issuer-bound metadata discovery、PKCE、resource binding、audience validation 和 least-privilege scopes 的完整 authorization 跟踪。",
+        "在 handler 运行之前拒绝权限不足请求的 step-up 决策。"
+      ]
+    },
+    {
+      "order": 12,
+      "group": "secure",
+      "phase": 13,
+      "lesson": 18,
+      "title": "生产环境中的 MCP Auth：Issuer-Bound Enrollment 与 Tokens",
+      "path": "phases/13-tools-and-protocols/18-mcp-auth-production",
+      "minutes": 90,
+      "required": true,
+      "checkpointEvidence": [
+        "一个 issuer-bound client enrollment 和 token-validation 跟踪，不会跨 issuer 信任 discovery metadata。",
+        "两个连续请求各自独立的 authentication 和具体操作 authorization 证据。"
+      ]
+    },
+    {
+      "order": 13,
+      "group": "secure",
+      "phase": 13,
+      "lesson": 17,
+      "title": "无状态 MCP Gateway 与 Registry 准入",
+      "path": "phases/13-tools-and-protocols/17-mcp-gateways-and-registries",
+      "minutes": 75,
+      "required": true,
+      "checkpointEvidence": [
+        "根据不可变 descriptor、provenance 和 policy 证据准入或拒绝 registry candidate。",
+        "记录确定性 routing、请求范围 authorization 以及所用确切 policy snapshot 的 gateway 跟踪。"
+      ]
+    },
+    {
+      "order": 14,
+      "group": "advanced",
+      "phase": 13,
+      "lesson": 28,
+      "title": "MCP Tool Contract 与 Content",
+      "path": "phases/13-tools-and-protocols/28-mcp-tool-contracts-and-content",
+      "minutes": 120,
+      "required": true,
+      "checkpointEvidence": [
+        "仅在 schema、annotations、transport-header mappings 和 content-block invariants 一致后才被接受的 Tool descriptor。",
+        "经过删减的 HTTP 边界跟踪，证明在 dispatch 前已进行 parameter-header encoding 和精确的 header-to-body 比较。"
+      ]
+    },
+    {
+      "order": 15,
+      "group": "advanced",
+      "phase": 13,
+      "lesson": 29,
+      "title": "MCP Reliability、Cancellation 与 Flow Control",
+      "path": "phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control",
+      "minutes": 120,
+      "required": true,
+      "checkpointEvidence": [
+        "四种确定性的 cancellation、completion、deadline 和 disconnect 顺序，不使用基于 sleep 的协调。",
+        "每个请求恰好一个最终结果、有界 queue 行为，以及为每种竞态记录的迟到事件处理。"
+      ]
+    },
+    {
+      "order": 16,
+      "group": "advanced",
+      "phase": 13,
+      "lesson": 30,
+      "title": "MCP Registry Supply Chain：准入、漂移与回滚",
+      "path": "phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift",
+      "minutes": 90,
+      "required": true,
+      "checkpointEvidence": [
+        "在 registry 暴露之前被拒绝的 namespace collision 和 descriptor-drift 案例。",
+        "与不可变 artifact identity、provenance 和 policy 证据关联的状态转换与回滚决策。"
+      ]
+    },
+    {
+      "order": 17,
+      "group": "advanced",
+      "phase": 13,
+      "lesson": 31,
+      "title": "MCP Conformance Engineering：Versioning、Evidence 与 Operations",
+      "path": "phases/13-tools-and-protocols/31-mcp-conformance-versioning-and-operations",
+      "minutes": 100,
+      "required": true,
+      "checkpointEvidence": [
+        "记录每个边界上的 protocol 时代、additive-field 行为、SDK transformation 和 proxy preservation 的 conformance Matrix。",
+        "由规范化线级交互记录、确定性测试，以及针对每个被拒案例的显式失败报告所支持的发布决策。"
+      ]
+    }
+  ],
+  "optionalLessons": [
+    {
+      "phase": 13,
+      "lesson": 23,
+      "title": "Capstone：无状态 Tool 生态系统",
+      "path": "phases/13-tools-and-protocols/23-capstone-tool-ecosystem",
+      "minutes": 120,
+      "required": false,
+      "prerequisitePaths": [
+        "phases/13-tools-and-protocols/19-a2a-protocol",
+        "phases/13-tools-and-protocols/20-opentelemetry-genai"
+      ],
+      "entryRule": "开始此集成 Capstone 之前，请完成 17 节必修 Model Context Protocol (MCP) 课程以及两条 prerequisite path。"
+    }
+  ]
+}
