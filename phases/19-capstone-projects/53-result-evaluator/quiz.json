@@ -7,71 +7,71 @@
       "question": "为什么 evaluator 使用 paired t test，而不是比较两个单独数字？",
       "options": [
         "因为 numpy 需要 paired arrays",
-        "因为在 candidate 和 baseline 之间配对相同 seed，可以把配置变化与 random initialisation noise 隔离开",
         "因为 runner 不能输出单个数字",
+        "因为在 candidate 和 baseline 之间配对相同 seed，可以把配置变化与 random initialisation noise 隔离开",
         "因为 IRB 总是要求 t tests"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "按 seed 配对会抵消 random initialisation effects。剩下的差异可归因于配置变化，而这正是 test 要测量的内容。"
     },
     {
       "stage": "pre",
       "question": "为什么 evaluator 在每个 metric 上都携带 direction 字段？",
       "options": [
+        "因为 numpy 需要 direction 来计算 variance",
         "因为 accuracy 和 loss 的方向相反；improvement 的符号取决于被比较 metric 的哪个方向更好",
         "因为 runner 要求它",
-        "因为 numpy 需要 direction 来计算 variance",
         "因为 parser 期望它"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Higher is better metrics 变大时表示改进；lower is better metrics 变小时表示改进。direction 字段告诉 improvement function 应用哪种符号约定。"
     },
     {
       "stage": "check",
       "question": "当 |improvement| 低于 threshold 时，即使 p value 显著，verdict 路径会返回什么？",
       "options": [
-        "improved",
-        "regressed",
         "noise",
-        "failed"
+        "regressed",
+        "failed",
+        "improved"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "从 loop 的角度看，一个 statistically significant 但小到无法采取行动的变化仍然是 noise。threshold gate 会先于 significance gate 运行。"
     },
     {
       "stage": "check",
       "question": "为什么 evaluator 在计算 improvement 前要 transform log scaled metrics？",
       "options": [
-        "因为 numpy logs 更快",
-        "因为 perplexity 和类似 metrics 会随 loss 指数增长；transform 到 log space 后，像百分之二这样的 threshold 才能同时适用于 linear 和 log metrics",
         "因为 p value 依赖它",
-        "因为 runner 只输出 log scaled metrics"
+        "因为 numpy logs 更快",
+        "因为 runner 只输出 log scaled metrics",
+        "因为 perplexity 和类似 metrics 会随 loss 指数增长；transform 到 log space 后，像百分之二这样的 threshold 才能同时适用于 linear 和 log metrics"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Perplexity 是 exp(loss)。很小的 loss 变化会带来很大的 perplexity 变化。取 log 可以让 relative improvements 在同一个 threshold 下与 linear metrics 可比。"
     },
     {
       "stage": "check",
       "question": "paired t test helper 什么时候返回 p_value = None？",
       "options": [
-        "当 means 相等时",
-        "当可用的 paired samples 少于两个时",
         "当 variance 为零时",
-        "当 metric scale 是 log 时"
+        "当 means 相等时",
+        "当 metric scale 是 log 时",
+        "当可用的 paired samples 少于两个时"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "t distribution 至少需要一个 degree of freedom。当 n 小于二时，没有 variance estimate，helper 会返回 None，让 verdict 路径可以把该 run 标记为 noise。"
     },
     {
       "stage": "check",
       "question": "如果哪怕一个 candidate result 的 terminal label 不是 ok，会发生什么？",
       "options": [
-        "evaluator 丢弃该 seed 并继续",
         "evaluator 返回 failed verdict，并在 rationale 中记录 bad terminals",
+        "evaluator 丢弃该 seed 并继续",
         "evaluator 重试该 run",
         "evaluator fallback 到 one sided test"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "失败的 run 会使 candidate set 失效。evaluator 会短路 verdict 路径，返回 failed 并列出出问题的 terminals，这样 orchestrator 就不会从 crashed run 中得出结论。"
     }
   ]

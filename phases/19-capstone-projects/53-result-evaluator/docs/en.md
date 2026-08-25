@@ -46,6 +46,10 @@ Improvement 是有符号的。对于 higher is better metric，负的 improvemen
 
 一个固定 threshold（`improvement_threshold=0.02`，百分之二）决定变化是否足够大，可以给出判断。低于该 threshold 时，无论 p value 如何，verdict 都是 "noise"；这个 loop 不关心用户测不出来的变化。
 
+```figure
+cg-paired-verdict
+```
+
 ## Architecture
 
 ```mermaid
