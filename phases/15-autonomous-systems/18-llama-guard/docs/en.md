@@ -83,6 +83,10 @@ Classifier layer 位于 constitutional layer（Lesson 17）之下、runtime laye
 
 没有任何单一层是充分的。这些层覆盖不同攻击类别。
 
+```figure
+a5-guard-sieve
+```
+
 ## 使用它
 
 `code/main.py` 模拟一个 toy classifier，使用 6-category taxonomy 对 input-turn text 进行分类。同一段文本会以 raw、emoji smuggling 和 homoglyph substitution 三种形式传入；classifier 的 hit rate 会按 Huang et al. paper 记录的方式下降。Driver 还展示了即使 input 被接受，output rails 如何拒绝某个 output。

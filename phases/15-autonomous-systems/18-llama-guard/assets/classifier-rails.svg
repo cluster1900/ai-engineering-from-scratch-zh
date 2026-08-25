@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">输入护栏 + model + 输出护栏 + 对话护栏</text>
+  <text x="440" y="26" text-anchor="middle" class="title">输入护栏 + Model + 输出护栏 + 对话护栏</text>
 
   <rect x="40" y="50" width="800" height="460" class="box"/>
 
@@ -37,7 +37,7 @@
 
   <!-- Model -->
   <rect x="510" y="80" width="130" height="60" class="cool"/>
-  <text x="575" y="104" text-anchor="middle" class="label">主 model</text>
+  <text x="575" y="104" text-anchor="middle" class="label">主 Model</text>
   <text x="575" y="122" text-anchor="middle" class="small">（第17课 weights）</text>
 
   <!-- Output rail -->
@@ -52,7 +52,7 @@
 
   <!-- Dialog rail -->
   <rect x="60" y="160" width="760" height="50" class="warn"/>
-  <text x="440" y="184" text-anchor="middle" class="label">对话护栏（Colang）：跨轮次约束 — 如即使用三种方式询问，也绝不讨论医学诊断</text>
+  <text x="440" y="184" text-anchor="middle" class="label">对话护栏（Colang）：跨轮次约束 — 即使换三种方式询问，也绝不讨论医学诊断</text>
 
   <!-- Taxonomy -->
   <rect x="60" y="230" width="760" height="100" class="cool"/>
@@ -63,11 +63,11 @@
 
   <!-- Attack corpus -->
   <rect x="60" y="350" width="760" height="140" class="hot"/>
-  <text x="440" y="374" text-anchor="middle" class="label">已记录绕过 — Huang et al. arXiv:2504.11168（2025）</text>
-  <text x="80" y="398" class="content">Emoji Smuggling：六个 guard 系统上 100% ASR</text>
-  <text x="80" y="414" class="content">NeMo Guard Detect：对抗 jailbreak 集上 72.54% ASR</text>
-  <text x="80" y="430" class="content">Homoglyph 替换：西里尔“р”代替拉丁“p”；classifier 漏检</text>
-  <text x="80" y="446" class="content">语义改写：相同意图，新词汇；fine-tune 无法全覆盖</text>
-  <text x="80" y="466" class="content">缓解：规范化 + classifier + constitution（L17）+ runtime（L10/13/14）</text>
-  <text x="80" y="482" class="small">classifier 是一层，不是解决方案</text>
+  <text x="440" y="374" text-anchor="middle" class="label">已记录的绕过 — Huang et al. arXiv:2504.11168（2025）</text>
+  <text x="80" y="398" class="content">Emoji Smuggling：在六个护栏系统上达到 100% ASR</text>
+  <text x="80" y="414" class="content">NeMo Guard Detect：在对抗 jailbreak 集上达到 72.54% ASR</text>
+  <text x="80" y="430" class="content">Homoglyph 替换：用西里尔“р”代替拉丁“p”；classifier 漏检</text>
+  <text x="80" y="446" class="content">语义改写：意图相同，词汇不同；Fine-tuning 无法完全覆盖</text>
+  <text x="80" y="466" class="content">缓解：规范化 + classifier + Constitution（L17）+ runtime（L10/13/14）</text>
+  <text x="80" y="482" class="small">classifier 只是一层，不是完整解决方案</text>
 </svg>
