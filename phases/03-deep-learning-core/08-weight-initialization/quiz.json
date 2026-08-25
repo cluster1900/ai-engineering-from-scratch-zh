@@ -1,36 +1,61 @@
 [
   {
     "question": "如果你把 Neural Network 中的所有权重都初始化为零，会发生什么？",
-    "options": ["网络会正常训练但速度较慢", "所有神经元都会计算相同的输出并接收相同的 Gradient，因此网络每层实际上只有 1 个有效神经元", "网络会发散", "零初始化是推荐的默认做法"],
-    "correct": 1,
+    "options": [
+      "网络会发散",
+      "零初始化是推荐的默认做法",
+      "网络会正常训练但速度较慢",
+      "所有神经元都会计算相同的输出并接收相同的 Gradient，因此网络每层实际上只有 1 个有效神经元"
+    ],
+    "correct": 3,
     "explanation": "权重为零时，同一层中的每个神经元都会计算相同的函数、接收相同的 Gradient，并以相同方式更新。这种“对称性”意味着数百个参数会表现得像一个参数。",
     "stage": "pre"
   },
   {
     "question": "为什么随机权重初始化的尺度很重要？",
-    "options": ["更大的权重训练得更快", "如果方差过高，激活值会爆炸；如果过低，激活值会消失 -- 两者都会阻止训练", "尺度只对输出层重要", "只要权重非零就无所谓"],
+    "options": [
+      "尺度只对输出层重要",
+      "如果方差过高，激活值会爆炸；如果过低，激活值会消失 -- 两者都会阻止训练",
+      "更大的权重训练得更快",
+      "只要权重非零就无所谓"
+    ],
     "correct": 1,
     "explanation": "每一层都会将方差乘以 fan_in * Var(w)。如果这个乘积 > 1，信号会在层间指数级爆炸。如果 < 1，信号会消失。合适的初始化会让这个乘积正好保持为 1。",
     "stage": "pre"
   },
   {
     "question": "Kaiming/He 初始化方差的公式是什么？",
-    "options": ["Var(w) = 1/fan_in", "Var(w) = 2/fan_in", "Var(w) = 2/(fan_in + fan_out)", "Var(w) = 1/(fan_in + fan_out)"],
+    "options": [
+      "Var(w) = 1/fan_in",
+      "Var(w) = 2/fan_in",
+      "Var(w) = 1/(fan_in + fan_out)",
+      "Var(w) = 2/(fan_in + fan_out)"
+    ],
     "correct": 1,
     "explanation": "Kaiming init 使用 Var(w) = 2/fan_in。这个 2 的因子用于补偿 ReLU 将一半激活值置零（负值变为 0）的影响，这实际上会让 fan_in 减半。",
     "stage": "post"
   },
   {
     "question": "什么时候应该使用 Xavier/Glorot 初始化而不是 Kaiming/He？",
-    "options": ["始终使用 -- Xavier 普遍更好", "当使用 sigmoid 或 tanh 激活时，因为它们不像 ReLU 那样将一半输出置零", "当在小数据集上训练时", "当使用 Adam Optimizer 时"],
-    "correct": 1,
+    "options": [
+      "当使用 Adam Optimizer 时",
+      "当在小数据集上训练时",
+      "当使用 sigmoid 或 tanh 激活时，因为它们不像 ReLU 那样将一半输出置零",
+      "始终使用 -- Xavier 普遍更好"
+    ],
+    "correct": 2,
     "explanation": "Xavier init 使用 Var(w) = 2/(fan_in + fan_out)，设计用于在零附近近似线性的激活函数（sigmoid、tanh）。Kaiming 额外的 2 因子用于补偿 ReLU 的半数置零，而 Xavier 不需要这个补偿。",
     "stage": "post"
   },
   {
     "question": "为什么 GPT-2 要按 1/sqrt(2N) 缩放 residual layer 的权重？",
-    "options": ["为了加快训练", "每次 residual addition 都会增加方差，因此缩放可以防止累积信号在 N 层中无界增长", "为了减少参数数量", "为了改进 tokenization"],
-    "correct": 1,
+    "options": [
+      "为了改进 tokenization",
+      "为了加快训练",
+      "每次 residual addition 都会增加方差，因此缩放可以防止累积信号在 N 层中无界增长",
+      "为了减少参数数量"
+    ],
+    "correct": 2,
     "explanation": "Residual connection 会把 sublayer 输出加到输入上：x = x + sublayer(x)。每次相加都会增加方差。经过 N 个 residual layer 后，方差会按 N 成比例增长。按 1/sqrt(2N) 缩放可以保持信号稳定。",
     "stage": "post"
   }
