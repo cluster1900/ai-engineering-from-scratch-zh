@@ -70,6 +70,10 @@ E[accepted] = (1 - α^(N+1)) / (1 - α)
 
 2026 年生产环境中：vLLM 和 SGLang 在可用时默认使用 EAGLE-3，否则使用 EAGLE-2。TensorRT-LLM 为 Meta 和 NVIDIA 公开模型提供最快的 Medusa 路径。llama.cpp 为 CPU 部署提供 vanilla draft。
 
+```figure
+l5-spec-decode-eagle
+```
+
 ## 构建它
 见 `code/main.py`。这是完整的 Leviathan speculative loop，包含所有组成部分：draft-of-N、验证器并行 pass、逐位置 rejection、residual sampling、bonus token、KV rollback，以及用于验证输出分布与直接从 `q` 采样一致的经验检验。
 

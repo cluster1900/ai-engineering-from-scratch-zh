@@ -17,7 +17,7 @@
     </style>
   </defs>
 
-  <text x="480" y="28" text-anchor="middle" class="title">speculative decoding 循环 — EAGLE-3 风格</text>
+  <text x="480" y="28" text-anchor="middle" class="title">speculative decoding 循环——EAGLE-3 风格</text>
 
   <!-- prefix -->
   <rect x="30" y="60" width="200" height="40" class="box"/>
@@ -30,44 +30,44 @@
 
   <!-- verify -->
   <rect x="570" y="60" width="360" height="40" class="hot"/>
-  <text x="750" y="85" text-anchor="middle" class="step">verifier q(prefix + drafts) — 一次 forward pass</text>
+  <text x="750" y="85" text-anchor="middle" class="step">verifier q(prefix + drafts)——一次 forward pass</text>
   <line x1="542" y1="80" x2="568" y2="80" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Leviathan rule -->
   <rect x="30" y="140" width="900" height="60" class="box"/>
-  <text x="50" y="165" class="head">Leviathan 规则 (for each i = 1..N)</text>
+  <text x="50" y="165" class="head">Leviathan 规则（对每个 i = 1..N）</text>
   <text x="50" y="185" class="step">accept d_i  if  u &lt; min(1, q(d_i) / p(d_i))  else  emit  correction ~ (q - p)_+ / ||(q - p)_+||_1  and STOP</text>
 
   <!-- outcome A -->
   <rect x="30" y="220" width="430" height="80" class="cool"/>
   <text x="245" y="243" text-anchor="middle" class="head">全部 N 个接受</text>
   <text x="245" y="263" text-anchor="middle" class="step">emit d_1 ... d_N + bonus ~ q_{N+1}</text>
-  <text x="245" y="282" text-anchor="middle" class="small">kv_length += N + 1  |  每次 verify 最多 N+1 Token</text>
+  <text x="245" y="282" text-anchor="middle" class="small">kv_length += N + 1 | 每次 verify 最多 N+1 个 Token</text>
 
   <!-- outcome B -->
   <rect x="500" y="220" width="430" height="80" class="hot"/>
   <text x="715" y="243" text-anchor="middle" class="head">在位置 j 拒绝</text>
   <text x="715" y="263" text-anchor="middle" class="step">emit d_1 ... d_{j-1} + correction ~ residual</text>
-  <text x="715" y="282" text-anchor="middle" class="small">kv truncate_to(k + j)  |  丢弃 j 之后 drafts</text>
+  <text x="715" y="282" text-anchor="middle" class="small">kv truncate_to(k + j) | 丢弃 j 之后的 drafts</text>
 
   <!-- draft evolution table -->
   <rect x="30" y="320" width="900" height="150" class="box"/>
-  <text x="480" y="343" text-anchor="middle" class="label">draft 演进 — 每代带来什么</text>
+  <text x="480" y="343" text-anchor="middle" class="label">draft 演进——每代带来什么</text>
 
   <text x="50" y="372" class="step">Leviathan 2023</text>
-  <text x="220" y="372" class="small">独立小 LLM  ·  alpha ~ 0.60  ·  2x 加速</text>
+  <text x="220" y="372" class="small">独立小 LLM · alpha ~ 0.60 · 2x 加速</text>
 
   <text x="50" y="392" class="step">EAGLE-1 (2024)</text>
-  <text x="220" y="392" class="small">verifier hidden states 上的 1-layer transformer  ·  alpha ~ 0.75  ·  2.5x</text>
+  <text x="220" y="392" class="small">verifier hidden states 上的 1-layer Transformer · alpha ~ 0.75 · 2.5x</text>
 
   <text x="50" y="412" class="step">EAGLE-2 (2024)</text>
-  <text x="220" y="412" class="small">+ 动态 draft tree  ·  alpha ~ 0.85  ·  3x-4x</text>
+  <text x="220" y="412" class="small">+ 动态 draft tree · alpha ~ 0.85 · 3x-4x</text>
 
   <text x="50" y="432" class="step">EAGLE-3 (2025)</text>
-  <text x="220" y="432" class="small">去掉 feature loss  +  training-time test  ·  alpha ~ 0.90+  ·  3x-6.5x</text>
+  <text x="220" y="432" class="small">去掉 feature Loss + training-time test · alpha ~ 0.90+ · 3x-6.5x</text>
 
   <text x="50" y="452" class="step">Medusa (2024)</text>
-  <text x="220" y="452" class="small">verifier 上额外 LM heads (无 draft model)  ·  alpha ~ 0.70  ·  2x-3x</text>
+  <text x="220" y="452" class="small">verifier 上额外 LM heads（无 draft Model）· alpha ~ 0.70 · 2x-3x</text>
 
   <text x="480" y="500" text-anchor="middle" class="caption">输出分布 = verifier 分布。完全一致。唯一变量是 alpha 和 N。</text>
 </svg>
