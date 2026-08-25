@@ -1,36 +1,61 @@
 [
   {
     "question": "人们为 LLMs 编写 prompt 时最常见的错误是什么？",
-    "options": ["使用了太多 tokens", "编写模糊、规格不明确的指令，让模型去猜测格式、范围和约束", "使用了错误的 API", "没有使用足够的示例"],
+    "options": [
+      "没有使用足够的示例",
+      "编写模糊、规格不明确的指令，让模型去猜测格式、范围和约束",
+      "使用了错误的 API",
+      "使用了太多 tokens"
+    ],
     "correct": 1,
     "explanation": "LLMs 会按字面意思遵循指令。'Write me a marketing email' 没有给模型任何约束。指定语气、受众、长度、格式和约束会产生显著更好的结果。",
     "stage": "pre"
   },
   {
     "question": "一个有效 prompt 的四个核心组成部分是什么？",
-    "options": ["输入、输出、模型、temperature", "角色、上下文、约束和输出格式", "System、user、assistant、function", "Query、document、answer、score"],
-    "correct": 1,
+    "options": [
+      "System、user、assistant、function",
+      "Query、document、answer、score",
+      "角色、上下文、约束和输出格式",
+      "输入、输出、模型、temperature"
+    ],
+    "correct": 2,
     "explanation": "有效的 prompts 会指定：模型应该扮演谁（角色）、它应该知道什么（上下文）、它应该做什么和不应该做什么（约束），以及如何组织响应（输出格式）。",
     "stage": "pre"
   },
   {
     "question": "为什么应该在 prompt 中包含输出格式指令？",
-    "options": ["它会让 prompt 更短", "如果没有格式指令，模型会选择自己的结构，这在不同调用之间会变化，并且很难以编程方式解析", "它会降低 API 成本", "它会防止 hallucination"],
+    "options": [
+      "它会防止 hallucination",
+      "如果没有格式指令，模型会选择自己的结构，这在不同调用之间会变化，并且很难以编程方式解析",
+      "它会让 prompt 更短",
+      "它会降低 API 成本"
+    ],
     "correct": 1,
     "explanation": "LLMs 是非确定性的。没有明确的格式指令时，一次调用可能返回 bullet points，下一次返回 prose，再下一次返回 markdown。指定格式可以确保输出一致且可解析。",
     "stage": "post"
   },
   {
     "question": "system prompt 的目的是什么？",
-    "options": ["验证 API 调用", "设置适用于整个对话的持久行为规则、角色和约束", "定义模型的架构", "压缩对话历史"],
-    "correct": 1,
+    "options": [
+      "设置适用于整个对话的持久行为规则、角色和约束",
+      "定义模型的架构",
+      "验证 API 调用",
+      "压缩对话历史"
+    ],
+    "correct": 0,
     "explanation": "system prompt 会为整个会话建立模型的人设、规则和约束。它会在每个用户回合之前运行，是生产环境中控制模型行为的主要机制。",
     "stage": "post"
   },
   {
     "question": "你应该如何测试一次 prompt 修改是否真的提升了输出质量？",
-    "options": ["阅读几个输出并凭判断做决定", "在多样化测试集上运行 prompt，并衡量已定义指标（accuracy、format compliance、relevance）的变化", "询问模型它是否做得更好", "检查 API 响应时间"],
-    "correct": 1,
+    "options": [
+      "在多样化测试集上运行 prompt，并衡量已定义指标（accuracy、format compliance、relevance）的变化",
+      "询问模型它是否做得更好",
+      "检查 API 响应时间",
+      "阅读几个输出并凭判断做决定"
+    ],
+    "correct": 0,
     "explanation": "只用少量示例评估 prompt 修改是不可靠的。带有多样化测试用例和已定义指标的系统化 evaluation harness，能显示修改是否对整个分布有效，而不只是对精挑细选的示例有效。",
     "stage": "post"
   }
