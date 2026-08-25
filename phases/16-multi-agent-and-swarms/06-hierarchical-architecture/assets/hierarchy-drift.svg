@@ -32,7 +32,7 @@
   <text x="135" y="196" text-anchor="middle" class="small">fe + be</text>
   <rect x="240" y="160" width="130" height="44" class="cool"/>
   <text x="305" y="180" text-anchor="middle" class="step">legal-manager</text>
-  <text x="305" y="196" text-anchor="middle" class="small">lawyer</text>
+  <text x="305" y="196" text-anchor="middle" class="small">律师</text>
   <line x1="135" y1="204" x2="135" y2="240" class="edge" marker-end="url(#arrow)"/>
   <line x1="305" y1="204" x2="305" y2="240" class="edge" marker-end="url(#arrow)"/>
   <rect x="70" y="240" width="130" height="40" class="cold"/>
@@ -71,7 +71,7 @@
   <text x="680" y="378" text-anchor="middle" class="small">LEGAL 问题未回答</text>
 
   <rect x="60" y="420" width="780" height="80" class="box"/>
-  <text x="450" y="442" text-anchor="middle" class="head">guardrails</text>
-  <text x="450" y="462" text-anchor="middle" class="small">树深限制为 2 · 有界协调轮次 · 每层 canary worker · 分解漂移警报</text>
+  <text x="450" y="442" text-anchor="middle" class="head">防护规则</text>
+  <text x="450" y="462" text-anchor="middle" class="small">树深限制为 2 · 有界协调轮次 · 每层 canary Worker · 分解漂移警报</text>
   <text x="450" y="482" text-anchor="middle" class="small">CrewAI Process.hierarchical 和嵌套 LangGraph supervisors 都继承此失效面</text>
 </svg>
