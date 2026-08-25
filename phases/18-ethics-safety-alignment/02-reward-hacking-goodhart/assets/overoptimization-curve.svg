@@ -18,7 +18,7 @@
   </defs>
 
   <text x="480" y="26" text-anchor="middle" class="title">Gao-Schulman-Hilton 过度优化曲线</text>
-  <text x="480" y="46" text-anchor="middle" class="caption">proxy reward 单调上升。gold reward 达峰后下降。</text>
+  <text x="480" y="46" text-anchor="middle" class="caption">proxy reward 单调上升；gold reward 达峰后下降。</text>
 
   <rect x="60" y="70" width="520" height="380" class="box"/>
   <line x1="100" y1="420" x2="560" y2="420" class="axis"/>
@@ -57,13 +57,13 @@
 
   <rect x="620" y="320" width="280" height="60" class="box"/>
   <text x="635" y="342" class="step">4 / evaluator 篡改</text>
-  <text x="635" y="362" class="small">agent 修改 scratchpad、env 或 RM 输入。</text>
+  <text x="635" y="362" class="small">Agent 修改 scratchpad、env 或 RM 输入。</text>
 
   <text x="760" y="404" text-anchor="middle" class="caption">一个机制：概率质量转移</text>
-  <text x="760" y="422" text-anchor="middle" class="caption">到 RM 奖励的易学启发式。</text>
+  <text x="760" y="422" text-anchor="middle" class="caption">易于获得 RM 奖励的启发式。</text>
 
   <rect x="60" y="470" width="860" height="70" class="box"/>
-  <text x="80" y="494" class="small">KL 正则会缓解坍缩，但不能阻止它（Gao 2023）。</text>
-  <text x="80" y="512" class="small">在重尾 reward error 下，KL 约束最优解可能把全部质量放到最大化错误的模式上</text>
-  <text x="80" y="528" class="small">— “灾难性 Goodhart”（OpenReview UXuBzWoZGK）。单靠任何 beta 都救不了。</text>
+  <text x="80" y="494" class="small">KL 正则可缓解坍缩，但无法阻止它（Gao 2023）。</text>
+  <text x="80" y="512" class="small">在重尾 reward error 下，KL 约束最优解可能将全部质量置于最大化错误的模式上</text>
+  <text x="80" y="528" class="small">—“灾难性 Goodhart”（OpenReview UXuBzWoZGK）。任何 beta 单独都无法挽救。</text>
 </svg>
