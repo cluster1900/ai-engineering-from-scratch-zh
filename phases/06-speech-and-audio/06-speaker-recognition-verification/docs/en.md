@@ -49,6 +49,10 @@
 
 在多说话人音频片段中判断“谁在什么时候说话”。Pipeline：VAD → segment → 对每个 segment 做 Embedding → cluster（agglomerative 或 spectral）→ 平滑边界。现代 stack：`pyannote.audio` 3.1，它把 speaker segmentation + embedding + clustering 封装在一次调用后面。2026 年 AMI 上的 SOTA DER 约为 15%（低于 2022 年的 23%）。
 
+```figure
+sp-eer-crossover
+```
+
 ## 构建它
 ### 步骤 1：从 MFCC statistics 构造玩具 Embedding
 
