@@ -64,6 +64,10 @@ Tripwires 会抛出 `InputGuardrailTripwireTriggered` / `OutputGuardrailTripwire
 - **Guardrail bypass.** Tool guardrails 只在 function tools 上触发；内置 tools（file reader、web fetch）需要单独的 policy。
 - **Over-tracing.** spans 中包含敏感内容。与 OTel GenAI content-capture rules（Lesson 23）配合使用：外部存储，按 ID 引用。
 
+```figure
+ae-agent-handoff
+```
+
 ## 构建它
 `code/main.py` 用 stdlib 实现了 SDK 形状：
 
