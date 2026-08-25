@@ -127,6 +127,10 @@ OCR pipelines 仍在以下方面胜出：
 - 完整 arXiv ingestion：Nougat 处理数学，VLM 处理 figures。
 - 监管场景：OCR pipeline + VLM validator 用于交叉检查。
 
+```figure
+mm-doc-layout
+```
+
 ## 使用它
 
 `code/main.py`：
