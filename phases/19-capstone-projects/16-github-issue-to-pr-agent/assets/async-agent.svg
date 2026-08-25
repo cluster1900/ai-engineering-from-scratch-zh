@@ -15,7 +15,7 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">异步云编码 agent - label 到 PR 工作流</text>
+  <text x="480" y="24" text-anchor="middle" class="title">异步云编码 Agent - label 到 PR 工作流</text>
 
   <rect x="40" y="60" width="190" height="80" class="cool"/>
   <text x="135" y="82" text-anchor="middle" class="step">GitHub issue label</text>
@@ -25,12 +25,12 @@
   <rect x="260" y="60" width="190" height="80" class="cold"/>
   <text x="355" y="82" text-anchor="middle" class="step">webhook 接收器</text>
   <text x="355" y="100" text-anchor="middle" class="small">Lambda / Fly.io</text>
-  <text x="355" y="118" text-anchor="middle" class="small">入队到 SQS</text>
+  <text x="355" y="118" text-anchor="middle" class="small">加入 SQS 队列</text>
 
   <rect x="480" y="60" width="190" height="80" class="dsk"/>
   <text x="575" y="82" text-anchor="middle" class="step">dispatcher</text>
   <text x="575" y="100" text-anchor="middle" class="small">预算账本</text>
-  <text x="575" y="118" text-anchor="middle" class="small">每 repo 上限</text>
+  <text x="575" y="118" text-anchor="middle" class="small">每个 repo 上限</text>
 
   <rect x="700" y="60" width="220" height="80" class="hot"/>
   <text x="810" y="82" text-anchor="middle" class="step">ECS Fargate task</text>
@@ -55,7 +55,7 @@
   <text x="470" y="244" text-anchor="middle" class="small">mini-swe-agent + Opus 4.7</text>
   <rect x="580" y="208" width="140" height="46" class="hot"/>
   <text x="650" y="228" text-anchor="middle" class="step">VERIFY</text>
-  <text x="650" y="244" text-anchor="middle" class="small">CI + 覆盖率 delta</text>
+  <text x="650" y="244" text-anchor="middle" class="small">CI + 覆盖率差值</text>
   <rect x="740" y="208" width="160" height="46" class="cool"/>
   <text x="820" y="228" text-anchor="middle" class="step">打开 PR</text>
   <text x="820" y="244" text-anchor="middle" class="small">label: needs-review</text>
@@ -66,23 +66,23 @@
   <path d="M720,230 L740,230" class="edge"/>
 
   <text x="80" y="296" class="small">按任务执行预算上限:</text>
-  <text x="80" y="314" class="small">$20 / turn 上限 30 / 30 分钟 wall-clock</text>
-  <text x="80" y="332" class="small">覆盖率 delta &lt; -2% -&gt; 标记 `needs-review` 但仍打开 PR</text>
-  <text x="80" y="350" class="small">CI 红或触及上限 -&gt; 无 PR，附原因失败日志</text>
+  <text x="80" y="314" class="small">$20 / turn，上限 30 / 30 分钟墙钟时间</text>
+  <text x="80" y="332" class="small">覆盖率差值 &lt; -2% -&gt; 标记 `needs-review`，但仍打开 PR</text>
+  <text x="80" y="350" class="small">CI 失败或触及上限 -&gt; 不打开 PR，附原因和失败日志</text>
 
   <rect x="40" y="390" width="440" height="120" class="box"/>
   <text x="260" y="412" text-anchor="middle" class="head">安全</text>
-  <text x="260" y="432" text-anchor="middle" class="small">GitHub App: 细粒度 Token，1h 过期</text>
+  <text x="260" y="432" text-anchor="middle" class="small">GitHub App：细粒度 Token，1h 过期</text>
   <text x="260" y="450" text-anchor="middle" class="small">禁止 force-push，禁止写入 main</text>
-  <text x="260" y="468" text-anchor="middle" class="small">强制 main 分支保护</text>
-  <text x="260" y="486" text-anchor="middle" class="small">归档前清理日志 secrets</text>
-  <text x="260" y="504" text-anchor="middle" class="caption">每 repo 每日 $ + PR 数上限</text>
+  <text x="260" y="468" text-anchor="middle" class="small">强制保护 main 分支</text>
+  <text x="260" y="486" text-anchor="middle" class="small">归档前清理日志中的 secrets</text>
+  <text x="260" y="504" text-anchor="middle" class="caption">每个 repo 的每日 $ + PR 数量上限</text>
 
   <rect x="500" y="390" width="420" height="120" class="box"/>
-  <text x="710" y="412" text-anchor="middle" class="head">对比 hosted</text>
+  <text x="710" y="412" text-anchor="middle" class="head">与托管方案对比</text>
   <text x="710" y="432" text-anchor="middle" class="small">30 个种子内部 issue</text>
-  <text x="710" y="450" text-anchor="middle" class="small">pass@1 / $ / 延迟 对比:</text>
-  <text x="710" y="468" text-anchor="middle" class="small">Cursor Background Agents</text>
-  <text x="710" y="486" text-anchor="middle" class="small">AWS Remote SWE Agents</text>
+  <text x="710" y="450" text-anchor="middle" class="small">pass@1 / $ / 延迟对比：</text>
+  <text x="710" y="468" text-anchor="middle" class="small">Cursor 后台 Agents</text>
+  <text x="710" y="486" text-anchor="middle" class="small">AWS 远程 SWE Agents</text>
   <text x="710" y="504" text-anchor="middle" class="caption">发布并排 Matrix</text>
 </svg>
