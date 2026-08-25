@@ -75,6 +75,10 @@ flowchart TD
 
 没有免费的午餐。将 `accum_steps` 翻倍，会让每个 optimizer step 的 wall time 翻倍。变化的是 Gradient estimate 的 variance：在相同 wall budget 下，你执行的 optimizer step 更少，但每一次都在更多 sample 上平均。文献把 large batch 和 small batch 视为不同的 optimization problem；本课关注的是机制，而不是统计。
 
+```figure
+cc-grad-accumulation
+```
+
 ## Build It
 
 `code/main.py` 是可运行 artifact。它做三件事。
