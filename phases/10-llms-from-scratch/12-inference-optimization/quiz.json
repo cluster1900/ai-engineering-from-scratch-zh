@@ -1,36 +1,61 @@
 [
   {
     "question": "LLM inference 的两个阶段是什么？",
-    "options": ["Training 和 evaluation", "Prefill（并行处理 prompt，compute-bound）和 decode（逐个生成 Token，memory-bound）", "Encoding 和 decoding", "Forward 和 backward"],
-    "correct": 1,
+    "options": [
+      "Forward 和 backward",
+      "Encoding 和 decoding",
+      "Training 和 evaluation",
+      "Prefill（并行处理 prompt，compute-bound）和 decode（逐个生成 Token，memory-bound）"
+    ],
+    "correct": 3,
     "explanation": "Prefill 会并行处理所有 prompt Token（受 compute 限制）。Decode 会以 autoregressive 方式逐个生成 Token（受加载模型权重的内存带宽限制）。不同优化会针对不同阶段。",
     "stage": "pre"
   },
   {
     "question": "KV-cache 在 autoregressive generation 中消除了什么？",
-    "options": ["对 attention masks 的需求", "在每个生成步骤中对所有先前 Token 的 key 和 value Vector 进行冗余重算", "Embedding lookup", "softmax computation"],
-    "correct": 1,
+    "options": [
+      "Embedding lookup",
+      "对 attention masks 的需求",
+      "softmax computation",
+      "在每个生成步骤中对所有先前 Token 的 key 和 value Vector 进行冗余重算"
+    ],
+    "correct": 3,
     "explanation": "如果没有 KV-cache，生成第 N 个 Token 需要为前 N-1 个 Token 重新计算 Attention key 和 value。KV-cache 会存储这些 Vector，因此每个新 Token 只需计算自己的 K 和 V，从而每步节省 O(N) computation。",
     "stage": "pre"
   },
   {
     "question": "什么是 continuous batching，为什么它能提高 throughput？",
-    "options": ["在一个大 batch 中处理所有请求", "当请求开始和结束时，动态地从正在运行的 batch 中添加和移除请求，而不是等待整个 batch 完成", "使用更大的 batch size", "跨多个模型进行 batching"],
-    "correct": 1,
+    "options": [
+      "跨多个模型进行 batching",
+      "使用更大的 batch size",
+      "在一个大 batch 中处理所有请求",
+      "当请求开始和结束时，动态地从正在运行的 batch 中添加和移除请求，而不是等待整个 batch 完成"
+    ],
+    "correct": 3,
     "explanation": "在 static batching 中，一个短请求会一直占用它的 batch slot，直到最长的请求完成。Continuous batching 会立即用新请求填充已完成的 slot，让 GPU 保持忙碌并提高整体 throughput。",
     "stage": "post"
   },
   {
     "question": "PagedAttention（用于 vLLM）解决了什么问题？",
-    "options": ["它加速 Attention computation", "它像 virtual memory 一样用固定大小的 block 管理 KV-cache memory，消除可变长度 sequence 带来的 fragmentation", "它减小模型大小", "它提升 tokenization 速度"],
-    "correct": 1,
+    "options": [
+      "它提升 tokenization 速度",
+      "它减小模型大小",
+      "它像 virtual memory 一样用固定大小的 block 管理 KV-cache memory，消除可变长度 sequence 带来的 fragmentation",
+      "它加速 Attention computation"
+    ],
+    "correct": 2,
     "explanation": "可变长度 sequence 的 KV-cache 会导致 memory fragmentation（allocation 之间出现浪费的空隙）。PagedAttention 会用固定 block 分配 KV-cache，并像 OS virtual memory 一样用 page table 映射它们。",
     "stage": "post"
   },
   {
     "question": "什么是 speculative decoding？",
-    "options": ["生成多个回答并选择最佳回答", "使用一个小型 draft model 提出多个 Token，再由大模型并行验证，从而加速生成", "预测用户想要哪些 Token", "缓存经常生成的 sequence"],
-    "correct": 1,
+    "options": [
+      "使用一个小型 draft model 提出多个 Token，再由大模型并行验证，从而加速生成",
+      "预测用户想要哪些 Token",
+      "生成多个回答并选择最佳回答",
+      "缓存经常生成的 sequence"
+    ],
+    "correct": 0,
     "explanation": "一个小而快的模型会生成 N 个候选 Token。大模型在一次 forward pass 中验证全部 N 个 Token（并行）。如果接受了 K 个 Token，你就用大约 1 次大模型 step 的时间生成了 K 个 Token。",
     "stage": "post"
   }
