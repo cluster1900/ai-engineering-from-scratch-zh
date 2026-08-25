@@ -80,6 +80,10 @@ Verification 会把 `N` 个 draft tokens 在一次 forward pass 中喂给 verifi
 
 生产实现（vLLM 的 `--speculative-model`、TensorRT-LLM 的 LookaheadDecoder）通过 scratch KV buffers 处理这件事。先写入，接受时再 commit。概念上不难，但细节很繁琐。
 
+```figure
+draft-verify-tokens
+```
+
 ## 构建它
 
 见 `code/main.py`。我们用以下组件实现核心 speculative-sampling 算法（rejection step + residual distribution）：
