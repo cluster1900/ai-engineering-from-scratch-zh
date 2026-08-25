@@ -9,9 +9,9 @@ lesson: 1
 
 根据以下标准分析该任务：
 
-**Context load** - 估算 agent 需要处理的数据总 Token 数量（文件内容、API 响应、tool 输出）。如果低于 100k Token，single-agent 通常就足够。如果超过 100k，multi-agent 有助于隔离 context。
+**Context load** - 估算 agent 需要处理的数据总 Token 数量（文件内容、API 响应、tool 输出）。如果低于 100k Token，single-agent 通常就足够。如果超过 100k，multi-agent 有助于隔离 Context。
 
-**Role diversity** - 统计任务需要多少种不同技能（研究、编码、审查、测试、数据分析）。如果是 1-2 个角色，single-agent 可行。如果是 3 个以上，specialist agents 能提升质量。
+**Role diversity** - 统计任务需要多少种不同 Skill（研究、编码、审查、测试、数据分析）。如果是 1-2 个角色，single-agent 可行。如果是 3 个以上，specialist agents 能提升质量。
 
 **Parallelism potential** - 识别可以同时运行的子任务。如果任务完全是顺序执行，multi-agent 会增加开销且没有速度收益。如果子任务彼此独立，fan-out 会有帮助。
 
@@ -21,19 +21,19 @@ lesson: 1
 
 应用这个决策 Matrix：
 
-| Criteria | Single Agent | Subagents | Pipeline | Team/Fan-out | Swarm |
+| 评估标准 | Single Agent | Subagents | Pipeline | Team/Fan-out | Swarm |
 |----------|-------------|-----------|----------|-------------|-------|
-| Context load | < 100k tokens | 100-300k tokens | 100-500k tokens | 200k+ tokens | 500k+ tokens |
-| Roles needed | 1-2 | 1 parent + focused children | 3-5 sequential | 3-5 parallel | Many identical |
-| Parallelism | None needed | Limited | None (sequential) | High | Very high |
-| Coordination | None | Parent-child | Linear handoff | Message bus | Shared state |
-| Typical task | 简单 Q&A、单文件编辑 | Codebase 搜索 + 聚焦编辑 | Research -> code -> review | 多文件 refactor | 大规模数据处理 |
+| Context load | < 100k Token | 100-300k Token | 100-500k Token | 200k+ Token | 500k+ Token |
+| 所需角色 | 1-2 | 1 个 parent agent + 专注的 child agents | 3-5 个顺序执行的 agents | 3-5 个并行执行的 agents | 许多相同的 agents |
+| 并行能力 | 无需 | 有限 | 无（顺序执行） | 高 | 非常高 |
+| 协调方式 | 无 | parent-child | 线性交接 | 消息总线 | 共享状态 |
+| 典型任务 | 简单 Q&A、单文件编辑 | Codebase 搜索 + 聚焦编辑 | 研究 -> 编码 -> 审查 | 多文件 refactor | 大规模数据处理 |
 
 输出格式：
 
-1. **Recommendation**: single-agent, subagents, pipeline, team, or swarm
-2. **Why**: 用 2-3 句话解释关键因素
-3. **Architecture sketch**: 所提议 agent 布局的 ASCII 图
-4. **Agents needed**: 列出每个 agent 的角色及其 system prompt 摘要
-5. **Communication plan**: agents 如何相互传递数据
-6. **Risk**: 这种架构可能出什么问题，以及如何缓解
+1. **建议**：single-agent、subagents、pipeline、team 或 swarm
+2. **原因**：用 2-3 句话解释关键因素
+3. **架构草图**：所提议 agent 布局的 ASCII 图
+4. **所需 agents**：列出每个 agent 的角色及其 system prompt 摘要
+5. **通信计划**：agents 如何相互传递数据
+6. **风险**：这种架构可能出什么问题，以及如何缓解
