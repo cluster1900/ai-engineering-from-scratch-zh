@@ -1,0 +1,78 @@
+{
+  "lesson": "12-mcp-roots-and-elicitation",
+  "title": "显式范围与无状态 Elicitation",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP Roots 提供了什么安全保证？",
+      "options": [
+        "提供 workspace 信息指引，而不是授权或 sandboxing",
+        "为每个 server 进程提供操作系统隔离",
+        "证明调用者拥有 root 下的每个文件",
+        "自动防止符号链接逃逸"
+      ],
+      "correct": 0,
+      "explanation": "Roots 仅用于提供信息，并且已在 2026-07-28 中弃用。Server 仍然需要授权、包含关系检查和 sandboxing。"
+    },
+    {
+      "stage": "check",
+      "question": "当 workspace 范围随每次 Tool 调用变化时，最清晰的现代替代方案是什么？",
+      "options": [
+        "存储在 transport 会话下的隐藏值",
+        "执行变更后发送的 roots/list 请求",
+        "自行报告的 clientInfo 名称",
+        "由 server 授权的显式 workspace URI 参数"
+      ],
+      "correct": 3,
+      "explanation": "显式 handle 可见且可 replay，但 server 仍必须为已认证主体授权该 handle。"
+    },
+    {
+      "stage": "check",
+      "question": "在 MCP 2026-07-28 下，表单模式的 elicitation 如何交付？",
+      "options": [
+        "作为来自 server/discover 的 HTTP redirect",
+        "通过 notifications/roots/list_changed",
+        "作为通过 Mcp-Session-Id stream 发送的反向请求",
+        "位于 input_required 结果的 inputRequests 中"
+      ],
+      "correct": 3,
+      "explanation": "MRTR 将 elicitation/create Embedding inputRequests，随后 client 使用 inputResponses 重试原始操作。elicitation {} 和 elicitation.form 支持表单模式；仅支持 URL 时返回 -32021，并设置 data.requiredCapabilities.elicitation.form。"
+    },
+    {
+      "stage": "check",
+      "question": "哪一个值绝不能通过表单模式的 elicitation 收集？",
+      "options": [
+        "破坏性操作的 boolean 确认值",
+        "从 enum 中选择的 note id",
+        "API access token",
+        "非敏感的显示偏好"
+      ],
+      "correct": 2,
+      "explanation": "Secret 和凭证不得经过 MCP client。对于敏感的外部交互，请使用经过谨慎绑定的 URL 模式流程。"
+    },
+    {
+      "stage": "post",
+      "question": "用户拒绝删除 elicitation。安全的结果是什么？",
+      "options": [
+        "因为 Model 已经选择了 note，所以执行删除",
+        "将缺少 content 视为隐式同意",
+        "返回完整的非 error 拒绝结果，并保留 note",
+        "重复显示相同对话框，直到用户接受"
+      ],
+      "correct": 2,
+      "explanation": "Decline 是明确拒绝。不得将它转换为同意、error 循环提示或数据变更。"
+    },
+    {
+      "stage": "post",
+      "question": "哪一种设计能将破坏性操作确认安全地绑定到用户看到的内容？",
+      "options": [
+        "对选定的 note id 进行 Base64 编码，但不添加签名",
+        "对主体、原始参数摘要、候选 id、阶段和过期时间签名，然后重新检查实时目标",
+        "将 clientInfo 用作权威用户身份",
+        "信任随 accept 操作返回的任意 note id"
+      ],
+      "correct": 1,
+      "explanation": "受完整性保护的状态可以防止篡改。共享的原子一次性 nonce claim 可以防止 replay，而最终实时检查可以处理数据变更前的竞态条件。"
+    }
+  ]
+}
