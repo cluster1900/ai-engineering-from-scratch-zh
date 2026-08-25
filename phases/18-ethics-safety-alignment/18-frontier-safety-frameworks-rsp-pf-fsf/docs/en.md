@@ -94,6 +94,10 @@ UK AISI、US CAISI 和 EU AI Office（第 24 课）是外部治理对应方。�
 
 第 17-18 课是在 deception 和 red-team 分析之上的 measurement-and-governance 层。第 19-24 课覆盖 welfare、bias、privacy、watermarking 和监管结构。第 28 课绘制研究生态图谱（MATS, Redwood, Apollo, METR），这些组织将 evaluations 落地执行。
 
+```figure
+al-asl-ladder
+```
+
 ## 使用它
 本课没有代码。阅读三个主要来源：RSP v3.0、PF v2、FSF v3.0。将每个实验室的分层结构映射到其他实验室，并各自找出一个该实验室定义但其他实验室未定义的 threshold。
 
