@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "你 benchmark 一个模型，并报告“在 4090 上平均每张图像 12ms”。缺少了什么？",
-      "options": ["没有缺少；这是一个完整的 benchmark", "Percentiles（p50/p95/p99）、warmup discipline，以及 CUDA synchronisation；单独的 mean 会隐藏 tail latency，并且可能测到的是 kernel dispatch 而不是 kernel execution", "模型大小", "dataset 名称"],
-      "correct": 1,
+      "options": [
+        "dataset 名称",
+        "模型大小",
+        "没有缺少；这是一个完整的 benchmark",
+        "Percentiles（p50/p95/p99）、warmup discipline，以及 CUDA synchronisation；单独的 mean 会隐藏 tail latency，并且可能测到的是 kernel dispatch 而不是 kernel execution"
+      ],
+      "correct": 3,
       "explanation": "Production latency 要用 percentiles 衡量，因为 real-time systems 失败在 tail 上，而不是 average 上。没有 warmup，JIT compilation 会抬高前几次测量值。没有 torch.cuda.synchronize，GPU kernel launches 会在 kernel 完成前返回，因此你测到的是 dispatch，而不是 execution。三者都必须正确，这个数字才有意义。"
     },
     {
       "stage": "pre",
       "question": "FLOPs 和 on-device latency 并不完全相关。为什么？",
-      "options": ["FLOPs counters 坏了", "不同 operation 对硬件的友好程度不同；depthwise convolutions 的 FLOPs 可能更低，但在 GPUs 上受 memory-bound 限制，而 dense convolutions 能高效使用 Tensor Cores。Memory bandwidth、kernel launch overhead 和 cache behaviour 也会在 raw FLOPs 之外影响 latency", "FLOPs 忽略 batch size", "PyTorch 计算 FLOPs 不正确"],
-      "correct": 1,
+      "options": [
+        "不同 operation 对硬件的友好程度不同；depthwise convolutions 的 FLOPs 可能更低，但在 GPUs 上受 memory-bound 限制，而 dense convolutions 能高效使用 Tensor Cores。Memory bandwidth、kernel launch overhead 和 cache behaviour 也会在 raw FLOPs 之外影响 latency",
+        "FLOPs counters 坏了",
+        "FLOPs 忽略 batch size",
+        "PyTorch 计算 FLOPs 不正确"
+      ],
+      "correct": 0,
       "explanation": "FLOPs 是一个低成本 proxy。Wall-clock latency 取决于一个 operation 与硬件优势的匹配程度：dense matmuls 能充分占用 Tensor Cores；depthwise convs 会受 memory bandwidth 拖慢；attention 会受 sequence-length^2 memory reads 拖慢。对于 architecture search，FLOPs 很有用；对于 deployment decisions，要在 target device 上测量。"
     },
     {
       "stage": "post",
       "question": "Post-training static INT8 quantisation 在 ImageNet-class vision models 上通常会损失多少 accuracy？",
-      "options": ["5-10 个百分点", "在 properly calibrated 的情况下为 0.1-1 个百分点；batch-norm-fused conv models 在 INT8 下表现尤其稳定", "总是 0；它是 lossless 的", "20+ 个百分点；不可用"],
-      "correct": 1,
+      "options": [
+        "总是 0；它是 lossless 的",
+        "20+ 个百分点；不可用",
+        "5-10 个百分点",
+        "在 properly calibrated 的情况下为 0.1-1 个百分点；batch-norm-fused conv models 在 INT8 下表现尤其稳定"
+      ],
+      "correct": 3,
       "explanation": "Static PTQ 在 well-calibrated vision models 上会损失零点几个百分点到约 1 个百分点。更大的 loss modes 是：(a) calibration data 不足，(b) quantising activations 时存在 extreme outliers（用 per-channel quantisation 或 clipping 修复），(c) 未 fused 的 BatchNorm layers。处理好这些后，INT8 基本上是免费的。"
     },
     {
       "stage": "post",
       "question": "你的 mobile app 需要一个小于 10MB 且 latency 低于 10ms 的 vision model。你会选择哪个 backbone？",
-      "options": ["ResNet-50", "MobileNetV3-Small 或 EfficientNet-Lite-B0 quantised 到 INT8；两者都面向这个预算，并且能干净地 compile 到 TFLite / Core ML", "ViT-Base", "ConvNeXt-Large"],
-      "correct": 1,
+      "options": [
+        "ResNet-50",
+        "ConvNeXt-Large",
+        "ViT-Base",
+        "MobileNetV3-Small 或 EfficientNet-Lite-B0 quantised 到 INT8；两者都面向这个预算，并且能干净地 compile 到 TFLite / Core ML"
+      ],
+      "correct": 3,
       "explanation": "2026 年的 mobile vision shipping 仍然由 MobileNetV3 和 EfficientNet-Lite variants 主导，因为它们就是为这个预算设计的：depthwise convs、h-swish、squeeze-excite，从第一天起就支持 quantisation-aware。ResNet-50 和 ViT-Base 在 FP32 下超过 100MB，在 INT8 下也超过 25MB，甚至在测量 latency 之前就已经超出 size budget。"
     },
     {
       "stage": "post",
       "question": "你用 opset 17 将 PyTorch model export 到 ONNX，结果因为“Unsupported operator”失败。最可能的原因是什么？",
-      "options": ["ONNX library 过时了", "(1) 一个没有 ONNX mapping 的 custom op；(2) tracing 无法捕获的 non-deterministic control-flow path；(3) 一个在 Python 中是 implicit、但没有 ONNX equivalent 的 tensor-scalar interaction。修复：替换该 op，对 control flow 使用 `torch.jit.script`，或 upgrade opset", "模型参数太多", "input shape 错了"],
-      "correct": 1,
+      "options": [
+        "模型参数太多",
+        "input shape 错了",
+        "ONNX library 过时了",
+        "(1) 一个没有 ONNX mapping 的 custom op；(2) tracing 无法捕获的 non-deterministic control-flow path；(3) 一个在 Python 中是 implicit、但没有 ONNX equivalent 的 tensor-scalar interaction。修复：替换该 op，对 control flow 使用 `torch.jit.script`，或 upgrade opset"
+      ],
+      "correct": 3,
       "explanation": "ONNX export 默认是 tracing，因此任何 tracing 无法捕获的东西都会失败：runtime control flow、Python-level branches、custom CUDA ops。多数失败来自某个没有 ONNX equivalent 的单个 node（通常是一个很小的 custom op，或一次对 torch.special.* 的调用）。修复方式是替换该 op，切换到 `torch.jit.script`，或移动到包含该 op 的 newer opset。"
     }
-  ]
+  ],
+  "title": null
 }
