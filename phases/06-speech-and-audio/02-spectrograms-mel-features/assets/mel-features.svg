@@ -14,7 +14,7 @@
     </style>
   </defs>
 
-  <text x="440" y="30" text-anchor="middle" class="title">每个 audio model 都要爬的四步阶梯</text>
+  <text x="440" y="30" text-anchor="middle" class="title">每个音频 Model 都要爬的四步阶梯</text>
 
   <!-- Step 1: Waveform -->
   <rect x="40" y="60" width="180" height="140" class="box"/>
@@ -40,7 +40,7 @@
   <rect x="368" y="120" width="12" height="60" fill="#eed9a8"/>
   <rect x="382" y="130" width="12" height="50" fill="#eed9a8"/>
   <rect x="396" y="140" width="12" height="40" fill="#faf6ef" stroke="#aaa"/>
-  <text x="345" y="190" text-anchor="middle" class="caption">每 25 ms frame 的 |FFT|，10 ms hop</text>
+  <text x="345" y="190" text-anchor="middle" class="caption">每个 25 ms frame 的 |FFT|，10 ms hop</text>
 
   <line x1="440" y1="130" x2="463" y2="130" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="452" y="120" text-anchor="middle" class="caption" font-size="10">filterbank</text>
@@ -74,7 +74,7 @@
 
   <!-- Mel scale curve -->
   <rect x="40" y="235" width="400" height="220" class="box"/>
-  <text x="240" y="258" text-anchor="middle" class="label">mel scale 是对音高的 log 感知</text>
+  <text x="240" y="258" text-anchor="middle" class="label">mel scale 是音高的 log 感知</text>
   <line x1="80" y1="420" x2="420" y2="420" stroke="#1a1a1a" stroke-width="1"/>
   <line x1="80" y1="420" x2="80" y2="280" stroke="#1a1a1a" stroke-width="1"/>
   <path d="M80,420 Q140,380 200,340 T320,300 T420,282" class="wave" stroke="#c0392b" stroke-width="2"/>
