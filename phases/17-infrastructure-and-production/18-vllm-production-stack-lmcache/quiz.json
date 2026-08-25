@@ -1,17 +1,17 @@
 {
   "lesson": "18-vllm-production-stack-lmcache",
-  "title": "带 LMCache KV Offloading 的 vLLM Production Stack",
+  "title": "Production Serving Stack — KV Offloading and Cache-Aware Routing",
   "questions": [
     {
       "stage": "pre",
       "question": "LMCache 在 vLLM 部署中主要解决什么问题？",
       "options": [
-        "HBM 中的 KV cache 压力导致 preemption，以及相同 prefixes 的 re-prefill",
         "Tokenizer GIL contention",
         "Network egress filtering",
-        "Cold-start image pull"
+        "Cold-start image pull",
+        "HBM 中的 KV cache 压力导致 preemption，以及相同 prefixes 的 re-prefill"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -19,35 +19,35 @@
       "question": "哪个 vLLM API 引入了可插拔的 KV cache backends？",
       "options": [
         "Prefix-caching flag",
-        "PagedAttention v2",
         "vLLM v0.9.0 中的 Connector API",
+        "PagedAttention v2",
         "ChunkedPrefill API"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "vLLM 0.11.0（2026 年 1 月）版本为 KV offload path 增加了什么？",
       "options": [
-        "异步 offload path，使 engine 在常见情况下不会因为 offload 而阻塞",
-        "仅支持同步的 offload",
+        "移除 LMCache support",
         "强制 FP8 KV cache",
-        "移除 LMCache support"
+        "异步 offload path，使 engine 在常见情况下不会因为 offload 而阻塞",
+        "仅支持同步的 offload"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "什么时候应该选择 LMCache 而不是原生 CPU offload？",
       "options": [
+        "当你只在 CPU 上运行时",
         "当多个 engines 在 tenants、LoRA variants 或重复的 RAG context 之间共享 prefixes，使 cross-engine 复用能够带来收益时",
-        "当你想完全禁用 KV caching 时",
         "当 single engine 有 HBM 压力且没有 prefix sharing 时",
-        "当你只在 CPU 上运行时"
+        "当你想完全禁用 KV caching 时"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -55,23 +55,23 @@
       "question": "当 KV footprint 远低于 HBM 时，LMCache 的收益会怎样？",
       "options": [
         "LMCache 自动禁用",
-        "它仍会让 throughput 翻倍",
         "配置与 baseline 接近，大约有 3-5% overhead，且没有实际收益",
-        "Engine crashes"
+        "Engine crashes",
+        "它仍会让 throughput 翻倍"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么 LMCache 可以与 disaggregated serving（Phase 17 · 17）组合使用？",
       "options": [
-        "因为 LMCache 替代 NIXL",
         "从 prefill 传到 decode 的 KV 会落入 LMCache；后续 queries 可以从 LMCache 拉取并跳过 prefill，因此 cache-aware router 可以选择其本地 cache 或 LMCache-shared cache 匹配的 engine",
-        "因为 LMCache 与 engine 运行在同一块 GPU 上",
-        "不能组合 — 它们互斥"
+        "不能组合 — 它们互斥",
+        "因为 LMCache 替代 NIXL",
+        "因为 LMCache 与 engine 运行在同一块 GPU 上"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     }
   ]
