@@ -60,6 +60,10 @@ ICLR Blogposts 2024。当手中有 causal graph 时，满足某些 group-fairnes
 
 Lesson 20 是 bias measurement。Lesson 21 是 fairness definition。Lesson 22 是 privacy（differential privacy）。Lesson 23 是 watermarking。这些是 allocation-adjacent lessons，用来补充 deception-adjacent Lessons 7-11。
 
+```figure
+an-fairness-trilemma
+```
+
 ## 使用它
 
 `code/main.py` 构建一个 toy binary-classification dataset，其中包含一个 sensitive attribute 和不相等的 base rates。在一个 simple classifier 上计算 demographic parity、equalized odds 和 conditional use accuracy equality。观察这三个 metrics 彼此不一致。应用针对 demographic parity 的 re-weighting，并观察它对另外两个指标的成本。

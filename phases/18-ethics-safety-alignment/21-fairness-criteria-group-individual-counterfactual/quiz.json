@@ -6,34 +6,34 @@
       "stage": "pre",
       "question": "对于 group A=a 和 A=a'，哪一项最符合 demographic parity 的定义？",
       "options": [
-        "不同 group 的 true-positive rate 和 false-positive rate 相等",
         "不同 group 的 predictive value 相等",
-        "不同 group 的 Lipschitz constant 相等",
-        "acceptance rate 相等：P(Y=1 | A=a) = P(Y=1 | A=a')"
+        "不同 group 的 true-positive rate 和 false-positive rate 相等",
+        "acceptance rate 相等：P(Y=1 | A=a) = P(Y=1 | A=a')",
+        "不同 group 的 Lipschitz constant 相等"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Chouldechova / Kleinberg-Mullainathan-Raghavan 2017 的 impossibility result 说明了什么？",
       "options": [
-        "Group fairness 总是可以通过 re-weighting 实现",
         "在 base rate 不相等的情况下，demographic parity、equalized odds 和 conditional use accuracy equality 不可能同时成立",
+        "Individual fairness 对任意 DAG 都蕴含 counterfactual fairness",
         "Counterfactual fairness 蕴含 demographic parity",
-        "Individual fairness 对任意 DAG 都蕴含 counterfactual fairness"
+        "Group fairness 总是可以通过 re-weighting 实现"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Dwork et al. 2012 通过什么来定义 individual fairness？",
       "options": [
-        "individual level 上的 demographic parity",
+        "带有 sensitive-attribute intervention 的 causal DAG",
         "protected group 之间 accuracy 相等",
         "decision map 相对于 task-specific similarity metric 满足 Lipschitz condition，使相似个体获得相似 decision",
-        "带有 sensitive-attribute intervention 的 causal DAG"
+        "individual level 上的 demographic parity"
       ],
       "correct": 2,
       "explanation": ""
@@ -42,9 +42,9 @@
       "stage": "check",
       "question": "Counterfactual fairness (Kusner et al. 2017) 要求：",
       "options": [
-        "不需要 causal assumption",
         "所有 group 的 Lipschitz constant 相等",
         "只需要 group-level statistics",
+        "不需要 causal assumption",
         "需要 causal DAG；当个体的 sensitive attribute 被 counterfactually altered 时，decision 保持不变"
       ],
       "correct": 3,
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "为什么 backtracking counterfactuals (arXiv:2401.13935) 对 legal compliance 很重要？",
       "options": [
-        "它们不是对 protected attribute 进行 intervention（这在法律上有问题），而是询问实际 feature 的哪种组合会产生 counterfactual outcome",
-        "它们消除了对任何 causal model 的需求",
         "它们替代了 embedding-based bias metrics",
-        "它们证明了 impossibility theorem 是错误的"
+        "它们消除了对任何 causal model 的需求",
+        "它们证明了 impossibility theorem 是错误的",
+        "它们不是对 protected attribute 进行 intervention（这在法律上有问题），而是询问实际 feature 的哪种组合会产生 counterfactual outcome"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "ICLR Blogposts 2024 的 philosophical reconciliation 主张什么？",
       "options": [
-        "impossibility theorem 可以通过 re-weighting 解决",
         "在显式 causal graph 下，满足某些 group-fairness measure 会蕴含 counterfactual fairness，因此不同 fairness family 之间表面上的对立，部分是由于 causal model 被隐式处理造成的",
         "Group fairness 和 counterfactual fairness 没有关联",
-        "只有 individual fairness 是可论证的"
+        "只有 individual fairness 是可论证的",
+        "impossibility theorem 可以通过 re-weighting 解决"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     }
   ]
