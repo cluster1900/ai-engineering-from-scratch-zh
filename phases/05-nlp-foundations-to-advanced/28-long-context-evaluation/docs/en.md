@@ -46,6 +46,10 @@ Long-context evaluation 衡量这些维度。本课会说明这些 benchmarks、
 
 你的规格表需要两个数字：retrieval-effective 和 reasoning-effective。通常 reasoning-effective 是宣称 window 的 25-50%。
 
+```figure
+gx-niah-decay
+```
+
 ## 构建它
 
 ### Step 1：为你的领域构建自定义 NIAH
