@@ -13,12 +13,12 @@
     </style>
   </defs>
 
-  <text x="500" y="26" text-anchor="middle" class="title">同一 tool，三种 provider 形态</text>
+  <text x="500" y="26" text-anchor="middle" class="title">同一 Tool，三种提供商形态</text>
 
   <rect x="40" y="50" width="920" height="80" class="box"/>
-  <text x="60" y="72" class="head">规范 tool（你的代码）</text>
+  <text x="60" y="72" class="head">规范 Tool（你的代码）</text>
   <text x="60" y="96" class="step">Tool(name="get_weather", description="...", input_schema={...}, strict=True)</text>
-  <text x="60" y="118" class="small">单一事实源；转换器输出 provider 专用 envelope。</text>
+  <text x="60" y="118" class="small">单一事实源；转换器输出提供商专用封装。</text>
 
   <rect x="40" y="150" width="300" height="180" class="oa"/>
   <text x="190" y="172" text-anchor="middle" class="head">OpenAI</text>
@@ -84,5 +84,5 @@
   <text x="696" y="494" class="step">}]</text>
   <text x="696" y="514" class="small">Gemini 3+ 中的唯一 id</text>
 
-  <text x="500" y="548" text-anchor="middle" class="caption">三者 name/args 语义相同；envelope 和 id 方案不同。</text>
+  <text x="500" y="548" text-anchor="middle" class="caption">三者 name/args 语义相同；封装和 id 方案不同。</text>
 </svg>

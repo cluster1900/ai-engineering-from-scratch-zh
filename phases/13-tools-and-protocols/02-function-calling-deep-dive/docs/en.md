@@ -111,6 +111,10 @@ Tool(
 
 Production teams 会把这个 translator 包进 `AbstractToolset`（Pydantic AI）、`UniversalToolNode`（LangGraph）或 `BaseTool`（LlamaIndex）。Phase 13 · 17 会交付一个 gateway，在三者任意一个前面暴露 OpenAI-shaped API。
 
+```figure
+function-call-args
+```
+
 ## 使用它
 `code/main.py` 定义一个 canonical `Tool` dataclass，以及三个 translators，用来发出 OpenAI、Anthropic 和 Gemini declaration JSON。然后它将每种 shape 的 hand-crafted provider response 解析为同一个 canonical call object，展示语义在表层之下是相同的。运行它，并并排 diff 三个 declarations。
 
