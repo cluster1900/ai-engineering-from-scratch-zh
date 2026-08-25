@@ -6,60 +6,60 @@
       "stage": "pre",
       "question": "阅读前：一个 pretrained language model 有一个包含 5M parameters 的 body，以及一个投影到 30K vocabulary 的 output head。你想要一个 2-class classifier。最有理据的第一步是什么？",
       "options": [
+        "冻结 head，只训练 body。",
         "丢弃 body，并在 800-example labelled set 上从零训练一个新的 transformer。",
-        "只把 head 替换为 2-class linear layer，之后再决定是否训练 body。",
         "保留原始 head，但 mask 掉除两个 output logits 之外的所有 logits。",
-        "冻结 head，只训练 body。"
+        "只把 head 替换为 2-class linear layer，之后再决定是否训练 body。"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Body 是昂贵部分，并且编码了 pretraining 得到的有用结构。先 swap head。是否冻结 body 是一个单独决策，由 data size 和 domain drift 驱动。"
     },
     {
       "stage": "check",
       "question": "为什么本课使用带 attention-mask weighting 的 mean pooling，而不是沿 sequence axis 做 plain mean？",
       "options": [
-        "Plain mean 对 transformers 来说在数学上未定义。",
-        "Padding positions 会贡献无关 hidden states，把 pooled Vector 拉向零。",
+        "Plain mean 会忽略 batch dimension。",
         "即使没有 pads，mean pool 也按惯例要求 masking。",
-        "Plain mean 会忽略 batch dimension。"
+        "Plain mean 对 transformers 来说在数学上未定义。",
+        "Padding positions 会贡献无关 hidden states，把 pooled Vector 拉向零。"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Padding tokens 不携带信号，但 body 仍会为它们产生 hidden states。没有 masking 时，padded positions 会污染 pooled representation，尤其是 batch 中 short sequences 被 pad 到最长 example 的长度时。"
     },
     {
       "stage": "check",
       "question": "在 `train_classifier` 中，Optimizer 使用 `[p for p in model.parameters() if p.requires_grad]` 构建。这个 idiom 保证了什么？",
       "options": [
-        "当 body frozen 时，它会静默忽略 head。",
+        "这是 Adam constructor 的要求。",
         "它告诉 PyTorch 即使 parameters frozen 也要通过它们做 autograd。",
-        "它只从 trainable subset 构建 param group，因此 head-only 和 full-FT cases 共享同一个 code path。",
-        "这是 Adam constructor 的要求。"
+        "当 body frozen 时，它会静默忽略 head。",
+        "它只从 trainable subset 构建 param group，因此 head-only 和 full-FT cases 共享同一个 code path。"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Optimizer 只会更新其 param list 中的 parameters。通过按 `requires_grad` 过滤，同一个 training function 可用于两种 regimes；toggle 是 freeze call，而不是 loop。"
     },
     {
       "stage": "check",
       "question": "在 spam class 上 precision 是 0.9，recall 是 0.6。F1 是多少？",
       "options": [
-        "0.75",
-        "0.72",
+        "0.30",
         "0.50",
-        "0.30"
+        "0.75",
+        "0.72"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "F1 是 precision 和 recall 的 harmonic mean：2 * 0.9 * 0.6 / (0.9 + 0.6) = 1.08 / 1.5 = 0.72。"
     },
     {
       "stage": "post",
       "question": "你使用与 head-only training 相同的 learning rate 做 full fine-tuning，model 的 F1 从 0.90 崩到 0.55。最可能的原因是什么？",
       "options": [
+        "PyTorch 在 full fine-tuning 期间静默禁用了 gradients。",
         "Body parameters 需要比 head 更小的 learning rate。",
-        "Adam 与 Classification objectives 不兼容。",
         "Cross-entropy loss 对 two-class problems 未定义。",
-        "PyTorch 在 full fine-tuning 期间静默禁用了 gradients。"
+        "Adam 与 Classification objectives 不兼容。"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Pretrained body 通常需要比 fresh head 更小的 learning rate。常见 pattern 是两个 parameter groups：head 使用高 LR，body 使用较小 LR。二者使用相同 LR 会破坏 pretraining signal。"
     },
     {

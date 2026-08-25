@@ -89,6 +89,10 @@ Binary Classification 中 class 1 是 positive class（spam）。计数如下：
 
 Confusion matrix 会把四个计数打印为 2x2 grid。Demo 会把两个 training regimes 的结果都写到 stdout。
 
+```figure
+cap-classifier-head-swap
+```
+
 ## Architecture
 
 ```mermaid
