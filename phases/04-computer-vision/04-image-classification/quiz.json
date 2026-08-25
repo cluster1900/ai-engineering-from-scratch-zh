@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "你的 model 输出 shape 为 (N, C) 的 raw logits。你写了 `loss = cross_entropy(softmax(logits), y)`。会出什么问题？",
-      "options": ["没有问题 — 这就是正确的 API", "cross_entropy 会在内部重新应用 softmax，所以你最终计算的是 softmax(softmax(logits))，产生近乎均匀的 probabilities 和无用的 Gradient", "cross_entropy 会抛出关于 shape 的 ValueError", "Accuracy 会精确下降 1/C"],
-      "correct": 1,
+      "options": [
+        "cross_entropy 会在内部重新应用 softmax，所以你最终计算的是 softmax(softmax(logits))，产生近乎均匀的 probabilities 和无用的 Gradient",
+        "没有问题 — 这就是正确的 API",
+        "cross_entropy 会抛出关于 shape 的 ValueError",
+        "Accuracy 会精确下降 1/C"
+      ],
+      "correct": 0,
       "explanation": "PyTorch 的 cross_entropy 期望 raw logits — 它在内部融合 log_softmax 和 NLL 以获得 numerical stability。先应用 softmax 会得到 softmax(softmax(x))，这会把 logits 压向均匀分布，并让 Gradient 几乎为零。Training loss 在前几步看起来可能合理，然后就停滞。始终传入 raw logits。"
     },
     {
       "stage": "pre",
       "question": "你评估一个 10-class classifier，得到 92% accuracy。Class 0 有 9,000 个 examples；classes 1-9 共享 1,000 个 examples（每个大约 111，总共 10,000）。这个 headline number 隐藏了什么？",
-      "options": ["什么也没隐藏 — accuracy 就是 accuracy", "model 可能对每个 input 都预测 class 0，仍然得到 90%（9000/10000）；剩下的 2% 可能来自任何其他 class。Per-class precision/recall 才能告诉你真正发生了什么", "validation loss 是错的", "model 一定是 over-fitting"],
-      "correct": 1,
+      "options": [
+        "model 可能对每个 input 都预测 class 0，仍然得到 90%（9000/10000）；剩下的 2% 可能来自任何其他 class。Per-class precision/recall 才能告诉你真正发生了什么",
+        "什么也没隐藏 — accuracy 就是 accuracy",
+        "model 一定是 over-fitting",
+        "validation loss 是错的"
+      ],
+      "correct": 0,
       "explanation": "在 9000/1000 split（10,000 个 total examples，90/10 imbalance）上，始终预测 majority class 会得到 9000/10000 = 90% accuracy。92% 这个数字可能隐藏了九个 minority classes 各自大约只有 20% accuracy。Per-class precision、recall、F1 和 confusion matrix 才是能暴露这一点的 diagnostics，这也是为什么仅凭 aggregate accuracy 永远不足以证明可以发布一个 classifier。"
     },
     {
       "stage": "post",
       "question": "Mixup 会用类似 lambda * y_i + (1-lambda) * y_j 的 interpolated soft targets 替换 one-hot labels。为什么这有助于 generalisation？",
-      "options": ["它让 effective batch size 翻倍", "model 被迫在 classes 之间产生平滑 predictions，而不是 memorising hard one-hot targets，这会同时改善 calibration 和 test accuracy", "它让你可以用更大的 learning rate 训练", "它保证 train loss 为零"],
-      "correct": 1,
+      "options": [
+        "它让 effective batch size 翻倍",
+        "它保证 train loss 为零",
+        "它让你可以用更大的 learning rate 训练",
+        "model 被迫在 classes 之间产生平滑 predictions，而不是 memorising hard one-hot targets，这会同时改善 calibration 和 test accuracy"
+      ],
+      "correct": 3,
       "explanation": "使用 hard one-hot targets 训练会推动 logits 在每个 training point 上变得任意尖锐，这会损害 calibration，并诱发 overfitting。Mixup 对 inputs 和 labels 做 convex combination，迫使 classifier 在 training points 之间表现得平滑；这对 natural image classes 是一个合理的 prior，并且能在不增加额外数据的情况下稳定提升 test accuracy。"
     },
     {
       "stage": "post",
       "question": "你在 CIFAR-10 上把 `RandomCrop(32, padding=4, padding_mode='zeros')` 换成 `padding_mode='reflect'`。为什么这里 reflect 更好？",
-      "options": ["Reflect pad 更快", "Zero padding 会产生明显的黑色边框，model 会学会依赖它；reflect pad 会镜像边缘 pixels，使 augmented crops 看起来像自然照片", "Reflect pad 会改变 output size", "Reflect pad 是 batch normalization 必需的"],
-      "correct": 1,
+      "options": [
+        "Zero padding 会产生明显的黑色边框，model 会学会依赖它；reflect pad 会镜像边缘 pixels，使 augmented crops 看起来像自然照片",
+        "Reflect pad 是 batch normalization 必需的",
+        "Reflect pad 会改变 output size",
+        "Reflect pad 更快"
+      ],
+      "correct": 0,
       "explanation": "Zero-padded crops 有可见的黑色边框，会把 crop position 的信息泄漏到 features 中。network 可能学会看 corner，并隐式撤销 augmentation。Reflect pad 会镜像真实内容，所以每个 crop 仍然看起来像 natural image，network 无法在 augmentation 上作弊。"
     },
     {
       "stage": "post",
       "question": "你训练了一个 classifier，confusion matrix 显示大多数 errors 都是 class 3 被预测为 class 5，以及 class 5 被预测为 class 3。单个影响最大的下一步是什么？",
-      "options": ["为所有 classes 等量添加更多 training data", "增加 batch size", "查看一批让 model 混淆的 class-3 和 class-5 images；这两个 classes 可能确实 ambiguous、被 mislabelled，或者在视觉上相似到需要 targeted augmentation 或重新标注的 training set", "从 SGD 切换到 Adam"],
+      "options": [
+        "增加 batch size",
+        "从 SGD 切换到 Adam",
+        "查看一批让 model 混淆的 class-3 和 class-5 images；这两个 classes 可能确实 ambiguous、被 mislabelled，或者在视觉上相似到需要 targeted augmentation 或重新标注的 training set",
+        "为所有 classes 等量添加更多 training data"
+      ],
       "correct": 2,
       "explanation": "confusion matrix 集中在一个 off-diagonal pair 上，说明 failure mode 是特定的。正确行动是检查这些 images：你常会发现 mislabelled data、near-duplicate classes，或者 model 尚未学到的简单 invariance。当 failure 如此 localised 时，笼统改动（更多数据、新 Optimizer）很少有帮助。"
     }
-  ]
+  ],
+  "title": null
 }
