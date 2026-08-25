@@ -47,14 +47,14 @@
   <rect x="620" y="240" width="280" height="160" class="box"/>
   <text x="760" y="265" text-anchor="middle" class="head">2024-2025 证据张力</text>
   <rect x="640" y="280" width="240" height="50" class="cool"/>
-  <text x="760" y="302" text-anchor="middle" class="step">canary MIA (Duan 2024)</text>
+  <text x="760" y="302" text-anchor="middle" class="step">canary MIA（Duan 2024）</text>
   <text x="760" y="320" text-anchor="middle" class="small">成功有限</text>
   <rect x="640" y="340" width="240" height="50" class="hot"/>
-  <text x="760" y="362" text-anchor="middle" class="step">extraction (Carlini, Nasr 2025)</text>
+  <text x="760" y="362" text-anchor="middle" class="step">提取（Carlini、Nasr 2025）</text>
   <text x="760" y="380" text-anchor="middle" class="small">显著记忆</text>
 
   <rect x="60" y="420" width="840" height="70" class="box"/>
-  <text x="80" y="445" class="small">Kowalczyk et al. 2025：两者测量不同事物。canaries 测“插入”；extraction 测“最可提取”。</text>
+  <text x="80" y="445" class="small">Kowalczyk 等人 2025：两者测量不同事物。canaries 测“插入”；extraction 测“最可提取”。</text>
   <text x="80" y="465" class="small">DP Reversal via LLM Feedback：即使输出不泄露，置信分数也可泄露重识别信号。</text>
   <text x="80" y="483" class="small">部署规则：epsilon + accountant + MIA protocol + extraction test + confidence exposure check。</text>
 </svg>

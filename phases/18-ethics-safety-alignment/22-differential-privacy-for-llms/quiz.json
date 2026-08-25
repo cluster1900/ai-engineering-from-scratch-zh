@@ -6,36 +6,36 @@
       "stage": "pre",
       "question": "(epsilon, delta)-differential privacy 对 randomized algorithm M 保证什么？",
       "options": [
-        "M 永远不会 memorizes 任何 training data",
-        "M 在 noise 之外是 deterministic 的",
         "对于任意两个只相差一个 example 的 dataset，以及任意 event S，P(M(D) in S) <= e^epsilon * P(M(D') in S) + delta，因此无法可靠推断任何单个个体的 contribution",
-        "M 被证明等价于 non-private algorithm"
+        "M 被证明等价于 non-private algorithm",
+        "M 永远不会 memorizes 任何 training data",
+        "M 在 noise 之外是 deterministic 的"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "以下哪一项不是 Abadi et al. 2016 所描述的 DP-SGD 步骤？",
       "options": [
-        "采样 mini-batch 并计算 per-example gradients",
-        "将每个 per-example gradient clip 到 threshold C",
         "在 step 之间重新 randomize model 的 tokenizer",
-        "对 clipped gradients 求和，并加入按 sigma * C 缩放的 Gaussian noise"
+        "将每个 per-example gradient clip 到 threshold C",
+        "对 clipped gradients 求和，并加入按 sigma * C 缩放的 Gaussian noise",
+        "采样 mini-batch 并计算 per-example gradients"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "为什么 LoRA + DP-SGD 是 2025 年常见配置？",
       "options": [
-        "在 frontier model 上进行完整 DP-SGD 成本过高；LoRA 将 gradient updates 限制在小型 adapter 上，减少 per-example gradient storage，同时仍对 adapter 提供 DP guarantees",
-        "它把 LoRA 用作 tokenizer",
         "LoRA 按设计会增加 epsilon",
-        "LoRA 去除了对 accountant 的需求"
+        "LoRA 去除了对 accountant 的需求",
+        "在 frontier model 上进行完整 DP-SGD 成本过高；LoRA 将 gradient updates 限制在小型 adapter 上，减少 per-example gradient storage，同时仍对 adapter 提供 DP guarantees",
+        "它把 LoRA 用作 tokenizer"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -43,8 +43,8 @@
       "question": "2025 年 3 月的 audit (arXiv:2503.06808) 如何解决 canary-MIA 与 training-data-extraction 之间的张力？",
       "options": [
         "它完全消除了对 canaries 的需求",
-        "它证明 DP-SGD 没有必要",
         "它表明二者衡量的是同一属性",
+        "它证明 DP-SGD 没有必要",
         "它表明二者衡量的是不同内容：对插入 canaries 的 MIA 会低估 memorization，因为 canaries 并未被优化为隐私上真正重要的 'most extractable' examples"
       ],
       "correct": 3,
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "PMixED (arXiv:2403.15638) 提供了什么作为 DP training 的替代方案？",
       "options": [
-        "更快的 DP-SGD variant",
         "用于 Renyi DP 的新 accountant",
         "通过 next-token distributions 上 mixture of experts 与 aggregation noise 实现 inference-time differential privacy；完全避免 DP training",
-        "一种仅通过 epsilon-delta accounting 计算 epsilon 的方式"
+        "一种仅通过 epsilon-delta accounting 计算 epsilon 的方式",
+        "更快的 DP-SGD variant"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "什么是 Differential Privacy Reversal via LLM Feedback attack？",
       "options": [
-        "将 DP-trained model 的 confidence scores 用作 oracle 来重新识别个体，即使 outputs 没有直接泄露",
         "针对 tokenizer entropy 的 attack",
-        "一种将 epsilon 重置为零的方法",
-        "针对 canary insertion 的 countermeasure"
+        "针对 canary insertion 的 countermeasure",
+        "将 DP-trained model 的 confidence scores 用作 oracle 来重新识别个体，即使 outputs 没有直接泄露",
+        "一种将 epsilon 重置为零的方法"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     }
   ]

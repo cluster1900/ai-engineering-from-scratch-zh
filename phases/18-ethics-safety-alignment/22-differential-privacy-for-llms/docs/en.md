@@ -67,6 +67,10 @@ Abadi et al. 2016。标准流程：
 
 Lessons 20-21 是 bias/fairness。Lesson 22 是隐私。Lesson 23 是通过 watermarking 实现 provenance。Lesson 27 覆盖监管层面的 data-provenance 层。
 
+```figure
+an-dp-clip-noise
+```
+
 ## 使用它
 `code/main.py` 在一个 toy binary-classification 数据集上模拟 DP-SGD。你可以扫过 noise multiplier σ 和 clipping norm C，并跟踪 (ε, δ) budget 与 accuracy cost。一个 “canary attack” 会插入一个唯一训练样本，并测量 log-loss test 在 DP 前后是否能检测到它。
 
