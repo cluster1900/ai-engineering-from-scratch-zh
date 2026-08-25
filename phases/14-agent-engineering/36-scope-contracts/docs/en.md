@@ -90,6 +90,10 @@ scope contract 约束的是一个 task。它不约束整个 project。agent 可�
 
 contract 与 list 通过 least privilege 组合，方式与下文描述的 merge 相同：task contract 的 `allowed_files` 必须落在 active feature 所触及的范围之内，不能越界。
 
+```figure
+wb-scope-bounce
+```
+
 ## 构建它
 
 `code/main.py` 实现：

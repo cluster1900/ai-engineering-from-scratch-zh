@@ -6,22 +6,22 @@
       "stage": "pre",
       "question": "为什么 scope creep 被称为最缺乏监控的失败模式？",
       "options": [
-        "它会让 Agent 大声崩溃",
-        "每一次触碰在当下都有合理理由；合在一起却形成了一个不同于已审查内容的变更",
         "它太罕见，不值得监控",
-        "Tests 会自动捕获它"
+        "Tests 会自动捕获它",
+        "它会让 Agent 大声崩溃",
+        "每一次触碰在当下都有合理理由；合在一起却形成了一个不同于已审查内容的变更"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Agents 会善意地叙述每一步；沉默的总和就是 creep。"
     },
     {
       "stage": "pre",
       "question": "课程把哪个 contract 字段称为 contract 的一半？",
       "options": [
-        "goal",
+        "approvals_required",
         "forbidden_files（负空间）",
-        "task_id",
-        "approvals_required"
+        "goal",
+        "task_id"
       ],
       "correct": 1,
       "explanation": "没有 forbidden_files 的 contract 是不完整的；负空间是 contract 的一半。"
@@ -30,22 +30,22 @@
       "stage": "check",
       "question": "为什么把 allowed/forbidden 固定到 globs，而不是原始路径？",
       "options": [
-        "Globs 更快",
-        "真实 repo 会移动文件；globs 能在 sessions 之间的重构中存活",
         "Globs 加密效果更好",
-        "原始路径无法 JSON-serializable"
+        "Globs 更快",
+        "原始路径无法 JSON-serializable",
+        "真实 repo 会移动文件；globs 能在 sessions 之间的重构中存活"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Globs（app/**/*.py）能让 contract 在重构中保持有效。"
     },
     {
       "stage": "check",
       "question": "'violation budget' 模式做什么？",
       "options": [
-        "为 Agent 设置月度预算",
+        "按 violation 收费",
         "允许预算范围内的小范围 scope slips 作为 warnings；只有超出预算才触发 merge refusal —— 这就是一个能交付的 gate 和一个会被禁用的 gate 之间的区别",
         "限制 model calls 的速率",
-        "按 violation 收费"
+        "为 Agent 设置月度预算"
       ],
       "correct": 1,
       "explanation": "agent-guardrails 使用 violationBudget，让 gate 在日常流程中可用。"
@@ -55,11 +55,11 @@
       "question": "specsmaxxing 实践者报告了什么？",
       "options": [
         "Latency 下降了 90%",
-        "Rabbit-hole rate 在三周内从 52% 降到 21%，且没有更改 Agent；起作用的是 contract，不是 model",
         "Cost 增加了 5x",
+        "Rabbit-hole rate 在三周内从 52% 降到 21%，且没有更改 Agent；起作用的是 contract，不是 model",
         "Tests 变慢了"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "在调用 Agent 前使用 YAML 中的 scope contracts，在不改 model 的情况下将 rabbit-hole rate 减半。"
     },
     {
@@ -68,8 +68,8 @@
       "options": [
         "最后一个 contract 胜出",
         "对 allowed_files 取交集；对 forbidden_files 取并集；取最小 time_budget；累积 approvals；deny-all 保持生效；None 的 merge 延后给另一侧",
-        "第一个 contract 胜出",
-        "随机 tie-break"
+        "随机 tie-break",
+        "第一个 contract 胜出"
       ],
       "correct": 1,
       "explanation": "Least-privilege merge：allows 取交集，forbids 取并集，time 取最严格值，approvals 累积。"
@@ -78,12 +78,12 @@
       "stage": "post",
       "question": "为什么 time 和 network budgets 也属于 contract？",
       "options": [
-        "Wall clock 和 external-host access 是 scope 维度；仅有 file globs 是必要但不充分的",
         "Providers 要求它们",
+        "Wall clock 和 external-host access 是 scope 维度；仅有 file globs 是必要但不充分的",
         "它们让 JSON 更小",
         "Apache 2.0 要求它们"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "time_budget_minutes 和 network_egress allowlists 是 file globs 之上的 scope 维度。"
     }
   ]
