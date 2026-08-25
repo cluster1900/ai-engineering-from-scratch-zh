@@ -1,0 +1,48 @@
+{
+  "useCaseId": "renewal-risk-assistance-v1",
+  "approvedPurpose": "为获得授权的客户经理准备有证据支持的续约风险摘要",
+  "automationMode": "assist",
+  "analysisConfidence": 0.87,
+  "consequence": "high",
+  "reversible": false,
+  "dataClasses": ["internal", "confidential"],
+  "affectedPeople": "当前企业客户",
+  "allowedOutputs": ["风险证据摘要", "审核材料包草稿"],
+  "prohibitedActions": ["对受保护群体进行排名", "批准折扣", "发送优惠"],
+  "risks": [
+    {
+      "id": "personal-data-exposure",
+      "prevent": "尽量减少对话记录并移除直接标识符",
+      "detect": "在模型和审核者访问之前扫描 prompt 和输出字段",
+      "correct": "遏制工作流、通知事件负责人并轮换已暴露的访问凭证"
+    },
+    {
+      "id": "unsupported-recommendation",
+      "prevent": "将主张限制在已批准的客户和政策来源范围内",
+      "detect": "运行主张与证据验证并呈现冲突",
+      "correct": "阻止发布并返回明确的发现结果以供修订"
+    },
+    {
+      "id": "unauthorized-action",
+      "prevent": "仅开放读取和草拟能力",
+      "detect": "审计被拒绝的变更提议和审批状态",
+      "correct": "撤销相关能力并调查尝试执行的操作"
+    },
+    {
+      "id": "uneven-treatment",
+      "prevent": "定义已批准的标准并排除缺乏正当理由的代理字段",
+      "detect": "衡量各受影响群体的错误率和升级率",
+      "correct": "暂停工作流并修复数据、标准或审核政策"
+    }
+  ],
+  "approvalPacket": {
+    "humanGate": true,
+    "authorizedRole": "account-director",
+    "decision": "批准、修订、拒绝或升级所提议的下一步",
+    "evidence": "来源 ID、冲突和自动检查结果",
+    "uncertainty": "明确列出缺失或权威性较低的证据",
+    "untrustedContentCanAuthorize": false
+  },
+  "retentionRule": "在已批准的政策期限内保留最小化的审核证据，随后将其删除",
+  "incidentOwner": "security-and-privacy-on-call"
+}
