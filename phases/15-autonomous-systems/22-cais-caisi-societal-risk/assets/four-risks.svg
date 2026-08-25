@@ -13,26 +13,26 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">CAIS 四风险框架 + 实践者发力点</text>
+  <text x="440" y="26" text-anchor="middle" class="title">CAIS 四风险框架与实践者发力点</text>
 
   <rect x="40" y="50" width="800" height="460" class="box"/>
 
   <!-- Quadrants -->
   <rect x="60" y="80" width="370" height="140" class="hot"/>
   <text x="245" y="104" text-anchor="middle" class="label">1. 恶意使用</text>
-  <text x="76" y="128" class="content">恶意行为者用 AI 作恶</text>
+  <text x="76" y="128" class="content">恶意行为者利用 AI 作恶</text>
   <text x="76" y="146" class="small">生物武器合成 · 虚假信息 · 网络攻击</text>
   <text x="76" y="170" class="content">缓解措施：</text>
   <text x="76" y="186" class="small">• 硬编码禁令 (L17) · Llama Guard (L18)</text>
-  <text x="76" y="202" class="small">• tool allowlist (L10, L11)</text>
+  <text x="76" y="202" class="small">• Tool 允许列表 (L10, L11)</text>
 
   <rect x="450" y="80" width="370" height="140" class="warn"/>
   <text x="635" y="104" text-anchor="middle" class="label">2. AI 竞赛</text>
   <text x="466" y="128" class="content">竞争压力压过安全</text>
   <text x="466" y="146" class="small">实验室 · 公司 · 国家</text>
   <text x="466" y="170" class="content">缓解措施：</text>
-  <text x="466" y="186" class="small">• 含 Risk Reports 的扩展策略 (L19, L20)</text>
-  <text x="466" y="202" class="small">• 外部评估 (L21)</text>
+  <text x="466" y="186" class="small">• 包含风险报告的扩展策略 (L19, L20)</text>
+  <text x="466" y="202" class="small">• 外部 Evaluation (L21)</text>
 
   <rect x="60" y="240" width="370" height="140" class="cool"/>
   <text x="245" y="264" text-anchor="middle" class="label">3. 组织风险（实践者推动）</text>
@@ -44,16 +44,16 @@
 
   <rect x="450" y="240" width="370" height="140" class="cold"/>
   <text x="635" y="264" text-anchor="middle" class="label">4. 失控 AI</text>
-  <text x="466" y="288" class="content">有能力的 AI 追求错位目标</text>
+  <text x="466" y="288" class="content">高能力 AI 追求错位目标</text>
   <text x="466" y="306" class="small">随自主时域增长 (L1, L21)</text>
   <text x="466" y="330" class="content">缓解措施：</text>
   <text x="466" y="346" class="small">• kill switches + canaries (L14)</text>
-  <text x="466" y="362" class="small">• propose-then-commit (L15) · checkpoints (L16)</text>
+  <text x="466" y="362" class="small">• 提议后提交 (L15) · Checkpoint (L16)</text>
 
   <!-- Bottom strip: CAIS / CAISI / SB-53 -->
   <rect x="60" y="400" width="760" height="90" class="box"/>
   <text x="440" y="424" text-anchor="middle" class="label">需要了解的三个实体</text>
-  <text x="80" y="446" class="content">CAIS（非营利，San Francisco，2022）— 四风险框架；2023 灭绝声明</text>
-  <text x="80" y="462" class="content">CAISI（NIST 中心，美国政府）— 自愿协议；非机密能力评估</text>
-  <text x="80" y="478" class="content">California SB-53 — 若签署，将成美国首个州级灾难风险监管</text>
+  <text x="80" y="446" class="content">CAIS（非营利组织，旧金山，2022）——四风险框架；2023 灭绝声明</text>
+  <text x="80" y="462" class="content">CAISI（美国政府 NIST 中心）——自愿协议；非机密能力 Evaluation</text>
+  <text x="80" y="478" class="content">California SB-53——若签署，将成为美国首个州级灾难风险监管法规</text>
 </svg>
