@@ -1,6 +1,6 @@
-# APIs & Keys
+# API 与密钥
 
-> 每个 AI API 的工作方式都一样：发送 request，得到 response。细节会变，模式不变。
+> 每个 AI API 的工作方式都相同：发送请求，获取响应。细节会变化，模式不会。
 
 **Type:** Build
 **Languages:** Python, TypeScript
@@ -8,79 +8,95 @@
 **Time:** ~30 分钟
 
 ## 学习目标
-- 使用 environment variables 和 `.env` files 安全存储 API keys
-- 同时使用 Anthropic Python SDK 和 raw HTTP 发起一次 LLM API call
-- 比较基于 SDK 和 raw HTTP 的 request/response formats，以便 debugging
-- 识别并处理常见 API errors，包括 authentication 和 rate limits
+
+- 使用环境变量和 `.env` 文件安全地存储 API key
+- 使用 Anthropic Python SDK 和原始 HTTP 发起 LLM API 调用
+- 比较基于 SDK 和原始 HTTP 的请求/响应格式，以便进行调试
+- 识别并处理常见的 API 错误，包括身份验证错误和速率限制
 
 ## 问题
-从 Phase 11 开始，你会调用 LLM APIs（Anthropic、OpenAI、Google）。在 Phase 13-16 中，你会构建在 loops 中使用这些 APIs 的 agents。你需要知道 API keys 如何工作、如何安全存储它们，以及如何发起你的第一次 API call。
 
-## 概念
+从 Phase 11 开始，你将调用 LLM API（Anthropic、OpenAI、Google）。在 Phase 13-16 中，你将构建循环使用这些 API 的 Agent。你需要了解 API key 的工作方式、如何安全地存储它们，以及如何发起第一次 API 调用。
+
+## 核心概念
+
 ```mermaid
 sequenceDiagram
-    participant C as Your Code
+    participant C as 你的代码
     participant S as API Server
-    C->>S: HTTP Request (with API key)
-    S->>C: HTTP Response (JSON)
+    C->>S: HTTP Request（包含 API key）
+    S->>C: HTTP Response（JSON）
 ```
 
-每个 API call 都有：
+每次 API 调用都包含：
 1. 一个 endpoint（URL）
-2. 一个 API key（authentication）
+2. 一个 API key（身份验证）
 3. 一个 request body（你想要什么）
 4. 一个 response body（你得到什么）
 
-## 构建它
-### 步骤 1：安全存储 API keys
+```figure
+s0-secret-inject
+```
 
-绝不要把 API keys 放进代码。使用 environment variables。
+## 动手构建
+
+### 第 1 步：安全地存储 API key
+
+绝不要把 API key 写入代码。请使用环境变量。
 
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
 export OPENAI_API_KEY="sk-..."
 ```
 
-或者使用 `.env` file（把它加入 `.gitignore`）：
+或者使用 `.env` 文件（并将其添加到 `.gitignore`）：
 
-```
+```text
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 ```
 
-### 步骤 2：第一次 API 调用 (Python)
+### 第 2 步：第一次 API 调用（Python）
 
 ```python
+import os
+
 import anthropic
 
 client = anthropic.Anthropic()
 
+MODEL = os.environ.get("LLM_MODEL", "claude-sonnet-5")
+
 response = client.messages.create(
-    model="claude-sonnet-4-20250514",
+    model=MODEL,
     max_tokens=256,
-    messages=[{"role": "user", "content": "What is a neural network in one sentence?"}]
+    messages=[{"role": "user", "content": "用一句话解释什么是 Neural Network？"}]
 )
 
 print(response.content[0].text)
 ```
 
-### 步骤 3： 第一次 API 调用 (TypeScript)
+`LLM_MODEL` 用于选择 Anthropic model id，默认值是未标注日期的 Sonnet alias。其他 provider（OpenAI、Google 等）都遵循 API key 加 model id 的相同模式，但各自拥有不同的 SDK、endpoint 和请求/响应 schema。
+
+### 第 3 步：第一次 API 调用（TypeScript）
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
+const MODEL = process.env.LLM_MODEL ?? "claude-sonnet-5";
+
 const response = await client.messages.create({
-  model: "claude-sonnet-4-20250514",
+  model: MODEL,
   max_tokens: 256,
-  messages: [{ role: "user", content: "What is a neural network in one sentence?" }],
+  messages: [{ role: "user", content: "用一句话解释什么是 Neural Network？" }],
 });
 
 console.log(response.content[0].text);
 ```
 
-### 步骤 4： Raw HTTP (no SDK)
+### 第 4 步：原始 HTTP（不使用 SDK）
 
 ```python
 import os
@@ -94,9 +110,9 @@ headers = {
     "anthropic-version": "2023-06-01",
 }
 body = json.dumps({
-    "model": "claude-sonnet-4-20250514",
+    "model": os.environ.get("LLM_MODEL", "claude-sonnet-5"),
     "max_tokens": 256,
-    "messages": [{"role": "user", "content": "What is a neural network in one sentence?"}],
+    "messages": [{"role": "user", "content": "用一句话解释什么是 Neural Network？"}],
 }).encode()
 
 req = urllib.request.Request(url, data=body, headers=headers, method="POST")
@@ -105,32 +121,36 @@ with urllib.request.urlopen(req) as resp:
     print(result["content"][0]["text"])
 ```
 
-这就是 SDKs 在背后做的事情。理解 raw HTTP call 有助于 debugging。
+这就是 SDK 在底层执行的操作。理解原始 HTTP 调用有助于调试。
 
-## 使用它
+## 实际使用
+
 对于本课程：
 
-| API | When you need it | Free tier |
+| API | 使用时机 | 免费套餐 |
 |-----|-----------------|-----------|
-| Anthropic (Claude) | Phases 11-16（agents, tools） | 注册赠送 $5 credit |
-| OpenAI | Phase 11（comparison） | 注册赠送 $5 credit |
-| Hugging Face | Phases 4-10（models, datasets） | Free |
+| Anthropic (Claude) | Phase 11-16（Agent、Tool） | 注册赠送 $5 额度 |
+| OpenAI | Phase 11（比较） | 注册赠送 $5 额度 |
+| Hugging Face | Phase 4-10（Model、Dataset） | 免费 |
 
-你现在不需要全部设置。等 lesson 需要时再设置。
+你现在不需要设置所有这些 API。请在课程要求使用时再进行设置。
 
-## 交付它
-本 lesson 会产出：
-- `outputs/prompt-api-troubleshooter.md` - 诊断常见 API errors
+## 交付成果
+
+本课将生成：
+- `outputs/prompt-api-troubleshooter.md` - 诊断常见 API 错误
 
 ## 练习
-1. 获取一个 Anthropic API key，并发起你的第一次 API call
-2. 尝试 raw HTTP 版本，并将 response format 与 SDK 版本进行比较
-3. 故意使用错误的 API key，并阅读 error message
+
+1. 获取一个 Anthropic API key，并发起你的第一次 API 调用
+2. 尝试原始 HTTP 版本，并将其响应格式与 SDK 版本进行比较
+3. 故意使用错误的 API key，并阅读错误消息
 
 ## 关键术语
-| Term | What people say | What it actually means |
+
+| 术语 | 人们通常怎么说 | 它的实际含义 |
 |------|----------------|----------------------|
-| API key | "Password for the API" | 一个唯一字符串，用于标识你的 account 并授权 requests |
-| Rate limit | "They're throttling me" | 每分钟/每小时最大 requests 数量，用于防止滥用并确保公平使用 |
-| Token | "A word"（在 API 语境中） | 一个 billing unit：input 和 output Tokens 会被分别计数并收费 |
-| Streaming | "Real-time responses" | 逐词获取 response，而不是等待完整 response |
+| API key | “API 的密码” | 用于识别你的账户并授权请求的唯一字符串 |
+| Rate limit | “他们在限制我的速度” | 为防止滥用并确保公平使用而设置的每分钟或每小时最大请求数 |
+| Token | “一个单词”（在 API 上下文中） | 计费单位：输入和输出 Token 会分别计数和收费 |
+| Streaming | “实时响应” | 逐字获取响应，而不是等待完整响应生成完毕 |
