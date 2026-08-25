@@ -74,6 +74,10 @@ Memory win 是精确的：per-rank parameter memory 降到 1/N。代价是 gathe
 
 CUDA 是 production target，但 CPU 上也存在相同 code paths。`gloo` 是 CPU collective backend。它在 GPU 上比 `nccl` 慢几个数量级，但 API surface 完全相同。本课的 process group 用 `backend="gloo"` 初始化，并用 `torch.multiprocessing` spawn ranks，而不是 `torchrun`；两者最终都会调用相同的 `torch.distributed`。在 multi-GPU node 上，唯一变化是 `backend="nccl"`、device tensors，以及用 `torchrun` 启动。
 
+```figure
+cg-allreduce-ring
+```
+
 ## Build It
 
 `code/main.py` 是可运行 artifact。
