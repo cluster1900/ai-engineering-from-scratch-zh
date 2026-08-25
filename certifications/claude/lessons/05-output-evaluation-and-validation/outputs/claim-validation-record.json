@@ -1,0 +1,55 @@
+{
+  "recordId": "weekly-brief-validation-v3",
+  "sourceSnapshot": "2026-W31",
+  "sources": [
+    {"id": "dataset-returns", "authority": "primary-data"},
+    {"id": "interview-07", "authority": "anecdotal"},
+    {"id": "policy-4.2", "authority": "approved-policy"}
+  ],
+  "claims": [
+    {"id": "C-01", "claim": "北部地区的退货量有所上升", "sourceIds": ["dataset-returns"], "support": "direct-calculation", "severity": "required", "result": "pass"},
+    {"id": "C-02", "claim": "培训导致了这一变化", "sourceIds": ["interview-07"], "support": "speculative", "severity": "blocker", "result": "fail"},
+    {"id": "C-03", "claim": "退款例外情况需要审批", "sourceIds": ["policy-4.2"], "support": "direct-policy", "severity": "blocker", "result": "pass"},
+    {"id": "C-04", "claim": "所有七个地区均有代表", "sourceIds": ["dataset-returns"], "support": "coverage-check", "severity": "required", "result": "pass"}
+  ],
+  "capabilityDiagnostic": {
+    "unexpectedOutput": "简报声称培训导致退货量下降，但证据只能证明时间上的先后关系。",
+    "primaryProperty": "next-token-prediction",
+    "humanCompetency": "discernment",
+    "properties": [
+      {
+        "id": "next-token-prediction",
+        "evidence": "生成的因果性续写看似合理，但无法由访谈记录推导得出。",
+        "targetedFix": "要求引用提供支持的原文片段，并在没有来源能够证明因果关系时拒绝作答。"
+      },
+      {
+        "id": "knowledge",
+        "evidence": "该工作流仅限于使用提供的快照，并且不存在已获批准的因果研究。",
+        "targetedFix": "检索一项当前且权威的研究，或者删除因果性主张。"
+      },
+      {
+        "id": "working-memory",
+        "evidence": "全部四项主张及其来源记录都包含在审查资料包中。",
+        "targetedFix": "修订期间将主张与证据 Matrix 放在相邻位置，以便持续验证覆盖情况。"
+      },
+      {
+        "id": "steerability",
+        "evidence": "生成契约没有禁止在缺乏直接支持时使用因果性语言。",
+        "targetedFix": "添加一项验收测试，要求因果性主张必须具有直接的因果证据。"
+      }
+    ]
+  },
+  "evaluatorAssignments": {
+    "schema": "deterministic",
+    "totals": "deterministic",
+    "claimSupport": "evidence-review",
+    "audienceFit": "human-rubric"
+  },
+  "uncertainties": ["西部地区的样本量小于目标值"],
+  "release": {
+    "blockerFailures": 1,
+    "requiredFailures": 0,
+    "decision": "revise",
+    "nextAction": "删除因果性主张，或获取权威的因果证据"
+  }
+}
