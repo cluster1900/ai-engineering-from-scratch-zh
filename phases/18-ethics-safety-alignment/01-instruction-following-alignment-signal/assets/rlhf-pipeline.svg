@@ -56,18 +56,18 @@
 
   <rect x="680" y="180" width="220" height="60" class="hot"/>
   <text x="790" y="202" text-anchor="middle" class="step">+ gamma * log pi(D_pretrain)</text>
-  <text x="790" y="222" text-anchor="middle" class="small">PPO-ptx：对齐税修复</text>
+  <text x="790" y="222" text-anchor="middle" class="small">PPO-ptx：修复对齐税</text>
 
   <text x="790" y="285" text-anchor="middle" class="caption">RM 分数上升，</text>
-  <text x="790" y="301" text-anchor="middle" class="caption">KL 锚点稳住。</text>
+  <text x="790" y="301" text-anchor="middle" class="caption">KL 锚点保持稳定。</text>
 
   <path d="M 300 190 L 350 190" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
   <path d="M 610 190 L 660 190" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
 
   <rect x="40" y="360" width="880" height="130" class="box"/>
-  <text x="480" y="385" text-anchor="middle" class="head">为什么 1.3B InstructGPT 在人类偏好上胜过 175B GPT-3</text>
-  <text x="60" y="412" class="small">1 / 对齐与能力是不同轴；1.3B 模型完成了人类要求的任务。</text>
-  <text x="60" y="432" class="small">2 / 能力下限仍由基础模型决定，RLHF 不能教授新事实。</text>
-  <text x="60" y="452" class="small">3 / phase 18 后续批评都攻击阶段 2（reward hacking）、阶段 3（KL 正则不足），或</text>
-  <text x="60" y="470" class="small">标注员本身（谄媚、alignment faking）。读批评前先理解此 pipeline。</text>
+  <text x="480" y="385" text-anchor="middle" class="head">为何 1.3B InstructGPT 在人类偏好上胜过 175B GPT-3</text>
+  <text x="60" y="412" class="small">1 / 对齐与能力是不同维度；1.3B Model 完成了人类要求的任务。</text>
+  <text x="60" y="432" class="small">2 / 能力下限仍由基础 Model 决定，RLHF 无法教授新事实。</text>
+  <text x="60" y="452" class="small">3 / Phase 18 后续批评均针对阶段 2（reward hacking）、阶段 3（KL 正则不足），或</text>
+  <text x="60" y="470" class="small">标注员本身（谄媚、alignment faking）。阅读批评前先理解此 pipeline。</text>
 </svg>

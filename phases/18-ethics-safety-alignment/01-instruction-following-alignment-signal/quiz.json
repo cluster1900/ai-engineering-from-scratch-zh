@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "为什么一个原始的 pre-trained language model 在面对“write a Python function that reverses a list”时，常常会用另一个 prompt 回应，而不是给出代码？",
       "options": [
-        "它的词表缺少 Python Token",
-        "没有 fine-tuning，它无法表示函数签名",
         "它的 temperature 默认值为零",
-        "它被训练来补全文网页格的文本，而在这种文本中，prompts 后面会继续接更多 prompts"
+        "它的词表缺少 Python Token",
+        "它被训练来补全文网页格的文本，而在这种文本中，prompts 后面会继续接更多 prompts",
+        "没有 fine-tuning，它无法表示函数签名"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "InstructGPT reward model 在 pairwise preference labels 上使用哪种 Loss？",
       "options": [
+        "预测 reward 与真实 reward 之间的 cross-entropy",
         "标注者分数上的 mean squared error",
-        "Bradley-Terry loss 形式：-log sigmoid(r(x, y_w) - r(x, y_l))",
         "带固定 margin 的 hinge loss",
-        "预测 reward 与真实 reward 之间的 cross-entropy"
+        "Bradley-Terry loss 形式：-log sigmoid(r(x, y_w) - r(x, y_l))"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -31,23 +31,23 @@
       "question": "InstructGPT 第 3 阶段中的 KL penalty 主要是在防止什么？",
       "options": [
         "灾难性遗忘 Tokenizer 统计信息",
-        "PPO Gradient 更新中的数值不稳定",
+        "Optimizer 找到利用 reward model 的 adversarial high-reward 字符串",
         "sampling 期间 context window 溢出",
-        "Optimizer 找到利用 reward model 的 adversarial high-reward 字符串"
+        "PPO Gradient 更新中的数值不稳定"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "PPO-ptx 将什么问题混入 RL objective 来缓解？",
       "options": [
-        "reward model 在 PPO 期间漂移",
-        "KL 项变为负数",
         "alignment tax：RLHF 未针对的 benchmark 上的 Regression",
-        "SFT 与 RM 之间的 Tokenizer 不匹配"
+        "SFT 与 RM 之间的 Tokenizer 不匹配",
+        "KL 项变为负数",
+        "reward model 在 PPO 期间漂移"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "以下哪一项是 InstructGPT 中 reward model 的初始化来源？",
       "options": [
-        "没有任何 pretraining 的随机标量回归器",
-        "一个单独的 encoder-only transformer",
         "保留 LM head 的 base pre-trained model",
-        "将 LM head 替换为 scalar head 的 SFT model"
+        "将 LM head 替换为 scalar head 的 SFT model",
+        "一个单独的 encoder-only transformer",
+        "没有任何 pretraining 的随机标量回归器"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     }
   ]

@@ -73,6 +73,10 @@ PPO-ptx 成为标准做法。Anthropic、DeepMind 和 Meta 都使用某种 varia
 
 后续课程中的每个 critique：reward hacking（Lesson 2）、DPO（Lesson 3）、sycophancy（Lesson 4）、CAI（Lesson 5）、sleeper agents（Lesson 7）、alignment faking（Lesson 9），都在反对这条 pipeline 的某一部分。Reward hacking 攻击 stage 2。DPO 把 stages 2 和 3 合并。CAI 替代 human labeler。Sycophancy 表明 labeler 是一个 biased signal。Alignment faking 表明 policy 可以完全绕过 stage 3。如果你脑中没有这条 pipeline，就无法理解这些 critiques。
 
+```figure
+al-instruct-pipeline
+```
+
 ## Use It
 
 `code/main.py` 在 toy preference data 上模拟三个阶段。Base “policy” 是一个在 actions {A, B, C} 上的 biased coin。Stage 1 SFT 在 200 个 prompts 上模拟 labeler actions。Stage 2 从 500 个 pairwise rankings 拟合 Bradley-Terry reward model。Stage 3 运行一个简化的 PPO update，并带有到 SFT policy 的 KL penalty。你可以观察 reward 上升、KL divergence 变大、policy drift，也可以关闭 KL term，看到 reward hacking 在 50 个 update steps 内出现。
