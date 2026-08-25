@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "本课中 Demo 的任务是什么？",
       "options": [
-        "用一个新的 framework 替换前面的课程",
-        "通过普通 Python imports 组合前面课程中的 primitives",
         "对照 baseline benchmark scheduler",
-        "在每个 branch 上调用真实的 language model"
+        "在每个 branch 上调用真实的 language model",
+        "用一个新的 framework 替换前面的课程",
+        "通过普通 Python imports 组合前面课程中的 primitives"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Demo 是一个 composition test。每个 stage 都存在于自己的课程中。Demo import 它们并串接 report。没有新的 framework，也没有新的 abstractions。"
     },
     {
@@ -30,12 +30,12 @@
       "stage": "check",
       "question": "当多个 branches 触发 paper 时，best-result picker 如何在它们之间做决定？",
       "options": [
-        "它选择运行 experiments 最多的 branch",
         "它选择 mean reward 最高的 branch，并按 branch id 的字母顺序打破 ties",
+        "它选择运行 experiments 最多的 branch",
         "它为了公平而随机选择",
         "它选择第一个触发的 branch"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "mean 最高者胜出。ties 按 branch id 打破，因此 Demo 是 deterministic。随机会破坏 determinism test。"
     },
     {
@@ -43,20 +43,20 @@
       "question": "当 scheduler 报告零个 paper triggers 时，picker 会 raise 什么 error？",
       "options": [
         "ValueError",
-        "NoTriggerError，它会在 writer 运行前 short-circuit Demo",
+        "它返回 None",
         "PaperValidationError",
-        "它返回 None"
+        "NoTriggerError，它会在 writer 运行前 short-circuit Demo"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "NoTriggerError 是 typed failure mode。返回 None 会让 writer 在 malformed input 上运行，并在更晚的位置用更不可操作的 error 失败。"
     },
     {
       "stage": "post",
       "question": "为什么 determinism test 会用相同 seed 运行 Demo 两次？",
       "options": [
-        "为了运行 asyncio 两次",
-        "为了断言 picked branch、reward 和 paper section ids 在两次运行中完全相同",
         "为了捕捉 memory leak",
+        "为了断言 picked branch、reward 和 paper section ids 在两次运行中完全相同",
+        "为了运行 asyncio 两次",
         "为了证明 scheduler 是公平的"
       ],
       "correct": 1,
@@ -67,11 +67,11 @@
       "question": "成功运行后，Demo report 包含什么？",
       "options": [
         "只有最终的 LaTeX file",
-        "scheduler_report、best_branch、best_reward、critic_result、paper_manifest 和 stop_reason",
         "只有 experiment count 和一个 status string",
-        "一个 model prompt 和 completion log"
+        "一个 model prompt 和 completion log",
+        "scheduler_report、best_branch、best_reward、critic_result、paper_manifest 和 stop_reason"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "每个 stage 的 output 都会被保留。report 是 upstream outputs 的 composition，而不是转换后的 summary。downstream tooling 读取 manifest；debuggers 读取 scheduler_report 内部的 trace。"
     }
   ]

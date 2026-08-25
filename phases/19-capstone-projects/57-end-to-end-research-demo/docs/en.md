@@ -15,6 +15,10 @@
 - 保持 Demo deterministic，使 test suite 可以断言最终形状。
 - 当任意 stage 的 contract 破坏时，暴露清晰的 failure mode，避免下一个 stage 使用破损 input 继续运行。
 
+```figure
+ch-research-pipeline
+```
+
 ## 这里组合了什么
 
 ```mermaid
