@@ -1,50 +1,50 @@
-# FIPA-ACL 与 Speech Acts 的传承
+# FIPA-ACL 与 Speech Act 的传承
 
-> 在 MCP 之前，在 A2A 之前，有 FIPA-ACL。2000 年，IEEE Foundation for Intelligent Physical Agents 批准了一种 agent communication language，其中包含二十个 performatives、两种 content languages，以及一组 interaction protocols：contract net、subscribe/notify、request-when。它之所以从工业界淡出，是因为 ontology 开销对 web 来说过于沉重，但 LLM 推动的 multi-agent systems 复兴，正在悄悄地重新实现同样的思想，只是没有 formal semantics：JSON contracts 取代 performatives，natural language 取代 ontologies。本课会认真解读 FIPA-ACL，让你看清 2026 年的 protocol 决策中，哪些是重新发明，哪些是真正的新东西，以及当前浪潮将在哪里重新发现 2000 年代已经解决过的问题。
+> 在 MCP 之前，在 A2A 之前，已有 FIPA-ACL。2000 年，IEEE Foundation for Intelligent Physical Agents 批准了一种 Agent 通信语言，其中包含二十种 performative、两种内容语言以及一组交互协议，包括 contract net、subscribe/notify 和 request-when。它逐渐淡出业界，是因为 ontology 开销对于 Web 而言过于沉重；但随着 LLM 推动 multi-Agent 系统复兴，业界正在悄然重新实现相同的理念，只是没有采用形式语义：JSON 契约代替 performative，自然语言代替 ontology。本课将认真研读 FIPA-ACL，帮助你看清 2026 年的哪些协议决策属于重新发明，哪些确有新意，以及当前浪潮会在哪些地方再次遇到 2000 年代已经解决的问题。
 
-**Type:** 学习
+**Type:** Learn
 **Languages:** Python (stdlib)
-**Prerequisites:** Phase 16 · 01（Why Multi-Agent）
+**Prerequisites:** Phase 16 · 01（为何需要 Multi-Agent）
 **Time:** ~60 分钟
 
 ## 问题
 
-2026 年的 agent-protocol 领域非常拥挤：用于工具的 MCP、用于 agents 的 A2A、用于企业审计的 ACP、用于去中心化信任的 ANP、用于 natural-language content 的 NLIP，再加上 CA-MCP 和二十多个研究提案。每个 spec 都宣称自己是基础性的。
+2026 年的 Agent 协议领域十分拥挤：面向 Tool 的 MCP、面向 Agent 的 A2A、面向企业审计的 ACP、面向去中心化信任的 ANP、面向自然语言内容的 NLIP，此外还有 CA-MCP 和二十多项研究提案。每份规范都宣称自己具有基础性地位。
 
-诚实地看，其中大多数都在重新发现一棵非常具体、已有二十年历史的决策树。Austin（1962）和 Searle（1969）的 speech-act theory 给了我们“utterances are actions”。KQML（1993）把它变成了 wire protocol。FIPA-ACL（2000 年批准）给出了参考级标准化：二十个 performatives、content languages SL0/SL1，以及用于 contract-net 和 subscribe-notify 的 interaction protocols。JADE 和 JACK 是 Java 参考平台。这个努力在 2010 年前后淡出，因为 ontology 开销太重，而 web 正在赢得主导地位。
+坦率地说，其中大多数都在重新探索一棵非常具体、已有二十年历史的决策树。Austin（1962）和 Searle（1969）的 Speech-act theory 提出了“话语即行动”。KQML（1993）将这一理念转化为 wire protocol。FIPA-ACL（于 2000 年获批）完成了基准性的标准化工作：二十种 performative、SL0/SL1 内容语言，以及用于 contract-net 和 subscribe-notify 的交互协议。JADE 和 JACK 是 Java 参考平台。到 2010 年前后，由于 ontology 开销过重且 Web 技术栈占据主导，这项工作逐渐式微。
 
-当你看到 MCP 的 `tools/call`、A2A 的 task lifecycle，或 CA-MCP 的 shared context store 时，你看到的是 FIPA 决策的一种更柔和、JSON-native 的重述。了解这段传承会告诉你两件事：哪些新的“创新”其实是重新发明，以及新的 specs 将重新发现哪些旧的 failure modes。
+当你观察 MCP 的 `tools/call`、A2A 的任务生命周期或 CA-MCP 的共享 Context 存储时，看到的其实是以更宽松、更原生于 JSON 的方式重述 FIPA 的决策。了解这段传承能让你看清两件事：哪些新的“创新”实际上只是重新发明，以及新规范将重新遭遇哪些旧有失效模式。
 
 ## 概念
 
-### 用一段话理解 Speech acts
+### 用一段话理解 Speech act
 
-Austin 注意到，有些句子并不是在描述世界，而是在改变世界。“I promise.” “I request.” “I declare.” 他把这些称为 performative utterances。Searle 将其形式化为五类：assertive、directive、commissive、expressive、declarative。KQML（Finin et al., 1993）把这套思想操作化到 software agents：一条 message 是一个 performative（动作）加上 content（动作所指向的内容）。FIPA-ACL 修补了 KQML 的缺口，并围绕二十个 performatives 做了标准化。
+Austin 注意到，有些句子并不是在描述世界，而是在改变世界。“我承诺。”“我请求。”“我宣布。”他将其称为 performative utterance。Searle 将其形式化为五类：assertive、directive、commissive、expressive 和 declarative。KQML（Finin 等，1993）将这一理念落实到软件 Agent：一条消息由 performative（行动）和 content（行动所指的内容）组成。FIPA-ACL 弥补了 KQML 的缺口，并围绕二十种 performative 建立了标准。
 
-### 二十个 FIPA performatives（部分列表）
+### 二十种 FIPA performative（部分列表）
 
-| Performative | Intent |
+| Performative | 意图 |
 |---|---|
 | `inform` | “我告诉你 P 为真” |
 | `request` | “我请求你执行 X” |
 | `query-if` | “P 是否为真？” |
 | `query-ref` | “X 的值是什么？” |
 | `propose` | “我提议我们执行 X” |
-| `accept-proposal` | “我接受该 proposal” |
-| `reject-proposal` | “我拒绝该 proposal” |
+| `accept-proposal` | “我接受该提议” |
+| `reject-proposal` | “我拒绝该提议” |
 | `agree` | “我同意执行 X” |
 | `refuse` | “我拒绝执行 X” |
 | `confirm` | “我确认 P 为真” |
 | `disconfirm` | “我否认 P” |
-| `not-understood` | “你的 message 无法 parse” |
-| `cfp` | “针对 X 发出 proposals 征集” |
-| `subscribe` | “当 X 变化时通知我” |
+| `not-understood` | “你的消息无法解析” |
+| `cfp` | “针对 X 征集提案” |
+| `subscribe` | “当 X 发生变化时通知我” |
 | `cancel` | “取消正在进行的 X” |
-| `failure` | “我尝试了 X，但失败了” |
+| `failure` | “我尝试执行 X，但失败了” |
 
-完整列表在 `fipa00037.pdf`（FIPA ACL Message Structure）中。重点不是记住它，而是这些内容中的每一个，都对应着 LLM protocol 最终会重新添加的一个 primitive。
+完整列表位于 `fipa00037.pdf`（FIPA ACL Message Structure）。重点不在于记住它，而在于这些 performative 中的每一种，都对应着 LLM 协议最终会重新加入的一项 primitive。
 
-### 规范的 FIPA-ACL message
+### 规范的 FIPA-ACL 消息
 
 ```
 (inform
@@ -59,26 +59,26 @@ Austin 注意到，有些句子并不是在描述世界，而是在改变世界�
 )
 ```
 
-七个字段承载 protocol envelope；一个字段（`content`）承载 payload。其余字段正是你每次给 JSON protocol 加上 retries、threading 和 ontology 时都会重新发明的东西。
+七个字段承载协议 envelope；一个字段（`content`）承载 payload。其余字段恰恰就是你每次为 JSON 协议附加重试、线程关联和 ontology 时都会重新发明的东西。
 
-### 两个 legacy platforms
+### 两个传统平台
 
-**JADE**（Java Agent DEvelopment framework，1999–2020s）是使用最广泛的 FIPA-compliant runtime。Agents 继承一个 base class，交换 ACL messages，在 containers 内运行，并使用 “behaviors” 协调。interaction-protocol library 随附 contract-net、subscribe-notify、request-when 和 propose-accept。
+**JADE**（Java Agent DEvelopment framework，1999–2020 年代）是使用最广泛的 FIPA 兼容 runtime。Agent 扩展一个基类、交换 ACL 消息、在 container 中运行，并通过“behavior”进行协调。其交互协议库内置了 contract-net、subscribe-notify、request-when 和 propose-accept。
 
-**JACK**（Agent Oriented Software，商业）强调在 FIPA messages 之上的 BDI（Belief-Desire-Intention）推理。更形式化，但采用更少。
+**JACK**（Agent Oriented Software，商业软件）强调在 FIPA 消息之上进行 BDI（Belief-Desire-Intention）推理。它更加形式化，但采用率较低。
 
-两者都在 web stack 吞掉 multi-agent use cases 后走向衰落。MCP 和 A2A 是 2026 年的 runtime “containers”。
+随着 Web 技术栈吞并 multi-Agent 使用场景，两者都逐渐衰落。MCP 和 A2A 是 2026 年的 runtime“container”。
 
-### FIPA 为什么淡出
+### FIPA 为何衰落
 
-- **Ontology 开销。** FIPA 要求使用 shared ontology 来 parse `content`。就 ontologies 达成一致是一个历时数年的标准化过程。web 只是使用 HTTP + JSON。
-- **没人使用的 formal semantics。** SL（Semantic Language）提供了严格的 truth conditions，但多数 production systems 使用 free-form content，并忽略 formalism。
-- **Tooling lock-in。** JADE 只支持 Java；JACK 是商业产品。Polyglot teams 绕开了两者。
-- **internet 赢下了 stack。** REST，随后是 JSON-RPC，再后来是 gRPC，取代了 ACL 的 transport。
+- **Ontology 开销。** FIPA 要求使用共享 ontology 来解析 `content`。就 ontology 达成共识通常需要持续数年的标准化过程，而 Web 只使用了 HTTP + JSON。
+- **无人使用的形式语义。** SL（Semantic Language）提供了严谨的真值条件，但大多数生产系统使用自由形式内容，并忽略了形式化机制。
+- **Tooling 锁定。** JADE 仅支持 Java；JACK 是商业软件。多语言团队绕开了二者。
+- **Internet 赢得了技术栈竞争。** REST、随后出现的 JSON-RPC，再到 gRPC，取代了 ACL 的传输方式。
 
-### LLM 复兴是 FIPA-lite
+### LLM 复兴是轻量版 FIPA
 
-比较一个 FIPA `request` 与一个 MCP `tools/call`：
+比较 FIPA `request` 与 MCP `tools/call`：
 
 ```
 (request                                {
@@ -90,67 +90,71 @@ Austin 注意到，有些句子并不是在描述世界，而是在改变世界�
 )                                        }
 ```
 
-同样的 envelope，不同的 syntax。两者都承载：谁、给谁、intent、payload、correlation id。二者相互之间都不是革命，而是在同一设计上的不同 trade-offs。
+相同的 envelope，不同的语法。两者都承载：谁、发给谁、意图、payload 和 correlation id。二者都不是对另一方的革命性突破，而是同一设计下的不同权衡。
 
-Liu et al. 的 2025 年 survey（“A Survey of Agent Interoperability Protocols: MCP, ACP, A2A, ANP”，arXiv:2505.02279）明确指出了这条传承：MCP 对应 tool-use speech acts，A2A 对应 agent-peer speech acts，ACP 对应 audit-trail speech acts，ANP 对应 decentralized-identity extensions。新的 specs 是 ACL 的后代，只是采用 JSON syntax 和更宽松的 semantics。
+Liu 等人在 2025 年发表的综述《A Survey of Agent Interoperability Protocols: MCP, ACP, A2A, ANP》（arXiv:2505.02279）明确说明了这种传承关系：MCP 对应 Tool 使用类 speech act，A2A 对应 Agent 对等通信类 speech act，ACP 对应审计轨迹类 speech act，ANP 对应去中心化身份扩展。新规范是 ACL 的后代，只是采用了 JSON 语法和更宽松的语义。
 
-### 直白地说明 trade-off
+### 直截了当地说明这种权衡
 
-**FIPA 给了你、而现代 specs 放弃的东西：**
+**FIPA 提供、现代规范舍弃的能力：**
 
-- Formal semantics：你可以证明 `inform` 意味着 sender 相信 content。
-- 一个规范的 performatives 目录：你不必重新争论“我们是否应该有一个 `cancel`？”。
-- 数十年的 interaction-protocol patterns：contract-net、subscribe-notify、propose-accept，并且有已知的 correctness properties。
+- 形式语义——你可以证明 `inform` 意味着发送方相信其中的内容。
+- 规范的 performative 目录——你不必重新争论“我们是否应该加入 `cancel`？”。
+- 数十年的交互协议模式——contract-net、subscribe-notify、propose-accept——并且具备已知的正确性属性。
 
-**现代 specs 给了你、而 FIPA 没有的东西：**
+**现代规范提供、FIPA 未曾提供的能力：**
 
-- 与所有现代工具兼容的 JSON-native payloads。
-- LLMs 无需 hand-coded ontology 即可解释的 natural-language content。
-- Web-stack transport（HTTP、SSE、WebSocket）。
-- 通过 self-describing documents 做 capability discovery（MCP `listTools`、A2A Agent Card）。
+- 与所有现代 Tool 兼容的 JSON 原生 payload。
+- LLM 无需手写 ontology 即可解释的自然语言内容。
+- Web 技术栈传输方式（HTTP、SSE、WebSocket）。
+- 通过实时 MCP `server/discover` 和 A2A Agent Card 进行能力发现。
 
-更宽松的 intent semantics，换来更容易的实现。这就是准确的 trade。
+以更宽松的意图语义换取更容易的实现。这就是确切的权衡。
 
-### 值得移植的 Interaction protocols
+### 值得移植的交互协议
 
-FIPA 随附了约 15 个 interaction protocols。其中三个值得带入 LLM multi-agent systems：
+FIPA 提供了约 15 种交互协议。其中三种值得带入 LLM multi-Agent 系统：
 
-1. **Contract Net Protocol (CNP)。** Manager 发出 `cfp`（call for proposals）；bidders 用 `propose` 响应；manager 接受/拒绝。这是规范的 task-market pattern（Phase 16 · 16 Negotiation）。
-2. **Subscribe/Notify。** Subscriber 发送 `subscribe`；publisher 在 topic 变化时发送 `inform`。这就是 2026 年的每个 event-bus。
-3. **Request-When。** “当 condition Y 成立时执行 X。”带 pre-conditions 的 delayed-action。2026 年的 analog 是 durable workflow engines 中的 deferred tasks（Phase 16 · 22 Production Scaling）。
+1. **Contract Net Protocol（CNP）。** Manager 发出 `cfp`（征集提案）；竞标者以 `propose` 响应；Manager 接受或拒绝。这是规范的任务市场模式（Phase 16 · 16 Negotiation）。
+2. **Subscribe/Notify。** 订阅方发送 `subscribe`；每当主题变化时，发布方发送 `inform`。这对应 2026 年的每一种 event bus。
+3. **Request-When。** “当条件 Y 成立时执行 X。”这是一种具有前置条件的延迟行动。其 2026 年对应形式是持久化 workflow engine 中的延迟任务（Phase 16 · 22 Production Scaling）。
 
-每一个都能清晰映射到现代 message queues、HTTP + polling，或 SSE streaming。
+每一种模式都可以清晰映射到现代消息队列、HTTP + polling 或 SSE streaming。
 
-### 放弃 ontology 后会出什么问题
+### 舍弃 ontology 后会出现什么问题
 
-没有 shared ontology，agents 会从 natural-language content 推断含义。2026 年有文档记录的 failure mode 是 **semantic drift**：两个 agents 用同一个词（`"customer"`）表示略有不同的概念，receiver 的 agent 按错误解释行动，而没有 schema validator 能捕获它。FIPA 的 ontology 要求会在 parse time 拒绝该 message。
+没有共享 ontology，Agent 就会根据自然语言内容推断含义。已有记录的 2026 年失效模式是 **semantic drift**：两个 Agent 使用同一个词（`"customer"`）表示略有差异的概念，接收方 Agent 按错误解释采取行动，而 schema validator 无法发现问题。FIPA 的 ontology 要求本可在解析阶段拒绝该消息。
 
-不走完整 ontology 路线的缓解措施：
+无需采用完整 ontology 的缓解方法：
 
-- `content` 上的 JSON Schema：在 wire 层拒绝结构错误。
-- Typed artifacts（A2A）：拒绝错误的 modality。
-- envelope 中的显式 performative：即使 content 是 natural language，也能让 intent 明确无歧义。
+- 对 `content` 使用 JSON Schema——在线路层拒绝结构错误。
+- 使用类型化 artifact（A2A）——拒绝错误的 modality。
+- 在 envelope 中使用显式 performative——即使 content 是自然语言，也能使意图明确无歧义。
 
-### 2026 specs 映射到 speech-act heritage
+### 2026 年规范与 Speech-act 传承的映射
 
-| Modern spec | FIPA analog | What it keeps | What it drops |
+| 现代规范 | FIPA 对应项 | 保留内容 | 舍弃内容 |
 |---|---|---|---|
-| MCP `tools/call` | `request` | explicit intent、correlation id | formal semantics、ontology |
-| MCP `resources/read` | `query-ref` | explicit intent、correlation id | formal semantics |
-| A2A Task lifecycle | contract-net + request-when | async lifecycle、state transitions | formal completeness guarantees |
-| A2A streaming events | subscribe/notify | async push | typed-predicate subscription |
-| CA-MCP shared context | blackboard（Hayes-Roth 1985） | multi-writer shared memory | logical consistency model |
-| NLIP | natural-language content | LLM-native | schema |
+| MCP `tools/call` | `request` | 显式意图、correlation id | 形式语义、ontology |
+| MCP `resources/read` | `query-ref` | 显式意图、correlation id | 形式语义 |
+| A2A Task 生命周期 | contract-net + request-when | 异步生命周期、状态转换 | 形式化完备性保证 |
+| A2A streaming event | subscribe/notify | 异步推送 | 类型化谓词订阅 |
+| CA-MCP 共享 Context | blackboard（Hayes-Roth 1985） | 多写入方共享 memory | 逻辑一致性 Model |
+| NLIP | 自然语言内容 | LLM 原生 | schema |
 
-从上到下阅读这张表，模式是：保留 structural primitive，放弃 formalism，让 LLMs 掩盖歧义。
+从上到下阅读此表，可以看到一种模式：保留结构 primitive，舍弃形式化机制，让 LLM 掩盖歧义。
+
+```figure
+sw-contract-net
+```
 
 ## 构建它
 
-`code/main.py` 实现了一个 pure-stdlib FIPA-ACL translator。它编码和解码规范的 ACL envelope，并展示每一种 MCP / A2A message shape 如何归约为同样的七个字段。这个 demo：
+`code/main.py` 实现了一个纯 stdlib 的 FIPA-ACL 转换器。它对规范 ACL envelope 进行编码和解码，并展示每种 MCP / A2A 消息形式如何归约为相同的七个字段。该 Demo：
 
-- 将五条 MCP-style 和 A2A-style messages 编码为 FIPA-ACL。
-- 将 FIPA-ACL 解码回现代等价形式。
-- 使用 `cfp`、`propose`、`accept-proposal`、`reject-proposal`，在一个 manager 和三个 bidders 之间运行一个玩具版 Contract Net negotiation。
+- 将五种 MCP 风格和 A2A 风格的消息编码为 FIPA-ACL。
+- 将 FIPA-ACL 解码回对应的现代形式。
+- 使用 `cfp`、`propose`、`accept-proposal` 和 `reject-proposal`，在一个 Manager 与三个竞标者之间运行一个简单的 Contract Net 协商。
 
 运行：
 
@@ -158,48 +162,50 @@ FIPA 随附了约 15 个 interaction protocols。其中三个值得带入 LLM mu
 python3 code/main.py
 ```
 
-输出是一段 side-by-side trace，展示每条现代 message 的 2026 JSON 形式和 FIPA-ACL 形式，然后展示一次 contract-net bid 的 round-trip。同样的 protocol primitives 在 round-trip 中保留下来；差异只在 syntax。
+输出是并排显示的 trace，先以 2026 JSON 形式和 FIPA-ACL 形式展示每条现代消息，再对 contract-net 竞标执行一次 round-trip。相同的协议 primitive 在 round-trip 后依然保留，只有语法发生变化。
 
 ## 使用它
 
-`outputs/skill-fipa-mapper.md` 是一个 skill，它会读取任意 agent-protocol spec 并生成 FIPA-ACL mapping。在采用新 protocol 之前，用它回答：“这真的是新东西，还是带 JSON syntax 的 `inform`？”
+`outputs/skill-fipa-mapper.md` 是一个 Skill，可读取任意 Agent 协议规范并生成 FIPA-ACL 映射。在采用新协议前使用它，以回答：“这确实是新东西，还是只采用了 JSON 语法的 `inform`？”
 
 ## 交付它
 
-不要把 FIPA-ACL 带回来。把它的 checklist 带回来：
+不要复活 FIPA-ACL。应当复用它的检查清单：
 
-- 每条 message 的 intent primitive（performative）是什么？
-- 是否有用于 request-response 和 cancellation 的 correlation id？
-- 是否有显式 content language（JSON-RPC、plain text、structured typed artifact）？
-- Interaction protocols 是 first-class，还是你在从头重新实现 contract-net？
-- 当两个 agents 对 content meaning 存在分歧（semantic drift）时会发生什么？
+- 每条消息的意图 primitive（performative）是什么？
+- request-response 和取消操作是否具有 correlation id？
+- 是否存在显式内容语言（JSON-RPC、纯文本、结构化类型 artifact）？
+- 交互协议是否是一等概念，还是你正在从头重新实现 contract-net？
+- 当两个 Agent 对内容含义存在分歧时会发生什么（semantic drift）？
 
-在把任何新 protocol 交付到 production 之前，先记录这五个问题。
+在将任何新协议交付到生产环境前，记录这五个问题。
 
 ## 练习
 
-1. 运行 `code/main.py`。观察 round-trip encoding。识别哪个 FIPA performative 对应 `tools/call`、`resources/read` 和 A2A task creation。
-2. 用一个 `cancel` performative 扩展 contract-net demo，让 manager 可以在 bid 过程中撤回 task。`cancel` 解决了 retries 本身无法解决的哪类 failure case？
-3. 阅读 FIPA ACL Message Structure（http://www.fipa.org/specs/fipa00037/）第 4.1–4.3 节。选择一个本课未覆盖的 performative，并描述它的现代 JSON-RPC analog。
-4. 阅读 Liu et al., arXiv:2505.02279。分别针对 MCP、A2A、ACP、ANP，列出它们保留和放弃的 FIPA performative families。
-5. 为你自己系统中 `request` performative 的 `content` 字段设计一个最小 JSON-Schema。与纯 natural-language 相比，这个 schema 给了你什么，又带来了什么成本？
+1. 运行 `code/main.py`。观察 round-trip 编码。确定 `tools/call`、`resources/read` 和 A2A 任务创建分别对应哪种 FIPA performative。
+2. 为 contract-net Demo 添加一个 `cancel` performative，使 Manager 可以在竞标过程中撤回任务。`cancel` 解决了哪个仅靠重试无法解决的失效场景？
+3. 阅读 FIPA ACL Message Structure（http://www.fipa.org/specs/fipa00037/）第 4.1–4.3 节。选择一种本课未涉及的 performative，并描述它在现代 JSON-RPC 中的对应形式。
+4. 阅读 Liu 等人的 arXiv:2505.02279。针对 MCP、A2A、ACP 和 ANP，分别列出它们保留和舍弃的 FIPA performative 类别。
+5. 为你自己系统中 `request` performative 的 `content` 字段设计一个最小 JSON Schema。与纯自然语言相比，这个 schema 为你提供了什么，又带来了什么成本？
 
 ## 关键术语
-| Term | What people say | What it actually means |
+
+| 术语 | 人们常说的含义 | 它的实际含义 |
 |------|----------------|------------------------|
-| Speech act | “一种会做事的 utterance” | Austin/Searle：把 utterances 视为 actions。ACL 的理论源头。 |
-| FIPA | “那个老 XML 东西” | IEEE Foundation for Intelligent Physical Agents。2000 年标准化了 ACL。 |
-| ACL | “Agent Communication Language” | FIPA 的 envelope format：performative + content + metadata。 |
-| Performative | “那个动词” | 一条 message 的 intent class：`inform`、`request`、`propose`、`cfp` 等。 |
-| KQML | “FIPA 的前身” | Knowledge Query and Manipulation Language（1993）。更简单，范围更窄。 |
-| Ontology | “共享词汇表” | 对 content language 所谈论概念的 formal definition。 |
-| SL0 / SL1 | “FIPA content languages” | Semantic Language levels 0 and 1，即 formal content language family。 |
-| Contract Net | “Task market” | Manager 发出 cfp；bidders propose；manager accepts。规范的 interaction protocol。 |
-| Interaction protocol | “Messages 的模式” | 一组具有已知 correctness 的 performatives 序列：request-when、subscribe-notify 等。 |
+| Speech act | “一种能够完成某件事的话语” | Austin/Searle：将话语视为行动。ACL 的理论源头。 |
+| FIPA | “那个老旧的 XML 东西” | IEEE Foundation for Intelligent Physical Agents。于 2000 年标准化 ACL。 |
+| ACL | “Agent Communication Language” | FIPA 的 envelope 格式：performative + content + metadata。 |
+| Performative | “动词” | 消息的意图类别：`inform`、`request`、`propose`、`cfp` 等。 |
+| KQML | “FIPA 的前身” | Knowledge Query and Manipulation Language（1993）。更简单、范围更窄。 |
+| Ontology | “共享词汇表” | 对内容语言所讨论概念的形式化定义。 |
+| SL0 / SL1 | “FIPA 内容语言” | Semantic Language 级别 0 和 1——形式内容语言家族。 |
+| Contract Net | “任务市场” | Manager 发出 cfp；竞标者提交 propose；Manager 接受。规范的交互协议。 |
+| Interaction protocol | “消息模式” | 由 performative 组成且具有已知正确性的序列：request-when、subscribe-notify 等。 |
 
 ## 延伸阅读
-- [Liu et al. — A Survey of Agent Interoperability Protocols: MCP, ACP, A2A, ANP](https://arxiv.org/html/2505.02279v1) — 将现代 specs 与 FIPA heritage 连接起来的规范 2025 survey
-- [FIPA ACL Message Structure Specification (fipa00037)](http://www.fipa.org/specs/fipa00037/) — 2000 年批准的 envelope format
-- [FIPA Communicative Act Library Specification (fipa00037)](http://www.fipa.org/specs/fipa00037/) — 完整的 performative catalog
-- [MCP specification 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25) — `request`/`query-ref` 的现代 tool-use 等价形式
-- [A2A specification](https://a2a-protocol.org/latest/specification/) — contract-net 和 subscribe-notify 的现代 agent-peer 等价形式
+
+- [Liu et al. — A Survey of Agent Interoperability Protocols: MCP, ACP, A2A, ANP](https://arxiv.org/html/2505.02279v1) — 将现代规范与 FIPA 传承联系起来的权威 2025 年综述
+- [FIPA ACL Message Structure Specification (fipa00037)](http://www.fipa.org/specs/fipa00037/) — 于 2000 年获批的 envelope 格式
+- [FIPA Communicative Act Library Specification (fipa00037)](http://www.fipa.org/specs/fipa00037/) — 完整的 performative 目录
+- [MCP specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28) — 当前无状态 Tool 使用场景中与 `request`/`query-ref` 对应的规范
+- [A2A specification](https://a2a-protocol.org/latest/specification/) — 现代 Agent 对等通信中与 contract-net 和 subscribe-notify 对应的规范

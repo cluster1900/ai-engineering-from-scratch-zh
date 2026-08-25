@@ -40,7 +40,7 @@
   <rect x="700" y="60" width="220" height="180" class="cold"/>
   <text x="810" y="82" text-anchor="middle" class="head">2026 后继者</text>
   <text x="810" y="108" text-anchor="middle" class="small">MCP · A2A · ACP · ANP · NLIP</text>
-  <text x="810" y="130" text-anchor="middle" class="small">JSON-native payloads</text>
+  <text x="810" y="130" text-anchor="middle" class="small">JSON 原生 payload</text>
   <text x="810" y="148" text-anchor="middle" class="small">自然语言内容</text>
   <text x="810" y="166" text-anchor="middle" class="small">HTTP · SSE · WebSocket</text>
   <text x="810" y="184" text-anchor="middle" class="small">自描述发现</text>
@@ -52,19 +52,19 @@
   <rect x="40" y="280" width="880" height="210" class="box"/>
   <text x="480" y="304" text-anchor="middle" class="head">Performative → 2026 等价物</text>
 
-  <text x="60" y="336" class="step">request</text>
+  <text x="60" y="336" class="step">请求</text>
   <text x="300" y="336" class="small">MCP tools/call · A2A POST /tasks</text>
   <text x="60" y="356" class="step">query-ref</text>
   <text x="300" y="356" class="small">MCP resources/read · A2A GET /tasks/{id}</text>
-  <text x="60" y="376" class="step">subscribe</text>
-  <text x="300" y="376" class="small">A2A SSE /tasks/{id}/events · MCP resources/subscribe</text>
+  <text x="60" y="376" class="step">订阅</text>
+  <text x="300" y="376" class="small">A2A SSE 任务事件 · MCP subscriptions/listen</text>
   <text x="60" y="396" class="step">cfp</text>
   <text x="300" y="396" class="small">任务市场广播（招标）</text>
-  <text x="60" y="416" class="step">propose · accept · reject</text>
+  <text x="60" y="416" class="step">提议 · 接受 · 拒绝</text>
   <text x="300" y="416" class="small">投标方响应 · manager 授予/拒绝</text>
-  <text x="60" y="436" class="step">cancel</text>
-  <text x="300" y="436" class="small">A2A task cancellation · MCP cancellation notification</text>
-  <text x="60" y="456" class="step">inform · failure</text>
+  <text x="60" y="436" class="step">取消</text>
+  <text x="300" y="436" class="small">A2A 任务取消 · MCP 取消通知</text>
+  <text x="60" y="456" class="step">通知 · 失败</text>
   <text x="300" y="456" class="small">artifact push · JSON-RPC 响应中的 error object</text>
 
   <text x="60" y="478" class="caption">保留：envelope + intent + correlation · 舍弃：SL 语义 + 强制 ontology</text>
