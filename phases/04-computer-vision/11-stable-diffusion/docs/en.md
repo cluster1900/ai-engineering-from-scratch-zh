@@ -101,6 +101,10 @@ LoRA 是几乎所有社区 fine-tune 的分发方式。CivitAI 和 Hugging Face 
 
 在 `diffusers` 中切换 scheduler 只需要改一行，有时无需任何 retraining 就能修复采样问题。
 
+```figure
+cv3-latent-compression
+```
+
 ## 构建它
 本课端到端使用 `diffusers`，而不是从零重建 Stable Diffusion。你需要重建的部分（VAE、text encoder、U-Net、scheduler）本身都是各自课程的主题；这里的目标是熟悉生产级 API。
 
