@@ -22,8 +22,8 @@
 
   <!-- Approved action -->
   <rect x="60" y="80" width="160" height="60" class="cool"/>
-  <text x="140" y="104" text-anchor="middle" class="label">已批准 action</text>
-  <text x="140" y="122" text-anchor="middle" class="small">idempotency key k</text>
+  <text x="140" y="104" text-anchor="middle" class="label">已批准操作</text>
+  <text x="140" y="122" text-anchor="middle" class="small">幂等键 k</text>
 
   <!-- Preconditions -->
   <rect x="240" y="80" width="160" height="60" class="cold"/>
@@ -33,12 +33,12 @@
   <!-- Mark-as-done-first -->
   <rect x="420" y="80" width="180" height="60" class="warn"/>
   <text x="510" y="104" text-anchor="middle" class="label">先标记完成</text>
-  <text x="510" y="122" text-anchor="middle" class="small">exec 前持久化 "committed"</text>
+  <text x="510" y="122" text-anchor="middle" class="small">执行前持久化 "committed"</text>
 
   <!-- Execute -->
   <rect x="620" y="80" width="180" height="60" class="hot"/>
   <text x="710" y="104" text-anchor="middle" class="label">执行副作用</text>
-  <text x="710" y="122" text-anchor="middle" class="small">tool call / DB write / send</text>
+  <text x="710" y="122" text-anchor="middle" class="small">Tool 调用 / DB 写入 / 发送</text>
 
   <path d="M220 110 L240 110" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <path d="M400 110 L420 110" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -46,7 +46,7 @@
 
   <!-- Verify -->
   <rect x="60" y="180" width="160" height="60" class="cool"/>
-  <text x="140" y="204" text-anchor="middle" class="label">post-action verify</text>
+  <text x="140" y="204" text-anchor="middle" class="label">操作后 verify</text>
   <text x="140" y="222" text-anchor="middle" class="small">重读目标资源</text>
 
   <rect x="240" y="180" width="160" height="60" class="cool"/>
@@ -55,26 +55,26 @@
 
   <rect x="420" y="180" width="180" height="60" class="hot"/>
   <text x="510" y="204" text-anchor="middle" class="label">verify 失败</text>
-  <text x="510" y="222" text-anchor="middle" class="small">检测到 known-bad state</text>
+  <text x="510" y="222" text-anchor="middle" class="small">检测到已知错误 state</text>
 
   <rect x="620" y="180" width="180" height="60" class="hot"/>
   <text x="710" y="204" text-anchor="middle" class="label">触发 rollback</text>
-  <text x="710" y="222" text-anchor="middle" class="small">in-band / compensating / alert</text>
+  <text x="710" y="222" text-anchor="middle" class="small">带内 / 补偿 / 告警</text>
 
   <path d="M220 210 L240 210" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <path d="M600 210 L620 210" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Double-execute hazard -->
   <rect x="60" y="270" width="760" height="100" class="hot"/>
-  <text x="440" y="294" text-anchor="middle" class="label">尖锐故障：崩溃后 retry 导致重复执行</text>
-  <text x="80" y="316" class="content">1. commit 开始 · 2. execute 成功 · 3. 持久化 "committed" 前崩溃</text>
-  <text x="80" y="332" class="content">4. resume，看到“已 approved 未 committed” · 5. 重新执行 · 6. side effect 触发两次</text>
-  <text x="80" y="352" class="content">缓解：执行前持久化“committed”（“mark-as-done-first”模式）</text>
+  <text x="440" y="294" text-anchor="middle" class="label">严重故障：崩溃后 retry 导致重复执行</text>
+  <text x="80" y="316" class="content">1. 开始 commit · 2. 执行成功 · 3. 持久化 "committed" 前崩溃</text>
+  <text x="80" y="332" class="content">4. resume，发现“已批准但未 committed” · 5. 重新执行 · 6. side effect 触发两次</text>
+  <text x="80" y="352" class="content">缓解：执行前持久化“committed”（“先标记完成”模式）</text>
 
   <!-- Article 14 -->
   <rect x="60" y="400" width="760" height="90" class="cold"/>
-  <text x="440" y="424" text-anchor="middle" class="label">EU AI Act Article 14 — 操作解读</text>
-  <text x="80" y="446" class="content">checkpoint 可查询（审计员访问，不只是日志）</text>
+  <text x="440" y="424" text-anchor="middle" class="label">EU AI Act 第 14 条 — 操作解读</text>
+  <text x="80" y="446" class="content">Checkpoint 可查询（供审计员访问，不只是日志）</text>
   <text x="80" y="462" class="content">回滚已演练（端到端测试，不是意图文档）</text>
-  <text x="80" y="478" class="content">审计轨迹跨部署保留（PostgreSQL 或 Durable Objects，不在内存）</text>
+  <text x="80" y="478" class="content">审计轨迹跨部署保留（PostgreSQL 或 Durable Objects，不存于内存）</text>
 </svg>

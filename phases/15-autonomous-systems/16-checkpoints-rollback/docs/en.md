@@ -82,6 +82,10 @@ Article 14 要求高风险系统具备“有效的人类监督”。在操作层
 
 缓解方式：在执行前持久化一个 “in-flight” intent，使用 idempotency key 执行，然后只有在动作后验证成功时才标记为 “committed”。如果动作触发了但状态写入失败，你就知道需要 verify，并且在必要时重新触发。如果状态写入成功但动作失败，你会 verify，并通过 recovery path 精确触发一次。
 
+```figure
+checkpoint-replay
+```
+
 ## 使用它
 
 `code/main.py` 实现了一个带 checkpoint 的 workflow，包含 idempotency、preconditions、verify 和 rollback。driver 模拟四个场景：干净运行、崩溃后的 retry（idempotency 捕获）、precondition fail（workflow 中止且不触发动作）、verify fail（触发 rollback）。
