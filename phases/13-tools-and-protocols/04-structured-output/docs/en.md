@@ -101,6 +101,10 @@ generate -> parse -> validate -> if fail, inject error and retry, max 3x
 
 Constrained Decoding 适用于小模型。在结构化任务上，一个带 grammar enforcement 的 3B 参数开放模型，表现优于使用原始提示的 70B 参数模型。这是结构化输出对生产环境重要的主要原因：它把可靠性和模型大小解耦。
 
+```figure
+constrained-decoding
+```
+
 ## 使用它
 
 `code/main.py` 提供了一个用 stdlib 编写的最小 JSON Schema 2020-12 validator（types、required、enum、min/max、pattern、items、additionalProperties）。它包装一个 `Invoice` schema，并让 fake LLM output 经过 validator，演示 parse error、schema violation 和 refusal 路径。生产中可以把 fake output 换成任何提供商的真实响应。
