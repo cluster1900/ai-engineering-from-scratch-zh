@@ -17,17 +17,17 @@
 
   <rect x="40" y="60" width="280" height="200" class="box"/>
   <text x="180" y="85" text-anchor="middle" class="head">Datasheet</text>
-  <text x="180" y="105" text-anchor="middle" class="small">Gebru et al. 2018 (CACM 2021)</text>
+  <text x="180" y="105" text-anchor="middle" class="small">Gebru 等，2018（CACM 2021）</text>
   <rect x="60" y="125" width="240" height="50" class="cold"/>
   <text x="180" y="148" text-anchor="middle" class="step">上游：训练数据</text>
   <text x="180" y="166" text-anchor="middle" class="small">动机、构成、收集</text>
   <rect x="60" y="185" width="240" height="60" class="cold"/>
-  <text x="180" y="208" text-anchor="middle" class="step">Data Cards (Pushkarna 2022)</text>
-  <text x="180" y="226" text-anchor="middle" class="small">telescopic / periscopic / microscopic</text>
+  <text x="180" y="208" text-anchor="middle" class="step">数据卡（Pushkarna 2022）</text>
+  <text x="180" y="226" text-anchor="middle" class="small">望远镜式 / 潜望镜式 / 显微镜式</text>
 
   <rect x="340" y="60" width="280" height="200" class="box"/>
-  <text x="480" y="85" text-anchor="middle" class="head">Model Card</text>
-  <text x="480" y="105" text-anchor="middle" class="small">Mitchell et al. 2019</text>
+  <text x="480" y="85" text-anchor="middle" class="head">Model 卡</text>
+  <text x="480" y="105" text-anchor="middle" class="small">Mitchell 等，2019</text>
   <rect x="360" y="125" width="240" height="50" class="cool"/>
   <text x="480" y="148" text-anchor="middle" class="step">中游：模型</text>
   <text x="480" y="166" text-anchor="middle" class="small">预期用途、因素、指标</text>
@@ -36,7 +36,7 @@
   <text x="480" y="226" text-anchor="middle" class="small">伦理考量（0.3% 填写）</text>
 
   <rect x="640" y="60" width="280" height="200" class="box"/>
-  <text x="780" y="85" text-anchor="middle" class="head">System Card</text>
+  <text x="780" y="85" text-anchor="middle" class="head">系统卡</text>
   <text x="780" y="105" text-anchor="middle" class="small">Sidhpurwala 2024 / Blueprints 2025</text>
   <rect x="660" y="125" width="240" height="50" class="hot"/>
   <text x="780" y="148" text-anchor="middle" class="step">下游：部署</text>
@@ -47,12 +47,12 @@
 
   <rect x="40" y="280" width="880" height="210" class="box"/>
   <text x="480" y="305" text-anchor="middle" class="head">2024-2025 进展</text>
-  <text x="60" y="335" class="small">CardGen (Liu et al. 2024)：通过 LLMs 自动生成；比许多人工撰写的 cards 更客观。</text>
-  <text x="60" y="355" class="small">下载相关性 (Liang et al. 2024)：详尽 cards +29% HF 下载量 -- 采用由市场驱动。</text>
-  <text x="60" y="375" class="small">Laminator (Duddu et al. 2024)：硬件 TEE + 加密证明，用于可验证声明。</text>
-  <text x="60" y="395" class="small">可持续性 (Jouneaux et al. July 2025)：碳、水、能源字段；新兴 ISO 标准。</text>
-  <text x="60" y="415" class="small">EU AI Act GPAI Code of Practice 透明度章节：model cards 作为合规 artifacts。</text>
-  <text x="60" y="445" class="small">采用缺口：仅 0.3% HF model cards 记录伦理考量 (Oreamuno et al. 2023)。</text>
+  <text x="60" y="335" class="small">CardGen（Liu 等，2024）：通过 LLMs 自动生成；比许多人工撰写的 cards 更客观。</text>
+  <text x="60" y="355" class="small">下载相关性（Liang 等，2024）：详尽 cards +29% HF 下载量——采用由市场驱动。</text>
+  <text x="60" y="375" class="small">Laminator（Duddu 等，2024）：硬件 TEE + 加密证明，用于可验证声明。</text>
+  <text x="60" y="395" class="small">可持续性（Jouneaux 等，2025 年 7 月）：碳、水、能源字段；新兴 ISO 标准。</text>
+  <text x="60" y="415" class="small">EU AI Act GPAI Code of Practice 透明度章节：Model Cards 作为合规产物。</text>
+  <text x="60" y="445" class="small">采用缺口：仅 0.3% HF Model Cards 记录伦理考量（Oreamuno 等，2023）。</text>
   <text x="60" y="465" class="small">补救：自动生成 + 下载相关性压力 + 监管要求。</text>
-  <text x="60" y="485" class="small">"Blueprints of Trust" (arXiv:2509.20394) 将 System Card 形式化为部署层补充。</text>
+  <text x="60" y="485" class="small">《信任蓝图》（arXiv:2509.20394）将 System Card 形式化为部署层补充。</text>
 </svg>

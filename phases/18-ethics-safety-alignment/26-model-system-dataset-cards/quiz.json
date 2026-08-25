@@ -6,60 +6,60 @@
       "stage": "pre",
       "question": "哪一项最准确地描述 Mitchell et al.（2019）最初的 Model Card？",
       "options": [
-        "一份 OpenAPI specification",
-        "ML models 的“营养标签”：训练数据、预期用途、因素、指标、评估数据、定量分组分析、伦理考量、注意事项",
         "仅是 model checkpoint manifest",
-        "一份监管法律合同"
+        "一份监管法律合同",
+        "ML models 的“营养标签”：训练数据、预期用途、因素、指标、评估数据、定量分组分析、伦理考量、注意事项",
+        "一份 OpenAPI specification"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Oreamuno et al.（2023）关于 Hugging Face model cards 中 ethical-considerations 采用情况发现了什么？",
       "options": [
+        "没有任何 model card 有文本",
         "约 0.3% 记录了 ethical considerations",
         "约 80% 记录了 ethical considerations",
-        "没有任何 model card 有文本",
         "所有 model cards 都记录了这些内容"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Pushkarna et al.（Google 2022）Data Cards 的 telescopic / periscopic / microscopic 分层提供了什么？",
       "options": [
-        "一种 boundary-object 框架，使同一文档能通过三个细节缩放层级服务不同读者（非专家、ML practitioners、auditors）",
         "pre-RLHF audit checklist（RLHF 前审计清单）",
         "望远镜主题的可视化库",
+        "一种 boundary-object 框架，使同一文档能通过三个细节缩放层级服务不同读者（非专家、ML practitioners、auditors）",
         "隐私保护查询接口"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "System Card 覆盖了 Model Cards 不覆盖的什么范围？",
       "options": [
+        "只有 tokenizer",
         "端到端 AI system：model + safety stack + deployment context，包括安全能力、prompt-injection protection、data-exfiltration detection、alignment 和 incident response",
-        "只有 dataset",
         "只有 prompt template",
-        "只有 tokenizer"
+        "只有 dataset"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "Liang et al.（2024）关于 model-card 详细程度与 Hugging Face 下载率报告了什么？",
       "options": [
-        "详细 model cards 让 treatment group 相对 control 在 HF 上实现 +29.0% 的每周下载提升（diff-in-diff）；采用压力如今由市场驱动，而不只是由合规驱动",
         "只有 ethical-considerations sections 影响下载量",
-        "详细程度对下载量没有影响",
-        "详细程度降低了下载率"
+        "详细程度降低了下载率",
+        "详细 model cards 让 treatment group 相对 control 在 HF 上实现 +29.0% 的每周下载提升（diff-in-diff）；采用压力如今由市场驱动，而不只是由合规驱动",
+        "详细程度对下载量没有影响"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -68,8 +68,8 @@
       "options": [
         "自动化 benchmarking harness",
         "通过硬件 TEE / cryptographic signatures 提供可验证 attestations，使 card 能携带 proof-of-claim，而不只是 claim",
-        "Datasheets standard 的替代品",
-        "基于 LLM 的 summary generator"
+        "基于 LLM 的 summary generator",
+        "Datasheets standard 的替代品"
       ],
       "correct": 1,
       "explanation": ""

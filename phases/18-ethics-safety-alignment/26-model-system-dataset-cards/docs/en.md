@@ -80,6 +80,10 @@ Sidhpurwala 2024 和 Meta 系统级透明度工作。"Blueprints of Trust" (arXi
 
 Lessons 24-25 是监管和 CVE 层。Lesson 26 是文档层。Lesson 27 是训练数据治理，也就是 datasheet 的上游。Lesson 28 是研究生态系统，产出 cards 中引用的评估。
 
+```figure
+an-card-scopes
+```
+
 ## 使用它
 
 `code/main.py` 会为一个玩具部署生成一个最小 model card、datasheet 和 system card。每个都遵循规范章节结构。你可以检查格式，并比较三个范围。
