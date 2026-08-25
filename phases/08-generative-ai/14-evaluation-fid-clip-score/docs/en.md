@@ -79,6 +79,10 @@ CMMD (Jayasumana et al., 2024) 修复了其中一些问题：使用 CLIP feature
 
 任何单一指标都是谎言。三个相互印证的指标 + 定性 review 才是主张。
 
+```figure
+gx-fid-distributions
+```
+
 ## 动手构建
 
 `code/main.py` 在合成的 "feature vectors" 上实现 FID、类 CLIP-score 和 Elo 聚合（我们用 4-D Vector 作为 Inception features 的替代）。你会看到：

@@ -21,7 +21,7 @@
   <rect x="30" y="60" width="270" height="200" class="box"/>
   <text x="165" y="85" text-anchor="middle" class="label">FID（样本质量）</text>
   <text x="165" y="110" text-anchor="middle" class="mono">||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2√Σ_rΣ_g)</text>
-  <text x="165" y="140" text-anchor="middle" class="caption">Fréchet distance between</text>
+  <text x="165" y="140" text-anchor="middle" class="caption">两者之间的 Fréchet distance</text>
   <text x="165" y="158" text-anchor="middle" class="caption">Inception-v3 空间中的 Gaussian 拟合</text>
   <text x="165" y="188" text-anchor="middle" class="caption">使用 N ≥ 10k，否则数字会骗人</text>
   <text x="165" y="206" text-anchor="middle" class="caption">ImageNet 偏置；使用 FD-DINO 或</text>
@@ -30,22 +30,22 @@
 
   <!-- CLIP column -->
   <rect x="315" y="60" width="270" height="200" class="box"/>
-  <text x="450" y="85" text-anchor="middle" class="label">CLIP score（贴合度）</text>
+  <text x="450" y="85" text-anchor="middle" class="label">CLIP 分数（贴合度）</text>
   <text x="450" y="110" text-anchor="middle" class="mono">cos( CLIP_image(x), CLIP_text(p) )</text>
-  <text x="450" y="140" text-anchor="middle" class="caption">输出与 prompt 匹配多好？</text>
+  <text x="450" y="140" text-anchor="middle" class="caption">输出与 Prompt 匹配多好？</text>
   <text x="450" y="170" text-anchor="middle" class="caption">组合失败会漏检</text>
-  <text x="450" y="188" text-anchor="middle" class="caption">短 prompt 机制上得分更高</text>
-  <text x="450" y="206" text-anchor="middle" class="caption">CMMD + VQA tests 覆盖 CLIP 盲点</text>
+  <text x="450" y="188" text-anchor="middle" class="caption">短 Prompt 机制上得分更高</text>
+  <text x="450" y="206" text-anchor="middle" class="caption">CMMD + VQA 测试覆盖 CLIP 盲点</text>
   <text x="450" y="252" text-anchor="middle" class="caption">越高越好</text>
 
   <!-- preference column -->
   <rect x="600" y="60" width="270" height="200" class="box"/>
   <text x="735" y="85" text-anchor="middle" class="label">人类偏好（真值）</text>
   <text x="735" y="110" text-anchor="middle" class="mono">由成对胜率得 Elo</text>
-  <text x="735" y="140" text-anchor="middle" class="caption">同一 prompt 下 A vs B</text>
+  <text x="735" y="140" text-anchor="middle" class="caption">同一 Prompt 下 A 对 B</text>
   <text x="735" y="158" text-anchor="middle" class="caption">HPSv2 / ImageReward / PickScore</text>
   <text x="735" y="188" text-anchor="middle" class="caption">作为自动代理指标</text>
-  <text x="735" y="206" text-anchor="middle" class="caption">Chatbot-Arena 风格图像 arena</text>
+  <text x="735" y="206" text-anchor="middle" class="caption">Chatbot-Arena 风格图像竞技场</text>
   <text x="735" y="252" text-anchor="middle" class="caption">胜率越高越好</text>
 
   <!-- failure modes -->
@@ -53,7 +53,7 @@
   <text x="450" y="310" text-anchor="middle" class="label">每个指标都有已知刷分法</text>
   <text x="450" y="333" text-anchor="middle" class="caption">FID：过拟合 Inception 先验 → 低 FID，质量相同</text>
   <text x="450" y="353" text-anchor="middle" class="caption">CLIP：用 'masterpiece, 4k' 饱和 → 分数虚高</text>
-  <text x="450" y="373" text-anchor="middle" class="caption">偏好：prompt 集与训练重叠 → 被操控</text>
+  <text x="450" y="373" text-anchor="middle" class="caption">偏好：Prompt 集与 Training 重叠 → 被操控</text>
 
   <!-- production report -->
   <rect x="30" y="410" width="840" height="100" class="cold"/>
