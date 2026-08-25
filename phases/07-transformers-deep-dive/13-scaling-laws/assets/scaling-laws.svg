@@ -18,17 +18,17 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">scaling laws：参数、Token、compute，以及 2026 年的变化</text>
+  <text x="450" y="30" text-anchor="middle" class="title">Scaling laws：参数、Token、计算量及 2026 年变化</text>
 
   <!-- Left: loss vs compute -->
   <rect x="40" y="60" width="420" height="360" class="box"/>
-  <text x="250" y="84" text-anchor="middle" class="label">Loss vs 训练 compute</text>
+  <text x="250" y="84" text-anchor="middle" class="label">Loss 与 Training 计算量</text>
 
   <!-- axes -->
   <line x1="90" y1="370" x2="430" y2="370" class="axis"/>
   <line x1="90" y1="110" x2="90" y2="370" class="axis"/>
   <text x="250" y="400" text-anchor="middle" class="caption">log10 compute (FLOPs)</text>
-  <text x="65" y="240" text-anchor="middle" class="caption" transform="rotate(-90 65 240)">cross-entropy Loss</text>
+  <text x="65" y="240" text-anchor="middle" class="caption" transform="rotate(-90 65 240)">交叉熵 Loss</text>
 
   <!-- ticks -->
   <text x="110" y="385" text-anchor="middle" class="caption">18</text>
@@ -45,7 +45,7 @@
 
   <!-- Kaplan (under-trained) curve -->
   <path class="curve-k" d="M 110 370 Q 180 340 240 290 Q 290 250 360 225 Q 400 215 430 210"/>
-  <text x="380" y="205" class="caption" fill="#555">Kaplan 2020（训练不足）</text>
+  <text x="380" y="205" class="caption" fill="#555">Kaplan 2020（Training 不足）</text>
 
   <!-- Chinchilla (optimal) curve -->
   <path class="curve-c" d="M 110 350 Q 180 310 240 260 Q 290 220 360 195 Q 400 180 430 170"/>
@@ -73,22 +73,22 @@
 
   <text x="510" y="155" class="content">D</text>
   <rect x="530" y="139" width="300" height="22" fill="#a9c9a4" stroke="#1a1a1a" stroke-width="1"/>
-  <text x="680" y="155" text-anchor="middle" class="content">训练 Token（用量）</text>
+  <text x="680" y="155" text-anchor="middle" class="content">Training Token（用量）</text>
 
-  <text x="672" y="190" text-anchor="middle" class="caption">固定 C 下取舍</text>
+  <text x="672" y="190" text-anchor="middle" class="caption">固定 C 下的取舍</text>
   <text x="672" y="210" text-anchor="middle" class="content">min L  =  A/N^α + B/D^β + E</text>
   <text x="672" y="232" text-anchor="middle" class="caption">α ≈ 0.34, β ≈ 0.28, E ≈ 1.69</text>
 
   <!-- Right: 2026 picture -->
   <rect x="485" y="280" width="375" height="200" class="box"/>
   <text x="672" y="304" text-anchor="middle" class="label">2026 年的新变化</text>
-  <text x="504" y="332" class="caption">— Chinchilla-optimal：最小化每 FLOP 的训练 Loss</text>
-  <text x="504" y="352" class="caption">— inference-optimal：更大 D、更小 N（过度训练）</text>
+  <text x="504" y="332" class="caption">— Chinchilla-optimal：最小化每 FLOP 的 Training Loss</text>
+  <text x="504" y="352" class="caption">— Inference-optimal：D 更大、N 更小（过度 Training）</text>
   <text x="504" y="372" class="caption">— Llama 3 8B：D/N ≈ 1875（15T Token，8B 参数）</text>
   <text x="504" y="392" class="caption">— 数据质量（Phi-style filtering）&gt;2× 有效 FLOPs</text>
-  <text x="504" y="412" class="caption">— MoE 将总参数与 active FLOPs 解耦</text>
-  <text x="504" y="432" class="caption">— Muon Optimizer：训练 FLOP 效率比 AdamW 高 2×</text>
-  <text x="504" y="452" class="caption">— “涌现”常是评分伪影；Loss 是平滑的</text>
+  <text x="504" y="412" class="caption">— MoE 将总参数与活跃 FLOPs 解耦</text>
+  <text x="504" y="432" class="caption">— Muon Optimizer：Training FLOP 效率比 AdamW 高 2×</text>
+  <text x="504" y="452" class="caption">— “涌现”常是评分伪影；Loss 平滑变化</text>
 
   <text x="450" y="504" text-anchor="middle" class="caption">相同的幂律形状，不同的绝对常数；仍是前沿实验室规划所依赖的地图。</text>
 </svg>
