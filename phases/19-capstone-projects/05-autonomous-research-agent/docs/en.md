@@ -65,6 +65,10 @@ seed idea + domain
 - Experiment framework：用于 physical experiment 的 PyTorch 2.5，W&B 用于 logging
 - Observability：Langfuse 用于 agent trace，每篇论文 $30 硬 budget
 
+```figure
+ce-experiment-tree
+```
+
 ## 构建它
 1. **Seed and domain scoping.** 选取一个 seed idea（例如，“investigate sparsity patterns in attention maps of sub-1B transformers”）。定义 search space：model、dataset、compute budget。
 
