@@ -28,6 +28,10 @@ IR 是每个 RAG system、每个 search bar、每个文档站点 fuzzy lookup �
 
 三路 retrieval（BM25 + dense + learned-sparse，如 SPLADE）在 2026 benchmarks 中优于两路方法，但需要 learned-sparse indexes 的基础设施。对大多数团队来说，两路加 cross-encoder rerank 是最佳平衡点。
 
+```figure
+gx-hybrid-retrieval
+```
+
 ## 构建它
 
 ### 步骤 1： 从零实现 BM25
