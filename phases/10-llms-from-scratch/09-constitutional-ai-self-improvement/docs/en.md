@@ -158,6 +158,10 @@ graph LR
 
 大多数 2026 年 frontier pipelines 会同时运行这四种方法。CAI 用于 safety layers。GRPO 用于 reasoning post-training pass。DPO 用于 preference polish。小规模 RLHF pass 用于处理其他方法难以解决的残余行为。
 
+```figure
+self-critique-loop
+```
+
 ## 构建它
 代码使用纯 Python + numpy 实现三件事：一个 Constitutional AI self-critique loop；一个用于简单算术的 rule-based reward checker；一个最小 GRPO trainer，在 Lesson 04 的 tiny language model 上运行。
 

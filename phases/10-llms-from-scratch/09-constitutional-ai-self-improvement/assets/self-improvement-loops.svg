@@ -18,21 +18,21 @@
 
   <!-- CAI column -->
   <rect x="40" y="55" width="400" height="380" class="box"/>
-  <text x="240" y="80" text-anchor="middle" class="label">Constitutional AI — 主观行为</text>
+  <text x="240" y="80" text-anchor="middle" class="label">Constitutional AI：主观行为</text>
 
   <rect x="60" y="100" width="360" height="32" class="hot"/>
-  <text x="240" y="121" text-anchor="middle" class="content">prompt + 初始响应</text>
+  <text x="240" y="121" text-anchor="middle" class="content">Prompt + 初始响应</text>
 
   <line x1="240" y1="137" x2="240" y2="155" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="160" width="360" height="48" class="box"/>
-  <text x="240" y="180" text-anchor="middle" class="content">model 对照批判</text>
+  <text x="240" y="180" text-anchor="middle" class="content">Model 对照原则进行批判</text>
   <text x="240" y="198" text-anchor="middle" class="content">从 constitution 采样的原则</text>
 
   <line x1="240" y1="213" x2="240" y2="231" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="60" y="236" width="360" height="32" class="box"/>
-  <text x="240" y="257" text-anchor="middle" class="content">model 重写响应</text>
+  <text x="240" y="257" text-anchor="middle" class="content">Model 重写响应</text>
 
   <line x1="240" y1="273" x2="240" y2="291" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -44,15 +44,15 @@
   <rect x="60" y="356" width="360" height="32" class="cool"/>
   <text x="240" y="377" text-anchor="middle" class="content">在成对 AI 判断上 DPO</text>
 
-  <text x="240" y="412" text-anchor="middle" class="caption">杠杆是 constitution — 编辑文本，</text>
+  <text x="240" y="412" text-anchor="middle" class="caption">杠杆是 constitution：编辑文本，</text>
   <text x="240" y="427" text-anchor="middle" class="caption">而非重标数千对样本</text>
 
   <!-- GRPO column -->
   <rect x="460" y="55" width="400" height="380" class="box"/>
-  <text x="660" y="80" text-anchor="middle" class="label">GRPO — 可验证行为</text>
+  <text x="660" y="80" text-anchor="middle" class="label">GRPO：可验证行为</text>
 
   <rect x="480" y="100" width="360" height="32" class="hot"/>
-  <text x="660" y="121" text-anchor="middle" class="content">prompt (数学 / 代码 / 格式)</text>
+  <text x="660" y="121" text-anchor="middle" class="content">Prompt（数学 / 代码 / 格式）</text>
 
   <line x1="660" y1="137" x2="660" y2="155" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -73,10 +73,10 @@
   <line x1="660" y1="333" x2="660" y2="351" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="480" y="356" width="360" height="32" class="cool"/>
-  <text x="660" y="377" text-anchor="middle" class="content">clipped surrogate + 到 reference 的 KL</text>
+  <text x="660" y="377" text-anchor="middle" class="content">截断 surrogate + 到 reference 的 KL</text>
 
-  <text x="660" y="412" text-anchor="middle" class="caption">无 value function，无 reward model —</text>
+  <text x="660" y="412" text-anchor="middle" class="caption">无 value function，无 reward Model：</text>
   <text x="660" y="427" text-anchor="middle" class="caption">DeepSeek-R1 配方，仅 ORM</text>
 
-  <text x="450" y="468" text-anchor="middle" class="caption">CAI 处理“tone”。GRPO 处理“answer”。多数 2026 pipelines 两者都用。</text>
+  <text x="450" y="468" text-anchor="middle" class="caption">CAI 处理“语气”，GRPO 处理“答案”。多数 2026 pipeline 两者并用。</text>
 </svg>
