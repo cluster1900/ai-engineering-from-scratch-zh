@@ -75,11 +75,11 @@
   <!-- Pretraining insets -->
   <rect x="60" y="430" width="360" height="70" class="box"/>
   <text x="240" y="452" text-anchor="middle" class="label">T5 pretraining</text>
-  <text x="240" y="474" text-anchor="middle" class="caption">span corruption：用 sentinels 替换 spans,</text>
-  <text x="240" y="490" text-anchor="middle" class="caption">只 decode spans</text>
+  <text x="240" y="474" text-anchor="middle" class="caption">span corruption：用 sentinel Token 替换 span</text>
+  <text x="240" y="490" text-anchor="middle" class="caption">仅 decode span</text>
 
   <rect x="480" y="430" width="360" height="70" class="box"/>
   <text x="660" y="452" text-anchor="middle" class="label">BART pretraining</text>
-  <text x="660" y="474" text-anchor="middle" class="caption">施加噪声（mask、删除、infill、shuffle），</text>
-  <text x="660" y="490" text-anchor="middle" class="caption">decoder 重构整个干净序列</text>
+  <text x="660" y="474" text-anchor="middle" class="caption">施加噪声（mask、删除、infill、shuffle）</text>
+  <text x="660" y="490" text-anchor="middle" class="caption">decoder 重构完整的干净序列</text>
 </svg>

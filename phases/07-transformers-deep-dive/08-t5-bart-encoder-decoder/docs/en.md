@@ -91,6 +91,10 @@ text infilling + sentence permutation 的组合产生了最好的下游结果。
 
 自约 2022 年以来的趋势是：decoder-only 接管了过去由 encoder-decoder 主导的任务，因为 (a) instruction-tuned decoder-only LLMs 可以通过 prompting 泛化到任何任务，(b) 单一架构比两个架构更容易扩展，(c) RLHF 假设使用 decoder。encoder-decoder 仍然保留在输入 modality 不同（speech、images）或 beam search 质量很重要的场景。
 
+```figure
+encoder-decoder
+```
+
 ## 构建它
 
 见 `code/main.py`。我们为一个 toy corpus 实现 T5 风格的 span corruption——这是本课最有用的单个部分，因为它出现在此后几乎每个 encoder-decoder 预训练配方中。
