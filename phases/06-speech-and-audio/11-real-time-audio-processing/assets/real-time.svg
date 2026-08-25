@@ -58,7 +58,7 @@
 
   <!-- Barge-in detection arrow -->
   <path d="M255,125 Q255,180 540,180 Q620,180 700,125" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
-  <text x="470" y="175" text-anchor="middle" class="caption" fill="#c0392b">barge-in：VAD 在流中取消 LLM + TTS</text>
+  <text x="470" y="175" text-anchor="middle" class="caption" fill="#c0392b">插话：VAD 在流中取消 LLM + TTS</text>
 
   <!-- Latency totals -->
   <rect x="40" y="210" width="800" height="120" class="hot"/>
@@ -86,5 +86,5 @@
   <text x="60"  y="394" class="content">20 ms 帧</text>    <text x="220" y="394" class="caption">320 samples @ 16 kHz；下游全部保持节奏</text>
   <text x="60"  y="414" class="content">ring buffer</text>     <text x="220" y="414" class="caption">2 s = 32 000 samples；吸收 jitter，不增加基础延迟</text>
   <text x="60"  y="434" class="content">AEC 必需</text>   <text x="220" y="434" class="caption">没有它，TTS 输出会回到 ASR 并自触发</text>
-  <text x="60"  y="454" class="content">预热 TTS</text>    <text x="220" y="454" class="caption">首轮前预热 vocoder，否则用户会感到 150 ms warm-up</text>
+  <text x="60"  y="454" class="content">预热 TTS</text>    <text x="220" y="454" class="caption">首轮前预热 vocoder，否则用户会感到 150 ms 预热延迟</text>
 </svg>
