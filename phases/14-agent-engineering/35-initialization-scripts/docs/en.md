@@ -53,6 +53,10 @@ Probe 失败意味着停止并呈现给 human。不要说“Agent 会自己搞�
 
 Rules (Phase 14 · 33) 描述行动前必须满足什么。Init 是建立这些 rules 可被检查的脚本。没有 init 的 rules 会变成“要小心”。没有 rules 的 init 会变成精致的失败。
 
+```figure
+wb-init-probes
+```
+
 ## 构建它
 `code/main.py` 实现了 `init_agent.py`：
 
