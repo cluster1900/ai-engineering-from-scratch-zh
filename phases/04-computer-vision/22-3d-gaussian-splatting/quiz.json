@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "到 2026 年，为什么 3D Gaussian Splatting 在很大程度上取代 NeRF，成为 photorealistic scene reconstruction 的 production default？",
-      "options": ["Gaussian Splatting 在任何情况下都能产生比 NeRF 更高的图像质量", "3DGS 是 explicit 的（没有 per-pixel MLP）：rendering 是 100+ fps 的 GPU rasterisation，训练只需数分钟而不是数小时，scenes 可编辑，并且 Khronos + OpenUSD 都在 2026 年将其标准化", "NeRF 已从研究记录中被撤回", "PyTorch 停止支持 NeRF operators"],
+      "options": [
+        "NeRF 已从研究记录中被撤回",
+        "3DGS 是 explicit 的（没有 per-pixel MLP）：rendering 是 100+ fps 的 GPU rasterisation，训练只需数分钟而不是数小时，scenes 可编辑，并且 Khronos + OpenUSD 都在 2026 年将其标准化",
+        "Gaussian Splatting 在任何情况下都能产生比 NeRF 更高的图像质量",
+        "PyTorch 停止支持 NeRF operators"
+      ],
       "correct": 1,
       "explanation": "3DGS 用数百万个 explicit 3D Gaussians 替换 implicit MLP。Rendering 变成 sorted alpha compositing，GPU 可以在消费级硬件上以 100+ fps 运行。训练耗时以分钟计。每个 Gaussian 都可编辑。到 2026 年，Khronos 批准了用于 3DGS 的 glTF extension，OpenUSD 26.03 发布了 native schema，使 3DGS 成为可移植的 production format。"
     },
     {
       "stage": "pre",
       "question": "scene 中的一个 3D Gaussian 携带 position、rotation、scale、opacity，还需要什么额外表示来处理 view-dependent colour（例如 specular highlights）？",
-      "options": ["第二张 RGB texture", "每个 Gaussian 一个小型 MLP", "Spherical harmonics coefficients：最高 degree 3 会为每个 colour channel 提供 16 个 coefficients，并在 render time 根据 viewing direction 求值", "一个 light probe cubemap"],
+      "options": [
+        "第二张 RGB texture",
+        "每个 Gaussian 一个小型 MLP",
+        "Spherical harmonics coefficients：最高 degree 3 会为每个 colour channel 提供 16 个 coefficients，并在 render time 根据 viewing direction 求值",
+        "一个 light probe cubemap"
+      ],
       "correct": 2,
       "explanation": "Spherical harmonics 是球面上的 Fourier basis。每个 Gaussian 存储 learned SH coefficients，用来编码其 colour 如何随 viewing direction 变化。在 render time，将 coefficients 与从 pixel 到 Gaussian centre 的 unit Vector 求值，从而在没有 textures 或 MLPs 的情况下得到 specular highlights、轻微 reflections 和 view-dependent shading。"
     },
     {
       "stage": "post",
       "question": "在 3DGS 训练期间，densification 包含“clone”和“split”操作。分别由什么触发？",
-      "options": ["没有任何触发条件，Gaussians 在 initialisation 之后是固定的", "高 Gradient magnitude 且 scale 小会触发 clone（需要更多局部细节）；高 Gradient 且 scale 大会触发 split（一个 Gaussian 过于平滑，无法拟合该区域）。opacity 低于阈值会触发 pruning", "距离上一次 checkpoint 的时间", "每个 epoch 中的随机采样"],
+      "options": [
+        "没有任何触发条件，Gaussians 在 initialisation 之后是固定的",
+        "高 Gradient magnitude 且 scale 小会触发 clone（需要更多局部细节）；高 Gradient 且 scale 大会触发 split（一个 Gaussian 过于平滑，无法拟合该区域）。opacity 低于阈值会触发 pruning",
+        "距离上一次 checkpoint 的时间",
+        "每个 epoch 中的随机采样"
+      ],
       "correct": 1,
       "explanation": "Adaptive densification 让 3DGS 能够从约 100k 个 SfM-seeded Gaussians 增长到收敛时的 1-5M。Clone 会复制 under-resolved small Gaussians；split 会把过大的 Gaussians 拆成两个更小的；prune 会丢弃 sigmoid opacity 已衰减到阈值以下的 Gaussians。这三个操作加上参数上的 Gradient Descent，就是完整的训练动态。"
     },
     {
       "stage": "post",
       "question": "NeRF 和 3DGS 中一个 pixel 的 colour equation 都是 `C = sum_i alpha_i * T_i * c_i`，其中 `T_i = prod_{j<i}(1 - alpha_j)`。这个共享方程说明了这两种方法的什么关系？",
-      "options": ["它们在所有方面都数学上完全相同", "两者都在积分同一个 volumetric rendering equation；区别只在 representation（implicit MLP samples vs explicit sparse Gaussians）和 rendering procedure（ray marching vs rasterisation）上，这也是它们图像质量可比的原因", "NeRF 严格更好", "3DGS 严格更好"],
+      "options": [
+        "NeRF 严格更好",
+        "两者都在积分同一个 volumetric rendering equation；区别只在 representation（implicit MLP samples vs explicit sparse Gaussians）和 rendering procedure（ray marching vs rasterisation）上，这也是它们图像质量可比的原因",
+        "它们在所有方面都数学上完全相同",
+        "3DGS 严格更好"
+      ],
       "correct": 1,
       "explanation": "这个共享方程是经典的 volumetric render。NeRF 通过沿 rays 采样并查询 MLP 来计算它。3DGS 通过把 Gaussians 投影到 2D，并对每个 pixel 的 sorted primitives 做 alpha-compositing 来计算它。相同的 physics、相同的 Loss、不同的数据结构和 rendering algorithms。这种一致性解释了为什么它们最终的 PSNR / LPIPS 接近；实际差距在速度和可编辑性。"
     },
     {
       "stage": "post",
       "question": "你想在 2026 年将一个 3DGS scene 发布到 Unreal Engine、Vision Pro、Blender 和一个 Three.js web viewer。哪个 export format 是最稳妥的选择？",
-      "options": ["只使用 raw `.ply`", "带 `KHR_gaussian_splatting` extension 的 glTF（Khronos RC 2026 年 2 月）和/或带 `UsdVolParticleField3DGaussianSplat` 的 OpenUSD 26.03；这是 2026 年两个已批准/标准化的格式", "每个 viewer 一个 custom binary blob", "3D Gaussians 的 PNG strips"],
-      "correct": 1,
+      "options": [
+        "每个 viewer 一个 custom binary blob",
+        "3D Gaussians 的 PNG strips",
+        "只使用 raw `.ply`",
+        "带 `KHR_gaussian_splatting` extension 的 glTF（Khronos RC 2026 年 2 月）和/或带 `UsdVolParticleField3DGaussianSplat` 的 OpenUSD 26.03；这是 2026 年两个已批准/标准化的格式"
+      ],
+      "correct": 3,
       "explanation": "截至 2024 年，每个 viewer 都有自己的格式。Khronos 在 2026 年 2 月为 glTF 批准了 KHR_gaussian_splatting，OpenUSD 26.03 在 2026 年 4 月增加了 native 3DGS schema。导出到任一格式，都能获得跨 engines、viewers 和 pipelines 的可移植性。`.ply` 仍然是研究领域的 interchange lingua franca，但结构化程度较低。对 cross-tool production 来说，glTF + USD 是 2026 年的答案。"
     }
-  ]
+  ],
+  "title": null
 }

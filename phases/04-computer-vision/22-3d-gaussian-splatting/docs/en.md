@@ -120,6 +120,10 @@ View-dependent colour 是单位球面上的函数 `c(direction)`。Spherical har
 - **Generative splats**：text-to-splat models（World Labs 的 Marble），可以 hallucinate 出完整场景。
 - **3D Gaussian Unscented Transform**：NVIDIA NuRec 用于 autonomous driving simulation 的变体。
 
+```figure
+cv3-gaussian-splat
+```
+
 ## 构建它
 
 ### 步骤 1：一个 2D Gaussian
