@@ -1,0 +1,27 @@
+{
+  "benchmarkId": "operations-routing-v1",
+  "candidates": ["fast", "balanced", "capable"],
+  "qualityGate": {
+    "requiredFacts": 4,
+    "unsupportedClaimsAllowed": 0,
+    "formatValid": true,
+    "consequentialCaseMustEscalate": true
+  },
+  "cases": [
+    {"id": "routine-01", "riskClass": "routine", "chosenModel": "fast", "humanReview": false, "estimatedCostUnits": 1, "gatePassed": true, "routingSignal": "仅格式任务"},
+    {"id": "routine-02", "riskClass": "routine", "chosenModel": "fast", "humanReview": false, "estimatedCostUnits": 1, "gatePassed": true, "routingSignal": "固定标签集"},
+    {"id": "routine-03", "riskClass": "routine", "chosenModel": "fast", "humanReview": false, "estimatedCostUnits": 1, "gatePassed": true, "routingSignal": "提供的记录完整"},
+    {"id": "routine-04", "riskClass": "routine", "chosenModel": "fast", "humanReview": false, "estimatedCostUnits": 1, "gatePassed": true, "routingSignal": "有边界的改写"},
+    {"id": "ambiguous-01", "riskClass": "ambiguous", "chosenModel": "balanced", "humanReview": false, "estimatedCostUnits": 2, "gatePassed": true, "routingSignal": "存在两种合理解释"},
+    {"id": "ambiguous-02", "riskClass": "ambiguous", "chosenModel": "balanced", "humanReview": false, "estimatedCostUnits": 2, "gatePassed": true, "routingSignal": "包含例外条款"},
+    {"id": "ambiguous-03", "riskClass": "ambiguous", "chosenModel": "balanced", "humanReview": false, "estimatedCostUnits": 2, "gatePassed": true, "routingSignal": "多来源综合"},
+    {"id": "conflict-01", "riskClass": "conflicting-source", "chosenModel": "capable", "humanReview": false, "estimatedCostUnits": 4, "gatePassed": true, "routingSignal": "权威来源冲突"},
+    {"id": "conflict-02", "riskClass": "conflicting-source", "chosenModel": "capable", "humanReview": false, "estimatedCostUnits": 4, "gatePassed": true, "routingSignal": "日期与政策不一致"},
+    {"id": "consequential-01", "riskClass": "consequential", "chosenModel": "capable", "humanReview": true, "estimatedCostUnits": 6, "gatePassed": true, "routingSignal": "例外建议会影响客户资金"}
+  ],
+  "routingComparison": {
+    "routedCostUnits": 24,
+    "allCapableCostUnits": 40,
+    "uncertainFallback": "路由到 capable model 并交由获授权的人员审核"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "experimentId": "operations-mode-trials-v1",
+  "verifiedOn": "2026-08-09",
+  "measurementStatus": "illustrative-not-live-provider-runs",
+  "settingSemantics": "settings 包含规范化的实验标签。Standard speed 表示省略 speed 请求字段。Fast speed 要求使用该配置中记录的文档规定请求字段、beta header、平台和访问前提。",
+  "task": "根据两份带日期的来源文档解决一个模糊的退款政策例外，并返回一份经过审核的 JSON 建议",
+  "gate": {
+    "minimumRunCount": 3,
+    "minimumQuality": 0.95,
+    "maximumP95LatencyMs": 8000,
+    "maximumMeanCostUnits": 5.0
+  },
+  "verificationPolicy": {
+    "refreshBeforeExperiment": true,
+    "rule": "运行或复制任何配置前，先在当前官方文档中核验模型和平台支持情况。",
+    "sources": [
+      {
+        "id": "sampling-reference",
+        "verifiedOn": "2026-08-09",
+        "claim": "Sampling 控制因模型而异，而且即使在接受 temperature 设置的模型上将 temperature 设为零，也不是完全确定性的。",
+        "sourceUrl": "https://platform.claude.com/docs/en/api/messages/create"
+      },
+      {
+        "id": "sampling-support",
+        "verifiedOn": "2026-08-09",
+        "claim": "当前 Messages 指南指出，Claude 4.7 及更高版本会拒绝非默认的 temperature、top_p 和 top_k 值。",
+        "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages"
+      },
+      {
+        "id": "model-versioning",
+        "verifiedOn": "2026-08-09",
+        "claim": "固定的模型 ID 会固定模型权重，但服务基础设施仍可能改变可观测行为。",
+        "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions"
+      },
+      {
+        "id": "models-overview",
+        "verifiedOn": "2026-08-09",
+        "claim": "模型概览将 claude-sonnet-5 和 claude-opus-5 列为准确的 Claude API ID，并将 adaptive thinking 列为两者均支持的功能。",
+        "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/overview"
+      },
+      {
+        "id": "sonnet-5-configuration",
+        "verifiedOn": "2026-08-09",
+        "claim": "Claude Sonnet 5 使用 claude-sonnet-5，默认启用 adaptive thinking，接受 disabled thinking，并支持此处使用的 low 和 high effort 值。",
+        "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/whats-new-sonnet-5"
+      },
+      {
+        "id": "opus-5-configuration",
+        "verifiedOn": "2026-08-09",
+        "claim": "Claude Opus 5 使用 claude-opus-5，接受 adaptive thinking，并支持此处使用的 medium effort 值。",
+        "sourceUrl": "https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5"
+      },
+      {
+        "id": "thinking-configuration",
+        "verifiedOn": "2026-08-09",
+        "claim": "Claude Opus 5 和 Sonnet 5 默认启用 thinking；两者接受 adaptive，且是否可以禁用 thinking 由特定模型的规则决定。",
+        "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/thinking"
+      },
+      {
+        "id": "effort-control",
+        "verifiedOn": "2026-08-09",
+        "claim": "Claude Sonnet 5 支持 low 和 high effort，Claude Opus 5 支持 medium effort，并且 effort 是一种行为信号，而不是严格的 Token 预算。",
+        "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/effort"
+      },
+      {
+        "id": "fast-mode",
+        "verifiedOn": "2026-08-09",
+        "claim": "Fast mode 将 Claude Opus 5 而非 Claude Sonnet 5 列为受支持模型；它是 Claude API 的 research preview，需要访问权限、speed fast 设置和 fast-mode-2026-02-01 beta header，并采用溢价定价。",
+        "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/fast-mode"
+      }
+    ]
+  },
+  "configurations": [
+    {
+      "id": "sonnet-standard-low",
+      "modelId": "claude-sonnet-5",
+      "platform": "claude-api",
+      "settings": {"speed": "standard", "effort": "low", "thinking": "adaptive"},
+      "support": {
+        "status": "docs-supported",
+        "verifiedOn": "2026-08-09",
+        "sourceIds": ["models-overview", "sonnet-5-configuration", "thinking-configuration", "effort-control"]
+      },
+      "runs": [
+        {"id": "low-01", "quality": 0.94, "latencyMs": 3400, "costUnits": 1.5, "outcomeFingerprint": "approve-with-two-citations"},
+        {"id": "low-02", "quality": 0.91, "latencyMs": 3800, "costUnits": 1.5, "outcomeFingerprint": "escalate-missing-exception"},
+        {"id": "low-03", "quality": 0.96, "latencyMs": 3600, "costUnits": 1.5, "outcomeFingerprint": "approve-with-three-citations"}
+      ],
+      "summary": {"runCount": 3, "minimumQuality": 0.91, "p95LatencyMs": 3800, "meanCostUnits": 1.5, "passesGate": false}
+    },
+    {
+      "id": "sonnet-standard-high",
+      "modelId": "claude-sonnet-5",
+      "platform": "claude-api",
+      "settings": {"speed": "standard", "effort": "high", "thinking": "adaptive"},
+      "support": {
+        "status": "docs-supported",
+        "verifiedOn": "2026-08-09",
+        "sourceIds": ["models-overview", "sonnet-5-configuration", "thinking-configuration", "effort-control"]
+      },
+      "runs": [
+        {"id": "high-01", "quality": 0.98, "latencyMs": 7100, "costUnits": 3.0, "outcomeFingerprint": "escalate-with-policy-conflict"},
+        {"id": "high-02", "quality": 0.96, "latencyMs": 7600, "costUnits": 3.0, "outcomeFingerprint": "escalate-with-date-conflict"},
+        {"id": "high-03", "quality": 0.97, "latencyMs": 7300, "costUnits": 3.0, "outcomeFingerprint": "escalate-with-two-conflicts"}
+      ],
+      "summary": {"runCount": 3, "minimumQuality": 0.96, "p95LatencyMs": 7600, "meanCostUnits": 3.0, "passesGate": true}
+    },
+    {
+      "id": "sonnet-standard-high-disabled",
+      "modelId": "claude-sonnet-5",
+      "platform": "claude-api",
+      "settings": {"speed": "standard", "effort": "high", "thinking": "disabled"},
+      "support": {
+        "status": "docs-supported",
+        "verifiedOn": "2026-08-09",
+        "sourceIds": ["models-overview", "sonnet-5-configuration", "thinking-configuration", "effort-control"]
+      },
+      "runs": [
+        {"id": "disabled-01", "quality": 0.92, "latencyMs": 5000, "costUnits": 2.4, "outcomeFingerprint": "approve-without-date-conflict"},
+        {"id": "disabled-02", "quality": 0.95, "latencyMs": 5400, "costUnits": 2.4, "outcomeFingerprint": "escalate-with-policy-conflict"},
+        {"id": "disabled-03", "quality": 0.93, "latencyMs": 5200, "costUnits": 2.4, "outcomeFingerprint": "approve-with-one-conflict"}
+      ],
+      "summary": {"runCount": 3, "minimumQuality": 0.92, "p95LatencyMs": 5400, "meanCostUnits": 2.4, "passesGate": false}
+    },
+    {
+      "id": "opus-standard-medium",
+      "modelId": "claude-opus-5",
+      "platform": "claude-api",
+      "settings": {"speed": "standard", "effort": "medium", "thinking": "adaptive"},
+      "support": {
+        "status": "docs-supported",
+        "verifiedOn": "2026-08-09",
+        "sourceIds": ["models-overview", "opus-5-configuration", "thinking-configuration", "effort-control"]
+      },
+      "runs": [
+        {"id": "opus-standard-01", "quality": 0.98, "latencyMs": 7200, "costUnits": 4.5, "outcomeFingerprint": "escalate-with-policy-conflict"},
+        {"id": "opus-standard-02", "quality": 0.97, "latencyMs": 7800, "costUnits": 4.5, "outcomeFingerprint": "escalate-with-date-conflict"},
+        {"id": "opus-standard-03", "quality": 0.98, "latencyMs": 7500, "costUnits": 4.5, "outcomeFingerprint": "escalate-with-two-conflicts"}
+      ],
+      "summary": {"runCount": 3, "minimumQuality": 0.97, "p95LatencyMs": 7800, "meanCostUnits": 4.5, "passesGate": true}
+    },
+    {
+      "id": "opus-fast-medium",
+      "modelId": "claude-opus-5",
+      "platform": "claude-api",
+      "settings": {"speed": "fast", "effort": "medium", "thinking": "adaptive"},
+      "support": {
+        "status": "docs-supported",
+        "verifiedOn": "2026-08-09",
+        "sourceIds": ["models-overview", "opus-5-configuration", "thinking-configuration", "effort-control", "fast-mode"]
+      },
+      "requestRequirements": {
+        "access": "需要 Anthropic fast-mode research-preview 访问权限，并且不保证有可用容量。",
+        "requestField": "speed: fast",
+        "betaHeaders": ["anthropic-beta: fast-mode-2026-02-01"]
+      },
+      "runs": [
+        {"id": "fast-01", "quality": 0.98, "latencyMs": 3900, "costUnits": 8.0, "outcomeFingerprint": "escalate-with-policy-conflict"},
+        {"id": "fast-02", "quality": 0.97, "latencyMs": 4200, "costUnits": 8.0, "outcomeFingerprint": "escalate-with-date-conflict"},
+        {"id": "fast-03", "quality": 0.98, "latencyMs": 4100, "costUnits": 8.0, "outcomeFingerprint": "escalate-with-two-conflicts"}
+      ],
+      "summary": {"runCount": 3, "minimumQuality": 0.97, "p95LatencyMs": 4200, "meanCostUnits": 8.0, "passesGate": false}
+    },
+    {
+      "id": "sonnet-fast-high",
+      "modelId": "claude-sonnet-5",
+      "platform": "claude-api",
+      "settings": {"speed": "fast", "effort": "high", "thinking": "adaptive"},
+      "support": {
+        "status": "docs-unsupported",
+        "verifiedOn": "2026-08-09",
+        "sourceIds": ["models-overview", "fast-mode"]
+      },
+      "runs": [],
+      "rejectionReason": "当前 fast-mode 文档没有将此模型列为受支持模型；在当前文档说明支持之前，不要发送试验请求。"
+    }
+  ],
+  "selectedConfiguration": "sonnet-standard-high",
+  "decision": {
+    "why": "在这些说明性测量结果中，它是通过重复运行质量和 p95 延迟门槛且成本最低的 docs-supported 配置；文档支持并不能证明账户权限或实时请求可以成功。",
+    "repeatPolicy": "在每个风险切片上，将每个受支持的配置至少运行三次，并比较最低质量、尾部延迟和可接受结果的平均成本。",
+    "changePolicy": "当模型 ID、平台、speed、effort、thinking 行为、Prompt、工具或服务假设发生变化时，重新执行文档核验和完整的重复评估。",
+    "rejected": [
+      "Low effort 在一次重复运行中未通过最低质量门槛。",
+      "在 high effort 下禁用 thinking 降低了成本和延迟，但未通过最低质量门槛。",
+      "Standard-speed Opus 通过了门槛，但成本高于选定的 Sonnet 配置。",
+      "Fast Opus 满足质量和延迟要求，但超过了成本门槛。",
+      "不受支持的组合会被记录为已拒绝的证据，而不会被尝试或静默降级。"
+    ]
+  }
+}
