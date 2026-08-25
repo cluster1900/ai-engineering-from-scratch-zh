@@ -16,7 +16,7 @@
       <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
     </marker>
   </defs>
-  <text x="480" y="24" text-anchor="middle" class="title">cache 感知多区域路由 — TTFT vs 网络 RTT</text>
+  <text x="480" y="24" text-anchor="middle" class="title">cache 感知多区域路由 — TTFT 与网络 RTT</text>
 
   <rect x="40" y="50" width="180" height="70" class="req"/>
   <text x="130" y="75" text-anchor="middle" class="head">传入请求</text>
@@ -37,7 +37,7 @@
   <text x="830" y="95" text-anchor="middle" class="step">副本 R3（us-east）</text>
   <text x="830" y="112" text-anchor="middle" class="small">hit=true，本地</text>
   <text x="830" y="128" text-anchor="middle" class="step">TTFT ≈ 80 ms</text>
-  <text x="830" y="146" text-anchor="middle" class="small">vs 冷态 ~800 ms</text>
+  <text x="830" y="146" text-anchor="middle" class="small">对比冷态 ~800 ms</text>
 
   <rect x="40" y="190" width="280" height="130" class="region"/>
   <text x="180" y="212" text-anchor="middle" class="head">us-east-1（源）</text>

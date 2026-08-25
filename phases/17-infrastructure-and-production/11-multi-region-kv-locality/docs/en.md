@@ -84,6 +84,10 @@ EU customer PHI 不能离开 EU。如果你的 cache-aware router 为了 prefix 
 - DR failure：32% 缺失 Tokenizer/quant configs。
 - JPMorgan us-east-1 failover 2024 年 11 月：22 分钟（30-min SLA）。
 
+```figure
+cache-aware-router
+```
+
 ## 使用它
 `code/main.py` 在 multi-region workload 上模拟三种 routing strategies（round-robin、cache-aware regional、cache-aware global）。报告 cache hit rate、TTFT P50/P99 和 cross-region bill。
 
