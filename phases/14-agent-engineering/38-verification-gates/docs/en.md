@@ -1,28 +1,31 @@
-# Verification Gates
+# 验证门
 
-> agent 不能把自己的工作标记为完成。verification gate 会读取 scope contract、feedback log、rule report 和 diff，并回答一个问题：这个任务真的完成了吗？如果 gate 说没有，那么无论聊天里怎么说，任务都没有完成。
+> Agent 无权将自己的工作标记为完成。验证门会读取范围契约、反馈日志、规则报告和 diff，然后回答一个问题：这项任务真的完成了吗？如果验证门给出的答案是否定的，那么无论聊天记录怎么说，任务都没有完成。
 
 **Type:** Build
 **Languages:** Python (stdlib)
-**Prerequisites:** Phase 14 · 33 (Rules), Phase 14 · 36 (Scope), Phase 14 · 37 (Feedback)
+**Prerequisites:** Phase 14 · 33（规则）、Phase 14 · 36（范围）、Phase 14 · 37（反馈）
 **Time:** ~55 分钟
 
 ## 学习目标
-- 将 verification gate 定义为作用于 workbench artifacts 的确定性函数。
-- 将 rule report、scope report、feedback records 和 diff 合并成一个 verdict。
-- 输出 reviewer agent 和 CI 都能读取的 `verification_report.json`。
-- 只要存在任何 block-severity failure，就无例外拒绝推进任务。
+
+- 将验证门定义为作用于工作台产物的确定性函数。
+- 将规则报告、范围报告、反馈记录和 diff 合并为单一结论。
+- 生成一份审查 Agent 和 CI 都能读取的 `verification_report.json`。
+- 只要出现任何 `block` 级失败，就拒绝推进任务，不设例外。
 
 ## 问题
-Agents 太容易宣称成功。三种失败形态最常见：
 
-- “看起来不错。”model 读取了自己的 diff，然后认定它是正确的。
-- “测试通过了。”说得很自信。但没有测试实际运行的记录。
-- “满足 acceptance。”acceptance criteria 被解释得足够宽松，以至于“任何像是完成的东西”都算完成。
+Agent 太容易宣告成功。最常见的是以下三种失败形式：
 
-workbench 的修复方式是一个 verification gate，它读取 agent 已经生成的 artifacts 并作出判断。gate 是确定性的。gate 受 version control 管理。gate 接入 CI。agent 无法贿赂它。
+- “看起来不错。”Model 阅读自己的 diff 后，判定它是正确的。
+- “测试已通过。”说得信心十足，却没有任何实际运行测试的记录。
+- “已满足验收条件。”对验收标准的解释宽松到“只要看起来像完成了”即可。
+
+工作台的解决方案是设置一个统一的验证门，由它读取 Agent 已经生成的产物并作出判定。验证门是确定性的。验证门受版本控制。验证门接入 CI。Agent 无法贿赂它。
 
 ## 概念
+
 ```mermaid
 flowchart TD
   Diff[Diff] --> Gate[verify_agent.py]
@@ -32,103 +35,113 @@ flowchart TD
   Gate --> Verdict[verification_report.json]
   Verdict --> Pass{passed?}
   Pass -- yes --> Review[Reviewer Agent]
-  Pass -- no --> Refuse[refuse done + surface to human]
+  Pass -- no --> Refuse[拒绝完成并向人类呈现问题]
 ```
 
-### gate 检查什么
+### 验证门检查什么
 
-| Check | Source artifact | Severity |
+| 检查 | 来源产物 | 严重级别 |
 |-------|-----------------|----------|
-| 所有 acceptance commands 都已运行 | `feedback_record.jsonl` | block |
-| 所有 acceptance commands 都以零退出码结束 | `feedback_record.jsonl` | block |
-| Scope check 没有 forbidden writes | `scope_report.json` | block |
-| Scope check 没有 off-scope writes | `scope_report.json` | block or warn |
-| 所有 block-severity rules 都通过 | `rule_report.json` | block |
-| feedback 中没有 `null` exit codes | `feedback_record.jsonl` | block |
-| Touched files 匹配 `scope.allowed_files` | both | warn |
+| 所有验收命令都已运行 | `feedback_record.jsonl` | `block` |
+| 所有验收命令都以零状态码退出 | `feedback_record.jsonl` | `block` |
+| 范围检查中没有禁止写入 | `scope_report.json` | `block` |
+| 范围检查中没有范围外写入 | `scope_report.json` | `block` 或 `warn` |
+| 所有 `block` 级规则都通过 | `rule_report.json` | `block` |
+| 反馈中没有 `null` 退出码 | `feedback_record.jsonl` | `block` |
+| 涉及的文件与 `scope.allowed_files` 匹配 | 两者 | `warn` |
 
-`warn` finding 会给 verdict 添加注释；`block` finding 会阻止 `passed: true`。
+`warn` 发现会为结论添加注释；`block` 发现会阻止 `passed: true`。
 
-### 确定性，而不是概率性
+### 确定性，而非概率性
 
-对于相同的 artifact set，gate 每次都必须生成相同 verdict。不要 LLM judges。LLM judges 属于 reviewer 侧（Phase 14 · 39），那里的目标是定性评估，而不是状态判断。
+对于同一组产物，验证门每次都必须生成相同的结论。不要使用 LLM judge。LLM judge 应放在审查者侧（Phase 14 · 39），因为那里的目标是定性评估，而不是确定状态。
 
-### 一个 report，一个 path
+### 一份报告，一个路径
 
-每次 task close-out，gate 都会输出一个 `verification_report.json`，写入 `outputs/verification/<task_id>.json`。CI 消费同一个 path。使用不同 paths 的多个 gates 会分叉 truth source。
+验证门会为每次任务收尾生成一份 `verification_report.json`，写入 `outputs/verification/<task_id>.json`。CI 使用同一路径。使用不同路径的多个验证门会导致事实来源分裂。
 
-### 无例外拒绝
+### 无条件拒绝
 
-Block-severity findings 不能由 agent override。它们只能由 human override，并且必须记录 `override_reason` 和 `overridden_by` user id。override 是一次签名变更，不是 agent 决策。
+Agent 无权覆盖 `block` 级发现。只有人类能够覆盖，而且必须记录 `override_reason` 和 `overridden_by` 用户 ID。覆盖是一项经过签名的变更，而不是 Agent 的决定。
 
-## 构建它
+```figure
+wb-gate-sequence
+```
+
+## 动手构建
+
 `code/main.py` 实现：
 
-- 每个输入 artifact 的 loader，全部在本地 stub，使本课自包含。
-- 一个 `verify(task_id, artifacts) -> VerdictReport` pure function。
-- 一个 printer，展示每项 check 的结果和最终 pass/fail。
-- 三个 task scenarios 的 demo：clean pass、scope creep、missing acceptance。
+- 每种输入产物的加载器。所有产物均在本地提供 stub，使本课能够独立运行。
+- 一个纯函数 `verify(task_id, artifacts) -> VerdictReport`。
+- 一个用于展示各项检查结果及最终通过/失败状态的打印器。
+- 三种任务场景的演示：完全通过、范围蔓延、缺少验收。
 
-运行它：
+运行：
 
-```
+```bash
 python3 code/main.py
 ```
 
-输出：三个 verdict reports，每个都保存到脚本旁边。
+输出：三份结论报告，每份都保存在脚本旁边。
 
-## 真实场景中的生产模式
+## 生产环境中的实践模式
 
-四种 patterns 会把 gate 从“另一个 lint job”提升为“deciding edge”。
+有四种模式可以将验证门从“另一个 lint job”提升为“最终决定环节”。
 
-**Defense-in-depth，而不是 single gate。** Pre-commit hook → CI status check → pre-tool authz hook → pre-merge gate。每一层都是确定性的，因此一层中的 failure 会被下一层捕获。microservices.io 的 2026 年 3 月 playbook 明确指出：pre-commit hook 是不可绕过的，因为与 model-side skill 不同，它不依赖 agent 遵循指令。verification gate 位于 CI / pre-merge 层。
+**纵深防御，而不是单一验证门。** Pre-commit hook → CI 状态检查 → Tool 调用前的 authz hook → merge 前验证门。每一层都是确定性的，因此某一层漏掉的失败会被下一层捕获。microservices.io 在 2026 年 3 月的实践手册中明确指出：pre-commit hook 不可绕过，因为与 Model 侧 Skill 不同，它不依赖 Agent 遵循指令。验证门位于 CI / merge 前这一层。
 
-**通过确定性 check 做 defense，model-judge 只处理细微差别。** Anthropic 的 2026 Hybrid Norm pairing：可验证 rewards（unit tests、schema checks、exit codes）回答“code 是否解决了问题？”——LLM rubrics 回答“code 是否可读、安全、符合风格？”gate 运行第一类；reviewer（Phase 14 · 39）运行第二类。混用它们会让信号坍塌。
+**用确定性检查进行防御，只让 Model judge 处理细微判断。** Anthropic 在 2026 年提出的 Hybrid Norm 组合方式是：可验证奖励（单元测试、schema 检查、退出码）回答“代码是否解决了问题？”；LLM rubric 回答“代码是否可读、安全并符合风格？”验证门运行第一类检查；审查者（Phase 14 · 39）运行第二类检查。将二者混合会破坏信号。
 
-**签名 override log，而不是 Slack threads。** 每次 override 都会在 `outputs/verification/overrides.jsonl` 中输出一行，包含：timestamp、finding code、reason、signing user、current HEAD commit。runtime 会拒绝任何缺少 signature 的 override；audit trail 由 git 跟踪。这是 override policy 与 override theater 之间的界线。
+**使用签名覆盖日志，而不是 Slack thread。** 每次覆盖都在 `outputs/verification/overrides.jsonl` 中生成一行记录，其中包含：时间戳、发现代码、原因、签名用户、当前 HEAD commit。运行时会拒绝任何缺少签名的覆盖；审计轨迹由 git 跟踪。这正是覆盖策略与覆盖表演之间的分界线。
 
-**将 coverage floor 作为一等 check。** `coverage_report.json` 会输入一个 `coverage_floor`（默认 80%）check。如果测得的 coverage 低于 floor，或比上一次 merge 的 floor 低超过 1 个百分点，gate 就会 fail。没有这个 check，agents 会悄悄删除失败的 tests，而 verification reports 仍然保持绿色。
+**将覆盖率下限作为一等检查。** `coverage_report.json` 会为 `coverage_floor` 检查提供输入，其默认值为 80%。如果测得的覆盖率低于该下限，或比上一次 merge 的下限下降超过 1 个百分点，验证门就会失败。没有这项检查时，Agent 会悄悄删除失败的测试，而验证报告仍会保持绿色。
 
-**`--strict` mode 会将 warns 提升为 blocks。** 对于 release branches、ship-blocking PRs 或 post-incident triage，`--strict` 会让每个 warning 都变成 hard fail。该 flag 按 branch opt-in；不是全局默认，因为 strict-on-everything 会腐蚀日常 flow。
+**`--strict` 模式将 `warn` 提升为 `block`。** 对于发布分支、阻塞发布的 PR 或事故后的分类处理，`--strict` 会把每个警告都转化为硬失败。该标志按分支选择启用，不作为全局默认值，因为对所有工作都启用 strict 模式会侵蚀日常工作流。
 
-## 使用它
-Production patterns：
+## 投入使用
 
-- **CI step。** `verify_agent` job 会针对 agent 的最终 artifacts 运行 gate。没有 `passed: true`，merge protection 会拒绝。
-- **Pre-handoff hook。** agent runtime 在生成 handoff doc 前调用 gate。没有绿色 verdict，就没有 handoff。
-- **Manual triage。** 当 agent 声称成功而 human 怀疑时，operators 会读取 report。
+生产环境模式：
 
-gate 是 workbench flow 中的 deciding edge。其他所有 surface 都位于它的上游。
+- **CI 步骤。** `verify_agent` job 针对 Agent 的最终产物运行验证门。如果没有 `passed: true`，merge protection 就会拒绝合并。
+- **交接前 hook。** Agent 运行时会在生成交接文档前调用验证门。没有绿色结论，就不允许交接。
+- **人工分类处理。** 当 Agent 声称成功但人类有所怀疑时，操作人员会读取报告。
 
-## 交付它
-`outputs/skill-verification-gate.md` 将 gate 接入一个具体项目：哪些 acceptance commands 会输入它，哪些 rules 是 block-severity，哪些 off-scope writes 被容忍，override audit log 如何存储。
+验证门是工作台流程中的最终决定环节。其他所有界面都位于它的上游。
+
+## 交付成果
+
+`outputs/skill-verification-gate.md` 会将验证门接入具体项目：哪些验收命令向其提供输入、哪些规则属于 `block` 级、哪些范围外写入可以容忍，以及如何存储覆盖审计日志。
 
 ## 练习
-1. 添加一个 `coverage_floor` check：test command 必须生成 coverage report，且至少达到 80%。决定哪个 artifact 携带 floor。
-2. 支持 `--strict` mode，将每个 `warn` 提升为 `block`。记录 strict mode 适合作为默认值的场景。
-3. 让 gate 除了 JSON 之外还生成 Markdown summary。论证哪些 fields 应属于 summary。
-4. 添加一个 `time_since_last_human_touch` check：human keystroke 后 60 秒内编辑过的任何文件，都免于 off-scope flags。
-5. 在你的产品中的真实 agent diff 上运行 gate。多少 findings 是真实的，多少是 noise？gate 需要在哪里成长？
+
+1. 添加一项 `coverage_floor` 检查：测试命令必须生成覆盖率至少为 80% 的报告。确定由哪个产物携带这个下限。
+2. 支持一种 `--strict` 模式，将每个 `warn` 提升为 `block`。记录在哪些情况下 strict 模式适合作为默认设置。
+3. 除 JSON 外，让验证门再生成一份 Markdown 摘要。说明哪些字段应出现在摘要中。
+4. 添加一项 `time_since_last_human_touch` 检查：在人类按键后的 60 秒内编辑的任何文件，都不受范围外标记影响。
+5. 针对你产品中的一个真实 Agent diff 运行验证门。其中有多少发现是真实问题，又有多少是噪声？验证门还需要在哪些方面扩展？
 
 ## 关键术语
-| Term | What people say | What it actually means |
+
+| 术语 | 人们通常怎么说 | 它的实际含义 |
 |------|----------------|------------------------|
-| Verification gate | “阻止事情的 check” | 作用于 workbench artifacts 的确定性函数，生成 pass/fail verdict |
-| Block severity | “Hard fail” | 会阻止 `passed: true` 并要求签名 override 的 finding |
-| Override log | “我们为什么放行它” | 带有 reason 和 user id 的签名条目，由 review 审计 |
-| Acceptance command | “证明” | 一个 shell command，其零退出码就是 `done` 的含义 |
-| One report path | “Source of truth” | `outputs/verification/<task_id>.json`，由 CI 和 humans 共同消费 |
+| 验证门 | “阻止事情继续的检查” | 作用于工作台产物、生成通过/失败结论的确定性函数 |
+| `block` 严重级别 | “硬失败” | 阻止 `passed: true` 并要求签名覆盖的发现 |
+| 覆盖日志 | “我们为什么允许它通过” | 包含原因和用户 ID、由审查流程审计的签名记录 |
+| 验收命令 | “证据” | 其零退出状态正是 `done` 含义的 shell 命令 |
+| 单一报告路径 | “事实来源” | `outputs/verification/<task_id>.json`，由 CI 和人类共同使用 |
 
 ## 延伸阅读
-- [Anthropic, Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
-- [OpenAI Agents SDK guardrails](https://platform.openai.com/docs/guides/agents-sdk/guardrails)
-- [microservices.io, GenAI dev platform: guardrails](https://microservices.io/post/architecture/2026/03/09/genai-development-platform-part-1-development-guardrails.html) — pre-commit 与 CI 之间的 defense in depth
-- [ICMD, The 2026 Playbook for Agentic AI Ops](https://icmd.app/article/the-2026-playbook-for-agentic-ai-ops-guardrails-costs-and-reliability-at-scale-1776661990431) — approval-gate 阶梯（draft → approval → auto under thresholds）
-- [Type-Checked Compliance: Deterministic Guardrails (arXiv 2604.01483)](https://arxiv.org/pdf/2604.01483) — Lean 4 作为 deterministic gating 的上界
-- [logi-cmd/agent-guardrails — merge gate 规范](https://github.com/logi-cmd/agent-guardrails) — scope + mutation-testing gates
-- [Guardrails AI x MLflow](https://guardrailsai.com/blog/guardrails-mlflow) — deterministic validators 作为 CI 评分器
-- [Akira, Real-Time Guardrails for Agentic Systems](https://www.akira.ai/blog/real-time-guardrails-agentic-systems) — tool 调用前/后的 gates
-- Phase 14 · 27 — prompt injection defenses（gate 的 adversarial pair）
-- Phase 14 · 36 — 此 gate enforce 的 scope contract
-- Phase 14 · 37 — 此 gate score 的 feedback log
-- Phase 14 · 39 — gate hand off 到的 reviewer agent
+
+- [Anthropic：面向长期应用开发的 Harness 设计](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+- [OpenAI Agents SDK guardrails](https://openai.github.io/openai-agents-python/guardrails/)
+- [microservices.io，GenAI 开发平台：guardrails](https://microservices.io/post/architecture/2026/03/09/genai-development-platform-part-1-development-guardrails.html) — pre-commit 与 CI 之间的纵深防御
+- [ICMD，2026 年 Agentic AI Ops 实践手册](https://icmd.app/article/the-2026-playbook-for-agentic-ai-ops-guardrails-costs-and-reliability-at-scale-1776661990431) — 审批门阶梯（草稿 → 审批 → 阈值内自动执行）
+- [类型检查合规性：确定性 Guardrails（arXiv 2604.01483）](https://arxiv.org/pdf/2604.01483) — 使用 Lean 4 展示确定性验证门的能力上限
+- [logi-cmd/agent-guardrails — merge gate 规范](https://github.com/logi-cmd/agent-guardrails) — 范围 + 变异测试验证门
+- [Guardrails AI x MLflow](https://guardrailsai.com/blog/guardrails-mlflow) — 将确定性验证器用作 CI 评分器
+- [Akira：Agentic 系统的实时 Guardrails](https://www.akira.ai/blog/real-time-guardrails-agentic-systems) — Tool 调用前后的验证门
+- Phase 14 · 27 — Prompt injection 防御（验证门的对抗性搭档）
+- Phase 14 · 36 — 此验证门执行的范围契约
+- Phase 14 · 37 — 此验证门评分的反馈日志
+- Phase 14 · 39 — 验证门交接给的审查 Agent
