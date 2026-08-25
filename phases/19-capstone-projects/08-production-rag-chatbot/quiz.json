@@ -6,9 +6,9 @@
       "stage": "pre",
       "question": "为什么 prompt caching 在受监管领域 RAG chatbot 中如此重要？",
       "options": [
-        "它消除了对 Vector database 的需求",
-        "在 60-80% hit rate 下，它通过对稳定前缀 tokens 打折，将每次查询成本降低 3-5 倍",
         "它消除了幻觉",
+        "在 60-80% hit rate 下，它通过对稳定前缀 tokens 打折，将每次查询成本降低 3-5 倍",
+        "它消除了对 Vector database 的需求",
         "它提升 rerank 阶段的 recall"
       ],
       "correct": 1,
@@ -30,9 +30,9 @@
       "stage": "check",
       "question": "retrieval layer 如何遵守 GDPR 或 HIPAA 这样的 jurisdiction tags？",
       "options": [
-        "它为每个国家运行一个单独的 index",
-        "它只在 generation 之后阻止响应",
         "它按区域重写 user question",
+        "它只在 generation 之后阻止响应",
+        "它为每个国家运行一个单独的 index",
         "Role 和 jurisdiction filters 在 hybrid search merge 之前应用，因此用户范围之外的 chunks 永远不会被 reranked"
       ],
       "correct": 3,
@@ -42,12 +42,12 @@
       "stage": "check",
       "question": "synthesis 阶段会让输出经过哪种分层 guardrail 组合？",
       "options": [
+        "仅一个输出 PII regex",
         "只在输入上使用 Llama Guard 4",
         "Llama Guard 4、NeMo Guardrails policy rails 和 Presidio PII scrub，再加上 citation enforcement",
-        "仅一个输出 PII regex",
         "单个 LLM-judge faithfulness check"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -66,22 +66,22 @@
       "stage": "post",
       "question": "用于约束交付物 correctness rubric 的 golden set 有多大？",
       "options": [
-        "5 个 demo queries",
         "200 个带有 citations 的专家标注 question/answer pairs",
-        "20 个问题",
-        "2000 个 synthetic questions"
+        "5 个 demo queries",
+        "2000 个 synthetic questions",
+        "20 个问题"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "每轮在线跟踪哪些 RAGAS scores？",
       "options": [
-        "Throughput、GPU utilization 和 queue depth",
         "BLEU、ROUGE 和 METEOR",
+        "Token count 和 dollar cost",
         "Faithfulness、answer relevance 和 context precision",
-        "Token count 和 dollar cost"
+        "Throughput、GPU utilization 和 queue depth"
       ],
       "correct": 2,
       "explanation": ""

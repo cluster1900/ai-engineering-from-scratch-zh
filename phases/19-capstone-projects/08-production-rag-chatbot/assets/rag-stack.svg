@@ -14,7 +14,7 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">监管领域 RAG — ingestion、guard、cache、observe</text>
+  <text x="480" y="24" text-anchor="middle" class="title">监管领域 RAG — 摄取、防护、缓存、观测</text>
 
   <rect x="40" y="50" width="280" height="460" class="box"/>
   <text x="180" y="72" text-anchor="middle" class="head">ingestion</text>
@@ -29,64 +29,64 @@
 
   <rect x="60" y="260" width="240" height="60" class="cold"/>
   <text x="180" y="280" text-anchor="middle" class="step">pgvector + pgvectorscale</text>
-  <text x="180" y="298" text-anchor="middle" class="small">Tantivy BM25 side-index</text>
-  <text x="180" y="314" text-anchor="middle" class="small">payload: role, jurisdiction</text>
+  <text x="180" y="298" text-anchor="middle" class="small">Tantivy BM25 侧索引</text>
+  <text x="180" y="314" text-anchor="middle" class="small">载荷：role, jurisdiction</text>
 
   <rect x="60" y="336" width="240" height="160" class="box"/>
   <text x="180" y="358" text-anchor="middle" class="head">eval</text>
-  <text x="180" y="378" text-anchor="middle" class="small">200-Q golden set</text>
-  <text x="180" y="394" text-anchor="middle" class="small">RAGAS faithfulness</text>
+  <text x="180" y="378" text-anchor="middle" class="small">200-Q 黄金集</text>
+  <text x="180" y="394" text-anchor="middle" class="small">RAGAS 忠实度</text>
   <text x="180" y="410" text-anchor="middle" class="small">引用正确性</text>
-  <text x="180" y="428" text-anchor="middle" class="small">Phoenix 每周 drift</text>
-  <text x="180" y="444" text-anchor="middle" class="small">red-team suite</text>
-  <text x="180" y="460" text-anchor="middle" class="small">(PAIR + PII + off-domain)</text>
-  <text x="180" y="484" text-anchor="middle" class="caption">alert: nDCG 下降 &gt; 5%</text>
+  <text x="180" y="428" text-anchor="middle" class="small">Phoenix 每周漂移</text>
+  <text x="180" y="444" text-anchor="middle" class="small">红队套件</text>
+  <text x="180" y="460" text-anchor="middle" class="small">（PAIR + PII + 域外）</text>
+  <text x="180" y="484" text-anchor="middle" class="caption">告警：nDCG 下降 &gt; 5%</text>
 
   <rect x="340" y="50" width="300" height="460" class="box"/>
-  <text x="490" y="72" text-anchor="middle" class="head">conversation (LangGraph)</text>
+  <text x="490" y="72" text-anchor="middle" class="head">对话（LangGraph）</text>
   <rect x="360" y="90" width="260" height="36" class="cool"/>
   <text x="490" y="112" text-anchor="middle" class="step">过滤 role + jurisdiction</text>
   <rect x="360" y="134" width="260" height="36" class="cool"/>
-  <text x="490" y="156" text-anchor="middle" class="step">hybrid retrieve + RRF</text>
+  <text x="490" y="156" text-anchor="middle" class="step">混合检索 + RRF</text>
   <rect x="360" y="178" width="260" height="36" class="cool"/>
-  <text x="490" y="200" text-anchor="middle" class="step">rerank bge-v2-gemma-2b</text>
+  <text x="490" y="200" text-anchor="middle" class="step">重排序 bge-v2-gemma-2b</text>
   <rect x="360" y="222" width="260" height="36" class="dsk"/>
-  <text x="490" y="244" text-anchor="middle" class="step">组装 cache-stable prompt</text>
+  <text x="490" y="244" text-anchor="middle" class="step">组装缓存稳定的 Prompt</text>
   <rect x="360" y="266" width="260" height="36" class="dsk"/>
-  <text x="490" y="288" text-anchor="middle" class="step">Claude Sonnet 4.7 synth</text>
+  <text x="490" y="288" text-anchor="middle" class="step">Claude Sonnet 4.7 生成</text>
   <rect x="360" y="310" width="260" height="36" class="hot"/>
-  <text x="490" y="332" text-anchor="middle" class="step">Llama Guard 4 output</text>
+  <text x="490" y="332" text-anchor="middle" class="step">Llama Guard 4 输出</text>
   <rect x="360" y="354" width="260" height="36" class="hot"/>
-  <text x="490" y="376" text-anchor="middle" class="step">Presidio PII scrub</text>
+  <text x="490" y="376" text-anchor="middle" class="step">Presidio PII 清洗</text>
   <rect x="360" y="398" width="260" height="36" class="cool"/>
   <text x="490" y="420" text-anchor="middle" class="step">引用强制</text>
-  <text x="490" y="460" text-anchor="middle" class="small">prompt-caching 目标：60-80%</text>
-  <text x="490" y="478" text-anchor="middle" class="small">cache key = system+policy+context</text>
-  <text x="490" y="496" text-anchor="middle" class="caption">Claude 4.5+ prompt-cache API</text>
+  <text x="490" y="460" text-anchor="middle" class="small">Prompt 缓存目标：60-80%</text>
+  <text x="490" y="478" text-anchor="middle" class="small">缓存键 = system+policy+context</text>
+  <text x="490" y="496" text-anchor="middle" class="caption">Claude 4.5+ Prompt 缓存 API</text>
 
   <rect x="660" y="50" width="260" height="460" class="box"/>
-  <text x="790" y="72" text-anchor="middle" class="head">guardrails + observe</text>
+  <text x="790" y="72" text-anchor="middle" class="head">防护栏 + 观测</text>
   <rect x="680" y="90" width="220" height="40" class="hot"/>
-  <text x="790" y="108" text-anchor="middle" class="step">Llama Guard 4 input</text>
-  <text x="790" y="124" text-anchor="middle" class="small">jailbreak + PII probes</text>
+  <text x="790" y="108" text-anchor="middle" class="step">Llama Guard 4 输入</text>
+  <text x="790" y="124" text-anchor="middle" class="small">越狱 + PII 探针</text>
   <rect x="680" y="138" width="220" height="40" class="hot"/>
   <text x="790" y="156" text-anchor="middle" class="step">NeMo Guardrails v0.12</text>
-  <text x="790" y="172" text-anchor="middle" class="small">off-domain rails</text>
+  <text x="790" y="172" text-anchor="middle" class="small">域外防护栏</text>
   <rect x="680" y="186" width="220" height="40" class="dsk"/>
-  <text x="790" y="204" text-anchor="middle" class="step">Langfuse self-hosted</text>
+  <text x="790" y="204" text-anchor="middle" class="step">Langfuse 自托管</text>
   <text x="790" y="220" text-anchor="middle" class="small">标注队列</text>
   <rect x="680" y="234" width="220" height="40" class="cold"/>
-  <text x="790" y="252" text-anchor="middle" class="step">Arize Phoenix drift</text>
+  <text x="790" y="252" text-anchor="middle" class="step">Arize Phoenix 漂移</text>
   <text x="790" y="268" text-anchor="middle" class="small">每周检索质量</text>
 
   <rect x="680" y="286" width="220" height="220" class="box"/>
   <text x="790" y="308" text-anchor="middle" class="head">成本报告</text>
-  <text x="790" y="330" text-anchor="middle" class="small">prompt-cache 命中率</text>
-  <text x="790" y="346" text-anchor="middle" class="small">tokens / query breakdown</text>
-  <text x="790" y="362" text-anchor="middle" class="small">$ / query by stage</text>
-  <text x="790" y="380" text-anchor="middle" class="small">rerank / synth / guard</text>
+  <text x="790" y="330" text-anchor="middle" class="small">Prompt 缓存命中率</text>
+  <text x="790" y="346" text-anchor="middle" class="small">Token / 查询明细</text>
+  <text x="790" y="362" text-anchor="middle" class="small">各阶段 $ / 查询</text>
+  <text x="790" y="380" text-anchor="middle" class="small">重排序 / 生成 / 防护</text>
   <text x="790" y="404" text-anchor="middle" class="small">命中率目标：60-80%</text>
   <text x="790" y="420" text-anchor="middle" class="small">成本降低 3-5x</text>
-  <text x="790" y="442" text-anchor="middle" class="small">当 prefix 稳定时</text>
+  <text x="790" y="442" text-anchor="middle" class="small">当前缀稳定时</text>
   <text x="790" y="478" text-anchor="middle" class="caption">Harvey / Glean / Mendable 2026 形态</text>
 </svg>

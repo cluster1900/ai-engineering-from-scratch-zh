@@ -1,149 +1,158 @@
-# Capstone 08 — 面向受监管垂直领域的 Production RAG Chatbot
+# Capstone 08 — 面向受监管垂直领域的生产级 RAG Chatbot
 
-> Harvey、Glean、Mendable 和 LlamaCloud 在 2026 年都运行同一种 production 形态。使用 docling 或 Unstructured 以及面向视觉内容的 ColPali 进行 ingest。Hybrid search。用 bge-reranker-v2-gemma 重新排序。使用 Claude Sonnet 4.7 合成，并通过 prompt caching 达到 60-80% hit rate。用 Llama Guard 4 和 NeMo Guardrails 防护。用 Langfuse 和 Phoenix 观测。用 RAGAS 在 200 题 golden set 上评分。在受监管领域（legal、clinical、insurance）构建一个系统，这个 capstone 的通过标准是通过 golden set、red team 和 drift dashboard。
+> 到 2026 年，Harvey、Glean、Mendable 和 LlamaCloud 都采用相同的生产架构。使用 docling 或 Unstructured 摄取内容，并使用 ColPali 处理视觉内容。采用混合搜索。使用 bge-reranker-v2-gemma 重新排序。使用 Claude Sonnet 4.7 进行合成，并以 60-80% 的命中率使用 Prompt caching。使用 Llama Guard 4 和 NeMo Guardrails 提供防护。使用 Langfuse 和 Phoenix 进行监控。基于包含 200 个问题的 Golden set，使用 RAGAS 进行评分。在受监管领域（法律、临床、保险）构建一个系统，Capstone 的通过标准是通过 Golden set、Red team 和漂移 Dashboard。
 
 **Type:** Capstone
-**Languages:** Python (pipeline + API), TypeScript (chat UI)
-**Prerequisites:** Phase 5 (NLP), Phase 7 (transformers), Phase 11 (LLM engineering), Phase 12 (multimodal), Phase 17 (infrastructure), Phase 18 (safety)
+**Languages:** Python（pipeline + API）、TypeScript（Chat UI）
+**Prerequisites:** Phase 5（NLP）、Phase 7（Transformer）、Phase 11（LLM Engineering）、Phase 12（Multimodal）、Phase 17（基础设施）、Phase 18（安全）
 **Phases exercised:** P5 · P7 · P11 · P12 · P17 · P18
 **Time:** 30 小时
 
 ## 问题
-受监管领域的 RAG（法律合同、临床试验方案、保险保单）是 2026 年最常交付到 production 的形态，因为 ROI 明确，风险也很具体。Harvey (Allen & Overy) 为法律场景构建了它。Mendable 交付 developer-docs 版本。Glean 覆盖 enterprise search。模式是：高保真 ingest，使用 hybrid retrieval 和 rerank，强制 citation 并使用 prompt caching 进行 synthesize，多层 safety 防护，并持续监控 drift。
 
-难点不在模型。难点是 jurisdiction-aware compliance（HIPAA、GDPR、SOC2）、citation 级别的 auditability、成本控制（当 hit rate 很高时，prompt caching 可带来 60-90% 折扣）、通过 RAGAS faithfulness 进行 hallucination detection，以及当源文档更新但 index 未跟上时进行 drift detection。这个 capstone 要求你在 200 题 golden set 上交付完整系统，并配套 red-team suite。
+受监管领域的 RAG（法律合同、临床试验方案、保险政策）是 2026 年交付最多的生产架构，因为它的 ROI 显而易见，风险也十分具体。Harvey（Allen & Overy）为法律领域构建了这套系统。Mendable 提供开发者文档版本。Glean 覆盖企业搜索。其模式是：以高保真度摄取内容，通过重新排序执行混合检索，使用引文强制和 Prompt caching 进行合成，通过多层安全机制提供防护，并持续监控漂移。
+
+困难之处不在 Model，而在于能够感知司法管辖区的合规性（HIPAA、GDPR、SOC2）、引文级别的可审计性、成本控制（Prompt caching 命中率较高时可获得 60-90% 的折扣）、通过 RAGAS 忠实度检测幻觉，以及在源文档已经更新但索引未能同步时检测漂移。本 Capstone 要求你围绕包含 200 个问题的 Golden set 交付所有这些能力，并同时提供一套 Red team 测试。
 
 ## 概念
-pipeline 有两侧。**Ingestion**：docling 或 Unstructured 解析结构化文档；ColPali 处理视觉丰富的文档；chunks 会获得 summaries、tags 和 role-based access labels。Vectors 进入 pgvector + pgvectorscale（低于 50M vectors）或 Qdrant Cloud；sparse BM25 并行运行。**Conversation**：LangGraph 处理 memory 和 multi-turn；每个 query 执行 hybrid retrieval，使用 bge-reranker-v2-gemma-2b rerank，使用 Claude Sonnet 4.7（prompt-cached）synthesize，通过 Llama Guard 4 和 NeMo Guardrails 处理输出，并发出 citation-anchored response。
 
-eval stack 有四层。**Golden set**（200 个带 citations 的标注 Q/A）用于 correctness。**Red team**（jailbreaks、PII extraction attempts、off-domain questions）用于 safety。**RAGAS** 自动逐轮评估 faithfulness / answer relevance / context precision。**Drift dashboard**（Arize Phoenix）每周监控 retrieval quality 和 hallucination score。
+Pipeline 包含两个部分。**摄取**：docling 或 Unstructured 解析结构化文档；ColPali 处理视觉内容丰富的文档；分块会获得摘要、标签和基于角色的访问标签。Vector 被写入 pgvector + pgvectorscale（Vector 数量少于 5000 万）或 Qdrant Cloud；稀疏 BM25 与其并行运行。**对话**：LangGraph 处理记忆和多轮交互；每个查询都会执行混合检索、使用 bge-reranker-v2-gemma-2b 重新排序、使用 Claude Sonnet 4.7（启用 Prompt caching）进行合成、让输出通过 Llama Guard 4 和 NeMo Guardrails，并生成以引文为锚点的响应。
 
-Prompt caching 是成本杠杆。Claude 4.5+ 和 GPT-5+ 支持缓存 system prompts + retrieved context。在 60-80% hit rate 下，单次 query 成本下降 3-5x。pipeline 必须围绕稳定前缀设计（system prompt + reranked context first），以实现高 cache hit rates。
+Evaluation stack 包含四层。**Golden set**（200 组带引文标签的 Q/A）用于验证正确性。**Red team**（jailbreak、PII 提取尝试、领域外问题）用于验证安全性。**RAGAS** 在每一轮自动评估忠实度、答案相关性和 Context 精度。**漂移 Dashboard**（Arize Phoenix）每周监控检索质量和幻觉分数。
+
+Prompt caching 是控制成本的关键手段。Claude 4.5+ 和 GPT-5+ 支持缓存 system Prompt + 检索到的 Context。当命中率达到 60-80% 时，单次查询成本可降低 3-5 倍。Pipeline 必须围绕稳定前缀进行设计（system Prompt + 重新排序后的 Context 放在前面），以获得较高的缓存命中率。
 
 ## 架构
+
 ```
-documents（contracts, protocols, policies）
+文档（合同、方案、政策）
       |
       v
-docling / Unstructured parse + 用于 visuals 的 ColPali
+docling / Unstructured 解析 + ColPali 处理视觉内容
       |
       v
-chunks + summaries + role-labels + jurisdiction tags
+分块 + 摘要 + 角色标签 + 司法管辖区标签
       |
       v
 pgvector + pgvectorscale  +  BM25 (Tantivy)
       |
-query + role + jurisdiction
+查询 + 角色 + 司法管辖区
       |
       v
-LangGraph conversational agent
-   +--- retrieve (hybrid)
-   +--- 按 role + jurisdiction 过滤
-   +--- rerank (bge-reranker-v2-gemma-2b or Voyage rerank-2)
-   +--- synthesize (Claude Sonnet 4.7, prompt cached)
-   +--- guard (Llama Guard 4 + NeMo Guardrails + Presidio output PII scrub)
-   +--- cite + return
+LangGraph 对话 Agent
+   +--- 检索（混合）
+   +--- 按角色 + 司法管辖区过滤
+   +--- 重新排序（bge-reranker-v2-gemma-2b 或 Voyage rerank-2）
+   +--- 合成（Claude Sonnet 4.7，启用 Prompt caching）
+   +--- 防护（Llama Guard 4 + NeMo Guardrails + Presidio 输出 PII 清理）
+   +--- 引用 + 返回
       |
       v
-eval:
-  RAGAS faithfulness / answer_relevance / context_precision（online）
-  Langfuse annotation queue（sampled）
-  Arize Phoenix drift（weekly）
-  red team suite（pre-release）
+Evaluation：
+  RAGAS 忠实度 / answer_relevance / context_precision（在线）
+  Langfuse 标注队列（抽样）
+  Arize Phoenix 漂移（每周）
+  Red team 测试套件（发布前）
 ```
 
 ## 技术栈
-- Ingestion: 用 Unstructured.io 或 docling 处理结构化文档；用 ColPali 处理视觉丰富的 PDFs
-- Vector DB: 低于 50M vectors 时使用 pgvector + pgvectorscale；否则使用 Qdrant Cloud
-- Sparse: 带 field weights 的 Tantivy BM25
-- 编排: LlamaIndex Workflows（ingestion）+ LangGraph（conversation）
-- Re-ranker: 自托管 bge-reranker-v2-gemma-2b 或 hosted Voyage rerank-2
-- LLM: 带 prompt caching 的 Claude Sonnet 4.7；fallback 为 self-hosted Llama 3.3 70B
-- Eval: RAGAS 0.2 online，DeepEval 用于 hallucination 和 jailbreak suites
-- Observability: self-hosted Langfuse，带 annotation queue；Arize Phoenix 用于 drift
-- Guardrails: Llama Guard 4 input/output classifier，NeMo Guardrails v0.12 policy，Presidio PII scrub
-- Compliance: chunks 上的 role-based access labels；用于 GDPR/HIPAA 的 jurisdiction tags
 
+- 摄取：使用 Unstructured.io 或 docling 处理结构化文档；使用 ColPali 处理视觉内容丰富的 PDF
+- Vector DB：Vector 数量少于 5000 万时使用 pgvector + pgvectorscale；否则使用 Qdrant Cloud
+- 稀疏检索：使用带字段权重的 Tantivy BM25
+- 编排：LlamaIndex Workflows（摄取）+ LangGraph（对话）
+- Re-ranker：自托管 bge-reranker-v2-gemma-2b 或托管式 Voyage rerank-2
+- LLM：启用 Prompt caching 的 Claude Sonnet 4.7；回退方案为自托管 Llama 3.3 70B
+- Evaluation：在线使用 RAGAS 0.2，使用 DeepEval 运行幻觉和 jailbreak 测试套件
+- 可观测性：带标注队列的自托管 Langfuse；使用 Arize Phoenix 监控漂移
+- Guardrails：Llama Guard 4 输入/输出分类器、NeMo Guardrails v0.12 策略、Presidio PII 清理
+- 合规：分块上的基于角色的访问标签；用于 GDPR/HIPAA 的司法管辖区标签
 
 ```figure
 canary-rollout
 ```
 
-## 构建它
-1. **Ingestion.** 使用 Unstructured 或 docling 解析你的 corpus（严肃构建通常为 1000-10000 个文档）。对于扫描页 / 视觉密集页面，路由到 ColPali。生成带 summaries、role-labels、jurisdiction tags 的 chunks。
+## 构建
 
-2. **Index.** Dense embeddings（Voyage-3 或 Nomic-embed-v2）写入 pgvector + pgvectorscale。通过 Tantivy 建立 BM25 side-index。Role 和 jurisdiction filters 作为 payload。
+1. **摄取。** 使用 Unstructured 或 docling 解析语料库（严肃的构建应包含 1000-10000 份文档）。对于扫描页面或视觉内容较多的页面，通过 ColPali 进行路由。生成带摘要、角色标签和司法管辖区标签的分块。
 
-3. **Hybrid retrieve.** 先按 role+jurisdiction 过滤；然后并行 dense + BM25；用 reciprocal rank fusion 合并；top-20 送入 reranker；top-5 送入 synth。
+2. **建立索引。** 将 Dense Embedding（Voyage-3 或 Nomic-embed-v2）写入 pgvector + pgvectorscale。通过 Tantivy 建立 BM25 辅助索引。将角色和司法管辖区过滤条件作为 payload。
 
-4. **Synthesize with prompt caching.** System prompt + static policies 放在 cache header；reranked context 作为 cache extension；user question 作为 uncached suffix。steady state 目标是 60-80% cache hit rate。
+3. **混合检索。** 首先按角色和司法管辖区过滤；然后并行执行稠密检索和 BM25；使用 reciprocal rank fusion 合并；将前 20 个结果交给 Re-ranker；将前 5 个结果交给合成阶段。
 
-5. **Guardrails.** 输入经过 Llama Guard 4；NeMo Guardrails rails 阻止 off-domain questions 或 policy-forbidden topics；Presidio 清理输出中的意外 PII；citation enforcement post-filter。
+4. **使用 Prompt caching 进行合成。** 将 system Prompt + 静态策略放入缓存头；将重新排序后的 Context 作为缓存扩展；将用户问题作为不缓存的后缀。稳定运行时，目标缓存命中率为 60-80%。
 
-6. **Golden set.** 由领域专家标注 200 个 Q/A pairs，包含 (answer, citations)。按 exact-citation match、answer correctness、faithfulness (RAGAS) 对 agent 评分。
+5. **Guardrails。** 对输入使用 Llama Guard 4；NeMo Guardrails rails 阻止领域外问题或策略禁止的主题；Presidio 清理输出中意外出现的 PII；使用后置过滤器强制执行引文要求。
 
-7. **Red team.** 50 个 adversarial prompts：jailbreaks（PAIR、TAP）、PII exfiltration attempts、off-domain、cross-jurisdiction leaks。用 pass/fail 和 severity 评分。
+6. **Golden set。** 由领域专家标注 200 组 Q/A，每组包含（答案、引文）。基于精确引文匹配、答案正确性和忠实度（RAGAS）对 Agent 评分。
 
-8. **Drift dashboard.** Arize Phoenix 每周跟踪 retrieval quality（nDCG、citation faithfulness）。下降 5% 时告警。
+7. **Red team。** 准备 50 个对抗性 Prompt：jailbreak（PAIR、TAP）、PII 外泄尝试、领域外问题、跨司法管辖区泄漏。使用通过/失败和严重程度进行评分。
 
-9. **Cost report.** Langfuse：prompt-caching hit rate、tokens per query、按阶段拆分的 $/query。
+8. **漂移 Dashboard。** Arize Phoenix 每周跟踪检索质量（nDCG、引文忠实度）。下降 5% 时发出警报。
 
-## 使用它
+9. **成本报告。** Langfuse：Prompt caching 命中率、每次查询的 Token 数、按阶段拆分的每次查询成本。
+
+## 使用
+
 ```
 $ chat --role=analyst --jurisdiction=GDPR
 > 根据我们的合同，EU 用户资料的数据保留义务是什么？
-[retrieve]  hybrid top-20 filtered to GDPR + analyst-role
-[rerank]    top-5 kept
-[synth]     claude-sonnet-4.7, cache hit 74%, 0.8s
-answer:
-  该合同（Section 12.4, Master Services Agreement dated 2024-03-11）
-  要求在终止后 30 天内删除 EU 用户资料，以遵守 GDPR
-  Article 17。DPA amendment（DPA-v2.1, Section 5）将该期限扩展为
-  “restricted”类别数据的 14 天。
-  citations: [MSA-2024-03-11 s12.4, DPA-v2.1 s5]
+[retrieve]  混合检索前 20 个结果，已按 GDPR + analyst-role 过滤
+[rerank]    保留前 5 个结果
+[synth]     claude-sonnet-4.7，缓存命中率 74%，0.8s
+答案：
+  合同（2024-03-11 签订的 Master Services Agreement，第 12.4 节）
+  要求根据 GDPR 第 17 条，在终止后 30 天内删除 EU 用户资料。
+  DPA 修正案（DPA-v2.1，第 5 节）针对“受限”类别数据，
+  将此期限进一步缩短至 14 天。
+  引文：[MSA-2024-03-11 s12.4, DPA-v2.1 s5]
 ```
 
-## 交付它
-`outputs/skill-production-rag.md` 描述 deliverable。一个部署在受监管领域的 chatbot，带 compliance labels，通过 rubric，并用 live drift monitoring 观测。
+## 交付
 
-| Weight | Criterion | How it is measured |
+`outputs/skill-production-rag.md` 描述了交付物。这是一个部署于受监管领域、带有合规标签、通过评分标准验证，并使用实时漂移监控进行观测的 Chatbot。
+
+| 权重 | 标准 | 衡量方式 |
 |:-:|---|---|
-| 25 | RAGAS faithfulness + answer relevance | golden set（200 Q/A）上的 online scores |
-| 20 | Citation correctness | 带可验证 source anchors 的 answers 占比 |
-| 20 | Guardrail coverage | Llama Guard 4 pass rate + jailbreak suite results |
-| 20 | Cost / latency engineering | Prompt-cache hit rate、p95 latency、$/query |
-| 15 | Drift monitoring dashboard | Phoenix live dashboard，带每周 retrieval-quality trend |
+| 25 | RAGAS 忠实度 + 答案相关性 | Golden set（200 组 Q/A）上的在线分数 |
+| 20 | 引文正确性 | 包含可验证来源锚点的答案比例 |
+| 20 | Guardrail 覆盖率 | Llama Guard 4 通过率 + jailbreak 测试套件结果 |
+| 20 | 成本/延迟工程 | Prompt cache 命中率、p95 延迟、每次查询成本 |
+| 15 | 漂移监控 Dashboard | 展示每周检索质量趋势的 Phoenix 实时 Dashboard |
 | **100** | | |
 
 ## 练习
-1. 在另一个 jurisdiction 下构建第二个 corpus slice（例如在 GDPR 之外加入 HIPAA）。在 20 题 cross-jurisdiction probe 上展示 role+jurisdiction filtering 如何防止 cross-leak。
 
-2. 测量一周 production traffic 的 prompt-cache hit rate。找出哪些 queries 破坏了 cache prefix。重新组织。
+1. 在不同司法管辖区下构建第二个语料库切片（例如，在 GDPR 之外增加 HIPAA）。使用包含 20 个问题的跨司法管辖区探测集，证明角色和司法管辖区过滤能够防止跨域泄漏。
 
-3. 添加带 10k-token summary buffer 的 multi-turn memory。测量随着 conversation 增长，faithfulness 是否下降。
+2. 测量一周生产流量中的 Prompt cache 命中率。找出哪些查询会破坏缓存前缀。重新设计其结构。
 
-4. 将 Claude Sonnet 4.7 替换为 self-hosted Llama 3.3 70B。测量 $/query 和 faithfulness delta。
+3. 添加使用 10k Token 摘要缓冲区的多轮记忆。测量忠实度是否会随着对话增长而下降。
 
-5. 添加 “unsure” mode：如果 top reranked scores 低于 threshold，agent 说 “I do not have confident citations”，而不是回答。测量 false-confidence reduction。
+4. 将 Claude Sonnet 4.7 替换为自托管 Llama 3.3 70B。测量每次查询成本和忠实度差异。
+
+5. 添加“不确定”模式：如果重新排序后的最高分低于阈值，Agent 不回答问题，而是说明“我没有可信度足够高的引文”。测量错误自信的降低程度。
 
 ## 关键术语
-| Term | What people say | What it actually means |
+
+| 术语 | 人们通常怎么说 | 实际含义 |
 |------|-----------------|------------------------|
-| Prompt caching | “Cached system + context” | Claude/OpenAI 功能：cache hit 时 cached prefix tokens 可享 60-90% 折扣 |
-| RAGAS | “RAG evaluator” | 自动评分 faithfulness、answer relevance、context precision |
-| Golden set | “Labeled eval” | 200+ 个专家标注的带 citations 的 Q/A；ground truth |
-| Jurisdiction tag | “Compliance label” | 附加到 chunks 的 GDPR/HIPAA/SOC2 scope；由 retrieval filter 强制执行 |
-| Citation faithfulness | “Grounded answer rate” | 由可检索 source spans 支撑的 claims 占比 |
-| Drift | “Retrieval quality decay” | nDCG 或 citation score 的每周变化；alert threshold 5% |
-| Red team | “Adversarial eval” | Pre-release jailbreak、PII extraction、off-domain probes |
+| Prompt caching | “缓存 system + Context” | Claude/OpenAI 功能：命中时，缓存的前缀 Token 可获得 60-90% 的折扣 |
+| RAGAS | “RAG 评估器” | 自动评估忠实度、答案相关性和 Context 精度 |
+| Golden set | “带标签的 Evaluation” | 200 组以上由专家标注且带引文的 Q/A；作为 Ground truth |
+| 司法管辖区标签 | “合规标签” | 附加到分块上的 GDPR/HIPAA/SOC2 范围；由检索过滤器强制执行 |
+| 引文忠实度 | “有依据的答案比例” | 可由检索到的来源片段支持的声明比例 |
+| 漂移 | “检索质量衰减” | nDCG 或引文分数的每周变化；警报阈值为 5% |
+| Red team | “对抗性 Evaluation” | 发布前的 jailbreak、PII 提取和领域外探测 |
 
 ## 延伸阅读
-- [Harvey AI](https://www.harvey.ai) — 参考法律 production stack
-- [Glean enterprise search](https://www.glean.com) — enterprise scale 下的参考 RAG
-- [Mendable documentation](https://mendable.ai) — developer-docs RAG 参考
-- [LlamaCloud Parse + Index](https://docs.llamaindex.ai/en/stable/examples/llama_cloud/llama_parse/) — managed ingestion
-- [Anthropic prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) — 成本杠杆参考
-- [RAGAS 0.2 documentation](https://docs.ragas.io/) — 标准 RAG eval framework
-- [Arize Phoenix](https://github.com/Arize-ai/phoenix) — 参考 drift observability
-- [Llama Guard 4](https://ai.meta.com/research/publications/llama-guard-4/) — 2026 safety classifier
-- [NeMo Guardrails v0.12](https://docs.nvidia.com/nemo-guardrails/) — policy rail framework
+
+- [Harvey AI](https://www.harvey.ai) — 法律领域生产技术栈参考
+- [Glean 企业搜索](https://www.glean.com) — 企业规模 RAG 参考
+- [Mendable 文档](https://mendable.ai) — 开发者文档 RAG 参考
+- [LlamaCloud Parse + Index](https://docs.cloud.llamaindex.ai/llamaparse/getting_started) — 托管式摄取
+- [Anthropic Prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) — 成本控制手段参考
+- [RAGAS 0.2 文档](https://docs.ragas.io/) — 规范的 RAG Evaluation framework
+- [Arize Phoenix](https://github.com/Arize-ai/phoenix) — 漂移可观测性参考
+- [Llama Guard 4](https://www.llama.com/docs/model-cards-and-prompt-formats/llama-guard-4/) — 2026 年安全分类器
+- [NeMo Guardrails v0.12](https://docs.nvidia.com/nemo-guardrails/) — 策略 rail framework
