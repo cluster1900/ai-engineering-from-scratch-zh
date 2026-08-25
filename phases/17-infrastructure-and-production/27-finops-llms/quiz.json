@@ -7,8 +7,8 @@
       "question": "为什么传统 FinOps 在 LLM 支出上会失效？",
       "options": [
         "LLMs 不花钱",
-        "LLM 账单总是免费的",
         "Cloud providers 拒绝逐项列出费用",
+        "LLM 账单总是免费的",
         "成本是 Token 交易，而不是资源正常运行时间；标签不会从 API 调用自动传播，你必须在调用点标记 user/task/tenant"
       ],
       "correct": 3,
@@ -18,60 +18,60 @@
       "stage": "check",
       "question": "本课要求从第一天开始检测哪三个归因维度？",
       "options": [
-        "按用户（user_id）、按任务（task_id + route）、按租户（tenant_id）",
         "Provider、model、API version",
         "Region、AZ、datacenter",
+        "按用户（user_id）、按任务（task_id + route）、按租户（tenant_id）",
         "GPU、CPU、RAM"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "成本归因中应该拆分出哪四个 Token 层？",
       "options": [
-        "Prompt、tool、memory、response",
-        "Input、output、network、disk",
+        "GPU、CPU、RAM、storage",
         "Cache、model、gateway、observability",
-        "GPU、CPU、RAM、storage"
+        "Input、output、network、disk",
+        "Prompt、tool、memory、response"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "执行阶梯中的 kill-switch 触发条件是什么？",
       "options": [
-        "租户支出的 z-score 相对于基线 > 4；自动暂停该租户并通知 on-call",
-        "Latency P50 > 2s",
+        "一分钟内支出超过 $1",
         "任意 5xx response",
-        "一分钟内支出超过 $1"
+        "租户支出的 z-score 相对于基线 > 4；自动暂停该租户并通知 on-call",
+        "Latency P50 > 2s"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "本课推荐使用哪个单位指标来替代 $/M tokens？",
       "options": [
-        "每个 gateway 的成本",
-        "每 GPU-hour 的成本",
         "每秒成本",
-        "每个产品结果的成本（例如每个已解决 support ticket 的成本、每篇生成 article 的成本、每个成功 agent task 的成本）"
+        "每 GPU-hour 的成本",
+        "每个产品结果的成本（例如每个已解决 support ticket 的成本、每篇生成 article 的成本、每个成功 agent task 的成本）",
+        "每个 gateway 的成本"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "本课称哪种归因模式是成熟团队使用的最高准确度模式？",
       "options": [
-        "抽样和外推",
-        "基于 model 的分配",
         "仅标记并聚合",
-        "Telemetry joiner — 通过 trace IDs 将 traces 与 billing 连接"
+        "基于 model 的分配",
+        "Telemetry joiner — 通过 trace IDs 将 traces 与 billing 连接",
+        "抽样和外推"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     }
   ]

@@ -13,7 +13,7 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="24" text-anchor="middle" class="title">LLMs 的 FinOps — 三维度、四层、三级执行</text>
+  <text x="480" y="24" text-anchor="middle" class="title">LLMs 的 FinOps——三维度、四层、三级执行</text>
 
   <rect x="40" y="50" width="280" height="180" class="dim"/>
   <text x="180" y="72" text-anchor="middle" class="head">三种归因维度</text>
@@ -23,14 +23,14 @@
   <text x="180" y="152" text-anchor="middle" class="step">按任务（task_id + route）</text>
   <rect x="60" y="170" width="240" height="35" class="box"/>
   <text x="180" y="192" text-anchor="middle" class="step">按租户（tenant_id）</text>
-  <text x="180" y="222" text-anchor="middle" class="caption">day 1 即采集三者</text>
+  <text x="180" y="222" text-anchor="middle" class="caption">从第 1 天起采集三者</text>
 
   <rect x="340" y="50" width="280" height="180" class="layer"/>
   <text x="480" y="72" text-anchor="middle" class="head">四个 Token 层</text>
   <text x="360" y="96" class="step">· prompt（40-60%）</text>
-  <text x="360" y="116" class="step">· tool（20-40%，agent-heavy）</text>
-  <text x="360" y="136" class="step">· memory（10-30%，RAG）</text>
-  <text x="360" y="156" class="step">· response（10-30%）</text>
+  <text x="360" y="116" class="step">· tool（20-40%，Agent 密集）</text>
+  <text x="360" y="136" class="step">· 记忆（10-30%，RAG）</text>
+  <text x="360" y="156" class="step">· 响应（10-30%）</text>
   <text x="480" y="200" text-anchor="middle" class="caption">把四项混在一起会隐藏优化杠杆</text>
 
   <rect x="640" y="50" width="280" height="180" class="enforce"/>
@@ -39,14 +39,14 @@
   <text x="660" y="114" class="small">峰值 2-3x，429 + Retry-After</text>
   <text x="660" y="138" class="step">2. 每租户每日支出上限</text>
   <text x="660" y="156" class="small">合同 1.5-3x；收紧速率 + 提醒 CS</text>
-  <text x="660" y="180" class="step">3. z-score &gt; 4 时 kill switch</text>
+  <text x="660" y="180" class="step">3. z-score &gt; 4 时启用 kill switch</text>
   <text x="660" y="198" class="small">自动暂停 + 呼叫 on-call</text>
 
   <rect x="40" y="260" width="880" height="100" class="box"/>
-  <text x="480" y="282" text-anchor="middle" class="head">单位指标：每个产品结果成本，不是 $/M Token</text>
+  <text x="480" y="282" text-anchor="middle" class="head">单位指标：每个产品结果的成本，而非 $/M Token</text>
   <text x="60" y="308" class="step">每个已解决工单成本</text>
   <text x="60" y="326" class="step">每篇生成文章成本</text>
-  <text x="60" y="344" class="step">每个成功 agent 任务成本</text>
+  <text x="60" y="344" class="step">每个成功 Agent 任务的成本</text>
   <text x="500" y="308" class="step">每用户会话分钟成本</text>
   <text x="500" y="326" class="step">每次索引刷新成本</text>
   <text x="500" y="344" class="caption">把成本绑定到产品结果，否则优化无锚点</text>

@@ -113,6 +113,10 @@ Stack：cache + batch + route + gateway。四个都用上时：
 - 单位指标：cost per resolved query，而不是 $/M Token。
 - Stacked optimizations：有可能达到 baseline 的约 5-10%。
 
+```figure
+i4-spend-ladder
+```
+
 ## 使用它
 
 `code/main.py` 模拟一个 multi-tenant LLM service，带三层 enforcement ladder。注入一个 abusive tenant，并演示 kill switch 触发。
