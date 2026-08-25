@@ -65,6 +65,10 @@ Patch size 是关键控制杆。更小的 patches = 更多 tokens、更好的分
 
 ViT 需要大量数据才能匹配 CNNs，因为它没有 CNN 的 inductive biases（translation invariance、locality）。如果没有超过 100M 的 labeled images 或强大的 self-supervised pretraining，在相同 compute 下 CNNs 仍然更强。DeiT 在 2021 年用 distillation 技巧修复了这一点；DINOv2 在 2023 年用 self-supervision 更彻底地解决了这个问题。
 
+```figure
+n5-patch-stream
+```
+
 ## 构建它
 
 参见 `code/main.py`。纯 stdlib 的 patchify + linear embedding + sanity checks。不进行训练，因为任何现实规模的 ViT 都需要 PyTorch 和数小时的 GPU 时间。
