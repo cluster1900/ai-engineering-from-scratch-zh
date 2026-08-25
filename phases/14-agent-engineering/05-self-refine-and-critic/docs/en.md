@@ -83,6 +83,10 @@ OpenAI Agents SDK 将这一模式作为 “output guardrails” 提供。guardra
 - **过度 refine。** 每次 refine pass 都会增加 latency 和 Token。预算设置为 1-3 次 pass；之后升级到 human review。
 - **在 trivial tasks 上使用 CRITIC。** 如果没有外部 verifier，CRITIC 会退化为 Self-Refine；不要为 stub verifier 支付 latency。
 
+```figure
+self-refine
+```
+
 ## 构建它
 
 `code/main.py` 在一个 toy task 上实现 Self-Refine 和 CRITIC：给定 topic，生成一个简短 bullet list。verifier 检查格式（3 个 bullets，每个少于 60 个字符）。CRITIC 增加一个外部 “fact verifier”，用于惩罚已知 hallucinations。

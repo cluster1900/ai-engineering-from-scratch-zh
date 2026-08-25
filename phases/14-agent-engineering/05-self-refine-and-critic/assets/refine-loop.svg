@@ -18,37 +18,37 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">Self-Refine (2023) 与 CRITIC (2023) — 迭代改进</text>
+  <text x="480" y="26" text-anchor="middle" class="title">Self-Refine（2023）与 CRITIC（2023）— 迭代改进</text>
 
   <rect x="40" y="60" width="420" height="440" class="box"/>
-  <text x="250" y="84" text-anchor="middle" class="head">Self-Refine: 一个模型，三个 prompts</text>
+  <text x="250" y="84" text-anchor="middle" class="head">Self-Refine：一个 Model，三个 Prompt</text>
 
   <rect x="70" y="110" width="360" height="50" class="cool"/>
   <text x="90" y="132" class="step">generate(task)  -&gt; output</text>
-  <text x="90" y="148" class="small">基础生成器 — 任务 prompt，无历史</text>
+  <text x="90" y="148" class="small">基础生成器 — 任务 Prompt，无历史记录</text>
 
   <rect x="70" y="170" width="360" height="50" class="cold"/>
   <text x="90" y="192" class="step">feedback(task, output)  -&gt; critique</text>
-  <text x="90" y="208" class="small">自我 critic；最弱环节 — 模型给自己打分</text>
+  <text x="90" y="208" class="small">自我 critic；最弱环节 — Model 给自己评分</text>
 
   <rect x="70" y="230" width="360" height="50" class="hot"/>
   <text x="90" y="252" class="step">refine(task, output, critique, HISTORY)  -&gt; output'</text>
-  <text x="90" y="268" class="small">history 是关键；丢掉它质量会崩</text>
+  <text x="90" y="268" class="small">历史记录是关键；丢弃后质量会崩</text>
 
   <rect x="70" y="290" width="360" height="50" class="dsk"/>
-  <text x="90" y="312" class="step">停止: feedback 说可以 OR max_iters</text>
-  <text x="90" y="328" class="small">两个条件配对；单一停止会隐藏 bug</text>
+  <text x="90" y="312" class="step">停止：feedback 表示通过或达到 max_iters</text>
+  <text x="90" y="328" class="small">两个条件需配对；单一停止条件会隐藏 bug</text>
 
   <text x="70" y="360" class="step">7 个任务平均 +20 绝对提升（论文）</text>
   <text x="70" y="376" class="small">数学、代码、缩写、对话；含 GPT-4</text>
   <text x="70" y="400" class="step">陷阱: 敷衍盖章循环</text>
-  <text x="70" y="416" class="small">同 prompt critic 只会赞同自己</text>
-  <text x="70" y="432" class="small">修复: 不同 prompt 风格或更小 critic</text>
-  <text x="70" y="460" class="step">适配 Anthropic “evaluator-optimizer”</text>
+  <text x="70" y="416" class="small">同一 Prompt 的 critic 只会赞同自己</text>
+  <text x="70" y="432" class="small">修复：使用不同 Prompt 风格或更小的 critic</text>
+  <text x="70" y="460" class="step">适配 Anthropic“evaluator-optimizer”</text>
   <text x="70" y="476" class="small">5 种工作流模式之一（2024 年 12 月）</text>
 
   <rect x="500" y="60" width="420" height="440" class="box"/>
-  <text x="710" y="84" text-anchor="middle" class="head">CRITIC: 通过外部工具验证</text>
+  <text x="710" y="84" text-anchor="middle" class="head">CRITIC：通过外部 Tool 验证</text>
 
   <rect x="530" y="110" width="360" height="50" class="cool"/>
   <text x="550" y="132" class="step">generate(task)  -&gt; output</text>
@@ -63,7 +63,7 @@
   <text x="550" y="268" class="small">同样 refine，更好 critique -&gt; 更好 output</text>
 
   <rect x="530" y="290" width="360" height="50" class="dsk"/>
-  <text x="550" y="312" class="step">停止: verifier 通过 OR max_iters</text>
+  <text x="550" y="312" class="step">停止：verifier 通过 OR max_iters</text>
   <text x="550" y="328" class="small">verifier 信号强于 self-critic</text>
 
   <text x="530" y="360" class="step">核心主张</text>

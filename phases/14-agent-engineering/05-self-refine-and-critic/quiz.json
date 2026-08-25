@@ -18,34 +18,34 @@
       "stage": "pre",
       "question": "为什么 Self-Refine 在 refine 步骤需要 history？",
       "options": [
-        "Providers 只在 history 上做 cache",
-        "如果没有先前输出和 critique，refine 步骤会重复早先的错误；ablation 显示质量会急剧下降",
         "History 是计费用的",
-        "它会加快 Token 生成"
+        "Providers 只在 history 上做 cache",
+        "它会加快 Token 生成",
+        "如果没有先前输出和 critique，refine 步骤会重复早先的错误；ablation 显示质量会急剧下降"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "refine prompt 基于完整 history 进行条件化，因此 model 不会重复早先的错误。"
     },
     {
       "stage": "check",
       "question": "相对于 Self-Refine，CRITIC 改变了什么？",
       "options": [
-        "它移除了 refine 步骤",
-        "它用一个基于外部工具的 verifier 替换 self-feedback 步骤",
         "它使用更大的 model 进行生成",
-        "它并行运行 feedback 步骤"
+        "它并行运行 feedback 步骤",
+        "它用一个基于外部工具的 verifier 替换 self-feedback 步骤",
+        "它移除了 refine 步骤"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "CRITIC 将 self-critique 换成 verify 步骤，并通过 search、code interpreter、calculator 或领域 verifier 路由。"
     },
     {
       "stage": "check",
       "question": "用 Claude 友好的语言来说，哪种 Anthropic workflow pattern 对应 Self-Refine 和 CRITIC？",
       "options": [
-        "Router",
+        "Parallel sampling",
         "Prompt chain",
         "Evaluator-Optimizer",
-        "Parallel sampling"
+        "Router"
       ],
       "correct": 2,
       "explanation": "Anthropic 将这种 pattern 命名为 Evaluator-Optimizer：evaluator 打分，optimizer 修订，循环直到收敛。"
@@ -54,36 +54,36 @@
       "stage": "check",
       "question": "什么是 rubber-stamp loop，本课建议如何避免它？",
       "options": [
-        "总是通过的 test；移除这个 test",
-        "同一个 model 和同一个 prompt critique 自己的输出并批准它；使用结构上不同的 prompts，或使用单独的较小 critic",
+        "超时的 guardrail；扩大 timeout",
         "总是失败的 retry；提高预算",
-        "超时的 guardrail；扩大 timeout"
+        "同一个 model 和同一个 prompt critique 自己的输出并批准它；使用结构上不同的 prompts，或使用单独的较小 critic",
+        "总是通过的 test；移除这个 test"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "同风格的 self-critique 会收敛到“我看没问题”；要让 evaluator 与 optimizer 区分开。"
     },
     {
       "stage": "post",
       "question": "OpenAI Agents SDK 中哪个 SDK feature 具有 CRITIC 形态？",
       "options": [
-        "Handoffs",
         "Sessions",
-        "Output guardrails（可调用 tools）",
-        "Tracing"
+        "Tracing",
+        "Handoffs",
+        "Output guardrails（可调用 tools）"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Output guardrails 会验证最终 agent 输出，并且可以调用 tools，对应 CRITIC 的 verifier 角色。"
     },
     {
       "stage": "post",
       "question": "本课为 2026 evaluator-optimizer loops 推荐什么 stop condition？",
       "options": [
-        "只有 verifier 通过时才停止",
         "只有 model 说“fine”时才停止",
-        "组合条件：verifier 通过 OR（model 说 fine AND iterations >= 2）OR iterations >= max_iterations",
-        "永不停止；让 agent 无限 self-improve"
+        "永不停止；让 agent 无限 self-improve",
+        "只有 verifier 通过时才停止",
+        "组合条件：verifier 通过 OR（model 说 fine AND iterations >= 2）OR iterations >= max_iterations"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "组合条件可以避免单一条件的 failure modes。"
     }
   ]
