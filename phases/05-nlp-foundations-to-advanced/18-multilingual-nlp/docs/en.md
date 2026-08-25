@@ -49,6 +49,10 @@
 
 实用规则：如果你的目标语言有一个类型学上接近的高资源亲缘语言，先尝试在那个语言上 fine-tune，然后再与英语 fine-tune 对比。
 
+```figure
+n5-crosslingual-bridge
+```
+
 ## 构建
 
 ### 步骤 1： zero-shot 跨语言分类

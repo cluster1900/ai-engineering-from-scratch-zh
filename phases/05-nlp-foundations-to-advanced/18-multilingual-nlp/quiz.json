@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "zero-shot cross-lingual transfer 是什么意思？",
       "options": [
-        "在一种源语言上 fine-tune multilingual model，并在另一种没有目标语言标签的语言上 evaluation",
         "在没有 translation model 的情况下翻译",
         "使用零次 merge 进行 tokenization",
+        "在一种源语言上 fine-tune multilingual model，并在另一种没有目标语言标签的语言上 evaluation",
         "使用零个示例进行训练"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Zero-shot transfer：在源语言上训练，在没有目标语言监督的情况下在目标语言上运行。"
     },
     {
       "stage": "pre",
       "question": "哪个 model family 是标准的 100 语言 cross-lingual baseline？",
       "options": [
-        "GloVe",
         "GPT-2",
-        "XLM-R（例如 XLM-RoBERTa-base，270M）",
-        "DistilBERT"
+        "GloVe",
+        "DistilBERT",
+        "XLM-R（例如 XLM-RoBERTa-base，270M）"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "XLM-R 是用于 cross-lingual classification 的典型 100 语言 pretrained baseline。"
     },
     {
@@ -42,36 +42,36 @@
       "stage": "check",
       "question": "低资源语言的“fertility tax”是什么？",
       "options": [
-        "BPE 拒绝训练",
-        "与 English 相比，低资源文本会被 tokenized 成每个词更多的 subwords，消耗 context window、latency 和 capacity",
         "更小的模型训练更慢",
-        "Tokenizers 无法处理 Unicode"
+        "Tokenizers 无法处理 Unicode",
+        "BPE 拒绝训练",
+        "与 English 相比，低资源文本会被 tokenized 成每个词更多的 subwords，消耗 context window、latency 和 capacity"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "长尾语言的 tokenization fertility 高得多，会消耗 context 和训练效率。"
     },
     {
       "stage": "check",
       "question": "为什么需要按语言 evaluation，而不是使用 aggregated accuracy？",
       "options": [
-        "Aggregates 会忽略 tokenization",
-        "Aggregate numbers 会隐藏长尾语言上的问题，在这些语言上 multilingual model 可能比其平均值差得多",
+        "Aggregates 运行更快",
         "Aggregates 只适用于 classification",
-        "Aggregates 运行更快"
+        "Aggregates 会忽略 tokenization",
+        "Aggregate numbers 会隐藏长尾语言上的问题，在这些语言上 multilingual model 可能比其平均值差得多"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Aggregate accuracy 会掩盖低资源语言上的糟糕表现；按语言的分数会暴露这一点。"
     },
     {
       "stage": "post",
       "question": "在使用 few-shot data 适配 multilingual model 时，为什么 fine-tuning learning rate 很关键？",
       "options": [
+        "高 LR 可能破坏 multilingual alignment，并实际上把模型退化为 English-only",
         "更低的 LR 会浪费 GPU",
-        "Tokenizers 要求如此",
         "它会改变 vocabulary",
-        "高 LR 可能破坏 multilingual alignment，并实际上把模型退化为 English-only"
+        "Tokenizers 要求如此"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "过高的 LR 会使共享表示发生漂移；保守的 LR（约 2e-5）可以保留 cross-lingual structure。"
     },
     {
@@ -79,23 +79,23 @@
       "question": "哪种 mitigation 能直接解决长尾 script 的 tokenizer fertility 问题？",
       "options": [
         "跳过 stopwords",
-        "降低 batch size",
         "使用 byte-fallback（SentencePiece byte_fallback=True）或具有更广泛 script coverage 的 tokenizer（例如 XLM-V）",
-        "更多 training epochs"
+        "更多 training epochs",
+        "降低 batch size"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "Byte fallback 和 broader-vocab tokenizers 会降低低资源 scripts 的 fertility 和 OOV。"
     },
     {
       "stage": "post",
       "question": "什么时候值得尝试从头训练 monolingual model，而不是使用 multilingual model？",
       "options": [
-        "对 English 总是如此",
-        "当目标语言有足够数据，可以训练出超过 multilingual baseline 的 monolingual model 时；先测试再假设",
         "仅用于翻译",
-        "只要 tokenizer 是 BPE"
+        "只要 tokenizer 是 BPE",
+        "对 English 总是如此",
+        "当目标语言有足够数据，可以训练出超过 multilingual baseline 的 monolingual model 时；先测试再假设"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "有时针对 high-resource 目标语言的 monolingual training 会超过 multilingual；需要通过经验比较来决定。"
     }
   ]

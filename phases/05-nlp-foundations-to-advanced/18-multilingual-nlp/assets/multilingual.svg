@@ -49,14 +49,14 @@
   <text class="label" x="660" y="45" text-anchor="middle">跨语言迁移</text>
 
   <rect class="hot" x="460" y="75" width="180" height="50" rx="3"/>
-  <text class="content" x="550" y="100" text-anchor="middle">用 English fine-tune</text>
+  <text class="content" x="550" y="100" text-anchor="middle">用英语 fine-tune</text>
   <text class="content" x="550" y="118" text-anchor="middle">情感标签</text>
 
   <path class="line" d="M 640 100 L 670 100" marker-end="url(#arrow)"/>
 
   <rect class="box" x="680" y="75" width="180" height="50" rx="3"/>
-  <text class="content" x="770" y="100" text-anchor="middle">运行于 Hindi、Urdu，</text>
-  <text class="content" x="770" y="118" text-anchor="middle">Swahili、French ...</text>
+  <text class="content" x="770" y="100" text-anchor="middle">运行于印地语、乌尔都语，</text>
+  <text class="content" x="770" y="118" text-anchor="middle">斯瓦希里语、法语……</text>
 
   <text class="stage" x="660" y="160">zero-shot 迁移。</text>
 
@@ -68,12 +68,12 @@
 
   <rect class="box" x="680" y="185" width="180" height="50" rx="3"/>
   <text class="content" x="770" y="210" text-anchor="middle">准确率 95-98%</text>
-  <text class="content" x="770" y="228" text-anchor="middle">为 English baseline 的</text>
+  <text class="content" x="770" y="228" text-anchor="middle">相对于英语 baseline 的</text>
 
-  <text class="stage" x="660" y="270">few-shot fine-tuning。</text>
+  <text class="stage" x="660" y="270">few-shot Fine-tuning。</text>
 
   <text class="note" x="660" y="300" text-anchor="middle">源语言很重要。</text>
-  <text class="note" x="660" y="315" text-anchor="middle">Hindi 源 &gt; English 源</text>
-  <text class="note" x="660" y="330" text-anchor="middle">适用于 Marathi、Bengali、Nepali。</text>
+  <text class="note" x="660" y="315" text-anchor="middle">印地语源 &gt; 英语源</text>
+  <text class="note" x="660" y="330" text-anchor="middle">适用于马拉地语、孟加拉语、尼泊尔语。</text>
   <text class="note" x="660" y="350" text-anchor="middle">查看 LANGRANK / qWALS。</text>
 </svg>
