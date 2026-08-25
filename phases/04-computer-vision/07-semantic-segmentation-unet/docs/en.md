@@ -132,6 +132,10 @@ U-Net 的 encoder 会将 resolution 减半四次，所以 input 必须能被 16 
 
 对于第一个 model，使用 256x256 input 和 64-channel-base U-Net 可以在 8 GB VRAM 上舒适训练。
 
+```figure
+segmentation-flood
+```
+
 ## 构建它
 ### 步骤 1： Encoder block
 
