@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
@@ -16,57 +16,57 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">任务生命周期（SEP-1686）- 到 2026 H1 仍为实验性</text>
+  <text x="480" y="26" text-anchor="middle" class="title">2026-07-28 无状态核心上的 MCP Tasks 扩展</text>
 
-  <rect x="40" y="60" width="880" height="80" class="box"/>
-  <text x="60" y="82" class="step">client -&gt; tools/call {name, arguments, _meta: {task: {required: true}}}</text>
-  <text x="60" y="102" class="step">server -&gt; result {_meta: {task: {id, state: "working", ttl}}}</text>
-  <text x="60" y="124" class="small">任务立即返回；无需长连接。</text>
+  <rect x="40" y="55" width="880" height="95" class="box"/>
+  <text x="60" y="80" class="step">客户端 -&gt; tools/call + 每请求 io.modelcontextprotocol/tasks capability</text>
+  <text x="60" y="104" class="step">服务器：持久创建任务，然后返回 resultType: "task" + taskId</text>
+  <text x="60" y="130" class="small">tools/list 发布 generate_report；服务器在 capability 检查后选择任务模式。</text>
 
-  <rect x="40" y="160" width="160" height="80" class="cool"/>
-  <text x="120" y="196" text-anchor="middle" class="step">working</text>
-  <text x="120" y="216" text-anchor="middle" class="small">worker 运行中</text>
+  <rect x="40" y="180" width="155" height="80" class="cool"/>
+  <text x="118" y="215" text-anchor="middle" class="step">working</text>
+  <text x="118" y="235" text-anchor="middle" class="small">worker 持有租约</text>
 
-  <rect x="260" y="160" width="160" height="80" class="cold"/>
-  <text x="340" y="196" text-anchor="middle" class="step">input_required</text>
-  <text x="340" y="216" text-anchor="middle" class="small">需要 elicitation</text>
+  <rect x="245" y="180" width="170" height="80" class="cold"/>
+  <text x="330" y="215" text-anchor="middle" class="step">input_required</text>
+  <text x="330" y="235" text-anchor="middle" class="small">未完成请求</text>
 
-  <rect x="480" y="160" width="160" height="80" class="cool"/>
-  <text x="560" y="196" text-anchor="middle" class="step">completed</text>
-  <text x="560" y="216" text-anchor="middle" class="small">结果可用</text>
+  <rect x="465" y="180" width="155" height="80" class="cool"/>
+  <text x="543" y="215" text-anchor="middle" class="step">已完成</text>
+  <text x="543" y="235" text-anchor="middle" class="small">嵌套的 complete 结果</text>
 
-  <rect x="700" y="160" width="100" height="80" class="hot"/>
-  <text x="750" y="196" text-anchor="middle" class="step">failed</text>
-  <text x="750" y="216" text-anchor="middle" class="small">错误</text>
+  <rect x="670" y="180" width="110" height="80" class="hot"/>
+  <text x="725" y="215" text-anchor="middle" class="step">失败</text>
+  <text x="725" y="235" text-anchor="middle" class="small">RPC 错误</text>
 
-  <rect x="820" y="160" width="100" height="80" class="box"/>
-  <text x="870" y="196" text-anchor="middle" class="step">cancelled</text>
-  <text x="870" y="216" text-anchor="middle" class="small">用户停止</text>
+  <rect x="810" y="180" width="110" height="80" class="box"/>
+  <text x="865" y="215" text-anchor="middle" class="step">已取消</text>
+  <text x="865" y="235" text-anchor="middle" class="small">worker 已停止</text>
 
-  <path d="M200,200 L260,200" class="edge" marker-end="url(#arrow)"/>
-  <path d="M420,200 L480,200" class="edge" marker-end="url(#arrow)"/>
-  <path d="M640,200 L700,200" class="edge" marker-end="url(#arrow)"/>
-  <path d="M640,200 L820,200" class="edge" marker-end="url(#arrow)"/>
-  <path d="M200,200 L200,150 C200,120 340,120 340,160" class="edge" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
-  <text x="270" y="128" class="small">elicitation 后回到循环</text>
+  <path d="M195,220 L245,220" class="edge" marker-end="url(#arrow)"/>
+  <path d="M415,220 L465,220" class="edge" marker-end="url(#arrow)"/>
+  <path d="M330,260 L330,280 C330,300 118,300 118,260" class="edge" marker-end="url(#arrow)"/>
+  <path d="M195,205 C300,155 390,155 465,205" class="edge" marker-end="url(#arrow)"/>
+  <path d="M620,220 L670,220" class="edge" marker-end="url(#arrow)"/>
+  <path d="M620,240 C700,285 790,285 810,240" class="edge" marker-end="url(#arrow)"/>
 
-  <rect x="40" y="260" width="420" height="110" class="cool"/>
-  <text x="250" y="282" text-anchor="middle" class="head">轮询客户端</text>
-  <text x="56" y="306" class="step">while true:</text>
-  <text x="56" y="322" class="step">status = tasks/status {taskId}</text>
-  <text x="56" y="338" class="step">if status.state terminal: break</text>
-  <text x="56" y="354" class="step">result = tasks/result {taskId}</text>
+  <rect x="40" y="310" width="420" height="165" class="cool"/>
+  <text x="250" y="335" text-anchor="middle" class="head">轮询和输入</text>
+  <text x="58" y="365" class="step">tasks/get {taskId}</text>
+  <text x="58" y="383" class="small">Mcp-Name = taskId；完整快照</text>
+  <text x="58" y="415" class="step">tasks/update {taskId, inputResponses}</text>
+  <text x="58" y="433" class="small">Mcp-Name = taskId；完整确认</text>
+  <text x="58" y="457" class="small">整个任务生命周期内输入键唯一</text>
 
-  <rect x="480" y="260" width="440" height="110" class="cold"/>
-  <text x="700" y="282" text-anchor="middle" class="head">流式客户端（可选）</text>
-  <text x="496" y="306" class="step">server -&gt; notifications/tasks/updated</text>
-  <text x="496" y="322" class="step">{taskId, state, progress}</text>
-  <text x="496" y="344" class="small">客户端渲染进度条；无轮询循环。</text>
+  <rect x="500" y="310" width="420" height="165" class="cold"/>
+  <text x="710" y="335" text-anchor="middle" class="head">取消和可选推送</text>
+  <text x="518" y="365" class="step">tasks/cancel {taskId}</text>
+  <text x="518" y="383" class="small">Mcp-Name = taskId；协作式确认</text>
+  <text x="518" y="415" class="step">通过 POST 响应 SSE 执行 subscriptions/listen</text>
+  <text x="518" y="433" class="small">notifications/subscriptions/acknowledged</text>
+  <text x="518" y="451" class="small">notifications/tasks + subscriptionId metadata</text>
 
-  <rect x="40" y="390" width="880" height="110" class="box"/>
-  <text x="480" y="412" text-anchor="middle" class="head">持久性与恢复</text>
-  <text x="60" y="434" class="step">每 tick 持久化任务状态（文件系统 / SQLite / Redis）</text>
-  <text x="60" y="452" class="step">ttl 承诺：服务器保留终态 ttl ms</text>
-  <text x="60" y="470" class="step">重启时：重载所有任务；进行中的 working -&gt; failed 并标记 CRASH_RECOVERY</text>
-  <text x="60" y="488" class="small">子任务和持久订阅在 2026 ROADMAP；按实验性处理。</text>
+  <rect x="40" y="500" width="880" height="45" class="hot"/>
+  <text x="480" y="520" text-anchor="middle" class="step">已移除的实验性假设：tasks/status | tasks/result | tasks/list</text>
+  <text x="480" y="538" text-anchor="middle" class="small">在应用存储中持久化所有权、过期时间、已签发输入键、结果或错误以及 worker 租约。</text>
 </svg>
