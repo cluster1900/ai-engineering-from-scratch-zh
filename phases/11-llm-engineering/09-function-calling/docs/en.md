@@ -1,79 +1,82 @@
 # Function Calling 与 Tool Use
 
-> LLMs 本身不能做任何事。它们生成文本。这就是全部能力。它们不能查看天气、查询数据库、发送电子邮件、运行代码或读取文件。你见过的每一个“AI agent”，本质上都是一个 LLM 生成 JSON，说明要调用哪个 function，然后由你的代码真正执行调用。模型是大脑。Tools 是双手。Function calling 是连接它们的神经系统。
+> LLMs 什么也做不了。它们只会生成文本。这就是它们的全部能力。它们无法查看天气、查询数据库、发送电子邮件、运行代码或读取文件。你见过的每一个“AI Agent”，本质上都是一个 LLM 在生成 JSON，用来说明应调用哪个 function，然后由你的代码真正执行调用。Model 是大脑，Tools 是双手，而 Function calling 是连接两者的神经系统。
 
 **Type:** Build
 **Languages:** Python
 **Prerequisites:** Phase 11 Lesson 03 (Structured Outputs)
-**Time:** ~75 minutes
-**Related:** Phase 11 · 14 (Model Context Protocol) — 当一个 tool 需要跨 host 共享时，应从 inline function-calling 升级为 MCP server。本课覆盖 inline 场景；MCP 覆盖 protocol 场景。
+**Time:** ~75 分钟
+**Related:** Phase 11 · 14 (Model Context Protocol) — 当一个 Tool 需要跨 host 共享时，应从内联 Function calling 升级为 MCP server。本课介绍内联场景；MCP 介绍协议场景。
 
 ## 学习目标
-- 实现一个 function calling loop：定义 tool schemas、解析模型的 tool-call JSON、执行 functions，并返回结果
-- 设计带有清晰 descriptions 和 typed parameters 的 tool schemas，使模型能够可靠调用
-- 构建一个 multi-turn agent loop，通过串联多次 function calls 来回答复杂查询
-- 处理 function calling 边界情况：parallel tool calls、error propagation，以及防止无限 tool loops
+
+- 实现 Function calling 循环：定义 Tool schema、解析 Model 的 Tool-call JSON、执行 function，并返回结果
+- 设计具有清晰描述和类型化参数的 Tool schema，使 Model 能够可靠调用
+- 构建能够串联多个 function call、回答复杂查询的多轮 Agent 循环
+- 处理 Function calling 的边界情况：并行 Tool call、错误传播，以及防止无限 Tool 循环
 
 ## 问题
-你构建了一个 chatbot。用户问：“What's the weather in Tokyo right now?”
 
-模型回答：“I don't have access to real-time weather data, but based on the season, Tokyo is likely around 15 degrees Celsius...”
+你构建了一个聊天机器人。用户问：“东京现在的天气怎么样？”
 
-这是披着免责声明外衣的 hallucination。模型并不知道天气。它永远不会知道。天气每小时都在变化。模型的训练数据已经是几个月前的了。
+Model 回答：“我无法访问实时天气数据，但根据季节判断，东京的气温可能在 15 摄氏度左右……”
 
-正确答案需要调用 OpenWeatherMap API，获取当前温度，并返回真实数值。模型不能调用 APIs。你的代码可以。缺失的一环是：一个结构化 protocol，让模型可以说“我需要用这些 arguments 调用 weather API”，并让你的代码执行它，再把结果喂回模型。
+这是一段披着免责声明外衣的幻觉。Model 不知道天气。它永远也不会知道。天气每小时都在变化，而 Model 的 Training data 已经过时数月。
 
-这就是 Function Calling。模型输出结构化 JSON，描述要用什么 arguments 调用哪个 function。你的 application 执行 function。结果回到 conversation 中。模型使用结果生成最终答案。
+正确答案需要调用 OpenWeatherMap API，获取当前温度并返回真实数值。Model 无法调用 API，但你的代码可以。缺失的部分是一个结构化协议：让 Model 能够表达“我需要使用这些参数调用天气 API”，再由你的代码执行调用并把结果反馈给它。
 
-没有 Function Calling，LLMs 是百科全书。有了它，它们就变成了 agents。
+这就是 Function calling。Model 输出结构化 JSON，描述要调用哪个 function 以及使用哪些参数。你的应用程序执行该 function，再把结果放回对话中。Model 使用这个结果生成最终答案。
+
+没有 Function calling，LLMs 只是百科全书。有了它，LLMs 就能成为 Agents。
 
 ## 概念
-### The Function Calling Loop
 
-每一次 tool-use 交互都遵循同一个 5 步循环。
+### Function Calling 循环
+
+每次 Tool-use 交互都遵循相同的 5 步循环。
 
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant A as Application
+    participant U as 用户
+    participant A as 应用程序
     participant M as Model
     participant T as Tool
 
-    U->>A: "What's the weather in Tokyo?"
-    A->>M: messages + tool definitions
+    U->>A: “东京的天气怎么样？”
+    A->>M: 消息 + Tool 定义
     M->>A: tool_call: get_weather(city="Tokyo")
-    A->>T: Execute get_weather("Tokyo")
+    A->>T: 执行 get_weather("Tokyo")
     T->>A: {"temp": 18, "condition": "cloudy"}
-    A->>M: tool_result + conversation
-    M->>A: "It's 18C and cloudy in Tokyo."
-    A->>U: Final response
+    A->>M: tool_result + 对话
+    M->>A: “东京现在 18°C，多云。”
+    A->>U: 最终响应
 ```
 
-Step 1：用户发送 message。Step 2：模型接收 message 以及 tool definitions（描述可用 functions 的 JSON Schema）。Step 3：模型不直接返回文本，而是输出一个 tool call，也就是包含 function name 和 arguments 的结构化 JSON object。Step 4：你的代码执行 function 并捕获结果。Step 5：结果返回给模型，模型现在拥有真实数据，可以生成最终答案。
+第 1 步：用户发送消息。第 2 步：Model 接收消息以及 Tool 定义，也就是描述可用 function 的 JSON Schema。第 3 步：Model 不再返回文本，而是输出一个 Tool call，即包含 function 名称和参数的结构化 JSON 对象。第 4 步：你的代码执行该 function 并获取结果。第 5 步：结果被送回 Model，此时 Model 已经拥有真实数据，可以生成最终答案。
 
-模型从不执行任何东西。它只决定调用什么，以及用什么 arguments 调用。你的代码才是 executor。
+Model 从不执行任何内容。它只决定调用什么，以及使用哪些参数。你的代码才是执行者。
 
-### Tool Definitions：JSON Schema Contract
+### Tool 定义：JSON Schema 契约
 
-每个 tool 都由一个 JSON Schema 定义，它告诉模型这个 function 做什么、接收哪些 arguments，以及这些 arguments 必须是什么类型。
+每个 Tool 都由一个 JSON Schema 定义，它会告诉 Model 该 function 的作用、接受哪些参数，以及这些参数必须采用什么类型。
 
 ```json
 {
   "type": "function",
   "function": {
     "name": "get_weather",
-    "description": "Get current weather for a city. Returns temperature in Celsius and conditions.",
+    "description": "获取城市的当前天气。返回摄氏温度和天气状况。",
     "parameters": {
       "type": "object",
       "properties": {
         "city": {
           "type": "string",
-          "description": "City name, e.g. 'Tokyo' or 'San Francisco'"
+          "description": "城市名称，例如 'Tokyo' 或 'San Francisco'"
         },
         "units": {
           "type": "string",
           "enum": ["celsius", "fahrenheit"],
-          "description": "Temperature units"
+          "description": "温度单位"
         }
       },
       "required": ["city"]
@@ -82,34 +85,34 @@ Step 1：用户发送 message。Step 2：模型接收 message 以及 tool defini
 }
 ```
 
-`description` fields 至关重要。模型会读取它们，以决定何时以及如何使用 tool。像“gets weather”这样含糊的 description，比“Get current weather for a city. Returns temperature in Celsius and conditions.”产生更差的 tool selection。description 是用于 tool selection 的 prompt。
+`description` 字段至关重要。Model 会读取它们，以决定何时以及如何使用 Tool。与“获取天气”这种模糊描述相比，“获取城市的当前天气。返回摄氏温度和天气状况。”能带来更准确的 Tool 选择。description 本身就是用于 Tool 选择的 Prompt。
 
-### Provider Comparison
+### Provider 对比
 
-每个主流 provider 都支持 function calling，但 API surface 有所不同。
+所有主流 Provider 都支持 Function calling，但 API 接口有所不同。
 
-| Provider | API Parameter | Tool Call Format | Parallel Calls | Forced Calling |
+| Provider | API 参数 | Tool Call 格式 | 并行调用 | 强制调用 |
 |----------|--------------|-----------------|---------------|----------------|
-| OpenAI (GPT-5, o4) | `tools` | `tool_calls[].function` | Yes (multiple per turn) | `tool_choice="required"` |
-| Anthropic (Claude 4.6/4.7) | `tools` | `content[].type="tool_use"` | Yes (multiple blocks) | `tool_choice={"type":"any"}` |
-| Google (Gemini 3) | `function_declarations` | `functionCall` | Yes | `function_calling_config` |
-| Open-weight (Llama 4, Qwen3, DeepSeek-V3) | Native `tools` on Llama 4; Hermes or ChatML on others | Mixed | Model-dependent | Prompt-based or `tool_choice` if supported |
+| OpenAI (GPT-5, o4) | `tools` | `tool_calls[].function` | 是（每轮可调用多个） | `tool_choice="required"` |
+| Anthropic (Claude 4.6/4.7) | `tools` | `content[].type="tool_use"` | 是（多个 block） | `tool_choice={"type":"any"}` |
+| Google (Gemini 3) | `function_declarations` | `functionCall` | 是 | `function_calling_config` |
+| Open-weight (Llama 4, Qwen3, DeepSeek-V3) | Llama 4 原生支持 `tools`；其他 Model 使用 Hermes 或 ChatML | 混合 | 取决于 Model | 基于 Prompt，或在支持时使用 `tool_choice` |
 
-到 2026 年，三家 closed providers 已经收敛到几乎相同的、基于 JSON Schema 的格式。Llama 4 自带一个 native `tools` field，形状与 OpenAI 匹配。Open-weight fine-tunes 仍然各不相同，其中 Hermes format（NousResearch）是 third-party fine-tunes 中最常见的格式。对于跨 hosts 共享的 tools，优先使用 MCP（Phase 11 · 14），而不是 inline function-calling，因为 server 对所有 host 都相同。
+到 2026 年，三家闭源 Provider 已经收敛到几乎相同的、基于 JSON Schema 的格式。Llama 4 提供了原生 `tools` 字段，其结构与 OpenAI 一致。Open-weight Fine-tuning Model 仍然各不相同，其中 Hermes 格式（NousResearch）在第三方 Fine-tuning Model 中最为常见。对于需要跨 host 共享的 Tools，应优先选择 MCP（Phase 11 · 14），而不是内联 Function calling，这样所有 host 都可以使用同一个 server。
 
-### Tool Choice: Auto, Required, Specific
+### Tool Choice：Auto、Required、Specific
 
-你可以控制模型何时使用 tools。
+你可以控制 Model 何时使用 Tools。
 
-**Auto**（默认）：模型自行决定是调用 tool 还是直接回答。“What's 2+2?”会直接回答。“What's the weather?”会调用 tool。
+**Auto**（默认）：Model 自行决定是调用 Tool 还是直接响应。“2+2 等于多少？”会直接回答；“天气怎么样？”则会调用 Tool。
 
-**Required**：模型必须至少调用一个 tool。当你知道用户意图需要 tool 时使用它。它可以防止模型不查询真实数据而直接猜测。
+**Required**：Model 必须调用至少一个 Tool。当你确定用户意图需要 Tool 时使用该模式。它能防止 Model 猜测答案，而不去查询真实数据。
 
-**Specific function**：强制模型调用某个特定 function。`tool_choice={"type":"function", "function": {"name": "get_weather"}}` 保证 weather tool 会被调用，无论 query 是什么。将它用于 routing，即 upstream logic 已经判断出需要哪个 tool 的场景。
+**Specific function**：强制 Model 调用指定的 function。无论查询内容是什么，`tool_choice={"type":"function", "function": {"name": "get_weather"}}` 都能保证调用天气 Tool。该模式适合路由场景，也就是上游逻辑已经确定需要使用哪个 Tool。
 
-### Parallel Function Calling
+### 并行 Function Calling
 
-GPT-4o 和 Claude 可以在单个 turn 中调用多个 functions。用户问：“What's the weather in Tokyo and New York?”模型会同时输出两个 tool calls：
+GPT-4o 和 Claude 可以在单轮中调用多个 function。用户问：“东京和纽约的天气怎么样？”Model 会同时输出两个 Tool call：
 
 ```json
 [
@@ -118,60 +121,65 @@ GPT-4o 和 Claude 可以在单个 turn 中调用多个 functions。用户问：�
 ]
 ```
 
-你的代码执行两者（理想情况下并发执行），返回两个结果，然后模型合成一个统一回答。这会把 round trips 从 2 次减少到 1 次。对于每个 query 需要 5-10 次 tool calls 的 agents，parallel calling 可将 latency 降低 60-80%。
+你的代码执行这两个调用（最好并发执行），返回两个结果，然后由 Model 合成为一个响应。这会将往返次数从 2 次减少到 1 次。对于每次查询需要调用 5-10 个 Tools 的 Agents，并行调用可以将延迟降低 60%-80%。
 
-### Structured Outputs 与 Function Calling 对比
+### Structured Outputs 与 Function Calling
 
-Lesson 03 覆盖了 structured outputs。Function calling 使用同一套 JSON Schema 机制，但目的不同。
+Lesson 03 介绍了 Structured Outputs。Function calling 使用相同的 JSON Schema 机制，但目的不同。
 
-**Structured outputs**：强制模型以特定形状生成数据。输出就是最终产物。示例：从文本中提取 product info 为 `{name, price, in_stock}`。
+**Structured Outputs**：强制 Model 以特定结构生成数据。输出本身就是最终产物。例如，从文本中提取产品信息，并表示为 `{name, price, in_stock}`。
 
-**Function calling**：模型声明执行某个 action 的意图。输出是中间步骤。示例：`get_weather(city="Tokyo")`，模型是在请求一个 action，而不是生成最终答案。
+**Function calling**：Model 声明执行某项操作的意图。输出只是中间步骤。例如，`get_weather(city="Tokyo")` 表示 Model 正在请求执行操作，而不是生成最终答案。
 
-当你需要 data extraction 时，使用 structured outputs。当你需要模型与 external systems 交互时，使用 function calling。
+需要提取数据时使用 Structured Outputs。需要让 Model 与外部系统交互时使用 Function calling。
 
-### Security: 不可妥协的规则
+### 安全：不可妥协的规则
 
-Function calling 是你能赋予 LLM 的最危险能力。模型选择要执行什么。如果你的 tool set 包含 database queries，模型就会构造 queries。如果它包含 shell commands，模型就会编写它们。
+Function calling 是你能赋予 LLM 的最危险能力。Model 会选择执行什么。如果 Tool 集合中包含数据库查询，Model 就会构造查询。如果其中包含 shell 命令，Model 就会编写命令。
 
-**Rule 1: Never pass model-generated SQL directly to a database.** 模型可能且确实会生成 DROP TABLE、UNION injections，或者返回每一行的 queries。始终 parameterize。始终 validate。始终使用 operations allowlist。
+**规则 1：绝不要将 Model 生成的 SQL 直接传给数据库。** Model 可能生成 DROP TABLE、UNION 注入，或者返回每一行数据的查询，而且它确实会这样做。始终使用参数化查询。始终进行验证。始终使用操作 allowlist。
 
-**Rule 2: Allowlist functions.** 模型只能调用你显式定义的 functions。永远不要构建一个通用的“按 name 执行任意 function”的 tool。如果你有 50 个 internal functions，只暴露用户需要的 5 个。
+**规则 2：对 function 使用 allowlist。** Model 只能调用你明确定义的 function。绝不要构建一个“按名称执行任意 function”的通用 Tool。如果内部有 50 个 function，只暴露用户所需的 5 个。
 
-**Rule 3: Validate arguments.** 模型可能传入一个 city name：`"; DROP TABLE users; --"`。执行前要根据预期的 types、ranges 和 formats 验证每个 argument。
+**规则 3：验证参数。** Model 可能传入 `"; DROP TABLE users; --"` 这样的城市名称。执行前，应根据预期类型、范围和格式验证每个参数。
 
-**Rule 4: Sanitize tool results.** 如果 tool 返回 sensitive data（API keys、PII、internal errors），在将其发回模型之前先过滤。模型会把 tool results 原样包含在它的 response 中。
+**规则 4：清理 Tool 结果。** 如果 Tool 返回敏感数据，例如 API key、PII 或内部错误，应先过滤再发送给 Model。Model 可能会逐字把 Tool 结果包含在响应中。
 
-**Rule 5: Rate limit tool calls.** 处于循环中的模型可能调用 tools 数百次。设置一个最大值（每个 conversation 10-20 次 calls 是合理的）。打断无限 loops。
+**规则 5：限制 Tool call 速率。** 循环中的 Model 可能调用 Tools 数百次。设置最大次数，每次对话允许 10-20 次调用通常比较合理。必须中断无限循环。
 
-### Error Handling
+### 错误处理
 
-Tools 会失败。APIs 会超时。Databases 会宕机。Files 不存在。模型需要知道 tool 何时失败以及为什么失败。
+Tools 会失败。API 会超时。数据库会宕机。文件可能不存在。Model 需要知道 Tool 是否失败，以及失败原因。
 
-将 errors 作为结构化 tool results 返回，而不是抛出 exceptions：
+将错误作为结构化 Tool 结果返回，而不是抛出异常：
 
 ```json
 {
   "error": true,
-  "message": "City 'Toky' not found. Did you mean 'Tokyo'?",
+  "message": "未找到城市 'Toky'。你是否想输入 'Tokyo'？",
   "code": "CITY_NOT_FOUND"
 }
 ```
 
-模型读取这个结果，调整 arguments，并重试。Models 很擅长从结构化 error messages 中自我纠正。它们不擅长从空 response 或泛泛的“something went wrong”错误中恢复。
+Model 会读取错误、调整参数并重试。Models 擅长根据结构化错误消息进行自我修正，但不擅长从空响应或笼统的“出现问题”错误中恢复。
 
-### MCP: Model Context Protocol
+### MCP：Model Context Protocol
 
-MCP 是 Anthropic 面向 tool interoperability 的 open standard。它不是让每个 application 定义自己的 tools，而是提供一个 universal protocol：tools 由 MCP servers 提供，并由 MCP clients（如 Claude Code、Cursor 或你的 application）消费。
+MCP 是 Anthropic 为 Tool 互操作性制定的开放标准。每个应用程序不再需要分别定义自己的 Tools，而是由 MCP 提供通用协议：Tools 由 MCP servers 提供，并由 MCP clients 使用，例如 Claude Code、Cursor 或你的应用程序。
 
-一个 MCP server 可以向任何兼容 client 暴露 tools。Postgres MCP server 让任何 MCP-compatible agent 获得 database access。GitHub MCP server 让任何 agent 获得 repository access。Tools 定义一次，到处使用。
+一个 MCP server 可以向任何兼容 client 暴露 Tools。Postgres MCP server 能为任何兼容 MCP 的 Agent 提供数据库访问能力。GitHub MCP server 能为任何 Agent 提供 repository 访问能力。Tools 只需定义一次，即可随处使用。
 
-MCP 之于 function calling，就像 HTTP 之于 networking。它标准化 transport layer，使 tools 变得 portable。
+MCP 之于 Function calling，就像 HTTP 之于网络通信。它对传输层进行标准化，使 Tools 具备可移植性。
 
-## 构建它
-### 步骤 1： Define the Tool Registry
+```figure
+mx-tool-call-loop
+```
 
-构建一个 registry，用于存储 tool definitions 及其 implementations。每个 tool 都有一个 JSON Schema definition（模型看到的内容）和一个 Python function（你的代码执行的内容）。
+## 手动构建
+
+### 第 1 步：定义 Tool Registry
+
+构建一个用于存储 Tool 定义及其实现的 registry。每个 Tool 都包含一个 JSON Schema 定义（Model 所看到的内容）和一个 Python function（代码实际执行的内容）。
 
 ```python
 import json
@@ -197,15 +205,15 @@ def register_tool(name, description, parameters, function):
     }
 ```
 
-### 步骤 2： Implement 5 Tools
+### 第 2 步：实现 5 个 Tools
 
-构建一个 calculator、weather lookup、web search simulator、file reader 和 code runner。
+构建计算器、天气查询、模拟 web 搜索、文件读取器和代码运行器。
 
 ```python
 def calculator(expression, precision=2):
     allowed = set("0123456789+-*/.() ")
     if not all(c in allowed for c in expression):
-        return {"error": True, "message": f"Invalid characters in expression: {expression}"}
+        return {"error": True, "message": f"表达式中包含无效字符：{expression}"}
     try:
         result = eval(expression, {"__builtins__": {}}, {"math": math})
         return {"result": round(float(result), precision), "expression": expression}
@@ -228,7 +236,7 @@ def get_weather(city, units="celsius"):
         suggestions = [c for c in WEATHER_DB if c.startswith(key[:3])]
         return {
             "error": True,
-            "message": f"City '{city}' not found.",
+            "message": f"未找到城市 '{city}'。",
             "suggestions": suggestions,
             "code": "CITY_NOT_FOUND",
         }
@@ -242,14 +250,14 @@ def get_weather(city, units="celsius"):
 
 SEARCH_DB = {
     "python function calling": [
-        {"title": "OpenAI Function Calling Guide", "url": "https://platform.openai.com/docs/guides/function-calling", "snippet": "Learn how to connect LLMs to external tools."},
-        {"title": "Anthropic Tool Use", "url": "https://docs.anthropic.com/en/docs/tool-use", "snippet": "Claude can interact with external tools and APIs."},
+        {"title": "OpenAI Function Calling Guide", "url": "https://platform.openai.com/docs/guides/function-calling", "snippet": "了解如何将 LLMs 连接到外部 Tools。"},
+        {"title": "Anthropic Tool Use", "url": "https://docs.anthropic.com/en/docs/tool-use", "snippet": "Claude 可以与外部 Tools 和 APIs 交互。"},
     ],
     "MCP protocol": [
-        {"title": "Model Context Protocol", "url": "https://modelcontextprotocol.io", "snippet": "An open standard for connecting AI models to data sources."},
+        {"title": "Model Context Protocol", "url": "https://modelcontextprotocol.io", "snippet": "一种用于连接 AI Models 与数据源的开放标准。"},
     ],
     "weather API": [
-        {"title": "OpenWeatherMap API", "url": "https://openweathermap.org/api", "snippet": "Free weather API with current, forecast, and historical data."},
+        {"title": "OpenWeatherMap API", "url": "https://openweathermap.org/api", "snippet": "提供当前、预报和历史数据的免费天气 API。"},
     ],
 }
 
@@ -265,27 +273,27 @@ def web_search(query, max_results=3):
 FILE_SYSTEM = {
     "data/config.json": '{"model": "gpt-4o", "temperature": 0.7, "max_tokens": 4096}',
     "data/users.csv": "name,email,role\nAlice,alice@example.com,admin\nBob,bob@example.com,user",
-    "README.md": "# My Project\nA tool-use agent built from scratch.",
+    "README.md": "# 我的项目\n一个从零构建的 Tool-use Agent。",
 }
 
 
 def read_file(path):
     if ".." in path or path.startswith("/"):
-        return {"error": True, "message": "Path traversal not allowed.", "code": "FORBIDDEN"}
+        return {"error": True, "message": "不允许路径遍历。", "code": "FORBIDDEN"}
     if path not in FILE_SYSTEM:
         available = list(FILE_SYSTEM.keys())
-        return {"error": True, "message": f"File '{path}' not found.", "available_files": available, "code": "NOT_FOUND"}
+        return {"error": True, "message": f"未找到文件 '{path}'。", "available_files": available, "code": "NOT_FOUND"}
     content = FILE_SYSTEM[path]
     return {"path": path, "content": content, "size_bytes": len(content), "lines": content.count("\n") + 1}
 
 
 def run_code(code, language="python"):
     if language != "python":
-        return {"error": True, "message": f"Language '{language}' not supported. Only 'python' is available."}
+        return {"error": True, "message": f"不支持语言 '{language}'。目前仅支持 'python'。"}
     forbidden = ["import os", "import sys", "import subprocess", "exec(", "eval(", "__import__", "open("]
     for pattern in forbidden:
         if pattern in code:
-            return {"error": True, "message": f"Forbidden operation: {pattern}", "code": "SECURITY_VIOLATION"}
+            return {"error": True, "message": f"禁止执行的操作：{pattern}", "code": "SECURITY_VIOLATION"}
     try:
         local_vars = {}
         exec(code, {"__builtins__": {"print": print, "range": range, "len": len, "str": str, "int": int, "float": float, "list": list, "dict": dict, "sum": sum, "min": min, "max": max, "abs": abs, "round": round, "sorted": sorted, "enumerate": enumerate, "zip": zip, "map": map, "filter": filter, "math": math}}, local_vars)
@@ -295,40 +303,40 @@ def run_code(code, language="python"):
         return {"error": True, "message": f"{type(e).__name__}: {e}"}
 ```
 
-### 步骤 3： Register All Tools
+### 第 3 步：注册所有 Tools
 
 ```python
 def register_all_tools():
     register_tool(
-        "calculator", "Evaluate a mathematical expression. Supports +, -, *, /, parentheses, and decimals. Returns the numeric result.",
-        {"type": "object", "properties": {"expression": {"type": "string", "description": "Math expression, e.g. '(10 + 5) * 3'"}, "precision": {"type": "integer", "description": "Decimal places in result", "default": 2}}, "required": ["expression"]},
+        "calculator", "计算数学表达式。支持 +、-、*、/、括号和小数。返回数值结果。",
+        {"type": "object", "properties": {"expression": {"type": "string", "description": "数学表达式，例如 '(10 + 5) * 3'"}, "precision": {"type": "integer", "description": "结果中的小数位数", "default": 2}}, "required": ["expression"]},
         calculator,
     )
     register_tool(
-        "get_weather", "Get current weather for a city. Returns temperature, condition, humidity, and wind speed.",
-        {"type": "object", "properties": {"city": {"type": "string", "description": "City name, e.g. 'Tokyo' or 'San Francisco'"}, "units": {"type": "string", "enum": ["celsius", "fahrenheit"], "description": "Temperature units, defaults to celsius"}}, "required": ["city"]},
+        "get_weather", "获取城市的当前天气。返回温度、天气状况、湿度和风速。",
+        {"type": "object", "properties": {"city": {"type": "string", "description": "城市名称，例如 'Tokyo' 或 'San Francisco'"}, "units": {"type": "string", "enum": ["celsius", "fahrenheit"], "description": "温度单位，默认为 celsius"}}, "required": ["city"]},
         get_weather,
     )
     register_tool(
-        "web_search", "Search the web for information. Returns a list of results with title, URL, and snippet.",
-        {"type": "object", "properties": {"query": {"type": "string", "description": "Search query"}, "max_results": {"type": "integer", "description": "Maximum results to return", "default": 3}}, "required": ["query"]},
+        "web_search", "在 web 上搜索信息。返回包含标题、URL 和摘要的结果列表。",
+        {"type": "object", "properties": {"query": {"type": "string", "description": "搜索查询"}, "max_results": {"type": "integer", "description": "返回结果的最大数量", "default": 3}}, "required": ["query"]},
         web_search,
     )
     register_tool(
-        "read_file", "Read the contents of a file. Returns the file content, size, and line count.",
-        {"type": "object", "properties": {"path": {"type": "string", "description": "Relative file path, e.g. 'data/config.json'"}}, "required": ["path"]},
+        "read_file", "读取文件内容。返回文件内容、大小和行数。",
+        {"type": "object", "properties": {"path": {"type": "string", "description": "相对文件路径，例如 'data/config.json'"}}, "required": ["path"]},
         read_file,
     )
     register_tool(
-        "run_code", "Execute Python code in a sandboxed environment. Set a 'result' variable to return output.",
-        {"type": "object", "properties": {"code": {"type": "string", "description": "Python code to execute"}, "language": {"type": "string", "enum": ["python"], "description": "Programming language"}}, "required": ["code"]},
+        "run_code", "在沙箱环境中执行 Python 代码。设置 'result' 变量以返回输出。",
+        {"type": "object", "properties": {"code": {"type": "string", "description": "要执行的 Python 代码"}, "language": {"type": "string", "enum": ["python"], "description": "编程语言"}}, "required": ["code"]},
         run_code,
     )
 ```
 
-### 步骤 4： Build the Function Calling Loop
+### 第 4 步：构建 Function Calling 循环
 
-这是核心 engine。它模拟模型决定调用哪个 tool，执行该 tool，并将结果喂回去。
+这是核心引擎。它模拟 Model 决定调用哪个 Tool、执行 Tool，并将结果反馈回去。
 
 ```python
 def simulate_model_decision(user_message, tools, conversation_history):
@@ -381,7 +389,7 @@ def execute_tool_call(tool_call):
     args = tool_call["arguments"]
 
     if name not in TOOL_REGISTRY:
-        return {"error": True, "message": f"Unknown tool: {name}", "code": "UNKNOWN_TOOL"}
+        return {"error": True, "message": f"未知 Tool：{name}", "code": "UNKNOWN_TOOL"}
 
     tool = TOOL_REGISTRY[name]
     func = tool["function"]
@@ -390,7 +398,7 @@ def execute_tool_call(tool_call):
     try:
         result = func(**args)
     except TypeError as e:
-        result = {"error": True, "message": f"Invalid arguments: {e}"}
+        result = {"error": True, "message": f"参数无效：{e}"}
 
     elapsed_ms = round((time.time() - start) * 1000, 2)
     return {"tool": name, "result": result, "execution_time_ms": elapsed_ms}
@@ -423,29 +431,29 @@ def run_function_calling_loop(user_message, max_iterations=5):
     return {"conversation": conversation, "tool_results": all_tool_results, "iterations": iteration + 1 if tool_calls else 0}
 ```
 
-### 步骤 5： Argument Validation
+### 第 5 步：参数验证
 
-构建一个 validator，在执行前根据 JSON Schema 检查 tool call arguments。
+构建一个验证器，在执行前根据 JSON Schema 检查 Tool call 参数。
 
 ```python
 def validate_tool_arguments(tool_name, arguments):
     if tool_name not in TOOL_REGISTRY:
-        return [f"Unknown tool: {tool_name}"]
+        return [f"未知 Tool：{tool_name}"]
 
     schema = TOOL_REGISTRY[tool_name]["definition"]["function"]["parameters"]
     errors = []
 
     if not isinstance(arguments, dict):
-        return [f"Arguments must be an object, got {type(arguments).__name__}"]
+        return [f"参数必须是对象，实际得到 {type(arguments).__name__}"]
 
     for required_field in schema.get("required", []):
         if required_field not in arguments:
-            errors.append(f"Missing required argument: {required_field}")
+            errors.append(f"缺少必需参数：{required_field}")
 
     properties = schema.get("properties", {})
     for arg_name, arg_value in arguments.items():
         if arg_name not in properties:
-            errors.append(f"Unknown argument: {arg_name}")
+            errors.append(f"未知参数：{arg_name}")
             continue
 
         prop_schema = properties[arg_name]
@@ -454,45 +462,45 @@ def validate_tool_arguments(tool_name, arguments):
         type_checks = {"string": str, "integer": int, "number": (int, float), "boolean": bool, "array": list, "object": dict}
         if expected_type in type_checks:
             if not isinstance(arg_value, type_checks[expected_type]):
-                errors.append(f"Argument '{arg_name}': expected {expected_type}, got {type(arg_value).__name__}")
+                errors.append(f"参数 '{arg_name}'：预期为 {expected_type}，实际得到 {type(arg_value).__name__}")
 
         if "enum" in prop_schema and arg_value not in prop_schema["enum"]:
-            errors.append(f"Argument '{arg_name}': '{arg_value}' not in {prop_schema['enum']}")
+            errors.append(f"参数 '{arg_name}'：'{arg_value}' 不在 {prop_schema['enum']} 中")
 
     return errors
 ```
 
-### 步骤 6： Run the Demo
+### 第 6 步：运行 Demo
 
 ```python
 def run_demo():
     register_all_tools()
 
     print("=" * 60)
-    print("  Function Calling & Tool Use Demo")
+    print("  Function Calling 与 Tool Use Demo")
     print("=" * 60)
 
-    print("\n--- Registered Tools ---")
+    print("\n--- 已注册的 Tools ---")
     for name, tool in TOOL_REGISTRY.items():
         desc = tool["definition"]["function"]["description"][:60]
         params = list(tool["definition"]["function"]["parameters"].get("properties", {}).keys())
         print(f"  {name}: {desc}...")
-        print(f"    params: {params}")
+        print(f"    参数：{params}")
 
-    print(f"\n--- Argument Validation ---")
+    print(f"\n--- 参数验证 ---")
     validation_tests = [
-        ("get_weather", {"city": "Tokyo"}, "Valid call"),
-        ("get_weather", {}, "Missing required arg"),
-        ("get_weather", {"city": "Tokyo", "units": "kelvin"}, "Invalid enum value"),
-        ("calculator", {"expression": 123}, "Wrong type (int for string)"),
-        ("unknown_tool", {"x": 1}, "Unknown tool"),
+        ("get_weather", {"city": "Tokyo"}, "有效调用"),
+        ("get_weather", {}, "缺少必需参数"),
+        ("get_weather", {"city": "Tokyo", "units": "kelvin"}, "无效的 enum 值"),
+        ("calculator", {"expression": 123}, "类型错误（应为 string，实际为 int）"),
+        ("unknown_tool", {"x": 1}, "未知 Tool"),
     ]
     for tool_name, args, label in validation_tests:
         errors = validate_tool_arguments(tool_name, args)
-        status = "VALID" if not errors else f"ERRORS: {errors}"
+        status = "有效" if not errors else f"错误：{errors}"
         print(f"  {label}: {status}")
 
-    print(f"\n--- Tool Execution ---")
+    print(f"\n--- Tool 执行 ---")
     direct_tests = [
         {"name": "calculator", "arguments": {"expression": "(10 + 5) * 3 / 2"}},
         {"name": "get_weather", "arguments": {"city": "Tokyo"}},
@@ -507,9 +515,9 @@ def run_demo():
         result = execute_tool_call(call)
         print(f"\n  {call['name']}({json.dumps(call['arguments'])})")
         print(f"    -> {json.dumps(result['result'], indent=None)[:100]}")
-        print(f"    time: {result['execution_time_ms']}ms")
+        print(f"    耗时：{result['execution_time_ms']}ms")
 
-    print(f"\n--- Full Function Calling Loop ---")
+    print(f"\n--- 完整 Function Calling 循环 ---")
     test_queries = [
         "What's the weather in Tokyo?",
         "Calculate (100 + 250) * 0.15",
@@ -519,27 +527,27 @@ def run_demo():
         "Tell me a joke",
     ]
     for query in test_queries:
-        print(f"\n  User: {query}")
+        print(f"\n  用户：{query}")
         result = run_function_calling_loop(query)
         if result["tool_results"]:
             for tr in result["tool_results"]:
-                print(f"    Tool: {tr['tool']} ({tr['execution_time_ms']}ms)")
-                print(f"    Result: {json.dumps(tr['result'], indent=None)[:90]}")
+                print(f"    Tool：{tr['tool']}（{tr['execution_time_ms']}ms）")
+                print(f"    结果：{json.dumps(tr['result'], indent=None)[:90]}")
         else:
-            print(f"    [No tool called -- direct response]")
-        print(f"    Iterations: {result['iterations']}")
+            print(f"    [未调用 Tool——直接响应]")
+        print(f"    迭代次数：{result['iterations']}")
 
-    print(f"\n--- Parallel Tool Calls ---")
+    print(f"\n--- 并行 Tool Call ---")
     multi_city_query = "What's the weather in tokyo and london?"
-    print(f"  User: {multi_city_query}")
+    print(f"  用户：{multi_city_query}")
     result = run_function_calling_loop(multi_city_query)
-    print(f"  Tool calls made: {len(result['tool_results'])}")
+    print(f"  Tool call 数量：{len(result['tool_results'])}")
     for tr in result["tool_results"]:
         city = tr["result"].get("city", "unknown")
         temp = tr["result"].get("temp_c", "N/A")
         print(f"    {city}: {temp}C, {tr['result'].get('condition', 'N/A')}")
 
-    print(f"\n--- Security Checks ---")
+    print(f"\n--- 安全检查 ---")
     security_tests = [
         ("read_file", {"path": "../../etc/passwd"}),
         ("run_code", {"code": "import subprocess; subprocess.run(['ls'])"}),
@@ -548,10 +556,11 @@ def run_demo():
     for tool_name, args in security_tests:
         result = execute_tool_call({"name": tool_name, "arguments": args})
         blocked = result["result"].get("error", False)
-        print(f"  {tool_name}({list(args.values())[0][:40]}): {'BLOCKED' if blocked else 'ALLOWED'}")
+        print(f"  {tool_name}({list(args.values())[0][:40]}): {'已阻止' if blocked else '已允许'}")
 ```
 
-## 使用它
+## 使用框架
+
 ### OpenAI Function Calling
 
 ```python
@@ -563,7 +572,7 @@ def run_demo():
 #     "type": "function",
 #     "function": {
 #         "name": "get_weather",
-#         "description": "Get current weather for a city",
+#         "description": "获取城市的当前天气",
 #         "parameters": {
 #             "type": "object",
 #             "properties": {
@@ -597,7 +606,7 @@ def run_demo():
 # print(final.choices[0].message.content)
 ```
 
-OpenAI 将 tool calls 返回为 `response.choices[0].message.tool_calls`。每个 call 都有一个 `id`，你在返回结果时必须包含它。模型使用这个 ID 将 results 匹配到 calls。GPT-4o 可以在单个 response 中返回多个 tool calls，需要遍历并执行所有 call。
+OpenAI 通过 `response.choices[0].message.tool_calls` 返回 Tool call。每个调用都有一个 `id`，返回结果时必须包含这个 ID。Model 使用该 ID 将结果与调用相匹配。GPT-4o 可以在单个响应中返回多个 Tool call，因此需要遍历并执行所有调用。
 
 ### Anthropic Tool Use
 
@@ -607,11 +616,11 @@ OpenAI 将 tool calls 返回为 `response.choices[0].message.tool_calls`。每�
 # client = anthropic.Anthropic()
 #
 # response = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[{
 #         "name": "get_weather",
-#         "description": "Get current weather for a city",
+#         "description": "获取城市的当前天气",
 #         "input_schema": {
 #             "type": "object",
 #             "properties": {
@@ -628,7 +637,7 @@ OpenAI 将 tool calls 返回为 `response.choices[0].message.tool_calls`。每�
 # result = get_weather(**tool_block.input)
 #
 # final = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[...],
 #     messages=[
@@ -639,15 +648,15 @@ OpenAI 将 tool calls 返回为 `response.choices[0].message.tool_calls`。每�
 # )
 ```
 
-Anthropic 将 tool calls 返回为带有 `type: "tool_use"` 的 content blocks。tool result 放在带有 `type: "tool_result"` 的 user message 中。注意关键区别：Anthropic 使用 `input_schema` 定义 tool parameters，而 OpenAI 使用 `parameters`。
+Anthropic 将 Tool call 作为 `type: "tool_use"` 的内容 block 返回。Tool 结果放在 `type: "tool_result"` 的用户消息中。注意这个关键区别：Anthropic 使用 `input_schema` 定义 Tool 参数，而 OpenAI 使用 `parameters`。
 
-### MCP Integration
+### MCP 集成
 
 ```python
-# MCP servers expose tools over a standardized protocol.
-# Any MCP-compatible client can discover and call these tools.
+# MCP servers 通过标准化协议暴露 Tools。
+# 任何兼容 MCP 的 client 都可以发现并调用这些 Tools。
 #
-# Example: connecting to a Postgres MCP server
+# 示例：连接到 Postgres MCP server
 #
 # from mcp import ClientSession, StdioServerParameters
 # from mcp.client.stdio import stdio_client
@@ -664,44 +673,48 @@ Anthropic 将 tool calls 返回为带有 `type: "tool_use"` 的 content blocks�
 #         result = await session.call_tool("query", {"sql": "SELECT count(*) FROM users"})
 ```
 
-MCP 将 tool implementation 与 tool consumption 解耦。Postgres server 了解 SQL。GitHub server 了解 API。你的 agent 只是 discovery 并调用 tools，它不需要为每个 integration 编写 provider-specific code。
+MCP 将 Tool 实现与 Tool 使用解耦。Postgres server 了解 SQL，GitHub server 了解 API。你的 Agent 只需发现并调用 Tools，不需要为每项集成编写特定于 Provider 的代码。
 
-## 交付它
-本课会产出 `outputs/prompt-tool-designer.md`，这是一个用于设计 tool definitions 的可复用 prompt template。给它一个关于你希望 tool 做什么的 description，它会生成完整的 JSON Schema definition，包括 descriptions、types 和 constraints。
+## 交付成果
 
-它还会产出 `outputs/skill-function-calling-patterns.md`，这是一个用于在 production 中实现 function calling 的 decision framework，覆盖 tool design、error handling、security 和 provider-specific patterns。
+本课会生成 `outputs/prompt-tool-designer.md`，这是一个用于设计 Tool 定义的可复用 Prompt 模板。向它描述希望 Tool 完成的工作，它就会生成包含描述、类型和约束的完整 JSON Schema 定义。
+
+本课还会生成 `outputs/skill-function-calling-patterns.md`，这是一个用于在生产环境中实现 Function calling 的决策框架，涵盖 Tool 设计、错误处理、安全性和特定于 Provider 的模式。
 
 ## 练习
-1. **Add a 6th tool: database query.** 实现一个 simulated SQL tool，使用 in-memory table。该 tool 接收 table name 和 filter conditions（不是 raw SQL）。验证 table name 位于 allowlist 中，并且 filter operators 仅限于 `=`、`>`、`<`、`>=`、`<=`。将匹配 rows 作为 JSON 返回。
 
-2. **Implement retry with error feedback.** 当 tool call 失败时（例如 city not found），把 error message 喂回 model decision function，并让它修正 arguments。记录每个 call 需要多少次 retries。为每个 tool call 设置最多 3 次 retries。
+1. **添加第 6 个 Tool：数据库查询。** 使用内存表实现一个模拟 SQL Tool。该 Tool 接受表名和筛选条件，而不是原始 SQL。验证表名是否位于 allowlist 中，并将筛选运算符限制为 `=`、`>`、`<`、`>=`、`<=`。以 JSON 返回匹配的行。
 
-3. **Build a multi-step agent.** 某些 queries 需要串联 tool calls：“Read the config file and tell me what model is configured, then search the web for that model's pricing.” 实现一个 loop，持续运行直到模型决定不再需要 tools，并把累积 results 传入每个 decision step。限制为 10 次 iterations，以防止 infinite loops。
+2. **实现带错误反馈的重试。** 当 Tool call 失败时，例如未找到城市，将错误消息反馈给 Model 决策 function，让它修正参数。记录每次调用的重试次数。将每个 Tool call 的最大重试次数设置为 3。
 
-4. **Measure tool selection accuracy.** 创建 30 个带有 expected tool names 的 test queries。在全部 30 个 queries 上运行你的 decision function，并衡量它选择正确 tool 的比例。识别哪些 queries 最容易导致 tools 之间的混淆。
+3. **构建多步骤 Agent。** 某些查询需要串联多个 Tool call：“读取配置文件并告诉我配置了哪个 Model，然后在 web 上搜索该 Model 的定价。”实现一个循环，持续运行直到 Model 决定不再需要 Tools，并在每个决策步骤中传入累积结果。最多允许 10 次迭代，以防止无限循环。
 
-5. **Implement tool call caching.** 如果同一个 tool 在 60 秒内以相同 arguments 被调用，则返回 cached result，而不是重新执行。使用以 `(tool_name, frozenset(args.items()))` 为 key 的 dictionary。衡量包含 20 个 queries 的 conversation 中的 cache hit rates。
+4. **测量 Tool 选择准确率。** 创建 30 个测试查询，并为每个查询指定预期 Tool 名称。对全部 30 个查询运行决策 function，测量它选择正确 Tool 的比例。找出最容易导致 Tools 之间混淆的查询。
+
+5. **实现 Tool call 缓存。** 如果 60 秒内使用相同参数调用了同一个 Tool，则返回缓存结果，而不是重新执行。使用以 `(tool_name, frozenset(args.items()))` 为 key 的 dictionary。在包含 20 个查询的对话中测量缓存命中率。
 
 ## 关键术语
-| Term | What people say | What it actually means |
+
+| 术语 | 人们常说的名称 | 实际含义 |
 |------|----------------|----------------------|
-| Function calling | “Tool use” | 模型输出结构化 JSON，描述要用特定 arguments 调用的 function，由你的代码执行，而不是模型执行 |
-| Tool definition | “Function schema” | 一个 JSON Schema object，描述 tool 的 name、purpose、parameters 和 types，模型读取它来决定何时以及如何使用该 tool |
-| Tool choice | “Calling mode” | 控制模型必须调用 tool（required）、可以调用 tool（auto），还是必须调用特定 tool（named） |
-| Parallel calling | “Multi-tool” | 模型在单个 turn 中输出多个 tool calls，从而减少 round trips，GPT-4o 和 Claude 都支持这一点 |
-| Tool result | “Function output” | 执行 tool 后得到的 return value，作为 message 发回模型，使它能在 response 中使用真实数据 |
-| Argument validation | “Input checking” | 在执行 tool 前，验证模型生成的 arguments 是否匹配预期 types、ranges 和 constraints |
-| MCP | “Tool protocol” | Model Context Protocol，即 Anthropic 的 open standard，用于通过 servers 暴露 tools，让任何兼容 client 都能发现并调用 |
-| Agent loop | “ReAct loop” | model-decides-tool、code-executes-tool、result-feeds-back 的迭代循环，直到模型拥有足够信息作出回答 |
-| Tool poisoning | “Prompt injection via tools” | 一种攻击，其中 tool results 包含会操纵模型行为的 instructions，因此要 sanitize 所有 tool outputs |
-| Rate limiting | “Call budget” | 设置每个 conversation 中 tool calls 的最大数量，以防止 infinite loops 和失控的 API costs |
+| Function calling | “Tool use” | Model 输出结构化 JSON，描述要使用特定参数调用的 function。执行者是你的代码，而不是 Model |
+| Tool definition | “Function schema” | 描述 Tool 名称、用途、参数和类型的 JSON Schema 对象。Model 读取它，以决定何时以及如何使用该 Tool |
+| Tool choice | “Calling mode” | 控制 Model 必须调用 Tool（required）、可以调用 Tool（auto），还是必须调用指定 Tool（named） |
+| Parallel calling | “Multi-tool” | Model 在单轮中输出多个 Tool call，从而减少往返次数。GPT-4o 和 Claude 都支持这种方式 |
+| Tool result | “Function output” | 执行 Tool 得到的返回值，它会作为消息发送回 Model，使 Model 可以在响应中使用真实数据 |
+| Argument validation | “Input checking” | 执行 Tool 前，验证 Model 生成的参数是否符合预期类型、范围和约束 |
+| MCP | “Tool protocol” | Model Context Protocol，即 Anthropic 的开放标准，用于通过 server 暴露 Tools，使任何兼容 client 都可以发现并调用它们 |
+| Agent loop | “ReAct loop” | 反复执行“Model 决定 Tool、代码执行 Tool、结果反馈给 Model”的循环，直到 Model 获得足够信息来响应 |
+| Tool poisoning | “通过 Tools 进行 Prompt injection” | 一种攻击方式：Tool 结果中包含操纵 Model 行为的指令。必须清理所有 Tool 输出 |
+| Rate limiting | “Call budget” | 设置每次对话允许的最大 Tool call 数量，以防止无限循环和 API 成本失控 |
 
 ## 延伸阅读
-- [OpenAI Function Calling Guide](https://platform.openai.com/docs/guides/function-calling) — 使用 GPT-4o 进行 tool use 的权威参考，包括 parallel calls、forced calling 和 structured arguments
-- [Anthropic Tool Use Guide](https://docs.anthropic.com/en/docs/tool-use) — Claude 的 tool use 实现，包括 input_schema、multi-tool responses 和 tool_choice configuration
-- [Model Context Protocol Specification](https://modelcontextprotocol.io) — 跨 AI applications 的 tool interoperability open standard，包含 server/client architecture
-- [Schick et al., 2023 — “Toolformer: Language Models Can Teach Themselves to Use Tools”](https://arxiv.org/abs/2302.04761) — 关于训练 LLMs 决定何时以及如何调用 external tools 的基础论文
-- [Patil et al., 2023 — “Gorilla: Large Language Model Connected with Massive APIs”](https://arxiv.org/abs/2305.15334) — 针对 1,645 个 APIs 的准确 API calls 对 LLMs 进行 fine-tuning，并减少 hallucination
-- [Berkeley Function Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html) — 实时 benchmark，对比 GPT-4o、Claude、Gemini 和 open models 的 function calling accuracy
-- [Yao et al., “ReAct: Synergizing Reasoning and Acting in Language Models” (ICLR 2023)](https://arxiv.org/abs/2210.03629) — Thought-Action-Observation loop，它是每次 tool call 外层的 agent loop；本课结束之处，正是 Phase 14 接续之处。
-- [Anthropic — Building effective agents (Dec 2024)](https://www.anthropic.com/research/building-effective-agents) — 从单一 tool-use primitive 构建出的五种可组合 patterns（prompt chaining、routing、parallelization、orchestrator-workers、evaluator-optimizer）。
+
+- [OpenAI Function Calling Guide](https://platform.openai.com/docs/guides/function-calling) — 使用 GPT-4o 进行 Tool use 的权威参考，涵盖并行调用、强制调用和结构化参数
+- [Anthropic Tool Use Guide](https://docs.anthropic.com/en/docs/tool-use) — Claude 的 Tool use 实现，涵盖 input_schema、多 Tool 响应和 tool_choice 配置
+- [Model Context Protocol Specification](https://modelcontextprotocol.io) — 面向 AI 应用程序 Tool 互操作性的开放标准，采用 server/client 架构
+- [Schick et al., 2023 — “Toolformer: Language Models Can Teach Themselves to Use Tools”](https://arxiv.org/abs/2302.04761) — 关于 Training LLMs 判断何时以及如何调用外部 Tools 的奠基论文
+- [Patil et al., 2023 — “Gorilla: Large Language Model Connected with Massive APIs”](https://arxiv.org/abs/2305.15334) — 针对 1,645 个 APIs 对 LLMs 进行 Fine-tuning，以提高 API 调用准确率并减少幻觉
+- [Berkeley Function Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html) — 对比 GPT-4o、Claude、Gemini 和 Open Models 的 Function calling 准确率实时基准
+- [Yao et al., “ReAct: Synergizing Reasoning and Acting in Language Models” (ICLR 2023)](https://arxiv.org/abs/2210.03629) — 围绕每次 Tool call 构建外层 Agent loop 的 Thought-Action-Observation 循环；本课结束之处，正是 Phase 14 开始之处。
+- [Anthropic — Building effective agents (Dec 2024)](https://www.anthropic.com/research/building-effective-agents) — 基于单一 Tool-use 原语构建的五种可组合模式：Prompt chaining、routing、parallelization、orchestrator-workers 和 evaluator-optimizer。
