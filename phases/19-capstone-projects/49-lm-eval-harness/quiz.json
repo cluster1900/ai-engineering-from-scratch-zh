@@ -6,33 +6,33 @@
       "stage": "pre",
       "question": "harness 的 JSONL format 中，哪四个字段定义一个 task example？",
       "options": [
-        "name, score, payload, vendor",
         "id, prompt, targets, metric，以及一个可选的 extras dict，用于存放 metric 需要的旁路数据",
-        "input 和 output",
-        "weights 和 bias"
+        "name, score, payload, vendor",
+        "weights 和 bias",
+        "input 和 output"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "JSONL 行就是 contract。extras 字段让 code_exec metric 能传入 io_pairs，而不会污染 prompt。"
     },
     {
       "stage": "pre",
       "question": "为什么 metric function signature 是 (prediction, targets, extras) -> float？",
       "options": [
-        "随机选择",
-        "这是能处理单 target 字符串匹配、多 reference rouge-l，以及带旁路数据的 code_exec 的最小 signature，同时将 score 保持在可比较的 [0.0, 1.0] 范围内",
         "它返回 integer",
-        "它需要 model object"
+        "它需要 model object",
+        "这是能处理单 target 字符串匹配、多 reference rouge-l，以及带旁路数据的 code_exec 的最小 signature，同时将 score 保持在可比较的 [0.0, 1.0] 范围内",
+        "随机选择"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "[0,1] 范围内的 float 意味着每个 task 和 overall score 都是可解释的平均值。extras slot 是 code_exec 获取 io_pairs 的方式。"
     },
     {
       "stage": "check",
       "question": "code_exec metric 如何抵御恶意 prediction？",
       "options": [
-        "它不抵御",
-        "它用剥离过的 __builtins__ dict 运行 prediction，因此 namespace 只暴露少量安全名称；import statement 会失败，因为 importer 不在 scope 中",
         "它使用 sandbox container",
+        "它用剥离过的 __builtins__ dict 运行 prediction，因此 namespace 只暴露少量安全名称；import statement 会失败，因为 importer 不在 scope 中",
+        "它不抵御",
         "它拒绝任何包含 def 的内容"
       ],
       "correct": 1,
@@ -42,36 +42,36 @@
       "stage": "check",
       "question": "model adapter abstraction 带来了什么？",
       "options": [
-        "什么也没有",
         "它是 harness 中唯一与 model 相关的代码；把 adapter 换成指向新 vendor 的 adapter，tasks、metrics、runner 和 leaderboard format 都保持不变",
-        "它让 model 更快",
-        "它是 torch 要求的"
+        "它是 torch 要求的",
+        "什么也没有",
+        "它让 model 更快"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "本课中的 ToyAdapter 是确定性的 pattern matcher。真实 vendor 的 HttpAdapter 具有相同的 generate(prompts) -> list[str] surface。"
     },
     {
       "stage": "check",
       "question": "为什么 leaderboard JSON 携带像 leaderboard.v1 这样的 schema string？",
       "options": [
-        "为了 SEO",
         "这样未来 format 变更时可以提升 version，下游 dashboard 可以据此分派，而不是静默损坏",
-        "它是随机的",
-        "它会压缩文件"
+        "它会压缩文件",
+        "为了 SEO",
+        "它是随机的"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "这和第 47 课中的 checkpoint payload 使用的是同一个技巧。schema 字段是 migration hook。"
     },
     {
       "stage": "post",
       "question": "阅读 leaderboard 时，overall_score 是如何计算的？比较两个 run 时应该注意什么？",
       "options": [
+        "随机样本",
         "正确计数的总和",
         "每个 task score（每个都在 [0,1] 中）的平均值；比较时，还要对 score 变化的 task diff 每个 example 的 prediction，因为单独的 score 会隐藏哪些 example 发生了 regression",
-        "最佳 task score",
-        "随机样本"
+        "最佳 task score"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "每个 task 平均值的 mean 会让每个 task 权重相同。使用 --include-per-example 将 prediction 级别的 evidence 和 score 放在一起，这样 regression 才可见。"
     }
   ]
