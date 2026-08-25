@@ -43,7 +43,7 @@
   <text x="630" y="149" text-anchor="middle" class="small">~70-75% 移动端覆盖</text>
   <text x="630" y="175" text-anchor="middle" class="step">M3 Max ≈ 41 tok/s</text>
   <text x="630" y="193" text-anchor="middle" class="small">~70-80% 原生性能</text>
-  <text x="630" y="211" text-anchor="middle" class="small">OpenAI 兼容 JS API</text>
+  <text x="630" y="211" text-anchor="middle" class="small">OpenAI 兼容 JavaScript API</text>
 
   <rect x="760" y="50" width="160" height="190" class="jet"/>
   <text x="840" y="72" text-anchor="middle" class="head">NVIDIA Jetson</text>
@@ -57,9 +57,9 @@
 
   <rect x="40" y="260" width="880" height="110" class="box"/>
   <text x="480" y="282" text-anchor="middle" class="head">带宽决定上限 — decode 每个 Token 读取完整权重</text>
-  <text x="480" y="308" text-anchor="middle" class="step">H100 HBM3: 3350 GB/s  →  Llama 8B Q4 上限 ≈ 710 tok/s（实测 170）</text>
-  <text x="480" y="326" text-anchor="middle" class="step">M3 Max 400 GB/s  →  上限 ≈ 85 tok/s（实测 55）</text>
-  <text x="480" y="344" text-anchor="middle" class="step">iPhone 16 60 GB/s  →  上限 ≈ 12 tok/s（实测 8）</text>
+  <text x="480" y="308" text-anchor="middle" class="step">H100 HBM3: 3350 GB/s → Llama 8B Q4 上限 ≈ 710 tok/s（实测 170）</text>
+  <text x="480" y="326" text-anchor="middle" class="step">M3 Max 400 GB/s → 上限 ≈ 85 tok/s（实测 55）</text>
+  <text x="480" y="344" text-anchor="middle" class="step">iPhone 16 60 GB/s → 上限 ≈ 12 tok/s（实测 8）</text>
   <text x="480" y="362" text-anchor="middle" class="caption">仅当 runtime efficiency 低于此上限时，compute 才重要</text>
 
   <rect x="40" y="390" width="880" height="100" class="box"/>

@@ -6,48 +6,48 @@
       "stage": "pre",
       "question": "根据本课，导致 mobile LLM inference 比 datacenter 更慢的核心约束是什么？",
       "options": [
+        "Storage capacity",
         "Wi-Fi latency",
         "Compute throughput",
-        "Memory bandwidth（mobile DRAM 为 50-90 GB/s，而 HBM3 为 2-3 TB/s）",
-        "Storage capacity"
+        "Memory bandwidth（mobile DRAM 为 50-90 GB/s，而 HBM3 为 2-3 TB/s）"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Apple 的 Neural Engine 为什么能避免 CPU-NPU copy overhead？",
       "options": [
+        "Apple Silicon 配备 unified memory — CPU 和 ANE 共享同一个内存池",
         "它使用 PCIe 5.0",
         "Core ML 禁用 KV cache",
-        "它在 copy 前将 weights 转码为 FP4",
-        "Apple Silicon 配备 unified memory — CPU 和 ANE 共享同一个内存池"
+        "它在 copy 前将 weights 转码为 FP4"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "本课推荐 browser 中 WebGPU + WebLLM 使用哪种 quantization format？",
       "options": [
+        "GGUF Q4_K_M",
         "NVFP4",
         "FP8",
-        "通过 mlc_llm convert_weight 编译的 Q4 MLC（q4f16_1）",
-        "GGUF Q4_K_M"
+        "通过 mlc_llm convert_weight 编译的 Q4 MLC（q4f16_1）"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "本课报告的 2026 年 WebGPU mobile 覆盖率大致是多少？",
       "options": [
-        "所有 browser 中 100%",
-        "仅 iOS Safari",
         "低于 10%",
-        "约 70-75%，Firefox Android 仍在追赶"
+        "仅 iOS Safari",
+        "约 70-75%，Firefox Android 仍在追赶",
+        "所有 browser 中 100%"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "为什么 voice 被强调为 edge inference 的 killer app？",
       "options": [
-        "Voice agents 对 latency 敏感（first token < 500 ms），local inference 可完全消除 network latency",
         "Voice models 不需要 KV cache",
         "Voice models 总是能装进 50 MB",
+        "Voice agents 对 latency 敏感（first token < 500 ms），local inference 可完全消除 network latency",
         "Voice 只能在 WebAssembly 中运行"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     }
   ]
