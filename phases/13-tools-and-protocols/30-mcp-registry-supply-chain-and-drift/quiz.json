@@ -1,0 +1,78 @@
+{
+  "lesson": "30-mcp-registry-supply-chain-and-drift",
+  "title": "MCP Registry 供应链：准入、Drift 与回滚",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 MCP Registry 中成功发布，对于生产 gateway 来说意味着什么？",
+      "options": [
+        "记录已通过 Registry 发布控制，但仍需执行本地 runtime 准入",
+        "实时 endpoint 与已发布的 package 完全一致",
+        "最新版本应立即替换所有旧路由",
+        "该 server 对所有 principal 都是安全的"
+      ],
+      "correct": 0,
+      "explanation": "Registry 发布只确立发布事实。产物、runtime、授权和本地批准检查仍然彼此独立。"
+    },
+    {
+      "stage": "check",
+      "question": "当已验证的 namespace 为 com.example 时，哪种 namespace 比较方式会拒绝 com.exampleevil/tool？",
+      "options": [
+        "检查完整 name 是否以 com.example 开头",
+        "搜索子字符串 example",
+        "按斜杠拆分，并精确比较 namespace segment",
+        "信任 server.json 中写入的 namespace"
+      ],
+      "correct": 2,
+      "explanation": "精确的 segment 比较可保留 namespace 边界，并使用可信验证方提供的权威信息。"
+    },
+    {
+      "stage": "check",
+      "question": "实时 server 新增了一个 Tool，但其 Registry 记录和 package coordinate 保持不变。哪项证据可以检测到这种变化？",
+      "options": [
+        "将新的规范化描述符 digest 与已准入的 Toolset pin 进行比较",
+        "Registry 发布时间戳",
+        "namespace 身份验证方法",
+        "仅使用语义版本字符串"
+      ],
+      "correct": 0,
+      "explanation": "实时描述符 pinning 可以检测发布元数据和 package coordinates 无法呈现的行为 drift。"
+    },
+    {
+      "stage": "check",
+      "question": "当已准入的 Registry 版本状态从 active 变为 deprecated 时，应当怎么做？",
+      "options": [
+        "将其从新路由中隔离，并保留历史准入证据",
+        "将已发布记录重写回 active",
+        "删除所有证据，使 client 无法发现该版本",
+        "忽略状态，因为 package 所有权已经过验证"
+      ],
+      "correct": 0,
+      "explanation": "状态是运行输入。隔离会阻止新的使用，而保留的证据可支持审计和回滚分析。"
+    },
+    {
+      "stage": "post",
+      "question": "哪个目标符合自动回滚条件？",
+      "options": [
+        "name 排序在候选版本之前的任意版本",
+        "先前已准入、根据策略处于 active 状态、健康且未被隔离的 pin",
+        "标记为 latest 的版本，即使从未经过审查",
+        "具有熟悉 package name 的已删除 Registry 版本"
+      ],
+      "correct": 1,
+      "explanation": "回滚用于恢复已知且可准入的路由，不会绕过当前状态、健康状况或隔离检查。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么准入 ledger head 应锚定在独立的信任域中？",
+      "options": [
+        "这样便不再需要产物 digest",
+        "这样发布者便可以设置由 Registry 管理的状态",
+        "这样可以将可变版本范围转换为精确 pin",
+        "本地 hash chain 可以检测编辑，而独立锚点能让完整的本地重写被检测出来"
+      ],
+      "correct": 3,
+      "explanation": "能够重写整个本地 ledger 的攻击者也能重新计算其 chain。外部签名锚点或一次写入锚点可以暴露这种重写。"
+    }
+  ]
+}
