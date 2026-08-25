@@ -21,20 +21,20 @@
   <rect x="60" y="80" width="370" height="280" class="cool"/>
   <text x="245" y="104" text-anchor="middle" class="label">v3.0 新增</text>
   <text x="76" y="126" class="content">• 双层缓解时间表</text>
-  <text x="76" y="142" class="small">（Anthropic 单方面 vs 行业建议）</text>
+  <text x="76" y="142" class="small">（Anthropic 单方面政策 vs 行业建议）</text>
   <text x="76" y="162" class="content">• AI R&amp;D-4 阈值（研究自动化）</text>
   <text x="76" y="178" class="small">一旦越过：发布 affirmative case</text>
   <text x="76" y="198" class="content">• Frontier Safety Roadmap（常设文档）</text>
-  <text x="76" y="214" class="content">• Risk Report（常设文档，回顾性）</text>
-  <text x="76" y="234" class="content">• 引用 RAND SL-4 安全</text>
+  <text x="76" y="214" class="content">• Risk Report（常设回顾文档）</text>
+  <text x="76" y="234" class="content">• 引用 RAND SL-4 安全标准</text>
   <text x="76" y="250" class="small">（在行业建议层）</text>
   <text x="76" y="270" class="content">• 承认：“有把握排除</text>
-  <text x="76" y="286" class="content">AI R&amp;D-4 正变得困难”</text>
-  <text x="76" y="318" class="small">v3.0 公告指出该阈值是当前关注点</text>
-  <text x="76" y="334" class="small">即使在当前代 Claude Opus 4.6 上</text>
+  <text x="76" y="286" class="content">“AI R&amp;D-4 正变得困难”</text>
+  <text x="76" y="318" class="small">v3.0 公告指出该阈值是当前关注重点</text>
+  <text x="76" y="334" class="small">即使对当前一代 Claude Opus 4.6 也是如此</text>
 
   <rect x="450" y="80" width="370" height="280" class="hot"/>
-  <text x="635" y="104" text-anchor="middle" class="label">v3.0 移除 / 软化</text>
+  <text x="635" y="104" text-anchor="middle" class="label">v3.0 移除 / 弱化</text>
   <text x="466" y="126" class="content">• 2023 暂停承诺已移除</text>
   <text x="466" y="142" class="small">（明确训练暂停条款删除）</text>
   <text x="466" y="162" class="content">• 定量阈值软化</text>
@@ -42,7 +42,7 @@
   <text x="466" y="198" class="content">• 具体缓解措施被替换为</text>
   <text x="466" y="214" class="content">“affirmative case”框架</text>
   <text x="466" y="234" class="content">• 独立审查仍弱</text>
-  <text x="466" y="250" class="small">（内部 Safety Advisory Group 为主）</text>
+  <text x="466" y="250" class="small">（主要依赖内部 Safety Advisory Group）</text>
   <text x="466" y="270" class="content">• 行业建议层允许</text>
   <text x="466" y="286" class="content">无承诺的政策倡导框架</text>
 
