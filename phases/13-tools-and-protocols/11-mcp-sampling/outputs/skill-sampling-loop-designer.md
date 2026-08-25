@@ -1,30 +1,42 @@
 ---
 name: sampling-loop-designer
-description: 使用 MCP sampling 设计一个由 server 托管的 agent loop，并配置合适的 modelPreferences、rate limits 和安全确认。
-version: 1.0.0
+description: 将 Model 辅助型 MCP Tool 迁移到直接 Inference，或迁移到无状态的 2026-07-28 MRTR，并使用有界的兼容性 Sampling。
+version: 2.0.0
 phase: 13
 lesson: 11
-tags: [mcp, sampling, agent-loop, model-preferences]
+tags: [mcp, mrtr, sampling, stateless, migration]
 ---
 
-给定一个需要 LLM 推理的 server-side 算法（research、summarization、planning、triage），设计一个基于 MCP sampling 的实现。
+为面向协议修订版 `2026-07-28` 的 MCP server 设计 Model 辅助行为。
+
+从一个决策开始：server 能否直接与 Model provider 集成？对于新设计，Sampling 已被弃用。除非使用客户端的 Model 和凭据是一项明确的产品要求，否则应优先选择直接集成。
 
 产出：
 
-1. Loop 结构。为每一轮 sampling 编号，说明 prompt 形状和预期输出类型。
-2. 每轮的 `modelPreferences`。按轮次为 cost / speed / intelligence 分配权重（总和 1.0）。"pick files" 轮偏向 cost；"synthesize" 轮偏向 intelligence。
-3. Rate limit。为每次调用设置 `max_samples_per_tool`；说明该数值的理由。
-4. Safety hooks。说明 client 应在何处显示确认对话框，以及拒绝路径会做什么。
-5. SEP-1577 纳入判断。决定是否在 sampling 内使用 tools；如果使用，标记 drift risk 并指定 tool 列表。
+1. 架构决策。选择直接 Inference 或兼容性 Sampling，并说明原因。
+2. 发现契约。展示 `server/discover`，其中包含准确的 `supportedVersions`、声明的 capabilities、`ttlMs` 和 `cacheScope`。如果声明了 Tool，请包含强制性的确定性 `tools/list` 描述符，其中应有有效的 object `inputSchema`、`resultType: "complete"`、server 身份元数据和缓存提示。
+3. 请求封装。在每个请求的 `_meta` 中包含协议版本和客户端 capabilities。版本缺失或不是字符串时使用 `-32602`；版本不受支持时使用 `-32022`，并提供准确的 `supported` 和 `requested` 数据；缺少 Sampling 时使用 `-32021`，并提供 `requiredCapabilities` object。客户端身份元数据仅作为信息使用。绝不为没有 id 的通知发送 JSON-RPC 响应；通过 HTTP 接受的通知应收到无正文的 `202`。
+4. 轮次表。对于每轮 MRTR，列出 `inputRequests` key、Embedding请求的 method、预期响应 schema、验证方式和预算。
+5. 重试契约。要求保留原始 method 和 arguments，使用新的 JSON-RPC id、当前轮次的 `inputResponses`，并逐字节保持 `requestState` 不变。
+6. 状态保护。将 HMAC 或 authenticated encryption 绑定到经过身份验证的主体、method、argument digest、阶段和较短的有效期。
+7. 安全策略。定义审批、最大轮数、Token 和字节限制、响应验证、日志记录和拒绝行为。
+8. 移除计划。如果仍保留 Sampling，请说明将其替换为直接集成的条件和日期。
 
 硬性拒绝：
-- 任何没有 rate limit 的 loop。存在 loop bombs 和资源盗用风险。
-- 任何设置 `includeContext: "allServers"` 的 loop。会造成跨 server 泄漏。
-- 任何 server 要求 client 生成内容，然后未经用户确认又将该内容作为 tool input 回传的 loop。confused-deputy 攻击Vector。
+
+- 在没有文档化需求的情况下，让新设计采用已弃用的 Sampling。
+- 2026-07-28 server 将 `sampling/createMessage` 作为实时的 server-to-client 请求发送。
+- 使用 `initialize`、`notifications/initialized`、`Mcp-Session-Id` 或隐藏的协议 session 状态。
+- 使用未签名且会影响授权、资源访问或业务逻辑的 `requestState`。
+- 重试时复用原始 JSON-RPC id，或更改原始 arguments。
+- 客户端 Model 循环缺少 capability 检查、审批策略、验证和严格轮数上限。
+- 使用 `includeContext: "allServers"` 或隐式的跨 server Context。
 
 拒绝规则：
-- 如果 server 拥有自己的 LLM 凭据，询问 sampling 是否确实必要；直接调用可能更简单。
-- 如果 use case 是单次 one-shot tool call，拒绝设计 sampling loop；sampling 用于多轮推理。
-- 如果用户要求一个向最终用户隐藏意图的 sampling loop，直接拒绝（covert sampling）。
 
-输出：一页设计，包含 loop steps、每轮的 modelPreferences、rate limit 和 safety checklist。结尾附注，标记与该设计相关的任何 SEP-1577（tools-in-sampling）drift risk。
+- 拒绝隐蔽的 Model 调用，以及任何向用户隐藏 server 意图的设计。
+- 拒绝将 Model 输出作为身份、授权或用户同意的证明。
+- 当一次确定性的 Tool 调用已经足够时，拒绝多轮设计。
+- 拒绝将客户端和 server 元数据称为经过身份验证的身份。
+
+输出一页架构说明，其中包含决策、线路流程、轮次表、已签名状态的内容、安全预算、失败场景和迁移计划。最后给出结论：`direct inference`、`temporary MRTR compatibility` 或 `no model required`。

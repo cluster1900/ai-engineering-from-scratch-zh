@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Georgia, 'Times New Roman', serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
@@ -12,66 +12,57 @@
       .head { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
       .step { font-size: 12px; font-family: 'Menlo', monospace; fill: #222; }
       .small { font-size: 11px; font-family: 'Menlo', monospace; fill: #333; }
-      .caption { font-size: 11px; fill: #555; font-style: italic; }
       .edge { stroke: #1a1a1a; stroke-width: 1.5; fill: none; }
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">通过 sampling 的服务器托管 agent loop（无服务器 API key）</text>
+  <text x="480" y="26" text-anchor="middle" class="title">2026-07-28 Model 输入：直接集成或无状态 MRTR</text>
 
-  <rect x="40" y="60" width="260" height="440" class="cool"/>
-  <text x="170" y="82" text-anchor="middle" class="head">client（用户 host）</text>
-  <text x="56" y="108" class="small">持有 LLM 凭据</text>
-  <text x="56" y="128" class="step">LLM provider</text>
-  <text x="56" y="146" class="small">（Claude、GPT、Gemini，</text>
-  <text x="56" y="162" class="small">本地 Ollama，...）</text>
-  <text x="56" y="194" class="step">sampling handler</text>
-  <text x="56" y="212" class="small">按服务器请求运行 LLM；</text>
-  <text x="56" y="228" class="small">返回 completion</text>
-  <text x="56" y="260" class="step">安全</text>
-  <text x="56" y="278" class="small">- 向用户显示请求</text>
-  <text x="56" y="294" class="small">- 应用每会话速率</text>
-  <text x="56" y="310" class="small">- 遵循 modelPreferences</text>
-  <text x="56" y="342" class="step">计费</text>
-  <text x="56" y="360" class="small">用户为采样付费</text>
-  <text x="56" y="376" class="small">用自己的 key 调用</text>
+  <rect x="40" y="55" width="880" height="70" class="hot"/>
+  <text x="480" y="78" text-anchor="middle" class="head">架构决策</text>
+  <text x="60" y="100" class="small">新服务器：直接调用 Model 提供商。兼容需求：通过 MRTR 传递已弃用的 Sampling。</text>
 
-  <path d="M300,180 L420,180" class="edge" marker-end="url(#arrow)"/>
-  <text x="360" y="174" text-anchor="middle" class="small">tools/call summarize_repo</text>
+  <rect x="40" y="145" width="260" height="350" class="cool"/>
+  <text x="170" y="170" text-anchor="middle" class="head">客户端和宿主 Model</text>
+  <text x="58" y="202" class="step">每个 POST 都包含 _meta</text>
+  <text x="58" y="220" class="small">protocolVersion: 2026-07-28</text>
+  <text x="58" y="238" class="small">clientCapabilities: sampling</text>
+  <text x="58" y="272" class="step">处理 inputRequests</text>
+  <text x="58" y="290" class="small">应用审批和预算</text>
+  <text x="58" y="308" class="small">验证 Model 输出</text>
+  <text x="58" y="342" class="step">重试原方法</text>
+  <text x="58" y="360" class="small">新的 JSON-RPC id</text>
+  <text x="58" y="378" class="small">本轮的 inputResponses</text>
+  <text x="58" y="396" class="small">原样回显 requestState</text>
+  <text x="58" y="438" class="small">无 initialize</text>
+  <text x="58" y="456" class="small">无协议会话</text>
+  <text x="58" y="474" class="small">无反向请求通道</text>
 
-  <path d="M660,260 L300,260" class="edge" marker-end="url(#arrow)"/>
-  <text x="480" y="254" text-anchor="middle" class="small">sampling/createMessage {pick files}</text>
+  <rect x="660" y="145" width="260" height="350" class="cold"/>
+  <text x="790" y="170" text-anchor="middle" class="head">无状态 MCP 服务器</text>
+  <text x="678" y="202" class="step">discover + 缓存的 tools/list</text>
+  <text x="678" y="220" class="small">version -32022 | capability -32021</text>
+  <text x="678" y="252" class="step">第 1 轮：选择文件</text>
+  <text x="678" y="270" class="small">resultType: input_required</text>
+  <text x="678" y="288" class="small">Embedding的 sampling/createMessage</text>
+  <text x="678" y="320" class="step">第 2 轮：总结</text>
+  <text x="678" y="338" class="small">验证首次响应</text>
+  <text x="678" y="356" class="small">返回下一个 input_required</text>
+  <text x="678" y="388" class="step">第 3 轮：完成</text>
+  <text x="678" y="406" class="small">resultType: complete</text>
+  <text x="678" y="438" class="step">requestState</text>
+  <text x="678" y="456" class="small">HMAC 绑定主体、参数、</text>
+  <text x="678" y="474" class="small">阶段和短期过期时间</text>
 
-  <path d="M300,310 L660,310" class="edge" marker-end="url(#arrow)"/>
-  <text x="480" y="304" text-anchor="middle" class="small">&lt;- completion {picked: [...]}</text>
+  <path d="M300,230 L660,230" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="222" text-anchor="middle" class="small">1. tools/call, id 1</text>
+  <path d="M660,285 L300,285" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="277" text-anchor="middle" class="small">2. input_required + 签名状态</text>
+  <path d="M300,345 L660,345" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="337" text-anchor="middle" class="small">3. 重试 tools/call, id 2</text>
+  <path d="M660,400 L300,400" class="edge" marker-end="url(#arrow)"/>
+  <text x="480" y="392" text-anchor="middle" class="small">4. 下一个 input_required 或 complete</text>
 
-  <path d="M660,370 L300,370" class="edge" marker-end="url(#arrow)"/>
-  <text x="480" y="364" text-anchor="middle" class="small">sampling/createMessage {summarize}</text>
-
-  <path d="M300,420 L660,420" class="edge" marker-end="url(#arrow)"/>
-  <text x="480" y="414" text-anchor="middle" class="small">&lt;- completion {summary}</text>
-
-  <path d="M660,460 L420,460" class="edge" marker-end="url(#arrow)"/>
-  <text x="540" y="454" text-anchor="middle" class="small">tools/call result {summary}</text>
-
-  <rect x="660" y="60" width="260" height="440" class="cold"/>
-  <text x="790" y="82" text-anchor="middle" class="head">服务器 (summarize_repo)</text>
-  <text x="676" y="108" class="small">无 LLM 凭据</text>
-  <text x="676" y="128" class="step">算法</text>
-  <text x="676" y="146" class="small">1. 遍历文件列表</text>
-  <text x="676" y="162" class="small">2. 让客户端选择</text>
-  <text x="676" y="178" class="small">3. 读取所选文件</text>
-  <text x="676" y="194" class="small">4. 让客户端总结</text>
-  <text x="676" y="210" class="small">5. 返回结果</text>
-  <text x="676" y="240" class="step">modelPreferences</text>
-  <text x="676" y="258" class="small">pick files: cost 0.5, int 0.2</text>
-  <text x="676" y="274" class="small">summarize  : cost 0.2, int 0.6</text>
-  <text x="676" y="306" class="step">护栏</text>
-  <text x="676" y="324" class="small">- max_samples_per_tool</text>
-  <text x="676" y="340" class="small">- includeContext: "none"</text>
-  <text x="676" y="356" class="small">- 无隐式采样</text>
-  <text x="676" y="388" class="step">SEP-1577 (drift-risk)</text>
-  <text x="676" y="406" class="small">sampling 内的 tools[]</text>
-  <text x="676" y="422" class="small">用于服务器托管 ReAct</text>
-  <text x="676" y="438" class="small">SDK 形态仍在稳定</text>
+  <rect x="40" y="515" width="880" height="30" class="box"/>
+  <text x="480" y="535" text-anchor="middle" class="small">任何服务器实例均可处理重试，因为请求和受完整性保护的状态都是自包含的。</text>
 </svg>

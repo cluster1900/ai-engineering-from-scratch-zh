@@ -1,0 +1,78 @@
+{
+  "lesson": "11-mcp-sampling",
+  "title": "MCP Model 输入：Sampling 迁移与无状态 MRTR",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "一个新的 MCP server 需要 Model Inference。在 2026-07-28 下，默认架构是什么？",
+      "options": [
+        "直接与 Model provider 集成",
+        "在每次 Tool 调用前发送 sampling/createMessage",
+        "将客户端的 Model key 存储在协议 session 中",
+        "为 Sampling 打开永久 SSE stream"
+      ],
+      "correct": 0,
+      "explanation": "对于新设计，Sampling 已被弃用。当 server 需要 Model Inference 时，推荐默认采用与 provider 直接集成的方式。"
+    },
+    {
+      "stage": "check",
+      "question": "2026-07-28 server 如何在 tools/call 期间请求兼容性 Sampling？",
+      "options": [
+        "将 Prompt 写入 server/discover",
+        "将 Prompt 放入 Mcp-Session-Id header",
+        "返回 resultType 为 input_required 的结果，并在 inputRequests 中放入 sampling/createMessage",
+        "在同一连接上发送反向 JSON-RPC 请求"
+      ],
+      "correct": 2,
+      "explanation": "MRTR 将 server-to-client 请求放在 input_required 结果中，从而避免使用反向请求通道。声明的 summarize_repo Tool 必须先通过确定性的 tools/list 提供，并具有有效的 inputSchema。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个属性能够证明 MRTR 重试是一个独立的 JSON-RPC 请求？",
+      "options": [
+        "它省略每个请求的元数据",
+        "它使用与原始请求相同的 id",
+        "它使用新的 id，同时重复原始 method 和 arguments",
+        "它移除原始 Tool arguments"
+      ],
+      "correct": 2,
+      "explanation": "客户端使用新的 JSON-RPC id 重复原始操作，并携带当前的 inputResponses 和原样返回的 requestState。"
+    },
+    {
+      "stage": "check",
+      "question": "当 requestState 会影响资源访问时，必须使用什么来保护它？",
+      "options": [
+        "绑定到主体、请求和有效期的 HMAC 或 authenticated encryption",
+        "仅使用 Base64 encoding",
+        "一个 clientInfo 名称",
+        "一个长期存在的 transport session"
+      ],
+      "correct": 0,
+      "explanation": "requestState 会经过不受信任的客户端。完整性保护和绑定可以防止篡改以及跨请求重放。"
+    },
+    {
+      "stage": "post",
+      "question": "客户端没有在每个请求的 capabilities 中声明 Sampling。server 应使用哪种准确的协议响应？",
+      "options": [
+        "仍然发送Embedding式 Sampling 请求",
+        "返回 -32021 并提供 data.requiredCapabilities，或选择不使用 Sampling 的路径",
+        "将该 capability 添加到客户端元数据中",
+        "根据之前的请求推定 capability"
+      ],
+      "correct": 1,
+      "explanation": "server 不得发出客户端未在当前请求中声明支持的 input request。缺少 capability 时的准确错误码是 -32021。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种迁移方式可以让两轮兼容性循环在协议层保持无状态？",
+      "options": [
+        "每次使用新的重试请求时，只携带当前轮次的 inputResponses 和已签名的阶段状态",
+        "将阶段状态存储在 Mcp-Session-Id 下",
+        "在完成前始终复用原始请求 id",
+        "在隐藏的 session 中累积所有 Model 响应"
+      ],
+      "correct": 0,
+      "explanation": "每次重试都是自包含的。已签名的 requestState 携带经过验证的中间状态，而 inputResponses 只包含当前轮次。"
+    }
+  ]
+}
