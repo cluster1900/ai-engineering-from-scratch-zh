@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "微积分中的链式法则说明了什么？",
-      "options": ["和的导数等于导数之和", "复合函数的导数等于各个函数导数的乘积", "乘积的积分等于积分的乘积", "函数只有在线性时才能求导"],
+      "options": [
+        "函数只有在线性时才能求导",
+        "复合函数的导数等于各个函数导数的乘积",
+        "和的导数等于导数之和",
+        "乘积的积分等于积分的乘积"
+      ],
       "correct": 1,
       "explanation": "对于 y = f(g(x))，链式法则表示 dy/dx = f'(g(x)) * g'(x)。你需要将链条中每一环的导数相乘。这是 backpropagation 的数学基础。"
     },
     {
       "stage": "pre",
       "question": "什么是 computational graph？",
-      "options": ["Loss 与训练步数的图", "一种有向图，其中节点是操作，边向前传递值或向后传递 gradients", "展示 Neural Network 架构的图示", "用于存储训练数据的图数据库"],
-      "correct": 1,
+      "options": [
+        "一种有向图，其中节点是操作，边向前传递值或向后传递 gradients",
+        "展示 Neural Network 架构的图示",
+        "用于存储训练数据的图数据库",
+        "Loss 与训练步数的图"
+      ],
+      "correct": 0,
       "explanation": "computational graph 表示一次计算中的操作序列。数据沿图向前流动，在 backpropagation 期间 gradients 向后流动。"
     },
     {
       "stage": "post",
       "question": "为什么 PyTorch 使用 reverse-mode autodiff（backpropagation）而不是 forward-mode？",
-      "options": ["Reverse mode 在数值上更准确", "Reverse mode 在一次 backward pass 中计算所有 gradients，而 forward mode 需要对每个输入变量执行一次 pass -- Neural networks 有数百万个输入，但只有一个 Loss 输出", "Reverse mode 使用更少内存", "Forward mode 无法处理非线性函数"],
+      "options": [
+        "Forward mode 无法处理非线性函数",
+        "Reverse mode 在一次 backward pass 中计算所有 gradients，而 forward mode 需要对每个输入变量执行一次 pass -- Neural networks 有数百万个输入，但只有一个 Loss 输出",
+        "Reverse mode 在数值上更准确",
+        "Reverse mode 使用更少内存"
+      ],
       "correct": 1,
       "explanation": "Neural networks 有数百万个权重输入，但只产生一个标量 Loss。Reverse mode 总共只需要一次 backward pass。Forward mode 则需要对每个权重执行一次 pass -- 也就是数百万次 pass -- 因此不切实际。"
     },
     {
       "stage": "post",
       "question": "在 Value 类 autograd engine 中，为什么 backward function 使用 '+=' 而不是 '=' 来累积 gradients？",
-      "options": ["为了对多个样本的 gradients 求平均", "因为一个值如果被多个操作使用，会从每个操作接收 gradient 贡献，而这些贡献必须相加", "为了防止 gradients 出现数值溢出", "因为 Python 在 closures 中不支持 '=' operator"],
-      "correct": 1,
+      "options": [
+        "因为一个值如果被多个操作使用，会从每个操作接收 gradient 贡献，而这些贡献必须相加",
+        "为了对多个样本的 gradients 求平均",
+        "为了防止 gradients 出现数值溢出",
+        "因为 Python 在 closures 中不支持 '=' operator"
+      ],
+      "correct": 0,
       "explanation": "当一个值流入多个操作时（例如 x 同时用于 x*y 和 x+z），它的总 gradient 是所有传入 gradient 贡献之和。使用 '=' 会覆盖先前的贡献。"
     },
     {
       "stage": "post",
       "question": "什么是 gradient checking，什么时候应该使用它？",
-      "options": ["检查 gradients 是否低于某个阈值，以防止 exploding gradients", "将 autodiff gradients 与数值 finite-difference gradients 对比，以验证 backward pass 的正确性", "检查所有 parameters 在训练期间是否都收到了非零 gradients", "在训练期间监控 gradient 大小，以检测 vanishing gradients"],
+      "options": [
+        "检查 gradients 是否低于某个阈值，以防止 exploding gradients",
+        "将 autodiff gradients 与数值 finite-difference gradients 对比，以验证 backward pass 的正确性",
+        "检查所有 parameters 在训练期间是否都收到了非零 gradients",
+        "在训练期间监控 gradient 大小，以检测 vanishing gradients"
+      ],
       "correct": 1,
       "explanation": "Gradient checking 通过 (f(x+h) - f(x-h)) / 2h 计算数值导数，并将其与 autodiff gradients 对比。在向 autograd engine 添加新操作或调试训练失败时使用它。"
     }
-  ]
+  ],
+  "title": null
 }
