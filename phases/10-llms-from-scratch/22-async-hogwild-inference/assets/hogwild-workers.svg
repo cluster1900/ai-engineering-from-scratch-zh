@@ -17,12 +17,12 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">Hogwild! 推理 — N 个 worker，一个共享 KV cache</text>
+  <text x="480" y="24" text-anchor="middle" class="title">Hogwild! 推理 — N 个 worker，共享一个 KV cache</text>
 
   <!-- Worker 1 -->
   <rect x="60" y="60" width="200" height="120" class="worker1"/>
   <text x="160" y="84" text-anchor="middle" class="head">worker 1</text>
-  <text x="160" y="106" text-anchor="middle" class="small">读取完整共享 cache</text>
+  <text x="160" y="106" text-anchor="middle" class="small">读取完整的共享 cache</text>
   <text x="160" y="124" text-anchor="middle" class="small">决定下一步写什么</text>
   <text x="160" y="144" text-anchor="middle" class="small">写入一个 Token</text>
   <text x="160" y="164" text-anchor="middle" class="small">重复</text>
@@ -30,7 +30,7 @@
   <!-- Worker 2 -->
   <rect x="60" y="360" width="200" height="120" class="worker2"/>
   <text x="160" y="384" text-anchor="middle" class="head">worker 2</text>
-  <text x="160" y="406" text-anchor="middle" class="small">读取完整共享 cache</text>
+  <text x="160" y="406" text-anchor="middle" class="small">读取完整的共享 cache</text>
   <text x="160" y="424" text-anchor="middle" class="small">看到 worker 1 的 Token</text>
   <text x="160" y="444" text-anchor="middle" class="small">转向未探索工作</text>
   <text x="160" y="464" text-anchor="middle" class="small">写入一个 Token</text>
@@ -62,8 +62,8 @@
   <text x="825" y="249" text-anchor="middle" class="step">C</text>
 
   <text x="650" y="290" text-anchor="middle" class="small">Token 从所有 worker 异步到达</text>
-  <text x="650" y="308" text-anchor="middle" class="small">RoPE positions 让 cache 在并发写入下保持稳定</text>
-  <text x="650" y="328" text-anchor="middle" class="small">每个 worker 的下次读取会看到全部内容</text>
+  <text x="650" y="308" text-anchor="middle" class="small">RoPE positions 让 cache 在并发写入时保持稳定</text>
+  <text x="650" y="328" text-anchor="middle" class="small">每个 worker 下次读取时会看到全部内容</text>
   <text x="650" y="346" text-anchor="middle" class="small">（包括其他 worker 刚写入的 Token）</text>
 
   <!-- Arrows -->
