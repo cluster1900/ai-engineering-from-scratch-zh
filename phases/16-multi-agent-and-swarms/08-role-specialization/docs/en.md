@@ -69,6 +69,10 @@ PwC 报告称（CrewAI deployments, 2025），加入结构化 validation loop �
 - **AutoGen** — 在 GroupChat 中使用带单词名称的 role-specific ConversableAgents。
 - **OpenAI Agents SDK** — 在 role-specialized Agents 之间使用 handoff tools。
 
+```figure
+swarm-roles
+```
+
 ## 构建
 
 `code/main.py` 实现了一个用于构建简单 Python function 的 4-role pipeline：

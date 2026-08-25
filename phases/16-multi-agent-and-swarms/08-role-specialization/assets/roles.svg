@@ -59,7 +59,7 @@
 
   <rect x="40" y="240" width="830" height="110" class="box"/>
   <text x="450" y="262" text-anchor="middle" class="head">为什么 verifier 是承重角色</text>
-  <text x="450" y="284" text-anchor="middle" class="small">MAST 分类法（Cemri et al. 2025）：1642 个多 agent 失败中 21.3% 是验证缺口</text>
+  <text x="450" y="284" text-anchor="middle" class="small">MAST 分类法（Cemri et al. 2025）：1642 个多 Agent 失败中 21.3% 是验证缺口</text>
   <text x="450" y="304" text-anchor="middle" class="small">PwC 2025：CrewAI 中结构化验证循环使准确率 10% -&gt; 70%（7× 增益）</text>
   <text x="450" y="324" text-anchor="middle" class="small">反模式：每个角色都是说“我看挺好”的 LLM — 经典 MAST 失败</text>
   <text x="450" y="342" text-anchor="middle" class="small">始终配对 critic（主观）与 verifier（确定性）；它们发现不同 bug</text>
@@ -69,5 +69,5 @@
   <text x="450" y="412" text-anchor="middle" class="small">Code = SOP(Team): Product Manager, Architect, Project Manager, Engineer, QA Engineer</text>
   <text x="450" y="430" text-anchor="middle" class="small">每个角色都有严格输入/输出 schema · pipeline 变得确定性</text>
   <text x="450" y="450" text-anchor="middle" class="small">CrewAI Agent(role, goal, backstory) 是现代易用界面</text>
-  <text x="450" y="470" text-anchor="middle" class="small">LangGraph 将角色编码为带专用 prompt 的图节点</text>
+  <text x="450" y="470" text-anchor="middle" class="small">LangGraph 将角色编码为带专用 Prompt 的图节点</text>
 </svg>
