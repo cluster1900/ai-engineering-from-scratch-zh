@@ -17,46 +17,46 @@
 
   <rect x="40" y="50" width="280" height="210" class="dev"/>
   <text x="180" y="72" text-anchor="middle" class="head">开发平台</text>
-  <text x="180" y="92" text-anchor="middle" class="small">traces + evals + prompts + sessions</text>
+  <text x="180" y="92" text-anchor="middle" class="small">追踪 + 评测 + Prompt + 会话</text>
   <rect x="60" y="110" width="240" height="35" class="box"/>
   <text x="180" y="132" text-anchor="middle" class="step">LangSmith（$39/用户/月）</text>
   <rect x="60" y="150" width="240" height="35" class="box"/>
   <text x="180" y="172" text-anchor="middle" class="step">Langfuse（MIT + 50K 免费）</text>
   <rect x="60" y="190" width="240" height="35" class="box"/>
   <text x="180" y="212" text-anchor="middle" class="step">Opik（Apache 2.0）</text>
-  <text x="180" y="245" text-anchor="middle" class="caption">打包式 — 最适合 dev loops</text>
+  <text x="180" y="245" text-anchor="middle" class="caption">打包式 — 最适合开发循环</text>
 
   <rect x="340" y="50" width="280" height="210" class="gw"/>
-  <text x="480" y="72" text-anchor="middle" class="head">gateway / telemetry</text>
-  <text x="480" y="92" text-anchor="middle" class="small">traces + metrics + gateway 功能</text>
+  <text x="480" y="72" text-anchor="middle" class="head">网关 / 遥测</text>
+  <text x="480" y="92" text-anchor="middle" class="small">追踪 + 指标 + 网关功能</text>
   <rect x="360" y="110" width="240" height="35" class="box"/>
-  <text x="480" y="132" text-anchor="middle" class="step">Helicone（proxy，MIT）</text>
+  <text x="480" y="132" text-anchor="middle" class="step">Helicone（代理，MIT）</text>
   <rect x="360" y="150" width="240" height="35" class="box"/>
   <text x="480" y="172" text-anchor="middle" class="step">SigNoz（Apache 2.0）</text>
   <rect x="360" y="190" width="240" height="35" class="box"/>
-  <text x="480" y="212" text-anchor="middle" class="step">OpenLLMetry（OSS）</text>
+  <text x="480" y="212" text-anchor="middle" class="step">OpenLLMetry（开源）</text>
   <text x="480" y="245" text-anchor="middle" class="caption">极简 — 搭配开发平台</text>
 
   <rect x="640" y="50" width="280" height="210" class="scale"/>
-  <text x="780" y="72" text-anchor="middle" class="head">scale / dev / lake</text>
+  <text x="780" y="72" text-anchor="middle" class="head">规模 / 开发 / 数据湖</text>
   <text x="780" y="92" text-anchor="middle" class="small">RAG 漂移，zero-copy，长期</text>
   <rect x="660" y="110" width="240" height="35" class="box"/>
   <text x="780" y="132" text-anchor="middle" class="step">Phoenix（Elastic L2.0）</text>
   <rect x="660" y="150" width="240" height="35" class="box"/>
   <text x="780" y="172" text-anchor="middle" class="step">Arize AX（zero-copy）</text>
   <rect x="660" y="190" width="240" height="35" class="box"/>
-  <text x="780" y="212" text-anchor="middle" class="step">TruLens（OSS evals）</text>
+  <text x="780" y="212" text-anchor="middle" class="step">TruLens（开源评测）</text>
   <text x="780" y="245" text-anchor="middle" class="caption">RAG + 长期分析</text>
 
   <rect x="40" y="280" width="880" height="100" class="otel"/>
   <text x="480" y="302" text-anchor="middle" class="head">OpenTelemetry GenAI conventions — 粘合层</text>
   <text x="480" y="325" text-anchor="middle" class="step">gen_ai.system · gen_ai.request.model · gen_ai.usage.input_tokens · gen_ai.usage.output_tokens</text>
   <text x="480" y="345" text-anchor="middle" class="small">2025 已发布。2026 生产模式：</text>
-  <text x="480" y="363" text-anchor="middle" class="step">gateway（Helicone）+ eval（Phoenix）+ lake（Iceberg / Arize AX）</text>
+  <text x="480" y="363" text-anchor="middle" class="step">网关（Helicone）+ 评测（Phoenix）+ 数据湖（Iceberg / Arize AX）</text>
 
   <rect x="40" y="400" width="880" height="100" class="box"/>
-  <text x="480" y="422" text-anchor="middle" class="head">规模化 sampling — 不能保留 1M traces/day 原始数据</text>
-  <text x="480" y="444" text-anchor="middle" class="step">保留 100% errors · 保留 100% high-cost · sample 5% success</text>
+  <text x="480" y="422" text-anchor="middle" class="head">规模化采样 — 无法保留 1M 追踪/天的原始数据</text>
+  <text x="480" y="444" text-anchor="middle" class="step">保留 100% 错误 · 保留 100% 高成本请求 · 采样 5% 成功请求</text>
   <text x="480" y="462" text-anchor="middle" class="step">始终保留聚合 · 原始数据用于长尾调试</text>
-  <text x="480" y="482" text-anchor="middle" class="caption">Arize AX 声称规模化时比 monolithic APM 便宜 ~100x — 在自有 data lake 上 zero-copy</text>
+  <text x="480" y="482" text-anchor="middle" class="caption">Arize AX 声称规模化时比单体式 APM 便宜约 100x — 在自有数据湖上 zero-copy</text>
 </svg>

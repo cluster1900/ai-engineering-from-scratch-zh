@@ -97,6 +97,10 @@ OpenTelemetry 在 2025 年末发布了 GenAI semantic conventions（`gen_ai.syst
 - Arize AX claim：在 scale 下比 monolithic 便宜约 100x。
 - OpenTelemetry GenAI conventions：2025 发布，2026 广泛采用。
 
+```figure
+i4-otel-glue
+```
+
 ## 使用它
 `code/main.py` 模拟在不同 retention strategies（100% ingest、sampling、sampling + errors）下的一天 1M traces。报告 storage cost 以及每种策略下丢失的内容。
 
