@@ -66,6 +66,10 @@ OpenHands 作者和 Epoch AI 都指出 SWE-bench Verified 存在 easy tail：500
 
 选择 agent 的含义是：在你自己的 bug backlog 上运行一个类似 Pro 的子集。真正重要的分数，是代表你实际交付内容的任务上的分数。
 
+```figure
+a5-scaffold-delta
+```
+
 ## 使用它
 
 `code/main.py` 在一个固定的 mini-task distribution 上比较两个玩具 agent scaffolds：

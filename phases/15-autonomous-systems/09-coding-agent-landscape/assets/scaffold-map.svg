@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">脚手架比 base model 更影响分数</text>
+  <text x="440" y="26" text-anchor="middle" class="title">脚手架比基础 Model 更影响分数</text>
 
   <rect x="40" y="50" width="800" height="440" class="box"/>
 
@@ -30,10 +30,10 @@
   <rect x="290" y="80" width="160" height="70" class="hot"/>
   <text x="370" y="104" text-anchor="middle" class="label">SWE-agent v1</text>
   <text x="370" y="124" text-anchor="middle" class="small">ACI 命令集</text>
-  <text x="370" y="140" text-anchor="middle" class="small">JSON tool 调用</text>
+  <text x="370" y="140" text-anchor="middle" class="small">JSON Tool 调用</text>
 
   <rect x="500" y="80" width="160" height="70" class="cold"/>
-  <text x="580" y="104" text-anchor="middle" class="label">Cline 自主</text>
+  <text x="580" y="104" text-anchor="middle" class="label">Cline 自主模式</text>
   <text x="580" y="124" text-anchor="middle" class="small">VS Code + 策略</text>
   <text x="580" y="140" text-anchor="middle" class="small">验证器循环</text>
 
@@ -50,27 +50,27 @@
   <!-- Score delta -->
   <rect x="80" y="180" width="580" height="80" class="box"/>
   <text x="100" y="202" class="label">分数差值</text>
-  <text x="100" y="226" class="content">相同模型: SWE-agent v1  43.2%    |    Cline 自主  59.8%</text>
-  <text x="100" y="244" class="content">+16.6 个绝对百分点，仅来自脚手架。(OpenHands, Epoch AI 2026)</text>
+  <text x="100" y="226" class="content">相同 Model：SWE-agent v1  43.2%    |    Cline 自主模式  59.8%</text>
+  <text x="100" y="244" class="content">+16.6 个绝对百分点，仅来自脚手架。（OpenHands，Epoch AI 2026）</text>
 
   <!-- CodeAct vs JSON -->
   <rect x="80" y="290" width="360" height="160" class="hot"/>
-  <text x="260" y="312" text-anchor="middle" class="label">CodeAct 脚手架 (OpenHands)</text>
-  <text x="100" y="334" class="content">+ 可组合: 一个 action 编辑多个文件</text>
-  <text x="100" y="350" class="content">+ 捕获 action 内的异常</text>
-  <text x="100" y="366" class="content">- 单个 action 影响范围更大</text>
-  <text x="100" y="382" class="content">- 需要加固沙箱 (Docker)</text>
-  <text x="100" y="402" class="content">适用: agent 在隔离容器内</text>
+  <text x="260" y="312" text-anchor="middle" class="label">CodeAct 脚手架（OpenHands）</text>
+  <text x="100" y="334" class="content">+ 可组合：一个操作编辑多个文件</text>
+  <text x="100" y="350" class="content">+ 捕获操作内的异常</text>
+  <text x="100" y="366" class="content">- 单个操作影响范围更大</text>
+  <text x="100" y="382" class="content">- 需要加固沙箱（Docker）</text>
+  <text x="100" y="402" class="content">适用：Agent 在隔离容器内</text>
   <text x="100" y="418" class="content">且可组合性值得审计成本</text>
-  <text x="100" y="434" class="small">arXiv:2407.16741 · MIT license · 最活跃开放平台</text>
+  <text x="100" y="434" class="small">arXiv:2407.16741 · MIT license · 最活跃的开放平台</text>
 
   <rect x="460" y="290" width="360" height="160" class="cold"/>
-  <text x="640" y="312" text-anchor="middle" class="label">JSON tool-call 脚手架</text>
-  <text x="480" y="334" class="content">+ 每个 action 都经过验证器</text>
+  <text x="640" y="312" text-anchor="middle" class="label">JSON Tool 调用脚手架</text>
+  <text x="480" y="334" class="content">+ 每个操作都经过验证器</text>
   <text x="480" y="350" class="content">+ 易于逐轮审计</text>
-  <text x="480" y="366" class="content">- 每轮一个 action；同一任务轮次更多</text>
+  <text x="480" y="366" class="content">- 每轮一个操作；同一任务轮次更多</text>
   <text x="480" y="382" class="content">- 组合性在编排器中</text>
-  <text x="480" y="402" class="content">适用: provider 控制执行器</text>
-  <text x="480" y="418" class="content">(Claude Managed Agents, OpenAI Assistants)</text>
+  <text x="480" y="402" class="content">适用：提供商控制执行器</text>
+  <text x="480" y="418" class="content">（Claude 托管 Agent、OpenAI Assistants）</text>
   <text x="480" y="434" class="small">托管服务中占主导，安全性内建</text>
 </svg>
