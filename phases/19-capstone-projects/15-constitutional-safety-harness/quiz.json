@@ -6,22 +6,22 @@
       "stage": "pre",
       "question": "这个 capstone 中的 layered safety 是什么意思？",
       "options": [
-        "对每个响应进行人工 review",
+        "在 input sanitize、policy rails、classifier gate、model、output filter 和 HITL tier 之间进行纵深防御",
         "只在输入上运行一个强 classifier",
         "对输出使用一个基于规则的 regex",
-        "在 input sanitize、policy rails、classifier gate、model、output filter 和 HITL tier 之间进行纵深防御"
+        "对每个响应进行人工 review"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "pre",
       "question": "哪个 classifier 支持大约 132 种语言的 Multilingual 覆盖？",
       "options": [
+        "Llama Guard 4",
         "Nemotron 3 Content Safety",
-        "ShieldGemma-2",
         "X-Guard",
-        "Llama Guard 4"
+        "ShieldGemma-2"
       ],
       "correct": 2,
       "explanation": ""
@@ -30,24 +30,24 @@
       "stage": "check",
       "question": "为什么要在像 XSTest 这样的 benign suite 上衡量 over-refusal？",
       "options": [
-        "为了替代 red-team scoring",
-        "为了 benchmark Token throughput",
+        "为了追踪 false-positive blocks，让 model 在提升 harmlessness 的同时保持有用",
         "为了认证 guardrail framework",
-        "为了追踪 false-positive blocks，让 model 在提升 harmlessness 的同时保持有用"
+        "为了替代 red-team scoring",
+        "为了 benchmark Token throughput"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "这个 capstone 中的 constitutional self-critique loop 是什么？",
       "options": [
-        "针对候选 jailbreak prompts 的 reranker",
         "从零训练的 RLHF reward model",
+        "Critic LLM 根据书面 constitution 给 draft 打分，提示 model 重写被反对的 outputs，然后在改进后的 pairs 上运行 SFT",
         "通过 Llama Guard 4 的一次 forward pass",
-        "Critic LLM 根据书面 constitution 给 draft 打分，提示 model 重写被反对的 outputs，然后在改进后的 pairs 上运行 SFT"
+        "针对候选 jailbreak prompts 的 reranker"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -66,10 +66,10 @@
       "stage": "post",
       "question": "red-team range 会运行哪六类 attack families？",
       "options": [
-        "BLEU、ROUGE、METEOR、BERTScore、CometKiwi 和 chrF",
+        "PSI、KL、MMD、KS、JS 和 Wasserstein",
         "PAIR、TAP、GCG、encoding (ASCII/base64/rot13)、multi-turn persona 和 multilingual code-switch",
         "Brute-force、dictionary、replay、MITM、phishing 和 CSRF",
-        "PSI、KL、MMD、KS、JS 和 Wasserstein"
+        "BLEU、ROUGE、METEOR、BERTScore、CometKiwi 和 chrF"
       ],
       "correct": 1,
       "explanation": ""
@@ -79,11 +79,11 @@
       "question": "为什么 range automation (cron + alerts) 是 rubric 的一部分？",
       "options": [
         "Cron 是调用 OPA 的唯一方式",
-        "持续的定时 probes 可以随着时间捕捉 attack success rate 和 over-refusal regressions 的 drift",
+        "需要 automation 才能禁用 Llama Guard 4",
         "明确要求手动运行",
-        "需要 automation 才能禁用 Llama Guard 4"
+        "持续的定时 probes 可以随着时间捕捉 attack success rate 和 over-refusal regressions 的 drift"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     }
   ]
