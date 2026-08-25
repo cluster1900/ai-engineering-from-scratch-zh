@@ -52,7 +52,7 @@
 
   <!-- Mask rules -->
   <rect x="480" y="210" width="180" height="120" class="box"/>
-  <text x="570" y="235" text-anchor="middle" class="label">logit processor</text>
+  <text x="570" y="235" text-anchor="middle" class="label">logit 处理器</text>
   <text x="570" y="260" text-anchor="middle" class="content">logit[t] = -inf</text>
   <text x="570" y="278" text-anchor="middle" class="content">if t not in valid</text>
   <text x="570" y="305" text-anchor="middle" class="caption">保留 100,000 个中的 10 个</text>
@@ -61,7 +61,7 @@
 
   <!-- Masked logits -->
   <rect x="700" y="70" width="180" height="260" class="box"/>
-  <text x="790" y="90" text-anchor="middle" class="label">masked logits</text>
+  <text x="790" y="90" text-anchor="middle" class="label">掩码后的 logits</text>
   <text x="720" y="115" class="content struck">"(" :  -inf</text>
   <text x="720" y="135" class="content">"0" :   1.8</text>
   <text x="720" y="155" class="content">"1" :   1.6</text>

@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "为什么仅靠 prompt 说“return JSON”还不足以用于生产环境？",
       "options": [
-        "JSON 太冗长",
         "Prompt 太长",
-        "Frontier models 大多数时候会遵循，但并非总是如此；那一小部分格式错误的输出会破坏下游 parser",
-        "Prompting 无法描述 schema"
+        "Prompting 无法描述 schema",
+        "JSON 太冗长",
+        "Frontier models 大多数时候会遵循，但并非总是如此；那一小部分格式错误的输出会破坏下游 parser"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "仅靠 prompt 的结构化方式在 frontier models 上大约 80% 的时间有效；生产环境需要更强的保证。"
     },
     {
       "stage": "pre",
       "question": "Constrained decoding 在每个生成步骤中修改什么？",
       "options": [
-        "KV cache",
-        "Tokenizer",
+        "logit Vector，mask 掉会使目标 grammar 无效的 Token，因此只能 sample 有效的续写",
         "训练 Loss",
-        "logit Vector，mask 掉会使目标 grammar 无效的 Token，因此只能 sample 有效的续写"
+        "Tokenizer",
+        "KV cache"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "logit processor 会把无效 Token 设为 -inf，因此 softmax 无法 sample 它们。"
     },
     {
@@ -31,11 +31,11 @@
       "question": "为什么 constrained decoding 可能比自由生成更快？",
       "options": [
         "模型更小",
-        "强制 scaffold Token（例如 '{\"name\": \"'）可以不经过 sampling 直接输出，并且有效 Token 的搜索空间会缩小",
         "它完全避免了 softmax",
-        "它跳过 backprop"
+        "它跳过 backprop",
+        "强制 scaffold Token（例如 '{\"name\": \"'）可以不经过 sampling 直接输出，并且有效 Token 的搜索空间会缩小"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "确定的 Token 会跳过 sampling，减少后的有效 Token 集合也会缩小 decode 成本。"
     },
     {
@@ -43,21 +43,21 @@
       "question": "哪种 schema 设计选择可以防止模型过早承诺？",
       "options": [
         "把 'answer' 放在第一位",
-        "使用更短的 key",
         "把 reasoning 字段放在 answer/decision 字段之前，让模型先思考再承诺",
+        "使用更短的 key",
         "使用 snake_case"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "字段顺序就是逻辑：先放 reasoning 可以让模型在锁定答案前先思考。"
     },
     {
       "stage": "check",
       "question": "像 Outlines 这样的基于 FSM 的 constrained decoding 工具有何局限？",
       "options": [
-        "它们不是 deterministic 的",
+        "它们只支持 enum",
         "它们会把你锁定在 OpenAI",
         "递归 schema 必须被展平；真正的递归结构需要基于 CFG 的引擎，例如 XGrammar",
-        "它们只支持 enum"
+        "它们不是 deterministic 的"
       ],
       "correct": 2,
       "explanation": "FSM 无法表示无界递归；CFG 引擎可以处理它。"
@@ -67,9 +67,9 @@
       "question": "为什么说 Instructor 不修改 logits？",
       "options": [
         "Instructor 会把 schema 格式化进 prompt，并解析/重试输出；logit masking 要么在 server-side 发生，要么完全不发生",
+        "它会编辑 prompt",
         "它使用 Gradient 更新",
-        "Anthropic 要求这样",
-        "它会编辑 prompt"
+        "Anthropic 要求这样"
       ],
       "correct": 0,
       "explanation": "Instructor 使用 provider-side structured output 加上 client-side validation 和 retries，而不是 logit masking。"
@@ -78,9 +78,9 @@
       "stage": "post",
       "question": "像 date='YYYY-MM-DD' 这样的严格 regex 可能引入什么问题？",
       "options": [
-        "它需要 CFG 支持",
-        "它移除了未知值的任何逃生口，因此模型会编造一个日期，而不是返回 null/sentinel",
         "它会破坏 JSON parsing",
+        "它移除了未知值的任何逃生口，因此模型会编造一个日期，而不是返回 null/sentinel",
+        "它需要 CFG 支持",
         "Regex 很慢"
       ],
       "correct": 1,
@@ -90,12 +90,12 @@
       "stage": "post",
       "question": "什么时候应该选择 vLLM guided decoding，而不是 vendor structured-output API？",
       "options": [
-        "始终选择 vendor",
-        "只适用于很小的 schema",
         "只在 byte-level BPE 下使用",
-        "自托管 inference，你控制模型，并且希望在没有 retries 的情况下获得 logit-level 保证"
+        "始终选择 vendor",
+        "自托管 inference，你控制模型，并且希望在没有 retries 的情况下获得 logit-level 保证",
+        "只适用于很小的 schema"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": "vLLM guided decoding 适合带有 logit-level 约束的自托管 serving；vendor APIs 会把你锁定在它们的 stack 中。"
     }
   ]

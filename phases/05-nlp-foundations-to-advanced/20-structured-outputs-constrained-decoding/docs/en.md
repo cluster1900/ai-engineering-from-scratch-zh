@@ -52,6 +52,10 @@ Constrained decoding 通常比 unconstrained generation *更快*。有两个原�
 
 Schema 字段顺序是逻辑，不是格式。
 
+```figure
+constrained-decoder
+```
+
 ## 构建
 
 ### 步骤 1：从零开始做 regex-constrained generation
