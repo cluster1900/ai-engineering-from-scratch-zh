@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "Claude computer use 接收什么输入，又发出什么输出？",
       "options": [
-        "Accessibility tree 输入，keyboard/mouse commands 输出",
         "Screenshots 输入（vision-based），keyboard/mouse commands 输出",
+        "Accessibility tree 输入，keyboard/mouse commands 输出",
         "DOM XML 输入，JavaScript 输出",
         "JSON 输入，SQL 输出"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Claude 读取 pixels，并发出 keyboard/mouse actions；不使用 OS accessibility API。"
     },
     {
@@ -19,9 +19,9 @@
       "question": "Gemini 2.5 Computer Use 的显著安全特性是什么？",
       "options": [
         "一个 per-step safety service，会在执行前评估每个 action 并拒绝不安全的 action",
+        "默认 read-only mode",
         "硬编码的 WAF rules",
-        "强制 CAPTCHAs",
-        "默认 read-only mode"
+        "强制 CAPTCHAs"
       ],
       "correct": 0,
       "explanation": "Gemini 2.5 Computer Use 将 per-step safety classifier 作为定义性特性提供。"
@@ -30,32 +30,32 @@
       "stage": "check",
       "question": "本课将什么识别为三个 models 共同的 untrusted input？",
       "options": [
+        "没有；一切都是 trusted",
         "只有 HTTPS responses",
         "Screenshots、DOM text、tool outputs、PDF content，以及任何 retrieved 内容",
-        "只有 PDF content",
-        "没有；一切都是 trusted"
+        "只有 PDF content"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "只有直接的用户指令才算 permission；其他一切都是 untrusted。"
     },
     {
       "stage": "check",
       "question": "本课引用了 OpenAI CUA 发布时的哪些 OSWorld / WebArena 数字？",
       "options": [
-        "OSWorld 38.1%，WebArena 58.1%，WebVoyager 87%",
-        "OSWorld 0%，WebArena 0%",
+        "未报告数字",
         "OSWorld 99%，WebArena 99%",
-        "未报告数字"
+        "OSWorld 0%，WebArena 0%",
+        "OSWorld 38.1%，WebArena 58.1%，WebVoyager 87%"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "这些是引用的发布时数字。"
     },
     {
       "stage": "check",
       "question": "哪种 defense pattern 不在 2026 convergence list 中？",
       "options": [
-        "Per-step safety classifier",
         "Navigation targets 的 allowlist/blocklist",
+        "Per-step safety classifier",
         "Human-in-the-loop 用于 sensitive actions",
         "自动点击 dialogs 以节省时间"
       ],
@@ -67,21 +67,21 @@
       "question": "本课强调的针对 computer-use agents 的主要攻击是什么？",
       "options": [
         "Network outages",
-        "恶意页面或 PDF 在 retrieved content 中Embedding指令，model 将其当作用户意图",
+        "OS update lag",
         "Slow rendering",
-        "OS update lag"
+        "恶意页面或 PDF 在 retrieved content 中Embedding指令，model 将其当作用户意图"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "把 screenshots 或 DOM text 当作 permission，是典型的 indirect-prompt-injection failure。"
     },
     {
       "stage": "post",
       "question": "什么时候特别建议 human-in-the-loop confirmation？",
       "options": [
-        "在 read-only navigation 上",
+        "从不",
         "在 login、purchase、file delete 等 sensitive actions 上",
         "只有当 model 请求时",
-        "从不"
+        "在 read-only navigation 上"
       ],
       "correct": 1,
       "explanation": "Sensitive actions（money、data exposure、新 logins）需要明确的人类确认。"

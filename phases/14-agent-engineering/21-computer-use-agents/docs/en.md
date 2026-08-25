@@ -75,6 +75,10 @@ Desktop 和 web agents 必须能看见屏幕并驱动输入。过去 18 个月�
 - **敏感动作没有确认。** Login、purchase、file delete 如果没有 human-in-the-loop，就是风险责任。
 - **长任务缺少可观测性。** 一个 200 次点击的运行在第 180 次点击失败，如果没有逐步 trace，就无法调试。
 
+```figure
+computer-use-cursor
+```
+
 ## 构建
 
 `code/main.py` 模拟 vision-agent loop：
