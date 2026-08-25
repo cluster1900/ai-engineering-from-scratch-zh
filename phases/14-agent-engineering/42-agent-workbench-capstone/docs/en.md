@@ -83,6 +83,10 @@ outputs/agent-workbench-pack/
 
 这个 pack 携带一个 `VERSION` 文件。需要 migration 的 schema bump 和 script 变更会 bump major。仅 doc 的变更会 bump patch。目标 repo 的 `agent_state.json` 记录它初始化时对应的 pack version。
 
+```figure
+wb-pack-install
+```
+
 ## 构建它
 
 `code/main.py` 会把 pack 组装到本课旁边的 `outputs/agent-workbench-pack/` 中，并用这个 mini-track 前面课程里的 schema 和 script，以及你已经写过的 doc 作为种子。

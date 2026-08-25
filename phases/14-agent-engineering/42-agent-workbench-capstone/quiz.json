@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "这个 capstone 会产出什么？",
       "options": [
-        "一篇研究论文",
+        "一个监控 dashboard",
         "一个带版本、可直接放入的目录 (agent-workbench-pack/)，包含七个 surfaces，以及一个 bin/install.sh，用于以幂等方式落地它们",
-        "一个新的 LLM",
-        "一个监控 dashboard"
+        "一篇研究论文",
+        "一个新的 LLM"
       ],
       "correct": 1,
       "explanation": "pack 是配方；每次 install 都是一份成品。"
@@ -18,45 +18,45 @@
       "stage": "pre",
       "question": "以下哪一项不属于 pack layout？",
       "options": [
-        "AGENTS.md + docs/",
+        "vendor_proprietary_weights/",
         "schemas/",
-        "scripts/",
-        "vendor_proprietary_weights/"
+        "AGENTS.md + docs/",
+        "scripts/"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "Pack layout 是 AGENTS.md、docs/、schemas/、scripts/、bin/、README.md。这个 pack 与 framework 和 vendor 无关。"
     },
     {
       "stage": "check",
       "question": "为什么这个 pack 带有 VERSION 文件？",
       "options": [
-        "为了 SEO",
-        "需要迁移的 schema/script 变更用 major bump；新增内容用 minor；仅文档变更用 patch；目标 repo 会记录它是基于哪个版本安装的",
         "为了追踪 agent IQ",
-        "为了在 Hacker News 上宣传"
+        "为了 SEO",
+        "为了在 Hacker News 上宣传",
+        "需要迁移的 schema/script 变更用 major bump；新增内容用 minor；仅文档变更用 patch；目标 repo 会记录它是基于哪个版本安装的"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "它的形态与 npm、Cargo、pyproject.toml 相同；VERSION 是契约，不是营销。"
     },
     {
       "stage": "check",
       "question": "这个 pack 中的 cross-tool distribution 是什么样的？",
       "options": [
-        "硬编码每个 tool 的路径",
         "一个源文件配合 symlinks (ln -s AGENTS.md CLAUDE.md, .cursor/rules/, .github/copilot-instructions.md)，让同一个源分发到每个 coding agent",
         "每个 tool 手动复制",
+        "硬编码每个 tool 的路径",
         "每个 tool 一个 vendor lock"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Nx 的 nx ai-setup 是参考；pack 的 installer 用 symlinks 做同样的事。"
     },
     {
       "stage": "check",
       "question": "本课建议 uninstaller 应该如何表现？",
       "options": [
-        "删除所有内容，包括 state",
-        "遇到非平凡 state 时拒绝执行；绝不删除用户的 agent_state.json、task_board.json 或 outputs/；只移除 schemas、scripts、docs 和 AGENTS.md（可 opt-out）",
         "只删除 docs",
+        "遇到非平凡 state 时拒绝执行；绝不删除用户的 agent_state.json、task_board.json 或 outputs/；只移除 schemas、scripts、docs 和 AGENTS.md（可 opt-out）",
+        "删除所有内容，包括 state",
         "禁用 git"
       ],
       "correct": 1,
@@ -66,24 +66,24 @@
       "stage": "post",
       "question": "什么应该留在 pack 之外？",
       "options": [
+        "Scripts",
         "Schemas",
         "项目特定 tasks、vendor SDK calls、团队 onboarding prose —— 这个 pack 与 framework 无关，位于 onboarding 旁边，而不是里面",
-        "Scripts",
         "installer"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Tasks 属于目标 repo 的 board，不属于 pack；vendor SDK calls 会把 pack 锁定到一个 framework。"
     },
     {
       "stage": "post",
       "question": "这个 pack 通过什么 channel 一次性交付给多个 coding agents？",
       "options": [
-        "手动复制",
         "SkillKit-style distribution (skillkit install agent-workbench-pack) 会从单一来源把它落地到 32 个 AI agents",
         "Email 附件",
+        "手动复制",
         "仅 GitHub release notes"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Pack repo 是 source of truth；SkillKit 是 distribution channel；vendor lock-in 会随之消解。"
     }
   ]
