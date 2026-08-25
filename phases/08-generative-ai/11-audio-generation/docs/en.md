@@ -56,6 +56,10 @@ waveform (16000 samples/sec)
 | AudioCraft 2 | Music + SFX | Flow matching | ~5s for 5s clip |
 | Riffusion v2 | Music | Spectrogram diffusion | ~10s |
 
+```figure
+score-matching
+```
+
 ## 构建它
 
 `code/main.py` 模拟核心思想：在合成的 "audio token" 序列上训练一个 tiny next-token Transformer，这些序列来自两种不同的 "style"（style A 为低 Token 和高 Token 交替，style B 为单调 ramp）。基于 style 进行 condition 并 sample。
