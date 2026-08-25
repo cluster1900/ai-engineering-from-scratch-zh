@@ -18,11 +18,11 @@
   <text x="30" y="96" class="content">主指标：WER（normalized）</text>
   <text x="30" y="114" class="content">声调语言用 CER</text>
   <text x="30" y="132" class="content">速度：RTFx</text>
-  <text x="30" y="150" class="content">延迟：first-token ms</text>
+  <text x="30" y="150" class="content">延迟：首 Token ms</text>
   <text x="30" y="174" class="tag">Open ASR Leaderboard</text>
-  <text x="30" y="192" class="caption">Parakeet 6.05% avg WER</text>
+  <text x="30" y="192" class="caption">Parakeet 平均 WER 6.05%</text>
   <text x="30" y="210" class="caption">Whisper-v3-turbo 1.58% LS</text>
-  <text x="30" y="228" class="caption">Canary-Qwen 5.63% avg</text>
+  <text x="30" y="228" class="caption">Canary-Qwen 平均 5.63%</text>
 
   <rect x="235" y="50" width="200" height="200" class="hot"/>
   <text x="335" y="72" text-anchor="middle" class="label">TTS</text>
@@ -48,7 +48,7 @@
 
   <rect x="665" y="50" width="195" height="200" class="box"/>
   <text x="762" y="72" text-anchor="middle" class="label">音频分类</text>
-  <text x="675" y="96" class="content">互斥：top-1, top-5</text>
+  <text x="675" y="96" class="content">互斥：top-1、top-5</text>
   <text x="675" y="114" class="content">多标签：mAP</text>
   <text x="675" y="132" class="content">不均衡：macro F1</text>
   <text x="675" y="150" class="content">按类 recall</text>
@@ -64,18 +64,18 @@
   <text x="30" y="349" class="content">消费者：盲测 MOS / ELO</text>
   <text x="30" y="375" class="tag">Suno v5 ELO 1293（质量领先）</text>
   <text x="30" y="395" class="caption">Udio v4 — 制作工具 + stems</text>
-  <text x="30" y="413" class="caption">MusicGen-large on MusicCaps ~4.5 FAD</text>
+  <text x="30" y="413" class="caption">MusicGen-large 在 MusicCaps 上约 4.5 FAD</text>
   <text x="30" y="441" class="content">FAD 始终配合人工 MOS 小组</text>
   <text x="30" y="459" class="content">开源：ACE-Step XL / YuE / Stable Audio Open</text>
 
   <rect x="450" y="265" width="410" height="220" class="hot"/>
   <text x="655" y="287" text-anchor="middle" class="label">音频-语言 + 流式</text>
-  <text x="460" y="313" class="content">LALM 推理：MMAU-Pro（1800 Q）</text>
+  <text x="460" y="313" class="content">LALM 推理：MMAU-Pro（1800 题）</text>
   <text x="460" y="331" class="content">长音频：LongAudioBench</text>
   <text x="460" y="349" class="content">captioning：FENSE / SPICE / CIDEr</text>
-  <text x="460" y="375" class="tag">Gemini 2.5 Pro ~60% MMAU-Pro overall</text>
+  <text x="460" y="375" class="tag">Gemini 2.5 Pro MMAU-Pro 总体约 60%</text>
   <text x="460" y="395" class="caption">GPT-4o Audio 52.5% — Qwen2.5-Omni 52.2%</text>
-  <text x="460" y="413" class="caption">multi-audio 子集：所有模型 ~22%（接近随机）</text>
+  <text x="460" y="413" class="caption">multi-audio 子集：所有 Model 约 22%（接近随机）</text>
   <text x="460" y="441" class="content">流式 S2S：延迟 P50/P95 + WER</text>
-  <text x="460" y="459" class="content">Moshi 200 ms L4 · GPT-4o Realtime ~300 ms</text>
+  <text x="460" y="459" class="content">Moshi 200 ms L4 · GPT-4o Realtime 约 300 ms</text>
 </svg>

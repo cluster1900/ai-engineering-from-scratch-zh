@@ -111,6 +111,10 @@ Multi-label：所有类别上的 **mAP (mean Average Precision)**。AudioSet：B
 | MMAU music subset | Music LALM | (within MMAU) |
 | HEAR benchmark | Self-supervised audio | `hearbenchmark.com` |
 
+```figure
+sp-wer-align
+```
+
 ## 构建
 
 ### 步骤 1：带规范化的 WER
