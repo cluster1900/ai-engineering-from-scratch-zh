@@ -62,6 +62,10 @@ Sandbagging（模型在评估中策略性表现不佳）位于 OpenAI 的 Resear
 - 节奏：政策是按声明的时间表更新，还是只在特定事件后更新？声明式节奏更强。
 - 独立性：外部审查是强制还是可选？Anthropic 与 Apollo 和 US AI Safety Institute 合作；OpenAI 与 METR 合作；DeepMind 主要依赖内部 SAG。
 
+```figure
+a5-tracked-vs-research
+```
+
 ## 使用它
 
 `code/main.py` 实现了一个小型 decision-table diff tool。给定一项能力（autonomy、deceptive alignment、R&D automation、cyber uplift 等），它会输出三项政策分别如何分类该能力，以及会触发什么缓解措施。它是阅读辅助工具，不是政策工具。

@@ -30,7 +30,7 @@
   <!-- Long-range Autonomy row -->
   <rect x="60" y="130" width="760" height="46" class="box"/>
   <text x="76" y="152" class="label">长期自主性</text>
-  <text x="76" y="170" class="content">OpenAI：Research（不触发）· Anthropic：已命名；阈值处 affirmative case · DeepMind：并入 ML R&amp;D / Cyber</text>
+  <text x="76" y="170" class="content">OpenAI：Research（不触发）· Anthropic：已命名；阈值处需 affirmative case · DeepMind：并入 ML R&amp;D / Cyber</text>
 
   <!-- Undermining safeguards -->
   <rect x="60" y="184" width="760" height="46" class="box"/>
@@ -49,13 +49,13 @@
 
   <!-- Cyber uplift -->
   <rect x="60" y="346" width="760" height="46" class="box"/>
-  <text x="76" y="368" class="label">cyber 提升</text>
-  <text x="76" y="386" class="content">OpenAI：Tracked · Anthropic：ASL-3 触发（安全 + 部署）· DeepMind：Cyber CCL</text>
+  <text x="76" y="368" class="label">Cyber 能力提升</text>
+  <text x="76" y="386" class="content">OpenAI：Tracked · Anthropic：触发 ASL-3（安全 + 部署）· DeepMind：Cyber CCL</text>
 
   <!-- Convergence note -->
   <rect x="60" y="400" width="760" height="90" class="hot"/>
   <text x="440" y="424" text-anchor="middle" class="label">趋同 + 分歧</text>
-  <text x="80" y="446" class="content">趋同：内部 SAG、deceptive-alignment 作为命名风险类、常设 artifacts</text>
-  <text x="80" y="462" class="content">分歧：Tracked vs Research 拆分仅在 PF v2；DeepMind 合并自主性；Anthropic 移除暂停条款</text>
-  <text x="80" y="478" class="content">测量依赖：三套框架仅在能力测量不可被 gameable 时有效</text>
+  <text x="80" y="446" class="content">趋同：内部 SAG、将 deceptive-alignment 列为风险类别、常设 artifacts</text>
+  <text x="80" y="462" class="content">分歧：Tracked 与 Research 拆分仅见于 PF v2；DeepMind 合并自主性；Anthropic 移除暂停条款</text>
+  <text x="80" y="478" class="content">测量依赖：三套框架仅在能力测量不可操纵时有效</text>
 </svg>
