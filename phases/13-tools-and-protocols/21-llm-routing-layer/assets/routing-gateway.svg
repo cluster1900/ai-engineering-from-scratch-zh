@@ -20,33 +20,33 @@
   <text x="480" y="26" text-anchor="middle" class="title">LLM 路由网关：一个 API，N 个 providers</text>
 
   <rect x="40" y="60" width="220" height="440" class="cool"/>
-  <text x="150" y="82" text-anchor="middle" class="head">你的 app</text>
+  <text x="150" y="82" text-anchor="middle" class="head">你的应用</text>
   <text x="56" y="108" class="step">openai.chat.completions.create(</text>
   <text x="56" y="126" class="step">model="smart",</text>
   <text x="56" y="144" class="step">messages=[...])</text>
-  <text x="56" y="176" class="small">- alias "smart" 是逻辑</text>
+  <text x="56" y="176" class="small">- alias "smart" 是逻辑名</text>
   <text x="56" y="192" class="small">名称，不是真实模型</text>
   <text x="56" y="216" class="small">- 无 provider 专用代码</text>
 
   <rect x="280" y="60" width="380" height="440" class="cold"/>
   <text x="470" y="82" text-anchor="middle" class="head">路由网关</text>
-  <text x="296" y="108" class="step">1 / redact PII</text>
+  <text x="296" y="108" class="step">1 / 遮蔽 PII</text>
   <text x="296" y="126" class="small">regex 或 ML 预分发</text>
-  <text x="296" y="148" class="step">2 / semantic cache</text>
-  <text x="296" y="166" class="small">prompt Embedding 查找</text>
+  <text x="296" y="148" class="step">2 / 语义缓存</text>
+  <text x="296" y="166" class="small">Prompt Embedding 查找</text>
   <text x="296" y="188" class="step">3 / alias 解析</text>
   <text x="296" y="206" class="small">smart -&gt; [gpt-4o, claude, gemini]</text>
   <text x="296" y="228" class="step">4 / 选择策略</text>
-  <text x="296" y="246" class="small">static / cost / latency / A-B</text>
+  <text x="296" y="246" class="small">静态 / 成本 / 延迟 / A-B</text>
   <text x="296" y="268" class="step">5 / 调用 provider</text>
-  <text x="296" y="286" class="small">转换 OpenAI -&gt; backend 形状</text>
-  <text x="296" y="308" class="step">6 / 5xx 时 fallback</text>
+  <text x="296" y="286" class="small">转换 OpenAI -&gt; 后端格式</text>
+  <text x="296" y="308" class="step">6 / 5xx 时回退</text>
   <text x="296" y="326" class="small">链中下一个 provider</text>
-  <text x="296" y="348" class="step">7 / cost 跟踪</text>
+  <text x="296" y="348" class="step">7 / 成本跟踪</text>
   <text x="296" y="366" class="small">tokens x price -&gt; 按 key 聚合</text>
   <text x="296" y="388" class="step">8 / 发出 OTel GenAI</text>
   <text x="296" y="406" class="small">每一跳都有 gen_ai.*</text>
-  <text x="296" y="428" class="step">9 / 输出 guardrails</text>
+  <text x="296" y="428" class="step">9 / 输出防护规则</text>
   <text x="296" y="446" class="small">返回前清理 completions</text>
 
   <path d="M660,200 L760,200" class="edge" marker-end="url(#arrow)"/>
@@ -54,7 +54,7 @@
   <path d="M660,360 L760,360" class="edge" marker-end="url(#arrow)"/>
 
   <rect x="760" y="60" width="160" height="440" class="hot"/>
-  <text x="840" y="82" text-anchor="middle" class="head">providers</text>
+  <text x="840" y="82" text-anchor="middle" class="head">提供商</text>
   <text x="776" y="108" class="step">OpenAI</text>
   <text x="776" y="126" class="small">gpt-4o, gpt-4o-mini</text>
 
@@ -68,12 +68,12 @@
   <text x="776" y="276" class="step">DeepSeek / Ollama</text>
 
   <text x="776" y="328" class="step">选择（2026）</text>
-  <text x="776" y="346" class="small">LiteLLM（self-host）</text>
+  <text x="776" y="346" class="small">LiteLLM（自托管）</text>
   <text x="776" y="362" class="small">OpenRouter（SaaS）</text>
-  <text x="776" y="378" class="small">Portkey（prod）</text>
+  <text x="776" y="378" class="small">Portkey（生产环境）</text>
 
   <text x="776" y="416" class="step">关键取舍</text>
-  <text x="776" y="434" class="small">control vs managed</text>
-  <text x="776" y="450" class="small">vs 开箱即用的</text>
-  <text x="776" y="466" class="small">guardrails</text>
+  <text x="776" y="434" class="small">控制 vs 托管</text>
+  <text x="776" y="450" class="small">vs 开箱即用</text>
+  <text x="776" y="466" class="small">防护规则</text>
 </svg>
