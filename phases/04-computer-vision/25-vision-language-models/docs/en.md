@@ -105,6 +105,10 @@ CMER = fraction of outputs where the text confidence is high but the image-text 
 
 当前 VLMs 在 spatial reasoning benchmarks（above-below、left-right、counting、distance）上得分为 50-60%。如果你的 use case 依赖“哪个物体在另一个物体上方”，要大量验证，generic VLM performance 低于人类。对于纯空间任务，比 VLM 更好的替代方案包括：专用 keypoint / pose estimator、depth model，或 detection model 加 box geometry 后处理。
 
+```figure
+v4-vlm-projector
+```
+
 ## 构建它
 
 ### 步骤 1： Projector
