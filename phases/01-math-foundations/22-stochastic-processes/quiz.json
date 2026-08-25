@@ -4,9 +4,9 @@
       "stage": "pre",
       "question": "什么是 Markov property？",
       "options": [
-        "该 process 总是回到它的 starting state",
-        "next state 只依赖 current state，而不依赖 previous states 的 history",
         "所有 states 在每一步都等可能",
+        "next state 只依赖 current state，而不依赖 previous states 的 history",
+        "该 process 总是回到它的 starting state",
         "该 process 必须有有限数量的 states"
       ],
       "correct": 1,
@@ -16,10 +16,10 @@
       "stage": "pre",
       "question": "在 1D random walk 中，到 origin 的 expected distance 如何随 steps 数 n 缩放？",
       "options": [
-        "Linearly：与 n 成正比",
-        "按 square root：与 sqrt(n) 成正比",
         "Logarithmically：与 log(n) 成正比",
-        "无论 n 多大都保持不变"
+        "按 square root：与 sqrt(n) 成正比",
+        "无论 n 多大都保持不变",
+        "Linearly：与 n 成正比"
       ],
       "correct": 1,
       "explanation": "每一步以相等 probability 为 +/-1。n steps 后的 variance 是 n，因此 standard deviation（到 origin 的 typical distance）是 sqrt(n)。10,000 steps 后，expected distance 约为 100，而不是 10,000。"
@@ -28,24 +28,24 @@
       "stage": "post",
       "question": "Markov chain 的 stationary distribution 是什么？",
       "options": [
+        "所有 states 上的 uniform distribution",
         "states 的 initial distribution",
-        "在 transition matrix 下不会改变的 distribution：pi * P = pi",
         "恰好一次 transition 后的 states distribution",
-        "所有 states 上的 uniform distribution"
+        "在 transition matrix 下不会改变的 distribution：pi * P = pi"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "stationary distribution pi 满足 pi * P = pi，也就是应用 transition matrix 后保持不变。它表示长期来看在每个 state 中花费的时间比例。对于 irreducible、aperiodic 的 chain，任意 initial distribution 都会 converge 到 pi。"
     },
     {
       "stage": "post",
       "question": "在 Langevin dynamics x_{t+1} = x_t - dt * grad(U) + sqrt(2*T*dt) * z 中，当 temperature T 接近 0 时会发生什么？",
       "options": [
+        "该 process 发散到无穷大",
         "该 process 变成 pure random walk",
         "该 process 变成 pure gradient descent（deterministic optimization）",
-        "该 process 发散到无穷大",
         "该 process 会冻结在初始位置"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "当 T = 0 时，noise term sqrt(2*T*dt)*z 消失，留下 x_{t+1} = x_t - dt * grad(U)，这就是标准的 gradient descent。当 T 很高时，noise 占主导，该 process 几乎是 random walk。中等 T 会平衡 exploration 和 exploitation。"
     },
     {
@@ -60,5 +60,6 @@
       "correct": 1,
       "explanation": "forward process 是一个 Markov chain：x_t = sqrt(alpha_t) * x_{t-1} + sqrt(1 - alpha_t) * noise。T steps 后，x_T 近似为 N(0, I)，也就是 pure Gaussian noise。reverse process（由 neural network 学习）随后逐步 denoise 以生成新 data。"
     }
-  ]
+  ],
+  "title": null
 }
