@@ -68,6 +68,10 @@ learner device
 - Safety：Llama Guard 4 + 自定义适龄 filter
 - Eval：Bloom-level 问题生成、pre/post test harness、efficacy study tooling
 
+```figure
+cf-tutor-loop
+```
+
 ## 构建它
 1. **Curriculum graph.** 构建一个包含 50-150 个 concept nodes 的 Neo4j（例如 K-12 algebra，从 "number line" 到 "quadratic formula"），并带有 prerequisite edges。为每个 node 附加 OER content（Open Textbook、OpenStax）。
 
