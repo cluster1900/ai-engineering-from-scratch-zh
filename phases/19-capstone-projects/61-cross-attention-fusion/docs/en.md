@@ -1,6 +1,6 @@
 # 交叉注意力融合
 
-> 投影层将一个图像向量与一个标题向量对齐。真正的视觉语言解码器需要每个文本token都参与每个补丁token，因此模型可以将每个单词放在一个区域中。交叉注意力就是这种接地的发生方式。文字查询；愿景关键和价值观给出了答案。本课构建了交叉注意力块、因果文本自注意力以及保持两者合法的掩码形状。
+> 投影层将一个图像Vector与一个标题Vector对齐。真正的视觉语言解码器需要每个文本token都参与每个补丁token，因此模型可以将每个单词放在一个区域中。交叉注意力就是这种接地的发生方式。文字查询；愿景关键和价值观给出了答案。本课构建了交叉注意力块、因果文本自注意力以及保持两者合法的掩码形状。
 
 **Type:** Build
 **Languages:** Python
@@ -78,6 +78,10 @@ class DecoderBlock:
       return text_tokens
 ```
 
+```figure
+ch-crossattn-fan
+```
+
 ## 构建它
 
 `code/main.py` 实现：
@@ -85,7 +89,7 @@ class DecoderBlock:
 - `CrossAttention(hidden, heads)`，具有单独的 `q` 和 `kv` 投影的多头交叉注意力。
 - `CausalSelfAttention(hidden, heads)`，来自标准解码器的屏蔽自注意力。
 - `DecoderBlock`，用预 LN 残差组成三个子层。
-- `VisionLanguageDecoder`，由模拟视觉编码器输出和小型文本嵌入表提供的四层解码器。
+- `VisionLanguageDecoder`，由模拟视觉编码器输出和小型文本Embedding表提供的四层解码器。
 - `causal_mask(length)` 返回 `(length, length)` 下三角布尔张量。
 - 一个演示，它向一批长度为 10 的两个文本序列提供长度为 197 的图像内存，并打印输出形状、自注意力掩模形状和每个位置的交叉注意力输出范数。
 
@@ -102,7 +106,7 @@ python3 code/main.py
 交叉注意力出现在两个生产系列中：
 
 - **Flamingo 和 IDEFICS。** 每 K 个语言模型块插入一个交叉注意力子层，并使用冻结的 LM。视觉语言适配器是交叉注意力块及其门。
-- **BLIP-2.** Q-Former 使用来自一组固定的 32 个查询token 的交叉注意力到图像特征中，然后将查询投影到 LM 嵌入空间中。
+- **BLIP-2.** Q-Former 使用来自一组固定的 32 个查询token 的交叉注意力到图像特征中，然后将查询投影到 LM Embedding空间中。
 
 本课程中的块的形状直接映射到两者上。面具纪律（自我因果关系，交叉因果关系）是相同的。
 
