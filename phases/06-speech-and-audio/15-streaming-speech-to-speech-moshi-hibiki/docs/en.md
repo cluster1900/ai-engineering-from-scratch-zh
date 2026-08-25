@@ -72,6 +72,10 @@ Sesame CSM（2025）使用了类似思路，一个带 Mimi codec head 的 Llama-
 | GPT-4o Realtime | ~300 ms | closed, OpenAI API | commercial |
 | Gemini 2.5 Live | ~350 ms | closed, Google API | commercial |
 
+```figure
+sp-fullduplex
+```
+
 ## 构建它
 
 ### 步骤 1：interface
