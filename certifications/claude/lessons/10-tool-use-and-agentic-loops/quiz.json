@@ -1,0 +1,78 @@
+{
+  "lesson": "10-tool-use-and-agentic-loops",
+  "title": "Tool 循环是一种受控委托",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Claude 的 tool_use block 表示什么？",
+      "options": [
+        "只要参数符合声明的 JSON schema，就是安全操作",
+        "已经由 Client 授权并分派给指定服务的操作",
+        "参数已通过 Server 输入 schema 的已提交事务",
+        "由模型提出、等待 Client 验证并执行的操作建议"
+      ],
+      "correct": 3,
+      "explanation": "Claude 会提出要使用的 Tool 及其参数。确定性的 Client 代码仍需验证、授权、执行并记录该操作。"
+    },
+    {
+      "stage": "check",
+      "question": "已有受支持的 SDK，自定义 Tool 在应用现有的 sandbox 中执行，并且不需要远程持久会话或自定义 wire 控制。哪种循环最适合作为默认选择？",
+      "options": [
+        "使用 SDK Tool Runner，并由应用负责授权、预算和最终状态验证",
+        "手写 REST 循环，因为由 SDK 管理消息序列会消除策略控制",
+        "使用确定性 workflow，即使接下来使用哪个 Tool 取决于观察结果",
+        "使用 Claude Managed Agents，因为任何开放式任务都需要远程托管会话"
+      ],
+      "correct": 0,
+      "explanation": "Tool Runner 消除了重复的 Client 循环样板代码，同时应用仍负责执行、审批、sandbox、预算和验证。使用托管或手写基础设施需要有明确的需求。"
+    },
+    {
+      "stage": "check",
+      "question": "某个 Tool 超时，但 Server 可能已经发起付款。重试前应该做什么？",
+      "options": [
+        "延长超时时间，并且仅在线路追踪中没有成功事件时重新发送",
+        "通过 idempotency key 和已确认的 Server 状态核对该操作",
+        "使用相同参数重试一次，因为确定性输入可以避免重复",
+        "让 Claude 对照对话检查错误并推断结果"
+      ],
+      "correct": 1,
+      "explanation": "在事务边界处，结果是不确定的。只有 idempotency 和权威状态核对才能确定重试是否安全。"
+    },
+    {
+      "stage": "check",
+      "question": "退款审核流程应仅在相关案例中加载，而已批准的退款操作必须在私有应用服务内运行。哪种组合最合适？",
+      "options": [
+        "使用符合 Anthropic schema 的 computer Tool，在没有应用策略的情况下点击退款按钮",
+        "使用包含私有退款凭据、由 Server 执行的内置 Tool",
+        "使用 Skill 封装流程，并使用自定义 Client Tool 执行已授权操作",
+        "仅使用 MCP Server，因为可复用说明和可执行权限属于同一层"
+      ],
+      "correct": 2,
+      "explanation": "Skill 用于封装可复用流程。自定义 Client Tool 可以保留私有执行、身份、审批和 idempotency 边界。"
+    },
+    {
+      "stage": "post",
+      "question": "对于部署 Agent，哪种成功检查最可靠？",
+      "options": [
+        "Agent 循环在报告部署后检查通过后正常结束",
+        "最终响应说明已部署的版本，并引用成功的 Tool 结果",
+        "线路追踪表明所有计划中的部署 Tool 都在没有错误的情况下返回",
+        "根据独立的最终状态检查，配置的版本处于健康状态"
+      ],
+      "correct": 3,
+      "explanation": "协议完成和自信的文字表述都不能证明环境已正确改变。应验证外部可观察的最终状态。"
+    },
+    {
+      "stage": "post",
+      "question": "一个任务始终依次提取字段、验证字段并写入已批准的记录。哪种架构更适合作为默认选择？",
+      "options": [
+        "包含显式模型步骤的确定性 workflow",
+        "一次模型调用，在调用写入 Tool 前完成提取和验证",
+        "由多个独立的提取、验证和写入 Subagent 组成的协调器",
+        "在提取、验证和写入 Tool 之间进行选择的有界 Agent"
+      ],
+      "correct": 0,
+      "explanation": "执行路径是已知的，因此 workflow 能提供更清晰的控制和测试。当观察结果决定未知路径时，Agent 式选择才更有价值。"
+    }
+  ]
+}
