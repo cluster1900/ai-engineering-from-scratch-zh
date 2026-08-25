@@ -73,6 +73,10 @@ AI 生成内容标注的 Transparency Code（第一版草案 2025 年 12 月，�
 
 Lessons 22-23 关注模型输出的内容（private data、provenance signal）。Lesson 27 覆盖 training-data governance。Lesson 24 是要求这些技术措施的监管框架。
 
+```figure
+an-watermark-greenlist
+```
+
 ## 使用它
 
 `code/main.py` 构建了一个玩具 text watermark。Tokens 是整数 0..N-1；watermarked sampling 会偏向 hash 定义的 green 集合。Detector 会计算 green-token z-score。你可以观察 1000-token generations 下的检测结果，看到 paraphrase 如何破坏该信号，并测量 human text 上的 false-positive rate。

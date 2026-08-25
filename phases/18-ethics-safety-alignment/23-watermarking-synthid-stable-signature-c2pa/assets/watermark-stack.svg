@@ -19,7 +19,7 @@
   <text x="480" y="85" text-anchor="middle" class="head">模态 x 机制</text>
   <rect x="60" y="105" width="200" height="110" class="cool"/>
   <text x="160" y="130" text-anchor="middle" class="step">文本</text>
-  <text x="160" y="152" text-anchor="middle" class="small">SynthID-text (Kirchenbauer)</text>
+  <text x="160" y="152" text-anchor="middle" class="small">SynthID-text（Kirchenbauer）</text>
   <text x="160" y="170" text-anchor="middle" class="small">绿/红 Token 偏置</text>
   <text x="160" y="190" text-anchor="middle" class="small">易受改写影响</text>
 
@@ -37,7 +37,7 @@
 
   <rect x="720" y="105" width="180" height="110" class="cool"/>
   <text x="810" y="130" text-anchor="middle" class="step">视频</text>
-  <text x="810" y="152" text-anchor="middle" class="small">SynthID-video (Veo)</text>
+  <text x="810" y="152" text-anchor="middle" class="small">SynthID-video（Veo）</text>
   <text x="810" y="170" text-anchor="middle" class="small">帧 + 时间信号</text>
   <text x="810" y="190" text-anchor="middle" class="small">对帧率稳健</text>
 
