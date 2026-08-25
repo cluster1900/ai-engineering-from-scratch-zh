@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "为什么 vanilla Self-Attention 要用 1/sqrt(d_k) 缩放 dot product？",
-      "options": ["为了让输出值位于 0 到 1 之间", "为了防止 dot product 在高维空间中变得很大，从而把 softmax 推入 Gradient 极小的区域", "为了将 query 和 key Vector 归一化为单位长度", "为了降低 Matrix multiplication 的计算成本"],
-      "correct": 1,
+      "options": [
+        "为了让输出值位于 0 到 1 之间",
+        "为了将 query 和 key Vector 归一化为单位长度",
+        "为了防止 dot product 在高维空间中变得很大，从而把 softmax 推入 Gradient 极小的区域",
+        "为了降低 Matrix multiplication 的计算成本"
+      ],
+      "correct": 2,
       "explanation": "当 d_k 很大时，随机 Vector 的 dot product 会按 sqrt(d_k) 的比例增长。如果不进行缩放，softmax 会接收到很大的输入，产生近似 one-hot 的输出，导致 Gradient 消失。"
     },
     {
       "stage": "pre",
       "question": "Self-Attention 中的三个 projections 是什么？",
-      "options": ["Input、hidden 和 output", "Query、key 和 value -- 每一个都是同一输入经过学习得到的 linear projection", "Encoder、decoder 和 cross-attention", "Embedding、position 和 segment"],
+      "options": [
+        "Encoder、decoder 和 cross-attention",
+        "Query、key 和 value -- 每一个都是同一输入经过学习得到的 linear projection",
+        "Embedding、position 和 segment",
+        "Input、hidden 和 output"
+      ],
       "correct": 1,
       "explanation": "Self-Attention 会通过三个不同的 weight Matrix 对输入进行 projection，生成 queries（我在寻找什么？）、keys（我包含什么？）和 values（如果匹配上，我输出什么？）。"
     },
     {
       "stage": "post",
       "question": "在 8 个 heads 且 d_model=512 的 Multi-Head Attention 中，每个 head 的维度是多少？",
-      "options": ["512 -- 每个 head 都看到完整维度", "64 -- d_model 会在各个 heads 之间平均拆分（512/8=64）", "8 -- 每个 head 一个维度", "4096 -- 每个 head 会扩展 representation"],
+      "options": [
+        "512 -- 每个 head 都看到完整维度",
+        "64 -- d_model 会在各个 heads 之间平均拆分（512/8=64）",
+        "4096 -- 每个 head 会扩展 representation",
+        "8 -- 每个 head 一个维度"
+      ],
       "correct": 1,
       "explanation": "Multi-Head Attention 会将 d_model 拆分为 h 个 heads，每个 head 在 d_k = d_model/h 个维度上运行。当每个 head 为 512/8 = 64 维时，总计算成本等同于在完整维度上的 single-head Attention。"
     },
     {
       "stage": "post",
       "question": "autoregressive Attention 中的 causal mask 会防止什么？",
-      "options": ["它会防止模型 attend 到 padding Token", "它会防止每个位置 attend 到未来位置，确保模型在预测下一个 Token 时只能使用过去的上下文", "它会防止 Attention weights 变得过大", "它会防止模型 attend 到自身位置"],
-      "correct": 1,
+      "options": [
+        "它会防止每个位置 attend 到未来位置，确保模型在预测下一个 Token 时只能使用过去的上下文",
+        "它会防止模型 attend 到自身位置",
+        "它会防止模型 attend 到 padding Token",
+        "它会防止 Attention weights 变得过大"
+      ],
+      "correct": 0,
       "explanation": "在 autoregressive generation 中，Token t 不能看到 Token t+1、t+2 等。causal mask 会在 softmax 之前将未来位置设置为 -infinity，从而将它们的 Attention weights 置零。"
     },
     {
       "stage": "post",
       "question": "为什么 Self-Attention 在序列长度 n 上具有 O(n^2) 复杂度？",
-      "options": ["因为模型有 n 层相互堆叠", "因为每个 Token 都会与每个其他 Token 计算 Attention scores，从而产生一个 n x n Attention Matrix", "因为 Attention 之后的 feedforward layers 是二次复杂度", "因为通过 Attention 进行 Backpropagation 需要 n^2 次 Gradient 计算"],
-      "correct": 1,
+      "options": [
+        "因为模型有 n 层相互堆叠",
+        "因为通过 Attention 进行 Backpropagation 需要 n^2 次 Gradient 计算",
+        "因为 Attention 之后的 feedforward layers 是二次复杂度",
+        "因为每个 Token 都会与每个其他 Token 计算 Attention scores，从而产生一个 n x n Attention Matrix"
+      ],
+      "correct": 3,
       "explanation": "QK^T Matrix multiplication 会产生一个 n x n Attention Matrix，其中条目 (i,j) 表示从 Token i 到 Token j 的 Attention。计算和内存都会按 O(n^2) 扩展，这也是长上下文模型需要 FlashAttention 等技术的原因。"
     }
-  ]
+  ],
+  "title": null
 }
