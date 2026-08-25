@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="480" y="28" text-anchor="middle" class="title">十二阶段，一个 manifest，一个发布门</text>
+  <text x="480" y="28" text-anchor="middle" class="title">十二阶段，一个 manifest，一个发布门禁</text>
 
   <!-- Stages grid 4x3 -->
   <g>
@@ -28,7 +28,7 @@
 
     <rect x="245" y="60" width="180" height="60" class="box"/>
     <text x="335" y="82" text-anchor="middle" class="label">03  Dataset</text>
-    <text x="335" y="102" text-anchor="middle" class="step">shards、dedup、rows</text>
+    <text x="335" y="102" text-anchor="middle" class="step">shard、去重、行数</text>
     <text x="335" y="115" text-anchor="middle" class="small">~hours · ~$50</text>
 
     <rect x="460" y="60" width="180" height="60" class="hot"/>
@@ -66,16 +66,16 @@
     <rect x="30"  y="280" width="180" height="60" class="box"/>
     <text x="120" y="302" text-anchor="middle" class="label">11  量化</text>
     <text x="120" y="322" text-anchor="middle" class="step">GPTQ / AWQ / GGUF</text>
-    <text x="120" y="335" text-anchor="middle" class="small">4-bit · ~mins</text>
+    <text x="120" y="335" text-anchor="middle" class="small">4-bit · 约数分钟</text>
 
     <rect x="245" y="280" width="180" height="60" class="box"/>
     <text x="335" y="302" text-anchor="middle" class="label">12  推理</text>
     <text x="335" y="322" text-anchor="middle" class="step">vLLM, TRT-LLM</text>
-    <text x="335" y="335" text-anchor="middle" class="small">连续 batch</text>
+    <text x="335" y="335" text-anchor="middle" class="small">连续 Batch</text>
 
     <rect x="460" y="280" width="180" height="60" class="gate"/>
     <text x="550" y="302" text-anchor="middle" class="label">发布门禁</text>
-    <text x="550" y="322" text-anchor="middle" class="step">regression + KL + $</text>
+    <text x="550" y="322" text-anchor="middle" class="step">Regression + KL + $</text>
     <text x="550" y="335" text-anchor="middle" class="small">数值阈值</text>
 
     <rect x="675" y="280" width="180" height="60" class="cool"/>
@@ -115,17 +115,17 @@
   <!-- Manifest and cost labels at bottom -->
   <rect x="30" y="380" width="400" height="100" class="box"/>
   <text x="230" y="402" text-anchor="middle" class="label">清单</text>
-  <text x="230" y="422" text-anchor="middle" class="step">version, seed, git_commit</text>
-  <text x="230" y="440" text-anchor="middle" class="step">每阶段 input/output hash</text>
-  <text x="230" y="458" text-anchor="middle" class="step">成本、wall clock、状态</text>
-  <text x="230" y="473" text-anchor="middle" class="small">单文件，足够 replay</text>
+  <text x="230" y="422" text-anchor="middle" class="step">版本、seed、git_commit</text>
+  <text x="230" y="440" text-anchor="middle" class="step">每阶段输入/输出 hash</text>
+  <text x="230" y="458" text-anchor="middle" class="step">成本、墙钟时间、状态</text>
+  <text x="230" y="473" text-anchor="middle" class="small">单文件，足够回放</text>
 
   <rect x="460" y="380" width="400" height="100" class="gate"/>
   <text x="660" y="402" text-anchor="middle" class="label">门禁</text>
-  <text x="660" y="422" text-anchor="middle" class="step">regression: metric ≥ baseline</text>
-  <text x="660" y="440" text-anchor="middle" class="step">KL 预算: drift &lt; cap</text>
-  <text x="660" y="458" text-anchor="middle" class="step">safety: refusal rate &lt; 5%</text>
-  <text x="660" y="473" text-anchor="middle" class="step">成本: total &lt; budget</text>
+  <text x="660" y="422" text-anchor="middle" class="step">Regression：指标 ≥ baseline</text>
+  <text x="660" y="440" text-anchor="middle" class="step">KL 预算：drift &lt; cap</text>
+  <text x="660" y="458" text-anchor="middle" class="step">安全性：拒答率 &lt; 5%</text>
+  <text x="660" y="473" text-anchor="middle" class="step">成本：总计 &lt; 预算</text>
 
-  <text x="480" y="508" text-anchor="middle" class="caption">无主观 sign-off — 每个门禁都是数字，且都有版本</text>
+  <text x="480" y="508" text-anchor="middle" class="caption">无主观签核——每个门禁都是数字，且都有版本</text>
 </svg>
