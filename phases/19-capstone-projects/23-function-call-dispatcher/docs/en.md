@@ -14,6 +14,10 @@
 - 将 handler exceptions 和 transport faults 映射到 harness loop 已经理解的单一 error envelope。
 - 用 concurrency limit 约束 parallel dispatch，避免四十个 tool calls 的 fan-out 耗尽 event loop。
 
+```figure
+cf-dispatch-retry
+```
+
 ## Where the dispatcher sits
 
 位于 harness loop（lesson twenty）和 tool registry（lesson twenty-one）之间。transport（lesson twenty-two）向 loop 输入。loop 把 tool call 交给 dispatcher。dispatcher 调用 registry，运行 handler，并返回 result 或 JSON-RPC 形状的 error envelope。
