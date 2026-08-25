@@ -82,6 +82,10 @@ Answer:
 
 这就是 CI 冒烟测试的形式。该管道离线运行、快速、确定。fixture 的阈值故意严格，因此六节课程中任何一课的回归都会导致演示失败。
 
+```figure
+rag-pipeline-flow
+```
+
 ## 构建它
 
 `code/main.py` 实现：
