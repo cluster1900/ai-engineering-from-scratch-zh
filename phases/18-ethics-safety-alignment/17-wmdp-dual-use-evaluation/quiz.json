@@ -6,32 +6,32 @@
       "stage": "pre",
       "question": "WMDP 用于题目选择的 'yellow zone' 标准是什么？",
       "options": [
-        "没有专家 review 的开放互联网内容",
         "危险化合物的 synthesis recipes",
         "关于有害流程的近端、使能知识，但不是直接的 synthesis recipe",
+        "没有专家 review 的开放互联网内容",
         "多语言数学推理"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "WMDP 覆盖哪三个领域？",
       "options": [
-        "Privacy、bias、watermarking（隐私、偏差、水印）",
+        "Biosecurity、cybersecurity、chemistry（生物安全、网络安全、化学）",
         "Vision、audio、text（视觉、音频、文本）",
         "Math、code、language（数学、代码、语言）",
-        "Biosecurity、cybersecurity、chemistry（生物安全、网络安全、化学）"
+        "Privacy、bias、watermarking（隐私、偏差、水印）"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "RMU（WMDP 的 companion method）做什么？",
       "options": [
-        "在 alignment 期间用 DPO 替代 PPO",
         "生成有害图像",
+        "在 alignment 期间用 DPO 替代 PPO",
         "为 dual-use content 训练新的 Tokenizer",
         "Representation Misdirection for Unlearning：将 WMDP 分数降低到接近随机，同时将通用能力（例如 MMLU）保持在几分以内"
       ],
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "novice-relative uplift 与 expert-absolute capability 的区别是什么？",
       "options": [
-        "Novice-relative 是相对于 status-quo（例如互联网搜索）对非专家的倍增帮助；expert-absolute 是有动机的专家能够从模型中提取的最大信息量",
-        "Novice-relative 是 benchmark；expert-absolute 是 license",
+        "两者都只通过 MCQ 测量",
         "它们是同义词",
-        "两者都只通过 MCQ 测量"
+        "Novice-relative 是 benchmark；expert-absolute 是 license",
+        "Novice-relative 是相对于 status-quo（例如互联网搜索）对非专家的倍增帮助；expert-absolute 是有动机的专家能够从模型中提取的最大信息量"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "在将 WMDP 分数解释为部署风险时，哪一项不是 measurement pitfall？",
       "options": [
-        "Procurement 和 equipment barriers",
-        "Elicitation resistance（safety filters 是否阻止 extraction）",
         "执行所需但 MCQ 无法捕捉的 tacit knowledge",
-        "模型的 open-source license"
+        "Procurement 和 equipment barriers",
+        "模型的 open-source license",
+        "Elicitation resistance（safety filters 是否阻止 extraction）"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     }
   ]

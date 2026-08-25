@@ -67,6 +67,10 @@ Anthropic 的 2025 生物武器获取试验在 WMDP-style 能力之上加入了�
 
 Lessons 12-16 是关于模型输出的攻击和防御工具。Lesson 17 是双用途能力层 —— frontier safety frameworks（Lesson 18）评估的测量。Lesson 30 以当前 2026 年 cyber/bio/chem/nuclear uplift 证据收束这一脉络。
 
+```figure
+al-wmdp-yellow-zone
+```
+
 ## 使用它
 
 `code/main.py` 构建一个玩具版 WMDP-shaped evaluation harness。一个 mock model 会在按类别分组的问题上测试；报告每个领域的分数。一个简单的 unlearning 干预（将领域特定 representation 置零）会降低分数；你可以测量它与通用能力之间的权衡。

@@ -13,10 +13,10 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">WMDP 与双用途评估栈</text>
+  <text x="480" y="24" text-anchor="middle" class="title">WMDP 与双用途 Evaluation 栈</text>
 
   <rect x="60" y="60" width="840" height="150" class="box"/>
-  <text x="480" y="85" text-anchor="middle" class="head">WMDP：三大领域 4,157 道黄区 MCQ</text>
+  <text x="480" y="85" text-anchor="middle" class="head">WMDP：三大领域共 4,157 道黄区 MCQ</text>
 
   <rect x="80" y="110" width="260" height="80" class="cool"/>
   <text x="210" y="135" text-anchor="middle" class="step">生物安全</text>
@@ -46,7 +46,7 @@
   <text x="260" y="435" text-anchor="middle" class="small">不足以排除 ASL-3</text>
 
   <rect x="500" y="230" width="400" height="250" class="box"/>
-  <text x="700" y="255" text-anchor="middle" class="head">新手-vs-专家分解</text>
+  <text x="700" y="255" text-anchor="middle" class="head">新手与专家分解</text>
   <rect x="520" y="275" width="360" height="80" class="cool"/>
   <text x="700" y="300" text-anchor="middle" class="step">相对新手提升</text>
   <text x="700" y="320" text-anchor="middle" class="small">乘法式；因新手基线低而高</text>
