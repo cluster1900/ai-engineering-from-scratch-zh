@@ -6,60 +6,60 @@
       "stage": "pre",
       "question": "ModelAdapter 接口的最小可能表面是多少？",
       "options": [
-        "生成（提示，任务）返回文本加上可选的置信度和每个tokennll",
-        "完成、嵌入、分类、总结",
+        "完成、Embedding、分类、总结",
         "初始化、登录、生成、关闭",
+        "生成（提示，任务）返回文本加上可选的置信度和每个tokennll",
         "加载权重、生成、保存权重"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "一种方法适用于任何适配器。其他一切都是可选的装饰。runner不需要更丰富的表面。"
     },
     {
-      "stage": "check",
+      "stage": "pre",
       "question": "为什么runner接受并行标志而不是始终并行运行？",
       "options": [
-        "CPython 中的并行执行不安全",
         "测试需要确定的执行顺序；该标志让他们切换到顺序",
+        "CPython 中的并行执行不安全",
         "并行执行需要GPU",
         "ThreadPoolExecutor 不是 stdlib"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "测试需要可重复性。生产需要吞吐量。该标志在没有两个代码路径的情况下分割了这些问题。"
     },
     {
       "stage": "check",
       "question": "runner如何确定校准缓冲液的正确标志？",
       "options": [
-        "它调用适配器两次并比较输出",
         "默认情况下，它在阈值 1.0 处使用精确匹配样式指标，在阈值 0.5 处使用分级指标",
+        "它调用适配器两次并比较输出",
         "它使用平均 bin 置信度",
         "它使用 Brier 分解"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "阈值是度量感知的：exact_match-style 度量使用接近 1.0 的截止值，而分级度量默认使用 0.5。"
     },
     {
       "stage": "check",
       "question": "为什么runner要构建 EvalRun 记录并将其交给聚合器，而不是内联计算排行榜？",
       "options": [
-        "EvalRun 内存效率更高",
         "它使runner与聚合器无关，并让排行榜层在不接触runner 的情况下发展",
         "numpy 数组上的聚合器比数据类上的聚合器更快",
-        "JSON 架构需要 EvalRun"
+        "JSON 架构需要 EvalRun",
+        "EvalRun 内存效率更高"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "组合优于内联。runner创造记录；聚合器拥有排行榜数学。每节课都有一个关注点。"
     },
     {
-      "stage": "post",
+      "stage": "check",
       "question": "最终 JSON 信封中困惑块的作用是什么？",
       "options": [
-        "排行榜排名所必需的",
-        "它是校准报告的输入",
+        "它是根据 bootstrap CI 计算得出的",
         "它携带每个模型保留的语言建模编号，与任务评分无关",
-        "它是根据 bootstrap CI 计算得出的"
+        "它是校准报告的输入",
+        "排行榜排名所必需的"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "困惑位于排行榜旁边，而不是排行榜内部。它使用适配器的每次调用token NLL 和token计数。"
     },
     {
