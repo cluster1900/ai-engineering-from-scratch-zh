@@ -32,7 +32,7 @@
   <text x="100" y="258" text-anchor="middle" class="content">decoder</text>
 
   <rect x="200" y="80" width="140" height="200" class="cold"/>
-  <text x="270" y="100" text-anchor="middle" class="caption">ControlNet clone（可训练）</text>
+  <text x="270" y="100" text-anchor="middle" class="caption">ControlNet clone（可 Training）</text>
   <rect x="220" y="115" width="100" height="35" class="box"/>
   <text x="270" y="138" text-anchor="middle" class="content">enc copy</text>
   <rect x="220" y="155" width="100" height="35" class="box"/>
@@ -79,8 +79,8 @@
 
   <rect x="60" y="380" width="180" height="120" class="cold"/>
   <text x="150" y="402" text-anchor="middle" class="content">ControlNet</text>
-  <text x="150" y="422" text-anchor="middle" class="caption">spatial（pose、depth、</text>
-  <text x="150" y="438" text-anchor="middle" class="caption">edges、scribble、seg）</text>
+  <text x="150" y="422" text-anchor="middle" class="caption">spatial（姿态、深度、</text>
+  <text x="150" y="438" text-anchor="middle" class="caption">边缘、涂鸦、分割）</text>
   <text x="150" y="470" text-anchor="middle" class="caption">每种模态 70-360 MB</text>
 
   <rect x="260" y="380" width="180" height="120" class="cold"/>
@@ -97,7 +97,7 @@
 
   <rect x="660" y="380" width="180" height="120" class="cold"/>
   <text x="750" y="402" text-anchor="middle" class="content">DreamBooth</text>
-  <text x="750" y="422" text-anchor="middle" class="caption">base 全量 fine-tune</text>
+  <text x="750" y="422" text-anchor="middle" class="caption">base 全量 Fine-tuning</text>
   <text x="750" y="438" text-anchor="middle" class="caption">最强身份保持</text>
   <text x="750" y="470" text-anchor="middle" class="caption">2-5 GB</text>
 </svg>
