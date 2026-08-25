@@ -21,41 +21,41 @@
 
   <rect x="30" y="50" width="440" height="210" class="hot"/>
   <text x="250" y="72" text-anchor="middle" class="head">路径 1：暴力上下文</text>
-  <text x="250" y="96" text-anchor="middle" class="small">Gemini 1.5 Pro：1M tokens</text>
-  <text x="250" y="114" text-anchor="middle" class="small">Gemini 2.5 Pro：10M+ tokens</text>
-  <text x="250" y="132" text-anchor="middle" class="small">Claude Opus 4.7：1M tokens</text>
+  <text x="250" y="96" text-anchor="middle" class="small">Gemini 1.5 Pro：1M Token</text>
+  <text x="250" y="114" text-anchor="middle" class="small">Gemini 2.5 Pro：10M+ Token</text>
+  <text x="250" y="132" text-anchor="middle" class="small">Claude Opus 4.7：1M Token</text>
   <text x="250" y="160" text-anchor="middle" class="step">工程</text>
   <text x="250" y="180" text-anchor="middle" class="small">自定义 Attention 层级</text>
-  <text x="250" y="196" text-anchor="middle" class="small">MoE expert 路由</text>
+  <text x="250" y="196" text-anchor="middle" class="small">MoE 专家路由</text>
   <text x="250" y="212" text-anchor="middle" class="small">闭源</text>
   <text x="250" y="240" text-anchor="middle" class="caption">最佳召回，仅闭源</text>
 
   <rect x="490" y="50" width="440" height="210" class="cool"/>
   <text x="710" y="72" text-anchor="middle" class="head">路径 2：ring Attention</text>
-  <text x="710" y="96" text-anchor="middle" class="small">LWM：1M-token 训练</text>
-  <text x="710" y="114" text-anchor="middle" class="small">LongVILA：1400-frame videos</text>
+  <text x="710" y="96" text-anchor="middle" class="small">LWM：1M-Token 训练</text>
+  <text x="710" y="114" text-anchor="middle" class="small">LongVILA：1400 帧视频</text>
   <text x="710" y="132" text-anchor="middle" class="small">分布式 ring 模式</text>
   <text x="710" y="160" text-anchor="middle" class="step">工程</text>
-  <text x="710" y="180" text-anchor="middle" class="small">每台设备持有 chunk</text>
-  <text x="710" y="196" text-anchor="middle" class="small">轮转进行 Attention passes</text>
+  <text x="710" y="180" text-anchor="middle" class="small">每台设备持有数据块</text>
+  <text x="710" y="196" text-anchor="middle" class="small">轮转执行 Attention</text>
   <text x="710" y="212" text-anchor="middle" class="small">开源</text>
   <text x="710" y="240" text-anchor="middle" class="caption">开源扩展好，计算重</text>
 
   <rect x="30" y="280" width="440" height="230" class="cold"/>
   <text x="250" y="302" text-anchor="middle" class="head">路径 3：Token 压缩</text>
-  <text x="250" y="326" text-anchor="middle" class="small">Video-XL：一个 summary Token</text>
-  <text x="250" y="344" text-anchor="middle" class="small">每个 clip（数百帧 -&gt; 1）</text>
-  <text x="250" y="362" text-anchor="middle" class="small">LongVA：长上下文迁移</text>
-  <text x="250" y="380" text-anchor="middle" class="small">VideoChat2：层级 pool</text>
+  <text x="250" y="326" text-anchor="middle" class="small">Video-XL：一个摘要 Token</text>
+  <text x="250" y="344" text-anchor="middle" class="small">每个片段（数百帧 -&gt; 1）</text>
+  <text x="250" y="362" text-anchor="middle" class="small">LongVA：长 Context 迁移</text>
+  <text x="250" y="380" text-anchor="middle" class="small">VideoChat2：层级池化</text>
   <text x="250" y="410" text-anchor="middle" class="step">工程</text>
-  <text x="250" y="430" text-anchor="middle" class="small">LLM 前学习式 compressor</text>
+  <text x="250" y="430" text-anchor="middle" class="small">LLM 前的学习式压缩器</text>
   <text x="250" y="446" text-anchor="middle" class="small">以召回换规模</text>
-  <text x="250" y="462" text-anchor="middle" class="small">~32k 上下文足够</text>
+  <text x="250" y="462" text-anchor="middle" class="small">~32k Context 足够</text>
   <text x="250" y="490" text-anchor="middle" class="caption">推理最便宜，定位最弱</text>
 
   <rect x="490" y="280" width="440" height="230" class="reg"/>
   <text x="710" y="302" text-anchor="middle" class="head">路径 4：Agentic 检索</text>
-  <text x="710" y="326" text-anchor="middle" class="small">VideoAgent：LLM 作 query planner</text>
+  <text x="710" y="326" text-anchor="middle" class="small">VideoAgent：LLM 作为查询规划器</text>
   <text x="710" y="344" text-anchor="middle" class="small">tool: find_clips(keyword)</text>
   <text x="710" y="362" text-anchor="middle" class="small">VLM 只读取匹配项</text>
   <text x="710" y="380" text-anchor="middle" class="small">LLM 组合最终答案</text>

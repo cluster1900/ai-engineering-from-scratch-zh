@@ -89,6 +89,10 @@ Gemini 2.5 Pro 在最长 90 分钟视频上得分 >99% 召回率。开放 72B �
 
 这结合了 brute-context 的全局理解和 retrieval 的局部细节能力。
 
+```figure
+mm-video-token-budget
+```
+
 ## 使用它
 `code/main.py`：
 
