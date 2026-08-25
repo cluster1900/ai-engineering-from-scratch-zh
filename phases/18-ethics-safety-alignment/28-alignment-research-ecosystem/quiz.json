@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "MATS 做什么，它的大致规模如何？",
       "options": [
-        "一种 reward-model 训练服务",
         "ML Alignment & Theory Scholars：一个研究导师制项目，自 2021 年以来已有 527+ 名学者、180+ 篇论文，并且 2025 年前的校友中约 80% 从事安全/security 工作",
-        "一个颁发 AI 出口许可证的监管机构",
-        "一个由 EU 拥有的前沿安全研究所"
+        "一种 reward-model 训练服务",
+        "一个由 EU 拥有的前沿安全研究所",
+        "一个颁发 AI 出口许可证的监管机构"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -19,23 +19,23 @@
       "question": "Redwood Research 提出了哪项议程？",
       "options": [
         "面向 LLMs 的 differential privacy",
-        "AI Control（第 10 课）：通过 U / T / H protocols，在存在 subversion 的情况下仍实现安全",
         "通过 SynthID 进行 watermarking",
-        "Constitutional AI"
+        "Constitutional AI",
+        "AI Control（第 10 课）：通过 U / T / H protocols，在存在 subversion 的情况下仍实现安全"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "哪个组织撰写了 In-Context Scheming 论文和《Towards Safety Cases for AI Scheming》框架？",
       "options": [
-        "METR",
-        "MATS",
         "Eleos AI",
-        "Apollo Research"
+        "METR",
+        "Apollo Research",
+        "MATS"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -43,35 +43,35 @@
       "question": "METR 在 alignment 生态系统中有什么独特的方法论风格？",
       "options": [
         "对 base models 进行 adversarial training",
-        "基于任务的能力评估、自主任务 time-horizon 研究，以及框架综合（例如《Common Elements of Frontier AI Safety Policies》）",
         "硬件认证的 verifiable inference",
-        "仅限 closed-source red-teaming"
+        "仅限 closed-source red-teaming",
+        "基于任务的能力评估、自主任务 time-horizon 研究，以及框架综合（例如《Common Elements of Frontier AI Safety Policies》）"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么多组织共同署名对安全声明很重要？",
       "options": [
+        "评估自身模型的实验室存在结构性利益冲突；外部评估者（Redwood, Apollo, METR, Eleos, UK AISI）可以提出并验证实验室可能少报的 failure modes",
         "它会增加引用次数",
-        "它会加快发表速度",
         "这是 EU AI Act 强制要求的",
-        "评估自身模型的实验室存在结构性利益冲突；外部评估者（Redwood, Apollo, METR, Eleos, UK AISI）可以提出并验证实验室可能少报的 failure modes"
+        "它会加快发表速度"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "Eleos AI Research 对该生态系统的主要贡献是什么？",
       "options": [
-        "AI Control benchmarks（AI Control 基准）",
-        "Watermarking 标准",
         "California 训练数据法律起草",
-        "部署前的模型 welfare 评估（第 19 课），包括 Claude Opus 4 system card 中的外部 welfare assessment"
+        "Watermarking 标准",
+        "部署前的模型 welfare 评估（第 19 课），包括 Claude Opus 4 system card 中的外部 welfare assessment",
+        "AI Control benchmarks（AI Control 基准）"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     }
   ]

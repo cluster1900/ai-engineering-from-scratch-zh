@@ -68,6 +68,10 @@ MATS 培养研究人员。毕业生进入 Anthropic、DeepMind、OpenAI（实验
 
 Lessons 7-11 引用了 Redwood 和 Apollo 的工作；Lesson 18 引用了 METR 的框架比较；Lesson 19 引用了 Eleos。Lesson 28 是对本 Phase 其余部分所依赖生态系统的显式组织地图。
 
+```figure
+sae-features
+```
+
 ## 使用它
 无需代码。阅读 METR 的 "Common Elements of Frontier AI Safety Policies"，把它作为外部综合如何为实验室内部 policy 工作增加价值的示例。
 
