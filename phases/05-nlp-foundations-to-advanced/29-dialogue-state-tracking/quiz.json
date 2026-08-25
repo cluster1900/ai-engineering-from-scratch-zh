@@ -7,11 +7,11 @@
       "question": "dialogue state tracking 在多轮对话中维护什么？",
       "options": [
         "仅自由文本历史",
-        "一个表示用户当前目标的 slot-value dictionary，并在每一轮之后更新",
+        "带 POS 标注的 transcript",
         "对话的 Embedding",
-        "带 POS 标注的 transcript"
+        "一个表示用户当前目标的 slot-value dictionary，并在每一轮之后更新"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "DST 维护一个结构化 slot-value map，backend 可以据此采取行动。"
     },
     {
@@ -19,9 +19,9 @@
       "question": "Joint Goal Accuracy (JGA) 衡量什么？",
       "options": [
         "每个 slot 都完全正确的轮次比例（all-or-nothing）",
-        "平均 slot accuracy",
+        "Cosine similarity",
         "每轮 latency",
-        "Cosine similarity"
+        "平均 slot accuracy"
       ],
       "correct": 0,
       "explanation": "JGA 是每轮所有 slots 的严格匹配；per-slot accuracy 更宽松。"
@@ -43,11 +43,11 @@
       "question": "哪种 2026 模式能用 5 行代码给出 guaranteed-valid slot dict？",
       "options": [
         "手写 regex",
-        "BM25 retrieval",
         "LLM + Instructor + Pydantic schema，并使用 constrained 或 validated output",
-        "TF-IDF classifier"
+        "TF-IDF classifier",
+        "BM25 retrieval"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "Pydantic schema + Instructor 会自动根据 slot ontology 验证 LLM 的 state output。"
     },
     {
@@ -55,8 +55,8 @@
       "question": "为什么要为你的 DST schema 做版本化？",
       "options": [
         "事后添加新 slots 会使旧 training data 失效，并破坏 longitudinal evaluation",
-        "JSON 要求这样做",
         "减少 token count",
+        "JSON 要求这样做",
         "提升速度"
       ],
       "correct": 0,
@@ -66,36 +66,36 @@
       "stage": "post",
       "question": "为什么 compliance-sensitive domains 的 DST 必须在 LLM extraction 旁加入 rule-based check？",
       "options": [
+        "LLMs 更慢",
         "Rules 避免 embeddings",
         "仅 LLM 的 DST 可能错误提取破坏性参数（amount、account、date）；rules layer 会执行确定性 constraints",
-        "LLMs 更慢",
         "Rules 是 multilingual"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Compliance domains 需要确定性执行；rules 会捕获 LLMs 引入的 slot errors。"
     },
     {
       "stage": "post",
       "question": "每一轮通过 LLM 重新生成 state 的成本问题是什么？",
       "options": [
-        "每轮重新读取完整历史会导致总 token usage 为 O(n^2)；要限制或总结较早轮次",
+        "Embedding drift",
         "更多 embeddings",
-        "Cosine costs",
-        "Embedding drift"
+        "每轮重新读取完整历史会导致总 token usage 为 O(n^2)；要限制或总结较早轮次",
+        "Cosine costs"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Full-history regeneration 相对于轮数是二次方成本；限制历史或使用 rolling summaries。"
     },
     {
       "stage": "post",
       "question": "为什么在执行破坏性 backend actions 之前需要显式 confirmation flows？",
       "options": [
-        "Latency",
         "Confirmation 会提高 JGA",
+        "即使优秀的 DST 也有非零 slot-error rates；确定性确认能防止 wrong-account 或 wrong-amount actions",
         "Tokenizers 要求这样做",
-        "即使优秀的 DST 也有非零 slot-error rates；确定性确认能防止 wrong-account 或 wrong-amount actions"
+        "Latency"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "破坏性 actions 需要用户确认，因为 DST 永远不会零错误。"
     }
   ]

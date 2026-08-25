@@ -50,6 +50,10 @@
 - **Correction。** “Actually make it 7 pm.” 必须更新时间，同时不清空其他 slots。
 - **对上一条系统话语的 Coreference。** “Yes, that one.” 哪个 “that”？
 
+```figure
+n5-slot-tracker
+```
+
 ## 构建它
 
 ### 步骤 1: 基于 rule 的 slot extractor
