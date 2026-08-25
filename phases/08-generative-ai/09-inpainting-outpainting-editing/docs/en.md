@@ -55,6 +55,10 @@ SD-Inpaint、SDXL-Inpaint、Flux-Fill 都使用这种 9-channel（或类似）�
 
 保留一个标准 unconditional diffusion model。在每个 reverse step，进行 resample：偶尔跳回更 noisy 的状态并重新生成。这样可以避免边界 artifact。当你没有训练好的 inpainting model 时使用。
 
+```figure
+inpaint-mask-reinject
+```
+
 ## Build It
 
 `code/main.py` 在 5 维数据上实现了一个玩具版 1-D inpainting 方案。我们在 5-D mixture data 上训练一个 DDPM，其中每个样本是来自两个 cluster 之一的 5 个 float。推理时，我们“mask” 5 个维度中的 2 个，在每一步注入未 mask 的 3 个维度的 noisy-forward 版本，并只重新生成被 mask 的维度。

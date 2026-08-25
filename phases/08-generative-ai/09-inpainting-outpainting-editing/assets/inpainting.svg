@@ -35,22 +35,22 @@
   <rect x="480" y="95" width="85" height="100" class="mask"/>
   <text x="450" y="230" text-anchor="middle" class="caption">反转 mask</text>
   <text x="450" y="248" text-anchor="middle" class="caption">扩展到画布外</text>
-  <text x="450" y="264" text-anchor="middle" class="caption">同模型，同 Loss</text>
+  <text x="450" y="264" text-anchor="middle" class="caption">同 Model，同 Loss</text>
 
   <!-- SDEdit -->
-  <text x="720" y="70" text-anchor="middle" class="label">SDEdit（无需重训）</text>
+  <text x="720" y="70" text-anchor="middle" class="label">SDEdit（无需重新 Training）</text>
   <rect x="590" y="80" width="270" height="130" class="box"/>
   <text x="725" y="110" text-anchor="middle" class="mono">x_0 -&gt; add noise to t -&gt; denoise</text>
   <text x="725" y="135" text-anchor="middle" class="caption">t/T = 0.3 → 轻微编辑</text>
   <text x="725" y="153" text-anchor="middle" class="caption">t/T = 0.6 → 中等编辑</text>
-  <text x="725" y="171" text-anchor="middle" class="caption">t/T = 0.9 → 近随机</text>
-  <text x="725" y="195" text-anchor="middle" class="caption">无 mask，仅噪声级滑块</text>
+  <text x="725" y="171" text-anchor="middle" class="caption">t/T = 0.9 → 近乎随机</text>
+  <text x="725" y="195" text-anchor="middle" class="caption">无 mask，仅 noise 级别滑块</text>
 
   <!-- pipeline flow -->
   <rect x="40" y="310" width="820" height="100" class="hot"/>
-  <text x="450" y="335" text-anchor="middle" class="label">inpainting 推理循环</text>
+  <text x="450" y="335" text-anchor="middle" class="label">inpainting Inference 循环</text>
   <text x="450" y="358" text-anchor="middle" class="mono">for t = T .. 1:  x_t[masked] = denoise;  x_t[unmasked] = noise(clean_source, t)</text>
-  <text x="450" y="380" text-anchor="middle" class="caption">每步用新的前向 Diffusion 干净图替换 unmasked 区域</text>
+  <text x="450" y="380" text-anchor="middle" class="caption">每步用新的正向 Diffusion 干净图替换 unmasked 区域</text>
   <text x="450" y="398" text-anchor="middle" class="caption">最后一步：将 unmasked 像素精确固定到干净源图</text>
 
   <!-- tools -->
