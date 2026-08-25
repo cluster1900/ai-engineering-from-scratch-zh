@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">capstone：一个 decoder-only Transformer，端到端</text>
+  <text x="450" y="30" text-anchor="middle" class="title">Capstone：端到端 decoder-only Transformer</text>
 
   <!-- Input tokens -->
   <rect x="350" y="60" width="200" height="30" class="hot"/>
@@ -39,7 +39,7 @@
 
   <!-- Causal MHA -->
   <rect x="260" y="242" width="380" height="32" class="attn"/>
-  <text x="450" y="263" text-anchor="middle" class="content">causal multi-head Self-Attention</text>
+  <text x="450" y="263" text-anchor="middle" class="content">因果 Multi-Head Self-Attention</text>
   <line x1="450" y1="274" x2="450" y2="292" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- + residual -->
@@ -73,11 +73,11 @@
 
   <!-- LM head tied -->
   <rect x="280" y="510" width="340" height="32" class="hot"/>
-  <text x="450" y="530" text-anchor="middle" class="content">lm_head（绑定到 Token Embedding）</text>
+  <text x="450" y="530" text-anchor="middle" class="content">lm_head（绑定至 Token Embedding）</text>
 
   <line x1="450" y1="542" x2="450" y2="558" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="330" y="558" width="240" height="30" class="box"/>
   <text x="450" y="578" text-anchor="middle" class="content">shift-by-one cross-entropy</text>
 
-  <text x="450" y="608" text-anchor="middle" class="caption">一个 config，把十三课压缩进单个训练脚本。</text>
+  <text x="450" y="608" text-anchor="middle" class="caption">一个 config，将十三课压缩为单个 Training 脚本。</text>
 </svg>

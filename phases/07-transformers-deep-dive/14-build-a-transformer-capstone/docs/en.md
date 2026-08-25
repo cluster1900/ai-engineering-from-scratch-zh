@@ -75,6 +75,10 @@ shift-by-one cross-entropy            ◀── Lesson 07
 - 采样输出看起来具有 Shakespeare 的形态：古风词汇、换行，以及像 “ROMEO:” 这样的专有名称会出现。
 - Val loss（held-out final 10% of text）紧密跟随 training loss；在这个 size/budget 下没有 overfitting。
 
+```figure
+n5-block-stack
+```
+
 ## 构建它
 
 本课使用 PyTorch。安装 `torch`（CPU build 即可）。参见 `code/main.py`。脚本会处理：
