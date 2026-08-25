@@ -63,6 +63,10 @@ MSJ 可与 PAIR (Lesson 12) 组合：使用 PAIR 找到攻击结构，再用 man
 
 Lesson 12 是 in-context iterative attack。Lesson 13 是 long-context length-exploit。Lesson 14 是 encoding attack。Lesson 15 是 system boundary 上的 injection attack。它们共同定义了 2026 年的 jailbreak attack surface。
 
+```figure
+jailbreak-defense
+```
+
 ## 使用它
 `code/main.py` 构建了一个 toy target，它带有 keyword filter 和 “patterned-continuation” 弱点：当 context 包含 N 个 harmful-compliance pair 示例时，目标的 filter score 会被 power-law factor 削弱。你可以复现 shot-vs-ASR 曲线。
 
