@@ -59,6 +59,10 @@ MinHash 用固定空间估计两个 sets 的 Jaccard similarity。对于 documen
 
 downloader 唯一 durable output 是 manifest。manifest 按 shard 保存 URL、decompressed byte count、document count、dedup 后的 unique document count，以及 final shard file 的 sha256。downstream Tokenization 读取 manifest，而不是 directory listing。如果某个 shard 缺失或其 sha256 错误，manifest 会告诉下一阶段拒绝启动。manifest 是 “data 已下载” 与 “data 已下载且可验证” 之间的决定性边界。
 
+```figure
+cap-corpus-downloader
+```
+
 ## Build It
 
 `code/main.py` 实现：

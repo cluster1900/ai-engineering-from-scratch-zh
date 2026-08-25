@@ -8,8 +8,8 @@
       "options": [
         "为了让 cache directory 看起来更有组织",
         "这样 resumed download 可以在追加前验证 verified bytes 上的 sha256 prefix，使 silent corruption 不可能发生",
-        "因为 urllib 要求这样做",
-        "为了在 shard file 移动时存储 URL"
+        "为了在 shard file 移动时存储 URL",
+        "因为 urllib 要求这样做"
       ],
       "correct": 1,
       "explanation": "checkpoint 记录 verified_bytes 和这些 bytes 的 sha256；只有当 on-disk hash 匹配时才会继续 resume。"
@@ -19,23 +19,23 @@
       "question": "LSH band scheme 提供了 exact-hash dedup 没有的什么能力？",
       "options": [
         "Constant memory usage",
-        "Sub-linear lookup，可以在 documents 只相差少量 tokens 时标记具有高 Jaccard similarity 的 near-duplicates",
         "Lossless compression",
+        "Sub-linear lookup，可以在 documents 只相差少量 tokens 时标记具有高 Jaccard similarity 的 near-duplicates",
         "更快的 sha256 computation"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "MinHash 加 LSH 能捕捉 exact-hash dedup 会错过的 paraphrases 和 boilerplate variants。"
     },
     {
       "stage": "check",
       "question": "为什么 checkpoint 要在 bytes 被追加前写入，而不是之后？",
       "options": [
-        "这样方便",
         "如果 process 在 write 和 checkpoint update 之间死亡，下一次 resume 会读取一个落后于 bytes 的 checkpoint，并静默 re-append，从而损坏 file",
-        "这样更快",
-        "这样节省 disk space"
+        "这样节省 disk space",
+        "这样方便",
+        "这样更快"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Checkpoint-first 匹配 write-ahead log：crash 会留下小于或等于 file 的 verified offset，绝不会领先。"
     },
     {
@@ -43,21 +43,21 @@
       "question": "manifest sha256 lock file 的作用是什么？",
       "options": [
         "它加快 reads",
+        "它是 manifest 的 backup",
         "downstream stages 会拒绝启动，除非 manifest content 与 pinned hash 匹配，从而关闭 attacker 编辑单个文件的 silent attack surface",
-        "它记录日期",
-        "它是 manifest 的 backup"
+        "它记录日期"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Pinning manifest hash 会让 code 与 data 之间的 link 成为 content-addressed contract。"
     },
     {
       "stage": "post",
       "question": "为什么 dedup 放在 Tokenization 上游，而不是之后？",
       "options": [
-        "Tokenizer 无法读取 JSONL",
-        "Tokenization 很昂贵；在同一 document 上运行两次会为同样的 loss curve 支付两倍成本，所以先丢弃 duplicates 严格来说更便宜",
         "Tokenizers 会拒绝 duplicates",
-        "Tokenizer 先需要 vocabulary"
+        "Tokenization 很昂贵；在同一 document 上运行两次会为同样的 loss curve 支付两倍成本，所以先丢弃 duplicates 严格来说更便宜",
+        "Tokenizer 先需要 vocabulary",
+        "Tokenizer 无法读取 JSONL"
       ],
       "correct": 1,
       "explanation": "Dedup 是第一个阶段，在这里每丢弃一个 duplicate document，就能为 Tokenizer 省下一次 pass。"
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "Tombstoning 被丢弃的 duplicate 保留了 silent delete 无法保留的什么？",
       "options": [
-        "Disk space",
-        "duplicate 与它 collision 的 keeper 之间的 link，以及能在之后 threshold change 后保留下来的 audit trail",
         "Compression ratio",
-        "Manifest sha256 stability"
+        "Disk space",
+        "Manifest sha256 stability",
+        "duplicate 与它 collision 的 keeper 之间的 link，以及能在之后 threshold change 后保留下来的 audit trail"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Tombstones 让未来的 pass 可以重新审视 dedup threshold；deletes 会丢失 evidence。"
     }
   ]
