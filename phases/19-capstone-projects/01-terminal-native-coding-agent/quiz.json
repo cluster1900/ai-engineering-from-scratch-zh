@@ -6,48 +6,48 @@
       "stage": "pre",
       "question": "2026 年的 terminal coding agents 共享哪种循环形态？",
       "options": [
+        "获取、Embed、排序、合成",
         "计划、行动、观察、恢复",
-        "编码、解码、采样、流式输出",
         "训练、评估、部署、监控",
-        "获取、Embed、排序、合成"
+        "编码、解码、采样、流式输出"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "pre",
       "question": "为什么 harness 要在 E2B 或 Daytona sandbox 中运行每个任务？",
       "options": [
-        "为了将 filesystem 和 tool 执行与 host 隔离，使 worktree 可以在完成后被清理",
+        "为了让 agent loop 能访问 GPU",
         "为了绕过 model-provider rate limits",
-        "为了在 cold caches 上 benchmark Token throughput",
-        "为了让 agent loop 能访问 GPU"
+        "为了将 filesystem 和 tool 执行与 host 隔离，使 worktree 可以在完成后被清理",
+        "为了在 cold caches 上 benchmark Token throughput"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "哪个 built-in hook 是在破坏性 shell commands 执行前阻止它们的自然位置？",
       "options": [
-        "PreToolUse",
-        "SessionStart",
         "Stop",
-        "PostToolUse"
+        "PostToolUse",
+        "PreToolUse",
+        "SessionStart"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "这个 capstone 将每个 tool result 限制在大约 4k Tokens。它主要防止哪种 failure mode？",
       "options": [
+        "Model 对 tool-call traces 过拟合",
         "通过恶意 shell metacharacters 进行 sandbox escape",
-        "当 tool 返回大段 dump 时造成 context poisoning 和失控成本",
         "恢复 sessions 时出现 stale plan state",
-        "Model 对 tool-call traces 过拟合"
+        "当 tool 返回大段 dump 时造成 context poisoning 和失控成本"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -55,21 +55,21 @@
       "question": "PreCompact hook 在 150k-Token 标记处做什么？",
       "options": [
         "取消运行并退还用户预算",
-        "将较早 turns 汇总成 prior-state block，使 plan 和新 observations 仍能放入 context",
         "Force-push 当前 branch 来备份进度",
+        "将较早 turns 汇总成 prior-state block，使 plan 和新 observations 仍能放入 context",
         "将 backing model 切换到更小的 draft model"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "这个 capstone 在 30-issue SWE-bench Pro subset 上将自己的 harness 与哪个 baseline 比较？",
       "options": [
-        "OpenCode",
+        "Aider",
         "mini-swe-agent",
         "Live-SWE-agent",
-        "Aider"
+        "OpenCode"
       ],
       "correct": 1,
       "explanation": ""
@@ -79,11 +79,11 @@
       "question": "deliverable 要衡量哪组 metrics？",
       "options": [
         "WER、MOS 和 first-audio-out",
+        "MRR@10 和 nDCG@10",
         "Perplexity、BLEU 和 ROUGE",
-        "pass@1、turns-per-task 和 dollar-per-task",
-        "MRR@10 和 nDCG@10"
+        "pass@1、turns-per-task 和 dollar-per-task"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     }
   ]

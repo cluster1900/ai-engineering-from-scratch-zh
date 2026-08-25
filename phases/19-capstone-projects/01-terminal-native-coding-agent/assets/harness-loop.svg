@@ -18,7 +18,7 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">终端原生 coding agent — 计划/行动/观察循环</text>
+  <text x="480" y="24" text-anchor="middle" class="title">终端原生 coding Agent — 计划/行动/观察循环</text>
 
   <rect x="40" y="50" width="200" height="460" class="box"/>
   <text x="140" y="72" text-anchor="middle" class="head">轮次生命周期</text>
@@ -48,7 +48,7 @@
   <text x="140" y="464" text-anchor="middle" class="small">任一超限即 Stop</text>
 
   <rect x="270" y="50" width="310" height="230" class="box"/>
-  <text x="425" y="72" text-anchor="middle" class="head">工具 (MCP StreamableHTTP)</text>
+  <text x="425" y="72" text-anchor="middle" class="head">工具（MCP StreamableHTTP）</text>
   <rect x="290" y="88" width="270" height="30" class="cool"/>
   <text x="425" y="108" text-anchor="middle" class="step">read_file / edit_file</text>
   <rect x="290" y="124" width="270" height="30" class="cool"/>
@@ -58,11 +58,11 @@
   <rect x="290" y="196" width="270" height="30" class="cold"/>
   <text x="425" y="216" text-anchor="middle" class="step">git (status / diff / commit / push)</text>
   <text x="425" y="254" text-anchor="middle" class="small">每次调用最多返回 4k tokens</text>
-  <text x="425" y="270" text-anchor="middle" class="small">每次调用都在 sandbox 内运行</text>
+  <text x="425" y="270" text-anchor="middle" class="small">每次调用均在 sandbox 内运行</text>
 
   <rect x="270" y="294" width="310" height="216" class="box"/>
   <text x="425" y="316" text-anchor="middle" class="head">sandbox (E2B / Daytona)</text>
-  <text x="425" y="336" text-anchor="middle" class="small">每任务新建 devcontainer</text>
+  <text x="425" y="336" text-anchor="middle" class="small">每个任务新建 devcontainer</text>
   <text x="425" y="352" text-anchor="middle" class="small">git worktree add agent/TASK_ID</text>
   <text x="425" y="368" text-anchor="middle" class="small">仅 tree 内可读写</text>
   <text x="425" y="384" text-anchor="middle" class="small">无 allowlist 则禁用网络</text>
@@ -74,7 +74,7 @@
   <text x="425" y="500" text-anchor="middle" class="small">破坏性命令由 hook 阻止</text>
 
   <rect x="610" y="50" width="310" height="460" class="box"/>
-  <text x="765" y="72" text-anchor="middle" class="head">hook 表面 (2026 形态)</text>
+  <text x="765" y="72" text-anchor="middle" class="head">hook 接口（2026 形态）</text>
   <rect x="630" y="88" width="270" height="30" class="cool"/>
   <text x="765" y="108" text-anchor="middle" class="step">SessionStart / SessionEnd</text>
   <rect x="630" y="124" width="270" height="30" class="hot"/>
@@ -85,18 +85,18 @@
   <text x="765" y="216" text-anchor="middle" class="step">Stop / PreCompact</text>
 
   <text x="765" y="256" text-anchor="middle" class="small">参考用户 hooks：</text>
-  <text x="765" y="274" text-anchor="middle" class="small">· 破坏性命令 guard</text>
-  <text x="765" y="290" text-anchor="middle" class="small">· token + 美元计量</text>
-  <text x="765" y="306" text-anchor="middle" class="small">· 每次工具调用发出 OTel span</text>
+  <text x="765" y="274" text-anchor="middle" class="small">· 破坏性命令防护</text>
+  <text x="765" y="290" text-anchor="middle" class="small">· Token + 美元计量</text>
+  <text x="765" y="306" text-anchor="middle" class="small">· 每次 Tool 调用发出 OTel span</text>
   <text x="765" y="322" text-anchor="middle" class="small">· Stop 时写入 trace bundle</text>
 
   <rect x="630" y="340" width="270" height="150" class="box"/>
   <text x="765" y="362" text-anchor="middle" class="head">可观测性</text>
   <text x="765" y="384" text-anchor="middle" class="small">OpenTelemetry GenAI semconv</text>
-  <text x="765" y="402" text-anchor="middle" class="small">每次工具调用一个 span</text>
-  <text x="765" y="420" text-anchor="middle" class="small">tokens + $ 作为 attributes 附加</text>
-  <text x="765" y="438" text-anchor="middle" class="small">Langfuse 自托管 sink</text>
-  <text x="765" y="468" text-anchor="middle" class="small">trace bundle 随 PR body 发送</text>
+  <text x="765" y="402" text-anchor="middle" class="small">每次 Tool 调用一个 span</text>
+  <text x="765" y="420" text-anchor="middle" class="small">Token + $ 作为属性附加</text>
+  <text x="765" y="438" text-anchor="middle" class="small">Langfuse 自托管接收端</text>
+  <text x="765" y="468" text-anchor="middle" class="small">trace bundle 随 PR 正文发送</text>
 
-  <text x="480" y="540" text-anchor="middle" class="caption">SWE-bench Pro 目标：pass@1 达到或高于 mini-swe-agent baseline，每任务低于 $5</text>
+  <text x="480" y="540" text-anchor="middle" class="caption">SWE-bench Pro 目标：pass@1 不低于 mini-swe-agent 基线，每任务低于 $5</text>
 </svg>
