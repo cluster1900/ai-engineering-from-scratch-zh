@@ -1,36 +1,61 @@
 [
   {
     "question": "base language model 和 instruction-tuned model 之间的根本区别是什么？",
-    "options": ["它们有不同的架构", "base model 会延续文本模式；instruction-tuned model 会遵循指令并回答问题", "Instruction-tuned models 更大", "Base models 更快"],
-    "correct": 1,
+    "options": [
+      "Instruction-tuned models 更大",
+      "Base models 更快",
+      "它们有不同的架构",
+      "base model 会延续文本模式；instruction-tuned model 会遵循指令并回答问题"
+    ],
+    "correct": 3,
     "explanation": "使用 next-token prediction 训练的 base model 会延续文本模式。向它提问时，它可能会生成更多问题。SFT 通过在 (instruction, response) 对上训练，教它生成答案。",
     "stage": "pre"
   },
   {
     "question": "在 SFT 期间对非 assistant Tokens 进行 Loss masking 的目的是什么？",
-    "options": ["加快训练速度", "只训练模型生成回答，而不是记住 instruction format 或 system prompts", "减少内存使用", "防止过拟合"],
-    "correct": 1,
+    "options": [
+      "减少内存使用",
+      "加快训练速度",
+      "防止过拟合",
+      "只训练模型生成回答，而不是记住 instruction format 或 system prompts"
+    ],
+    "correct": 3,
     "explanation": "在 SFT 期间，你希望模型学习如何回应，而不是如何复现 instruction。Loss masking 会将 system/user Tokens 的 Loss 设为 0，这样 Gradient 只来自 assistant 的 response Tokens。",
     "stage": "pre"
   },
   {
     "question": "SFT 训练数据通常遵循什么格式？",
-    "options": ["原始文本文档", "使用 special tokens 标记 system、user 和 assistant roles 的 chat template", "键值对", "SQL queries 和 results"],
+    "options": [
+      "键值对",
+      "使用 special tokens 标记 system、user 和 assistant roles 的 chat template",
+      "原始文本文档",
+      "SQL queries 和 results"
+    ],
     "correct": 1,
     "explanation": "SFT 数据使用结构化 chat format：一个设置行为的 system prompt、一个 user instruction，以及一个 assistant response。Special tokens 标记 role 边界，让模型学习对话结构。",
     "stage": "post"
   },
   {
     "question": "为什么 SFT 模型可能在 benchmarks 上产生更低的 perplexity，但 conversational quality 更差？",
-    "options": ["benchmarks 是错的", "SFT 优化的是对训练样例的 pattern matching，而不是人类关心的细微质量判断 -- 这需要 RLHF/DPO", "模型太小", "learning rate 错了"],
+    "options": [
+      "benchmarks 是错的",
+      "SFT 优化的是对训练样例的 pattern matching，而不是人类关心的细微质量判断 -- 这需要 RLHF/DPO",
+      "learning rate 错了",
+      "模型太小"
+    ],
     "correct": 1,
     "explanation": "SFT 教模型遵循格式并生成看似合理的回应。它不会教模型在存在多个有效选项时哪个回应更好。Human preference alignment (RLHF/DPO) 解决了这个差距。",
     "stage": "post"
   },
   {
     "question": "有效 SFT 通常需要多少高质量 instruction-response pairs？",
-    "options": ["数百万", "10,000 到 100,000 个高质量样例", "少于 100 个", "数十亿"],
-    "correct": 1,
+    "options": [
+      "10,000 到 100,000 个高质量样例",
+      "少于 100 个",
+      "数十亿",
+      "数百万"
+    ],
+    "correct": 0,
     "explanation": "SFT 的数据效率高得出人意料。研究表明，10K-100K 个高质量样例（如 Alpaca 或 LIMA datasets）可以有效教会模型遵循指令。质量远比数量重要。",
     "stage": "post"
   }
