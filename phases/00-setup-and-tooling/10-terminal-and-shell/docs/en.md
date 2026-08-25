@@ -35,6 +35,10 @@ graph TD
 
 三件事同时运行。一个 terminal。你可以 detach，回家，再 SSH 回来，然后 reattach。训练会继续运行。
 
+```figure
+s0-shell-pipeline
+```
+
 ## 构建它
 
 ### 步骤 1： 了解你的 shell
