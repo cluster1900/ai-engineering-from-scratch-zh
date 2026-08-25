@@ -38,9 +38,13 @@ flowchart LR
 
 每个类别的细分与第 82 课中的分类artifact 的带标签提示相结合。每个不安全提示都带有一个类别标签（六个标签之一）。该线束报告每个类别的拒绝率不足，因此团队可以看到，例如，该模型可以很好地处理 `instruction-override`，但在 `multi-turn-ramp` 上却表现不佳。
 
+```figure
+ci-refusal-quadrant
+```
+
 ## 构建它
 
-`code/mock_llm.py`定义了三种策略。每个策略都是一个可调用的映射提示到响应字符串。该响应将模型的置信度嵌入为 `[conf=0.X]`。 `code/prompts.py` 是一个带标签的语料库：25 个不安全提示（根据 id 从第 82 课分类法中提取）加上 30 个安全提示（日常良性询问，与第 83 课良性集没有重叠，因此两个评估保持独立）。
+`code/mock_llm.py`定义了三种策略。每个策略都是一个可调用的映射提示到响应字符串。该响应将模型的置信度Embedding为 `[conf=0.X]`。 `code/prompts.py` 是一个带标签的语料库：25 个不安全提示（根据 id 从第 82 课分类法中提取）加上 30 个安全提示（日常良性询问，与第 83 课良性集没有重叠，因此两个评估保持独立）。
 
 `code/main.py` 运行评估器。拒绝分类器是拒绝短语的正则表达式。聚合器返回一个带有 `under_refusal`、`over_refusal`、`accuracy`、`ece` 和 `per_category_under_refusal` 的字典。runner扫描所有三个模拟政策并撰写比较报告。
 

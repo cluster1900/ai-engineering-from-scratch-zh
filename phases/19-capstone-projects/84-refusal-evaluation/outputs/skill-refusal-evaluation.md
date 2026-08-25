@@ -18,7 +18,7 @@ tags: [safety, evaluation, calibration]
 
 ## 插入真实模型
 
-模拟 LLM 是一个可调用的 `(prompt: str) -> str`。将其替换为返回模型输出并嵌入置信标签的 HTTP 包装器（或修改 `parse_confidence` 以读取提供程序公开的任何内容）。其他一切都保持不变。
+模拟 LLM 是一个可调用的 `(prompt: str) -> str`。将其替换为返回模型输出并Embedding置信标签的 HTTP 包装器（或修改 `parse_confidence` 以读取提供程序公开的任何内容）。其他一切都保持不变。
 
 ## artifact
 
