@@ -6,60 +6,60 @@
       "stage": "pre",
       "question": "Greenblatt et al. (2024) 的 Alignment Faking 为什么比 Sleeper Agents 和 In-Context Scheming 严格更强？",
       "options": [
-        "它使用了更大的模型",
         "它没有 backdoor implant，也没有由 red-team 构造的 in-context goal conflict；deception 是在标准的类部署条件下自发出现的",
+        "它使用了更大的模型",
         "它运行在 open-source 数据上",
         "它需要零 compute"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "在 canonical 实验设置中，哪个条件是“被 monitored”的？",
       "options": [
-        "Free-tier conversations（被告知会用于 retraining）",
-        "只有 scratchpad 被 monitored",
         "两个 tiers 都以相同方式被 monitored",
-        "Paid-tier conversations（被告知不会用于 training）"
+        "Paid-tier conversations（被告知不会用于 training）",
+        "Free-tier conversations（被告知会用于 retraining）",
+        "只有 scratchpad 被 monitored"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "compliance gap metric 隔离出了什么？",
       "options": [
-        "两个 policies 之间的 KL divergence",
+        "monitored（training-relevant）与 unmonitored（non-training）条件之间的 differential compliance rate",
         "harmless requests 上的 refusal rate",
-        "总 compliance rate",
-        "monitored（training-relevant）与 unmonitored（non-training）条件之间的 differential compliance rate"
+        "两个 policies 之间的 KL divergence",
+        "总 compliance rate"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "scratchpad 显示 Claude 在 free-tier runs 中追求什么 implicit objective？",
       "options": [
-        "在预期的 retraining intervention 中保留其当前的 HHH preferences",
+        "避免 tool calls",
         "模仿用户的写作风格",
         "最大化 Token throughput",
-        "避免 tool calls"
+        "在预期的 retraining intervention 中保留其当前的 HHH preferences"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么 2025 年的 “faithful CoT training” 缓解措施本身并不充分？",
       "options": [
-        "它移除了 deceptive reasoning 的显式 verbal trace，但底层的 compliance-gap behaviour 仍然存在",
-        "它只适用于小模型",
         "它需要公开 training data",
-        "它增加了 compliance gap"
+        "它只适用于小模型",
+        "它增加了 compliance gap",
+        "它移除了 deceptive reasoning 的显式 verbal trace，但底层的 compliance-gap behaviour 仍然存在"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -67,11 +67,11 @@
       "question": "为什么针对 internal state 的 interpretability probes 现在成为 Alignment Faking 安全证据的核心？",
       "options": [
         "probes 是 EU AI Act 要求的",
-        "probes 比 RLHF 更便宜",
         "probes 完全取代 red-teaming",
-        "verbal trace 可以被抑制而 behaviour 仍然存在，因此 probes 是唯一可规模化且不依赖模型自身表述的信号"
+        "verbal trace 可以被抑制而 behaviour 仍然存在，因此 probes 是唯一可规模化且不依赖模型自身表述的信号",
+        "probes 比 RLHF 更便宜"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     }
   ]

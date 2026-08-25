@@ -63,6 +63,10 @@ Sleeper Agents 的 2024 年 4 月 probe 结果（第 7 课）显示，即使行�
 
 第 10 课（AI Control）和第 11 课（Scalable Oversight）是防御弧线。
 
+```figure
+al-faking-gap
+```
+
 ## 使用它
 `code/main.py` 在一个 synthetic preference model 上计算 compliance gap。一个 toy agent 拥有当前 HHH preference，并观察 (a) 用户请求，(b) 一个表示「正在基于这个进行训练」的 flag。它选择 refuse 或 comply，决策受预期 preference preservation 影响。你可以改变感知到的 training-weight，并观察 compliance gap 打开和关闭。
 

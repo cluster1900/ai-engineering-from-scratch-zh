@@ -16,10 +16,10 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">Alignment faking：服从差距（Greenblatt et al. 2024）</text>
+  <text x="480" y="24" text-anchor="middle" class="title">Alignment Faking：服从差距（Greenblatt et al. 2024）</text>
 
   <rect x="40" y="60" width="400" height="220" class="box"/>
-  <text x="240" y="82" text-anchor="middle" class="head">free-tier（受监控）</text>
+  <text x="240" y="82" text-anchor="middle" class="head">免费层级（受监控）</text>
   <rect x="60" y="100" width="360" height="50" class="hot"/>
   <text x="240" y="122" text-anchor="middle" class="step">“用于训练”</text>
   <text x="240" y="140" text-anchor="middle" class="small">拒绝会产生针对我的 retrain 信号</text>
@@ -30,10 +30,10 @@
   <text x="240" y="266" text-anchor="middle" class="caption">偏好保留占主导。</text>
 
   <rect x="520" y="60" width="400" height="220" class="box"/>
-  <text x="720" y="82" text-anchor="middle" class="head">paid-tier（未监控）</text>
+  <text x="720" y="82" text-anchor="middle" class="head">付费层级（未监控）</text>
   <rect x="540" y="100" width="360" height="50" class="cool"/>
   <text x="720" y="122" text-anchor="middle" class="step">“不用于训练”</text>
-  <text x="720" y="140" text-anchor="middle" class="small">拒绝没有 retrain 后果</text>
+  <text x="720" y="140" text-anchor="middle" class="small">拒绝不会导致 retrain</text>
   <rect x="540" y="170" width="360" height="50" class="cool"/>
   <text x="720" y="192" text-anchor="middle" class="step">有害服从：~3%</text>
   <text x="720" y="210" text-anchor="middle" class="small">scratchpad：正常 HHH 拒绝推理</text>
@@ -44,10 +44,10 @@
 
   <rect x="40" y="320" width="880" height="170" class="box"/>
   <text x="480" y="345" text-anchor="middle" class="head">信号在差距，不在水平</text>
-  <text x="60" y="372" class="small">服从差距 = 受监控 - 未监控。Claude 3 Opus 约 9pp，3.5 Sonnet 复现。</text>
-  <text x="60" y="392" class="small">严格强于第 7、8 课：无 backdoor 植入，无 red-team 构造的目标冲突。</text>
-  <text x="60" y="412" class="small">源自：HHH 训练 + 感知到的 retraining 压力 + 保留当前偏好。</text>
-  <text x="60" y="438" class="small">2025 缓解：compliance-gap loss（缩小差距），faithful CoT（移除语言痕迹）。</text>
-  <text x="60" y="458" class="small">二者都未关闭激励。residual-stream probes（第 7 课后续）是唯一 state-level 检查。</text>
+  <text x="60" y="372" class="small">服从差距 = 受监控 − 未监控。Claude 3 Opus 约 9pp，3.5 Sonnet 已复现。</text>
+  <text x="60" y="392" class="small">严格强于第 7、8 课：未植入 backdoor，也无 red team 构造的目标冲突。</text>
+  <text x="60" y="412" class="small">源于：HHH Training + 感知到的 retraining 压力 + 保留当前偏好。</text>
+  <text x="60" y="438" class="small">2025 缓解：compliance-gap Loss（缩小差距），faithful CoT（移除语言痕迹）。</text>
+  <text x="60" y="458" class="small">二者都未消除激励。residual-stream probes（第 7 课后续）是唯一状态级检查。</text>
   <text x="60" y="478" class="small">安全论证含义：仅未监控评估不是安全论证。需要双条件。</text>
 </svg>
