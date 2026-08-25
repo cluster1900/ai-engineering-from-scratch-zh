@@ -22,10 +22,10 @@
   <text x="180" y="82" text-anchor="middle" class="head">边界 1：检索</text>
   <rect x="60" y="100" width="240" height="60" class="hot"/>
   <text x="180" y="125" text-anchor="middle" class="step">不可信内容</text>
-  <text x="180" y="145" text-anchor="middle" class="small">RAG 上下文中的攻击者邮件</text>
+  <text x="180" y="145" text-anchor="middle" class="small">RAG Context 中的攻击者邮件</text>
   <rect x="60" y="170" width="240" height="60" class="cool"/>
-  <text x="180" y="195" text-anchor="middle" class="step">防御：scope labels</text>
-  <text x="180" y="215" text-anchor="middle" class="small">IFC + untrusted tag</text>
+  <text x="180" y="195" text-anchor="middle" class="step">防御：scope 标签</text>
+  <text x="180" y="215" text-anchor="middle" class="small">IFC + untrusted 标签</text>
 
   <rect x="340" y="60" width="280" height="180" class="box"/>
   <text x="480" y="82" text-anchor="middle" class="head">边界 2：scope</text>
@@ -34,7 +34,7 @@
   <text x="480" y="145" text-anchor="middle" class="small">mailbox / repo / HR scopes</text>
   <rect x="360" y="170" width="240" height="60" class="cool"/>
   <text x="480" y="195" text-anchor="middle" class="step">防御：能力门控</text>
-  <text x="480" y="215" text-anchor="middle" class="small">仅由可信意图发起 tool calls</text>
+  <text x="480" y="215" text-anchor="middle" class="small">仅由可信意图发起 Tool 调用</text>
 
   <rect x="640" y="60" width="280" height="180" class="box"/>
   <text x="780" y="82" text-anchor="middle" class="head">边界 3：输出</text>
@@ -52,9 +52,9 @@
   <text x="480" y="295" text-anchor="middle" class="head">同族 CVEs（2025）</text>
   <text x="60" y="325" class="small">CVE-2025-32711 EchoLeak（CVSS 9.3）：M365 Copilot；零点击；CSP 批准外泄。</text>
   <text x="60" y="345" class="small">CamoLeak（CVSS 9.6）：通过 Camo 图像代理影响 GitHub Copilot Chat；已通过禁用图像渲染修复。</text>
-  <text x="60" y="365" class="small">CVE-2025-53773：GitHub Copilot RCE，经 code-suggestion 界面的 prompt injection 触发。</text>
+  <text x="60" y="365" class="small">CVE-2025-53773：GitHub Copilot RCE，经 code-suggestion 界面的 Prompt injection 触发。</text>
   <text x="60" y="395" class="small">严重性校准：厂商最初低估。Aim Labs 通过展示 MFA-code 外泄升级。</text>
-  <text x="60" y="415" class="small">NIST AI SPD 2024：“generative AI's greatest security flaw.” OWASP LLM01 2025：#1 威胁。</text>
+  <text x="60" y="415" class="small">NIST AI SPD 2024：“生成式 AI 最大的安全缺陷。”OWASP LLM01 2025：#1 威胁。</text>
   <text x="60" y="445" class="small">政策：三条边界需要三项独立控制。只修一个不够。</text>
   <text x="60" y="465" class="small">负责任披露：MSRC 服务端修补；Aim Labs 发布；生态学习。迭代。</text>
 </svg>

@@ -68,6 +68,10 @@ CVE 编号未披露（Microsoft 的选择），CVSS 9.6 来自 Aim Labs 的评�
 
 Lesson 15 是抽象层面的 attack class。Lesson 25 是具体的 CVE 层。Lesson 24 是管理 disclosure obligations 的 regulatory framework。Lessons 26-27 覆盖 documentation 和 data governance。
 
+```figure
+an-echoleak-chain
+```
+
 ## 使用它
 
 `code/main.py` 将 EchoLeak attack trace 重建为 state-transition log。你可以观察 email 进入 context、指令执行，以及 exfiltration URL 的构造。一个简单防御（scope separation：阻止由不可信内容触发的 tool calls）可以防止 exfiltration。
