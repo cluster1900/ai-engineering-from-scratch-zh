@@ -15,7 +15,7 @@
     </style>
   </defs>
 
-  <text x="450" y="28" text-anchor="middle" class="title">对抗训练：两个网络，一个 Loss</text>
+  <text x="450" y="28" text-anchor="middle" class="title">对抗 Training：两个网络，一个 Loss</text>
 
   <!-- noise -->
   <rect x="40" y="100" width="80" height="50" class="box"/>
@@ -60,12 +60,12 @@
 
   <!-- failures -->
   <rect x="40" y="370" width="400" height="70" class="hot"/>
-  <text x="240" y="392" text-anchor="middle" class="label">失败：D 获胜</text>
-  <text x="240" y="412" text-anchor="middle" class="caption">D(fake) → 0，给 G 的 Gradient 消失</text>
-  <text x="240" y="428" text-anchor="middle" class="caption">修复：降低 D lr，添加输入 noise，WGAN</text>
+  <text x="240" y="392" text-anchor="middle" class="label">失败：D 胜出</text>
+  <text x="240" y="412" text-anchor="middle" class="caption">D(fake) → 0，G 的 Gradient 消失</text>
+  <text x="240" y="428" text-anchor="middle" class="caption">修复：降低 D lr，添加输入噪声，使用 WGAN</text>
 
   <rect x="460" y="370" width="400" height="70" class="hot"/>
   <text x="660" y="392" text-anchor="middle" class="label">失败：G collapse</text>
-  <text x="660" y="412" text-anchor="middle" class="caption">G 只输出一个 mode，D 无法惩罚</text>
-  <text x="660" y="428" text-anchor="middle" class="caption">修复：minibatch disc，spectral norm，PacGAN</text>
+  <text x="660" y="412" text-anchor="middle" class="caption">G 仅输出一个 mode，D 无法惩罚</text>
+  <text x="660" y="428" text-anchor="middle" class="caption">修复：minibatch disc、spectral norm、PacGAN</text>
 </svg>
