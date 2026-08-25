@@ -54,6 +54,10 @@ RLHF（Christiano et al. 2017; Ouyang et al. 2022）把 preferences 转换成 re
 - **Process reward models（PRMs）：** 给 partial solutions（每个 reasoning step）打分，用于 RLHF 和 reasoning 的 GRPO 变体。
 - **Constitutional AI / RLAIF：** 使用 aligned LLM 生成 preferences，而不是使用人类。扩展 preference budget。
 
+```figure
+reward-model
+```
+
 ## 构建它
 
 本课使用微型合成的“prompts”和“responses”，表示为字符串。RM 是一个基于 bag-of-tokens 表示的 linear scorer。没有真实 LLM —— 重要的是 pipeline 的*形状*，不是规模。见 `code/main.py`。

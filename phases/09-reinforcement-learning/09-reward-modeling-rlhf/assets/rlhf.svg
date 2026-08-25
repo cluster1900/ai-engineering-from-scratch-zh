@@ -14,7 +14,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">RLHF：三个阶段，一个 language model</text>
+  <text x="450" y="30" text-anchor="middle" class="title">RLHF：三个阶段，一个 language Model</text>
 
   <rect x="30" y="60" width="270" height="360" class="box"/>
   <text x="165" y="88" text-anchor="middle" class="label">阶段 1：SFT</text>
@@ -27,38 +27,38 @@
   <rect x="50" y="255" width="230" height="140" class="hot"/>
   <text x="165" y="280" text-anchor="middle" class="label">冻结 anchor</text>
   <text x="70" y="310" class="content">pi_ref = pi_SFT</text>
-  <text x="70" y="332" class="content">R_phi init from pi_SFT</text>
+  <text x="70" y="332" class="content">R_phi 由 pi_SFT 初始化</text>
   <text x="165" y="370" text-anchor="middle" class="caption">在阶段 2-3 保持不变</text>
 
   <rect x="315" y="60" width="270" height="360" class="box"/>
-  <text x="450" y="88" text-anchor="middle" class="label">阶段 2：reward model</text>
-  <text x="335" y="118" class="content">data: (x, y_+, y_-)  prefs</text>
-  <text x="335" y="140" class="content">loss: Bradley-Terry</text>
+  <text x="450" y="88" text-anchor="middle" class="label">阶段 2：reward Model</text>
+  <text x="335" y="118" class="content">数据：(x, y_+, y_-) prefs</text>
+  <text x="335" y="140" class="content">Loss：Bradley-Terry</text>
   <text x="335" y="162" class="content">-log sig(R_phi(x,y_+)-R_phi(x,y_-))</text>
-  <text x="335" y="200" class="content">output: scalar R_phi(x, y)</text>
+  <text x="335" y="200" class="content">输出：Scalar R_phi(x, y)</text>
   <text x="450" y="235" text-anchor="middle" class="caption">preferences -&gt; reward</text>
 
   <rect x="335" y="280" width="230" height="120" class="cool"/>
   <text x="450" y="305" text-anchor="middle" class="label">2026 替代方案</text>
   <text x="355" y="330" class="content">DPO 完全跳过 R_phi：</text>
   <text x="355" y="352" class="content">pi 上的 closed-form pref loss</text>
-  <text x="450" y="385" text-anchor="middle" class="caption">同等质量，更少 compute</text>
+  <text x="450" y="385" text-anchor="middle" class="caption">同等质量，计算量更少</text>
 
   <rect x="600" y="60" width="270" height="360" class="box"/>
   <text x="735" y="88" text-anchor="middle" class="label">阶段 3：PPO</text>
-  <text x="620" y="118" class="content">sample y ~ pi_theta(. | x)</text>
+  <text x="620" y="118" class="content">采样 y ~ pi_theta(. | x)</text>
   <text x="620" y="140" class="content">reward = R_phi(x, y)</text>
   <text x="620" y="162" class="content">- beta * KL(pi_theta || pi_ref)</text>
   <text x="620" y="185" class="content">PPO clipped surrogate 更新</text>
   <text x="735" y="225" text-anchor="middle" class="caption">KL 让 pi 贴近 manifold</text>
-  <text x="735" y="245" text-anchor="middle" class="caption">R_phi 训练所在位置</text>
+  <text x="735" y="245" text-anchor="middle" class="caption">R_phi Training 所在位置</text>
 
   <rect x="620" y="275" width="230" height="125" class="hot"/>
   <text x="735" y="300" text-anchor="middle" class="label">诊断</text>
-  <text x="640" y="325" class="content">mean KL &lt; 10</text>
-  <text x="640" y="345" class="content">RM score 上升</text>
+  <text x="640" y="325" class="content">平均 KL &lt; 10</text>
+  <text x="640" y="345" class="content">RM 分数上升</text>
   <text x="640" y="365" class="content">human eval：稳定或上升</text>
   <text x="735" y="390" text-anchor="middle" class="caption">holdback：reward-hacking 警报</text>
 
-  <text x="450" y="450" text-anchor="middle" class="caption">2022：InstructGPT / ChatGPT 用此配方发布  ·  2026：DPO + GRPO 承担大部分工作</text>
+  <text x="450" y="450" text-anchor="middle" class="caption">2022：InstructGPT / ChatGPT 用此配方发布 · 2026：DPO + GRPO 承担大部分工作</text>
 </svg>
