@@ -17,12 +17,12 @@
     "stage": "pre",
     "question": "一个数据集有 95% negative 和 5% positive 样本。一个 model 对每个样本都预测为 'negative'。它的 accuracy 是多少？",
     "options": [
-      "50%",
-      "5%",
+      "0%",
       "95%",
-      "0%"
+      "50%",
+      "5%"
     ],
-    "correct": 2,
+    "correct": 1,
     "explanation": "Accuracy = correct predictions / total = 950/1000 = 95%。这说明为什么 accuracy 对 imbalanced data 具有误导性 -- 一个无用的 model 看起来表现很好。"
   },
   {
@@ -30,12 +30,12 @@
     "stage": "post",
     "question": "在 K-fold cross-validation 且 K=5 时，每个 data point 会被用于 validation 多少次？",
     "options": [
-      "5 次",
       "正好一次",
+      "5 次",
       "取决于 random seed",
       "从不 -- 所有数据都用于 training"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "在 K-fold CV 中，数据被拆分为 K 个相等的 folds。每个 fold 都会正好一次作为 validation set，其余 K-1 个 folds 用于 training。"
   },
   {
@@ -43,10 +43,10 @@
     "stage": "post",
     "question": "一条 learning curve 显示 training score = 0.95，而 validation score = 0.60，并且随着更多数据也没有改善。你应该尝试什么？",
     "options": [
-      "收集更多 training data",
+      "提高 learning rate",
       "使用更简单的 model，或添加 regularization 来降低 variance（overfitting）",
       "移除 validation set，把更多 training data 给 model",
-      "提高 learning rate"
+      "收集更多 training data"
     ],
     "correct": 1,
     "explanation": "training（高）和 validation（低）scores 之间存在大差距，说明 high variance（overfitting）。修复方法是更简单的 model、更多 regularization，或 dropout 等技术 -- 如果差距持续存在，则不是更多数据。"
