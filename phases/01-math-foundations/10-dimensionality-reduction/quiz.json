@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "什么是 'curse of dimensionality'？",
-      "options": ["高维数据下载耗时太长", "随着维度增加，距离会变得失去意义，体积会集中在角落，并且你需要指数级更多的数据", "Neural Network 无法处理超过 100 个 feature 的数据", "高维数据总是包含噪声"],
-      "correct": 1,
+      "options": [
+        "随着维度增加，距离会变得失去意义，体积会集中在角落，并且你需要指数级更多的数据",
+        "Neural Network 无法处理超过 100 个 feature 的数据",
+        "高维数据总是包含噪声",
+        "高维数据下载耗时太长"
+      ],
+      "correct": 0,
       "explanation": "在高维空间中，所有成对距离都会收敛到相近的值，数据点会分散到角落，并且维持样本密度需要指数级更多的数据。Dimensionality reduction 可以抵消这些影响。"
     },
     {
       "stage": "pre",
       "question": "PCA 会找到什么？",
-      "options": ["按名称判断出的最重要 feature", "数据中方差最大的正交方向", "相似数据点的 Cluster", "要保留的最佳 feature 数量"],
-      "correct": 1,
+      "options": [
+        "相似数据点的 Cluster",
+        "按名称判断出的最重要 feature",
+        "数据中方差最大的正交方向",
+        "要保留的最佳 feature 数量"
+      ],
+      "correct": 2,
       "explanation": "PCA 会计算 covariance matrix 的 eigenvector，这些 eigenvector 是按捕获的数据方差多少排序的正交方向。第一个 principal component 指向最大扩散方向。"
     },
     {
       "stage": "post",
       "question": "在 784 维 MNIST 数据上运行 PCA，并设置 k=50 个 component 后，你发现捕获了 95% 的方差。这说明了什么？",
-      "options": ["每张图像中只有 50 个 pixel 重要", "数据实际上位于一个约 50 维的 subspace 中；剩余 734 个维度大多是噪声或冗余", "95% 的图像属于同一个 class", "模型将达到 95% 的准确率"],
+      "options": [
+        "95% 的图像属于同一个 class",
+        "数据实际上位于一个约 50 维的 subspace 中；剩余 734 个维度大多是噪声或冗余",
+        "模型将达到 95% 的准确率",
+        "每张图像中只有 50 个 pixel 重要"
+      ],
       "correct": 1,
       "explanation": "用 50 个 component 解释 95% 的方差，意味着 784 维数据的核心结构只由 50 个方向捕获。其余部分只携带 5% 的变化，主要是噪声。"
     },
     {
       "stage": "post",
       "question": "为什么不应该在训练 classifier 前把 t-SNE 用作 preprocessing？",
-      "options": ["t-SNE 对大型 dataset 来说太慢", "t-SNE 只为可视化而设计：它会扭曲全局距离，具有随机性，并且输出坐标在不同运行之间没有一致含义", "t-SNE 会把数据降到正好 2 维，维度太少", "t-SNE 要求提前知道 label"],
-      "correct": 1,
+      "options": [
+        "t-SNE 只为可视化而设计：它会扭曲全局距离，具有随机性，并且输出坐标在不同运行之间没有一致含义",
+        "t-SNE 要求提前知道 label",
+        "t-SNE 对大型 dataset 来说太慢",
+        "t-SNE 会把数据降到正好 2 维，维度太少"
+      ],
+      "correct": 0,
       "explanation": "t-SNE 会保留局部邻域，但会扭曲全局结构。Cluster 之间的距离没有意义，不同运行会产生不同 layout。使用 PCA 进行 preprocessing，只将 t-SNE/UMAP 用于可视化。"
     },
     {
       "stage": "post",
       "question": "什么时候应该选择 kernel PCA 而不是标准 PCA？",
-      "options": ["当 sample 数量多于 feature 数量时", "当数据位于标准 PCA 无法分离的非线性 manifold 上时，例如同心圆", "当你需要尽可能快的计算时", "当你想要可解释的 principal component 时"],
-      "correct": 1,
+      "options": [
+        "当你需要尽可能快的计算时",
+        "当你想要可解释的 principal component 时",
+        "当 sample 数量多于 feature 数量时",
+        "当数据位于标准 PCA 无法分离的非线性 manifold 上时，例如同心圆"
+      ],
+      "correct": 3,
       "explanation": "标准 PCA 会寻找线性 subspace。如果数据具有非线性结构（例如两个同心环），PCA 会把二者投影到同一条线上。Kernel PCA 会将数据映射到更高维空间，使结构变为线性。"
     }
-  ]
+  ],
+  "title": null
 }
