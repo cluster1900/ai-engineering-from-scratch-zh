@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">KV cache 增长。Flash Attention 将热路径留在 SRAM。</text>
+  <text x="450" y="30" text-anchor="middle" class="title">KV cache 增长。Flash Attention 将热路径保留在 SRAM。</text>
 
   <!-- Left: KV cache growth -->
   <rect x="40" y="60" width="400" height="230" class="box"/>
@@ -74,11 +74,11 @@
   <rect x="365" y="240" width="24" height="22" class="kv"/>
   <rect x="390" y="240" width="24" height="22" class="kv"/>
 
-  <text x="240" y="278" text-anchor="middle" class="caption">每个新 query attend 到 N 个缓存 k/v — 每步 O(N)，非 O(N²)</text>
+  <text x="240" y="278" text-anchor="middle" class="caption">每个新 query 对 N 个缓存 k/v 执行 Attention — 每步 O(N)，而非 O(N²)</text>
 
   <!-- Right: Flash attention tiling -->
   <rect x="460" y="60" width="400" height="230" class="box"/>
-  <text x="660" y="85" text-anchor="middle" class="label">Flash Attention — 分块进入 SRAM</text>
+  <text x="660" y="85" text-anchor="middle" class="label">Flash Attention — 分块载入 SRAM</text>
 
   <!-- HBM frame -->
   <rect x="485" y="100" width="180" height="170" class="hbm"/>
@@ -94,7 +94,7 @@
 
   <!-- SRAM -->
   <rect x="690" y="100" width="160" height="170" class="sram"/>
-  <text x="770" y="120" text-anchor="middle" class="content">SRAM（每 SM）</text>
+  <text x="770" y="120" text-anchor="middle" class="content">SRAM（每个 SM）</text>
   <text x="770" y="138" text-anchor="middle" class="caption">30 TB/s, 256 KB</text>
 
   <rect x="705" y="150" width="30" height="30" class="kv"/><text x="720" y="170" text-anchor="middle" class="content">Qt</text>
@@ -102,8 +102,8 @@
   <rect x="775" y="150" width="30" height="30" class="kv"/><text x="790" y="170" text-anchor="middle" class="content">Vt</text>
   <rect x="810" y="150" width="30" height="30" class="kv"/><text x="825" y="170" text-anchor="middle" class="content">Ot</text>
 
-  <text x="770" y="215" text-anchor="middle" class="content">运行中（max, sum）</text>
-  <text x="770" y="238" text-anchor="middle" class="caption">softmax 精确，非近似</text>
+  <text x="770" y="215" text-anchor="middle" class="content">运行中的（max, sum）</text>
+  <text x="770" y="238" text-anchor="middle" class="caption">softmax 精确计算，并非近似</text>
 
   <!-- Arrows between HBM and SRAM -->
   <line x1="665" y1="160" x2="695" y2="160" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -115,25 +115,25 @@
 
   <text x="110" y="385" text-anchor="middle" class="content">FA1 (2022)</text>
   <text x="110" y="405" text-anchor="middle" class="caption">SRAM 分块</text>
-  <text x="110" y="421" text-anchor="middle" class="caption">A100 上 2×</text>
+  <text x="110" y="421" text-anchor="middle" class="caption">A100 上提速 2×</text>
 
   <text x="290" y="385" text-anchor="middle" class="content">FA2 (2023)</text>
   <text x="290" y="405" text-anchor="middle" class="caption">更好并行性</text>
-  <text x="290" y="421" text-anchor="middle" class="caption">A100 上 3×</text>
+  <text x="290" y="421" text-anchor="middle" class="caption">A100 上提速 3×</text>
 
   <text x="470" y="385" text-anchor="middle" class="content">FA3 (2024)</text>
-  <text x="470" y="405" text-anchor="middle" class="caption">Hopper 异步，FP8</text>
-  <text x="470" y="421" text-anchor="middle" class="caption">~740 TFLOPs H100</text>
+  <text x="470" y="405" text-anchor="middle" class="caption">Hopper 异步执行，FP8</text>
+  <text x="470" y="421" text-anchor="middle" class="caption">H100 约 740 TFLOPs</text>
 
   <text x="650" y="385" text-anchor="middle" class="content">FA4 (2026)</text>
-  <text x="650" y="405" text-anchor="middle" class="caption">Blackwell 5 阶段管线</text>
+  <text x="650" y="405" text-anchor="middle" class="caption">Blackwell 5 阶段流水线</text>
   <text x="650" y="421" text-anchor="middle" class="caption">推理优先</text>
 
   <text x="810" y="385" text-anchor="middle" class="content">下一步</text>
-  <text x="810" y="405" text-anchor="middle" class="caption">反向 + GQA</text>
-  <text x="810" y="421" text-anchor="middle" class="caption">训练用 varlen</text>
+  <text x="810" y="405" text-anchor="middle" class="caption">Backpropagation + GQA</text>
+  <text x="810" y="421" text-anchor="middle" class="caption">Training 使用 varlen</text>
 
-  <text x="460" y="456" text-anchor="middle" class="caption">KV cache 和 Flash Attention 在 2026 年已普及：vLLM、SGLang、TensorRT-LLM、llama.cpp 都默认两者存在。</text>
+  <text x="460" y="456" text-anchor="middle" class="caption">到 2026 年，KV cache 和 Flash Attention 已普及：vLLM、SGLang、TensorRT-LLM、llama.cpp 均默认支持两者。</text>
 
   <text x="460" y="504" text-anchor="middle" class="caption">下一前沿：PagedAttention（KV 作为虚拟内存）、prefix caching、speculative decoding。</text>
 </svg>
