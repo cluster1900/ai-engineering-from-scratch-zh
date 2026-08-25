@@ -108,6 +108,10 @@ Full checkpoint（segment size 1）：只保存 `L * input_volume`（对于标�
 - **Pipeline parallel：** 典型模式是 checkpoint 每个 pipeline-stage 的 forward，使 reverse-order microbatches 可以复用 activation memory。
 - **FP8 recompute：** recompute 期间更新的 amax histories 必须与原始 forward 匹配，否则 FP8 scale 会漂移。大多数 frameworks 会 snapshot scale。
 
+```figure
+activation-recompute
+```
+
 ## 构建它
 
 ### 步骤 1：带 Segments 的 Toy Model
