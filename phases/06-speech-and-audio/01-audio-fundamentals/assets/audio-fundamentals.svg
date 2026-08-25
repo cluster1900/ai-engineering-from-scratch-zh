@@ -81,10 +81,10 @@
   <!-- Bit depth / sample rate table -->
   <rect x="460" y="250" width="380" height="180" class="box"/>
   <text x="650" y="274" text-anchor="middle" class="label">2026 sample rates</text>
-  <text x="480" y="300" class="content">8 kHz</text><text x="560" y="300" class="caption">telephony — ASR 避免使用</text>
+  <text x="480" y="300" class="content">8 kHz</text><text x="560" y="300" class="caption">电话语音 — ASR 避免使用</text>
   <text x="480" y="322" class="content">16 kHz</text><text x="560" y="322" class="caption">ASR 标准（Whisper, Parakeet）</text>
   <text x="480" y="344" class="content">24 kHz</text><text x="560" y="344" class="caption">现代 TTS（Kokoro, F5, xTTS）</text>
-  <text x="480" y="366" class="content">44.1 kHz</text><text x="560" y="366" class="caption">CD audio, music</text>
-  <text x="480" y="388" class="content">48 kHz</text><text x="560" y="388" class="caption">film, pro audio, hi-fi TTS</text>
+  <text x="480" y="366" class="content">44.1 kHz</text><text x="560" y="366" class="caption">CD 音频、音乐</text>
+  <text x="480" y="388" class="content">48 kHz</text><text x="560" y="388" class="caption">电影、专业音频、hi-fi TTS</text>
   <text x="650" y="420" text-anchor="middle" class="caption">任何 ML pipeline 前的第一个问题</text>
 </svg>
