@@ -56,6 +56,10 @@ flowchart TD
 
 schedule 是训练健康状态的一半。gradient norm 是另一半。training loop 每 step 记录两者。divergent training run 会先出现 gradient norm spike，然后 loss 才会变化；调得好的 warmup 会让 norm 随 rate 线性上升；过于激进的 peak 会表现为 warmup 后 norm 仍然维持高位。磁盘上的 dataset 是 `step, lr, grad_l2_norm, loss`。CSV 是唯一 durable record。
 
+```figure
+cap-cosine-warmup
+```
+
 ## Build It
 
 `code/main.py` 实现：

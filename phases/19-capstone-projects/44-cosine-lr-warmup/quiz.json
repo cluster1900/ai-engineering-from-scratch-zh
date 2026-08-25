@@ -6,46 +6,46 @@
       "stage": "pre",
       "question": "为什么 cosine-with-warmup schedule 从 zero 开始，而不是从 lr_max 开始？",
       "options": [
+        "随机传统",
         "因为 lr_max 在 step zero 是非法的",
         "前一千次 updates 很 noisy；从 zero 到 lr_max 的 linear ramp 会在 running estimates 稳定时给 Optimizer 一个较小的 effective step size",
-        "因为 Adam 要求这样",
-        "随机传统"
+        "因为 Adam 要求这样"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Warmup 让脆弱的早期 updates 保持较小；否则模型要么 diverge，要么 plateau。"
     },
     {
       "stage": "check",
       "question": "为什么 schedule 要实现为关于 step 的单一 function，而不是三段拼接？",
       "options": [
-        "单一 functions 更小",
         "拼接的 schedule 在第一次改变 lr_max 时就会丢掉一个边界；单一 function 计算同一个 closed-form expression，并保留 warmup 和 total endpoints 上的 continuity",
         "Linters 要求这样",
-        "随机"
+        "随机",
+        "单一 functions 更小"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "lr(warmup_steps) 和 lr(total_steps) 的 continuity 来自 closed form。"
     },
     {
       "stage": "check",
       "question": "在 schedule 中，step > total_steps 时会发生什么？",
       "options": [
-        "它会抛出 exception",
-        "它固定在 lr_min；schedule 不 extrapolate，需要延长训练的 trainers 会显式修改 total_steps",
         "它返回 nan",
-        "它会 wrap around"
+        "它会抛出 exception",
+        "它会 wrap around",
+        "它固定在 lr_min；schedule 不 extrapolate，需要延长训练的 trainers 会显式修改 total_steps"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "固定的 floor 会让 overshooting trainer 进入有文档记录的状态，而不是 crash。"
     },
     {
       "stage": "check",
       "question": "为什么要把 gradient L2 norm 记录在 learning rate 旁边？",
       "options": [
-        "它看起来更好",
+        "传统",
         "norm 是训练健康状态的另一半：divergent run 会先出现 norm spike，然后 loss 才变化；过于激进的 peak 会表现为 warmup 后 norm 仍然维持高位",
-        "Adam 要求这样",
-        "传统"
+        "它看起来更好",
+        "Adam 要求这样"
       ],
       "correct": 1,
       "explanation": "共同记录能让 pathological schedules 在 run time 可见，而不是事后才发现。"
@@ -56,8 +56,8 @@
       "options": [
         "Fractions 更干净",
         "适合 20k-step run 的固定 warmup count，在 200M-step run 中基本等于没有 warmup；fraction（典型 1-3 percent）会随训练时长缩放",
-        "随机偏好",
-        "硬件要求"
+        "硬件要求",
+        "随机偏好"
       ],
       "correct": 1,
       "explanation": "绝对 warmup counts 在不同训练时长尺度上会表现不当。"
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "为什么 production 中通常使用非零的 lr_min？",
       "options": [
-        "Adam 要求非零",
         "接近 lr_max 10 percent 的 floor 会让 Optimizer 在 long tail 中继续学习；lr_min 为 zero 会产生一条看起来不错的 curve，以及一个尚未完成训练的模型",
         "数值稳定性",
-        "向后兼容"
+        "向后兼容",
+        "Adam 要求非零"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "schedule 的尾部是 late-stage refinements 落地的地方；将其归零会浪费这部分信号。"
     }
   ]
