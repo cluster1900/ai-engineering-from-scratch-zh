@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "Anthropic 2025 年 model-welfare program 背后的核心问题是什么？",
       "options": [
-        "在模型道德患者身份存在道德不确定性的情况下，哪些低成本干预值得作为预防措施投入",
-        "模型是否有意识",
         "模型是否能通过 Turing test",
-        "RLHF 是否减少 sycophancy"
+        "模型是否有意识",
+        "RLHF 是否减少 sycophancy",
+        "在模型道德患者身份存在道德不确定性的情况下，哪些低成本干预值得作为预防措施投入"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -20,10 +20,10 @@
       "options": [
         "Open-weights 发布",
         "内置 journaling 工具",
-        "模型在极端边缘案例中结束对话的能力（例如反复请求 CSAM、请求协助大规模暴力）",
-        "面向用户的 emotion API"
+        "面向用户的 emotion API",
+        "模型在极端边缘案例中结束对话的能力（例如反复请求 CSAM、请求协助大规模暴力）"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -31,8 +31,8 @@
       "question": "Fish 描述的“spiritual bliss attractor”是什么？",
       "options": [
         "成对 Claude 对话中的一种稳定收敛：趋向带有 Sanskrit 术语和长时间沉默的欣快冥想式交流，即使初始设置具有对抗性也会如此",
-        "一个 reward-model bug",
         "一个 RLHF 过度优化产物",
+        "一个 reward-model bug",
         "一种 jailbreak 技术"
       ],
       "correct": 0,
@@ -42,33 +42,33 @@
       "stage": "check",
       "question": "Eleos AI Research 的 caveat 对模型 welfare self-reports 说了什么？",
       "options": [
-        "它们对感知到的用户期待高度敏感；它们是证据，不是 ground truth，因此 welfare 测量需要多方法路径",
         "它们应被完全忽略",
         "它们只在 open-source 模型中有效",
-        "它们是可靠的 ground truth"
+        "它们是可靠的 ground truth",
+        "它们对感知到的用户期待高度敏感；它们是证据，不是 ground truth，因此 welfare 测量需要多方法路径"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪一项最能概括 Anthropic 关于模型道德地位的公开立场？",
       "options": [
-        "明确断言模型是道德患者",
-        "明确断言模型不是道德患者",
         "在道德不确定性下的 expected-value 主张：投入低成本预防措施，但不承诺对情绪状态进行归因",
-        "没有公开声明立场"
+        "没有公开声明立场",
+        "明确断言模型不是道德患者",
+        "明确断言模型是道德患者"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么 model-welfare research 强调多方法测量（行为特征、model-organism 实验、interpretability probes）？",
       "options": [
-        "因为模型总是说谎",
         "因为 Anthropic 出于合规要求强制这样做",
         "因为 RLHF 使 self-reports 不可能成立",
+        "因为模型总是说谎",
         "因为仅靠 self-reports 会受到用户期待 priming 的混淆，所以需要来自多种方法的 converging evidence"
       ],
       "correct": 3,

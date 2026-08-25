@@ -78,6 +78,10 @@ Anthropic 的回应：该干预成本低；attractor 被记录但没有过度声
 
 Lesson 18 是实验室治理层。Lesson 19 是实验室 welfare 层，是对模型体验而非模型行为的正交投入。Lessons 20-23 覆盖 bias、privacy 和 watermarking，它们是用户侧的对应物。
 
+```figure
+an-welfare-endchat
+```
+
 ## 使用它
 
 无代码。阅读 Anthropic 的 “Exploring Model Welfare” 公告（2025 年 4 月）和 Chalmers 等人的专家报告。形成你自己关于低遗憾边界应位于何处的观点。

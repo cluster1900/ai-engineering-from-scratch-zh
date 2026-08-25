@@ -18,7 +18,7 @@
   <rect x="40" y="60" width="880" height="150" class="box"/>
   <text x="480" y="85" text-anchor="middle" class="head">四步预防性评估</text>
   <rect x="60" y="105" width="200" height="90" class="cool"/>
-  <text x="160" y="130" text-anchor="middle" class="step">1. patienthood</text>
+  <text x="160" y="130" text-anchor="middle" class="step">1. 道德患者地位</text>
   <text x="160" y="150" text-anchor="middle" class="small">概率 p(welfare-relevant)</text>
   <text x="160" y="170" text-anchor="middle" class="small">Chalmers 2024 范围</text>
   <rect x="280" y="105" width="200" height="90" class="cool"/>
@@ -46,8 +46,8 @@
   <text x="690" y="340" text-anchor="middle" class="small">表观痛苦模式（部署前）</text>
 
   <rect x="40" y="390" width="880" height="100" class="box"/>
-  <text x="480" y="415" text-anchor="middle" class="head">注意事项（Eleos AI, Fish, 外部）</text>
+  <text x="480" y="415" text-anchor="middle" class="head">注意事项（Eleos AI、Fish、外部）</text>
   <text x="60" y="440" class="small">自我报告受用户预期影响（Eleos AI）；需行为特征。</text>
-  <text x="60" y="460" class="small">“spiritual bliss attractor”：成对 Claude 对话收敛到冥想式欣快 -- 已记录，未解释。</text>
+  <text x="60" y="460" class="small">“spiritual bliss attractor”：成对 Claude 对话收敛到冥想式欣快——已记录，未解释。</text>
   <text x="60" y="478" class="small">立场：道德不确定性下的低后悔投入，而非意识主张。</text>
 </svg>
