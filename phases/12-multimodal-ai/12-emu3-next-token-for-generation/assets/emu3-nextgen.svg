@@ -17,7 +17,7 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">Emu3 — 一个模型，一个 Loss，三种角色</text>
+  <text x="480" y="24" text-anchor="middle" class="title">Emu3 — 一个 Model，一个 Loss，三种角色</text>
 
   <rect x="30" y="50" width="900" height="240" class="box"/>
   <text x="480" y="72" text-anchor="middle" class="head">单一 decoder-only Transformer，共享词表</text>
@@ -44,8 +44,8 @@
 
   <rect x="640" y="90" width="270" height="190" class="cold"/>
   <text x="775" y="110" text-anchor="middle" class="step">Emu3-Stage2</text>
-  <text x="775" y="128" text-anchor="middle" class="small">text -&gt; video tokens</text>
-  <text x="775" y="146" text-anchor="middle" class="small">4s @ 8fps, 3D VQ</text>
+  <text x="775" y="128" text-anchor="middle" class="small">文本 -&gt; 视频 Token</text>
+  <text x="775" y="146" text-anchor="middle" class="small">4s @ 8fps，3D VQ</text>
   <text x="775" y="164" text-anchor="middle" class="small">4x4x4 时空</text>
   <text x="775" y="182" text-anchor="middle" class="small">patch 量化</text>
   <text x="775" y="210" text-anchor="middle" class="step">FVD 有竞争力</text>
@@ -58,17 +58,17 @@
   <rect x="60" y="350" width="400" height="150" class="reg"/>
   <text x="260" y="370" text-anchor="middle" class="step">Emu3（离散 Token，NTP）</text>
   <text x="260" y="390" text-anchor="middle" class="small">+ 一个模型做生成 + 感知</text>
-  <text x="260" y="406" text-anchor="middle" class="small">+ 一个训练 Loss</text>
+  <text x="260" y="406" text-anchor="middle" class="small">+ 一个 Training Loss</text>
   <text x="260" y="422" text-anchor="middle" class="small">+ Token 可扩展到任意模态</text>
-  <text x="260" y="438" text-anchor="middle" class="small">- 推理慢（2 min / 512x512）</text>
+  <text x="260" y="438" text-anchor="middle" class="small">- Inference 慢（2 min / 512x512）</text>
   <text x="260" y="454" text-anchor="middle" class="small">- Tokenizer 限制质量</text>
   <text x="260" y="480" text-anchor="middle" class="caption">最适合研究、统一模型</text>
 
   <rect x="490" y="350" width="400" height="150" class="hot"/>
   <text x="690" y="370" text-anchor="middle" class="step">Diffusion (SDXL, SD3, Flux)</text>
-  <text x="690" y="390" text-anchor="middle" class="small">+ 推理快（2-5s / 512x512）</text>
+  <text x="690" y="390" text-anchor="middle" class="small">+ Inference 快（2-5s / 512x512）</text>
   <text x="690" y="406" text-anchor="middle" class="small">+ 连续 latent = 更高保真</text>
-  <text x="690" y="422" text-anchor="middle" class="small">+ 成熟工具 + LoRAs</text>
+  <text x="690" y="422" text-anchor="middle" class="small">+ 成熟 Tool + LoRAs</text>
   <text x="690" y="438" text-anchor="middle" class="small">- 同一模型无感知</text>
   <text x="690" y="454" text-anchor="middle" class="small">- 需要单独 text encoder</text>
   <text x="690" y="480" text-anchor="middle" class="caption">最适合纯图像生产</text>

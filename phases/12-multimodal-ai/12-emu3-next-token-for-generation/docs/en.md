@@ -82,6 +82,10 @@ Emu3 的深层贡献是概念性的。如果 next-token prediction 能够扩展�
 
 Show-o、Janus-Pro 和 InternVL-U 都建立在这个论点之上，或对其提出挑战。到 2025 年，中国实验室（BAAI、DeepSeek）在这个方向上的发表比美国实验室更积极。
 
+```figure
+l5-emu3-next-token
+```
+
 ## 使用它
 `code/main.py` 构建两个 toy pieces：
 
