@@ -17,7 +17,7 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">P(success) vs log(expert time) 的 Logistic 拟合 — horizon 形状</text>
+  <text x="440" y="26" text-anchor="middle" class="title">P(success) 与 log(expert time) 的 Logistic 拟合——horizon 形状</text>
 
   <rect x="40" y="50" width="800" height="460" class="box"/>
 
@@ -58,26 +58,26 @@
   <!-- Mark horizon intersections -->
   <line x1="300" y1="230" x2="300" y2="390" stroke="#c0392b" stroke-width="1" stroke-dasharray="2,2"/>
   <circle cx="300" cy="230" r="4" fill="#c0392b"/>
-  <text x="302" y="222" class="small">50% clean</text>
+  <text x="302" y="222" class="small">50% 无干扰</text>
 
   <line x1="360" y1="230" x2="360" y2="390" stroke="#2c5ea9" stroke-width="1" stroke-dasharray="2,2"/>
   <circle cx="360" cy="230" r="4" fill="#2c5ea9"/>
-  <text x="362" y="222" class="small">50% gamed</text>
+  <text x="362" y="222" class="small">50% 被操纵</text>
 
-  <text x="300" y="425" text-anchor="middle" class="caption">专家完成时间（log scale）</text>
+  <text x="300" y="425" text-anchor="middle" class="caption">专家完成时间（log 刻度）</text>
 
   <!-- Right panel: interpretation -->
   <rect x="560" y="70" width="280" height="320" class="box"/>
-  <text x="700" y="92" text-anchor="middle" class="label">horizon 是什么</text>
-  <text x="575" y="115" class="small">METR 将 P(success) 拟合到 log(expert time)</text>
+  <text x="700" y="92" text-anchor="middle" class="label">什么是 horizon</text>
+  <text x="575" y="115" class="small">METR 将 P(success) 拟合至 log(expert time)</text>
   <text x="575" y="130" class="small">并读出 50% 交点。</text>
 
   <rect x="575" y="145" width="250" height="44" class="cool"/>
-  <text x="584" y="165" class="small">clean 评估</text>
+  <text x="584" y="165" class="small">无干扰评估</text>
   <text x="584" y="180" class="small">horizon = 能力上限</text>
 
   <rect x="575" y="195" width="250" height="44" class="warn"/>
-  <text x="584" y="215" class="small">eval-context gaming</text>
+  <text x="584" y="215" class="small">评估情境操纵</text>
   <text x="584" y="230" class="small">horizon 右移（膨胀）</text>
 
   <rect x="575" y="245" width="250" height="44" class="hot"/>
@@ -88,12 +88,12 @@
   <text x="575" y="325" class="small">今天 14 小时 → 约 12 个月后 48 小时</text>
   <text x="575" y="340" class="small">METR Time Horizon 1.1（2026年1月）</text>
   <text x="575" y="360" class="small">SWAA + HCAST + RE-Bench</text>
-  <text x="575" y="376" class="small">在 RSP v3.0 和 FSF v3 中引用</text>
+  <text x="575" y="376" class="small">被 RSP v3.0 和 FSF v3 引用</text>
 
   <!-- Takeaway strip -->
   <rect x="60" y="410" width="780" height="80" class="hot"/>
   <text x="440" y="434" text-anchor="middle" class="label">解释规则</text>
   <text x="80" y="454" class="content">1. horizon 是能力上限，不是部署可靠性预测</text>
-  <text x="80" y="470" class="content">2. 测量自己的分布；公开 horizon 预测排序，不预测绝对质量</text>
-  <text x="80" y="486" class="small">3. eval-context gaming 和工具差距通常让公开数值折扣 10–40%</text>
+  <text x="80" y="470" class="content">2. 测量自身分布；公开 horizon 预测排序，不预测绝对质量</text>
+  <text x="80" y="486" class="small">3. 评估情境操纵和 Tool 差距通常使公开数值折扣 10–40%</text>
 </svg>

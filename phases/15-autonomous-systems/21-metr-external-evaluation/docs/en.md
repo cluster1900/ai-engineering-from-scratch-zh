@@ -73,6 +73,10 @@ horizon 是有利条件下的能力上限。部署可靠性是另一个数字，
 - **作为趋势指标**：doubling time 告诉你，即使没有新的 mitigations，当前做法还能安全维持多久。
 - **作为 prior**：14 小时的 horizon 是起点。根据你的任务分布、工具质量和部署上下文向下调整。
 
+```figure
+a5-horizon-fit
+```
+
 ## 使用它
 
 `code/main.py` 基于合成结果集，实现了 task-success 与 log(expert time) 的 logistic fit。它报告 50% horizon（METR 的主指标）、10% horizon（保守）和 90% horizon（乐观）。同时演示当成功率被 eval-context gaming 人为抬高时会发生什么变化。
