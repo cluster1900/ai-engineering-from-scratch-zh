@@ -42,7 +42,7 @@
   <rect x="580" y="180" width="260" height="80" class="box"/>
   <text x="710" y="202" text-anchor="middle" class="head">Selector</text>
   <text x="710" y="222" text-anchor="middle" class="small">round-robin（固定循环）</text>
-  <text x="710" y="240" text-anchor="middle" class="small">LLM 选择（感知上下文）</text>
+  <text x="710" y="240" text-anchor="middle" class="small">LLM 选择（感知 Context）</text>
   <text x="710" y="256" text-anchor="middle" class="small">自定义（基于规则兜底）</text>
 
   <line x1="110" y1="180" x2="350" y2="140" class="edge" marker-end="url(#arrow)"/>
@@ -50,10 +50,10 @@
   <line x1="470" y1="180" x2="520" y2="140" class="edge" marker-end="url(#arrow)"/>
 
   <line x1="450" y1="140" x2="580" y2="200" class="edge" marker-end="url(#arrow)"/>
-  <text x="555" y="168" class="small">selector 读取池</text>
+  <text x="555" y="168" class="small">Selector 读取池</text>
 
   <path d="M 710 260 Q 710 320 470 300" class="edge" fill="none" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-  <text x="580" y="300" class="small">selector 返回：next speaker = manager</text>
+  <text x="580" y="300" class="small">Selector 返回：下一位发言者 = manager</text>
 
   <rect x="40" y="340" width="380" height="150" class="box"/>
   <text x="230" y="362" text-anchor="middle" class="head">适合群聊的场景</text>
@@ -61,13 +61,13 @@
   <text x="230" y="402" text-anchor="middle" class="small">探索式问题求解</text>
   <text x="230" y="420" text-anchor="middle" class="small">不宜预接所有 handoff</text>
   <text x="230" y="440" text-anchor="middle" class="small">“头脑风暴会”而非“流水线”</text>
-  <text x="230" y="468" text-anchor="middle" class="caption">selector 替代显式图边</text>
+  <text x="230" y="468" text-anchor="middle" class="caption">Selector 替代显式图边</text>
 
   <rect x="460" y="340" width="380" height="150" class="box"/>
   <text x="650" y="362" text-anchor="middle" class="head">失效模式</text>
   <text x="650" y="384" text-anchor="middle" class="small">热门发言者（单个 Agent 主导）</text>
   <text x="650" y="402" text-anchor="middle" class="small">迎合级联（服从强势者）</text>
   <text x="650" y="420" text-anchor="middle" class="small">上下文膨胀（池无界增长）</text>
-  <text x="650" y="440" text-anchor="middle" class="small">selector 不一致（LLM 非确定性）</text>
+  <text x="650" y="440" text-anchor="middle" class="small">Selector 不一致（LLM 非确定性）</text>
   <text x="650" y="468" text-anchor="middle" class="caption">限制轮次 · 跟踪平衡 · 限定视图</text>
 </svg>
