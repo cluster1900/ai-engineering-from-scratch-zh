@@ -15,38 +15,38 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="28" text-anchor="middle" class="title">multi-agent systems 的持久执行</text>
+  <text x="480" y="28" text-anchor="middle" class="title">多 Agent 系统的持久执行</text>
 
   <rect x="40" y="60" width="880" height="180" class="cool"/>
-  <text x="480" y="84" text-anchor="middle" class="head">super-step + checkpoint 模式（LangGraph, Temporal, Restate）</text>
+  <text x="480" y="84" text-anchor="middle" class="head">super-step + checkpoint 模式（LangGraph、Temporal、Restate）</text>
 
   <rect x="60" y="110" width="110" height="100" class="box"/>
   <text x="115" y="135" text-anchor="middle" class="step">super-step 1</text>
   <text x="115" y="158" text-anchor="middle" class="small">规划</text>
   <line x1="115" y1="175" x2="115" y2="195" stroke="#1a1a1a" marker-end="url(#arrow)"/>
-  <text x="115" y="220" text-anchor="middle" class="caption">写 ckpt</text>
+  <text x="115" y="220" text-anchor="middle" class="caption">写入 ckpt</text>
 
   <rect x="200" y="110" width="110" height="100" class="box"/>
   <text x="255" y="135" text-anchor="middle" class="step">super-step 2</text>
   <text x="255" y="158" text-anchor="middle" class="small">研究</text>
   <line x1="255" y1="175" x2="255" y2="195" stroke="#1a1a1a" marker-end="url(#arrow)"/>
-  <text x="255" y="220" text-anchor="middle" class="caption">写 ckpt</text>
+  <text x="255" y="220" text-anchor="middle" class="caption">写入 ckpt</text>
 
   <rect x="340" y="110" width="110" height="100" class="hot"/>
   <text x="395" y="135" text-anchor="middle" class="step">super-step 3</text>
-  <text x="395" y="158" text-anchor="middle" class="small">CRASH</text>
+  <text x="395" y="158" text-anchor="middle" class="small">崩溃</text>
   <line x1="395" y1="175" x2="395" y2="195" stroke="#c0392b"/>
 
   <rect x="480" y="110" width="110" height="100" class="cold"/>
   <text x="535" y="135" text-anchor="middle" class="step">恢复</text>
-  <text x="535" y="158" text-anchor="middle" class="small">从 ckpt 2</text>
+  <text x="535" y="158" text-anchor="middle" class="small">从 ckpt 2 恢复</text>
   <line x1="535" y1="175" x2="535" y2="195" stroke="#1a1a1a" marker-end="url(#arrow)"/>
   <text x="535" y="220" text-anchor="middle" class="caption">另一个 worker</text>
 
   <rect x="620" y="110" width="110" height="100" class="box"/>
   <text x="675" y="135" text-anchor="middle" class="step">super-step 3'</text>
   <text x="675" y="158" text-anchor="middle" class="small">研究（重做）</text>
-  <text x="675" y="220" text-anchor="middle" class="caption">幂等 tool calls</text>
+  <text x="675" y="220" text-anchor="middle" class="caption">幂等 Tool 调用</text>
 
   <rect x="760" y="110" width="140" height="100" class="box"/>
   <text x="830" y="135" text-anchor="middle" class="step">super-step 4</text>
@@ -80,11 +80,11 @@
   <text x="610" y="386" text-anchor="middle" class="small">10k 并发：可行</text>
 
   <rect x="720" y="320" width="180" height="80" class="hot"/>
-  <text x="810" y="344" text-anchor="middle" class="step">thread-per-call</text>
+  <text x="810" y="344" text-anchor="middle" class="step">每次调用一个线程</text>
   <text x="810" y="366" text-anchor="middle" class="small">每个约 ~1MB stack</text>
   <text x="810" y="386" text-anchor="middle" class="small">10k 并发：约 ~10GB</text>
 
   <text x="710" y="430" text-anchor="middle" class="caption">LLM 调用 99% 时间闲置在 I/O；threads 只耗内存无收益</text>
   <text x="710" y="450" text-anchor="middle" class="caption">CPU-bound 后处理留在线程 / 进程</text>
-  <text x="710" y="475" text-anchor="middle" class="caption">rainbow deployments 让长运行 agents 跨代码推送存活</text>
+  <text x="710" y="475" text-anchor="middle" class="caption">rainbow deployments 让长运行 Agent 跨代码推送存活</text>
 </svg>
