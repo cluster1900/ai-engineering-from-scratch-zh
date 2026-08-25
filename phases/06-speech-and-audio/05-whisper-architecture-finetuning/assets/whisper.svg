@@ -13,7 +13,7 @@
     </style>
   </defs>
 
-  <text x="440" y="28" text-anchor="middle" class="title">Whisper：一种架构，多任务，由 prompt 控制</text>
+  <text x="440" y="28" text-anchor="middle" class="title">Whisper：一种架构，多任务，由 Prompt 控制</text>
 
   <!-- Encoder block -->
   <rect x="40" y="60" width="220" height="200" class="box"/>
@@ -47,7 +47,7 @@
 
   <!-- Prompt -->
   <rect x="615" y="60" width="230" height="200" class="box"/>
-  <text x="730" y="82" text-anchor="middle" class="label">基于 prompt 的任务</text>
+  <text x="730" y="82" text-anchor="middle" class="label">基于 Prompt 的任务</text>
   <text x="625" y="108" class="content">&lt;|en|&gt;   &lt;|transcribe|&gt;</text>
   <text x="625" y="125" class="caption">→ 英文转录</text>
   <text x="625" y="147" class="content">&lt;|fr|&gt;   &lt;|translate|&gt;</text>
@@ -74,10 +74,10 @@
   <!-- Fine-tune -->
   <rect x="460" y="290" width="385" height="175" class="hot"/>
   <text x="652" y="312" text-anchor="middle" class="label">LoRA fine-tune (q_proj + v_proj, r=16)</text>
-  <text x="475" y="340" class="content">full-FT  Turbo-809M → 809M 可训练</text>
-  <text x="475" y="362" class="content">LoRA-r16 Turbo      → 0.65M 可训练</text>
-  <text x="475" y="384" class="content">LoRA-r16 Large-v3   → 5.2M 可训练</text>
-  <text x="475" y="406" class="content">LoRA-r16 Medium     → 3.1M 可训练</text>
+  <text x="475" y="340" class="content">full-FT Turbo-809M → 809M 可训练</text>
+  <text x="475" y="362" class="content">LoRA-r16 Turbo → 0.65M 可训练</text>
+  <text x="475" y="384" class="content">LoRA-r16 Large-v3 → 5.2M 可训练</text>
+  <text x="475" y="406" class="content">LoRA-r16 Medium → 3.1M 可训练</text>
   <text x="652" y="432" text-anchor="middle" class="caption">若 &lt;10 h，冻结 encoder；仅调 decoder</text>
-  <text x="652" y="452" text-anchor="middle" class="caption">2–20 h 域内 WER 降 2–5×</text>
+  <text x="652" y="452" text-anchor="middle" class="caption">2–20 h 域内 WER 降低 2–5×</text>
 </svg>

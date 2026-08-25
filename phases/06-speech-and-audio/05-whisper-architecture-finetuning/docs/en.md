@@ -70,6 +70,10 @@ Prompt 让一个模型能够完成很多 tasks。把 `<|en|>` 改成 `<|fr|>`，
 
 社区结果：在 20 小时 medical dictation 上 fine-tune Medium，会把 medical vocabulary 上的 WER 从 12% 降到 4.5%。在 4 小时 Icelandic 上 fine-tune Turbo，会把 WER 从 18% 降到 6%。
 
+```figure
+sp-asr-attention
+```
+
 ## Build It
 
 ### Step 1: 直接运行 Whisper
