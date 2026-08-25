@@ -1,60 +1,70 @@
 ---
 name: mcp-auth-wiring
-description: 独立生产 MCP 授权（RFC 8414、CIMD、7591、8707、7636 PKCE、9728、9207）— 受保护资源元数据、注册、JWKS 刷新和每个请求令牌验证。
-version: 1.1.0
+description: 使用 issuer 绑定注册、CIMD、受保护资源元数据、JWKS 刷新、audience 固定和逐请求验证来设计 MCP 2026-07-28 授权。
+version: 2.0.0
 phase: 13
 lesson: 18
 tags: [mcp, oauth, cimd, dcr, jwks, rfc8414, rfc7591, rfc8707, rfc7636, rfc9728, rfc9207]
 ---
-给定 MCP 服务器配置和 IdP 功能集，发出构成生产 MCP 授权层的身份验证表面和拒绝规则。
+
+给定一个 MCP server 配置和一组 IdP 能力，生成构成生产级 MCP 授权层的授权接口和拒绝规则。
 
 输入：
 
-- `mcp_resource_url` — 规范资源 URL（最具体的标识符；仅在区分共同托管服务器时保留路径），用作 `aud` 和受保护资源元数据 `resource` 值。
+- `mcp_resource_url` — 规范资源 URL（最具体的标识符；仅当路径可区分共同托管的 server 时才保留路径），用作 `aud` 和受保护资源元数据的 `resource` 值。
 - `idp_metadata_url` — IdP 的 `/.well-known/oauth-authorization-server`（或 OpenID Connect Discovery）URL。
-- `idp_capabilities` — `code_challenge_methods_supported`、`grant_types_supported`、`client_id_metadata_document_supported` (CIMD)、`registration_endpoint` (DCR)、`response_types_supported`、`authorization_response_iss_parameter_supported` (RFC 9207) 的观测值。
-- `tools` — MCP 工具列表以及每个工具所需的范围。
+- `idp_capabilities`：观测到的 `issuer`、`code_challenge_methods_supported`、`grant_types_supported`、`client_id_metadata_document_supported`、已弃用的 `registration_endpoint`、`response_types_supported` 和 `authorization_response_iss_parameter_supported` 值。
+- `pre_registered_client_ids`：由 authorization server 运营方预配置的可选 issuer 到 client ID 映射。应优先使用这种限定于 issuer 的身份，然后使用 CIMD，最后才将已弃用的 DCR 作为兼容路径。
+- `application_type`：`native` 或 `web`，选择已弃用的 DCR 兼容方案时必填。
+- `credential_store`：以 authorization server issuer 为 key 存储的 client ID 和注册凭据，以及以 `(issuer, mcp_resource_url)` 为 key 存储的 access token。
+- `tools`：MCP Tool 列表，以及每个 Tool 所需的 scope。
 
-生产：
+生成：
 
-1. **拒绝门。** 如果任何硬条件失败，则拒绝接线并停止：
-   - `code_challenge_methods_supported` 中缺少 `S256`（PKCE 无降级模式）。
+1. **拒绝门禁。** 如果任何硬性条件不满足，拒绝接线并停止：
+   - `code_challenge_methods_supported` 中缺少 `S256`（PKCE 不存在降级模式）。
    - `grant_types_supported` 中缺少 `authorization_code`。
-   - `response_types_supported` 与 `["code"]` 不同。
-   - 不存在注册路径：预注册的`client_id`、`client_id_metadata_document_supported: true`（CIMD）或`registration_endpoint`（DCR）均不可用。任何一个都足够了 - DCR 缺失不再是拒绝（2025 年 11 月 25 日将 DCR 降级为 `MAY`；CIMD 是首选默认值）。
+   - `response_types_supported` 不是严格等于 `["code"]`。
+   - 不存在任何注册路径：预注册的 `client_id`、`client_id_metadata_document_supported: true` 和已弃用的 DCR 兼容 endpoint 均不可用。
+   - 已选择 CIMD，但其 `client_id` 不是带路径的绝对 HTTPS 文档 URL、与文档 URL 不匹配，或文档缺少非空的 `client_name` 或 `redirect_uris` 数组。对于 CIMD，`application_type` 是可选的。
+   - 返回的 RFC 9207 `iss` 与重定向前记录的 issuer 不同，或 server 已声明支持它却没有返回。
+   - 已弃用的 DCR 缺少 `application_type`，或其 redirect URI 策略与 `native` 或 `web` 冲突。
 
-2. **受保护资源元数据文档** (RFC 9728)，供 MCP 服务器在 `/.well-known/oauth-protected-resource` 发布。包括`resource`、`authorization_servers`（发行人白名单）、`scopes_supported`、`bearer_methods_supported: ["header"]`。
+2. MCP server 的**受保护资源元数据文档**（RFC 9728）。对于带路径的资源，将 well-known 段插入该路径之前：`https://host/team/mcp` 映射为 `https://host/.well-known/oauth-protected-resource/team/mcp`。包含 `resource`、`authorization_servers`（issuer allow-list）、`scopes_supported` 和 `bearer_methods_supported: ["header"]`。
 
-3. **HTTP 端点。**
-   - `GET /.well-known/oauth-protected-resource` — 返回 (2) 中的文档。
-   - `POST /mcp`（MCP 传输）— 在调度任何工具之前运行令牌验证。
-   -（仅限 DCR 路径）`POST /register` — 注册商，前面有速率限制检查。
+3. **HTTP endpoints。**
+   - `GET /.well-known/oauth-protected-resource` — 返回第（2）项中的文档。
+   - `POST /mcp`（无状态 MCP transport）：在分派任何 Tool 前，验证本次请求的 bearer token。
+   - 仅用于 DCR 兼容：`POST /register`，并在其之前执行 application type 检查和 rate limit 检查。
 
-4. **后台作业+例程。**
-   - 计划的 JWKS 刷新将 `jwks_uri` 重新提取到缓存 `{keys, fetched_at}` 中。幂等；从不铸造钥匙。 AS 旋转；资源服务器仅刷新。默认`0 */6 * * *`；对于高周转 IdP，紧固至 `*/15 * * * *`。
-   - `validate` 例程 — 检查 `iss` 允许列表、针对缓存的 JWKS、`aud == mcp_resource_url`、`exp` 的签名、所需范围。
-   - 升级发布路径 - 仅当工具列表包含用户最初未授予的范围后的操作时。
+4. **后台任务与例程。**
+   - 定时 JWKS 刷新任务，将 `jwks_uri` 重新获取到缓存 `{keys, fetched_at}` 中。具有幂等性；绝不生成 key。AS 负责轮换；resource server 只负责刷新。默认为 `0 */6 * * *`；对于高频轮换的 IdP，收紧为 `*/15 * * * *`。
+   - `validate` 例程 — 检查 `iss` allow-list、针对缓存 JWKS 验证签名、`aud == mcp_resource_url`、`exp` 和所需 scope。
+   - step-up 签发路径 — 仅当 Tool 列表包含由用户最初未授予的 scope 所限制的操作时启用。
 
-5. **缓存计划。** 每个接受的发行人有一个条目，由 `issuer` 键入，持有 `{keys, fetched_at}`。记录读取模式：验证器读取缓存，并在 `kid` 未命中时回退到单个同步刷新（重新获取，而不是旋转 - 重新获取是幂等的，不能转变为密钥创建 DoS）。
+5. **缓存方案。** 每个被接受的 issuer 对应一个以 `issuer` 为 key 的条目，保存 `{keys, fetched_at}`。记录读取模式：validator 读取缓存，并在 `kid` 未命中时回退到一次同步刷新（重新获取，而非轮换——重新获取具有幂等性，无法被转化为创建 key 的 DoS）。
 
-6. **范围映射。** 将每个工具映射到其所需的范围。输出一个表：
-   `| tool | required_scope | rationale |`。将破坏性工具归入其自己的范围内；切勿将读取范围重复用于写入工具。
+6. **Scope 映射。** 将每个 Tool 映射到其所需的 scope。输出表格：
+   `| tool | required_scope | rationale |`。将破坏性 Tool 归入其专属 scope；绝不要为写入 Tool 复用读取 scope。
 
-7. **运行时的拒绝规则**（验证器必须对这些规则进行编码）：
-   - 当 `aud != mcp_resource_url` → 401 `Bearer error="invalid_token", error_description="audience mismatch", resource_metadata="<prm_url>"` 时拒绝。
-   - 当`iss not in authorization_servers`时拒绝。
-   - 在单次重新获取回退后，当 `kid` 不在缓存的 JWKS 中时拒绝。
-   - 当所需范围不存在时拒绝 → 403 `Bearer error="insufficient_scope", scope="<required>", resource_metadata="<prm_url>"`。
-   - 拒绝任何没有 `code_verifier` 或 `resource` 参数的令牌请求。
+7. **运行时拒绝规则**（validator 必须编码这些规则）：
+   - 当 `aud != mcp_resource_url` 时拒绝 → 401 `Bearer error="invalid_token", error_description="audience mismatch", resource_metadata="<prm_url>"`。
+   - 当 `iss not in authorization_servers` 时拒绝。
+   - 单次重新获取回退后，如果 `kid` 仍不在缓存的 JWKS 中，则拒绝。
+   - 缺少所需 scope 时拒绝 → 403 `Bearer error="insufficient_scope", scope="<required>", resource_metadata="<prm_url>"`。
+   - 拒绝任何没有 S256 `code_challenge` 的授权请求，并拒绝任何 `code_verifier`、client、redirect URI 或 `resource` 与一次性 authorization code 记录不匹配的 token 请求。
+   - 拒绝 issuer 与其 credential store key 不匹配的任何凭据或 token。issuer 变更需要重新注册。
 
-硬拒绝（切勿发送任何这些 - 拒绝请求并记录原因）：
+硬性拒绝项（绝不为以下情况接线——拒绝请求并记录原因）：
 
-- 以明文形式存储 `client_secret`。公众客户端使用`token_endpoint_auth_method: none`；机密客户使用`private_key_jwt`。静态或注册响应日志中没有明文共享机密。
-- 跳过验证器上的 `aud` 检查。受众绑定（访问令牌权限限制）是 RFC 8707 + RFC 9728 的全部原因。- 将 JWKS 缓存未命中回退连接到旋转和铸造而不是重新获取。它永远不会生成丢失的 `kid`，并让攻击者控制的 `kid` 值强制创建无限制的密钥。后备必须是幂等刷新。
-- 允许无 PKCE 授权码请求。 OAuth 2.1 禁止它；验证者必须拒绝任何存储的授权码记录缺少 `code_challenge` 的 `/token` 交换。
-- 缓存 JWKS，无需刷新作业。要么是计划的刷新发送，要么是身份验证表面未部署。
-- 在没有允许列表的情况下信任 `iss` 声明。任何接受来自任何 `iss` 令牌的验证器都可以让攻击者建立自己的 IdP 并伪造令牌。
-- 将入站 MCP 令牌转发到上游 API（令牌直通）。如果 MCP 服务器调用上游 API，它必须获取自己的单独令牌；直通会产生混淆副问题。
-- 以明文形式存储 `registration_access_token`。静态哈希；每次更新都需要明文。
+- 以明文存储 `client_secret`。公共 client 使用 `token_endpoint_auth_method: none`；机密 client 使用 `private_key_jwt`。静态存储或注册响应日志中不得出现明文共享 secret。
+- 在 validator 中跳过 `aud` 检查。Audience 绑定（access token 权限限制）正是 RFC 8707 + RFC 9728 的核心意义。
+- 将 JWKS 缓存未命中回退接到轮换并生成 key 的操作，而不是重新获取。这样做永远无法生成缺失的 `kid`，还会让由攻击者控制的 `kid` 值强制触发无限制的 key 创建。回退必须是幂等刷新。
+- 允许不使用 PKCE 的 authorization code 请求。OAuth 2.1 禁止这样做；validator 必须拒绝存储的 authorization code 记录中缺少 `code_challenge` 的任何 `/token` 交换。
+- 缓存 JWKS 却没有刷新任务。必须随系统交付定时刷新，否则不得部署授权接口。
+- 在没有 allow-list 的情况下信任 `iss` claim。任何接受任意 `iss` 所签发 token 的 validator，都会允许攻击者搭建自己的 IdP 并伪造 token。
+- 将传入的 MCP token 转发给上游 API（token 透传）。如果 MCP server 调用上游 API，则必须获取自己独立的 token；透传会产生 confused-deputy 问题。
+- 以明文存储 `registration_access_token`。静态存储时使用哈希；每次更新时都要求提供明文。
+- 将 MCP 请求元数据或已移除的协议 session 当作授权状态。2026-07-28 transport 是无状态的；必须对每个请求进行身份验证和授权。
 
-输出：一页计划，其中包含受保护资源文档、所选注册路径（CIMD/预注册/DCR）、HTTP 端点、JWKS 刷新作业、缓存计划、范围映射表和编码的运行时拒绝规则。以最有可能针对所选 IdP 出现的单一部署阻塞差距结束 — 通常是否支持 CIMD，然后回退到企业 SSO 的 DCR 可用性。
+输出：一页方案，其中包含受保护资源文档、以 issuer 为 key 的注册布局、以 issuer 和 resource 为 key 的 token 布局、选定的注册路径、HTTP endpoints、JWKS 刷新任务、scope 映射以及运行时拒绝规则。最后列出在 authorization server 实际元数据中发现的第一个未满足部署门禁。

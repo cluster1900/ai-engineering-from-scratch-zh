@@ -1,0 +1,78 @@
+{
+  "lesson": "18-mcp-auth-production",
+  "title": "生产环境中的 MCP Auth：Issuer 绑定的注册与 Token",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP client 为同一资源发现了不同的 authorization server issuer。它应该如何处理现有注册和 access token？",
+      "options": [
+        "在本地更改 access token 的 audience 后，仅复用该 access token",
+        "向新的 issuer 注册，并按 issuer 隔离凭据",
+        "因为 MCP 资源 URL 未改变，所以复用两者",
+        "将两者存储在 Tool 名称下，而不是 issuer 下"
+      ],
+      "correct": 1,
+      "explanation": "Client 标识符和注册凭据归创建它们的 authorization server issuer 所有。issuer 变更需要独立注册，每个 access token 都应同时按该 issuer 及其资源 audience 进行缓存。"
+    },
+    {
+      "stage": "check",
+      "question": "MCP 2026-07-28 授权配置文件首选哪种注册方式？",
+      "options": [
+        "为每个请求使用 RFC 7591 Dynamic Client Registration",
+        "从 client 的 HTTPS URL 提供 Client ID Metadata Document",
+        "使用存储单个全局 client 标识符的协议 session",
+        "在每个桌面 client 中Embedding共享 client secret"
+      ],
+      "correct": 1,
+      "explanation": "CIMD 允许 authorization server 从 HTTPS client 标识符解析 client 元数据。DCR 已被弃用，仅作为兼容方案保留。"
+    },
+    {
+      "stage": "check",
+      "question": "一个已弃用的 DCR 请求描述了 loopback 桌面 client。要正确对其分类，哪项元数据至关重要？",
+      "options": [
+        "Mcp-Session-Id",
+        "通配符 redirect URI",
+        "设置为 native 的 application_type",
+        "可复用的 bearer token"
+      ],
+      "correct": 2,
+      "explanation": "当前的兼容指导要求使用正确的 application type。loopback 桌面 client 属于 native；web client 使用 HTTPS redirect URI。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 client 要在兑换 authorization code 前验证 RFC 9207 iss 值？",
+      "options": [
+        "防止在错误的 token endpoint 兑换可信 issuer 的 code",
+        "避免刷新 JWKS 缓存",
+        "用 issuer discovery 取代 PKCE",
+        "从 server/discover 中选择一个 Tool"
+      ],
+      "correct": 0,
+      "explanation": "issuer 检查可防御 authorization server mix-up 攻击。它通过确认响应来自重定向前记录的 issuer 来补充 PKCE。"
+    },
+    {
+      "stage": "post",
+      "question": "对于当前的无状态 transport，MCP resource server 应将授权缓存在哪里？",
+      "options": [
+        "存储在 Mcp-Session-Id 下，直到 client 发送 DELETE",
+        "存储在 server/discover 结果中，供之后的所有调用使用",
+        "存储在 SSE 连接中，直到它重新连接",
+        "不应将其缓存为协议 session 决策；应在每个请求中验证 bearer token"
+      ],
+      "correct": 3,
+      "explanation": "MCP 2026-07-28 移除了协议 session。每个请求都会独立跨越授权边界，因此每次都要检查身份、audience、过期时间和 scope。"
+    },
+    {
+      "stage": "post",
+      "question": "在信任 authorization server 之前，哪种部署证据最有力？",
+      "options": [
+        "根据 PKCE、issuer、注册和资源绑定要求检查目标 server 发现的元数据",
+        "从旧课程复制的供应商分类表",
+        "声称支持 OAuth 的产品页面",
+        "一次未检查 token audience 的成功登录"
+      ],
+      "correct": 0,
+      "explanation": "能力会随部署和版本发生变化。实时 discovery document 是需要检查的具体契约，之后还应进行端到端的 issuer 和 audience 验证。"
+    }
+  ]
+}
