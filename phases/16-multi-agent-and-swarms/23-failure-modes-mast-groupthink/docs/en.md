@@ -137,6 +137,10 @@ STRATUS（NeurIPS 2025）报告称，当你部署以下角色时，mitigation-su
 
 2026 年的工程动作：instrument slow-failure proxies，这样你能在 drift 变成可见错误之前捕获它。Agreement rate、retry rate、output-length distribution，以及连续 agent versions 之间的 edit-distance 都是有用的 proxies。
 
+```figure
+a5-retry-cascade
+```
+
 ## 构建它
 
 `code/main.py` 实现：
