@@ -6,34 +6,34 @@
       "stage": "pre",
       "question": "相比自由形式的 LLM 计划，HTN 增加了什么？",
       "options": [
-        "在强制执行 operator preconditions 和 effects 时可证明的正确性",
+        "更好的 Embedding",
         "更便宜的 inference",
-        "更短的 prompts",
-        "更好的 Embedding"
+        "在强制执行 operator preconditions 和 effects 时可证明的正确性",
+        "更短的 prompts"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "HTN 带有 preconditions 和 effects 的 symbolic operators 通过构造保证 soundness。"
     },
     {
       "stage": "pre",
       "question": "AlphaEvolve 是为哪一类问题构建的？",
       "options": [
-        "自由形式的散文生成",
-        "具有机器可检查、确定性 fitness function 的优化问题",
         "多轮聊天记忆",
-        "Vector search 排序"
+        "自由形式的散文生成",
+        "Vector search 排序",
+        "具有机器可检查、确定性 fitness function 的优化问题"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Evolutionary search 需要确定性的 evaluator；AlphaEvolve 面向存在这种 evaluator 的领域。"
     },
     {
       "stage": "check",
       "question": "ChatHTN 如何在使用 LLM 的同时保持 plan soundness？",
       "options": [
-        "它不能；soundness 只是尽力而为",
+        "它使用 Vector database",
         "LLM 建议只作为候选 decompositions 进入，并根据 operator schema 验证；symbolic layer 负责 correctness",
-        "它在 HTN traces 上 fine-tune LLM",
-        "它使用 Vector database"
+        "它不能；soundness 只是尽力而为",
+        "它在 HTN traces 上 fine-tune LLM"
       ],
       "correct": 1,
       "explanation": "LLM 扩展 method library，但不能绕过 operator preconditions 和 effects。"
@@ -43,9 +43,9 @@
       "question": "课程引用了 AlphaEvolve 的哪项结果？",
       "options": [
         "56 年来首次在 4x4 complex matrix multiplication 上改进 Strassen",
-        "让 Gemini 上的 inference 加速 10 倍",
+        "首次证明 P=NP",
         "在 HumanEval 上击败 GPT-4",
-        "首次证明 P=NP"
+        "让 Gemini 上的 inference 加速 10 倍"
       ],
       "correct": 0,
       "explanation": "AlphaEvolve 为 4x4 complex matmul 找到了 48 次 scalar multiplications，这是 56 年来首次改进 Strassen。"
@@ -54,12 +54,12 @@
       "stage": "check",
       "question": "HTN 中哪个元素是带有 preconditions 和 effects、可直接执行的 primitive action？",
       "options": [
+        "State",
         "Task",
         "Method",
-        "Operator",
-        "State"
+        "Operator"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Operators 是 primitives；methods 分解 compound tasks；state 是 facts 的集合。"
     },
     {
@@ -67,11 +67,11 @@
       "question": "课程对没有真实 evaluator 的 AlphaEvolve 提出了什么警告？",
       "options": [
         "它很慢",
+        "它不能在 GPUs 上运行",
         "询问 LLM 代码是否更好不是 fitness function；evaluator 必须是确定性且快速的",
-        "它违反 Apache 2.0",
-        "它不能在 GPUs 上运行"
+        "它违反 Apache 2.0"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "没有确定性的 evaluator，search 就没有可收敛的信号。"
     },
     {

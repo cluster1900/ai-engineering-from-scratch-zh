@@ -87,6 +87,10 @@ Loop：
 - **没有真实 evaluator 的 AlphaEvolve。** “询问 LLM 代码是否更好”不是 fitness function。Evaluator 必须 deterministic 且 fast。
 - **过度工程化。** 大多数 agent tasks 都不需要这两者。先考虑 ReAct 或 ReWOO。
 
+```figure
+htn-tree-expand
+```
+
 ## 构建它
 
 `code/main.py` 实现了两个玩具示例：

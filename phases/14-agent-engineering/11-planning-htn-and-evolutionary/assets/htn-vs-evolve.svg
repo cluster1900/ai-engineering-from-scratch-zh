@@ -16,7 +16,7 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">ChatHTN 与 AlphaEvolve — 两个 2025 混合规划器</text>
+  <text x="480" y="26" text-anchor="middle" class="title">ChatHTN 与 AlphaEvolve——两个 2025 混合规划器</text>
 
   <rect x="40" y="50" width="440" height="210" class="htn"/>
   <text x="260" y="72" text-anchor="middle" class="head">ChatHTN  符号式 + LLM 分解器</text>
@@ -50,11 +50,11 @@
   <text x="78" y="418" class="small">fitness 必须确定；当测试 / benchmarks 是评估器时有效</text>
 
   <rect x="60" y="430" width="840" height="40" class="box"/>
-  <text x="78" y="452" class="step">开放式 agent 任务  ReAct / ReWOO（不用这些）</text>
+  <text x="78" y="452" class="step">开放式 Agent 任务  ReAct / ReWOO（不用这些）</text>
   <text x="78" y="468" class="small">无算子 schema，无机器可检验 fitness；转向第 01-02 课</text>
 
   <rect x="60" y="480" width="840" height="26" class="box"/>
   <text x="78" y="498" class="step">混合：顶层用 HTN，每个 primitive operator 用 AlphaEvolve  逐案判断</text>
 
-  <text x="480" y="540" text-anchor="middle" class="caption">LLMs 放大能力；不负责正确性。符号层和评估器负责硬保证。</text>
+  <text x="480" y="540" text-anchor="middle" class="caption">LLMs 放大能力；不负责正确性。符号层和评估器提供硬保证。</text>
 </svg>
