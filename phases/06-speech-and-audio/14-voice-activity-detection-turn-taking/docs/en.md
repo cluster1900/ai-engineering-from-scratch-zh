@@ -53,6 +53,10 @@ Streaming STT models 有 look-ahead delay（Kyutai STT-1B 为 500 ms，STT-2.6B 
 
 Silero 是正确的默认选择。Cobra 是合规性 / 准确率升级。Energy-only VAD 在 2026 年的生产环境中没有位置。
 
+```figure
+sp-vad-cascade
+```
+
 ## 构建它
 
 ### 步骤 1： energy gate
