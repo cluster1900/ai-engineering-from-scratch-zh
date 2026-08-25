@@ -6,96 +6,96 @@
       "stage": "pre",
       "question": "在 rule-based chatbot 中，slot-filling state machine 做什么？",
       "options": [
-        "检测讽刺",
         "选择最流畅的回复",
         "对用户消息进行 Embedding",
-        "跟踪哪些必需参数（日期、目的地、金额）仍然缺失，并按顺序询问它们"
+        "跟踪哪些必需参数（日期、目的地、金额）仍然缺失，并按顺序询问它们",
+        "检测讽刺"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": "Slot filling 会迭代收集任务处理器所需的结构化参数。"
     },
     {
       "stage": "pre",
       "question": "为什么 retrieval-based chat 能抵抗 hallucination？",
       "options": [
+        "它使用 BM25",
         "它使用 embeddings",
         "它拒绝所有查询",
-        "它从经过整理的集合中返回预设回复，而不是生成新文本",
-        "它使用 BM25"
+        "它从经过整理的集合中返回预设回复，而不是生成新文本"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Retrieval 会呈现预先写好的答案；没有 generation 就意味着没有编造内容。"
     },
     {
       "stage": "check",
       "question": "与一次性的 LLM 调用相比，LLM agent loop 的定义是什么？",
       "options": [
-        "使用 greedy decoding",
-        "使用 softmax",
         "一个 controller 会交错进行 LLM 调用和 tool invocation，直到模型返回最终答案或达到步骤预算",
+        "使用 softmax",
+        "使用 greedy decoding",
         "更大的 context window"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "Agent 添加了包含 tool call 和终止条件的 plan-act-observe loop。"
     },
     {
       "stage": "check",
       "question": "为什么 hybrid routing（rules + retrieval + LLM agent）是 2026 年生产环境的默认选择？",
       "options": [
-        "它维护成本更低",
-        "它消除了 evaluation 的需要",
+        "它避免使用 embeddings",
         "没有单一架构能很好地处理每一种请求；rules 覆盖破坏性操作，retrieval 覆盖 FAQ，agent 处理模糊的开放式查询",
-        "它避免使用 embeddings"
+        "它维护成本更低",
+        "它消除了 evaluation 的需要"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": "Hybrid system 对高风险操作使用 deterministic rules，并将 LLM agent 保留给开放式查询。"
     },
     {
       "stage": "check",
       "question": "什么是 prompt injection？",
       "options": [
-        "仅仅是一种 SQL injection 变体",
         "一种 tokenizer attack",
-        "把 tokens 注入 embeddings",
-        "用户提供的（direct）或文档提供的（indirect）文本，试图覆盖 system prompt 或劫持 agent 的行为"
+        "用户提供的（direct）或文档提供的（indirect）文本，试图覆盖 system prompt 或劫持 agent 的行为",
+        "仅仅是一种 SQL injection 变体",
+        "把 tokens 注入 embeddings"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "Prompt injection 会通过用户输入或 tool output 中的不可信文本改写 agent 的行为。"
     },
     {
       "stage": "post",
       "question": "哪项 OWASP Top 10（LLM Apps 2025）风险被排为 LLM01？",
       "options": [
-        "Prompt injection（direct 和 indirect）",
-        "Insecure deserialization",
+        "SQL injection",
         "Broken access control",
-        "SQL injection"
+        "Insecure deserialization",
+        "Prompt injection（direct 和 indirect）"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Prompt injection 是 OWASP LLM Apps Top 10（2025）中的 LLM01。"
     },
     {
       "stage": "post",
       "question": "哪种 mitigation pattern 通过分离 planning 和 execution 来减少 indirect prompt injection？",
       "options": [
-        "更短的 context",
         "Plan-Verify-Execute：agent 先规划，根据计划验证每个操作，然后执行，从而防止 tool output 注入新的未规划操作",
-        "更大的模型",
-        "更低的 temperature"
+        "更短的 context",
+        "更低的 temperature",
+        "更大的模型"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "PVE 会根据已达成的计划检查每个步骤，因此来自 tool output 的注入指令会被拒绝。"
     },
     {
       "stage": "post",
       "question": "为什么即使在 LLM-agent system 中，破坏性操作（付款、删除）也必须走结构化流程？",
       "options": [
-        "LLMs 很慢",
-        "Beam search 不安全",
         "Tools 无法被调用",
-        "自信的编造、prompt injection 和 scope creep 意味着 LLM 不能成为不可逆副作用的唯一权威"
+        "Beam search 不安全",
+        "自信的编造、prompt injection 和 scope creep 意味着 LLM 不能成为不可逆副作用的唯一权威",
+        "LLMs 很慢"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": "Hallucination 和 injection 让通过纯 LLM agent 执行不可逆操作变得不安全；需要 deterministic confirmation flow。"
     }
   ]
