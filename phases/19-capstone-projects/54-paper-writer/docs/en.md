@@ -15,6 +15,10 @@
 - 接入一个 mocked prose generator，它从 structured outline 填充每个 section，让 harness 可以在没有 model 的情况下测试。
 - 输出单个 `paper.tex`、一个 `references.bib`，再加一个列出每个 referenced figure 和每个 used citation 的 manifest。
 
+```figure
+ch-paper-skeleton
+```
+
 ## Why a skeleton first
 
 从 prose 开始的 draft 会积累 structural debt。introduction 增长出三段本该放到 related work 的内容。某个 figure 在定义之前就被引用。bibliography 最终为同一篇 paper 产生三个 keys。等 author 注意到时，rewriting cost 已经高于 writing cost。
