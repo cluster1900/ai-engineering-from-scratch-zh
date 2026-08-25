@@ -108,6 +108,10 @@ ColPali 每个 document 的 storage 约多 30x。在规模化场景中，OPQ / P
 
 对于 2026 年的其他场景，即 financial reports、scientific papers、legal contracts、medical records、UX documentation，vision-native RAG 胜出。
 
+```figure
+mm-maxsim
+```
+
 ## 使用它
 
 `code/main.py`：
