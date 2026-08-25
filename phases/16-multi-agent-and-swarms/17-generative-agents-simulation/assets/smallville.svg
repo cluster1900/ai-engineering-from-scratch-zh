@@ -15,7 +15,7 @@
       .caption { font-size: 11px; fill: #555; font-style: italic; }
     </style>
   </defs>
-  <text x="480" y="28" text-anchor="middle" class="title">Generative agents — Park 等 2023 的三个组件</text>
+  <text x="480" y="28" text-anchor="middle" class="title">Generative agents — Park 等人 2023 年提出的三个组件</text>
 
   <rect x="40" y="60" width="280" height="220" class="cool"/>
   <text x="180" y="84" text-anchor="middle" class="head">记忆流</text>
@@ -33,14 +33,14 @@
   <text x="480" y="108" text-anchor="middle" class="step">高阶信念</text>
   <text x="480" y="136" text-anchor="middle" class="small">周期触发：</text>
   <text x="480" y="154" text-anchor="middle" class="small">未处理重要性 &gt; threshold</text>
-  <text x="480" y="180" text-anchor="middle" class="small">prompt: "given recent memories,</text>
-  <text x="480" y="196" text-anchor="middle" class="small">what is a higher-level insight?"</text>
+  <text x="480" y="180" text-anchor="middle" class="small">prompt: "根据近期记忆，</text>
+  <text x="480" y="196" text-anchor="middle" class="small">能得出什么更高层次的洞见？"</text>
   <text x="480" y="222" text-anchor="middle" class="small">输出：新的 reflection 条目</text>
   <text x="480" y="240" text-anchor="middle" class="small">重新写入记忆流</text>
   <text x="480" y="258" text-anchor="middle" class="caption">无 reflection：无法形成信念</text>
 
   <rect x="640" y="60" width="280" height="220" class="box"/>
-  <text x="780" y="84" text-anchor="middle" class="head">plan</text>
+  <text x="780" y="84" text-anchor="middle" class="head">计划</text>
   <text x="780" y="108" text-anchor="middle" class="step">天 / 小时 / action</text>
   <text x="780" y="136" text-anchor="middle" class="small">天：去上班，吃晚饭</text>
   <text x="780" y="156" text-anchor="middle" class="small">小时：9am 咖啡馆，12pm 午餐...</text>
@@ -57,7 +57,7 @@
   <text x="140" y="362" class="small">agent-0 (Isabella) 被设定为："下午 5 点在咖啡馆办派对"</text>
 
   <text x="70" y="382" class="step">tick 0-2</text>
-  <text x="140" y="382" class="small">Isabella 邀请邻居；每个邀请都成为其记忆流中的 observation</text>
+  <text x="140" y="382" class="small">Isabella 邀请邻居；每次邀请都成为其记忆流中的 observation</text>
 
   <text x="70" y="402" class="step">tick 1-3</text>
   <text x="140" y="402" class="small">受邀邻居 reflection -&gt; 信念 "我被邀请参加派对" -&gt; 计划参加</text>

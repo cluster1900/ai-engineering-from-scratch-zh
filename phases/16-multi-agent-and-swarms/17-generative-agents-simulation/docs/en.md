@@ -86,6 +86,10 @@ Park et al. 明确记录了：
 
 Smallville 是概念证明：当组件正确时，multi-agent 涌现可以很便宜。该架构现在已经在 open-source models 上复现（更小的 LLMs 可信度是平滑下降，而不是急剧崩塌）。任何需要 **emergent social behavior** 的生产系统都会使用这种形状。任何需要 **tight task execution** 的系统都会使用本 phase 前面介绍的 supervisor / roles / primitives 模式。
 
+```figure
+a5-memory-reflection
+```
+
 ## 构建它
 
 `code/main.py` 用 stdlib Python 和脚本化 agent policies（没有真实 LLM）实现三个组件。Demo 以微型形式复现 Valentine's-party 涌现：
