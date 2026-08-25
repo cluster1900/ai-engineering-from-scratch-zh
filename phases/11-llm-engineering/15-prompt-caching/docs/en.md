@@ -48,6 +48,10 @@
 
 Anthropic 的 25% 写入溢价意味着，一个 cached block 至少要被读取两次，才能实现净省钱。1 次写入 + 1 次读取，平均每次请求成本为 0.675x（节省 32%）；1 次写入 + 10 次读取，平均为 0.205x（节省 80%）。经验法则：缓存任何你预计在 TTL 内至少复用 3 次的内容。
 
+```figure
+prompt-cache-hit
+```
+
 ## 构建它
 
 ### 步骤 1： 使用显式 markers 的 Anthropic prompt caching

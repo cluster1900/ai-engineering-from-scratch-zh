@@ -7,45 +7,45 @@
       "question": "相较基础 input 费率，Anthropic 对 cache read 应用什么折扣？",
       "options": [
         "25% 折扣",
-        "50% 折扣",
+        "90% 折扣",
         "75% 折扣",
-        "90% 折扣"
+        "50% 折扣"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么 dynamic timestamp 必须放在 cache breakpoint 下方，而不是上方？",
       "options": [
-        "只有当前缀逐字节完全相同时，缓存才会命中；变化的 timestamp 会破坏它之后所有内容的匹配",
+        "Anthropic 明确拒绝 cached blocks 中的 timestamps",
         "Timestamp 会让 Tokenizer 混乱",
         "它们比静态文本消耗更多 Token",
-        "Anthropic 明确拒绝 cached blocks 中的 timestamps"
+        "只有当前缀逐字节完全相同时，缓存才会命中；变化的 timestamp 会破坏它之后所有内容的匹配"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "OpenAI 的 prompt caching 是如何配置的？",
       "options": [
-        "显式的 cache_control 标记",
-        "你创建并引用的 CachedContent API",
+        "按 project 切换的系统级 flag",
         "无需配置的自动前缀匹配",
-        "按 project 切换的系统级 flag"
+        "你创建并引用的 CachedContent API",
+        "显式的 cache_control 标记"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "对于 Anthropic，1-hour extended TTL 相比 5-minute default 需要多少 write premium？",
       "options": [
-        "相同",
-        "2x write premium（比 baseline 高 50%）",
         "4x write premium",
-        "没有 write premium"
+        "2x write premium（比 baseline 高 50%）",
+        "没有 write premium",
+        "相同"
       ],
       "correct": 1,
       "explanation": ""
@@ -54,12 +54,12 @@
       "stage": "post",
       "question": "需要多少次复用才能覆盖 Anthropic 的 25% write premium？",
       "options": [
-        "1",
-        "2",
         "5",
-        "10"
+        "10",
+        "1",
+        "2"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     }
   ]
