@@ -15,6 +15,10 @@
 - 将完成的 results fan out 到 paper-write stage 和 re-queue stage，让高产出 branch 生成 follow-up hypotheses。
 - 暴露逐 iteration trace，包含 branch scores、slot occupancy 和 pruning decisions。
 
+```figure
+ch-ucb-scheduler
+```
+
 ## 为什么是 scheduler，而不是 worklist
 
 扁平 worklist 会按提交顺序运行 jobs。当每个 job 都独立时，这没有问题。research 不是独立的：experiment three 的 finding 会改变 experiments four 和 five 的优先级。一个会读取 result fan-in 并重排 queue 的 scheduler，可以在单位 compute 内完成更有用的工作。
