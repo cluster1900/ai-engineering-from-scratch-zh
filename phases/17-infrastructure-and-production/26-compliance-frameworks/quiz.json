@@ -6,9 +6,9 @@
       "stage": "pre",
       "question": "EU AI Act 对 high-risk systems 的执行从什么时候开始？",
       "options": [
-        "2025 年 2 月 2 日",
-        "2026 年 8 月 2 日",
         "已于 2024 年完全执行",
+        "2026 年 8 月 2 日",
+        "2025 年 2 月 2 日",
         "2030 年 1 月 1 日"
       ],
       "correct": 1,
@@ -18,24 +18,24 @@
       "stage": "check",
       "question": "EU AI Act 定义了哪种双层罚款上限？",
       "options": [
-        "任何违规最高统一罚款 €1M",
         "任何违规最高罚款 €100K",
         "high-risk-system obligations 最高 €15M 或全球年营业额的 3%（Art. 99(4)）；prohibited AI practices 最高 €35M 或 7%（Art. 99(3)）",
+        "任何违规最高统一罚款 €1M",
         "没有经济处罚，只有下架命令"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "为什么 post-processing PII cleanup 不是可辩护的 GDPR 姿态？",
       "options": [
-        "它在规模化时太慢",
+        "模型已经看到了数据，因此实时 inference-layer redaction（在 LLM call 之前）才是 2026 年可辩护的标准",
         "GDPR 完全禁止 redaction",
-        "Post-processing 与实时处理完全相同",
-        "模型已经看到了数据，因此实时 inference-layer redaction（在 LLM call 之前）才是 2026 年可辩护的标准"
+        "它在规模化时太慢",
+        "Post-processing 与实时处理完全相同"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "跨框架控制项映射的目标是什么？",
       "options": [
-        "一个控制策略满足多个框架要求（例如 access logging 映射到 ISO 27001 A.5.15-5.18、GDPR Art. 32、HIPAA §164.312(a)）",
         "消除审计",
         "用 ISO 42001 替代所有框架",
+        "一个控制策略满足多个框架要求（例如 access logging 映射到 ISO 27001 A.5.15-5.18、GDPR Art. 32、HIPAA §164.312(a)）",
         "为每个框架增加更多独立控制项"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "本课对 HIPAA + LLM workloads 的建议是什么？",
       "options": [
-        "HIPAA 不适用于 LLMs",
-        "没有签署 BAA 时，绝不要将 PHI 发送给外部 AI service；三大 hyperscalers 和主要 LLM API providers 都提供 BAAs",
         "只使用 on-prem models，绝不使用 managed",
-        "将 PHI 发送给任何 provider；BAA 是可选的"
+        "将 PHI 发送给任何 provider；BAA 是可选的",
+        "HIPAA 不适用于 LLMs",
+        "没有签署 BAA 时，绝不要将 PHI 发送给外部 AI service；三大 hyperscalers 和主要 LLM API providers 都提供 BAAs"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     }
   ]
