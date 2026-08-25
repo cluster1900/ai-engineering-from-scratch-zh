@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "为什么 2026 年前沿方案在金融 PDF 和科学论文上更偏好 vision-first late interaction，而不是 OCR-then-text？",
       "options": [
-        "Vision models 的每页成本更低",
         "OCR pipelines 会破坏旋转表格、密集公式和图表图像，丢失一半信号",
-        "OCR 比渲染更慢",
-        "OCR 无法在 GPUs 上运行"
+        "OCR 无法在 GPUs 上运行",
+        "Vision models 的每页成本更低",
+        "OCR 比渲染更慢"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -19,9 +19,9 @@
       "question": "ColPali 风格 retrieval 中的 late interaction 是什么意思？",
       "options": [
         "每个 query token 都会与每个 patch token 打分，并通过 MaxSim 汇总每个 token 的最大值",
-        "Embeddings 会推迟到 eval time 才生成",
         "Embeddings 会在用户点击结果后计算",
-        "reranker 只在最终 candidate 上运行"
+        "reranker 只在最终 candidate 上运行",
+        "Embeddings 会推迟到 eval time 才生成"
       ],
       "correct": 0,
       "explanation": ""
@@ -30,12 +30,12 @@
       "stage": "check",
       "question": "ColQwen Embedding 每页大约会产生多少个 patch vectors，这会带来什么存储问题？",
       "options": [
-        "每页约 2048 个 patch vectors，相比 single-vector indexes 会让原始存储膨胀",
         "正好 128 个 vectors，可以清晰适配任何 vector DB",
+        "每页约 2048 个 patch vectors，相比 single-vector indexes 会让原始存储膨胀",
         "每页 1 个 vector，没有存储问题",
         "16 个 vectors，存储开销可以忽略"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -44,8 +44,8 @@
       "options": [
         "在 ingestion 之前移除重复 PDF 页面",
         "通过保留约 50% 的高信号 patches 来压缩 multi-vector index，同时准确率损失可以忽略",
-        "重写 query Embedding 以获得更短的 vectors",
-        "围绕证据区域裁剪 bounding boxes"
+        "围绕证据区域裁剪 bounding boxes",
+        "重写 query Embedding 以获得更短的 vectors"
       ],
       "correct": 1,
       "explanation": ""
@@ -54,9 +54,9 @@
       "stage": "check",
       "question": "为什么某些页面仍然会拼接一个 OCR 文本通道？",
       "options": [
-        "它会改善 PDF 渲染质量",
         "VLMs 无法读取 180 DPI 的图像",
         "OCR 是主要 retrieval modality",
+        "它会改善 PDF 渲染质量",
         "公式密集和表格密集的页面会受益于与图像并行的文本 fallback"
       ],
       "correct": 3,
@@ -66,24 +66,24 @@
       "stage": "post",
       "question": "这个 capstone 针对哪个 Benchmark 进行 vision-first retrieval 评估？",
       "options": [
-        "RewardBench-2",
-        "SWE-bench Pro",
         "ViDoRe v3",
-        "MMLU-Pro"
+        "RewardBench-2",
+        "MMLU-Pro",
+        "SWE-bench Pro"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "rubric 中的证据区域 grounding 是什么意思？",
       "options": [
-        "DocPruner 达到的 compression ratio",
         "re-ranker 在 p99 tail 的延迟",
         "每次 query 检索到的总页数",
-        "被引用 bounding boxes 中实际包含答案 span 的比例"
+        "被引用 bounding boxes 中实际包含答案 span 的比例",
+        "DocPruner 达到的 compression ratio"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     }
   ]

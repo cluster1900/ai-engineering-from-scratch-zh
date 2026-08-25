@@ -67,15 +67,15 @@
   <rect x="700" y="210" width="200" height="40" class="cold"/>
   <text x="800" y="236" text-anchor="middle" class="step">引用区域</text>
   <rect x="700" y="260" width="200" height="40" class="dsk"/>
-  <text x="800" y="286" text-anchor="middle" class="step">viewer overlay</text>
+  <text x="800" y="286" text-anchor="middle" class="step">查看器叠加层</text>
 
   <rect x="700" y="310" width="200" height="200" class="box"/>
-  <text x="800" y="332" text-anchor="middle" class="head">evaluation</text>
-  <text x="800" y="352" text-anchor="middle" class="small">ViDoRe v3（retrieval）</text>
-  <text x="800" y="370" text-anchor="middle" class="small">M3DocVQA（multi-page QA）</text>
-  <text x="800" y="388" text-anchor="middle" class="small">content-class x approach</text>
-  <text x="800" y="406" text-anchor="middle" class="small">Matrix：text / table / chart /</text>
-  <text x="800" y="424" text-anchor="middle" class="small">handwriting / equation</text>
-  <text x="800" y="444" text-anchor="middle" class="small">vs OCR-then-text baseline</text>
-  <text x="800" y="472" text-anchor="middle" class="caption">发布并排 delta</text>
+  <text x="800" y="332" text-anchor="middle" class="head">Evaluation</text>
+  <text x="800" y="352" text-anchor="middle" class="small">ViDoRe v3（检索）</text>
+  <text x="800" y="370" text-anchor="middle" class="small">M3DocVQA（多页 QA）</text>
+  <text x="800" y="388" text-anchor="middle" class="small">内容类别 x 方法</text>
+  <text x="800" y="406" text-anchor="middle" class="small">Matrix：text / 表格 / 图表 /</text>
+  <text x="800" y="424" text-anchor="middle" class="small">手写内容 / 公式</text>
+  <text x="800" y="444" text-anchor="middle" class="small">对比 OCR-then-text baseline</text>
+  <text x="800" y="472" text-anchor="middle" class="caption">发布并排差异</text>
 </svg>

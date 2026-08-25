@@ -55,6 +55,10 @@ query ----+----> retrieve top-k pages (MaxSim)
 - Evaluation: ViDoRe v3 benchmark，M3DocVQA 用于 multi-page reasoning
 - Viewer UI: Next.js 15，使用 canvas overlay 显示 evidence regions
 
+```figure
+ce-late-interaction
+```
+
 ## 构建它
 1. **Ingest.** 遍历一个包含 10k PDF 页面的语料库，覆盖 10-K、科学论文和扫描文档。将每页渲染为 1536x2048 PNG。持久化 `{doc_id, page_num, image_path}`。
 
