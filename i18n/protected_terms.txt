@@ -12,7 +12,44 @@ Tokenizer
 Embedding
 Vector
 Matrix
+Scalar
+Tensor
+Dot Product
+Cross Product
+Eigenvalue
+Eigenvector
+Determinant
+Rank
+Norm
+Basis
+Span
+Linear Transformation
+Jacobian
+Hessian
+Derivative
+Partial Derivative
 Gradient
+Gradient Descent
+Chain Rule
+Integral
+Probability
+Random Variable
+Probability Distribution
+Expectation
+Variance
+Covariance
+Correlation
+Likelihood
+Maximum Likelihood Estimation
+Bayesian
+Prior
+Posterior
+Hypothesis Test
+p-value
+Confidence Interval
+Fourier Transform
+Markov Chain
+Stochastic Process
 Backpropagation
 Loss
 Optimizer
@@ -61,6 +98,24 @@ LLaVA
 RAG
 LLM
 LLMs
+Model
+Agent
+Tool
+Skill
+Prompt
+Context
+Inference
+Training
+Evaluation
+Dataset
+Feature
+Label
+Hyperparameter
+Epoch
+Batch
+Checkpoint
+Fine-tuning
+Quantization
 MCP
 API
 SDK

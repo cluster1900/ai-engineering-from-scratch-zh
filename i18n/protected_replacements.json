@@ -7,7 +7,6 @@
   "注意力机制": "Attention",
   "令牌": "Token",
   "分词器": "Tokenizer",
-  "嵌入": "Embedding",
   "向量": "Vector",
   "矩阵": "Matrix",
   "梯度下降": "Gradient Descent",
