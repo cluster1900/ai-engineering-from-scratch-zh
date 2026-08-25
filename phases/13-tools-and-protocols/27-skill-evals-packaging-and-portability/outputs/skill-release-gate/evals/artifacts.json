@@ -1,0 +1,10 @@
+{
+  "artifactMode": "fixture",
+  "contract": {
+    "requiredHeadings": ["Decision", "Evidence"],
+    "requiredTerms": ["precision", "recall"],
+    "forbiddenTerms": ["guaranteed portable"]
+  },
+  "baseline": "Release 看起来没有问题。",
+  "withSkill": "# Decision\n\n通过。\n\n# Evidence\n\nPrecision：1.0。Recall：1.0。"
+}

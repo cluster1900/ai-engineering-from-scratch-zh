@@ -1,0 +1,12 @@
+{
+  "evidenceMode": "deterministic-fixture",
+  "scriptChecks": [
+    {"id": "unit-fixtures", "passed": true, "evidence": "确定性脚本 fixture 已通过。"},
+    {"id": "repeat-run", "passed": true, "evidence": "重复运行 fixture 得到了相同结果。"}
+  ],
+  "safetyChecks": [
+    {"id": "path-traversal", "passed": true, "evidence": "遍历引用已被拒绝。"},
+    {"id": "undeclared-network", "passed": true, "evidence": "Evaluator 未请求任何网络权限。"},
+    {"id": "external-write", "passed": true, "evidence": "Evaluator 未写入任何外部状态。"}
+  ]
+}

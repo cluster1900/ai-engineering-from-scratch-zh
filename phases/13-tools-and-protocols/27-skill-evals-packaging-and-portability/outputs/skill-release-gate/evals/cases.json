@@ -1,0 +1,17 @@
+{
+  "triggerTerms": ["skill", "package", "bundle", "trigger", "portability", "evaluate", "release"],
+  "evaluationMode": "deterministic-fixture",
+  "threshold": 2,
+  "runs": 5,
+  "minimumPrecision": 0.8,
+  "minimumRecall": 0.8,
+  "minimumRepeatRate": 0.9,
+  "cases": [
+    {"id": "positive-package", "prompt": "在 release 前 evaluate 此 skill package", "expected": true},
+    {"id": "positive-trigger", "prompt": "测量 skill trigger 的 precision 和 recall", "expected": true},
+    {"id": "positive-portability", "prompt": "检查 bundle 在不同 host 间的 portability", "expected": true},
+    {"id": "near-release-notes", "prompt": "发布 release notes", "expected": false},
+    {"id": "near-model-eval", "prompt": "evaluate Model 响应质量", "expected": false},
+    {"id": "near-dependency", "prompt": "安装 package 依赖项", "expected": false}
+  ]
+}

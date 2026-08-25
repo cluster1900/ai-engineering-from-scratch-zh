@@ -1,0 +1,78 @@
+{
+  "lesson": "27-skill-evals-packaging-and-portability",
+  "title": "Skill Evals、打包与可移植性",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在本课的 Model 中，哪组 Evaluation 最能揭示 Skill 描述是否存在过度触发？",
+      "options": [
+        "明确的正向 Prompt，加上语义相近但应保持负向的 Prompt",
+        "仅进行一次成功的端到端演示",
+        "一份受支持文件扩展名的列表",
+        "仅使用从 Skill 名称复制的 Prompt"
+      ],
+      "correct": 0,
+      "explanation": "简单的正向样本衡量预期任务能否触发。近似但不匹配的负向样本衡量相邻任务是否被错误触发，这是计算 false positive 和 precision 所必需的。"
+    },
+    {
+      "stage": "check",
+      "question": "某项触发测试有 8 个 true positive 和 2 个 false positive。它的 precision 是多少？",
+      "options": [
+        "recall 为 0.8，但无法计算 precision",
+        "0.8",
+        "0.2",
+        "1.0"
+      ],
+      "correct": 1,
+      "explanation": "Precision 等于 true positive 除以所有预测为正的样本：8 / (8 + 2) = 0.8。计算 recall 需要 false negative 的数量，而此场景并未提供该数据。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么要使用相同的断言比较 baseline 产物和启用 Skill 后的产物？",
+      "options": [
+        "保证 Skill 能在每个 host 中运行",
+        "消除触发测试的必要性",
+        "允许 Skill 在 Evaluation 期间修改预期结果",
+        "衡量 Skill 是否改进了任务输出，而不只是被激活"
+      ],
+      "correct": 3,
+      "explanation": "激活并不等于结果。共享的产物契约会测试加载 Skill 后是否改变了必需标题、证据、schema 或禁止内容，同时保持与 baseline 的衡量结果可比较。"
+    },
+    {
+      "stage": "check",
+      "question": "某个 host 能加载 SKILL.md，但在安装期间丢弃了 `references/` 和 `scripts/`。对于同时需要两者的 bundle，可移植性 matrix 应如何分类？",
+      "options": [
+        "原生支持，因为 frontmatter 已加载",
+        "需要 adapter，并列出缺失的配套文件和脚本能力",
+        "不受支持，即使 adapter 可以保留这些文件",
+        "重命名目录后即可保证可移植"
+      ],
+      "correct": 1,
+      "explanation": "该 host 能理解核心文件，因此并非完全不受支持。但它仍无法原生满足包中声明的需求，matrix 应明确列出所需的 adapter 工作，而不是将可移植性简化为是或否。"
+    },
+    {
+      "stage": "post",
+      "question": "与一次通过的触发 Evaluation 相比，重复运行率额外提供了什么？",
+      "options": [
+        "结构化包 lint 的替代方案",
+        "允许 Skill 执行 bundle 中的脚本",
+        "关于每个用例在多次执行中是否一致的证据",
+        "通用的 host 调用命令"
+      ],
+      "correct": 2,
+      "explanation": "单次运行可能掩盖 nondeterminism。每个用例的重复运行率能揭示不稳定的激活或产物生成，而结构 lint、runtime 权限和 host adapter 仍是彼此独立的问题。"
+    },
+    {
+      "stage": "post",
+      "question": "对于 Agent Skill bundle，哪种发布 gate 最完整？",
+      "options": [
+        "bundle 包含大量参考文件和一段很长的描述",
+        "Skill 无需 baseline 即可在作者的机器上运行",
+        "SKILL.md 存在，并且一个正向 Prompt 能将其激活",
+        "全部六层均通过，本地 captured-mode 值具有匹配且绑定来源的 digest，并且 bundle 外部的可信 attestation 绑定了完整证据根"
+      ],
+      "correct": 3,
+      "explanation": "六层分别是包结构；包含 precision、recall 和重复运行稳定性的触发路由；指令和产物行为；脚本正确性；安全和权限；以及打包与可移植性，其中包括经过 manifest 验证的干净安装。每一层都必须通过。绑定来源的本地 digest 可以检测不匹配，但也可以在重新标记 fixture 后重新计算，因此要达到生产就绪状态，还需要一个外部 attestation，并由其精确且可信的 SHA-256 绑定完整证据根。"
+    }
+  ]
+}
