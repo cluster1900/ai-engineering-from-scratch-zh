@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "2026 年 LLM 服务凭证的标准模式是什么？",
       "options": [
-        "把 key 存在 Slack channel 里",
-        "由 AI gateway 在运行时通过 IAM role 从集中式 vault 拉取；在 vault 中轮换，所有 app 会在几分钟内获取更新",
+        "为了速度把 API keys 硬编码到 config files 中",
         "把 key 通过 email 发给每位工程师",
-        "为了速度把 API keys 硬编码到 config files 中"
+        "把 key 存在 Slack channel 里",
+        "由 AI gateway 在运行时通过 IAM role 从集中式 vault 拉取；在 vault 中轮换，所有 app 会在几分钟内获取更新"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -19,9 +19,9 @@
       "question": "本课建议 API keys、vault root tokens 和 CI/CD credentials 采用什么轮换节奏？",
       "options": [
         "90 天内，尽可能自动化；手动时需要记录日志并跟踪",
-        "每 5 年一次",
         "只在泄露时轮换",
-        "永不轮换"
+        "永不轮换",
+        "每 5 年一次"
       ],
       "correct": 0,
       "explanation": ""
@@ -30,12 +30,12 @@
       "stage": "check",
       "question": "为什么 PII scrubbing 使用一致的 tokenization（Mesh approach）？",
       "options": [
-        "它比 regex 使用更少内存",
         "它会加密发送给 model 的 prompt",
         "这是 ISO 27001 要求",
-        "相同的源值会映射到相同的 placeholder，因此 LLM 可以在整个 prompt 中保留 code 和关系语义"
+        "相同的源值会映射到相同的 placeholder，因此 LLM 可以在整个 prompt 中保留 code 和关系语义",
+        "它比 regex 使用更少内存"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -54,24 +54,24 @@
       "stage": "post",
       "question": "2026 年 Vercel supply-chain incident 对 CI/CD credentials 有什么教训？",
       "options": [
-        "CI/CD credentials 等同于 prod 权限 — 存入 vault，严格限制 scope，并激进轮换",
-        "CI/CD secrets 不可能被盗",
         "CI/CD credentials 风险低，可以留在 env files 中",
-        "Vercel 未受影响"
+        "CI/CD secrets 不可能被盗",
+        "Vercel 未受影响",
+        "CI/CD credentials 等同于 prod 权限 — 存入 vault，严格限制 scope，并激进轮换"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "本课建议为每次 LLM call 保留哪些 audit log fields？",
       "options": [
-        "只保留 raw prompt",
-        "只保留 response",
+        "只保留 cost",
         "Timestamp、user/tenant、prompt hash（不是 raw）、model + version、token counts、cost、response hash、任何 guardrail trips",
-        "只保留 cost"
+        "只保留 raw prompt",
+        "只保留 response"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     }
   ]
