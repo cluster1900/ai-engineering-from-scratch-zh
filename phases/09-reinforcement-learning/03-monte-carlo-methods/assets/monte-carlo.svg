@@ -13,7 +13,7 @@
     </style>
   </defs>
 
-  <text x="450" y="30" text-anchor="middle" class="title">MC：rollout，计算回报，求平均</text>
+  <text x="450" y="30" text-anchor="middle" class="title">MC：rollout、计算回报、求平均</text>
 
   <rect x="40" y="60" width="820" height="90" class="hot"/>
   <text x="60" y="85" class="label">episode i</text>
@@ -31,17 +31,17 @@
 
   <rect x="40" y="290" width="400" height="130" class="box"/>
   <text x="240" y="315" text-anchor="middle" class="label">first-visit MC</text>
-  <text x="60" y="340" class="content">对首次访问的 s_t 所在 t：</text>
+  <text x="60" y="340" class="content">对于首次访问 s_t 的 t：</text>
   <text x="60" y="360" class="content">N(s_t) += 1</text>
   <text x="60" y="380" class="content">V(s_t) += (G_t - V(s_t)) / N(s_t)</text>
   <text x="240" y="405" text-anchor="middle" class="caption">无偏，iid 样本</text>
 
   <rect x="460" y="290" width="400" height="130" class="box"/>
   <text x="660" y="315" text-anchor="middle" class="label">every-visit MC</text>
-  <text x="480" y="340" class="content">对轨迹中的每个 t：</text>
+  <text x="480" y="340" class="content">对于轨迹中的每个 t：</text>
   <text x="480" y="360" class="content">N(s_t) += 1</text>
   <text x="480" y="380" class="content">V(s_t) += (G_t - V(s_t)) / N(s_t)</text>
   <text x="660" y="405" text-anchor="middle" class="caption">方差更低，略有偏差</text>
 
-  <text x="450" y="450" text-anchor="middle" class="caption">无模型，无 bootstrap — 只采样轨迹并平均回报</text>
+  <text x="450" y="450" text-anchor="middle" class="caption">无 Model、无 bootstrap — 只采样轨迹并平均回报</text>
 </svg>
