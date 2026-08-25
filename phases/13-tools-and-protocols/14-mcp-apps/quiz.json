@@ -1,0 +1,78 @@
+{
+  "lesson": "14-mcp-apps",
+  "title": "无状态协议上的 MCP Apps",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "现代 MCP App 应在何处将其 UI resource 绑定到 Tool？",
+      "options": [
+        "仅在最终文本结果中",
+        "在独立的 HTTP GET stream 中",
+        "在 MCP session cookie 中",
+        "在 tools/list 返回的 Tool 定义中"
+      ],
+      "correct": 3,
+      "explanation": "Tool 定义中嵌套的 _meta.ui.resourceUri 使 host 能够在调用前预加载和审查 UI。"
+    },
+    {
+      "stage": "check",
+      "question": "2026-07-28 客户端如何声明对 MCP Apps 的支持？",
+      "options": [
+        "通过 notifications/initialized",
+        "通过 Mcp-Session-Id",
+        "在每个请求的 io.modelcontextprotocol/clientCapabilities.extensions 中",
+        "通过接受所有 ui:// resources"
+      ],
+      "correct": 2,
+      "explanation": "Extension 通过每个请求中的客户端 capability map 选择性启用。"
+    },
+    {
+      "stage": "check",
+      "question": "ui/initialize 初始化的是什么？",
+      "options": [
+        "协议级服务器 session",
+        "OAuth 客户端注册",
+        "iframe 与 host 之间的 Apps postMessage bridge",
+        "Streamable HTTP GET channel"
+      ],
+      "correct": 2,
+      "explanation": "ui/initialize 属于 Apps bridge dialect，与已移除的 MCP 核心 handshake 相互独立。"
+    },
+    {
+      "stage": "check",
+      "question": "对于与用户无关的捆绑式 App，哪一种 resource 响应最安全？",
+      "options": [
+        "没有 resultType，也没有缓存策略",
+        "resultType 为 complete、ttlMs 有明确上限、cacheScope 为 public，并采用默认拒绝的 CSP",
+        "在 HTML 中Embedding session Token",
+        "无限制的 ttlMs 和通配符 CSP domain"
+      ],
+      "correct": 1,
+      "explanation": "完整的结果、明确的缓存提示和范围严格的 CSP，使 wire 和浏览器策略均可被检查。"
+    },
+    {
+      "stage": "post",
+      "question": "host 收到针对某个 URI 的 resources/read body，但 Mcp-Name header 指向另一个 URI。此时应如何处理？",
+      "options": [
+        "打开两个 resources",
+        "优先采用 header",
+        "优先采用 body",
+        "返回 HTTP 400 和 JSON-RPC error -32020"
+      ],
+      "correct": 3,
+      "explanation": "在评估 version 支持或功能策略之前，routing header 必须与 body 匹配；transport 应返回 HTTP 400 和 JSON-RPC error -32020。"
+    },
+    {
+      "stage": "post",
+      "question": "对于不支持 MCP Apps 的 host，正确的 fallback 是什么？",
+      "options": [
+        "将 HTML 作为受信任的 host chrome 返回",
+        "使用普通文本或结构化输出维持 Tool 可用，并省略 UI 绑定",
+        "创建隐藏 session 并重试",
+        "自动授予 extension"
+      ],
+      "correct": 1,
+      "explanation": "可选 extension 不能导致未协商该 extension 的客户端无法使用底层 Tool。"
+    }
+  ]
+}
