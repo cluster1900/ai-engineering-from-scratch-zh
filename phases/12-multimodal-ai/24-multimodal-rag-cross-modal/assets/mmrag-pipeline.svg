@@ -17,14 +17,14 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">Multimodal RAG — 跨模态检索、融合、ground、生成</text>
+  <text x="480" y="24" text-anchor="middle" class="title">Multimodal RAG — 跨模态检索、融合、依据定位、生成</text>
 
   <rect x="30" y="50" width="900" height="220" class="box"/>
-  <text x="480" y="72" text-anchor="middle" class="head">查询 -&gt; 分解 -&gt; 3 个 retriever -&gt; 融合 -&gt; VLM generator</text>
+  <text x="480" y="72" text-anchor="middle" class="head">查询 -&gt; 分解 -&gt; 3 个检索器 -&gt; 融合 -&gt; VLM 生成器</text>
 
   <rect x="60" y="90" width="180" height="60" class="reg"/>
   <text x="150" y="112" text-anchor="middle" class="step">查询</text>
-  <text x="150" y="130" text-anchor="middle" class="small">"安静的 vegan brunch</text>
+  <text x="150" y="130" text-anchor="middle" class="small">"安静的纯素早午餐</text>
   <text x="150" y="145" text-anchor="middle" class="small">带自然光"</text>
 
   <path d="M 245 120 L 285 100" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -50,7 +50,7 @@
   <rect x="510" y="130" width="170" height="90" class="reg"/>
   <text x="595" y="152" text-anchor="middle" class="step">分数融合</text>
   <text x="595" y="172" text-anchor="middle" class="small">加权求和</text>
-  <text x="595" y="188" text-anchor="middle" class="small">或 MoE gate</text>
+  <text x="595" y="188" text-anchor="middle" class="small">或 MoE 门控</text>
   <text x="595" y="206" text-anchor="middle" class="small">top-k 候选</text>
 
   <path d="M 685 175 L 725 175" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -65,7 +65,7 @@
   <text x="480" y="312" text-anchor="middle" class="head">2025 年三篇综述</text>
 
   <rect x="60" y="330" width="260" height="170" class="hot"/>
-  <text x="190" y="352" text-anchor="middle" class="step">Abootorabi et al.</text>
+  <text x="190" y="352" text-anchor="middle" class="step">Abootorabi 等人</text>
   <text x="190" y="368" text-anchor="middle" class="small">arXiv:2502.08826</text>
   <text x="190" y="388" text-anchor="middle" class="small">完整分类体系</text>
   <text x="190" y="404" text-anchor="middle" class="small">检索 / 融合 / 生成</text>
@@ -74,19 +74,19 @@
   <text x="190" y="466" text-anchor="middle" class="caption">列出所有子问题</text>
 
   <rect x="340" y="330" width="260" height="170" class="cool"/>
-  <text x="470" y="352" text-anchor="middle" class="step">Mei et al.</text>
+  <text x="470" y="352" text-anchor="middle" class="step">Mei 等人</text>
   <text x="470" y="368" text-anchor="middle" class="small">arXiv:2504.08748</text>
   <text x="470" y="388" text-anchor="middle" class="small">子任务基准</text>
   <text x="470" y="404" text-anchor="middle" class="small">故障模式目录</text>
-  <text x="470" y="420" text-anchor="middle" class="small">适合 eval 设计</text>
-  <text x="470" y="446" text-anchor="middle" class="step">读它做 evals</text>
+  <text x="470" y="420" text-anchor="middle" class="small">适合评估设计</text>
+  <text x="470" y="446" text-anchor="middle" class="step">读它做评估</text>
   <text x="470" y="466" text-anchor="middle" class="caption">按指标拆解</text>
 
   <rect x="620" y="330" width="290" height="170" class="cold"/>
-  <text x="765" y="352" text-anchor="middle" class="step">Zhao et al.</text>
+  <text x="765" y="352" text-anchor="middle" class="step">Zhao 等人</text>
   <text x="765" y="368" text-anchor="middle" class="small">arXiv:2503.18016</text>
   <text x="765" y="388" text-anchor="middle" class="small">视觉 RAG</text>
-  <text x="765" y="404" text-anchor="middle" class="small">ColPali-family 较强</text>
+  <text x="765" y="404" text-anchor="middle" class="small">ColPali 系列较强</text>
   <text x="765" y="420" text-anchor="middle" class="small">偏重纯视觉</text>
   <text x="765" y="446" text-anchor="middle" class="step">读它做视觉 RAG</text>
   <text x="765" y="466" text-anchor="middle" class="caption">补充第 23 课</text>

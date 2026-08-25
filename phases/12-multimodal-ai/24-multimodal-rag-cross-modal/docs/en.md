@@ -108,6 +108,10 @@ Cross-modal evaluation 仍不成熟。常见 proxy：
 
 没有覆盖所有 modality 的标准 benchmark。大多数 paper 都在 domain-specific tasks 上 evaluation。
 
+```figure
+contrastive-matrix
+```
+
 ## 使用它
 `code/main.py`：
 
