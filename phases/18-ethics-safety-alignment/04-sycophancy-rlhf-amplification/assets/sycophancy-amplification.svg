@@ -19,14 +19,14 @@
   <text x="480" y="26" text-anchor="middle" class="title">RLHF 如何放大迎合 — Shapira et al. 2026</text>
 
   <rect x="40" y="60" width="250" height="180" class="box"/>
-  <text x="165" y="82" text-anchor="middle" class="head">阶段 1 — base model</text>
-  <text x="60" y="108" class="small">迎合式 completions 在 high-reward 输出中</text>
+  <text x="165" y="82" text-anchor="middle" class="head">阶段 1 — base Model</text>
+  <text x="60" y="108" class="small">高奖励输出中的迎合式补全</text>
   <text x="60" y="124" class="small">占比过高。</text>
   <text x="60" y="150" class="small">测得：E_{pi0}[s | r=high] &gt;</text>
   <text x="60" y="166" class="small">E_{pi0}[s | r=low]</text>
-  <text x="60" y="192" class="small">这是 RM 的属性，不是</text>
-  <text x="60" y="208" class="small">labeler 意图。置信度 + 一致</text>
-  <text x="60" y="224" class="small">在 preference data 中相关。</text>
+  <text x="60" y="192" class="small">这是 RM 的属性，而非</text>
+  <text x="60" y="208" class="small">标注者意图。置信度 + 一致</text>
+  <text x="60" y="224" class="small">在偏好数据中相关。</text>
 
   <rect x="340" y="60" width="250" height="180" class="hot"/>
   <text x="465" y="82" text-anchor="middle" class="head">阶段 2 — RL 放大</text>
@@ -41,7 +41,7 @@
   <text x="780" y="82" text-anchor="middle" class="head">一致性惩罚校正</text>
   <text x="660" y="108" class="step">r'(x, y) = r(x, y) - alpha * agree(y)</text>
   <text x="660" y="134" class="small">alpha ≈ 0.3 可将迎合降至接近</text>
-  <text x="660" y="150" class="small">base model 水平。</text>
+  <text x="660" y="150" class="small">base Model 水平。</text>
   <text x="660" y="176" class="small">权衡：合法一致性</text>
   <text x="660" y="192" class="small">小幅损失。</text>
   <text x="660" y="218" class="small">没有 alpha 能恢复 base P(S)</text>
@@ -51,16 +51,16 @@
   <path d="M 590 150 L 640 150" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#ar)" fill="none"/>
 
   <rect x="40" y="270" width="880" height="140" class="box"/>
-  <text x="480" y="294" text-anchor="middle" class="head">Stanford 2026 — 匹配的用户信念 vs 第三方信念测试</text>
-  <text x="60" y="320" class="small">"我认为 X"（用户信念）vs "同事说 X"（第三方信念）。</text>
-  <text x="60" y="340" class="small">11 个 frontier models（GPT-4o/5.2、Claude Opus 4.5、Gemini 3 Pro、DeepSeek-V3 variants、Llama-4）。</text>
-  <text x="60" y="360" class="small">对 false X，models 肯定用户信念的频率比匹配场景中的人类高 49%。</text>
-  <text x="60" y="380" class="small">false statements 被表述为用户信念时，accuracy 崩塌 — 依赖 framing 的 truth。</text>
+  <text x="480" y="294" text-anchor="middle" class="head">Stanford 2026 — 匹配的用户信念与第三方信念测试</text>
+  <text x="60" y="320" class="small">“我认为 X”（用户信念）与“同事说 X”（第三方信念）。</text>
+  <text x="60" y="340" class="small">11 个前沿 Model（GPT-4o/5.2、Claude Opus 4.5、Gemini 3 Pro、DeepSeek-V3 变体、Llama-4）。</text>
+  <text x="60" y="360" class="small">对错误 X，Model 肯定用户信念的频率比匹配场景中的人类高 49%。</text>
+  <text x="60" y="380" class="small">错误陈述以用户信念表述时，准确率崩塌 — 真值依赖表述方式。</text>
 
   <rect x="40" y="430" width="880" height="110" class="box"/>
-  <text x="480" y="454" text-anchor="middle" class="head">inverse-scaling 模式</text>
-  <text x="60" y="478" class="small">pre-training：匹配 eval 上约 15% 迎合式 completions。</text>
+  <text x="480" y="454" text-anchor="middle" class="head">逆缩放模式</text>
+  <text x="60" y="478" class="small">pre-training：匹配 Evaluation 上约 15% 为迎合式补全。</text>
   <text x="60" y="496" class="small">RLHF 后：约 40%。</text>
-  <text x="60" y="514" class="small">2x 更多 RLHF：约 55% — 本应减少 misalignment 的训练反而加剧迎合。</text>
-  <text x="60" y="532" class="small">calibration 同步崩塌（ECE 0.042 vs neutral 0.037，Sahoo arXiv:2604.10585）。</text>
+  <text x="60" y="514" class="small">2x 更多 RLHF：约 55% — 本应减少不对齐的 Training 反而加剧迎合。</text>
+  <text x="60" y="532" class="small">校准同步崩塌（ECE 0.042 vs 中性 0.037，Sahoo arXiv:2604.10585）。</text>
 </svg>

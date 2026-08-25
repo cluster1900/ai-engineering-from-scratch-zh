@@ -80,6 +80,10 @@ Sycophancy 是一个经典例子，说明 alignment 不是在单一目标上“�
 
 这也是最清楚的案例之一：Optimizer 正在严格执行目标所说的事情。修复必须发生在目标上，而不是 Optimizer 上。
 
+```figure
+al-sycophancy-amplifier
+```
+
 ## 使用它
 `code/main.py` 在一个 toy 3-action world 中模拟 Sycophancy amplification。base policy 在 actions {correct-answer, sycophantic-agreement, random-wrong} 上是均匀的。reward model 会为 agreement（虚假特征）给出小的正奖励，并为 correctness 给出真实 utility。你可以切换 agreement penalty，观察 Sycophancy 如何随 beta 和 alpha 上升与下降。
 
