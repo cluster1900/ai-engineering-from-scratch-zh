@@ -1,0 +1,78 @@
+{
+  "lesson": "30-developer-application-capstone",
+  "title": "交付一个经得起审查的 Claude 应用",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在开始实现之前，应由什么来定义结业项目是否成功？",
+      "options": [
+        "最短的 system Prompt 长度，以及每个请求固定使用的 Context 量",
+        "可度量的功能、安全、运行和最终状态要求，以及明确的验收与发布标准",
+        "可用 MCP server 和 Tool 的完整目录，无论工作流是否需要",
+        "每条成功工作流路径中固定的 Agent 轮次和 Tool 调用次数目标"
+      ],
+      "correct": 1,
+      "explanation": "明确的要求可以在架构选择固化之前，让成功、失败、权限和证据都变得可测试。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么结业项目从直接调用只读 Tool 开始，而不是使用 MCP？",
+      "options": [
+        "直接 Tool 会从 Model 请求继承用户授权，因此不需要应用端检查",
+        "至少两个独立 host 连接到同一个 server 后，MCP 才能公开 Tool",
+        "单个 host 和单项能力尚不足以证明需要独立的发现机制和 server 生命周期",
+        "MCP 用于变更能力，而直接 Tool 是只读访问所必需的传输方式"
+      ],
+      "correct": 2,
+      "explanation": "当多个 host 之间需要共享发现、治理或互操作性时，MCP 的运行成本才有价值。"
+    },
+    {
+      "stage": "check",
+      "question": "注入测试返回了安全拒绝。测试还必须断言什么？",
+      "options": [
+        "Model 在断定所请求的操作被禁止之前，调用了每个可用的只读 Tool",
+        "已启用 extended thinking，使追踪记录包含对拒绝决策更详细的解释",
+        "拒绝信息包含足够的细节，使评估者能够识别触发攻击的是哪条指令",
+        "在整个执行轨迹中，未发生禁止的 Tool 调用、机密读取、网络请求或其他副作用"
+      ],
+      "correct": 3,
+      "explanation": "安全性需要最终状态和执行轨迹证据。拒绝措辞无法证明应用阻止了副作用。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么订单状态工作流默认禁用 extended thinking？",
+      "options": [
+        "直接查询没有表现出足以抵消额外延迟和成本的质量提升",
+        "它无法在多轮 Messages 请求中与 tool-result block 结合使用",
+        "它会在 API 响应中暴露隐藏推理，从而自动泄露应用机密",
+        "当应用同时请求确定性的 Tool 结果时，它会阻止 schema 约束输出"
+      ],
+      "correct": 0,
+      "explanation": "功能应以工作负载证据为依据。如果没有 Evaluation 证明其收益，简单查询不值得投入更多推理预算。"
+    },
+    {
+      "stage": "post",
+      "question": "实时集成收到 tool_use 后，在下一个 API 请求中仅发送 tool_result。这样破坏了哪项结业项目契约？",
+      "options": [
+        "Evaluation 时限契约，因为应用在 Tool 开始执行后又发出了一个请求",
+        "将 assistant tool_use 与匹配的 user tool_result 关联起来的 Messages content-block 状态契约",
+        "Prompt caching 契约，因为之前的 assistant 内容没有转换为可复用的 cache prefix",
+        "MCP resource-URI 契约，因为每个 Tool 结果都必须在继续执行前发布到 resource 地址"
+      ],
+      "correct": 1,
+      "explanation": "应用必须保留 assistant tool_use block，并追加匹配的 user tool_result，然后重新发送完整状态。"
+    },
+    {
+      "stage": "post",
+      "question": "哪三项产物能让结业项目在运行层面经得起审查？",
+      "options": [
+        "plugin 清单、MCP registry，以及展示所选可用组件的 Model 排行榜",
+        "system Prompt、采样设置和一份成功的正常流程记录",
+        "带版本的架构决策记录、可执行的 Evaluation 计划和经过演练的故障运行手册",
+        "部署截图、汇总 Token 数量，以及描述应用预期行为的产品页面"
+      ],
+      "correct": 2,
+      "explanation": "架构说明决策，Evaluation 验证行为，运行手册则定义生产环境偏离计划时的控制与恢复方式。"
+    }
+  ]
+}
