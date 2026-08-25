@@ -106,6 +106,10 @@ OTel spans 可以导出到：
 
 AgentOps（成立于 2024 年）专注于 GenAI observability。它封装了流行 frameworks（LangGraph、Pydantic AI、CrewAI），自动发送 OTel spans。如果你的 stack 使用受支持的 framework，它很有用；否则使用 manual instrumentation。
 
+```figure
+t3-span-waterfall
+```
+
 ## 使用它
 `code/main.py` 会把 OTel-shaped spans 发送到 stdout（采用类似 OTLP-JSON 的格式），用于一个调用 LLM、dispatch 两个 tools，并进行一次 MCP round-trip 的 agent。没有真实 exporter——本课聚焦于 span shape 和 attribute set。把输出粘贴到 OTLP-compatible viewer 中，或者直接阅读它。
 

@@ -13,7 +13,7 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">单个 agent 轮次的 OTel GenAI span 层级</text>
+  <text x="480" y="26" text-anchor="middle" class="title">单个 Agent 轮次的 OTel GenAI span 层级</text>
 
   <rect x="40" y="60" width="880" height="40" class="cool"/>
   <text x="480" y="84" text-anchor="middle" class="step">agent.invoke_agent  INTERNAL  gen_ai.agent.name=research-agent</text>
