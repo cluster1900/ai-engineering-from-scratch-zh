@@ -1,0 +1,78 @@
+{
+  "lesson": "25-integration-protocols-identity-and-least-privilege",
+  "title": "集成协议、身份与最小权限",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "支持人员只读取工单并起草回复，但他们的 Agent 还拥有退款和删除账户的 Tool。哪种做法最能降低风险？",
+      "options": [
+        "将敏感 Tool 调用路由到能够更可靠地推理授权问题的更大 Model",
+        "保留这些 capability 的可见性，但要求每个 Tool 描述重复说明该角色的政策限制",
+        "从该角色中移除不必要的 Tool 和 scope",
+        "保留所有 Tool，但记录敏感调用"
+      ],
+      "correct": 2,
+      "explanation": "最小权限会移除角色不需要的 capability。日志和警告可以辅助控制，但仍会保留不必要的权限和攻击面。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 capability discovery 和执行授权是两项独立的控制措施？",
+      "options": [
+        "Discovery 在 session 开始时执行，因此只有访问已公布 catalog 之外的 Tool 时才需要授权",
+        "Discovery 会限制 Context，因此执行授权是多余的",
+        "Discovery 在 host 端筛选 capability，而集成协议会自动授权所有已公布的操作",
+        "隐藏 Tool 可以减少暴露，而执行授权可以阻止直接或因状态过期而产生的未授权调用"
+      ],
+      "correct": 3,
+      "explanation": "范围较窄的 catalog 可以改善选择并减少暴露，但调用方仍可能访问某个 endpoint，或者权限可能发生变化。服务必须对每次执行进行授权。"
+    },
+    {
+      "stage": "check",
+      "question": "什么情况下 MCP 比直接 API 更合适？",
+      "options": [
+        "当多个 host 需要跨 server 边界对 capability 进行标准化的动态 discovery 时",
+        "当一个稳定服务需要最低延迟时",
+        "当集成需要协议层推断用户身份并授予权限，且不使用独立的政策服务时",
+        "当任意 Claude 应用需要调用 Tool，并希望用一种协议取代服务专属授权时"
+      ],
+      "correct": 0,
+      "explanation": "MCP 通过标准化的 capability discovery 和跨 host 集成，为额外的边界提供了价值。对于已知且开销较低的服务调用，直接 API 可能仍然更加清晰。"
+    },
+    {
+      "stage": "check",
+      "question": "可靠的审批必须绑定到哪些内容？",
+      "options": [
+        "Model 的置信度、风险分类以及选择所提议 capability 的陈述理由",
+        "确切的操作、参数、请求者、审批者权限和过期时间",
+        "Tool 名称和进行审批的 tenant",
+        "当前 Prompt 和对话标识符，使该 Model turn 中的所有 Tool 调用都继承审批"
+      ],
+      "correct": 1,
+      "explanation": "审批只对特定身份和时间窗口下提议的特定效果有效。参数发生变化时，需要重新决策。"
+    },
+    {
+      "stage": "post",
+      "question": "某个 Tool 返回授权错误。Agent harness 应该如何对其分类？",
+      "options": [
+        "将请求路由到更强的 Model，使其可以修改 Tool 参数，直到授权成功",
+        "在指数退避后使用相同凭据重试，因为授权服务可能暂时存在不一致",
+        "除非访问权限或审批状态发生变化，否则不可重试，并提供安全的升级操作",
+        "将失败记录为 Tool 警告，省略受限效果，并假定工作流已经成功而继续执行"
+      ],
+      "correct": 2,
+      "explanation": "重复发送相同的未授权请求不可能成功。结构化错误应该说明安全的后续步骤，同时不泄露机密细节。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么应用范围的 service API key 不足以实现按用户授权？",
+      "options": [
+        "它会阻止下游审计日志记录应用身份或所请求的服务操作",
+        "它只对 client transport 进行身份验证，因此无法直接调用下游服务 endpoint",
+        "它在应用 scope 层面过期，因此在检查授权之前，用户请求的生命周期可能超过该凭据",
+        "它标识的是应用的广泛权限，但可能不包含实际用户主体、tenant 或当前 scope"
+      ],
+      "correct": 3,
+      "explanation": "下游服务需要关于实际主体和所请求操作的可信声明。广泛的应用凭据可能会把用户边界压缩为无法强制执行的 Prompt 指令。"
+    }
+  ]
+}

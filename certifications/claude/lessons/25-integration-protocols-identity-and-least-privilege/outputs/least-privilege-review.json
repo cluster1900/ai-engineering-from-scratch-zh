@@ -1,0 +1,23 @@
+{
+  "review_id": "support-role-capabilities-v1",
+  "principal": "support-agent-42",
+  "primary_integration": "mcp",
+  "visible_tools": ["read_ticket", "draft_reply"],
+  "hidden_tools": ["issue_refund", "delete_account"],
+  "execution_fixture": {
+    "tool": "issue_refund",
+    "allowed": false,
+    "error": {
+      "category": "authorization",
+      "retryable": false,
+      "safe_next_action": "请求已获授权的人工审核"
+    }
+  },
+  "controls": [
+    "在 Model 参数之外传播身份",
+    "执行时进行 scope 检查",
+    "将审批绑定到确切的操作和参数",
+    "结构化审计引用"
+  ],
+  "status": "least_privilege_verified"
+}
