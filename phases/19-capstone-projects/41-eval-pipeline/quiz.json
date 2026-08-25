@@ -18,12 +18,12 @@
       "stage": "check",
       "question": "perplexity eval 会在非 pad positions 上累加 per-token negative log-likelihood，并除以非 pad Token 总数。为什么不直接平均 per-batch perplexities？",
       "options": [
+        "Perplexity 对 batched data 未定义。",
         "平均 per-batch perplexities 在数学上等价。",
-        "平均 per-batch perplexities 会低估短 sequences 的权重（它们的 per-batch ppl 方差更大），并产生有偏 aggregate。",
         "Batches 包含 padded tokens，必须始终被平均。",
-        "Perplexity 对 batched data 未定义。"
+        "平均 per-batch perplexities 会低估短 sequences 的权重（它们的 per-batch ppl 方差更大），并产生有偏 aggregate。"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Per-token aggregation 是教科书定义，并避免 batch-size 和 length biases。Per-batch averaging 是常见 bug；在 sequence lengths 不同的 fixture 上，它会产生与正确计算不同的数字。"
     },
     {
@@ -31,11 +31,11 @@
       "question": "当 prediction 和 reference 都为空时，Token F1 返回 1.0。还有哪种情况必须返回特定值？",
       "options": [
         "当 pred 为空但 reference 非空时，F1 必须为 1.0。",
+        "当 pred 恰好包含一个匹配 Token 时，F1 必须为 0.5。",
         "当 pred 非空但 reference 为空时，F1 必须未定义。",
-        "当 pred 或 reference 只有一方为空时，F1 必须为 0.0。",
-        "当 pred 恰好包含一个匹配 Token 时，F1 必须为 0.5。"
+        "当 pred 或 reference 只有一方为空时，F1 必须为 0.0。"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Empty-empty 是 vacuous match。混合 empty-non-empty 是明确的 miss：一侧有内容，另一侧没有。SQuAD 约定是在这种情况下 F1 = 0。"
     },
     {
@@ -55,23 +55,23 @@
       "question": "你将 mock judge 替换为真实 frontier-model judge。pipeline 的最小改动是什么？",
       "options": [
         "重写 aggregator 以接受不同的 score range。",
-        "将 `judge_eval` 的 `judge_fn` 参数替换为一个具有相同 signature 的函数：(instruction, prediction, reference) -> JudgeVerdict。",
         "向 DEFAULT_WEIGHTS 添加一个新 entry。",
+        "将 `judge_eval` 的 `judge_fn` 参数替换为一个具有相同 signature 的函数：(instruction, prediction, reference) -> JudgeVerdict。",
         "将整个 eval suite 迁移到 async I/O。"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "judge interface 是 `(instruction, prediction, reference) -> JudgeVerdict`。任何具有该 signature 的函数都可以直接替换进去。pipeline 通过这条边界与 judge implementation 解耦，这正是重点。"
     },
     {
       "stage": "post",
       "question": "你的 aggregate score 是 0.72，但 exact-match 是 0.40，judge 是 4.5/5。model 正在做什么 trade-off？",
       "options": [
-        "model 精确命中 gold string 的频率较低，但 judge 认为开放式答案还不错。",
-        "model 在 LM corpus 上过拟合。",
         "aggregate 计算错误。",
-        "judge 按定义就与 exact-match 不对齐。"
+        "model 在 LM corpus 上过拟合。",
+        "judge 按定义就与 exact-match 不对齐。",
+        "model 精确命中 gold string 的频率较低，但 judge 认为开放式答案还不错。"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "低 EM 加高 judge 暗示 paraphrase：答案在实质上是对的，但不是与 gold 逐字符一致。这正是 EM 漏掉而 judge 捕捉到的维度。这个 trade-off 提供了信息，不是 bug。"
     }
   ]

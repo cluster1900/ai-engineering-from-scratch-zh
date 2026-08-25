@@ -103,6 +103,10 @@ aggregate 是 normalised eval scores 的 weighted mean。每个 eval 都报告�
 
 Weights 可配置。默认组合是 0.2 perplexity、0.3 exact-match、0.3 token F1、0.2 judge。weights 的选择是一个产品决策；本课暴露这个 knob，方便你实验。
 
+```figure
+cg-eval-quadrant
+```
+
 ## Architecture
 
 ```mermaid
