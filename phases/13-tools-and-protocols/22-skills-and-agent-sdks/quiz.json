@@ -1,0 +1,78 @@
+{
+  "lesson": "22-skills-and-agent-sdks",
+  "title": "Agent Skills：可移植契约与运行时边界",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "某团队有一套可复用的审查方法，以及一个用于提供 pull request 数据的现有 API。根据运行时策略，哪种设计将各项职责分配给了正确的原语？",
+      "options": [
+        "将审查方法放入 Agent Skill，并通过 MCP Tool 公开 API",
+        "用更长的用户 Prompt 替换 API",
+        "将方法和 API 实现都放入 AGENTS.md",
+        "仅使用生命周期 Hook 作为审查指令的来源"
+      ],
+      "correct": 0,
+      "explanation": "Skill 承载可复用的流程性知识，而 MCP 公开外部能力。二者可以组合使用。AGENTS.md 更适合 repository 范围的默认设置，而 Hook 用于响应生命周期事件，不能替代上述任一层。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 validator 应要求 SKILL.md 中的 name 与其所在目录的名称一致？",
+      "options": [
+        "这样可以保证每个 host 都支持相同的调用语法",
+        "这样能为发现和打包提供一个稳定标识，避免出现两个相互冲突的名称",
+        "这样可以让 Markdown 标题正确渲染",
+        "这样可以让 Skill 绕过 host 权限"
+      ],
+      "correct": 1,
+      "explanation": "发现 Tool 经常同时按文件夹和 frontmatter 索引 Skill。保持二者一致可以避免含义不明确的 catalog 条目和失效的安装路径。它既不会授予权限，也不会统一 host 的调用 UI。"
+    },
+    {
+      "stage": "check",
+      "question": "某个 SKILL.md 包含一个只有特定运行时才能理解的字段。从可移植性的角度应如何解释？",
+      "options": [
+        "将该字段移入 Skill 名称",
+        "将其视为 host 扩展，并且仅在显式的 host 策略下验证",
+        "该字段会自动成为核心标准的一部分",
+        "每个运行时都必须先实现该字段才能加载 Skill"
+      ],
+      "correct": 1,
+      "explanation": "可移植的核心 metadata 与 host 运行时扩展属于不同的契约。Adapter 可以识别某项扩展，但核心 validator 不应声称该字段具有通用语义。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种原语最适合表示一项必须在每次 Tool 调用后运行的检查？",
+      "options": [
+        "MCP resource",
+        "一次性 Prompt",
+        "Repository glossary",
+        "生命周期 Hook"
+      ],
+      "correct": 3,
+      "explanation": "决定性要求是事件触发时机，因此生命周期 Hook 是正确的机制。Skill 可以说明工作流，MCP 可以公开能力，但二者都不会天然地在每次 Tool 调用后触发。"
+    },
+    {
+      "stage": "post",
+      "question": "什么情况下 AGENTS.md 比 Agent Skill 更适合作为指令载体？",
+      "options": [
+        "当外部服务需要经过身份验证的 API 调用时",
+        "当脚本需要在 workspace jail 之外执行时",
+        "当约定应适用于整个 repository 中的工作时",
+        "当指令应仅为少见的专业任务加载时"
+      ],
+      "correct": 2,
+      "explanation": "AGENTS.md 用于传达持久的 repository Context，例如构建命令和编码约定。特定于任务的流程适合放入 Skill，外部操作适合使用 Tool，任何指令文件都不应被用于逃逸 sandbox。"
+    },
+    {
+      "stage": "post",
+      "question": "一个有效的 Agent Skill 本身会授予什么？",
+      "options": [
+        "在每个 Agent host 中都可用的通用斜杠命令",
+        "可被发现的流程性指令，并受 host 运行时策略约束",
+        "执行所有 bundle 脚本的权限",
+        "自动网络访问权限"
+      ],
+      "correct": 1,
+      "explanation": "可移植产物提供 metadata 和指令。发现机制、调用 UI、Tool 访问、审批和脚本执行仍由运行时负责，因此有效性并不等同于权限。"
+    }
+  ]
+}

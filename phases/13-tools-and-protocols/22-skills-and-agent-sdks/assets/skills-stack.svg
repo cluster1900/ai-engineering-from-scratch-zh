@@ -13,19 +13,19 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">三层 agent 上下文栈</text>
+  <text x="480" y="26" text-anchor="middle" class="title">三层 Agent 上下文栈</text>
 
   <rect x="40" y="60" width="880" height="140" class="cool"/>
-  <text x="480" y="84" text-anchor="middle" class="head">AGENTS.md（项目级，session 启动）</text>
-  <text x="60" y="110" class="small">截至 2026 年 4 月，60k+ repos 采用</text>
+  <text x="480" y="84" text-anchor="middle" class="head">AGENTS.md（项目级，会话启动）</text>
+  <text x="60" y="110" class="small">截至 2026 年 4 月，60k+ 仓库采用</text>
   <text x="60" y="130" class="step">/repo-root/AGENTS.md</text>
   <text x="60" y="148" class="small"># Project: my-service</text>
   <text x="60" y="164" class="small">## Conventions: TypeScript, pnpm, Pydantic models, RFC 2119 MUST</text>
   <text x="60" y="180" class="small">## Commands: pnpm dev, pnpm build, pnpm test</text>
 
   <rect x="40" y="220" width="880" height="140" class="cold"/>
-  <text x="480" y="244" text-anchor="middle" class="head">SKILL.md（可复用 know-how，调用时加载）</text>
-  <text x="60" y="270" class="small">Anthropic Agent Skills，open standard，2025 年 12 月</text>
+  <text x="480" y="244" text-anchor="middle" class="head">SKILL.md（可复用实践知识，调用时加载）</text>
+  <text x="60" y="270" class="small">Anthropic Agent Skills，开放标准，2025 年 12 月</text>
   <text x="60" y="290" class="step">/skills/release-notes-writer/SKILL.md</text>
   <text x="60" y="308" class="small">---</text>
   <text x="60" y="324" class="small">name: release-notes-writer</text>
@@ -33,9 +33,9 @@
   <text x="60" y="356" class="small">---</text>
 
   <rect x="40" y="380" width="880" height="120" class="hot"/>
-  <text x="480" y="404" text-anchor="middle" class="head">MCP server（skill 调用的 tools）</text>
+  <text x="480" y="404" text-anchor="middle" class="head">MCP 服务器（Skill 调用的 tools）</text>
   <text x="60" y="430" class="small">Phase 13 / 06-14 讲解该协议</text>
   <text x="60" y="450" class="step">notes-server  +  github-server  +  gateway</text>
   <text x="60" y="468" class="small">MCP = "有哪些 tools"；Skill = "如何使用"；AGENTS.md = "项目规则"</text>
-  <text x="60" y="486" class="small">Apps SDK（OpenAI）是 MCP + ChatGPT UI 的 widget metadata。</text>
+  <text x="60" y="486" class="small">Apps SDK（OpenAI）是 MCP + ChatGPT UI 的 widget 元数据。</text>
 </svg>

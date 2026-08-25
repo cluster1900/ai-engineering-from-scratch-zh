@@ -1,0 +1,26 @@
+[
+  {
+    "task": "仅重写此段落一次",
+    "primitives": ["prompt"]
+  },
+  {
+    "task": "在多个 repositories 中应用同一份发布检查清单",
+    "primitives": ["Agent Skill"]
+  },
+  {
+    "task": "使用发布检查清单并查询部署 API",
+    "primitives": ["Agent Skill", "MCP tool"]
+  },
+  {
+    "task": "在每个生成文件完成后强制执行格式化",
+    "primitives": ["hook"]
+  },
+  {
+    "task": "以确定性方式规范化一个已知的 JSON schema",
+    "primitives": ["ordinary code"]
+  },
+  {
+    "task": "在隔离的 Context 中研究一个独立问题",
+    "primitives": ["subagent"]
+  }
+]
