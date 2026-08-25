@@ -18,12 +18,12 @@
       "stage": "pre",
       "question": "EAGLE-3 做了什么是 ngram drafts 做不到的？",
       "options": [
-        "它替换 target model",
-        "它在 target model 的 hidden states 上训练 draft heads，以获得更高的 acceptance rates",
         "它完全避免 tokenization",
-        "它只在 CPUs 上运行"
+        "它只在 CPUs 上运行",
+        "它在 target model 的 hidden states 上训练 draft heads，以获得更高的 acceptance rates",
+        "它替换 target model"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -42,24 +42,24 @@
       "stage": "check",
       "question": "为什么 traffic distribution 变化时 acceptance rate 会 drift？",
       "options": [
-        "vLLM 每小时轮换 models",
         "Draft alignment 依赖 input distribution：ShareGPT、code 和 domain data 会触发不同 patterns",
         "OS scheduler 会重新排列 GPU memory",
-        "Quantization 会在 runtime 改变"
+        "Quantization 会在 runtime 改变",
+        "vLLM 每小时轮换 models"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "deployment 基于哪个 Kubernetes HPA signal 进行 scale？",
       "options": [
-        "Cluster autoscaler nodes",
-        "CPU utilization",
         "Disk IOPS",
-        "Inference requests 的 queue-wait time"
+        "CPU utilization",
+        "Inference requests 的 queue-wait time",
+        "Cluster autoscaler nodes"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
