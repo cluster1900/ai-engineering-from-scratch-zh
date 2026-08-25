@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "为什么 2024+ SOTA text-to-image 模型（SD3、FLUX、Z-Image）用 Diffusion Transformer（DiT）替代了 U-Net denoiser？",
-      "options": ["Transformers 更容易编写", "DiT 的扩展比 U-Net 更可预测（与 LLMs 处于相同 scaling-law 范式），能更好地处理长距离空间依赖以实现 prompt-accurate generation，并且通过 cross 或 joint Attention 与 text encoders 自然配合", "U-Net 已经不再支持 GPUs", "DiT 参数更少"],
+      "options": [
+        "U-Net 已经不再支持 GPUs",
+        "DiT 的扩展比 U-Net 更可预测（与 LLMs 处于相同 scaling-law 范式），能更好地处理长距离空间依赖以实现 prompt-accurate generation，并且通过 cross 或 joint Attention 与 text encoders 自然配合",
+        "Transformers 更容易编写",
+        "DiT 参数更少"
+      ],
       "correct": 1,
       "explanation": "DiT 将 diffusion 视为另一种 sequence-modelling 任务。它像 language models 一样扩展，避免了 convolutions 的固定 inductive bias 对长距离结构造成瓶颈，并且能与 transformer text encoders 干净地集成。每个 2026 SOTA 模型，SD3、FLUX.1、FLUX.2、SD4、Z-Image、Qwen-Image，都是 DiT。"
     },
     {
       "stage": "pre",
       "question": "Rectified flow 训练模型在 data 与 noise 之间的直线插值路径上预测速度 `v = epsilon - x_0`。为什么这能实现 20-step sampling，而不是 1000 step？",
-      "options": ["它不能；rectified flow 也需要 1000 steps", "学到的 ODE 比 DDPM 的弯曲 SDE 更接近直线，因此少步数 Euler integration 就能生成准确样本；结合 distillation 后，可以得到像 FLUX schnell 这样的 1-4 step 变体", "Euler 严格优于 DDIM", "它需要更大的模型"],
+      "options": [
+        "它需要更大的模型",
+        "学到的 ODE 比 DDPM 的弯曲 SDE 更接近直线，因此少步数 Euler integration 就能生成准确样本；结合 distillation 后，可以得到像 FLUX schnell 这样的 1-4 step 变体",
+        "Euler 严格优于 DDIM",
+        "它不能；rectified flow 也需要 1000 steps"
+      ],
       "correct": 1,
       "explanation": "DDPM 的反向过程是一条 stochastic curved path，需要许多小步。Rectified flow 定义了一条直线插值；学到的速度在轨迹上近似恒定。对近似直线的 ODE 进行 integration 只需要很少步。SD3 和 FLUX 在 20-30 steps 下即可 full quality sampling；schnell/turbo/LCM 会进一步 distil 到 1-4 steps。"
     },
     {
       "stage": "post",
       "question": "MMDiT（SD3）使用两套权重，一套用于 text tokens，一套用于 image tokens，并共享一个 joint attention layer。为什么？",
-      "options": ["为了节省内存", "Text 和 image Embeddings 在概念上属于不同分布；独立权重让每种 modality 处理自己的表示，同时 joint attention 让它们交互；结果是比单一共享流更好的 text-image alignment 和 prompt following", "这是 legacy design", "实际上只有 image tokens 会经过 Attention"],
+      "options": [
+        "为了节省内存",
+        "Text 和 image Embeddings 在概念上属于不同分布；独立权重让每种 modality 处理自己的表示，同时 joint attention 让它们交互；结果是比单一共享流更好的 text-image alignment 和 prompt following",
+        "这是 legacy design",
+        "实际上只有 image tokens 会经过 Attention"
+      ],
       "correct": 1,
       "explanation": "Stable Diffusion 3 的 MMDiT 保留 per-modality 权重流，以维持 text 和 image tokens 的不同统计特性，同时 joint self-attention layer 让它们融合。这在结构上比 concatenate-and-share（SD1/2 使用的方式）更具表达力，并且在实证上提升了 prompt adherence 和 text rendering。FLUX 将其扩展为 alternating double-stream / single-stream blocks，以提高效率。"
     },
     {
       "stage": "post",
       "question": "DiT block 中的 AdaLN-Zero 是什么意思，为什么有帮助？",
-      "options": ["epsilon 为 zero 的 layer norm", "Adaptive LayerNorm，其 modulation MLP 初始化为 zero，使 block 从 identity 开始；随后训练学习 scale/shift/gate，从而稳定非常深的 diffusion transformers", "只在 50% 时间应用的 LayerNorm", "mean 为 zero 的 LayerNorm"],
+      "options": [
+        "只在 50% 时间应用的 LayerNorm",
+        "Adaptive LayerNorm，其 modulation MLP 初始化为 zero，使 block 从 identity 开始；随后训练学习 scale/shift/gate，从而稳定非常深的 diffusion transformers",
+        "epsilon 为 zero 的 layer norm",
+        "mean 为 zero 的 LayerNorm"
+      ],
       "correct": 1,
       "explanation": "AdaLN 会从 conditioning Vector 预测 scale、shift 和 gate。'Zero' 表示 MLP 初始化为 zero，因此 gate 从 0 开始，block 表现为 identity。Gradient 会缓慢地将 modulation 从 zero 推开，这会防止深层 stack 在训练早期发散。它相当于 DiT 版本的 ResNet residual zero-init，并用于每个现代 diffusion transformer。"
     },
     {
       "stage": "post",
       "question": "FLUX.1-schnell 可以在 4 steps 内生成图像。哪项技术让它能够做到？",
-      "options": ["与 FLUX.1-dev 不同的 base architecture", "Distillation，schnell 从慢速 many-step teacher 训练而来，使用 adversarial / consistency-style objectives，使 1-4 个 denoising steps 匹配 teacher 的 20-30 step 输出", "更低精度的权重", "更小的参数量"],
-      "correct": 1,
+      "options": [
+        "更低精度的权重",
+        "更小的参数量",
+        "Distillation，schnell 从慢速 many-step teacher 训练而来，使用 adversarial / consistency-style objectives，使 1-4 个 denoising steps 匹配 teacher 的 20-30 step 输出",
+        "与 FLUX.1-dev 不同的 base architecture"
+      ],
+      "correct": 2,
       "explanation": "Schnell / Turbo / LCM 变体使用 step distillation。small-step student 学习匹配 many-step teacher 的输出。base architecture 和参数量通常相同（FLUX.1-dev 和 schnell 都是 12B）。Distillation 是让 sub-1-second inference 变得实用的关键。这与 SDXL Turbo、SD Turbo 和 Latent Consistency Models 是同一个思路。"
     }
-  ]
+  ],
+  "title": null
 }

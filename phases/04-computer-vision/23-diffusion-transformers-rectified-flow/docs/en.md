@@ -118,6 +118,10 @@ FLUX.1-schnell 是 2026 年的 open-source 默认选择。Z-Image 是效率领�
 
 DDPM + U-Net 能工作。DiT + rectified flow 工作得**更好、更快，并且扩展得更干净**。这个转变类似 NLP 中从 RNNs 到 transformers 的转变：两种 architectures 解决的是同一个问题，但 transformers 更能扩展，并且现在占据主导地位。每一篇 2026 年关于 image、video 或 3D generation 的论文都使用 DiT-shaped denoiser，并且通常使用 rectified flow objective。U-Net DDPM 现在主要用于教学（Lesson 10）。
 
+```figure
+cv3-rectified-flow
+```
+
 ## 构建它
 
 ### 步骤 1：带 AdaLN 的 DiT block
