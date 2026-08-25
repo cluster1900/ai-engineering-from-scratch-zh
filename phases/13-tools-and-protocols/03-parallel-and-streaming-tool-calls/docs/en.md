@@ -110,6 +110,10 @@ host reply 仍然必须引用 ids：
 
 如果 model 本身以 stream 形式输出，你可以在某个 call 的 arguments 完整后立即开始执行，而不是等所有 calls 都 finalize。这是 OpenAI 记录过的一种优化，但并非所有 SDK 都暴露。本课的 harness 会这么做：只要模拟 stream 产出完整 argument object，host 就会启动那个 call。
 
+```figure
+tp-parallel-fanout
+```
+
 ## 使用它
 
 `code/main.py` 有两部分。第一部分使用 `concurrent.futures.ThreadPoolExecutor`，顺序和并行运行三个模拟 weather calls，并打印 wall-clock time。第二部分回放一个假的 streaming response，也就是在同一条 stream 上交错的三个 parallel calls 的 `arguments` chunks，并用 `StreamAccumulator` 按 id 重组。没有 LLM，没有网络，只有重组逻辑。
