@@ -1,110 +1,122 @@
-# 托管 LLM 平台 — Bedrock, Vertex AI, Azure OpenAI
+# 托管 LLM 平台 — Bedrock、Vertex AI、Azure OpenAI
 
-> 三家 hyperscaler，三种不同策略。AWS Bedrock 是模型市场 — Claude, Llama, Titan, Stability, Cohere 位于同一个 API 之后。Azure OpenAI 是独家的 OpenAI 合作关系，加上用于专用容量的 Provisioned Throughput Units (PTUs)。Vertex AI 以 Gemini 为先，拥有最佳的长上下文和 Multimodal 叙事。2026 年，Artificial Analysis 在 Llama 3.1 405B 等效场景下测得 Azure OpenAI median 约为 50 ms，Bedrock 约为 75 ms — PTUs 解释了这个差距，因为专用容量胜过共享 on-demand。决策规则不是“哪个最快”，而是“哪个模型目录和 FinOps 界面匹配我的产品”。本课会教你把 tradeoff 写下来再做选择，而不是凭感觉。
+> 三家 hyperscaler，三种截然不同的策略。AWS Bedrock 是 Model 市场，通过一个 API 提供 Claude、Llama、Titan、Stability 和 Cohere。Azure OpenAI 是与 OpenAI 的独家合作服务，并通过 Provisioned Throughput Units（PTUs）提供专用容量。Vertex AI 以 Gemini 为核心，在长 Context 和 Multimodal 方面表现最佳。2026 年，Artificial Analysis 测得：在相当于 Llama 3.1 405B 的 Model 上，Azure OpenAI 的中位延迟约为 50 ms，而 Bedrock 约为 75 ms。PTUs 解释了这一差距，因为专用容量优于共享按需容量。决策原则不是“哪个最快”，而是“哪个 Model 目录和 FinOps 能力最适合我的产品”。本课将教你记录各项权衡并据此选择，而不是凭感觉决策。
 
 **Type:** Learn
-**语言：** Python (stdlib, toy cost-and-latency comparator)
-**前置要求：** Phase 11 (LLM Engineering), Phase 13 (Tools & Protocols)
-**Time:** ~60 minutes
+**Languages:** Python（stdlib，简化的成本与延迟比较器）
+**Prerequisites:** Phase 11（LLM Engineering）、Phase 13（Tools & Protocols）
+**Time:** ~60 分钟
 
 ## 学习目标
-- 说出三种平台策略（marketplace vs exclusive vs Gemini-first），并把每种策略匹配到一个产品用例。
-- 解释 Azure OpenAI 中 Provisioned Throughput Units (PTUs) 给你买到了什么，以及为什么 on-demand Bedrock 在 405B 规模下通常读数会慢约 25 ms。
-- 绘制每个平台的 FinOps 归因界面（Bedrock Application Inference Profiles vs Vertex project-per-team vs Azure scopes + PTU reservations）。
-- 写下一条“two-provider minimum”策略，并解释为什么 single-vendor lock-in 是 2026 年代价高昂的错误。
+
+- 说出三种平台策略（市场、独家合作、Gemini-first），并将每种策略与相应的产品用例匹配。
+- 解释 Azure OpenAI 中的 Provisioned Throughput Units（PTUs）能为你带来什么，以及为什么在 405B 规模上，按需 Bedrock 的读数通常慢约 25 ms。
+- 绘制各平台的 FinOps 归因体系图（Bedrock Application Inference Profiles、Vertex 每团队一个项目、Azure scopes + PTU reservations）。
+- 写出一项“至少两个 provider”政策，并解释为什么单一 vendor 锁定是 2026 年代价高昂的错误。
 
 ## 问题
-你为产品选择了 Claude 3.7 Sonnet。现在你需要提供服务。你可以直接调用 Anthropic API，也可以通过 AWS Bedrock 调用，或者通过 gateway。直接 API 最简单；Bedrock 增加了 BAAs、VPC endpoints、IAM 和 CloudWatch 归因。gateway 增加了跨 provider 的 failover、统一 billing 和 rate limits。
 
-更深层的问题是目录。如果你需要在同一个产品中使用 Claude、Llama 和 Gemini，那么你无法从单一地点买齐它们，除非那个地点同时是 Bedrock 加 Vertex 加 Azure OpenAI。hyperscaler 不是可以互换的 — 它们各自对谁拥有模型层做出了不同押注。
+你为产品选择了 Claude 3.7 Sonnet。现在需要将它投入服务。你可以直接调用 Anthropic API，也可以通过 AWS Bedrock 调用，或者经由 gateway 调用。直接 API 最简单；Bedrock 增加了 BAAs、VPC endpoints、IAM 和 CloudWatch 归因能力。gateway 则增加了跨 provider 的故障转移、统一计费和速率限制。
 
-本课会梳理这三种押注、latency 差距、FinOps 差距和 lock-in 风险。
+更深层的问题在于目录。如果同一产品需要 Claude、Llama 和 Gemini，那么你无法从一个地方购买全部服务，除非这个“地方”同时包括 Bedrock、Vertex 和 Azure OpenAI。这些 hyperscaler 并不能互换，因为它们对于谁将掌控 Model 层分别做出了不同的押注。
+
+本课将梳理这三种押注、延迟差距、FinOps 差距和锁定风险。
 
 ## 概念
+
 ### 三种策略
 
-**AWS Bedrock** — marketplace。Claude (Anthropic)、Llama (Meta)、Titan (AWS first-party)、Stability (image)、Cohere (embeddings)、Mistral，以及 image 和 embedding 子目录。一个 API，一个 IAM 界面，一个 CloudWatch export。Bedrock 的押注是，客户想要可选性，胜过想要单一模型。
+**AWS Bedrock** — 市场。提供 Claude（Anthropic）、Llama（Meta）、Titan（AWS first-party）、Stability（图像）、Cohere（Embedding）、Mistral，以及图像和 Embedding 子目录。一个 API、一个 IAM 界面、一个 CloudWatch 导出接口。Bedrock 的押注是：与单一 Model 相比，客户更看重选择空间。
 
-**Azure OpenAI** — exclusive partnership。你在 Azure datacenters 中获得 GPT-4 / 4o / 5 / o-series、DALL·E、Whisper，以及 OpenAI 模型的 fine-tuning。“Azure OpenAI Service”目录中没有非 OpenAI 模型 — 这些会进入 Azure AI Foundry（独立产品）。Azure 的押注是 OpenAI 仍然处于前沿，而客户想要针对这段特定关系的企业控制能力。
+**Azure OpenAI** — 独家合作。你可以获得 GPT-4 / 4o / 5 / o-series、DALL·E、Whisper，以及在 Azure datacenters 中对 OpenAI Model 进行 Fine-tuning 的能力。“Azure OpenAI Service”目录中不包含非 OpenAI Model，这些 Model 位于 Azure AI Foundry（独立产品）中。Azure 的押注是：OpenAI 会继续处于前沿，而客户希望在这一特定合作关系之上获得企业级控制能力。
 
-**Vertex AI** — Gemini first，其余第二。Gemini 1.5 / 2.0 / 2.5 Flash and Pro，加上 Model Garden（third-party）。Vertex 的押注是 Multimodal 长上下文 — 1M-token Gemini context 是差异化因素。
+**Vertex AI** — Gemini 优先，其他 Model 居次。提供 Gemini 1.5 / 2.0 / 2.5 Flash 和 Pro，以及 Model Garden（第三方）。Vertex 押注的是 Multimodal 长 Context，拥有 1M Token Context 的 Gemini 是其差异化优势。
 
-### 规模下的 Latency 差距
+### 大规模场景下的延迟差距
 
-Artificial Analysis 运行持续 benchmark。在等效的 Llama 3.1 405B 部署上（shared on-demand），Azure OpenAI median first-token latency 约为 50 ms；Bedrock 约为 75 ms。这个差距不是 AWS 失败 — 它是容量模型差异。Azure 销售 PTUs (Provisioned Throughput Units)，为你的 tenant 预留 GPU 容量。Bedrock 的等价物（Provisioned Throughput）也存在，但每 unit 起价约 $21/hour，大多数客户仍停留在 shared on-demand。
+Artificial Analysis 会持续运行 benchmark。在相当的 Llama 3.1 405B 部署上（共享按需容量），Azure OpenAI 的首个 Token 延迟中位数约为 50 ms；Bedrock 约为 75 ms。这一差距并非 AWS 的失败，而是容量模式不同所致。Azure 销售 PTUs（Provisioned Throughput Units），为你的 tenant 预留 GPU 容量。Bedrock 也有类似产品（Provisioned Throughput），但每个 unit 的起价约为每小时 21 美元，因此大多数客户仍使用共享按需容量。
 
-On-demand shared capacity 会与所有其他客户的流量竞争。Dedicated capacity 不会。如果你的产品 SLA 是 TTFT < 100 ms at P99，那么你要么购买 Azure 上的 PTUs，要么购买 Bedrock Provisioned Throughput，要么接受默认波动。
+按需共享容量需要与其他所有客户的流量竞争，专用容量则不需要。如果你的产品 SLA 要求 P99 TTFT < 100 ms，那么你要么购买 Azure PTUs，要么购买 Bedrock Provisioned Throughput，要么接受默认的波动。
 
 ### Provisioned Throughput 经济性
 
-Azure PTUs：一块预留的 inference compute。对于可预测 workload，相比 on-demand 最高可节省约 70%。成本按小时固定，与流量无关 — 即使 idle 也要为 reservation 付费。break-even 通常在 40-60% sustained utilization 左右。
+Azure PTUs：预留的一组 Inference 计算资源。对于可预测的工作负载，与按需模式相比最多可节省约 70%。无论流量多少，每小时成本固定，即使闲置也要为 reservation 付费。盈亏平衡点通常在 40-60% 的持续利用率附近。
 
-Bedrock Provisioned Throughput：根据模型和 region，每小时 $21-$50。数学类似 — break-even 大约在 peak utilization 的一半。需要 monthly commitment。
+Bedrock Provisioned Throughput：根据 Model 和 region 的不同，每小时为 21-50 美元。计算逻辑类似，盈亏平衡点约为峰值利用率的一半。需要按月承诺。
 
-Vertex provisioned capacity 按 Gemini SKU 销售；pricing 因模型和 region 而异，公开宣传更少。
+Vertex provisioned capacity 按 Gemini SKU 销售；价格因 Model 和 region 而异，公开程度较低。
 
 ### FinOps 界面 — 真正的差异化因素
 
-**Bedrock Application Inference Profiles** 是 marketplace 中最干净的归因。用 `team`、`product`、`feature` 标记 profile；让所有模型调用都通过它路由；CloudWatch 无需后处理即可按 profile 拆分成本。它于 2025 年新增，仍然是最细粒度的 hyperscaler 原生能力。
+**Bedrock Application Inference Profiles** 在市场型平台中提供了最清晰的归因能力。使用 `team`、`product`、`feature` 标记 profile；让所有 Model 调用通过它路由；CloudWatch 无需后处理即可按 profile 拆分成本。这项功能于 2025 年加入，至今仍是 hyperscaler 原生功能中粒度最细的方案。
 
-**Vertex** 归因是 project-per-team 加 labels-everywhere。你把每个团队建模为一个 GCP project，在每个 resource 上打 labels，并使用 BigQuery Billing Export + DataStudio 做 rollup。工作更多，但 BigQuery 让你可以对成本数据执行任意 SQL。
+**Vertex** 的归因方式是每团队一个项目，并在所有位置添加 label。你将每个团队建模为一个 GCP project，为每项资源添加 label，再使用 BigQuery Billing Export + DataStudio 进行汇总。工作量更大，但 BigQuery 允许你对成本数据执行任意 SQL。
 
-**Azure** 依赖 subscription/resource-group scopes 加 tags，并把 PTU reservations 作为一等成本对象。Tags 从 resource groups 继承，而不是从 requests 继承，所以 per-request 归因需要 Application Insights custom metrics，或一个会写入 headers 的 gateway。
+**Azure** 依赖 subscription/resource-group scopes 和 tag，并将 PTU reservations 作为一级成本对象。tag 继承自 resource group，而不是 request，因此按 request 归因需要使用 Application Insights custom metrics，或者使用能够写入 header 的 gateway。
 
-模式是：Bedrock 原生最干净，Vertex 通过 BigQuery 最灵活，Azure 最不透明，除非你做 instrument。
+总体规律是：Bedrock 的原生体验最清晰，Vertex 通过 BigQuery 提供的灵活性最高，而 Azure 最不透明，除非你自行添加观测能力。
 
-### Lock-in 是 2026 年的风险
+### 锁定是 2026 年的风险
 
-当一个模型占主导时，single-hyperscaler commitment 还可以接受。2026 年，前沿每月都在移动 — 一个季度是 Claude 3.7，下一个季度是 Gemini 2.5，再下一个季度是 GPT-5。锁定一个平台，就会把你排除在三分之二的前沿之外。
+当某个 Model 占据绝对优势时，只承诺使用一家 hyperscaler 并无大碍。但在 2026 年，前沿水平每月都在变化：一个季度是 Claude 3.7，下一个季度是 Gemini 2.5，再下一个季度则是 GPT-5。锁定一个平台，意味着你无法使用另外三分之二的前沿能力。
 
-有效团队采用的模式是：对任何产品关键 LLM call，至少使用 two-provider minimum。Bedrock 加 Azure OpenAI 是常见组合 — 从一个平台拿 Claude，从另一个平台拿 GPT，在它们之间 failover，使用同一个 gateway。成本上升可以忽略，因为 gateway 会做 optimal routing；在 outage 期间（如 Azure OpenAI January 2025 incident、AWS us-east-1 outage），可用性提升是决定性的。
+有效团队采用的模式是：对所有产品关键型 LLM 调用，至少使用两个 provider。Bedrock 加 Azure OpenAI 是常见组合，一个提供 Claude，另一个提供 GPT，在二者之间进行故障转移，并使用同一个 gateway。由于 gateway 会选择最优路由，增加的成本可以忽略不计；而在服务中断期间，例如 2025 年 1 月的 Azure OpenAI 事故和 AWS us-east-1 故障，可用性的提升具有决定性意义。
 
-### Data residency、BAAs 和受监管行业
+### 数据驻留、BAAs 与受监管行业
 
-Bedrock：大多数 region 提供 BAAs；VPC endpoints；guardrails。常见 fintech 默认选项。
-Azure OpenAI：HIPAA、SOC 2、ISO 27001；EU data residency；企业受监管场景的默认选项。
-Vertex：HIPAA、GDPR、按 region 的 data residency；Google Cloud 的 compliance stack。
+Bedrock：多数 region 提供 BAAs；支持 VPC endpoints 和 guardrails。通常是 fintech 的默认选择。
+Azure OpenAI：支持 HIPAA、SOC 2、ISO 27001 和欧盟数据驻留；是受监管企业的默认选择。
+Vertex：支持 HIPAA、GDPR 和按 region 的数据驻留；具备 Google Cloud 的合规体系。
 
-三者都满足基础 checkbox。差异在于 data retention policies、logs 如何处理，以及 abuse-monitoring 是否读取你的流量（大多数默认 opt-in；enterprise 可 opt-out）。
+三者都能满足基本的勾选式要求。区别在于数据保留政策、日志处理方式，以及滥用监测是否会读取你的流量（多数服务默认选择加入；企业客户可以选择退出）。
 
-### 你应该记住的数字
+### 你应记住的数字
 
-- Azure OpenAI 在 Llama 3.1 405B 等效场景下的 median TTFT：~50 ms（使用 PTUs）。
-- Bedrock on-demand 中位 TTFT：~75 ms。
-- Bedrock Provisioned Throughput：每 unit $21-$50/hr。
-- Azure PTU break-even：~40-60% sustained utilization。
-- 高利用率下 PTU 相比 on-demand 的节省：最高 70%。
+- Azure OpenAI 在相当于 Llama 3.1 405B 的 Model 上的 TTFT 中位数：约 50 ms（使用 PTUs）。
+- Bedrock 按需模式的 TTFT 中位数：约 75 ms。
+- Bedrock Provisioned Throughput：每个 unit 每小时 21-50 美元。
+- Azure PTU 盈亏平衡点：约 40-60% 的持续利用率。
+- 高利用率下，PTU 相比按需模式最多可节省 70%。
+
+```figure
+i4-platform-lanes
+```
 
 ## 使用它
-`code/main.py` 会在一个 synthetic workload 上比较这三个平台 — 它建模 on-demand vs PTU 经济性、TTFT variance 和 cost attribution fidelity。运行它，看看 PTUs 在哪里回本，以及 marketplace 的模型广度在哪里超过 TTFT 差距。
+
+`code/main.py` 使用合成工作负载比较三个平台，它对按需模式与 PTU 的经济性、TTFT 波动以及成本归因保真度进行建模。运行它，观察 PTU 在什么情况下能够回本，以及 Model 市场的广度在什么情况下比 TTFT 差距更重要。
 
 ## 交付它
-本课会生成 `outputs/skill-managed-platform-picker.md`。给定 workload profile（所需模型、TTFT SLA、daily volume、compliance requirements），它会推荐 primary platform、fallback，以及 FinOps instrumentation plan。
+
+本课会生成 `outputs/skill-managed-platform-picker.md`。给定工作负载概况（所需 Model、TTFT SLA、每日流量、合规要求），它会推荐主平台、备用平台和 FinOps 观测方案。
 
 ## 练习
-1. 运行 `code/main.py`。对于 70B class model，Azure PTU 在什么 sustained utilization 下优于 on-demand？计算 break-even，并与宣称的 40-60% 区间比较。
-2. 你的产品需要 Claude 3.7 Sonnet 和 GPT-4o。设计一个 two-provider deployment — 哪个放到哪个 hyperscaler，前面放什么 gateway，failover policy 是什么？
-3. 一位受监管的 healthcare 客户要求 BAAs、US-East data residency 和 sub-100ms P99 TTFT。选择一个平台，并用三个具体功能来论证。
-4. 你发现本月 Bedrock 账单在没有流量变化的情况下上涨了 4x。没有 Application Inference Profiles 时，你会如何找到罪魁祸首？有 profiles 时，需要多久？
-5. 阅读 Azure OpenAI 和 Bedrock pricing pages。对于 100M-token/month Claude workload，哪个更便宜 — direct Anthropic API、Bedrock on-demand，还是 Bedrock Provisioned Throughput？
+
+1. 运行 `code/main.py`。对于 70B 级 Model，Azure PTU 在多高的持续利用率下优于按需模式？计算盈亏平衡点，并与宣传的 40-60% 区间比较。
+2. 你的产品需要 Claude 3.7 Sonnet 和 GPT-4o。设计一个双 provider 部署：每个 Model 应使用哪家 hyperscaler、前方设置什么 gateway、采用什么故障转移政策？
+3. 一家受监管的医疗客户要求 BAAs、US-East 数据驻留和低于 100 ms 的 P99 TTFT。选择一个平台，并用三个具体功能说明理由。
+4. 你发现本月 Bedrock 账单增长了 4 倍，但流量没有变化。如果没有 Application Inference Profiles，你会如何找到问题来源？如果有 profiles，需要多长时间？
+5. 阅读 Azure OpenAI 和 Bedrock 定价页面。对于每月 100M Token 的 Claude 工作负载，哪一种更便宜：直接使用 Anthropic API、Bedrock 按需模式，还是 Bedrock Provisioned Throughput？
 
 ## 关键术语
-| Term | What people say | What it actually means |
+
+| 术语 | 人们通常怎么说 | 它的实际含义 |
 |------|----------------|------------------------|
-| Bedrock | "AWS LLM service" | 跨 Claude、Llama、Titan、Mistral、Cohere 的模型 marketplace |
-| Azure OpenAI | "Azure's ChatGPT" | 位于 Azure datacenters 中、带企业控制能力的独家 OpenAI 模型 |
-| Vertex AI | "Google's LLM" | 以 Gemini 为先的平台，Model Garden 用于 third-party models |
-| PTU | "dedicated capacity" | Provisioned Throughput Unit — 预留 inference GPUs，按小时定价 |
-| Application Inference Profile | "Bedrock tagging" | 带 tags 的 per-product cost/usage profile，CloudWatch-native |
-| Model Garden | "Vertex catalog" | Vertex AI 的 third-party model section，独立于 Gemini |
-| Two-provider minimum | "LLM redundancy" | 让每条关键 LLM 路径跨 ≥2 个 hyperscaler 运行的策略 |
-| BAA | "HIPAA paperwork" | Business Associate Agreement；PHI 所必需；三者均提供 |
-| Abuse monitoring | "the log watcher" | provider-side safety scan，作用于 prompts/outputs；enterprise 可 opt-out |
+| Bedrock | “AWS LLM 服务” | 覆盖 Claude、Llama、Titan、Mistral 和 Cohere 的 Model 市场 |
+| Azure OpenAI | “Azure 的 ChatGPT” | 部署在 Azure datacenters 中并提供企业控制能力的独家 OpenAI Model |
+| Vertex AI | “Google 的 LLM” | 以 Gemini 为核心，并通过 Model Garden 提供第三方 Model 的平台 |
+| PTU | “专用容量” | Provisioned Throughput Unit — 按小时计价的预留 Inference GPU |
+| Application Inference Profile | “Bedrock 标记” | 按产品划分并带有 tag 的成本/用量 profile，CloudWatch-native |
+| Model Garden | “Vertex 目录” | Vertex AI 的第三方 Model 区域，与 Gemini 分开 |
+| 至少两个 provider | “LLM 冗余” | 在至少 2 家 hyperscaler 上运行每条关键 LLM 路径的政策 |
+| BAA | “HIPAA 文书” | Business Associate Agreement；处理 PHI 时必须具备；三家平台均可提供 |
+| 滥用监测 | “日志监视器” | provider 对 Prompt/输出执行的安全扫描；企业客户可以选择退出 |
 
 ## 延伸阅读
-- [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/) — 权威 rate card 和 Provisioned Throughput pricing。
-- [Azure OpenAI Service Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/) — PTU economics 和 rate cards。
-- [Vertex AI Generative AI Pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) — Gemini tiers 和 Model Garden surcharges。
-- [Artificial Analysis LLM Leaderboard](https://artificialanalysis.ai/) — 跨 provider 的持续 latency 和 throughput benchmarks。
-- [The AI Journal — AWS Bedrock vs Azure OpenAI CTO Guide 2026](https://theaijournal.co/2026/03/aws-bedrock-vs-azure-openai/) — enterprise decision framework。
-- [Finout — Bedrock vs Vertex vs Azure FinOps](https://www.finout.io/blog/bedrock-vs.-vertex-vs.-azure-cognitive-a-finops-comparison-for-ai-spend) — attribution mechanics side-by-side。
+
+- [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/) — 权威费率表和 Provisioned Throughput 定价。
+- [Azure OpenAI Service Pricing](https://azure.microsoft.com/en-us/pricing/details/azure-openai/) — PTU 经济性和费率表。
+- [Vertex AI Generative AI Pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) — Gemini 层级和 Model Garden 附加费用。
+- [Artificial Analysis LLM Leaderboard](https://artificialanalysis.ai/) — 跨 provider 的持续延迟与吞吐量 benchmark。
+- [The AI Journal — AWS Bedrock vs Azure OpenAI CTO Guide 2026](https://theaijournal.co/2026/03/aws-bedrock-vs-azure-openai/) — 企业决策框架。
+- [Finout — Bedrock vs Vertex vs Azure FinOps](https://www.finout.io/blog/bedrock-vs.-vertex-vs.-azure-cognitive-a-finops-comparison-for-ai-spend) — 并列比较归因机制。

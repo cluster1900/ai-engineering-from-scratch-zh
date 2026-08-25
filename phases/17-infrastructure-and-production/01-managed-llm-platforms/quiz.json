@@ -6,33 +6,33 @@
       "stage": "pre",
       "question": "在本课之前，如果客户需要在一个 API 后面接入 Claude、Llama 和 Cohere，你会首先选择哪个平台？",
       "options": [
-        "Vertex AI",
         "AWS Bedrock",
-        "Azure OpenAI Service",
-        "Direct Anthropic API"
+        "Vertex AI",
+        "Direct Anthropic API",
+        "Azure OpenAI Service"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "pre",
       "question": "哪家 hyperscaler 的押注被描述为独家合作，而不是 marketplace？",
       "options": [
-        "Azure OpenAI",
         "Vertex AI",
         "AWS Bedrock",
-        "OCI Generative AI"
+        "OCI Generative AI",
+        "Azure OpenAI"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "在 Llama 3.1 405B 等效模型上，Azure OpenAI（使用 PTUs）与 Bedrock on-demand 之间测得的 median TTFT 差距大约是多少？",
       "options": [
-        "~100 ms",
-        "~5 ms",
         "~250 ms",
+        "~5 ms",
+        "~100 ms",
         "~25 ms"
       ],
       "correct": 3,
@@ -42,48 +42,48 @@
       "stage": "check",
       "question": "Bedrock 2025 的哪项功能能在 CloudWatch 中原生提供最清晰的按产品成本归因？",
       "options": [
+        "Bedrock Agents",
         "Bedrock Knowledge Bases",
         "Application Inference Profiles",
-        "Bedrock Guardrails",
-        "Bedrock Agents"
+        "Bedrock Guardrails"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Azure PTUs 通常在什么持续利用率区间相对于 on-demand 达到盈亏平衡？",
       "options": [
-        "5-10%",
+        "40-60%",
         "80-95%",
-        "20-30%",
-        "40-60%"
+        "5-10%",
+        "20-30%"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么本课推荐的 2026 策略是：对产品关键型 LLM 调用至少使用两个 provider？",
       "options": [
-        "这是 SOC 2 Type II 的要求",
-        "Frontier model 领先地位每月轮换，因此单一 vendor lock-in 会让你错过三分之二的 frontier",
         "除非你同时使用竞争对手，否则 hyperscaler 拒绝签署 BAA",
-        "单一 vendor 定价总是更贵"
+        "单一 vendor 定价总是更贵",
+        "这是 SOC 2 Type II 的要求",
+        "Frontier model 领先地位每月轮换，因此单一 vendor lock-in 会让你错过三分之二的 frontier"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪项陈述最准确地描述了三个平台的 FinOps surface？",
       "options": [
-        "Azure 原生最清晰，Bedrock 不透明",
-        "Vertex 完全没有 attribution surface",
         "三者都暴露相同的 per-request attribution",
-        "Bedrock 原生最清晰，Vertex 通过 BigQuery 最灵活，Azure 在没有 instrumentation 时最不透明"
+        "Bedrock 原生最清晰，Vertex 通过 BigQuery 最灵活，Azure 在没有 instrumentation 时最不透明",
+        "Vertex 完全没有 attribution surface",
+        "Azure 原生最清晰，Bedrock 不透明"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     }
   ]
