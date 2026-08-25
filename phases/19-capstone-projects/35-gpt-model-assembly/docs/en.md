@@ -69,6 +69,10 @@ flowchart LR
 
 三个旋钮，对应三种不同行为。Temperature 接近零会退化成 greedy。Temperature 为一时匹配模型的自然 distribution。Top-k 为一就是 greedy。Top-k 为四十会过滤长尾。组合方式很重要；下一课关于训练的内容会把 generation 用作定性 eval 信号。
 
+```figure
+cc-gpt-assembly
+```
+
 ## Build It
 
 `code/main.py` 实现：

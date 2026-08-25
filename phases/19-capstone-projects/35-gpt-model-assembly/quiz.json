@@ -8,8 +8,8 @@
       "options": [
         "vocab 30000，context 512，d_model 512，6 heads，6 layers",
         "vocab 50257，context 1024，d_model 768，12 heads，12 layers，参数接近 1.24 亿",
-        "vocab 100000，context 2048，d_model 1024，16 heads，24 layers",
-        "vocab 50000，context 4096，d_model 4096，32 heads，32 layers"
+        "vocab 50000，context 4096，d_model 4096，32 heads，32 layers",
+        "vocab 100000，context 2048，d_model 1024，16 heads，24 layers"
       ],
       "correct": 1,
       "explanation": "GPT-2 small 是 124M parameter 配置；匹配它可以确认 wiring 正确。"
@@ -30,24 +30,24 @@
       "stage": "check",
       "question": "generation 如何滑动它的 context window？",
       "options": [
-        "每一步都截断为 context 的一半",
         "每一步取运行序列（prompt 加已生成内容）中最后 context_length 个 tokens，并把它们送入模型",
+        "每一步都截断为 context 的一半",
         "用零 padding 到最大 context",
         "每一步都从 prompt 重新开始"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "一旦运行序列溢出 context length，sliding window 就会丢弃最旧的 tokens。"
     },
     {
       "stage": "check",
       "question": "为什么要用比其余部分更小的 std 初始化 Attention output projection 和第二个 MLP linear？",
       "options": [
-        "它能节省内存",
-        "两者都会直接进入 residual add。将它们的 std 按 1 over sqrt of 2 times num_layers 缩放，可让 residual stream 在十二层中保持尺度稳定",
         "数据集要求这样做",
-        "Top-k sampling 需要更小的 weights"
+        "Top-k sampling 需要更小的 weights",
+        "两者都会直接进入 residual add。将它们的 std 按 1 over sqrt of 2 times num_layers 缩放，可让 residual stream 在十二层中保持尺度稳定",
+        "它能节省内存"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "如果没有这个缩放，residual stream 会随深度增长，并把最终 LayerNorm 推入过热区间。"
     },
     {
@@ -56,8 +56,8 @@
       "options": [
         "选择 Optimizer learning rate",
         "在 softmax 前除以 logits。T 小于 1 会把 distribution 向 greedy 方向变尖锐，T 等于 1 保持模型的自然 distribution，T 大于 1 会变平坦",
-        "向 head 添加 dropout",
-        "缩放 Embeddings"
+        "缩放 Embeddings",
+        "向 head 添加 dropout"
       ],
       "correct": 1,
       "explanation": "Temperature 是最简单的旋钮；与 top-k 结合时，它控制 generation 的探索程度。"
