@@ -73,6 +73,10 @@ Open-source：RouteLLM (LMSYS)、Not Diamond (commercial)、Prompt Mule。
 - GPT-4-level 2022 vs 2026：~$20/M → ~$0.40/M。
 - Cascade latency impact：median 约 1.2x，escalated 约 2x（约 10% traffic）。
 
+```figure
+model-cascade-router
+```
+
 ## 使用它
 
 `code/main.py` 会在 mixed workload 上模拟 pre-route、cascade 和 ensemble。报告 blended cost、quality loss 和 escalation rate。
