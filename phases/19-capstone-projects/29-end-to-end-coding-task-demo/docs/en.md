@@ -49,6 +49,10 @@ agent 的 policy 是一个 state machine。五个 states。
 
 fixture bug 是 `fizz.py` 中的 off-by-one。deterministic policy 通过 regex 从 test failure message 中检测出 bug，并发出修正后的 file。把 policy 替换成 LLM 不会改变 harness contract。
 
+```figure
+cg-harness-weave
+```
+
 ## Architecture
 
 ```mermaid
