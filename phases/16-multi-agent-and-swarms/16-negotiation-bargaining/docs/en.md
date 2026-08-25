@@ -102,6 +102,10 @@ NeurIPS 2024 (https://proceedings.neurips.cc/paper_files/paper/2024/file/984dd3d
 
 如果 offer 需要是一个数字（price、ETA、quantity），就根据 negotiation state deterministic 生成它，并让 LLM 生成 framing。如果 offer 需要是一个 proposal structure（task decomposition、role assignment），可以让 LLM 起草，但在发送前要根据 schema 验证并进行 constraint-check。
 
+```figure
+a5-og-narrator
+```
+
 ## 构建它
 
 `code/main.py` 实现了：
