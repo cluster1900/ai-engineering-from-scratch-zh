@@ -65,7 +65,7 @@
   <text x="150" y="428" text-anchor="middle" class="step">阶段 2 交错</text>
   <text x="150" y="446" text-anchor="middle" class="small">Multimodal 文档</text>
   <text x="150" y="462" text-anchor="middle" class="small">跨模态上下文</text>
-  <text x="150" y="480" text-anchor="middle" class="small">OBELICS + podcast</text>
+  <text x="150" y="480" text-anchor="middle" class="small">OBELICS + 播客</text>
 
   <rect x="260" y="330" width="180" height="170" class="cool"/>
   <text x="350" y="352" text-anchor="middle" class="step">阶段 3 语音增强</text>
@@ -75,11 +75,11 @@
   <text x="350" y="428" text-anchor="middle" class="step">阶段 4 SFT</text>
   <text x="350" y="446" text-anchor="middle" class="small">VQA、旁白</text>
   <text x="350" y="462" text-anchor="middle" class="small">语音对话</text>
-  <text x="350" y="480" text-anchor="middle" class="small">any-to-any 任务</text>
+  <text x="350" y="480" text-anchor="middle" class="small">任意模态互转任务</text>
 
   <rect x="460" y="330" width="460" height="170" class="reg"/>
   <text x="690" y="352" text-anchor="middle" class="step">流式解码路径（目标 &lt;500 ms TTFAB）</text>
-  <text x="690" y="372" text-anchor="middle" class="small">mic -&gt; 语音 Token（~40 ms）</text>
+  <text x="690" y="372" text-anchor="middle" class="small">麦克风 -&gt; 语音 Token（~40 ms）</text>
   <text x="690" y="388" text-anchor="middle" class="small">prefill prompt（8B 时 ~80 ms）</text>
   <text x="690" y="404" text-anchor="middle" class="small">首个输出 Token（~40 ms）</text>
   <text x="690" y="420" text-anchor="middle" class="small">residual-VQ 层 1..7 并行解码（~30 ms）</text>

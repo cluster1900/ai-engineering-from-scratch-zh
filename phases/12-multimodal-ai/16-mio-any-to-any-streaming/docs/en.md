@@ -108,6 +108,10 @@ MIO 最接近 pure-token any-to-any。AnyGPT 是它的概念前身。
 
 这些是 open research problems。Qwen3-Omni（Lesson 12.20）是 2025 年最先进的 open attempt。
 
+```figure
+any-to-any-stream
+```
+
 ## 使用它
 `code/main.py`：
 
