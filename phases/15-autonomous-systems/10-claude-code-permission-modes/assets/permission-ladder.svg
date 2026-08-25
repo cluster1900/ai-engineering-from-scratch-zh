@@ -38,12 +38,12 @@
   <text x="405" y="132" text-anchor="middle" class="small">写入自动；exec 询问</text>
 
   <rect x="480" y="96" width="130" height="46" class="warn"/>
-  <text x="545" y="116" text-anchor="middle" class="label">autoMode</text>
+  <text x="545" y="116" text-anchor="middle" class="label">auto</text>
   <text x="545" y="132" text-anchor="middle" class="small">分类器批准</text>
 
   <rect x="620" y="96" width="90" height="46" class="hot"/>
-  <text x="665" y="116" text-anchor="middle" class="label">yolo</text>
-  <text x="665" y="132" text-anchor="middle" class="small">仅临时</text>
+  <text x="665" y="116" text-anchor="middle" class="label">dontAsk</text>
+  <text x="665" y="132" text-anchor="middle" class="small">无 Prompt</text>
 
   <rect x="720" y="96" width="110" height="46" class="hot"/>
   <text x="775" y="116" text-anchor="middle" class="label">bypassPermissions</text>
@@ -51,35 +51,35 @@
 
   <!-- Auto Mode internals -->
   <rect x="60" y="170" width="770" height="200" class="box"/>
-  <text x="445" y="192" text-anchor="middle" class="label">Auto Mode (2026年3月24日) — 两阶段安全分类器</text>
+  <text x="445" y="192" text-anchor="middle" class="label">自动模式（2026 年 3 月 24 日）— 操作审查分类器</text>
 
   <rect x="80" y="210" width="180" height="110" class="cool"/>
   <text x="170" y="232" text-anchor="middle" class="label">拟议 action</text>
-  <text x="170" y="252" text-anchor="middle" class="small">tool + payload</text>
+  <text x="170" y="252" text-anchor="middle" class="small">Tool + payload</text>
   <text x="170" y="270" text-anchor="middle" class="small">来自 agent 循环</text>
 
   <rect x="290" y="210" width="180" height="110" class="warn"/>
-  <text x="380" y="232" text-anchor="middle" class="label">第 1 阶段分类器</text>
-  <text x="380" y="252" text-anchor="middle" class="small">单 Token 检查</text>
-  <text x="380" y="270" text-anchor="middle" class="small">并行运行</text>
-  <text x="380" y="288" text-anchor="middle" class="small">低成本关键词规则</text>
+  <text x="380" y="232" text-anchor="middle" class="label">分类器 Model</text>
+  <text x="380" y="252" text-anchor="middle" class="small">独立 Model</text>
+  <text x="380" y="270" text-anchor="middle" class="small">审查每个操作</text>
+  <text x="380" y="288" text-anchor="middle" class="small">运行前审查</text>
 
   <rect x="500" y="210" width="180" height="110" class="hot"/>
-  <text x="590" y="232" text-anchor="middle" class="label">第 2 阶段审查</text>
-  <text x="590" y="252" text-anchor="middle" class="small">chain-of-thought</text>
-  <text x="590" y="270" text-anchor="middle" class="small">轨迹上下文</text>
-  <text x="590" y="288" text-anchor="middle" class="small">(仅对标记项)</text>
+  <text x="590" y="232" text-anchor="middle" class="label">升级阻断</text>
+  <text x="590" y="252" text-anchor="middle" class="small">阻断超出</text>
+  <text x="590" y="270" text-anchor="middle" class="small">请求范围的</text>
+  <text x="590" y="288" text-anchor="middle" class="small">操作</text>
 
   <rect x="710" y="210" width="120" height="110" class="cold"/>
   <text x="770" y="232" text-anchor="middle" class="label">HITL</text>
-  <text x="770" y="252" text-anchor="middle" class="small">低置信度</text>
-  <text x="770" y="270" text-anchor="middle" class="small">升级</text>
+  <text x="770" y="252" text-anchor="middle" class="small">被阻断的操作</text>
+  <text x="770" y="270" text-anchor="middle" class="small">交由用户处理</text>
 
   <path d="M260 265 L290 265" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <path d="M470 265 L500 265" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
   <path d="M680 265 L710 265" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <text x="380" y="340" text-anchor="middle" class="small">未标记 -&gt; 立即执行</text>
+  <text x="380" y="340" text-anchor="middle" class="small">批准 -&gt; 立即执行</text>
   <text x="590" y="340" text-anchor="middle" class="small">对提权 / 外泄形态硬阻断</text>
 
   <!-- Budget line -->
@@ -88,5 +88,5 @@
   <text x="80" y="434" class="content">max_turns = agent 循环迭代硬上限</text>
   <text x="80" y="450" class="content">max_budget_usd = 美元熔断；超限中止会话</text>
   <text x="80" y="466" class="content">per-tool caps = 例如每会话 WebFetch 调用不超过 N 次</text>
-  <text x="80" y="482" class="small">Anthropic 将 Auto Mode 作为研究预览发布；分类器是一层，不是解决方案。</text>
+  <text x="80" y="482" class="small">可用性取决于套餐、组织启用情况、Model 和提供商；分类器只是一层防护，并非完整方案。</text>
 </svg>
