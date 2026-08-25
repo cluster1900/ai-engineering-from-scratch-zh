@@ -1,15 +1,15 @@
 {
   "lesson": "13-langgraph-stateful-graphs",
-  "title": "LangGraph：有状态图与持久执行",
+  "title": "Stateful Graph Orchestration — Durable Execution and Checkpoints",
   "questions": [
     {
       "stage": "pre",
       "question": "LangGraph 将什么视为 agent 的核心单元？",
       "options": [
-        "一次自由形式的 LLM 调用",
+        "一个 Vector index",
         "一个包含类型化 state、函数 node 和条件 edge 的 state machine",
         "单个 tool registry",
-        "一个 Vector index"
+        "一次自由形式的 LLM 调用"
       ],
       "correct": 1,
       "explanation": "LangGraph 将 agent 建模为 state graph：node 是纯函数，edge 是转移，state 是类型化且不可变的。"
@@ -19,45 +19,45 @@
       "question": "持久执行解决了什么问题？",
       "options": [
         "降低 inference 成本",
-        "当一个 40 步运行在第 38 步失败时，使用精确 state 从第 38 步恢复，而不是从头开始",
         "更快生成 Embedding",
+        "当一个 40 步运行在第 38 步失败时，使用精确 state 从第 38 步恢复，而不是从头开始",
         "在不同 provider 之间翻译"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "每个 node 之后的 checkpoint 让 runtime 可以从最后一个成功步骤恢复。"
     },
     {
       "stage": "check",
       "question": "以下哪一项不是 LangGraph 支持的三种拓扑之一？",
       "options": [
-        "Supervisor",
-        "Swarm（peer-to-peer）",
+        "Gradient ring",
         "Hierarchical（嵌套 subgraph）",
-        "Gradient ring"
+        "Supervisor",
+        "Swarm（peer-to-peer）"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "拓扑包括 supervisor、swarm 和 hierarchical。Gradient ring 不是 LangGraph 拓扑。"
     },
     {
       "stage": "check",
       "question": "为什么 node 必须是确定性的，resume 才能干净地工作？",
       "options": [
-        "Provider 要求确定性",
-        "Resume 假设相同输入会产生相同的 state update；random seed、wall-clock 和外部 API 都必须被捕获",
+        "这是 GIL 的要求",
         "确定性会降低 Token 成本",
-        "这是 GIL 的要求"
+        "Resume 假设相同输入会产生相同的 state update；random seed、wall-clock 和外部 API 都必须被捕获",
+        "Provider 要求确定性"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "如果一个 node 依赖未捕获的非确定性，resume 就无法重建步骤后的 state。"
     },
     {
       "stage": "check",
       "question": "什么是 conditional edge？",
       "options": [
-        "由训练 Loss 加权的 edge",
+        "带 TTL 的 edge",
         "由 state 函数选择的 edge，用于让 graph 分支",
         "只在 GPU 上运行的 edge",
-        "带 TTL 的 edge"
+        "由训练 Loss 加权的 edge"
       ],
       "correct": 1,
       "explanation": "Conditional edge 基于 state 分支；过度使用会让 graph 难以推理。"
@@ -66,24 +66,24 @@
       "stage": "post",
       "question": "当 checkpoint 太小时会出什么问题？",
       "options": [
-        "Tool state 和 memory write 无法恢复；完整 state 必须可序列化",
         "磁盘会被填满",
         "Graph 无法到达 END",
+        "Tool state 和 memory write 无法恢复；完整 state 必须可序列化",
         "模型会生成更短的回答"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "只 checkpoint 对话轮次，会让 tool state 和 memory write 处在 resume 无法触及的范围之外。"
     },
     {
       "stage": "post",
       "question": "human-in-the-loop 在 LangGraph 的设计中位于哪里？",
       "options": [
-        "它需要 fork runtime",
         "在关键 node 前暂停，将序列化 state 展示给人类，接受修改后 resume；checkpointer 让这件事成本很低",
         "只在 START 和 END",
-        "通过一个单独的 provider API"
+        "通过一个单独的 provider API",
+        "它需要 fork runtime"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "因为 state 已经在 node 之间序列化，人工 review 和 edit 自然就是一种 pause-and-resume 模式。"
     }
   ]
