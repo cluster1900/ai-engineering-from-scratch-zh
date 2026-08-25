@@ -15,6 +15,10 @@
 - 计算每个模型的平均得分和成对差异的引导置信区间。
 - 将排行榜输出为 JSON 报告和 Markdown 表，第 75 课中的 runner可以将其粘贴到 CI 评论中。
 
+```figure
+ci-leaderboard-ci
+```
+
 ## 输入的形状
 
 聚合器使用 `EvalRun` 记录列表：
