@@ -27,6 +27,10 @@ Word2Vec 留下了两个开放问题。
 
 **BPE (Byte-Pair Encoding)。** 从单个 bytes（或字符）的 vocabulary 开始。统计 corpus 中每个相邻 pair。把最高频的 pair 合并成新的 Token。重复 `k` 次。结果：得到一个包含 `k + 256` 个 Token 的 vocabulary，其中高频序列（`ing`、`tion`、`the`）是单个 Token，罕见词会被拆成熟悉的片段。每个句子都能被 tokenizes 成某种形式。
 
+```figure
+n5-subword-merge
+```
+
 ## 构建
 
 ### GloVe：factorize 共现 Matrix
