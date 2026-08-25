@@ -6,9 +6,9 @@
       "stage": "pre",
       "question": "决定一条信息是否属于 repo memory 的 durability test 是什么？",
       "options": [
-        "它是否是 JSON",
-        "它在三个月后的 CI rerun 中是否仍然有用；如果是，就放入 repo；如果不是，就作为 telemetry",
         "用户是否将它标记为重要",
+        "它在三个月后的 CI rerun 中是否仍然有用；如果是，就放入 repo；如果不是，就作为 telemetry",
+        "它是否是 JSON",
         "它是否能放进 4 kB"
       ],
       "correct": 1,
@@ -19,9 +19,9 @@
       "question": "哪个 schema 字段承载 agent 的 contract version？",
       "options": [
         "schema_version",
-        "build_hash",
         "model_id",
-        "session_uuid"
+        "session_uuid",
+        "build_hash"
       ],
       "correct": 0,
       "explanation": "schema_version 是整数 contract；manager 会拒绝从未知版本加载。"
@@ -31,9 +31,9 @@
       "question": "atomic write 是如何工作的？",
       "options": [
         "在同一目录中使用 tempfile.mkstemp，写入，fsync，然后用 os.replace（atomic rename）覆盖目标文件",
-        "先 truncate 再写入目标文件",
         "Append-only 并带 CRC",
-        "加密并覆盖"
+        "加密并覆盖",
+        "先 truncate 再写入目标文件"
       ],
       "correct": 0,
       "explanation": "POSIX 和 Windows 上的 atomic rename 可以防止 partial-write corruption。"
@@ -42,36 +42,36 @@
       "stage": "check",
       "question": "为什么非 idempotent 的 tool calls 需要 idempotency keys？",
       "options": [
-        "为了 billing",
         "如果 agent 在 tool call 之后、checkpoint 结果之前崩溃，可以安全 retry；执行前记录 call ID，并在 retry 时跳过该 call",
-        "为了 deduplicate logs",
-        "为了缩短输出"
+        "为了缩短输出",
+        "为了 billing",
+        "为了 deduplicate logs"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "pending_calls.jsonl 保存 call IDs；recovery 会检查并跳过已经执行过的 work。"
     },
     {
       "stage": "check",
       "question": "相对于 state，大型 artifacts（CSVs、长 transcripts、generated files）应该放在哪里？",
       "options": [
-        "Inline 放在 agent_state.json 中",
-        "作为单独文件（或 object storage），state 中只保留 path，这样 checkpoints 保持小而快",
+        "拼接成一个巨大的 log",
         "放在 environment variables 中",
-        "拼接成一个巨大的 log"
+        "Inline 放在 agent_state.json 中",
+        "作为单独文件（或 object storage），state 中只保留 path，这样 checkpoints 保持小而快"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "单独的 artifacts 可以独立于 state 增长；checkpoints 读写成本保持很低。"
     },
     {
       "stage": "post",
       "question": "用于 audit 的 event sourcing 加上用于 resume 的 snapshots 能带来什么？",
       "options": [
-        "更低的 disk usage",
         "先读取 snapshot，再 replay 其后的 events，从而逐字 replay agent decisions；形态与 Postgres WAL 相同",
         "更快的 inference",
+        "更低的 disk usage",
         "原生 voice support"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "每次 mutation 都 append 到 state.events.jsonl；定期 snapshot 到 state.json；replay snapshot timestamp 之后的 events。"
     },
     {
@@ -79,11 +79,11 @@
       "question": "课程说 schema_version mismatch 时会发生什么？",
       "options": [
         "manager 静默升级",
-        "manager 拒绝加载，直到 tools/migrate_state.py 中的 migration script 运行",
         "state 被删除",
-        "agent retry"
+        "agent retry",
+        "manager 拒绝加载，直到 tools/migrate_state.py 中的 migration script 运行"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "执行 schema migrations 或 refuse-to-load；绝不 silent upgrade。"
     }
   ]

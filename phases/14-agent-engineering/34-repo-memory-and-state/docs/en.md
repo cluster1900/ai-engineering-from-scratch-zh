@@ -61,6 +61,10 @@ State 写入需要能承受部分失败：写入 tempfile，fsync，然后 renam
 
 当 schema 变化时，在 schema bump 旁边交付一个 migration script。state file 带有 `schema_version` field；manager 会拒绝加载它无法迁移的版本文件。
 
+```figure
+wb-state-persist
+```
+
 ## 构建它
 `code/main.py` 实现：
 
@@ -127,6 +131,6 @@ script 会写入 `workdir/agent_state.json` 和 `workdir/task_board.json`，跨�
 - [eunomia, Checkpoint/Restore Systems: Evolution, Techniques, Applications](https://eunomia.dev/blog/2025/05/11/checkpointrestore-systems-evolution-techniques-and-applications-in-ai-agents/) — 来自 OS 历史、应用于 agents 的 CR primitives
 - [Indium, 7 State Persistence Strategies for Long-Running AI Agents in 2026](https://www.indium.tech/blog/7-state-persistence-strategies-ai-agents-2026/)
 - [Microsoft Agent Framework, Compaction](https://learn.microsoft.com/en-us/agent-framework/agents/conversations/compaction) — vendor checkpoint manager
-- Phase 14 · 08 — memory blocks and sleep-time compute
+- Phase 14 · 08 — memory blocks 和 sleep-time compute
 - Phase 14 · 32 — 本课为其 schema 化的 three-file minimum
 - Phase 14 · 40 — 从同一个 schema 读取的 handoff packets
