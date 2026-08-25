@@ -1,35 +1,60 @@
 [
   {
     "question": "为什么恒定学习率通常不适合训练 Neural Network？",
-    "options": ["它使用过多内存", "它要么在训练后期过高（导致振荡），要么在训练早期过低（浪费计算）", "恒定学习率会导致过拟合", "它们只适用于 SGD"],
+    "options": [
+      "它使用过多内存",
+      "它要么在训练后期过高（导致振荡），要么在训练早期过低（浪费计算）",
+      "恒定学习率会导致过拟合",
+      "它们只适用于 SGD"
+    ],
     "correct": 1,
     "explanation": "最佳步长会在训练过程中变化。早期，大步长可以快速推进。训练后期，需要小步长来收敛到一个最小值。恒定学习率无法同时满足这两种需求。",
     "stage": "pre"
   },
   {
     "question": "learning rate warmup 的目的是什么？",
-    "options": ["防止过拟合", "让自适应 Optimizer 统计量（momentum、variance）在采取大步长之前稳定下来", "逐渐增大 batch size", "正确初始化权重"],
-    "correct": 1,
+    "options": [
+      "让自适应 Optimizer 统计量（momentum、variance）在采取大步长之前稳定下来",
+      "防止过拟合",
+      "逐渐增大 batch size",
+      "正确初始化权重"
+    ],
+    "correct": 0,
     "explanation": "Adam 的 moment 估计初始化为零。早期 Gradient 更新基于不可靠的统计量。Warmup 从很小的 LR 开始并逐渐升高，让 Adam 有时间积累有意义的估计。",
     "stage": "pre"
   },
   {
     "question": "Llama 3、GPT-3 和大多数现代 LLMs 使用什么 learning rate schedule？",
-    "options": ["恒定学习率", "每 30 个 epoch 进行 step decay", "Linear warmup 后接 cosine decay", "Exponential decay"],
-    "correct": 2,
+    "options": [
+      "恒定学习率",
+      "每 30 个 epoch 进行 step decay",
+      "Exponential decay",
+      "Linear warmup 后接 cosine decay"
+    ],
+    "correct": 3,
     "explanation": "Linear warmup + cosine decay 是 Transformer 训练的标准做法。Llama 3 使用 2000 个 warmup steps，并通过 cosine decay 从 3e-4 降到 3e-5。这个 schedule 不需要调 milestone。",
     "stage": "post"
   },
   {
     "question": "1cycle policy 与其他 schedules 有什么不同？",
-    "options": ["它使用恒定学习率", "它在训练前半段将学习率向上升高，然后再降下来 -- 高 LR 阶段起到正则化作用", "它只适用于 SGD", "它不需要任何 hyperparameter tuning"],
-    "correct": 1,
+    "options": [
+      "它不需要任何 hyperparameter tuning",
+      "它只适用于 SGD",
+      "它使用恒定学习率",
+      "它在训练前半段将学习率向上升高，然后再降下来 -- 高 LR 阶段起到正则化作用"
+    ],
+    "correct": 3,
     "explanation": "Leslie Smith 的 1cycle 会将 LR 从低升到高（前半段），再从高降到很低（后半段）。高 LR 阶段帮助模型在收敛到最佳 basin 之前探索更多 Loss landscape。",
     "stage": "post"
   },
   {
     "question": "如果 training Loss 突然飙升并发散，最可能的学习率问题是什么？",
-    "options": ["学习率太低", "学习率太高，导致 Optimizer 越过最小值", "warmup period 太长", "schedule decay 得太慢"],
+    "options": [
+      "学习率太低",
+      "学习率太高，导致 Optimizer 越过最小值",
+      "warmup period 太长",
+      "schedule decay 得太慢"
+    ],
     "correct": 1,
     "explanation": "过高的学习率会导致 Optimizer 采取比 Loss basin 更大的步长，越过最小值并导致 Loss 增加。这会表现为突然发散。",
     "stage": "post"
