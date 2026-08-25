@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "为什么 Exact Match 和 token-F1 不足以评估现代 LLM 输出？",
       "options": [
-        "它们太慢",
         "它们不可微",
+        "它们会漏掉语义等价；'June 29th, 2007' 与 'June 29, 2007' 虽然正确，但 EM 得分为 0",
         "它们需要 GPUs",
-        "它们会漏掉语义等价；'June 29th, 2007' 与 'June 29, 2007' 虽然正确，但 EM 得分为 0"
+        "它们太慢"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "Exact-match/F1 无法识别人类会判定为正确的释义或格式差异。"
     },
     {
       "stage": "pre",
       "question": "RAGAS faithfulness metric 衡量什么？",
       "options": [
-        "Retrieval recall",
-        "答案中的每个 claim 是否通过 NLI 被 retrieved context 蕴含",
         "Latency",
-        "Tokens per second"
+        "Tokens per second",
+        "答案中的每个 claim 是否通过 NLI 被 retrieved context 蕴含",
+        "Retrieval recall"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Faithfulness 使用 NLI entailment 将每个 answer claim 与 retrieved context 进行检查。"
     },
     {
@@ -42,12 +42,12 @@
       "stage": "check",
       "question": "LLM-as-judge 设置中的 self-evaluation bias 是什么？",
       "options": [
-        "使用同一个 LLM family 生成和评判，相比独立 judge 会让分数膨胀 10-20%",
-        "更低的 latency",
         "Judges 在 cached outputs 上运行更快",
-        "Judges 会忽略 system prompts"
+        "Judges 会忽略 system prompts",
+        "更低的 latency",
+        "使用同一个 LLM family 生成和评判，相比独立 judge 会让分数膨胀 10-20%"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "同 family 的 generator+judge 会让分数向上偏；应使用不同 model family 进行评判。"
     },
     {
@@ -55,20 +55,20 @@
       "question": "相比朴素的 'score 0-1' prompt，G-Eval 具体增加了什么？",
       "options": [
         "更大的 context",
-        "更低的 cost",
+        "带有命名 evaluation steps 的显式 chain-of-thought rubric，从而得到更稳定的分数",
         "Multilingual scoring",
-        "带有命名 evaluation steps 的显式 chain-of-thought rubric，从而得到更稳定的分数"
+        "更低的 cost"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "G-Eval 的结构化 eval-steps 比自由形式的 'rate it' prompts 产生更可靠的分数。"
     },
     {
       "stage": "post",
       "question": "为什么只报告 aggregate mean score 很危险？",
       "options": [
-        "Aggregates 太大",
-        "Aggregates 会忽略 judge",
         "Aggregates 需要 GPU",
+        "Aggregates 会忽略 judge",
+        "Aggregates 太大",
         "0.85 的 mean 可能掩盖 5% 的灾难性失败；始终检查底部 quantile"
       ],
       "correct": 3,
@@ -79,23 +79,23 @@
       "question": "为什么要在 CI 中固定 judge model + version？",
       "options": [
         "Anthropic 要求必须这样做",
-        "更低的 cost",
+        "升级 judge 会改变每个 metric；没有冻结的 judge，纵向比较会失效",
         "Tokenizer drift",
-        "升级 judge 会改变每个 metric；没有冻结的 judge，纵向比较会失效"
+        "更低的 cost"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "judge 升级会悄悄改变 metric baseline；固定版本可以保持跨运行的可比性。"
     },
     {
       "stage": "post",
       "question": "相对于 RAGAS，DeepEval 适合放在哪里？",
       "options": [
-        "DeepEval 是 pytest-for-LLMs（CI gates、G-Eval、hallucination metrics）；RAGAS 专注于 reference-free RAG monitoring",
-        "DeepEval 仅提供 hosted 版本",
+        "完全替代 RAGAS",
         "DeepEval 是一个 Tokenizer",
-        "完全替代 RAGAS"
+        "DeepEval 是 pytest-for-LLMs（CI gates、G-Eval、hallucination metrics）；RAGAS 专注于 reference-free RAG monitoring",
+        "DeepEval 仅提供 hosted 版本"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "DeepEval 负责 CI/CD regression testing；RAGAS 处理 reference-free RAG monitoring。"
     }
   ]

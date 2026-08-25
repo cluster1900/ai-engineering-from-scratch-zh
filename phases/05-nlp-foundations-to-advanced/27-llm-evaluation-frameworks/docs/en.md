@@ -50,6 +50,10 @@ Exact Match 得分 0。F1 得分约 75%。人工会给 100%。
 
 **Calibration.** 在没有与 human labels 的相关性验证前，永远不要信任原始 judge score。运行 100 个手工标注示例。绘制 judge vs human。计算 Spearman rho。如果 rho < 0.7，你的 judge rubric 需要改进。
 
+```figure
+n5-judge-gauge
+```
+
 ## 构建它
 
 ### 步骤 1： 使用 NLI 做 faithfulness（RAGAS-style）
