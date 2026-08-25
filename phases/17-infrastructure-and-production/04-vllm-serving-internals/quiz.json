@@ -1,17 +1,17 @@
 {
   "lesson": "04-vllm-serving-internals",
-  "title": "vLLM Serving 内部机制：PagedAttention、Continuous Batching、Chunked Prefill",
+  "title": "Serving Engine Internals — PagedAttention, Continuous Batching, Chunked Prefill",
   "questions": [
     {
       "stage": "pre",
       "question": "经典 static batching 在处理长度混合的请求时，主要问题是什么？",
       "options": [
         "它只适用于 FP4",
-        "它要求每个 GPU 之间都有 NVLink",
         "它完全无法使用 GPU",
-        "padding 到最长 prompt 和最长 output 会浪费内存，并让整个 batch 被最慢的 sequence 阻塞"
+        "padding 到最长 prompt 和最长 output 会浪费内存，并让整个 batch 被最慢的 sequence 阻塞",
+        "它要求每个 GPU 之间都有 NVLink"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -19,20 +19,20 @@
       "question": "PagedAttention 如何将 KV cache fragmentation 从 60-80% 降低到 4% 以下？",
       "options": [
         "通过完全禁用 KV cache",
+        "通过将完整 prompt 保存在 CPU RAM 中",
         "通过将 weights 压缩为 INT4",
-        "通过按固定大小的 block（默认 16 tokens）分配 KV cache，并通过每个 sequence 的 block table 引用",
-        "通过将完整 prompt 保存在 CPU RAM 中"
+        "通过按固定大小的 block（默认 16 tokens）分配 KV cache，并通过每个 sequence 的 block table 引用"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "哪个 invariant 定义了 vLLM V1 scheduler 中的 continuous batching？",
       "options": [
-        "scheduler 每个请求只运行一次，并且 batch 永不改变",
         "每个请求都有自己专用的 GPU stream",
         "scheduler 等待 10 ms 窗口来填满 batch 后再运行",
+        "scheduler 每个请求只运行一次，并且 batch 永不改变",
         "scheduler 每次 decode iteration 运行一次，将已完成的 sequences 移出，并将等待中的 sequences 移入"
       ],
       "correct": 3,
@@ -54,10 +54,10 @@
       "stage": "post",
       "question": "在 vLLM v0.18.0 中，哪种 speculative-decoding 变体仍然兼容 --enable-chunked-prefill？",
       "options": [
-        "仅 EAGLE-1",
-        "V1 scheduler 中的 N-gram GPU speculative decoding",
         "没有 speculative decoding 是兼容的",
-        "Draft-model speculative decoding"
+        "V1 scheduler 中的 N-gram GPU speculative decoding",
+        "Draft-model speculative decoding",
+        "仅 EAGLE-1"
       ],
       "correct": 1,
       "explanation": ""
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "为什么 chunked prefill 单独来看不会提高 mean throughput？",
       "options": [
-        "它运行在与 decode 不同的 GPU 上",
-        "它在底层使用 speculative decoding",
         "它更激进地压缩 weights",
-        "它只减少 decode-time jitter；实践中的 throughput 收益来自在长 prefill 期间保持 decode sequences 存活，而不是改变完成的工作量"
+        "它只减少 decode-time jitter；实践中的 throughput 收益来自在长 prefill 期间保持 decode sequences 存活，而不是改变完成的工作量",
+        "它运行在与 decode 不同的 GPU 上",
+        "它在底层使用 speculative decoding"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     }
   ]
