@@ -90,6 +90,10 @@ M[i, j] = 1 iff there exists b where offsets[b] <= i < offsets[b+1] and offsets[
 
 2026 年的生产规则：选择一个 per-task max-pixels cap，按原生 aspect ratio 编码到该 cap，打包 batch，并跳过 padding。Qwen2.5-VL 暴露了 `min_pixels` 和 `max_pixels`，正是用于这个旋钮。
 
+```figure
+mm-patch-n-pack
+```
+
 ## 使用它
 `code/main.py` 为一批异构图像使用整数像素坐标实现 patch-n'-pack。它会：
 
