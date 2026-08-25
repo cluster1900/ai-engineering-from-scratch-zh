@@ -51,6 +51,10 @@
 
 NVIDIA 的 2026 benchmark。chunk 应足够大，能包含答案和局部上下文；也应足够小，让 retriever 的 top-K 聚焦在答案上，而不是上下文噪声上。
 
+```figure
+n5-chunk-cuts
+```
+
 ## 构建它
 
 ### 步骤 1： fixed 和 recursive chunking
