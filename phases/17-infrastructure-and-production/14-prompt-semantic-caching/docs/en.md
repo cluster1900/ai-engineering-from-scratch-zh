@@ -1,71 +1,74 @@
-# Prompt Caching 与 Semantic Caching 经济学
+# Prompt Caching 与 Semantic Caching 的经济性
 
-> **Pricing snapshot 日期为 2026-04。** 以下数值声明反映本课发布时采集的 vendor rate cards；在下游引用前，请先对照链接文档核验。
+> **定价快照日期为 2026-04。** 下文中的数字来自本课发布时记录的供应商价目表；在下游引用这些数字之前，请先根据链接文档进行核验。
 
-> Caching 发生在两层。L2（provider-level）prompt/prefix caching 会为重复 prefix 复用 attention KV —— Anthropic 的 prompt-caching docs 宣称，在长 prompts 上最高可降低 90% 成本、降低 85% latency；对于 Claude 3.5 Sonnet，cache reads 为 $0.30/M，而 fresh 为 $3.00/M，TTL 为 5 分钟，1-hour TTL 选项有 2x write premium（docs.anthropic.com，2026-04）。OpenAI prompt caching 会自动应用于 ≥1024 tokens 的 prompts，并将 cached input 定价为相对 fresh 约 90% 折扣（platform.openai.com，2026-04）；精确的 per-model cached rate 取决于 live rate card。L1（app-level）semantic caching 会在 Embedding similarity 命中时完全跳过 LLM。Vendor “95% accuracy” 指的是匹配正确性，而不是 hit rate —— 报告的生产 hit rates 从 10%（open-ended chat）到 70%（structured FAQ）不等；两家 provider 都没有发布 official baseline，因此应把这些视为 community telemetry，而不是保证。生产陷阱：parallelization 会破坏 caching（在第一次 cache write 之前发出的 N 个 parallel requests 会让花费膨胀数倍），而 prefix 内的 dynamic content 会完全阻止 cache hits。ProjectDiscovery 报告称，通过将 dynamic text 移出 cacheable prefix，hit rate 从 7% 提升到 74%（2025-11）。
+> 缓存发生在两个层级。L2（供应商层）Prompt/前缀缓存会对重复前缀复用 Attention KV。Anthropic 的 Prompt Caching 文档宣称，对于长 Prompt，成本最多可降低 90%，延迟最多可降低 85%；对于 Claude 3.5 Sonnet，缓存读取价格为 $0.30/M，而新输入为 $3.00/M，默认 TTL 为 5 分钟，1 小时 TTL 选项的写入溢价为 2 倍（docs.anthropic.com，2026-04）。OpenAI Prompt Caching 会自动应用于 ≥1024 Token 的 Prompt，缓存输入价格约比新输入低 90%（platform.openai.com，2026-04）；每个 Model 的确切缓存价格取决于实时价目表。L1（应用层）Semantic Caching 会在 Embedding 相似度命中时完全跳过 LLM。供应商宣称的“95% accuracy”指匹配正确率，而不是命中率。报告中的生产命中率从 10%（开放式聊天）到 70%（结构化 FAQ）不等；两家供应商都没有发布官方基准，因此应将这些数据视为社区遥测，而不是保证。生产环境中的陷阱包括：并行化会破坏缓存（在首次缓存写入完成前发出 N 个并行请求，可能使支出增加数倍），而前缀中的动态内容会完全阻止缓存命中。ProjectDiscovery 报告称，通过将动态文本移出可缓存前缀，命中率从 7% 提升到了 74%（2025-11）。
 
 **Type:** Learn
-**Languages:** Python (stdlib, toy two-layer cache simulator)
-**前置要求：** Phase 17 · 04 (vLLM Serving Internals), Phase 17 · 06 (SGLang RadixAttention)
+**Languages:** Python（stdlib，简化的双层缓存模拟器）
+**Prerequisites:** Phase 17 · 04（Serving Engine 内部机制）、Phase 17 · 06（SGLang RadixAttention）
 **Time:** ~60 分钟
 
-## 学习目标
-- 区分 L2 prompt/prefix caching（provider 侧 KV 复用）与 L1 semantic caching（对相似 prompts 绕过 LLM）。
-- 解释 Anthropic 的 `cache_control` 显式标记，以及两个 TTL 选项（5-min 与 1-hour）及其 price multipliers。
-- 根据 hit rate、prompt/response mix 和 Token prices，计算预期月度节省。
-- 说出会让账单膨胀 5-10x 的 parallelization anti-pattern，以及会让 hit rate 崩塌的 dynamic-content anti-pattern。
+## Learning Objectives
+
+- 区分 L2 Prompt/前缀缓存（供应商端的 KV 复用）与 L1 Semantic Caching（对相似 Prompt 绕过 LLM）。
+- 解释 Anthropic 的显式 `cache_control` 标记，以及两个 TTL 选项（5 分钟与 1 小时）及其价格倍数。
+- 根据命中率、Prompt/响应比例和 Token 价格，计算预期的月度节省金额。
+- 说明会使账单膨胀 5-10 倍的并行化反模式，以及会导致命中率崩溃的动态内容反模式。
 
 ## 问题
-你给自己的 RAG service 加了 prompt caching。账单没有变化。你测量 hit rate；只有 7%。你的 prompts 看起来是静态的，但其实不是 —— system prompt 包含按分钟格式化的当前日期、request ID，以及为了多样性而随机重排的示例。每个 request 都写入一个新的 cache entry，读取为零。
 
-另外，你的 agent 会为每个 user question 并行运行十个 tool calls。十个请求都在第一次 cache write 完成之前到达 provider。十次写入，零次读取。你的账单是“开启 caching 后”本应成本的 5-10x。
+你为 RAG 服务添加了 Prompt Caching，但账单没有变化。测量后发现命中率只有 7%。你的 Prompt 看似静态，实际上却并非如此：系统 Prompt 包含精确到分钟的当前日期、请求 ID，以及为了增加多样性而随机调整顺序的示例。每个请求都会写入一个新的缓存条目，读取次数为零。
 
-Caching 是一种协议，不是一个 flag。两层，两种不同的 failure modes。
+与此同时，你的 Agent 会针对每个用户问题并行执行十次 Tool 调用。这十个请求都在首次缓存写入完成前到达供应商。结果是十次写入，零次读取。你的账单是“启用缓存”预期成本的 5-10 倍。
+
+缓存是一种协议，不是一个开关。两个层级，有两种不同的失败模式。
 
 ## 概念
-### L2 — provider prompt/prefix caching
 
-Provider 存储 cacheable prefix 的 attention KV，并在下一个匹配该 prefix 的 request 上复用它。你只支付一次 write cost，reads 几乎免费。
+### L2 — 供应商 Prompt/前缀缓存
 
-**Anthropic (Claude 3.5 / 3.7 / 4 series)**：request 中的显式 `cache_control` marker。你标记哪些 blocks 可 cache。TTL：5-minute（write costs 为 1.25x base）或 1-hour（write costs 为 2x base）。Cache reads：Claude 3.5 Sonnet 上为 $0.30/M，而 fresh 为 $3.00/M —— 便宜 10x（docs.anthropic.com，截至 2026-04）。不同 model 的 rates 不同（Opus/Haiku 分别发布）；始终交叉核对 live pricing page。
+供应商会存储可缓存前缀的 Attention KV，并在下一个请求匹配该前缀时复用。你只需支付一次写入成本，后续读取几乎免费。
 
-**OpenAI**：对 ≥1024 tokens 的 prompts 自动 caching（platform.openai.com，2026-04）。没有显式 flag。在当前 gpt-4o/gpt-5 rate cards 上，cached input 约比 fresh 便宜 10x。docs 和 release notes 都没有发布 official hit-rate baseline；community reports 在精心设计 prompt 后大多集中在 30–60%。监控 `usage.cached_tokens` 来测量你自己的情况。
+**Anthropic（Claude 3.5 / 3.7 / 4 系列）**：请求中使用显式 `cache_control` 标记。你需要标记哪些 block 可缓存。TTL：5 分钟（写入成本为基础价格的 1.25 倍）或 1 小时（写入成本为基础价格的 2 倍）。Claude 3.5 Sonnet 的缓存读取价格为 $0.30/M，而新输入为 $3.00/M，便宜 10 倍（docs.anthropic.com，截至 2026-04）。不同 Model 的价格不同（Opus/Haiku 单独发布）；务必与实时定价页面交叉核验。
 
-**Google (Gemini)**：通过显式 API 做 context caching；1M-token context 意味着 caching 的收益更大。
+**OpenAI**：自动对 ≥1024 Token 的 Prompt 启用缓存（platform.openai.com，2026-04）。无需显式 flag。在当前 gpt-4o/gpt-5 价目表中，缓存输入的价格约为新输入的十分之一。文档和 release note 都没有发布官方命中率基准；在精心设计 Prompt 的情况下，社区报告通常集中在 30–60%。请监控 `usage.cached_tokens` 来测量自己的数据。
 
-**Self-hosted (vLLM, SGLang)**：Phase 17 · 06 介绍 RadixAttention —— 在你自己的 compute 上采用相同模式。
+**Google（Gemini）**：通过显式 API 进行 Context Caching；对于 1M Token Context，缓存带来的收益更大。
 
-### L1 — app 级 semantic caching
+**Self-hosted（vLLM、SGLang）**：Phase 17 · 06 介绍了 RadixAttention，即在自己的计算资源上采用相同模式。
 
-在调用 LLM 之前，先 hash prompt、对其做 Embedding，并查找相似的 cached request（cosine similarity 高于 threshold，通常为 0.95+）。命中时，返回 cached response。未命中时，调用 LLM 并 cache 结果。
+### L1 — 应用层 Semantic Caching
+
+在调用 LLM 之前，先对 Prompt 进行 hash 和 Embedding，然后查找相似的已缓存请求（余弦相似度高于阈值，通常为 0.95+）。命中时，返回缓存响应。未命中时，调用 LLM 并缓存结果。
 
 Open-source：Redis Vector Similarity、GPTCache、Qdrant。Commercial：Portkey Cache、Helicone Cache。
 
-Vendor accuracy claims 指的是返回的 cached response 在语义上合适的频率，而不是命中频率。生产 hit rates：
+供应商的 accuracy 声明指返回的缓存响应在语义上合适的频率，而不是缓存命中的频率。生产环境命中率如下：
 
-- Open-ended chat：10-15%。
-- Structured FAQ / support：40-70%。
-- Code questions：20-30%（小变体会破坏 hits）。
-- Voice agents repeating prompts：50-80%（voice normalization fixed set）。
+- 开放式聊天：10-15%。
+- 结构化 FAQ / 支持服务：40-70%。
+- 代码问题：20-30%（微小变体就会导致无法命中）。
+- 重复 Prompt 的语音 Agent：50-80%（语音规范化为固定集合）。
 
-### The parallelization anti-pattern
+### 并行化反模式
 
-你的 agent 并行发起 10 个 tool calls。全部 10 个都有相同的 4K-token system prompt。Anthropic cache writes 是 per-request 的；第一次 cache-write 在 provider 看到 prompt 后约 300 ms 完成。Requests 2-10 在同一毫秒窗口到达，并且每个都会看到 cache miss。你支付了 10 次 write premiums，0 次 read discounts。
+你的 Agent 会并行执行 10 次 Tool 调用。所有调用都包含相同的 4K Token 系统 Prompt。Anthropic 的缓存写入按请求执行；供应商收到 Prompt 后约 300 ms，首次缓存写入才会完成。请求 2-10 在同一个毫秒时间窗口内到达，每一个都会发生缓存未命中。你支付了 10 次写入溢价，却没有获得任何读取折扣。
 
-修复：batch with sequential-first —— 单独发起 request 1，然后在 1 的 cache 已经 populated 后再触发 2-10。给第一个 tool call 增加 300 ms；节省 5-10x 账单。
+修复方法：使用 sequential-first 方式分 Batch。先单独发出请求 1，等其缓存填充完成后再发出请求 2-10。这会给首次 Tool 调用增加 300 ms 延迟，但可以将账单降低 5-10 倍。
 
-### The dynamic content anti-pattern
+### 动态内容反模式
 
-你的 system prompt 看起来像：
+你的系统 Prompt 如下：
 
 ```
 You are a helpful assistant. The current time is 14:32:17.
 User ID: abc123. Today is Tuesday...
 ```
 
-每个 request 都是唯一的。每个 request 都会写入。零 hits。
+每个请求都是唯一的。每个请求都会写入缓存。命中次数为零。
 
-修复：把所有真正静态的内容移动到 cacheable prefix；把 dynamic content 追加到 cache boundary 之后：
+修复方法：将所有真正静态的内容移到可缓存前缀中，并在缓存边界后附加动态内容：
 
 ```
 [cacheable]
@@ -75,52 +78,61 @@ You are a helpful assistant. [rules, examples, instructions]
 Current time: 14:32:17. User: abc123.
 ```
 
-ProjectDiscovery 通过这种方式把 cache hit rate 从 7% 提升到 74%，并发布了该 anatomy。
+ProjectDiscovery 通过这种方式将缓存命中率从 7% 提升到了 74%，并公开了具体结构。
 
-### Stack batch + cache for overnight workloads
+### 为隔夜工作负载叠加 Batch 与缓存
 
-Batch APIs（Phase 17 · 15）在 24-hour turnaround 下提供 50% 折扣。Cached input 叠加后又能获得约 10x。Overnight classification、labeling 和 report generation workloads 可以通过叠加降到 synchronous-uncached 成本的约 10%。
+Batch API（Phase 17 · 15）可在 24 小时周转时间下提供 50% 折扣。再叠加缓存输入，成本还能在此基础上降低约 10 倍。隔夜 Classification、Labeling 和报告生成工作负载通过叠加这些机制，可将成本降至同步、无缓存成本的约 10%。
 
-### Numbers you should remember
+### 你应该记住的数字
 
-Pricing points 是从链接的 vendor docs 中采集的 2026-04 数据，并且每几个月会变化 —— 依赖它们之前请重新核验。
+以下定价数据于 2026-04 从链接的供应商文档中获取，每隔几个月就可能发生变化，请在依赖这些数字前重新核验。
 
-- Anthropic cached read：Claude 3.5 Sonnet 上 $0.30/M，约比 fresh input 便宜 10x（docs.anthropic.com）。
-- Anthropic cache write premium：1.25x（5-min TTL）或 2x（1-hour TTL）。
-- OpenAI auto-cache：适用于 ≥1024 tokens 的 prompts；在当前 rate cards 上，cached input 定价约为 fresh input 的 10%（platform.openai.com）。
-- Semantic cache hit rate（community-reported）：open chat 约 ~10%；structured FAQ 最高约 ~70%。不是 vendor-documented baseline。
-- ProjectDiscovery：通过将 dynamic 移出 prefix，hit rate 从 7% → 74%（project blog，2025-11）。
-- Parallelization anti-pattern：典型报告显示，当 N 个 parallel requests 错过第一次 cache write 时，账单会膨胀 5–10x。
+- Anthropic 缓存读取：Claude 3.5 Sonnet 为 $0.30/M，约比新输入便宜 10 倍（docs.anthropic.com）。
+- Anthropic 缓存写入溢价：1.25 倍（5 分钟 TTL）或 2 倍（1 小时 TTL）。
+- OpenAI 自动缓存：适用于 ≥1024 Token 的 Prompt；在当前价目表中，缓存输入价格约为新输入的 10%（platform.openai.com）。
+- Semantic Cache 命中率（社区报告）：开放式聊天约 10%；结构化 FAQ 最高约 70%。这不是供应商记录的基准。
+- ProjectDiscovery：通过将动态内容移出前缀，将命中率从 7% 提升到 74%（项目博客，2025-11）。
+- 并行化反模式：当 N 个并行请求错过首次缓存写入时，典型报告显示账单会膨胀 5–10 倍。
+
+```figure
+semantic-cache-hit
+```
 
 ## 使用它
-`code/main.py` 模拟混合 workloads 上的 L1 + L2 caching。报告 hit rates、bill，并展示 parallelization penalty。
+
+`code/main.py` 在混合工作负载上模拟 L1 + L2 缓存。它会报告命中率和账单，并展示并行化带来的成本惩罚。
 
 ## 交付它
-本课产出 `outputs/skill-cache-auditor.md`。给定 prompt template 和 traffic，它会审计 cacheability 并推荐 restructure。
+
+本课将生成 `outputs/skill-cache-auditor.md`。给定 Prompt template 和流量后，它会审计可缓存性并建议如何重构。
 
 ## 练习
-1. 运行 `code/main.py`。切换 parallelization flag。账单变化多少？
-2. 你的 system prompt 有日期。把它移出去。展示 before/after hit rate math。
-3. 在给定 request arrival rate 的情况下，计算 1-hour TTL（2x write）与 5-minute TTL（1.25x write）的 break-even。
-4. Semantic cache 在 0.95 threshold 下命中 20%。在 0.85 下命中 50%，但你看到错误的 cached responses。选择正确 threshold 并说明理由。
-5. 你对每个 user question batch 10 个 parallel sub-queries。重写为 cache-friendly，同时不增加 end-to-end latency。
+
+1. 运行 `code/main.py`。切换并行化 flag。账单会发生多大变化？
+2. 你的系统 Prompt 中包含日期。将其移出，并展示调整前后的命中率计算。
+3. 给定请求到达率，计算 1 小时 TTL（2 倍写入成本）与 5 分钟 TTL（1.25 倍写入成本）的盈亏平衡点。
+4. Semantic Cache 在 0.95 阈值下的命中率为 20%。在 0.85 阈值下，命中率为 50%，但会出现错误的缓存响应。选择正确的阈值并说明理由。
+5. 你会针对每个用户问题并行分 Batch 执行 10 个子查询。重写流程，使其更有利于缓存，同时不增加端到端延迟。
 
 ## 关键术语
+
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
-| L2 prompt cache | "prefix cache" | Provider 存储重复 prefix 的 KV |
-| `cache_control` | "Anthropic cache marker" | 标记 cacheable blocks 的显式 attribute |
-| Cache write premium | "write tax" | 从首次 miss 到 cache 的额外成本（1.25x 或 2x） |
-| L1 semantic cache | "embedding cache" | 调用 LLM 前在 app-level 进行 hash-and-embed |
-| GPTCache | "LLM caching lib" | 流行的 OSS L1 cache library |
-| Cache hit rate | "hits / total" | 从 cache 服务的 requests 占比 |
-| Parallelization anti-pattern | "the N-write trap" | N 个 parallel requests 会 N 次 miss cache |
-| Dynamic content trap | "the time-in-prompt trap" | prefix 中的 dynamic bytes 会破坏 hit rate |
-| RadixAttention | "intra-replica cache" | SGLang 的 prefix-cache implementation |
+| L2 Prompt Cache | “前缀缓存” | 供应商为重复前缀存储 KV |
+| `cache_control` | “Anthropic 缓存标记” | 用于标记可缓存 block 的显式属性 |
+| Cache write premium | “写入税” | 首次从未命中到写入缓存的额外成本（1.25 倍或 2 倍） |
+| L1 Semantic Cache | “Embedding 缓存” | 调用 LLM 前在应用层执行 hash 和 Embedding |
+| GPTCache | “LLM 缓存库” | 流行的 OSS L1 缓存库 |
+| Cache hit rate | “命中数 / 总数” | 由缓存提供服务的请求比例 |
+| Parallelization anti-pattern | “N 次写入陷阱” | N 个并行请求导致 N 次缓存未命中 |
+| Dynamic content trap | “Prompt 中的时间陷阱” | 前缀中的动态字节会破坏命中率 |
+| RadixAttention | “副本内缓存” | SGLang 的前缀缓存实现 |
 
 ## 延伸阅读
-- [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) — official `cache_control` semantics 与 TTLs。
-- [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching) — automatic caching behavior 与 eligibility。
-- [TianPan — Semantic Caching for LLMs Production](https://tianpan.co/blog/2026-04-10-semantic-caching-llm-production)
-- [ProjectDiscovery — Cut LLM Costs 59% With Prompt Caching](https://projectdiscovery.io/blog/how-we-cut-llm-cost-with-prompt-caching)
+
+- [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) — 官方 `cache_control` 语义和 TTL。
+- [OpenAI Prompt Caching](https://platform.openai.com/docs/guides/prompt-caching) — 自动缓存行为和适用条件。
+- [TianPan — 生产环境中的 LLM Semantic Caching](https://tianpan.co/blog/2026-04-10-semantic-caching-llm-production)
+- [ProjectDiscovery — 使用 Prompt Caching 将 LLM 成本降低 59%](https://projectdiscovery.io/blog/how-we-cut-llm-cost-with-prompt-caching)
 - [DigitalOcean / Anthropic — Prompt Caching](https://www.digitalocean.com/blog/prompt-caching-with-digital-ocean)
