@@ -95,6 +95,10 @@ Prismatic VLMs（Karamcheti et al., 2024）是控制了所有 axes 的 paper。�
 
 这些默认项中的每一项，都可以追溯到本课末尾引用 papers 中的实测 ablation。
 
+```figure
+l5-vlm-recipe-knobs
+```
+
 ## 使用它
 `code/main.py` 是一个 ablation table parser 和 recipe picker。它编码了 MM1 和 Idefics2 ablation tables（浓缩版），并允许你查询：
 
