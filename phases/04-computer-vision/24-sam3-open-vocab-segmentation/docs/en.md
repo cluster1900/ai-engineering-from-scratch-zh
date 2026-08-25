@@ -104,6 +104,10 @@ SAM-MI（2025-2026）解决 SAM 的 decoder bottleneck。关键思想：
 
 它们都返回相同的一般结构（boxes + labels + scores + masks + IDs），这很有帮助：你的下游 pipeline 不需要根据运行的是哪个模型来分支。
 
+```figure
+cv3-open-vocab
+```
+
 ## 构建
 
 ### 步骤 1：Prompt 构造
