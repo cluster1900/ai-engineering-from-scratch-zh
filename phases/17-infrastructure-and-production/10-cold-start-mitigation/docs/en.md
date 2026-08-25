@@ -82,6 +82,10 @@ ServerlessLLM 将 storage 视为一个 hierarchy：NVMe（快但大）、DRAM（
 - Run:ai Model Streamer：~2x weight-load speedup。
 - ServerlessLLM tiered loading：latency 降低 10-200x（paper numbers）。
 
+```figure
+cold-start-pipeline
+```
+
 ## 使用它
 `code/main.py` 对带有和不带各类 mitigation 的 cold-start path 建模。报告 total cold-start time、warm-pool cost，以及 warm pool 回本所需的 break-even request rate。
 
