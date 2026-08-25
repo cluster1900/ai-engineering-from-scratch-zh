@@ -96,6 +96,10 @@ Multiplex 是 2026 年 crowd tracking 的新默认选择：concert crowds、ware
 
 对于 surveillance（who is who）：报告 IDF1。对于 sports analytics（counting passes）：HOTA。对于一般学术比较：HOTA。
 
+```figure
+cv3-track-assoc
+```
+
 ## 构建它
 
 ### 步骤 1： 基于 IoU 的 cost matrix

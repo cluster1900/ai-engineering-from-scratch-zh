@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "在 tracking-by-detection 中，Hungarian algorithm 做什么？",
-      "options": ["它会过滤掉低置信度的检测结果", "它求解 tracks 与 detections 之间的最低成本一对一分配，通常使用 1 - IoU 作为成本，从而将每条 track 至多匹配到一个 detection，反之亦然", "它训练 detector", "它预测未来轨迹"],
-      "correct": 1,
+      "options": [
+        "它训练 detector",
+        "它预测未来轨迹",
+        "它会过滤掉低置信度的检测结果",
+        "它求解 tracks 与 detections 之间的最低成本一对一分配，通常使用 1 - IoU 作为成本，从而将每条 track 至多匹配到一个 detection，反之亦然"
+      ],
+      "correct": 3,
       "explanation": "每一帧 tracking-by-detection 都会做一个分配问题：M 条 tracks，N 个 detections，找到最佳的一对一匹配。Hungarian 是解决这个问题的最优多项式算法。成本通常是 1 - IoU（重叠越高 = 成本越低）。scipy.optimize.linear_sum_assignment 是标准实现。SORT、DeepSORT、ByteTrack、BoT-SORT 都使用它。"
     },
     {
       "stage": "pre",
       "question": "ByteTrack 的区别性贡献是什么？",
-      "options": ["一个新的 backbone", "第二阶段 association：尝试将剩余 tracks 匹配到低置信度 detections，从而恢复标准 tracker 因丢弃这些 detections 而会丢失的短时遮挡和 IDs", "一个新的 Kalman filter", "一个 appearance Embedding"],
-      "correct": 1,
+      "options": [
+        "一个新的 backbone",
+        "一个 appearance Embedding",
+        "一个新的 Kalman filter",
+        "第二阶段 association：尝试将剩余 tracks 匹配到低置信度 detections，从而恢复标准 tracker 因丢弃这些 detections 而会丢失的短时遮挡和 IDs"
+      ],
+      "correct": 3,
       "explanation": "大多数 trackers 会丢弃低于置信度阈值（约 0.5）的 detections。ByteTrack 会保留它们，并运行第二次 Hungarian pass，尝试把它们匹配到没有匹配任何高置信度 detection 的 tracks。这能恢复短暂遮挡和交叉场景，在 MOT17 上显著提升 IDF1，而且不需要任何学习到的 appearance features。它的简单性使其成为 Ultralytics 和 Roboflow Supervision 中的默认选择。"
     },
     {
       "stage": "post",
       "question": "SAM 2 的基于 memory 的 tracker 如何避免显式 Hungarian 风格的 association？",
-      "options": ["它在内部运行 SORT", "它在 memory bank 中存储每个 instance 的时空 features；在每个新 frame 上，memory 与当前 features 之间的 Cross-Attention 会直接生成同一个 instance 的 mask，association 隐含在 Attention 操作中", "它使用 Kalman filter", "它要求每帧都有人工标注的 IDs"],
-      "correct": 1,
+      "options": [
+        "它在 memory bank 中存储每个 instance 的时空 features；在每个新 frame 上，memory 与当前 features 之间的 Cross-Attention 会直接生成同一个 instance 的 mask，association 隐含在 Attention 操作中",
+        "它在内部运行 SORT",
+        "它使用 Kalman filter",
+        "它要求每帧都有人工标注的 IDs"
+      ],
+      "correct": 0,
       "explanation": "SAM 2 用 memory-conditioned segmenter 替代了 detect-then-associate 循环。memory bank 保存来自前序 frames 的该 instance 的 features。在每个新 frame 上，decoder 会让新 frame 的 features 对 memory 做 Cross-Attention，得到的 mask 就是同一个 instance，不需要外部分配步骤。这能优雅地处理长时间遮挡，因为即使 instance 消失很多 frames，memory 仍会保留。"
     },
     {
       "stage": "post",
       "question": "对于监控视频，如果保持每个人的 ID 一致是主要要求，应该报告哪个指标？",
-      "options": ["MOTA", "IDF1，即 ID precision 和 recall 的调和平均值；衡量随时间保持 identity 的能力，而不是逐帧 detection accuracy", "Top-1 accuracy", "FID"],
-      "correct": 1,
+      "options": [
+        "IDF1，即 ID precision 和 recall 的调和平均值；衡量随时间保持 identity 的能力，而不是逐帧 detection accuracy",
+        "Top-1 accuracy",
+        "MOTA",
+        "FID"
+      ],
+      "correct": 0,
       "explanation": "MOTA 会混合 detection 和 association errors，因此有大量 false positives 的 tracker 可能掩盖它的 ID failures。IDF1 是为“随时间判断谁是谁”这个问题设计的：它会在整个视频范围内全局匹配 predicted tracks 和 ground-truth tracks，并在 identity labels 上计算 F1。对于 surveillance 和 crowd analytics，IDF1 是应报告的指标；HOTA 是更广泛的学术标准。"
     },
     {
       "stage": "post",
       "question": "SAM 3.1 Object Multiplex（2026 年 3 月）引入了跨多个 tracked instances 的 shared memory。这带来了什么能力？",
-      "options": ["更低的准确率", "高效的 multi-object tracking：一个带有 per-instance query tokens 的 shared memory bank 替代 N 个独立 memory banks，因此成本随 instances 数量呈亚线性增长，演唱会人群规模的场景也变得可处理", "仅限 Cloud inference", "一个新的 training objective"],
-      "correct": 1,
+      "options": [
+        "高效的 multi-object tracking：一个带有 per-instance query tokens 的 shared memory bank 替代 N 个独立 memory banks，因此成本随 instances 数量呈亚线性增长，演唱会人群规模的场景也变得可处理",
+        "一个新的 training objective",
+        "更低的准确率",
+        "仅限 Cloud inference"
+      ],
+      "correct": 0,
       "explanation": "Pre-Multiplex SAM 2 / SAM 3 为每个 object 使用自己的 memory bank；成本随 instances 数量线性增长。Multiplex（2026 年 3 月）引入了一个 shared memory，并用 per-instance query tokens 获取 instance-specific features。多 object tracking，如人群、交通、仓库工人，首次在基于 memory 的 tracker 中变得高效。"
     }
-  ]
+  ],
+  "title": null
 }
