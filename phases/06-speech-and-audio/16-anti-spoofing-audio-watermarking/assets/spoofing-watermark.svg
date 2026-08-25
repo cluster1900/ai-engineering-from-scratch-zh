@@ -11,21 +11,21 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">三层防御 — 检测 + watermarking + provenance</text>
+  <text x="440" y="26" text-anchor="middle" class="title">三层防御 — 检测 + 水印 + 来源追踪</text>
 
   <rect x="20" y="55" width="270" height="170" class="box"/>
   <text x="155" y="78" text-anchor="middle" class="label">A. anti-spoof 检测</text>
   <text x="155" y="96" text-anchor="middle" class="tag">ASVspoof 5 · AASIST · RawNet2</text>
   <text x="35" y="124" class="content">输入音频  →  classifier</text>
   <text x="35" y="142" class="content">输出：“真实”或“合成”</text>
-  <text x="35" y="162" class="content">EER 0.42% on ASVspoof 2019 LA</text>
-  <text x="35" y="180" class="content">EER 7.23% on ASVspoof 5（真实世界）</text>
+  <text x="35" y="162" class="content">ASVspoof 2019 LA 上的 EER：0.42%</text>
+  <text x="35" y="180" class="content">ASVspoof 5（真实世界）上的 EER：7.23%</text>
   <text x="35" y="208" class="caption">应对非协作对手</text>
 
   <rect x="305" y="55" width="270" height="170" class="hot"/>
-  <text x="440" y="78" text-anchor="middle" class="label">B. 音频 watermarking</text>
+  <text x="440" y="78" text-anchor="middle" class="label">B. 音频水印</text>
   <text x="440" y="96" text-anchor="middle" class="tag">AudioSeal · WaveVerify</text>
-  <text x="320" y="124" class="content">generator Embedding signal</text>
+  <text x="320" y="124" class="content">generator Embedding 信号</text>
   <text x="320" y="142" class="content">detector 提取 payload</text>
   <text x="320" y="162" class="content">每段 16-bit payload</text>
   <text x="320" y="180" class="content">可经受 MP3 / EQ / 噪声</text>
@@ -47,9 +47,9 @@
   <text x="40" y="330" class="content">溯源：重新编码即可轻易移除 → 单独无效</text>
 
   <rect x="20" y="350" width="840" height="105" class="hot"/>
-  <text x="440" y="372" text-anchor="middle" class="label">2026 voice-gen 部署生产清单</text>
-  <text x="40" y="398" class="content">1. 每次生成都Embedding AudioSeal（detector 随 CI 发布）</text>
+  <text x="440" y="372" text-anchor="middle" class="label">2026 voice-gen 生产部署清单</text>
+  <text x="40" y="398" class="content">1. 每次生成都 Embedding AudioSeal（检测器随 CI 发布）</text>
   <text x="40" y="416" class="content">2. 用 C2PA 签名 manifest，含 model id + user id + timestamp</text>
-  <text x="40" y="434" class="content">3. 入站通话音频运行 AASIST / RawNet2 detector（欺诈、重放）</text>
-  <text x="40" y="452" class="content">4. 审计日志 + 30 天保留 + consent artifact + rate-limit + kill-switch</text>
+  <text x="40" y="434" class="content">3. 入站通话音频运行 AASIST / RawNet2 检测器（欺诈、重放）</text>
+  <text x="40" y="452" class="content">4. 审计日志 + 保留 30 天 + consent artifact + rate-limit + kill-switch</text>
 </svg>

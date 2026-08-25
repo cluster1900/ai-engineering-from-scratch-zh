@@ -70,6 +70,10 @@ AudioSeal 之前的开放 baseline。Invertible neural network，32 bits/sec。�
 
 不是 ML 技术，而是一种 manifest 格式。音频文件携带关于创建工具、作者、日期的加密签名 metadata。Audobox / Seamless 使用它。适合 provenance；但如果恶意行为者重新编码并剥离 metadata，它就无能为力。
 
+```figure
+v4-audio-watermark
+```
+
 ## 构建它
 
 ### 步骤 1： 一个简单的 spectral-feature detector（toy）
