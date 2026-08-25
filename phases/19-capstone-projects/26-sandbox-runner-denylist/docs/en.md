@@ -46,6 +46,10 @@ sandbox 有四个 refusal axes：name、argv、path、structure。每个 axis �
 
 `SandboxResult` exit codes 使用惯例值：0 表示 success，非零表示 failure，另外有三个 sentinel codes：denied (-100)、timed_out (-101) 和 truncated（exit code 是真实值，同时设置 flag）。下游课程会读取这个结构化 result，而不是解析 stderr。
 
+```figure
+cg-path-jail
+```
+
 ## 架构
 
 ```mermaid
