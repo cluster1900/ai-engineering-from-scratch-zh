@@ -63,6 +63,10 @@ OTel GenAI（Lesson 23）给了你 schema。你仍然需要一个平台来 inges
 - **没有 grounding 的自建 LLM-judge。** CRITIC pattern（Lesson 05）适用 — judges 需要外部工具进行事实验证。
 - **Prompt versions 没有关联到 traces。** 当 prod 出现 regression 时，你无法 bisect 到导致问题的 prompt。
 
+```figure
+wb-trace-ingest
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个 stdlib trace collector + LLM-judge evaluator：
