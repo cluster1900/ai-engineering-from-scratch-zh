@@ -80,6 +80,10 @@ while True:
 - *长 horizon 的 perfect-information games*（Go、chess）：仍然是 search-based。AlphaZero / MuZero 占主导。
 - *LLM reasoning*：生产中还没有 MCTS；对完整 rollout 做 GRPO，推理 compute 使用 best-of-N。Process reward models (PRMs) 暗示 step-level search 正被重新加入。
 
+```figure
+f3-selfplay-ladder
+```
+
 ## 构建
 
 `code/main.py` 中的代码实现了 **微型 GRPO** —— 一个带多组 sample 的 bandit。algorithm 与 LLM 上相同；只有 policy 和 environment 更简单。它讲清楚 *loss* 和 *group-relative advantage*，也就是 2025 年的创新点。
