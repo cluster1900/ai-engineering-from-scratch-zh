@@ -69,6 +69,10 @@ position wise MLP 会把同一个两层网络独立应用到每个 Token。hidde
 
 它们让跨深度的 Gradient path 变成加法形式，从而保持 Gradient norm 的尺度穿过十二层。它们也让每个 block 学习对运行中 representation 的加性更新，而不是完整替换。这两个效果就是 block 能够扩展的原因。
 
+```figure
+cc-transformer-block
+```
+
 ## Build It
 
 `code/main.py` 实现了：
