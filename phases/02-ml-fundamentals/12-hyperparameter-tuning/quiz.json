@@ -4,10 +4,10 @@
     "stage": "pre",
     "question": "parameter 和 hyperparameter 有什么区别？",
     "options": [
-      "parameters 由用户设置；hyperparameters 在训练过程中学习得到",
-      "parameters 在训练过程中学习得到（weights、biases）；hyperparameters 在训练开始前设置（learning rate、max depth）",
       "没有区别；它们是同义词",
-      "parameters 只适用于 Neural Network；hyperparameters 适用于 tree models"
+      "parameters 在训练过程中学习得到（weights、biases）；hyperparameters 在训练开始前设置（learning rate、max depth）",
+      "parameters 只适用于 Neural Network；hyperparameters 适用于 tree models",
+      "parameters 由用户设置；hyperparameters 在训练过程中学习得到"
     ],
     "correct": 1,
     "explanation": "Parameters 由 optimization algorithm 在训练过程中学习得到（例如 weights）。Hyperparameters 在训练前设置，用来控制学习如何发生（例如 learning rate、regularization strength）。"
@@ -17,12 +17,12 @@
     "stage": "pre",
     "question": "对 4 个 hyperparameters 进行 grid search，且每个都有 5 个取值，需要多少次评估？",
     "options": [
-      "20",
-      "25",
       "625",
-      "4"
+      "20",
+      "4",
+      "25"
     ],
-    "correct": 2,
+    "correct": 0,
     "explanation": "Grid search 会评估每一种组合：5^4 = 625。这种指数级扩展正是 grid search 在 hyperparameters 很多时变得不切实际的原因。"
   },
   {
@@ -30,10 +30,10 @@
     "stage": "post",
     "question": "为什么在相同评估预算下，random search 往往优于 grid search？",
     "options": [
-      "Random search 使用了更好的 optimization algorithm",
-      "大多数 hyperparameters 的有效维度较低，因此 random search 能更密集地覆盖重要的那些维度",
       "Random search 总能找到全局最优解",
-      "Grid search 无法处理连续型 hyperparameters"
+      "大多数 hyperparameters 的有效维度较低，因此 random search 能更密集地覆盖重要的那些维度",
+      "Grid search 无法处理连续型 hyperparameters",
+      "Random search 使用了更好的 optimization algorithm"
     ],
     "correct": 1,
     "explanation": "通常对于给定问题，只有 1-2 个 hyperparameters 真正重要。Grid search 会把评估浪费在变化不重要的 hyperparameters 上。Random search 在每次 trial 中为每个 parameter 提供唯一取值，因此能更密集地覆盖重要维度。"
@@ -43,12 +43,12 @@
     "stage": "post",
     "question": "在 Bayesian optimization 中，acquisition function 平衡的是什么？",
     "options": [
+      "surrogate model 中的 bias 和 variance",
       "训练速度和模型准确率",
-      "Exploitation（在已知效果好的点附近搜索）和 exploration（搜索不确定区域）",
       "features 的数量和 samples 的数量",
-      "surrogate model 中的 bias 和 variance"
+      "Exploitation（在已知效果好的点附近搜索）和 exploration（搜索不确定区域）"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "Acquisition function 通过平衡 exploitation（靠近已知好结果）和 exploration（surrogate model 不确定的位置）来决定下一步评估哪里。这会比 random search 更高效地引导搜索。"
   },
   {
@@ -57,11 +57,11 @@
     "question": "你使用 test set 调优 hyperparameters，并报告最佳 test performance。这种做法有什么问题？",
     "options": [
       "没有问题 -- 这是标准做法",
-      "你对 test set 过拟合了；报告的 performance 过于乐观，无法泛化",
       "test set 应该用于训练，而不是调优",
-      "Hyperparameters 应该只能是 integers"
+      "Hyperparameters 应该只能是 integers",
+      "你对 test set 过拟合了；报告的 performance 过于乐观，无法泛化"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "在 test set 上调优意味着你选择了恰好在这些特定 samples 上表现良好的 hyperparameters。这是对 test set 的过拟合。使用 validation set 进行调优，并保留 test set 用于最终评估。"
   }
 ]
