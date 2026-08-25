@@ -1,0 +1,48 @@
+{
+  "lesson": "07-building-an-mcp-server",
+  "title": "构建 MCP Server：无状态 Python 和 TypeScript",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "现代 MCP server 从哪里读取 client capabilities？",
+      "options": ["从 Mcp-Session-Id 读取", "从第一次 initialize 调用读取", "从当前的每个请求读取", "从进程环境读取"],
+      "correct": 2,
+      "explanation": "MCP 2026-07-28 在每个请求的 params._meta 中携带 client capabilities。"
+    },
+    {
+      "stage": "check",
+      "question": "现代 server 必须实现哪种方法？",
+      "options": ["initialize", "server/discover", "resources/subscribe", "shutdown"],
+      "correct": 1,
+      "explanation": "现代 server 必须实现 server/discover，但客户端可以先调用其他方法。"
+    },
+    {
+      "stage": "check",
+      "question": "tools/list 的成功结果中必须包含哪些字段？",
+      "options": ["protocolVersion 和 tools", "resultType、ttlMs、cacheScope 和 tools", "initialized 和 tools", "sessionId 和 tools"],
+      "correct": 1,
+      "explanation": "现代列表结果具有明确类型并且可以缓存。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 server 应该以确定性方式对 tools 排序？",
+      "options": ["为了稳定缓存和 Model Context", "为了创建会话", "为了协商协议", "为了取代授权"],
+      "correct": 0,
+      "explanation": "稳定排序使等价的注册表能够生成等价的响应。"
+    },
+    {
+      "stage": "post",
+      "question": "一次有效的 Tool 调用成功运行，但领域操作失败。哪种结构符合要求？",
+      "options": ["notifications/initialized", "HTTP DELETE", "一个将 isError 设为 true 的完整 Tool 结果", "一个新的 server 请求"],
+      "correct": 2,
+      "explanation": "Tool 层级的失败通过 content 和 isError 保持对 Model 可见。"
+    },
+    {
+      "stage": "post",
+      "question": "什么应该终止 stdio server 的传输生命周期？",
+      "options": ["stdin 上的 EOF", "一个 GET 请求", "一个强制的 shutdown RPC", "Mcp-Session-Id 过期"],
+      "correct": 0,
+      "explanation": "EOF 是可移植的 stdio 关闭信号。它不会关闭现代协议会话。"
+    }
+  ]
+}

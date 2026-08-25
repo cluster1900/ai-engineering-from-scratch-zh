@@ -1,166 +1,206 @@
-# 构建 MCP Server — Python + TypeScript SDKs
+# 构建 MCP 服务器：无状态 Python 与 TypeScript
 
-> 大多数 MCP tutorials 只展示 stdio hello-world。真正的 server 会暴露 tools、resources 和 prompts，处理 capability negotiation，发出 structured errors，并且在不同 SDKs 中行为一致。本课端到端构建一个 notes server：stdlib stdio transport、JSON-RPC dispatch、三个 server primitives，以及一种 pure-function 风格，等你进阶后可以直接放进 Python SDK 的 FastMCP 或 TypeScript SDK。
+> 现代 MCP 服务器不会记住 handshake。它会验证每个请求的元数据，运行一个 handler，并返回一个带类型的结果。
 
 **Type:** Build
-**Languages:** Python (stdlib, stdio MCP server)
-**Prerequisites:** Phase 13 · 06 (MCP fundamentals)
-**Time:** ~75 分钟
+**Languages:** Python, TypeScript
+**Prerequisites:** Phase 13, Lesson 06
+**Time:** 约 85 分钟
 
 ## 学习目标
-- 实现 `initialize`、`tools/list`、`tools/call`、`resources/list`、`resources/read`、`prompts/list` 和 `prompts/get` methods。
-- 编写一个 dispatch loop，从 stdin 读取 JSON-RPC messages，并向 stdout 写入 responses。
-- 按照 JSON-RPC 2.0 spec 和 MCP 的附加 codes 发出 structured error responses。
-- 在不重写 tool logic 的情况下，将 stdlib implementation 进阶到 FastMCP（Python SDK）或 TypeScript SDK。
+
+- 为 MCP `2026-07-28` 实现强制性的 `server/discover`。
+- 验证每个请求的协议版本和客户端 capabilities。
+- 以确定性的列表顺序公开 Tool、Resource 和 Prompt。
+- 在正确的结果中返回 `resultType`、服务器身份和缓存提示。
+- 通过 newline-delimited stdio，在 Python 和 TypeScript 中提供相同的无状态契约。
 
 ## 问题
-在你能使用 remote transport（Phase 13 · 09）或 auth layer（Phase 13 · 16）之前，需要一个干净的 local server。Local 意味着 stdio：server 由 client 作为 child process 启动，messages 通过 stdin/stdout 逐行流动。
 
-2025-11-25 spec 规定 stdio messages 编码为 JSON objects，并带有显式的 `\n` separator。这里没有 SSE；SSE 是旧的 remote mode，并将在 2026 年中移除（Atlassian 的 Rovo MCP server 已于 2026 年 6 月 30 日弃用它；Keboola 于 2026 年 4 月 1 日弃用）。对于 stdio，每行一个 JSON object 就是完整的 wire format。
+在收到第一条消息后存储客户端 capabilities 的服务器很容易构建，却很难运维。同一个 process 可能依次服务多个客户端。远程请求可能落到不同的 worker 上。过期的 capability 声明可能导致行为跨授权边界泄漏。
 
-notes server 是一个很好的形状，因为它会练到全部三个 server primitives。Tools 做 mutation（`notes_create`）。Resources 暴露 data（`notes://{id}`）。Prompts 提供 templates（`review_note`）。本课的形状可以泛化到任何 domain。
+MCP `2026-07-28` 通过让每个请求都具备自描述性，解决了这个问题中与协议有关的部分。你的应用仍然可以保存持久笔记、job 或显式状态 handle。但它不能保留会改变后续请求解码方式的隐藏协议状态。
+
+本课将构建两个版本的笔记服务器。Python 和 TypeScript 版本的协议核心都只使用各自的标准库。两者公开相同的 method，并执行相同的 wire contract。
 
 ## 概念
-### Dispatch loop
 
+### 现代 dispatch loop
+
+```text
+读取一行 JSON-RPC
+解析 envelope
+如果它是 notification，则不响应
+验证此请求的 params._meta
+根据 method 路由
+使用 resultType 和 serverInfo 包装成功结果
+写入一行 JSON-RPC 响应
+忘记请求范围内的元数据
 ```
-loop:
-  line = stdin.readline()
-  msg = json.loads(line)
-  if has id:
-    handle request -> write response
-  else:
-    handle notification -> no response
+
+仍需注意三条 stdio 规则：
+
+- 只向 stdout 写入 JSON-RPC 消息。将诊断信息发送到 stderr。
+- 使用换行符分隔消息，并在每次响应后执行 flush。
+- 当 stdin 到达 EOF 时立即退出。
+
+process 的生命周期是 transport 的生命周期。它不是现代 MCP session。
+
+### 请求验证
+
+每个请求必须包含：
+
+```json
+{
+  "params": {
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientCapabilities": {},
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "notes-client",
+        "version": "1.0.0"
+      }
+    }
+  }
+}
 ```
 
-三条规则：
+前两个字段是必需的。建议提供 `clientInfo`。验证已提供身份信息的结构，但不要将它视为身份认证。
 
-- 不要向 stdout 打印任何不是 JSON-RPC envelope 的内容。Debug logs 写到 stderr。
-- 每个 request MUST 匹配一个带有相同 `id` 的 response。
-- Notifications MUST NOT 被响应。
+如果版本不受支持，则返回代码 `-32022`，并包含 `requested` 和 `supported`。缺少请求元数据属于无效参数，代码为 `-32602`。绝不要使用先前调用中的值填充缺失字段。
 
-### 实现 `initialize`
+### 强制发现
+
+现代服务器必须实现 `server/discover`。完整的发现结果包括支持的现代版本、capabilities、可选说明、缓存提示，以及结果 `_meta` 中的服务器身份：
+
+```json
+{
+  "resultType": "complete",
+  "supportedVersions": ["2026-07-28"],
+  "capabilities": {
+    "tools": {"listChanged": false},
+    "resources": {"listChanged": false, "subscribe": false},
+    "prompts": {"listChanged": false}
+  },
+  "ttlMs": 3600000,
+  "cacheScope": "public",
+  "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+      "name": "notes-server",
+      "version": "2.0.0"
+    }
+  }
+}
+```
+
+发现操作不会解锁服务器。客户端可以在不调用发现操作的情况下调用 `tools/list`，因为 `tools/list` 已携带相同的请求元数据。
+
+### Tools
+
+`tools/list` 返回确定性的 Tool descriptor 列表。稳定的排序可以改善响应缓存，并保持 Model Context 稳定。该结果还必须包含 `ttlMs` 和 `cacheScope`。
+
+`tools/call` 返回 content block 和 `isError`。当协议 envelope 或 method 参数无效时，使用 JSON-RPC 错误。当有效的 Tool 调用已经运行，但 Tool 本身执行失败时，使用 `isError: true`。
+
+Tool annotation 仍然只是提示，而不是强制机制：
+
+- `readOnlyHint`
+- `destructiveHint`
+- `idempotentHint`
+- `openWorldHint`
+
+host 应使用它们来进行确认和展示。服务器仍然必须执行真正的授权检查。
+
+### Resources
+
+`resources/list` 返回稳定的 URI descriptor。`resources/read` 返回带类型的内容。两者在 `2026-07-28` 中均可缓存，因此都包含 `ttlMs` 和 `cacheScope`。
+
+对于用户特定的笔记数据，使用 `cacheScope: "private"`。共享缓存不得跨授权 Context 复用私有响应。
+
+现代变更传递不使用 `resources/subscribe`。客户端打开 `subscriptions/listen`，并请求 `resourceSubscriptions` 或列表变更类别。Lesson 10 将构建这一流程。
+
+### Prompts
+
+`prompts/list` 可缓存且具有确定性。`prompts/get` 使用参数渲染指定的 Prompt。渲染后的 Prompt 结果是完整的，但它并不属于需要缓存提示的可缓存列表或读取结果。
+
+### 每个成功结果都有类型
+
+示例为每个成功结果使用同一个 wrapper：
 
 ```python
-def initialize(params):
+def complete(payload):
     return {
-        "protocolVersion": "2025-11-25",
-        "capabilities": {
-            "tools": {"listChanged": True},
-            "resources": {"listChanged": True, "subscribe": False},
-            "prompts": {"listChanged": False},
-        },
-        "serverInfo": {"name": "notes", "version": "1.0.0"},
+        "resultType": "complete",
+        **payload,
+        "_meta": {SERVER_INFO_KEY: SERVER_INFO},
     }
 ```
 
-只声明你支持的内容。client 依赖 capability set 来 gate features。
+列表、读取和发现 handler 会添加 `ttlMs` 与 `cacheScope`。集中使用这个 wrapper，可以防止某个 handler 静默遗漏现代结果字段。
 
-### 实现 `tools/list` 和 `tools/call`
+### 不允许服务器发起请求
 
-`tools/list` 返回 `{tools: [...]}`，其中每个 entry 都有 `name`、`description`、`inputSchema`。`tools/call` 接收 `{name, arguments}`，并返回 `{content: [blocks], isError: bool}`。
+现代服务器可以发送与客户端请求相关的 notification，也可以在客户端打开的 `subscriptions/listen` stream 上发送 notification。但它不得发送自己的 JSON-RPC request。
 
-Content blocks 是有类型的。最常见的有：
+当 handler 需要 sampling、elicitation 或 roots 输入时，它会返回 `input_required` 结果。客户端完成其中Embedding的输入请求，然后使用新的 request id 重试原始 method。Lesson 11 将介绍这种 Multi Round-Trip Request 模式。
 
-```json
-{"type": "text", "text": "Found 2 notes"}
-{"type": "resource", "resource": {"uri": "notes://14", "text": "..."}}
-{"type": "image", "data": "<base64>", "mimeType": "image/png"}
+### 显式旧版兼容性
+
+双时代服务器还可以在明确隔离的旧版分支中实现 `2025-11-25` handshake。当请求中存在必需的现代 `_meta` 字段时，它选择现代行为；当收到 `initialize` 时，它选择旧版行为。
+
+不要让 `2026-07-28` 请求经过旧版 handshake 路径。不要在旧版初始化结果中加入现代 `resultType` 字段。本课代码特意只支持现代协议，以便清晰呈现其不变量。
+
+```figure
+t3-dispatch-loop
 ```
-
-Tool errors 有两种形状。Protocol-level errors（unknown method、bad params）是 JSON-RPC errors。Tool-level errors（valid call，但 tool 失败）会作为 `{content: [...], isError: true}` 返回。这让模型能在其 context 中看到失败。
-
-### 实现 resources
-
-Resources 按设计是 read-only。`resources/list` 返回 manifest；`resources/read` 返回 content。URIs 可以是 `file://...`、`http://...`，或像 `notes://` 这样的 custom scheme。
-
-当你把 data 作为 resource 而不是 tool 暴露时：
-
-- 模型不会“call”它；client 可以按 user request 将它注入 context。
-- Subscriptions 允许 server 在 resource 变化时 push updates（Phase 13 · 10）。
-- Phase 13 · 14 用 `ui://` 将其扩展到 interactive resources。
-
-### 实现 prompts
-
-Prompts 是带 named arguments 的 templates。host 会把它们作为 slash-commands 展示。`review_note` prompt 可以接收一个 `note_id` argument，并生成一个 multi-message prompt template，client 再把它喂给自己的模型。
-
-### Stdio transport 细节
-
-- Newline-delimited JSON。没有 length-prefixed framing。
-- 不要 buffer。每次写入后调用 `sys.stdout.flush()`。
-- client 控制 lifetime。当 stdin 关闭（EOF）时，干净退出。
-- 不要静默处理 SIGPIPE；记录日志并退出。
-
-### Annotations
-
-每个 tool 都可以携带 `annotations` 来描述 safety properties：
-
-- `readOnlyHint: true` — pure read，可安全重试。
-- `destructiveHint: true` — 不可逆 side effects；client 应确认。
-- `idempotentHint: true` — 相同 inputs 产生相同 outputs。
-- `openWorldHint: true` — 与 external systems 交互。
-
-client 使用这些来决定 UX（confirmation dialogs、status indicators）和 routing（Phase 13 · 17）。
-
-### Graduation path
-
-`code/main.py` 中的 stdlib server 大约 180 行。FastMCP（Python）将同样的 logic 压缩为 decorator-style：
-
-```python
-from fastmcp import FastMCP
-app = FastMCP("notes")
-
-@app.tool()
-def notes_search(query: str, limit: int = 10) -> list[dict]:
-    ...
-```
-
-TypeScript SDK 有等价的形状。准备好后，graduation path 可以直接替换；概念（capabilities、dispatch、content blocks）是相同的。
 
 ## 使用它
-`code/main.py` 是一个完整的 notes MCP server，基于 stdio 且只使用 stdlib。它处理 `initialize`、三个 tools（`notes_list`、`notes_search`、`notes_create`）的 `tools/list` 和 `tools/call`、每条 note 的 `resources/list` 和 `resources/read`，以及一个 `review_note` prompt。你可以通过 pipe JSON-RPC messages 来驱动它：
 
+运行 Python 服务器的有限 demo 和测试：
+
+```bash
+cd code
+python3 main.py --demo
+python3 -m unittest discover tests -v
 ```
-echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | python main.py
+
+使用 TypeScript runner 运行 TypeScript 移植版本：
+
+```bash
+npx tsx main.ts --demo
 ```
 
-需要关注的点：
-
-- dispatcher 是一个 `dict[str, Callable]`，以 method name 为 key。
-- 每个 tool executor 返回 content blocks 列表，而不是 bare string。
-- 当 executor 抛出异常时设置 `isError: true`。
+demo 会发送 `server/discover`、列出每种 primitive、调用 Tool，并展示不支持版本的错误。每个现代请求都会重复携带元数据。每个成功结果都包含服务器身份。
 
 ## 交付它
-本课产出 `outputs/skill-mcp-server-scaffolder.md`。给定一个 domain（notes、tickets、files、database），该 skill 会 scaffold 一个 MCP server，并带有合适的 tools / resources / prompts 划分以及 SDK graduation path。
+
+本课交付 `outputs/skill-mcp-server-scaffolder.md`。它会生成一个现代服务器方案，其中包含发现契约、逐请求验证、确定性的可缓存列表，以及可选的隔离式旧版 adapter。
 
 ## 练习
-1. 运行 `code/main.py`，并用手写 JSON-RPC messages 驱动它。练习 `notes_create`，然后用 `resources/read` 取回新 note。
 
-2. 添加一个带有 `annotations: {destructiveHint: true}` 的 `notes_delete` tool。验证 client 会展示 confirmation dialog（这需要真实 host；Claude Desktop 可用）。
-
-3. 实现 `resources/subscribe`，让 server 在 note 被修改时 push `notifications/resources/updated`。添加 keepalive task。
-
-4. 将 server 移植到 FastMCP。Python 文件应缩小到 80 行以内。wire behavior 必须完全一致；用同一个 JSON-RPC test harness 验证。
-
-5. 阅读 spec 的 `server/tools` section，并找出一个本课 server 未实现的 tool definition 字段。（提示：有好几个；选一个并添加。）
+1. 从一个请求中移除 capabilities，并证明服务器不会复用上一个请求的声明。
+2. 反转 `TOOLS`、`PROMPTS` 和笔记的插入顺序。确认所有列表结果仍保持稳定。
+3. 添加一个破坏性的 `notes_delete` Tool，并要求在 executor 内部进行授权检查。仅将 `destructiveHint` 保留为 UX 提示。
+4. 添加带有 `ttlMs`、`cacheScope` 和确定性排序的 `resources/templates/list`。
+5. 为 `2025-11-25` 构建一个独立的旧版 adapter。添加测试，证明现代请求绝不会进入该 adapter。
 
 ## 关键术语
-| Term | What people say | What it actually means |
-|------|----------------|------------------------|
-| MCP server | “暴露 tools 的东西” | 通过 stdio 或 HTTP 说 MCP JSON-RPC 的 process |
-| stdio transport | “Child process model” | Server 由 client 启动；通过 stdin/stdout 通信 |
-| Dispatcher | “Method router” | JSON-RPC method name 到 handler function 的 map |
-| Content block | “Tool result chunk” | tool response 的 `content` array 中的 typed element |
-| `isError` | “Tool-level failure” | 表示 tool 失败；与 JSON-RPC error 区分开 |
-| Annotations | “Safety hints” | readOnly / destructive / idempotent / openWorld flags |
-| FastMCP | “Python SDK” | 构建在 MCP protocol 之上的 decorator-based higher-level framework |
-| Resource URI | “Addressable data” | 标识 resource 的 `file://`、`db://` 或 custom scheme |
-| Prompt template | “Slash-command brief” | server 提供的 template，带有供 host UIs 使用的 argument slots |
-| Capability declaration | “Feature toggle” | 在 `initialize` 中声明的 per-primitive flags |
+
+| 术语 | 含义 |
+|------|---------|
+| 无状态服务器 | 根据每个请求自身的元数据处理该请求，无需协议 session memory |
+| `server/discover` | 公布版本和 capabilities 的强制性现代 method |
+| 完整结果 | 带有 `resultType: "complete"` 的现代成功结果 |
+| 可缓存结果 | 带有 `ttlMs` 和 `cacheScope` 的发现、列表或 Resource 读取结果 |
+| 确定性列表 | 相同的逻辑 registry 会生成相同的项目顺序 |
+| 服务器身份 | 结果 `_meta` 中推荐的 `io.modelcontextprotocol/serverInfo` |
+| Tool 错误 | 有效的 Tool 调用返回包含 `isError: true` 的内容 |
+| 协议错误 | 通过 `error` 返回的无效 JSON-RPC 或 MCP 请求 |
 
 ## 延伸阅读
-- [Model Context Protocol — Python SDK](https://github.com/modelcontextprotocol/python-sdk) — Python 参考实现
-- [Model Context Protocol — TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) — 并行的 TS implementation
-- [FastMCP — server framework](https://gofastmcp.com/) — 用于 MCP servers 的 decorator-style Python API
-- [MCP — Quickstart server guide](https://modelcontextprotocol.io/quickstart/server) — 使用任一 SDK 的 end-to-end tutorial
-- [MCP — Server tools spec](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) — tools/* messages 的完整 reference
+
+- [MCP Specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/)
+- [MCP Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
+- [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
+- [MCP Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources)
+- [MCP Prompts](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts)
+- [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
