@@ -38,6 +38,10 @@ Your options:
    Best for: Serious training, large models
 ```
 
+```figure
+s0-gpu-dispatch
+```
+
 ## 构建它
 ### 选项 1：本地 NVIDIA GPU
 
