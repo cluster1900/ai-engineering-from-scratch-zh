@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "什么是 Language Server Protocol (LSP)？",
-      "options": ["一种在 editors 之间传输文件的 protocol", "一种标准，让 editors 可以从特定 language 的 server 接收 type info、completions 和 diagnostics", "一种用于 source code files 的压缩格式", "一种用于远程 pair programming 的 network protocol"],
-      "correct": 1,
+      "options": [
+        "一种在 editors 之间传输文件的 protocol",
+        "一种用于 source code files 的压缩格式",
+        "一种用于远程 pair programming 的 network protocol",
+        "一种标准，让 editors 可以从特定 language 的 server 接收 type info、completions 和 diagnostics"
+      ],
+      "correct": 3,
       "explanation": "LSP 是一种标准化 protocol，让 editors 可以与 language servers 通信，以获得 autocomplete、type checking 和 error diagnostics 等功能，并且不依赖具体 editor。"
     },
     {
       "stage": "pre",
       "question": "为什么 format-on-save 对团队项目有用？",
-      "options": ["它通过移除 whitespace 来减小文件大小", "它无需手动格式化，就能确保所有 contributors 的 code style 一致", "它会在代码执行前捕获 runtime bugs", "它会压缩代码以加快 git operations"],
-      "correct": 1,
+      "options": [
+        "它无需手动格式化，就能确保所有 contributors 的 code style 一致",
+        "它会压缩代码以加快 git operations",
+        "它通过移除 whitespace 来减小文件大小",
+        "它会在代码执行前捕获 runtime bugs"
+      ],
+      "correct": 0,
       "explanation": "Format-on-save 会在每次保存时运行 formatter（如 Black 或 Ruff），确保所有代码都遵循相同的 style conventions，无论是谁写的。"
     },
     {
       "stage": "post",
       "question": "哪个 VS Code extension 可以像本地一样在远程 GPU 机器上编辑代码？",
-      "options": ["GitLens", "Pylance", "Remote SSH", "Debugpy"],
-      "correct": 2,
+      "options": [
+        "Pylance",
+        "Debugpy",
+        "GitLens",
+        "Remote SSH"
+      ],
+      "correct": 3,
       "explanation": "Remote SSH 会在远程机器上安装轻量级 VS Code server，并将 UI stream 到你的本地 editor，让你可以远程编辑文件、运行 terminals 和 debug。"
     },
     {
       "stage": "post",
       "question": "为什么在 VS Code settings 中应为 AI work 启用 'notebook.output.scrolling'？",
-      "options": ["它会为宽 dataframes 启用水平 scrolling", "它可以防止 training loop output（数千行）撑爆 output panel", "它允许用鼠标滚轮在 notebook cells 之间滚动", "它会在 editor 中启用 smooth scrolling animations"],
-      "correct": 1,
+      "options": [
+        "它会在 editor 中启用 smooth scrolling animations",
+        "它允许用鼠标滚轮在 notebook cells 之间滚动",
+        "它会为宽 dataframes 启用水平 scrolling",
+        "它可以防止 training loop output（数千行）撑爆 output panel"
+      ],
+      "correct": 3,
       "explanation": "Training loops 可能会打印数千行 output。没有 output scrolling 时，notebook output panel 会无限增长，使 notebook 无法使用。"
     },
     {
       "stage": "post",
       "question": "在 VS Code 中将 'python.analysis.typeCheckingMode' 设置为 'basic' 有什么作用？",
-      "options": ["它为 Python files 启用 syntax highlighting", "它会在运行代码前捕获错误的 argument types 和 tensor shape mismatches", "它会按照 PEP 8 standards 格式化 Python code", "它启用 Python 3.12 language features"],
-      "correct": 1,
+      "options": [
+        "它为 Python files 启用 syntax highlighting",
+        "它会按照 PEP 8 standards 格式化 Python code",
+        "它启用 Python 3.12 language features",
+        "它会在运行代码前捕获错误的 argument types 和 tensor shape mismatches"
+      ],
+      "correct": 3,
       "explanation": "Pylance 的 basic type checking 会在编辑时标记 type mismatches、错误的 argument types 和不正确的 API parameters，在你运行可能很昂贵的 training script 之前捕获 bugs。"
     }
-  ]
+  ],
+  "title": null
 }
