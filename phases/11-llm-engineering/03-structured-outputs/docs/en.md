@@ -133,6 +133,10 @@ graph TD
 
 **可选字段省略**：模型会省略那些技术上可选、但对你的用例在语义上重要的字段。即使数据有时缺失，也要在 schema 中将它们设为 required——强制模型显式生成 `null`。
 
+```figure
+mx-schema-funnel
+```
+
 ## 构建它
 
 ### 步骤 1：JSON Schema Validator

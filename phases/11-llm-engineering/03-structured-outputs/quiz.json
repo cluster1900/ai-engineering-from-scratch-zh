@@ -1,36 +1,61 @@
 [
   {
     "question": "为什么让 LLMs 输出结构化 JSON 很有挑战？",
-    "options": ["LLMs 不能生成 JSON", "LLMs 会逐个 Token 生成自由形式文本，并且可能在任何位置产生无效 JSON（缺少括号、类型错误、额外文本）", "JSON 对 LLMs 来说太复杂", "LLMs 只能输出纯文本"],
-    "correct": 1,
+    "options": [
+      "JSON 对 LLMs 来说太复杂",
+      "LLMs 只能输出纯文本",
+      "LLMs 不能生成 JSON",
+      "LLMs 会逐个 Token 生成自由形式文本，并且可能在任何位置产生无效 JSON（缺少括号、类型错误、额外文本）"
+    ],
+    "correct": 3,
     "explanation": "LLMs 会以自回归方式生成 Token。它们可能添加尾随逗号、忘记闭合括号、在 JSON 外包裹 markdown 格式，或幻觉出额外字段。每个 Token 都是独立生成的，因此结构有效性无法保证。",
     "stage": "pre"
   },
   {
     "question": "什么是 constrained decoding？",
-    "options": ["限制模型的词表大小", "限制模型在每一步可以生成哪些 Token，以确保输出符合某个 grammar 或 schema", "使用更小的模型", "压缩输出"],
-    "correct": 1,
+    "options": [
+      "限制模型的词表大小",
+      "使用更小的模型",
+      "压缩输出",
+      "限制模型在每一步可以生成哪些 Token，以确保输出符合某个 grammar 或 schema"
+    ],
+    "correct": 3,
     "explanation": "Constrained decoding 会在每个生成步骤屏蔽无效 Token。左花括号之后，只允许有效的 JSON key。冒号之后，只允许有效的 value Token。这会在 Token 层面保证结构有效性。",
     "stage": "pre"
   },
   {
     "question": "使用 Pydantic models 验证 LLM 输出有什么好处？",
-    "options": ["它们让 API 调用更快", "它们定义 typed schemas，可以自动验证、解析并拒绝格式错误的 LLM 输出，同时给出清晰的错误消息", "它们减少 Token 使用量", "它们提升模型准确率"],
-    "correct": 1,
+    "options": [
+      "它们定义 typed schemas，可以自动验证、解析并拒绝格式错误的 LLM 输出，同时给出清晰的错误消息",
+      "它们让 API 调用更快",
+      "它们减少 Token 使用量",
+      "它们提升模型准确率"
+    ],
+    "correct": 0,
     "explanation": "Pydantic 会强制执行类型、必填字段、取值约束和嵌套结构。当 LLM 产生无效输出时，Pydantic 会给出具体错误消息，这些消息可以反馈给模型用于自我纠正。",
     "stage": "post"
   },
   {
     "question": "当 LLM 尽管有指令仍返回无效 JSON 时，你应该怎么做？",
-    "options": ["切换到另一个模型", "实现一个 retry loop，把验证错误作为上下文发回给模型，让它进行修正尝试", "手动修复 JSON", "提高 temperature"],
-    "correct": 1,
+    "options": [
+      "切换到另一个模型",
+      "手动修复 JSON",
+      "实现一个 retry loop，把验证错误作为上下文发回给模型，让它进行修正尝试",
+      "提高 temperature"
+    ],
+    "correct": 2,
     "explanation": "带错误反馈的 retry loop 效果很好：解析输出、捕获验证错误、把错误消息作为上下文发回去（'Your output had this error: ... Please fix it'）。大多数模型会在第二次尝试时自我纠正。",
     "stage": "post"
   },
   {
     "question": "什么时候应该使用 API 的原生 JSON mode，什么时候使用基于 prompt 的 JSON extraction？",
-    "options": ["始终使用原生 JSON mode", "需要保证结构时使用原生 mode；对于需要模型推理应提取哪些内容的复杂 extraction，使用基于 prompt 的方式", "始终使用基于 prompt 的 extraction", "它们会产生完全相同的结果"],
-    "correct": 1,
+    "options": [
+      "始终使用基于 prompt 的 extraction",
+      "始终使用原生 JSON mode",
+      "需要保证结构时使用原生 mode；对于需要模型推理应提取哪些内容的复杂 extraction，使用基于 prompt 的方式",
+      "它们会产生完全相同的结果"
+    ],
+    "correct": 2,
     "explanation": "原生 JSON mode（OpenAI 的 response_format、Anthropic 的 tool_use）会保证有效的 JSON 结构。基于 prompt 的 extraction 在复杂推理场景中更灵活，可用于决定要填充哪些字段。当结构最重要时，使用原生 mode。",
     "stage": "post"
   }
