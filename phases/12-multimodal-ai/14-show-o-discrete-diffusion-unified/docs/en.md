@@ -87,6 +87,10 @@ Show-o2（2025 follow-up, arXiv 2506.15564）扩展了 Show-o：更大的 LLM ba
 
 按任务选择：当你想在一个 open model 中同时获得 T2I + inpainting + VQA，并且速度合理时，选择 Show-o；当质量最重要且你能承担 two-loss plumbing 时，选择 Transfusion。
 
+```figure
+masked-diffusion-unmask
+```
+
 ## 使用它
 `code/main.py` 模拟 Show-o sampling：
 
