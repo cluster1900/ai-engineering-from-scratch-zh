@@ -288,6 +288,10 @@ flowchart TD
     J -->|"No labels"| M["Unsupervised or self-supervised"]
 ```
 
+```figure
+f3-learning-boundary
+```
+
 ## 构建它
 
 `code/ml_intro.py` 中的代码从零实现了一个 nearest centroid classifier，这是最简单的 ML 算法。它展示了核心思想：从数据中学习，然后对新数据进行预测。
