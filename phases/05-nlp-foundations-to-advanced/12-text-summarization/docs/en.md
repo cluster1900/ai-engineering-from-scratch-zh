@@ -27,6 +27,10 @@ Abstractive summarization 是一个生成问题。一个 transformer 在输入�
 
 使用 **ROUGE**（Recall-Oriented Understudy for Gisting Evaluation）评估。ROUGE-1 和 ROUGE-2 衡量 unigram 和 bigram overlap。ROUGE-L 衡量 longest common subsequence。越高越好，但 40 ROUGE-L 算“good”，50 算“exceptional”。每篇论文都会报告这三项。使用 `rouge-score` package。
 
+```figure
+summarize-collapse
+```
+
 ## 构建
 
 ### 步骤 1： TextRank（extractive）
