@@ -131,6 +131,10 @@ harness-over-model 的说法现在有了数据支撑。值得了解，因为这�
 
 所以，当你在其他地方听到 “harness engineering” 时，把它翻译成 primitives。Prompts 和 rules 是 policy 与 functions。Scaffolding 是 runtime。Guardrails 是 authorization + verification。Hooks 是 triggers。Memory 是 session persistence。Ralph Loop 是 requeue。Subagents 是 workers。Sandboxes 是 compute planes。词汇会变；工程不会。workbench 是 agent-facing UX；而能够挺过下一次 vendor reframe 的 harness，本质上是 functions、workers、triggers、runtimes、queues、persistence 和 policy 被正确连接在一起。
 
+```figure
+wb-seven-surfaces
+```
+
 ## 构建它
 `code/main.py` 会把一个微型 repo task 运行两次。第一次是 prompt only，第二次接入七个 surfaces。相同模型，相同任务。脚本会统计失败运行中缺失了哪些 surfaces，并打印 failure-mode report。
 
