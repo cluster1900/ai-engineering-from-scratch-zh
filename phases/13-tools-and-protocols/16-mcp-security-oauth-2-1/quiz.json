@@ -1,0 +1,78 @@
+{
+  "lesson": "16-mcp-security-oauth-2-1",
+  "title": "MCP Authorization：CIMD、Issuer Binding、PKCE 与 Step-Up",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 2026-07-28 版本中，新的 MCP OAuth client enrollment 首选哪种机制？",
+      "options": [
+        "URL 中的 access token",
+        "Mcp-Session-Id",
+        "Client ID Metadata Documents",
+        "Dynamic Client Registration"
+      ],
+      "correct": 2,
+      "explanation": "CIMD 是首选方案；DCR 已被 deprecated，仅作为兼容路径保留。"
+    },
+    {
+      "stage": "check",
+      "question": "带有 loopback redirect 的 desktop client 在使用 DCR fallback 时应声明哪种 application_type？",
+      "options": [
+        "web",
+        "stateless",
+        "native",
+        "confidential"
+      ],
+      "correct": 2,
+      "explanation": "Desktop、mobile、command-line 和 loopback client 都属于 native application。"
+    },
+    {
+      "stage": "check",
+      "question": "Client 必须如何处理 authorization response 中的 iss 值？",
+      "options": [
+        "将其规范化并比较 hostname",
+        "将其存储为 clientInfo",
+        "PKCE 成功后将其忽略",
+        "使用 response 前，将其与已记录的 issuer 进行精确比较"
+      ],
+      "correct": 3,
+      "explanation": "RFC 9207 issuer 检查可防止不同 issuer 之间发生 authorization response mix-up。"
+    },
+    {
+      "stage": "check",
+      "question": "Client 应如何为 issuer 签发的 OAuth credential 和 access token 设置 key？",
+      "options": [
+        "由 issuer 签发的 credential 按 issuer 设置 key，Token 按 issuer 加 resource 设置 key",
+        "将所有 registration 和 Token 存储在一个全局 client name 下",
+        "仅按 server display name 设置 key",
+        "按 protocol session identifier 设置 key"
+      ],
+      "correct": 0,
+      "explanation": "Issuer 和 resource key 可防止签发的 credential 跨越 security authority 或 audience。自行托管的 CIMD URL 仍具有可移植性。"
+    },
+    {
+      "stage": "post",
+      "question": "Resource 返回 403，并带有 scope notes:delete。正确的下一步是什么？",
+      "options": [
+        "未经 authorization，直接在本地添加 notes:delete",
+        "解释该 scope、获得 consent、为其执行 authorization，然后使用新的 request id 重试",
+        "将 MCP Token 发送到下游 API",
+        "复用当前 Token 并忽略 challenge"
+      ],
+      "correct": 1,
+      "explanation": "Step-up 会在重试操作前获取一个经过新 authorization 的 Token。"
+    },
+    {
+      "stage": "post",
+      "question": "MCP resource https://notes.example.com/mcp 对应的 RFC 9728 metadata URL 是什么？",
+      "options": [
+        "https://notes.example.com/.well-known/oauth-protected-resource/mcp",
+        "https://auth.example.com/.well-known/oauth-protected-resource",
+        "https://notes.example.com/.well-known/oauth-protected-resource",
+        "https://notes.example.com/mcp/.well-known/oauth-protected-resource"
+      ],
+      "correct": 0,
+      "explanation": "RFC 9728 会保留 well-known 段之后的 protected resource 路径，因此必须包含 /mcp 后缀。"
+    }
+  ]
+}
