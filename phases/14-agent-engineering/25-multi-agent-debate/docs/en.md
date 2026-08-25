@@ -62,6 +62,10 @@ Cross-model 组合优于 single-model debates：ChatGPT + Bard 组合 > 任一�
 - **Hub failure。** 在 star topology 中，一个糟糕的 hub 会污染所有人。轮换 hub 或使用多个 hubs。
 - **Prompt homogenization。** 所有 agents 使用相同 prompt；它们会产生相同答案。使用多样化 prompts 和/或模型。
 
+```figure
+debate-converge
+```
+
 ## 构建它
 `code/main.py` 实现了 stdlib debate：
 
