@@ -1,36 +1,61 @@
 [
   {
     "question": "zero-shot 和 few-shot prompting 的关键区别是什么？",
-    "options": ["Zero-shot 更快", "Zero-shot 只给出指令；few-shot 会在实际查询前包含示例输入-输出演示", "Few-shot 使用不同的模型", "Zero-shot 不使用 system prompt"],
-    "correct": 1,
+    "options": [
+      "Zero-shot 只给出指令；few-shot 会在实际查询前包含示例输入-输出演示",
+      "Zero-shot 不使用 system prompt",
+      "Few-shot 使用不同的模型",
+      "Zero-shot 更快"
+    ],
+    "correct": 0,
     "explanation": "Few-shot prompting 包含 worked examples（demonstrations），向模型展示期望的模式。这就像先向某人展示如何填写表单，再让他填写自己的表单。",
     "stage": "pre"
   },
   {
     "question": "'Chain of Thought' prompting 做了什么？",
-    "options": ["它把多个 API 调用串联起来", "它指示模型在给出最终答案前展示中间推理步骤，从而提升多步问题的准确率", "它按顺序连接多个模型", "它生成更长的回答"],
-    "correct": 1,
+    "options": [
+      "它指示模型在给出最终答案前展示中间推理步骤，从而提升多步问题的准确率",
+      "它生成更长的回答",
+      "它把多个 API 调用串联起来",
+      "它按顺序连接多个模型"
+    ],
+    "correct": 0,
     "explanation": "CoT prompting（例如 'Let's think step by step'）给模型一张“草稿纸”来处理问题。在 GSM8K 数学问题上，仅这一点就把 GPT-4o 准确率从 78% 提升到 91%。",
     "stage": "pre"
   },
   {
     "question": "Tree-of-Thought 和 Chain-of-Thought 有什么不同？",
-    "options": ["它使用树形数据结构进行存储", "它并行探索多条推理路径，并评估哪条路径通向最佳答案", "它只是更长的思维链", "它使用不同的模型"],
-    "correct": 1,
+    "options": [
+      "它并行探索多条推理路径，并评估哪条路径通向最佳答案",
+      "它使用树形数据结构进行存储",
+      "它使用不同的模型",
+      "它只是更长的思维链"
+    ],
+    "correct": 0,
     "explanation": "CoT 遵循单条推理路径。Tree-of-Thought 会生成多条候选路径，评估它们（可能使用 LLM 本身），并选择最好的一条。这有助于处理第一条推理路径可能错误的问题。",
     "stage": "post"
   },
   {
     "question": "选择 few-shot 示例时，最重要的是什么？",
-    "options": ["使用尽可能多的示例", "选择多样化示例，覆盖不同情况，并展示你想要的确切格式和推理模式", "使用最短的示例", "使用来自测试集的示例"],
+    "options": [
+      "使用最短的示例",
+      "选择多样化示例，覆盖不同情况，并展示你想要的确切格式和推理模式",
+      "使用尽可能多的示例",
+      "使用来自测试集的示例"
+    ],
     "correct": 1,
     "explanation": "示例质量胜过数量。3-5 个多样、格式良好、覆盖不同边界情况的示例，比 20 个浪费上下文窗口 tokens 的重复示例更能教会模型模式。",
     "stage": "post"
   },
   {
     "question": "为什么 CoT prompting 会提升准确率，即使模型有无 CoT 时拥有相同知识？",
-    "options": ["它激活了隐藏的模型能力", "生成中间 Token 为最终答案创建了更大的有效上下文，使模型能够基于自己的推理进行条件生成", "它使用了更多计算", "它改变了 model weights"],
-    "correct": 1,
+    "options": [
+      "它使用了更多计算",
+      "它激活了隐藏的模型能力",
+      "它改变了 model weights",
+      "生成中间 Token 为最终答案创建了更大的有效上下文，使模型能够基于自己的推理进行条件生成"
+    ],
+    "correct": 3,
     "explanation": "没有 CoT 时，模型必须在一个 Token 内直接跳到答案。有了 CoT，每个中间步骤都是模型为下一步进行条件生成时可依赖的 Token。模型本质上是在“大声思考”，逐步构建答案。",
     "stage": "post"
   }
