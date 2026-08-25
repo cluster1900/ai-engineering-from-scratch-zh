@@ -19,30 +19,30 @@
   <text x="480" y="26" text-anchor="middle" class="title">Prompt injection 防御 — 将检索内容视为不可信</text>
 
   <rect x="40" y="50" width="880" height="160" class="attack"/>
-  <text x="480" y="72" text-anchor="middle" class="head">Greshake et al. 2023 — 间接 prompt injection</text>
+  <text x="480" y="72" text-anchor="middle" class="head">Greshake et al. 2023 — 间接 Prompt injection</text>
   <rect x="60" y="88" width="840" height="24" class="box"/>
-  <text x="78" y="104" class="step">1. attacker 控制可检索内容（网页、PDF、email、memory note）</text>
+  <text x="78" y="104" class="step">1. 攻击者控制可检索内容（网页、PDF、邮件、memory note）</text>
   <rect x="60" y="116" width="840" height="24" class="box"/>
-  <text x="78" y="132" class="step">2. agent 摄入  attacker 指令覆盖 developer prompt</text>
+  <text x="78" y="132" class="step">2. Agent 摄入  攻击者指令覆盖 developer prompt</text>
   <rect x="60" y="144" width="840" height="24" class="box"/>
-  <text x="78" y="160" class="step">3. 已演示利用：数据盗取、worming、memory poisoning、生态污染</text>
+  <text x="78" y="160" class="step">3. 已演示利用：数据盗取、蠕虫传播、memory poisoning、生态污染</text>
   <rect x="60" y="172" width="840" height="30" class="box"/>
-  <text x="78" y="192" class="step">主张：处理检索到的 prompts = 在工具使用面上执行任意代码</text>
+  <text x="78" y="192" class="step">主张：处理检索到的 Prompt = 在 Tool 使用面上执行任意代码</text>
 
   <rect x="40" y="230" width="440" height="280" class="validator"/>
   <text x="260" y="252" text-anchor="middle" class="head">PVE pattern  Prompt, Validator, Executor</text>
   <rect x="60" y="268" width="400" height="36" class="box"/>
-  <text x="78" y="290" class="step">1. main model 提议 tool call</text>
+  <text x="78" y="290" class="step">1. 主 Model 提议 Tool call</text>
   <rect x="60" y="308" width="400" height="36" class="box"/>
-  <text x="78" y="330" class="step">2. 低价快速 validator 检查参数</text>
+  <text x="78" y="330" class="step">2. 低价快速验证器检查参数</text>
   <rect x="60" y="348" width="400" height="36" class="box"/>
-  <text x="78" y="370" class="step">3. validator 检查检索内容来源</text>
+  <text x="78" y="370" class="step">3. 验证器检查检索内容来源</text>
   <rect x="60" y="388" width="400" height="36" class="box"/>
   <text x="78" y="410" class="step">4. 遇到 injection marker 或不安全目的地则拒绝</text>
   <rect x="60" y="428" width="400" height="36" class="box"/>
-  <text x="78" y="450" class="step">5. pass  executor 运行；拒绝时告知 main model</text>
+  <text x="78" y="450" class="step">5. 通过则执行器运行；拒绝时告知主 Model</text>
   <rect x="60" y="468" width="400" height="36" class="box"/>
-  <text x="78" y="490" class="step">成本：每次 tool call 多一次 inference</text>
+  <text x="78" y="490" class="step">成本：每次 Tool call 多一次 Inference</text>
 
   <rect x="500" y="230" width="420" height="280" class="defense"/>
   <text x="710" y="252" text-anchor="middle" class="head">六项控制防御原则（2026）</text>
@@ -51,13 +51,13 @@
   <rect x="520" y="308" width="380" height="36" class="box"/>
   <text x="538" y="330" class="step">2. allowlist / blocklist 导航</text>
   <rect x="520" y="348" width="380" height="36" class="box"/>
-  <text x="538" y="370" class="step">3. 逐步安全评估（Gemini 2.5）</text>
+  <text x="538" y="370" class="step">3. 逐步安全 Evaluation（Gemini 2.5）</text>
   <rect x="520" y="388" width="380" height="36" class="box"/>
   <text x="538" y="410" class="step">4. 工具输入 + 输出护栏</text>
   <rect x="520" y="428" width="380" height="36" class="box"/>
-  <text x="538" y="450" class="step">5. 敏感操作 human-in-the-loop</text>
+  <text x="538" y="450" class="step">5. 敏感操作人工介入</text>
   <rect x="520" y="468" width="380" height="36" class="box"/>
   <text x="538" y="490" class="step">6. 外部内容捕获 + span 引用</text>
 
-  <text x="480" y="540" text-anchor="middle" class="caption">"只有用户的直接指令才算许可" — OpenAI CUA docs</text>
+  <text x="480" y="540" text-anchor="middle" class="caption">“只有用户的直接指令才算许可” — OpenAI CUA 文档</text>
 </svg>

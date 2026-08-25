@@ -65,6 +65,10 @@ LLMs 无法可靠地区分哪些指令来自用户，哪些指令来自检索内
 - **只依赖 instruction-following。** “System prompt 说忽略不可信指令”不是强制执行机制。
 - **过度信任检索到的 memory。** 昨天的 agent 写入了一个被污染的 memory note；今天的 agent 读取了它。
 
+```figure
+injection-hijack
+```
+
 ## 构建它
 
 `code/main.py` 实现 PVE：
