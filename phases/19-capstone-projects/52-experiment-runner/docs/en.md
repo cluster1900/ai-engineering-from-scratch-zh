@@ -36,6 +36,10 @@ ExperimentSpec
 
 script 存在磁盘上；runner 会把 config 写入一个 temp file path，script 再读取它。script 应该在 stdout 上打印单个 json line，其 keys 是 `metric_keys` 的 superset。stdout 上的其他内容都会被捕获，但 metrics parser 会忽略它们。
 
+```figure
+cg-runner-limits
+```
+
 ## Architecture
 
 ```mermaid

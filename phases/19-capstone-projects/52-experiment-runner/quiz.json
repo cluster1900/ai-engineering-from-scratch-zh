@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "为什么 runner 要 spawn 一个 subprocess，而不是在 process 内 import experiment script？",
       "options": [
-        "因为 Python 不允许 nested imports",
+        "因为 subprocess 比 import 更快",
         "因为独立 process 让 runner 在 timeout 或 memory limits 时拥有 kill handle，并把 crashes 与 orchestrator 隔离开",
-        "因为 metrics format 要求这样做",
-        "因为 subprocess 比 import 更快"
+        "因为 Python 不允许 nested imports",
+        "因为 metrics format 要求这样做"
       ],
       "correct": 1,
       "explanation": "独立 process 是语言自带的最简单 isolation。parent 保留 kill handle 和独立 address space，因此 crashing experiment 不会拖垮 orchestrator。"
@@ -30,48 +30,48 @@
       "stage": "check",
       "question": "当 stdout 有 metrics 但 exit code 非零时，runner 会返回哪个 terminal label？",
       "options": [
-        "ok",
         "timeout",
-        "oom",
-        "crash"
+        "crash",
+        "ok",
+        "oom"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "只有 exit code 为零且 metrics 成功解析时，terminal 才是 ok。非零 exit code 是 crash，即使 failure 前捕获到了一些 metrics。"
     },
     {
       "stage": "check",
       "question": "runner 如何识别 stdout 内的 final metrics blob？",
       "options": [
-        "它读取第一个 json line",
-        "它读取最后一个 keys 覆盖 required metric_keys 的 json line；更早的 covering lines 会成为 intermediate metrics",
         "它扫描 stderr 中的 json",
-        "它期望 output 恰好只有一行"
+        "它期望 output 恰好只有一行",
+        "它读取最后一个 keys 覆盖 required metric_keys 的 json line；更早的 covering lines 会成为 intermediate metrics",
+        "它读取第一个 json line"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Final metrics 是最后一个能解析为 json 且包含每个 required key 的 line。更早的 covering lines 会保留为 intermediate metrics，用于 learning curves。"
     },
     {
       "stage": "check",
       "question": "为什么 ablation helper 一次只 sweep 一个 knob，而不是 full factorial？",
       "options": [
-        "因为 runner 无法 launch 超过一个 subprocess",
         "因为一次一个 knob 会产生 evaluator 能绘制的清晰 axis，而 full factorial 会指数级膨胀并混淆解释",
-        "因为 numpy 不支持 cartesian product",
-        "因为 seed 只会沿一个 knob 变化"
+        "因为 seed 只会沿一个 knob 变化",
+        "因为 runner 无法 launch 超过一个 subprocess",
+        "因为 numpy 不支持 cartesian product"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Single knob sweeps 让结果保持可解释。Full factorial 的成本会随 knobs 数量指数级增长，得到的 table 也难以阅读。"
     },
     {
       "stage": "check",
       "question": "把 spec.seed 转发到 config['__seed'] 会给 evaluator 提供什么保证？",
       "options": [
-        "更快的 wall time",
         "更低的 memory consumption",
-        "Determinism，因此使用相同 seed 的 rerun 会产生相同 metrics，evaluator 可以从 random noise 中识别真实变化",
-        "一个免费的 significance test"
+        "更快的 wall time",
+        "一个免费的 significance test",
+        "Determinism，因此使用相同 seed 的 rerun 会产生相同 metrics，evaluator 可以从 random noise 中识别真实变化"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "seed 会固定 experiment 中的 random initialisation。两个使用相同 seed 的 runs 会产生相同 metrics，这正是 evaluator 区分真实 regression 和不同 draw 的基础。"
     }
   ]
