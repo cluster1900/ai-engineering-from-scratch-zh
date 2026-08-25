@@ -34,7 +34,7 @@
   <rect x="440" y="130" width="180" height="70" class="cool"/>
   <text x="530" y="150" text-anchor="middle" class="step">Coder C</text>
   <text x="530" y="168" text-anchor="middle" class="small">worktree C</text>
-  <text x="530" y="186" text-anchor="middle" class="small">子任务：api</text>
+  <text x="530" y="186" text-anchor="middle" class="small">子任务：API</text>
 
   <rect x="640" y="130" width="180" height="70" class="cool"/>
   <text x="730" y="150" text-anchor="middle" class="step">Coder D</text>
@@ -62,7 +62,7 @@
 
   <rect x="340" y="400" width="280" height="54" class="dsk"/>
   <text x="480" y="422" text-anchor="middle" class="step">测试者 (Gemini 2.5 Pro)</text>
-  <text x="480" y="440" text-anchor="middle" class="small">在干净 sandbox 中运行 suite</text>
+  <text x="480" y="440" text-anchor="middle" class="small">在干净 sandbox 中运行测试套件</text>
   <path d="M480,374 L480,400" class="edge"/>
 
   <rect x="340" y="480" width="280" height="40" class="cool"/>
@@ -72,8 +72,8 @@
   <rect x="40" y="300" width="260" height="240" class="box"/>
   <text x="170" y="322" text-anchor="middle" class="head">指标</text>
   <text x="170" y="344" text-anchor="middle" class="small">SWE-bench Pro pass@1</text>
-  <text x="170" y="362" text-anchor="middle" class="small">wall-clock vs single-agent</text>
-  <text x="170" y="380" text-anchor="middle" class="small">bug probe 的错误批准</text>
+  <text x="170" y="362" text-anchor="middle" class="small">实际耗时 vs single-agent</text>
+  <text x="170" y="380" text-anchor="middle" class="small">bug 探针的错误批准</text>
   <text x="170" y="398" text-anchor="middle" class="small">Token 放大比</text>
   <text x="170" y="416" text-anchor="middle" class="small">合并冲突率</text>
   <text x="170" y="440" text-anchor="middle" class="small">目标：</text>
@@ -89,10 +89,10 @@
   <text x="790" y="362" text-anchor="middle" class="small">A2A 类型化消息</text>
   <text x="790" y="380" text-anchor="middle" class="small">文件支撑任务板</text>
   <text x="790" y="398" text-anchor="middle" class="small">Langfuse 角色标签 + Token</text>
-  <text x="790" y="422" text-anchor="middle" class="small">post-mortem 直方图：</text>
+  <text x="790" y="422" text-anchor="middle" class="small">复盘直方图：</text>
   <text x="790" y="438" text-anchor="middle" class="small">计划模糊 / 合并冲突 /</text>
   <text x="790" y="454" text-anchor="middle" class="small">审查者错误批准 /</text>
-  <text x="790" y="470" text-anchor="middle" class="small">测试 flake</text>
+  <text x="790" y="470" text-anchor="middle" class="small">测试不稳定</text>
   <text x="790" y="496" text-anchor="middle" class="small">随每次失败运行发布</text>
   <text x="790" y="516" text-anchor="middle" class="caption">交接是失败面</text>
 </svg>

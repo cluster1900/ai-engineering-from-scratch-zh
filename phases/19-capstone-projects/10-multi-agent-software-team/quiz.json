@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "为什么 single-agent harness 即使拥有 200k-token context，也会在大型任务上碰到上限？",
       "options": [
+        "Models 不支持 git",
         "Single agents 不能进行 tool calls",
-        "Sandboxes 拒绝托管超过一个 process",
         "Context 无法同时容纳 architecture plan、四个并行 codebase slices、reviewer commentary 和 test output",
-        "Models 不支持 git"
+        "Sandboxes 拒绝托管超过一个 process"
       ],
       "correct": 2,
       "explanation": ""
@@ -18,9 +18,9 @@
       "stage": "pre",
       "question": "在这个 factory shape 中，architect role 负责什么？",
       "options": [
-        "审查 merged diff 中的 hallucinations",
-        "读取 issue，并产出带有明确接口的 subtasks 计划",
         "在干净 sandbox 中运行 test suite",
+        "读取 issue，并产出带有明确接口的 subtasks 计划",
+        "审查 merged diff 中的 hallucinations",
         "当 coders 意见不一致时强制 merge branches"
       ],
       "correct": 1,
@@ -30,10 +30,10 @@
       "stage": "check",
       "question": "为什么每个 coder 都在自己的 git worktree 加 Daytona sandbox 中工作？",
       "options": [
-        "Worktrees 比 branches clone 更快",
+        "Architect 需要 worktree IDs",
         "Daytona 是唯一支持 SSH 的 sandbox",
         "隔离的 working trees 让 N 个 coders 可以并行实现 subtasks，而不会踩到共享文件",
-        "Architect 需要 worktree IDs"
+        "Worktrees 比 branches clone 更快"
       ],
       "correct": 2,
       "explanation": ""
@@ -42,21 +42,21 @@
       "stage": "check",
       "question": "为了让 reviewer 保持诚实，对它施加了什么约束？",
       "options": [
-        "它只能在 tester 签字后运行",
         "它不能批准自己编写或提出的 diffs",
+        "它只能在 tester 签字后运行",
         "它必须批准读到的每个 diff",
         "它必须与 architect 使用同一个 model"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "为什么 rubric 会将 token efficiency 与 single-agent baseline 对比？",
       "options": [
-        "Multi-agent 总是更便宜",
-        "Role boundaries 会增加 summary 和 handoff context，所以真正的问题是 factory 是否能在 per dollar 上获胜",
         "Single-agent 没有 observability story",
+        "Role boundaries 会增加 summary 和 handoff context，所以真正的问题是 factory 是否能在 per dollar 上获胜",
+        "Multi-agent 总是更便宜",
         "Token cost 与 performance 无关"
       ],
       "correct": 1,
@@ -68,22 +68,22 @@
       "options": [
         "一个新的 architect plan template",
         "一个更新后的 A2A protocol spec",
-        "一个 force-push log",
-        "一个 handoff-failure histogram，用于识别哪个 role boundary 出了问题（plan、merge、review、test）"
+        "一个 handoff-failure histogram，用于识别哪个 role boundary 出了问题（plan、merge、review、test）",
+        "一个 force-push log"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "这个 capstone 使用哪个 evaluation set 来跨 roles 评分 pass@1？",
       "options": [
-        "SWE-bench Pro 50-issue subset",
         "HumanEval-Java",
+        "MigrationBench",
         "MT-Bench-v2",
-        "MigrationBench"
+        "SWE-bench Pro 50-issue subset"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     }
   ]
