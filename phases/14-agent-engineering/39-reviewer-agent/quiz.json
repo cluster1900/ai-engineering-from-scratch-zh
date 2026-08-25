@@ -7,44 +7,44 @@
       "question": "为什么构建者无法可靠地给自己的工作打分？",
       "options": [
         "它会耗尽 tokens",
+        "模型会拒绝自我评分",
         "验收是必要但不充分的；问题匹配度、范围纪律、已记录的假设以及交接就绪度，需要一个拥有不同输入的不同角色来判断",
-        "它会失去认证",
-        "模型会拒绝自我评分"
+        "它会失去认证"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "构建者和 reviewer 之间的差距，正是可靠性所在；验收只能证明一个更弱的版本。"
     },
     {
       "stage": "pre",
       "question": "以下哪一项不是五个 rubric 维度之一？",
       "options": [
+        "推理延迟",
         "问题匹配度",
         "范围纪律",
-        "验证质量",
-        "推理延迟"
+        "验证质量"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "这五项是问题匹配度、范围纪律、假设、验证质量、交接就绪度。"
     },
     {
       "stage": "check",
       "question": "角色分离需要什么？",
       "options": [
-        "不同的模型",
         "不同的 system prompt 和不同的输入；只要姿态改变，并且 reviewer 对 diff 没有写入权限，同一个模型也可以扮演两个角色",
-        "不同的物理硬件",
-        "一个新账号"
+        "不同的模型",
+        "一个新账号",
+        "不同的物理硬件"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "纪律体现在姿态和输入中，而不是模型身份中。"
     },
     {
       "stage": "check",
       "question": "Cloudflare 的 2026 review 架构是什么样的？",
       "options": [
-        "一个大型 reviewer",
-        "最多七个 specialist reviewer 并行运行，由一个 Review Coordinator 去重 findings；顶级模型只用于 coordinator，更便宜的层级用于 specialists",
         "两个 reviewer 轮询",
+        "最多七个 specialist reviewer 并行运行，由一个 Review Coordinator 去重 findings；顶级模型只用于 coordinator，更便宜的层级用于 specialists",
+        "一个大型 reviewer",
         "单个顺序执行的 LLM"
       ],
       "correct": 1,
@@ -54,12 +54,12 @@
       "stage": "check",
       "question": "以下哪一项不是本课列出的四种 LLM-judge 偏差之一？",
       "options": [
-        "Position bias（A,B 与 B,A 顺序不一致）",
+        "Vector locality",
         "Verbosity bias（更长的输出得分更高）",
         "Self-preference（同一模型家族）",
-        "Vector locality"
+        "Position bias（A,B 与 B,A 顺序不一致）"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "这四种是 position、verbosity、self-preference、authority；vector locality 不在其中。"
     },
     {
@@ -79,11 +79,11 @@
       "question": "reviewer 的报告会在哪里与 workbench 的其他部分集成？",
       "options": [
         "它会替代验证",
+        "它只会交给 manager",
         "它会打包进交接包（第 40 课）；human review 从报告开始，而不是从空白页开始",
-        "它会覆盖 gate",
-        "它只会交给 manager"
+        "它会覆盖 gate"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "review report 会进入 handoff，让下一个 session 和 human reviewer 从一份书面 verdict 开始。"
     }
   ]
