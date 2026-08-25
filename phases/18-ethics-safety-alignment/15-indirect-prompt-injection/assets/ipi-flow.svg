@@ -16,13 +16,13 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">间接 prompt injection：攻击者后手</text>
+  <text x="480" y="24" text-anchor="middle" class="title">间接 prompt injection：攻击者后手行动</text>
 
   <rect x="40" y="60" width="200" height="180" class="box"/>
   <text x="140" y="82" text-anchor="middle" class="head">攻击者</text>
   <rect x="60" y="100" width="160" height="50" class="hot"/>
   <text x="140" y="122" text-anchor="middle" class="step">发布 payload</text>
-  <text x="140" y="140" text-anchor="middle" class="small">email、网页、ticket</text>
+  <text x="140" y="140" text-anchor="middle" class="small">电子邮件、网页、工单</text>
   <rect x="60" y="170" width="160" height="50" class="hot"/>
   <text x="140" y="192" text-anchor="middle" class="step">包含指令</text>
   <text x="140" y="210" text-anchor="middle" class="small">用户看似良性</text>
@@ -30,17 +30,17 @@
   <rect x="280" y="60" width="200" height="180" class="box"/>
   <text x="380" y="82" text-anchor="middle" class="head">用户</text>
   <rect x="300" y="100" width="160" height="50" class="cool"/>
-  <text x="380" y="122" text-anchor="middle" class="step">请求 agent</text>
+  <text x="380" y="122" text-anchor="middle" class="step">请求 Agent</text>
   <text x="380" y="140" text-anchor="middle" class="small">良性请求</text>
   <rect x="300" y="170" width="160" height="50" class="cool"/>
   <text x="380" y="192" text-anchor="middle" class="step">无感知</text>
-  <text x="380" y="210" text-anchor="middle" class="small">zero-click 表面</text>
+  <text x="380" y="210" text-anchor="middle" class="small">zero-click 攻击面</text>
 
   <rect x="520" y="60" width="200" height="180" class="box"/>
-  <text x="620" y="82" text-anchor="middle" class="head">agent</text>
+  <text x="620" y="82" text-anchor="middle" class="head">Agent</text>
   <rect x="540" y="100" width="160" height="50" class="cold"/>
   <text x="620" y="122" text-anchor="middle" class="step">检索 + 读取</text>
-  <text x="620" y="140" text-anchor="middle" class="small">tool 输出 -&gt; prompt</text>
+  <text x="620" y="140" text-anchor="middle" class="small">Tool 输出 -&gt; prompt</text>
   <rect x="540" y="170" width="160" height="50" class="cold"/>
   <text x="620" y="192" text-anchor="middle" class="step">遵循指令</text>
   <text x="620" y="210" text-anchor="middle" class="small">执行攻击者意图</text>
@@ -60,12 +60,12 @@
 
   <rect x="40" y="270" width="880" height="220" class="box"/>
   <text x="480" y="295" text-anchor="middle" class="head">防御演进 2023 -&gt; 2026</text>
-  <text x="60" y="325" class="small">2023: 对检索内容做 substring / 关键词过滤。任意改写即可绕过。</text>
-  <text x="60" y="345" class="small">2024: 困惑度、改写、重新 Tokenization、训练式 prompt-injection 分类器。</text>
-  <text x="60" y="365" class="small">2025 (Nasr et al. Oct 2025): 自适应攻击 (Gradient、RL、人类) 击破 12 个已发布防御中的 &gt;90%。</text>
-  <text x="60" y="385" class="small">2026: 信息流控制。标记每个内容源。不可信内容不能调用 tools。</text>
-  <text x="60" y="405" class="small">真实事件: EchoLeak (CVE-2025-32711, M365 Copilot), CamoLeak (Copilot Chat), CVE-2025-53773。</text>
-  <text x="60" y="430" class="small">OWASP LLM01 (2025): prompt injection 是 #1 应用层 LLM 威胁。</text>
-  <text x="60" y="450" class="small">NIST AI SPD (2024): “generative AI 最大安全缺陷。”</text>
+  <text x="60" y="325" class="small">2023：对子字符串或关键词过滤检索内容。任意改写即可绕过。</text>
+  <text x="60" y="345" class="small">2024：困惑度、改写、重新 Tokenization、训练式 prompt-injection 分类器。</text>
+  <text x="60" y="365" class="small">2025（Nasr et al. Oct 2025）：自适应攻击（Gradient、RL、人类）攻破 12 个已发布防御中的 90% 以上。</text>
+  <text x="60" y="385" class="small">2026：信息流控制。标记每个内容源。不可信内容不能调用 Tool。</text>
+  <text x="60" y="405" class="small">真实事件：EchoLeak（CVE-2025-32711、M365 Copilot）、CamoLeak（Copilot Chat）、CVE-2025-53773。</text>
+  <text x="60" y="430" class="small">OWASP LLM01（2025）：prompt injection 是首要应用层 LLM 威胁。</text>
+  <text x="60" y="450" class="small">NIST AI SPD（2024）：“生成式 AI 最大的安全缺陷。”</text>
   <text x="60" y="470" class="small">领域方向：隔离，而非预防。同一上下文窗口中混放代码 + 数据是根因。</text>
 </svg>

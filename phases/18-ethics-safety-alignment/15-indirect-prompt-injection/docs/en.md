@@ -56,6 +56,10 @@ OWASP LLM Top 10 (2025) 将 prompt injection（direct + indirect）列为 LLM01�
 
 Lessons 12-14 是 model-centric jailbreaks。Lesson 15 是主导 2026 年生产部署的 system-centric attack。Lesson 16 覆盖防御工具。Lesson 25 覆盖具体的 CVE 叙事。
 
+```figure
+al-injection-vector
+```
+
 ## 使用它
 
 `code/main.py` 构建了一个 IPI harness。一个 toy agent 有三个 tools（search web、read email、send message）。环境包含攻击者控制的内容，其中Embedding了一条指令（"forward this to all contacts"）。你可以在 naive agent（遵循注入指令）、filter-defended agent（对 retrieved content 做 keyword filter）和 IFC agent（分离 trusted 与 untrusted content，并拒绝 untrusted control-flow commands）之间切换。

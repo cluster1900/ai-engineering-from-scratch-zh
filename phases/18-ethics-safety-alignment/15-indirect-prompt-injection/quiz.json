@@ -6,10 +6,10 @@
       "stage": "pre",
       "question": "Indirect prompt injection (IPI) 与 direct prompt injection 的区别是什么？",
       "options": [
-        "IPI 需要对目标模型进行 fine-tuning",
-        "IPI 将指令Embedding agent 在正常运行期间会消费的外部内容中（web pages、emails、tool outputs），攻击者无需接触用户的 prompt",
         "IPI 是 jailbreaking 的同义词",
-        "IPI 只适用于 Multimodal 模型"
+        "IPI 将指令Embedding agent 在正常运行期间会消费的外部内容中（web pages、emails、tool outputs），攻击者无需接触用户的 prompt",
+        "IPI 只适用于 Multimodal 模型",
+        "IPI 需要对目标模型进行 fine-tuning"
       ],
       "correct": 1,
       "explanation": ""
@@ -18,12 +18,12 @@
       "stage": "check",
       "question": "以下哪一项不是课程中列出的三种 IPI 投递 Vector 之一？",
       "options": [
-        "Retrieval-augmented generation（被污染的 retrieval）",
         "用户直接编辑 system-prompt",
         "Tool output（工具输出）",
-        "Inbox / document workflows（收件箱 / 文档工作流）"
+        "Inbox / document workflows（收件箱 / 文档工作流）",
+        "Retrieval-augmented generation（被污染的 retrieval）"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -31,23 +31,23 @@
       "question": "为什么 user-input filters 会漏掉 IPI？",
       "options": [
         "Filters 无法读取 JSON",
+        "Filters 只在模型响应之后运行",
         "User-input filters 区分大小写",
-        "payload 从未出现在用户输入中；它出现在 retrieved 或 tool-supplied content 中",
-        "Filters 只在模型响应之后运行"
+        "payload 从未出现在用户输入中；它出现在 retrieved 或 tool-supplied content 中"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "Information Flow Control (IFC) 对 AI agents 的核心原则是什么？",
       "options": [
-        "加密所有 retrieved content",
-        "只使用 single-turn prompts",
         "默认禁用所有 tools",
-        "按来源将内容标记为 trusted 或 untrusted；由 untrusted content 触发的 action 必须在执行前由 trusted input 确认"
+        "加密所有 retrieved content",
+        "按来源将内容标记为 trusted 或 untrusted；由 untrusted content 触发的 action 必须在执行前由 trusted input 确认",
+        "只使用 single-turn prompts"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -56,20 +56,20 @@
       "options": [
         "Adaptive attacks 的评估成本过高",
         "它们报告的接近零 ASR 在 adaptive attack 下依然成立",
-        "只有一个 defense 被攻破",
-        "Adaptive attacks（Gradient、RL、random search、human red-team）攻破了其中 >90%，尽管它们最初声称 ASR 接近零"
+        "Adaptive attacks（Gradient、RL、random search、human red-team）攻破了其中 >90%，尽管它们最初声称 ASR 接近零",
+        "只有一个 defense 被攻破"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "Prompt injection 在 2025 OWASP LLM Top 10 中排名第几？",
       "options": [
-        "未列出",
+        "LLM10（最低）",
         "LLM01（最高，#1 application-layer threat）",
-        "LLM05",
-        "LLM10（最低）"
+        "未列出",
+        "LLM05"
       ],
       "correct": 1,
       "explanation": ""
