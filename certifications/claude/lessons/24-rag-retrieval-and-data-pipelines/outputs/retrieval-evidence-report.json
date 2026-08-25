@@ -1,0 +1,20 @@
+{
+  "report_id": "policy-retrieval-baseline-v1",
+  "active_sources": ["refund-v3", "shipping-v2"],
+  "excluded_sources": [
+    {"document_id": "refund-v2", "reason": "非活跃版本"}
+  ],
+  "query": "谁负责批准超过 500 美元的退款？",
+  "ranked_hits": [
+    {
+      "rank": 1,
+      "document_id": "refund-v3",
+      "chunk_id": "refund-v3:0",
+      "updated_at": "2026-08-01",
+      "support": "执行前必须获得财务批准。"
+    }
+  ],
+  "metrics": {"recall_at_k": 1.0, "mean_reciprocal_rank": 1.0},
+  "freshness_gate": "已通过",
+  "authorization_gate": "fixture 使用公开的合成政策数据"
+}
