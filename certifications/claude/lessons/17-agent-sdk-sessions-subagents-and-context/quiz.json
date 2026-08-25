@@ -1,0 +1,78 @@
+{
+  "lesson": "17-agent-sdk-sessions-subagents-and-context",
+  "title": "Agent SDK Session、Subagent 与 Context",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Agent 应该在哪里存储权威的任务完成状态、审批和外部副作用 ID？",
+      "options": [
+        "存储在 Session 摘要中，以便恢复时保留任务完成和审批声明",
+        "存储在列出审批和最近已知副作用 ID 的稳定 system instruction 中",
+        "存储在持久化外部状态中，并将引用加载到 Context",
+        "存储在附加到每个已完成操作的结构化置信度记录中"
+      ],
+      "correct": 2,
+      "explanation": "对话是一个工作集。持久化状态为跨 Session 或 Context 丢失后的版本控制、对账、幂等性和恢复提供支持。"
+    },
+    {
+      "stage": "check",
+      "question": "何时 fork Session 比 resume Session 更合适？",
+      "options": [
+        "不存在先前状态，且两个 Agent 需要独立编写计划时",
+        "原始任务已经完成，但其 Session 应继续保留以供参考时",
+        "每次调用外部状态 Tool 后，继续执行同一个已核对计划时",
+        "探索替代方案时必须保留原始分支并隔离修改"
+      ],
+      "correct": 3,
+      "explanation": "Fork 会保留共同的起点，同时允许隔离探索。Resume 则在完成外部状态对账后继续一条有效轨迹。"
+    },
+    {
+      "stage": "check",
+      "question": "Compaction 解决什么问题？",
+      "options": [
+        "缓解 Context 大小压力，同时保留紧凑的当前工作集",
+        "长时间暂停后重新验证用户身份和当前 scope",
+        "跨重启持久化记录审批和外部事务",
+        "对可能在超时前已经完成的模糊副作用进行对账"
+      ],
+      "correct": 0,
+      "explanation": "Compaction 会减少 Context 体积。持久化状态、授权和副作用对账仍然是彼此独立的系统职责。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种用途最适合操作前 Tool Hook？",
+      "options": [
+        "选择哪个尚未解决的假设值得进行下一轮研究",
+        "阻止在声明的文件范围之外进行写入",
+        "反复重写解释，直到评分者认为其具有足够说服力",
+        "判断某项法律条款在当前事实下是否构成实质性风险"
+      ],
+      "correct": 1,
+      "explanation": "范围是可以在执行前检查的确定性不变量。语义判断应由 Model 完成，并配合 Evaluation 和适当审查。"
+    },
+    {
+      "stage": "post",
+      "question": "退款请求可能已经成功后发生超时。重试前应该怎么做？",
+      "options": [
+        "立即使用相同 key 重试，因为相同请求始终安全",
+        "使用更大的 Model 恢复 Session，并根据 Session 事件序列推断是否完成",
+        "核对幂等性 key 和外部结果，以确定副作用是否已经发生",
+        "在本地将调用标记为失败，然后使用新的退款操作标识符发起请求"
+      ],
+      "correct": 2,
+      "explanation": "结果未知时，重试可能会重复执行高影响操作。对账能够确定当前事实，并确保下一次操作安全。"
+    },
+    {
+      "stage": "post",
+      "question": "Agent Session 暂停后，某个依赖项发生了实质性变化。最稳妥的继续策略是什么？",
+      "options": [
+        "附加之前的全部 Tool 日志，使现有 Context 无需重新规划即可适应变化",
+        "不进行对账，直接从暂停的 Session fork，以保留原始分支",
+        "Resume 旧计划，但要求 Agent 在工作过程中考虑依赖项变化",
+        "重新验证状态、标记过时假设，并使用新的结构化计划启动或 fork Session"
+      ],
+      "correct": 3,
+      "explanation": "实质性的外部变化会使先前轨迹失效。根据持久化的当前状态构建新的工作 Context，可以避免强迫过时假设通过 resume 继续生效。"
+    }
+  ]
+}
