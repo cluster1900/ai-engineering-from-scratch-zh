@@ -98,6 +98,10 @@ Fuyu（Adept，2023）是一个相关方法：完全跳过单独的 vision encod
 
 AnyGPT（Zhan et al., 2024）把 Chameleon 扩展到四种模态：文本、图像、语音、音乐。每种模态都使用相同的 VQ-VAE 技巧，共享 Transformer。Any-to-any generation。Lesson 12.16 中会进一步介绍。
 
+```figure
+vq-codebook
+```
+
 ## 使用它
 
 `code/main.py` 构建了一个 toy end-to-end early-fusion model：
