@@ -1,0 +1,78 @@
+{
+  "lesson": "29-mcp-reliability-cancellation-and-flow-control",
+  "title": "MCP 可靠性、取消与 Flow Control",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "一个 mutation 响应丢失，客户端使用新的 JSON-RPC id 进行 retry。什么条件能保证 retry 安全？",
+      "options": [
+        "新的 JSON-RPC id 会自动对 mutation 去重",
+        "Tool descriptor 包含 idempotentHint",
+        "使用相同参数重复使用一个持久化的应用 idempotency key",
+        "retry 使用同一个 HTTP 连接"
+      ],
+      "correct": 2,
+      "explanation": "JSON-RPC id 用于关联消息。业务 idempotency 需要持久化 key、参数 fingerprint 和已存储的提交结果。"
+    },
+    {
+      "stage": "check",
+      "question": "在 MCP 2026-07-28 中，客户端如何通过 stdio 取消进行中的请求？",
+      "options": [
+        "使用 JSON-RPC id 调用 tasks/cancel",
+        "发送包含活跃请求 id 的 notifications/cancelled",
+        "关闭每请求 SSE 流",
+        "向 MCP endpoint 发送 DELETE 请求"
+      ],
+      "correct": 1,
+      "explanation": "stdio 没有每请求响应流，因此客户端会发送无需等待响应的 notifications/cancelled notification。"
+    },
+    {
+      "stage": "check",
+      "question": "客户端如何取消进行中的 Streamable HTTP 请求？",
+      "options": [
+        "关闭该请求的 SSE 响应流",
+        "向 MCP endpoint POST notifications/cancelled",
+        "等待 server 发送 notifications/cancelled",
+        "发送值为空的 Last-Event-ID"
+      ],
+      "correct": 0,
+      "explanation": "对于现代 Streamable HTTP，关闭请求专属的响应流就是取消信号。"
+    },
+    {
+      "stage": "check",
+      "question": "每次空闲超时前都有 progress 到达。哪一种 deadline 仍必须终止失控的请求？",
+      "options": [
+        "从请求开始计算的绝对最大超时",
+        "下一个 pagination cursor 的到期时间",
+        "代理的 keepalive 间隔",
+        "Task 轮询间隔"
+      ],
+      "correct": 0,
+      "explanation": "有效的 progress 可以重置空闲计时，但绝对最大 deadline 必须始终有效。"
+    },
+    {
+      "stage": "post",
+      "question": "成功的 tasks/cancel 响应能证明什么？",
+      "options": [
+        "持久化结果已被删除",
+        "worker 已经停止",
+        "server 已确认取消意图",
+        "Task 最终必定变为 cancelled"
+      ],
+      "correct": 2,
+      "explanation": "Task 取消是协作式的。Task 可能继续处于 working 状态、先完成，或在 worker checkpoint 后进入 cancelled 状态。"
+    },
+    {
+      "stage": "post",
+      "question": "订阅 SSE 流在多个 progress event 后中断。哪一种恢复方案符合 MCP 2026-07-28？",
+      "options": [
+        "从 Last-Event-ID 恢复，并重放每个进行中的 mutation",
+        "打开 GET event stream 并恢复 Mcp-Session-Id",
+        "保留旧请求 id，并假定没有遗漏更新",
+        "发起新的 listen 请求、重新获取权威状态，并避免重放不安全的 mutation"
+      ],
+      "correct": 3,
+      "explanation": "现代 MCP 流不能通过 Last-Event-ID 恢复。恢复过程使用新请求、重新获取权威数据，并明确判断 retry 安全性。"
+    }
+  ]
+}
