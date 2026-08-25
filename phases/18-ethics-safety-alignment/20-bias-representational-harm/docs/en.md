@@ -55,6 +55,10 @@ WinoIdentity (COLM 2025) 引入了基于不确定性的交叉公平性。它衡�
 
 Lessons 20-21 正式覆盖偏见与公平性。Lesson 22 覆盖隐私。Lesson 23 覆盖 watermarking。这些是用户伤害层，与前面的欺骗/安全层互为补充。
 
+```figure
+an-bias-two-harms
+```
+
 ## 使用它
 
 `code/main.py` 构建了一个 toy embedding-based bias probe：在简单共现 Embedding 中，测量身份词与属性词之间的 WEAT 风格距离。你可以注入一个偏见并观察指标触发；应用一个简单去偏操作，并观察部分恢复。

@@ -16,7 +16,7 @@
   <text x="480" y="24" text-anchor="middle" class="title">偏见与表征伤害：测量与干预</text>
 
   <rect x="40" y="60" width="880" height="150" class="box"/>
-  <text x="480" y="85" text-anchor="middle" class="head">Gallegos et al. 2024 三类指标</text>
+  <text x="480" y="85" text-anchor="middle" class="head">Gallegos 等人 2024 三类指标</text>
   <rect x="60" y="105" width="280" height="90" class="cool"/>
   <text x="200" y="130" text-anchor="middle" class="step">基于 Embedding</text>
   <text x="200" y="150" text-anchor="middle" class="small">WEAT, SEAT</text>
@@ -34,7 +34,7 @@
   <text x="480" y="255" text-anchor="middle" class="head">交叉性 + 机制</text>
   <rect x="60" y="275" width="420" height="70" class="cold"/>
   <text x="270" y="298" text-anchor="middle" class="step">交叉性评估</text>
-  <text x="270" y="316" text-anchor="middle" class="small">An et al. 2025（PNAS Nexus）：5 个模型，race x gender</text>
+  <text x="270" y="316" text-anchor="middle" class="small">An 等人 2025（PNAS Nexus）：5 个模型，种族 x 性别</text>
   <text x="270" y="334" text-anchor="middle" class="small">WinoIdentity（COLM 2025）：基于不确定性</text>
   <rect x="500" y="275" width="400" height="70" class="cold"/>
   <text x="700" y="298" text-anchor="middle" class="step">机制性去偏</text>
