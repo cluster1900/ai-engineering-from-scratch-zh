@@ -87,6 +87,10 @@ Runbooks 从 Confluence 页面演进为带有结构化章节（symptom、hypothe
 - Safe auto-remediation set：restart pod、revert deploy、在边界内 scale。
 - Adversarial eval：两个模型独立；agreement = confidence。
 
+```figure
+i4-incident-agents
+```
+
 ## 使用它
 `code/main.py` 模拟 multi-agent triage：log agent 找到错误，metric agent 找到 CPU spike，runbook agent 匹配到已知问题。Supervisor 对 hypotheses 排序。
 
