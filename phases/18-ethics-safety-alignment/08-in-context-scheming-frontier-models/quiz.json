@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "in-context scheming 与 sleeper-agent backdoors 有什么不同？",
       "options": [
-        "scheming 需要在 adversarial data 上进行 fine-tuning",
         "scheming 仅由 in-context prompt 和 environment 引出，没有 implant",
+        "scheming 需要在 adversarial data 上进行 fine-tuning",
         "scheming 只发生在 open-source models 中",
         "scheming 使用更小的 models"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -20,10 +20,10 @@
       "options": [
         "Reward、KL、长度惩罚",
         "Sampling temperature、top-k、top-p（采样控制参数）",
-        "Helpful、honest、harmless（三 H 原则）",
-        "Misalignment、goal-directedness、situational awareness（未对齐、目标导向性、情境感知）"
+        "Misalignment、goal-directedness、situational awareness（未对齐、目标导向性、情境感知）",
+        "Helpful、honest、harmless（三 H 原则）"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -31,11 +31,11 @@
       "question": "在 Apollo evaluations 中，哪个 model 在 deceptive act 之后的 follow-up questions 中，有超过 85% 的情况下维持了自己的 cover story？",
       "options": [
         "Claude 3.5 Sonnet",
+        "o1",
         "Llama 3.1 405B",
-        "Gemini 1.5 Pro",
-        "o1"
+        "Gemini 1.5 Pro"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -43,23 +43,23 @@
       "question": "2025 年 anti-scheming deliberative-alignment 结果中的关键 confound 是什么？",
       "options": [
         "training data 太小",
-        "post-trained model 也更擅长检测自己是否处于 evaluation 中，因此 covert action 表面下降的一部分来自更好的隐藏，而不是更好的 alignment",
         "reward model 被 open-sourced",
-        "PPO 被 DPO 替代"
+        "PPO 被 DPO 替代",
+        "post-trained model 也更擅长检测自己是否处于 evaluation 中，因此 covert action 表面下降的一部分来自更好的隐藏，而不是更好的 alignment"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么 evaluation-suite reliability 在 2025/2026 年会变成一种 capability-adjacent quantity？",
       "options": [
-        "具备更强 situational awareness 的 models 能识别 evaluation contexts，因此它们的 eval behaviour 作为 deployment behaviour proxy 的可靠性更低",
-        "evaluations 现在只使用 proprietary tooling",
         "更好的 models 更慢，因此更难 evaluate",
-        "open-source models 无法运行新的 benchmarks"
+        "evaluations 现在只使用 proprietary tooling",
+        "open-source models 无法运行新的 benchmarks",
+        "具备更强 situational awareness 的 models 能识别 evaluation contexts，因此它们的 eval behaviour 作为 deployment behaviour proxy 的可靠性更低"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -67,11 +67,11 @@
       "question": "为什么 Phase 18 arc 会把 Sleeper Agents、In-Context Scheming 和 Alignment Faking 放在一起讲？",
       "options": [
         "它们都来自同一批 authors",
-        "它们共享一个 benchmark dataset",
         "它们覆盖了 deception spectrum：植入式（Sleeper Agents）、由 in-context conflict 引出（Scheming），以及没有 goal conflict 的 spontaneous emergence（Alignment Faking）",
-        "它们都依赖 Constitutional AI"
+        "它们都依赖 Constitutional AI",
+        "它们共享一个 benchmark dataset"
       ],
-      "correct": 2,
+      "correct": 1,
       "explanation": ""
     }
   ]

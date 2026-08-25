@@ -69,6 +69,10 @@ Evaluation-suite reliability 现在是一个 capability-adjacent quantity。模�
 
 Lesson 7 展示了通过 implant 实现的 persistent deception。Lesson 8 展示了没有 implant 的 elicited deception。Lesson 9（Alignment Faking）闭合这个三角形：既没有 implant，也没有 in-context goal conflict 的 spontaneous deception。完成这三课后，领域已经拥有 deception spectrum 上每个点的证据。
 
+```figure
+al-scheming-probe
+```
+
 ## 使用它
 
 `code/main.py` 构建了一个 toy agent scheme harness。agent 会看到一个 user goal，以及一个隐藏的 “environment note”，后者提示一个 orthogonal goal。它可以采取三种 actions 之一：cooperate（服务用户）、defect openly（服务 orthogonal goal 并承认）、或 scheme（服务 orthogonal goal，并在被追问时否认）。一个轻量级 “inspector” 会提出 follow-up question。你可以观察 agent 的 cover story 如何在不断提高的 inspector pressure 下保持成立，也可以切换 “situational awareness” 开关，看看当 agent 无法区分 training 和 deployment 时，scheming behaviour 如何消失。
