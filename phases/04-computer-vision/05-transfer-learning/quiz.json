@@ -3,37 +3,63 @@
     {
       "stage": "pre",
       "question": "你有 500 张带标注的图像，用于一个接近 ImageNet distribution 的新任务。哪种方案最合理？",
-      "options": ["从头训练一个 ResNet-50", "冻结一个 ImageNet-pretrained backbone，只训练一个新的 linear head", "用相同的大 LR fine-tune 每一层", "忽略 pretrained weights；小数据集最适合小模型"],
-      "correct": 1,
+      "options": [
+        "用相同的大 LR fine-tune 每一层",
+        "忽略 pretrained weights；小数据集最适合小模型",
+        "冻结一个 ImageNet-pretrained backbone，只训练一个新的 linear head",
+        "从头训练一个 ResNet-50"
+      ],
+      "correct": 2,
       "explanation": "只有 500 张图像时，你没有足够信号从头训练一个 Deep Network，也无法安全地端到端 fine-tune 所有层而不破坏 pretrained features。冻结 backbone 并只训练新的 head（linear probe）会直接使用 pretrained features，这是小型、近域数据集的标准做法。"
     },
     {
       "stage": "pre",
       "question": "为什么 ImageNet-pretrained network 的早期 conv 层能很好地迁移到医学图像，即使 ImageNet 中没有 X-ray？",
-      "options": ["PyTorch 会自动重新初始化早期层", "早期层编码通用视觉 primitives —— edges、orientations、contrast —— 这些几乎被任何视觉域共享；只有后期层会专门适配 ImageNet categories", "ImageNet 暗中包含医学数据", "Transfer 只有在 domains 匹配时才有效"],
-      "correct": 1,
+      "options": [
+        "ImageNet 暗中包含医学数据",
+        "Transfer 只有在 domains 匹配时才有效",
+        "PyTorch 会自动重新初始化早期层",
+        "早期层编码通用视觉 primitives —— edges、orientations、contrast —— 这些几乎被任何视觉域共享；只有后期层会专门适配 ImageNet categories"
+      ],
+      "correct": 3,
       "explanation": "Gabor-like filters 和简单 texture detectors 是早期 CNN layers 在任何自然图像语料上都会学到的 features。它们反映了光照、阴影和边缘的统计规律，这些规律存在于摄影、医学成像、显微成像和卫星数据中。后期层会逐步专门化，因此 fine-tuning 会聚焦在最后几个 blocks。"
     },
     {
       "stage": "post",
       "question": "使用 discriminative learning rates 进行端到端 fine-tuning 时，为什么早期层应该比后期层使用更小的 LR？",
-      "options": ["早期层参数更少", "早期层编码你想保留的通用 features；后期层编码必须移动的任务特定 features；早期层较小的 LR 可以防止 feature drift 和 catastrophic forgetting", "PyTorch 要求 layer-wise LR 才能保证正确性", "早期层更小的 LR 会加快训练"],
-      "correct": 1,
+      "options": [
+        "早期层更小的 LR 会加快训练",
+        "早期层参数更少",
+        "早期层编码你想保留的通用 features；后期层编码必须移动的任务特定 features；早期层较小的 LR 可以防止 feature drift 和 catastrophic forgetting",
+        "PyTorch 要求 layer-wise LR 才能保证正确性"
+      ],
+      "correct": 2,
       "explanation": "早期层已经编码了正确的视觉 primitives；你希望只进行极小更新，以保留这些 features。后期层需要向新任务移动。整个模型使用同一个 learning rate 会强迫两端折中，从而伤害两端。Discriminative LRs 允许每个 stage 按自己的节奏移动，这是 fine-tuning 的经验甜点。"
     },
     {
       "stage": "post",
       "question": "你在一个包含 800 张灰度图像（复制到 3 个 channels）的 10 类医学数据集上 fine-tune 一个 ResNet。Accuracy 是 10%（10 类的随机猜测水平）。最可能的原因是什么？",
-      "options": ["你用了错误的 Loss Function", "BatchNorm running statistics 来自 ImageNet RGB 照片，与 grayscale-medical distribution 严重不匹配，因此前几个 BN 层会产生 noise 并向前传播", "ResNet 无法处理 grayscale input", "800 张图像对任何 transfer learning 来说都太少"],
+      "options": [
+        "ResNet 无法处理 grayscale input",
+        "BatchNorm running statistics 来自 ImageNet RGB 照片，与 grayscale-medical distribution 严重不匹配，因此前几个 BN 层会产生 noise 并向前传播",
+        "800 张图像对任何 transfer learning 来说都太少",
+        "你用了错误的 Loss Function"
+      ],
       "correct": 1,
       "explanation": "BatchNorm 会保留来自 ImageNet 的 running_mean 和 running_var。在小型且 distribution-shifted 的数据集上，这些 buffers 在短暂 fine-tune 期间无法足够快地适应，BN 会用错误的 stats 归一化 activations。修复方式：冻结 BN statistics、切换到 GroupNorm，或在目标数据集上用一次只更新 BN 的 warmup pass 预训练 BN stats。"
     },
     {
       "stage": "post",
       "question": "你比较两次运行：(a) 在冻结的 ImageNet backbone 上做 linear probe，accuracy 为 82%；(b) 端到端 fine-tune，accuracy 为 78%。你应该得出什么结论？",
-      "options": ["Fine-tuning 没有帮助；上线 linear probe", "最终低于 linear probe 的 fine-tune 几乎总是训练 bug —— LR 过高、BN 处理不当，或 scheduler/optimizer 配置错误；在对 transfer 下结论前先诊断", "数据集太大", "Pretrained weights 很差"],
+      "options": [
+        "Fine-tuning 没有帮助；上线 linear probe",
+        "最终低于 linear probe 的 fine-tune 几乎总是训练 bug —— LR 过高、BN 处理不当，或 scheduler/optimizer 配置错误；在对 transfer 下结论前先诊断",
+        "数据集太大",
+        "Pretrained weights 很差"
+      ],
       "correct": 1,
       "explanation": "Fine-tuning 应该总是超过或匹配 linear probe，因为 linear probe 是 backbone LR = 0 的 fine-tuning 特例。如果 fine-tune 更差，说明 pipeline 正在主动破坏 pretrained features。修复方法是降低 backbone LR、应用 discriminative LRs，或冻结 BN —— 而不是放弃 fine-tuning。"
     }
-  ]
+  ],
+  "title": null
 }

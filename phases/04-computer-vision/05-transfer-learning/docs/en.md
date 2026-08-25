@@ -112,6 +112,10 @@ Transfer-learning runs 需要两个你在 scratch run 中不会跟踪的数字�
 
 如果 fine-tuned 低于 pretrained-only，你就有 learning-rate 或 BN bug。始终打印两者。
 
+```figure
+transfer-learning
+```
+
 ## 构建它
 ### 步骤 1： Load a pretrained backbone and inspect it
 
