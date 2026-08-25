@@ -71,6 +71,10 @@ Azure Content Moderator：2024 年 2 月 deprecated，2027 年 2 月 retired。�
 
 Lesson 16 在 red-team context 中覆盖 moderation tooling。Lesson 29 覆盖 deployed moderation。Lesson 30 以当前 dual-use capability evidence 收尾。
 
+```figure
+an-moderation-layers
+```
+
 ## 使用它
 `code/main.py` 构建一个 three-layer moderation harness：input moderator（keyword + category score）、output moderator（对 output 使用同一 classifier）、custom moderator（domain rules）。你可以将 inputs 跑过它，并观察哪一层捕捉到了什么。
 

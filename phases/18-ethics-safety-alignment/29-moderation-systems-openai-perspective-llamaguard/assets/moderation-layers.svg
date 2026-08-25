@@ -16,10 +16,10 @@
     </style>
   </defs>
 
-  <text x="480" y="24" text-anchor="middle" class="title">三层 moderation：2026 默认部署模式</text>
+  <text x="480" y="24" text-anchor="middle" class="title">三层内容审核：2026 默认部署模式</text>
 
   <rect x="40" y="60" width="180" height="100" class="cool"/>
-  <text x="130" y="90" text-anchor="middle" class="step">用户 prompt</text>
+  <text x="130" y="90" text-anchor="middle" class="step">用户 Prompt</text>
   <text x="130" y="115" text-anchor="middle" class="small">Llama Guard 3/4</text>
   <text x="130" y="135" text-anchor="middle" class="small">OpenAI Moderation</text>
 
@@ -29,12 +29,12 @@
   <text x="330" y="135" text-anchor="middle" class="small">医疗拒答</text>
 
   <rect x="440" y="60" width="180" height="100" class="hot"/>
-  <text x="530" y="90" text-anchor="middle" class="step">model</text>
-  <text x="530" y="115" text-anchor="middle" class="small">GPT-5, Claude, Gemini</text>
-  <text x="530" y="135" text-anchor="middle" class="small">或 open-source</text>
+  <text x="530" y="90" text-anchor="middle" class="step">Model</text>
+  <text x="530" y="115" text-anchor="middle" class="small">GPT-5、Claude、Gemini</text>
+  <text x="530" y="135" text-anchor="middle" class="small">或开源</text>
 
   <rect x="640" y="60" width="180" height="100" class="cool"/>
-  <text x="730" y="90" text-anchor="middle" class="step">输出 moderation</text>
+  <text x="730" y="90" text-anchor="middle" class="step">输出内容审核</text>
   <text x="730" y="115" text-anchor="middle" class="small">Llama Guard 3/4</text>
   <text x="730" y="135" text-anchor="middle" class="small">OpenAI Moderation</text>
 
@@ -43,7 +43,7 @@
   <path d="M 620 110 L 640 110" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow29)" fill="none"/>
 
   <rect x="40" y="180" width="880" height="160" class="box"/>
-  <text x="480" y="205" text-anchor="middle" class="head">类别 taxonomy</text>
+  <text x="480" y="205" text-anchor="middle" class="head">类别体系</text>
   <rect x="60" y="225" width="280" height="100" class="cool"/>
   <text x="200" y="250" text-anchor="middle" class="step">OpenAI Moderation（13 类）</text>
   <text x="200" y="270" text-anchor="middle" class="small">骚扰(+威胁) / 仇恨(+威胁)</text>
@@ -52,20 +52,20 @@
 
   <rect x="360" y="225" width="280" height="100" class="cool"/>
   <text x="500" y="250" text-anchor="middle" class="step">Llama Guard 3（14 类）</text>
-  <text x="500" y="270" text-anchor="middle" class="small">MLCommons AILuminate taxonomy</text>
+  <text x="500" y="270" text-anchor="middle" class="small">MLCommons AILuminate 分类体系</text>
   <text x="500" y="288" text-anchor="middle" class="small">+ code-interpreter-abuse、选举</text>
   <text x="500" y="306" text-anchor="middle" class="small">+ 诽谤、specialized-advice</text>
 
   <rect x="660" y="225" width="240" height="100" class="cool"/>
-  <text x="780" y="250" text-anchor="middle" class="step">Perspective（toxicity baseline）</text>
-  <text x="780" y="270" text-anchor="middle" class="small">TOXICITY / SEVERE / INSULT</text>
+  <text x="780" y="250" text-anchor="middle" class="step">Perspective（毒性基线）</text>
+  <text x="780" y="270" text-anchor="middle" class="small">毒性 / 严重 / 侮辱</text>
   <text x="780" y="288" text-anchor="middle" class="small">LLM 前时代</text>
   <text x="780" y="306" text-anchor="middle" class="small">研究中仍在使用</text>
 
   <rect x="40" y="360" width="880" height="130" class="box"/>
   <text x="480" y="385" text-anchor="middle" class="head">弃用 + 迁移</text>
   <text x="60" y="415" class="small">Azure Content Moderator：2024 年 2 月弃用，2027 年 2 月退役。</text>
-  <text x="60" y="435" class="small">替代：Azure AI Content Safety（基于 LLM，集成 Azure OpenAI）。</text>
-  <text x="60" y="455" class="small">迁移项目：受影响部署为 2024-2027；纳入 EU AI Act 时间线。</text>
-  <text x="60" y="475" class="small">omni-moderation-latest (2024)：多数开发者免费；文本 + 图像；多语言提升 42%。</text>
+  <text x="60" y="435" class="small">替代方案：Azure AI Content Safety（基于 LLM，集成 Azure OpenAI）。</text>
+  <text x="60" y="455" class="small">迁移项目：受影响部署期为 2024-2027 年；纳入 EU AI Act 时间线。</text>
+  <text x="60" y="475" class="small">omni-moderation-latest（2024）：多数开发者免费；文本 + 图像；多语言提升 42%。</text>
 </svg>
