@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "为什么 DPO 可以跳过显式 reward model 的训练？",
       "options": [
+        "Preference data 不需要标量 reward",
         "DPO 在第二个 optimization loop 中隐式训练自己的 reward model",
         "闭式 RLHF 最优解允许你把 reward 表达为 policy 的 log-ratio，并将其代入 Bradley-Terry loss",
-        "Preference data 不需要标量 reward",
         "Bradley-Terry preferences 恰好对 reward function 不变"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -30,12 +30,12 @@
       "stage": "check",
       "question": "什么时候你会选择 KTO 而不是 DPO？",
       "options": [
-        "当你必须保证 zero implicit-reward drift 时",
         "当你有未配对的 single labels（desirable / undesirable），并且想使用 loss-aversion utilities 时",
         "当你只有带有强 margins 的 paired data 时",
+        "当你必须保证 zero implicit-reward drift 时",
         "当你想完全移除 KL penalty 时"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -43,8 +43,8 @@
       "question": "与 DPO 相比，SimPO 独有的属性是什么？",
       "options": [
         "它移除 reference policy，并按 sequence length 归一化 log-likelihood",
-        "它放弃 Bradley-Terry log-sigmoid，改用 identity mapping",
         "它将 odds-ratio loss 与 NLL 结合使用",
+        "它放弃 Bradley-Terry log-sigmoid，改用 identity mapping",
         "它保留 reference policy 并添加 margin"
       ],
       "correct": 0,
@@ -54,10 +54,10 @@
       "stage": "post",
       "question": "BPO 针对的 DPO 中的 “Degraded Chosen Response” 问题是什么？",
       "options": [
-        "chosen response 缺失于 reference policy 的 support 中",
         "chosen response 在 inference 时以低概率被采样",
+        "chosen response 变得比 rejected 更长",
         "只要 rejected log-prob 下降得更快，DPO 就可以让 chosen response 的绝对 log-prob 下降",
-        "chosen response 变得比 rejected 更长"
+        "chosen response 缺失于 reference policy 的 support 中"
       ],
       "correct": 2,
       "explanation": ""
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "Rafailov et al. (NeurIPS 2024) 关于 direct alignment algorithms 的 scaling laws 表明：",
       "options": [
-        "DAAs 在 gold reward 上呈现与 Gao et al. 相同的 peak-and-collapse over-optimization 形状",
+        "DPO 会 over-optimize，但 IPO 和 SimPO 不会",
         "DAAs 通过设计消除了 Goodhart",
         "当 paired data 超过 100k examples 时，over-optimization 会消失",
-        "DPO 会 over-optimize，但 IPO 和 SimPO 不会"
+        "DAAs 在 gold reward 上呈现与 Gao et al. 相同的 peak-and-collapse over-optimization 形状"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     }
   ]

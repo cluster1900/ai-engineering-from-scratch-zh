@@ -46,7 +46,7 @@
   <text x="810" y="202" text-anchor="middle" class="head">SimPO</text>
   <text x="720" y="224" class="small">无 pi_ref；</text>
   <text x="720" y="246" class="small">长度归一化</text>
-  <text x="720" y="262" class="small">log pi + margin gamma.</text>
+  <text x="720" y="262" class="small">log pi + 间隔 gamma。</text>
   <text x="720" y="278" class="small">消除长度偏置。</text>
 
   <rect x="270" y="320" width="200" height="110" class="box"/>
@@ -72,8 +72,8 @@
 
   <rect x="50" y="460" width="860" height="140" class="box"/>
   <text x="480" y="484" text-anchor="middle" class="head">如何选择 — 2026</text>
-  <text x="70" y="510" class="small">成对 prefs、归一化良好 → DPO · 长度偏置明显 → SimPO · 高 beta 饱和 → IPO</text>
-  <text x="70" y="530" class="small">非成对 binary feedback → KTO · 单阶段 base-to-aligned → ORPO · chosen log-prob 下降 → BPO</text>
-  <text x="70" y="552" class="small">每个 lab 都会跑一组测试。数学推理与安全行为的最优解不同。</text>
-  <text x="70" y="574" class="small">Rafailov et al. (NeurIPS 2024) 证明 DAAs 仍会过度优化 — Goodhart 不在乎你选了哪个 loss。</text>
+  <text x="70" y="510" class="small">成对偏好、归一化良好 → DPO · 长度偏置明显 → SimPO · 高 beta 饱和 → IPO</text>
+  <text x="70" y="530" class="small">非成对二元反馈 → KTO · 单阶段 base-to-aligned → ORPO · chosen log-prob 下降 → BPO</text>
+  <text x="70" y="552" class="small">每个实验都会运行一组测试。数学推理与安全行为的最优解不同。</text>
+  <text x="70" y="574" class="small">Rafailov et al. (NeurIPS 2024) 证明 DAAs 仍会过度优化 — Goodhart 不在乎你选择哪种 Loss。</text>
 </svg>
