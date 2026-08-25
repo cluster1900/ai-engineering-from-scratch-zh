@@ -15,6 +15,10 @@
 - 计算从一个模型进行多代采样的任务的 pass-at-k。
 - 将沙箱崩溃、语法错误和超时视为一流的失败模式，并具有runner可以记录的不同退出代码。
 
+```figure
+sandbox-runner
+```
+
 ## 为什么需要一个孤立的子进程
 
 内联`exec`存在安全和稳定性隐患。生成的 `while True: pass` 永远阻止 eval。生成的 `import shutil; shutil.rmtree('/')` 确实像听起来一样灾难性。解决方法是为每个候选生成一个新的 Python 解释器，在 stdin 上传递代码，将断言结果写入 stdout，并在溢出时终止该进程。主机 eval 进程继续运行。

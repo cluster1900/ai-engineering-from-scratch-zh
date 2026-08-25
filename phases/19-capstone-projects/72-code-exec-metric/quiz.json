@@ -6,36 +6,36 @@
       "stage": "pre",
       "question": "为什么runner为每个候选进程生成一个新的 Python 子进程，而不是调用 exec 内联？",
       "options": [
-        "它比 exec 更快",
         "它避免了污染内置函数",
-        "它将超时、输出溢出和危险的导入与主机评估过程隔离开来",
-        "exec 在现代 Python 中已被弃用"
+        "exec 在现代 Python 中已被弃用",
+        "它比 exec 更快",
+        "它将超时、输出溢出和危险的导入与主机评估过程隔离开来"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "候选代码中的无限循环或失控内存分配只会导致子进程崩溃。宿主评估不断进步。"
     },
     {
-      "stage": "check",
+      "stage": "pre",
       "question": "对于具有 3 个断言的任务，如果 2 个通过，1 个失败，得分是多少？",
       "options": [
-        "1.0",
         "0.667",
+        "1.0",
         "0.0",
         "0.5"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "通过分数除以总分。三分之二是 0.667。退出代码是assertion_fail。"
     },
     {
       "stage": "check",
       "question": "当候选代码未解析时，runner会返回哪个退出代码？",
       "options": [
+        "syntax_error",
         "error",
-        "assertion_fail",
         "timeout",
-        "syntax_error"
+        "assertion_fail"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": "compile() 在运行器内部引发 SyntaxError，内部脚本捕获它并写入 exit_code=syntax_error。"
     },
     {
@@ -43,35 +43,35 @@
       "question": "为什么挂钟超时是负载控制而不是导入拒绝列表？",
       "options": [
         "Python 中不能拒绝导入",
-        "大多数失败都是无限循环，坚定的对手可以绕过任何进程中的拒绝列表",
         "subprocess.run 不支持拒绝列表",
+        "大多数失败都是无限循环，坚定的对手可以绕过任何进程中的拒绝列表",
         "在编译时检查挂钟"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "拒绝者捕获惰性代码，超时捕获无限循环。拒绝名单是后盾，暂停是底线。"
     },
     {
-      "stage": "post",
+      "stage": "check",
       "question": "当 n - c < k 时 pass_at_k(n, c, k) 返回什么？",
       "options": [
-        "零，因为样本未定义",
         "一、因为样品必须含有至少一种合格溶液",
         "c/n，经验通过率",
+        "零，因为样本未定义",
         "引发值错误"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "如果失败次数少于样本大小，则大小为 k 的每个样本必然包含至少一次通过，因此概率为 1。"
     },
     {
       "stage": "post",
       "question": "runner如何出现输出溢出？为什么上限为 256 KB？",
       "options": [
-        "子进程的标准输出是流式传输的；一旦超过 256 KB 运行总数，子进程将被终止，并且该任务将被记录为 exit_code=error 并详细说明“输出溢出”",
         "仅标准错误；大小与操作系统管道默认值匹配",
-        "候选源大小有上限，因此生成的代码保持较小",
-        "得分值，以百分比表示，保留两位小数"
+        "得分值，以百分比表示，保留两位小数",
+        "子进程的标准输出是流式传输的；一旦超过 256 KB 运行总数，子进程将被终止，并且该任务将被记录为 exit_code=error 并详细说明“输出溢出”",
+        "候选源大小有上限，因此生成的代码保持较小"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "盖子可以保护主机。淹没标准输出的候选代码在中途被杀死；runner将 exit_code=error 下的结果标准化为详细信息“输出溢出”，而不是生成新的退出代码。"
     }
   ]
