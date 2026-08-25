@@ -6,24 +6,24 @@
       "stage": "pre",
       "question": "在 GenAI conventions 中，哪个 span name 表示一次 agent run？",
       "options": [
-        "agent.start",
         "invoke_agent（可选地以 gen_ai.agent.name 作为后缀）",
-        "run_chain",
-        "agent_loop"
+        "agent.start",
+        "agent_loop",
+        "run_chain"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "invoke_agent 是规范名称；设置后，agent 的 name attribute 会出现在 span name 中。"
     },
     {
       "stage": "pre",
       "question": "GenAI SIG 定义了哪三类 span？",
       "options": [
-        "Model/client, agent, tool",
         "Frontend, backend, db",
         "Read, write, exec",
-        "Latency, error, throughput"
+        "Latency, error, throughput",
+        "Model/client, agent, tool"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Model/client（LLM 调用）、agent（create/invoke）、tool（每次 invocation）是这些类别。"
     },
     {
@@ -31,11 +31,11 @@
       "question": "invoke_agent span 什么时候使用 kind CLIENT，什么时候使用 INTERNAL？",
       "options": [
         "始终使用 INTERNAL",
-        "远程 agent services（OpenAI Assistants、Bedrock Agents）使用 CLIENT；进程内 frameworks（LangChain、CrewAI、local ReAct）使用 INTERNAL",
         "只有 HTTPS 使用 CLIENT",
-        "始终使用 CLIENT"
+        "始终使用 CLIENT",
+        "远程 agent services（OpenAI Assistants、Bedrock Agents）使用 CLIENT；进程内 frameworks（LangChain、CrewAI、local ReAct）使用 INTERNAL"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "远程 agent 调用是 CLIENT；进程内 agent runs 是 INTERNAL。"
     },
     {
@@ -44,8 +44,8 @@
       "options": [
         "默认捕获所有内容",
         "Instrumentations 默认 SHOULD NOT 捕获；通过 gen_ai.* attributes opt-in 捕获",
-        "只捕获 output，绝不捕获 input",
-        "只在 errors 时捕获"
+        "只在 errors 时捕获",
+        "只捕获 output，绝不捕获 input"
       ],
       "correct": 1,
       "explanation": "默认关闭的内容捕获会保护 PII 和 secrets；opt-in 是显式的。"
@@ -54,36 +54,36 @@
       "stage": "check",
       "question": "哪个 attribute 标识 retrieval 查询过的 corpus 或 store？",
       "options": [
-        "gen_ai.provider.name",
-        "gen_ai.request.model",
         "gen_ai.data_source.id",
-        "gen_ai.agent.name"
+        "gen_ai.provider.name",
+        "gen_ai.agent.name",
+        "gen_ai.request.model"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "gen_ai.data_source.id 标记 retrieval 命中的 RAG corpus 或 store。"
     },
     {
       "stage": "post",
       "question": "本课建议在生产环境中如何存储 prompt content？",
       "options": [
-        "在每个 span 上以 plain text 捕获完整 prompts",
         "将 content 存储在外部（S3、log store），并在 span 上记录 reference IDs",
-        "永远不要存储任何 content",
-        "在 span attributes 中加密 prompts"
+        "在每个 span 上以 plain text 捕获完整 prompts",
+        "在 span attributes 中加密 prompts",
+        "永远不要存储任何 content"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "带 pointer IDs 的外部存储可以避免 PII 泄漏到 ops 可读取的 traces 中。"
     },
     {
       "stage": "post",
       "question": "如何 opt into GenAI conventions 的 experimental stable preview？",
       "options": [
+        "付费购买 license",
         "编辑 OTel collector config",
         "设置 OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental",
-        "从 source 重新构建 SDK",
-        "付费购买 license"
+        "从 source 重新构建 SDK"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "这个 env var 会固定 experimental conventions，避免 attributes 被静默重命名。"
     }
   ]

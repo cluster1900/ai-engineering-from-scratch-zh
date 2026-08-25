@@ -68,6 +68,10 @@ Datadog v1.37+ 会将 GenAI attributes 原生映射到其 LLM Observability sche
 - **没有 parent links 的 spans。** 会产生孤立的 tool spans。始终传播 context。
 - **没有设置 stability opt-in。** 后端升级时，你的 attributes 可能会被重命名。
 
+```figure
+ae-genai-span-tree
+```
+
 ## 构建它
 `code/main.py` 实现了一个匹配 GenAI conventions 的 stdlib span emitter：
 
