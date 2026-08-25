@@ -83,6 +83,10 @@ Phase 14 中的每一课都会生成 eval cases：
 - **过拟合 evals。** 为 eval 优化会偏离生产实用性。轮换 cases。
 - **Flaky evals。** 非确定性 cases 会造成 false alarms。固定 seeds，snapshot state。
 
+```figure
+ae-eval-three-layers
+```
+
 ## 构建它
 `code/main.py` 是一个 stdlib eval harness：
 

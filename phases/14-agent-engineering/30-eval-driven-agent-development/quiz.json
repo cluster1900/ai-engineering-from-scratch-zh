@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "本课命名的三个评估层是什么？",
       "options": [
-        "静态基准、自定义离线 eval、在线生产 eval",
         "单元、集成、端到端",
         "Smoke、回归、验收",
-        "Pre、check、post"
+        "Pre、check、post",
+        "静态基准、自定义离线 eval、在线生产 eval"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "静态（SWE-bench、GAIA）、自定义离线（LLM-judge、exec、trajectory）、在线（replays、alerts、cost/latency）。"
     },
     {
@@ -20,8 +20,8 @@
       "options": [
         "从 multi-agent debate 开始",
         "从简单 prompts 开始，用全面评估优化它们，并且只在需要时才添加 multi-step agentic systems",
-        "从 hierarchical orchestration 开始",
-        "只从 frontier model 开始"
+        "只从 frontier model 开始",
+        "从 hierarchical orchestration 开始"
       ],
       "correct": 1,
       "explanation": "Anthropic 明确表示，evaluation 是驱动所有其他选择的外层循环。"
@@ -30,33 +30,33 @@
       "stage": "check",
       "question": "evaluator-optimizer 紧密循环是什么？",
       "options": [
-        "训练、评估、部署",
         "Proposer 生成输出，evaluator 进行判断，持续 refine 直到 evaluator 通过（Self-Refine 的泛化形式）",
         "采样、排序、去重",
-        "缓存、重试、失败"
+        "缓存、重试、失败",
+        "训练、评估、部署"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "它是 Self-Refine 的泛化形式：任何流程都可以包装进 propose-judge-refine。"
     },
     {
       "stage": "check",
       "question": "2026 年关于 evals 放置位置的最佳实践是什么？",
       "options": [
-        "只放在单独的 vendor dashboard 中",
-        "放在代码旁边，在每个 PR 的 CI 中运行，并基于 eval scores 阻止 merge",
+        "完全由 QA 团队负责",
         "只按季度运行",
-        "完全由 QA 团队负责"
+        "放在代码旁边，在每个 PR 的 CI 中运行，并基于 eval scores 阻止 merge",
+        "只放在单独的 vendor dashboard 中"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "与代码共置、由 CI gate、跟踪回归是标准做法。"
     },
     {
       "stage": "check",
       "question": "为什么本课警告不要使用没有 grounding 的 LLM-judge？",
       "options": [
-        "它太慢了",
-        "Judges 也会 hallucinate；要配合 CRITIC pattern，让判断基于外部工具 grounding",
         "它违反 Apache 2.0",
+        "Judges 也会 hallucinate；要配合 CRITIC pattern，让判断基于外部工具 grounding",
+        "它太慢了",
         "它只能在 GPUs 上运行"
       ],
       "correct": 1,
@@ -66,24 +66,24 @@
       "stage": "post",
       "question": "对 evals 过拟合的危险是什么？",
       "options": [
-        "计算成本上升",
-        "为 eval set 做优化会偏离生产可用性；轮换 cases",
         "Vector indices 产生碎片",
-        "Latency 降得太低"
+        "计算成本上升",
+        "Latency 降得太低",
+        "为 eval set 做优化会偏离生产可用性；轮换 cases"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Eval set 轮换能让优化与生产现实保持一致。"
     },
     {
       "stage": "post",
       "question": "为什么 flaky evals 会造成问题？",
       "options": [
-        "它们会让 inference cost 翻倍",
-        "非确定性 cases 会产生误报；固定 seeds 并 snapshot state",
+        "它们超出了 context window",
         "它们无法访问 database",
-        "它们超出了 context window"
+        "它们会让 inference cost 翻倍",
+        "非确定性 cases 会产生误报；固定 seeds 并 snapshot state"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Flake 会让 regressions 无法解读；必须具备确定性（seeds、state snapshots）。"
     }
   ]
