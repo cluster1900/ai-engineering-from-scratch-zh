@@ -60,6 +60,10 @@ PagerDuty / Alertmanager webhook
 - Audit: append-only 结构化 log（considered、executed、approved、outcome）
 - Deployment: K8s deployment，配有自己的窄 RBAC role；独立 namespace
 
+```figure
+ce-rootcause-walk
+```
+
 ## 构建它
 1. **Graph ingestion.** 每 30s 将 kube-state-metrics 同步到 Neo4j/kuzu。Nodes: Pod, Deployment, Node, Service, PVC, HPA。Edges: OWNED_BY, SCHEDULED_ON, EXPOSES, MOUNTS, SCALES。Telemetry overlay edges: OBSERVED_BY（Pod 由 Prometheus series 观测）。
 
