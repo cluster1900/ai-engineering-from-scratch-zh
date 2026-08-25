@@ -101,6 +101,10 @@ GANs 没有 ground truth，那么你怎么知道它们是否在工作？
 
 对于小型 synthetic-data 运行，sample inspection 就足够了。
 
+```figure
+cv-gan-image
+```
+
 ## 构建它
 ### 步骤 1： Generator
 
