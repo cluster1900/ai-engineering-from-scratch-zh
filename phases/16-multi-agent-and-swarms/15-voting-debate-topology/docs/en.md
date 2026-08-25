@@ -95,6 +95,10 @@ Sibyl framework（在 Minsky-LLM literature 中被引用）形式化了一个“
 - Rounds 无上限。Conformity 每次都会赢。
 - 任务很简单。使用 N=5 self-consistency 的 single agent 更便宜，accuracy 也差不多。
 
+```figure
+sw-debate-topology
+```
+
 ## 构建它
 `code/main.py` 实现：
 

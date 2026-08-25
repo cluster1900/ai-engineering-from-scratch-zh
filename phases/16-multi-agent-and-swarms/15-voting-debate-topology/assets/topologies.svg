@@ -21,7 +21,7 @@
   <rect x="40" y="60" width="210" height="220" class="box"/>
   <text x="145" y="84" text-anchor="middle" class="head">星型</text>
   <circle cx="145" cy="140" r="24" class="hub"/>
-  <text x="145" y="144" text-anchor="middle" class="small">hub</text>
+  <text x="145" y="144" text-anchor="middle" class="small">中心节点</text>
   <circle cx="80" cy="200" r="20" class="node"/>
   <circle cx="145" cy="220" r="20" class="node"/>
   <circle cx="210" cy="200" r="20" class="node"/>
@@ -74,9 +74,9 @@
 
   <rect x="40" y="310" width="900" height="150" class="cool"/>
   <text x="490" y="334" text-anchor="middle" class="head">MultiAgentBench 实测结果（MARBLE, ACL 2025）</text>
-  <text x="70" y="362" class="small">研究任务 graph 最优；milestone 达成率比次优拓扑高 +3%</text>
+  <text x="70" y="362" class="small">研究任务中 graph 最优；里程碑达成率比次优拓扑高 +3%</text>
   <text x="70" y="382" class="small">协调成本：约 4 个 agents 后，耗时和 Token 成本增速超过准确率</text>
   <text x="70" y="402" class="small">异构性（不同 base models）持续优于增加同质 agents</text>
   <text x="70" y="422" class="small">有界轮次（2-3）很关键：无界辩论奖励一致性，而非正确性</text>
-  <text x="70" y="442" class="small">当 hub 能力强且 workers 便宜时，star 是成本甜点</text>
+  <text x="70" y="442" class="small">当中心节点能力强且工作节点成本低时，star 成本效益最佳</text>
 </svg>
