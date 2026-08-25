@@ -46,6 +46,10 @@
 4. 可选：通过 real IMU 上的 autoencoder 做 observation adaptation。
 5. Deploy。在 10+ environments 上 zero-shot。如果失败，就用 safety-constrained PPO 做几分钟 real-world fine-tuning。
 
+```figure
+f3-reality-gap
+```
+
 ## 构建它
 
 本课代码是一个很小的 domain randomization 演示，场景是带有 *noisy* transitions 的 GridWorld。我们训练一个 policy，让它在 “sim” 中经历 randomized slip probabilities，并在 “real” 中使用一个训练时从未见过的 slip level 做评估。这个形态可以直接映射到 MuJoCo-to-hardware transfer。

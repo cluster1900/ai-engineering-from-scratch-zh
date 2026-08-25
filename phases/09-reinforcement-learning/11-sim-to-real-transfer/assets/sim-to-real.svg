@@ -18,25 +18,25 @@
 
   <rect x="40" y="60" width="820" height="70" class="hot"/>
   <text x="60" y="85" class="label">现实差距</text>
-  <text x="60" y="108" class="content">sim physics approx = real physics + epsilon  (friction, delay, lighting, noise, ...)</text>
+  <text x="60" y="108" class="content">sim 物理近似 = 真实物理 + epsilon（摩擦、延迟、光照、噪声等）</text>
 
   <rect x="40" y="150" width="260" height="240" class="box"/>
-  <text x="170" y="178" text-anchor="middle" class="label">domain randomization</text>
+  <text x="170" y="178" text-anchor="middle" class="label">域随机化</text>
   <text x="60" y="205" class="content">theta_sim ~ P(theta)</text>
-  <text x="60" y="225" class="content">在多个 sims 上训练</text>
-  <text x="60" y="245" class="content">policy 看到随机重力，</text>
+  <text x="60" y="225" class="content">在多个 sim 上 Training</text>
+  <text x="60" y="245" class="content">policy 观察随机重力、</text>
   <text x="60" y="265" class="content">质量、摩擦、motor gain</text>
   <text x="170" y="300" text-anchor="middle" class="caption">无需真实数据</text>
-  <text x="170" y="320" text-anchor="middle" class="caption">OpenAI Dactyl (Rubik's cube)</text>
-  <text x="170" y="345" text-anchor="middle" class="caption">过度 rand. -&gt; 保守</text>
-  <text x="170" y="365" text-anchor="middle" class="caption">不足 rand. -&gt; 脆弱</text>
+  <text x="170" y="320" text-anchor="middle" class="caption">OpenAI Dactyl（魔方）</text>
+  <text x="170" y="345" text-anchor="middle" class="caption">过度随机化 -&gt; 保守</text>
+  <text x="170" y="365" text-anchor="middle" class="caption">随机化不足 -&gt; 脆弱</text>
 
   <rect x="320" y="150" width="260" height="240" class="cool"/>
-  <text x="450" y="178" text-anchor="middle" class="label">system identification</text>
+  <text x="450" y="178" text-anchor="middle" class="label">系统辨识</text>
   <text x="340" y="205" class="content">测量真实：</text>
   <text x="340" y="225" class="content">摩擦、延迟、增益</text>
   <text x="340" y="245" class="content">接入 sim</text>
-  <text x="340" y="265" class="content">在匹配 sim 上训练</text>
+  <text x="340" y="265" class="content">在匹配的 sim 上 Training</text>
   <text x="450" y="300" text-anchor="middle" class="caption">低噪声，精确</text>
   <text x="450" y="320" text-anchor="middle" class="caption">但残余误差对</text>
   <text x="450" y="345" text-anchor="middle" class="caption">policy 不可见</text>
@@ -47,9 +47,9 @@
   <text x="620" y="225" class="content">地形、ground truth</text>
   <text x="620" y="245" class="content">student：仅 sensor obs</text>
   <text x="620" y="265" class="content">蒸馏 teacher -&gt; student</text>
-  <text x="730" y="300" text-anchor="middle" class="caption">ANYmal, Boston Dynamics</text>
+  <text x="730" y="300" text-anchor="middle" class="caption">ANYmal、Boston Dynamics</text>
   <text x="730" y="320" text-anchor="middle" class="caption">跨物理条件鲁棒</text>
-  <text x="730" y="345" text-anchor="middle" class="caption">参数 + obs noise</text>
+  <text x="730" y="345" text-anchor="middle" class="caption">参数 + obs 噪声</text>
 
-  <text x="450" y="435" text-anchor="middle" class="caption">2026 配方：GPU 并行 sim + DR + teacher/student + 真实硬件 safety shield</text>
+  <text x="450" y="435" text-anchor="middle" class="caption">2026 配方：GPU 并行 sim + DR + teacher/student + 真实硬件安全屏障</text>
 </svg>
