@@ -20,24 +20,24 @@
   <text x="480" y="24" text-anchor="middle" class="title">Audio-LLM 轨迹：Whisper (2022) 到 Audio Flamingo 3 (2025)</text>
 
   <rect x="30" y="50" width="900" height="230" class="box"/>
-  <text x="480" y="72" text-anchor="middle" class="head">流水线：频谱图 -&gt; encoder -&gt; Q-former -&gt; LLM</text>
+  <text x="480" y="72" text-anchor="middle" class="head">流水线：频谱图 -&gt; 编码器 -&gt; Q-former -&gt; LLM</text>
 
   <rect x="50" y="90" width="180" height="170" class="hot"/>
   <text x="140" y="110" text-anchor="middle" class="step">1. 波形</text>
   <text x="140" y="128" text-anchor="middle" class="small">16 kHz 单声道</text>
   <text x="140" y="150" text-anchor="middle" class="step">2. log-Mel 频谱</text>
-  <text x="140" y="168" text-anchor="middle" class="small">25ms 窗，10ms hop</text>
-  <text x="140" y="184" text-anchor="middle" class="small">80 Mel bins</text>
+  <text x="140" y="168" text-anchor="middle" class="small">25ms 窗，10ms 步长</text>
+  <text x="140" y="184" text-anchor="middle" class="small">80 个 Mel 频带</text>
   <text x="140" y="200" text-anchor="middle" class="small">log 压缩</text>
   <text x="140" y="222" text-anchor="middle" class="small">30s = 3000 帧</text>
 
   <path d="M 235 170 L 275 170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="280" y="90" width="200" height="170" class="cool"/>
-  <text x="380" y="110" text-anchor="middle" class="step">3. audio encoder</text>
+  <text x="380" y="110" text-anchor="middle" class="step">3. 音频编码器</text>
   <text x="380" y="132" text-anchor="middle" class="small">Whisper：语音强</text>
   <text x="380" y="148" text-anchor="middle" class="small">BEATs：音乐强</text>
-  <text x="380" y="164" text-anchor="middle" class="small">AF-Whisper：concat</text>
+  <text x="380" y="164" text-anchor="middle" class="small">AF-Whisper：拼接</text>
   <text x="380" y="186" text-anchor="middle" class="small">每 10ms 1 帧</text>
   <text x="380" y="210" text-anchor="middle" class="small">12 层 Transformer</text>
   <text x="380" y="230" text-anchor="middle" class="caption">桥接训练时冻结</text>
@@ -45,13 +45,13 @@
   <path d="M 485 170 L 525 170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="530" y="90" width="200" height="170" class="cold"/>
-  <text x="630" y="110" text-anchor="middle" class="step">4. audio Q-former</text>
+  <text x="630" y="110" text-anchor="middle" class="step">4. 音频 Q-former</text>
   <text x="630" y="132" text-anchor="middle" class="small">32-64 个可学习 query</text>
-  <text x="630" y="148" text-anchor="middle" class="small">对帧做 Cross-Attention</text>
+  <text x="630" y="148" text-anchor="middle" class="small">对帧执行 Cross-Attention</text>
   <text x="630" y="164" text-anchor="middle" class="small">输出定长 Token</text>
   <text x="630" y="186" text-anchor="middle" class="step">训练</text>
   <text x="630" y="202" text-anchor="middle" class="small">阶段 1：ITM + ITC + ITG</text>
-  <text x="630" y="218" text-anchor="middle" class="small">阶段 2：instruction tune</text>
+  <text x="630" y="218" text-anchor="middle" class="small">阶段 2：指令调优</text>
 
   <path d="M 735 170 L 775 170" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -78,12 +78,12 @@
   <text x="250" y="488" text-anchor="middle" class="caption">MMAU ~0.50</text>
 
   <rect x="470" y="340" width="440" height="160" class="cool"/>
-  <text x="690" y="362" text-anchor="middle" class="step">端到端 audio-LLM（AF3）</text>
+  <text x="690" y="362" text-anchor="middle" class="step">端到端 Audio-LLM（AF3）</text>
   <text x="690" y="384" text-anchor="middle" class="small">所有级联任务：是</text>
   <text x="690" y="400" text-anchor="middle" class="small">情绪 / 氛围：是</text>
   <text x="690" y="416" text-anchor="middle" class="small">音乐 / 乐器：是</text>
   <text x="690" y="432" text-anchor="middle" class="small">环境声：是</text>
   <text x="690" y="448" text-anchor="middle" class="small">时间定位：是</text>
   <text x="690" y="464" text-anchor="middle" class="small">按需 CoT：+3-5 分</text>
-  <text x="690" y="488" text-anchor="middle" class="caption">MMAU 0.72（open SOTA 2025）</text>
+  <text x="690" y="488" text-anchor="middle" class="caption">MMAU 0.72（开源 SOTA 2025）</text>
 </svg>

@@ -105,6 +105,10 @@ MMAU（Massive Multimodal Audio Understanding）是 2024-2025 音频推理 bench
 
 Open SOTA（AF3）为 0.72；proprietary frontier 约 0.78（Gemini 2.5 Pro、Claude Opus 4.7）。这个差距小于 VideoMME 的 open-vs-closed delta，说明 audio-LLMs 正在成熟。
 
+```figure
+audio-text-ctc
+```
+
 ## 使用它
 `code/main.py`：
 
