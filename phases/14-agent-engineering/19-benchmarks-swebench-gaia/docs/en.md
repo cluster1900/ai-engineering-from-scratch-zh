@@ -76,6 +76,10 @@ GAIA 用来衡量“generalist capability”。不要把它和 code-specific ben
 - **Contaminated claims。** 报告 SWE-bench 却不提 Verified 或 SWE-bench+ 是 misleading 的。
 - **Benchmark-as-development-target。** 为 benchmark 优化会偏离 production usefulness。
 
+```figure
+ae-swebench-gate
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个玩具版 SWE-bench-like harness：

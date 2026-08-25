@@ -6,9 +6,9 @@
       "stage": "pre",
       "question": "SWE-bench 的 evaluator 会在候选 patch 上检查什么？",
       "options": [
-        "与 reference fix 对比的 BLEU score",
-        "之前失败的 tests 现在通过（FAIL_TO_PASS），并且之前通过的 tests 仍然通过（PASS_TO_PASS）",
         "Patch 长度少于 200 行",
+        "之前失败的 tests 现在通过（FAIL_TO_PASS），并且之前通过的 tests 仍然通过（PASS_TO_PASS）",
+        "与 reference fix 对比的 BLEU score",
         "Patch 通过单独的 LLM judge"
       ],
       "correct": 1,
@@ -18,12 +18,12 @@
       "stage": "pre",
       "question": "为什么存在 SWE-bench Verified？",
       "options": [
+        "它包含更多语言",
         "它运行更快",
         "OpenAI 的 500-task human-curated subset 去除了模糊 issues 和不可靠 tests",
-        "它包含更多语言",
         "它使用不同的 patch format"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Verified 是更干净的 subset，用于可信报告。"
     },
     {
@@ -31,9 +31,9 @@
       "question": "SWE-bench+ 对 successful patches 发现了什么？",
       "options": [
         "32.67% 在 issue 中泄露了 solution text，31.08% 有可疑的弱 test coverage",
-        "所有 patches 都是 memorized",
+        "Patches 总是超过 1000 行",
         "不存在 contamination",
-        "Patches 总是超过 1000 行"
+        "所有 patches 都是 memorized"
       ],
       "correct": 0,
       "explanation": "SWE-bench+ 在大量 successful patches 中标记出了 solution leakage 和 weak coverage。"
@@ -43,23 +43,23 @@
       "question": "GAIA 的 design philosophy 是什么？",
       "options": [
         "对 humans 难，对 AI 容易",
-        "对 humans 在概念上简单（约 92%），但对 AI 困难（早期带 plugins 的 GPT-4：约 15%）",
         "纯粹的 Vector retrieval benchmark",
-        "只有 single-turn questions"
+        "只有 single-turn questions",
+        "对 humans 在概念上简单（约 92%），但对 AI 困难（早期带 plugins 的 GPT-4：约 15%）"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "GAIA 有意设计为 easy-for-humans、hard-for-AI，测试 reasoning + tools + modality。"
     },
     {
       "stage": "check",
       "question": "哪一个不是 AgentBench 的 environment categories？",
       "options": [
-        "Code（Bash、DB、KG）",
         "Games（Alfworld、LTP）",
         "Web（WebShop、Mind2Web）",
-        "Gradient（RL、IRL）"
+        "Gradient（RL、IRL）",
+        "Code（Bash、DB、KG）"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": "AgentBench 覆盖 code、games、web 和 open-ended generation。不存在 gradient category。"
     },
     {
@@ -78,12 +78,12 @@
       "stage": "post",
       "question": "这些 benchmarks 没有衡量哪个维度？",
       "options": [
-        "真实世界 operational cost（tokens、wall-clock）、adversarial safety，以及你自己的 domain",
         "Test transitions",
+        "Step counts",
         "Per-task success",
-        "Step counts"
+        "真实世界 operational cost（tokens、wall-clock）、adversarial safety，以及你自己的 domain"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Benchmarks 会 aggregate；它们无法捕捉 cost、adversarial robustness 或你的 domain。"
     }
   ]

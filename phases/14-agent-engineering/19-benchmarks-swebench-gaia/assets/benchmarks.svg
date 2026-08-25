@@ -14,41 +14,41 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">三个 2026 agent benchmarks：代码、通用、多环境</text>
+  <text x="480" y="26" text-anchor="middle" class="title">三个 2026 Agent 基准：代码、通用、多环境</text>
 
   <rect x="40" y="50" width="290" height="250" class="swe"/>
-  <text x="185" y="72" text-anchor="middle" class="head">SWE-bench  代码</text>
-  <text x="60" y="96" class="small">2,294 个 GitHub issues，12 个 Python repos</text>
-  <text x="60" y="114" class="small">agent 获取：repo + issue 文本</text>
-  <text x="60" y="132" class="small">输出：patch</text>
+  <text x="185" y="72" text-anchor="middle" class="head">SWE-bench：代码</text>
+  <text x="60" y="96" class="small">2,294 个 GitHub issue，12 个 Python 仓库</text>
+  <text x="60" y="114" class="small">Agent 获取：仓库 + issue 文本</text>
+  <text x="60" y="132" class="small">输出：补丁</text>
   <rect x="60" y="144" width="250" height="46" class="box"/>
   <text x="78" y="164" class="step">FAIL_TO_PASS：现在通过</text>
   <text x="78" y="182" class="small">PASS_TO_PASS：保持通过</text>
   <rect x="60" y="196" width="250" height="46" class="box"/>
-  <text x="78" y="216" class="step">Verified (OpenAI)：500 个干净任务</text>
+  <text x="78" y="216" class="step">Verified（OpenAI）：500 个干净任务</text>
   <text x="78" y="234" class="small">去除歧义、弱测试、不清晰修复</text>
   <rect x="60" y="248" width="250" height="46" class="warn"/>
   <text x="78" y="268" class="step">SWE-bench+：污染审计</text>
-  <text x="78" y="286" class="small">32.67% solution 泄漏；31.08% 弱测试</text>
+  <text x="78" y="286" class="small">32.67% 解决方案泄漏；31.08% 弱测试</text>
 
   <rect x="340" y="50" width="290" height="250" class="gaia"/>
-  <text x="485" y="72" text-anchor="middle" class="head">GAIA  通用</text>
+  <text x="485" y="72" text-anchor="middle" class="head">GAIA：通用</text>
   <text x="360" y="96" class="small">466 个问题，300 个私有排行榜</text>
   <text x="360" y="114" class="small">对人类简单 (92%)</text>
-  <text x="360" y="132" class="small">对 AI 难 (GPT-4+plugins：15%)</text>
+  <text x="360" y="132" class="small">对 AI 困难（GPT-4+plugins：15%）</text>
   <rect x="360" y="144" width="250" height="46" class="box"/>
-  <text x="378" y="164" class="step">Level 1  单工具、简单</text>
+  <text x="378" y="164" class="step">Level 1：单 Tool、简单</text>
   <text x="378" y="182" class="small">事实查找</text>
   <rect x="360" y="196" width="250" height="46" class="box"/>
-  <text x="378" y="216" class="step">Level 2  多步推理</text>
+  <text x="378" y="216" class="step">Level 2：多步推理</text>
   <text x="378" y="234" class="small">搜索 + 提取 + 计算</text>
   <rect x="360" y="248" width="250" height="46" class="box"/>
-  <text x="378" y="268" class="step">Level 3  长工具链 + Multimodal</text>
+  <text x="378" y="268" class="step">Level 3：长 Tool 链 + Multimodal</text>
   <text x="378" y="286" class="small">图像、PDF、链式网页导航</text>
 
   <rect x="640" y="50" width="290" height="250" class="bench"/>
-  <text x="785" y="72" text-anchor="middle" class="head">AgentBench  多环境</text>
-  <text x="660" y="96" class="small">8 个环境，每 split 约 4k-13k turns</text>
+  <text x="785" y="72" text-anchor="middle" class="head">AgentBench：多环境</text>
+  <text x="660" y="96" class="small">8 个环境，每个 split 约 4k–13k 轮</text>
   <rect x="660" y="108" width="250" height="46" class="box"/>
   <text x="678" y="128" class="step">代码：Bash、DB、KG</text>
   <rect x="660" y="160" width="250" height="46" class="box"/>
@@ -59,17 +59,17 @@
   <text x="678" y="284" class="step">开放式生成</text>
 
   <rect x="40" y="320" width="880" height="200" class="warn"/>
-  <text x="480" y="342" text-anchor="middle" class="head">benchmarks 不衡量什么</text>
+  <text x="480" y="342" text-anchor="middle" class="head">基准未衡量什么</text>
   <rect x="60" y="358" width="840" height="30" class="box"/>
-  <text x="78" y="378" class="step">运营成本：tokens、耗时、解决步数</text>
+  <text x="78" y="378" class="step">运营成本：Token、耗时、解决步数</text>
   <rect x="60" y="392" width="840" height="30" class="box"/>
   <text x="78" y="412" class="step">对抗条件下的安全行为 (第 27 课)</text>
   <rect x="60" y="426" width="840" height="30" class="box"/>
-  <text x="78" y="446" class="step">你的领域表现 (custom evals，第 30 课)</text>
+  <text x="78" y="446" class="step">你的领域表现（自定义 evals，第 30 课）</text>
   <rect x="60" y="460" width="840" height="30" class="box"/>
-  <text x="78" y="480" class="step">长尾失败 (benchmarks 取平均；运营者关心最差 1%)</text>
+  <text x="78" y="480" class="step">长尾失败（基准取平均；运营者关心最差 1%）</text>
   <rect x="60" y="494" width="840" height="20" class="box"/>
-  <text x="78" y="510" class="step">始终同时报告原始分数和 Verified / +-audited 分数</text>
+  <text x="78" y="510" class="step">始终同时报告原始分数和 Verified / + 审计分数</text>
 
   <text x="480" y="540" text-anchor="middle" class="caption">单数字排行榜执念是 #1 反模式。报告分布。</text>
 </svg>
