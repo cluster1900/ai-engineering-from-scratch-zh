@@ -199,6 +199,10 @@ flowchart TD
     K -->|No| M["Try different method or keep all features"]
 ```
 
+```figure
+f3-feature-prune
+```
+
 ## 构建它
 ### 步骤 1： Generate synthetic data with known feature structure
 

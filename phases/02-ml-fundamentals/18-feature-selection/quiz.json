@@ -4,12 +4,12 @@
     "stage": "pre",
     "question": "为什么添加更多特征反而可能让模型表现更差？",
     "options": [
-      "更多特征总是会提高模型准确率",
-      "无关特征会增加噪声，提高过拟合风险，并稀释有用特征中的信号",
       "模型能接受的特征数量有硬性上限",
-      "更多特征会让模型耗尽内存"
+      "更多特征总是会提高模型准确率",
+      "更多特征会让模型耗尽内存",
+      "无关特征会增加噪声，提高过拟合风险，并稀释有用特征中的信号"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "无关特征会让模型有机会对训练数据中的噪声过拟合。它们会增加维度，使数据更稀疏，并让距离变得不那么有意义（维度灾难）。"
   },
   {
@@ -17,12 +17,12 @@
     "stage": "pre",
     "question": "filter 和 wrapper 特征选择方法的关键区别是什么？",
     "options": [
-      "filter 方法使用模型来评估特征；wrapper 方法使用统计量",
       "filter 方法不使用模型，而是用统计量为特征打分；wrapper 方法训练模型来评估特征子集",
       "filter 方法总是比 wrapper 方法更准确",
-      "wrapper 方法一次只能选择一个特征"
+      "wrapper 方法一次只能选择一个特征",
+      "filter 方法使用模型来评估特征；wrapper 方法使用统计量"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "filter 方法（variance threshold、mutual information、correlation）使用统计度量为特征打分。wrapper 方法（RFE、forward selection）会反复训练模型，以评估不同的特征子集。"
   },
   {
@@ -30,10 +30,10 @@
     "stage": "post",
     "question": "Mutual information 可以检测 Pearson correlation 无法检测到的关系。是哪一种？",
     "options": [
-      "连续特征之间的线性关系",
+      "需要超过 1000 个数据点的关系",
       "非线性关系，例如二次或周期性依赖",
-      "仅限分类特征之间的关系",
-      "需要超过 1000 个数据点的关系"
+      "连续特征之间的线性关系",
+      "仅限分类特征之间的关系"
     ],
     "correct": 1,
     "explanation": "Pearson correlation 只衡量线性关联。二次关系（y = x^2）的 correlation 为零，但 mutual information 很高。MI 可以捕捉变量之间的任何统计依赖。"
@@ -44,11 +44,11 @@
     "question": "L1 (Lasso) regularization 会在训练过程中执行特征选择。它是如何做到的？",
     "options": [
       "它会在训练开始前移除低方差特征",
-      "它会把无关特征的权重推到恰好为零，从而有效地将它们从模型中消除",
       "它会按特征与目标的 correlation 对特征排序",
+      "它会把无关特征的权重推到恰好为零，从而有效地将它们从模型中消除",
       "它会为每个特征训练单独的模型"
     ],
-    "correct": 1,
+    "correct": 2,
     "explanation": "L1 regularization 会向 Loss 添加 |w| 惩罚。L1 约束的几何形状（菱形）会让某些权重解恰好落在零点，从而产生自动选择特征的稀疏模型。"
   },
   {
@@ -58,8 +58,8 @@
     "options": [
       "它并不更好 -- 总是应该一次性全部移除",
       "随着特征被移除，特征重要性会发生变化，因此迭代式移除会考虑特征之间的交互",
-      "RFE 使用与单步移除不同的重要性指标",
-      "一次移除一个特征只对 Neural Network 有必要"
+      "一次移除一个特征只对 Neural Network 有必要",
+      "RFE 使用与单步移除不同的重要性指标"
     ],
     "correct": 1,
     "explanation": "特征重要性是相对的。当一个相关特征被移除时，它的对应特征的重要性可能会上升。迭代式移除让模型在每一步重新评估重要性，从而捕捉这些交互。"
