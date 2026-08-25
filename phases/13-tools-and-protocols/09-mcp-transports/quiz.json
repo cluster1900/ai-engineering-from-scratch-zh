@@ -1,0 +1,48 @@
+{
+  "lesson": "09-mcp-transports",
+  "title": "MCP Transport：stdio 与无状态 Streamable HTTP",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "每条现代 Streamable HTTP message 由哪种 HTTP method 承载？",
+      "options": ["PATCH", "DELETE", "GET", "POST"],
+      "correct": 3,
+      "explanation": "每个现代 JSON-RPC request 或 notification 都是发送到同一个 MCP endpoint 的新 POST。"
+    },
+    {
+      "stage": "check",
+      "question": "仅支持现代协议的 MCP endpoint 应该为 GET 和 DELETE 返回什么？",
+      "options": ["301", "200", "202", "405"],
+      "correct": 3,
+      "explanation": "独立 GET 和 DELETE 不属于 Streamable HTTP 2026-07-28。"
+    },
+    {
+      "stage": "check",
+      "question": "每个现代 request 中的哪些 header 必须与 body 匹配？",
+      "options": ["Mcp-Session-Id and Last-Event-ID", "ETag and If-None-Match", "MCP-Protocol-Version and Mcp-Method", "Cookie and Host"],
+      "correct": 2,
+      "explanation": "对于 tools/call、resources/read 和 prompts/get，还必须提供 Mcp-Name。"
+    },
+    {
+      "stage": "check",
+      "question": "client 如何请求长期运行的变更 notification？",
+      "options": ["POST subscriptions/listen", "resources/subscribe", "Mcp-Session-Id", "GET /mcp"],
+      "correct": 0,
+      "explanation": "subscriptions/listen 会打开 response stream。它的 acknowledgement、notification 和最终 result 都使用 listen request id 作为 subscription metadata。"
+    },
+    {
+      "stage": "post",
+      "question": "现代 request 范围内的 SSE stream 在最终 response 之前中断。接下来应该怎么做？",
+      "options": ["删除 session", "复用同一个 response stream", "使用 Last-Event-ID 恢复", "使用新的 JSON-RPC id 安全重试"],
+      "correct": 3,
+      "explanation": "现代 SSE 不可恢复。安全的重试方式是使用新 id 发起新 request。"
+    },
+    {
+      "stage": "post",
+      "question": "服务器应该如何处理 2026-07-28 request 中的 Mcp-Session-Id？",
+      "options": ["忽略且不回显", "拒绝所有包含它的 request", "将其用于 routing", "轮换它"],
+      "correct": 0,
+      "explanation": "现代修订版已经移除了 protocol session 和 session header。"
+    }
+  ]
+}

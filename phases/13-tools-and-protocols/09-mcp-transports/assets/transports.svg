@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="Georgia, 'Times New Roman', serif">
   <defs>
     <style>
       .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
@@ -13,65 +13,56 @@
     </style>
   </defs>
 
-  <text x="480" y="26" text-anchor="middle" class="title">MCP transports：stdio、Streamable HTTP、legacy SSE</text>
+  <text x="480" y="26" text-anchor="middle" class="title">MCP 2026-07-28 传输与旧版边界</text>
 
-  <rect x="40" y="60" width="290" height="400" class="cool"/>
-  <text x="185" y="82" text-anchor="middle" class="head">stdio（本地）</text>
-  <text x="56" y="108" class="step">子进程</text>
-  <text x="56" y="126" class="small">client 启动 server，</text>
-  <text x="56" y="142" class="small">通过 stdin/stdout 通信</text>
-  <text x="56" y="174" class="step">wire 格式</text>
-  <text x="56" y="192" class="small">每行一个 JSON，\n</text>
-  <text x="56" y="208" class="small">stdout 仅用于 JSON-RPC</text>
-  <text x="56" y="224" class="small">stderr 用于日志</text>
-  <text x="56" y="256" class="step">会话</text>
-  <text x="56" y="274" class="small">process = session</text>
-  <text x="56" y="290" class="small">无需 id</text>
-  <text x="56" y="322" class="step">认证</text>
-  <text x="56" y="340" class="small">继承父级信任</text>
-  <text x="56" y="372" class="step">结论</text>
-  <text x="56" y="390" class="small">仅本地服务器。</text>
-  <text x="56" y="406" class="small">最简单，最可靠。</text>
+  <rect x="35" y="55" width="280" height="410" class="cool"/>
+  <text x="175" y="80" text-anchor="middle" class="head">stdio：本地</text>
+  <text x="55" y="112" class="step">绑定</text>
+  <text x="55" y="134" class="small">客户端启动的子进程</text>
+  <text x="55" y="152" class="small">每行一个 JSON-RPC 对象</text>
+  <text x="55" y="170" class="small">stdout 传输协议，stderr 记录日志</text>
+  <text x="55" y="208" class="step">现代元数据</text>
+  <text x="55" y="230" class="small">每个请求都包含版本 + capabilities</text>
+  <text x="55" y="248" class="small">clientInfo SHOULD 重复</text>
+  <text x="55" y="286" class="step">生命周期</text>
+  <text x="55" y="308" class="small">EOF 关闭传输进程</text>
+  <text x="55" y="326" class="small">进程不是协议会话</text>
+  <text x="55" y="364" class="step">恢复</text>
+  <text x="55" y="386" class="small">重启、重新发现、重新列出</text>
+  <text x="55" y="404" class="small">用新 id 重试安全操作</text>
 
-  <rect x="345" y="60" width="290" height="400" class="cold"/>
-  <text x="490" y="82" text-anchor="middle" class="head">Streamable HTTP（远程）</text>
-  <text x="361" y="108" class="step">单端点 /mcp</text>
-  <text x="361" y="126" class="small">POST：JSON-RPC 请求</text>
-  <text x="361" y="142" class="small">GET：打开 SSE stream</text>
-  <text x="361" y="158" class="small">DELETE：终止会话</text>
-  <text x="361" y="190" class="step">会话</text>
-  <text x="361" y="208" class="small">Mcp-Session-Id header</text>
-  <text x="361" y="224" class="small">加密随机，</text>
-  <text x="361" y="240" class="small">服务器分配</text>
-  <text x="361" y="272" class="step">安全</text>
-  <text x="361" y="290" class="small">Origin allowlist</text>
-  <text x="361" y="306" class="small">DNS-rebinding 防护</text>
-  <text x="361" y="322" class="small">OAuth 2.1（第 16 课）</text>
-  <text x="361" y="354" class="step">重连</text>
-  <text x="361" y="372" class="small">用相同 sid 重新 GET；</text>
-  <text x="361" y="388" class="small">last-event-id 重放</text>
-  <text x="361" y="420" class="step">结论</text>
-  <text x="361" y="438" class="small">2026 标准。</text>
+  <rect x="340" y="55" width="280" height="410" class="cold"/>
+  <text x="480" y="80" text-anchor="middle" class="head">Streamable HTTP：现代</text>
+  <text x="360" y="112" class="step">单一端点 /mcp</text>
+  <text x="360" y="134" class="small">每条 JSON-RPC 消息单独 POST</text>
+  <text x="360" y="152" class="small">响应：JSON 或限定范围的 SSE</text>
+  <text x="360" y="188" class="step">必需镜像字段</text>
+  <text x="360" y="210" class="small">MCP-Protocol-Version</text>
+  <text x="360" y="228" class="small">Mcp-Method + 条件式 Mcp-Name</text>
+  <text x="360" y="246" class="small">逐项对照 body 验证</text>
+  <text x="360" y="282" class="step">长连接变更</text>
+  <text x="360" y="304" class="small">POST subscriptions/listen</text>
+  <text x="360" y="322" class="small">确认 + 带标签的通知 + 结果</text>
+  <text x="360" y="358" class="step">已移除的现代行为</text>
+  <text x="360" y="380" class="small">GET / DELETE 返回 405</text>
+  <text x="360" y="398" class="small">忽略会话 + 重放标头</text>
+  <text x="360" y="416" class="small">无服务器 JSON-RPC 请求</text>
 
-  <rect x="650" y="60" width="290" height="400" class="hot"/>
-  <text x="795" y="82" text-anchor="middle" class="head">旧版 HTTP+SSE</text>
-  <text x="666" y="108" class="step">两个端点</text>
-  <text x="666" y="126" class="small">POST /messages</text>
-  <text x="666" y="142" class="small">GET /sse（stream）</text>
-  <text x="666" y="174" class="step">问题</text>
-  <text x="666" y="192" class="small">CDN / WAF 不友好</text>
-  <text x="666" y="208" class="small">要跟踪两个会话</text>
-  <text x="666" y="224" class="small">长 SSE 超时</text>
-  <text x="666" y="256" class="step">弃用</text>
-  <text x="666" y="274" class="small">Atlassian Rovo：2026-06-30</text>
-  <text x="666" y="290" class="small">Keboola：2026-04-01</text>
-  <text x="666" y="306" class="small">官方 spec 标记 LEGACY</text>
-  <text x="666" y="338" class="step">迁移</text>
-  <text x="666" y="356" class="small">两个端点合为一个；</text>
-  <text x="666" y="372" class="small">生成新 sid；</text>
-  <text x="666" y="388" class="small">添加 Origin 检查</text>
-  <text x="666" y="420" class="step">结论</text>
-  <text x="666" y="438" class="small">2026 年中前迁移。</text>
+  <rect x="645" y="55" width="280" height="410" class="hot"/>
+  <text x="785" y="80" text-anchor="middle" class="head">仅用于旧版兼容</text>
+  <text x="665" y="112" class="step">2025 Streamable HTTP</text>
+  <text x="665" y="134" class="small">Mcp-Session-Id</text>
+  <text x="665" y="152" class="small">独立 GET + DELETE</text>
+  <text x="665" y="170" class="small">Last-Event-ID 恢复</text>
+  <text x="665" y="206" class="step">2024 HTTP+SSE</text>
+  <text x="665" y="228" class="small">独立的 SSE 和 POST 端点</text>
+  <text x="665" y="264" class="step">安全的双版本探测</text>
+  <text x="665" y="286" class="small">优先现代 POST</text>
+  <text x="665" y="304" class="small">识别到现代错误：保持现代模式</text>
+  <text x="665" y="322" class="small">未识别未命中：尝试旧版</text>
+  <text x="665" y="358" class="step">迁移规则</text>
+  <text x="665" y="380" class="small">保持旧版路由独立</text>
+  <text x="665" y="398" class="small">切勿标为 2026 行为</text>
 
-  <text x="480" y="498" text-anchor="middle" class="caption">本地选 stdio，远程选 Streamable HTTP；SSE 模式只是临时桥接。</text>
+  <text x="480" y="505" text-anchor="middle" class="caption">各绑定的协议语义保持一致：每个现代请求均为自描述。</text>
 </svg>
