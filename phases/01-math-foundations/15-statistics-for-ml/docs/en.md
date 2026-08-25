@@ -485,6 +485,10 @@ If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
 
 全部从零实现，只使用 `math` 和 `random`。不使用 numpy，不使用 scipy。
 
+```figure
+f3-bootstrap-resample
+```
+
 ## 关键术语
 | Term | Definition |
 |---|---|
