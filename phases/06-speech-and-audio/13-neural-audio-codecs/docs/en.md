@@ -74,6 +74,10 @@ AR LM 先预测 semantic token（以文本为条件），再预测 acoustic toke
 
 像 Opus 这样的传统 codec 在每 bit 的感知质量上仍然胜出。Neural codecs 胜在 **离散 Token**（Opus 不产生这种 Token）和 **generative-model quality**（LM 能如何使用这些 Token）。
 
+```figure
+rvq-codec-cascade
+```
+
 ## 构建它
 
 ### 步骤 1：用 EnCodec encode

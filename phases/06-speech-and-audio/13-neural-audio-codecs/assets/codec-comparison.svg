@@ -12,7 +12,7 @@
     </style>
   </defs>
 
-  <text x="440" y="26" text-anchor="middle" class="title">neural audio codecs — RVQ 的四种变体，一个语义/声学拆分</text>
+  <text x="440" y="26" text-anchor="middle" class="title">Neural audio codecs — RVQ 的四种变体，一个语义/声学拆分</text>
 
   <rect x="20" y="55" width="200" height="150" class="box"/>
   <text x="120" y="78" text-anchor="middle" class="label">EnCodec（Meta，2022）</text>
@@ -35,9 +35,9 @@
   <rect x="450" y="55" width="200" height="150" class="box"/>
   <text x="550" y="78" text-anchor="middle" class="label">SNAC（Siuzdak 2024）</text>
   <text x="550" y="96" text-anchor="middle" class="tag">多尺度 RVQ</text>
-  <text x="460" y="120" class="content">粗 codes @ 12 Hz</text>
-  <text x="460" y="138" class="content">中 codes @ 25 Hz</text>
-  <text x="460" y="156" class="content">细 codes @ 50 Hz</text>
+  <text x="460" y="120" class="content">粗粒度 codes @ 12 Hz</text>
+  <text x="460" y="138" class="content">中粒度 codes @ 25 Hz</text>
+  <text x="460" y="156" class="content">细粒度 codes @ 50 Hz</text>
   <text x="460" y="178" class="caption">层级式 → AR-LM 友好</text>
   <text x="460" y="196" class="caption">Orpheus-3B 使用</text>
 
