@@ -84,6 +84,10 @@ Flamingo（Lesson 12.04）早于 BLIP-2，使用了相同的 cross-attention 思
 
 四者都有效。决定性问题是你受限于 Token budget，还是受限于 quality-per-token。
 
+```figure
+modality-projection
+```
+
 ## 使用它
 `code/main.py` 构建了一个 stdlib Q-Former-style cross-attention：
 
