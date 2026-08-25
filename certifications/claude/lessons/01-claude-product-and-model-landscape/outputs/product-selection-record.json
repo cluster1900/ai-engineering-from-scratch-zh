@@ -1,0 +1,216 @@
+{
+  "decisionId": "weekly-competitor-brief-v1",
+  "verifiedOn": "2026-08-08",
+  "humanOwner": "competitive-intelligence-lead",
+  "requirements": {
+    "recurrence": "weekly",
+    "publicFreshnessDays": 7,
+    "internalSource": "当前获准的 ROADMAP",
+    "sensitivity": "internal",
+    "output": "带来源附录的两页高管简报",
+    "collaboration": "共享的团队工作流",
+    "consequence": "高管规划输入"
+  },
+  "surfaceCandidates": [
+    {
+      "id": "continued-chat",
+      "complexity": 1,
+      "meetsConstraints": false,
+      "reason": "携带陈旧 context，且没有受到维护的内部来源边界"
+    },
+    {
+      "id": "project-research",
+      "complexity": 2,
+      "meetsConstraints": true,
+      "reason": "把当前公开研究与受到维护的内部 knowledge 和审核结合起来"
+    },
+    {
+      "id": "custom-application",
+      "complexity": 3,
+      "meetsConstraints": true,
+      "reason": "能够满足契约，但增加了目前尚无充分理由承担的 ownership 和集成成本"
+    }
+  ],
+  "selectedSurface": "project-research",
+  "modelGate": {
+    "minimumCoverage": 0.95,
+    "maximumUnsupportedClaims": 0,
+    "maximumLatencySeconds": 20
+  },
+  "modelBenchmark": [
+    {
+      "id": "haiku-family",
+      "coverage": 0.86,
+      "unsupportedClaims": 1,
+      "latencySeconds": 5.2,
+      "costUnits": 1.0
+    },
+    {
+      "id": "sonnet-family",
+      "coverage": 0.98,
+      "unsupportedClaims": 0,
+      "latencySeconds": 11.4,
+      "costUnits": 3.0
+    }
+  ],
+  "selectedModel": "sonnet-family",
+  "deploymentMatrix": {
+    "scenario": {
+      "workload": "一个受监管的保险团队正在为员工和内部应用程序添加经过审核的文档分析服务",
+      "cloudCommitment": "Azure 是获准的生产环境 landing zone",
+      "procurement": "新的使用量必须通过现有 Azure 协议结算",
+      "dataBoundary": "Prompts 和 completions 必须保留在获准的美国 cloud boundary 内",
+      "identity": "人员和工作负载访问由 Microsoft Entra ID 和 Azure RBAC 治理",
+      "seatsBudgets": "二十名具名用户需要受到治理的访问权限，应用程序则需要每月使用量上限",
+      "operationalControl": "平台团队负责 deployment、logging、quotas 和 incident response"
+    },
+    "weights": {
+      "cloudCommitment": 5,
+      "procurement": 5,
+      "dataBoundary": 5,
+      "identity": 4,
+      "seatsBudgets": 3,
+      "operationalControl": 3
+    },
+    "candidates": [
+      {
+        "id": "claude-enterprise-direct",
+        "label": "Claude Enterprise 与直接调用 Claude API",
+        "ratings": {
+          "cloudCommitment": {"score": 2, "reason": "在强制使用的 Azure landing zone 之外增加了一个直接 Anthropic control plane"},
+          "procurement": {"score": 2, "reason": "需要直接向 Anthropic 采购，而不是使用现有 Azure 协议"},
+          "dataBoundary": {"score": 3, "reason": "Anthropic 记录了第一方 API data controls，但既定要求指定了获准的 cloud boundary"},
+          "identity": {"score": 3, "reason": "Enterprise SSO 和 API workload federation 均可使用，但它们与 Azure resource RBAC 相互独立"},
+          "seatsBudgets": {"score": 4, "reason": "Enterprise seats 和 member limits，再加上 API workspace limits，可以覆盖两种使用形态"},
+          "operationalControl": {"score": 4, "reason": "Anthropic workspaces 提供 roles、rate limits、spend limits 和 usage reporting"}
+        },
+        "weightedScore": 71,
+        "evidenceIds": ["direct-authentication", "direct-workspaces", "enterprise-sso", "enterprise-spend-limits"]
+      },
+      {
+        "id": "amazon-bedrock",
+        "label": "Amazon Bedrock",
+        "ratings": {
+          "cloudCommitment": {"score": 1, "reason": "在仅允许 Azure 的生产政策中引入 AWS"},
+          "procurement": {"score": 1, "reason": "把使用量转移到 AWS billing 和 model access"},
+          "dataBoundary": {"score": 2, "reason": "由 AWS 管理的 inference boundaries 很可靠，但位于获准的 Azure boundary 之外"},
+          "identity": {"score": 2, "reason": "AWS IAM 会与现有 Entra 和 Azure RBAC 运营模型形成重复"},
+          "seatsBudgets": {"score": 2, "reason": "该工作负载属于 application inference，而具名员工 seats 仍然需要另一个界面"},
+          "operationalControl": {"score": 4, "reason": "Bedrock 提供 AWS-native authentication、billing、regions 和 quotas"}
+        },
+        "weightedScore": 46,
+        "evidenceIds": ["bedrock-boundary"]
+      },
+      {
+        "id": "google-vertex-ai",
+        "label": "Google Vertex AI",
+        "ratings": {
+          "cloudCommitment": {"score": 1, "reason": "在仅允许 Azure 的生产政策中引入 Google Cloud"},
+          "procurement": {"score": 1, "reason": "需要 Google Cloud project 和 billing 路径"},
+          "dataBoundary": {"score": 2, "reason": "虽然存在 regional 和 multi-region endpoints，但无法满足 Azure-specific boundary"},
+          "identity": {"score": 2, "reason": "Google Cloud IAM 会与获准的 Azure identity 模型形成重复"},
+          "seatsBudgets": {"score": 2, "reason": "该平台服务于 application inference，不能替代具名员工访问权限"},
+          "operationalControl": {"score": 4, "reason": "Global、multi-region 和 regional endpoints 为应用程序团队提供了多种部署选择"}
+        },
+        "weightedScore": 46,
+        "evidenceIds": ["vertex-endpoints"]
+      },
+      {
+        "id": "microsoft-foundry",
+        "label": "Microsoft Foundry",
+        "ratings": {
+          "cloudCommitment": {"score": 5, "reason": "使用获准的 Azure subscription 和 resource hierarchy"},
+          "procurement": {"score": 5, "reason": "Claude 使用量通过 Azure Marketplace 计费"},
+          "dataBoundary": {"score": 5, "reason": "Azure-hosted US Data Zone deployment 符合既定的 prompt 和 completion 边界"},
+          "identity": {"score": 5, "reason": "Azure-native authentication 和 RBAC 与现有 control plane 一致"},
+          "seatsBudgets": {"score": 4, "reason": "Azure 使用量治理覆盖应用程序；具名员工 seats 仍然是独立决策"},
+          "operationalControl": {"score": 4, "reason": "团队控制 Foundry resources 和 deployments，而 Anthropic 运营模型服务"}
+        },
+        "weightedScore": 119,
+        "evidenceIds": ["foundry-hosting"]
+      }
+    ]
+  },
+  "deploymentADR": {
+    "status": "accepted",
+    "selectedPath": "microsoft-foundry",
+    "decision": "通过 US Data Zone 中由 Azure 托管的 Microsoft Foundry resource 部署 application inference；仅当需要原生 Claude app 时，才单独采购员工 seats。",
+    "rejectedAlternatives": [
+      "对于此应用程序，直接使用 Anthropic 与要求使用 Azure 的采购路径冲突。",
+      "Amazon Bedrock 和 Google Vertex AI 会增加未经批准的 cloud control planes，却不能解决工作负载要求。"
+    ],
+    "consequences": [
+      "Azure 团队负责 resource access、deployment configuration、budgets、logging 和 regional verification。",
+      "每次进行重大模型或模式变更前，都必须重新检查功能和模型可用性。",
+      "人员 Claude seats 作为独立的产品决策进行治理，而不是隐藏在 API 架构中。"
+    ],
+    "reviewTriggers": [
+      "获准的 cloud 或 marketplace agreement 发生变化。",
+      "所选 Foundry hosting option 不支持某项必需功能。",
+      "Data-boundary 要求或 processor terms 发生变化。"
+    ]
+  },
+  "officialEvidence": [
+    {
+      "id": "direct-authentication",
+      "path": "claude-enterprise-direct",
+      "verifiedOn": "2026-08-09",
+      "claim": "直接 Claude API 支持面向生产工作负载的 API keys 和 workload identity federation。",
+      "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/authentication"
+    },
+    {
+      "id": "direct-workspaces",
+      "path": "claude-enterprise-direct",
+      "verifiedOn": "2026-08-09",
+      "claim": "Claude API workspaces 对 keys、roles、rate limits、spend limits 和 usage reporting 的范围进行限定。",
+      "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/workspaces"
+    },
+    {
+      "id": "enterprise-sso",
+      "path": "claude-enterprise-direct",
+      "verifiedOn": "2026-08-09",
+      "claim": "Claude organization access 可以与 enterprise single sign-on 以及 JIT 或 SCIM provisioning 集成。",
+      "sourceUrl": "https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso"
+    },
+    {
+      "id": "enterprise-spend-limits",
+      "path": "claude-enterprise-direct",
+      "verifiedOn": "2026-08-09",
+      "claim": "Claude Enterprise 提供 member spend limits，且这些限制与 Claude API workspace limits 相互独立。",
+      "sourceUrl": "https://platform.claude.com/docs/en/manage-claude/spend-limits-api"
+    },
+    {
+      "id": "bedrock-boundary",
+      "path": "amazon-bedrock",
+      "verifiedOn": "2026-08-09",
+      "claim": "Amazon Bedrock 中的 Claude 使用 AWS-native authentication、billing 和由 AWS 管理的 security boundaries。",
+      "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock"
+    },
+    {
+      "id": "vertex-endpoints",
+      "path": "google-vertex-ai",
+      "verifiedOn": "2026-08-09",
+      "claim": "Google Cloud 上的 Claude 提供 global、multi-region 和 regional endpoints，它们在 residency 和 availability 方面具有不同的权衡。",
+      "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai"
+    },
+    {
+      "id": "foundry-hosting",
+      "path": "microsoft-foundry",
+      "verifiedOn": "2026-08-09",
+      "claim": "Microsoft Foundry 提供 Azure-native endpoints 和 authentication、Azure Marketplace billing，以及 Azure-hosted 或 Anthropic-hosted 部署选项。",
+      "sourceUrl": "https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry"
+    }
+  ],
+  "officialSources": [
+    "https://platform.claude.com/docs/en/about-claude/models/overview",
+    "https://platform.claude.com/docs/en/manage-claude/authentication",
+    "https://platform.claude.com/docs/en/manage-claude/workspaces",
+    "https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso",
+    "https://platform.claude.com/docs/en/manage-claude/spend-limits-api",
+    "https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock",
+    "https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai",
+    "https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry",
+    "https://support.claude.com/en/articles/9517075-what-are-projects",
+    "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+  ]
+}

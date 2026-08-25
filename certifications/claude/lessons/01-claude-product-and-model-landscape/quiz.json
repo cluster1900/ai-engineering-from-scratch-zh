@@ -1,0 +1,78 @@
+{
+  "lesson": "01-claude-product-and-model-landscape",
+  "title": "选择能够承载工作的最小 Surface",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "一个受监管的应用必须使用现有的 Azure 协议、Entra identity、Azure RBAC 和美国 data-zone 部署。哪个路径是最有力的起始候选方案？",
+      "options": [
+        "使用 AWS 区域端点的 Amazon Bedrock",
+        "使用所需 Azure 托管和部署类型的 Microsoft Foundry",
+        "Claude for Enterprise 席位加上直接使用 Claude API workspace",
+        "使用美国多区域端点的 Google Vertex AI"
+      ],
+      "correct": 1,
+      "explanation": "Foundry 符合所述的采购、identity、运营和云边界要求。团队仍须核验当前托管选项和功能支持情况。"
+    },
+    {
+      "stage": "check",
+      "question": "什么时候 Research 比直接进行 Web 搜索更合适？",
+      "options": [
+        "需要从权威的一手页面确认一项当前事实时",
+        "答案需要引用，但相关来源和主张已经明确时",
+        "必须收集、核对并引用多个来源时",
+        "必须打开一份已知文档并检查其中确切的政策条款时"
+      ],
+      "correct": 2,
+      "explanation": "Research 适合广泛的多步骤调查。范围较窄的事实通常只需要更简单的搜索和核验路径。"
+    },
+    {
+      "stage": "check",
+      "question": "在 Haiku、Sonnet 和 Opus 之间进行选择时，最安全且持久的规则是什么？",
+      "options": [
+        "选择 context window 最大的系列，然后调整 Prompt 以满足成本目标",
+        "根据已发布的定位，为每个系列永久分配一个任务类别",
+        "外部工作默认使用能力最强的系列，然后降低低风险内部任务所用的系列",
+        "依据具有代表性的成功标准测试可能适用的最小系列，并在实际测得失败时升级"
+      ],
+      "correct": 3,
+      "explanation": "各系列的定位很有参考价值，但实际选择应依据任务对质量、延迟和成本的约束进行衡量。"
+    },
+    {
+      "stage": "check",
+      "question": "一个组织为员工购买 Claude for Enterprise，同时还从应用中直接调用 Claude API。哪种控制设计最有力？",
+      "options": [
+        "将具名用户席位和成员限制，与 API workspace key、速率限制及支出限制分开治理",
+        "只选择一个控制平面，因为 Anthropic 的直接产品共享相同的 identity 和预算语义",
+        "使用 Enterprise 席位政策控制应用速率限制，并使用 API workspace 管理员工访问",
+        "将席位和 API Token 视为统一的共享容量，因为两者都是从 Anthropic 采购的"
+      ],
+      "correct": 0,
+      "explanation": "人员席位和应用消耗属于不同的使用形态。即使采用直接采购，其 identity、预算和访问控制也必须保持明确。"
+    },
+    {
+      "stage": "post",
+      "question": "一家以 AWS 为主的公司要求使用 AWS IAM、AWS 计费和由 AWS 管理的推理安全边界。哪条部署路径最符合这些要求？",
+      "options": [
+        "Google Vertex AI，因为多区域端点与云平台无关",
+        "核验当前模型、区域和功能后使用 Amazon Bedrock",
+        "Claude for Enterprise，因为 SSO 可以替代工作负载 IAM",
+        "Microsoft Foundry，因为 Azure Marketplace 的费用可以向 AWS 结算"
+      ],
+      "correct": 1,
+      "explanation": "Bedrock 符合所述的 AWS 控制平面要求。当前模型访问权限、端点、数据处理方式和功能支持情况仍属于带有时效性的输入。"
+    },
+    {
+      "stage": "post",
+      "question": "一个 Google Cloud 团队需要在现有项目、IAM、计费和 EU 端点策略内进行应用推理。其 ADR 应该怎么做？",
+      "options": [
+        "选择 Vertex AI，并永久固化当前的功能 Matrix，因为项目 identity 将保持稳定",
+        "只比较 Token 价格，因为 Google Cloud 已负责 identity、采购和事件响应",
+        "选择 Vertex AI，然后记录当前模型、功能、端点、processor 和定价证据以及核验日期",
+        "选择直接使用 Claude API，因为不同 provider 上的模型行为相同，控制平面不会影响架构"
+      ],
+      "correct": 2,
+      "explanation": "Vertex AI 符合所述的控制平面要求，但 ADR 必须保留每一项可变平台事实的带日期证据，并明确其重新审查触发条件。"
+    }
+  ]
+}
