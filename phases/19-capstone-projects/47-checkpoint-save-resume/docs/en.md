@@ -80,6 +80,10 @@ Index 记录 shard count、每个 shard 的 sha256，以及 meta file 的 sha256
 
 把 resume 对齐到下一个 epoch 开始，会浪费从几分钟到一天不等的时间。解决方法是 `(epoch, batch_in_epoch)` 加 RNG state。load 之后，training loop 会将 random number generator 快进越过当前 epoch 中已经消耗的 batches，然后从 `batch_in_epoch` 继续。本课代码精确地完成了这一点；断言是 resume 后的 Loss trajectory 会在 1e-4 范围内匹配未中断的 baseline。
 
+```figure
+cc-atomic-checkpoint
+```
+
 ## Build It
 
 `code/main.py` 提供四个 primitives 和一个 demo driver。

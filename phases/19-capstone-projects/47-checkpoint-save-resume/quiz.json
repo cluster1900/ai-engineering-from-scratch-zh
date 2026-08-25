@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "哪一组最能描述一个完整的 training checkpoint？",
       "options": [
+        "任何 torch.save() 可以 serialize 的东西",
         "仅 model weights",
         "Model state、optimizer state、scheduler state、step counters、loss history，以及 python、numpy、torch CPU、torch CUDA 的 RNG state",
-        "只有 loss history",
-        "任何 torch.save() 可以 serialize 的东西"
+        "只有 loss history"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "Resume 必须沿着同一条 trajectory 前进。没有 optimizer moments、scheduler position 和 RNG state，resumed loss 就会变成另一条曲线。"
     },
     {
@@ -30,36 +30,36 @@
       "stage": "check",
       "question": "为什么 sharded checkpoint 会在 index.json 中为每个 shard 存储 sha256？",
       "options": [
-        "为了 SEO",
         "这样 loader 可以在 load time 检测到被截断或被篡改的 shard，而不是静默 merge 一个坏的 state_dict",
-        "为了压缩文件",
-        "因为 torch 要求这样做"
+        "因为 torch 要求这样做",
+        "为了 SEO",
+        "为了压缩文件"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "load_sharded_checkpoint 会 assert 每个 shard 的实际 hash 匹配记录值，并且 meta file 的 hash 也匹配。Silent corruption 是最糟糕的 failure mode。"
     },
     {
       "stage": "check",
       "question": "Resume 如何在当前 epoch 内的正确 offset 继续？",
       "options": [
-        "它跳到下一个 epoch boundary",
-        "TrainState 记录 (epoch, batch_in_epoch)，并且 RNG state 会被恢复，所以 loader 会将 generator fast-forward 到已经消费过的 batch 之后再继续",
         "它使用一个特殊 database",
-        "它总是从 step 0 重新开始"
+        "它跳到下一个 epoch boundary",
+        "它总是从 step 0 重新开始",
+        "TrainState 记录 (epoch, batch_in_epoch)，并且 RNG state 会被恢复，所以 loader 会将 generator fast-forward 到已经消费过的 batch 之后再继续"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "没有 (epoch, batch_in_epoch)，你会 snap 到下一个 epoch boundary 并浪费工作。没有 RNG，你会看到不同的 batch。两者都必需。"
     },
     {
       "stage": "check",
       "question": "Payload 上的 schema 字段能给你带来什么？",
       "options": [
-        "什么都没有",
         "一个 migration hook：未来 format 变化会 bump schema string，loader 可以基于它 dispatch，而不是破坏旧 run",
-        "一个漂亮的 filename",
-        "Compression"
+        "什么都没有",
+        "Compression",
+        "一个漂亮的 filename"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "本课使用 ckpt.v1；下一个版本是带 migrate function 的 ckpt.v2。没有这个字段，format evolution 就需要破坏兼容性。"
     },
     {
@@ -67,11 +67,11 @@
       "question": "阅读 resume demo summary，max_loss_diff_after_resume 接近 0 证明了什么？",
       "options": [
         "没有有用信息",
-        "post-resume loss trajectory 在 floating point noise 范围内匹配 uninterrupted baseline，这意味着 RNG state 和 optimizer state 都被忠实恢复",
+        "磁盘很快",
         "模型很好",
-        "磁盘很快"
+        "post-resume loss trajectory 在 floating point noise 范围内匹配 uninterrupted baseline，这意味着 RNG state 和 optimizer state 都被忠实恢复"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "如果你忘记 RNG，会看到不同曲线和非平凡 diff。如果你忘记 optimizer state，diff 会非常大。接近零的数值就是 contract。"
     }
   ]
