@@ -1,114 +1,151 @@
 # GPT — Causal Language Modeling
 
-> BERT 能看到两侧。GPT 只能看到过去。triangle mask 是现代 AI 中影响最深远的一行代码。
+> BERT 能看到两侧。GPT 只能看到过去。三角形 mask 是现代 AI 中影响最深远的一行代码。
 
 **Type:** Build
 **Languages:** Python
-**先修要求:** Phase 7 · 02 (Self-Attention), Phase 7 · 05 (Full Transformer), Phase 7 · 06 (BERT)
+**Prerequisites:** Phase 7 · 02 (Self-Attention), Phase 7 · 05 (完整 Transformer), Phase 7 · 06 (BERT)
 **Time:** ~75 分钟
 
 ## 问题
 
-language model 回答一个问题：给定前 `t-1` 个 tokens，token `t` 上的概率分布是什么？用这个信号训练，也就是 next-token prediction，你就会得到一个可以一次生成一个 token、生成任意文本的模型。
+Language Model 回答一个问题：给定前 `t-1` 个 Token，第 `t` 个 Token 的 Probability Distribution 是什么？使用这个信号，也就是 next-token prediction 进行 Training，你将得到一个能够逐个 Token 生成任意文本的 Model。
 
-要在整个 sequence 上并行进行端到端训练，你需要让每个位置的预测只依赖更早的位置。否则模型会通过偷看答案轻易作弊。
+若要在整个序列上并行进行端到端 Training，就需要让每个位置的预测仅依赖于更早的位置。否则，Model 只需查看答案便能轻易作弊。
 
-causal mask 做的就是这件事。它是一个由 `-inf` 值组成的上三角 matrix，在 softmax 之前加到 attention scores 上。softmax 之后，这些位置会变成 0。每个位置只能 attend 到自身和更早的位置。因为你把它一次性应用到整个 sequence 上，所以一次 forward pass 就能得到 N 个并行的 next-token predictions。
+causal mask 正是为此而存在。它是一个由 `-inf` 值构成的上三角 Matrix，在 softmax 之前加到 Attention 分数上。经过 softmax 后，这些位置会变成 0。每个位置只能关注自身和更早的位置。由于只需将它应用于整个序列一次，因此一次 forward pass 就能并行得到 N 个 next-token prediction。
 
-GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi —— 它们都是 decoder-only causal transformers，核心循环相同。只是规模更大、数据更好、RLHF 更好。
+GPT-1 (2018)、GPT-2 (2019)、GPT-3 (2020)、GPT-4 (2023)、GPT-5 (2025)、Claude、Llama、Qwen、Mistral、DeepSeek、Kimi，全都是采用相同核心循环的 decoder-only causal Transformer。它们之间的区别在于数据质量、规模、架构改进，以及 post-training（SFT、RLHF、DPO 及其后继方法）。
 
 ## 概念
 
-![Causal mask creates a triangular attention matrix](../assets/causal-attention.svg)
+![causal mask 创建三角形 Attention Matrix](../assets/causal-attention.svg)
 
 ### mask
 
-给定长度为 `N` 的 sequence，构建一个 `N × N` matrix：
+给定长度为 `N` 的序列，构建一个 `N × N` Matrix：
 
 ```
 M[i, j] = 0       if j <= i
 M[i, j] = -inf    if j > i
 ```
 
-在 softmax 之前，把 `M` 加到原始 attention scores 上。`exp(-inf) = 0`，所以被 mask 的位置贡献的权重为零。attention matrix 的每一行都只是对先前位置的概率分布。
+在 softmax 之前，将 `M` 加到原始 Attention 分数上。`exp(-inf) = 0`，因此被 mask 的位置贡献的权重为零。Attention Matrix 的每一行都仅表示先前位置上的 Probability Distribution。
 
-实现成本：一次 `torch.tril()` 调用。计算时间：纳秒级。对整个领域的影响：一切。
+实现成本：一次 `torch.tril()` 调用。计算时间：纳秒级。对该领域的影响：一切。
 
-### 并行训练，串行推理
+### 三角形从何而来
 
-训练：对整个 `(N, d_model)` sequence 做一次 forward-pass，计算 N 个 cross-entropy losses（每个位置一个），求和，backprop。沿 sequence 并行。这就是 GPT 训练能够扩展的原因：你可以在一次 GPU pass 中处理 batch 里的 1M tokens。
+mask 通常被描述为附加到 Attention 上的补丁。反过来进行推导后，它就不再神秘：Attention 是前缀平均值的第三次改进，而三角形就是该平均值循环边界的 Matrix 表示。
 
-推理：你逐个 token 生成。输入 `[t1, t2, t3]`，得到 `t4`。输入 `[t1, t2, t3, t4]`，得到 `t5`。输入 `[t1, t2, t3, t4, t5]`，得到 `t6`。KV cache（Lesson 12）保存 `t1…tn` 的 hidden states，这样你就不必在每一步重新计算它们。但推理时的串行深度 = 输出长度。这就是 autoregressive tax，也是每个 LLM 解码成为延迟瓶颈的原因。
+**Stage 1 — 前缀平均值。** 对序列进行因果汇总的最简单方式：位置 `i` 变为位置 `0…i` 的平均值。用循环表示，就是 `out[i] = X[:i+1].mean(0)`。同样的计算也可以通过一次 Matrix 乘法完成。取一个由 1 构成的下三角 Matrix，将每一行除以该行元素数量，然后相乘：
 
-### loss —— shift-by-one
+```python
+import numpy as np
 
-给定 tokens `[t1, t2, t3, t4]`：
+A = np.tril(np.ones((n, n)))
+A = A / A.sum(axis=1, keepdims=True)
+out = A @ X
+```
 
-- Input: `[t1, t2, t3]`
-- Targets: `[t2, t3, t4]`
+`A` 的第 `i` 行是 `[1/(i+1), …, 1/(i+1), 0, …, 0]`。对角线上方的零体现了因果性。这里并不是将未来的信息 mask 掉，而是求和时从未包含未来的信息。
 
-对每个位置 `i`，计算 `-log P(target_i | inputs[:i+1])`。求和。这就是整个 sequence 的 cross-entropy。
+**Stage 2 — 学习得到的权重。** 均匀平均会将过去的每个 Token 视为同等相关。将 1 替换为学习得到的分数 Matrix `S`。此时无法再从构造上保证每行之和为 1，因此要用 softmax 归一化每一行，而不是除以元素数量。softmax 永远不会输出严格的零，这会破坏因果性，除非将未来位置的分数设为 `-inf`，因为 `exp(-inf) = 0`：
 
-你听说过的每一个 transformer LM 都用这个 loss 训练。Pre-training、fine-tuning、SFT —— loss 相同，数据不同。
+```python
+def softmax(x, axis):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
 
-### Decoding strategies
+S = S + np.triu(np.full((n, n), -np.inf), k=1)
+A = softmax(S, axis=1)
+out = A @ X
+```
 
-训练之后，sampling 选择比人们想象的更重要。
+同一个三角形、同一个行随机 Matrix、同一次 Matrix 乘法。`-inf` mask 并不是新增的机制。它只是将 Stage 1 中的零元素转换到了 softmax 的输入域。
 
-| Method | What it does | When to use |
+**Stage 3 — 依赖内容的权重。** 在 Stage 2 中，`S` 在 Training 后是固定的：无论 Token 表达什么内容，位置 7 对位置 3 的权重始终相同。让分数依赖 Token 本身：`S = Q @ K.T / sqrt(d_k)`。其他部分都不变。mask、softmax、Matrix 乘法完全相同。
+
+三个 Stage，一个不变量：一个下三角行随机 Matrix 乘以序列。均匀平均、学习得到的静态权重、依赖内容的权重。mask 从未被添加到 Attention 中。它是从平均值中延续下来的。
+
+```figure
+mask-derivation
+```
+
+### 并行 Training，串行 Inference
+
+Training：对整个 `(N, d_model)` 序列执行一次 forward pass，计算 N 个 cross-entropy Loss（每个位置一个），求和，然后执行 Backpropagation。沿序列并行处理。这正是 GPT Training 能够扩展的原因：可以在一次 GPU pass 中处理一个 Batch 内的 100 万个 Token。
+
+Inference：逐个 Token 生成。输入 `[t1, t2, t3]`，得到 `t4`。输入 `[t1, t2, t3, t4]`，得到 `t5`。输入 `[t1, t2, t3, t4, t5]`，得到 `t6`。KV cache（Lesson 12）会保存 `t1…tn` 的 hidden state，因此不必在每一步重新计算它们。但 Inference 时的串行深度 = 输出长度。这就是 autoregressive 的代价，也是 decoding 成为每个 LLM 延迟瓶颈的原因。
+
+### Loss — shift-by-one
+
+给定 Token `[t1, t2, t3, t4]`：
+
+- 输入：`[t1, t2, t3]`
+- 目标：`[t2, t3, t4]`
+
+对于每个位置 `i`，计算 `-log P(target_i | inputs[:i+1])`，然后求和。这就是整个序列的 cross-entropy。
+
+你听说过的每个 Transformer LM 都使用这种 Loss 进行 Training。Pre-training、Fine-tuning、SFT，Loss 相同，数据不同。
+
+### Decoding 策略
+
+Training 完成后，采样方式的影响比大多数人想象的更大。
+
+| 方法 | 作用 | 使用场景 |
 |--------|--------------|-------------|
-| Greedy | 每一步取 Argmax | 确定性任务、code completion |
-| Temperature | 将 logits 除以 T，然后 sample | 创造性任务，T 越高多样性越强 |
-| Top-k | 只从 top-k tokens 中 sample | 消除低概率长尾 |
-| Top-p (nucleus) | 从累计概率 ≥ p 的最小集合中 sample | 2020+ 默认选择；会适应分布形状 |
-| Min-p | 保留 `p > min_p * max_p` 的 tokens | 2024+；比 top-p 更擅长拒绝长尾 |
-| Speculative decoding | draft model 提出 N 个 tokens，big model 验证 | 在质量相同的情况下减少 2–3× 延迟 |
+| Greedy | 每一步都取 argmax | 确定性任务、代码补全 |
+| Temperature | 将 logits 除以 T 后采样 | 创意任务；T 越高，多样性越强 |
+| Top-k | 仅从概率最高的 k 个 Token 中采样 | 去除低概率长尾 |
+| Top-p (nucleus) | 从累积概率 ≥ p 的最小集合中采样 | 2020 年后的默认方式；可适应分布形状 |
+| Min-p | 保留满足 `p > min_p * max_p` 的 Token | 2024 年后使用；比 top-p 更善于拒绝长尾 |
+| Speculative decoding | 小型 draft Model 提出 N 个 Token，大型 Model 进行验证 | 在质量相同的情况下将延迟降低 2–3 倍 |
 
-在 2026 年，对于 open-weights models，min-p + temperature 0.7 是一个合理默认值。Speculative decoding 是任何生产 inference stack 的基本配置。
+在 2026 年，对于开放权重 Model，min-p + temperature 0.7 是合理的默认配置。对于任何生产级 Inference 技术栈而言，speculative decoding 都已是基本要求。
 
-### 让 “GPT recipe” 起作用的因素
+### “GPT 配方”为何有效
 
-1. **Decoder-only.** 没有 encoder 开销。每层一次 Attention + FFN pass。
-2. **Scaling.** 124M → 1.5B → 175B → trillions。Chinchilla scaling laws（Lesson 13）告诉你如何分配 compute。
-3. **In-context learning.** 大约在 6B–13B 时涌现。模型无需 fine-tuning 就能跟随 few-shot examples。
-4. **RLHF.** 基于人类偏好的 post-training 把原始 pretrained 文本模型转化为 chat assistants。
-5. **Pre-norm + RoPE + SwiGLU.** 支撑大规模稳定训练。
+1. **Decoder-only。** 没有 encoder 开销。每层只需执行一次 Attention + FFN。
+2. **Scaling。** 124M → 1.5B → 175B → 数万亿。Chinchilla scaling laws（Lesson 13）会告诉你如何分配计算资源。
+3. **In-context learning。** 在约 6B–13B 参数规模时涌现。Model 无需 Fine-tuning 即可遵循 few-shot 示例。
+4. **RLHF。** 基于人类偏好进行 post-training，将原始预训练文本 Model 转变为聊天助手。
+5. **Pre-norm + RoPE + SwiGLU。** 在大规模 Training 中保持稳定。
 
-自 GPT-2 以来，核心架构没有太大变化。真正有趣的变化都发生在数据、规模和 post-training 上。
-
+自 GPT-2 以来，核心架构并没有太大变化。真正有趣的进展都发生在数据、规模和 post-training 上。
 
 ```figure
 causal-mask
 ```
 
-## 构建它
+## 动手构建
 
-### 步骤 1： causal mask
+### Step 1：causal mask
 
-见 `code/main.py`。一行代码：
+请参阅 `code/main.py`。只需一行：
 
 ```python
 def causal_mask(n):
     return [[0.0 if j <= i else float("-inf") for j in range(n)] for i in range(n)]
 ```
 
-在 softmax 之前把它加到 attention scores 上。这就是完整机制。
+在 softmax 之前，将它加到 Attention 分数上。这就是完整的机制。
 
-### 步骤 2： 一个 2-layer GPT-ish model
+### Step 2：一个 2 层 GPT 风格 Model
 
-堆叠两个 decoder blocks（masked self-attention + FFN，无 cross-attention）。添加 token embedding、positional encoding 和 unembedding（与 token embedding matrix 绑定，这是自 GPT-2 以来的标准技巧）。
+堆叠两个 decoder block（masked Self-Attention + FFN，不使用 cross-attention）。添加 Token Embedding、positional encoding 和 unembedding（与 Token Embedding Matrix 共享权重，这是自 GPT-2 以来的标准技巧）。
 
-### 步骤 3： next-token prediction，端到端
+### Step 3：端到端 next-token prediction
 
-在一个 20-token toy vocab 上，在每个位置产生 logits。针对 shift-by-one target 计算 cross-entropy loss。无 Gradient —— 这是一个 forward-pass sanity check。
+在一个包含 20 个 Token 的玩具词表上，为每个位置生成 logits。根据 shift-by-one 目标计算 cross-entropy Loss。不计算 Gradient，这只是一次 forward pass 的健全性检查。
 
-### 步骤 4： sampling
+### Step 4：采样
 
-实现 greedy、temperature、top-k、top-p、min-p。在固定 prompt 上运行每一种并比较输出。一个 sampling function 只需要 10 行。
+实现 greedy、temperature、top-k、top-p、min-p。在固定 Prompt 上运行每种方法并比较输出。一个采样函数只需 10 行代码。
 
-## 使用它
+## 使用现成工具
 
-PyTorch，2026 idiom：
+PyTorch 的 2026 年惯用写法：
 
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -127,38 +164,38 @@ out = model.generate(
 print(tok.decode(out[0]))
 ```
 
-在底层，`generate()` 运行 forward pass，取出 final-position logits，sample 下一个 token，追加它，然后重复。每个生产级 LLM inference stack（vLLM, TensorRT-LLM, llama.cpp, Ollama, MLX）都用重度优化实现同一个循环 —— batched prefill、continuous batching、KV cache paging、speculative decoding。
+在内部，`generate()` 会运行 forward pass，提取最后一个位置的 logits，采样下一个 Token，将其追加到序列，然后重复。每个生产级 LLM Inference 技术栈（vLLM、TensorRT-LLM、llama.cpp、Ollama、MLX）都通过大量优化实现相同的循环，包括批量 prefill、continuous batching、KV cache paging 和 speculative decoding。
 
-**GPT vs BERT，各用一句话：** GPT 预测 `P(x_t | x_{<t})`。BERT 预测 `P(x_masked | x_unmasked)`。loss 决定模型是否能够生成。
+**用一句话分别概括 GPT 与 BERT：** GPT 预测 `P(x_t | x_{<t})`。BERT 预测 `P(x_masked | x_unmasked)`。Loss 决定了 Model 能否生成内容。
 
-## 交付它
+## 交付成果
 
-见 `outputs/skill-sampling-tuner.md`。这个 skill 会为新的 generation task 选择 sampling parameters，并在需要 deterministic decoding 时标记出来。
+请参阅 `outputs/skill-sampling-tuner.md`。该 Skill 会为新的生成任务选择采样参数，并标记必须使用确定性 decoding 的情况。
 
 ## 练习
 
-1. **Easy.** 运行 `code/main.py`，验证 softmax 之后的 causal attention matrix 是下三角的。抽查：第 3 行应该只在第 0–3 列有权重。
-2. **Medium.** 实现宽度为 4 的 beam search。在 10 个短 prompts 上比较 beam-4 与 greedy 的 perplexity。beam 总是会赢吗？（提示：通常对翻译是这样，但对 open-ended chat 不是。）
-3. **Hard.** 实现 speculative decoding：使用一个微型 2-layer model 作为 draft，用一个 6-layer model 作为 verifier。测量 100 个长度为 64 的 completions 上的 wall-clock speedup。确认输出与 verifier 的 greedy 输出匹配。
+1. **简单。** 运行 `code/main.py`，验证经过 softmax 后的 causal Attention Matrix 是下三角 Matrix。抽查：第 3 行应仅在第 0–3 列具有权重。
+2. **中等。** 实现宽度为 4 的 beam search。在 10 个短 Prompt 上比较 beam-4 与 greedy 的 perplexity。beam 是否总能胜出？（提示：通常适用于翻译，但不适用于开放式聊天。）
+3. **困难。** 实现 speculative decoding：使用一个微型 2 层 Model 作为 draft Model，一个 6 层 Model 作为 verifier。在 100 次长度为 64 的补全上测量实际运行时间的加速比。确认输出与 verifier 的 greedy 输出一致。
 
 ## 关键术语
 
-| Term | What people say | What it actually means |
+| 术语 | 人们通常怎么说 | 实际含义 |
 |------|-----------------|-----------------------|
-| Causal mask | “三角形” | 加到 attention scores 上的上三角 `-inf` matrix，使位置 `i` 只能看到位置 `≤ i`。 |
-| Next-token prediction | “loss” | 模型在每个位置上的分布与真实下一个 token 之间的 cross-entropy。 |
-| Autoregressive | “一次生成一个” | 将输出反馈为输入；并行性只存在于训练阶段，不存在于生成阶段。 |
-| Logits | “pre-softmax scores” | softmax 之前 LM head 的原始输出；sampling 就发生在这些值上。 |
-| Temperature | “创造力旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = uniform。 |
-| Top-p | “Nucleus sampling” | 将分布截断为累计和 ≥p 的最小集合；从剩余部分 sample。 |
-| Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 tokens；会根据分布尖锐程度调整 cutoff。 |
-| Speculative decoding | “draft + verify” | 便宜模型提出 N 个 tokens；大模型并行验证。 |
-| Teacher forcing | “训练技巧” | 训练时输入真实的前一个 token，而不是模型的预测。每个 seq2seq LM 的标准做法。 |
+| Causal mask | “那个三角形” | 添加到 Attention 分数上的上三角 `-inf` Matrix，使位置 `i` 只能看到位置 `≤ i`。 |
+| Next-token prediction | “那个 Loss” | 在每个位置上，计算 Model 的 Probability Distribution 与真实下一个 Token 之间的 cross-entropy。 |
+| Autoregressive | “一次生成一个” | 将输出反馈为输入；只有 Training 期间可以并行，生成期间不能并行。 |
+| Logits | “softmax 之前的分数” | softmax 之前 LM head 的原始输出；采样基于这些值进行。 |
+| Temperature | “创意旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = 均匀分布。 |
+| Top-p | “Nucleus sampling” | 将分布截断为总和达到 ≥p 的最小集合，再从剩余部分中采样。 |
+| Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 Token；根据分布的尖锐程度调整截断阈值。 |
+| Speculative decoding | “Draft + verify” | 低成本 Model 提出 N 个 Token；大型 Model 并行验证。 |
+| Teacher forcing | “Training 技巧” | Training 时输入真实的前一个 Token，而不是 Model 的预测。每个 seq2seq LM 都会采用这种标准方法。 |
 
 ## 延伸阅读
 
-- [Radford et al. (2018). Improving Language Understanding by Generative Pre-Training](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf) —— GPT-1。
-- [Radford et al. (2019). Language Models are Unsupervised Multitask Learners](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) —— GPT-2。
-- [Brown et al. (2020). Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165) —— GPT-3 和 in-context learning。
-- [Leviathan, Kalman, Matias (2023). Fast Inference from Transformers via Speculative Decoding](https://arxiv.org/abs/2211.17192) —— spec decoding 论文。
-- [HuggingFace `modeling_llama.py`](https://github.com/huggingface/transformers/blob/main/src/transformers/models/llama/modeling_llama.py) —— 标准 causal-LM 参考代码。
+- [Radford et al. (2018). Improving Language Understanding by Generative Pre-Training](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf) — GPT-1。
+- [Radford et al. (2019). Language Models are Unsupervised Multitask Learners](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) — GPT-2。
+- [Brown et al. (2020). Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165) — GPT-3 与 in-context learning。
+- [Leviathan, Kalman, Matias (2023). Fast Inference from Transformers via Speculative Decoding](https://arxiv.org/abs/2211.17192) — speculative decoding 论文。
+- [HuggingFace `modeling_llama.py`](https://github.com/huggingface/transformers/blob/main/src/transformers/models/llama/modeling_llama.py) — 规范的 causal LM 参考代码。
