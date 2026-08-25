@@ -18,12 +18,12 @@
       "stage": "check",
       "question": "在长度为 N、stride 为 S 的 id 流中，可以放入多少个长度为 T+1 的 window？",
       "options": [
-        "N // (T + 1)",
         "max(0, 1 + (N - (T + 1)) // S)",
+        "N - T - S",
         "(N - T) * S",
-        "N - T - S"
+        "N // (T + 1)"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "第一个 window 从 0 开始。后续 window 从 S 的倍数开始。最后一个 window 仍必须覆盖 T+1 个 ids。"
     },
     {
@@ -31,23 +31,23 @@
       "question": "把 stride 减半会对 dataset 产生什么影响？",
       "options": [
         "它会让每个 epoch 的训练 examples 数量减半",
+        "它会移除相邻 windows 之间的重叠",
         "它大约会让每个 epoch 的训练 examples 数量翻倍",
-        "它没有影响，因为 windows 永远不重叠",
-        "它会移除相邻 windows 之间的重叠"
+        "它没有影响，因为 windows 永远不重叠"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "更小的 stride 会产生更多重叠 windows，增加 example count 和边界多样性，代价是每个 epoch 需要更多 compute。"
     },
     {
       "stage": "check",
       "question": "为什么要把显式 torch.Generator 传给 DataLoader？",
       "options": [
-        "它会加快 data loading",
-        "它会移除对 batch padding 的需求",
         "它会让使用相同 seed 的运行之间的 shuffle 保持 deterministic",
-        "它会启用 multi-GPU training"
+        "它会移除对 batch padding 的需求",
+        "它会启用 multi-GPU training",
+        "它会加快 data loading"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "seeded generator 会复现相同的 shuffle。使用相同 seed 的 reruns 会以相同顺序看到 batches，这是公平比较 hyperparameter 所必需的。"
     },
     {
@@ -55,23 +55,23 @@
       "question": "为什么 dataset 会从每个大小为 T+1 的 window 返回 (input[:-1], input[1:])？",
       "options": [
         "它会丢弃一个 id 来节省 memory",
-        "它实现了 shift-by-one target，让 Loss 衡量 next-token prediction",
         "它会从 input 中移除一个 special token",
-        "这是 PyTorch tensor indexing 的一个怪癖"
+        "这是 PyTorch tensor indexing 的一个怪癖",
+        "它实现了 shift-by-one target，让 Loss 衡量 next-token prediction"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "位置 t 的 target 是位置 t+1 的 input。把 window 切成 [:-1] 和 [1:] 表达了这个 contract。"
     },
     {
       "stage": "post",
       "question": "为什么本课会丢弃不完整的尾部 windows，而不是 padding 它们？",
       "options": [
-        "Padding 会改变词汇表大小",
         "丢弃可以让每个 example 保持相同长度，因此不需要 Loss mask",
-        "model 不支持 padded tokens",
-        "被丢弃的数据会在下一个 epoch 恢复"
+        "被丢弃的数据会在下一个 epoch 恢复",
+        "Padding 会改变词汇表大小",
+        "model 不支持 padded tokens"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "所有 examples 在构造上都正好是 T tokens 长，因此 batch 是干净的 rectangular tensor，Loss 可以无需 mask 地均匀应用。"
     }
   ]

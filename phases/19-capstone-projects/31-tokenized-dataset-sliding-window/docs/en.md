@@ -14,6 +14,10 @@
 - 用 DataLoader 包装 dataset，并使用按 epoch 设定 seed 的 deterministic shuffle。
 - 推理 stride、冗余和有效 dataset size 之间的权衡。
 
+```figure
+cap-sliding-window
+```
+
 ## 框架
 
 一次预训练运行每次读取一批 Token ids，并更新 model。每个 batch 的形状由训练 contract 固定。对于 causal language model，batch 持有 `(B, T)` input ids 和 `(B, T)` target ids，其中 target 是 input 左移一位。data pipeline 的工作，是从可能有数 GB 原始文本的 corpus 中，按需、deterministic 且可复现地产生这个 contract。
