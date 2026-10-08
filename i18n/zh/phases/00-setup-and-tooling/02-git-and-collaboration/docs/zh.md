@@ -73,8 +73,8 @@ git merge experiment/new-optimizer
 ### 步骤 4: 使用这个课程
 
 ```bash
-git clone https://github.com/rohitg00/ai-engineering-from-scratch.git
-cd ai-engineering-from-scratch
+git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
+cd ai-engineering-from-scratch-zh
 
 git checkout -b my-progress
 # work through lessons, commit your code
