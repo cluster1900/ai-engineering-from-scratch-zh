@@ -88,11 +88,11 @@
 mcpa-07-discover
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方图表以双轨形式直观分离了两种不同的协商机制。顶层泳道展示了 `server/discover` 交互：对客户端而言属于可选调用，通过一次单向往返集中获取支持版本、服务端能力、引导指令以及缓存提示；底层泳道展示了在每次执行 `tools/call` 时的实际表现（无论此前是否执行过服务发现）：服务端对请求自带的 `clientCapabilities` 进行全新的孤立校验。如果请求什么都没声明，依赖交互索取的工具调用将直接返回 `-32021` 错误，并精确点名所缺失的能力；只有在当前请求中明确声明了该项能力，调用才能顺利完成。此前 discover 调用的成功，绝不会自动继承到底层泳道的调用中。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。代码中的 `DeployServer` 实现了 `server/discover` 以及一个设置了门禁的受控工具 `notify_oncall`（其定义明确指出必须具备 `elicitation` 能力才允许执行），同时提供了一个无需任何额外能力的普通工具 `list_incidents`：
 
@@ -102,11 +102,11 @@ python3 code/main.py
 
 按顺序观察终端打印的六组消息交互：第一对往返是一次标准的 `server/discover` 调用，成功返回了 `supportedVersions`、`capabilities`、`instructions` 与缓存提示；第二对往返中，客户端调用 `notify_oncall` 但传入了 `clientCapabilities: {}`，服务端随即返回 `-32021` 错误，其 `data.requiredCapabilities` 清晰指明缺失 `elicitation`；第三对往返中，客户端在请求元数据中补全了 `elicitation` 声明，调用随即平稳成功执行；第四对往返中，客户端调用了一个服务端根本未提供的工具名 `close_all_incidents`，触发了标准的协议级错误 `-32602`，而非能力缺失错误；最后两对往返展示了版本协商全流程：一次尝试请求 `2025-11-25` 版本的 `server/discover` 收到 `-32022` 错误且 `data.supported` 指明仅支持 `["2026-07-28"]`，客户端紧接着切换至该受支持版本并使用全新的请求 ID 发起重试，顺利成功。你可以尝试在某次请求中声明了能力之后，在下一次调用中再次故意省略该能力声明，观察服务端如何坚决拒绝执行，这印证了服务端绝不会产生跨请求的记忆惯性。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/capability-negotiation-cheatsheet.md` 是本课交付的单页能力协商速查手册：系统汇总了 `DiscoverResult` 的字段字典、并排对比了 `ServerCapabilities` 与 `ClientCapabilities` 的结构差异、给出了 `-32021` 与 `-32022` 的错误负载范例，并梳理了简明的协商重试五步法则。在构建或排查生产级客户端与服务端的交互协议时，该手册是绝佳的案头参考。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -120,11 +120,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/07-discovery-and-capability-negotiation
 ```
 
-## Capstone Connection
+## 项目连接
 
 最终 Capstone 项目的起步动作正是一个标准的 `server/discover` 调用，后续整条交互链路均严格遵守该调用回传的缓存提示；随后的首个关键工具调用，之所以能够顺利执行，完全是因为客户端在该特定请求中精确声明了所需能力；紧接着触发的 MRTR 交互索取流程，也是完全建立在这一精确声明的基础之上。所有这些步骤均直接建立在本课确立的核心分界线上：服务发现自描述服务端，发生一次且具备可缓存性；能力声明自描述客户端，发生在每个请求中且具备实时独立性。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -137,7 +137,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/07-discovery-and-
 | UnsupportedProtocolVersionError | 错误码 -32022；当前请求声明的协议版本服务端无法支持时返回 |
 | 逐请求协商 (Per-request negotiation) | 版本与能力数据仅从当前单次请求中实时读取、绝不依赖历史推断的规则 |
 
-## Further Reading
+## 延伸阅读
 
 - [服务发现规范：server/discover](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [版本控制与兼容性](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)

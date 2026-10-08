@@ -70,11 +70,11 @@ MCP 针对上述持续性场景引入了由客户端显式开启的专用事件�
 mcpa-16-subscription-stream
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节架构图在左右两侧分别列出客户端与服务端，并沿着垂直时间线生动展示了一次多流复用场景。两条 `subscriptions/listen` 请求先后建立，每条流的首包确认均在 `_meta` 中标注了自身的唯一 ID，随后的通知消息严格保持相同的标注，使得工具变更流与纯资源变更流即便在同一物理通道中交织传输也绝不会产生混淆。在图示下方，一个独立的 `tools/call` 请求运行着自身的请求与响应闭环，并穿插着属于自身的进度汇报报文；请注意，这三条进度通知绝不携带任何订阅 ID，因为它们完全隶属于当前调用本身。在图谱末尾，客户端主动取消了第二个订阅，而一条已经在途中飞行的残余更新通知即便随后抵达，也会被客户端直接静默丢弃而非分发上层。阅读图示时，请重点关注 `subscriptionId` 与 `progressToken` 是如何从机制上杜绝信道串扰的。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本构建了一个 `SubscriptionServer`，将每个活动的 `subscriptions/listen` 请求记录为携带具体授权通知类型的 `Subscription` 对象，并将 `resource_updated`、`list_changed`、`cancel` 与 `close_gracefully` 作为产生流消息的唯一合法入口，且在订阅已关闭或未获授权时严正拒绝发送任何报文。`call_long_job` 用于响应常规的 `tools/call`，若请求携带了 `progressToken`，则会在返回最终结果的同时发射一系列进度通知，与外部的订阅流完全解耦隔离。`SubscriberClient` 发送监听请求、登记确认包，并通过 `receive_stream` 实现多路解复用（仅分发本地仍处于活动状态的订阅 ID 对应的通知）。
 
@@ -84,11 +84,11 @@ python3 code/main.py
 
 对照核心概念研读终端打印出的交互记录。观察前两次订阅的首包确认：核验每个 `subscriptionId` 是否严格等于当初发起 `subscriptions/listen` 请求的 ID。接着观察针对 `run_build` 调用的三次进度通知：核实它们完全没有携带任何 `_meta` 订阅元数据。随后观察接近尾声处的订阅取消操作，以及紧随其后故意标记为违规演练的捕获条目：由于取消与网络传输存在竞态，一条针对刚取消订阅的 `resources/updated` 通知抵达了客户端，客户端严谨地将其就地丢弃而非向上传播。最后尝试为 `promptsListChanged` 开启第三个订阅并触发变更通知：观察其返回值直接为 `None`，因为该服务端在能力协商中从未声明支持 Prompt 机制，因此绝不可能越权下发该通知。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/notification-routing-table.md` 是本课交付的单页速查指南：将本课涉及的所有通知方法与其所属通道、必选字段及治理规则进行严格映射：哪四种方法绝对仅能在监听流中出现、哪两种通知被严格限制在请求作用域内及其深层原因，以及客户端在各类传输层实施取消时应采取的标准化手段。在后续做题排查交互日志时，请将该表与错误码速查表配合使用。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -102,11 +102,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/16-notifications-and-subscriptions
 ```
 
-## Capstone Connection
+## 项目连接
 
 Capstone 综合考核中的长耗时复杂任务深度依赖本课建立的技术规范：能够一眼看穿附带进度的普通调用绝非订阅流（它通过缺失 `taskId` 与后置课程的 Tasks 扩展产生本质区别），且能依靠订阅 ID 熟练分发各类异步通知。在 Capstone 场景中执行中途取消操作时，究竟是在 HTTP 上断开 SSE 响应流，还是在 stdio 上发送 `notifications/cancelled` 报文，完全取决于本课讲授的传输层分工规范。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -119,7 +119,7 @@ Capstone 综合考核中的长耗时复杂任务深度依赖本课建立的技�
 | Graceful closure（优雅关闭） | 服务端在断开前在原始 listen 请求上返回的 complete 结果，区别于突发性物理断链 |
 | `notifications/cancelled` | stdio 传输下的取消通知；服务端使用该通知的唯一合法目的是主动终结监听流 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 消息交互模式](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns)
 - [MCP 订阅机制规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions)

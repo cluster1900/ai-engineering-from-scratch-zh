@@ -101,11 +101,11 @@ MCP 将这部分文本的管辖权交还给服务端，置于专为此类场景�
 mcpa-13-prompt-template
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节架构图左侧完整演示了一次 `prompts/get` 调用的端到端生命周期：包含模板中的 `{language}` 与 `{framework}` 占位符、调用时传入的具体实参，以及最终替换生成的文本结果。右侧演示了针对 `framework` 参数以完全相同的前缀连续执行两次 `completion/complete` 的对比：第一次未传入 `context.arguments`，第二次则由客户端明确告知了用户先前已选定 Python。在第二次调用中候选列表显著收窄，因为服务端得以排除了与该语言无关的框架条目。请注意，图示左右两列均未标注任何缓存提示，因为 `prompts/get` 与 `completion/complete` 本身绝不携带任何缓存元数据。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本实现了一个基于标准库的 Prompt 服务端，注册了 `code_review` 与 `bug_triage` 两个模板，并以每页 1 个条目的规则进行列表枚举，以此完整展示使用 `cursor` 与 `nextCursor` 的真实分页流。后台维护了一个包含 144 个源码文件路径的虚拟目录，用于支撑 `ref/resource` 的自动补全，使 100 条上限及 `hasMore` 标志完全基于真实超限的路径数据来呈现。
 
@@ -115,11 +115,11 @@ python3 code/main.py
 
 对照核心概念部分的讲解细致研读打印出的交互记录。观察两次 `prompts/list` 调用：第二次调用使用第一次返回的 `nextCursor`，返回了剩余的 Prompt 且不再包含 `nextCursor`，标志着列表已彻底枚举完毕。随后观察第三次 `prompts/list` 调用：客户端故意发送了一个服务端从未签发过的非法游标，服务端严格返回了 `-32602`。接着查看 `code_review` 的 `prompts/get` 调用：其返回结果包含两条消息，一个是已将 `python` 和 `flask` 替换完毕的 `text` 文本块，另一个是指向编码规范文件的 `resource_link`。然后审视两组主动构造的失败场景：未传任何参数的 `prompts/get`，以及请求不存在的 Prompt 名称，两者均统一返回 `-32602`。最后对比针对 `framework` 的两次自动补全：无 `context` 的第一次调用返回了包含 JavaScript 框架在内的 3 个匹配项；而在 `context.arguments` 设定为 `{"language": "python"}` 的第二次调用中，精准缩减为仅属于 Python 的 2 个匹配项。紧随其后的两次调用针对 `ref/resource` 路径执行补全：前缀为空时返回了 144 个可能路径中的前 100 条并标明 `hasMore: true`；而当前缀收窄为 `auth/` 时，精准返回全部 18 条匹配项并标明 `hasMore: false`。你可以尝试修改前缀或添加第三个 Prompt 重新运行，观察分页与补全系统的动态响应。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/prompt-and-completion-reference.md` 是本课交付的单页速查手册：涵盖请求与响应标准格式、`PromptMessage` 支持的内容类型矩阵、完整错误码映射表，以及自动补全引用类型规范与截断限制。在审查或实现真实服务端的 Prompt 功能时，请随时对照该手册核实 `prompts/get` 的错误返回以及 `completion/complete` 的 100 条上限与 `hasMore` 表现。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -133,11 +133,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/13-prompts-and-completion
 ```
 
-## Capstone Connection
+## 项目连接
 
 在 Capstone 综合考核的项目全流程中，系统会执行服务发现、工具调用并走通用户授权流程；但在真实的生产宿主中，用户往往倾向于直接调用经过审核的标准化模板而非输入自由文本，并在表单输入时依赖自动补全功能。当 Capstone 考核要求你论证“为何在某一特定交互中优先选用 Prompt 而非工具”时，请始终立足于控制权模型进行作答：这是由用户主动发起的明确选择，服务端全权负责文本措辞的规范性，且模板渲染过程纯净无副作用，绝不产生像工具调用那样不可逆的状态变更。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -152,7 +152,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/13-prompts-and-co
 | `context.arguments` | 客户端回传的已确认前序参数字典，服务端用以大幅收窄后续补全候选范围 |
 | `hasMore` | 补全状态标志；只要实际匹配总数 total 超过 100 条上限即置为 true |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：Prompt 原语 (Prompts)](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts)
 - [MCP 规范 2026-07-28：自动补全机制 (Completion)](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/completion)

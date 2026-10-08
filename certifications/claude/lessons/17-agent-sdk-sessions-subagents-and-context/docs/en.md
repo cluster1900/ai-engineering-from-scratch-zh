@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [The Agent SDK Is a Harness, Not Permission](../../12-claude-agent-sdk-and-hooks/), [Multi-Agent Orchestration and Delegation](../../16-multi-agent-orchestration-and-delegation/); Phase 14, Lesson 17
+**Prerequisites:** [Agent SDK 本质是运行底座而非权限放行](../../12-claude-agent-sdk-and-hooks/), [多 Agent 编排与任务委托](../../16-multi-agent-orchestration-and-delegation/); Phase 14, Lesson 17
 **Time:** ~120 minutes
 
 ## 学习目标
@@ -175,9 +175,9 @@ Hooks 在围绕 Session 或 Tool 调用的固定生命周期事件点触发运�
 
 利用 Subagent 开展受限的数据检索，并仅向主链路返回附带引用凭证的浓缩摘要。即便底层模型宣称拥有百万级 Token 窗口，有效推理注意力依然是非常宝贵的核心资源。
 
-## Build It
+## 动手构建
 
-## Interactive Lab
+## 交互式实验
 
 ```figure
 17-session-context-budget
@@ -185,15 +185,15 @@ Hooks 在围绕 Session 或 Tool 调用的固定生命周期事件点触发运�
 
 运行上下文预算模拟器，直观模拟将工作集动态分配给目标、约束、证据链、工具结果与输出契约的过程。实验直观揭示了为什么单纯压缩体积并不能证明保留下来的状态具有时效性和真实性。
 
-## Practice Lab
+## 实战演练
 
 在代码迁移实战中人为使某个检查点失效，在不依赖历史闲聊记录的前提下，仅依靠外部状态与验证逻辑修复恢复数据包（Resume Packet）。
 
-## Shipped Artifact
+## 交付产物
 
 本课交付的标准产物位于 [`outputs/session-recovery-packet.md`](../outputs/session-recovery-packet.md)，它记录了一次因意外中断的代码迁移任务现场，包含精准的文件 Hash、未决的副作用判定以及可安全接续的下一步行动。
 
-## Verify It
+## 验证方法
 
 在本地运行校验程序，确认恢复数据包中完整包含了持久化状态、重新验证逻辑、幂等校验键以及独立评审隔离约束：
 
@@ -205,7 +205,7 @@ python3 -m unittest discover -s code/tests -v
 
 课后测验将全面考察会话流转策略与断点恢复的设计准则。
 
-## Capstone Connection
+## 项目连接
 
 将经过校验的会话恢复数据包，无缝挂载到架构师基础场景大作业（Architect Foundations Capstone）中，作为恢复能力与上下文治理体系的核心支撑证据。
 
@@ -233,13 +233,13 @@ Fork 派生一个全新的独立评审上下文。仅向其提供代码 Diff、�
 - 结构化分布式调用链（Trace）自动打点
 - 终止状态检查：校验清单完工状态或显式的 partial 异常声明
 
-## Use It
+## 实践应用
 
 在企业智能客服场景中，将工单最新状态、检索到的政策 ID、用户授权凭据以及工具调用结果持久化沉淀到案件数据库中。模型的会话上下文仅载入当前轮次的用户问题与最相关的证据。若用户在数小时后重新接入，系统直接从数据库重建工作上下文，并在调用前重新核验安全政策的有效性。
 
 在持续集成（CI）流水线中，每次运行必须从特定 Git Commit 和明确声明的输入数据干净启动。复用交互式会话往往会隐蔽地带入未声明的环境状态。应当始终将外部持久化的分析结论或结构化摘要作为显式输入接入。
 
-## Exam Decision Patterns
+## 考试决策模式
 
 当需要合法的逻辑连续性时选择 Resume；当需要隔离探索备选方案时选择 Fork；当面临过时上下文风险时果断开启干净的 New Session。上下文压缩仅解决空间容量问题，无法保证事实的绝对真实性。
 
@@ -254,7 +254,7 @@ Fork 派生一个全新的独立评审上下文。仅向其提供代码 Diff、�
 
 坚决避免将冗长而充满历史噪音的完整交互记录直接倾倒给后续每一个 Agent。
 
-## Common Traps
+## 常见陷阱
 
 ### 会话历史等同于系统状态 (Session Equals State)
 
@@ -272,7 +272,7 @@ Fork 出的上下文会全盘继承先前的认知偏差和有缺陷的证据链
 
 部署过多隐式且晦涩的 Hooks 会让 Agent 系统的整体调试变成灾难。Hooks 必须保持单一职责、行为透明可观测、受版本控制管辖，并与明确命名的系统不变量绑定。
 
-## Exercises
+## 课后习题
 
 1. 为一个在生产发布中途遭遇中断的部署 Agent，设计一份完整的恢复数据包（Resume Packet）。
 2. 为一个高风险的支付划扣工具调用增加幂等键与状态主动对账机制。
@@ -280,7 +280,7 @@ Fork 出的上下文会全盘继承先前的认知偏差和有缺陷的证据链
 4. 绘制一份生命周期钩子映射表，明确划分哪些属于模型的语义推断范畴，哪些属于确定性的硬性代码门禁。
 5. 分别在携带与剥离生成者推理记录的两种上下文中测试评审 Agent，量化比对其对既有假设的盲从程度。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 通俗说法 | 严谨工程定义 |
 |------|----------|--------------|
@@ -291,7 +291,7 @@ Fork 出的上下文会全盘继承先前的认知偏差和有缺陷的证据链
 | 钩子 (Hook) | 一段 Prompt 提示 | 挂载在特定生命周期事件点上的确定性程序逻辑 |
 | 幂等性 (Idempotency) | 失败就重试 | 对于相同的请求标识，无论重复执行多少次，系统产生的外部副作用完全一致 |
 
-## Further Reading
+## 延伸阅读
 
 - [Claude Agent SDK Sessions 官方文档](https://platform.claude.com/docs/en/agent-sdk/sessions)：了解最新 Session 管理机制
 - [Claude Agent SDK Hooks 官方文档](https://platform.claude.com/docs/en/agent-sdk/hooks)：掌握生命周期事件挂载规范

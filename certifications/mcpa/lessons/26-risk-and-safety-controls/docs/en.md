@@ -82,11 +82,11 @@ digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
 mcpa-26-attack-surface
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的架构图围绕中央网关节点展示了八大核心威胁：顶部为受污染的描述符投毒与 Rug Pull 恶意替换；右侧为工具遮蔽与令牌穿透；底部为 requestState 篡改与外部网络 `$ref` 注入；左侧为 DNS 重新绑定与供应链代码漂移。图中的每一个威胁分支都遵循相同的逻辑本质：即网关选择对来自服务器、注册中心或客户端的数据进行自主验证，而非盲目信任。中央核心区域总结了应对全部八类威胁的三大防御手段：固定工具描述符以便让后续变更显形；在描述符送入模型上下文前执行恶意模式扫描；并在单一调用方或单个工具级别严格限制行为边界，即便每单次调用从表面上看都完全合法。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。该程序构建了一个安全网关 `RiskGateway`，前端代理了两个基础工具：`search_helpdesk` 和 `sync_upstream_ticket`。随后，程序尝试注册第三个工具（其 Schema 引用了外部网络 `$ref`）以及第四个工具（其描述中暗含了注入指令）。
 
@@ -96,11 +96,11 @@ python3 code/main.py
 
 对照核心概念阅读终端打印的运行记录。观察 `bulk_import` 的注册结果显示 `accepted=False`：由于包含网络 `$ref`，该工具在进入目录前就被直接拒绝。观察 `draft_reply_wizard` 的注册日志显示 `accepted=True` 并列出了命中可疑词库的具体原因：虽然记录了该投毒工具，但立即对其进行了安全隔离。在随后的请求日志中，第一次调用 `search_helpdesk` 顺利成功；随后 `gateway.observe()` 模拟了一次 Schema 发生改变的描述符刷新，接下来的同一工具调用立刻返回 `isError: true`，作为疑似 Rug Pull 被挂起审查，尽管该工具的名称自始至终未曾变动。执行 `gateway.approve()` 清除了挂起状态并重新固定了哈希摘要，随后的调用便恢复正常。接着观察两次调用 `sync_upstream_ticket` 的不同表现：第一次由于将 `upstream_credential` 设置为客户端自身的认证令牌，被网关作为令牌穿透行为当场拦截；第二次传入专门针对上游作用域的独立凭据后，调用顺利成功。最后，观察连续调用 `search_helpdesk` 突破了配置的速率限制（阈值为 4 次），第五次调用被明确作为执行错误拦截，而不是静默排队或引发系统崩溃。你还可以尝试向 `SUSPICIOUS_PHRASES` 添加新短语，注册包含该短语的新工具，并验证它在被任何人调用之前即在注册瞬间被自动隔离。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/threat-control-matrix.md` 是一份单页参考矩阵，详细梳理了十大安全威胁（包括示意图中的八大威胁，加上通过执行结果注入提示词与恶意图标攻击），映射了对应的防御控制机制，并标明了规范对应章节及本课代码的落地实现。请将此矩阵与第 22 课的信任边界图及第 25 课的同意检查清单结合使用，三者共同构建了协议级信任、人工审核流程与本课自动化技术防御的完整闭环。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -114,11 +114,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/26-risk-and-safety-controls
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在第 33 课的综合项目中，将完整演练一个贯穿所有知识领域的全流程交互，涵盖工具调用、MRTR 用户同意往返以及审计链条。在未受治理的安全盲区中展示这些能力是极其危险的。Capstone 中的工具调用预设了类似本课网关的防护体系已经就位：调用的描述符已被哈希固定、描述内容已通过注入扫描，且即将使用的身份凭据绝不会被未加改造地直接穿透转发给上游服务。请将本课的威胁控制矩阵带入第 27 课的审计追踪中：控制策略决定了系统允许发生什么，而审计日志则负责铁证如山地证明实际发生了什么。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -133,7 +133,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/26-risk-and-safet
 | DNS rebinding（DNS 重新绑定） | 域名在验证阶段解析为合法外网地址，在请求实际发出时被重新指向内网或环回地址的攻击手法 |
 | Supply chain drift（供应链漂移） | 准入通过后，注册中心条目、依赖包版本或实际运行中的服务端点独立发生非受控变更 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 安全最佳实践](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)，重点参阅令牌穿透、SSRF 以及状态句柄劫持章节。
 - [OAuth 授权规范安全考量](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations)。

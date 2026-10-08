@@ -105,11 +105,11 @@ MCP 扩展是对核心规范的一种可选补充：它是超越核心协议之�
 mcpa-30-extension-negotiation
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的流程图将客户端声明的扩展与服务器声明的扩展进行了并列对比。中间的标识符 `com.example/priority-routing` 同时出现在两边的方框中，因此顺利汇入中央的“活跃扩展 (Active)”框内：本次调用将获得增强特性的执行待遇。而 `io.modelcontextprotocol/ui` 仅存在于客户端声明中，`io.modelcontextprotocol/tasks` 仅存在于服务器声明中；二者均未能汇入中央活跃框，因为扩展协商严格要求通信双端同时指名相同的合法标识符。下方展示了与核心概念对齐的三种最终走向：双方共同声明的可选扩展顺利激活并丰富响应数据；仅单方声明的可选扩展自动平稳回退至核心规范基础行为；而未达成双方共同激活的强制扩展，则直接被网关拦截并返回 `-32021` 错误，明确指出缺失的具体扩展标识符。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。函数 `negotiate_extensions` 将整个协商机制凝聚在一个纯函数中：它遍历客户端声明的扩展，剔除畸形标识符，仅保留在服务器 `extensions` 映射中同时存在的项，并将这一交集与客户端提供的配置对象成对返回。代码基于此函数构建了两个工具：`summarize_incidents` 将 `com.example/priority-routing` 视为可选扩展：在完全不声明任何扩展的情况下调用它，它返回普通的 "3 open incidents" 纯文本；在声明该扩展且配置对象为空 `{}` 时，它成功激活并默认进入 "standard" 优先级（这直观演示了空对象在实践中代表支持无参配置的含义）；而在传入 `{"tier": "gold"}` 时，该工具则按照黄金级别进行优先排序。另一工具 `export_dataset` 则将 `com.example/bulk-export` 视为强制扩展：在未声明该扩展的情况下调用它，服务器甚至不会去读取输入参数，而是当场返回 `-32021` 协议错误，并在 `data.requiredCapabilities` 中明确指出该扩展；而在客户端显式声明该扩展后，相同的调用得以顺利执行完毕。
 
@@ -119,11 +119,11 @@ python3 code/main.py
 
 运行程序并依序跟踪八次完整的网络交互记录。重点观察第 7 次交互：客户端在声明一个合法扩展的同时，故意塞入了一个没有斜杠前缀的伪造标识符 `no-slash-here`。观察协商逻辑如何静默丢弃该非法项，同时确保合法的扩展依然被正确激活；这正是 `is_well_formed_extension_id` 存在的防御意义，即便请求的其他部分看起来挑不出任何毛病。尝试在代码中新增第三个工具，将其设计为同时强制依赖两个不同的扩展，并验证当客户端同时遗漏它们时，服务器首先抛出的错误响应。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/extension-negotiation-guide.md` 汇编成了一份单页权威指南：梳理了标准的标识符格式规则；指明了双端声明在线路报文中的准确宿存位置；列出了涵盖可选激活、可选降级与强制拦截的三行决策对照表；总结了从主仓 SEP 孵化至 `ext-` 仓库的扩展生命周期审查清单；并附带了官方正式扩展名录及其标准前缀标识符。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -137,11 +137,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/30-the-extensions-framework
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在 Capstone 综合大作业的工具生态系统设计中，你必须为你做出的每一项架构选择向评审团提供无可辩驳的技术辩护。何时应当采用扩展是该辩护的核心关键：即某项特定功能究竟应当属于工具的基础返回内容，还是应当置于某些调用方可能根本不具备的扩展之后，以及在对方缺失该扩展时你的系统如何实现无缝降级。当你在 Capstone 中构建超越三大基础原语的高级能力时，请熟练运用本课的活跃扩展集合计算逻辑与 `-32021` 拦截机制；当考官追问为什么不直接把这些功能合并进 MCP 核心规范时，能够流利阐述扩展生命周期的治理哲学。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -154,7 +154,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/30-the-extensions
 | Extension repository（扩展仓库） | modelcontextprotocol 官方组织下以 `ext-` 为前缀的代码仓库，用于独立维护官方扩展规范 |
 | Experimental extension（实验性扩展） | 托管在以 `experimental-ext-` 为前缀的代码库中的早期孵化扩展，隶属于工作组或兴趣组，非正式标准 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 扩展框架总览](https://modelcontextprotocol.io/extensions/overview)。
 - [SEP-2133: 扩展机制标准提案](https://modelcontextprotocol.io/seps/2133-extensions)。

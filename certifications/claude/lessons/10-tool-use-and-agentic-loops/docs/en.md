@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [The Messages API Is a State Machine](../../08-messages-api-and-application-lifecycle/), [Structured Output Is an Untrusted Contract](../../09-structured-output-and-defensive-parsing/)
+**Prerequisites:** [Messages API 本质是状态机](../../08-messages-api-and-application-lifecycle/), [结构化输出本质是不可信契约](../../09-structured-output-and-defensive-parsing/)
 **Time:** ~130 minutes
 
 ## 学习目标
@@ -304,7 +304,7 @@ python3 -m unittest discover tests -v
 
 仔细研读 Demo 打印出的调用实录。找到 assistant 返回的 `tool_use` 内容块以及随后的 user 角色 `tool_result`。随后检查打印出的选型决策夹具。尝试调整托管智能体案例的输入条件使其不接受 Beta 契约，观察该选型决策如何在启动任何运行时之前就确定性地拦截失败。协议层面的正确性与架构设计的严密性必须是肉眼可见且可断言测试的。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过工具循环预算图示，配置交互轮次、单工具调用次数、物理超时时间以及人工审批预算。演练触发重复调用或拒绝未经授权的变更操作，观察哪一个确定性终止条件会最终阻断循环。
 
@@ -312,15 +312,15 @@ python3 -m unittest discover tests -v
 10-tool-loop-budget
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 运行工具循环，依次输入未注册的工具名、非法格式参数、被拦截拒绝的变更操作、单轮多工具并发调用、处理函数抛出异常以及轮次预算耗尽的边界测试用例。确认每一个返回的工具结果都严格保留了其 `tool_use_id`。接下来，针对服务端工具、标准 Schema 客户端工具、私有自定义工具、Skill 驱动的流程以及 MCP 服务，逐一划分其代码执行物理边界与安全鉴权责任主体。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/tool-loop-transcript.json` 记录了由 `demo()` 生成的完整类型化工具交互轨迹实录。`outputs/runtime-and-tool-surface-decisions.json` 则提供了一份不依赖外部环境的权威架构决策比对报告，系统对比了四种运行时底座与四种能力组合方案。运行 `python3 main.py` 即可查看这两份夹具，运行单元测试套件可自动验证产物格式、Schema 边界拦截、审批拒绝逻辑、运行时准入关卡、执行边界隔离、异常封装以及防死循环熔断机制。
 
-## Verify It (验证方法)
+## 验证方法
 
 ```bash
 cd certifications/claude/lessons/10-tool-use-and-agentic-loops/code
@@ -328,11 +328,11 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套测验将深入考察提议与授权的边界划分、工具描述编写准则、幂等性保障、并发执行安全、最终状态断言以及工作流与智能体的选型判断。将通过验证的调用轨迹作为重要的工具安全边界证据，直接整合至 Developer Capstone 30 以及 Architect Capstone 31 和 32 中。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - Claude 对工具的选择仅仅是一项“调用提议”，绝不能等同于“已获得系统授权”。
 - 必须先校验 Schema 形态，再执行业务安全鉴权，全部通过后方可执行具体代码。
@@ -349,7 +349,7 @@ python3 -m unittest discover tests -v
 - 将 Skill 定位为操作规程指南，将 MCP 定位为标准化连接协议边界；两者本身均不自动授予业务操作特权。
 - 评估智能体时，必须综合审计其完整的工具调用轨迹与最终业务状态真实性，而非仅仅阅读最终生成的回复文本。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 新增一个需要审批令牌的 `issue_refund` 工具。编写测试用例证明：即便对话文本中包含大量用户同意语句，只要未提供合法的加密令牌，调用就会被坚决拦截拒绝。
 2. 在单次模型响应中注入两个只读工具调用，并在应用程序中并发执行它们。编写断言验证两个结果均能按精确的调用 ID 正确组装并回传。
@@ -357,7 +357,7 @@ python3 -m unittest discover tests -v
 4. 编写一个防震荡检测器：当模型连续两次发起归一化参数完全相同的工具调用时，立即主动熔断并终止循环。
 5. 将一个私有自定义工具重构为供两个不同宿主同时接入的 MCP 服务端能力。清晰梳理身份鉴权、用户授权同意、返回结果过滤以及服务高可用保障中，哪些职责上移到了 MCP 服务边界，哪些职责依然保留在各自宿主端。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [工具使用概览 (Tool Use Overview)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)
 - [实现客户端工具开发指南](https://platform.claude.com/docs/en/agents-and-tools/tool-use/implement-tool-use)

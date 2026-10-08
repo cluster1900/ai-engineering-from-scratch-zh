@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [Multi-Agent Orchestration and Delegation](../../16-multi-agent-orchestration-and-delegation/), [Tool Contracts, Errors, and Progressive Discovery](../../18-tool-contracts-errors-and-progressive-discovery/), [Claude Code Memory, Rules, Skills, and CI](../../19-claude-code-memory-rules-skills-and-ci/), [Reliable Extraction, Batch, and Independent Reviewers](../../20-reliable-extraction-batch-and-reviewers/), [Make Large Context Observable](../../21-long-context-reliability-provenance-and-escalation/)
+**Prerequisites:** [多 Agent 编排与任务委托](../../16-multi-agent-orchestration-and-delegation/), [工具契约、错误处理与渐进式发现](../../18-tool-contracts-errors-and-progressive-discovery/), [Claude Code 记忆、规则、Skill 与持续集成](../../19-claude-code-memory-rules-skills-and-ci/), [可靠信息抽取、Batch 批处理与独立评审](../../20-reliable-extraction-batch-and-reviewers/), [构建可观测的大上下文系统](../../21-long-context-reliability-provenance-and-escalation/)
 **Time:** ~6 hours across two focused sessions
 
 ## 学习目标
@@ -117,9 +117,9 @@ flowchart LR
 
 面对上述任何一类突发故障，合格的架构方案必须明确指明：系统如何在第一时间捕获异常、如何有效遏制故障扩散、如何安全重试或优雅升级转派、哪些状态被确定性落盘持久化，以及谁是对该异常负最终责任的人类主管。
 
-## Build It (动手构建)
+## 动手构建
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 31-architect-foundation-readiness
@@ -127,17 +127,17 @@ flowchart LR
 
 使用上述架构就绪度矩阵，跨越全部六大业务透镜，系统性检验五道架构门禁的健壮度。尝试随意篡改工具契约、配置规范、校验规则或上下文不变量中的任何一项，直观观察到底是哪些业务场景会遭遇一票否决阻断，而不是盲目为每个场景生搬硬套互不兼容的拓扑。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 针对每一个架构领域分别运行随附的确定性故障固件（Fixture），并为该场景编写跨业务透镜的架构补丁，在绝不削弱全局通用不变量的前提下彻底修复该故障。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 随课程交付的架构设计数据包模版以及填充完整的
 [`outputs/demo-readiness-report.json`](../outputs/demo-readiness-report.json)
 构成了本项目的核心可复用工程交付成果。
 
-## Verify It (验证方法)
+## 验证方法
 
 使用以下命令运行确定性校验脚本并跑通全量故障在先测试：
 
@@ -149,7 +149,7 @@ python3 -m unittest discover -s code/tests -v
 
 课后配备的 6 道认证自测题将重点考核你在不同业务语境下自如迁移架构设计原则的综合决断力。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 填充完整的核心架构方案、跨场景差异化补丁文档（Deltas）、3 份 ADR 决策记录以及同行独立评审报告，共同构成了 Claude Certified Architect Foundations 认证的核心毕业申报材料。
 
@@ -274,7 +274,7 @@ python3 -m unittest discover -s code/tests -v
 
 架构师必须针对审查清单中的每一条缺陷，凭借技术证据逐一给出修复证明或进行有理有据的技术抗辩；随后重新跑通确定性校验器，固化保存最终的交接验收数据包。
 
-## Use It (生产应用)
+## 实践应用
 
 ### 认证场景推演方法论
 
@@ -323,7 +323,7 @@ python3 -m unittest discover -s code/tests -v
 5. 将一个超长交互会话提炼压缩为一个紧凑的恢复状态包，并证明底层外部数据库的权威状态依然完好保留。
 6. 与另一位学员互换架构数据包，尝试使用自己编写的极端故障用例去攻击对方的系统并记录拦截表现。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 - **场景透镜 (Scenario lens)**：用于从特定业务维度对统一核心架构展开极限压力测试的典型业务情境。
 - **变异点 (Variation point)**：在保持底层架构不变式绝对稳固的前提下，允许根据具体业务特性进行灵活定制的特定组件或策略。
@@ -334,7 +334,7 @@ python3 -m unittest discover -s code/tests -v
 - **残留风险 (Residual risk)**：在所有预设的技术控制措施全部正常生效后依然客观存在的系统风险，附带明确的接纳责任人。
 - **架构交付包 (Architecture handoff)**：供工程开发、运维管理与业务多方实现安全无缝落地的成套决策、实测证据、契约及责任人档案集合。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude Certified Architect Foundations Exam Guide](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf) 官方认证考试大纲指南
 - [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents) 掌握智能体架构模式的权威指南

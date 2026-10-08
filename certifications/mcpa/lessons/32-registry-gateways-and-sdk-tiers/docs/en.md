@@ -96,14 +96,14 @@ SDK 评级绝非一次性认定的终身荣誉：一致性测试会针对当前�
 mcpa-32-registry-flow
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的全链路架构图追踪了一个服务器从初始发布到线上实际调用的完整历程：
 - 在图表左侧，证明了反向 DNS 命名空间所有权的发布者提交 `server.json`，注册中心在同时通过命名空间所有权校验与公网可访问性检查后，方才予以准入收录；下游聚合器按照自身的节奏拉取注册表数据并向终端宿主应用提供分发服务。
 - 在图表右侧，客户端向网关发起请求，请求在 HTTP 头中携带了 `Mcp-Method` 与 `Mcp-Name`；网关内置的“请求头 vs 请求体”一致性校验逻辑在此分流：内容完全一致的请求顺利放行至正确的后端集群；而一旦发现任何参数分歧，则在触及任何后端之前直接熔断，返回 `-32020` 错误。
 - 架构图下方展示了三个 SDK 评级徽章及其对应的一致性测试通过率。请沿着数据流从左至右观察：在注册中心合法注册这一事实，绝不会让该请求在网关处享受到任何特权豁免，这是两道完全独立的安全关卡。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。函数 `admit_to_registry` 将注册中心的准入规则实现为一个纯函数：它利用 `split_namespace` 拆解声称的命名空间，拦截发布者未通过所有权验证的命名空间，拦截标记为 `"private"` 的私有服务，并拦截带有版本区间的非法版本号字符串。使用同一命名空间在已验证发布者与仿冒发布者之间分别尝试准入，对比终端输出的不同拒绝原因。函数 `resolve_install_target` 演示了宿主如何在包安装与远程服务之间做出解析决策。函数 `schema_version_from_url` 从 URL 中提取清单 Schema 日期，直观展示它与全局 `PROTOCOL_VERSION` 并存且独立的特性。
 
@@ -113,11 +113,11 @@ mcpa-32-registry-flow
 python3 code/main.py
 ```
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/registry-and-gateway-guide.md` 是一份单页实战速查手册：系统归纳了注册中心准入自检清单；提供了 `packages` 与 `remotes` 的选型决策表；明确了网关在路由前必须强制执行的请求头校验顺序；以一行精炼定义总结了考试必背的 `cacheScope` 隔离准则；并附带了 SDK 评级要求矩阵及为期四周的降级淘汰机制说明。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -131,11 +131,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/32-registry-gateways-and-sdk-tiers
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 Capstone 综合考核假定考官给出的服务器是考生在正式发起第一次请求前、已经通过合理技术手段完成检索与信任评估的资产，而本课正是将这种抽象的“信任感”拆解为可客观量化技术检查的关键所在。当答辩中考官要求你辩护“为什么请求能够准确触达目标后端”时，你的回答应当直接指出本课手写的请求头与请求体强校验逻辑；当被问及“为何某个缓存结果未能被复用”时，能够准确搬出 `cacheScope` 的私有隔离法则；而当评估一套外部系统能否稳定支撑 2026-07-28 全量协议特性时，你的技术底气应来自于对其底层 SDK 评级的审查，而非主观臆测。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -150,7 +150,7 @@ Capstone 综合考核假定考官给出的服务器是考生在正式发起第�
 | SDK tier（SDK 评级） | 基于自动化测试与长期响应维护表现（一级至三级）对 SDK 规范完整度进行的客观度量 |
 | Relegation（降级惩罚） | 当 SDK 持续四周出现自动化一致性测试失败或长期堆积严重缺陷时触发的强制降级规则 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 注册中心核心设计](https://modelcontextprotocol.io/registry/about)。
 - [注册中心代码包类型规范](https://modelcontextprotocol.io/registry/package-types)。

@@ -81,11 +81,11 @@ WWW-Authenticate: Bearer error="insufficient_scope",
 mcpa-25-consent-gates
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的流程图展示了一次 `tools/call` 在执行具体逻辑之前所经过的两道检验网关。它首先穿过授权边界：如果令牌的作用域不足，服务器将返回 `403` 及所需的作用域进行拦截，客户端将该作用域与现有作用域取并集后重试授权并再次调用。只有在授权通过后，请求才会抵达用户同意网关：如果该工具需要人类决策且当前没有任何针对该具体工具的批准记录，服务器将返回 `input_required` 而非执行操作，客户端通过一轮 `elicitation/create` 往返交互完成用户确认后重试。请注意这两道网关是相互独立且具备严格先后顺序的：一个完全获得 OAuth 授权的客户端仍然可能被要求进行人工确认；反之，一个没有任何用户同意阻碍的调用也可能因为作用域不足而被拦截。一个工具可以受其中一道网关保护、同时受两者保护，或者两者都不受。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。该程序构建了一个拥有四个工具的完整模拟服务器：`list_files`（只读、封闭世界、立即执行）、`search_web`（只读但涉及开放世界，因 `openWorldHint` 为 true 仍受同意网关约束）、`delete_file`（破坏性操作、受同意网关约束，由小型内存文件系统支撑，以便观察拒绝操作如何保留文件完整性），以及 `send_payment`（破坏性操作且受 `payments:write` 作用域保护，同时触发两道网关）。
 
@@ -95,11 +95,11 @@ python3 code/main.py
 
 对照上述讲解阅读执行日志。定位针对 `delete_file` 返回的 `input_required` 结果；观察用户的 `decline` 如何让 `notes.txt` 保持原样；观察随后的全新引出（拒绝同意不会被持久记录）；以及最终被用户接受 (`accept`) 并成功执行删除的重试请求。接着观察故意构造的恶意调用记录：某次重试虽然回传了合法的 `requestState`，但却试图删除一个与用户所见不同的文件。由于服务器的签名校验识别出了参数不匹配，日志将其标记为 `violation`，而没有轻信重试请求。另外，观察 `send_payment` 如何先因作用域不足被拦截质询，客户端如何计算 `payments:read` 与质询的 `payments:write` 的并集，并在授权通过后才进入独立的同意确认提示。最后，对比仅持有 `payments:read` 时 `tools/list` 的返回结果与获得 `payments:write` 之后的返回结果。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/consent-design-checklist.md` 是一份用于审查用户同意与授权架构设计的一页式参考清单：涵盖何时触发提示、如何界定授权作用域、如何设计步进式质询，以及哪些必须当场拒绝的常见错误反模式。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -113,11 +113,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/25-consent-and-least-privilege
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在 Capstone 综合项目中，每一个具有副作用的工具都必须拥有严格限定在其自身名称上的独立同意决策，绝不能从同级工具中隐式继承，也绝不能单凭服务器自身声明的注解而予以信任。每一个受作用域约束的工具都必须提供通过取并集而非覆盖进行提权的步进路径，并设置重试上限。当 Capstone 考核要求你为调用方的可见性与执行边界辩护时，请从本课的两道网关出发作答：人类明确批准了什么，以及当前持有的令牌实际授权了什么，并能够清晰指出某一具体失败属于哪一道网关。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -129,7 +129,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/25-consent-and-le
 | Scope union（作用域并集） | 客户端先前作用域与质询所需作用域的合并集合，确保重新授权过程绝不丢失先前的权限授予 |
 | Least privilege in list results（列表结果中的最小权限） | 过滤为仅展示调用者当前授权允许访问的内容的 `tools/list` 响应，且缓存作用域标记为 `cacheScope: "private"` |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Model Context Protocol 规范 2026-07-28, Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)，查阅用户交互模型 (User Interaction Model) 与工具双错误通道机制。
 - [Model Context Protocol 规范 2026-07-28, Elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation)，了解表单模式 (Form Mode)、URL 模式以及三种响应动作。

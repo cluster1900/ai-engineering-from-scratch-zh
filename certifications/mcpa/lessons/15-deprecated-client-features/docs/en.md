@@ -78,11 +78,11 @@ Logging 的废弃机制则有所不同，因为该特性在底层通信中包含
 mcpa-15-deprecation-timeline
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节图示清晰展现了一条跨越 2026-07-28 发布日及一年后最早移除日期的完整时间轴，分别为 Roots、Sampling 与 Logging 设立了并行泳道：从被宣告废弃之日起至当前时间为实线色块，随后逐渐过渡为超越最早移除标记的虚线色块，因为“具备移除资格”绝不等于“已排期执行移除”。在时间轴下方，两列对比表格清晰列出了两类截然不同的协议元素：左侧是依然活跃在网络中的现有合法特性（`roots/list`、`sampling/createMessage` 以及搭配 `notifications/message` 的逐请求 `logLevel`），右侧则是已被彻底抹除的历史遗迹（`logging/setLevel` 与 `notifications/roots/list_changed`）。请注意观察，实线色块在穿越最早移除标记后仍在向前延续，因为唯有核心维护团队在发布版本时的正式决议，而非机械的日历翻页，才能决定特性的最终命运。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。其中的 `advise_migrations` 函数即为实验指南中定义的迁移顾问：传入服务端与客户端的能力声明集合，它能自动诊断出双方正在使用的所有已废弃特性，并逐一列出其对应的 SEP 编号、官方迁移路径，以及基于十二个月缓冲期由 `add_months` 精确推算出的最早合法移除日期。后台构建的 `Server` 暴露了两个代表性工具：`summarize_workspace` 同时依赖 Roots 与 Sampling：未声明这两项能力的客户端调用时会立刻被 `-32021` 驳回并标明缺失项；声明了双重能力的客户端则会收到包含 `workspace_roots` 与 `workspace_summary` 的 `input_required` 结果，在客户端应答后，使用新 ID 并原样回传 `requestState` 即可顺利拿到最终结果（若篡改了 `requestState` 则会被直接拒绝）。`run_diagnostic` 则无需任何特殊能力：调用时未传日志级别则保持静默；若传入 `logLevel: "info"`，则仅对 info 和 warning 级别触发 `notifications/message`，并自动过滤 debug 级日志；若传入非法级别则抛出 `-32602`。
 
@@ -92,11 +92,11 @@ python3 code/main.py
 
 重点研读输出的最后一段：一个被清晰标注为违规演示的旧时代请求，尝试向同一个现代服务端发送已彻底删除的 `logging/setLevel` 方法，服务端当场返回了代表方法不存在的 `-32601` 协议错误，生动展示了“已废弃”与“已删除”在底层报文响应上的本质区别。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/deprecation-migration-guide.md` 是本课交付的单页速查指南：系统解析了生命周期政策下 Deprecated 的法定义务、SEP-2577 三大特性与 DCR 及 HTTP+SSE 的对照表、2026-07-28 规范真正抹除的删除清单，以及今日依然能合规通过网络语法校验器的废弃特性白名单。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -110,11 +110,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/15-deprecated-client-features
 ```
 
-## Capstone Connection
+## 项目连接
 
 在 Capstone 综合考核的大型端到端交互中，考生必须能够一眼辨析出某个特性属于“已废弃”还是“已删除”：它依赖 MRTR 实现授权确认的方式，与本课中承载 Roots 与 Sampling 的逻辑如出一辙；且在组装交互报文时，绝不会犯下引入 `initialize` 或 `logging/setLevel` 这类已被彻底删除方法的低级错误。本课实现的迁移顾问分析逻辑，后续同样会被安全策略引擎与审计流水线深度复用。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -129,7 +129,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/15-deprecated-cli
 | `logging/setLevel` | 用于设置全局连接日志级别的已彻底删除方法，在无状态核心中已无立足之地 |
 | SEP-2577 | 在 2026-07-28 规范中统筹废弃 Roots、Sampling 与 Logging 的核心提案 |
 
-## Further Reading
+## 延伸阅读
 
 - [Roots 规范（已废弃）](https://modelcontextprotocol.io/specification/2026-07-28/client/roots)
 - [Sampling 规范（已废弃）](https://modelcontextprotocol.io/specification/2026-07-28/client/sampling)

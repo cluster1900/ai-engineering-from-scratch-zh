@@ -73,11 +73,11 @@ MCP 规范为客户端确立了严格且唯一的注册优先级顺序；该顺�
 mcpa-24-registration-paths
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的阶梯决策图自顶向下系统展开了四大注册路径的优先级管道。每一个方框内部均标注了触发该路径所需满足的前置检测条件，标有“若不可用”的下行箭头清晰指示了客户端在探测失败时如何顺次跌落至下一个备选路径。请特别关注位于第三阶梯的动态客户端注册 (DCR)：该方框采用虚线边框绘制，醒目标识出其在 2026-07-28 规范中属于已废弃 (Deprecated) 的降级保护状态：它仍然保持技术可用，但绝非现代客户端的首选方案。在阶梯决策图右侧，附带了一份紧凑的合规自查表，精炼列出了授权服务器审查 CIMD 元数据文档时的法定必检项，并直观揭示了客户端凭据为何必须以 Issuer 为索引强制锁定的底层逻辑。在启动代码演练前，请顺着决策方框在脑海中模拟一遍客户端的决策路径：本地是否已针对该授权服务器持有预留凭据？授权服务器的自身元数据中是否声明了 CIMD 支持？该服务是否暴露出动态注册端点？或者最终只能无奈弹窗求助人类用户？
 
-## Practice Lab (实战演练)
+## 实战演练
 
 查看 `code/main.py` 源码。该模块构建了三台具备不同技术能力的虚拟授权服务器：第一台完整通告了 CIMD 支持；第二台未支持 CIMD 仅提供了陈旧的 DCR `registration_endpoint`；第三台两项自动化能力均不具备。核心规划函数 `choose_registration_path` 严格依循前述优先级进行决策：当针对第一台授权服务器且本地预注册凭据库为空时，算法坚定选择 `cimd`；当再次运行该函数但在预注册库中预先注入了该服务的主机标识符时，即便 CIMD 能力完全可用，决策依然判定预注册胜出，因为其在优先级阶梯上享有最高优先权。面对第二台授权服务器，算法探测到 CIMD 缺失，因而自动降级退化至 `dcr` 并将此决策打上已废弃标记。面对第三台授权服务器，由于两种机制均不可用，算法最终输出 `ask-user` 决断。
 
@@ -89,11 +89,11 @@ python3 code/main.py
 
 `validate_cimd` 函数模拟了授权服务器在收到形如 URL 的 Client ID 时所执行的严苛合规校验逻辑：审查 URL 是否采用包含合法路径的 HTTPS 规范协议；检查文档是否包含必填的 `client_id`、`client_name` 与 `redirect_uris` 字段；严格比对文档声明的 `client_id` 与实际拉取该文档的 URL 是否字符级完全一致；并逐一核验所有重定向 URI 是否均为 HTTPS 地址或本地回环地址。在控制台输出中观察四份不同元数据文档的校验表现：完全合规的测试文档顺利通过放行；`client_id` 与自身 URL 存在偏差的文档被当场捕获；使用不安全 `http` 协议的文档被直接拦截；遗漏了 `redirect_uris` 的残缺文档被精准拒收。紧接着，`CredentialStore` 严格执行了授权中心绑定守卫：它将持久化凭据强制登记在特定签发者名下；当尝试调用 `.use()` 并在参数中传入另一个无关的 Issuer 时，模块立即抛出详细的 `ValueError` 异常，准确指明该凭据的合法归属。`ProxyConsentLedger` 完整重现了混淆代理人漏洞的防御实现：通过维护一组由静态 Client ID 与下游各独立 Client ID 构成的显式授权账本，在未针对该特定下游 ID 显式调用 `record_consent` 之前，`may_forward` 函数坚决返回 False 拒绝代理转发。最后，`recommend_auth_extension` 展示了如何根据场景特征在两套鉴权扩展之间做出精准推导；日志最后一条记录展示了获得合法授权的 `acme-ops-cli` 客户端利用客户端凭据所置换出的有效令牌，如何通过 Streamable HTTP 协议规范，在请求头中携带 Bearer 凭证完成真正的 `server/discover` 与 `tools/call` 端到端通信。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/client-registration-guide.md` 是一份单页生产级客户端注册与身份治理指南：完整收录了四大注册路径的优先级裁定标准；授权服务器校验 CIMD 的法定全量清单；OIDC 框架下的 `application_type` 选型铁律；基于 Issuer 的凭据本地持久化存储范式；针对代理层混淆代理人风险的实操防御方案；以及两大企业级鉴权扩展的技术对比矩阵。在为新开发的 MCP 客户端设计注册接入层时，可将其作为权威架构规范。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在当前课程目录下执行单元测试：
 
@@ -107,11 +107,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/24-client-registration-and-identity
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在毕业设计的综合演练中，整个经过授权保护的安全调用之所以能够顺利出示有效令牌，其物理前提正是本课所实现的某一注册机制在底层已经完成闭环：无论是依赖预配凭据、动态拉取并验证 CIMD 文档，还是在兼容模式下执行旧版 DCR 握手。无论毕业项目最终选用了哪一条注册链路，客户端持有的所有凭据在底层都必须以 Issuer 为索引安全落盘（正如本课中 `CredentialStore` 演示的严密结构）。下一课将在此基础之上更进一步：一旦客户端在网络层完全证明了“自己是谁”，系统便将通过权限许可与最小特权原则，严格约束它在业务层“究竟允许做什么”。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 核心内涵解释 |
 |---|---|
@@ -124,7 +124,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/24-client-registr
 | Confused deputy (混淆代理人) | 代理网关使用单一静态 Client ID 代表下游多个独立客户端交互时，因缺乏针对特定客户端的独立授权而引发的安全漏洞 |
 | Authorization extension | MCP 官方鉴权扩展能力，如 OAuth Client Credentials 或 Enterprise-Managed Authorization |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：客户端注册机制 (Client Registration)](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration)
 - [MCP 规范 2026-07-28：鉴权架构安全考量 (Security Considerations)](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations)

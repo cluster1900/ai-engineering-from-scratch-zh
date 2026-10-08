@@ -73,11 +73,11 @@ MCP 2026-07-28 是一套彻底的无状态协议：处理请求所需的全部�
 mcpa-04-stateless-requests
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方图表展示了两个客户端（Alice 和 Bob）通过轮询路由器（Round-Robin Router）向后端两个无状态副本（Replica A 和 Replica B）发送请求的场景。两个副本在单机内存中均不保存购物篮状态，它们统一读写由创建工具返回的不透明句柄所索引的外部共享存储（Shared Store）。因此，无论路由器将请求分发给哪一个副本，都能精准得到正确的响应，整个交互过程完全不受先前请求由哪个副本处理所影响。沿着追踪线观察一个购物篮从创建到被分发至另一副本被调用的全过程：业务结果始终保持确定与一致，线缆通信中没有任何证据表明其底层涉及了两个截然不同的物理服务进程。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。代码构建了两个共享同一个 `SharedStore` 的后端副本，以及一个采用轮询分发策略的 `Router`，随后模拟了三组调用者向该集群发起请求：Alice 的第一个连接、Alice 属于同一身份主体的第二个连接，以及属于完全不同身份主体的 Bob：
 
@@ -87,11 +87,11 @@ python3 code/main.py
 
 将控制台的输出记录与上文核心概念对照阅读。Alice 的第一个连接与第二个连接分别调用 `tools/list`，尽管轮询路由器将它们分别交由不同的后端副本（Replica A 与 Replica B）处理，但两者获取的工具列表完全一致：查看返回结果的 `_meta` 可以看到 `serverInfo.name` 在 `basket-replica-A` 与 `basket-replica-B` 之间切换，而 `tools` 数组内容却保持逐字节一致。观察 Alice 在一个副本上创建了购物篮，而在路由器刚好路由给另一副本的后续调用中向该购物篮添加商品，添加操作丝毫不受影响，因为数据沉淀在共享存储而非副本内存中。随后观察代码故意展示的两处受控失败：Bob 尝试向 Alice 的购物篮添加商品，服务端返回带有 `isError: true` 的常规业务结果，清晰指出该购物篮归属于其他调用者；稍后，随着模拟时钟推移超过了购物篮的有效存活期，Alice 的第二个连接尝试结账时再次收到 `isError: true`，指出购物篮已经过期。这两处失败均未触发 JSON-RPC 协议级错误，因为它们都是模型能够直接采取补救行动（重新创建购物篮继续执行）的业务异常。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/stateless-design-checklist.md` 是本课交付的单页无状态设计自查手册：总结了无状态协议不变量的定义、何种差异允许因连接而异与何种差异仅能因鉴权而异的边界准则、设计基于句柄的有状态工具的五步工作流、服务上线前必查清单，以及 2026-07-28 为实现默认无状态化而坚决移除的三大旧机制对照表。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -105,11 +105,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/04-the-stateless-core
 ```
 
-## Capstone Connection
+## 项目连接
 
 最终的 Capstone 项目要求整个端到端交互体系无论由哪个副本响应请求均能稳定工作，其包含的长周期任务与用户授权审批流都需要跨越多个通信往返。这两项核心特性的底层全部依托本课所讲授的无状态设计：服务端持有的业务状态要么在协议层彻底抽离，要么通过客户端在请求中显式串联的句柄来唯一定位。当在 Capstone 项目答辩中要求论证为何系统具备无缝水平扩展（Horizontal Scaling）能力时，你将以本课的无状态核心设计以及基于句柄管理状态的设计模式作为最强有力的技术依据。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -121,7 +121,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/04-the-stateless-
 | 工具执行错误 (Tool execution error) | 包含 `isError: true` 的常规结果，是句柄过期、未知或越权时合规的反馈渠道 |
 | `Mcp-Session-Id` | 用于命名协议级会话的旧版 HTTP 请求头，已在 2026-07-28 规范中彻底删除 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：无状态性](https://modelcontextprotocol.io/specification/2026-07-28/basic#statelessness)
 - [MCP 规范 2026-07-28：有状态工具最佳实践](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#stateful-tools)

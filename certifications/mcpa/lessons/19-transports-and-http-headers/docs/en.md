@@ -64,11 +64,11 @@ Mcp-Param-Region: us-west1
 mcpa-19-transports
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的架构图将 stdio 与 Streamable HTTP 两大传输机制并列对照。左侧为 stdio 模式：客户端与服务端完全通过 `stdin`、`stdout` 以及用于日志的虚线 `stderr` 单纯交换行文本，全程不存在任何请求头层，全部元数据自包含在请求体内 `_meta` 中。右侧为 Streamable HTTP 模式：客户端向单一端点发起 POST 请求，服务端直接回传响应；图中的通信箭头上标注了关键检查点，即服务端将镜像请求头与请求体进行严格对比，一旦校验不一致立刻打回 `400` 状态码与 `-32020` 错误，绝不放行进入工具执行层。请顺着两条路径各追踪一次调用，你会发现 JSON-RPC 报文核心完全未变，改变的仅仅是其外层传输封包方式。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 查看 `code/main.py` 代码。该模块构建了一个内置 `run_report` 工具的服务端实例，其 `region` 参数被显式声明为 `x-mcp-header: Region`，并驱动同一个调用在三种场景下执行：`call_stdio` 直接向服务端发送请求，模拟本地子进程视角，利用 `frame_message` 与 `parse_frames` 演示换行分帧；`call_http` 利用 `build_http_headers` 自动构建合规镜像头，经由 `handle_http_request` 执行严格校验，通过后再分发至服务逻辑，并将请求头与报文统一包裹记录；`call_http_with_header_mismatch` 则故意将请求头中的 `Mcp-Method` 篡改为 `prompts/get`，直观展示服务端如何将其拦截并返回 `400` 状态码与 `-32020` 错误码（该条目用 `violation` 标记包裹，使校验器能专门针对随后的标准错误响应进行比对）。
 
@@ -80,11 +80,11 @@ python3 code/main.py
 
 对于那些从不转化为 JSON-RPC 报文的纯传输层响应（如 GET/DELETE 触发的 `405`、非法 Origin 触发的 `403`，以及成功接收通知返回的 `202` 无实体响应），它们并未出现在运行日志的常规调用列表中，因为此时根本不存在任何 `result` 或 `error` 对象；它们的处理逻辑集中在 `handle_http_get_or_delete`、`validate_origin` 与 `handle_http_notification` 中，并在单元测试中接受直接覆盖。尝试在调试会话中将 `region` 参数修改为包含逗号或中文字符的非常规文本重新运行：观察 `encode_header_value` 如何自动切换至 Base64 哨兵编码，并确认服务端 `decode_header_value` 能够将其无损还原。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/transport-selection-guide.md` 是一份单页传输选型与契约指南：清晰指明何时应当选用 stdio、何时选用 Streamable HTTP；提供了完整的请求头映射对照表（指明源字段与必需场景）；详细记录了 Base64 哨兵编码规则；并对 GET、DELETE、Origin 违规、头部冲突以及通知成功接收等纯传输场景提供了权威的状态码决断标准。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在当前课程目录下执行单元测试：
 
@@ -98,11 +98,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/19-transports-and-http-headers
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 毕业设计中的端到端完整交互必须运行在特定的底层传输通道之上，其所附带的每一个请求头都必须恪守本课建立的“报文体为事实唯一基准”的铁律：镜像字段仅用于路由分流，绝不能篡位成为第二数据源。当毕业项目在网络通信层面校验报文时，执行的正是本课实现的头部与报文体双向核验机制；而当项目需要证明为何连接中断后不能机械重连续传时，其立论依据正是本课展现的 stdio 重启与 HTTP 新 id 重发所依赖的纯粹无状态原则。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 核心内涵解释 |
 |---|---|
@@ -117,7 +117,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/19-transports-and
 | `HeaderMismatch` | 错误码 `-32020`：当镜像请求头与请求体声明冲突或必需请求头缺失时，伴随 HTTP `400` 返回 |
 | Origin validation (源验证) | 核查请求的 `Origin` 头部以阻断 DNS 重绑定攻击的安全机制，违规时返回 `403` |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 传输协议概述](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports)
 - [stdio 传输协议规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)

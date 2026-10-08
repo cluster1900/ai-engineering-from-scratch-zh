@@ -66,11 +66,11 @@
 mcpa-05-era-matrix
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方图表追踪了一次时代探测请求的完整分流树：分支一为收到 `DiscoverResult` 成功结果，直接导向“采用现代模式”；分支二为收到已知规范的 `-32022` 错误，导向“提取受支持版本并重试”；分支三为遇到其他未知错误或请求超时，导向“降级至旧版流程”。请重点注意：三种输出结果中有两种依然被归类为现代服务端，只有第三种场景才会改变客户端后续发送的数据格式。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本中将 `LEGACY_EXAMPLES` 设置为 `True`，因为本课有正当的教学理由构造旧时代的交互序列：展示双时代客户端如何优雅降级，以及展示纯现代服务端如何在报错的同时附带自身版本列表。在代码输出的跟踪记录中，所有此类旧版消息均被显式包裹为 `{"legacy": true, "message": {...}}`，而所有常规的现代消息则直接平铺输出，不作特殊包裹：
 
@@ -80,11 +80,11 @@ python3 code/main.py
 
 实验构建了四种不同的服务端，并统一由一个 `DualEraClient` 进行探测。`modern-server` 仅支持 `2026-07-28`，首次探测便直接返回 `DiscoverResult`；`modern-other-version-server` 是一个为本实验特设的合成现代服务端，其故意锁定了虚拟的新版本，展示了优雅重试的路径：客户端探测收到 `-32022` 错误，随即自动读取 `data.supported` 中的版本号并发起二次重试，整个过程完全不需要触发降级逻辑；`legacy-error-server` 面对陌生探测方法直接返回传统的 Method not found 错误，客户端准确判定其为旧版；而 `legacy-timeout-server` 则对探测请求保持沉默超时，客户端同样将其判定为旧版，这再次印证了降级判断不依赖特定错误码。尝试对 `modern-server` 发起第二次探测，观察前后的调用日志：没有任何新的网络数据发出，因为时代判定已经被成功缓存。最后观察 `modern-only-server` 拒绝旧版握手请求的过程，其错误信息中详尽列出了自身支持的版本，完美践行了现代服务端的规范职责。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/era-compatibility-matrix.md` 是本课交付的单页兼容性速查参考文档：收录了协议版本演进编年史、三大核心时代术语定义、stdio 与 HTTP 探测算法并排流程图、客户端与服务端跨时代配对兼容矩阵，以及考前高频考点备忘清单。在开发需要兼容各时期复杂环境的生产系统时，建议常备此表。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -98,11 +98,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/05-protocol-eras-and-compatibility
 ```
 
-## Capstone Connection
+## 项目连接
 
 在第 33 课的 Capstone 综合大实验中，整条交互记录均完全基于现代规范构建，通篇没有任何探测指令。而这种简洁性之所以能够成立，完全是立足于本课的兼容基石：在系统链路的上游，客户端早已运行了本课所传授的探测逻辑，并确证当前连接完全值得以现代规范进行交互。当考题或架构评审要求你论述为什么某个设计可以省略时代探测时，你的论据应当是本课的探测缓存逻辑，而不是未经求证的侥幸假设。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -118,7 +118,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/05-protocol-eras-
 | 400 响应体检测 (400 body inspection) | 在 HTTP 传输上收到 400 状态码时先解析内部错误对象，再行决定是否降级的技巧 |
 | 纯现代拒绝响应 (Modern-only rejection) | 纯现代服务端在拒绝旧版请求时，在错误信息中显式告知自身支持版本的规范行为 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：版本控制与兼容性](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
 - [stdio 传输层向后兼容指引](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)

@@ -39,11 +39,11 @@ MCP 系统由三大核心角色组成，各自承担着狭义且明确的职责�
 mcpa-06-topology
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方架构图展示了一个宿主主进程内部容纳了三个独立的客户端方框，每个客户端分别连接右侧的一个独立服务端。`files` 与 `notes` 被绘制为通过 stdio 传输的本地服务端，且它们在实验中特意均自声明其 `serverInfo.name` 为 "primary"；`metrics` 被绘制为通过 Streamable HTTP 传输的远程服务端，其唯一声明的能力是资源，不提供工具。仔细观察图表底部的注册表视图：注册表将原生名称 `search` 保留指向 `files`，因为它是先声明的；而将来自 `notes` 的冲突工具重命名为 `notes/search`。同时请注意注册表中彻底缺失了什么：两个服务端自称的 "primary" 标识从未出现在路由表的任何角落，宿主在决定如何路由流量时，根本无需采纳服务端自己对自己的称呼。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本完全使用标准库构建了三个服务端（不引入任何网络调用或外部 SDK），但通信消息结构完全严格匹配 2026-07-28 规范。代码中的 `build_host()` 函数将一个 `Host` 实例通过三个完全独立的 `Client` 对象分别连接到 `files`、`notes` 和 `metrics`，随后调用 `build_registry()` 完成跨服务端的工具聚合：
 
@@ -55,11 +55,11 @@ python3 code/main.py
 
 你可以尝试修改代码：接入第四个自声明名称同样为 "primary" 但宿主分配了新 ID 的服务端，验证注册表如何基于宿主 ID 稳定路由；或者在 `files` 与 `notes` 之间制造第二个冲突的工具名称，观察前缀规则如何自动生效而无需修改底层路由转发逻辑。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/architecture-roles-map.md` 是本课交付的单页架构角色参考手册：系统梳理了三大角色的核心职责分工、本地与远程服务端的详细对比表、服务端特性与客户端特性的控制权归属矩阵，以及包含严格路由隔离在内的六步工具聚合检查清单。建议将其与无状态核心及协议时代参考资料配合查阅，它们共同构成了请求组装与多服务端精准路由的完整知识体系。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -73,11 +73,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/06-hosts-clients-and-servers
 ```
 
-## Capstone Connection
+## 项目连接
 
 在第 33 课的 Capstone 综合大实验中，要求完整设计并描述一套端到端运行的真实 MCP 生产拓扑。评审人员的核心提问往往围绕：宿主实际连接了多少个服务端？模型发起的某次工具调用如何被精准路由至对应的目标节点？在回答此类问题时，你必须运用本课讲授的规范术语：列出宿主为连接分配的专属 ID、说明客户端与服务端的强绑定关系、剖析该服务端是本地还是远程及其遵循的信任边界形态，并指出聚合注册表是如何消除潜在名称冲突的。如果在方案答辩中试图依赖服务端自声明的 `serverInfo.name` 来解释路由决策，就表明尚未真正掌握本课传授的拓扑原则。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -91,7 +91,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/06-hosts-clients-
 | serverInfo.name | 服务端自声明的身份字符串，仅用于日志与界面展示，绝不可作为路由凭据 |
 | 服务端 ID 前缀 (Server-id prefix) | 宿主在聚合注册表中用于消除同名工具冲突的命名空间前缀，如 `notes/search` |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 架构规范](https://modelcontextprotocol.io/specification/2026-07-28/architecture)，详细阐述 Host、Client 与 Server 的规范职责及其背后的核心设计理念
 - [MCP 架构概览指南](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture)，涵盖系统参与者、传输模式及发现交互示例

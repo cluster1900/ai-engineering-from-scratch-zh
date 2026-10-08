@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [Put Authority Around Capability](../../06-governance-safety-and-responsible-use/), [Integration Protocols, Identity, and Least Privilege](../../25-integration-protocols-identity-and-least-privilege/); Phase 17, Lesson 26
+**Prerequisites:** [以制度权威规约技术能力](../../06-governance-safety-and-responsible-use/), [集成协议、身份凭据与最小权限原则](../../25-integration-protocols-identity-and-least-privilege/); Phase 17, Lesson 26
 **Time:** ~150 minutes
 
 ## 学习目标
@@ -185,7 +185,7 @@ Prompt 护栏旨在正面引导模型的生成概率分布；系统护栏旨在�
 
 对风险评估档案与控制存证材料进行严格的版本控制。初次上线时的准入批复，绝不能自动豁免后续无关系统变更的安全责任。
 
-## Build It (动手构建)
+## 动手构建
 
 本实验使用标准库 Python 搭建了一套确定性的企业治理数据包与控制门禁校验引擎，确保系统上线前的合规基石坚如磐石：
 
@@ -195,7 +195,7 @@ Prompt 护栏旨在正面引导模型的生成概率分布；系统护栏旨在�
 - **步骤 4：人机协同复审工程化（Human Review Design）**：严密计算预期复审单据量，设定触发条件、复审人员资质门槛、证据包内容契约与复审队列阻塞时的安全兜底。
 - **步骤 5：审批决议与变更重评（Approval & Reassessment）**：明确安全、法务、业务领域专家的多方签字背书，明确设定变更重审红线。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 27-governance-approval-flow
@@ -203,15 +203,15 @@ Prompt 护栏旨在正面引导模型的生成概率分布；系统护栏旨在�
 
 使用上述审批流探索器，独立调整操作后果等级、行为可逆性、证据链完整度、复审人员专业资质、队列吞吐容量与降级兜底预案。直观体验在何种临界条件下，所谓的“人工把关”标签能够成为一道坚不可摧的安全控制，又在何种情况下会退化为拖垮生产的无意义业务瓶颈。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在测试数据包的副本中人为移除复审队列的降级预案或清空某项核心控制项的负责人，观察系统校验器是如何直接报红阻断的，并亲手修复该治理缺陷。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 [`outputs/governance-control-packet.md`](../outputs/governance-control-packet.md) 包含一份真实完整的治理控制数据包，涵盖了全套风险登记册、数据流动边界图、四层控制措施矩阵以及配有明确编制的人工复审架构方案。
 
-## Verify It (验证方法)
+## 验证方法
 
 在本地环境中运行确定性治理校验工具，执行全量自动化验证：
 
@@ -223,11 +223,11 @@ python3 -m unittest discover -s code/tests -v
 
 课程配套的 6 道自测题将重点考核你对合规风险转化、数据最小化落地、人机协同架构防线与重大变更重审机制的实战把控。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 请将此处的治理控制数据包与人工复审准入规范，作为 Architect Professional Capstone 毕业设计中企业级安全合规体系的核心交付依据。
 
-## Use It (生产应用)
+## 实践应用
 
 针对患者留言处理场景，一个更为稳健的初版上线策略应为：仅为具备专业临床资质的复审医护人员起草内部转诊分类建议，绝不在未经人工审阅前直接向患者下发回复，更不直接修改底层电子病历（EMR）。该工作流仅摄取绝对必要的非敏感字段，对接权威临床指南知识库，执行严格的租户与角色隔离，并在检测到高危症状关键词时强制跳过自动处理直通紧急人工通道。
 
@@ -243,7 +243,7 @@ python3 -m unittest discover -s code/tests -v
 
 最终是否满足监管合规要求，由法务、隐私、安全与临床领域的法定负责人共同签署裁定。架构师的职责是提供详实透明的数据拓扑、技术控制、测试证据与残余风险量化评估报告。
 
-## 考点决策模式 (Exam Decision Patterns)
+## 考试决策模式
 
 当试题场景涉及受监管行业（如金融、医疗）或敏感隐私数据时，切勿假设“内部使用”就代表天然合规。必须坚持数据最小化、分类定级、核验合同配置，并促成法定授权部门的介入审查。
 
@@ -264,7 +264,7 @@ python3 -m unittest discover -s code/tests -v
 - 引入没有明确操作标准与时间预算的泛泛“人工审核”
 - 将云厂商通用的品牌合规背书直接等同于自己系统的业务合规
 
-## 常见陷阱 (Common Traps)
+## 常见陷阱
 
 ### 依仗产品名称宣称合规 (Compliance by Product Name)
 
@@ -282,7 +282,7 @@ python3 -m unittest discover -s code/tests -v
 
 不同的数学公平性定义在统计学上往往相互排斥。必须结合具体业务情境、法律法规、潜在危害与多方利益权衡，做出审慎选择并公开透明披露其技术代价。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 针对一个融合了外部文件解析、MCP 连接器、批量评估任务与人工复审界面的复杂客服流水线，绘制全域数据流向拓扑图。
 2. 针对日均 10,000 单业务、触发人工复审率为 5% 的系统，建立复审队列排队论模型，并推导合理的医护人员编制需求。
@@ -290,7 +290,7 @@ python3 -m unittest discover -s code/tests -v
 4. 为受到 AI 辅助决策不利影响的信贷申请用户，设计一套完备可执行的异议申诉与人工纠错全流程。
 5. 梳理并制定一份重大变更评估清单（Material-change Criteria），明确列出哪些技术变动必须强制打回治理委员会重新签批。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 常见误解 | 实际技术内涵 |
 |---|---|---|
@@ -301,7 +301,7 @@ python3 -m unittest discover -s code/tests -v
 | 算法公平性 (Fairness) | 各群体间的准确率绝对拉平 | 紧密结合法律伦理语境、需公开披露技术权衡代价并由权威多方参与裁决的上下文特定准则 |
 | 异议申诉权 (Contestability) | 客服热线随口应付 | 赋予受不利决策影响的用户一条有实质意义的质疑证据、触发复核并纠正系统裁决的法定通道 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude API data retention documentation](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention) 了解各功能模块的数据保留周期与官方安全边界
 - [Anthropic Trust Center](https://trust.anthropic.com/) 获取最新的安全合规白皮书与第三方认证审计报告

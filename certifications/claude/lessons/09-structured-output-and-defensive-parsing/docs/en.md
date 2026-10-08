@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [Validate the Claim, Not the Confidence](../../05-output-evaluation-and-validation/), [The Messages API Is a State Machine](../../08-messages-api-and-application-lifecycle/)
+**Prerequisites:** [检验断言真伪，而非轻信模型语气](../../05-output-evaluation-and-validation/), [Messages API 本质是状态机](../../08-messages-api-and-application-lifecycle/)
 **Time:** ~95 minutes
 
 ## 学习目标
@@ -290,7 +290,7 @@ python3 -m unittest discover tests -v
 
 在生产环境中，优先选用所在技术栈成熟的主流校验库。本课手写轻量校验器子集的目的，是为了彻底弄懂底层库背后所执行的核心检查，而非在生产中替代标准完整的 JSON Schema 实现。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过自愈恢复图示，观察候选输出如何依次穿过语法关、形态关、语义关和权限关。演练将有限的修复预算投入到自愈结构格式错误中，并将此结果与因缺乏原始事实凭据而必须升级人工处理的场景进行对比。
 
@@ -298,15 +298,15 @@ python3 -m unittest discover tests -v
 09-structured-output-recovery
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 运行带边界约束的抽取器，然后依次输入包含 Markdown 围栏的 JSON、布尔值整型、意外未知属性以及连续两次均非法的畸形响应。准确判断每种失败情况分别属于语法关、形态关、语义关还是权限关的职责范畴。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/validated-triage.json` 是通过离线自愈修复演示所生成的完整达标契约产物。运行 `python3 main.py` 即可在本地重现它，并随后运行单元测试套件。测试用例对比了签入的产物与 `demo()` 函数的输出，其余测试则系统覆盖了代码块围栏、字段缺失、布尔整型陷阱、额外属性拦截、有界修复以及超限重试等关键边界场景。
 
-## Verify It (验证方法)
+## 验证方法
 
 ```bash
 cd certifications/claude/lessons/09-structured-output-and-defensive-parsing/code
@@ -314,11 +314,11 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套测验将考核学员在陌生业务场景中精准归类各类异常归属关卡的能力。经充分验证的业务对象与修复证据链，将直接作为关键支撑材料纳入 Developer Capstone 30 以及 Architect Capstone 31 和 32 的实施方案中。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - 若输出能够成功解析但违反了数值区间或枚举项，应当选用 Schema 形态校验进行拦截，而非在提示词中追加模糊的免责声明。
 - 若输出完全匹配 Schema 定义但与数据库中的受信任真实记录相矛盾，应当选用业务语义检查进行拦截。
@@ -329,7 +329,7 @@ python3 -m unittest discover tests -v
 - 若 Schema 需要调整变更，必须像对待任何对外公开的 API 一样进行显式版本控制与平滑双轨迁移。
 - 若平台提供了解码约束（Constrained Generation）能力，积极启用以大幅削减格式错误，但应用层的事后防御性校验绝不可废弃。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 在 Schema 中新增 `evidence_ids` 字段并约束为带长度上限的字符串数组。编写测试用例覆盖合规列表、元素类型为整型的非法列表，以及元素数量超限的列表。
 2. 增加一条跨字段联合业务校验规则：当 `uncertainty: high` 时，强制要求 `needs_human: true`。
@@ -338,7 +338,7 @@ python3 -m unittest discover tests -v
 5. 针对校验器设计十组对抗性输入：Markdown 围栏文本、重复键值对象、非法未知字段、转义控制字符、超长文本、布尔混充整型以及嵌套的提示词注入语言。
 6. 在独立的生产沙箱实验中，使用 Pydantic 将分诊工单契约重构为数据模型。在不向本课程引入额外依赖的前提下，对比 Pydantic 的严格模式（Strict Mode）与强转模式（Coercion）的行为差异。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [结构化输出指南 (Structured Outputs)](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
 - [Messages API 参考手册](https://platform.claude.com/docs/en/api/messages)

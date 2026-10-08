@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [RAG, Retrieval, and Data Pipelines](../../24-rag-retrieval-and-data-pipelines/); Phase 11, Lesson 10; Phase 17, Lessons 08, 13, and 27
+**Prerequisites:** [RAG、检索与数据管道](../../24-rag-retrieval-and-data-pipelines/); Phase 11, Lesson 10; Phase 17, Lessons 08, 13, and 27
 **Time:** ~150 minutes
 
 ## 学习目标
@@ -153,7 +153,7 @@ Prompt 缓存机制基于对稳定前缀（Stable Prefix）的高效复用。如
 
 切忌仅观察全局均值。全局均值的轻微改善极有可能掩盖了某个高风险细分客户群体遭遇灾难性退化的严重事实。
 
-## Build It (动手构建)
+## 动手构建
 
 本实验使用标准库 Python 搭建了一个严谨的轨迹数据聚合与发布门禁评估系统：
 
@@ -162,7 +162,7 @@ Prompt 缓存机制基于对稳定前缀（Stable Prefix）的高效复用。如
 - **步骤 3：架构变体横向对比**：`by_variant` 机制杜绝将采用了缓存或路由优化的候选方案与原有基线进行粗暴混编平均，支持多维度并排评审。
 - **步骤 4：严格裁定服务质量目标**：`evaluate_objectives` 设定硬性质量门禁与延迟/成本上限红线。候选方案必须同时通过每一个必选门禁，绝不允许用更低廉的模型成本去抵消质量与安全维度的滑坡。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 26-latency-cost-slo
@@ -170,15 +170,15 @@ Prompt 缓存机制基于对稳定前缀（Stable Prefix）的高效复用。如
 
 使用上述 SLO 探索台，独立调整任务成功率、缓存命中率、重试惩罚系数、P50 及 P95 延迟参数。直观观察在哪些场景下，调用单价更低廉或底层网络全绿的变体，会在上层任务质量或单次成功综合成本门禁前遭遇一票否决。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在数据流中人工注入一组调用单价极低但频繁失败重试的轨迹样本，观察单次成功任务综合成本是如何不降反升的，并精准指出哪一道发布门禁应当立刻阻断上线。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 [`outputs/release-scorecard.json`](../outputs/release-scorecard.json) 包含一份完整的基线与候选版本对比记分卡，涵盖了质量、延迟、缓存效率与财务经济性等多维度的独立准入判定。
 
-## Verify It (验证方法)
+## 验证方法
 
 在本地环境中运行聚合计算程序并执行全量测试：
 
@@ -190,11 +190,11 @@ python3 -m unittest discover tests -v
 
 课程配套的 6 道自测题将深度考核你对生产故障定位归因、长尾延迟分析、成本科学核算与金丝雀放量策略的实战理解。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 请将此处的发布记分卡与门禁校验引擎，无缝集成到 Architect Professional Capstone 毕业设计中的全面可观测性架构与自动化金丝雀拦截策略中。
 
-## Use It (生产应用)
+## 实践应用
 
 面对生产环境的典型追问：“为什么新版本发布后，业务任务完成率显著暴跌？”
 
@@ -215,7 +215,7 @@ python3 -m unittest discover tests -v
 | 检索召回率 (Recall) | | | 处于基线可接受容差区间内 |
 | 人工复审介入工时 | | | 未转嫁隐性人工审查业务负担 |
 
-## 考点决策模式 (Exam Decision Patterns)
+## 考试决策模式
 
 如果系统层面 API 响应全绿，但业务方反馈大量劣质结果，必须立即引入或深入审查语义质量指标与 Agent 执行轨迹证据。如果文档刷新后出现事实错误，优先排查检索链路而非盲目切换模型。
 
@@ -229,7 +229,7 @@ python3 -m unittest discover tests -v
 - 建立覆盖质量、延迟、成本与安全的综合灰度门禁
 - 确保每一项生产告警均具备明确负责人与处置 Runbook
 
-## 常见陷阱 (Common Traps)
+## 常见陷阱
 
 ### 默认无差别记录完整 Prompt (Logging Full Prompts by Default)
 
@@ -247,7 +247,7 @@ python3 -m unittest discover tests -v
 
 这一视角会错误地奖赏那些便宜但高频失败的方案。评估必须以“促成一次成功业务交付”所花费的总体综合资金为基准，并纳入失败重试与人工救火的全部隐性成本。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 扩展实验代码中的 Trace 数据结构，为其挂载包含数据检索与两个工具调用的子级 Span 节点。
 2. 引入输入风险分层逻辑（Risk Strata），构建一组测试数据证明全局指标提升完全可能伴随高风险分层的致命恶化。
@@ -255,7 +255,7 @@ python3 -m unittest discover tests -v
 4. 针对工具鉴权批量失败这一异常模式，编写包含明确责任人、告警阈值与排查步骤的生产 Runbook。
 5. 制定一份金丝雀灰度发布策略方案，要求一旦监测到任何硬性安全控制失效即刻触发秒级全自动回滚。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 常见误解 | 实际技术内涵 |
 |---|---|---|
@@ -266,7 +266,7 @@ python3 -m unittest discover tests -v
 | P95 延迟 (P95 latency) | 系统中最慢的那一次请求 | 统计学分位数：代表 95% 的请求耗时均低于或等于该时间阈值 |
 | 单次成功成本 (Cost per success) | 模型官方 Token 标价 | 整个系统为达成一次真正被业务验收认可的有效结果所支出的全口径资金期望 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude usage and cost API documentation](https://platform.claude.com/docs/en/build-with-claude/usage-cost-api) 查阅当前使用量与成本统计 API 的官方集成规范
 - [Prompt caching documentation](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) 深入掌握 Prompt 缓存的底层机制与最佳实践

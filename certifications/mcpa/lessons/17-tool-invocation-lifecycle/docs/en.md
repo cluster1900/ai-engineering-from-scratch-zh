@@ -87,11 +87,11 @@
 mcpa-17-lifecycle
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的架构图将八个检查点自顶向下排列成链状管道，两条错误分支在各自发生的精确位置剥离开来：校验检查点 (Validate) 分流至 `-32602`（协议级错误，不触发执行，无结果返回），而执行检查点 (Execute) 分流至 `isError`（工具执行级错误，依然包装为标准的 complete 结果结构）。返回结果 (Result) 自身产生两条分流：complete 结束整条链路，而 input_required 则携带全新分配的 id 循环回到发起调用检查点，这也是全图中唯一一条向后回溯的边。请特别注意：选择 (Select) 与确认 (Confirm) 虽然位于调用管道之中，但绝不连接任何错误分支。它们既不会产生协议级错误，也不会产出工具执行级错误，因为它们根本不会向网络层发出任何 JSON-RPC 报文；在确认检查点被拒绝的请求，在发起调用之前便已优雅终止。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在课程目录下运行参考模块：
 
@@ -115,11 +115,11 @@ print(run.final)
 
 尝试修改 `main.py` 中 `publish_release` 所要求的必填参数，或者为构建任务注入超出 `run_timeout_then_cancel` 轮询预算的时钟周期，重新运行代码观察检查点轨迹的变化。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/tool-lifecycle-state-chart.md` 是一份单页工具生命周期状态速查表：详细列出了每一个检查点、其属于网络可见还是宿主内部、可能触发的错误通道，以及针对各类调用暂停或故障场景的精准重试规则。在开发客户端或服务端实现时，可将其作为判定“当前环节应当发生什么”的架构设计参考标准。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在课程根目录下执行单元测试套件：
 
@@ -133,11 +133,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/17-tool-invocation-lifecycle
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 MCPA 毕业设计中的端到端完整交互，本质上就是本课生命周期的实战落地：前期的服务发现与工具列表查询、需要严格校验参数模式的工具调用、针对 `input_required` 采用新 id 的多轮交互、执行过程中的进度推送与可能发生的超时取消，以及最终记录在审计日志中的不可篡改结果。当综合项目要求你论证为什么某种架构设计要以特定方式进行重试、放弃或上报错误时，底层标准始终是“该事件发生在哪一个检查点”，这正是本课帮助你建立的条件反射。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 核心内涵解释 |
 |---|---|
@@ -150,7 +150,7 @@ MCPA 毕业设计中的端到端完整交互，本质上就是本课生命周期
 | Reissue (重新签发) | 连接意外中断后使用新 id 重新发送调用；由于传输层无状态，不支持断点续传 |
 | idempotentHint (幂等性提示) | 标识重复调用是否安全的参考提示，属于不可信建议，不能作为绝对安全保证 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP Tools 规范](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)，重点阅读错误处理 (Error Handling) 与有状态工具 (Stateful Tools) 章节
 - [多轮往返请求 (MRTR) 规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr)

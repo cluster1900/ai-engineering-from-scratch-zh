@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [The Messages API Is a State Machine](../../08-messages-api-and-application-lifecycle/), [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/), [Security Lives Outside the Prompt](../../13-application-security-and-secrets/)
+**Prerequisites:** [Messages API 本质是状态机](../../08-messages-api-and-application-lifecycle/), [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/), [安全防护存在于提示词之外](../../13-application-security-and-secrets/)
 **Time:** ~120 minutes
 
 ## 学习目标
@@ -263,7 +263,7 @@ python3 -m unittest discover tests -v
 
 该评测底座在设计上力求紧凑透明。生产级系统在此基础上应当持久化存储数据集、对评分器进行版本控制、支持大规模并发与批处理、支持新旧候选版本打擂比对，并渲染分维度的报表。而本课的轻量实现则精准暴露了其背后的核心数据模型。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过评测与可观测性闭环图示，观察输出契约检查、调用轨迹、最终状态、安全防线、成本预算、追踪遥测以及发布门禁之间的因果联动。尝试模拟触发一次看似流畅完美但在底层遗漏了核心状态变更的虚假成功用例，直观观察为何输出文本质量绝不能覆写外部物理状态的缺失。
 
@@ -271,15 +271,15 @@ python3 -m unittest discover tests -v
 14-eval-observability-loop
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 运行本地评测底座，随后刻意构造一个文本回复通过但调用轨迹或最终状态落空的对抗用例。尝试调低严重故障拦截门禁，或故意漏掉某一个追踪字段，观察发布准入包如何被系统确定性拒绝。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/eval-release-gate.json` 是一份经过严格验证的生产发布门禁规范。它完整配置了严重级故障门禁、综合通过率基线、分业务切片阈值、长尾延迟与成本上限，以及必填的追踪字段与故障分类清单。配套的单元测试套件除了运行本地评测引擎之外，还对伪造轨迹拦截、违禁文本检测、异常分类映射、数据聚合逻辑以及百分位计算进行了全方位验证。
 
-## Verify It (验证方法)
+## 验证方法
 
 ```bash
 cd certifications/claude/lessons/14-evals-testing-debugging-and-observability/code
@@ -287,7 +287,7 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套测验将围绕最终状态断言、确定性代码测试防线、LLM 裁判校准技巧、网络序列化边界排查、业务切片退化分析以及协议自愈恢复策略展开综合考察。将经过验证的发布门禁规范与本地评测报告，直接作为重要的质量与可观测性凭据整合进 Developer Capstone 30 以及 Architect Capstone 31 和 32 中。
 
@@ -308,7 +308,7 @@ python3 -m unittest discover tests -v
 
 当云端模型别名（Alias）可能在后台发生静默变更时，应配置定时的金丝雀自动化评测，并记录平台暴露的真实底层模型信息。每当提示词、Schema、工具集、Skill、Hook、MCP 服务端或 SDK 依赖发生变更时，必须在正式部署上线前强制运行对应的自动化评测套件。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - 凡是期望属性具有确定性规则的场景，坚决优先选用确定性代码测试。
 - 对输出契约、工具轨迹、最终客观状态、安全性以及运行成本预算进行独立评估。
@@ -319,7 +319,7 @@ python3 -m unittest discover tests -v
 - 在将问题归咎于模型能力之前，优先排查底层的网络传输与数据序列化边界。
 - 评估发布准入时，以严重级故障零容忍和局部切片退化为核心红线，绝不能单纯依赖全局平均分。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 新增三个最终回复文本看似完美但底层工具调用轨迹发生错误的对抗用例，编写断言确保它们因不同原因被准确判定失败。
 2. 针对 20 条模型实际响应，依照三个维度的人工评分量表进行独立标注。将基于模型的评分器打分结果与人工标注进行比对，统计并分析其假阳性与假阴性案例。
@@ -327,7 +327,7 @@ python3 -m unittest discover tests -v
 4. 编写一套专门针对追踪日志的脱敏测试套件，包含 API Token、真实电子邮箱以及私有文档片段，验证脱敏管道无任何信息遗漏。
 5. 针对即将进行的大版本模型迁移，设计一套配对评测方案（Paired Evaluation），并在运行测试前预先定义不可逾越的严重故障红线。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [设计测试用例与评测体系指南](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
 - [Anthropic 官方 Evaluation Tool 工具手册](https://platform.claude.com/docs/en/test-and-evaluate/eval-tool)

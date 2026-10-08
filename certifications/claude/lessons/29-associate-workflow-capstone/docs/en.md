@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [Choose the Smallest Surface That Can Carry the Work](../../01-claude-product-and-model-landscape/), [Turn a Request Into a Testable Contract](../../03-prompting-and-task-decomposition/), [Put Each Fact in the Right Kind of Context](../../04-context-knowledge-memory-and-caching/), [Validate the Claim, Not the Confidence](../../05-output-evaluation-and-validation/), [Put Authority Around Capability](../../06-governance-safety-and-responsible-use/), [Design the Handoff Before the Automation](../../07-workflow-design-and-human-handoffs/)
+**Prerequisites:** [选用足以承载任务的最小工作界面](../../01-claude-product-and-model-landscape/), [将模糊需求转化为可测试的契约](../../03-prompting-and-task-decomposition/), [将各类事实置于适得其所的上下文容器中](../../04-context-knowledge-memory-and-caching/), [检验断言真伪，而非轻信模型语气](../../05-output-evaluation-and-validation/), [以制度权威规约技术能力](../../06-governance-safety-and-responsible-use/), [在推进自动化前，先设计好人机交接契约](../../07-workflow-design-and-human-handoffs/)
 **Time:** ~4 hours across one simulated workweek
 
 ## 学习目标
@@ -66,9 +66,9 @@ flowchart LR
 
 该校验器无法替代人类做出价值判断：它无法断定某项内部政策在伦理道德层面是否完善，无法确认人类复审员在业务上是否足够称职，也无法凭空证明数据源自身的陈述是否绝对为真。这些维度的责任始终属于企业治理与人类专家。
 
-## Build It (动手构建)
+## 动手构建
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 29-associate-capstone-readiness
@@ -76,17 +76,17 @@ flowchart LR
 
 在为期五天的构建过程中，请全程参考上述就绪度大盘。它将业务目标、源数据资产、Prompt 推进阶段、论据支撑度、签字权限、下游交接与安全降级紧密联结在一起，使得任何一份包装华丽的草稿都绝不可能在门禁失效的情况下蒙混过关。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 完整走完下文详述的五天工作流；随后故意逐一破坏交互载体合规性、源数据完整性、论点证据支撑、主管签字权限与交接兜底门禁，亲眼见证校验系统是如何精准报错拦截的。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 随课程交付的实战清单模版以及填充完整的
 [`outputs/demo-readiness-report.json`](../outputs/demo-readiness-report.json)
 构成了本项目的核心可复用验收成果。
 
-## Verify It (验证方法)
+## 验证方法
 
 使用以下命令运行确定性校验器并跑通全量前置测试；本地测试无需连网或配置任何 API 凭据。课后的 6 道认证自测题是最终的个人水平检验。
 
@@ -96,7 +96,7 @@ python3 code/main.py
 python3 -m unittest discover -s code/tests -v
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 填充完毕的整套交付数据包，构成了 Claude Certified Associate 认证路线的核心毕业评审证据，可供同行评审或专家核验。
 
@@ -110,11 +110,11 @@ python3 -m unittest discover -s code/tests -v
 
 同时清晰划定严格的非目标（Out of scope）红线：
 
-- 严禁向外部客户自动下发任何消息公告
-- 严禁对一线员工开展个人绩效自动化排队打分
-- 严禁直接修改底层人力排班排班表系统
-- 严禁给出任何具有法律或监管效力的结论
-- 严禁录入或处理任何最高机密等级的限制性数据
+- 不自动向客户发送消息
+- 不对员工做绩效排名
+- 不修改排班表
+- 不下法律或监管结论
+- 不使用受限数据
 
 深度评估对比候选的产品交互载体：一次性网页版 Chat 虽然开箱即用，但无法固化沉淀长效指令与周期性知识库；Claude Projects 具备共享协作与固定知识库能力，非常适合可复用的团队协同，前提是当前企业采购协议已明确批准该数据等级的处理；直接调用 API 则是实现全自动数据摄取、算法校验与企业审计集成的最佳工程路径；Research 功能适合探查公开动态事实，但绝不能用它来取代企业已批准的官方政策库。
 
@@ -234,7 +234,7 @@ python3 -m unittest discover -s code/tests -v
 - 哪些新暴露的失败案例应当立即纳入日常评估测试集？
 - 该工作流下一阶段是应当维持半自动化辅助，还是适度开放部分受控自动化，抑或是果断退回传统纯人工流程？
 
-## Use It (生产应用)
+## 实践应用
 
 ### 完备的交付证据包
 
@@ -280,7 +280,7 @@ python3 -m unittest discover -s code/tests -v
 5. 邀请一位不知情的同事仅凭借你组装的人机交接包完成模拟审批，记录其过程中被迫追问的每一个缺失信息。
 6. 测算单次合格周报的真实交付成本，将人工复核与返工工时按标准薪酬折算入内。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 - **决策工作流 (Decision workflow)**：将受治理的输入证据转化为经过审慎核验的行动方案或决策建议的连贯工程序列。
 - **源数据快照 (Source snapshot)**：在单次任务执行前确定性冻结、带有版本号的固定证据集合。
@@ -291,7 +291,7 @@ python3 -m unittest discover -s code/tests -v
 - **增量复审 (Delta review)**：在初次审批完成后，若源数据发生局部更新，仅针对变动增量部分触发的定向快速评审。
 - **就绪度证据 (Evidence of readiness)**：包含测试用例通过日志、失败拦截证明、多方签批记录与安全降级预案的可复现客观事实集合，绝非主观口头保证。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude Certified Associate Foundations Exam Guide](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf) 官方认证大纲指南
 - [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents) 掌握智能体架构模式的经典文献

@@ -111,11 +111,11 @@ MCP 官方通过标准化扩展 `io.modelcontextprotocol/tasks` (SEP-2663) 彻�
 mcpa-21-task-states
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的状态机架构图清晰描绘了异步任务可能流转的每一个状态，以及驱动各状态跃迁的具体 API 调用。追踪 `working` 向左上方指向 `input_required` 的跃迁线：该跃迁纯粹由服务端内部逻辑触发，不依赖客户端发送任何新请求；而观察其向右下方的返回路径，则清晰标注了客户端必须实际调用的唯一交互接口：`tasks/update`。在图表右侧，从 `working` 状态发散出三个终态分支：因顺利产出结果而达成的 `completed`、因客户端主动诉求而达成的 `cancelled`，以及因底层遭遇系统异常而导致的 `failed`。这三个终态全部使用虚线边框标注：一旦任务状态机落入这三个终态之一，后续所有的 `tasks/get` 轮询均将幂等返回该终态快照，不会再发生任何进一步的状态迁移。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 查看 `code/main.py` 源码。`run_build_pipeline` 是一个拥有统一输入模式的构建部署工具：在底层执行完全相同的构建、测试并在获批后部署的业务逻辑。代码唯一的差异，仅在于调用方是否在请求中显式声明了 `io.modelcontextprotocol/tasks` 扩展。
 
@@ -127,11 +127,11 @@ python3 code/main.py
 
 对照前文核心概念研读终端打印的调用轨迹：未声明该扩展的调用以纯同步模式执行，并明确警告部署阶段需要该扩展方可进行安全人工审批；而声明了扩展的调用则立即获得了 `resultType: "task"` 异步句柄。该实验通过显式单步推进任务状态来模拟真实微服务集群中后台 Worker 在离散请求间的作业推进，而非使用不可靠的后台线程 Sleep，确保运行日志中的每一次状态流转都绝对确定且可复现。追踪同一个 `taskId` 从初次轮询的 `working` 状态演进到 `input_required`，随后观察客户端调用 `tasks/update` 提交 `{"approved": true}` 授权，直至最后一次轮询获取到 `completed` 终态，并对比其内联的 `result` 与同步调用返回的结构。最后观察两处异常防御：针对伪造的 `taskId` 发起 `tasks/get` 稳定触发 `-32602` 错误；而针对真实合法的 `taskId`，若客户端在轮询时漏掉了扩展声明，则稳定收到 `-32021` 缺失能力报错。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/long-running-work-patterns.md` 是一份权威长耗时架构决策指南：涵盖了在同步调用、MRTR 往返、Task 与服务端句柄之间取舍的精准准则；能力协商操作清单；`CreateTaskResult` 字段定义；包含顶层 `resultType` 与内层嵌套 `status` 判别逻辑的轮询准则；以及 2025-11-25 实验方法被现代机制全面取代的权威对照表。在设计可能耗时较长、随时面临客户端耐心或网关超时考验的复杂工具时，请将其作为标准设计规范。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在当前课程目录下执行单元测试：
 
@@ -145,11 +145,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/21-long-running-work-and-tasks
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在毕业设计的综合评估场景中，某些受严格审计管控的工具调用由于耗时较长或需要中途人工确认，将被要求架构重构为标准任务形态而非普通同步阻塞。此时，本课阐述的四道核心考题将直接决定系统的可用性：客户端是否在单请求级正确声明了该扩展、服务端是否正确对外通告、任务句柄是否在下发前已达成存储持久化，以及轮询代码是否清醒地将外层 RPC 的 `resultType` 与内层后台作业的 `status` 严格隔离开来。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 核心内涵解释 |
 |---|---|
@@ -164,7 +164,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/21-long-running-w
 | Durable before return | 核心架构原则：`taskId` 在被交到客户端手中之前，必须在底层存储中已确立可查 |
 | Cooperative cancellation | 协作式取消机制：`tasks/cancel` 仅登记取消意愿，不构成服务端强行掐断的绝对保证 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 官方 Tasks 扩展规范文档](https://modelcontextprotocol.io/extensions/tasks/overview)
 - [SEP-2663：Tasks 扩展标准定义](https://modelcontextprotocol.io/seps/2663-tasks-extension)

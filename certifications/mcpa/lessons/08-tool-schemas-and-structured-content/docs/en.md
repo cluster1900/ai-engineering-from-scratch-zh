@@ -69,7 +69,7 @@
 mcpa-08-schema-contract
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方图表左侧展示了一个工具的 `inputSchema` 与 `outputSchema`，紧接着是一个用于决定是否放行调用至 Handler 的校验门禁。顺着两条不同的执行路径进行观察：若 Schema 校验失败，虚线路径直接阻断请求触达底层 Handler，并就地生成包含 `isError: true` 的常规业务结果；若校验通过，实线路径放行执行 Handler，并在返回 `structuredContent` 的同时附带其文本镜像块。观察图表右侧：当请求调用了一个服务端从未声明过的工具名称时，流量直接走向了一条完全独立的硬错误路径，触发 `-32602` 协议错误，因为面对一个根本不存在的工具，底层没有任何 Schema 可供比对校验。打开 `code/main.py` 并运行，随后将控制台输出的每一条响应与图表中的两条路径准确对应。
 
@@ -79,15 +79,15 @@ python3 code/main.py
 
 按顺序阅读打印出的通信记录：首先是一次针对 `lookup_product` 的合法调用，紧接着是触发 Schema 校验失败的四种不同错误调用（遗漏 `sku` 必填项、`region` 传入了枚举之外的值、`sku` 传入了错误的类型，以及传入了被禁止的多余属性）；随后观察无参工具 `server_time` 的正常调用以及传入多余参数时的被拒情况；最后观察针对一个服务端从未注册过的工具名称发起的调用。前述所有参数校验失败均以 `isError: true` 的形式规范返回；唯有最后一次针对未知工具名的调用，返回了标准的 JSON-RPC 协议错误。
 
-## Practice Lab
+## 实战演练
 
 在 `code/main.py` 中扩展 `build_catalog_server`，添加第三个工具 `list_regions`：其 `outputSchema` 在根节点描述一个字符串数组（而非对象），以匹配 SEP-2106 所允许的数组及标量 `structuredContent` 特性。按照官方推荐的无参形式为其编写空的 `inputSchema`，并使其处理函数直接返回一个原生的 Python 列表。使用 `validate_arguments` 验证你返回的数组在新定义的 Schema 约束下没有任何字段缺失或类型错误（本课内建的轻量校验器覆盖了 type、properties、required、enum 和 additionalProperties，这正是生产级 JSON Schema 库扩展至完整 2020-12 词汇的核心子集）。随后尝试注册一个其 `inputSchema` 中包含指向外部网络主机的 `$ref` 的恶意工具（类似代码中 `attempt_network_ref_registration` 所演示的拦截场景），确认该注册请求在任何调用执行前就被服务端底层坚决拒绝。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/tool-schema-reference.md` 是本课交付的单页工具模式参考手册：全面收录了工具定义的每个字段规范、JSON Schema 方言及 `$ref` 解析安全红线、`outputSchema` 与 `structuredContent` 的契约规范、工具命名语法表，以及通过详实对比展示两大错误通道具体 Payload 的对照清单。在面对陌生服务端的 `tools/list` 输出时建议常备此表，以便快速判定即将发起的调用是否能够顺利合规通行。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -101,11 +101,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/08-tool-schemas-and-structured-content
 ```
 
-## Capstone Connection
+## 项目连接
 
 在 Capstone 项目答辩中，评审员会要求你为所搭建生态中的每一个工具设计进行严格论证。“Schema 能够捕获异常”这一论断只有在 Schema 定义足够精确、且服务端将其作为工具执行错误而非可能被客户端屏蔽的协议错误返回给大模型时，才具有真正的工程意义。当在 Capstone 中设计接收复杂用户输入的工具或引用共享模式片段时，请务必贯彻本课传授的命名规则与 `$ref` 外部引用防御准则；在规划 Handler 的异常捕获与汇报机制时，始终遵循本课明确的两大错误通道分离模型。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -118,7 +118,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/08-tool-schemas-a
 | 协议级错误 (Protocol error) | 形如 -32602 的底层 JSON-RPC 错误，汇报大模型无法通过微调参数自纠的根本性违规 |
 | 工具命名规范 (Tool naming rules) | 长度 1 至 128 字符、大小写敏感、仅含字母数字下划线连字符和点、单服务端内唯一 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：工具原语 (Tools)](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)，涵盖本课讲授的规范字段、模式规则与错误处理准则
 - [MCP 规范 2026-07-28：JSON Schema 使用规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#json-schema-usage)，涵盖方言选择与 $ref 解析限制

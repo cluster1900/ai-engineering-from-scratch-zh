@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [Validate the Claim, Not the Confidence](../../05-output-evaluation-and-validation/), [Structured Output Is an Untrusted Contract](../../09-structured-output-and-defensive-parsing/); Phase 14, Lesson 39
+**Prerequisites:** [检验断言真伪，而非轻信模型语气](../../05-output-evaluation-and-validation/), [结构化输出本质是不可信契约](../../09-structured-output-and-defensive-parsing/); Phase 14, Lesson 39
 **Time:** ~135 minutes
 
 ## 学习目标
@@ -203,9 +203,9 @@ flowchart LR
 
 平均值往往会掩盖某个特定高危字段的灾难性假阳性表现。务必根据文档类型、语种分布、文本长度以及业务风险等级实施精细的分层切片度量。
 
-## Build It
+## 动手构建
 
-## Interactive Lab
+## 交互式实验
 
 ```figure
 20-batch-review-confidence
@@ -213,15 +213,15 @@ flowchart LR
 
 运行置信度与审查模拟器，直观观察抽取记录依次穿透语法、Schema、业务语义与来源溯源四层门禁的完整过程。动态调整假阳性违约成本与独立评审抽检比例，深刻理解为什么仅仅保证 JSON 合法与模型自我感觉良好远远不足以作为系统上线放行的准绳。
 
-## Practice Lab
+## 实战演练
 
 将一个在原文中有据可查的截止日期人为替换为凭空编造的虚假值，依次跑通四层校验链路，观察系统准确识别出语义及溯源违规，并将该异常记录精准分流至人工裁决队列（Adjudication），而非陷入盲目重试。
 
-## Shipped Artifact
+## 交付产物
 
 本课交付的标准产物位于 [`outputs/extraction-review-report.md`](../outputs/extraction-review-report.md)，包含一个带有稳定 `custom_id` 的批处理作业范例、支持可空未知态的 Schema、处理乱序返回结果的机制、独立评审审查意见以及最终的人工裁决裁定状态。
 
-## Verify It
+## 验证方法
 
 在本地执行离线确定性校验器：
 
@@ -233,7 +233,7 @@ python3 -m unittest discover -s code/tests -v
 
 课后测验将深入考察结构化自愈修复、Batch 架构设计以及独立评审员体系的决策准则。
 
-## Capstone Connection
+## 项目连接
 
 将这份经过严密校验的抽取报告，直接并入架构师基础场景大作业（Architect Foundations Capstone）的复杂信息抽取篇章，作为贯通四层校验防线的权威落地证据。
 
@@ -269,7 +269,7 @@ python3 -m unittest discover -s code/tests -v
 
 为所有提交记录绑定稳定全局唯一 ID。在单元测试中故意打乱批处理返回顺序，并主动注入局部失败，验证对账模块能否无缝保留已成功的记录，并仅对安全的失败项发起定向重试。
 
-## Use It
+## 实践应用
 
 在企业生产落地中，原始文档与抽取归一化后的数据必须物理隔离存储。永久保留源文件 Hash 版本与证据在原文中的绝对字符偏移量（Offsets）。当业务准则或底层 Schema 发生迭代升级时，应当发布全新的数据版本，严禁直接覆盖历史上已经生效的存量决策记录。
 
@@ -277,7 +277,7 @@ python3 -m unittest discover -s code/tests -v
 
 针对高风险的抽取任务，采取分层抽检机制：对核心重大字段、低置信度证据记录或首次出现的新文档格式实施 100% 全量复审，而对普通低风险常规记录实施随机抽样审查。
 
-## Exam Decision Patterns
+## 考试决策模式
 
 当面对 JSON 结构合法但核心事实完全错误的现象时，应当果断构建业务语义校验与原文证据溯源校验。当模型在边界裁决上表现出不稳定性时，优先引入显式的正面与反面准则，并辅以少样本边界示例。
 
@@ -290,7 +290,7 @@ python3 -m unittest discover -s code/tests -v
 - 对非实时、无需动态单步工具交互的批处理任务启用 Batch 模式
 - 始终依赖全局稳定的唯一 ID 执行批处理乱序对账
 
-## Common Traps
+## 常见陷阱
 
 ### 误把格式合规当作事实正确 (Schema Equals Truth)
 
@@ -308,7 +308,7 @@ python3 -m unittest discover -s code/tests -v
 
 这种做法会导致系统彻底丢失究竟是哪个字段发生了错误及其背后的推导线索。评审节点必须首先输出结构化的审查意见单，随后再触发受控的修正流程。
 
-## Exercises
+## 课后习题
 
 1. 编写一条跨字段语义校验规则：当业务门槛值大于零时，强制校验币种单位不得为空。
 2. 针对容易被误判为法律义务的通用申明条款，设计两组高质量的负面少样本示例。
@@ -316,7 +316,7 @@ python3 -m unittest discover -s code/tests -v
 4. 编写一段基于稳定 `custom_id` 的对账程序，正确处理乱序返回且包含部分失败的批处理结果。
 5. 针对单阶段抽取与“生成者加独立评审者”双阶段抽取，对比计算产出单条合格入库记录的综合成本差异。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 通俗说法 | 严谨工程定义 |
 |------|----------|--------------|
@@ -327,7 +327,7 @@ python3 -m unittest discover -s code/tests -v
 | 批处理 (Batch) | 更快的 API | 针对大规模离线数据设计、具备高性价比与宽松延迟窗口的异步吞吐处理模式 |
 | 裁决 (Adjudication) | 再次重试 | 依据明确的权威规则解决不同评估器之间或模型与标注之间分歧的决断过程 |
 
-## Further Reading
+## 延伸阅读
 
 - [Claude 结构化输出官方文档](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
 - [Claude Message Batches 官方开发指南](https://platform.claude.com/docs/en/build-with-claude/message-batches)

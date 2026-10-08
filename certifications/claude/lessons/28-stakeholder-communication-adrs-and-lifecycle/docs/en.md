@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [Business Discovery, Requirements, and SLAs](../../22-business-discovery-requirements-and-slas/), [Enterprise Governance, Compliance, and Human Review](../../27-enterprise-governance-compliance-and-hitl/); Phase 17, Lesson 23
+**Prerequisites:** [业务调研、需求分析与服务等级目标](../../22-business-discovery-requirements-and-slas/), [企业级治理、合规与人工复审](../../27-enterprise-governance-compliance-and-hitl/); Phase 17, Lesson 23
 **Time:** ~135 minutes
 
 ## 学习目标
@@ -194,7 +194,7 @@ flowchart LR
 
 这条不可磨灭的存证追溯链，是支撑系统高效排障、满足外部审计合规以及驱动理性架构迭代的生命线。
 
-## Build It (动手构建)
+## 动手构建
 
 本实验使用标准库 Python 搭建了一套全流程交付包与 ADR 决策生命周期验证体系：
 
@@ -204,7 +204,7 @@ flowchart LR
 - **步骤 4：运维就绪度核查表（Operational Readiness Checklist）**：逐项检查监控看板、预警阈值、应急 Runbook、鉴权依赖、离线评估基准、回滚机制与复审队列容量。
 - **步骤 5：责任归属与变更映射表（Ownership Map）**：为每一项核心资产与决策绑定运行负责人、变更签批人与变更重审红线。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 28-adr-lifecycle
@@ -212,15 +212,15 @@ flowchart LR
 
 使用上述 ADR 决策全生命周期探索器，驱动一个具体的架构选型决策完整遍历需求探索、工程构建、离线验证、线上金丝雀、日常运维、突发事故及架构推翻重评的全流程。通过修改客观实测证据或逆转红线，直观观察系统会强制调度哪一位负责人出面采取行动。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在模拟沙盘推演中故意触发知识库数据陈旧事故，顺着遥测证据链追溯到对应的架构决策负责人，亲自动手在 ADR 中追加针对时效性门禁的逆转触发规则，而不是仅仅在流程图上修改几个方块。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 [`outputs/delivery-handoff-packet.md`](../outputs/delivery-handoff-packet.md) 包含一份完整的系统交付交接包，将管理层决策要点、正式 ADR 架构决策、研发工程接口契约、SRE 运维演练记录及自然人责任矩阵严密集成为一个有机整体。
 
-## Verify It (验证方法)
+## 验证方法
 
 在本地环境中运行确定性交付验证脚本，确保所有决策、负责人、自愈证明与逆转触发器均符合规范：
 
@@ -232,11 +232,11 @@ python3 -m unittest discover -s code/tests -v
 
 课程配套的 6 道自测题将深度考查你对利益相关方沟通降维、ADR 严谨撰写规范、工程交接防呆设计及全生命周期运维责任治理的实际掌握。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 请将此处的交付交接数据包与 ADR 决策追溯机制，作为 Architect Professional Capstone 最终答辩与项目结项交接阶段的最高级别交付产物。
 
-## Use It (生产应用)
+## 实践应用
 
 针对企业级智能研究助理系统的研发落地，架构师应当向不同角色提供以下视角：
 
@@ -250,7 +250,7 @@ python3 -m unittest discover -s code/tests -v
 
 在项目线上试点结束时，切忌仅仅核对简单的生成准确率指标。必须综合评估分析师工时节省幅度、引用查阅频次、复审人员负荷变化、各细分业务场景的采纳率、单次合格研究报告的综合资金成本以及突发异常工单。据此做出客观决策：是进一步扩大推广规模、实施技术重构、收缩使用边界，还是坚决果断止损下线。
 
-## 考点决策模式 (Exam Decision Patterns)
+## 考试决策模式
 
 当试题考查如何就复杂技术方案与多方利益相关方沟通权衡时，必须依据受众的职责定位，使用恰当的语境准确转译商业后果、实测技术证据、被淘汰的备选路径以及最终的残余风险。
 
@@ -269,7 +269,7 @@ python3 -m unittest discover -s code/tests -v
 - 试图用一套千篇一律的技术胶片向所有利益相关方做汇报
 - 责任矩阵中通篇出现模糊的“研发团队”、“业务部门”等缺乏落地责任人的虚级概念
 
-## 常见陷阱 (Common Traps)
+## 常见陷阱
 
 ### 一套胶片包打天下 (One Deck for Every Audience)
 
@@ -287,7 +287,7 @@ python3 -m unittest discover -s code/tests -v
 
 调用次数的上升可能仅仅反映出生成结果粗糙导致员工不得不被迫反复返工修正。唯有结合最终业务成果与人工处理耗时，才能度量真实的系统生产力价值。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 将一份复杂的多 Agent 系统技术架构方案，浓缩改写为面向企业 CEO 的单页纸决策简报。
 2. 针对模型选型与本地私有化部署决策，撰写一份包含可量化逆转触发条件的严谨 ADR 决策记录。
@@ -295,7 +295,7 @@ python3 -m unittest discover -s code/tests -v
 4. 梳理并盘点一个企业级 RAG 生产系统的全部可变组件，为其逐一指定具体的维护负责人与变更签批人。
 5. 设计一套能够真实反映员工信任度、实际业务产出及人工返工比例的 AI 采纳度综合记分卡。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 常见误解 | 实际技术内涵 |
 |---|---|---|
@@ -306,7 +306,7 @@ python3 -m unittest discover -s code/tests -v
 | 业务采纳度 (Adoption) | 用户点击量或系统日活规模 | 深度嵌入日常生产工作流、能够持续产出预期业务价值且不转嫁隐性返工负担的良性使用状态 |
 | 架构逆转条件 (Reversal condition) | 架构师心里觉得不靠谱 | 在 ADR 中预先白纸黑字写明的客观技术证据红线，一旦被触发即强制要求推翻重构现有方案 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude Platform documentation](https://platform.claude.com/docs/en/home) 查阅当前最新的架构实现边界与开发指南
 - [Building effective agents](https://www.anthropic.com/research/building-effective-agents) 掌握如何清晰阐述工作流与 Agent 选型权衡

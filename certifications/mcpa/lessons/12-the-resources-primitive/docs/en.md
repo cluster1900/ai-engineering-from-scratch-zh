@@ -41,11 +41,11 @@ URI Scheme 的选取属于严肃的架构决策，而非无关紧要的格式标
 mcpa-12-resource-read
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节图示清晰描绘了一个 URI 从模板展开到最终读取结果的全过程。在左侧，模板 `file:///project/{+path}` 将路径片段展开为具体的 URI；其中的 `+` 修饰符保留了嵌套路径中的斜杠，避免了普通 `{path}` 展开时被过度转义的问题。中间方框代表 `resources/read` 处理流程，它在执行实际查找前，首先对照服务端根目录对展开后的 URI 进行严格路径清洗。随后流程分叉为两条明确路径：成功解析出实体内容的 URI 返回包含 `contents`、`ttlMs` 与 `cacheScope` 的完整结果；而解析失败的 URI（无论是因为未注册，还是试图通过 `..` 逃逸出根目录）统一返回错误码 `-32602` 并在 `data.uri` 中标明目标，绝不静默返回一个含糊的空 `contents` 数组。在进入代码实验前，请仔细对照梳理这两条分支，它们是每个合规资源服务端都必须正确实现的标准产出。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本构建了一个内存工作区服务端：包含一个 `README.md`、`src/` 目录下的两个代码文件、二进制图标 `logo.png`、采用 `git://` URI 的版本控制更新日志，以及采用 `user://` URI 的一条私有备忘笔记。在课程目录下运行：
 
@@ -55,11 +55,11 @@ python3 code/main.py
 
 对照核心概念研读打印出的通信记录。`resources/list` 按 URI 排序返回完整目录，每个条目均标注了 `cacheScope: public` 以及对应的 `ttlMs`。`resources/templates/list` 返回了一个模板 `file:///project/{+path}`；演示脚本传入 `path=src/utils.py` 完成模板展开，并直接读取返回内容。读取代表目录的 `file:///project/src` 时，在一个 `contents` 数组中同时返回了该目录下的两个文件条目，每个条目拥有独立的 `uri` 与 `mimeType`。读取 `logo.png` 时返回的是 `blob` 字段而非 `text`；解码该 Base64 串即可还原原始二进制字节。读取 `user://alice/notes/welcome` 时返回的是带较短 `ttlMs` 的 `cacheScope: private`，因为该内容专属于单个用户，严禁全局共享。最后两项读取演示了经过精心设计的失败场景：读取从未注册的非法 URI 会返回带 `data.uri` 的 `-32602`；而试图通过在 URI 中拼接 `..` 相对路径逃逸出工作区根目录的请求同样被拦截并返回相同错误，绝不触碰沙箱外部的任何文件。你可以尝试修改模板展开的目标文件，或在代码中添加自定义的新资源并重新运行，观察目录枚举与资源读取如何在无需修改客户端代码的情况下自然支持。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/resource-design-guide.md` 是本课交付的单页资源设计与审查速查指南：包含 URI Scheme 选取矩阵、三个核心方法及其返回值规范、两种内容形态的结构定义、围绕 `-32602` 与 `data.uri` 的错误处理合规检查清单、缓存作用域决策指南，以及针对 URI 路径清洗的安全核查项。在编写或评审服务端的资源处理器时，请随身查阅此指南。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -73,11 +73,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/12-the-resources-primitive
 ```
 
-## Capstone Connection
+## 项目连接
 
 Capstone 综合考核中的全流程通信除了工具调用与授权流程外，还必须包含至少一次合规的资源读取，且该读取必须严格满足本课检验的错误处理规范：缺失资源必须返回带 `data.uri` 的 `-32602`，严禁返回裸露的空 `contents` 数组，且每个完整的成功响应必须携带 `ttlMs` 与 `cacheScope`。请牢固掌握“查询前必先清洗路径”的安全习惯，Capstone 考核中的权限校验同样深度依赖该防御逻辑。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -92,7 +92,7 @@ Capstone 综合考核中的全流程通信除了工具调用与授权流程外�
 | `cacheScope` | public（可跨用户共享）或 private（严格绑定当前授权上下文）的缓存提示 |
 | `subscriptions/listen` | 用于监听资源变更通知的现代事件流机制，全面取代了已废弃的 resources/subscribe |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：资源原语 (Resources)](https://modelcontextprotocol.io/specification/2026-07-28/server/resources)
 - [MCP 规范 2026-07-28：缓存机制 (Caching)](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching)

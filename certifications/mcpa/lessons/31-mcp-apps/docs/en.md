@@ -120,13 +120,13 @@ UI 资源内部携带了指导宿主如何渲染它的安全元数据，全部�
 mcpa-31-app-sandbox
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的架构图同时展示了一次工具调用在双端协商下的两条执行分支：
 - 在左侧分支中，声明了 UI 扩展的宿主通过常规的 `resources/read` 读取工具在 `_meta.ui.resourceUri` 中指定的资源，严格核验 MIME 类型，依据声明域名结合本地安全策略装配出严格的 CSP，并在沙箱化 iframe 中安全渲染视图；图中的虚线清晰标明了关键安全门禁：即使是由 App 前端代码直接发起的工具调用，在满足工具自身可见性的前提下，依然必须越过人类同意确认网关，随后方可发往后端服务器。
 - 在右侧分支中，从未声明 UI 扩展的普通宿主在收到常规的 `tools/call` 结果后直接止步，仅提取并展示工具返回的纯文本内容，自始至终绝不触碰任何底层资源。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。该程序构建了一个独立的服务器，暴露了绑定到同一个仪表盘视图的三个典型工具：`sales_by_region`（默认可见性，模型与应用皆可见）、`refresh_sales_view`（`visibility: ["app"]`，对大模型隐蔽，仅供前端视图刷新）、以及 `export_sales_report`（`visibility: ["model"]`，仅供大模型调用，禁止前端 App 触碰）。同时暴露了四个资源：标准的 `ui://` 真实视图、一个返回普通 `text/html` 而非 App Profile 的缺陷部件 `legacy-widget`、一个 CSP 声明域名超出宿主本地白名单的非法部件 `scripts-widget`，以及一个完全省略了 `csp` 字段的最小化部件 `minimal-widget`。
 
@@ -136,11 +136,11 @@ python3 code/main.py
 
 代码中的 `HostAppLoader.load` 分别在声明扩展与未声明扩展的两种情境下，对同一个工具执行了完整的加载决策，终端清晰输出了两套可直接对比的执行计划：一套是 `{"mode": "app", ...}`，基于真实的 `resources/read` 构建，携带着动态生成的完整 `csp` 规则串以及被严格裁减为宿主白名单真子集的 `grantedPermissions`；另一套则是 `{"mode": "text", ...}`，根本不会向服务器发起资源读取请求。函数 `review_app_resource` 与 `build_csp` 分别针对两类缺陷资源与最小化资源展开了专项检测，并在控制台以纯文本逐一解释了各项检测失败的具体原因或生效的默认安全策略。在程序末尾，`request_tool_call_from_app` 演示了两道独立的防御关卡：针对 `export_sales_report` 的调用因为可见性缺少 `"app"` 在触及同意流程前被直接就地拒绝；而针对 `refresh_sales_view` 的调用在遭遇用户拒绝时被当场终止，在获得用户批准后则携带全新 ID 顺利转发至服务端。仔细比对这两次调用的请求报文，验证每次请求均完整携带各自独立的 `_meta` 与扩展声明，无任何跨调用状态残留。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/mcp-apps-review-checklist.md` 是一份单页架构审查清单：系统整理了在信任并渲染一个 `ui://` 资源之前必须执行的完整检查项；规范了 UI 工具必须保留的纯文本兜底准则；并提供了一份决策矩阵，将各项检测结果映射为“正常渲染”、“平稳降级”或“彻底拦截”。当你在工具定义中引入 `_meta.ui` 时，请务必参照本清单进行技术审查。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -154,11 +154,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/31-mcp-apps
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在 Capstone 综合大作业的端到端全流程考核中，考官可能会在调用链路中加入具备 UI 交互能力的工具。本课探讨的每一个问题在此时都将成为答辩考点：本次请求在线路上是否真正完成了扩展的协商？抓取到的资源在真正渲染之前是否严格核验了标准的 MIME 类型？以及由前端界面触发的工具调用是否依然穿过了 Capstone 统一要求的人类同意授权网关。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -175,7 +175,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/31-mcp-apps
 | App-to-host bridge | 基于 `postMessage` 构建的专属 JSON-RPC 通信桥梁，独立于底层的客户端-服务器连接 |
 | Text fallback（文本降级） | 具备 UI 能力的工具为不支持该扩展的普通宿主所保留的纯文本 `content` 兜底响应 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP Apps 扩展总览](https://modelcontextprotocol.io/extensions/apps/overview)。
 - [构建 MCP App 官方实战指南](https://modelcontextprotocol.io/extensions/apps/build)。

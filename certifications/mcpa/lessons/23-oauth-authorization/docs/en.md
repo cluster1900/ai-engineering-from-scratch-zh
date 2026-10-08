@@ -78,11 +78,11 @@ HTTP 层的三组状态码精准映射了鉴权结果，考试中常针对其边
 mcpa-23-oauth-flow
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的全流程泳道图追踪了一次高危的凭据轮换操作在三个阶段中的完整交互。在顶部泳道中，客户端发起的首次尝试完全未携带令牌，服务端直接以 HTTP 401 与 `WWW-Authenticate` 响应头予以截断，响应中绝无任何 JSON-RPC 报文体，因为请求在协议解析层之前已被物理阻断。在中间泳道中，客户端将该头部解析为受保护资源元数据发现流程，随后使用路径特化探测顺序定位授权服务器，并在本地生成 PKCE 密钥对；从授权服务器重定向拿回授权码后，严格执行 `iss` 一致性比对，确认无误后换得正式令牌。在底部泳道中，客户端重新发起相同的 `tools/call` 请求，这次显式附带了 `Authorization: Bearer` 请求头；服务端的资源服务器层核验该令牌的 Audience 确实绑定为自身的规范 URI 后予以放行，请求最终顺利抵达自基础课以来构建的常规工具业务处理逻辑。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 查看 `code/main.py` 源码。`simulate_authorization_flow` 函数以纯 Python 原生数据结构完整实现了受保护资源元数据发现、授权服务器元数据解析、PKCE 质询派生、资源指示符绑定以及签发者一致性核验；这一部分完全不依赖任何 JSON-RPC 协议包：直接使用字典抽象元数据文档，使用 `AuthorizationRequest` 与 `TokenRequest` 数据类抽象标准 OAuth 交互。而 `McpServer` 与 `McpClient` 则专职模拟 MCP 通信侧：内含一个受 `ResourceServer` 严格保护的 `rotate_credential` 核心工具；服务内置了两枚有效签发的测试令牌，一枚的 Audience 准确匹配本服务端的规范 URI，另一枚则是为完全无关的外部服务端签发。
 
@@ -94,11 +94,11 @@ python3 code/main.py
 
 首先研读控制台打印的发现链路顺序：两个受保护资源元数据探测 URL（路径特化优先，随后根路径），以及三个针对带路径 Issuer 的授权服务器探测 URL。随后观察两组核心报文日志：第一组是未附带凭据的原始 `tools/call`，被外层准确包裹为纯 HTTP 401 状态与标准鉴权响应头，完全没有 `result` 或 `error` 实体；第二组是携带了合法 Bearer Token 重试的相同请求：此时报文成功注入 `Authorization: Bearer tok_valid_abc` 并在 HTTP 层获得 200 放行，紧随其后的是包含新请求 id 的常规 `resultType: "complete"` 业务响应。尝试在代码中将客户端所使用的令牌篡改为 `foreign_token` 并重新运行：观察一枚虽然签名完好但 Audience 指向 `https://other-server.example.com/mcp` 的外部令牌，如何在服务端 Audience 校验关卡被当场抓包并直接打回 401 拒绝。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/authorization-flow-checklist.md` 是一份单页生产级鉴权落地清单：系统收录了受保护资源元数据与授权服务器元数据的权威探测顺序标准；PKCE 缺失强阻断法则；规范化 `resource` 参数的构造约束；RFC 9207 规范的 `iss` 四行决策核验表；以及 401、403 与 400 三大核心状态码的技术判别红线。在为远程托管的 MCP 服务端首次搭建授权体系时，请务必将其作为前置检查标准。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在当前课程目录下执行单元测试：
 
@@ -112,11 +112,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/23-oauth-authorization
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在毕业设计的端到端终极交互场景中，系统内置了一个严格校验 Audience 并拒收外来异构令牌的资源服务器，其安全逻辑与本课实现完全同源。综合项目中所要求掌握的所有鉴权常识：Bearer Token 的可信度受限于其签发的具体受众、传输层 401 拒绝不生成 JSON-RPC 报文体、规范化资源 URI 是令牌作用域的唯一法定锚点，均直接植根于本课的扎实演练。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 核心内涵解释 |
 |---|---|
@@ -131,7 +131,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/23-oauth-authoriz
 | Token passthrough (令牌透传) | 将客户端发来的原始令牌直接转发给下游依赖 API 的危险违规做法；MCP 架构严令禁止 |
 | 401 vs 403 vs 400 | 分别严格指代：无令牌或令牌无效、有效令牌但权限不足 (Scope 缺失)，以及授权请求本身语法畸形 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：授权框架 (Authorization)](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)
 - [MCP 规范 2026-07-28：授权服务器发现机制 (Discovery)](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery)

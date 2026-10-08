@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [Structured Output Is an Untrusted Contract](../../09-structured-output-and-defensive-parsing/), [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/)
+**Prerequisites:** [结构化输出本质是不可信契约](../../09-structured-output-and-defensive-parsing/), [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/)
 **Time:** ~120 minutes
 
 ## 学习目标
@@ -288,7 +288,7 @@ MCP 服务端能够以智能体的信任身份对外暴露丰富的工具和数�
 6. 将该攻击样本转化为自动化的安全回归测试用例。
 7. 在严密的可观测性监控之下，灰度逐步恢复系统服务。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过安全威胁模型图示，演练将敏感密钥数据、不受信外部内容、模型操作提议、策略拦截门禁、执行沙箱以及外部业务系统放置在完全隔离的物理边界两端。尝试逐一关闭某一项安全控制，直观观察哪一条潜在的攻击渗透链路会随之变为可达通路。
 
@@ -296,15 +296,15 @@ MCP 服务端能够以智能体的信任身份对外暴露丰富的工具和数�
 13-secrets-threat-model
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 运行安全策略门禁，随后依次输入路径穿越遍历、敏感密钥目录访问、破坏性 Shell 命令、来自不可信数据源的写操作提议，以及未列入白名单的外部非法域名请求。依据底层客观的放行或拦截真实状态进行判定，而非依赖模型生成的自然语言辩解。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/security-decision-record.json` 记录了由 `python3 main.py` 演示生成的标准安全审计流水：一个被合法放行的受限目录读取、一个被拦截的敏感密钥读取、一个被拦截的高危破坏性命令，以及一个向白名单受信任域名发起的合法 HTTPS 请求。配套的单元测试套件对路径穿越拦截、数据源信任标签校验、写操作审批门禁、网络域名白名单、日志脱敏机制以及环境变量密钥隔离进行了全方位断言验证。
 
-## Verify It (验证方法)
+## 验证方法
 
 ```bash
 cd certifications/claude/lessons/13-application-security-and-secrets/code
@@ -312,11 +312,11 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套测验将围绕数据源信任等级判定、密钥存放位置原则、真实身份防伪造、多层纵深防御体系、最终物理状态安全验证以及安全事件应急处置流程展开深入考察。将通过验证的安全决策实录与威胁模型设计，直接作为重要的安全凭证纳入 Developer Capstone 30 以及 Architect Capstone 31 和 32 的实施方案中。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - 必须视所有外部检索到的文档内容和工具返回结果为完全不可信的数据。
 - 在盲目向提示词中追加安全警告之前，首先从物理上收缩系统不必要的多余特权。
@@ -328,7 +328,7 @@ python3 -m unittest discover tests -v
 - 衡量防御是否成功的唯一标准是客观的最终物理状态，绝非模型在文本中如何礼貌拒绝。
 - 面对未知的工具、未知的信任标签或未定义的策略状态，坚决执行故障关闭（Fail-Closed）拦截策略。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 为策略拦截门禁扩展一份标准化的审批凭据对象，强力绑定目标工具名、归一化参数哈希、审批人身份主体与过期失效时间。
 2. 为网络出站策略增加重定向防劫持校验：当请求从白名单合法域名意外跳转至未授权域名时，坚决拦截该重定向请求。
@@ -336,7 +336,7 @@ python3 -m unittest discover tests -v
 4. 为某次意外出现在模型追踪链路中的敏感 API Token，制定一份标准详尽的应急轮换操作手册（Runbook）。
 5. 针对一份典型的 MCP 服务端启动配置文件展开安全代码审计，识别其潜在攻击面，并输出一份最小权限整改清单。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [缓解越狱攻击与提示词注入风险指南](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks)
 - [防范提示词泄露最佳实践](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak)

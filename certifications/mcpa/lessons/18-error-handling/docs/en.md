@@ -85,11 +85,11 @@ Mcp-Method: tools/list
 mcpa-18-error-taxonomy
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的错误分类架构图将两类处理通道并列展示。左列系统列出了本课各个实战场景可能触发的五种协议级错误码，每个错误码代表一个由客户端直接识别并就地处理的基础设施级独立小方块。右列则是一张完整的处理卡片：所有工具业务层面的异常，无论由何种原因触发，一律收敛为统一的 `isError: true` 响应结构，这正是能够作为普通上下文内容安全递送给大模型的唯一通道。底部的虚线带则是绝对禁区：历史遗留区间以及明确废弃的两个旧版代码，任何合规的现代 MCP 实现均不得跨越该边界。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 `code/main.py` 构建了一个包含两个工具的小型服务台系统，并驱动客户端完整遍历本课涉及的所有典型故障场景：正常的服务发现与工具调用、缺少必填参数、枚举参数取值非法、请求调用不存在的工具、调用需要特定能力但请求未作声明的工具、不支持的协议版本协商，以及完全遗漏 `_meta` 的非法请求。在代码仓库根目录下运行该脚本：
 
@@ -99,11 +99,11 @@ python3 certifications/mcpa/lessons/18-error-handling/code/main.py
 
 首先研读其中的安全防御逻辑：`is_forbidden_error_code` 以纯函数的形式完整实现了规范的错误码分配策略，而 `safe_error` 则在实际构造任何错误响应之前强制调用该校验函数。该服务端返回的所有错误必须全部经由 `safe_error` 构造，从而在架构根源上杜绝违规错误码被意外写入 Socket 连接。在运行日志的末尾，有两个标有 `violation` 标记的条目：它们清晰演示了不合规服务端在遇到历史遗留“工具调用失败”场景及已废弃的“资源不存在”场景时会错误返回什么，并用安全包装器明确隔离，使其成为鲜明的反面教学案例。你可以在终端 Python 会话中尝试手动执行 `main.safe_error(1, -32050, "made up")`，观察其在构建响应前便被 `ForbiddenErrorCode` 异常拦截阻断；然后尝试执行 `main.safe_error(1, -32021, "fine")`（官方三大保留代码之一），观察其顺利放行并成功生成标准响应。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/error-code-decision-table.md` 是一份四步错误决策速查表：选择处理通道、选定标准错误码、核验其是否位于禁用黑名单中，以及在无法匹配现有定义时如何正确安置应用自定义代码。该产物还完整包含了 HTTP 状态码映射标准，以及绝不携带 JSON-RPC 报文的纯传输层事件清单。在审查服务端错误处理架构时，请将其作为标准设计准则。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -117,11 +117,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/18-error-handling
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在 MCPA 毕业设计的端到端交互实现中，每当底层出现异常时都会深度依赖本课建立的准则：参数不合规的工具调用必须以 `isError` 形式优雅返回，以确保大语言模型在流程中断前获得自我纠错的机会；被恶意篡改的 MRTR `requestState` 必须被果断拦截且严禁随意滥发非标错误码；针对错误 Audience 签发的访问令牌必须依照第 23 课规范予以阻断，绝不能含糊归为某种临时的协议错误。当综合评估要求你论证某一失败响应的设计理由时，答案永远由两类处理通道之一以及本课决策表中的标准错误码构成，绝不能包含任何由个人临时拼凑的随想数字。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 核心内涵解释 |
 |---|---|
@@ -134,7 +134,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/18-error-handling
 | Retired code (废弃代码) | 早期版本曾经定义但在 2026-07-28 规范中被严令禁止主动发送的错误码，如 `-32002` 与 `-32042` |
 | `safe_error` | 本课构建的架构安全守卫：在实际组装响应报文之前，严格校验并拒绝非法错误码 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [基础协议规范：错误代码 (Error Codes)](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#error-codes)
 - [Tools 规范：错误处理 (Error Handling)](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#error-handling)

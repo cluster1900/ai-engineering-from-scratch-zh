@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [End-to-End Architecture and Value Tradeoffs](../../23-end-to-end-architecture-and-value-tradeoffs/); Phase 13, Lessons 01, 05, 06, 16, and 18
+**Prerequisites:** [端到端系统架构与价值权衡](../../23-end-to-end-architecture-and-value-tradeoffs/); Phase 13, Lessons 01, 05, 06, 16, and 18
 **Time:** ~150 minutes
 
 ## 学习目标
@@ -137,7 +137,7 @@ Prompt 中一句模糊的“请先征求用户同意”根本无法构建可靠�
 
 MCP 规范仅仅标准化了客户端与服务端之间交换工具与资源信息的协议格式。业务层面的租户隔离、最终用户身份识别、敏感操作知情同意、细粒度策略决策、合规审计以及凭据轮换，依然完全属于宿主应用的责任范畴。传输层安全（TLS）绝不等于授权，协议握手成功更不代表客户端自然拥有对所有暴露工具的调用许可。
 
-## Build It (动手构建)
+## 动手构建
 
 本实验使用 Python 标准库实现了一个清晰严密的工具权限与协议路由系统，将身份与授权控制的边界彻底透明化：
 
@@ -146,7 +146,7 @@ MCP 规范仅仅标准化了客户端与服务端之间交换工具与资源信�
 - **步骤 3：基于身份过滤能力发现**：`discover_tools` 根据主体的当前 Scope 动态剔除越权工具，确保普通工单处理人员甚至无法获知注销账号工具的存在。
 - **步骤 4：执行时强制二次鉴权**：`authorize` 验证实时权限与审批有效性；校验失败时，`execute_tool` 返回不可重试的结构化错误对象，坚决拒绝执行。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 25-identity-permission-path
@@ -154,15 +154,15 @@ MCP 规范仅仅标准化了客户端与服务端之间交换工具与资源信�
 
 使用上述权限路径探索器，完整跟踪一个请求从身份认证、能力动态发现、模型工具挑选、运行时拦截校验、人工审批绑定、实际下游调用到最终审计归档的全链路。通过调整测试主体的 Scope，亲身体验为什么能力发现与执行授权必须是两道相互独立的控制防线。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 为测试主体仅配置只读发现权限，尝试触发高危执行动作；随后为其注入一张限定参数的审批单，观察哪一步决策发生了转变，以及系统底层的安全边界是如何始终保持生效的。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 [`outputs/least-privilege-review.json`](../outputs/least-privilege-review.json) 包含一份完整的最小权限审查产物，记录了当前角色可见的工具清单，以及一次由于缺乏权限而被结构化拒绝的退款调用拦截证据。
 
-## Verify It (验证方法)
+## 验证方法
 
 在本地环境中运行并验证完整的授权控制实现及测试套件：
 
@@ -174,11 +174,11 @@ python3 -m unittest discover tests -v
 
 课程配套的 6 道自测题将重点检验你对集成协议适配、身份透传规范、审批绑定机制与错误分类设计的理解。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 请将此处的最小权限审查报告和结构化错误拦截逻辑，作为 Architect Professional Capstone 毕业设计中身份认证与最小权限架构的关键合规证据。
 
-## Use It (生产应用)
+## 实践应用
 
 针对客服系统案例，应将工具按职责划分为细粒度的角色权限包：
 
@@ -202,7 +202,7 @@ python3 -m unittest discover tests -v
 
 严禁盲目追赶技术潮流，架构决策必须以工程指标为依归。
 
-## 考点决策模式 (Exam Decision Patterns)
+## 考试决策模式
 
 如果某个业务角色在正常流程下永远不需要某项能力，请直接从配置中将其完全移除。依赖审计日志与文本二次确认只是事后补偿性手段，绝不是最小权限原则。
 
@@ -222,7 +222,7 @@ python3 -m unittest discover tests -v
 - 寄希望于更大参数的模型能更“懂事”地遵守规则
 - 误以为建立了 MCP 协议连接就天然完成了系统鉴权
 
-## 常见陷阱 (Common Traps)
+## 常见陷阱
 
 ### 全员共用同一个超级服务账号 (One Service Account for Every User)
 
@@ -240,7 +240,7 @@ python3 -m unittest discover tests -v
 
 重复发送相同的请求不可能凭空获得权限。必须将鉴权错误明确标记为不可重试（`retryable: false`），并明确指示调用方转入正确的提权申请或人工审核流程。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 为系统引入数据资源级权限控制（Resource-level Authorization），使得调用主体只能读取指派给自己的工单。
 2. 实现一个基于数字签名的单次有效审批记录验证器，一旦检测到参数被篡改立即抛出异常。
@@ -248,7 +248,7 @@ python3 -m unittest discover tests -v
 4. 针对 200ms 超时预算的三个核心内部微服务，撰写一份详尽的技术选型报告，深度对比 MCP 与直接 API 的性能与维护成本。
 5. 对工具描述与返回内容进行红队对抗测试（Red-team Testing），防范间接提示词注入攻击。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 常见误解 | 实际技术内涵 |
 |---|---|---|
@@ -259,7 +259,7 @@ python3 -m unittest discover tests -v
 | 最小权限 (Least privilege) | 在界面上加个二次确认弹窗 | 彻底剥离一切非必要能力，将留存的每个权限边界收缩到绝对最小 |
 | 审批单 (Approval) | 用户随口说了声“好的” | 针对精确入参、操作主体和有效时长进行严格绑定的单次授权凭证 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP specification](https://modelcontextprotocol.io/specification/latest) 阅读 MCP 协议规范了解当前标准行为
 - [MCP authorization specification](https://modelcontextprotocol.io/specification/latest/basic/authorization) 学习协议层授权的硬性要求与最佳实践

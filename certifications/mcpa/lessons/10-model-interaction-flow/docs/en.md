@@ -47,11 +47,11 @@
 mcpa-10-interaction-flow
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节架构图完整展现了一个请求流经全部五个阶段的全貌。跟随顶部第一行，从用户输入出发，历经宿主构建上下文、模型做出工具选择，直至到达确认拦截关卡。从该关卡分出两条路径：获得许可的调用继续向右发送至服务端；而被拒绝的调用则直接沉入下方的虚线框中暂存，绝不向外发送。在服务端下方，三种可能的结果发散展开：执行成功的结果向下汇入最终答复，而工具执行错误与 `input_required` 结果均以虚线形式回环向上折返至模型，表明它们属于重试链路而非正向推进。请注意，虽然两条重试路径在图示中形态相似，但其底层机制截然不同：只有其中一条需要分配全新 ID 并原样回传 `requestState`。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py` 并在课程目录下运行：
 
@@ -61,11 +61,11 @@ python3 code/main.py
 
 终端将打印出 9 组请求与响应报文对。首先审阅前两次 `get_forecast` 调用：模型最初草拟了一组空参数，服务端返回 `isError: true` 并明确指出了缺失的字段，随后模型才从用户的原始提示中提取出城市名称，并使用全新 ID 发起了第二次调用。接着审阅两次 `open_ticket` 调用：第一次调用提供了合法的 `title`，但依然返回了 `input_required`，因为该服务端设计为必须由人类确认工单优先级，绝不放任模型凭空猜测；随后发起的重试携带了 `inputResponses`，并原封不动地带回了服务端签发的 `requestState` 原始字符串。随后观察输出中的确认关卡部分：`close_ticket` 工具没有提供任何 `annotations` 块，因此宿主根据规范默认值直接将其判定为破坏性操作，在发送前将两个拟发起的调用均展示给人类进行确认。其中一个工单获得批准并实际发送到了网络中；另一个工单因为低优先级需要二级复核而被否决，根本没有生成任何 `tools/call` 请求。最后，模型尝试调用该服务端并未提供的 `archive_ticket` 工具，收到了 `-32602` 错误码，随后系统并未进行盲目重试。底部的最终答复直接引用了成功调用中返回的真实内容，而非凭空虚构。你可以尝试修改代码中的 `choose_priority` 或 `approve_close` 函数后重新运行，观察交互循环如何流向不同的分支路径。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/interaction-flow-trace.md` 是本课交付的单页交互追踪与决策指南：清晰梳理了模型在调用前后能看到的全部字段、`tools/call` 三种返回结果对交互循环的驱动分支，以及构建合规宿主循环时必须遵循的审查清单（在调用前展示参数、严禁使用相同参数盲目重试协议错误等）。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -79,11 +79,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/10-model-interaction-flow
 ```
 
-## Capstone Connection
+## 项目连接
 
 Capstone 综合考核中的全流程交互正是本课循环机制的真实演练：构建上下文、交由模型决策、在敏感操作发出前进行人工拦截确认、正确解析三种返回形态，并基于工具返回的真实数据生成回复。当 Capstone 考核涉及“为何某一调用从未出现在网络中”或“为何某次重试必须采用全新 ID”时，其答案均直接溯源自本课讲解的交互循环机制，而非单纯依赖网络报文规则。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -96,7 +96,7 @@ Capstone 综合考核中的全流程交互正是本课循环机制的真实演�
 | requestState | 服务端签发的不透明状态字符串，客户端在 MRTR 重试时必须原样逐字节回传，严禁读取或篡改 |
 | Annotation defaults（注解默认值） | 当工具缺失注解时适用的 readOnlyHint: false 与 destructiveHint: true，确认关卡据此触发拦截 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：工具、消息流与用户交互模型](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
 - [MCP 规范 2026-07-28：多轮往返请求 (MRTR)](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr)

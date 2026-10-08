@@ -63,11 +63,11 @@ JSON-RPC 2.0 规范为 MCP 提供了四种基础消息形态，而协议规范�
 mcpa-03-envelope
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方图表顶层并排对比了四种消息形态的判定核心：请求必须具备非空的 id、通知必须彻底没有 id、成功结果必须包含 resultType、错误响应必须具备 code 和 message。图表下半部分对 `_meta` 键名进行了两次深度剖析，将斜杠两边的标签与名称拆解展示。`io.modelcontextprotocol/protocolVersion` 高亮了第二级标签 `modelcontextprotocol`，清晰说明了其为何属于官方保留空间；而 `com.example.mcp/scanId` 同样高亮了其第二级标签，但由于该标签是 `example`，因此尽管字符串后部出现了 `mcp`，它依然属于自由使用的非保留前缀。并排对照两行高亮显示，规则一目了然：决定前缀是否为官方保留的关键在于位置，而不仅仅在于单词是否出现。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本没有网络通信，也不依赖任何外部 SDK，纯粹聚焦于本课传授的消息形态逻辑。`classify_message` 接收原始字典并返回 `"request"`、`"notification"`、`"result"`、`"error"` 或 `"invalid"`，其判定严格遵循上述 id 规则：有 method 且无 id 归为通知，有 method 且 id 合法归为请求，有 method 但 id 为 null 则属于非法消息；`meta_key_status` 接收键名字符串并依据前缀语法及第二级标签规则，准确返回 `"reserved"`、`"free"` 或 `"invalid"`：
 
@@ -77,11 +77,11 @@ python3 code/main.py
 
 首先对照核心概念研读控制台打印出的分类清单，随后观察 `run_scenario` 运行的一组消息交互演示：包含一个得到完整结果回复的合法 `tools/call` 请求、一个未产生任何回应的 `notifications/progress` 进度通知，以及被通信校验器视为违规流量的三个故意构造的错误示例（分别附带违规原因说明）。这三个错误包括：携带了不该出现的 id 的通知、id 为 null 的畸形请求，以及完全缺失 `_meta` 的请求；随后代码展示了合规服务端遇到此类情况时，通过相同的 `handle_request` 逻辑所真实生成的 `-32602` 错误响应。尝试将请求中缺失的字段从 `protocolVersion` 改为 `clientCapabilities` 并重新运行，观察报错信息如何精准指出另一个缺失的元数据键名。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/message-shapes-reference.md` 是本课交付的单页消息结构参考速查文档：收录了四种基础消息形态定义、resultType 枚举取值、包含第二级标签校验准则的 `_meta` 语法规范，以及完整的保留键名速查清单（附带对应简报章节索引）。在审查原始 MCP 通信流量时建议常备此表，它能帮助你迅速判定特定消息结构是否合法、某个元数据键名是否可供业务自由使用。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -95,11 +95,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/03-json-rpc-and-meta
 ```
 
-## Capstone Connection
+## 项目连接
 
 后续第 04 课直接在本文讲授的消息信封之上构建其“无状态（Stateless）”设计：服务端之所以能够将每个到达的请求视为自包含单元，正是因为每个请求都已在自身的 `_meta` 中注入了协议版本与能力声明，无需再从底层物理连接中获取推断信息。第 18 课的错误处理分类体系同样建立在此基础之上，要求熟记 `-32602` 是畸形元数据引发的错误码，且错误响应中的 `data` 属于可选拓展。在 Capstone 最终项目的端到端通信中，首条交互消息正是按照本课实验所示的标准信封规范（包含完备的 `_meta` 结构）构建的，信封构造稍有不慎，后续整条调用链都会直接崩溃。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -114,7 +114,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/03-json-rpc-and-m
 | clientCapabilities | 位于 `_meta` 中的必需字段，声明与当前单次请求直接相关的客户端能力 |
 | 自声明字段 (Self-reported) | clientInfo 与 serverInfo：由发送方自行填写的标识，未经验证，绝不可充当安全凭证 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：基础协议](https://modelcontextprotocol.io/specification/2026-07-28/basic)，重点研读 Messages 与 `_meta` 通用字段
 - [SEP-414：在 `_meta` 中引入 OpenTelemetry 链路追踪上下文](https://modelcontextprotocol.io/seps/414-request-meta)

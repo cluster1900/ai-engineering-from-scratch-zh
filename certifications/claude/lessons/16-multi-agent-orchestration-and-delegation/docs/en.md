@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/); Phase 14, Lessons 12 and 28
+**Prerequisites:** [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/); Phase 14, Lessons 12 and 28
 **Time:** ~135 minutes
 
 ## 学习目标
@@ -153,9 +153,9 @@ Claude 负责处理需要语义理解的决策（例如评估哪条缺失论点�
 
 利用合成的工具故障和部分结果对编排逻辑进行压力测试。仅在正常路径（Happy Path）下运行是说服力最低的验证。
 
-## Build It
+## 动手构建
 
-## Interactive Lab
+## 交互式实验
 
 ```figure
 16-multi-agent-topology
@@ -163,15 +163,15 @@ Claude 负责处理需要语义理解的决策（例如评估哪条缺失论点�
 
 在引入多个 Agent 之前，请先使用拓扑交互图进行推演。对比单上下文（Single Context）、顺序流水线（Sequential Pipeline）、并行扇出（Parallel Fan-Out）、协调器专家（Coordinator）以及独立评审（Independent Reviewer）架构；交互图直观揭示了各个模式下的协调成本、前置依赖关系以及局部结果丢失风险。
 
-## Practice Lab
+## 实战演练
 
 设计一个有边界的技术调研流水线，随后尝试移除其中一个不必要的上下文，并在量化评估中证明这一精简是否会影响最终的可度量指标。
 
-## Shipped Artifact
+## 交付产物
 
 本课交付的产物位于 [`outputs/orchestration-contract.md`](../outputs/orchestration-contract.md)，它是一份具体可执行的调研流水线交接契约，而非空白模板。
 
-## Verify It
+## 验证方法
 
 在本地验证任务标识、依赖顺序、资源预算、局部状态定义与评审隔离机制：
 
@@ -183,7 +183,7 @@ python3 -m unittest discover -s code/tests -v
 
 尝试修改其中的某条前置依赖或移除局部状态处理规则，确认校验工具能否立即拦截违规配置。课后测验将在构建完成后重点考查系统拓扑决策能力。
 
-## Capstone Connection
+## 项目连接
 
 将这份经过验证的编排契约，复用为架构师认证场景综合项目（Architect Foundations Scenario Capstone）中的 Multi-Agent 编排章节。
 
@@ -216,7 +216,7 @@ python3 -m unittest discover -s code/tests -v
 
 故意注入重复论点、时间冲突的事实、人为构造失败的 Agent、过时的参考资料以及格式错误的输出对象。确保最后的综合汇报不会静默掩盖这些异常。
 
-## Use It
+## 实践应用
 
 在代码库审查场景中，推荐的稳定落地范式为：
 
@@ -231,7 +231,7 @@ python3 -m unittest discover -s code/tests -v
 
 在客户支持场景中，根据权限级别而非仅凭专业知识划分角色：政策研究员拥有只读权限；退款建议 Agent 负责案例分析；而只有通过独立审批的执行节点才能获取写权限以触发资金划转。
 
-## Exam Decision Patterns
+## 考试决策模式
 
 在处理前置条件与权限边界时，优先选择确定性的程序控制；在需要隔离推理的场景中选择 Subagent，而非将其退化为确定性的常规工具调用。
 
@@ -247,7 +247,7 @@ python3 -m unittest discover -s code/tests -v
 
 而不佳的备选方案往往试图通过为更多 Agent 灌输宽泛模糊的 Prompt 和全量工具来解决协作问题。
 
-## Common Traps
+## 常见陷阱
 
 ### 为每个步骤都生硬分配一个 Agent (Agent Per Step)
 
@@ -265,7 +265,7 @@ python3 -m unittest discover -s code/tests -v
 
 评审 Agent 若读取了生成者的完整推导脉络，往往会不自觉地陷入相同思维定势，最终退化为润色文字的修辞编辑。必须在纯净的全新上下文中提供待审产物、客观证据与评审细则。
 
-## Exercises
+## 课后习题
 
 1. 将一段膨胀的单 Agent Prompt 重构为普通工具、Skill 与 Subagent 的职责分工，并论证每个边界的合理性。
 2. 设计当三个并发文献研究员中有任意一个超时失效时的局部结果（Partial Result）应对机制。
@@ -273,7 +273,7 @@ python3 -m unittest discover -s code/tests -v
 4. 在相同的基准评估集上，对比顺序流水线与自适应协调器模式的准确度、耗时与 Token 开销。
 5. 编写一个轨迹测试用例：当两个 Agent 出现任务职责重复认领时，断言测试失败并报警。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 通俗说法 | 严谨工程定义 |
 |------|----------|--------------|
@@ -284,7 +284,7 @@ python3 -m unittest discover -s code/tests -v
 | 交接 (Handoff) | 把文字发过去 | 传递类型化状态、支持证据、结构化错误及后续责任链的过程 |
 | 独立评审员 (Independent Reviewer) | 再问一次第二意见 | 在完全剥离生成者思维引导的纯净上下文中评估产物与证据质量 |
 
-## Further Reading
+## 延伸阅读
 
 - [Claude Agent SDK 官方文档](https://platform.claude.com/docs/en/agent-sdk/overview)：查阅当前 Subagent 与 Session 管理能力
 - [构建高效智能体 (Building Effective Agents)](https://www.anthropic.com/research/building-effective-agents)：深入掌握编排设计模式

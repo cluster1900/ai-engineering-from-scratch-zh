@@ -4,13 +4,13 @@
 
 **Type:** Learn
 **Languages:** Python
-**Prerequisites:** [Study the Decisions, Not the Vocabulary](../../00-certification-strategy/), [Managed LLM Platforms](../../../../../phases/17-infrastructure-and-production/01-managed-llm-platforms/)
+**Prerequisites:** [考核核心是决策，而非词汇死记](../../00-certification-strategy/), [Managed LLM Platforms](../../../../../phases/17-infrastructure-and-production/01-managed-llm-platforms/)
 **Time:** ~90 minutes
 
 ## 学习目标
 
 - 在 Chat（对话）、Projects（项目）、Research（深度调研）、文件与 Artifacts、Connectors（连接器）以及编程式 API 界面之间做出精准选型。
-- 脱离具体模型小版本号，深入理解 Haiku、Sonnet 与 Opus 模型家族恒定的定位与分工分工。
+- 脱离具体模型小版本号，深入理解 Haiku、Sonnet 与 Opus 模型家族恒定的定位与分工。
 - 将产品界面与模型选型与质量、响应时延（Latency）、Token 成本、数据保鲜度以及合规治理约束全面匹配。
 - 借助架构决策记录（ADR），客观对比 Anthropic 原生直接采购、Amazon Bedrock、Google Vertex AI 以及 Microsoft Foundry 等主流部署路径。
 - 明确识别何时应采用 Memory（记忆）、Project Knowledge（项目知识库）或直接新建干净会话来维系上下文连续性。
@@ -188,7 +188,7 @@ flowchart TD
 
 切忌为了强行迎合主观喜好的云厂商而恶意篡改权重配比。如果某项硬性安全合规红线足以一票否决某个路径，应在打分前将其作为硬性把关门槛明确排除。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过下方的模型适配交互图表（Model-fit figure），动态调整任务的复发频次、数据保鲜度、风险等级、团队协作规模与输出格式约束。核心目的不是寻找一个放之四海而皆准的万能界面，而是深刻观察到底是哪一项具体的硬性约束使得轻量级的简单界面彻底无法胜任。
 
@@ -196,15 +196,15 @@ flowchart TD
 01-claude-model-fit
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在本地运行选型打分校验器，尝试修改参数，让成本更低的小模型在某一测试关卡中挂掉，或者构造一组边界使得最简化的原生界面能够通过所有测试。尝试调整部署权重、破坏候选方案的得分逻辑，或刻意剔除附带日期的权威证据。观察推荐结论是如何完全基于客观事实证据而发生迁移，而非受制于对某款产品或云厂商的盲目偏好。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/product-selection-record.json` 包含一份填报完备的实战范例：既包含针对每周竞品简报的工作界面选型结论，又包含针对某受监管金融场景 Azure 应用的云部署打分矩阵与正式 ADR。部署部分严格覆盖了当前 4 大主流路径、6 项加权评估维度、场景专属判定依据、附带核验日期的官方信源、后续架构影响以及明确的复审触发机制。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在本地终端运行确定性校验脚本及其自动化测试集：
 
@@ -216,7 +216,7 @@ python3 -m unittest discover tests -v
 
 校验器具备严格的防御性拦截逻辑：它会自动拒绝任何未标注核验日期的产品参数、拒绝未经基准评测验证的模型选型、拦截缺少人类责任人签字的流程、拦截未阐明否决理由的决策草案、校验 4 种部署路径的完整性、检查加权算法的数学准确性、否决背离最高得分的违规 ADR，并严查官方信源凭证。在示例通过后，请将其改造为你所负责的真实业务流程。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 本课自测题重点考察在多维约束剧烈变动时，你是否能做出最优的产品形态与模型组合决断。所沉淀的选型决策记录将作为核心基石，直接输入到第 29 课至第 32 课的高阶毕业设计（Capstones）中，届时你必须在答辩中充分论证为何不能采用更轻量或更原生替代界面的深层理由。
 

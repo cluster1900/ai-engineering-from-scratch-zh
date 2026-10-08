@@ -78,11 +78,11 @@ TTL 保鲜期与实时推送通知是相辅相成、紧密协同的。服务端�
 mcpa-20-cache-freshness
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的架构图直观展示了单条缓存响应在时间轴上的状态迁移。响应在 `t_received` 刻度到达，并向后延伸出一段由 `ttlMs` 界定的阴影保鲜带：在阴影覆盖的区间内，客户端的所有查询直接由本地缓存瞬时响应，底层网络完全静默。请特别对比图中第二条相同的时间轴：一条 `list_changed` 变更通知在阴影保鲜期尚未结束前突然抵达，保鲜生命线在通知到达的瞬间被即刻切断。图表附注明确强调了这一核心法则：通知一到，立即失效，此时本地时钟剩余的 TTL 余额彻底归零作废。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。该模块构建了一个小型 `notes` 资源服务器，内含三篇共享的公开笔记与两篇私有笔记，前端接入了 `ClientCache` 缓存组件，供 `alice-token` 与 `bob-token` 两个不同客户端身份共享（模拟网关层共享缓存环境）。
 
@@ -94,11 +94,11 @@ python3 code/main.py
 
 对照核心概念研读终端打印的交互记录：前五次请求遍历了 `resources/list` 分页流：第二次调用由于命中本地缓存而完全无网络流量；第三次调用显式传入 `cursor: ""` 并顺利拉取到中间切片页面而非第一页；第四次顺着 `nextCursor` 拿到尾页；第五次故意传入未知的假游标并成功观察到服务端返回 `-32602`。随后的笔记读取流程展示了作用域隔离：Alice 与 Bob 能够共享同一份关于公开 README 的本地缓存副本（因为其 `cacheScope` 为 `"public"`），但在读取私有日记时，两人各自触发了独立的远端拉取，因为 `"private"` 条目在共享缓存内部绝对禁止跨 Token 复用。紧接着，Alice 开启了 `subscriptions/listen` 订阅流，服务端修改了笔记列表，随后的 `resources/list` 调用即使 TTL 尚未到期也立即穿透回远端网络。在读取私有保险库笔记时，触发了携带 `elicitation/create` 的 `input_required` 结果；客户端完成输入交互后，使用全新 id 并回传 `requestState` 发起重试，而最终获取的完整内容被显式排除在缓存之外，因此二次读取保险库必须再次发起全量询问。最后一条记录并非客户端主动发送：它被包装为一个故意的违规样例，模拟了未遵循 SEP-2549 规范的旧版服务端完全遗漏 `ttlMs` 与 `cacheScope` 的返回形态，这正是促使合规客户端自动降级采用 `ttlMs: 0` 默认保全策略的典型场景。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/caching-decision-guide.md` 是一份单页缓存决策与游标使用权威指南：系统梳理了如何科学选定 `ttlMs` 与 `cacheScope`，以及如何无缺陷实现客户端本地缓存组件。在编写调用 `resources/list`、`resources/read`、`tools/list`、`prompts/list`、`resources/templates/list` 或 `server/discover` 的核心模块时，可直接将其作为架构实现的基准手册。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -112,11 +112,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/20-caching-and-pagination
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在毕业设计的全流程交互中，针对每一个可缓存的调用，系统都必须决策其结果可信度能够维持多久，以及是否允许跨越不同调用者共享；同时必须具备在不预设固定页数的前提下平稳遍历海量长列表的工程能力。这两项决策完全依托本课准则：严格从服务端响应结构中提取 `ttlMs` 与 `cacheScope` 而非自行拍脑袋设定硬编码策略；以方法名与关键入参为基准构建严格的 Cache Key；将空字符串游标视为合法数据而非终结信号；并且绝不允许将包含多轮交互的重试结果混入缓存之中冒充通用副本。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 核心内涵解释 |
 |---|---|
@@ -129,7 +129,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/20-caching-and-pa
 | `list_changed` notification | 实时推送通知；一旦收到，关联的本地缓存列表立刻失效，无论剩余 TTL 还有多久 |
 | MRTR retried result | 经由 `input_required` 多轮往返重试最终获取的终态响应；此类结果绝对禁止写入缓存 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 缓存规范 (Caching)](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching)
 - [MCP 分页规范 (Pagination)](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/pagination)

@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [Agent SDK Sessions, Subagents, and Context](../../17-agent-sdk-sessions-subagents-and-context/), [Tool Contracts, Errors, and Progressive Discovery](../../18-tool-contracts-errors-and-progressive-discovery/), [Reliable Extraction, Batch, and Independent Reviewers](../../20-reliable-extraction-batch-and-reviewers/)
+**Prerequisites:** [Agent SDK 会话、Subagent 与上下文管理](../../17-agent-sdk-sessions-subagents-and-context/), [工具契约、错误处理与渐进式发现](../../18-tool-contracts-errors-and-progressive-discovery/), [可靠信息抽取、Batch 批处理与独立评审](../../20-reliable-extraction-batch-and-reviewers/)
 **Time:** ~150 minutes
 
 ## 学习目标
@@ -252,9 +252,9 @@ Disposition (处理决议): 在推向生产环境灰度前必须经过人工专�
 
 时刻将外部文档文本视为不可信的外部输入（Untrusted Data）。一段隐蔽的 HTML 隐藏元素或一段代码注释，可能暗藏着恶意的 Prompt 注入指令，绝不能允许其逾越主任务的安全策略或工具权限准则。
 
-## Build It
+## 动手构建
 
-## Interactive Lab
+## 交互式实验
 
 ```figure
 21-provenance-escalation
@@ -262,15 +262,15 @@ Disposition (处理决议): 在推向生产环境灰度前必须经过人工专�
 
 运行溯源与升级模拟器，演练在交互界面中故意深埋、不当裁剪、制造冲突或剔除关键证据，实时观察系统覆盖率与任务状态的变化轨迹。该交互实验让 `partial` 与 `blocked` 状态显式可见，而不是任由一段看似行云流水的 AI 摘要掩盖尚未完成的工作。
 
-## Practice Lab
+## 实战演练
 
 从一份测试数据包中人为抹去被忽略项的统计计数（Omitted-item Count）或冲突属主标识，观察系统将未完工状态误判为全部完成的严重隐患，随后修复该证据元数据信封。
 
-## Shipped Artifact
+## 交付产物
 
 本课交付的核心成果位于 [`outputs/reliability-packet.md`](../outputs/reliability-packet.md)，完整记录了一个包含 24 个文件的代码审查案例，内含显式的覆盖率清点（如 18 of 24）、单处事实冲突处理、数据源溯源信封以及明确绑定责任人的向上升级处置方案。
 
-## Verify It
+## 验证方法
 
 在本地验证证据信封与分层人工审查策略的合规性：
 
@@ -282,7 +282,7 @@ python3 -m unittest discover -s code/tests -v
 
 课后测验将全面考察针对上下文摆放策略、清单机制构建与容灾恢复的核心要点。
 
-## Capstone Connection
+## 项目连接
 
 将这份经过验证的可靠性数据包，直接作为架构师基础场景大作业（Architect Foundations Capstone）的上下文可靠性工程附录。
 
@@ -312,7 +312,7 @@ python3 -m unittest discover -s code/tests -v
 
 分别选取一份 Markdown 规范文档、一份包含密集数据表格的 PDF、一份 CSV 数据表以及一份核心源代码。确认提取出的引文能够精准跳转回对应的章节、页码、单元格区间或代码行号，确保依赖排版布局的关键事实在提取后毫发无损。
 
-## Use It
+## 实践应用
 
 ### 考试决策核心范式 (Exam Decision Patterns)
 
@@ -347,7 +347,7 @@ python3 -m unittest discover -s code/tests -v
 5. 为一个包含 10000 条抽取记录的企业数据库，设计一份科学的分层人工抽检计划，包含高危全审与随机抽样。
 6. 对比一段 Markdown 数据表格在纯文本形式与富文本渲染形式下的信息抽取表现，详细记录丢失的结构语义。
 
-## Key Terms
+## 核心术语
 
 - **迷失在中间 (Lost in the middle):** 当关键信息被深埋在超长上下文的中后段非核心区域时，模型有效提取与遵循该信息的能力出现显著衰减的现象。
 - **溯源信封 (Provenance envelope):** 完整封装了数据源标识、版本快照、时间戳、权威等级、原始物理坐标及提取方式的标准化结构元数据。
@@ -359,7 +359,7 @@ python3 -m unittest discover -s code/tests -v
 - **分层审查 (Stratified review):** 依据业务破坏后果、不确定性等级划分风险梯次，辅以固定比例的代表性随机抽样的人工审核资源分配机制。
 - **格式类型保真渲染 (Content-type rendering):** 在数据解析与呈现过程中，深度维系原始数据格式（如表格、代码、多栏 PDF）所固有结构与视觉语义的处理手段。
 
-## Further Reading
+## 延伸阅读
 
 - [Claude Certified Architect Foundations 官方考试指南](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf)
 - [Anthropic 官方提示词工程指南：长上下文最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/long-context-tips)

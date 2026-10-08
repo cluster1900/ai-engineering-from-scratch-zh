@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [End-to-End Architecture and Value Tradeoffs](../../23-end-to-end-architecture-and-value-tradeoffs/); Phase 11, Lessons 06 and 07; Phase 5, Lesson 23
+**Prerequisites:** [端到端系统架构与价值权衡](../../23-end-to-end-architecture-and-value-tradeoffs/); Phase 11, Lessons 06 and 07; Phase 5, Lesson 23
 **Time:** ~150 minutes
 
 ## 学习目标
@@ -150,7 +150,7 @@ flowchart LR
 - 检索召回分布的漂移（Distribution Shift）
 - 评估测试集中排名前列的高频失败查询
 
-## Build It (动手构建)
+## 动手构建
 
 本实验使用 Python 标准库实现了一个透明且易于调试的轻量级 BM25 风格检索索引。虽然生产级搜索系统具备更高的并发性能与特性，但底层评分计算与元数据边界的核心逻辑与之一致。
 
@@ -163,7 +163,7 @@ flowchart LR
 - **步骤 5：返回结构化溯源信息**：每次检索返回的 `RetrievalHit` 均包含完整元数据，供生成层进行精确引用绑定。
 - **步骤 6：检索器指标评测**：`evaluate_retrieval` 针对标注数据集计算 Recall@K 和 MRR 指标。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 24-rag-ranking
@@ -171,15 +171,15 @@ flowchart LR
 
 在修改代码前，请使用上述排序实验台对比词法匹配、元数据过滤、过期数据排除以及 Top-K 设定的行为表现。通过可视化的排序名次，直观理解检索策略对召回率、倒数排名、新鲜度以及数据溯源的深远影响。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在测试数据固件（Fixture）的副本中添加一份已过期或未经授权的文档，编写测试断言以证明该文档在证据进入生成阶段前已被确定性排除在候选集之外。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 [`outputs/retrieval-evidence-report.json`](../outputs/retrieval-evidence-report.json) 包含了一份完整的基线报告，记录了带排名的文本块标识、当前活跃源版本以及各项检索评估指标。
 
-## Verify It (验证方法)
+## 验证方法
 
 使用以下命令重现并验证实验代码与测试套件：
 
@@ -191,11 +191,11 @@ python3 -m unittest discover tests -v
 
 课后配备的 6 道测试题目将全面检验你对检索故障排查及技术选型的掌握程度。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 请将此处的证据报告和时效性判定逻辑，迁移复用到 Architect Professional Capstone 项目中的 RAG 评估套件与时效门禁架构中。
 
-## Use It (生产应用)
+## 实践应用
 
 生产级系统通常组合使用文档解析器、对象存储、稀疏/向量索引、元数据过滤器、Reranker 重排器及离线评估管道。即使采用托管云服务，以下治理流程契约亦不可或缺。
 
@@ -212,7 +212,7 @@ python3 -m unittest discover tests -v
 
 严禁在未排查候选集的情况下直接调低 Temperature 或更换更大参数的模型，参数微调无法凭空变出被检索层丢弃或拦截的关键证据。
 
-## 考点决策模式 (Exam Decision Patterns)
+## 考试决策模式
 
 当线上系统在文档库更新后立刻出现事实性错误，而模型版本与响应延迟保持稳定时，应首先调查数据摄取、索引版本、元数据过滤及检索排序机制。
 
@@ -232,7 +232,7 @@ python3 -m unittest discover tests -v
 - 在排查候选证据集之前就匆忙替换模型
 - 仅依赖模型自由生成的纯文本引用说明，而缺乏底层溯源 ID 支撑
 
-## 常见陷阱 (Common Traps)
+## 常见陷阱
 
 ### 上下文越长，事实锚定越好 (More Context Means More Grounding)
 
@@ -250,7 +250,7 @@ python3 -m unittest discover tests -v
 
 在不注销旧版本文本块的前提下直接追加新内容，会导致索引中并存相互矛盾的事实。必须将数据刷新视同一次具有严格版本控制的系统发布。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 为检索器增加字段级权重加权（Field-aware Boosting），使标题匹配的得分权重高于正文匹配。
 2. 添加司法管辖区（Jurisdiction）过滤字段，并编写单元测试证明越权数据块绝不会进入候选集。
@@ -258,7 +258,7 @@ python3 -m unittest discover tests -v
 4. 构建 10 个测试用例，分别展示精确编号查询与泛化同义转述查询在检索策略上的分流差异。
 5. 设计一份具备自动化校验与快速回滚机制的原子性索引更新 SOP 清单。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 常见误解 | 实际技术内涵 |
 |---|---|---|
@@ -269,7 +269,7 @@ python3 -m unittest discover tests -v
 | Recall@K | 模型的最终回答准确率 | 在检索出的前 K 个结果中，包含所需关键证据的查询占比 |
 | 溯源链 (Provenance) | 模型在末尾生成的参考引用脚注 | 贯穿从原始数据切片到最终论点成立的全生命周期机器可读谱系结构 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude citations documentation](https://platform.claude.com/docs/en/build-with-claude/citations) 查看 Claude 原生引用功能的规范与集成
 - [Claude token counting documentation](https://platform.claude.com/docs/en/build-with-claude/token-counting) 了解上下文预算与计费测算

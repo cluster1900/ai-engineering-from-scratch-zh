@@ -4,7 +4,7 @@
 
 **Type:** Learn
 **Languages:** Python
-**Prerequisites:** [The Agent SDK Is a Harness, Not Permission](../../12-claude-agent-sdk-and-hooks/), [Evals Turn Agent Behavior Into Engineering Evidence](../../14-evals-testing-debugging-and-observability/)
+**Prerequisites:** [Agent SDK 本质是运行底座而非权限放行](../../12-claude-agent-sdk-and-hooks/), [评测将智能体行为转化为工程证据](../../14-evals-testing-debugging-and-observability/)
 **Time:** ~170 minutes
 
 ## 学习目标
@@ -428,7 +428,7 @@ flowchart LR
 
 合格的代码审查员必须坚决驳回该 PR，要求其出具详尽的系统能力盘点清单（Capability Inventory），将各项权限精准收敛至当前具体工作流所需的最小范围，并随后在真实安装的生产版本中，使用真实的合法与违规测试用例分别验证其拦截有效性。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 15-team-agent-loop
@@ -436,16 +436,16 @@ flowchart LR
 
 通过团队智能体循环交互式图示，演练将一项拟议的团队工程变更，依次推过需求对齐、代码修改、确定性验证、人工复审与回滚机制等完整生命周期。尝试动态调整指令作用域与安全控制强弱，观察在何种临界点下，仅仅依靠自然语言提示词的口头规则将彻底失效并不再构成可靠的团队安全边界。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 针对上方示例中存在严重隐患的配置变更展开同行安全审计，全面收缩其 Shell 执行与文件系统读写的开放面，并为其编写一组明确定义被允许的合法测试用例与被坚决拦截的违规测试用例，同时附带完备的故障回滚操作条件。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 已填充完成的 [`outputs/team-configuration-review.md`](../outputs/team-configuration-review.md) 产物，将上述审计复盘沉淀为一份可广泛复用的系统能力盘点、权限分配、上下文预算、自主度管控、工作区隔离、任务调度、策略执行以及容灾回滚记录。
 [`outputs/permission-request-decision.json`](../outputs/permission-request-decision.json) 则是一份经过严格断言的 `PermissionRequest` Hook 决策范例，展示了系统如何在底层确定性拦截外部未授权的发布动作。
 
-## Verify It (验证方法)
+## 验证方法
 
 为你的代码仓库修改一份专属副本，随后运行确定性验证脚本：
 
@@ -457,11 +457,11 @@ python3 -m unittest discover -s code/tests -v
 
 验证脚本能够自动核验权责所有者划分、合法与违规测试用例覆盖、版本化配置规范，以及灾难回滚操作凭证。在充分产出客观工程证据后，通过本课配套的六道深度测验题检验你的决策判断能力。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 将完成并通过验证的团队配置审查报告，作为重要的团队工程规范与 CI 流水线控制规范附录，直接纳入 Developer Capstone 的终期答辩材料中。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - 保持 `CLAUDE.md` 紧凑精练，牢牢聚焦于当前代码仓库的核心事实。
 - 始终将配置信息放置在满足需求的最窄且持久的作用域中。
@@ -477,7 +477,7 @@ python3 -m unittest discover -s code/tests -v
 - 智能体自动化流水线执行完毕后，后续流程必须强制走标准的人工审查与受保护的主干分支合并策略。
 - 对任何改变系统底层行为的提示词、配置、依赖与模型版本实施严格的版本控制与量化回归评测。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 在 `default`、`acceptEdits`、`plan` 以及 `dontAsk` 四种不同权限模式下分别运行同一次完全相同的无害代码修改操作，记录并对比哪一道安全边界在行为上发生了变化。
 2. 对包含复杂上下文的测试会话执行一次聚焦压缩（Compact），随后验证项目根目录指令、路径局部规则以及 Skill 内容各自以何种方式被重新加载。
@@ -486,7 +486,7 @@ python3 -m unittest discover -s code/tests -v
 5. 分别手写实现一个通过 stdout 输出结构化 JSON 实施拦截的 `PreToolUse` Hook，以及一个触发阻断的 `PermissionRequest` Hook。编写自动化测试分别证明退出码 `0` 与退出码 `2` 的控制语义差异。
 6. 针对同一个 Pull Request，对比 Anthropic 官方托管的代码审查（Managed Code Review）与基于只读权限配置的 `anthropics/claude-code-action@v1` 自建工作流在审查产出与工程控制上的异同。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude Code 官方架构概览](https://code.claude.com/docs/en/overview)
 - [Claude Code 记忆管理规范 (Memory)](https://code.claude.com/docs/en/memory)

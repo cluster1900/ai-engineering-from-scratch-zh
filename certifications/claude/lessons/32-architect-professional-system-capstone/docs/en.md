@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [Choose the Smallest Surface That Can Carry the Work](../../01-claude-product-and-model-landscape/), [Spend Capability Where Failure Is Expensive](../../02-model-selection-and-token-economics/), [Turn a Request Into a Testable Contract](../../03-prompting-and-task-decomposition/), [Put Each Fact in the Right Kind of Context](../../04-context-knowledge-memory-and-caching/), [Validate the Claim, Not the Confidence](../../05-output-evaluation-and-validation/), [Put Authority Around Capability](../../06-governance-safety-and-responsible-use/), [The Messages API Is a State Machine](../../08-messages-api-and-application-lifecycle/), [Structured Output Is an Untrusted Contract](../../09-structured-output-and-defensive-parsing/), [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/), [MCP Separates Capability From Host](../../11-mcp-server-design-and-integration/), [The Agent SDK Is a Harness, Not Permission](../../12-claude-agent-sdk-and-hooks/), [Security Lives Outside the Prompt](../../13-application-security-and-secrets/), [Evals Turn Agent Behavior Into Engineering Evidence](../../14-evals-testing-debugging-and-observability/), [Claude Code Scales Through Shared Constraints](../../15-claude-code-for-development-teams/), [Multi-Agent Orchestration and Delegation](../../16-multi-agent-orchestration-and-delegation/), [Tool Contracts, Errors, and Progressive Discovery](../../18-tool-contracts-errors-and-progressive-discovery/), [Business Discovery, Requirements, and SLAs](../../22-business-discovery-requirements-and-slas/), [End-to-End Architecture and Value Tradeoffs](../../23-end-to-end-architecture-and-value-tradeoffs/), [RAG, Retrieval, and Data Pipelines](../../24-rag-retrieval-and-data-pipelines/), [Integration Protocols, Identity, and Least Privilege](../../25-integration-protocols-identity-and-least-privilege/), [Production Observability, Latency, and Cost](../../26-production-observability-latency-and-cost/), [Enterprise Governance, Compliance, and Human Review](../../27-enterprise-governance-compliance-and-hitl/), [Stakeholder Communication, ADRs, and Lifecycle Ownership](../../28-stakeholder-communication-adrs-and-lifecycle/)
+**Prerequisites:** [选用足以承载任务的最小工作界面](../../01-claude-product-and-model-landscape/), [将强推理能力投入在失败代价高昂的关键处](../../02-model-selection-and-token-economics/), [将模糊需求转化为可测试的契约](../../03-prompting-and-task-decomposition/), [将各类事实置于适得其所的上下文容器中](../../04-context-knowledge-memory-and-caching/), [检验断言真伪，而非轻信模型语气](../../05-output-evaluation-and-validation/), [以制度权威规约技术能力](../../06-governance-safety-and-responsible-use/), [Messages API 本质是状态机](../../08-messages-api-and-application-lifecycle/), [结构化输出本质是不可信契约](../../09-structured-output-and-defensive-parsing/), [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/), [MCP 架构：解耦能力与宿主系统](../../11-mcp-server-design-and-integration/), [Agent SDK 本质是运行底座而非权限放行](../../12-claude-agent-sdk-and-hooks/), [安全防护存在于提示词之外](../../13-application-security-and-secrets/), [评测将智能体行为转化为工程证据](../../14-evals-testing-debugging-and-observability/), [Claude Code 借助共享约束实现团队规模化应用](../../15-claude-code-for-development-teams/), [多 Agent 编排与任务委托](../../16-multi-agent-orchestration-and-delegation/), [工具契约、错误处理与渐进式发现](../../18-tool-contracts-errors-and-progressive-discovery/), [业务调研、需求分析与服务等级目标](../../22-business-discovery-requirements-and-slas/), [端到端系统架构与价值权衡](../../23-end-to-end-architecture-and-value-tradeoffs/), [RAG、检索与数据管道](../../24-rag-retrieval-and-data-pipelines/), [集成协议、身份凭据与最小权限原则](../../25-integration-protocols-identity-and-least-privilege/), [生产环境可观测性、延迟与成本](../../26-production-observability-latency-and-cost/), [企业级治理、合规与人工复审](../../27-enterprise-governance-compliance-and-hitl/), [利益相关方沟通、架构决策记录 (ADR) 与全生命周期责任归属](../../28-stakeholder-communication-adrs-and-lifecycle/)
 **Time:** ~8 to 12 hours
 
 ## 学习目标
@@ -152,9 +152,9 @@ flowchart LR
 
 如果系统中的某一个组件无法清晰向上追溯到具体的业务需求，请反思其存在的必要性；如果某项需求缺乏具体的工程控制措施或自动化测试用例，说明该架构方案尚不完备；如果一项测试结果的好坏无法对生产发布决策产生一票否决的影响，那么该测试就只是毫无意义的数字装饰。
 
-## Build It (动手构建)
+## 动手构建
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 32-architect-professional-readiness
@@ -162,11 +162,11 @@ flowchart LR
 
 使用上述专业级架构就绪度大盘，将业务需求、技术选型决策、控制措施、实测证据、发布门禁、线上试点结果与资产责任人全面联动起来。直观体验在底层严密防守下，任何一项涉及鉴权越权、核心安全或回滚预案失效的硬性缺陷，是如何在加权总分再高的情况下依然保持绝对的一票否决阻断状态。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在模拟沙盘中故意注入一项未被满足的业务需求、一项未经代码验证的硬性控制、一个失败的评估门禁以及一次回滚演练崩溃，顺着责任链路找到对应的归属责任人并在系统边界上彻底予以修复。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 随课程交付的架构方案全量模板、填充完整的生产级参考架构白皮书
 [`outputs/reference-architecture-packet.md`](../outputs/reference-architecture-packet.md)、自动化校验报告
@@ -175,7 +175,7 @@ flowchart LR
 [`outputs/scored-rubric.md`](../outputs/scored-rubric.md)
 构成了本项目的核心可复用验收资产。该参考架构在所有指定的硬性门禁与真实交接证据全部绿灯通过前，在生产级别始终保持受阻阻断状态。
 
-## Verify It (验证方法)
+## 验证方法
 
 配套的 Python 实验代码负责对架构数据包进行机械严密的结构化核验。它无法代替人类主管去判断商业策略的高明与否，但能以绝对冷酷的方式排查出一大批底层的低级架构缺陷：责任人缺位、需求不可量化不可测试、关键硬性控制未经自动化断言、离线评测门禁未跑通、缺失版本回滚预案，以及 ADR 决策缺乏架构逆转触发红线等。
 
@@ -207,7 +207,7 @@ python3 -m unittest discover tests -v
 
 使用上述命令重现评估报告并跑通全部确定性门禁。课后的 6 道认证自测题将对架构师的综合专业判断力进行最终的严苛检验。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 填充完毕的十大部分架构设计数据包、架构答辩实录、故障攻防沙盘推演记录以及经双向签字的交接验收单，共同构成了申报 Claude Certified Architect Professional 认证的最高级别结项申报材料。
 
@@ -242,7 +242,7 @@ python3 -m unittest discover tests -v
 
 请严格对照该准则开展自我审查与同行模拟交叉评审。本打分表是课程体系内沉淀的教学考核标准，不代表官方考试的闭门计分模型。
 
-## 考点决策模式 (Exam Decision Patterns)
+## 考试决策模式
 
 Architect Professional 认证考试极度推崇全生命周期的系统工程判断力。当多个选项在纸面上看似均合理可行时，必须优先挑选那个能够**在正确的系统边界上直击核心约束、且能产出可供第三方复核确证的客观工程证据**的技术方案。
 
@@ -280,7 +280,7 @@ Architect Professional 认证考试极度推崇全生命周期的系统工程判
 
 仅仅把文档往群里一丢就宣称完成了交接。在突发故障演练中，接收方团队面对报警完全无法脱离原架构师的现场指导而独立实现自愈恢复。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 将本系统的智能客服场景替换为一个受到高度法律监管的金融信贷文书审查系统，全面梳理哪些技术控制措施与责任人角色必须发生实质调整。
 2. 扩充随附 Python 校验器中的 `EvaluationGate` 类，为其注入置信度区间（Confidence Intervals）与最小样本容量的统计学断言逻辑。
@@ -288,7 +288,7 @@ Architect Professional 认证考试极度推崇全生命周期的系统工程判
 4. 邀请一位独立的资深架构师审阅你的设计方案，找出五个虽有需求声明但完全缺乏测试用例或责任人背书的悬空设计。
 5. 在金丝雀灰度发布演练中故意注入性能滑坡，完整记录一次由自动化监控指标触发并执行的正式架构逆转决策全流程。
 
-## 核心术语 (Key Terms)
+## 核心术语
 
 | 术语 (Term) | 常见误解 | 实际技术内涵 |
 |---|---|---|
@@ -298,7 +298,7 @@ Architect Professional 认证考试极度推崇全生命周期的系统工程判
 | 架构自辩能力 (Architecture defense) | 舌战群儒的演讲口才 | 凭借详实严密的工程实测证据，客观阐述设计取舍、预期代价并从容自证被否决方案劣势的专业能力 |
 | 运营责任人 (Operating owner) | 代码上线部署的当天值班人员 | 在系统投产后全周期内，对业务 SLO 履约、突发事故处置、架构迭代变更及最终退役负全责的核心角色 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude Certified Architect Professional exam guide](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf) 官方认证考试大纲指南
 - [Claude Platform documentation](https://platform.claude.com/docs/en/home) 官方最新平台架构文档

@@ -80,7 +80,7 @@
 mcpa-33-capstone-flow
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的全景拓扑图清晰描绘了整套交互流程：服务发现孕育了参数校验、参数校验引出 MRTR 用户同意流程、用户同意解锁了异步轮询任务，并最终产生业务结果；图表底部的虚线贯穿全程，代表着跨越每一个服务跳跃的单一持久 Trace ID；而旁边环环相扣的小方块，则代表着在交互最终时刻通过严密数学验证的防篡改哈希链。运行本课实验，并对照终端打印的每一行输出逐一核验：
 
@@ -96,15 +96,15 @@ python3 code/main.py
 
 随后观察终端打印的完整审计账本，验证 `verify()` 输出 `True`；紧接着观察程序在内存中对某条历史记录的原地篡改，以及 `verify()` 如何瞬间在相同索引处精准报错。尝试修改变量 `alice` 发起 `run_full_diagnostics` 时声明的能力集合，并在重新运行前预测你将会看到异步的 `resultType: "task"` 还是同步的普通结果。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在终端中进入 `code/` 目录并启动 Python 交互式环境，执行 `import main`。使用 `server = main.build_server()` 初始化一个新服务器，并使用 `client = main.Client("alice-oncall", server)` 构建一个客户端。首先传入 `capabilities={}` 调用 `restart_service`，确认终端如期返回 `-32021`；随后传入 `capabilities=main.ELICIT_CAPS` 再次调用，验证相同的请求此时顺利返回 `input_required`。从该结果中提取出 `requestState` 字符串，像演示脚本那样篡改其最后一位字符并手动发起重试：你将清晰捕获到一个文本明确提示签名校验失败的 `isError` 结果，而不是发生未授权的静默成功。最后，创建一个长任务并轮询一次，随后直接修改 `server.audit.entries` 中已记录条目的某个属性值。在修改前后分别调用 `server.audit.verify()`：观察校验报告的错误索引恰好就是你刚刚触碰的那个条目，绝不会是前一个，也绝不会是列表末尾，因为该条目之后的所有哈希链环均已断裂。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/mcpa-readiness-checklist.md` 是专为本次认证大考准备的“考前冲刺复习宝典”：它完整收录了来自 `certifications/mcpa/tracks/mcpa-f.json` 官方大纲的全部 18 项核心考核目标，按五个大纲加权领域科学归类，并将每一项目标都映射为了你在本课日志中亲手运行过的确凿实战记录或前序对应课程。建议在完成本课后趁热打铁通读一遍以巩固记忆；并在正式迈入考场的前一天晚上再次通读，实现对全领域核心考点的极速唤醒。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -118,7 +118,7 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/33-mcpa-capstone-readiness
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 考试大纲上的每一个领域，最终都汇聚为了本课单次交互时序中的某一个确定阶段，而非孤立的分散练习：
 - **MCP Fundamentals (基础原理)**：体现为开头的版本协商机制，以及贯穿全局的无状态核心铁律（任何请求绝不依赖前一请求的隐式上下文）；
@@ -129,7 +129,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/33-mcpa-capstone-
 
 在这节课之后，前面已经没有新的理论课程了。等待你的，是那份沉甸甸的备考核对清单、是真实的在线认证考场，更是未来在工业级生产环境中，将本课所演示的协议交互作为核心关键基础设施、全权对其可靠性与安全性负责的工程师担当。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -143,7 +143,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/33-mcpa-capstone-
 | `traceparent` | `_meta` 中携带的 W3C 分布式追踪上下文；确保整个交互流中 Trace ID 恒定，并在每一跳派生独立 Span ID |
 | Hash chained audit log（哈希链审计日志） | 仅追加写入的不可抵赖账本，每个条目的哈希计算涵盖前一条目的哈希，使任何增删改皆可通过重算链条即时发现 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 规范 2026-07-28 官方全文](https://modelcontextprotocol.io/specification/2026-07-28)，本课交互所严格遵循的权威基准。
 - [MCP 架构总览指南](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture)，深入理解通信角色分工。

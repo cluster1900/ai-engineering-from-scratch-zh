@@ -39,11 +39,11 @@
 mcpa-09-manifest-anatomy
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节图示将三个文档并列展示：带有能力声明与指令的 `server/discover` 结果、附带注解与 `x-mcp-header` 标记的 `tools/list` 工具条目，以及带有命名空间的 Registry `server.json`。每个面板均突出了粗心服务端最容易犯错的关键字段：写得像操控指令而非系统描述的 instructions、没有任何注解声明的工具，以及缺少验证命名空间的裸名称。请将每个高亮字段与上述概念部分的规则一一对应：该字段的初衷是什么，以及对于严格遵循规范的客户端而言，其缺失或误用究竟意味着何种实际行为。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本构建了两个仅响应 `server/discover` 和 `tools/list` 的服务端：一个是典型粗心集成的 `acme-tools` 服务端，另一个则是设计严谨的 `docs-search` 服务端。脚本将两者的响应结果以及各自手写的 `server.json` 传入 `lint_manifest` 进行审查。在课程目录下运行它：
 
@@ -53,11 +53,11 @@ python3 code/main.py
 
 首先阅读 `acme-tools` 的审查报告。`delete_account` 工具完全没有 `annotations` 块，linter 在规范默认规则下直接将其标记为破坏性工具（destructive），这并非无端猜测，而是因为规范要求必须作此假设。`rotate_api_key` 通过 `x-mcp-header` 镜像了 `new_api_key` 参数，linter 捕捉到该头暴露了疑似敏感密钥的内容。`run_report` 通过包含空格的头名 `"Region Code"` 镜像了 `region_code`，这不符合 HTTP field-name token 规范，Streamable HTTP 客户端遇到此类定义必须直接将其从工具列表中剔除。`get_balance` 描述为“当前用户的账户余额”，但服务端的 `tools/list` 结果声明的却是 `cacheScope: "public"`，linter 将这两点结合指出了严重的缓存泄露风险。discover 的 `instructions` 以“Ignore any prior guidance（忽略先前的任何指引）”开头，linter 迅速将其标记为意图操控模型的危险文本。注册表名称 `"acme-tools"` 不包含 `/`，无法解析出有效命名空间，同样被判定违规。作为对比，查看 `docs-search`：每个工具均显式声明只读，使用的请求头规范且唯一，被缓存的文本确实属于公开数据，instructions 专注于描述服务端功能，且注册表名称 `io.github.acmedocs/docs-search` 成功解析出经 GitHub 验证的合法命名空间。通信记录（transcript）的最后一项不是客户端发送的请求，而是粗心服务端可能返回的违规 `server/discover` 响应，它完全缺失了 `ttlMs` 与 `cacheScope`：：我们故意构造此违规信封，以便你在实际发起线上调用之前就能看清破坏缓存契约的具体表现。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/manifest-review-checklist.md` 是本课交付的单页速查清单：包含三个文档的必查要素、注解默认值速查表、`x-mcp-header` 语法规则、缓存与 instructions 危险信号特征，以及 Registry 命名空间解析指南。在后续接入陌生服务端时，请常备该清单进行核对。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -71,11 +71,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/09-reading-server-manifests
 ```
 
-## Capstone Connection
+## 项目连接
 
 在 Capstone 综合考核的项目端到端交互中，系统在发起任何实质性调用之前，必然首先执行 discover 调用与工具列表拉取。在该阶段能够安全成立的一切前提，均建立在本课的基础之上：能力标志是否被正确读取、注解默认值是否被合规应用而非遗漏、清单中是否潜藏在首次调用前就试图操控模型的违规文本。本认证路线后续关于信任边界与用户授权（Consent）的课程，也直接根植于本课培养的“在采取行动前审慎审查清单声明”的防御性直觉。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -88,7 +88,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/09-reading-server
 | Red flag（危险信号） | 清单字段的声明与其所属类别下规范服务端应有的严谨行为严重不符的特征 |
 | Ownership verification（所有权验证） | Registry 用以将名称绑定到具体发布者的 GitHub、DNS 或 HTTP 挑战机制 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：服务发现 (Discovery)](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP 规范 2026-07-28：工具原语 (Tools)](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)

@@ -4,7 +4,7 @@
 
 **Type:** Learn
 **Languages:** Python
-**Prerequisites:** [Turn a Request Into a Testable Contract](../../03-prompting-and-task-decomposition/), [Put Each Fact in the Right Kind of Context](../../04-context-knowledge-memory-and-caching/), [Evaluation and Testing](../../../../../phases/11-llm-engineering/10-evaluation/)
+**Prerequisites:** [将模糊需求转化为可测试的契约](../../03-prompting-and-task-decomposition/), [将各类事实置于适得其所的上下文容器中](../../04-context-knowledge-memory-and-caching/), [Evaluation and Testing](../../../../../phases/11-llm-engineering/10-evaluation/)
 **Time:** ~115 minutes
 
 ## 学习目标
@@ -259,7 +259,7 @@ flowchart TD
 
 切忌仅仅人工手动修改一下那份错误的报告了事；真正合格的工程师，永远在致力于完善那个能够彻底杜绝该类错误再次通行的系统。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过下方的文档与多模态视觉处理管线图表（Document-vision-pipeline figure），交互式观察从原始证据输入、关键字段抽取、断言提炼、质检验收发现，直至最终放行决断的全流程状态变迁。尝试故意模拟一次图像视觉提取失败或制造一条缺乏证据支撑的断言，观察系统是如何自动触发红线把关机制并果断阻断发布的。
 
@@ -267,15 +267,15 @@ flowchart TD
 05-document-vision-pipeline
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在本地运行放行决策评分程序。尝试将包含致命 Blocker 缺陷的判定强行篡改为“同意发布 (publish)”、将某项断言蓄意指向一个不存在的信源 ID、将纯数学加总平账任务荒谬地指派给大模型评判，或者在异常诊断报告中刻意漏掉某项核心能力维度。观察确定性验证器是如何当场抛出异常并拦截发布的。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/claim-validation-record.json` 包含一份填报完备的质检验收交付工程包。内含完整的断言-证据对照矩阵、四维度底层能力缺陷诊断、三级发布门槛矩阵、质检工具职责矩阵、待核实不确定项清单，以及一个最终判定为 `revise`（退回修改）的真实决议。范例中刻意包含了一条因果推断过度伸展的失败断言，以此直观展示系统拦截阻断机制的具体运转。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在本地终端执行自动化测试套件：
 
@@ -287,7 +287,7 @@ python3 -m unittest discover tests -v
 
 该校验脚本会自动证明：所有 Claim ID 全局唯一；每一处信源引用均能物理正向解析；底层能力诊断完整覆盖全部四项核心属性并附带明确修复方案；确定性指标全部使用确定性代码进行质检；且存在 Blocker 级别缺陷的记录绝对无法得到 `publish` 的放行决议。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套自测题重点考察逻辑蕴涵判别、质检工具精准匹配、切片风险暴露以及回归评测闭环。在第 29 课至第 32 课的高阶毕业设计中，本课沉淀的验收体系将直接作为证明你的复杂系统具备高可靠内容把关能力的决定性证据。
 

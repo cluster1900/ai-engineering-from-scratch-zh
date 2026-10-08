@@ -71,11 +71,11 @@ SDK 评级是本课交付给具体角色的最后一项关键技术选型决策�
 mcpa-28-roles-map
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的图表由三个并列面板构成：本地 stdio 部署形态、无网关的裸跑远程 HTTP 部署形态，以及前端带有网关的企业级代理部署形态。每个面板清晰标明了在该形态下负责承接各项典型规范要求的具体角色。请重点关注被高亮标记的那一行职责流动：在裸跑 HTTP 面板中，服务器作者在负责受保护资源元数据 (PRM) 的同时，必须亲自承接 Origin 请求头校验的重任；而在网关面板中，该校验职责瞬间跳转到了平台或网关运维人员名下，因为网关此时成为了接收请求的首要入口。从第二个面板到第三个面板，底层的 MUST 规范条款一字未改，改变的仅仅是所处的部署形态，而责任人随之发生了决定性的转移。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。代码中的 `REQUIREMENTS` 是一个由精选 `Requirement` 记录构成的元组，每一条都直接摘录自主规范文本中确切的 MUST 或 SHOULD 条款，并标注了其适用的部署形态以及默认负责的角色。函数 `build_responsibility_matrix(shape)` 会根据指定的形态过滤目录、为每项适用的要求分配责任人，并将任何责任人为 `None` 的孤立 MUST 归集到 `gaps` 缺陷列表中。运行该脚本：
 
@@ -85,11 +85,11 @@ python3 code/main.py
 
 对比终端打印的三种部署形态的责任矩阵。验证 `stdio-env-credentials` 明确划归平台或网关运维人员；验证 `prm-implemented` 在 `http` 和 `gateway` 两种形态下均归属于服务器作者；并重点观察 `origin-validation` 是唯一在两者间发生责任漂移的条款：在 `http` 下由 `server_author` 负责，在 `gateway` 下由 `platform_gateway_operator` 负责。接着观察 `error-code-allocation` 条目：它的 `default_role` 被故意留空为 `None`，这是一条摘录自规范第 5 节的 MUST NOT 禁令，它无法被简单武断地划归给六大角色中的某一个，因此在每一次运行中矩阵都会将其作为待解决的责任空缺 (Gap) 显式报错。尝试添加一条你自己的第 13 项 `Requirement`（从你已学过的课程中选取一条规范），确定由六大角色中的哪一个负责认领，打上适用的部署形态标签，重新运行脚本并观察你的新规则在矩阵中精准就位。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/roles-responsibility-matrix.md` 是一份单页实战速查手册：以一行一角色精炼定义了六大角色；系统梳理了三种采纳路径及在演进过程中各角色新增的责任边界；以 Origin 请求头校验为例手把手演示了职责漂移推导过程；并附带了一份涵盖维护者层级、工作组与兴趣组对比、SEP 状态机以及 SDK 三级评级标准的治理备忘单。请将本手册与之前宿主、客户端和服务器课程中的架构图对照使用：前者描绘了报文的物理拓扑，而本手册明确了到底由谁对每一个通信环节承担最终责任。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下运行测试：
 
@@ -103,11 +103,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/28-roles-and-adoption
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在 Capstone 综合大作业的实战答辩中，考官会要求你为一整套完整的部署方案进行工程合理性辩护，而绝非仅仅停留在描述报文结构层面。本课正是为你提供这套严谨工程防守语言的核心基石：当审查员在答辩中追问你的架构中“到底由谁负责校验 Origin 请求头”时，你的回答必须精准道出具体的角色名称与当前所处的部署架构形态，而不是机械地重复“规范规定服务器必须校验”。请带上本课的责任矩阵，并在未来的每一个工程场景中养成职业本能：面对规范中提及的每一个 MUST，始终追问一句：“在当前这支具体的研发团队中，究竟由谁出面认领？”
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -122,7 +122,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/28-roles-and-adop
 | SEP | 规范增强提议 (Specification Enhancement Proposal)，用于引入新特性或重大变更的社区工作流 |
 | SDK tier（SDK 评级） | 官方衡量 SDK 成熟度与承诺水平的评级体系（一级至三级），涵盖一致性测试与 Bug 响应时效 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 社区治理与托管架构](https://modelcontextprotocol.io/community/governance)。
 - [工作组 (WG) 与兴趣组 (IG) 运作指南](https://modelcontextprotocol.io/community/working-interest-groups)。

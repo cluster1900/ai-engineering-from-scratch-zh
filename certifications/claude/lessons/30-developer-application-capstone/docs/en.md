@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [Spend Capability Where Failure Is Expensive](../../02-model-selection-and-token-economics/), [Turn a Request Into a Testable Contract](../../03-prompting-and-task-decomposition/), [Put Each Fact in the Right Kind of Context](../../04-context-knowledge-memory-and-caching/), [Validate the Claim, Not the Confidence](../../05-output-evaluation-and-validation/), [The Messages API Is a State Machine](../../08-messages-api-and-application-lifecycle/), [Structured Output Is an Untrusted Contract](../../09-structured-output-and-defensive-parsing/), [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/), [MCP Separates Capability From Host](../../11-mcp-server-design-and-integration/), [The Agent SDK Is a Harness, Not Permission](../../12-claude-agent-sdk-and-hooks/), [Security Lives Outside the Prompt](../../13-application-security-and-secrets/), [Evals Turn Agent Behavior Into Engineering Evidence](../../14-evals-testing-debugging-and-observability/), [Claude Code Scales Through Shared Constraints](../../15-claude-code-for-development-teams/)
+**Prerequisites:** [将强推理能力投入在失败代价高昂的关键处](../../02-model-selection-and-token-economics/), [将模糊需求转化为可测试的契约](../../03-prompting-and-task-decomposition/), [将各类事实置于适得其所的上下文容器中](../../04-context-knowledge-memory-and-caching/), [检验断言真伪，而非轻信模型语气](../../05-output-evaluation-and-validation/), [Messages API 本质是状态机](../../08-messages-api-and-application-lifecycle/), [结构化输出本质是不可信契约](../../09-structured-output-and-defensive-parsing/), [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/), [MCP 架构：解耦能力与宿主系统](../../11-mcp-server-design-and-integration/), [Agent SDK 本质是运行底座而非权限放行](../../12-claude-agent-sdk-and-hooks/), [安全防护存在于提示词之外](../../13-application-security-and-secrets/), [评测将智能体行为转化为工程证据](../../14-evals-testing-debugging-and-observability/), [Claude Code 借助共享约束实现团队规模化应用](../../15-claude-code-for-development-teams/)
 **Time:** ~240 minutes
 
 ## 学习目标
@@ -170,9 +170,9 @@ flowchart LR
 
 生产 Trace 还必须包含分布式 Correlation ID 与各组件的版本号快照。切忌为了图一时排障方便而直接明文打印原始访问 Token 或完整用户对话。坚持最小必要类型化存证原则，为深度的安全事故排查提供受访问控制保护的专项审查通道。
 
-## Build and Run (动手构建与运行)
+## 动手构建与运行
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 ```figure
 30-developer-capstone-readiness
@@ -180,15 +180,15 @@ flowchart LR
 
 使用上述就绪度大盘，完整核验从输入参数校验、策略网关拦截、工具安全执行、输出契约约束、链路追踪审计、离线评测打分到故障应急恢复的全链路。只要轨迹上的任何一个门禁亮起红灯，表面再光鲜的最终回复也绝不代表系统合格。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 按顺序依次运行正常查询用例、参数缺失用例、订单不存在用例、畸形格式用例与注入攻击用例；随后在本地主动制造一处缺陷，证明即使最终文本状态看似成功，底层的执行轨迹依然能够精确报警拦截。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 项目的核心交付产物包括填充完整的系统架构设计文档（`outputs/architecture.md`）、评测计划（`outputs/eval-plan.json`）、生产应急手册（`outputs/runbook.md`）以及 [`outputs/demo-readiness-report.json`](../outputs/demo-readiness-report.json)。
 
-## Verify It (验证方法)
+## 验证方法
 
 使用以下命令运行系统并执行全量测试套件：
 
@@ -220,7 +220,7 @@ ANTHROPIC_API_KEY="..." ANTHROPIC_MODEL="your-approved-model-id" python3 main.py
 
 网络传输层绝不会向终端打印或在本地落盘该 API Key。当缺失 `ANTHROPIC_API_KEY` 或未配置明确的 `ANTHROPIC_MODEL` 时，`test_live_wire.py` 将自动跳过执行。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 上述四份交付成果与通过全量测试的行为轨迹，构成了 Claude Certified Developer 认证路线的核心毕业申报材料。
 
@@ -364,7 +364,7 @@ sequenceDiagram
 - 本地核心交付产物完全不需要任何联网凭据即可开箱跑通。
 - 如果补充了真实 API 网络测试用例，必须明确证明其真实的序列化边界并归档所测版本。
 
-## 考点决策规则 (Exam Decision Rules)
+## 考试决策准则
 
 - 始终从业务需求与终态验收证据出发进行系统设计。
 - 坚决将模型的“调用意图提议”与系统的“底层授权执行”解耦。
@@ -375,7 +375,7 @@ sequenceDiagram
 - 在触发任何重试机制前，必须首先完成错误的结构化归类与幂等性确认。
 - 将架构文档、评测计划与运维 Runbook 作为系统不可分割的组成部分协同交付。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Messages API reference](https://platform.claude.com/docs/en/api/messages) 官方 Messages API 核心参考指南
 - [Tool use overview](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview) Claude 工具调用的权威使用规范

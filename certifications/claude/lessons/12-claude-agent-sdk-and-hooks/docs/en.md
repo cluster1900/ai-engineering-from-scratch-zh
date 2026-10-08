@@ -4,7 +4,7 @@
 
 **Type:** Learn
 **Languages:** Python
-**Prerequisites:** [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/), [MCP Separates Capability From Host](../../11-mcp-server-design-and-integration/)
+**Prerequisites:** [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/), [MCP 架构：解耦能力与宿主系统](../../11-mcp-server-design-and-integration/)
 **Time:** ~140 minutes
 
 ## 学习目标
@@ -359,7 +359,7 @@ async for event in query(prompt=user_goal, options=options):
 
 切勿直接将上述伪代码复制到生产环境中而不核对本地安装的具体 SDK 版本。这段代码的核心价值在于清晰梳理各方权责：严格收敛工具白名单、保证系统提示词受信任、执行确定性生命周期 Hook、强制限制最大交互轮次、实时脱敏审计事件，并对最终返回的结果进行严格的业务校验。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过 Hook 生命周期图示，演练在智能体调用工具的前后编排执行前策略 Hook、执行后脱敏 Hook、人工审批卡点、物理隔离沙箱、全链路遥测以及最终状态断言。尝试将原本用于安全拦截的控制逻辑移至工具执行之后，观察为何此时系统已经无法阻止外部副作用的发生。
 
@@ -367,15 +367,15 @@ async for event in query(prompt=user_goal, options=options):
 12-agent-hook-lifecycle
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 运行底座安全策略评估器，随后故意触发如下违规行为：从高危变更工具中剔除人工审批卡点、将执行前 Hook 错误移动至执行之后、赋予代码审查子智能体文件写权限，或把客观的最终状态断言降级为仅仅检查模型回复文本。紧接着，模拟将 SSE 断连误当作正常结束、将 `requires_action` 指向未知的事件 ID、重复复用过期的屏幕截图、传入超出显示边界的非法点击坐标，或在金融操作中绕过人工授权。确保每一次违规都能被系统确定性拦截，且每一次拦截都能精准映射为独立的防护失效原因。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/agent-harness-policy.json` 是一份经过严格验证的代码仓库智能体策略规范。它完整声明了运行时选型决策、应用程序拥有的控制权、工具白名单、Hook 编排、隔离沙箱规则、各项安全预算、托管事件恢复策略、只读评审员契约、持久化状态模式、Computer Use 动作防御策略以及最终状态断言。`outputs/managed-agent-event-fixture.json` 则包含了一组可离线回放的会话事件实录，完整呈现了因等待关联自定义工具执行而暂停挂起并最终到达 `end_turn` 的全过程。
 
-## Verify It (验证方法)
+## 验证方法
 
 在无需安装任何真实外部 SDK 的前提下，离线验证整套策略：
 
@@ -387,11 +387,11 @@ python3 -m unittest discover tests -v
 
 策略校验器能够自动拦截无审批的写操作、缺乏执行前 Hook 与沙箱保护的高危能力、无上限的交互轮次、具备写权限的审查员子智能体、残缺的持久化状态定义、不安全的 Computer Use 策略、脆弱的事件恢复规则，以及单纯依据模型回复内容误判任务完成的缺陷。事件消费者与 Computer Use 防护器完全基于签入的夹具执行，绝不启动真实 SDK、不唤起浏览器、不发起网络通信，亦不调用远程模型。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套测验将围绕底座架构选型、事件流正常终止判定、Hook 正确编排位置、Computer Use 安全审批卡点、子智能体物理隔离以及会话状态客观对齐展开综合考核。请将通过验证的策略文件与离线事件夹具，作为坚实的底座安全凭证直接沉淀至 Developer Capstone 30 以及 Architect Capstone 31 和 32 中。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - SDK 仅提供执行底座；应用程序必须亲自提供安全策略准则与成功判定条件。
 - 严格区分 Messages Tool Runner、功能更广的本地 Agent SDK 以及远端的 Managed Agents 云服务。
@@ -409,7 +409,7 @@ python3 -m unittest discover tests -v
 - 对架构分解的任何重构优化，都必须在完全一致的基准测试集上进行量化评测对比。
 - 必须基于外部客观事实独立验证最终交付状态，绝不能仅凭智能体自身的回复文本主观评判。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 设计一个拥有读、搜索、编辑和定向测试运行工具的代码仓库智能体。为每一项能力分别编排对应的 Hook、隔离沙箱、审批机制与审计日志规则。
 2. 将一份长达 1,500 词的臃肿系统提示词解耦重构为精简的核心指令外加一个 Skill 组件。设计一套客观评测集，证明该重构在提高任务准确率的同时降低了 Token 消耗。
@@ -417,7 +417,7 @@ python3 -m unittest discover tests -v
 4. 设计一个分为三个阶段（Sprint）的代码文档长效迁移方案，为每个阶段设置明确的产物检查点与独立的自动化评审门禁。
 5. 扩展离线事件夹具以涵盖需要权限确认的桌面计算机操作。强制要求关联的人工审批决策，在不发起真实动作的前提下，编写测试证明回放该事件绝不会引发动作的二次重复执行。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Claude Agent SDK 官方概览](https://platform.claude.com/docs/en/agent-sdk/overview)
 - [Agent SDK 快速入门指南](https://platform.claude.com/docs/en/agent-sdk/quickstart)

@@ -89,11 +89,11 @@
 mcpa-29-use-case-matrix
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的图表将本课分类目录中的典型案例与塑造其最终形态的关键问题进行了对齐：谁掌控原语、采用何种传输协议，以及声明了何种扩展。首先看开发者工具行：工具原语、stdio 传输、无任何扩展，因为一个由模型在本地触发的代码检索，只需要一个读取自身环境变量的受信任本地子进程即可。随后观察底部三行：长任务引入了 Tasks 扩展、交互式仪表盘引入了 UI 扩展、而机器间同步则引入了 OAuth Client Credentials 扩展；请注意每个扩展分别精准命中了耗时、展现形式与授权主体这三大核心维度的不同诉求。中间两行（数据访问与可复用流）展示了原语选型的关键分水岭：宿主悄悄注入工单上下文是 Resource，而用户主动挑选标准化审查清单则是 Prompt，即便二者都运行在相同的远程网络传输之上。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 打开 `code/main.py`。代码中的 `CATALOG` 存储了 8 个精选的 `UseCaseProfile` 业务画像：覆盖了上述七大核心业务家族，外加一个绝不适用 MCP 的纯进程内反模式用例。函数 `recommend()` 将每一个画像转化为附带完整推导链条 (`reasoning`) 的架构选型推荐方案 (`Recommendation`)。运行脚本：
 
@@ -103,11 +103,11 @@ python3 code/main.py
 
 对照核心概念研读终端输出的选型结果。随后找到脚本中的 `run_scenario()` 函数：它模拟驱动一个名为 `opsdesk` 的服务器依次处理 `server/discover` 发现调用、`tools/list` 工具枚举、一次成功的内部文档搜索 `search_internal_docs`，以及两次针对 `usage_dashboard` 仪表盘的调用（一次未声明 UI 扩展，另一次显式声明了 UI 扩展），最后以调用一个不存在的未知工具收尾。验证 `tools/list` 的结果明确标注了 `cacheScope: "private"`，而 `server/discover` 则标注了 `"public"`，因为服务器自身的能力描述并非机密，但其后台具体的工具数据可能包含敏感资产。随后在 `CATALOG` 中添加你自己的第 9 个业务画像（例如一个在静默 10 分钟后自动给运维值班人员发报警短信的监控服务），填写其参数，在重新运行脚本前预测 `recommend()` 的输出，并将你的预测与终端打印的实际推导过程对照验证。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/use-case-decision-matrix.md` 将七大业务家族汇总为单页速查决策矩阵：详细罗列了每一个场景所需的原语类型、传输方式、认证路径、配套扩展与缓存作用域设定，并附带了“何时不应使用 MCP”的自检清单及本课探讨的四大运维考量。请将本矩阵与上一课的角色职责手册对照存放：角色手册明确了谁对部署负责，而本矩阵指引他们在具体任务面前应当构建何种系统。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下执行测试：
 
@@ -121,11 +121,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/29-operational-use-cases
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 Capstone 综合考核要求考生对一套完整的端到端系统架构进行专业辩护，而不是孤立地默写各个知识点。本课正是该项辩护能力的起点：在面对考官给出的综合场景时，在写下第一行报文之前，必须能够瞬间厘清其原语类型、传输通道、认证模式、配套扩展以及缓存策略，这与本课推荐引擎在代码中实现的推导逻辑完全一致。当大作业场景中途引入了一个长耗时步骤或需要交互式界面展示时，能够自然引入 Tasks 或 MCP Apps 扩展；而当场景中的某一环节根本无需协议封装时，能够果断指出并坚持采用本地类库，而不是盲目为每一个函数都套上一层 MCP 服务器。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -138,7 +138,7 @@ Capstone 综合考核要求考生对一套完整的端到端系统架构进行�
 | cacheScope | 可缓存结果上的 `public` 或 `private` 标记，用于严格限制跨授权上下文的数据共享；绝非独立访问控制手段 |
 | Graceful degradation（优雅降级） | 当客户端未声明某一可选扩展时，服务端自动平稳退回至基础核心行为或返回清晰说明的义务 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 服务器核心概念](https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts)，深入理解本课所立足的工具、资源与提示词控制权划分模型。
 - [MCP 客户端核心概念](https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts)，探索信息引出与客户端特性体系。

@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [Spend Capability Where Failure Is Expensive](../../02-model-selection-and-token-economics/), [Turn a Request Into a Testable Contract](../../03-prompting-and-task-decomposition/), [Put Each Fact in the Right Kind of Context](../../04-context-knowledge-memory-and-caching/)
+**Prerequisites:** [将强推理能力投入在失败代价高昂的关键处](../../02-model-selection-and-token-economics/), [将模糊需求转化为可测试的契约](../../03-prompting-and-task-decomposition/), [将各类事实置于适得其所的上下文容器中](../../04-context-knowledge-memory-and-caching/)
 **Time:** ~120 minutes
 
 ## 学习目标
@@ -282,7 +282,7 @@ python3 -m unittest discover tests -v
 
 本课程中的所有代码均未导入外部真实 SDK、未读取任何机密凭证、未上传真实文件、未发起网络请求，也未调用远程真实模型。`multimodal_lab_fixture()` 使用单像素合成图像和离线占位符文件 ID 进行模拟。在私有实验中，你可以将 `ScriptedTransport.create()` 替换为真实的 SDK 调用，并在完成鉴权上传后替换占位 ID，而上层的状态机、白名单逻辑与安全账本无需做任何变动。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过生命周期图示，逐步单步演练用户输入、assistant 内容块、工具执行、关联结果以及最终终止停止原因的状态流转。尝试破坏其中的调用顺序，观察哪一个状态转换会触发非法协议错误。
 
@@ -290,15 +290,15 @@ python3 -m unittest discover tests -v
 08-messages-lifecycle
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 运行脚本化的生命周期模拟器，然后尝试故意删掉 assistant 的 `tool_use` 消息、修改关联的 correlation ID，或者在未触发 `message_stop` 时强行中断流。接下来，将可复用文件 ID 修改为不在内部白名单中的非法值、故意损坏图片的 Base64 编码，或者同时请求批处理与流式 Token。确保每一个异常都能精准映射为清晰命名的协议错误或数据边界拦截错误，而不是退化为无意义的提示词重试。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/messages-lifecycle-transcript.json` 记录了完全脱离外部依赖的完整工具闭环交互实录。`outputs/multimodal-request-fixture.json` 则补充了四项架构访问决策、一个混合图像与文档的复杂请求示例、应用持有的文件白名单以及脱敏后的资产边界安全账本。运行 `python3 main.py` 会在终端打印这两份夹具内容。单元测试套件在不依赖网络的情况下对所有签入产物进行自动化回归校验。
 
-## Verify It (验证方法)
+## 验证方法
 
 ```bash
 cd certifications/claude/lessons/08-messages-api-and-application-lifecycle/code
@@ -306,7 +306,7 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套测验将在不同业务场景下考察这些核心协议决策。所验证的生命周期交互实录将作为关键证据，直接服务于 Developer Capstone 30 以及 Architect Capstone 31 和 32 的架构落地。
 
@@ -332,7 +332,7 @@ flowchart LR
 
 在每条追踪链路（Trace）中，务必对系统指令版本、模型选型、工具目录版本、输出 Schema 版本以及应用代码版本打上显式标记。缺乏这些版本标识，你将无法有效复现线上回归问题，更无法在评测对比中得到公平可信的结论。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - 若场景中出现前序对话消息丢失，优先排查客户端维护的会话状态缺陷，而非误以为模型内部存在记忆机制。
 - 若工具调用结果被拒绝，仔细核对消息角色（Role）交替顺序以及 `tool_use_id` 是否精确匹配。
@@ -347,7 +347,7 @@ flowchart LR
 - 若重试操作可能导致外部副作用重复触发，必须强制前置引入幂等键检查或状态核对机制。
 - 若协议返回未知的 `stop_reason`，坚决执行 Fail-Closed 策略，并根据最新官方文档更新枚举映射。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 在模拟测试中新增一个包含两个 `tool_use` 块的响应。编写断言验证紧接着的用户消息中同时包含两个携带正确 ID 的 `tool_result` 块。
 2. 针对 `max_tokens` 停止原因编写专门的处理逻辑，向调用方返回显式的“未完成（incomplete）”类型化结果，而不是误将截断的文本作为最终答案展示。
@@ -355,7 +355,7 @@ flowchart LR
 4. 在追踪元数据中追加租户 ID 与提示词版本号，同时确保用户原始消息文本完全被脱敏遮蔽。
 5. 扩展多模态夹具以支持基于 URL 的图像引入，在不发起真实网络请求的前提下，完整记录其源域名、授权策略、留存期限及降级失败边界。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [Messages API 参考文档](https://platform.claude.com/docs/en/api/messages)
 - [Messages 调用示例](https://platform.claude.com/docs/en/api/messages-examples)

@@ -41,11 +41,11 @@ MCP 的底层消息传输统一基于 JSON-RPC 2.0 规范。一个标准请求�
 mcpa-02-n-by-m
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方图表以对比形式展示了 4 个应用程序与 6 个外部系统的集成网络。左侧展示了点对点的网状直连架构，每个应用与每个系统之间都需要独立维护专用代码，累计多达 24 条定制集成的胶水链路；右侧展示了基于统一 MCP 协议构建的星状架构，每个应用与每个系统都仅向标准协议注册一次接口，全系统总计仅需 10 条连接线。顺着右侧的箭头追踪从 Client 到 Server 的单次请求链路：请求指明了调用的具体方法，在自身元数据中携带了协议版本与能力集，并成功获取了一个标注为 `complete` 的结果对象。特别留意右侧交互过程：在发送首个具备业务价值的实际请求之前，没有任何多余的握手建连对话。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。这是一个仅使用 Python 标准库构建的无网络依赖、无外部 SDK 引入的模型，但其所有的消息形态均严格遵循 2026-07-28 规范。代码中定义了两个彼此独立的业务服务端（天气查询服务与工单系统服务），以及一个在编写时完全不知晓这两个服务的通用 Client 类。Client 能够动态发现这两个服务端、列出它们提供的工具集并完成实际调用：
 
@@ -55,11 +55,11 @@ python3 code/main.py
 
 对照核心概念阅读终端打印出的消息往返记录。观察每一个请求中携带的 `_meta` 块以及每一个响应结果中的 `resultType`。接下来观察代码故意演示的三种异常场景：调用天气服务 `get_forecast` 但遗漏城市参数时，服务端返回包含 `isError: true` 的正常业务结果；当尝试调用一个不存在的工具时，服务端返回 JSON-RPC 协议错误 `-32602`；当请求携带服务端不支持的协议版本 `1999-01-01` 时，服务端返回 `-32022` 错误，并在其 `data` 字段中详细列出当前服务端实际支持的合法版本列表。你可以在工单服务端中尝试新增第三个工具或修改城市参数，再次运行脚本，观察客户端如何在不需要任何代码修改的情况下动态发现并处理新工具。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/mcp-scope-brief.md` 是本课交付的单页架构说明手册：提炼了 N 加 M 集成模型的数学论证、明确了 MCP 标准化与非标准化的边界、梳理了系统参与者与三大原语的控制权归属，并总结了两大错误通道的区别。当需要向团队阐述为何应该暴露标准 MCP 服务而不是继续堆砌定制集成代码时，该手册是极佳的宣讲依据。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -73,11 +73,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/02-the-integration-problem
 ```
 
-## Capstone Connection
+## 项目连接
 
 最终的 Capstone 项目将构建涵盖从服务发现到受审计工具调用全流程的完整 2026-07-28 通信链路。Capstone 中的所有设计均立足于本课构建的基石模型：每个宿主为每个服务端独立管理客户端实例、服务端通过结构化数据自描述、请求自身携带上下文元数据，以及结果显式标注其完成状态。在 Capstone 进行架构设计方案答辩时，你将运用 N 加 M 架构模型以及协议错误与工具执行错误的分离逻辑作为核心理论支撑。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -92,7 +92,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/02-the-integratio
 | 协议级错误 (Protocol error) | 请求结构或协议违规所引发的 JSON-RPC 错误，例如调用未知工具 (`-32602`) |
 | 工具执行错误 (Tool execution error) | 包含 `isError: true` 的常规业务结果，大模型可阅读该错误说明并自纠重试 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28)，重点研读 Overview 与 Tools 页面
 - [MCP 架构概述指南](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture)

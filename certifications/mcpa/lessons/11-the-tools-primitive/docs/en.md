@@ -77,11 +77,11 @@
 mcpa-11-tool-call
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节图示清晰展示了一次完整的 `tools/call` 往返交互：请求单向流向服务端，`CallToolResult` 则反向返回客户端；在箭头下方，展示了工具结果 `content` 数组中可以混合搭载的五种内容块类型。在此之下，同一个结果中的 `isError` 状态标志分为两个分支：省略或为 false 表示调用正常完成；为 true 则表示工具遭遇了需要模型阅读并介入处理的业务错误。该图谱中的结构不专属于任何特定服务端，无论是回答一句话、绘制徽标，还是返回一个暂不需要直接阅读的文件链接，底层均严格遵循这套统一的通信结构。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本构建了一个包含 6 个工具的 `release-desk` 服务端，分别覆盖了每种内容块类型以及一份结构化工单摘要；脚本以每页 2 个工具的规格执行深度为 3 页的列表查询，其中故意将第二页的游标设计为空字符串以考验客户端的分页鲁棒性。
 
@@ -91,11 +91,11 @@ python3 code/main.py
 
 对照核心概念部分的讲解研读打印出的各个页面：前两页均以客户端绝不擅自解析的 `nextCursor` 结尾，唯独第三页完全没有 `nextCursor` 键，这是表明分页彻底结束的唯一权威信号。接着查看文件顶部的 `render_for_audience` 函数，观察它是如何精准利用 `render_badge` 挂载在内容块上的 `annotations.audience` 列表，将徽标图片从面向 `"assistant"` 的上下文中剔除，同时完整保留在面向 `"user"` 的展示中。最后观察通信记录末尾的 `subscriptions/listen` 交互：首先是订阅确认握手，随后在事件流进行中一旦动态注册了第 7 个工具 `triage_incident`，便立刻触发了 `notifications/tools/list_changed` 通知，紧接着客户端重新遍历 `tools/list`，此时正好需要第 4 个页面才能完整展示。你可以尝试向 `build_tool_server` 中添加自定义的第 8 个工具并重新运行，验证分页边界与 `effective_tool_annotations` 默认值能够在无需改动客户端一行代码的情况下自适应生效。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/tool-result-anatomy.md` 是本课交付的单页参考规范速查手册：包含 `tools/list` 的分页与缓存字段定义、`CallToolResult` 的标准结构、五种内容块类型及其必选字段映射表、工具注解默认值矩阵，以及 `listChanged` 变更流的处理时序。在实际审查真实服务端的工具定义时，请随时对照该手册进行核验。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -109,11 +109,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/11-the-tools-primitive
 ```
 
-## Capstone Connection
+## 项目连接
 
 在 Capstone 综合考核的项目全流程中，系统会实际调用工具、对照 JSON Schema 校验参数，并将 `isError` 错误结果重新喂给模型以实现自愈重试。这两个环节正是本课 `CallToolResult` 的实战运用：`content` 是模型阅读的素材，`structuredContent` 是宿主程序无需二次解析文本即可安全信任的结构化数据，而 `isError` 则是划分“请求格式非法”与“工具遭遇需要解释的业务异常”的关键判据。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -128,7 +128,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/11-the-tools-prim
 | `nextCursor` | 分页响应中尚有更多条目时携带的不透明令牌；判断依据是该键是否存在，而非其布尔真假 |
 | `subscriptions/listen` | 客户端用于开启事件流以接收服务端 notifications/tools/list_changed 通知的请求 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：工具原语 (Tools)](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
 - [MCP 规范 2026-07-28：订阅模式 (Subscriptions)](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions)

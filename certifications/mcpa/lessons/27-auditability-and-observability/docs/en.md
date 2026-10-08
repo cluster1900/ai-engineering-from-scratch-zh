@@ -76,7 +76,7 @@ def child_traceparent(value):
 mcpa-27-trace-propagation
 ```
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 上方的架构图追踪了一个 `traceparent` 从客户端发起调用进入 `ops-desk`、跨越中间跳跃节点进入 `credential-vault` 并最终返回的全生命周期。在整个流转中，Trace ID 始终保持绝对恒定，而 Parent ID 则在每一次箭头所代表的跳跃中派生出全新的值。图表下方展示了两个服务器各自维护的独立哈希链账本：尽管两份日志在物理上彼此隔离、绝不直接包含对方的条目或哈希，但它们都清晰标注了相同的 Trace ID。
 
@@ -88,15 +88,15 @@ python3 certifications/mcpa/lessons/27-auditability-and-observability/code/main.
 
 首先仔细观察网络报文日志：`reset_api_key` 请求中的 `traceparent` 与嵌套的 `store_secret` 请求中的 `traceparent` 共享完全相同的 32 位 Trace ID 片段，两者的区别仅在于 16 位的 Parent ID。随后观察终端打印的两份审计日志：`ops-desk` 记录的 `reset_api_key` 条目中，`new_key` 已被替换为固定掩码，而 `account_id` 依然清晰可见；在 `credential-vault` 的日志中，`store_secret` 条目同样独立完成了对 `secret` 字段的脱敏，这体现出每个服务器都在自身的日志边界内自主执行脱敏策略。接着找到一条 Principal 显示为 `unauthenticated` 的 `ops-desk` 条目：该调用携带了一个伪造的非法 Bearer Token，虽然没有任何工具被真正执行，但该非法尝试本身依然被铁证如山地记录在案。最后两行首先对未遭改动的干净日志执行 `verify()`，随后在内存中直接篡改首个条目的参数内容并再次触发 `verify()`；验证结果瞬间转为失败，并精准指出了哈希链断裂的具体条目位置。
 
-## Practice Lab (实战演练)
+## 实战演练
 
 将链路向后延伸一跳。为 `credential-vault` 配置其专属的上游服务器 `key-escrow`（密钥托管服务），该服务提供一个简单的确认接收工具 `escrow_key`。修改 `store_secret` 的处理函数，使其在返回前通过 `ctx.call_upstream("escrow_key", {"account_id": arguments["account_id"]})` 向托管服务发起调用，这与 `reset_api_key` 访问保管库所采用的模式完全一致。重新运行演示程序，并在通信日志中验证三件事：`escrow_key` 请求携带的 `traceparent` 具有与原始客户端调用及 `store_secret` 完全一致的 Trace ID；生成了全新的独立 Parent ID；且其 Request ID 来自全局共享的 `IdSequence` 因此在线路上绝不发生碰撞。随后在 `ops-desk`、`credential-vault` 以及 `key-escrow` 三个服务器的日志上分别调用 `verify()`，确认各自都能独立返回 `(True, None)`。这无可辩驳地证明了：由三个不同程序独立维护的三条完全分离的哈希链，仅凭一个共享的 Trace ID 即可被完美缝合成一次可严密追溯的端到端操作。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/audit-and-telemetry-spec.md` 是一份单页参考规范，详细归纳了：`traceparent` 的字段布局、合法长度以及全零拒绝准则；合格审计条目必须包含的五大核心字段；以可验证伪代码呈现的脱敏与哈希链检验流程；以及 `clientInfo` 为何绝不能充当身份主体的理论根基。请将本规范与上一课的威胁控制矩阵配合使用：控制矩阵明确了系统允许发生什么，而审计规范则保证了系统能够证明实际发生了什么。
 
-## Verify It (验证方法)
+## 验证方法
 
 在课程根目录下执行单元测试：
 
@@ -110,11 +110,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/27-auditability-and-observability
 ```
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 第 33 课的综合考核将整合贯穿所有领域的端到端通信，其核对清单明确列出了两项由本课直接奠定的核心成果：全链路完整传递的 Trace ID，以及可顺利通过校验的防篡改审计链条。在 Capstone 的交互流程触及工具调用的瞬间，请求中已经携带了符合本课格式要求的标准 `traceparent`，而负责承接调用的任何服务器都必须在可供审查员抽检的日志中记录真实的主体标识而非无意义的展示别名。请牢记这一套字段规范，并在综合考核中能够准确指明 Trace ID 是如何在服务跳跃间严密传递的，而非仅仅停留在抽象概念的描述上。
 
-## 关键术语 (Key Terms)
+## 核心术语
 
 | 术语 | 定义说明 |
 |------|---------|
@@ -129,7 +129,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/27-auditability-a
 | Result channel（结果通道） | 标识某次调用最终结束于何种输出通道：成功结果、`isError` 业务拒绝还是协议层错误 |
 | Correlation（关联） | 即使各服务的内部 Request ID 互不相同，依然能够凭借共享的 Trace ID 将跨进程的日志条目缝合对齐 |
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 规范 2026-07-28, 基础协议](https://modelcontextprotocol.io/specification/2026-07-28/basic)，查阅 `_meta` 保留键与 OpenTelemetry 追踪上下文规范。
 - [SEP-414, `_meta` 中的 OpenTelemetry 追踪上下文定义](https://modelcontextprotocol.io/seps/414-request-meta)。

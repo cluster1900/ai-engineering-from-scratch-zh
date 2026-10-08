@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [Claude Code Scales Through Shared Constraints](../../15-claude-code-for-development-teams/), [Agent SDK Sessions, Subagents, and Context](../../17-agent-sdk-sessions-subagents-and-context/)
+**Prerequisites:** [Claude Code 借助共享约束实现团队规模化应用](../../15-claude-code-for-development-teams/), [Agent SDK 会话、Subagent 与上下文管理](../../17-agent-sdk-sessions-subagents-and-context/)
 **Time:** ~210 minutes
 
 ## 学习目标
@@ -277,9 +277,9 @@ CI 环境绝对不能继承开发者在本地交互调试时的历史上下文�
 
 负责修复核验的独立审查节点应当接收：原始缺陷记录、当前代码 Diff、针对性测试用例以及明确的验收准则。它不需要通读最初发现该缺陷时的整场历史对话。
 
-## Build It
+## 动手构建
 
-## Interactive Lab
+## 交互式实验
 
 ```figure
 19-memory-rule-precedence
@@ -287,7 +287,7 @@ CI 环境绝对不能继承开发者在本地交互调试时的历史上下文�
 
 使用规则优先级交互图，演练将长期稳定的项目全局规范、定向生效的路径规则、按需载入的 Skills、显式命令以及确定性执行的生命周期 Hooks 分流至其最小生效作用域。观察层级冲突的发生机制，透彻理解为何隐秘的本地偏好无法作为 CI 流水线的判断准则。
 
-## Practice Lab
+## 实战演练
 
 人为修改破坏一个已记录在案的路径 Glob 通配符，观察测试桩路径的匹配失效表现，在不将窄作用域规则倒退倾倒回根文件的原则下修复通配边界。随后在本地测试随课交付的 Skill 作用域校验脚本，分别验证一个合法的迁移路径和一个越权目录穿越尝试：
 
@@ -296,11 +296,11 @@ python3 outputs/migration-review-skill/scripts/check_scope.py migrations/2026_ad
 python3 outputs/migration-review-skill/scripts/check_scope.py ../secrets.sql
 ```
 
-## Shipped Artifact
+## 交付产物
 
 本课交付的核心审查报告位于 [`outputs/configuration-scope-audit.md`](../outputs/configuration-scope-audit.md)，记录了经实测验证的 Glob 路径规则用例、显式放行与阻断边界、受控 Subagent 定义、插件分发策略、精确的 Hook 输出规范以及无头 CI 审查契约。随附的 [`outputs/migration-review-skill/`](../outputs/migration-review-skill/) 目录提供了完整的真实 `SKILL.md`、确定性校验脚本以及按需查阅的合规清单。
 
-## Verify It
+## 验证方法
 
 在脱离 Claude、无网络连接且无任何 API 秘钥的环境中直接运行离线验证：
 
@@ -312,7 +312,7 @@ python3 -m unittest discover -s code/tests -v
 
 课后测验将全面考查各机制的架构选型原则以及在 CI 中验证缺陷修复的工程方案。
 
-## Capstone Connection
+## 项目连接
 
 将经过校验的配置架构规范，作为 Claude Code 工程体系章节直接并入架构师基础场景大作业（Architect Foundations Capstone）中。
 
@@ -349,7 +349,7 @@ python3 -m unittest discover -s code/tests -v
 
 开展配置调试实战测试：故意引入一个无法正常匹配的路径 Glob，验证你的审计工具能否精准将其捕获并报错报警。
 
-## Use It
+## 实践应用
 
 配置文件必须像核心业务代码一样纳入严格的代码审查（Code Review）流程。对配置文件的任何轻微改动，都可能在暗中颠覆权限边界、上下文消耗、可用工具以及自动化执行逻辑。
 
@@ -367,7 +367,7 @@ python3 -m unittest discover -s code/tests -v
 
 通过小型的测试用例验证配置的实际行为：例如，断言数据库迁移审查规则仅在处理迁移路径时被激活、高危命令能够被底层 Hook 彻底拦截阻断，以及审查命令能够严格输出符合 Schema 的结构化结果。
 
-## Exam Decision Patterns
+## 考试决策模式
 
 当提示词指导变得过于臃肿或仅对局部代码有效时，坚决将其拆分迁移至定向的路径规则或按需加载的 Skills 中。当某项业务约束绝对不容许被违背时，采用确定性的权限配置、生命周期 Hooks 或 CI 刚性门禁来捍卫，而不是寄希望于在 Prompt 中使用感叹号加粗强调。
 
@@ -386,7 +386,7 @@ python3 -m unittest discover -s code/tests -v
 
 坚决避免因配置不当而导致大篇幅规则全局无脑灌入、或在 CI 中复用开发者受污染的本地环境。
 
-## Common Traps
+## 常见陷阱
 
 ### 误把根指令文件当成全能百科全书 (Root File as Encyclopedia)
 
@@ -404,7 +404,7 @@ python3 -m unittest discover -s code/tests -v
 
 大语言模型的代码审查意见仅能作为人类专家的辅助参考。确定性的静态代码测试、严格的输入 Schema、企业级安全扫描以及关键审批流，才是捍卫系统不变量的真正基石。
 
-## Exercises
+## 课后习题
 
 1. 将一份超过 500 行的臃肿根目录指令文件，重构为篇幅在一页之内的轻量化路由分发入口。
 2. 设计针对前端组件与核心算法库的局部路径规则，并编写测试路径集证明通配符的命中准确性。
@@ -414,7 +414,7 @@ python3 -m unittest discover -s code/tests -v
 6. 将编写好的 Skill 和 Agent 打包为标准化插件，在测试插件市场中锁定版本，并编写对应的回滚应急方案。
 7. 设计一份用于只读无头 CI 审查的输出 Schema，确保生成的每个缺陷都包含稳定且可追踪的唯一 ID。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 通俗说法 | 严谨工程定义 |
 |------|----------|--------------|
@@ -428,7 +428,7 @@ python3 -m unittest discover -s code/tests -v
 | 钩子 (Hook) | 给模型的硬性指令 | 挂载在特定生命周期事件点上被确定性触发执行的宿主程序逻辑 |
 | 无头模式 (Headless mode) | 没有窗口的聊天窗口 | 在非交互环境下依据声明的输入数据纯静默运行，并产出机器可读结构化制品的执行模式 |
 
-## Further Reading
+## 延伸阅读
 
 - [Claude Code 记忆管理官方文档](https://code.claude.com/docs/en/memory)
 - [Claude Code Skills 开发指南](https://code.claude.com/docs/en/skills)

@@ -71,11 +71,11 @@ JSON-RPC 批量调用（Batching）正是制定这套严谨生命周期政策的
 mcpa-01-spec-map
 ```
 
-## Interactive Lab
+## 交互式实验
 
 上方图表将整套协议规范映射为清晰的树状结构：顶部的根节点延伸出三个标有 MUST 的方框，涵盖基础协议、版本控制和消息模式；另外四个标有 MAY 的方框涵盖授权机制、服务端特性、客户端特性及通用工具。在下方，三枚状态标签勾勒出具体特性的独立生命周期：从 Active 到 Deprecated 再到 Removed，这种状态伴随特性本身演进，独立于整份文档的版本标签。某个板块可以是 MUST 强制支持的，而该板块下具体开放哪些工具或资源，依然完全由服务端的具体实现自主决定。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本不发起任何外部网络调用，而是将协议规范建模为纯数据结构进行演示：包含废弃特性注册表、按 SEP 编号索引的更新日志以及关键字分类器：
 
@@ -85,11 +85,11 @@ python3 code/main.py
 
 将控制台输出的内容与上文的核心概念相互印证。`classify_requirement` 会解析英文语句并返回其规范性约束强度，直观证明小写形态的相同单词会被归类为 `unspecified`（未作规范）而非 `forbidden`（禁止）；`feature_state` 能够查询 Roots、Sampling 或 JSON-RPC Batching 在特定修订版下究竟属于 Active、Deprecated 还是 Removed；而 `earliest_removal` 则直接基于十二个月的弃用窗口动态计算出 2027-07-28 这一关键节点，避免硬编码；`changelog_lookup` 接受 SEP 编号并返回其关联的变更条目。在脚本结尾，代码模拟发送了 `server/discover` 请求并打印通信往返，同时故意构造了一次错误场景：缺少必需 `_meta` 块的畸形请求，合规的服务端必须坚决拒绝该请求，而绝不能进行主观臆测。你可以在代码的 `DEPRECATED_REGISTRY` 中尝试追加一条带有自定义窗口期的条目，或者调整 `include-context-this-server-all-servers` 所跟随的基准特性，再次运行脚本观察 `earliest_removal` 与 `feature_state` 如何在不改动其他逻辑的情况下动态响应变更。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/spec-reading-guide.md` 是本节课交付的单页规范阅读参考指南：收录了 MUST 强制支持项清单、关键字约束强度判定表、修订版状态与特性演进状态的区别定义，以及弃用时间计算规则与确切基准锚点。建议在阅读协议规范原文、与团队讨论技术方案或解答认证考题时，将其作为常备速查清单。
 
-## Verify It
+## 验证方法
 
 在课程目录下执行单元测试：
 
@@ -103,11 +103,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/01-reading-the-specification
 ```
 
-## Capstone Connection
+## 项目连接
 
 最终的 Capstone 项目将组装一套端到端跑通的完整 2026-07-28 消息交互链路，它默认你在不查阅任何资料的前提下，就能立刻判定某个消息结构、某个错误码或某项特性是否依然处于现行有效状态。本路线后续的所有课程在引用具体页面或 SEP 提案时，都会贯彻本课所讲授的严谨方式：细究关键字约束强度、考察特性生命周期状态，并追溯到制定该规则的底层提案。当面对 Capstone 项目或真实考题中关于某项约束究竟是 MUST 还是 SHOULD、某项功能究竟是 Deprecated 还是 Removed 的考查时，你所运用的正是本课建立的技术准绳。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 定义 |
 |------|------|
@@ -122,7 +122,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/01-reading-the-sp
 | 最早移除时间 (Earliest removal) | 在 Deprecated 特性的最短窗口期（至少 12 个月）届满当天或之后发布的第一个现行版 |
 | SEP | 规范增强提案 (Specification Enhancement Proposal)，用于提案并记录规范变更的 Markdown 文档 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28)
 - [MCP 规范 2026-07-28：基础协议](https://modelcontextprotocol.io/specification/2026-07-28/basic)

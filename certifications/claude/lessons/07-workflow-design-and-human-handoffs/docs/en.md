@@ -4,7 +4,7 @@
 
 **Type:** Learn
 **Languages:** Python
-**Prerequisites:** [Validate the Claim, Not the Confidence](../../05-output-evaluation-and-validation/), [Put Authority Around Capability](../../06-governance-safety-and-responsible-use/), [Anthropic Workflow Patterns](../../../../../phases/14-agent-engineering/12-anthropic-workflow-patterns/)
+**Prerequisites:** [检验断言真伪，而非轻信模型语气](../../05-output-evaluation-and-validation/), [以制度权威规约技术能力](../../06-governance-safety-and-responsible-use/), [Anthropic Workflow Patterns](../../../../../phases/14-agent-engineering/12-anthropic-workflow-patterns/)
 **Time:** ~105 minutes
 
 ## 学习目标
@@ -244,7 +244,7 @@ flowchart LR
 
 让全新研发的 Claude 工作流与现有的生产老流程并行静默运转，**坚决不赋予模型直接触发外部真实动作的写权限**。在完全相同的输入下，严密比对两者的输出质量与人工二次审阅耗时。在测试集中必须大量混入真实的棘手边缘案例，严禁只测标准理想用例。唯有当各项量化把关门槛全部稳定通过、且各环节安全应急责任人已全员就绪时，才准获准启动小流量受控切流。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过下方的人工审查阈值图表（Review-threshold figure），动态调整业务后果破坏力、动作可逆性、规则模糊度以及事实证据完备性。深入体悟：系统控制权是如何在风险攀升的过程中，平滑地从受控自动化过渡到强制性的人机交接审查，从而在触碰不可逆物理状态之前牢牢筑起安全防线。
 
@@ -252,15 +252,15 @@ flowchart LR
 07-human-review-threshold
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 在本地运行人机交接评分程序。尝试从发布步骤中故意抹去责任人（Owner）、删除容错断点（Checkpoint）、剔除降级预案（Fallback）或撤销高管审批，观察契约校验器是如何报错的；随后尝试手动解除审查未通过项，观察系统推荐的下一执行动作是如何发生正向迁移的。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/workflow-handoff-packet.json` 包含一份填报完备的发布简报业务工作流工程包。内含每个处理步骤的具体责任人、准入准出把关门槛、状态快照断点、手工降级回退指南、SLA 服务预期，以及一份结构高度清晰、可立即供人类审查员拍板的人机交接数据包。
 
-## Verify It (验证步骤)
+## 验证方法
 
 在本地终端执行自动化合规与契约校验：
 
@@ -272,7 +272,7 @@ python3 -m unittest discover tests -v
 
 该校验脚本会自动证明：流水线中的每一个处理步骤均严格具备 Owner、Gate、Escalation、Fallback 以及 Next Owner；具有不可逆物理影响的对外发布动作必须强制包含人类审查签字授权；且交付给人机交接界面的数据包必须完整列出所有失败的检查项以及合法的候选决断选项。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 配套自测题重点考察现状测绘、流程重构决策、交接数据包要素、重试幂等安全性、流程责任归属以及影子模式投产准则。在 Associate 认证的第 29 课毕业设计中，本工作流与交接工程包将直接作为你向评审委员会提交的生产级运维流程与人机协同交付物。
 

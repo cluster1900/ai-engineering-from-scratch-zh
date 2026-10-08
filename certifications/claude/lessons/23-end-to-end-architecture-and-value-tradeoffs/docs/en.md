@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [Business Discovery, Requirements, and SLAs](../../22-business-discovery-requirements-and-slas/); Phase 14, Lessons 01, 12, and 28
+**Prerequisites:** [业务调研、需求分析与服务等级目标](../../22-business-discovery-requirements-and-slas/); Phase 14, Lessons 01, 12, and 28
 **Time:** ~135 minutes
 
 ## 学习目标
@@ -193,9 +193,9 @@ Claude 非常擅长处理充满主观裁决与模糊语义的定性判断（例�
 
 唯有掌握了如此高保真的追踪链路，反馈闭环才能真正驱动系统的科学迭代：指导工程师准确研判究竟应当优化 Prompt 引导词、修复外部知识检索策略、调整风控路由分流门限、重构底层工具契约，还是收缩该业务场景的自动开放范围。
 
-## Build It
+## 动手构建
 
-## Interactive Lab
+## 交互式实验
 
 ```figure
 23-architecture-tradeoff
@@ -203,15 +203,15 @@ Claude 非常擅长处理充满主观裁决与模糊语义的定性判断（例�
 
 运行系统架构权衡交互图，在加权质量、P95 延迟、综合成本、安全合规、审计透明度以及维护改造成本六大维度上，横向比对增强型调用、确定性工作流、自治 Agent 与多 Agent 四大架构路线。交互实验深刻揭示了：当不可逾越的刚性安全门禁亮起红灯时，哪怕总分被其他便利性维度拉得再高，该方案依然属于不合格的危险设计。
 
-## Practice Lab
+## 实战演练
 
 从一份现成的架构决策记录中，人为删去已被驳回的备选方案说明或硬性安全门禁条款，观察系统就绪性检查的报错拦截，随后补齐严谨的架构取舍技术论据。
 
-## Shipped Artifact
+## 交付产物
 
 本课交付的标准架构产物位于 [`outputs/architecture-decision.md`](../outputs/architecture-decision.md)，详细记录了一个面向企业级合同审查场景的确定性工作流选型决议，附带详尽的异常故障流转分支设计与明确的架构推翻逆转条件（Reversal Condition）。
 
-## Verify It
+## 验证方法
 
 在本地执行离线架构决策数据包的自动化验证：
 
@@ -223,7 +223,7 @@ python3 -m unittest discover -s code/tests -v
 
 课后测验将全面考查架构模式选型、系统不变量控制以及全生命周期价值权衡的核心设计思想。
 
-## Capstone Connection
+## 项目连接
 
 将这份沉淀完毕的架构决策记录（ADR），直接并入架构师专业级终极大作业（Architect Professional Capstone）的核心架构选型章节。
 
@@ -260,7 +260,7 @@ python3 -m unittest discover -s code/tests -v
 
 清晰阐明：未来在观测到哪些客观证据或业务条件发生变化时，团队应当果断推翻当前选型并平滑切换至另一种架构模式。架构设计是立足于当前现实约束下的科学阶段性决断，绝不是永久固化、不可撼动的教条图腾。
 
-## Use It
+## 实践应用
 
 以构建一套能够跨企业海量财务与法律年报开展精准穿透分析的深度问答系统为例：
 
@@ -271,7 +271,7 @@ python3 -m unittest discover -s code/tests -v
 
 此时，若业务方临时追加硬性约束：“系统必须在 30 秒内完成答复，且单次问答成本不得超过 0.05 美元”，原本的最优架构路线可能会瞬间发生逆转。脱离了现实资源与业务约束的架构设计，没有任何实际工程意义。
 
-## Exam Decision Patterns
+## 考试决策模式
 
 当面临多个复杂度各异的备选方案时，始终选择**能够完全满足已知业务与安全约束的最简单架构**。在试图修补 Prompt 提示词之前，优先寻找系统结构层面的解耦治理之道。
 
@@ -287,7 +287,7 @@ python3 -m unittest discover -s code/tests -v
 
 坚决摒弃那些在未看清系统真实故障边界前，就轻率地试图通过换用更大模型、增加 Prompt 篇幅、无脑引入更多 Agent，或一股脑塞入更多工具的低级错误选项。
 
-## Common Traps
+## 常见陷阱
 
 ### 工具能力无限膨胀 (Capability Bloat)
 
@@ -305,7 +305,7 @@ python3 -m unittest discover -s code/tests -v
 
 一套软件系统能否在生产环境中真正长期存活，完全取决于其对模糊歧义输入、陈旧失效数据、越权权限报错、网络 I/O 超时以及局部故障返回等海量长尾异常的处置能力。在架构方案正式定稿前，必须将这些非正常路径的处理机制全部清晰纳入考量。
 
-## Exercises
+## 课后习题
 
 1. 针对企业发票争议仲裁业务流程，分别设计增强型调用、确定性工作流以及自适应 Agent 三套平行的架构草案，并明确阐述在何种条件下应当推翻选型并发生方案逆转。
 2. 深入审查一个现有的复杂 AI 工作流，精准定位出三个应当立即剥离出来改由确定性代码硬编码实现的核心系统不变量。
@@ -313,7 +313,7 @@ python3 -m unittest discover -s code/tests -v
 4. 在一个多智能体协同研究系统的架构设计中，主动注入外部工具突发宕机故障，详细编写系统在面临断点时应当返回的标准局部结果（Partial Result）数据结构。
 5. 设计一套端到端基准评测方案，要求其不仅能够打分评估系统最终输出的文本质量，还能敏锐识别出在后台执行轨迹中存在浪费性 Token 空耗或潜在安全越权违规的劣质系统。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 通俗说法 | 严谨工程定义 |
 |------|----------|--------------|
@@ -324,7 +324,7 @@ python3 -m unittest discover -s code/tests -v
 | 接口契约 (Contract) | 一段 Prompt 提示 | 在系统各模块交接处用于规范数据格式、异常分类与权责归属的机器可校验刚性协议 |
 | 单次成功综合成本 (Cost per success) | Token 单价 | 包含所有模型调用、工具执行、失败重试、人工复审及灾难挽回成本在内的综合端到端期望成本期望值 |
 
-## Further Reading
+## 延伸阅读
 
 - [Anthropic 官方研究报告：构建高效智能体 (Building Effective Agents)](https://www.anthropic.com/research/building-effective-agents)
 - [Claude Agent SDK 官方全套开发指南](https://platform.claude.com/docs/en/agent-sdk/overview)

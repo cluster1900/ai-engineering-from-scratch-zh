@@ -78,11 +78,11 @@
 mcpa-14-mrtr
 ```
 
-## Interactive Lab
+## 交互式实验
 
 本节架构图将客户端与服务端划分为两条并行的处理泳道，并追踪了一次发布部署在两个往返周期中的全景。首个实线箭头代表常规的 `tools/call`；服务端返回的响应以 `input_required` 提前终结了该次调用，而无需悬挂阻塞连接；中间的留白标注了客户端在本地异步搜集人类决策的时间窗口；第二个实线箭头是一个分配了全新 ID 的独立 `tools/call` 请求，携带着 `inputResponses` 以及首个响应中签发的原始 `requestState` 字符串；最终箭头则是标准的 `complete` 成功结果。跨越这道时间缝隙的唯一介质是客户端主动带回的自包含报文，没有任何跨请求的服务端单点内存依赖。
 
-## Practice Lab
+## 实战演练
 
 打开 `code/main.py`。该脚本构建了一个 `DeployServer`，对外暴露了一个在执行真实发布前必定请求人类确认的 `deploy_release` 工具，其底层采用了表单模式的引导确认，并完全依靠标准库的 `hmac` 与 `hashlib` 构建了防篡改的 `requestState`。`mint_request_state` 会对包含主体、按逻辑时钟计算的过期时间，以及由工具名与参数生成的 SHA-256 摘要（`digest_request`）的载荷进行加密签名。`verify_request_state` 使用恒定时间比较函数 `hmac.compare_digest` 重新核验签名，随后依次校验主体、过期时间与参数摘要，并最终核实该令牌的 Nonce 是否已被核销。
 
@@ -92,11 +92,11 @@ python3 code/main.py
 
 运行脚本并观察六种不同的执行走向。首先，一个从未声明 `elicitation` 能力的访客客户端发起调用，在服务端构建其无法处理的 `inputRequests` 之前，便被 `-32021` 协议错误当场拒绝。随后，Alice 批准了部署，重试请求顺利完成并在 `structuredContent.deployed` 中返回 true。接着，Alice 拒绝了另一次部署，重试依然以 `isError: false` 正常完成：因为用户的拒绝属于预期的业务决断，绝非系统故障，服务平稳保留未部署状态。紧接着展示了四组精心设计的负面异常案例（在通信记录中封装为 `violation`，防止语法检查器误判）：第一组故意将 `requestState` 签名的最后一个字符篡改，第二组在凭据超出极短有效期后才发起重试，第三组由恶意用户 Mallory 尝试重放服务端为 Alice 签发的凭据，第四组虽保留了 Alice 的合法凭据，却在重试时暗中将部署环境篡改。这四种违规调用均被服务端识别为工具执行错误并返回 `isError: true` 及清晰的人类可读原因。规范要求服务端必须坚决拒绝未通过验证的非法状态，而本实验选用工具执行错误通道，以便上层大模型能感知原因并尝试自愈（服务端亦可选择重新发起 `input_required` 再次要求确认）。模型据此可以重新发起调用以获取全新的合法凭据，从而避免彻底卡死在晦涩的底层错误中。
 
-## Shipped Artifact
+## 交付产物
 
 `outputs/mrtr-implementation-checklist.md` 是本课交付的单页实战落地指南：明确界定了服务端返回 `input_required` 时的合规红线与禁区、`requestState` 的加密保护标准实现范式、客户端应尽的逐字节原样回显义务、表单模式与 URL 模式的选型决策树，以及考前必背的核心避坑要点。
 
-## Verify It
+## 验证方法
 
 在课程目录下运行测试套件：
 
@@ -110,11 +110,11 @@ python3 -m unittest discover code/tests
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/14-multi-round-trip-requests-and-elicitation
 ```
 
-## Capstone Connection
+## 项目连接
 
 在 Capstone 综合考核的端到端大题中，包含了用于用户授权确认的 MRTR 引导确认交互，其底层正是使用本课构建的加密级 `requestState` 进行保护：强绑定身份主体、过期时限以及请求参数摘要，并在演练中主动对恶意篡改尝试实施拦截。本课建立的认知框架（四步交互循环、必须分配全新 ID、凭据逐字节原样回传，以及协议错误与工具执行错误的分工）是应对综合大题时必须熟稔于心的基石能力。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 含义 |
 |------|------|
@@ -129,7 +129,7 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/14-multi-round-tr
 | Principal binding | 将 requestState 与经过认证的调用方身份强绑定，彻底杜绝越权凭据重放攻击 |
 | Single use enforcement | 服务端对已核销令牌的 Nonce 进行追踪，确保状态凭证绝不可能被二次兑现 |
 
-## Further Reading
+## 延伸阅读
 
 - [MCP 规范 2026-07-28：多轮往返请求 (MRTR)](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr)
 - [MCP 规范 2026-07-28：引导确认原语 (Elicitation)](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation)

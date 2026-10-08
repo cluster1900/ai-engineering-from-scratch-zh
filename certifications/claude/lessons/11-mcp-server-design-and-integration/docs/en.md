@@ -4,7 +4,7 @@
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/)
+**Prerequisites:** [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/)
 **Time:** ~120 minutes
 
 ## 学习目标
@@ -440,7 +440,7 @@ python3 -m unittest discover certifications/claude/lessons/11-mcp-server-design-
 
 该模拟器将隐藏在底层的网络通信规则显式透明化。在生产环境中，优先选用官方 SDK 进行开发，并对真实传输层进行充分测试。官方 SDK 提供了更加成熟的连接帧管理、类型化协议模型、取消信号传播以及复杂的向前兼容机制，这些都不应在生产业务中随意重复造轮子。
 
-## Interactive Lab (交互式实验)
+## 交互式实验
 
 通过 MCP 权限边界图示，演练将某项业务能力在宿主、客户端与服务端之间进行流转划分。动态调整调用方身份、协议版本、底层传输协议、被请求的操作类型以及 MRTR 补充输入。观察哪一个组件负责用户同意、哪一个负责服务端授权、哪一个维护协议元数据，以及持久化状态究竟由谁持有。
 
@@ -448,7 +448,7 @@ python3 -m unittest discover certifications/claude/lessons/11-mcp-server-design-
 11-mcp-permission-boundary
 ```
 
-## Practice Lab (实战演练)
+## 实战演练
 
 运行模拟器，随后逐一执行以下破坏性边界测试：
 
@@ -460,13 +460,13 @@ python3 -m unittest discover certifications/claude/lessons/11-mcp-server-design-
 6. 使用相同的共享签名密钥初始化一个全新的服务端对象实例，将重试请求发送给新实例，验证无状态跨节点接力成功。
 7. 替换新实例的共享密钥，验证由第一个实例签发的状态被新实例立即拒绝。
 
-## Shipped Artifact (交付产物)
+## 交付产物
 
 `outputs/mcp-capability-snapshot.json` 记录了完全可复现的现代 MCP 通信实录。它完整收录了服务发现、带缓存提示的目录广播、完整执行结果、跨两个独立实例接力的 MRTR 完整交互、请求级进度推送以及 Streamable HTTP 的标准部署配置。
 
 该交付产物中绝对不包含任何旧版的初始化握手、initialized 通知、服务端向客户端反向发起的调用或任何协议层 Session。
 
-## Verify It (验证方法)
+## 验证方法
 
 在仓库根目录下执行如下验证命令：
 
@@ -477,7 +477,7 @@ python3 -m unittest discover certifications/claude/lessons/11-mcp-server-design-
 
 第一个命令会重新生成并校验签入的 JSON 产物。单元测试套件对服务发现机制、请求元数据校验、错误码映射、缓存提示、确定性排序、MRTR 能力守门人、状态防篡改、跨实例重试容灾、进度通知格式以及最新的 HTTP 规范进行了 100% 的自动化断言。
 
-## Capstone Connection (项目连接)
+## 项目连接
 
 在 Developer Capstone 以及 Architect Capstone 的架构评审中，所产出的服务发现与 MRTR 交互实录将直接作为关键的集成契约凭据。一份高质量的架构答辩必须能够精准指出每一道安全边界的信任所有者，清晰演示跨实例重试在无状态服务中的平滑流转，并从底层原理阐明显式应用级状态与已被废弃的协议 Session 之间的本质区别。
 
@@ -492,7 +492,7 @@ python3 -m unittest discover certifications/claude/lessons/11-mcp-server-design-
 
 认证核心课程明确了每一道边界的安全归属，而上述进阶课程则通过实战代码验证在真实物理线路上穿行的每一比特数据。
 
-## 考试决策准则 (Exam Decision Rules)
+## 考试决策准则
 
 - 宿主拥有模型交互权与最终用户同意权；客户端负责协议翻译与组帧；服务端拥有能力的执行权与服务端业务鉴权。
 - MCP `2026-07-28` 规范是彻底无状态的。每一个请求必须单独携带协议版本与客户端能力元数据。
@@ -523,7 +523,7 @@ python3 -m unittest discover certifications/claude/lessons/11-mcp-server-design-
 
 MCP 带来了标准化服务发现、独立进程传输、安全缓存与集中治理的巨大收益。但它同样引入了一套全新的协议边界和额外的微服务运维成本。唯有当系统的跨宿主互操作性收益能够证明该成本的合理性时，才应当引入 MCP。
 
-## 课后练习 (Exercises)
+## 课后习题
 
 1. 在服务端中新增第二个资源，并编写测试证明多次请求返回的资源列表顺序始终保持确定一致。
 2. 针对耗时较长的长任务引入显式的应用程序级状态句柄（Handle），并模拟将后续轮次的查询请求随机路由到两个不同的集群实例上。
@@ -532,7 +532,7 @@ MCP 带来了标准化服务发现、独立进程传输、安全缓存与集中�
 5. 模拟 HTTP 传输层的版本头校验：当请求头中的 `MCP-Protocol-Version` 与请求体 `_meta` 中的版本不一致时，返回 `-32020` 错误并置 HTTP 状态码为 400。
 6. 使用官方受支持的 SDK 重构本课中的同款服务端，对比真实的物理抓包数据与离线模拟器产物之间的异同。
 
-## 延伸阅读 (Further Reading)
+## 延伸阅读
 
 - [MCP 2026-07-28 规范更新说明](https://modelcontextprotocol.io/specification/2026-07-28/changelog)
 - [MCP 基础协议与单请求元数据规范](https://modelcontextprotocol.io/specification/2026-07-28/basic)

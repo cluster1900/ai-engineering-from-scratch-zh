@@ -4,7 +4,7 @@
 
 **Type:** Reference
 **Languages:** Python
-**Prerequisites:** [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/), [MCP Separates Capability From Host](../../11-mcp-server-design-and-integration/); Phase 13, Lesson 05
+**Prerequisites:** [工具循环本质是受控委托](../../10-tool-use-and-agentic-loops/), [MCP 架构：解耦能力与宿主系统](../../11-mcp-server-design-and-integration/); Phase 13, Lesson 05
 **Time:** ~120 minutes
 
 ## 学习目标
@@ -185,9 +185,9 @@ MCP 协议包含 Tools、Resources 和 Prompts 三大基语，应根据控制流
 
 根据任务性质严格限制 Bash 与 Write 工具的分配。优先选用语义最明确、能够产生可审计审查证据的专门工具。
 
-## Build It
+## 动手构建
 
-## Interactive Lab
+## 交互式实验
 
 ```figure
 18-tool-discovery-contract
@@ -195,15 +195,15 @@ MCP 协议包含 Tools、Resources 和 Prompts 三大基语，应根据控制流
 
 使用工具发现契约交互图，直观对比工具语义重叠、渐进式按需加载以及运行时执行鉴权的工作机制。动态切换不同的错误类别，观察系统何时应该触发重试、何时必须要求修正输入、何时需要申请审批，以及何时只能向上升级给人工处理。
 
-## Practice Lab
+## 实战演练
 
 人为构造一个存在重叠描述的工具定义，并将一个权限不足错误标记为允许重试。观察 Agent 陷入死循环的失控现场，随后重构该接口并修复错误恢复契约。
 
-## Shipped Artifact
+## 交付产物
 
 本课交付的标准评审产物位于 [`outputs/tool-catalog-review.md`](../outputs/tool-catalog-review.md)，其中明确划分了政策、账户和外部搜索的独立边界，并包含了完整的故障处理矩阵。
 
-## Verify It
+## 验证方法
 
 在本地执行工具契约的自动化静态审查：
 
@@ -215,7 +215,7 @@ python3 -m unittest discover -s code/tests -v
 
 课后测验将全面考察针对工具接口设计、错误分类自愈与渐进式发现的核心考点。
 
-## Capstone Connection
+## 项目连接
 
 将这份经过审计的工具契约成果，作为工具规范与 MCP 接口索引直接接入到架构师基础场景大作业（Architect Foundations Capstone）中。
 
@@ -238,13 +238,13 @@ python3 -m unittest discover -s code/tests -v
 
 注入参数校验失败、权限不足、并发冲突、频控超限、网络超时及局部返回等异常，验证运行时 Harness 是否严格根据错误类型采取差异化对策。
 
-## Use It
+## 实践应用
 
 在结构化信息抽取场景中，定义一个不产生外部副作用的专属 Tool，让该 Tool 的 Schema 精准匹配目标数据模型。在调用时配置强制工具调用。获取到数据后，必须由后端程序核查其业务语义合法性与溯源凭证。严禁把生产环境中具有写操作副作用的真实工具直接当作输出格式化模版来使用。
 
 在大型企业级工具管理中，部署统一的工具注册表（Registry），基于具体业务域与租户权限执行按需检索。仅在上下文中动态装载筛选出的工具元数据。持续监测工具库整体体积、发现检索准确率、模型选型命中率、Prompt 缓存复用率以及未授权探测告警。
 
-## Exam Decision Patterns
+## 考试决策模式
 
 工具调用中出现的问题，本质上绝大多数都是接口设计问题。在试图增加繁琐的 Prompt 提示词之前，优先重构工具名称、正反边界说明、入参 Schema、按角色分发机制以及结构化错误协议。
 
@@ -259,7 +259,7 @@ python3 -m unittest discover -s code/tests -v
 
 坚决避免为了图一时方便而将所有工具全量倾倒在全局上下文中。
 
-## Common Traps
+## 常见陷阱
 
 ### 误把工具描述当作权限防火墙 (Tool Description as Authorization)
 
@@ -277,7 +277,7 @@ python3 -m unittest discover -s code/tests -v
 
 项目级的配置文件是为团队版本协作设计的。敏感秘钥必须通过环境变量动态注入，严禁进入代码版本控制历史。
 
-## Exercises
+## 课后习题
 
 1. 重写五个存在语义模糊重叠的工具定义，为其划定泾渭分明的操作边界。
 2. 针对内部数据、公开网页与合规政策检索场景，搭建一套混淆配对评估评测集。
@@ -285,7 +285,7 @@ python3 -m unittest discover -s code/tests -v
 4. 将一个臃肿庞大的单体 MCP Server 拆分为独立的 Tools、Resources 与 Prompts 组合。
 5. 编写一份符合规范的项目级与用户级 MCP 配置文件范式，确保不包含任何明文硬编码秘钥。
 
-## Key Terms
+## 核心术语
 
 | 术语 | 通俗说法 | 严谨工程定义 |
 |------|----------|--------------|
@@ -296,7 +296,7 @@ python3 -m unittest discover -s code/tests -v
 | MCP 资源 (MCP Resource) | 一个读接口 | 依据标准协议通过 URI 寻址并读取的只读上下文数据实体 |
 | 项目作用域 (Project Scope) | 全局公共配置 | 针对单一代码仓库或研发团队生效、受版本控制管辖的工程配置文件 |
 
-## Further Reading
+## 延伸阅读
 
 - [Claude 工具调用官方文档](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)
 - [MCP 开放协议最新规范](https://modelcontextprotocol.io/specification/latest)
