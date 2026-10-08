@@ -1,0 +1,306 @@
+# Geração de imagens  GANs
+
+> O GAN é um sistema fixo entre duas redes neurais. Um responsável por desenhar e outro responsável por avaliar. Eles ficam melhores juntos até que os resultados do desenho enganem o avaliador.
+
+**Type:** Build
+**Languages:** Python
+**Prerequisites:** Phase 4 Lesson 03 (CNNs), Phase 3 Lesson 06 (Optimizers), Phase 3 Lesson 07 (Regularization)
+**Time:** ~75 分钟
+
+## Objectivo de aprendizagem
+- 解释                                                                                                                                                                                                                                                              
+- Em PyTorch, realize DCGAN e, em 60 páginas, permita que seja gerada imagem 32x32 sintética em linha.
+- Utilize三种标准技巧稳定 GAN 训练: perda não saturante  norma espectral  TTUR (regra de atualização em duas escalas)
+- 读取训练曲线,区分健康收与模式 collapse、oscillação、discriminador-ganhos-completamente
+
+## 问题
+Classificação Igreja rede irá imagens mapeadas para etiquetas. Geração  reversou este problema: a amostra sai como se fosse de uma nova imagem da mesma distribuição.
+
+標準損失機能 (MSE、クロスエントロピー) não pode medir se esse padrão é originado da distribuição real── minimizar por erro de imagem produz um resultado médio confuso, em vez de padrão real──突破点 lies in learning Loss: train a second network, make its task to distinguish real from fake,并 use it to drive generator──
+
+GANs (Goodfellow et al., 2014) definiram esse quadro. Até 2018, o StyleGAN já pode gerar fotos difíceis de distinguir entre 1024x1024 rostos de pessoas.
+
+## 概念
+### As duas redes
+
+```mermaid
+flowchart LR
+    Z["z ~ N(0, I)<br/>noise"] --> G["Generator<br/>transposed convs"]
+    G --> FAKE["Fake image"]
+    REAL["Real image"] --> D["Discriminator<br/>conv classifier"]
+    FAKE --> D
+    D --> OUT["P(real)"]
+
+    style G fill:#dbeafe,stroke:#2563eb
+    style D fill:#fef3c7,stroke:#d97706
+    style OUT fill:#dcfce7,stroke:#16a34a
+```
+
+**generator**G 接收一个噪音矢量 `z`Não saiu uma imagem.**discriminator**D 接收一张图像并输出单标量:该图像为真实的概率──
+
+### O jogo
+
+G espero D 犯错――D espero que o meu próprio julgamento seja correto――
+
+```
+min_G max_D  E_x[log D(x)] + E_z[log(1 - D(G(z)))]
+```
+
+Da direita para a esquerda:D está a maximizar isso na realidade`log D(real)`) e falso`log (1 - D(fake))`G está em minimizar D em falso acima de precisão  espera `D(G(z))`Muito alto.
+
+O bom amigo provou que existe um equilíbrio global, entre os quais`p_G = p_data`D em todas as posições produz 0,5, e gera a divergência Jensen-Shannon entre distribuição e distribuição real.
+
+### Perda não saturante
+
+A forma acima está instável no valor numérico.`D(G(z))`Para cada falso, quase zero, portanto.`log(1 - D(G(z)))`Para G's Gradiente 会消失──修复方法:翻转 G's Loss──
+
+```
+L_D = -E_x[log D(x)] - E_z[log(1 - D(G(z)))]
+L_G = -E_z[log D(G(z))]                          # non-saturating
+```
+
+Agora é o momento .`D(G(z))`接近零时,G 的损失 很大,Gradient 也有信息量──每个现代GAN都使用这个变体进行训练──
+
+### Regras de arquitetura DCGAN
+
+Radford、Metz、Chintala (2015) vai transformar os experimentos de muitos anos de fracasso em cinco regras, tornando o treinamento GAN mais estável:
+
+1. Usando convases graduadas  substituindo o pooling (((Duas redes são assim)
+2. Em gerador e discriminador, todos usam a norma de lote, mas G's output e D's input são excluídos.
+3. Em construções mais profundas, a transferência de camadas totalmente conectadas.
+4. G 在除输出层外所有层使用 ReLU(输出层用 tanh,将输出限制在 [-1, 1])。
+5. D 在所有层使用LeakyReLU(negative_slope=0.2)。
+
+Cada moderno GAN baseado em conv ((StyleGAN、BigGAN、GigaGAN) ainda surgiu dessas regras, e foi substituído por uma parte delas.
+
+### Modos de falha  e suas características
+
+```mermaid
+flowchart LR
+    M1["Mode collapse<br/>G produces a narrow<br/>set of outputs"] --> S1["D loss low,<br/>G loss oscillating,<br/>sample variety drops"]
+    M2["Vanishing gradients<br/>D wins completely"] --> S2["D accuracy ~100%,<br/>G loss huge and static"]
+    M3["Oscillation<br/>G and D keep trading<br/>wins forever"] --> S3["Both losses swing<br/>wildly with no downward trend"]
+
+    style M1 fill:#fecaca,stroke:#dc2626
+    style M2 fill:#fecaca,stroke:#dc2626
+    style M3 fill:#fecaca,stroke:#dc2626
+```
+
+- **Mode collapse**G 找到一张能骗过 D 的图像,然后只生成它──修复:加入迷你批次歧视、光谱规范,或标签条件──
+- **Discriminator wins**:D 变强太快,G 的 Gradient 消失──修复:减小 D、降低 D learning rate,或对真实标签 应用标签 smoothing──
+- **Oscillation**A rede de dados é uma das principais fontes de informação para o desenvolvimento de dados.
+
+### Avaliação
+
+Os GANs não têm verdade, então como sabes se estão a trabalhar?
+
+- **Sample inspection** Cada época 结时直接查看 64 个样本──不可妥协──
+- **FID (Fréchet Inception Distance)** real conjunto e generação de conjunto de distribuições de características Inception-v3  distancia entre──越低越好──社区标准──
+- **Inception Score**较旧,也更脆弱; prioridade usar FID。
+- **Precision/Recall for generative models**分别衡量质量 (precision) 和覆盖度 (recall) ∼比单独使用FID 更有信息量──
+
+Para pequenas operações de dados sintéticos, a inspecção de amostras é suficiente.
+
+
+```figure
+cv-gan-image
+```
+
+## Construí-lo
+### 步骤 1: Gerador
+
+Um pequeno gerador DCGAN, recebe 64 bits de ruído e gera uma imagem 32x32.
+
+```python
+import torch
+import torch.nn as nn
+
+class Generator(nn.Module):
+    def __init__(self, z_dim=64, img_channels=3, feat=64):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.ConvTranspose2d(z_dim, feat * 4, kernel_size=4, stride=1, padding=0, bias=False),
+            nn.BatchNorm2d(feat * 4),
+            nn.ReLU(inplace=True),
+            nn.ConvTranspose2d(feat * 4, feat * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(feat * 2),
+            nn.ReLU(inplace=True),
+            nn.ConvTranspose2d(feat * 2, feat, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(feat),
+            nn.ReLU(inplace=True),
+            nn.ConvTranspose2d(feat, img_channels, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.Tanh(),
+        )
+
+    def forward(self, z):
+        return self.net(z.view(z.size(0), -1, 1, 1))
+```
+
+Quatro transpostos, cada um usado.`kernel_size=4, stride=2, padding=1`, assim eles podem fazer o seu espaço de tamanho duplicado.
+
+### 步骤 2: Discriminador
+
+O gerador de imagens de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz em movimento, o gerador de luz.
+
+```python
+class Discriminator(nn.Module):
+    def __init__(self, img_channels=3, feat=64):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Conv2d(img_channels, feat, kernel_size=4, stride=2, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(feat, feat * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(feat * 2),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(feat * 2, feat * 4, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(feat * 4),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(feat * 4, 1, kernel_size=4, stride=1, padding=0),
+        )
+
+    def forward(self, x):
+        return self.net(x).view(-1)
+```
+
+Última Convocation`4x4`mapa de características 降到 `1x1`◊输出是每张图像一个标量; apenas durante a Loss 计算期间应用 sigmoid。
+
+### 步骤 3: Passo de formação
+
+交替执行: cada lote, primeiro, uma vez D, novamente, uma vez G.
+
+```python
+import torch.nn.functional as F
+
+def train_step(G, D, real, z, opt_g, opt_d, device):
+    real = real.to(device)
+    bs = real.size(0)
+
+    # D step
+    opt_d.zero_grad()
+    d_real = D(real)
+    d_fake = D(G(z).detach())
+    loss_d = (F.binary_cross_entropy_with_logits(d_real, torch.ones_like(d_real))
+              + F.binary_cross_entropy_with_logits(d_fake, torch.zeros_like(d_fake)))
+    loss_d.backward()
+    opt_d.step()
+
+    # G step
+    opt_g.zero_grad()
+    d_fake = D(G(z))
+    loss_g = F.binary_cross_entropy_with_logits(d_fake, torch.ones_like(d_fake))
+    loss_g.backward()
+    opt_g.step()
+
+    return loss_d.item(), loss_g.item()
+```
+
+D passo em meio `G(z).detach()`至关重要: 我们不希望在更新 D 时 Gradient 流入 G ⋅ esqueça que é um erro clássico de iniciantes ⋅
+
+### 步骤 4: em formas sintéticas 上运行完整训练循环
+
+```python
+from torch.utils.data import DataLoader, TensorDataset
+import numpy as np
+
+def synthetic_images(num=2000, size=32, seed=0):
+    rng = np.random.default_rng(seed)
+    imgs = np.zeros((num, 3, size, size), dtype=np.float32) - 1.0
+    for i in range(num):
+        r = rng.uniform(6, 12)
+        cx, cy = rng.uniform(r, size - r, size=2)
+        yy, xx = np.meshgrid(np.arange(size), np.arange(size), indexing="ij")
+        mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+        color = rng.uniform(-0.5, 1.0, size=3)
+        for c in range(3):
+            imgs[i, c][mask] = color[c]
+    return torch.from_numpy(imgs)
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+data = synthetic_images()
+loader = DataLoader(TensorDataset(data), batch_size=64, shuffle=True)
+
+G = Generator(z_dim=64, img_channels=3, feat=32).to(device)
+D = Discriminator(img_channels=3, feat=32).to(device)
+opt_g = torch.optim.Adam(G.parameters(), lr=2e-4, betas=(0.5, 0.999))
+opt_d = torch.optim.Adam(D.parameters(), lr=2e-4, betas=(0.5, 0.999))
+
+for epoch in range(10):
+    for (batch,) in loader:
+        z = torch.randn(batch.size(0), 64, device=device)
+        ld, lg = train_step(G, D, batch, z, opt_g, opt_d, device)
+    print(f"epoch {epoch}  D {ld:.3f}  G {lg:.3f}")
+```
+
+`Adam(lr=2e-4, betas=(0.5, 0.999))`É a configuração padrão de DCGAN  menor beta1  evitará o impulso  em jogo adversário exageradamente estável
+
+### 步骤 5: Amostração
+
+```python
+@torch.no_grad()
+def sample(G, n=16, z_dim=64, device="cpu"):
+    G.eval()
+    z = torch.randn(n, z_dim, device=device)
+    imgs = G(z)
+    imgs = (imgs + 1) / 2
+    return imgs.clamp(0, 1)
+```
+
+采样前始终切换到 eval mode── para DCGAN é importante, pois a norma do lote usará estatísticas de execução, em vez de estatísticas do lote atual──
+
+### 步骤 6: Normalização espectral
+
+O sistema de controle de dados é um sistema de controle de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de
+
+```python
+from torch.nn.utils import spectral_norm
+
+def build_sn_discriminator(img_channels=3, feat=64):
+    return nn.Sequential(
+        spectral_norm(nn.Conv2d(img_channels, feat, 4, 2, 1)),
+        nn.LeakyReLU(0.2, inplace=True),
+        spectral_norm(nn.Conv2d(feat, feat * 2, 4, 2, 1)),
+        nn.LeakyReLU(0.2, inplace=True),
+        spectral_norm(nn.Conv2d(feat * 2, feat * 4, 4, 2, 1)),
+        nn.LeakyReLU(0.2, inplace=True),
+        spectral_norm(nn.Conv2d(feat * 4, 1, 4, 1, 0)),
+    )
+```
+
+- Não .`Discriminator`替换为 `build_sn_discriminator()`后,你通常不再需要TTUR技巧──Spectro norma é a mais fácil de aplicar de um único nível de estabilidade──
+
+## Use-o
+Para a geração rigorosa, utilizar pesos pré-treinados ou trocar para difusão.
+
+- `torch_fidelity`Pode-se calcular em seu gerador, sem precisar de escrever o código de avaliação auto-definida.
+- `pytorch-gan-zoo`(legacia)`StudioGAN`提供经过测试的DCGAN、WGAN-GP、SN-GAN、StyleGAN 和 BigGAN 实现──
+
+Até 2026, os GANs continuam sendo a melhor escolha para estas cenas: realtime image generation (produzir imagens) (latença <10 ms) ̳transferência de estilo ̳tem controle preciso da tradução de imagem para imagem ̳Pix2Pix、CycleGAN) ∼ Difusão em fotorealismo e condicionamento de texto 上胜出──
+
+## Entrega-o
+本课产出:
+
+- `outputs/prompt-gan-training-triage.md` um prompt, para se ler  training曲线描述并选择 failure mode (modo de colapso, D-win, oscilação), bem como um único programa de modificação.
+- `outputs/skill-dcgan-scaffold.md`Uma habilidade, pode ser.`z_dim`、Objetivo `image_size`和 `num_channels`编写DCGAN andamento, incluindo training loop 和 sample saver。
+
+## 练习
+1. **(Easy)**Em conjunto de dados de círculos sintéticos, a formação acima do DCGAN, e ao final de cada época, a conservação de 16 amostras de redes. Até que época, a geração de círculos torna-se óbvia?
+2. **(Medium)**Usar a norma espectral  substituir a norma de lote do discriminador 并排训练两版本 哪个收更快?哪个收更快?哪个在三个种子中上方差更低?
+3. **(Hard)**实现 condicional DCGAN:将 class label 输入 G 和 D(在 G 中将 one-hot 拼接到噪音,在 D 中拼接一个类嵌入频道) ⋅ em lição 7 do conjunto de dados sintético "círculos vs quadrados" 上训练,并通过使用指定标签 采样来展示类调节 有效──
+
+## 关键术语
+| Term | What people say | What it actually means |
+|------|----------------|----------------------|
+| Generator (G) | “负责画东西的网络” | 将 noise 映射到图像；训练目标是骗过 discriminator |
+| Discriminator (D) | “评判者” | Binary classifier；训练目标是区分真实图像与生成图像 |
+| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 p_G = p_data |
+| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 -log(D(G(z)))，而不是 log(1 - D(G(z)))，以避免训练早期 Gradient 消失 |
+| Mode collapse | “Generator 只生成一种东西” | G 只生成数据分布中的一小部分；用 SN、minibatch discrimination 或更大的 batch 修复 |
+| TTUR | “两个 learning rates” | D 比 G 学得更快，通常快 2-4 倍；稳定训练 |
+| Spectral norm | “1-Lipschitz layer” | 一种 weight-normalisation，用来限制每层的 Lipschitz constant；防止 D 变得任意陡峭 |
+| FID | “Fréchet Inception Distance” | 真实集合与生成集合的 Inception-v3 feature distributions 之间的距离；标准评估指标 |
+
+## 延伸阅读
+- [Generative Adversarial Networks (Goodfellow et al., 2014)](https://arxiv.org/abs/1406.2661) O artigo sobre a criação
+- [DCGAN (Radford, Metz, Chintala, 2015)](https://arxiv.org/abs/1511.06434) Deixar GANs capacitação de arquitetura
+- [Spectral Normalization for GANs (Miyato et al., 2018)](https://arxiv.org/abs/1802.05957) As técnicas de estabilização úteis
+- [StyleGAN3 (Karras et al., 2021)](https://arxiv.org/abs/2106.12423)SOTA GAN; ler parece ser um seleto de todos os habilidades da última década
