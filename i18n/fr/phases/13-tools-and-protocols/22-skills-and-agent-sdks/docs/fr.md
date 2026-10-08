@@ -79,7 +79,7 @@ test -f my-first-skill/SKILL.md
 Restez à l' écoute`agent-skills-first-run`Actuellement, il n'y a pas de service:
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-contract-reviewer --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract-reviewer --full-depth
 ```
 
 选择你当前正在使用的代理 宿主和作用域──安装器会列出 `skill-contract-reviewer` et de son écriture `--full-depth`Les compétences fournies par ce cours sont un ensemble de programmes contenant des références, des scénarios et des actifs statiques.
