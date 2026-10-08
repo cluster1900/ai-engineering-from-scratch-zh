@@ -1,0 +1,17 @@
+{
+  "phases/08-generative-ai/01-generative-models-taxonomy-history/docs/en.md": "351cf2af47003fb1df4ad5a98d47a91b1e066c116aa6e23c53c67ed5ce690f3f",
+  "phases/08-generative-ai/02-autoencoders-vae/docs/en.md": "8fcdc317c5c76a0b34aac5b0b56926b92396d2bcc60376fd2c86d83842737f06",
+  "phases/08-generative-ai/03-gans-generator-discriminator/docs/en.md": "a2ad6635bdd12d341851befa9b71221f4957cccdc40144dc63228b3f9f49ff6a",
+  "phases/08-generative-ai/04-conditional-gans-pix2pix/docs/en.md": "eb85ad15b99f90a39cbe3d5267bad5022c242b1bea017d2d4613035caf81f328",
+  "phases/08-generative-ai/05-stylegan/docs/en.md": "6851747347f55d1b8fab81cf4d76be95b6817a49855c9e09a53350e02c61503a",
+  "phases/08-generative-ai/06-diffusion-ddpm-from-scratch/docs/en.md": "1386360fe8633f6afb3acef417cf9ab08182068c4c86d1a8ea5d0bf492e61b3f",
+  "phases/08-generative-ai/07-latent-diffusion-stable-diffusion/docs/en.md": "ca126eef7fd07315e2e7edfa0f45020e7d72748a9617594c0d46322f31963684",
+  "phases/08-generative-ai/08-controlnet-lora-conditioning/docs/en.md": "ad142e66864b643f5184afb413609e60594a95b627059dfccdff6b7fa2bd9b55",
+  "phases/08-generative-ai/09-inpainting-outpainting-editing/docs/en.md": "89afa580abfb880c2bcd1a654e2291f12788737a211eadb8dc15f414fd9f3dd0",
+  "phases/08-generative-ai/10-video-generation/docs/en.md": "13bc1bcffadc202615b3a6424cc13a262a31d9c1d4d5a65bb547c4236fe5e9ca",
+  "phases/08-generative-ai/11-audio-generation/docs/en.md": "9b8cee0e5100bec35028dee94b97ead1dd8cd6e2ca7072d3bf742284016a8fc9",
+  "phases/08-generative-ai/12-3d-generation/docs/en.md": "b5af2cc0ef91d190535652446ffa58aa6b5a31c9560086e8337e9302c520ea0c",
+  "phases/08-generative-ai/13-flow-matching-rectified-flows/docs/en.md": "4b04f8c057b64b28c7446cd22b95a70f3ffa05bc0bc07bdefb0a0e4e068743d8",
+  "phases/08-generative-ai/14-evaluation-fid-clip-score/docs/en.md": "0cc9ceb43ac109d4691ee50402fc25756a765f609b1397731f2e89a1974eef5d",
+  "phases/08-generative-ai/19-visual-autoregressive-var/docs/en.md": "dec83bf8e9d4ae86e35a84e9b2647f5ef578fc86ca4a58ffca5ac262f70d27f3"
+}
