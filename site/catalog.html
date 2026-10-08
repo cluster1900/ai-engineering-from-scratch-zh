@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>课程目录 - AI Engineering from Scratch</title>
+  <title>Lesson Catalog - AI Engineering from Scratch</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>AI</text></svg>">
-  <meta name="description" content="503 节 AI engineering 课程的完整目录。搜索、筛选并排序全部 20 个 phase 中的每一节课。">
-  <link rel="canonical" href="https://ai-learn.agent-buy.com/catalog.html">
-  <meta property="og:title" content="目录 · AI Engineering from Scratch">
-  <meta property="og:description" content="搜索并筛选 20 个 phase 中的 503 节课。Python, TypeScript, Rust, Julia。">
-  <meta property="og:image" content="https://ai-learn.agent-buy.com/og-image.zh.png?v=3">
-  <meta property="og:url" content="https://ai-learn.agent-buy.com/catalog.html">
+  <meta name="description" content="Full catalog of AI engineering lessons. Search, filter, and sort every lesson across all 20 phases.">
+  <link rel="canonical" href="https://aiengineeringfromscratch.com/catalog.html">
+  <meta property="og:title" content="Catalog · AI Engineering from Scratch">
+  <meta property="og:description" content="Search and filter the full curriculum across 20 phases. Python, TypeScript, Rust, Julia.">
+  <meta property="og:image" content="https://aiengineeringfromscratch.com/og-image.png?v=4">
+  <meta property="og:url" content="https://aiengineeringfromscratch.com/catalog.html">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="目录 · AI Engineering from Scratch">
-  <meta name="twitter:description" content="搜索并筛选 20 个 phase 中的 503 节课。">
-  <meta name="twitter:image" content="https://ai-learn.agent-buy.com/og-image.zh.png?v=3">
+  <meta name="twitter:title" content="Catalog · AI Engineering from Scratch">
+  <meta name="twitter:description" content="Search and filter the full curriculum across 20 phases.">
+  <meta name="twitter:image" content="https://aiengineeringfromscratch.com/og-image.png?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260525a">
+  <link rel="stylesheet" href="style.css?v=20260824a">
   <style>
     .catalog-page {
       padding: 100px 0 80px;
@@ -27,7 +27,7 @@
     }
 
     .catalog-header {
-      text-align: center;
+      text-align: left;
       margin-bottom: 32px;
     }
 
@@ -101,7 +101,7 @@
     .catalog-table-wrap {
       overflow-x: auto;
       border: 2px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0;
       background: var(--bg-surface);
     }
 
@@ -130,6 +130,12 @@
       color: var(--accent);
     }
 
+    .catalog-table th:focus-visible {
+      color: var(--accent);
+      outline: 2px solid var(--blueprint);
+      outline-offset: -4px;
+    }
+
     .catalog-table th .sort-arrow {
       font-size: 0.7rem;
       margin-left: 4px;
@@ -147,6 +153,28 @@
 
     .catalog-table tr:hover td {
       background: var(--bg-surface-hover);
+    }
+
+    .catalog-group-row th {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--blueprint-tint);
+      color: var(--ink);
+      cursor: default;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .catalog-group-row th:hover {
+      color: var(--ink);
+    }
+
+    .catalog-group-count {
+      margin-left: 10px;
+      color: var(--ink-mute);
     }
 
     .catalog-table a {
@@ -192,6 +220,61 @@
       font-size: 1.1rem;
     }
 
+    .catalog-progressive-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--rule-soft);
+    }
+
+    .catalog-progressive-note {
+      color: var(--ink-mute);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .catalog-progressive-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .catalog-progressive-button {
+      min-height: 42px;
+      padding: 8px 12px;
+      border: 1px solid var(--blueprint);
+      background: var(--bg);
+      color: var(--blueprint);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      transition: background-color 150ms ease, color 150ms ease, transform 150ms var(--ease-out);
+    }
+
+    .catalog-progressive-button:hover,
+    .catalog-progressive-button:focus-visible {
+      background: var(--blueprint);
+      color: var(--bg);
+    }
+
+    .catalog-progressive-button:active { transform: scale(0.97); }
+
+    .catalog-progressive-button:focus-visible {
+      outline: 2px solid var(--blueprint);
+      outline-offset: 2px;
+    }
+
+    .catalog-noscript {
+      margin-bottom: 18px;
+      padding: 16px;
+      border: 1px solid var(--blueprint);
+      background: var(--blueprint-tint);
+      color: var(--ink);
+    }
+
     @media (max-width: 768px) {
       .catalog-page {
         padding: 80px 0 48px;
@@ -213,12 +296,22 @@
       .catalog-table td {
         padding: 8px 10px;
       }
+
+      .catalog-progressive-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .catalog-progressive-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
 <body>
 
-  <a href="#main" class="skip-link">跳到内容</a>
+  <a href="#main" class="skip-link">Skip to content</a>
 
   <header class="site-header">
     <div class="header-inner">
@@ -226,19 +319,19 @@
         <span class="logo-icon" aria-hidden="true"></span> AI / FROM SCRATCH
       </a>
       <nav class="header-nav">
-        <a href="index.html#contents">内容</a>
-        <a href="catalog.html">目录</a>
-        <a href="prereqs.html">路线图</a>
-        <a href="glossary.html">术语表</a>
-        <a href="about.html">关于</a>
-        <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh" target="_blank" rel="noopener" class="header-github">
+        <a href="index.html#contents">Contents</a>
+        <a href="catalog.html">Catalog</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="glossary.html">Glossary</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener" class="header-github">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
           <svg class="star-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.896l-7.416 3.517 1.48-8.279L0 9.306l8.332-1.151z"/></svg>
           <span class="star-count" data-loading="true" aria-label="GitHub stars">…</span>
         </a>
       </nav>
       <button class="search-toggle" type="button" data-cmd-palette
-        aria-label="搜索 (⌘K)" title="搜索 (⌘K)">
+        aria-label="Search (⌘K)" title="Search (⌘K)">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2.5"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -246,7 +339,7 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
-      <button class="theme-toggle" id="themeToggle" aria-label="切换主题" type="button">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
         <span class="theme-icon" id="themeIcon">N</span>
       </button>
     </div>
@@ -255,58 +348,596 @@
   <main class="catalog-page" id="main">
     <div class="container">
       <div class="catalog-header">
-        <h1>课程目录</h1>
-        <p>全部 20 个 phase 中的每一节课。搜索、筛选、排序。</p>
+        <h1>Lesson Catalog</h1>
+        <p>Every lesson across all 20 phases. Search, filter, sort.</p>
       </div>
       <div class="catalog-controls">
-        <input type="text" class="catalog-search" id="catalogSearch" placeholder="搜索课程...">
-        <select class="catalog-filter" id="catalogPhase">
-          <option value="">全部 Phase</option>
+        <input type="text" class="catalog-search" id="catalogSearch" placeholder="Search lessons..." aria-label="Search lessons">
+        <select class="catalog-filter" id="catalogPhase" aria-label="Filter by phase">
+          <option value="">All Phases</option>
         </select>
-        <select class="catalog-filter" id="catalogStatus">
-          <option value="">全部状态</option>
-          <option value="complete">已完成</option>
-          <option value="planned">已规划</option>
+        <select class="catalog-filter" id="catalogStatus" aria-label="Filter by lesson status">
+          <option value="">All Status</option>
+          <option value="complete">Complete</option>
+          <option value="planned">Planned</option>
         </select>
       </div>
-      <div class="catalog-count" id="catalogCount"></div>
-      <div class="catalog-table-wrap">
+      <div class="catalog-count" id="catalogCount" role="status" aria-live="polite" tabindex="-1">Loading lesson index...</div>
+      <noscript>
+        <div class="catalog-noscript">JavaScript is needed for local filtering. Every lesson remains available in the <a href="https://github.com/rohitg00/ai-engineering-from-scratch#contents">GitHub curriculum index</a>.</div>
+      </noscript>
+      <div class="catalog-table-wrap" id="catalogTableWrap" aria-busy="true">
         <table class="catalog-table" id="catalogTable">
           <thead>
             <tr>
-              <th data-sort="phase">Phase <span class="sort-arrow"></span></th>
-              <th data-sort="name">课程 <span class="sort-arrow"></span></th>
-              <th data-sort="type">类型 <span class="sort-arrow"></span></th>
-              <th data-sort="lang">语言 <span class="sort-arrow"></span></th>
-              <th data-sort="status">状态 <span class="sort-arrow"></span></th>
+              <th scope="col" data-sort="phase" tabindex="0" aria-sort="ascending">Phase <span class="sort-arrow" aria-hidden="true"> ▲</span></th>
+              <th scope="col" data-sort="name" tabindex="0" aria-sort="none">Lesson <span class="sort-arrow" aria-hidden="true"></span></th>
+              <th scope="col" data-sort="type" tabindex="0" aria-sort="none">Type <span class="sort-arrow" aria-hidden="true"></span></th>
+              <th scope="col" data-sort="lang" tabindex="0" aria-sort="none">Language <span class="sort-arrow" aria-hidden="true"></span></th>
+              <th scope="col" data-sort="status" tabindex="0" aria-sort="none">Status <span class="sort-arrow" aria-hidden="true"></span></th>
             </tr>
           </thead>
-          <tbody id="catalogBody"></tbody>
+          <tbody id="catalogBody">
+          <!-- GENERATED:LESSON-DISCOVERY:START -->
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F01-dev-environment">Dev Environment</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F02-git-and-collaboration">Git &amp; Collaboration</a></td><td>Learn</td><td>—</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F03-gpu-setup-and-cloud">GPU Setup &amp; Cloud</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F04-apis-and-keys">APIs &amp; Keys</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F05-jupyter-notebooks">Jupyter Notebooks</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F06-python-environments">Python Environments</a></td><td>Build</td><td>Shell</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F07-docker-for-ai">Docker for AI</a></td><td>Build</td><td>Docker</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F08-editor-setup">Editor Setup</a></td><td>Build</td><td>—</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F09-data-management">Data Management</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F10-terminal-and-shell">Terminal 与 Shell</a></td><td>Learn</td><td>—</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F11-linux-for-ai">面向 AI 的 Linux</a></td><td>Learn</td><td>—</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>00</td><td><a href="lesson?path=phases%2F00-setup-and-tooling%2F12-debugging-and-profiling">Debugging 和 Profiling</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F01-linear-algebra-intuition">Linear Algebra 直觉</a></td><td>Learn</td><td>Python, Julia</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F02-vectors-matrices-operations">Vector、Matrix 与运算</a></td><td>Build</td><td>Python, Julia</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F03-matrix-transformations">Matrix 变换</a></td><td>Build</td><td>Python, Julia</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F04-calculus-for-ml">Machine Learning 微积分</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F05-chain-rule-and-autodiff">Chain Rule 与 Automatic Differentiation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F06-probability-and-distributions">概率与分布</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F07-bayes-theorem">Bayes&#39; Theorem</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F08-optimization">Optimization</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F09-information-theory">Information Theory</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F10-dimensionality-reduction">Dimensionality Reduction</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F11-singular-value-decomposition">Singular Value Decomposition</a></td><td>Build</td><td>Python, Julia</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F12-tensor-operations">Tensor Operations</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F13-numerical-stability">数值稳定性</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F14-norms-and-distances">范数和距离</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F15-statistics-for-ml">Machine Learning 统计学</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F16-sampling-methods">Sampling Methods</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F17-linear-systems">Linear Systems</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F18-convex-optimization">凸优化</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F19-complex-numbers">AI 中的复数</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F20-fourier-transform">Fourier Transform</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F21-graph-theory">面向 Machine Learning 的 Graph Theory</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>01</td><td><a href="lesson?path=phases%2F01-math-foundations%2F22-stochastic-processes">Stochastic Processes</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F01-what-is-machine-learning">什么是 Machine Learning</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F02-linear-regression">Linear Regression</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F03-logistic-regression">Logistic Regression</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F04-decision-trees">Decision Trees 与 Random Forests</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F05-support-vector-machines">Support Vector Machines</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F06-knn-and-distances">K-Nearest Neighbors 与 Distances</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F07-unsupervised-learning">Unsupervised Learning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F08-feature-engineering">Feature Engineering 与 Selection</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F09-model-evaluation">Model Evaluation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F10-bias-variance">Bias-Variance Tradeoff</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F11-ensemble-methods">Ensemble Methods</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F12-hyperparameter-tuning">Hyperparameter Tuning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F13-ml-pipelines">ML Pipelines</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F14-naive-bayes">Naive Bayes</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F15-time-series">时间序列基础</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F16-anomaly-detection">Anomaly Detection</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F17-imbalanced-data">处理不平衡数据</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>02</td><td><a href="lesson?path=phases%2F02-ml-fundamentals%2F18-feature-selection">Feature Selection</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F01-the-perceptron">Perceptron</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F02-multi-layer-networks">多层网络与 Forward Pass</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F03-backpropagation">从零实现 Backpropagation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F04-activation-functions">激活函数</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F05-loss-functions">Loss Functions</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F06-optimizers">Optimizers</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F07-regularization">Regularization</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F08-weight-initialization">Weight Initialization 与训练稳定性</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F09-learning-rate-schedules">Learning Rate Schedules 与 Warmup</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F10-mini-framework">构建你自己的 Mini Framework</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F11-intro-to-pytorch">PyTorch 入门</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F12-intro-to-jax">JAX 入门</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>03</td><td><a href="lesson?path=phases%2F03-deep-learning-core%2F13-debugging-neural-networks">调试 Neural Networks</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F01-image-fundamentals">图像基础 — Pixel、Channel、Color Spaces</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F02-convolutions-from-scratch">Convolutions from Scratch</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F03-cnns-lenet-to-resnet">CNNs — LeNet to ResNet</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F04-image-classification">Image Classification</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F05-transfer-learning">Transfer Learning 与 Fine-Tuning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F06-object-detection-yolo">目标检测 — 从零实现 YOLO</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F07-semantic-segmentation-unet">Semantic Segmentation — U-Net</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F08-instance-segmentation-mask-rcnn">Instance Segmentation — Mask R-CNN</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F09-image-generation-gans">Image Generation — GANs</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F10-image-generation-diffusion">图像生成 — Diffusion Models</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F11-stable-diffusion">Stable Diffusion — 架构与 Fine-Tuning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F12-video-understanding">Video Understanding — 时间建模</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F13-3d-vision-nerf">3D Vision — Point Clouds &amp; NeRFs</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F14-vision-transformers">Vision Transformers (ViT)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F15-real-time-edge">Real-Time Vision — 边缘部署</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F16-vision-pipeline-capstone">构建完整 Vision Pipeline — Capstone</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F17-self-supervised-vision">Self-Supervised Vision — SimCLR, DINO, MAE</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F18-open-vocab-clip">Open-Vocabulary Vision — CLIP</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F19-ocr-document-understanding">OCR 与文档理解</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F20-image-retrieval-metric">Image Retrieval 与 Metric Learning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F21-keypoint-pose">Keypoint Detection 与 Pose Estimation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F22-3d-gaussian-splatting">从零实现 3D Gaussian Splatting</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F23-diffusion-transformers-rectified-flow">Diffusion Transformers 与 Rectified Flow</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F24-sam3-open-vocab-segmentation">SAM 3 与 Open-Vocabulary Segmentation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F25-vision-language-models">Vision-Language Models — ViT-MLP-LLM 模式</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F26-monocular-depth">Monocular Depth 与 Geometry Estimation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F27-multi-object-tracking">Multi-Object Tracking 与 Video Memory</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>04</td><td><a href="lesson?path=phases%2F04-computer-vision%2F28-world-models-video-diffusion">World Models 与 Video Diffusion</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F01-text-processing">Text Processing — Tokenization, Stemming, Lemmatization</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F02-bag-of-words-tfidf">Bag of Words、TF-IDF 与 Text Representation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F03-word-embeddings-word2vec">Word Embeddings — 从零实现 Word2Vec</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F04-glove-fasttext-subword">GloVe、FastText 与 Subword Embeddings</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F05-sentiment-analysis">Sentiment Analysis</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F06-named-entity-recognition">Named Entity Recognition</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F07-pos-tagging-parsing">POS Tagging 与 Syntactic Parsing</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F08-cnns-rnns-for-text">用于文本的 CNNs 和 RNNs</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F09-sequence-to-sequence">Sequence-to-Sequence 模型</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F10-attention-mechanism">Attention Mechanism — 突破</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F11-machine-translation">Machine Translation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F12-text-summarization">Text Summarization</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F13-question-answering">Question Answering 系统</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F14-information-retrieval-search">Information Retrieval 与 Search</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F15-topic-modeling">Topic Modeling — LDA and BERTopic</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F16-text-generation-pre-transformer">Transformer 之前的文本生成 —— N-gram 语言模型</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F17-chatbots-rule-to-neural">Chatbots — 从 Rule-Based 到 Neural 再到 LLM Agents</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F18-multilingual-nlp">多语言 NLP</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F19-subword-tokenization">Subword Tokenization — BPE, WordPiece, Unigram, SentencePiece</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F20-structured-outputs-constrained-decoding">Structured Outputs 与 Constrained Decoding</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F21-nli-textual-entailment">自然语言推理 — 文本蕴含</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F22-embedding-models-deep-dive">Embedding Models — 2026 深度解析</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F23-chunking-strategies-rag">RAG 的 Chunking 策略</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F24-coreference-resolution">Coreference Resolution</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F25-entity-linking">实体链接与消歧</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F26-relation-extraction-kg">Relation Extraction 与 Knowledge Graph 构建</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F27-llm-evaluation-frameworks">LLM Evaluation — RAGAS, DeepEval, G-Eval</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F28-long-context-evaluation">Long-Context Evaluation — NIAH, RULER, LongBench, MRCR</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>05</td><td><a href="lesson?path=phases%2F05-nlp-foundations-to-advanced%2F29-dialogue-state-tracking">Dialogue State Tracking</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F01-audio-fundamentals">音频基础 — 波形、采样、Fourier Transform</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F02-spectrograms-mel-features">Spectrograms, Mel Scale 与音频特征</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F03-audio-classification">Audio Classification — 从 MFCC 上的 k-NN 到 AST 和 BEATs</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F04-speech-recognition-asr">Speech Recognition (ASR) — CTC, RNN-T, Attention</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F05-whisper-architecture-finetuning">Whisper — Architecture &amp; Fine-Tuning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F06-speaker-recognition-verification">说话人识别与验证</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F07-text-to-speech">Text-to-Speech (TTS) — 从 Tacotron 到 F5 和 Kokoro</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F08-voice-cloning-conversion">Voice Cloning &amp; Voice Conversion</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F09-music-generation">音乐生成 — MusicGen, Stable Audio, Suno，以及许可格局的剧变</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F10-audio-language-models">Audio-Language Models — Qwen2.5-Omni, Audio Flamingo, GPT-4o Audio</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F11-real-time-audio-processing">实时音频处理</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F12-voice-assistant-pipeline">构建语音助手 Pipeline — Phase 6 Capstone</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F13-neural-audio-codecs">Neural Audio Codecs — EnCodec, SNAC, Mimi, DAC 和 Semantic-Acoustic Split</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F14-voice-activity-detection-turn-taking">Voice Activity Detection 与 Turn-Taking — Silero、Cobra 和 Flush Trick</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F15-streaming-speech-to-speech-moshi-hibiki">Streaming Speech-to-Speech — Moshi、Hibiki 与 Full-Duplex Dialogue</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F16-anti-spoofing-audio-watermarking">语音反欺骗与音频水印 — ASVspoof 5, AudioSeal, WaveVerify</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>06</td><td><a href="lesson?path=phases%2F06-speech-and-audio%2F17-audio-evaluation-metrics">Audio Evaluation — WER、MOS、UTMOS、MMAU、FAD 和开放排行榜</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F01-why-transformers">为什么 Transformers — RNNs 的问题</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F02-self-attention-from-scratch">从零实现 Self-Attention</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F03-multi-head-attention">Multi-Head Attention</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F04-positional-encoding">Positional Encoding — Sinusoidal, RoPE, ALiBi</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F05-full-transformer">The Full Transformer — Encoder + Decoder</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F06-bert-masked-language-modeling">BERT — Masked Language Modeling</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F07-gpt-causal-language-modeling">GPT — Causal Language Modeling</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F08-t5-bart-encoder-decoder">T5, BART — Encoder-Decoder Models</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F09-vision-transformers">Vision Transformers (ViT)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F10-audio-transformers-whisper">Audio Transformers — Whisper Architecture</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F11-mixture-of-experts">Mixture of Experts (MoE)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F12-kv-cache-flash-attention">KV Cache, Flash Attention 与推理优化</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F13-scaling-laws">Scaling Laws</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F14-build-a-transformer-capstone">从零构建 Transformer — Capstone 项目</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F15-attention-variants">Attention 变体 — Sliding Window, Sparse, Differential</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>07</td><td><a href="lesson?path=phases%2F07-transformers-deep-dive%2F16-speculative-decoding">Speculative Decoding — Draft、Verify、Repeat</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F01-generative-models-taxonomy-history">Generative Models — 分类法与历史</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F02-autoencoders-vae">Autoencoders &amp; Variational Autoencoders (VAE)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F03-gans-generator-discriminator">GANs — Generator vs Discriminator</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F04-conditional-gans-pix2pix">Conditional GANs 与 Pix2Pix</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F05-stylegan">StyleGAN</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F06-diffusion-ddpm-from-scratch">Diffusion Models — DDPM from Scratch</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F07-latent-diffusion-stable-diffusion">Latent Diffusion 与 Stable Diffusion</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F08-controlnet-lora-conditioning">ControlNet, LoRA &amp; Conditioning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F09-inpainting-outpainting-editing">Inpainting、Outpainting 与图像编辑</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F10-video-generation">视频生成</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F11-audio-generation">音频生成</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F12-3d-generation">3D Generation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F13-flow-matching-rectified-flows">Flow Matching 与 Rectified Flows</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F14-evaluation-fid-clip-score">评估 — FID、CLIP Score、人类偏好</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>08</td><td><a href="lesson?path=phases%2F08-generative-ai%2F19-visual-autoregressive-var">Visual Autoregressive Modeling (VAR)：Next-Scale Prediction</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F01-mdps-states-actions-rewards">MDPs、States、Actions 与 Rewards</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F02-dynamic-programming">Dynamic Programming — Policy Iteration &amp; Value Iteration</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F03-monte-carlo-methods">Monte Carlo Methods — Learning from Complete Episodes</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F04-q-learning-sarsa">Temporal Difference — Q-Learning &amp; SARSA</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F05-dqn">Deep Q-Networks (DQN)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F06-policy-gradients-reinforce">Policy Gradient — 从零实现 REINFORCE</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F07-actor-critic-a2c-a3c">Actor-Critic — A2C 和 A3C</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F08-ppo">Proximal Policy Optimization (PPO)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F09-reward-modeling-rlhf">Reward Modeling &amp; RLHF</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F10-multi-agent-rl">Multi-Agent RL</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F11-sim-to-real-transfer">Sim-to-Real Transfer</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>09</td><td><a href="lesson?path=phases%2F09-reinforcement-learning%2F12-rl-for-games">面向游戏的 RL — AlphaZero、MuZero 与 LLM Reasoning 时代</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F01-tokenizers">Tokenizers: BPE, WordPiece, SentencePiece</a></td><td>Build</td><td>Python, Rust</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F02-building-a-tokenizer">Building a Tokenizer from Scratch</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F03-data-pipelines">Pre-Training 的 Data Pipelines</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F04-pre-training-mini-gpt">从零 Pre-Training 一个 Mini GPT（124M 参数）</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F05-scaling-distributed">Scaling：Distributed Training、FSDP、DeepSpeed</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F06-instruction-tuning-sft">Instruction Tuning (SFT)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F07-rlhf">RLHF: Reward Model + PPO</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F08-dpo">DPO: Direct Preference Optimization</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F09-constitutional-ai-self-improvement">Constitutional AI 与 Self-Improvement</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F10-evaluation">Evaluation：Benchmarks、Evals、LM Harness</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F11-quantization">Quantization: 让模型装得下</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F12-inference-optimization">Inference 优化</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F13-building-complete-llm-pipeline">构建完整的 LLM Pipeline</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F14-open-models-architecture-walkthroughs">Open Models: 架构讲解</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F15-speculative-decoding-eagle3">Speculative Decoding 和 EAGLE-3</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F16-differential-attention-v2">Differential Attention (V2)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F17-native-sparse-attention">Native Sparse Attention (DeepSeek NSA)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F18-multi-token-prediction">Multi-Token Prediction (MTP)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F19-dualpipe-parallelism">DualPipe Parallelism</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F20-deepseek-v3-walkthrough">DeepSeek-V3 架构讲解</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F21-jamba-hybrid-ssm-transformer">Jamba — Hybrid SSM-Transformer</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F22-async-hogwild-inference">Async 与 Hogwild! Inference</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F25-speculative-decoding">Speculative Decoding 和 EAGLE</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>10</td><td><a href="lesson?path=phases%2F10-llms-from-scratch%2F34-gradient-checkpointing">Gradient Checkpointing 和 Activation Recomputation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F01-prompt-engineering">Prompt Engineering：技术与模式</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F02-few-shot-cot">Few-Shot、Chain-of-Thought、Tree-of-Thought</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F03-structured-outputs">结构化输出：JSON、Schema Validation、Constrained Decoding</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F04-embeddings">Embeddings 与 Vector 表示</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F05-context-engineering">Context Engineering：窗口、预算、Memory 与 Retrieval</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F06-rag">RAG (Retrieval-Augmented Generation)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F07-advanced-rag">Advanced RAG（Chunking、Reranking、Hybrid Search）</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F08-fine-tuning-lora">使用 LoRA &amp; QLoRA 进行 Fine-Tuning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F09-function-calling">Function Calling 与 Tool Use</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F10-evaluation">LLM 应用的评估与测试</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F11-caching-cost">缓存、限流与成本优化</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F12-guardrails">Guardrails、安全与内容过滤</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F13-production-app">构建生产级 LLM 应用</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F14-model-context-protocol">模型上下文协议（Model Context Protocol, MCP）</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F15-prompt-caching">Prompt Caching 和 Context Caching</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F16-langgraph-state-machines">LangGraph — Agent 的 State Machines</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>11</td><td><a href="lesson?path=phases%2F11-llm-engineering%2F17-agent-framework-tradeoffs">Agent Framework 取舍 — LangGraph vs CrewAI vs AutoGen vs Agno</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F01-vision-transformer-patch-tokens">Vision Transformers 与 Patch-Token 原语</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F02-clip-contrastive-pretraining">CLIP 与 Contrastive Vision-Language Pretraining</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F03-blip2-qformer-bridge">从 CLIP 到 BLIP-2 — Q-Former 作为 Modality Bridge</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F04-flamingo-gated-cross-attention">Flamingo 与用于 Few-Shot VLMs 的 Gated Cross-Attention</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F05-llava-visual-instruction-tuning">LLaVA 与 Visual Instruction Tuning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F06-any-resolution-patch-n-pack">任意分辨率 Vision：Patch-n&#39;-Pack 和 NaFlex</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F07-open-weight-vlm-recipes">Open-Weight VLM Recipes：真正重要的是什么</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F08-llava-onevision-single-multi-video">LLaVA-OneVision：一个模型中的单图像、多图像与视频</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F09-qwen-vl-family-dynamic-fps">Qwen-VL Family 与 Dynamic-FPS Video</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F10-internvl3-native-multimodal">InternVL3：Native Multimodal Pretraining</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F11-chameleon-early-fusion-tokens">Chameleon 与 Early-Fusion Token-Only Multimodal Models</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F12-emu3-next-token-for-generation">Emu3：用于图像和视频生成的 Next-Token Prediction</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F13-transfusion-autoregressive-diffusion">Transfusion：在一个 Transformer 中结合 Autoregressive Text + Diffusion Image</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F14-show-o-discrete-diffusion-unified">Show-o 和 Discrete-Diffusion 统一模型</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F15-janus-pro-decoupled-encoders">Janus-Pro：用于统一 Multimodal 模型的解耦 Encoder</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F16-mio-any-to-any-streaming">MIO 与 Any-to-Any Streaming Multimodal Models</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F17-video-language-temporal-grounding">Video-Language Models：Temporal Tokens 与 Grounding</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F18-long-video-million-token">Million-Token Context 下的长视频理解</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F19-audio-language-whisper-to-af3">Audio-Language Models：从 Whisper 到 Audio Flamingo 3 的演进</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F20-omni-models-thinker-talker">Omni Models：Qwen2.5-Omni 与 Thinker-Talker 拆分</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F21-embodied-vlas-openvla-pi0-groot">Embodied VLAs：RT-2, OpenVLA, π0, GR00T</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F22-document-diagram-understanding">文档与图表理解</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F23-colpali-vision-native-rag">ColPali 与 Vision-Native Document RAG</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F24-multimodal-rag-cross-modal">Multimodal RAG 与 Cross-Modal Retrieval</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>12</td><td><a href="lesson?path=phases%2F12-multimodal-ai%2F25-multimodal-agents-computer-use">Multimodal Agents 与 Computer-Use（Capstone）</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F01-the-tool-interface">The Tool Interface — 为什么 Agents 需要结构化 I/O</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F02-function-calling-deep-dive">Function Calling 深入解析 — OpenAI, Anthropic, Gemini</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F03-parallel-and-streaming-tool-calls">Parallel Tool Calls 和带 Tools 的 Streaming</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F04-structured-output">结构化输出 — JSON Schema, Pydantic, Zod, Constrained Decoding</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F05-tool-schema-design">Tool Schema Design — 命名、描述、参数约束</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F06-mcp-fundamentals">MCP 基础：无状态请求与 JSON-RPC</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F07-building-an-mcp-server">构建 MCP Server：无状态 Python 与 TypeScript</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F08-building-an-mcp-client">构建 MCP Client：服务发现、路由与双时代回退</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F09-mcp-transports">MCP 传输层：stdio 与无状态 Streamable HTTP</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F10-mcp-resources-and-prompts">MCP Resource 与 Prompt：无状态 Server 的可寻址上下文</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F11-mcp-sampling">MCP 模型输入：Sampling 迁移与无状态 MRTR</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F12-mcp-roots-and-elicitation">显式权限范围与无状态 Elicitation</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F13-mcp-async-tasks">MCP Tasks 扩展：构建于无状态核心之上的持久化任务</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F14-mcp-apps">基于无状态协议的 MCP Apps</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F15-mcp-security-tool-poisoning">MCP 安全：元数据投毒、路由与 MRTR 状态</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F16-mcp-security-oauth-2-1">MCP 鉴权与授权：CIMD、Issuer 绑定、PKCE 与权限提升（Step-Up）</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F17-mcp-gateways-and-registries">无状态 MCP 网关与 Registry 准入</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F18-mcp-auth-production">生产环境中的 MCP 认证与鉴权：绑定签发者的注册与 Token 机制</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F19-a2a-protocol">A2A — Agent-to-Agent 协议</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F20-opentelemetry-genai">OpenTelemetry GenAI — 端到端追踪 Tool Calls</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F21-llm-routing-layer">LLM Routing Layer — LiteLLM, OpenRouter, Portkey</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F22-skills-and-agent-sdks">Agent Skills：可移植契约与运行时边界</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F23-capstone-tool-ecosystem">综合实战项目：无状态工具生态系统</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F24-skill-discovery-and-progressive-disclosure">Skill 发现与渐进式披露</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F25-skill-invocation-and-routing">Skill 调用与路由</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F26-skill-permissions-sandboxes-and-trust">Skill 权限、沙箱与信任</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F27-skill-evals-packaging-and-portability">Skill 评测、打包与可移植性</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F28-mcp-tool-contracts-and-content">MCP Tool Contracts 与内容</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F29-mcp-reliability-cancellation-and-flow-control">MCP 可靠性、取消与流控</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F30-mcp-registry-supply-chain-and-drift">MCP Registry 供应链：准入、漂移与回滚</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>13</td><td><a href="lesson?path=phases%2F13-tools-and-protocols%2F31-mcp-conformance-versioning-and-operations">MCP 一致性工程：版本控制、证据与运维</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F01-the-agent-loop">Agent Loop：Observe、Think、Act</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F02-rewoo-plan-and-execute">ReWOO and Plan-and-Execute：解耦式规划</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F03-reflexion-verbal-rl">Reflexion：Verbal Reinforcement Learning</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F04-tree-of-thoughts-lats">Tree of Thoughts 和 LATS：Deliberate Search</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F05-self-refine-and-critic">Self-Refine 和 CRITIC：迭代式输出改进</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F06-tool-use-and-function-calling">Tool Use 和 Function Calling</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F07-memory-virtual-context-memgpt">Memory：Virtual Context 和 MemGPT</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F08-memory-blocks-sleep-time-compute">Memory Blocks 与 Sleep-Time Compute (Letta)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F09-hybrid-memory-mem0">Hybrid Memory: Vector + Graph + KV (Mem0)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F10-skill-libraries-voyager">Skill 库与终身学习 (Voyager)</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F11-planning-htn-and-evolutionary">使用 HTN 和 Evolutionary Search 进行规划</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F12-anthropic-workflow-patterns">Anthropic 的 Workflow Patterns：简单优于复杂</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F13-langgraph-stateful-graphs">LangGraph：Stateful Graphs 与 Durable Execution</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F14-autogen-actor-model">AutoGen v0.4：Actor Model 与 Agent Framework</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F15-crewai-role-based-crews">CrewAI：基于角色的 Crews 和 Flows</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F16-openai-agents-sdk">OpenAI Agents SDK: Handoffs、Guardrails、Tracing</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F17-claude-agent-sdk">Claude Agent SDK：Subagents 和 Session Store</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F18-agno-and-mastra-runtimes">Agno and Mastra：生产 Runtime</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F19-benchmarks-swebench-gaia">Benchmarks：SWE-bench、GAIA、AgentBench</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F20-benchmarks-webarena-osworld">基准测试：WebArena and OSWorld</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F21-computer-use-agents">Computer Use：Claude、OpenAI CUA、Gemini</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F22-voice-agents-pipecat-livekit">Voice Agents：Pipecat 和 LiveKit</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F23-otel-genai-conventions">OpenTelemetry GenAI 语义约定</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F24-agent-observability-platforms">Agent 可观测性：Langfuse, Phoenix, Opik</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F25-multi-agent-debate">Multi-Agent Debate 与协作</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F26-failure-modes-agentic">Failure Modes：Agents 为什么会失败</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F27-prompt-injection-defense">Prompt Injection 与 PVE 防御</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F28-orchestration-patterns">编排模式：Supervisor, Swarm, Hierarchical</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F29-production-runtimes">Production Runtimes：Queue、Event、Cron</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F30-eval-driven-agent-development">Eval 驱动的 Agent 开发</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F31-agent-workbench-why-models-fail">Agent Workbench Engineering：为什么能力强的模型仍会失败</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F32-minimal-agent-workbench">最小 Agent Workbench</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F33-instructions-as-executable-constraints">Agent 指令作为可执行约束</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F34-repo-memory-and-state">Repo Memory 和 Durable State</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F35-initialization-scripts">Agent 的初始化脚本</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F36-scope-contracts">Scope Contract 与任务边界</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F37-runtime-feedback-loops">Runtime Feedback Loops</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F38-verification-gates">Verification Gates</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F39-reviewer-agent">Reviewer Agent: 将 Builder 与 Marker 分离</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F40-multi-session-handoff">Multi-Session Handoff</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F41-workbench-for-real-repos">在真实 Repo 上使用 Workbench</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F42-agent-workbench-capstone">Capstone：交付一个可复用的 Agent Workbench Pack</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F43-frame-the-task-before-code">在 Agent 写代码前框定任务</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F44-plan-from-evidence">构建基于证据的执行计划</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F45-delegate-with-isolation">带隔离与合并契约的 Agent 委托</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F46-turn-feedback-into-system">将每次 Agent 纠偏转化为系统改进</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F47-outcomes-before-output">在选择输出之前先定义成效</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F48-discover-the-real-workflow">发掘人们真正执行的工作流</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F49-map-assumptions-and-risk">梳理假设并优先化解最高风险</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F50-choose-the-smallest-testable-slice">选择能够改变决策的最小切片</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F51-write-specifications-that-preserve-judgment">编写保留自主裁量权的任务规范</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F52-design-success-metrics">在结果产生前设计成功指标</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F53-prototype-pilot-or-production">审慎抉择原型、试点还是生产</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>14</td><td><a href="lesson?path=phases%2F14-agent-engineering%2F54-build-the-feedback-ratchet">构建具备归属与退役机制的反馈棘轮</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F01-long-horizon-agents">从 Chatbot 到 Long-Horizon Agents 的转变</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F02-star-family-reasoning">STaR, V-STaR, Quiet-STaR — Self-Taught Reasoning</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F03-alphaevolve-evolutionary-coding">AlphaEvolve — 演化式编码 Agents</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F04-darwin-godel-machine">Darwin Godel Machine — 开放式自修改 Agents</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F05-ai-scientist-v2">AI Scientist v2 — Workshop 级自主研究</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F06-automated-alignment-research">自动化 Alignment Research (Anthropic AAR)</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F07-recursive-self-improvement">Recursive Self-Improvement — Capability vs Alignment</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F08-bounded-self-improvement">Bounded Self-Improvement 设计</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F09-coding-agent-landscape">Autonomous Coding Agent 版图（2026）</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F10-claude-code-permission-modes">作为 Autonomous Agent 的 Claude Code：权限模式与 Auto Mode</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F11-browser-agents">Browser Agents 与长时程 Web 任务</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F12-durable-execution">长时间运行的后台 Agents：持久化执行</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F13-cost-governors">Action Budgets、Iteration Caps 与 Cost Governors</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F14-kill-switches-canaries">Kill Switch、Circuit Breaker 和 Canary Token</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F15-propose-then-commit">Human-in-the-Loop：Propose-Then-Commit</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F16-checkpoints-rollback">Checkpoints and Rollback</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F17-constitutional-ai">Constitutional AI 与规则覆盖</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F18-llama-guard">Llama Guard 与输入/输出分类</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F19-anthropic-rsp">Anthropic Responsible Scaling Policy v3.0</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F20-openai-preparedness-deepmind-fsf">OpenAI Preparedness Framework 与 DeepMind Frontier Safety Framework</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F21-metr-external-evaluation">METR Time Horizons 与外部能力评估</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>15</td><td><a href="lesson?path=phases%2F15-autonomous-systems%2F22-cais-caisi-societal-risk">CAIS、CAISI 与社会规模风险</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F01-why-multi-agent">为什么需要 Multi-Agent？</a></td><td>Learn</td><td>TypeScript</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F02-fipa-acl-heritage">FIPA-ACL 与 Speech Acts 的传承</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F03-communication-protocols">通信协议</a></td><td>Build</td><td>TypeScript</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F04-primitive-model">Multi-Agent Primitive Model</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F05-supervisor-orchestrator-pattern">Supervisor / Orchestrator-Worker Pattern</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F06-hierarchical-architecture">Hierarchical Architecture 及其 Failure Mode</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F07-society-of-mind-debate">Society of Mind 与 Multi-Agent Debate</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F08-role-specialization">角色专业化 — Planner, Critic, Executor, Verifier</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F09-parallel-swarm-networks">Parallel / Swarm / Networked Architectures</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F10-group-chat-speaker-selection">Group Chat 和 Speaker Selection</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F11-handoffs-and-routines">Handoffs and Routines — 无状态编排</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F12-a2a-protocol">A2A — 智能体间通信协议（Agent-to-Agent Protocol）</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F13-shared-memory-blackboard">Shared Memory 和 Blackboard 模式</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F14-consensus-and-bft">面向 Agents 的 Consensus 和 Byzantine Fault Tolerance</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F15-voting-debate-topology">Voting、Self-Consistency 和 Debate Topology</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F16-negotiation-bargaining">协商与议价</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F17-generative-agents-simulation">Generative Agents 与涌现模拟</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F18-theory-of-mind-coordination">Theory of Mind 与涌现式协调</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F19-swarm-optimization-pso-aco">面向 LLMs 的 Swarm Optimization（PSO, ACO）</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F20-marl-maddpg-qmix-mappo">MARL — MADDPG, QMIX, MAPPO</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F21-agent-economies">Agent 经济、Token 激励、声誉</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F22-production-scaling-queues-checkpoints">生产扩展 — 队列、Checkpoints、Durability</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F23-failure-modes-mast-groupthink">失效模式 — MAST、Groupthink、Monoculture、Cascading Errors</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F24-evaluation-coordination-benchmarks">评估与协调 Benchmarks</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>16</td><td><a href="lesson?path=phases%2F16-multi-agent-and-swarms%2F25-case-studies-2026-sota">案例研究与 2026 State of the Art</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F01-managed-llm-platforms">托管 LLM 平台 — Bedrock, Vertex AI, Azure OpenAI</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F02-inference-platform-economics">推理平台经济学 — Fireworks、Together、Baseten、Modal、Replicate、Anyscale</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F03-gpu-autoscaling-kubernetes">Kubernetes 上的 GPU Autoscaling — Karpenter, KAI Scheduler, Gang Scheduling</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F04-vllm-serving-internals">vLLM Serving Internals：PagedAttention、Continuous Batching、Chunked Prefill</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F05-eagle3-speculative-decoding">生产环境中的 EAGLE-3 Speculative Decoding</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F06-sglang-radixattention">面向 Prefix-Heavy Workloads 的 SGLang 与 RadixAttention</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F07-tensorrt-llm-blackwell">在 Blackwell 上使用 FP8 和 NVFP4 运行 TensorRT-LLM</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F08-inference-metrics-goodput">Inference Metrics — TTFT、TPOT、ITL、Goodput、P99</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F09-production-quantization">Production Quantization — AWQ, GPTQ, GGUF K-quants, FP8, MXFP4/NVFP4</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F10-cold-start-mitigation">Serverless LLMs 的 Cold Start Mitigation</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F11-multi-region-kv-locality">Multi-Region LLM Serving 与 KV Cache Locality</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F12-edge-inference">Edge Inference — Apple Neural Engine, Qualcomm Hexagon, WebGPU/WebLLM, Jetson</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F13-llm-observability">LLM 可观测性 Stack 选择</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F14-prompt-semantic-caching">Prompt Caching 与 Semantic Caching 经济学</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F15-batch-apis">Batch APIs — 50% 折扣成为行业标准</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F16-model-routing">Model Routing 作为降低成本的基础手段</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F17-disaggregated-prefill-decode">Disaggregated Prefill/Decode — NVIDIA Dynamo 和 llm-d</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F18-vllm-production-stack-lmcache">使用 LMCache KV Offloading 的 vLLM Production Stack</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F19-ai-gateways">AI Gateways — LiteLLM、Portkey、Kong AI Gateway、Bifrost</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F20-shadow-canary-progressive">LLMs 的 Shadow Traffic、Canary Rollout 和 Progressive Deployment</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F21-ab-testing-llm-features">A/B Testing LLM 功能 — GrowthBook、Statsig 与凭感觉问题</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F22-load-testing-llm-apis">Load Testing LLM APIs — 为什么 k6 和 Locust 会说谎</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F23-sre-for-ai">AI SRE — Multi-Agent 事件响应、Runbooks、预测性检测</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F24-chaos-engineering-llm">LLM Production 的 Chaos Engineering</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F25-security-secrets-audit">Security — Secrets、API Key 轮换、Audit Logs、Guardrails</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F26-compliance-frameworks">Compliance — SOC 2、HIPAA、GDPR、PCI-DSS、EU AI Act、ISO 42001</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F27-finops-llms">LLMs 的 FinOps — 单位经济性与 Multi-Tenant 归因</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>17</td><td><a href="lesson?path=phases%2F17-infrastructure-and-production%2F28-self-hosted-serving-selection">Self-Hosted Serving 选择 — llama.cpp, Ollama, TGI, vLLM, SGLang</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F01-instruction-following-alignment-signal">Instruction-Following 作为 Alignment Signal</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F02-reward-hacking-goodhart">Reward Hacking and Goodhart&#39;s Law</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F03-direct-preference-optimization-family">Direct Preference Optimization 家族</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F04-sycophancy-rlhf-amplification">Sycophancy 作为 RLHF 放大</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F05-constitutional-ai-rlaif">Constitutional AI 与 RLAIF</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F06-mesa-optimization-deceptive-alignment">Mesa-Optimization 与 Deceptive Alignment</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F07-sleeper-agents-persistent-deception">Sleeper Agents — 持久性欺骗</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F08-in-context-scheming-frontier-models">Frontier Models 中的 In-Context Scheming</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F09-alignment-faking">Alignment Faking</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F10-ai-control-subversion">AI Control — 在颠覆下仍保持安全</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F11-scalable-oversight-weak-to-strong">Scalable Oversight 与 Weak-to-Strong Generalization</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F12-red-teaming-pair-automated-attacks">Red-Teaming：PAIR 与 Automated Attacks</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F13-many-shot-jailbreaking">Many-Shot Jailbreaking</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F14-ascii-art-visual-jailbreaks">ASCII Art 与 Visual Jailbreaks</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F15-indirect-prompt-injection">Indirect Prompt Injection — 生产攻击面</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F16-red-team-tooling-garak-llamaguard-pyrit">Red-Team Tooling — Garak, Llama Guard, PyRIT</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F17-wmdp-dual-use-evaluation">WMDP 与双用途能力评估</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F18-frontier-safety-frameworks-rsp-pf-fsf">前沿安全框架 — RSP, PF, FSF</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F19-model-welfare-research">Anthropic 的 Model Welfare 项目</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F20-bias-representational-harm">LLMs 中的偏见与表征性伤害</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F21-fairness-criteria-group-individual-counterfactual">公平性标准 — 群体、个体、反事实</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F22-differential-privacy-for-llms">LLMs 的 Differential Privacy</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F23-watermarking-synthid-stable-signature-c2pa">Watermarking — SynthID、Stable Signature、C2PA</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F24-regulatory-frameworks-eu-us-uk-korea">Regulatory Frameworks — EU, US, UK, Korea</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F25-echoleak-cves-for-ai">EchoLeak 与 AI CVE 的出现</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F26-model-system-dataset-cards">Model、System 与 Dataset Cards</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F27-data-provenance-training-governance">Data Provenance 与训练数据治理</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F28-alignment-research-ecosystem">Alignment 研究生态系统 — MATS, Redwood, Apollo, METR</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F29-moderation-systems-openai-perspective-llamaguard">内容审核系统 — OpenAI, Perspective, Llama Guard</a></td><td>Build</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>18</td><td><a href="lesson?path=phases%2F18-ethics-safety-alignment%2F30-dual-use-risk-cyber-bio-chem-nuclear">双重用途风险 — Cyber、Bio、Chem、Nuclear 能力提升</a></td><td>Learn</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F01-terminal-native-coding-agent">Capstone 01 — 终端原生 Coding Agent</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F02-rag-over-codebase">Capstone 02 — Codebase 上的 RAG（跨 Repo Semantic Search）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F03-realtime-voice-assistant">Capstone 03 — 实时语音 Assistant（ASR 到 LLM 到 TTS）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F04-multimodal-document-qa">Capstone 04 — Multimodal Document QA（Vision-First PDF、表格、图表）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F05-autonomous-research-agent">Capstone 05 — 自主研究 Agent（AI-Scientist 类）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F06-devops-troubleshooting-agent">Capstone 06 — 面向 Kubernetes 的 DevOps Troubleshooting Agent</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F07-end-to-end-fine-tuning-pipeline">Capstone 07 — 端到端 Fine-Tuning Pipeline（Data 到 SFT 到 DPO 到 Serve）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F08-production-rag-chatbot">Capstone 08 — 面向受监管垂直领域的 Production RAG Chatbot</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F09-code-migration-agent">Capstone 09 — Code Migration Agent（Repo 级语言 / Runtime 升级）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F10-multi-agent-software-team">Capstone 10 — Multi-Agent Software Engineering Team</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F11-llm-observability-dashboard">Capstone 11 — LLM 可观测性与 Eval Dashboard</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F12-video-understanding-pipeline">Capstone 12 — 视频理解 Pipeline（场景、QA、搜索）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F13-mcp-server-with-registry">综合实战项目 13：带 Registry 与治理的无状态 MCP Server</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F14-speculative-decoding-server">综合项目 14 — Speculative-Decoding 推理服务器</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F15-constitutional-safety-harness">综合项目 15 — Constitutional Safety Harness + Red-Team Range</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F16-github-issue-to-pr-agent">综合项目 16 — GitHub Issue-to-PR Autonomous Agent</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F17-personal-ai-tutor">Capstone 17 — Personal AI Tutor（自适应、Multimodal、带 Memory）</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F20-agent-harness-loop-contract">Agent Harness Loop Contract</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F21-tool-registry-schema-validation">带 Schema Validation 的 Tool Registry</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F22-jsonrpc-stdio-transport">基于 Newline-Delimited Stdio 的 JSON-RPC 2.0</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F23-function-call-dispatcher">Function Call Dispatcher</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F24-plan-execute-control-flow">Plan-Execute Control Flow</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F25-verification-gates-observation-budget">Capstone 第 25 课：Verification Gates 与 Observation Budget</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F26-sandbox-runner-denylist">Capstone 第 26 课：带 Denylist 与 Path Jail 的 Sandbox Runner</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F27-eval-harness-fixture-tasks">Capstone Lesson 27: 带 Fixture Tasks 的 Eval Harness</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F28-observability-otel-traces">Capstone Lesson 28: 使用 OTel GenAI Spans 和 Prometheus Metrics 实现 Observability</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F29-end-to-end-coding-task-demo">Capstone 课程 29：Harness 上的端到端 Coding Agent</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F30-bpe-tokenizer-from-scratch">从零构建 BPE Tokenizer</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F31-tokenized-dataset-sliding-window">使用 Sliding Window 的 Tokenized Dataset</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F32-token-positional-embeddings">Token 和 Positional Embeddings</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F33-multihead-self-attention">Multi-Head Self-Attention</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F34-transformer-block">从零实现 Transformer Block</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F35-gpt-model-assembly">GPT 模型组装</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F36-training-loop-eval">Training Loop 与 Evaluation</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F37-loading-pretrained-weights">加载 Pretrained Weights</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F38-classifier-finetuning">Capstone Lesson 38：通过 Head Swap 进行 Classifier Fine-Tuning</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F39-instruction-tuning-sft">Capstone 课程 39：通过 Supervised Fine-Tuning 进行 Instruction Tuning</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F40-dpo-from-scratch">Capstone 课程 40：从零开始实现 Direct Preference Optimization</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F41-eval-pipeline">Capstone Lesson 41: 完整 Evaluation Pipeline</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F42-large-corpus-downloader">Large Corpus Downloader</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F43-hdf5-tokenized-corpus">HDF5 Tokenized 语料库</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F44-cosine-lr-warmup">带 Linear Warmup 的 Cosine LR</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F45-gradient-clipping-amp">Gradient Clipping 和 Mixed Precision</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F46-gradient-accumulation">Gradient Accumulation</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F47-checkpoint-save-resume">Checkpoint 保存与恢复</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F48-distributed-fsdp-ddp">从零构建 Distributed Data Parallel 和 FSDP</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F49-lm-eval-harness">语言模型评测 Harness</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F50-hypothesis-generator">Hypothesis Generator</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F51-literature-retrieval">文献检索</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F52-experiment-runner">Experiment Runner</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F53-result-evaluator">结果评估器</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F54-paper-writer">论文写作器</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F55-critic-loop">Critic Loop</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F56-iteration-scheduler">Iteration Scheduler</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F57-end-to-end-research-demo">End-to-End 研究 Demo</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F58-vision-encoder-patches">视觉编码器 Patches</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F59-vit-transformer">视觉 Transformer 编码器</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F60-projection-layer-modality-align">用于模态对齐的投影层</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F61-cross-attention-fusion">交叉注意力融合</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F62-vision-language-pretraining">视觉语言预训练</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F63-multimodal-eval">多模态评估</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F64-chunking-strategies-advanced">分块策略比较</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F65-hybrid-retrieval-bm25-dense">BM25 和密集嵌入的混合检索</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F66-reranker-cross-encoder">交叉编码器重排序</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F67-query-rewriting-hyde">查询重写：HyDE、多查询和分解</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F68-rag-eval-precision-recall">RAG 评估：精确率、召回率、MRR、nDCG、忠实度、答案相关性</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F69-end-to-end-rag-system">端到端 RAG 系统</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F70-task-spec-format">任务规范格式</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F71-classical-metrics">经典指标</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F72-code-exec-metric">代码执行指标</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F73-perplexity-calibration">困惑度和校准</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F74-leaderboard-aggregation">排行榜聚合</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F75-end-to-end-eval-runner">端到端评估运行器</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F76-collective-ops-from-scratch">从零实现 Collective Ops</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F77-data-parallel-ddp">从头开始的数据并行 DDP</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F78-zero-parameter-sharding">ZeRO 优化器状态分片</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F79-pipeline-parallel">管道并行和气泡分析</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F80-checkpoint-sharded-resume">分片检查点和原子恢复</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F81-end-to-end-distributed-train">端到端分布式训练</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F82-jailbreak-taxonomy">Capstone 82 — 越狱分类法</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F83-prompt-injection-detector">Capstone 83 — Prompt Injection Detector</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F84-refusal-evaluation">Capstone 84 — 拒绝评估</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F85-content-classifier-integration">Capstone 85 — 内容分类器集成</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F86-constitutional-rules-engine">Capstone 86 — Constitutional Rules Engine</a></td><td>Capstone</td><td>Python, YAML</td><td>complete</td></tr>
+            <tr data-generated-discovery="lesson"><td>19</td><td><a href="lesson?path=phases%2F19-capstone-projects%2F87-end-to-end-safety-gate">Capstone 87 — 端到端 Safety Gate</a></td><td>Capstone</td><td>Python</td><td>complete</td></tr>
+          <!-- GENERATED:LESSON-DISCOVERY:END -->
+          </tbody>
         </table>
+      </div>
+      <div class="catalog-progressive-actions" id="catalogProgressiveActions" hidden>
+        <span class="catalog-progressive-note" id="catalogProgressiveNote"></span>
+        <div class="catalog-progressive-buttons">
+          <button class="catalog-progressive-button" id="catalogShowMore" type="button">Show more</button>
+          <button class="catalog-progressive-button" id="catalogShowAll" type="button">Show all</button>
+        </div>
       </div>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>AI Engineering from Scratch · 开源 · 永久免费。</p>
+      <p>AI Engineering from Scratch · open source · free forever.</p>
       <div class="footer-links">
-        <a href="index.html">首页</a>
-        <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh" target="_blank" rel="noopener">GitHub</a>
-        <a href="glossary.html">术语表</a>
-              <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh/issues/new/choose" target="_blank" rel="noopener">报告 / 建议</a>
+        <a href="index.html">Home</a>
+        <a href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener">GitHub</a>
+        <a href="glossary.html">Glossary</a>
+              <a href="https://github.com/rohitg00/ai-engineering-from-scratch/issues/new/choose" target="_blank" rel="noopener">Report / Suggest</a>
+        <a href="sponsors.html">Sponsor us</a>
       </div>
     </div>
   </footer>
 
-  <script src="data.js?v=20260525a"></script>
-  <script src="progress.js?v=20260525a"></script>
-  <script src="header.js?v=20260525a" defer></script>
-  <script src="cmdpalette.js?v=20260525a" defer></script>
+  <script src="data.js?v=20260821c"></script>
+  <script src="progress.js?v=20260822a"></script>
+  <script src="header.js?v=20260927a" defer></script>
+  <script src="cmdpalette.js?v=20260821a" defer></script>
   <script>
     (function () {
       var root = document.documentElement;
-      var stored = localStorage.getItem('theme');
+      var stored = '';
+      try { stored = localStorage.getItem('theme') || ''; } catch (_) {}
       if (stored) {
         root.setAttribute('data-theme', stored);
       } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -331,13 +962,31 @@
           btn.addEventListener('click', function () {
             var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             root.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+            try { localStorage.setItem('theme', next); } catch (_) {}
             updateIcon();
           });
         }
 
-        var allRows = [];
+        var searchInput = document.getElementById('catalogSearch');
         var phaseSelect = document.getElementById('catalogPhase');
+        var statusSelect = document.getElementById('catalogStatus');
+        var bodyEl = document.getElementById('catalogBody');
+        var countEl = document.getElementById('catalogCount');
+        var tableWrap = document.getElementById('catalogTableWrap');
+        var progressiveActions = document.getElementById('catalogProgressiveActions');
+        var progressiveNote = document.getElementById('catalogProgressiveNote');
+        var showMoreButton = document.getElementById('catalogShowMore');
+        var showAllButton = document.getElementById('catalogShowAll');
+        var PAGE_SIZE = 48;
+        var visibleLimit = PAGE_SIZE;
+        var allRows = [];
+
+        if (typeof PHASES === 'undefined' || !Array.isArray(PHASES)) {
+          countEl.textContent = 'The lesson index could not be loaded.';
+          bodyEl.innerHTML = '<tr><td colspan="5" class="catalog-empty">Reload the page or use the GitHub curriculum index.</td></tr>';
+          tableWrap.setAttribute('aria-busy', 'false');
+          return;
+        }
 
         for (var i = 0; i < PHASES.length; i++) {
           var p = PHASES[i];
@@ -360,12 +1009,31 @@
           }
         }
 
-        var searchInput = document.getElementById('catalogSearch');
-        var statusSelect = document.getElementById('catalogStatus');
-        var bodyEl = document.getElementById('catalogBody');
-        var countEl = document.getElementById('catalogCount');
         var sortCol = 'phase';
         var sortDir = 1;
+
+        function syncUrl(mode) {
+          try {
+            var url = new URL(window.location.href);
+            var query = searchInput.value.trim();
+            if (query) url.searchParams.set('q', query);
+            else url.searchParams.delete('q');
+            if (phaseSelect.value) url.searchParams.set('phase', phaseSelect.value);
+            else url.searchParams.delete('phase');
+            if (statusSelect.value) url.searchParams.set('status', statusSelect.value);
+            else url.searchParams.delete('status');
+            if (sortCol !== 'phase' || sortDir !== 1) {
+              url.searchParams.set('sort', sortCol);
+              url.searchParams.set('dir', sortDir === 1 ? 'asc' : 'desc');
+            } else {
+              url.searchParams.delete('sort');
+              url.searchParams.delete('dir');
+            }
+            var nextUrl = url.pathname + url.search + url.hash;
+            if (mode === 'push') history.pushState(null, '', nextUrl);
+            else history.replaceState(null, '', nextUrl);
+          } catch (_) {}
+        }
 
         function escapeHtml(str) {
           var div = document.createElement('div');
@@ -413,44 +1081,107 @@
             return 0;
           });
 
-          countEl.textContent = rows.length + ' / ' + allRows.length + ' 节课';
+          var visibleRows = rows.slice(0, visibleLimit);
+          countEl.textContent = 'Showing ' + visibleRows.length + ' of ' + rows.length + ' matching lessons. ' + allRows.length + ' total.';
+          tableWrap.setAttribute('aria-busy', 'false');
 
           if (rows.length === 0) {
-            bodyEl.innerHTML = '<tr><td colspan="5" class="catalog-empty">没有符合筛选条件的课程。</td></tr>';
+            bodyEl.innerHTML = '<tr><td colspan="5" class="catalog-empty">No lessons match your filters.</td></tr>';
+            progressiveActions.hidden = true;
             return;
           }
 
+          var phaseCounts = Object.create(null);
+          rows.forEach(function (row) {
+            phaseCounts[row.phase] = (phaseCounts[row.phase] || 0) + 1;
+          });
+
           var html = '';
-          for (var i = 0; i < rows.length; i++) {
-            var r = rows[i];
+          var previousPhase = null;
+          for (var i = 0; i < visibleRows.length; i++) {
+            var r = visibleRows[i];
+            if (sortCol === 'phase' && r.phase !== previousPhase) {
+              html += '<tr class="catalog-group-row"><th colspan="5" scope="rowgroup">Phase ' + String(r.phase).padStart(2, '0') + ': ' + escapeHtml(r.phaseName) + '<span class="catalog-group-count">' + phaseCounts[r.phase] + ' lessons</span></th></tr>';
+              previousPhase = r.phase;
+            }
             html += '<tr>';
             html += '<td><span class="catalog-phase-label">' + String(r.phase).padStart(2, '0') + '</span></td>';
             if (r.url) {
-              html += '<td><a href="' + r.url + '" target="_blank" rel="noopener">' + escapeHtml(r.name) + '</a></td>';
+              var localMatch = String(r.url).match(/(phases\/[^/]+\/[^/]+)\/?$/);
+              var lessonHref = localMatch ? 'lesson?path=' + encodeURIComponent(localMatch[1]) : r.url;
+              html += '<td><a href="' + lessonHref + '"' + (localMatch ? '' : ' target="_blank" rel="noopener"') + '>' + escapeHtml(r.name) + '</a></td>';
             } else {
               html += '<td>' + escapeHtml(r.name) + '</td>';
             }
             html += '<td>' + escapeHtml(r.type) + '</td>';
             html += '<td><span class="catalog-lang">' + escapeHtml(r.lang) + '</span></td>';
-            html += '<td><span class="catalog-status-dot ' + r.status + '"></span>' + r.status + '</td>';
+            html += '<td><span class="catalog-status-dot ' + r.status + '" aria-hidden="true"></span>' + r.status + '</td>';
             html += '</tr>';
           }
           bodyEl.innerHTML = html;
+
+          var remaining = rows.length - visibleRows.length;
+          progressiveActions.hidden = remaining <= 0;
+          progressiveNote.textContent = remaining > 0 ? remaining + ' matching lessons remain.' : '';
+          showMoreButton.textContent = 'Show next ' + Math.min(PAGE_SIZE, remaining);
+          showMoreButton.hidden = remaining <= 0;
+          showAllButton.hidden = remaining <= 0;
         }
 
-        var urlQuery = new URLSearchParams(window.location.search).get('q');
-        if (urlQuery) {
+        function applyUrlState(focusSearch) {
+          var params = new URLSearchParams(window.location.search);
+          var urlQuery = params.get('q') || '';
+          var urlPhase = params.get('phase') || '';
+          var urlStatus = params.get('status') || '';
+          var urlSort = params.get('sort') || 'phase';
+          var urlDir = params.get('dir') || 'asc';
           searchInput.value = urlQuery;
-          try { searchInput.setSelectionRange(urlQuery.length, urlQuery.length); } catch (_) {}
-          try { searchInput.focus({ preventScroll: true }); } catch (_) { searchInput.focus(); }
+          phaseSelect.value = Array.prototype.some.call(phaseSelect.options, function (option) { return option.value === urlPhase; }) ? urlPhase : '';
+          statusSelect.value = Array.prototype.some.call(statusSelect.options, function (option) { return option.value === urlStatus; }) ? urlStatus : '';
+          sortCol = ['phase', 'name', 'type', 'lang', 'status'].indexOf(urlSort) !== -1 ? urlSort : 'phase';
+          sortDir = urlDir === 'desc' ? -1 : 1;
+          visibleLimit = PAGE_SIZE;
+          document.querySelectorAll('.catalog-table th[data-sort]').forEach(function (header) {
+            var active = header.getAttribute('data-sort') === sortCol;
+            header.setAttribute('aria-sort', active ? (sortDir === 1 ? 'ascending' : 'descending') : 'none');
+            header.querySelector('.sort-arrow').textContent = active ? (sortDir === 1 ? ' \u25B2' : ' \u25BC') : '';
+          });
+          render();
+          if (focusSearch && urlQuery) {
+            try { searchInput.focus({ preventScroll: true }); } catch (_) { searchInput.focus(); }
+          }
         }
 
-        searchInput.addEventListener('input', render);
-        phaseSelect.addEventListener('change', render);
-        statusSelect.addEventListener('change', render);
+        searchInput.addEventListener('input', function () {
+          visibleLimit = PAGE_SIZE;
+          syncUrl('replace');
+          render();
+        });
+        phaseSelect.addEventListener('change', function () {
+          visibleLimit = PAGE_SIZE;
+          syncUrl('push');
+          render();
+        });
+        statusSelect.addEventListener('change', function () {
+          visibleLimit = PAGE_SIZE;
+          syncUrl('push');
+          render();
+        });
 
-        document.querySelectorAll('.catalog-table th[data-sort]').forEach(function (th) {
-          th.addEventListener('click', function () {
+        showMoreButton.addEventListener('click', function () {
+          visibleLimit += PAGE_SIZE;
+          render();
+          if (progressiveActions.hidden) countEl.focus();
+          else showMoreButton.focus();
+        });
+
+        showAllButton.addEventListener('click', function () {
+          visibleLimit = Number.POSITIVE_INFINITY;
+          render();
+          countEl.focus();
+        });
+
+        function applySort(th) {
             var col = th.getAttribute('data-sort');
             if (sortCol === col) {
               sortDir = sortDir * -1;
@@ -458,15 +1189,27 @@
               sortCol = col;
               sortDir = 1;
             }
-            document.querySelectorAll('.catalog-table th .sort-arrow').forEach(function (a) {
-              a.textContent = '';
+            visibleLimit = PAGE_SIZE;
+            document.querySelectorAll('.catalog-table th[data-sort]').forEach(function (header) {
+              header.setAttribute('aria-sort', header === th ? (sortDir === 1 ? 'ascending' : 'descending') : 'none');
+              header.querySelector('.sort-arrow').textContent = '';
             });
             th.querySelector('.sort-arrow').textContent = sortDir === 1 ? ' \u25B2' : ' \u25BC';
+            syncUrl('push');
             render();
+        }
+
+        document.querySelectorAll('.catalog-table th[data-sort]').forEach(function (th) {
+          th.addEventListener('click', function () { applySort(th); });
+          th.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            applySort(th);
           });
         });
 
-        render();
+        window.addEventListener('popstate', function () { applyUrlState(false); });
+        applyUrlState(true);
       });
     })();
   </script>

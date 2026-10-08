@@ -105,6 +105,11 @@ Benchmark 数字会变化，NVIDIA 和 inference stack 每季度都会发布更�
 - Disaggregation threshold：prompts >512 tokens + outputs >200 tokens。
 - 通过 NIXL 的 KV transfer：70B FP8 上 4K-prompt KV 需要 20-80 ms。
 
+
+```figure
+prefill-decode-split
+```
+
 ## 使用它
 
 `code/main.py` 模拟 colocated vs disaggregated serving。报告 throughput、cost per request，以及 prompt-length crossover。

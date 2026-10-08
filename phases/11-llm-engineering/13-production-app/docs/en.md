@@ -259,6 +259,11 @@ graph TD
 | 14 | CORS 仅为 production domains 配置 | Security |
 | 15 | 通过 100 concurrent users 的 load test | Performance |
 
+
+```figure
+l5-prod-app-paths
+```
+
 ## 构建它
 
 这是 capstone。一个文件。所有组件都连接起来。

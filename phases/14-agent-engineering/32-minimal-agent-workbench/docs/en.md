@@ -57,6 +57,11 @@ Board 上的 task 有 id、goal、owner（`builder`、`reviewer` 或 `human`）�
 
 后续课程会添加 scope contracts、feedback runners、verification gates、reviewer checklists 和 handoff packets。这里的三个文件是它们共同假设的基础。
 
+
+```figure
+wb-three-files
+```
+
 ## 构建它
 `code/main.py` 会把最小 workbench 写入一个空 repo，并演示单轮 agent turn，它会：
 

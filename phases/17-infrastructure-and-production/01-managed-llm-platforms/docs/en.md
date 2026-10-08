@@ -75,6 +75,11 @@ Vertex：HIPAA、GDPR、按 region 的 data residency；Google Cloud 的 complia
 - Azure PTU break-even：~40-60% sustained utilization。
 - 高利用率下 PTU 相比 on-demand 的节省：最高 70%。
 
+
+```figure
+i4-platform-lanes
+```
+
 ## 使用它
 `code/main.py` 会在一个 synthetic workload 上比较这三个平台 — 它建模 on-demand vs PTU 经济性、TTFT variance 和 cost attribution fidelity。运行它，看看 PTUs 在哪里回本，以及 marketplace 的模型广度在哪里超过 TTFT 差距。
 

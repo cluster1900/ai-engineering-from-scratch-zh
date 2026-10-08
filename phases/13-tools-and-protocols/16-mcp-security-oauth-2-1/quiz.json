@@ -1,0 +1,78 @@
+{
+  "lesson": "16-mcp-security-oauth-2-1",
+  "title": "MCP 鉴权与授权：CIMD、Issuer 绑定、PKCE 与权限提升（Step-Up）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 2026-07-28 规范中，新增 MCP OAuth 客户端注册（Enrollment）首选哪种机制？",
+      "options": [
+        "URL 查询参数中的 Access Token",
+        "Mcp-Session-Id",
+        "客户端 ID 元数据文档（CIMD）",
+        "动态客户端注册（DCR）"
+      ],
+      "correct": 2,
+      "explanation": "首选 CIMD；DCR 已被正式废弃，仅作为向后兼容路径保留。"
+    },
+    {
+      "stage": "check",
+      "question": "带有本地回环（Loopback）重定向的桌面客户端在 DCR 回退路径中应当声明哪种 application_type？",
+      "options": [
+        "web",
+        "stateless",
+        "native",
+        "confidential"
+      ],
+      "correct": 2,
+      "explanation": "桌面、移动端、命令行工具以及使用本地回环地址的客户端均属于 native 应用。"
+    },
+    {
+      "stage": "check",
+      "question": "客户端在收到授权响应后，必须对响应中的 iss 参数执行什么操作？",
+      "options": [
+        "对其进行规范化并比对主机名（hostnames）",
+        "将其直接存储为 clientInfo",
+        "在 PKCE 校验成功后直接忽略它",
+        "在消费该响应前，严格将其与预先记录的签发者（Issuer）精确比对"
+      ],
+      "correct": 3,
+      "explanation": "RFC 9207 签发者检查可防止来自不同签发者的授权响应发生混淆（Mix-up 攻击）。"
+    },
+    {
+      "stage": "check",
+      "question": "客户端应当如何为签发者派发的 OAuth 凭据与 Access Token 设置存储键（Key）？",
+      "options": [
+        "由签发者派发的凭据以 issuer 为键，Token 以 issuer + resource 为键",
+        "将所有注册信息与 Token 归在同一个全局客户端名称下",
+        "仅以 server 的显示名称（display name）为键",
+        "以协议会话标识符（session ID）为键"
+      ],
+      "correct": 0,
+      "explanation": "基于 Issuer 和 Resource 建立键索引可防止派发的凭据跨越安全边界或受众。自托管的 CIMD URL 保持可移植性。"
+    },
+    {
+      "stage": "post",
+      "question": "资源端返回 403 并要求 notes:delete scope。正确的下一步操作是什么？",
+      "options": [
+        "在本地无需授权直接添加 notes:delete",
+        "解释该权限需求、获取用户同意、针对该 scope 重新发起授权，然后用新的请求 ID 重试",
+        "将现有的 MCP Token 直接转发给下游 API",
+        "直接复用当前 Token 并忽略该 scope 质询"
+      ],
+      "correct": 1,
+      "explanation": "权限提升（Step-Up）在重试该操作前获取新授权的 Token。"
+    },
+    {
+      "stage": "post",
+      "question": "对于 MCP 资源 https://notes.example.com/mcp，其 RFC 9728 元数据 URL 是什么？",
+      "options": [
+        "https://notes.example.com/.well-known/oauth-protected-resource/mcp",
+        "https://auth.example.com/.well-known/oauth-protected-resource",
+        "https://notes.example.com/.well-known/oauth-protected-resource",
+        "https://notes.example.com/mcp/.well-known/oauth-protected-resource"
+      ],
+      "correct": 0,
+      "explanation": "RFC 9728 在 well-known 段后保留受保护资源的原有路径，因此必须保留 /mcp 后缀。"
+    }
+  ]
+}

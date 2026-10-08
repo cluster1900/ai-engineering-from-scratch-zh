@@ -8,6 +8,11 @@
 **Time:** ~90 minutes
 
 ## Learning Objectives
+
+
+```figure
+cf-registry-validate
+```
 - 持有一个有类型的 registry，映射 tool name → schema → handler，让 dispatcher 只需查询一次，之后即可信任。
 - 实现 JSON Schema 2020-12 的一个子集，覆盖百分之九十的 tool calls 实际使用的 keywords。
 - 返回精确的、形如 json-pointer 的错误路径，让 model 可以在一次往返内自我修正。

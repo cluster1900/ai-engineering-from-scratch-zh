@@ -63,6 +63,11 @@ N=8 时：vanilla 16P，ZeRO-1 5.5P，下降 65%。 N=64 时：vanilla 16P，ZeR
 
 Allreduce 为每个等级提供完整的求和梯度。如果只需要分片r，则减少的梯度的(N-1)/N会浪费在r上。 Reduce_scatter 准确地交付每个等级拥有的分片；每个rank的字节与allreduce相同（因为allreduce是reduce_scatter + allgather），但后半部分稍后被参数分片allgather替换。网线与DDP相同，内存是分开的。
 
+
+```figure
+cd-zero-shard
+```
+
 ## 构建它
 
 `code/main.py` 实现：

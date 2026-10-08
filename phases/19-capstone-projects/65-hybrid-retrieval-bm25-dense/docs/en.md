@@ -60,6 +60,11 @@ IDF 公式使用平滑的 Robertson 和 Spark Jones 定义，即 `log((N - df + 
 
 BM25 分数不受限制且依赖于语料库。余弦相似度限制在 -1 到 1 之间。线性组合 `alpha * bm25 + (1 - alpha) * cosine` 需要每个语料库 alpha 调整，并且每次重新索引时都会中断。基于等级的融合则不然。两个等级在不同模式下具有可比性。自 2010 年以来，已发布的 RRF 基线在每个公共 TREC 赛道上都击败了分数插值。这与您在 Vespa 和 Weaviate 文档中听到的有关 RankFusion 与 RRF 的论点相同。他们得出了相同的结论：除非你有非常有力的证据来插值，否则保持基于排名。
 
+
+```figure
+rrf-fusion
+```
+
 ## 构建它
 
 `code/main.py` 实现：

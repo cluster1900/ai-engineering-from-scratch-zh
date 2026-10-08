@@ -59,6 +59,11 @@ LangGraph、AutoGen、CrewAI 都偏 framework-heavy。想要“只要 Agent loop
 - **Ecosystem lock-in.** Mastra 的 Vercel-flavored integration 在 Vercel 上是加分项，在别处可能是减分项。
 - **Enterprise license confusion.** Mastra 的 `ee/` 目录是 source-available，不是 Apache 2.0。如果你计划 fork，请阅读 licenses。
 
+
+```figure
+wb-runtime-spawn
+```
+
 ## 构建它
 本课主要是对比性的 —— 单一 code artifact 无法公正呈现两个 frameworks。参见 `code/main.py` 中的 side-by-side toy：一个最小的“运行 Agent、stream output、persist session”流程，实现了两次（一次 Agno-shaped，一次 Mastra-shaped）。
 

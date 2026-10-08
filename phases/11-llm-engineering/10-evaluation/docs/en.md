@@ -215,6 +215,11 @@ flowchart LR
 
 本课我们从零构建它，让你理解每一层。在 production 中，使用这些工具之一。
 
+
+```figure
+llm-judge-rubric
+```
+
 ## 构建它
 ### 步骤 1：定义 Eval 数据结构
 

@@ -63,6 +63,11 @@ Plan-and-Act 将该 pattern 扩展到 long-horizon web 和 mobile agents。关�
 
 Anthropic 的 2024 年 12 月指导：从最简单的方式开始。如果任务只是一次 tool call 加一次 summary，就不要构建 ReWOO。如果任务是一个 40 步 research assignment，就不要只用 ReAct。
 
+
+```figure
+rewoo-plan
+```
+
 ## 构建它
 `code/main.py` 实现了一个玩具版 ReWOO：
 

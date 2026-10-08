@@ -29,6 +29,11 @@ graph TD
 
 Hugging Face `datasets` library 是为 AI work 加载 data 的标准方式。它开箱即用地处理 downloading、caching、format conversion 和 streaming。
 
+
+```figure
+s0-data-pipeline
+```
+
 ## 构建它
 ### 步骤 1：安装 datasets library
 

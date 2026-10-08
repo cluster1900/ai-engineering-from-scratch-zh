@@ -54,6 +54,11 @@ reviewer 读取 diff、state、feedback、verdict。它写一份 report。它不
 
 gate（Phase 14 · 38）检查确定性事实：acceptance 是否运行、规则是否通过、scope 是否保持。reviewer 做定性判断：这是否是正确的工作、是否有文档记录、handoff 是否可用。两者都需要。
 
+
+```figure
+wb-builder-marker
+```
+
 ## 构建它
 `code/main.py` 实现：
 

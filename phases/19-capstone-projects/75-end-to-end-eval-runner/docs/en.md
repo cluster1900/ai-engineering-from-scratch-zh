@@ -9,6 +9,11 @@
 
 ## 学习目标
 
+
+```figure
+eval-grid
+```
+
 - 定义任何模型（模拟、本地、API）都可以通过小方法表面满足的 `ModelAdapter` 接口。
 - 在固定 JSONL 文件上运行评估，并在工作池中并行执行任务。
 - 一次性将度量层（exact_match、F1、BLEU-4、ROUGE-L、code_exec）与校准层组合在一起。

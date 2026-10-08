@@ -100,6 +100,11 @@ State 是大多数 framework 选择在 production 中崩掉的地方。
 | 带 reducers 的数千个 parallel fanouts | LangGraph + `Send` | 唯一拥有一等 parallel-dispatch API 的选择。 |
 | 快速 prototype，不承诺 framework | Plain Python + provider SDK | 没有 framework 是最快的 framework。 |
 
+
+```figure
+l5-framework-fit
+```
+
 ## 练习
 
 1. **Easy.** 取同一个任务 — “research Anthropic's headquarters, write a 200-word brief, cite sources” — 分别用 LangGraph（四个 nodes：plan、search、write、cite）和 CrewAI（三个 roles：researcher、writer、editor）实现。报告每次运行的 token cost 和代码行数。

@@ -133,6 +133,11 @@ Lesson 17（Agent Framework Tradeoffs）用 Matrix 展示了这一点。简短�
 - **Brittle handoffs。** Task N 的 `expected_output` 是“an outline”。Task N+1 把它作为 `context` 读取，并尝试 parse 三个 sections。LLM 生成了四个。下游 Agent 即兴处理。修复方式是在 Task N 上使用 `output_pydantic`，让 Task N+1 读取 typed object，而不是 free text。
 - **Crew-as-prod。** 自由形式 Crew 在没有 Flow wrapper 的情况下被发布到生产。输出 variability 高；无法 replay；on-call 无法 diff 一次坏运行和一次好运行。用 Flow 包起来。
 
+
+```figure
+ae-crew-vs-flow
+```
+
 ## 构建它
 
 `code/main.py` 实现了两种形态的 stdlib 版本，以及一个三 Agent crew。

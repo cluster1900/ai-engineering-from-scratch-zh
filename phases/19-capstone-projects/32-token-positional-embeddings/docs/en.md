@@ -8,6 +8,11 @@
 **Time:** ~90 分钟
 
 ## Learning Objectives
+
+
+```figure
+cc-embedding-lookup
+```
 - 构建一个 token-embedding lookup table，把 vocabulary ids 映射到 dense vectors。
 - 构建一个按 position 索引的 learned positional-embedding lookup table。
 - 构建一个按 position 索引、没有 parameters 的 fixed sinusoidal positional embedding。

@@ -8,6 +8,11 @@
 **Time:** ~90 minutes
 
 ## Learning Objectives
+
+
+```figure
+cf-jsonrpc-frames
+```
 - 使用通过 stdin 和 stdout 上的 newline-delimited JSON framing 的 JSON-RPC 2.0 通信。
 - 映射五个标准 error codes（-32700, -32600, -32601, -32602, -32603），并以正确语义暴露它们。
 - 区分 requests、responses、notifications 和 batches，而不发明新的 envelope keys。

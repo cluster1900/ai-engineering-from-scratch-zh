@@ -1,6 +1,6 @@
-/* figures-genai-rl.js — Phase 8（generative AI）
-   和 Phase 9（Reinforcement Learning）的交互式课程图示。加载于 lesson-figures.js 之后，
-   并通过 window.LF 注册。无依赖，仅 ES5，通过 CSS vars 设置主题。 */
+/* figures-genai-rl.js — interactive lesson figures for Phase 8 (generative AI)
+   and Phase 9 (reinforcement learning). Loads after lesson-figures.js and
+   registers through window.LF. No deps, ES5 only, theme via CSS vars. */
 (function () {
   'use strict';
   var LF = window.LF;
@@ -16,11 +16,11 @@
     ]));
   }
 
-  // ── diffusion-denoise：去掉噪声后逐渐浮现的一维信号 ──────
+  // ── diffusion-denoise: a 1D signal emerging as noise is stripped away ──────
   function diffusionDenoise(host) {
     var W = 520, H = 240, PAD = 30, N = 96, T = 50;
     var state = { t: 35 };
-    // 固定的干净信号 x0 和固定的噪声样本，因此渲染是确定性的
+    // fixed clean signal x0 and a fixed noise sample, so render is deterministic
     var x0 = [], noise = [], i, seed = 12345;
     function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff * 2 - 1; }
     for (i = 0; i < N; i++) {
@@ -36,29 +36,29 @@
     state._render = function () {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       svg.appendChild(svgEl('line', { x1: PAD, y1: H / 2, x2: W - PAD, y2: H / 2, stroke: 'var(--rule-soft,#eee)', 'stroke-width': '1' }));
-      // alpha_bar 从 1（干净，t=0）下降到约 0（纯噪声，t=T）
+      // alpha_bar runs 1 (clean, t=0) down to ~0 (pure noise, t=T)
       var ab = Math.pow(Math.cos((state.t / T) * Math.PI / 2), 2);
       var sA = Math.sqrt(ab), sN = Math.sqrt(1 - ab), d = '', j;
       for (j = 0; j < N; j++) {
         var xt = sA * x0[j] + sN * noise[j];
         d += (j ? 'L' : 'M') + px(j).toFixed(1) + ' ' + py(xt).toFixed(1) + ' ';
       }
-      // 干净目标的淡色残影
+      // faint ghost of the clean target
       var dc = '';
       for (j = 0; j < N; j++) { dc += (j ? 'L' : 'M') + px(j).toFixed(1) + ' ' + py(x0[j]).toFixed(1) + ' '; }
       svg.appendChild(svgEl('path', { d: dc, fill: 'none', stroke: 'var(--ink-mute,#999)', 'stroke-width': '1.5', 'stroke-dasharray': '4 3', opacity: '0.5' }));
       svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: 'var(--blueprint,#3553ff)', 'stroke-width': '1.8' }));
-      meta.textContent = 't = ' + state.t + ' / ' + T + '  ·  信号 ' + Math.round(sA * 100) + '%  ·  噪声 ' + Math.round(sN * 100) + '%  ·  ' + (state.t < 8 ? '几乎干净' : state.t > 42 ? '接近纯噪声' : '去噪中');
+      meta.textContent = 't = ' + state.t + ' of ' + T + '  ·  signal ' + Math.round(sA * 100) + '%  ·  noise ' + Math.round(sN * 100) + '%  ·  ' + (state.t < 8 ? 'almost clean' : state.t > 42 ? 'near pure noise' : 'denoising');
       formula.textContent = 'x_t = sqrt(alpha_bar_t) x_0 + sqrt(1 - alpha_bar_t) noise   ·   alpha_bar_t = cos^2((t/T)·pi/2)';
     };
-    var grid = el('div', {}, [slider(state, 't', 'timestep t（0 = 干净，T = 噪声）', 0, T, 1)]);
-    frame(host, 'DIFFUSION 去噪', '拖动 timestep',
+    var grid = el('div', {}, [slider(state, 't', 'timestep t (0 = clean, T = noise)', 0, T, 1)]);
+    frame(host, 'DIFFUSION DENOISE', 'drag the timestep',
       grid, [svg, meta, formula],
-      'Diffusion model 学习反转加噪过程。在 t = T 时，信号是纯噪声；随着 t 向 0 下降，模型会一步步移除噪声，底层信号（灰色虚线）重新浮现。每个 x_t 都是干净信号与同一份噪声按 schedule 加权得到的固定混合。');
+      'A diffusion model learns to reverse a noising process. At t = T the signal is pure noise; as t falls toward 0 the model removes noise step by step and the underlying signal (grey dashes) re-emerges. Each x_t is a fixed mix of the clean signal and the same noise, weighted by the schedule.');
     state._render();
   }
 
-  // ── noise-schedule：Diffusion 步骤中的 linear 与 cosine alpha_bar ──────
+  // ── noise-schedule: linear vs cosine alpha_bar across diffusion steps ──────
   function noiseSchedule(host) {
     var W = 520, H = 220, PAD = 32, T = 1000;
     var state = { sched: 'cosine', t: 500 };
@@ -78,7 +78,7 @@
       svg.appendChild(svgEl('line', { x1: mx, y1: PAD, x2: mx, y2: H - PAD, stroke: 'var(--ink-mute,#999)', 'stroke-width': '1', 'stroke-dasharray': '3 3' }));
       svg.appendChild(svgEl('circle', { cx: mx, cy: py(v), r: '5', fill: 'var(--blueprint,#3553ff)' }));
       var snr = v / Math.max(1e-6, 1 - v);
-      meta.textContent = 'alpha_bar = ' + v.toFixed(3) + '  ·  SNR = ' + snr.toFixed(2) + '  ·  ' + (state.sched === 'cosine' ? 'cosine 在中间步骤保留信号更久' : 'linear 会过早破坏信号');
+      meta.textContent = 'alpha_bar = ' + v.toFixed(3) + '  ·  SNR = ' + snr.toFixed(2) + '  ·  ' + (state.sched === 'cosine' ? 'cosine keeps signal longer in mid steps' : 'linear destroys signal early');
       formula.textContent = state.sched === 'cosine'
         ? 'alpha_bar_t = cos^2((t/T)·pi/2)   ·   SNR(t) = alpha_bar_t / (1 - alpha_bar_t)'
         : 'alpha_bar_t = (1 - t/T)^2.2   ·   SNR(t) = alpha_bar_t / (1 - alpha_bar_t)';
@@ -87,20 +87,20 @@
       select(state, 'sched', 'schedule', [['cosine', 'cosine'], ['linear', 'linear']]),
       slider(state, 't', 'diffusion step t', 0, T, 10)
     ]);
-    frame(host, '噪声 SCHEDULE', '选择一个 schedule',
+    frame(host, 'NOISE SCHEDULE', 'pick a schedule',
       grid, [svg, meta, formula],
-      'alpha_bar 是第 t 步仍然保留的信号比例，它与剩余噪声的比值就是信噪比。linear schedule 会在早期步骤快速抹除信号；cosine schedule 在中段衰减更平缓，让有用信号保留更久，并为模型提供信息量更高的中间目标。');
+      'alpha_bar is the fraction of signal surviving at step t, and its ratio to the remaining noise is the signal-to-noise ratio. A linear schedule wipes out the signal fast in the early steps; the cosine schedule decays more gently in the middle, leaving useful signal for longer and giving the model more informative intermediate targets.');
     state._render();
   }
 
-  // ── vae-latent-grid：在二维 latent space 中移动，观察解码形状的变形 ─
+  // ── vae-latent-grid: walk a 2D latent space, watch the decoded shape morph ─
   function vaeLatentGrid(host) {
     var W = 520, H = 240, CX = 380, CY = 120, R = 78;
     var state = { z1: 0, z2: 0 };
     var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H });
     var meta = el('div', { class: 'lf-meta' });
     var formula = el('div', { class: 'lf-formula' });
-    // 左侧：带有移动点的 latent plane；右侧：由 (z1,z2) 解码得到的参数化形状
+    // left: latent plane with a moving dot; right: a parametric shape decoded from (z1,z2)
     state._render = function () {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       var planeX = 40, planeY = 40, planeW = 160, planeH = 160;
@@ -110,7 +110,7 @@
       var dx = planeX + planeW / 2 + state.z1 / 3 * (planeW / 2);
       var dy = planeY + planeH / 2 - state.z2 / 3 * (planeH / 2);
       svg.appendChild(svgEl('circle', { cx: dx, cy: dy, r: '5', fill: 'var(--blueprint,#3553ff)' }));
-      // 解码：z1 控制瓣数/尖锐度，z2 控制圆润与星形之间的变化
+      // decode: z1 controls number of lobes / pointiness, z2 controls roundness vs star
       var pts = 80, k, dpath = '';
       var lobes = 3 + Math.round((state.z1 + 3) / 6 * 5); // 3..8
       var spike = (state.z2 + 3) / 6; // 0..1
@@ -122,23 +122,23 @@
       }
       dpath += 'Z';
       svg.appendChild(svgEl('path', { d: dpath, fill: 'none', stroke: 'var(--blueprint,#3553ff)', 'stroke-width': '2' }));
-      meta.textContent = 'latent (z1, z2) = (' + state.z1.toFixed(1) + ', ' + state.z2.toFixed(1) + ')  ·  解码为 ' + lobes + ' 瓣  ·  ' + (spike < 0.25 ? '圆润' : spike > 0.7 ? '尖锐' : '混合');
-      formula.textContent = 'x = decoder(z),  z ~ N(0, I)   ·   相邻的 z 会解码为相似形状（平滑 latent space）';
+      meta.textContent = 'latent (z1, z2) = (' + state.z1.toFixed(1) + ', ' + state.z2.toFixed(1) + ')  ·  decoded ' + lobes + ' lobes  ·  ' + (spike < 0.25 ? 'round' : spike > 0.7 ? 'spiky' : 'mixed');
+      formula.textContent = 'x = decoder(z),  z ~ N(0, I)   ·   nearby z decode to similar shapes (smooth latent space)';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'z1', 'latent z1', -3, 3, 0.1),
       slider(state, 'z2', 'latent z2', -3, 3, 0.1)
     ]);
-    frame(host, 'VAE LATENT GRID', '拖动 z1 和 z2',
+    frame(host, 'VAE LATENT GRID', 'drag z1 and z2',
       grid, [svg, meta, formula],
-      'VAE 将输入映射到平滑的 latent space，并把其中的点解码回输出。左侧方块是该空间的一个切片；圆点是你的 latent code。移动圆点会让右侧解码出的形状连续变形，因为 decoder 被训练为让相邻 code 产生相邻输出。');
+      'A VAE maps inputs to a smooth latent space and decodes points back to outputs. The square on the left is a slice of that space; the dot is your latent code. Moving it morphs the decoded shape on the right continuously, because the decoder is trained so that nearby codes produce nearby outputs.');
     state._render();
   }
 
-  // ── gan-minimax：generator 与 discriminator 的平衡及失败模式 ──────
+  // ── gan-minimax: generator vs discriminator balance and failure modes ──────
   function ganMinimax(host) {
     var W = 520, H = 220, PAD = 34;
-    // bal：-1 = generator 大幅领先，0 = 均衡，+1 = discriminator 大幅领先
+    // bal: -1 = generator far ahead, 0 = equilibrium, +1 = discriminator far ahead
     var state = { bal: 0 };
     var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H });
     var status = el('span', { class: 'lf-num' });
@@ -146,13 +146,13 @@
     var formula = el('div', { class: 'lf-formula' });
     function px(b) { return PAD + (b + 1) / 2 * (W - 2 * PAD); }
     function py(v) { return H - PAD - clamp(v, 0, 3) / 3 * (H - 2 * PAD); }
-    // D 在假样本上的准确率随 bal 上升；当 D 很确定时，传给 G 的 gradient 会消失
-    function dLoss(b) { return 0.4 + 0.9 * (1 - Math.abs(b)); } // 胜者在两端 Loss 最低
-    function gLoss(b) { return 0.5 + 1.4 * (b + 1) / 2; } // D 越强，generator 越吃力
+    // D accuracy on fakes rises with bal; gradient to G vanishes when D is certain
+    function dLoss(b) { return 0.4 + 0.9 * (1 - Math.abs(b)); } // lowest losses at extremes for the winner
+    function gLoss(b) { return 0.5 + 1.4 * (b + 1) / 2; } // generator suffers as D gets stronger
     state._render = function () {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       svg.appendChild(svgEl('line', { x1: PAD, y1: H - PAD, x2: W - PAD, y2: H - PAD, stroke: 'var(--rule-soft,#eee)', 'stroke-width': '1' }));
-      // bal = 0 处的均衡标记
+      // equilibrium marker at bal = 0
       var ex = px(0);
       svg.appendChild(svgEl('line', { x1: ex, y1: PAD, x2: ex, y2: H - PAD, stroke: 'var(--rule-soft,#ddd)', 'stroke-width': '1', 'stroke-dasharray': '3 3' }));
       function curve(fn, st) { var d = '', i, b; for (i = 0; i <= 100; i++) { b = -1 + 2 * i / 100; d += (i ? 'L' : 'M') + px(b).toFixed(1) + ' ' + py(fn(b)).toFixed(1) + ' '; } svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: st, 'stroke-width': '2' })); }
@@ -162,29 +162,29 @@
       svg.appendChild(svgEl('circle', { cx: px(b), cy: py(gLoss(b)), r: '5', fill: 'var(--blueprint,#3553ff)' }));
       svg.appendChild(svgEl('circle', { cx: px(b), cy: py(dLoss(b)), r: '4', fill: 'var(--ink-mute,#999)' }));
       var mode;
-      if (b > 0.55) mode = 'discriminator 过强：gradient 消失';
-      else if (b < -0.55) mode = 'generator 占优：存在 mode collapse 风险';
-      else mode = '接近均衡：有用的 gradient 可以流动';
+      if (b > 0.55) mode = 'discriminator too strong: vanishing gradient';
+      else if (b < -0.55) mode = 'generator dominates: mode collapse risk';
+      else mode = 'near equilibrium: useful gradients flow';
       status.innerHTML = mode;
-      meta.textContent = 'generator loss ' + gLoss(b).toFixed(2) + '  ·  discriminator loss ' + dLoss(b).toFixed(2) + '  ·  传给 G 的 gradient ' + ((1 - Math.abs(b)) * 100).toFixed(0) + '%';
-      formula.textContent = 'min_G max_D  E[log D(x)] + E[log(1 - D(G(z)))]   ·   平衡会让博弈保持有信息量';
+      meta.textContent = 'generator loss ' + gLoss(b).toFixed(2) + '  ·  discriminator loss ' + dLoss(b).toFixed(2) + '  ·  gradient to G ' + ((1 - Math.abs(b)) * 100).toFixed(0) + '%';
+      formula.textContent = 'min_G max_D  E[log D(x)] + E[log(1 - D(G(z)))]   ·   balance keeps the game informative';
     };
-    var grid = el('div', {}, [slider(state, 'bal', '平衡（-1 = G 领先，+1 = D 领先）', -1, 1, 0.05)]);
-    frame(host, 'GAN MINIMAX', '拖动平衡',
+    var grid = el('div', {}, [slider(state, 'bal', 'balance (-1 = G ahead, +1 = D ahead)', -1, 1, 0.05)]);
+    frame(host, 'GAN MINIMAX', 'drag the balance',
       grid, [svg, el('div', { style: 'margin-top:12px' }, [status]), meta, formula],
-      'GAN 是一个双人博弈：generator（蓝色）试图骗过 discriminator（灰色），而 discriminator 试图区分真实与伪造。两者必须一起变强。如果 discriminator 决定性获胜，它传给 generator 的 gradient 会消失；如果 generator 领先过快，就可能 collapse 到少数输出上。健康的训练会停留在虚线标记的均衡附近。');
+      'A GAN is a two-player game: the generator (blue) tries to fool the discriminator (grey), which tries to tell real from fake. Both must improve together. If the discriminator wins decisively its gradient to the generator vanishes; if the generator races ahead it can collapse onto a few outputs. Healthy training stays near the dashed equilibrium.');
     state._render();
   }
 
-  // ── qlearning-gridworld：4x4 网格，训练 episode 中的 value 快照 ──
+  // ── qlearning-gridworld: 4x4 grid, value snapshots over training episodes ──
   function qlearningGridworld(host) {
     var W = 520, H = 240, GRID = 4, CELL = 52, OX = 40, OY = 18;
-    var GOAL = 3, PIT = 9; // index = row*4 + col；goal 在 (0,3)，pit 在 (2,1)
+    var GOAL = 3, PIT = 9; // index = row*4 + col; goal at (0,3), pit at (2,1)
     var state = { ep: 200 };
     var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H });
     var meta = el('div', { class: 'lf-meta' });
     var formula = el('div', { class: 'lf-formula' });
-    // 通过 deterministic 4x4 上的 value iteration 收敛得到的 value（gamma 0.9，step -0.04）
+    // converged values via value iteration on a deterministic 4x4 (gamma 0.9, step -0.04)
     var GAMMA = 0.9, STEP = -0.04, Rgoal = 1, Rpit = -1;
     function neighbors(s) {
       var r = Math.floor(s / GRID), c = s % GRID, out = [];
@@ -198,7 +198,7 @@
     (function () { var it, s, nb, best, k; for (it = 0; it < 200; it++) { for (s = 0; s < GRID * GRID; s++) { if (s === GOAL || s === PIT) continue; nb = neighbors(s); best = -1e9; for (k = 0; k < nb.length; k++) best = Math.max(best, Vstar[nb[k]]); Vstar[s] = STEP + GAMMA * best; } } })();
     function valueAt(s, ep) { if (s === GOAL) return Rgoal; if (s === PIT) return Rpit; return Vstar[s] * clamp(ep / 300, 0, 1); }
     function shade(v) {
-      // 将 [-1,1] 中的 v 映射为 blueprint（正值）或 warn（负值）的透明度
+      // map v in [-1,1] to opacity of blueprint (positive) or warn (negative)
       if (v >= 0) return { fill: 'var(--blueprint,#3553ff)', op: (0.08 + 0.6 * Math.min(1, v)).toFixed(2) };
       return { fill: 'var(--warn,#b8870f)', op: (0.08 + 0.6 * Math.min(1, -v)).toFixed(2) };
     }
@@ -231,24 +231,24 @@
           }
         }
       }
-      meta.textContent = 'episode ' + state.ep + ' / 300  ·  ' + (state.ep < 30 ? 'value 仍接近零' : state.ep < 200 ? 'value 正从 goal 扩散' : 'policy 已收敛');
+      meta.textContent = 'episode ' + state.ep + ' of 300  ·  ' + (state.ep < 30 ? 'values still near zero' : state.ep < 200 ? 'value spreading from the goal' : 'policy converged');
       formula.textContent = 'Q(s,a) <- Q(s,a) + alpha [ r + gamma max_a\' Q(s\',a\') - Q(s,a) ]   ·   gamma = 0.9';
     };
-    var grid = el('div', {}, [slider(state, 'ep', '训练 episodes', 0, 300, 10)]);
-    frame(host, 'Q-LEARNING GRIDWORLD', '拖动 episodes',
+    var grid = el('div', {}, [slider(state, 'ep', 'training episodes', 0, 300, 10)]);
+    frame(host, 'Q-LEARNING GRIDWORLD', 'drag the episodes',
       grid, [svg, meta, formula],
-      'agent 学习到达 goal 并避开 pit。格子的底色表示学到的 state value（蓝色好，琥珀色差），箭头表示 greedy policy。早期 value 接近零；随着训练推进，value 会从 goal 向外传播，箭头会排列成一条绕开 pit 的路径。');
+      'The agent learns to reach the goal and avoid the pit. Cell shading is the learned state value (blue good, amber bad) and the arrows are the greedy policy. Early on values sit near zero; with training, value propagates outward from the goal and the arrows line up into a path that routes around the pit.');
     state._render();
   }
 
-  // ── value-iteration-gamma：沿一维链条向 goal 传播的 value ─
+  // ── value-iteration-gamma: value propagating along a 1D chain toward a goal ─
   function valueIterationGamma(host) {
     var W = 520, H = 200, N = 10, CELL = 44, OX = 36, OY = 70;
     var state = { gamma: 0.9 };
     var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H });
     var meta = el('div', { class: 'lf-meta' });
     var formula = el('div', { class: 'lf-formula' });
-    // goal 位于最右侧格子，reward 为 1；每一步没有 cost；V(s) = gamma^(dist)
+    // goal at the rightmost cell, reward 1; each step costs nothing; V(s) = gamma^(dist)
     state._render = function () {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       var g = state.gamma, i, vals = [];
@@ -263,20 +263,20 @@
         if (i < N - 1) { svg.appendChild(svgEl('line', { x1: x + CELL - 6, y1: y + (CELL - 4) / 2, x2: x + CELL + 2, y2: y + (CELL - 4) / 2, stroke: 'var(--ink-mute,#999)', 'stroke-width': '1.2' })); }
       }
       var reach = vals[0];
-      meta.textContent = 'gamma = ' + g.toFixed(2) + '  ·  距 goal 9 步的 value = ' + reach.toFixed(3) + '  ·  ' + (g < 0.6 ? '短视：远期 reward 衰减' : g > 0.95 ? '长视：value 贯穿整条链' : '中等 horizon');
-      formula.textContent = 'V(s) = gamma^(distance to goal)   ·   更高的 gamma 会让 value 从 goal 传播得更远';
+      meta.textContent = 'gamma = ' + g.toFixed(2) + '  ·  value 9 steps from goal = ' + reach.toFixed(3) + '  ·  ' + (g < 0.6 ? 'short-sighted: distant reward fades' : g > 0.95 ? 'far-sighted: value carries across the chain' : 'moderate horizon');
+      formula.textContent = 'V(s) = gamma^(distance to goal)   ·   higher gamma propagates value further from the goal';
     };
     var grid = el('div', {}, [slider(state, 'gamma', 'discount gamma', 0.1, 0.99, 0.01)]);
-    frame(host, 'VALUE ITERATION', '拖动 gamma',
+    frame(host, 'VALUE ITERATION', 'drag gamma',
       grid, [svg, meta, formula],
-      'Value iteration 会把 reward 从 goal 开始一步步向后传递。在这条链上，唯一的 reward 位于最右侧格子，因此每个 state 的价值等于 gamma 的“距 goal 距离”次方。较小的 gamma 会让远期 reward 几乎没有价值（短视）；接近 1 的 gamma 会把强 value 一直带回链条起点。');
+      'Value iteration backs reward up from the goal one step at a time. On this chain the only reward is at the rightmost cell, so each state is worth gamma raised to its distance from the goal. A small gamma makes distant reward nearly worthless (short-sighted); a gamma near 1 carries strong value all the way back along the chain.');
     state._render();
   }
 
-  // ── epsilon-greedy：explore/exploit 划分与累积 regret ────────────
+  // ── epsilon-greedy: explore/exploit split and cumulative regret ────────────
   function epsilonGreedy(host) {
     var W = 520, H = 210, PAD = 32, N = 500;
-    var state = { eps: 0.1, decay: 1 }; // decay 1 = fixed，0 = decaying schedule
+    var state = { eps: 0.1, decay: 1 }; // decay 1 = fixed, 0 = decaying schedule
     var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H });
     var bar = el('i');
     var barWrap = el('div', { class: 'lf-bar' }, [bar]);
@@ -285,7 +285,7 @@
     function epsAt(t) { return state.decay > 0.5 ? state.eps : state.eps / (1 + t / 60); }
     function px(t) { return PAD + t / N * (W - 2 * PAD); }
     function py(v, vmax) { return H - PAD - clamp(v / vmax, 0, 1) * (H - 2 * PAD); }
-    var GAP = 0.4; // 每次 exploratory pull（次优臂）的 regret cost
+    var GAP = 0.4; // regret cost per exploratory pull (suboptimal arm)
     state._render = function () {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       svg.appendChild(svgEl('line', { x1: PAD, y1: H - PAD, x2: W - PAD, y2: H - PAD, stroke: 'var(--rule-soft,#eee)', 'stroke-width': '1' }));
@@ -297,22 +297,22 @@
       svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: 'var(--blueprint,#3553ff)', 'stroke-width': '2' }));
       var e0 = epsAt(0), eEnd = epsAt(N);
       bar.style.width = (e0 * 100).toFixed(0) + '%';
-      meta.textContent = '初始 explore ' + Math.round(e0 * 100) + '% / exploit ' + Math.round((1 - e0) * 100) + '%  ·  结束 explore ' + Math.round(eEnd * 100) + '%  ·  总 regret ' + vmax.toFixed(1);
+      meta.textContent = 'start explore ' + Math.round(e0 * 100) + '% / exploit ' + Math.round((1 - e0) * 100) + '%  ·  end explore ' + Math.round(eEnd * 100) + '%  ·  total regret ' + vmax.toFixed(1);
       formula.textContent = state.decay > 0.5
-        ? 'fixed epsilon：regret 会永远线性增长  ·  P(explore) = ' + state.eps.toFixed(2)
-        : 'decaying epsilon_t = epsilon_0 / (1 + t/60)  ·  随着 exploration 减少，regret 趋于平坦';
+        ? 'fixed epsilon: regret grows linearly forever  ·  P(explore) = ' + state.eps.toFixed(2)
+        : 'decaying epsilon_t = epsilon_0 / (1 + t/60)  ·  regret levels off as exploration fades';
     };
     var grid = el('div', { class: 'lf-grid' }, [
-      slider(state, 'eps', 'epsilon（explore rate）', 0, 0.5, 0.01),
+      slider(state, 'eps', 'epsilon (explore rate)', 0, 0.5, 0.01),
       select(state, 'decay', 'schedule', [['fixed', '1'], ['decaying', '0']])
     ]);
-    frame(host, 'EPSILON-GREEDY', '拖动 epsilon',
-      grid, [el('div', { class: 'lf-meta' }, ['动作中的 explore 占比']), barWrap, svg, meta, formula],
-      'agent 以 epsilon 的概率 explore 一个随机动作；否则 exploit 当前最优估计。条形图显示 explore/exploit 的划分，曲线表示累积 regret，也就是没有始终选择最佳臂而放弃的 reward。fixed epsilon 会让 regret 永远累积；decaying schedule 会先在早期 explore，随后 exploit，因此 regret 会变平。');
+    frame(host, 'EPSILON-GREEDY', 'drag epsilon',
+      grid, [el('div', { class: 'lf-meta' }, ['explore share of actions']), barWrap, svg, meta, formula],
+      'With probability epsilon the agent explores a random action; otherwise it exploits its current best estimate. The bar shows the explore/exploit split and the curve is cumulative regret, the reward given up by not always picking the best arm. A fixed epsilon piles up regret forever; a decaying schedule explores early then exploits, so regret flattens.');
     state._render();
   }
 
-  // ── discount-horizon：effective horizon 与几何权重衰减 ─────────
+  // ── discount-horizon: effective horizon and geometric weight decay ─────────
   function discountHorizon(host) {
     var W = 520, H = 210, PAD = 32, TMAX = 40;
     var state = { gamma: 0.9 };
@@ -331,21 +331,21 @@
         svg.appendChild(svgEl('rect', { x: px(t) - 3, y: py(w), width: 6, height: (H - PAD) - py(w), fill: 'var(--blueprint,#3553ff)', opacity: '0.85' }));
       }
       var hor = 1 / (1 - g);
-      // 标记 effective horizon
+      // mark the effective horizon
       var hx = px(Math.min(TMAX, hor));
       svg.appendChild(svgEl('line', { x1: hx, y1: PAD, x2: hx, y2: H - PAD, stroke: 'var(--warn,#b8870f)', 'stroke-width': '1.5', 'stroke-dasharray': '4 3' }));
-      num.innerHTML = hor.toFixed(1) + ' <small>步 horizon</small>';
-      meta.textContent = 'gamma = ' + g.toFixed(2) + '  ·  horizon 处的权重 = ' + Math.pow(g, hor).toFixed(2) + '（约 1/e）  ·  20 步后的 reward 权重为 ' + Math.pow(g, 20).toFixed(3);
-      formula.textContent = 'return = sum_t gamma^t r_t   ·   effective horizon = 1/(1 - gamma)   ·   权重按几何级数衰减';
+      num.innerHTML = hor.toFixed(1) + ' <small>step horizon</small>';
+      meta.textContent = 'gamma = ' + g.toFixed(2) + '  ·  weight at the horizon = ' + Math.pow(g, hor).toFixed(2) + ' (about 1/e)  ·  reward 20 steps out weighs ' + Math.pow(g, 20).toFixed(3);
+      formula.textContent = 'return = sum_t gamma^t r_t   ·   effective horizon = 1/(1 - gamma)   ·   weights decay geometrically';
     };
     var grid = el('div', {}, [slider(state, 'gamma', 'discount gamma', 0.5, 0.99, 0.01)]);
-    frame(host, 'DISCOUNT HORIZON', '拖动 gamma',
+    frame(host, 'DISCOUNT HORIZON', 'drag gamma',
       grid, [svg, el('div', { style: 'margin-top:10px' }, [num]), meta, formula],
-      '距离当前 t 步的未来 reward 会按 gamma^t 加权，因此权重会按几何级数下降（柱状条）。虚线标记 effective horizon 1/(1 - gamma)，此处权重已下降到约 1/e。提高 gamma 会拉长这个 horizon，让 agent 关注更远未来的 reward。');
+      'Future reward t steps away is weighted by gamma^t, so the weights fall off geometrically (the bars). The dashed line marks the effective horizon 1/(1 - gamma), where the weight has dropped to about 1/e. Raising gamma stretches that horizon, making the agent care about reward much further into the future.');
     state._render();
   }
 
-  // ── policy-gradient-landscape：Gradient ascent 爬向 reward 峰值 ──────
+  // ── policy-gradient-landscape: gradient ascent climbing a reward peak ──────
   function policyGradientLandscape(host) {
     var W = 520, H = 230, PAD = 30;
     var state = { lr: 0.15, steps: 14, theta0: -2.4 };
@@ -353,7 +353,7 @@
     var status = el('span', { class: 'lf-num' });
     var meta = el('div', { class: 'lf-meta' });
     var formula = el('div', { class: 'lf-formula' });
-    // reward J(theta)：平滑的峰形 landscape，最大值接近 theta = 1.2
+    // reward J(theta): a smooth peaked landscape with the maximum near theta = 1.2
     function J(t) { return 3 * Math.exp(-0.35 * (t - 1.2) * (t - 1.2)) + 0.4 * Math.exp(-0.8 * (t + 2) * (t + 2)); }
     function grad(t) { var h = 1e-3; return (J(t + h) - J(t - h)) / (2 * h); }
     function px(t) { return PAD + (t + 3.5) / 7 * (W - 2 * PAD); }
@@ -371,18 +371,18 @@
       pts.forEach(function (p, idx) { svg.appendChild(svgEl('circle', { cx: px(p), cy: py(J(p)), r: idx === pts.length - 1 ? '5' : '3', fill: 'var(--blueprint,#3553ff)' })); });
       var last = pts[pts.length - 1];
       var atPeak = Math.abs(last - 1.2) < 0.2;
-      status.innerHTML = atPeak ? '到达峰值' : 'J(theta) = ' + J(last).toFixed(2);
-      meta.textContent = 'theta = ' + last.toFixed(2) + '  ·  reward ' + J(last).toFixed(3) + ' / ' + J(1.2).toFixed(2) + ' max  ·  ' + (state.lr > 0.6 ? 'large lr：可能越过峰值' : '爬升中');
-      formula.textContent = 'theta <- theta + lr · grad_theta J(theta)   ·   ascent 会朝更高 expected reward 移动';
+      status.innerHTML = atPeak ? 'reached the peak' : 'J(theta) = ' + J(last).toFixed(2);
+      meta.textContent = 'theta = ' + last.toFixed(2) + '  ·  reward ' + J(last).toFixed(3) + ' of ' + J(1.2).toFixed(2) + ' max  ·  ' + (state.lr > 0.6 ? 'large lr: may overshoot the peak' : 'climbing');
+      formula.textContent = 'theta <- theta + lr · grad_theta J(theta)   ·   ascent moves toward higher expected reward';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'lr', 'learning rate', 0.02, 1.0, 0.02),
       slider(state, 'steps', 'steps', 1, 40, 1),
       slider(state, 'theta0', 'start theta', -3.2, 3.2, 0.1)
     ]);
-    frame(host, 'POLICY GRADIENT', '拖动 learning rate',
+    frame(host, 'POLICY GRADIENT', 'drag the learning rate',
       grid, [svg, el('div', { style: 'margin-top:12px' }, [status]), meta, formula],
-      'Policy gradient 方法会沿着提升 expected reward 的方向调整 policy 参数 theta。这里灰色曲线是 reward landscape，圆点是向峰值爬升的 ascent steps。较小的 rate 会缓慢爬升；过大的 rate 会越过峰值；如果从左侧开始，左边的局部凸起可能困住爬升过程。');
+      'Policy gradient methods adjust the policy parameter theta in the direction that raises expected reward. Here the grey curve is the reward landscape and the dots are ascent steps climbing toward the peak. A small rate creeps up slowly; too large a rate overshoots; a local bump on the left can trap the climb if it starts there.');
     state._render();
   }
 

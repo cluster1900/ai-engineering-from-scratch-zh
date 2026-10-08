@@ -76,6 +76,11 @@ CrewAI 形式化了两种部署模式：
 - **Bouncing handoffs in swarm.** A -> B -> A -> B。使用 hop counters。
 - **Fake hierarchy.** 因为“enterprise”而做三层；实际只有两个团队。压平。
 
+
+```figure
+orchestration-pattern
+```
+
 ## 构建它
 `code/main.py` 使用 stdlib，基于脚本化 LLM 实现全部四种模式：
 

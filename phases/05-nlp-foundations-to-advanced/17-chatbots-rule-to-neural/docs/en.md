@@ -29,6 +29,11 @@ Chatbot 架构经历了四种 paradigm 的循环，每一种都是因为上一�
 
 这四种 paradigm 并不是顺序替代关系。一个 2026 年生产级 chatbot 会经过全部四种路径：rule-based 用于身份验证和 destructive actions，retrieval 用于 FAQ，neural generation 用于自然表达，LLM agent 用于模糊的开放式查询。
 
+
+```figure
+chatbot-lineage
+```
+
 ## 构建它
 
 ### 步骤 1：rule-based pattern matching

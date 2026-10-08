@@ -76,6 +76,11 @@ Batch file formats 因 provider 而异：
 - 叠加 batch + cached input：约为 sync uncached cost 的 10%。
 - Workload triage 规则：如果 24h latency 可接受，始终 batch。
 
+
+```figure
+batch-lane-triage
+```
+
 ## 使用它
 `code/main.py` 为一个 50k-document workload 计算 sync、sync+cache、batch、batch+cache 的成本。报告以 $ 和百分比表示的 savings。
 

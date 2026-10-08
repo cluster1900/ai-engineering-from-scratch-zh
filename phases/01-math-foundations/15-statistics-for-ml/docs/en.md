@@ -474,6 +474,11 @@ If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
 
 ## Building It
 
+
+```figure
+f3-bootstrap-resample
+```
+
 你将实现：
 
 1. **从零实现 descriptive statistics**（mean、median、mode、standard deviation、percentiles、IQR）

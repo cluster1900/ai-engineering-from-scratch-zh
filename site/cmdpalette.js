@@ -1,38 +1,107 @@
 /**
- * 命令面板 — 由 Cmd/Ctrl+K 或搜索按钮触发的全局搜索。
+ * Command palette — global search triggered by Cmd/Ctrl+K or the search button.
  *
- * 完全在客户端侧，从 data.js 中已加载的数据搜索课程标题、摘要、Phase 名称、语言、类型和
- * 术语表条目。
- * 无网络请求。无外部依赖。
+ * Searches focused paths, lesson titles, summaries, phase names, languages,
+ * types, and glossary terms entirely client-side from data already loaded.
+ * No network requests. No external dependencies.
  *
- * API（挂载到 window.CmdPalette）：
- *   CmdPalette.open()   — 打开面板
- *   CmdPalette.close()  — 关闭面板
+ * API (attached to window.CmdPalette):
+ *   CmdPalette.open()   — open the palette
+ *   CmdPalette.close()  — close the palette
  *
- * 触发按钮：任何带有 [data-cmd-palette] 属性的元素。
+ * Trigger buttons: any element with the [data-cmd-palette] attribute.
  */
 (function () {
   'use strict';
 
-  // ── 常量 ────────────────────────────────────────────────────────────
+  // ── Constants ────────────────────────────────────────────────────────
   var PALETTE_ID  = 'cmdPalette';
   var MAX_RESULTS = 12;
   var BODY_ATTR   = 'data-palette-open';
 
-  // ── 模块状态 ───────────────────────────────────────────────────────
-  var _index      = null;   // 延迟构建的可搜索条目扁平数组
+  // ── Module state ─────────────────────────────────────────────────────
+  var _index      = null;   // lazy-built flat array of searchable items
   var _activeIdx  = -1;
   var _isOpen     = false;
   var _prevFocus  = null;
 
-  // ── 搜索索引 ───────────────────────────────────────────────────────
+  function learningPathEntryPath(entry) {
+    return typeof entry === 'string' ? entry : entry && entry.path ? entry.path : '';
+  }
+
+  function learningPathDestination(lessonPath, learningPathId) {
+    if (!lessonPath || !learningPathId) return '';
+    return 'lesson?path=' + encodeURIComponent(lessonPath) +
+      '&learningPath=' + encodeURIComponent(learningPathId);
+  }
+
+  function resultIndexForEnter(activeIndex, resultCount) {
+    if (activeIndex >= 0 && activeIndex < resultCount) return activeIndex;
+    return resultCount > 0 ? 0 : -1;
+  }
+
+  function navigationDestination(href, routeLinks) {
+    var routes = routeLinks || (typeof window !== 'undefined' ? window.AIFSRouteLinks : null);
+    return routes && typeof routes.adaptHref === 'function' ? routes.adaptHref(href) : href;
+  }
+
+  // ── Search index ─────────────────────────────────────────────────────
+  function certificationData() {
+    var data = null;
+    if (typeof CLAUDE_CERTIFICATION_DATA !== 'undefined' && CLAUDE_CERTIFICATION_DATA) {
+      data = CLAUDE_CERTIFICATION_DATA;
+    } else if (typeof CERTIFICATIONS !== 'undefined' && CERTIFICATIONS) {
+      data = CERTIFICATIONS;
+    }
+
+    var tracks = null;
+    if (typeof CERTIFICATION_TRACKS !== 'undefined' && CERTIFICATION_TRACKS) {
+      tracks = Array.isArray(CERTIFICATION_TRACKS)
+        ? CERTIFICATION_TRACKS
+        : CERTIFICATION_TRACKS.tracks;
+    }
+
+    if (!data && tracks) data = { tracks: tracks };
+    else if (data && !Array.isArray(data.tracks) && tracks) {
+      data = Object.assign({}, data, { tracks: tracks });
+    }
+    return data;
+  }
+
   /**
-   * 从 window.PHASES 和 window.GLOSSARY 构建一次扁平搜索索引。
-   * 幂等：后续调用会返回缓存数组。
+   * Build the flat search index once from window.PHASES and window.GLOSSARY.
+   * Idempotent: subsequent calls return the cached array.
    */
   function buildIndex() {
     if (_index !== null) return _index;
     _index = [];
+
+    if (typeof LEARNING_PATHS !== 'undefined' && Array.isArray(LEARNING_PATHS)) {
+      for (var lp = 0; lp < LEARNING_PATHS.length; lp++) {
+        var learningPath = LEARNING_PATHS[lp] || {};
+        var route = Array.isArray(learningPath.lessons) ? learningPath.lessons : [];
+        var firstLessonPath = route.length ? learningPathEntryPath(route[0]) : '';
+        var learningPathId = learningPath.id || String(lp);
+        if (!firstLessonPath) continue;
+        var checkpointKeywords = Array.isArray(learningPath.checkpoints)
+          ? learningPath.checkpoints.map(function (checkpoint) {
+              return typeof checkpoint === 'string'
+                ? checkpoint
+                : checkpoint && (checkpoint.title || checkpoint.name || checkpoint.goal) || '';
+            }).join(' ')
+          : '';
+        _index.push({
+          kind:        'learning-path',
+          id:          'lp:' + learningPathId,
+          name:        learningPath.title || learningPathId,
+          summary:     learningPath.summary || '',
+          keywords:    [learningPath.keywords || '', checkpointKeywords, 'focused course route'].filter(Boolean).join(' '),
+          lessonCount: route.length,
+          minutes:     Number(learningPath.estimatedMinutes || 0),
+          url:         learningPathDestination(firstLessonPath, learningPathId),
+        });
+      }
+    }
 
     if (typeof PHASES !== 'undefined' && Array.isArray(PHASES)) {
       for (var i = 0; i < PHASES.length; i++) {
@@ -40,7 +109,7 @@
         for (var j = 0; j < phase.lessons.length; j++) {
           var lesson = phase.lessons[j];
 
-          // 提取 lesson.html?path= 使用的 phases/…/… 路径
+          // Extract the phases/…/… path used for lesson?path=
           var lessonPath = '';
           if (lesson.url) {
             var m = lesson.url.match(/(phases\/[^/?#]+\/[^/?#]+)/);
@@ -74,6 +143,16 @@
           name:    g.term  || '',
           summary: g.means || '',
           says:    g.says  || '',
+          slug:    g.slug  || '',
+          keywords: [
+            g.category,
+            g.whyItMatters,
+            g.example,
+            g.confusion,
+            g.whyCalled,
+            Array.isArray(g.aliases) ? g.aliases.join(' ') : '',
+            Array.isArray(g.related) ? g.related.join(' ') : '',
+          ].filter(Boolean).join(' '),
         });
       }
     }
@@ -96,12 +175,74 @@
       }
     }
 
+    // Certification data is optional. Index it only on pages that already
+    // loaded one of the supported globals; never fetch the large data bundle
+    // solely for search.
+    var certs = certificationData();
+    if (certs) {
+      var tracks = Array.isArray(certs.tracks) ? certs.tracks : [];
+      for (var t = 0; t < tracks.length; t++) {
+        var track = tracks[t] || {};
+        var trackId = track.id || track.slug || track.examCode || String(t);
+        var domainNames = Array.isArray(track.domains)
+          ? track.domains.map(function (domain) { return domain.name || domain.id || ''; }).join(' ')
+          : '';
+        _index.push({
+          kind:     'certification-track',
+          id:       'ct:' + trackId,
+          name:     track.credential || track.name || track.shortName || track.examCode || 'Certification track',
+          summary:  track.summary || track.audience || '',
+          keywords: [track.shortName, track.examCode, track.level, track.audience, domainNames].filter(Boolean).join(' '),
+          examCode: track.examCode || '',
+          level:    track.level || '',
+          url:      'certification?id=' + encodeURIComponent(trackId),
+        });
+      }
+
+      var lessonMap = certs.lessonsByPath || {};
+      var lessonList = Array.isArray(certs.lessons) ? certs.lessons : [];
+      var certLessons = Object.keys(lessonMap).map(function (path) {
+        var lesson = lessonMap[path] || {};
+        return Object.assign({ path: path }, lesson);
+      }).concat(lessonList);
+      var seenCertLessons = {};
+
+      for (var c = 0; c < certLessons.length; c++) {
+        var certLesson = certLessons[c] || {};
+        var certPath = certLesson.path || certLesson.lessonPath || '';
+        if (!certPath || seenCertLessons[certPath]) continue;
+        seenCertLessons[certPath] = true;
+        _index.push({
+          kind:       'certification-lesson',
+          id:         'cl:' + certPath,
+          name:       certLesson.name || certLesson.title || certLesson.slug || 'Certification lesson',
+          summary:    certLesson.summary || '',
+          keywords:   certLesson.keywords || '',
+          type:       certLesson.type || '',
+          lang:       certLesson.languages || certLesson.lang || '',
+          lessonPath: certPath,
+        });
+      }
+    }
+
     return _index;
   }
 
-  // ── 评分 ───────────────────────────────────────────────────────────
+  function rebuildIndex() {
+    _index = null;
+    return buildIndex();
+  }
+
+  function refreshOpenPalette() {
+    if (!_isOpen) return;
+    var input = _inputEl();
+    var query = input ? input.value.trim() : '';
+    renderResults(query ? search(query) : []);
+  }
+
+  // ── Scoring ──────────────────────────────────────────────────────────
   function scoreItem(item, q) {
-    // q 已由调用方完成小写转换与首尾空白裁剪
+    // q is already lowercased + trimmed by the caller
     var name     = item.name.toLowerCase();
     var summary  = (item.summary  || '').toLowerCase();
     var keywords = (item.keywords || '').toLowerCase();
@@ -112,42 +253,43 @@
 
     var s = 0;
 
-    // 完整名称精确匹配 — 最高优先级
+    // Exact full-name match — highest priority
     if (name === q) return 200;
 
-    // 名称中的子串匹配（最重要的信号）
+    // Substring matches in name (most important signal)
     if (name.startsWith(q))          s += 100;
     else if (name.indexOf(q) !== -1) s +=  70;
+    if (item.kind === 'learning-path' && name.startsWith(q)) s += 100;
 
-    // 多词查询：每个词都必须出现在名称中的某处
+    // Multi-word query: every word must appear somewhere in name
     var words = q.split(/\s+/).filter(Boolean);
     if (words.length > 1) {
       var allInName = words.every(function (w) { return name.indexOf(w) !== -1; });
       if (allInName) {
         s += (s === 0 ? 65 : 20);
       } else {
-        // 较弱匹配：每个词分布在 name + summary + keywords + phase 中
+        // Weaker: every word spread across name + summary + keywords + phase
         var blob = name + ' ' + summary + ' ' + keywords + ' ' + phase;
         var allInBlob = words.every(function (w) { return blob.indexOf(w) !== -1; });
         if (allInBlob) s += 15;
       }
     }
 
-    // 辅助字段 — 按预期相关性排序
+    // Supporting fields — ordered by expected relevance
     if (summary.indexOf(q)  !== -1) s += 25;
-    if (keywords.indexOf(q) !== -1) s += 22; // H3 标题：高密度词汇
-    if (says.indexOf(q)     !== -1) s += 22; // 术语表中的“人们如何表述”
+    if (keywords.indexOf(q) !== -1) s += 22; // H3 headings: dense vocabulary
+    if (says.indexOf(q)     !== -1) s += 22; // glossary "what people say"
     if (phase.indexOf(q)    !== -1) s += 18;
     if (lang.indexOf(q)     !== -1) s += 14;
     if (type.indexOf(q)     !== -1) s += 10;
 
-    // 单词兜底：在名称 Token 上做词边界前缀匹配
+    // Single-word fallback: word-boundary prefix match on name tokens
     if (s === 0 && words.length === 1) {
       var nameParts = name.split(/[\s\-–—:,]+/).filter(Boolean);
       for (var i = 0; i < nameParts.length; i++) {
         if (nameParts[i].startsWith(q)) { s += 30; break; }
       }
-      // 最后兜底：单个词出现在 keywords 或 summary 的任意位置
+      // Last resort: single word anywhere in keywords or summary
       if (s === 0 && keywords.indexOf(q) !== -1) s += 18;
       if (s === 0 && summary.indexOf(q)  !== -1) s += 12;
     }
@@ -171,7 +313,7 @@
     return results.slice(0, MAX_RESULTS).map(function (r) { return r.item; });
   }
 
-  // ── 工具函数 ───────────────────────────────────────────────────────
+  // ── Utilities ────────────────────────────────────────────────────────
   function escHtml(str) {
     var d = document.createElement('div');
     d.textContent = (str == null) ? '' : String(str);
@@ -179,8 +321,8 @@
   }
 
   /**
-   * 在 `text` 中高亮 `query` 的首次出现位置（或其第一个匹配词）。
-   * 返回 HTML-safe 字符串，并用 <mark> 包住匹配内容。
+   * Highlight the first occurrence of `query` (or its first matching word)
+   * inside `text`. Returns an HTML-safe string with a <mark> around the match.
    */
   function highlight(text, query) {
     if (!text) return '';
@@ -192,7 +334,7 @@
     var matchLen = q.length;
 
     if (idx === -1) {
-      // 逐词尝试
+      // Try each word individually
       var words = q.split(/\s+/).filter(Boolean);
       for (var i = 0; i < words.length; i++) {
         idx = lower.indexOf(words[i]);
@@ -215,11 +357,11 @@
     return (cut.length > max * 0.6 ? cut : str.slice(0, max)) + '…';
   }
 
-  // ── 面板 DOM（首次打开时延迟创建） ─────────────────────────────────
+  // ── Palette DOM (created lazily on first open) ────────────────────────
   function createPaletteDOM() {
     if (document.getElementById(PALETTE_ID)) return;
 
-    // 检测平台，用于页脚快捷键提示
+    // Detect platform for the footer shortcut hint
     var isMac = /Mac|iPhone|iPod|iPad/.test(
       (navigator.userAgentData && navigator.userAgentData.platform) ||
       navigator.platform || ''
@@ -230,7 +372,9 @@
     el.id = PALETTE_ID;
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-modal', 'true');
-    el.setAttribute('aria-label', '搜索课程和术语表');
+    el.setAttribute('aria-label', 'Search learning paths, lessons, and glossary');
+    el.setAttribute('aria-hidden', 'true');
+    el.inert = true;
 
     el.innerHTML =
       '<div class="cp-backdrop" id="cpBackdrop"></div>' +
@@ -243,27 +387,29 @@
             '<line x1="21" y1="21" x2="16.65" y2="16.65"/>' +
           '</svg>' +
           '<input class="cp-input" id="cpInput" type="search"' +
-          ' placeholder="搜索课程和术语表…"' +
+          ' placeholder="Search paths, lessons, and glossary…"' +
           ' autocomplete="off" autocorrect="off"' +
           ' autocapitalize="off" spellcheck="false"' +
-          ' aria-label="搜索" aria-autocomplete="list"' +
+          ' role="combobox" aria-label="Search" aria-autocomplete="list"' +
+          ' aria-haspopup="listbox" aria-expanded="false"' +
           ' aria-controls="cpResults">' +
-          '<kbd class="cp-kbd-esc" id="cpKbdEsc">Esc</kbd>' +
+          '<button class="cp-kbd-esc" id="cpClose" type="button"' +
+          ' aria-label="Close search">Esc</button>' +
         '</div>' +
         '<ul class="cp-results" id="cpResults"' +
-        ' role="listbox" aria-label="搜索结果"></ul>' +
+        ' role="listbox" aria-label="Search results"></ul>' +
         '<div class="cp-footer">' +
           '<span class="cp-footer-group">' +
             '<kbd>↑</kbd><kbd>↓</kbd>' +
-            '<span class="cp-footer-label">导航</span>' +
+            '<span class="cp-footer-label">navigate</span>' +
           '</span>' +
           '<span class="cp-footer-group">' +
             '<kbd>↵</kbd>' +
-            '<span class="cp-footer-label">打开</span>' +
+            '<span class="cp-footer-label">open</span>' +
           '</span>' +
           '<span class="cp-footer-group">' +
             '<kbd>Esc</kbd>' +
-            '<span class="cp-footer-label">关闭</span>' +
+            '<span class="cp-footer-label">close</span>' +
           '</span>' +
           '<span class="cp-footer-shortcut">' + shortcutLabel + '</span>' +
         '</div>' +
@@ -271,9 +417,10 @@
 
     document.body.appendChild(el);
 
-    // 连接内部交互
+    // Wire up internal interactions
     document.getElementById('cpBackdrop').addEventListener('click', close);
-    document.getElementById('cpKbdEsc').addEventListener('click', close);
+    document.getElementById('cpClose').addEventListener('click', close);
+    el.addEventListener('keydown', _onDialogKeyDown);
 
     var inp = document.getElementById('cpInput');
     inp.addEventListener('input', _onInput);
@@ -284,10 +431,15 @@
   function _inputEl() { return document.getElementById('cpInput'); }
   function _listEl()  { return document.getElementById('cpResults'); }
 
-  // ── 打开 / 关闭 ───────────────────────────────────────────────────
+  function _clearActiveDescendant() {
+    var input = _inputEl();
+    if (input) input.removeAttribute('aria-activedescendant');
+  }
+
+  // ── Open / close ─────────────────────────────────────────────────────
   function open() {
     if (_isOpen) {
-      // 已打开 — 确保输入框获得焦点
+      // Already open — make sure the input is focused
       var inp = _inputEl();
       if (inp) inp.focus();
       return;
@@ -300,20 +452,21 @@
     createPaletteDOM();
     document.body.setAttribute(BODY_ATTR, '');
 
-    // 两帧延迟：第一帧触发过渡，第二帧确保聚焦
-    requestAnimationFrame(function () {
-      var pal = _palEl();
-      if (pal) pal.classList.add('cp-open');
+    var pal = _palEl();
+    if (pal) {
+      pal.inert = false;
+      pal.setAttribute('aria-hidden', 'false');
+      pal.classList.add('cp-open');
+    }
 
-      requestAnimationFrame(function () {
-        var inp = _inputEl();
-        if (inp) {
-          inp.focus();
-          var q = inp.value.trim();
-          renderResults(q ? search(q) : []);
-        }
-      });
-    });
+    var input = _inputEl();
+    if (input) {
+      input.setAttribute('aria-expanded', 'true');
+      _clearActiveDescendant();
+      input.focus();
+      var q = input.value.trim();
+      renderResults(q ? search(q) : []);
+    }
   }
 
   function close() {
@@ -322,19 +475,26 @@
     _activeIdx = -1;
 
     var pal = _palEl();
-    if (pal) pal.classList.remove('cp-open');
+    if (pal) {
+      pal.classList.remove('cp-open');
+      pal.setAttribute('aria-hidden', 'true');
+      pal.inert = true;
+    }
+    var input = _inputEl();
+    if (input) input.setAttribute('aria-expanded', 'false');
+    _clearActiveDescendant();
     document.body.removeAttribute(BODY_ATTR);
 
-    // 将焦点返回到用户之前所在的位置
+    // Return focus to wherever the user was before
     try {
       if (_prevFocus && typeof _prevFocus.focus === 'function') {
         _prevFocus.focus();
       }
-    } catch (_) { /* 元素可能已从 DOM 中移除 */ }
+    } catch (_) { /* element may have been removed from DOM */ }
     _prevFocus = null;
   }
 
-  // ── 渲染结果 ───────────────────────────────────────────────────────
+  // ── Render results ───────────────────────────────────────────────────
   function renderResults(results) {
     var list = _listEl();
     if (!list) return;
@@ -342,20 +502,38 @@
     var query = (_inputEl() ? _inputEl().value : '').trim();
 
     if (!query) {
+      var inventory = buildIndex();
+      var lessonCount = inventory.filter(function (item) { return item.kind === 'lesson'; }).length;
+      var certificationLessonCount = inventory.filter(function (item) { return item.kind === 'certification-lesson'; }).length;
+      var learningPathCount = inventory.filter(function (item) { return item.kind === 'learning-path'; }).length;
+      var artifactCount = inventory.filter(function (item) { return item.kind === 'artifact'; }).length;
+      var glossaryCount = inventory.filter(function (item) { return item.kind === 'glossary'; }).length;
+      var inventoryParts = [lessonCount + ' lessons'];
+      if (learningPathCount) {
+        inventoryParts.push(learningPathCount + ' focused learning ' + (learningPathCount === 1 ? 'path' : 'paths'));
+      }
+      if (certificationLessonCount) {
+        inventoryParts.push(certificationLessonCount + ' certification lessons');
+      }
+      inventoryParts.push(artifactCount + ' outputs');
+      inventoryParts.push(glossaryCount + ' glossary terms');
       list.innerHTML =
         '<li class="cp-empty" role="option" aria-disabled="true">' +
-        '输入内容以搜索 503 节 课程、499 个输出物和术语表条目' +
+        'Search ' + inventoryParts.slice(0, -1).join(', ') + ', and ' +
+        inventoryParts[inventoryParts.length - 1] +
         '</li>';
       _activeIdx = -1;
+      _clearActiveDescendant();
       return;
     }
 
     if (results.length === 0) {
       list.innerHTML =
         '<li class="cp-empty" role="option" aria-disabled="true">' +
-        '没有找到 <em>' + escHtml(query) + '</em> 的结果' +
+        'No results for <em>' + escHtml(query) + '</em>' +
         '</li>';
       _activeIdx = -1;
+      _clearActiveDescendant();
       return;
     }
 
@@ -366,33 +544,56 @@
       var chip = '';
       var chipClass = 'cp-item-chip';
 
-      if (r.kind === 'lesson') {
-        // 优先使用站内阅读器；回退到 GitHub URL
+      if (r.kind === 'learning-path') {
+        dest = r.url;
+        chip = 'Learning path';
+        chipClass += ' cp-item-chip--alt';
+      } else if (r.kind === 'lesson') {
+        // Prefer the in-site reader; fall back to GitHub URL
         dest = r.lessonPath
-          ? 'lesson.html?path=' + encodeURIComponent(r.lessonPath)
+          ? 'lesson?path=' + encodeURIComponent(r.lessonPath)
           : r.url;
         chip = 'Phase ' + String(r.phaseId).padStart(2, '0');
+      } else if (r.kind === 'certification-lesson') {
+        dest = 'lesson?path=' + encodeURIComponent(r.lessonPath);
+        chip = 'Certification';
+        chipClass += ' cp-item-chip--alt';
+      } else if (r.kind === 'certification-track') {
+        dest = r.url;
+        chip = r.examCode || 'Certification';
+        chipClass += ' cp-item-chip--alt';
       } else if (r.kind === 'artifact') {
-        // 跳转到产出该 artifact 的课程
+        // Jump to the lesson that produced this artifact
         dest = r.lessonPath
-          ? 'lesson.html?path=' + encodeURIComponent(r.lessonPath)
-          : ('https://github.com/cluster1900/ai-engineering-from-scratch-zh/tree/main/' + r.file);
+          ? 'lesson?path=' + encodeURIComponent(r.lessonPath)
+          : ('https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/' + r.file);
         var ak = (r.artKind || 'artifact');
         chip = ak.charAt(0).toUpperCase() + ak.slice(1);
         chipClass += ' cp-item-chip--alt';
       } else {
-        // 深链接：用精确术语名称预填充术语表搜索
-        // 让用户直接落到定义，而不是完整列表。
-        dest      = 'glossary.html?q=' + encodeURIComponent(r.name);
-        chip      = '术语表';
+        // Prefer the canonical term anchor. Legacy generated data falls back
+        // to the exact-name query until the next site build.
+        dest      = r.slug
+          ? 'glossary.html#' + encodeURIComponent(r.slug)
+          : 'glossary.html?q=' + encodeURIComponent(r.name);
+        chip      = 'Glossary';
         chipClass += ' cp-item-chip--alt';
       }
 
       var snippet = r.summary ? truncate(r.summary, 110) : '';
       var metaParts = [];
-      if (r.kind === 'lesson') {
+      if (r.kind === 'learning-path') {
+        if (r.lessonCount) metaParts.push(r.lessonCount + ' lessons');
+        if (r.minutes) {
+          var hours = Math.floor(r.minutes / 60);
+          var minutes = r.minutes % 60;
+          metaParts.push(((hours ? hours + 'h' : '') + (minutes ? ' ' + minutes + 'm' : '')).trim());
+        }
+      } else if (r.kind === 'lesson' || r.kind === 'certification-lesson') {
         if (r.type && r.type !== '—') metaParts.push(r.type);
         if (r.lang && r.lang !== '—') metaParts.push(r.lang);
+      } else if (r.kind === 'certification-track') {
+        if (r.level) metaParts.push(r.level);
       } else if (r.kind === 'artifact') {
         if (r.phaseId !== undefined && r.phaseId !== null) {
           metaParts.push('Phase ' + String(r.phaseId).padStart(2, '0'));
@@ -401,7 +602,7 @@
       var meta = metaParts.join(' · '); // ·
 
       html +=
-        '<li class="cp-item" role="option" aria-selected="false"' +
+        '<li class="cp-item" id="cpOption-' + i + '" role="option" aria-selected="false"' +
         ' data-idx="' + i + '"' +
         ' data-href="' + escHtml(dest) + '">' +
           '<div class="cp-item-body">' +
@@ -420,8 +621,9 @@
 
     list.innerHTML = html;
     _activeIdx = -1;
+    _clearActiveDescendant();
 
-    // 附加交互处理器
+    // Attach interaction handlers
     var items = list.querySelectorAll('.cp-item');
     for (var j = 0; j < items.length; j++) {
       items[j].addEventListener('click',     _onItemClick);
@@ -429,7 +631,7 @@
     }
   }
 
-  // ── 事件处理器 ─────────────────────────────────────────────────────
+  // ── Event handlers ───────────────────────────────────────────────────
   function _onInput(e) {
     var query = e.target.value;
     renderResults(search(query));
@@ -458,32 +660,51 @@
 
       case 'Enter': {
         e.preventDefault();
-        const target = (_activeIdx >= 0 && items[_activeIdx])
-          ? items[_activeIdx]
-          : (count === 1 ? items[0] : null);
+        var targetIndex = resultIndexForEnter(_activeIdx, count);
+        var target = targetIndex >= 0 ? items[targetIndex] : null;
         if (target) _navigate(target);
         break;
       }
 
-      case 'Tab':
-        // 将焦点限制在面板内（唯一可交互元素是输入框）
-        e.preventDefault();
-        break;
+    }
+  }
 
-      case 'Escape':
-        e.preventDefault();
-        close();
-        break;
+  function _onDialogKeyDown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+      return;
+    }
+
+    if (e.key !== 'Tab') return;
+    var input = _inputEl();
+    var closeButton = document.getElementById('cpClose');
+    if (!input || !closeButton) return;
+
+    if (e.shiftKey && document.activeElement === input) {
+      e.preventDefault();
+      closeButton.focus();
+    } else if (!e.shiftKey && document.activeElement === closeButton) {
+      e.preventDefault();
+      input.focus();
     }
   }
 
   function _updateActive(items) {
+    var input = _inputEl();
+    var activeId = '';
     for (var i = 0; i < items.length; i++) {
       var active = (i === _activeIdx);
       items[i].classList.toggle('cp-item--active', active);
       items[i].setAttribute('aria-selected', active ? 'true' : 'false');
-      if (active) items[i].scrollIntoView({ block: 'nearest' });
+      if (active) {
+        activeId = items[i].id;
+        items[i].scrollIntoView({ block: 'nearest', behavior: 'instant' });
+      }
     }
+    if (input && activeId) input.setAttribute('aria-activedescendant', activeId);
+    else _clearActiveDescendant();
   }
 
   function _onItemClick(e) {
@@ -504,26 +725,28 @@
     var href = item.getAttribute('data-href');
     if (!href) return;
     close();
-    window.location.href = href;
+    window.location.href = navigationDestination(href);
   }
 
-  // ── 全局键盘快捷键（Cmd/Ctrl+K）───────────────────────────────────
-  document.addEventListener('keydown', function (e) {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      if (_isOpen) {
-        // 面板已打开 — 仅重新聚焦输入框
-        var inp = _inputEl();
-        if (inp) inp.focus();
-      } else {
-        open();
+  // ── Global keyboard shortcut (Cmd/Ctrl+K) ────────────────────────────
+  if (typeof document !== 'undefined') {
+    document.addEventListener('keydown', function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (_isOpen) {
+          // Palette is already open — just refocus the input
+          var inp = _inputEl();
+          if (inp) inp.focus();
+        } else {
+          open();
+        }
       }
-    }
-  });
+    });
+  }
 
-  // ── 初始化：连接触发按钮 + 预先构建索引 ───────────────────────────
+  // ── Init: wire trigger buttons + eagerly build index ─────────────────
   function _init() {
-    // 任何带有 [data-cmd-palette] 的元素在点击时都会打开面板
+    // Any element with [data-cmd-palette] opens the palette on click
     var triggers = document.querySelectorAll('[data-cmd-palette]');
     for (var i = 0; i < triggers.length; i++) {
       triggers[i].addEventListener('click', function (e) {
@@ -532,17 +755,44 @@
       });
     }
 
-    // 现在构建搜索索引，让第一次按键即时响应
+    // Build the core index now so the first keystroke is instant. On lesson
+    // pages, certification-data.js is loaded on demand and may still be in
+    // flight. Rebuild after it settles so an early core-only cache cannot
+    // permanently hide certification tracks and lessons.
     buildIndex();
+
+    var certificationReady = window.__AIFS_CERTIFICATION_DATA_READY;
+    if (certificationReady && typeof certificationReady.then === 'function') {
+      certificationReady.then(function () {
+        rebuildIndex();
+        refreshOpenPalette();
+      }).catch(function () {
+        // Keep the already-built core index available when the optional
+        // certification bundle cannot be loaded.
+      });
+    }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _init);
-  } else {
-    _init();
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', _init);
+    } else {
+      _init();
+    }
   }
 
-  // ── 公共 API ───────────────────────────────────────────────────────
-  window.CmdPalette = { open: open, close: close };
+  // ── Public API ────────────────────────────────────────────────────────
+  if (typeof window !== 'undefined') {
+    window.CmdPalette = { open: open, close: close };
+  }
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      rebuildIndex: rebuildIndex,
+      search: search,
+      learningPathDestination: learningPathDestination,
+      navigationDestination: navigationDestination,
+      resultIndexForEnter: resultIndexForEnter,
+    };
+  }
 
 }());

@@ -1,30 +1,51 @@
 ---
 name: oauth-scope-planner
-description: 为远程 MCP server 设计 OAuth 2.1 scope 集、pinning 规则和 step-up 策略。
-version: 1.0.0
+description: Design MCP 2026-07-28 authorization with CIMD, issuer isolation, resource indicators, and step-up scopes.
+version: 2.0.0
 phase: 13
 lesson: 16
-tags: [oauth, pkce, resource-indicators, step-up, sep-835]
+tags: [mcp, oauth, cimd, pkce, issuer, resource-indicators]
 ---
 
-给定一个带有工具列表的远程 MCP server，设计授权模型。
+Given a remote HTTP MCP server and its tool list, design the complete authorization boundary.
 
-产出：
+## Required inputs
 
-1. Scope 层级。渐进式 scope 集（例如 `read` -> `write` -> `delete` -> `admin`）。每个操作类别一个 scope；不要让 scope 集膨胀。
-2. Scope 到工具的映射。为每个工具标注其所需 scope。标记任何需要多个 scope 的工具。
-3. Step-up 策略。哪些操作需要 step-up，而不是初始 consent。典型情况：破坏性操作需要 step-up。
-4. Resource indicator 值。用于 `resource` 参数的规范 URL。确保该 URL 与 `.well-known/oauth-protected-resource` 的 resource 字段匹配。
-5. Protected-resource metadata。起草包含 `authorization_servers`、`scopes_supported` 和 `resource` 的 `.well-known/oauth-protected-resource` JSON。
+- Canonical MCP resource URI and protected-resource metadata location.
+- Allowed authorization server issuers.
+- Client runtime: native or web, with exact redirect URIs.
+- Tool-to-scope mapping and consequential operations.
+- Token, refresh, and credential-storage constraints.
+- Legacy authorization servers that lack CIMD, if any.
 
-硬性拒绝项：
-- 任何需要 admin scope 但在调用时没有显式确认对话框的工具。需要 step-up。
-- 任何覆盖多个操作类别的 scope。权限蔓延。
-- 任何跳过 audience validation 的 server。Confused-deputy 漏洞。
+## Produce
 
-拒绝规则：
-- 如果 server 是本地的（stdio），拒绝 OAuth，并说明 stdio 继承父进程信任。
-- 如果 server 依赖旧版 OAuth 2.0 implicit flow，拒绝并要求迁移到 2.1 + PKCE。
-- 如果用户要求 passwordless 的“仅 API key”认证，针对远程 server 拒绝；要求使用 OAuth 2.1 authorization code + PKCE，并为用户授权访问使用 resource indicators。Client credentials 只适用于没有用户委托的 machine-to-machine 场景。
+1. Resource metadata. Draft RFC 9728 `resource`, `authorization_servers`, and `scopes_supported`. Preserve the resource path after the well-known segment, such as `https://notes.example.com/.well-known/oauth-protected-resource/mcp` for `https://notes.example.com/mcp`.
+2. Issuer policy. State exact allowed issuers, metadata validation, change handling, and RFC 9207 `iss` comparison.
+3. Enrollment. Use pre-registration when available, otherwise prefer a Client ID Metadata Document. Its HTTPS URL with a path is the `client_id`; require exact redirect URIs and treat display metadata as untrusted. `application_type` is optional here.
+4. DCR fallback. If required, label it deprecated, declare `application_type`, and define the precise condition that allows fallback. Do not downgrade after a generic CIMD security failure.
+5. Credential keys. Store pre-registered and DCR credentials under issuer and tokens under `(issuer, resource)`. Forbid reuse across issuers. State that a self-hosted CIMD URL is portable and does not require DCR re-registration when a trusted issuer changes.
+6. PKCE flow. Require S256, exact redirect URI, authorization response issuer validation, and the same resource in authorization and token requests.
+7. Scope model. Map every tool to its minimum scope. Treat the current `WWW-Authenticate` scope challenge as authoritative.
+8. Step-up experience. Identify the additional scope, user explanation, consent point, new authorization, and retry with a fresh MCP request id.
+9. Resource-server checks. Implement advertised `tools/list` with valid object-root schemas, deterministic order, result type, server identity, and cache hints. Validate issuer, audience, expiry, scope, current MCP headers, and request metadata before tool dispatch.
+10. Token hygiene. Bearer header only, no query token, no token passthrough, confidential refresh storage, and rotation plan.
+11. Error contract. Preserve every request id in a JSON-RPC error envelope, including OAuth failures. Require HTTP 400 `-32020` for header mismatch before the HTTP 400 `-32022` version support check, exact supported and requested data, HTTP 404 `-32601` for unknown methods, and 202 with an empty body for accepted notifications.
+12. Transport boundary. Label parsed-body examples as in-process protocol models and attach them to Lesson 09's complete Streamable HTTP adapter for JSON Content-Type and JSON plus SSE Accept validation.
 
-输出：一页授权计划，包含 scope 层级、scope 到工具的映射、step-up 策略、resource indicator 和 protected-resource metadata JSON。最后写出首次遇到时最可能让用户意外的 step-up 操作。
+## Hard rejects
+
+- DCR presented as the preferred new enrollment mechanism.
+- DCR without `application_type`.
+- Reusing issuer-minted registration credentials, access tokens, or refresh tokens after the issuer changes. A self-hosted CIMD URL is the portable exception, not an issuer-minted secret.
+- Normalizing an authorization response `iss` before comparison.
+- Missing PKCE S256 or missing `resource` in authorization and token requests.
+- Accepting a token for another audience or forwarding the MCP token downstream.
+- Using `clientInfo`, `serverInfo`, capabilities, or a removed protocol session as authentication.
+- Adding OAuth to local stdio solely to imitate remote HTTP.
+- Dropping the protected resource path when constructing the RFC 9728 metadata URL.
+- Returning a plain-text or ad hoc object for an MCP request error instead of a JSON-RPC envelope with the same id.
+
+## Output format
+
+Return sections named Resource, Issuers, Enrollment, Credential Store, PKCE Flow, Scope Matrix, Step-Up, Server Validation, Token Hygiene, and Compatibility. End with the exact event that forces issuer review and, for issuer-minted clients, re-enrollment.

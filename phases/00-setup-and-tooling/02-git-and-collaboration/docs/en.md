@@ -37,6 +37,11 @@ sequenceDiagram
 2. Push 到 remote（`git push`）
 3. 为 experiments 创建 branch（`git checkout -b experiment`）
 
+
+```figure
+s0-commit-dag
+```
+
 ## 构建它
 ### 步骤 1： Configure git
 

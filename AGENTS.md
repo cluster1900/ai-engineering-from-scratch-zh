@@ -2,13 +2,13 @@
 
 供接触本 repo 的贡献者和 AI agents 使用的操作手册。打开 PR 前请先阅读。
 
-本 repo 是一套课程，而不是 SaaS app。课程就是产品。下面每条规则都是为了让 435 节课长期保持一致。
+本 repo 是一套课程，而不是 SaaS app。课程就是产品。下面每条规则都是为了让 523 节课长期保持一致。
 
 ---
 
 ## 理念
 
-435 节课。20 个 phase。每个算法都先从原始数学出发构建，然后才导入任何 framework。你会在 Python、TypeScript、Rust 或 Julia 中手写 backprop、Tokenizer、Attention 机制和 agent loop。然后你再用生产级 library 运行同一操作，让 framework 不再是黑箱。“Build It / Use It” 的分离是主线。每节课都会交付一个可复用 artifact，可接入你的日常工作流。
+523 lessons. 20 phases.（523 节课。20 个 phase。）每个算法都先从原始数学出发构建，然后才导入任何 framework。你会在 Python、TypeScript、Rust 或 Julia 中手写 backprop、Tokenizer、Attention 机制和 agent loop。然后你再用生产级 library 运行同一操作，让 framework 不再是黑箱。“Build It / Use It” 的分离是主线。每节课都会交付一个可复用 artifact，可接入你的日常工作流。
 
 ---
 

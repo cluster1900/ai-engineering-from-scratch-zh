@@ -1,0 +1,78 @@
+{
+  "lesson": "27-skill-evals-packaging-and-portability",
+  "title": "Skill Evals, Packaging, and Portability",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在本课模型中，哪种评测集最能揭示某个 skill 描述是否存在过度误触发（over-triggers）的问题？",
+      "options": [
+        "明确的正向提示词，外加在语义上高度接近但不应触发的负向提示词（近邻用例）",
+        "仅包含一次成功的端到端演示",
+        "支持的文件扩展名列表",
+        "仅包含直接复制自 skill 名称的提示词"
+      ],
+      "correct": 0,
+      "explanation": "容易的正向用例度量预期任务是否能够被触发。而近邻负向用例则度量相邻任务是否被错误触发，这对于计算假阳性（false positives）和精确率（precision）是必不可少的。"
+    },
+    {
+      "stage": "check",
+      "question": "某项触发测试包含 8 个真阳性（true positives）和 2 个假阳性（false positives）。其精确率（precision）是多少？",
+      "options": [
+        "召回率为 0.8，但无法计算精确率",
+        "0.8",
+        "0.2",
+        "1.0"
+      ],
+      "correct": 1,
+      "explanation": "精确率（Precision）是真阳性除以所有被预测为阳性的总数：8 / (8 + 2) = 0.8。召回率（Recall）则需要假阴性计数，而此场景中并未提供该数据。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么对基线工件和引入 skill 后的工件要使用相同的断言进行对比？",
+      "options": [
+        "为了保证该 skill 能够在所有宿主中正常运行",
+        "为了消除对触发测试的需求",
+        "为了允许该 skill 在评测过程中修改预期结果",
+        "为了度量该 skill 是否切实提升了任务产出，而不仅仅是成功激活"
+      ],
+      "correct": 3,
+      "explanation": "激活并不是最终结果。共享的工件契约测试加载该 skill 是否改进了必需的标题、证据链、schema 或避免了违规内容，同时保持度量标准与基线具备直接可比性。"
+    },
+    {
+      "stage": "check",
+      "question": "某个宿主加载了 SKILL.md，但在安装期间丢弃了 references/ 和 scripts/。对于同时需要这两者的组件包，可移植性矩阵应该如何归类？",
+      "options": [
+        "原生支持（Native），因为 frontmatter 已经成功加载",
+        "需要适配器（Adapter required），并列出缺失的附属文件与脚本能力",
+        "完全不支持（Unsupported），即使适配器能够保留这些文件",
+        "重命名目录后保证可移植"
+      ],
+      "correct": 1,
+      "explanation": "该宿主能够理解核心文件，因此并非完全不支持。但它无法以原生方式满足组件包声明的需求，能力矩阵应具体指明所需的适配器工作，而不是将可移植性粗暴简化为‘是’或‘否’。"
+    },
+    {
+      "stage": "post",
+      "question": "相比单次通过的触发评测，重复运行通过率（repeated-run rate）提供了什么额外价值？",
+      "options": [
+        "替代包结构静态 lint 检查",
+        "允许该 skill 执行随附脚本的权限",
+        "关于每个用例在多次重复执行中一致性表现的置信证据",
+        "通用的宿主调用命令"
+      ],
+      "correct": 2,
+      "explanation": "单次运行可能会掩盖不确定性。按用例统计的重复运行率能够揭示出不稳定（flaky）的激活或工件产出，而结构 lint、运行时权限和宿主适配器仍然属于独立维度的考量。"
+    },
+    {
+      "stage": "post",
+      "question": "对于一个 Agent Skill 组件包，哪种发布卡点（release gate）最为完整严密？",
+      "options": [
+        "组件包包含大量参考文件且拥有冗长的描述",
+        "Skill 在作者的本地机器上无需基线即可运行通过",
+        "SKILL.md 存在且有一条正向提示词能够激活它",
+        "六个层级全部通过，本地捕获模式的数值具有匹配的源绑定摘要，且包外的可信认证绑定了完整的 evidence root"
+      ],
+      "correct": 3,
+      "explanation": "六个层级分别是：包结构；兼具精确率、召回率和重复运行稳定性的触发路由；指令与工件行为；脚本正确性；安全性与权限控制；以及包含经 manifest 验证干净安装在内的打包与可移植性。每一层都必须通过。源绑定的本地摘要能检测不匹配，但可以通过重新标记 fixtures 来重新计算，因此生产就绪状态还必须要求外部认证，其受信任的精确 SHA-256 绑定了完整的 evidence root。"
+    }
+  ]
+}

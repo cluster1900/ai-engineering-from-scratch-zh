@@ -1,0 +1,48 @@
+{
+  "lesson": "07-building-an-mcp-server",
+  "title": "构建 MCP Server：无状态 Python 与 TypeScript",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "现代 MCP Server 从哪里读取 Client 的能力声明（capabilities）？",
+      "options": ["从 Mcp-Session-Id 中", "从第一次 initialize 调用中", "从每一个当前请求中", "从进程环境变量中"],
+      "correct": 2,
+      "explanation": "MCP 2026-07-28 规范要求在每一个独立请求的 params._meta 中都必须携带 Client 能力声明。"
+    },
+    {
+      "stage": "check",
+      "question": "现代 MCP Server 必须实现以下哪个方法？",
+      "options": ["initialize", "server/discover", "resources/subscribe", "shutdown"],
+      "correct": 1,
+      "explanation": "server/discover 在现代 Server 上是强制必须实现的，尽管 Client 也可以直接调用其他业务方法。"
+    },
+    {
+      "stage": "check",
+      "question": "在 tools/list 的成功返回结果中，必须包含哪些字段？",
+      "options": ["protocolVersion 和 tools", "resultType, ttlMs, cacheScope, tools", "initialized 和 tools", "sessionId 和 tools"],
+      "correct": 1,
+      "explanation": "现代列表结果是带类型标识（resultType）且可缓存的，必须包含 ttlMs 和 cacheScope。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 Server 应该对返回的工具列表进行确定性排序（deterministic sorting）？",
+      "options": ["为了稳定缓存键并保持模型上下文的一致性", "为了创建底层 Session", "为了协商通信协议", "为了替代权限校验"],
+      "correct": 0,
+      "explanation": "稳定的排序使逻辑等价的注册表能产生完全一致的报文响应，避免破坏 Prompt Cache 和上下文一致性。"
+    },
+    {
+      "stage": "post",
+      "question": "一个合规的 Tool 调用正常执行，但工具内部的业务操作失败了，应返回哪种报文结构？",
+      "options": ["notifications/initialized", "HTTP DELETE", "包含 isError: true 的 complete 工具调用结果", "一个全新的 Server 请求"],
+      "correct": 2,
+      "explanation": "工具层面的业务失败应通过 content 文本与 isError: true 让模型清晰感知，而不是返回协议级 JSON-RPC 错误。"
+    },
+    {
+      "stage": "post",
+      "question": "什么信号应当终结基于 stdio 的 Server 的传输生命周期？",
+      "options": ["stdin 读到 EOF", "收到 GET 请求", "收到强制的 shutdown RPC", "Mcp-Session-Id 过期"],
+      "correct": 0,
+      "explanation": "stdin 的 EOF 是跨平台的 stdio 进程退出信号；它仅代表传输层结束，并不关闭任何现代协议 Session。"
+    }
+  ]
+}

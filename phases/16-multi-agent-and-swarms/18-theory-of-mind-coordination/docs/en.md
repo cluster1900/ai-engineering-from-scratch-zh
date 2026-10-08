@@ -103,6 +103,11 @@ Li et al. 记录了：context limits 会导致 agents 忘记哪个信念属于�
 
 这些都可以在带日志的 multi-agent system 中测量。它们是“coordination”叙事的实质版本。
 
+
+```figure
+sw-theory-of-mind
+```
+
 ## 构建它
 
 `code/main.py` 实现：

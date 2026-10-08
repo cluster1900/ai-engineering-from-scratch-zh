@@ -1,32 +1,49 @@
 ---
 name: mcp-apps-spec
-description: 为需要交互式 UI resource 的 tool 生成完整 MCP Apps contract。
-version: 1.0.0
+description: Design and review an MCP App contract on the stateless 2026-07-28 protocol.
+version: 2.0.0
 phase: 13
 lesson: 14
-tags: [mcp, apps, ui-resources, csp, iframe-sandbox]
+tags: [mcp, apps, stateless, ui-resources, csp, sandbox]
 ---
 
-给定一个适合使用交互式 UI 的 tool（timeline、form、dashboard、map、chart），生成 MCP Apps contract。
+Given an MCP tool that may need an interactive view, produce a framework-neutral contract.
 
-生成：
+## Required inputs
 
-1. `ui://` URI。为 UI resource 指定一个规范名称（例如 `ui://notes/timeline`）。
-2. Tool result 形状。`content[]` 包含 `text` preamble 和 `ui_resource` block；填充 `_meta.ui`。
-3. CSP。为 `default-src`、`script-src`、`connect-src`、`img-src`、`style-src` 设置最小 allowlist。除非必要，避免使用 `'unsafe-inline'`。
-4. Permissions list。需要时包含 camera / mic / geolocation / network；不需要则为空。
-5. postMessage entry points。UI 会调用哪些 `host.*`，以及它们返回什么。
-6. Security checklist。区分于 host、防 clickjacking、严格的 connect-src；如果渲染任何用户内容，则进行 HTML sanitization。
+- Tool name, arguments, ordinary text result, and structured result.
+- User interactions the view must support.
+- Data sensitivity and whether responses vary by authorization context.
+- Browser permissions and external origins the view needs.
+- Text-only behavior for hosts without Apps support.
 
-Hard rejects:
-- CSP 使用 `default-src *`。这是过度开放的安全风险。
-- 任何超出 UI 实际使用范围的 `permissions` 请求。最小权限。
-- 任何加载外部 scripts 的 ui:// resource。应打包或拒绝。
-- 任何在未 sanitization 的情况下渲染用户可控 HTML 的 UI。这是 XSS vector。
+## Produce
 
-Refusal rules:
-- 如果 UI 只是静态结果，拒绝 scaffold App；返回 text content。
-- 如果 tool 更适合使用原生 host widgets（progress bars、confirmation dialogs），则推荐使用它们。
-- 如果 host 尚不支持 MCP Apps（截至 2026-04 的 VS Code stable、Zed、Windsurf），标记 fallback-to-text 路径。
+1. Current core envelope. Show `2026-07-28`, per-request `protocolVersion`, `clientCapabilities`, recommended `clientInfo`, matching `Mcp-Method` and `Mcp-Name` headers, and `resultType` responses.
+2. Discovery entry. Advertise `io.modelcontextprotocol/ui` in `server/discover`, with conservative `ttlMs` and `cacheScope`.
+3. Tool declaration. Put nested `_meta.ui.resourceUri` on the tool returned by `tools/list`. Do not wait for `tools/call` to reveal the UI.
+4. Resource contract. Include deterministic `resources/list` metadata before `resources/read`. Give one canonical `ui://` URI, stable name and description, `text/html;profile=mcp-app`, cache hints, CSP domain lists (`connectDomains`, `resourceDomains`, `frameDomains`, `baseUriDomains`), and the minimum permissions object.
+5. Result contract. Return useful text and structured data whether or not the host renders the App.
+6. Bridge contract. List every Apps `ui/*` or proxied method, exact message origin, argument schema, result schema, and host-side consent check.
+7. Fallback. Describe the tool and result when the client omits the Apps extension capability.
+8. Verification table. Cover HTTP 400 `-32020` header mismatch before routing, HTTP 400 `-32022` with exact supported and requested version data, HTTP 400 `-32021` with `data.requiredCapabilities`, HTTP 404 `-32601`, 202 empty-body notifications, CSP violation, untrusted content, unauthorized bridge calls, and text fallback.
+9. Transport boundary. If the implementation receives parsed requests and headers, label it an in-process protocol model and connect it to Lesson 09's complete Streamable HTTP adapter. A real adapter must require JSON Content-Type and an Accept value containing JSON plus SSE.
 
-Output: 一页 contract，包含 `ui://` URI、tool result JSON、CSP、permissions、postMessage entry points 和 security checklist。最后用一句话说明能渲染此 UI 的最低 host 要求。
+## Hard rejects
+
+- A core `initialize`, `notifications/initialized`, or `Mcp-Session-Id` path presented as current MCP.
+- A wildcard `postMessage` target origin or a receiver that skips `event.origin` validation.
+- A UI binding revealed only after the tool runs.
+- Wildcard CSP domain lists, unbounded network origins, or permissions without a visible feature.
+- User-controlled HTML inserted without a defined sanitization boundary.
+- A consequential UI action that treats an iframe click as host authorization.
+- A server that advertises resources but omits `resources/list`.
+- Any JSON-RPC response body for a notification without an `id`.
+
+## Compatibility boundary
+
+Legacy flat UI metadata may be read as a fallback, but new output uses nested `_meta.ui.resourceUri`. `ui/initialize` is allowed only when identified as the Apps postMessage handshake. It never stands in for removed MCP core initialization.
+
+## Output format
+
+Return a compact design with these headings: Core Wire, Discovery, Tool, Resource, Result, Bridge, Security, Fallback, Verification. End with the single riskiest origin, permission, or consent assumption.

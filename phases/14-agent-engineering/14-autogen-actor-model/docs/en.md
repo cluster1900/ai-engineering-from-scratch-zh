@@ -60,6 +60,11 @@ AutoGen v0.4 的答案是：actor model。每个 agent 都是一个拥有私有 
 
 2026 年初：AutoGen v0.7.x 对 research 和 prototyping 来说是稳定的。Microsoft 已将 active development 转向 Microsoft Agent Framework（2025 年 10 月 1 日 public preview；1.0 GA 目标为 2026 年 Q1 末）。AutoGen pattern 可以干净地向前移植，actor model 是持久的思想。
 
+
+```figure
+actor-mailbox
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个 stdlib actor runtime：

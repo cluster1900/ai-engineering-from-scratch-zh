@@ -1,7 +1,7 @@
-/* figures-agents-alignment.js - agent engineering、multi-agent swarm 和 alignment 的
-   交互式课程图示。在 lesson-figures.js 之后加载，并通过 window.LF 注册。
-   无 deps，ES5，通过 CSS vars 设置主题。创作方式：使用 ```figure block
-   指定下面某个 widget 的名称。 */
+/* figures-agents-alignment.js - interactive lesson figures for agent
+   engineering, multi-agent swarms, and alignment. Loads after
+   lesson-figures.js and registers through window.LF. No deps, ES5, theme via
+   CSS vars. Authoring: a ```figure block naming one of the widgets below. */
 (function () {
   'use strict';
   var LF = window.LF;
@@ -24,62 +24,172 @@
     return svgEl('line', { x1: x1, y1: y1, x2: x2, y2: y2, stroke: 'var(--ink-soft,#555)', 'stroke-width': '1.4', 'marker-end': 'url(#lf-aa-arrow)', 'stroke-dasharray': dash || '' });
   }
 
-  // ── agent-loop：think → act → observe 循环，高亮当前节点 ──────────────
+  // ── agent-loop: persistent causal trace with evidence flowing into context ─
   function agentLoop(host) {
     var state = { step: 0 };
-    var W = 520, H = 240;
-    var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H });
-    var meta = el('div', { class: 'lf-meta' });
+    var W = 620, H = 330;
+    var markerId = LF.uid('lf-agent-loop-arrow');
+    var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img' });
+    var title = svgEl('title', { id: LF.uid('lf-agent-loop-title') });
+    title.appendChild(document.createTextNode('Twelve-step agent loop causal trace'));
+    var desc = svgEl('desc', { id: LF.uid('lf-agent-loop-desc') });
+    desc.appendChild(document.createTextNode('A persistent Think, Act, Tool, Observe, and Context loop. The selected step highlights the active node, causal edge, and accumulated evidence.'));
+    svg.setAttribute('aria-labelledby', title.id + ' ' + desc.id);
+    svg.appendChild(title);
+    svg.appendChild(desc);
+    svg.appendChild(svgEl('defs', {}, [
+      svgEl('marker', { id: markerId, viewBox: '0 0 8 8', refX: '7', refY: '4', markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse' }, [
+        svgEl('path', { d: 'M0 0 L8 4 L0 8 z', fill: 'context-stroke' })
+      ])
+    ]));
+    var meta = el('div', { class: 'lf-meta', role: 'status', 'aria-live': 'polite', 'aria-atomic': 'true' });
     var nodes = [
-      { x: 210, y: 28, label: 'THINK' },
-      { x: 360, y: 150, label: 'ACT' },
-      { x: 60, y: 150, label: 'OBSERVE' }
+      { id: 'think', x: 28, y: 34, w: 112, label: 'THINK' },
+      { id: 'act', x: 188, y: 34, w: 112, label: 'ACT' },
+      { id: 'tool', x: 348, y: 34, w: 112, label: 'TOOL' },
+      { id: 'observe', x: 444, y: 146, w: 132, label: 'OBSERVE' },
+      { id: 'context', x: 204, y: 146, w: 132, label: 'CONTEXT' }
     ];
-    var notes = ['根据目标 + 历史规划下一步行动', '用选定参数调用 tool', '读取结果，并追加到 trajectory'];
+    var edgeSpecs = [
+      { id: 'think-act', d: 'M140 56 H178' },
+      { id: 'act-tool', d: 'M300 56 H338' },
+      { id: 'tool-observe', d: 'M460 56 C528 56 548 102 510 136' },
+      { id: 'observe-context', d: 'M444 168 H346' },
+      { id: 'context-think', d: 'M204 168 C92 168 74 106 84 86' }
+    ];
+    var steps = [
+      { node: 0, edge: -1, phase: 'Think', note: 'Read the goal and trajectory, then form a plan.', evidence: 0, value: 'find city count' },
+      { node: 1, edge: 0, phase: 'Chosen action', note: 'Select search_web because current evidence is missing.', evidence: 1, value: 'search_web' },
+      { node: 2, edge: 1, phase: 'Tool call', note: 'Send the chosen tool its explicit query arguments.', evidence: 1, value: 'query: Tokyo' },
+      { node: 2, edge: 2, phase: 'Tool result', note: 'The tool returns a metro population result.', evidence: 2, value: '37m metro' },
+      { node: 3, edge: 2, phase: 'Observe', note: 'Notice that metro population does not answer city proper.', evidence: 3, value: 'scope mismatch' },
+      { node: 4, edge: 3, phase: 'Context update', note: 'Append the result and scope mismatch to the trajectory.', evidence: 4, value: 'evidence added' },
+      { node: 0, edge: 4, phase: 'Think again', note: 'Use the updated context to refine the next plan.', evidence: 0, value: 'verify 23 wards' },
+      { node: 1, edge: 0, phase: 'Chosen action', note: 'Choose a narrower search with the corrected scope.', evidence: 1, value: 'search_web' },
+      { node: 2, edge: 1, phase: 'Tool call', note: 'Request the population for Tokyo city proper.', evidence: 1, value: 'query: 23 wards' },
+      { node: 2, edge: 2, phase: 'Tool result', note: 'The tool returns the scoped population evidence.', evidence: 2, value: '14m wards' },
+      { node: 3, edge: 2, phase: 'Observe', note: 'Confirm that this result matches the requested scope.', evidence: 3, value: 'scope matched' },
+      { node: 4, edge: 3, phase: 'Context update', note: 'Store the supported answer so the next thought can finish.', evidence: 4, value: 'ready to answer' }
+    ];
+    var evidenceSpecs = [
+      { label: 'PLAN', x: 18 },
+      { label: 'ACTION', x: 138 },
+      { label: 'RESULT', x: 258 },
+      { label: 'OBSERVATION', x: 378 },
+      { label: 'CONTEXT', x: 498 }
+    ];
+    var edgeEls = [];
+    var nodeEls = [];
+    var evidenceEls = [];
+    var stepText = svgEl('text', {
+      x: '310', y: '124', 'text-anchor': 'middle',
+      'font-family': 'var(--font-mono,monospace)', 'font-size': '10',
+      fill: 'var(--ink-mute,#777)'
+    });
+
+    edgeSpecs.forEach(function (edge) {
+      var path = svgEl('path', {
+        d: edge.d, fill: 'none', stroke: 'var(--rule-soft,#c9c9c2)', 'stroke-width': '2',
+        'marker-end': 'url(#' + markerId + ')', 'data-part': 'edge-' + edge.id,
+        style: 'transition:stroke 180ms var(--ease-out,cubic-bezier(.23,1,.32,1)),opacity 180ms var(--ease-out,cubic-bezier(.23,1,.32,1))'
+      });
+      edgeEls.push(path);
+      svg.appendChild(path);
+    });
+
+    nodes.forEach(function (node) {
+      var inner = svgEl('g', {
+        'data-part': 'node-' + node.id,
+        style: 'transform-box:fill-box;transform-origin:center;transition:transform 220ms var(--ease-out,cubic-bezier(.23,1,.32,1)),opacity 220ms var(--ease-out,cubic-bezier(.23,1,.32,1))'
+      });
+      var rect = svgEl('rect', {
+        width: node.w, height: '44', rx: '4', fill: 'var(--bg-surface,#eee)', stroke: 'var(--rule-soft,#ddd)', 'stroke-width': '1.5',
+        style: 'transition:fill 180ms var(--ease-out,cubic-bezier(.23,1,.32,1)),stroke 180ms var(--ease-out,cubic-bezier(.23,1,.32,1))'
+      });
+      var text = svgEl('text', {
+        x: node.w / 2, y: '26', 'text-anchor': 'middle', 'font-family': 'var(--font-mono,monospace)', 'font-size': '11', fill: 'var(--ink,#1a1a1a)',
+        style: 'transition:fill 180ms var(--ease-out,cubic-bezier(.23,1,.32,1))'
+      });
+      text.appendChild(document.createTextNode(node.label));
+      inner.appendChild(rect);
+      inner.appendChild(text);
+      svg.appendChild(svgEl('g', { transform: 'translate(' + node.x + ' ' + node.y + ')' }, [inner]));
+      nodeEls.push({ group: inner, rect: rect, text: text });
+    });
+
+    svg.appendChild(stepText);
+    svg.appendChild(svgEl('line', { x1: '18', y1: '218', x2: '602', y2: '218', stroke: 'var(--rule-soft,#ddd)', 'stroke-width': '1', 'stroke-dasharray': '3 4' }));
+    var laneLabel = svgEl('text', { x: '18', y: '209', 'font-family': 'var(--font-mono,monospace)', 'font-size': '9', fill: 'var(--ink-mute,#777)', 'letter-spacing': '1.4' });
+    laneLabel.appendChild(document.createTextNode('EVIDENCE ENTERING THE NEXT THOUGHT'));
+    svg.appendChild(laneLabel);
+
+    evidenceSpecs.forEach(function (item, index) {
+      var inner = svgEl('g', {
+        'data-part': 'evidence-' + index, opacity: '0.24',
+        style: 'transform-box:fill-box;transform-origin:center;transition:opacity 220ms var(--ease-out,cubic-bezier(.23,1,.32,1)),transform 220ms var(--ease-out,cubic-bezier(.23,1,.32,1))'
+      });
+      var rect = svgEl('rect', { width: '104', height: '62', rx: '3', fill: 'var(--bg-surface,#eee)', stroke: 'var(--rule-soft,#ddd)', 'stroke-width': '1' });
+      var label = svgEl('text', { x: '8', y: '17', 'font-family': 'var(--font-mono,monospace)', 'font-size': '8.5', fill: 'var(--blueprint,#3553ff)', 'letter-spacing': '1' });
+      label.appendChild(document.createTextNode(item.label));
+      var value = svgEl('text', { x: '8', y: '39', 'font-family': 'var(--font-mono,monospace)', 'font-size': '9.5', fill: 'var(--ink-soft,#555)' });
+      value.appendChild(document.createTextNode('waiting'));
+      inner.appendChild(rect);
+      inner.appendChild(label);
+      inner.appendChild(value);
+      svg.appendChild(svgEl('g', { transform: 'translate(' + item.x + ' 236)' }, [inner]));
+      evidenceEls.push({ group: inner, rect: rect, value: value });
+    });
+
     state._render = function () {
-      while (svg.firstChild) svg.removeChild(svg.firstChild);
-      svg.appendChild(arrowDefs());
-      var cur = state.step % 3;
-      var cx = [285, 210, 135], cy = [108, 192, 108];
+      var current = steps[state.step];
       var i;
-      for (i = 0; i < 3; i++) {
-        var a = nodes[i], b = nodes[(i + 1) % 3];
-        svg.appendChild(arrow(a.x + 75, a.y + 22 + 6 * (i === 0 ? 1 : -0), b.x + (i === 2 ? 75 : 0), b.y + 22));
+      for (i = 0; i < nodeEls.length; i++) {
+        var activeNode = i === current.node;
+        nodeEls[i].group.style.transform = activeNode ? 'translateY(-3px)' : 'translateY(0)';
+        nodeEls[i].group.style.opacity = activeNode ? '1' : '0.72';
+        nodeEls[i].rect.setAttribute('fill', activeNode ? 'var(--blueprint,#3553ff)' : 'var(--bg-surface,#eee)');
+        nodeEls[i].rect.setAttribute('stroke', activeNode ? 'var(--blueprint,#3553ff)' : 'var(--rule-soft,#ddd)');
+        nodeEls[i].text.setAttribute('fill', activeNode ? 'var(--bg,#fafaf5)' : 'var(--ink,#1a1a1a)');
       }
-      svg.appendChild(arrow(135, 128, 240, 60, '4 4'));
-      svg.appendChild(arrow(290, 60, 380, 128, '4 4'));
-      svg.appendChild(arrow(360, 196, 100, 196, '4 4'));
-      for (i = 0; i < 3; i++) {
-        svg.appendChild(box(nodes[i].x, nodes[i].y, 100, 44, nodes[i].label, i === cur));
+      for (i = 0; i < edgeEls.length; i++) {
+        var activeEdge = i === current.edge;
+        edgeEls[i].setAttribute('stroke', activeEdge ? 'var(--blueprint,#3553ff)' : 'var(--rule-soft,#c9c9c2)');
+        edgeEls[i].setAttribute('opacity', activeEdge ? '1' : '0.58');
       }
-      svg.appendChild((function () {
-        var t = svgEl('text', { x: 260, y: 132, 'text-anchor': 'middle', 'font-family': 'var(--font-mono,monospace)', 'font-size': '10', fill: 'var(--ink-mute,#777)' });
-        t.appendChild(document.createTextNode('step ' + (state.step + 1)));
-        return t;
-      })());
-      meta.textContent = nodes[cur].label.toLowerCase() + ': ' + notes[cur] + '  ·  当目标达成或 step budget 用尽时，loop 结束';
+      var accumulated = {};
+      for (i = 0; i <= state.step; i++) accumulated[steps[i].evidence] = steps[i].value;
+      for (i = 0; i < evidenceEls.length; i++) {
+        var visible = Object.prototype.hasOwnProperty.call(accumulated, i);
+        var activeEvidence = i === current.evidence;
+        evidenceEls[i].group.setAttribute('opacity', visible ? (activeEvidence ? '1' : '0.72') : '0.24');
+        evidenceEls[i].group.style.transform = activeEvidence ? 'translateY(-4px)' : 'translateY(0)';
+        evidenceEls[i].rect.setAttribute('stroke', activeEvidence ? 'var(--blueprint,#3553ff)' : 'var(--rule-soft,#ddd)');
+        evidenceEls[i].value.textContent = visible ? accumulated[i] : 'waiting';
+      }
+      stepText.textContent = 'STEP ' + (state.step + 1) + ' OF 12  ·  ' + current.phase.toUpperCase();
+      meta.textContent = current.phase + ': ' + current.note + ' The loop stops only when the goal is met or its step budget runs out.';
     };
-    var grid = el('div', {}, [LF.slider(state, 'step', 'step', 0, 11, 1)]);
+    var grid = el('div', {}, [LF.slider(state, 'step', 'causal step', 0, 11, 1, function (value) { return (value + 1) + ' / 12'; })]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['AGENT LOOP']), el('span', {}, ['拖动 step'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['AGENT LOOP']), el('span', {}, ['drag the step'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta])]),
-      el('div', { class: 'lf-cap' }, ['agent 是一个 loop，而不是一次单独调用。它思考下一步动作，通过调用函数来行动，观察结果，并将该观察反馈到下一次思考中。这个 cycle 会重复，直到目标达成或 step budget 耗尽。'])
+      el('div', { class: 'lf-cap' }, ['An agent loop is a causal trajectory, not three boxes rotating emphasis. Each thought chooses an action, the tool call produces evidence, the observation updates context, and that new context changes the next thought.'])
     ]));
     state._render();
   }
 
-  // ── react-trace：Thought / Action / Observation 行按 step 展开 ────────
+  // ── react-trace: Thought / Action / Observation rows unfold by step ────────
   function reactTrace(host) {
     var state = { step: 1 };
     var trace = [
-      ['Thought', '我需要 Tokyo 当前的人口。'],
+      ['Thought', 'I need the current population of Tokyo.'],
       ['Action', 'search("Tokyo population 2026")'],
       ['Observation', '"Tokyo metro: about 37 million."'],
-      ['Thought', '问题问的是 city proper，不是 metro。'],
+      ['Thought', 'The question asks for the city proper, not metro.'],
       ['Action', 'search("Tokyo city proper population")'],
       ['Observation', '"Tokyo (23 wards): about 14 million."'],
-      ['Thought', '我现在有了可以回答的数字。'],
-      ['Action', 'finish("23 wards 约 1400 万。")']
+      ['Thought', 'I now have the figure to answer.'],
+      ['Action', 'finish("About 14 million in the 23 wards.")']
     ];
     var rows = el('div', {});
     var meta = el('div', { class: 'lf-meta' });
@@ -96,24 +206,24 @@
         }, [tag, document.createTextNode(' ' + v)]));
       }
       var last = trace[n - 1][0];
-      meta.textContent = n + ' / ' + trace.length + ' 行  ·  ' + (last === 'Observation' ? 'tool 结果已返回，agent 接下来会推理' : last === 'Action' && trace[n - 1][1].indexOf('finish') === 0 ? 'agent 已生成最终答案' : last === 'Action' ? '正在等待 tool 结果' : '在下一次 action 前进行推理');
+      meta.textContent = n + ' of ' + trace.length + ' rows  ·  ' + (last === 'Observation' ? 'tool result returned, agent will reason next' : last === 'Action' && trace[n - 1][1].indexOf('finish') === 0 ? 'agent has produced the final answer' : last === 'Action' ? 'awaiting the tool result' : 'reasoning before the next action');
     };
-    var grid = el('div', {}, [LF.slider(state, 'step', '展示到 step', 1, 8, 1)]);
+    var grid = el('div', {}, [LF.slider(state, 'step', 'reveal up to step', 1, 8, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['REACT TRACE']), el('span', {}, ['拖动以展开'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['REACT TRACE']), el('span', {}, ['drag to unfold'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [rows, meta])]),
-      el('div', { class: 'lf-cap' }, ['ReAct 将推理与行动交错进行。每个 Thought 决定要做什么，每个 Action 调用一个 tool，每个 Observation 将结果反馈回来。把推理显式化，让 agent 能从错误路径中恢复，而不是一错到底。'])
+      el('div', { class: 'lf-cap' }, ['ReAct interleaves reasoning with acting. Each Thought decides what to do, each Action calls a tool, each Observation feeds the result back. Making the reasoning explicit lets the agent recover from a wrong turn instead of committing to it.'])
     ]));
     state._render();
   }
 
-  // ── tool-routing：query 根据 description match 映射到一个注册 tool ─
+  // ── tool-routing: a query maps to one registered tool by description match ─
   function toolRouting(host) {
     var tools = [
-      { name: 'search_web', desc: '查找事实和当前事件' },
-      { name: 'run_python', desc: '计算、解析、转换数据' },
-      { name: 'send_email', desc: '撰写并发送消息' },
-      { name: 'query_db', desc: '在 database 中查找行' }
+      { name: 'search_web', desc: 'find facts and current events' },
+      { name: 'run_python', desc: 'compute, parse, transform data' },
+      { name: 'send_email', desc: 'compose and send a message' },
+      { name: 'query_db', desc: 'look up rows in the database' }
     ];
     var queries = [
       { text: 'what is the GDP of France', sim: [0.91, 0.18, 0.05, 0.31] },
@@ -131,26 +241,26 @@
       while (rows.firstChild) rows.removeChild(rows.firstChild);
       tools.forEach(function (t, idx) {
         var on = idx === bi;
-        var bar = el('i'); bar.style.width = (q.sim[idx] * 100).toFixed(0) + '%';
+        var bar = el('i'); bar.style.transform = 'scaleX(' + q.sim[idx].toFixed(3) + ')';
         if (!on) bar.style.background = 'var(--rule-soft,#ccc)';
         var lab = el('label', {}, [t.name + '  (' + t.desc + ')', el('b', {}, [on ? 'routed →' : q.sim[idx].toFixed(2)])]);
         if (!on) lab.style.opacity = '0.5';
         rows.appendChild(el('div', { class: 'lf-ctrl' }, [lab, el('div', { class: 'lf-bar' }, [bar])]));
       });
-      meta.textContent = 'query "' + q.text + '"  →  ' + tools[bi].name + '  （与其 description 的 similarity 为 ' + best.toFixed(2) + '）';
+      meta.textContent = 'query "' + q.text + '"  →  ' + tools[bi].name + '  (similarity ' + best.toFixed(2) + ' to its description)';
     };
     var grid = el('div', {}, [LF.select(state, 'q', 'query', [
       ['what is the GDP of France', '0'], ['add up these expenses', '1'], ['tell the team we shipped', '2'], ['how many users signed up', '3']
     ])]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['TOOL ROUTING']), el('span', {}, ['选择一个 query'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['TOOL ROUTING']), el('span', {}, ['pick a query'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [rows, meta])]),
-      el('div', { class: 'lf-cap' }, ['router 会将 query 与每个已注册 tool 的 description 打分，并选择最接近的匹配。好的 function name 和 description 不是装饰：它们是 router 用来决定调用哪个 tool 的信号。'])
+      el('div', { class: 'lf-cap' }, ['A router scores the query against each registered tool description and picks the closest match. Good function names and descriptions are not cosmetic: they are the signal the router uses to decide which tool to call.'])
     ]));
     state._render();
   }
 
-  // ── swarm-messages：all-to-all O(N^2) vs hub/supervisor O(N) ───────────────
+  // ── swarm-messages: all-to-all O(N^2) vs hub/supervisor O(N) ───────────────
   function swarmMessages(host) {
     var state = { n: 6 };
     var W = 520, H = 240, R = 78;
@@ -191,19 +301,19 @@
         t.appendChild(document.createTextNode(p[0])); svg.appendChild(t);
       });
       var mesh = n * (n - 1);
-      meta.textContent = 'all-to-all：' + mesh + ' 条 directed messages (N·(N−1))  ·  hub：' + (2 * n) + ' 条 edges (O(N))';
-      formula.textContent = 'broadcast cost 以 O(N²) 增长；supervisor 将流量汇入一个节点，成本为 O(N)';
+      meta.textContent = 'all-to-all: ' + mesh + ' directed messages (N·(N−1))  ·  hub: ' + (2 * n) + ' edges (O(N))';
+      formula.textContent = 'broadcast cost grows as O(N²); a supervisor funnels traffic through one node for O(N)';
     };
     var grid = el('div', {}, [LF.slider(state, 'n', 'agents N', 2, 12, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SWARM MESSAGES']), el('span', {}, ['拖动 N'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SWARM MESSAGES']), el('span', {}, ['drag N'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['如果每个 agent 都与其他所有 agent 通信，message count 会按 N·(N−1) 增长，因此 naive broadcast 会按二次方扩展。将所有流量路由通过 supervisor，可将其削减为线性数量的 edges，这就是大型系统会集中协调的原因。'])
+      el('div', { class: 'lf-cap' }, ['If every agent talks to every other agent, message count grows as N·(N−1), so naive broadcast scales quadratically. Routing all traffic through a supervisor cuts it to a linear number of edges, which is why large systems centralize coordination.'])
     ]));
     state._render();
   }
 
-  // ── supervisor-hierarchy：branching factor 和 depth → total agents ────────
+  // ── supervisor-hierarchy: branching factor and depth → total agents ────────
   function supervisorHierarchy(host) {
     var state = { b: 3, depth: 2 };
     var W = 520, H = 240;
@@ -233,7 +343,7 @@
         prev = cur;
       }
       var exact = 0, lv; for (lv = 0; lv <= depth; lv++) { exact += Math.pow(b, lv); }
-      meta.textContent = 'branching ' + b + '，depth ' + depth + '  →  总计 ' + exact + ' 个 agents' + (capped ? ' · 图示将每一层上限设为 64' : '') + '（leaves 执行工作，internal nodes 负责委派）';
+      meta.textContent = 'branching ' + b + ', depth ' + depth + '  →  ' + exact + ' agents total' + (capped ? ' · diagram caps each level at 64' : '') + ' (leaves do the work, internal nodes delegate)';
       formula.textContent = b === 1
         ? 'total = Σ 1^level for level 0..depth = depth + 1 = ' + exact
         : 'total = Σ b^level for level 0..depth = (b^(depth+1) − 1) / (b − 1) = ' + exact;
@@ -243,14 +353,14 @@
       LF.slider(state, 'depth', 'depth', 1, 3, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SUPERVISOR HIERARCHY']), el('span', {}, ['拖动 branching 和 depth'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['SUPERVISOR HIERARCHY']), el('span', {}, ['drag branching and depth'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['supervisor 将一个任务拆分给 worker agents，而这些 worker agents 本身也可能监督其他 agent。total agents 是 branching factor 在 depth 上的 geometric sum，因此即使 fan-out 很小，head count 也会快速爆炸。保持 tree 浅。'])
+      el('div', { class: 'lf-cap' }, ['A supervisor splits a task across worker agents, which may themselves supervise. Total agents is the geometric sum of the branching factor over the depth, so even a small fan-out explodes the head count quickly. Keep the tree shallow.'])
     ]));
     state._render();
   }
 
-  // ── rlhf-reward-kl：reward − beta·KL；小 beta 会让 policy drift ─────
+  // ── rlhf-reward-kl: reward − beta·KL; small beta lets the policy drift ─────
   function rlhfRewardKL(host) {
     var state = { beta: 0.2 };
     var W = 520, H = 220, PAD = 34, SMAX = 200;
@@ -280,21 +390,21 @@
       svg.appendChild(svgEl('circle', { cx: px(best), cy: py(obj(best)), r: '4.5', fill: 'var(--blueprint,#3553ff)' }));
       peakDrift = kl(best);
       var hacking = best >= SMAX - 4 && beta < 0.15;
-      status.innerHTML = hacking ? 'reward hacking' : '峰值在 step ' + best;
-      meta.textContent = hacking ? 'beta 太小：没有任何东西把 policy 拉回，它会过度优化 proxy reward，并偏离 reference'
-        : 'KL penalty 将 drift 限制在 ' + peakDrift.toFixed(2) + '；objective 达到峰值后下降';
-      formula.textContent = 'objective = reward − β·KL(π ‖ π_ref),  β = ' + beta.toFixed(2) + '   （灰色 reward，金色 β·KL，蓝色 objective）';
+      status.innerHTML = hacking ? 'reward hacking' : 'peak at step ' + best;
+      meta.textContent = hacking ? 'beta too small: nothing pulls the policy back, it over-optimizes the proxy reward and drifts from the reference'
+        : 'KL penalty caps the drift at ' + peakDrift.toFixed(2) + '; the objective peaks then declines';
+      formula.textContent = 'objective = reward − β·KL(π ‖ π_ref),  β = ' + beta.toFixed(2) + '   (grey reward, gold β·KL, blue objective)';
     };
     var grid = el('div', {}, [LF.slider(state, 'beta', 'KL penalty β', 0.02, 1.0, 0.02)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['RLHF: REWARD − β·KL']), el('span', {}, ['拖动 β'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['RLHF: REWARD − β·KL']), el('span', {}, ['drag β'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [status]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['RLHF 会最大化 reward 减去 KL penalty，使 policy 保持接近 reference model。当 β 太小时，penalty 几乎不起作用，因此 policy 会追逐 proxy reward 并发生偏移，利用 reward model 中的缺陷。KL term 是防止 reward hacking 的约束。'])
+      el('div', { class: 'lf-cap' }, ['RLHF maximizes reward minus a KL penalty that keeps the policy near the reference model. When β is too small the penalty barely bites, so the policy chases the proxy reward and drifts off, exploiting flaws in the reward model. The KL term is the leash against reward hacking.'])
     ]));
     state._render();
   }
 
-  // ── dpo-margin：chosen vs rejected log-probs 和 DPO loss curve ────────
+  // ── dpo-margin: chosen vs rejected log-probs and the DPO loss curve ────────
   function dpoMargin(host) {
     var state = { margin: 1.0, beta: 1.0 };
     var W = 520, H = 200, PAD = 34, MMAX = 6;
@@ -315,22 +425,22 @@
       svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: 'var(--blueprint,#3553ff)', 'stroke-width': '2' }));
       svg.appendChild(svgEl('circle', { cx: px(m), cy: py(loss(m, beta)), r: '5', fill: 'var(--blueprint,#3553ff)' }));
       num.innerHTML = loss(m, beta).toFixed(3) + ' <small>DPO loss</small>';
-      meta.textContent = (m > 0 ? 'chosen 比 rejected 高 ' + m.toFixed(2) : m < 0 ? 'rejected 被错误排在 chosen 之上' : '平局') + '  ·  P(prefer chosen) = ' + sigmoid(beta * m).toFixed(2);
-      formula.textContent = 'loss = −log σ(β·(r_chosen − r_rejected)),  margin = ' + m.toFixed(2) + ', β = ' + beta.toFixed(1) + '   ·   margin 越大 → loss 越低';
+      meta.textContent = (m > 0 ? 'chosen ranked above rejected by ' + m.toFixed(2) : m < 0 ? 'rejected wrongly ranked above chosen' : 'tie') + '  ·  P(prefer chosen) = ' + sigmoid(beta * m).toFixed(2);
+      formula.textContent = 'loss = −log σ(β·(r_chosen − r_rejected)),  margin = ' + m.toFixed(2) + ', β = ' + beta.toFixed(1) + '   ·   larger margin → lower loss';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       LF.slider(state, 'margin', 'reward margin (chosen − rejected)', -4, 4, 0.1),
       LF.slider(state, 'beta', 'β', 0.2, 3.0, 0.1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['DPO MARGIN']), el('span', {}, ['拖动 margin'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['DPO MARGIN']), el('span', {}, ['drag the margin'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [num]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['DPO 直接在 preference pairs 上训练，不需要单独的 reward model。loss 是 β 乘以 chosen response 与 rejected response 之间 implicit reward margin 后的 −log σ。更大的正 margin 会把 loss 推向零；负 margin（rejected 排名更高）会受到重罚。'])
+      el('div', { class: 'lf-cap' }, ['DPO trains directly on preference pairs with no separate reward model. The loss is −log σ of β times the implicit reward margin between the chosen and rejected response. A larger positive margin drives the loss toward zero; a negative margin (rejected ranked higher) is heavily penalized.'])
     ]));
     state._render();
   }
 
-  // ── context-budget：tokens/turn × turns 填充固定 window ─────────────
+  // ── context-budget: tokens/turn × turns filling a fixed window ─────────────
   function contextBudget(host) {
     var state = { perTurn: 1200, turns: 14, windowK: 32 };
     var num = el('span', { class: 'lf-num' });
@@ -343,11 +453,11 @@
       var used = state.perTurn * state.turns;
       var pct = used / win * 100;
       num.innerHTML = LF.fmtInt(used) + ' <small>/ ' + LF.fmtInt(win) + ' tokens</small>';
-      bar.style.width = Math.min(100, pct) + '%';
+      bar.style.transform = 'scaleX(' + Math.min(1, pct / 100) + ')';
       barWrap.classList.toggle('over', used > win);
       var turnsToFull = Math.ceil(win / state.perTurn);
-      meta.textContent = (used > win ? '⚠ window 已溢出：' : Math.round(pct) + '% 已用：')
-        + (used > win ? '更早的 turns 必须 compact 或 hand off' : 'compaction 会在接近上限时触发，大约在 turn ' + turnsToFull);
+      meta.textContent = (used > win ? '⚠ window overflowed: ' : Math.round(pct) + '% full: ')
+        + (used > win ? 'older turns must be compacted or handed off' : 'compaction triggers near the top, at about turn ' + turnsToFull);
       formula.textContent = state.perTurn + ' tokens/turn × ' + state.turns + ' turns = ' + LF.fmtInt(used) + '  ·  window ' + state.windowK + 'K = ' + LF.fmtInt(win);
     };
     var grid = el('div', { class: 'lf-grid' }, [
@@ -356,14 +466,14 @@
       LF.slider(state, 'windowK', 'context window (K)', 8, 200, 8)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['CONTEXT BUDGET']), el('span', {}, ['拖动 turns 和 window'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['CONTEXT BUDGET']), el('span', {}, ['drag turns and window'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [num, barWrap, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['每个 turn 都会向固定 window 追加 tokens。运行总量会持续攀升，直到接近限制，此时 agent 必须将旧 turns compact 成摘要，或 hand off 到新的 context。长会话的成败取决于对这个 budget 的管理。'])
+      el('div', { class: 'lf-cap' }, ['Every turn appends tokens to a fixed window. The running total climbs until it nears the limit, where the agent must compact old turns into a summary or hand off to a fresh context. Long sessions live or die on managing this budget.'])
     ]));
     state._render();
   }
 
-  // ── guardrail-gates：有序 safety gates，一个触发 → blocked ─────────────
+  // ── guardrail-gates: ordered safety gates, one trips → blocked ─────────────
   function guardrailGates(host) {
     var state = { trip: '0' };
     var W = 520, H = 150;
@@ -371,9 +481,9 @@
     var status = el('span', { class: 'lf-num' });
     var meta = el('div', { class: 'lf-meta' });
     var gates = ['input filter', 'policy check', 'output filter'];
-    var notes = ['blocked：malicious 或 off-policy prompt 在 model 运行前被拒绝',
-      'blocked：model output 违反 usage policy',
-      'blocked：unsafe content 已从 response 中清除'];
+    var notes = ['blocked: malicious or off-policy prompt rejected before the model runs',
+      'blocked: model output violates a usage policy',
+      'blocked: unsafe content scrubbed from the response'];
     state._render = function () {
       var trip = Number(state.trip);
       while (svg.firstChild) svg.removeChild(svg.firstChild);
@@ -397,15 +507,15 @@
       }
       if (allowed) { svg.appendChild(arrow(prevX, y + h / 2, prevX + gap, y + h / 2)); svg.appendChild(box(prevX + gap, y, 80, h, 'allowed', false)); }
       status.innerHTML = allowed ? 'allowed' : 'blocked';
-      meta.textContent = allowed ? '所有 gates 通过：response 返回给用户' : notes[trip - 1];
+      meta.textContent = allowed ? 'all gates pass: the response is returned to the user' : notes[trip - 1];
     };
-    var grid = el('div', {}, [LF.select(state, 'trip', '哪个 gate 触发', [
+    var grid = el('div', {}, [LF.select(state, 'trip', 'which gate trips', [
       ['none / all pass', '0'], ['input filter', '1'], ['policy check', '2'], ['output filter', '3']
     ])]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['GUARDRAIL GATES']), el('span', {}, ['选择一个 gate'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['GUARDRAIL GATES']), el('span', {}, ['pick a gate'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [status]), meta])]),
-      el('div', { class: 'lf-cap' }, ['safety 以有序 gates 运行：model 前的 input filter、对 request 的 policy check，以及对 response 的 output filter。第一个触发的 gate 会阻止 request，因此 unsafe prompts 不会到达 model，unsafe outputs 也不会到达用户。'])
+      el('div', { class: 'lf-cap' }, ['Safety runs as ordered gates: an input filter before the model, a policy check on the request, and an output filter on the response. The first gate that trips blocks the request, so unsafe prompts never reach the model and unsafe outputs never reach the user.'])
     ]));
     state._render();
   }

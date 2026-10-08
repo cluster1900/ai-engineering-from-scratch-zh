@@ -81,6 +81,11 @@ M[i, j] = -inf    if j > i
 causal-mask
 ```
 
+
+```figure
+mask-derivation
+```
+
 ## 构建它
 
 ### 步骤 1： causal mask

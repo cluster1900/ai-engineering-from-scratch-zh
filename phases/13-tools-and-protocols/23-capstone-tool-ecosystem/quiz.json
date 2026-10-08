@@ -1,0 +1,78 @@
+{
+  "lesson": "23-capstone-tool-ecosystem",
+  "title": "综合实战项目：无状态工具生态系统",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "本课标准库测试框架（harness）的成功运行证明了什么？",
+      "options": [
+        "证明了进程内的策略与数据流完全符合断言预期",
+        "证明了真实的 MCP 传输协议完成了初始化握手",
+        "证明了 OAuth 授权服务器签发了有效的 Token",
+        "证明了遥测收集器（Collector）接收到了所有的 OpenTelemetry Span"
+      ],
+      "correct": 0,
+      "explanation": "该测试框架使用 Python 函数、静态 Token、测试夹具和内存 Span。它验证了本地逻辑边界，而将真正的协议、授权、导出、浏览器渲染和沙箱集成留给后续的集成测试。"
+    },
+    {
+      "stage": "check",
+      "question": "以下哪套交互流程符合 MCP 2026-07-28 规范中针对服务发现与长周期任务轮询的定义？",
+      "options": [
+        "server/connect, tools/poll, tasks/status",
+        "server/discover, tools/call 返回 task 句柄, tasks/get 轮询",
+        "initialize, tools/call, tasks/result",
+        "GET /mcp, tools/call, tasks/list"
+      ],
+      "correct": 1,
+      "explanation": "无状态修订版本强制使用 server/discover。可选的 io.modelcontextprotocol/tasks 扩展返回任务句柄并使用 tasks/get 进行轮询；处于终态的任务直接内联最终结果。旧版握手、GET 端点、tasks/result 和 tasks/list 均已被移除。"
+    },
+    {
+      "stage": "check",
+      "question": "A2A v1 协议在其 gRPC 和 JSON-RPC 绑定中如何命名发送消息操作？",
+      "options": [
+        "AgentMessage",
+        "message/create",
+        "tasks/send",
+        "SendMessage"
+      ],
+      "correct": 3,
+      "explanation": "A2A v1 在 gRPC 和 JSON-RPC 中使用 SendMessage。其 HTTP+JSON 绑定暴露为 POST /message:send。"
+    },
+    {
+      "stage": "check",
+      "question": "MCP Apps SDK 中的哪项调用允许 App 请求调用其来源 server 上的 tool？",
+      "options": [
+        "host.callTool(name, args)",
+        "app.callServerTool({ name, arguments })",
+        "app.invoke(name, args)",
+        "server.tools.call(args)"
+      ],
+      "correct": 1,
+      "explanation": "App 实例使用包含 name 和可选 arguments 的对象调用 callServerTool；宿主负责代理转发底层的 tools/call 请求。"
+    },
+    {
+      "stage": "post",
+      "question": "本实战项目中的 Agent Skill 本身对 MCP tools 和执行沙箱赋予了什么权限？",
+      "options": [
+        "显式调用后自动绕过人工审批",
+        "自动被授予正文中提及的所有 tool 的调用权限",
+        "自动获得只读网络访问权限",
+        "没有任何直接权限；宿主适配器与安全策略依然独立鉴权每一项能力"
+      ],
+      "correct": 3,
+      "explanation": "Skill 仅提供操作规程。服务发现、调用、工具暴露、授权、凭据与隔离完全由宿主及外部运行时边界独立强制执行。"
+    },
+    {
+      "stage": "post",
+      "question": "哪类证据最能证明遥测数据确实跨越了生产环境的导出边界？",
+      "options": [
+        "一条要求输出 Span 的 Skill 指令",
+        "一个包含 traceId 字段的本地字典",
+        "一张预期 Span 层次架构的图表",
+        "收集器接收端记录的数据，并包含 traceId 与父子关系的断言验证"
+      ],
+      "correct": 3,
+      "explanation": "接收端的观测数据才能证明 SDK、传播器、导出器、网络传输和收集器整条链路真正通畅。本地数据和示意图仅能证明本地构建或设计意图。"
+    }
+  ]
+}

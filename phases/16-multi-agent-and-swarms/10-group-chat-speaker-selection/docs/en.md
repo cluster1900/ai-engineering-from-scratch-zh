@@ -90,6 +90,11 @@ manager = GroupChatManager(groupchat=chat, llm_config={...})
 
 两者都使用 Lesson 04 中的四个 primitives。Group chat 默认使用 LLM-selected orchestration 和 full-pool shared state。
 
+
+```figure
+swarm-speaker
+```
+
 ## 构建它
 
 `code/main.py` 用 stdlib 从零实现一个 GroupChat。包含三个 agents（coder、reviewer、manager）、round-robin 和 LLM-selected 变体，以及基于 `TERMINATE` token 的终止。

@@ -8,6 +8,11 @@
 **Time:** ~90 minutes
 
 ## Learning Objectives
+
+
+```figure
+cg-plan-replan
+```
 - 将 plan 表示为 typed steps 的有序列表，让 executor 能推理 progress 和 outcome。
 - 顺序执行 steps，并将 failure 受控地 handoff 回 planner。
 - 从当前 cursor 开始 replan，并在 context 中带上 prior error，让下一个 plan 更有信息。

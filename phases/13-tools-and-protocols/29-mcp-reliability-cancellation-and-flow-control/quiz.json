@@ -1,0 +1,78 @@
+{
+  "lesson": "29-mcp-reliability-cancellation-and-flow-control",
+  "title": "MCP 可靠性、取消与流控",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "一次写操作（mutation）的响应丢失了，client 使用新的 JSON-RPC id 发起重试。是什么保证了这次重试的安全性？",
+      "options": [
+        "新的 JSON-RPC id 会自动对该 mutation 进行去重",
+        "tool 描述符中包含了 idempotentHint 提示",
+        "使用持久化的应用层幂等键（idempotency key）并携带完全一致的参数进行重试",
+        "重试复用了同一个 HTTP 连接"
+      ],
+      "correct": 2,
+      "explanation": "JSON-RPC id 仅用于在通信层关联消息。业务层面的幂等性需要依赖持久化的幂等键、参数指纹（argument fingerprint）以及已持久化提交的结果。"
+    },
+    {
+      "stage": "check",
+      "question": "在 MCP 2026-07-28 规范中，client 如何在 stdio 传输上取消正在进行中的请求？",
+      "options": [
+        "针对该 JSON-RPC id 调用 tasks/cancel",
+        "发送带有当前活跃请求 id 的 notifications/cancelled",
+        "关闭针对该请求的独立 SSE 流",
+        "向 MCP 端点发送 DELETE 请求"
+      ],
+      "correct": 1,
+      "explanation": "stdio 没有按请求划分的独立响应流，因此 client 需发送无需回复的 notifications/cancelled 通知。"
+    },
+    {
+      "stage": "check",
+      "question": "client 如何取消正在进行的 Streamable HTTP 请求？",
+      "options": [
+        "直接关闭该请求对应的 SSE 响应流",
+        "向 MCP 端点 POST 发送 notifications/cancelled",
+        "等待 server 主动发送 notifications/cancelled",
+        "发送取值为空的 Last-Event-ID 标头"
+      ],
+      "correct": 0,
+      "explanation": "在现代 Streamable HTTP 中，关闭该请求专有的响应流本身就是取消信号。"
+    },
+    {
+      "stage": "check",
+      "question": "进度通知（progress）总是在空闲超时到达前不断产生。此时必须由哪种截止时间来终止失控的死循环请求？",
+      "options": [
+        "从请求发起时刻起算的绝对最大超时时间（absolute maximum timeout）",
+        "下一次分页游标的过期时间",
+        "代理层的 keepalive 心跳间隔",
+        "Task 的轮询间隔"
+      ],
+      "correct": 0,
+      "explanation": "有效的进度通知可以重置空闲时钟（idle clock），但全局绝对最大截止时间必须始终保持强制有效。"
+    },
+    {
+      "stage": "post",
+      "question": "成功的 tasks/cancel 响应能够证明什么？",
+      "options": [
+        "持久化的结果已被彻底删除",
+        "后台 worker 已经完全停止工作",
+        "server 已确认收到取消意图",
+        "该 Task 最终一定会变为 cancelled 状态"
+      ],
+      "correct": 2,
+      "explanation": "Task 取消是协作式（cooperative）的。Task 可能依然处于 working 状态、可能先于取消完成执行，也可能在 worker 检查点之后才转入 cancelled。"
+    },
+    {
+      "stage": "post",
+      "question": "一个订阅 SSE 流在收到若干 progress 事件后中断。哪种恢复方案符合 MCP 2026-07-28 规范？",
+      "options": [
+        "从 Last-Event-ID 处恢复并重放每一个在途的 mutation",
+        "打开 GET 事件流并恢复 Mcp-Session-Id",
+        "保留旧的请求 id 并假定没有丢失任何更新",
+        "开启全新的 listen 请求，向权威方法重新拉取当前状态，且不盲目重放不安全的 mutation"
+      ],
+      "correct": 3,
+      "explanation": "现代 MCP 事件流不支持基于 Last-Event-ID 的断点续传。恢复机制采用新请求发起监听，并向权威数据源全量重新拉取，同时确保显式的重试安全性。"
+    }
+  ]
+}

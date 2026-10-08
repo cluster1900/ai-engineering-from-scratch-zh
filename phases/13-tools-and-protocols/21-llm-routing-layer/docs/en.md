@@ -95,6 +95,11 @@ Gateway 可以同时路由 LLM 调用和 MCP sampling requests。当 sampling re
 - **Latency-aware.** 选择过去 N 分钟内最快的模型。
 - **Task-aware.** Prompt classifier 将 coding 路由到一个模型，将 summarization 路由到另一个模型。
 
+
+```figure
+tp-router-failover
+```
+
 ## 使用它
 `code/main.py` 用约 150 行实现了一个 routing gateway：接受 OpenAI-shaped 请求，转换到各 provider stub，运行优先级 fallback chain，跟踪单次请求成本，并对输入应用 PII redaction pass。用三个场景运行它：正常请求、primary-provider outage 触发 fallback、PII 泄漏被 redaction 捕获。
 

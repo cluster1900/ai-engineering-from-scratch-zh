@@ -109,6 +109,11 @@ Orchestrator = ({state, last_speaker}) -> next_agent
 
 所有这些都可以在 primitives 之上实现。它们都不是新的 primitives。
 
+
+```figure
+a5-primitive-radar
+```
+
 ## 构建它
 `code/main.py` 用约 150 行 stdlib Python 实现四个 primitives。没有真正的 LLM —— 每个 agent 都是一个 scripted policy，因此重点保持在 coordination structure 上。
 

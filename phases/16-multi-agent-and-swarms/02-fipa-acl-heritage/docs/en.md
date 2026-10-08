@@ -107,7 +107,7 @@ Liu et al. 的 2025 年 survey（“A Survey of Agent Interoperability Protocols
 - 与所有现代工具兼容的 JSON-native payloads。
 - LLMs 无需 hand-coded ontology 即可解释的 natural-language content。
 - Web-stack transport（HTTP、SSE、WebSocket）。
-- 通过 self-describing documents 做 capability discovery（MCP `listTools`、A2A Agent Card）。
+- 通过实时的 MCP `server/discover` 与 A2A Agent Card 进行能力发现。
 
 更宽松的 intent semantics，换来更容易的实现。这就是准确的 trade。
 
@@ -143,6 +143,11 @@ FIPA 随附了约 15 个 interaction protocols。其中三个值得带入 LLM mu
 | NLIP | natural-language content | LLM-native | schema |
 
 从上到下阅读这张表，模式是：保留 structural primitive，放弃 formalism，让 LLMs 掩盖歧义。
+
+
+```figure
+sw-contract-net
+```
 
 ## 构建它
 
@@ -201,5 +206,5 @@ python3 code/main.py
 - [Liu et al. — A Survey of Agent Interoperability Protocols: MCP, ACP, A2A, ANP](https://arxiv.org/html/2505.02279v1) — 将现代 specs 与 FIPA heritage 连接起来的规范 2025 survey
 - [FIPA ACL Message Structure Specification (fipa00037)](http://www.fipa.org/specs/fipa00037/) — 2000 年批准的 envelope format
 - [FIPA Communicative Act Library Specification (fipa00037)](http://www.fipa.org/specs/fipa00037/) — 完整的 performative catalog
-- [MCP specification 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25) — `request`/`query-ref` 的现代 tool-use 等价形式
+- [MCP specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28) — `request`/`query-ref` 的当前无状态 tool-use 等价形式
 - [A2A specification](https://a2a-protocol.org/latest/specification/) — contract-net 和 subscribe-notify 的现代 agent-peer 等价形式

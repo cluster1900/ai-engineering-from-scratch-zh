@@ -30,6 +30,11 @@ graph TD
 
 我们自底向上安装。每一层都依赖它下面的一层。
 
+
+```figure
+s0-env-stack
+```
+
 ## 构建它
 ### 步骤 1： System Foundation
 

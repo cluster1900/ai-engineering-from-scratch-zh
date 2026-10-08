@@ -31,6 +31,11 @@ sequenceDiagram
 3. 一个 request body（你想要什么）
 4. 一个 response body（你得到什么）
 
+
+```figure
+s0-secret-inject
+```
+
 ## 构建它
 ### 步骤 1：安全存储 API keys
 

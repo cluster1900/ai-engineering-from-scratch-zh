@@ -1,31 +1,31 @@
 ---
-name: Bug 报告
-about: lesson 或网站上的内容有误
+name: Bug report
+about: Something in a lesson or on the site is wrong
 title: "[bug] "
 labels: bug
 ---
 
-## 位置
+## Where
 
-- Phase / lesson: <!-- 例如 Phase 4 · 06-object-detection-yolo -->
-- 文件 / URL: <!-- 例如 phases/04-computer-vision/06-object-detection-yolo/code/main.py 或 aiengineeringfromscratch.com/lesson.html?path=... -->
+- Phase / lesson: <!-- e.g. Phase 4 · 06-object-detection-yolo -->
+- File / URL: <!-- e.g. phases/04-computer-vision/06-object-detection-yolo/code/main.py or aiengineeringfromscratch.com/lesson.html?path=... -->
 
-## 哪里有问题
+## What's wrong
 
-<!-- 用一段话描述。你期望看到什么，实际看到了什么。 -->
+<!-- One-paragraph description. What did you expect vs. what you saw. -->
 
-## 复现步骤
+## Reproduce
 
 1.
 2.
 3.
 
-## 环境
+## Environment
 
 - OS:
-- Python / Node / 其他 runtime 版本:
-- 运行方式（本地、Colab、Docker 等）:
+- Python / Node / other runtime version:
+- How you ran it (local, Colab, Docker, etc.):
 
-## 截图或日志
+## Screenshot or logs
 
-<!-- 如果有截图，请拖放到这里；如果有 traceback，请粘贴到这里。 -->
+<!-- Drop a screenshot or paste the traceback if you have one. -->

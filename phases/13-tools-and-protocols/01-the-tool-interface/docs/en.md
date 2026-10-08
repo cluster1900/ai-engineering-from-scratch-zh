@@ -99,6 +99,11 @@ Phase 14 · 12 会深入讲解 error recovery 和 self-healing；Phase 17 会覆
 
 剩余每一课都是对这个四步循环的展开。请把它作为不变量记在心里。
 
+
+```figure
+tp-tool-loop
+```
+
 ## 使用它
 `code/main.py` 会在没有 LLM 的情况下运行四步循环。一个假的 “decider” function 通过对用户消息进行 pattern-matching 来模拟模型；executor、schema validator 和 observe-step harness 都是真实的。运行它，查看带有可打印中间 state 的完整 request/response choreography；然后在后续课程中将 fake decider 替换为任意真实 provider。
 
@@ -140,5 +145,5 @@ Phase 14 · 12 会深入讲解 error recovery 和 self-healing；Phase 17 会覆
 - [OpenAI — Function calling guide](https://platform.openai.com/docs/guides/function-calling) — OpenAI-style tool declarations 和 call shapes 的 canonical reference
 - [Anthropic — Tool use overview](https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview) — Claude 的 `tool_use` / `tool_result` block format
 - [Google — Gemini function calling](https://ai.google.dev/gemini-api/docs/function-calling) — Gemini 中的 `functionDeclarations` 和 parallel-call semantics
-- [Model Context Protocol — Specification 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25) — tool interface 的 provider 无关泛化
+- [Model Context Protocol — Specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28) — 当前无状态、跨供应商通用的工具接口规范
 - [JSON Schema — 2020-12 release notes](https://json-schema.org/draft/2020-12/release-notes) — 每个现代 tool API 都使用的 schema dialect

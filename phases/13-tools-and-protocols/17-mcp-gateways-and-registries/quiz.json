@@ -1,0 +1,78 @@
+{
+  "lesson": "17-mcp-gateways-and-registries",
+  "title": "无状态 MCP 网关与 Registry 准入",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "当前的现代 MCP 网关在处理普通客户端请求之间必须保留什么？",
+      "options": [
+        "每个后端对应一个 Mcp-Session-Id",
+        "最近一次的 HTTP 连接",
+        "独立的 GET 事件流",
+        "不保留协议会话；每个请求都携带用于验证和路由所需的全部自包含信息"
+      ],
+      "correct": 3,
+      "explanation": "MCP 2026-07-28 的普通请求是自包含的，可由集群中任何健康的网关实例独立处理。"
+    },
+    {
+      "stage": "check",
+      "question": "针对特定主体过滤的 tools/list 结果通常应当使用哪种缓存作用域（cache scope）？",
+      "options": [
+        "public",
+        "global",
+        "private",
+        "session"
+      ],
+      "correct": 2,
+      "explanation": "针对特定用户的 tool 列表绝不能跨授权上下文共享。"
+    },
+    {
+      "stage": "check",
+      "question": "网关应当如何将 tool 调用转发给当前的现代后端？",
+      "options": [
+        "先建立一个独立的 GET 流",
+        "直接复制外部的 Bearer Token 和 session id",
+        "复用外部的 JSON-RPC id 作为持久化状态",
+        "使用网关客户端元数据与经过中介的 capabilities 创建一个全新的自包含请求"
+      ],
+      "correct": 3,
+      "explanation": "网关充当后端的客户端，并创建一个全新的、独立有效的下游请求。"
+    },
+    {
+      "stage": "check",
+      "question": "网关在准入过程中应当如何使用官方 Registry 的 server.json 记录？",
+      "options": [
+        "验证其发布元数据结构，然后将其与独立的已验证发布者、来源出处、策略及审批状态进行联合",
+        "将 Registry 上的发布记录直接等同于已完成的安全审查",
+        "从任意记录字段中直接复制验证断言",
+        "信任任何看起来名称熟悉的记录"
+      ],
+      "correct": 0,
+      "explanation": "server.json 仅承载发布元数据。经验证的溯源信息与网关自身的审批决策属于独立的外部准入证据。"
+    },
+    {
+      "stage": "post",
+      "question": "在现代 Streamable HTTP 中，长生命周期的列表变更通知是如何建立的？",
+      "options": [
+        "通过发送 POST subscriptions/listen 请求，并接收 SSE 响应流",
+        "通过调用 resources/subscribe",
+        "通过携带 Last-Event-ID 的独立 GET 请求",
+        "通过 notifications/initialized"
+      ],
+      "correct": 0,
+      "explanation": "subscriptions/listen 取代了旧版未经请求的独立 GET 流与资源订阅模型。"
+    },
+    {
+      "stage": "post",
+      "question": "以下哪项 Tasks 扩展路由规则符合当前规范？",
+      "options": [
+        "使用 tasks/result 获取最终输出",
+        "使用 tasks/list 恢复 session 中的所有任务",
+        "使用 taskId 作为 Mcp-Name 来路由 tasks/get、tasks/update 和 tasks/cancel",
+        "将任务状态存储在 Mcp-Session-Id 中"
+      ],
+      "correct": 2,
+      "explanation": "官方扩展使用 get、update 和 cancel；taskId 提供了路由句柄，且不依赖任何协议 session。"
+    }
+  ]
+}

@@ -52,6 +52,11 @@ flowchart TB
 
 严重程度遵循 1-5 等级。1 是针对良性目标的笨拙攻击（“请假装是海盗”）。5 是一种攻击，如果成功，会产生已部署系统不得发出的输出（危险活动的操作细节）。大多数 fixture 都是 2-3，因为部署规模上的真实攻击往往简单而偷懒。严重性由 fixture 作者设置。两名审稿人的分歧超过一个级别，就说明该 rubric 需要改进。
 
+
+```figure
+cd-attack-taxonomy
+```
+
 ## 构建它
 
 该语料库作为单个 Python 列表存在于 `code/fixtures.py` 中。 `code/main.py` 中的分类类加载它，验证每个类别至少有七个fixture，公开 `by_category`、`match` 和 `stats` 方法，并提供打印直方图的可运行演示。三元余弦是用 `numpy` 从头开始​​实现的。

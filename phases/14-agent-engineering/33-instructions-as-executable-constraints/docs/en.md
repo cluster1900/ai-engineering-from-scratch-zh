@@ -80,6 +80,11 @@ feature_list.json          # backlog（Phase 14 · 36）
 
 两个测试能让分层保持诚实。第一个是 reachability test：agent 应该能从 router 出发，最多两跳抵达任何规则，所以 router 必须按 path 链接每个 topic doc，而不是用 prose 模糊描述。第二个是 freshness test：router 足够短，reviewer 会在每个 PR 里重读它，这是防止它悄悄长回百科全书的唯一办法。指针失效比缺一条规则更糟，所以 router 中的 broken link 本身就是 startup-check violation。
 
+
+```figure
+wb-rule-checkoff
+```
+
 ## 构建它
 
 `code/main.py` 提供：

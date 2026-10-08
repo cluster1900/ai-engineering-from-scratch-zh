@@ -63,6 +63,11 @@ Short-term（一次运行内，即 state 中的 conversation history）和 long-
 - **Non-deterministic nodes.** Resume 假设 node inputs 会产生相同的 state update。Random seeds、wall-clock、external APIs 都必须被捕获。
 - **Over-use of conditional edges.** 每条 edge 都是 conditional 的 graph，是一个无法推理的状态机。优先使用 linear chains，只偶尔分支。
 
+
+```figure
+langgraph-state
+```
+
 ## 构建它
 
 `code/main.py` 实现了一个 stdlib stateful graph：

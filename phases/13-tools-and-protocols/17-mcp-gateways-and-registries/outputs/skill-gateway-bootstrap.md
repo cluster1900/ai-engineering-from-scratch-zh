@@ -1,30 +1,50 @@
 ---
 name: gateway-bootstrap
-description: 根据 users、backends 和 compliance constraints 生成 gateway 配置规范。
-version: 1.0.0
+description: Design a stateless MCP 2026-07-28 gateway with registry admission, policy, routing, and compatibility boundaries.
+version: 2.0.0
 phase: 13
 lesson: 17
-tags: [mcp, gateway, rbac, audit, policy]
+tags: [mcp, gateway, stateless, registry, rbac, subscriptions, tasks]
 ---
 
-给定一个企业 MCP 方案（users、backends、compliance constraints），生成 gateway 配置规范。
+Given clients, backends, authorization requirements, and compliance constraints, produce a gateway design.
 
-生成：
+## Required inputs
 
-1. Backend 列表。每项包含其 registry（Official / Glama / custom）、canonical name（reverse-DNS）、固定的 description hashes。
-2. User 列表。每项包含一个 role 和 allowed-tool 集合。
-3. RBAC Matrix。按每个 user x backend-tool 一行，包含 allow/deny。
-4. Rate limits。按 user 设置 burst 和 sustained limits；对高成本 tools 设置 per-tool limits。
-5. Audit plan。Log destination（file、OpenTelemetry、SIEM）、retention、captured fields。
+- Public gateway resource URI, accepted protocol revisions, and transport.
+- Authenticated principal and role model.
+- Backend endpoints, issuers, resources, registry records, publisher evidence, and approved descriptors.
+- Tool visibility, argument policy, cost classes, and data sensitivity.
+- Streaming, change-notification, MRTR, and Tasks requirements.
+- Audit, retention, trace, and redaction requirements.
 
-Hard rejects:
-- 任何不在 Official Registry 中且没有明确 admin approval 的 backend。
-- 任何允许所有 users 使用所有 tools 的 RBAC rule。Privilege explosion。
-- 任何没有 immutable storage 的 audit plan。Compliance fail。
+## Produce
 
-Refusal rules:
-- 如果 developer population 超过 100 且没有定义任何 roles，拒绝 bootstrap，并要求至少三个 roles。
-- 如果方案未识别 OAuth 2.1 identity provider，拒绝并建议先采用 Keycloak 或 Auth0。
-- 如果任何 backend 使用 stdio，拒绝通过 HTTP gateway 代理它；stdio servers 应由每个 developer 在本地运行。
+1. Stateless ingress. One POST endpoint, per-request version and capabilities, matching method and name headers, JSON or request-scoped SSE, and 405 for modern GET and DELETE. Validate header equality before version support. Specify HTTP 400 `-32020`, HTTP 400 `-32022` with exact supported and requested data, HTTP 404 `-32601`, optional error data serialization, and 202 empty-body notification handling.
+2. Discovery plan. Implement gateway `server/discover`, discover each backend, expose only safe end-to-end capability intersections, and include current `resultType`, `ttlMs`, `cacheScope`, and server identity metadata.
+3. Admission table. Validate the official Registry `server.json` publication shape and `com.example/*` style name separately from security admission. For every backend, join the record to external verified publisher namespace, provenance source, endpoint, version policy, descriptor digest, issuer, resource, approval, and expiry state.
+4. Namespace map. Give every backend tool a stable qualified public name and retain a valid object-root `inputSchema` on every `tools/list` descriptor. Reject collision-by-order.
+5. Authorization matrix. Map principal and role to public tool, resource, arguments, and scopes. Keep outer and backend credentials separate and issuer-bound.
+6. Forwarding contract. Build a fresh self-contained backend request, advertise only mediated client capabilities, validate the backend result, and preserve trace correlation.
+7. Cache plan. Make principal-dependent discovery and lists private. Set bounded TTLs and invalidation behavior.
+8. Rate and audit policy. Key limits by principal, issuer, resource, tool, cost class, and time. Redact credentials and unnecessary sensitive arguments.
+9. Interaction routing. Describe request-scoped SSE, `subscriptions/listen` acknowledgment and reconnect behavior, byte-exact MRTR state forwarding, and Tasks routing by task id in `Mcp-Name`.
+10. Transport adapter. If the gateway receives parsed requests and headers, label it an in-process protocol model and connect it to Lesson 09 for JSON Content-Type and JSON plus SSE Accept enforcement.
+11. Compatibility adapter. Fence older initialization, session ids, GET streams, resource subscriptions, and experimental task methods away from the modern gateway core.
 
-Output: 一页配置文档，包含 backend list、user list、RBAC matrix、rate limits 和 audit plan。最后给出团队应首先实现的单条 policy rule。
+## Hard rejects
+
+- Session affinity, session stores, or session-id rewriting presented as required for 2026-07-28.
+- Trusting registry presence or a display name without admission evidence.
+- Silent tool collisions or descriptor pin updates without re-approval.
+- Reusing the outer bearer token at a backend or a backend token at another issuer or resource.
+- Public caching of a principal-filtered list.
+- A standalone modern GET event stream, Last-Event-ID replay, or resource subscribe method.
+- New `tasks/list` or `tasks/result` behavior.
+- Rate limits keyed only by a removed protocol session.
+- Security verification invented inside `server.json` instead of separate verified admission and provenance state.
+- Namespaced tool descriptors that omit `inputSchema`.
+
+## Output format
+
+Return sections named Ingress, Discovery, Admission, Namespace Map, Authorization, Forwarding, Cache, Rate Limits, Audit, Interactions, and Legacy Adapter. End with the one route that requires the strongest acceptance test.

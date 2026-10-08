@@ -1,0 +1,48 @@
+{
+  "lesson": "08-building-an-mcp-client",
+  "title": "构建 MCP Client：服务发现、路由与双时代回退",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "支持双时代（dual-era）的 stdio Client 应该优先发送什么作为首个探测？",
+      "options": ["Mcp-Session-Id", "server/discover", "initialize", "HTTP GET"],
+      "correct": 1,
+      "explanation": "服务发现探测在现代逐请求元数据模式与旧版初始化握手之间建立了明确清晰的分界线。"
+    },
+    {
+      "stage": "check",
+      "question": "服务发现探测返回了 -32022 且包含双方均支持的版本，Client 应该怎么做？",
+      "options": ["使用支持的版本重试现代服务发现", "发送 initialize 握手", "发起 HTTP GET", "忽略该 Server"],
+      "correct": 0,
+      "explanation": "-32022 属于已被识别的现代协议错误证据，因此 Client 应继续保持现代模式并重试协商。"
+    },
+    {
+      "stage": "check",
+      "question": "以下哪项是选定 Legacy（旧版）时代的充分必要条件？",
+      "options": ["收到任何 -32601 错误", "Peer 处于 Legacy 白名单中", "Peer 在白名单中，且有超时的 initialize 探测返回了合规且受支持的旧版结果", "服务发现探测本身发生超时"],
+      "correct": 2,
+      "explanation": "白名单仅赋予了发起探测的权限；唯有针对配置支持的旧版协议返回结构合规的正向 initialize 结果，才能确认进入 Legacy 时代。"
+    },
+    {
+      "stage": "check",
+      "question": "当两个不同 Server 均暴露名为 search 的工具时，Client 应如何处理命名冲突？",
+      "options": ["静默覆盖其中一个", "信任进程启动先后顺序", "根据声明的策略加前缀或拒绝加载", "创建一个协议 Session"],
+      "correct": 2,
+      "explanation": "显式加前缀（如 server/tool）或明确报错拒绝，能够保证工具路由的透明性与确定性。"
+    },
+    {
+      "stage": "post",
+      "question": "在 Client 协商进入 Legacy 时代后，旧版结果省略了 resultType 字段，Client 应如何解读？",
+      "options": ["解读为 input_required", "解读为 complete（已完成）", "解读为传输层错误", "解读为 server/discover"],
+      "correct": 1,
+      "explanation": "对于来自较早协议版本且缺少 resultType 的响应，Client 应默认将其当作 complete 处理。"
+    },
+    {
+      "stage": "post",
+      "question": "在现代传输层中断后，在恢复业务路由之前必须完成什么操作？",
+      "options": ["重新连接、重新发现（rediscover）并重新列出工具（relist）", "使用 Last-Event-ID 恢复传输", "回显 Mcp-Session-Id", "复用旧连接的元数据"],
+      "correct": 0,
+      "explanation": "Client 必须重建对端状态记录，并且仅对安全操作使用全新的请求 ID 进行重试。"
+    }
+  ]
+}

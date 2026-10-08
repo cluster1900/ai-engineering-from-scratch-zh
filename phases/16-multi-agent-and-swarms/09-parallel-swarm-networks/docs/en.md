@@ -66,6 +66,11 @@ Mitigations:
 
 Swarm 与 content-based routing（Lesson 22）天然配对。不要使用 generic queue，而是为每种 message type 准备一个 queue。Specialist workers 只订阅自己的 type。这是可扩展到数千 agents 的 message-bus architectures 的基础。
 
+
+```figure
+sw-work-stealing
+```
+
 ## 构建它
 `code/main.py` 实现了一个由 4 个 worker threads 组成的 swarm，它们从共享 `queue.Queue` 中拉取 tasks。Tasks 具有可变 durations（有些快，有些慢）。该 demo 对比：
 

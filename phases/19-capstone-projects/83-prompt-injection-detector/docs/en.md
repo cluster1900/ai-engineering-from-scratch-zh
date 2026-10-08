@@ -43,6 +43,11 @@ flowchart LR
 
 探测器不是Safety Gate。这只是门所发出的众多信号之一。在设计上，它倾向于回忆编码技巧和指令覆盖，并接受角色扮演的中等精度，因为角色扮演攻击模糊到合法的创意写作请求，并且门将使用其他信号（规则引擎、分类器）来处理边界情况。
 
+
+```figure
+injection-gate
+```
+
 ## 构建它
 
 语料库加载器读取第 82 课中的 `outputs/taxonomy.json`。规则以数据而非代码的形式存在于 `code/rules.py` 中。每个规则都是一个包含 `name`、`category`、`score` 以及 `substring` 或 `regex` 的字典。检测器类将它们编译一次。

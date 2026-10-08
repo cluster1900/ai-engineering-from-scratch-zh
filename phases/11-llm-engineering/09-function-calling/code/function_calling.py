@@ -1,5 +1,10 @@
+"""Function calling from scratch: a tool registry, the model-to-tool dispatch
+loop, and guarded tool implementations. See docs/en.md for the walkthrough."""
+
+import ast
 import json
 import math
+import re
 import time
 
 
@@ -100,10 +105,18 @@ def read_file(path):
 def run_code(code, language="python"):
     if language != "python":
         return {"error": True, "message": f"Language '{language}' not supported. Only 'python' is available."}
-    forbidden = ["import os", "import sys", "import subprocess", "exec(", "eval(", "__import__", "open("]
-    for pattern in forbidden:
-        if pattern in code:
-            return {"error": True, "message": f"Forbidden operation: {pattern}", "code": "SECURITY_VIOLATION"}
+    try:
+        tree = ast.parse(code)
+    except SyntaxError as e:
+        return {"error": True, "message": f"SyntaxError: {e}", "code": "SYNTAX_ERROR"}
+    unsafe_names = {"exec", "eval", "compile", "__import__", "open", "globals", "locals", "vars", "getattr", "setattr", "delattr"}
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            return {"error": True, "message": "Forbidden operation: import is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Attribute) and node.attr.startswith("__") and node.attr.endswith("__"):
+            return {"error": True, "message": "Forbidden operation: dunder attribute access is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Name) and node.id in unsafe_names:
+            return {"error": True, "message": f"Forbidden operation: {node.id} is not allowed", "code": "SECURITY_VIOLATION"}
     try:
         local_vars = {}
         exec(
@@ -183,7 +196,7 @@ def register_all_tools():
     )
     register_tool(
         "run_code",
-        "Execute Python code in a sandboxed environment. Set a 'result' variable to return output.",
+        "Run a small Python snippet behind a static-analysis guard and a restricted interpreter. This is a teaching filter, not real isolation. Set a 'result' variable to return output.",
         {
             "type": "object",
             "properties": {
@@ -216,13 +229,17 @@ def simulate_model_decision(user_message, tools, conversation_history):
         return calls
 
     if any(word in msg for word in ["calculate", "compute", "math", "what is", "how much"]):
+        for run in re.findall(r"[0-9.+\-*/()\s]{3,}", msg):
+            expr = run.strip()
+            if not any(c.isdigit() for c in expr):
+                continue
+            if not any(c in expr for c in "+-*/"):
+                continue
+            if "error" not in calculator(expr):
+                return [{"name": "calculator", "arguments": {"expression": expr}}]
         for token in msg.split():
             if any(c in token for c in "+-*/"):
                 return [{"name": "calculator", "arguments": {"expression": token}}]
-        if "+" in msg or "-" in msg or "*" in msg or "/" in msg:
-            expr = "".join(c for c in msg if c in "0123456789+-*/.() ")
-            if expr.strip():
-                return [{"name": "calculator", "arguments": {"expression": expr.strip()}}]
         return [{"name": "calculator", "arguments": {"expression": "0"}}]
 
     if any(word in msg for word in ["search", "find", "look up", "google"]):

@@ -61,6 +61,11 @@ GitHub issue 被标记为 `@agent fix` 或 PR comment
 - Observability: Langfuse，带 per-PR trace archive，并从 PR body 链接
 - Budget: per-repo daily dollar ceiling；每个 repo 每天最多 PR 数
 
+
+```figure
+cf-issue-to-pr
+```
+
 ## 构建它
 1. **GitHub App.** Fine-grained installation token：issues read+write、pull_requests write、contents read+write、workflows read。Branch protection（唯一能做到这一点的 surface）强制执行“禁止 direct push 到 `main`”和“禁止 force-push”；app 不在 bypass list 中。worker 对 proposed diff 执行“禁止写入 `.github/workflows` 下的内容”的 allow-list check，因为 GitHub App permissions 不是 path-scoped。
 

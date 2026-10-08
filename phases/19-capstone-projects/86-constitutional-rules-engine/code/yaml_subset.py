@@ -154,12 +154,7 @@ def _parse_sequence(lines: list[str], start: int, indent: int) -> tuple[list[Any
             synthetic = " " * child_indent + rest
             j = i + 1
             extra_lines = []
-            while j < len(lines) and _indent_of(lines[j]) >= child_indent:
-                # A nested sequence item (for example inside any_of/all_of) is
-                # still part of this mapping. Only a dash at the current
-                # sequence indentation starts the next top-level item.
-                if _indent_of(lines[j]) == indent and lines[j].lstrip().startswith("- "):
-                    break
+            while j < len(lines) and _indent_of(lines[j]) > indent:
                 extra_lines.append(lines[j])
                 j += 1
             block = [synthetic] + extra_lines

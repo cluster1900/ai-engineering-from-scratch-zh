@@ -61,6 +61,11 @@ State 写入需要能承受部分失败：写入 tempfile，fsync，然后 renam
 
 当 schema 变化时，在 schema bump 旁边交付一个 migration script。state file 带有 `schema_version` field；manager 会拒绝加载它无法迁移的版本文件。
 
+
+```figure
+wb-state-persist
+```
+
 ## 构建它
 `code/main.py` 实现：
 

@@ -201,6 +201,11 @@ circuit breaker 会在达到限制时停止支出。没有它，一个 bug 或�
 
 Semantic caching 的 Embedding 成本（$180/month）在 cache hits 的第一个小时内就能收回。
 
+
+```figure
+semantic-cache
+```
+
 ## 构建它
 
 ### 步骤 1：Cost Calculator

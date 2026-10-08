@@ -1,7 +1,7 @@
-/* figures-vision-speech.js — Phase 4（computer
-   vision）和 Phase 6（speech & audio）的交互式课程图示。在 lesson-figures.js 之后加载，
-   并通过 window.LF 注册 widgets。Vanilla ES5，无 deps，通过 CSS
-   vars 设置主题。创作方式与 docs/en.md 中的 fenced block 相同：
+/* figures-vision-speech.js — interactive lesson figures for Phase 4 (computer
+   vision) and Phase 6 (speech & audio). Loads after lesson-figures.js and
+   registers widgets through window.LF. Vanilla ES5, no deps, theme via CSS
+   vars. Authoring is the same fenced block in docs/en.md:
        ```figure
        convolution-kernel
        ``` */
@@ -20,7 +20,7 @@
     ]);
   }
 
-  // ── convolution-kernel：在固定 8x8 image 上滑动一个 3x3 kernel ──────────
+  // ── convolution-kernel: slide a 3x3 kernel over a fixed 8x8 image ──────────
   function convolutionKernel(host) {
     var IMG = [
       [10, 12, 14, 80, 82, 16, 14, 12],
@@ -55,8 +55,8 @@
     state._render = function () {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       var cell = 22, gx = 8, gy = 18, gx2 = 300, r, c;
-      svg.appendChild(svgEl('text', { x: gx, y: 12, fill: 'var(--ink-mute,#777)', 'font-size': '10', 'font-family': 'monospace' }, [tnode('输入 8x8')]));
-      svg.appendChild(svgEl('text', { x: gx2, y: 12, fill: 'var(--ink-mute,#777)', 'font-size': '10', 'font-family': 'monospace' }, [tnode('输出 6x6')]));
+      svg.appendChild(svgEl('text', { x: gx, y: 12, fill: 'var(--ink-mute,#777)', 'font-size': '10', 'font-family': 'monospace' }, [tnode('input 8x8')]));
+      svg.appendChild(svgEl('text', { x: gx2, y: 12, fill: 'var(--ink-mute,#777)', 'font-size': '10', 'font-family': 'monospace' }, [tnode('output 6x6')]));
       for (r = 0; r < N; r++) for (c = 0; c < N; c++) {
         svg.appendChild(svgEl('rect', { x: gx + c * cell, y: gy + r * cell, width: cell - 1, height: cell - 1, fill: 'var(--blueprint,#3553ff)', opacity: gray(IMG[r][c]).toFixed(3) }));
       }
@@ -69,9 +69,9 @@
         svg.appendChild(svgEl('rect', { x: gx2 + c * ocell, y: gy + r * ocell, width: ocell - 1, height: ocell - 1, fill: 'var(--blueprint,#3553ff)', opacity: gray(ov).toFixed(3), stroke: hot ? 'var(--warn,#b8870f)' : 'none', 'stroke-width': '2' }));
       }
       var out = conv(wx, wy);
-      meta.textContent = 'window 位于 (' + wx + ',' + wy + ')  ·  输出 = ' + out.toFixed(1) + (DIV[state.kernel] > 1 ? '  (sum / ' + DIV[state.kernel] + ')' : '');
+      meta.textContent = 'window at (' + wx + ',' + wy + ')  ·  output = ' + out.toFixed(1) + (DIV[state.kernel] > 1 ? '  (sum / ' + DIV[state.kernel] + ')' : '');
       var k = KERNELS[state.kernel];
-      formula.textContent = '输出 = Σ kernel · patch   ·   kernel 行 [' + k[0].join(' ') + '] [' + k[1].join(' ') + '] [' + k[2].join(' ') + ']';
+      formula.textContent = 'output = Σ kernel · patch   ·   kernel rows [' + k[0].join(' ') + '] [' + k[1].join(' ') + '] [' + k[2].join(' ') + ']';
     };
     function tnode(t) { return document.createTextNode(t); }
 
@@ -80,13 +80,13 @@
       slider(state, 'wx', 'window x', 0, OUT - 1, 1),
       slider(state, 'wy', 'window y', 0, OUT - 1, 1)
     ]);
-    host.appendChild(shell('CONVOLUTION KERNEL', '选择一个 kernel，滑动 window',
+    host.appendChild(shell('CONVOLUTION KERNEL', 'pick a kernel, slide the window',
       grid, [svg, meta, formula],
-      'Convolution 会把一个小 kernel 覆盖到 image 的每个 3x3 patch 上，并对逐元素乘积求和。edge kernel 会抵消平坦区域并点亮垂直带；blur 会平均邻居；sharpen 会相对于周围放大中心。由于 window 无法以边界为中心，输出在每一边都会少两个 pixels。'));
+      'A convolution lays a small kernel over every 3x3 patch of the image and sums the elementwise products. The edge kernel cancels flat regions and lights up the vertical band; blur averages neighbors; sharpen amplifies the center against its surround. The output is two pixels smaller per side because the window cannot center on the border.'));
     state._render();
   }
 
-  // ── pooling：在 4x4 grid 上做 2x2 max 或 average pooling，stride 为 2 ──────────
+  // ── pooling: 2x2 max or average pooling over a 4x4 grid, stride 2 ──────────
   function pooling(host) {
     var GRID = [
       [3, 8, 2, 1],
@@ -114,8 +114,8 @@
     state._render = function () {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       var cell = 40, gx = 14, gy = 30, gx2 = 320, r, c;
-      svg.appendChild(svgEl('text', { x: gx, y: 20, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [tx('输入 4x4')]));
-      svg.appendChild(svgEl('text', { x: gx2, y: 20, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [tx('输出 2x2')]));
+      svg.appendChild(svgEl('text', { x: gx, y: 20, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [tx('input 4x4')]));
+      svg.appendChild(svgEl('text', { x: gx2, y: 20, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [tx('output 2x2')]));
       for (r = 0; r < 4; r++) for (c = 0; c < 4; c++) {
         var win = poolWindow(Math.floor(r / 2) * 2, Math.floor(c / 2) * 2);
         var local = (r % 2) * 2 + (c % 2);
@@ -129,22 +129,22 @@
         svg.appendChild(svgEl('text', { x: gx2 + c * cell + (cell - 2) / 2, y: gy + r * cell + (cell - 2) / 2 + 4, fill: 'var(--bg,#fafaf5)', 'font-size': '13', 'font-family': 'monospace', 'text-anchor': 'middle' }, [tx(state.mode === 'max' ? String(p.val) : p.val.toFixed(1))]));
       }
       meta.textContent = state.mode === 'max'
-        ? '每个 2x2 window 保留最大值（在输入中用轮廓标出）'
-        : '每个 2x2 window 保留四个值的平均值';
-      formula.textContent = '2x2 window，stride 2  ·  4x4 → 2x2  ·  ' + (state.mode === 'max' ? 'out = max(window)' : 'out = mean(window)');
+        ? 'each 2x2 window keeps its largest value (outlined in the input)'
+        : 'each 2x2 window keeps the average of its four values';
+      formula.textContent = '2x2 window, stride 2  ·  4x4 → 2x2  ·  ' + (state.mode === 'max' ? 'out = max(window)' : 'out = mean(window)');
     };
     function tx(t) { return document.createTextNode(t); }
 
     var grid = el('div', { class: 'lf-grid' }, [
       select(state, 'mode', 'pooling', [['max', 'max'], ['average', 'average']])
     ]);
-    host.appendChild(shell('POOLING', 'max 或 average',
+    host.appendChild(shell('POOLING', 'max or average',
       grid, [svg, meta, formula],
-      'Pooling 通过把每个 window 汇总成一个值来下采样 feature map。stride 为 2 的 2x2 window 会把两个维度都减半，将 4x4 grid 变成 2x2。Max pooling 会转发每个 window 中最强的 activation（已高亮）；average pooling 会转发 mean。结果更小、对平移更 tolerant，并且让下一层更便宜。'));
+      'Pooling downsamples a feature map by summarizing each window into one value. A 2x2 window with stride 2 halves both dimensions, turning the 4x4 grid into 2x2. Max pooling forwards the strongest activation in each window (highlighted); average pooling forwards the mean. The result is smaller, translation-tolerant, and cheaper for the next layer.'));
     state._render();
   }
 
-  // ── receptive-field：一个深层 neuron 能看到多少 input pixels ────────────
+  // ── receptive-field: how many input pixels one deep neuron sees ────────────
   function receptiveField(host) {
     var state = { layers: 4, k: 3, stride: 1 };
     var num = el('span', { class: 'lf-num' });
@@ -158,21 +158,21 @@
         jump = jump * state.stride;
       }
       num.innerHTML = rf + ' <small>x ' + rf + ' pixels</small>';
-      meta.textContent = state.layers + ' 个 conv layers  ·  kernel ' + state.k + '  ·  stride ' + state.stride + '  ·  一个 output neuron 能看到宽 ' + rf + ' pixels 的区域';
-      formula.textContent = 'RF 每层增长 (k − 1) · Π(strides)   ·   RF = 1 + Σ (k − 1) · s^(layer−1)';
+      meta.textContent = state.layers + ' conv layers  ·  kernel ' + state.k + '  ·  stride ' + state.stride + '  ·  one output neuron sees a ' + rf + '-pixel-wide region';
+      formula.textContent = 'RF grows by (k − 1) · Π(strides) per layer   ·   RF = 1 + Σ (k − 1) · s^(layer−1)';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'layers', 'conv layers', 1, 12, 1),
       slider(state, 'k', 'kernel size', 1, 7, 2),
       slider(state, 'stride', 'stride', 1, 3, 1)
     ]);
-    host.appendChild(shell('RECEPTIVE FIELD', '堆叠 layers',
+    host.appendChild(shell('RECEPTIVE FIELD', 'stack the layers',
       grid, [num, meta, formula],
-      'CNN 深处的 neuron 看不到整张 image，只能看到通过下方每一层传给它的 patch。每个 kernel 都会让这个 patch 扩宽 (kernel − 1)，而任何 stride 都会放大后续所有 layers 的覆盖范围。堆叠小 kernels 是 network 低成本构建大 receptive field 的方式，无需使用一个巨大的 filter。'));
+      'A neuron deep in a CNN does not see the whole image, only the patch that fed into it through every layer below. Each kernel widens that patch by (kernel − 1), and any stride multiplies the reach of all later layers. Stacking small kernels is how a network builds a large receptive field cheaply, without one giant filter.'));
     state._render();
   }
 
-  // ── conv-output-size：floor((W - K + 2P)/S) + 1，配有条带图 ───────
+  // ── conv-output-size: floor((W - K + 2P)/S) + 1 with a strip diagram ───────
   function convOutputSize(host) {
     var state = { W: 32, K: 3, S: 1, P: 1 };
     var svg = svgEl('svg', { viewBox: '0 0 520 200' });
@@ -200,11 +200,11 @@
         var cx = x0 + (i * state.S + state.K / 2) * unit;
         svg.appendChild(svgEl('circle', { cx: cx.toFixed(1), cy: y0 + 60, r: '2.4', fill: 'var(--blueprint,#3553ff)' }));
       }
-      svg.appendChild(svgEl('text', { x: x0, y: y0 - 12, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [t('padded input = ' + (state.W + 2 * state.P) + '（灰色 = padding，方框 = kernel）')]));
+      svg.appendChild(svgEl('text', { x: x0, y: y0 - 12, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [t('padded input = ' + (state.W + 2 * state.P) + ' (grey = padding, box = kernel)')]));
       svg.appendChild(svgEl('text', { x: x0, y: y0 + 90, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [t('output positions = ' + (valid ? out : 0))]));
       num.innerHTML = (valid ? out : 0) + ' <small>x ' + (valid ? out : 0) + '</small>';
-      meta.textContent = valid ? 'W ' + state.W + '  K ' + state.K + '  S ' + state.S + '  P ' + state.P + '  →  每边 ' + out
-        : 'kernel 大于 padded input：没有有效输出';
+      meta.textContent = valid ? 'W ' + state.W + '  K ' + state.K + '  S ' + state.S + '  P ' + state.P + '  →  ' + out + ' per side'
+        : 'kernel larger than padded input: no valid output';
       formula.textContent = 'out = floor((W − K + 2P) / S) + 1 = floor((' + state.W + ' − ' + state.K + ' + ' + (2 * state.P) + ') / ' + state.S + ') + 1';
     };
     function t(s) { return document.createTextNode(s); }
@@ -214,13 +214,13 @@
       slider(state, 'S', 'stride S', 1, 4, 1),
       slider(state, 'P', 'padding P', 0, 5, 1)
     ]);
-    host.appendChild(shell('CONV OUTPUT SIZE', '拖动 W、K、S、P',
+    host.appendChild(shell('CONV OUTPUT SIZE', 'drag W, K, S, P',
       grid, [svg, num, meta, formula],
-      'Convolution 输出的 spatial size 遵循一个公式：floor((W − K + 2P) / S) + 1。Padding P 添加边界，让 kernel 可以触及 edges 并保持 size；stride S 会跳过 positions 并缩小输出。"Same" padding 会选择 P，使输出匹配输入；"valid" padding 使用 P = 0，并按 K − 1 缩小。'));
+      'The spatial size out of a convolution follows one formula: floor((W − K + 2P) / S) + 1. Padding P adds border so the kernel can reach the edges and keep size; stride S skips positions and shrinks the output. "Same" padding picks P so the output matches the input; "valid" padding uses P = 0 and shrinks by K − 1.'));
     state._render();
   }
 
-  // ── cnn-param-count：conv weight sharing 对比 dense layer ──────────────────
+  // ── cnn-param-count: conv weight sharing vs a dense layer ──────────────────
   function cnnParamCount(host) {
     var state = { cin: 64, cout: 128, k: 3, hw: 32 };
     var num = el('span', { class: 'lf-num' });
@@ -238,8 +238,8 @@
       var ratio = dense / conv;
       num.innerHTML = human(conv) + ' <small>conv params</small>';
       bar.style.width = clamp(state.k * state.k * state.cin * state.cout / 1e6 * 4, 2, 100) + '%';
-      meta.textContent = '同一张 ' + state.hw + 'x' + state.hw + ' map 上的 dense layer = ' + human(dense) + ' params  ·  多 ' + human(ratio) + 'x';
-      formula.textContent = 'conv = (K·K·Cin + 1)·Cout = (' + state.k + '·' + state.k + '·' + state.cin + ' + 1)·' + state.cout + '   ·   与 spatial size 无关';
+      meta.textContent = 'a dense layer on the same ' + state.hw + 'x' + state.hw + ' map = ' + human(dense) + ' params  ·  ' + human(ratio) + 'x more';
+      formula.textContent = 'conv = (K·K·Cin + 1)·Cout = (' + state.k + '·' + state.k + '·' + state.cin + ' + 1)·' + state.cout + '   ·   independent of spatial size';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'cin', 'in channels', 1, 512, 1),
@@ -249,11 +249,11 @@
     ]);
     host.appendChild(shell('CNN PARAM COUNT', 'conv vs dense',
       grid, [num, barWrap, meta, formula],
-      'Convolution layer 的成本是 (K·K·Cin + 1)·Cout 个 weights，并在每个 spatial position 复用这一个 kernel。连接同一个 feature map 的 dense layer 则需要为每对 input-output pixel 单独准备一个 weight，数量会随 image size 爆炸。Weight sharing 正是 CNN 能小到足以在 images 上训练的原因。'));
+      'A convolution layer costs (K·K·Cin + 1)·Cout weights and reuses that one kernel at every spatial position. A dense layer wiring the same feature map would need a separate weight per input-output pixel pair, which explodes with image size. Weight sharing is why CNNs stay small enough to train on images at all.'));
     state._render();
   }
 
-  // ── spectrogram-window：STFT window size 与 time-frequency 取舍 ───
+  // ── spectrogram-window: STFT window size and the time-frequency tradeoff ───
   function spectrogramWindow(host) {
     var state = { win: 256 };
     var SR = 16000;
@@ -278,19 +278,19 @@
       }
       svg.appendChild(svgEl('text', { x: x0, y: y0 + gh + 16, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [t('time →')]));
       svg.appendChild(svgEl('text', { x: 8, y: y0 + 8, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace' }, [t('freq')]));
-      meta.textContent = 'window ' + state.win + ' samples = ' + (winSec * 1000).toFixed(1) + ' ms  ·  freq bins 每 ' + freqRes.toFixed(1) + ' Hz 一个  ·  '
-        + (state.win <= 256 ? 'time 上清晰，frequency 上模糊' : state.win >= 1024 ? 'frequency 上清晰，time 上模糊' : '平衡');
-      formula.textContent = 'time res = window / SR，freq res = SR / window   ·   乘积固定（uncertainty）';
+      meta.textContent = 'window ' + state.win + ' samples = ' + (winSec * 1000).toFixed(1) + ' ms  ·  freq bins every ' + freqRes.toFixed(1) + ' Hz  ·  '
+        + (state.win <= 256 ? 'sharp in time, blurry in frequency' : state.win >= 1024 ? 'sharp in frequency, blurry in time' : 'balanced');
+      formula.textContent = 'time res = window / SR,  freq res = SR / window   ·   product is fixed (uncertainty)';
     };
     function t(s) { return document.createTextNode(s); }
     var grid = el('div', {}, [slider(state, 'win', 'STFT window (samples)', 64, 2048, 64)]);
-    host.appendChild(shell('SPECTROGRAM WINDOW', '拖动 window size',
+    host.appendChild(shell('SPECTROGRAM WINDOW', 'drag the window size',
       grid, [svg, meta, formula],
-      'Spectrogram 会把 signal 切成多个 windows，并对每个 window 做 Fourier transform。短 window 能精确定位事件发生的时间，但会把能量扩散到 frequency 上；长 window 能细致分辨 pitch，但会把它涂抹到 time 上。两种 resolution 的乘积固定，所以每个选择都是用一个换另一个。'));
+      'A spectrogram chops the signal into windows and takes a Fourier transform of each. A short window pins down when something happened but spreads its energy across frequency; a long window resolves pitch finely but smears it across time. The product of the two resolutions is fixed, so every choice trades one for the other.'));
     state._render();
   }
 
-  // ── mel-scale：linear Hz 对比 mel curve ─────────────────────────────
+  // ── mel-scale: linear Hz against the mel curve ─────────────────────────────
   function melScale(host) {
     var state = { f: 4000 };
     var FMAX = 16000;
@@ -318,18 +318,18 @@
       svg.appendChild(svgEl('text', { x: PAD - 6, y: PAD + 10, fill: 'var(--ink-mute,#777)', 'font-size': '11', 'font-family': 'monospace', 'text-anchor': 'end' }, [tx('mel')]));
       num.innerHTML = Math.round(m) + ' <small>mel</small>';
       var fracHz = state.f / FMAX, fracMel = m / MELMAX;
-      meta.textContent = state.f + ' Hz 是 Hz axis 的 ' + Math.round(fracHz * 100) + '%，但只到 mel axis 的 ' + Math.round(fracMel * 100) + '%  ·  high frequencies 被压缩';
-      formula.textContent = 'mel = 2595 · log10(1 + f / 700)   ·   虚线是用于对比的 linear identity';
+      meta.textContent = state.f + ' Hz is ' + Math.round(fracHz * 100) + '% of the Hz axis but only ' + Math.round(fracMel * 100) + '% up the mel axis  ·  high frequencies are compressed';
+      formula.textContent = 'mel = 2595 · log10(1 + f / 700)   ·   dashed line is the linear identity for comparison';
     };
     function tx(s) { return document.createTextNode(s); }
     var grid = el('div', {}, [slider(state, 'f', 'frequency (Hz)', 100, FMAX, 100)]);
-    host.appendChild(shell('MEL SCALE', '拖动 frequency',
+    host.appendChild(shell('MEL SCALE', 'drag the frequency',
       grid, [svg, num, meta, formula],
-      '人耳对 low frequencies 的分辨更细，对 high ones 的分辨更粗。mel scale 会弯曲 linear Hz 来匹配这一点：它在 1 kHz 以下接近 linear，在其以上明显压缩，所以从 8 到 9 kHz 的跳变跨越的 mels 远少于从 200 到 300 Hz。Mel filterbanks 会把 resolution 用在耳朵真正关心的位置。'));
+      'Human hearing resolves low frequencies finely and high ones coarsely. The mel scale bends linear Hz to match: it is near-linear below 1 kHz and compresses steeply above it, so a jump from 8 to 9 kHz spans far fewer mels than 200 to 300 Hz. Mel filterbanks spend their resolution where the ear actually cares.'));
     state._render();
   }
 
-  // ── nyquist-aliasing：fs/2 以上的 sampling 会折叠成虚假的 low frequency ───
+  // ── nyquist-aliasing: sampling above fs/2 folds to a false low frequency ───
   function nyquistAliasing(host) {
     var state = { f: 7, fs: 20 };
     var W = 520, H = 220, PAD = 28, DUR = 1;
@@ -360,16 +360,16 @@
       svg.appendChild(svgEl('path', { d: ad, fill: 'none', stroke: 'var(--warn,#b8870f)', 'stroke-width': '1.5', 'stroke-dasharray': '5 3' }));
       for (k = 0; k < sx.length; k++) { svg.appendChild(svgEl('circle', { cx: px(sx[k]), cy: py(sy[k]), r: '3', fill: 'var(--blueprint,#3553ff)' })); }
       status.innerHTML = over ? 'aliased → ' + fa.toFixed(1) + ' Hz' : 'sampled cleanly';
-      meta.textContent = 'signal ' + state.f + ' Hz  ·  sample rate ' + state.fs + ' Hz  ·  Nyquist = ' + (state.fs / 2) + ' Hz  ·  ' + (over ? '高于 Nyquist：dots 描绘出虚假的 ' + fa.toFixed(1) + ' Hz wave' : '低于 Nyquist：被忠实捕获');
-      formula.textContent = '当 f > fs/2 时出现 alias   ·   f_alias = |f − round(f/fs)·fs|';
+      meta.textContent = 'signal ' + state.f + ' Hz  ·  sample rate ' + state.fs + ' Hz  ·  Nyquist = ' + (state.fs / 2) + ' Hz  ·  ' + (over ? 'above Nyquist: dots trace a false ' + fa.toFixed(1) + ' Hz wave' : 'below Nyquist: faithfully captured');
+      formula.textContent = 'alias appears when f > fs/2   ·   f_alias = |f − round(f/fs)·fs|';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       slider(state, 'f', 'signal frequency (Hz)', 1, 30, 1),
       slider(state, 'fs', 'sample rate (Hz)', 4, 40, 1)
     ]);
-    host.appendChild(shell('NYQUIST & ALIASING', '拖动 frequency 和 rate',
+    host.appendChild(shell('NYQUIST & ALIASING', 'drag frequency and rate',
       grid, [svg, status, meta, formula],
-      '灰色是真实 signal，蓝色 dots 是 samples，虚线是这些 dots 暗示的 wave。只要 sample rate 超过 signal frequency 的两倍，samples 就能重建原始 signal。把 frequency 推过 Nyquist (fs/2) 后，同样的 dots 会描绘出一个更低且虚假的 frequency：这就是 aliasing，也是 audio 在 sampling 前需要 low-pass filtered 的原因。'));
+      'Grey is the true signal, blue dots are the samples, the dashed line is the wave those dots imply. As long as the sample rate exceeds twice the signal frequency, the samples reconstruct the original. Push the frequency past Nyquist (fs/2) and the same dots trace a lower, false frequency: that is aliasing, and it is why audio is low-pass filtered before sampling.'));
     state._render();
   }
 

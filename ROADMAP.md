@@ -341,6 +341,14 @@
 | 21 | [LLM Routing Layer](phases/13-tools-and-protocols/21-llm-routing-layer/) | ✅ | ~45 min |
 | 22 | [Skills 与 Agent SDKs](phases/13-tools-and-protocols/22-skills-and-agent-sdks/) | ✅ | ~45 min |
 | 23 | [Capstone — Tool Ecosystem](phases/13-tools-and-protocols/23-capstone-tool-ecosystem/) | ✅ | ~120 min |
+| 24 | [Skill 发现与渐进式公开](phases/13-tools-and-protocols/24-skill-discovery-and-progressive-disclosure/) | ✅ | ~75 min |
+| 25 | [Skill 调用与路由](phases/13-tools-and-protocols/25-skill-invocation-and-routing/) | ✅ | ~75 min |
+| 26 | [Skill 权限、沙箱与信任边界](phases/13-tools-and-protocols/26-skill-permissions-sandboxes-and-trust/) | ✅ | ~75 min |
+| 27 | [Skill 评估、打包与可移植性](phases/13-tools-and-protocols/27-skill-evals-packaging-and-portability/) | ✅ | ~90 min |
+| 28 | [MCP Tool Contracts 与内容](phases/13-tools-and-protocols/28-mcp-tool-contracts-and-content/) | ✅ | ~75 min |
+| 29 | [MCP 可靠性、取消与流控](phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/) | ✅ | ~75 min |
+| 30 | [MCP Registry 供应链：准入、漂移与回滚](phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/) | ✅ | ~75 min |
+| 31 | [MCP 一致性工程：版本控制、证据与运维](phases/13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/) | ✅ | ~75 min |
 
 ## Phase 14: Agent Engineering — ✅（约 42 小时）
 
@@ -388,6 +396,18 @@
 | 40 | Multi-Session Handoff | ✅ | ~50 min |
 | 41 | 真实 Repo 上的 Workbench | ✅ | ~60 min |
 | 42 | Capstone: 发布可复用的 Agent Workbench Pack | ✅ | ~75 min |
+| 43 | [在 Agent 写代码前框定任务](phases/14-agent-engineering/43-frame-the-task-before-code/) | ✅ | ~60 min |
+| 44 | [构建基于证据的执行计划](phases/14-agent-engineering/44-plan-from-evidence/) | ✅ | ~65 min |
+| 45 | [带隔离与合并契约的 Agent 委托](phases/14-agent-engineering/45-delegate-with-isolation/) | ✅ | ~70 min |
+| 46 | [将每次 Agent 纠偏转化为系统改进](phases/14-agent-engineering/46-turn-feedback-into-system/) | ✅ | ~65 min |
+| 47 | [在选择输出之前先定义成效](phases/14-agent-engineering/47-outcomes-before-output/) | ✅ | ~60 min |
+| 48 | [发掘人们真正执行的工作流](phases/14-agent-engineering/48-discover-the-real-workflow/) | ✅ | ~70 min |
+| 49 | [映射假设并优先解决最高风险点](phases/14-agent-engineering/49-map-assumptions-and-risk/) | ✅ | ~65 min |
+| 50 | [选择能够改变决策的最小切片](phases/14-agent-engineering/50-choose-the-smallest-testable-slice/) | ✅ | ~65 min |
+| 51 | [编写保留人类判断力的规范说明](phases/14-agent-engineering/51-write-specifications-that-preserve-judgment/) | ✅ | ~75 min |
+| 52 | [在结果出现前设计成功度量指标](phases/14-agent-engineering/52-design-success-metrics/) | ✅ | ~70 min |
+| 53 | [审慎选择原型、试点还是生产级](phases/14-agent-engineering/53-prototype-pilot-or-production/) | ✅ | ~70 min |
+| 54 | [构建带权责与退役机制的反馈棘轮](phases/14-agent-engineering/54-build-the-feedback-ratchet/) | ✅ | ~75 min |
 
 ## Phase 15: Autonomous Systems — ✅（约 20 小时）
 
@@ -606,6 +626,6 @@
 
 ---
 
-**总计：20 个 Phase，503 节课程 | 503 已完成 | 预计约 1,050 小时**
+**总计：20 个 Phase，523 节课程 | 523 已完成 | 预计约 1,081 小时**
 
 想帮忙？选择任意 ⬚ 课程并提交 PR。参见 [CONTRIBUTING.md](CONTRIBUTING.md)。

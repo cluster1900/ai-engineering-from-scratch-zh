@@ -168,6 +168,11 @@ MCP 是 Anthropic 面向 tool interoperability 的 open standard。它不是让�
 
 MCP 之于 function calling，就像 HTTP 之于 networking。它标准化 transport layer，使 tools 变得 portable。
 
+
+```figure
+mx-tool-call-loop
+```
+
 ## 构建它
 ### 步骤 1： Define the Tool Registry
 

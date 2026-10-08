@@ -74,6 +74,11 @@ handoff 描述工作；clean state 让工作可恢复。它们不是同一件事
 
 cleanup 阶段会产出一个 `clean_state.json`，其中列出 blocking issues；空列表是 handoff generator 写 packet 前要断言的前置条件。建立在 dirty tree 上的 handoff 不是 handoff，而是转发混乱。两个 artifacts 成对出现：cleanup 证明 workbench 可以安全离开，handoff 证明下一个 session 知道从哪里开始。
 
+
+```figure
+wb-handoff-packet
+```
+
 ## 构建它
 
 `code/main.py` 实现了：

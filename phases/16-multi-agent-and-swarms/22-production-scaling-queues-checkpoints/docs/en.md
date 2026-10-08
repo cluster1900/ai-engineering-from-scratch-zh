@@ -116,6 +116,11 @@ Anthropic 的 multi-agent research system 使用 "rainbow deployments"：多个 
 - 面向 stateful workloads 的 rainbow/canary deployment。
 - Observability：per-agent traces、super-step audit、retry counter。
 
+
+```figure
+sw-checkpoint-replay
+```
+
 ## 构建它
 
 `code/main.py` 实现了：

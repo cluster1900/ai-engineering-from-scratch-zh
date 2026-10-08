@@ -40,6 +40,16 @@ at is prep of running
 3pm is pobj of at
 ```
 
+
+```figure
+pos-tagger
+```
+
+
+```figure
+dependency-arcs
+```
+
 ## 构建它
 
 ### 步骤 1： most-frequent-tag baseline

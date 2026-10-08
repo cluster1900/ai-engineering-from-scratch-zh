@@ -8,6 +8,11 @@
 **Time:** ~90 minutes
 
 ## Learning Objectives
+
+
+```figure
+cf-loop-contract
+```
 - 将 agent harness loop 规定为一个具有显式 transitions 的确定性 state machine。
 - 实现十个 lifecycle hook topics，operators 可以把 policy、telemetry 和 guardrails 接入其中。
 - 定义两个 pull points，loop 在这些位置把控制权交还给 caller，并在 fresh input 上恢复。

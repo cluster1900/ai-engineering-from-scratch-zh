@@ -55,6 +55,11 @@ flowchart TB
 
 循环运行固定的 20 步并退出。没有`while True`，没有人为干预，没有从外部状态恢复。您可以在无人值守的情况下运行并在完成后找到完整日志的Capstone是证明系统接线正确的Capstone。如果任何部分陷入僵局，演示将永远不会返回，并且测试fixture会捕获它。
 
+
+```figure
+ci-distributed-assembly
+```
+
 ## 构建它
 
 `code/main.py` 实现：

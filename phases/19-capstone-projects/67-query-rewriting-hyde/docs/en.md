@@ -99,6 +99,11 @@ Question: {user_query}
 
 模拟的形状才是重要的，而不是数据。在生产中，您将模拟替换为真实的模型调用。检索器不会改变。
 
+
+```figure
+cd-hyde-vector
+```
+
 ## 构建它
 
 `code/main.py` 实现：

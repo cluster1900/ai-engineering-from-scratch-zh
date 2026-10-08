@@ -1,0 +1,78 @@
+{
+  "lesson": "10-mcp-resources-and-prompts",
+  "title": "MCP Resource 与 Prompt",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Host 需要通过 URI 检索一份稳定的架构设计笔记。哪种 MCP primitive 最适合？",
+      "options": [
+        "Resource",
+        "取消通知（Cancellation notification）",
+        "协议会话（Protocol session）",
+        "破坏性 tool"
+      ],
+      "correct": 0,
+      "explanation": "Resource 通过 URI 暴露可寻址内容。Tool 用于执行操作，而会话与取消机制并不用于建模可读内容。"
+    },
+    {
+      "stage": "check",
+      "question": "在 2026-07-28 规范下，当 resources/read 收到未知的 resource URI 时，server 应当返回什么？",
+      "options": [
+        "resources/list_changed 通知",
+        "JSON-RPC 错误 -32601",
+        "空的 contents 成功响应数组",
+        "JSON-RPC 错误 -32602"
+      ],
+      "correct": 3,
+      "explanation": "当前的 Resources 契约对无效或未知的 resource URI 使用无效参数错误码 -32602。返回空的成功结果会掩盖调用方的错误。"
+    },
+    {
+      "stage": "check",
+      "question": "对于 resources/read 返回的用户私有笔记，哪种缓存策略最安全？",
+      "options": [
+        "设为 Public，因为 URI 是稳定的",
+        "当 MIME 类型匹配时跨用户共享",
+        "设为 Private 并设置有界的 TTL",
+        "设为 Public 并设置无限长的 TTL"
+      ],
+      "correct": 2,
+      "explanation": "属于特定用户的私有结果绝不能跨身份边界共享。设置有界 TTL 的私有缓存既能在同一鉴权上下文中减少重复读取，又不会造成越权泄漏。"
+    },
+    {
+      "stage": "check",
+      "question": "在 subscriptions/listen 响应流上，用来唯一标识每条通知的是什么？",
+      "options": [
+        "订阅元数据中记录的原始 listen 请求 ID",
+        "Resource 的 MIME 类型",
+        "新生成的协议会话 ID",
+        "Server 进程 ID"
+      ],
+      "correct": 0,
+      "explanation": "subscriptions/listen 的 JSON-RPC 请求 ID 会作为 io.modelcontextprotocol/subscriptionId，在确认通知以及随后的每个事件中重复携带。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 resources/list 和 prompts/list 针对相同的请求输入必须保证是确定性的？",
+      "options": [
+        "为了授予对所有返回条目的公开访问权限",
+        "为了避免校验分页游标",
+        "为了稳定缓存、快照以及 Host 界面",
+        "为了让列表条目依赖先前的读取结果"
+      ],
+      "correct": 2,
+      "explanation": "稳定的列表条目与排序能够防止缓存击穿和界面抖动。由于凭证是显式的请求输入，鉴权依然能够正确影响条目的可见性。"
+    },
+    {
+      "stage": "post",
+      "question": "即便 client 可以直接调用 resources/list，当前规范下的 MCP server 依然必须暴露什么方法？",
+      "options": [
+        "针对每个 URI 暴露 resources/subscribe 方法",
+        "暴露创建协议会话的 initialize 方法",
+        "独立的 HTTP GET 事件流",
+        "带有支持版本与 capabilities 的 server/discover 方法"
+      ],
+      "correct": 3,
+      "explanation": "Server 必须实现 server/discover，以便 client 获取一份 capability 与版本的快照。对于 client 而言调用它是可选的，client 也可以直接调用其它方法并处理结构化的版本错误。"
+    }
+  ]
+}

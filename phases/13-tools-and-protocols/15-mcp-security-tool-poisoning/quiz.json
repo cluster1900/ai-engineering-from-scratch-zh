@@ -1,0 +1,78 @@
+{
+  "lesson": "15-mcp-security-tool-poisoning",
+  "title": "MCP 安全：元数据投毒、路由与 MRTR 状态",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 MCP 请求中，哪一个字段可以安全地用作已认证的客户端主体身份？",
+      "options": [
+        "任何由客户端自报告的 clientInfo 字段都不安全",
+        "clientInfo.name",
+        "clientInfo.version",
+        "clientCapabilities"
+      ],
+      "correct": 0,
+      "explanation": "客户端信息（clientInfo）与 capabilities 属于协议级元数据，绝不能作为身份认证凭据。"
+    },
+    {
+      "stage": "check",
+      "question": "在批准一个 tool 之后，网关应当对什么内容计算哈希锁定（Hash Pin）？",
+      "options": [
+        "规范化后的完整 descriptor，包括 description、schema 以及相关 annotations",
+        "仅针对 tool name",
+        "仅针对 server 的 display name",
+        "当前的 session 标识符"
+      ],
+      "correct": 0,
+      "explanation": "完整 descriptor 锁定能够捕获到仅针对 description 的哈希所遗漏的 schema 与 annotation 恶意篡改。"
+    },
+    {
+      "stage": "check",
+      "question": "当两个后端 server 都暴露了同名 tool search 时，网关应当如何对外暴露它们？",
+      "options": [
+        "让模型根据上下文推断调用哪一个 server",
+        "随机选择一个后端",
+        "使用稳定的完全限定名（如 notes.search 和 issues.search）",
+        "仅保留最新发现的那个 tool"
+      ],
+      "correct": 2,
+      "explanation": "完全限定名能确保路由、审批、审计以及头部验证都精确指向同一个稳定的 tool。"
+    },
+    {
+      "stage": "check",
+      "question": "以下哪种客户端 capability 声明支持 MCP 的表单诱导（form elicitation）？",
+      "options": [
+        "隐式的 elicitation: {} 或显式的 elicitation: {form: {}}",
+        "任何非空的 extensions 对象",
+        "仅启用了表单支持的 protocol session",
+        "仅包含 elicitation.url"
+      ],
+      "correct": 0,
+      "explanation": "空的 elicitation 对象隐式表示支持表单，而 form: {} 则显式声明支持。仅支持 URL 无法满足表单（form）请求。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 requestState 必须进行完整性保护并与精确的调用 arguments 强绑定？",
+      "options": [
+        "为了选择合适的缓存作用域（cache scope）",
+        "为了替代 OAuth 鉴权",
+        "为了防止客户端在另一个操作中复用或篡改确认凭证",
+        "为了减小 JSON 报文体积"
+      ],
+      "correct": 2,
+      "explanation": "requestState 会在不可信的对端往返传递，因此服务器必须能够检测篡改和上下文变更。共享原子 nonce 核销可防止在不同处理程序实例间被重放复用。"
+    },
+    {
+      "stage": "post",
+      "question": "现代 MCP 网关在处理请求时，正确的执行顺序是什么？",
+      "options": [
+        "信任 clientInfo，直接执行，然后记录审计日志",
+        "将客户端声明的 capabilities 直接作为授权权限",
+        "身份认证、验证底层报文与头部、检查 capability 兼容性、鉴权授权，然后执行",
+        "创建 session、按发现顺序路由，然后鉴权"
+      ],
+      "correct": 2,
+      "explanation": "在进行鉴权和执行之前，必须先消除报文歧义并确认主体身份。"
+    }
+  ]
+}

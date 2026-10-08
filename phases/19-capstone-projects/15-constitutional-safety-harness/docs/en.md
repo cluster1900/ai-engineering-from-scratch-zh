@@ -73,6 +73,11 @@ output: CVSS-scored findings + disclosure timeline + before/after harmlessness d
 - PII scrub：Presidio
 - Target：一个 8B instruction-tuned model，或其他 capstones 中的一个 RAG chatbot
 
+
+```figure
+cf-safety-stack
+```
+
 ## 构建它
 
 1. **目标设置。** 在 vLLM 上启动一个 8B instruction-tuned model（或复用另一个 capstone 中的 RAG chatbot）。这是被测 app。

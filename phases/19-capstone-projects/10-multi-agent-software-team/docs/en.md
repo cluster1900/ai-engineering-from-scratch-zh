@@ -60,6 +60,11 @@ Coder A          Coder B          Coder C          Coder D          (4 parallel)
 - Observability: Langfuse with role-tagged spans, per-agent token accounting
 - Deployment: K8s，每个 role 一个独立 Deployment，并基于 backlog 配置 HPA
 
+
+```figure
+ce-team-handoff
+```
+
 ## 构建它
 1. **Task board.** File-backed JSONL，包含 typed messages：`plan_request`、`subtask`、`diff_ready`、`review_needed`、`test_needed`、`approved`、`rejected`、`replan_needed`。Agents 订阅 tags。
 

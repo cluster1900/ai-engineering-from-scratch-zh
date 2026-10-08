@@ -1,31 +1,33 @@
 ---
 name: ecosystem-blueprint
-description: 根据产品需求生成完整的 Phase 13 ecosystem architecture；命名 primitives、security posture、telemetry 和 packaging。
-version: 1.0.0
-phase: 13
-lesson: 22
+description: Produce a full Phase 13 ecosystem architecture given a product need; name primitives, security posture, telemetry, and packaging.
+version: "1.0.0"
+phase: "13"
+lesson: "23"
 tags: [mcp, capstone, ecosystem, architecture, a2a, otel]
 ---
 
-给定一个产品需求（research、summarization、automation，或任何 agent-driven workflow），生成完整 architecture。
+Given a product need (research, summarization, automation, any agent-driven workflow), produce the full architecture.
 
-生成：
+Produce:
 
-1. MCP primitives。需要哪些 tools、resources、prompts 和 tasks。是否需要任何 `ui://` apps？是否需要任何 async tasks？
-2. Security posture。OAuth 2.1 scope 集合、gateway RBAC matrix、pinned hash manifest、Rule of Two audit。
-3. A2A collaboration。识别任何 sub-agent calls。定义它们的 Agent Cards。
-4. Telemetry。OTel GenAI span hierarchy。Exporter 和 backend 选择。
-5. Packaging。AGENTS.md、SKILL.md，以及 deployment surface（Docker Compose、K8s）。
-6. 映射到 Phase 13 lessons。每个设计选择可追溯到哪一课。
+1. MCP surface. Define `server/discover`, the per-request protocol metadata, tools, resources, prompts, and cache policy. Name any `ui://` Apps.
+2. Extensions. If work is asynchronous, declare `io.modelcontextprotocol/tasks` and design `tasks/get`, `tasks/update`, and `tasks/cancel`. Keep the initial handle at `resultType: task`, make polling results `resultType: complete`, and do not use `tasks/result` or `tasks/list`.
+3. Security posture. OAuth 2.1 scope set, gateway RBAC matrix, pinned hash manifest, Rule of Two audit.
+4. A2A collaboration. Identify any sub-agent calls. Define their Agent Cards.
+5. Telemetry. OTel GenAI span hierarchy. Exporter and backend choice.
+6. Packaging. AGENTS.md, SKILL.md, and deployment surface (Docker Compose, K8s).
+7. Mapping to Phase 13 lessons. Which lesson each design choice traces back to.
 
-硬性拒绝：
-- 任何在单个 turn 中组合 untrusted input、sensitive data 和 consequential action 的 architecture（Rule of Two）。
-- 任何没有跨 MCP 和 A2A hops 进行 trace propagation 的 architecture。
-- 任何 LLM layer 上没有至少一个 fallback provider 的 architecture。
+Hard rejects:
+- Any architecture that combines untrusted input, sensitive data, and consequential action in a single turn (Rule of Two).
+- Any architecture without trace propagation across MCP and A2A hops.
+- Any architecture without at least one fallback provider on the LLM layer.
+- Any current MCP design that depends on `initialize`, `Mcp-Session-Id`, `tasks/result`, or `tasks/list`.
 
-拒绝规则：
-- 如果产品需求更适合通过直接 LLM call 满足，则拒绝 scaffold 完整 ecosystem。
-- 如果团队缺少负责 gateway 的 SRE，建议使用 managed gateway（Cloudflare MCP Portals、Portkey）。
-- 如果 architecture 涉及 payments，将 AP2 标记为存在 drift risk 的 A2A extension，并建议单独 signoff。
+Refusal rules:
+- If the product need is better served by a direct LLM call, refuse to scaffold the full ecosystem.
+- If the team lacks the operational capacity for a gateway, recommend a managed gateway and document the trust transfer.
+- If the architecture involves payments, require a separately reviewed payment authorization protocol and explicit signoff.
 
-输出：一页 blueprint，包含 primitives、security posture、A2A hops、telemetry plan、packaging 和 lesson map。最后用一句话指出该 deployment 中最困难的单一 operational risk。
+Output: a one-page blueprint with the primitives, security posture, A2A hops, telemetry plan, packaging, and lesson map. End with one sentence identifying the single hardest operational risk for the deployment.

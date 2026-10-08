@@ -9,6 +9,11 @@
 
 ## Learning Objectives
 
+
+```figure
+ch-ucb-scheduler
+```
+
 - 将 research workflow 建模为一个 hypothesis queue，它会喂给并行 experiment slots，结果再 fan back in。
 - 用 asyncio 并发运行多个 experiments，让 scheduler 可以保持所有 slots 忙碌。
 - 用 UCB 为每个 hypothesis branch 打分，让 scheduler 可以在不放弃 exploration 的情况下 pruning 低产出 branches。

@@ -49,6 +49,11 @@ perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
 ngram-backoff
 ```
 
+
+```figure
+prediction-game
+```
+
 ## 构建它
 
 ### 步骤 1： trigram 计数

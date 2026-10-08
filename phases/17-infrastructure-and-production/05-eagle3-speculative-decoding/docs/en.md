@@ -70,6 +70,11 @@ Google 在 2025 年的 AI Overviews 中部署了 speculative decoding（质量�
 - 没有 domain-trained draft head 的专业领域。Alpha 太低。
 - vLLM v0.18.0 加 draft-model spec decode 加 `--enable-chunked-prefill`。这个组合无法编译。文档化的例外是 V1 中的 N-gram GPU spec decode。
 
+
+```figure
+mx-speculative-tree
+```
+
 ## 使用它
 
 `code/main.py` 会在一系列 alpha 值和 draft length K 上模拟有无 speculative decoding 的 decode loop。它会打印 break-even alpha、测得的 speedup 和 tail behavior。在多个 (alpha, K) 组合上运行它，准确观察 speculative decoding 在哪里不再划算。

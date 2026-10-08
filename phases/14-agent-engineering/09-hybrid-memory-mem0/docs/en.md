@@ -85,6 +85,11 @@ Mem0 按 scope 划分记忆：
 - **KV schema creep.** `(user_id, type, entity)` 看起来简单，直到每个团队都加入自己的 `type`。每季度审计 type 集合。
 - **Graph explosion.** 一个噪声 extractor 每条 message 添加 50 条 edges。限制每次 `add` 调用的 graph 写入数；丢弃低置信度 edges。
 
+
+```figure
+ae-memory-fusion
+```
+
 ## 构建它
 `code/main.py` 用 stdlib 实现三存储模式：
 

@@ -9,6 +9,11 @@
 
 ## Learning Objectives
 
+
+```figure
+ch-research-pipeline
+```
+
 - 将 auto-research loop 端到端串接起来：hypothesis seed、experiment runner、scheduler、critic loop、paper writer。
 - 通过普通 Python imports 组合前四节 Track D 课程中的 primitives，而不是通过 framework。
 - 运行 loop 直到自行终止，并输出一份列出每个 stage 输出的单一 Demo report。

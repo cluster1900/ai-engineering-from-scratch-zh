@@ -1,0 +1,78 @@
+{
+  "lesson": "11-mcp-sampling",
+  "title": "MCP 模型输入：Sampling 迁移与无状态 MRTR",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "一个新建的 MCP server 需要模型推理能力。在 2026-07-28 规范下默认的推荐架构是什么？",
+      "options": [
+        "直接与模型提供方（Model Provider）集成",
+        "在每次 tool 调用前发送 sampling/createMessage",
+        "将 client 的模型 API key 存放在协议会话中",
+        "为 Sampling 打开一条永久的 SSE 流"
+      ],
+      "correct": 0,
+      "explanation": "在面向新设计时 Sampling 已被弃用。当 server 需要模型推理时，直接集成提供方是官方推荐的默认做法。"
+    },
+    {
+      "stage": "check",
+      "question": "在 2026-07-28 规范下，server 在处理 tools/call 期间如何发起兼容性的 Sampling 请求？",
+      "options": [
+        "将 prompt 写入 server/discover 的响应中",
+        "将 prompt 放在 Mcp-Session-Id 请求头中",
+        "返回 resultType 为 input_required 的结果，并在 inputRequests 中放入 sampling/createMessage",
+        "在同一连接上发送反向 JSON-RPC 请求"
+      ],
+      "correct": 2,
+      "explanation": "MRTR 将 server 到 client 的请求封装在 input_required 结果中，从而避免了反向请求通道。声明的 summarize_repo 工具必须首先通过带有合法 inputSchema 的确定性 tools/list 可被发现。"
+    },
+    {
+      "stage": "check",
+      "question": "哪项特征能够证明 MRTR 重试是一次独立的 JSON-RPC 请求？",
+      "options": [
+        "它省略了每个请求专用的元数据",
+        "它使用与原始请求相同的 id",
+        "它使用全新的 id，同时重复原始的方法与参数",
+        "它移除了原始的 tool 参数"
+      ],
+      "correct": 2,
+      "explanation": "Client 使用全新的 JSON-RPC id 重复原始操作，附加当前轮次的 inputResponses 并原封不动回显 requestState。"
+    },
+    {
+      "stage": "check",
+      "question": "当 requestState 影响资源访问权限时，必须使用什么机制来保护它？",
+      "options": [
+        "使用绑定到主体、请求与过期时间的 HMAC 或鉴权加密",
+        "仅仅使用 Base64 编码",
+        "仅使用 clientInfo 中的客户端名称",
+        "依赖长生命周期的传输层会话"
+      ],
+      "correct": 0,
+      "explanation": "requestState 会流经不可信的 client。完整性保护与状态绑定能够防止篡改和跨请求重放攻击。"
+    },
+    {
+      "stage": "post",
+      "question": "Client 未在每请求 capabilities 中声明 Sampling 支持。Server 应当给出什么精确的协议响应？",
+      "options": [
+        "依然发送内嵌的 sampling 请求",
+        "返回错误码 -32021 及 data.requiredCapabilities，或走无需 Sampling 的备选路径",
+        "强行将该 capability 添加到 client 的元数据中",
+        "假设继承先前请求中声明的 capability"
+      ],
+      "correct": 1,
+      "explanation": "Server 绝不能发出当前请求未声明支持的内嵌输入请求。缺失所需 capability 的标准错误码是 -32021。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种迁移方式能够在协议层保持两轮兼容循环完全无状态？",
+      "options": [
+        "在每次全新的重试请求中仅携带当轮 inputResponses 与签名的阶段状态",
+        "在 Mcp-Session-Id 头下存储阶段状态",
+        "在整个交互完成前重复复用原始请求 id",
+        "在隐藏的会话中累加所有模型响应"
+      ],
+      "correct": 0,
+      "explanation": "每次重试都是自包含的。经过签名的 requestState 携带经过校验的中间状态，且 inputResponses 仅包含当前轮次的响应。"
+    }
+  ]
+}

@@ -59,6 +59,11 @@ Transformer有数千个参数张量。每个张量的一次 allreduce 会支付 
 
 每个rank必须调用`torch.manual_seed(seed + rank)`进行洗牌，但调用`torch.manual_seed(seed)`进行参数初始化。单个共享种子意味着每个等级都看到相同的批次顺序（击败数据并行）；参数的特定于等级的种子意味着初始参数与 float epsilon 不一致，并且梯度同步不再使副本相同。获得正确的种子模式，否则参数等效性测试将在步骤 1 中失败。
 
+
+```figure
+ci-ddp-grad-sync
+```
+
 ## 构建它
 
 `code/main.py` 实现：

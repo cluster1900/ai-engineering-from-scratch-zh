@@ -71,6 +71,11 @@ Letta V1 (`letta_v1_agent`, 2026) 弃用 `send_message`/heartbeat 和 inline `Th
 - **Silent drift.** Sleep-time agent 重写了 block，而 primary agent 从未注意到。为 blocks 加版本，并在 trace 中展示 diffs。
 - **Poisoned consolidation.** Sleep-time agent 将攻击者可触达内容处理进 core。Lesson 27 同样适用于 sleep-time surface。
 
+
+```figure
+memory-blocks
+```
+
 ## 构建它
 `code/main.py` 实现了：
 

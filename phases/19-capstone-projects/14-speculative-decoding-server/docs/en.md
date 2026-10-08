@@ -55,6 +55,11 @@ HPA on queue-wait metric
 - Eval: ShareGPT、MT-Bench-v2、GSM8K、HumanEval，用于衡量跨 domain 分布的接受率
 - Reference: TensorRT-LLM speculative decoding，作为 vendor baseline
 
+
+```figure
+cf-spec-decode
+```
+
 ## 构建它
 1. **Target model prep.** 选择 Llama 3.3 70B。通过 Marlin quantize 到 FP8。在 1xH100（或 2x tensor-parallel）上用 vLLM 0.7 部署。
 

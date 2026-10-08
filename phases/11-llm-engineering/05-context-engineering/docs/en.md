@@ -157,6 +157,11 @@ graph TD
 
 这正是优秀 AI application 与卓越 AI application 的分界。模型是相同的。context 才是差异化因素。
 
+
+```figure
+lost-in-the-middle
+```
+
 ## 构建它
 
 ### 步骤 1：Token Counter

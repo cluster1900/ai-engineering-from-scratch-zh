@@ -60,6 +60,11 @@ LangGraph 就是提供这种 abstraction 的 library。它不是 LangChain 意�
 
 一个 compiled graph 可以作为另一个 graph 中的 node。outer graph 看到的是一个 single node；inner graph 拥有自己的 state 和自己的 checkpoints。这就是团队构建 supervisor-worker agents 的方式：supervisor graph 将 user intent route 到某个 domain worker subgraph。
 
+
+```figure
+l5-state-graph-ledger
+```
+
 ## 构建它
 
 ### 步骤 1： state and nodes

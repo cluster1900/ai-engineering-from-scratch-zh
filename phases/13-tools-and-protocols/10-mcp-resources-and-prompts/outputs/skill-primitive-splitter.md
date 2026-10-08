@@ -1,30 +1,42 @@
 ---
 name: primitive-splitter
-description: 将 MCP server 草稿中的每项能力分类为 tool、resource 或 prompt，并给出理由。
-version: 1.0.0
+description: Review an MCP server design and separate tools, resources, prompts, caching, and subscriptions using the 2026-07-28 contract.
+version: 2.0.0
 phase: 13
 lesson: 10
-tags: [mcp, primitives, resources, prompts]
+tags: [mcp, resources, prompts, subscriptions, caching]
 ---
 
-给定一个拟议 MCP server 的能力清单（plain English 或 draft tool list），将每一项分类为 tool、resource 或 prompt，并用一句话说明理由。
+Review a proposed MCP server from the consumer's point of view.
 
-产出：
+Produce:
 
-1. 按能力分类。对每一项，返回 `{name, primitive: tool | resource | prompt, rationale}`。
-2. Resource URI scheme。如果有任何能力会成为 resources，提出一个 URI scheme（`notes://`、`gh://`、`db://`）和一个 template pattern。
-3. Prompt argument skeletons。如果有任何能力会成为 prompts，提出 argument list 以及 required/optional 标记。
-4. Subscription candidates。标记那些经常变化、会受益于 `resources/subscribe` 的 resources。
-5. Anti-pattern flags。指出旧设计中把读取封装成 tool 的情况（例如 `notes_read(id)`），而 resource 会更合适。
+1. A `server/discover` result advertising revision `2026-07-28` and the exact resource and prompt capabilities.
+2. A table with `name`, `chooser`, `primitive`, and `reason`.
+3. Stable resource URI schemes and any bounded resource templates.
+4. Prompt names, descriptions, and required or optional arguments.
+5. A deterministic ordering rule for every list method.
+6. A cache policy with `ttlMs` and `cacheScope` for each cacheable result.
+7. A `subscriptions/listen` filter for resources or list changes that need updates.
+8. One invalid-resource example that returns JSON-RPC `-32602`, plus an unsupported-revision example that returns `-32022` with `supported` and `requested`.
 
-硬性拒绝：
-- 任何被分类为 "both tool and resource" 却没有拆分的能力。选择其中一个，或搭建一对能力。
-- 任何没有识别 required arguments 的 prompt。要在 slash-command UIs 中呈现，需要 argument schemas。
-- 任何不可寻址的 resource URI scheme（free-form strings，而不是 URIs）。
+Use these decision rules:
 
-拒绝规则：
-- 如果所有能力都落在 tools，拒绝并询问该 server 是否有可作为 resource 的 read-only data。
-- 如果没有能力适合作为 prompts，这是可以的；prompts 是 optional。不要凭空创造。
-- 如果该 server 的 domain 更适合由 A2A（agent-to-agent collaboration、opaque state）服务，拒绝并重定向到 Phase 13 · 19。
+- A model-selected operation is a tool.
+- Host-readable URI-addressed content is a resource.
+- A user-selected message workflow is a prompt.
+- An update stream is client-opened through `subscriptions/listen`.
+- The listen request ID becomes `io.modelcontextprotocol/subscriptionId`.
+- The acknowledgment must precede all events on that subscription.
+- A notification never bypasses authorization for a later read.
+- `server/discover` is mandatory even when a client chooses to call another method first.
 
-输出：一页 decision report，包含 categorization table、URI scheme proposal、prompt skeletons 和 subscription flags。最后给出对这个 server 影响最大的单个 tool -> resource 转换。
+Reject a design when:
+
+- A list varies because of connection history.
+- A private result is placed in a public cache.
+- A resource URI is accepted without parsing, authorization, and boundary checks.
+- The design uses `resources/subscribe` or treats a subscription as a protocol session.
+- A prompt is allowed to override trusted host instructions.
+
+Return a one-page contract review. End with the highest-risk primitive, cache, or subscription mistake and the smallest correction.

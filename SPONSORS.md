@@ -1,141 +1,182 @@
-# 赞助
+# Sponsorship
 
-`ai-engineering-from-scratch` 是一套免费的、采用 MIT license 的课程。覆盖 20 个
-phases，共 428 节课。该项目由 [Rohit Ghumare](https://github.com/rohitg00) 构建并维护。
+`ai-engineering-from-scratch` is a free, MIT-licensed curriculum. 523 lessons across 20
+phases. The work is built and maintained by [Rohit Ghumare](https://github.com/rohitg00).
 
-赞助用于支持发布课程、维持网站运行，以及回复
-issue 队列所需的时间。仅接受现金。不接受 Credits-in-kind、股权或“我们来帮你写内容”这类安排，
-详见下方 [Hard rules](#hard-rules)。
+Cash sponsorships fund the time it takes to ship lessons, keep the site running, and reply
+to the issue queue. Production hardware is considered separately under the
+[Hardware Lab Partner](#hardware-lab-partner) policy. Service credits, equity, or
+"we'll write your content" arrangements are not accepted. See [Hard rules](#hard-rules).
 
-如果你或你的公司想支持这套课程，本页就是价格表。
+If you or your company want to support the curriculum, this page is the rate card.
 
-## 如何赞助
+## Sponsor
+
+| Sponsor | Description |
+|---|---|
+| <a href="https://serpapi.com/ai-engineering-from-scratch"><picture><source media="(prefers-color-scheme: dark)" srcset="https://serpapi.com/assets/media_kit/logo-with-wordmark-white.svg"><img src="https://serpapi.com/assets/media_kit/logo-with-wordmark.svg" alt="SerpApi" width="180"></picture></a> | Web Search API for your AI apps. Available in Markdown and JSON for any integration. |
+| <a href="https://nitrostack.ai/referral/aiengineeringfromscratch"><img src="https://nitrostack.ai/logo.png" alt="NitroStack" width="56"></a> **NitroStack** | An end-to-end development platform for building, testing, debugging, and deploying production-ready MCP servers and applications. |
+
+## How to sponsor
+
+Sponsor names, logos, links, and tier assignments are managed by the maintainer.
+Sponsorship changes are not accepted through contributor pull requests.
 
 - **GitHub Sponsors:** [github.com/sponsors/rohitg00](https://github.com/sponsors/rohitg00)
 
-GitHub Sponsors 负责处理账单、收据和税务表单。根据 [GitHub 的政策](https://docs.github.com/en/sponsors/receiving-sponsorships-through-github-sponsors/about-github-sponsors-for-open-source-contributors)，个人
-赞助的平台费为 0%，组织赞助最高为 6%。
+GitHub Sponsors handles billing, receipts, and tax forms. 0% platform fee on personal
+sponsorships, up to 6% on organization sponsorships, per [GitHub's policy](https://docs.github.com/en/sponsors/receiving-sponsorships-through-github-sponsors/about-github-sponsors-for-open-source-contributors).
 
-为避免误解：本课程没有 token、coin、NFT、wallet，也没有 chain
-合作关系。维护者不为任何 crypto 项目背书、推广、合作或接受其
-付款。上方的资金链接是唯一渠道；
-任何其他使用本项目名称的行为都与本项目无关。
+For clarity: the curriculum has no token, no coin, no NFT, no wallet, and no chain
+partnership. The maintainer does not endorse, promote, partner with, or accept
+payment from any crypto project. The funding link above is the only channel;
+anything else using this project's name is unaffiliated.
 
-## 触达规模
+## Reach
 
-这些是真实数据，不是 pitch deck。数据于 2026-05-14 从官方 analytics
-dashboard 验证，可按需提供截图。
+These are real numbers, not pitch decks. Website figures come from the production
+[Vercel Web Analytics](https://vercel.com/docs/analytics) dashboard. GitHub figures come
+from the repository traffic API, which reports the last 14 days. Newsletter figures come
+from the Substack dashboard. All figures were verified 2026-10-07.
 
-| Window | Visitors | Page views | Growth |
-|---|---|---|---|
-| Last 7 days | 33,569 | 53,917 | +450% / +399% |
-| Last 30 days | 55,593 | 90,709 | +335% / +403% |
+| Channel | Window | Figure |
+|---|---|---:|
+| Website page views | last 30 days | 521,690 |
+| [AI Engineering Newsletter](https://thatdevopsguy.substack.com) subscribers | all time | 11,000+ |
+| GitHub repository views | 2026-09-22 to 2026-10-05 | 280,632 |
+| GitHub repository views, 30-day rate | estimate from the 14-day figure | about 601,000 |
+| GitHub unique visitors | 2026-09-22 to 2026-10-05 | 72,761 |
+| GitHub clones | 2026-09-22 to 2026-10-05 | 20,228 (5,625 unique) |
+| GitHub stars | all time | 65,223 |
+| GitHub forks | all time | 11,242 |
 
-- **GitHub stars:** 7,500+，并且仍在增长
-- **Top referrers (30d):** X / Twitter (18K), Google (7.1K), GitHub (5.3K), Instagram (1.2K),
-  Brave (505), LinkedIn (470)
-- **Top pages:** `/` (63K views), `/index.html` (15K), `/prereqs.html` (5.5K),
-  `/catalog.html` (4.9K), `/glossary.html` (2K)
-- **Cross-platform amplification:** Twitter/X 是排名第一的获取渠道；Gold 和
-  Platinum 赞助商会通过同一渠道在 release-note threads 中获得共同放大传播。
+- **Top GitHub referrers, last 14 days:** GitHub (28.0K), LinkedIn (15.6K across web and
+  app), Google (9.2K), the course website (5.8K), X / t.co (5.4K), Threads (4.0K)
+- **Top GitHub pages, last 14 days:** the README (108K views), the Chinese README (8.1K),
+  Phase 0 setup (4.8K)
 
-在这个规模下，一个赞助展示位的价值与 50-100K 月访问量的付费
-dev newsletter 广告位，或中等体量的独立 dev blog 广告位处于同一区间。
+GitHub reports traffic for 14 days only. At the same daily rate, the repository draws
+about 601,000 views in 30 days, more than the website. Across both, the project draws
+more than 1.1 million views a month. The AI Engineering Newsletter sends a weekly issue
+on AI to more than 11,000 subscribers. Gold, Platinum, and Diamond sponsors also receive
+the cross-platform co-features defined in the tier ladder below.
 
-## 等级阶梯
+A sponsor placement at this scale is in the same range as a paid slot in a dev publication
+with one million monthly page views.
+
+## Tier ladder
 
 | Tier | $/mo | Min term | What you get |
 |------|------|----------|---|
-| **Backer** | $25 | month-to-month | 名称出现在 [BACKERS.md](BACKERS.md)，GitHub profile 上显示 Sponsors badge |
-| **Bronze** | $250 | 3 months | README 赞助区中的纯文本行、名称出现在 BACKERS.md、发布当天一条感谢该等级的 tweet |
-| **Silver** | $750 | 6 months | README 赞助行中的小 logo（最大 120×40），在适用的 API lessons 中列为一个受支持 provider，release notes 中每季度致谢一次 |
-| **Gold** | $2,000 | 6 months | README 中等 logo（最大 200×60）+ 课程网站 sponsor page 上的专属行 + 每季度一次 X / LinkedIn 联合展示 |
-| **Platinum** | $5,000 | 12 months, max 1 partner | 首屏 Hero logo + 在赞助期内每篇 release-notes post 中署名 + Phase 11 或 Phase 14 下的一节专属 integration lesson，由维护者撰写，并保持与课程其余部分相同的编辑标准 |
+| **Backer** | $25 | month-to-month | Name in [BACKERS.md](BACKERS.md), Sponsors badge on your GitHub profile |
+| **Bronze** | $250 | 3 months | Text-only row in the README sponsor block, name in BACKERS.md, one launch-day tweet thanking the tier |
+| **Silver** | $750 | 6 months | Small logo (max 120×40) in the README sponsor row, listed as one supported provider in API lessons where applicable, quarterly thank-you in release notes |
+| **Gold** | $2,000 | 6 months | Medium logo (max 200×60) in README + dedicated row on the sponsor page of the curriculum site + one X / LinkedIn co-feature per quarter |
+| **Platinum** | $5,000 | 12 months, max 1 partner | Hero logo above the fold + named in every release-notes post for the term + one dedicated integration lesson under Phase 11 or Phase 14, written by the maintainer to the same editorial standard as the rest of the curriculum |
+| **Diamond / Title Partner** | $10,000 | 12 months, max 1 partner | Sole title-partner placement in the README sponsor block and sponsor page + hero logo above the fold + named in every release-notes post + one maintainer-written integration lesson + quarterly audience report and X / LinkedIn co-feature |
 
-目前不提供 Diamond / Title 等级（$10,000+/mo）。当月访问量超过 250K，或存在经过验证的
-Fortune-500 enterprise dependency 后，可以合理地重新评估。
+Pricing is calibrated against the public sponsor pages of comparable open-source
+projects, the analytics above, and standard dev-blog sponsor rates at the 100-250K monthly
+visitor scale (see [Pricing anchors](#pricing-anchors) below).
 
-定价依据包括同类 open-source
-项目的公开 sponsor pages、上方 analytics，以及 50-100K 月访问量规模下的标准 dev-blog sponsor rates
-（见下方 [Pricing anchors](#pricing-anchors)）。
+## Hardware Lab Partner
+
+Hardware companies can sponsor the course by gifting production GPUs, AI workstations,
+storage, networking, or edge systems. The hardware becomes the maintainer's property on
+delivery.
+
+Gifted hardware may be used, modified, benchmarked, repurposed, or retired as needed for
+lessons and repository work. The provider receives up to 12 months of Hardware Lab Partner
+recognition on the sponsor page and in relevant work. Hardware does not automatically grant
+a cash sponsorship tier.
+
+Contact the [maintainer](https://github.com/rohitg00) before shipping hardware.
 
 ## Hard rules
 
-这些规则不可协商。无法接受这些规则的赞助商会被礼貌谢绝。
+These rules are non-negotiable. Sponsors who cannot accept them are politely declined.
 
-1. **不在 lesson 正文中放置赞助内容。** Logos 只会出现在 README sponsor block、
-   课程网站的 sponsor page，以及 BACKERS.md 中。绝不会出现在 `phases/**/docs/en.md`、
-   `outputs/`、code samples，或学习者正在阅读课程内容本身的任何位置。
-2. **“Supported provider” 不等于 “recommended”。** 每节 API lesson 都会在同一 interface 后展示三个或
-   更多 providers。赞助商会与其他 provider 并列展示；
-   绝不会被标记为 default、preferred choice，或“我应该用哪个”的答案。
-3. **不接受 sponsor-authored content。** 每节 lesson 都由维护者撰写。赞助商仅能为技术准确性 review
-   integration PRs；他们不能提出叙事方式、设定
-   trade-offs，或否决比较内容。
-4. **不拥有 roadmap veto。** Platinum 赞助商可以像其他人一样提交 roadmap suggestions。
-   由维护者决定发布什么。
-5. **30 天 editorial-conflict exit。** 如果赞助商向维护者施压，要求内容带有偏向，
-   赞助将在 30 天内终止，并按比例退款。Logo 会在下一次
-   site deploy 时移除。
-6. **Conflict refusal。** 本课程会拒绝其产品与
-   课程原则直接冲突的赞助商（closed-loop vibe-coding tools、vendor lock-in evangelism、忽视 observability 或拒绝随 open formats 发布的 agent
-   products）。是否拒绝由
-   维护者自行裁量。
-7. **仅接受现金。** 不接受 Credits-in-kind、股权、免费硬件、“我们来帮你做 DevRel”，
-   以及捆绑交易。它们太容易被低估，也太难
-   清晰入账。
+1. **No lesson-body placements.** Logos appear in the README sponsor block, on the
+   curriculum site's sponsor page, and in BACKERS.md only. Never inside `phases/**/docs/en.md`,
+   `outputs/`, code samples, or anywhere a learner is reading the curriculum content itself.
+2. **"Supported provider" does not mean "recommended."** Every API lesson shows three or
+   more providers behind the same interface. Sponsors get listed alongside the others; they
+   are never marked as the default, the preferred choice, or the answer to "which should I
+   use."
+3. **No sponsor-authored content.** The maintainer writes every lesson. Sponsors review
+   integration PRs for technical accuracy only; they do not propose narratives, frame
+   trade-offs, or veto comparisons.
+4. **No roadmap veto.** Platinum sponsors may submit roadmap suggestions like anyone else.
+   The maintainer decides what ships.
+5. **30-day editorial-conflict exit.** If a sponsor pressures the maintainer to bias content,
+   the sponsorship terminates within 30 days with a pro-rata refund. The logo drops on the
+   next site deploy.
+6. **Conflict refusal.** The curriculum declines sponsors whose product directly contradicts
+   curriculum principles (closed-loop vibe-coding tools, vendor lock-in evangelism, agent
+   products that ignore observability or refuse to ship with open formats). Refusal is at
+   the maintainer's sole discretion.
+7. **Cash or approved hardware only.** Service credits, equity, "we'll do your DevRel for
+   you," sponsor-authored content, and bundle deals are not accepted. Hardware must follow
+   the written Hardware Lab Partner policy above.
 
-## 来自潜在赞助商的反提案
+## Counter-proposals from prospective sponsors
 
-如果你的公司有不同诉求，正确做法是先阅读 tier ladder 和
-hard rules，然后在第一封 email 中提出具体的 tier 和 term。不要一开始就说
-“要不要我们用免费 credits 换一个 hero placement”或“我们想自己写
-integration”——这些已经根据上方 hard rules 预先谢绝，这类 email
-最终只会收到指回本页的链接。
+If your company has a different ask, the right move is to read the tier ladder and the
+hard rules, then propose a specific tier and term in your first email. Do not open with
+"how about we trade you free credits for a hero placement" or "we'd like to write the
+integration ourselves" — those are pre-declined under the hard rules above and the email
+will end with a link back to this page.
 
 ## Pricing anchors
 
-上方 tier 金额的依据是：(a) 同类
-open-source 项目的公开 sponsor pages，以及 (b) 面向 50-100K 月访问量 dev
-publications 的标准 sponsor-slot rates。已于 2026-05 验证。
+The tier amounts above are anchored against (a) public sponsor pages of comparable
+open-source projects, and (b) standard sponsor-slot rates for dev publications at one
+million monthly page views across channels. Audience figures and GitHub stars verified
+2026-10-07.
 
-可比 open-source rate cards:
+Comparable open-source rate cards:
 
-- **开源基线** — [Drupal AI Developer Assistant](https://opencollective.com/drupal-ai-initiative/projects/aidev),
+- **Open-source baseline** — [Drupal AI Developer Assistant](https://opencollective.com/drupal-ai-initiative/projects/aidev),
   [Babel](https://opencollective.com/babel), [Parcel](https://opencollective.com/parcel),
-  [Vue.js](https://opencollective.com/vuejs) 的 Bronze 都从 $100/mo 起，提供纯文本
-  recognition。本项目 Bronze 为 $250，因为这套课程拥有
-  上述 repo 单独并不具备的受众流量。
-- **$750 Silver** 高于 Babel Silver ($500) 和 Drupal AI Gold ($500)；低于 Vue
-  Platinum ($2,000)。以本课程的月流量来看，这是合理的。
-- **$2,000 Gold** 对齐 Babel Base Support（按年计费 $24K = $2K/mo）和 Vue
-  Platinum。
-- **$5,000 Platinum** 对齐 Vue Diamond。在 7.5K stars + 55K monthly visitors + 当前
-  增长斜率下，专属 lesson + hero placement 支撑了这个价格。
-- **Diamond / Title ($10K+)** 暂不提供。当月访问量
-  超过 250K 后，可以合理地重新评估。
+  [Vue.js](https://opencollective.com/vuejs) all open Bronze at $100/mo with text-only
+  recognition. Bronze here sits at $250 because the curriculum carries the audience traffic
+  none of those repos individually carry.
+- **$750 Silver** sits above Babel Silver ($500) and Drupal AI Gold ($500); below Vue
+  Platinum ($2,000). Defensible at the curriculum's monthly traffic.
+- **$2,000 Gold** matches Babel Base Support (billed yearly at $24K = $2K/mo) and Vue
+  Platinum.
+- **$5,000 Platinum** matches Vue Diamond. At 65.2K stars + 521.7K monthly page views, the
+  dedicated lesson + hero placement is what justifies the price.
+- **$10,000 Diamond / Title Partner** is one exclusive annual slot. The rate reflects
+  65.2K stars, 11.2K forks, 521.7K website page views in 30 days, 280.6K repository views
+  in 14 days (about 601K a month), title placement, quarterly reporting, and the
+  maintainer-written integration work.
 
-## 赞助资金用途
+## What sponsorship pays for
 
-按下一笔资金的支出优先级排序：
+Listed in order of how the next dollar gets spent:
 
-1. 维护者用于新 lessons 和 issue queue 的时间。
-2. Site hosting、domain 和 CDN（Vercel + custom domains）。
-3. Diagram authoring tools、font licensing、design assets。
-4. 当某个 phase 覆盖超出维护者深度的领域时，用于 guest lesson reviewers 的一次性 research 或 content fees。
-5. 针对已开放超过 30 天的特定 issues 的 contributor bounties。
+1. Maintainer time on new lessons and on the issue queue.
+2. Site hosting, domain, and CDN (Vercel + custom domains).
+3. Diagram authoring tools, font licensing, design assets.
+4. One-time research or content fees for guest lesson reviewers when a phase covers
+   territory outside the maintainer's depth.
+5. Contributor bounties on specific issues that have been open longer than 30 days.
 
-## 成为赞助商
+## Becoming a sponsor
 
-1. 从上方选择一个 tier。
-2. 通过 [GitHub Sponsors](https://github.com/sponsors/rohitg00) 订阅。
-3. Silver 及以上等级，请 email 维护者并附上：你的 logo（优先 SVG）、希望链接到的 URL，
-   以及你承诺的 term length。
-4. Logo 会在下一次 site deploy 中上线，通常在 48 小时内。
-5. 收据和 invoices 由 GitHub Sponsors 自动开具。
+1. Pick a tier above.
+2. Subscribe via [GitHub Sponsors](https://github.com/sponsors/rohitg00).
+3. For Silver and above, email the maintainer with: your logo (SVG preferred), the URL
+   you want it linked to, and the term length you've committed to.
+4. The logo lands in the next site deploy, usually within 48 hours.
+5. Receipts and invoices are issued by GitHub Sponsors automatically.
 
-## 成为前赞助商
+Hardware partners follow the separate [Hardware Lab Partner](#hardware-lab-partner)
+process and must agree to written terms before shipping equipment.
 
-你可以在 GitHub Sponsors dashboard 中一键取消。Logo 会在当前
-billing period 结束后的下一次 site deploy 中移除。没有 clawback，没有 exit interview，也没有 hard
-feelings。赞助是为课程提供资金支持；它并不购买关系。
+## Becoming an ex-sponsor
+
+Cancellation is one click in your GitHub Sponsors dashboard. The logo drops on the next
+site deploy after the current billing period ends. No clawback, no exit interview, no hard
+feelings. Sponsorships fund the curriculum; they do not buy a relationship.

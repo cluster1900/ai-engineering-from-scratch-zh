@@ -82,6 +82,11 @@ BP = 1                if generated length > reference length
 
 对于在合成数据上运行的 50 步训练，预计指标不会很高；它们预计高于随机基线，这是演示检查的内容。
 
+
+```figure
+ch-recall-window
+```
+
 ## 构建它
 
 `code/main.py` 实现：

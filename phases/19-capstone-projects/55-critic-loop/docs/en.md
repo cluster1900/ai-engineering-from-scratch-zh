@@ -9,6 +9,11 @@
 
 ## Learning Objectives
 
+
+```figure
+ch-critic-converge
+```
+
 - 按五个固定维度为论文草稿打分：clarity、novelty、evidence、methodology、related-work。
 - 将每一轮 critique 应用为结构化 revision diff，而不是自由形式的重写。
 - 通过比较多轮分数检测收敛；在 plateau、达到目标或预算耗尽时停止。

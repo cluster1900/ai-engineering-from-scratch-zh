@@ -170,6 +170,11 @@ graph TD
     end
 ```
 
+
+```figure
+agentic-rag-loop
+```
+
 ## 构建
 
 ### 步骤 1：BM25 实现

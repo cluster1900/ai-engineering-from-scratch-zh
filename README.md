@@ -6,10 +6,21 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
-  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-503-3553ff?style=flat-square&labelColor=fafaf5" alt="503 节课"></a>
+  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-523-3553ff?style=flat-square&labelColor=fafaf5" alt="523 节课"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 个 Phase"></a>
   <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh/stargazers"><img src="https://img.shields.io/github/stars/cluster1900/ai-engineering-from-scratch-zh?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
   <a href="https://ai-learn.agent-buy.com"><img src="https://img.shields.io/badge/web-ai--learn.agent--buy.com-3553ff?style=flat-square&labelColor=fafaf5" alt="网站"></a>
+</p>
+
+### Sponsors
+
+<p align="center">
+  <a href="https://serpapi.com/ai-engineering-from-scratch"><picture><source media="(min-width: 768px)" srcset="assets/sponsors/serpapi-banner-compact.png" width="48%"><img src="assets/sponsors/serpapi-banner-compact.png" alt="SerpApi. Web Search API for your AI apps. Available in Markdown and JSON for any integration." width="440"></picture></a>
+  <a href="https://nitrostack.ai/referral/aiengineeringfromscratch"><picture><source media="(min-width: 768px)" srcset="assets/sponsors/nitrostack-banner-equal.png" width="48%"><img src="assets/sponsors/nitrostack-banner-equal.png" alt="NitroStack. Build and deploy your MCP app in 10 minutes. Get your product into ChatGPT and Claude marketplaces with free cloud deployment." width="440"></picture></a>
+</p>
+
+<p align="center">
+  <sub><span>Your support keeps every lesson free and open source.</span> <a href="#supporters">See all supporters</a> · <a href="SPONSORS.md">Become a sponsor</a></sub>
 </p>
 
 ## 来自 [Agent Memory - #1 Persistent memory ⭐](https://github.com/rohitg00/agentmemory) 的作者 <a href="https://github.com/rohitg00/agentmemory/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentmemory?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>，可自然接入任何 agents 或 chat assistants。
@@ -21,7 +32,7 @@
 > **84% 的学生已经在使用 AI 工具。只有 18% 认为自己已准备好以
 > 专业方式使用它们。** 这套课程正是为了弥合这道差距。
 >
-> 503 节课。20 个 Phase。约 320 小时。Python、TypeScript、Rust、Julia。每节课都会产出
+> 523 lessons. 20 phases. (523 节课。20 个 Phase。约 342 小时。) Python、TypeScript、Rust、Julia。每节课都会产出
 > 一个可复用 artifact：prompt、skill、agent、MCP server。免费、开源、MIT。
 >
 > 你不只是学习 AI。你会亲手构建它。端到端。从零开始。
@@ -30,6 +41,76 @@
 <p align="center"><sub><b>150,639</b> readers &nbsp;·&nbsp; <b>241,669</b> page views in the last 30 days &nbsp;·&nbsp; as of 2026-06-07</sub></p>
 <!-- STATS:END -->
 
+## 从这里开始：选择你想构建的内容
+
+在开始之前，你不必通读全部 523 节课。选定一个目标即可。每个链接均可在 GitHub 或官方网站上打开同一套课程，两个版本采用完全一致的教学代码。
+
+| 你的目标 | 在 GitHub 上学习 | 在网站上学习 |
+|---|---|---|
+| 我是新手，想要完整的 AI 工程基础 | [Phase 0: 环境准备与工具链](phases/00-setup-and-tooling/) | [开发环境配置](https://ai-learn.agent-buy.com/lesson.html?path=phases/00-setup-and-tooling/01-dev-environment) |
+| 我懂 Python，想要数学与机器学习基础 | [Phase 1: 数学基础](phases/01-math-foundations/) | [线性代数直觉](https://ai-learn.agent-buy.com/lesson.html?path=phases/01-math-foundations/01-linear-algebra-intuition) |
+| 我想构建生产级大模型应用 | [Phase 11: LLM 工程化](phases/11-llm-engineering/) | [Prompt 工程](https://ai-learn.agent-buy.com/lesson.html?path=phases/11-llm-engineering/01-prompt-engineering) |
+| 我想构建 AI Agent | [Phase 14: Agent 工程](phases/14-agent-engineering/) | [Agent 循环](https://ai-learn.agent-buy.com/lesson.html?path=phases/14-agent-engineering/01-the-agent-loop) |
+| 我想在真实代码库中使用编程 Agent | [编程 Agent 辅助工程路径](learning-paths/using-coding-agents.json) | [Agent 辅助工程](https://ai-learn.agent-buy.com/lesson.html?path=phases/14-agent-engineering/31-agent-workbench-why-models-fail&learningPath=using-coding-agents) |
+| 我想在编码前确立正确的产品决策与需求框架 | [产品判断力与交付路径](learning-paths/shaping-the-build.json) | [产品判断力与交付](https://ai-learn.agent-buy.com/lesson.html?path=phases/14-agent-engineering/47-outcomes-before-output&learningPath=shaping-the-build) |
+| 我想基于 Model Context Protocol (MCP) 进行构建 | [MCP 路线](phases/13-tools-and-protocols/README.md#model-context-protocol-mcp-path) | [Model Context Protocol (MCP) 路径](https://ai-learn.agent-buy.com/lesson.html?path=phases/13-tools-and-protocols/06-mcp-fundamentals&learningPath=model-context-protocol) |
+| 我想编写并发布 Agent Skills | [Agent Skills 专修路线](phases/13-tools-and-protocols/README.md#agent-skills-fast-path) | [Agent Skills 路径](https://ai-learn.agent-buy.com/lesson.html?path=phases/13-tools-and-protocols/22-skills-and-agent-sdks&learningPath=agent-skills) |
+| 我想备考 Claude 官方认证 | [认证上手指南](certifications/claude/GETTING_STARTED.md) | [认证学院](https://ai-learn.agent-buy.com/certifications.html) |
+| 我想备考 MCP Associate (MCPA) 认证 | [MCPA 上手指南](certifications/mcpa/GETTING_STARTED.md) | [MCPA 认证路线](https://ai-learn.agent-buy.com/certification.html?id=mcpa-f) |
+
+不确定自己适合从哪里开始？使用 [`start-learning` 水平评估导师](skills/start-learning/SKILL.md) 或参考 [网站先修指南](https://ai-learn.agent-buy.com/prereqs.html)。
+
+在 [AI 工程学习路径](https://ai-learn.agent-buy.com/learning-paths.html) 中对比四个核心领域和六条职业方向。
+
+### Use every lesson the same way · 用同样的方法学习每节课
+
+1. **阅读** `docs/en.md`，并用你自己的话解释核心概念。
+2. **动手敲代码并构建** 核心逻辑，不要把代码块当作装饰。
+3. 从包含 `README.md` 和 `phases/` 的仓库根目录 **运行** 课程命令。
+4. **保留证据**：命令、工作目录、退出码、有意义的输出，以及你修改或生成的 artifact。
+5. 只有当你能解释输出、并且不靠猜测就能进行一处小修改时，才 **继续下一课**。
+
+### 克隆仓库并生成你的第一个证据
+
+```bash
+git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
+cd ai-engineering-from-scratch-zh
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner
+python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
+```
+
+## 30 秒添加 AI 导师
+
+如果已安装 Node.js、`npx` 和支持 skill 的编程 agent，只需两条命令即可让你的 coding agent 成为个人导师。无需克隆仓库即可安装或阅读导师指令。运行专项实验需安装 `python3`。
+
+检查本地环境：
+
+```bash
+node --version
+npx --version
+python3 --version
+```
+
+安装课程 skills：
+
+```bash
+npx skills add rohitg00/ai-engineering-from-scratch
+```
+
+各宿主调用语法：
+
+| 宿主 | 开始课程 | 开启 Model Context Protocol (MCP) | 开启 Agent Skills | 运行阶段测验 |
+|---|---|---|---|---|
+| Codex | `start-learning` 或从 `/skills` 中选择 | `learn-mcp` 或从 `/skills` 中选择 | `learn-agent-skills` 或从 `/skills` 中选择 | `check-understanding 13` 或从 `/skills` 中选择 |
+| Claude Code | `/start-learning` | `/learn-mcp` | `/learn-agent-skills` | `/check-understanding 13` |
+| 其他兼容宿主 | `使用 start-learning 开始课程。` | `使用 learn-mcp 开启 Model Context Protocol (MCP) 路径。` | `使用 learn-agent-skills 开启 Agent Skills Engineering 路径。` | `使用 check-understanding 测验我的 Phase 13 掌握情况。` |
+
+十道题的水平定位测验会将你现有的知识映射到一个起始阶段，并将个性化学习计划保存至 `LEARNING.md`。之后，`learn` skill 会在每次会话中传授一课：概念、数学、代码、测验。它直接从本仓库流式获取课程内容，遇到卡壳时，`course-guide` skill 能精确跳转到讲解该知识点的课程。
+
+如果只想学习 Model Context Protocol (MCP)，调用对应宿主的 MCP 指令。它会创建 `MCP-LEARNING.md` 并沿着 17 节课的路线，深入无状态请求、传输层、双向工作、安全性、可靠性、注册表治理以及一致性证据。具体顺序见 [Model Context Protocol (MCP) 清单](learning-paths/model-context-protocol.json)。
+
+如果只想学习 Agent Skills，调用对应宿主的 Agent Skills 指令。它会创建 `AGENT-SKILLS-LEARNING.md` 并执行连贯的 5 课路线：契约规范、发现机制、调用路由、沙箱边界，以及发布评估与真机可移植性。在 Web 端从 [Agent Skills 路径](https://ai-learn.agent-buy.com/lesson.html?path=phases/13-tools-and-protocols/22-skills-and-agent-sdks&learningPath=agent-skills) 开始。
+
 ## 运作方式
 
 大多数 AI 资料都是零散教学。这里一篇 paper，那里一篇 fine-tuning 文章，
@@ -37,9 +118,9 @@
 解释它的 loss curve。你把一个 function 接到 agent 上，却说不清在调用它的 model 内部，
 attention 究竟在做什么。
 
-这套课程就是主干。20 个 Phase，503 节课，四门语言：Python、TypeScript、
+这套课程是主干。20 个 Phase，523 节课，四门语言：Python、TypeScript、
 Rust、Julia。一端是 linear algebra，另一端是 autonomous swarms。每个 algorithm
-都会先从原始数学手写构建。Backprop、Tokenizer、Attention、Agent loop等到
+都会先从原始数学手写构建。Backprop、Tokenizer、Attention、Agent loop。等到
 PyTorch 出场时，你已经知道它在底层做什么。
 
 每节课都遵循同一个循环：阅读问题，推导数学，编写代码，运行测试，保留 artifact。
@@ -158,6 +239,57 @@ ls phases/03-deep-learning-core/05-loss-functions/outputs/
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
+### 备考 Claude 官方认证
+
+[Claude 认证学院](certifications/claude/README.md) 是面向全部四项官方 Claude 认证方向（Associate Foundations、Developer Foundations、Architect Foundations、Architect Professional）的免费开源备考项目。每条路线均整合了对应考试大纲的课程、可运行实验、诊断测试、毕业设计以及完整全真模拟试卷。
+
+配合 Claude Code、Codex、ChatGPT、Cursor 或其他 agent 使用 [AI 原生 GitHub 入门指南](certifications/claude/GETTING_STARTED.md)。在 Codex 中运行 `claude-certification`，在 Claude Code 中运行 `/claude-certification`，或指示其他宿主使用 `claude-certification`。它会选择认证方向，在 `CLAUDE-CERTIFICATION.md` 中创建持久学习路线，逐课教学，运行真实实验，并提供基于 artifact 的评估反馈。同一套课程也可在 [认证网站](https://ai-learn.agent-buy.com/certifications.html) 在线学习。
+
+本学院为基于公开考试目标的独立学习资料，非 Anthropic 官方附属，不复制真实考题，亦不保证考试通过。
+
+### 备考 MCP Associate (MCPA) 认证
+
+[MCPA 认证课程](certifications/mcpa/README.md) 是面向 Agentic AI Foundation 与 Linux Foundation Training 联合推出的 Model Context Protocol Associate 认证考试的免费开源备考项目。包含 34 节课程，基于 2026-07-28 无状态协议规范，覆盖全部五大考试领域：单次请求 `_meta` 与 `server/discover` 握手替代机制、多轮往返请求、订阅、缓存、Tasks 与 MCP Apps 扩展、OAuth 授权，以及 Registry 和 SDK 分层。每节课都附带可运行的纯标准库实验，并通过 wire shape 校验器验证通信格式；路线还包含诊断测验、毕业设计以及三套完全按照公开大纲权重编排的全真模拟试卷。
+
+配合 Claude Code、Codex、ChatGPT、Cursor 等使用 [AI 原生 GitHub 入门指南](certifications/mcpa/GETTING_STARTED.md)。在 Codex 中运行 `mcpa-certification`，在 Claude Code 中运行 `/mcpa-certification`，或指示其他宿主使用 `mcpa-certification`。它会在 `MCPA-CERTIFICATION.md` 中创建持久路线，循序渐进地教学、运行实验并反馈。课程同时上线于 [MCPA 认证专页](https://ai-learn.agent-buy.com/certification.html?id=mcpa-f)。
+
+本课程为基于公开考试目标的独立学习资料，非 Agentic AI Foundation 或 Linux Foundation 官方附属，不复制真实试题，亦不保证考试通过。
+
+### 学习 Skills 工具清单
+
+| Skill | 功能 |
+|---|---|
+| [`start-learning`](skills/start-learning/SKILL.md) | 一次性上手引导：明确学习动机、定级测验，并将个性化计划保存至 `LEARNING.md`。 |
+| [`learn`](skills/learn/SKILL.md) | 核心导师循环：热身复习、下一课互动教学、课后测验；记录进度与复习队列。 |
+| [`course-guide`](skills/course-guide/SKILL.md) | 主题路由导航：“去哪里学 Attention？”或“Loss 出现 NaN 怎么办？” → 给出精准课程与链接。 |
+| [`learn-mcp`](skills/learn-mcp/SKILL.md) | MCP 专项导师：创建 `MCP-LEARNING.md`，按 17 课清单推进，记录通信、安全、可靠性与一致性证据。 |
+| [`learn-agent-skills`](skills/learn-agent-skills/SKILL.md) | Agent Skills 专项导师：创建 `AGENT-SKILLS-LEARNING.md`，讲授第 22、24、25、26、27 课，并记录真机实测证据。 |
+| [`claude-certification`](skills/claude-certification/SKILL.md) | Claude 认证导师：选择 CCAO-F、CCDV-F、CCAR-F 或 CCAR-P；逐课教学；运行实验；批阅 artifacts；组织模拟考试；保存进度。 |
+| [`mcpa-certification`](skills/mcpa-certification/SKILL.md) | MCPA 导师：沿着基于 2026-07-28 协议的 34 课 `mcpa-f` 路线教学；运行实验与 wire checker；组织诊断测验与三套模拟考试；记录进度。 |
+| [`find-your-level`](skills/find-your-level/SKILL.md) | 10 道题的定级测验：将你的背景知识映射到起始阶段，并生成附带预估时长的个性化路线。 |
+| [`check-understanding <phase>`](skills/check-understanding/SKILL.md) | 阶段理解检查测验：每阶段 8 道题，附带反馈和建议重点复习的课程。 |
+
+```text
+░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
+```
+
+## 以电子书形式阅读核心课程
+
+`phases/` 下的 20 个核心阶段编纂成了共六卷的电子书系列。EPUB 和 PDF 由 CI 直接基于核心课程源码构建，并附加在每次 [GitHub release](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases) 中；以下链接始终指向最新版本。卷号代表系列中的分册，并非版本号：每份副本均带有日期印章，历史版本可从对应 Release 中下载。
+
+Certification curricula are intentionally not converted into the books. 它们的 AI 导师状态、可运行实验、动态图表、诊断测试和计时模拟考试在 GitHub 和官方网站上保持第一优先支持。
+
+| 卷号 | 标题 | 包含阶段 | 下载 |
+|-----|-------|--------|----------|
+| 1 | Foundations · Math, Tooling, and Classical Machine Learning | 00-02 | [EPUB](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol1-foundations.epub) · [PDF](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol1-foundations.pdf) |
+| 2 | Deep Learning · Networks, Vision, and Speech | 03, 04, 06 | [EPUB](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol2-deep-learning.epub) · [PDF](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol2-deep-learning.pdf) |
+| 3 | Language · NLP Foundations and the Transformer | 05, 07 | [EPUB](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol3-language.epub) · [PDF](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol3-language.pdf) |
+| 4 | Large Language Models · Generation, Reinforcement, Pretraining, and Engineering | 08-11 | [EPUB](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol4-llms.epub) · [PDF](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol4-llms.pdf) |
+| 5 | Agents · Multimodality, Protocols, Autonomy, and Swarms | 12-16 | [EPUB](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol5-agents.epub) · [PDF](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol5-agents.pdf) |
+| 6 | Production · Infrastructure, Safety, and Capstones | 17-19 | [EPUB](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol6-production.epub) · [PDF](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download/aiefs-vol6-production.pdf) |
+
+每本书都是阶段性快照，而本仓库则是持续更新的活版课程。每章结尾都链接回对应课程的动态图表、测验与可运行源码。本地构建请使用 `python3 scripts/build_book.py`（需安装 pandoc），流水线细节见 [book/README.md](book/README.md)。
+
 ## 每节课都会交付成果
 
 其他课程通常以 *“恭喜，你学会了 X。”* 结束。这里的每节课都会以一个
@@ -179,7 +311,7 @@ ls phases/03-deep-learning-core/05-loss-functions/outputs/
 </table>
 
 > 用 `python3 scripts/install_skills.py` 一次性安装全部内容。是真工具，不是作业。
-> 完成整套课程后，你会拥有一个包含 503 个 artifacts 的作品集，并且真正理解它们，
+> 完成整套课程后，你会拥有一个包含 523 个 artifacts 的作品集，并且真正理解它们，
 > 因为它们都是你亲手构建的。
 
 ### FIG_002 · 一个完整示例
@@ -608,87 +740,111 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-13">
-<summary><b>Phase 13 — Tools & Protocols</b> &nbsp;<code>23 lessons</code>&nbsp; <em>AI 与真实世界之间的接口。</em></summary>
+<summary><b>Phase 13 — 工具与协议</b> &nbsp;<code>31 节课</code>&nbsp; <em>Function calling、MCP 协议、安全与生态。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
 |:---:|--------|:----:|------|
-| 01 | [The Tool Interface](phases/13-tools-and-protocols/01-the-tool-interface/) | 学习 | Python |
-| 02 | [Function Calling Deep Dive](phases/13-tools-and-protocols/02-function-calling-deep-dive/) | 构建 | Python |
-| 03 | [Parallel and Streaming Tool Calls](phases/13-tools-and-protocols/03-parallel-and-streaming-tool-calls/) | 构建 | Python |
-| 04 | [Structured Output](phases/13-tools-and-protocols/04-structured-output/) | 构建 | Python |
-| 05 | [Tool Schema Design](phases/13-tools-and-protocols/05-tool-schema-design/) | 学习 | Python |
-| 06 | [MCP Fundamentals](phases/13-tools-and-protocols/06-mcp-fundamentals/) | 学习 | Python |
-| 07 | [Building an MCP Server](phases/13-tools-and-protocols/07-building-an-mcp-server/) | 构建 | Python |
-| 08 | [Building an MCP Client](phases/13-tools-and-protocols/08-building-an-mcp-client/) | 构建 | Python |
-| 09 | [MCP Transports](phases/13-tools-and-protocols/09-mcp-transports/) | 学习 | Python |
-| 10 | [MCP Resources and Prompts](phases/13-tools-and-protocols/10-mcp-resources-and-prompts/) | 构建 | Python |
-| 11 | [MCP Sampling](phases/13-tools-and-protocols/11-mcp-sampling/) | 构建 | Python |
-| 12 | [MCP Roots and Elicitation](phases/13-tools-and-protocols/12-mcp-roots-and-elicitation/) | 构建 | Python |
-| 13 | [MCP Async Tasks](phases/13-tools-and-protocols/13-mcp-async-tasks/) | 构建 | Python |
-| 14 | [MCP Apps](phases/13-tools-and-protocols/14-mcp-apps/) | 构建 | Python |
-| 15 | [MCP Security I — Tool Poisoning](phases/13-tools-and-protocols/15-mcp-security-tool-poisoning/) | 学习 | Python |
-| 16 | [MCP Security II — OAuth 2.1](phases/13-tools-and-protocols/16-mcp-security-oauth-2-1/) | 构建 | Python |
-| 17 | [MCP Gateways and Registries](phases/13-tools-and-protocols/17-mcp-gateways-and-registries/) | 学习 | Python |
-| 18 | [MCP Auth in Production — DCR + JWKS on iii](phases/13-tools-and-protocols/18-mcp-auth-production/) | 构建 | Python |
-| 19 | [A2A Protocol](phases/13-tools-and-protocols/19-a2a-protocol/) | 构建 | Python |
-| 20 | [OpenTelemetry GenAI](phases/13-tools-and-protocols/20-opentelemetry-genai/) | 构建 | Python |
-| 21 | [LLM Routing Layer](phases/13-tools-and-protocols/21-llm-routing-layer/) | 学习 | Python |
-| 22 | [Skills and Agent SDKs](phases/13-tools-and-protocols/22-skills-and-agent-sdks/) | 学习 | Python |
-| 23 | [Capstone — Tool Ecosystem](phases/13-tools-and-protocols/23-capstone-tool-ecosystem/) | 构建 | Python |
+| 01 | [Tool Interface](phases/13-tools-and-protocols/01-the-tool-interface/) | Learn | Python |
+| 02 | [Function Calling 深入解析](phases/13-tools-and-protocols/02-function-calling-deep-dive/) | Build | Python |
+| 03 | [Parallel 与 Streaming Tool Calls](phases/13-tools-and-protocols/03-parallel-and-streaming-tool-calls/) | Build | Python |
+| 04 | [Structured Output](phases/13-tools-and-protocols/04-structured-output/) | Build | Python |
+| 05 | [Tool Schema Design](phases/13-tools-and-protocols/05-tool-schema-design/) | Learn | Python |
+| 06 | [MCP 基础](phases/13-tools-and-protocols/06-mcp-fundamentals/) | Learn | Python |
+| 07 | [构建 MCP Server](phases/13-tools-and-protocols/07-building-an-mcp-server/) | Build | Python |
+| 08 | [构建 MCP Client](phases/13-tools-and-protocols/08-building-an-mcp-client/) | Build | Python |
+| 09 | [MCP Transports](phases/13-tools-and-protocols/09-mcp-transports/) | Build | Python |
+| 10 | [MCP Resources 与 Prompts](phases/13-tools-and-protocols/10-mcp-resources-and-prompts/) | Build | Python |
+| 11 | [MCP Sampling](phases/13-tools-and-protocols/11-mcp-sampling/) | Build | Python |
+| 12 | [MCP Roots 与 Elicitation](phases/13-tools-and-protocols/12-mcp-roots-and-elicitation/) | Build | Python |
+| 13 | [MCP Async Tasks](phases/13-tools-and-protocols/13-mcp-async-tasks/) | Build | Python |
+| 14 | [MCP Apps](phases/13-tools-and-protocols/14-mcp-apps/) | Build | Python |
+| 15 | [MCP Security I — Tool Poisoning](phases/13-tools-and-protocols/15-mcp-security-tool-poisoning/) | Learn | Python |
+| 16 | [MCP Security II — OAuth 2.1](phases/13-tools-and-protocols/16-mcp-security-oauth-2-1/) | Build | Python |
+| 17 | [MCP Gateways 与 Registries](phases/13-tools-and-protocols/17-mcp-gateways-and-registries/) | Learn | Python |
+| 18 | [Production 中的 MCP Auth — iii 上的 DCR + JWKS](phases/13-tools-and-protocols/18-mcp-auth-production/) | Build | Python |
+| 19 | [A2A Protocol](phases/13-tools-and-protocols/19-a2a-protocol/) | Build | Python |
+| 20 | [OpenTelemetry GenAI](phases/13-tools-and-protocols/20-opentelemetry-genai/) | Build | Python |
+| 21 | [LLM Routing Layer](phases/13-tools-and-protocols/21-llm-routing-layer/) | Learn | Python |
+| 22 | [Skills 与 Agent SDKs](phases/13-tools-and-protocols/22-skills-and-agent-sdks/) | Build | Python |
+| 23 | [Capstone — Tool Ecosystem](phases/13-tools-and-protocols/23-capstone-tool-ecosystem/) | Build | Python |
+| 24 | [Skill 发现与渐进式公开](phases/13-tools-and-protocols/24-skill-discovery-and-progressive-disclosure/) | Build | Python |
+| 25 | [Skill 调用与路由](phases/13-tools-and-protocols/25-skill-invocation-and-routing/) | Build | Python |
+| 26 | [Skill 权限、沙箱与信任边界](phases/13-tools-and-protocols/26-skill-permissions-sandboxes-and-trust/) | Build | Python |
+| 27 | [Skill 评估、打包与可移植性](phases/13-tools-and-protocols/27-skill-evals-packaging-and-portability/) | Build | Python |
+| 28 | [MCP Tool Contracts 与内容](phases/13-tools-and-protocols/28-mcp-tool-contracts-and-content/) | Build | Python |
+| 29 | [MCP 可靠性、取消与流控](phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/) | Build | Python |
+| 30 | [MCP Registry 供应链：准入、漂移与回滚](phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/) | Build | Python |
+| 31 | [MCP 一致性工程：版本控制、证据与运维](phases/13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/) | Build | Python |
+
+第 06-18 课与第 28-31 课构成专门的 [Model Context Protocol (MCP) 学习路径](learning-paths/model-context-protocol.json)。其清单执行顺序为 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 18, 17, 28, 29, 30, 31。
 
 </details>
 
 <details id="phase-14">
-<summary><b>Phase 14 — Agent Engineering</b> &nbsp;<code>42 lessons</code>&nbsp; <em>从 first principles 构建 agents —— loop、memory、planning、frameworks、benchmarks、production、workbench。</em></summary>
+<summary><b>Phase 14 — Agent Engineering</b> &nbsp;<code>54 节课</code>&nbsp; <em>Agentic loops、记忆架构、工作流编排与 Workbench 评估体系。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
 |:---:|--------|:----:|------|
-| 01 | [The Agent Loop](phases/14-agent-engineering/01-the-agent-loop/) | 构建 | Python |
-| 02 | [ReWOO and Plan-and-Execute](phases/14-agent-engineering/02-rewoo-plan-and-execute/) | 构建 | Python |
-| 03 | [Reflexion and Verbal Reinforcement Learning](phases/14-agent-engineering/03-reflexion-verbal-rl/) | 构建 | Python |
-| 04 | [Tree of Thoughts and LATS](phases/14-agent-engineering/04-tree-of-thoughts-lats/) | 构建 | Python |
-| 05 | [Self-Refine and CRITIC](phases/14-agent-engineering/05-self-refine-and-critic/) | 构建 | Python |
-| 06 | [Tool Use and Function Calling](phases/14-agent-engineering/06-tool-use-and-function-calling/) | 构建 | Python |
-| 07 | [Memory — Virtual Context and MemGPT](phases/14-agent-engineering/07-memory-virtual-context-memgpt/) | 构建 | Python |
-| 08 | [Memory Blocks and Sleep-Time Compute](phases/14-agent-engineering/08-memory-blocks-sleep-time-compute/) | 构建 | Python |
-| 09 | [Hybrid Memory — Mem0 Vector + Graph + KV](phases/14-agent-engineering/09-hybrid-memory-mem0/) | 构建 | Python |
-| 10 | [Skill Libraries and Lifelong Learning — Voyager](phases/14-agent-engineering/10-skill-libraries-voyager/) | 构建 | Python |
-| 11 | [Planning with HTN and Evolutionary Search](phases/14-agent-engineering/11-planning-htn-and-evolutionary/) | 构建 | Python |
-| 12 | [Anthropic's Workflow Patterns](phases/14-agent-engineering/12-anthropic-workflow-patterns/) | 构建 | Python |
-| 13 | [LangGraph — Stateful Graphs and Durable Execution](phases/14-agent-engineering/13-langgraph-stateful-graphs/) | 构建 | Python |
-| 14 | [AutoGen v0.4 — Actor Model](phases/14-agent-engineering/14-autogen-actor-model/) | 构建 | Python |
-| 15 | [CrewAI — Role-Based Crews and Flows](phases/14-agent-engineering/15-crewai-role-based-crews/) | 构建 | Python |
-| 16 | [OpenAI Agents SDK — Handoffs, Guardrails, Tracing](phases/14-agent-engineering/16-openai-agents-sdk/) | 构建 | Python |
-| 17 | [Claude Agent SDK — Subagents and Session Store](phases/14-agent-engineering/17-claude-agent-sdk/) | 构建 | Python |
-| 18 | [Agno and Mastra — Production Runtimes](phases/14-agent-engineering/18-agno-and-mastra-runtimes/) | 学习 | Python |
-| 19 | [Benchmarks — SWE-bench, GAIA, AgentBench](phases/14-agent-engineering/19-benchmarks-swebench-gaia/) | 学习 | Python |
-| 20 | [Benchmarks — WebArena and OSWorld](phases/14-agent-engineering/20-benchmarks-webarena-osworld/) | 学习 | Python |
-| 21 | [Computer Use — Claude, OpenAI CUA, Gemini](phases/14-agent-engineering/21-computer-use-agents/) | 构建 | Python |
-| 22 | [Voice Agents — Pipecat and LiveKit](phases/14-agent-engineering/22-voice-agents-pipecat-livekit/) | 构建 | Python |
-| 23 | [OpenTelemetry GenAI Semantic Conventions](phases/14-agent-engineering/23-otel-genai-conventions/) | 构建 | Python |
-| 24 | [Agent Observability — Langfuse, Phoenix, Opik](phases/14-agent-engineering/24-agent-observability-platforms/) | 学习 | Python |
-| 25 | [Multi-Agent Debate and Collaboration](phases/14-agent-engineering/25-multi-agent-debate/) | 构建 | Python |
-| 26 | [Failure Modes — Why Agents Break](phases/14-agent-engineering/26-failure-modes-agentic/) | 构建 | Python |
-| 27 | [Prompt Injection and the PVE Defense](phases/14-agent-engineering/27-prompt-injection-defense/) | 构建 | Python |
-| 28 | [Orchestration Patterns — Supervisor, Swarm, Hierarchical](phases/14-agent-engineering/28-orchestration-patterns/) | 构建 | Python |
-| 29 | [Production Runtimes — Queue, Event, Cron](phases/14-agent-engineering/29-production-runtimes/) | 学习 | Python |
-| 30 | [Eval-Driven Agent Development](phases/14-agent-engineering/30-eval-driven-agent-development/) | 构建 | Python |
-| 31 | [Agent Workbench: Why Capable Models Still Fail](phases/14-agent-engineering/31-agent-workbench-why-models-fail/) | 学习 | Python |
-| 32 | [The Minimal Agent Workbench](phases/14-agent-engineering/32-minimal-agent-workbench/) | 构建 | Python |
-| 33 | [Agent Instructions as Executable Constraints](phases/14-agent-engineering/33-instructions-as-executable-constraints/) | 构建 | Python |
-| 34 | [Repo Memory and Durable State](phases/14-agent-engineering/34-repo-memory-and-state/) | 构建 | Python |
-| 35 | [Initialization Scripts for Agents](phases/14-agent-engineering/35-initialization-scripts/) | 构建 | Python |
-| 36 | [Scope Contracts and Task Boundaries](phases/14-agent-engineering/36-scope-contracts/) | 构建 | Python |
-| 37 | [Runtime Feedback Loops](phases/14-agent-engineering/37-runtime-feedback-loops/) | 构建 | Python |
-| 38 | [Verification Gates](phases/14-agent-engineering/38-verification-gates/) | 构建 | Python |
-| 39 | [Reviewer Agent: Separate Builder from Marker](phases/14-agent-engineering/39-reviewer-agent/) | 构建 | Python |
-| 40 | [Multi-Session Handoff](phases/14-agent-engineering/40-multi-session-handoff/) | 构建 | Python |
-| 41 | [The Workbench on a Real Repo](phases/14-agent-engineering/41-workbench-for-real-repos/) | 构建 | Python |
-| 42 | [Capstone: Ship a Reusable Agent Workbench Pack](phases/14-agent-engineering/42-agent-workbench-capstone/) | 构建 | Python |
+| 01 | [Agent Loop](phases/14-agent-engineering/01-the-agent-loop/) | Build | Python |
+| 02 | [ReWOO 与 Plan-and-Execute](phases/14-agent-engineering/02-rewoo-plan-and-execute/) | Build | Python |
+| 03 | [Reflexion 与 Verbal Reinforcement Learning](phases/14-agent-engineering/03-reflexion-verbal-rl/) | Build | Python |
+| 04 | [Tree of Thoughts 与 LATS](phases/14-agent-engineering/04-tree-of-thoughts-lats/) | Build | Python |
+| 05 | [Self-Refine 与 CRITIC](phases/14-agent-engineering/05-self-refine-and-critic/) | Build | Python |
+| 06 | [Tool Use 与 Function Calling](phases/14-agent-engineering/06-tool-use-and-function-calling/) | Build | Python |
+| 07 | [Memory — Virtual Context 与 MemGPT](phases/14-agent-engineering/07-memory-virtual-context-memgpt/) | Build | Python |
+| 08 | [Memory Blocks 与 Sleep-Time Compute (Letta)](phases/14-agent-engineering/08-memory-blocks-sleep-time-compute/) | Build | Python |
+| 09 | [Hybrid Memory — Vector + Graph + KV (Mem0)](phases/14-agent-engineering/09-hybrid-memory-mem0/) | Build | Python |
+| 10 | [Skill Libraries 与 Lifelong Learning (Voyager)](phases/14-agent-engineering/10-skill-libraries-voyager/) | Build | Python |
+| 11 | [使用 HTN 与 Evolutionary Search 进行规划](phases/14-agent-engineering/11-planning-htn-and-evolutionary/) | Build | Python |
+| 12 | [Anthropic 的 Workflow Patterns](phases/14-agent-engineering/12-anthropic-workflow-patterns/) | Build | Python |
+| 13 | [LangGraph — Stateful Graphs 与 Durable Execution](phases/14-agent-engineering/13-langgraph-stateful-graphs/) | Build | Python |
+| 14 | [AutoGen v0.4 — Actor Model](phases/14-agent-engineering/14-autogen-actor-model/) | Build | Python |
+| 15 | [CrewAI — Role-Based Crews 与 Flows](phases/14-agent-engineering/15-crewai-role-based-crews/) | Build | Python |
+| 16 | [OpenAI Agents SDK — Handoffs, Guardrails, Tracing](phases/14-agent-engineering/16-openai-agents-sdk/) | Build | Python |
+| 17 | [Claude Agent SDK — Subagents 与 Session Store](phases/14-agent-engineering/17-claude-agent-sdk/) | Build | Python |
+| 18 | [Production Agent Runtimes](phases/14-agent-engineering/18-agno-and-mastra-runtimes/) | Learn | Python |
+| 19 | [Benchmarks — SWE-bench, GAIA, AgentBench](phases/14-agent-engineering/19-benchmarks-swebench-gaia/) | Learn | Python |
+| 20 | [Benchmarks — WebArena 与 OSWorld](phases/14-agent-engineering/20-benchmarks-webarena-osworld/) | Learn | Python |
+| 21 | [Computer Use — Claude, OpenAI CUA, Gemini](phases/14-agent-engineering/21-computer-use-agents/) | Build | Python |
+| 22 | [Voice Agents — Pipecat 与 LiveKit](phases/14-agent-engineering/22-voice-agents-pipecat-livekit/) | Build | Python |
+| 23 | [OpenTelemetry GenAI Semantic Conventions](phases/14-agent-engineering/23-otel-genai-conventions/) | Build | Python |
+| 24 | [Agent Observability — Langfuse, Phoenix, Opik](phases/14-agent-engineering/24-agent-observability-platforms/) | Learn | Python |
+| 25 | [Multi-Agent Debate 与 Collaboration](phases/14-agent-engineering/25-multi-agent-debate/) | Build | Python |
+| 26 | [Failure Modes — Agents 为什么会失效](phases/14-agent-engineering/26-failure-modes-agentic/) | Build | Python |
+| 27 | [Prompt Injection 与 PVE Defense](phases/14-agent-engineering/27-prompt-injection-defense/) | Build | Python |
+| 28 | [Orchestration Patterns — Supervisor, Swarm, Hierarchical](phases/14-agent-engineering/28-orchestration-patterns/) | Build | Python |
+| 29 | [Production Runtimes — Queue, Event, Cron](phases/14-agent-engineering/29-production-runtimes/) | Learn | Python |
+| 30 | [Eval-Driven Agent Development](phases/14-agent-engineering/30-eval-driven-agent-development/) | Build | Python |
+| 31 | [Agent Workbench: 为什么能力强的模型仍会失败](phases/14-agent-engineering/31-agent-workbench-why-models-fail/) | Learn | Python |
+| 32 | [Minimal Agent Workbench](phases/14-agent-engineering/32-minimal-agent-workbench/) | Build | Python |
+| 33 | [作为可执行约束的 Agent Instructions](phases/14-agent-engineering/33-instructions-as-executable-constraints/) | Build | Python |
+| 34 | [Repo Memory 与 Durable State](phases/14-agent-engineering/34-repo-memory-and-state/) | Build | Python |
+| 35 | [面向 Agents 的 Initialization Scripts](phases/14-agent-engineering/35-initialization-scripts/) | Build | Python |
+| 36 | [Scope Contracts 与 Task Boundaries](phases/14-agent-engineering/36-scope-contracts/) | Build | Python |
+| 37 | [Runtime Feedback Loops](phases/14-agent-engineering/37-runtime-feedback-loops/) | Build | Python |
+| 38 | [Verification Gates](phases/14-agent-engineering/38-verification-gates/) | Build | Python |
+| 39 | [Reviewer Agent: 分离 Builder 与 Marker](phases/14-agent-engineering/39-reviewer-agent/) | Build | Python |
+| 40 | [Multi-Session Handoff](phases/14-agent-engineering/40-multi-session-handoff/) | Build | Python |
+| 41 | [真实 Repo 上的 Workbench](phases/14-agent-engineering/41-workbench-for-real-repos/) | Build | Python |
+| 42 | [Capstone: 发布可复用的 Agent Workbench Pack](phases/14-agent-engineering/42-agent-workbench-capstone/) | Build | Python |
+| 43 | [在 Agent 写代码前框定任务](phases/14-agent-engineering/43-frame-the-task-before-code/) | Build | Python |
+| 44 | [构建基于证据的执行计划](phases/14-agent-engineering/44-plan-from-evidence/) | Build | Python |
+| 45 | [带隔离与合并契约的 Agent 委托](phases/14-agent-engineering/45-delegate-with-isolation/) | Build | Python |
+| 46 | [将每次 Agent 纠偏转化为系统改进](phases/14-agent-engineering/46-turn-feedback-into-system/) | Build | Python |
+| 47 | [在选择输出之前先定义成效](phases/14-agent-engineering/47-outcomes-before-output/) | Build | Python |
+| 48 | [发掘人们真正执行的工作流](phases/14-agent-engineering/48-discover-the-real-workflow/) | Build | Python |
+| 49 | [映射假设并优先解决最高风险点](phases/14-agent-engineering/49-map-assumptions-and-risk/) | Build | Python |
+| 50 | [选择能够改变决策的最小切片](phases/14-agent-engineering/50-choose-the-smallest-testable-slice/) | Build | Python |
+| 51 | [编写保留人类判断力的规范说明](phases/14-agent-engineering/51-write-specifications-that-preserve-judgment/) | Build | Python |
+| 52 | [在结果出现前设计成功度量指标](phases/14-agent-engineering/52-design-success-metrics/) | Build | Python |
+| 53 | [审慎选择原型、试点还是生产级](phases/14-agent-engineering/53-prototype-pilot-or-production/) | Build | Python |
+| 54 | [构建带权责与退役机制的反馈棘轮](phases/14-agent-engineering/54-build-the-feedback-ratchet/) | Build | Python |
 
-每个 Phase 14 workbench 课程（31-42）都会交付一个 `mission.md`，在 agent 打开完整课程 docs 之前为它提供任务 brief。
+Phase 14 的每个 workbench 课程（31-42）都附带 `mission.md`，在 agent 查看完整课程文档前进行任务简报。
+
+第 31-46 课构成 [Agent-Assisted Engineering 学习路径](learning-paths/using-coding-agents.json)。清单顺序结合了 workbench 基础与任务框定、规划、委托及持久反馈机制。第 47-54 课构成 [Product Judgment and Delivery 学习路径](learning-paths/shaping-the-build.json)，涵盖从成效框定到证据、风险、范围、度量、分阶段发布以及反馈权责管理的完整闭环。
 
 </details>
 
@@ -948,9 +1104,7 @@ outputs/
 
 用 `npx skills add` 安装它们。接入 Claude、Cursor、Codex、OpenClaw、Hermes，或任何读取 SKILL.md / AGENTS.md 目录的 agent。是真工具，不是作业。
 
-### 将所有课程 skill 安装到你的 agent 中
-
-这个 repo 在 `phases/**/outputs/` 下提供 388 个 skills 和 99 个 prompts。
+本 repo 提供了 396 个 skill 和 99 个 prompt（位于 `phases/**/outputs/` 下）。
 
 **推荐：通过 [skills.sh](https://skills.sh) 安装。** 无需 clone，无需 Python，并会自动检测你的 agent skills 目录：
 
@@ -962,7 +1116,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh --phase 14            
 
 `skills` 会写入你的 agent 会读取的目录：`.claude/skills/`、`.cursor/skills/`、`.codex/skills/`、OpenClaw 的 skills folder、Hermes 的 bundle path，或任何支持 SKILL.md 的工具。一个命令，覆盖每种 agent。
 
-**进阶：通过 `scripts/install_skills.py` 离线安装 / 自定义 layout。** 需要先 clone repo。适合需要 tag filters、dry-run 或非默认 layout 的场景：
+**课程产物（The lesson artifacts）。** The repo ships 396 skills and 99 prompts under `phases/**/outputs/`；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义 layout。需要先 clone repo。适合需要 tag filters、dry-run 或非默认 layout 的场景：
 
 ```bash
 python3 scripts/install_skills.py <target>                                 # every skill, default --layout skills (nested)
@@ -1111,7 +1265,7 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 
 ## 赞助这项工作
 
-免费，MIT-licensed，503 节课。课程完全依靠 sponsorship 维护。只接受现金。
+免费，MIT-licensed，523 节课。课程完全依靠 sponsorship 维护。只接受现金。
 
 **触达（2026-05-14 已验证）：** 55,593 月访问者 · 90,709 page views · 7.5K stars ·
 Twitter/X 是 #1 acquisition channel。
@@ -1138,6 +1292,13 @@ Twitter/X 是 #1 acquisition channel。
 ```
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
+
+<a id="supporters"></a>
+
+## Sponsor the work
+
+赞助支持本课程。Free, MIT-licensed, 523 lessons. Thank you to the sponsors and backers who make the work possible.
+[查看所有赞助者与支持者 · See all sponsors and backers](BACKERS.md).
 
 ## Star history
 

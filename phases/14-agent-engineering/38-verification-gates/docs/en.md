@@ -61,6 +61,11 @@ flowchart TD
 
 Block-severity findings 不能由 agent override。它们只能由 human override，并且必须记录 `override_reason` 和 `overridden_by` user id。override 是一次签名变更，不是 agent 决策。
 
+
+```figure
+wb-gate-sequence
+```
+
 ## 构建它
 `code/main.py` 实现：
 

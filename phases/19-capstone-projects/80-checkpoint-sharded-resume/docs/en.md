@@ -68,6 +68,11 @@ flowchart TD
 
 通过 `O_APPEND` 对一个文件的并发写入适用于 POSIX 字节对齐写入，但实际上，一个分片内的偏移量跨越 MB 大小的区域，并且锁定占主导地位。当底层文件系统是并行的（Lustre、GPFS）时，每个等级的文件没有争用，并且可以从条带化中受益。因此，生产堆栈（DeepSpeed、FSDP、NeMo）都使用 per-rank 文件。
 
+
+```figure
+ci-sharded-checkpoint
+```
+
 ## 构建它
 
 `code/main.py` 实现：

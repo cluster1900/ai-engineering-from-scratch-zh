@@ -1,0 +1,78 @@
+{
+  "lesson": "31-mcp-conformance-versioning-and-operations",
+  "title": "MCP 一致性工程：版本控制、证据与运维",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么单次成功的 SDK tools/list 调用不足以作为充分的一致性证明？",
+      "options": [
+        "SDK 规范化后的对象可能会掩盖底层的真实线路字段、版本行为、中间代理篡改以及非法的响应格式",
+        "SDK 根本无法调用 MCP tools",
+        "成功的调用总是会默认选择旧版纪元（legacy era）",
+        "一致性要求仅适用于 Registry 发布者"
+      ],
+      "correct": 0,
+      "explanation": "一致性验证必须深入检查原始请求与响应报文、所协商的版本纪元、中间代理行为以及 SDK 的具体转换逻辑。"
+    },
+    {
+      "stage": "check",
+      "question": "一次现代探测请求返回了 JSON-RPC 错误码 -32021。具备回退能力的 client 应当如何应对？",
+      "options": [
+        "立即发送 initialize 握手切换到旧版纪元",
+        "将对端视作已下线",
+        "维持现代纪元，并纠正或如实上报缺失的能力声明（capability declaration）",
+        "忽略该错误并直接在不声明能力的情况下重试"
+      ],
+      "correct": 2,
+      "explanation": "收到已识别的现代协议错误代码，本身就证明了对端具备现代协议行为。这是用于纠偏的证据，绝非降级回退的许可。"
+    },
+    {
+      "stage": "check",
+      "question": "现代 client 应当如何处理包含 resultType: complete 以及不熟悉的新增附加字段的响应结果？",
+      "options": [
+        "将 resultType 修改为 input_required",
+        "直接拒绝任何包含未知键的响应",
+        "接受已识别的结果类型，并根据其职责定位选择保留或有意忽略该附加字段",
+        "将不熟悉的字段视作旧版握手信号"
+      ],
+      "correct": 2,
+      "explanation": "附加字段是向后兼容与向前兼容的重要支撑。这与未知的生命周期结果类型判别器（discriminator）有着本质区别。"
+    },
+    {
+      "stage": "check",
+      "question": "对于没有 id 的 JSON-RPC notification，规范要求的响应形式是什么？",
+      "options": [
+        "返回一个 server/discover 结果",
+        "不产生任何 JSON-RPC 响应",
+        "返回一个 content 为 null 的 complete 结果",
+        "返回一个 id 为 null 的 error 响应"
+      ],
+      "correct": 1,
+      "explanation": "Notification 属于严格的单向通信。最终的传输层序列化器绝不能向外出具任何 JSON-RPC success 或 error 响应。"
+    },
+    {
+      "stage": "post",
+      "question": "下列哪项证据最能证明中间代理完整透传了源站的协议错误？",
+      "options": [
+        "带有稳定内容摘要且经过脱敏的入口、源站以及出口三方状态与请求体证据",
+        "网关控制台仪表盘的截图",
+        "单凭 SDK 抛出的异常类名",
+        "代理进程的在线运行时间（uptime）"
+      ],
+      "correct": 0,
+      "explanation": "三边界证据能够清晰揭示 HTTP 状态码崩塌、请求体被改写，以及行为发生变异的具体跳数（hop）。"
+    },
+    {
+      "stage": "post",
+      "question": "候选版本在负面交互记录测试中失败，而先前的旧版本缺乏准入和健康检查证据。此时发布门禁应当如何处置？",
+      "options": [
+        "选择最新的 Registry 版本直接上线",
+        "因为黄金记录测试通过了，所以予以放行晋级",
+        "回滚到标记为 latest 的软件包",
+        "保持发布拦截（Hold），直到证明存在合规的回滚目标或修复后的候选版本"
+      ],
+      "correct": 3,
+      "explanation": "在缺乏精确准入与健康凭据的情况下盲目回滚，无异于进行另一次未经验证的冒险发布，因此最安全的处置是保持拦截并维持现状。"
+    }
+  ]
+}

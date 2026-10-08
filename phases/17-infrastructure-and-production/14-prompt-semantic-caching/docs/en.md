@@ -92,6 +92,11 @@ Pricing points 是从链接的 vendor docs 中采集的 2026-04 数据，并且�
 - ProjectDiscovery：通过将 dynamic 移出 prefix，hit rate 从 7% → 74%（project blog，2025-11）。
 - Parallelization anti-pattern：典型报告显示，当 N 个 parallel requests 错过第一次 cache write 时，账单会膨胀 5–10x。
 
+
+```figure
+semantic-cache-hit
+```
+
 ## 使用它
 `code/main.py` 模拟混合 workloads 上的 L1 + L2 caching。报告 hit rates、bill，并展示 parallelization penalty。
 

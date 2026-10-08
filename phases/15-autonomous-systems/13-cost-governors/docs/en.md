@@ -60,6 +60,11 @@ Microsoft 的 Agent Governance Toolkit 覆盖 OWASP Agentic Top 10 和 EU AI Act
 
 Microsoft 文档中的真实案例：一个 e-commerce agent 在添加新工具后，月度成本翻了三倍。该工具允许 agent 在每个 session 中轮询订单状态。没有循环检测。没有每工具上限。没有 week-over-week 增长告警。修复方案是每工具上限加每日增长告警。这是一个模板：每个新的工具表面都是一个新的潜在循环；每个新工具都需要自己的上限和自己的告警。
 
+
+```figure
+cost-governor-stack
+```
+
 ## 使用它
 
 `code/main.py` 模拟一个有 layered cost-governor stack 和没有该栈的 agent 运行。模拟中的 agent 在若干轮后漂移进轮询循环；layered stack 会在速度窗口内抓住它，而单个月度上限要到几天后才会触发。

@@ -322,6 +322,11 @@ Chaining 优于单 prompt 有三个原因：
 
 正确技术取决于三个因素：准确率要求、延迟预算和成本容忍度。对大多数生产系统来说，few-shot CoT 加 3-sample self-consistency fallback 可以覆盖 90% 的用例。
 
+
+```figure
+few-shot-curve
+```
+
 ## 构建它
 
 我们将构建一个数学问题求解器，把 few-shot prompting、chain-of-thought 推理和 self-consistency voting 组合成一个 pipeline。然后为难题加入 tree-of-thought。

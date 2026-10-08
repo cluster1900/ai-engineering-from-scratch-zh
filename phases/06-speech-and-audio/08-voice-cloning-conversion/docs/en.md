@@ -57,6 +57,11 @@
 
 SECS > 0.70 对大多数听众而言通常已经与目标声音难以区分。
 
+
+```figure
+sp-voice-factorize
+```
+
 ## Build It
 
 ### Step 1: 用 recognition-synthesis 分解（`main.py` 中的 code-only demo）

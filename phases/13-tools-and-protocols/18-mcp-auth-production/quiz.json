@@ -1,0 +1,78 @@
+{
+  "lesson": "18-mcp-auth-production",
+  "title": "生产环境中的 MCP 认证与鉴权：绑定签发者的注册与 Token 机制",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP 客户端发现同一个资源对应了一个不同的授权服务器签发者（Issuer）。它应当如何处理已有的客户端注册凭据与 Access Token？",
+      "options": [
+        "在本地修改 Token 的受众（Audience）后继续复用该 Token",
+        "针对新签发者重新发起注册，并将凭据严格按签发者物理隔离",
+        "直接复用两者，因为 MCP 资源 URL 并未发生改变",
+        "将两者保存在 tool 名称下，而非保存在签发者下"
+      ],
+      "correct": 1,
+      "explanation": "客户端标识符和注册凭据归属于创建它们的授权服务器签发者。签发者变更需要独立注册，且每个 Access Token 均在签发者与资源受众双重索引下进行缓存。"
+    },
+    {
+      "stage": "check",
+      "question": "MCP 2026-07-28 授权 profile 首选哪种客户端注册方式？",
+      "options": [
+        "在每个请求中均调用 RFC 7591 动态客户端注册（DCR）",
+        "托管在客户端 HTTPS URL 上的客户端 ID 元数据文档（CIMD）",
+        "存储单一全局客户端标识符的协议 session",
+        "在每个桌面客户端中硬编码共享的 client secret"
+      ],
+      "correct": 1,
+      "explanation": "CIMD 允许授权服务器直接从客户端 HTTPS URL 标识符中拉取解析客户端元数据。DCR 已被废弃，仅作为向后兼容路径保留。"
+    },
+    {
+      "stage": "check",
+      "question": "在已废弃的 DCR 请求中注册一个本地回环桌面客户端，哪项元数据对于正确分类必不可少？",
+      "options": [
+        "Mcp-Session-Id",
+        "通配符重定向 URI",
+        "将 application_type 设置为 native",
+        "可复用的 Bearer Token"
+      ],
+      "correct": 2,
+      "explanation": "当前的兼容性指南要求提供正确的应用类型。本地回环桌面客户端必须声明为 native；Web 客户端使用 HTTPS 重定向 URI。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么客户端在兑换授权码之前必须校验 RFC 9207 的 iss 参数值？",
+      "options": [
+        "防止将诚实签发者的授权码拿到攻击者控制的 Token 端点去兑换",
+        "为了避免刷新 JWKS 缓存",
+        "为了用签发者发现替代 PKCE",
+        "为了从 server/discover 中挑选合适的 tool"
+      ],
+      "correct": 0,
+      "explanation": "签发者校验用于防御授权服务器混淆攻击（Mix-up Attack）。它通过确认响应确实来自重定向之前记录的签发者来补充 PKCE 的防御盲区。"
+    },
+    {
+      "stage": "post",
+      "question": "在当前无状态传输协议下，MCP 资源服务器应当在何处缓存授权状态？",
+      "options": [
+        "缓存在 Mcp-Session-Id 下，直到客户端发送 DELETE",
+        "缓存在 server/discover 的结果中供后续所有调用复用",
+        "缓存在 SSE 连接中，直到发生断线重连",
+        "不作为协议会话决策进行缓存；在每一个请求上均独立校验 Bearer Token"
+      ],
+      "correct": 3,
+      "explanation": "MCP 2026-07-28 移除了协议 session。每个请求都独立跨越授权边界，因此每次都必须独立检查身份、受众、过期时间与 scope。"
+    },
+    {
+      "stage": "post",
+      "question": "在决定信任某个授权服务器之前，哪类部署证据最具有说服力？",
+      "options": [
+        "抓取目标服务器的实时发现元数据，严格比对 PKCE、签发者、注册机制及资源绑定等要求",
+        "照抄旧课程中的厂商特性对比表",
+        "宣称支持 OAuth 的厂商产品宣传页",
+        "一次未检查 Token 受众的成功登录尝试"
+      ],
+      "correct": 0,
+      "explanation": "各厂商的特性随部署和版本而变化。实时的发现元数据文档才是最明确的核验契约，后续还须进行端到端的签发者与受众校验。"
+    }
+  ]
+}

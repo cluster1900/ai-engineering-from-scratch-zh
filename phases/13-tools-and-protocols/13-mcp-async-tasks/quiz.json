@@ -1,0 +1,78 @@
+{
+  "lesson": "13-mcp-async-tasks",
+  "title": "MCP Tasks 扩展：构建于无状态核心之上的持久化任务",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "无状态的 MCP server 如何支持长达十分钟的长耗时工作？",
+      "options": [
+        "将一条带有 Mcp-Session-Id 的连接持续保持打开十分钟",
+        "仅在 initialize 的状态中保存任务进度",
+        "要求所有 client 均使用粘性负载均衡（Sticky Load Balancing）",
+        "返回一个由底层应用程序存储支撑的显式持久化任务句柄（Task Handle）"
+      ],
+      "correct": 3,
+      "explanation": "无状态描述的是协议的请求模型。持久化的应用程序状态则由显式的 task id 与共享存储进行建模。"
+    },
+    {
+      "stage": "check",
+      "question": "Server 什么时候可以从 tools/call 中返回 resultType 为 task 的响应？",
+      "options": [
+        "在当前请求已声明该扩展且任务已持久化可读之后",
+        "只要先前的会话曾声明支持 Tasks 即可",
+        "在持久化写入之前返回，以便 client 乐观轮询",
+        "仅当 params._meta.task.required 为 true 时"
+      ],
+      "correct": 0,
+      "explanation": "任务创建是由 server 主导的，但当前请求声明支持扩展以及返回前持久化（durable-before-return）是强制要求的。缺失支持返回带有 data.requiredCapabilities 的 -32021 错误。"
+    },
+    {
+      "stage": "check",
+      "question": "tasks/get 的响应包含 resultType: complete 且 status 为 working。这代表什么含义？",
+      "options": [
+        "该响应违反了 Tasks 扩展规范",
+        "底层代表的作业已经顺利执行完毕",
+        "该任务已被取消",
+        "轮询的 RPC 调用本身已执行完毕，但后台作业仍在运行中"
+      ],
+      "correct": 3,
+      "explanation": "resultType 描述的是 tasks/get RPC 本次调用。Task status 则独立描述持久化作业的当前状态。当 status 为 completed 时，内嵌的 CallToolResult 会带有自身的 resultType complete 与 serverInfo 元数据。"
+    },
+    {
+      "stage": "check",
+      "question": "在任务已经创建生成之后，client 如何对 input_required 进行作答响应？",
+      "options": [
+        "调用带有 answer 字段的 tasks/result 方法",
+        "开启一个全新的 initialize 会话",
+        "使用相同的 id 重试原始的 tools/call",
+        "针对任务未决的 key 发送带有 inputResponses 的 tasks/update 请求"
+      ],
+      "correct": 3,
+      "explanation": "创建任务后的输入由 tasks/get 暴露并通过 tasks/update 履行，而不是通过重试原始调用。"
+    },
+    {
+      "stage": "post",
+      "question": "一次成功的 tasks/cancel 响应能够保证什么？",
+      "options": [
+        "Server 已确认接收到取消意图",
+        "任务的执行结果已被物理删除",
+        "任务的最终状态必然是 cancelled",
+        "后台 worker 已经彻底停止运行"
+      ],
+      "correct": 0,
+      "explanation": "取消是协作式的且具备最终一致性。在 server 发送确认之后，工作可能早已完成或暂时忽略取消信号。"
+    },
+    {
+      "stage": "post",
+      "question": "哪组方法集合符合当前官方 Tasks 扩展规范？",
+      "options": [
+        "tools/task、notifications/task_result 与 roots/list",
+        "tasks/get、tasks/update 与 tasks/cancel",
+        "tasks/create、tasks/subscribe 与 tasks/delete",
+        "tasks/status、tasks/result 与 tasks/list"
+      ],
+      "correct": 1,
+      "explanation": "官方扩展定义了 tasks/get、tasks/update 和 tasks/cancel。每个 HTTP 请求将 Mcp-Name 设置为 params.taskId。旧版的 status、result 和 list 方法仅作为迁移兼容使用。"
+    }
+  ]
+}

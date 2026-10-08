@@ -1,0 +1,78 @@
+{
+  "lesson": "22-skills-and-agent-sdks",
+  "title": "Agent Skills：可移植契约与运行时边界",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "团队拥有一套可复用的代码审查方法，以及一个提供 Pull Request 数据的现有 API。根据运行时策略，哪种设计将各个关注点正确分配给了合适的基本构件（Primitive）？",
+      "options": [
+        "将审查方法封装在 Agent Skill 中，并将 API 通过 MCP tool 对外暴露",
+        "用更长的用户 Prompt 替代该 API",
+        "将审查方法和 API 实现全部直接写入 AGENTS.md",
+        "仅使用生命周期 Hook 作为审查指令的唯一来源"
+      ],
+      "correct": 0,
+      "explanation": "Skill 承载可复用的过程性知识，而 MCP 暴露外部能力，二者可以完美组合。AGENTS.md 更适合存放代码库级别的默认全局规范，而 Hook 针对生命周期事件做出响应，不能替代前两层。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么验证器应当强制要求 SKILL.md 中的 name 与其所在目录名称保持一致？",
+      "options": [
+        "这能保证每个宿主（Host）都支持完全相同的调用语法",
+        "这为服务发现与打包分发提供了统一稳定的标识，避免了两个名称相互冲突",
+        "这能确保 Markdown 的一级标题正确渲染",
+        "这允许该 Skill 绕过宿主的权限审查"
+      ],
+      "correct": 1,
+      "explanation": "服务发现工具通常会同时根据目录名和 frontmatter 对 skill 建立索引。名称一致可防止目录条目产生歧义并避免安装路径损坏。它并不授予特权，也不统一宿主的调用界面。"
+    },
+    {
+      "stage": "check",
+      "question": "一份 SKILL.md 中包含了一个仅被某特定运行时理解的专有字段。在可移植标准下，应当如何理解该字段？",
+      "options": [
+        "将该字段直接合并进 skill 的 name 中",
+        "将其视为宿主扩展（Host Extension），仅在明确配置的宿主策略下进行校验",
+        "该字段静默自动成为核心标准的一部分",
+        "每个运行时在加载该 skill 之前都必须实现该字段"
+      ],
+      "correct": 1,
+      "explanation": "可移植的核心元数据与宿主运行时扩展属于两套独立的契约。适配器可以识别扩展，但核心验证器不应断言该字段具有通用语义。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种基本构件（Primitive）最适合用于实现“在每次 tool 调用后必须强制运行的安全检查”？",
+      "options": [
+        "MCP 资源（Resource）",
+        "单次 Prompt",
+        "代码库词汇表（Glossary）",
+        "生命周期钩子（Lifecycle Hook）"
+      ],
+      "correct": 3,
+      "explanation": "核心诉求在于事件触发的时机，因此生命周期 Hook 是最正确的机制。Skill 解释工作流，MCP 暴露能力，但二者都不会天然在每次 tool 调用后自动触发。"
+    },
+    {
+      "stage": "post",
+      "question": "在什么场景下，将内容写入 AGENTS.md 会比封装成 Agent Skill 更合适？",
+      "options": [
+        "当外部服务需要发起经过认证的 API 调用时",
+        "当某个脚本需要在工作区沙箱之外执行时",
+        "当规范应当贯穿在该代码库内的所有开发工作中生效时",
+        "当某些指令仅需在罕见的特定专家任务中按需加载时"
+      ],
+      "correct": 2,
+      "explanation": "AGENTS.md 用于传达持久的代码库上下文，例如构建命令与编码规范。特定任务的过程适合封装为 Skill，外部操作属于 Tool，且任何指令文件都不能用于逃逸沙箱。"
+    },
+    {
+      "stage": "post",
+      "question": "一个结构合规的 Agent Skill 软件包本身赋予了什么权力？",
+      "options": [
+        "在每一个 agent 宿主中获得通用的斜杠（slash）调用命令",
+        "提供可被发现的过程性指令，受宿主运行时的安全策略约束",
+        "直接获得执行其内嵌所有脚本的特权",
+        "自动获得访问外部网络的权限"
+      ],
+      "correct": 1,
+      "explanation": "可移植制品仅提供元数据与操作指令。服务发现、调用界面、Tool 访问权限、审批流程以及脚本执行始终由宿主运行时全权控制，结构合规绝不等于获得执行权限。"
+    }
+  ]
+}

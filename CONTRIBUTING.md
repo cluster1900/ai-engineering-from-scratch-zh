@@ -1,41 +1,43 @@
-# 贡献指南
+# Contributing
 
-Lessons、translations、fixes、outputs 都欢迎。每个 pull
-request 只包含一项贡献，可以让 review 更快，也能让 contributor 计数和署名正确运作。
+Lessons, translations, fixes, outputs — all welcome. One contribution per pull
+request keeps reviews fast and lets contributor counts and credit work
+correctly.
 
-## 重要：README 和 ROADMAP 会供给 website
+## Important: the README and ROADMAP feed the website
 
-`site/build.js` 会解析 `README.md`、`ROADMAP.md` 和 `glossary/terms.md` 来
-生成 `site/data.js`。任何触及这些文件的 pull request 都必须保持以下两种模式完整：
+`site/build.js` parses `README.md`, `ROADMAP.md`, and `glossary/terms.md` to
+generate `site/data.js`. Two patterns must stay intact in any pull request that
+touches those files:
 
-- Phase headers 采用 `### Phase N: Name \`X lessons\`` 形式，或
-  `<details><summary><b>Phase N — Name</b> ... <code>X lessons</code> ... <em>Description</em></summary>` 形式。
-- Lesson tables 使用列形状 `| # | Lesson | Type | Lang |`（capstone tables 则为
-  `| # | Project | Combines | Lang |`）。`Lang` 列
-  接受纯文本（`Python, TypeScript`）或旧版 emoji flags
-  （`🐍 🟦 🦀 🟣 ⚛️`）；两者对 parser 等价。
-- Phase headers 和 lesson rows 上的 ROADMAP status glyphs（`✅`、`🚧`、`⬚`）。
-  不要把它们替换成文本 — parser 会依据这些精确字符识别。
+- Phase headers in either `### Phase N: Name \`X lessons\`` form or
+  `<details><summary><b>Phase N — Name</b> ... <code>X lessons</code> ... <em>Description</em></summary>` form.
+- Lesson tables with the column shape `| # | Lesson | Type | Lang |` (or
+  `| # | Project | Combines | Lang |` for capstone tables). The `Lang` column
+  accepts plain text (`Python, TypeScript`) or the legacy emoji flags
+  (`🐍 🟦 🦀 🟣 ⚛️`); both are parser-equivalent.
+- ROADMAP status glyphs (`✅`, `🚧`, `⬚`) on phase headers and lesson rows.
+  Do not replace them with text — the parser keys off the exact characters.
 
-编辑这些文件后运行 `node site/build.js`；如果你的编辑在结构上安全，`git diff site/data.js`
-应该只显示 timestamp 变化。
+Run `node site/build.js` after editing those files; `git diff site/data.js`
+should show only the timestamp change if your edit was structural-safe.
 
-## 贡献方式
+## Ways to Contribute
 
-### 1. 添加 New Lesson
+### 1. Add a New Lesson
 
-每个 lesson 位于 `phases/XX-phase-name/NN-lesson-name/`，结构如下：
+Each lesson lives in `phases/XX-phase-name/NN-lesson-name/` with this structure:
 
 ```
 NN-lesson-name/
-├── code/           至少一个可运行 implementation
-├── notebook/       用于 experimentation 的 Jupyter notebook（optional）
+├── code/           At least one runnable implementation
+├── notebook/       Jupyter notebook for experimentation (optional)
 ├── docs/
-│   └── en.md       Lesson documentation（required）
-└── outputs/        此 lesson 产生的 prompts、skills 或 agents（if applicable）
+│   └── en.md       Lesson documentation (required)
+└── outputs/        Prompts, skills, or agents this lesson produces (if applicable)
 ```
 
-**Lesson doc format** (`en.md`)：
+**Lesson doc format** (`en.md`):
 
 ```markdown
 # Lesson Title
@@ -69,9 +71,9 @@ The prompt, skill, agent, or tool this lesson produces.
 3. Challenge exercise
 ```
 
-### 2. 添加 Translation
+### 2. Add a Translation
 
-在任意 lesson 的 `docs/` 文件夹中创建新文件：
+Create a new file in any lesson's `docs/` folder:
 
 ```
 docs/
@@ -83,16 +85,16 @@ docs/
 └── ...
 ```
 
-保持与 English 版本相同的结构。翻译 content，不翻译 code。
+Keep the same structure as the English version. Translate content, not code.
 
-### 3. 添加 Output
+### 3. Add an Output
 
-如果某个 lesson 应该产出可复用的 prompt、skill、agent 或 MCP server：
+If a lesson should produce a reusable prompt, skill, agent, or MCP server:
 
-1. 在该 lesson 的 `outputs/` 文件夹中创建它
-2. 在顶层 `outputs/` index 中添加 reference
+1. Create it in the lesson's `outputs/` folder
+2. Add a reference in the top-level `outputs/` index
 
-**Prompt format：**
+**Prompt format:**
 
 ```markdown
 ---
@@ -105,7 +107,7 @@ lesson: 01
 [System prompt or template here]
 ```
 
-**Skill format：**
+**Skill format:**
 
 ```markdown
 ---
@@ -120,42 +122,46 @@ tags: [agents, loops]
 [Skill content here]
 ```
 
-### 4. 修复 Bugs 或改进 Existing Lessons
+### 4. Fix Bugs or Improve Existing Lessons
 
-- 修复无法运行的 code
-- 改进 explanations
-- 添加更好的 diagrams
-- 更新过时信息
+- Fix code that doesn't run
+- Improve explanations
+- Add better diagrams
+- Update outdated information
 
-### 5. 添加 Exercises 或 Projects
+### 5. Add Exercises or Projects
 
-更多 exercises 和 projects 始终欢迎，尤其是连接多个 phases 的内容。
+More exercises and projects are always welcome, especially ones that connect multiple phases.
 
 ## Guidelines
 
-- **Code 必须运行。** 每个 code 文件都应使用列出的 dependencies 无错误执行。
-- **Code 中不要有 comments。** Code 应该自解释。使用 docs 进行说明。
-- **为任务选择最合适的语言。** 不要在 TypeScript 或 Rust 更适合时强行使用 Python。
-- **先从零构建。** 在展示 framework 版本之前，始终先从第一性原理实现 concept。
-- **保持实用。** Theory 服务于 practice，而不是相反。
-- **不要 AI slop。** 像人一样写。直接。删掉废话。
+- **Code must run.** Every code file should execute without errors with the listed dependencies.
+- **No comments in code.** Code should be self-explanatory. Use the docs for explanation.
+- **Best language for the job.** Don't force Python where TypeScript or Rust is the better choice.
+- **Build from scratch first.** Always implement the concept from first principles before showing the framework version.
+- **Keep it practical.** Theory serves practice, not the other way around.
+- **No AI slop.** Write like a human. Be direct. Cut filler.
 
 ## Pull Request Process
 
-1. Fork repository
-2. 创建 feature branch（`git checkout -b add-lesson-phase3-gradient-descent`）
-3. 进行修改
-4. 确保所有 code 都能运行
-5. 提交 pull request，并附上清晰描述
+Sponsorship changes are not accepted through contributor pull requests. Sponsor
+names, logos, links, and tier assignments are managed by the maintainer. See
+[SPONSORS.md](SPONSORS.md) for sponsorship enquiries.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b add-lesson-phase3-gradient-descent`)
+3. Make your changes
+4. Ensure all code runs. Run `python3 scripts/run_lesson_tests.py` to execute every lesson's own tests; lessons whose tests need a scientific dependency you have not installed are skipped, the rest run.
+5. Submit a pull request with a clear description
 
 ## Code of Conduct
 
-见 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。友善、乐于助人、具有建设性。
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Be kind, be helpful, be constructive.
 
 ## Style
 
-- 直接的 prose。删掉废话。匹配 manual 的语气，不要写成 marketing copy。
-- headings 中不要使用装饰性 emojis。Lang column emoji flags 是唯一
-  例外，且仅因为 parser 会映射它们。
-- Code 使用 lesson 中列出的 dependencies 即可原样运行。
-- 先从零构建，再展示 framework。
+- Direct prose. Cut filler. Match the manual's tone, not marketing copy.
+- No decorative emojis in headings. Lang column emoji flags are the one
+  exception and only because the parser maps them.
+- Code runs as-is with the dependencies listed in the lesson.
+- Build from scratch first, framework second.

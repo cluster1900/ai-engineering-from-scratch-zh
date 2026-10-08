@@ -1,6 +1,7 @@
-/* figures-frontier.js - autonomous systems（Phase 15）和 capstone projects（Phase 19）的交互式课程图示。
-   在 lesson-figures.js 之后加载，并通过 window.LF 注册。
-   无依赖，ES5，通过 CSS vars 使用主题。编写方式：一个 ```figure block，命名下方某个 widget。 */
+/* figures-frontier.js - interactive lesson figures for autonomous systems
+   (Phase 15) and the capstone projects (Phase 19). Loads after
+   lesson-figures.js and registers through window.LF. No deps, ES5, theme via
+   CSS vars. Authoring: a ```figure block naming one of the widgets below. */
 (function () {
   'use strict';
   var LF = window.LF;
@@ -28,7 +29,7 @@
     return t;
   }
 
-  // ── task-decomposition: 一个目标展开为多个子任务（planning tree） ────
+  // ── task-decomposition: a goal fans out into sub-tasks (a planning tree) ────
   function taskDecomposition(host) {
     var state = { branch: 3, depth: 2 };
     var W = 520, H = 250;
@@ -40,7 +41,7 @@
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       var top = 30, rowH = (H - 70) / Math.max(1, depth);
       var prev = [{ x: W / 2 }];
-      svg.appendChild(box(W / 2 - 32, top - 14, 64, 28, '目标', true));
+      svg.appendChild(box(W / 2 - 32, top - 14, 64, 28, 'GOAL', true));
       var lv;
       for (lv = 1; lv <= depth; lv++) {
         var count = Math.pow(b, lv);
@@ -60,25 +61,25 @@
       var total = 0;
       for (lv = 0; lv <= depth; lv++) { total += Math.pow(b, lv); }
       var leaves = Math.pow(b, depth);
-      meta.textContent = 'branching ' + b + '，深度 ' + depth + '  ->  ' + leaves + ' 个叶子子任务，共 ' + total + ' 个节点（叶子是可执行步骤）';
-      formula.textContent = '叶子数 = b^depth；总节点数 = (b^(depth+1) - 1) / (b - 1)';
+      meta.textContent = 'branching ' + b + ', depth ' + depth + '  ->  ' + leaves + ' leaf sub-tasks, ' + total + ' nodes total (leaves are the executable steps)';
+      formula.textContent = 'leaves = b^depth ;  total nodes = (b^(depth+1) - 1) / (b - 1)';
     };
     var grid = el('div', { class: 'lf-grid' }, [
-      LF.slider(state, 'branch', 'branching（每个节点的子任务数）', 1, 4, 1),
-      LF.slider(state, 'depth', '规划深度', 1, 3, 1)
+      LF.slider(state, 'branch', 'branching (sub-tasks per node)', 1, 4, 1),
+      LF.slider(state, 'depth', 'planning depth', 1, 3, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['任务分解']), el('span', {}, ['拖动 branching 和深度'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['TASK DECOMPOSITION']), el('span', {}, ['drag branching and depth'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['长周期 agent 不会正面硬攻复杂目标。它先把目标分解为子任务，再继续分解这些子任务，直到叶子节点变成它可以直接执行的步骤。更宽的 branching 和更深的树会让计划更周密，但也会成倍增加需要跟踪的工作量，这就是有用计划通常保持较浅的原因。'])
+      el('div', { class: 'lf-cap' }, ['A long-horizon agent does not attack a complex objective head-on. It decomposes the goal into sub-tasks, then decomposes those again, until the leaves are steps it can execute directly. Wider branching and deeper trees plan more thoroughly but multiply the work to track, which is why useful plans stay shallow.'])
     ]));
     state._render();
   }
 
-  // ── reflection-loop: 执行 -> 评估 -> 批判 -> 修订，质量上升 ──
+  // ── reflection-loop: act -> evaluate -> critique -> revise, quality climbs ──
   function reflectionLoop(host) {
     var state = { iter: 3 };
-    var stages = ['执行', '评估', '批判', '修订'];
+    var stages = ['ACT', 'EVALUATE', 'CRITIQUE', 'REVISE'];
     var W = 520, H = 170;
     var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H });
     var bar = el('i');
@@ -99,23 +100,23 @@
       }
       svg.appendChild(arrow(x0 + bw / 2, y + h, x0 + bw / 2, y + h + 18, '4 4'));
       svg.appendChild(svgEl('path', { d: 'M ' + (x0 + bw / 2) + ' ' + (y + h + 18) + ' L ' + (x - gap - bw / 2) + ' ' + (y + h + 18) + ' L ' + (x - gap - bw / 2) + ' ' + (y + h + 6), fill: 'none', stroke: 'var(--ink-soft,#555)', 'stroke-width': '1.4', 'stroke-dasharray': '4 4', 'marker-end': 'url(#lf-fr-arrow)' }));
-      svg.appendChild(label(W / 2, y + h + 34, '修订会反馈到下一次尝试'));
+      svg.appendChild(label(W / 2, y + h + 34, 'revise feeds the next attempt'));
       var q = quality(n);
-      status.innerHTML = q.toFixed(1) + ' <small>质量</small>';
+      status.innerHTML = q.toFixed(1) + ' <small>quality</small>';
       bar.style.width = q.toFixed(1) + '%';
       var gain = quality(n) - quality(n - 1);
-      meta.textContent = '第 ' + n + ' 次迭代  ·  本轮增益 +' + gain.toFixed(1) + '  ·  ' + (gain < 2 ? '收益已经趋平：停止反思' : '仍在改进');
+      meta.textContent = 'iteration ' + n + '  ·  gain this pass +' + gain.toFixed(1) + '  ·  ' + (gain < 2 ? 'returns have flattened: stop reflecting' : 'still improving');
     };
-    var grid = el('div', {}, [LF.slider(state, 'iter', '反思迭代次数', 1, 8, 1)]);
+    var grid = el('div', {}, [LF.slider(state, 'iter', 'reflection iterations', 1, 8, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['反思循环']), el('span', {}, ['拖动迭代次数'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['REFLECTION LOOP']), el('span', {}, ['drag the iterations'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:12px' }, [status]), barWrap, meta])]),
-      el('div', { class: 'lf-cap' }, ['自我改进循环会先行动，评估结果，批判哪里出了问题，然后在下一次尝试前修订。每一轮都会提高质量，但增益会按几何级数缩小，并很快趋平。关键能力在于知道反思什么时候已经不再划算。'])
+      el('div', { class: 'lf-cap' }, ['A self-improvement loop acts, evaluates the result, critiques what went wrong, and revises before the next attempt. Each pass raises quality, but the gain shrinks geometrically and soon flattens. The skill is knowing when reflection has stopped paying for itself.'])
     ]));
     state._render();
   }
 
-  // ── memory-consolidation: episodic events 压缩成 semantic summary ──
+  // ── memory-consolidation: episodic events compress into a semantic summary ──
   function memoryConsolidation(host) {
     var state = { events: 24, threshold: 8 };
     var W = 520, H = 150;
@@ -135,27 +136,27 @@
         svg.appendChild(svgEl('rect', { x: x, y: 26, width: Math.max(2, dotW - 2), height: 22, rx: '2', fill: old ? 'var(--rule-soft,#ddd)' : 'var(--blueprint,#3553ff)', opacity: old ? '0.5' : '1' }));
         x += dotW;
       }
-      svg.appendChild(label(x / 2 + 7, 18, 'episodic events（蓝色为最近事件）'));
+      svg.appendChild(label(x / 2 + 7, 18, 'episodic events (recent in blue)'));
       var summaryX = W - 150, summaryY = 80;
       svg.appendChild(box(summaryX, summaryY, 132, 40, 'semantic memory', consolidated > 0));
       svg.appendChild(arrow(consolidated > 0 ? (14 + consolidated * dotW / 2) : 14, 50, summaryX + 4, summaryY + 6, '4 4'));
-      svg.appendChild(label(summaryX + 66, summaryY - 8, consolidated + ' 个事件 -> 1 个摘要'));
-      meta.textContent = recent + ' 个最近事件逐字保留  ·  ' + consolidated + ' 个较早事件压缩进长期 memory';
-      formula.textContent = '保留最新的 ' + thr + ' 个 episodic；buffer 溢出时，把其余内容整合为 semantic summary';
+      svg.appendChild(label(summaryX + 66, summaryY - 8, consolidated + ' events -> 1 summary'));
+      meta.textContent = recent + ' recent events kept verbatim  ·  ' + consolidated + ' older events compressed into long-term memory';
+      formula.textContent = 'keep newest ' + thr + ' episodic; consolidate the rest into a semantic summary as the buffer overflows';
     };
     var grid = el('div', { class: 'lf-grid' }, [
       LF.slider(state, 'events', 'episodic events', 4, 40, 1),
-      LF.slider(state, 'threshold', '整合阈值', 2, 20, 1)
+      LF.slider(state, 'threshold', 'consolidation threshold', 2, 20, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['Memory 整合']), el('span', {}, ['拖动阈值'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['MEMORY CONSOLIDATION']), el('span', {}, ['drag the threshold'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['最近步骤会以详细的 episodic 记录存在。一旦 buffer 超过阈值，最旧的 episodes 就会被压缩成紧凑的 semantic summary，在释放窗口的同时保留要点。长期运行的 agent 要靠整合生存，而不是永远记住每个 Token。'])
+      el('div', { class: 'lf-cap' }, ['Recent steps live as detailed episodic records. Once the buffer crosses a threshold, the oldest episodes are compressed into a compact semantic summary that preserves the gist while freeing the window. A long-running agent survives by consolidating instead of remembering every token forever.'])
     ]));
     state._render();
   }
 
-  // ── world-model-rollout: 用学得的 model 想象未来状态 ────────
+  // ── world-model-rollout: imagine future states with a learned model ────────
   function worldModelRollout(host) {
     var state = { rollout: 2, branch: 2 };
     var W = 520, H = 240;
@@ -168,7 +169,7 @@
       var top = 28, rowH = (H - 66) / Math.max(1, depth);
       var prev = [{ x: W / 2 }];
       svg.appendChild(svgEl('circle', { cx: W / 2, cy: top, r: '9', fill: 'var(--blueprint,#3553ff)' }));
-      svg.appendChild(label(W / 2, top - 14, '现在'));
+      svg.appendChild(label(W / 2, top - 14, 'now'));
       var lv;
       for (lv = 1; lv <= depth; lv++) {
         var count = Math.pow(b, lv);
@@ -186,30 +187,30 @@
       }
       var imagined = 0;
       for (lv = 1; lv <= depth; lv++) { imagined += Math.pow(b, lv); }
-      meta.textContent = '向前看 ' + depth + ' 步，每个状态有 ' + b + ' 个动作  ->  在采取一个真实动作前，先模拟 ' + imagined + ' 个想象中的未来';
-      formula.textContent = '想象状态数 = sum b^k for k=1..depth  ·  成本随 rollout depth 指数增长';
+      meta.textContent = 'looking ' + depth + ' step' + (depth > 1 ? 's' : '') + ' ahead, ' + b + ' actions per state  ->  ' + imagined + ' imagined futures simulated before one real action';
+      formula.textContent = 'imagined states = sum b^k for k=1..depth  ·  cost grows exponentially with rollout depth';
     };
     var grid = el('div', { class: 'lf-grid' }, [
-      LF.slider(state, 'rollout', 'rollout depth（向前看的步数）', 1, 3, 1),
-      LF.slider(state, 'branch', '每个状态的动作数', 1, 4, 1)
+      LF.slider(state, 'rollout', 'rollout depth (steps ahead)', 1, 3, 1),
+      LF.slider(state, 'branch', 'actions per state', 1, 4, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['World-Model Rollout']), el('span', {}, ['拖动深度和 branching'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['WORLD-MODEL ROLLOUT']), el('span', {}, ['drag depth and branching'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['基于 model 的规划会在接触真实世界之前先模拟未来。从当前状态出发，agent 会想象每个候选动作会通向哪些状态，用学得的 model 向前 rollout，然后才提交到最佳的第一步。更深的 rollouts 规划效果更好，但想象树会指数增长。'])
+      el('div', { class: 'lf-cap' }, ['Model-based planning simulates the future before touching the world. From the current state the agent imagines the states each candidate action would lead to, rolls those forward with a learned model, and only then commits to the best first move. Deeper rollouts plan better but the imagined tree grows exponentially.'])
     ]));
     state._render();
   }
 
-  // ── autonomy-oversight: risk dial 将动作路由到自动执行或人工 gate ──
+  // ── autonomy-oversight: a risk dial routes actions to auto or a human gate ──
   function autonomyOversight(host) {
     var state = { autonomy: 50 };
     var actions = [
-      { name: '读取文件', risk: 10 },
-      { name: '运行查询', risk: 30 },
-      { name: '写入文件', risk: 55 },
-      { name: '运行 shell command', risk: 75 },
-      { name: '部署到 production', risk: 92 }
+      { name: 'read a file', risk: 10 },
+      { name: 'run a query', risk: 30 },
+      { name: 'write a file', risk: 55 },
+      { name: 'run a shell command', risk: 75 },
+      { name: 'deploy to production', risk: 92 }
     ];
     var rows = el('div', {});
     var status = el('span', { class: 'lf-num' });
@@ -223,23 +224,23 @@
         if (ok) { auto++; }
         var bar = el('i'); bar.style.width = a.risk + '%';
         if (!ok) { bar.style.background = 'var(--warn,#b8870f)'; }
-        var lab = el('label', {}, [a.name + '（risk ' + a.risk + '）', el('b', {}, [ok ? '自动批准' : '升级 ->'])]);
+        var lab = el('label', {}, [a.name + ' (risk ' + a.risk + ')', el('b', {}, [ok ? 'auto-approved' : 'escalate ->'])]);
         if (!ok) { lab.style.color = 'var(--warn,#b8870f)'; }
         rows.appendChild(el('div', { class: 'lf-ctrl' }, [lab, el('div', { class: 'lf-bar' + (ok ? '' : ' over') }, [bar])]));
       });
-      status.innerHTML = auto + ' / ' + actions.length + ' <small>自动批准</small>';
-      meta.textContent = 'autonomy ' + allow + '：低于或等于旋钮值的动作可无人值守运行；任何更高风险的动作都会升级到人工 gate';
+      status.innerHTML = auto + ' / ' + actions.length + ' <small>auto-approved</small>';
+      meta.textContent = 'autonomy ' + allow + ': actions at or below the dial run unattended; anything riskier escalates to a human gate';
     };
-    var grid = el('div', {}, [LF.slider(state, 'autonomy', 'autonomy / risk 旋钮', 0, 100, 1)]);
+    var grid = el('div', {}, [LF.slider(state, 'autonomy', 'autonomy / risk dial', 0, 100, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['Autonomy 监督']), el('span', {}, ['拖动旋钮'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['AUTONOMY OVERSIGHT']), el('span', {}, ['drag the dial'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [rows, el('div', { style: 'margin-top:12px' }, [status]), meta])]),
-      el('div', { class: 'lf-cap' }, ['Human-in-the-loop 是一个旋钮，而不是开关。单一 autonomy 阈值让低风险动作无人值守运行，而任何高于阈值的动作都会停下来等待人工批准。提高旋钮获得速度，降低旋钮获得控制。无论旋钮停在哪里，部署到 production 都应该接近顶部。'])
+      el('div', { class: 'lf-cap' }, ['Human-in-the-loop is a dial, not a switch. A single autonomy threshold lets low-risk actions run unattended while anything above it stops for human approval. Raise the dial for speed, lower it for control. Deploying to production should sit near the top no matter where the dial rests.'])
     ]));
     state._render();
   }
 
-  // ── pass-at-k: pass@k = 1 - (1-p)^k 随 k 增长而趋近 1 ───────────────
+  // ── pass-at-k: pass@k = 1 - (1-p)^k rises toward 1 as k grows ───────────────
   function passAtK(host) {
     var state = { p: 0.3, k: 5 };
     var W = 520, H = 210, PAD = 34, KMAX = 20;
@@ -260,26 +261,26 @@
       svg.appendChild(svgEl('circle', { cx: px(k), cy: py(passK(p, k)), r: '5', fill: 'var(--blueprint,#3553ff)' }));
       var v = passK(p, k);
       num.innerHTML = (v * 100).toFixed(1) + ' <small>% pass@' + k + '</small>';
-      meta.textContent = '单个样本成功率为 ' + (p * 100).toFixed(0) + '%  ·  ' + k + ' 次尝试把成功率提升到 ' + (v * 100).toFixed(1) + '%';
-      formula.textContent = 'pass@k = 1 - (1 - p)^k,  p = ' + p.toFixed(2) + ', k = ' + k + '   ·   k -> infinity 会把它推向 1';
+      meta.textContent = 'one sample succeeds ' + (p * 100).toFixed(0) + '% of the time  ·  ' + k + ' tries lift it to ' + (v * 100).toFixed(1) + '%';
+      formula.textContent = 'pass@k = 1 - (1 - p)^k,  p = ' + p.toFixed(2) + ', k = ' + k + '   ·   k -> infinity drives it toward 1';
     };
     var grid = el('div', { class: 'lf-grid' }, [
-      LF.slider(state, 'p', '单样本成功率 p', 0.02, 0.95, 0.01),
-      LF.slider(state, 'k', '样本数 k', 1, KMAX, 1)
+      LF.slider(state, 'p', 'per-sample success p', 0.02, 0.95, 0.01),
+      LF.slider(state, 'k', 'samples k', 1, KMAX, 1)
     ]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['PASS @ K']), el('span', {}, ['拖动 p 和 k'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['PASS @ K']), el('span', {}, ['drag p and k'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [num]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['Pass@k 问的是 k 个独立样本中是否至少有一个解决了任务。如果每次尝试以概率 p 成功，那么 k 次全部失败的概率是 (1-p)^k，因此 pass@k 就是一减去这个值。即使是较弱的 model，也会随着更多样本迅速爬升，这就是 best-of-k 如此便宜有效，以及 pass@1 和 pass@k 讲述不同故事的原因。'])
+      el('div', { class: 'lf-cap' }, ['Pass@k asks whether at least one of k independent samples solves the task. If each try succeeds with probability p, all k fail with probability (1-p)^k, so pass@k is one minus that. Even a weak model climbs steeply with more samples, which is why best-of-k is such a cheap lever and why pass@1 and pass@k tell different stories.'])
     ]));
     state._render();
   }
 
-  // ── eval-harness-matrix: tasks x variants 网格，按 variant 聚合 ──────
+  // ── eval-harness-matrix: tasks x variants grid, aggregate per variant ──────
   function evalHarnessMatrix(host) {
     var state = { variant: '0' };
     var tasks = ['parse-json', 'sort-list', 'sql-join', 'regex-extract', 'recursion', 'edge-cases'];
-    // 每个 [variant][task] 的确定性 pass(1)/fail(0)
+    // deterministic pass(1)/fail(0) per [variant][task]
     var grids = [
       [1, 1, 0, 1, 1, 0],
       [1, 1, 1, 1, 1, 1],
@@ -315,20 +316,20 @@
       }
       var passed = 0; for (t = 0; t < tasks.length; t++) { if (grids[sel][t] === 1) { passed++; } }
       status.innerHTML = passed + ' / ' + tasks.length + ' <small>' + names[sel] + '</small>';
-      meta.textContent = names[sel] + ' 的聚合分数 = ' + (passed / tasks.length * 100).toFixed(0) + '%  ·  P = pass，F = 每个 fixture task 的 fail';
+      meta.textContent = 'aggregate score for ' + names[sel] + ' = ' + (passed / tasks.length * 100).toFixed(0) + '%  ·  P = pass, F = fail per fixture task';
     };
     var grid = el('div', {}, [LF.select(state, 'variant', 'model variant', [
       ['baseline', '0'], ['tuned', '1'], ['ablation', '2']
     ])]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['Eval Harness Matrix']), el('span', {}, ['选择一个 variant'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['EVAL HARNESS MATRIX']), el('span', {}, ['pick a variant'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [status]), meta])]),
-      el('div', { class: 'lf-cap' }, ['eval harness 会让每个任务对每个 model variant 运行，并在网格中记录 pass 或 fail。沿列阅读可以看出哪些任务很难；沿行阅读会得到某个 variant 的聚合分数。这个 Matrix 会把模糊的直觉变成一个可用于 regression-test 的数字。'])
+      el('div', { class: 'lf-cap' }, ['An eval harness runs every task against every model variant and records pass or fail in a grid. Reading down a column shows which tasks are hard; reading across a row gives one variant its aggregate score. The matrix is what turns a vague hunch into a number you can regression-test against.'])
     ]));
     state._render();
   }
 
-  // ── canary-rollout: traffic split、error rate、rollback trigger ────────────
+  // ── canary-rollout: traffic split, error rate, rollback trigger ────────────
   function canaryRollout(host) {
     var state = { canary: 10 };
     var stableErr = 0.4, canaryErr = 2.6, sla = 1.5;
@@ -348,23 +349,23 @@
       if (c > 6) { svg.appendChild(label(x0 + sw + (fullW - sw) / 2, y + h / 2 + 4, 'canary ' + c + '%', 'var(--bg,#fafaf5)')); }
       var blended = (s * stableErr + c * canaryErr) / 100;
       var rollback = canaryErr > sla;
-      svg.appendChild(label(W / 2, y + h + 22, 'canary error ' + canaryErr.toFixed(1) + '% vs SLA ' + sla.toFixed(1) + '%' + (rollback ? '  触发 ROLLBACK' : ''), rollback ? 'var(--warn,#b8870f)' : 'var(--ink-mute,#777)'));
-      status.innerHTML = blended.toFixed(2) + ' <small>% 混合 error</small>';
-      meta.textContent = rollback ? 'canary 违反 SLA：把它的 traffic 排回 stable version' : 'canary 在 SLA 内：可以安全扩大 rollout';
-      formula.textContent = '混合 error = (stable% · ' + stableErr + ' + canary% · ' + canaryErr + ') / 100  ·  当 canary error > SLA 时触发 rollback';
+      svg.appendChild(label(W / 2, y + h + 22, 'canary error ' + canaryErr.toFixed(1) + '% vs SLA ' + sla.toFixed(1) + '%' + (rollback ? '  ROLLBACK TRIGGERED' : ''), rollback ? 'var(--warn,#b8870f)' : 'var(--ink-mute,#777)'));
+      status.innerHTML = blended.toFixed(2) + ' <small>% blended error</small>';
+      meta.textContent = rollback ? 'canary breaches the SLA: drain its traffic back to the stable version' : 'canary within SLA: safe to widen the rollout';
+      formula.textContent = 'blended error = (stable% · ' + stableErr + ' + canary% · ' + canaryErr + ') / 100  ·  trip rollback when canary error > SLA';
     };
     var grid = el('div', {}, [LF.slider(state, 'canary', 'canary traffic %', 0, 100, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['Canary Rollout']), el('span', {}, ['拖动 canary %'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['CANARY ROLLOUT']), el('span', {}, ['drag the canary %'])]),
       el('div', { class: 'lf-body' }, [grid, el('div', { class: 'lf-out' }, [svg, el('div', { style: 'margin-top:10px' }, [status]), meta, formula])]),
-      el('div', { class: 'lf-cap' }, ['canary release 会把一小部分 traffic 路由到新版本，其余 traffic 留在经过验证的版本上。canary 上的 error rate 会对照 SLA 监控；一旦违反，traffic 就会排回 stable。这里 canary 错误偏高，所以扩大 split 会提高混合 error，并让 rollback 保持待触发状态。'])
+      el('div', { class: 'lf-cap' }, ['A canary release routes a small slice of traffic to the new version while the rest stays on the proven one. Error rate on the canary is watched against an SLA; the moment it breaches, traffic drains back to stable. Here the canary runs hot, so widening the split raises the blended error and keeps the rollback armed.'])
     ]));
     state._render();
   }
 
-  // ── trace-spans: 时间线上的嵌套 spans，展开一个查看 children ────
+  // ── trace-spans: nested spans on a timeline, expand one to see children ────
   function traceSpans(host) {
-    // 每个 span: name, start, dur (ms), depth
+    // each span: name, start, dur (ms), depth
     var spans = [
       { name: 'handle_request', start: 0, dur: 1200, depth: 0 },
       { name: 'llm_call (plan)', start: 40, dur: 420, depth: 1 },
@@ -404,14 +405,14 @@
       out.appendChild(meta);
       var s = spans[sel];
       status.innerHTML = s.dur + ' <small>ms · ' + s.name + '</small>';
-      meta.textContent = 'span 从 ' + s.start + 'ms 开始，运行 ' + s.dur + 'ms，深度 ' + s.depth + '  ·  总 trace ' + total + 'ms（一个 root span，它的 children 按缩进嵌套）';
+      meta.textContent = 'span starts at ' + s.start + 'ms, runs ' + s.dur + 'ms, depth ' + s.depth + '  ·  total trace ' + total + 'ms (one root span, its children nested by indent)';
     };
     var out = el('div', { class: 'lf-out' });
-    var grid = el('div', {}, [LF.slider(state, 'expand', '检查 span', 0, spans.length - 1, 1)]);
+    var grid = el('div', {}, [LF.slider(state, 'expand', 'inspect span', 0, spans.length - 1, 1)]);
     host.appendChild(el('div', { class: 'lf' }, [
-      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['Trace Spans']), el('span', {}, ['拖动以检查'])]),
+      el('div', { class: 'lf-head' }, [el('span', { class: 'lf-label' }, ['TRACE SPANS']), el('span', {}, ['drag to inspect'])]),
       el('div', { class: 'lf-body' }, [grid, out]),
-      el('div', { class: 'lf-cap' }, ['distributed trace 是一棵 span 树，铺在时间线上。root span 覆盖整个 request；每个 LLM call、retrieval 和 tool call 的 child spans 会根据开始时间和持续时间嵌套其中。阅读 gantt 可以看出 latency 实际花在了哪里，这是每次 production incident 首先要问的问题。'])
+      el('div', { class: 'lf-cap' }, ['A distributed trace is a tree of spans laid out on a timeline. The root span covers the whole request; child spans for each LLM call, retrieval, and tool call nest inside it by start time and duration. Reading the gantt shows where the latency actually went, which is the first question every production incident asks.'])
     ]));
     state._render();
   }

@@ -1,0 +1,78 @@
+{
+  "lesson": "12-mcp-roots-and-elicitation",
+  "title": "显式权限范围与无状态 Elicitation",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP Roots 曾经提供了怎样的安全保证？",
+      "options": [
+        "提示性的工作区指引，不具备鉴权或沙箱隔离能力",
+        "为每个 server 进程提供操作系统级隔离",
+        "证明调用方拥有 root 目录下的所有文件",
+        "自动防御符号链接逃逸"
+      ],
+      "correct": 0,
+      "explanation": "Roots 仅仅是提示性的，在 2026-07-28 中已被弃用。Server 依然需要自行负责鉴权、路径限制和沙箱隔离。"
+    },
+    {
+      "stage": "check",
+      "question": "当工作区权限范围随着每次 tool 调用而改变时，最清晰的现代替代方案是什么？",
+      "options": [
+        "存储在传输层会话中的隐藏值",
+        "在状态变更后发送 roots/list 请求",
+        "自行声明的 clientInfo 客户端名称",
+        "由 server 进行鉴权的显式工作区 URI 参数"
+      ],
+      "correct": 3,
+      "explanation": "显式句柄具有可见性且易于重放，但 server 仍必须针对已鉴权的主体对其进行授权校验。"
+    },
+    {
+      "stage": "check",
+      "question": "在 MCP 2026-07-28 规范下，表单模式的 elicitation 是如何交付给 client 的？",
+      "options": [
+        "作为来自 server/discover 的 HTTP 重定向",
+        "通过 notifications/roots/list_changed 通知",
+        "作为 Mcp-Session-Id 流上的反向请求",
+        "内嵌在 input_required 结果的 inputRequests 中"
+      ],
+      "correct": 3,
+      "explanation": "MRTR 将 elicitation/create 嵌入在 inputRequests 中，随后 client 携带 inputResponses 重试原始操作。elicitation {} 和 elicitation.form 均支持表单模式；仅支持 URL 会返回带有 data.requiredCapabilities.elicitation.form 的 -32021 错误。"
+    },
+    {
+      "stage": "check",
+      "question": "绝不能通过表单模式 elicitation 收集以下哪类数据？",
+      "options": [
+        "布尔类型的破坏性操作确认",
+        "从枚举列表中选择的笔记 id",
+        "API 访问令牌（Access Token）",
+        "非敏感的界面展示偏好"
+      ],
+      "correct": 2,
+      "explanation": "机密信息与身份凭证绝不能经过 MCP client。对于敏感的外部交互，请使用严格绑定的 URL 模式流程。"
+    },
+    {
+      "stage": "post",
+      "question": "用户拒绝（decline）了删除确认的 elicitation 对话框。安全合理的返回结果是什么？",
+      "options": [
+        "依然执行删除，因为模型先前已经选定了笔记",
+        "将缺失内容视作默许同意",
+        "返回一个表示拒绝的 complete 且非错误的结果，并保留笔记",
+        "不断重复弹出相同的对话框直到用户接受"
+      ],
+      "correct": 2,
+      "explanation": "Decline 是明确的拒绝操作。绝不能将其转化为默许同意、错误重试循环或触发实际变更。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种设计能够安全地将破坏性操作确认与用户实际看到的内容紧密绑定？",
+      "options": [
+        "对选中的笔记 id 进行未签名的 Base64 编码",
+        "签名主体、原始参数摘要、候选 id 集合、阶段与过期时间，并在变更前重新校验存活目标",
+        "将 clientInfo 作为权威的用户身份凭证",
+        "无条件信任返回 action 为 accept 的任意笔记 id"
+      ],
+      "correct": 1,
+      "explanation": "完整性保护的状态能够防止篡改。通过在多实例间共享的原子一次性 nonce 声明可防止重放，而变更前的最终存活核查则能化解竞态条件。"
+    }
+  ]
+}

@@ -1,30 +1,44 @@
 ---
 name: elicitation-form-designer
-description: 为需要在调用过程中让用户确认或消歧的 tool 设计 elicitation form schema 和 message template。
-version: 1.0.0
+description: Design explicit resource scope and stateless MCP 2026-07-28 elicitation with authorization, safe forms, and signed retry state.
+version: 2.0.0
 phase: 13
 lesson: 12
-tags: [mcp, elicitation, user-input, forms]
+tags: [mcp, elicitation, mrtr, scope, authorization]
 ---
 
-给定一个行为可能需要在调用过程中获取用户输入的 tool，设计 elicitation schema 和 message。
+Design a user-input step for an MCP operation targeting protocol revision `2026-07-28`.
 
-产出：
+Produce:
 
-1. 触发条件。说明应导致 tool 调用 `elicitation/create` 的确切输入或歧义。
-2. Message template。Host 展示给用户的一句话。朴素、具体、没有行话。
-3. Schema。扁平 JSON Schema，包含带类型的 properties，以及用于消歧的 `enum` 列表或用于确认的 `boolean`。不要嵌套。
-4. 分支处理。将 `accept` / `decline` / `cancel` 映射到 tool 行为。
-5. Rate-limit 规则。限制每次 tool 调用中的 elicitations 数量；绝不要在循环中 elicit。
+1. Scope contract. Put the workspace, directory, or resource URI in visible tool arguments or server configuration. State which authenticated principals may use it.
+2. Boundary checks. Define URI normalization, path-component containment, symbolic-link policy, and the operating-system sandbox.
+3. Trigger condition. Name the exact ambiguity, confirmation, or external interaction that requires user input.
+4. Discovery and capability gate. Return exact `supportedVersions`, capabilities, `ttlMs`, and `cacheScope` from `server/discover`. If tools are advertised, include mandatory deterministic `tools/list` descriptors with a valid object `inputSchema`, server identity metadata, and cache hints. Treat `elicitation: {}` and explicit `elicitation.form` as form support. Reject missing or URL-only support with `-32021` and `data.requiredCapabilities.elicitation.form`; use `-32022` with exact `supported` and `requested` data for an unsupported version.
+5. MRTR result. Return `resultType: "input_required"` with a stable `inputRequests` key and `elicitation/create` request.
+6. Interaction design. For form mode, provide a plain message and restricted flat schema. For URL mode, show the HTTPS destination and out-of-band completion rule.
+7. Retry contract. Require a fresh JSON-RPC id, original method and arguments, current `inputResponses`, per-request `_meta`, and exact `requestState` echo.
+   An id-less notification never receives a JSON-RPC result or error; an accepted Streamable HTTP notification receives `202` with no body.
+8. Branch handling. Map `accept`, `decline`, and `cancel` to different safe outcomes.
+9. State protection. Bind HMAC or authenticated encryption to the authenticated principal, original argument digest, candidate set, operation phase, expiry, and one-time nonce. Consume the nonce atomically in a bounded, TTL-pruned replay store shared by every handler instance.
+10. Final revalidation. Re-check authorization, live record state, and containment immediately before mutation.
 
-硬性拒绝：
-- 任何嵌套 objects 的 schema。Elicitation v1 是扁平的。
-- 任何用于补齐缺失参数的 elicitation，而该参数本可以由 LLM 用自然语言询问。
-- 任何高频 elicitation（每次 tool 调用超过一次）。
+Hard rejects:
 
-拒绝规则：
-- 如果 tool 是 read-only 且低风险，拒绝 elicit，直接返回结果。
-- 如果 tool 具有破坏性，且 Host 支持 `destructiveHint` annotations，建议使用 annotations，并让 client 原生处理确认。
-- 如果需求是 OAuth sign-in，推荐 URL-mode elicitation，并标记 SEP-1036 drift 风险。
+- Treating deprecated Roots as authorization, containment, or sandboxing.
+- Using `roots/list` or `notifications/roots/list_changed` in a new 2026-07-28 design.
+- Sending a reverse `elicitation/create` request instead of returning it through MRTR.
+- Collecting passwords, API keys, access tokens, or payment credentials in form mode.
+- Sending an elicitation mode absent from current per-request capabilities.
+- Treating `clientInfo` as an authenticated user identity.
+- Performing a destructive action before validated acceptance and final authorization checks.
+- Unsigned `requestState` that carries candidates or permission-relevant data.
 
-输出：一页设计，包含触发条件、message template、schema、分支处理、rate-limit 规则，以及关于 form mode 或 URL mode 哪个更合适的说明。
+Refusal rules:
+
+- Refuse repeated prompts after explicit decline.
+- Refuse elicitation for a value the server can derive or validate without the user.
+- Refuse a URL that contains credentials, user secrets, or a pre-authenticated bearer value.
+- Refuse a request that uses hidden protocol-session state, `initialize`, or `Mcp-Session-Id`.
+
+Output a one-page design with scope, authorization, containment, interaction mode, schema or URL, MRTR wire shape, state fields, response branches, replay policy, and final revalidation checklist.

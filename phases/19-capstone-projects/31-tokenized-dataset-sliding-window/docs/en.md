@@ -8,6 +8,11 @@
 **Time:** ~90 分钟
 
 ## Learning Objectives
+
+
+```figure
+cap-sliding-window
+```
 - 通过只调用一次 Tokenizer，把原始 corpus 转换为 Token ids 流。
 - 使用可配置的重叠 stride，把 id 流切成固定长度的 window。
 - 构建一个 PyTorch Dataset，为 next-token prediction 返回 input 和 target tensors。

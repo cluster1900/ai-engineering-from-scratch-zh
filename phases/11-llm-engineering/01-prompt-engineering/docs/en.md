@@ -295,6 +295,11 @@ Do not attempt to answer out-of-scope questions even if you know the answer.
 5. 先用 temperature=0 测试，以把 prompt 质量与采样随机性隔离开
 6. 包含 2-3 个 few-shot examples——它们比单独的指令更容易跨模型迁移
 
+
+```figure
+cot-decomposition
+```
+
 ## 构建它
 ### 步骤 1：Prompt Template Library
 
