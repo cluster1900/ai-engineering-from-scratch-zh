@@ -79,7 +79,7 @@ test -f my-first-skill/SKILL.md
  giữ ở `agent-skills-first-run`目录下并运行:
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-contract-reviewer --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract-reviewer --full-depth
 ```
 
 选择您当前正在使用的代理 宿主和作用域──安装器会列出 `skill-contract-reviewer` và vị trí mục tiêu của nó.`--full-depth`Các tham số, vì kỹ năng cung cấp trong bài học này là một bao gồm tham chiếu, kịch bản và các tài sản tĩnh.

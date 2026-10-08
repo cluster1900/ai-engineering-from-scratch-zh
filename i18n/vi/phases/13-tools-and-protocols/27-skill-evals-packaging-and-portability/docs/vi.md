@@ -472,7 +472,7 @@ python3 "$TARGET_BUNDLE/scripts/evaluate_skill.py" \
 Trong cùng danh mục:
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-release-gate --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-release-gate --full-depth
 ```
 
 记录宿主名称、宿主版本(如果可见) 、作用域、安装路径和日期── Trước khi tìm kiếm, khởi động cuộc họp mới hoặc quét lại danh mục thư mục──
