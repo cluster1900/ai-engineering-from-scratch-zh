@@ -1,0 +1,20 @@
+{
+  "phases/02-ml-fundamentals/01-what-is-machine-learning/docs/en.md": "00d30a1bfae82a37b81135f220e6c8e3ce454c113430b30c4d1db8d2e385dfb8",
+  "phases/02-ml-fundamentals/02-linear-regression/docs/en.md": "7f03e27dbbd3c64fe935aaee25399a8f90656035e93d807e51b48fcbcb7e2a4e",
+  "phases/02-ml-fundamentals/03-logistic-regression/docs/en.md": "37322813f6c37b14a128a0eb5cc8fd8de94314b808aeaea2c18929cc063cc267",
+  "phases/02-ml-fundamentals/04-decision-trees/docs/en.md": "8f45dcc0810bb9620534998098e4de9e33db4ba1ad6ba6e7bcf9088e656bc8eb",
+  "phases/02-ml-fundamentals/05-support-vector-machines/docs/en.md": "5f595c37a1bff9448f7896b63b9330c55297e5873bf91d9e1a082cd7414997e0",
+  "phases/02-ml-fundamentals/06-knn-and-distances/docs/en.md": "11f6a5d27c8cc49930b09389018518a980503de7ca1fc730e70ba56e7557e5d7",
+  "phases/02-ml-fundamentals/07-unsupervised-learning/docs/en.md": "6e4d328e9d55bc9c6496c4bee44a460d9ad3a500b7d32bd23d142dfff7e0a653",
+  "phases/02-ml-fundamentals/08-feature-engineering/docs/en.md": "e336cd370ec82ad0abbc26876d1f1e7ff79f6fc8acab0fb2900eeb0e3253cddc",
+  "phases/02-ml-fundamentals/09-model-evaluation/docs/en.md": "a3b13d57b5a38736fe5e52db6b1fda1552859f8a3f785a506b293341737f6b4e",
+  "phases/02-ml-fundamentals/10-bias-variance/docs/en.md": "84584e4703732ce238073213a47694f9380ced9c2ca04adbc8e31dca668358df",
+  "phases/02-ml-fundamentals/11-ensemble-methods/docs/en.md": "ec2125d6f1dc094ad2fb26e134d9622cf75f0ba478f6cb718a041f2ce83dff81",
+  "phases/02-ml-fundamentals/12-hyperparameter-tuning/docs/en.md": "232675d3cd3a4482e658e609c100d18d38125d0a0d7cd888cb4c8c4a05c33b70",
+  "phases/02-ml-fundamentals/13-ml-pipelines/docs/en.md": "8e80e4ac1f465a1b36b48c12acbab4935494315152c702fa2454861ca4fd938d",
+  "phases/02-ml-fundamentals/14-naive-bayes/docs/en.md": "863afe3b6f584b6c105a38a9e652e901d6dbb4aa3b5eef7b4511cdbfd9916c9a",
+  "phases/02-ml-fundamentals/15-time-series/docs/en.md": "b0ed1f9458a7c9edf072e4c4422eac51e731b7e23b014106bd4f1b01cb348d46",
+  "phases/02-ml-fundamentals/16-anomaly-detection/docs/en.md": "aa4a5371c14482105cc15d5f6082bbcea5dcf9f12e8ee01ec011586ab96aec49",
+  "phases/02-ml-fundamentals/17-imbalanced-data/docs/en.md": "2c32fc288ef579de5d140d65aa349228e1dab4391151e8bc9a1d3db5f8e93ebf",
+  "phases/02-ml-fundamentals/18-feature-selection/docs/en.md": "724f135639f55e5ac08207348bfcc6a73ba57b9491c626b98035cb93f5923dd5"
+}
