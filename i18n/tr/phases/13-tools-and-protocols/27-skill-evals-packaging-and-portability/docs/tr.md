@@ -472,7 +472,7 @@ Rapor gösterilmelidir`checksPassed`和 `fixturePassed`Doğru, ama`productionRea
 Aynı katalogda:
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-release-gate --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-release-gate --full-depth
 ```
 
 记录宿主名称、宿主版本(如果可见) 作用域、安装路径和日期──
