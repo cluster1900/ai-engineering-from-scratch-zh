@@ -3621,9 +3621,10 @@
         }
         var quizPromiseForRequest = lessonQuizPromise;
 
-        var lessonDocument = lang === 'en'
+        var isZhFork = SOURCE_OWNER === 'cluster1900' || SOURCE_REPO === 'ai-engineering-from-scratch-zh' || (typeof window !== 'undefined' && window.__AIFS_SERVE_LOCAL);
+        var lessonDocument = (lang === 'en' || (isZhFork && lang === 'zh'))
           ? fetchRepositoryFile(enPath).then(function (response) {
-              return { response: response, lang: 'en' };
+              return { response: response, lang: 'zh' };
             })
           : fetch(translatedUrl).then(function (response) {
               if (!response.ok) throw new Error('fetch-failed');

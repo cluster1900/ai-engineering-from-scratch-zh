@@ -42,6 +42,7 @@
   function repoUrl(path) {
     var safe = clean(path);
     if (isLocal()) return '../' + safe;
+    if (typeof window !== 'undefined' && window.__AIFS_SERVE_LOCAL) return '/' + safe;
     return rawRepoUrl(safe);
   }
 
