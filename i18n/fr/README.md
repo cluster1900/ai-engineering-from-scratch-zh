@@ -24,9 +24,7 @@
   <sub><span>Votre soutien permet à chaque leçon de rester gratuite et open source.</span> <a href="#supporters">Voir tous les soutiens</a> · <a href="../../SPONSORS.md">Become a sponsor</a></sub>
 </p>
 
-## 来自 [Agent Memory - #1 Persistent memory ⭐](https://github.com/rohitg00/agentmemory) 的作者 <a href="https://github.com/rohitg00/agentmemory/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentmemory?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>，可自然接入任何 agents 或 chat assistants。
-
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -127,7 +125,7 @@ PyTorch 出场时，你已经知道它在底层做什么。
 每节课都遵循同一个循环：阅读问题，推导数学，编写代码，运行测试，保留 artifact。
 没有五分钟视频，没有复制粘贴式部署，也没有手把手托管。免费、开源，并且可以在你自己的笔记本电脑上运行。
 
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -162,7 +160,7 @@ flowchart TB
   P18 --> P19
 ```
 
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -170,12 +168,12 @@ flowchart TB
 
 每节课都位于自己的文件夹中，整个课程保持相同结构：
 
-```
+```text
 phases/<NN>-<phase-name>/<NN>-<lesson-name>/
-├── code/      runnable implementations (Python, TypeScript, Rust, Julia)
+├── code/      可运行实现代码 (Python, TypeScript, Rust, Julia)
 ├── docs/
-│   └── en.md  lesson narrative
-└── outputs/   prompts, skills, agents, or MCP servers this lesson produces
+│   └── en.md  课程讲解文档
+└── outputs/   本课交付的提示词、技能、智能体或 MCP 服务器
 ```
 
 每节课遵循六个节拍。*Build It / Use It* 的拆分是主干 —— 你先从零实现
@@ -196,47 +194,32 @@ flowchart LR
 
 三种入口。选择一种。
 
-**选项 A — 阅读。** 打开
-[ai-learn.agent-buy.com](https://ai-learn.agent-buy.com/) 上任意已完成课程，或在
-[目录](#contents) 下展开一个 Phase。无需配置，无需 clone。
+**选项 A — 在终端中学习 *(推荐)*。** 在完成上述 Node.js、`npx`、宿主环境与作用域前置检查后，将学习 skills 安装到兼容的 agent 中，让课程自主推进教学：
 
-**选项 B — clone 并运行。**
+```bash
+npx skills add cluster1900/ai-engineering-from-scratch-zh
+```
+
+参考上方的宿主调用语法表。安装的 skills 提供了 `start-learning`、`learn`、`course-guide`，以及聚焦的 `learn-mcp` 和 `learn-agent-skills` 路线。课程讲解可以直接从本仓库在线流式获取，无需提前克隆。复制仓库中的代码命令或运行可执行的 MCP 与 Agent Skills 实验则需要本地克隆。进度会自动保存在项目中的 `LEARNING.md`、`MCP-LEARNING.md` 或 `AGENT-SKILLS-LEARNING.md`，方便随时恢复会话。
+
+**选项 B — 在线阅读。** 打开 [ai-learn.agent-buy.com](https://ai-learn.agent-buy.com) 上任意已完成的课程，或在 [目录](#contents) 下展开一个 Phase。无需配置环境，无需克隆代码。
+
+**选项 C — 克隆并运行。**
 
 ```bash
 git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
 cd ai-engineering-from-scratch-zh
-python phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
+python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
-**选项 C — 找到你的水平 *(推荐)*。** 智能跳转到合适位置。在 Claude、Cursor、Codex、OpenClaw、Hermes，或任何已安装课程 skills 的 agent 中：
-
-```bash
-/find-your-level
-```
-
-十个问题。把你的知识水平映射到起始 Phase，并生成带小时估算的个性化路径。
-每个 Phase 结束后：
-
-```bash
-/check-understanding 3        # quiz yourself on phase 3
-ls phases/03-deep-learning-core/05-loss-functions/outputs/
-# ├── prompt-loss-function-selector.md
-# └── prompt-loss-debugger.md
-```
+克隆本仓库还会在 Claude Code 中自动加载学习 skills，并将每节课的代码提供给 `learn` 导师进行真实执行，而不仅是静态导读。
 
 ### 前置要求
 
-- 你会写代码（任何语言都可以；Python 会有帮助）。
-- 你想理解 AI **到底如何工作**，而不只是调用 APIs。
+- 你会写代码（任何语言均可；会 Python 更有帮助）。
+- 你想搞懂 AI **究竟如何工作**，而不只是调用外部 API。
 
-### 内置 agent skills（Claude、Cursor、Codex、OpenClaw、Hermes）
-
-| Skill | 作用 |
-|---|---|
-| [`/find-your-level`](../../.agents/skills/find-your-level/SKILL.md) | 十题分级测验。将你的知识映射到起始 Phase，并生成带小时估算的个性化路径。 |
-| [`/check-understanding <phase>`](../../.agents/skills/check-understanding/SKILL.md) | 按 Phase 进行测验，共八题，提供反馈和需要复习的具体课程。 |
-
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -268,7 +251,7 @@ ls phases/03-deep-learning-core/05-loss-functions/outputs/
 | [`claude-certification`](../../skills/claude-certification/SKILL.md) | Claude 认证导师：选择 CCAO-F、CCDV-F、CCAR-F 或 CCAR-P；逐课教学；运行实验；批阅 artifacts；组织模拟考试；保存进度。 |
 | [`mcpa-certification`](../../skills/mcpa-certification/SKILL.md) | MCPA 导师：沿着基于 2026-07-28 协议的 34 课 `mcpa-f` 路线教学；运行实验与 wire checker；组织诊断测验与三套模拟考试；记录进度。 |
 | [`find-your-level`](../../skills/find-your-level/SKILL.md) | 10 道题的定级测验：将你的背景知识映射到起始阶段，并生成附带预估时长的个性化路线。 |
-| [`check-understanding <phase>`](../../skills/check-understanding/SKILL.md) | 阶段理解检查测验：每阶段 8 道题，附带反馈和建议重点复习的课程。 |
+| [`check-understanding <phase>`](../../skills/check-understanding/SKILL.md) | 阶段理解检查测验：每阶段 8 道题，附带反馈和建议重点复习的课程。使用上方调用语法表中的 Codex、Claude Code 或自然语言格式调用。 |
 
 ```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
@@ -278,7 +261,7 @@ ls phases/03-deep-learning-core/05-loss-functions/outputs/
 
 `phases/` 下的 20 个核心阶段编纂成了共六卷的电子书系列。EPUB 和 PDF 由 CI 直接基于核心课程源码构建，并附加在每次 [GitHub release](https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases) 中；以下链接始终指向最新版本。卷号代表系列中的分册，并非版本号：每份副本均带有日期印章，历史版本可从对应 Release 中下载。
 
-Certification curricula are intentionally not converted into the books. 它们的 AI 导师状态、可运行实验、动态图表、诊断测试和计时模拟考试在 GitHub 和官方网站上保持第一优先支持。
+认证课程体系刻意未转录为电子书（intentionally not converted into the books）。它们的 AI 导师状态、可运行实验、动态图表、诊断测试和计时模拟考试在 GitHub 和官方网站上保持第一优先支持。
 
 | 卷号 | 标题 | 包含阶段 | 下载 |
 |-----|-------|--------|----------|
@@ -367,7 +350,7 @@ the agent went wrong and explain why...
 </tr>
 </table>
 
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -1089,7 +1072,7 @@ Phase 14 的每个 workbench 课程（31-42）都附带 `mission.md`，在 agent
 
 </details>
 
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -1097,46 +1080,46 @@ Phase 14 的每个 workbench 课程（31-42）都附带 `mission.md`，在 agent
 
 每节课都会产出一个可复用 artifact。完成后你会拥有：
 
-```
+```text
 outputs/
-├── prompts/      prompt templates for every AI task
-└── skills/       SKILL.md files for AI coding agents
+├── prompts/      各类 AI 任务的提示词模板 (Prompt templates)
+└── skills/       面向 AI 编程智能体的技能文件 (SKILL.md)
 ```
 
-用 `npx skills add` 安装它们。接入 Claude、Cursor、Codex、OpenClaw、Hermes，或任何读取 SKILL.md / AGENTS.md 目录的 agent。是真工具，不是作业。
+接入 Claude、Cursor、Codex、OpenClaw、Hermes，或任何读取 SKILL.md / AGENTS.md 目录的 agent。是真工具，不是作业。
 
-本 repo 提供了 396 个 skill 和 99 个 prompt（位于 `phases/**/outputs/` 下）。
+### 将课程 skills 安装到你的 agent 中
 
-**推荐：通过 [skills.sh](https://skills.sh) 安装。** 无需 clone，无需 Python，并会自动检测你的 agent skills 目录：
+两套 skills，两个安装程序：
+
+**学习类 skills**（`start-learning`、`learn`、`course-guide`、`learn-mcp`、`learn-agent-skills`、`claude-certification`、`mcpa-certification`、`find-your-level` 和 `check-understanding`）位于 [`skills/`](../../skills/) 下，只需一条命令即可安装到支持 skills 的宿主中。安装需要 Node.js 和 `npx`，无需克隆仓库或安装 Python：
 
 ```bash
-npx skills add cluster1900/ai-engineering-from-scratch-zh                       # every skill
-npx skills add cluster1900/ai-engineering-from-scratch-zh --skill agent-loop    # one skill
-npx skills add cluster1900/ai-engineering-from-scratch-zh --phase 14            # one phase
+npx skills add cluster1900/ai-engineering-from-scratch-zh
 ```
 
-`skills` 会写入你的 agent 会读取的目录：`.claude/skills/`、`.cursor/skills/`、`.codex/skills/`、OpenClaw 的 skills folder、Hermes 的 bundle path，或任何支持 SKILL.md 的工具。一个命令，覆盖每种 agent。
+`skills` 会写入安装期间选择的宿主与作用域，例如 `.claude/skills/`、`.cursor/skills/`、`.codex/skills/` 或其他受支持的 skills 目录。请确认所选宿主能检索到该目标路径。
 
-**课程产物（The lesson artifacts）。** The repo ships 396 skills and 99 prompts under `phases/**/outputs/`；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义 layout。需要先 clone repo。适合需要 tag filters、dry-run 或非默认 layout 的场景：
+**课程产物（The lesson artifacts）。** The repo ships 396 skills and 99 prompts（本 repo 提供了 396 个 skill 和 99 个 prompt，位于 `phases/**/outputs/`）；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义布局。需要先克隆仓库。支持按标签过滤、dry-run 预览以及按 agent 布局：
 
 ```bash
-python3 scripts/install_skills.py <target>                                 # every skill, default --layout skills (nested)
-python3 scripts/install_skills.py <target> --layout skills                 # same as above, explicit
+python3 scripts/install_skills.py <target>                                 # 所有 skill，默认 --layout skills（嵌套目录）
+python3 scripts/install_skills.py <target> --layout skills                 # 同上，显式指定
 python3 scripts/install_skills.py <target> --type all                      # skills + prompts + agents
-python3 scripts/install_skills.py <target> --phase 14                      # one phase only
-python3 scripts/install_skills.py <target> --tag rag                       # filter by tag
-python3 scripts/install_skills.py <target> --layout flat                   # flat files
-python3 scripts/install_skills.py <target> --dry-run                       # preview without writing
-python3 scripts/install_skills.py <target> --force                         # overwrite existing files
+python3 scripts/install_skills.py <target> --phase 14                      # 仅限单个 phase
+python3 scripts/install_skills.py <target> --tag rag                       # 按标签过滤
+python3 scripts/install_skills.py <target> --layout flat                   # 平铺文件
+python3 scripts/install_skills.py <target> --dry-run                       # 预览而不写入
+python3 scripts/install_skills.py <target> --force                         # 强制覆盖已有文件
 ```
 
 `<target>` 是你的 agent 的 skills 目录，例如 `~/.claude/skills/`、`~/.cursor/skills/`、`~/.config/openclaw/skills/`、`.skills/`，或 agent 会读取的任意路径。
 
-默认情况下，如果目标位置已有文件，脚本会拒绝覆盖，并在列出所有冲突路径后以 code 1 退出。使用 `--dry-run` 预览冲突，或使用 `--force` 覆盖。每次非 dry-run 运行都会在目标目录写入一个 `manifest.json`，其中包含按 type 和 phase 分组的完整清单。选择你的 agent 能读取的 layout：
+默认情况下，如果目标位置已有文件，脚本会拒绝覆盖，并在列出所有冲突路径后以 code 1 退出。使用 `--dry-run` 预览冲突，或使用 `--force` 覆盖。每次非 dry-run 运行都会在目标目录写入一个 `manifest.json`，其中包含按 type 和 phase 分组的完整清单。选择你的 agent 能读取的布局：
 
 | `--layout`  | 写入路径 |
 |---|---|
-| `skills`    | `<target>/<name>/SKILL.md`（nested convention，Claude / Cursor / Codex / OpenClaw / Hermes 均支持） |
+| `skills`    | `<target>/<name>/SKILL.md`（嵌套约定，Claude / Cursor / Codex / OpenClaw / Hermes 均支持） |
 | `by-phase`  | `<target>/phase-NN/<name>.md` |
 | `flat`      | `<target>/<name>.md` |
 
@@ -1145,10 +1128,10 @@ python3 scripts/install_skills.py <target> --force                         # ove
 Phase 14 capstone 提供一个可复用的 Agent Workbench pack（AGENTS.md、schemas、init / verify / handoff scripts）。用以下命令将它 scaffold 到任意 repo：
 
 ```bash
-python3 scripts/scaffold_workbench.py path/to/your-repo            # full pack + seeds
-python3 scripts/scaffold_workbench.py path/to/your-repo --minimal  # skip docs/
-python3 scripts/scaffold_workbench.py path/to/your-repo --dry-run  # preview only
-python3 scripts/scaffold_workbench.py path/to/your-repo --force    # overwrite
+python3 scripts/scaffold_workbench.py path/to/your-repo            # 完整工具包 + 种子文件
+python3 scripts/scaffold_workbench.py path/to/your-repo --minimal  # 跳过 docs/
+python3 scripts/scaffold_workbench.py path/to/your-repo --dry-run  # 仅预览
+python3 scripts/scaffold_workbench.py path/to/your-repo --force    # 强制覆盖
 ```
 
 你会得到已连接好的七个 workbench surfaces、一个 starter `task_board.json`，以及一个位于 `schema_version: 1` 的全新 `agent_state.json`。然后：编辑 task，编辑 `AGENTS.md`，运行 `scripts/init_agent.py`，把 contract 交给你的 agent。pack source 位于 `phases/14-agent-engineering/42-agent-workbench-capstone/outputs/agent-workbench-pack/`。
@@ -1158,8 +1141,8 @@ python3 scripts/scaffold_workbench.py path/to/your-repo --force    # overwrite
 `scripts/build_catalog.py` 会遍历磁盘上的每个 Phase、每节课、每个 artifact，并在 repo root 写入 `catalog.json`。一个文件，包含课程的全部事实源。
 
 ```bash
-python3 scripts/build_catalog.py               # writes <repo>/catalog.json
-python3 scripts/build_catalog.py --stdout      # to stdout, do not touch repo
+python3 scripts/build_catalog.py               # 写入 <repo>/catalog.json
+python3 scripts/build_catalog.py --stdout      # 输出至 stdout，不修改本地仓库
 python3 scripts/build_catalog.py --out path/to/file.json
 ```
 
@@ -1172,11 +1155,11 @@ GitHub Action（`.github/workflows/curriculum.yml`）会在每个 PR 上重建 `
 `scripts/lesson_run.py` 会 byte-compile 每节课 `code/` 目录下的每个 `.py` 文件。默认模式只做 syntax-check —— 不执行代码，不需要 API keys，也不需要 heavy ML deps。它能捕获 contributors 最常引入的 regressions（错误缩进、损坏的 f-strings、误改内容）。
 
 ```bash
-python3 scripts/lesson_run.py                  # syntax-check the whole curriculum
-python3 scripts/lesson_run.py --phase 14       # one phase only
-python3 scripts/lesson_run.py --json           # JSON report on stdout
-python3 scripts/lesson_run.py --strict         # exit 1 if any lesson fails
-python3 scripts/lesson_run.py --execute        # actually run, 10s timeout per lesson
+python3 scripts/lesson_run.py                  # 对整个课程做语法检查
+python3 scripts/lesson_run.py --phase 14       # 仅检查单个 phase
+python3 scripts/lesson_run.py --json           # 在 stdout 输出 JSON 报告
+python3 scripts/lesson_run.py --strict         # 任何课程失败则以 1 退出
+python3 scripts/lesson_run.py --execute        # 真实运行，每课限时 10 秒
 ```
 
 `--execute` 会以 10 秒 timeout 运行每节课的 `code/main.py`（或第一个 `.py` 文件）。如果课程入口文件以 `# requires: pkg1, pkg2` 注释开头并列出非 stdlib deps，该课程会以原因 `needs <deps>` 被跳过。该脚本是 opt-in，未接入 CI。
@@ -1193,7 +1176,7 @@ python3 scripts/lesson_run.py --execute        # actually run, 10s timeout per l
 | 会 Deep Learning，想学 LLMs 和 agents | Phase 10 — LLMs from Scratch | ~100 小时 |
 | Senior engineer，只想学 agent engineering | Phase 14 — Agent Engineering | ~60 小时 |
 
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -1232,7 +1215,7 @@ python3 scripts/lesson_run.py --execute        # actually run, 10s timeout per l
 </tr>
 </table>
 
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -1250,9 +1233,9 @@ python3 scripts/lesson_run.py --execute        # actually run, 10s timeout per l
 提交课程前，运行 invariant check：
 
 ```bash
-python3 scripts/audit_lessons.py           # full curriculum
-python3 scripts/audit_lessons.py --phase 14  # single phase
-python3 scripts/audit_lessons.py --json    # CI-friendly output
+python3 scripts/audit_lessons.py           # 检查完整课程
+python3 scripts/audit_lessons.py --phase 14  # 仅检查单个 phase
+python3 scripts/audit_lessons.py --json    # 输出 CI 友好格式
 ```
 
 当任何规则失败时，exit code 非零。规则（L001–L010）会校验目录
@@ -1260,37 +1243,7 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 （拒绝导致 issue #102 的 legacy `q/choices/answer` keys），以及
 课程 docs 中的相对链接。
 
-```
-░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
-```
-
-## 赞助这项工作
-
-免费，MIT-licensed，523 节课。课程完全依靠 sponsorship 维护。只接受现金。
-
-**触达（2026-05-14 已验证）：** 55,593 月访问者 · 90,709 page views · 7.5K stars ·
-Twitter/X 是 #1 acquisition channel。
-
-<br />
-<br />
-<a href="https://vercel.com/open-source-program">
-  <img alt="Vercel OSS Program" src="https://vercel.com/oss/program-badge-2026.svg" />
-</a>
-
-**当前 sponsors:** [CodeRabbit](https://coderabbit.link/rohit-ghumare) · [iii](https://iii.dev?utm_source=ai-engineering-from-scratch&utm_medium=readme&utm_campaign=sponsor)
-
-| 等级 | $/mo | 你将获得 |
-|------|------|---|
-| Backer | $25 | 名字列入 BACKERS.md |
-| Bronze | $250 | README sponsor block 中的纯文本行 + launch-day tweet |
-| Silver | $750 | README 中的小 logo + 在 API lessons 中列为一个 supported provider |
-| Gold | $2,000 | README 中等 logo + sponsor page + 每季度 X / LinkedIn 联合展示 |
-| Platinum | $5,000 | 首屏 Hero logo + 一节 dedicated integration lesson，最多 1 个 partner |
-
-完整 rate card、硬性规则、pricing anchors 和 reach data：[SPONSORS.md](../../SPONSORS.md)。
-通过 [GitHub Sponsors](https://github.com/sponsors/rohitg00) 注册。
-
-```
+```text
 ░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
 ```
 
@@ -1298,7 +1251,13 @@ Twitter/X 是 #1 acquisition channel。
 
 ## Soutenir le projet
 
-Gratuit, sous licence MIT, 523 leçons. Merci aux sponsors et aux soutiens qui rendent ce travail possible. [Voir tous les sponsors et soutiens](../../BACKERS.md).
+免费，MIT-licensed，523 节课。感谢所有让这项工作成为可能的赞助者和支持者。[查看所有赞助者与支持者](../../BACKERS.md)。
+
+想要支持本项目？请查看 [赞助方案选项](../../SPONSORS.md)，包括 [硬件实验室合作伙伴](../../SPONSORS.md#hardware-lab-partner)，或前往 [GitHub Sponsors 赞助](https://github.com/sponsors/rohitg00)。
+
+```text
+░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒░░░▒▒▒
+```
 
 ## Historique des étoiles
 
