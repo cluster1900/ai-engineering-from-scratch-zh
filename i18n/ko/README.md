@@ -1298,8 +1298,7 @@ Twitter/X 是 #1 acquisition channel。
 
 ## 프로젝트 후원하기
 
-赞助支持本课程。Free, MIT-licensed, 523 lessons. Thank you to the sponsors and backers who make the work possible.
-[查看所有赞助者与支持者 · See all sponsors and backers](../../BACKERS.md).
+무료, MIT 라이선스, 523개 레슨. 이 작업을 가능하게 해 주는 후원사와 후원자 여러분께 감사드립니다. [모든 후원사와 후원자 보기](../../BACKERS.md).
 
 ## 스타 히스토리
 

@@ -1298,8 +1298,7 @@ Twitter/X 是 #1 acquisition channel。
 
 ## ادعم العمل
 
-赞助支持本课程。Free, MIT-licensed, 523 lessons. Thank you to the sponsors and backers who make the work possible.
-[查看所有赞助者与支持者 · See all sponsors and backers](../../BACKERS.md).
+مجاني، بترخيص MIT، ويضم 523 درسًا. شكرًا للرعاة والداعمين الذين يجعلون هذا العمل ممكنًا. [عرض جميع الرعاة والداعمين](../../BACKERS.md).
 
 ## سجلّ النجوم
 

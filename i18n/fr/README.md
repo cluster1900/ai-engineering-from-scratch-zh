@@ -1298,8 +1298,7 @@ Twitter/X 是 #1 acquisition channel。
 
 ## Soutenir le projet
 
-赞助支持本课程。Free, MIT-licensed, 523 lessons. Thank you to the sponsors and backers who make the work possible.
-[查看所有赞助者与支持者 · See all sponsors and backers](../../BACKERS.md).
+Gratuit, sous licence MIT, 523 leçons. Merci aux sponsors et aux soutiens qui rendent ce travail possible. [Voir tous les sponsors et soutiens](../../BACKERS.md).
 
 ## Historique des étoiles
 

@@ -1298,8 +1298,7 @@ Twitter/X 是 #1 acquisition channel。
 
 ## काम को प्रायोजित करें
 
-赞助支持本课程。Free, MIT-licensed, 523 lessons. Thank you to the sponsors and backers who make the work possible.
-[查看所有赞助者与支持者 · See all sponsors and backers](../../BACKERS.md).
+मुफ़्त, MIT लाइसेंस के अंतर्गत, 523 पाठ। इस काम को संभव बनाने वाले प्रायोजकों और समर्थकों का धन्यवाद। [सभी प्रायोजक और समर्थक देखें](../../BACKERS.md)।
 
 ## स्टार इतिहास
 

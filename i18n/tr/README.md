@@ -1298,8 +1298,7 @@ Twitter/X 是 #1 acquisition channel。
 
 ## Projeye sponsor olun
 
-赞助支持本课程。Free, MIT-licensed, 523 lessons. Thank you to the sponsors and backers who make the work possible.
-[查看所有赞助者与支持者 · See all sponsors and backers](../../BACKERS.md).
+Ücretsiz, MIT lisanslı, 523 ders. Bu çalışmayı mümkün kılan sponsorlara ve destekçilere teşekkür ederiz. [Tüm sponsorları ve destekçileri görüntüle](../../BACKERS.md).
 
 ## Yıldız geçmişi
 
