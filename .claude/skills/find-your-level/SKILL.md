@@ -193,7 +193,7 @@ phase heading contains the estimated hours in the format `(~N hours)`. Parse
 these values instead of using hardcoded numbers. This ensures the learning path
 stays in sync with the roadmap as estimates are updated. If the repo is not
 cloned locally, fetch it from
-`https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/ROADMAP.md`.
+`https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/ROADMAP.md`.
 
 ## Output Format
 

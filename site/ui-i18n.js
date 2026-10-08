@@ -123,7 +123,7 @@
   "Start the Course": "开始学习",
   "Explore Learning Paths": "探索学习路径",
   "Star on GitHub": "在 GitHub 上点亮 Star",
-  "Follow @rohitg00": "关注 @rohitg00",
+  "Follow @cluster1900": "关注 @cluster1900",
   "Learn in your terminal": "在终端中学习",
   "Use start-learning to begin the course.": "使用 start-learning 开始课程。",
   "Your agent becomes your tutor: placement quiz, personalized path, lessons taught interactively in your terminal.": "你的智能体成为导师：分级测验、个性化路径，在终端中互动授课。",

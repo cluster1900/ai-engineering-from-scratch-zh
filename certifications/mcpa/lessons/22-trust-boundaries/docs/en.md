@@ -1,35 +1,40 @@
-# Trust Zones in an MCP Exchange
+# MCP 交互中的信任边界与安全信任域
 
-> A tool result is data the server chose to send, not a message the host already trusted. Draw the zones before you draw the arrows.
+> 工具返回的结果仅仅是服务端选择发送的普通数据，绝非宿主环境预先信任的权威指令。在绘制通信链路的箭头之前，必须先精准划清各信任域的安全边界。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 21
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Locate the trust zones in an MCP exchange (user and host, client, server, upstream systems, and the model) and say which ones the host controls outright
-- Explain why tool descriptions, annotations, icons, results, resource contents, and discovery instructions are untrusted input the moment they enter the model's context
-- Treat `clientInfo` and `serverInfo` as self-reported, display-only identity that a trust decision must never rely on
-- Recognize and refuse an instruction embedded inside one server's content that asks the host to call a different server's tool
-- Apply the local-server consent rule from SEP-1024 and the stdio and DNS-rebinding rules that keep a local MCP deployment from becoming an attacker's foothold
+- 精准定位 MCP 交互中的五大信任域（用户与宿主环境、客户端、服务端、上游系统以及大语言模型），明确哪些域受宿主环境绝对物理掌控
+- 深刻理解为何工具描述、注解、图标、返回结果、资源内容以及服务发现指令在进入大模型上下文的瞬间一律属于不可信输入
+- 掌握将 `clientInfo` 与 `serverInfo` 严格定级为“自声明、仅供展示”的调试元数据，绝不能作为任何安全信任决策的依据
+- 准确识别并坚决拦截嵌入在某一服务端内容深处、企图诱导宿主环境调用另一外部服务端工具的跨服务间接注入攻击
+- 熟练应用 SEP-1024 本地服务端安装授权规则，以及 stdio 与 DNS 重绑定防御机制，防止本地 MCP 部署沦为攻击者的提权跳板
 
-## The Problem
+## 问题背景
 
-A host that supports tools has agreed to let a model act through code it did not write. The servers behind that code range from a script a teammate published last week to a hosted product run by a company the user has never met, and every one of them can be connected with the same few lines of configuration. Once connected, a server is a full participant in the conversation: it names its own tools, writes its own descriptions, and decides what text comes back from every call. Nothing about the wire protocol forces that text to be honest.
+一个具备工具调用能力的宿主环境 (Host)，本质上是同意了大语言模型可以通过运行他人编写的代码来对外部世界产生实际影响。站在这些代码背后的服务端形态各异：从团队同事上周刚随手写出的本地脚本，到用户从未谋面的商业公司所托管的云端 SaaS 产品，它们在宿主环境中均可通过区区几行配置文件完成挂载。一旦连接建立，服务端便成为了对话流中的全功能参与者：它自主命名工具、编写功能描述，并完全决定每次调用返回给模型的具体文本内容。在底层通信协议中，没有任何机制能够强制保证这些文本的诚实度与善意。
 
-Two shortcuts both fail. Trust everything that arrives over an established connection, and a single compromised or careless server can steer the model, exfiltrate data, or trigger destructive actions on other systems the user never intended it to touch. Distrust everything so completely that the host can no longer use tool results at all, and the assistant stops being useful the moment it needs a second opinion from anything outside itself. Neither extreme is what the specification asks for. What it asks for is a map: which parts of the system the user's own choices put in charge, and which parts are someone else's code that merely happens to be connected right now.
+在工程实践中，两种极端的偷懒做法均注定失败：如果宿主环境无底线信任已建连通道传输的一切数据，单个被黑客攻陷或存在代码漏洞的服务端就能轻而易举地带偏模型思路、窃取敏感资产，甚至在用户完全不知情的情况下触发针对其他关联系统的破坏性操作；而如果将不可信的防御推向极端，以至于宿主环境全面禁用任何工具返回的结果，智能体就会在需要任何外部信息输入的瞬间彻底丧失实用价值。这两种极端都不是 MCP 规范所倡导的。规范真正要求工程师掌握的是一张清晰严谨的安全拓扑图：明确标示出系统中究竟哪些组件受用户自身的决策绝对掌控，而哪些部分仅仅是恰好处于连接状态的他人物理代码。
 
-That map is the trust boundary, and drawing it correctly is the foundation the rest of the Security and Governance domain builds on. Consent gates, OAuth scopes, and audit trails all assume you already know which inputs need watching. This lesson is where that watching starts.
+这张拓扑图正是信任边界 (Trust Boundary)。正确绘制该边界，是掌握“安全与治理 (Security and Governance)”这一考点领域的基石。后续课程中涉及的人工授权确认关卡、OAuth 细粒度权限范围以及不可篡改审计链条，全部建立在你已经能够清晰识别哪些输入需要被防御性审查的前提之上。本课正是构建这套审查体系的起点。
 
-## The Concept
+## 核心概念
 
-An MCP exchange has five zones, and they do not all deserve the same trust. **User and host**: the person running the assistant, and the application they run it in. The host is the root of trust; everything else earns trust from a choice the host, or the person behind it, made. **Client**: the component inside the host that speaks to one server. The host writes or embeds the client, so the client inherits the host's trust completely; a host runs one client per server connection, never sharing a client's internal state across servers. **Server**: a separate program, frequently written and operated by a third party. Connecting to it, even over a local `stdio` pipe the user launched themselves, does not transfer any of the host's trust to it. **Upstream systems**: whatever the server itself calls out to, a database, a SaaS API, another agent. The client never talks to these directly and usually cannot see them at all. **Model**: the language model that reads assembled context and decides what to do next. The model sits logically downstream of every other zone, which makes it the zone every other zone's untrustworthy output eventually reaches.
+一次标准的 MCP 交互由五个清晰的信任域构成，它们在安全信任级别上绝非生而平等：
+1. **用户与宿主环境 (User and host)：** 运行智能体助手的人类用户，以及用户所操作的宿主应用程序。宿主环境是整套安全架构的信任根基 (Root of trust)；系统中的其他一切组件，其合法性全部派生自宿主环境或其背后人类用户的明确授权。
+2. **客户端 (Client)：** 宿主环境内部专门负责与单个特定服务端进行通信的集成组件。客户端由宿主环境直接编写或内嵌，因此完全继承宿主环境的最高信任级别；宿主环境针对每个独立的服务端连接均应启动专有客户端实例，严禁在不同服务端之间共享客户端的内部状态。
+3. **服务端 (Server)：** 独立的外部进程，绝大多数情况下由第三方独立编写并运维。与服务端建立物理连接（即便是用户在本地终端自行拉起的 `stdio` 管道），绝不代表宿主环境的信任级别自动转移给了该服务端。
+4. **上游系统 (Upstream systems)：** 服务端自身在后台依赖并访问的外部基础设施，如私有数据库、第三方 SaaS API 或其他协作智能体。客户端绝不与这些系统发生直接通信，通常也完全无法感知其底层拓扑。
+5. **模型 (Model)：** 负责读取组装后的完整上下文窗口并进行逻辑推理的大语言模型。模型在逻辑链路中位于所有其他信任域的下游，这也意味着它成为了所有其他信任域不可信输出流向的终点汇聚地。
 
-Everything a server contributes to that assembled context is untrusted input the moment it crosses into the model's zone, no matter how it arrives. A tool's `name`, `description`, `icons`, and `annotations` come from the server's own definition. A `tools/call` result's `content` blocks, a `resources/read` response's text or blob, and a `server/discover` result's `instructions` field are all bytes the server chose. None of that is protocol metadata the client generated; all of it is content a program under someone else's control wrote for the express purpose of being read by a model. Treating it as data to inspect, rather than as an instruction that already carries authority, is the entire discipline this lesson teaches.
+服务端向模型上下文贡献的每一项内容，在穿过安全边界进入模型域的瞬间，在本质上全部属于不可信输入 (Untrusted Input)。工具的名称 (`name`)、功能描述 (`description`)、展示图标 (`icons`) 以及注解 (`annotations`)，全部来源于服务端单方面的定义；`tools/call` 执行结果的文本与内容块、`resources/read` 读取出的文本或二进制 Blob，以及 `server/discover` 响应中附带的系统指令 (`instructions`)，无一例外全部由服务端自主决定。上述字段绝非客户端在协议层生成的受信任元数据，而是受外部控制的软件程序专门为了被大语言模型阅读而精心构造的文本载荷。将这些输入严格视作待审查的纯数据，而非天然具备执行权威的内部指令，是本课所要求掌握的核心工程素养。
 
-Self-reported identity makes the same point from a different angle. `_meta[io.modelcontextprotocol/clientInfo]` and `_meta[io.modelcontextprotocol/serverInfo]` carry a name and version that the sender wrote about itself. They exist for display, logging, and debugging. A server can set `serverInfo.name` to anything it likes, including the name of a server the host already trusts, and the protocol will not stop it. A host's own record of which server it dialed, the command it launched or the URL it connected to, is the only identity worth basing a decision on. If that record says the connection is not on the trusted list, a flattering self-reported name changes nothing.
+从另一个维度审视，自声明身份 (Self-reported identity) 同样揭示了这一原则。位于元数据中的 `_meta[io.modelcontextprotocol/clientInfo]` 与 `_meta[io.modelcontextprotocol/serverInfo]` 仅仅是发送方对其自身名称与版本的单方面宣称。它们的存在价值仅限于日志排查、界面展示与联调排错。一个恶意服务端完全可以在 `serverInfo.name` 中随意伪造一个宿主环境高度信任的知名服务名称，协议底层对此不作任何防伪校验。宿主环境自身本地持久化存储的拨号连接凭证（即实际拉起的物理启动命令或实际连接的网络 URL），才是判定服务端真实身份的唯一权威事实。如果宿主本地记录表明该连接并未列入受信任白名单，那么来自服务端自我吹嘘的华丽名称在安全决策层面毫无效力。
 
 ```json
 {
@@ -44,67 +49,69 @@ Self-reported identity makes the same point from a different angle. `_meta[io.mo
 }
 ```
 
-That result is perfectly well formed JSON-RPC: a real request answered with `resultType: "complete"`, ordinary text content, no protocol error anywhere. It is also an attempted prompt injection. A note the user saved, or an attacker planted, is asking the host to call a delete tool on an entirely different server. This is multi-server isolation: content that a server named "notes" returns must never be treated as authorization to call a tool on a server named "tickets." Only a choice the model itself makes, from its own reasoning about the user's actual request, may cross that boundary. A host that scans returned content for embedded instructions naming another server's tool, and refuses to synthesize that call on the content's say-so alone, is applying exactly this rule. The refusal is a host-level policy decision, not a JSON-RPC error; the wire exchange above is completely valid, and the danger lives entirely in how the host chooses to act on it afterward.
+上面的 JSON-RPC 响应在协议层面是完美合规的：一个合法的工具调用请求换来了一个标有 `resultType: "complete"` 的响应，携带着常规的文本内容块，未抛出任何底层协议错误。然而，这却是一次典型的提示词注入 (Prompt Injection) 攻击：一段由用户保存或被恶意攻击者预先植入的笔记文本，正在处心积虑地诱骗宿主环境去调用另一个完全独立的工单服务上的全量删除工具。这正是多服务隔离 (Multi-server isolation) 原则的核心用武之地：一个名为“notes”的服务端所返回的数据内容，绝对不能被直接当做调用“tickets”服务端工具的合法授权。只有大语言模型在充分理解人类用户的真实意图后自主做出的推理判断，才允许跨越这一安全边界。宿主环境在检测到返回文本中包含指明其他服务端工具的嵌入式执行指令时，必须果断拒绝仅凭文本内容便直接合成该调用。这种拦截是宿主应用层面的安全策略裁决，而非 JSON-RPC 协议层报错；报文传输本身完全合法，危险完全潜伏在宿主环境后续选择如何处置该内容的决策之中。
 
-Tool annotations deserve the same skepticism as tool content. `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint` are hints a server attaches to its own tool, and the specification requires clients to treat them as untrusted unless the server is one the host has explicitly decided to trust. An untrusted server can declare `destructiveHint: false` on a tool that deletes an entire workspace, hoping a host will skip its confirmation step. The correct response is to fall back to the conservative defaults (`readOnlyHint` false, `destructiveHint` true, `idempotentHint` false, `openWorldHint` true) for any safety decision, and only honor the server's own claim once that server has earned a place on the trusted list. Icons carry a narrower but sharper version of the same risk: a tool's `icons` array can name any URI, and a client that renders `javascript:` or `file:` URIs is letting a server execute code inside the host's own interface. A conformant client accepts only `https:` and `data:` icon sources, fetches them without sending credentials, and treats even a same-origin SVG as potentially executable content rather than a picture.
+工具注解同样必须接受审慎的防御性怀疑。`readOnlyHint`（只读提示）、`destructiveHint`（破坏性操作提示）、`idempotentHint`（幂等性提示）与 `openWorldHint`（开放世界交互提示）是由服务端单方面贴在自身工具上的参考标签；MCP 规范强制要求客户端在未对服务端建立显式信任之前，严禁直接依赖此类注解。一个未受信任的服务端完全可能在一个能够清空用户整个代码工作区的危险工具上蓄意标注 `destructiveHint: false`，妄图以此欺骗宿主环境跳过关键的人工确认关卡。面对未信任的服务端，安全合规的应对策略是在所有安全决策中直接回退至最保守的系统默认防御配置（即假定 `readOnlyHint` 为 false，`destructiveHint` 为 true，`idempotentHint` 为 false，`openWorldHint` 为 true），只有当该服务端在宿主审计名单中正式确立可信地位后，方可采信其自报注解。展示图标 (`icons`) 则潜藏着更为狭窄却更具杀伤力的系统漏洞：工具的 `icons` 数组允许声明任意 URI；若客户端鲁莽地直接在自身界面中渲染 `javascript:` 或 `file:` 伪协议 URI，就会直接导致外部服务端代码在宿主原生 UI 沙箱内任意执行。合规客户端仅接受 `https:` 与 `data:` 图标源，在抓取图标时绝不携带任何身份凭据，并始终将同源 SVG 视作潜在可执行代码而非单纯的无害图像。
 
-Local servers add a physical dimension to the same problem. A server launched from a one-click configuration link runs with the user's own privileges the instant it starts, and a malicious startup command hidden in that configuration can read SSH keys or run `rm -rf` before the user sees a single tool definition. SEP-1024 requires a client that supports one-click local installation to show the exact command, unabridged, and to require explicit approval before running it; nothing about a local, stdio-launched server exempts it from this review. A local HTTP server carries a companion risk: a malicious web page in the user's browser can address `http://127.0.0.1` directly, so the server must validate the `Origin` header and reject anything it does not recognize, the DNS rebinding defense this lesson shares with the transports lesson's header rules. `stdio` servers handle credentials differently again: because the transport already runs inside the user's own process tree, the specification says implementations should skip the OAuth flow entirely and read credentials from the environment instead, the same environment the user's shell already trusts.
+本地服务端为这一安全模型引入了物理维度的现实风险。通过一键配置链接启动的本地服务端，在进程初始化的瞬间便直接继承了当前人类用户的所有操作系统权限；隐藏在该启动参数中的恶意指令在用户看到任何工具定义之前，就能悄无声息地读取 SSH 私钥或在磁盘上执行高危删除操作。SEP-1024 规范为此做出了强制性约束：支持一键本地安装的客户端必须向用户完整、无截断地展示底层拟执行的物理命令行，并在真正拉起进程前强制要求用户的主动审批；本地 stdio 进程绝不能逃避这一前置审查。运行在本地的回环 HTTP 服务端同样面临侧翼威胁：用户浏览器打开的任意恶意网页均可直接通过跨域网络请求寻址 `http://127.0.0.1`，因此本地 HTTP 服务端必须强制校验 `Origin` 请求头并坚决阻断未知来源，这也是本课与第 19 课在防御 DNS 重绑定攻击上的共同基石。而在凭据管理方面，由于 stdio 进程天然运行在当前用户的进程树中，规范明确建议此类实现跳过复杂的 OAuth 网页跳转授权流，直接从受信任的宿主环境环境变量中读取访问凭证。
 
 ```figure
 mcpa-22-trust-zones
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure places the host, its client, and the model inside one trusted zone on the left, separated by a dashed boundary from the server zone on the right. Follow the top arrow across the boundary: a request leaves the client and reaches the server. Follow the bottom arrow back: whatever the server returns crosses through the trust filter, drawn as a gate straddling the boundary, before the model ever reads it. The dashed line from the server to "upstream systems" marks a channel the client cannot see at all; the server may call out to it, but the client only ever observes the server's own responses. Notice that host and client connect to the model with short, undashed arrows: content that starts inside the trusted zone reaches the model without passing through the filter, because it never crossed the boundary in the first place.
+上方的架构图在左侧将宿主环境、其内嵌的客户端以及模型统一划分在受信任的核心安全域内，并通过一道清晰的虚线边界与右侧的服务端域严格隔离开来。顺着顶部的箭头跨越边界：一次请求由客户端正式发出并投递至服务端。顺着底部的箭头返回：服务端吐出的任何数据在送达大语言模型之前，必须强制穿过横跨在安全边界上的信任过滤器 (Trust Filter) 审查关卡。从服务端指向“上游系统”的虚线路径代表了一条对客户端完全透明且不可见的内部通道：服务端可在后台自由与其交互，但客户端在物理上仅能观测到服务端回传的显式响应。请特别注意：宿主环境与客户端指向模型的连接线为无虚线的简短实线箭头，这表明诞生于核心受信任域内部的内容无需流经信任过滤器即可安全进入模型上下文，因为它们从始至终从未跨越过外部危险边界。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Open `code/main.py`. It builds three mock servers over the same JSON-RPC shapes earlier lessons used: `notes` (untrusted, and it returns a note containing an embedded instruction to call another server's tool), `tickets` (untrusted, and it self-reports a flattering `serverInfo.name` of `"trusted-internal-tools"` even though the host never put it on the trusted list), and `calendar` (the one server the host has actually vetted and trusted).
+查看 `code/main.py` 代码。该模块基于前序课程的 JSON-RPC 报文规范模拟构建了三个独立服务端：`notes`（未受信任，其返回的笔记内容蓄意包含了诱骗宿主调用另一工具的注入指令）、`tickets`（未受信任，在其 `serverInfo.name` 中欺骗性地自我宣称为 `"trusted-internal-tools"`，但宿主本地白名单中并未记录其指纹），以及 `calendar`（宿主环境经过严格审计并正式列入信任白名单的唯一合规服务端）。
+
+在课程根目录下执行实战演练：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed output in four parts. First, the wire exchanges: three `tools/list` calls and three `tools/call` calls, all ordinary and all protocol-conformant. Second, trust labeling: the host's own record shows `tickets` as untrusted no matter what its `serverInfo.name` claims. Third, the embedded instruction: the note's text is quarantined, and a direct attempt to relay it into a call on `tickets.delete_all_tickets` is refused, while a call the instruction never named goes through unaffected. Fourth, the annotation and icon checks: `notes`'s dishonest `destructiveHint: false` claim is overridden back to the safe default, `calendar`'s honestly declared annotations pass through unchanged, and the `javascript:` icon is rejected while the `https:` one is accepted. Then look at `transcript()`'s last entry: it is wrapped as a `violation`, the exact request a naive host would have sent if it had obeyed the embedded instruction, kept in the lesson to show precisely what never gets sent.
+终端打印的执行日志分为四个核心部分：首先是网络报文交互：三次标准的 `tools/list` 查询与三次合规的 `tools/call` 调用，在通信协议层面均完全合规。第二部分是信任标签核验：宿主自身的底层凭证记录严密判定 `tickets` 处于不可信状态，无论其报文头部的 `serverInfo.name` 如何巧舌如簧。第三部分是跨服务注入拦截：笔记文本中的恶意指令被准确识别并实施安全隔离；代码断然拒绝仅凭该文本便擅自将其转发为对 `tickets.delete_all_tickets` 的物理调用，而与该指令无关的常规业务调用则在正常通道中完全不受干扰。第四部分是注解与图标合规审查：`notes` 服务端蓄意伪造的 `destructiveHint: false` 被宿主强制重置为安全的保守默认值；`calendar` 服务端诚实声明的注解顺利放行生效；恶意伪造的 `javascript:` 图标被坚决拦截，合规的 `https:` 图标顺利接纳。最后观察运行日志中的最后一条条目：它被安全包裹在 `violation` 测试包装器中，精准展示了一个缺乏防御意识的幼稚宿主环境在误信注入指令后会错误发出的危险违规调用，将其留存在教学套件中作为永不执行的反面教材。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/trust-boundary-map.md` is a one-page reference: the five zones and their default trust, the list of what crosses into the model untrusted, the self-reported-identity rule, the multi-server isolation rule, the SEP-1024 and DNS-rebinding rules, and a short red-flags checklist to run over a new server before connecting it.
+`outputs/trust-boundary-map.md` 是一份单页信任边界权威拓扑指南：系统定义了五大信任域及其默认信任等级；列出了在跨入模型上下文时必须按不可信输入对待的全量字段清单；阐明了自声明身份防御原则、多服务隔离原则以及 SEP-1024 与 DNS 重绑定防御规范；并附带一份用于在挂载全新外部服务端之前逐项对照审查的安全红线自查清单。
 
-## Verify It
+## Verify It (验证步骤)
 
-Run the tests from the lesson directory:
+在当前课程目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: a tool result is labeled to the server zone and never trusted by default, a host-configuration item is labeled to the user-and-host zone, a self-reported `serverInfo.name` never grants trust on its own, an embedded cross-server instruction is quarantined and a relay built from it alone is refused while an unrelated call still succeeds, annotations from an untrusted server fall back to the safe defaults while a trusted server's annotations pass through unchanged, a `javascript:` icon is rejected while an `https:` icon is accepted, a local launch command is allowed only when it comes from the host's own configuration, every wire request still carries its required `_meta`, cacheable list results still carry `ttlMs` and `cacheScope`, and the transcript marks the naive relay as a deliberate violation rather than a real exchange. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+测试套件系统验证了本课全部核心论断：工具返回结果被严格打标归入服务端域且默认不予信任；宿主环境自身的配置项被安全打标归入受信任域；自声明的 `serverInfo.name` 绝对无法单方面换取信任权限；嵌入式跨服务调用指令被成功识别隔离且直接中继尝试被坚决阻断；来自未受信任服务端的危险注解自动回退至保守系统默认值，受信任服务端的注解正常放行；`javascript:` 伪协议图标被阻断而 `https:` 图标顺利采信；本地启动命令仅在完全源自宿主自有配置时才获准执行；所有通信报文严格携带必需的 `_meta`；可缓存的列表查询正常包含 `ttlMs` 与 `cacheScope`；且测试日志中故意展示的幼稚中继调用被严密标记为违规样例而非真实通信。运行协议通信校验器：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/22-trust-boundaries
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The capstone's end-to-end exchange asks you to justify a design under review, and every later control in this domain assumes the zoning from this lesson is already in place. The consent gate in the next lesson only fires because a call was correctly flagged as one a human should look at; the audit chain two lessons after that only makes sense once you can say which zone each record came from. When the capstone's transcript shows a tool result flowing back into the model, you will be expected to say, without hesitation, which zone produced it and why the model was allowed to read it at all.
+在毕业设计的全流程审查中，后续针对安全领域的所有防御机制均深度依托本课确立的信任域划分。下一课将要实现的人工确认关卡之所以被精准触发，正是因为目标调用被正确打标为高风险外部指令；而在随后课程中构建的审计追踪链条，其可信度完全建立在能够无混淆指出每一条记录究竟发源于哪一个信任域的基础之上。当毕业设计的全景运行日志展示工具结果回流至大语言模型时，你必须能够毫不犹豫地阐明其产出信任域，并论证为何模型被允许在当前安全策略下读取该数据。
 
-## Key Terms
+## 核心术语 (Key Terms)
 
-| Term | Meaning |
-|------|---------|
-| Trust zone | One of the five parts of an MCP exchange (user and host, client, server, upstream systems, model), each with a different default trust level |
-| Trust boundary | The line between zones the host controls and zones it does not; crossing it changes how content must be treated |
-| Self-reported identity | The `clientInfo` and `serverInfo` a sender writes about itself; valid for display and logging, never for a trust decision |
-| Multi-server isolation | The rule that content from one server must never trigger a call to a different server without the model's own choice |
-| Untrusted annotation | A tool hint (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) that a client must not rely on unless the declaring server is trusted |
+| 术语 (Term) | 核心内涵解释 |
+|---|---|
+| Trust zone (信任域) | MCP 交互拓扑中的五个独立组成部分，各自具备互不相同的基线信任评级 |
+| Trust boundary (信任边界) | 区分宿主绝对可控领域与外部不可控领域的技术红线；跨越该红线将彻底改变数据的处理策略 |
+| Self-reported identity | 发送方在 `clientInfo` 与 `serverInfo` 中单方面宣称的身份；仅供展示与排错，严禁作为安全判别凭据 |
+| Multi-server isolation | 多服务安全隔离准则：来自某一服务端的返回内容，绝对禁止在缺乏模型自主推理的前提下直接触发对另一服务端的调用 |
+| Untrusted annotation | 外部服务端在工具上附带的参考提示；除非该服务端已被宿主正式确立信任，否则客户端绝不能盲目信赖 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [MCP security best practices](https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices), especially Local MCP Server Compromise and stdio Transport Security
-- [MCP specification 2026-07-28, base protocol](https://modelcontextprotocol.io/specification/2026-07-28/basic), for the `_meta` self-reported identity rules and icon security requirements
-- [MCP specification 2026-07-28, Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools), for the untrusted-annotations warning and the human-in-the-loop guidance
-- [SEP-1024: MCP Client Security Requirements for Local Server Installation](https://modelcontextprotocol.io/community/seps/1024-mcp-client-security-requirements-for-local-server-installation)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 3, 12, and 13
-- `phases/13-tools-and-protocols/15-mcp-security-tool-poisoning`, which builds a deeper threat model over the same wire shapes
+- [MCP 安全最佳实践指南](https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices)，重点研读本地服务端沦陷防御与 stdio 传输安全
+- [MCP 基础协议规范 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/basic)，了解 `_meta` 自声明身份规则与图标安全基线
+- [MCP Tools 规范 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)，参阅不可信注解警告与人机协同 (Human-in-the-loop) 架构指引
+- [SEP-1024：本地服务端安装的 MCP 客户端安全基线标准](https://modelcontextprotocol.io/community/seps/1024-mcp-client-security-requirements-for-local-server-installation)
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 3、12 与 13 章节
+- `phases/13-tools-and-protocols/15-mcp-security-tool-poisoning`，深入演练基于相同网络报文形态的高级威胁建模与工具投毒防御

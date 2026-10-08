@@ -79,7 +79,7 @@ test -f my-first-skill/SKILL.md
 保持在 `agent-skills-first-run` 目录下并运行：
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-contract-reviewer --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract-reviewer --full-depth
 ```
 
 选择你当前正在使用的 agent 宿主和作用域。安装器会列出 `skill-contract-reviewer` 及其写入的目标位置。必须加上 `--full-depth` 参数，因为本课提供的 skill 是一个包含了 references、脚本和静态资产的嵌套程序包。

@@ -11,7 +11,7 @@
   "source": "core",
   "author": {
     "name": "AI Engineering from Scratch",
-    "github": "rohitg00"
+    "github": "cluster1900"
   },
   "youWillBuild": "A scoped MCP inventory server that discovers schemas inside a measured context budget.",
   "usefulFor": [

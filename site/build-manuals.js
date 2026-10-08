@@ -12,8 +12,8 @@ const ROOT = path.resolve(__dirname, '..');
 const MANUALS = path.join(ROOT, 'manuals');
 const SITE = __dirname;
 const SITE_ORIGIN = 'https://aiengineeringfromscratch.com';
-const RELEASE_URL = 'https://github.com/rohitg00/ai-engineering-from-scratch/releases/latest/download';
-const ISSUES_URL = 'https://github.com/rohitg00/ai-engineering-from-scratch/issues';
+const RELEASE_URL = 'https://github.com/cluster1900/ai-engineering-from-scratch-zh/releases/latest/download';
+const ISSUES_URL = 'https://github.com/cluster1900/ai-engineering-from-scratch-zh/issues';
 const AUTHOR = 'Rohit Ghumare';
 const LICENSE = 'MIT license';
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -603,7 +603,7 @@ function manualArticle(manual, mode) {
   return `<article class="manual">${coverHtml(manual, mode)}${mode === 'print' ? tocHtml(manual, 'print') : ''}${body.join('\n')}\n${colophonHtml(manual)}</article>`;
 }
 
-const SITE_HEADER = '<header class="site-header"><div class="header-inner"><a href="index.html" class="logo"><span class="logo-icon" aria-hidden="true"></span> AI / FROM SCRATCH</a><nav class="header-nav"><a href="index.html#contents">Contents</a><a href="catalog.html">Catalog</a><a href="projects.html">Projects</a><a href="manuals.html">Manuals</a><a href="prereqs.html">Roadmap</a><a href="glossary.html">Glossary</a><a href="about.html">About</a><a href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener" class="header-github"><span>GitHub</span><span class="star-count" data-loading="true">…</span></a></nav><button class="search-toggle" type="button" data-cmd-palette aria-label="Search"><span aria-hidden="true">⌕</span></button><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button"><span class="theme-icon" id="themeIcon">N</span></button></div></header>';
+const SITE_HEADER = '<header class="site-header"><div class="header-inner"><a href="index.html" class="logo"><span class="logo-icon" aria-hidden="true"></span> AI / FROM SCRATCH</a><nav class="header-nav"><a href="index.html#contents">Contents</a><a href="catalog.html">Catalog</a><a href="projects.html">Projects</a><a href="manuals.html">Manuals</a><a href="prereqs.html">Roadmap</a><a href="glossary.html">Glossary</a><a href="about.html">About</a><a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh" target="_blank" rel="noopener" class="header-github"><span>GitHub</span><span class="star-count" data-loading="true">…</span></a></nav><button class="search-toggle" type="button" data-cmd-palette aria-label="Search"><span aria-hidden="true">⌕</span></button><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button"><span class="theme-icon" id="themeIcon">N</span></button></div></header>';
 
 function pageShell({ title, ogTitle, description, canonical, noindex, main }) {
   const css = shared('tokens.css') + shared('manual.css') + shared('web.css');
@@ -629,7 +629,7 @@ ${noindex ? '<meta name="robots" content="noindex">\n' : ''}<link rel="canonical
 <a href="#main" class="skip-link">Skip to content</a>
 ${SITE_HEADER}
 ${main}
-<footer class="site-footer"><div class="container footer-inner"><p>AI Engineering from Scratch · open source · free forever.</p><div class="footer-links"><a href="index.html">Home</a><a href="manuals.html">Manuals</a><a href="catalog.html">Course catalog</a><a href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener">GitHub</a><a href="sponsors.html">Sponsor us</a></div></div></footer>
+<footer class="site-footer"><div class="container footer-inner"><p>AI Engineering from Scratch · open source · free forever.</p><div class="footer-links"><a href="index.html">Home</a><a href="manuals.html">Manuals</a><a href="catalog.html">Course catalog</a><a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh" target="_blank" rel="noopener">GitHub</a><a href="sponsors.html">Sponsor us</a></div></div></footer>
 <script src="data.js"></script>
 <script src="content-source.js"></script>
 <script src="header.js" defer></script>

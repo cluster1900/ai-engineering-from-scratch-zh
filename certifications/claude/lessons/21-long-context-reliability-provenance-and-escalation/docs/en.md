@@ -1,60 +1,60 @@
-# Make Large Context Observable
+# 构建可观测的大上下文系统 (Make Large Context Observable)
 
-> A large context window can hold more evidence. It cannot tell you which evidence was noticed, current, authoritative, or safe to act on.
+> 超大上下文窗口能够容纳更多证据材料，但它无法向你证明：哪些证据被真正注意到、是否处于最新状态、是否具备权威性，以及依据它们采取行动是否安全。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** [Agent SDK Sessions, Subagents, and Context](../../17-agent-sdk-sessions-subagents-and-context/), [Tool Contracts, Errors, and Progressive Discovery](../../18-tool-contracts-errors-and-progressive-discovery/), [Reliable Extraction, Batch, and Independent Reviewers](../../20-reliable-extraction-batch-and-reviewers/)
 **Time:** ~150 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Place and retrieve critical facts to reduce lost-in-the-middle failures.
-- Trim tool output without losing provenance, errors, conflicts, or decision-relevant detail.
-- Propagate complete, partial, and blocked results through agentic workflows.
-- Use manifests, scratchpads, subagents, and compaction for different large-codebase jobs.
-- Calibrate confidence and stratify human review from evidence and consequence.
-- Preserve source identity, dates, conflicts, and content type through ingestion and rendering.
+- 合理编排并精准检索核心事实，显著降低“迷失在中间”（Lost in the Middle）的注意力衰减故障
+- 在裁剪工具输出的同时，完整保留来源溯源（Provenance）、错误结构、冲突信息与决策关键细节
+- 在 Agent 工作流中显式传递 Complete（完成）、Partial（部分完成）与 Blocked（受阻）三种一级状态
+- 针对超大代码库协同任务，组合运用清单（Manifest）、草稿板（Scratchpad）、Subagent 与上下文压缩
+- 基于客观证据链校准置信度（Calibration），并依据失败后果实施分层人工审查（Stratified Human Review）
+- 在数据摄取与排版渲染全链路中，完整保留原始文档标识、日期版本、冲突记录与内容格式类型
 
-## The Problem
+## 问题背景
 
-A migration coordinator receives 140 files, three architecture documents, a dependency report, test logs, and results from four subagents. The prompt fits inside the advertised context window.
+一个代码库迁移协调器接收了 140 个代码文件、三份核心架构设计文档、一份第三方依赖分析报告、详细的测试日志，以及四个 Subagent 提交的汇总结果。整个 Prompt 的 Token 消耗完全处于宣称的上下文窗口额度之内。
 
-The final plan still violates a security rule. The rule appears once near the middle of a long architecture document. A tool result containing the failed integration test was shortened to "tests mostly passed." One subagent timed out after reviewing 18 of 24 files, but its prose summary looks complete. A Markdown table lost its column relationships during extraction, so a deprecated dependency appears supported.
+然而，最终输出的迁移执行方案依然严重违背了一条关键的安全红线。这条红线仅在一份长篇架构文档的偏中后段出现过一次。一个包含关键集成测试报错失败的工具输出，在被截断压缩时被草率地总结成一句“大部分测试已顺利通过”。某个负责文件审查的 Subagent 在完成 24 个文件中的 18 个后发生超时，但其返回的自然语言摘要表面上看起来完全是一份完整的报告。一份 Markdown 表格在抽取过程中丢失了列对齐关系，导致一个已被废弃的危险依赖项被误判为受官方支持。
 
-Nothing exceeded the nominal token limit. The system failed because important facts had weak placement, metadata disappeared, partial work looked complete, and nobody defined an escalation rule.
+整场交互没有任何地方超出名义上的 Token 容量限制。系统的彻底崩溃，是因为关键事实在上下文中摆放位置薄弱、核心元数据中途丢失、局部未完工成果伪装成了最终成果，并且没有任何人预先定义向外升级上报（Escalation）的处理规则。
 
-Context reliability is not the ability to fit more text. It is the ability to preserve the right state, expose uncertainty, and route decisions when evidence is insufficient.
+上下文可靠性绝不仅指“塞下更多文本”的吞吐能力，而是指精确维持关键状态、暴露不确定性风险，并在证据不足时将决策安全流转到正确节点的系统工程能力。
 
-## The Concept
+## 核心概念
 
-### Context has an attention topology
+### 上下文拥有注意力拓扑结构 (Context Has an Attention Topology)
 
-Models do not treat every token as equally useful in every task. Long inputs can make evidence harder to locate, especially when the relevant fact is surrounded by similar or conflicting material. This is often called lost in the middle.
+在大语言模型中，并非所有 Token 在每项任务中都能获得等权重的有效注意力。极长的上下文输入往往会让关键证据的定位变得极其困难，尤其是当核心事实被大量相似或相互冲突的背景材料所包围时。这种现象在学术界与工业界常被称为“迷失在中间”（Lost in the Middle）。
 
-Use placement deliberately:
+必须有意识地在空间位置上精细编排：
 
-1. Put the task, decision, hard constraints, and output contract before the evidence.
-2. Group evidence by a stable identity such as file, claim, source, or subsystem.
-3. Put the current question immediately before the model must answer it.
-4. Repeat only the few critical constraints near the final request.
-5. Retrieve narrow evidence for the current decision instead of carrying the entire archive.
+1. 将当前核心任务目标、终极裁决要求、硬性边界约束与输出契约置于大篇幅证据材料之前。
+2. 依据稳定的业务唯一标识（如文件路径、论据 ID、权威源标识或子系统名）对证据进行结构化分组聚类。
+3. 将当前待决的具体问题紧贴在模型即将产生输出的最终位置之前。
+4. 仅在最接近最终请求的尾部位置，高保真重申极少数绝不容许妥协的系统不变量。
+5. 针对当前的具体裁决步骤定向检索最小范围的支撑证据，而非全程背负整个历史归档。
 
-Do not repeat every rule at both ends. Repetition consumes context and can amplify stale instructions. Promote only invariants whose omission would cause material failure.
+切勿在上下文的首尾两端全量复制所有冗长规则。机械的重复不仅白白浪费 Token 窗口，还会放大陈旧失效规则的负面干扰。仅置顶那些一旦被遗漏就会引发实质性灾难的核心不变量。
 
 ```text
-goal and hard constraints
-current manifest and unresolved gaps
-relevant evidence blocks with metadata
-decision-specific question
-required result and escalation schema
+当前核心目标与系统级硬性约束
+当前任务清单与未解决的阻塞缺口
+附带元数据的相关证据块列表
+针对当前决策的定向核心问题
+要求的输出契约与向上升级上报 Schema
 ```
 
-If evidence can be selected reliably, retrieval is usually stronger than one enormous prompt. A large context window is capacity for the remaining hard case, not permission to skip information architecture.
+如果系统能够具备高精度的证据检索能力，定向精准检索的表现往往远胜于单次灌入一个无所不包的超大 Prompt。庞大的上下文窗口是为真正复杂的疑难场景保留的弹性容量，绝不能成为团队放弃信息架构设计（Information Architecture）的借口。
 
-### Evidence needs an envelope
+### 证据材料必须包裹标准元数据信封 (Evidence Needs an Envelope)
 
-Raw text is not enough. Wrap every important unit with structured metadata:
+仅仅提供原始文本是远远不够的。必须为每一个关键证据单元封装统一的结构化元数据信封（Provenance Envelope）：
 
 ```json
 {
@@ -72,47 +72,47 @@ Raw text is not enough. Wrap every important unit with structured metadata:
 }
 ```
 
-The values are illustrative. The envelope answers questions prose cannot:
+这些字段取值展示了元数据信封的核心结构。信封能够解答纯自然语言无法明确的底层核心问题：
 
-- Which version did the agent see?
-- Was it policy, a draft, or a generated summary?
-- Which files or claims does it govern?
-- Can the original span be inspected?
-- Is another source newer or more authoritative?
+- Agent 当时究竟读取的是哪一个具体版本？
+- 该材料是官方已生效的政策、临时草案还是 AI 生成的摘要？
+- 它究竟管辖哪些具体的服务模块或业务论据？
+- 是否能够快速追溯定位到源文件中的原始字符区间以供人工复核？
+- 外部是否存在版本更新或权威等级更高的数据源？
 
-Keep the source body and metadata associated through every handoff. A clean summary without identity is difficult to verify.
+在跨 Agent 的每一次数据流转与交接中，始终将证据正文与元数据信封绑定传递。缺乏明确来源标识的“精炼摘要”，在工程上根本无法被有效审计核查。
 
-### Trim tool output by decision value
+### 依据决策价值裁剪工具输出 (Trim Tool Output by Decision Value)
 
-Tool output can dominate context. Trimming should remove repetition, not state.
+冗长膨胀的工具返回值极易迅速挤占主上下文。裁剪工具输出的核心宗旨是去除无意义的机械重复，而不是丢弃系统关键状态。
 
-Preserve:
+必须完整保留的关键信息：
 
-- tool call and trace IDs
-- command or query and scoped target
-- exit or completion status
-- structured errors and retryability
-- affected files, records, or claims
-- failing assertions and the smallest supporting excerpt
-- counts, totals, and omitted-item count
-- source versions and timestamps
-- conflicts and unresolved gaps
-- a pointer to the full external artifact
+- 工具调用 ID 与分布式链路 Trace ID
+- 触发的具体指令或查询语句及其生效目标范围
+- 进程退出码或调用完工状态标识
+- 结构化错误明细与是否允许重试的判定标识
+- 受到本次调用影响的文件、数据库记录或论据列表
+- 发生断言失败的最小必要报错原文字符段
+- 汇总统计计数、总计数量以及被省略的项目计数（Omitted-item Count）
+- 目标数据源的版本号与时间戳
+- 暴露出的冲突项与尚未解决的缺口明细
+- 指向外部完整持久化日志制品的稳定寻址链接
 
-Remove or externalize:
+应当积极剔除或剥离至外部存储的噪音：
 
-- repeated progress lines
-- duplicate stack frames
-- successful rows that add no distinct evidence
-- decorative formatting
-- large bodies already stored under a stable reference
+- 持续轮询刷屏的重复进度条输出
+- 多次重复打印的相同调用栈堆栈行
+- 无法提供任何独特判定依据的海量执行成功流水行
+- 纯粹用于控制台终端美化的装饰性排版边框
+- 已经具备持久化访问链接的大文件内容主体
 
-Use a deterministic adapter where possible:
+尽可能通过确定性的适配器（Adapter）将原始输出格式化为紧凑对象：
 
 ```json
 {
   "status": "partial",
-  "summary": "18 of 24 files reviewed; 2 findings; 6 files not processed",
+  "summary": "已完成 24 个文件中的 18 个审查；发现 2 处隐患；6 个文件尚未处理",
   "findings": ["finding-014", "finding-015"],
   "errors": [
     {
@@ -126,131 +126,131 @@ Use a deterministic adapter where possible:
 }
 ```
 
-"Mostly passed" deletes the most important distinction: which part did not pass.
+一句模糊的“大部分测试通过”，实际上直接抹杀掉了工程排错中最核心的信息：究竟是哪个部分的测试没有通过。
 
-### Complete, partial, and blocked are first-class states
+### 将 Complete、Partial 与 Blocked 作为系统一级状态 (Complete, Partial, and Blocked Are First-Class States)
 
-Every task contract should define three outcomes:
+所有任务契约必须显式定义三类完工状态：
 
-- **Complete:** Every required part satisfies the output contract.
-- **Partial:** Valid work exists, but named scope or evidence is missing.
-- **Blocked:** Safe progress requires new authority, policy, data, or external state.
+- **Complete (完全完成):** 契约要求的每一个组成部分均已彻底满足输出规范。
+- **Partial (部分完成):** 产出了部分有效的工作成果，但存在明确命名的缺失范围或未完成证据。
+- **Blocked (受阻挂起):** 在获得新的授权许可、合规政策、必要数据或外部环境状态前，无法安全继续前行。
 
-Partial is not failure, and it is not complete. The coordinator can retain valid findings, retry only eligible gaps, and prevent synthesis from interpreting missing work as no issue.
+Partial 既不等于彻底失败，也绝不等于圆满完成。协调器可以稳妥采纳其中已经过验证的有效成果，精准针对明确指明的缺口安排定向重试，并杜绝后续的综合报告将“未审查的部分”武断解读为“没有任何安全隐患”。
 
 ```mermaid
 flowchart TD
-    A["Subtask result"] --> B{"State?"}
-    B -->|"complete"| C["Validate schema and provenance"]
-    B -->|"partial"| D["Keep valid output and schedule named gaps"]
-    B -->|"blocked"| E["Escalate missing authority, policy, or state"]
-    C --> F["Merge"]
-    D --> G{"Gaps safe to defer?"}
-    G -->|"yes"| F
-    G -->|"no"| E
+    A["子任务返回结果"] --> B{"状态属于哪一类？"}
+    B -->|"complete"| C["校验 Schema 与证据溯源信封"]
+    B -->|"partial"| D["保留有效产物，将具名缺口排入后续计划"]
+    B -->|"blocked"| E["向上升级：缺乏权限、政策或环境状态"]
+    C --> F["合并至主干成果"]
+    D --> G{"缺口是否允许安全延期？"}
+    G -->|"是"| F
+    G -->|"否"| E
 ```
 
-Errors need category, retryability, safe message, affected scope, partial result reference, and suggested next action. A timeout may be retryable. An authorization denial is not fixed by retrying. An ambiguous policy needs an owner, not more tokens.
+异常错误必须包含分类代码、可重试标记、面向模型的安全提示文案、波及范围、局部结果指针以及建议采取的下一步行动。一次网络超时可能属于允许自动退避重试的错误；而鉴权失败绝不可能通过反复重试自行解决；政策上的模糊歧义需要责任人定夺，而非耗费更多 Token 去瞎猜。
 
-### Escalate the reason, not the anxiety
+### 升级具体的事实原因，而不是抛出焦虑 (Escalate the Reason, Not the Anxiety)
 
-Escalation should name the missing decision:
+向上升级上报时，必须清晰指明究竟缺失了哪一项权威决策：
 
-| Condition | Safe response |
-|---|---|
-| Missing evidence | Identify source needed and affected conclusion |
-| Conflicting authoritative sources | Preserve both, apply documented precedence, or route to owner |
-| Policy gap | Stop the governed action and ask the policy owner for a rule |
-| Permission gap | Request scoped access or choose an approved alternate path |
-| Repeated semantic failure | Stop bounded retries and request adjudication |
-| Unknown external side effect | Reconcile state before retry |
+| 触发条件 | 安全标准的升级响应动作 |
+|----------|------------------------|
+| 关键证据缺失 | 明确指明所需的数据源名称，以及该缺失所影响的具体结论 |
+| 权威数据源存在直接冲突 | 完整保留双方论据，应用已备案的优先级规则，或转交属主裁定 |
+| 现行业务政策存在空白 | 立即终止受管辖的高危操作，向政策属主提请补充制定规则 |
+| 运行权限不足 | 申请精准受限的访问权限，或选用经批准的安全替代路径 |
+| 语义校验反复失败 | 立即终止盲目的有限重试，将问题分流至人工仲裁队列 |
+| 外部写操作副作用处于未知态 | 在触发任何重试前，先执行外部真实状态对账 |
 
-Do not escalate with "the model is unsure." Provide source IDs, attempted checks, the exact ambiguity, consequence, deadline, and available safe options.
+切勿向上汇报一句空洞模糊的“模型表示无法确定”。必须详实附带数据源 ID、已尝试过的验证步骤、准确的歧义点描述、潜在的业务后果、处理时效要求以及当前可选的安全备选方案。
 
-### Large codebases need four different memory tools
+### 超大代码库需要配合四种不同的记忆工具 (Large Codebases Need Four Different Memory Tools)
 
-These mechanisms are related but not interchangeable.
+这四种机制相互协同，但绝不能混为一谈。
 
-#### Manifest
+#### 1. 清单 (Manifest)
 
-A manifest is the durable map: file IDs, ownership, purpose, dependencies, review state, hashes, findings, and unresolved work. It supports coverage and recovery. The manifest remains authoritative outside the conversation.
+清单是系统的持久化资产总图：记录文件 ID、代码属主、业务功能、调用依赖、审查状态、Hash 校验码、已发现缺陷以及尚未解决的阻塞项。它是把控审查覆盖率与支持系统容灾断点恢复的根本依托。清单独立于对话生命周期，持久化保存在模型上下文之外。
 
-#### Scratchpad
+#### 2. 草稿板 (Scratchpad)
 
-A scratchpad supports temporary reasoning for the current bounded task: search hypotheses, candidate files, and next checks. It can be discarded. Never store the only copy of a decision, approval, or completed action there.
+草稿板用于为当前受限的临时子任务提供临时推理空间：暂存检索假说、候选比对文件以及下一步准备执行的核验项。任务完成后即可丢弃。严禁把一项正式决策、审批凭证或已完成动作的唯一记录仅仅保存在草稿板中。
 
-#### Subagent
+#### 3. 子智能体 (Subagent)
 
-A subagent gets isolated context for a bounded concern. It returns a structured result with file and evidence references. Isolation reduces context competition, but the coordinator must still enforce coverage and merge rules.
+Subagent 拥有独立的纯净上下文，专注于解决某一细分领域的特定问题。它向主系统交付结构化的结果，并附带明确的文件与证据引用。上下文隔离极大地降低了注意力的竞争干扰，但主协调器依然必须从全局视角把控覆盖完整性并执行合并准则。
 
-#### Compaction
+#### 4. 上下文压缩 (Compaction)
 
-Compaction compresses a growing session into current goal, constraints, verified work, open gaps, evidence references, and next action. It controls context size. It does not guarantee truth or durable state.
+上下文压缩将日益庞大的历史会话提炼浓缩为当前目标、核心约束、已确认工作、遗留缺口、证据引用指针以及明确的下一步行动。它的核心作用是遏制上下文体积无限膨胀。压缩本身并不能证明保留下来的事实具备时效性，也无法代替持久化状态。
 
-Use them together:
+四者配合的标准范式：
 
 ```text
-manifest says what exists and what is done
-scratchpad helps decide the next bounded search
-subagent isolates one reasoning responsibility
-compaction rebuilds a smaller current working set
+Manifest (清单) 掌管全局：明确记录存在什么以及哪些已经完工
+Scratchpad (草稿板) 辅助思考：指导下一步局部检索的发起
+Subagent (子智能体) 隔离执行：专注于单一推理职责
+Compaction (压缩) 控制体积：重构出紧凑精炼的当前工作集
 ```
 
-For a large repository, start with structure and dependency maps, then retrieve the smallest connected slice. Ask bounded subagents to inspect specific subsystems. Return normalized findings to the manifest. Run a final cross-file pass over the manifest and accepted evidence, not raw transcripts.
+在处理超大型代码仓库时，首先从全局架构与依赖拓扑图切入，随后仅定向拉取高度关联的代码切片。派出拥有严格权限边界的 Subagent 深入各个子系统开展隔离审查。将标准化后的缺陷结果写回全局清单中。最后在主干流程中，基于清单数据和已被验证的客观证据开展跨文件一致性汇总，而不是直接去硬嚼各个 Subagent 的原始交互转录全文。
 
-### Confidence should be evidence-calibrated
+### 置信度必须基于客观证据进行校准 (Confidence Should Be Evidence-Calibrated)
 
-A model-generated percentage is not calibrated merely because it has two decimal places. Express confidence through observable evidence:
+由大语言模型自己随口吐出的百分比数字，绝不会仅仅因为保留了两位小数就变得科学精准。系统应当基于可观测的客观证据来表述置信水平：
 
-- support class: direct, calculated, indirect, conflicting, or absent
-- source authority and freshness
-- coverage: reviewed items divided by required items
-- evaluator agreement and known disagreement
-- novelty relative to tested cases
-- consequence if wrong
+- 证据支撑等级：直接强支撑、计算推导得出、间接弱相关、相互冲突或完全缺失
+- 数据源的权威等级及其时效新鲜度
+- 覆盖率指标：已审查项在全部必需项中所占的真实比例
+- 多个评估器之间的一致性比例及已记录的显式分歧
+- 相比于已知测试用例的新颖度与未知偏差程度
+- 一旦产生误判可能造成的业务破坏后果
 
-A decision record can say:
+一份合格的架构决策记录应当如下表述：
 
 ```text
-Evidence class: direct in two approved sources
-Coverage: 24 of 24 required files
-Conflicts: one resolved by architecture owner on 2026-08-07
-Automated checks: 18 passed, 0 failed
-Residual uncertainty: runtime behavior not observed under network partition
-Disposition: human review required before production rollout
+Evidence class (证据等级): 来自两份经审批生效权威文档的直接强支撑
+Coverage (覆盖完整度): 24 个必需文件中已完整审查 24 个
+Conflicts (冲突处理): 包含 1 处分歧，已于 2026-08-07 由架构委员会属主完成裁定
+Automated checks (自动化检查): 18 项全部通过，0 项失败
+Residual uncertainty (残留不确定性): 尚未在真实网络脑裂分区环境下观测运行时表现
+Disposition (处理决议): 在推向生产环境灰度前必须经过人工专家终审
 ```
 
-This is more useful than "92 percent confident."
+这种严谨的工程证据，远比一句轻飘飘的“置信度 92%”具备高得多的决策价值。
 
-### Human review should be stratified
+### 人工审查必须实施分层抽检 (Human Review Should Be Stratified)
 
-Review every case when consequence or policy requires it. Otherwise allocate human attention by risk:
+当潜在后果极其严重或企业合规政策有强制要求时，必须进行 100% 全量人工审查。在其他场景下，应当依据系统风险科学分配宝贵的人力注意力：
 
-- every high-impact decision
-- every conflict or policy gap
-- every low-evidence or partial result
-- every new content type, language, or subsystem
-- cases near a decision threshold
-- a random sample of ordinary passing cases
+- 每一项具备重大业务影响的高危决策
+- 所有存在事实冲突或涉及政策空白边界的样本
+- 缺乏充分证据支撑或仅处于 Partial 状态的产物
+- 首次引入的新内容格式类型、新编程语言或全新的子系统
+- 处于判定阈值模糊边界上的临界样本
+- 从普通正常通过的用例中抽取固定比例的随机对照样本（Random Sample）
 
-The random sample detects unknown failure classes. If you review only flagged cases, a broken flagger can remain invisible.
+保留随机抽样样本至关重要，它是发现未知故障分类的唯一雷达。如果系统仅仅审查被算法标记为可疑的样本，一旦负责标记的判定器自身发生失效，严重的系统性漏洞就会彻底隐形。
 
-Track reviewer disagreement and corrections. Use them to update evaluation cases and routing thresholds, not merely to calculate a vanity acceptance rate.
+严密跟踪人工审核员与自动化系统之间的分歧和修正记录。将这些数据用于持续扩充评估基准集并校准路由分流阈值，而非仅仅用来计算一个表面光鲜的“一次性通过率”。
 
-### Content type changes meaning
+### 内容格式类型从根本上决定了信息的内在结构 (Content Type Changes Meaning)
 
-Ingestion and rendering must respect content type:
+在数据摄取（Ingestion）与展现渲染（Rendering）的整个链路中，必须给予原始数据格式应有的尊重：
 
-- Markdown uses headings, lists, links, and fenced code as structure.
-- HTML may contain hidden navigation, scripts, or accessibility labels distinct from visible text.
-- PDF pages can carry tables, footnotes, columns, diagrams, and scanned images.
-- CSV and spreadsheets express relationships through rows, columns, formulas, and sheets.
-- Source code depends on symbols, imports, comments, generated files, and repository paths.
-- Images and diagrams need visual interpretation plus a reference to the original asset.
+- Markdown：利用多级标题、列表缩进、超链接与代码块表达严密的逻辑层级。
+- HTML：包含可能与正文截然不同的隐藏式导航条、内嵌脚本或无障碍辅助元数据。
+- PDF：单页内可能混合排版有数据表格、脚注说明、多栏文本、流程图以及低分辨率扫描图片。
+- CSV 与电子表格：完全依赖行、列、计算公式与多 Sheet 关联来表达数据语义。
+- 源代码：高度依赖作用域符号、模块导入、行内注释、自动生成的中间文件以及文件系统相对路径。
+- 架构图与流程图：需要依赖多模态视觉空间推理，且必须保留对原图资源的强引用链接。
 
-Flattening every format into undifferentiated text can invert a table, detach a footnote, or merge navigation with evidence. Store the original content type, extraction method, location, and rendering warnings. Test the actual rendered artifact when layout carries meaning.
+如果将所有格式无脑拍平成毫无结构的纯文本，极易导致表格行列倒置、脚注与主文脱钩，或者把导航栏的免责声明误当成核心技术规范。必须完整持久化原始 Content Type、提取算法、字符坐标，并在发生版面解析异常时发出告警。在排版布局承载关键业务语义的场景中，必须对实际渲染出来的产物进行严格比对测试。
 
-Treat document text as untrusted data. A hidden HTML element or code comment can contain instructions that should not override the task or tool policy.
+时刻将外部文档文本视为不可信的外部输入（Untrusted Data）。一段隐蔽的 HTML 隐藏元素或一段代码注释，可能暗藏着恶意的 Prompt 注入指令，绝不能允许其逾越主任务的安全策略或工具权限准则。
 
 ## Build It
 
@@ -260,25 +260,19 @@ Treat document text as untrusted data. A hidden HTML element or code comment can
 21-provenance-escalation
 ```
 
-Use the provenance and escalation simulator to bury, trim, conflict, or remove
-evidence while watching coverage and task state change. The interaction makes
-`partial` and `blocked` observable instead of allowing a smooth summary to hide
-missing work.
+运行溯源与升级模拟器，演练在交互界面中故意深埋、不当裁剪、制造冲突或剔除关键证据，实时观察系统覆盖率与任务状态的变化轨迹。该交互实验让 `partial` 与 `blocked` 状态显式可见，而不是任由一段看似行云流水的 AI 摘要掩盖尚未完成的工作。
 
 ## Practice Lab
 
-Remove the omitted-item count or conflict owner from a copy of the packet,
-observe the false-completion risk, and repair the evidence envelope.
+从一份测试数据包中人为抹去被忽略项的统计计数（Omitted-item Count）或冲突属主标识，观察系统将未完工状态误判为全部完成的严重隐患，随后修复该证据元数据信封。
 
 ## Shipped Artifact
 
-The filled [`outputs/reliability-packet.md`](../outputs/reliability-packet.md)
-records a 24-file review with one conflict, explicit coverage, source metadata,
-and an owner-bound escalation.
+本课交付的核心成果位于 [`outputs/reliability-packet.md`](../outputs/reliability-packet.md)，完整记录了一个包含 24 个文件的代码审查案例，内含显式的覆盖率清点（如 18 of 24）、单处事实冲突处理、数据源溯源信封以及明确绑定责任人的向上升级处置方案。
 
 ## Verify It
 
-Verify the evidence envelope and review strata:
+在本地验证证据信封与分层人工审查策略的合规性：
 
 ```bash
 cd certifications/claude/lessons/21-long-context-reliability-provenance-and-escalation
@@ -286,95 +280,94 @@ python3 code/main.py
 python3 -m unittest discover -s code/tests -v
 ```
 
-The quiz checks placement, manifests, and recovery.
+课后测验将全面考察针对上下文摆放策略、清单机制构建与容灾恢复的核心要点。
 
 ## Capstone Connection
 
-Use the packet as the context-reliability appendix of the Architect Foundations
-capstone.
+将这份经过验证的可靠性数据包，直接作为架构师基础场景大作业（Architect Foundations Capstone）的上下文可靠性工程附录。
 
-Build a reliability packet for a large-codebase security review.
+针对大规模代码库的安全审计场景，构建完整的可靠性数据包：
 
-### Step 1: Create the manifest
+### 步骤 1：构建全局清单 (Manifest)
 
-List every in-scope file with subsystem, owner, hash, content type, review state, assigned subagent, finding IDs, and unresolved gaps. Add deterministic coverage checks.
+枚举作用域内的每一个目标文件，记录所属子系统、代码责任人、文件 Hash、Content Type、当前审查状态、指派的 Subagent、发现的 Issue ID 以及尚未闭环的缺口。配套编写确定性的覆盖率核查代码。
 
-### Step 2: Define the context budget
+### 步骤 2：规划上下文预算配额 (Context Budget)
 
-Reserve space for goal, hard constraints, current manifest slice, relevant evidence, structured errors, and output contract. Store full logs externally with stable references.
+为主任务目标、刚性边界约束、当前清单局部切片、关联核心证据、结构化错误以及输出契约严格预留空间。将海量原始日志转储至外部对象存储中，仅在上下文中保留不可篡改的访问指针。
 
-### Step 3: Normalize tool results
+### 步骤 3：工具输出适配归一化 (Normalize Tool Results)
 
-Write adapters for search, tests, and file inspection. Inject a timeout, truncated log, permission denial, and partial search result. Verify that each preserves affected scope and correct retry behavior.
+为代码检索、测试执行以及文件审查工具编写标准化适配器。主动注入网络超时、日志截断、权限拒绝以及局部搜索结果，验证适配层能否完整保留波及范围并准确标识可重试性。
 
-### Step 4: Add escalation rules
+### 步骤 4：健全向上升级流转机制 (Escalation Rules)
 
-Create fixtures for conflicting policies, an uncovered file, missing authorization, and an unknown side effect. Each should name an owner and safe next action.
+针对政策直接冲突、文件审查遗漏、鉴权凭据缺失以及未知副作用等异常场景分别编写处理用例，确保每一份上报工单均明确指明裁决责任人与安全的下一步动作。
 
-### Step 5: Calibrate review
+### 步骤 5：校准人工审查分层机制 (Calibrate Review)
 
-Review every severe finding and partial result, plus a random sample of passes. Compare reported evidence class with reviewer disposition. Adjust routing from measured false-pass risk.
+对所有严重风险隐患及 Partial 局部结果实施 100% 全量复核，并对正常通过的样本进行固定比例的随机抽检。对照人工实际判定结论校准自动化系统的证据等级，根据假阴性漏报风险动态调整后续的分流阈值。
 
-### Step 6: Test rendering
+### 步骤 6：测试多格式排版渲染保真度 (Test Rendering)
 
-Use one Markdown policy, one table-heavy PDF, one CSV, and one source file. Confirm that citations resolve to the right section, page, cell range, or lines and that layout-dependent facts survive.
+分别选取一份 Markdown 规范文档、一份包含密集数据表格的 PDF、一份 CSV 数据表以及一份核心源代码。确认提取出的引文能够精准跳转回对应的章节、页码、单元格区间或代码行号，确保依赖排版布局的关键事实在提取后毫发无损。
 
 ## Use It
 
-### Exam decision patterns
+### 考试决策核心范式 (Exam Decision Patterns)
 
-For long-context reliability scenarios:
+在面对超长上下文可靠性场景时，优先遵循以下架构准则：
 
-1. Put the current goal and critical constraints at clear boundaries.
-2. Select relevant evidence and carry a structured provenance envelope.
-3. Trim verbosity while preserving failures, counts, conflicts, and references.
-4. Propagate complete, partial, and blocked states explicitly.
-5. Escalate policy, authority, and ambiguity gaps to the named owner.
-6. Calibrate confidence from evidence and coverage.
-7. Stratify human review by consequence, uncertainty, novelty, and random sampling.
+1. 将当前任务目标与核心约束明确放置在清晰的边界位置。
+2. 精准筛选最相关的证据，并始终附带结构化的溯源信封。
+3. 精简冗余输出，但坚决保留异常失败、忽略计数、事实冲突与制品指针。
+4. 在全链路中显式传递并流转 Complete、Partial 和 Blocked 状态。
+5. 遇到政策缺失、越权或模糊歧义时，果断向具名责任人发起向上升级。
+6. 基于客观证据质量与覆盖率严谨校准置信度。
+7. 结合业务后果、不确定性水平、新颖程度与底线随机抽样，构建分层人工复核体系。
 
-### Common traps
+### 常见工程陷阱 (Common Traps)
 
-- **Fits in context, therefore noticed:** Capacity is mistaken for reliable attention.
-- **Summary as evidence:** Source identity, date, and supporting span disappear.
-- **Trim every error:** The one failed assertion is removed with repetitive logs.
-- **Partial means no findings:** Unreviewed scope is converted into negative evidence.
-- **Retry every failure:** Authorization and policy gaps consume budget without changing state.
-- **Scratchpad as database:** Durable decisions vanish when context changes.
-- **Compaction as verification:** A smaller summary can preserve stale assumptions.
-- **Confidence as a percentage:** Precision of wording is mistaken for calibration.
-- **Plain-text ingestion for every format:** Tables, footnotes, code structure, and rendered meaning are lost.
+- **能塞进上下文，就代表被充分注意：** 致命地将模型的物理窗口容量误当成了高保真的有效注意力。
+- **误把概括摘要当成客观证据：** 原始数据源的唯一标识、版本时间戳与直接支撑的原文片段全被抹杀。
+- **裁剪日志时将关键错误一同抹去：** 在过滤重复日志时，那条唯一的断言失败行被不当清除。
+- **局部完成被当成全无问题：** 未能来得及审查的代码范围，被后续流程武断当成了无安全隐患的负面证据。
+- **面对所有故障一律盲目重试：** 遇到权限不足或政策缺失时不断空耗 Token，却无法改变任何系统状态。
+- **把草稿板当成持久化数据库：** 上下文一旦切换，写在草稿板上的核心决策凭据瞬间灰飞烟灭。
+- **把上下文压缩当成事实核查：** 一段由大语言模型生成的紧凑摘要，极易在内部延续已经过时的错误假设。
+- **把浮点百分比当成真正校准的置信度：** 误把语言措辞的表面肯定当成了经过科学统计验证的确定性。
+- **对所有文件格式一律无脑转为纯文本：** 表格关联性、脚注引用、代码缩进及视觉版面承载的核心逻辑被全部破坏。
 
-### Exercises
+### 课后练习 (Exercises)
 
-1. Reorder a 50-page context packet so the task and critical policy remain visible without duplicating every rule.
-2. Convert a 5,000-line test log into a structured partial result with a pointer to the full artifact.
-3. Design a manifest and three subagent contracts for a repository with 300 files.
-4. Write escalation packets for missing evidence, policy conflict, and unknown side effect.
-5. Create a stratified review plan for 10,000 extraction records.
-6. Compare extraction from a Markdown table and its rendered view. Record lost relationships.
+1. 对一份长达 50 页的上下文输入包进行结构重排，确保核心任务与关键安全政策在上下文两端保持高度可见，同时避免冗余规则过度重复。
+2. 将一份包含 5000 行的单元测试全量日志，适配压缩为一个紧凑的局部结果结构体，并附带指向外部完整日志制品的持久化链接。
+3. 针对一个包含 300 个源码文件的代码仓库，设计一套全局清单架构及三组 Subagent 的分工交互契约。
+4. 分别针对证据缺失、政策冲突以及未知副作用三种故障，编写规范的向上升级工单数据包。
+5. 为一个包含 10000 条抽取记录的企业数据库，设计一份科学的分层人工抽检计划，包含高危全审与随机抽样。
+6. 对比一段 Markdown 数据表格在纯文本形式与富文本渲染形式下的信息抽取表现，详细记录丢失的结构语义。
 
 ## Key Terms
 
-- **Lost in the middle:** Reduced reliable use of relevant information buried inside long context.
-- **Provenance envelope:** Metadata preserving source identity, version, dates, authority, location, and extraction method.
-- **Partial result:** Valid completed work accompanied by explicit missing scope or errors.
-- **Manifest:** Durable structured inventory of scope, state, ownership, evidence, and gaps.
-- **Scratchpad:** Temporary working notes that are not authoritative state.
-- **Compaction:** Compression of conversational context into a smaller working set.
-- **Confidence calibration:** Aligning expressed certainty or routing with measured evidence and error behavior.
-- **Stratified review:** Allocating human review by risk categories plus representative sampling.
-- **Content-type rendering:** Preserving the structural and visual semantics of the original format.
+- **迷失在中间 (Lost in the middle):** 当关键信息被深埋在超长上下文的中后段非核心区域时，模型有效提取与遵循该信息的能力出现显著衰减的现象。
+- **溯源信封 (Provenance envelope):** 完整封装了数据源标识、版本快照、时间戳、权威等级、原始物理坐标及提取方式的标准化结构元数据。
+- **局部结果 (Partial result):** 一种明确合法的中间状态，代表产出了一定比例的合格成果，但显式附带有未覆盖的作用域缺口或局部故障。
+- **清单 (Manifest):** 独立于单次对话生命周期存在、持久化记录全部范围、状态、属主、证据与遗留缺陷的权威结构化总图。
+- **草稿板 (Scratchpad):** 仅为当前正在推进的短期局部任务提供临时推理空间的暂存区，不可用于充当权威持久化事实存储。
+- **上下文压缩 (Compaction):** 将不断拉长的对话会话浓缩为精炼的工作集，以控制 Token 消耗，但不具备验证事实新鲜度的功能。
+- **置信度校准 (Confidence calibration):** 使系统表达的把握程度或路由决策，与经实测检验的客观证据强度和历史错误率保持统计一致。
+- **分层审查 (Stratified review):** 依据业务破坏后果、不确定性等级划分风险梯次，辅以固定比例的代表性随机抽样的人工审核资源分配机制。
+- **格式类型保真渲染 (Content-type rendering):** 在数据解析与呈现过程中，深度维系原始数据格式（如表格、代码、多栏 PDF）所固有结构与视觉语义的处理手段。
 
 ## Further Reading
 
-- [Claude Certified Architect Foundations Exam Guide](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf)
-- [Anthropic: Long context prompting tips](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/long-context-tips)
-- [Anthropic: Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)
-- [Anthropic: Citations](https://platform.claude.com/docs/en/build-with-claude/citations)
-- [Anthropic: Agent SDK context management](https://platform.claude.com/docs/en/agent-sdk/context-management)
-- [AI Engineering from Scratch: Context Engineering](../../../../../phases/11-llm-engineering/05-context-engineering/)
-- [AI Engineering from Scratch: Repository Memory and State](../../../../../phases/14-agent-engineering/34-repo-memory-and-state/)
-- [AI Engineering from Scratch: Multi-Session Handoff](../../../../../phases/14-agent-engineering/40-multi-session-handoff/)
+- [Claude Certified Architect Foundations 官方考试指南](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf)
+- [Anthropic 官方提示词工程指南：长上下文最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/long-context-tips)
+- [Anthropic 官方技术文档：上下文窗口机制](https://platform.claude.com/docs/en/build-with-claude/context-windows)
+- [Anthropic 官方文档：引用溯源机制 (Citations)](https://platform.claude.com/docs/en/build-with-claude/citations)
+- [Anthropic 官方开发指南：Agent SDK 上下文管理](https://platform.claude.com/docs/en/agent-sdk/context-management)
+- 本教程 Phase 11 第 05 课：上下文工程核心原理与实战
+- 本教程 Phase 14 第 34 课：代码仓库记忆体系与状态持久化
+- 本教程 Phase 14 第 40 课：跨会话状态安全交接机制
 
-Context limits, compaction behavior, citations, SDK features, model support, and content-processing capabilities can change. These references were checked on 2026-08-08. Verify current official documentation and test the exact platform behavior before deployment.
+上下文窗口上限、会话压缩机制、引用溯源特性、SDK 接口设计、底层模型支持以及富文本内容解析管道可能会随技术演进而持续升级。上述参考资料于 2026-08-08 完成核实。在生产环境部署之前，请务必核对当前最新的官方文档，并在目标平台上进行端到端验证。

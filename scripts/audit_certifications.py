@@ -37,7 +37,7 @@ LESSON_NAME_RE = re.compile(r"^[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*$")
 ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 FIELD_RE = re.compile(r"^\*\*(?P<name>[^*]+):\*\*\s*(?P<value>.+)$", re.MULTILINE)
 H1_RE = re.compile(r"^#\s+\S", re.MULTILINE)
-LEARNING_OBJECTIVES_RE = re.compile(r"^##\s+Learning Objectives\s*$", re.MULTILINE)
+LEARNING_OBJECTIVES_RE = re.compile(r"^##\s+(?:Learning Objectives|学习目标)(?:\s*\(.*?\))?\s*$", re.MULTILINE)
 FIGURE_FENCE_RE = re.compile(r"```figure\s*\n\s*([a-z0-9-]+)", re.MULTILINE)
 CODE_EXTENSIONS = {".py": "Python", ".ts": "TypeScript", ".rs": "Rust", ".jl": "Julia"}
 QUIZ_KEYS = {"stage", "question", "options", "correct", "explanation"}
@@ -457,14 +457,24 @@ def check_lesson(audit: Audit, lesson_dir: Path) -> None:
         check_lesson_quiz(audit, lesson_dir)
         return
     text = doc_path.read_text(encoding="utf-8")
-    if len(text.split()) < 800:
-        audit.add("C020", doc_path, f"lesson is too thin for certification preparation: {len(text.split())} words, minimum 800")
+    cjk_count = len(re.findall(r'[\u4e00-\u9fff]', text))
+    word_count = len(text.split()) + cjk_count
+    if word_count < 800:
+        audit.add("C020", doc_path, f"lesson is too thin for certification preparation: {word_count} words/characters, minimum 800")
     if not H1_RE.search(text):
         audit.add("C020", doc_path, "missing top-level heading")
     if not LEARNING_OBJECTIVES_RE.search(text):
         audit.add("C020", doc_path, "missing Learning Objectives section")
+    zh_parity = {
+        "Interactive Lab": r"(?:Interactive Lab|交互式实验|交互式 Lab)",
+        "Practice Lab": r"(?:Practice Lab|实战演练|实战实验|实战 Lab)",
+        "Shipped Artifact": r"(?:Shipped Artifact|交付产物)",
+        "Verify It": r"(?:Verify It|验证步骤|验证方法|验证结果)",
+        "Capstone Connection": r"(?:Capstone Connection|总结连接|项目连接|阶段连接)",
+    }
     for heading in PARITY_HEADINGS:
-        if not re.search(rf"^##\s+{re.escape(heading)}\s*$", text, re.MULTILINE):
+        zh_pat = zh_parity.get(heading, re.escape(heading))
+        if not re.search(rf"^##\s+(?:{re.escape(heading)}|{zh_pat})(?:\s*\(.*?\))?\s*$", text, re.MULTILINE):
             audit.add("C029", doc_path, f"missing full-parity section '## {heading}'")
     expected_figure = EXPECTED_FIGURES.get(lesson_dir.name[:2])
     figure_ids = set(FIGURE_FENCE_RE.findall(text))

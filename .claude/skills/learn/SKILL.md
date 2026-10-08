@@ -38,7 +38,7 @@ Prefer local files when the repo is cloned (a `phases/` directory exists in
 or above the current directory). Otherwise fetch from:
 
 ```text
-https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/<path>
+https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/<path>
 ```
 
 - Lesson text: `phases/<phase-dir>/<lesson-dir>/docs/en.md`

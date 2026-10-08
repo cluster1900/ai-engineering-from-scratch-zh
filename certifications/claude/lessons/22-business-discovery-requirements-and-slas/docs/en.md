@@ -1,194 +1,161 @@
-# Business Discovery, Requirements, and SLAs
+# 业务调研、需求分析与服务等级目标 (Business Discovery, Requirements, and SLAs)
 
-> The first architecture decision is deciding what problem you are actually responsible for solving.
+> 架构设计的第一个关键决策，是明确你究竟负责解决什么真实问题。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Phase 11, Lesson 13; Phase 14, Lesson 12; Phase 17, Lesson 08
 **Time:** ~120 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Convert a broad AI request into a measurable problem statement
-- Separate functional, quality, infrastructure, safety, and lifecycle requirements
-- Define success metrics, service-level objectives, and escalation boundaries
-- Identify assumptions that need evidence before architecture begins
-- Produce a discovery brief that technical and business stakeholders can approve
+- 将宽泛模糊的业务 AI 诉求转化为具备可度量指标的严谨问题陈述
+- 结构化拆解功能性、质量、基础设施、安全合规与全生命周期需求
+- 科学定义业务成效指标、服务等级指标（SLI）、服务等级目标（SLO）以及升级上报边界
+- 识别并提炼出在架构选型前必须经过实证检验的关键先验假设
+- 产出能让技术与业务利益相关方共同达成共识并批准的业务调研简报（Discovery Brief）
 
-## The Problem
+## 问题背景
 
-A support director asks for an agent that resolves every ticket automatically.
-The request sounds specific. It is not.
+一位客户服务负责人提出需求：“我们需要一个能够全自动解决所有客户工单的智能 Agent。”这个诉求听起来目标明确，但实际上却极度模糊和危险。
 
-You do not know which ticket classes are in scope, what resolution means, which
-systems the agent can change, how much financial authority it has, what latency
-users tolerate, or which actions require a person. You also do not know whether
-the real problem is response time, inconsistent policy application, backlog,
-cost, or customer satisfaction.
+你并不知道究竟哪些工单类型属于本次交付范围；不知道“解决”在业务口径下的确切定义；不知道该 Agent 能够读写哪些底层系统；不知道它拥有多少额度的退款或补偿授权；不知道终端用户能够容忍的最长响应延迟是多少；也不知道哪些高危操作在法律或合规层面必须经过人工审批。你甚至根本不清楚当前业务最痛的症结究竟是响应延迟太长、政策执行标准不一、工单积压严重、客服人力成本高企，还是客户净推荐值（NPS）低迷。
 
-If you begin with a model and tool list, you will optimize an assumption. A
-technically impressive system can still fail because it improved the wrong
-measure, automated a forbidden step, or moved work from agents to reviewers
-without reducing total effort.
+如果在这个阶段直接开始敲定模型版本与工具列表，你只是在基于一系列脆弱的盲目假设进行局部优化。一个在技术上看似炫酷复杂的系统依然极大概率会彻底失败：因为它优化了错误的业务指标、擅自自动化了严禁触碰的高危动作，或者仅仅是把客服人员的打字工作转移成了更繁琐的人工复审工作，并未减少团队总体的精力消耗。
 
-Professional architecture begins with discovery. The exam tests whether you can
-translate business intent into a solution and defend the tradeoffs. In practice,
-this skill prevents months of rework.
+专业的 AI 系统架构设计必须始于严谨的业务调研。架构师认证考试深度考查考生将商业意图翻译为系统工程方案并捍卫权衡取舍的能力；而在实际企业生产落地中，这一能力能够为你挽救数月盲目返工的巨大研发成本。
 
-## The Concept
+## 核心概念
 
-### Start With the Decision, Not the Feature
+### 从业务决策出发，而非从功能特性出发 (Start With the Decision, Not the Feature)
 
-Rewrite the request as a decision with an owner, evidence, and consequence.
+将客户的业务诉求重写为包含明确属主、客观证据链与潜在破坏后果的决策型陈述。
 
-Weak problem statement:
+薄弱的问题陈述：
 
 ```text
-Build a Claude support agent.
+构建一个基于 Claude 的智能客服 Agent。
 ```
 
-Decision-shaped statement:
+严谨的决策型陈述：
 
 ```text
-Reduce median time to a policy-correct first response for billing questions
-from 11 minutes to under 3 minutes, while keeping unsupported-refund actions at
-zero and preserving human approval for refunds above the team threshold.
+将账单疑问类工单首次给出政策合规回复的耗时中位数从 11 分钟压缩至 3 分钟以内，同时确保无政策依据的违规退款操作发生次数严格为零，并对超出团队授权额度阈值的退款请求强制保留人工审批机制。
 ```
 
-The second statement tells you what to measure. It also tells you what not to
-automate.
+后一种陈述清晰指明了系统应当测量什么指标，同时也划定了严禁被全自动化的操作红线。
 
-Use five questions in the first discovery session:
+在首场业务调研访谈中，必须彻底搞清五个核心问题：
 
-1. What observable outcome should change?
-2. Who owns that outcome?
-3. What action follows from the output?
-4. What is the cost of a wrong, late, or missing answer?
-5. Which constraints cannot be traded away?
+1. 究竟哪项可观测的客观业务结果需要发生改变？
+2. 谁是该业务结果的最终责任人（Owner）？
+3. 系统的输出将直接引发后续哪些业务操作？
+4. 给出一个错误、超时或缺失的回答，会给企业带来多大的实质性损失？
+5. 哪些刚性约束条件是绝对不可被牺牲或妥协的？
 
-### Classify Requirements Before Prioritizing Them
+### 在排定优先级前必须首先分类需求 (Classify Requirements Before Prioritizing Them)
 
-Architects lose information when every request becomes a generic bullet under
-"requirements." Use explicit classes.
+当所有业务期望都被混为一谈塞进“需求”清单中时，关键的架构决策信息就会严重丢失。必须实施显式分类：
 
-| Class | Question | Support example |
-|-------|----------|-----------------|
-| Functional | What must the system do? | Read a ticket, find policy, draft a reply |
-| Quality | How good must it be? | Cite the active policy version in 98 percent of evaluated drafts |
-| Performance | How quickly and at what scale? | P95 draft latency below 8 seconds at 40 requests per second |
-| Security | Who may see or change what? | Only assigned agents can view account context |
-| Safety | Which outcomes need prevention or approval? | Never issue a refund without a validated authority decision |
-| Operability | How will failure be detected and recovered? | Alert on retrieval freshness and tool-error rate |
-| Lifecycle | Who updates, approves, and retires it? | Policy team owns source freshness; platform owns runtime |
+| 需求类别 | 核心考量问题 | 典型企业级客服案例 |
+|----------|--------------|--------------------|
+| 功能性需求 (Functional) | 系统必须完成什么业务动作？ | 读取工单信息、检索有效政策文本、拟定回复草案 |
+| 质量需求 (Quality) | 系统的输出必须达到多高的水准？ | 在基准评估集上，98% 的拟定草案必须准确引用生效政策版本 |
+| 性能需求 (Performance) | 系统需在何种吞吐规模与延迟下运行？ | 在每秒 40 次并发请求压力下，P95 首字生成延迟低于 8 秒 |
+| 安全需求 (Security) | 谁有权查看或变更哪些核心数据？ | 仅被分配该工单的持牌坐席才能调阅客户历史账单与敏感凭据 |
+| 防护与合规需求 (Safety) | 哪些风险后果必须被刚性拦截或审批？ | 严禁在缺乏已校验授权凭证的情况下直接触发系统退款操作 |
+| 可运维性需求 (Operability) | 系统如何监控故障并在异常时实现自愈？ | 针对政策检索新鲜度与外部工具调用错误率部署自动化实时告警 |
+| 生命周期需求 (Lifecycle) | 谁来负责后续更新、审批上线与下线归档？ | 政策法务团队负责维护知识库有效性，平台工程团队负责运行时基线 |
 
-This classification exposes contradictions. "Answer instantly" conflicts with
-"perform a three-source compliance review." "Automate all refunds" conflicts
-with a human approval requirement. Discovery makes those conflicts visible
-before code turns them into incidents.
+这种严谨的分类能够立刻暴露深层架构矛盾：“要求极速毫秒级响应”与“必须经过三道不同数据源交叉合规审查”直接冲突；“全自动免密退款”与“涉及资金划转必须人工复核”直接冲突。业务调研的价值在于把这些深层冲突在方案设计阶段完全显性化，而不是任由代码上线后引发生产级安全事故。
 
-### Map the Current Workflow
+### 绘制现实中的端到端真实业务流 (Map the Current Workflow)
 
-Do not design from the idealized process described in a slide. Observe the real
-work.
+切勿仅仅依据演示 PPT 上美化过的理想化流程开展系统设计。必须深入一线去观察实际运转的人工工作流。
 
 ```mermaid
 flowchart LR
-    I["Ticket arrives"] --> T["Agent classifies intent"]
-    T --> P["Agent searches policy"]
-    P --> A["Agent checks account authority"]
-    A --> D["Agent drafts or escalates"]
-    D --> R["Reviewer approves risky action"]
-    R --> O["Reply and action recorded"]
-    O --> F["Outcome becomes feedback"]
+    I["工单接入系统"] --> T["坐席人工研判意图"]
+    T --> P["坐席在内网检索政策"]
+    P --> A["坐席核验客户账户权限"]
+    A --> D["坐席撰写回复或向上升级"]
+    D --> R["审批人复核高危敏感动作"]
+    R --> O["发送回复并落盘业务记录"]
+    O --> F["工单处理结果转化为优化反馈"]
 ```
 
-For each step, record:
+针对业务链条中的每一个环节，详实记录：
 
-- input and output
-- system of record
-- responsible role
-- decision rule
-- common exception
-- delay and rework
-- data classification
-- evidence retained
+- 输入数据与输出数据规格
+- 权威的记录系统（System of Record）
+- 负责执行的具体角色岗位
+- 底层遵循的具体业务裁决规则
+- 日常最高频出现的特殊异常分支
+- 导致业务流转延迟与返工的真实卡点
+- 涉及数据项的安全密级分类
+- 必须被持久化保留的审计证据链
 
-The highest-value intervention may be retrieval for the policy step, a narrow
-classifier at intake, or a better approval interface. An autonomous agent is
-only one possible pattern.
+在很多情况下，投资回报率最高的架构切入点可能仅仅是在政策检索环节引入高精度 RAG、在工单入口部署一个窄分类模型，或者重构一个体验更好的人工审批界面。盲目上一套全自治的复杂 Agent 往往只是诸多备选方案中成本最高的一种。
 
-### Separate Value From Capability
+### 明确区分技术能力与商业价值 (Separate Value From Capability)
 
-Claude may be capable of drafting a response. The business value depends on
-whether the draft reduces total handling time after review, improves consistency,
-or enables a new service level.
+Claude 模型完全具备自动起草一段顺畅回复的技术能力。然而，该功能是否具有真实的商业价值，取决于这篇草案是否真正缩短了坐席在人工复核后的总处理时长、是否显著提升了服务标准的一致性，或者是否帮助企业达成了全新的服务等级标准。
 
-Use a simple value hypothesis:
+运用严谨的业务价值假说模版：
 
 ```text
-For [user or team], changing [workflow step] with [bounded capability] will
-improve [business measure] from [baseline] to [target], without violating
-[guardrail]. We will know after [evaluation window].
+针对 [特定用户或业务团队]，通过引入 [具备明确边界的 AI 技术能力] 来改造 [具体工作流环节]，将把 [核心商业指标] 从 [当前基线水平] 优化至 [目标指标水平]，同时绝不违背 [系统安全与合规红线]。我们将在 [指定的实验评估周期] 结束后依据客观数据做出最终验收判定。
 ```
 
-Every field must be filled with evidence or labeled as an assumption. Do not
-hide uncertainty inside a confident architecture diagram.
+模版中的每一个字段要么有据可查，要么被显式标记为尚待验证的假设。切勿将未经检验的不确定性粉饰在一张看似宏大的架构拓扑图里。
 
-### Turn Risk Into a Review Boundary
+### 将系统风险转化为清晰的审查边界 (Turn Risk Into a Review Boundary)
 
-Human review is not a universal safety answer. It must have a trigger, reviewer,
-evidence packet, time budget, and fallback.
+人工介入审查（Human Review）绝不是一种万能的安全兜底灵丹妙药。一套有效的人工审查机制必须具备明确的触发门限、明确的审查人角色、标准化的审查数据包、严格的时间预算以及超时兜底策略。
 
-For each action, estimate:
+针对系统能够触发的每一个业务动作，深入评估：
 
-- impact if wrong
-- reversibility
-- confidence available from evidence
-- regulatory or policy obligation
-- abuse potential
-- review cost
+- 一旦决策失误带来的破坏影响严重程度
+- 该动作是否具备低成本的可逆性（Reversibility）
+- 当前能够从外部证据链中获得的真实置信度
+- 面临的外部法务法规或内部合规审计刚性红线
+- 遭受外部黑客恶意利用或欺诈的潜在敞口
+- 引入人工审查所带来的隐性人力成本与流转延迟
 
-Low-impact, reversible drafts can proceed automatically. High-impact or
-irreversible actions need deterministic checks and explicit authority. Medium
-risk often needs sampling, threshold-based review, or post-action audit.
+对于低影响且完全可逆的回复草案，可放行全自动输出；对于高破坏性或不可逆的写操作，必须依赖确定性的硬性校验与显式的人工授权；而对于处于中等风险维度的操作，通常适宜采用阈值拦截、分层抽检或事后异步审计等策略。
 
-### Define SLI, SLO, and SLA Correctly
+### 科学界定 SLI、SLO 与 SLA 的层级关系 (Define SLI, SLO, and SLA Correctly)
 
-A service-level indicator is the measured signal. A service-level objective is
-the internal target. A service-level agreement is a commitment with business or
-contractual consequences.
+服务等级指标（SLI）是实际被实时采集测量的量化信号；服务等级目标（SLO）是技术团队内部自我设定的达标基线；服务等级协议（SLA）则是向客户或业务方做出、一旦违背将承担明确商业或合同罚则的严肃承诺。
 
-| Layer | Example |
-|-------|---------|
-| SLI | Percentage of drafts with a valid citation to the active policy |
-| SLO | At least 98 percent over a rolling seven-day window |
-| SLA | Customer-facing first response within the contracted support window |
+| 核心层级 | 严谨工程定义 | 企业典型案例 |
+|----------|--------------|--------------|
+| SLI (服务等级指标) | 衡量系统实际行为的量化度量指标 | 包含指向生效政策有效引文的草案在全量抽样中所占的比例 |
+| SLO (服务等级目标) | 团队内部设定的阶段性质量攻坚目标 | 在连续 7 天的滑动时间窗口内该比例稳定维持在 98% 以上 |
+| SLA (服务等级协议) | 具备法律或合同赔付效力的对外服务承诺 | 在合同规定的工作时间窗口内完成工单的首次实质性响应 |
 
-Do not promise a model accuracy SLA without defining the population, label,
-measurement method, and response when the objective is missed. "The model is 95
-percent accurate" is not operationally meaningful.
+严禁在未界定清晰评测群体、标准真值标签、度量统计方法以及未达标时的应对预案之前，就轻易对外签署所谓的“模型准确率 SLA”。一句空洞的“模型准确率达到 95%”在实际工程运维中没有任何指导价值。
 
-For an AI system, include several classes of indicator:
+针对企业级 AI 工程体系，必须全面涵盖以下几大维度的指标建设：
 
-- task quality: factuality, completeness, policy adherence
-- system performance: latency, availability, throughput
-- economics: cost per successful task, cache hit rate, review effort
-- safety: blocked unsafe actions, false blocks, escalation precision
-- operations: retrieval freshness, tool failures, rollback time
+- 任务完成质量：事实真实度、回答完备度、企业政策遵从度
+- 系统运行性能：P95 响应延迟、集群可用性（Availability）、每秒并发吞吐量
+- 经济成本模型：单次成功任务的综合 Token 成本、Prompt 缓存命中率、人工复审消耗时长
+- 安全合规防线：拦截高危动作成功率、误拦截率（False Blocks）、升级上报查准率
+- 生产运维健康度：外部检索知识库新鲜度、工具接口调用失败率、紧急配置回滚平均耗时
 
-### Make Non-Goals Explicit
+### 显式界定非目标以捍卫项目边界 (Make Non-Goals Explicit)
 
-Non-goals protect the system from silent scope expansion.
+明确定义非目标（Non-Goals），是防止项目需求在落地过程中被无底线蔓延侵蚀的坚固盾牌。
 
-Examples:
+标准非目标范式：
 
-- The first release drafts replies but does not send them.
-- It handles billing FAQs but not account closure.
-- It recommends a refund amount but cannot execute a refund.
-- It supports English tickets only during the pilot.
+- 首发上线版本仅向客服坐席提供建议草案，严禁系统绕过人工直接对外发信。
+- 本期系统仅专注于处理高频账单咨询类常见问题，不承接复杂的账户注销与资产划转业务。
+- 系统仅负责根据历史规则测算建议退款金额，不具备直接调用网银接口划扣资金的写权限。
+- 在前期的种子灰度试点期间，系统仅支持纯英文工单的解析与处理。
 
-If a stakeholder disagrees, discovery has found a decision that needs ownership.
-That is progress.
+如果某位业务干系人对上述非目标提出强烈异议，说明调研阶段成功挖掘出了一个尚未达成组织共识的核心决策点。这正是前期调研所追求的成果。
 
 ## Build It
 
@@ -198,25 +165,19 @@ That is progress.
 22-sla-value-tradeoff
 ```
 
-Use the value and SLA explorer to change baseline, target, review effort,
-quality, latency, and hard authority constraints. It shows when a capable
-system still produces negative workflow value or violates a non-tradeable gate.
+运行业务价值与 SLA 权衡交互图，尝试动态调配系统基线现状、预期目标、人工复核成本、生成质量门槛、网络延迟及不可妥协的刚性权限红线。直观观察在哪些条件下，即使底层模型展现出了强大的生成能力，整体系统依然会在工作流中产生负向价值，甚至触碰不可逾越的安全红线。
 
 ## Practice Lab
 
-Change one baseline into an unsupported claim, classify it correctly, and add
-an owner, evidence source, and decision date before architecture selection.
+将一个业务现状基线修改为缺乏权威数据支撑的主观断言，对其进行严谨分类，并在正式确立架构路线前，为其补齐决策属主、客观证据来源以及决策确认截止日期。
 
 ## Shipped Artifact
 
-The filled [`outputs/discovery-brief.md`](../outputs/discovery-brief.md) is an
-approved, decision-shaped support pilot with measurable SLIs, SLOs, assumptions,
-non-goals, and owners.
+本课交付的标准交付物位于 [`outputs/discovery-brief.md`](../outputs/discovery-brief.md)，是一份面向真实客服试点项目的结构化业务调研简报，内含具备可度量性的 SLI、SLO、先验假设审查表、非目标声明以及清晰绑定的属主体系。
 
 ## Verify It
 
-Verify that facts, estimates, preferences, and constraints are not collapsed
-together:
+在本地执行离线验证程序，核查事实、估算数据、主观偏好与不可妥协的硬性约束是否被严格区分：
 
 ```bash
 cd certifications/claude/lessons/22-business-discovery-requirements-and-slas
@@ -224,194 +185,173 @@ python3 code/main.py
 python3 -m unittest discover -s code/tests -v
 ```
 
-The quiz checks discovery and service-level decisions.
+课后测验将全面考查需求解构、SLO 设定及架构选型权衡的核心知识点。
 
 ## Capstone Connection
 
-Use the brief as the first artifact in the Architect Professional capstone.
+将经过评审的调研简报，作为架构师专业级终极大作业（Architect Professional Capstone）的起始核心产物。
 
-Create a one-page discovery brief before drawing the architecture.
+在绘制系统架构图之前，必须首先整理出一页结构完整的业务调研简报：
 
 ```markdown
-# Discovery Brief
+# 业务调研简报 (Discovery Brief)
 
-## Outcome
-- Owner:
-- Current baseline:
-- Target:
-- Evaluation window:
+## 业务成效 (Outcome)
+- 业务责任人 (Owner):
+- 当前现状基线 (Current baseline):
+- 预期目标 (Target):
+- 效果评估周期 (Evaluation window):
 
-## Users and Workflow
-- Primary user:
-- Current workflow step:
-- Downstream action:
-- Exceptions:
+## 用户画像与工作流 (Users and Workflow)
+- 主要使用角色 (Primary user):
+- 当前改造环节 (Current workflow step):
+- 下游触发动作 (Downstream action):
+- 核心异常分支 (Exceptions):
 
-## Requirements
-- Functional:
-- Quality:
-- Performance:
-- Security:
-- Safety:
-- Operability:
-- Lifecycle:
+## 需求矩阵 (Requirements)
+- 功能性需求 (Functional):
+- 质量需求 (Quality):
+- 性能需求 (Performance):
+- 安全需求 (Security):
+- 防护合规需求 (Safety):
+- 可运维性需求 (Operability):
+- 生命周期需求 (Lifecycle):
 
-## Data and Authority
-- Data classes:
-- Systems of record:
-- Read permissions:
-- Write permissions:
-- Human approval triggers:
+## 数据底座与操作权限 (Data and Authority)
+- 数据密级划分 (Data classes):
+- 权威记录系统 (Systems of record):
+- 读权限范围 (Read permissions):
+- 写权限范围 (Write permissions):
+- 触发人工审批红线 (Human approval triggers):
 
-## Measures
-- SLIs:
-- SLOs:
-- Business measures:
-- Guardrail measures:
+## 度量体系 (Measures)
+- 服务等级指标 (SLIs):
+- 服务等级目标 (SLOs):
+- 核心业务指标 (Business measures):
+- 安全防护红线指标 (Guardrail measures):
 
-## Assumptions to Test
-- Assumption:
-- Evidence needed:
-- Owner:
-- Decision date:
+## 待实证检验的先验假设 (Assumptions to Test)
+- 假设内容 (Assumption):
+- 所需证明材料 (Evidence needed):
+- 跟踪责任人 (Owner):
+- 确认截止日期 (Decision date):
 
-## Non-Goals
-- Not in the first release:
+## 明确非目标 (Non-Goals)
+- 本期严禁涉足的范围 (Not in the first release):
 ```
 
-Now run an assumption audit. Mark each statement as fact, estimate, preference,
-or constraint. Facts need sources. Estimates need a confidence range. Preferences
-need an owner. Constraints need an authority.
+随后针对简报中的每一句陈述开展假设审计（Assumption Audit）：精确归类为事实（Fact）、估算（Estimate）、偏好（Preference）还是约束（Constraint）。事实必须提供原始来源；估算必须标明置信区间；偏好必须落实到具体提出人；约束必须指明其权威授权来源。
 
-### Prioritize With Cost of Error
+### 依据错误代价排定优先级 (Prioritize With Cost of Error)
 
-Use this decision table for each candidate use case:
+针对每一个潜在的应用场景，对照以下决策矩阵进行打分：
 
-| Dimension | Low | Medium | High |
-|-----------|-----|--------|------|
-| Wrong-output impact | Minor edit | Customer friction | Financial, legal, or safety harm |
-| Reversibility | One-click undo | Manual correction | Irreversible or difficult |
-| Data sensitivity | Public | Internal | Regulated or secret |
-| Action authority | Draft only | Bounded write | Destructive or financial write |
-| Evidence quality | Direct source | Partial source | Ambiguous or missing |
+| 评估维度 | 低风险 (Low) | 中风险 (Medium) | 高风险 (High) |
+|----------|--------------|-----------------|---------------|
+| 输出错误引发的破坏 | 产生轻微文字歧义，坐席稍作修改即可 | 引发客户沟通摩擦，增加解释成本 | 造成直接资金损失、法律诉讼或人身财产安全危害 |
+| 动作可逆性 | 支持一键撤销回滚 | 需要人工介入修正数据补偿 | 彻底不可逆，或回滚补偿成本极其昂贵 |
+| 数据保密敏感度 | 公开可查阅数据 | 企业内部普通办公数据 | 受严格法规监管的敏感数据或核心机密 |
+| 系统执行权限 | 纯文本草案输出 | 极其受限的局部数据写入 | 涉及资金清结算或不可逆删除的高危写操作 |
+| 原始证据质量 | 拥有唯一权威的直接数据源 | 仅有部分间接数据源支撑 | 证据材料模糊不清、相互矛盾甚至完全缺失 |
 
-A high score does not automatically ban AI. It changes the architecture toward
-narrower scope, deterministic gates, stronger evidence, human approval, and
-more conservative rollout.
+高风险评分并不意味着绝对禁止引入 AI。它要求系统架构必须向更窄的业务范围、更严格的确定性门禁、更硬核的证据链、更刚性的人工审批以及更加谨慎保守的灰度放量节奏倾斜。
 
 ## Use It
 
-Apply the brief to three architecture candidates:
+将整理完毕的调研简报，置于三种候选架构方案中进行比对裁决：
 
-1. Retrieval-assisted draft generation with human approval.
-2. A deterministic workflow that calls Claude only for classification and
-   drafting.
-3. An adaptive agent with ticket, policy, account, and refund tools.
+1. 检索增强（RAG）加辅助起草方案，辅以人工 100% 审查把关。
+2. 确定性业务流水线方案：仅在需要文本分类与起草的关键节点受控调用 Claude。
+3. 自治型 Agent 方案：赋予工单、政策、账户与退款等一系列动态工具。
 
-Score each against the requirements. The most capable option is not automatically
-best. If the workflow is stable and known, deterministic orchestration often
-reduces latency, cost, and failure surface. Use an agent when the path depends on
-evidence discovered during execution and the additional flexibility is worth the
-control burden.
+对照调研简报中沉淀的各项指标逐一评估。能力最强大的方案并不一定是最优解。如果业务流程高度稳定且已知，确定性的流水线编排往往能够带来更低的延迟、更低的 Token 成本以及大幅缩减的故障暴露面。只有当执行路径高度依赖在运行中途动态发现的未知线索，且这种灵活性所带来的业务收益远超维护控制成本时，才应当选择自适应的 Agent 架构。
 
-Record the choice in an architecture decision record:
+将最终的架构权衡决策沉淀为标准的架构决策记录（ADR）：
 
 ```markdown
-# ADR: Support Resolution Pattern
+# 架构决策记录：客服工单自动化处理架构选型
 
-## Status
-Proposed
+## 状态 (Status)
+提议中 (Proposed)
 
-## Context
-Decision, constraints, evidence, and unresolved assumptions.
+## 背景上下文 (Context)
+核心决策目标、不可逾越的刚性约束、权威支持证据以及尚未解决的待验假设。
 
-## Options
-1. Retrieval-assisted draft workflow
-2. Deterministic multi-step workflow
-3. Adaptive tool-using agent
+## 备选方案 (Options)
+1. 检索增强辅助起草工作流 (Retrieval-assisted draft workflow)
+2. 确定性多步骤状态机工作流 (Deterministic multi-step workflow)
+3. 具备动态工具调用能力的自适应 Agent (Adaptive tool-using agent)
 
-## Decision
-Chosen option and the requirement it best satisfies.
+## 最终决策 (Decision)
+最终入选方案及其所能最完美满足的关键业务需求。
 
-## Rejected Alternatives
-Why each alternative loses under current constraints.
+## 驳回理由 (Rejected Alternatives)
+其他备选方案在当前业务与合规约束下败选的具体技术原因。
 
-## Consequences
-New operational work, residual risk, and reversal plan.
+## 伴随影响 (Consequences)
+引入的全新运维负担、残留系统风险以及紧急情况下的业务回滚方案。
 
-## Verification
-Offline evaluation, pilot guardrails, SLOs, and review date.
+## 验证与验收机制 (Verification)
+离线基准评测集标准、小流量试点防护红线指标、SLO 告警配置以及定期架构复审日期。
 ```
 
 ## Exam Decision Patterns
 
-When a scenario begins with a broad business request, the strongest first step
-usually reduces ambiguity before selecting technology.
+当一道架构设计场景题以一段宏大模糊的商业诉求作为开篇时，最专业且得分最高的第一步动作，永远是在选定具体技术前全力消除需求的不确定性。
 
-Prefer an answer that:
+在认证考核中，推荐优先选择具备以下特征的方案：
 
-- establishes the business outcome and current baseline
-- identifies users, systems of record, and downstream action
-- separates hard constraints from preferences
-- defines quality and operational measures
-- assigns review and lifecycle ownership
-- tests the riskiest assumption with a bounded pilot
+- 明确确立可度量的商业成果指标与当前真实基线
+- 精准识别终端用户画像、权威记录系统以及下游触发的真实动作
+- 将不可妥协的硬性约束与主观偏好清晰解耦
+- 建立完备的质量与可运维性度量体系（SLI/SLO）
+- 为人工复审机制和系统全生命周期明确划定责任归属
+- 优先通过低成本且边界受限的小范围试点，对风险最高的先验假设进行实证检验
 
-Be suspicious of answers that immediately choose the largest model, add an
-agent, or promise automation without clarifying authority and error cost.
+而对于那些一上来就盲目选用参数规模最大的旗舰模型、无脑堆叠多 Agent 架构，或者在未厘清权限边界与错误破坏代价前就轻率承诺全自动化的选项，必须保持高度警惕。
 
 ## Common Traps
 
-### Turning Every Request Into an Agent
+### 把所有业务诉求一律包装成自治 Agent (Turning Every Request Into an Agent)
 
-Agentic flexibility has a cost: more tool calls, larger attack surface, harder
-testing, and less predictable latency. Choose it only when adaptive planning is
-a requirement.
+Agent 架构的自主灵活性必须付出巨大的工程代价：频繁的工具链调用、显著扩大的安全攻击暴露面、更复杂的测试覆盖难度以及极难预测的长尾响应延迟。唯有当自适应动态规划确实是一项刚性业务诉求时，才选用此模式。
 
-### Treating Human Review as Free
+### 误把人工复核当成零成本的兜底方案 (Treating Human Review as Free)
 
-A review queue can become the new bottleneck. Measure review time, agreement,
-and escalation quality.
+缺乏科学管控的人工审查队列往往会迅速沦为系统新的吞吐瓶颈。必须精细化度量坐席的审查时长、人机一致性比例以及向上升级上报的查准率。
 
-### Using Accuracy Without a Denominator
+### 抛出没有明确分母的“模型准确率” (Using Accuracy Without a Denominator)
 
-State the dataset, population, label, evaluator, and time window. Otherwise the
-number cannot guide an operational decision.
+必须严格声明基准数据集版本、抽样人群范围、真值标注来源、评估算法以及统计的时间窗口。否则，这个空洞的百分比数字根本无法指导任何严肃的工程决策。
 
-### Ignoring Ownership After Launch
+### 系统上线后对运维责任归属视而不见 (Ignoring Ownership After Launch)
 
-Every prompt, source, tool, control, metric, and escalation path needs an owner.
-An unowned control decays silently.
+系统中的每一个提示词模版、数据源接口、工具函数、安全控制策略、监控指标与升级通道，都必须在组织架构层面明确指派维护责任人。缺乏清晰属主归属的安全策略，终将在无人问津中逐渐腐化失效。
 
 ## Exercises
 
-1. Rewrite "build an AI analyst" into a decision-shaped problem statement with
-   a baseline, target, guardrail, and owner.
-2. Map a real workflow and identify one step where a deterministic rule is
-   better than a model call.
-3. Define five SLIs for a retrieval-assisted compliance workflow. Include at
-   least one quality, safety, economic, and operability signal.
-4. Write an ADR that rejects an agent architecture even though the model is
-   capable of doing the work.
-5. Design a pilot that tests the highest-risk assumption without giving the
-   system production write access.
+1. 将“帮我们打造一个 AI 金融分析师”这一宽泛需求，改写为包含基线数据、提升目标、不可妥协的合规红线及明确业务属主的决策型问题陈述。
+2. 深入梳理一项团队正在运行的真实业务流程，明确指出其中哪一个特定步骤采用确定性代码规则实现远胜于调用大语言模型。
+3. 为一套检索增强型法务合规问答系统，制定五项核心 SLI 指标，确保涵盖输出质量、安全防护、成本经济性以及运维健康度等关键维度。
+4. 撰写一份标准 ADR，论证并记录为什么在底层模型完全具备执行能力的前提下，团队依然在架构上果断驳回全自治 Agent 方案。
+5. 设计一套严格受限的小流量灰度实验方案，在完全不开放生产环境写入权限的前提下，对业务风险最高的先验假设进行实操检验。
 
 ## Key Terms
 
-| Term | What people say | What it actually means |
-|------|-----------------|------------------------|
-| Requirement | A requested feature | A testable condition the solution must satisfy |
-| Constraint | Something inconvenient | A boundary the architecture may not trade away |
-| SLI | An SLA target | The measured signal used to judge service behavior |
-| SLO | A vendor promise | An internal objective for an indicator |
-| SLA | Any performance goal | A service commitment with defined consequences |
-| Non-goal | Work postponed quietly | An explicit boundary that prevents scope drift |
-| ADR | A diagram | A durable record of context, options, decision, and consequences |
+| 术语 | 通俗说法 | 严谨工程定义 |
+|------|----------|--------------|
+| 需求 (Requirement) | 想要的功能特性 | 最终交付的系统工程方案必须能够通过测试检验的可验证条件 |
+| 约束 (Constraint) | 让人头疼的不便限制 | 在技术架构权衡设计中绝对不容许被牺牲或妥协的边界红线 |
+| SLI (服务等级指标) | 就是 SLA 目标 | 用于量化研判系统服务运行时实际健康表现的客观度量信号 |
+| SLO (服务等级目标) | 厂商做出的承诺 | 团队内部为特定服务等级指标设定的期望达标量化目标 |
+| SLA (服务等级协议) | 任何性能指标要求 | 对外做出、一旦违背将承担明确商业或合同罚则的严肃服务承诺 |
+| 非目标 (Non-goal) | 往后悄悄推迟的工作 | 显式对外声明不属于本期交付范围、用于防范范围失控的边界防火墙 |
+| 架构决策记录 (ADR) | 一张架构设计图 | 结构化沉淀系统业务背景、备选方案、最终决断与长远影响的持久工程文档 |
 
 ## Further Reading
 
-- [Claude Certified Architect Professional exam guide](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf) for the public lifecycle and architecture objectives
-- [Anthropic guidance on building effective agents](https://www.anthropic.com/research/building-effective-agents) for workflow and agent tradeoffs
-- [Claude Platform documentation](https://platform.claude.com/docs/en/home) for current product and API behavior
-- Phase 11, Lesson 13 for the production application boundary
-- Phase 17, Lesson 08 for latency, throughput, and goodput measures
+- [Claude Certified Architect Professional 官方考试大纲](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf)
+- [Anthropic 官方研究报告：构建高效智能体 (Building Effective Agents)](https://www.anthropic.com/research/building-effective-agents)
+- [Claude 官方平台开发文档](https://platform.claude.com/docs/en/home)
+- 本教程 Phase 11 第 13 课：企业生产级应用边界与系统集成
+- 本教程 Phase 17 第 08 课：响应延迟、系统吞吐量与有效吞吐量（Goodput）度量

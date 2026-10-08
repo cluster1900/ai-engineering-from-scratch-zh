@@ -1,63 +1,63 @@
-# The JSON-RPC Envelope
+# JSON-RPC 消息信封
 
-> A server that has never talked to you before still has to know, from this one message alone, whether you expect an answer, which protocol version you speak, and where your metadata ends and your arguments begin.
+> 一个此前从未与你通信过的服务端，仅凭这一条消息本身就必须明确：你是否期待回复、你使用的是哪个协议版本，以及你的协议元数据在何处结束、业务参数从何处开始。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 02
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Classify any 2026-07-28 message on the wire as a request, a notification, a result response, or an error response, and state the id rule that makes each one what it is
-- Explain what resultType means, why complete and input_required are the two core values, and how a client must treat an unrecognized or an absent one
-- Validate a `_meta` key name against the prefix and name grammar, and tell a reserved MCP prefix from a merely similar one by checking its second label, not its first
-- Name the reserved `_meta` keys a request, a notification, and a result each carry, and the one exception the prefix rule makes for OpenTelemetry trace context
-- Explain why a request missing a required `_meta` field is rejected with `-32602`, and why no two MCP messages ever travel together in one batch
+- 能够将线缆中传输的任何符合 2026-07-28 规范的消息分类为请求（Request）、通知（Notification）、成功响应（Result Response）或错误响应（Error Response），并说出界定各形态的 `id` 规则
+- 深入解释 `resultType` 的设计语义，阐明为何 `complete` 与 `input_required` 是两大核心取值，以及客户端必须如何处理未识别或缺失该字段的情况
+- 熟练依据前缀与名称的语法规范校验 `_meta` 键名，并通过检查第二级标签而非第一级标签，准确识别 MCP 官方保留前缀
+- 指明请求、通知和结果各应携带哪些 MCP 官方保留的 `_meta` 键，以及针对 OpenTelemetry 分布式链路追踪上下文设立的唯一例外
+- 解释为何缺少必要 `_meta` 字段的请求会被返回 `-32602` 错误直接拒绝，以及为何 MCP 严禁在单次批处理中传输多条消息
 
-## The Problem
+## 问题背景
 
-Lesson 02 showed one client discovering two servers it had never seen before and calling a tool on each. Underneath that exchange sits a smaller, sharper question the exam expects you to answer without hesitating: handed an arbitrary bag of JSON that just arrived over stdio or landed in a Streamable HTTP POST body, what kind of message is it, and what is a receiver allowed to assume about it?
+在第 02 课中，我们观察了一个客户端如何成功发现两个此前从未见过的服务端，并分别调用它们提供的工具。在这一交互表象之下，隐藏着一个更加微观且锐利的考查核心，认证考试要求考生对此毫无犹豫地做出判断：面对通过 stdio 管道传输或作为可流式传输 HTTP（Streamable HTTP）POST 请求体抵达的一段任意 JSON 数据，它到底属于哪种消息形态？接收方对它做出的行为假设究竟是什么？
 
-JSON-RPC 2.0 gives MCP four shapes to choose from, and the specification is strict about how a receiver tells them apart, because a stateless server has no connection-level agreement to fall back on. There was never an opening handshake that pinned down "this connection speaks version X" or "this stream only carries requests from client Y." Every message has to carry enough of its own identity that a receiver processing it in isolation, quite possibly on a completely different replica of the server than the one that handled the message before it, reaches the same conclusion every time.
+JSON-RPC 2.0 规范为 MCP 提供了四种基础消息形态，而协议规范对于接收方如何分辨它们有着极为严苛的要求，因为无状态的服务端根本无法依赖任何连接级别的预设上下文。在通信链路建立时，从来没有过一次预先协商好“本连接采用版本 X”或“当前数据流仅承载来自客户端 Y 的请求”的握手流程。每一条独立的消息都必须自带完备的身份说明信息，以至于任何处理该消息的接收方节点（极可能是集群中与处理前一条消息完全不同的另一个服务端副本），孤立地审视该消息时都能次次推导出一模一样的结论。
 
-That self-description happens on two layers. The outer layer is the envelope itself: is this a request that expects a reply, a notification that does not, a result that finished the job, or an error that did not? Get the `id` field wrong and a server cannot tell a request from a notification, or a client cannot match a response back to the call that produced it. The inner layer is `_meta`, the property a request, a notification, or a result can use to carry protocol-level facts, such as which protocol version a request claims to speak, without those facts colliding with whatever the application itself happens to call `version` or `capabilities` in its own arguments. Get the `_meta` naming rules wrong and a server-specific field can silently shadow, or be shadowed by, a field the protocol itself depends on.
+这种自描述能力在两个层次上展开。外层是消息信封本身：这是需要回复的请求、不需要回复的通知、执行完毕的结果，还是执行受阻的错误？如果 `id` 字段的使用发生差错，服务端就无法区分客户端发来的是请求还是通知，客户端也无法将收到的响应与先前发起的调用精准配对。内层则是 `_meta` 结构，请求、通知或响应都可以利用它来携带协议层面的事实数据（例如该请求声明所采用的协议版本），同时避免这些协议元数据与应用程序自身业务参数中恰好命名为 `version` 或 `capabilities` 的业务字段发生命名碰撞。如果违反了 `_meta` 的命名法则，自定义扩展字段就可能悄无声息地遮蔽协议核心字段，或者反过来被核心字段覆盖。
 
-## The Concept
+## 核心概念
 
-**Four shapes, one rule each.** A request carries `id`, `method`, and optional `params`; the id must be a string or an integer, must never be `null`, and must not repeat an id the sender is still waiting to hear back about.
+**四种消息形态，各遵循一条铁律。** 请求（Request）必须携带 `id`、`method` 以及可选的 `params`；`id` 必须是字符串或整数，绝不能为 `null`，且绝不能重复使用发送方当前仍在等待响应中的未完成 ID。
 
 ```json
 {"jsonrpc": "2.0", "id": 7, "method": "tools/call", "params": {"name": "get_weather", "arguments": {"location": "Pune"}}}
 ```
 
-A notification carries `method` and optional `params`, and must not include an `id` at all. The receiver must not send any reply, ever, success or failure.
+通知（Notification）携带 `method` 和可选的 `params`，但绝对不能包含 `id`。接收方无论成功还是失败，都坚决不得对通知发送任何响应。
 
 ```json
 {"jsonrpc": "2.0", "method": "notifications/progress", "params": {"progressToken": 7, "progress": 1, "total": 2}}
 ```
 
-A result response echoes the request's `id` and carries a `result` object. That object must include a `resultType` field.
+成功结果响应（Result response）必须回显请求的 `id`，并携带 `result` 对象。该对象中必须包含 `resultType` 字段。
 
 ```json
 {"jsonrpc": "2.0", "id": 7, "result": {"resultType": "complete", "content": [{"type": "text", "text": "Pune: sunny, 26C"}], "isError": false}}
 ```
 
-An error response also echoes the request's `id`, except in the one case where the id could not be read at all because the request itself was too malformed to parse; it carries an `error` object with an integer `code` and a string `message`, and may add a `data` field.
+错误响应（Error response）同样必须回显请求的 `id`（唯一的例外是请求结构本身严重畸形损坏导致根本无法解析出 `id` 的罕见场景）；它携带包含整数 `code` 和字符串 `message` 的 `error` 对象，并可按需附加 `data` 详情。
 
 ```json
 {"jsonrpc": "2.0", "id": 3, "error": {"code": -32602, "message": "Missing required _meta field(s): io.modelcontextprotocol/protocolVersion"}}
 ```
 
-**resultType tells the client how to read what follows.** A value of `"complete"` means the result holds the final content and there is nothing more to do. A value of `"input_required"` means the result is an `InputRequiredResult`, the shape the multi round-trip pattern uses to ask the client for more before the original call can finish; that retry mechanic is its own lesson later in this route. Extensions may register further values, such as `"task"` for long-running work, but only when the client has advertised the matching capability. A client that receives a resultType it does not recognize must treat the result as invalid rather than guess at its shape, and a client talking to a server on an earlier protocol version that never sent resultType at all must treat the missing field as `"complete"`, which is the one piece of backward compatibility this otherwise strict rule makes room for.
+**`resultType` 告知客户端如何解读后续数据。** 取值为 `"complete"` 意味着结果中包含了最终生成的业务内容，无需后续动作。取值为 `"input_required"` 则代表返回的是 `InputRequiredResult` 对象，这是多轮交互模式（Multi Round-Trip）下服务端在最终完成调用之前向客户端索取更多输入信息的数据结构；关于此重试交互机制，将在后续课程专门深入拆解。扩展模块还可以注册其他扩展枚举值（例如用于长耗时任务的 `"task"`），但前提是客户端必须预先声明了对等的能力支持。若客户端接收到无法识别的 `resultType`，必须将其直接判定为无效响应，而绝不能主观臆测其内部结构；唯一的向后兼容例外是：当客户端与不支持该特性的早期旧版服务端通信且响应完全缺少 `resultType` 时，客户端应默认将其作为 `"complete"` 处理。
 
-**`_meta` keeps protocol facts out of the application's own namespace.** A `_meta` key has two parts: an optional prefix, and a name. When present, the prefix is one or more dot-separated labels followed by a slash; each label starts with a letter, ends with a letter or a digit, and may use letters, digits, or hyphens in between. The name, when non-empty, starts and ends with an alphanumeric character and may use letters, digits, hyphens, underscores, and dots in between. A prefix is reserved for MCP's own use whenever its second label, not its first, is `modelcontextprotocol` or `mcp`. That single word, second, is where most exam traps live: `io.modelcontextprotocol/protocolVersion` and `dev.mcp/anything` are both reserved, because `modelcontextprotocol` and `mcp` sit in the second position. `com.example.mcp/scanId` is not reserved, because its second label is `example`; `mcp` only shows up third. A key such as `mcp.example/thing`, where `mcp` is the first label and nothing reserved sits second, is not reserved by this rule either. Implementations are encouraged to use reverse DNS notation for their own prefixes, such as `com.example/` rather than `example.com/`, precisely so a namespace collision is a choice, not an accident.
+**`_meta` 将协议元数据隔绝于应用命名空间之外。** 一个合法的 `_meta` 键名由两部分组成：可选的前缀（prefix）和名称（name）。当包含前缀时，前缀是由点号分隔的一个或多个标签后跟斜杠 `/` 组成；每个标签必须以英文字母开头，以字母或数字结尾，中间允许包含字母、数字或连字符。名称在非空时必须以字母数字开头和结尾，中间允许使用字母、数字、连字符、下划线和点号。对于 MCP 官方前缀而言，其核心保留规则是：当且仅当点号分隔的**第二级标签**（而不是第一级标签）为 `modelcontextprotocol` 或 `mcp` 时，该前缀被视为 MCP 协议的官方保留前缀。这正是考题极易命题的细节所在：`io.modelcontextprotocol/protocolVersion` 与 `dev.mcp/anything` 均属于官方保留前缀，因为 `modelcontextprotocol` 和 `mcp` 位于第二级位置；而 `com.example.mcp/scanId` 则不是保留前缀，因为其第二级标签是 `example`，`mcp` 仅出现在第三级；形如 `mcp.example/thing` 的键名同样不属于保留前缀，因为 `mcp` 位于第一级标签且第二级非保留字。官方强烈建议开发者为自定义扩展使用类似反向 DNS 的前缀命名（例如 `com.example/` 而非 `example.com/`），从而确保命名空间的隔离是主动规划的结果，而非意外冲突。
 
-**Every request states its own version and capabilities; every result may say who answered.** Three `_meta` keys under `io.modelcontextprotocol/` matter on every request: `protocolVersion` (a string, required), `clientCapabilities` (an object, required, and allowed to be empty), and `clientInfo` (an `Implementation` naming the client, not strictly required but expected on every request unless a client is deliberately configured to omit it). A fourth, `logLevel`, opts a single request into log notifications for the deprecated logging feature; a later lesson on deprecated client features covers it in full. A request missing either required field is malformed, and a conformant server must reject it with JSON-RPC error `-32602` and, on an HTTP transport, a `400 Bad Request` status. On the way back, a server should attach `io.modelcontextprotocol/serverInfo` to a result's `_meta` so the response names the implementation that produced it. Both `clientInfo` and `serverInfo` are self-reported by whichever side sends them and are never verified by the protocol; they exist for display, logging, and debugging, and a server or a gateway that lets either one influence an authorization or routing decision has confused a courtesy field for a credential.
+**每个请求声明自身版本与能力，每个结果可回显服务身份。** 位于 `io.modelcontextprotocol/` 命名空间下的三个请求级 `_meta` 键至关重要：`protocolVersion`（字符串，必需项）、`clientCapabilities`（对象，必需项，允许为空对象），以及 `clientInfo`（标注客户端身份信息的实现结构，虽非强校验项但除非客户端有意配置省略，否则预期始终携带）。第四个键 `logLevel` 允许单次请求针对已废弃的日志功能订阅日志通知。如果请求缺少上述任一必需项，即属畸形请求，合规服务端必须以 JSON-RPC 错误码 `-32602` 明确拒绝，在 HTTP 传输层则映射为 `400 Bad Request` 状态码。在回传方向上，服务端应当在响应结果的 `_meta` 中附带 `io.modelcontextprotocol/serverInfo`，以便明确回显产出该响应的服务端实现版本。需要明确的是，`clientInfo` 与 `serverInfo` 纯属双方自声明字段，底层协议从未对它们进行防篡改真实性验证；它们仅用于日志记录、界面展示与排查调试，若有网关或服务端将它们作为身份认证或权限路由的凭据，就犯了将客套自称错当安全凭据的严重架构错误。
 
-**A short list of other keys is reserved outright.** `progressToken`, carried without any prefix, opts a request into progress notifications. `io.modelcontextprotocol/subscriptionId` appears on every notification delivered over a `subscriptions/listen` stream so the client can tell which subscription produced it, a mechanic a later lesson on notifications and subscriptions builds out fully. The keys `traceparent`, `tracestate`, and `baggage` are the one deliberate exception to the prefix rule: OpenTelemetry's own trace-context convention expects those exact bare names, so MCP reserves them without a namespace prefix rather than break interoperability with existing tracing tooling, a choice documented in SEP-414.
+**无前缀的少量特殊保留键。** 不带任何前缀的 `progressToken` 允许请求开启进度通知监听。`io.modelcontextprotocol/subscriptionId` 则会出现在通过 `subscriptions/listen` 数据流派发的每条通知中，供客户端区分当前事件属于哪个订阅。`traceparent`、`tracestate` 与 `baggage` 则是前缀规则中唯一刻意保留的免命名空间例外：因为 W3C 与 OpenTelemetry 规范约定了这三个无前缀的标准名称，MCP 在 SEP-414 中决定对它们予以直接保留，避免破坏现有分布式链路追踪生态的开箱即用兼容性。
 
-**No message ever travels with company.** JSON-RPC batching was removed from MCP in the 2025-06-18 revision and has not returned. On Streamable HTTP, one POST body carries exactly one request or one notification; on stdio, one newline-delimited line carries exactly one message. If a client has three requests ready to go, it sends three POST bodies, not one array of three.
+**消息绝不结伴成批传输。** JSON-RPC 批处理调用早在 2025-06-18 的修订版中就已被正式彻底移除，至今从未回归。在可流式传输 HTTP（Streamable HTTP）中，一个 POST 请求体只能承载一条请求或一条通知；在 stdio 传输中，一行换行符分隔的文本只能承载一条独立消息。如果客户端准备好发起三个并发请求，它必须发送三个独立的 HTTP POST 请求体，绝不能合并为一个包含三项的 JSON 数组。
 
 ```figure
 mcpa-03-envelope
@@ -65,31 +65,31 @@ mcpa-03-envelope
 
 ## Interactive Lab
 
-The figure's top row lines up the four shapes side by side with the field each one lives or dies by: a request's non-null id, a notification's complete absence of one, a result's resultType, an error's code and message. The bottom half zooms into a single `_meta` key twice, splitting each one at the slash into its labels and its name. `io.modelcontextprotocol/protocolVersion` highlights its second label, `modelcontextprotocol`, to show why it is reserved. `com.example.mcp/scanId` highlights its second label too, but that label is `example`, so nothing is reserved even though `mcp` does appear later in the string. Read the two highlighted rows side by side and the trap explains itself: position, not presence, decides whether a prefix belongs to MCP.
+上方图表顶层并排对比了四种消息形态的判定核心：请求必须具备非空的 id、通知必须彻底没有 id、成功结果必须包含 resultType、错误响应必须具备 code 和 message。图表下半部分对 `_meta` 键名进行了两次深度剖析，将斜杠两边的标签与名称拆解展示。`io.modelcontextprotocol/protocolVersion` 高亮了第二级标签 `modelcontextprotocol`，清晰说明了其为何属于官方保留空间；而 `com.example.mcp/scanId` 同样高亮了其第二级标签，但由于该标签是 `example`，因此尽管字符串后部出现了 `mcp`，它依然属于自由使用的非保留前缀。并排对照两行高亮显示，规则一目了然：决定前缀是否为官方保留的关键在于位置，而不仅仅在于单词是否出现。
 
 ## Practice Lab
 
-Open `code/main.py`. It has no network calls and no SDK, just the message shapes this lesson teaches. `classify_message` looks at a raw dict and returns `"request"`, `"notification"`, `"result"`, `"error"`, or `"invalid"`, using exactly the id rule described above: a `method` with no `id` is a notification, a `method` with a well-formed id is a request, and a `method` with a `null` id is neither, so it comes back invalid. `meta_key_status` takes a key string and returns `"reserved"`, `"free"`, or `"invalid"`, applying the prefix grammar and the second-label rule to decide.
+打开 `code/main.py`。该脚本没有网络通信，也不依赖任何外部 SDK，纯粹聚焦于本课传授的消息形态逻辑。`classify_message` 接收原始字典并返回 `"request"`、`"notification"`、`"result"`、`"error"` 或 `"invalid"`，其判定严格遵循上述 id 规则：有 method 且无 id 归为通知，有 method 且 id 合法归为请求，有 method 但 id 为 null 则属于非法消息；`meta_key_status` 接收键名字符串并依据前缀语法及第二级标签规则，准确返回 `"reserved"`、`"free"` 或 `"invalid"`：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed classification list against the concept section first, then watch `run_scenario` play out a short exchange: a well-formed `tools/call` request answered with a complete result, a `notifications/progress` notification that gets no reply, and three deliberate mistakes the wire checker treats as violations rather than as real traffic, each labeled with the reason it is wrong. One is a notification carrying an id it should never have. One is a request whose id is `null`. One is a request whose `_meta` is missing entirely; that one is followed by the real `-32602` error a conformant server sends back, produced by the same `handle_request` function the well-formed call used. Change the missing field to `clientCapabilities` instead of `protocolVersion` and rerun to see the error message name the other key.
+首先对照核心概念研读控制台打印出的分类清单，随后观察 `run_scenario` 运行的一组消息交互演示：包含一个得到完整结果回复的合法 `tools/call` 请求、一个未产生任何回应的 `notifications/progress` 进度通知，以及被通信校验器视为违规流量的三个故意构造的错误示例（分别附带违规原因说明）。这三个错误包括：携带了不该出现的 id 的通知、id 为 null 的畸形请求，以及完全缺失 `_meta` 的请求；随后代码展示了合规服务端遇到此类情况时，通过相同的 `handle_request` 逻辑所真实生成的 `-32602` 错误响应。尝试将请求中缺失的字段从 `protocolVersion` 改为 `clientCapabilities` 并重新运行，观察报错信息如何精准指出另一个缺失的元数据键名。
 
 ## Shipped Artifact
 
-`outputs/message-shapes-reference.md` is a one-page reference for the four message shapes, the resultType values, the `_meta` grammar with the second-label test spelled out, and the full reserved-key table, each row citing the brief. Keep it open while reading raw MCP traffic; it answers "is this shape valid" and "is this key mine to use" faster than paging back through the specification.
+`outputs/message-shapes-reference.md` 是本课交付的单页消息结构参考速查文档：收录了四种基础消息形态定义、resultType 枚举取值、包含第二级标签校验准则的 `_meta` 语法规范，以及完整的保留键名速查清单（附带对应简报章节索引）。在审查原始 MCP 通信流量时建议常备此表，它能帮助你迅速判定特定消息结构是否合法、某个元数据键名是否可供业务自由使用。
 
 ## Verify It
 
-Run the tests from the lesson directory:
+在课程目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: all four shapes classify correctly, a null request id and an id-bearing notification are both rejected, a result without resultType is flagged, `io.modelcontextprotocol/protocolVersion` and `dev.mcp/anything` come back reserved while `com.example.mcp/anything` comes back free, the four bare reserved keys are recognized, a malformed key name is invalid, a request missing `protocolVersion` or missing `clientCapabilities` each comes back as `-32602`, a well-formed request completes normally, and every unwrapped result in the transcript carries a resultType. The repository's wire checker validates the same transcript against the full set of 2026-07-28 rules, including how the three deliberate violations are wrapped:
+这些测试验证了本课的核心技术规则：所有四种消息形态分类准确无误；null 的请求 id 与携带 id 的通知均被严格判定为非法；缺少 resultType 的结果对象被正确标记违规；`io.modelcontextprotocol/protocolVersion` 与 `dev.mcp/anything` 被判定为保留键，而 `com.example.mcp/anything` 被判定为自由键；四个无前缀的特殊保留键被准确识别；畸形键名判定为无效；请求缺失 `protocolVersion` 或缺失 `clientCapabilities` 均触发 `-32602` 协议错误；结构完备的合法请求能平稳完成；且通信记录中的每个解包结果均合规包含 resultType。仓库自带的通信校验器同样对测试通信记录执行严苛的 2026-07-28 规则审查（包括检验三个故意注入的违规示例是如何被包装记录的）：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/03-json-rpc-and-meta
@@ -97,26 +97,26 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/03-json-rpc-and-m
 
 ## Capstone Connection
 
-Lesson 04 builds statelessness directly on top of the envelope this lesson defines: a server can only treat every request as self-contained because every request already carries its own version and capabilities in `_meta`, with nothing left over to infer from the connection. Lesson 18's error taxonomy assumes you already know that `-32602` is the code a malformed `_meta` produces and that an error response's `data` field is optional. The capstone's end-to-end exchange opens with a request built exactly like the one in this lesson's practice lab, `_meta` and all, and nothing later in the route works if that first envelope is wrong.
+后续第 04 课直接在本文讲授的消息信封之上构建其“无状态（Stateless）”设计：服务端之所以能够将每个到达的请求视为自包含单元，正是因为每个请求都已在自身的 `_meta` 中注入了协议版本与能力声明，无需再从底层物理连接中获取推断信息。第 18 课的错误处理分类体系同样建立在此基础之上，要求熟记 `-32602` 是畸形元数据引发的错误码，且错误响应中的 `data` 属于可选拓展。在 Capstone 最终项目的端到端通信中，首条交互消息正是按照本课实验所示的标准信封规范（包含完备的 `_meta` 结构）构建的，信封构造稍有不慎，后续整条调用链都会直接崩溃。
 
 ## Key Terms
 
-| Term | Meaning |
-|------|---------|
-| Request | A message with `id`, `method`, and optional `params`; expects exactly one reply |
-| Notification | A message with `method` and optional `params`, never an `id`; gets no reply |
-| Result response | A reply that echoes the request id and carries a `result` object with resultType |
-| Error response | A reply that carries an `error` object with an integer `code` and a string `message` |
-| resultType | The field naming what kind of result this is: complete, input_required, or an extension value |
-| `_meta` | The property carrying protocol-level metadata, keyed by an optional dotted prefix plus a name |
-| Reserved prefix | A `_meta` prefix whose second dot-separated label is `modelcontextprotocol` or `mcp` |
-| protocolVersion | The required `_meta` field naming the protocol version a request speaks |
-| clientCapabilities | The required `_meta` field naming the capabilities relevant to one request |
-| Self-reported field | clientInfo and serverInfo: sender-supplied identity, never verified, never a security signal |
+| 术语 | 定义 |
+|------|------|
+| Request (请求) | 包含 `id`、`method` 及可选 `params` 的消息，预期恰好获得一次响应 |
+| Notification (通知) | 包含 `method` 及可选 `params` 但坚决不含 `id` 的单向消息，绝不获取响应 |
+| Result response (结果响应) | 回显请求 id 并携带包含 resultType 的 `result` 对象的业务成功响应 |
+| Error response (错误响应) | 携带包含整数 `code` 和字符串 `message` 的 `error` 对象的协议失败响应 |
+| resultType | 指明当前结果完成阶段的字段：支持 complete、input_required 或扩展值 |
+| `_meta` | 承载协议级元数据的属性，由可选的点分前缀和名称组合作为键名 |
+| Reserved prefix (保留前缀) | 点分第二级标签为 `modelcontextprotocol` 或 `mcp` 的官方保留前缀 |
+| protocolVersion | 位于 `_meta` 中的必需字段，明确声明单次请求所遵循的协议版本 |
+| clientCapabilities | 位于 `_meta` 中的必需字段，声明与当前单次请求直接相关的客户端能力 |
+| 自声明字段 (Self-reported) | clientInfo 与 serverInfo：由发送方自行填写的标识，未经验证，绝不可充当安全凭证 |
 
 ## Further Reading
 
-- [MCP specification 2026-07-28, Base Protocol](https://modelcontextprotocol.io/specification/2026-07-28/basic), especially Messages and the `_meta` general field
-- [SEP-414, OpenTelemetry trace context in `_meta`](https://modelcontextprotocol.io/seps/414-request-meta)
-- [TypeScript schema, source of truth for every message shape](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/schema/2026-07-28/schema.ts)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 2 and 3
+- [MCP 规范 2026-07-28：基础协议](https://modelcontextprotocol.io/specification/2026-07-28/basic)，重点研读 Messages 与 `_meta` 通用字段
+- [SEP-414：在 `_meta` 中引入 OpenTelemetry 链路追踪上下文](https://modelcontextprotocol.io/seps/414-request-meta)
+- [TypeScript Schema：所有消息形态与数据类型的唯一真理来源](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/schema/2026-07-28/schema.ts)
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md` 第 2 节与第 3 节

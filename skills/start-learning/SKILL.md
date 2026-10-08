@@ -143,7 +143,7 @@ Create `LEARNING.md` in the current directory with exactly these sections:
 ```markdown
 # My AI Engineering Path
 <!-- Managed by the ai-engineering-from-scratch learning skills.
-     Repo: https://github.com/rohitg00/ai-engineering-from-scratch -->
+     Repo: https://github.com/cluster1900/ai-engineering-from-scratch-zh -->
 
 ## Mission
 <their answer to question 1, in their words, plus the build goal from question 3>
@@ -160,7 +160,7 @@ Create `LEARNING.md` in the current directory with exactly these sections:
 <all 20 phases; Status is Skip, Review, Do, or Done from the placement
 result. Hours come from ROADMAP.md: read it locally if the repo is cloned,
 otherwise fetch
-https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/ROADMAP.md>
+https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/ROADMAP.md>
 
 ## Progress log
 | Date | Lesson | Quiz | Note |

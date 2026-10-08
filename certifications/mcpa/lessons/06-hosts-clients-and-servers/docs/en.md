@@ -1,39 +1,39 @@
-# Hosts, Clients, and Servers: MCP's Process Topology
+# 宿主、客户端与服务端：MCP 的进程拓扑架构
 
-> A host never talks to a server directly, only through one client per server. That single binding is where MCP draws its trust boundaries, and where a host aggregating many servers has to start resolving name collisions.
+> 宿主（Host）从不与服务端直接对话，而是为每个服务端维护一个专职的客户端（Client）。这一对一绑定构成了 MCP 划分信任边界的基石，也是聚合多服务端的宿主解决名称冲突的起点。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 05
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Name the three participants of an MCP system, host, client, and server, and state what each one is responsible for
-- Explain why a host embeds exactly one client per server connection instead of one client juggling several
-- Tell a local stdio server from a remote Streamable HTTP server and explain which boundary each one's trust actually follows
-- Match each server primitive, tools, resources, prompts, and completion, and each client feature to who controls it or who supplies it
-- Aggregate the tools of several connected servers into one registry, resolve a name collision with a server-id prefix, and explain why a server's self-reported serverInfo.name is never the key to route on
+- 准确说出 MCP 系统的三大参与者（Host 宿主、Client 客户端与 Server 服务端），并陈述各自的核心职责
+- 深入解释为何宿主必须为每个服务端连接分别嵌入一个独立的客户端实例，而不是用单个客户端同时调度多个服务端
+- 严格区分本地 stdio 服务端与远程 Streamable HTTP 服务端，并说明各自所遵循的信任边界形态
+- 将服务端各项原语（工具、资源、提示词模板、补全）与客户端特性（Elicitation 交互索取、Sampling 采样、Roots 根路径）与其对应的控制方与提供方进行准确映射
+- 掌握将多个已连接服务端的工具聚合至单一注册表的工作机制，运用服务端 ID 前缀解决命名冲突，并解释为何服务端自声明的 `serverInfo.name` 绝不能充当路由键
 
-## The Problem
+## 问题背景
 
-Picture an assistant wired into three systems at once: a files server, a notes server, and a metrics service. Every one of those connections carries the same stateless request shape you already know from the stateless core and the era-negotiation work in the lessons before this one: each request stamps its own protocol version and capabilities, and no connection remembers anything between calls. What those earlier lessons did not answer is a different question: when a host is talking to three servers at once, who is talking to whom, and what happens when two of those servers describe themselves the same way or expose a tool with the same name.
+设想一个 AI 助手同时连接了三个外部系统：本地文件服务端、个人笔记服务端以及性能指标监控服务。这三条连接上的消息传输，全部遵循我们在前序课程中探讨过的无状态请求规范：每个请求自带协议版本与能力声明，连接在两次调用之间不保留任何持久状态。然而，之前的课程尚未解答一个关键的拓扑架构问题：当宿主同时面对三个服务端时，通信的交互主体究竟是谁？如果其中两个服务端拥有相同的功能描述，或者暴露了同名的工具，系统应当如何协调？
 
-A naive design flattens all three servers into one busy connection object that keeps track of which server sent what. That design has no clean place to say which server a result came from, no way to stop one server's declared capabilities from leaking into a call meant for another, and no way to tell two servers apart once you notice that both of them happen to call themselves "primary" in their own self-description. None of that is a corner case. Any host that connects to more than one MCP server has to solve it, and the specification's architecture solves it structurally rather than through discipline: fixed roles, one connection per pairing, and a naming rule for what happens when two independently written servers do not know about each other.
+一种粗糙幼稚的设计是把这三个服务端的通信全部揉进同一个全局连接对象中，由该对象内部记录哪条消息来自哪个服务端。这种设计存在严重的架构缺陷：无法清晰界定返回的结果究竟源自何处；无法阻止某一服务端声明的能力泄露并污染本应发给另一服务端的调用；更无法区分两个碰巧都在自描述信息中自称 "primary" 的服务端。这些绝非罕见的边缘情况，任何接入多个 MCP 服务端的宿主应用都必须直面这些挑战。协议规范从底层架构层面给出了结构化解决方案，而非依赖松散的约定：固定的角色分工、每对连接独立实例化，以及针对互不知晓的独立服务端制定冲突重命名准则。
 
-## The Concept
+## 核心概念
 
-Three participants make up an MCP system, and each one has a narrow job. The **host** is the single application process the user is actually running: a chat assistant, an IDE, a batch pipeline. The host creates clients, controls which connections are allowed to exist, enforces consent before a tool runs, and aggregates whatever context its connected servers hand back. The host is the only party in the system that ever sees the full picture across every connected server.
+MCP 系统由三大核心角色组成，各自承担着狭义且明确的职责。**Host（宿主）** 是终端用户直接运行的唯一应用程序主进程：例如聊天助手、代码 IDE 或自动化批处理流水线。宿主负责实例化客户端、掌控允许建立哪些连接、在工具执行前强制执行用户授权（Consent），并将各个已连接服务端回传的上下文数据聚合为一个统一的整体。宿主是全系统中唯一能够俯瞰所有已连接服务端全貌的全局掌控者。
 
-A **client** is an object the host creates, and every client is scoped to exactly one server for the life of that connection. This is not a suggestion; it is how the architecture keeps servers from bleeding into each other. If the host needs a second server, it does not reuse the first client's connection, it creates a second client. A host with three active servers is a host with three client objects, each one wired to its own server, each one stamping the same per-request protocol version and capabilities you saw in the stateless core, and each one kept from ever seeing what the other two clients are doing. A client's other job is bookkeeping that never leaks into the wire: correlating request ids, tracking a server's declared capabilities, and knowing which server it is allowed to ask for a tool call.
+**Client（客户端）** 是由宿主创建的对象实例，且在连接的整个生命周期中，每个客户端必须严格且唯一地绑定到一个特定的服务端。这绝非随意的编码建议，而是架构用来防止不同服务端上下文相互串扰的硬隔离手段。如果宿主需要连接第二个服务端，它绝不能复用第一个客户端的既有连接，而必须新建第二个客户端实例。拥有三个活跃服务端的宿主，在内存中必然维护着三个独立的客户端对象，每个对象各自连接专属的服务端，各自在每个请求中打上独立的协议版本与能力集，且彼此之间绝对无法窥探对方的通信动作。客户端在宿主内部还承担着不会泄露到网络线缆中的内部审计职责：配对请求与响应 ID、追踪服务端声明的能力范围，以及确认自己有权向哪个服务端发起工具调用。
 
-A **server** is a separate program, and it can be **local** or **remote**. A local server is typically launched as a subprocess and reached over stdio, newline-delimited JSON-RPC with no header layer, so the whole message lives in `_meta`. A remote server is typically a long-running service reached over Streamable HTTP, one POST per message, with the protocol version repeated in a required header alongside the version already present in `_meta`. Trust follows whichever boundary a given server actually crosses. A local stdio server crosses a process boundary: it usually runs under the same user, reads credentials straight from the environment, and the specification says stdio implementations should not run an OAuth flow at all. A remote Streamable HTTP server crosses a network boundary: it is commonly operated by a different team or a different company, and it is the transport the authorization framework is built for, bearer tokens, protected resource metadata, audience validation. Neither boundary is stronger by default; they are just different boundaries, and a host should reason about each connected server against the boundary it actually crosses rather than treating "server" as one undifferentiated category.
+**Server（服务端）** 是独立运行的外部程序，在物理部署上可分为**本地（Local）**与**远程（Remote）**两种形态。本地服务端通常作为操作系统的子进程被拉起，通过标准输入输出（stdio）管道与客户端通信，采用换行符分隔的 JSON-RPC 消息，不存在 HTTP 头部协议层，因此整条消息的元数据全部封装在 `_meta` 中。远程服务端通常是作为常驻微服务运行并通过可流式传输 HTTP（Streamable HTTP）暴露，每个 POST 请求体承载一条消息，且协议版本除了在 `_meta` 中标注外，还会强制重复声明在 HTTP 请求头中。安全信任遵循各服务端实际跨越的物理边界：本地 stdio 服务端跨越的是操作系统进程边界，它通常运行在与宿主相同的用户权限下，直接从环境变量中读取凭据，规范明确指出 stdio 实现通常不需要执行复杂的 OAuth 流程；远程 Streamable HTTP 服务端跨越的是网络边界，往往由不同团队乃至第三方公司独立运维，它正是 Bearer 访问令牌、受保护资源元数据以及受众校验（Audience Validation）等授权机制的核心应用场景。这两种边界不存在谁更安全的绝对高下之分，它们只是不同的物理安全域，宿主必须针对各个服务端实际跨越的边界因地制宜地进行安全建模，而绝不能将“服务端”笼统视为均质的单一抽象。
 
-The specification also states a design principle worth holding onto here: servers should not be able to read the whole conversation, and should not be able to see into each other. Every request a client sends carries only what that one request needs, never the host's full history, and the isolation between two connected servers is not a courtesy, it is enforced by the fact that they are different processes talking to different client objects that never compare notes.
+规范在此处还明确确立了一条至关重要的安全设计原则：服务端绝不能拥有阅读完整对话历史的权限，各服务端之间更绝不能相互窥探。客户端发送的每个请求仅携带完成该单次任务所需的最小必要数据，绝不能打包发送宿主的全局历史上下文；不同服务端之间的这种强隔离性，正是通过它们作为完全独立的操作系统进程与彼此互不串通的独立客户端对象进行通信而得到物理保障的。
 
-Server primitives split by who is in control. **Tools** are model-controlled: the model decides when to call one, based on its name, description, and input schema. **Resources** are application-driven: the host decides which ones to fetch and place into context, and the resource itself is just a URI plus content. **Prompts** are user-controlled: a person explicitly picks a template rather than having the model reach for one on its own. A fourth server feature, **completion**, gives argument autocomplete for a prompt or resource template and follows the application, since it is the host deciding what to suggest as a user types. Client features run the other direction, a server asking the client for something. **Elicitation** lets a server request information from the user mid-call, delivered as an `input_required` result the client answers by retrying with `inputResponses`, and it is fully active in this revision. **Sampling** and **roots** are both deprecated as of 2026-07-28: sampling let a server ask the client to run a model completion on its behalf, and new servers should call an LLM provider's API directly instead; roots let a client advertise filesystem boundaries, and new servers should take a directory as a tool argument, a resource URI, or server configuration instead. Deprecated does not mean removed. Both still work, and the earliest either can be removed is a revision released on or after 2027-07-28.
+服务端原语按照谁掌握控制权进行清晰界定：**Tools（工具）** 由模型控制，模型依据工具名称、描述及参数 Schema 自主决策何时发起调用；**Resources（资源）** 由应用程序驱动，宿主自主裁定何时拉取资源并将其注入上下文，资源本身仅仅是 URI 及其指向的实体内容；**Prompts（提示词模板）** 由用户控制，由人类终端用户显式挑选模板，而非由模型自发触发；第四项服务端特性 **Completion（补全）** 为提示词或资源模板提供参数自动补全，其控制权同样跟随应用程序，因为是宿主在用户输入时负责呈现补全建议。客户端特性则沿反方向运作，即服务端向客户端发起索取：**Elicitation（交互索取）** 允许服务端在工具调用执行中途向上层索取所需数据，通过回传 `input_required` 结果并由客户端附带 `inputResponses` 发起重试来实现，该特性在现代规范中处于完全活跃状态；**Sampling（采样）** 与 **Roots（根路径）** 则在 2026-07-28 规范中被正式标记为废弃（Deprecated）：采样过去允许服务端委托客户端调用大模型生成文本，现代服务端应直接调用大模型服务商的 API；根路径过去允许客户端向服务端公开文件系统边界，现代服务端应直接通过工具参数、资源 URI 或服务启动配置来显式接收目录边界。请牢记废弃不等于移除，两者至今依然功能完好，且最早的法定移除窗口不会早于 2027-07-28 之后发布的版本。
 
-Put several servers behind one host and a real design problem shows up: aggregation. Tool names only have to be unique within one server. Two servers that have never heard of each other can both expose a tool named `search`, and both can self-report the same `serverInfo.name` in their `server/discover` result, because that field is whatever the server operator chose to put there. A host that keys its aggregated registry on the self-reported name, or that lets the second `search` silently overwrite the first, has built something that routes a model's tool call to the wrong server without anyone noticing. The fix has two parts. First, key every entry in the registry, and every routing decision, on the connection identifier the host itself assigned when it connected, a config key, a slot index, anything under the host's own control, never on `serverInfo.name`. Second, when two servers declare the same tool name, keep the first one's name as the plain, canonical entry and expose the later collision under a server-id prefix, so both tools stay reachable under distinct names. The server that owns a tool still enforces its own errors regardless of how the host aggregated it: an unknown tool is still `-32602`, and a bad argument still comes back as a tool execution error, exactly as you saw before aggregation entered the picture.
+当单个宿主接入多个服务端时，必然会引出一个核心工程问题：工具聚合（Aggregation）。工具名称只需保证在单个服务端内部唯一即可。两个彼此毫不相识的独立服务端完全可以同时提供一个名为 `search` 的工具，甚至它们在 `server/discover` 响应中自声明的 `serverInfo.name` 都可能恰好都是 "primary"，因为该字段纯粹是由服务端的编写者自由填写的。如果宿主简单地使用自声明名称作为聚合注册表的索引，或者允许第二个同名的 `search` 工具直接静默覆盖第一个，系统就会在无人察觉的情况下把模型的工具调用路由至完全错误的服务端。合规的解决方案由两部分组成：第一，聚合注册表中的每一个条目以及所有的底层路由决策，必须完全基于宿主在建立连接时自身分配的内部连接标识符（例如配置文件中的 key、卡槽索引等完全由宿主掌控的标识），绝对不能以 `serverInfo.name` 作为路由依据；第二，当出现两个同名工具冲突时，保持最先注册的工具名称作为原生规范名称，而将后续冲突的同名工具添加服务端 ID 前缀（例如 `notes/search`）暴露给上层，从而确保两个工具均可通过互不相同的名称被调用。拥有该工具的服务端在收到调用时，依然会严格执行自己的校验逻辑：调用不存在的工具依然返回 `-32602`，参数不合法依然返回带有 `isError: true` 的工具执行错误，这与未聚合前的行为完全一致。
 
 ```figure
 mcpa-06-topology
@@ -41,33 +41,33 @@ mcpa-06-topology
 
 ## Interactive Lab
 
-The figure shows one host process with three client boxes inside it, each one connected to its own server box on the right. Files and notes are drawn as local, stdio-transport servers, and both self-report the same `serverInfo.name`, "primary", on purpose. Metrics is drawn as a remote, Streamable HTTP server whose only declared capability is resources, not tools. Read the bottom of the figure: the registry keeps `search` pointed at files because files declared it first, and exposes the colliding `search` from notes as `notes/search`. Notice what never appears anywhere in that registry: the self-reported name "primary" that files and notes share. The host never asked either server what to call itself before deciding how to route.
+上方架构图展示了一个宿主主进程内部容纳了三个独立的客户端方框，每个客户端分别连接右侧的一个独立服务端。`files` 与 `notes` 被绘制为通过 stdio 传输的本地服务端，且它们在实验中特意均自声明其 `serverInfo.name` 为 "primary"；`metrics` 被绘制为通过 Streamable HTTP 传输的远程服务端，其唯一声明的能力是资源，不提供工具。仔细观察图表底部的注册表视图：注册表将原生名称 `search` 保留指向 `files`，因为它是先声明的；而将来自 `notes` 的冲突工具重命名为 `notes/search`。同时请注意注册表中彻底缺失了什么：两个服务端自称的 "primary" 标识从未出现在路由表的任何角落，宿主在决定如何路由流量时，根本无需采纳服务端自己对自己的称呼。
 
 ## Practice Lab
 
-Open `code/main.py`. It builds three servers with the standard library only, no network and no SDK, but the message shapes follow the 2026-07-28 schema exactly. `build_host()` connects a `Host` to `files`, `notes`, and `metrics` with three separate `Client` objects, one per server, then calls `build_registry()` to aggregate their tools.
+打开 `code/main.py`。该脚本完全使用标准库构建了三个服务端（不引入任何网络调用或外部 SDK），但通信消息结构完全严格匹配 2026-07-28 规范。代码中的 `build_host()` 函数将一个 `Host` 实例通过三个完全独立的 `Client` 对象分别连接到 `files`、`notes` 和 `metrics`，随后调用 `build_registry()` 完成跨服务端的工具聚合：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed output against the concept section above. The first block shows each connection's host-assigned id next to the server's self-reported name: files and notes both report "primary", proving the point that self-reported identity is not a safe key. The second block shows the aggregated registry: `search` maps to files, `notes/search` maps to notes, and nothing in the registry points at metrics, because metrics never declared a `tools` capability and the host never even sent it a `tools/list` request. The per-client exchanges that follow show every request's `_meta` block and every result's `resultType`, plus the last two entries: a routed call with a missing argument coming back as `isError: true`, and a direct call naming a tool the notes server does not have, coming back as JSON-RPC error `-32602`, both exactly as the two-error-channel rule from earlier lessons predicts.
+对照核心概念研读控制台打印出的交互流程。首个输出块对比展示了每个连接由宿主分配的确定性 ID 与服务端自声明的名称：可以看到 `files` 与 `notes` 的自声明名称均为 "primary"，直观印证了自声明名称不可作为安全路由键的论点。第二个输出块展示了聚合后的工具注册表：原生 `search` 精准映射到 `files`，而 `notes/search` 精准映射到 `notes`；整个注册表完全没有关于 `metrics` 的工具条目，因为 `metrics` 从未声明 `tools` 能力，宿主甚至根本不会向其发送 `tools/list` 探测请求。随后的客户端通信记录呈现了每个请求携带的 `_meta` 块与响应的 `resultType`，并在最后演示了两个典型场景：通过路由分发但缺失参数的调用返回带有 `isError: true` 的常规业务结果；而直接调用 `notes` 服务端未拥有的工具则返回标准的 JSON-RPC 协议错误 `-32602`。
 
-Then change something and rerun. Add a fourth server whose `serverInfo.name` also collides with "primary" but whose host-assigned id is new, and confirm the registry still routes correctly by id. Or add a second colliding tool name between files and notes and confirm the prefix rule applies again without touching `Host.route`.
+你可以尝试修改代码：接入第四个自声明名称同样为 "primary" 但宿主分配了新 ID 的服务端，验证注册表如何基于宿主 ID 稳定路由；或者在 `files` 与 `notes` 之间制造第二个冲突的工具名称，观察前缀规则如何自动生效而无需修改底层路由转发逻辑。
 
 ## Shipped Artifact
 
-`outputs/architecture-roles-map.md` is a one-page reference: the three roles and what each is responsible for, a local-versus-remote comparison table, a server-features-versus-client-features table with who controls each one, and a six-step aggregation checklist ending in the rule that a receiving server still enforces its own errors no matter how the host aggregated the call. Keep it next to the stateless-core and protocol-eras references; together they cover how a request is built and how a host finds the right place to send it.
+`outputs/architecture-roles-map.md` 是本课交付的单页架构角色参考手册：系统梳理了三大角色的核心职责分工、本地与远程服务端的详细对比表、服务端特性与客户端特性的控制权归属矩阵，以及包含严格路由隔离在内的六步工具聚合检查清单。建议将其与无状态核心及协议时代参考资料配合查阅，它们共同构成了请求组装与多服务端精准路由的完整知识体系。
 
 ## Verify It
 
-Run the tests from the lesson directory:
+在课程目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: that each client stays bound to exactly one server object, that discovery runs independently per server so files, notes, and metrics each get their own capabilities, that a colliding tool name is disambiguated by a server-id prefix, that routing by canonical and prefixed name reaches the correct server, that the host never lists tools from a server that did not declare a tools capability, that two servers sharing one self-reported name still route independently, that an unknown tool on a specific server is still a protocol error, that a routed call with a missing argument is still a tool execution error, and that rebuilding the registry twice produces the same result. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+这些测试验证了本课的所有技术论断：每个客户端实例严格绑定到一个特定的服务端对象；每个服务端独立执行能力发现（使得 files、notes 与 metrics 各自拥有正确的专属能力集）；冲突的工具名称通过服务端 ID 前缀消除歧义；通过原始名称与带前缀名称均能正确路由到目标服务端；宿主绝不向未声明 tools 能力的服务端请求工具列表；共享相同自声明名称的两个服务端能够被宿主独立路由；特定服务端上的未知工具调用依然触发协议错误；参数缺失的聚合调用依然触发工具执行错误；以及多次重复构建聚合注册表得到完全确定且一致的结果。通信校验器同样审查测试通信记录是否符合 2026-07-28 规范：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/06-hosts-clients-and-servers
@@ -75,27 +75,27 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/06-hosts-clients-
 
 ## Capstone Connection
 
-The capstone asks you to describe a working MCP deployment end to end, and one of the first questions a reviewer asks is how many servers the host actually reaches and how a model-selected tool call ends up at the right one. Answer with this lesson's vocabulary: name each host-assigned connection id, name the server it is bound to, say whether that server is local or remote and which boundary its trust follows, and point at the registry entry that resolves any name collision. A capstone answer that reaches for a server's self-reported name to justify a routing decision has not learned this lesson yet.
+在第 33 课的 Capstone 综合大实验中，要求完整设计并描述一套端到端运行的真实 MCP 生产拓扑。评审人员的核心提问往往围绕：宿主实际连接了多少个服务端？模型发起的某次工具调用如何被精准路由至对应的目标节点？在回答此类问题时，你必须运用本课讲授的规范术语：列出宿主为连接分配的专属 ID、说明客户端与服务端的强绑定关系、剖析该服务端是本地还是远程及其遵循的信任边界形态，并指出聚合注册表是如何消除潜在名称冲突的。如果在方案答辩中试图依赖服务端自声明的 `serverInfo.name` 来解释路由决策，就表明尚未真正掌握本课传授的拓扑原则。
 
 ## Key Terms
 
-| Term | Meaning |
-|------|---------|
-| Host | The single application process the user runs; it creates and manages clients |
-| Client | An object the host creates that is bound to exactly one server for the life of a connection |
-| Server | A separate program, local (stdio) or remote (Streamable HTTP), that exposes tools, resources, and prompts |
-| Local server | A subprocess reached over stdio; trust follows the process boundary |
-| Remote server | A service reached over Streamable HTTP; trust follows the network boundary |
-| Control model | Tools are model-controlled, resources are application-driven, prompts are user-controlled |
-| Elicitation | A client feature that lets a server request input from the user through an MRTR round trip |
-| serverInfo.name | A server's self-reported identity, for display and logging only, never a routing key |
-| Server-id prefix | The disambiguation a host applies to a colliding tool name, such as `notes/search` |
+| 术语 | 定义 |
+|------|------|
+| Host (宿主) | 用户直接操作的单一应用主进程，负责创建和管控所有客户端并统揽全局上下文 |
+| Client (客户端) | 由宿主实例化的对象，在单条连接生命周期内严格且唯一地绑定到一个服务端 |
+| Server (服务端) | 独立运行的程序，分为本地 (stdio) 与远程 (Streamable HTTP)，暴露工具、资源与模板 |
+| 本地服务端 (Local server) | 通过 stdio 管道交互的子进程，信任边界遵循操作系统进程隔离 |
+| 远程服务端 (Remote server) | 通过 Streamable HTTP 交互的网络服务，信任边界遵循跨网络鉴权体系 |
+| 控制权模型 (Control model) | 工具由模型控制、资源由应用驱动、提示词模板由终端用户控制 |
+| Elicitation (交互索取) | 允许服务端在多轮请求调用中途向客户端索取用户输入的现代客户端特性 |
+| serverInfo.name | 服务端自声明的身份字符串，仅用于日志与界面展示，绝不可作为路由凭据 |
+| 服务端 ID 前缀 (Server-id prefix) | 宿主在聚合注册表中用于消除同名工具冲突的命名空间前缀，如 `notes/search` |
 
 ## Further Reading
 
-- [MCP architecture specification](https://modelcontextprotocol.io/specification/2026-07-28/architecture), for the normative host, client, and server roles and the design principles behind them
-- [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture), for the participants, transports, and a worked discovery example
-- [Understanding MCP servers](https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts), for the server-feature control model and multi-server examples
-- [Understanding MCP clients](https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts), for elicitation and the deprecated sampling and roots features
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 4, 6, and 10
-- `phases/13-tools-and-protocols/08-building-an-mcp-client`, for a from-scratch client that merges and routes tools across several peers
+- [MCP 架构规范](https://modelcontextprotocol.io/specification/2026-07-28/architecture)，详细阐述 Host、Client 与 Server 的规范职责及其背后的核心设计理念
+- [MCP 架构概览指南](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture)，涵盖系统参与者、传输模式及发现交互示例
+- [深入理解 MCP 服务端](https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts)，涵盖服务端特性的控制模型与多服务端实战
+- [深入理解 MCP 客户端](https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts)，涵盖交互索取（Elicitation）与已废弃的采样及根路径特性
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md` 第 4、6 与 10 节
+- 本仓库中的 `phases/13-tools-and-protocols/08-building-an-mcp-client`，从零实现一个跨多个对等节点合并与路由工具的高可用客户端

@@ -1,31 +1,31 @@
-# Two Ways for a Request to Fail
+# 请求失败的两类处理通道
 
-> A failed request does not get to invent its own vocabulary. MCP 2026-07-28 fixes a small set of numbers, splits every failure into one of two channels, and puts a firm list of numbers permanently out of reach.
+> 失败的请求绝不能随意发明自己的错误词汇。MCP 2026-07-28 规范严格限定了一小组错误码，将所有失败精确划分至两类处理通道之一，并将一批历史遗留代码永久移出可用范围。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 17
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Tell a protocol error from a tool execution error and know which channel a server must use for a given failure
-- Name the three MCP-reserved error codes, -32020, -32021, and -32022, and the data each one carries
-- Apply the 2026-07-28 error code allocation policy: the legacy sub-range, the reserved sub-range, and where an application-defined code belongs
-- Map a JSON-RPC error code to the HTTP status a Streamable HTTP server must return alongside it
-- Explain why -32002 and -32042 must never be emitted by a 2026-07-28 implementation, and what replaced each one
+- 准确区分协议级错误 (Protocol Error) 与工具执行级错误 (Tool Execution Error)，并掌握服务端针对特定失败类型必须选用的错误通道
+- 熟练掌握 MCP 规范专属保留的三个核心错误码：-32020、-32021 与 -32022，以及各自携带的结构化数据
+- 掌握 2026-07-28 错误码分配策略 (Allocation Policy)：历史遗留子区间、规范保留子区间，以及应用自定义错误码的合法分布位置
+- 熟练将 JSON-RPC 错误码映射为流式 HTTP (Streamable HTTP) 服务端必须同步返回的对应 HTTP 状态码
+- 深入理解为何 2026-07-28 实现严禁返回 -32002 与 -32042，以及替代它们的标准方案
 
-## The Problem
+## 问题背景
 
-A server that has never thought hard about failure tends to invent its own error vocabulary as it goes. A missing argument gets one ad hoc code, a downstream timeout gets another, a permission problem becomes a made up string buried in a message field. None of that travels. A client built by a different team has no way to know what a number some other server picked on a Tuesday actually means, and two servers that both reach for the same convenient number, say -32001, can mean two unrelated things by it. This is not hypothetical: before the 2026-07-28 allocation policy existed, official MCP SDKs disagreed on the code for a missing resource alone. Four used -32002, one used -32602, one used -32603, and one used a generic zero. A client that wanted to reliably detect "resource not found" across servers had to special-case every SDK.
+一个未对错误处理进行深度架构设计的服务端，往往会在开发过程中随意拼凑错误词汇。缺失参数被赋予一个临时错误码，下游接口超时被赋予另一个，权限校验失败则被包装成埋在文本消息深处的自定义字符串。这种混乱的错误定义在分布式系统中根本无法协同。由另一个团队开发的客户端根本无从知晓某个外部服务端在某个周二随意挑选的错误码到底代表什么含义；当两个不同的服务端为了图省事碰巧都选用同一个数字（例如 -32001）时，它们表达的可能完全是毫无关联的底层概念。这绝非夸大其词的理论假设：在 2026-07-28 规范统一定义错误码分配策略之前，各官方 MCP SDK 仅在“资源不存在”这一项的错误码上就存在严重分歧：有四个 SDK 使用 -32002，一个使用 -32602，一个使用 -32603，还有一个直接使用通用的 0。这导致希望在多个不同服务端之间可靠识别“资源未找到”的客户端，必须针对每一个 SDK 单独编写恶心的特化兼容逻辑。
 
-The cost lands hardest on the participant with the least room to guess: the model deciding what to do next. A tool call that fails and returns as an opaque JSON-RPC error the client swallows before it reaches the model's context gives the model nothing to learn from. It repeats the same broken call, or it gives up on a task that a single corrected argument would have finished. The lifecycle checkpoints from lesson 17 already drew the outline: validation, capability checks, and execution can each fail, and treating every failure the same way throws away information a caller could have used to recover. This lesson fills in the exact numbers, the exact channel each one travels on, and the numbers that are permanently off the table.
+这种不规范所带来的代价，最终沉重地转嫁给了最没有容错与猜测空间的关键参与者：正在思考下一步该采取什么行动的大语言模型。如果工具调用执行失败后，被包装成晦涩的底层 JSON-RPC 协议错误并被客户端中间件直接拦截吞噬，大模型将完全丧失从错误中学习并自我修正的机会。它只能要么徒劳地重复相同的失败调用，要么过早放弃一个原本只需修正单个参数就能顺利完成的任务。在第 17 课中，生命周期的各个检查点已经勾勒出了清晰轮廓：校验、能力协商与具体执行均可能遭遇失败，如果将所有故障都一概粗暴对待，就会白白丢弃调用方本可用于系统自愈的关键信息。本课将系统补全具体的错误码分配规则、各个错误码专属的传输通道，以及那些被官方规范永久禁用的代码。
 
-## The Concept
+## 核心概念
 
-Every MCP failure travels back on exactly one of two channels, and picking the right one is, per the specification's own framing, the most tested distinction in the whole error model.
+MCP 协议中的每一次失败，都必须严格经由两类处理通道之一返回给调用端。根据规范自身的强调，准确选择正确的通道，是整个错误模型考核中最核心的考点。
 
-A **protocol error** means the request itself was wrong: the method does not exist, the named tool is not one this server exposes, a required field is missing, or the server hit an internal fault. It is a standard JSON-RPC error object, and a client typically handles it itself rather than showing it to the model:
+**协议级错误 (Protocol Error)** 意味着请求报文本体存在根本性错误：调用的方法不存在、请求的工具不是该服务端实际暴露的、缺失必填的协议元数据字段，或者服务端遭遇了不可逆的内部致命故障。它在传输层体现为标准的 JSON-RPC 错误对象，客户端通常在基础设施层自行拦截处理，而不会将其直接暴露给大模型：
 
 ```json
 {
@@ -38,7 +38,7 @@ A **protocol error** means the request itself was wrong: the method does not exi
 }
 ```
 
-A **tool execution error** means the request was fine, the server ran the tool, and the tool hit a problem the caller can fix: a missing or badly shaped argument, a downstream API failure, a business rule the input violated, an expired handle. It is a normal `complete` result with `isError: true`, and it is exactly the content a model can read and correct itself on:
+**工具执行级错误 (Tool Execution Error)** 则意味着请求报文本身完全合法合规，服务端也成功启动了该工具的业务处理函数，但在执行过程中遭遇了调用方可以设法自愈的问题：缺失入参、参数格式不匹配、下游接口调用失败、违反了特定业务规则，或者引用的业务句柄已过期。此类错误返回的是一个形态完整、携带有 `isError: true` 的常规 `complete` 结果对象，其内容恰恰是大语言模型完全能够阅读理解并据此自主纠正的结构化信息：
 
 ```json
 {
@@ -52,23 +52,23 @@ A **tool execution error** means the request was fine, the server ran the tool, 
 }
 ```
 
-Before 2026-07-28, the specification's own guidance on this split was ambiguous: an early revision described "invalid arguments" as a protocol error and "invalid input data" as a tool execution error, without drawing a clean line between them. SEP-1303 closed the gap by merging both under tool execution errors. A missing required field, a wrong type, an out-of-range value: all of it is `isError: true`, never `-32602`. An unknown tool is the one case that stays a protocol error, because there is nothing about the arguments to correct; the tool itself does not exist.
+在 2026-07-28 版本之前，规范对于二者的边界划分存在一定的模糊性：早期版本曾将“非法参数 (invalid arguments)”界定为协议级错误，而将“非法输入数据 (invalid input data)”界定为工具执行级错误，但在两者之间并未给出清晰的技术分界线。SEP-1303 提案彻底弥合了这一分歧，将所有与参数相关的错误统一归纳为工具执行级错误。无论是必填字段缺失、类型错误还是数值越界，一律返回 `isError: true`，严禁返回协议错误码 `-32602`。唯一的例外是“未知工具 (unknown tool)”：这依然属于协议级错误，因为此时根本没有任何入参可以修正，是工具本体根本不存在。
 
-The standard JSON-RPC 2.0 codes carry the base protocol failures: `-32700` parse error (the body was not valid JSON, so `id` is reported as `null` because none could be read), `-32600` invalid request (valid JSON, but not a well-formed JSON-RPC object), `-32601` method not found (the method itself is not one this server implements), `-32602` invalid params (an unknown tool, a request missing required `_meta`, a resource that does not exist, an invalid prompt argument, an invalid pagination cursor), and `-32603` internal error (the server itself failed). The gap between `-32601` and `-32602` is worth memorizing on its own: `-32601` is about the *method*, `-32602` is about *everything else wrong with the request*, including a tool name the server has never heard of.
+标准的 JSON-RPC 2.0 错误码承载了基础协议层的失败场景：`-32700` 解析错误 (Parse error，报文体不是合法的 JSON，由于无法解析出有效 id，此时返回的 `id` 必须为 `null`)；`-32600` 非法请求 (Invalid Request，虽然是合法 JSON 但不符合 JSON-RPC 规范对象格式)；`-32601` 方法未找到 (Method not found，服务端未实现该方法)；`-32602` 非法参数 (Invalid params，用于请求未知工具、缺失必填 `_meta`、资源不存在、提示词参数非法、分页游标无效等)；以及 `-32603` 内部错误 (Internal error，服务端自身崩溃)。`-32601` 与 `-32602` 的区别值得重点牢记：`-32601` 针对的是 JSON-RPC 顶层 *方法 (method)* 本身，而 `-32602` 针对的是 *请求内部包装的其他一切非法内容*，包括服务端从未注册过的具体工具名称。
 
-JSON-RPC reserves `-32000` to `-32099` for implementation-defined server errors, and the 2026-07-28 allocation policy partitions that space cleanly. `-32000` to `-32019` is legacy: codes implementations picked before this policy existed. New implementations must not allocate anything there, and should avoid the whole sub-range. `-32020` to `-32099` is reserved for the specification itself, and only three codes in it are defined:
+JSON-RPC 规范保留了 `-32000` 至 `-32099` 区间用于实现自定义的服务端错误，而 2026-07-28 分配策略将该区间进行了严格的分区管理：`-32000` 至 `-32019` 属于历史遗留区间 (legacy sub-range)，即本策略制定之前早期实现所占用的代码。全新的实现严禁在该区间分配任何新错误码，且应尽量避免使用整个子区间。`-32020` 至 `-32099` 属于规范专属保留区间 (reserved sub-range)，目前仅定义了三个官方错误码：
 
 ```json
 {"code": -32020, "message": "Header mismatch: Mcp-Name header value 'foo' does not match body value 'bar'"}
 ```
 
-`-32020` is `HeaderMismatch`: an HTTP header disagrees with the request body, or a required header is missing. `-32021` is `MissingRequiredClientCapability`: the server needed a capability this specific request's `clientCapabilities` did not declare, and the error carries `data.requiredCapabilities` naming what was missing, echoing the per-request negotiation from lesson 07. `-32022` is `UnsupportedProtocolVersion`: the requested protocol version is not one the server supports, carrying `data.supported` (a list) and `data.requested`, the version-negotiation shape lesson 05 introduced. Emitting any other code in `-32020` to `-32099` that is not one of these three is forbidden outright.
+`-32020` 为 `HeaderMismatch`（请求头不匹配）：HTTP 请求头与请求体声明不一致，或缺失必要的请求头。`-32021` 为 `MissingRequiredClientCapability`（缺失必需的客户端能力）：服务端执行该操作需要某项能力，而该请求自身的 `clientCapabilities` 未曾声明，此时错误响应会附带 `data.requiredCapabilities` 指明缺失项，这与第 07 课介绍的单请求级动态协商机制紧密相连。`-32022` 为 `UnsupportedProtocolVersion`（不支持的协议版本）：客户端请求的协议版本不在服务端支持列表中，错误响应中会携带 `data.supported`（支持版本列表）与 `data.requested`（请求版本），即第 05 课介绍的版本协商响应结构。在 `-32020` 至 `-32099` 区间内返回除这三个之外的任何代码，均属于严重违反协议规范的行为。
 
-Two codes are explicitly retired and must never appear in a 2026-07-28 response. `-32002` was the resource-not-found code through 2025-11-25; SEP-2164 replaced it with `-32602` once the inconsistency across SDKs made the old recommendation unworkable. `-32042` was a narrower code for URL-mode elicitation being required, and it existed only in the 2025-11-25 revision; it has no direct replacement because URL-mode elicitation is now negotiated through the ordinary MRTR flow instead of a dedicated error. A client built to be permissive can still accept `-32002` from an older server for backward compatibility, but a 2026-07-28 server must not produce it.
+有两个旧版错误码已被明确废弃 (Retired)，严禁在 2026-07-28 响应中出现：`-32002` 在 2025-11-25 之前曾被用于表示资源未找到；由于不同 SDK 之间的实现混乱导致旧规范难以为继，SEP-2164 提案将其统一替换为标准代码 `-32602`。`-32042` 则是在 2025-11-25 版本中短暂存在的狭义错误码，用于要求使用 URL 模式进行引导式信息补全；该代码已被废弃且无直接替代物，因为现代协议已将 URL 模式补全直接整合入通用的 MRTR 机制之中，不再需要专属错误码。虽然具备容错能力的客户端仍可在接收旧服务端响应时兼容 `-32002`，但任何遵循 2026-07-28 规范的服务端均不得主动生成该代码。
 
-Application-defined codes that fit neither a defined MCP code nor `isError` should sit entirely outside `-32768` to `-32000`, the whole JSON-RPC reserved range. In practice this case should be rare: SEP-1303 exists precisely so an implementation reaches for `isError` before it reaches for a new number.
+至于既不符合 MCP 规范定义、又不适合归为 `isError` 的应用自定义业务错误码，必须完全位于 `-32768` 至 `-32000` 整个 JSON-RPC 保留区间之外。在实际生产工程中，这种情况应当极少出现：SEP-1303 提案的核心初衷，就是要求开发者优先使用携带自愈上下文的 `isError`，而非仓促发明新的生僻错误码。
 
-On Streamable HTTP, several of these codes come with a documented HTTP status. A header mismatch, a missing capability, an unsupported version, and a malformed request missing `_meta` all pair with `400 Bad Request`:
+在流式 HTTP (Streamable HTTP) 传输场景下，上述许多协议错误码都需要在 HTTP 传输层映射为对应的标准 HTTP 状态码。请求头不一致、缺失必要客户端能力、协议版本不支持，以及请求体缺失必填 `_meta` 的报文，在 HTTP 层均必须对应返回 `400 Bad Request`：
 
 ```http
 POST /mcp HTTP/1.1
@@ -77,68 +77,68 @@ Mcp-Method: tools/list
 
 ```
 
-If the header on that request had disagreed with the body, or if `_meta` had been missing from the body entirely, the response is `400` with the matching JSON-RPC error inside it. An unknown method gets `404 Not Found` instead, since that failure is about the endpoint's own routing, not the message shape. Beyond the JSON-RPC layer entirely, a few transport and authorization events carry HTTP statuses with no JSON-RPC error at all: a notification the server accepts returns `202 Accepted` with no body, a `GET` or `DELETE` sent to the modern MCP endpoint returns `405 Method Not Allowed`, a missing or invalid bearer token returns `401 Unauthorized`, and insufficient OAuth scope returns `403 Forbidden`.
+如果该请求携带的 Header 与 Request Body 不符，或者 Body 中完全缺失了 `_meta` 结构，服务端必须返回 HTTP `400` 状态码，并在其响应体内包装对应的 JSON-RPC 错误对象。未知的顶层方法则映射为 `404 Not Found`，因为该错误本质上属于网络路由端点不存在，而非报文格式解析错误。此外，在 JSON-RPC 协议层之外，底层网络传输与鉴权事件拥有独立的 HTTP 状态码，且不会附加任何 JSON-RPC 错误报文：服务端正常接收的单向通知返回 `202 Accepted`（无响应体）；向现代 MCP 端点发起 `GET` 或 `DELETE` 请求返回 `405 Method Not Allowed`；Bearer Token 缺失或无效返回 `401 Unauthorized`；OAuth Scope 权限不足则返回 `403 Forbidden`。
 
-Finally, one narrow exception to a rule you can otherwise treat as absolute: an error response always echoes the request's `id`, except when the id could not be read at all, such as a body that failed to parse as JSON in the first place. That response reports `id: null`, because there was never an id to echo.
+最后需要说明一个几乎绝对成立的通用规则中的极窄特例：错误响应必须严格回显请求报文中的 `id` 字段；唯一的例外是请求体根本无法被解析为合法 JSON 的场景。此时由于服务端根本无法提取出有效的 id，错误响应中的 `id` 必须明确返回 `null`。
 
 ```figure
 mcpa-18-error-taxonomy
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure lays the two channels side by side. The left column lists the five codes a protocol error can carry in this lesson's scenarios, each one a small box a client reads and handles on its own. The right column is a single card: every tool-level problem, regardless of what caused it, becomes the same `isError: true` shape, which is the one channel that reaches the model as ordinary content. The dashed band at the bottom is the forbidden zone: the legacy sub-range and the two explicitly retired codes, a boundary a conformant implementation never crosses in either direction.
+上方的错误分类架构图将两类处理通道并列展示。左列系统列出了本课各个实战场景可能触发的五种协议级错误码，每个错误码代表一个由客户端直接识别并就地处理的基础设施级独立小方块。右列则是一张完整的处理卡片：所有工具业务层面的异常，无论由何种原因触发，一律收敛为统一的 `isError: true` 响应结构，这正是能够作为普通上下文内容安全递送给大模型的唯一通道。底部的虚线带则是绝对禁区：历史遗留区间以及明确废弃的两个旧版代码，任何合规的现代 MCP 实现均不得跨越该边界。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-`code/main.py` builds a small helpdesk server with two tools and a client that drives it through every scenario this lesson describes: a clean discovery and tool call, a missing argument, an invalid enum value, a call to a tool that does not exist, a call that needs a capability the request never declared, an unsupported protocol version, and a request missing `_meta` entirely. Run it from the repository root:
+`code/main.py` 构建了一个包含两个工具的小型服务台系统，并驱动客户端完整遍历本课涉及的所有典型故障场景：正常的服务发现与工具调用、缺少必填参数、枚举参数取值非法、请求调用不存在的工具、调用需要特定能力但请求未作声明的工具、不支持的协议版本协商，以及完全遗漏 `_meta` 的非法请求。在代码仓库根目录下运行该脚本：
 
 ```bash
 python3 certifications/mcpa/lessons/18-error-handling/code/main.py
 ```
 
-Read the guard first: `is_forbidden_error_code` implements the allocation policy as a pure function, and `safe_error` calls it before constructing any error response at all. Every error this server ever returns goes through `safe_error`, so a forbidden code cannot reach a socket by accident. Near the end of the transcript are two entries marked `violation`: they show what a non-conformant server would have wrongly returned for a legacy "tool call failed" code and for the retired resource-not-found code, each one wrapped so it is unmistakably a counter-example, never live protocol behavior. Try calling `main.safe_error(1, -32050, "made up")` yourself in a shell; watch it raise `ForbiddenErrorCode` before anything resembling a response even gets built. Then try `main.safe_error(1, -32021, "fine")`, one of the three defined reserved codes, and watch it succeed.
+首先研读其中的安全防御逻辑：`is_forbidden_error_code` 以纯函数的形式完整实现了规范的错误码分配策略，而 `safe_error` 则在实际构造任何错误响应之前强制调用该校验函数。该服务端返回的所有错误必须全部经由 `safe_error` 构造，从而在架构根源上杜绝违规错误码被意外写入 Socket 连接。在运行日志的末尾，有两个标有 `violation` 标记的条目：它们清晰演示了不合规服务端在遇到历史遗留“工具调用失败”场景及已废弃的“资源不存在”场景时会错误返回什么，并用安全包装器明确隔离，使其成为鲜明的反面教学案例。你可以在终端 Python 会话中尝试手动执行 `main.safe_error(1, -32050, "made up")`，观察其在构建响应前便被 `ForbiddenErrorCode` 异常拦截阻断；然后尝试执行 `main.safe_error(1, -32021, "fine")`（官方三大保留代码之一），观察其顺利放行并成功生成标准响应。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/error-code-decision-table.md` is a four-step decision table: pick the channel, pick the code, confirm it is not on the forbidden list, then place an application-defined code correctly if nothing else fits. It also carries the HTTP status mapping and the transport events that never carry a JSON-RPC error at all. Keep it open while reviewing a server's error handling.
+`outputs/error-code-decision-table.md` 是一份四步错误决策速查表：选择处理通道、选定标准错误码、核验其是否位于禁用黑名单中，以及在无法匹配现有定义时如何正确安置应用自定义代码。该产物还完整包含了 HTTP 状态码映射标准，以及绝不携带 JSON-RPC 报文的纯传输层事件清单。在审查服务端错误处理架构时，请将其作为标准设计准则。
 
-## Verify It
+## Verify It (验证步骤)
 
-Run the tests from the lesson directory:
+在课程根目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: an unknown tool is `-32602`, an unknown method is `-32601` mapped to HTTP 404, a missing or invalid argument is `isError: true` rather than a protocol error, a request missing `_meta` is `-32602` mapped to HTTP 400, an unsupported version carries `data.supported` and `data.requested`, a missing capability carries `data.requiredCapabilities`, a declared capability lets the call through, the guard refuses `-32001`, `-32002`, `-32042`, and an arbitrary undefined reserved code while allowing the three defined ones and codes outside the reserved range entirely, a parse failure reports a null id, and the full transcript never carries a forbidden code outside a `violation` wrapper. The repository's wire checker validates the same transcript against the 2026-07-28 rules directly:
+测试套件系统验证了本课全部核心结论：未知工具严格返回 `-32602`；未知顶层方法返回 `-32601` 并映射为 HTTP 404；缺失或非法参数返回包含 `isError: true` 的常规响应而非协议错误；缺少 `_meta` 的请求返回 `-32602` 并映射为 HTTP 400；不支持的版本响应中包含 `data.supported` 与 `data.requested`；缺少能力响应包含 `data.requiredCapabilities`；正常声明能力后调用顺利通过；安全守卫严格拦截 `-32001`、`-32002`、`-32042` 及任意未定义的保留区间代码，同时精准放行三个官方保留码与保留区间外的安全代码；JSON 解析失败正确返回 null id；且运行日志中除教学特化的 `violation` 包装块外绝无任何违规代码。课程专属的协议通信校验器也会基于 2026-07-28 规则对通信报文进行全面审计：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/18-error-handling
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The capstone's end-to-end exchange leans on this lesson every time something goes wrong inside it: a schema-invalid tool call must come back as `isError` so the model can correct itself before the run continues, a tampered MRTR `requestState` must be refused without inventing a new code for the occasion, and a token issued for the wrong audience must be rejected the way lesson 23 describes, not folded into some ad hoc protocol error. When the capstone asks you to justify a failure response, the answer is always one of two channels and a code from this lesson's table, never a number you made up for the occasion.
+在 MCPA 毕业设计的端到端交互实现中，每当底层出现异常时都会深度依赖本课建立的准则：参数不合规的工具调用必须以 `isError` 形式优雅返回，以确保大语言模型在流程中断前获得自我纠错的机会；被恶意篡改的 MRTR `requestState` 必须被果断拦截且严禁随意滥发非标错误码；针对错误 Audience 签发的访问令牌必须依照第 23 课规范予以阻断，绝不能含糊归为某种临时的协议错误。当综合评估要求你论证某一失败响应的设计理由时，答案永远由两类处理通道之一以及本课决策表中的标准错误码构成，绝不能包含任何由个人临时拼凑的随想数字。
 
-## Key Terms
+## 核心术语 (Key Terms)
 
-| Term | Meaning |
-|------|---------|
-| Protocol error | A JSON-RPC error object for a request that was itself wrong: unknown method, unknown tool, malformed envelope, server fault |
-| Tool execution error | A normal `complete` result with `isError: true`, content the model can read and correct itself on |
-| Allocation policy | The 2026-07-28 rule that splits `-32000` to `-32099` into a legacy sub-range and a sub-range reserved for the specification |
-| `HeaderMismatch` | `-32020`, returned when an HTTP header disagrees with the request body or a required header is missing |
-| `MissingRequiredClientCapabilityError` | `-32021`, returned with `data.requiredCapabilities` when a request needs a capability its own `clientCapabilities` did not declare |
-| `UnsupportedProtocolVersionError` | `-32022`, returned with `data.supported` and `data.requested` when a request names a version the server does not implement |
-| Retired code | A code a past revision defined that 2026-07-28 forbids emitting, such as `-32002` or `-32042` |
-| `safe_error` | This lesson's guard: refuses to construct a forbidden code before any response is built |
+| 术语 (Term) | 核心内涵解释 |
+|---|---|
+| Protocol error (协议级错误) | 针对请求报文本体错误的 JSON-RPC 错误对象：如未知方法、未知工具、信封畸形或底层故障 |
+| Tool execution error (工具执行级错误) | 携带有 `isError: true` 的标准 `complete` 结果，大模型可阅读其中内容并自主纠正后续调用 |
+| Allocation policy (分配策略) | 2026-07-28 规则：将 `-32000` 至 `-32099` 严格切分为历史遗留子区间与规范专属保留子区间 |
+| `HeaderMismatch` | 错误码 `-32020`，在 HTTP 请求头与请求体声明不一致或缺失必要头部时返回 |
+| `MissingRequiredClientCapabilityError` | 错误码 `-32021`，附带 `data.requiredCapabilities`，在请求未声明所需客户端能力时返回 |
+| `UnsupportedProtocolVersionError` | 错误码 `-32022`，附带支持与请求版本列表，在请求指名服务端未实现的协议版本时返回 |
+| Retired code (废弃代码) | 早期版本曾经定义但在 2026-07-28 规范中被严令禁止主动发送的错误码，如 `-32002` 与 `-32042` |
+| `safe_error` | 本课构建的架构安全守卫：在实际组装响应报文之前，严格校验并拒绝非法错误码 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [Base protocol: Error Codes](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#error-codes)
-- [Tools: Error Handling](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#error-handling)
-- [Streamable HTTP: Server Validation and header requirements](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#server-validation)
-- [SEP-1303: Input Validation Errors as Tool Execution Errors](https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors)
-- [SEP-2164: Standardize Resource Not Found Error Code](https://modelcontextprotocol.io/seps/2164-resource-not-found-error)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 5
+- [基础协议规范：错误代码 (Error Codes)](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#error-codes)
+- [Tools 规范：错误处理 (Error Handling)](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#error-handling)
+- [流式 HTTP (Streamable HTTP)：服务端校验与头部规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#server-validation)
+- [SEP-1303：输入校验错误归入工具执行级错误](https://modelcontextprotocol.io/seps/1303-input-validation-errors-as-tool-execution-errors)
+- [SEP-2164：标准化资源未找到错误代码](https://modelcontextprotocol.io/seps/2164-resource-not-found-error)
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 5 章节

@@ -1,31 +1,42 @@
-# The Extensions Framework
+# 协议扩展框架 (The Extensions Framework)
 
-> An extension is a capability neither side has to support: named with a mandatory vendor prefix, declared fresh in the metadata of every request, and safe to ignore, so the core protocol never has to grow to fit one vendor's idea.
+> 扩展是一项通信双方均非强制支持的能力：它必须带有强制性的厂商命名前缀，在每一个独立请求的元数据中重新声明，并且可以被安全地忽略。正因如此，MCP 核心规范永远无需为了迎合某一家厂商的私有构想而无休止地膨胀。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 29
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Identify a well formed extension identifier by its mandatory vendor prefix, and name a real official one and a real third party one
-- Explain where a client declares extension support and where a server declares its own, and why both live in per-request `_meta` rather than a one time handshake
-- Compute the active extension set for a request from what the client asks for and what the server actually supports
-- Apply graceful degradation: fall back to core behavior for an optional extension, and reject a request that needs a mandatory one the two sides never mutually activated
-- Trace an extension's lifecycle from an Extensions Track SEP through an experimental repository to an official identifier, and state what forces a new identifier
+- 依据强制性的厂商命名前缀识别格式良好的扩展标识符，并分别举出一个官方维护的标准扩展标识符和一个合法的第三方扩展标识符。
+- 阐明客户端与服务器各自在何处声明扩展支持能力，并解释为何双方的声明都必须置于单次请求的 `_meta` 中，而非依赖一次性的建连握手。
+- 基于客户端本次请求所声明的需求与服务器实际支持的能力，准确计算当前请求的活跃扩展集合 (Active Extension Set)。
+- 贯彻执行优雅降级 (Graceful Degradation) 原则：针对可选扩展，在未达成双向激活时平稳回退至核心规范行为；针对强制扩展，在未达成双向激活时坚决拒绝请求。
+- 追踪一个扩展从 Extensions 轨道的 SEP 提案、在实验性代码仓库中孵化，直至获得官方正式标识符的完整生命周期，并明确指出哪些破坏性变更必须强制分配全新标识符。
 
-## The Problem
+## 问题背景
 
-MCP's core specification has to stay something every implementation can fully support, the same guarantee that lets any client discover and drive any server it has never seen before. Real deployments want things the core was never going to standardize for everyone: a tool that renders an interactive chart instead of a wall of text, a way to hand off a slow job and poll it later, machine to machine authentication that never involves a browser, a way to publish reusable playbooks instead of one off tools. If the core absorbed every one of these, the specification would never stop growing, and a server built two years ago would quietly stop being a complete implementation of MCP the day the spec added a feature it never asked for and never needed.
+MCP 的核心规范必须始终保持精简，确保每一个合规实现都能够完整支持它，这正是任何客户端得以自由发现并驱动此前从未见过的任意服务器的基础底气。然而，在真实的生产落地中，各业务团队必然渴望核心规范绝不可能为所有人进行统一标准化的能力：比如希望某个工具能够渲染一个交互式的富图表而非大段枯燥文本、希望能够将一个耗时极长的任务异步移交并在稍后轮询状态、希望在无浏览器介入的环境下实现纯机器对机器的静默认证，或者希望分发可复用的标准化作业指南 (Playbooks) 而非孤立的工具。如果核心规范将这些五花八门的需求全部照单全收，规范本身的体积将陷入永久膨胀的泥潭；更可怕的是，一个两年前编写的完备服务器，可能会在规范新增了一项它既未申请也完全不需要的特性的当天，悄然丧失作为“完整 MCP 实现”的合规地位。
 
-Inventing these capabilities without a shared convention is worse than not having them. Two vendors solving the same problem, say letting a server render a UI, would pick different `_meta` field names, a client would have no reliable way to ask a server whether it understands a given field, and a security reviewer would have no single place to look up what that field is even supposed to mean. The concrete failure looks like this: a server team wants a tool to return a richer response when the caller can use it, but nothing in the base spec tells them how to advertise that richness so an older client does not choke on fields it has never seen, and a client team wants to know, before it shapes a request around a feature it read about somewhere, whether this particular server, on this particular call, actually implements it.
+然而，在缺乏统一共享约定的情况下由各厂商自行发明这些特性，比完全不具备这些特性更加灾难。针对同一个工程诉求（例如让服务器具备渲染 UI 界面的能力），两家不同的厂商会各自选用完全不同的 `_meta` 字段命名；客户端没有任何可靠的标准手段去询问服务器是否理解特定字段；而安全审查人员也根本找不到统一的地方去查验某个私有字段到底意味着什么。具体的工程痛点非常鲜明：服务器团队希望在调用方具备渲染能力时返回更丰富的交互式响应，但基础规范没有告诉他们如何向外宣告这种增强能力，导致旧版客户端在遇到从未见过的字段时因无法解析而崩溃；反过来，客户端团队在基于某篇博客上看到的高级特性构建请求之前，迫切想确认当前的特定服务器在本次调用中到底是否真正实现了该能力。
 
-## The Concept
+## 核心概念
 
-An MCP extension is an optional addition to the specification: a capability beyond the core protocol that either side may or may not implement, named so that unrelated vendors never collide. Its identifier has the shape `{vendor-prefix}/{extension-name}`, and the prefix is not optional: the format follows the same rule as `_meta` keys, except here a prefix is required. Official extensions, the ones MCP itself maintains, use the `io.modelcontextprotocol` prefix, for example `io.modelcontextprotocol/oauth-client-credentials`. Anyone else building an extension is expected to use a reversed domain name they actually control, the same convention Java packages use, so a company that owns example.com would publish `com.example/my-extension`. A bare word with no slash in it is not a valid extension identifier at all; nothing can negotiate it, because there is no prefix to tell two vendors apart.
+### 扩展标识符的命名规范
 
-Both sides advertise extension support the way they advertise everything else in this revision: as data attached to the message, never as a one time setup step. A client declares the extensions it wants for a given call inside that request's own metadata, under `_meta["io.modelcontextprotocol/clientCapabilities"].extensions`, a map from identifier to a settings object:
+MCP 扩展是对核心规范的一种可选补充：它是超越核心协议之外的增强能力，通信双边中的任意一方都可以选择实现或不实现它。为了确保来自不同厂商的扩展绝不发生命名冲突，扩展标识符遵循严格的格式：`{vendor-prefix}/{extension-name}`。
+
+这里的斜杠前缀并非可有可无的装饰，而是强制性的规范要求：它的设计遵循了与 `_meta` 元数据键相同的命名哲学，但在扩展标识符中，厂商前缀是**绝对不可省略的**。
+- 由 MCP 官方直接维护的标准官方扩展，必须统一采用 `io.modelcontextprotocol` 作为前缀，例如 `io.modelcontextprotocol/oauth-client-credentials`。
+- 其他任何第三方机构或企业构建的私有扩展，必须使用其自身实际拥有所有权的反向域名作为前缀（与 Java 包名命名规范完全一致），例如拥有 example.com 域名的企业应当发布以 `com.example/my-extension` 命名的扩展。
+- 任何不包含斜杠的纯裸词（如 `my-extension`）都是彻底非法的扩展标识符；没有任何协议引擎能够对其进行能力协商，因为缺失前缀就无法将两家厂商的命名区分开来。
+
+### 基于单次请求元数据的扩展声明与协商
+
+在 2026-07-28 规范修订版中，双端宣告扩展支持的方式与声明其他一切特性的方式完全统一：作为附加在具体报文上的元数据，**绝非一次性的建连握手**。
+
+客户端在每次发起调用时，在其请求自身的元数据中声明本次调用所启用的扩展集合，路径为 `_meta["io.modelcontextprotocol/clientCapabilities"].extensions`。它是一个以扩展标识符为键、以配置对象 (Settings Object) 为值的映射表：
 
 ```json
 {
@@ -47,7 +58,7 @@ Both sides advertise extension support the way they advertise everything else in
 }
 ```
 
-A server declares which extensions it implements inside its `server/discover` result, under `capabilities.extensions`, the same shape:
+服务器则在其 `server/discover` 端点的发现响应中声明自身支持实现的所有扩展，结构位于 `capabilities.extensions`，两者的数据形状完全对称：
 
 ```json
 {
@@ -66,77 +77,87 @@ A server declares which extensions it implements inside its `server/discover` re
 }
 ```
 
-An empty settings object, `{}`, is a complete and valid declaration: it means the extension is supported with nothing to configure. A populated one carries whatever fine grained configuration that specific extension defines, such as the `mimeTypes` list above. Because this rides on `_meta` and is resent on every call, nothing declared on one request carries over to the next; that is the same statelessness that governs the protocol version and every other per-request capability, not a special case invented for extensions.
+一个空的配置对象 `{}` 是一份完整且完全合法的能力声明：它意味着“本端完全支持该扩展，且当前无特殊参数需要配置”。一个包含具体键值的配置对象则用于承载该特定扩展所定义的细粒度控制参数（例如上述的 `mimeTypes` 媒体类型列表）。由于这一机制寄宿于每次调用的 `_meta` 之中并在每次调用时重新随请求下发，因此前一次请求声明的内容绝不会自动继承到下一次请求中。这正是支配协议版本号及其他一切每请求特性的核心无状态哲学，绝非针对扩展额外生造的特例。
 
-An extension is active for a given call only when both sides name it: the client asked for it on this request, and the server's own capabilities say it implements it. Computing that set is an intersection of two maps by identifier, and a malformed identifier, one missing its mandatory prefix, never belongs in the result even if it somehow turns up on both sides; validating the shape of an identifier is part of computing the active set, not a separate step you can skip.
+对于某一次具体调用而言，**唯有当双方均显式指明了同一个标识符时，该扩展才被视作处于活跃激活状态 (Active)**：即客户端在本次请求中明确申请了它，且服务器的能力清单也表明自身实现了它。计算活跃扩展集合的过程，本质上就是对两个映射表的键取交集。在这个过程中，任何缺少强制厂商前缀的畸形标识符，哪怕偶然同时出现在了两端的字典中，也必须被无条件剔除；对标识符格式的严格校验是活跃集计算过程不可分割的一环，绝不能偷懒略过。
 
-What happens next depends on whether the extension was optional or mandatory for that particular call. If it is optional, an enhancement layered on top of behavior that already works, the side that supports it falls back to core behavior when the other side does not: a tool that can render an interactive dashboard still returns meaningful text content for a client that never declared the UI extension. If the extension is mandatory for that call, an operation with no meaningful core only behavior, such as handing back a durable job handle a client cannot poll without it, the request is rejected instead of half answered. The rejection reuses the same capability gate lesson 07 introduced for any missing client capability: `MissingRequiredClientCapabilityError`, `-32021`, its `data.requiredCapabilities` naming exactly which extension the call needed, shaped as `{"extensions": {"<identifier>": {}}}`. Nothing about this error is extension specific machinery; it is the ordinary per-request capability gate, applied to an extension identifier instead of a core one. Extensions are opt-in on both sides too: an SDK is never required to implement any extension to claim full protocol conformance, and where it does implement one it ships disabled until the developer turns it on explicitly.
+### 优雅降级与强制扩展拦截
 
-An extension does not enter the specification the way a core feature does. It starts as a distinct SEP type, an Extensions Track SEP, in the main MCP repository, and unlike a Standards Track SEP it must already have a working reference implementation in an official SDK before the Core Maintainers will review it at all. Once approved, its specification lives in an extension repository inside the modelcontextprotocol GitHub organization, named with an `ext-` prefix, such as `ext-auth` for the authorization extensions or `ext-apps` for MCP Apps; Core Maintainers keep ultimate authority over anything published there, but day to day changes are delegated to that repository's own maintainers and need no further core review. A Working Group or Interest Group can also incubate an idea before it is ready for a SEP at all, inside a repository named with an `experimental-ext-` prefix instead, clearly marked as non official so nobody mistakes prototyping for a commitment; Core Maintainers can still archive or remove one of these at their own discretion.
+计算出活跃扩展集之后，系统的下一步行为取决于该扩展对于本次调用而言属于可选扩展 (Optional) 还是强制扩展 (Mandatory)：
+- **可选扩展 (Optional)**：属于在已有合规功能之上的锦上添花。当对方未能激活该扩展时，支持方应当主动平稳回退至核心规范行为。例如一个具备渲染交互式大屏能力的工具，在面对未声明 UI 扩展的客户端时，仍然应当返回具备实际业务价值的纯文本内容。
+- **强制扩展 (Mandatory)**：属于没有核心等价替代方案的关键操作。例如服务器向客户端交出一个持久化的后台作业句柄，若客户端不支持异步轮询扩展，根本无法消费该结果。此时服务器必须坚决拒绝该请求，而不是交出一个半吊子的无效响应。
 
-Extensions version independently of the core protocol and of each other, and a new extension release needs no core review at all. The one hard rule governs a breaking change: removing or renaming a field, changing a field's type, changing what existing behavior means, or adding a new required field. None of those may ship under the old identifier. The extension gets a new one instead, typically suffixed, `io.modelcontextprotocol/my-extension-v2`, so an implementation still declaring the old identifier keeps getting the old, unmodified behavior rather than silently breaking. A new optional field, or a version marker inside the settings object, is not a breaking change and needs no new identifier.
+此类拒绝复用了我们在第 07 课中学习的通用客户端能力网关错误：`MissingRequiredClientCapabilityError`，标准错误码为 `-32021`。在错误的 `data.requiredCapabilities` 字段中，必须精准指出本次调用缺失的具体扩展标识符，数据结构为 `{"extensions": {"<identifier>": {}}}`。这一错误处理机制完全是通用的每请求能力网关逻辑，只是将检查的目标从核心能力名称换成了扩展标识符。另外，扩展在双端均遵循严格的自愿启用 (Opt-in) 原则：任何 SDK 绝不需要实现任何扩展即可宣称自身 100% 遵循核心协议；即使 SDK 内部实现了某项扩展，在默认出厂状态下也必须保持禁用，直到研发人员显式将其开启。
 
-Four families of official extension exist today. Tasks (`io.modelcontextprotocol/tasks`, SEP-2663) is the durable job handle from lesson 21: a server answers a request with a task instead of blocking, and the client polls it. MCP Apps (`io.modelcontextprotocol/ui`, SEP-1865) lets a tool point at a sandboxed, renderable interface instead of only text, covered next. Skills over MCP (`io.modelcontextprotocol/skills`, SEP-2640) lets a server publish reusable workflow instructions a client can discover and read through the resources primitive it already has. Reading a skill's `SKILL.md` through `resources/read` only retrieves text: the extension treats skill content as untrusted input, leaves whether a skill is loaded into model context at all to explicit user policy, tells hosts to let users inspect a skill before loading it, and ignores permission-widening frontmatter such as `allowed-tools` on MCP-served skills unless the user approved that grant. The authorization extensions, published from the `ext-auth` repository, add OAuth's client credentials flow and an enterprise managed authorization framework on top of the core authorization model. Because support for every one of these is opt-in and independent per client, the extensions site keeps a running matrix of which client implements which one; check it before a design leans on a specific extension being there. A gateway sitting between a real client and a backend server is itself a client to that backend, and has to decide independently what to declare rather than forwarding whatever the original caller declared; advertising an extension the gateway cannot actually mediate correctly is worse than not advertising it at all.
+### 扩展生命周期与版本演进准则
 
-Before this revision, an extension was declared once, inside the `initialize` request's `capabilities.extensions` and echoed once in the `initialize` response, and that single declaration was assumed to hold for the rest of the connection; SEP-2133's own historical text, preserved as a record of what shipped at the time, still shows that shape. 2026-07-28 has no connection lifetime handshake and nowhere to hold a declaration across calls, so that assumption does not carry forward. The declaration now travels in `_meta` on every request, and a server must not assume a client's extension support on this call matches what it declared, or what any other client ever declared, on an earlier one.
+扩展进入官方生态的路径与核心规范截然不同。它首先以独立的“扩展轨道规范增强提议 (Extensions Track SEP)”形式提交至 MCP 主代码库。与标准轨道 SEP 不同，核心维护者在评审扩展提案前，强制要求该扩展必须在官方 SDK 中已经具备可运行的标准参考实现。一旦获批，其技术规范将托管在 `modelcontextprotocol` 官方 GitHub 组织下带有 `ext-` 前缀的独立代码仓库中（例如针对授权扩展的 `ext-auth`，或针对 MCP Apps 的 `ext-apps`）。核心维护者保留最终的治理否决权，但该仓库日常的技术演进完全下放给仓库自身的维护者团队，后续的微调不再需要经过主规范核心团队的逐轮复审。在正式发起 SEP 之前，工作组或兴趣组还可以在带有 `experimental-ext-` 前缀的实验性仓库中进行早期孵化，并明确打上非官方标签，避免社区将原型探索误解为官方承诺。
+
+扩展的版本迭代完全独立于核心规范，也彼此独立。一个扩展发布新版本通常不需要核心团队介入审查。但是，这里存在一条不容妥协的铁律：**严禁在旧的扩展标识符下引入任何破坏性变更 (Breaking Change)**！如果一个改动删除了已有字段、对字段重命名、修改了字段类型、改变了已有行为的既定语义，或者引入了全新的必填字段，该变更绝对不能沿用旧的标识符！它必须申请并分配一个全新的标识符（通常通过追加版本后缀，如 `io.modelcontextprotocol/my-extension-v2`）。这样一来，依然声明旧标识符的客户端就能够继续获得稳定无损的历史行为，而绝不会在不知情的情况下发生线上崩溃。仅增加可选的新字段或在配置对象内部携带版本协商信息，则属于向后兼容变更，无需更换标识符。
+
+目前官方体系中主要存在四大类标准扩展：
+1. **Tasks 扩展**（`io.modelcontextprotocol/tasks`，SEP-2663）：第 21 课学习的持久化异步任务句柄；
+2. **MCP Apps 扩展**（`io.modelcontextprotocol/ui`，SEP-1865）：使工具能够指向安全沙箱渲染界面的扩展；
+3. **Skills over MCP 扩展**（`io.modelcontextprotocol/skills`，SEP-2640）：允许服务器发布可复用工作流指南的扩展。请牢记：通过 `resources/read` 读取技能的 `SKILL.md` 仅获取纯文本说明；该扩展明确将技能内容定性为不可信输入，强制要求宿主应用允许用户在加载前进行审查，并且严禁解析技能头部声明的特权扩大配置（如 `allowed-tools`），除非获得了人类的明确授权；
+4. **授权扩展 (Authorization Extensions)**：由 `ext-auth` 仓库发布，在核心授权体系之上补充了 OAuth 客户端凭据流程以及企业托管集中授权框架。
 
 ```figure
 mcpa-30-extension-negotiation
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure sets the client's declared extensions and the server's declared extensions side by side. One identifier, `com.example/priority-routing`, appears in both boxes and converges into the active box in the middle: this call gets the enhanced behavior. `io.modelcontextprotocol/ui` appears only on the client's side and `io.modelcontextprotocol/tasks` only on the server's; neither converges, because negotiation needs both sides to name the same identifier. Below, the three outcomes line up with the concept section: an optional extension both sides declare activates and enriches the response, an optional extension only one side declares falls back to core behavior, and a mandatory extension that never mutually activates gets rejected with `-32021` naming exactly what was missing.
+上方的流程图将客户端声明的扩展与服务器声明的扩展进行了并列对比。中间的标识符 `com.example/priority-routing` 同时出现在两边的方框中，因此顺利汇入中央的“活跃扩展 (Active)”框内：本次调用将获得增强特性的执行待遇。而 `io.modelcontextprotocol/ui` 仅存在于客户端声明中，`io.modelcontextprotocol/tasks` 仅存在于服务器声明中；二者均未能汇入中央活跃框，因为扩展协商严格要求通信双端同时指名相同的合法标识符。下方展示了与核心概念对齐的三种最终走向：双方共同声明的可选扩展顺利激活并丰富响应数据；仅单方声明的可选扩展自动平稳回退至核心规范基础行为；而未达成双方共同激活的强制扩展，则直接被网关拦截并返回 `-32021` 错误，明确指出缺失的具体扩展标识符。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Open `code/main.py`. `negotiate_extensions` is the whole mechanism in one function: it walks the client's declared extensions, keeps only the ones that are well formed and that the server also lists in its own `extensions` map, and hands back that intersection paired with the client's settings object. Two tools sit on top of it. `summarize_incidents` treats `com.example/priority-routing` as optional: called with nothing declared it returns a plain "3 open incidents"; called with the extension declared as an empty settings object it still activates, defaulting to a "standard" tier, which is exactly what `{}` meaning supported with no settings looks like in practice; called with `{"tier": "gold"}` the same tool sorts for that tier instead. `export_dataset` treats `com.example/bulk-export` as mandatory: called without it declared, the server never even looks at the arguments, it answers immediately with `-32021` and `data.requiredCapabilities` naming the extension; called with it declared, the same call completes normally.
+打开 `code/main.py`。函数 `negotiate_extensions` 将整个协商机制凝聚在一个纯函数中：它遍历客户端声明的扩展，剔除畸形标识符，仅保留在服务器 `extensions` 映射中同时存在的项，并将这一交集与客户端提供的配置对象成对返回。代码基于此函数构建了两个工具：`summarize_incidents` 将 `com.example/priority-routing` 视为可选扩展：在完全不声明任何扩展的情况下调用它，它返回普通的 "3 open incidents" 纯文本；在声明该扩展且配置对象为空 `{}` 时，它成功激活并默认进入 "standard" 优先级（这直观演示了空对象在实践中代表支持无参配置的含义）；而在传入 `{"tier": "gold"}` 时，该工具则按照黄金级别进行优先排序。另一工具 `export_dataset` 则将 `com.example/bulk-export` 视为强制扩展：在未声明该扩展的情况下调用它，服务器甚至不会去读取输入参数，而是当场返回 `-32021` 协议错误，并在 `data.requiredCapabilities` 中明确指出该扩展；而在客户端显式声明该扩展后，相同的调用得以顺利执行完毕。
 
 ```bash
 python3 code/main.py
 ```
 
-Run it and follow the eight exchanges in order. The seventh one declares a made up identifier, `no-slash-here`, alongside a valid one; watch it get silently dropped from negotiation while the valid one still activates, which is exactly what `is_well_formed_extension_id` is there to guarantee even when nothing else about the request looks wrong. Try adding a third tool that requires two extensions at once, and see which missing one `_call` reports first.
+运行程序并依序跟踪八次完整的网络交互记录。重点观察第 7 次交互：客户端在声明一个合法扩展的同时，故意塞入了一个没有斜杠前缀的伪造标识符 `no-slash-here`。观察协商逻辑如何静默丢弃该非法项，同时确保合法的扩展依然被正确激活；这正是 `is_well_formed_extension_id` 存在的防御意义，即便请求的其他部分看起来挑不出任何毛病。尝试在代码中新增第三个工具，将其设计为同时强制依赖两个不同的扩展，并验证当客户端同时遗漏它们时，服务器首先抛出的错误响应。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/extension-negotiation-guide.md` collects the identifier format, where each side's declaration lives on the wire, a three row decision table for optional and active, optional and falling back, and mandatory and rejected, the lifecycle checklist from a SEP to an `ext-` repository, and the official extension roster with each one's real identifier, all citing the brief.
+`outputs/extension-negotiation-guide.md` 汇编成了一份单页权威指南：梳理了标准的标识符格式规则；指明了双端声明在线路报文中的准确宿存位置；列出了涵盖可选激活、可选降级与强制拦截的三行决策对照表；总结了从主仓 SEP 孵化至 `ext-` 仓库的扩展生命周期审查清单；并附带了官方正式扩展名录及其标准前缀标识符。
 
-## Verify It
+## Verify It (验证方法)
 
-Run the tests from the lesson directory:
+在课程根目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: that a real official identifier and a real third party identifier both validate while a bare word without a prefix does not, that negotiation is the intersection of what the client asks for and what the server actually supports, that an optional extension falls back to a plain result when it never activates, that an empty settings object still counts as supported while a populated one configures the behavior, that a mandatory extension left undeclared is rejected with `-32021` naming it in `data.requiredCapabilities` while declaring it lets the same call complete, that a malformed identifier present on both sides still never activates, and that `server/discover` advertises the server's extensions with real cache hints. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+测试套件全面覆盖了本课的核心考点：官方标准标识符与合法的第三方标识符均能顺利通过校验，而缺少厂商前缀的纯裸词会被坚决拦截；扩展协商严格等于客户端诉求与服务器能力的数学交集；可选扩展未激活时平稳回退为普通核心文本响应；空配置对象 `{}` 被合规识别为支持且无需配置，而具备实参的配置对象能正确指导后端行为；未声明的强制扩展调用会当场触发带有 `-32021` 错误码的异常并在 `data.requiredCapabilities` 中精准具名；双端同时声明的格式错误标识符绝不会被错误激活；并且 `server/discover` 能够输出带有真实缓存提示的扩展清单。仓库的报文合规检查器同样会验证本课的运行日志是否完全符合 2026-07-28 规范：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/30-the-extensions-framework
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The capstone's tool ecosystem has to justify every design choice against the base spec, and an extension is one of the choices it has to justify correctly: whether a behavior belongs in a tool's core response or behind an extension a caller might not have, and what the fallback looks like when it does not. Reach for this lesson's active set computation and its `-32021` rejection whenever the capstone's server offers something beyond the three core primitives, and reach for the lifecycle rules whenever it has to explain why a behavior it wants is not simply added to the core spec directly.
+在 Capstone 综合大作业的工具生态系统设计中，你必须为你做出的每一项架构选择向评审团提供无可辩驳的技术辩护。何时应当采用扩展是该辩护的核心关键：即某项特定功能究竟应当属于工具的基础返回内容，还是应当置于某些调用方可能根本不具备的扩展之后，以及在对方缺失该扩展时你的系统如何实现无缝降级。当你在 Capstone 中构建超越三大基础原语的高级能力时，请熟练运用本课的活跃扩展集合计算逻辑与 `-32021` 拦截机制；当考官追问为什么不直接把这些功能合并进 MCP 核心规范时，能够流利阐述扩展生命周期的治理哲学。
 
-## Key Terms
+## 关键术语 (Key Terms)
 
-| Term | Meaning |
+| 术语 | 定义说明 |
 |------|---------|
-| Extension | An optional addition to MCP beyond the core protocol, identified by `{vendor-prefix}/{extension-name}` |
-| Vendor prefix | The mandatory namespace on an extension identifier; `io.modelcontextprotocol` for official extensions, a reversed domain for everyone else |
-| Settings object | The per-extension configuration value in a capabilities declaration; `{}` means supported with nothing to configure |
-| Active extension set | The identifiers a given request actually negotiated: present in both the client's declared capabilities and the server's |
-| Graceful degradation | Falling back to core behavior when an optional extension is not mutually active, instead of failing the request |
-| `MissingRequiredClientCapabilityError` | `-32021`, returned when a call needs an extension, or any capability, this request's `clientCapabilities` did not declare |
-| Extension repository | A repository in the modelcontextprotocol GitHub organization with an `ext-` prefix, holding one or more official extensions |
-| Experimental extension | An incubating extension in an `experimental-ext-` repository, tied to a Working or Interest Group, not yet an official SEP |
+| Extension（协议扩展） | 超越 MCP 核心协议之外的可选能力扩充，统一由 `{vendor-prefix}/{extension-name}` 唯一标识 |
+| Vendor prefix（厂商前缀） | 扩展标识符中强制要求的命名空间；官方标准扩展为 `io.modelcontextprotocol`，第三方为反向域名 |
+| Settings object（配置对象） | 客户端能力声明中与扩展名配对的参数字典；`{}` 代表完全支持且当前无特殊参数需要配置 |
+| Active extension set（活跃扩展集合） | 针对单次具体请求真正达成共识的扩展集合：即同时存在于客户端本次声明与服务器能力清单中的交集 |
+| Graceful degradation（优雅降级） | 当某项可选扩展未能达成双向激活时，系统平稳回退至核心规范标准行为而非让请求报错崩溃的机制 |
+| `MissingRequiredClientCapabilityError` | `-32021` 协议错误，当某次调用所需的扩展或核心能力在请求元数据中未声明时抛出 |
+| Extension repository（扩展仓库） | modelcontextprotocol 官方组织下以 `ext-` 为前缀的代码仓库，用于独立维护官方扩展规范 |
+| Experimental extension（实验性扩展） | 托管在以 `experimental-ext-` 为前缀的代码库中的早期孵化扩展，隶属于工作组或兴趣组，非正式标准 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [MCP Extensions Overview](https://modelcontextprotocol.io/extensions/overview)
-- [SEP-2133: Extensions](https://modelcontextprotocol.io/seps/2133-extensions)
-- [Extension Negotiation, MCP versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning#extension-negotiation)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 14
-- `phases/13-tools-and-protocols/17-mcp-gateways-and-registries`, which works through per-request capability negotiation from a gateway's point of view
+- [MCP 扩展框架总览](https://modelcontextprotocol.io/extensions/overview)。
+- [SEP-2133: 扩展机制标准提案](https://modelcontextprotocol.io/seps/2133-extensions)。
+- [扩展协商规范，MCP 版本演进指南](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning#extension-negotiation)。
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 14 节。
+- `phases/13-tools-and-protocols/17-mcp-gateways-and-registries`，从网关视角深入剖析每请求能力协商。

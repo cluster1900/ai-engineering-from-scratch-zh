@@ -56,7 +56,7 @@
     "estimatedMinutes": 10,
     "lessonPath": "phases/13-tools-and-protocols/22-skills-and-agent-sdks",
     "goal": "Create a small skill, install the complete reviewer bundle into a real host, invoke it explicitly, verify its output, and remove it cleanly.",
-    "installCommand": "npx skills add rohitg00/ai-engineering-from-scratch --skill skill-contract-reviewer --full-depth",
+    "installCommand": "npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract-reviewer --full-depth",
     "workingDirectory": "An empty learner workspace. Save its absolute path as TARGET_ROOT before installation.",
     "expectedEvidence": [
       "The installer reports the selected host and destination.",

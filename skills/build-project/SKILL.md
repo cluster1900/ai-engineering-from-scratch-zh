@@ -38,7 +38,7 @@ lessons, language choices, and requirements. For each stage, read:
 - `projects/<id>/stages/<stage-id>/tests/`: what the grader checks
 
 Prefer local files. If the repository is not cloned, fetch from
-`https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/<path>`
+`https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/<path>`
 and teach in conceptual mode (see below). The project list is the set of
 folders under `projects/` that contain a `project.json`, excluding `_template`.
 Planned projects in `projects/roadmap.json` are not buildable yet.

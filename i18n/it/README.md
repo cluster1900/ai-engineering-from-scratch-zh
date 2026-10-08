@@ -95,7 +95,7 @@ python3 --version
 安装课程 skills：
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch
+npx skills add cluster1900/ai-engineering-from-scratch-zh
 ```
 
 各宿主调用语法：

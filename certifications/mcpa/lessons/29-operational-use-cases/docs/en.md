@@ -1,31 +1,48 @@
-# Choosing MCP's Shape for the Job
+# 为特定任务选择适用的 MCP 架构形态 (Choosing MCP's Shape for the Job)
 
-> Four questions, who initiates the call, how sensitive the data is, how long the work runs, and whether a human needs to see it, turn a vague request into a specific choice of primitive, transport, auth path, and extension.
+> 四个核心问题：谁发起调用、数据有多敏感、任务运行多久，以及是否需要人类参与查看，将一个模糊的业务需求转化为对协议原语、传输通道、认证路径与扩展能力的精准选型。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 28
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Map seven operational use case families, developer tools, data access, enterprise systems of record, long running workflow automation, interactive UIs, reusable workflows, and machine to machine integration, to the MCP primitive, transport, and extension that fit each one
-- Choose between a tool, a resource, and a prompt by asking who controls the action: the model, the application, or the user
-- Recognize when MCP is the wrong tool for a job and name what a team should reach for instead
-- Reason about the four operational concerns, authorization path, cache scope, consent, and observability, that any use case design has to answer
-- Read a server/discover result and a tools/call exchange and connect their cache hints and extension declarations back to the use case that produced them
+- 将七大业务场景家族（开发者工具、数据访问、企业核心系统记录、长耗时工作流自动化、交互式 UI、可复用工作流以及机器对机器集成）精准映射到适配的 MCP 原语、传输层与协议扩展。
+- 通过追问“谁掌控该项操作”（模型、宿主应用程序还是最终用户）在 Tool、Resource 与 Prompt 之间做出正确的技术选型。
+- 敏锐识别 MCP 并非最佳方案的反模式场景，并能清晰指出团队应转而采用何种架构。
+- 深入权衡任何业务场景设计都必须解答的四大运维考量：授权路径、缓存作用域、用户同意机制与可观测性链路。
+- 解析 `server/discover` 响应与 `tools/call` 报文交互，并将缓存提示与扩展声明反向溯源至驱动其生成的具体业务用例。
 
-## The Problem
+## 问题背景
 
-A team that has learned MCP's message shapes still hits a harder question the moment a real project lands on their desk: given this job, which of the protocol's shapes actually fits? The wire rules hold equally for a five second lookup and a twenty minute pipeline, so nothing in the JSON-RPC envelope forces the choice by itself. Left to instinct, two mistakes show up constantly. Some teams reach for a tool for everything, including data a host should simply read into context on its own, so every retrieval becomes a model decision instead of an application one, and every answer costs a round trip the model has to ask for by name. Other teams treat MCP as the default integration layer for problems that never leave one process, wrapping a currency formatter or a string template in a server nobody else will ever call, and pay a protocol's overhead for zero interoperability benefit. Real operational work also stacks concerns the base message shapes do not settle on their own: who authorizes a call when no human is watching, whether last week's cached list is safe to reuse for this user, and how an auditor traces a result back to the request that produced it. This domain is the part of the exam that checks whether a candidate can answer those questions from a description of the job, not from a diagram already labeled with the right answer.
+一个已经完全熟练掌握 MCP 报文格式的技术团队，在面对真实业务项目时依然会遭遇更深层的灵魂拷问：面对眼前这项具体任务，协议的哪一种架构形态才是最合适的？由于底层的报文线格式既能支撑 5 秒钟的快速查询，又能支撑耗时 20 分钟的数据处理流水线，JSON-RPC 信封本身并不会自动帮你做出选择。如果单凭直觉，工程中往往会反复出现两种严重反模式：
 
-## The Concept
+一些团队倾向于将一切操作都封装为工具 (Tool)，哪怕有些数据宿主应用程序原本完全可以自主静默读取到上下文；结果导致每一次数据召回都变成了大模型的决策开销，每个答案都需要模型指名道姓地多花费一轮往返调用。另一些团队则把 MCP 当成了哪怕在单进程内都不离不弃的默认集成层，甚至把货币格式化或字符串模板也硬套进一个外部根本无人调用的 MCP 服务器中，为毫无互操作性收益的代码平白支付沉重的协议通信开销。真实的业务系统还会叠加基础报文形态无法自行决定的跨切面考量：无人值守时由谁完成授权？上周缓存的列表对于当前新用户是否安全可用？审计人员如何将最终结果严密反查至产生它的原始请求？认证考试正是通过场景分析题，检验考生能否从任务描述出发推导出最佳架构，而非仅仅识别已经画好的架构图。
 
-Start from a rule already earned in this course: tools are model controlled, resources are application driven, and prompts are user controlled. That split answers the first and largest question a use case asks, who is expected to decide that this capability runs. A code search the model reaches for mid conversation is a tool. A ticket's current status that the host quietly drops into context before the model ever answers is a resource. A code review checklist the user explicitly picks from a menu is a prompt, and when that checklist is really a cataloged multi step procedure with supporting files rather than one template, the Skills over MCP extension (`io.modelcontextprotocol/skills`) serves its instructions through the same `resources/read` call this track already covers, discoverable first through `skills/list` and `skills/get`.
+## 核心概念
 
-Four more questions round out the design. Does the system this wraps live on the same machine as the host, or somewhere remote? A local filesystem or a local database answers with stdio, and stdio implementations should not run an OAuth flow at all, they read credentials from the environment. A remote system answers with Streamable HTTP, and now authorization enters the picture: a human approving a redirect gets the core framework's interactive OAuth 2.1 flow, a background job with nobody watching gets the OAuth client credentials authorization extension (`io.modelcontextprotocol/oauth-client-credentials`), and an organization with a central identity provider gets the Enterprise-Managed Authorization extension (`io.modelcontextprotocol/enterprise-managed-authorization`) instead of asking every employee to grant every server individually.
+### 三大核心原语的控制权划分
 
-How long does the work take? A call that can finish inside one request-response pair stays a plain result. A deploy pipeline or a batch import that might run for minutes returns a `CreateTaskResult` from the tasks extension (`io.modelcontextprotocol/tasks`) instead, so the client polls a durable `taskId` rather than holding a connection open against a timeout:
+一切选型始于本课程确立的第一原则：**Tools 由模型控制 (Model-controlled)，Resources 由应用程序驱动 (Application-driven)，Prompts 由用户主导 (User-controlled)**。这一控制权划分直接回答了业务场景面临的第一个也是最核心的问题：究竟由谁来决定这项能力应当触发执行？
+- 在对话中途由大语言模型自主判定是否调用的代码检索，是一个 **Tool**。
+- 在模型组织回复之前，由宿主应用程序静默读取并注入系统上下文的工单当前状态，是一个 **Resource**。
+- 由用户主动从下拉菜单中明确挑选的代码审查清单，是一个 **Prompt**；如果该清单本质上是一个包含辅助文件的目录化多步骤流程而不仅是单一模板，则属于 Skills over MCP 扩展（`io.modelcontextprotocol/skills`），其操作指南通过本课程已涵盖的 `resources/read` 标准调用提供，并首先通过 `skills/list` 与 `skills/get` 完成服务发现。
+
+### 架构决策的四大递进维度
+
+结合以下四个关键维度，可以使架构选型更加完善和严谨：
+
+#### 1. 物理拓扑与认证路径：本地进程还是远程网络？
+所封装的底层系统是与宿主运行在同一台本地机器上，还是位于远程网络端点？
+- 本地文件系统或本地轻量数据库天然选用 **stdio** 传输。规范明确建议 stdio 实现不应运行复杂的 OAuth 授权流，而应直接从本地操作系统的环境变量中读取认证凭据。
+- 远程系统则必须采用 **Streamable HTTP**，此时授权机制正式入场：有人类参与并能完成重定向批准的场景，采用核心规范的交互式 OAuth 2.1 流程；无人值守的后台自动化批处理任务，选用 OAuth 客户端凭据授权扩展（`io.modelcontextprotocol/oauth-client-credentials`）；而在拥有统一企业级 IdP（身份提供商）的大型组织中，则应选用企业托管授权扩展（`io.modelcontextprotocol/enterprise-managed-authorization`），避免每个员工必须逐一向几十个服务单独授权。
+
+#### 2. 耗时特征：即时响应还是长耗时异步任务？
+一次调用能够在单一的“请求-响应”生命周期内顺利完成吗？
+- 可以在数秒内完成的短时操作，直接返回标准的内容结果。
+- 涉及数分钟乃至数小时的代码编译、发布流水线或海量数据导入，必须通过 Tasks 扩展（`io.modelcontextprotocol/tasks`）返回一个 `CreateTaskResult`。客户端随后基于持久化的 `taskId` 展开轮询，而不是脆弱地保持 HTTP 连接以对抗超时中断：
 
 ```json
 {
@@ -41,7 +58,10 @@ How long does the work take? A call that can finish inside one request-response 
 }
 ```
 
-Does the result need an interactive surface? A number or a short paragraph stays plain content. A dashboard a user actually wants to click through calls for MCP Apps (`io.modelcontextprotocol/ui`), a tool whose definition points at a `ui://` resource that the host renders in a sandboxed iframe, but only once the caller declares the extension:
+#### 3. 展现形式：纯文本还是交互式 UI？
+结果仅仅是一个统计数值或一段简短说明，还是用户希望交互式探索的数据大屏？
+- 简单信息直接返回标准文本或图片内容。
+- 如果用户需要可点击筛选、动态下钻的富交互界面，则应采用 MCP Apps 扩展（`io.modelcontextprotocol/ui`）。工具定义指向一个 `ui://` 资源 URI，宿主应用将其安全渲染在沙箱化的 iframe 中。但这必须建立在调用方显式声明了该扩展能力的前提下：
 
 ```json
 {
@@ -53,70 +73,76 @@ Does the result need an interactive surface? A number or a short paragraph stays
 }
 ```
 
-A server that offers this well still answers a caller who never declared that block with ordinary text content instead of an error, the graceful degradation the extensions framework expects of both sides.
+一个优秀的服务器在面对未声明此扩展能力的调用方时，绝不能报错崩溃，而必须优雅降级为返回普通的纯文本描述，这正是扩展框架对双端一致性的强制要求。
 
-How sensitive is the data, and is a human present to weigh in? Sensitive results carry `cacheScope: "private"` on whichever of the six cacheable operations produced them, never as an access control by itself, only as a promise not to hand one user's cached answer to another. A human present for a sensitive or slow action is worth an MRTR elicitation confirming the specific detail before the server commits, echoing the retry pattern this track already builds elsewhere; nobody present at all means the call runs inside whatever scope it was already granted, with no elicitation to answer. Every path still ends the same way for an auditor: trace context in `_meta` follows a call across every hop, and the audit record keys on the authenticated principal a token names, never on the self reported `clientInfo` a client could put anything into.
+#### 4. 敏感级别与审计可追溯性
+数据资产有多敏感？现场是否有人类可以提供实时决策？
+- 敏感数据在六种可缓存操作的返回结果中，必须明确标记 `cacheScope: "private"`。请记住这本身不是访问控制手段，而是一项安全承诺：确保网关绝不将 A 用户的缓存结果错误分发给 B 用户。
+- 如果操作涉及敏感资金或不可逆破坏性变更，且现场有人类在场，服务器应发起基于 MRTR 的 elicitation 信息引出，在真正提交执行前向人类确认细节；如果是无人值守模式，调用只能在预先严格授予的作用域内运转，不得发起无人应答的 elicitation。
+- 无论走哪条路径，审计可观测性标准完全统一：通过 `_meta` 中的标准追踪上下文实现跨进程全链路串联，审计日志牢牢记录经过认证的合法主体 (Principal)，绝不轻信客户端随口上报的展示名。
 
-Not every job clears the bar for a protocol boundary at all. A capability that never leaves one process, formatting a string, rounding a number, composing a prompt from local variables, has no second consumer for MCP's interoperability to pay for and no separate system for a client and server to stand between. Standing up a server for it adds a JSON-RPC envelope, a discovery round trip, and an authorization decision on top of a function call that already worked. The seven use case families above are the ones where a second consumer, a second host, or a boundary worth guarding is genuinely in play; when none of those hold, a library call is the correct answer, not an under-built MCP server.
+### 何时不应使用 MCP
+
+并非所有的工程问题都值得引入协议边界。如果一项能力自始至终不需要跨越单一进程：例如格式化日期字符串、进行数学四舍五入、或者利用本地变量拼接提示词模板，这里既不存在需要 MCP 提供互操作性的第二个独立使用者，也不存在需要宿主与客户端建立边界防守的外部异构系统。硬要为此类纯进程内逻辑搭建一个 MCP 服务器，是在原本运转良好的本地函数调用之上，平白强行塞入 JSON-RPC 序列化、能力发现协商和授权决策的多余包袱。本课梳理的七大场景，全部建立在存在第二个外部使用者、存在异构宿主系统或存在真正需要设防的安全边界的基础之上；当这些前提都不存在时，直接调用本地类库才是最优雅正确的工程解法。
 
 ```figure
 mcpa-29-use-case-matrix
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure lines up six of this lesson's catalog entries against the questions that shape them most visibly: who controls the primitive, which transport it rides, and which extension, if any, it declares. Follow the developer tools row first: a tool, stdio, no extension, because a code search a model triggers on a local machine needs nothing beyond a trusted subprocess reading its own environment. Then follow the bottom three rows, a long job pulling in the tasks extension, an interactive dashboard pulling in the ui extension, and a machine to machine sync pulling in the OAuth client credentials extension, and notice each extension answers a different one of the four questions, duration, interactivity, and who is present to authorize. The two middle rows, data access and reusable flow, show the other primitive split: an application quietly reading ticket context becomes a resource, while a user explicitly picking a checklist becomes a prompt even though both ride the same remote transport.
+上方的图表将本课分类目录中的典型案例与塑造其最终形态的关键问题进行了对齐：谁掌控原语、采用何种传输协议，以及声明了何种扩展。首先看开发者工具行：工具原语、stdio 传输、无任何扩展，因为一个由模型在本地触发的代码检索，只需要一个读取自身环境变量的受信任本地子进程即可。随后观察底部三行：长任务引入了 Tasks 扩展、交互式仪表盘引入了 UI 扩展、而机器间同步则引入了 OAuth Client Credentials 扩展；请注意每个扩展分别精准命中了耗时、展现形式与授权主体这三大核心维度的不同诉求。中间两行（数据访问与可复用流）展示了原语选型的关键分水岭：宿主悄悄注入工单上下文是 Resource，而用户主动挑选标准化审查清单则是 Prompt，即便二者都运行在相同的远程网络传输之上。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Open `code/main.py`. `CATALOG` holds eight `UseCaseProfile` entries: one for each of the seven use case families above, plus the in-process case where MCP does not fit at all. `recommend()` turns each profile into a `Recommendation` carrying its own `reasoning` trail. Run it:
+打开 `code/main.py`。代码中的 `CATALOG` 存储了 8 个精选的 `UseCaseProfile` 业务画像：覆盖了上述七大核心业务家族，外加一个绝不适用 MCP 的纯进程内反模式用例。函数 `recommend()` 将每一个画像转化为附带完整推导链条 (`reasoning`) 的架构选型推荐方案 (`Recommendation`)。运行脚本：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed catalog against the concept section above, then find `run_scenario()`. It drives one `opsdesk` server through a `server/discover` call, a `tools/list` call, a successful `search_internal_docs` call, and two calls to `usage_dashboard`, one without the ui extension declared and one with it, ending on a call to a tool that does not exist. Confirm that the `tools/list` result carries `cacheScope: "private"` while `server/discover` carries `"public"`, since a server's own capability description is not sensitive even when the tools behind it are. Then add a ninth profile to `CATALOG` for a use case of your own choosing, a monitoring alert that pages a human after ten minutes of silence, say, fill in its fields, predict what `recommend()` will return before you rerun the script, and check your prediction against the printed reasoning.
+对照核心概念研读终端输出的选型结果。随后找到脚本中的 `run_scenario()` 函数：它模拟驱动一个名为 `opsdesk` 的服务器依次处理 `server/discover` 发现调用、`tools/list` 工具枚举、一次成功的内部文档搜索 `search_internal_docs`，以及两次针对 `usage_dashboard` 仪表盘的调用（一次未声明 UI 扩展，另一次显式声明了 UI 扩展），最后以调用一个不存在的未知工具收尾。验证 `tools/list` 的结果明确标注了 `cacheScope: "private"`，而 `server/discover` 则标注了 `"public"`，因为服务器自身的能力描述并非机密，但其后台具体的工具数据可能包含敏感资产。随后在 `CATALOG` 中添加你自己的第 9 个业务画像（例如一个在静默 10 分钟后自动给运维值班人员发报警短信的监控服务），填写其参数，在重新运行脚本前预测 `recommend()` 的输出，并将你的预测与终端打印的实际推导过程对照验证。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/use-case-decision-matrix.md` lays out the seven use case families in one table: the primitive, transport, auth path, extensions, and cache scope each one calls for, next to the "when MCP is not the right tool" test and the four operational concerns this lesson walks through. Keep it next to the roles and responsibilities brief; that material names who owns a deployment, and this one names what they should build for the job actually in front of them.
+`outputs/use-case-decision-matrix.md` 将七大业务家族汇总为单页速查决策矩阵：详细罗列了每一个场景所需的原语类型、传输方式、认证路径、配套扩展与缓存作用域设定，并附带了“何时不应使用 MCP”的自检清单及本课探讨的四大运维考量。请将本矩阵与上一课的角色职责手册对照存放：角色手册明确了谁对部署负责，而本矩阵指引他们在具体任务面前应当构建何种系统。
 
-## Verify It
+## Verify It (验证方法)
 
-Run the tests from the lesson directory:
+在课程根目录下执行测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: a local system recommends a tool over stdio with environment credentials, an application-initiated case recommends a resource, a user-initiated template recommends a prompt and the skills extension, a long job recommends the tasks extension, a machine-to-machine case recommends the client credentials extension, an interactive dashboard recommends MCP Apps with a text fallback, private data recommends a private cache scope, public data recommends a public cache scope, an enterprise-managed deployment recommends the enterprise authorization extension, a use case with no external system is not recommended for MCP at all, the demonstration transcript's discover and list results carry the right cache hints, the dashboard tool falls back to text without the ui extension, an unknown tool is a protocol error, a request missing its metadata is rejected, and an unsupported version names the versions the server does support. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+测试套件系统验证了本课的各项论断：本地系统准确推荐基于 stdio 与环境变量的工具方案；应用程序发起的数据需求推荐使用 Resource；用户主导的模板需求推荐 Prompt 与 Skills 扩展；长耗时任务推荐 Tasks 异步扩展；机器间集成推荐客户端凭据扩展；交互式仪表盘推荐带有文本降级保护的 MCP Apps；私有敏感数据必须配置 private 缓存；公开能力描述配置 public 缓存；无外部系统的纯进程内任务坚决不推荐采用 MCP；演示报文中的 discover 与 list 正确输出缓存提示；仪表盘工具在缺失 UI 扩展时能平稳降级为文本；未知工具触发协议层错误；缺失元数据的畸形请求被直接拒绝；而遇到不支持的协议版本时能够清晰告知客户端支持的合法版本号。仓库内的协议合规检查器同样会验证报文流程是否完全符合 2026-07-28 规范：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/29-operational-use-cases
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The capstone readiness review asks for one design defended end to end, not five domains recited in isolation. This lesson is where that defense starts: given a scenario, name the primitive, the transport, the auth path, the extensions, and the cache scope before writing a single message, the same four questions this lesson's recommender answers in code. When a capstone scenario adds a long running step or an interactive result partway through, reach for the tasks extension or MCP Apps the way the catalog above does, and when a piece of the scenario turns out not to need MCP at all, say so plainly instead of forcing a server around it.
+Capstone 综合考核要求考生对一套完整的端到端系统架构进行专业辩护，而不是孤立地默写各个知识点。本课正是该项辩护能力的起点：在面对考官给出的综合场景时，在写下第一行报文之前，必须能够瞬间厘清其原语类型、传输通道、认证模式、配套扩展以及缓存策略，这与本课推荐引擎在代码中实现的推导逻辑完全一致。当大作业场景中途引入了一个长耗时步骤或需要交互式界面展示时，能够自然引入 Tasks 或 MCP Apps 扩展；而当场景中的某一环节根本无需协议封装时，能够果断指出并坚持采用本地类库，而不是盲目为每一个函数都套上一层 MCP 服务器。
 
-## Key Terms
+## 关键术语 (Key Terms)
 
-| Term | Meaning |
+| 术语 | 定义说明 |
 |------|---------|
-| Operational use case | A concrete job, developer tooling, data access, enterprise records, long running automation, an interactive UI, a reusable workflow, or machine to machine integration, that a design has to fit MCP to |
-| Control split | The rule that a tool is model controlled, a resource is application driven, and a prompt is user controlled |
-| Tasks extension | `io.modelcontextprotocol/tasks`; returns a durable `taskId` for work too long for one blocking request |
-| MCP Apps | `io.modelcontextprotocol/ui`; renders a tool's result as an interactive surface in a sandboxed iframe, with a text fallback |
-| Skills over MCP | `io.modelcontextprotocol/skills`; serves a cataloged multi step procedure's instructions through `resources/read` |
-| Authorization extension | An opt-in auth path, client credentials for an unattended caller or enterprise-managed for a central identity provider, beyond the core interactive flow |
-| cacheScope | The `public` or `private` marker on a cacheable result that limits sharing across authorization contexts; never an access control by itself |
-| Graceful degradation | A server's obligation to fall back to core behavior, or reject with a clear error, when a caller has not declared an extension it offers |
+| Operational use case（业务运维用例） | 需要量身适配 MCP 架构形态的具体工程场景（如开发者工具、数据访问、长耗时工作流等） |
+| Control split（控制权划分） | 工具由模型控制、资源由应用程序驱动、提示词由用户主导的核心原语选型准则 |
+| Tasks extension（Tasks 扩展） | `io.modelcontextprotocol/tasks`；为无法在单次请求中阻塞返回的长耗时任务签发持久化 `taskId` |
+| MCP Apps | `io.modelcontextprotocol/ui`；在沙箱化 iframe 中将工具执行结果渲染为交互式界面，并支持文本兜底降级 |
+| Skills over MCP | `io.modelcontextprotocol/skills`；通过 `resources/read` 标准通道对外提供结构化多步骤操作指南的扩展 |
+| Authorization extension（授权扩展） | 超越基础交互流的可选认证路径，如面向无人值守系统的客户端凭据模式或企业集中托管模式 |
+| cacheScope | 可缓存结果上的 `public` 或 `private` 标记，用于严格限制跨授权上下文的数据共享；绝非独立访问控制手段 |
+| Graceful degradation（优雅降级） | 当客户端未声明某一可选扩展时，服务端自动平稳退回至基础核心行为或返回清晰说明的义务 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [MCP server concepts](https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts), for the tools, resources, and prompts control split this lesson builds on
-- [MCP client concepts](https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts), for elicitation and the client features it grounds
-- [Extensions overview](https://modelcontextprotocol.io/extensions/overview), for extension identifiers, negotiation, and graceful degradation
-- [MCP Tasks](https://modelcontextprotocol.io/extensions/tasks/overview), [MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview), [Skills over MCP](https://modelcontextprotocol.io/extensions/skills/overview), and [authorization extensions](https://modelcontextprotocol.io/extensions/auth/overview)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 10 and 14
-- `phases/13-tools-and-protocols/23-capstone-tool-ecosystem`, for a worked end-to-end ecosystem scenario
+- [MCP 服务器核心概念](https://modelcontextprotocol.io/docs/2026-07-28/learn/server-concepts)，深入理解本课所立足的工具、资源与提示词控制权划分模型。
+- [MCP 客户端核心概念](https://modelcontextprotocol.io/docs/2026-07-28/learn/client-concepts)，探索信息引出与客户端特性体系。
+- [扩展协议总览](https://modelcontextprotocol.io/extensions/overview)，掌握扩展唯一标识符、能力协商与优雅降级原则。
+- [MCP Tasks 规范](https://modelcontextprotocol.io/extensions/tasks/overview)、[MCP Apps 规范](https://modelcontextprotocol.io/extensions/apps/overview)、[Skills over MCP 规范](https://modelcontextprotocol.io/extensions/skills/overview) 及 [授权扩展规范](https://modelcontextprotocol.io/extensions/auth/overview)。
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 10 与 14 节。
+- `phases/13-tools-and-protocols/23-capstone-tool-ecosystem`，体验端到端生态系统实战演练。

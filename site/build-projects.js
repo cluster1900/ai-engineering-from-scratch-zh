@@ -173,7 +173,7 @@ function buildData(options = {}) {
   }
   const planned = roadmap.filter(project => !readyIds.has(project.id)).map(project => ({ ...project, status: 'planned' }));
   for (const project of loaded.filter(project => project.status === 'draft')) if (!seen.has(project.id)) planned.push({ ...project, status: 'draft' });
-  return { generated: new Date().toISOString().slice(0, 10), repo: 'https://github.com/rohitg00/ai-engineering-from-scratch', levels: LEVELS, projects, planned };
+  return { generated: new Date().toISOString().slice(0, 10), repo: 'https://github.com/cluster1900/ai-engineering-from-scratch-zh', levels: LEVELS, projects, planned };
 }
 
 function bundleContent(data, root, outDir) {

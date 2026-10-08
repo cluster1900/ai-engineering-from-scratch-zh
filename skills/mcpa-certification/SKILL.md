@@ -25,7 +25,7 @@ Prefer a local clone. Locate the nearest parent containing
 `certifications/mcpa/program.json`. Otherwise read files from:
 
 ```text
-https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/<path>
+https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/<path>
 ```
 
 Read these files as needed:
@@ -127,7 +127,7 @@ Create `MCPA-CERTIFICATION.md` with this structure:
 ```markdown
 # My MCPA Certification Path
 <!-- Managed by the mcpa-certification skill.
-     Repo: https://github.com/rohitg00/ai-engineering-from-scratch -->
+     Repo: https://github.com/cluster1900/ai-engineering-from-scratch-zh -->
 
 ## Goal
 <learner's reason and intended practical outcome>

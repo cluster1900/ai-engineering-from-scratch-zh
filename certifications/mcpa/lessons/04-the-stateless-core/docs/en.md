@@ -1,29 +1,29 @@
-# The Stateless Core of MCP
+# MCP 的无状态核心架构
 
-> Every request carries everything a server needs to answer it; nothing carries over from the request before it, not even on the same connection.
+> 每个请求都自包含了服务端处理它所需的一切信息；没有任何状态会从先前的请求中隐式继承，哪怕它们处于同一条连接之上。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 03
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Explain statelessness as a protocol invariant: every request is self-describing, and a server must not infer capabilities, version, or identity from any request that came before it on the same connection
-- Explain why statelessness matters operationally: any replica can answer any request, retries are safe to route anywhere, and load balancers need no stickiness
-- Distinguish a connection or a stdio process from a session or conversation, and state how list results relate to connection identity versus the authorization presented on a request
-- Design cross-request state with an explicit, opaque, server-minted handle that the client passes back as an ordinary tool argument, following the SEP-2567 pattern
-- Identify what 2026-07-28 removed to make statelessness the default, and name what replaced each removed piece
+- 深入阐述作为协议核心不变量的“无状态性（Statelessness）”：每个请求必须具备完全自描述性，服务端严禁根据同一连接上先前到达的任何请求来推断当前请求的能力、版本或客户端身份
+- 从系统运维视角解释为何无状态性至关重要：任何副本均可响应任意请求、请求重试可安全路由至任何节点，且负载均衡器无需维护粘性会话（Sticky Sessions）
+- 严格区分传输连接或 stdio 子进程与业务会话或对话轮次的界限，并说明列表查询结果仅与单次请求呈现的鉴权范围相关，而与物理连接无关
+- 掌握跨请求状态的设计模式：依据 SEP-2567 模式，通过服务端签发显式、不透明的句柄（Handle），由客户端在后续调用中作为普通工具参数显式回传
+- 识别 2026-07-28 规范为实现默认无状态化所彻底废除的旧机制，并说出替代各项旧机制的具体规范方案
 
-## The Problem
+## 问题背景
 
-Before 2026-07-28, opening a connection to an MCP server meant sending an `initialize` request. That request negotiated a protocol version, exchanged capabilities, and recorded client and server identity, and the result was held as session state for as long as the connection lasted. Every later request on that connection leaned on what the handshake had established. The server never had to repeat "which version are we speaking" or "what can this client do" because it already knew, as long as it remembered.
+在 2026-07-28 规范之前，与 MCP 服务端建立连接通常意味着首先发送一个 `initialize` 请求。该请求负责协商协议版本、交换双方能力集，并记录客户端与服务端的身份元数据，协商出的结果会在连接存续期间作为会话（Session）状态保存在内存中。在此之后，该连接上发送的所有后续请求都完全依赖握手阶段所奠定的上下文。服务端不需要重复询问“当前连接使用的是哪个版本”或“该客户端支持哪些特性”，因为只要服务端的进程内存依然保留着那份状态记忆，一切都能正常运转。
 
-That memory is the problem. A session tied to one connection is also tied to whichever process happens to be holding that connection open. Put a fleet of servers behind an ordinary load balancer and the second request from a client can land on a different replica than the first one did, a replica that never saw the handshake and has no idea what version or capabilities were agreed. The common fix was sticky routing: pin a client to one specific backend for the life of its session. Sticky routing works until that backend restarts, deploys a new version, or simply gets overloaded while its neighbors sit idle, at which point the client's session state is gone and it has to reconnect and redo the handshake from scratch. Every server author also had to write code to create, track, and eventually garbage collect that per client session state, and every client author had to write matching code to survive a dropped connection. None of this complexity was about the actual work the server did. It was overhead the session created and then made mandatory.
+然而，这种对于内存状态的依赖正是系统架构噩梦的根源所在。与单一物理连接绑定的会话，本质上也强行绑定了碰巧持有该连接的特定后端进程。若将服务端集群部署在常规的负载均衡器之后，来自客户端的第二个请求极可能会被分发到与第一个请求完全不同的副本实例上。而后一个副本从未经历过最初的握手过程，对先前协商好的版本和能力一无所知。过去常用的补救手段是采用粘性路由（Sticky Routing）：在会话生命周期内将特定客户端强行绑定在某台固定的后端节点上。粘性路由在理想情况下看似可用，但一旦该后端节点发生崩溃重启、发布新版本滚动更新，或者因为流量倾斜导致单节点过载而相邻节点空闲时，客户端原有的会话状态便彻底烟消云散，客户端不得不从头断线重连并重新执行繁重的握手。更糟糕的是，每位服务端开发者都必须编写大量繁琐的代码来创建、追踪并定期垃圾回收每个客户端的会话状态；而每位客户端开发者也必须编写复杂的防御代码来应对突如其来的断连重建。这些架构复杂度完全与服务端要解决的实际业务逻辑无关，它们纯粹是会话机制强加给整个技术栈的沉重负担。
 
-## The Concept
+## 核心概念
 
-MCP 2026-07-28 is a stateless protocol: all the information needed to process a request is contained in the request itself. A server processes each request independently, and it must not infer capabilities, protocol version, or client identity from any request that arrived earlier, even one sent over the same connection or stream. Lesson 03 already showed the mechanism this depends on: every request carries `io.modelcontextprotocol/protocolVersion` and `io.modelcontextprotocol/clientCapabilities` in `params._meta`, so nothing about who is asking or what they support has to be remembered between requests.
+MCP 2026-07-28 是一套彻底的无状态协议：处理请求所需的全部信息，完全自包含于该请求本身。服务端独立处理每一个到达的请求，严禁从同一连接或传输数据流中先前接收的任何请求中，推断当前请求的能力集合、协议版本或客户端身份。在第 03 课中，我们已经见证了支撑该架构的核心机制：每个请求都会在其 `params._meta` 字段中携带 `io.modelcontextprotocol/protocolVersion` 与 `io.modelcontextprotocol/clientCapabilities`。因此，关于“调用者是谁”以及“调用者支持什么”，在跨请求的空隙中根本无需任何持久记忆。
 
 ```json
 {
@@ -41,15 +41,15 @@ MCP 2026-07-28 is a stateless protocol: all the information needed to process a 
 }
 ```
 
-A server could answer that request having never seen this client before, on a process that has handled a thousand unrelated requests in between, and the answer would be identical. That is the whole point: the request is a complete, standalone description of what to do.
+即使一个服务端进程此前从未见过该客户端，且在此期间刚刚处理了上千个互不相干的其他请求，它在接收到上述请求时也能立即给出完全一致的响应。这正是无状态设计的精髓所在：每个请求都是一份完整、立即可独立执行的任务描述。
 
-One consequence follows directly: an open connection is not a conversation. A stdio process or an HTTP connection is a transport, and a transport is not a session boundary. Clients may interleave unrelated requests belonging to different tasks, different users, or different conversations on the same transport, and a server must not treat connection or process identity as a stand in for conversation continuity. A single stdio process could carry a request for one user immediately followed by an unrelated request for a different user, and the server must handle both correctly without assuming they belong together just because they arrived on the same pipe.
+由此可以推导出一个直接的架构推论：一条打开的物理连接绝不等于一次业务对话。一个 stdio 子进程或一条 HTTP TCP 连接仅仅是传输层通道（Transport），传输层绝不构成业务会话的边界。客户端完全可以在同一条传输通道上交错发送属于不同任务、不同终端用户或不同对话轮次的独立请求，服务端绝不能将物理连接或进程标识作为业务对话连续性的判断凭据。单个 stdio 管道完全可能先后传输针对用户 A 的操作请求和紧随其后针对用户 B 的无关请求，服务端必须各自独立严谨地予以处理，而绝不能仅仅因为它们来自同一管道就假定它们存在归属关联。
 
-The same rule shapes list results. `tools/list`, `resources/list`, and `prompts/list` must not vary depending on which connection asked, and a server must not mutate what those lists return as a side effect of some other request, the way a legacy-era server might have made `query` appear in `tools/list` only after `connect_database` had been called earlier on that connection. Lists are allowed to vary for a real reason: the authorization presented on the request itself. A server that returns fewer tools to a lower privileged token is reading that scope from the current request, which is exactly what statelessness asks for. What it may never do is read that scope from a memory of what an earlier request on the same connection declared.
+同样的法则也直接规范了列表查询结果的行为。`tools/list`、`resources/list` 与 `prompts/list` 的返回内容绝对不能因发起请求的物理连接不同而产生偏差；服务端更不能将这些列表的返回变化作为其他请求调用的隐式副作用。在旧时代的设计中，某些服务端可能会在连接上调用 `connect_database` 之后，才让 `query` 工具突兀地出现在 `tools/list` 中，这种设计在现代规范下是严厉禁止的。列表的动态变化只能源于一种合规的理由：当前请求本身所呈现的鉴权凭据（Authorization）。若服务端针对较低权限的访问令牌返回较少的可用工具列表，这是完全合法且契合无状态原则的，因为服务端是在依据当前请求携带的有效范围（Scope）进行实时判定；但服务端坚决不能根据先前请求曾出示过的凭证记忆来裁决当前请求的列表内容。
 
-Statelessness is worth the discipline because of what it buys operationally. Since no request depends on anything held in process memory, any replica behind a load balancer can answer any request, so ordinary round robin routing works and sticky sessions become unnecessary. A request that fails partway through is safe to retry against a different replica, because retrying does not require finding the one process that remembers the earlier state. A crashed or restarted replica loses nothing that mattered to the protocol, because nothing that mattered to the protocol was stored there in the first place.
+坚持无状态纪律能够带来巨大的运维收益。由于没有任何请求依赖驻留于进程内存中的私有上下文，位于负载均衡器背后的任何副本节点都可以处理任何请求，因此常规的轮询（Round-Robin）分发机制完全能够胜任，粘性会话彻底成为历史。一个在执行途中遭遇超时的请求可以安全地重试分发到另一个完全不同的后端副本，因为重试无需寻找“记住先前状态的唯一节点”。崩溃或重启的副本不会丢失任何影响协议运转的数据，因为协议层的数据从一开始就从未存放在单机内存中。
 
-None of this means a server can never remember anything. A shopping basket, an open browser context, or a long running job all need to survive across more than one tool call, and MCP handles that with explicit, server-minted handles instead of an implicit session. A creation tool mints an opaque identifier and returns it in `structuredContent`; the model carries that identifier forward and passes it back as an ordinary argument on every later call that needs it.
+这绝不意味着服务端永远无法管理持久状态。无论是电商购物篮、浏览器上下文实例还是长周期异步任务，显然都需要跨越多个工具调用而持续存在。MCP 解决该需求的方式是采用显式、由服务端签发的句柄（Server-Minted Handles），而非隐式的连接会话。创建资源的工具会在执行成功后签发一个不透明的唯一标识符（Opaque Identifier），并在 `structuredContent` 中将其返回；大模型将负责把该标识符保存在上下文记忆中，并在后续需要引用该状态的任何工具调用中，将其作为常规参数显式传回服务端：
 
 ```json
 // tools/call: create_basket
@@ -63,11 +63,11 @@ None of this means a server can never remember anything. A shopping basket, an o
 }
 ```
 
-Nothing about `basket_id` is a protocol feature. It is an ordinary string in a tool result and an ordinary string in a tool argument, indistinguishable to the wire from any other piece of data a tool returns. The design guidance that makes handles work well is not enforced by the protocol, so it falls on the server author: keep the handle opaque rather than encoding structure a client could parse or guess, authorize the caller against the handle on every call since possession of a name is not the same as being allowed to use it, and state the handle's lifetime in the creation tool's description so the model can see the policy before it decides to create state. When a call arrives for a handle that has expired, never existed, or belongs to a different caller, the correct response is a tool execution error, a normal result with `isError: true` that names the problem, not a JSON-RPC protocol error. An expired or foreign handle is a business outcome the model can recover from by creating a new basket, not a malformed request.
+从协议底层来看，`basket_id` 没有任何特殊的协议级魔法。在线缆通信中，它只是工具执行结果中的一个普通字符串，也是后续工具调用参数中的一个普通字符串，与其他任何常规业务字段毫无二致。保障显式句柄安全高效运作的最佳工程实践完全取决于服务端开发者的设计水准：句柄必须保持严格的不透明性，避免编码客户端可以逆向猜测的内部结构；服务端在每次接收到句柄时必须严格对调用者进行权限校验，因为单纯掌握句柄名称绝不等于拥有操作权限；在创建工具的文本描述中必须明确说明句柄的生命周期淘汰策略，以便大模型在决定创建状态前就理解其时效限制。当收到的工具调用携带了已过期、不存在或属于其他调用者的非法句柄时，服务端合规的做法是返回工具执行错误（即带有 `isError: true` 并阐明具体原因的普通业务结果），而不是返回 JSON-RPC 协议错误。因为对于模型而言，句柄失效是可以通过重新创建购物篮来恢复自纠的正常业务异常，而不是格式错误的协议违规。
 
-This also answers a question that matters for orchestrators running several subagents: since list results cannot depend on which connection asked, a second connection belonging to the same authenticated principal, such as a subagent spun up by an orchestrator, sees exactly the same `tools/list` result the orchestrator saw and can safely reuse a cached copy instead of asking again. A session-scoped list result could never offer that guarantee, because the whole point of a session was that it was tied to one particular connection.
+对于运行多个子 Agent 的编排系统而言，这也带来了一项核心优势：由于列表查询结果不依赖物理连接，属于同一鉴权主体的第二个并发连接（例如由主编排器拉起的一个辅助子 Agent），所看到的 `tools/list` 结果与主编排器完全一致，因此子 Agent 完全可以安全复用父级的本地缓存，无需再次通过网络拉取。基于会话的旧体系永远无法提供这种确定性的缓存保障，因为会话从定义上就与具体的单条物理连接紧密捆绑。
 
-Making statelessness the default meant removing the machinery that statefulness depended on. There is no opening handshake: the `initialize` request and `notifications/initialized` are both gone, replaced by per-request `_meta` and the optional `server/discover` call from lesson 03. There is no `Mcp-Session-Id` header, because there is no session for a header to name. Capabilities are no longer scoped to a connection; they are declared fresh on every request, so a server never has to wonder whether a capability it remembers from three requests ago is still current.
+要让无状态成为系统默认行为，就必须大刀阔斧地剔除所有滋生状态机制的旧协议部件：连接建立时的握手流程彻底消失，`initialize` 请求与 `notifications/initialized` 通知均被删除，取而代之的是请求级自带的 `_meta` 以及第 03 课讲授的可选 `server/discover` 探测；旧版的 `Mcp-Session-Id` HTTP 请求头被彻底移除，因为根本不再存在会话供其标识；能力集不再与物理连接绑定，而是在每个独立请求中实时声明，服务端无需再去揣测三个请求前协商的能力在此时此刻是否依然成立。
 
 ```figure
 mcpa-04-stateless-requests
@@ -75,31 +75,31 @@ mcpa-04-stateless-requests
 
 ## Interactive Lab
 
-The figure shows two clients, alice and bob, sending requests through a round robin router to two replicas, A and B. Neither replica keeps basket state in memory. Both read and write the same shared store, keyed by the opaque handle a creation tool returned, so whichever replica the router happens to pick next answers correctly regardless of which replica handled the call before it. Follow one basket from creation through a call that lands on the other replica: the answer does not change, and nothing about the exchange reveals that two different processes were involved.
+上方图表展示了两个客户端（Alice 和 Bob）通过轮询路由器（Round-Robin Router）向后端两个无状态副本（Replica A 和 Replica B）发送请求的场景。两个副本在单机内存中均不保存购物篮状态，它们统一读写由创建工具返回的不透明句柄所索引的外部共享存储（Shared Store）。因此，无论路由器将请求分发给哪一个副本，都能精准得到正确的响应，整个交互过程完全不受先前请求由哪个副本处理所影响。沿着追踪线观察一个购物篮从创建到被分发至另一副本被调用的全过程：业务结果始终保持确定与一致，线缆通信中没有任何证据表明其底层涉及了两个截然不同的物理服务进程。
 
 ## Practice Lab
 
-Open `code/main.py`. It builds two replicas that share one `SharedStore` and a `Router` that dispatches to them round robin, then runs three callers against that deployment: alice, a second connection for alice with the same principal, and bob, a different principal entirely.
+打开 `code/main.py`。代码构建了两个共享同一个 `SharedStore` 的后端副本，以及一个采用轮询分发策略的 `Router`，随后模拟了三组调用者向该集群发起请求：Alice 的第一个连接、Alice 属于同一身份主体的第二个连接，以及属于完全不同身份主体的 Bob：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed exchanges against the concept section. Alice's first connection and her second connection call `tools/list` and get back an identical tool list, even though the round robin router answered them from two different replicas: read each result's `_meta` to see the `serverInfo.name` change between `basket-replica-A` and `basket-replica-B` while the `tools` array itself stays byte for byte the same. Watch alice create a basket on one replica and add an item to it through a call the router happens to route to the other replica; the item is added correctly because the basket lives in the shared store, not in either replica's memory. Then find the two deliberate failures. Bob tries to add an item to alice's basket and gets back a normal result with `isError: true` explaining that the basket belongs to a different principal. Later, after the clock in the scenario advances past the basket's lifetime, alice's second connection tries to check that same basket out and gets `isError: true` again, this time explaining that the basket expired. Neither failure is a JSON-RPC error, because both are outcomes the model can act on: create a new basket and continue.
+将控制台的输出记录与上文核心概念对照阅读。Alice 的第一个连接与第二个连接分别调用 `tools/list`，尽管轮询路由器将它们分别交由不同的后端副本（Replica A 与 Replica B）处理，但两者获取的工具列表完全一致：查看返回结果的 `_meta` 可以看到 `serverInfo.name` 在 `basket-replica-A` 与 `basket-replica-B` 之间切换，而 `tools` 数组内容却保持逐字节一致。观察 Alice 在一个副本上创建了购物篮，而在路由器刚好路由给另一副本的后续调用中向该购物篮添加商品，添加操作丝毫不受影响，因为数据沉淀在共享存储而非副本内存中。随后观察代码故意展示的两处受控失败：Bob 尝试向 Alice 的购物篮添加商品，服务端返回带有 `isError: true` 的常规业务结果，清晰指出该购物篮归属于其他调用者；稍后，随着模拟时钟推移超过了购物篮的有效存活期，Alice 的第二个连接尝试结账时再次收到 `isError: true`，指出购物篮已经过期。这两处失败均未触发 JSON-RPC 协议级错误，因为它们都是模型能够直接采取补救行动（重新创建购物篮继续执行）的业务异常。
 
 ## Shipped Artifact
 
-`outputs/stateless-design-checklist.md` is a one-page checklist you can run a server design against before shipping it: the invariant itself, the difference between what may vary by connection and what may vary by authorization, five steps for designing a handle-based stateful tool, a pre-ship checklist, and the three pieces 2026-07-28 removed to make statelessness the default.
+`outputs/stateless-design-checklist.md` 是本课交付的单页无状态设计自查手册：总结了无状态协议不变量的定义、何种差异允许因连接而异与何种差异仅能因鉴权而异的边界准则、设计基于句柄的有状态工具的五步工作流、服务上线前必查清单，以及 2026-07-28 为实现默认无状态化而坚决移除的三大旧机制对照表。
 
 ## Verify It
 
-Run the tests from the lesson directory:
+在课程目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: that two replicas sharing one store answer an identical `tools/list`, that a handle minted on one replica works when it is used against the other, that a handle used by a different principal comes back as a tool execution error, that a handle used after it expires comes back as a tool execution error, that two connections belonging to the same principal see an identical cacheable list result, that a request missing its `_meta` protocol fields is rejected with `-32602`, that interleaved requests from two principals never leak one principal's items into the other's basket, and that every request in the scenario's transcript carries its protocol version and capabilities. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+这些测试验证了本课的所有技术论点：共享同一外部存储的两个副本返回完全一致的 `tools/list`；在某一副本上签发的句柄能在另一副本上正常使用；非法主体尝试使用他人句柄将收到工具执行错误；句柄过期后调用将收到工具执行错误；属于同一主体的两个连接能看到完全一致且可安全缓存的列表结果；缺少必要 `_meta` 协议字段的请求被服务端以 `-32602` 坚决拒绝；两个主体的交错请求绝不会发生数据泄露或物品串扰；以及场景通信记录中的每一个请求都严格携带协议版本与能力声明。通信校验器同样验证测试通信记录完全符合 2026-07-28 规则：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/04-the-stateless-core
@@ -107,25 +107,25 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/04-the-stateless-
 
 ## Capstone Connection
 
-The capstone's end to end exchange has to work no matter which replica answers which request, and its long running task and its consent flow both need to survive across more than one round trip. Both rest on this lesson: state that a server owns has to be either absent from the protocol layer entirely or referenced by an explicit handle the client threads through its own requests. When the capstone asks you to justify why a design is safe to scale horizontally, you will point back to the stateless core and to the handle pattern that lets state exist without a session to hold it.
+最终的 Capstone 项目要求整个端到端交互体系无论由哪个副本响应请求均能稳定工作，其包含的长周期任务与用户授权审批流都需要跨越多个通信往返。这两项核心特性的底层全部依托本课所讲授的无状态设计：服务端持有的业务状态要么在协议层彻底抽离，要么通过客户端在请求中显式串联的句柄来唯一定位。当在 Capstone 项目答辩中要求论证为何系统具备无缝水平扩展（Horizontal Scaling）能力时，你将以本课的无状态核心设计以及基于句柄管理状态的设计模式作为最强有力的技术依据。
 
 ## Key Terms
 
-| Term | Meaning |
-|------|---------|
-| Statelessness | The protocol invariant that every request is self-describing and independent of earlier requests |
-| Connection | A transport-level channel (a stdio process or an HTTP connection) that is not a session or conversation |
-| Replica | One of several interchangeable server processes that can answer any request because none holds private state |
-| Server-minted handle | An opaque identifier a creation tool returns, passed back as an ordinary argument to reference state across calls |
-| Shared store | Durable storage every replica reads and writes, so state does not live inside any one process |
-| Tool execution error | A normal result with `isError: true`, the correct channel for an expired, unknown, or foreign handle |
-| `Mcp-Session-Id` | The legacy header that named a protocol-level session; removed in 2026-07-28 |
+| 术语 | 定义 |
+|------|------|
+| 无状态性 (Statelessness) | 每个请求均自包含且独立于先前请求的协议核心不变量 |
+| 传输连接 (Connection) | 传输层的物理信道（stdio 进程或 HTTP 连接），不构成会话或对话边界 |
+| 服务副本 (Replica) | 集群中可互换的服务端进程节点，因不持有私有状态而可响应任意请求 |
+| 服务端签发句柄 (Server-minted handle) | 由创建工具返回的不透明标识符，后续作为普通参数传回以跨调用定位状态 |
+| 共享存储 (Shared store) | 供所有服务副本统一读写的持久化存储，解耦状态与单机进程内存 |
+| 工具执行错误 (Tool execution error) | 包含 `isError: true` 的常规结果，是句柄过期、未知或越权时合规的反馈渠道 |
+| `Mcp-Session-Id` | 用于命名协议级会话的旧版 HTTP 请求头，已在 2026-07-28 规范中彻底删除 |
 
 ## Further Reading
 
-- [Statelessness, MCP specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/basic#statelessness)
-- [Stateful Tools, MCP specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#stateful-tools)
-- [SEP-2575: Make MCP Stateless](https://modelcontextprotocol.io/seps/2575-stateless-mcp)
-- [SEP-2567: Sessionless MCP via Explicit State Handles](https://modelcontextprotocol.io/seps/2567-sessionless-mcp)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 4
-- `phases/13-tools-and-protocols/06-mcp-fundamentals`, which builds the per-request JSON-RPC model this lesson assumes
+- [MCP 规范 2026-07-28：无状态性](https://modelcontextprotocol.io/specification/2026-07-28/basic#statelessness)
+- [MCP 规范 2026-07-28：有状态工具最佳实践](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#stateful-tools)
+- [SEP-2575：让 MCP 全面无状态化](https://modelcontextprotocol.io/seps/2575-stateless-mcp)
+- [SEP-2567：基于显式状态句柄的无会话 MCP 架构](https://modelcontextprotocol.io/seps/2567-sessionless-mcp)
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md` 第 4 节
+- 本仓库中的 `phases/13-tools-and-protocols/06-mcp-fundamentals`，系统实现本课所依赖的逐请求 JSON-RPC 模型

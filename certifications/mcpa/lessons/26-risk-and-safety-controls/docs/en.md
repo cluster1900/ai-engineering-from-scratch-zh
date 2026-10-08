@@ -1,33 +1,37 @@
-# Risk and Safety Controls for MCP Tool Calls
+# MCP 工具调用的风险与安全控制 (Risk and Safety Controls for MCP Tool Calls)
 
-> A tool description is not documentation the model happens to see. It is a string the model reads as instructions, which makes it the cheapest place to attack a system that otherwise looks fully locked down.
+> 工具描述绝不仅仅是模型恰好看到的普通文档，而是模型直接当作指令执行的文本字符串。正因如此，它往往成为攻击看似严密防御系统的最廉价突破口。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 25
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Name the attack surfaces a correctly authorized, stateless 2026-07-28 deployment still exposes: metadata poisoning, rug pulls, tool shadowing, confused deputy, token passthrough, requestState tampering, SSRF, DNS rebinding, malicious icons, and supply chain drift
-- Pin a tool definition by hash and detect the moment a later descriptor changes underneath an earlier approval
-- Treat a tool's description, annotations, and results as untrusted input the model reads as instructions, not as documentation a human already vetted
-- Block token passthrough so a credential scoped to the MCP server never reaches an unrelated upstream API
-- Choose an isError tool execution result over an invented protocol error code when a policy, not a malformed request, is the reason a call was refused
+- 明确一个经过正确授权且遵循 2026-07-28 无状态规范的部署环境仍然暴露的十大攻击面：元数据投毒 (Metadata Poisoning)、恶意撤换/抽地毯 (Rug Pulls)、工具遮蔽 (Tool Shadowing)、混淆代理 (Confused Deputy)、令牌穿透透传 (Token Passthrough)、requestState 篡改、服务端请求伪造 (SSRF)、DNS 重新绑定 (DNS Rebinding)、恶意图标 (Malicious Icons) 以及供应链漂移 (Supply Chain Drift)。
+- 基于哈希摘要固定工具描述符 (Pin a tool definition by hash)，并在先前批准的描述符发生隐蔽变更的瞬间精准感知。
+- 将工具的名称、描述、注解和返回结果统一视为模型读取的不可信输入指令，而非已经过人工严格审查的安全文档。
+- 彻底阻断令牌穿透，确保限定在 MCP 服务器范围内的凭据绝不会流向无关的上游第三方 API。
+- 当拒绝调用的原因是策略限制而非报文格式错误时，准确选用附带 `isError: true` 的工具执行结果，而非凭空捏造协议层错误码。
 
-## The Problem
+## 问题背景
 
-A support gateway aggregates a dozen MCP servers so one assistant can search tickets, read internal documentation, and push resolved cases into a billing system. Every one of those servers is, from the model's point of view, just text: a name, a description, a schema, and whatever content a tool call happens to return. The protocol does not ask whether that text is honest. It asks whether a message is well formed, and a message can be perfectly well formed while lying about what a tool does.
+在一个典型的客服支持网关中，可能会聚合十几个 MCP 服务器，从而让一个 AI 助手既能检索工单、查阅内部技术文档，又能将已解决的案例同步推送到计费系统中。从大语言模型的视角来看，所有这些服务器都只是纯文本：一个名称、一段描述、一个 JSON Schema，以及某次工具调用恰好返回的内容。MCP 协议本身并不检验这些文本是否诚实可信；它只检验报文在语法上是否格式良好 (Well-formed)，而一条结构完全合规的报文完全可以在其声称的功能上进行欺骗。
 
-Lesson 22 drew the trust boundaries and lesson 25 built the consent gate that asks a human before a destructive call runs. Neither one finishes the job by itself. Consent gates the call a human actually sees; it does nothing about the description the model already read to decide which call to make, or the routine, non-destructive calls nobody reviews one at a time. A gateway needs controls that hold even when no human is watching, and that catch a problem before it ever reaches a confirmation dialog.
+第 22 课划定了信任边界，第 25 课构建了在破坏性操作执行前询问人类的用户同意网关。然而，仅靠这两项机制并不能彻底保障安全。用户同意网关只能防守人类能够亲眼看到的那一次调用；对于模型为了决定发起哪项调用而预先阅读的工具描述，或者那些没有人会逐一审查的常规只读调用，同意网关无能为力。安全网关必须具备在无人工实时盯防时依然生效的自动化控制手段，并在恶意内容触达用户确认弹窗之前就将其就地拦截。
 
-## The Concept
+## 核心概念
 
-Security and Governance builds in layers. Lesson 22 named the trust zones. Lesson 23 and lesson 24 covered how a client proves who it is. Lesson 25 built the moment a human approves one specific call. This lesson is the layer underneath all of that: what a server or a gateway does automatically, for the calls nobody reviews one at a time, and for the moment before any human sees anything, when a tool description is already sitting in the model's context.
+安全与治理体系是分层构建的：第 22 课划分了信任区域；第 23 课与第 24 课解决了客户端如何证明自身身份；第 25 课实现了人类明确批准具体调用的关键节点。而本课所聚焦的，是位于这一切之下的防御底座：即服务器或网关针对无人逐一审查的海量调用能够自动执行哪些防护，以及在人类尚未察觉任何异样、工具描述已经载入模型上下文的时刻，系统该如何抵御潜在威胁。
 
-Treat a tool's name, description, annotations, icons, and results as untrusted input to the model, the same way lesson 22 treats every other piece of server-supplied content. A description can embed an instruction that has nothing to do with what the tool actually does: language telling the model to also call a different tool, to forward its output somewhere else, or to not mention a step to the user. The model reads natural language as natural language; it cannot tell a genuine usage note from an attack by tone alone, so the defense cannot be reading more carefully. The same risk applies to what a tool returns. A successful, well formed CallToolResult is exactly as trustworthy as the server that produced it, so a compromised or malicious server can plant an instruction inside a normal result's text content just as easily as inside its own description. A static scanner that flags phrases such as an instruction to ignore prior guidance, or a request to keep a step secret from the user, is cheap enough to run at registration and on every change. It is a tripwire, not a proof of safety: a scanner can miss an attack phrased carefully enough, and it can flag a legitimate warning that happens to share a phrase. Treat a hit as something a reviewer looks at, not an automatic verdict either way.
+### 将工具元数据与返回结果视为不可信输入
 
-A tool that passed review yesterday is not the same tool forever. A rug pull is a change to a previously approved name, description, schema, or annotation, and the danger is that the name usually stays the same, so nothing about a later call looks different. Pinning only the description text misses a schema or annotation change that alters what a tool can do just as much as new wording would, so pin the whole descriptor instead: canonicalize it and hash it.
+必须将工具的名称、描述、注解、图标以及执行结果，一律视为输入给模型的不可信数据，这与第 22 课对待所有服务器提供内容的原则完全一致。工具描述中完全可能被植入与工具实际功能毫无关系的隐式指令：例如要求模型额外调用另一个工具、将其输出静默转发到外部服务器，或者在回复用户时隐瞒该步骤的存在。模型在解析自然语言时一视同仁，单凭语气和措辞根本无法辨别一条说明究竟是正规的使用指导还是精心设计的越狱攻击，因此我们的防御绝不能依赖让模型“更仔细地辨别”。同样的风险也存在于工具的返回结果中：一个执行成功且格式良好的 CallToolResult，其可信度完全取决于生成它的服务器；遭到入侵或恶意的服务器完全可以在普通结果的文本内容中植入指令，就像在工具描述中投毒一样容易。在注册以及后续发生变更时，运行静态扫描器来检测诸如“忽略先前指导”或“向用户保密此步骤”等可疑短语是一种成本极低且非常有效的手段。但静态扫描只是一道触发警报的绊线，而非安全性证明：措辞巧妙的攻击可能绕过扫描，而包含某些警告短语的合法工具也可能被误报。因此，扫描命中应当作为人工复审的触发信号，而不是绝对的机器裁决。
+
+### 防范恶意撤换 (Rug Pulls)：哈希固定与全量描述符绑定
+
+昨天通过人工审查的工具，明天并不一定还是同一个工具。“恶意撤换 (Rug Pull)”指的是对先前已批准的工具名称、描述、Schema 或注解进行恶意篡改，其最大的隐蔽性在于工具名称通常保持不变，因此后续的调用在表面上看没有任何异常。如果仅仅通过哈希固定描述文本，就会漏掉对 Schema 或注解的隐蔽篡改，而这些篡改对工具实际行为能力的改变丝毫不亚于直接修改文本。因此，必须对整个工具描述符进行规范化序列化并计算哈希摘要：
 
 ```python
 payload = json.dumps(
@@ -37,11 +41,13 @@ payload = json.dumps(
 digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
 ```
 
-Store the digest against the tool's qualified name. On every refresh, an unknown key waits for review, a duplicate unqualified name needs a namespace, and a known key whose digest changed is a rug pull: quarantine the tool, hold it for re-review, and only fold the new digest in once someone has actually looked at it. Hash equality proves stability, not safety. A poisoned descriptor stays poisoned even when it is perfectly pinned, which is why pinning is a change detector layered on top of the description scan, never a replacement for it.
+将该哈希摘要与工具的完全限定名 (Qualified Name) 绑定存储。在每次元数据刷新时：未知的键需要提交人工审查；未加限定前缀的重名工具必须划分命名空间；而已知键如果哈希摘要发生改变，则判定为疑似 Rug Pull：系统必须立即隔离该工具并挂起待查，唯有在安全人员完成实际复审后方可更新哈希摘要。必须清醒认识到：哈希一致只能证明内容没有发生变动，绝不等于内容本身是安全的。一个已经中毒的描述符即便被完美固定也依然包含毒素，这就是为什么哈希固定是叠在描述扫描之上的变更检测机制，而绝非其替代品。
 
-Two servers can each expose a tool literally named search without either one knowing the other exists. A gateway that aggregates both and lets discovery order silently pick a winner has created tool shadowing: a call meant for one server's search can route to the other's, and nothing in the request shows the mistake. Lesson 06 already prefixes aggregated names with a server identifier for exactly this reason, and lesson 09's manifest review treats an unqualified, collision-prone name as a finding worth flagging on its own. The qualified name, not the description or the server's self-reported serverInfo, is what approval, audit, hash pins, and routing should all refer to.
+### 工具遮蔽 (Tool Shadowing) 与混淆代理 (Confused Deputy)
 
-An MCP server that calls a third-party API on a client's behalf is an OAuth client itself, and that makes it a deputy: something acting with authority delegated from someone else. A confused deputy attack tricks that deputy into using its authority on the attacker's behalf, most often through a static client id and a browser that still carries a consent cookie from an earlier, legitimate flow. The everyday version of the same mistake is simpler and more common: token passthrough, where a handler takes the bearer token a client used to authenticate to the MCP server itself and forwards that same token to an unrelated upstream API.
+两个不同的服务器可能各自暴露一个名称完全一致的工具（例如都叫 `search`），且彼此毫不知情。如果聚合网关仅仅依据服务发现的先后顺序静默选取胜者，就会造成“工具遮蔽 (Tool Shadowing)”漏洞：原本发往 A 服务器 `search` 工具的调用可能会被错误路由到 B 服务器的工具，而请求本身看不出任何差错。正因如此，第 06 课在聚合名称时强制加上服务器标识前缀，而第 09 课在清单审查中将无限定前缀的易冲突名称直接作为风险项予以标记。无论是审批、审计、哈希固定还是路由寻址，都必须基于完全限定名，而不是简单的描述文本或服务器自报的 serverInfo。
+
+当 MCP 服务器代表客户端调用第三方 API 时，该服务器本身也扮演了 OAuth 客户端的角色，这使它成为了一个代理者（即代表他人被授予权限的实体）。“混淆代理 (Confused Deputy)”攻击正是利用这一点，诱骗该中间代理以攻击者的名义动用其被委派的特权，最常见的形式是利用静态 Client ID 以及浏览器残留的历史会话 Cookie。而在日常工程中，这种错误最常见、最普遍的变体是“令牌穿透透传 (Token Passthrough)”：处理程序直接获取客户端用于向 MCP 服务器自身进行身份验证的 Bearer Token，并原封不动地将该令牌转发给无关的上游第三方 API。
 
 ```json
 {
@@ -56,78 +62,82 @@ An MCP server that calls a third-party API on a client's behalf is an OAuth clie
 }
 ```
 
-The value in `arguments.upstream_credential` is the same string as the inbound bearer token, and a handler that forwards it has handed the upstream API a credential that was only ever validated for the MCP server's own audience. The fix is not cleverer parsing; it is refusing to forward and minting a separate, upstream-scoped credential instead, exactly as the authorization security considerations require: a server must validate that a token was issued for its own audience and must never pass through the token it received from its client on an upstream call.
+在上例中，`arguments.upstream_credential` 中的值与传入的 Bearer Token 完全相同。如果处理程序将其直接转发，就等于将一个受众 (Audience) 仅限定为该 MCP 服务器的凭证拱手让给了上游 API。防御此问题的方法不是进行更复杂的字符串解析，而是坚决拒绝透传，并单独为上游 API 签发限定于上游受众的独立凭证。正如 OAuth 授权规范的安全考量中所严格要求的：服务器必须校验令牌是否专门为自身的受众签发，并且严禁在向上游发起调用时直接复用从客户端接收到的令牌。
 
-Lesson 14 covers Multi Round-Trip Requests in depth, but its `requestState` field belongs on this lesson's threat list too, because it is attacker-controlled the moment it leaves the server. A client cannot be trusted to return it unmodified. If `requestState` ever influences an authorization decision, resource access, or business logic, sign or encrypt it, bind it to the authenticated principal, a short expiry, and a digest of the request it belongs to, and enforce single use on the server rather than hoping a client behaves.
+### 篡改防护、SSRF、DNS 重新绑定与供应链风险
 
-Several MCP surfaces ask a client, a server, or an authorization server to fetch a URL somebody else supplied, and each one is a server-side request forgery opportunity if that URL is followed blindly: an authorization server fetching a Client ID Metadata Document, a client following a `resource_metadata` URL from a `WWW-Authenticate` challenge, or a validator resolving a `$ref` inside a tool's inputSchema. The rule is the same in every case: never auto-dereference a network URI by default. Fetching one, if it is ever necessary, is an explicit, opt-in action behind an allowlist that blocks private and link-local address ranges, enforces HTTPS, and applies a timeout, because a URL that looks ordinary during validation can resolve to an internal address by the time the request actually runs. DNS rebinding is that same gap applied to a local HTTP server: a hostname resolves to a safe address once, then to a loopback or internal address on the next lookup, so lesson 19's Origin validation and localhost binding exist specifically to close it. Icons carry a smaller version of the same risk in image form: accept only `https:` or `data:` URIs, require the same origin as the server that declared the icon, and treat SVG as executable content rather than as a picture, because an SVG can carry a script.
+第 14 课深入剖析了多轮往返请求 (MRTR)，但其 `requestState` 字段同样必须列入威胁清单：该字段离开服务器的瞬间，就沦为了攻击者可控的数据，绝不能盲信客户端会原样回传。一旦 `requestState` 参与影响授权决策、资源访问或业务逻辑，服务器端必须对其进行加密签名，将其绑定到经身份验证的主体标识、较短的过期时间以及对应请求的摘要上，并在服务端强制执行一次性消费校验。
 
-Supply chain risk shows up before any of this. A registry listing, a package version, and the endpoint that actually answers a request are three separate facts from three separate authorities, and treating a registry hit as automatic trust collapses them into one. A namespace has to be verified against its authenticated owner, not just string matched, because a prefix check alone accepts a lookalike namespace as readily as the real one. A package or remote source has to be pinned by digest, because a floating version tag can point at different bytes tomorrow than it did during review. The running server has to be re-observed after admission too, because a server that passed review can still add a tool later, which is a supply chain rug pull wearing a different name. None of these checks substitutes for the others.
+在 MCP 的多个交互面上，都会要求客户端、服务器或授权服务器抓取外部提供的 URL，如果盲目跟随这些 URL，每一处都会沦为服务端请求伪造 (SSRF) 的通道：例如授权服务器拉取客户端 ID 元数据文档、客户端解析 `WWW-Authenticate` 质询中的 `resource_metadata` 地址，或是校验器解析工具 `inputSchema` 内的 `$ref`。防范规则非常明确：严禁在默认情况下自动解引用网络 URI。若确实需要抓取，必须将其置于严格的白名单机制之后，全面屏蔽私有 IP 地址与本地链路地址段，强制启用 HTTPS 并设置超时时间。因为一个在验证阶段看似正常的域名，在请求真正发出时完全可能被解析到内部受限网络。DNS 重新绑定 (DNS Rebinding) 则是针对本地 HTTP 服务器的同类攻击：域名在首次解析时指向安全的外网 IP，但在随后的请求中却被重新绑定到环回地址 (Loopback) 或内网地址。第 19 课强制要求的 Origin 校验与 Localhost 绑定机制，正是专门为了堵死这一漏洞。图标 (Icons) 同样存在类似风险：仅接受 `https:` 或 `data:` URI，强制要求与声明图标的服务器同源，并坚决将 SVG 视为可执行脚本内容而非普通图片进行严格过滤。
 
-A policy engine has exactly three channels available for a refusal, and reaching for the wrong one is itself a common mistake worth naming. A request that is malformed, such as naming a tool the server never registered, is a JSON-RPC protocol error: code `-32602`, the same channel lesson 02 used for an unknown tool. A refusal the model should read and possibly react to, such as a rate limit that tripped or a tool held after a rug pull, belongs in a normal result with `isError: true` and an explanation in its content, never a JSON-RPC error and never a made up code. The temptation is to reach for something like `-32001`, because the legacy `-32000` to `-32019` block looks like open space for a custom denial code. It is not: that block exists for legacy implementations only, `-32020` to `-32099` is reserved for the specification itself, and an application-defined code, if one is truly needed, belongs outside `-32768` to `-32000` entirely. Most policy refusals never need one, because `isError` already gives the model a channel it can read, explain to the user, and sometimes correct for.
+在更上游的环节，供应链风险早已埋下伏笔。注册中心条目 (Registry Listing)、软件包版本以及实际响应请求的端点，是来自三个不同权威实体的独立事实；若把注册中心收录直接等同于可信，就是将这三者混为一谈。命名空间必须结合认证所有者进行严格校验，而不能仅做前缀字符串匹配，否则攻击者极易通过外观相似的仿冒命名空间实现钓鱼攻击。软件包或远程代码必须基于内容摘要 (Digest) 进行固定，因为浮动的版本标签（如 latest）随时可能被替换为恶意字节。而在服务器准入之后，运行中的服务端仍需持续监控，因为通过初审的服务器完全可能在后续动态追加恶意工具，这本质上是换了马甲的供应链恶意撤换。以上任何一项检查都不能替代其他防线。
 
-None of these controls needs a human in the loop to work, which is the point. A single automatic step that reads untrusted input, touches sensitive data, and takes a consequential action all at once is the shape every threat on this list is trying to reach. Splitting that step, whether by pinning a descriptor before it can silently change, scanning a description before it reaches a model, validating a credential's audience before it leaves the server, or refusing a network reference before it is ever fetched, is what keeps one missed review from becoming an incident. A rate limit, a timeout, and running a tool handler in a sandboxed process with reduced privileges are blunter still: none of them understands what an attack looks like, and that is exactly their value, because they bound the damage even when every smarter check upstream missed something.
+### 策略拒绝的三大通道选择
+
+当策略引擎决定拒绝某次请求时，协议提供了三个不同的通道，而选错通道本身就是一种常见的工程缺陷。如果请求本身格式畸形（例如调用了一个服务器从未注册过的工具名称），这属于 JSON-RPC 协议层错误，应返回错误码 `-32602`（正如第 02 课处理未知工具那样）。但如果请求在语法上合规，拒绝的原因是策略拦截（例如触发了速率限制，或是工具因 Rug Pull 正在被隔离审查），则该拒绝必须通过包含 `isError: true` 的常规 `tools/call` 结果返回，并在其 `content` 中附带给模型阅读的文本解释，绝不能返回 JSON-RPC error，更不能自造错误码。许多开发者容易误用 `-32001` 等错误码，误以为旧规范中的 `-32000` 到 `-32019` 区间是可以随意自定义的错误码空间。事实并非如此：该区间仅为旧版遗留实现保留，`-32020` 到 `-32099` 则已被 MCP 核心规范保留用于未来扩展；即使真正需要应用程序自定义协议错误码，也必须完全脱离 `-32768` 到 `-32000` 这一保留区间。绝大多数策略拒绝根本不需要自定义协议错误码，因为 `isError: true` 已经为大模型提供了一个清晰的反馈通道，模型可以理解失败原因、向用户说明情况，并在适当时候调整策略重试。
+
+上述安全控制机制的真正价值在于：它们无需人工实时介入即可自主运转。一个未经检查就直接读取不可信输入、触碰敏感数据并引发实质性后果的单一处理步骤，正是本课清单上所有攻击手段试图寻找的脆弱点。通过将这一过程层层拆解（在静默篡改前固定描述符、在触达模型前扫描描述文本、在凭据出站前校验受众目标、在网络请求发出前阻断恶意引用），系统得以避免因一次偶发的人工疏漏而酿成严重的安全事故。速率限制、超时控制以及在低权限沙箱进程中运行工具处理程序，则是更为根本的兜底屏障：它们虽然无法感知攻击的具体形态，却能在上游所有精细检测不幸失效时，有效将系统受损边界牢牢锁定。
 
 ```figure
 mcpa-26-attack-surface
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure arranges eight threats around a central gateway node: poisoned descriptions and rug pulls near the top, tool shadowing and token passthrough on the right, requestState tampering and a network `$ref` toward the bottom, DNS rebinding and supply chain drift on the left. Nothing in the diagram is exotic; every spoke is a variation on the same idea, something a server, a registry, or a client supplied that the gateway chose to verify instead of trust. The center names the three moves that answer all eight: pin a descriptor so a later change is visible, scan a description before it reaches a model, and limit what a single caller or a single tool can do even when every individual call looks legitimate on its own.
+上方的架构图围绕中央网关节点展示了八大核心威胁：顶部为受污染的描述符投毒与 Rug Pull 恶意替换；右侧为工具遮蔽与令牌穿透；底部为 requestState 篡改与外部网络 `$ref` 注入；左侧为 DNS 重新绑定与供应链代码漂移。图中的每一个威胁分支都遵循相同的逻辑本质：即网关选择对来自服务器、注册中心或客户端的数据进行自主验证，而非盲目信任。中央核心区域总结了应对全部八类威胁的三大防御手段：固定工具描述符以便让后续变更显形；在描述符送入模型上下文前执行恶意模式扫描；并在单一调用方或单个工具级别严格限制行为边界，即便每单次调用从表面上看都完全合法。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Open `code/main.py`. It builds a `RiskGateway` fronting two tools, `search_helpdesk` and `sync_upstream_ticket`, then registers a third tool whose schema references a network `$ref` and a fourth tool whose description carries an injected instruction.
+打开 `code/main.py`。该程序构建了一个安全网关 `RiskGateway`，前端代理了两个基础工具：`search_helpdesk` 和 `sync_upstream_ticket`。随后，程序尝试注册第三个工具（其 Schema 引用了外部网络 `$ref`）以及第四个工具（其描述中暗含了注入指令）。
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed transcript against the concept section. The registration line for `bulk_import` shows `accepted=False`: the network `$ref` gets it refused before the tool ever reaches the catalog. The registration line for `draft_reply_wizard` shows `accepted=True` with a reason naming the flagged phrase: a poisoned tool is still recorded, but quarantined on the spot. In the request log, the first `search_helpdesk` call succeeds, then `gateway.observe()` simulates a descriptor refresh with a changed schema, and the very next call to the same tool comes back `isError: true`, held for review as a rug pull even though the tool's name never changed. `gateway.approve()` clears the hold and repins the hash, and the following call succeeds again. Watch `sync_upstream_ticket` get called twice: once with `upstream_credential` set to the same token the client used to authenticate, refused as token passthrough, and once with a distinct, upstream-scoped credential, which succeeds. The final `search_helpdesk` calls push past its configured `rate_limit` of four, and the call that would be the fifth comes back as an execution error rather than silently queuing or crashing. Then add a phrase to `SUSPICIOUS_PHRASES`, register a new tool whose description contains it, and confirm it is quarantined the moment it is registered, before anyone ever calls it.
+对照核心概念阅读终端打印的运行记录。观察 `bulk_import` 的注册结果显示 `accepted=False`：由于包含网络 `$ref`，该工具在进入目录前就被直接拒绝。观察 `draft_reply_wizard` 的注册日志显示 `accepted=True` 并列出了命中可疑词库的具体原因：虽然记录了该投毒工具，但立即对其进行了安全隔离。在随后的请求日志中，第一次调用 `search_helpdesk` 顺利成功；随后 `gateway.observe()` 模拟了一次 Schema 发生改变的描述符刷新，接下来的同一工具调用立刻返回 `isError: true`，作为疑似 Rug Pull 被挂起审查，尽管该工具的名称自始至终未曾变动。执行 `gateway.approve()` 清除了挂起状态并重新固定了哈希摘要，随后的调用便恢复正常。接着观察两次调用 `sync_upstream_ticket` 的不同表现：第一次由于将 `upstream_credential` 设置为客户端自身的认证令牌，被网关作为令牌穿透行为当场拦截；第二次传入专门针对上游作用域的独立凭据后，调用顺利成功。最后，观察连续调用 `search_helpdesk` 突破了配置的速率限制（阈值为 4 次），第五次调用被明确作为执行错误拦截，而不是静默排队或引发系统崩溃。你还可以尝试向 `SUSPICIOUS_PHRASES` 添加新短语，注册包含该短语的新工具，并验证它在被任何人调用之前即在注册瞬间被自动隔离。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/threat-control-matrix.md` is a one-page reference mapping ten threats, the eight in the figure plus prompt injection through results and malicious icons, to the control that answers each one and where the specification or this lesson's code shows it working. Keep it next to lesson 22's trust boundary map and lesson 25's consent checklist; together they cover protocol-level trust, human review, and the automatic controls this lesson adds.
+`outputs/threat-control-matrix.md` 是一份单页参考矩阵，详细梳理了十大安全威胁（包括示意图中的八大威胁，加上通过执行结果注入提示词与恶意图标攻击），映射了对应的防御控制机制，并标明了规范对应章节及本课代码的落地实现。请将此矩阵与第 22 课的信任边界图及第 25 课的同意检查清单结合使用，三者共同构建了协议级信任、人工审核流程与本课自动化技术防御的完整闭环。
 
-## Verify It
+## Verify It (验证方法)
 
-Run the tests from the lesson directory:
+在课程根目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: an unknown tool is a protocol error while a rate limit trip and a held rug pull are both `isError` tool execution results, a network `$ref` is refused at registration before it ever reaches the catalog, a poisoned description is quarantined the moment it is registered, a changed descriptor is held until `approve()` repins its hash, a token passthrough attempt is blocked while a distinct upstream credential succeeds, and every request on the wire still carries its protocol version and capabilities. The repository's wire checker validates the lesson's transcript against the 2026-07-28 rules:
+测试套件系统验证了本课的各项防御主张：未知工具调用触发标准协议错误，而速率超限和挂起的 Rug Pull 工具均返回包含 `isError: true` 的工具执行结果；网络 `$ref` 在注册阶段被直接拒绝且无法入库；投毒描述符在注册瞬间被立即隔离；发生变动的描述符被自动挂起直到 `approve()` 重新计算哈希；令牌穿透行为被严格阻断而合法独立凭证顺利放行；底层线路上发出的每一条请求都完整携带有协议版本与能力协商字段。仓库提供的 Wire 校验器同样会依据 2026-07-28 规范检验测试通信日志：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/26-risk-and-safety-controls
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-Lesson 33 assembles one exchange that touches every domain, including a tool call, an MRTR consent round trip, and an audit chain. None of that is safe to demonstrate on an ungoverned catalog. The capstone's tool call assumes something like this lesson's gateway already pinned the descriptor it is calling, already scanned it for an injected instruction, and already knows the credential it is about to use will never be forwarded upstream unchanged. Carry the threat-control matrix into lesson 27's audit trail: a control decides what is allowed to happen, and the log that lesson builds proves what did.
+在第 33 课的综合项目中，将完整演练一个贯穿所有知识领域的全流程交互，涵盖工具调用、MRTR 用户同意往返以及审计链条。在未受治理的安全盲区中展示这些能力是极其危险的。Capstone 中的工具调用预设了类似本课网关的防护体系已经就位：调用的描述符已被哈希固定、描述内容已通过注入扫描，且即将使用的身份凭据绝不会被未加改造地直接穿透转发给上游服务。请将本课的威胁控制矩阵带入第 27 课的审计追踪中：控制策略决定了系统允许发生什么，而审计日志则负责铁证如山地证明实际发生了什么。
 
-## Key Terms
+## 关键术语 (Key Terms)
 
-| Term | Meaning |
+| 术语 | 定义说明 |
 |------|---------|
-| Metadata poisoning | An instruction embedded in a tool's name, description, or annotations that has nothing to do with what the tool does |
-| Rug pull | A change to a previously approved tool descriptor, often while the tool's name stays the same |
-| Definition pinning | Hashing a tool's whole descriptor at approval time so a later change is detectable |
-| Tool shadowing | Two servers exposing the same unqualified tool name so discovery order silently picks one |
-| Confused deputy | An intermediary tricked into using its own delegated authority on an attacker's behalf |
-| Token passthrough | Forwarding a client's MCP-server-scoped bearer token to an unrelated upstream API |
-| requestState tampering | Modifying the opaque MRTR state a client is supposed to echo back unchanged |
-| SSRF | Server-side request forgery: inducing a fetch of an internal or unintended URL |
-| DNS rebinding | A hostname that resolves to a safe address during validation and an internal one at request time |
-| Supply chain drift | A registry listing, a package, or a running endpoint changing independently after admission |
+| Metadata poisoning（元数据投毒） | 在工具的名称、描述或注解中植入与工具实际功能无关的模型控制指令 |
+| Rug pull（恶意撤换/抽地毯） | 对先前已获批准的工具描述符进行隐蔽篡改，而通常工具名称保持不变 |
+| Definition pinning（定义/描述符固定） | 在审批时对工具完整描述符计算加密哈希，确保后续任何细微变动皆可被即时感知 |
+| Tool shadowing（工具遮蔽） | 多个服务器暴露相同的非限定工具名称，导致网关依据发现顺序发生静默覆盖 |
+| Confused deputy（混淆代理） | 拥有合法委托权限的中间服务被诱骗代表攻击者滥用该特权的安全漏洞 |
+| Token passthrough（令牌穿透透传） | 将客户端限定用于 MCP 服务器自身的身份验证令牌直接转发给外部上游 API 的高危行为 |
+| requestState tampering（状态篡改） | 对客户端应当原样回传的 MRTR 不透明状态字符串进行恶意修改 |
+| SSRF（服务端请求伪造） | 诱导服务器向内部受限网络或非预期外部目标发起未授权网络请求的攻击手段 |
+| DNS rebinding（DNS 重新绑定） | 域名在验证阶段解析为合法外网地址，在请求实际发出时被重新指向内网或环回地址的攻击手法 |
+| Supply chain drift（供应链漂移） | 准入通过后，注册中心条目、依赖包版本或实际运行中的服务端点独立发生非受控变更 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices), especially Token Passthrough, Server-Side Request Forgery, and State Handle Hijacking
-- [Authorization security considerations](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations)
-- [Multi Round-Trip Requests](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr), Security Considerations
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 13
-- `phases/13-tools-and-protocols/15-mcp-security-tool-poisoning`, for the attack surfaces this lesson builds on
-- `phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift`, for admission pinning and rollback in depth
+- [MCP 安全最佳实践](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)，重点参阅令牌穿透、SSRF 以及状态句柄劫持章节。
+- [OAuth 授权规范安全考量](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations)。
+- [多轮往返请求 (MRTR) 规范安全考量](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr)。
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 13 节。
+- `phases/13-tools-and-protocols/15-mcp-security-tool-poisoning`，深入学习本课攻防对抗的原型场景。
+- `phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift`，详尽掌握准入哈希固定与回滚策略。

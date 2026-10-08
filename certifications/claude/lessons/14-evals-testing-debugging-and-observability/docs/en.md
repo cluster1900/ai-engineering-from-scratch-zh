@@ -1,83 +1,85 @@
-# Evals Turn Agent Behavior Into Engineering Evidence
+# 评测将智能体行为转化为工程证据
 
-> A trace tells you what happened. An eval tells you whether it was acceptable. A regression gate keeps the next change from quietly making it worse.
+> 追踪遥测（Trace）告诉你发生了什么，评测（Eval）告诉你表现是否达标，而回归门禁（Regression Gate）则能防止下一次版本变更时系统悄然退化。
 
 **Type:** Build
 **Languages:** Python
 **Prerequisites:** [The Messages API Is a State Machine](../../08-messages-api-and-application-lifecycle/), [A Tool Loop Is Controlled Delegation](../../10-tool-use-and-agentic-loops/), [Security Lives Outside the Prompt](../../13-application-security-and-secrets/)
 **Time:** ~120 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Separate unit, integration, end-to-end, and behavioral evaluation layers
-- Build realistic cases with output, trajectory, final-state, safety, cost, and latency checks
-- Calibrate model-based graders against human judgments
-- Classify transport, protocol, model, tool, contract, and policy failures
-- Design traces that support reproduction without leaking sensitive data
-- Use regression thresholds and statistical comparison for non-deterministic systems
+- 严格区分单元测试、契约测试、集成测试与行为评测层级
+- 构建包含输出契约、调用轨迹、最终状态、安全性、成本与延迟的多维真实评测用例
+- 基于人类专家标注对基于模型的评分器 (Model-Based Grader / LLM-as-a-Judge) 进行严密校准
+- 对传输超时、协议错误、模型生成、工具执行、Schema 契约与安全策略故障进行精准分类
+- 设计能够精准复现问题的全链路追踪日志，同时杜绝敏感数据泄露
+- 针对非确定性系统建立科学的统计回归阈值与置信区间对比机制
 
-## The Answer Passed While the System Failed
+## 问题背景
 
-An order agent responds, "Your replacement has been shipped." A text grader finds the words "replacement" and "shipped" and marks the case correct.
+一个订单客服智能体回复道：“您的换货商品已经发出。”一个简单的文本评分器在回复中匹配到了“换货”与“发出”这两个关键词，随即判定该用例通过。
 
-The trace shows no shipping tool call. The order database shows no replacement. The agent invented a successful action.
+然而查看底层的执行轨迹（Trace）却发现，智能体根本没有调用发货工具；核对后端的订单数据库，也根本查不到任何换货申请记录。智能体凭空捏造了一次原本未曾发生的成功操作。
 
-The output grader passed. The application failed.
+文本维度的输出评分器通过了，但真实的应用程序却发生了严重故障。
 
-AI evaluation must reach beyond prose. A production case can have several independent expectations:
+对 AI 系统的工程评测绝不能仅仅停留在语言表面。一个生产级测试用例通常包含多项相互独立的预期断言：
 
-- The answer states only verified facts.
-- The correct tool was selected.
-- No forbidden tool was selected.
-- Tool arguments matched the authenticated user.
-- The final external state changed as intended.
-- An unsafe request caused no side effect.
-- Latency and cost remained within budget.
+- 回复文本仅陈述经过客观验证的事实。
+- 正确选择了符合业务意图的合法工具。
+- 绝没有调用任何被禁用的敏感工具。
+- 工具传入的参数与当前已认证的用户身份严格吻合。
+- 外部系统的客观物理状态确实按预期发生了变更。
+- 面对不安全的恶意请求时未产生任何外部副作用。
+- 整体端到端延迟与 Token 经济成本控制在预算之内。
 
-Treat these as separate checks. A single score can summarize them later, but it should not erase which contract broke.
+必须将这些检查点作为完全独立的维度进行验证。后续可以通过单一综合得分进行宏观汇总，但绝不能抹平具体是哪一项契约发生了破坏。
 
-## Test the Deterministic Layers First
+## 核心概念
 
-Do not use an LLM judge to test code that a unit test can prove.
+### 优先对确定性层级进行充分测试 (Test the Deterministic Layers First)
+
+凡是能够用确定性单元测试彻底证伪的代码，坚决不要浪费昂贵的 LLM 裁判去评判。
 
 ```mermaid
 flowchart TB
-    Unit[Unit tests] --> Contract[Schema and protocol contract tests]
-    Contract --> Integration[Live integration tests]
-    Integration --> Behavioral[Behavioral evals]
-    Behavioral --> EndToEnd[End-to-end final-state tests]
-    EndToEnd --> Canary[Production canary and monitoring]
+    Unit[单元测试] --> Contract[Schema 与协议契约测试]
+    Contract --> Integration[在线真实集成测试]
+    Integration --> Behavioral[动态行为评测]
+    EndToEnd[端到端最终状态校验] --> Canary[生产金丝雀灰度与监控]
+    Behavioral --> EndToEnd
 ```
 
-**Unit tests** cover schema validators, stop-reason branches, policy gates, retry budgets, redaction, and tool handlers.
+**单元测试 (Unit tests)：** 覆盖 Schema 校验器、停止原因分支逻辑、策略拦截门禁、重试预算计数器、日志脱敏函数以及具体的工具处理函数。
 
-**Contract tests** cover Messages content ordering, MCP initialization, JSON-RPC correlation, streaming event assembly, and provider serialization boundaries.
+**契约测试 (Contract tests)：** 覆盖 Messages 内容块排序约束、MCP 基础通信、JSON-RPC 关联 ID 映射、流式事件帧解析以及提供商序列化格式边界。
 
-**Integration tests** call the actual API or server in a controlled environment. They find authentication, version, timeout, and SDK-wire problems mocks cannot reveal.
+**集成测试 (Integration tests)：** 在受控测试环境中发起真实的外部 API 或服务端调用，精准暴露鉴权失败、版本失配、物理超时以及底层 SDK 传输协议等 Mock 无法还原的真实问题。
 
-**Behavioral evals** test model choices across representative and adversarial cases.
+**行为评测 (Behavioral evals)：** 针对具有代表性的典型业务样本与对抗样本，全面评测模型的决策与工具调用倾向。
 
-**End-to-end tests** inspect the authoritative final state after all model and tool steps.
+**端到端测试 (End-to-end tests)：** 在所有模型推理与工具交互执行完毕后，直接核查外部权威系统中的最终物理状态。
 
-**Production monitoring** detects distribution shifts, provider changes, new user behavior, cost spikes, and failures absent from the development set.
+**生产监控 (Production monitoring)：** 实时感知线上真实流量的数据分布漂移、云端提供商变动、新型用户行为模式、突发成本尖峰以及开发测试集中未曾覆盖的隐蔽故障。
 
-The layers answer different questions. A green unit suite does not prove model behavior. A high model-judge score does not prove the API field reached the database.
+不同层级的测试回答完全不同维度的问题。单元测试全绿并不代表模型在业务场景中表现可信；而基于模型的评分器打出高分，也绝无法证明 API 参数确实成功写入了底层数据库。
 
-## Build Cases From Decisions and Failures
+### 基于真实业务决策与故障案例构建评测集 (Build Cases From Decisions and Failures)
 
-Start with 20 to 50 cases, not 5,000 synthetic prompts. Make the first set realistic enough that reviewing every trace teaches you something.
+从 20 到 50 个精心设计的真实案例起步，而不是盲目用脚本生成 5,000 条虚幻的合成提示词。让第一批测试集足够真实扎实，使得团队在复盘每一条轨迹时都能沉淀有价值的认知。
 
-Sources include:
+核心案例来源包括：
 
-- Product requirements and acceptance criteria.
-- Anonymized production failures.
-- Support tickets and human workflows.
-- Boundary values and malformed inputs.
-- Security abuse cases.
-- Model, prompt, or tool migration risks.
-- Cases where experts disagree.
+- 产品 PRD 核心需求与验收标准。
+- 对生产真实线上故障进行脱敏后的复现样本。
+- 人工客服或人工审核沉淀下的典型工作流。
+- 业务临界极值与畸形格式输入。
+- 专业的安全渗透与对抗攻击样本。
+- 模型升级、提示词重构或工具替换时的潜在回归风险点。
+- 领域专家之间存在决策分歧的典型模糊案例。
 
-Each case needs a stable ID, input, trusted fixtures, expected checks, and provenance. Avoid storing sensitive raw production data when a minimal synthetic equivalent preserves the failure.
+每一个用例都必须具备唯一的稳定 ID、清晰的输入内容、受信任的测试夹具（Fixtures）、预期的多维断言，以及明确的来源出处。只要轻量合成的数据能够精确还原故障机理，坚决避免直接存储未经处理的敏感生产数据。
 
 ```json
 {
@@ -94,113 +96,113 @@ Each case needs a stable ID, input, trusted fixtures, expected checks, and prove
 }
 ```
 
-The expected answer is not one exact sentence. It is a set of properties tied to product behavior.
+期望的目标绝非死板地匹配某一句话，而是一组与产品业务行为紧密绑定的属性集合。
 
-Partition cases into development and held-out sets. If you repeatedly tune against every case, you overfit the eval. Keep a separate release set and refresh it with new failures.
+将评测集严格划分为开发集（Development set）与保留测试集（Held-out set）。如果反复针对所有用例调试优化提示词，系统极易在评测集上产生严重的过拟合。必须保留独立的发布验证集，并持续注入线上的新发现故障。
 
-## Evaluate Five Surfaces
+### 评估系统表现的五个核心维度 (Evaluate Five Surfaces)
 
-### Output Contract
+#### 1. 输出契约维度 (Output Contract)
 
-Check JSON schema, required content, forbidden claims, citations, refusal class, tone only when it serves a product requirement, and consistency with tool evidence.
+校验返回的 JSON Schema、必须包含的关键结论、严禁出现的虚假断言、引用来源合法性、拒绝回复类别归属、仅在服务于产品诉求时的语气语调，以及与工具返回客观证据的一致性。
 
-Use deterministic checks for exact fields, enums, links, and forbidden secrets. Use semantic graders only where multiple valid phrasings exist.
+对于固定字段、枚举取值、链接格式以及机密凭证防外泄，坚决使用确定性代码进行断言；仅在存在多种合法自然语言表述的场景下，才引入语义层面的评分器。
 
-### Tool Trajectory
+#### 2. 工具调用轨迹维度 (Tool Trajectory)
 
-Record ordered tool names, normalized argument fingerprints, results, errors, retries, and denials.
+完整记录按序调用的工具名称、归一化参数指纹、执行结果、报错信息、重试轮次以及被安全拦截的记录。
 
-Trajectory expectations can be exact for a workflow and flexible for an agent. A research agent may use either of two approved search paths. Define acceptable sets rather than forcing one incidental sequence.
+在确定性工作流中，轨迹预期可以是严丝合缝的；而在智能体场景下，轨迹应当保留必要的灵活性。例如调研智能体可以通过两条完全合规但不同的路径完成信息检索。应定义合法的工具集合与约束规则，而非强求唯一的特定步骤序列。
 
-Flag:
+重点监控并标红：
 
-- Unnecessary calls.
-- Repeated identical calls.
-- Forbidden capability use.
-- Missing verification calls.
-- Unsafe parallel mutations.
-- Tool errors hidden from the final answer.
+- 不必要的多余工具调用。
+- 连续发起的完全相同调用。
+- 尝试调用未经授权的受限工具。
+- 应当执行核验却遗漏了工具调用。
+- 不安全的并发写操作。
+- 底层工具执行报错却在最终文本中被静默掩盖。
 
-### Final State
+#### 3. 最终客观状态维度 (Final State)
 
-Query the system of record. Did the ticket route to the expected queue? Did a file contain the required change? Did tests pass? Did a deployment become healthy? Did no email send during a denial case?
+直接查询底层的核心业务系统（System of Record）。工单是否确实被流转到了正确的处理队列？目标文件是否确实包含了预期的代码修改？单元测试是否真实执行通过？服务部署在集群中是否确实处于就绪状态？在拦截用例中是否确实没有外发任何邮件？
 
-Final-state assertions are often the strongest agent eval because they are independent of the model's narration.
+最终状态断言往往是整个智能体评测体系中最硬核的防线，因为它的成立完全脱离并独立于模型自身的叙述。
 
-### Safety
+#### 4. 安全防护维度 (Safety)
 
-Use adversarial inputs and assert both behavior and non-events. A safe-looking refusal is insufficient if a secret-read tool already ran.
+使用对抗性输入，同时断言“智能体的正面行为”与“底层的未发生事件”。如果模型吐出了一段看似礼貌的安全拒绝文本，但底层的密钥读取工具先前已经实际被触发执行，那么该用例在安全上依然是绝对失败的。
 
-Measure policy denials, approval prompts, secret exposure, cross-tenant access, untrusted-content obedience, and unauthorized side effects.
+量化统计安全策略拦截频次、人工确认弹窗触发率、敏感凭证暴露次数、跨租户越权调用次数、对不可信内容的服从倾向，以及未授权副作用的发生概率。
 
-### Operational Budget
+#### 5. 运营成本与算力预算维度 (Operational Budget)
 
-Track total and per-turn latency, token usage, cache hits, model calls, tool calls, retries, and estimated cost. Correctness comes first, but an agent that uses 40 turns for a two-step task is not ready.
+全面跟踪全链路耗时与单轮耗时、Token 总消耗量、提示词缓存命中率、模型调用频次、工具调用频次、重试次数以及估算的直接经济成本。正确性固然永远位列第一，但一个耗费了 40 轮交互才完成两步简单任务的智能体，显然无法达到生产交付标准。
 
-Set hard limits for runaway prevention and softer regression thresholds for release comparison.
+设定硬性上限以防范死循环与账单穿透，同时设定相对宽容的回归阈值以便在版本比对时进行横向把控。
 
-## Graders Form a Portfolio
+### 构建多维评分器组合 (Graders Form a Portfolio)
 
-No single grader fits every criterion.
+没有任何单一的评分机制能够胜任所有的评测维度。
 
-| Criterion | Strong grader |
+| 评测维度 | 最佳匹配的强评分器 |
 |---|---|
-| JSON shape | Schema validator |
-| Exact tool order | Deterministic trace assertion |
-| Database state | System-of-record query |
-| Secret leakage | Pattern plus fixture-specific checks |
-| Factual support | Citation resolution and entailment rubric |
-| Helpfulness across valid phrasing | Human-calibrated model judge |
-| Visual quality | Human review or specialized visual rubric |
+| JSON 结构形态 | 标准 Schema 校验器 (Schema validator) |
+| 工具执行时序 | 确定性的轨迹断言代码 (Deterministic trace assertion) |
+| 数据库物理状态 | 权威业务系统数据库直查 (System-of-record query) |
+| 敏感机密外泄 | 正则特征匹配结合测试夹具针对性扫描 |
+| 事实证据支撑度 | 事实溯源核查与蕴含判定规则 (Entailment rubric) |
+| 多样化自然语言表达质量 | 经过人工标注校准的 LLM 裁判 (Human-calibrated model judge) |
+| 视觉生成品质 | 人工评审或专用的多模态视觉评测规则 |
 
-A model judge should receive a clear rubric, the relevant evidence, and a constrained output contract. It should not receive irrelevant chain-of-thought or hidden answers that leak the target.
+当引入基于模型的评分器（LLM 裁判）时，必须向其提供界定清晰的评分量表（Rubric）、相关的客观事实凭证，以及受限的结构化输出契约。切勿向其传入无关的思维链细节，或泄露包含标准答案的目标信息。
 
-Example rubric dimensions:
+典型的评分量表设计示例：
 
 ```text
-Correctness: Every status claim is supported by the tool result.
-Completeness: The response answers the request and names any missing evidence.
-Safety: It does not expose internal data or imply an unauthorized action occurred.
-Score each dimension 0, 1, or 2 and cite the evidence span.
+正确性 (Correctness)：回复中的每一条状态断言都必须严格在工具返回结果中找到明确依据。
+完整性 (Completeness)：回复清晰解答了用户的提问，并如实指出了当前缺失的关键事实。
+安全性 (Safety)：回复未泄露内部敏感数据，且未暗示发生了未经授权的外部操作。
+针对每个维度分别打出 0、1 或 2 分，并必须精准引用对应的证据片段。
 ```
 
-Calibrate the judge against independently labeled human examples. Measure agreement, false positives, and false negatives by important slice. If the judge rewards verbosity or shares the generator's blind spot, change the rubric or grader.
+必须使用具有独立人工专家标注的黄金数据集对 LLM 裁判进行严格校准。分业务切片（Slice）统计其与人工判断的吻合度、假阳性率（误报）与假阴性率（漏报）。如果发现 LLM 裁判倾向于给冗长啰嗦的回答打高分，或者存在与待测生成器相同的认知盲区，必须立即修正评分量表或更换评测模型。
 
-Do not ask the same agent to generate and then declare its own work correct. Independent context and evidence reduce self-confirmation.
+严禁让同一个智能体既充当考生又充当考官来宣称自身工作成果正确。独立的上下文与客观外部证据是消除“自我证实偏差”的唯一途径。
 
-## Non-Determinism Requires Repeated Measurement
+### 针对非确定性系统开展重复统计度量 (Non-Determinism Requires Repeated Measurement)
 
-One passing run is evidence of one run.
+单次测试通过，仅仅是单次运行成功的孤证。
 
-Sampling, provider infrastructure, tool latency, retrieved content, and model updates can change outcomes. For high-variance cases, run several trials with controlled configuration. Record model version, parameters, prompt version, tool version, fixture version, and run seed where applicable.
+模型采样的随机性、服务商基础设施抖动、外部工具延迟、检索内容的动态变化以及云端模型的静默微调，都会导致输出结果产生波动。对于高方差的不确定用例，必须在严格锁定的配置下执行多次重复测试。记录模型版本号、超参数、提示词版本、工具版本、测试夹具版本以及具体的随机种子（Seed）。
 
-Compare candidates with:
+在版本发布横向比对中，系统考量：
 
-- Pass rate and confidence interval.
-- Per-domain or per-slice pass rate.
-- Severe-failure count.
-- Mean and tail latency.
-- Mean tokens and cost.
-- Tool-call distribution.
+- 综合测试通过率及其统计置信区间 (Confidence Interval)。
+- 分领域或特定业务切片的细粒度通过率。
+- 严重级安全与业务穿透故障的数量（必须为 0）。
+- 平均耗时与长尾延迟（p95 / p99）。
+- 平均 Token 消耗量与单次任务综合成本。
+- 工具调用的频次与分布变化趋势。
 
-A 1 percentage-point average gain can hide a new data-leak failure. Define non-negotiable safety and correctness gates before optimizing averages.
+综合平均得分提高 1 个百分点，完全有可能掩盖了引入了一例致命的数据越权泄露。在着手优化平均分之前，必须首先确立不可妥协的硬性安全与核心正确性门禁。
 
-Use paired comparisons when possible: run old and new configurations on the same cases and compare case-level changes. Review every regression, not only the aggregate.
+尽可能采用配对比较法（Paired Comparison）：在新旧两个候选版本上运行完全相同的测试用例集，逐个用例对比变化。逐一排查每一次单点退化，而绝不仅仅盯住宏观的平均数字。
 
-## A Trace Must Reconstruct the Decision Path
+### 追踪链路必须能够完整还原决策路径 (A Trace Must Reconstruct the Decision Path)
 
-Useful trace events include:
+一条高可用的追踪遥测事件应当包含：
 
-- Request accepted and validated.
-- Model invocation started and completed.
-- Content block and stop-reason summary.
-- Tool proposed.
-- Policy decision.
-- Approval requested and resolved.
-- Tool started, completed, failed, or timed out.
-- Result validated and minimized.
-- Final answer validated.
-- Final state checked.
+- 请求被正式接收并校验通过。
+- 模型推理开始与结束时间点。
+- 返回内容块类型与停止原因摘要。
+- 提议调用的工具及其参数。
+- 策略拦截门禁所做出的放行或拦截决策。
+- 发起人工审批请求及最终审批结果。
+- 工具执行开始、完成、报错或超时事件。
+- 工具返回结果的校验与精简记录。
+- 最终回复内容的校验记录。
+- 外部客观最终状态核验结果。
 
 ```json
 {
@@ -216,38 +218,40 @@ Useful trace events include:
 }
 ```
 
-Do not put raw access tokens, complete private documents, or unrestricted tool output into traces. Use typed summaries, redaction, hashing where appropriate, encryption, access control, and retention limits.
+严禁将明文访问令牌、完整的私有敏感文档或未经脱敏的原始工具输出记录在全链路追踪中。应当使用类型化摘要、敏感脱敏、加盐哈希指纹、加密存储、访问控制以及显式的数据留存期。
 
-Propagate one trace ID through the API, agent harness, MCP call, downstream service, and eval report. Without correlation, a timeout appears as unrelated partial logs.
+让全局统一的链路 ID（Trace ID）完整穿透 API 网关、智能体运行底座、MCP 通信、下游微服务以及自动化评测报告。缺乏链路因果关联，一次简单的系统超时就会在日志中碎裂为互不相关的孤立报错。
 
-## Classify Before Recovering
+### 在采取恢复措施前必须精准分类故障 (Classify Before Recovering)
 
-| Failure class | Evidence | Typical response |
+| 故障类别 | 核心表现凭据 | 标准工程应对策略 |
 |---|---|---|
-| Transport timeout | No complete provider response | Retry read-only call with backoff and deadline |
-| Rate limit | Provider status and retry guidance | Queue or back off within user SLA |
-| Protocol error | Invalid content ordering or unknown control state | Fix client state; do not prompt-retry blindly |
-| Contract parse error | Invalid JSON or schema mismatch | Bounded repair or safe fallback |
-| Tool validation error | Invalid arguments | Return exact field error to the loop |
-| Policy denial | Deterministic gate decision | Preserve denial; request valid approval if applicable |
-| Tool-domain failure | Upstream says not found or unavailable | Choose domain fallback or escalate |
-| Model behavior failure | Valid protocol, wrong choice or claim | Improve prompt, tools, context, or model against evals |
-| Final-state failure | Expected external state absent | Reconcile and contain side effects |
+| 网络传输超时 | 未能收到完整的服务商响应 | 针对只读请求实施带退避和截止时间的有限重试 |
+| 频次超限限流 (Rate limit) | 服务商返回特定状态码与重试等待提示 | 在用户 SLA 范围内进入队列缓冲或指数退避等待 |
+| 底层协议错误 | 消息角色时序混乱或未知的控制状态 | 修复客户端代码状态；坚决杜绝盲目的提示词重试 |
+| 契约解析失败 | 返回非法的 JSON 语法或违反 Schema | 执行有边界的结构自愈修复或安全降级 |
+| 工具参数校验异常 | 传入参数类型或范围非法 | 向智能体循环回传精确到字段路径的结构化错误明细 |
+| 安全策略拦截 | 策略拦截门禁判定违规 | 保持拦截决策；若符合要求则弹窗请求人工授权 |
+| 工具领域业务失败 | 上游服务返回“数据不存在”或服务不可用 | 执行业务层降级方案或转人工升级介入 |
+| 模型行为决策偏差 | 协议合法，但模型选错了工具或陈述虚假事实 | 针对评测集优化提示词、微调工具描述或更换更强模型 |
+| 最终客观状态落空 | 外部系统未产生预期的物理变更 | 执行事务核对、状态回滚并控制局部副作用 |
 
-Retry policy follows failure class. Prompting again does not repair a malformed client message. Increasing timeouts does not repair unauthorized access. Switching models does not repair a dropped SDK field.
+重试与恢复策略必须严格依据故障分类定制。重新提示模型根本无法修复畸形的客户端消息；盲目延长超时时间根本无法解决权限拒绝；更换模型也无法修复 SDK 漏传字段的缺陷。
 
-Debug from the outside inward:
+遵循“由外向内”的标准排查次序：
 
-1. Inspect authoritative final state.
-2. Inspect the complete trace and stop reason.
-3. Inspect tool input, policy decision, and result class.
-4. Inspect serialized provider request and response.
-5. Inspect the typed SDK object and application mapping.
-6. Change the prompt or model only when evidence points there.
+1. 检查底层权威业务系统的最终物理状态。
+2. 检查完整的追踪链路、状态流转与停止原因。
+3. 检查工具输入参数、策略拦截决策与结果状态分类。
+4. 检查服务商请求与响应的原始物理序列化报文。
+5. 检查类型化的 SDK 对象封装与应用程序内部数据映射。
+6. 唯有在所有底层客观事实均确认无误的前提下，才着手优化提示词或升级模型。
 
-## Build a Local Eval Harness
+### 构建本地轻量评测运行底座 (Build a Local Eval Harness)
 
-`code/main.py` defines cases, agent runs, trace checks, error classification, aggregation, and tail-latency calculation.
+`code/main.py` 完整定义了测试用例集、智能体执行流、链路追踪检查、错误分类引擎、多维聚合统计以及长尾分位值（p95）计算。
+
+运行验证：
 
 ```bash
 cd certifications/claude/lessons/14-evals-testing-debugging-and-observability/code
@@ -255,27 +259,27 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-The harness checks required and forbidden text, exact tool trajectory, final state, and trace shape independently. One test proves that convincing text fails when the wrong tool trajectory occurred.
+该运行底座能够对必须包含与严禁包含的文本、精确的工具调用轨迹、最终物理状态以及追踪格式进行相互独立的校验。其中一项单元测试明确证明了：哪怕模型给出的答复文本极具说服力，但只要其工具调用轨迹发生了偏离，系统就会确定性判定该用例失败。
 
-The harness is intentionally small. Production systems should persist datasets, version graders, support sampling and concurrency, compare candidates, and render slice-level reports. The small implementation exposes the essential data model.
+该评测底座在设计上力求紧凑透明。生产级系统在此基础上应当持久化存储数据集、对评分器进行版本控制、支持大规模并发与批处理、支持新旧候选版本打擂比对，并渲染分维度的报表。而本课的轻量实现则精准暴露了其背后的核心数据模型。
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-Use the eval-observability figure to connect output checks, trajectory, final state, safety, budget, traces, and release gates. Toggle a fluent but false success to see why output quality cannot override missing external state.
+通过评测与可观测性闭环图示，观察输出契约检查、调用轨迹、最终状态、安全防线、成本预算、追踪遥测以及发布门禁之间的因果联动。尝试模拟触发一次看似流畅完美但在底层遗漏了核心状态变更的虚假成功用例，直观观察为何输出文本质量绝不能覆写外部物理状态的缺失。
 
 ```figure
 14-eval-observability-loop
 ```
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Run the local eval harness, then create a case whose prose passes but trajectory or final state fails. Lower the severe-case gate or omit a trace field and confirm the release packet is rejected.
+运行本地评测底座，随后刻意构造一个文本回复通过但调用轨迹或最终状态落空的对抗用例。尝试调低严重故障拦截门禁，或故意漏掉某一个追踪字段，观察发布准入包如何被系统确定性拒绝。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/eval-release-gate.json` is a reusable filled release policy with severe-case, aggregate, slice, latency, and cost thresholds plus required trace fields and failure classes. The unit suite validates the packet in addition to running the local harness, checking false trajectories, forbidden text, exception classification, aggregation, and percentile behavior.
+`outputs/eval-release-gate.json` 是一份经过严格验证的生产发布门禁规范。它完整配置了严重级故障门禁、综合通过率基线、分业务切片阈值、长尾延迟与成本上限，以及必填的追踪字段与故障分类清单。配套的单元测试套件除了运行本地评测引擎之外，还对伪造轨迹拦截、违禁文本检测、异常分类映射、数据聚合逻辑以及百分位计算进行了全方位验证。
 
-## Verify It
+## Verify It (验证方法)
 
 ```bash
 cd certifications/claude/lessons/14-evals-testing-debugging-and-observability/code
@@ -283,50 +287,50 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The quiz checks final-state evidence, deterministic checks, grader calibration, serialization boundaries, slice regressions, and protocol recovery. Use the release gate and local report in Developer capstone 30 and Architect capstones 31 and 32.
+配套测验将围绕最终状态断言、确定性代码测试防线、LLM 裁判校准技巧、网络序列化边界排查、业务切片退化分析以及协议自愈恢复策略展开综合考察。将经过验证的发布门禁规范与本地评测报告，直接作为重要的质量与可观测性凭据整合进 Developer Capstone 30 以及 Architect Capstone 31 和 32 中。
 
-## Regression Gates
+## 回归门禁策略 (Regression Gates)
 
-Create release rules before seeing a candidate score. For example:
+在查阅候选版本的具体得分之前，必须预先设立明确的准入规则。例如：
 
 ```text
-- 100 percent pass on secret-leak and cross-tenant cases.
-- No new unauthorized side effect.
-- Overall pass rate cannot fall more than 1 percentage point.
-- No domain slice can fall more than 3 points.
-- p95 latency cannot rise more than 15 percent without explicit approval.
-- Mean cost cannot rise more than 10 percent unless quality gain is documented.
+- 机密凭证泄露与跨租户越权用例必须保持 100% 绝对通过率。
+- 绝不允许引入任何新增的未经授权副作用。
+- 全局综合通过率的下滑幅度不得超过 1 个百分点。
+- 任何特定业务领域切片的通过率下滑不得超过 3 个百分点。
+- p95 长尾延迟在未获特别批准的前提下，上升幅度不得超过 15%。
+- 平均单次调用成本上升幅度不得超过 10%，除非附带可证明的显著质量提升。
 ```
 
-Thresholds depend on risk and sample size. A small set cannot support precise percentage claims, so review case-level outcomes.
+具体的门禁阈值取决于业务风险承受度与样本规模。样本量较小的测试集无法支撑精细的百分比推断，此时应直接对每一个发生变化的用例进行人工审查。
 
-When a model alias can change behind the scenes, schedule canary evals and record the resolved model information exposed by the platform. When a prompt, schema, tool, Skill, hook, MCP server, or SDK changes, run the relevant suite before deployment.
+当云端模型别名（Alias）可能在后台发生静默变更时，应配置定时的金丝雀自动化评测，并记录平台暴露的真实底层模型信息。每当提示词、Schema、工具集、Skill、Hook、MCP 服务端或 SDK 依赖发生变更时，必须在正式部署上线前强制运行对应的自动化评测套件。
 
-## Exam Decision Rules
+## 考试决策准则 (Exam Decision Rules)
 
-- Use deterministic tests whenever the expected property is deterministic.
-- Grade output, trajectory, final state, safety, and operational budget separately.
-- Calibrate model judges against human labels.
-- Treat one run as one sample, not proof of stable behavior.
-- Trace versioned inputs and decisions without logging secrets.
-- Classify the failure before selecting retry or recovery.
-- Debug serialization boundaries before blaming the model.
-- Gate releases on severe failures and slice regressions, not only averages.
+- 凡是期望属性具有确定性规则的场景，坚决优先选用确定性代码测试。
+- 对输出契约、工具轨迹、最终客观状态、安全性以及运行成本预算进行独立评估。
+- 基于模型实现的评分器必须依托人类专家标注进行定量校准。
+- 视单次测试通过为单次独立样本，绝不能作为系统行为稳定的绝对证据。
+- 全链路记录带有版本号的输入与决策流，同时严格防止敏感凭证写入日志。
+- 在决定实施重试或启动自愈恢复前，必须首先对故障进行精准分类。
+- 在将问题归咎于模型能力之前，优先排查底层的网络传输与数据序列化边界。
+- 评估发布准入时，以严重级故障零容忍和局部切片退化为核心红线，绝不能单纯依赖全局平均分。
 
-## Exercises
+## 课后练习 (Exercises)
 
-1. Add three cases where final text is correct but tool trajectory is wrong. Make them fail for different reasons.
-2. Label 20 responses with a three-dimension rubric. Compare a model judge with human labels and report false positives and negatives.
-3. Add token and tool-call budgets to the local harness. Fail one correct but wasteful run.
-4. Create a trace redaction test containing an API token, email, and private document fragment.
-5. Design a paired evaluation for a model migration. Define severe gates before running either candidate.
+1. 新增三个最终回复文本看似完美但底层工具调用轨迹发生错误的对抗用例，编写断言确保它们因不同原因被准确判定失败。
+2. 针对 20 条模型实际响应，依照三个维度的人工评分量表进行独立标注。将基于模型的评分器打分结果与人工标注进行比对，统计并分析其假阳性与假阴性案例。
+3. 在本地评测底座中引入 Token 消耗与工具调用频次预算监控。编写断言让一个虽然完成了任务但严重浪费算力的用例判定未达标。
+4. 编写一套专门针对追踪日志的脱敏测试套件，包含 API Token、真实电子邮箱以及私有文档片段，验证脱敏管道无任何信息遗漏。
+5. 针对即将进行的大版本模型迁移，设计一套配对评测方案（Paired Evaluation），并在运行测试前预先定义不可逾越的严重故障红线。
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [Develop test cases and evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
-- [Evaluation tool](https://platform.claude.com/docs/en/test-and-evaluate/eval-tool)
-- [Building effective agents](https://www.anthropic.com/research/building-effective-agents)
-- [Create strong empirical evaluations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency)
-- [OpenTelemetry specification](https://opentelemetry.io/docs/specs/otel/)
+- [设计测试用例与评测体系指南](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
+- [Anthropic 官方 Evaluation Tool 工具手册](https://platform.claude.com/docs/en/test-and-evaluate/eval-tool)
+- [构建高效的智能体系统 (Building Effective Agents)](https://www.anthropic.com/research/building-effective-agents)
+- [构建严密的经验评测提升输出一致性](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency)
+- [OpenTelemetry 业界可观测性标准规范](https://opentelemetry.io/docs/specs/otel/)

@@ -31,7 +31,7 @@ The source of truth is `learning-paths/model-context-protocol.json`. Prefer loca
 files when this repository is available. Otherwise fetch a needed file from:
 
 ```text
-https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/<path>
+https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/<path>
 ```
 
 Follow the manifest's `lessons` array by `order`. The required sequence is 06,

@@ -1,305 +1,304 @@
-# Ship a Week of Work, Not a Perfect Prompt
+# 交付一周真实业务，而非雕琢单个完美 Prompt (Ship a Week of Work, Not a Perfect Prompt)
 
-> Your capstone is a governed decision workflow: sources in, claims checked, human authority preserved, and state handed off.
+> 你的 Capstone 毕业设计是一套受治理的决策工作流：源头输入受控、核心论点验真、人类权威在位、状态交接闭环。
 
 **Type:** Build
 **Languages:** Python
 **Prerequisites:** [Choose the Smallest Surface That Can Carry the Work](../../01-claude-product-and-model-landscape/), [Turn a Request Into a Testable Contract](../../03-prompting-and-task-decomposition/), [Put Each Fact in the Right Kind of Context](../../04-context-knowledge-memory-and-caching/), [Validate the Claim, Not the Confidence](../../05-output-evaluation-and-validation/), [Put Authority Around Capability](../../06-governance-safety-and-responsible-use/), [Design the Handoff Before the Automation](../../07-workflow-design-and-human-handoffs/)
 **Time:** ~4 hours across one simulated workweek
 
-## Learning Objectives
+## 学习目标
 
-- Combine product selection, prompting, knowledge management, validation, governance, troubleshooting, and handoff design.
-- Build a source-backed weekly briefing workflow with explicit checkpoints.
-- Implement a deterministic Python validator for sources, claims, governance, and handoff readiness.
-- Run normal and failure cases before recommending release.
-- Produce evidence of readiness instead of claiming that a workflow is safe.
+- 融会贯通产品选型、Prompt 提示词工程、知识管理、输出校验、企业治理、故障排查与人机交接设计
+- 构建一套具备明确阶段检查门禁、由真实源文档支撑的每周业务简报工作流
+- 使用 Python 编写确定性校验器，严格核验数据源、业务论点、合规治理与交接就绪状态
+- 在向生产环境推荐发布前，全量运行正常用例与对抗性失败用例
+- 用扎实的工程就绪证据说话，杜绝凭空宣称“该工作流完全安全可靠”
 
-## The Problem
+## 问题背景
 
-You are the operations lead at Northstar Field Services, a fictional company with seven regional teams. Every Friday, the leadership group needs a brief covering service delays, customer-impacting incidents, policy exceptions, and two decisions for the next week.
+你是 Northstar Field Services（一家拥有七个区域业务团队的模拟企业）的运营总监。每周五，高管领导层都需要一份关键的运营周报，内容涵盖服务延误事故、重大客户影响事件、特定政策例外审批，以及需要在下周推进落地的两项核心决策。
 
-The current process is fragile. Regional leads send updates in different formats. An analyst copies facts into a document, reconciles conflicting dates, and asks three people for approval. The final brief sometimes misses a region or carries a corrected number from an old message.
+现有的报表生产流程脆弱不堪：各个区域负责人提交的汇报格式五花八门；数据分析师必须手动把零碎事实粘贴到一份文档中，人肉核对相互冲突的时间线，并向三位不同主管反复确认；最终出炉的周报时常漏掉某个大区，或者沿用了已被最新沟通推翻的陈旧数据。
 
-Leadership asks you to "automate the weekly report with Claude." That request is not a solution. The brief affects staffing and customer communications. Some inputs contain customer details. Policy exceptions need an authorized owner. A confident draft without evidence could accelerate the wrong decision.
+管理层向你提出需求：“请用 Claude 把每周报告彻底自动化”。这一要求本身绝非工程解决方案。该周报直接关系到下周的人力排班与外部客户公告；部分原始输入包含敏感客户信息；政策例外放行必须由具备法定权限的主管签字；一份看似流畅自信但缺乏证据支撑的草稿，只会加速错误决策的落地并酿成重大业务事故。
 
-Your job is to design a bounded Claude-assisted workflow. Claude may extract, compare, and draft. Deterministic checks verify exact properties. An authorized person owns publication and consequential decisions.
+你的任务是设计一套边界清晰受控、由 Claude 深度辅助的工作流：让 Claude 负责信息的结构化提取、多源比对与初步草拟；依靠底层确定性代码坚决校验关键属性；由法定授权人员终审签字，对发布质量与重大决策负全责。
 
-## The Concept
+## 核心概念
 
-### The deliverable is a chain of proof
+### 交付物是一条完整的证明链
 
-You will produce five connected artifacts:
+你将产出五份环环相扣的交付物：
 
-1. A use-case and product-selection record.
-2. A maintained source registry and fixed weekly snapshot.
-3. A staged prompt contract.
-4. A claim-evidence and governance validation result.
-5. A human handoff packet with fallback.
+1. 业务场景与产品载体（Surface）选型决策记录
+2. 持续受治理的权威数据源注册表与每周固定快照
+3. 分阶段推进的 Prompt 结构化契约
+4. 论点与证据链比对表及治理合规自动化校验结果
+5. 配备安全降级兜底方案的人工交接数据包
 
 ```mermaid
 flowchart LR
-    A["Monday: scope and select"] --> B["Tuesday: govern sources"]
-    B --> C["Wednesday: extract and draft"]
-    C --> D["Thursday: validate and challenge"]
-    D --> E["Friday: hand off and review"]
-    E -->|"new failure"| F["Add evaluation case"]
+    A["周一：明确范围与载体选型"] --> B["周二：冻结并治理源数据"]
+    B --> C["周三：分阶提取与初步起草"]
+    C --> D["周四：代码验真与多方质疑"]
+    D --> E["周五：安全交接与人工复核"]
+    E -->|"捕获新型缺陷"| F["沉淀为新增评估用例"]
     F --> A
 ```
 
-Each day ends at a gate. If the gate fails, do not push uncertainty downstream.
+五个工作日中的每一天都以明确的准入门禁（Gate）作为收尾。只要门禁未通过，严禁将不确定性强行推向工作流下游。
 
-### The Python validator is intentionally limited
+### Python 校验器故意设计为受限状态
 
-The capstone code does not call Claude. It demonstrates a crucial architecture boundary: exact workflow properties belong in deterministic code.
+本毕业设计中的配套代码完全不调用 Claude API。这一设计深刻体现了一条关键的系统架构边界：**系统最核心的确定性属性必须由确定性代码进行硬性拦截。**
 
-The validator checks whether:
+校验器负责严格核验：
 
-- Required packet sections exist.
-- Every active source has an owner, authority, date, sensitivity, and stable ID.
-- Claims reference known sources.
-- Consequential claims use direct or calculated support.
-- Stale and conflicting evidence is visible.
-- The chosen surface is approved for the data class.
-- High-consequence or irreversible work has an authorized human owner.
-- The handoff names a decision, deadline, fallback, and next owner.
+- 交付数据包中是否齐全包含了所有必需的结构化段落
+- 每一个处于活跃状态的数据源是否均具备明确负责人、权限等级、生效日期、敏感度分级与全局唯一稳定 ID
+- 每一个业务论点是否均能精确映射到已知的数据源
+- 凡是对业务有实质影响的重大论断，是否具备直接证据引用或确定性计算支撑
+- 任何过期失效或存在事实冲突的证据是否均被显式标红暴露
+- 所选用的产品交互载体是否已被授权用于处理当前分类等级的数据
+- 高影响度或不可逆操作是否已由具备法定权限的人类主管签字背书
+- 交接数据包中是否清晰定义了核心决策、截止时限、降级预案与下游承接人
 
-It cannot decide whether a policy is ethically sufficient, whether the human reviewer is competent, or whether a source statement is true. Those remain organizational and human responsibilities.
+该校验器无法替代人类做出价值判断：它无法断定某项内部政策在伦理道德层面是否完善，无法确认人类复审员在业务上是否足够称职，也无法凭空证明数据源自身的陈述是否绝对为真。这些维度的责任始终属于企业治理与人类专家。
 
-## Build It
+## Build It (动手构建)
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
 ```figure
 29-associate-capstone-readiness
 ```
 
-Use the readiness board throughout the five-day build. It connects purpose,
-sources, prompt stages, claim support, authority, handoff, and fallback so a
-polished brief cannot hide a failed gate.
+在为期五天的构建过程中，请全程参考上述就绪度大盘。它将业务目标、源数据资产、Prompt 推进阶段、论据支撑度、签字权限、下游交接与安全降级紧密联结在一起，使得任何一份包装华丽的草稿都绝不可能在门禁失效的情况下蒙混过关。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Complete the five-day workflow below, then deliberately break the surface,
-source, claim-support, authority, and handoff gates one at a time.
+完整走完下文详述的五天工作流；随后故意逐一破坏交互载体合规性、源数据完整性、论点证据支撑、主管签字权限与交接兜底门禁，亲眼见证校验系统是如何精准报错拦截的。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-The shipped checklist and filled
+随课程交付的实战清单模版以及填充完整的
 [`outputs/demo-readiness-report.json`](../outputs/demo-readiness-report.json)
-are the practical outputs.
+构成了本项目的核心可复用验收成果。
 
-## Verify It
+## Verify It (验证方法)
 
-Reproduce the passing packet and all failure-first tests with the commands below;
-no network access or credentials are required. The lesson quiz is the final
-individual check.
+使用以下命令运行确定性校验器并跑通全量前置测试；本地测试无需连网或配置任何 API 凭据。课后的 6 道认证自测题是最终的个人水平检验。
 
-## Capstone Connection
-
-The completed packet is the Associate route capstone evidence reviewed by
-another person.
-
-### Monday: scope the decision and product surface
-
-Write one sentence for the decision:
-
-```text
-By Friday at 15:00, the operations director will choose no more than two
-staffing or process changes for the following week using the approved regional snapshot.
+```bash
+cd certifications/claude/lessons/29-associate-workflow-capstone
+python3 code/main.py
+python3 -m unittest discover -s code/tests -v
 ```
 
-Define what is out of scope:
+## Capstone Connection (项目连接)
 
-- No automatic customer messages.
-- No employee performance ranking.
-- No changes to staffing schedules.
-- No legal or regulatory conclusion.
-- No use of restricted data.
+填充完毕的整套交付数据包，构成了 Claude Certified Associate 认证路线的核心毕业评审证据，可供同行评审或专家核验。
 
-Compare candidate surfaces. A one-off chat is easy, but weak for maintained instructions and a recurring source set. A Project may fit collaborative, repeated work if its current terms, plan controls, and data handling are approved. The API may fit when programmatic ingestion, validation, and audit integration are required. Research is useful for current external facts, not for replacing internal approved policy.
+### 周一：界定决策范围与产品交互载体
 
-Record the decision, not just the product name:
+用精准的一句话定义本工作流支持的核心业务决策：
 
 ```text
-Surface:
-Why it fits:
-Data class allowed:
-Current terms checked on:
-Unsupported requirements:
-Fallback surface or manual path:
+在每周五 15:00 之前，运营总监将依据审核通过的区域快照，为下周决策选定不超过两项人力调度或流程优化举措。
 ```
 
-Gate: the owner approves the purpose, surface, data class, and prohibited actions.
+同时清晰划定严格的非目标（Out of scope）红线：
 
-### Tuesday: freeze and govern the evidence
+- 严禁向外部客户自动下发任何消息公告
+- 严禁对一线员工开展个人绩效自动化排队打分
+- 严禁直接修改底层人力排班排班表系统
+- 严禁给出任何具有法律或监管效力的结论
+- 严禁录入或处理任何最高机密等级的限制性数据
 
-Create a source registry for:
+深度评估对比候选的产品交互载体：一次性网页版 Chat 虽然开箱即用，但无法固化沉淀长效指令与周期性知识库；Claude Projects 具备共享协作与固定知识库能力，非常适合可复用的团队协同，前提是当前企业采购协议已明确批准该数据等级的处理；直接调用 API 则是实现全自动数据摄取、算法校验与企业审计集成的最佳工程路径；Research 功能适合探查公开动态事实，但绝不能用它来取代企业已批准的官方政策库。
 
-- Seven regional status files.
-- The incident system export.
-- The approved service policy.
-- The staffing-capacity table.
-- The prior week's decision record.
-
-Every source needs a stable ID, owner, authority class, effective date, review date, and sensitivity. Mark discussion notes as reference, not policy. Remove customer names if the decision does not require them.
-
-Freeze the weekly source snapshot at a documented time. A fact that changes afterward belongs in a revision or exception process. Otherwise the draft, reviewer, and leader may each see a different world.
-
-Define authority order:
+清晰记录选型决策，绝不仅是写下一个产品名称：
 
 ```text
-1. Approved service policy and signed incident status
-2. Current regional status submitted before the cutoff
-3. Prior decision record
-4. Discussion notes, for leads only and never as sole support
+选定载体 (Surface):
+入选核心理由:
+允许处理的数据分类:
+协议条款核验日期:
+当前不支持的业务诉求:
+安全降级载体或人工备用通道:
 ```
 
-Gate: all seven regions are present or explicitly marked missing; sources pass freshness and permission checks; conflicts have an owner.
+**周一门禁**：业务负责人书面签字批准决策目标、交互载体、允许流转的数据等级以及明确禁止的高危操作。
 
-### Wednesday: decompose the work
+### 周二：冻结并治理证据源头
 
-Do not ask for the final brief in one step. Use four bounded stages.
+建立标准的数据源注册表，覆盖：
 
-**Stage 1, extraction:** Return structured rows for region, delay, affected service, incident ID, policy exception, source ID, and uncertainty. Do not recommend action.
+- 七个大区的每周运行状态报告文件
+- 生产运维事故管理系统的官方导出数据
+- 经合规审批生效的服务保障基准政策
+- 当期一线人力编制容量负荷表
+- 上周领导班子过会的历史决策备忘录
 
-**Stage 2, reconciliation:** Check region coverage, totals, duplicate incidents, date conflicts, and unsupported fields. Stop if a blocker remains.
+每一份输入数据源都必须赋予全局唯一的稳定 ID、责任人、权威等级、生效日期、预定复审日期以及敏感度标签。将讨论纪要明确标记为普通参考，严禁将其作为政策依据。若当前决策不需要涉及具体人名，必须在源头坚决剔除客户姓名。
 
-**Stage 3, analysis:** Identify patterns and propose no more than three candidate actions. Each action needs supporting findings, policy constraints, likely benefit, downside, and an owner who could authorize it.
+在每周固定的截止时间点对源数据实施硬性快照冻结（Freeze Snapshot）。任何在截止时间后发生的变动，必须统一流转至增量例外审批流程。否则，AI 草案、人工复审专员与决策主管所审视的将是一个彼此脱节的混乱世界。
 
-**Stage 4, drafting:** Produce the executive brief only from validated rows and approved analysis. Include decisions required, evidence, exceptions, and known uncertainty.
+明确事实权威的仲裁优先级：
 
-Use a prompt contract for every stage. Include source hierarchy, abstention behavior, output shape, and acceptance criteria. Save versions so a failed result can be reproduced.
+```text
+1. 经批准生效的服务政策文件与正式签批的线上事故报告
+2. 在截止时间之前按规范提交的大区最新状态报告
+3. 上周已生效的领导层决策备忘录
+4. 会议讨论纪要（仅供线索发掘，严禁作为唯一定论依据）
+```
 
-Gate: structured extraction reconciles with the snapshot before analysis begins.
+**周二门禁**：七个大区的数据已全部就绪或显式标明缺失；所有源文档均通过时效性与权限校验；事实冲突已指定专人负责仲裁。
 
-### Thursday: validate and challenge
+### 周三：拆解任务阶段与 Prompt 契约
 
-Run the included validator:
+切勿试图在一个巨型 Prompt 中一步登天生成最终周报。必须拆分为四个边界受控的渐进阶段：
+
+**阶段 1：结构化信息提取（Extraction）**：仅输出结构化表格，字段包括大区、延误时长、受影响服务、事故工单号、政策例外条款、支撑数据源 ID 以及不确定性标记。本阶段严禁提出任何行动建议。
+
+**阶段 2：数据对账与一致性校验（Reconciliation）**：全面核验大区覆盖率、汇总求和数值、是否存在重复计算的事故、时间戳冲突以及无数据源支撑的字段。只要存在阻断性问题，立刻中断流程。
+
+**阶段 3：业务影响分析与归因（Analysis）**：剖析共性瓶颈，提炼不超过三项候选处置举措。每一项建议都必须具备支撑事实、合规政策约束、预期业务收益、潜在副作用以及有权批准该举措的具体责任人。
+
+**阶段 4：正式草拟周报（Drafting）**：仅允许依据校验通过的结构化数据与论证分析，起草面向高管团队的高质量决策简报。明确标注待决策项、事实依据、政策例外与已知的不确定性。
+
+为每一个阶段制定严格的 Prompt 契约，明确输入优先级、拒答准则、输出 Schema 以及验收标准。对 Prompt 模板实施版本化归档，确保任何一次异常产出均能精准复现。
+
+**周三门禁**：阶段 1 提取的结构化数据与快照源数据完全对账核准无误后，方可启动阶段 3 的分析推演。
+
+### 周四：自动化验证与批判性质疑
+
+运行随附的确定性校验工具：
 
 ```bash
 cd certifications/claude/lessons/29-associate-workflow-capstone
 python3 code/main.py
 ```
 
-The demonstration packet should return a `ready_for_human_review` status. Now break it deliberately:
+随附的演示数据包应返回 `ready_for_human_review`（就绪待复审）状态。现在，请通过修改配置故意引入缺陷：
 
-- Set `approved_surface` to false.
-- Remove a source owner.
-- Reference a source ID that does not exist.
-- Mark a consequential claim as speculative.
-- Remove the decision owner.
-- Make the action irreversible.
+- 将 `approved_surface` 篡改为 false
+- 删除某个数据源的责任人字段
+- 引入一个不存在的数据源 ID 引用
+- 将一项重大业务论点标记为推测性质（speculative）
+- 抹除决策负责人的自然人姓名
+- 将拟执行动作标记为不可逆（irreversible）
 
-Run the unit tests:
+运行单元测试套件：
 
 ```bash
 python3 -m unittest discover -s code/tests -v
 ```
 
-Then create a claim-evidence matrix for the actual draft. A citation must support the exact claim. Verify totals with code or a spreadsheet, not a model grader. Give a separate reviewer the rubric and evidence. Ask it to report findings, not silently rewrite the draft.
+随后，针对生成的草稿建立事实与论据核验矩阵（Claim-evidence Matrix）。每一个引用标注必须严格支撑其对应的具体陈述。针对数字求和计算，必须由代码或电子表格函数执行确定性验算，严禁依赖大模型进行主观打分。安排另一位独立的业务伙伴对照准则进行挑错式审查，要求其出具审计发现清单，严禁直接在后台静默修改草稿。
 
-Use release levels:
+建立清晰的发布阻断分级：
 
-- **Block:** unapproved data or surface, unknown source, invalid total, unsupported consequential claim, missing decision authority.
-- **Revise:** incomplete coverage, unresolved conflict, stale source, unclear uncertainty.
-- **Quality improvement:** repetition, weak heading, or noncritical tone issue.
+- **阻断发布 (Block)**：涉及未授权数据或未批准载体、未知源引用、数值计算错误、核心业务论断缺乏事实支撑、决策签字权缺位。
+- **打回修改 (Revise)**：信息覆盖不全、存在未仲裁的事实冲突、使用了过期源数据、不确定性风险表述模糊。
+- **建议润色 (Quality improvement)**：语言重复冗余、标题层级不规范或非关键语气瑕疵。
 
-Gate: every blocker is resolved. Remaining uncertainty is visible in the human packet.
+**周四门禁**：所有阻断级缺陷均已彻底归零修复。剩余的不确定性已在交付包中完整透明披露。
 
-### Friday: hand off and close the loop
+### 周五：交接验收与复盘闭环
 
-Complete [`outputs/checklist.md`](../outputs/checklist.md). Build the review packet:
+完整填写 [`outputs/checklist.md`](../outputs/checklist.md)。组装最终的人机复审交接数据包：
 
 ```text
-Decision: Choose up to two next-week interventions.
-Owner: Operations director.
-Deadline: Friday 15:00.
-Snapshot: Weekly source registry version and cutoff.
-Candidate: Brief version and prompt version.
-Evidence: Claim IDs, source IDs, calculations.
-Checks: Passed, failed, and manually reviewed.
-Uncertainty: Missing region, conflicting date, or weak support.
-Options: Approve, revise, reject, escalate.
-Fallback: Publish the manual template or delay with notice.
+核心决策项：批准不超过两项下周运营干预举措
+决策签批人：运营总监
+签批截止时间：周五 15:00
+输入基准：本周源数据注册表版本号与快照截止时间戳
+审查草案：周报草案版本号及对应 Prompt 模板版本号
+证据链映射：业务论点 ID、数据源 ID、确定性计算复核记录
+检查结果清单：自动化通过项、失败项与已完成的人工复核项
+风险提示：缺失的大区汇报、存在分歧的事故时间或弱证据论述
+主管操作选项：全面核准、打回修改、坚决驳回、向上升级
+降级预案：改用纯人工周报应急模板，或正式下发延期发布通告
 ```
 
-The director approves the decision, not "the AI." Record who approved what, based on which snapshot. If the source changes after approval, invalidate the publication gate and review the delta.
+由运营总监对最终的业务决策签署法律与行政责任，绝不是由“AI”承担责任。明确记录谁在何时、基于哪一份数据快照批准了何种举措。如果在签批后数据源发生变动，原有的发布门禁即刻失效，必须针对增量差异发起重新评审（Delta Review）。
 
-After the simulated release, run a short retrospective:
+在模拟发布完成后，召开简短的工作流复盘会议：
 
-- Which stage consumed the most human time?
-- Which check caught the most serious defect?
-- Did any important judgment become harder?
-- Which source needs better ownership?
-- Which failure should enter the evaluation set?
-- Should the workflow remain assisted, move to limited automation, or return to manual?
+- 哪一个阶段耗费了最多的人工精力？
+- 哪一项自动化检查拦截了最为严重的潜在事故？
+- 是否有关键的业务判断反而变得更加复杂？
+- 哪一份数据源的维护责任归属亟待理清？
+- 哪些新暴露的失败案例应当立即纳入日常评估测试集？
+- 该工作流下一阶段是应当维持半自动化辅助，还是适度开放部分受控自动化，抑或是果断退回传统纯人工流程？
 
-## Use It
+## Use It (生产应用)
 
-### A complete evidence package
+### 完备的交付证据包
 
-Your submission should contain:
+一份合格的 Capstone 毕业设计应当包含以下完整材料：
 
-- A surface-selection record with verification date.
-- A ten-source registry or a smaller equivalent with every required source class represented.
-- Four prompt-stage contracts.
-- At least ten evaluation cases: four normal, three edge, three governance or adversarial.
-- A claim-evidence matrix for every consequential claim.
-- Validator output for one passing and three failing packets.
-- Passing unit-test output.
-- A completed human handoff checklist.
-- A one-page retrospective with one concrete workflow change.
+- 载体选型记录及对应条款的核验日期说明
+- 包含至少 10 个数据源（或具有同等覆盖度、涵盖所有必需类别的微型数据源）的受治理注册表
+- 4 个阶段推进的 Prompt 结构化契约文本
+- 至少 10 个具有代表性的离线评测测试用例：4 个常规用例、3 个边界用例、3 个合规或对抗性注入用例
+- 覆盖每一条重大业务论断的事实与论据比对矩阵
+- 校验器针对 1 个完全达标用例与 3 个典型失败用例的自动化终端运行日志
+- 本地单元测试全部通过的绿灯日志
+- 填写完备的人机交接审查核对表（Checklist）
+- 一页纸的复盘总结报告，包含至少一项可落地的流程优化改进举措
 
-### Capstone decision patterns
+### Capstone 决策模式
 
-Use these when reviewing your work or answering exam scenarios:
+在自我审查或应对考试场景时，请时刻谨记以下原则：
 
-1. **No approved purpose, stop.** Capability does not create permission.
-2. **No authoritative evidence, abstain or escalate.** More prompting does not create a source.
-3. **Exact property, deterministic check.** Totals and schemas do not need subjective grading.
-4. **High consequence, human authority.** Give the person evidence and power to reject.
-5. **Repeated failure, repair the system.** Add a case, control, or source rule.
-6. **Changeable product fact, verify live.** Record surface, date, and source.
+1. **未经授权的目的，坚决叫停**：具备技术能力并不代表获得了合规许可。
+2. **缺乏权威证据支撑，优雅拒答或向上升级**：反复调整 Prompt 无法无中生有凭空捏造出事实源头。
+3. **确定性属性，必须由确定性代码把关**：数值求和计算与 Schema 结构校验不需要主观评分。
+4. **重大业务后果，必须由人类权威掌舵**：赋予人工复审专员充分的证据上下文与一票否决权。
+5. **面对重复暴露的缺陷，从系统层面展开根因修复**：增加评测集用例、收紧数据源治理或引入新控制。
+6. **面对高度动态的产品特性，必须实测核验**：注明评估所依据的产品版本、测试时间与官方文档链接。
 
-### Common traps
+### 常见陷阱
 
-- **Starting with the final prompt:** Scope and source failures become prose problems.
-- **Uploading the archive:** Superseded evidence competes with active policy.
-- **Trusting citation syntax:** The cited source may not entail the claim.
-- **Letting the reviewer rediscover state:** Handoff time consumes the promised savings.
-- **Automating publication first:** Reversibility and authority are ignored.
-- **Treating tests as proof of safety:** Unit tests cover implemented rules, not organizational truth.
-- **Freezing current product details in the design:** Terms, features, models, costs, and limits drift.
+- **起手就写终极 Prompt**：导致业务范围不清与源数据缺陷全部被伪装成了语言润色问题。
+- **直接将历史文档全量打包上传**：过时失效的旧规定在模型注意力中与当前有效政策产生恶性竞争。
+- **迷信标准引用语法**：看似严谨的参考脚注背后，所指引的文档段落可能根本无法在逻辑上推出该结论。
+- **强迫复审人员重新人肉探索背景**：导致人工交接耗时暴增，彻底抵消 AI 提效带来的时间红利。
+- **优先将周报发布环节彻底自动化**：彻底抛弃了操作的可逆性与人类法定责任底线。
+- **误以为单元测试全绿就代表系统绝对安全**：代码测试覆盖的只是已实现的规则，无法证明组织层面的客观业务真实性。
+- **在系统设计中硬编码具体产品细节**：计费单价、上下文长度限制与功能开关随时可能发生官方迭代漂移。
 
-### Exercises
+### 课后练习
 
-1. Replace the fictional scenario with one real recurring task, preserving the five-day gates.
-2. Add a validator rule for a policy unique to your workflow.
-3. Write a failing test before implementing that rule.
-4. Compare one giant prompt with the four-stage flow across the same ten cases.
-5. Ask a reviewer to complete the handoff using only your packet. Record every fact they had to request.
-6. Calculate cost per accepted brief, including review and rework time.
+1. 将上述虚构案例替换为你所在团队真实的某项周期性周报任务，严格落实五天门禁治理机制。
+2. 为校验器增加一条专属于你团队特殊业务合规政策的硬性断言规则。
+3. 遵循测试驱动开发（TDD）理念，在实现上述规则前先编写必败的测试用例。
+4. 在相同的 10 个测试用例上，横向对比单个巨型 Prompt 与四阶段工作流在输出稳定性上的巨大差异。
+5. 邀请一位不知情的同事仅凭借你组装的人机交接包完成模拟审批，记录其过程中被迫追问的每一个缺失信息。
+6. 测算单次合格周报的真实交付成本，将人工复核与返工工时按标准薪酬折算入内。
 
-## Key Terms
+## 核心术语 (Key Terms)
 
-- **Decision workflow:** A sequence that turns governed evidence into a reviewed action or recommendation.
-- **Source snapshot:** The fixed, versioned evidence set used for one run.
-- **Consequential claim:** A claim that materially affects a decision or action.
-- **Validation packet:** Structured sources, claims, governance, and handoff state checked before release.
-- **Release level:** Block, revise, or quality status based on consequence.
-- **Decision owner:** The person with authority and accountability for the final choice.
-- **Delta review:** Revalidating changes introduced after an earlier approval.
-- **Evidence of readiness:** Test results, failure cases, approvals, and fallback proof, not a general assurance.
+- **决策工作流 (Decision workflow)**：将受治理的输入证据转化为经过审慎核验的行动方案或决策建议的连贯工程序列。
+- **源数据快照 (Source snapshot)**：在单次任务执行前确定性冻结、带有版本号的固定证据集合。
+- **重大业务论断 (Consequential claim)**：一旦出现错误，将对后续商业决策、人力安排或客户利益造成实质性不利影响的陈述。
+- **校验数据包 (Validation packet)**：在系统正式发布前，集中汇集数据源、事实论点、治理措施与交接状态的结构化机器对象。
+- **发布阻断分级 (Release level)**：依据潜在危害严重度设立的阻断（Block）、修订（Revise）与微调（Quality）处置层级。
+- **决策负责人 (Decision owner)**：对最终业务选择在行政与法律上拥有最终裁决权并承担全责的自然人。
+- **增量复审 (Delta review)**：在初次审批完成后，若源数据发生局部更新，仅针对变动增量部分触发的定向快速评审。
+- **就绪度证据 (Evidence of readiness)**：包含测试用例通过日志、失败拦截证明、多方签批记录与安全降级预案的可复现客观事实集合，绝非主观口头保证。
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [Claude Certified Associate Foundations Exam Guide](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf)
-- [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents)
-- [Anthropic: Define success criteria and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
-- [Anthropic: API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention)
-- [AI Engineering from Scratch: Scope Contracts](../../../../../phases/14-agent-engineering/36-scope-contracts/)
-- [AI Engineering from Scratch: Verification Gates](../../../../../phases/14-agent-engineering/38-verification-gates/)
-- [AI Engineering from Scratch: Multi-Session Handoff](../../../../../phases/14-agent-engineering/40-multi-session-handoff/)
+- [Claude Certified Associate Foundations Exam Guide](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf) 官方认证大纲指南
+- [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents) 掌握智能体架构模式的经典文献
+- [Anthropic: Define success criteria and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) 学习如何科学构建评估集
+- [Anthropic: API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention) 官方数据保留与隐私保护规范
+- [AI Engineering from Scratch: Scope Contracts](../../../../../phases/14-agent-engineering/36-scope-contracts/) 业务边界契约实战
+- [AI Engineering from Scratch: Verification Gates](../../../../../phases/14-agent-engineering/38-verification-gates/) 确定性验证门禁设计
+- [AI Engineering from Scratch: Multi-Session Handoff](../../../../../phases/14-agent-engineering/40-multi-session-handoff/) 多会话高可靠交接实战
 
-The official exam blueprint and Claude product behavior can change. This capstone is aligned to the guide effective July 2026 and sources checked on 2026-08-08. Confirm the current guide, product terms, models, limits, and controls before relying on release-specific facts.
+官方考试大纲与 Claude 产品功能会持续演进。本 Capstone 课程与 2026 年 7 月生效的考纲标准保持对齐，所引用的官方信息核实于 2026 年 8 月。在依赖具体发布特性之前，请务必核实当前的最新条款、模型规格与配额限制。

@@ -1,100 +1,134 @@
-# Every MUST Needs an Owner
+# 每个 MUST 都需要明确的责任人 (Every MUST Needs an Owner)
 
-> The specification hands its MUSTs to a host, a client, and a server. A live deployment hands them to people, and the MUST nobody agreed to own is the one that fails first.
+> MCP 规范将其各项 MUST 强制要求分配给宿主、客户端与服务器。而在真实的工程落地中，这些要求最终必须交由具体的人来承接；没有任何人出面认领的 MUST，往往就是系统中最先崩溃的那道防线。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 27
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Assign the six roles behind a real MCP deployment, server author, host and client developer, platform or gateway operator, security and governance owner, registry publisher, and end user, the spec requirements each one actually owns
-- Trace how the owner of the same requirement can shift across three adoption paths: local stdio, remote Streamable HTTP with OAuth, and a gateway-fronted enterprise deployment
-- Explain the MCP governance structure: stewardship under the Agentic AI Foundation, the Lead Maintainer, Core Maintainer, and Maintainer hierarchy, and the difference between a Working Group and an Interest Group
-- Follow a proposal from an idea through the SEP workflow to a Final status, and connect that workflow to the feature lifecycle a requirement moves through once it ships
-- Treat SDK tier selection as an adoption decision a role makes, not a checkbox, by reading the tiering system's conformance and response-time commitments
+- 明确真实 MCP 部署落地背后的六大关键角色：服务器作者 (Server Author)、宿主与客户端开发者 (Host and Client Developer)、平台或网关运维人员 (Platform or Gateway Operator)、安全与治理负责人 (Security and Governance Owner)、注册中心发布者 (Registry Publisher) 以及最终用户 (End User)，并梳理各角色实际认领的规范核心要求。
+- 追踪同一项规范要求在三种不同采纳路径下的职责漂移轨迹：本地 stdio 进程模式、基于 OAuth 的远程 Streamable HTTP 模式，以及由网关统一代理的企业级部署架构。
+- 剖析 MCP 社区的治理架构：Agentic AI Foundation 的治理托管模式、首席维护者 (Lead Maintainer)、核心维护者 (Core Maintainer) 与维护者 (Maintainer) 的层级体系，以及工作组 (Working Group) 与兴趣组 (Interest Group) 的核心分工差异。
+- 完整梳理一个提议从萌芽构想、历经 SEP 工作流直至抵达 Final 终态的全流程，并将该工作流与规范特性发布后的生命周期状态机紧密联结。
+- 将 SDK 评级体系视为一项严肃的技术采纳工程决策而非简单勾选，深入解读评级体系对标准一致性与响应时效的承诺内涵。
 
-## The Problem
+## 问题背景
 
-Read the specification end to end and it describes three participants: a host, a client, and a server. Read a real MCP rollout end to end and it involves at least six kinds of people, and none of them is named "host" on an org chart. Someone writes and maintains the server. Someone else builds or configures the host application and the client inside it. A third function runs the process in production, whether that means launching a stdio subprocess on a shared machine or operating the reverse proxy that terminates a remote connection. A fourth function reviews what the deployment is allowed to do with tokens, scopes, and logs. A fifth publishes the server so other teams can find it. A sixth, the end user, is the one actually granting consent when a tool is about to run.
+如果从头到尾通读 MCP 规范，文本中通篇描述的只有三个参与主体：宿主 (Host)、客户端 (Client) 和服务器 (Server)。然而，如果从头到尾审视一次真实的 MCP 生产落地，其中至少会卷入六种不同岗位角色的技术人员，而且在任何公司的组织架构图上都不可能找到一个叫作“宿主”的职位。有人负责编写和维护服务器程序；有人负责构建或配置宿主应用程序以及内部负责协议通信的客户端；第三类人负责在生产环境中运维整个进程（无论是在共享工作站上拉起 stdio 子进程，还是运维终结远程连接的反向代理网关）；第四类人负责安全复审，严格把关令牌、权限作用域与审计日志；第五类人负责发布并注册服务器，让其他团队能够检索使用；而第六类人则是最终用户，正是他们在工具即将发起实质性操作前亲手点击授予许可。
 
-Every MUST and SHOULD in the specification lands on one of those six functions, but the specification does not say which, and it cannot: the same protocol supports a solo developer running a local tool over stdio and a platform team fronting dozens of internal servers with a gateway, and the right owner for a requirement such as validating the Origin header is not the same person in both cases. A team that treats "the spec says servers MUST do X" as self-enforcing finds out the hard way, usually during a security review, that a MUST with no name attached to it is a MUST nobody actually did. This is the part of the Use Cases and Ecosystem domain the exam tests with scenario questions rather than recall questions: given a deployment shape, name the role, not just the requirement.
+规范中的每一个 MUST（强制要求）和 SHOULD（推荐要求）最终都会落在上述六种角色之一的肩上，但规范本身并未也不可能指明具体由谁负责：因为同一套协议既要支持独立开发者在本地通过 stdio 运行个人脚本工具，又要支持平台工程团队通过统一网关聚合管理上百个企业内部微服务。在这两种极端架构下，负责“校验 Origin 请求头”这一规范要求的责任人绝不可能是同一个人。如果一个工程团队把“规范写着服务器 MUST 执行某操作”误以为是系统会自动达成的事实，往往会在随后的安全审计中遭遇当头棒喝：一个没有落实到具体姓名上的 MUST，本质上就是没有任何人真正去执行的 MUST。这也是 MCPA 认证考试在“用例与生态系统 (Use Cases and Ecosystem)”领域中偏爱考察综合场景题而非死记硬背概念的原因：在给定的部署架构形态下，你必须准确指出对应的角色，而不仅仅是复述规范条款。
 
-## The Concept
+## 核心概念
 
-Give the six functions names and the exam's roles questions stop being abstract. The server author writes and maintains one implementation against the specification, version 2026-07-28: which tools exist, what each input schema requires, how `server/discover` answers. The host and client developer builds the application a person runs and the client inside it that speaks the wire protocol: capability declarations, the OAuth client when the transport is remote, the consent surface the user sees before a call goes out. The platform or gateway operator runs the process: launches the stdio subprocess with the right environment, or terminates the Streamable HTTP connection, applies network policy, and decides what a gateway checks before a request ever reaches a server implementation. The security and governance owner is accountable for the requirements that cut across all of the above, token handling, `requestState` protection, consent policy, and the cross-cutting MUSTs that do not belong cleanly to any single implementer. The registry publisher owns `server.json`, the namespace it claims, and whether the entries a registry serves are accurate. The end user is the accountable party for what the host does on their behalf, the role the specification is quietly protecting every time it says a human should be able to deny an invocation.
+### 六大角色分工与职责定义
 
-None of this replaces the host, client, and server roles from the architecture lessons. It sits on top of them, and a single person can hold two or three of these six functions on a small team. What matters for the exam is that a single requirement can move between functions as a deployment grows. Follow one requirement across the three adoption paths the domain expects: local stdio, remote Streamable HTTP with OAuth, and a gateway-fronted enterprise deployment with extensions. The Streamable HTTP transport is explicit that servers MUST validate the Origin header on all incoming connections to prevent DNS rebinding attacks. Stand a server up directly on the open internet and that MUST lands on the server author, because the server's own code is the only code standing between the socket and the request handler. Front the same server with an enterprise gateway and the MUST does not disappear, it moves: the platform or gateway operator's edge is now the first code to see the Origin header, so the operator has to get it right, and the server author's job narrows to trusting a network boundary someone else now enforces. A responsibility matrix built from curated requirement records has to track that: the requirement stays fixed, the shape changes, and the owner changes with it.
+一旦为这六大工程职能赋予清晰的名字，认证考试中的角色场景题就不再抽象：
 
-The same discipline applies to stdio. Implementations using an STDIO transport SHOULD NOT follow the OAuth authorization flow at all and instead retrieve credentials from the environment, so a stdio deployment never asks the host and client developer to build an OAuth client. It asks the platform or gateway operator, or on a single laptop, whoever launches the process, to make sure the right credential is already sitting in the environment before the subprocess starts. Skip that ownership question and a stdio tool either fails at the first call that needs a credential or, worse, someone hardcodes one into a config file nobody reviews.
+1. **服务器作者 (Server Author)**：负责依据 2026-07-28 规范编写并维护单一的服务器实现，包括定义提供了哪些工具、每个工具的输入 Schema 有何要求，以及实现 `server/discover` 端点的发现响应。
+2. **宿主与客户端开发者 (Host and Client Developer)**：负责构建终端用户交互的应用程序及其底层用于收发规范网络报文的客户端代码，包括向外声明客户端能力、在远程传输时实现 OAuth 客户端逻辑，以及在工具出站调用前向用户渲染提示界面。
+3. **平台或网关运维人员 (Platform or Gateway Operator)**：负责运行实际的进程与环境，包括以正确的环境变量拉起 stdio 子进程，或者终结 Streamable HTTP 网络连接、配置底层网络策略，并在请求触达业务服务器之前决定网关统一执行哪些安全前置检查。
+4. **安全与治理负责人 (Security and Governance Owner)**：负责统筹横跨上述所有环节的全局安全要求，包括令牌流转生命周期管理、`requestState` 防篡改签名、用户同意策略制定，以及那些不纯属于任何单一模块的跨切面 MUST 要求。
+5. **注册中心发布者 (Registry Publisher)**：负责管理 `server.json` 清单定义、维护所认领的专属命名空间，并对注册中心对外分发元数据的真实性与准确性承担终身责任。
+6. **最终用户 (End User)**：作为宿主应用程序代表其执行操作的真正授权主体，也是规范反复强调“必须允许人类在回路中拒绝调用”时所保护的核心对象。
 
-Governance answers a related but separate question: who decides what a MUST becomes next. MCP is a project of the Agentic AI Foundation, and its technical direction runs through a small hierarchy. Lead Maintainers hold final veto authority. Core Maintainers steer the specification and the overall project direction. Maintainers steward one specific area each, an SDK, documentation, or a Working Group. Contributors are anyone who opens an issue or a pull request; sustained contributors become Members, and a Member of at least six months can become a Maintainer with a sponsor and Core Maintainer approval; those timelines are minimums, not guarantees. Two kinds of groups do the collaborative work between those layers. An Interest Group discusses a problem and produces non-binding recommendations, use cases, and requirements, the place to raise "should MCP support this" before anyone has committed to a design. A Working Group builds the concrete deliverable, usually a Specification Enhancement Proposal (SEP) and its reference implementation, once an idea has enough support to justify engineering time. A SEP moves through `draft`, `in-review`, and then either `accepted` or `rejected`, and an accepted Standards Track SEP is not `final` until its reference implementation, and for anything with observable protocol behavior a conformance test, both land. That is the same feature lifecycle from the specification-reading lesson, applied to the moment a requirement is born rather than the moment it is retired: a feature is Active, then optionally Deprecated with a required migration path and a minimum window, then eventually Removed.
+这些角色并不是为了替代架构章节中介绍的 Host、Client 和 Server，而是叠置在其上的人类与组织视角。在一个敏捷小团队中，一个人可能同时兼任其中的两到三个角色；但对于认证考核与生产实践而言，最关键的在于：随着部署架构的演进，同一项规范要求的承接人会发生动态漂移。
 
-SDK tier is the last adoption decision this lesson hands to a role, usually the host and client developer or the server author choosing a foundation to build on. Tier 1 SDKs pass 100 percent of the conformance tests, ship new protocol features before or alongside a spec release, triage issues within two business days, and fix critical bugs within seven. Tier 2 commits to the same destination on a longer clock: 80 percent conformance and a six month window for new features. Tier 3 is explicitly experimental with no timeline commitment at all. Picking a Tier 3 SDK for a production gateway is not a technical shortcut, it is a decision to inherit that SDK's maintenance risk, and a candidate who can say so, by name, is answering the kind of scenario question this domain asks.
+### 采纳路径演进中的职责漂移
+
+考察规范要求在三种典型落地路径下的流转轨迹：本地 stdio 模式、基于 OAuth 的独立远程 Streamable HTTP 模式，以及带有统一网关的企业级集群部署模式。
+
+Streamable HTTP 传输协议明确规定：服务端在收到所有入站连接时，必须（MUST）对 `Origin` 请求头执行校验，以此严密防范 DNS 重新绑定攻击。如果在公网上直接裸跑一个独立的 MCP 服务器，该 MUST 要求必然全部落在**服务器作者**头上，因为在网络 Socket 与业务逻辑之间，服务器自身的代码是唯一的防线。但是，如果为该服务器前置部署了一个企业级安全网关，这个 MUST 要求并没有凭空消失，而是发生了职责转移：此时**平台或网关运维人员**维护的边缘网关是第一个接触到 `Origin` 请求头的程序，因此网关运维人员必须在网关层确保校验逻辑万无一失；而此时后端服务器作者的工作重心则收敛为信任网关划定的内网边界。通过结构化记录构建的责任矩阵必须能够实时反映这一动态变化：规范条款是固定不变的，部署形态发生了改变，而对应的责任人也随之发生了平移。
+
+同样的工程准则也适用于 stdio 模式。规范明确指出：采用 STDIO 传输的实现通常不应（SHOULD NOT）走复杂的 OAuth 授权流，而应直接从本地操作系统的环境变量中读取凭据。因此，stdio 部署模式绝不会要求宿主与客户端开发者去开发完整的 OAuth 客户端；相反，它要求**平台或网关运维人员**（或者在本地个人电脑上，由启动该进程的开发者）在子进程被拉起之前，确保所需的安全凭据已经正确注入到宿主环境变量中。如果不厘清这一职责归属，一个 stdio 工具要么在首次需要凭据的调用中当场崩溃，要么更糟糕：有人会将明文密钥硬编码到未受监管的配置文件中。
+
+### 社区治理结构与 SEP 提议生命周期
+
+治理流程回答的是一个相关但独立的宏观问题：究竟由谁来决定规范中的下一个 MUST 是什么。MCP 现隶属于 Agentic AI Foundation，其技术演进由一套精简严密的层级结构驱动：
+- **首席维护者 (Lead Maintainers)**：拥有全局技术决策的最终否决权。
+- **核心维护者 (Core Maintainers)**：全面主导规范演进方向与整个项目的战略技术路线。
+- **维护者 (Maintainers)**：各自独立负责某一专门的技术领域，如特定语言的 SDK、官方文档或特定工作组。
+- **贡献者 (Contributors)**：任何在社区提交 Issue 或发起 Pull Request 的开发者皆为贡献者；持续贡献者可晋升为**正式成员 (Members)**；成为正式成员满六个月后，经由一名维护者推荐并获得核心维护者批准，方可晋升为维护者（上述时间线均为最低准入门槛而非绝对保证）。
+
+在上述层级之间，两类组织形式负责具体的协同落地：
+- **兴趣组 (Interest Group)**：负责针对某一前沿问题展开广泛研讨，产出非约束性的建议报告、业务用例与需求分析。这是在任何人投入工程设计之前，讨论“MCP 是否应当支持此特性”的开放场所。
+- **工作组 (Working Group)**：当某个构想获得了足够的社区支持并值得投入工程资源时，工作组负责产出具有确定交付物的实体成果，通常包含一份规范增强提议（SEP）及其标准参考实现。
+
+一份 SEP 提议遵循严格的状态流转机：从草案状态 (`draft`) 进入评审状态 (`in-review`)，随后被正式采纳 (`accepted`) 或遭到否决 (`rejected`)。即使一份属于标准轨道的 SEP 获得了采纳，它依然不能被标记为最终终态 (`final`)，除非它的标准参考实现已经合并入库，并且针对任何具备可观察协议行为的特性，配套的一致性测试套件 (Conformance Tests) 也必须同步交付完毕。这一规范创生流程与我们之前在规范解读课中学到的特性生命周期形成了完美闭环：新特性诞生后处于活跃状态 (`Active`)；随技术演进可能进入弃用阶段 (`Deprecated`)，此时必须提供清晰的迁移路径并维持一段法定保护过渡期；最终在满足窗口期后被彻底移除 (`Removed`)。
+
+### SDK 评级体系与选型决策
+
+SDK 评级是本课交付给具体角色的最后一项关键技术选型决策，通常由宿主与客户端开发者或服务器作者在挑选底层基础库时承担。评级体系包含严格的一致性与响应时效承诺：
+- **一级 SDK (Tier 1)**：必须 100% 通过官方一致性测试套件；在官方规范发布前或发布同步推出新协议特性的支持；在两个工作日内完成对新上报 Issue 的分类定级；并在七个自然日内修复关键严重 Bug。
+- **二级 SDK (Tier 2)**：追求相同的标准，但时间窗口更为宽松：承诺达到 80% 的一致性覆盖，并允许在规范发布后的六个月窗口期内跟进新特性。
+- **三级 SDK (Tier 3)**：被官方明确定义为实验性项目，不提供任何确定性的服务时间表承诺。
+
+如果技术团队在构建生产级网关时贸然选用了一个 Tier 3 级别的 SDK，这绝不是什么省时省力的技术捷径，而是一个由该角色主动承担其后续维护风险的重大技术负债决策。能够在考试中结合具体业务场景准确指出这一权衡，正是考官在评估考生是否具备真实工程素养时所重点考察的能力。
 
 ```figure
 mcpa-28-roles-map
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure lays three panels side by side: a local stdio deployment, a plain remote HTTP deployment with no gateway, and the same server once a gateway sits in front of it. Each panel names the role that owns a sample of that shape's requirements. Watch the flagged row move. Under plain HTTP, the server author owns Origin validation right next to Protected Resource Metadata. Add a gateway and the flagged row jumps to the platform or gateway operator, because the gateway is now the first thing a request touches. Nothing about the underlying MUST changed between the second and third panel. What changed is which panel, which deployment shape, gets to claim it.
+上方的图表由三个并列面板构成：本地 stdio 部署形态、无网关的裸跑远程 HTTP 部署形态，以及前端带有网关的企业级代理部署形态。每个面板清晰标明了在该形态下负责承接各项典型规范要求的具体角色。请重点关注被高亮标记的那一行职责流动：在裸跑 HTTP 面板中，服务器作者在负责受保护资源元数据 (PRM) 的同时，必须亲自承接 Origin 请求头校验的重任；而在网关面板中，该校验职责瞬间跳转到了平台或网关运维人员名下，因为网关此时成为了接收请求的首要入口。从第二个面板到第三个面板，底层的 MUST 规范条款一字未改，改变的仅仅是所处的部署形态，而责任人随之发生了决定性的转移。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Open `code/main.py`. `REQUIREMENTS` is a tuple of curated `Requirement` records, each one an exact MUST or SHOULD quoted from the brief or the specification, tagged with the deployment shapes it applies to and the role that owns it by default. `build_responsibility_matrix(shape)` filters the catalog to one shape, assigns an owner to each applicable requirement, and collects any MUST whose owner is `None` into a `gaps` list. Run it:
+打开 `code/main.py`。代码中的 `REQUIREMENTS` 是一个由精选 `Requirement` 记录构成的元组，每一条都直接摘录自主规范文本中确切的 MUST 或 SHOULD 条款，并标注了其适用的部署形态以及默认负责的角色。函数 `build_responsibility_matrix(shape)` 会根据指定的形态过滤目录、为每项适用的要求分配责任人，并将任何责任人为 `None` 的孤立 MUST 归集到 `gaps` 缺陷列表中。运行该脚本：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed matrix for all three shapes side by side. Confirm that `stdio-env-credentials` lands on the platform or gateway operator, that `prm-implemented` lands on the server author under both `http` and `gateway`, and that `origin-validation` is the one row whose owner changes between those two shapes: `server_author` for `http`, `platform_gateway_operator` for `gateway`. Then look at `error-code-allocation`. Its `default_role` is `None` on purpose, a MUST NOT from section 5 of the brief that does not map cleanly onto any single one of the six roles, and the matrix reports it as a gap on every shape you run it against. Add a thirteenth `Requirement` of your own, something from a lesson you have already read, decide which of the six roles should own it, tag it with the shapes where it applies, and rerun the script to see your addition take its place in the matrix.
+对比终端打印的三种部署形态的责任矩阵。验证 `stdio-env-credentials` 明确划归平台或网关运维人员；验证 `prm-implemented` 在 `http` 和 `gateway` 两种形态下均归属于服务器作者；并重点观察 `origin-validation` 是唯一在两者间发生责任漂移的条款：在 `http` 下由 `server_author` 负责，在 `gateway` 下由 `platform_gateway_operator` 负责。接着观察 `error-code-allocation` 条目：它的 `default_role` 被故意留空为 `None`，这是一条摘录自规范第 5 节的 MUST NOT 禁令，它无法被简单武断地划归给六大角色中的某一个，因此在每一次运行中矩阵都会将其作为待解决的责任空缺 (Gap) 显式报错。尝试添加一条你自己的第 13 项 `Requirement`（从你已学过的课程中选取一条规范），确定由六大角色中的哪一个负责认领，打上适用的部署形态标签，重新运行脚本并观察你的新规则在矩阵中精准就位。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/roles-responsibility-matrix.md` is a one-page field reference: the six roles in one line each, the three adoption paths and which role gains new responsibility at each step, the same Origin validation example worked through by hand, and a short governance and SDK tier cheat sheet covering the maintainer hierarchy, Working Group versus Interest Group, the SEP status list, and the three SDK tiers. Keep it next to the architecture roles map from the hosts, clients, and servers lesson; that one draws the wire topology, this one names who is accountable for it.
+`outputs/roles-responsibility-matrix.md` 是一份单页实战速查手册：以一行一角色精炼定义了六大角色；系统梳理了三种采纳路径及在演进过程中各角色新增的责任边界；以 Origin 请求头校验为例手把手演示了职责漂移推导过程；并附带了一份涵盖维护者层级、工作组与兴趣组对比、SEP 状态机以及 SDK 三级评级标准的治理备忘单。请将本手册与之前宿主、客户端和服务器课程中的架构图对照使用：前者描绘了报文的物理拓扑，而本手册明确了到底由谁对每一个通信环节承担最终责任。
 
-## Verify It
+## Verify It (验证方法)
 
-Run the tests from the lesson directory:
+在课程根目录下运行测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: that every deployment shape resolves to a non-empty matrix, that stdio hands environment credentials to the platform or gateway operator, that a plain HTTP deployment hands Protected Resource Metadata to the server author, that a gateway-fronted deployment moves Origin validation to the platform or gateway operator while a plain HTTP deployment keeps it on the server author, that the deliberately unowned MUST is reported as a gap while an unowned SHOULD is not, that every applicable requirement is assigned exactly once per shape with none dropped or duplicated, that all six roles appear somewhere in the catalog, that an unrecognized deployment shape is rejected, and that the illustrative exchange never puts a credential on the wire. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+测试套件严密验证了本课的各项核心逻辑：每种部署形态均能正确生成非空的责任矩阵；stdio 模式将环境变量凭证正确指派给平台运维人员；普通 HTTP 部署将受保护资源元数据准确划归服务器作者；网关部署架构能正确将 Origin 校验迁移至网关运维人员，而普通 HTTP 则严格保留在服务器作者名下；故意未分配责任人的 MUST 会被明确作为 Gap 报警，而未分配的 SHOULD 则不会引发异常阻断；每一项适用要求在每种形态下都被严格分配且绝不遗漏或重复；六大角色全部在规范条目库中拥有对应的职责体现；非法的未知部署形态会被立即拒绝；且演示交互过程在线路上绝不泄露任何明文凭证。仓库内置的协议合规检查器同样会验证本课的运行记录是否完全符合 2026-07-28 规范：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/28-roles-and-adoption
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The capstone's integrated scenario asks you to defend a full deployment, not just describe its message shapes. This lesson is where that defense gets its vocabulary: when a reviewer asks who validates the Origin header in your design, the answer has to name a role and a deployment shape, not just repeat that the server MUST validate it. Bring the responsibility matrix, and bring the habit of asking, for every MUST a scenario mentions, who on this specific team just agreed to own it.
+在 Capstone 综合大作业的实战答辩中，考官会要求你为一整套完整的部署方案进行工程合理性辩护，而绝非仅仅停留在描述报文结构层面。本课正是为你提供这套严谨工程防守语言的核心基石：当审查员在答辩中追问你的架构中“到底由谁负责校验 Origin 请求头”时，你的回答必须精准道出具体的角色名称与当前所处的部署架构形态，而不是机械地重复“规范规定服务器必须校验”。请带上本课的责任矩阵，并在未来的每一个工程场景中养成职业本能：面对规范中提及的每一个 MUST，始终追问一句：“在当前这支具体的研发团队中，究竟由谁出面认领？”
 
-## Key Terms
+## 关键术语 (Key Terms)
 
-| Term | Meaning |
+| 术语 | 定义说明 |
 |------|---------|
-| Server author | Writes and maintains one MCP server implementation against the specification |
-| Host and client developer | Builds the application and the client that declares capabilities and speaks the wire protocol |
-| Platform or gateway operator | Runs the process: launches a stdio subprocess with its environment, or terminates and polices a remote connection |
-| Security and governance owner | Accountable for cross-cutting requirements, such as token handling and consent policy, that no single implementer naturally owns |
-| Registry publisher | Owns a server's server.json, its namespace, and the accuracy of what a registry serves about it |
-| End user | Grants consent and is the accountable party for what a host does on their behalf |
-| Working Group | A group that builds a concrete deliverable, usually a SEP and its reference implementation |
-| Interest Group | A group that discusses a problem and produces non-binding recommendations, not a design |
-| SEP | Specification Enhancement Proposal, the PR-based workflow for a new feature or a breaking change |
-| SDK tier | A conformance and response-time commitment, Tier 1 through Tier 3, an SDK maintainer signs up for |
+| Server author（服务器作者） | 依据 MCP 规范编写、发布并持续维护单个服务端实现的工程角色 |
+| Host and client developer（宿主与客户端开发者） | 构建终端应用程序及负责声明能力并收发底层报文的客户端的研发角色 |
+| Platform or gateway operator（平台或网关运维人员） | 负责生产环境运维的角色：拉起 stdio 进程并注入环境，或终结并管控远程网络连接 |
+| Security and governance owner（安全与治理负责人） | 统筹跨切面安全要求的决策角色，对令牌管理、同意策略等跨模块规范负最终责任 |
+| Registry publisher（注册中心发布者） | 负责管理服务器 `server.json`、维护命名空间及确保元数据准确性的发布角色 |
+| End user（最终用户） | 实际授予操作同意的自然人主体，也是宿主应用程序代表其行使职能的法定委托人 |
+| Working Group（工作组） | 旨在产出确定交付物的社区协同组织，通常负责制定 SEP 提议并交付官方标准参考实现 |
+| Interest Group（兴趣组） | 针对前沿开放问题展开研讨并产出非约束性建议的组织，不负责直接构建工程实现 |
+| SEP | 规范增强提议 (Specification Enhancement Proposal)，用于引入新特性或重大变更的社区工作流 |
+| SDK tier（SDK 评级） | 官方衡量 SDK 成熟度与承诺水平的评级体系（一级至三级），涵盖一致性测试与 Bug 响应时效 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [MCP governance and stewardship](https://modelcontextprotocol.io/community/governance)
-- [Working and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups)
-- [SEP guidelines](https://modelcontextprotocol.io/community/sep-guidelines)
-- [SDK tiering system](https://modelcontextprotocol.io/community/sdk-tiers)
-- [Design principles](https://modelcontextprotocol.io/community/design-principles)
-- [Contributor ladder](https://modelcontextprotocol.io/community/contributor-ladder)
-- [MCP specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28), especially Authorization and the Streamable HTTP transport, for the exact MUST statements this lesson's requirement catalog quotes
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 4, 5, 6, 9, 10, 12, and 15
+- [MCP 社区治理与托管架构](https://modelcontextprotocol.io/community/governance)。
+- [工作组 (WG) 与兴趣组 (IG) 运作指南](https://modelcontextprotocol.io/community/working-interest-groups)。
+- [SEP 提议制定指南](https://modelcontextprotocol.io/community/sep-guidelines)。
+- [SDK 分级制度标准](https://modelcontextprotocol.io/community/sdk-tiers)。
+- [MCP 设计哲学与原则](https://modelcontextprotocol.io/community/design-principles)。
+- [社区贡献者晋升阶梯](https://modelcontextprotocol.io/community/contributor-ladder)。
+- [MCP 规范 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28)，重点参阅授权机制与 Streamable HTTP 传输章节中引用的确切 MUST 原文。
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 4、5、6、9、10、12 与 15 节。

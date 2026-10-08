@@ -1,30 +1,32 @@
-# Interactive Interfaces Inside the Conversation
+# 会话内部的交互式界面 (Interactive Interfaces Inside the Conversation)
 
-> A tool result does not have to stop at text: a server can point at a small HTML interface and let the host render it, sandboxed, right where the conversation is already happening.
+> 工具的执行结果绝不局限于纯文本：服务器可以指向一个小巧的 HTML 交互界面，并允许宿主环境在当前正在发生的对话流中，以安全沙箱的形式将其原生渲染展示。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 30
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Explain what an interactive interface adds beyond a tool's ordinary text and structured content, and recognize the use cases where reaching for one pays off
-- Negotiate the `io.modelcontextprotocol/ui` extension per request and trace a `ui://` resource from a tool's `_meta.ui.resourceUri` through an ordinary `resources/read` call
-- Read a UI resource's `_meta.ui.csp` domain lists and `_meta.ui.permissions` flags, and construct the Content Security Policy a host must enforce, including its restrictive default
-- Enforce a tool's `visibility` so the agent's tool list and an app's own `tools/call` requests only ever see what each side is allowed to see
-- Describe the sandboxed iframe security model, the app-to-host bridge, and why an app-initiated tool call still crosses a consent boundary
-- Design a fallback so a UI-capable tool keeps working for a host that never declares the extension
+- 阐述交互式界面相比工具常规返回的纯文本或结构化内容所带来的增强价值，并准确识别引入该特性的高价值业务场景。
+- 在单次请求粒度协商 `io.modelcontextprotocol/ui` 扩展，并追踪从工具定义中的 `_meta.ui.resourceUri` 到发起标准 `resources/read` 读取 `ui://` 资源的全流程。
+- 解析 UI 资源的 `_meta.ui.csp` 域名清单与 `_meta.ui.permissions` 权限标志位，构建宿主必须强制执行的内容安全策略 (CSP)，包括严格的默认兜底规则。
+- 强制实施工具的 `visibility` 可见性隔离策略，确保智能体自身的工具列表与应用内部的 `tools/call` 请求各自只能感知其被允许访问的工具子集。
+- 深入剖析沙箱化 iframe 安全架构、应用至宿主的 Bridge 桥接通信机制，并阐明为何由应用前端发起的工具调用依然必须跨越人类同意边界。
+- 设计完善的优雅降级方案，确保具备 UI 渲染能力的工具在面对未声明该扩展的宿主时依然能够平稳运转。
 
-## The Problem
+## 问题背景
 
-A dashboard tool that answers "show me sales by region" can return a paragraph of numbers, or it can return a small table wrapped in `structuredContent`. Neither one lets a user click a region to drill in, hover a bar for the exact figure, or flip between metrics without asking the model to run the tool again for every click. A configuration tool faces the same ceiling from the other direction: turning "which region, which instance size, autoscaling or not" into a back-and-forth conversation is slower and more error-prone than a form the user fills out once, with defaults and validation visible up front.
+一个响应“展示各地区销售业绩”的报表工具，既可以返回一段包含各种数字的自然语言段落，也可以返回一个被 `structuredContent` 包裹的结构化小表格。然而，这两种方式都无法让用户直接点击某一区域进行数据下钻、将鼠标悬停在柱状图上查看精准数值，或在不同指标维度之间自由切换，除非用户愿意针对每一次点击都让大模型重新调用一遍底层工具。对于配置类工具，从反方向看也会遭遇同样的体验天花板：把“部署在哪个可用区、选择多大规格实例、是否开启自动伸缩”变成一问一答的多轮对话，其交互效率与容错率远远落后于一个预先展示了默认值与即时参数校验、供用户一次性填写的图形表单。
 
-Text and structured content remain the right choice for most tools. The gap they leave is narrow but real: results a user wants to explore, not just read, and choices a user wants to make with everything visible at once, not one question at a time. MCP Apps closes that gap with an optional extension, not a new transport or a second protocol standing next to MCP. It reuses two primitives this track already covers, a tool and a resource, and adds one rule for how a host renders what it fetches.
+对于绝大多数常规工具而言，纯文本与结构化内容依然是最轻量高效的表达载体。但它们留下的体验空白虽然狭窄却十分真实：那就是用户渴望自主探索而非仅仅被动阅读的数据结果，以及用户希望全局一览、自主勾选而非逐一被动问答的决策表单。MCP Apps 扩展正是为了填补这一空白而诞生的可选扩展，它既没有发明新的底层传输协议，也没有在 MCP 旁边另立门户建立第二套规范；相反，它完美复用了本课程已经掌握的两个核心原语（Tool 与 Resource），并为宿主环境如何安全渲染抓取到的内容补充了一套严谨的安全运行时规则。
 
-## The Concept
+## 核心概念
 
-The extension identifier is `io.modelcontextprotocol/ui`. It negotiates exactly the way every extension negotiates, the same per-request declaration lesson 30 walked through for extensions in general: a client declares support in `io.modelcontextprotocol/clientCapabilities.extensions` on the requests it sends, and a server declares its own support in `capabilities.extensions` from `server/discover`. Declaring the extension does not depend on any earlier request. It is per request, the same as the protocol version and every other capability.
+### 扩展协商与 UI 资源绑定
+
+该扩展的标准唯一标识符为 `io.modelcontextprotocol/ui`。它的协商流程完全遵循我们在第 30 课中探讨的通用每请求协商法则：客户端在每次发出的请求元数据中通过 `io.modelcontextprotocol/clientCapabilities.extensions` 声明对该扩展的支持，而服务器则在其 `server/discover` 端点的发现响应中通过 `capabilities.extensions` 声明自身的实现支持。扩展声明不依赖任何历史请求；它是每请求独立的，正如协议版本号及其他一切能力一样。
 
 ```json
 {
@@ -42,13 +44,24 @@ The extension identifier is `io.modelcontextprotocol/ui`. It negotiates exactly 
 }
 ```
 
-A server that supports the extension answers with `capabilities.extensions` naming the same identifier, alongside whatever `tools` and `resources` capabilities it already advertises. That answer does not depend on what the caller declared either: `server/discover` reports what the server can do, and a client works out what is actually usable by intersecting that with what it itself supports. A host that never declares the extension gets the identical discovery result; it simply never acts on the part of it that names an extension it does not implement.
+支持该扩展的服务器会在响应中声明相同的标识符，同时伴随其常规的 `tools` 和 `resources` 能力。这一响应同样客观反映服务器自身的能力，不随调用方的声明而变化：`server/discover` 负责告知服务器能做什么，客户端通过取交集来确定当前真正可用的能力子集。一个从未声明该扩展的普通宿主会收到完全相同的发现报文，只是它绝不会去处理那些它自身未实现的扩展部分。
 
-A UI-capable tool carries one extra field in its definition, `_meta.ui.resourceUri`, pointing at a `ui://` resource. This is static per-tool metadata, part of the same `tools/list` entry every client receives, so it does not vary by who is asking any more than the rest of a tool's definition does. Because the binding is visible before the tool is ever called, a host can preload and review the resource ahead of time instead of discovering it only after the model decides to invoke the tool.
+具备 UI 交互能力的工具会在其工具定义中额外携带一个字段：`_meta.ui.resourceUri`，指向一个以 `ui://` 为协议头的特殊资源 URI。这是静态的单工具元数据，属于每个客户端在 `tools/list` 中都会收到的标准内容的一部分，并不因人而异。由于这种绑定关系在工具被调用之前就已经完全透明暴露，宿主环境完全可以在大模型决定调用该工具之前，提前完成资源的预加载与安全复审，而无需等到调用发生的瞬间才仓促应对。
 
-A tool's `_meta.ui` can also carry `visibility`, an array that defaults to `["model", "app"]` when the field is absent. A tool visible to `"model"` is the one the agent can see and decide to call, the ordinary case this track has covered since lesson 11. A tool visible to `"app"` is one the rendered app itself may call directly, through the bridge, without asking the model to take a turn. The two are independent gates a host enforces on two different lists: a tool whose visibility drops `"model"` never appears in the agent's own tool list at all, and a tool whose visibility drops `"app"` still appears to the model as normal, but the host rejects a `tools/call` an app tries to place against it. A cross-server call to an app-only tool, one whose server does not match the app's own, is blocked outright, regardless of visibility.
+### 双向可见性控制：模型可见与应用可见
 
-Fetching that resource uses no special method. The host reads it the same way it reads any other resource, through `resources/read`, and the result must carry `mimeType` set to exactly `text/html;profile=mcp-app`. That profile parameter is what marks the document as a renderable app rather than an arbitrary HTML page a browser happens to be able to open; a resource that answers with plain `text/html` is not one, no matter how well-formed its markup is, and a careful host checks the mime type on every fetch rather than trusting the `ui://` scheme alone.
+工具的 `_meta.ui` 还可以携带一个 `visibility` 数组；当该字段缺省时，默认取值为 `["model", "app"]`：
+- 对 `"model"` 可见的工具，是大模型智能体能够感知并在对话中自主决定调用的常规工具（即第 11 课以来学习的标准工具形态）。
+- 对 `"app"` 可见的工具，则是渲染出来的 HTML 应用前端自身能够通过桥接通道直接发起的工具，调用过程无需模型参与轮次交互。
+
+这两项是宿主环境在两份独立清单上严格把关的独立安全网关：
+- 如果一个工具的可见性配置剔除了 `"model"`，它将**绝对不会**出现在呈现给大模型的工具列表中；
+- 如果一个工具剔除了 `"app"`，模型依然可以像往常一样看到并调用它，但宿主会坚决拦截任何由前端 App 试图针对该工具发起的 `tools/call` 请求；
+- 另外，任何跨服务器调用 App 专属工具的企图（即发起调用的 App 所在的服务器与目标工具所在的服务器不匹配），无论配置了何种可见性，都将被宿主就地彻底阻断。
+
+### 抓取 UI 资源与严格 MIME 校验
+
+获取该 UI 资源无需使用任何特殊方法。宿主通过现成的 `resources/read` 接口发起读取，与读取普通资源别无二致。但是，返回的内容必须严格满足一个致命条件：其 `mimeType` 必须精确等于 `text/html;profile=mcp-app`。
 
 ```json
 {
@@ -79,80 +92,94 @@ Fetching that resource uses no special method. The host reads it the same way it
 }
 ```
 
-The same resource carries the fields that govern how the host may render it, all inside `_meta.ui`. `csp` is an object, not a flat list: `connectDomains` covers fetch, XHR, and WebSocket; `resourceDomains` covers scripts, styles, images, and fonts; `frameDomains` covers nested iframes; `baseUriDomains` covers the document's own base URI. Every key is optional. A host MUST construct its Content Security Policy from exactly the domains a resource declares and MUST NOT allow a domain the resource never named; declaring a domain is not the same as getting it, because the host MAY still further restrict what it actually honors, as a matter of its own policy, not because the wire failed. If `csp` is omitted entirely, a host MUST fall back to a restrictive default that blocks everything but same-origin content and inline styles and scripts, with no outbound connections at all. Missing `frameDomains` always means `frame-src 'none'`, and missing `baseUriDomains` always means `base-uri 'self'`, whether or not the rest of `csp` is present. A host SHOULD log the CSP it ends up constructing for later security review.
+这里的 `profile=mcp-app` 参数是唯一将该文档标记为“可由宿主沙箱渲染的受控 App”而非“普通浏览器网页”的技术依据。任何返回普通 `text/html` 的资源，无论其 HTML 结构多么完整合规，都坚决不得作为 App 予以渲染；严谨的宿主在每次抓取后都必须严格校验 MIME 类型，绝不能仅凭 `ui://` 协议头就轻信内容性质。
 
-`permissions` is a second object, one optional empty-object flag per capability: `camera`, `microphone`, `geolocation`, `clipboardWrite`. A host MAY honor any of them by setting the iframe's `allow` attribute accordingly, and an app SHOULD NOT assume a requested permission was actually granted; it degrades the same way any web page does when a permission prompt is denied. Rendering does not wait on permissions the way it waits on the mime type: a resource that asks for a permission the host will not grant still renders, just without that capability.
+### 内容安全策略 (CSP) 与沙箱权限控制
 
-Once rendered, the app and the host talk over their own JSON-RPC dialect, carried over `postMessage`, not over the client-server connection this curriculum otherwise covers. Some of its messages share a name with the core protocol, such as `tools/call`; most are new, with a `ui/` prefix, such as `ui/initialize`, which sets up the channel between one iframe and the host frame that embeds it. That local handshake is unrelated to the core `initialize` request, which does not exist in 2026-07-28: it never negotiates a protocol version, never creates a session, and never touches the stateless client-server wire this track has covered since lesson 04. When the host is a web page, it MUST NOT talk to the view directly either: it wraps the view in an intermediate sandbox proxy on a different origin from the host's own, and that proxy is what actually forwards bridge messages in both directions.
+UI 资源内部携带了指导宿主如何渲染它的安全元数据，全部位于 `_meta.ui` 中。`csp` 是一个结构化对象而非扁平字符串：
+- `connectDomains`：限制 fetch、XHR 与 WebSocket 的出站通信域名；
+- `resourceDomains`：限制加载脚本、样式、图片及字体的合法来源域名；
+- `frameDomains`：限制嵌套 iframe 的来源域名；
+- `baseUriDomains`：限制文档自身的基准 URI。
 
-Through that bridge, the app can ask the host to place a tool call on its behalf, but only against a tool whose visibility includes `"app"` in the first place. The host is still the one that decides: it forwards the request to the server as an ordinary `tools/call`, with a fresh id and full `_meta`, only after the same consent a user would apply to any tool invocation, and it can decline outright. The iframe cannot approve its own consequential action; it can only ask, and the host answers.
+所有字段均为可选。规范要求宿主必须（MUST）严格依据资源显式声明的域名来装配最终的内容安全策略 (CSP)，且绝不准（MUST NOT）放行任何资源未曾声明的域名。请注意：声明了某个域名并不代表必然能获得该权限，因为宿主完全可以依据自身更严格的本地安全策略对其进一步收紧。如果资源完全省略了 `csp` 字段，宿主必须强制回退到极其保守的默认防御策略：全面阻断同源内容以外的一切网络请求，严禁任何外部出站网络连接，仅允许内联脚本与样式。未声明 `frameDomains` 恒等同于 `frame-src 'none'`；未声明 `baseUriDomains` 恒等同于 `base-uri 'self'`。宿主应当对最终装配出的 CSP 字符串进行持久化审计留痕。
 
-This is also the shape of the security argument for choosing an app over a plain linked webpage. The iframe cannot read the host page's cookies, local storage, or DOM, and it cannot navigate the parent page or run script in its context; every privileged action must cross the mediated bridge. That isolation is what lets a host safely render an app from a server it has not audited line by line, the same way it already renders untrusted tool results and resource text without letting them dictate what the model or the user ultimately does, the trust-boundary discipline lesson 22 already established.
+`permissions` 是第二个权限对象，包含一组可选的空对象标志位：`camera`、`microphone`、`geolocation`、`clipboardWrite`。宿主可以根据本地策略，通过配置 iframe 的 `allow` 属性选择性放行某些硬件权限；App 绝不应假定申请的权限必然获批，而必须像常规现代网页那样在权限被拒时平稳降级运行。UI 的渲染过程绝不会因为缺少某项硬件权限而中断。
 
-None of this is mandatory for a tool to keep working. A UI-capable tool still returns a useful `content` text answer from every `tools/call`, and a host that never declared the extension simply never reads the `ui://` resource: it uses that text the way it would for any other tool, and the extension's own rule applies, the side without support falls back to core behavior rather than the request failing.
+### 沙箱架构与跨 Bridge 调用的同意网关
+
+一旦渲染完成，App 与宿主之间通过基于 `postMessage` 的专有 JSON-RPC 通信协议进行交互，该通道完全独立于客户端与服务器之间的底层网络链路。在这个专有通道中，部分报文与核心协议同名（如 `tools/call`），多数则带有 `ui/` 前缀（如用于建立本地双向通道的 `ui/initialize`）。请注意：这个本地初始握手与 2026-07-28 规范中早已废除的旧版核心 `initialize` 握手毫无关系：它不协商协议版本、不创建持久连接会话，也绝不触碰核心客户端与服务器之间的无状态通信报文。当宿主本身是一个 Web 页面时，规范严禁（MUST NOT）宿主页面与 App 视图直接跨域通信：宿主必须将视图包裹在一个与自身主域名完全不同的独立源 (Origin) 的中间沙箱代理 (Sandbox Proxy) 中，由该代理负责在两端安全转发 Bridge 消息。
+
+通过该 Bridge 桥接，App 可以请求宿主代表其发起一次工具调用（前提是目标工具的可见性包含了 `"app"`）。但真正拥有最终决定权的依然是宿主应用：宿主在收到请求后，必须将其视为一次全新发起的标准 `tools/call`，生成全新的 ID 与完整的 `_meta`，并**强制经过与普通模型调用完全相同的人类同意 (Consent) 确认流程**；宿主甚至可以直接当场拒绝。iframe 内部的代码绝对无权擅自批准任何可能产生实质后果的副作用操作；它只能发起申请，决定权永远在宿主手中。
+
+这也正是选择 MCP Apps 而非简单嵌入外部网页的核心安全逻辑所在：iframe 无法读取宿主页面的 Cookie、本地存储或 DOM 树，也无法操控父级页面跳转或在宿主上下文中注入脚本；每一项特权操作都必须穿过由宿主严格监管的通信桥梁。这种严密的安全隔离，使得宿主能够放心地将来自第三方服务器的代码在界面上渲染出来，正如它处理不可信的工具执行结果一样，始终坚守第 22 课所确立的信任边界准则。
+
+当然，这一切绝非工具运行的强制前提：具备 UI 渲染能力的工具在每次被调用时，仍然必须返回具有独立业务价值的普通文本 `content`。对于从未声明过 UI 扩展的普通宿主，系统完全跳过读取 `ui://` 资源的过程，直接消费文本内容；双方在无缝兼容中实现优雅降级。
 
 ```figure
 mcpa-31-app-sandbox
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure follows one tool call through both branches at once. On the left, a host that declared the extension reads the tool's `_meta.ui.resourceUri` through an ordinary `resources/read`, checks the mime type, and constructs a Content Security Policy from the declared domains, narrowed further by its own policy, before rendering inside the sandboxed iframe; a dashed line marks the consent gate an app-initiated tool call must still cross, on top of the tool's own visibility, before it reaches the server. On the right, a host that never declared the extension stops after the plain `tools/call` and renders the same tool's text content, never touching the resource at all.
+上方的架构图同时展示了一次工具调用在双端协商下的两条执行分支：
+- 在左侧分支中，声明了 UI 扩展的宿主通过常规的 `resources/read` 读取工具在 `_meta.ui.resourceUri` 中指定的资源，严格核验 MIME 类型，依据声明域名结合本地安全策略装配出严格的 CSP，并在沙箱化 iframe 中安全渲染视图；图中的虚线清晰标明了关键安全门禁：即使是由 App 前端代码直接发起的工具调用，在满足工具自身可见性的前提下，依然必须越过人类同意确认网关，随后方可发往后端服务器。
+- 在右侧分支中，从未声明 UI 扩展的普通宿主在收到常规的 `tools/call` 结果后直接止步，仅提取并展示工具返回的纯文本内容，自始至终绝不触碰任何底层资源。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Open `code/main.py`. A single server exposes three tools bound to one dashboard view: `sales_by_region` (default visibility, both model and app), `refresh_sales_view` (`visibility: ["app"]`, hidden from the agent), and `export_sales_report` (`visibility: ["model"]`, unreachable from inside the app). It also exposes four resources: the tool's real `ui://` view, a `legacy-widget` resource that answers with plain `text/html` instead of the app profile, a `scripts-widget` resource whose CSP names a domain outside the host's own policy, and a `minimal-widget` resource that omits `csp` entirely.
+打开 `code/main.py`。该程序构建了一个独立的服务器，暴露了绑定到同一个仪表盘视图的三个典型工具：`sales_by_region`（默认可见性，模型与应用皆可见）、`refresh_sales_view`（`visibility: ["app"]`，对大模型隐蔽，仅供前端视图刷新）、以及 `export_sales_report`（`visibility: ["model"]`，仅供大模型调用，禁止前端 App 触碰）。同时暴露了四个资源：标准的 `ui://` 真实视图、一个返回普通 `text/html` 而非 App Profile 的缺陷部件 `legacy-widget`、一个 CSP 声明域名超出宿主本地白名单的非法部件 `scripts-widget`，以及一个完全省略了 `csp` 字段的最小化部件 `minimal-widget`。
 
 ```bash
 python3 code/main.py
 ```
 
-`HostAppLoader.load` runs the full decision twice on the same tool and arguments, once with the extension declared and once without, so the two plans in the printed output are directly comparable: one is `{"mode": "app", ...}` built from a real `resources/read`, carrying a constructed `csp` string and a `grantedPermissions` list that is a strict subset of what the resource asked for; the other is `{"mode": "text", ...}` that never issues that call at all. `review_app_resource` and `build_csp` run separately against the flawed and minimal resources and explain, in plain text, which check each one fails or which default applies. Near the bottom, `request_tool_call_from_app` shows two independent gates: a call against `export_sales_report` is refused for missing `"app"` in its visibility before consent is even considered, while a call against `refresh_sales_view` is refused when declined and forwarded with a fresh id when approved. Compare the two `tools/call` entries for the same tool and confirm every request still carries its own `_meta`, extension declaration included, with nothing remembered between them.
+代码中的 `HostAppLoader.load` 分别在声明扩展与未声明扩展的两种情境下，对同一个工具执行了完整的加载决策，终端清晰输出了两套可直接对比的执行计划：一套是 `{"mode": "app", ...}`，基于真实的 `resources/read` 构建，携带着动态生成的完整 `csp` 规则串以及被严格裁减为宿主白名单真子集的 `grantedPermissions`；另一套则是 `{"mode": "text", ...}`，根本不会向服务器发起资源读取请求。函数 `review_app_resource` 与 `build_csp` 分别针对两类缺陷资源与最小化资源展开了专项检测，并在控制台以纯文本逐一解释了各项检测失败的具体原因或生效的默认安全策略。在程序末尾，`request_tool_call_from_app` 演示了两道独立的防御关卡：针对 `export_sales_report` 的调用因为可见性缺少 `"app"` 在触及同意流程前被直接就地拒绝；而针对 `refresh_sales_view` 的调用在遭遇用户拒绝时被当场终止，在获得用户批准后则携带全新 ID 顺利转发至服务端。仔细比对这两次调用的请求报文，验证每次请求均完整携带各自独立的 `_meta` 与扩展声明，无任何跨调用状态残留。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/mcp-apps-review-checklist.md` is a one-page review checklist: what to confirm before trusting a `ui://` resource enough to render it, the fallback a UI-capable tool must keep, and a short decision table mapping each check's outcome to render, fall back, or reject. Keep it next to a server's tool descriptions when a tool declares `_meta.ui`.
+`outputs/mcp-apps-review-checklist.md` 是一份单页架构审查清单：系统整理了在信任并渲染一个 `ui://` 资源之前必须执行的完整检查项；规范了 UI 工具必须保留的纯文本兜底准则；并提供了一份决策矩阵，将各项检测结果映射为“正常渲染”、“平稳降级”或“彻底拦截”。当你在工具定义中引入 `_meta.ui` 时，请务必参照本清单进行技术审查。
 
-## Verify It
+## Verify It (验证方法)
 
-Run the tests from the lesson directory:
+在课程根目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: the extension is negotiated only when both sides declare it, a tool's UI binding appears in `tools/list` no matter who is asking, an omitted `visibility` defaults to both `"model"` and `"app"`, the agent's own tool list excludes an app-only tool, an app-aware host resolves the resource through exactly one `resources/read`, a host without the extension falls back to text and skips that call entirely, a resource with the wrong mime type is rejected even though the read itself succeeds, a resource whose CSP names a domain outside the host's policy is rejected and says which domain, `build_csp` constructs the right directives from declared domains and falls back to the restrictive default when `csp` is omitted, granted permissions never exceed the host's own policy, a declined app-initiated tool call never reaches the wire, an approved one is forwarded with a fresh id, a call against a tool whose visibility excludes `"app"` is refused before consent is even asked, an unknown resource is a protocol error, and every cacheable result carries `ttlMs` and `cacheScope`. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+测试套件全面验证了本课的各项论断：扩展唯有在双端共同声明时才会被激活；工具的 UI 绑定关系无论调用者是谁均如实呈现在 `tools/list` 中；省略的 `visibility` 默认赋值为 `["model", "app"]`；大模型自身的工具列表坚决排除仅供 App 调用的工具；感知 App 的宿主通过标准 `resources/read` 解析资源；未声明扩展的宿主直接平稳回退至纯文本并完全跳过资源读取；MIME 类型错误的资源即胜利读取也会被安全拒绝；CSP 声明域名违规的资源会被精准拦截并指明违规域名；`build_csp` 能正确装配指令并在缺省时回退至极度严格的默认策略；授予的硬件权限绝不超出宿主自身白名单边界；被拒绝的 App 端工具调用绝不发出物理报文；获批的调用携带全新 ID 正常转发；针对无 App 权限工具的发起源头拦截发生在请求同意之前；请求未知资源返回标准协议错误；且所有可缓存结果均附带合法的 `ttlMs` 与 `cacheScope`。仓库的报文检查器同样会验证通信日志是否完全符合 2026-07-28 规范：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/31-mcp-apps
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The capstone's end-to-end exchange can include a UI-capable tool among its calls, and every question this lesson raises still applies there: has the extension actually been negotiated on this request, does the fetched resource carry the exact mime type before anything renders, and does an app-initiated call still cross the same consent gate the capstone already enforces for every other tool invocation.
+在 Capstone 综合大作业的端到端全流程考核中，考官可能会在调用链路中加入具备 UI 交互能力的工具。本课探讨的每一个问题在此时都将成为答辩考点：本次请求在线路上是否真正完成了扩展的协商？抓取到的资源在真正渲染之前是否严格核验了标准的 MIME 类型？以及由前端界面触发的工具调用是否依然穿过了 Capstone 统一要求的人类同意授权网关。
 
-## Key Terms
+## 关键术语 (Key Terms)
 
-| Term | Meaning |
+| 术语 | 定义说明 |
 |------|---------|
-| MCP Apps | The optional extension that lets a tool point at an interactive HTML interface the host renders |
-| `io.modelcontextprotocol/ui` | The extension identifier both client and server declare to negotiate MCP Apps |
-| `ui://` | The URI scheme reserved for an app's UI resource |
-| `_meta.ui.resourceUri` | The field on a tool definition that points at its `ui://` resource |
-| `text/html;profile=mcp-app` | The exact mime type that marks a fetched resource as a renderable app |
-| `_meta.ui.csp` | An object of optional domain lists (`connectDomains`, `resourceDomains`, `frameDomains`, `baseUriDomains`) a host builds its Content Security Policy from |
-| `_meta.ui.permissions` | An object of optional empty-object flags (`camera`, `microphone`, `geolocation`, `clipboardWrite`) a host may honor |
-| `visibility` | A tool's `_meta.ui` array, `["model", "app"]` by default, gating the agent's tool list and an app's own `tools/call` requests separately |
-| Sandboxed iframe | The isolated frame a host renders an app inside, with no direct access to the host page |
-| Sandbox proxy | The different-origin intermediary a web host MUST use between itself and a rendered view |
-| App-to-host bridge | The JSON-RPC dialect over `postMessage` that an app and its host use, separate from the client-server wire |
-| Text fallback | The plain `content` result a UI-capable tool still returns for a host without the extension |
+| MCP Apps | 允许工具指向由宿主在沙箱中渲染的 HTML 交互界面的可选协议扩展 |
+| `io.modelcontextprotocol/ui` | 客户端与服务器双方用于协商启用 MCP Apps 特性的标准扩展标识符 |
+| `ui://` | 专门为交互式 App UI 资源保留的专用 URI 协议头 |
+| `_meta.ui.resourceUri` | 工具定义中用于指向其配套 `ui://` 资源地址的元数据字段 |
+| `text/html;profile=mcp-app` | 唯一能够合法将资源标记为可渲染交互式 App 的精准 MIME 类型 |
+| `_meta.ui.csp` | 包含出站与资源加载域名的对象，宿主据此装配实际执行的内容安全策略 |
+| `_meta.ui.permissions` | 包含硬件与敏感权限标志位的对象，宿主可依据本地策略决定是否授权给 iframe |
+| `visibility` | 工具的可见性配置数组，默认为 `["model", "app"]`，独立控制模型与前端 App 的调用权限 |
+| Sandboxed iframe | 宿主渲染 App 所采用的隔离沙箱容器，严密阻断对宿主主页面 DOM 与敏感数据的直接访问 |
+| Sandbox proxy | Web 宿主与视图之间必须强制采用的异源中间代理，用于中继转发桥接消息 |
+| App-to-host bridge | 基于 `postMessage` 构建的专属 JSON-RPC 通信桥梁，独立于底层的客户端-服务器连接 |
+| Text fallback（文本降级） | 具备 UI 能力的工具为不支持该扩展的普通宿主所保留的纯文本 `content` 兜底响应 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [MCP Apps overview](https://modelcontextprotocol.io/extensions/apps/overview)
-- [Build an MCP App](https://modelcontextprotocol.io/extensions/apps/build)
-- [SEP-1865: MCP Apps, Interactive User Interfaces for MCP](https://modelcontextprotocol.io/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp)
-- [MCP Apps specification, 2026-01-26](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 14
-- `phases/13-tools-and-protocols/14-mcp-apps`, which builds a full request-and-resource server and a stricter Streamable HTTP adapter around the same extension
+- [MCP Apps 扩展总览](https://modelcontextprotocol.io/extensions/apps/overview)。
+- [构建 MCP App 官方实战指南](https://modelcontextprotocol.io/extensions/apps/build)。
+- [SEP-1865: MCP Apps 规范增强提议](https://modelcontextprotocol.io/seps/1865-mcp-apps-interactive-user-interfaces-for-mcp)。
+- [MCP Apps 规范定义 (2026-01-26)](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx)。
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 14 节。
+- `phases/13-tools-and-protocols/14-mcp-apps`，深入探索构建完备的请求-资源服务器及 Streamable HTTP 严格适配器。

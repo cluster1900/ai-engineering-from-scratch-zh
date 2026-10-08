@@ -1,233 +1,197 @@
-# End-to-End Architecture and Value Tradeoffs
+# 端到端系统架构与价值权衡 (End-to-End Architecture and Value Tradeoffs)
 
-> Architecture is the art of spending complexity only where it changes the outcome.
+> 架构设计的真正精髓，在于仅在能够实质性改变业务结果的刀刃上投入系统复杂度。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** [Business Discovery, Requirements, and SLAs](../../22-business-discovery-requirements-and-slas/); Phase 14, Lessons 01, 12, and 28
 **Time:** ~135 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Draw a complete Claude system from input through feedback and operations
-- Choose among augmented calls, workflows, agents, and multi-agent systems
-- Decompose complex work around evidence, authority, and verification boundaries
-- Defend cost, latency, quality, safety, and maintainability tradeoffs
-- Identify when additional model capability cannot repair a structural design flaw
+- 绘制从原始用户输入、安全过滤、推理执行到回流反馈及生产运维监控的完整 Claude 端到端系统闭环
+- 在增强型模型调用（Augmented Call）、确定性工作流（Workflow）、自适应 Agent 与多智能体系统（Multi-Agent）间做出科学选型
+- 围绕事实证据、权限边界与结果校验契约对复杂业务逻辑实施模块化拆解
+- 全面评估并捍卫调用成本、响应延迟、交付质量、安全防护与可维护性之间的工程权衡
+- 精准识别单纯提升模型参数规模无法治愈底层结构性设计缺陷的典型系统症状
 
-## The Problem
+## 问题背景
 
-A team launches a contract-review assistant. One prompt contains the contract,
-policy library, extraction schema, negotiation rules, and a request for a final
-redline. The demo works. Production does not.
+一个研发团队上线了一套法律合同审查助手。他们将整份合同原文、庞大的企业法务政策库、抽取字段的 JSON Schema、谈判妥协策略准则，以及最终生成修改标红（Redline）的指令，全部打包塞进了一个庞大的单阶段 Prompt 中。在局部的 Demo 演示中，系统表现惊艳；然而一旦推向生产环境，系统迅速崩溃。
 
-Large contracts exceed the practical context budget. Policy versions conflict.
-The model returns valid JSON with an unsupported legal conclusion. Reviewers
-cannot see which source supported which change. Retrying increases cost without
-changing the failure. A larger model improves prose while leaving provenance,
-authority, and lifecycle ownership unresolved.
+超长的复杂合同直接挤爆了可用的有效上下文预算；前后不同时期的法务政策条文频繁发生逻辑冲突；模型偶尔返回一段符合语法的合法 JSON，但其包含的核心法务结论在原文中却毫无根据；人工复核律师完全无法追踪具体的修改建议究竟来自哪一份法务参考政策；失败时的自动重试机制只是在空耗 API 成本，并未改变生成逻辑的根本缺陷；团队随后尝试切换至参数规模更大的旗舰模型，虽然润色出的文本更加文雅流畅，但来源溯源缺失、越权风险以及缺乏全生命周期维护属主等结构性痼疾依然毫无改观。
 
-The system is not failing because the prompt needs another sentence. It is
-failing because several different responsibilities have been compressed into a
-single probabilistic step.
+这套系统的失败，绝不是因为 Prompt 里少写了一句规范要求，而是因为系统架构设计错误地将多个本应解耦的独立工程职责，粗暴地压缩进了单次充满不确定性的概率推理步骤中。
 
-## The Concept
+## 核心概念
 
-### Draw the Whole Loop
+### 绘制端到端全链路闭环 (Draw the Whole Loop)
 
-An end-to-end architecture includes more than the model call.
+一套企业级 AI 架构所涵盖的范围，远远超出单纯调用大语言模型 API 这一单步动作。
 
 ```mermaid
 flowchart LR
-    I["Input and identity"] --> V["Validate and classify"]
-    V --> C["Assemble trusted context"]
-    C --> R["Reason or generate"]
-    R --> T["Tools and external systems"]
-    T --> O["Validate output"]
-    O --> H{"Approval needed?"}
-    H -->|"yes"| P["Human review"]
-    H -->|"no"| A["Apply bounded action"]
+    I["用户输入与身份凭证"] --> V["入参校验与意图分类"]
+    V --> C["组装可信上下文工作集"]
+    C --> R["核心推理与生成"]
+    R --> T["受控工具与外部系统对接"]
+    T --> O["多层输出防御校验"]
+    O --> H{"是否需要审批？"}
+    H -->|"是"| P["人工介入审查"]
+    H -->|"否"| A["执行有边界的写操作"]
     P --> A
-    A --> E["Evidence, logs, and outcome"]
-    E --> F["Evaluation and feedback"]
+    A --> E["落盘证据、审计日志与业务结果"]
+    E --> F["离线评估与反馈闭环"]
     F --> C
 ```
 
-For every edge, ask:
+针对架构图中的每一条连线，架构师必须明确解答：
 
-- What data crosses the boundary?
-- Which identity and permission apply?
-- What schema or contract is enforced?
-- What happens on timeout, ambiguity, or partial failure?
-- What evidence is retained?
-- Who owns the next decision?
+- 跨越该边界传递的具体数据结构是什么？
+- 当前调用继承了哪类用户身份鉴权与权限作用域？
+- 边界两端强制执行什么格式契约与数据 Schema？
+- 遭遇网络超时、输入歧义或局部返回故障时如何处置？
+- 必须持久化保存哪些可供追溯的审计证据链？
+- 下一个环节决策的最终责任人是谁？
 
-An architecture diagram without failure paths is a marketing picture.
+一张没有标注异常失败流转路径的架构拓扑图，只是一张用于营销宣讲的空洞插画。
 
-### Choose the Smallest Pattern That Fits
+### 始终选择能够满足需求的最简架构模式 (Choose the Smallest Pattern That Fits)
 
-There are four useful starting patterns.
+工程实践中存在四种经典的基准架构模式：
 
-#### Augmented Model Call
+#### 1. 增强型模型调用模式 (Augmented Model Call)
 
-One request uses selected context, retrieval, or a tool and returns a bounded
-output. Use it for classification, extraction, drafting, or scoring when the
-steps are known and a single turn can contain the necessary evidence.
+单次 API 请求结合了精准筛选的上下文、RAG 检索片段或特定只读工具，并产出有明确边界的输出。适用于分类、抽取、文本起草或打分，且业务步骤完全已知、单轮交互足以容纳所需全部证据的场景。
 
-Benefits:
+核心优势：
 
-- lowest orchestration overhead
-- easiest to evaluate
-- predictable latency and cost
+- 编排复杂度最低，极简轻量
+- 极其易于搭建确定性的离线基准评测
+- 响应延迟与 Token 成本高度可预测
 
-Limits:
+局限性：
 
-- weak fit for branching work
-- limited recovery across several external actions
+- 难以应对高度复杂、动态分支的非线性任务
+- 缺乏跨多个外部业务写操作之间的容灾自愈能力
 
-#### Deterministic Workflow
+#### 2. 确定性工作流模式 (Deterministic Workflow)
 
-Code controls the sequence and calls Claude at selected steps. Use it when the
-business process is stable, auditability matters, or each transition needs a
-clear contract.
+由程序代码硬编码控制全局流转逻辑，仅在特定选定节点上受控调用 Claude。适用于业务流程稳定已知、高度强调过程审计性，或各个流转状态之间必须实施严格契约校验的场景。
 
-Benefits:
+核心优势：
 
-- explicit states and retries
-- narrow permissions per step
-- reproducible tests
+- 具备显式的状态机机理与受控重试逻辑
+- 针对每一个特定步骤实施最小权限控制
+- 测试用例高度可复现、可隔离排错
 
-Limits:
+局限性：
 
-- brittle when the path cannot be known in advance
-- new exception classes require workflow changes
+- 当面对无法在编码阶段预先枚举所有分支的开放任务时显得僵化脆弱
+- 出现新类型的业务异常时必须修改并重新发布工作流代码
 
-#### Adaptive Agent
+#### 3. 自适应 Agent 模式 (Adaptive Agent)
 
-Claude selects the next action based on observations until a stop condition is
-met. Use it when evidence discovery determines the path and enumerating every
-branch would be impractical.
+由 Claude 根据上一步的执行观测结果自主决策下一步行动，循环推进直至达成终止条件。适用于任务路径高度取决于在执行中途动态发现的客观证据，且在前期枚举所有可能分支极其不现实的场景。
 
-Benefits:
+核心优势：
 
-- flexible planning
-- useful for open-ended research and repair
+- 具备强大的自主动态规划能力
+- 极其擅长处理开放式的探索研究与自动化排错修复
 
-Limits:
+局限性：
 
-- variable latency and cost
-- larger permission and evaluation surface
-- loop, drift, and tool-error risks
+- 整体响应延迟与 Token 开销存在极大的方差与不确定性
+- 安全鉴权边界显著扩大，全链路评测难度成倍上升
+- 伴随潜在的死循环、目标漂移与工具调用错误风险
 
-#### Multi-Agent System
+#### 4. 多智能体系统模式 (Multi-Agent System)
 
-A coordinator delegates isolated concerns to specialists or independent
-reviewers. Use it when work can be partitioned, context isolation improves
-quality, or independence is required for verification.
+由中央协调器（Coordinator）将解耦后的专项子任务分派给多个垂直领域的专家 Agent 或独立评审 Agent。适用于任务可以清晰正交拆分、上下文隔离能显著提升输出质量，或者业务核验必须依赖上下文物理独立性的高危场景。
 
-Benefits:
+核心优势：
 
-- parallel execution
-- smaller context per role
-- independent review
+- 支持高并发并行执行互不依赖的子任务
+- 显著缩小各专业角色的单次上下文工作集
+- 实现真正意义上剥离先验偏见的独立二次评审
 
-Limits:
+局限性：
 
-- handoff loss and duplicated work
-- more calls and harder trace analysis
-- coordination can cost more than it saves
+- 跨 Agent 交接存在信息衰减与重复调研的开销
+- 整体网络请求次数暴增，分布式追踪与排错极其复杂
+- 系统协同通信的损耗成本往往很容易超过其原本节约的推理开销
 
-Do not choose multi-agent because the diagram looks mature. Choose it when a
-specific context, independence, parallelism, or specialization requirement pays
-for the coordination.
+切勿仅仅因为架构图画出来显得前沿高级而盲目选用 Multi-Agent 架构。只有当明确的上下文隔离、决策独立性、并行吞吐或领域专业化收益能够远远覆盖掉昂贵的协同编排成本时，引入多 Agent 才具备正向的工程价值。
 
-### Decompose Around Contracts
+### 围绕严格的接口契约实施业务解耦 (Decompose Around Contracts)
 
-Bad decomposition follows document sections or team boundaries without asking
-how correctness will be checked. Good decomposition creates a contract at each
-handoff.
+拙劣的系统解耦往往机械地照搬文档的自然章节或现成的研发部门界限，而从未深入思考各个环节产出的正确性究竟该如何被验证。优秀的系统解耦在每一次跨边界交接点上均树立严格的契约。
 
-For the contract-review system:
+以合同智能审查系统为例，标准的解耦流水线包括：
 
-1. Intake validates file type, identity, and jurisdiction metadata.
-2. Clause segmentation returns stable identifiers and source spans.
-3. Policy retrieval returns versioned evidence with provenance.
-4. Clause analysis returns findings against a schema.
-5. An independent reviewer checks evidence coverage and contradictions.
-6. Redline generation uses only accepted findings.
-7. Human counsel approves material changes.
-8. The system records decision evidence and later outcome.
+1. 准入接入阶段：严格校验文件类型格式、用户身份及合同适用的法律管辖区元数据。
+2. 条款切片阶段：将长文切解为离散条款，返回全局稳定的唯一标识符与原文绝对字符区间。
+3. 政策检索阶段：按需检索最新生效的法务合规政策，返回附带版本溯源信封的权威条文。
+4. 条款审查阶段：基于输入契约比对条款与政策，输出符合强类型 Schema 的审查缺陷。
+5. 独立评审阶段：由独立上下文中的评审 Agent 全面核验证据链支撑度与逻辑自洽性。
+6. 标红生成阶段：仅基于经过独立评审放行的合法缺陷清单，产出修改建议标红。
+7. 人工终审阶段：由专业执业律师对涉及重大利益的高危改动进行最终审核签字。
+8. 业务归档阶段：全面持久化沉淀决策依据快照，并跟踪后续长期业务执行结果。
 
-Each step has a narrower job than "review this contract." A failure can be
-localized. The system can retry retrieval without regenerating accepted clause
-analysis, and a reviewer can reject one finding without discarding all work.
+每一个细分步骤的职责范围都远比一句模糊的“审查这份合同”要清晰受控得多。系统故障能够被瞬间精确定位至特定节点：如果是检索不到位，系统可以定向触发检索重试，而无需推翻重跑前置已经验证通过的条款切片成果；独立评审也可以精准驳回单条有争议的修改意见，而无需将整份合同的全部工作全盘废弃。
 
-### Separate Semantic and Deterministic Controls
+### 明确解耦语义推断与确定性代码控制 (Separate Semantic and Deterministic Controls)
 
-Claude is useful for ambiguous judgments such as whether a clause materially
-changes liability. Code is better for invariants such as required fields,
-permission checks, maximum refund, allowed jurisdiction, and document version.
+Claude 非常擅长处理充满主观裁决与模糊语义的定性判断（例如研判某项合同免责条款是否实质性加重了企业的违约赔偿责任）；而程序代码则更擅长坚守冷酷的系统不变量（例如必填字段校验、RBAC 鉴权拦截、单次退款上限、允许的法律管辖区白名单以及政策文档的版本校验）。
 
-Use this rule:
+必须恪守以下工程铁律：
 
 ```text
-If a condition can be expressed as a stable predicate over trusted data,
-enforce it outside the model.
+凡是能够基于受信任数据表达为稳定布尔断言（Predicate）的业务条件，必须坚决在模型上下文外部由确定性代码强制执行。
 ```
 
-Prompt instructions guide behavior. They do not create a security boundary.
+写在 Prompt 提示词里的指令只是指导模型行为倾向的软性建议，绝不能将其误当成牢不可破的安全防御边界。
 
-### Budget Across the Whole Trajectory
+### 将系统预算核算贯穿于整个端到端执行轨迹 (Budget Across the Whole Trajectory)
 
-Cost is not only input plus output tokens for one call. A system trajectory may
-include retrieval, several model calls, tool execution, retries, review, and
-human labor.
+真实系统的成本绝不能仅仅以单次模型 API 调用的输入加输出 Token 价格来狭隘估算。整个业务执行轨迹往往涵盖多次检索、多轮工具交互、失败重试、独立评审以及后续的人工介入复核。
 
-Estimate:
+综合任务期望成本估算模型：
 
 ```text
-expected task cost =
-  model calls
-  + retrieval and tool cost
-  + retry probability times retry cost
-  + human review minutes times labor rate
-  + expected incident and correction cost
+单次任务综合期望成本 =
+  所有模型调用的 Token 开销总和
+  + 外部知识检索与业务工具 API 调用开销
+  + (单次重试概率 × 重试轮次平均成本)
+  + (人工介入审查平均时长 × 人力工时单价)
+  + (严重故障漏报概率 × 线上故障定损与救火成本)
 ```
 
-A smaller model that produces more retries can cost more per successful task.
-A larger model may be cheaper if it eliminates an expensive review step, but
-only an evaluation can establish that.
+选用参数规模更小、单价看似更便宜的模型，若在实际运行中因指令遵循能力弱而引发频繁的重试与更高比例的人工介入，其产出单条合格业务结果的综合成本反而往往远超旗舰模型。然而，究竟采用何种模型组合最具性价比，必须依靠客观真实的基准评估集数据说话，而非凭空臆测。
 
-### Treat Latency as a Distribution
+### 始终将响应延迟视为一条统计概率分布曲线 (Treat Latency as a Distribution)
 
-Average latency hides the long tail that users experience. Model time, tool
-time, queueing, retries, and human approval combine.
+平均延迟（Average Latency）极易粉饰太平，掩盖终端用户真实经历的长尾延迟灾难。模型生成耗时、外部工具网络 I/O、任务排队堆积、网络抖动重试以及人工审查滞留，会层层叠加并产生延迟放大效应。
 
-Use at least P50, P95, and timeout rate. For interactive work, track time to
-first useful output as well as total completion. For background work, throughput
-and completion deadline may matter more than first-token latency.
+在监控中必须重点追踪 P50、P95、P99 以及超时中断率（Timeout Rate）。对于前端交互式场景，首字生成时间（TTFT）与产出首个可用有效结构的时间往往比整场交互的终结耗时更加决定用户体验；而对于后台异步批处理任务，端到端吞吐量（Throughput）与批次交付截止时效的遵守率，则远比毫秒级的单步延迟更加关键。
 
-Parallel execution only helps independent work. Parallel calls that compete for
-the same rate limit or produce results requiring serial reconciliation may add
-cost without reducing end-to-end time.
+盲目的并行执行仅对完全互不依赖的子任务有加速效果。若并发发起的多个请求共享同一个底层 API 频控上限（Rate Limit），或者并发产出的非结构化结果最终仍需在主干串行执行昂贵的人工对账合并，这种并行化不仅无法缩短端到端时延，反而会带来严重的成本虚耗。
 
-### Design Feedback as a Product Surface
+### 将反馈闭环设计为严肃的系统级产品表面 (Design Feedback as a Product Surface)
 
-Feedback is not a pile of thumbs-up events. It must connect an outcome to the
-inputs, versions, trajectory, and decision.
+反馈体系绝不是在界面上简单收集几个毫无上下文的“点赞”或“点踩”按钮。它必须能够将最终的业务表现结果，精准穿透并关联回最初的输入数据、环境快照、执行轨迹与核心决策。
 
-Store:
+必须结构化持久沉淀的核心要素：
 
-- input class and risk tier
-- prompt, model, tool, and knowledge versions
-- retrieved evidence identifiers
-- tool calls and structured errors
-- output and validator results
-- human edits and reason codes
-- downstream outcome
+- 输入用例的风险层级与业务分类打标
+- 触发该决策时的 Prompt 模版版本、底层模型版本、工具 Schema 版本与知识库快照版本
+- 实际检索调用的权威证据条目唯一标识
+- 中途执行的全部工具调用入参及返回的结构化错误明细
+- 模型输出产物及各层校验器拦截日志
+- 人工介入专家修改后的最终版本及明确的驳回原因码（Reason Codes）
+- 该业务记录在下游系统中产生的后续履约结果反馈
 
-The feedback loop then supports a decision: change a prompt, repair retrieval,
-adjust routing, improve a tool, or narrow scope.
+唯有掌握了如此高保真的追踪链路，反馈闭环才能真正驱动系统的科学迭代：指导工程师准确研判究竟应当优化 Prompt 引导词、修复外部知识检索策略、调整风控路由分流门限、重构底层工具契约，还是收缩该业务场景的自动开放范围。
 
 ## Build It
 
@@ -237,25 +201,19 @@ adjust routing, improve a tool, or narrow scope.
 23-architecture-tradeoff
 ```
 
-Use the architecture tradeoff explorer to compare an augmented call, workflow,
-agent, and multi-agent design against weighted quality, latency, cost, safety,
-auditability, and change-cost evidence. Hard constraints cannot be averaged
-away by a high total score.
+运行系统架构权衡交互图，在加权质量、P95 延迟、综合成本、安全合规、审计透明度以及维护改造成本六大维度上，横向比对增强型调用、确定性工作流、自治 Agent 与多 Agent 四大架构路线。交互实验深刻揭示了：当不可逾越的刚性安全门禁亮起红灯时，哪怕总分被其他便利性维度拉得再高，该方案依然属于不合格的危险设计。
 
 ## Practice Lab
 
-Remove one rejected alternative or hard safety gate from a copy of the decision,
-observe the readiness failure, and repair the architectural rationale.
+从一份现成的架构决策记录中，人为删去已被驳回的备选方案说明或硬性安全门禁条款，观察系统就绪性检查的报错拦截，随后补齐严谨的架构取舍技术论据。
 
 ## Shipped Artifact
 
-The filled [`outputs/architecture-decision.md`](../outputs/architecture-decision.md)
-selects a deterministic contract-review workflow and records failure paths and
-a reversal condition.
+本课交付的标准架构产物位于 [`outputs/architecture-decision.md`](../outputs/architecture-decision.md)，详细记录了一个面向企业级合同审查场景的确定性工作流选型决议，附带详尽的异常故障流转分支设计与明确的架构推翻逆转条件（Reversal Condition）。
 
 ## Verify It
 
-Run the deterministic decision-packet verifier:
+在本地执行离线架构决策数据包的自动化验证：
 
 ```bash
 cd certifications/claude/lessons/23-end-to-end-architecture-and-value-tradeoffs
@@ -263,136 +221,113 @@ python3 code/main.py
 python3 -m unittest discover -s code/tests -v
 ```
 
-The quiz tests the same pattern and control decisions.
+课后测验将全面考查架构模式选型、系统不变量控制以及全生命周期价值权衡的核心设计思想。
 
 ## Capstone Connection
 
-Carry the ADR into the Architect Professional capstone's architecture options
-section.
+将这份沉淀完毕的架构决策记录（ADR），直接并入架构师专业级终极大作业（Architect Professional Capstone）的核心架构选型章节。
 
-Create an architecture packet for one business workflow.
+针对一项具体的企业核心业务工作流，构建完整的架构决策数据包：
 
-### Step 1: Draw Three Candidates
+### 步骤 1：梳理三套平行的候选架构设计
 
-Draw an augmented-call, deterministic-workflow, and adaptive-agent design. Keep
-the same inputs, outputs, and constraints so the comparison is fair.
+针对完全相同的业务输入、产出目标与不可妥协的硬性约束，分别绘制出增强型调用（Augmented Call）、确定性工作流（Deterministic Workflow）与自适应 Agent（Adaptive Agent）三套独立的方案设计图，确保评测环境公平公正。
 
-### Step 2: Score Explicit Tradeoffs
+### 步骤 2：对显式权衡维度进行量化评分
 
-Use a one-to-five scale with written evidence.
+采用 1 到 5 分的打分体系，并强制为每一个打分附带严谨的书面事实论据。
 
-| Criterion | Weight | Augmented call | Workflow | Agent |
-|-----------|-------:|---------------:|---------:|------:|
-| Task quality | 25 | | | |
-| P95 latency | 15 | | | |
-| Cost per success | 15 | | | |
-| Safety and authority | 20 | | | |
-| Auditability | 15 | | | |
-| Change cost | 10 | | | |
+| 核心评估维度 | 权重占比 | 增强型调用方案 | 确定性工作流方案 | 自适应 Agent 方案 |
+|--------------|---------:|---------------:|-----------------:|------------------:|
+| 核心任务质量 | 25 | | | |
+| P95 响应延迟 | 15 | | | |
+| 成功交付综合成本 | 15 | | | |
+| 安全防护与权限收敛 | 20 | | | |
+| 过程可审计性 | 15 | | | |
+| 长期维护演进成本 | 10 | | | |
 
-Weights come from discovery, not habit. If a regulated action makes safety a
-hard constraint, do not average it away with convenience.
+各维度的权重分配必须严格脱胎于前期的业务调研结论，而非凭个人直觉随意指派。若外部法规对某项高危写操作设立了刚性的法律合规底线，安全维度的要求即属于绝对不可妥协的一票否决项，绝不能被操作便捷性或响应速度等优势所折抵稀释。
 
-### Step 3: Write Failure Paths
+### 步骤 3：详尽设计异常故障流转路径
 
-For each external dependency, specify timeout, retry, circuit-break behavior,
-partial result, user message, and operator evidence. Include a total turn and
-cost budget for agents.
+针对系统涉及的每一个外部第三方依赖，逐一明确定义调用超时、退避重试、熔断降级（Circuit Break）、局部结果交付、面向终端用户的安全提示文案，以及提供给运维人员的排障审计证据。针对自适应 Agent 方案，必须硬编码不可逾越的交互轮次配额与综合 Token 成本预算。
 
-### Step 4: Define the Evaluation
+### 步骤 4：构建全方位综合评估基准集
 
-Build a representative set covering normal, ambiguous, adversarial, and
-dependency-failure cases. Measure final quality, trajectory quality, cost,
-latency, and safety.
+搭建具备高度代表性的评估样本库，全面覆盖常规黄金用例、边界模糊用例、恶意提示词注入用例以及下游接口故障注入用例。全方位度量最终输出质量、执行轨迹规范性、综合成本、延迟分布与安全防御拦截率。
 
-### Step 5: Record Reversal Conditions
+### 步骤 5：白纸黑字记录架构推翻逆转条件
 
-State what evidence would cause the team to switch patterns. Architecture is a
-current decision, not a permanent identity.
+清晰阐明：未来在观测到哪些客观证据或业务条件发生变化时，团队应当果断推翻当前选型并平滑切换至另一种架构模式。架构设计是立足于当前现实约束下的科学阶段性决断，绝不是永久固化、不可撼动的教条图腾。
 
 ## Use It
 
-Consider a research system that must answer questions across company filings.
+以构建一套能够跨企业海量财务与法律年报开展精准穿透分析的深度问答系统为例：
 
-A single augmented call fits when one retrieval query reliably returns enough
-evidence. A workflow fits when every task follows query, retrieve, rank, answer,
-and cite. An agent fits when it must discover missing entities, reformulate
-queries, and decide whether evidence is sufficient. A multi-agent design fits
-only if parallel source research or independent verification improves the target
-metric enough to justify coordination.
+- 当单次精准检索即可稳定召回充足且确凿的事实证据时，采用最轻量的**增强型模型调用模式**是性价比最高的明智之举。
+- 当每项调研任务均严格遵循固定步骤（如“提取关键财务指标 -> 检索历史财报对应章节 -> 执行跨期数值校验比对 -> 汇总输出规范报告并精确标注来源引文”）时，采用**确定性工作流模式**能够获得无可比拟的稳定性、审计透明度与低延迟表现。
+- 当必须依据中途偶然挖掘出的可疑线索动态展开多轮深度调查（例如发现某项异常对外担保，需临时决定进一步穿透核查其关联方交易背景，并动态研判现有证据是否足以支撑下定结论）时，赋予灵活规划能力的**自适应 Agent 模式**才是破局的核心利器。
+- 只有当跨数据源的并行独立调研或剥离先验偏见的独立交叉核验能够成倍放大最终研报的可信度，且这一质量跃升的商业价值足以全面覆盖昂贵的系统协同损耗时，引入复杂的**多智能体系统模式**才真正具备正向的工程合理性。
 
-Now add a one-hour answer deadline and a strict cost budget. The optimal design
-may change. Architecture is always architecture under constraints.
+此时，若业务方临时追加硬性约束：“系统必须在 30 秒内完成答复，且单次问答成本不得超过 0.05 美元”，原本的最优架构路线可能会瞬间发生逆转。脱离了现实资源与业务约束的架构设计，没有任何实际工程意义。
 
 ## Exam Decision Patterns
 
-When options differ by complexity, choose the simplest architecture that meets
-the stated requirement. Look for structural fixes before prompt patches.
+当面临多个复杂度各异的备选方案时，始终选择**能够完全满足已知业务与安全约束的最简单架构**。在试图修补 Prompt 提示词之前，优先寻找系统结构层面的解耦治理之道。
 
-Strong answers often:
+在认证考核中，推荐优先选择具备以下特质的高分方案：
 
-- enforce deterministic rules in code
-- isolate high-risk tools and permissions
-- use a workflow for known paths and an agent for genuinely adaptive paths
-- add an independent reviewer when independence is a requirement
-- keep provenance through every transformation
-- define stop, retry, partial-result, and escalation behavior
-- optimize cost per successful outcome, not cost per call
+- 坚决将确定性的硬性规则在模型外部由代码强制守护
+- 对高危破坏性工具与核心系统权限实施严格的物理隔离
+- 对执行路径已知的业务采用确定性工作流，仅在真正需要自适应规划的环节选用 Agent
+- 当业务客观要求必须进行无偏见验证时，引入纯净上下文中的独立评审员机制
+- 在全链路的每一次数据转换与格式映射中，始终完整维系数据源的溯源链条
+- 预先严密定义终止条件、退避重试策略、局部结果输出格式以及向上升级机制
+- 紧密围绕“产出单次成功业务结果的综合成本”进行系统优化，而非孤立盯着单次调用的 Token 单价
 
-Weak answers often add a larger model, longer prompt, more agents, or more tools
-without addressing the actual failure boundary.
+坚决摒弃那些在未看清系统真实故障边界前，就轻率地试图通过换用更大模型、增加 Prompt 篇幅、无脑引入更多 Agent，或一股脑塞入更多工具的低级错误选项。
 
 ## Common Traps
 
-### Capability Bloat
+### 工具能力无限膨胀 (Capability Bloat)
 
-Every unnecessary tool expands prompt size, choice ambiguity, attack surface,
-and authorization risk. Expose the minimum set required for the current role.
+每增加一个缺乏必要性的边缘工具，都会无端增加 Prompt 的体积消耗、诱发模型产生选型歧义、放大潜在的系统受攻击面，并显著加剧安全越权漏洞的爆发概率。仅向当前角色暴露完成其特定职责所需的最小工具集。
 
-### Prompting Around a Missing Contract
+### 试图通过优化 Prompt 来掩盖缺失的系统契约 (Prompting Around a Missing Contract)
 
-If two steps disagree about identifiers, schemas, or error behavior, clearer
-natural-language instructions cannot create a reliable interface. Define the
-contract.
+如果系统上下游两个处理节点之间在数据主键标识、返回 Schema 格式或异常报错规范上缺乏统一标准，写再多洋洋洒洒的自然语言提示词也绝不可能凭空创造出一个高可靠的软件接口。必须老老实实建立确定性的数据契约。
 
-### Self-Review as Independence
+### 误把自我审查当成客观独立评审 (Self-Review as Independence)
 
-Asking the same context to "double-check" can repeat the same assumption. Use a
-separate reviewer with an explicit rubric and isolated evidence when independence
-matters.
+让同一个上下文窗口中的模型对自己刚刚生成的结论进行“二次复核检查”，极大概率只会机械地重复其最初推导时的先验思维定势。当客观独立性是一项关键安全合规要求时，必须使用一个剥离了生成者思考脉络的全新独立上下文，并注入明确的评审细则展开客观审核。
 
-### Optimizing the Demo Path
+### 陷入面向 Demo 演示的局部优化陷阱 (Optimizing the Demo Path)
 
-Production quality lives in ambiguity, stale data, permission errors, timeouts,
-and partial failure. Include them before architecture approval.
+一套软件系统能否在生产环境中真正长期存活，完全取决于其对模糊歧义输入、陈旧失效数据、越权权限报错、网络 I/O 超时以及局部故障返回等海量长尾异常的处置能力。在架构方案正式定稿前，必须将这些非正常路径的处理机制全部清晰纳入考量。
 
 ## Exercises
 
-1. Design augmented-call, workflow, and agent candidates for an invoice-dispute
-   process. Choose one and state the reversal condition.
-2. Find three invariants in an AI workflow that should be deterministic code.
-3. Calculate cost per successful task for two models with different retry and
-   review rates.
-4. Add a tool outage to a multi-agent research design and specify partial-result
-   behavior.
-5. Write an evaluation that detects a system with good final prose but wasteful
-   or unsafe trajectories.
+1. 针对企业发票争议仲裁业务流程，分别设计增强型调用、确定性工作流以及自适应 Agent 三套平行的架构草案，并明确阐述在何种条件下应当推翻选型并发生方案逆转。
+2. 深入审查一个现有的复杂 AI 工作流，精准定位出三个应当立即剥离出来改由确定性代码硬编码实现的核心系统不变量。
+3. 假设有两个候选模型，其中较小模型的单次 API 单价只有大模型的一半，但其重试率高出三倍且引发人工介入的概率高出四倍。请结合具体参数建立数学模型，精确计算产出单次成功业务结果的真实综合成本。
+4. 在一个多智能体协同研究系统的架构设计中，主动注入外部工具突发宕机故障，详细编写系统在面临断点时应当返回的标准局部结果（Partial Result）数据结构。
+5. 设计一套端到端基准评测方案，要求其不仅能够打分评估系统最终输出的文本质量，还能敏锐识别出在后台执行轨迹中存在浪费性 Token 空耗或潜在安全越权违规的劣质系统。
 
 ## Key Terms
 
-| Term | What people say | What it actually means |
-|------|-----------------|------------------------|
-| Augmented call | A weak agent | A bounded model call supplied with selected context or tools |
-| Workflow | An agent with fixed steps | Code-owned orchestration with explicit transitions |
-| Agent | Any LLM application | A model-directed loop that chooses actions from observations |
-| Multi-agent | More intelligence | Several model contexts coordinated for isolation, parallelism, or independent review |
-| Contract | A prompt instruction | A machine-checkable boundary for data, errors, and responsibility |
-| Cost per success | Token price | Total expected model, tool, retry, review, and correction cost per accepted outcome |
+| 术语 | 通俗说法 | 严谨工程定义 |
+|------|----------|--------------|
+| 增强型模型调用 (Augmented call) | 弱一点的 Agent | 仅供给精准上下文切片或受限只读工具的单次有明确边界的模型交互 |
+| 确定性工作流 (Workflow) | 步骤固定的 Agent | 由宿主程序代码主导编排流转、具备显式状态转换机制的受控执行体系 |
+| 智能体 (Agent) | 任何 LLM 应用 | 由大语言模型主导推理循环、依据环境观测结果动态自适应决定后续行动的闭环系统 |
+| 多智能体系统 (Multi-agent) | 更高维的智慧 | 协调多个具备独立上下文窗口的模型实例，以实现上下文隔离、并行加速或无偏见独立评审的复合架构 |
+| 接口契约 (Contract) | 一段 Prompt 提示 | 在系统各模块交接处用于规范数据格式、异常分类与权责归属的机器可校验刚性协议 |
+| 单次成功综合成本 (Cost per success) | Token 单价 | 包含所有模型调用、工具执行、失败重试、人工复审及灾难挽回成本在内的综合端到端期望成本期望值 |
 
 ## Further Reading
 
-- [Building effective agents](https://www.anthropic.com/research/building-effective-agents) for workflow and agent patterns
-- [Claude Agent SDK documentation](https://platform.claude.com/docs/en/agent-sdk/overview) for current agent harness capabilities
-- Phase 14, Lesson 01 for the agent loop from first principles
-- Phase 14, Lesson 28 for orchestration tradeoffs
-- Phase 17, Lesson 08 for goodput and latency measurement
+- [Anthropic 官方研究报告：构建高效智能体 (Building Effective Agents)](https://www.anthropic.com/research/building-effective-agents)
+- [Claude Agent SDK 官方全套开发指南](https://platform.claude.com/docs/en/agent-sdk/overview)
+- 本教程 Phase 14 第 01 课：从第一性原理构建 Agent 推理循环
+- 本教程 Phase 14 第 28 课：工作流与 Agent 编排模式横向对比与权衡
+- 本教程 Phase 17 第 08 课：系统有效吞吐量（Goodput）与长尾响应延迟治理

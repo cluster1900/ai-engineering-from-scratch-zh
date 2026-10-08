@@ -57,7 +57,7 @@ Parse the argument. If it is a number, validate it is between 0 and 19 inclusive
 
 ### Step 2: Read the Phase Content
 
-If the repo is cloned (a `phases/` directory exists in or above the current directory), find all lesson directories under `phases/<phase-dir>/` and read each lesson's `docs/en.md`. If it is not cloned, get the phase's lesson list from the Contents section of the README (fetch `https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/README.md`), then fetch each lesson's `docs/en.md` from the same raw base URL. These documents contain the teaching material you will generate questions from.
+If the repo is cloned (a `phases/` directory exists in or above the current directory), find all lesson directories under `phases/<phase-dir>/` and read each lesson's `docs/en.md`. If it is not cloned, get the phase's lesson list from the Contents section of the README (fetch `https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/README.md`), then fetch each lesson's `docs/en.md` from the same raw base URL. These documents contain the teaching material you will generate questions from.
 
 Read as many lesson docs as needed to cover the full breadth of the phase. If a phase has many lessons (15+), prioritize reading a representative spread: first few, middle, and last few.
 

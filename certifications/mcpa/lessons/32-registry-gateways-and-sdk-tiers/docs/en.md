@@ -1,31 +1,41 @@
-# Finding, Routing To, and Trusting a Server
+# 发现、路由与信任服务器 (Finding, Routing To, and Trusting a Server)
 
-> A name in the registry is a claim about who published a server, not a guarantee about what it does. A gateway decides whether a request may reach that server at all. An SDK's tier says how much of the protocol its implementation actually speaks. Three separate questions, three separate answers.
+> 注册中心里的一个名字，只是关于谁发布了该服务器的声称，绝非对其行为安全的担保。网关负责裁决一个请求究竟能否触达目标服务器。而 SDK 的评级则如实反映了其实际实现了协议规范的多少内容。三个独立的问题，必须由三个不同的答案来解答。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 31
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Explain what the MCP Registry stores and what it deliberately does not store, why it only accepts publicly accessible servers, and why it is currently a preview surface
-- Verify a server's reverse DNS namespace the way the registry does, through GitHub or domain based authentication, and separate that from the ownership proof a package registry checks
-- Read a server.json entry's packages and remotes, and explain why its schema version is independent of the protocol version the server actually speaks at runtime
-- Explain what a stateless gateway is responsible for: validating Mcp-Method and Mcp-Name against the request body, routing on that header pair, and respecting cacheScope instead of inventing its own cache authority
-- Use an SDK's conformance tier as a portability and trust signal, and explain how a tier is earned and how it can be lost
+- 阐明 MCP 注册中心 (MCP Registry) 存储了什么以及故意不存储什么，解释其为何仅收录公网可访问的服务器，并理解其目前处于预览阶段 (Preview) 的内涵。
+- 像官方注册中心那样，通过 GitHub 组织或域名挑战校验服务器的反向 DNS 命名空间，并将其与软件包注册表自身的代码包所有权校验严格区分开。
+- 解析 `server.json` 清单条目中的 `packages` 与 `remotes` 字段，并理解清单自身的 Schema 版本与服务器在运行时实际协商的 MCP 协议版本为何彼此完全独立。
+- 明确无状态网关 (Stateless Gateway) 的核心职责：比对请求头中的 `Mcp-Method` 与 `Mcp-Name` 是否与请求体完全一致、基于请求头高速路由，并严格遵守 `cacheScope` 规则而非擅自扩大缓存权限。
+- 将 SDK 的一致性评级 (Conformance Tier) 作为衡量可移植性与底层信任的技术信号，掌握评级的晋升机制与降级罚则。
 
-## The Problem
+## 问题背景
 
-A team decides to add a third party MCP server to an internal assistant. Three separate questions show up immediately, and they do not share an answer. Where does the team find a candidate server, and how do they know the name it publishes under actually belongs to the company it claims to be, rather than to whoever typed that name into a form first. Once the server is approved, how does every internal client reach it through one front door, with one place to enforce who may call what, without that front door becoming a second parser that has to fully understand every request body just to route it. Once the team is ready to build its own server instead of only consuming one, which SDK is safe to build on, given that the protocol itself has moved four times in two years.
+当一个研发团队决定将第三方 MCP 服务器引入内部 AI 助手时，会立刻面临三个彼此独立且答案迥异的核心问题：
+1. 团队该去哪里检索可用的服务器，以及如何确认该服务器发布所使用的命名空间确实归属于其声称的企业，而不是被某个抢先在注册表单中输入该名字的无关人员所冒名顶替？
+2. 一旦该服务器获批准入，内网所有客户端如何通过统一入口与其安全通信，网关如何在不反复对每一个请求体进行深层 JSON 反序列化的前提下快速完成路由与访问控制？
+3. 当团队不仅满足于使用外部服务器，而是准备自主构建内部服务时，考虑到协议本身在两年内经历了四次重大演进，挑选哪一个 SDK 才是安全、稳定、具备长期维护保障的技术选型？
 
-Those three questions map to three different pieces of infrastructure that sit around the protocol rather than inside it: the MCP Registry, a gateway, and the SDK tiering system. It is tempting to treat them as one continuous supply chain, publish to the registry, route through the gateway, trust the SDK, but each layer proves a narrow and different thing, and the exam rewards knowing exactly where one layer's guarantee ends and the next one's begins. The registry proves who published a name. It does not scan the code behind that name for vulnerabilities, and it does not run the server to see whether it behaves. A gateway proves a request is well formed and permitted to proceed. It does not know or vouch for who originally published the backend it is routing to. An SDK's tier is a maintenance and completeness signal about one implementation. It says nothing about any particular server built with that SDK, and nothing about a specific published listing. Conflating these three is exactly the kind of scenario question the Use Cases and Ecosystem domain is built to test.
+这三个问题分别映射到环绕在协议外围而非协议内部的三大基础设施构件：**MCP 注册中心、API 网关，以及 SDK 评级体系**。开发者极易产生误区，将它们视为一条连续的单向供应链：“发布到注册中心 -> 经由网关统一路由 -> 信任底层 SDK”；但实际上，每一层所提供的保证是狭窄且完全不同的。认证考试正是通过场景题目考察考生是否清晰掌握每一层的防御边界：
+- 注册中心仅证明是谁发布了该命名条目，它绝不对代码进行漏洞扫描，也不运行服务器检验其实际行为是否良善。
+- 网关仅证明单次请求格式合法且符合本地访问控制策略，它既不知晓也绝不背书所路由的后端服务原本是由谁编写的。
+- SDK 评级仅代表该语言基础库实现的规范完整度与维护质量，它不能替代对基于该 SDK 编写的具体业务服务器的安全性审查，更不担保任何特定的公开注册条目。将这三者混为一谈是生态系统理解中的典型硬伤。
 
-## The Concept
+## 核心概念
 
-### The registry: metadata, not code
+### 注册中心：索引元数据，而非托管代码
 
-The MCP Registry is the official, centrally hosted metadata index for publicly accessible MCP servers, and it is explicitly a preview: its maintainers warn that breaking changes or data resets can happen before it reaches general availability. What it stores is a `server.json` document per published version: a reverse DNS name, a title and description, a version string, and either a `packages` array, a `remotes` array, or both. The registry never hosts the server itself. A `packages` entry names a `registryType` (`npm`, `pypi`, `nuget`, `cargo`, or `oci`, plus `mcpb` for a prebuilt binary release) and an `identifier` that a package registry such as npm, PyPI, or Docker Hub actually serves. A `remotes` entry names a transport, `streamable-http` or the deprecated `sse`, and a URL the server answers on directly, optionally with `variables` for multi tenant URL templates and `headers` for values the client must send. The registry can carry both at once so a host can choose whichever installation path it prefers.
+MCP 注册中心是官方集中托管的公开元数据索引，目前明确处于预览 (Preview) 阶段：维护团队明确提示在正式迈向 GA（一般可用）之前，可能会发生破坏性变更或数据重置。注册中心为每个发布的版本存储一份 `server.json` 文档：包含反向 DNS 格式的名称、标题与描述、版本号字符串，以及 `packages` 数组、`remotes` 数组（或二者兼备）。
+
+**注册中心本身绝不托管任何服务器代码或可执行文件**：
+- `packages` 条目指明了 `registryType`（如 `npm`、`pypi`、`nuget`、`cargo`、`oci` 或代表预构建二进制的 `mcpb`）以及在公共代码仓库中实际分发的包标识符 `identifier`。
+- `remotes` 条目则声明了传输协议类型（`streamable-http` 或已废弃的 `sse`）以及服务器对外直接提供服务的公网 URL，并可选择性配置用于多租户 URL 模板的 `variables` 或客户端必须发送的 `headers`。清单可以同时包含两者，以便宿主应用根据自身环境自主决定安装运行方式。
 
 ```json
 {
@@ -42,17 +52,19 @@ The MCP Registry is the official, centrally hosted metadata index for publicly a
 }
 ```
 
-Notice the `$schema` field: it names a schema revision, `2025-12-11` in this example, that describes the shape of `server.json` itself. That date has nothing to do with the MCP protocol version, `2026-07-28`, that the running server actually negotiates at the wire level once a client calls `server/discover`. A registry entry can validate against a newer or older schema revision while the server behind it speaks any protocol version it likes; the two dates are tracked and versioned completely separately, and reading them as the same fact is exactly the kind of trap a scenario question sets.
+请特别注意顶部的 `$schema` 字段：它声明的是 `server.json` 数据格式自身的 Schema 版本（如本例中的 `2025-12-11`）。**这一日期与运行中的服务器在物理线路上实际协商的 MCP 协议版本（如 `2026-07-28`）毫无关系**！注册条目完全可以使用最新版的清单 Schema，而后端运行的服务端代码依然可以按需运行任意版本的协议。这两项规范在版本演进上是完全解耦的，把它们混为一谈是场景分析题中常见的陷阱。
 
-The name itself is the registry's trust mechanism. Names follow a reverse DNS format, `io.github.username/server` or `io.github.orgname/server` for GitHub authenticated publishers, or `com.example/server` for a publisher who proved they control the `example.com` domain, through a DNS TXT record or an HTTP file at a well known path. This namespace authentication is what stops an unrelated party from publishing a server named after a company they do not represent: the registry only accepts a publish under a given authority from the publisher who proved they own that authority, at publish time, every time. That check is separate from the ownership check a package registry performs on the underlying artifact: npm looks for an `mcpName` field in `package.json`, PyPI, NuGet, and Cargo look for an `mcp-name: name` string in the rendered README (Cargo needs it as visible text, since crates.io strips HTML comments that PyPI and NuGet preserve), and Docker or OCI images look for an `io.modelcontextprotocol.server.name` label. Two separate proofs, one for the name in the registry and one for the artifact the name points at, both have to agree with `server.json` before a listing is trustworthy.
+服务器名称本身是注册中心的核心信任机制。名称必须严格遵循反向 DNS 格式：对于通过 GitHub 认证的发布者，为 `io.github.username/server` 或 `io.github.orgname/server`；对于证明了自身拥有特定域名的企业机构，为 `com.example/server`（通过在对应域名下配置 DNS TXT 记录或托管知名路径 HTTP 校验文件完成所有权证明）。这种命名空间强认证机制彻底杜绝了第三方抢注不属于自己的名企商标：注册中心在发布时每一次都会强制校验发布者是否拥有对应的权威域。这一检查与底层包管理器的所有权验证相互独立：npm 检查 `package.json` 中的 `mcpName` 字段；PyPI、NuGet 与 Cargo 检查 README 中的 `mcp-name: name` 字符串（Cargo 要求其为可见文本，因为 crates.io 会剥离注释）；Docker 或 OCI 镜像则检查 `io.modelcontextprotocol.server.name` 标签。这两道证明（针对注册中心命名空间的证明与针对底层软件制品的证明）必须同时与 `server.json` 完全吻合，发布条目才具备真正的可信度。
 
-Versioning has its own narrow rules worth knowing cold. A version string must be unique per publish and is immutable once published; semantic versioning is recommended and lets the registry mark a listing "latest" automatically, but strings that look like a version range rather than one exact version, `^1.2.3`, `~1.2.3`, `>=1.2.3`, or `1.x`, are prohibited outright, because the registry has no way to resolve a range to one artifact. The registry is also deliberately narrow about what it will list at all: it accepts only publicly accessible servers, meaning the package is on a public package registry or the remote URL answers to the public internet. A server reachable only inside a private network or a private package feed cannot be published here; a team that needs that runs its own registry implementing the same published OpenAPI interface. Security scanning is delegated outward, to the underlying package registries and to downstream aggregators, and the registry's own moderation is deliberately permissive: it removes illegal content, malware, spam, and non functioning servers, but explicitly does not remove a server merely for being low quality, buggy, vulnerable, or a duplicate of something else. A host application is not meant to query the official registry directly at all; it is meant to consume a downstream aggregator or marketplace, which polls the registry's read only REST API on an infrequent schedule, keeps its own copy, and may add curation, ratings, or a security scan of its own on top.
+在版本管理上，版本号一经发布便具备不可变性；官方强烈推荐使用严格的语义化版本 (SemVer) 格式；诸如 `^1.2.3`、`~1.2.3` 或 `>=1.2.3` 等动态范围版本号是被坚决禁止的，因为注册中心无法将模糊范围映射到确切的代码制品。另外，官方注册中心在准入范围上极其克制：它**仅接受公网可访问的服务器**。仅在企业内网或私有代码源中可达的服务无法在此发布；有内网发布需求的企业应基于官方发布的 OpenAPI 规范搭建内部私有注册中心。注册中心自身的审核主要针对违法违规、恶意软件与完全无法运行的空壳，明确不会仅因代码质量低、存在缺陷或功能重复而下架服务。最终宿主应用程序通常不直接高频请求官方注册中心，而是面向下游聚合器 (Aggregator) 或应用市场消费数据。
 
-### Gateways: routing on the wire, not on trust
+### 网关：依据协议报文路由，而非盲信
 
-A gateway sits in front of one or more backend MCP servers and presents one MCP endpoint to every client behind it. Because the stateless core removed sessions, a gateway does not need to pin a client to one backend replica the way a session aware design once did; any healthy instance can answer any self contained request, the same guarantee that let lesson 04's replicas trade requests freely. What the gateway does need is a fast way to decide where a request goes and whether it is allowed to go there at all, and this is exactly what the Streamable HTTP header mirror from lesson 19 is for. Every POST carries `MCP-Protocol-Version`, `Mcp-Method`, and, for `tools/call`, `resources/read`, and `prompts/get`, `Mcp-Name`. A gateway reads those headers to pick a route and apply policy without first deserializing and fully understanding the JSON-RPC body on its fast path.
+网关部署在一个或多个后端 MCP 服务器的前端，向内网所有客户端呈现单一、统一的 MCP 服务端点。由于 2026-07-28 规范彻底移除了有状态会话，网关无需再像旧版那样艰难地将某个客户端强行粘连在特定后端副本上；任何健康副本都可以无差别地处理任何自包含请求。网关的核心挑战在于：如何在不将整个 JSON-RPC 请求体完全反序列化的前提下，以最快的速度决定将请求路由至何处并执行访问控制。
 
-Headers are a routing shortcut, never a second source of truth. Before a gateway (or the backend behind it) treats a request as valid, it has to confirm the header values agree with the corresponding body fields, `Mcp-Method` against `method`, `Mcp-Name` against `params.name` or `params.uri`, `MCP-Protocol-Version` against `params._meta["io.modelcontextprotocol/protocolVersion"]`. A mismatch is rejected as `HeaderMismatch`, code `-32020`, HTTP `400`, before any backend lookup happens at all. Skipping that check is not a small shortcut: a gateway that routed on the header alone and executed on the body could be tricked into logging and rate limiting one tool while a completely different, more sensitive tool actually ran.
+这正是我们在第 19 课学习的 Streamable HTTP 镜像请求头的核心价值所在。每一个 POST 请求都会在外层 HTTP 头中携带 `MCP-Protocol-Version`、`Mcp-Method`，并在涉及 `tools/call`、`resources/read` 与 `prompts/get` 时额外携带 `Mcp-Name`。网关只需快速读取这些轻量级请求头，即可在高速路径上完成路由选路与权限预检。
+
+然而，**请求头仅仅是高速路由的捷径，绝不是独立的真理来源**！在网关（或其背后的服务）将请求视为合法之前，必须严格核验请求头的值是否与请求体内部的字段完全一致：`Mcp-Method` 必须与 `method` 一致；`Mcp-Name` 必须与 `params.name` 或 `params.uri` 一致；`MCP-Protocol-Version` 必须与 `_meta` 中的协议版本一致。一旦发现任何不一致，网关必须在触达任何后端服务之前，果断拒绝该请求并返回 `HeaderMismatch` 错误（错误码 `-32020`，HTTP 状态码 `400`）：
 
 ```http
 POST /mcp HTTP/1.1
@@ -67,75 +79,83 @@ Mcp-Name: lookup_account
 {"jsonrpc": "2.0", "id": 7, "error": {"code": -32020, "message": "Header mismatch: Mcp-Method", "data": {"headers": ["Mcp-Method"]}}}
 ```
 
-A gateway's other responsibilities all follow from the same discipline of adding policy without adding authority the protocol never granted it. It enforces which principal may reach which backend and tool, and it never re-emits a legacy `-32000` through `-32019` code or invents a new one inside the `-32020` through `-32099` reserved band on top of what the specification already defines. When it forwards a cacheable result, `server/discover`, `tools/list`, `prompts/list`, `resources/list`, `resources/templates/list`, or `resources/read`, it passes `ttlMs` and `cacheScope` through unchanged rather than stripping them, because the calling client depends on those hints. The exam favorite detail sits inside `cacheScope` itself: a `"private"` result must never be served across two different callers even when the request otherwise looks identical, while a `"public"` result may be shared freely. A gateway's own cache is an optimization layered on top of the origin server's hint, never a new authority that can promote a private result to shared just because that would be convenient, and it partitions every private cache entry by the authenticated caller, never by the request shape alone. Finally, a gateway is not the place to terminate one caller's token and mint or reuse a different one when calling upstream; token passthrough is forbidden for the same reason it is forbidden anywhere else in the protocol, covered fully in lesson 23, and a gateway that logs or partitions cache entries by the caller's identity still must not place that identity inside the JSON-RPC message it forwards to the backend.
+跳过这项检查是一个巨大的安全后门：如果网关仅依据请求头进行路由和审计，而真实后端依据请求体执行，攻击者便可以通过构造冲突报文，让网关记录并限流一个普通的只读工具，而后台实际上却偷偷执行了一个高危破坏性工具。
 
-### SDK tiers: a portability signal, not a scan
+在缓存管理上，网关转发六种可缓存操作的响应时，必须原样透传 `ttlMs` 与 `cacheScope`。最关键的考点在于 `cacheScope`：标记为 `"private"` 的结果**绝对不得跨越两个不同的调用者共享**，即便两个请求在参数和形状上完全一模一样；只有标记为 `"public"` 的数据才允许跨用户共享。网关自身的缓存只是叠加在源端提示之上的性能优化手段，绝无权将私有结果越权提升为共享缓存。此外，网关严禁实施令牌穿透透传 (Token Passthrough)，并且网关内部用于区分私有缓存的用户身份标识，绝对不得擅自塞入转发给后端的 JSON-RPC 报文中。
 
-Every server or client in this curriculum is written against some SDK, and the SDK Tiering System is how the ecosystem measures whether a given SDK build is safe to build long lived infrastructure on. Tier 1 requires a 100 percent pass rate on the automated conformance test suite, shipping new protocol features before or alongside the next spec release, triaging issues (confirming and labeling them, not necessarily fixing them) within two business days, fixing a critical severity bug within seven days, at least one stable, non prerelease version with a documented breaking change policy, comprehensive documentation, a published dependency update policy, and a published roadmap. Tier 2 asks for 80 percent conformance, new features within six months, triage within a month, critical bug fixes within two weeks, one stable release, basic documentation, and either a plan toward Tier 1 or a stated reason for staying at Tier 2. Tier 3 has no minimum on any of it: experimental, partially implemented, or narrowly specialized SDKs live here with no timeline commitment at all. Extensions such as Tasks or MCP Apps are never required for any tier; an SDK can be a fully conformant Tier 1 implementation of the core protocol while simply not implementing a given extension, since extensions are opt in by design.
+### SDK 评级体系：代码质量与维护承诺的度量衡
 
-A tier is not a one time certificate. Conformance is measured continuously against the current stable release, and an SDK that fails any conformance test continuously for four weeks drops from Tier 1 to Tier 2, while one that fails more than 20 percent of tests for four weeks drops from Tier 2 to Tier 3; unresolved issues sitting for two months can trigger relegation as well. Advancing a tier runs the opposite direction: the maintainers self assess against the published requirements, open an issue with supporting evidence, pass the automated conformance suite, and get sign off from the SDK Working Group. This is the connective tissue back to the N plus M portability argument from lesson 02. The wire format claiming compliance is not the same thing as an SDK actually implementing every required behavior correctly; a Tier 2 or Tier 3 SDK might silently mishandle `_meta`, skip a required header, or misbehave on an MRTR retry from lesson 14. Portability across clients is not a fixed table memorized in advance. It is the combination of two things checked at run time and at build time: the per-request capability declaration a client makes on `server/discover` from lesson 07, and the tier of the SDK actually sitting behind whichever client or server you are relying on.
+生态系统中所有服务端和客户端实现都基于特定的底层 SDK，而 SDK 评级体系正是衡量某个 SDK 是否足以承载企业长期基础设施的量化标尺：
+- **一级 SDK (Tier 1)**：自动化一致性测试套件通过率必须达到 100%；在新协议规范发布前或同步推出支持；在 2 个工作日内完成对新 Issue 的分类定级；在 7 个自然日内修复关键安全漏洞；拥有带有向后兼容策略承诺的正式稳定版本；具备完备的文档、公开的依赖更新策略与长期演进路线图。
+- **二级 SDK (Tier 2)**：要求达到 80% 的一致性覆盖率；在规范发布后 6 个月内跟进新特性；1 个月内完成 Issue 分类；2 周内修复关键 Bug；具备基础文档，并明确说明迈向 Tier 1 的计划或维持在 Tier 2 的合理缘由。
+- **三级 SDK (Tier 3)**：官方定义为实验性、部分实现或高度专用的库，不作任何时间线保证。请注意：任何评级都不强制要求实现 Tasks 或 MCP Apps 等可选扩展；一个仅实现核心协议的 SDK 完全可以成为合规的 Tier 1 实现。
+
+SDK 评级绝非一次性认定的终身荣誉：一致性测试会针对当前稳定规范持续自动化运行。一旦某个 SDK 在自动化测试中**持续四周**出现测试失败，其评级将立刻由 Tier 1 降级至 Tier 2；若失败率超过 20% 并持续四周，则进一步降级至 Tier 3；长期悬而未决的严重缺陷同样会触发降级。晋升评级则需要维护者自测、提交实质证据、全量跑通测试套件并获得 SDK 工作组的正式批准。在线路上宣称自己符合规范，与底层 SDK 真正具备完整的合规实现完全是两回事；在跨平台选型时，必须将动态能力协商与底层 SDK 的硬实力评级结合考量。
 
 ```figure
 mcpa-32-registry-flow
 ```
 
-## Interactive Lab
+## Interactive Lab (交互式实验)
 
-The figure traces one server from publication to a live call. On the left, a publisher who has proven ownership of a namespace submits a `server.json`, and the registry admits it only after the namespace check and the public-only check both pass; an aggregator polls the registry on its own schedule and republishes toward host applications, never the other way around. On the right, a client's request to a gateway carries `Mcp-Method` and `Mcp-Name` alongside the body; the gateway's header-versus-body check branches two ways, a match proceeds to the correct backend, and a mismatch turns into `-32020` before any backend is touched. Underneath, three tier badges show the same conformance percentage this lesson's code encodes as data. Follow one name from the left edge to the right edge and notice that nothing about being correctly registered gives a request special treatment at the gateway. Those are two separate gates.
+上方的全链路架构图追踪了一个服务器从初始发布到线上实际调用的完整历程：
+- 在图表左侧，证明了反向 DNS 命名空间所有权的发布者提交 `server.json`，注册中心在同时通过命名空间所有权校验与公网可访问性检查后，方才予以准入收录；下游聚合器按照自身的节奏拉取注册表数据并向终端宿主应用提供分发服务。
+- 在图表右侧，客户端向网关发起请求，请求在 HTTP 头中携带了 `Mcp-Method` 与 `Mcp-Name`；网关内置的“请求头 vs 请求体”一致性校验逻辑在此分流：内容完全一致的请求顺利放行至正确的后端集群；而一旦发现任何参数分歧，则在触及任何后端之前直接熔断，返回 `-32020` 错误。
+- 架构图下方展示了三个 SDK 评级徽章及其对应的一致性测试通过率。请沿着数据流从左至右观察：在注册中心合法注册这一事实，绝不会让该请求在网关处享受到任何特权豁免，这是两道完全独立的安全关卡。
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Open `code/main.py`. `admit_to_registry` models the registry's own admission check as a small pure function: it splits a claimed name into an authority and a slug with `split_namespace`, rejects a namespace the calling publisher never verified, rejects a `visibility` of `"private"`, and rejects a version string that `looks_like_version_range` flags. Run it once for a publisher against their own verified namespace and once for a different publisher against the same claimed name, and compare the `reason` string each time. `resolve_install_target` reads a `packages` or `remotes` entry the way a host deciding how to install a server would. `schema_version_from_url` pulls the schema date out of a `$schema` URL so you can see it sitting next to, and independent of, `PROTOCOL_VERSION`.
+打开 `code/main.py`。函数 `admit_to_registry` 将注册中心的准入规则实现为一个纯函数：它利用 `split_namespace` 拆解声称的命名空间，拦截发布者未通过所有权验证的命名空间，拦截标记为 `"private"` 的私有服务，并拦截带有版本区间的非法版本号字符串。使用同一命名空间在已验证发布者与仿冒发布者之间分别尝试准入，对比终端输出的不同拒绝原因。函数 `resolve_install_target` 演示了宿主如何在包安装与远程服务之间做出解析决策。函数 `schema_version_from_url` 从 URL 中提取清单 Schema 日期，直观展示它与全局 `PROTOCOL_VERSION` 并存且独立的特性。
 
-The `Gateway` class is the part that speaks real MCP. `call_tool` and `read_resource` build a normal request, compute the headers a Streamable HTTP client would send with `_headers_for`, and route using `self.routes.get(headers["Mcp-Name"])`, the header value itself, not a second read of the body, which is the entire point of mirroring the name into a header in the first place. Read `_validate_headers` and confirm it checks all three fields before anything reaches a backend. Then read `call_tool_with_mismatched_method_header`: it changes only the `Mcp-Method` header after building a perfectly valid request body, and logs that one entry wrapped with `"violation"` so you can see exactly what a gateway operator would see on the wire, immediately followed by the real `-32020` response. Run the scenario and watch `accounts.read_count` after `token-alice` reads a private resource twice and `token-bob` reads the same URI once: the count is two, not three, because alice's second read was a cache hit and bob's was not, proof that the private cache never crossed between them. Compare that against `status.read_count` after the same two callers read a public resource: the count stays at one. Finally, search every entry in `gateway.log` for the literal string `"secret-token-value"` after calling `call_tool` with that token; it never appears, because the token exists only inside the gateway's own cache-partitioning logic, never inside the message it forwards.
+代码中的 `Gateway` 类实现了真实的 MCP 路由逻辑。`call_tool` 与 `read_resource` 构建合法请求，通过 `_headers_for` 计算出对应的 HTTP 头，并直接基于 `headers["Mcp-Name"]` 完成路由映射，而无需在快速路径上对请求体进行二次解析。阅读 `_validate_headers` 方法，确认它在将请求发往后端前严格校验了三个核心字段。随后查看 `call_tool_with_mismatched_method_header`：它在构建了合规请求体后，故意篡改了 `Mcp-Method` 请求头，并在日志中输出带有 `"violation"` 的违规记录，直观展示网关运维人员在线路上所捕获的异常以及紧随其后的真实 `-32020` 响应。随后观察缓存隔离效果：当 `token-alice` 连续读取两次私有资源而 `token-bob` 读取一次相同 URI 时，后端的实际读取计数器 `accounts.read_count` 仅为 2 而非 3，因为 Alice 的第二次读取命中了私有缓存，而 Bob 无法共享 Alice 的缓存；与此对比，在读取公开资源时，两人的读取使得 `status.read_count` 稳定保持在 1。最后在 `gateway.log` 中全局搜索字符串 `"secret-token-value"`，可以验证它从未出现，因为该凭证仅用于网关自身的缓存隔离计算，绝不会被透传至转发给后端的下游报文中。
 
 ```bash
 python3 code/main.py
 ```
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/registry-and-gateway-guide.md` is a one-page reference: the registry admission checklist, the packages-versus-remotes decision, the header-validation order a gateway must enforce before routing, the cacheScope rule stated as a single sentence you can quote back on the exam, and the SDK tier requirement table with its relegation thresholds.
+`outputs/registry-and-gateway-guide.md` 是一份单页实战速查手册：系统归纳了注册中心准入自检清单；提供了 `packages` 与 `remotes` 的选型决策表；明确了网关在路由前必须强制执行的请求头校验顺序；以一行精炼定义总结了考试必背的 `cacheScope` 隔离准则；并附带了 SDK 评级要求矩阵及为期四周的降级淘汰机制说明。
 
-## Verify It
+## Verify It (验证方法)
 
-Run the tests from the lesson directory:
+在课程根目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: a publisher is admitted only under a namespace they verified, a spoofed claim against someone else's namespace is rejected, a private-visibility server is rejected from the public registry even with a verified namespace, a version string that looks like a range is prohibited, the server.json schema version and the protocol version are independent facts, `resolve_install_target` prefers a remote and falls back to a package, a gateway call reaches the backend the `Mcp-Name` header names, a header-body mismatch comes back as `-32020` and never reaches the backend, a private resource's cache never crosses two different callers while a public resource's cache is shared between them, a caller's token never appears inside the JSON-RPC message the gateway forwards, the SDK tier table answers exactly what the specification states, and the relegation rule only fires after four continuous weeks of failure. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+测试套件全面验证了本课的各项论断：发布者仅被允许在其验证过的命名空间下发布条目；针对他人命名空间的伪造发布会被坚决拦截；私有可见性的服务器即拥有合法命名空间也绝不被公开注册中心收录；包含模糊范围的版本号被直接阻断；`server.json` 的 Schema 版本与协议版本相互独立；`resolve_install_target` 优先解析远程端点并以代码包兜底；网关精准将请求路由至 `Mcp-Name` 所指向的后端；请求头与请求体不一致立即触发 `-32020` 且绝不触及后端；私有资源缓存绝不发生跨用户越权共享而公共资源缓存全局复用；调用方认证令牌绝不泄露至网关转发的 JSON-RPC 报文内；SDK 评级指标严格符合规范定义；且降级规则唯有在连续四周测试失败后方才正式触发。仓库内置的报文规范检查器同样会验证本课的运行日志是否完全符合 2026-07-28 规范：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/32-registry-gateways-and-sdk-tiers
 ```
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The capstone's end-to-end exchange assumes a server the candidate could plausibly have found and trusted before the first request is ever sent, and this lesson is where that trust gets decomposed into checkable parts instead of one vague feeling. When the capstone scenario asks you to defend why a request reached the right backend, you are pointing at the same header-versus-body check this lesson builds by hand. When it asks why a cached result was or was not reused, you are quoting the same `cacheScope` rule. And when it asks whether a given implementation can be relied on to speak the full 2026-07-28 surface, the honest answer runs through the SDK tier of whatever sits behind it, not through hope.
+Capstone 综合考核假定考官给出的服务器是考生在正式发起第一次请求前、已经通过合理技术手段完成检索与信任评估的资产，而本课正是将这种抽象的“信任感”拆解为可客观量化技术检查的关键所在。当答辩中考官要求你辩护“为什么请求能够准确触达目标后端”时，你的回答应当直接指出本课手写的请求头与请求体强校验逻辑；当被问及“为何某个缓存结果未能被复用”时，能够准确搬出 `cacheScope` 的私有隔离法则；而当评估一套外部系统能否稳定支撑 2026-07-28 全量协议特性时，你的技术底气应来自于对其底层 SDK 评级的审查，而非主观臆测。
 
-## Key Terms
+## 关键术语 (Key Terms)
 
-| Term | Meaning |
+| 术语 | 定义说明 |
 |------|---------|
-| MCP Registry | The official, preview-stage metadata index of publicly accessible server.json listings |
-| server.json | The metadata document a registry entry stores: name, version, and packages or remotes |
-| Namespace verification | Proof, via GitHub or a domain challenge, that a publisher controls the authority in a claimed name |
-| Aggregator | A downstream consumer that polls the registry's REST API and republishes toward host applications |
-| Subregistry | An aggregator that also implements the registry's own OpenAPI interface for host applications |
-| Gateway | A single MCP endpoint in front of one or more backends that routes and enforces policy per request |
-| HeaderMismatch | The `-32020` error a gateway or server returns when a mirrored header disagrees with the request body |
-| cacheScope | The `public` or `private` hint on a cacheable result; private entries must never cross callers |
-| SDK tier | A conformance and maintenance rating (Tier 1, 2, or 3) measured continuously against test results |
-| Relegation | The rule that drops an SDK's tier after sustained conformance failure over four continuous weeks |
+| MCP Registry | 官方集中托管的公网可访问 `server.json` 清单索引，当前处于预览阶段 |
+| `server.json` | 注册条目所存储的元数据文件：包含名称、版本以及 packages 或 remotes 安装信息 |
+| Namespace verification（命名空间验证） | 通过 GitHub 组织或域名 DNS 校验，证明发布者对所申请名称权威域所有权的凭证 |
+| Aggregator（聚合器） | 周期性拉取注册中心 REST API 并面向下游宿主应用重新分发聚合数据的生态角色 |
+| Subregistry（子注册中心） | 面向内部或特定垂直领域、对外提供与官方注册中心兼容的 OpenAPI 接口的聚合服务 |
+| Gateway（API 网关） | 部署在多个后端服务前端的单一协议端点，负责每请求粒度的路由分发与安全策略实施 |
+| HeaderMismatch | 当 HTTP 镜像请求头与 JSON-RPC 请求体字段产生分歧时返回的 `-32020` 协议错误 |
+| cacheScope | 可缓存结果上的作用域提示；标记为 `private` 的缓存条目严禁跨不同认证调用者共享 |
+| SDK tier（SDK 评级） | 基于自动化测试与长期响应维护表现（一级至三级）对 SDK 规范完整度进行的客观度量 |
+| Relegation（降级惩罚） | 当 SDK 持续四周出现自动化一致性测试失败或长期堆积严重缺陷时触发的强制降级规则 |
 
-## Further Reading
+## 延伸阅读 (Further Reading)
 
-- [The MCP Registry](https://modelcontextprotocol.io/registry/about)
-- [Registry package types](https://modelcontextprotocol.io/registry/package-types)
-- [Registry authentication](https://modelcontextprotocol.io/registry/authentication)
-- [Registry aggregators](https://modelcontextprotocol.io/registry/registry-aggregators)
-- [SDK tiering system](https://modelcontextprotocol.io/community/sdk-tiers)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 9, 10, and 15
-- `phases/13-tools-and-protocols/17-mcp-gateways-and-registries`, which builds a full gateway policy engine in more depth
+- [MCP 注册中心核心设计](https://modelcontextprotocol.io/registry/about)。
+- [注册中心代码包类型规范](https://modelcontextprotocol.io/registry/package-types)。
+- [注册中心发布者身份认证指南](https://modelcontextprotocol.io/registry/authentication)。
+- [注册中心下游聚合器开发指南](https://modelcontextprotocol.io/registry/registry-aggregators)。
+- [SDK 分级管理准则](https://modelcontextprotocol.io/community/sdk-tiers)。
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 9、10 与 15 节。
+- `phases/13-tools-and-protocols/17-mcp-gateways-and-registries`，深入构建全功能网关策略引擎。

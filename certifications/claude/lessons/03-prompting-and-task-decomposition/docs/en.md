@@ -1,238 +1,234 @@
-# Turn a Request Into a Testable Contract
+# 将模糊需求转化为可测试的契约
 
-> A strong prompt does not merely describe what to write. It makes success observable before generation begins.
+> 一段优秀的 Prompt 绝不仅仅是描摹应当写出什么内容，而是在模型生成启动之前，就已让成功标准变得清晰可观测。
 
 **Type:** Learn
 **Languages:** Python
 **Prerequisites:** [Study the Decisions, Not the Vocabulary](../../00-certification-strategy/), [Prompt Engineering](../../../../../phases/11-llm-engineering/01-prompt-engineering/)
 **Time:** ~100 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Translate an ambiguous request into an outcome, evidence standard, constraints, and acceptance checks.
-- Decompose complex work into stages that can be inspected and corrected independently.
-- Choose between direct prompting, examples, structured sections, iteration, and workflow redesign.
-- Diagnose prompt failures without treating every bad output as a model failure.
-- Build reusable prompt packets for high-value Claude workflows.
+- 将模糊发散的自然语言需求，精准解构为目标产出、证据标准、硬性约束与验收校验四位一体的工程契约。
+- 将复杂的长程任务拆解为可独立检查、独立纠偏的多阶段结构化流水线。
+- 在直接提示（Direct Prompting）、少样本范例（Few-shot）、结构化标签、单步迭代与工作流重构之间做出理性架构权衡。
+- 精准诊断 Prompt 缺陷，杜绝盲目将生成质量问题归咎于模型能力缺陷。
+- 为企业高价值的 Claude 业务工作流构建可版本化复用的 Prompt 契约包（Prompt Packets）。
 
-## The Problem
+## 问题背景
 
-An operations manager asks Claude to "research our customer complaints and create a persuasive executive report with recommendations." The result is fluent. It includes four recommendations, two trends, and a clean table.
+某业务运营主管向 Claude 输入了一句指令：“请深入调研我们的客户投诉情况，撰写一份极具说服力、面向公司高管的管理层报告，并给出改进建议。”生成的回复文采斐然、对仗工整，包含四项改进建议、两项趋势洞察以及一张整洁的排版表格。
 
-It is also unusable. One recommendation conflicts with policy. The table combines two date ranges. A regional exception is missing. Nobody can tell which complaint supports which claim.
+然而，这份报告在业务上完全处于不可交付状态：其中一项建议与公司现行合规章程严重冲突；表格将两个不同时间区间的统计口径随意混淆；漏掉了某一关键区域市场的例外规则；更致命的是，全篇没有任何人能溯源查证究竟是哪一条客户投诉支撑了哪一项业务推论。
 
-The team tries three repairs. They add "be accurate." They ask Claude to "think harder." Then they paste the same request into a more capable model. The prose improves, but the evidence problem remains.
+业务团队尝试了三种常见的民科式修补：他们在 Prompt 中加上“请务必保证准确客观”；他们要求 Claude“更深入地思考”；最后干脆把这段指令复制粘贴到最新、最贵的高阶大模型中。文字表述确实变得更加华丽流畅，但最核心的事实证据链崩塌问题依然原封未动。
 
-The request never defined the decision, the permitted sources, the required coverage, the audience, or the test for a supported recommendation. Claude optimized for a plausible report because plausibility was the only visible target.
+问题的根源在于：原始请求从未明确界定支撑的具体决策、允许引用的权威证据边界、统计覆盖范围、目标汇报受众，以及对一项建议是否具备证据支撑的检验标准。Claude 只能退而求其次去拼命生成一份“看起来像那么回事”的漂亮报告，因为“看起来像那么回事”是它在输入中唯一能捕捉到的优化目标。
 
-## The Concept
+## 核心概念
 
-### Prompting is interface design
+### Prompt 本质是系统接口设计
 
-A prompt is an interface between human intent and model behavior. Good interfaces expose inputs, constraints, outputs, and failure states. Weak prompts hide all four inside adjectives such as "great," "comprehensive," or "professional."
+Prompt 是人类业务意图与模型生成行为之间的契约接口（Interface）。优秀的接口会明确暴露输入参数、硬性约束、预期输出格式以及异常失效状态；而脆弱低质的 Prompt 往往将这些关键要素全部掩盖在“高质量”、“全面详尽”或“专业权威”等模糊虚浮的形容词堆砌中。
 
-Use this contract:
+请严格采用以下标准七要素契约（Prompt Contract）：
 
-1. **Outcome:** What decision or action will this output support?
-2. **Context:** What background is necessary, and what is irrelevant?
-3. **Task:** What transformation should Claude perform?
-4. **Evidence:** Which sources may support claims, and how should gaps be handled?
-5. **Constraints:** What must not happen?
-6. **Format:** What exact shape should the result take?
-7. **Acceptance checks:** How will a person or program decide whether it passes?
+1. **Outcome（业务目标）：** 该输出最终将支撑何种具体的管理决断或下游系统动作？
+2. **Context（背景上下文）：** 哪些背景信息是必不可少的，哪些是应当剔除的冗余噪音？
+3. **Task（核心任务）：** 明确要求 Claude 实施何种具体的信息转换或处理操作？
+4. **Evidence（事实证据）：** 允许援引哪些信源支撑断言，在面对证据断档盲区时应如何规范处置？
+5. **Constraints（负向约束）：** 严禁出现哪些行为、内容或推断？
+6. **Format（交付形态）：** 最终交付物应具备何种确切的数据结构与排版组织形式？
+7. **Acceptance checks（验收检查）：** 人类审查员或测试程序将依据何种客观标准判定该交付物是否及格？
 
-The order matters less than the presence of each part. You can label sections with Markdown headings, XML-style tags, or another consistent delimiter. Structure helps the model distinguish data from instructions and helps reviewers locate assumptions.
+要素的具体排布先后并不绝对，关键在于七大核心要素必须完整在线。你可以采用 Markdown 结构化标题、XML 风格标签（如 `<context>`、`<constraints>`）或其它统一的分隔符组织文本。强结构化不仅能极大降低模型将背景数据误判为执行指令的注入风险，更能为人工审查员提供清晰的假设溯源抓手。
 
 ```text
 <outcome>
-Prepare the weekly support review so the director can choose two process fixes.
+起草周度技术支持复盘纪要，供运营总监拍板决定两项核心业务流程修复方案。
 </outcome>
 
 <sources>
-Use only the attached tickets and policy handbook. Treat the handbook as authoritative.
+仅允许依据随附的客户工单记录与 2026 版客服合规操作手册；以手册条款为最高权威依据。
 </sources>
 
 <task>
-Group complaints by root cause, quantify each group, and propose no more than three fixes.
+按照根本归因对本周投诉展开聚类归纳，精确统计每个类别的工单数量，并提出不超过三项针对性改进措施。
 </task>
 
 <constraints>
-Do not infer customer intent. Mark missing dates as unknown. Do not include names.
+严禁主观脑补揣测客户意向；缺失日期的记录一律显式标为未知；严禁在文本中泄露任何客户真实姓名。
 </constraints>
 
 <output>
-Return: executive summary, evidence table, recommendations, uncertainties.
+严格按照以下顺序输出：高管管理摘要、断言证据对照表、落地建议方案、待核实不确定项。
 </output>
 
 <checks>
-Every recommendation must cite at least two ticket IDs and one policy section.
+每项改进建议必须显式引用至少两个具体工单 ID 以及一个对应的客服手册条款章节编号。
 </checks>
 ```
 
-### Criteria come before wording
+### 评估准则必须先于提示词措辞而确立
 
-Prompt optimization is impossible without a target. Define criteria first, then improve the prompt against representative cases.
+在未设立清晰的量化靶心之前，任何所谓的“Prompt 调优”都是盲人摸象。必须预先确立客观评价指标，再针对代表性用例展开调优闭环。
 
-For the complaint report, criteria might be:
+针对上述客户投诉报告，严密的技术准则应当设计为：
+- 每一笔客户投诉必须被归入某一类别，或显式归入“未分类”兜底池。
+- 各类别统计数量相加，必须与原始输入工单总量在数学上严格平账。
+- 所有涉及规章制度的断言，必须精准对应已提供的参考规范条款。
+- 提出的改进建议绝不能超越该业务团队的法定职权边界。
+- 文本中严禁包含任何个人身份信息（PII）。
+- 遇到信息模糊处必须主动暴露不确定性，严禁将其转化为自信的臆测。
 
-- Every complaint is assigned once or explicitly marked unclassified.
-- Counts reconcile with the input total.
-- Policy claims cite a supplied section.
-- Recommendations do not exceed the team's authority.
-- Personally identifying information is absent.
-- Uncertainty is visible instead of converted into a guess.
+“写得更好一点”无法提供任何可供工程归因的诊断信号；而“各项分类计数必须在数学上严格平衡”，则能在测试挂掉时精确指出系统缺陷所在与修复方向。
 
-"Make it better" gives no diagnostic signal. "The counts must reconcile" tells you what failed and what to change.
+### 沿着可验证边界拆解长程任务
 
-### Decompose along verification boundaries
-
-Long tasks become safer when each stage produces an artifact that can be inspected. A useful decomposition is:
+当长链条的复杂任务被拆解为多个独立阶段、且每个阶段均产出可独立审查的中间实体（Artifact）时，系统的可控度与可靠性将呈指数级提升：
 
 ```mermaid
 flowchart LR
-    A["Clarify the decision"] --> B["Inventory and classify sources"]
-    B --> C["Extract claims and evidence"]
-    C --> D["Analyze patterns"]
-    D --> E["Draft for the audience"]
-    E --> F["Validate claims and constraints"]
-    F --> G["Approve or revise"]
+    A["明确决策目标"] --> B["盘点并归类知识源"]
+    B --> C["提取断言与底层证据"]
+    C --> D["归纳模式与异常分布"]
+    D --> E["面向目标受众起草正文"]
+    E --> F["对齐断言与约束复核"]
+    F --> G["签发交付或退回重修"]
 ```
 
-This is not the same as splitting by arbitrary page count. Each boundary should answer a question:
+这种拆解绝不是简单按字数或页数盲目切块，每个阶段之间的交接边界必须能够独立回答一个判定性问题：
+- 在开始计算分析前，我们能否独立核实待分析信源的完整性？
+- 在展开主观定性解读前，我们能否独立核实验收提取出的事实断言？
+- 在正式呈送分发前，我们能否独立核实验收各项落地建议的合规性？
 
-- Can we verify the source set before analysis?
-- Can we verify extracted facts before interpretation?
-- Can we verify recommendations before publishing?
+仅在子任务之间彼此完全没有数据依赖时，才允许并行执行。例如：对投诉进行分类打标与从制度文件中提取约束条款可以完全并发推进；但生成最终的落地建议则必须在上述两项工作均已通过验收后方可串行触发。
 
-Run independent tasks in parallel only when they do not depend on one another. Classifying complaint categories and extracting policy constraints can run in parallel. Writing recommendations must wait for both.
+串行分阶段编排不仅能彻底消除跨模块间的隐性耦合，更为系统提供了极具价值的**断点容错恢复机制（Recovery Point）**。一旦发现信息提取出现偏差，工程师只需单点修复提取模块，而无需将整篇庞大的报告从头全量重跑。
 
-Sequential stages reduce hidden coupling. They also create a recovery point. If extraction is wrong, you repair extraction rather than regenerating the entire report.
+### 范例（Examples）的核心是划定决策分界线
 
-### Examples teach boundaries
+在规则难以用自然语言抽象穷尽、或对输出格式有极端严苛要求时，少样本提示（Few-shot Prompting）能发挥奇效。但一个合格的高质量范例，绝不能只展示风平浪静的简单正面案例，而必须精准刻画**决策分界线（Decision Boundary）**。
 
-Few-shot examples are useful when the rule is difficult to state or when formatting must be exact. A good example shows the decision boundary, not just the easy center.
+以工单情感极性打标为例，切忌连续提供三个毫无争议的极度满意案例。应当提供一个语义模糊纠结的典型案例、一个正面表扬与负面吐槽交织的混合案例，以及一个完全缺乏有效信息的“无法判定”兜底案例，并逐一附带详细的判定逻辑阐述。只有这样，模型才能真正领会区分不同类别的临界判定条件。
 
-For sentiment labels, do not provide three obviously positive examples. Include an ambiguous complaint, a mixed statement, and an "unknown" case. Explain why each label applies. The model learns what separates categories.
+同时必须提防范例引发的先入为主偏见：如果范例中清一色全是零售电商背景的工单，模型极易误将零售术语当作全量任务的默认前提。范例必须保持足够的业务场景多样性，且逻辑必须与正文书面准则严格契合。
 
-Examples can also create accidental rules. If every demonstration mentions retail customers, the model may treat retail language as part of the task. Keep examples diverse, minimal, and consistent with the written criteria.
+### 严谨定义角色，杜绝盲目崇拜
 
-### Assign roles carefully
+角色设定（Role Prompting，如“你是一名资深合规审计总监”）能够赋予模型特定的专业视角色彩，但它**绝不会凭空赐予模型额外的真实世界事实知识、系统特权或敏感数据访问权限**。虚拟的专家人设，永远无法替代白纸黑字的合规手册、铁证如山的事实信源或不可或缺的人工复核流程。
 
-Role prompts can supply perspective, such as "act as a compliance reviewer." They do not grant knowledge, authority, or access. A role cannot replace policy text, source evidence, or a human approval step.
-
-Prefer a concrete perspective:
+请将虚浮的人设转化为具体可操作的专业审查视角：
 
 ```text
-Review the draft from the perspective of the privacy owner.
-Identify each sentence that exposes personal data, cite the applicable supplied policy,
-and propose the smallest compliant revision.
+请严格从数据合规与隐私安全负责人的专业视角审查当前草案。
+逐句识别可能泄露客户敏感隐私的表述，准确标出违反了随附合规手册的哪一具体条款，
+并给出满足合规红线前提下的最精炼修改方案。
 ```
 
-This is testable. "You are the world's best privacy expert" is not.
+这套指令具备明确的可测试性与可验证性；而诸如“你是世界上最顶尖的隐私专家”之类的空洞吹捧，则不具备任何工程价值。
 
-### Iteration needs a hypothesis
+### 科学迭代建立在明确假设之上
 
-Useful iteration changes one meaningful variable and measures the effect across a small evaluation set. Examples:
+真正专业的工程迭代，是在固定的小规模评估集上，每次仅变动一个具备明确意义的技术变量，并严密量化观测其带来的指标迁移：
+- **假设 A：** 强制要求生成断言-证据对照表，能够显著降低无事实根据的凭空建议比例。
+- **假设 B：** 将合规条例在 Prompt 中置于具体工单之前，能够显著提升模型对例外条款的处理准确率。
+- **假设 C：** 补充一个图文不符的混淆反例，能够大幅改善模型对复杂边缘用例的误判率。
 
-- Hypothesis: requiring a claim-evidence table will reduce unsupported recommendations.
-- Hypothesis: placing the policy before the tickets will improve exception handling.
-- Hypothesis: one counterexample will improve classification of mixed cases.
+在对比不同 Prompt 版本的表现时，评测用例集必须保持绝对冻结。否则你根本无法分清指标的提升，究竟是因为你的 Prompt 变得更优秀了，还是因为碰巧换了一套更简单的输入数据。
 
-Keep the evaluation cases stable while comparing prompt variants. Otherwise you cannot distinguish a better prompt from an easier input.
+当反复调整措辞依然无法见效时，请立即停止无休止的文字游戏。真正的问题往往潜藏在：关键证据缺失、业务约束彼此冲突、上下文过度臃肿、模型算力上限不足，或是工作流编排本身存在结构性缺陷。
 
-When repeated changes fail, stop polishing sentences. The problem may be missing evidence, conflicting requirements, too much context, insufficient capability, or an unsafe workflow.
+## 动手构建
 
-## Build It
+### 第一步：编写验收卡片 (Acceptance Card)
 
-### Step 1: Write the acceptance card
-
-Choose one recurring work task. Write a short acceptance card before a prompt:
+挑选一个日常周期性业务任务，在正式动笔写 Prompt 之前，首先填写这份结构化验收卡片：
 
 ```text
-Decision supported:
-Primary reader:
-Authoritative sources:
-Required facts:
-Forbidden content or actions:
-Output structure:
-Pass conditions:
-Escalation conditions:
+支撑的业务决策:
+核心报告受众:
+指定权威真理信源:
+必须包含的关键事实:
+严禁出现的表述或行为:
+输出交付结构形态:
+及格通过验收条件:
+触发人工升级条件:
 ```
 
-Make every pass condition observable. "Professional" is not observable. "Uses no unexplained acronym and begins with a three-sentence summary" is.
+务必确保每一条及格条件都具备绝对的**可观测性（Observable）**。“行文显得专业严谨”是不具备可观测性的；而“全文未出现任何未经定义的专业缩略词，且开篇包含三句话的高管管理摘要”则是严密可观测的。
 
-### Step 2: Create a source hierarchy
+### 第二步：建立信源权威层级架构 (Source Hierarchy)
 
-Conflicting sources are normal. Tell Claude which source wins.
+在多源集成系统中，不同数据源之间存在分歧矛盾是常态。必须在 Prompt 中以绝对权威等级明确裁定胜负规则：
 
 ```text
-Authority order:
-1. Approved policy handbook dated 2026-07-01
-2. Current operating procedure
-3. Ticket notes
+信源权威仲裁等级:
+1. 2026 年 7 月 1 日经合规委员会签发的官方政策手册
+2. 当前生效的业务标准作业程序 (SOP)
+3. 历史工单跟进记录便签
 
-If sources conflict, report the conflict. Do not silently choose the newer or longer text.
+若上述信源之间出现条款冲突，必须在最终报告中明确指出该冲突细节；严禁模型私自偏向更新或篇幅更长的文本。
 ```
 
-Recency and authority are different. A recent chat message does not automatically override an approved policy.
+请深刻认识到：时效新旧（Recency）与权威层级（Authority）是完全独立的两个维度。一条昨晚在即时聊天群中发送的碎碎念便签，绝不可能自动凌驾于企业正式颁布的合规准则之上。
 
-### Step 3: Design the stages
+### 第三步：全流程多阶段状态机设计
 
-For each stage, define input, output, and gate:
+为流程中的每一个环节，严格定义输入、输出以及准入把关门槛（Gate）：
 
-| Stage | Input | Output | Gate |
+| 阶段名称 | 输入材料 | 交付成果 | 阶段准入把关门槛 (Gate) |
 |---|---|---|---|
-| Intake | Request and source inventory | Scope card | Owner confirms decision and deadline |
-| Extraction | Approved sources | Claim-evidence rows | Required fields complete |
-| Analysis | Verified rows | Patterns and exceptions | Counts reconcile |
-| Draft | Approved analysis | Audience-ready report | Format and scope pass |
-| Validation | Draft plus sources | Findings and corrections | High-risk findings resolved |
+| 需求受理 (Intake) | 原始诉求与待处理信源清单 | 范围卡片 (Scope Card) | 业务负责人正式确认分析范围与截止时限 |
+| 信息提取 (Extraction) | 经合规准入的原始权威数据 | 断言-证据结构化行项 | 必填字段 100% 提取完备无残缺 |
+| 综合分析 (Analysis) | 经过前序验证的干净行项 | 趋势规律归纳与异常名单 | 统计总数在数学上与原始输入严格平账 |
+| 报告起草 (Draft) | 已过审的综合分析结论 | 面向受众的正式报告文稿 | 格式排版与业务覆盖范围 100% 达标 |
+| 合规验证 (Validation) | 正式草案及对应原始信源 | 审计排查发现与修正清单 | 所有高危级别漏洞与缺陷全部清零闭环 |
 
-This table is a workflow specification. The prompt for each stage can stay smaller and more precise than one giant prompt.
+这张表格就是系统的工作流工程规约。每个阶段的专职 Prompt 都能保持极其精简聚焦，其可靠性远超一个试图包打天下的万能巨型 Prompt。
 
-### Step 4: Add uncertainty behavior
+### 第四步：显式规范不确定性弃权机制 (Abstention)
 
-Tell Claude what to do when evidence is missing:
+明确指示模型在遭遇事实证据断档时应当采取的行为准则：
 
 ```text
-If a required fact is unavailable, write "Not established from supplied sources."
-List the missing source and explain which conclusion cannot be made.
-Do not estimate a number unless the task explicitly permits estimation.
+若某个必须回答的关键事实在提供的信源中缺失，必须如实输出：“依据当前所提供的资料无法建立该结论。”
+明确列出缺失的必要信源类型，并阐明由于该信息缺失导致哪些后续业务判断无法做出。
+除非任务中显式允许估算，否则严禁凭主观猜测任何统计数值。
 ```
 
-Abstention is a designed output, not a model defect.
+主动承认无法推断（Abstention）是经过深思熟虑的高阶架构设计，绝非系统缺陷。
 
-### Step 5: Test adversarial cases
+### 第五步：构建包含对抗攻击的鲁棒性评测集
 
-Create at least five cases:
+构建至少包含以下 5 类边界的对抗测试集：
+- 证据充足完备的常规标准用例。
+- 蓄意拿掉某项关键必要信源的残缺用例。
+- 两份底层参考文件在核心数据上公然矛盾的冲突用例。
+- 在参考文件内部蓄意夹带指令覆盖的 Prompt 注入攻击用例。
+- 越权要求执行未授权破格操作的非法用例。
 
-- A normal request with complete evidence.
-- A request missing one required source.
-- Two sources that conflict.
-- An instruction hidden inside source content.
-- A request that exceeds the user's authority.
+严格对照前置验收卡片逐项核验 Pass/Fail 状态，杜绝仅凭一次偶然跑通的个案产生盲目自信。
 
-Record pass or fail against the acceptance card. Do not rely on one impressive demonstration.
+## Interactive Lab (交互式实验)
 
-## Interactive Lab
-
-Use the prompt-contract figure to edit the outcome, evidence, constraints, output shape, and checks as separate components. Follow the stage gates to see why a missing source should stop analysis instead of producing better formatted uncertainty.
+通过下方的 Prompt 契约交互图表（Prompt-contract figure），独立编辑目标产出、证据要求、负向约束、输出结构以及验证关卡各组件。沿着各个阶段的流转门槛深入观察：为什么当关键信源缺失时，系统应当当场熔断并终止后续分析，而不是盲目去生成排版更加精致的幻觉推测。
 
 ```figure
 03-prompt-contract
 ```
 
-## Practice Lab
+## Practice Lab (实战演练)
 
-Run the contract scorer and remove one acceptance check, source rank, stage gate, or adversarial case. Repair the exact failure instead of adding vague prompt wording.
+在本地运行契约评分程序，尝试刻意剔除某一条验收检查项、抹掉信源权威仲裁优先级、删除某一阶段门槛，或删除对抗评测集中的高危用例。观察校验器是如何精确拦截报错的；随后针对性修补缺陷，严禁通过泛化模糊提示词措辞来掩盖漏洞。
 
-## Shipped Artifact
+## Shipped Artifact (交付产物)
 
-`outputs/prompt-contract-packet.json` is a filled complaint-analysis contract. It contains all seven contract parts, an authority order, five adversarial evaluation cases, explicit abstention behavior, and stage-level gates.
+`outputs/prompt-contract-packet.json` 包含一份填报完备的投诉分析业务契约规范包。它完整覆盖了标准契约的全部 7 大组件、清晰的信源权威仲裁等级、5 类涵盖对抗注入的严苛评测用例、显式的不确定性弃权规约，以及全流程多阶段把关门槛。
 
-## Verify It
+## Verify It (验证步骤)
 
-Validate it locally:
+在本地终端运行确定性验证脚本及其自动化测试套件：
 
 ```bash
 cd certifications/claude/lessons/03-prompting-and-task-decomposition/code
@@ -240,60 +236,59 @@ python3 main.py
 python3 -m unittest discover tests -v
 ```
 
-The validator rejects vague pass criteria, missing authority order, absent escalation behavior, or an evaluation set that omits normal, missing-source, conflict, injection, and unauthorized cases.
+校验引擎会自动拦截：模糊不可测的及格标准、缺失权威仲裁优先级的配置、缺失异常上报机制的设计，或者未完整覆盖常规、缺源、冲突、注入与越权等 5 种对抗维度的不合格评测集。
 
-## Capstone Connection
+## Capstone Connection (项目连接)
 
-The quiz checks contract design, decomposition, evidence hierarchy, and abstention. Carry the validated packet into capstones 29 through 32 as the versioned prompt and acceptance contract for the workflow you build.
+配套自测题重点考察契约化设计、多阶段任务解耦、信源权威仲裁以及安全弃权机制。在第 29 课至第 32 课的高阶毕业设计中，这份通过本地校验的契约包将直接作为你所构建的核心业务工作流的版本化 Prompt 基准与自动化验收契约。
 
-## Use It
+## 实践应用
 
-### Exam decision pattern
+### 考试决策模式
 
-For scenario questions, use this order:
+在解答考纲中的场景类考题时，请严格遵循以下思考顺序：
+1. 精准锁定题干要求的最终业务目标（Outcome）。
+2. 敏锐发现题干中缺失的关键约束条件或事实证据盲区。
+3. 优先选择能够**将隐性缺陷显性化暴露（Make failure observable）**的修复方案。
+4. 在失败后果严重的环节，坚决捍卫人工复核或明确的政策合规边界。
+5. 只有在彻底排查并优化了 Prompt、上下文与工作流编排之后，才考虑升级底层大模型的推理能力。
 
-1. Identify the requested outcome.
-2. Find the missing requirement or evidence.
-3. Prefer a repair that makes the failure observable.
-4. Preserve an explicit human or policy boundary when consequences are high.
-5. Escalate model capability only after prompt, context, and workflow causes are addressed.
+最优秀的正确选项，永远是在修补技术契约或重构工作流编排，极少是单纯添加空洞模糊的形容词修饰。
 
-The strongest answer usually improves the contract or the workflow. It rarely adds a vague adjective.
+### 常见陷阱
 
-### Common traps
+- **一个庞大 Prompt 包打天下：** 导致长程复杂任务完全丧失中间状态的可观测性与容错恢复能力。
+- **只顾堆砌细节却缺乏结构层级：** 冗长的文本堆砌极易在模型内部引发逻辑指令自相矛盾。
+- **误将虚拟角色当成真实权威：** 以为指定了专家人设，模型就能凭空掌握未提供的机密数据或越权做出合法决断。
+- **范例全是一马平川的简单正例：** 模型虽然学会了简单套路，但在遭遇真实边缘用例时全面溃败。
+- **过度迷信隐式思维链（CoT）：** 试图用模型隐式的内部思维推导，去替代可被外部程序与人类独立验证的阶段性实体（Artifacts）。
+- **遇事不决一律升级更贵的大模型：** 算力再强大的模型，也无法推导出从未向其提供过的内部规章条款。
+- **依赖无休止的人工对话微调修复：** 真正生产可复用的业务流，必须依托具备版本受控的代码化指令包与自动化测试集。
 
-- **One prompt for the entire project:** Complex work has no inspection points.
-- **More detail without hierarchy:** A longer prompt can contain more contradictions.
-- **Role as authority:** A persona does not create reliable facts or permissions.
-- **Examples without edge cases:** The model learns the easy pattern but misses the boundary.
-- **Chain-of-thought dependency:** Requiring hidden reasoning text is not a substitute for verifiable intermediate artifacts.
-- **Model upgrade as first response:** Better capability cannot recover an absent policy.
-- **Endless conversational correction:** A reusable task needs versioned instructions and evaluation cases.
+### 课后习题
 
-### Exercises
+1. 将“请为公司领导层简要总结这篇材料”这句模糊指令，完整重构为严谨的七要素 Prompt 工程契约。
+2. 针对一个包含 5 个步骤的复杂业务工作流，深入分析哪些步骤可以安全并发执行，并详述步骤之间的强依赖关系。
+3. 为某个具体的工单分类打标任务设计 3 个高质量范例：1 个标准清晰正例、1 个处于模糊边界的临界案例，以及 1 个主动声明无法判定的弃权案例。
+4. 为你的 Prompt 编写 5 个对抗测试用例，必须明确涵盖信源冲突场景与试图诱导越权的非法请求。
+5. 挑出团队近期一次不及预期的模型糟糕输出，精准将其归类为需求、信源、上下文、提示词、模型能力还是编排流失效。
 
-1. Rewrite "Summarize this for leadership" as a seven-part prompt contract.
-2. Take a five-step task and identify which steps can run in parallel. Explain every dependency.
-3. Create three examples for a category label: one clear, one boundary case, and one abstention.
-4. Design five evaluation cases for your prompt, including conflicting evidence and an unauthorized request.
-5. Review a recent weak output and classify the failure as requirement, source, context, prompt, model, or workflow.
+## 核心术语
 
-## Key Terms
+- **Acceptance criterion (验收准则):** 最终交付物必须无可争议满足的、具备确定性可观测判定的硬性检验条件。
+- **Decomposition (任务解耦拆解):** 将庞杂交织的长程任务拆解为具有明确依赖关系、独立验证门槛与标准产出的离散子任务阶段。
+- **Few-shot prompting (少样本提示):** 在上下文显式提供少量代表性范例，以高效传授临界决策边界或特殊格式规范的提示工程技术。
+- **Prompt contract (Prompt 契约):** 一套结构化声明业务目标、背景、任务、信源证据、负向约束、输出格式与验收条件的工程化规范。
+- **Source hierarchy (信源权威层级):** 当多个参考数据源发生事实分歧或逻辑冲突时，裁定谁具备最高仲裁效力的一致性仲裁准则。
+- **Abstention (安全弃权/拒答):** 当输入事实证据残缺或请求超出合法授权边界时，模型显式且主动拒绝脑补推断的规范防御行为。
+- **Verification boundary (验证边界):** 在复杂流水线中设立的质量把关卡点，在此处必须对阶段性中间产物完成严格检验，方准放行进入下一阶段。
 
-- **Acceptance criterion:** An observable condition an output must satisfy.
-- **Decomposition:** Splitting work into stages with explicit dependencies and outputs.
-- **Few-shot prompting:** Supplying examples that demonstrate the desired task or boundary.
-- **Prompt contract:** A structured statement of outcome, context, task, evidence, constraints, format, and checks.
-- **Source hierarchy:** The rule that determines which evidence is authoritative when sources conflict.
-- **Abstention:** An explicit refusal to infer when evidence or permission is insufficient.
-- **Verification boundary:** A point where an intermediate artifact can be tested before work continues.
+## 延伸阅读
 
-## Further Reading
+- [Anthropic 官方 Prompt 工程权威指南](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
+- [Claude 4 与高阶模型提示词最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices)
+- [定义成功指标与构建自动化评估流水线](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
+- [从零手写少样本提示与思维链推理](../../../../../phases/11-llm-engineering/02-few-shot-cot/)
+- [Anthropic 官方生产级工作流架构模式](../../../../../phases/14-agent-engineering/12-anthropic-workflow-patterns/)
 
-- [Anthropic: Prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
-- [Anthropic: Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-4-best-practices)
-- [Anthropic: Define success criteria and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests)
-- [AI Engineering from Scratch: Few-Shot Prompting and Chain of Thought](../../../../../phases/11-llm-engineering/02-few-shot-cot/)
-- [AI Engineering from Scratch: Anthropic Workflow Patterns](../../../../../phases/14-agent-engineering/12-anthropic-workflow-patterns/)
-
-Official product behavior and model-specific prompting advice can change. The links above were checked on 2026-08-08. Recheck the current Anthropic documentation before freezing a production prompt or studying a release-specific feature.
+官方产品特性与面向特定模型的提示优化建议处于持续演进中。上述文档链接核验于 2026 年 8 月 8 日。在将提示词固化为生产版本或深入探究具体新特性前，请务必核实当前的官方文档最新版本。

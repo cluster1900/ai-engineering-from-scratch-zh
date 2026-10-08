@@ -599,7 +599,7 @@ test('build-time SEO manifests cover every readable lesson and expose canonical 
     assert.ok(entry.excerpt.split(/\s+/).length <= 220);
     assert.match(entry.canonicalUrl, /^https:\/\/aiengineeringfromscratch\.com\/lesson\?path=/);
     assert.doesNotMatch(entry.canonicalUrl, /lesson\.html|[&?](?:track|learningPath)=/);
-    assert.match(entry.sourceUrl, /^https:\/\/github\.com\/rohitg00\/ai-engineering-from-scratch\//);
+    assert.match(entry.sourceUrl, /^https:\/\/github\.com\/(?:rohitg00|cluster1900)\/ai-engineering-from-scratch(?:-zh)?\//);
     assert.ok(['course', 'certification'].includes(entry.context.kind));
     assert.deepEqual(entry.learningPathIds, (expectedLearningPathIds.get(lessonPath) || []).sort());
     assert.deepEqual(entry.fromTrackIds, (expectedFromTrackIds.get(lessonPath) || []).sort());
@@ -1491,11 +1491,11 @@ test('homepage preserves live GitHub CTAs and the motion-aware learner marquee',
   assert.doesNotMatch(mastheadCta[0], /Start (?:MCP Engineering|Agent Skills)/i);
   assert.match(
     mastheadCta[0],
-    /<a class="masthead-btn" href="https:\/\/github\.com\/rohitg00\/ai-engineering-from-scratch"[^>]*aria-label="Star ai-engineering-from-scratch on GitHub"[^>]*>[\s\S]*?<span>Star on GitHub<\/span>[\s\S]*?<span class="masthead-btn-count" data-gh-stars="rohitg00\/ai-engineering-from-scratch" data-loading="true">/
+    /<a class="masthead-btn" href="https:\/\/github\.com\/(?:rohitg00\/ai-engineering-from-scratch|cluster1900\/ai-engineering-from-scratch-zh)"[^>]*aria-label="Star (?:ai-engineering-from-scratch|ai-engineering-from-scratch-zh) on GitHub"[^>]*>[\s\S]*?<span>Star on GitHub<\/span>[\s\S]*?<span class="masthead-btn-count" data-gh-stars="(?:rohitg00\/ai-engineering-from-scratch|cluster1900\/ai-engineering-from-scratch-zh)" data-loading="true">/
   );
   assert.match(
     mastheadCta[0],
-    /<a class="masthead-btn" href="https:\/\/github\.com\/rohitg00"[^>]*aria-label="Follow Rohit Ghumare on GitHub"[^>]*>[\s\S]*?<span>Follow @rohitg00<\/span>/
+    /<a class="masthead-btn" href="https:\/\/github\.com\/(?:rohitg00|cluster1900)"[^>]*aria-label="Follow (?:Rohit Ghumare|cluster1900) on GitHub"[^>]*>[\s\S]*?<span>Follow @(?:rohitg00|cluster1900)<\/span>/
   );
   assert.match(homepage, /<script src="header\.js\?v=[^"]+" defer><\/script>/);
   assert.match(headerSource, /\[data-gh-stars="' \+ REPO \+ '"\]/);

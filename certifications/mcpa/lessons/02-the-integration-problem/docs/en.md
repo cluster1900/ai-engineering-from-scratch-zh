@@ -1,41 +1,41 @@
-# The Integration Problem MCP Solves
+# MCP 所解决的系统集成困境
 
-> Every system you connect to an AI application is a contract. MCP makes that contract the same shape everywhere, so one client can use a server it has never seen before.
+> 接入 AI 应用的每个外部系统都是一份通信契约。MCP 让这种契约在任何地方都保持统一的结构形态，使得客户端能够无缝调用此前从未见过的服务端。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 01
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Explain the N times M integration problem and how one shared protocol reduces it to N plus M
-- State what MCP standardizes between AI applications and external systems, and what it deliberately leaves out
-- Name the participants of an MCP system and the three server primitives in one sentence each
-- Read a discovery request, a tool list, and a tool call as ordinary JSON-RPC messages carrying per-request metadata
-- Tell a protocol error from a tool execution error and explain why the difference matters to the model
+- 深入解释 N 乘 M（N x M）的系统集成困境，以及统一的共享协议如何将其化简为 N 加 M（N + M）
+- 明确指出 MCP 在 AI 应用程序与外部系统之间标准化了什么，以及它有意将哪些层面留给应用层自主决定
+- 用一句话分别定义 MCP 架构的核心参与者以及服务端暴露的三大原语（Primitives）
+- 能够将发现请求（Discovery Request）、工具列表（Tool List）和工具调用（Tool Call）解析为携带请求级元数据的普通 JSON-RPC 消息
+- 明确区分协议级错误（Protocol Error）与工具执行错误（Tool Execution Error），并解释为何这种差异对大模型至关重要
 
-## The Problem
+## 问题背景
 
-Connecting an AI application to an outside system used to mean writing glue. An assistant that needed your files, your ticket queue, and your database needed three integrations, and each one invented its own way to describe what it could do, its own argument format, its own error shape, and its own idea of who was allowed to call it. A fourth system meant a fourth integration. A second AI application meant writing all of them again, because nothing written for the first one fit the second.
+在过去，将 AI 应用程序连接到外部系统意味着必须手写大量的胶水代码。一个既需要读取本地文件、又需要访问工单队列、还需要查询数据库的 AI 助手，必须构建三套各自独立的定制集成方案。这三个系统各自发明了声明自身能力的方式、自创的参数格式、特有的错误结构，以及各自对于调用权限的假设。当需要接入第四个外部系统时，就必须编写第四套适配逻辑；而当团队开发了第二个 AI 应用时，所有这些胶水代码又必须重写一遍，因为为第一个应用编写的代码根本无法适配第二个应用。
 
-That is an N times M problem. Four applications and six systems cost twenty-four integrations, and every one of them is a place where the format drifts and the security assumptions blur. The expensive part is not the first integration. It is the twentieth, and the review that has to reason about all twenty at once.
+这就是典型的 N 乘 M（N x M）集成爆炸困境。4 个应用程序与 6 个外部系统相乘，需要开发和维护多达 24 套点对点的集成方案。每一个集成点都是数据格式出现漂移、安全边界假设出现模糊的潜在隐患。高昂的成本往往不在于完成第一套集成的开发，而在于面对第 20 套集成时，技术团队必须同时理解并审查前面 19 套系统的设计逻辑与复杂交互。
 
-The Model Context Protocol turns N times M into N plus M. Each application learns to speak MCP once. Each system exposes an MCP server once. Any modern client can then use any modern server, because both sides agree on one message format, one way to describe capabilities, and one way to call a tool and read what comes back. Four applications and six systems now cost ten implementations, and each new system adds one.
+Model Context Protocol（模型上下文协议，MCP）通过引入统一的标准协议层，将 N 乘 M 的网状集成彻底简化为 N 加 M（N + M）的星状集成。每个 AI 应用程序只需实现一次 MCP 协议通信；每个外部系统只需封装并暴露一个 MCP 服务端。任何遵循最新标准的客户端都可以立即与任何现代服务端进行交互，因为通信双方在底层消息格式、能力声明机制以及工具调用与结果读取方式上达成了一致共识。此时，4 个应用与 6 个系统仅需 10 套规范实现，且未来每新增一个外部系统，全架构只需递增编写 1 个服务端适配层即可。
 
-## The Concept
+## 核心概念
 
-MCP is a protocol, not a product. It standardizes the conversation between an AI application and the systems that give it context and let it act: how a server describes itself, how a client asks what the server offers, how a tool is invoked, and how results and errors come back. It deliberately does not standardize the model, which model a host uses, how the host builds its prompt, or what the user interface looks like. Those stay the application's decisions.
+MCP 是一套开放通信协议，而非某款具体的封装产品。它标准化了 AI 应用程序与其获取上下文信息和执行现实动作的外部系统之间的交互对话：包括服务端如何向外描述自身、客户端如何探寻服务端提供的能力清单、工具如何被发起调用，以及执行结果和错误如何规范返回。与此相对，MCP 有意不标准化底层大模型本身、宿主选择哪款模型、宿主如何组装上下文提示词，以及前端用户界面的呈现形态。这些设计决策完全保留给上层应用程序自主把控。
 
-The participants are few. The **host** is the application the user works in, such as a chat assistant or an editor. Inside the host, a **client** manages the conversation with one **server**, and a host runs one client per server it uses. A server exposes three kinds of **primitives**. **Tools** are named, described, schema-typed actions the model can decide to invoke. **Resources** are readable data, identified by URIs, that the application chooses to place in context. **Prompts** are reusable templates the user picks explicitly. Who is in control differs for each: tools are model-controlled, resources are application-driven, and prompts are user-controlled.
+MCP 架构的系统参与者非常清晰简洁：**Host（宿主）** 是用户直接交互的上层应用程序，例如智能问答助手、IDE 代码编辑器或命令行工具；在 Host 内部，**Client（客户端）** 负责管理与特定 **Server（服务端）** 的通信，Host 通常为其连接的每一个 Server 实例化一个对应的 Client；Server 则对外暴露三种核心 **Primitives（原语）**：**Tools（工具）** 是包含名称、描述和严格 Schema 参数类型的操作，模型可自主决定何时发起调用；**Resources（资源）** 是由 URI 唯一定位的可读数据资产，由应用程序自主决定何时将其载入上下文；**Prompts（提示词模板）** 则是供终端用户显式挑选的结构化、可复用提示词模板。这三者的控制权归属截然不同：工具由模型主导控制，资源由应用程序主导驱动，而提示词模板则由最终用户直接把控。
 
-Every message is JSON-RPC 2.0. A request has an `id`, a `method`, and `params`. A response carries either a `result` or an `error` with the same `id`. In the 2026-07-28 revision, the one the MCPA exam is aligned to, every request also carries its own protocol metadata in `params._meta`: the protocol version under the key `io.modelcontextprotocol/protocolVersion`, the client's capabilities under `io.modelcontextprotocol/clientCapabilities`, and, recommended, the client's name and version under `io.modelcontextprotocol/clientInfo`. There is no opening handshake and no session. Each request stands on its own, which is why any replica of a server can answer it.
+MCP 的底层消息传输统一基于 JSON-RPC 2.0 规范。一个标准请求包含 `id`、`method` 以及 `params` 字段；而响应消息则携带相同的 `id`，并附带 `result`（成功结果）或 `error`（协议错误）。在 MCPA 考试严格对应的 2026-07-28 规范中，每一次请求都必须在 `params._meta` 字段中携带自身的协议元数据：包括通过 `io.modelcontextprotocol/protocolVersion` 声明的协议版本、通过 `io.modelcontextprotocol/clientCapabilities` 声明的客户端能力，以及推荐携带的客户端名称和版本（`io.modelcontextprotocol/clientInfo`）。这里完全不存在传统通信中的握手连接阶段，也不依赖持久的 Session 会话状态。每个请求都是完全自包含的，这也是为什么服务端的任何无状态副本（Replica）都能够无差别地直接处理请求的原因。
 
-Every result carries a `resultType`. For now you will see `complete`, meaning the result holds the final content. Later lessons introduce `input_required`, the answer a server gives when it needs something from the user before it can finish.
+每个操作结果对象都包含一个关键字段 `resultType`。在基础交互场景中，该字段通常为 `complete`，表明该结果已包含全部最终交付内容；在后续进阶课程中，我们将学习 `input_required`，它代表服务端在完成最终动作前，需要向上层回传表单并等待用户输入进一步信息。
 
-Discovery is data, not code. A client can call `server/discover` to learn which protocol versions a server supports, which capabilities it offers, and its name, and it can call `tools/list` to receive each tool's name, description, and input schema. Nothing is compiled into the client ahead of time. That is the entire interoperability argument in one sentence: a client written today can drive a server written next year, because the server describes itself in the protocol.
+服务端的服务发现是基于纯数据而非硬编码逻辑实现的。客户端可以通过调用 `server/discover` 探知服务端支持哪些协议版本、具备哪些核心能力以及服务端的身份元信息；同时可以通过调用 `tools/list` 实时获取每个工具的名称、描述以及输入参数的 JSON Schema。没有任何工具定义需要提前编译进客户端的代码中。这就是 MCP 能够实现跨时代互操作性的核心支柱：今天编写的客户端能够直接调度明年才开发出来的崭新服务端，因为服务端能够在通信时自我描述。
 
-Errors come in two kinds, and the exam cares about the difference. A **protocol error** is a JSON-RPC error: the request itself was wrong, such as a call naming a tool the server does not have, which is code `-32602` (Invalid params). A **tool execution error** is a normal result with `isError: true` and an explanation in its content: the tool ran into a problem the model can fix, such as a missing argument. The model sees tool execution errors and can retry with corrected arguments. It learns much less from a protocol error.
+协议中的错误划分为两种不同类别，MCPA 认证考试非常看重考生对这种界限的辨别力：**协议级错误（Protocol error）** 是标准的 JSON-RPC 错误对象，代表请求本身就存在语法或协议层面的不合规。例如客户端调用了一个服务端根本未声明的未知工具，服务端将返回错误码 `-32602`（无效参数 Invalid params）。**工具执行错误（Tool execution error）** 则完全是一个正常的业务结果，其内部包含 `isError: true` 并在文本内容中详细说明了失败原因。这种错误通常代表工具在运行时遇到了模型可以通过自纠来解决的问题，例如遗漏了必填参数或传入了格式非法的值。大模型能够读懂工具执行错误并基于报错反馈修正参数再次发起重试，而从底层的协议级错误中，模型往往很难获取有意义的自纠上下文。
 
 ```figure
 mcpa-02-n-by-m
@@ -43,31 +43,31 @@ mcpa-02-n-by-m
 
 ## Interactive Lab
 
-The figure shows the same four applications and six systems twice. On the left, every application is wired to every system, twenty-four lines of custom glue. On the right, each application and each system connects once to the shared protocol, ten connections in total. Then follow a single request from one client to one server: the request names a method, carries its own version and capabilities, and gets back a result whose `resultType` says it is complete. Notice what is missing on the right side: there is no setup conversation before the first useful request.
+上方图表以对比形式展示了 4 个应用程序与 6 个外部系统的集成网络。左侧展示了点对点的网状直连架构，每个应用与每个系统之间都需要独立维护专用代码，累计多达 24 条定制集成的胶水链路；右侧展示了基于统一 MCP 协议构建的星状架构，每个应用与每个系统都仅向标准协议注册一次接口，全系统总计仅需 10 条连接线。顺着右侧的箭头追踪从 Client 到 Server 的单次请求链路：请求指明了调用的具体方法，在自身元数据中携带了协议版本与能力集，并成功获取了一个标注为 `complete` 的结果对象。特别留意右侧交互过程：在发送首个具备业务价值的实际请求之前，没有任何多余的握手建连对话。
 
 ## Practice Lab
 
-Open `code/main.py`. It is a standard-library model with no network and no SDK, but the message shapes follow the 2026-07-28 schema. It builds two unrelated servers, a weather service and a ticket service, and one client class that was written for neither. The client discovers each server, lists its tools, and calls them.
+打开 `code/main.py`。这是一个仅使用 Python 标准库构建的无网络依赖、无外部 SDK 引入的模型，但其所有的消息形态均严格遵循 2026-07-28 规范。代码中定义了两个彼此独立的业务服务端（天气查询服务与工单系统服务），以及一个在编写时完全不知晓这两个服务的通用 Client 类。Client 能够动态发现这两个服务端、列出它们提供的工具集并完成实际调用：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed exchanges against the concept section. Find the `_meta` block on every request and the `resultType` on every result. Then find three deliberate failures. A call to `get_forecast` without a city comes back as a normal result with `isError: true`. A call to a tool that does not exist comes back as JSON-RPC error `-32602`. A request that claims protocol version `1999-01-01` comes back as error `-32022`, whose `data` lists the versions the server does support. Change the city, add a third tool to the ticket server, and rerun to watch discovery pick it up without any change to the client.
+对照核心概念阅读终端打印出的消息往返记录。观察每一个请求中携带的 `_meta` 块以及每一个响应结果中的 `resultType`。接下来观察代码故意演示的三种异常场景：调用天气服务 `get_forecast` 但遗漏城市参数时，服务端返回包含 `isError: true` 的正常业务结果；当尝试调用一个不存在的工具时，服务端返回 JSON-RPC 协议错误 `-32602`；当请求携带服务端不支持的协议版本 `1999-01-01` 时，服务端返回 `-32022` 错误，并在其 `data` 字段中详细列出当前服务端实际支持的合法版本列表。你可以在工单服务端中尝试新增第三个工具或修改城市参数，再次运行脚本，观察客户端如何在不需要任何代码修改的情况下动态发现并处理新工具。
 
 ## Shipped Artifact
 
-`outputs/mcp-scope-brief.md` is a one-page brief you can hand to a teammate: the N plus M argument, what MCP does and does not standardize, the participants and primitives with who controls each, and the two error channels. Use it when you explain why a team should expose one MCP server instead of writing another bespoke integration.
+`outputs/mcp-scope-brief.md` 是本课交付的单页架构说明手册：提炼了 N 加 M 集成模型的数学论证、明确了 MCP 标准化与非标准化的边界、梳理了系统参与者与三大原语的控制权归属，并总结了两大错误通道的区别。当需要向团队阐述为何应该暴露标准 MCP 服务而不是继续堆砌定制集成代码时，该手册是极佳的宣讲依据。
 
 ## Verify It
 
-Run the tests from the lesson directory:
+在课程目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: the integration arithmetic, that one client discovers two unrelated servers, that every request carries the version and capabilities, that discovery returns cache hints and the server's identity, that an unknown tool is a protocol error while a missing argument is a tool execution error, that a request without metadata is rejected, that an unsupported version names the supported ones, and that the tool list order is stable. The repository's wire checker also validates the lesson's transcript against the 2026-07-28 rules:
+这些测试验证了本课的所有技术结论：集成分支的算术逻辑、单个客户端成功发现两个完全无关的服务端、每个请求均合规携带版本与能力元数据、服务发现正确返回缓存提示与服务端标识、未知工具判定为协议错误而参数缺失判定为工具执行错误、缺少元数据的畸形请求被服务端坚决拒绝、版本不匹配时响应中附带受支持版本清单，以及工具列表返回顺序保持确定性稳定。通信校验器同样会校验本课记录是否完全契合 2026-07-28 的线缆通信准则：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/02-the-integration-problem
@@ -75,27 +75,27 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/02-the-integratio
 
 ## Capstone Connection
 
-The capstone assembles a full 2026-07-28 exchange from discovery to an audited tool call. Everything in it rests on this lesson's picture: a host with one client per server, servers that describe themselves as data, requests that carry their own metadata, and results that say what kind of result they are. When the capstone asks you to justify a design, you will argue from the N plus M model and from the split between protocol errors and tool execution errors.
+最终的 Capstone 项目将构建涵盖从服务发现到受审计工具调用全流程的完整 2026-07-28 通信链路。Capstone 中的所有设计均立足于本课构建的基石模型：每个宿主为每个服务端独立管理客户端实例、服务端通过结构化数据自描述、请求自身携带上下文元数据，以及结果显式标注其完成状态。在 Capstone 进行架构设计方案答辩时，你将运用 N 加 M 架构模型以及协议错误与工具执行错误的分离逻辑作为核心理论支撑。
 
 ## Key Terms
 
-| Term | Meaning |
-|------|---------|
-| Host | The application the user works in; it runs one client per server |
-| Client | The component inside the host that talks to one server |
-| Server | A program that exposes tools, resources, and prompts over MCP |
-| Tool | A model-controlled action with a name, description, and input schema |
-| Resource | Application-driven readable data identified by a URI |
-| Prompt | A user-controlled template the user selects explicitly |
-| `_meta` | The per-request metadata block carrying version, capabilities, and client identity |
-| `resultType` | The field that says whether a result is complete or needs more input |
-| Protocol error | A JSON-RPC error for a request that is itself wrong, such as an unknown tool (`-32602`) |
-| Tool execution error | A normal result with `isError: true` that the model can read and correct |
+| 术语 | 定义 |
+|------|------|
+| Host (宿主) | 用户直接操作的顶层应用环境，通常为每个外部服务端运行一个 Client |
+| Client (客户端) | 位于 Host 内部、专职负责与单一 Server 进行协议通信的模块 |
+| Server (服务端) | 通过标准 MCP 协议对外暴露 Tools、Resources 与 Prompts 的后端服务程序 |
+| Tool (工具) | 由模型自主发起调用、具备名称、文本描述与严格 JSON Schema 输入约束的操作单元 |
+| Resource (资源) | 由应用程序上下文机制直接驱动、由 URI 唯一定位的可读数据资产 |
+| Prompt (提示词模板) | 由终端用户直接主动选取的预定义、可复用提示词交互模板 |
+| `_meta` | 每个请求中携带的请求级元数据字典，包含协议版本、客户端能力及身份声明 |
+| `resultType` | 标注操作结果完成阶段的字段，指示结果为 `complete` 还是需要更多输入 |
+| 协议级错误 (Protocol error) | 请求结构或协议违规所引发的 JSON-RPC 错误，例如调用未知工具 (`-32602`) |
+| 工具执行错误 (Tool execution error) | 包含 `isError: true` 的常规业务结果，大模型可阅读该错误说明并自纠重试 |
 
 ## Further Reading
 
-- [MCP specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28), especially the Overview and the Tools pages
-- [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture)
-- [JSON-RPC 2.0 specification](https://www.jsonrpc.org/specification)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 2, 3, 5, and 10
-- `phases/13-tools-and-protocols/06-mcp-fundamentals`, which builds the stateless request model in depth
+- [MCP 规范 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28)，重点研读 Overview 与 Tools 页面
+- [MCP 架构概述指南](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture)
+- [JSON-RPC 2.0 官方规范](https://www.jsonrpc.org/specification)
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md` 第 2、3、5 与 10 节
+- 本仓库中的 `phases/13-tools-and-protocols/06-mcp-fundamentals`，系统推导无状态请求模型的设计细节

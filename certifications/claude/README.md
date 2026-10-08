@@ -37,7 +37,7 @@ Start with the [GitHub learner guide](GETTING_STARTED.md), or install the
 [portable certification tutor skill](../../skills/claude-certification/SKILL.md):
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch
+npx skills add cluster1900/ai-engineering-from-scratch-zh
 ```
 
 Then ask your agent to run:

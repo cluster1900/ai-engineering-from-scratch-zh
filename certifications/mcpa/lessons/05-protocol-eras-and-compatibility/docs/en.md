@@ -1,41 +1,41 @@
-# Telling a Modern MCP Server From a Legacy One
+# 区分现代与旧版 MCP 服务端
 
-> Modern MCP has no opening handshake, so a client that must work with both current and older servers has to work out which kind it is talking to from how the very first exchange behaves, not from anything either side announces up front.
+> 现代 MCP 彻底取消了建连握手，因此必须同时兼容新旧服务端的客户端，必须通过首次通信交互的实际表现来推断对方的技术时代，而非依赖任何预先声称的元数据。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 04
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Name the revision timeline from 2024-11-05 through 2026-07-28 and the headline change each revision made
-- Define modern, legacy, and dual-era, and read the compatibility matrix for every combination of client era and server era
-- Probe a server on stdio with `server/discover` and classify its response as modern, modern with a different version, or legacy, without keying the decision to one specific error code
-- Explain how a client negotiates a version after an `UnsupportedProtocolVersionError` (code -32022) without performing a handshake
-- State what 2026-07-28 removed outright, and why a server that only speaks modern versions still names its supported versions when it rejects an old connection attempt
+- 梳理从 2024-11-05 至 2026-07-28 的协议版本演进时间线，并说出每个版本带来的标志性架构变更
+- 精确定义现代（Modern）、旧版（Legacy）与双时代兼容（Dual-Era）三大概念，并熟读客户端时代与服务端时代各种组合下的兼容性矩阵
+- 掌握在 stdio 传输上通过 `server/discover` 探测服务端的机制，并能在不依赖特定单一错误码的前提下，将其响应归类为现代版本、支持其他版本的现代服务端或旧版服务端
+- 深入解释客户端在收到 `UnsupportedProtocolVersionError`（错误码 -32022）后，如何在不退回握手流程的前提下通过版本重试完成协商
+- 明确指出 2026-07-28 彻底废除的旧协议特性，并阐明为何仅支持现代版本的服务端在拒绝旧版建连请求时，仍应在报错中明确列出自身支持的合法版本
 
-## The Problem
+## 问题背景
 
-Real deployments do not upgrade all at once. A client library gets built today and still has to talk to servers written months or years apart, some updated the day a new revision shipped and some left exactly as they were installed. The 2026-07-28 revision removed the one thing earlier revisions used to sort that out: an opening exchange that named a version before any real work began. Every modern request is now self-describing, which is exactly what makes the protocol stateless, but it also means there is no longer a dedicated moment where a client and server agree on ground rules.
+在真实的生产部署环境中，系统组件不可能在一夜之间全部完成升级。今天开发的一套客户端 SDK，在实际运行中往往需要与发布时间相差数月乃至数年的各种服务端通信：有些服务端在规范发布当天就完成了同步迭代，而有些服务端则常年保持最初部署时的老旧形态。2026-07-28 修订版彻底删除了早期版本用来解决兼容性问题的唯一纽带：即在真正开始业务交互之前，通过专门的握手往返来确定双方协议版本的机制。现代规范要求所有请求都必须完全自描述，这奠定了协议无状态性的基石，但同时也意味着客户端与服务端之间不再存在一个专门达成共识的专属协商时刻。
 
-So a client written to be useful across that spread of servers has a genuine problem to solve before it can be useful at all: given a connection it knows nothing about yet, decide, cheaply and reliably, whether the thing on the other end reads modern per-request metadata or expects to be greeted the old way. Guess wrong and the exchange fails in confusing ways: a modern server sees a method it does not recognize, or a legacy server tries to interpret a request that is missing everything it expects to find. This lesson is about making that decision on purpose, the way the specification defines it, rather than by accident.
+因此，旨在跨异构环境稳定工作的客户端，在处理任何实际业务之前都面临着一个不可回避的技术挑战：面对一条此前一无所知的全新连接，如何以极低开销且高度可靠的方式，判定通信对端究竟能够理解请求级的元数据，还是仍然顽固地期待旧时代的握手问候？如果猜测错误，通信链路将以极其令人费解的方式崩溃：现代服务端会收到无法识别的未知方法而报错，或者旧版服务端在收到缺少旧字段的现代请求时直接陷入解析异常。本节课的宗旨就是建立依据规范定义的确定性判别机制，取代凭运气盲目猜测的脆弱做法。
 
-## The Concept
+## 核心概念
 
-The table below lists every named revision of the protocol and the change that defines it. Only the most recent one is modern; everything before it is legacy.
+下表详细汇总了 MCP 协议的所有正式版本演进史及其代表性的核心变更。在整个体系中，只有最新的修订版被定义为现代版本，在此之前的所有版本均统称为旧版时代。
 
-| Revision | Era | Headline change |
+| 修订版本 | 技术时代 | 标志性核心变更 |
 |---|---|---|
-| 2024-11-05 | Legacy | First public revision: stdio and HTTP+SSE transports, plus the handshake that opened every connection. |
-| 2025-03-26 | Legacy | Streamable HTTP replaces HTTP+SSE; OAuth 2.1 authorization; tool annotations; audio content. |
-| 2025-06-18 | Legacy | Structured tool output; resource links; elicitation; OAuth resource server classification; the MCP-Protocol-Version header; JSON-RPC batching removed. |
-| 2025-11-25 | Legacy | Icons; incremental scope consent; tool name guidance; URL mode elicitation; experimental tasks; validation errors become tool execution errors instead of protocol errors. |
-| 2026-07-28 | Modern | Stateless core, no more handshake or sessions; adds `server/discover`, Multi Round-Trip Requests, `resultType`, and `subscriptions/listen`; moves tasks to an extension; deprecates roots, sampling, logging, and Dynamic Client Registration. |
+| 2024-11-05 | 旧版 (Legacy) | 首个公开规范版本：包含 stdio 与 HTTP+SSE 传输层，以及每个连接强制执行的建连握手。 |
+| 2025-03-26 | 旧版 (Legacy) | 引入可流式传输 HTTP（Streamable HTTP）替代 HTTP+SSE；引入 OAuth 2.1 授权体系；工具注解；音频多模态内容。 |
+| 2025-06-18 | 旧版 (Legacy) | 结构化工具输出；资源链接；交互索取（Elicitation）；OAuth 资源服务器分类；MCP-Protocol-Version 请求头；彻底移除 JSON-RPC 批处理。 |
+| 2025-11-25 | 旧版 (Legacy) | 图标支持；增量 Scope 授权；工具命名规范引导；URL 模式索取；实验性任务；Schema 校验失败从协议错误转为常规工具执行错误。 |
+| 2026-07-28 | 现代 (Modern) | 核心全面无状态化，彻底取消握手与 Session；新增 `server/discover`、多轮请求（MRTR）、`resultType` 与 `subscriptions/listen`；Tasks 移入扩展；废弃 Roots、Sampling、Logging 及动态客户端注册。 |
 
-Three words carry the rest of this lesson. **Modern** means a revision where version, identity, and capabilities travel as per-request metadata: 2026-07-28 and anything after it. **Legacy** means a revision that opens a connection with an `initialize` handshake and keeps state for a session: 2025-11-25 and everything before it. **Dual-era** describes an implementation, client or server, that supports both, with an explicit decision about which one it is dealing with before it parses anything else.
+理解本课后续逻辑需要牢牢把握三个专业术语：**Modern（现代）** 特指协议版本、身份标识与能力集作为请求级元数据传输的修订版：即 2026-07-28 及其后续版本；**Legacy（旧版）** 特指依赖 `initialize` 握手建连并通过 Session 维持状态的旧版本：即 2025-11-25 及更早版本；**Dual-era（双时代兼容）** 则指在解析任何具体消息之前，能显式决策并无缝支持新旧两套通信规范的高可用客户端或服务端实现。
 
-A dual-era client's whole job comes down to one probe. On stdio, before sending any request that matters, it sends `server/discover` carrying its preferred version in `_meta`, then reads what comes back:
+一个双时代客户端的核心判定逻辑收敛于一次初始的主动探测（Probe）。在 stdio 传输通道上，在发送任何关键业务请求之前，客户端会主动发送一条携带自身偏好版本的 `server/discover` 探测请求，随后分析返回结果：
 
 ```json
 {
@@ -52,15 +52,15 @@ A dual-era client's whole job comes down to one probe. On stdio, before sending 
 }
 ```
 
-Three outcomes, three conclusions. A `DiscoverResult` means the server is modern: pick a version from its `supportedVersions` and continue. A recognized modern error, the one shown above is `UnsupportedProtocolVersionError`, still means the server is modern, just not at the version the client tried first: retry with one of the versions listed in `data.supported`, using a fresh request id, and do not treat this as a reason to give up on the modern path. Anything else, an error the client does not recognize as one of the small set of modern error shapes, or no answer at all within a reasonable timeout, means the server is legacy: fall back to the legacy `initialize` handshake. The important discipline here is the third case. The fallback must never be keyed to one specific error code, because a legacy server has no obligation to answer an unfamiliar method the same way twice; it might reply with Method not found, with Invalid params, or simply hang. What identifies "legacy" is the absence of a recognizable modern answer, not the presence of any particular one.
+探测可能产生三种截然不同的返回结果，分别对应三种清晰的架构推论：第一，收到合法的 `DiscoverResult` 成功响应，意味着服务端完全属于现代规范：从其返回的 `supportedVersions` 列表中选择双方均支持的版本，后续直接按照现代无状态流程通信即可；第二，收到已知的标准现代错误对象，例如上述代码展示的 `UnsupportedProtocolVersionError`（错误码 `-32022`），这依然确凿证明服务端属于现代规范，仅仅是客户端首选的版本服务端不支持：此时客户端绝不应退回到旧版通道，而应使用全新生成的请求 ID，挑选服务端在 `data.supported` 中明确列出的受支持版本发起重试；第三，收到其他任何错误（即客户端无法识别为现代标准错误形态的异常返回，如 Method not found、Invalid params），或者在设定的超时时间内完全没有收到任何响应：这表明对端服务端属于旧版体系，客户端应平滑降级（Fallback）到旧版的 `initialize` 握手流程。在处理第三种场景时必须保持高度工程严谨性：降级逻辑绝不能与某一个具体的错误码强行绑定，因为旧版服务端面对陌生的新方法时，其报错行为完全无法保证一致；判定对端为旧版的本质特征是缺少可识别的现代合规响应，而不是由于捕获到了某种特定的错误码。
 
-On the Streamable HTTP transport the same idea takes a different shape, because modern servers also answer with `400 Bad Request` for several ordinary reasons: an unsupported version, a missing capability, a header that disagrees with the body. A dual-era client attempts a modern request first and, on a 400, reads the response body before deciding anything. A recognized modern JSON-RPC error in that body still means modern, so the client corrects the request or retries with a supported version rather than falling back. An empty body or one that does not parse as a recognized modern error means legacy, and the client falls back to the old handshake, and from there possibly further still to the deprecated transport that came before Streamable HTTP.
+在可流式传输 HTTP（Streamable HTTP）传输层上，探测思想相同但表象有所区别。因为现代服务端面对不合规请求时，通常会返回 HTTP `400 Bad Request` 状态码（例如版本不支持、能力缺失或请求头与请求体冲突）。双时代客户端在收到 400 响应时，必须仔细阅读并解析 HTTP 响应体：如果响应体能够解析为合法的现代 JSON-RPC 错误，证明对端依然是现代服务端，客户端只需修正请求参数或切换受支持版本重试即可；如果响应体为空，或者内容根本无法解析为已知的现代错误结构，客户端才最终断定对端为旧版系统，并依次尝试降级到旧版握手甚至旧版 HTTP+SSE 传输通道。
 
-Era is a property of the server, not of any single request, so a client should cache the result for the life of the connection's process on stdio, or for the origin on HTTP, and can persist that assumption across restarts of the same configuration. If a cached assumption later turns out to be wrong, for example because the server was upgraded, the client is free to re-probe rather than trusting the stale answer forever.
+技术时代的判定是整个服务端进程的全局属性，而非单次调用的偶发特征。因此，客户端在 stdio 模式下应在整个进程存活期内缓存探测结论，在 HTTP 模式下应按源站域名（Origin）粒度进行缓存，甚至可以在跨进程重启之间持久化这一配置。当然，如果缓存的时代结论在后续业务中被证明失效（例如服务端刚刚完成热升级），客户端完全可以重新发起探测刷新认知，而不要盲目信任过期的缓存结论。
 
-There is one more rule worth knowing because it protects the users who benefit from it least: a server that only speaks modern versions should still name the versions it does support in any error it returns to an `initialize` request. That client has no fall-forward path of its own; the only diagnostic information it can show a person is whatever the server put in that one message.
+规范中还包含一条充分体现人道主义关怀的设计约束：即使一个服务端仅支持现代协议版本，当它在收到旧版客户端发来的 `initialize` 请求时，在返回的错误中依然 SHOULD 明确附带自身所支持的现代版本列表。因为那些老旧的客户端本身没有自动向前兼容的能力，将支持的版本写入错误信息，是留给人类管理员在排查日志时唯一清晰可见的诊断线索。
 
-2026-07-28 removed the whole legacy opening sequence, not just narrowed it. The `initialize` request and the `notifications/initialized` notification that used to follow it are gone. So are protocol sessions and the header that identified one, the standalone GET stream and the session teardown that went with it, and the two resource-watching methods now replaced by `subscriptions/listen`. A handful of session-scoped methods no longer have anywhere to live, stream resumability by event id is gone, and a server may no longer address the client except in a reply to something the client sent. None of these belong in a transcript that claims to be modern; if you ever need to show one for a compatibility example, mark it plainly as what it is.
+2026-07-28 规范彻底删除了整套旧时代的建连序列：`initialize` 请求及其后续的 `notifications/initialized` 通知均被彻底废除；协议级 Session 及其关联的 HTTP 请求头彻底取消；独立的 GET 数据流以及会话注销流程完全删除；旧有的两项资源监听方法已被现代的 `subscriptions/listen` 全面取缔。一系列与会话强绑定的过时方法无处容身，基于 Event ID 的数据流断线恢复机制已被移除，服务端也被严令禁止向客户端发送未经请求的突发指令。在现代消息记录中，绝对不能出现这些旧特性的身影；如果因兼容性演示需要不得不展示它们，必须明确对其进行标注。
 
 ```figure
 mcpa-05-era-matrix
@@ -68,31 +68,31 @@ mcpa-05-era-matrix
 
 ## Interactive Lab
 
-The figure traces one probe into its three possible endings: a `DiscoverResult` box that leads straight to "use it," a recognized `-32022` box that leads to "retry with a supported version," and an "other error or timeout" box that leads to falling back. Notice that two of the three outcomes still count as modern. Only the third one changes what the client sends next.
+上方图表追踪了一次时代探测请求的完整分流树：分支一为收到 `DiscoverResult` 成功结果，直接导向“采用现代模式”；分支二为收到已知规范的 `-32022` 错误，导向“提取受支持版本并重试”；分支三为遇到其他未知错误或请求超时，导向“降级至旧版流程”。请重点注意：三种输出结果中有两种依然被归类为现代服务端，只有第三种场景才会改变客户端后续发送的数据格式。
 
 ## Practice Lab
 
-Open `code/main.py`. `LEGACY_EXAMPLES` is set to `True` because this lesson has a legitimate reason to construct an old-style opening exchange: showing a dual-era client fall back to it, and showing a modern server reject it while naming its own versions. Every such message is wrapped as `{"legacy": true, "message": {...}}` in the transcript; every other message in the file is an ordinary modern request or result and is never wrapped.
+打开 `code/main.py`。该脚本中将 `LEGACY_EXAMPLES` 设置为 `True`，因为本课有正当的教学理由构造旧时代的交互序列：展示双时代客户端如何优雅降级，以及展示纯现代服务端如何在报错的同时附带自身版本列表。在代码输出的跟踪记录中，所有此类旧版消息均被显式包裹为 `{"legacy": true, "message": {...}}`，而所有常规的现代消息则直接平铺输出，不作特殊包裹：
 
 ```bash
 python3 code/main.py
 ```
 
-The demo builds four servers and probes each one with the same `DualEraClient`. `modern-server` supports only `2026-07-28`, so the first probe returns a `DiscoverResult` immediately. `modern-other-version-server` is a second, purely synthetic modern server invented for this lab, pinned to a made-up later version so you can watch the retry path: the first probe comes back `-32022`, and the client automatically retries with the version named in `data.supported`, never touching the fallback path at all. `legacy-error-server` answers an unrecognized method with a plain Method not found error, which the client correctly reads as legacy, and `legacy-timeout-server` never answers the probe at all, which the client also reads as legacy, proving the fallback does not depend on getting any particular error back. Probe `modern-server` a second time and compare the log length before and after: nothing new is sent, because the era was already cached. Last, watch `modern-only-server` reject an old-style opening request with an error that lists its own supported versions, exactly as a modern-only server should.
+实验构建了四种不同的服务端，并统一由一个 `DualEraClient` 进行探测。`modern-server` 仅支持 `2026-07-28`，首次探测便直接返回 `DiscoverResult`；`modern-other-version-server` 是一个为本实验特设的合成现代服务端，其故意锁定了虚拟的新版本，展示了优雅重试的路径：客户端探测收到 `-32022` 错误，随即自动读取 `data.supported` 中的版本号并发起二次重试，整个过程完全不需要触发降级逻辑；`legacy-error-server` 面对陌生探测方法直接返回传统的 Method not found 错误，客户端准确判定其为旧版；而 `legacy-timeout-server` 则对探测请求保持沉默超时，客户端同样将其判定为旧版，这再次印证了降级判断不依赖特定错误码。尝试对 `modern-server` 发起第二次探测，观察前后的调用日志：没有任何新的网络数据发出，因为时代判定已经被成功缓存。最后观察 `modern-only-server` 拒绝旧版握手请求的过程，其错误信息中详尽列出了自身支持的版本，完美践行了现代服务端的规范职责。
 
 ## Shipped Artifact
 
-`outputs/era-compatibility-matrix.md` is a one-page reference: the revision timeline, the three era terms, the stdio and HTTP probe algorithms side by side, the full compatibility matrix for every client and server era pairing, and the handful of facts worth memorizing before the exam. Keep it next to you while building anything that has to survive contact with servers you did not write.
+`outputs/era-compatibility-matrix.md` 是本课交付的单页兼容性速查参考文档：收录了协议版本演进编年史、三大核心时代术语定义、stdio 与 HTTP 探测算法并排流程图、客户端与服务端跨时代配对兼容矩阵，以及考前高频考点备忘清单。在开发需要兼容各时期复杂环境的生产系统时，建议常备此表。
 
 ## Verify It
 
-Run the tests from the lesson directory:
+在课程目录下执行单元测试：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: a `DiscoverResult` is read as modern, a recognized `-32022` triggers a retry rather than a fallback, an unrecognized error triggers a fallback, a timeout triggers the same fallback, a cached era is served without sending a new probe, a modern-only server names its versions when it rejects an old-style request, every legacy exchange in the transcript is wrapped, and no request id is ever reused across the whole run. The repository's wire checker validates the same transcript against the 2026-07-28 rules directly:
+测试套件将逐一检验本课的技术论述：`DiscoverResult` 准确识别为现代时代；受支持的 `-32022` 错误触发版本重试而非误触发降级；未知错误与超时均平稳触发降级；缓存的时代结论能直接命中而无需重复发包；纯现代服务端在拒绝旧请求时如实列出受支持版本；场景中所有旧版通信均被合规包裹；且整个测试运行期间所有请求 ID 保持全局唯一绝无复用。通信校验器同样直接依据 2026-07-28 规则审查测试通信记录：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/05-protocol-eras-and-compatibility
@@ -100,29 +100,29 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/05-protocol-eras-
 
 ## Capstone Connection
 
-The capstone exchange in lesson 33 is written entirely in modern terms, with no probe anywhere in it, and that is only a safe thing to do because this lesson exists: somewhere upstream of that exchange, a client already ran the probe this lesson teaches and decided the connection was worth treating as modern. When you are asked to justify why a design can skip era detection, the answer is this lesson, not an assumption.
+在第 33 课的 Capstone 综合大实验中，整条交互记录均完全基于现代规范构建，通篇没有任何探测指令。而这种简洁性之所以能够成立，完全是立足于本课的兼容基石：在系统链路的上游，客户端早已运行了本课所传授的探测逻辑，并确证当前连接完全值得以现代规范进行交互。当考题或架构评审要求你论述为什么某个设计可以省略时代探测时，你的论据应当是本课的探测缓存逻辑，而不是未经求证的侥幸假设。
 
 ## Key Terms
 
-| Term | Meaning |
-|------|---------|
-| Modern | A revision, 2026-07-28 or later, where version and capabilities travel as per-request metadata |
-| Legacy | A revision, 2025-11-25 or earlier, that opens a connection with a handshake and keeps a session |
-| Dual-era | An implementation that supports both eras, with an explicit decision before it parses anything |
-| `initialize` (legacy) | The handshake that opened a legacy connection before 2026-07-28; gone in the modern era |
-| `server/discover` | The request a dual-era client uses to probe a server's era on stdio |
-| `DiscoverResult` | The response that identifies a server as modern and lists its supported versions |
-| UnsupportedProtocolVersionError | Code -32022; a recognized modern error that triggers a retry, never a fallback |
-| Era caching | Storing the probe's conclusion per server process or origin instead of probing every request |
-| Compatibility matrix | The table of outcomes for every combination of client era and server era |
-| 400 body inspection | On HTTP, reading a 400 response's body for a recognized modern error before assuming legacy |
-| Modern-only rejection | A modern-only server naming its supported versions when it rejects an old-style opening request |
+| 术语 | 定义 |
+|------|------|
+| 现代时代 (Modern) | 2026-07-28 及后续版本，版本与能力全部作为请求级元数据传输 |
+| 旧版时代 (Legacy) | 2025-11-25 及更早版本，依赖 initialize 握手建连并通过 Session 维持状态 |
+| 双时代兼容 (Dual-era) | 具备在解析业务之前显式判定并同时支持新旧两套规范的高弹性实现 |
+| `initialize` (旧版) | 2026-07-28 之前用于开启连接的旧版握手方法，在现代规范中已彻底移除 |
+| `server/discover` | 双时代客户端在 stdio 传输上用于探测服务端所属时代的标准化请求 |
+| `DiscoverResult` | 服务端作为现代实体作出的成功响应，列出自身支持的协议版本与核心能力 |
+| UnsupportedProtocolVersionError | 错误码 -32022；已知的现代错误，触发版本重试而非触发旧版降级 |
+| 时代缓存 (Era caching) | 将探测得出的技术时代按进程或域名粒度持久化缓存，避免逐次重复探测 |
+| 兼容性矩阵 (Compatibility matrix) | 穷举客户端与服务端不同时代组合下的交互行为与降级结果的决策表 |
+| 400 响应体检测 (400 body inspection) | 在 HTTP 传输上收到 400 状态码时先解析内部错误对象，再行决定是否降级的技巧 |
+| 纯现代拒绝响应 (Modern-only rejection) | 纯现代服务端在拒绝旧版请求时，在错误信息中显式告知自身支持版本的规范行为 |
 
 ## Further Reading
 
-- [Versioning and Compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
-- [stdio transport, Backward Compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
-- [Streamable HTTP transport, Backward Compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
-- [Inspector: Protocol eras](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras)
-- [2026-07-28 changelog](https://modelcontextprotocol.io/specification/2026-07-28/changelog), [2025-11-25 changelog](https://modelcontextprotocol.io/specification/2025-11-25/changelog), [2025-06-18 changelog](https://modelcontextprotocol.io/specification/2025-06-18/changelog), [2025-03-26 changelog](https://modelcontextprotocol.io/specification/2025-03-26/changelog)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, sections 1 and 6
+- [MCP 规范 2026-07-28：版本控制与兼容性](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
+- [stdio 传输层向后兼容指引](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
+- [可流式传输 HTTP 向后兼容指引](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
+- [Inspector 工具：协议技术时代](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras)
+- 协议变更日志：[2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/changelog)、[2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/changelog)、[2025-06-18](https://modelcontextprotocol.io/specification/2025-06-18/changelog)、[2025-03-26](https://modelcontextprotocol.io/specification/2025-03-26/changelog)
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md` 第 1 节与第 6 节

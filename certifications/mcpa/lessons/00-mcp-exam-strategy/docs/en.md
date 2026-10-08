@@ -1,44 +1,44 @@
-# The MCPA Blueprint Is a Study Budget, Not a Checklist
+# MCPA 认证考纲是复习预算，而不是打卡清单
 
-> A syllabus lists what might appear on an exam. A blueprint states how often each part actually does. Read the MCPA blueprint as a budget for your study hours, not a table of contents to skim once and forget.
+> 考纲（syllabus）列出了考试可能涉及的内容。而大纲蓝图（blueprint）则明确了各部分实际出现的考查比重。请将 MCPA 蓝图作为你复习时间的分配预算，而不是粗略浏览后就抛诸脑后的目录。
 
 **Type:** Orientation
 **Languages:** Python
 **Prerequisites:** None
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Name the five MCPA domains and their exact published weights, and confirm they total 100 percent
-- Convert a domain's blueprint weight into a proportional share of a fixed study-hours budget
-- State the MCPA exam's format, fee, validity period, and retake policy, and reconcile the certification page's 90 minute duration against the launch press release's conflicting 120 minute figure
-- Explain why the exam's item count and passing score are not published, and what that means for how a candidate calibrates readiness
-- Read an exam question for a legacy-era distractor, such as an `initialize` handshake, a session, or `-32601` for an unknown tool, and reason to the 2026-07-28 replacement
-- Trace the 34-lesson route from this orientation lesson through the capstone, and say which domain, or domains, each lesson belongs to
+- 说出 MCPA 的五大考试领域及其官方公布的具体权重，并验证其总和正好为 100%
+- 将各领域的蓝图权重转换为固定复习时间预算中的按比例分配学时
+- 说明 MCPA 考试的形式、费用、有效期及重考政策，并厘清认证官网页面标明的 90 分钟时长与发布新闻稿中 120 分钟冲突数据之间的关系
+- 解释为何考试的具体题量和及格分数未对外公布，以及这对考生评估自身备考状态意味着什么
+- 在阅读考题时识别旧时代（legacy-era）的干扰项（例如 `initialize` 握手、会话状态或将未知工具归结为 `-32601`），并推导出符合 2026-07-28 规范的替代方案
+- 梳理从本导引课程至最终 Capstone 项目的 34 节课完整路线，并指明每节课所属的考查领域
 
-## The Problem
+## 问题背景
 
-The Model Context Protocol touches a lot of surface area: roles and messages, schemas, transports, tool and resource lifecycles, sampling, error handling, OAuth, consent, auditability, and the ecosystem that has grown up around all of it. A candidate who opens the MCPA guide and starts reading top to bottom, spending roughly equal time on every topic, is making a study-plan decision without realizing it: that every part of the syllabus matters equally. It does not. The certification page that defines this exam also publishes a blueprint, a breakdown of five domains with a percentage weight attached to each one. That number is not decoration. It is the closest thing to an answer key the provider gives you before exam day, because it states how the exam's content is distributed across domains, on average.
+Model Context Protocol（模型上下文协议，MCP）涵盖了庞大的技术范畴：角色与消息定义、Schema 模式、传输层（Transports）、工具与资源生命周期、采样（Sampling）、错误处理、OAuth、用户授权（Consent）、审计性，以及围绕这些构建的整个生态。如果一名考生打开 MCPA 考试指南从头读到尾，在每个主题上花费大致相同的时间，实际上是在潜意识中做出了一个学习决策：认为大纲中的每个部分权重均等。但事实并非如此。定义该考试的认证官方页面发布了一份蓝图（blueprint），将考试划分为五个领域并标注了各自的百分比权重。这些数值绝非装饰，它们是认证机构在考试日之前为你提供的最接近“答题关键线索”的信息，因为它们指明了考题在各个领域之间的平均分布比例。
 
-Ignoring the blueprint is a planning bug, the same kind of bug as building a cache that never gets invalidated: it looks fine until the mismatch between assumption and reality costs you. Spend your hours evenly across five domains and you will, by construction, under-study the domain worth 26 percent of the exam and over-study the one worth 14 percent. The gap compounds because two domains, Interactions and Execution and Security and Governance, together account for half the blueprint. A study plan that does not know this treats a domain that is nearly twice as heavy as another as though they were interchangeable.
+无视蓝图是一个严重的规划缺陷，这种缺陷如同构建了一个永不失效的缓存：在假设与现实脱节造成损失之前，表面上看起来一切正常。若将备考时间平均分配给五个领域，从结构上必然会导致考查比重占 26% 的核心领域复习不足，而考查比重占 14% 的领域则投入过多。这种偏差还会进一步加剧，因为“交互与执行（Interactions and Execution）”与“安全与治理（Security and Governance）”两个领域相加，正好占据了整份蓝图的一半权重。忽视这一点的复习计划，实际上是将权重相差近一倍的领域当成了可以互相替代的同等内容。
 
-There is a third problem, and it costs points rather than hours. Every MCPA question is written against the 2026-07-28 release, but a candidate's intuition about MCP is often shaped by older tutorials, blog posts, and even earlier drafts of this curriculum, all describing a protocol that opened every connection with an `initialize` handshake and kept state in a session. An option that describes that older protocol reads as familiar, even authoritative, and familiarity is exactly what makes it a convincing wrong answer. A candidate who cannot tell a legacy-era belief from a 2026-07-28 fact on sight will lose points to options that sound right for the wrong reason. Finally, a 34-lesson curriculum is easy to read start to finish without ever noticing which of the five domains a given lesson is training. This lesson exists to fix all four problems before you read another lesson in this track: turn the published weights into an explicit hours budget, build a readiness signal that is honest about what the guide does and does not tell you, train the reflex that catches a legacy-era distractor, and hand you the route that maps all 34 lessons onto the five domains they build toward.
+此外还存在第三个问题，它消耗的不是时间，而是考分。每一道 MCPA 考题均基于 2026-07-28 协议规范进行命制，然而许多考生对 MCP 的直觉往往受到旧版教程、博客文章甚至早期课程草稿的影响。那些资料描述的旧协议会在建立连接时执行 `initialize` 握手，并通过 Session 维持会话状态。若选项描述了这种旧协议机制，读起来往往令人熟悉甚至看似权威，而这种“熟悉感”恰恰让它成为了极具欺骗性的错误选项。无法一眼区分旧时代残留观念与 2026-07-28 规范事实的考生，很容易因为看似正确的原因而丢分。最后，包含 34 节课的庞大课程体系很容易让人逐课阅读却忽略每节课到底在训练哪个领域的能力。本节导引课的目的，正是在你深入学习本路线的其他课程之前解决上述四大问题：将官方公布的权重转化为具体的学时预算，建立客观看待官方公布信息与未公布细节的备战信号，训练快速识别旧时代干扰项的本能反射，并提供将全部 34 节课映射到五大领域的清晰路线图。
 
-## The Concept
+## 核心概念
 
-Start with the numbers themselves, because they are the whole foundation of the plan. The MCPA blueprint publishes five domains: MCP Fundamentals at 16 percent, Architecture and Components at 14 percent, Interactions and Execution at 26 percent, Security and Governance at 24 percent, and Use Cases and Ecosystem at 20 percent. Add them and you get exactly 100, which is worth checking yourself rather than trusting a summary, because a blueprint that does not sum to 100 is a sign something was transcribed wrong. Each domain also publishes named sub-competencies. MCP Fundamentals covers purpose and scope, core concepts, and interoperability and value. Architecture and Components covers schemas and structured data, the host, client, and server roles, and the model interaction flow. Interactions and Execution, the heaviest domain, covers interaction patterns and response handling, error handling, the tool invocation lifecycle, and protocol primitives. Security and Governance covers trust boundaries, permissions and consent, risk and safety controls, and auditability and observability. Use Cases and Ecosystem covers roles and adoption, operational use cases, and ecosystem portability. Every fact in this paragraph, along with its source and retrieval date, is recorded in `certifications/mcpa/research/source-verification-ledger.md` in this repository, so you can verify it yourself rather than take a lesson's word for it.
+首先从这些核心数字入手，因为它们是整个备考计划的基石。MCPA 蓝图公布了五大考查领域：MCP 基础（MCP Fundamentals）占 16%，架构与组件（Architecture and Components）占 14%，交互与执行（Interactions and Execution）占 26%，安全与治理（Security and Governance）占 24%，应用场景与生态（Use Cases and Ecosystem）占 20%。将它们相加正好等于 100。这一点非常值得自行核验，而不是盲目相信摘要，因为总和不等于 100 的蓝图往往意味着抄录过程存在错误。每个领域下还公布了具体的细分能力项（sub-competencies）：MCP 基础涵盖目标与范围、核心概念、互操作性与价值；架构与组件涵盖 Schema 与结构化数据、宿主（Host）、客户端（Client）与服务端（Server）的角色分工，以及模型交互流程；交互与执行作为占比最高的领域，涵盖交互模式与响应处理、错误处理机制、工具调用生命周期以及协议原语；安全与治理涵盖信任边界、权限与授权、风险与安全控制，以及审计性与可观测性；应用场景与生态涵盖组织角色与采纳路径、生产运维场景及生态可移植性。本段提及的所有事实、数据来源及检索日期，均完整记录在本代码仓库的 `certifications/mcpa/research/source-verification-ledger.md` 中，供你自行验证。
 
-Next, the mechanics around the blueprint. The exam is delivered online, proctored, and multiple choice, and its content is aligned to the Model Context Protocol specification dated 2026-07-28, the same version this entire curriculum targets. The fee is 250 US dollars for the exam alone, separate from any bundled subscription. The credential is valid for two years, and a candidate who does not pass on the first attempt gets one included retake. Even the duration is not one clean number: the certification page itself states a 90 minute duration, while the Linux Foundation's own launch press release states 120 minutes. This curriculum follows the certification page, the exam-specific source, and records the press release's figure as an unresolved discrepancy rather than quietly picking whichever number looked more convenient; `certifications/mcpa/research/source-verification-ledger.md` carries both numbers with both sources so you can reverify before relying on either one. Two numbers are conspicuously absent from both sources: the exact number of items on the exam, and the passing score. Treat that absence as a fact in its own right, not a gap to paper over with a guess. It means your calibration target cannot be "answer at least N of 60 questions correctly." It has to be "reach solid, evenly distributed competence across all five domains," because that is the only target the published information actually supports.
+接下来审视与蓝图相关的考试机制。该考试采用在线监考的单选及多选题形式，其考查内容严格遵循 2026-07-28 版的 Model Context Protocol 规范，这与本套课程锁定的规范版本完全一致。单次考试费用为 250 美元（不含任何捆绑订阅）。认证凭证有效期为两年；初次考试未通过的考生可享受一次包含在内的免费重考机会。关于考试时长，官方渠道存在一个值得注意的细节：认证主页标明考试时长为 90 分钟，而 Linux Foundation 最初的发布新闻稿中则写作 120 分钟。本课程以针对该考试的专门来源（认证页面）为准，将新闻稿的数据记录为未决冲突，而不是随意采信看似更宽松的时间；在 `certifications/mcpa/research/source-verification-ledger.md` 中同时收录了这两处数据及对应出处，方便你在安排考试前进行复核。与此同时，有两个关键数据在所有官方渠道中均明确未予公布：具体的考试题量和及格分数线。请将这种“未公布”本身视为一项客观事实，而不要试图用主观猜测去掩饰信息空白。这意味着你的备考目标不能设定为“在 60 道题中至少答对 N 道”，而必须设定为“在五大领域中均建立扎实且均衡的胜任能力”，因为这是当前官方信息所唯一支撑的备考策略。
 
-Now connect the numbers to a plan. If a blueprint weight is a percentage of exam content, then the same percentage applied to a study-hours budget gives you a defensible per-domain target: hours for a domain equal your total budget multiplied by that domain's weight, divided by 100. This is ordinary proportional allocation, the same arithmetic behind sizing a budget line item or a portfolio position, and it is deterministic: the same budget and the same blueprint always produce the same split. The second half of the plan is measuring where you stand. A readiness estimate that simply averages your practice accuracy across five domains treats a domain worth 14 percent the same as one worth 26 percent, which quietly lets strength in a light domain cover for weakness in a heavy one. A weighted readiness estimate multiplies each domain's practice accuracy by that domain's blueprint weight before summing, so the number you look at tracks the exam's own emphasis instead of a naive five-way split. Both computations, the budget allocation and the weighted readiness estimate, are implemented as small, deterministic functions in `code/main.py`, and the figure below turns the five weights into a picture you can compare against your own allocation.
+现在将这些数字转化为执行计划。如果蓝图权重代表各领域在考题中的平均比例，那么将该比例应用于总复习学时预算，即可得出各领域的合理目标学时：某一领域的复习学时 = 总预算学时 * 该领域权重 / 100。这是标准的按比例分配算法，与预算规划或投资组合仓位控制的数学原理完全一致，具有确定性：在给定的总预算与蓝图下，始终会产生相同的时间切分。规划的另一半在于量化你当前的准备程度。如果单纯将五个领域的练习正确率取简单算术平均，就等于把 14% 权重的领域和 26% 权重的领域等同视之，这会让低权重领域的优势悄悄掩盖高权重领域的短板。加权准备度评估（weighted readiness estimate）会在求和之前，将每个领域的练习正确率乘以该领域的蓝图权重，从而使你参考的指标忠实反映考试本身的侧重点，而不是粗糙的五等分平均。学时分配与加权准备度计算均已在 `code/main.py` 中实现为小型、确定性的函数，下方的图表将这五大权重转化为直观的视觉呈现，供你与自己的时间分配进行比对。
 
-### Reading a question: catching a legacy-era distractor
+### 审题技巧：识别旧时代干扰项 (Legacy-Era Distractors)
 
-A well-written distractor is not random noise. The MCPA exam is aligned to 2026-07-28, but MCP has gone through five revisions, and the belief system of the first, 2024-11-05, release is still everywhere: in old blog posts, in cached documentation, in an earlier draft of this very curriculum before it was corrected. That older belief system reads as fluent and confident, which is what makes it dangerous as a wrong answer. Train a specific reflex instead of a vague sense of caution. First, notice any option that describes a setup step, a handshake, or a negotiation before the first real request; 2026-07-28 has none, every request carries its own protocol version and capabilities in `_meta`, so an `initialize` call, or a claim that the connection negotiates a version up front, is a legacy-era tell. Second, notice any option that leans on a session or a sticky connection to explain how a server remembers something across calls; 2026-07-28 is stateless, and cross-request state travels as an explicit, server-minted handle passed back as an ordinary argument, never as an implicit session. Third, check any error code against what it actually means: an unknown tool is `-32602`, not the tempting `-32601`, which is reserved for an unknown method, and an argument that fails a tool's schema is not a protocol error at all, it is a normal result with `isError: true` that the model can read and correct. `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 16, keeps a running table of these traps, each wrong belief paired with the 2026-07-28 fact that replaced it; read it once before your first practice set and again the night before the exam.
+一道设计精良的干扰项绝不是毫无规律的随机噪声。MCPA 考试严格以 2026-07-28 规范为准，但 MCP 协议经历过五次版本迭代，早期 2024-11-05 版本的观念依然充斥在旧博客、旧文档缓存甚至本课程未经修正前的早期草稿中。这些过时观念读起来流利自然，因而极具迷惑性。我们应当建立针对性的判断反射，而不是盲目的谨慎感。首先，警惕任何将初始化握手、配置协商作为首个业务请求前提条件的选项：2026-07-28 规范中没有单独的握手阶段，每个请求都会在 `_meta` 中自带协议版本与能力声明，因此出现 `initialize` 调用或声称连接前必须预先协商版本的说法，属于典型的旧时代特征。其次，警惕任何依赖 Session 或粘性连接来解释服务端跨调用状态保持的选项：2026-07-28 核心设计是完全无状态的，跨请求的状态必须作为服务端签发的显式句柄（handle），作为常规参数回传，绝不能依赖隐式的连接 Session。第三，对照标准严格检查错误码的语义：请求调用未知工具返回的是 `-32602`（无效参数），而不是极具诱惑力但专用于未知方法的 `-32601`；而工具调用参数未通过 Schema 校验甚至根本不属于协议层错误，它是一个正常的业务响应，其内部包含 `isError: true`，供模型读取并进行自纠。本仓库中的 `certifications/mcpa/research/mcp-2026-07-28-brief.md` 第 16 节整理了常见旧时代陷阱清单，将各种错误观念与 2026-07-28 的正确规范逐一对比，建议在首次做模拟题前及考前重点复习。
 
-### The route: 34 lessons across five domains
+### 学习路线：横跨五大领域的 34 节课程
 
-This track has 34 lessons, numbered 00 through 33, and every one of them is tagged to at least one of the five blueprint domains. Most lessons belong to exactly one domain: the tools primitive belongs to Interactions and Execution, OAuth belongs to Security and Governance, and so on down the route. A few lessons sit at a genuine intersection and are tagged with two domains at once. JSON-RPC and Meta is tagged Fundamentals and Architecture because the message envelope it teaches is both a core concept and a piece of the architecture the exam separately asks about; Transports and HTTP Headers is tagged Interactions and Architecture for the same reason, one mechanism, two angles the exam can question it from. The capstone lesson at the end of the route, lesson 33, is tagged with all five domains on purpose, because it is the one exchange that has to exercise every domain's ideas in a single transcript. `code/main.py` in this lesson encodes that entire route as data, not prose, so a script, or you, can ask "which lessons train Security and Governance" and get an exact, checkable answer instead of a guess from memory.
+本认证路线共有 34 节课，编号从 00 至 33，每节课均明确标记了其对应的蓝图考查领域。大部分课程归属于某一个具体的领域：工具原语属于交互与执行，OAuth 授权属于安全与治理，以此类推。少部分课程位于交叉地带，会同时标注两个领域：例如“JSON-RPC 与 Meta”同时归入基础与架构领域，因为其传授的消息信封既是核心概念，又是考试单独考查的架构机制；“传输层与 HTTP 头”同样归入交互与架构两个维度，代表从不同考试角度考察同一机制。位于路线终点的 Capstone 课程（第 33 课）特意标注了全部五个领域，因为它是通过一个完整的消息交互记录，综合检验五大领域全部知识体系的实战终局。本课代码 `code/main.py` 将整套学习路线编码为结构化数据而非普通文本，脚本或学习者可以准确查询“哪些课程涉及安全与治理”，并获得精确、可检验的课程列表，无需仅凭记忆推测。
 
 ```figure
 mcpa-00-blueprint-weights
@@ -46,27 +46,27 @@ mcpa-00-blueprint-weights
 
 ## Interactive Lab
 
-Run the script below. It validates the domain weights and the 34-lesson route, then prints the exam facts exactly as the two official sources state them, including the 90 versus 120 minute duration conflict and the two fields that are deliberately `null` because neither source publishes them. It allocates a 40-hour example budget across the five domains and prints the result next to a sample readiness computation built from example practice scores, alongside a naive unweighted average of the same scores so you can see the two numbers diverge. Finally it prints the full route length and the lesson slugs `route_for_domain` returns for two sample domains, the same question the route section above answers in prose.
+运行下面的脚本。该脚本会校验五大领域权重及 34 节课程的学习路线，并按照两个官方渠道的原貌打印考试事实数据，包括 90 分钟对 120 分钟的时长分歧，以及因官方未予公布而特意设为 `null` 的两项字段。脚本将 40 小时的示例预算按比例拆分至各个领域，并展示基于模拟做题记录计算的加权准备度，同时附上未经加权的简单算术平均值，直观呈现两者的差异。最后，脚本会输出完整的路线总长度，以及通过 `route_for_domain` 查询到的示例领域对应课程列表：
 
 ```bash
 python3 code/main.py
 ```
 
-Hold the printed allocation table next to the figure above. The tallest bars, Interactions and Execution and Security and Governance, should also be the largest numbers in your printed allocation, because both come from the same five weights. If you change the `total_hours` value passed to `allocate_study_hours` in `demo()` and rerun the script, every number in the table moves in place while the proportions between domains stay fixed, because the split is relative to the blueprint, not to any specific budget size. Try calling `main.route_for_domain("not-a-real-domain")` from a Python shell in the lesson directory and watch it refuse the request instead of silently returning an empty route.
+将控制台打印出的学时分配表与上方图表对照查看。最高的两个柱状条（交互与执行、安全与治理）应当与输出中分配学时最多的两项精准对应，因为它们都源自相同的权重数据。如果你修改 `demo()` 中传给 `allocate_study_hours` 的 `total_hours` 参数并重新运行，表格中的所有绝对数值都会相应调整，但各领域之间的相对比例保持严格恒定，因为切分是相对于考试蓝图计算的。尝试在课程目录下打开 Python 交互环境并执行 `main.route_for_domain("not-a-real-domain")`，观察其如何严谨地拒绝无效请求，而不是静默返回一个空列表。
 
 ## Practice Lab
 
-Before you open the next lesson in this track, do three things with your own numbers instead of the example ones baked into the demo. First, decide how many hours you actually have between now and your exam date, then call `allocate_study_hours` with that number and write down the five domain targets somewhere you will see them again, such as the shipped cheat sheet below. Second, as you work through practice questions or the diagnostic assessment in this track, keep a running `(correct, total)` tally for each domain, and periodically call `estimate_readiness` with that tally. Watch what happens to the number as you fill in a domain you had previously left at zero attempts: it should move, because an unpracticed domain scores as zero in the estimate rather than being quietly excluded. Third, call `route_for_domain` for whichever domain your readiness estimate says is weakest, and read that exact list of lessons next, in order, instead of continuing straight down the numbered list out of habit. Repeat all three checks weekly. A plan you built once and never revisited is not a plan, it is a snapshot.
+在开始学习下一节课之前，请使用你个人的实际数据替代示例数值，完成以下三件事：第一，评估从今天起到考试日你真正能够投入的总学时，调用 `allocate_study_hours` 计算出五个领域的分配目标，并将它们记录在显眼的地方（例如下文提供的速查表中）；第二，在做模拟题或诊断测试时，记录每个领域的 `(正确题数, 总题数)` 累计数据，定期运行 `estimate_readiness`。观察当你为某个此前做题数为零的领域补充做题记录时准备度数值的变化：该数值应当发生变动，因为在加权算法中未做题的领域得分为零，而不是被悄悄忽略；第三，针对加权准备度显示最为薄弱的领域调用 `route_for_domain`，优先按顺序学习该领域对应的课程，而不是机械地按照数字编号从头读到尾。建议每周重复以上检查。一次制定后便不再跟进的计划不是真正的计划，只是一张静态快照。
 
 ## Shipped Artifact
 
-`outputs/mcpa-blueprint-cheatsheet.md` is the one-page reference this lesson produces: all five domains with their weights and published sub-competencies, the fixed exam facts including the page-versus-press duration conflict and the two facts that are explicitly unpublished, a short legacy-era distractor checklist, and the full 34-lesson route table with each lesson's domain. Print it, pin it, or keep it open in a second window for the rest of this track.
+`outputs/mcpa-blueprint-cheatsheet.md` 是本节课交付的单页参考速查手册：包含全部五个领域及其公布的权重与细分能力项、考试固定事实（包含时长冲突说明与明确未公布的两项事实）、简明旧时代干扰项识别清单，以及涵盖每节课领域归属的 34 节课完整路线表。建议打印该文件或在备考期间常驻在参考窗口中。
 
 ## Verify It
 
-Run the tests with `python3 -m unittest discover code/tests`. They check that the five domain weights sum to exactly 100 and that the validation guard rejects a weight set that does not, that a study-hours budget is split in exact proportion to those weights and that the split sums back to the original budget, that a weighted readiness estimate rewards mastery of the heaviest domain more than mastery of a lighter one rather than treating every domain the same, that a zero-hour budget allocates zero to every domain without special-casing, that a domain with no attempted practice questions contributes zero to readiness instead of raising a division error, that an unrecognized domain name is rejected by both the readiness estimate and the route lookup instead of failing silently, and that the route covers all 34 lessons numbered 00 through 33 with the capstone alone spanning every domain. If any of these fail, the code and this lesson have drifted apart, and the code is the source of truth for the arithmetic.
+运行测试套件：`python3 -m unittest discover code/tests`。这些测试将验证：五个领域的权重总和严格为 100 且校验守卫能拒绝不合法的权重集；学时预算严格按权重比例切分且切分后的总和等于原始预算；加权准备度算法对高权重领域的掌握给予更高评价而非无差别对待；零学时预算能直接安全返回全零结果无需特殊分支；未做题领域的准备度贡献为零而不是引发除以零异常；未识别的领域名称会被计算函数与路由查询明确拒绝而非静默失败；学习路线完整覆盖编号 00 至 33 的全部 34 节课且仅有 Capstone 课程横跨全部五个领域。如果有测试失败，说明代码与课程讲义出现了不一致，代码是计算逻辑的真实来源。
 
-This lesson never exchanges a message with an MCP server, so its wire transcript is deliberately empty; the repository's wire checker confirms that the module explains why instead of silently shipping nothing:
+本课侧重于宏观规划，并不与 MCP 服务端发生实际消息往来，因此其通信记录（wire transcript）为空；仓库的通信校验器验证了模块对通信为空的合理解释：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/00-mcp-exam-strategy
@@ -74,24 +74,24 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/00-mcp-exam-strat
 
 ## Capstone Connection
 
-The `estimate_readiness` function you just ran is not a throwaway demo. It is the same weighted scoring model lesson 33, the capstone readiness review, expects you to run again, this time against your real diagnostic or mock-exam domain breakdown, to decide whether you are actually ready to schedule the exam or whether a specific domain still needs another pass. Keep the cheat sheet, the two study functions, and the route table in this lesson close. Every one of the 34 lessons that follows slots into at least one of the five weighted domains named here, and the capstone is where you prove, with your own numbers run back through this same math, that your coverage matches the blueprint rather than your reading order.
+刚才运行的 `estimate_readiness` 函数并非一次性演示，在第 33 课的 Capstone 准备度评审中，你将再次使用该加权评分模型。届时你将输入自己在模拟考中的各领域真实得分，用以客观判定自己是否已经做好预约正式考试的准备，或者哪些具体领域仍需再次强化复习。请妥善保存本课生成的速查手册、两个规划函数以及路线表。后续的 34 节课每一节都会归入这里定义的五个加权领域之一，而在 Capstone 总结中，你将通过真实的复习数据证明自己的复习广度符合官方蓝图的要求。
 
 ## Key Terms
 
-| Term | Meaning |
-|------|---------|
-| Blueprint | The published table of the five MCPA domains and their percentage weights |
-| Domain weight | The percentage of exam content a single domain represents, on average |
-| Study-hours budget | The fixed number of hours available before exam day, split across domains by weight |
-| Readiness estimate | A weighted average of practice accuracy across domains, using blueprint weights instead of a plain average |
-| Unpublished fact | An exam detail, such as item count or passing score, that neither official source states |
-| Legacy-era distractor | A wrong answer option that describes MCP as it worked before 2026-07-28, such as an `initialize` handshake or a session |
-| Route | The mapping from each of the 34 lessons to the domain, or domains, it trains |
+| 术语 | 定义 |
+|------|------|
+| 蓝图 (Blueprint) | 官方公布的 MCPA 五大考试领域及其百分比权重对照表 |
+| 领域权重 (Domain weight) | 单个领域在整个考试试卷内容中所占的平均比例 |
+| 学时预算 (Study-hours budget) | 考前可用的总复习小时数，按领域权重进行比例切分 |
+| 准备度评估 (Readiness estimate) | 各领域模拟做题正确率的加权平均数，以蓝图权重作为权重系数 |
+| 未公布事实 (Unpublished fact) | 官方渠道明确未对外公开的考试细节（例如试卷总题量或合格线） |
+| 旧时代干扰项 (Legacy-era distractor) | 描述 2026-07-28 之前旧版 MCP 特性的错误选项（例如 `initialize` 握手或 Session） |
+| 学习路线 (Route) | 34 节课程与各自针对训练的五大考试领域之间的映射关系 |
 
 ## Further Reading
 
-- Model Context Protocol specification, version 2026-07-28, at https://modelcontextprotocol.io/specification/2026-07-28, the release this entire blueprint and curriculum are aligned to.
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 16, for the full table of legacy-era traps this lesson's reading strategy is built from.
-- `phases/13-tools-and-protocols/06-mcp-fundamentals` in this repository, for the deep-dive lesson on the core concepts every domain in the blueprint builds on.
-- MCPA certification page, https://training.linuxfoundation.org/certification/model-context-protocol-associate-mcpa/, the official guide this lesson's exam facts are drawn from.
-- `certifications/mcpa/research/source-verification-ledger.md` in this repository, for every fact above, including the duration discrepancy, with its source and retrieval date.
+- Model Context Protocol 规范 2026-07-28 版本（https://modelcontextprotocol.io/specification/2026-07-28），整个认证蓝图与课程体系均基于此版本构建。
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md` 第 16 节，包含本课做题策略所依托的旧时代常见陷阱完整对照表。
+- 本仓库中的 `phases/13-tools-and-protocols/06-mcp-fundamentals`，提供蓝图各领域核心概念的底层推导与深度讲解。
+- MCPA 官方认证页面（https://training.linuxfoundation.org/certification/model-context-protocol-associate-mcpa/），本课所引用的核心考试事实出处。
+- 本仓库中的 `certifications/mcpa/research/source-verification-ledger.md`，记录了上述所有事实（包括考试时长分歧）的来源及检索日期。

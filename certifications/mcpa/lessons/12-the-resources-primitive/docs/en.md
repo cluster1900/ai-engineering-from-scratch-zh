@@ -1,41 +1,41 @@
-# Resources: Addressable Content for a Stateless Server
+# 资源原语：无状态服务端的可寻址内容 (Resources: Addressable Content for a Stateless Server)
 
-> A tool answers a question by doing something. A resource answers it by being something the host can already point the model at, addressed by a URI instead of invoked by a name.
+> 工具通过“执行动作”来回答问题；而资源则通过“作为可被引用的内容存在”来回答问题：宿主可直接将其置于模型上下文，并通过 URI 进行寻址，而非按名称触发调用。
 
 **Type:** Reference
 **Languages:** Python
 **Prerequisites:** Lesson 11
 **Time:** ~45 minutes
 
-## Learning Objectives
+## 学习目标
 
-- Read `resources/list`, `resources/templates/list`, and `resources/read` as three distinct methods with three distinct results.
-- Expand an RFC 6570 URI template into a concrete URI, then read it like any other resource.
-- Explain why a missing resource is JSON-RPC error `-32602` with `data.uri`, never a result with an empty `contents` array.
-- Choose `ttlMs` and `cacheScope` for a read based on whether its content is shared or belongs to one caller.
-- Sanitize a URI before it reaches storage so a template can never be used to read outside a server's own root.
+- 将 `resources/list`、`resources/templates/list` 与 `resources/read` 理解为具有三种完全不同返回结果的独立方法
+- 将 RFC 6570 URI 模板展开为具体的 URI，并像读取常规资源一样对其进行内容拉取
+- 阐明为何访问不存在的资源必须返回包含 `data.uri` 的 JSON-RPC 协议错误 `-32602`，而绝不能返回带有空 `contents` 数组的正常结果
+- 能够根据内容属于公共共享还是调用方私有，为读取结果合理选取 `ttlMs` 与 `cacheScope`
+- 在 URI 触达底层存储前对其进行安全路径清洗，确保模板机制绝不可能被利用来越权读取服务端根目录之外的文件
 
-## The Problem
+## 问题背景
 
-A host that wants to put a project's README, a ticket's body, or a user's saved note into a model's context is not asking the model to do anything. It is choosing what the model should already know before it answers. Route that choice through a tool and you inherit tool semantics you do not want: the model decides whether to call it, the call can fail argument validation, and every plain read now looks like an action in the transcript. Route it around MCP entirely, by reading a file straight off disk from inside the host, and you lose the one thing MCP was built to give you: a server that can move to a different machine, sit behind a different transport, or belong to a different team, without the host changing a line of code.
+当宿主希望将项目的 README、工单正文或用户保存的备忘笔记置入模型上下文时，它并不是在请求模型执行任何操作。它只是在主动决策模型在生成回复前应当预先知晓哪些背景信息。如果将这种数据获取需求强行包装为工具调用，你就会被迫引入一系列不需要的工具语义：必须等待模型自主决定是否发起调用、调用可能遭遇参数校验失败，且在通信记录中每一次简单的数据读取都会被记录为一次动作执行。反之，若完全绕开 MCP 协议，直接由宿主在本地从磁盘读取文件，你又会丧失 MCP 赋予的核心价值：服务端无法在不改动宿主一行代码的情况下迁移至其他机器、无法切换底层传输协议，也无法解耦交由不同团队维护。
 
-Resources close exactly this gap. They are content, not actions, addressed by a URI instead of invoked by a name, and the application, not the model, decides when one enters context. A note server that exposes `notes://alice/welcome` behaves the same whether the host renders it in a sidebar, feeds it to the model automatically, or never touches it at all in a given turn. The protocol's job stops at describing the content and answering reads correctly; what a host does with a resource once it has read it stays the application's decision, the same way tools left the prompt and the interface to the application.
+资源（Resources）原语精准填补了这一空白。资源是内容而非动作，通过 URI 进行全局寻址而非按函数名调用，且由应用程序而非模型来决定何时将其注入上下文。一个暴露 `notes://alice/welcome` 的笔记服务端，无论宿主是将其渲染在前端侧边栏、自动追加到模型上下文，还是在某一轮交互中对其完全置之不理，服务端的行为都保持高度一致。协议的职责严格止步于对内容的准确描述以及对读取请求的正确响应；一旦资源被读取，宿主如何处置它完全属于应用程序层面的决策，这与工具原语将 Prompt 编排和交互界面交由应用层掌控的哲学如出一辙。
 
-## The Concept
+## 核心概念
 
-Resources sit on the application-driven side of MCP's control split: tools are model-controlled, prompts are user-controlled, and resources are chosen by the host. A client discovers what is available and asks for it on the host's terms, whether that means an automatic heuristic, a picker in the interface, or a fixed set the host always includes.
+在 MCP 的控制权划分体系中，资源位于“应用程序驱动”的一侧：工具由模型控制，Prompt 模板由人类用户控制，而资源则由宿主应用程序自主选取。客户端通过服务发现了解有哪些可用资源，并按照宿主自身的策略发起读取，无论是基于自动启发式规则、界面上的文件选择器，还是宿主默认绑定的固定上下文集合。
 
-Three methods cover the whole surface. `resources/list` returns the resources currently visible to the caller: a `uri`, a `name`, an optional `description`, `mimeType`, and `icons`. The set may be empty and may change over time, but it must not vary per connection, only by the authorization presented on the request, because the stateless core from lesson 04 forbids a server from remembering which connection asked last time. `resources/templates/list` returns parameterized URIs described with RFC 6570 templates, such as `file:///project/{+path}`, for families of resources too large or too dynamic to enumerate one by one. `resources/read` takes a `uri` and returns one or more content items in `contents`.
+三大核心方法覆盖了资源的全部功能。`resources/list` 返回当前调用方可见的资源目录：包含 `uri`、`name`、可选的 `description`、`mimeType` 以及 `icons`。返回的集合可以为空，也可以随时间动态演进，但针对未变更的数据源，其返回内容绝不能因连接的不同而产生差异，只能由请求携带的授权凭证决定可见范围，因为第 04 课阐明的无状态核心严格禁止服务端记住“上次是哪个连接发起的查询”。`resources/templates/list` 返回使用 RFC 6570 语法描述的带参数 URI 模板（如 `file:///project/{+path}`），专门用于处理规模过大或过于动态而无法逐条静态枚举的资源家族。`resources/read` 接收具体 `uri`，并在 `contents` 列表中返回一个或多个内容项。
 
-A content item takes one of two shapes. Text content is `{uri, mimeType, text}`. Binary content is `{uri, mimeType, blob}`, where `blob` is base64-encoded bytes. A single read can return more than one content item: a resource that represents a directory can read back every file underneath it in one `contents` array, each entry carrying its own `uri` and `mimeType`.
+内容项采用两种标准形态之一。文本内容格式为 `{uri, mimeType, text}`；二进制内容格式为 `{uri, mimeType, blob}`，其中 `blob` 为 Base64 编码的字节串。单次读取调用完全可以返回多个内容项：例如代表目录的资源可以在一个 `contents` 数组中一次性返回其下属的每一个文件，每个条目均各自携带独立的 `uri` 与 `mimeType`。
 
-URI schemes are a design decision, not a formality. Use `https://` only when a capable client could fetch the same content directly from the web without going through the server at all; if the server is the only path to the content, prefer `file://`, `git://`, or a scheme of your own, in accordance with RFC 3986. A `file://` URI does not have to name a real path on a real filesystem. It only has to be a stable, namespaced identifier the server understands, which is exactly why a server can serve `file:///project/{+path}` from an in-memory tree and still sanitize every expansion as if it were walking a real directory: normalize the path segment against a synthetic root before ever looking it up, so no sequence of `..` segments can walk the lookup outside that root.
+URI Scheme 的选取属于严肃的架构决策，而非无关紧要的格式标签。只有当能力完备的客户端无需经由服务端中转、可直接从公网获取相同内容时，才允许使用 `https://`；若服务端是获取该内容的唯一合法通道，必须遵循 RFC 3986 规范，优先选用 `file://`、`git://` 或业务自定义 Scheme。`file://` URI 并不要求必须对应真实物理文件系统中的真实路径，它仅仅是服务端能够理解的稳定、带命名空间的唯一标识符；这正是为何服务端可以完全基于内存虚拟树来对外提供 `file:///project/{+path}`，同时依然像遍历真实目录一样严格清洗每次展开后的路径：在执行实际查询前，必须对照虚拟根目录对路径段进行规范化清洗，确保任何 `..` 相对路径片段都绝不可能逃逸出受控根目录。
 
-Errors matter here in a way they do not for tools. If the requested URI does not exist, the server returns a JSON-RPC error, code `-32602` (Invalid params), with `data.uri` naming what was asked for. SEP-2164 put the error there deliberately: `-32602` is the ordinary meaning of an invalid parameter, and a non-existent URI is exactly that, an argument the client supplied that does not correspond to anything the server has. Older servers used `-32002`, a code from the JSON-RPC server-error range that the specification never formally reserved for this meaning; a 2026-07-28 server must not emit it, though a well-behaved client still recognizes it from a legacy peer it happens to talk to. What a server must never do, on either code, is return a normal result with an empty `contents` array. An empty array cannot say whether the resource exists and happens to be blank or does not exist at all, so the protocol closes that ambiguity by making absence a distinct, error-shaped answer.
+错误处理在资源体系中具有与工具截然不同的严苛规范。若请求的 URI 不存在，服务端必须返回错误码为 `-32602`（Invalid params）的 JSON-RPC 协议错误，并在 `data.uri` 中明确指出缺失的 URI。SEP-2164 规范做出此项规定有其明确理由：`-32602` 代表参数无效的标准语义，而一个不存在的 URI 本质上正是客户端传入了一个无法对应服务端任何实体的非法参数。早期旧版服务端曾使用 `-32002`（属于服务端错误保留段），但 2026-07-28 规范已严禁返回该代码，不过合规客户端在与老旧系统对接时仍需保留向前兼容识别能力。无论使用何种错误码，服务端绝对不可采取的违规行为是：返回一个带有空 `contents` 数组的普通成功响应。空数组无法向客户端阐明“该资源确实存在但内容碰巧为空”，还是“该资源根本就不存在”，协议通过强制要求返回结构明确的错误报文彻底消除了这种二义性。
 
-`resources/read` is one of the six methods whose complete results must carry caching hints: `ttlMs`, how many milliseconds the client may treat the answer as fresh, and `cacheScope`, either `public` or `private`. A resource that reads the same for every caller, a public changelog, say, can use `public` with a long `ttlMs`. A resource scoped to one user's data must use `private`, so a cache never lets one caller's read satisfy another caller's request. `cacheScope` describes who may share a cached copy; it does not perform access control by itself, so the server still authorizes every read regardless of what scope it later reports.
+`resources/read` 是其完整响应必须附带缓存提示的六个标准方法之一：包含 `ttlMs`（客户端可将该结果视为新鲜的有效毫秒数）以及值为 `public` 或 `private` 的 `cacheScope`。对于对所有调用方均返回相同内容的数据源（例如公开更新日志），可采用带有较长 `ttlMs` 的 `public` 作用域；而对于绑定特定用户私有数据的资源，则必须声明为 `private`，防止缓存层误将某位用户的读取结果直接交付给另一位调用方。`cacheScope` 描述的是缓存副本的可共享范围，它自身不承担访问控制职能，因此服务端在后续接收读取请求时，无论此前汇报了何种作用域，每次均须独立执行身份鉴权。
 
-Resources also carry optional annotations, `audience`, `priority`, and `lastModified`, hints a host can use to decide what to surface first, and a capability flag, `subscribe`, that lets a client watch a URI for changes through `subscriptions/listen` with a `resourceSubscriptions` filter rather than the retired standalone subscribe call. The full mechanics of that stream, acknowledgment, demultiplexing, cancellation, get their own treatment later, but the shape of the request is the same stateless, per-request `_meta` you have used since the envelope lesson.
+资源同样支持可选的内容注解：`audience`、`priority` 与 `lastModified`，宿主可据此决定界面的呈现优先级；此外服务端可通过 `subscribe` 能力标志，允许客户端通过带有 `resourceSubscriptions` 过滤器的 `subscriptions/listen` 来订阅特定 URI 的变更事件，从而替代了已废弃的独立订阅调用。这套事件流的完整机制（确认应答、多路解复用、取消流）在后续课程中会详细展开，但请求本身依然遵循大家自信封课程以来一直使用的无状态、逐请求携带的 `_meta` 规范。
 
 ```figure
 mcpa-12-resource-read
@@ -43,31 +43,31 @@ mcpa-12-resource-read
 
 ## Interactive Lab
 
-The figure follows one URI from a template to a result. On the left, a template, `file:///project/{+path}`, expands a path segment into a concrete URI; the `+` keeps the slashes in a nested path instead of escaping them the way a plain `{path}` expansion would. The middle box is `resources/read` itself, which sanitizes the expanded URI against the server's root before it ever performs a lookup. From there the diagram forks: a URI that resolves to something real returns a complete result carrying `contents`, `ttlMs`, and `cacheScope`; a URI that resolves to nothing, whether because it was never registered or because a `..` segment tried to walk it outside the root, returns `-32602` naming the URI in `data.uri`, never a quietly empty `contents` array. Trace both paths before moving to the code: they are the same two outcomes every resource server has to implement correctly.
+本节图示清晰描绘了一个 URI 从模板展开到最终读取结果的全过程。在左侧，模板 `file:///project/{+path}` 将路径片段展开为具体的 URI；其中的 `+` 修饰符保留了嵌套路径中的斜杠，避免了普通 `{path}` 展开时被过度转义的问题。中间方框代表 `resources/read` 处理流程，它在执行实际查找前，首先对照服务端根目录对展开后的 URI 进行严格路径清洗。随后流程分叉为两条明确路径：成功解析出实体内容的 URI 返回包含 `contents`、`ttlMs` 与 `cacheScope` 的完整结果；而解析失败的 URI（无论是因为未注册，还是试图通过 `..` 逃逸出根目录）统一返回错误码 `-32602` 并在 `data.uri` 中标明目标，绝不静默返回一个含糊的空 `contents` 数组。在进入代码实验前，请仔细对照梳理这两条分支，它们是每个合规资源服务端都必须正确实现的标准产出。
 
 ## Practice Lab
 
-Open `code/main.py`. It builds one in-memory workspace server: a `README.md`, a directory of two files under `src/`, a binary `logo.png`, a version-controlled changelog under a `git://` URI, and one private note under a `user://` URI. Run it from the lesson directory.
+打开 `code/main.py`。该脚本构建了一个内存工作区服务端：包含一个 `README.md`、`src/` 目录下的两个代码文件、二进制图标 `logo.png`、采用 `git://` URI 的版本控制更新日志，以及采用 `user://` URI 的一条私有备忘笔记。在课程目录下运行：
 
 ```bash
 python3 code/main.py
 ```
 
-Read the printed transcript against the concept section. `resources/list` returns the catalog sorted by URI, each entry carrying `cacheScope: public` and a `ttlMs`. `resources/templates/list` returns one template, `file:///project/{+path}`; the demo expands it with `path=src/utils.py` and reads the result straight back. Reading `file:///project/src`, the directory entry, returns two content items in one `contents` array, one per file underneath it. Reading `logo.png` returns a `blob` field instead of `text`; decode it and check the bytes against the source. Reading `user://alice/notes/welcome` returns `cacheScope: private` with a short `ttlMs`, because that content belongs to one user rather than to everyone who can reach the server. The last two reads are the deliberate failures: a URI that was never registered comes back `-32602` with `data.uri` set, and a URI built by walking `..` segments out of the project root resolves to nothing and fails the same way, never landing on any file outside the sandboxed root. Change which file the template expands, add a resource of your own, and rerun to see the catalog and the read both pick it up without any change to the client.
+对照核心概念研读打印出的通信记录。`resources/list` 按 URI 排序返回完整目录，每个条目均标注了 `cacheScope: public` 以及对应的 `ttlMs`。`resources/templates/list` 返回了一个模板 `file:///project/{+path}`；演示脚本传入 `path=src/utils.py` 完成模板展开，并直接读取返回内容。读取代表目录的 `file:///project/src` 时，在一个 `contents` 数组中同时返回了该目录下的两个文件条目，每个条目拥有独立的 `uri` 与 `mimeType`。读取 `logo.png` 时返回的是 `blob` 字段而非 `text`；解码该 Base64 串即可还原原始二进制字节。读取 `user://alice/notes/welcome` 时返回的是带较短 `ttlMs` 的 `cacheScope: private`，因为该内容专属于单个用户，严禁全局共享。最后两项读取演示了经过精心设计的失败场景：读取从未注册的非法 URI 会返回带 `data.uri` 的 `-32602`；而试图通过在 URI 中拼接 `..` 相对路径逃逸出工作区根目录的请求同样被拦截并返回相同错误，绝不触碰沙箱外部的任何文件。你可以尝试修改模板展开的目标文件，或在代码中添加自定义的新资源并重新运行，观察目录枚举与资源读取如何在无需修改客户端代码的情况下自然支持。
 
 ## Shipped Artifact
 
-`outputs/resource-design-guide.md` is a one-page reference for designing and reviewing resources: a scheme-choice table, the three methods and what each returns, the two content shapes, an error-handling checklist built around `-32602` and `data.uri`, a cache-scope decision table, and a short security checklist for URI sanitization. Keep it next to a server's resource handlers while you write or review them.
+`outputs/resource-design-guide.md` 是本课交付的单页资源设计与审查速查指南：包含 URI Scheme 选取矩阵、三个核心方法及其返回值规范、两种内容形态的结构定义、围绕 `-32602` 与 `data.uri` 的错误处理合规检查清单、缓存作用域决策指南，以及针对 URI 路径清洗的安全核查项。在编写或评审服务端的资源处理器时，请随身查阅此指南。
 
 ## Verify It
 
-Run the tests from the lesson directory:
+在课程目录下运行测试套件：
 
 ```bash
 python3 -m unittest discover code/tests
 ```
 
-They check the claims in this lesson: the catalog is sorted and carries cache hints, the template expands and reads the right file, a binary read carries a base64 `blob`, a missing URI fails with `-32602` and `data.uri`, a `..` segment can never resolve outside the project root, a directory read returns multiple content items, a private note carries `cacheScope: private`, and requests without the right protocol metadata are rejected the same way every other method rejects them. The repository's wire checker validates the same transcript against the 2026-07-28 rules:
+测试验证了本课阐述的核心主张：资源目录保持排序并完整携带缓存提示；模板能够准确展开并读取到目标文件；二进制读取正确返回 Base64 编码的 `blob`；请求不存在的 URI 会失败并返回带有 `data.uri` 的 `-32602` 协议错误；包含 `..` 的恶意路径绝不可能越权访问工作区根目录之外的内容；目录读取能在一个响应中返回多个内容项；私有笔记严格标注 `cacheScope: private`；缺失必要协议元数据的请求会被统一拒绝。本仓库的通信检查脚本还会依据 2026-07-28 规范核验本课的通信记录：
 
 ```bash
 python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/12-the-resources-primitive
@@ -75,26 +75,26 @@ python3 scripts/check_mcpa_wire.py certifications/mcpa/lessons/12-the-resources-
 
 ## Capstone Connection
 
-The capstone's single end-to-end transcript needs at least one resource read alongside its tool call and its consent flow, and it needs to get the read's error handling right under the same rules this lesson tests: a missing resource is `-32602` with `data.uri`, never a bare empty `contents` array, and every complete read carries `ttlMs` and `cacheScope`. Carry the sanitize-before-lookup habit forward too; it is the same discipline the capstone's authorization checks depend on.
+Capstone 综合考核中的全流程通信除了工具调用与授权流程外，还必须包含至少一次合规的资源读取，且该读取必须严格满足本课检验的错误处理规范：缺失资源必须返回带 `data.uri` 的 `-32602`，严禁返回裸露的空 `contents` 数组，且每个完整的成功响应必须携带 `ttlMs` 与 `cacheScope`。请牢固掌握“查询前必先清洗路径”的安全习惯，Capstone 考核中的权限校验同样深度依赖该防御逻辑。
 
 ## Key Terms
 
-| Term | Meaning |
-|------|---------|
-| Resource | Application-driven content identified by a URI |
-| `resources/list` | Returns the resource catalog visible to the caller, with cache hints |
-| `resources/templates/list` | Returns RFC 6570 URI templates for families of resources |
-| `resources/read` | Returns one or more content items in `contents` for a URI |
-| Text content | `{uri, mimeType, text}` |
-| Binary content | `{uri, mimeType, blob}`, base64-encoded |
-| `-32602` | Invalid params; the code for a missing or invalid resource URI, carrying `data.uri` |
-| `ttlMs` | How long, in milliseconds, a client may treat a cached read as fresh |
-| `cacheScope` | `public` (shareable) or `private` (bound to one authorization context) |
-| `subscriptions/listen` | The modern way to watch a resource for changes, replacing the retired `resources/subscribe` |
+| 术语 | 含义 |
+|------|------|
+| Resource（资源） | 由应用程序选择并驱动、通过 URI 进行全局唯一寻址的内容实体 |
+| `resources/list` | 用于枚举当前调用方可见的资源目录并附带缓存提示的请求方法 |
+| `resources/templates/list` | 用于返回描述资源家族的 RFC 6570 URI 模板集合的请求方法 |
+| `resources/read` | 依据指定 URI 获取一个或多个 contents 内容块的具体读取方法 |
+| Text content（文本内容） | 包含 uri、mimeType 以及 text 字符串的文本资源形态 |
+| Binary content（二进制内容） | 包含 uri、mimeType 以及 Base64 编码 blob 的二进制资源形态 |
+| `-32602` | Invalid params 错误码；用于标明资源 URI 不存在或非法，并携带 data.uri |
+| `ttlMs` | 客户端可将读取结果视作新鲜有效、允许复用缓存的最大毫秒数 |
+| `cacheScope` | public（可跨用户共享）或 private（严格绑定当前授权上下文）的缓存提示 |
+| `subscriptions/listen` | 用于监听资源变更通知的现代事件流机制，全面取代了已废弃的 resources/subscribe |
 
 ## Further Reading
 
-- [MCP specification 2026-07-28: Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources)
-- [MCP specification 2026-07-28: Caching](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching)
-- `certifications/mcpa/research/mcp-2026-07-28-brief.md`, section 10
-- `phases/13-tools-and-protocols/10-mcp-resources-and-prompts`, which builds a resources and prompts server in depth
+- [MCP 规范 2026-07-28：资源原语 (Resources)](https://modelcontextprotocol.io/specification/2026-07-28/server/resources)
+- [MCP 规范 2026-07-28：缓存机制 (Caching)](https://modelcontextprotocol.io/specification/2026-07-28/server/utilities/caching)
+- `certifications/mcpa/research/mcp-2026-07-28-brief.md`，第 10 节
+- `phases/13-tools-and-protocols/10-mcp-resources-and-prompts`，深入学习资源与 Prompt 模板服务端的工程构建

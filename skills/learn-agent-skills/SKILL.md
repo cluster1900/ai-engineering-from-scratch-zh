@@ -31,7 +31,7 @@ The route source of truth is `learning-paths/agent-skills.json`. Prefer local
 files when this repository is cloned. Otherwise fetch each file from:
 
 ```text
-https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/<path>
+https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/<path>
 ```
 
 Read the manifest before choosing a lesson. Follow `lessons` by `order`; do

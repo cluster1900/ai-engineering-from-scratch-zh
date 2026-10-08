@@ -11,7 +11,7 @@
   "source": "core",
   "author": {
     "name": "AI Engineering from Scratch",
-    "github": "rohitg00"
+    "github": "cluster1900"
   },
   "youWillBuild": "A scoped cloud incident reader with an execution receipt for every cache hit and retry.",
   "usefulFor": [

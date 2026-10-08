@@ -74,7 +74,7 @@
   }
 
   function repoFileUrl(path) {
-    return (DATA.repo || 'https://github.com/rohitg00/ai-engineering-from-scratch') + '/blob/main/' + path;
+    return (DATA.repo || 'https://github.com/cluster1900/ai-engineering-from-scratch-zh') + '/blob/main/' + path;
   }
 
   function contentUrl(path) {
