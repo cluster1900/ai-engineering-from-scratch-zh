@@ -79,7 +79,7 @@ test -f my-first-skill/SKILL.md
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `agent-skills-first-run`Agora, não há nada a fazer.
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-contract-reviewer --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract-reviewer --full-depth
 ```
 
 选择你当前正在使用的代理 宿主和作用域──安装器会列出 `skill-contract-reviewer` e a sua posição de objectivo de escrita.`--full-depth`参数, pois a habilidade fornecida nesta aula é um conjunto de programas que contém referências, guiões e ativos estáticos.
