@@ -472,7 +472,7 @@ python3 "$TARGET_BUNDLE/scripts/evaluate_skill.py" \
 在同一目录下运行:
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-release-gate --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-release-gate --full-depth
 ```
 
 记录宿主名称、宿主版本(如果可见) 作用域、安装路径和日期── 在探测行为之前,启动新会话或重新扫描目录──
