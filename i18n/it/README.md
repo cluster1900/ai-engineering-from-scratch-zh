@@ -1278,7 +1278,7 @@ MIT。按你想要的方式使用它 —— fork、教学、出售、交付都�
 中文版由 [cluster1900](https://github.com/cluster1900) 和贡献者维护，源自 [Rohit Ghumare](https://github.com/rohitg00) 的原始课程。
 
 <sub>
-  <a href="https://x.com/ghumare64">@ghumare64</a> &nbsp;·&nbsp;
+  <a href="https://github.com/cluster1900">@cluster1900</a> &nbsp;·&nbsp;
   <a href="https://ai-learn.agent-buy.com">ai-learn.agent-buy.com</a> &nbsp;·&nbsp;
   <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh/issues/new/choose">报告 / 建议</a>
 </sub>
