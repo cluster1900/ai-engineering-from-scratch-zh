@@ -79,7 +79,7 @@ test -f my-first-skill/SKILL.md
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `agent-skills-first-run`वर्तमान में:
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch --skill skill-contract-reviewer --full-depth
+npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract-reviewer --full-depth
 ```
 
 选择你当前正在使用的代理 宿主和作用域──安装器会列出 `skill-contract-reviewer` और इसके लेखन के लक्ष्य स्थान  अवश्य जोड़ा जाना चाहिए `--full-depth`参数, क्योंकि इस वर्ग में प्रदान की जाने वाली कौशल एक ऐसी है जिसमें संदर्भ, स्क्रिप्ट और स्थैतिक संपत्ति का एक ढांचा है।
