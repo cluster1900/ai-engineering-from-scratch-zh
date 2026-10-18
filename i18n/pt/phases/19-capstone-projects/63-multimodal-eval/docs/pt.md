@@ -49,15 +49,14 @@ Construir imagens e títulos entre inserções `(N, N)`余弦相似度矩阵─�
 
 ### BLEU-4
 
-```text
-BLEU-4 = BP * exp(mean(log p1, log p2, log p3, log p4))
+```math
+\text{BLEU-4} = \text{BP} \cdot \exp\big(\text{mean}(\log p_1, \log p_2, \log p_3, \log p_4)\big)
 ```
 
 Entre eles `p_n`é a precisão de n 元语法 após modificação ((aparece em qualquer referência o número de cortes de n 元语法 gerados em qualquer referência, exceto o número total de n 元语法 gerados em qualquer referência),`BP`É simples punição:
 
-```text
-BP = 1                if generated length > reference length
-   = exp(1 - r/g)     otherwise, where r is reference length and g is generated
+```math
+\text{BP} = \begin{cases} 1 & \text{当生成长度} > \text{参考长度} \\ \exp(1 - r/g) & \text{否则，其中 } r \text{ 为参考长度，} g \text{ 为生成长度} \end{cases}
 ```
 
 Para alguns.`p_n`Para um pequeno exemplo de zero, é necessário fazer uma planejamento. Para a implementação, o método de Chen 和 Cherry é o mais seguro para qualquer número de zero, moléculas e divisórias adicionadas.

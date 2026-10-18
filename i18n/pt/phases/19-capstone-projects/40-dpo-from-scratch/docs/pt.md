@@ -27,42 +27,46 @@ DPO utiliza uma perda supervisionada  substituir estas duas fases. O modelo de r
 
 O modelo Bradley-Terry começou.`x`E duas conclusões.`y_w`(eleito)`y_l`(rejeitado), humanos preferência `y_w`A probabilidade é
 
-```text
-P(y_w > y_l | x) = sigmoid( r(x, y_w) - r(x, y_l) )
+```math
+P(y_w > y_l \mid x) = \sigma\big( r(x, y_w) - r(x, y_l) \big)
 ```
 
 Entre eles `r`É uma função de recompensa latente.`r`, e depois a política de treinamento .`pi`, com o âncora KL maximizar `r`- Não .
 
-```text
-max_pi   E_{x, y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 O DPO recomenda observar que, neste objectivo, a política óptima`pi*`Pode ser usado.`r`写成 forma fechada:
 
-```text
-pi*(y | x) = (1/Z(x)) * pi_ref(y | x) * exp( r(x, y) / beta )
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left( \frac{r(x, y)}{\beta} \right)
 ```
 
 Para o`r`重新整理:
 
-```text
-r(x, y) = beta * ( log pi*(y | x) - log pi_ref(y | x) ) + beta * log Z(x)
+```math
+r(x, y) = \beta \big( \log \pi^*(y \mid x) - \log \pi_{\text{ref}}(y \mid x) \big) + \beta \log Z(x)
 ```
 
 `log Z(x)`项对 `y_w`和 `y_l`É assim que depende.`x`- Não .`y`), portanto, na calculação da diferença de preferência 时会抵消:
 
-```text
-r(x, y_w) - r(x, y_l) = beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                                - log pi_theta(y_l|x) + log pi_ref(y_l|x) )
+```math
+\begin{aligned}
+r(x, y_w) - r(x, y_l) = \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+&- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big)
+\end{aligned}
 ```
 
 代入Bradley-Terry sigmoid,并对偏好对取负记录概率:
 
-```text
-L_DPO(theta) = - E_{(x, y_w, y_l)} [
-  log sigmoid( beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                       - log pi_theta(y_l|x) + log pi_ref(y_l|x) ) )
-]
+```math
+\begin{aligned}
+L_{\text{DPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l)} \Big[
+  \log \sigma\big( \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+  &- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big) \big)
+\Big]
+\end{aligned}
 ```
 
 É o caso de um sigmoide de um log-probabilidade, que é calculado por quatro log-probabilidades. Não há um modelo de recompensa único. Não há PPO.
@@ -87,8 +91,8 @@ flowchart LR
 
 Antes de qualquer treinamento, há um teste de saúde mental útil.`log pi_theta(y_w | x)`求 Gradiente:
 
-```text
-d L_DPO / d log pi_theta(y_w | x) = - beta * (1 - sigmoid(z))
+```math
+\frac{\partial L_{\text{DPO}}}{\partial \log \pi_\theta(y_w \mid x)} = -\beta \big(1 - \sigma(z)\big)
 ```
 
 Entre eles `z`É o argumento de Sigmoide.`z`Por isso, o resultado é um aumento da política de log-probabilidade da conclusão escolhida, reduzindo as perdas.`log pi_theta(y_l | x)`O Gradiente 为正: melhorar a probabilidade de log rejeitado 会增加 Loss── treinamento 将将将将选取 往上推,把将将拒绝 往下推── referência é congelada; não se moverá──

@@ -83,7 +83,7 @@ Contador de tokens , muito grosseiro .`len(text) // 4`Heurística. 本课重点�
 
 ## Por que a cadeia é importante
 
-Uma vez negar, mais uma vez permitir, mais barato.`WhitelistGate`运行 O(1) busca por hash`RegexGate`运行 O (patrão)`RecencyGate`读取 mensagem loja de uma pequena fatia.`BudgetGate`读取整个账簿──你需要按成本升序排列它们,这样被拒绝的电话就能在执行昂贵的工作前短路──
+Uma vez negar, mais uma vez permitir, mais barato.`WhitelistGate`运行 $O(1)$- Não.`RegexGate`运行 $O(\text{pattern} \cdot \text{argv})$- Não.`RecencyGate`读取 mensagem loja de uma pequena fatia.`BudgetGate`读取整个账簿──你需要按成本升序排列它们,这样被拒绝的电话就能在执行昂贵的工作前短路──
 
 Você também deve seguir o raio da explosão 排序──Whitelist 是最强的主张: este instrumento Não está no contrato 中──regex gate 其次: este argumento Não está no contrato 中──Recensão 仍然关心,但调用 在结构上是合法的──Budget 放在最后,因为按照定义,它只会在其他检查都通过后触发──
 

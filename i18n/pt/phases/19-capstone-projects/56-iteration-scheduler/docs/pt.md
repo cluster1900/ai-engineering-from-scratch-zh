@@ -62,8 +62,8 @@ flowchart TB
 
 本课使用的 UCB公式是经典 UCB1──
 
-```text
-ucb(branch) = mean_reward(branch) + c * sqrt( ln(total_runs) / runs(branch) )
+```math
+\text{ucb}(\text{branch}) = \text{mean\_reward}(\text{branch}) + c \sqrt{ \frac{\ln(\text{total\_runs})}{\text{runs}(\text{branch})} }
 ```
 
 `total_runs`É o total de todos os ramos 上已完成的实验.`c`É o peso da exploração;`sqrt(2)`- Correrá para zero.`+inf`, por isso, os ramos não tentados 总是先被调调度──平均奖励 高的分支会保持高分,直到其他分支 追上;运行很多次但奖励 不高的分支会被运行次数更少的替代品超过──

@@ -16,7 +16,7 @@
 
 ## 问题
 
-N 级 简单 allreduce 将张量 N 次发送到根并广播 N 次。 Cada ranking de带宽缩缩为O(N), root成为瓶,并且挂钟楼层是最慢的链接乘以N。 Ring allreduce 将其展平为大小为T/N的2(N-1) 块,因此每个rank字节降至2T(N-1)/N,与集群大小无关── Tree allreduce 在小N 和高延迟链路上获胜,因为深度是log2(N) 跳而不是2(N-1) ─集群形态选择错误的拓,最慢的决定时间步骤──
+N 级上的简单将张量 N 次发送到根并广播 N 次。 cada rank 带宽缩放为$O(N)$, o anel se torna um copo, e o hang-lock é o mais lento do link multiplicado por N.$T/N$de$2(N-1)$块, portanto cada rank 字节 下降到$2T(N-1)/N$A árvore tudo reduz em N pequeno e em N alto atrasado, porque a profundidade é$\log_2(N)$Salta em vez de salta$2(N-1)$                                                                                                                                                                                                                                                              
 
  Cada quadro de treinamento distribuído que você vai ler neste tutorial depende de estas quatro linguagens originais。 PyTorch DDP irá reduzir a gradiência com cada barril de parâmetros em um allreduce 同步。 ZeRO  através de reduce_scatter para o estado do optimizador fazer um pedaço, e através de allgather 广播更新的参数。 FSDP irá tornar-se completo em todo o conjunto com reduce_scatter。
 

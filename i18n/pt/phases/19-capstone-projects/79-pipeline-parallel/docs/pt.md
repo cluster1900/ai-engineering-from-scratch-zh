@@ -16,7 +16,7 @@
 
 ## 问题
 
-O modelo de parâmetros 70B no fp16 precisa apenas de parâmetros de 140 GB. Nenhum GPU de consumo pode suportá-lo. O ZeRO-3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+O modelo de parâmetros 70B no fp16 precisa apenas de parâmetros de 140 GB. Nenhum GPU de consumo pode suportá-lo.$\log(N)$︎ O tubo é executado através de diferentes rotas: ︎ o modelo é cortado em N 个阶段, e colocado em cada nível em um estágio. ︎ O primeiro nível é executado em 0 ︎, ︎ o primeiro nível é executado em 2 ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎
 
 气泡是管道开始时(等第一微批到最后阶段) 和结束时(等最后微批回流) 的空时间──对于M 个微批和N 个阶段,每阶段的气泡分数为 (N-1) /(M+N-1)──当M=8、N=4时,即27%.──当M=64、N=4时,为4.5%──当M=64、N=4时,即4.5%──当每阶段有很多微批时,气泡就会缩小,这意味着每微批批的批次大小小小小小,驱动器批次设计的约.──
 

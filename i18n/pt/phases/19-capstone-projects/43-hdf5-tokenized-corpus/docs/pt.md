@@ -16,7 +16,7 @@
 
 ## O problema
 
-现代语言模型训练运行 会在数十名工人上以每秒数十万样本的速度读取代码. JSONL no disco em primeira vez faltas de página de caché faltas 时就会崩: JSON parser 很慢,文档边界无法寻址,而寻到"样本 4,217,884" 需要扫描文件──即使压缩效果很好Parquet,也不适合这里,因为教练不想要列;它想要一个带 O1) 随机访问的平代码流
+现代语言模型训练运行 会在数十名工人上以每秒数十万样本的速度读取代码. JSONL no disco em primeira vez faltas de página de caché faltas 时就会崩: JSON parser 很慢,文档边界无法寻址,而寻到"样本 4,217,884" 需要扫描文件──即使压缩效果很好.$O(1)$acesso aleatório de 平 token stream.
 
 HDF5  Adaptado, é porque ele fornece um conjunto de dados fragmentado, ajustável, grande e pequeno, apenas para números inteiros, seus pedaços em leitura em cache de página amigo amigo.`tokens[3,200,000 : 3,200,8192]`A slice, o HDF5 vai colocar o requisito de hiperlabro de cache de página copiar para uma nova distribuição de array NumPy ⋅ custo é cada trabalhador um manuseio de arquivo aberto, bem como um pedaço de grande página de cache de pegada; em comparação com o custo de JSONL, que pode ser ignorado ⋅
 
