@@ -30,19 +30,19 @@ while True:
 
 **AlphaZero (2017)。**Silver et al. 给定一个规则已知的游戏(शतरंज、शोगी、Go):
 
-- नीति-मूल्य नेटवर्क: एक塔 `f_θ(s) → (p, v)``p`यह कानूनी कदम है ऊपर की पूर्ववर्ती`v`खेल के परिणाम की अपेक्षा है।
-- मोन्टे कार्लो वृक्ष खोज (MCTS): प्रत्येक चरण में, वृक्षों का उपयोग`(p, v)`作为前 + बूटस्ट्रैप──用 UCB (PUCT) 选择节点:`a* = argmax Q(s, a) + c · p(a|s) · √N(s) / (1 + N(s, a))`
-- स्वयं-खेलः एजेंट बनाम एजेंट को खेल के लिए.`t`步,MCTS यात्रा वितरण `π_t`成为政策 训练目标──
-- हानि:`L = (v - z)² - π · log p + c · ||θ||²``z` खेल का परिणाम+1 / 0 / -1)
+- नीति-मूल्य नेटवर्क: एक塔 $f_\theta(s) \to (p, v)$$p$यह कानूनी कदम है ऊपर की पूर्ववर्ती$v$खेल के परिणाम की अपेक्षा है।
+- मोन्टे कार्लो वृक्ष खोज (MCTS): प्रत्येक चरण में, वृक्षों का उपयोग$(p, v)$作为前 + बूटस्ट्रैप──用 UCB (PUCT) 选择节点:$a^{\ast} = \arg\max_a Q(s, a) + c \cdot p(a \mid s) \cdot \sqrt{N(s)} / (1 + N(s, a))$
+- स्वयं-खेलः एजेंट बनाम एजेंट को खेल के लिए.$t$步,MCTS यात्रा वितरण $\pi_t$成为政策 训练目标──
+- हानि:$L = (v - z)^2 - \pi \cdot \log p + c \cdot \lVert \theta \rVert^2$$z$ खेल का परिणाम+1 / 0 / -1)
 
 零人类知识――零手工. एक एकल संयोजन, अपने स्वयं के खेल के बाद एक शतरंज, शोगी और गो को प्राप्त किया।
 
 **MuZero (2019)。**Schrittwieser et al. 移除规则已知的要求──
 
-- न कि स्थिर वातावरण का उपयोग करना, बल्कि एक *लैटिन डायनामिक्स मॉडल* सीखना`(h, g, f)`:
-  - `h(s)`:将观察 编码为潜伏状态──
-  - `g(s_latent, a)`:预测下一个潜伏状态 + पुरस्कार──
-  - `f(s_latent)`:预测 नीति पूर्व + मूल्य。
+- न कि स्थिर वातावरण का उपयोग करना, बल्कि एक *लैटिन डायनामिक्स मॉडल* सीखना$(h, g, f)$:
+  - $h(s)$:将观察 编码为潜伏状态──
+  - $g(s_{\text{latent}}, a)$:预测下一个潜伏状态 + पुरस्कार──
+  - $f(s_{\text{latent}})$:预测 नीति पूर्व + मूल्य。
 - MCTS में *लर्ना लटेंट स्पेस* 中运行──同一搜索,同一训练循环──
 - 适用于Go、棋、shogi *以及* अत्तारी  一个算法,不需要规则知识──
 
@@ -54,11 +54,11 @@ while True:
 
 - 游戏: उत्तर गणित / कोडिंग / तर्क समस्या──胜利= सत्यापितकर्ता(परीक्षण मामला 通过、数值答案匹配) वापसी 1──
 - नीतिःLLM。कार्य:टोकन──राज्यःप्रदर्शन + प्रतिक्रिया-अभी तक──
--  कोई आलोचना नहीं                                                                                                                                                                                                                                                             `G`个完成──计算每个完成的奖励──使用 **group-relative advantage** `A_i = (r_i - mean_r) / std_r`作为 REINFORCE 风格更新的信号──
+-  कोई आलोचना नहीं $V_\phi$)― इसके विपरीत, प्रत्येक संकेत पर, नीतिगत दृष्टिकोण से $G$个完成──计算每个完成的奖励──使用 **group-relative advantage** $A_i = (r_i - \text{mean}_r) / \text{std}_r$作为 REINFORCE 风格更新的信号──
 - संदर्भ नीति के लिए KL दंड के साथ, RLHF के समान
 - 完整 हानि:
 
-  `L_GRPO(θ) = -E_{q, {o_i}} [ (1/G) Σ_i A_i · log π_θ(o_i | q) ] + β · KL(π_θ || π_ref)`
+  $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
  कोई पुरस्कार मॉडल, कोई आलोचक, कोई एमसीटीएस नहीं  समूह-संबंधी आधार रेखा  तीनों को बदल दिया गया  तर्क मानदंड में, कम से अधिक गणना के साथ  पीपीओ-आरएलएचएफ 质量  तक पहुँचने या उससे अधिक 
 
@@ -145,7 +145,7 @@ RLHF के समान निदानः संदर्भ के लिए 
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO ने RLHF का जोखिम उठाया हैः यदि सत्यापक  गलती या उपयोग किया जा सकता है, तो LLM शोषण करेगा।
-- **Group size 太小。**समूह मूल के आधार पर`1/√G`缩放――低于 `G = 4`时,अतिरिक्त संकेत 会很噪音;标准选择是 `G = 8`तक `64`
+- **Group size 太小。**समूह मूल के आधार पर$1/\sqrt{G}$缩放――低于 $G = 4$时,अतिरिक्त संकेत 会很噪音;标准选择是 $G = 8$64 तक
 - **Length bias。**अलग-अलग लंबाई के LLM पूरा होने के विभिन्न लॉग-संभाव्यताएँ हैं।
 - **纯 self-play 循环。**अल्फाज़ेरो 风格训练可能在一般数量游戏中卡进 प्रभुत्व लूप──可通过多样化对手池 लीग खेल,पढ़ें 10)缓解──
 - **Search-policy mismatch。**अल्फाज़ेर  प्रशिक्षण नीति 去模仿搜索结果── यदि नीति नेट 太小, खोज का वितरण प्रदर्शित नहीं कर सकता है, तो प्रशिक्षण रुक जाएगा──
@@ -196,7 +196,7 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 ## अभ्यास
 
-1. **Easy。**`code/main.py`中实现 GRPO bandiit──在 2 个提示 × प्रत्येक 4 个答案 टोकन 上训练──使用 `G=8`में < 1,000 बार अद्यतन में प्राप्त
+1. **Easy。**`code/main.py`中实现 GRPO bandiit──在 2 个提示 × प्रत्येक 4 个答案 टोकन 上训练──使用 $G=8$में < 1,000 बार अद्यतन में प्राप्त
 2. **Medium。**接入 PPO(क्लिप) और वैनिला REINFORCE──在同一个强盗上比较样本效率和奖励差与GRPO的差──
 3. **Hard。**扩展到长度为 2 的推理链:agent 发发发两个 टोकन,verifier 对两个 टोकन对对 给予奖励──测量GRPO 如何处理两步序列 上的信用分配──(提示:按 *पूर्ण क्रम* 计算组优势,并传播到两个 टोकन位置──)
 
@@ -204,11 +204,11 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 | Term | 人们常说 | 实际含义 |
 |------|-----------------|-----------------------|
-| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned `(p, v)` prior 的 UCB1/PUCT selection。 |
+| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned $(p, v)$ prior 的 UCB1/PUCT selection。 |
 | AlphaZero | “Self-play + MCTS” | Policy-value net 被训练来匹配 MCTS visits 和 game outcome。 |
 | MuZero | “Learned-model AlphaZero” | 相同循环，但通过 learned dynamics 在 latent space 中进行。 |
 | GRPO | “Critic-free PPO” | Group Relative Policy Optimization；带 group-mean baseline + KL 的 REINFORCE。 |
-| PUCT | “AlphaZero 的 UCB” | `Q + c · p · √N / (1 + N_a)` —— 平衡 value estimate 与 prior。 |
+| PUCT | “AlphaZero 的 UCB” | $Q + c \cdot p \cdot \sqrt{N} / (1 + N_a)$ —— 平衡 value estimate 与 prior。 |
 | Self-play | “Agent vs past self” | Zero-sum 的标准做法；提供对称训练信号。 |
 | League play | “Population-based self-play” | 将 past + current + exploiters 采样为 opponents。 |
 | Verifier reward | “Verifiable RL” | Reward 来自 deterministic checker（tests pass、answer matches）。 |

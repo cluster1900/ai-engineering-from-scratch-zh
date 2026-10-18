@@ -21,31 +21,31 @@ RLHF(Christiano et al. 2017; Ouyang et al. 2022)  प्राथमिकता
 
 ![Three-stage RLHF: SFT, RM training on pairwise prefs, PPO with KL penalty](../assets/rlhf.svg)
 
-**Stage 1：Supervised Fine-Tuning（SFT）。**开始──在目标行为的人类编写示范 上细节调️ निर्देश-अनुशरण प्रतिक्रियाएँ、उपयोगी उत्तर इत्यादि)`π_SFT`मॉडल, यह अच्छे व्यवहार की ओर मुड़ता है, लेकिन अभी भी कार्रवाई के लिए असीमित स्थान है।
+**Stage 1：Supervised Fine-Tuning（SFT）。**开始──在目标行为的人类编写示范 上细节调️ निर्देश-अनुशरण प्रतिक्रियाएँ、उपयोगी उत्तर इत्यादि)$\pi_{\text{SFT}}$मॉडल, यह अच्छे व्यवहार की ओर मुड़ता है, लेकिन अभी भी कार्रवाई के लिए असीमित स्थान है।
 
 **Stage 2：Reward Model training。**
 
-- 收集对提示 `x``(y_+, y_-)`, द्वारा मानव द्वारा चिह्नित y_+ 优于 y_-──
--  प्रशिक्षण पुरस्कार मॉडल `R_φ(x, y)`, इसे दे दो ।`y_+`分配更高分数──
+- 收集对提示 $x$$(y_+, y_-)$, द्वारा मानव द्वारा चिह्नित y_+ 优于 y_-──
+-  प्रशिक्षण पुरस्कार मॉडल $R_\phi(x, y)$, इसे दे दो ।$y_+$分配更高分数──
 - हानि:**Bradley-Terry pairwise logistic**:
 
-  `L(φ) = -E[ log σ(R_φ(x, y_+) - R_φ(x, y_-)) ]`
+  $L(\phi) = -\mathbb{E}[ \log \sigma(R_\phi(x, y_+) - R_\phi(x, y_-)) ]$
 
-  σ 是 सिग्मोइड── रिवार्ड्स का अंतर 隐含偏好 的 लॉग-ऑड्स──BT 1952 से ब्राडली-टेरी) से हमेशा मानक विधि रही है, यह भी आधुनिक आरएलएचएफ में मुख्य प्रवाह चयन──
+  $\sigma$यह एक विशिष्ट विधि है। यह एक प्रमुख विकल्प है।
 
-- `R_φ`आमतौर पर एसएफटी मॉडल से आरंभिक, और शीर्ष पर एक स्केलर सिर जोड़ना।
+- $R_\phi$आमतौर पर एसएफटी मॉडल से आरंभिक, और शीर्ष पर एक स्केलर सिर जोड़ना।
 
 **Stage 3：带 KL penalty、针对 RM 的 PPO。**
 
-- से `π_SFT`प्रारंभिक प्रशिक्षण नीति`π_θ`                                                                                                                                                                                                                                                              `π_ref = π_SFT`
-- प्रतिक्रिया `y`结束时的奖励:
+- से $\pi_{\text{SFT}}$प्रारंभिक प्रशिक्षण नीति$\pi_\theta$                                                                                                                                                                                                                                                              $\pi_{\text{ref}} = \pi_{\text{SFT}}$
+- प्रतिक्रिया $y$结束时的奖励:
 
-  `r_total(x, y) = R_φ(x, y) - β · KL(π_θ(·|x) || π_ref(·|x))`
+  $r_{\text{total}}(x, y) = R_\phi(x, y) - \beta \cdot \mathrm{KL}(\pi_\theta(\cdot \mid x) \Vert \pi_{\text{ref}}(\cdot \mid x))$
 
-  KL दंड 防止 `π_θ`任意漂离 `π_SFT` यह एक *नियमितकर्ता*, नहीं है कठोरता ट्रस्ट क्षेत्र──`β`आम तौर पर `0.01`-`0.05`
+  KL दंड 防止 $\pi_\theta$任意漂离 $\pi_{\text{SFT}}$ यह एक *नियमितकर्ता*, नहीं है कठोरता ट्रस्ट क्षेत्र──$\beta$आम तौर पर 0.01-0.05 है।
 - इस पुरस्कार का उपयोग करें 运行 PPO(पाठ 08)  फायदे ऊपर गणना में टोकन स्तर की प्रक्षेपवक्र में, लेकिन RM केवल पूर्ण प्रतिक्रिया 打分 देता है
 
-**为什么需要 KL？**没有它,PPO会很乐意找到奖励黑客策略  RM                                                                                                                                                                                                                                                     `π_θ`保持在RM 训练过的多样性 附近──它是RLHF में सबसे महत्वपूर्ण एकल旋──
+**为什么需要 KL？**没有它,PPO会很乐意找到奖励黑客策略  RM                                                                                                                                                                                                                                                     $\pi_\theta$保持在RM 训练过的多样性 附近──它是RLHF में सबसे महत्वपूर्ण एकल旋──
 
 **2026 状态：**
 
@@ -98,7 +98,7 @@ def rm_train_step(w, x, y_pos, y_neg, lr):
 
 ### चरण 3: आरएम 之 पर पीपीओ जैसी नीति
 
-हमारी खिलौना नीति शब्दकोश से एक टोकन उत्पन्न करेगा। हम RM का उपयोग कर इस टोकन को 打分,计算 `log π_θ(token | prompt)`, जोड़ें KL-to-reference दंड,并应用 कटौती पीपीओ सरोगेट
+हमारी खिलौना नीति शब्दकोश से एक टोकन उत्पन्न करेगा। हम RM का उपयोग कर इस टोकन को 打分,计算 $\log \pi_\theta(\text{token} \mid \text{prompt})$, जोड़ें KL-to-reference दंड,并应用 कटौती पीपीओ सरोगेट
 
 ```python
 def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### चरण 4: मॉनिटर KL
 
-हर अद्यतन ट्रैकिंग मतलब`KL(π_θ || π_ref)` अगर यह चढ़ गया `~5-10`, नीति 已漂离 `π_SFT`很远 低 `β`यह वास्तविक RLHF में सबसे महत्वपूर्ण निदान है।
+हर अद्यतन ट्रैकिंग मतलब$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$ अगर यह चढ़ गया `~5-10`, नीति 已漂离 $\pi_{\text{SFT}}$很远 低 $\beta$यह वास्तविक RLHF में सबसे महत्वपूर्ण निदान है।
 
 ### चरण 5: TRL का उपयोग करें उत्पादन नुस्खा
 
@@ -164,7 +164,7 @@ for batch in dataloader:
 
 ## 陷
 
-- **Over-optimization / reward hacking。**आरएम अपूर्ण नहीं है;`π_θ`                                                                                                                                                                                                                                                              `β`、 विस्तार RM प्रशिक्षण डेटा
+- **Over-optimization / reward hacking。**आरएम अपूर्ण नहीं है;$\pi_\theta$                                                                                                                                                                                                                                                              $\beta$、 विस्तार RM प्रशिक्षण डेटा
 - **Length hacking。**长度――Politics 学会填充答案──补救:लंबाई-मानककृत पुरस्कार,或使用-लंबाई-जागरूक RM के RLAIF──
 - **RM 太小。**कम से कम आरएम की जरूरत है और नीति एक ही है।
 - **KL tuning。** 太低 → drift 和 reward hacking──β 太高 → नीति 几乎不变──标准技巧是使用一个以固定的每步 KL 为目标的 *适应的* β──
@@ -214,7 +214,7 @@ tags: [rl, rlhf, alignment, llm]
 ## अभ्यास
 
 1. **简单。**`code/main.py`中500  सिंथेटिक प्राथमिकता जोड़े  प्रशिक्षण ब्रैडली-टेरी इनाम मॉडल──在 hold-out के 100  जोड़े 上测量 जोड़ी सटीकता── 90% से अधिक होना चाहिए──
-2. **中等。**उपयोग `β ∈ {0.0, 0.1, 1.0}`运行 खिलौना PPO-RLHF लूप──对每个值,绘制 RM स्कोर बनाम KL-to-reference over updates── कौन से रन 发生奖励-hack?
+2. **中等。**उपयोग $\beta \in \lbrace 0.0, 0.1, 1.0 \rbrace$运行 खिलौना PPO-RLHF लूप──对每个值,绘制 RM स्कोर बनाम KL-to-reference over updates── कौन से रन 发生奖励-hack?
 3. **困难。**RLHF-PPO पाइपलाइन के साथ उपयोग की गणना में और अंतिम RM स्कोर तक पहुंचने में वृद्धि
 
 ## 关键术语
@@ -223,8 +223,8 @@ tags: [rl, rlhf, alignment, llm]
 |------|----------|----------|
 | RLHF | "Alignment RL" | 三阶段 SFT + RM + PPO pipeline（Christiano 2017, Ouyang 2022）。 |
 | Reward Model (RM) | "The scoring net" | 通过 Bradley-Terry 拟合 pairwise preferences 学到的 scalar function。 |
-| Bradley-Terry | "Pairwise logistic loss" | `P(y_+ ≻ y_-) = σ(R(y_+) - R(y_-))`；标准 RM objective。 |
-| KL penalty | "Stay near the reference" | reward 中的 `β · KL(π_θ \|\| π_ref)`；anti-reward-hacking regularizer。 |
+| Bradley-Terry | "Pairwise logistic loss" | $P(y_+ \succ y_-) = \sigma(R(y_+) - R(y_-))$；标准 RM objective。 |
+| KL penalty | "Stay near the reference" | reward 中的 $\beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$；anti-reward-hacking regularizer。 |
 | Reward hacking | "Goodhart's law" | Policy 利用 RM 缺陷；症状：reward 上升，human eval 持平。 |
 | RLAIF | "AI-labeled preferences" | 标签来自另一个 LM 而非人类的 RLHF。 |
 | PRM | "Process Reward Model" | 给 partial reasoning steps 打分；用于 reasoning pipelines。 |

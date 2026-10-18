@@ -21,31 +21,31 @@
 
 ![Four MARL regimes: indep, centralized critic, self-play, league](../assets/marl.svg)
 
-**Formalism: Markov Game.**एमडीपी का पानाकरणःराज्य `S`、 संयुक्त कार्य `a = (a_1, …, a_n)`、 संक्रमण `P(s' | s, a)`, तथा प्रत्येक एजेंट के पुरस्कार `R_i(s, a, s')` प्रत्येक एजेंट `i`अपनी नीति में`π_i`नीचे अपने प्रतिफल को अधिकतम करें। यदि पुरस्कार पूरी तरह से समान हैं, तो यह है।**fully cooperative** यदि यह शून्य-अमेरिका है, तो यह है **adversarial** यदि मिश्रित, तो है **general-sum**
+**Formalism: Markov Game.**एमडीपी का पानाकरणःराज्य $S$、 संयुक्त कार्य $a = (a_1, \ldots, a_n)$、 संक्रमण $P(s' \mid s, a)$, तथा प्रत्येक एजेंट के पुरस्कार $R_i(s, a, s')$ प्रत्येक एजेंट $i$अपनी नीति में$\pi_i$नीचे अपने प्रतिफल को अधिकतम करें। यदि पुरस्कार पूरी तरह से समान हैं, तो यह है।**fully cooperative** यदि यह शून्य-अमेरिका है, तो यह है **adversarial** यदि मिश्रित, तो है **general-sum**
 
 **核心挑战：**
 
-- **Non-stationarity.**एजेंट से`i`का दृष्टिकोण देखें,`P(s' | s, a_i)`取决于 `π_{-i}`, और यह बदल रहा है.
+- **Non-stationarity.**एजेंट से$i$का दृष्टिकोण देखें,$P(s' \mid s, a_i)$取决于 $\pi_{-i}$, और यह बदल रहा है.
 - **Credit assignment.**साझा पुरस्कार में, कौन सा एजेंट इसे करने के लिए नेतृत्व किया?
 - **Exploration coordination.**एजेंटों को एक ही राज्य की दोहराने के बजाय एक-दूसरे की पूर्ति करने की रणनीति तलाशनी होगी।
-- **Scalability.**संयुक्त कार्यक्षेत्र 会随 `n`वृद्धि दर
+- **Scalability.**संयुक्त कार्यक्षेत्र 会随 $n$वृद्धि दर
 - **Partial observability.**प्रत्येक एजेंट केवल अपने स्वयं के अवलोकन को देख सकता है; वैश्विक राज्य छिपा हुआ है।
 
 **四种主导范式：**
 
 **1. Independent Q-learning / independent PPO (IQL, IPPO).**प्रत्येक एजेंट सीखें अपना स्वयं का प्रश्न या नीति, अन्य एजेंटों को अपने पर्यावरण का हिस्सा बनाएं सरल, कभी प्रभावी, विशेष रूप से अनुभव दोहराएं एक साधारण एजेंट-मॉडलिंग के रूप में।
 
-**2. Centralized training, decentralized execution (CTDE).**आधुनिक शैली में सबसे आम है. प्रत्येक एजेंट की अपनी नीति है.`π_i`, यह स्थानीय अवलोकन पर आधारित है ।`o_i` तैनाती के लिए मानक विकेन्द्रीकृत निष्पादन है।`Q(s, a_1, …, a_n)`इस पर एक पूर्ण वैश्विक स्थिति तथा संयुक्त कार्य के लिए शर्तें:
+**2. Centralized training, decentralized execution (CTDE).**आधुनिक शैली में सबसे आम है. प्रत्येक एजेंट की अपनी नीति है.$\pi_i$, यह स्थानीय अवलोकन पर आधारित है ।$o_i$ तैनाती के लिए मानक विकेन्द्रीकृत निष्पादन है।$Q(s, a_1, \ldots, a_n)$इस पर एक पूर्ण वैश्विक स्थिति तथा संयुक्त कार्य के लिए शर्तें:
 - **MADDPG**(लो और सहयोगियों 2017): 带有每个代理 一个集中批评的DDPG──
-- **COMA**(Foerster et al. 2017): विरोधाभासी आधार  प्रश्न यदि मैं उस समय कार्रवाई करता `a'`, मेरा पुरस्कार होगा यह कितना है?
+- **COMA**(Foerster et al. 2017): विरोधाभासी आधार  प्रश्न यदि मैं उस समय कार्रवाई करता $a'$, मेरा पुरस्कार होगा यह कितना है?
 - **MAPPO**/**IPPO**साझा आलोचक (यू और सहयोगियों 2022) के साथः 带有集中价值功能的PPO──2026年合作社 MARL 中的主导方法──
-- **QMIX**(Rashid et al. 2018): मूल्य विघटन`Q_tot(s, a) = f(Q_1(s, a_1), …, Q_n(s, a_n))`,并使用单调混合──
+- **QMIX**(Rashid et al. 2018): मूल्य विघटन$Q_{\text{tot}}(s, a) = f(Q_1(s, a_1), \ldots, Q_n(s, a_n))$,并使用单调混合──
 
 **3. Self-play.**एक ही एजेंट के दो प्रतिकृतियाँ एक दूसरे के खिलाफ युद्ध करते हैं।
 
 **4. League play.**स्व-खेल आम-समुदाय / विरोधी वातावरण का विस्तारः लीग से लेग में प्रतिद्वंद्वी के लिए एक समूह को बनाए रखना, और उनके खिलाफ प्रशिक्षण देना। शोषकों में शामिल होना।
 
-**Communication.**允许 agents 相互发送学到的信息 `m_i`在合作环境中有效──Foerster et al. (2016) 表明,विभिन्न एजेंटों के बीच संचार को समाप्ति तक प्रशिक्षित किया जा सकता है── आज एलएलएम के बहु-एजेंट प्रणालियों पर आधारित है
+**Communication.**允许 agents 相互发送学到的信息 $m_i$在合作环境中有效──Foerster et al. (2016) 表明,विभिन्न एजेंटों के बीच संचार को समाप्ति तक प्रशिक्षित किया जा सकता है── आज एलएलएम के बहु-एजेंट प्रणालियों पर आधारित है
 
 
 ```figure
@@ -102,11 +102,11 @@ def independent_q(env, episodes, alpha, gamma, epsilon):
 
 ### 步骤3: केंद्रीकृत Q और विघटित-मूल्य अद्यतन
 
-संयुक्त कार्यों के लिए एक प्रश्न का उपयोग करेंः`Q(s, a_1, a_2)` साझा पुरस्कार 更新──执行时通过边缘化来分散化:`π_i(s) = argmax_{a_i} max_{a_{-i}} Q(s, a_1, a_2)`यह सूचकांक स्तर के संयुक्त कार्य क्षेत्र का उपयोग करके एक* सही* वैश्विक दृष्टिकोण को बदल देता है
+संयुक्त कार्यों के लिए एक प्रश्न का उपयोग करेंः$Q(s, a_1, a_2)$ साझा पुरस्कार 更新──执行时通过边缘化来分散化:$\pi_i(s) = \arg\max_{a_i} \max_{a_{-i}} Q(s, a_1, a_2)$यह सूचकांक स्तर के संयुक्त कार्य क्षेत्र का उपयोग करके एक* सही* वैश्विक दृष्टिकोण को बदल देता है
 
 ### 步骤 4: 简单 स्व-प्ले
 
-एक एजेंट, दो भूमिकाएँ. प्रशिक्षण एजेंट ए.`K`个节目,把 A के वजन 复制到 B──对称训练, प्रगति一致── अल्फाझेरो नुस्खा का लघु संस्करण──
+एक एजेंट, दो भूमिकाएँ. प्रशिक्षण एजेंट ए.$K$个节目,把 A के वजन 复制到 B──对称训练, प्रगति一致── अल्फाझेरो नुस्खा का लघु संस्करण──
 
 ## 常见陷
 
@@ -168,11 +168,11 @@ tags: [rl, multi-agent, marl, self-play]
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Markov game | "Multi-agent MDP" | `(S, A_1, …, A_n, P, R_1, …, R_n)`；每个 agent 都有自己的 reward。 |
+| Markov game | "Multi-agent MDP" | $(S, A_1, \ldots, A_n, P, R_1, \ldots, R_n)$；每个 agent 都有自己的 reward。 |
 | CTDE | "Centralized training, decentralized execution" | Training time 使用 joint critic；每个 agent 的 policy 只使用 local obs。 |
 | IPPO | "Independent PPO" | 每个 agent 单独运行 PPO。简单 baseline；经常被低估。 |
 | MAPPO | "Multi-agent PPO" | 带有以 global state 为条件的 centralized value function 的 PPO。 |
-| QMIX | "Monotonic value decomposition" | `Q_tot = f_monotone(Q_1, …, Q_n)` 允许 decentralized argmax。 |
+| QMIX | "Monotonic value decomposition" | $Q_{\text{tot}} = f_{\text{monotone}}(Q_1, \ldots, Q_n)$ 允许 decentralized argmax。 |
 | COMA | "Counterfactual multi-agent" | Advantage = 我的 Q 减去对我的 action 做 marginalizing 后的 expected Q。 |
 | Self-play | "Agent vs past self" | 单个 agent，两个 roles；zero-sum games 的标准方法。 |
 | League play | "Population training" | 缓存过去的 policies，从 pool 中采样 opponents；处理 strategy cycles。 |
