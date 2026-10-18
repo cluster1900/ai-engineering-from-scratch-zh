@@ -356,6 +356,14 @@ Performance 会在远小于 784 维时进入平台期。这个平台期就是你
 
 3. 取一个有 50 个 features、但只有 5 个 informative features 的 dataset（用 `sklearn.datasets.make_classification` 生成）。应用 PCA，并检查 explained variance curve 是否正确识别出数据实际上是 5-dimensional。
 
+### 提示
+
+**练习 1。** 阅读 `PCA` 类中的 `inverse_transform`，并为每种主成分数量分别拟合一个模型。计算 10、50 和 200 个主成分对应的 `reconstruction_error`；主成分数量增加时，误差必须下降。
+
+**练习 2。** 在同一个数据子集上拟合 `sklearn.manifold.TSNE` 三次，只改变 `perplexity`，并保持相同的 `random_state`。较低的困惑度只考察少量邻居，因此会形成较小且紧密的群组；较高的困惑度考察更多邻居，因此会形成更大、更平滑的群组。
+
+**练习 3。** 调用 `make_classification(n_features=50, n_informative=5, n_redundant=45)`，拟合 `PCA`，并打印累计解释方差。冗余特征是有效特征的线性组合，因此曲线在 5 个主成分处就接近 1.0。然后尝试 `n_redundant=0`：其余 45 个特征是独立噪声，曲线不会趋于平坦。
+
 ## Key Terms
 
 | Term | What people say | What it actually means |
