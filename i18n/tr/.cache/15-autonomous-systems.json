@@ -1,7 +1,7 @@
 {
-  "phases/15-autonomous-systems/01-long-horizon-agents/docs/en.md": "bed296a96889fb1314b7a63dc186aeddb4c1cef4d975a5920462ae98df69327f",
+  "phases/15-autonomous-systems/01-long-horizon-agents/docs/en.md": "8a5dc501150df3a86afbbd6cbf1a02a02f5cda94ac40d7b6a36bb1042dd7331e",
   "phases/15-autonomous-systems/02-star-family-reasoning/docs/en.md": "9d208508a0ace164fe614fe44dec0c7977e9a0bcdb97e37136da7f817e6fdd70",
-  "phases/15-autonomous-systems/03-alphaevolve-evolutionary-coding/docs/en.md": "e7940daeaec535e704c4e5c125dd2a56a05dd44c24e978dd5c8e039531c19e41",
+  "phases/15-autonomous-systems/03-alphaevolve-evolutionary-coding/docs/en.md": "220309865fcc83e172864065190865a96dba26850c3c8d45522411480560d1bf",
   "phases/15-autonomous-systems/04-darwin-godel-machine/docs/en.md": "a7b7fd46984fbe5b6251deea6578432beff7b1c451768fea9278449f8d8b8136",
   "phases/15-autonomous-systems/05-ai-scientist-v2/docs/en.md": "f2ea51065366d376f70d13c1ed2a1028f91cd586a15cb3a053e173a84940d1c7",
   "phases/15-autonomous-systems/06-automated-alignment-research/docs/en.md": "372e16ac6599db6bb19b95b1d39e6ec2ab53a0d0d1d04d37d0ba6bb5a7c11083",
@@ -19,6 +19,6 @@
   "phases/15-autonomous-systems/18-llama-guard/docs/en.md": "d93a11da4724f702b905e3da5c9cadff2d3b0f00fcc3117e0cf7e6754fca5df3",
   "phases/15-autonomous-systems/19-anthropic-rsp/docs/en.md": "88d3f980d0e6a38e919cf333bad97d62486e4a594e72994789ea0c42939e233f",
   "phases/15-autonomous-systems/20-openai-preparedness-deepmind-fsf/docs/en.md": "525155fcdd0673e5933c53256c49fb1716c6caaa3f540b18293e515c8913a62c",
-  "phases/15-autonomous-systems/21-metr-external-evaluation/docs/en.md": "ccf4ca982f8888da4a7c9e34ff8daac2f1474d668139e2ed83b161a243070855",
+  "phases/15-autonomous-systems/21-metr-external-evaluation/docs/en.md": "573cb7248e243a2a9de3039524e77d9a84d00e42b11d40a37f1c8beb76f78ec2",
   "phases/15-autonomous-systems/22-cais-caisi-societal-risk/docs/en.md": "4e4fd94b53944d6eb2e2bfcbbda98b6476b98b7a5e2f3ac978b63726a36e8d0b"
 }

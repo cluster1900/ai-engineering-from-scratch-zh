@@ -58,7 +58,7 @@ AlphaEvolve'da yapılan bir düzeltme yöntemidir: LLM'yi hiç görmemiş bir de
 
 LLM, bir 2000 行 Python dosyasına otomatik olarak mutasyon yaparak neredeyse her zaman bir dil biçimi hatası oluşturabilir. LLM, bir işlevi otomatik olarak bytes yerine değiştirmek yerine, daha mantıklı bir komşu alanına odaklanır. Bu da değerlendirmeci 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调用 调
 
-Dolayısıyla, değerlendirici LLM'nin hayali biçimini ele alır. LLM'ler, bir işlevi öte sınırlı durumda O  n log n  olarak iddia eder, ancak aslında O  n ^ 2 olarak görülebilir.
+Dolayısıyla, değerlendirici LLM'nin hayalini yakalayacaktır. LLM'ler, bir fonksiyonu sınırlı bir durumda güvenle iddia edecektir.$O(n \log n)$Ama aslında öyle.$O(n^2)$Bu yüzden, bu durumun bir sonucu olarak ortaya çıkması gerekmez.
 
 ### AlphaEvolve sınır yığınının ortasındaki konum
 

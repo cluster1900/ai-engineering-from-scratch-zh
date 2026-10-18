@@ -30,7 +30,7 @@ Bu dersin bir kısmı metodoloji hakkında, bir kısmı açıklama şekli hakkı
 
 1. 收集一个任务套件,覆盖分钟级到小时级的专家完成时间──当前套件:HCAST(180+个任务)、RE-Bench(71个任务)、SWAA──
 2. 让模型运行每个任务;记录成功或失败――
-3. 拟合一条 lojistik eğri:P(başarılı) is log(专家完成时间) 的函数──
+3. 拟合一条 lojistik eğri:$P(\text{success})$Evet .$\log(\text{专家完成时间})$Of fonksiyon
 4. ufuk = P(başarılılık) = 0.5 的专家时间──
 
 Logistik-fit  şekli uyguntur, çünkü yetenek ve görev zorluğu arasında genellikle bir artış ve yaklaşım ilişkisi vardır. %50 nokta bir seçimdir.
@@ -80,7 +80,7 @@ a5-horizon-fit
 
 ## Kullan
 
-`code/main.py`合成結果集, görev başarısı ve log  expert time  logistik uyumunu gerçekleştirdi.  rapor 50% ufuk  METR  的主指标)  10% ufuk 保守)  90% ufuk 乐观)  Aynı zamanda başarının oranı değerlendirilmiş kontext oyunları tarafından gösterilmiştir.
+`code/main.py`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\log(\text{expert time})$%50 ufuk (METR  主指标) 、10% ufuk (保守) 、90% ufuk (乐观) ── aynı zamanda başarının oranının değerlendirilmiş kontext oyunları tarafından gösterildi.
 
 ## - Söyle.
 
