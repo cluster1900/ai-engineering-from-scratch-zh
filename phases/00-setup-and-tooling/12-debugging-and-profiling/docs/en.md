@@ -396,3 +396,15 @@ python phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.p
 3. 使用 `tracemalloc` 找出 data loading pipeline 中哪一行分配了最多 memory。
 4. 为一个简单 training run 设置 TensorBoard，并识别 model 是否 overfitting。
 5. 在 training loop 内使用 `breakpoint()`。练习从 debugger prompt 检查 tensor shapes、devices 和 gradient values。
+
+### 提示
+
+**练习 1。** 运行 `python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`，阅读每个演示函数的输出。然后修改 `demo_nan_detection` 中的模型，使其输出除以零，再运行一次；`detect_nan` 必须打印带有步骤编号的 NaN 警告。
+
+**练习 2。** 用 `python -m cProfile -s cumtime your_script.py` 运行循环，或用 `cProfile.Profile()` 包裹它。查看 `cumtime` 列顶部的行；其中属于你自己代码且耗时最大的函数，就是最慢的函数。
+
+**练习 3。** 像 `demo_memory_tracking` 一样，在数据加载代码之前调用 `tracemalloc.start()`，之后调用 `tracemalloc.take_snapshot()`。打印 `snapshot.statistics("lineno")[:5]`；第一行会显示分配内存最多的文件和行号。
+
+**练习 4。** 每个 epoch 都用 `SummaryWriter` 记录训练损失和验证损失，再运行 `tensorboard --logdir=runs`。如果训练损失持续下降而验证损失上升，说明模型发生了过拟合。
+
+**练习 5。** 将 `breakpoint()` 放在循环内部的 `loss.backward()` 之后，然后运行脚本。在 `(Pdb)` 提示符处打印 `x.shape`、`x.device` 和 `next(model.parameters()).grad`，再输入 `c` 继续下一步。
