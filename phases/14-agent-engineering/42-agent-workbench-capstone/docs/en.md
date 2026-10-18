@@ -205,7 +205,7 @@ Pack 是 recipe。每次 install 是一份 serving。
 
 ## 交付物
 
-保留可复用的 pack，以及你完成的 [career-agent-evidence.md](../outputs/career-agent-evidence.md) 副本。该模板将任务框架、执行计划、运行凭据、评审、恢复演练和交接整合为一份可评审的案例研究。
+保留可复用的 pack，以及你完成的 [career-agent-evidence.md](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/42-agent-workbench-capstone/outputs/career-agent-evidence.md) 副本。该模板将任务框架、执行计划、运行凭据、评审、恢复演练和交接整合为一份可评审的案例研究。
 
 ## 关键术语
 
