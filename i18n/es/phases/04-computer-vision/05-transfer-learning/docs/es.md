@@ -97,8 +97,8 @@ Para los conjuntos de datos pequeños, una sola capa lineal normalmente es sufic
 
 Esta es la versión más suave de LR de la moderna afinidad (BEiT, DINOv2, ViT-B) utilizada en la actualidad.
 
-```
-lr_layer_k = base_lr * decay^(L - k)
+```math
+\text{lr\_layer}_k = \text{base\_lr} \cdot \text{decay}^{L - k}
 ```
 
 Cuando la descomposición = 0,75 y L = 12 bloques de transformador 时, el primer bloque de entrenamiento LR es la cabeza LR `0.75^11 ≈ 0.04x` Esto es más importante para los cambios de tono que para las CNN; para las CNN, las LR de grupo de escenarios suelen ser suficientes

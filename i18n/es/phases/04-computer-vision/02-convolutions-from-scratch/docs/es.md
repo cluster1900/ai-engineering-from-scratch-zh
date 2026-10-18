@@ -71,8 +71,8 @@ Esta es una fórmula, es decir.**shared weights、locality、sliding window**, e
 
 给定输入空间尺寸 `H`、tamaño del núcleo `K`、padding `P`、 paso `S`¿Qué es esto ?
 
-```
-H_out = floor( (H - K + 2P) / S ) + 1
+```math
+H_{\text{out}} = \left\lfloor \frac{H - K + 2P}{S} \right\rfloor + 1
 ```
 
 Remememorándola. Lo calcularás en cada arquitectura.
@@ -85,7 +85,7 @@ Remememorándola. Lo calcularás en cada arquitectura.
 | Pool 2x2 | 32 | 2 | 0 | 2 | 16 |
 | 大 receptive field | 32 | 7 | 3 | 2 | 16 |
 
-"El mismo relleno" significa seleccionar P, para que cuando S == 1 时 H_out == H。 para el núcleo extraño K,也就是 P = (K - 1) / 2。
+"El mismo relleno" significa "elección".$P$, para hacer que sea$S = 1$时    tiempo$H_{\text{out}} = H$ Para el número de extraños $K$, es decir .$P = (K - 1) / 2$ es por eso que los núcleos 3x3  dominan: siguen teniendo el núcleo de menor número de puntos centrales
 
 ### Padding
 

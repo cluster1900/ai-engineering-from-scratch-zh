@@ -52,18 +52,20 @@ Cada línea en este ciclo puede tener errores.`model(x).softmax()`Las adiciones 
 
 clasificador 会为每张图像产生 `C`个数字, denominados logits. 应用 softmax 会把它们转换为概率分布:
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 La probabilidad de registro negativo de la clase de entropía cruzada 衡量正确 的负记录概率:
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-Forma derecha es forma numérica estable (log-sum-exp)`nn.CrossEntropyLoss`En una op, se combina softmax + NLL,并 directamente recibe logits crudos.
+Forma derecha es forma numérica estable (log-sum-exp)`nn.CrossEntropyLoss`En una op, se mezcla softmax + NLL,并直接接收原始logits──selfie first applique softmax 几乎总是bug,因为你计算的是$\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$, es una cantidad sin sentido.
 
 ### ¿Por qué el aumento es efectivo?
 
@@ -105,7 +107,7 @@ No me lo digas.`[0, 0, 1, 0, 0]`Como objetivo de entrenamiento, sino usar `[eps/
 La precisión agregada ocultará el desequilibrio. Si siempre predice la clase mayoritaria, también puede obtener el 90%.
 
 - **Per-class accuracy** Cada clase un número; inmediatamente exponer la clase de la falta de rendimiento.
-- **Confusion matrix** C x C rejilla, en la cual la fila i col j = clase verdadera i 被预测为类 j 的数量; diagonal 是正确预测, off-diagonales 才是模型 问题所在。
+- **Confusion matrix**¿ Qué es esto ?$C \times C$red, entre las filas $i$Col.$j$= clase verdadera $i$被预测为 clase $j$La cantidad de diagonales es la verdadera predicción, las diagonales no son el modelo.
 - **Top-1 / Top-5** Es cierto que la clase está en el top 1 o en el top 5 de las predicciones; Top-5 para ImageNet  es importante, porque como Norwich Terrier y Norfolk Terrier clases de este tipo                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 - **Calibration (ECE)** 0.8 confianza  ¿Es realmente cierto el 80% del tiempo?  Redes modernas  sistematicamente demasiado confiadas; puede utilizarse escala de temperatura o etiqueta suavizando 
 

@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## El objetivo del aprendizaje
-- 解释                                                                                                                                                                                                                                                              
+-  Explique el mínimo entre generador y discriminador  y por qué el equilibrio debe$p_{\text{model}} = p_{\text{data}}$
 - En PyTorch se realiza DCGAN, y en 60 líneas se genera una imagen 32x32 de la composición de la línea
 - Utiliza三种标准技巧稳定 GAN 训练: pérdida no saturante  norma espectral  Ttur (regla de actualización en dos escalas)
 - 读取训练曲线,区分健康收与模式 collapse、oscillación、discriminador-ganas-completamente
@@ -42,8 +42,8 @@ flowchart LR
 
 G 希望 D 犯错――D 希望自己判断正确――形式化地说:
 
-```
-min_G max_D  E_x[log D(x)] + E_z[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_x[\log D(x)] + \mathbb{E}_z[\log(1 - D(G(z)))]
 ```
 
 Desde la derecha hacia la izquierda:D está en el maximización de que en realidad`log D(real)`) y falso`log (1 - D(fake))`) Precisión en la imagen. G está en minimizar D en falso                                                                                                                                                                                                                                                      `D(G(z))`Es muy alto.
@@ -54,9 +54,11 @@ El buen amigo demostró que existe un equilibrio global entre estos mínimos.`p_
 
 La forma de arriba está inestable en el valor numérico.`D(G(z))`Para cada falso, casi nada, por lo tanto.`log(1 - D(G(z)))`Se pierde el Gradiente de G.
 
-```
-L_D = -E_x[log D(x)] - E_z[log(1 - D(G(z)))]
-L_G = -E_z[log D(G(z))]                          # non-saturating
+```math
+\begin{aligned}
+L_D &= -\mathbb{E}_x[\log D(x)] - \mathbb{E}_z[\log(1 - D(G(z)))] \\
+L_G &= -\mathbb{E}_z[\log D(G(z))] \qquad \text{（非饱和）}
+\end{aligned}
 ```
 
 Ahora mismo`D(G(z))`接近零时,G 的损失 很大,Gradient 也有信息量──每现代GAN都使用这个变体进行训练──
@@ -292,8 +294,8 @@ Hasta 2026, los GANs siguen siendo la mejor opción de estos escenarios: realtim
 |------|----------------|----------------------|
 | Generator (G) | “负责画东西的网络” | 将 noise 映射到图像；训练目标是骗过 discriminator |
 | Discriminator (D) | “评判者” | Binary classifier；训练目标是区分真实图像与生成图像 |
-| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 p_G = p_data |
-| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 -log(D(G(z)))，而不是 log(1 - D(G(z)))，以避免训练早期 Gradient 消失 |
+| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 $p_G = p_{\text{data}}$ |
+| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 $-\log(D(G(z)))$，而不是 $\log(1 - D(G(z)))$，以避免训练早期 Gradient 消失 |
 | Mode collapse | “Generator 只生成一种东西” | G 只生成数据分布中的一小部分；用 SN、minibatch discrimination 或更大的 batch 修复 |
 | TTUR | “两个 learning rates” | D 比 G 学得更快，通常快 2-4 倍；稳定训练 |
 | Spectral norm | “1-Lipschitz layer” | 一种 weight-normalisation，用来限制每层的 Lipschitz constant；防止 D 变得任意陡峭 |

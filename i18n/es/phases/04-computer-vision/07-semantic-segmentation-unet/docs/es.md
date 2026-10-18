@@ -84,10 +84,10 @@ El segundo en el proyecto real se puede ver.
 
 ### Grilla de píxeles de arriba de la entropía cruzada
 
-对于包含C 个类的语义分类,model output es `(N, C, H, W)`❖ El objetivo es `(N, H, W)`, contiene ID de clase entera. La entropía cruzada es exactamente la misma que la clasificación, sólo se aplica en cada posición espacial.
+对于包含 $C$个 clases de segmentación semántica, modelo de salida es `(N, C, H, W)`❖ El objetivo es `(N, H, W)`, contiene ID de clase entera. La entropía cruzada es exactamente la misma que la clasificación, sólo se aplica en cada posición espacial.
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 PyTorch 中的 `F.cross_entropy`Origin生处理这种形状──不需要重塑──
@@ -98,17 +98,19 @@ En la mayoría de las imágenes de una clase, esto es incorrecto. La imagen méd
 
 La pérdida de dados                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 Entre ellos `p`Es un mapa de probabilidad de sigmoide/softmax de una clase.`y`Es una máscara de verdad binaria. Sólo cuando se superponen, la pérdida es para cero.
 
 实践中, utilización **combined loss**¿Qué es esto ?
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 La entropía cruzada en el entrenamiento  temprano proporciona un gradiente estable; Dice se centrará en el entrenamiento  posterior                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
@@ -117,7 +119,7 @@ La entropía cruzada en el entrenamiento  temprano proporciona un gradiente esta
 
 - **Pixel accuracy** 预测 exacta de píxeles 百分比──计算便宜──与分类中的精度一样, en datos desequilibrados 上会失效──
 - **IoU per class** Cada clase de máscara de la intersección sobre la unión; entre las clases 求平均 = mIoU。
-- **Dice (F1 on pixels)** 类似 IoU;`Dice = 2 * IoU / (1 + IoU)`❖ Imágenes médicas, más preferencia Dice, conducción de la comunidad, más preferencia IoU;
+- **Dice (F1 on pixels)** 类似 IoU;$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$❖ Imágenes médicas, más preferencia Dice, conducción de la comunidad, más preferencia IoU;
 - **Boundary F1**  Medir los límites previstos y la proximidad de los límites de la verdad de fondo, incluso un pequeño desvío también será castigado                                                                                                                                                                                                                                               
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              

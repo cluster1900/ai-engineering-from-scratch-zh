@@ -178,7 +178,7 @@ print(f"InfoNCE with identical pairs:  {loss_same:.3f}")
 print(f"InfoNCE with random pairs:     {loss_random:.3f}")
 ```
 
-Para los pares similares  debería obtener una pérdida menor(en gran lote 和 bajo temperatura 下接近 0) ・・・随机 pares 应得到 log(2N-1) = ~log(31) = ~3.4, en el lote de 16 pares。
+Para el mismo par  debería obtener una pérdida menor  en gran lote y baja temperatura  en 0 $\log(2N-1) \approx \log(31) \approx 3.4$, para el lote de 16 pares.
 
 ### 步骤 4: Enmascaramiento de estilo MAE
 

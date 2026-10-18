@@ -47,8 +47,8 @@ La red de alta densidad de personas (HRNet, ViTPose) es el principal programa; l
 
 No hay regresión directa.`(x, y)`, sino para cada punto clave 预测 uno `H x W`Mapa de calor, en el centro de la verdadera ubicación hay una mancha gaussiana.
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 En la inferencia, el argmax de cada mapa de calor es la ubicación del punto clave de la predicción.

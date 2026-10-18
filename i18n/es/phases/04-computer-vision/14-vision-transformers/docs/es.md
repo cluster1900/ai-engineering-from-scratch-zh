@@ -97,7 +97,7 @@ ViT-B/16
 
 - 16x16 parches -> 196 tokens, estándar de configuración。
 - 32x32 parches -> 49 tokens, más rápido pero resolución menor.
-- 8x8 parches -> 784 tokens, más preciso, pero O(n^2) costo de atención 扩展性很差──
+- 8x8 parches -> 784 tokens, más preciso, pero $O(n^2)$El costo de la atención  扩展性很差──
 
 Más grandes parches = menos tokens = más rápido pero espacio detalles menor。SwinV2 en ventanas jerárquicas utiliza parches 4x4。
 

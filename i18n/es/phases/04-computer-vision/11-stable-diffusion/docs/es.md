@@ -52,8 +52,8 @@ flowchart LR
 
 Normal de texto condicionamiento se dirige a cada instante `c`El aprendizaje`epsilon_theta(x_t, t, c)` CFG  entrenamiento de la misma red, pero hay 10% del tiempo que se pierde `c`(substitución por embebido en el espacio), para obtener un modelo único de sonido condicional y incondicional ∞ en la inferencia:
 
-```
-eps = eps_uncond + w * (eps_cond - eps_uncond)
+```math
+\epsilon = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})
 ```
 
 `w`Es la escala de orientación.`w=0`Es incondicional,`w=1`Es normal condicional,`w>1`Las condiciones de producción se han reducido, el precio se ha reducido.`w=7.5`¿Qué es eso?

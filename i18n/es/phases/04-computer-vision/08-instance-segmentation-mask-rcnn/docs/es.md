@@ -83,8 +83,8 @@ Colocar una muestra de máscara de 28x28 en la propuesta del tamaño original de
 
 Máscara R-CNN tiene cuatro clases de pérdidas en adición:
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`¿ Qué ?`L_rpn_box` Objetividad de las propuestas de RPN + caja Regresión。

@@ -23,7 +23,7 @@ Estas dos clases de representaciones, por diferentes razones, están dominadas. 
 ## 概念
 ### Nube de punto
 
-Nube de punto es un conjunto de puntos de N 个点, cada punto puede ser seleccionado con características de color, intensidad, normalidad.
+Nube de punto es $\mathbb{R}^3$En el centro$N$个点的无序集合, cada punto se puede elegir con características ((color, intensidad, normal) ⋅
 
 ```
 cloud = [
@@ -41,8 +41,8 @@ cloud = [
 
 PointNet (Qi et al., 2017) utilizó una idea para resolver dos cosas: para cada aplicación de puntos compartidos MLP, luego con la función simétrica (((max pool)聚合── el resultado es un vector de tamaño fijo, y no depende de la secuencia──
 
-```
-f(P) = max_{p in P} MLP(p)
+```math
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 Este es el centro de todo PointNet.
@@ -86,22 +86,23 @@ Perdida de imágenes: ¿Qué se puede hacer con el pixel de la realidad de la ti
 
 作用在 `(x, y, z)`Los MLP de vainilla de arriba no pueden indicar detalles de alta frecuencia, ya que los MLP de arriba en la gama de frecuencias se desplazan hacia abajo en la gama de frecuencias.
 
-```
-gamma(p) = (sin(2^0 pi p), cos(2^0 pi p), sin(2^1 pi p), cos(2^1 pi p), ...)
+```math
+\gamma(p) = \left(\sin(2^0 \pi p), \cos(2^0 \pi p), \sin(2^1 \pi p), \cos(2^1 \pi p), \ldots\right)
 ```
 
-Esto es lo mismo que los transformadores usan las mismas técnicas de posiciones, también aparecerá de nuevo en el tiempo de difusión (lección 10)
+Lo mejor que puedo hacer es$L=10$个 frecuencia niveles── esto es lo mismo que los transformadores usan las mismas técnicas de posiciones, también aparecerá en el tiempo de difusión condicionamiento (lección 10) en la otra.
 
 ### Renderamiento volumétrico
 
+```math
+\begin{aligned}
+C(r) &= \sum_i T_i \left(1 - \exp(-\sigma_i \delta_i)\right) c_i \\[4pt]
+T_i &= \exp\left(-\sum_{j<i} \sigma_j \delta_j\right) \\
+\delta_i &= t_{i+1} - t_i
+\end{aligned}
 ```
-C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 
-T_i  = exp(- sum_{j<i} sigma_j * delta_j)
-delta_i = t_{i+1} - t_i
-```
-
-`T_i`Es la transmisión, es decir, hay mucha luz que puede llegar a un punto.`(1 - exp(-sigma_i * delta_i))`Sí, la opacidad está en el punto.`c_i`Es color. El pixel final es el aumento de la radiación.
+`T_i`Es la transmisión, es decir, hay mucha luz que puede llegar a un punto.$i$¿Qué es eso?`(1 - exp(-sigma_i * delta_i))`Sí , sí .$i$La opacidad de la parte superior.`c_i`Es color. El pixel final es el aumento de la radiación.
 
 ### Lo que sustituyó a las NERF
 

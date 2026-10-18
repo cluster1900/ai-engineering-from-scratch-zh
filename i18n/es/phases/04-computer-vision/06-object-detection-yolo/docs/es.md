@@ -74,11 +74,13 @@ Los detectores modernos suelen usar FPN, en diferentes resoluciones, en diferent
 
 Originario `tx, ty, tw, th`No son coordenadas de caja; son objetivos de Regresión que necesitan ser transformados en el dibujo previo:
 
-```
-centre x  = (sigmoid(tx) + cell_x) * stride
-centre y  = (sigmoid(ty) + cell_y) * stride
-width     = anchor_w * exp(tw)
-height    = anchor_h * exp(th)
+```math
+\begin{aligned}
+\text{中心 } x &= (\sigma(t_x) + \text{cell}_x) \cdot \text{stride} \\
+\text{中心 } y &= (\sigma(t_y) + \text{cell}_y) \cdot \text{stride} \\
+\text{宽度} &= \text{anchor}_w \cdot \exp(t_w) \\
+\text{高度} &= \text{anchor}_h \cdot \exp(t_h)
+\end{aligned}
 ```
 
 `sigmoid`La concentración del centro se limita a la célula.`exp`让宽可以从基自由缩缩而不会发生符号翻转.`stride`Coloque las coordenadas de la cuadrícula en pixeles. Este decodificación es el mismo en cada versión de YOLO.
@@ -87,11 +89,11 @@ height    = anchor_h * exp(th)
 
 Detección en medio de la medida de dos cajas de comparabilidad de métricas generales:
 
-```
-IoU(A, B) = area(A intersect B) / area(A union B)
+```math
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
-IoU = 1 muestra completamente igual; IoU = 0 muestra no hay sobreposición. La predicción y la caja de verdad fundamental entre IoU decide si una predicción es o no calculada como positiva verdadera.
+$\mathrm{IoU} = 1$Se muestra totalmente igual;$\mathrm{IoU} = 0$Indicar no hay sobreposición: predicción y caja de verdad fundamental  IoU decide una predicción si si算作 verdadero positivo $\mathrm{IoU} \ge 0.5$)。 La UO entre dos predicciones es NMS en función de la carga de carga.
 
 ### Represión no máxima
 
@@ -113,11 +115,13 @@ NMS(boxes, scores, iou_threshold):
 
 YOLO pérdida es tres pérdidas de peso.
 
-```
-L = lambda_coord * L_box(pred, target, where obj=1)
-  + lambda_obj   * L_obj(pred, 1,     where obj=1)
-  + lambda_noobj * L_obj(pred, 0,     where obj=0)
-  + lambda_cls   * L_cls(pred, target, where obj=1)
+```math
+\begin{aligned}
+L = {} & \lambda_{\text{coord}} \cdot L_{\text{box}}(\text{pred}, \text{target}, \text{where obj}=1) \\
++ {} & \lambda_{\text{obj}} \cdot L_{\text{obj}}(\text{pred}, 1, \text{where obj}=1) \\
++ {} & \lambda_{\text{noobj}} \cdot L_{\text{obj}}(\text{pred}, 0, \text{where obj}=0) \\
++ {} & \lambda_{\text{cls}} \cdot L_{\text{cls}}(\text{pred}, \text{target}, \text{where obj}=1)
+\end{aligned}
 ```
 
 只有包含对象的细胞 才会贡献框回归和分类损失──不含对象的细胞 只贡献对象性损失──教模型保持沉默)──`lambda_noobj`Normalmente es menor (cerca de 0,5), ya que la mayoría de las células están vacías, de lo contrario, se producirá la pérdida total.

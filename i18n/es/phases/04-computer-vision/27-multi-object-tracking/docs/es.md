@@ -61,7 +61,7 @@ Cada rastreador clásico está en el paso de predicción de movimiento usando el
 
 ### Algoritmo húngaro
 
-给定一个 `M x N`Matriz de costos (tracks x detections), busca hacer total costos, la menor de una tarea en una contra de otra.`1 - IoU(track_bbox, detection_bbox)`, o características de apariencia de la similitud cosínica negativa.`scipy.optimize.linear_sum_assignment`En Python está bastante rápido.
+给定一个 `M x N`Matriz de costos (tracks x detections), busca hacer total costos, la menor de una tarea en una contra de otra.`1 - IoU(track_bbox, detection_bbox)`, o características de apariencia de la similitud cosínica negativa.$O((M+N)^3)$¡ ¡ Qué !$M, N$Lo mejor es por 1000, por`scipy.optimize.linear_sum_assignment`En Python está bastante rápido.
 
 ### Key ideas de ByteTrack
 

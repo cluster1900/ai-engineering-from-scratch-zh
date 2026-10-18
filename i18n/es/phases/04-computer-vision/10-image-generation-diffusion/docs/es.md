@@ -26,35 +26,32 @@ Este curso construirá un DDPM mínimo: ruido hacia adelante, denuncio hacia atr
 
 ### proceso avanzado
 
-取一张图像                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `x_0` Añadir poco ruido gaussiano  get `x_1`△ Reincorporar poco ruido  get `x_2` Continuar el proceso hasta que`x_T`几乎无法与纯高斯噪音 区分──
+取一张图像                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `x_0` Añadir poco ruido gaussiano  get `x_1`△ Reincorporar poco ruido  get `x_2` Continuar$T$步, hasta `x_T`几乎无法与纯高斯噪音 区分──
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1},  beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \; \beta_t I\right)
 ```
 
-`beta_t`Es un horario de variación más pequeño, generalmente en T=1000 pasos, desde 0.0001 线性增长到0.02── cada paso reduce ligeramente la señal e inyecta un nuevo ruido──
+`beta_t`Es un menor horario de variación, normalmente en$T=1000$步内 de 0.0001 线性增长到0.02── cada paso se acorta ligeramente y se inyecta un nuevo ruido──
 
 ### 闭式跳转 (cambio de tiempo)
 
  Paso a paso añadir ruido es una cadena de Markov, pero matemáticamente se puede doblar: puedes dar un paso directamente desde `x_0`muestra 出 `x_t`¿Qué es eso?
 
-```
-Define alpha_t = 1 - beta_t
-Define alpha_bar_t = prod_{s=1..t} alpha_s
-
-Then:
-  q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0,  (1 - alpha_bar_t) * I)
-
-Equivalently:
-  x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon
-  where epsilon ~ N(0, I)
+```math
+\begin{aligned}
+&\text{定义 } \alpha_t = 1 - \beta_t \\
+&\text{定义 } \bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s \\[6pt]
+&\text{则：} q(x_t \mid x_0) = \mathcal{N}\left(x_t; \sqrt{\bar{\alpha}_t} \, x_0, \; (1 - \bar{\alpha}_t) I\right) \\[6pt]
+&\text{等价地：} x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1 - \bar{\alpha}_t} \, \epsilon \quad \text{其中 } \epsilon \sim \mathcal{N}(0, I)
+\end{aligned}
 ```
 
 Esta única manera es la difusión, puede ser práctica.`t`, directamente desde`x_0`muestra 出 `x_t`,并一步完成训练, no necesita simular la cadena completa de Markov.
 
 ### proceso inverso
 
-Proceso hacia adelante es fijo. Proceso inverso.`p(x_{t-1} | x_t)`Es una red neuronal que necesita aprender contenido.`x_{t-1}`Ellos prevé el ruido en el segundo paso`epsilon`, y luego por la fórmula matemática se deduce`x_{t-1}`¿Qué es eso?
+Proceso hacia adelante es fijo. Proceso inverso.`p(x_{t-1} | x_t)`Es una red neuronal que necesita aprender contenido.`x_{t-1}`Ellos prevé en la segunda.$t$步加入的 ruido `epsilon`, y luego por la fórmula matemática se deduce`x_{t-1}`¿Qué es eso?
 
 ```mermaid
 flowchart LR
@@ -79,7 +76,7 @@ flowchart LR
  Para cada paso de entrenamiento:
 
 1. muestra 一张真实图像 `x_0`¿Qué es eso?
-2. Desde [1, T] 中均样本 一个时间步骤 `t`¿Qué es eso?
+2. Desde$[1, T]$En el caso de las muestras de la muestra, el tiempo es el paso.`t`¿Qué es eso?
 3. ruido de muestra `epsilon ~ N(0, I)`¿Qué es eso?
 4. 计算 `x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon`¿Qué es eso?
 5. Usado red 预测 `epsilon_theta(x_t, t)`¿Qué es eso?
@@ -103,7 +100,7 @@ El clave es que, aunque la condición inversa generalmente no tiene forma cerrad
 
 ### ¿Por qué es 1000 pasos?
 
-El objetivo de la selección del horario de ruido avanzado es hacer que cada paso se incluya un ruido suficientemente bueno, haciendo que el paso inverso sea muy similar al Gaussian.
+El objetivo de la selección del horario de ruido hacia adelante es hacer que cada paso se incluya un ruido suficientemente bueno, que el paso inverso sea casi como Gaussian.$T=1000$El programa lineal de acompañamiento es el establecimiento de DDPM.
 
 ### DDIM: rápidamente 20 veces de muestreo
 
@@ -314,14 +311,14 @@ Encuentro de trabajo:
 
 | Term | 人们通常怎么说 | 实际含义 |
 |------|----------------|----------------------|
-| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 T 步内把图像破坏成 Gaussian noise |
+| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 $T$ 步内把图像破坏成 Gaussian noise |
 | Reverse process | “一步步 denoise” | 学到的分布，会从 noise 逐步走回图像 |
-| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 t 步加入的 noise |
-| Beta schedule | “noise 大小” | T 个小 variance 组成的序列，定义每一步进入多少 noise |
-| alpha_bar_t | “累计保留因子” | 到时间 t 为止的 (1 - beta_s) 乘积；t 越大，剩余信号越少 |
-| DDPM sampler | “Ancestral，随机” | 从每个 x_{t-1} 的 conditional Gaussian 中 sample；1000 步 |
+| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 $t$ 步加入的 noise |
+| Beta schedule | “noise 大小” | $T$ 个小 variance 组成的序列，定义每一步进入多少 noise |
+| $\bar{\alpha}_t$ | “累计保留因子” | 到时间 $t$ 为止的 $(1 - \beta_s)$ 乘积；$t$ 越大，剩余信号越少 |
+| DDPM sampler | “Ancestral，随机” | 从每个 $x_{t-1}$ 的 conditional Gaussian 中 sample；1000 步 |
 | DDIM sampler | “确定性，快速” | 将 sampling 重写为确定性 ODE；20-100 步即可得到相似质量 |
-| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 t 的 sinusoidal embedding，让它知道 noise level |
+| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 $t$ 的 sinusoidal embedding，让它知道 noise level |
 
 ## 延伸阅读
 

@@ -173,8 +173,8 @@ Para la mayoría de las CNN modernas, se entra en RGB.
 
 Desde RGB 转灰度是加权和, no es el valor medio, ya que el ojo humano es más sensible al verde que al rojo o al azul:
 
-```
-Y = 0.299 R + 0.587 G + 0.114 B       (ITU-R BT.601, the classic weights)
+```math
+Y = 0.299 R + 0.587 G + 0.114 B \qquad \text{(ITU-R BT.601, 经典权重)}
 ```
 
 ### Ratio de aspecto, dimensionamiento y interpolación

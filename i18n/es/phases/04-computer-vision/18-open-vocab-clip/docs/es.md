@@ -42,7 +42,7 @@ flowchart LR
 
 ###  objetivo
 
-给定一个包含 N 个 (imagen, captura) pares de lote, construir una matriz de similitud NxN。 entrenar dos codificadores, hacer diagonales(pares de coincidencia) con alta similitud, mientras que fuera de diagonales(no coincidencia) con baja similitud。
+给定一个包含 $N$个 (imagen, leyenda) pares de lote,构建一个 $N \times N$matriz de similitud。 entrenar dos codificadores, hacer que los pares diagonales (paralelas) tengan una alta similitud, mientras que los extra-diagonales (paralelas) no tengan una baja similitud。
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ Es simétrico, porque la extracción de imagen a texto y texto a imagen debería
 
 SigLIP(Zhai et al., 2023) con sigmoide por pareja  sustituyó softmax:
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 Per-pair Loss 移除 CLIP required batch-level normalization──SigLIP en pequeños lotes 下训练更好,并在相同数据量下匹配或超过 CLIP──

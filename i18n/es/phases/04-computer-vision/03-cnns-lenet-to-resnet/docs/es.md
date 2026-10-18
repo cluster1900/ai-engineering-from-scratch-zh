@@ -69,7 +69,7 @@ stack:   conv 3x3 -> conv 3x3 -> pool 2x2
 repeat:  16 or 19 conv layers
 ```
 
-两个 convases 3x3 See de la superficie de entrada con una conva 5x5 similar, pero los parámetros más pequeños (2 * 9 * C^2 = 18C^2 vs 25 * C^2), y en el medio extra un ReLU。 VGG Colocar esta observación en la estructura completa。 Su sencillez, es decir, un tipo de bloque 反复堆叠, hacer que sea el punto de referencia de todas las estructuras.
+两个 convases 3x3 See de la zona de entrada con una conva 5x5 similar, pero los parámetros son menores ($2 \cdot 9 \cdot C^2 = 18C^2$- ¿ Qué ?$25 \cdot C^2$), y en medio de un extraño ReLU¬VGG Colocar esta observación en la estructura completa¬, su sencillez, es decir, un tipo de bloque 反复堆叠, hacer que sea el punto de referencia de todas las estructuras posteriores¬.
 
 代价: 138M parámetros, entrenamiento lento, inferencia 昂贵
 
@@ -117,9 +117,11 @@ VGG puede trabajar en 19 niveles, es debido a la norma de lote (casi al mismo ti
 
 Él, Zhang, Ren, Sun propusieron una solución para todo.
 
-```
-standard block:   y = F(x)
-residual block:   y = F(x) + x
+```math
+\begin{aligned}
+\text{标准块：} \quad & y = F(x) \\
+\text{残差块：} \quad & y = F(x) + x
+\end{aligned}
 ```
 
 `+ x`Se muestra la capa 总能通过把 `F(x)`推到零来选择什么都不做── un ResNet de 1.000 capas 现在最差也不差比1 layer network 差,因为 cada bloque adicional tiene una pequeña escotilla de escape──有这个保证,Optimizer 愿意让每个块 变得*稍微*有用;而稍微有用的块 堆叠100次,就是最先进的──
