@@ -35,8 +35,8 @@ minimize L(w) where:
 
 La pérdida de peso en relación con cada Gradiente. Deja que cada peso se mueva en la dirección opuesta de su Gradiente.
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 Éste es el algoritmo completo.
@@ -91,9 +91,11 @@ El ruido en SGD y mini-batch no es un error.
 
 El descenso del gradiente de vainilla sólo se observa en el actual gradiente. Si el gradiente se mueve en forma de swing (en el valle estrecho), el progreso es lento.
 
-```
-v = beta * v + gradient
-w = w - lr * v
+```math
+\begin{aligned}
+v &= \beta \cdot v + \text{gradient} \\
+w &= w - \text{lr} \cdot v
+\end{aligned}
 ```
 
 类比是: una bola que se rodea hacia abajo de la montaña. No se detiene en cada pequeña columna de altura, se vuelve a empezar.
@@ -121,17 +123,17 @@ Diferentes pesos requieren diferentes tasas de aprendizaje. Algunos muy poco obt
 
 Adam (Estimación de Momento Adaptativo) se pondrá por cada peso y seguirá dos cosas:
 
-1. Primero momento ((m):Gradientes de promedio corriente ((( similar a impulso)
-2. Segundo momento ((v):gradientes cuadrados de promedio corriente ((magnitud de gradiente)
+1. En el primer momento$m$):Medio de funcionamiento de los gradientes (( similar a la potencia)
+2. Segundo momento$v$): gradientes cuadrados de la media corriente
 
-```
-m = beta1 * m + (1 - beta1) * gradient
-v = beta2 * v + (1 - beta2) * gradient^2
-
-m_hat = m / (1 - beta1^t)    bias correction
-v_hat = v / (1 - beta2^t)    bias correction
-
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+\begin{aligned}
+m &= \beta_1 \cdot m + (1 - \beta_1) \cdot \text{gradient} \\
+v &= \beta_2 \cdot v + (1 - \beta_2) \cdot \text{gradient}^2 \\[4pt]
+\hat{m} &= m / (1 - \beta_1^t) \quad \text{偏差校正} \\
+\hat{v} &= v / (1 - \beta_2^t) \quad \text{偏差校正} \\[4pt]
+w &= w - \text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)
+\end{aligned}
 ```
 
 Además de`sqrt(v_hat)`Es un punto de vista clave. Los pesos de los Gradientes grandes serán separados por un gran número de fases. Cada peso obtendrá su propio ritmo de aprendizaje adaptativo.
@@ -146,14 +148,14 @@ Además de`sqrt(v_hat)`Es un punto de vista clave. Los pesos de los Gradientes g
 
 | Schedule | Formula | Use case |
 |----------|---------|----------|
-| Step decay | lr = lr * factor every N epochs | 简单，手动控制 |
-| Exponential decay | lr = lr_0 * decay^t | 平滑降低 |
-| Cosine annealing | lr = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T)) | Transformers，现代训练 |
+| Step decay | $\text{lr} = \text{lr} \cdot \text{factor}$，每 $N$ 个 epochs 更新 | 简单，手动控制 |
+| Exponential decay | $\text{lr} = \text{lr}_0 \cdot \text{decay}^t$ | 平滑降低 |
+| Cosine annealing | $\text{lr} = \text{lr} _{\min} + 0.5 \cdot (\text{lr} _{\max} - \text{lr} _{\min}) \cdot (1 + \cos(\pi t / T))$ | Transformers，现代训练 |
 | Warmup + decay | 线性上升，然后 decay | 大模型，防止早期不稳定 |
 
 ### Conveja vs no conveja
 
-Función convexa 只有一个最小──渐进下降 总能找到它──像 `f(x) = x^2`Este tipo de cuadrático es convexo.
+Función convexa 只有一个最小──渐进下降 总能找到它──像 $f(x) = x^2$Este tipo de cuadrático es convexo.
 
 Las funciones de pérdida de red neuronal son no convexas.
 
@@ -202,8 +204,8 @@ gradient-descent
 
 La función Rosenbrock es un estándar de optimización clásica. Su mínimo se encuentra en (1, 1), está en un estrecho valle de la curva, fácil de encontrar pero difícil de seguir.
 
-```
-f(x, y) = (1 - x)^2 + 100 * (y - x^2)^2
+```math
+f(x, y) = (1 - x)^2 + 100 \cdot (y - x^2)^2
 ```
 
 ```python
@@ -345,9 +347,19 @@ Las clases de optimización que se construyen aquí aparecerán de nuevo en la F
 
 2. **Momentum comparison.**En la función Rosenbrock 上 utiliza valores de impulso [0.0, 0.5, 0.9, 0.99] 运行带动态的 SGD──跟踪每一步的损失──哪个动态值 收最快?哪个会超越?
 
-3. **Saddle point escape.**定义函数   Función de definición`f(x, y) = x^2 - y^2`(original punto de un punto de silla) ∼ desde (0.01, 0.01) 开始── Comparar vanilla GD、带动态 的 SGD 和 Adam 的行为──哪个能逃离 ?? 车点?
+3. **Saddle point escape.**定义函数   Función de definición$f(x, y) = x^2 - y^2$(original punto de un punto de silla) ∼ desde (0.01, 0.01) 开始── Comparar vanilla GD、带动态 的 SGD 和 Adam 的行为──哪个能逃离 ?? 车点?
 
 4. **Implement learning rate decay.**Por GradientDescent clase  Añadir el horario de desintegración exponencial:`lr = lr_0 * 0.999^step` Comparar en la función Rosenbrock la función de descomposición de la utilización y la de la descomposición de la utilización.
+
+### 提示
+
+**练习 1。** Por todas las tasas de aprendizaje, para cada uno creado `GradientDescent(lr=...)`, con `rosenbrock`Y `rosenbrock_gradient`Una vez que me lo dijeron.`optimize` Cuando se dispersa, la pérdida se incrementa o se transforma`nan`; el valor mínimo se encuentra en $(1, 1)$, pérdida para 0:
+
+**练习 2。**Para cada uno de los valores de la creación`SGDMomentum(momentum=m)`, registro de cada paso después de la pérdida.`find_convergence_step`Comparado con la velocidad, y a través de la pérdida, la repetición y la disminución para identificar las situaciones más allá del objetivo.
+
+**练习 3。**Escribir en la escala$(2x, -2y)$, hacer tres optimizadores todos desde (0.01, 0.01)  empezando a funcionar ⋅ cada 100 pasos imprimir una vez $y$:使 $\lvert y \rvert$El mejorador de cambios es el mejorador de escape de puntos.
+
+**练习 4。**En el`GradientDescent`中保存   Cómo se puede guardar`lr_0`Y el número de contadores, en `step`¿ Qué es eso ?`lr = lr_0 * 0.999 ** step` Imprimir los 0 y 1000 pasos de la tasa de aprendizaje; debe ser`lr_0`降到约 $0.37 \times \text{lr}_0$¿Qué es eso?
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
@@ -358,7 +370,7 @@ Las clases de optimización que se construyen aquí aparecerán de nuevo en la F
 | SGD | “Random sampling” | Stochastic gradient descent。用随机子集而不是完整 dataset 计算 Gradient。实践中几乎总是指 mini-batch SGD。 |
 | Mini-batch | “A chunk of data” | 用于估计 Gradient 的一小部分训练数据（32-256 个样本）。平衡速度与 Gradient 准确性。 |
 | Adam | “The default optimizer” | Adaptive Moment Estimation。跟踪每个 weight 的 Gradients 和 squared gradients 的 running averages，从而为每个 weight 提供自己的 learning rate。 |
-| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 (1 - beta^t) 进行补偿。 |
+| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 $(1 - \beta^t)$ 进行补偿。 |
 | Learning rate schedule | “Change lr over time” | 在训练过程中调整 learning rate 的函数。早期大步，后期小步。 |
 | Convex function | “One valley” | 任意 local minimum 都是 global minimum 的函数。Gradient descent 总能找到它。Neural Network losses 不是 convex。 |
 | Saddle point | “Flat but not a minimum” | Gradient 为零，但在某些方向上是 minimum、在另一些方向上是 maximum 的点。高维空间中很常见。 |

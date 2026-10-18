@@ -28,10 +28,10 @@ Esta clase te enseñará a construir cada fórmula desde cero, a ver de dónde p
 
 Cuando ocurre algo que no es probable, lleva más información.
 
-概率为 p 的事件的信息量是:
+概率为 $p$La cantidad de información del evento es:
 
-```
-I(x) = -log(p(x))
+```math
+I(x) = -\log(p(x))
 ```
 
 Utiliza en 2 por debajo de un registro  obtendemos bits ⋅ Utiliza en el registro natural  obtendemos nats ⋅ la misma idea, diferentes unidades ⋅
@@ -50,98 +50,104 @@ El hecho de que haya un evento con información es algo que ya sabes que va a su
 
 La entropía es una distribución de todas las expectativas de sorpresa de los posibles resultados.
 
-```
-H(P) = -sum( p(x) * log(p(x)) )  for all x
+```math
+H(P) = -\sum_{x} p(x) \log(p(x))
 ```
 
 公平硬币对二元变量 具有最大エントロピー:1 bit──偏置硬币(99% 正面)具有低エントロピー:0.08 bits──你已经知道会发生什么,因此每次抛几乎不会告诉你任何信息──
 
-```
-Fair coin:    H = -(0.5 * log2(0.5) + 0.5 * log2(0.5)) = 1.0 bit
-Biased coin:  H = -(0.99 * log2(0.99) + 0.01 * log2(0.01)) = 0.08 bits
+```math
+\begin{aligned}
+\text{公平硬币：} \quad & H = -(0.5 \log_2(0.5) + 0.5 \log_2(0.5)) = 1.0 \text{ bit} \\
+\text{偏置硬币：} \quad & H = -(0.99 \log_2(0.99) + 0.01 \log_2(0.01)) = 0.08 \text{ bits}
+\end{aligned}
 ```
 
 Entropia mide una distribución de incertidumbre incontrolável.
 
 ### La función de pérdida (你每日使用的损失函数)
 
-Entropias cruzas  medida cuando utilizas la distribución Q 来编码实际来自分布 P 的事件时, sorpresa media es cuánto──
+Entropias cruzas  medida cuando utilizas distribución $Q$Para codificar de hecho proviene de la distribución.$P$En el caso de los eventos, la sorpresa media es de...
 
+```math
+H(P, Q) = -\sum_{x} p(x) \log(q(x))
 ```
-H(P, Q) = -sum( p(x) * log(q(x)) )  for all x
-```
 
-P es la distribución verdadera (la etiqueta) Q es la predicción de tu modelo. Si Q y P se ajustan completamente, la entropía cruzada y la entropía se ajustan.
+$P$Es una verdadera distribución de las etiquetas.$Q$Es la predicción de tu modelo.$Q$Con$P$Completamente coincidente, la entropía cruzada es igual a la entropía. Cualquier incumplimiento lo hará crecer.
 
-En la clasificación, P es un vector de una clase real con probabilidad de 1, otros todos en 0).
+En la clasificación,$P$Es un vector de una clase real con probabilidad de 1, otros todos en 0).
 
-```
-H(P, Q) = -log(q(true_class))
+```math
+H(P, Q) = -\log(q(\text{true\_class}))
 ```
 
 Ésta es la clasificación de la pérdida completa de entropía cruzada 公式──最大化正确类的预测概率──
 
 ### KL Divergencia (distribuciones  entre distancias)
 
-KL divergencia  medir el uso de Q en lugar de P  traerá una sorpresa extra 
+KL divergencia 衡量使用 $Q$En vez de$P$Traerá una sorpresa extra.
 
-```
-D_KL(P || Q) = sum( p(x) * log(p(x) / q(x)) )  for all x
-             = H(P, Q) - H(P)
+```math
+\begin{aligned}
+D_{KL}(P \,\|\, Q) &= \sum_{x} p(x) \log(p(x) / q(x)) \\
+&= H(P, Q) - H(P)
+\end{aligned}
 ```
 
 La entropía cruzada es la entropía + divergencia KL. Debido a que la verdadera distribución de la entropía durante el entrenamiento es constante, la entropía cruzada minimizada es igual a la mínima divergencia KL.
 
-La divergencia KL 不是对称的:D_KL(P  Q) != D_KL(Q  P)──no es una verdadera métrica de distancia──
+La diferencia KL no es un parámetro de:$D_{KL}(P \Vert Q) \ne D_{KL}(Q \Vert P)$No es una verdadera métrica de distancia.
 
 ### Información mutua
 
 Información mutua  medir saber una variable 能 decirte otra variable 多少信息──
 
-```
-I(X; Y) = H(X) - H(X|Y)
-        = H(X) + H(Y) - H(X, Y)
+```math
+\begin{aligned}
+I(X; Y) &= H(X) - H(X \mid Y) \\
+&= H(X) + H(Y) - H(X, Y)
+\end{aligned}
 ```
 
-Si X y Y son independientes, la información mutua es nula. Si uno de ellos no te dice ninguna información del otro, la información mutua es como la entropía de una variable.
+Si es que$X$Y $Y$独立, información mutua 为零. 知道其中一个不会告诉你另一个信息. 如果它们完全相关, información mutua等于任一变量的 Entropia.
 
 En la selección de características, la información mutua entre la característica y el objetivo  高, significa que la característica tiene uso.
 
 ### Entropia condicional
 
-H(Y delX) ∆ medir observado hasta X 后, sobre Y todavía queda mucha incertidumbre―
+$H(Y \mid X)$衡量观察到 $X$后, acerca $Y$Hay mucha incertidumbre.
 
-```
-H(Y|X) = H(X,Y) - H(X)
+```math
+H(Y \mid X) = H(X,Y) - H(X)
 ```
 
 两个极端:
-- Si X  totalmente decide Y, entonces H  Y X                                                                                                                                                                                                                                                         
-- Si X a Y   no tiene información, entonces H      Y                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+- Si es que$X$完全决定  Estoy seguro de que no .$Y$Entonces ...$H(Y \mid X) = 0$❖ saber $X$¿Cómo se puede eliminar la$Y$La incertidumbre total. Ejemplo:$X$= temperatura de la temperatura,$Y$= 华氏温度──
+- Si es que$X$¿ Qué ?$Y$No hay información, entonces.$H(Y \mid X) = H(Y)$❖ saber $X$完全不会降低你的不确定性── ejemplos:$X$= 抛硬币结果,$Y$= El tiempo de mañana...
 
-Entropia condicional 始终非负,并且永远不超过 H(Y):
+Entropia condicional 始终非负,并且永远不超过 $H(Y)$¿Qué es esto ?
 
+```math
+0 \le H(Y \mid X) \le H(Y)
 ```
-0 <= H(Y|X) <= H(Y)
-```
 
-En el aprendizaje automático, la entropía condicional aparece en los árboles de decisión. En cada división, el algoritmo selecciona H(Y que no tiene X) La característica mínima de X, es decir, la eliminación de la característica de la máxima incertidumbre sobre la etiqueta Y.
+En el aprendizaje automático, la entropía condicional aparece en los árboles de decisión. En cada división, el algoritmo se selecciona.$H(Y \mid X)$La más pequeña característica $X$, es decir , el movimiento de la etiqueta .$Y$La mayor incertidumbre.
 
 ### Entropia conjunta
 
-H(X,Y) es la entropía de la distribución conjunta de X y Y 一起.
+$H(X,Y)$Sí $X$Y $Y$Una distribución conjunta de la entropía.
 
-```
-H(X,Y) = -sum sum p(x,y) * log(p(x,y))   for all x, y
+```math
+H(X,Y) = -\sum_{x} \sum_{y} p(x,y) \log(p(x,y))
 ```
 
 关键性质:
 
-```
-H(X,Y) <= H(X) + H(Y)
+```math
+H(X,Y) \le H(X) + H(Y)
 ```
 
-Cuando X y Y 独立时等号成立──如果它们共享信息, entropía conjunta就小于各自的エントロピー 之和──这个缺失的エントロピー 正是相互信息──
+Cuando$X$Y $Y$独立时等号成立──如果它们共享信息, entropía conjunta 就小于各自的 Entrropy 之和──这个缺失的 Entrropy 正是相互信息──
 
 ```mermaid
 graph TD
@@ -167,50 +173,52 @@ graph TD
 ```
 
 Estas relaciones:
-- H(X,Y) = H(X) + H(Y que sea X) = H(Y) + H(X que sea)
-- El valor de la cantidad de residuos de la producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de producción de la planta de la planta de producción de la planta de la planta de producción de la planta de la planta de la planta de producción de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de la planta de
-- H(X,Y) = H(X) + H(Y) - I(X;Y)
+- $H(X,Y) = H(X) + H(Y \mid X) = H(Y) + H(X \mid Y)$
+- $I(X;Y) = H(X) - H(X \mid Y) = H(Y) - H(Y \mid X)$
+- $H(X,Y) = H(X) + H(Y) - I(X;Y)$
 
 ### Información mutua (Depth Diving)
 
-Información mutua I(X;Y) 量化知道一个变量会减少关于另一个变量的多少不确定性──
+Información mutua $I(X;Y)$量化知道一个变量会减少关于另一个变量的多少不确定性──
 
-```
-I(X;Y) = H(X) - H(X|Y)
-       = H(Y) - H(Y|X)
-       = H(X) + H(Y) - H(X,Y)
-       = sum sum p(x,y) * log(p(x,y) / (p(x) * p(y)))
+```math
+\begin{aligned}
+I(X;Y) &= H(X) - H(X \mid Y) \\
+&= H(Y) - H(Y \mid X) \\
+&= H(X) + H(Y) - H(X,Y) \\
+&= \sum_{x} \sum_{y} p(x,y) \log\left(\frac{p(x,y)}{p(x) \, p(y)}\right)
+\end{aligned}
 ```
 
 Sexualidad:
-- I(X;Y) >= 0 siempre se ha establecido. Observar algo nunca te hará perder información.
-- Cuando y sólo cuando X y Y  independiente, I  X; Y) = 0。
-- I(X;Y) = I(Y;X)。 es un homogéneo, diferente a la divergencia KL。
-- I(X;X) = H(X)。 Una variable y compartir toda la información.
+- $I(X;Y) \ge 0$Siempre he creado... observar algo nunca te dejará perder información.
+- Cuando y sólo cuando$X$Y $Y$独立时,$I(X;Y) = 0$¿Qué es eso?
+- $I(X;Y) = I(Y;X)$Es un parámetro, diferente a la divergencia KL.
+- $I(X;X) = H(X)$Una variable Comparte toda la información con uno mismo
 
 **用于 feature selection 的 mutual information。**En ML, las características que deseas para el objetivo tienen información.
 
-1. Para cada característica X_i, calcular I(X_i; Y), de las cuales Y es la variable objetivo。
+1. Para cada característica$X_i$, calcular $I(X_i; Y)$, entre ellos $Y$Es la variable objetivo.
 2. 按 MI puntuación 排序 características。
-3. Mantener las características.
+3.  保留前                  $k$个 rasgos。
 
 Esta se aplica a cualquier relación entre la característica y el objetivo: lineal, no lineal, monótono o cualquier otra relación. Correlación sólo puede captar relaciones lineales.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|
-| Pearson correlation | Linear relationships | O(n) | No |
-| Spearman correlation | Monotonic relationships | O(n log n) | No |
-| Mutual information | 任意 statistical dependency | O(n log n) with binning | Yes |
+| Pearson correlation | Linear relationships | $O(n)$ | No |
+| Spearman correlation | Monotonic relationships | $O(n \log n)$ | No |
+| Mutual information | 任意 statistical dependency | $O(n \log n)$ with binning | Yes |
 
 ### Limpiación de etiquetas y entropía cruzada
 
 标准分类 使用hard targets:[0, 0, 1, 0]──true class 的概率为 1,其他全部为 0──Littering Label 会用软目标 替换它们:
 
-```
-soft_target = (1 - epsilon) * hard_target + epsilon / num_classes
+```math
+\text{soft\_target} = (1 - \epsilon) \cdot \text{hard\_target} + \epsilon / \text{num\_classes}
 ```
 
-Cuando epsilon = 0,1 y hay 4 clases 时:
+Cuando$\epsilon = 0.1$且有4 个类 时:
 - Objetivo duro: [0, 0, 1, 0]
 - Objetivo suave: [0,025, 0,025, 0,925, 0,025]
 
@@ -224,8 +232,8 @@ Desde la Teoría de la Información 视角看, etiqueta suavizando 增加 la ent
 
 Uso de etiqueta de suavización de pérdida de entropía cruzada 变为:
 
-```
-L = (1 - epsilon) * CE(hard_target, prediction) + epsilon * H_uniform(prediction)
+```math
+L = (1 - \epsilon) \cdot \text{CE}(\text{hard\_target}, \text{prediction}) + \epsilon \cdot H_{\text{uniform}}(\text{prediction})
 ```
 
 El segundo punto es que las predicciones de la distancia a la uniformidad, es decir, la regularización directa de la confianza.
@@ -236,12 +244,14 @@ Tres puntos de vista, con un mismo final.
 
 **Information Theory 视角。**La entropía cruzada mide la distribución de su modelo en lugar de la distribución real. Gastaba muchos bits cuando lo utilizaba. Minimizándolo, se convertiría en el codificador de mayor eficacia de la realidad.
 
-**Maximum likelihood 视角。**对于 N 个 true classes 为 y_i de las muestras de formación:
+**Maximum likelihood 视角。** para $N$个 verdadero clases $y_i$Muestras de formación:
 
-```
-Likelihood     = product( q(y_i) )
-Log-likelihood = sum( log(q(y_i)) )
-Negative log-likelihood = -sum( log(q(y_i)) )
+```math
+\begin{aligned}
+\text{似然} &= \prod_i q(y_i) \\
+\text{对数似然} &= \sum_i \log(q(y_i)) \\
+\text{负对数似然} &= -\sum_i \log(q(y_i))
+\end{aligned}
 ```
 
 La última línea es la pérdida de entropía cruzada. Minimizar la entropía cruzada.
@@ -258,15 +268,17 @@ log base e   -> nats      (machine learning convention)
 log base 10  -> hartleys  (rarely used)
 ```
 
-1 nat = 1/ln(2) bits = 1,4427 bits。PyTorch 和 TensorFlow 默认使用自然log (nat) ⋅
+1 nat = $1/\ln(2)$Bit = 1.4427 bits。PyTorch 和 TensorFlow 默认使用自然log(nats)。
 
 ### Perplejidad
 
 La perplejidad es un índice de entropía cruzada. Te dice que el modelo es incierto.
 
-```
-Perplexity = 2^H(P,Q)   (if using bits)
-Perplexity = e^H(P,Q)   (if using nats)
+```math
+\begin{aligned}
+\text{Perplexity} &= 2^{H(P,Q)} \quad \text{（使用 bits 时）} \\
+\text{Perplexity} &= e^{H(P,Q)} \quad \text{（使用 nats 时）}
+\end{aligned}
 ```
 
 La perplejidad es el modelo de 50 idiomas, en promedio, como si tuviéramos que elegir entre los 50 tokens siguientes posibles.
@@ -446,19 +458,29 @@ Tu construiste desde cero.`torch.nn.CrossEntropyLoss()` Lo que se hace dentro―
 
 2. 某模型对真级为 1的样本 输出 logits [5.0, 2.0, 0.5]──手算交叉输入损失,然后用你的 `cross_entropy_loss`¿Qué tipo de logitos darán cero pérdida?
 
-3. 证明 KL divergencia 不是对称的──选择两个分布 P 和 Q,计算 D_KL(P   Q) 和 D_K  L(Q  P)──解释它们为什么不同──
+3. prova la divergencia KL 不是对称的──select two distributions $P$Y $Q$, calcular $D_{KL}(P \Vert Q)$Y $D_{KL}(Q \Vert P)$❖ Explicar por qué son diferentes.
 
 4. 构建一个函数,为一段代币预测 序列计算困难──给定一个由 (true_token_index, predicted_logits) pares 组成的列表,返回该序列的困难──
+
+### 提示
+
+**练习 1。**Usando 26 ̊ de probabilidad de cambio `entropy`, el resultado debe ser$\log_2 26 \approx 4.70$Los bits― la frecuencia de las letras reales no son uniformes, por lo que el uso de la frecuencia real tiene que ser más bajo―.
+
+**练习 2。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `softmax`, re-contratar la probabilidad de la indicación 1  $-\ln$,并与 `cross_entropy_loss(1, logits)`Comparar; ambos deben acercarse a 3.06¬, sólo que cuando la lógica de la clase 1 es mayor que las otras dos veces, la pérdida se acerca a 0¬.
+
+**练习 3。**Utiliza formas diferentes de dos pequeñas distribuciones, por ejemplo $P = [0.9, 0.1]$Y $Q = [0.5, 0.5]$, separados en dos ordenes de uso`kl_divergence`◊ dos valores deben ser diferentes, ya que cada dirección tiene una distribución diferente de los valores en relación con el valor de carga.
+
+**练习 4。**Para cada uno de los datos de entrada`cross_entropy_loss(true_token_index, predicted_logits)`, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , y , , , , , , , , , , , , , , , , , , , , , , , , , , , y , , , , , , , , , , , , , , y , , , , , , , , , , , y , , , , , , , , , , , , y , , , , , , y , , , , , y , , , , , , , , y , , , , , y , , , , , y , , , , , , y , , , , , y , , , , , , y , y , , , , y , , , , , ,`perplexity`。 Usado $V$个 token 上的均 logits 检验:perplexity 必须为 $V$¿Qué es eso?
 
 ## 关键术语: "El hombre es un hombre"
 
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：-log(p) |
+| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：$-\log(p)$ |
 | Entropy | “Randomness” | 一个 distribution 中所有 outcomes 的平均 surprise。衡量不可约 uncertainty。 |
-| Cross-entropy | “The loss function” | 使用 model distribution Q 编码来自 true distribution P 的事件时的平均 surprise。 |
-| KL divergence | “Distance between distributions” | 使用 Q 而不是 P 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
-| Mutual information | “How related are X and Y” | 知道 Y 后，关于 X 的 uncertainty 减少量。为零表示独立。 |
+| Cross-entropy | “The loss function” | 使用 model distribution $Q$ 编码来自 true distribution $P$ 的事件时的平均 surprise。 |
+| KL divergence | “Distance between distributions” | 使用 $Q$ 而不是 $P$ 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
+| Mutual information | “How related are $X$ and $Y$” | 知道 $Y$ 后，关于 $X$ 的 uncertainty 减少量。为零表示独立。 |
 | Softmax | “Turn logits into probabilities” | 取指数并归一化。将任意 real-valued vector 映射为有效 probability distribution。 |
 | Perplexity | “How confused the model is” | Cross-entropy 的指数。model 在每一步从中选择的有效 vocabulary size。 |
 | Bits | “Shannon's unit” | 使用以 2 为底的 log 衡量的信息。一个 bit 解决一次公平抛硬币。 |

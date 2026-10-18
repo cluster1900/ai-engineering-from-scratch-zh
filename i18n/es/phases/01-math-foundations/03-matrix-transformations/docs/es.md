@@ -45,7 +45,7 @@ graph LR
 
 ### Rotación
 
-La rotación 2D de la angular de la theta mantendrá la distancia y la angularidad.
+ Ángulo por$\theta$La rotación 2D mantendrá la distancia y el ángulo inmutables.
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 En 3D, giras alrededor de un eje. Cada eje tiene su propia matriz de rotación.
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### Escalado
@@ -123,8 +117,8 @@ graph LR
 ```
 
 Matrices de corte:
-- `Shx = [[1, k], [0, 1]]`Se moverá k * y
-- `Shy = [[1, 0], [k, 1]]`将 y 平移 k * x
+- `Shx = [[1, k], [0, 1]]`¿ Qué ?$x$平移 $k \cdot y$
+- `Shy = [[1, 0], [k, 1]]`¿ Qué ?$y$平移 $k \cdot x$
 
 ### Reflexión
 
@@ -196,7 +190,7 @@ Esta matriz 会沿 [1, 1] 方向把空间拉伸 3x,并保持 [1, -1] 不变─�
 
 ### Composición propia
 
-Si una matriz tiene n 个线性无关的 eigenvectors, se puede desglosar:
+Si una matriz tiene$n$个线性无关的 eigenvectors, se puede desglosar:
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### ¿Por qué los valores propios son importantes ?
 
-**PCA。**Los vectores propios de la matriz de covarianza son los componentes principales. Los valores propios te dirán cuánta variación capturó cada componente.
+**PCA。**Los vectores propios de la matriz de covarianza son los componentes principales. Los valores propios te dirán cuánto variación capturó cada componente.$k$个, ya tienes reducción de dimensionalidad.
 
 **稳定性。**En redes recurrentes y sistemas dinámicos, los valores propios de magnitud > 1 causarán una explosión de salida.
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤 3: desde el cálculo de valores propios de 0 ((2x2)
 
- Para una matriz 2x2 `[[a, b], [c, d]]`,valores propios de la ecuación característica 求解:`lambda^2 - (a+d)*lambda + (ad - bc) = 0`¿Qué es eso?
+ Para una matriz 2x2 `[[a, b], [c, d]]`,valores propios de la ecuación característica 求解:$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$¿Qué es eso?
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ Este curso se desarrolla para PCA (Fase 2) y Red Neural (Neural Network) 权重�
 
 3. 创建三个变换的组合(rotar 30 grados, según la escala [1.5, 0.8), usar kx=0.3 shear),并将其应用到按圆形排列的 8 个点上――印变换前后的坐标――计算组合矩阵的决定因素,并验证它等于各决定因素的乘积――
 
+### 提示
+
+**练习 1。**¿ Qué ?`mat_vec_mul`¿ Qué ?`rotation_2d`¿Qué es esto?`scaling_2d`Y `shearing_2d` aplicada a cada punto superior. Para el giro, calcular el cambio anterior de 4 条边长和 2 条对角线长度; todos ellos deben mantenerse invariables.
+
+**练习 2。**写出特征方程                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $\lambda^2 - (\text{trace})\lambda + \det = 0$Y buscar la solución. Rehechar dos resultados y es igual a la muestra.`eigenvalues_2x2`Y `np.linalg.eigvals`Comparado
+
+**练习 3。**Construir tres matrices, us `shearing_2d(0.3, 0)`Construir la cuadrícula de corte, según el orden de aplicación `mat_mul`相乘, re将结果作用于 8 个点 $(\cos\theta, \sin\theta)$ La línea de la matriz de rotación es de 1, la línea de la matriz de corte también es de 1, por lo que la línea de la matriz de combinación `det_2x2` deben ser iguales $1.5 \times 0.8 = 1.2$¿Qué es eso?
+
 ## 关键术语: "El hombre es un hombre"
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ Este curso se desarrolla para PCA (Fase 2) y Red Neural (Neural Network) 权重�
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 

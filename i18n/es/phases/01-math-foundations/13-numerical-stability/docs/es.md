@@ -96,7 +96,7 @@ Relative error: 19.2%
 
 Esto significa que una vez que se reduce el método se produce un error relativo del 19%. En el ML, esta situación se presenta:
 
-- Utiliza el tamaño de la media de datos en el cálculo de diferencias:当 E[x] 很大时计算 `E[x^2] - E[x]^2`
+- Utiliza la media de datos de cálculo:当 $\mathbb{E}[x]$很大时计算 $\mathbb{E}[x^2] - \mathbb{E}[x]^2$
 - Las probabilidades de registro de las dos casi iguales
 - Utiliza过小 epsilon  calcular los gradientes de diferencia finita
 
@@ -141,20 +141,22 @@ En el ML,`exp()`Se encuentra en el cálculo de la probabilidad y de la suavidad.
 
 Este truco: en la búsqueda de exponente  antes de primero disminuir el valor máximo.
 
-```
-log(sum(exp(x_i))) = max(x) + log(sum(exp(x_i - max(x))))
+```math
+\log\left(\sum_i \exp(x_i)\right) = \max(x) + \log\left(\sum_i \exp(x_i - \max(x))\right)
 ```
 
 ¿Por qué funciona: disminuir `max(x)`后, el máximo exponente es `exp(0) = 1`△ no puede ocurrir un desbordamiento △ en la demanda y en la demanda al menos uno es 1, por lo que el total y al menos es 1, y ∞`log(1) = 0` Imposible que el flujo suba hasta `-inf`¿Qué es eso?
 
  prueba:
 
-```
-log(sum(exp(x_i)))
-= log(sum(exp(x_i - c + c)))                    (add and subtract c)
-= log(sum(exp(x_i - c) * exp(c)))               (exp(a+b) = exp(a)*exp(b))
-= log(exp(c) * sum(exp(x_i - c)))               (factor out exp(c))
-= c + log(sum(exp(x_i - c)))                    (log(a*b) = log(a) + log(b))
+```math
+\begin{aligned}
+& \log\left(\sum_i \exp(x_i)\right) \\
+&= \log\left(\sum_i \exp(x_i - c + c)\right) && \text{（加上并减去 } c\text{）} \\
+&= \log\left(\sum_i \exp(x_i - c) \cdot \exp(c)\right) && (\exp(a+b) = \exp(a) \cdot \exp(b)) \\
+&= \log\left(\exp(c) \cdot \sum_i \exp(x_i - c)\right) && \text{（提取公因子 } \exp(c)\text{）} \\
+&= c + \log\left(\sum_i \exp(x_i - c)\right) && (\log(a \cdot b) = \log(a) + \log(b))
+\end{aligned}
 ```
 
 ¿ Qué ?`c = max(x)`, el exceso de flujo se elimina.
@@ -170,8 +172,8 @@ Este truco es visible en todo el ML:
 
 Softmax se convertirá en la probabilidad:
 
-```
-softmax(x_i) = exp(x_i) / sum(exp(x_j))
+```math
+\mathop{\mathrm{softmax}}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
 ```
 
 No hay trampa, los logits para [100, 101, 102] conducirá a un desbordamiento:
@@ -242,18 +244,18 @@ Gradientes analíticos (de Backpropagation) puede haber un error.
 
 Diferencia centrada 公式:
 
-```
-df/dx ~= (f(x + h) - f(x - h)) / (2h)
+```math
+\frac{df}{dx} \approx \frac{f(x + h) - f(x - h)}{2h}
 ```
 
-Es la precisión, mejor que la diferencia hacia adelante.`(f(x+h) - f(x)) / h`,后者只有 O (h) ⋅
+Es el .$O(h^2)$精度, lejos mejor que la diferencia hacia adelante $(f(x+h) - f(x)) / h$, el último sólo $O(h)$¿Qué es eso?
 
-选择 h:太大则近似不准确──太小则 cancelación catastrófica 会毁掉结果──`h = 1e-5`¿ Qué ?`1e-7`Es muy habitual.
+选择 $h$:Toda la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de la historia de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos de los tiempos`h = 1e-5`¿ Qué ?`1e-7`Es muy habitual.
 
 检查方式: cálculo diferencia relativa entre los gradientes analíticos y numéricos 
 
-```
-relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{relative\_error} = \frac{\lvert \text{grad}_{\text{analytical}} - \text{grad}_{\text{numerical}} \rvert}{\max(\lvert \text{grad}_{\text{analytical}} \rvert, \lvert \text{grad}_{\text{numerical}} \rvert, 10^{-8})}
 ```
 
 经验规则:
@@ -289,7 +291,7 @@ Cada vez que se realiza una nueva capa o Función de pérdida, se deben revisar 
 5. Net effect: same update, but no underflow
 ```
 
-La escalación de pérdidas dinámicas 会自动调整尺度因子──从一个大值(65536)开始──如果梯度过成 `inf`, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , y , , , , , , y , , , , , , , , , , , , , , y , , , , , , , , , , , ,
+La escalación de pérdidas dinámicas 会自动调整尺度因子──从一个大值(65536)开始──如果梯度过成 `inf`, ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡$N$步没有 sobrecarga,就加倍──
 
 ### Bfloat16 vs float16: ¿Por qué Bfloat16 en el entrenamiento
 
@@ -350,8 +352,8 @@ Layer 50: values in [0, inf]
 
 Normalización 会在每一层重新居中并重新缩放激活:
 
-```
-LayerNorm(x) = (x - mean(x)) / (std(x) + epsilon) * gamma + beta
+```math
+\mathop{\mathrm{LayerNorm}}(x) = \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x) + \epsilon} \cdot \gamma + \beta
 ```
 
 `epsilon`(normalmente para 1e-5) se realizarán en todas las activaciones y evitarán simultáneamente la eliminación de parámetros.`gamma`Y `beta`让网络能恢复它需要的任何规模──
@@ -569,7 +571,7 @@ Estos establecimientos se lograrán en la fase 3 construcción de un ciclo de fo
 
 ##  ejercicios
 
-1. **Catastrophic cancellation。**Utiliza float32 中的 ingenuo fórmula `E[x^2] - E[x]^2`計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法 计算──将误差与真实方差──0.6667)比较──
+1. **Catastrophic cancellation。**Utiliza float32 中的 ingenuo fórmula $\mathbb{E}[x^2] - \mathbb{E}[x]^2$計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法 计算──将误差与真实方差──0.6667)比较──
 
 2. **Precision hunt。**En Python encontrar el mínimo de float32 valor`x`, hacer que`1.0 + x == 1.0` Éste es el epsilon de la máquina  Verifique si es compatible `numpy.finfo(numpy.float32).eps`¿Qué es eso?
 
@@ -579,17 +581,29 @@ Estos establecimientos se lograrán en la fase 3 construcción de un ciclo de fo
 
 5. **Loss scaling experiment。**模拟 float16 训练:创建范围在 [1e-9, 1e-3] 内的随机梯度,转换为 float16,并测量有多少比例变成零――然后应用损失规模(乘以 1024),转换为 float16,再扩展回,并再次测量零比例――
 
+### 提示
+
+**练习 1。**En el cuadrado anterior`np.float32`转换 estos tres valores, luego调用 `variance_naive`Y `welford_variance`◊ float32 en $10^{12}$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+
+**练习 2。**Desde`x = np.float32(1.0)`- ¿Qué? - ¿Qué?`np.float32(1.0) + x != np.float32(1.0)`En el caso de los tipos de float32 , cada uno de los valores de los tipos de float32 se mantiene en el mismo nivel, y el último de los valores de los tipos de float32 se mantiene en el mismo nivel.`numpy.finfo(numpy.float32).eps`Por lo tanto, el último$2^{-23}$¿Qué es eso?
+
+**练习 3。**Previo pronóstico para cada respuesta.$n$个相等的值 $c$, por el resultado$c + \ln n$ Sólo un valor muy grande, el resultado se acerca a ese valor  Para cerca de -1000 de valores, el resultado se acerca $-1000 + \ln n$, y`logsumexp_naive` regresar `-inf`, porque cada índice se encuentra en 0
+
+**练习 4。** para $y = Wx + b$Y pérdida $L$¿ Qué ?$W$La escala es la escala de la escala y la escala de la escala.$x$De la pérdida de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de la carga de carga de la carga de la carga de carga de la carga de carga de la carga de carga de la carga de carga de la carga de carga de la carga de carga de la carga de carga de carga de carga$W$de la función,调用 `numerical_gradient`, y transmitirá dos resultados .`check_gradient`¿Qué es eso?
+
+**练习 5。**¿ Qué ?`10 ** np.random.uniform(-9, -3, n)`En la medida de la cantidad de valores de la muestra, no se utiliza`np.float16`转换──Float16 无法保留小于约 $6 \times 10^{-8}$El valor de la reducción previo de aproximadamente una cuarta parte se transforma en cero, mientras que multiplicado por 1024 casi no cambia en cero.
+
 ## 关键术语: "El hombre es un hombre"
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | IEEE 754 | “float 标准” | 定义 binary floating point formats、rounding rules 和 special values（inf、nan）的国际标准。每个现代 CPU 和 GPU 都实现了它。 |
-| Machine epsilon | “精度极限” | 在给定 float format 中，使 1.0 + e != 1.0 成立的最小值 e。对于 float32，它约为 1.19e-7。 |
+| Machine epsilon | “精度极限” | 在给定 float format 中，使 $1.0 + e \ne 1.0$ 成立的最小值 $e$。对于 float32，它约为 1.19e-7。 |
 | Catastrophic cancellation | “减法导致的精度损失” | 相减两个几乎相等的 floating point 数时，有效数字相互抵消，rounding noise 主导结果。 |
 | Overflow | “数字太大” | 结果超过最大可表示值并变成 inf。exp(89) 会使 float32 overflow。 |
 | Underflow | “数字太小” | 结果比最小可表示正数还接近零，并变成 0.0。exp(-104) 会使 float32 underflow。 |
-| Log-sum-exp trick | “先减去最大值” | 通过提出 exp(max(x)) 来计算 log(sum(exp(x)))，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
-| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 max(logits)。结果在数值上相同，且不可能 overflow。 |
+| Log-sum-exp trick | “先减去最大值” | 通过提出 $\exp(\max(x))$ 来计算 $\log(\sum \exp(x))$，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
+| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 $\max(\text{logits})$。结果在数值上相同，且不可能 overflow。 |
 | Gradient checking | “校验你的 Backpropagation” | 将 Backpropagation 得到的 analytical gradients 与 finite differences 得到的 numerical gradients 比较，以捕获实现 bug。 |
 | Mixed precision | “Float16 forward，float32 backward” | 对 speed-critical operations 使用低精度 floats，对 numerically sensitive operations 使用高精度 floats。典型提速为 2-3x。 |
 | Loss scaling | “防止 Gradient underflow” | 在 Backpropagation 前将 Loss 乘以一个大常数，使 gradients 保持在 float16 可表示范围内，然后在 weight updates 前除以同一个常数。 |
@@ -597,7 +611,7 @@ Estos establecimientos se lograrán en la fase 3 construcción de un ciclo de fo
 | Gradient clipping | “限制 Gradient norm” | 缩放 Gradient Vector，使其 norm 不超过阈值。防止 exploding gradients 毁掉 weights。 |
 | NaN | “Not a Number” | 来自未定义操作（0/0、inf-inf、sqrt(-1)）的特殊 float value。会传播到所有后续 arithmetic。 |
 | Inf | “Infinity” | 来自 overflow 或除以零的特殊 float value。可以组合产生 NaN（inf - inf、inf * 0）。 |
-| Numerical gradient | “暴力求导” | 通过计算 f(x+h) 和 f(x-h)，再除以 2h 来近似 derivative。很慢，但用于校验时可靠。 |
+| Numerical gradient | “暴力求导” | 通过计算 $f(x+h)$ 和 $f(x-h)$，再除以 $2h$ 来近似 derivative。很慢，但用于校验时可靠。 |
 
 ## 延伸阅读
 

@@ -41,7 +41,7 @@ Mode:   出现最频繁的值
         对 categorical data 有用。对 continuous data，通常信息量很低。
 ```
 
-media es un punto de equilibrio. Mediana es un punto de equilibrio. Cuando los demás se desvían, su distribución es sesgada.
+La media es el punto de equilibrio. Cuando los demás se alejan, su distribución es sesgada.$\text{mean} \gg \text{median}$(Por la desviación de la derecha causada por los millonarios)$\text{mean} \ll \text{median}$(Por el simple ejemplo de la inclinación izquierda)
 
 **Measures of spread**¿Hay más información disponible?
 
@@ -72,14 +72,16 @@ IQR:        Q3 - Q1 (interquartile range)
 
 En ML, te centrarás en los percentiles, para inferir las distribuciones de confianza de la latencia, predicción y comprensión de las distribuciones de errores. Un error promedio  muy bajo pero error P99  muy malo modelo, para aplicaciones críticas a la seguridad puede ser inútil.
 
-**Sample vs population statistics.**Desde la muestra 计算变量 时,用 (n-1) en lugar de n como divisor. Esta es la corrección de Bessel.
+**Sample vs population statistics.**Desde la muestra 计算 variance 时,用 $(n-1)$En vez de$n$Como un número de divisores, esto es la corrección de Bessel. Se compensa la muestra de la población real.$n$, tu verás sistematicamente la variación real.$(n-1)$, la estimación es imparcial.
 
-```
-Population variance: sigma^2 = (1/N) * sum((x_i - mu)^2)
-Sample variance:     s^2     = (1/(n-1)) * sum((x_i - x_bar)^2)
+```math
+\begin{aligned}
+\text{总体方差：} \quad \sigma^2 &= \frac{1}{N} \sum (x_i - \mu)^2 \\
+\text{样本方差：} \quad s^2 &= \frac{1}{n-1} \sum (x_i - \bar{x})^2
+\end{aligned}
 ```
 
-实践中: si n 很大(数千个样本), la diferencia puede ser ignorada.
+实践中: si $n$                                                                                                                                                                                                                                                              $n$很小(几十个样本), es muy importante.
 
 ### Correlación: 变量 cómo cambian juntos
 
@@ -97,7 +99,7 @@ r =  0:  无线性关系（但可能存在非线性关系！）
 Range: [-1, 1]
 ```
 
-Pearson 假设关系是线性的, y los dos cambios se adaptan en gran medida a la distribución normal.
+Pearson 假设关系是线性的, y dos variables se adaptan en gran medida a la distribución normal.$r$Desde 0,1 hasta 0,9...
 
 **Spearman rank correlation**衡量单调关联:
 
@@ -136,7 +138,7 @@ Cov(X, Y) < 0:  当 X 增加时，Y 倾向于减少
 Cov(X, Y) = 0:  无线性共同变化
 ```
 
-对于d 个特征,covariance matrix C es una matriz d x d, de la cual C[i][j] = Cov(feature_i, feature_j)。对角线项 C[i][i] 是每个特征的变化──
+ para $d$个 características, matriz de covarianza $C$Sí , uno .$d \times d$Matrix, entre ellos $C[i][j] = \mathop{\mathrm{Cov}}(\text{feature}_i, \text{feature}_j)$◊ por el lado$C[i][i]$Es una variación de cada característica.
 
 ```
 C = | Var(x1)      Cov(x1,x2)  Cov(x1,x3) |
@@ -152,7 +154,7 @@ Properties:
 
 **与 PCA 的联系。**PCA para la matriz de covarianza hacer su propia composición. Los egénvectores son los componentes principales. Los egénvalos le dicen a cada componente cuánto variación ha capturado. Esto es exactamente lo que cubre la lección 10, pero ahora puede ver por qué la matriz de covarianza es adecuada para objetos descompuestos: codifica todo lo que hay en los datos en relación a las relaciones linearias.
 
-**与 correlation 的联系。**La matriz de correlación es la matriz de covarianza de variaciones estandarizadas (en inglés: standard variance matrix) (cada variación está separada por su propia desviación estándar).
+**与 correlation 的联系。**La matriz de correlación es la matriz de covarianza de variaciones estandarizadas (cada variación está excluida por su propia desviación estándar).$[-1, 1]$¿Qué es eso?
 
 ### Prueba de hipótesis
 
@@ -202,10 +204,11 @@ T-test comparar medios.
 
 **One-sample t-test:**¿El valor de población es diferente de un valor de hipótesis?
 
-```
-t = (x_bar - mu_0) / (s / sqrt(n))
-
-degrees of freedom = n - 1
+```math
+\begin{aligned}
+t &= \frac{\bar{x} - \mu_0}{s / \sqrt{n}} \\[4pt]
+\text{自由度} &= n - 1
+\end{aligned}
 ```
 
 **Two-sample t-test (independent):**¿El grupo dos significa si es diferente?
@@ -294,19 +297,20 @@ Practically significant? 0.03% 的提升不值得
 
 **Effect size**La diferencia cuantitativa es grande, y independiente del tamaño de la muestra:
 
-```
-Cohen's d = (mean_1 - mean_2) / pooled_std
-
-d = 0.2:  small effect
-d = 0.5:  medium effect
-d = 0.8:  large effect
+```math
+\begin{aligned}
+\text{Cohen's } d &= \frac{\text{mean}_1 - \text{mean}_2}{\text{pooled\_std}} \\[4pt]
+d &= 0.2: \quad \text{小效应} \\
+d &= 0.5: \quad \text{中等效应} \\
+d &= 0.8: \quad \text{大效应}
+\end{aligned}
 ```
 
 始终同时报告 p-value 和 effect size──p-value 告诉你差异是否真实──effect size 告诉你差异是否重要──
 
 ### Problemas de comparación múltiples
 
-Cuando usted prueba muchas hipótesis, algunas de ellas se vuelven significativas por casualidad. Si usted prueba 20 cosas en alfa = 0.05 , incluso si no tiene ningún efecto real, también se espera que surja 1 falso positivo.
+Cuando compruebas muchas hipótesis, algunas de ellas se vuelven significativas por casualidad.$\alpha = 0.05$Se espera que aparezcan 1 falsos positivos, incluso si no hay ningún efecto real.
 
 ```
 P(at least one false positive) = 1 - (1 - alpha)^m
@@ -317,7 +321,7 @@ P(false positive) = 1 - 0.95^20 = 0.64
 你有 64% 的概率至少得到一个 false positive。
 ```
 
-**Bonferroni correction:**Se llevará a cabo un análisis de la cantidad de alfa.
+**Bonferroni correction:**¿ Qué ?$\alpha$Excepto en pruebas de cantidad.
 
 ```
 Adjusted alpha = alpha / m = 0.05 / 20 = 0.0025
@@ -414,11 +418,11 @@ Kruskal-Wallis:     比较多个 groups（替代 ANOVA）
 - 更高 statistical power（更擅长检测真实差异）
 ```
 
-En el experimento ML, normalmente solo hay 5 o 10 pliegues de validación cruzada), por lo que, como Wilcoxon, este tipo de pruebas no parámétricas suelen ser más adecuadas que las pruebas t.
+En el experimento de ML, normalmente sólo tienes muy poco.$n$(5 o 10 plegas de validación cruzada), por lo que, como Wilcoxon firmó-ranquear este tipo de pruebas no parámétricas 往往比 t-tests 更合适──
 
 ### Teorema del límite central: impacto real
 
-El CLT indica que, con el aumento de la cantidad de muestras, la distribución de los medios se acercará a la distribución normal, independientemente de la distribución de la población de la base.
+El C.L.T. indica, con$n$增大, mean sample 的分布将趋近正常分布, independientemente de la distribución de la población de nivel inferior 是什么──
 
 ```
 If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
@@ -470,7 +474,7 @@ If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
 
 9. **在数据不独立时假设 independence。**Las imágenes médicas de los mismos pacientes, de varias frases del mismo archivo, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos pacientes, de los mismos, de los mismos, de los mismos, de los mismos, de los mismos, de los cuales son los que se encuentran en el mismo.
 
-10. **P-hacking。**No se deja de intentar diferentes pruebas, subconjuntos o criterios de exclusión hasta que se obtiene p < 0.05.
+10. **P-hacking。**No dejan de intentar diferentes pruebas, subconjuntos o criterios de exclusión hasta que se obtienen.$p < 0.05$◊ El resultado es sólo un artefacto del proceso de búsqueda.
 
 ## Construirlo
 
@@ -486,7 +490,7 @@ Usted va a lograr:
 3. **Hypothesis tests**(testa de una muestra t-testa de dos muestras t-testa de chi-cuadrado)
 4. **Bootstrap confidence intervals**(Aplicable para estadísticas arbitrarias, no necesita假设)
 5. **A/B test simulator**(generar datos, pruebas, inspecciones de errores de tipo I y tipo II)
-6. **Statistical vs practical significance demo**(Mostra cómo hacer que todo sea significativo)
+6. **Statistical vs practical significance demo**(Mostración grande $n$¿Cómo hacer que todo sea significativo?
 
 Todo desde el cero, solo para usar.`math`Y `random`。不使用numpy,不使用scipy。
 
@@ -498,7 +502,7 @@ Todo desde el cero, solo para usar.`math`Y `random`。不使用numpy,不使用sc
 | Standard deviation | variance 的平方根。以原始单位衡量 spread。 |
 | Percentile | 给定百分比的数据低于该值。 |
 | IQR | Interquartile range。Q3 减 Q1。中间 50% 的 spread。 |
-| Pearson correlation | 衡量两个变量之间的线性关联。Range [-1, 1]。 |
+| Pearson correlation | 衡量两个变量之间的线性关联。Range $[-1, 1]$。 |
 | Spearman correlation | 使用 ranks 衡量单调关联。 |
 | Covariance matrix | 所有 features 两两 covariances 组成的 Matrix。 |
 | Null hypothesis | 默认假设，即无效应或无差异。 |

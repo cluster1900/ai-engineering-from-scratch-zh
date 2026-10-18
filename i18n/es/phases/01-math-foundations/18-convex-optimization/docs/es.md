@@ -26,7 +26,7 @@ Comprender la conmoción tiene tres puntos de valor. Primero, le dice a usted cu
 
 ### 凸集
 
-Si para el conjunto S hay dos puntos, el intervalo entre ellos está completamente en el centro de S, entonces el conjunto S es un conjunto de simbolos.
+Si para el conjunto$S$En cualquier punto, el intervalo entre ellos está completamente ubicado.$S$En el caso de los grupos$S$Es un poco complicado.
 
 | 凸集 | 非凸 |
 |---|---|
@@ -34,12 +34,12 @@ Si para el conjunto S hay dos puntos, el intervalo entre ellos está completamen
 | **三角形**：对所有内部点都满足相同性质 | **甜甜圈/环形**：中间的孔意味着某些线段会离开集合 |
 | 任意两点之间的线段都留在集合内 | 某些点对之间的线段会离开集合 |
 
-形式化测试: para S en cualquier punto x、y, así como en cualquier t en [0, 1], punto tx + (1-t) y 也在 S 中。
+形式化测试: para el$S$En cualquier punto$x, y$, y arbitrario$t \in [0, 1]$,点 $tx + (1-t)y$También está$S$En el medio.
 
 凸集 ejemplos:
-- Una línea recta, una plana, toda la R^n
+- Una línea recta, una plana, toda.$\mathbb{R}^n$
 - Una bola (en inglés)
-- Una mitad de espacio: {x: a^T x <= b}
+- Un medio espacio:$\lbrace x : a^T x \le b \rbrace$
 - 任意数凸集的交交集 任意数凸集的交交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交集 交
 
 Ejemplos de no-concentración:
@@ -49,10 +49,10 @@ Ejemplos de no-concentración:
 
 ### 凸函数
 
-Si la función f define un dominio de forma gráfica, y para cualquier dos puntos x、y, así como cualquier t en [0, 1]:
+Si es que funciona$f$La definición de dominio es un cúmulo, y para cualquier dos puntos en su definición de dominio.$x, y$, y arbitrario$t \in [0, 1]$¿Qué es esto ?
 
-```
-f(tx + (1-t)y) <= t*f(x) + (1-t)*f(y)
+```math
+f(tx + (1-t)y) \le t f(x) + (1-t) f(y)
 ```
 
 几何上看: la línea entre cualquier punto de la imagen se encuentra sobre la imagen o sobre la imagen.
@@ -64,26 +64,26 @@ f(tx + (1-t)y) <= t*f(x) + (1-t)*f(y)
 | **局部最小值** | 每个局部最小值都是全局最小值 | 可能存在多个高度不同的局部最小值 |
 
 常见凸函数:
-- f(x) = x^2(抛物线)
-- F (x) = (x) es un valor absoluto
-- f(x) = e^x(指数)
-- f(x) = max(0, x)(ReLU, aunque es分段线性)
-- f(x) = -log(x) para x > 0(负对数)
-- 任意线性函数 f(x) = a^T x + b(既凸又)
+- $f(x) = x^2$(抛物线)
+- $f(x) = \lvert x \rvert$(valor absoluto)
+- $f(x) = e^x$(indicador)
+- $f(x) = \max(0, x)$(ReLU, a pesar de que es un segmento de línea)
+- $f(x) = -\log(x)$por$x > 0$(负对数)
+- 任意线性函数 $f(x) = a^T x + b$(既凸又)
 
 ### 测试凸性
 
 Tres pruebas prácticas, desde las más fáciles hasta las más rigurosas.
 
-**测试 1：二阶导数测试（1D）。**Si para todos los x hay f'(x) >= 0, entonces f es una función de la forma.
+**测试 1：二阶导数测试（1D）。**Si es todo$x$¿ Qué pasa ?$f''(x) \ge 0$, entonces$f$Es una función de la forma en que se puede ver.
 
-- f(x) = x^2:f'(x) = 2 >= 0。凸。
-- f(x) = x^3:f'(x) = 6x。x < 0 时为负──非凸──
-- f(x) = e^x: f'(x) = e^x > 0。凸。
+- $f(x) = x^2$¿Qué es esto ?$f''(x) = 2 \ge 0$¿Qué es eso?
+- $f(x) = x^3$¿Qué es esto ?$f''(x) = 6x$¿Qué es eso?$x < 0$时为负――非凸――
+- $f(x) = e^x$¿Qué es esto ?$f''(x) = e^x > 0$¿Qué es eso?
 
-**测试 2：Hessian 测试（多变量）。**Si la matriz hessiana H(x) para todas las x es semidefinida positiva, entonces f es la función de la forma en que la matriz es la matriz de la forma en que la matriz es la segunda.
+**测试 2：Hessian 测试（多变量）。**Si la Matriz Hessiana $H(x)$Para todo$x$Todo es semidefinido positivo.$f$Es la función de la forma en que se forma la matriz.
 
-**测试 3：定义测试。**直接检查不等式 f(tx + (1-t) y) <= t*f(x) + (1-t) *f(y)。适用于导数难以计算的函数。
+**测试 3：定义测试。**直接检查不等式  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection  direct inspection$f(tx + (1-t)y) \le t f(x) + (1-t) f(y)$△ Aplicable a las funciones de la dirección de la función de la dirección.
 
 ### ¿Por qué es importante?
 
@@ -129,20 +129,22 @@ graph LR
 
 ### Matriz de Hessian
 
-函数 f: R^n -> R de Hessian H es por la segunda etapa de la matriz n x n.
+函数    Función$f: \mathbb{R}^n \to \mathbb{R}$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $H$Es un grupo de dos grupos.$n \times n$Matrix.
 
+```math
+H_{ij} = \frac{\partial^2 f}{\partial x_i \, \partial x_j}
 ```
-H[i][j] = d^2 f / (dx_i dx_j)
-```
 
-对于 f ((x, y) = x^2 + 3xy + y^2:
+ para $f(x, y) = x^2 + 3xy + y^2$¿Qué es esto ?
 
-```
-df/dx = 2x + 3y       d^2f/dx^2 = 2      d^2f/dxdy = 3
-df/dy = 3x + 2y       d^2f/dydx = 3      d^2f/dy^2 = 2
-
-H = [ 2  3 ]
-    [ 3  2 ]
+```math
+\begin{gathered}
+\begin{aligned}
+\frac{\partial f}{\partial x} &= 2x + 3y & \frac{\partial^2 f}{\partial x^2} &= 2 & \frac{\partial^2 f}{\partial x \, \partial y} &= 3 \\
+\frac{\partial f}{\partial y} &= 3x + 2y & \frac{\partial^2 f}{\partial y \, \partial x} &= 3 & \frac{\partial^2 f}{\partial y^2} &= 2
+\end{aligned} \\[8pt]
+H = \begin{bmatrix} 2 & 3 \\ 3 & 2 \end{bmatrix}
+\end{gathered}
 ```
 
 Hessian 告诉你曲率信息:
@@ -151,18 +153,17 @@ Hessian 告诉你曲率信息:
 - 符号混合: punto de sellado (( ciertas direcciones hacia arriba, otras direcciones hacia abajo)
 - 零 valor propio: este sentido es plano de 退化)
 
-Para la conmoción, el Hessian tiene que estar en todas las posiciones semidefinido positivo, y no sólo en un punto.
+对于凸性,Hessian 必须在所有位置都是正分半定义的所有自值 $\ge 0$), no sólo en algún punto.
 
 ### El método de Newton
 
 Descenso Gradiente Utiliza una etapa de información(Gradiente) ――Método de Newton Utiliza una segunda etapa de información(Hessian)──Esto se adapta a un segundo punto de aproximación, y luego salta directamente al valor mínimo de esta segunda función―
 
-```
-Update rule:
-  x_new = x - H^(-1) * gradient
-
-Compare to gradient descent:
-  x_new = x - lr * gradient
+```math
+\begin{aligned}
+\text{更新规则：} \quad & x_{\text{new}} = x - H^{-1} \cdot \text{gradient} \\
+\text{与 gradient descent 比较：} \quad & x_{\text{new}} = x - \text{lr} \cdot \text{gradient}
+\end{aligned}
 ```
 
 El método de Newton utiliza el método hessiano 替代标量学习率── esto se ajusta automáticamente en función de la curvatura local.
@@ -190,14 +191,14 @@ graph TD
 - 尺度不变 (cualquiera que sea el problema de la estadística)
 
 缺点:
-- 计算 Hessian 需要 O(n^2) 内存,求逆需要 O(n^3)
-- Para una red neuronal de un millón de pesos, eso significa 10 a 12 artículos y 10 a 18 operaciones.
+- 计算 Hessian 需要 $O(n^2)$¿Qué es lo que se necesita?$O(n^3)$
+- Para una red neuronal de un millón de pesos, eso significa$10^{12}$个条目和                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $10^{18}$Siguiente operación
 - No es práctico para el aprendizaje profundo
 
 ### 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化 约束优化
 
-无约束优化: 在所有 x 上最小化 f(x) ⋅
-约束优化: en condiciones de约束 bajo minimizar f ((x) ⋅
+无约束优化: en todos$x$La minimizada$f(x)$¿Qué es eso?
+约束优化: en condiciones de restricción minimizar $f(x)$¿Qué es eso?
 
 现实问题有约束――你想最小化成本,但预算有限――你想最小化错误,但模型复杂度有限――
 
@@ -216,22 +217,24 @@ graph LR
 
 Los multiplicadores de lagarilla 方法把束问题转换为无束问题──
 
-问题:在 g(x) = 0 的约束下最小化 f(x)。
+问题: en $g(x) = 0$De la limitación bajo minimización $f(x)$¿Qué es eso?
 
-解法: introducir un nuevo cambio (Lagrange multiplier lambda),并求解无约束问题:
+解法: Introducción de un nuevo cambio $\lambda$),并求解无约束问题:
 
-```
-L(x, lambda) = f(x) + lambda * g(x)
-```
-
-En la descripción, L's Gradiente 为零:
-
-```
-dL/dx = df/dx + lambda * dg/dx = 0
-dL/dlambda = g(x) = 0
+```math
+L(x, \lambda) = f(x) + \lambda g(x)
 ```
 
-几何直觉: en el límite mínimo de valores, f de Gradiente 必须与束 g de Gradiente 平行──. Si no son iguales, puedes moverte en el límite de la curva, y reducir aún más f──.
+En la despejación,$L$de Gradiente 为零:
+
+```math
+\begin{aligned}
+\frac{\partial L}{\partial x} &= \frac{\partial f}{\partial x} + \lambda \frac{\partial g}{\partial x} = 0 \\
+\frac{\partial L}{\partial \lambda} &= g(x) = 0
+\end{aligned}
+```
+
+几何直觉: en el punto de referencia mínimo,$f$de Gradiente  ten que estar en el límite $g$Si no se equilibran, se puede mover en la línea de la línea de movimiento y bajar aún más.$f$¿Qué es eso?
 
 ```mermaid
 graph LR
@@ -240,39 +243,41 @@ graph LR
     S --- C["At the solution, gradient of f is parallel to gradient of g"]
 ```
 
-Ejemplo: en x + y = 1 de约束下最小化 f(x,y) = x^2 + y^2。
+Ejemplo: en $x + y = 1$De la limitación bajo minimización $f(x,y) = x^2 + y^2$¿Qué es eso?
 
+```math
+\begin{aligned}
+L &= x^2 + y^2 + \lambda(x + y - 1) \\[4pt]
+\frac{\partial L}{\partial x} &= 2x + \lambda = 0 \implies x = -\lambda/2 \\
+\frac{\partial L}{\partial y} &= 2y + \lambda = 0 \implies y = -\lambda/2 \\
+\frac{\partial L}{\partial \lambda} &= x + y - 1 = 0 \\[4pt]
+&\text{由前两个方程得：} x = y \\
+&\text{代入得：} 2x = 1, \text{因此 } x = y = 0.5, \ \lambda = -1
+\end{aligned}
 ```
-L = x^2 + y^2 + lambda(x + y - 1)
 
-dL/dx = 2x + lambda = 0  =>  x = -lambda/2
-dL/dy = 2y + lambda = 0  =>  y = -lambda/2
-dL/dlambda = x + y - 1 = 0
-
-From first two: x = y
-Substituting: 2x = 1, so x = y = 0.5, lambda = -1
-```
-
-Linea directa x + y = 1 arriba distancia del punto de origen punto de proximidad es (0,5, 0,5)。
+Directamente$x + y = 1$La distancia más cercana al punto original es$(0.5, 0.5)$¿Qué es eso?
 
 ### Condiciones de la TCC
 
 Las condiciones de Karush-Kuhn-Tucker ampliarán los multiplicadores de Lagrange hasta un tipo de restricción.
 
-问题:在 g_i(x) <= 0,i = 1, ..., m 的约束下最小化 f(x) 』
+问题: en $g_i(x) \le 0$¿ Qué ?$i = 1, \ldots, m$De la limitación bajo minimización $f(x)$¿Qué es eso?
 
 Condiciones de la TCC:
 
-```
-1. Stationarity:    df/dx + sum(lambda_i * dg_i/dx) = 0
-2. Primal feasibility:  g_i(x) <= 0  for all i
-3. Dual feasibility:    lambda_i >= 0  for all i
-4. Complementary slackness:  lambda_i * g_i(x) = 0  for all i
+```math
+\begin{aligned}
+&\text{1. 驻点条件：} && \frac{\partial f}{\partial x} + \sum_i \lambda_i \frac{\partial g_i}{\partial x} = 0 \\
+&\text{2. 原始可行性：} && g_i(x) \le 0 \quad \text{对于所有 } i \\
+&\text{3. 对偶可行性：} && \lambda_i \ge 0 \quad \text{对于所有 } i \\
+&\text{4. 互补松弛：} && \lambda_i \, g_i(x) = 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-La lentitud complementaria es un factor clave.
+La lentitud complementaria es un factor clave.$g_i = 0$, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , y , y , , , , , , , , , , , , , y , , , , y , , , , , , , y , y , , , , y , , , , , y , , , , y , y , , , , , , y , , , , y , y , y , y , y , , , , , y , y , y , , , , y , y , y , y , y , y , y , , , , , y , y , y , y , y , y , y , y , y , y , y$\lambda = 0$¿Qué es eso?
 
-Las condiciones de KKT son el núcleo de los SVM. Los vectores de soporte son el núcleo de los datos activos de los puntos de datos de los sistemas de datos.
+Las condiciones de KKT son el núcleo de los SVM.$\lambda > 0$)¬ todos los demás datos $\lambda = 0$, no afecta a los límites de la decisión¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
 
 ### Regularización  como restricción optimizada
 
@@ -280,25 +285,27 @@ La regularización de L1 y L2 no son técnicas arbitrarias. Son un problema de o
 
 **L2 regularization (Ridge)：**
 
+```math
+\begin{aligned}
+&\text{最小化 } \text{Loss}(w) \text{，约束为 } \lVert w \rVert^2 \le t \\[4pt]
+&\text{等价的无约束形式：} \\
+&\text{最小化 } \text{Loss}(w) + \lambda \lVert w \rVert^2
+\end{aligned}
 ```
-minimize  Loss(w)  subject to  ||w||^2 <= t
 
-Equivalent unconstrained form:
-minimize  Loss(w) + lambda * ||w||^2
-```
-
-约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约                                                                                                                                                                                                                                      
+约束   en el$\lVert w \rVert^2 \le t$定义一个球(2D 中是圆,3D 中是球面) ――解位于 Loss 等高线第一次接触这个球的位置──
 
 **L1 regularization (LASSO)：**
 
+```math
+\begin{aligned}
+&\text{最小化 } \text{Loss}(w) \text{，约束为 } \lVert w \rVert_1 \le t \\[4pt]
+&\text{等价的无约束形式：} \\
+&\text{最小化 } \text{Loss}(w) + \lambda \lVert w \rVert_1
+\end{aligned}
 ```
-minimize  Loss(w)  subject to  ||w||_1 <= t
 
-Equivalent unconstrained form:
-minimize  Loss(w) + lambda * ||w||_1
-```
-
-约束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束 束                                                                                                                                                                                                                                         
+约束   en el$\lVert w \rVert_1 \le t$定义一个形(2D 中旋转的正方形) 』
 
 | 属性 | L2 约束（圆） | L1 约束（菱形） |
 |---|---|---|
@@ -315,11 +322,13 @@ Cada problema de optimización de un conjunto de elementos tiene un problema de 
 
 Función doble de Lagrange:
 
-```
-Primal: minimize f(x) subject to g(x) <= 0
-Lagrangian: L(x, lambda) = f(x) + lambda * g(x)
-Dual function: d(lambda) = min_x L(x, lambda)
-Dual problem: maximize d(lambda) subject to lambda >= 0
+```math
+\begin{aligned}
+&\text{原始问题：} && \text{最小化 } f(x) \text{，约束为 } g(x) \le 0 \\
+&\text{拉格朗日函数：} && L(x, \lambda) = f(x) + \lambda g(x) \\
+&\text{对偶函数：} && d(\lambda) = \min_x L(x, \lambda) \\
+&\text{对偶问题：} && \text{最大化 } d(\lambda) \text{，约束为 } \lambda \ge 0
+\end{aligned}
 ```
 
 ¿Por qué la dualidad es importante:
@@ -346,7 +355,7 @@ Función de pérdida de red neuronal 极其非凸── de acuerdo con cada est�
 
 **大多数局部最小值已经足够好。**En el espacio alto, los puntos críticos de cada momento (gradiente en posición de cero) son puntos de sella, no el valor mínimo local. La probabilidad de un mínimo local de un pequeño número de puntos es muy baja.
 
-**真正的障碍是 saddle points，而不是局部最小值。**En una función de n 个参数, el punto de sellado tiene la misma dirección de curvatura positiva y negativa. Para el punto crítico arbitrario de alto nivel, la probabilidad de que todos los n 个 eigenwales tengan un valor mínimo local de 2 个 (n) ⋅n es de aproximadamente 2 ⋅n.
+**真正的障碍是 saddle points，而不是局部最小值。**En una tiene$n$个参数的函数中, Saddle point 同时具有正曲率和负曲率方向──对高维中的随机关键点,所有 $n$个 eigenvalues 都为正 (%) local mínimos) de la probabilidad de aproximadamente es $2^{-n}$❖ Casi todos los puntos críticos son puntos de silla.
 
 **Overparameterization 会平滑 landscape。** El número de parámetros es mayor que el de las redes de ejemplos de entrenamiento con superficies de pérdida más suaves, más conectadas.  Las redes más amplias tienen menos valores mínimos de mal localización.
 
@@ -365,21 +374,21 @@ Función de pérdida de red neuronal 极其非凸── de acuerdo con cada est�
 
 El método de Newton para el gran modelo no es práctico.
 
-**L-BFGS (Limited-memory BFGS)：**Utiliza m 个 Gradient 差分近似逆 Hessian── necesita O(mn) 内存, en lugar de O(n^2)── se aplica a más de 10.000 个参数的问题── se utiliza en el clásico ML(logística regresión、CRFs), pero no se utiliza en el aprendizaje profundo──
+**L-BFGS (Limited-memory BFGS)：**Usado recientemente $m$个 Gradiente 差分近似逆赫西亚语──需要 $O(mn)$En lugar de eso.$O(n^2)$ Aplicable para el máximo de 10.000 个参数问题── para el clásico ML(regressión logística、CRFs), pero no para el aprendizaje profundo──
 
 **Natural gradient：**Utilice la matriz de información de Fisher (en inglés) en lugar de la estándar de Hessian. Esto tendrá en cuenta la probabilidad de distribución de la estructura de la información.
 
-**Hessian-free optimization：**Utiliza gradiente conjugado 求解 Hx = g, no se forma claramente H― sólo se necesitan productos de vector hessiano, que se puede hacer a través de diferenciación automática en O n 时间内计算―
+**Hessian-free optimization：**Utiliza gradiente conjugado 求解 $Hx = g$, no se forma de forma evidente$H$ Sólo se necesitan productos de vector hessiano, que se puede hacer a través de la diferenciación automática en $O(n)$时间内计算──
 
 **Diagonal approximations：**El segundo momento de Adam es la aproximación de Hessian a la línea de la esquina. AdaHessian                                                                                                                                                                                                                                                   
 
 | 方法 | 内存 | 每步成本 | 何时使用 |
 |--------|--------|--------------|-------------|
-| Gradient Descent | O(n) | O(n) | Baseline，大模型 |
-| Newton's method | O(n^2) | O(n^3) | 小型凸问题 |
-| L-BFGS | O(mn) | O(mn) | 中型凸问题 |
-| Adam | O(n) | O(n) | Deep Learning 默认选择 |
-| K-FAC | O(n) | 每层 O(n) | 研究、大 batch training |
+| Gradient Descent | $O(n)$ | $O(n)$ | Baseline，大模型 |
+| Newton's method | $O(n^2)$ | $O(n^3)$ | 小型凸问题 |
+| L-BFGS | $O(mn)$ | $O(mn)$ | 中型凸问题 |
+| Adam | $O(n)$ | $O(n)$ | Deep Learning 默认选择 |
+| K-FAC | $O(n)$ | 每层 $O(n)$ | 研究、大 batch training |
 
 
 ```figure
@@ -517,15 +526,27 @@ print(f"Support vectors: {svm.n_support_}")
 
 ##  ejercicios
 
-1. **凸性画廊。**Utiliza controles de pruebas de estas funciones de la cartera: f(x) = x^4、f(x) = sin(x)、f(x,y) = x^2 + y^2、f(x,y) = x*y、f(x) = max(x, 0)。 Explica por qué cada resultado es razonable。
+1. **凸性画廊。**Utiliza un inspector de pruebas de la conmoción de estas funciones:$f(x) = x^4$¿Qué es esto?$f(x) = \sin(x)$¿Qué es esto?$f(x,y) = x^2 + y^2$¿Qué es esto?$f(x,y) = xy$¿Qué es esto?$f(x) = \max(x, 0)$❖ Explicar por qué cada resultado es razonable.
 
-2. **Newton vs Gradient Descent 竞赛。**Desde el punto de partida (10, 10) 出发,在 f(x,y) = 50*x^2 + y^2 上运行两种方法──每种方法需要多少步才能达到损失 < 1e-10?
+2. **Newton vs Gradient Descent 竞赛。**Desde el comienzo$(10, 10)$En el exterior, en el exterior.$f(x,y) = 50x^2 + y^2$上运行两种方法── Cada método necesita cuántos pasos para alcanzar la pérdida < 1e-10? Cuando el número de condición ((la mayor relación entre el valor propio hessiano y el menor de la relación entre el valor propio hessiano) aumenta, ¿qué sucede en el Descenso Gradiente?
 
-3. **Lagrange multiplier 几何。**En el conjunto x + 2y = 4 下最小化 f(x,y) = (x-3)^2 + (y-3)^2── a través del examen de la clasificación de f de Gradiente y g de Gradiente de la Plantilla para la evaluación de la clasificación──
+3. **Lagrange multiplier 几何。**En el tiempo$x + 2y = 4$¡ ¡ Qué tan pequeño !$f(x,y) = (x-3)^2 + (y-3)^2$ Por medio de la inspección$f$de Gradiente con $g$La evolución de la evolución de los sistemas de cálculo de la evolución de las variables de la evolución de los sistemas de cálculo de la evolución de las variables de la evolución de la evolución de las variables de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la evolución de la cuidad.
 
-4. **Regularization 约束。**实现 L1-constrained optimization: en ̊x ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s ̊s  ̊s ̊s ̊s ̊s ̊s    ̊s ̊s   ̊s            ̊s         ̊s      ̊s                      
+4. **Regularization 约束。**实现 optimización limitada L1:$\lvert x \rvert + \lvert y \rvert \le 1$De la limitación bajo minimización $(x-3)^2 + (y-2)^2$◊ mostrar la solución de un坐标 es igual a零
 
 5. **Hessian eigenvalue 分析。** calcular la función Rosenbrock en (1,1) y (-1,1) 处的赫西亚语――计算两个点处的自值――Eigenvalues 告诉你近最小值与远最小值处的曲率有什么区别?
+
+### 提示
+
+**练习 1。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `check_convexity`Antes, antes de cada resultado: en un grado, observar $f''(x)$Los valores propios de Hessian se observan en el segundo plano.$f(x,y) = xy$, Los valores propios de Hessian son 1 y -1, por lo que el inspector debe reportar que esta función no es una función de la forma en que se puede calcular.
+
+**练习 2。**Uso $f$de Gradiente y Hessian 调用 `optimize_gd`Con`newtons_method` El método de Newton sólo necesita un paso en la búsqueda de una función cuadrática  Para el descenso de gradiente, ya que existe $50x^2$项, la tasa de aprendizaje 必须小于 $2/100$, por lo tanto $y$La dirección se mueve muy lentamente.$100x^2$后重复实验, otra vez estadística
+
+**练习 3。**Uso $g(x,y) = x + 2y - 4$调用                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `lagrange_solve` En la solución de la solicitud, comprobar si se cumple $x + 2y = 4$, así como$\nabla f = (2(x-3), 2(y-3))$Sí, por lo tanto$\nabla g = (1, 2)$De la multiplicidad.
+
+**练习 4。**El mínimo sin restricciones (3, 2) 位于形外,因此答案在边界上──使用预测梯梯下降:先进行一次 更新,再投投影回 $\lvert x \rvert + \lvert y \rvert \le 1$◊ El resultado del examen se cumple con el número de veces que se llevan a cabo las pruebas.`demo_regularization_geometry`Comparado
+
+**练习 5。**En cada punto de la regla `rosenbrock_hessian`, y los resultados se transmitirán .`hessian_eigenvalues_2d` En (1, 1) se encuentran dos valores propios que son positivos, y su proporción es muy grande, por lo que el valle en una dirección es muy estrecho, en otra dirección es muy plano.
 
 ## 关键术语: "El hombre es un hombre"
 
@@ -544,7 +565,7 @@ print(f"Support vectors: {svm.n_support_}")
 | Complementary slackness | 在解处，约束要么是 active 的，要么其 multiplier 为零。二者不会同时非零 |
 | Duality | 每个约束问题都有一个伴随的 dual problem。对于凸问题，二者具有相同的最优值 |
 | Strong duality | Primal 和 dual 的最优值相等。对满足 Slater's condition 的凸问题成立 |
-| L-BFGS | 近似二阶方法，存储最近 m 个 Gradient 差分，而不是完整 Hessian |
+| L-BFGS | 近似二阶方法，存储最近 $m$ 个 Gradient 差分，而不是完整 Hessian |
 | Saddle point | Gradient 为零，但在某些方向上是最小值、在另一些方向上是最大值的点 |
 | Overparameterization | 使用比训练样本更多的参数。会平滑 Loss landscape 并减少糟糕局部最小值 |
 

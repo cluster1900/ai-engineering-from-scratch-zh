@@ -1,6 +1,6 @@
 # Sistemas lineales
 
-> Reseñar Ax = b es uno de los problemas más antiguos de la matemática, y todavía está en funcionamiento en tu red neuronal.
+> 求解   ¿ Qué es esto ?$Ax = b$Es uno de los problemas más antiguos de las matemáticas, y todavía funciona en tu red neuronal.
 
 **Type:** Build
 **Language:**Python
@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## El objetivo del aprendizaje
-- Utiliza带 pivotando parcial y sustitución de atrás de eliminación gaussiana 求解 Ax = b
+- Uso con pivotamiento parcial y sustitución de retroceso de eliminación gaussiana 求解 $Ax = b$
 - Utiliza LU、QR 和 Cholesky descompuestas 分解 Matrix,并解释每种方法适用场景
 - 推导 mínimos cuadrados de las ecuaciones normales,并将其与线性回归和脊回归 联系起来
 - Uso de la condición número  diagnóstico de sistemas mal condicionados,并 aplicar regularización 使其稳定
@@ -16,7 +16,7 @@
 ##  problemas
 Cada vez que se practica la regresión lineal, se trata de resolver un sistema lineal. Cada vez que se calcula el tamaño de los cuadrados mínimos, se trata de resolver un sistema lineal.`y = Wx + b`Cuando, está en el lado de evaluar el sistema lineal. Cuando se une a la regularización, usted está modificando este sistema. Cuando utiliza procesos de Gaussian. Cuando se descompone una matriz.
 
-方程 Ax = b 无处不在──A es la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la
+方程   Cómo es$Ax = b$No está en ninguna parte.$A$Es una matriz de componentes de números ya conocidos.$b$Es un vector de la configuración de salida ya conocida.$x$Es que quieres encontrar un vector de cantidad desconocida en el regreso en línea.$A$Es tu matriz de datos,$b$Es tu vector objetivo,$x$Es un vector de peso. Todo el modelo puede ser concluido en: encontrar.$x$,使 $Ax$尽可能接近 $b$¿Qué es eso?
 
 En esta clase se entenderán todos los métodos principales para resolver esta ecuación desde cero. Usted entenderá por qué algunos métodos son más rápidos y otros más estables, por qué algunos métodos sólo se aplican a sistemas cuadrados y otros pueden tratar sistemas sobredeterminados, y por qué el número de condiciones de la matriz decide si su respuesta tiene sentido.
 
@@ -51,15 +51,15 @@ graph TD
     end
 ```
 
-En la matriz 形式中, "una solución" significa A es invertible──"No solución" significa sistema es inconsistente──"Soluciones infinitas" significa A tiene un espacio nulo──la mayoría de los problemas de ML pertenecen a  no hay una definición exacta de los tipos de clases, porque tus ecuaciones (punto de datos) son más desconocidos (parámetros) 更多── esto es el lugar donde los cuadrados más pequeños (play role) ──
+En Matrix 形式中, "una solución" significa$A$es invertible. "No hay solución" significa que el sistema es inconsistente.$A$tiene un espacio nulo. La mayoría de los problemas de ML pertenecen a la clase de  no tiene una definición exacta, porque tus ecuaciones (punto de datos) son más grandes que los parámetros desconocidos.
 
 ### imagen de columna vs imagen de fila
 
-Hay dos formas de entender Ax = b:
+Hay dos formas de entender.$Ax = b$¿Qué es eso?
 
-**Row picture.**Cada línea de un define una ecuación. Cada ecuación es un hiperplano.
+**Row picture.** $A$Cada línea define una ecuación. Cada ecuación es un hiperplano.
 
-**Column picture.**Cada una de las columnas de A es un vector. ¿Qué combinación lineal de columnas de A puede producir b?
+**Column picture.** $A$Cada uno de los rangoes es un vector.$A$¿Qué combinación lineal de columnas puede producirse?$b$¿ Qué ?
 
 ```
 A = | 2  1 |    b = | 5 |
@@ -72,11 +72,11 @@ Column picture: 找到 x1, x2，使得：
   2 * [2, 1] + 1 * [1, -1] = [4+1, 2-1] = [5, 1]   check.
 ```
 
-Si b se encuentra en el espacio de columna de A, el sistema tiene una solución. Si b no está en uno de ellos, se encuentra en el espacio de columna de la distancia del punto más cercano. Este punto más cercano es la solución de cuadrados mínimos.
+Foto de columna 更根本──如果 $b$ en el$A$En el espacio de columna del sistema, el sistema se encuentra en el centro.$b$No entre ellos, encontrará el espacio de columna en el punto más cercano. Este punto más cercano es la solución de los cuadrados más pequeños.
 
 ### Eliminación gaussiana
 
-La eliminación gaussiana 将 Ax = b 转换为 上方三角形系统 Ux = c, luego utiliza la sustitución de atrás 求解──这是最直接的方法──
+La eliminación de Gaussian$Ax = b$转换为 sistema triangular superior $Ux = c$, y luego con la sustitución de atrás  buscar la solución.
 
 算法:
 
@@ -108,7 +108,7 @@ Back substitute:
   2*x1 + 2 + 2 = 8 --> x1 = 2
 ```
 
-El costo de cálculo de la eliminación gaussiana es de O (n^3) ⋅ para el sistema 1000x1000, esto es aproximadamente mil millones de veces operaciones de puntos flotantes⋅ es rápido, pero si necesitas usar el mismo sistema, también puedes hacerlo mejor.
+El costo de cálculo de la eliminación de Gaussian$O(n^3)$  $1000 \times 1000$sistema, esto es aproximadamente mil millones de veces operaciones de punto flotante.$A$Buscar más sistemas, también podemos hacerlo mejor.
 
 ### Pivotado parcial: ¿Por qué es importante?
 
@@ -133,7 +133,7 @@ En la aritmética de puntos flotantes de precisión limitada, la versión de un 
 
 ### Descomposición de las LU
 
-La descomposición de LU se dividirá en una matriz triangular inferior L y una matriz triangular superior U:A = LU──L Matriz  almacenamiento de los multiplicadores Gaussian elimination en el medio──U Matrix is the result of elimination──
+La descomposición de LU$A$分解为 matriz triangular inferior $L$和 matriz triangular superior $U$¿Qué es esto ?$A = LU$¿Qué es eso?$L$Matriz  almacenamiento de la eliminación Gaussian 中的乘法──$U$La matriz es el resultado de la eliminación.
 
 ```
 A = L @ U
@@ -143,25 +143,27 @@ A = L @ U
 | 2  3  1 |   | 1  2  1 |   | 0  0  -2 |
 ```
 
-¿Por qué hay que eliminar el factor y no eliminarlo directamente? Porque una vez que hay L y U, se necesita un nuevo b para resolver Ax = b sólo O (n^2):
+¿Por qué tener un factor y no eliminarlo directamente?$L$Y $U$, en cualquier nuevo .$b$求解   ¿ Qué es esto ?$Ax = b$Sólo necesito$O(n^2)$¿Qué es esto ?
 
+```math
+\begin{aligned}
+Ax &= b \\
+LUx &= b \\
+&\text{令 } y = Ux\text{:} \\
+Ly &= b \quad \text{（前代，} O(n^2)\text{）} \\
+Ux &= y \quad \text{（回代，} O(n^2)\text{）}
+\end{aligned}
 ```
-Ax = b
-LUx = b
-令 y = Ux:
-  Ly = b    (forward substitution, O(n^2))
-  Ux = y    (back substitution, O(n^2))
-```
 
-El costo de O (n^3) sólo se paga una vez en la factorization. Después de cada vez de resolver, se trata de O (n^2) ⋅ Si necesitas utilizar los mismos A (n^3) y diferentes b (b) vectores para resolver 1000 sistemas, LU permite que el total de trabajo se ahorra en aproximadamente 1000/3 veces.
+$O(n^3)$El costo sólo se paga una vez en la facturación.$O(n^2)$Si necesitas usar lo mismo.$A$、 diferentes $b$Los vectores buscan resolver 1000 sistemas, LU hará que el total de trabajo se ahorra aproximadamente 1000/3 veces.
 
-Usando pivotando parcial, obtienes PA = LU, en el cual P es la matriz de permutación de los swaps de filas registrados.
+Usando la rotación parcial, lo consigues.$PA = LU$, entre ellos $P$Es la matriz de permutación de los swaps de filas de registro.
 
 ### Descomposición de las QR
 
-La descomposición QR se dividirá en una matriz ortogonal Q y una matriz triangular superior R:A = QR。
+Descomposición de QR$A$分解为 matriz ortogonales $Q$和 matriz triangular superior $R$¿Qué es esto ?$A = QR$¿Qué es eso?
 
-Matriz ortogonal 具有 Q^T Q = I 的性质── sus columnas son vectores ortónormales──乘以 Q 会保持长和角──
+Matriz ortogonal 具有 $Q^T Q = I$Su naturaleza. Sus columnas son vectores ortónormales.$Q$会保持 lengths 和 angles。
 
 ```
 A = Q @ R
@@ -175,7 +177,7 @@ To solve Ax = b:
   Back substitute to get x.
 ```
 
-En la búsqueda de solucionar los problemas de cuadrados mínimos 时,QR比 LU en estabilidad numérica 上更好──Gram-Schmidt proceso 逐列构建 Q:
+En la búsqueda de solucionar los problemas de cuadrados mínimos 时,QR比 LU en estabilidad numérica 上更好──Gram-Schmidt proceso 逐列构建 $Q$¿Qué es esto ?
 
 ```
 Given columns a1, a2, ... of A:
@@ -191,11 +193,11 @@ q3 = q3 / ||q3||
 R[i][j] = qi . aj    for i <= j
 ```
 
-Cada paso se moverá a lo largo de todos los componentes de los vectores anteriores, sólo dejando una nueva dirección ortogonala.
+Cada paso se moverá junto a todo lo anterior.$q$Componente de los vectores, sólo deja una nueva dirección ortogonal.
 
 ### Descomposición de Cholesky
 
-Cuando A es simétrico (A = A^T) y positivo definido (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (T) (
+Cuando$A$Es simétrico.$A = A^T$) y positivo definido (todos los valores propios están en forma) cuando se puede desglosar en$A = L L^T$, entre ellos $L$Es triangular inferior. Ésta es la descomposición de Cholesky.
 
 ```
 A = L @ L^T
@@ -212,13 +214,13 @@ Cholesky es casi dos veces más grande que LU, y sólo necesita la mitad del esp
 - Las matrices de covarianza son semidefinidas simétricas positivas (a través de la regularización, se pueden cambiar por definidas positivas)
 - La matriz del núcleo de procesos gaussianos en el medio es una definición positiva simétrica.
 - La función convexa en el mínimo de la posición de Hessian es un definido positivo simétrico.
-- A^T A 总是 simétrico positivo semi-definido。
+- $A^T A$总是 simétrico positivo semi-definido
 
-En los procesos gaussianos, se utiliza Cholesky para resolver la matriz del núcleo K, y luego se busca la solución K alfa = y para obtener el significado predictivo.
+En procesos gaussianos, usas Cholesky para descifrar la matriz del núcleo.$K$, y luego buscar la solución .$K \alpha = y$Para obtener un significado predictivo, el factor Cholesky también da un determinante de probabilidad marginal:$\log \det(K) = 2 \sum \log(\mathop{\mathrm{diag}}(L))$¿Qué es eso?
 
 ### Cuadrados mínimos:当 Ax = b 没有精确解时
 
-Si A es m x n 且 m > n(equaciones Más que desconocidos), el sistema es sobredeterminado.
+Si es que$A$Sí $m \times n$且 $m > n$(equaciones 多于未知), el sistema es sobredeterminado.
 
 ```
 minimize ||Ax - b||^2
@@ -229,11 +231,11 @@ minimize ||Ax - b||^2
 
 Minimizar  satisfagan las ecuaciones normales:
 
-```
+```math
 A^T A x = A^T b
 ```
 
-推导:展开A 求 Gradient,并令其为零:2 A  A x - 2 A  T b = 0
+推导:展开 $\lVert Ax - b \rVert^2 = (Ax - b)^T (Ax - b) = x^T A^T A x - 2 x^T A^T b + b^T b$¿Qué es esto?$x$求 Gradiente,并令其为零:$2 A^T A x - 2 A^T b = 0$¿Qué es eso?
 
 ```
 Original system (overdetermined, 4 equations, 2 unknowns):
@@ -253,35 +255,40 @@ Solve: x = [1.5, 1.7]
 
 ### Equaciones normales = regresión lineal
 
-Esta relación es precisa. En la regresión lineal, la matriz de datos X cada una línea se corresponde a una muestra, cada una línea se corresponde a una característica y cada entrada a una muestra.
+Este tipo de conexión es preciso. En la regresión lineal, la matriz de datos.$X$Cada línea se enfrenta a una muestra, cada línea se enfrenta a una característica.$y$Cada entrada corresponde a una muestra.$w$满足:
 
-```
-X^T X w = X^T y
-w = (X^T X)^(-1) X^T y
+```math
+\begin{aligned}
+X^T X w &= X^T y \\
+w &= (X^T X)^{-1} X^T y
+\end{aligned}
 ```
 
 Esta es una solución de forma cerrada de regresión lineal.`sklearn.linear_model.LinearRegression.fit()`Ciudad calcular este resultado (o a través de QR o SVD  calcular resultados similares)
 
-A la matriz añade el término de regularización lambda * I, tú tienes regresión de la cresta:
+hacia Matrix 添加 regularisation término $\lambda I$, tienes regresión de la cresta:
 
-```
-(X^T X + lambda * I) w = X^T y
-w = (X^T X + lambda * I)^(-1) X^T y
+```math
+\begin{aligned}
+(X^T X + \lambda I) w &= X^T y \\
+w &= (X^T X + \lambda I)^{-1} X^T y
+\end{aligned}
 ```
 
-Regularización hará que la matriz esté condicionada mejor (más fácilmente se puede obtener la inversa), y a través de los pesos hacia el cero se contraerá para evitar el sobreajuste. Cuando lambda > 0 时, la matriz X^T X + lambda * I 总是对称正确, por lo tanto se puede utilizar Cholesky 求解──
+La regularización hará que la matriz esté condicionada mejor (más fácilmente se puede obtener la inversa), y a través de la contracción de los pesos hacia el cero para evitar el sobreajuste.$\lambda > 0$时,Matrix $X^T X + \lambda I$总是对称正确, por lo tanto se puede utilizar Cholesky 求解──
 
 ### Pseudoinverso (Moore-Penrose)
 
-Pseudoinverso A+ va a invertir la matriz 推广到非平方 和 singular matrices── para cualquier Matrix A:
+Pseudoinversión $A^+$La inversión de la matriz 推广到非平方 和 singular matrices──对任意 Matrix $A$¿Qué es esto ?
 
+```math
+\begin{aligned}
+x &= A^+ b \\[4pt]
+\text{其中 } A^+ &= V \Sigma^+ U^T \quad \text{（通过 SVD 计算）}
+\end{aligned}
 ```
-x = A+ b
 
-where A+ = V Sigma+ U^T    (computed via SVD)
-```
-
-Sigma + 通過對每個非零單位值 取相互并轉置結果构成──如果 A = U Sigma V^T,那么 A+ = V Sigma+ U^T──
+$\Sigma^+$通过对每个非零单数值 取相互并转置结果构成──如果 $A = U \Sigma V^T$Entonces ...$A^+ = V \Sigma^+ U^T$¿Qué es eso?
 
 ```
 A = U Sigma V^T        (SVD)
@@ -294,21 +301,21 @@ A+ = V Sigma+ U^T
 ```
 
 Pseudoinverso                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-- 唯一解: A+ b 给出该解──
-- 无解:A+b 给出 solución de cuadrados mínimos。
-- ¡A+b 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给出 给给出 给出 给给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给 给
+- 唯一解:$A^+ b$¿Qué quieres decir?
+- 无解:$A^+ b$给出最小平方的解决方案──
+- 无穷多解:$A^+ b$- ¿ Qué ?$\lVert x \rVert$La última de las soluciones.
 
 NumPy de `np.linalg.lstsq`Y `np.linalg.pinv`内部都使用 SVD。
 
 ### Número de condición
 
-Número de condición Solución de medida tiene una gran sensibilidad a las pequeñas variaciones de la entrada  Para la Matriz A, el número de condición es:
+Número de condición  Solución de medida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     $A$,número de condición es:
 
-```
-kappa(A) = ||A|| * ||A^(-1)|| = sigma_max / sigma_min
+```math
+\kappa(A) = \lVert A \rVert \cdot \lVert A^{-1} \rVert = \frac{\sigma_{\max}}{\sigma_{\min}}
 ```
 
-Entre ellos sigma_max 和 sigma_min 分别是最大和最小单数值──
+Entre ellos $\sigma_{\max}$Y $\sigma_{\min}$Se diferencian los valores mayores y menores de singularidad.
 
 ```
 Well-conditioned (kappa ~ 1):        Ill-conditioned (kappa ~ 10^15):
@@ -320,17 +327,17 @@ x 中的小变化                         x 中的巨大变化
 ```
 
 经验法则:
-- Kappa < 100: seguridad, solución 准确。
-- ¿Cómo es que el tiempo de la vida de los hombres es un tiempo de vida?
-- para float64):solución 没有意义──Matrix 实际上是单一──
+- $\kappa < 100$: seguridad, solución 准确。
+- $\kappa \approx 10^k$¿Cómo se puede ver la diferencia entre los números de los puntos flotantes y los números de los puntos flotantes ?$k$位精度──
+- $\kappa \approx 10^{16}$(Para float64):solución 没有意义──Matrix 实际上是单一──
 
-En ML, mal-condicionamiento ocurre en características 几乎 collinear 时――Regularization(添加 lambda * I)将将条件数 从 sigma_max / sigma_min 改善为 (sigma_max + lambda) / (sigma_min + lambda) ⋅
+En el ML, mal-condicionamiento ocurre en características quasi colinear 时──regularización 添加 $\lambda I$) se va a poner el número de condición de$\sigma_{\max} / \sigma_{\min}$ mejoramiento $(\sigma_{\max} + \lambda) / (\sigma_{\min} + \lambda)$¿Qué es eso?
 
 ### Métodos iterativos: gradiente conjugado
 
 Para sistemas muy grandes y raros, millones de desconocidos, métodos directos como LU o Cholesky, métodos iterativos, que pueden ser utilizados en varias ocasiones, pueden mejorar una conjetura para una solución similar.
 
-El gradiente conjugado (CG) en A es un gradiente positivo simétrico definido 时求解 Ax = b。 en la aritmética exacta se encuentra una solución exacta, pero si los valores propios de A se agrupan, normalmente se obtendrán más rápidamente ──
+Gradiente conjugado (CG) en$A$Es simétrico positivo definido 时求解 $Ax = b$◊ Es en la aritmética exacta $n$Luego encontraré una solución, pero si$A$Los valores propios   reunir, normalmente                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 
 ```
 Algorithm sketch:
@@ -359,29 +366,29 @@ La tasa de convergencia depende del número de condiciones.
 
 | Method | Requirements | Cost | Use case |
 |--------|-------------|------|----------|
-| Gaussian elimination | Square, nonsingular A | O(n^3) | 对 square system 的一次性求解 |
-| LU decomposition | Square, nonsingular A | O(n^3) factor + O(n^2) solve | 使用相同 A 的多次求解 |
-| QR decomposition | Any A (m >= n) | O(mn^2) | Least squares，numerically stable |
-| Cholesky | Symmetric positive definite A | O(n^3/3) | Covariance matrices，Gaussian processes，ridge regression |
-| Normal equations | Overdetermined (m > n) | O(mn^2 + n^3) | Linear regression（小 n） |
-| SVD / pseudoinverse | Any A | O(mn^2) | Rank-deficient systems，minimum-norm solutions |
-| Conjugate gradient | Symmetric positive definite, sparse A | O(n * k * nnz) | Large sparse systems，k = iterations |
+| Gaussian elimination | Square, nonsingular $A$ | $O(n^3)$ | 对 square system 的一次性求解 |
+| LU decomposition | Square, nonsingular $A$ | $O(n^3)$ factor + $O(n^2)$ solve | 使用相同 $A$ 的多次求解 |
+| QR decomposition | Any $A$ ($m \ge n$) | $O(mn^2)$ | Least squares，numerically stable |
+| Cholesky | Symmetric positive definite $A$ | $O(n^3/3)$ | Covariance matrices，Gaussian processes，ridge regression |
+| Normal equations | Overdetermined ($m > n$) | $O(mn^2 + n^3)$ | Linear regression（小 $n$） |
+| SVD / pseudoinverse | Any $A$ | $O(mn^2)$ | Rank-deficient systems，minimum-norm solutions |
+| Conjugate gradient | Symmetric positive definite, sparse $A$ | $O(n \cdot k \cdot \text{nnz})$ | Large sparse systems，$k$ = iterations |
 
 ### Conexión a ML
 
 Cada método de esta clase se encuentra en el ML de producción:
 
-**Linear regression.**Solución de forma cerrada 求解 las ecuaciones normales X^T X w = X^T y。 esto puede pasar por Cholesky 如果 n 很小)、QR 如果数学的稳定性 很重要) 或 SVD 如果矩阵可能级缺)完成──
+**Linear regression.**Solución de forma cerrada 求解 ecuaciones normales $X^T X w = X^T y$Esto puede pasar por Cholesky si$n$很小) 、QR(si la estabilidad numérica 很重要) o SVD(si la matriz puede ser deficiente en rango)完成。
 
-**Ridge regression.**hacia X^T X 添加 lambda * I。 Sistema regularizado (X^T X + lambda * I) w = X^T y 总是可以通过Cholesky 求解,因为当 lambda > 0 时,X^T X + lambda * I 是对称正确的──
+**Ridge regression.**¿ Qué ?$X^T X$添加                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           $\lambda I$ Sistema regularizado$(X^T X + \lambda I) w = X^T y$Siempre puedo pasar por Cholesky, porque ahora.$\lambda > 0$时,$X^T X + \lambda I$Es un positivo simétrico definido.
 
-**Gaussian processes.**Medios predictivos 需要求解 K alfa = y, entre los cuales K es matriz del núcleo。对 K 做 Cholesky factorization 是标准方法。Log probabilidad marginal 使用 log det(K) = 2 suma(log(diag(L)))。
+**Gaussian processes.**Medios predictivos 需要求解 $K \alpha = y$, entre ellos $K$Es la matriz del núcleo.$K$Hacer la factorization de Cholesky es el método estándar. Logar probabilidad marginal.$\log \det(K) = 2 \sum \log(\mathop{\mathrm{diag}}(L))$¿Qué es eso?
 
 **Neural network initialization.**Inicialización ortogonal Utiliza la descomposición QR  Crea columnas para matrices de peso ortónormales― esto puede prevenir el colapso de señales en redes profundas―
 
 **Preconditioning.**Optimizadores a gran escala Utilizan Cholesky incompleto o LU incompleto como precondiciones de solventes de gradientes conjugados。
 
-**Feature engineering.**El número de condición de X^T X  te dice si las características son colinearias. Si la kappa es grande, elimina las características o añade regularización.
+**Feature engineering.** $X^T X$El número de condición  te dice las características si no colinear── si $\kappa$很大, eliminar características o añadir regularización.
 
 
 ```figure
@@ -539,35 +546,47 @@ print(f"Ridge weights (sklearn): {ridge_sk.coef_}")
 ##  ejercicios
 1. Utiliza tu eliminación gaussiana, tu solvente de LU y`np.linalg.solve`求解 sistema `[[1,2,3],[4,5,6],[7,8,10]] x = [6, 15, 27]`❖ Experimentación en tolerancia de punto flotante en en da la misma respuesta―
 
-2. 生成一个50x5 matriz aleatoria X 和 objetivo y = X @ w_true + ruido──分别使用正常方程、QR(通过 `np.linalg.qr`)、SVD( a través de `np.linalg.svd`) y `np.linalg.lstsq`求解 w―比较四个解决方案──测量 X^T X 的条件数,并解释它如何影响你信任哪种方法──
+2. 生成一个50x5 matriz aleatoria X 和 objetivo y = X @ w_true + ruido──分别使用正常方程、QR(通过 `np.linalg.qr`)、SVD( a través de `np.linalg.svd`) y `np.linalg.lstsq`求解 w──比较四个解决方案──测量 $X^T X$¿Cómo puede afectar a tu confianza?
 
-3. 通过让两列几乎相同来创建一个几乎单一矩阵 (例如, columna 2 = columna 1 + 1e-10 * ruido) ⋅ calcular su número de condición ⋅分别在有规律化和无规律化的情况下求解 Ax = b(加0.01 * I) ⋅ Compare soluciones 和残留──解释为什么规律化有帮助──
+3. 通过让两列几乎相同来创建一个几乎单一矩阵 (例如, columna 2 = columna 1 + 1e-10 * ruido) ⋅ calcular su número de condición ⋅分别在有规律化和无规律化的情况下求解$Ax = b$(添加 $0.01 I$)― Comparar soluciones y residuos― Explicar por qué la regularización es útil―
 
-4. Para una matriz positiva definida simétrica aleatoria 100x100  lograr algoritmo de gradiente conjugado―统计它收到容忍 1e-8 需要多少次反复──与n 代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代
+4. Para una matriz positiva definida simétrica aleatoria 100x100  lograr algoritmo de gradiente conjugado―统计它收到容忍 1e-8 需要多少次反复──与 $n$El valor máximo de las iteraciones se compara.
 
 5. En la matriz positiva definida de 10 50 200 500 en la matriz de la matriz, en la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de`np.linalg.solve`计时――绘制结果――验证 Cholesky 大约比 LU 快 2倍――
+
+### 提示
+
+**练习 1。**调用                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `gaussian_elimination(A, b)`, re调用 `lu_decompose(A)`Y luego se puso a usar`lu_solve(P, L, U, b)`, última调用 `np.linalg.solve(A, b)` Uso`np.allclose(A @ x, b)`检查每个解,并用 `np.allclose`Comparar estas tres soluciones.
+
+**练习 2。**Para las ecuaciones normales `least_squares_normal`, el resto de métodos utilizan las tres funciones de NUMPY                                                                                                                                                                                                                                                        `w_true` Compare `condition_number(X.T @ X)`Y `condition_number(X)`El primero es el cuadrado del segundo, por lo tanto, las ecuaciones normales pierden la mayor precisión.
+
+**练习 3。**预期 condición número 会超过 $10^{9}$△分別使用 `np.linalg.solve`Y `ridge_regression(A, b, 0.01)`                                                                                                                                                                                                                                                              `np.linalg.norm(x)`Y norma residual. Dos residuos pueden ser muy pequeños, pero la solución de la regularización no suele contener una gran cantidad.
+
+**练习 4。**Uso `B @ B.T + n * np.eye(n)`Construir una matriz positiva simétrica definida, garantizando que cada valor propio está en su lugar.`conjugate_gradient`En el ciclo de la cuenta, se incluye el contador, y luego se verifica si la norma residual final es menor que 1e-8, si el número de veces no supera los 100[6].
+
+**练习 5。**Tres tipos de solventes`B @ B.T + n * np.eye(n)`矩阵,并用 `time.perf_counter`∆ medir el tiempo de cada búsqueda de solución, obtener el mejor resultado de varias operaciones¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Linear system | "Solve for x" | 一组 linear equations Ax = b。找到 x 意味着找到在 transformation A 下产生 output b 的 input。 |
-| Gaussian elimination | "Row reduce" | 使用 row operations 系统性地将 diagonal 下方的 entries 置零，产生可通过 back substitution 求解的 upper triangular system。O(n^3)。 |
-| Partial pivoting | "Swap rows for stability" | 在 column k 中进行 elimination 前，将该 column 中 absolute value 最大的行交换到 pivot 位置。防止除以很小的数。 |
-| LU decomposition | "Factor into triangles" | 写成 A = LU，其中 L 是 lower triangular（存储 multipliers），U 是 upper triangular（eliminated matrix）。将 O(n^3) 成本摊销到多次求解中。 |
-| QR decomposition | "Orthogonal factorization" | 写成 A = QR，其中 Q 的 columns 是 orthonormal，R 是 upper triangular。对于 least squares，比 LU 更稳定。 |
-| Cholesky decomposition | "Square root of a matrix" | 对 symmetric positive definite A，写成 A = LL^T。成本是 LU 的一半。用于 covariance matrices、kernel matrices 和 ridge regression。 |
-| Least squares | "Best fit when exact is impossible" | 当 system overdetermined（equations 多于 unknowns）时，最小化 squared residuals 的总和 ||Ax - b||^2。 |
-| Normal equations | "The calculus shortcut" | A^T A x = A^T b。将 ||Ax - b||^2 的 Gradient 设为零。这就是 linear regression 的 closed-form solution。 |
-| Pseudoinverse | "Inversion for non-square matrices" | A+ = V Sigma+ U^T via SVD。对于任意 Matrix，无论 square 或 rectangular、singular 与否，给出 minimum-norm least-squares solution。 |
-| Condition number | "How trustworthy is this answer" | kappa = sigma_max / sigma_min。衡量对 input perturbations 的敏感性。大约损失 log10(kappa) 位精度。 |
-| Ridge regression | "Regularized least squares" | 求解 (X^T X + lambda I) w = X^T y。添加 lambda I 改善 conditioning，并将 weights 向零收缩。防止 overfitting。 |
-| Conjugate gradient | "Iterative Ax=b for big matrices" | 用于 symmetric positive definite systems 的 iterative solver。最多 n 步收敛。适合 factorization 成本过高的大型 sparse systems。 |
-| Overdetermined system | "More data than parameters" | 在 m-by-n system 中 m > n。不存在精确解。Least squares 找到最佳近似。这就是每个 regression problem。 |
-| Back substitution | "Solve from the bottom up" | 给定 upper triangular system，先求解最后一个 equation，然后向后 substitute。O(n^2)。 |
-| Forward substitution | "Solve from the top down" | 给定 lower triangular system，先求解第一个 equation，然后向前 substitute。O(n^2)。用于 LU solves 中的 L step。 |
+| Linear system | "Solve for x" | 一组 linear equations $Ax = b$。找到 $x$ 意味着找到在 transformation $A$ 下产生 output $b$ 的 input。 |
+| Gaussian elimination | "Row reduce" | 使用 row operations 系统性地将 diagonal 下方的 entries 置零，产生可通过 back substitution 求解的 upper triangular system。$O(n^3)$。 |
+| Partial pivoting | "Swap rows for stability" | 在 column $k$ 中进行 elimination 前，将该 column 中 absolute value 最大的行交换到 pivot 位置。防止除以很小的数。 |
+| LU decomposition | "Factor into triangles" | 写成 $A = LU$，其中 $L$ 是 lower triangular（存储 multipliers），$U$ 是 upper triangular（eliminated matrix）。将 $O(n^3)$ 成本摊销到多次求解中。 |
+| QR decomposition | "Orthogonal factorization" | 写成 $A = QR$，其中 $Q$ 的 columns 是 orthonormal，$R$ 是 upper triangular。对于 least squares，比 LU 更稳定。 |
+| Cholesky decomposition | "Square root of a matrix" | 对 symmetric positive definite $A$，写成 $A = LL^T$。成本是 LU 的一半。用于 covariance matrices、kernel matrices 和 ridge regression。 |
+| Least squares | "Best fit when exact is impossible" | 当 system overdetermined（equations 多于 unknowns）时，最小化 squared residuals 的总和 $\lVert Ax - b \rVert^2$。 |
+| Normal equations | "The calculus shortcut" | $A^T A x = A^T b$。将 $\lVert Ax - b \rVert^2$ 的 Gradient 设为零。这就是 linear regression 的 closed-form solution。 |
+| Pseudoinverse | "Inversion for non-square matrices" | $A^+ = V \Sigma^+ U^T$ via SVD。对于任意 Matrix，无论 square 或 rectangular、singular 与否，给出 minimum-norm least-squares solution。 |
+| Condition number | "How trustworthy is this answer" | $\kappa = \sigma_{\max} / \sigma_{\min}$。衡量对 input perturbations 的敏感性。大约损失 $\log_{10}(\kappa)$ 位精度。 |
+| Ridge regression | "Regularized least squares" | 求解 $(X^T X + \lambda I) w = X^T y$。添加 $\lambda I$ 改善 conditioning，并将 weights 向零收缩。防止 overfitting。 |
+| Conjugate gradient | "Iterative Ax=b for big matrices" | 用于 symmetric positive definite systems 的 iterative solver。最多 $n$ 步收敛。适合 factorization 成本过高的大型 sparse systems。 |
+| Overdetermined system | "More data than parameters" | 在 $m\text{-by-}n$ system 中 $m > n$。不存在精确解。Least squares 找到最佳近似。这就是每个 regression problem。 |
+| Back substitution | "Solve from the bottom up" | 给定 upper triangular system，先求解最后一个 equation，然后向后 substitute。$O(n^2)$。 |
+| Forward substitution | "Solve from the top down" | 给定 lower triangular system，先求解第一个 equation，然后向前 substitute。$O(n^2)$。用于 LU solves 中的 L step。 |
 
 ## 延伸阅读
 - [MIT 18.06: Linear Algebra](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/)(Gilbert Strang) --                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 - [Numerical Linear Algebra](https://people.maths.ox.ac.uk/trefethen/text.html)(Trefethen & Bau) -- Comprender la estabilidad numérica, el acondicionamiento y los algoritmos por qué no
 - [Matrix Computations](https://www.cs.cornell.edu/cv/GolubVanLoan4/golubandvanloan.htm)(Golub & Van Loan) --  охватыва разных матричных алгоритмов 百科式参考
-- [3Blue1Brown: Inverse Matrices](https://www.3blue1brown.com/lessons/inverse-matrices)-- para la búsqueda de la solución de Ax = b 几何意义的可见化直觉
+- [3Blue1Brown: Inverse Matrices](https://www.3blue1brown.com/lessons/inverse-matrices)- Para la solicitud$Ax = b$几何意义的可见化直觉 (en inglés)

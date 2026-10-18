@@ -8,7 +8,7 @@
 **Time:** ~90 分钟
 
 ## El objetivo del aprendizaje
-- Desde零 realizar DFT,并使用O(N log N) de Cooley-Tukey FFT 验证它
+- Desde el 0 de la realización de DFT,并用 $O(N \log N)$De Cooley-Tukey FFT 验证它
 - Comprender los coeficientes de frecuencia: de señal en el espectro de amplitud, fase y potencia
 -  aplicación del teorema de la convolución, a través de la multiplicación FFT  ejecutar la convolución
 - La descomposición de la frecuencia de Fourier con los codificadores posicionales del transformador y las capas de convolución de CNN  enlace
@@ -25,67 +25,64 @@ Esto es importante para el ML, porque el pensamiento de dominio de frecuencia �
 ## 概念
 ### La definición de DFT
 
-给定 N 个 muestras x[0], x[1], ..., x[N-1],Discrete Fourier Transform 会生成 N 个 frecuencias coeficientes X[0], X[1], ..., X[N-1]:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $N$个 muestras $x[0], x[1], \ldots, x[N-1]$,Discrete Fourier Transform 会生成 $N$个 coeficientes de frecuencia $X[0], X[1], \ldots, X[N-1]$¿Qué es esto ?
 
-```
-X[k] = sum_{n=0}^{N-1} x[n] * e^(-2*pi*i*k*n/N)
-
-for k = 0, 1, ..., N-1
+```math
+X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-Cada X[k] es un número complejo. Su magnitud. X[k] también representa la amplitud de la frecuencia k. Su ángulo de fase.
+Cada uno .$X[k]$Es un número complejo. Su magnitud.$\lvert X[k] \rvert$Indicar la frecuencia $k$La amplitud... su fase.$\angle X[k]$Indicar la desviación de la fase de la frecuencia.
 
-¿Qué es esto?`e^(-2*pi*i*k*n/N)`Es una fase que gira en frecuencia k. La DFT calcula la correlación entre la señal y N 个等间隔频率. Si la señal en frecuencia k arriba contiene energía, la correlación es muy grande.
+¿Qué es esto?$e^{-2\pi i k n/N}$Es una frecuencia.$k$旋转的phasor──DFT 计算是信号与 $N$个等间隔频率 中每一个的相关性.$k$La correlación es muy grande.
 
 ### El significado de cada uno de los números
 
-**X[0]: DC component。**Es la suma de todas las muestras, con la proporción de 成比例 media.
+**$X[0]$: DC component。**Es la suma de todas las muestras, con la proporción de 成比例 media.
 
+```math
+X[0] = \sum_{n=0}^{N-1} x[n] \, e^0 = \text{全部 samples 之和}
 ```
-X[0] = sum_{n=0}^{N-1} x[n] * e^0 = sum of all samples
-```
 
-**X[k] for 1 <= k <= N/2: positive frequencies。**X[k] muestra cada N 个 muestras 中 k 个周期 的频率──k 越大,频率 越高(oscillación 越快)──
+**$X[k]$ for $1 \le k \le N/2$: positive frequencies。** $X[k]$Muestra cada uno$N$个 muestras 中 $k$个 ciclos de frecuencia:$k$越大, frecuencia 越高 oscillación 越快)
 
-**X[N/2]: Nyquist frequency。**Es la frecuencia máxima de N 个 muestras 能表示的── exceder esta frecuencia, se produce alias, es decir, frecuencias altas 伪装成低频──
+**$X[N/2]$: Nyquist frequency。**Es el .$N$个样本 能表示的最高频率──超越这个频率,就会出现别名,也就是高频率──伪装成低频率──
 
-**X[k] for N/2 < k < N: negative frequencies。**对于真实值的信号,X[N-k] = conj(X[k])。 las frecuencias negativas son las positivas de las imágenes── ése es el motivo por el cual la información útil se encuentra en los coeficientes anteriores N/2 + 1 ‖ 中──
+**$X[k]$ for $N/2 < k < N$: negative frequencies。** para las señales de valor real,$X[N-k] = \overline{X[k]}$Las frecuencias negativas son el reflejo de las positivas.$N/2 + 1$个 coeficientes 中──
 
 ### DFT inverso
 
 Reverso DFT de los coeficientes de frecuencia de la reunión 重建原始信号:
 
-```
-x[n] = (1/N) * sum_{k=0}^{N-1} X[k] * e^(2*pi*i*k*n/N)
-
-for n = 0, 1, ..., N-1
+```math
+x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X[k] \, e^{2\pi i k n/N} \qquad \text{其中 } n = 0, 1, \ldots, N-1
 ```
 
-La única diferencia entre el DFT de adelante y el exponente medio es que el símbolo es positivo, y que tiene un factor de normalización 1/N.
+La única diferencia entre el DFT de adelante y el exponente de la posición es que el símbolo de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la posición de la cuento es es es es es es es es es es es es es es es es es es es es es es es es es una de la posición de la posición de la posición de la posición$1/N$Factor de normalización
 
 La DFT inversa es una reconstrucción perfecta. No perderá ningún tipo de información. Puedes pasar del dominio del tiempo al dominio de la frecuencia, volver y volver sin producir ningún error.
 
 ### El FFT: hacerlo rápido
 
-Como se define anteriormente, el DFT es O(N^2): para cada uno de los coeficientes de salida de N, es necesario para N 个输入样本求和──当 N = 1 millón 时, esto es una operación de 10^12 veces──
+Como se define anteriormente, la DFT es$O(N^2)$Por lo tanto ,$N$个 de producción coeficientes de entre cada uno, todos por $N$个 muestras de entrada 求和──当 $N$= 1 millón, esto es todo.$10^{12}$Las siguientes operaciones.
 
-La transformación rápida de Fourier (FFT) se realizará con O(N log N) 计算同样结果──当N = 1 millón 时, esto es aproximadamente 2.000.000 veces operaciones, en lugar de 1.000.000 veces── esto hace que el análisis de frecuencia 变得可行──
+Transformación rápida de Fourier (FFT) 会以$O(N \log N)$計算同样结果──当 $N$= 1 millón de veces, esto es aproximadamente 20 millones de operaciones, no un millón de veces. Esto hace que el análisis de frecuencia se haga posible.
 
 Algorithm Cooley-Tukey (FFT) utiliza dividir y conquistar:
 
 1. Se dividirá la señal en muestras de índice par y impar.
 2. 递归计算每一半的 DFT──
-3. Utiliza "factores de doble" e^(-2*pi*i*k/N) 合并两个 DFT de medio tamaño。
+3. Usando "factores gemelos" $e^{-2\pi i k/N}$合并两个 DFT de medio tamaño.
 
+```math
+\begin{aligned}
+X[k] &= E[k] + e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\
+X[k + N/2] &= E[k] - e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\[6pt]
+\text{其中 } E &= \text{偶数索引 samples 的 DFT} \\
+O &= \text{奇数索引 samples 的 DFT}
+\end{aligned}
 ```
-X[k] = E[k] + e^(-2*pi*i*k/N) * O[k]          for k = 0, ..., N/2 - 1
-X[k + N/2] = E[k] - e^(-2*pi*i*k/N) * O[k]    for k = 0, ..., N/2 - 1
 
-where E = DFT of even-indexed samples
-      O = DFT of odd-indexed samples
-```
-
-Esta simetría significa que cada uno de los niveles de la recurrente ejecuta el trabajo O (N), y también tiene un log2 (N) 层──总计:O (N) log N (N)).
+Esta simetría significa cada uno de los niveles de ejecución de la recesiva.$O(N)$trabajo, y hay$\log_2(N)$层――总计:$O(N \log N)$¿Qué es eso?
 
 ```mermaid
 graph TD
@@ -107,23 +104,27 @@ FFT  requerir longitud de señal es de 2 ── En la práctica, las señales no
 
 ### Análisis espectral
 
-**power spectrum**Sí, X es el cuadrado de cada coeficiente de frecuencia.
+**power spectrum**Sí $\lvert X[k] \rvert^2$, es la magnitud cuadrada de cada coeficiente de frecuencia. Muestra que cada frecuencia tiene mucha energía.
 
-**phase spectrum**Es el ángulo ((X[k]), es el defset de fase de cada frecuencia. Para la mayoría de las tareas de análisis, lo que te preocupa es el espectro de potencia, y no te preocupas por la fase.
+**phase spectrum**Sí $\angle X[k]$,也就是每个频率的相对应──对于大多数分析任务,你关心的是功率谱,并会忽略相──
 
-```
-Power at frequency k:  P[k] = |X[k]|^2 = X[k].real^2 + X[k].imag^2
-Phase at frequency k:  phi[k] = atan2(X[k].imag, X[k].real)
+```math
+\begin{aligned}
+\text{频率 } k \text{ 处的 Power：} \quad P[k] &= |X[k]|^2 = \mathop{\mathrm{Re}}(X[k])^2 + \mathop{\mathrm{Im}}(X[k])^2 \\
+\text{频率 } k \text{ 处的 Phase：} \quad \phi[k] &= \mathop{\mathrm{atan2}}(\mathop{\mathrm{Im}}(X[k]), \mathop{\mathrm{Re}}(X[k]))
+\end{aligned}
 ```
 
 ### Resolución de frecuencia
 
-Resolución de frecuencia de DFT  depende de las muestras 数量 N 和 muestreo de tasa fs。
+Resolución de frecuencia de DFT  Depende de las muestras $N$y la tasa de muestreo $f_s$¿Qué es eso?
 
-```
-Frequency of bin k:      f_k = k * fs / N
-Frequency resolution:    delta_f = fs / N
-Maximum frequency:       f_max = fs / 2  (Nyquist)
+```math
+\begin{aligned}
+\text{bin } k \text{ 对应的频率：} \quad & f_k = k \cdot f_s / N \\
+\text{频率分辨率：} \quad & \Delta f = f_s / N \\
+\text{最高频率：} \quad & f_{\max} = f_s / 2 \quad \text{(Nyquist)}
+\end{aligned}
 ```
 
 Para distinguir dos frecuencias muy cercanas, necesitas más muestras... para capturar frecuencias altas, necesitas una tasa de muestreo más alta...
@@ -134,20 +135,21 @@ Este es uno de los resultados más importantes del procesamiento de señales, y 
 
 **time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。**
 
-```
-x * h = IFFT(FFT(x) . FFT(h))
-
-where * is convolution and . is element-wise multiplication
+```math
+\begin{aligned}
+& x * h = \text{IFFT}(\text{FFT}(x) \cdot \text{FFT}(h)) \\[4pt]
+& \text{其中 } * \text{ 表示 convolution，} \cdot \text{ 表示 element-wise multiplication}
+\end{aligned}
 ```
 
 ¿Por qué es importante ?
 
-- 两个长度为 N 和 M de señales 直接卷曲 需要 O(N*M) operaciones。
-- 基于 FFT 的卷曲 需要 O(N log N):transform 两者、multiply、transform back。
+- 两个长度为 $N$Y $M$Las señales  direct convolución  necesitan $O(NM)$Operaciones
+-  Basado en la convolución de FFT  necesita $O(N \log N)$:transform 两者、multiplicar、transform back──
 -  Para los núcleos grandes, la convolución FFT 会快得多──
 - Esto es lo que ocurre en las capas convolutivas de campos receptivos grandes.
 
-Nota:DFT  calcular es una convolución circular (signal 会 wrap around) ・・・ Para la convolución lineal (linear convolución) ⋅ sin envoltura, por favor en el cálculo anterior se darán dos señales de cero pad hasta la longitud N + M - 1―
+Nota:DFT  calcular es una convolución circular (signal 会 wrap around) ・・・ Para la convolución lineal (linear convolución)  sin envoltura, por favor en el cálculo anterior se darán dos señales de cero pad hasta la longitud $N + M - 1$¿Qué es eso?
 
 ```mermaid
 graph LR
@@ -167,7 +169,7 @@ graph LR
 
 ### Las ventanas
 
-DFT 假设信号是周期的,也就是把N个样本视为无限重复信号的一个周期――如果信号的起点和终点不是同一个值,就会在边界产生间断,并表现为虚假的高频内容――这称为光谱泄漏――
+DFT 假设 señal es periódico,也就是把 $N$个样本 视为无限重复信号的一个周期──如果信号的起点和终点不是同一个值,就会在边界产生不连续性,并表现为虚假的高频内容──这称为光谱泄漏──
 
 Las ventanas se encuentran en el cálculo de DFT, de modo que la señal de los dos extremos se reduce a cero, lo que reduce la fuga.
 
@@ -180,9 +182,11 @@ Las ventanas se encuentran en el cálculo de DFT, de modo que la señal de los d
 | Hamming | Modified cosine | 中等 | 更低 (-42 dB) | Audio processing、speech analysis |
 | Blackman | Triple cosine | 宽 | 非常低 (-58 dB) | 当 side lobe suppression 至关重要时 |
 
-```
-Hann window:    w[n] = 0.5 * (1 - cos(2*pi*n / (N-1)))
-Hamming window: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
+```math
+\begin{aligned}
+\text{Hann window：} \quad & w[n] = 0.5 \left(1 - \cos\frac{2\pi n}{N-1}\right) \\
+\text{Hamming window：} \quad & w[n] = 0.54 - 0.46 \cos\frac{2\pi n}{N-1}
+\end{aligned}
 ```
 
 Antes de DFT, la ventana se aplicará a la señal haciendo la multiplicación de elementos para la ventana:`X = DFT(x * w)`¿Qué es eso?
@@ -191,13 +195,13 @@ Antes de DFT, la ventana se aplicará a la señal haciendo la multiplicación de
 
 | Property | Time Domain | Frequency Domain |
 |----------|-------------|-----------------|
-| Linearity | a*x + b*y | a*X + b*Y |
-| Time shift | x[n - k] | X[f] * e^(-2*pi*i*f*k/N) |
-| Frequency shift | x[n] * e^(2*pi*i*f0*n/N) | X[f - f0] |
-| Convolution | x * h | X * H (pointwise) |
-| Multiplication | x * h (pointwise) | X * H (circular convolution, scaled by 1/N) |
-| Parseval's theorem | sum \|x[n]\|^2 | (1/N) * sum \|X[k]\|^2 |
-| Conjugate symmetry (real input) | x[n] real | X[k] = conj(X[N-k]) |
+| Linearity | $ax + by$ | $aX + bY$ |
+| Time shift | $x[n - k]$ | $X[f] e^{-2\pi i f k/N}$ |
+| Frequency shift | $x[n] e^{2\pi i f_0 n/N}$ | $X[f - f_0]$ |
+| Convolution | $x * h$ | $X \cdot H$ (pointwise) |
+| Multiplication | $x \cdot h$ (pointwise) | $X * H$ (circular convolution, scaled by $1/N$) |
+| Parseval's theorem | $\sum \lvert x[n] \rvert^2$ | $\frac{1}{N} \sum \lvert X[k] \rvert^2$ |
+| Conjugate symmetry (real input) | $x[n]$ real | $X[k] = \overline{X[N-k]}$ |
 
 El teorema de Parseval expresa la energía total en dos dominios entre los mismos.
 
@@ -205,18 +209,20 @@ El teorema de Parseval expresa la energía total en dos dominios entre los mismo
 
 Original Transformer Utiliza codificaciones posicionales sinusoidales:
 
-```
-PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
-PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```math
+\begin{aligned}
+PE(pos, 2i) &= \sin\left(pos / 10000^{2i/d_{\text{model}}}\right) \\
+PE(pos, 2i+1) &= \cos\left(pos / 10000^{2i/d_{\text{model}}}\right)
+\end{aligned}
 ```
 
-Cada par de dimensiones (2i, 2i+1) oscila con diferentes frecuencias. Las frecuencias de alta (dimensión 0,1) a baja (dimensiones finales) se realizan según el espacio geométrico. Esto permite que cada posición en todas las bandas de frecuencia tenga un patrón único, similar a los coeficientes de Fourier.
+Cada uno de las dimensiones$(2i, 2i+1)$Las frecuencias de las frecuencias de las frecuencias de las frecuencias de las dimensiones de la alta a la baja, de las dimensiones de la última a la alta, de las dimensiones de la última a la última, de acuerdo con el espacio geométrico, de acuerdo a la clasificación. Esto permite que cada posición en todas las bandas de frecuencia tenga un patrón único, similar a los coeficientes de Fourier, que identifica únicamente una señal.
 
 Ofrece propiedades clave:
 
 - **Uniqueness:**Cualquier dos posiciones no tendrán la misma codificación.
-- **Bounded values:**Sin 和 cos 始终在 [-1, 1] 内。
-- **Relative position:**La codificación de posición p+k puede expresarse como función lineal de la posición p 处 codificación──modelo puede aprender a concentrarse en posiciones relativas──
+- **Bounded values:**Sin y cos siempre en$[-1, 1]$En el interior.
+- **Relative position:**posición $p+k$La codificación puede representarse como posición $p$处 codificación de la función lineal──modelo puede aprender a concentrarse en las posiciones relativas──
 
 ### Conexión con las CNN
 
@@ -228,7 +234,7 @@ Según el teorema de la convolución, esto es lo siguiente:
 3. En el dominio de frecuencia multiplicar
 4. Para el resultado de la ejecución de la IFFT
 
-标准 CNN 实现使用直接卷积 (convolucción directa) 对小型3x3 kernels 更快) 但是对于大型 kernels或全球卷积,基于FFT的方法会显著更快──一些架构 (por ejemplo, FNet) 完全使用FFT 替代注意,在 O(N log N) 而非 O(N^2) complejidad 下获得有竞争力的精度──
+标准 CNN 实现使用直接卷积 (convolucción directa) 对小型3x3 kernels 更快) 但是对于大型 kernels或全球卷积,基于FFT的方法会显著更快──一些架构 (例如 FNet) 完全使用FFT 替代注意,在$O(N \log N)$Y no$O(N^2)$La complejidad, la precisión y la competitividad.
 
 ### Espectogramas y Transformación de Fourier de corto plazo
 
@@ -251,7 +257,7 @@ Los espectrogramas son la representación estándar de los modelos de audio ML. 
 
 ### Alfabetización
 
-Si la señal incluye frecuencias superiores a fs/2 (frecuencia Nyquist), a la velocidad de fs muestreo se producirán copias alias. Una señal de 90 Hz de muestreo de 100 Hz se parece a la señal de 10 Hz  completamente igual. Sólo con muestras  imposible distinguirlos.
+Si la señal 含高于 $f_s/2$Las frecuencias de (frecuencia Nyquist)$f_s$El muestreo producirá copias alias. Una señal de 90 Hz de muestreo de 100 Hz parece la misma que la señal de 10 Hz. Sólo con muestras no se pueden distinguir.
 
 ```
 Example:
@@ -270,7 +276,7 @@ Es por eso que los convertidores analógicos a digitales contendrán filtros ant
 
 Un error común es: en FFT antes de la señal  realizar empadeo cero 会提升频分辨率──它不会──零padding 只是插在现有频段之间,让频谱看起来更平滑──但它无法揭示原始样本中不存在的频率细节──
 
-La resolución de frecuencia verdadera sólo depende del tiempo de observación T = N / fs。 para distinguir la diferencia de las dos frecuencias del delta_f, usted necesita al menos T = 1 / delta_f 秒 de datos。 No importa cuánto haga el empate cero, no puede cambiar este límite fundamental―
+La resolución de frecuencia real depende del tiempo de observación .$T = N / f_s$                                                                                                                                                                                                                                                              $\Delta f$De las dos frecuencias, usted necesita al menos $T = 1 / \Delta f$秒的数据── no importa cuánto haga el empate cero, todo no puede cambiar este límite fundamental―
 
 
 ```figure
@@ -280,7 +286,7 @@ fourier-synthesis
 ## Construirlo
 ### 步骤 1: DFT desde cero
 
-O  N ^ 2) DFT  directamente de la definición
+$O(N^2)$DFT  directamente de la definición.
 
 ```python
 import math
@@ -304,7 +310,7 @@ def dft(x):
 
 ### 步骤 2: DFT inverso
 
-结构 igual, exponente 为正,并除以 N。
+结构 igual, exponente 为正,并除以 $N$¿Qué es eso?
 
 ```python
 def idft(X):
@@ -420,32 +426,44 @@ Es la forma de la matriz de espectro es (n_frecuencias, n_time_frames) ⋅ cada 
 ##  ejercicios
 1. **Pure tone identification。**创建一个信号,其中包含一个未知频率(1到50 Hz 之间) de una sola onda senoidal, con muestreo de 128 Hz 1 秒──使用你的DFT 识别频率──验证答案是否匹配──现在加入标准偏差为0.5的高斯噪音,并重复──噪音 如何影响光谱?
 
-2. **FFT vs DFT verification。**生成一个长度为 64 的随机信号――同时计算 DFT(O(N^2)) y FFT──验证所有系数在 1e-10 以内匹配──在长度为 256、512、1024 和 2048 的信号上分别计时两个函数──绘制 DFT时间与 FFT时间的比例──
+2. **FFT vs DFT verification。**Se produce una señal aleatoria de 64 dimensiones.$O(N^2){}$) y FFT──verificación de todos los coeficientes en 1e-10 以内匹配── en longitud de 256、512、1024 y 2048 señales 上分別计时两个 funciones──绘制 DFT tiempo y FFT tiempo ratio──
 
 3. **Convolution theorem proof by example。**创建信号 x = [1, 2, 3, 4, 0, 0, 0, 0] 和 filter h = [1, 1, 1, 0, 0, 0, 0, 0]──直接计算它们的圆卷 (圆卷) 嵌套)──然后通过FFT 计算(转换、乘用、逆转)──验证结果匹配──现在通过适当的零执行线性卷──
 
 4. **Windowing effects。**Crear una señal, es 10 Hz y 12 Hz ((muy cerca) dos ondas senolares de y ⋅ en 128 Hz muestreo 1 segundo separado en sin ventana ⋅ ventana Hann y ventana Hamming ⋅ en el cálculo del espectro de potencia ⋅ en qué ventana es más fácil distinguir entre dos picos? ¿Por qué?
 
-5. **Positional encoding analysis。**Por d_modelo = 128 y max_pos = 512 生成 sinusidal positional encodings──对每一对位置 (p1, p2),计算它们的点产品──说明点产品 只依赖于p1 - p2的位置,而不依赖于绝对位置──随着距离 增加,点产品会发生什么?
+5. **Positional encoding analysis。**Por d_modelo = 128 和 max_pos = 512 生成 sinusoidal codificación posicional$(p_1, p_2)$, calcular los códigos de producto de puntos.$\lvert p_1 - p_2 \rvert$, sin depender de posiciones absolutas, ¿con la distancia, aumentando, el producto punto ¿qué pasará?
+
+### 提示
+
+**练习 1。**En un segundo, 128 veces, Bin.$k$En el caso de la$k$Hz, por lo tanto, para la frecuencia de los números enteros, los binos 1 a 63 el índice de valor máximo es la frecuencia. Elige una frecuencia de Hz de un número entero.`generate_signal`Y `magnitude_spectrum` Después de unirse al ruido, comprobar si el valor máximo se encuentra en el mismo contenedor, mientras que el valor de los demás contenedores aumenta de forma significativa.
+
+**练习 2。**Uso de 2 veces, porque`fft`Se puede ver el resultado de la prueba de la prueba de la prueba.`max(abs(a - b))`◊ El tiempo que se consume debe ser de gran envergadura$N / \log_2 N$增长── en el mismo lugar.
+
+**练习 3。**Para la convolución circular, mano$n$= 0 、1 、2 时的 $y[n] = \sum_k h[k] x[(n-k) \bmod 8]$,并比较 `convolve_direct`Y `convolve_fft`La longitud de la convolución lineal es de 4 + 3 - 1 = 6, por lo que primero comprueba la longitud 8 si ya es suficiente.
+
+**练习 4。**Uso `hann_window`¿Qué es esto?`hamming_window`¿Qué es esto?`apply_window`Y `power_spectrum`, y se calcula que entre 9 y 13 Hz hay varias picas de separación: 10 Hz y 12 Hz en 1 segundo, y que no hay más ventanas, puede parecer mejor.
+
+**练习 5。**Uso `positional_encoding(pos, 128)`計算每加码──比较位置 (0, 10) 的点 product 和位置 (100, 110) 的点 product: la diferencia entre ambos debe estar en aproximadamente 1e-10 以内──然后固定一个 $p_1$, dibujar puntos de producto$\lvert p_1 - p_2 \rvert$变化的曲线──
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What it means |
 |------|---------------|
-| DFT (Discrete Fourier Transform) | 将 N 个 time-domain samples 转换为 N 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
-| FFT (Fast Fourier Transform) | 用于计算 DFT 的 O(N log N) algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
-| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 1/N scaling |
-| Frequency bin | DFT output 中的每个 index k 表示 frequency k*fs/N Hz。"bin" 是离散的 frequency slot |
-| DC component | X[0]，zero-frequency coefficient。与 signal mean 成比例 |
-| Nyquist frequency | fs/2，在 sampling rate fs 下可表示的最大 frequency。高于它的 frequencies 会 alias |
-| Power spectrum | \|X[k]\|^2，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
-| Phase spectrum | angle(X[k])，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
+| DFT (Discrete Fourier Transform) | 将 $N$ 个 time-domain samples 转换为 $N$ 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
+| FFT (Fast Fourier Transform) | 用于计算 DFT 的 $O(N \log N)$ algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
+| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 $1/N$ scaling |
+| Frequency bin | DFT output 中的每个 index $k$ 表示 frequency $k f_s/N$ Hz。"bin" 是离散的 frequency slot |
+| DC component | $X[0]$，zero-frequency coefficient。与 signal mean 成比例 |
+| Nyquist frequency | $f_s/2$，在 sampling rate $f_s$ 下可表示的最大 frequency。高于它的 frequencies 会 alias |
+| Power spectrum | $\lvert X[k] \rvert^2$，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
+| Phase spectrum | $\angle X[k]$，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
 | Spectral leakage | 将 non-periodic signal 当作 periodic 处理导致的虚假 frequency content。可通过 windowing 减少 |
 | Window function | 在 DFT 前应用的 tapering function（Hann、Hamming、Blackman），用于减少 spectral leakage |
-| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential e^(-2*pi*i*k/N) |
+| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential $e^{-2\pi i k/N}$ |
 | Convolution theorem | time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。它是 signal processing 和 CNNs 的基础 |
 | Circular convolution | signal 会 wrap around 的 convolution。这是 DFT 自然计算的内容 |
 | Linear convolution | 没有 wraparound 的标准 convolution。通过在 DFT 前 zero-padding 实现 |
-| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。sum \|x[n]\|^2 = (1/N) sum \|X[k]\|^2 |
+| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。$\sum \lvert x[n] \rvert^2 = \frac{1}{N} \sum \lvert X[k] \rvert^2$ |
 | Aliasing | 当 sampling rate 不足时，高于 Nyquist 的 frequencies 表现为较低 frequencies |
 
 ## 延伸阅读

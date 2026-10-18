@@ -31,9 +31,9 @@ Necesitas cuatro cosas:
 ## 概念
 ### Gráficos: nodos y bordes
 
-Un gráfico G = (V, E) por vertices (nodos) V 和 bordes E 组成──每条 edge 连接两个节点──
+Un gráfico .$G = (V, E)$Por vertices (nodos) $V$Y los bordes $E$组成──每条 edge 连接两个节点──
 
-**Directed vs undirected。**En el gráfico no dirigido, el borde (u, v) muestra u 连接到 v,并且 v 也连接到 u──En el gráfico dirigido, el borde (u, v) muestra u 指向 v, pero反向不一定成立──
+**Directed vs undirected。**En el gráfico no dirigido, en el borde.$(u, v)$Muestra$u$ Conectar hasta $v$, y también$v$También conectado a$u$△ en el gráfico dirigido (digrafo)$(u, v)$Muestra$u$En dirección$v$Pero el contrario no es cierto.
 
 **Weighted vs unweighted。**En el gráfico sin peso, los bordes deben existir o no existir. En el gráfico con peso, cada borde tiene un peso de valor, por ejemplo, distancia, costo o fuerza.
 
@@ -46,14 +46,13 @@ Un gráfico G = (V, E) por vertices (nodos) V 和 bordes E 组成──每条 ed
 
 ### La matriz de la proximidad
 
-Matriz de adyacencia A es el núcleo de la muestra.
+matriz de adyacencia $A$Es el núcleo de la expresión.$n$个节点 的 gráfico:
 
-```
-A[i][j] = 1    if there is an edge from node i to node j
-A[i][j] = 0    otherwise
+```math
+A[i][j] = \begin{cases} 1 & \text{若存在从节点 } i \text{ 到节点 } j \text{ 的 edge} \\ 0 & \text{否则} \end{cases}
 ```
 
-对于不指向图表,A 是对称:A[i][j] = A[j][i]。对于权重图表,A[i][j] =边缘 (i, j) 的重量。
+ Para los gráficos no dirigidos,$A$Es simétrico:$A[i][j] = A[j][i]$ Para los gráficos ponderados,$A[i][j]$= borde $(i, j)$El peso de la planta.
 
 **示例：一个 triangle：**
 
@@ -66,20 +65,22 @@ A = [[0, 1, 1],
      [1, 1, 0]]
 ```
 
-Matriz de adyacencia es cada entrada de GNN.
+Matriz de adyacencia es cada entrada de GNN.$A$Las operaciones de la matriz de arriba a la gráfica de las operaciones de arriba.
 
 ### Grado
 
 El grado de nodo es conectado a sus bordes 数量── para los gráficos dirigidos, tienes en grado(edges de entrada) y fuera de grado(edges de salida)──
 
-Matriz de grados D es diagonal:
+matriz de grados $D$Es diagonal:
 
-```
-D[i][i] = degree of node i
-D[i][j] = 0    for i != j
+```math
+\begin{aligned}
+D[i][i] &= \text{节点 } i \text{ 的 degree} \\
+D[i][j] &= 0 \quad \text{其中 } i \ne j
+\end{aligned}
 ```
 
-对于三角形示例:D = diag(2,2,2), pues cada nodo están conectados a otros dos nodos.
+ Para el triángulo ejemplos:$D = \mathop{\mathrm{diag}}(2, 2, 2)$, porque cada nodo están conectados a otros dos nodos.
 
 Grado 告诉你节点的重要性──High degree = hub node──a red de grado distribución 揭示了它的结构──Social networks 遵循电力规律(少量枢纽,许多叶节)──random graphs 具有波森分布级――
 
@@ -129,19 +130,17 @@ DFS se puede utilizar:
 
 ### El gráfico laplaciano
 
-L = D - A。 teoría del gráfico espectral 中最重要的矩阵──
+$L = D - A$◊ teoría de gráficos espectral 中最重要的矩阵──
 
  Para el triángulo:
 
-```
-D = [[2, 0, 0],    A = [[0, 1, 1],    L = [[2, -1, -1],
-     [0, 2, 0],         [1, 0, 1],         [-1, 2, -1],
-     [0, 0, 2]]         [1, 1, 0]]         [-1, -1,  2]]
+```math
+D = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix} \qquad A = \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \qquad L = \begin{bmatrix} 2 & -1 & -1 \\ -1 & 2 & -1 \\ -1 & -1 & 2 \end{bmatrix}
 ```
 
 La laplacia 具有非常重要的性质:
 
-1. **L 是 positive semi-definite。**Todos los valores propios tienen >= 0
+1. **$L$ 是 positive semi-definite。**Todos los valores propios$\ge 0$¿Qué es eso?
 
 2. **zero eigenvalues 的数量等于 connected components 的数量。**Un gráfico conectado 恰恰有一个零 eigenvalue──一个有3 个分离的组件的图片有三个零 eigenvalue──
 
@@ -171,12 +170,12 @@ graph TD
 Los valores propios de la matriz adyacente y la laplacia pueden revelar propiedades estructurales en caso de no hacer ningún cruce.
 
 **Spectral clustering**El método de trabajo es el siguiente:
-1. 计算 Laplacian L
-2. 找到 L's k 个最小 eigenvectors(跳过第一个; para los gráficos conectados, es todo 1)
+1. 计算 Laplacian $L$
+2. 找到 $L$de la $k$个最小 eigenvectors(跳过第一个; para los gráficos conectados, es todo 1)
 3. Para usar estos propios vectores como nuevos marcadores de cada nodo
-4. En estos lugares se ejecuta k-means
+4. En estos lugares se ejecuta$k$- significa
 
-¿Por qué esto es efectivo? Los vectores propios de L  codificaron la gráfica                                                                                                                                                                                                                                                     
+¿Por qué funciona?$L$Los nodos de los nodos propios 编码了图上最平滑的函数──连接良好节点会得到相似的 eigenvector values──被瓶分隔节点会得到不同的值──eigenvectors 会自然地分离集群──
 
 **Random walk connection。**La distribución estacionaria de la marcha aleatoria tiene un efecto negativo en la distribución de la marcha aleatoria.
 
@@ -184,25 +183,25 @@ Los valores propios de la matriz adyacente y la laplacia pueden revelar propieda
 
 Es el núcleo de las redes neuronales gráficas. Cada nodo recolecta mensajes de sus vecinos, los agrupa y luego actualiza su propio estado.
 
-```
-h_v^(k+1) = UPDATE(h_v^(k), AGGREGATE({h_u^(k) : u in neighbors(v)}))
+```math
+h_v^{(k+1)} = \text{UPDATE}\left(h_v^{(k)}, \text{AGGREGATE}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
 En la forma más simple, AGGREGATE = media, UPDATE = transformación lineal + activación:
 
-```
-h_v^(k+1) = sigma(W * mean({h_u^(k) : u in neighbors(v)}))
-```
-
-Esto es en realidad una falsa forma de multiplicación de matriz. Si H es la matriz de todas las características de los nodos, A es la matriz de adyacencia:
-
-```
-H^(k+1) = sigma(A_norm * H^(k) * W)
+```math
+h_v^{(k+1)} = \sigma\left(W \cdot \text{mean}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
-Entre ellos, la norma A es una matriz de adyacencia normalizada.
+Esto es en realidad una falsa forma de multiplicación de matriz.$H$Es la matriz de todas las características de los nodos,$A$Es una matriz de adyacencia:
 
-Una ronda de mensajes pasando 让每个节点 看到它的邻居――两轮让它看到邻居的邻居――K 轮让每个节点 获得来自其K-hop社区的信息――
+```math
+H^{(k+1)} = \sigma\left(A_{\text{norm}} H^{(k)} W\right)
+```
+
+Entre ellos $A_{\text{norm}}$Es una matriz de adyacencia normalizada.
+
+Una ronda de mensajes pasando 让每个节点 看到它的邻居――两轮让它看到邻居的邻居――$K$轮让每个节点 获得从其 $K$-La información del barrio de la tienda.
 
 ```mermaid
 graph LR
@@ -323,7 +322,7 @@ def dfs(graph, start):
     return order
 ```
 
-BFS utiliza deque(dos filas de filas) para realizar O(1) popleft。DFS utiliza lista 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 O(V + E)。
+BFS 使用 deque (dos filas de filas) para realizar$O(1)$popleft──DFS Utiliza lista 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 $O(V + E)$¿Qué es eso?
 
 ### Paso 3:Componentes conectados y valores propios laplacios
 
@@ -366,7 +365,7 @@ def spectral_clustering(graph, k=2):
     return labels
 ```
 
-对于 k=2,Fiedler vector 符号会将图分成两个集群──对于 k>2,你会在前 k 个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个
+ para $k=2$, El gráfico de los símbolos de vector de Fiedler se dividirá en dos grupos.$k>2$, estarás en el frente$k$个 eigenvectors( excluir triviales todos-ones eigenvector) 上运行 $k$- significa.
 
 ### Paso 5: Pasa de mensaje
 
@@ -457,13 +456,13 @@ El vector Fiedler 承担了主要工作──正值条目位于一个集群,负�
 | Connected components | Preprocessing, handling disconnected graphs |
 | PageRank | Node importance ranking, attention initialization |
 
-GNNs 值得特别说明──GCN(Kipf & Welling, 2017) en la operación de convolución de gráfico Utilizando añadido matriz de adyacencia de los bucles automáticos, A_hat = A + I:
+GNNs 值得特别说明──GCN(Kipf & Welling, 2017) en la operación de convolución de gráfico Utilizando añadido matriz de adyacencia de los bucles automáticos,$\hat{A} = A + I$¿Qué es esto ?
 
-```text
-H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
+```math
+H^{(l+1)} = \sigma\left(\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2} H^{(l)} W^{(l)}\right)
 ```
 
-Entre ellos A_hat = A + I(adyacencia加自环),D_hat es una matriz de grado de A_hat, los self-loops 确保每个节在集中的 期间包含自身特征──这正是带有对称的正常化的信息传递──D_hat^(-1/2) *A_hat *D_hat^(-1/2) es una matriz de adyacencia normalizada──Laplacian aparece aquí, es porque esta normalización se asocia con L_sym = I - D^(-1/2) *A * D^(-1/2) 相关── Comprender Laplacian,就意味着理解GCNs为什么有效──
+Entre ellos $\hat{A} = A + I$(adyacencia加 auto-bucles),$\hat{D}$Sí $\hat{A}$de grado de matriz, los circuitos automáticos, asegurarse de que cada nodo contiene sus propias características durante la agregación, esto es con una normalización simétrica de la transmisión de mensajes.$\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2}$Es una matriz de adyacencia normalizada. La Laplacian aparece aquí, es porque esta normalización se produce con$L_{\text{sym}} = I - D^{-1/2} A D^{-1/2}$相关──理解拉普拉西亚语,就意味着理解GCN为什么有效──
 
 ##  ejercicios
 1. **从零实现 PageRank。**Desde puntuaciones uniformes 开始──每一步:score(v) = (1-d) /n + d * suma(score(u) /out_degree(u)), de los cuales u es todo orientado hacia v nodos──使用 d=0.85──运行直到收(change < 1e-6)──在一个小型网页图上测试──
@@ -476,14 +475,26 @@ Entre ellos A_hat = A + I(adyacencia加自环),D_hat es una matriz de grado de A
 
 5. **分析一个真实世界 graph。**Utiliza el gráfico del Club de Karate(34 nodos, 78 bordes)。 calcular la distribución de grados、valores propios Laplacian 和 agrupación espectral。
 
+### 提示
+
+**练习 1。**Utiliza la fórmula dada en el ejercicio. Los nodos sin bordes salientes deben dividir su porcentaje en promedio entre todos los nodos, de lo contrario, el total de los nodos será menor que 1.`pagerank(graph)`Comparado
+
+**练习 2。**Uso `add_edge`Construye dos cliques, con un borde, conectalas y luego convocalas.`spectral_clustering(graph, k=2)` Revisa si cada uno de los cliques obtiene el mismo etiquetado  Cada uno de ellos recibe el mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado  Cada uno de ellos recibe un mismo etiquetado `laplacian()`El segundo pequeño valor propio; a medida que los dos grupos se conectan más estrechamente, el valor aumentará.
+
+**练习 3。**Uso `heapq`维护优先队,总是扩展已知距离最小节点──将每条边的重量都设为1,检查 Dijkstra 得到的每距离是否等于 `bfs(graph, start)`Número de niveles de BFS en el centro de la zona.
+
+**练习 4。**¿ La matriz de identidad ?`features`, hacer que cada línea marque un punto, y luego aplicar dos veces `message_passing`                                                                                                                                                                                                                                                              $v$Las entradas no-zero en circulación indican qué puntos de información han llegado .$v$将这个集合与宽度第一搜索中距离不超过2的节点集合比较
+
+**练习 5。** `networkx.karate_club_graph()` proporcionar una lista de bordes, así como la propiedad de los puntos `club`La verdad del fondo en medio...`Graph`En el medio, no comprobar si tiene 34 puntos y 78 bordes.`spectral_clustering` Obtener etiquetas con `club`De hecho, el nombre de las etiquetas se puede cambiar de nombre.
+
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Graph | “Nodes and edges” | 一种数学结构 G=(V,E)，用于编码 pairwise relationships |
-| Adjacency matrix | “The connection table” | 一个 n x n matrix，其中如果 nodes i 和 j 相连，则 A[i][j] = 1 |
+| Graph | “Nodes and edges” | 一种数学结构 $G=(V,E)$，用于编码 pairwise relationships |
+| Adjacency matrix | “The connection table” | 一个 $n \times n$ matrix，其中如果 nodes $i$ 和 $j$ 相连，则 $A[i][j] = 1$ |
 | Degree | “一个 node 有多 connected” | 接触某个 node 的 edges 数量 |
-| Laplacian | “D minus A” | L = D - A，其 eigenvalues 会揭示 graph structure 的 matrix |
-| Fiedler value | “The algebraic connectivity” | L 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
+| Laplacian | “D minus A” | $L = D - A$，其 eigenvalues 会揭示 graph structure 的 matrix |
+| Fiedler value | “The algebraic connectivity” | $L$ 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
 | BFS | “Level-by-level search” | 在深入之前先访问所有 neighbors 的 traversal，可找到 shortest paths |
 | DFS | “Go deep first” | 在回溯之前沿一条 path 走到末端的 traversal |
 | Message passing | “Nodes talk to neighbors” | 每个 node 从其 neighbors 聚合信息，这是 GNNs 的核心 |

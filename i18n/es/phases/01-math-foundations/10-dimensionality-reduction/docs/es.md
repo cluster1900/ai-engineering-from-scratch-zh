@@ -38,9 +38,9 @@ Dimension    Avg distance ratio (max/min between random points)
 1000         ~1.02
 ```
 
-**体积集中在角落。**D 维 Unit Hypercube tiene 2 个角. En 100 维中, casi todo el volumen está en la esquina, lejos del centro.
+**体积集中在角落。** $d$维 unidad de hipercubo tiene $2^d$个角──En 100 dimensiones, casi todo el volumen está en un corner, lejos del centro──Los puntos de datos se extenderán hasta los bordes, mientras que sus modelos en la zona interna se encuentran con falta de datos──
 
-**你需要指数级更多的数据。**Para mantener la misma densidad de muestras en un espacio, de 2D a 20D significa que necesitas 10 a 18 veces más datos. Nunca tendrás suficientes datos.
+**你需要指数级更多的数据。**Para mantener la misma densidad de muestras en un espacio, desde 2D hasta 20D significa que necesitas$10^{18}$倍的数据―― Usted nunca tendrá suficiente datos―― reducción de la dimensión llevará la densidad de datos de vuelta al alcance del procesamiento―
 
 ### PCA: encontrar las direcciones que importan
 
@@ -88,7 +88,7 @@ Tres estrategias:
 
 1. **Threshold.**Mantenga suficientes componentes, para explicar la variación del 90-95%.
 2. **Elbow method.** trazar una variación explicada de cada componente― buscar puntos de rápida bajada­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­
-3. **Downstream performance.**La precisión del modelo de análisis y medición de datos de PCA será la mejor precisión en la posición del tiempo de la plataforma.
+3. **Downstream performance.**Para PCA, el proceso de preprocesamiento es de$k$,并测量模型的精度──最佳 $k$Es preciso entrar en la posición de la plataforma.
 
 ### T-SNE: preservar los barrios
 
@@ -101,7 +101,7 @@ La clave de la T-SNE:
 - Estocástica. Diferentes operaciones producen diferentes diseños.
 - Perplejidad 参数控制考虑多少邻居 (títpico rango: 5-50)
 - 输出中集群  距离无意义―― sólo los grupos tienen significado propio―
-- En grandes conjuntos de datos 上很慢──默认是O(n^2)──
+- En grandes conjuntos de datos, es muy lento.$O(n^2)$¿Qué es eso?
 
 ### UMAP: una estructura global más rápida y mejor
 
@@ -135,27 +135,27 @@ UMAP en el espacio alto construye un gráfico ponderado, luego busca un diseño 
 El núcleo PCA se aplica en el espacio de características de alto nivel inducido por la función del núcleo, sin calcular claramente los encabezados en ese espacio.
 
 算法:
-1. 计算 matriz del núcleo K, de la cual K_ij = k(x_i, x_j)
+1. 计算 matriz del núcleo $K$, entre ellos $K_{ij} = k(x_i, x_j)$
 2. En el espacio de características en el centro de la matriz del núcleo
 3. Para la matriz del núcleo centrado hacer su propiocompuesto
-4. 顶部 eigenvectors(按1/sqrt(eigenvalue) 缩放) es las proyecciones
+4. 顶部 eigenvectors 按 $1/\sqrt{\text{eigenvalue}}$缩放) es proyección
 
 常见 funciones del núcleo:
 
 | Kernel | Formula | Good for |
 |--------|---------|----------|
-| RBF (Gaussian) | exp(-gamma * \|\|x - y\|\|^2) | 大多数 nonlinear data、smooth manifolds |
-| Polynomial | (x . y + c)^d | Polynomial relationships |
-| Sigmoid | tanh(alpha * x . y + c) | Neural network-like mappings |
+| RBF (Gaussian) | $\exp(-\gamma \lVert x - y \rVert^2)$ | 大多数 nonlinear data、smooth manifolds |
+| Polynomial | $(x \cdot y + c)^d$ | Polynomial relationships |
+| Sigmoid | $\tanh(\alpha x \cdot y + c)$ | Neural network-like mappings |
 
 ¿Cuándo usar PCA del núcleo y no PCA estándar:
 
 | Criterion | Standard PCA | Kernel PCA |
 |-----------|-------------|------------|
 | Data structure | Linear subspace | Nonlinear manifold |
-| Speed | O(min(n^2 d, d^2 n)) | O(n^2 d + n^3) |
+| Speed | $O(\min(n^2 d, d^2 n))$ | $O(n^2 d + n^3)$ |
 | Interpretability | Components are linear combinations of features | Components lack direct feature interpretation |
-| Scalability | Works on millions of samples | Kernel matrix is n x n, memory-limited |
+| Scalability | Works on millions of samples | Kernel matrix is $n \times n$, memory-limited |
 | Reconstruction | Direct inverse transform | Requires pre-image approximation |
 
 经典例:2D:Círculos concéntricos en el seno de dos círculos. Dos círculos, un círculo dentro de otro círculo.
@@ -165,22 +165,24 @@ El núcleo PCA se aplica en el espacio de características de alto nivel inducid
 ¿Qué te ha pasado en la reducción de dimensiones? ¿Has reducido el 784 a 50 dimensiones? ¿Qué has perdido?
 
 测量 error de reconstrucción:
-1. 将数据投影到k 维:X_reduced = X @ W_k
-2. 重建: X_hat = X_reducido @ W_k^T
-3. 计算 MSE:medio((X - X_hat) ^2)
+1. La proyección de datos$k$¿Qué es esto?$X_{\text{reduced}} = X W_k$
+2. ¿Qué es esto ?$\hat{X} = X_{\text{reduced}} W_k^T$
+3. 计算 MSE:$\text{mean}((X - \hat{X})^2)$
 
 En el caso de la PCA, el error de reconstrucción y la variación explicada tienen una relación clara:
 
-```
-Reconstruction error = sum of eigenvalues NOT included
-Total variance = sum of ALL eigenvalues
-Fraction lost = (sum of dropped eigenvalues) / (sum of all eigenvalues)
+```math
+\begin{aligned}
+\text{重建误差} &= \text{未保留的特征值之和} \\
+\text{总方差} &= \text{全部特征值之和} \\
+\text{损失比例} &= \frac{\text{丢弃的特征值之和}}{\text{全部特征值之和}}
+\end{aligned}
 ```
 
 Cada componente de la relación de variación explicada es:
 
-```
-explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
+```math
+\text{explained\_ratio}_k = \frac{\text{eigenvalue}_k}{\sum \text{所有特征值}}
 ```
 
 Si se explica la variación acumulada de los componentes, se obtiene una curva de "elbo"―.
@@ -188,7 +190,7 @@ Si se explica la variación acumulada de los componentes, se obtiene una curva d
 - La variación acumulada  transversal de tu umbral de posición(generalmente es de 0,90 o 0,95)
 - Desempeño de tareas en el flujo subyacente 进入平台期的位置
 
-El error de reconstrucción no solo se utiliza para seleccionar k. Se puede utilizar para detectar anomalías: el error de reconstrucción de alta muestra es de valores fuera de línea, que no corresponden al subspacio aprendido.
+Erro de reconstrucción no sólo para seleccionar$k$ Puede utilizarlo para la detección de anomalías: errores de reconstrucción.
 
 
 ```figure
@@ -354,6 +356,14 @@ Encuentro de trabajo:
 
 3. Tenga un conjunto de datos con 50 características  pero sólo 5 características informativas `sklearn.datasets.make_classification`生成) ・ aplicar PCA,并检查 explicó que la curva de variación si no correctamente identifica los datos en realidad es de 5 dimensiones。
 
+### 提示
+
+**练习 1。**阅读   Cómo es`PCA`类中的 `inverse_transform`, y se adapta a un modelo por número de componentes principales.`reconstruction_error`Cuando aumenta la cantidad de componentes principales, el error debe disminuir.
+
+**练习 2。**En el mismo conjunto de datos`sklearn.manifold.TSNE`Tres veces, sólo cambian.`perplexity`, mantener el mismo `random_state` La menor confusión sólo considera a una pequeña cantidad de vecinos, por lo que se forman grupos más pequeños y estrechos; la mayor confusión considera a más vecinos, por lo que se forman grupos más grandes y más suaves.
+
+**练习 3。**调用                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `make_classification(n_features=50, n_informative=5, n_redundant=45)`,拟合 `PCA`,并印累计解释方差──冗余特征是有效特征的线性组合, por lo que la curva en 5 principales componentes está cerca de 1.0──然后尝试`n_redundant=0`El resto de 45 son ruidos independientes, las curvas no se vuelven planas.
+
 ## Términos clave
 
 | Term | What people say | What it actually means |
@@ -361,8 +371,8 @@ Encuentro de trabajo:
 | Curse of dimensionality | "Too many features" | 随着维度增长，距离、体积和数据密度都会表现得反直觉。Models 需要指数级更多的数据来补偿。 |
 | PCA | "Reduce dimensions" | 旋转你的坐标系，使各轴与 maximum variance 的方向对齐，然后丢弃 low-variance axes。 |
 | Principal component | "An important direction" | Covariance matrix 的一个 eigenvector。Feature space 中数据变化最大的方向。 |
-| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 k 个 ratios 求和，就能看到 k 个 components 保留了多少信息。 |
-| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry (i,j) 衡量 feature i 和 feature j 如何共同变化。Diagonal entries 是各自的 variances。 |
+| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 $k$ 个 ratios 求和，就能看到 $k$ 个 components 保留了多少信息。 |
+| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry $(i,j)$ 衡量 feature $i$ 和 feature $j$ 如何共同变化。Diagonal entries 是各自的 variances。 |
 | t-SNE | "That cluster plot" | 一种 nonlinear 方法，通过保留 pairwise neighborhood probabilities 将高维数据映射到 2D。适合可视化，不适合 preprocessing。 |
 | UMAP | "Faster t-SNE" | 一种基于 topological data analysis 的 nonlinear 方法。既保留 local structure，也保留部分 global structure。比 t-SNE 更容易扩展。 |
 | Perplexity | "A t-SNE knob" | 控制每个点考虑的有效邻居数量。低 perplexity 聚焦非常 local 的结构。高 perplexity 捕获更宽泛的模式。 |

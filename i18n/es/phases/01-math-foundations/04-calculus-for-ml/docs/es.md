@@ -9,7 +9,7 @@
 
 ## El objetivo del aprendizaje
 
-- 计算常见 ML 函数(x^2、sigmoid、cross-entropy) de la cantidad de valores y de la resolución
+- 计算常见 ML 函数($x^2$Número de valores de la sigmoide y de la resolución de la entropía cruzada
 - Desde el 0 a la realización de Descenso Gradiente, en 1D y 2D Minimizar la Función de Pérdida
 - 推导 linear regresión 模型的渐变,并通过手动更新权重来训练它
 - Explicar la Matriz Hessiana, la serie Taylor, los recientes, así como su relación con los métodos de optimización
@@ -24,59 +24,58 @@ Tienes una red neuronal que contiene millones de pesos. Cada peso es un giro. Ne
 
 ### ¿Qué es el número de guías?
 
-导数量衡变化率──对函数 y = f(x),导数 f'(x) 会告诉你: si usted hace x 微小地推动一点, y 会变化多少?
+导数衡变率──对函数 $y = f(x)$,导数 $f'(x)$Te diré que si lo haces$x$微小地 impulsar un poco,$y$¿Cuánto cambiará?
 
 Desde la geometría, el número de dirección es la inclinación de una línea en un punto.
 
-**f(x) = x^2：**
+**$f(x) = x^2$：**
 
-| x | f(x) | f'(x)（斜率） |
+| $x$ | $f(x)$ | $f'(x)$（斜率） |
 |---|------|---------------|
 | 0 | 0    | 0（平坦，在底部） |
 | 1 | 1    | 2 |
 | 2 | 4    | 4（该点处切线的斜率） |
 | 3 | 9    | 6 |
 
-Cuando x es igual a 2, la inclination es 4 ⋅ si se pone x hacia la derecha se mueve muy pequeño un punto, y 大约 aumentará esta movilidad 4 veces ⋅ cuando x es igual a 0, la inclination es 0 ⋅ si se encuentra en la parte inferior del recipiente ⋅
+En el$x=2$时, la inclinancia es 4... si lo haces.$x$A la derecha se mueve muy pequeño,$y$Aproximadamente aumentará este volumen de movilidad 4 veces.$x=0$时, la inclinada es 0... estás en el fondo de la taza...
 
  формально определение:
 
-```
-f'(x) = lim   f(x + h) - f(x)
-        h->0  -----------------
-                     h
+```math
+f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}
 ```
 
-En el código, saltarás el límite, directamente usando una h muy pequeña.
+En el código, saltarás por encima de los límites, directamente usando un muy pequeño.$h$. Ése es el número de valores.
 
 ### 偏导数: una vez sólo mira una variación
 
 La pérdida de la red neuronal depende de miles de millones de pesos. La función real tiene muchas entradas. La pérdida de la red neuronal depende de miles de millones de pesos.
 
-```
-f(x, y) = x^2 + 3xy + y^2
-
-df/dx = 2x + 3y     (treat y as a constant)
-df/dy = 3x + 2y     (treat x as a constant)
+```math
+\begin{aligned}
+f(x, y) &= x^2 + 3xy + y^2 \\[4pt]
+\frac{\partial f}{\partial x} &= 2x + 3y \quad \text{（将 } y \text{ 视为常量）} \\
+\frac{\partial f}{\partial y} &= 3x + 2y \quad \text{（将 } x \text{ 视为常量）}
+\end{aligned}
 ```
 
 Cada parámetro de la respuesta es: si sólo me reduce este peso, ¿cómo perdería?
 
 ### Gradiente: todos los vectores de los cuales componen los números de orientación
 
-El gradiente reunirá cada número de orientación en un vector. Para la función f ((x, y, z), el gradiente es:
+Gradiente se reunirá cada parámetro en un vector.$f(x, y, z)$, Gradiente es:
 
-```
-grad f = [ df/dx, df/dy, df/dz ]
+```math
+\nabla f = \left[ \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right]
 ```
 
 El gradiente indica hacia la dirección más alta.
 
-**f(x,y) = x^2 + y^2 的等高线图：**
+**$f(x,y) = x^2 + y^2$ 的等高线图：**
 
 Esta función forma una forma de cubo, igual a la línea alta es el círculo central. El valor mínimo es (0, 0)
 
-| 点 | grad f | -grad f（下降方向） |
+| 点 | $\nabla f$ | $-\nabla f$（下降方向） |
 |-------|--------|----------------------------|
 | (1, 1) | [2, 2]（指向上坡，远离最小值） | [-2, -2]（指向下坡，朝向最小值） |
 | (0, 0) | [0, 0]（平坦，在最小值处） | [0, 0] |
@@ -85,7 +84,7 @@ Esta función forma una forma de cubo, igual a la línea alta es el círculo cen
 
 ### Enlace con la optimización
 
-训练 Neural Network 就是优化──你有一个损失函数 L(w1, w2, ..., wn),它衡量模型有多错──你想最小化它──
+訓練 Neural Network 就是优化── tienes una función de pérdida $L(w_1, w_2, \ldots, w_n)$, mide el modelo tiene muchos errores.
 
 ```
 Gradient descent update rule:
@@ -102,7 +101,7 @@ Rate de aprendizaje  control 步长── demasiado grande para superar el objet
 
 **Loss landscape（1D 切片）：**
 
-Función de pérdida L(w)  Con la variación del peso w se forma una curva de un vértice de un valle―
+Función de pérdida $L(w)$ con el peso $w$La variación forma una curva de un pico de un valle.
 
 | 特征 | 描述 |
 |---------|-------------|
@@ -116,9 +115,9 @@ El Descenso Gradiente se realiza a lo largo de la inclinancia descendente. Puede
 
 计算导数 tiene dos formas:
 
-解析方式:手动应用微积分规则──对 f(x) = x^2,导数是 f'(x) = 2x──精确,快速──
+解析方式:手动应用微积分规则──对 $f(x) = x^2$,导数是 $f'(x) = 2x$❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ 
 
-El método de cálculo de la cantidad de valores: utilizar la definición para hacer un aproximamiento.
+El método de valor: utilizar la definición para realizar aproximación.$h$计算 $f(x+h)$Y $f(x-h)$, y luego tomar la diferencia.
 
 ```
 Numerical (central difference):
@@ -148,7 +147,7 @@ f(x) = ln(x)   f'(x) = 1/x     Cross-entropy loss
 f(x) = 1/(1+e^-x)  f'(x) = f(x)(1-f(x))   Sigmoid activation
 ```
 
-对于 f ((x) = x^2:
+ para $f(x) = x^2$¿Qué es esto ?
 
 ```
 f(x) = x^2    f'(x) = 2x
@@ -161,7 +160,7 @@ f(x) = x^2    f'(x) = 2x
    2    4       4      slope tilts right (increasing)
 ```
 
-对于 f(w) = wx + b, y x=3、b=1:
+ para $f(w) = wx + b$, y$x=3$¿Qué es esto?$b=1$¿Qué es esto ?
 
 ```
 f(w) = 3w + 1    f'(w) = 3
@@ -189,17 +188,16 @@ Red Neural es una serie de funciones: entrada -> lineal -> activación -> lineal
 
 Gradiente 告诉你斜率──Hessian 告诉你曲率──
 
-Hessian es la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la matriz de la mat
+El hesiano es la matriz de la composición de la función.$f(x_1, x_2, \ldots, x_n)$,Hessian de $(i, j)$项是:
 
-```
-H[i][j] = d^2f / (dx_i * dx_j)
+```math
+H_{ij} = \frac{\partial^2 f}{\partial x_i \, \partial x_j}
 ```
 
-对于二变量函数 f ((x, y):
+对于二变量函数 $f(x, y)$¿Qué es esto ?
 
-```
-H = | d^2f/dx^2    d^2f/dxdy |
-    | d^2f/dydx    d^2f/dy^2 |
+```math
+H = \begin{bmatrix} \dfrac{\partial^2 f}{\partial x^2} & \dfrac{\partial^2 f}{\partial x \, \partial y} \\[8pt] \dfrac{\partial^2 f}{\partial y \, \partial x} & \dfrac{\partial^2 f}{\partial y^2} \end{bmatrix}
 ```
 
 **Hessian 在临界点（Gradient = 0 的地方）告诉你什么：**
@@ -210,7 +208,7 @@ H = | d^2f/dx^2    d^2f/dxdy |
 | 负定（所有 eigenvalues < 0） | Local maximum | 向下开口的碗 |
 | 不定（eigenvalues 正负混合） | Saddle point | 马鞍形 |
 
-**示例：**f(x, y) = x^2 - y^2(una silla 函数)
+**示例：** $f(x, y) = x^2 - y^2$(una función de silla)
 
 ```
 df/dx = 2x       df/dy = -2y
@@ -223,7 +221,7 @@ Eigenvalues: 2 and -2 (one positive, one negative)
 --> Saddle point at (0, 0)
 ```
 
-与 f(x, y) = x^2 + y^2(Una función de forma de copa)
+Con$f(x, y) = x^2 + y^2$(一个碗形函数) (en inglés)
 
 ```
 H = | 2  0 |
@@ -237,22 +235,24 @@ Eigenvalues: 2 and 2 (both positive)
 
 El método de Newton utiliza el Hessian para tomar un mejor mejor mejoramiento de la descenso gradiente.
 
-```
-Newton's update:    w_new = w_old - H^(-1) * gradient
-Gradient descent:   w_new = w_old - lr * gradient
+```math
+\begin{aligned}
+\text{牛顿法更新：} \quad & w_{\text{new}} = w_{\text{old}} - H^{-1} \cdot \text{梯度} \\
+\text{梯度下降：} \quad & w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{梯度}
+\end{aligned}
 ```
 
 El método de Newton 收更快, porque el Hessian 会 se vuelve a reducir en un grado: 方向的步子更小,平坦方向的步子更大──
 
-El problema es que para una red neuronal con N parámetros, Hessian es N x N. Un modelo de 100 millones de parámetros necesita una matriz con mil millones de elementos.
+ El problema es: para $N$个参数 de la red neuronal, Hessian es $N \times N$◊ Un modelo con un millón de parámetros necesita una matriz con mil millones de elementos.
 
 | 方法 | 使用什么 | 成本 | 收敛 |
 |--------|-------------|------|-------------|
-| Gradient Descent | 只使用一阶导数 | 每步 O(N) | 慢（线性） |
-| Newton's method | 完整 Hessian | 每步 O(N^3) | 快（二次） |
-| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 O(N) | 中等（超线性） |
-| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 O(N) | 中等 |
-| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 O(N^2) | 快 |
+| Gradient Descent | 只使用一阶导数 | 每步 $O(N)$ | 慢（线性） |
+| Newton's method | 完整 Hessian | 每步 $O(N^3)$ | 快（二次） |
+| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 $O(N)$ | 中等（超线性） |
+| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 $O(N)$ | 中等 |
+| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 $O(N^2)$ | 快 |
 
 En la práctica, Adam es el Optimizador predeterminado de Deep Learning.
 
@@ -260,17 +260,17 @@ En la práctica, Adam es el Optimizador predeterminado de Deep Learning.
 
 Cualquier función plana puede ser localmente utilizada en varios términos:
 
-```
-f(x + h) = f(x) + f'(x)*h + (1/2)*f''(x)*h^2 + (1/6)*f'''(x)*h^3 + ...
+```math
+f(x + h) = f(x) + f'(x)\,h + \frac{1}{2} f''(x)\,h^2 + \frac{1}{6} f'''(x)\,h^3 + \cdots
 ```
 
-包含的项越多,近似越好, pero sólo en el punto x 附近成立──
+incluye más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más, más.$x$附近成立──
 
 **为什么 Taylor series 对 ML 重要：**
 
-- **一阶 Taylor = Gradient Descent。**Cuando usted utiliza f(x + h) ~ f(x) + f'(x) *h 时, usted está haciendo la línea de aproximación.
+- **一阶 Taylor = Gradient Descent。**Cuando usted utiliza$f(x + h) \approx f(x) + f'(x) h$Cuando estás haciendo un enfoque lineal... el Descenso Gradiente minimizará este modelo lineal, así que elegirás.$h = -\text{lr} \cdot f'(x)$¿Qué es eso?
 
-- **二阶 Taylor = Newton's method。**Utiliza f(x + h) ~ f(x) + f'(x) *h + (1/2) *f'(x) *h^2 时, tu obtienes un segundo modelo── minimización.
+- **二阶 Taylor = Newton's method。**Uso $f(x + h) \approx f(x) + f'(x) h + \frac{1}{2} f''(x) h^2$Cuando, tienes un segundo modelo... minimizar lo que conseguirás.$h = -f'(x)/f''(x)$, es el paso de Newton.
 
 - **Loss Function 设计。**MSE y entropía cruzada son planas, lo que significa que sus expansiones Taylor se muestran bien. Esto no es casualidad.
 
@@ -291,27 +291,27 @@ Higher orders          Finer structure     Rarely used in ML
 
 En ML, tienes muy pocos cálculos manuales, pero este concepto está presente:
 
-**概率。**对于具有密度 p(x) de continuas con cambios:
+**概率。** para tener densidad $p(x)$Las variaciones de la línea de trabajo:
+```math
+P(a < X < b) = \int_a^b p(x) \, dx
 ```
-P(a < X < b) = integral from a to b of p(x) dx
-```
-概率 densidad curva en la superficie entre a y b  , es la probabilidad en el área en que se encuentra 
+概率 densidad curva en $a$Y $b$间面积,就是落在该区间内的概率──
 
 **期望值。**按概率加权的平均结果:
-```
-E[f(X)] = integral of f(x) * p(x) dx
+```math
+\mathbb{E}[f(X)] = \int f(x) \, p(x) \, dx
 ```
 La pérdida esperada en la distribución de datos es una积分――la experiencia de la formación se reduce al mínimo.
 
 **KL divergence。**medir dos distribuciones diferentes:
-```
-KL(p || q) = integral of p(x) * log(p(x) / q(x)) dx
+```math
+\mathrm{KL}(p \,\|\, q) = \int p(x) \log \frac{p(x)}{q(x)} \, dx
 ```
 Utilizando VAEs, destilación del conocimiento y inferencia bayesiana.
 
 **归一化常数。**En la inferencia bayesiana:
-```
-p(w | data) = p(data | w) * p(w) / integral of p(data | w) * p(w) dw
+```math
+p(w \mid \text{data}) = \frac{p(\text{data} \mid w) \, p(w)}{\int p(\text{data} \mid w) \, p(w) \, dw}
 ```
 La divisor es el cuadro de todos los valores de los parámetros posibles. Por lo general es imposible de manejar, por lo que utilizamos el método de aproximación MCMC y inferencia variativa, etc.
 
@@ -353,16 +353,16 @@ Todo el contenido de la retropropagación es: desde la salida hasta la entrada, 
 
 Cuando una función trae un vector 映射到一个向量 时(por ejemplo, la capa de red neuronal), su dirección es una matriz―Jacobian 包含每个输出对每个输入的所有偏导数―
 
-对于 f: R^n -> R^m, Jacobian J 是一个 m x n Matrix:
+ para $f: \mathbb{R}^n \to \mathbb{R}^m$, Jacobian $J$Sí , uno .$m \times n$Matrix:
 
-| | x1 | x2 | ... | xn |
+| | $x_1$ | $x_2$ | ... | $x_n$ |
 |---|---|---|---|---|
-| f1 | df1/dx1 | df1/dx2 | ... | df1/dxn |
-| f2 | df2/dx1 | df2/dx2 | ... | df2/dxn |
+| $f_1$ | $\partial f_1/\partial x_1$ | $\partial f_1/\partial x_2$ | ... | $\partial f_1/\partial x_n$ |
+| $f_2$ | $\partial f_2/\partial x_1$ | $\partial f_2/\partial x_2$ | ... | $\partial f_2/\partial x_n$ |
 | ... | ... | ... | ... | ... |
-| fm | dfm/dx1 | dfm/dx2 | ... | dfm/dxn |
+| $f_m$ | $\partial f_m/\partial x_1$ | $\partial f_m/\partial x_2$ | ... | $\partial f_m/\partial x_n$ |
 
-Usted no se encargará de la red neuronal de calcular Jacobian. Pero saber que existe, le ayudará a entender la forma de la Backpropagation. Si una capa coloca R^n ¿m ¿m ¿m ¿r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r?r
+No lo harás para la red neuronal. Pero saber que existe te ayudará a entender la forma de la retropropagación.$\mathbb{R}^n$映射到 $\mathbb{R}^m$, su Jacobian es$m \times n$◊ Gradiente se encuentra en la matriz de la transformación hacia el flujo posterior.
 
 ### ¿ Por qué es importante para la red neuronal ?
 
@@ -446,7 +446,7 @@ for step in range(20):
     print(f"step {step:2d}  x={x:8.4f}  f(x)={x**2:10.6f}")
 ```
 
-Desde x=5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+Desde$x=5$Comienza, cada paso se acerca más.$x=0$(valor mínimo)
 
 ### Paso 4: ejecutar Descenso Gradiente en 2D
 
@@ -532,7 +532,7 @@ for h in [0.1, 0.5, 1.0, 2.0]:
     print(f"h={h:.1f}  sin(h)={true_val:.4f}  order1={t1:.4f}  order2={t2:.4f}")
 ```
 
-En el caso de las pequeñas, esta aproximación es muy buena; pero en el caso de las grandes, no funciona. Es por eso que el Descenso Gradiente en las tasas de aprendizaje menores es el mejor resultado: cada paso supone que la aproximación lineal es exacta.
+En el$x_0=0$ cerca,$\sin(x) \approx x$(一阶泰勒) 〜对于很小的 对于很小的 对于很小的$h$, este casi parece muy bueno; pero para los más grandes $h$Por eso el Descenso Gradiente en las tasas de aprendizaje más pequeñas, los resultados son mejores: cada paso supone que la aproximación lineal es precisa.
 
 ### Paso 8: Por qué esto es importante para la red neuronal
 
@@ -601,9 +601,17 @@ Usted acaba de construir Gradient Descent desde cero. PyTorch se completa autom�
 
 ##  ejercicios
 
-1. Uso de la palabra`numerical_derivative`Cómo lograrlo`numerical_second_derivative(f, x)` prueba x^3 en x=2 处的二阶导数是12──
-2. Utiliza Descenso Gradiente 找到 f(x, y) = (x - 3) ^ 2 + (y + 1) ^ 2 de la mínima valoración── desde (0, 0) 开始──答案应收到 (3, -1)──
-3. En el ciclo de Descenso Gradiente, se añade el impulso:维护一个会累积过去.
+1. Uso de la palabra`numerical_derivative`Cómo lograrlo`numerical_second_derivative(f, x)` Prueba$x^3$En el$x=2$El número de la segunda etapa es 12.
+2. 使用 Descenso Gradiente 找到 $f(x, y) = (x - 3)^2 + (y + 1)^2$El valor mínimo de la información.$(0, 0)$开始──答案应收到 $(3, -1)$¿Qué es eso?
+3. En el ciclo de Descenso Gradiente, se añade el impulso:$f(x) = x^4 - 3x^2$La velocidad de recepción es superior a la de no impulso.
+
+### 提示
+
+**练习 1。** definir una vuelta `numerical_derivative(f, x)`de la función auxiliar, volver a transmitirlo a`numerical_derivative` Si el resultado es más ruido, se usan dos veces más grandes pasos, por ejemplo `h=1e-4`En el$x=2$Los resultados de la reunión se acercarán a los 12
+
+**练习 2。**Escribir en la escala$(2(x - 3), 2(y + 1))$, o utilizar `numerical_gradient`, desde$(0, 0)$开始调用 `gradient_descent_nd` Imprimir una vez cada 10 pasos; debe dirigirse hacia $(3, -1)$ Movimiento, pérdida debe bajar a cerca de 0 
+
+**练习 3。**保存速度                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `v`, según `v = momentum * v - lr * grad`更新,再将 `v`¡ ¡ ¡ Qué tan grande !`x`上── Los dos métodos de estadística requieren de varios pasos para que la escala se acerque a 0; el valor mínimo se encuentra en $x = \pm\sqrt{1.5} \approx \pm 1.225$¿Qué es eso?
 
 ## 关键术语: "El hombre es un hombre"
 
@@ -614,12 +622,12 @@ Usted acaba de construir Gradient Descent desde cero. PyTorch se completa autom�
 | Gradient | “最陡上升方向” | 由所有偏导数组成的 Vector。指向让函数增长最快的方向。 |
 | Gradient Descent | “往下坡走” | 从参数中减去 Gradient（乘以 learning rate），从而降低 Loss。Neural Network 训练的核心。 |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 有多大的标量。太大：发散。太小：收敛缓慢。 |
-| Chain rule | “把导数相乘” | 对复合函数求导的规则：df/dx = df/dg * dg/dx。Backpropagation 的数学基础。 |
+| Chain rule | “把导数相乘” | 对复合函数求导的规则：$\frac{df}{dx} = \frac{df}{dg} \cdot \frac{dg}{dx}$。Backpropagation 的数学基础。 |
 | Jacobian | “导数 Matrix” | 当一个函数把 Vector 映射到 Vector 时，Jacobian 是所有输出相对于输入的偏导数组成的 Matrix。 |
 | Numerical derivative | “有限差分” | 通过在两个相邻点上评估函数并计算它们之间的斜率来近似导数。 |
 | Backpropagation | “Reverse-mode autodiff” | 使用链式法则，从输出到输入逐层计算 Gradient。Neural Network 就是这样学习的。 |
 | Hessian | “二阶导数 Matrix” | 所有二阶偏导数组成的 Matrix。描述函数的曲率。在临界点处 Hessian 正定意味着 local minimum。 |
-| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：f(x+h) ~ f(x) + f'(x)h + (1/2)f''(x)h^2 + ... 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
+| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：$f(x+h) \approx f(x) + f'(x)h + \frac{1}{2}f''(x)h^2 + \cdots$ 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
 | Integral | “曲线下面积” | 某个量在一个范围内的累积。在 ML 中，积分定义概率、期望值和 KL divergence。 |
 
 ## 延伸阅读
