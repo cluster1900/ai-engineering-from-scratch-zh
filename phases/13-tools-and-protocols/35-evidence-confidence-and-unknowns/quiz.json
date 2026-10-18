@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "rea gives every Evidence record a confidence value. Which set of values does the schema allow?",
+      "question": "rea 为每条 Evidence 记录赋予一个 confidence 值。该模式允许哪些值？",
       "options": [
-        "A number from 0.0 to 1.0",
-        "observed, derived, or inferred",
-        "pass, fail, or unknown",
-        "low, medium, high, or critical"
-      ],
-      "correct": 1,
-      "explanation": "Confidence is a three-value enum in src/domain/evidence.ts. Severity and completion statuses are different fields with their own values."
-    },
-    {
-      "stage": "check",
-      "question": "Two people run the same rea query on the same object file in different folders on different machines. What happens to evidence_id?",
-      "options": [
-        "It differs because the local path differs",
-        "It is the same because the hash excludes name and local_path",
-        "It is the same only when the folder names match",
-        "It differs because the machine clock differs"
-      ],
-      "correct": 1,
-      "explanation": "The semantic projection keeps the subject digest, format, and architecture and drops name and local_path. The same observation of the same bytes gets the same id anywhere."
-    },
-    {
-      "stage": "check",
-      "question": "A claim says grade(55) == 0. The ledger holds the Ghidra pseudocode record and the derived table model. What is the claim's status?",
-      "options": [
-        "pass, because the pseudocode record is observed",
-        "pass, because two records agree with the claim",
-        "fail, because the pseudocode shows a different expression",
-        "unsupported, because no observed run states the result"
+        "0.0 到 1.0 之间的数值",
+        "pass、fail 或 unknown",
+        "low、medium、high 或 critical",
+        "observed、derived 或 inferred"
       ],
       "correct": 3,
-      "explanation": "The pseudocode is an observation of what Ghidra printed, not of what the function returns. Only an observed run of the function can promote a behaviour claim."
+      "explanation": "confidence 在 src/domain/evidence.ts 中是一个只有三个值的枚举。严重程度和完成状态属于其他字段，各有自己的取值。"
     },
     {
       "stage": "check",
-      "question": "A snapshot was saved under profile digest a04af771. A later rea release changes jump_table_evidence to a v2 contract. What does the cache do with the snapshot?",
+      "question": "两个人在不同机器的不同目录中，对同一个目标文件运行相同的 rea 查询。evidence_id 会怎样？",
       "options": [
-        "Starts Ghidra and overwrites the old entries",
-        "Replays the entries and marks each one stale",
-        "Refuses the import with profile_mismatch",
-        "Replays only the entries that have no jump table"
+        "相同，因为哈希计算不包含 name 和 local_path",
+        "仅当目录名相同时才相同",
+        "不同，因为机器时钟不同",
+        "不同，因为本地路径不同"
       ],
-      "correct": 2,
-      "explanation": "The profile digest covers every contract version string. A changed version gives a new digest, and the snapshot no longer matches the active binding."
+      "correct": 0,
+      "explanation": "语义投影保留目标的摘要、格式和架构，排除 name 和 local_path。对相同字节的相同观察，无论在哪里进行，都会获得相同的标识符。"
+    },
+    {
+      "stage": "check",
+      "question": "一项断言称 grade(55) == 0。账本中保存了 Ghidra 伪代码记录及推导出的表模型。该断言的状态是什么？",
+      "options": [
+        "unsupported，因为没有实际观察到的运行结果能说明返回值",
+        "pass，因为伪代码记录的置信类别是 observed",
+        "fail，因为伪代码展示的是另一个表达式",
+        "pass，因为两条记录都与断言一致"
+      ],
+      "correct": 0,
+      "explanation": "伪代码记录观察的是 Ghidra 打印了什么，而不是函数返回了什么。只有实际观察到的函数运行才能使行为断言获得支持。"
+    },
+    {
+      "stage": "check",
+      "question": "一个快照以配置摘要 a04af771 保存。后续 rea 版本将 jump_table_evidence 改为 v2 契约。缓存会如何处理这个快照？",
+      "options": [
+        "以 profile_mismatch 拒绝导入",
+        "启动 Ghidra 并覆盖旧条目",
+        "重放条目，并将每条标记为过期",
+        "仅重放不包含跳转表的条目"
+      ],
+      "correct": 0,
+      "explanation": "配置摘要涵盖每个契约的版本字符串。版本变更会产生新的摘要，因此该快照不再与当前生效的绑定匹配。"
     },
     {
       "stage": "post",
-      "question": "What closes a residual unknown with the disposition verified?",
+      "question": "要以 verified 这一解决结果关闭一个剩余未知项，需要什么？",
       "options": [
-        "At least one evidence id with the required confidence and authority",
-        "Removing the unknown from the ledger",
-        "A rationale sentence written by the analyst",
-        "A new revision with status resolved and an empty evidence list"
+        "分析人员写下的一句理由",
+        "从账本中删除该未知项",
+        "一个状态为 resolved 且证据列表为空的新修订版本",
+        "至少一个满足所需置信类别和权威来源要求的证据标识符"
       ],
-      "correct": 0,
-      "explanation": "A verified resolution names evidence ids, and the ledger checks that each one is observed and carries the authority the unknown asked for."
+      "correct": 3,
+      "explanation": "verified 解决结果必须指明证据标识符，账本会检查每条证据的置信类别是否为 observed，以及是否具有该未知项要求的权威来源。"
     },
     {
       "stage": "post",
-      "question": "Runs of the host build showed grade(95) == 4 and grade(100) == 4. The claim covers every score from 90 to 100. Which status is correct?",
+      "question": "宿主机构建的运行结果显示 grade(95) == 4 且 grade(100) == 4。断言覆盖从 90 到 100 的每个分数。正确的状态是什么？",
       "options": [
-        "unknown, because 2 of 11 inputs have observed runs",
-        "pass, because every observed run agreed with the claim",
-        "unsupported, because the x86-64 object itself never ran",
-        "fail, because nine inputs were never run"
+        "unsupported，因为 x86-64 目标文件本身从未运行过",
+        "pass，因为所有已观察到的运行结果都与断言一致",
+        "fail，因为有 9 个输入从未运行过",
+        "unknown，因为 11 个输入中只有 2 个有实际观察到的运行结果"
       ],
-      "correct": 0,
-      "explanation": "Partial coverage is unknown, not pass and not fail. The unknown record stays open until the other nine inputs have observed runs."
+      "correct": 3,
+      "explanation": "部分覆盖意味着 unknown，而非 pass，也非 fail。在其余 9 个输入都有实际观察到的运行结果之前，该未知项记录会保持未关闭状态。"
     }
   ]
 }

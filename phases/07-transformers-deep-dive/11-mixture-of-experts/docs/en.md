@@ -11,7 +11,7 @@
 
 dense Transformer 在 inference 时的 FLOPs 等于它的参数量（forward pass 乘以 2）。扩展一个 dense model 时，每个 Token 都要支付完整计算成本。到 2024 年，frontier 已经撞上了 compute wall：要显著变得更聪明，你需要每个 Token 指数级更多的 FLOPs。
 
-Mixture of Experts 打破了这种关联。把每个 FFN 替换成 `E` 个独立 experts + 一个为每个 Token 选择 `k` 个 experts 的 router。总参数量 = `E × FFN_size`。每个 Token 的活跃参数量 = `k × FFN_size`。典型的 2026 配置：`E=256`，`k=8`。存储随 `E` 扩展，计算随 `k` 扩展。
+Mixture of Experts 打破了这种关联。把每个 FFN 替换成 $E$ 个独立 experts + 一个为每个 Token 选择 $k$ 个 experts 的 router。总参数量 = $E \times \text{FFN size}$。每个 Token 的活跃参数量 = $k \times \text{FFN size}$。典型的 2026 配置：$E=256$，$k=8$。存储随 $E$ 扩展，计算随 $k$ 扩展。
 
 2026 年的 frontier 几乎全是 MoE：DeepSeek-V3（671B total / 37B active）、Mixtral 8×22B、Qwen2.5-MoE、Llama 4、Kimi K2、gpt-oss。在 Artificial Analysis 的独立 leaderboard 上，排名前 10 的开源模型全都是 MoE。
 
@@ -46,7 +46,7 @@ h = h + sum_{e in top_k}(
 如果 router 让 90% 的 Token 都经过 expert 3，其他 experts 就会被饿死。已经尝试过三种修复方式：
 
 1. **Auxiliary load-balancing loss**（Switch Transformer、Mixtral）。添加一个与 expert 使用率方差成正比的惩罚项。有效，但会增加一个 hyperparameter 和第二个 Gradient 信号。
-2. **Expert capacity + token dropping**（早期 Switch）。每个 expert 最多处理 `C × N/E` 个 Token；溢出的 Token 跳过该层。会损害质量。
+2. **Expert capacity + token dropping**（早期 Switch）。每个 expert 最多处理 $C \times N/E$ 个 Token；溢出的 Token 跳过该层。会损害质量。
 3. **Auxiliary-loss-free balancing**（DeepSeek-V3）。添加一个可学习的 per-expert bias，用来偏移 router 的 top-k 选择。bias 在 training loss 外部更新。不对主目标添加惩罚。这是 2024 年的重要突破。
 
 DeepSeek-V3 的做法：每个 training step 后，对每个 expert 检查其使用率是高于还是低于目标。按 `±γ` 微调 bias。选择时使用 `scores + bias`。用于 gating 的 expert probabilities 仍然使用未修改的原始 `scores`。这将 routing 与 expression 解耦。
@@ -59,7 +59,7 @@ DeepSeek-V2/V3 还把 experts 拆分为 *shared* 和 *routed*。每个 Token 都
 
 经典 MoE（GShard、Switch）：每个 expert 和完整 FFN 一样宽。`E` 较小（8-64），`k` 较小（1-2）。
 
-现代 fine-grained MoE（DeepSeek-V3、Qwen-MoE）：每个 expert 更窄（1/8 FFN size）。`E` 很大（256+），`k` 更大（8+）。总参数量相同，但组合数量扩展快得多。`C(256, 8) = 400 trillion` 种可能的每 Token “experts”。质量提升，latency 保持不变。
+现代 fine-grained MoE（DeepSeek-V3、Qwen-MoE）：每个 expert 更窄（1/8 FFN size）。$E$ 很大（256+），$k$ 更大（8+）。总参数量相同，但组合数量扩展快得多。$\binom{256}{8} \approx 400$ 万亿 种可能的每 Token “experts”。质量提升，latency 保持不变。
 
 ### 成本画像
 
@@ -160,7 +160,7 @@ model = AutoModelForCausalLM.from_pretrained("mistralai/Mixtral-8x22B-v0.1")
 | Auxiliary-loss-free | “DeepSeek-V3 的技巧” | 只在 router 的 selection 上通过 per-expert bias 实现 balance；没有额外 Gradient。 |
 | Shared expert | “Always on” | 每个 Token 都会经过的额外 expert；捕获通用知识。 |
 | Expert parallelism | “按 expert 分片” | 将不同 experts 分配到不同 GPUs；通过网络 route tokens。 |
-| Sparsity | “active params < total params” | 比率 `k × expert_size / (E × expert_size)`；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
+| Sparsity | “active params < total params” | 比率 $k \times \text{expert size} / (E \times \text{expert size})$；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
 
 ## 延伸阅读
 

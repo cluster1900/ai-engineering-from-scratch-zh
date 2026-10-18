@@ -39,11 +39,11 @@ INT8:  [1 sign] [7 value]                   = 8  bits (uniform steps)
 INT4:  [1 sign] [3 value]                   = 4  bits (16 levels total)
 ```
 
-**FP32** 是 full precision。23 个 mantissa bits 给你大约 7 位十进制 precision。范围：大约从 1.2 x 10^-38 到 3.4 x 10^38。过去 training 几乎只用 FP32。现在它仍用于 accumulation（matrix multiplication 期间的运行求和）。
+**FP32** 是 full precision。23 个 mantissa bits 给你大约 7 位十进制 precision。范围：大约从 $1.2 \times 10^{-38}$ 到 $3.4 \times 10^{38}$。过去 training 几乎只用 FP32。现在它仍用于 accumulation（matrix multiplication 期间的运行求和）。
 
 **FP16** 把 bits 减半。10 个 mantissa bits 给出约 3.3 位十进制 precision。exponent 缩小到 5 bits，范围大幅缩小（最大值约 65,504）。这对权重没问题（权重聚集在零附近），但对 training 期间可能突然增大的 activations 和 gradients 很危险。FP16 training 需要 loss scaling 来防止 underflow。
 
-**BF16** (Brain Float 16) 保留 FP32 的 8-bit exponent，但把 mantissa 缩小到 7 bits。范围和 FP32 相同，precision 比 FP16 更低。Google 专门为 Deep Learning 设计了它。直觉是：对 Neural Network 来说，范围比 precision 更重要。一个 10^-20 的 Gradient 在 FP16 中会 underflow 到零，但在 BF16 中能保留下来。一个 0.07342 的权重在 BF16 中 round 到 0.0734，也足够接近。每个现代 training run 都使用 BF16 或 BF16/FP32 混合。
+**BF16** (Brain Float 16) 保留 FP32 的 8-bit exponent，但把 mantissa 缩小到 7 bits。范围和 FP32 相同，precision 比 FP16 更低。Google 专门为 Deep Learning 设计了它。直觉是：对 Neural Network 来说，范围比 precision 更重要。一个 $10^{-20}$ 的 Gradient 在 FP16 中会 underflow 到零，但在 BF16 中能保留下来。一个 0.07342 的权重在 BF16 中 round 到 0.0734，也足够接近。每个现代 training run 都使用 BF16 或 BF16/FP32 混合。
 
 **FP8** 有两种形式。E4M3（4 exponent，3 mantissa）用于 inference 期间的 weights 和 activations。E5M2（5 exponent，2 mantissa）用于 training 期间的 gradients，此时范围比 precision 更重要。在 H100 GPUs 上，FP8 inference 相比 FP16 可实现 30-50% 加速，且质量损失可忽略。
 

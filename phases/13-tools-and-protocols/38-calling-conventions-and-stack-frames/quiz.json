@@ -4,99 +4,99 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "The same C function double mixed(int i, double d, long long l, float f) is compiled for Linux x86-64 and for Windows x64. Which registers hold the four arguments?",
+      "question": "同一个 C 函数 double mixed(int i, double d, long long l, float f) 分别面向 Linux x86-64 和 Windows x64 编译。四个参数分别存放在哪些寄存器中？",
       "options": [
-        "Both use edi, xmm0, rsi, xmm1, because both ABIs fill integer and SSE lists in order",
-        "System V: edi, xmm0, rsi, xmm1 (two lists). Microsoft x64: ecx, xmm1, r8, xmm3 (one slot per position)",
-        "System V passes d and f on the stack, because SSE registers carry only return values",
-        "Both use ecx, xmm0, rdx, xmm1, because both ABIs start the integer list at rcx"
-      ],
-      "correct": 1,
-      "explanation": "psABI 3.2.3 assigns INTEGER and SSE classes from two separate register lists. The Microsoft convention is positional: argument k uses RCX/RDX/R8/R9 or XMM0 to XMM3 for slot k, so a double in slot 1 goes to XMM1 and a float in slot 3 in XMM3."
-    },
-    {
-      "stage": "check",
-      "question": "At -O2 the Microsoft x64 build of eight_args reads its fifth argument at 0x28(%rsp) with no prologue. Where does 0x28 come from?",
-      "options": [
-        "The frame pointer offset plus the saved rbp that the prologue pushed before the body",
-        "Five 8-byte argument slots counted up from the stack pointer, one slot per argument",
-        "Alignment padding that the compiler chose so the load is on a 16-byte boundary",
-        "8 bytes of return address plus the 32-byte shadow store for the four register arguments"
+        "两者都使用 edi、xmm0、rsi、xmm1，因为这两种 ABI 都按顺序填充整数寄存器列表和 SSE 寄存器列表",
+        "System V 在栈上传递 d 和 f，因为 SSE 寄存器只用于传递返回值",
+        "两者都使用 ecx、xmm0、rdx、xmm1，因为这两种 ABI 的整数寄存器列表都从 rcx 开始",
+        "System V：edi、xmm0、rsi、xmm1（两个独立列表）。Microsoft x64：ecx、xmm1、r8、xmm3（每个参数位置对应一个槽位）"
       ],
       "correct": 3,
-      "explanation": "On entry 0(%rsp) is the return address and 8(%rsp) to 39(%rsp) are the four home slots. The first stack argument therefore starts at 40, which is 0x28."
+      "explanation": "psABI 3.2.3 从两个独立的寄存器列表中分别为 INTEGER 类和 SSE 类分配寄存器。Microsoft 调用约定按参数位置分配：第 k 个参数使用第 k 个槽位对应的 RCX/RDX/R8/R9 或 XMM0 至 XMM3，因此槽位 1 中的 double 使用 XMM1，槽位 3 中的 float 使用 XMM3。"
     },
     {
       "stage": "check",
-      "question": "keeps at -O2 on System V begins with pushq %rbp; pushq %r14; pushq %rbx and then calls ext with no subq. Why is the stack aligned at the call?",
+      "question": "在 -O2 下，Microsoft x64 版本的 eight_args 没有函数序言，直接从 0x28(%rsp) 读取第五个参数。0x28 是怎么来的？",
       "options": [
-        "24 bytes of pushes plus the 8-byte return address is 32, a multiple of 16",
-        "The callee ext realigns the stack in its own prologue before it uses it",
-        "Every pushq keeps the stack 16-byte aligned, so any number of pushes is aligned",
-        "The red zone absorbs the misalignment, so the call does not need a subq"
-      ],
-      "correct": 0,
-      "explanation": "psABI 3.2.2 says (%rsp + 8) is a multiple of 16 on entry. Three pushes bring the depth to 24, and 24 + 8 = 32, so the call site is aligned without a subq."
-    },
-    {
-      "stage": "check",
-      "question": "The AArch64 keeps prologue is stp x29, x30, [sp, #-0x30]!; str x21, [sp, #0x10]; mov x29, sp; stp x20, x19, [sp, #0x20]. Where is the frame record?",
-      "options": [
-        "At the top of the frame next to the caller, because the record must be above the saves",
-        "At sp+0 and sp+8 after the prologue: x29 at the lower address, x30 above, x29 points at it",
-        "Nowhere, because a function that saves x21 does not need a frame record",
-        "In x19 and x20, because the stp of x20 and x19 stores the record last"
+        "编译器选择的对齐填充，使这次加载的地址位于 16 字节边界上",
+        "8 字节的返回地址，加上为四个寄存器参数预留的 32 字节影子空间",
+        "从栈指针向高地址数五个 8 字节参数槽位，每个参数占一个槽位",
+        "帧指针偏移量，再加上函数序言在执行主体之前压栈保存的 rbp"
       ],
       "correct": 1,
-      "explanation": "The pre-indexed stp stores x29 at the new sp and x30 at sp+8, and mov x29, sp makes x29 point at the pair. The Apple arm64 build of the same function puts the record at the top of the frame instead."
+      "explanation": "函数入口处，0(%rsp) 存放返回地址，8(%rsp) 至 39(%rsp) 是四个参数的栈上预留槽位。因此，第一个栈参数从偏移 40 处开始，也就是 0x28。"
     },
     {
       "stage": "check",
-      "question": "At -O0 the System V build of eight_args stores six argument registers to -0x8(%rbp) through -0x30(%rbp) without a subq. What makes those stores legal?",
+      "question": "在 System V 上，-O2 下的 keeps 以 pushq %rbp; pushq %r14; pushq %rbx 开头，随后调用 ext，期间没有 subq。为什么调用时栈仍然对齐？",
       "options": [
-        "They sit in the 128-byte red zone below rsp, and the leaf makes no call that overwrites them",
-        "rbp points 48 bytes below rsp after the prologue, so the stores are above rsp",
-        "The caller allocated the 48 bytes before the call, as part of its outgoing area",
-        "The stores go into the caller's frame, which the callee owns until it returns"
+        "压栈占用的 24 字节加上 8 字节返回地址，共 32 字节，是 16 的倍数",
+        "每次 pushq 都会保持栈的 16 字节对齐，因此压栈多少次都对齐",
+        "被调用函数 ext 会在自己的函数序言中重新对齐栈，然后再使用它",
+        "红区会吸收对齐偏差，因此调用前不需要 subq"
       ],
       "correct": 0,
-      "explanation": "The red zone is the 128 bytes beyond %rsp that signal handlers do not modify. The Microsoft and AArch64 Linux builds of the same function allocate the space with subq or sub sp instead, because those ABIs have no red zone."
+      "explanation": "psABI 3.2.2 规定，函数入口处的 (%rsp + 8) 是 16 的倍数。三次压栈又消耗 24 字节，24 + 8 = 32，因此无需 subq，调用点的栈就已对齐。"
     },
     {
-      "stage": "post",
-      "question": "struct big big_ret(long long seed) returns a 32-byte struct. How does each ABI return it?",
+      "stage": "check",
+      "question": "AArch64 上 keeps 的函数序言为 stp x29, x30, [sp, #-0x30]!; str x21, [sp, #0x10]; mov x29, sp; stp x20, x19, [sp, #0x20]。帧记录位于哪里？",
       "options": [
-        "All three return it in four registers, because each ABI has four result registers",
-        "Buffer address in rdi (seed to rsi), in rcx (seed to rdx), or in x8 (seed stays in x0)",
-        "System V and Microsoft x64 return it in rax:rdx, and AArch64 returns it in x0:x1",
-        "All three return it on the stack above the return address, in the caller's frame"
+        "位于栈帧靠近调用者的顶部，因为帧记录必须位于其他已保存寄存器的上方",
+        "序言执行后的 sp+0 和 sp+8：x29 保存在低地址，x30 保存在其上方，x29 指向这条帧记录",
+        "没有帧记录，因为保存 x21 的函数不需要帧记录",
+        "位于 x19 和 x20 中，因为保存 x20 和 x19 的 stp 最后存入了帧记录"
       ],
       "correct": 1,
-      "explanation": "psABI 3.2.3 classes a 32-byte aggregate as MEMORY and passes the address in %rdi as if it were the first argument. Microsoft shifts the real arguments right by one after the hidden pointer in RCX. AAPCS64 6.9 uses the indirect result register x8 and leaves x0 to x7 untouched."
+      "explanation": "使用前变址寻址的 stp 将 x29 存到新的 sp 处，将 x30 存到 sp+8 处，而 mov x29, sp 使 x29 指向这一对值。同一函数的 Apple arm64 版本则把帧记录放在栈帧顶部。"
     },
     {
-      "stage": "post",
-      "question": "radare2 6.2.4 lists seven arguments for eight_args at -O2 on System V: rdi, rsi, rdx, r8, r9 and two stack slots. Which argument is missing and why?",
+      "stage": "check",
+      "question": "在 -O0 下，System V 版本的 eight_args 将六个参数寄存器保存到 -0x8(%rbp) 至 -0x30(%rbp)，却没有执行 subq。为什么这些存储操作是合法的？",
       "options": [
-        "rcx, because its only read is the index of leaq (%rdx,%rcx), %rax",
-        "r9, because r9 is callee-saved and the tool skips callee-saved registers",
-        "The second stack slot, because 16 bytes above rsp is outside the frame",
-        "Nothing, because the function reads only seven values from its inputs"
+        "这些位置在 rsp 下方的 128 字节红区内，而且该叶子函数不会发起可能覆盖这些位置的函数调用",
+        "这些数据存入调用者的栈帧，而被调用函数在返回前拥有该栈帧",
+        "函数序言执行后，rbp 指向 rsp 下方 48 字节处，所以这些存储位置都在 rsp 上方",
+        "调用者在调用前分配了这 48 字节，作为传出参数区域的一部分"
       ],
       "correct": 0,
-      "explanation": "The source has eight parameters and the bytes read %rcx once, inside a lea. The analyzer in this lesson counts base and index registers as reads and finds all six register arguments. The tool output disagrees with the source, so record it as a finding to verify."
+      "explanation": "红区是 %rsp 下方的 128 字节空间，信号处理程序不会修改它。同一函数的 Microsoft 和 AArch64 Linux 版本则通过 subq 或 sub sp 分配空间，因为这些 ABI 没有红区。"
     },
     {
       "stage": "post",
-      "question": "The .xdata entry for keeps in the Windows object is 01 07 04 00 07 32 03 30 02 70 01 60. What does it say?",
+      "question": "struct big big_ret(long long seed) 返回一个 32 字节的结构体。各 ABI 如何返回它？",
       "options": [
-        "Version 1, frame register rbp with offset 0x70, and three pushes of rbx, rdi, rsi",
-        "Version 1, a 7-byte prolog, an 8-byte allocation at offset 7, then pushes of rbx, rdi, rsi",
-        "Version 1, a 7-byte prolog, and three nonvolatile saves into the shadow store",
-        "Version 1, a 7-byte prolog, a 32-byte allocation at offset 7, then pushes of rbx, rdi, rsi"
+        "System V 和 Microsoft x64 用 rax:rdx 返回，AArch64 用 x0:x1 返回",
+        "三者都将结果放在栈上返回地址的上方，即调用者的栈帧中",
+        "三者都用四个寄存器返回，因为每种 ABI 都有四个结果寄存器",
+        "缓冲区地址分别放在 rdi 中（seed 移至 rsi）、rcx 中（seed 移至 rdx）或 x8 中（seed 仍在 x0 中）"
       ],
       "correct": 3,
-      "explanation": "The UNWIND_CODE byte 0x32 is op 2 (UWOP_ALLOC_SMALL) with info 3, so 3*8+8 = 32 bytes. The bytes 0x30, 0x70, 0x60 are op 0 (UWOP_PUSH_NONVOL) with register numbers 3, 7, 6: rbx, rdi, rsi. That matches the prologue 56 57 53 48 83 ec 20 read from the bytes."
+      "explanation": "psABI 3.2.3 将 32 字节聚合类型归为 MEMORY 类，并将结果地址放入 %rdi，如同传递第一个参数。Microsoft 在 RCX 中放置隐藏指针，实际参数依次后移一个位置。AAPCS64 6.9 使用间接结果寄存器 x8，不占用 x0 至 x7。"
+    },
+    {
+      "stage": "post",
+      "question": "在 System V 的 -O2 版本中，radare2 6.2.4 为 eight_args 列出了七个参数：rdi、rsi、rdx、r8、r9 和两个栈槽位。漏掉了哪个参数，为什么？",
+      "options": [
+        "没有遗漏，因为该函数只从输入中读取七个值",
+        "rcx，因为它唯一一次被读取是在 leaq (%rdx,%rcx), %rax 中充当索引寄存器",
+        "r9，因为 r9 是被调用者保存寄存器，而工具会跳过这类寄存器",
+        "第二个栈槽位，因为 rsp 上方 16 字节处已经超出栈帧"
+      ],
+      "correct": 1,
+      "explanation": "源代码有八个参数，机器码在一条 lea 指令中读取了一次 %rcx。本课的分析器将基址寄存器和索引寄存器的使用都计为读取，因此能找出全部六个寄存器参数。工具输出与源代码不一致，应将这一点记录为待验证的发现。"
+    },
+    {
+      "stage": "post",
+      "question": "Windows 目标文件中，keeps 的 .xdata 条目为 01 07 04 00 07 32 03 30 02 70 01 60。它表达了什么信息？",
+      "options": [
+        "版本 1，函数序言长 7 字节，偏移 7 处记录分配 32 字节，随后是 rbx、rdi、rsi 的压栈记录",
+        "版本 1，帧寄存器为 rbp、偏移量为 0x70，以及对 rbx、rdi、rsi 的三次压栈",
+        "版本 1，函数序言长 7 字节，并将三个非易失寄存器保存到影子空间",
+        "版本 1，函数序言长 7 字节，偏移 7 处记录分配 8 字节，随后是 rbx、rdi、rsi 的压栈记录"
+      ],
+      "correct": 0,
+      "explanation": "UNWIND_CODE 字节 0x32 的操作码为 2（UWOP_ALLOC_SMALL），附加信息为 3，因此分配大小为 3*8+8 = 32 字节。字节 0x30、0x70、0x60 的操作码均为 0（UWOP_PUSH_NONVOL），寄存器编号分别为 3、7、6，即 rbx、rdi、rsi。这与从字节中读出的函数序言 56 57 53 48 83 ec 20 一致。"
     }
   ]
 }

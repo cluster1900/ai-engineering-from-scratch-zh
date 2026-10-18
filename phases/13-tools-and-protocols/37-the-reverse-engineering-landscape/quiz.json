@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "radare2, rizin, angr, and Ghidra all open ledger-x86_64-O1.o and report four functions, yet grade sits at 0x08000050, 0x400010, and 0x100010 in three of them. What explains the three addresses?",
+      "question": "radare2、rizin、angr 和 Ghidra 都打开 ledger-x86_64-O1.o，并报告有 4 个函数，但其中三种工具分别将 grade 定位在 0x08000050、0x400010 和 0x100010。为什么会出现这三个地址？",
       "options": [
-        "The object was compiled three times and the compiler placed grade differently each time",
-        "Each tool chooses its own base address for a relocatable object, so the same function keeps its .text offset 0x10 under three different bases",
-        "The symbol table stores three alternative addresses and each tool picks one of them",
-        "Two of the tools disassembled the wrong section and the addresses belong to .rodata"
-      ],
-      "correct": 1,
-      "explanation": "A relocatable object has no load address. radare2 and rizin map the file at 0x08000000, angr at 0x400000, Ghidra at 0x100000. Subtracting the .text base gives the same offset 0x10 in every tool."
-    },
-    {
-      "stage": "check",
-      "question": "On ledger-x86_64-O0.o the harness reports 3 blocks for grade in radare2, 8 in rizin and angr, and 9 in Ghidra. Which statement matches the captured evidence?",
-      "options": [
-        "angr found more code than Ghidra because it decodes the alignment padding as case blocks",
-        "radare2 decoded the case blocks but merged them into one block because they share a target",
-        "Ghidra split the switch block at the jmp rax to place its switchD label, rizin resolved five cases as a switch_op, and radare2 stopped at the indirect jump with 36 bytes never reached",
-        "The four counts come from four different functions and the harness mixed them up"
+        "符号表存储了三个备选地址，每种工具各选一个",
+        "目标文件编译了三次，每次编译器都将 grade 放在不同位置",
+        "每种工具都会为可重定位目标文件选择自己的基址，因此同一个函数虽然位于三个不同基址之上，其 .text 偏移仍然都是 0x10",
+        "其中两种工具反汇编了错误的节，这些地址属于 .rodata"
       ],
       "correct": 2,
-      "explanation": "The counts come from the same bytes. The difference is how far each tool follows jmp rax: radare2 stops, rizin and Ghidra read the table through its relocations, angr keeps the case blocks but routes the jump to an unresolvable node."
+      "explanation": "可重定位目标文件没有加载地址。radare2 和 rizin 将文件映射到 0x08000000，angr 映射到 0x400000，Ghidra 映射到 0x100000。减去各自的 .text 基址后，每种工具得到的偏移都是 0x10。"
     },
     {
       "stage": "check",
-      "question": "pypcode lifts sub rsp, 0x10 into nine operations that write CF, OF, SF, ZF, and PF, and pyvex lifts it into seven statements with PUT(cc_op) = 0x8 and no flag at all. What does the difference mean?",
+      "question": "对于 ledger-x86_64-O0.o 中的 grade，对比框架报告 radare2 给出 3 个基本块，rizin 和 angr 各给出 8 个，Ghidra 给出 9 个。哪项陈述与采集的证据一致？",
       "options": [
-        "P-code and VEX disagree about the semantics of subtraction on x86-64",
-        "P-code writes every flag eagerly; VEX stores a condition-code thunk (operation and operands) and computes a flag only when a later instruction reads it",
-        "pyvex lost the flags and its lift is incomplete for this instruction",
-        "The two lifts used different operand sizes, 64-bit in P-code and 32-bit in VEX"
+        "angr 找到的代码比 Ghidra 更多，因为它将对齐填充解码为 case 基本块",
+        "这四个计数来自四个不同的函数，是对比框架把它们混淆了",
+        "radare2 解码了各个 case 基本块，但因为它们共用一个目标，将其合并为一个基本块",
+        "Ghidra 在 jmp rax 处拆分 switch 基本块以放置 switchD 标签，rizin 将 5 个 case 解析为一个 switch_op，而 radare2 停在间接跳转处，留下 36 个从未遍历到的字节"
       ],
-      "correct": 1,
-      "explanation": "Both lifts are complete. SLEIGH writes the flags at the instruction. VEX records cc_op, cc_dep1, cc_dep2, cc_ndep and evaluates a flag lazily at the branch that uses it."
+      "correct": 3,
+      "explanation": "这些计数来自相同的字节。区别在于每种工具会沿 jmp rax 追踪到哪里：radare2 就此停止；rizin 和 Ghidra 通过重定位读取跳转表；angr 保留 case 基本块，但将跳转指向一个无法解析的节点。"
     },
     {
       "stage": "check",
-      "question": "On sweep-trap.o llvm-objdump lists 8 instruction starts inside lookup and radare2, rizin, and Ghidra list 6. Where do the two extra starts come from?",
+      "question": "pypcode 将 sub rsp, 0x10 提升为 9 个操作，其中会写入 CF、OF、SF、ZF 和 PF；pyvex 则将其提升为 7 条语句，其中有 PUT(cc_op) = 0x8，却完全没有标志位。这种差异意味着什么？",
       "options": [
-        "llvm-objdump prints the relocation entries as instructions and the other tools hide them",
-        "The linear sweep decodes the four table bytes 31 c0 90 48 as xorl, nop, and a REX prefix that swallows the real addl, so it gains starts at 0x10, 0x12, and 0x13 and loses the start at 0x14",
-        "The sweep counts the padding nop after plus_one as part of lookup",
-        "radare2, rizin, and Ghidra skipped two legitimate instructions because they stop at the first jmp"
+        "P-code 立即写入每个标志位；VEX 保存条件码 thunk（包含操作及操作数的延迟计算记录），直到后续指令读取某个标志位时才计算它",
+        "pyvex 丢失了标志位，因此对这条指令的提升不完整",
+        "两次提升使用了不同的操作数宽度：P-code 为 64 位，VEX 为 32 位",
+        "P-code 和 VEX 对 x86-64 减法的语义存在分歧"
+      ],
+      "correct": 0,
+      "explanation": "两种提升都是完整的。SLEIGH 在处理该指令时就写入标志位；VEX 记录 cc_op、cc_dep1、cc_dep2 和 cc_ndep，直到使用标志位的分支处才对其延迟求值。"
+    },
+    {
+      "stage": "check",
+      "question": "对于 sweep-trap.o，llvm-objdump 在 lookup 内列出了 8 个指令起点，而 radare2、rizin 和 Ghidra 各列出 6 个。多出的两个起点从何而来？",
+      "options": [
+        "radare2、rizin 和 Ghidra 在第一个 jmp 处停止，因此跳过了两条真正的指令",
+        "线性扫描将 4 个表数据字节 31 c0 90 48 解码为 xorl、nop 和一个吞入真正 addl 指令的 REX 前缀，因此在 0x10、0x12 和 0x13 多出起点，同时丢失了 0x14 处的起点",
+        "llvm-objdump 将重定位条目打印成了指令，其他工具则隐藏了它们",
+        "线性扫描将 plus_one 之后用于填充的 nop 计入了 lookup"
       ],
       "correct": 1,
-      "explanation": "The harness reports extra starts 0x10, 0x12, 0x13 and a missing start at 0x14 for the sweep. The three graph builders leave 0x10 to 0x14 unclaimed, and the harness names that range as data inside a function."
+      "explanation": "对比框架报告，线性扫描在 0x10、0x12 和 0x13 多出了指令起点，并缺少 0x14 处的起点。三种图构建器都没有将 0x10 至 0x14 这段范围认定为代码，对比框架则将其标记为函数内部的数据。"
     },
     {
       "stage": "post",
-      "question": "Ghidra decompiles grade at -O1 to param_1 / 10 - 6 and angr decompiles the same bytes to (a0 * 1717986919) >> 0x22. Which pipeline stage produced the difference?",
+      "question": "Ghidra 将 -O1 下的 grade 反编译为 param_1 / 10 - 6，angr 则将相同字节反编译为 (a0 * 1717986919) >> 0x22。这种差异产生于流水线的哪个阶段？",
       "options": [
-        "The disassembler, because the two tools decoded different instructions at 0x13",
-        "The loader, because angr applied the relocations and Ghidra did not",
-        "Term rewriting in the data-flow stage: Ghidra's Rule pool folds the multiply-and-shift idiom back into a division, angr's simplifier leaves the arithmetic as lifted",
-        "The emitter, because angr prints constants in decimal and Ghidra in hexadecimal"
+        "反汇编阶段，因为两种工具在 0x13 处解码出了不同指令",
+        "数据流阶段的项重写：Ghidra 的 Rule 规则池将乘法加移位的惯用模式折叠回除法，而 angr 的简化器保留了提升后的算术表达式",
+        "加载阶段，因为 angr 应用了重定位，而 Ghidra 没有",
+        "输出阶段，因为 angr 用十进制打印常量，而 Ghidra 用十六进制"
       ],
-      "correct": 2,
-      "explanation": "Both tools decode the same imul by 0x66666667 and sar by 34. Ghidra's simplification loop rewrites that idiom into a division; angr's AIL simplification does not, so the lifted arithmetic reaches the emitter."
+      "correct": 1,
+      "explanation": "两种工具都解码出了乘以 0x66666667 的 imul 和右移 34 位的 sar。Ghidra 的简化循环将这一惯用模式重写为除法；angr 的 AIL 简化没有这样做，因此提升后的算术表达式一直保留到了输出阶段。"
     },
     {
       "stage": "post",
-      "question": "A teammate proposes to trust whichever tool reports the most basic blocks, because more blocks means more code was found. Which captured result argues against that rule?",
+      "question": "一位队友建议相信基本块报告数量最多的工具，因为基本块越多就意味着找到的代码越多。哪项采集结果反驳了这一规则？",
       "options": [
-        "radare2 reports 3 blocks for grade at -O0 and is the only tool that is right",
-        "Ghidra reports 9 blocks for grade at -O0 where rizin reports 8 for the same edges, and angr adds a block with no symbol at every padding gap, so block count measures block boundaries and heuristics rather than code found",
-        "Every tool reports the same block count on every fixture, so the rule cannot be tested",
-        "llvm-objdump reports the most blocks and is a linear sweep"
+        "llvm-objdump 报告的基本块最多，而且它使用线性扫描",
+        "radare2 对 -O0 下的 grade 报告了 3 个基本块，而且它是唯一正确的工具",
+        "所有工具对每个夹具都报告相同的基本块数量，因此无法检验这一规则",
+        "对于 -O0 下的 grade，在边相同的情况下，Ghidra 报告了 9 个基本块，rizin 则报告 8 个；angr 还在每个填充间隙都添加了一个没有符号的基本块，因此基本块计数反映的是基本块边界划分和启发式规则，而非找到的代码量"
       ],
-      "correct": 1,
-      "explanation": "Ghidra's extra block is a label split at jmp rax, and angr's extra functions are alignment bytes. Agreement on instruction starts, edges, and byte accounting is the evidence; a single count is not."
+      "correct": 3,
+      "explanation": "Ghidra 多出的基本块来自在 jmp rax 处为放置标签而进行的拆分，angr 多出的函数则来自对齐字节。指令起点、边和字节归属的一致性才是证据，单一计数并不是。"
     }
   ]
 }

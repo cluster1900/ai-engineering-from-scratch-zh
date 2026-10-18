@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A rebuilt percent_change passes four hand-written tests. What does that prove?",
+      "question": "重建的 percent_change 通过了 4 个手写测试。这能证明什么？",
       "options": [
-        "The rebuild agrees with the original on those four inputs and nothing more",
-        "The rebuild compiles to the same bytes",
-        "The decompiler output was correct",
-        "The rebuild equals the original for every input"
+        "反编译器的输出是正确的",
+        "重建实现会编译成相同的字节",
+        "只能证明重建实现与原始实现在这 4 个输入上的结果一致",
+        "重建实现与原始实现在所有输入上都等价"
       ],
-      "correct": 0,
-      "explanation": "A test set proves agreement on the inputs it contains. Zero, negative, rounding, and overflow cells are where rebuilds diverge."
+      "correct": 2,
+      "explanation": "一个测试集只能证明在它所包含的输入上结果一致。零值、负数、舍入和溢出这些输入单元才是重建实现容易出现分歧的地方。"
     },
     {
       "stage": "check",
-      "question": "The original computes (after - before) * 100 / before in 32-bit int. The rebuild uses a 64-bit intermediate. Where do they differ?",
+      "question": "原始实现使用 32 位 int 计算 (after - before) * 100 / before，重建实现则使用 64 位中间值。两者会在哪些输入上产生不同结果？",
       "options": [
-        "Never, because the cast back to int removes the difference",
-        "On inputs where the 32-bit product wraps and before is not 1 or -1",
-        "On every input with a negative before",
-        "Only when before is zero"
+        "仅当 before 为零时",
+        "32 位乘积发生回绕，且 before 既不是 1 也不是 -1 的输入",
+        "所有 before 为负数的输入",
+        "永远不会，因为转换回 int 会消除差异"
       ],
       "correct": 1,
-      "explanation": "The original divides the wrapped 32-bit product. The rebuild divides the exact 64-bit product and truncates afterwards. For before equal to 1 or -1 the two agree after truncation."
+      "explanation": "原始实现用回绕后的 32 位乘积做除法。重建实现用精确的 64 位乘积做除法，之后再截回 32 位。当 before 等于 1 或 -1 时，两者在截回后结果一致。"
     },
     {
       "stage": "check",
-      "question": "Two x86-64 ELF objects hold the same 46 code bytes for grade, including zero bytes in the relocation field. Why is the byte compare still not enough?",
+      "question": "两个 x86-64 ELF 目标文件中，grade 的 46 个代码字节完全相同，重定位字段中的零字节也相同。为什么仅比较字节仍然不够？",
       "options": [
-        "The addend lives in the .rela.text record, and the table those records point at can differ",
-        "Zero bytes never appear in machine code",
-        "The function size is stored in .rodata",
-        "RELA objects cannot be compared"
-      ],
-      "correct": 0,
-      "explanation": "In a RELA object the field bytes are zero and the addend is in the relocation record. Mask the field, compare the record shape, then read and compare the constants at the target."
-    },
-    {
-      "stage": "check",
-      "question": "The grid contains before = -1 and after = 536870911. The compiled x86-64 original executes idiv with INT_MIN / -1. What happens?",
-      "options": [
-        "It returns INT_MIN",
-        "It raises a divide error and the process gets SIGFPE",
-        "It returns 0 because the guard handles it",
-        "It returns INT_MAX"
-      ],
-      "correct": 1,
-      "explanation": "x86-64 idiv raises #DE when the quotient does not fit. AArch64 sdiv returns INT_MIN for the same operands, so the oracle depends on the architecture."
-    },
-    {
-      "stage": "post",
-      "question": "What did the 2026 study of LLM decompiler refinement measure when the build rate rose from 75% to 90%?",
-      "options": [
-        "Behaviour match rose by the same amount",
-        "The study did not measure behaviour",
-        "Readability fell and behaviour was unchanged",
-        "Behaviour match fell from 74% to 62%"
+        "机器码中绝不会出现零字节",
+        "函数大小存储在 .rodata 中",
+        "无法比较 RELA 目标文件",
+        "加数保存在 .rela.text 记录中，而这些记录指向的表可能不同"
       ],
       "correct": 3,
-      "explanation": "Liu, Raff, and Micinski (arXiv 2609.05370) found that invented types, callees, and guards made more candidates compile while fewer matched the original on fuzzed inputs."
+      "explanation": "在 RELA 目标文件中，重定位字段的字节为零，加数则保存在重定位记录中。应屏蔽该字段，比较记录结构，然后读取并比较目标位置的常量。"
+    },
+    {
+      "stage": "check",
+      "question": "输入网格包含 before = -1 和 after = 536870911。编译后的 x86-64 原始实现在执行 idiv 时计算 INT_MIN / -1。会发生什么？",
+      "options": [
+        "返回 INT_MAX",
+        "返回 INT_MIN",
+        "触发除法错误，进程收到 SIGFPE",
+        "返回 0，因为保护逻辑会处理这一情况"
+      ],
+      "correct": 2,
+      "explanation": "当商超出可表示范围时，x86-64 的 idiv 会触发 #DE。对相同的操作数，AArch64 的 sdiv 返回 INT_MIN，因此判定基准取决于架构。"
     },
     {
       "stage": "post",
-      "question": "Leg one could not run because the host has no C compiler. Leg two passed for both functions. What is the proof status?",
+      "question": "在 2026 年一项利用 LLM 改进反编译结果的研究中，构建成功率从 75% 上升到 90% 时，行为匹配率发生了什么变化？",
       "options": [
-        "unknown, because an unverified claim never aggregates to pass",
-        "pass, because every claim that ran passed",
-        "pass, because byte equality implies behaviour equality",
-        "fail, because a leg did not run"
+        "可读性下降，行为保持不变",
+        "行为匹配率从 74% 下降到 62%",
+        "该研究未测量行为",
+        "行为匹配率以相同幅度上升"
       ],
-      "correct": 0,
-      "explanation": "fail wins, then unknown. A claim that was not checked stays unknown, and unknown never becomes pass."
+      "correct": 1,
+      "explanation": "Liu、Raff 和 Micinski（arXiv 2609.05370）发现，臆造的类型、被调用函数和保护条件使更多候选实现能够编译，却让更少的候选实现在模糊测试输入上与原始实现保持一致。"
+    },
+    {
+      "stage": "post",
+      "question": "由于宿主机没有 C 编译器，第一条验证路径无法运行。两个函数都通过了第二条验证路径。证明状态是什么？",
+      "options": [
+        "fail，因为有一条验证路径没有运行",
+        "pass，因为实际运行过的断言都通过了",
+        "pass，因为字节相等意味着行为相等",
+        "unknown，因为未验证的断言绝不能汇总为 pass"
+      ],
+      "correct": 3,
+      "explanation": "汇总时 fail 的优先级最高，其次是 unknown。未检查的断言保持 unknown，而 unknown 绝不会变成 pass。"
     }
   ]
 }
