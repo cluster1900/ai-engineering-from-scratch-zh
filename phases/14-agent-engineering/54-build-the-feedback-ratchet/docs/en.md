@@ -98,7 +98,7 @@ python3 -m unittest discover code/tests -v
 
 ## 实践实验：为受挫后的决策负责
 
-从你的职业学习路径对应的作品集项目中，选择一个工作流。围绕它完成一次决策、一项小实验和一次复审。将证据保存在[职业交付模板](../outputs/career-delivery-evidence.md)中。
+从你的职业学习路径对应的作品集项目中，选择一个工作流。围绕它完成一次决策、一项小实验和一次复审。将证据保存在[职业交付模板](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/54-build-the-feedback-ratchet/outputs/career-delivery-evidence.md)中。
 
 Python 实验会生成示例待办行动项。它不会观察用户、度量干预效果，也不会证明你已经具备职业胜任力。运行该实验只是本练习的准备工作。
 
@@ -144,7 +144,7 @@ Python 实验会生成示例待办行动项。它不会观察用户、度量干�
 
 估算每个成功完成任务的成本，计入模型调用、重试、配套服务和人工审核。说明人力单价假设，区分实测用量与估算值。将该成本与人工替代方案，或项目背后的价值假设进行比较。
 
-通过已有的 [LLM FinOps 课程](../../../17-infrastructure-and-production/27-finops-llms/docs/en.md)，进一步学习成本归因与单位经济性。FinOps 指通过协作管理技术用量和成本；成本归因是将成本分配到相应工作负载，单位经济性则考察每个成功任务的成本与价值。更换模型只是可能的应对方式之一；缩小工作流范围或保留人工步骤，可能才是更好的产品决策。
+通过已有的 [LLM FinOps 课程](https://aiengineeringfromscratch.com/lesson?path=phases/17-infrastructure-and-production/27-finops-llms)，进一步学习成本归因与单位经济性。更换模型只是可能的应对方式之一；缩小工作流范围或保留人工步骤，可能才是更好的产品决策。
 
 ### 6. 完成闭环
 
@@ -156,7 +156,7 @@ Python 实验会生成示例待办行动项。它不会观察用户、度量干�
 
 ## 交付物
 
-将 [career-delivery-evidence.md](../outputs/career-delivery-evidence.md) 复制到自己的项目，并使用证据链接填写。让仓库中的模板保持可复用。将决策简报、交互走查、度量比较，以及有明确责任归属的后续行动，一并纳入你的职业作品集交付物。
+将 [career-delivery-evidence.md](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/54-build-the-feedback-ratchet/outputs/career-delivery-evidence.md) 复制到自己的项目，并使用证据链接填写。让仓库中的模板保持可复用。将决策简报、交互走查、度量比较，以及有明确责任归属的后续行动，一并纳入你的职业作品集交付物。
 
 ## 验证
 
