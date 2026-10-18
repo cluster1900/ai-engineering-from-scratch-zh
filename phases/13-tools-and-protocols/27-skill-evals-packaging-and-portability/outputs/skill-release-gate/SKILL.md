@@ -51,13 +51,17 @@ metadata:
 
 <a id="output-contract"></a>
 
-## 输出契约
+## Output contract
+
+输出契约（标题保留为评估器识别的固定接口）。
 
 返回完整的 JSON 评估报告。保留每一层的检查及其证据，防止汇总通过掩盖路由、产物、脚本、安全、安装树或可移植性失败。`fixturePassed` 表示教学样例通过。`localEvidenceReady` 仅表示本地摘要完整性通过。只有 `productionReady` 还具备有效的包外信任锚时，`passed` 才为 true。
 
 <a id="failure-behavior"></a>
 
-## 失败行为
+## Failure behavior
+
+失败行为（标题保留为评估器识别的固定接口）。
 
 配置无效、来源缺失或不匹配、可信证明缺失或无效、文件哈希不同、必需能力缺失，或任一生产门禁失败时，以非零结果停止并报告失败层。显式的 `--fixture-demo` 路线仅在 `fixturePassed` 为 true 时才可成功退出，而且绝不构成可发布声明。绝不自动发布、安装到其他位置、修复证据、创建信任决策或放宽阈值。
 
