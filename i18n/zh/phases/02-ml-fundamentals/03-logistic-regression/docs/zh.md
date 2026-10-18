@@ -18,7 +18,7 @@
 
 你想根据瘤大小预测它是恶性还是良性――你试图使用线性回归――它会输出0.3、1.7或 -0.5 这样的数字――这些数字是什么意思?1.7 是非常恶性吗?-0.5 是非常良性吗?线性回归 输出是无限数字――分类需要0到1之间的界率概率,以及明确的决策:是否或否――
 
-逻辑回归 解决了这个问题――它使用相同的线性组合 (wx + b),然后通过 sigmoid 函数,将任意数字缩小到 (0, 1) 范围内――输出就是概率――你设定一个门――通常是0.5),然后做出决策――
+逻辑回归解决了这个问题.$wx + b$),然后通过sigmoid函数,将任意数字缩小到 (0, 1) 范围内――输出就是概率――你设定一个门,通常是0.5),然后做出决策――
 
 尽管名字里有回归,但物流回归是一种分类算法,而不是回归算法.
 
@@ -44,22 +44,22 @@ actual: 0   0   0   0   1   1   1   1   1   1
 
 形函数正是这样做:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\sigma(z) = \frac{1}{1 + e^{-z}}
 ```
 
 性质:
-- 当z是很大的正数时,sigmoid(z) 接近1
-- 当z是很大的负数时,sigmoid(z) 接近0
-- 当 z = 0 时,sigmoid(z) = 0.5
+- 当 当$z$是一个很大的正数时,$\sigma(z)$接近1
+- 当 当$z$是很大的负数时,$\sigma(z)$接近 0
+- 当 当$z = 0$时,$\sigma(z) = 0.5$
 - 输出始终位于0和1之间
 - 这个功能是平滑的
 
-它的衍生 具有方便的形式:sigmoid'(z) =sigmoid(z) * (1 - sigmoid(z))。这让渐进式计算更高效──
+它的衍生具有方便的形式:$\sigma'(z) = \sigma(z) (1 - \sigma(z))$,这让渐进的计算更高效.
 
 ### 后勤回归 =线性模型 + 形
 
-模型先计算 z = wx + b(与线性回归相同),然后应用sigmoid:
+模型先计算$z = wx + b$(与线性回归相似),然后应用sigmoid:
 
 ```mermaid
 flowchart LR
@@ -70,21 +70,21 @@ flowchart LR
     D -->|No| N[Predict 0]
 ```
 
-输出 p 被解释为 P(y=1 √ x),即输入属于类1的概率──决策边界位于wx + b = 0 的位置,此时 sigmoid 输出恰好为0.5──
+输出$p$被解释为$P(y=1 \mid x)$输入属于1类的概率.$wx + b = 0$现在的位置是0.5个.
 
 ### 双边交叉缩损失
 
 不能在物流回归中使用MSE──带 sigmoid 的MSE 会产生非凸显的成本表面,存在许多本地最小量──应使用二进制交叉缩 (log loss):
 
-```
-Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
+```math
+\text{损失} = -\frac{1}{n} \sum \left( y \log(p) + (1-y) \log(1-p) \right)
 ```
 
 为什么它有效:
-- 当 y=1 且 p 接近 1 时:log(1) = 0,因此损失接近 0(正确,低成本)
-- 当 y=1 且 p 接近 0 时:log(0) 接近负无穷,因此损失很大(错误,高成本)
-- 当 y=0 且 p 接近 0 时:log(1) = 0,因此损失接近 0 正确,低成本)
-- 当 y=0 且 p 接近 1 时:log(0) 接近负无穷,因此损失很大(错误,高成本)
+- 当 当$y=1$且$p$接近 1 时:$\log(1) = 0$由于这种情况,
+- 当 当$y=1$且$p$接近 0 时:$\log(0)$接近负无穷,因此损失很大(错误,高成本)
+- 当 当$y=0$且$p$接近 0 时:$\log(1) = 0$由于这种情况,
+- 当 当$y=0$且$p$接近 1 时:$\log(0)$接近负无穷,因此损失很大(错误,高成本)
 
 对于物流回归,这个损失函数是凸的,因此保证只有一个全球最小的.
 
@@ -92,12 +92,14 @@ Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
 
 双向交叉化时,梯度具有简洁形式:
 
-```
-dL/dw = (1/n) * sum((p - y) * x)
-dL/db = (1/n) * sum(p - y)
+```math
+\begin{aligned}
+\frac{\partial L}{\partial w} &= \frac{1}{n} \sum (p - y) \, x \\
+\frac{\partial L}{\partial b} &= \frac{1}{n} \sum (p - y)
+\end{aligned}
 ```
 
-它们看起来与线性回归的渐进式完全相同. 区别在于p = sigmoid(wx + b),而不是p = wx + b──sigmoid 引入非线性,但渐进式更新规则保持不变.
+它们看起来与线性回归的渐进率完全相同.$p = \sigma(wx + b)$没有什么.$p = wx + b$△ 引入非线性,但渐进的更新规则保持不变.
 
 ```mermaid
 flowchart TD
@@ -114,29 +116,29 @@ flowchart TD
 
 对于2D输入 (输入) 两个特征,决策界限是满足以下条件的直线:
 
-```
-w1*x1 + w2*x2 + b = 0
+```math
+w_1 x_1 + w_2 x_2 + b = 0
 ```
 
 一侧的点被分类为 1,另一侧的点被分类为 0――逻辑回归总是产生线性决策边界――如果需要曲的边界,要么添加多项式特征,要么使用非线性模型――
 
 ### 使用软max 进行多类分类
 
-处理两个类. 对 k 个类,使用软max函数:
+处理两个类型的二进制物流回归$k$个类,使用软max函数:
 
-```
-softmax(z_i) = e^(z_i) / sum(e^(z_j) for all j)
+```math
+\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
 ```
 
-每个类都有自己的权重向量.模型为每个类计算一个分数 z_i,然后软max 将分数转换为总和为 1 的概率.预测类是概率最高的类.
+每个类都有自己的权重向量.$z_i$然后软max将分数转换为总和为 1 的概率.预测类是最高概率的类.
 
 变为类型交叉:
 
-```
-Loss = -(1/n) * sum(sum(y_k * log(p_k)))
+```math
+\text{损失} = -\frac{1}{n} \sum \sum_k y_k \log(p_k)
 ```
 
-其中 y_k 对真类为 1,对所有其他类为 0 ((一热编码) ⋅
+其中$y_k$对真类为 1,对所有其他类为 0 ((一热编码)
 
 ### 评估指标
 
@@ -150,18 +152,18 @@ Loss = -(1/n) * sum(sum(y_k * log(p_k)))
 | Actually Negative | False Positive (FP) | True Negative (TN) |
 
 **Precision**在所有预测中,有多少实际是积极的?
-```
-Precision = TP / (TP + FP)
+```math
+\text{精确率} = \frac{TP}{TP + FP}
 ```
 
 **Recall**(敏感):在所有实际积极的样本中,我们抓住了多少?
-```
-Recall = TP / (TP + FN)
+```math
+\text{召回率} = \frac{TP}{TP + FN}
 ```
 
 **F1 Score**精确和回忆的和平均量――平衡两个指标――
-```
-F1 = 2 * (Precision * Recall) / (Precision + Recall)
+```math
+F_1 = 2 \cdot \frac{\text{精确率} \cdot \text{召回率}}{\text{精确率} + \text{召回率}}
 ```
 
 优先考虑的场景:
@@ -505,7 +507,7 @@ print(f"\nClassification Report:\n{classification_report(y_te, y_pred)}")
 
 ## 练习
 
-1. 生成一个不线性分离的数据集 (例如两个同心圆) ⋅训练物流回归并观察它的失败――然后添加多项式特征 ((x1^2、x2^2、x1*x2) 并再次训练――展示准确性 得到提升――
+1. 生成一个不线性分离的数据集 (例如两个同心圆) ⋅训练物流回归并观察它的失败――然后添加多项式特性$x_1^2, x_2^2, x_1 x_2$并再次训练――展示精度 得到提升――
 2. 为3级软max模型实现多级混矩阵――计算每类精度和回忆――哪个类最难分类?
 3. 从零构建ROC曲线――对0到1之间的100个门值,计算真正率和虚假正率――使用形规则计算AUC (AUC) 下的区域)
 
@@ -514,14 +516,14 @@ print(f"\nClassification Report:\n{classification_report(y_te, y_pred)}")
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | Logistic regression | “用于 Classification 的 Regression” | 一个 linear model 后接 sigmoid function，用于输出 class probabilities |
-| Sigmoid function | “S-curve” | function 1/(1+e^(-z))，将任意实数映射到 (0, 1) 范围 |
-| Binary cross-entropy | “Log loss” | Loss Function -[y*log(p) + (1-y)*log(1-p)]，会严厉惩罚自信但错误的预测 |
+| Sigmoid function | “S-curve” | function $1/(1+e^{-z})$，将任意实数映射到 (0, 1) 范围 |
+| Binary cross-entropy | “Log loss” | Loss Function $-[y \log(p) + (1-y) \log(1-p)]$，会严厉惩罚自信但错误的预测 |
 | Decision boundary | “分界线” | 模型输出概率等于 0.5 的 surface，用于分隔 predicted classes |
 | Softmax | “Multi-class sigmoid” | 将 scores 的 Vector 转换为总和为 1 的概率的 function |
-| Precision | “选中的有多少是相关的” | TP / (TP + FP)，positive predictions 中实际为 positive 的比例 |
-| Recall | “相关的有多少被选中” | TP / (TP + FN)，actual positives 中被模型正确识别的比例 |
-| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：2*P*R / (P+R) |
+| Precision | “选中的有多少是相关的” | $TP / (TP + FP)$，positive predictions 中实际为 positive 的比例 |
+| Recall | “相关的有多少被选中” | $TP / (TP + FN)$，actual positives 中被模型正确识别的比例 |
+| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：$2PR / (P+R)$ |
 | Confusion matrix | “错误分解” | 展示每个 class pair 的 TP、TN、FP、FN 计数的表格 |
 | Threshold | “cutoff” | 超过该 probability value 时模型预测 class 1（默认 0.5，可调） |
-| One-hot encoding | “类别的二进制列” | 将 class k 表示为一个 Vector：除位置 k 为 1 外，其余位置均为 0 |
-| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 k 个 classes 的扩展，使用 one-hot encoded labels |
+| One-hot encoding | “类别的二进制列” | 将 class $k$ 表示为一个 Vector：除位置 $k$ 为 1 外，其余位置均为 0 |
+| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 $k$ 个 classes 的扩展，使用 one-hot encoded labels |

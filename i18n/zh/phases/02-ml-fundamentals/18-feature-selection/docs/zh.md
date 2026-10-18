@@ -59,8 +59,8 @@ flowchart TD
 
 考虑一个特征,在1000个样本中,有999个是0.0――它的变量接近零――没有模型可以使用它来区分类――移除它――
 
-```
-variance(x) = mean((x - mean(x))^2)
+```math
+\text{方差}(x) = \text{均值}\bigl((x - \text{均值}(x))^2\bigr)
 ```
 
 设置一个门,例如0.01) 弃每个变量低于这个门的特征,这会在完全不看待目标变量的情况下移除常数或近常数的特征.
@@ -71,17 +71,17 @@ variance(x) = mean((x - mean(x))^2)
 
 ### 互通信息
 
-相互信息 衡量知道X的特征值可以在多大程度上减少对目标Y的不确定性.
+相互信息 衡量知道特征 $X$值可在多大程度上减少对目标$Y$没有确定性.
 
-```
-I(X; Y) = sum_x sum_y p(x, y) * log(p(x, y) / (p(x) * p(y)))
+```math
+I(X; Y) = \sum_x \sum_y p(x, y) \cdot \log \frac{p(x, y)}{p(x) \cdot p(y)}
 ```
 
-如果 X 和 Y 独立,则 p(x,y) = p(x) * p(y),因此 log 项为零,I(X;Y) = 0──X 能告诉你更多关于 Y 的信息,相互信息就越高──
+如果$X$和 $Y$独立,则$p(x, y) = p(x) \cdot p(y)$由于此,$I(X; Y) = 0$,我知道.$X$能告诉你更多关于$Y$互通信息就越高.
 
 相对于相关性关键优势:相互信息能捕捉非线性关系――某个特征可能与目标相关性为零,但相互信息很高,因为关系可能是方形或周期性――
 
-对于连续特征,首先要分辨成子 (基于历史图的估计) ・子数量会影响估计结果:子太少会丢失信息,子太多会增加噪音――常见选择:sqrt(n) 子或斯图尔格斯规则(1 + log2(n))。
+对于连续特征,首先要分辨成桶的数量.$\sqrt{n}$子或斯图尔格斯的规则$1 + \log_2 n$
 
 ```mermaid
 flowchart LR
@@ -113,14 +113,14 @@ flowchart TD
 
 由于模型会同时看到所有剩余的功能,RFE会考虑功能相互作用.
 
-成本:你需要训练模型N - 目标次.对于500个特征,目标为10的情况,就是490次训练.对于昂贵的模型,这会很慢.
+成本:你需要训练模型$N - \text{目标}$对于500个特征而言,10个目标的情况,就是490次训练.对于昂贵的模型而言,这会很慢.
 
 ### 规范化
 
 L1规律化 会把重量的绝对值加入损失函数:
 
-```
-loss = prediction_error + alpha * sum(|w_i|)
+```math
+\text{损失} = \text{prediction\_error} + \alpha \cdot \sum \lvert w_i \rvert
 ```
 
 关键控制功能 被剪枝的激进程度──alpha 越高,越多的重量 会精确变成零──
@@ -137,12 +137,10 @@ loss = prediction_error + alpha * sum(|w_i|)
 
 决策树及其组合 (随机森林,渐进增强) 会自然地对特征排名. 每个分区都会减少杂质.
 
-对于有树木的随机森林:
+对于有$T$树木的随机森林:
 
-```
-importance(feature_j) = (1/T) * sum over all trees of
-    sum over all nodes splitting on feature_j of
-        (n_samples * impurity_decrease)
+```math
+\text{重要性}(\text{特征}_j) = \frac{1}{T} \sum_{\text{所有树}} \; \sum_{\text{所有基于此特征划分的节点：} \text{特征}_j} (\text{n\_samples} \cdot \text{impurity\_decrease})
 ```
 
 这将为每个特征提供正常化重要性分数. 它可以自动处理非线性关系和特征相互作用.
@@ -517,7 +515,7 @@ importances = rf.feature_importances_
 | Filter method | “独立为 features 打分” | 一种 feature selection 方法，不训练 model，而是使用统计度量对 features 排名，并孤立地评估每个 feature |
 | Wrapper method | “用 model 挑 features” | 一种 feature selection 方法，通过训练 model 并使用其 performance 作为 selection criterion 来评估 feature subsets |
 | Embedded method | “model 在训练期间选择 features” | 作为 model fitting 一部分发生的 feature selection，例如 L1 regularization 会把 weights 推向零 |
-| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 X 的知识后，关于 Y 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
+| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 $X$ 的知识后，关于 $Y$ 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
 | Recursive Feature Elimination | “训练、排名、剪枝、重复” | 一种迭代式 wrapper method，会训练 model、移除最不重要的 feature(s)，并重复直到达到 target count |
 | L1 / Lasso regularization | “会消灭 features 的 penalty” | 将 weight 绝对值之和加入 Loss Function，这会把不重要 feature 的 weights 推到精确为零 |
 | Variance threshold | “移除 constant features” | 丢弃在 samples 之间 variance 低于指定 threshold 的 features，过滤掉不携带信息的 features |

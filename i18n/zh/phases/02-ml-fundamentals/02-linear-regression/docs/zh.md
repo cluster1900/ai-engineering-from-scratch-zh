@@ -26,36 +26,36 @@
 
 ### 模型
 
-线性回归 假设输入 (x) 与输出 (y) 之间存在线性关系:
+线性回归假设输入 ($x$) 与产量 ($y$) 之间存在性关系:
 
-```
+```math
 y = wx + b
 ```
 
-- `w`(重量/倾斜):当 x 增加 1 时,y 改变多少
-- `b`(偏差/截图):当x = 0时,y 的值
+- `w`(重量/倾斜):当 $x$增加 1 时,$y$改变多少
+- `b`现在,我们要做什么?$x = 0$时,$y$的值
 
 对于多个输入 (功能),它扩展为:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
-或写成向量形式:`y = w^T * x + b`
+或写成向量形式:$y = w^T x + b$
 
-目标:找到w 和b 的值,使预测的 y 在所有训练例子上尽可能接近真实的 y.
+目标:找到$w$和 $b$的值,使预测的 $y$在所有训练例子中,上尽可能接近真实.$y$,我知道.
 
 ### 成本函数 (平均平方错误)
 
 如何衡量尽可能接近?你需要单一数字来表示预测有多个错误.最常见的选择是平均平方错误 (MSE):
 
-```
-MSE = (1/n) * sum((y_predicted - y_actual)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{预测值}} - y_{\text{实际值}})^2
 ```
 
 为什么要平方?有两个原因. 第一,它对大错误的惩罚高于小错误.
 
-成本函数会形成一个曲面――对于单个重量 w 和偏差 b,MSE 曲面看起来像一个碗抛物面)――碗底就是MSE 最小的位置――训练就是找到这个底部――
+成本函数会形成一个曲面.$w$和偏见$b$面面看起来像一个碗面. 碗底就是MSE 最小的位置. 训练就是找到这个底部.
 
 ### 渐进的下降
 
@@ -74,18 +74,22 @@ flowchart TD
 
 毕业生会告诉你两个事情:每个参数应该朝哪个方向移动,以及多少移动.
 
-对于 y_hat = wx + b 的 MSE:
+对于$\hat{y} = wx + b$的:
 
-```
-dMSE/dw = (2/n) * sum((y_hat - y) * x)
-dMSE/db = (2/n) * sum(y_hat - y)
+```math
+\begin{aligned}
+\frac{\partial \text{MSE}}{\partial w} &= \frac{2}{n} \sum (\hat{y} - y) \, x \\
+\frac{\partial \text{MSE}}{\partial b} &= \frac{2}{n} \sum (\hat{y} - y)
+\end{aligned}
 ```
 
 更新规则:
 
-```
-w = w - learning_rate * dMSE/dw
-b = b - learning_rate * dMSE/db
+```math
+\begin{aligned}
+w &= w - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial w} \\
+b &= b - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial b}
+\end{aligned}
 ```
 
 控制步长――太大:会过最小值并发散――太小:训练 会耗时很长时间――典型起始值:0.01、0.001 或0.0001──
@@ -94,18 +98,18 @@ b = b - learning_rate * dMSE/db
 
 专为线性回归,有一个直接公式可以在没有任何代的情况下给出最优的权重:
 
-```
-w = (X^T * X)^(-1) * X^T * y
+```math
+w = (X^T X)^{-1} X^T y
 ```
 
-它通过求逆矩阵,一步解出 w. 它非常适合小数据集.对于大数据集 (数百万行或数千个特征),更推渐进下降,因为矩阵逆转在特征数量上的复杂性是 O (n ^ 3) ⋅
+通过反矩阵,一步解出.$w$△它非常适合小数据集. 对大数据集 (数百万行或数千个特征),更推渐进下降,因为矩阵逆转在特征数量上的复杂性是$O(n^3)$,我知道.
 
 ### 多个线性回归
 
 对于多个特征,模型变为:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
 一切工作方式相同:MSE是成本函数,渐进下降 同时更新所有重量.唯一的区别是你适合一个超平面,而不是一条线.
@@ -116,36 +120,38 @@ y = w1*x1 + w2*x2 + ... + wn*xn + b
 
 如果关系不是线性怎么办?你仍然可以通过创建多项函数的特性来使用线性回归:
 
-```
-y = w1*x + w2*x^2 + w3*x^3 + b
+```math
+y = w_1 x + w_2 x^2 + w_3 x^3 + b
 ```
 
-这仍然是线性回归,因为模型对重量 (w1,w2,w3) 是线性的.
+这仍然是线性回归,因为模型对重量 ($w_1, w_2, w_3$) 是线性.你只是使用了.$x$没有线性特征.
 
 更高阶段的多项式可以适应更复杂的曲线,但也有过度的风险.
 
 ### 分数
 
- MSE 告诉你有很多离谱,但这个数字取决于 y 的尺寸. R-平方 (R^2) 提供了一个不依赖尺寸的衡量指标:
+士说你有很多错误,但这个数字取决于$y$的尺度──R-平方 ($R^2$) 提供一个不依赖尺度的衡量指标:
 
-```
-R^2 = 1 - (sum of squared residuals) / (sum of squared deviations from mean)
-    = 1 - SS_res / SS_tot
+```math
+\begin{aligned}
+R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} \\
+&= 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}
+\end{aligned}
 ```
 
-- 子的子
-- 模型并不是比每次都预测的平均更好
-- R^2 < 0.0:模型比预测平均更差
+- $R^2 = 1.0$完美预测
+- $R^2 = 0.0$模型不比每次都预测的平均更好
+- $R^2 < 0.0$模型比预测平均更差
 
 ### 调整 预览 (坡回归)
 
 模型可能通过分配更大的重量来过度适应.
 
-```
-Cost = MSE + lambda * sum(w_i^2)
+```math
+\text{代价} = \text{MSE} + \lambda \sum w_i^2
 ```
 
-惩罚项会抑制较大的重量――超参数 lambda 控制权衡:lambda 越高,重量 越小,规范 越强――后课程会深入讲解这一点――现在只需要知道它存在,以及为什么它有帮助――
+惩罚项会抑制较大的重量――超参数$\lambda$控制权衡:$\lambda$越高,越小,越强,越规范化,越强. 后课程将深入讨论这一点.
 
 ## 构建
 
@@ -521,24 +527,24 @@ print(f"Ridge coefficient: {ridge.coef_[0]:.4f}")
 ## 练习
 
 1. 实现批次梯度下降,静态梯度下降 (SGD) 和迷你批次梯度下降.
-2. 从立方函数 (y = ax^3 + bx^2 + cx + d + 噪音) 生成数据──拟合度1、3 和 10 的多项式──比较训练 R^2 和测试 R^2──到底是多个度时过适应变得明显吗?
-3. 实现拉索回归(L1规律化:罚款 *阿尔法金额 (L1) ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎
+2. 从立方函数 ($y = ax^3 + bx^2 + cx + d + \text{噪声}$) 生成数据――拟合度1、3 和 10 的多项式――比较训练$R^2$和测试$R^2$过度适应变得明显到底是多么的?
+3. 实现拉索回归:$\text{惩罚项} = \alpha \sum \lvert w_i \rvert$什么重量会变为零,以及与里奇的区别?为什么L1会产生稀缺的解决方案,而L2不会?
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Linear regression | “在数据中画一条线” | 找到 weight w 和 bias b，使 wx+b 与真实 y 值之间的平方差之和最小 |
+| Linear regression | “在数据中画一条线” | 找到 weight $w$ 和 bias $b$，使 $wx+b$ 与真实 $y$ 值之间的平方差之和最小 |
 | Cost function | “model 有多差” | 一个将 model parameters 映射为单一数字的函数，用于衡量 prediction error，并由 optimization 最小化 |
-| Mean squared error | “平方误差的平均值” | (1/n) * (predicted - actual)^2 的求和，对大误差施加不成比例的惩罚 |
+| Mean squared error | “平方误差的平均值” | $\frac{1}{n} \sum (\text{预测值} - \text{实际值})^2$，对大误差施加不成比例的惩罚 |
 | Gradient descent | “往下坡走” | 使用偏导数，沿着降低 cost function 的方向迭代调整 parameters |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 中 parameters 改变量的标量 |
-| Normal equation | “直接求解” | 闭式解 w = (X^T X)^-1 X^T y，无需迭代即可得到最优 weights |
-| R-squared | “拟合有多好” | model 所解释的 y 方差比例，范围从负无穷到 1.0 |
+| Normal equation | “直接求解” | 闭式解 $w = (X^T X)^{-1} X^T y$，无需迭代即可得到最优 weights |
+| R-squared | “拟合有多好” | model 所解释的 $y$ 方差比例，范围从负无穷到 1.0 |
 | Feature scaling | “让 features 可比较” | 将 features 转换到相近范围（例如 zero mean、unit variance），使 Gradient Descent 更快收敛 |
 | Regularization | “惩罚复杂度” | 向 cost function 添加一个会缩小 weights 的项，以防止 overfitting |
-| Ridge regression | “L2 regularization” | 向 MSE 添加 lambda * sum(w_i^2) 惩罚项的 linear regression |
-| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features (x, x^2, x^3, ...) 做 linear regression，对 weights 仍然是线性的 |
+| Ridge regression | “L2 regularization” | 向 MSE 添加 $\lambda \sum w_i^2$ 惩罚项的 linear regression |
+| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features ($x, x^2, x^3, \ldots$) 做 linear regression，对 weights 仍然是线性的 |
 | Overfitting | “记住 training data” | 使用过于复杂的 model，以至于拟合了 training data 中的噪声，并在新数据上失效 |
 
 ## 延伸阅读

@@ -48,10 +48,8 @@ graph TD
 
 **Gini impurity**测量是:如果按照该节点的类分布给一个随机选择的样本贴标签,它被错误分类的概率.
 
-```
-Gini(S) = 1 - sum(p_k^2)
-
-where p_k is the proportion of class k in set S.
+```math
+\text{基尼}(S) = 1 - \sum_k p_k^2 \quad \text{其中 } p_k \text{ 是集合 } S \text{ 中类别 } k \text{ 的占比。}
 ```
 
 对于纯节点 (全部属于同一个类),Gini = 0──对于50/50类的二进制分区,Gini = 0.5──越低越好──
@@ -64,8 +62,8 @@ Gini = 1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48
 
 **Entropy**衡量节点 中的信息量(混乱程度) ・第一阶段 第09课已覆盖――
 
-```
-Entropy(S) = -sum(p_k * log2(p_k))
+```math
+\text{熵}(S) = -\sum_k p_k \log_2(p_k)
 ```
 
 对于纯节点,值=0──对于50/50二进制分区,值=1.0──越低越好──
@@ -81,20 +79,21 @@ Entropy = -(0.6 * log2(0.6) + 0.4 * log2(0.4))
 
 **Information gain**是分开后度度或基因的降低量.
 
-```
-IG(S, feature, threshold) = Impurity(S) - weighted_avg(Impurity(S_left), Impurity(S_right))
-
-where the weights are the proportions of samples in each child.
+```math
+\begin{aligned}
+& IG(S, \text{特征}, \text{阈值}) = \text{不纯度}(S) - \text{weighted\_avg}(\text{不纯度}(S_{\text{左子节点}}), \text{不纯度}(S_{\text{右子节点}})) \\[4pt]
+& \text{其中，权重是每个子节点的样本占比。}
+\end{aligned}
 ```
 
 每个节点上的贪算法:尝试每一个特征和每个可能的门.`(feature, threshold)`组合.
 
 ### 分开 如何工作
 
-对于当前节点上包含n 个特征 m 个样本的数据集:
+对于当前节点上包含$n$个特征$m$个样本 的数据集:
 
-1. 对每个特征 j(j = 1 到 n):
-   - 按特征 j 对样本排序
+1. 对于每一个特征$j$($j = 1$到了$n$):
+   - 按特征$j$对样本排序
    - 将相邻不同取值之间的每个中点作为门
    - 计算每个门的信息获取
 2. 选择信息获取最高特征和门
@@ -109,7 +108,7 @@ where the weights are the proportions of samples in each child.
 
 **Pre-pruning**在树上会成长之前停止:
 - 树 达到设定深度 时停止分裂
-- 每叶子的最小样本:如果某个节点的样本少于 k,则停止
+- 每叶子的最小样本:如果某个节点的样本少于$k$停止
 - 最少信息获取:如果最好的污染改善小于某个门,则停止
 - 最多叶子节点:限制叶子的总数
 
@@ -125,8 +124,8 @@ where the weights are the proportions of samples in each child.
 
 **Variance reduction**替代信息获取:
 
-```
-VR(S, feature, threshold) = Var(S) - weighted_avg(Var(S_left), Var(S_right))
+```math
+VR(S, \text{特征}, \text{阈值}) = \text{Var}(S) - \text{weighted\_avg}(\text{Var}(S_{\text{左子节点}}), \text{Var}(S_{\text{右子节点}}))
 ```
 
 选择使变量 降低最大的分区. 树将输入空间分为多个区域,并在每个区域预测一个常数 (平均值) △.
@@ -155,7 +154,7 @@ graph TD
 
 **Bagging（bootstrap aggregating）：**每棵树都在一个杆样本上训练,也就是从训练数据中进行放回随机抽取样本.
 
-**Feature randomization：**在每次分区时,只考虑一个随机的特征子集.对于分类,默认是 sqrt(n_特征) 对于回归,是 n_特征/3──这会防止所有树木都在同一主导特征上分区.
+**Feature randomization：**在每次分类时,只考虑一个随机的特征子集.$\sqrt{n_{\text{特征}}}$为了回归,是$n_{\text{特征}}/3$这将防止所有树木都在同一主导特征上分裂.
 
 关键洞见:对许多非相关树木 求平均,可以在不增加偏见的情况下降低差异.
 
@@ -165,9 +164,8 @@ graph TD
 
 **Mean Decrease in Impurity (MDI)：**总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量 总量
 
-```
-importance(feature_j) = sum over all nodes where feature_j is used:
-    (n_samples_at_node / n_total_samples) * impurity_decrease
+```math
+\text{重要性}(\text{特征}_j) = \sum_{\text{使用特征 } j \text{ 划分的节点}} \frac{n_{\text{节点样本数}}}{n_{\text{总样本数}}} \cdot \text{impurity\_decrease}
 ```
 
 这种方法很快 (即可计算) 在训练期间,但会偏向高cardinality特性以及具有许多可能的分点的特性.
@@ -349,7 +347,7 @@ print(f"Feature importances: {rf.feature_importances_}")
 
 1. 在包含3个类的2D数据集上训练单棵决策树――手动追踪分区,并绘制矩形决策边界――比较最大_深度=2 与最大_深度=10 时的边界――
 
-2. 为回归树实现变量减少分离――为200个点生成 y = sin(x) +噪音,并适合你的回归树――将树的零件-常数预测与真曲线一起绘图――
+2. 为回归树实现变量减少分离.为200个点生成.$y = \sin(x) + \text{噪声}$并且将树的零件随着真曲线的预测进行绘图.
 
 3. 构建包含1、5、10、50 和200棵树的随机森林――绘制训练精确性和测试精确性 随着树木数量变化的曲线――观察测试精确性会达到平台期,但不会下降――森林 抵抗过度合)
 

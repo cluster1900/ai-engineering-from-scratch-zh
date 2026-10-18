@@ -51,23 +51,24 @@
 
 ### 腐烂
 
-对于任意点 x,平方损失下期望预测误差可以精确分解为:
+对于任何点$x$预期预测差距可以精确分为:
 
+```math
+\begin{aligned}
+& \text{期望误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声} \\[6pt]
+& \text{其中：} \\
+& \quad \text{偏差}^2 = (\mathbb{E}[\hat{f}(x)] - f(x))^2 \\
+& \quad \text{方差} = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2] \\
+& \quad \text{噪声} = \mathbb{E}[(y - f(x))^2] \quad (\sigma^2)
+\end{aligned}
 ```
-Expected Error = Bias^2 + Variance + Irreducible Noise
 
-where:
-  Bias^2   = (E[f_hat(x)] - f(x))^2
-  Variance = E[(f_hat(x) - E[f_hat(x)])^2]
-  Noise    = E[(y - f(x))^2]             (sigma^2)
-```
+- $f(x)$是真实函数
+- $\hat{f}(x)$是模型预测
+- $\mathbb{E}[\ldots]$是对不同训练集的期望
+- $y$是观测到的标签(真实函数加噪声)
 
-- `f(x)`是真实函数
-- `f_hat(x)`是模型预测
-- `E[...]`是对不同训练集的期望
-- `y`是观测到的标签(真实函数加噪声)
-
-在有噪音数据上,没有模型能比Sigma^2做得更好.
+噪音是不可约束的. 在有噪音数据上,没有模型可以比较.$\sigma^2$你的任务是做得更好.$\text{偏差}^2$和差异 之间找到正确平衡.
 
 ### 模型复杂性与错误
 
@@ -128,9 +129,9 @@ graph LR
 
 | Regime | Parameters vs Samples | Behavior |
 |--------|----------------------|----------|
-| Underparameterized | p << n | 经典 tradeoff 适用 |
-| Interpolation threshold | p ~ n | Variance 达到峰值，测试误差激增 |
-| Overparameterized | p >> n | Implicit regularization 开始起作用，测试误差下降 |
+| Underparameterized | $p \ll n$ | 经典 tradeoff 适用 |
+| Interpolation threshold | $p \sim n$ | Variance 达到峰值，测试误差激增 |
+| Overparameterized | $p \gg n$ | Implicit regularization 开始起作用，测试误差下降 |
 
 从实践角度看:如果你使用神经网络或大型树团,不要停在插曲门上.
 
@@ -177,7 +178,7 @@ flowchart TD
 
 **Bagging (Bootstrap Aggregating)**预测取平均――每个单独模型都有高变化,但平均值的变化要低得多――随机森林将被用于决策树――
 
-它在数学上有效的原因是:如果平均N个独立预测,每个预测的变量都是sigma^2,那么平均值的变量是sigma^2 / N. 这些模型并不真正独立,所以降幅小于1/N,但仍然相当可观.
+数学上有效的原因是,如果你平均$N$个独立预测,每个预测的变化都是$\sigma^2$平均值的差异是$\sigma^2 / N$△这些模型并不是真正独立的,因此降幅度小于$1/N$但仍然相当可观.
 
 **Boosting**通过顺序构建模型来降低偏见,其中每一个新模型都关注当前组合的错误.
 
@@ -303,10 +304,10 @@ variance = np.mean(predictions.var(axis=0))
 total_error = np.mean(np.mean((predictions - y_true) ** 2, axis=1))
 ```
 
-- `mean_pred`是从启动样本 估计出的E[f_hat(x)
+- `mean_pred`是从启动样本 估计出$\mathbb{E}[\hat{f}(x)]$
 - `bias_sq`是平均预测与真实值之间的差距的平方
 - `variance`是跨启动样本的预测平均离散程度
-- `total_error`应该近似等于偏差^2 +变异 +噪音
+- `total_error`应该接近等于$\text{偏差}^2 + \text{方差} + \text{噪声}$
 
 ### 步骤 4:学习曲线
 
@@ -434,7 +435,7 @@ for alpha in alphas:
 
 2. 如何影响变量组件?最优多项数的程度是否会移动?
 
-3. 向实验添加L2规律化 (Ridge回归) ⋅对于固定的高度多项式 (高度多项式) ⋅15),将 lambda从0扫描到100──绘制偏差^2 和变异 随 lambda 变化的函数图──
+3. 向实验添加L2规律化 (Ridge回归) △对于固定的高度多项式 (高度式多项式) △15度,将 lambda从0扫描到100──绘制$\text{偏差}^2$和变量随着变量变量函数图.
 
 4. 将真实函数从多项式修改为`sin(x)`偏差变化 分解会如何变化?是否仍然有最好的程度的清晰度?
 
