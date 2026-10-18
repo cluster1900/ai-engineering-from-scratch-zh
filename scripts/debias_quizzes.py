@@ -30,7 +30,12 @@ ANCHOR = re.compile(
     r"\b(all|none|both|neither)\s+of\s+(the|these)\b"
     r"|\b(both|neither|either)\s+[A-D]\b"
     r"|\b[A-D]\s+and\s+[A-D]\b"
-    r"|\b(above|below|following)\b",
+    r"|\b(above|below|following)\b"
+    # Chinese translations of the same positional phrases ("all of the above",
+    # "both B and C are correct"). Without these, translated quizzes lose the
+    # anchor and would be reordered, breaking the option's meaning.
+    r"|(以上|上述|下列|如下)(全部|都|皆|均|各项|选项|所有)"
+    r"|(?<![A-Za-z0-9_])[A-D]\s*(和|与|及|、)\s*[A-D](?![A-Za-z0-9_])",
     re.IGNORECASE,
 )
 

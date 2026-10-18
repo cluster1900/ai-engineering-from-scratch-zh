@@ -18,24 +18,24 @@
       "stage": "check",
       "question": "per-minute billing（Baseten、Modal）大约在多高的持续 GPU 利用率时开始优于 per-token billing（Fireworks、Together）？",
       "options": [
+        "5%",
         "60%",
         "90%",
-        "30%",
-        "5%"
+        "30%"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "哪个平台被描述为 Python-native serverless，采用 per-second billing，并且 pre-warming 后 cold start 为 2-4s？",
       "options": [
-        "Baseten",
         "Modal",
-        "Fireworks",
-        "Anyscale"
+        "Baseten",
+        "Anyscale",
+        "Fireworks"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -43,35 +43,35 @@
       "question": "Fireworks 的显著 LoRA 定价差异点是什么？",
       "options": [
         "LoRA-served requests 比 base model 更贵",
-        "完全不支持 LoRA",
         "LoRA requests 需要单独的 dedicated GPU contract",
-        "LoRA-served requests 按 base model 的 per-token rate 收费"
+        "LoRA-served requests 按 base model 的 per-token rate 收费",
+        "完全不支持 LoRA"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "哪个平台适合需要 SOC 2 Type II、HIPAA-ready posture 和 dedicated GPUs 的 regulated healthcare customer？",
       "options": [
+        "Replicate",
         "Baseten",
         "Together",
-        "Anyscale",
-        "Replicate"
+        "Anyscale"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "为什么这节课认为 custom-engine claims 在平台层大多只是 marketing shade？",
       "options": [
-        "per-token pricing 是唯一真正的差异点",
-        "vLLM 和 SGLang 约占 production open-source inference 的 80%，所以平台差异更多来自 DX、attribution 和 SLAs，而不是 engine",
         "所有 custom engines 都是 TensorRT-LLM 的 forks",
-        "Custom engines 从不优于 vLLM"
+        "Custom engines 从不优于 vLLM",
+        "per-token pricing 是唯一真正的差异点",
+        "vLLM 和 SGLang 约占 production open-source inference 的 80%，所以平台差异更多来自 DX、attribution 和 SLAs，而不是 engine"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     }
   ]
