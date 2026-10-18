@@ -50,7 +50,7 @@ METR(ممثل ARC Evals) سوف تحدد احتمال نجاح المهام مع
 | Property | Chatbot (single-turn) | Long-horizon agent |
 |---|---|---|
 | Run length | 秒 | 分钟到小时 |
-| Tokens per run | 10^3 | 10^5 到 10^7 |
+| Tokens per run | $10^3$ | $10^5$ 到 $10^7$ |
 | State | 短暂 | 持久、checkpointed |
 | Failure surface | model capability | capability + drift + loops + hacking |
 | Review unit | final answer | trajectory |
