@@ -306,3 +306,15 @@ s0-process-fork
 3. Iniciar uma sessão de discussão, entre elas,`sleep 300`, desligado, sessões de saída, e depois religar.
 4. Utilização `df -h`检查可用磁盘空间, então usar `du -sh ~/.cache/*`找出 cache 中占空间的内容──
 5. Utilização `scp`Transmitir um arquivo de uma máquina local para uma máquina remota, e depois usar.`rsync`Faça a mesma transmissão,并比较体验──
+
+### 提示
+
+**练习 1。**运行 `cd ~`, usá-lo`mkdir`创建新文件, reutilize `cd`Entrem e usem.`touch`创建三个文件――在 `ls -la`输出中, check these three files size is 0, owner is for your user name──
+
+**练习 2。**- Não .`sudo apt install -y htop`Instalação e inicialização`F6`(or点击列名)`MEM%`排序── top de lista dos processos que ocupam o maior número de memórias.
+
+**练习 3。**O que é isso?`tmux new -s train`,运行 `sleep 300`, reutilizar`Ctrl+B`后接 `d`- Não. - Não.`tmux ls`- Não, não.`tmux attach -t train`重新连接;`sleep`- Não, não.
+
+**练习 4。**运行 `df -h`, Consulte o principal catálogo do sistema de documentos .`Avail`列──再运行 `du -sh ~/.cache/* | sort -h`Deixe o maior dos documentos ficar na última linha.
+
+**练习 5。**- Não .`scp file.txt user@host:~/`复制文件,再对同一文件运行 `rsync -avP file.txt user@host:~/`第二次运行 `rsync`Quando ordena, quase não envia qualquer conteúdo, porque os documentos de distância não mudam.

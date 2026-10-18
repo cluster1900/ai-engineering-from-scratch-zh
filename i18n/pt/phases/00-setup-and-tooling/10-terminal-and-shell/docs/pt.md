@@ -337,6 +337,16 @@ O uso de cada ferramenta neste curso:
 3. - Não .`for i in $(seq 1 100); do echo "epoch $i loss: $(echo "scale=4; 1/$i" | bc)"; sleep 0.1; done > fake_train.log`Crear um falso diário de treinamento, e depois usar `grep`- Não.`tail`和 `awk`Só aumentam os valores de perda.
 4. Por você tem o direito de acesso limitado ao servidor  Configurar uma entrada de configuração SSH(ou usar `localhost`练习语法) ⋅
 
+### 提示
+
+**练习 1。**Previo funcionamento`tmux new -s practice`,用前 `Ctrl+B`后接 `"`和 `%`- Não, não.`Ctrl+B`加方向键切换窗格──用 `Ctrl+B`后接 `d`Separar-se, fazer o que quiser.`tmux ls`, reutilizar`tmux attach -t practice`Re-conexão; os três procedimentos devem continuar a funcionar.
+
+**练习 2。**- Não .`code/shell_aliases.sh`- Não, não.`~/.zshrc`Ou `~/.bashrc`末尾,再对该文件运行 `source` Operar`alias`, ou para um novo nome operar .`type <name>`Confirmar a concha já a identificou.
+
+**练习 3。**Previo funcionamento`tail -5 fake_train.log`- Não, não.`grep loss`过,并用 `awk '{print $NF}'`Apenas imprima o último parágrafo; o output deve ser um número de 100 ̊ gradualmente diminuindo.
+
+**练习 4。** 将课程中   `Host gpu`配置块复制到 `~/.ssh/config`,把 `HostName`和 `User`改成你的服务器信息,或改成 `localhost`和你的用户名──运行 `ssh -G gpu`Imprimir SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor SSH  Servidor`ssh gpu`- Não.
+
 ## 关键术语
 
 | 术语 | 人们怎么说 | 实际含义 |

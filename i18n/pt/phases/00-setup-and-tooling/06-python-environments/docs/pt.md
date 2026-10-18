@@ -260,6 +260,16 @@ Isto vai ser na raiz repo  criar um `.venv`,并安装和验证 dependências pri
 3. Para um projeto de PyTorch e Anthropic SDK simultaneamente 编写 `pyproject.toml`
 4. Por isso, instale um pacote, não ative venv, observe o que ele está fazendo e depois desliga.
 
+### 提示
+
+**练习 1。**Em depósito`bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh`◊ Percurso de leitura e saída; se um item de verificação falhar, primeiro corrigir o item, re-executar o script, até que todos os cheques sejam aprovados.
+
+**练习 2。**Em novos documentos`uv venv`Crear um segundo ambiente e ativar, através de versões fixas instaladas em um antigo numpy, por exemplo `numpy==1.26.4`分別在两个环境中运行 `python -c "import numpy; print(numpy.__version__)"`A versão de saída deve ser diferente.
+
+**练习 3。**Desde o projeto.toml 基础中的示例开始,在 `dependencies`- Não .`torch`和 `anthropic`在新环境中运行 `uv pip install -e .`Ou `uv sync`• dois paquetes podem ser importados normalmente, apenas para indicar que os documentos são configurados corretamente.
+
+**练习 4。**退出所有环境,运行 `pip install --user <small package>`, re运行 `pip show <package>`Não vejo`Location`Vai-te embora.`pip uninstall <package>`Descarrega-o, re-transporte.`pip show`Confirmar que foi removido.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

@@ -366,6 +366,16 @@ Você agora tem um ambiente de desenvolvimento de IA replicável.
 3. - Não .`flask`Adicionar ao Dockerfile, reconstruir e colocar no porto 5000 para executar um simples servidor API.`-p 5000:5000`mapa 端口
 4. Utilização `docker images`测量 image size──try to remove base image `devel`切换到 `runtime`,并比较大小
 
+### 提示
+
+**练习 1。**Use-se no curso.`docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .`Ordenação de construção, re-após`docker run --rm ai-dev`Em Mac, em instruções de instrução`--gpus all`O recipiente tem de ser impresso.`2.6.0`开头的版本号──
+
+**练习 2。**Em`code/`文件中运行 `docker compose up -d`, reutilizar`docker compose exec ai-dev bash`Em`ai-dev`服务中打开 shell.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      `curl http://qdrant:6333/collections`; retornar JSON 就说明服务名能在构成 网络内解析。
+
+**练习 3。**Em Dockerfile 中添加 `RUN pip install flask`, reconstruir,并用 `host="0.0.0.0"`Iniciar o servidor, porque o servidor do localhost está apenas ligado no recipiente não pode ser acessado fora do recipiente.`http://localhost:5000`, confirmar o terminal de mapeamento válido.
+
+**练习 4。**运行 `docker images ai-dev`, registar o tamanho 列──将 `FROM` 行中 `devel`改为 `runtime`, usando uma nova tag construir, re-comparar duas imagens de tamanho; tempo de execução 镜像不包含编译器和头文件──
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

@@ -160,3 +160,11 @@ Este curso produz um livro de verificação que qualquer um pode usar para verif
 1. 运行验证脚本并修复 qualquer falha
 2. Para este curso criar um ambiente virtual Python, e instalar PyTorch
 3. Usando todas as quatro línguas escrevi um "olá mundo", e cada vez mais.
+
+### 提示
+
+**练习 1。**Em depósito`python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner`, primeiro corrigir o primeiro erro, re-consulte o seguinte, re-executar o guião, todos os exames necessários são passados, para que seja concluído.
+
+**练习 2。**Em armazém`uv venv` criar ambiente e ativar, reutilizar passo 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 `python -c "import torch; print(torch.__version__)"`• Transposição de textos e textos;
+
+**练习 3。**Utilize概念部分技术中的四种运行时:Python、运行到 Node.js' TypeScript、Rust 和 Julia──分别编写一个小文件,用`python3`- Não.`npx tsx`(Node.js 不能直接运行 `.ts`文件) 、`cargo run`Ou `rustc`- Não.`julia`运行──每次运行都必须印印你的消息,并以退出码 0 结束──

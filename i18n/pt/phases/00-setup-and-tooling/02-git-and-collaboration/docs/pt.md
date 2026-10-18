@@ -99,6 +99,14 @@ Assim, o curso não precisa de base ou submodules.
 2.  criar um `.gitignore`, excluir os ficheiros dos pontos de controlo`.pt`- Não.`.pth`- Não.`.safetensors`)
 3. - Não .`git log --oneline`Veja o histórico de compromissos deste repo, e leia as lições sobre como foi adicionado.
 
+### 提示
+
+**练习 1。**Em GitHub cima clicar em Fork, reutilizar `git clone`克隆你自己的叉 地址──运行 `git push -u origin my-progress`Depois, no GitHub, abre a garrafa e confirma que está na lista.`my-progress`E contém os teus documentos.
+
+**练习 2。**Em depósito de dados`.gitignore`文件中为每扩展名添加一条模式, por exemplo `*.pt`◊ Para cada expansão, criar um arquivo vazio, e depois executar `git status`Estes documentos não devem aparecer na lista de documentos não rastreados.
+
+**练习 3。**运行 `git log --oneline`, re运行 `git log --oneline -- phases/00-setup-and-tooling`, apenas mostrar modificações sobre esta fase de submissão.`git show --stat <hash>`Veja quais são os documentos de curso que ele adicionou.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

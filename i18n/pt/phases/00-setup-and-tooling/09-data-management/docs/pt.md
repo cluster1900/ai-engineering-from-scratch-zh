@@ -239,6 +239,16 @@ Isto vai baixar um pequeno conjunto de dados, transformá-lo, dividir-lo, e impr
 3. Transformar um conjunto de dados em Parquet, e comparar o tamanho do arquivo com o CSV
 4. Utilize semente fixa 创建 70/15/15 tren/val/test split,并验证 size
 
+### 提示
+
+**练习 1。**调用 `code/data_utils.py`Em meio`load_and_inspect("glue", "mrpc")`, ou de modo direto`load_dataset("glue", "mrpc")`, imprimir`ds["train"][:5]` Todos os exemplos devem ser incluídos `sentence1`- Não.`sentence2`和 `label`- Não.
+
+**练习 2。**- Como ?`stream_dataset`Como usá-lo.`streaming=True`Carregar dados, em ciclo, ler amostras, quando`time.time()`超开始时间加 10秒时停止──印样本数,并运行两次,因为第一次包含连接启动开销──
+
+**练习 3。**- Como ?`convert_format`Como, usá-lo.`to_csv`和 `to_parquet`保存同一个数据集, reutilize `ls -lh`Ou `os.path.getsize`Comparar documentos de grande porte.`load_from_parquet`重新加载 Parquet 文件, check行数是否保持不变──
+
+**练习 4。**Fixação`seed`, usar duas vezes `train_test_split`A primeira divisão é de 30%, a segunda divisão é de 30% para metade. A primeira linha de cada conjunto deve ser igual à primeira.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

@@ -396,3 +396,15 @@ python phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.p
 3. Utilização `tracemalloc`找出数据 loading pipeline 中哪一行分配了最多内存的部分──
 4. Para uma simples execução de treinamento, configurar TensorBoard, não identificar o modelo ou não sobre-ajustamento.
 5. Em circuito de treinamento`breakpoint()`◊ Exercícios de desmantelamento de instâncias                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+
+### 提示
+
+**练习 1。**运行 `python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`, ler cada saída de função de demonstração .`demo_nan_detection`Modelo de meio, fazendo com que a saída seja dividida em zero, re-opera uma vez;`detect_nan`必須印带有步骤编号的 NaN 警告──
+
+**练习 2。**- Não .`python -m cProfile -s cumtime your_script.py`运行循环, ou us `cProfile.Profile()`Envolve-o.`cumtime`As linhas de cima da linha; entre elas, pertence a sua própria função codificada e consumida, é a função mais lenta.
+
+**练习 3。**- Como ?`demo_memory_tracking`Assim, em dados carregando código antes de usar `tracemalloc.start()`, depois调用 `tracemalloc.take_snapshot()`- É um bom trabalho.`snapshot.statistics("lineno")[:5]`A primeira linha mostra a maior quantidade de documentos e números de registro distribuídos.
+
+**练习 4。**Cada época é uma boa oportunidade .`SummaryWriter` registos de perda de treinamento e perda de verificação, re-operação `tensorboard --logdir=runs` Se a perda de treinamento continuar a diminuir e a perda de verificação aumentar, indicar que o modelo ocorreu sobre-adaptado
+
+**练习 5。**- Não .`breakpoint()` colocado no círculo interno `loss.backward()`Depois, depois, depois, o livro.`(Pdb)`提示符处打印 `x.shape`- Não.`x.device`和 `next(model.parameters()).grad`, re-import `c`Continuem o próximo passo.

@@ -78,11 +78,11 @@ Cada extensão de efeitos:
 | Black Formatter | 保存时自动格式化，保持风格一致 |
 | Ruff | 快速 linting，捕获常见错误 |
 
-本课中 `code/.vscode/extensions.json`文件包含完整推列表──当你打开项目文件时,VS Code 会提示你安装它们──
+本课中 `code/vscode/extensions.json`文件包含完整推列表──将它复制到你的项目文件中中中 的`.vscode/extensions.json`Quando abrir o arquivo, o Código VS irá te pedir para instalar essas expansões.
 
 ### 步骤 3: Configuração
 
-复制本课 `code/.vscode/settings.json`Em meio a configurações, ou através de `Settings > Open Settings (JSON)`Aplicação manual.
+复制本课 `code/vscode/settings.json`Em meio a configurações, ou através de `Settings > Open Settings (JSON)`Aplicação manual.
 
 Configurações de trabalho da IA:
 
@@ -195,6 +195,16 @@ Com este conjunto, o seu fluxo de trabalho diário parece assim:
 2. O que é isso?`settings.json`复制到你的 VS Código de configuração 中
 3. 打开一个Python文件,验证Pylance 显示类型提示,并且黑会在保存时格式化
 4. Se você pode acessar uma máquina remota, configure Remote SSH e abra um arquivo sobre ele
+
+### 提示
+
+**练习 1。**Instalação passo 2  表格中的扩展, ou us `code --install-extension <id>`Instalação`code/vscode/extensions.json`Em todo o mundo.`code --list-extensions`, cada um com o ID no documento 核对;;
+
+**练习 2。**打开 Configurações > Configurações abertas (JSON),将 `code/vscode/settings.json`Se o arquivo já estiver configurado, por favor, junte todas as teclas e mantenha JSON efetivamente; o código VS irá usar o redline para marcar os arquivos errados.
+
+**练习 3。** escrever uma função com tipo de inatividade, o mouse pendente em sua configuração; o piloto irá mostrar o tipo de dedução.  adicionar mais espaço e armazenar o arquivo em uma linha;
+
+**练习 4。**先将服务器加入 `~/.ssh/config`, confirming terminal `ssh <host>`Pode ser conectado normalmente. Reutilizar o comando de conectividade remota de SSH. Quando o código VS estiver em funcionamento em máquinas de distância, o estado irá mostrar o nome do usuário.
 
 ## 关键术语
 | Term | What people say | What it actually means |

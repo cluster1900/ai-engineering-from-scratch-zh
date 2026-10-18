@@ -240,6 +240,14 @@ A.I.
 2. Crear um notebook que simultaneamente contenha marcas e células de código, carregar CSV, exibir dataframe, e desenhar gráfico.
 3. - Não .`code/notebook_tips.py`Código de código  Aplique no notebook Colab 中,并使用免费GPU 运行
 
+### 提示
+
+**练习 1。**- Não .`jupyter lab`Iniciar o JupyterLab, colocará duas versões separadas.`%timeit`As duas unidades usam uma escala de 100.000, garantindo que a medida é a mesma quantidade de trabalho.
+
+**练习 2。**- Não .`pd.read_csv`读取数据,将数据frame 放入单元最后一行显示它,再使用 `df.plot()`Ou matplotlib 绘图── executar Kernel > Restart & Run All 后, cada um dos dispositivos de cálculo de execução deve mostrar números, e não deve haver nenhum erro de cálculo de cada um dos componentes.
+
+**练习 3。**Em Colab 中先选择 Runtime > Alterar o tipo de runtime > GPU, re-pegar código──当 `code/notebook_tips.py`Cada função do meio é impressa em parte de resposta e é executada no meio do sistema.`torch.cuda.is_available()` Retorno `True`O que é que é verdade?
+
 ## 关键术语
 
 | Term | What people say | What it actually means |
