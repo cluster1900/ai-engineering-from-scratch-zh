@@ -21,7 +21,7 @@ Claude Opus 4.7 tiene 200K Token  Window(beta en medio para 1M) ――GPT-5 tien
 
 Se trata de un asistente de codificación de la verdadera separación. Sistema de instrucción: 500 Token──50 个工具的工具的定义: 8,000 Token──检索文件:4,000 Token──对话史(10轮):6,000 Token──当前用户查询:200 Token──生成预算(最大输出):4,000 Token──总计:22,700 Token──这只占 128K 窗口的18%──
 
-Pero la atención no se adapta a la longitud del contexto 线性扩展―― tener un modelo de contexto de 128K Token tiene que pagar una segunda atención 成本(n^2), aunque la mayoría de los modelos de producción utilizan alta eficiencia Atención 变体) ・・・ más importante, la recuperación 准确率会下降──Needle en un Haystack test muestra que el modelo es difícil de encontrar en el contexto largo 信息间的.
+Pero la atención no depende de la longitud del contexto 线性扩展── tener un modelo de contexto de 128K Token 需要付出二次注意 成本(Vanilla transformadores 中是$O(n^2)$, aunque la mayoría de los modelos de producción utilizan alta eficiencia Atención 变体) ⋅ Más importante, la tasa de recuperación 准确会下降──Needle en un Haystack测试 muestra que el modelo es difícil de encontrar en el contexto largo 信息间的信息──Liu et al. ⋅2023) muestra que los LLM para el contexto largo 信息的开端和结尾 准确率 获取 准确率接近完美, pero para la información de la posición medio 信息的准确率 △40-70% ⋅位置) 准确会下降 10-20%──
 
  Lección práctica es: 200K Token no significa usar 200K Token 就有效──精心选的10K Token context 往往胜过直接倾倒的100K Token context──文本工程是在文本窗口内最大化信号-噪音比的学科──
 

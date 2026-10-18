@@ -91,20 +91,20 @@ En esta clase, usamos TF-IDF para construir nuestra propia simple incorporación
 
 **Cosine similarity**: dos vectores 之间角的余弦值──范围从 -1(相反) 到 1(完全相同)──忽略 magnitud, sólo se concentra en la dirección──这是RAG's默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: producto interno original. Vectores más grandes obtendrán un número más alto. Cuando la magnitud de los datos llevados a cabo es útil.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**:espacio vectorial en el centro de la línea recta.
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 La similitud cosínica es el estándar de selección. A través de la magnitud, puede ser fácil de tratar en diferentes documentos de diferentes dimensiones.

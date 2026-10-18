@@ -864,7 +864,7 @@ La API de lote para todos los tokens ofrece un descuento fijo del 50%. El result
 #     return None
 ```
 
-En el entorno de producción, utilizar el índice de vectores (Redis Vector Search、Pinecone o pgvector) para realizar una búsqueda de datos en <1,000 条条条.
+En el entorno de producción, se realiza una exploración de la línea de la línea de un vector con un índice de vectores (Redis Vector Search、Pinecone o pgvector) para realizar una exploración de la línea de una línea de un vector (Redis Vector Search、Pinecone o pgvector) para realizar una exploración de la línea de una línea de una línea de una línea de una línea de una línea de más de 1.000 entradas.$O(\log n)$Busca.
 
 ##  entregarlo
 
