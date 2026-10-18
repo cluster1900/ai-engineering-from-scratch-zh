@@ -23,16 +23,53 @@ GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Ll
 
 ### mask
 
-给定长度为 `N` 的 sequence，构建一个 `N × N` matrix：
+给定长度为 $N$ 的 sequence，构建一个 $N \times N$ matrix：
 
-```
-M[i, j] = 0       if j <= i
-M[i, j] = -inf    if j > i
+```math
+M_{ij} = \begin{cases} 0 & \text{若 } j \le i \\ -\infty & \text{若 } j > i \end{cases}
 ```
 
-在 softmax 之前，把 `M` 加到原始 attention scores 上。`exp(-inf) = 0`，所以被 mask 的位置贡献的权重为零。attention matrix 的每一行都只是对先前位置的概率分布。
+在 softmax 之前，把 `M` 加到原始 attention scores 上。$\exp(-\infty) = 0$，所以被 mask 的位置贡献的权重为零。attention matrix 的每一行都只是对先前位置的概率分布。
 
 实现成本：一次 `torch.tril()` 调用。计算时间：纳秒级。对整个领域的影响：一切。
+
+### 三角形从何而来
+
+mask 通常被讲成附加在 attention 上的一块补丁。反过来推导，它就不再神秘：attention 是前缀平均的第三次改进，而三角形只是把平均运算的循环边界写成矩阵。
+
+**阶段 1：前缀平均。** 最简单的序列因果摘要：位置 $i$ 变为位置 $0 \ldots i$ 的均值。写成循环就是 `out[i] = X[:i+1].mean(0)`。同样的计算也可以用一次矩阵乘法完成。取一个元素为 1 的下三角矩阵，每行除以该行的元素计数，再相乘：
+
+```python
+import numpy as np
+
+A = np.tril(np.ones((n, n)))
+A = A / A.sum(axis=1, keepdims=True)
+out = A @ X
+```
+
+$A$ 的第 $i$ 行是 $[1/(i+1), \ldots, 1/(i+1), 0, \ldots, 0]$。对角线上方的零就是因果性。没有任何未来信息被 mask 掉；未来信息从未进入求和。
+
+**阶段 2：学习权重。** 均匀平均把过去每个 token 都视为同等重要。用学到的分数矩阵 `S` 替换那些 1。此时各行不再天然求和为 1，因此用 softmax 对每行归一化，而不是除以计数。Softmax 不会输出精确的零，这会破坏因果性，除非把未来位置的分数设为 `-inf`，因为 `exp(-inf) = 0`：
+
+```python
+def softmax(x, axis):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
+
+S = S + np.triu(np.full((n, n), -np.inf), k=1)
+A = softmax(S, axis=1)
+out = A @ X
+```
+
+同一个三角形，同一个行随机矩阵（每行表示和为 1 的非负概率权重），同样只需一次 matmul。`-inf` mask 并不是新机制，只是把阶段 1 的零元素转换到了 softmax 的输入域。
+
+**阶段 3：依赖内容的权重。** 在阶段 2 中，`S` 在训练后固定：无论 tokens 的内容是什么，位置 7 对位置 3 的权重始终相同。让分数取决于 tokens 本身：`S = Q @ K.T / sqrt(d_k)`。其他部分完全不变。Mask、softmax、matmul，仍是同样的流程。
+
+三个阶段，一个不变量：下三角行随机矩阵乘以序列。均匀平均、学习到的静态权重、依赖内容的权重。mask 并非后来加到 attention 上的；它从平均运算中一直保留了下来。
+
+```figure
+mask-derivation
+```
 
 ### 并行训练，串行推理
 
@@ -134,7 +171,7 @@ print(tok.decode(out[0]))
 
 在底层，`generate()` 运行 forward pass，取出 final-position logits，sample 下一个 token，追加它，然后重复。每个生产级 LLM inference stack（vLLM, TensorRT-LLM, llama.cpp, Ollama, MLX）都用重度优化实现同一个循环 —— batched prefill、continuous batching、KV cache paging、speculative decoding。
 
-**GPT vs BERT，各用一句话：** GPT 预测 `P(x_t | x_{<t})`。BERT 预测 `P(x_masked | x_unmasked)`。loss 决定模型是否能够生成。
+**GPT vs BERT，各用一句话：** GPT 预测 $P(x_t \mid x_{<t})$。BERT 预测 $P(x_{\text{masked}} \mid x_{\text{unmasked}})$。loss 决定模型是否能够生成。
 
 ## 交付它
 
@@ -154,8 +191,8 @@ print(tok.decode(out[0]))
 | Next-token prediction | “loss” | 模型在每个位置上的分布与真实下一个 token 之间的 cross-entropy。 |
 | Autoregressive | “一次生成一个” | 将输出反馈为输入；并行性只存在于训练阶段，不存在于生成阶段。 |
 | Logits | “pre-softmax scores” | softmax 之前 LM head 的原始输出；sampling 就发生在这些值上。 |
-| Temperature | “创造力旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = uniform。 |
-| Top-p | “Nucleus sampling” | 将分布截断为累计和 ≥p 的最小集合；从剩余部分 sample。 |
+| Temperature | “创造力旋钮” | 将 logits 除以 $T$；$T \to 0$ = greedy，$T \to \infty$ = uniform。 |
+| Top-p | “Nucleus sampling” | 将分布截断为累计和 $\ge p$ 的最小集合；从剩余部分 sample。 |
 | Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 tokens；会根据分布尖锐程度调整 cutoff。 |
 | Speculative decoding | “draft + verify” | 便宜模型提出 N 个 tokens；大模型并行验证。 |
 | Teacher forcing | “训练技巧” | 训练时输入真实的前一个 token，而不是模型的预测。每个 seq2seq LM 的标准做法。 |
