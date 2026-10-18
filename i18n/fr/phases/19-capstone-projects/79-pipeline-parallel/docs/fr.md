@@ -16,7 +16,7 @@
 
 ##  problématique
 
-Le modèle de paramètres 70B de fp16 ne nécessite que 140 Go de paramètres. Aucun GPU de consommation ne peut le supporter. ZeRO-3 跨级分片参数, mais il faut toujours que chaque niveau soit utilisé pour chaque étape de collecte complète, chaque étape de paiement log ((N) 跳.
+Le modèle de paramètres 70B de fp16 ne nécessite que 140 Go de paramètres. Aucun GPU de consommation ne peut le supporter. ZeRO-3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $\log(N)$Le cours du pipeline prend différentes routes: le modèle est coupé en N 个阶段, et placé sur chaque niveau en un seul. Le niveau 1 est en phase 0 et le niveau 1 est en phase 1.
 
 La boue est le temps vide du tuyau quand il commence (à attendre la première petite partie pour atteindre la dernière étape) et quand il se termine (à attendre la dernière petite partie pour revenir à la dernière étape). Pour les M et N, chaque étape est composée de boues (N-1) / M+N-1).
 

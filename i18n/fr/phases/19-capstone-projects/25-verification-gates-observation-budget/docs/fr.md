@@ -83,7 +83,7 @@ Le compteur de jetons est très grossier.`len(text) // 4`Le point de départ de 
 
 ## Pourquoi la chaîne 顺序 est importante
 
-Une fois de nier, une fois de laisser, c'est plus facile.`WhitelistGate`运行 O(1) recherche de hachage`RegexGate`运行 O(pattern * argv)`RecencyGate`读取 message store 的一个小片──`BudgetGate`读取整个账簿──你需要按成本升序排列它们,这样被拒绝的电话就能在执行昂贵的工作前短路──
+Une fois de nier, une fois de laisser, c'est plus facile.`WhitelistGate`运行  référencement$O(1)$Je suis en train de chercher.`RegexGate`运行  référencement$O(\text{pattern} \cdot \text{argv})$Il y a une autre.`RecencyGate`读取 message store 的一个小片──`BudgetGate`读取整个账簿──你需要按成本升序排列它们,这样被拒绝的电话就能在执行昂贵的工作前短路──
 
 Vous devez aussi respecter le rayon de déploiement 排序──Whitelist est le plus fort的主张:
 

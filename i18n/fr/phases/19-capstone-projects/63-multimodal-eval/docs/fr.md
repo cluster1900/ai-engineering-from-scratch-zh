@@ -49,15 +49,14 @@ Pour chaque image, les questions, les réponses, les questions de codage, les qu
 
 ### Le projet de loi
 
-```text
-BLEU-4 = BP * exp(mean(log p1, log p2, log p3, log p4))
+```math
+\text{BLEU-4} = \text{BP} \cdot \exp\big(\text{mean}(\log p_1, \log p_2, \log p_3, \log p_4)\big)
 ```
 
 Parmi eux `p_n`est la précision de n 元语法 après modification ((apparaît dans toute référence n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n`BP`C'est une simple punition.
 
-```text
-BP = 1                if generated length > reference length
-   = exp(1 - r/g)     otherwise, where r is reference length and g is generated
+```math
+\text{BP} = \begin{cases} 1 & \text{当生成长度} > \text{参考长度} \\ \exp(1 - r/g) & \text{否则，其中 } r \text{ 为参考长度，} g \text{ 为生成长度} \end{cases}
 ```
 
 Pour certains.`p_n`Pour un petit échantillon de zéro, il faut effectuer un étalonnage. Pour réaliser cette méthode, il faut utiliser Chen 和 Cherry.

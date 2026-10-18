@@ -106,7 +106,7 @@ def lcs_length(a, b):
     return int(dp[n, m])
 ```
 
-Numpy 表使实现清晰易读; Pure Python 列表也可以工作──选择 ROUGE-L 的任务为每个任务支付 O(n m) 成本──对于保持在毫秒以下的典型摘要长度──
+Numpy 表使实现清晰易读; Pure Python 列表也可以工作──选择 ROUGE-L 的任务为每个任务支付 $O(n m)$Pour maintenir une longueur de résumé typique inférieure à un milliseconde,
 
 ## 准确度
 

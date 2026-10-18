@@ -69,10 +69,12 @@ client de récupération 拥有这两轮和 merge──caller 传入一个查询
 
 Le tokeniser est le premier .`lower`, à nouveau selon les caractères numériques non-écrites divisés. Il n'y a pas de résultat.
 
-```text
-idf(t)      = log((N - df + 0.5) / (df + 0.5) + 1.0)
-tf_norm(t)  = (f * (k1 + 1)) / (f + k1 * (1 - b + b * dl / avgdl))
-score(d, q) = sum over t in q of idf(t) * tf_norm(t)
+```math
+\begin{aligned}
+\text{idf}(t) &= \log\!\left(\frac{N - \text{df} + 0.5}{\text{df} + 0.5} + 1.0\right) \\
+\text{tf\_norm}(t) &= \frac{f \cdot (k_1 + 1)}{f + k_1 \cdot \left(1 - b + b \cdot \text{dl} / \text{avgdl}\right)} \\
+\text{score}(d, q) &= \sum_{t \in q} \text{idf}(t) \cdot \text{tf\_norm}(t)
+\end{aligned}
 ```
 
 ## Traversage du graphique de citation

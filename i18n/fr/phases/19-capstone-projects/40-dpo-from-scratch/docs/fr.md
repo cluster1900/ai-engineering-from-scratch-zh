@@ -27,42 +27,46 @@ Le DPO utilise une perte supervisée  pour remplacer ces deux phases  le mod�
 
 Le modèle Bradley-Terry commence.`x`Et deux compléments `y_w`(élu) avec `y_l`(réfuté), les humains préfèrent`y_w`La probabilité est
 
-```text
-P(y_w > y_l | x) = sigmoid( r(x, y_w) - r(x, y_l) )
+```math
+P(y_w > y_l \mid x) = \sigma\big( r(x, y_w) - r(x, y_l) \big)
 ```
 
 Parmi eux `r`C'est une fonction de récompense latente.`r`, puis la politique de formation `pi`, avec l' ancre KL maximiser `r`- Le numéro de la liste:
 
-```text
-max_pi   E_{x, y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 Le DPO a recommandé de faire observer, dans cet objectif, une politique optimale.`pi*`Ça peut être.`r`写成 sous forme fermée:
 
-```text
-pi*(y | x) = (1/Z(x)) * pi_ref(y | x) * exp( r(x, y) / beta )
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left( \frac{r(x, y)}{\beta} \right)
 ```
 
 Pour le`r`Je suis en train de vous dire:
 
-```text
-r(x, y) = beta * ( log pi*(y | x) - log pi_ref(y | x) ) + beta * log Z(x)
+```math
+r(x, y) = \beta \big( \log \pi^*(y \mid x) - \log \pi_{\text{ref}}(y \mid x) \big) + \beta \log Z(x)
 ```
 
 `log Z(x)`项对 `y_w`et `y_l`Ça dépend.`x`, au lieu de `y`), par conséquent, dans le calcul de la différence de préférence 时会抵消:
 
-```text
-r(x, y_w) - r(x, y_l) = beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                                - log pi_theta(y_l|x) + log pi_ref(y_l|x) )
+```math
+\begin{aligned}
+r(x, y_w) - r(x, y_l) = \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+&- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big)
+\end{aligned}
 ```
 
 代入 Bradley-Terry sigmoid,并对偏好对取负记录概率:
 
-```text
-L_DPO(theta) = - E_{(x, y_w, y_l)} [
-  log sigmoid( beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                       - log pi_theta(y_l|x) + log pi_ref(y_l|x) ) )
-]
+```math
+\begin{aligned}
+L_{\text{DPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l)} \Big[
+  \log \sigma\big( \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+  &- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big) \big)
+\Big]
+\end{aligned}
 ```
 
 Ceci est une perte. Il est chaque cas un sigmoïde de la valeur, cette valeur est calculée par quatre log-probabilités. Il n'y a pas de modèle de récompense unique. Il n'y a pas de PPO. La perte n'a pas de terme KL. La contrainte KL est transformée en dérivation de forme fermée.
@@ -87,8 +91,8 @@ flowchart LR
 
 Avant tout entraînement, il y a un contrôle de santé mentale utile.`log pi_theta(y_w | x)`求 Gradient:
 
-```text
-d L_DPO / d log pi_theta(y_w | x) = - beta * (1 - sigmoid(z))
+```math
+\frac{\partial L_{\text{DPO}}}{\partial \log \pi_\theta(y_w \mid x)} = -\beta \big(1 - \sigma(z)\big)
 ```
 
 Parmi eux `z`C'est l'argument de Sigmoid.`z`Les résultats de la recherche ont été positifs, ce qui signifie que l'amélioration de la politique de log-probabilité de l'achèvement choisi, réduira les pertes.`log pi_theta(y_l | x)`Le niveau de probabilité de logement rejeté augmentera la perte.

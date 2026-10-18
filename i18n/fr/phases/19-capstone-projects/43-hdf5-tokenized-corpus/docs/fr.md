@@ -16,7 +16,7 @@
 
 ## Le problème
 
-La première erreur de la page de cache froide sur le disque JSONL: JSON parseur  très lent, le document bordure impossible à trouver, alors que chercher à "échantillon 4,217,884"  besoin de fil de scan ⋅ Même si l'effet de compression est très bon Parquet, ne convient pas ici, parce que l'entraîneur ne veut pas de colonnes; il veut un flux aléatoire d'accès O1) ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅   ⋅                                                                                                                                                             
+La première erreur de la page de cache froide sur le disque JSONL: JSON parseur  très lent, le document bordure impossible à trouver, et de chercher jusqu'à "échantillon 4,217,884"  besoin de fil de balayage ⋅ même si l'effet de compression est très bon Parquet, ne convient pas ici, parce que l'entraîneur ne veut pas de colonnes; il veut une bande$O(1)$Résumé de l'article:
 
 HDF5  Adapté, parce qu'il fournit un ensemble de données fragmenté                                                                                                                                                                                                                                                     `tokens[3,200,000 : 3,200,8192]`Le coût est pour chaque travailleur un poignet de fichier ouvert, ainsi qu'une pièce de grande taille de l'empreinte de cache de la page; par rapport au coût de JSONL, cela peut être négligé.
 
