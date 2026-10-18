@@ -49,8 +49,8 @@
 
 LayerNorm 会减去均值、除以 std、缩放并平移。RMSNorm 只保留缩放：
 
-```
-RMSNorm(x) = x / sqrt(mean(x^2) + eps) * gamma
+```math
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 没有均值消除。没有 bias。每个 Token 少一次 matmul。Zhang and Sennrich (2019) 认为它在 machine translation 上可以匹配 LayerNorm，同时快 10%。所有现代 open model 都使用它。
@@ -75,8 +75,8 @@ score = q_rotated . k_rotated
 
 GPT-2 的 MLP 是 `x -> gelu(xW1 + b1) -> (...)W2 + b2`。SwiGLU（Shazeer 2020）用 gated product 替换 activation：
 
-```
-SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
+```math
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 两个并行 projection，而不是一个，由 Swish activation 进行 gate。实证上，它在每参数 perplexity 上更强。Llama 2 采用了它，随后大家都跟进了。MLP 的 hidden size 通常会设置为让总参数量匹配原始 dense MLP：如果 GPT-2 使用 `ff_dim = 4 * hidden`，SwiGLU 使用 `ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`。
@@ -87,7 +87,7 @@ GPT-2 使用 **Multi-Head Attention (MHA)**：每个 head 都有自己的 Q、K�
 
 **Multi-Query Attention (MQA, Shazeer 2019)** 在所有 heads 之间共享一个 K 和一个 V。将 KV cache 按 num_heads 缩减，在典型模型上就是 12x 到 32x 的下降。Accuracy 在困难 benchmark 上会略有下降。
 
-**Grouped-Query Attention (GQA, Ainslie et al. 2023)** 是中间方案：G 组 Q heads 共享一个 K 和一个 V。Llama 3 8B 使用 GQA，包含 32 个 Q heads 和 8 个 KV heads（G=8），所以相较完整 MHA，KV cache 缩小 4x。
+**Grouped-Query Attention (GQA, Ainslie et al. 2023)** 是中间方案：$G$ 组 Q heads 共享一个 K 和一个 V。Llama 3 8B 使用 GQA，包含 32 个 Q heads 和 8 个 KV heads（$G=8$），所以相较完整 MHA，KV cache 缩小 4x。
 
 **Multi-Head Latent Attention (MLA, DeepSeek 2024)** 将 K 和 V 压缩到共享的 low-rank latent 中，再按 head 投影回去。它进一步降低 KV cache，同时保留每个 head 的表达能力。DeepSeek-V2 和 V3 依赖它实现 long-context 性能。
 
@@ -151,6 +151,7 @@ graph LR
 | Qwen 2.5 72B | 2024 | 72B | 72B | RMSNorm | SwiGLU | RoPE (YaRN) | GQA (64/8) | no | 128k |
 | DeepSeek V2 236B | 2024 | 236B | 21B | RMSNorm | SwiGLU | RoPE | MLA | yes (160 experts, top-6) | 128k |
 | DeepSeek V3 | 2024 | 671B | 37B | RMSNorm | SwiGLU | RoPE | MLA | yes (256 experts, top-8) | 128k |
+| Spark-X2.5 4B | 2026 | 4.1B | 4.1B | RMSNorm | GeGLU | RoPE + sliding (3:1) | GQA (16/4)，门控输出 | 否 | 1M |
 
 扫描这些列。RMSNorm 是通用的。SwiGLU 或它的 GeGLU 近亲是通用的。RoPE 是通用的。7B 以上 GQA 是通用的，除非被 MLA 替代。MoE 是最高端模型的差异点。
 
@@ -173,6 +174,11 @@ Llama 3 8B config：
 ```
 
 每个字段都对应你已经实现过的东西。
+较新的 config 增加了一些会改变计算方式的字段，因此计算器会在这些字段存在时读取它们：
+
+- `head_dim`：当它不等于 `hidden_size / num_attention_heads` 时，需要显式设置。Gemma 2 9B 的 hidden 为 3584，有 16 个 heads，但 `head_dim` 为 256，因此它的 Q projection 是 3584 x 4096，而不是方阵。
+- `tie_word_embeddings`：LM head 是否复用 embedding matrix。Llama 3 8B 不共享两者，因此如果只计算一次 embedding，就会漏掉 525M 参数。
+- `layer_types` 和 `sliding_window`：哪些 layers attend 到完整 context，哪些只 attend 到最近的 W 个 tokens。
 
 - `hidden_size`: embedding dimension。
 - `intermediate_size`: MLP hidden size（3.5x hidden -- SwiGLU 数学）。
@@ -209,6 +215,15 @@ Llama 3 8B 在 128k context、BF16、head_dim = hidden / num_heads = 128 时：
 
 8B weights 在 BF16 中是 16 GB。单个 128k sequence 的 KV cache 比 weights 还大。这就是推动 GQA、MLA 和 KV cache quantization 研究的 memory pressure。
 
+上述公式假设每一层都缓存完整 sequence。Sliding-window layer 始终只需要最近的 W 个 tokens，因此对于 hybrid models，需要逐层求和：
+
+```text
+kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
+           * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
+```
+
+Spark-X2.5 4B 每一个 full-attention layer 搭配三个 sliding-window layers（$W = 512$）：36 层中有 9 个 full layers 和 27 个 sliding layers。在 1M-token context 下，使用 BF16 时，每个 sequence 约需 38.7 GB（36 GiB）。如果全部 36 层都缓存完整 context，则需要 154.6 GB（144 GiB）。Full layers 承担了几乎全部开销，因此查看 long-context model 时，应首先关注 full 与 sliding layers 的比例。
+
 ### When Each Model Wins
 
 - **单张 80GB GPU，无 MoE**：Llama 3 8B、Mistral 7B、Gemma 2 9B。易于 serve，tooling 广泛。
@@ -216,6 +231,7 @@ Llama 3 8B 在 128k context、BF16、head_dim = hidden / num_heads = 128 时：
 - **最大的 open capability，可接受 MoE 复杂度**：DeepSeek V3、Mixtral 8x22B。每 active FLOP 的 capability 最佳。
 - **Long-context 需求**：Llama 3（通过 RoPE scaling 达到 128k）、DeepSeek（MLA 优势）。
 - **Low-latency serving**：Gemma 2 9B（sliding window 降低 long-context compute）。
+- **较小内存预算下的长上下文**：Spark-X2.5 4B 等 hybrid sliding-window models，只有四分之一的 layers 承担完整 context 的开销。
 
 
 ```figure
@@ -234,12 +250,16 @@ config = {
 }
 ```
 
-脚本会逐字段遍历架构，计算 embedding、attention（带 GQA reduction）、MLP（带 SwiGLU expansion）、layernorms 和 head 的参数量。然后它会按给定 context length 计算 KV cache，并打印 summary。
+脚本会逐字段遍历架构，计算 embedding、attention（带 GQA reduction，并在 config 设置时使用显式 `head_dim`）、MLP（带 SwiGLU 或 GeGLU expansion）、layernorms，以及不与 embedding 共享权重时的 LM head 参数量。然后它会按给定 context length 逐层计算 KV cache，将 sliding-window layers 的缓存限制在各自窗口内，并打印 summary。
+
+对于 dense models，总参数量与公开的参数量完全一致：Llama 3 8B 为 8,030,261,248，Gemma 2 9B 为 9,241,705,984，Spark-X2.5 4B 为 4,112,079,360。Qwen 2.5 72B 相差 819,200，这也是练习 1 的内容。
 
 实现见 `code/main.py`。
 
 ## 使用它
 运行计算器，使用脚本中捆绑的 Llama 3 8B、Mistral 7B、Mixtral 8x7B 和 DeepSeek V3 configs。比较参数分解。注意 MoE models 的总参数量远超 dense models，但 active param count 往往更小。注意 DeepSeek V3 的 KV cache 虽然总参数更多，却小于 Llama 3 405B 的 KV cache -- 这就是 MLA 的效果。
+
+接着比较 Gemma 2 9B 和 Spark-X2.5 4B。对于这两个模型，脚本都会打印实际需要的 KV cache，以及假如所有 layers 都是 full attention 时所需的 KV cache。Gemma 2 在 8k context 下按 1:1 交替使用两类层，因此节省幅度不大。Spark-X2.5 在 1M context 下采用 3:1 比例和 512-token window，因此缓存需求缩小到四分之一。
 
 然后插入你本地任意模型的 config，阅读 summary，并判断它是否适合你的 GPU。
 
@@ -268,7 +288,7 @@ config = {
 | MoE | “Sparse experts” | Mixture of Experts：每个 block 有 N 个 MLPs，router 为每个 Token 选择 top-k -- 巨大的 total params，较小的 active params |
 | Top-k routing | “每个 Token 选择 k 个 experts” | Router 为每个 expert 计算分数，并激活最高的 k 个 -- 典型 k 从 2（Mixtral）到 8（DeepSeek） |
 | YaRN | “拉伸 RoPE” | Yet another RoPE extension -- 通过插值 rotary angles，在 inference 时将 context 从 8k 扩展到 128k+ |
-| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 W 个 Tokens -- 将 attention cost 限制为每 Token O(W)，用于 Gemma 2 和早期 Mistral |
+| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 $W$ 个 Tokens -- 将 attention cost 限制为每 Token $O(W)$，用于 Gemma 2 和早期 Mistral |
 | Active params | “每个 Token 实际运行的部分” | 对于 MoE models，指每个 Token 会经历 forward pass 的参数量（远小于 total params）-- 决定 per-token FLOPs |
 
 ## 延伸阅读

@@ -77,8 +77,8 @@ Reward model 是被改造成打分器的 language model。取 SFT model，替换
 
 Loss Function 使用 pairwise preferences 的 Bradley-Terry model：
 
-```
-loss = -log(sigmoid(reward(preferred) - reward(rejected)))
+```math
+\text{loss} = -\log\big(\mathop{\mathrm{sigmoid}}(\text{reward}(\text{preferred}) - \text{reward}(\text{rejected}))\big)
 ```
 
 这是关键公式。`sigmoid(reward(A) - reward(B))` 给出 response A 相比 response B 更受偏好的概率。这个 Loss 会推动 reward model 给 preferred response 分配更高分数。
@@ -93,8 +93,8 @@ PPO 是一种 Reinforcement Learning 算法。在 RLHF 中，“environment” �
 
 目标：
 
-```
-maximize: E[R(prompt, response)] - beta * KL(policy || reference)
+```math
+\text{maximize:} \quad \mathbb{E}[R(\text{prompt}, \text{response})] - \beta \cdot \mathrm{KL}(\text{policy} \,\|\, \text{reference})
 ```
 
 第一项推动模型生成高 reward 的响应。第二项（KL divergence penalty）防止模型偏离 SFT checkpoint 太远。
@@ -107,7 +107,7 @@ maximize: E[R(prompt, response)] - beta * KL(policy || reference)
 
 KL penalty 表示：你可以改进，但不能变成一个完全不同的模型。要接近 SFT version，因为它已经相当合理。偏离太远时，KL cost 会压过 reward。
 
-**InstructGPT numbers:** PPO training 使用 lr=1.5e-5、KL coefficient beta=0.02、256K episodes（prompt-response pairs），并且每个 batch 做 4 个 PPO epochs。整个 RLHF pipeline 在 GPU cluster 上需要数天时间。
+**InstructGPT numbers:** PPO training 使用 lr=1.5e-5、KL coefficient $\beta=0.02$、256K episodes（prompt-response pairs），并且每个 batch 做 4 个 PPO epochs。整个 RLHF pipeline 在 GPU cluster 上需要数天时间。
 
 ```mermaid
 graph LR
@@ -130,12 +130,14 @@ graph LR
 
 ### PPO Objective 详解
 
-PPO 使用 “clipped surrogate objective” 来防止过大的更新。New policy 与 old policy 概率之间的 ratio 会被裁剪到 [1 - epsilon, 1 + epsilon] 范围，其中 epsilon 通常是 0.2。
+PPO 使用 “clipped surrogate objective” 来防止过大的更新。New policy 与 old policy 概率之间的 ratio 会被裁剪到 $[1 - \epsilon, 1 + \epsilon]$ 范围，其中 $\epsilon$ 通常是 0.2。
 
-```
-ratio = pi_new(action | state) / pi_old(action | state)
-clipped_ratio = clip(ratio, 1 - epsilon, 1 + epsilon)
-loss = -min(ratio * advantage, clipped_ratio * advantage)
+```math
+\begin{aligned}
+\text{ratio} &= \pi_{\text{new}}(\text{action} \mid \text{state}) / \pi_{\text{old}}(\text{action} \mid \text{state}) \\
+\text{clipped\_ratio} &= \mathop{\mathrm{clip}}(\text{ratio}, 1 - \epsilon, 1 + \epsilon) \\
+\text{loss} &= -\min(\text{ratio} \cdot \text{advantage}, \text{clipped\_ratio} \cdot \text{advantage})
+\end{aligned}
 ```
 
 Advantage function 估计当前响应相对于预期质量好多少。在 RLHF 中：
@@ -600,19 +602,19 @@ if __name__ == "__main__":
 
 3. 模拟 reward hacking。创建一个给长响应高分的 reward model（reward = len(response) / 100）。用这个有缺陷的 reward model 运行 PPO，观察 policy model 生成越来越长、越来越重复的输出。然后添加 0.1 的 KL penalty，并展示它会防止这种退化行为。
 
-4. 实现 multi-objective reward。训练两个 reward models：一个用于 helpfulness，另一个用于 conciseness。将它们组合为 R = 0.7 * R_helpful + 0.3 * R_concise。展示组合目标会生成既 helpful 又 concise 的响应，避免单一 helpfulness reward 带来的 verbosity trap。
+4. 实现 multi-objective reward。训练两个 reward models：一个用于 helpfulness，另一个用于 conciseness。将它们组合为 $R = 0.7 \cdot R_{\text{helpful}} + 0.3 \cdot R_{\text{concise}}$。展示组合目标会生成既 helpful 又 concise 的响应，避免单一 helpfulness reward 带来的 verbosity trap。
 
-5. 比较不同 KL coefficients。分别用 beta=0.001（过低，reward hacking）、beta=0.02（标准）和 beta=0.5（过高，无法学习）运行 PPO。绘制每种设置的 reward curve 和 KL curve。beta=0.02 的运行应表现出稳定的 reward 提升，并且 KL 有界。
+5. 比较不同 KL coefficients。分别用 $\beta=0.001$（过低，reward hacking）、$\beta=0.02$（标准）和 $\beta=0.5$（过高，无法学习）运行 PPO。绘制每种设置的 reward curve 和 KL curve。$\beta=0.02$ 的运行应表现出稳定的 reward 提升，并且 KL 有界。
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | RLHF | “Training with human feedback” | Reinforcement Learning from Human Feedback：一个三阶段 pipeline（SFT、reward model、PPO），使用人类偏好信号优化 language model 输出 |
 | Reward model | “A model that scores responses” | 一个带 scalar output head 的 Transformer，使用 Bradley-Terry loss 在 pairwise human preferences 上训练 |
-| Bradley-Terry | “The comparison model” | 一种概率模型，其中 P(A > B) = sigmoid(score(A) - score(B))，可将 pairwise preferences 转换为一致的 scoring function |
+| Bradley-Terry | “The comparison model” | 一种概率模型，其中 $P(A > B) = \mathop{\mathrm{sigmoid}}(\text{score}(A) - \text{score}(B))$，可将 pairwise preferences 转换为一致的 scoring function |
 | PPO | “The RL algorithm” | Proximal Policy Optimization：更新 policy 以最大化 reward，同时裁剪更新幅度以防止不稳定 |
 | KL divergence | “How different two distributions are” | 衡量 policy model 的 Token distribution 与 reference model 之间差异的指标，用作 penalty 来防止 reward hacking |
-| KL penalty | “The leash on the model” | 从 reward signal 中减去的 Beta * KL(policy \|\| reference)，防止 policy 偏离 SFT checkpoint 太远 |
+| KL penalty | “The leash on the model” | 从 reward signal 中减去的 $\beta \cdot \mathrm{KL}(\text{policy} \Vert \text{reference})$，防止 policy 偏离 SFT checkpoint 太远 |
 | Reward hacking | “Gaming the reward” | policy 通过利用 reward model 的弱点找到退化的高 reward 输出，而不是真正改进 |
 | Preference pair | “Which is better, A or B?” | 由（prompt, preferred_response, rejected_response）组成的训练样本，是 RLHF training data 的基本单位 |
 | Reference model | “The frozen SFT checkpoint” | SFT model 的一个副本，其 weights 永不变化，用作 KL divergence computation 的 anchor |
