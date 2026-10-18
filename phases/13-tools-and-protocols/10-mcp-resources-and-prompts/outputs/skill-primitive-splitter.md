@@ -7,36 +7,36 @@ lesson: 10
 tags: [mcp, resources, prompts, subscriptions, caching]
 ---
 
-Review a proposed MCP server from the consumer's point of view.
+从使用方的角度审查拟议的 MCP 服务器。
 
-Produce:
+请给出：
 
-1. A `server/discover` result advertising revision `2026-07-28` and the exact resource and prompt capabilities.
-2. A table with `name`, `chooser`, `primitive`, and `reason`.
-3. Stable resource URI schemes and any bounded resource templates.
-4. Prompt names, descriptions, and required or optional arguments.
-5. A deterministic ordering rule for every list method.
-6. A cache policy with `ttlMs` and `cacheScope` for each cacheable result.
-7. A `subscriptions/listen` filter for resources or list changes that need updates.
-8. One invalid-resource example that returns JSON-RPC `-32602`, plus an unsupported-revision example that returns `-32022` with `supported` and `requested`.
+1. 一个 `server/discover` 结果，声明协议修订版 `2026-07-28`，以及准确的资源与提示词能力。
+2. 一张包含 `name`、`chooser`、`primitive` 和 `reason` 的表格。
+3. 稳定的资源 URI 格式，以及有明确边界的资源模板。
+4. 提示词的名称、描述，以及必填或可选参数。
+5. 每个列表方法的确定性排序规则。
+6. 每项可缓存结果的缓存策略，包括 `ttlMs` 和 `cacheScope`。
+7. 针对需要更新的资源或列表变化，给出 `subscriptions/listen` 过滤器。
+8. 一个返回 JSON-RPC `-32602` 的无效资源示例，以及一个返回 `-32022`、包含 `supported` 和 `requested` 的不支持修订版示例。
 
-Use these decision rules:
+采用以下判断规则：
 
-- A model-selected operation is a tool.
-- Host-readable URI-addressed content is a resource.
-- A user-selected message workflow is a prompt.
-- An update stream is client-opened through `subscriptions/listen`.
-- The listen request ID becomes `io.modelcontextprotocol/subscriptionId`.
-- The acknowledgment must precede all events on that subscription.
-- A notification never bypasses authorization for a later read.
-- `server/discover` is mandatory even when a client chooses to call another method first.
+- 由模型选择的操作是工具。
+- 可由宿主读取、通过 URI 寻址的内容是资源。
+- 由用户选择的消息工作流是提示词。
+- 更新流由客户端通过 `subscriptions/listen` 打开。
+- 监听请求的 ID 成为 `io.modelcontextprotocol/subscriptionId`。
+- 确认响应必须先于该订阅上的所有事件。
+- 通知绝不能绕过后续读取的授权检查。
+- 即使客户端选择先调用其他方法，`server/discover` 仍是必需的。
 
-Reject a design when:
+出现以下情况时，否决设计：
 
-- A list varies because of connection history.
-- A private result is placed in a public cache.
-- A resource URI is accepted without parsing, authorization, and boundary checks.
-- The design uses `resources/subscribe` or treats a subscription as a protocol session.
-- A prompt is allowed to override trusted host instructions.
+- 列表内容因连接历史而变化。
+- 私有结果被放入公共缓存。
+- 未经解析、授权和边界检查就接受资源 URI。
+- 设计使用 `resources/subscribe`，或将订阅视为协议会话。
+- 允许提示词覆盖可信的宿主指令。
 
-Return a one-page contract review. End with the highest-risk primitive, cache, or subscription mistake and the smallest correction.
+返回一页契约审查报告。最后指出风险最高的原语、缓存或订阅错误，以及最小修正方案。
