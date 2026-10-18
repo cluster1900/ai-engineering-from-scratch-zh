@@ -18,20 +18,20 @@
 
 RLHF objective（Lesson 1）：
 
-```text
-max_pi E_{x,y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 有一个已知最优解：
 
-```text
-pi*(y|x) = (1/Z(x)) * pi_ref(y|x) * exp(r(x, y) / beta)
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left(\frac{r(x, y)}{\beta}\right)
 ```
 
 因此 reward 由 optimal policy 与 reference 的比值隐式定义：
 
-```text
-r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
+```math
+r(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 把它代入 Bradley-Terry preference likelihood 后，partition function `Z(x)` 会抵消，因为它只依赖 `x`。剩下的是一个只含 policy parameters 的 loss，不再需要 reward model。这就是 DPO。
@@ -42,11 +42,11 @@ r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
 
 ### DPO (Rafailov et al., 2023)
 
-```text
-L_DPO = -log sigmoid(
-  beta * log(pi(y_w | x) / pi_ref(y_w | x))
-  - beta * log(pi(y_l | x) / pi_ref(y_l | x))
-)
+```math
+L_{\text{DPO}} = -\log \sigma\!\left(
+  \beta \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
+  - \beta \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}
+\right)
 ```
 
 可能出错的地方：
@@ -59,8 +59,8 @@ L_DPO = -log sigmoid(
 
 Identity Preference Optimization 用 preference probability 上的 identity mapping 替换 log-sigmoid。loss 变成 bounded target 上的 squared-error：
 
-```text
-L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x)) - 1/(2 beta))^2
+```math
+L_{\text{IPO}} = \left( \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} - \frac{1}{2\beta} \right)^2
 ```
 
 margin 被 `1/(2 beta)` 限定。preference strength 与 implicit-reward gap 成比例。不会爆掉。
@@ -69,8 +69,8 @@ margin 被 `1/(2 beta)` 限定。preference strength 与 implicit-reward gap 成
 
 Kahneman-Tversky Optimization 完全去掉 pairwise 结构。给定一个单独标注的 output，以及一个二元的 “desirable” 或 “undesirable” 信号，它会映射到 prospect-theory utility：
 
-```text
-v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
+```math
+v(x, y) = \sigma\!\left(\beta \log \frac{\pi(y \mid x)}{\pi_{\text{ref}}(y \mid x)} - z_{\text{ref}}\right)
 ```
 
 并对 gains 和 losses 使用不同权重（loss aversion）。好处是：你可以使用 unpaired data，而这类数据要丰富得多。
@@ -79,12 +79,12 @@ v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
 
 Simple Preference Optimization 让训练信号与生成过程对齐。完全移除 reference policy，并按长度归一化 log-likelihood：
 
-```text
-L_SimPO = -log sigmoid(
-  (beta / |y_w|) * log pi(y_w | x)
-  - (beta / |y_l|) * log pi(y_l | x)
-  - gamma
-)
+```math
+L_{\text{SimPO}} = -\log \sigma\!\left(
+  \frac{\beta}{|y_w|} \log \pi(y_w \mid x)
+  - \frac{\beta}{|y_l|} \log \pi(y_l \mid x)
+  - \gamma
+\right)
 ```
 
 使用 margin `gamma` 来稳定训练。长度归一化移除了利用 DPO length-bias failure mode 的激励（更长的 `y_w` 会在构造上带来更大的 log-prob gap）。
@@ -93,9 +93,11 @@ L_SimPO = -log sigmoid(
 
 Odds-Ratio Preference Optimization 在标准 SFT negative log-likelihood 上添加一个 preference term：
 
-```text
-L_ORPO = L_NLL(y_w) + lambda * L_OR
-L_OR = -log sigmoid(log(odds(y_w) / odds(y_l)))
+```math
+\begin{aligned}
+L_{\text{ORPO}} &= L_{\text{NLL}}(y_w) + \lambda L_{\text{OR}} \\
+L_{\text{OR}} &= -\log \sigma\!\left(\log \frac{\text{odds}(y_w)}{\text{odds}(y_l)}\right)
+\end{aligned}
 ```
 
 没有 reference policy，SFT term 就是 regularizer。从 base model 到 aligned model 只需单阶段训练。无需单独的 SFT checkpoint。
