@@ -97,7 +97,7 @@ ViT-B/16 堆叠 12 个这样的 blocks，每个 block 有 12 个 attention heads
 
 - 16x16 patches -> 196 tokens，标准设置。
 - 32x32 patches -> 49 tokens，更快但分辨率更低。
-- 8x8 patches -> 784 tokens，更精细，但 O(n^2) attention cost 扩展性很差。
+- 8x8 patches -> 784 tokens，更精细，但 $O(n^2)$ attention cost 扩展性很差。
 
 更大的 patches = 更少的 tokens = 更快但空间细节更少。SwinV2 在 hierarchical windows 中使用 4x4 patches。
 

@@ -52,18 +52,20 @@ flowchart LR
 
 classifier 会为每张图像产生 `C` 个数字，称为 logits。应用 softmax 会把它们转换成 probability distribution：
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 Cross-entropy 衡量正确 class 的 negative log probability：
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-右侧形式是数值稳定的形式（log-sum-exp）。PyTorch 的 `nn.CrossEntropyLoss` 会在一个 op 中融合 softmax + NLL，并直接接收 raw logits。自己先应用 softmax 几乎总是 bug，因为你计算的是 log(softmax(softmax(z)))，这是一个没有意义的量。
+右侧形式是数值稳定的形式（log-sum-exp）。PyTorch 的 `nn.CrossEntropyLoss` 会在一个 op 中融合 softmax + NLL，并直接接收 raw logits。自己先应用 softmax 几乎总是 bug，因为你计算的是 $\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$，这是一个没有意义的量。
 
 ### 为什么 augmentation 有效
 
@@ -105,7 +107,7 @@ mixup 的近亲。不要用 `[0, 0, 1, 0, 0]` 作为训练目标，而是用 `[e
 Aggregate accuracy 会掩盖 imbalance。一个 90-10 的 binary classifier 如果永远预测 majority class，也能得到 90%。真正告诉你发生了什么的工具是：
 
 - **Per-class accuracy** — 每个 class 一个数字；会立即暴露表现不足的类别。
-- **Confusion matrix** — C x C grid，其中 row i col j = true class i 被预测为 class j 的数量；diagonal 是正确预测，off-diagonals 才是 model 问题所在。
+- **Confusion matrix** — $C \times C$ grid，其中 row $i$ col $j$ = true class $i$ 被预测为 class $j$ 的数量；diagonal 是正确预测，off-diagonals 才是 model 问题所在。
 - **Top-1 / Top-5** — 正确 class 是否在 top 1 或 top 5 predictions 中；Top-5 对 ImageNet 很重要，因为像 “Norwich terrier” 和 “Norfolk terrier” 这样的 classes 确实存在歧义。
 - **Calibration (ECE)** — 0.8 confidence 的预测是否真的有 80% 的时间是正确的？现代 networks 系统性地 over-confident；可以用 temperature scaling 或 label smoothing 修正。
 

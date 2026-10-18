@@ -21,9 +21,11 @@
 
 **TF-IDF** 会重新加权 BoW。一个出现在每个文档中的词信息量不高，所以把它的权重调低。一个在语料库中很少见、但在单个文档中频繁出现的词是信号，所以把它的权重调高。
 
-```
-TF-IDF(w, d) = TF(w, d) * IDF(w)
-             = count(w in d) / |d| * log(N / df(w))
+```math
+\begin{aligned}
+\text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
+\end{aligned}
 ```
 
 其中 `TF` 是文档中的 term frequency，`df` 是 document frequency（有多少个文档包含该词），`N` 是文档总数。`log` 会让高频常见词的权重保持有界。

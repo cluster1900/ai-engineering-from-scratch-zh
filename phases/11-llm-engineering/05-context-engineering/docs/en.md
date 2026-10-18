@@ -21,7 +21,7 @@ Claude Opus 4.7 有 200K Token 窗口（beta 中为 1M）。GPT-5 有 400K。Gem
 
 下面是一个 coding assistant 的真实拆分。System prompt：500 Token。50 个 tools 的 tool definitions：8,000 Token。Retrieved documentation：4,000 Token。Conversation history（10 轮）：6,000 Token。当前 user query：200 Token。Generation budget（max output）：4,000 Token。总计：22,700 Token。这只占 128K 窗口的 18%。
 
-但 Attention 并不会随 context length 线性扩展。拥有 128K Token context 的模型要付出二次 Attention 成本（vanilla transformers 中是 O(n^2)，尽管大多数生产模型使用高效 Attention 变体）。更重要的是，Retrieval 准确率会下降。“Needle in a Haystack”测试表明，模型很难找到放在长 context 中间的信息。Liu et al.（2023）的研究显示，LLMs 对长 context 开头和结尾的信息 Retrieval 准确率接近完美，但对放在中间的信息（context 的 40-70% 位置）准确率会下降 10-20%。这种“lost-in-the-middle”效应因模型而异，但会影响当前所有架构。
+但 Attention 并不会随 context length 线性扩展。拥有 128K Token context 的模型要付出二次 Attention 成本（vanilla transformers 中是 $O(n^2)$，尽管大多数生产模型使用高效 Attention 变体）。更重要的是，Retrieval 准确率会下降。“Needle in a Haystack”测试表明，模型很难找到放在长 context 中间的信息。Liu et al.（2023）的研究显示，LLMs 对长 context 开头和结尾的信息 Retrieval 准确率接近完美，但对放在中间的信息（context 的 40-70% 位置）准确率会下降 10-20%。这种“lost-in-the-middle”效应因模型而异，但会影响当前所有架构。
 
 实践上的教训是：可用 200K Token 并不意味着使用 200K Token 就有效。精心筛选的 10K Token context 往往胜过直接倾倒的 100K Token context。Context engineering 是在 context window 内最大化 signal-to-noise ratio 的学科。
 

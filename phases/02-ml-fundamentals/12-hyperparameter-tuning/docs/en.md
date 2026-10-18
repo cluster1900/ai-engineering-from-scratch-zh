@@ -14,7 +14,7 @@
 - 设计一种 hyperparameter tuning 策略，通过合适的 cross-validation 避免对 validation set 过拟合
 
 ## 问题
-你的 gradient boosting 模型有 learning rate、number of trees、max depth、min samples per leaf、subsample ratio 和 column sample ratio。也就是六个 hyperparameters。如果每个都有 5 个合理取值，那么 grid 就有 5^6 = 15,625 种组合。每次训练需要 10 秒。全部尝试一遍需要 43 小时的计算时间。
+你的 gradient boosting 模型有 learning rate、number of trees、max depth、min samples per leaf、subsample ratio 和 column sample ratio。也就是六个 hyperparameters。如果每个都有 5 个合理取值，那么 grid 就有 $5^6 = 15{,}625$ 种组合。每次训练需要 10 秒。全部尝试一遍需要 43 小时的计算时间。
 
 Grid search 是最直观的方法，也是规模变大后最差的方法。Random search 用更少的计算量能做得更好。Bayesian optimization 通过从过去的评估中学习，效果还会更好。知道该使用哪种策略，以及哪些 hyperparameters 真正重要，可以省下数天浪费的 GPU 时间。
 
@@ -28,7 +28,7 @@ Parameters 是在训练过程中学习得到的（weights、biases、split thres
 | Learning rate | 每次更新的步长 | 0.001 到 1.0 |
 | Number of trees/epochs | 训练时长 | 10 到 10,000 |
 | Max depth | 模型复杂度 | 1 到 30 |
-| Regularization (lambda) | 防止过拟合 | 0.0001 到 100 |
+| Regularization ($\lambda$) | 防止过拟合 | 0.0001 到 100 |
 | Batch size | Gradient 估计噪声 | 16 到 512 |
 | Dropout rate | 被丢弃的 neurons 比例 | 0.0 到 0.5 |
 
@@ -122,7 +122,7 @@ Learning rate 几乎总是最重要的 hyperparameter。与其保持固定，不
 | Scheduler | Formula | 何时使用 |
 |-----------|---------|-------------|
 | Step decay | 每 N 个 epochs 乘以 0.1 | 经典 CNN 训练 |
-| Cosine annealing | lr * 0.5 * (1 + cos(pi * t / T)) | 现代默认选择 |
+| Cosine annealing | $\text{lr} \cdot 0.5 \cdot (1 + \cos(\pi t / T))$ | 现代默认选择 |
 | Warmup + decay | 先线性增加，再 cosine decay | Transformers |
 | One-cycle | 在一个 cycle 内先增加再减少 | 快速收敛 |
 | Reduce on plateau | 指标停滞时按因子降低 | 稳妥默认选择 |

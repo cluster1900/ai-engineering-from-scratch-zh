@@ -11,12 +11,12 @@
 
 VAEs 会产生模糊的 samples，因为它们的 MSE decoder loss 对于*均值*图像是 Bayes 最优的，而许多合理数字的均值就是一个模糊的数字。你想要一种奖励*合理性*的 loss，而不是奖励与某个目标在 pixel-wise 层面接近。合理性没有 closed-form。你必须学出来。
 
-Goodfellow 的想法：训练一个 classifier `D(x)` 来区分真实图像和 fakes。训练一个 generator `G(z)` 来欺骗 `D`。`G` 的 loss signal 就是 `D` 当前认为某个东西看起来真实的依据。随着 `G` 改进，这个 signal 也会更新，追逐一个移动目标。如果两个网络都收敛，`G` 就在从未写下 `log p(x)` 的情况下学会了 data distribution。
+Goodfellow 的想法：训练一个 classifier $D(x)$ 来区分真实图像和 fakes。训练一个 generator $G(z)$ 来欺骗 $D$。$G$ 的 loss signal 就是 $D$ 当前认为某个东西看起来真实的依据。随着 $G$ 改进，这个 signal 也会更新，追逐一个移动目标。如果两个网络都收敛，$G$ 就在从未写下 `log p(x)` 的情况下学会了 data distribution。
 
 这就是 adversarial training。数学上它是一个 minimax game：
 
-```
-min_G max_D  E_real[log D(x)] + E_fake[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_{\text{real}}[\log D(x)] + \mathbb{E}_{\text{fake}}[\log(1 - D(G(z)))]
 ```
 
 到 2026 年，GANs 已经不再是 SOTA generator（diffusion 和 flow matching 夺走了王冠）。但 StyleGAN 2/3 仍然是已发布过的最锐利 face models，GAN discriminators 被用作 diffusion training 中的 *perceptual losses*，而 adversarial training 支撑着 fast 1-step distillations（SDXL-Turbo, SD3-Turbo, LCM），让你能交付 real-time diffusion。
@@ -25,20 +25,20 @@ min_G max_D  E_real[log D(x)] + E_fake[log(1 - D(G(z)))]
 
 ![GAN training: generator and discriminator in minimax](../assets/gan.svg)
 
-**Generator `G(z)`。** 将 noise Vector `z ~ N(0, I)` 映射到 sample `x̂`。一个 decoder 形状的网络（dense 或 transposed conv）。
+**Generator $G(z)$。** 将 noise Vector $z \sim \mathcal{N}(0, I)$ 映射到 sample $\hat{x}$。一个 decoder 形状的网络（dense 或 transposed conv）。
 
-**Discriminator `D(x)`。** 将 sample 映射为 scalar probability（或 score）。真实 → 1，fake → 0。
+**Discriminator $D(x)$。** 将 sample 映射为 scalar probability（或 score）。真实 → 1，fake → 0。
 
 **Loss。** 两个交替更新：
 
-- **训练 `D`：** `loss_D = -[ log D(x) + log(1 - D(G(z))) ]`。对 real=1, fake=0 做 binary cross-entropy。
-- **训练 `G`：** `loss_G = -log D(G(z))`。这是 Goodfellow 使用的 *non-saturating* 形式（原始的 `log(1 - D(G(z)))` 会 saturate，并在 `D` 很自信时杀死 gradients）。
+- **训练 $D$：** $\text{loss}_D = -[ \log D(x) + \log(1 - D(G(z))) ]$。对 real=1, fake=0 做 binary cross-entropy。
+- **训练 $G$：** $\text{loss}_G = -\log D(G(z))$。这是 Goodfellow 使用的 *non-saturating* 形式（原始的 $\log(1 - D(G(z)))$ 会 saturate，并在 $D$ 很自信时杀死 gradients）。
 
-**Training loop。** 一步 `D`，一步 `G`。重复。
+**Training loop。** 一步 $D$，一步 $G$。重复。
 
-**为什么它能工作。** 如果 `G` 完美匹配 `p_data`，那么 `D` 做不到比随机猜测更好，并且处处输出 0.5；`G` 不再获得 gradient。达到 equilibrium。
+**为什么它能工作。** 如果 $G$ 完美匹配 $p_{\text{data}}$，那么 $D$ 做不到比随机猜测更好，并且处处输出 0.5；$G$ 不再获得 gradient。达到 equilibrium。
 
-**为什么它会失效。** Mode collapse（`G` 找到一个 `D` 无法分类的 mode，然后永远铸造它）、vanishing gradient（`D` 学得太快，`log D` saturates）、training instability（learning rates、batch sizes、任何东西）。
+**为什么它会失效。** Mode collapse（$G$ 找到一个 $D$ 无法分类的 mode，然后永远铸造它）、vanishing gradient（$D$ 学得太快，$\log D$ saturates）、training instability（learning rates、batch sizes、任何东西）。
 
 ## 让 GANs 可用的 Variants
 
@@ -64,7 +64,7 @@ gan-minimax
 
 ### 步骤 1： non-saturating loss
 
-vanilla Goodfellow loss `log(1 - D(G(z)))` 会在 D 以高置信度把 G 的 fake 分类为 fake 时趋近 0。此时 G 的 gradient 基本为零，G 无法改进。non-saturating 形式 `-log D(G(z))` 具有相反的 asymptote：当 D 很自信时它会爆增，给 G 一个强 signal。
+vanilla Goodfellow loss $\log(1 - D(G(z)))$ 会在 D 以高置信度把 G 的 fake 分类为 fake 时趋近 0。此时 G 的 gradient 基本为零，G 无法改进。non-saturating 形式 $-\log D(G(z))$ 具有相反的 asymptote：当 D 很自信时它会爆增，给 G 一个强 signal。
 
 ```python
 def g_loss(d_fake):
@@ -131,7 +131,7 @@ GANs 锐利但狭窄。一旦你的 domain 打开，比如 photos、任意 text 
 ## 练习
 
 1. **Easy。** 使用默认设置运行 `code/main.py`。然后设置 `D_LR = 5 * G_LR` 并重新运行。G 的 loss 多快 collapse 到常数？
-2. **Medium。** 用 WGAN loss 替换 Goodfellow BCE loss：`loss_D = E[D(fake)] - E[D(real)]`，`loss_G = -E[D(fake)]`，并将 D 的 weights clip 到 `[-0.01, 0.01]`。Training 是否更稳定？比较 wall-clock convergence。
+2. **Medium。** 用 WGAN loss 替换 Goodfellow BCE loss：$\text{loss}_D = \mathbb{E}[D(\text{fake})] - \mathbb{E}[D(\text{real})]$，$\text{loss}_G = -\mathbb{E}[D(\text{fake})]$，并将 D 的 weights clip 到 `[-0.01, 0.01]`。Training 是否更稳定？比较 wall-clock convergence。
 3. **Hard。** 将 1-D 示例扩展到 2-D data（环上的 8 个 Gaussians mixture）。跟踪 generator 在 steps 1k、5k、10k 捕获了 8 个 modes 中的多少个。实现 minibatch discrimination 并重新测量。
 
 ## 关键术语
@@ -140,8 +140,8 @@ GANs 锐利但狭窄。一旦你的 domain 打开，比如 photos、任意 text 
 |------|-----------------|-----------------------|
 | Generator | "G" | noise-to-sample network，`G: z → x̂`。 |
 | Discriminator | "D" | Classifier `D: x → [0, 1]`，real vs fake。 |
-| Minimax | "The game" | joint objective 的 `min_G max_D`。 |
-| Non-saturating loss | "The fix" | 对 G 使用 `-log D(G(z))`，而不是 `log(1 - D(G(z)))`。 |
+| Minimax | "The game" | joint objective 的 $\min_G \max_D$。 |
+| Non-saturating loss | "The fix" | 对 G 使用 $-\log D(G(z))$，而不是 $\log(1 - D(G(z)))$。 |
 | Mode collapse | "G memorized one thing" | 尽管 data 多样，Generator 只产生少量不同 outputs。 |
 | WGAN | "Wasserstein" | 用 Earth-Mover distance + gradient penalty 替换 BCE；gradient 更平滑。 |
 | Spectral norm | "Lipschitz trick" | 约束 D 的 weight norms 来 bound 它的 slope；稳定 training。 |
@@ -151,7 +151,7 @@ GANs 锐利但狭窄。一旦你的 domain 打开，比如 photos、任意 text 
 
 GANs 在 open-domain generation 的 sample quality 上不再获胜，但它们仍然在 inference cost 上获胜。在 production-inference 文献词汇中，一个 GAN 具有：
 
-- **没有 prefill，没有 decode stages。** 一次 `G(z)` forward pass。TTFT ≈ total latency。
+- **没有 prefill，没有 decode stages。** 一次 $G(z)$ forward pass。TTFT ≈ total latency。
 - **没有 KV-cache pressure。** 唯一 state 是 weights。Batch size 受 activation memory 限制，而不是 cache。
 - **Trivial continuous batching。** 由于每个 request 都消耗相同的固定 FLOPs，server 目标占用率下的 static batch 通常是最优的。不需要 in-flight scheduler。
 

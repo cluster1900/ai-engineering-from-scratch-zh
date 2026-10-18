@@ -9,11 +9,11 @@
 
 ## 问题
 
-Full Attention 在序列长度上的内存成本是 `O(N²)`，计算成本也是 `O(N²)`。对于一个 128K-context 的 Llama 3 70B，这意味着每层有 160 亿个 Attention 条目，再乘以 80 层。Flash Attention（Lesson 12）隐藏了 `O(N²)` activation 内存，但不会改变算术计算成本——每个 Token 仍然会 attend 到每个其他 Token。
+Full Attention 在序列长度上的内存成本是 $O(N^2)$，计算成本也是 $O(N^2)$。对于一个 128K-context 的 Llama 3 70B，这意味着每层有 160 亿个 Attention 条目，再乘以 80 层。Flash Attention（Lesson 12）隐藏了 $O(N^2)$ activation 内存，但不会改变算术计算成本——每个 Token 仍然会 attend 到每个其他 Token。
 
 三类变体会改变 Attention Matrix 本身的拓扑：
 
-1. **Sliding window attention (SWA).** 每个 Token 只 attend 到固定窗口内的邻近 Token，而不是完整 prefix。内存和计算降到 `O(N · W)`，其中 `W` 是窗口大小。Gemma 2/3、Mistral 7B 的前几层、Phi-3-Long。
+1. **Sliding window attention (SWA).** 每个 Token 只 attend 到固定窗口内的邻近 Token，而不是完整 prefix。内存和计算降到 $O(N \cdot W)$，其中 $W$ 是窗口大小。Gemma 2/3、Mistral 7B 的前几层、Phi-3-Long。
 2. **Sparse / block attention.** 只有选定的 `(i, j)` 对会被打分；其余位置被强制为零权重。Longformer、BigBird、OpenAI sparse transformer。
 3. **Differential attention.** 用独立的 Q/K projection 计算两张 Attention map，再相减。消除会把权重泄漏到前几个 Token 的 “attention sink”。Microsoft 的 DIFF Transformer（2024）。
 
@@ -23,7 +23,7 @@ Full Attention 在序列长度上的内存成本是 `O(N²)`，计算成本也�
 
 ### Sliding Window Attention (SWA)
 
-位置 `i` 的每个 query 只 attend 到 `[i - W, i]`（causal SWA）或 `[i - W/2, i + W/2]`（bidirectional）中的位置。窗口外的 Token 会在 score Matrix 中得到 `-inf`。
+位置 $i$ 的每个 query 只 attend 到 $[i - W, i]$（causal SWA）或 $[i - W/2, i + W/2]$（bidirectional）中的位置。窗口外的 Token 会在 score Matrix 中得到 $-\infty$。
 
 ```
 full causal:           sliding window (W=4):
@@ -39,17 +39,17 @@ positions 0-7          positions 0-7, W=4
 7 | x x x x x x x x  7 |          x x x x
 ```
 
-对于 `N = 8192` 和 `W = 1024`，score Matrix 期望上有 1024 × 8192 个非零行——减少了 8×。
+对于 $N = 8192$ 和 $W = 1024$，score Matrix 期望上有 1024 × 8192 个非零行——减少了 8×。
 
-**KV cache 会随 SWA 缩小。** 每层只需要保留最近 `W` 个 Token 的 K 和 V。对于一个类似 Gemma-3 的配置（1024 window，128K context），KV cache 会降低 128×。
+**KV cache 会随 SWA 缩小。** 每层只需要保留最近 $W$ 个 Token 的 K 和 V。对于一个类似 Gemma-3 的配置（1024 window，128K context），KV cache 会降低 128×。
 
-**质量成本。** 纯 SWA Transformer 难以处理长距离检索。修复方法：在 SWA 层之间交错 full-attention 层。Gemma 3 使用 5:1 SWA:global。Mistral 7B 使用 causal-SWA stack，信息通过重叠窗口“向前流动”——每一层都会把有效感受野扩展 `W`，经过 `L` 层后，模型可以向后 attend `L × W` 个 Token。
+**质量成本。** 纯 SWA Transformer 难以处理长距离检索。修复方法：在 SWA 层之间交错 full-attention 层。Gemma 3 使用 5:1 SWA:global。Mistral 7B 使用 causal-SWA stack，信息通过重叠窗口“向前流动”——每一层都会把有效感受野扩展 $W$，经过 `L` 层后，模型可以向后 attend `L × W` 个 Token。
 
 ### Sparse / Block Attention
 
 预先选择一个 `N × N` sparsity pattern。三种经典形状：
 
-- **Local + strided (OpenAI sparse transformer).** Attend 到最近 `W` 个 Token，再加上此前每隔 `stride` 个 Token 的位置。以 `O(N · sqrt(N))` 计算同时捕捉局部和长距离信息。
+- **Local + strided (OpenAI sparse transformer).** Attend 到最近 $W$ 个 Token，再加上此前每隔 `stride` 个 Token 的位置。以 $O(N \cdot \sqrt{N})$ 计算同时捕捉局部和长距离信息。
 - **Longformer / BigBird.** Local window + 少量 global tokens（例如 `[CLS]`），这些 Token attend 到所有 Token，也被所有 Token attend + random-sparse links。在匹配质量下经验上获得 2× context。
 - **Native Sparse Attention (DeepSeek, 2025).** 学习哪些 `(Q, K)` block 重要；在 kernel 层面跳过零 block。兼容 FlashAttention。
 
@@ -61,13 +61,15 @@ Sparse Attention 是一个 kernel engineering 故事。数学很简单（mask sc
 
 Differential Attention 通过计算**两张** Attention map 并相减来解决这个问题：
 
-```
-A1 = softmax(Q1 K1^T / √d)
-A2 = softmax(Q2 K2^T / √d)
-DiffAttn = (A1 - λ · A2) V
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d}) \\
+\text{DiffAttn} &= (A_1 - \lambda \cdot A_2) V
+\end{aligned}
 ```
 
-其中 `λ` 是一个学习得到的 scalar（通常为 0.5–0.8）。A1 捕捉真实内容权重；A2 捕捉 sink。相减会抵消 sink，把权重重新分配给相关 Token。
+其中 $\lambda$ 是一个学习得到的 scalar（通常为 0.5–0.8）。A1 捕捉真实内容权重；A2 捕捉 sink。相减会抵消 sink，把权重重新分配给相关 Token。
 
 报告结果（Microsoft 2024）：perplexity 降低 5–10%，在相同训练长度下有效 context 延长 1.5–2×，needle-in-haystack 检索更敏锐。
 
@@ -75,12 +77,12 @@ DiffAttn = (A1 - λ · A2) V
 
 | Variant | Compute | KV cache | Quality vs full | Production use |
 |---------|---------|----------|-----------------|----------------|
-| Full attention | O(N²) | O(N) per layer | baseline | 每个模型的默认层 |
-| SWA (window 1024) | O(N·W) | O(W) per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
-| Local + strided sparse | O(N·√N) | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
-| BigBird (local + global + random) | O(N) approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
-| Native Sparse (DeepSeek-V3.2) | O(N · active fraction) | O(N) | within 0.05 ppl | DeepSeek-V3.2, 2025 |
-| Differential | O(2·N²) | O(2N) | -5 to -10% ppl | DIFF Transformer, early 2026 models |
+| Full attention | $O(N^2)$ | $O(N)$ per layer | baseline | 每个模型的默认层 |
+| SWA (window 1024) | $O(N \cdot W)$ | $O(W)$ per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
+| Local + strided sparse | $O(N \cdot \sqrt{N})$ | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
+| BigBird (local + global + random) | $O(N)$ approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
+| Native Sparse (DeepSeek-V3.2) | $O(N \cdot \text{active fraction})$ | $O(N)$ | within 0.05 ppl | DeepSeek-V3.2, 2025 |
+| Differential | $O(2 \cdot N^2)$ | $O(2N)$ | -5 to -10% ppl | DIFF Transformer, early 2026 models |
 
 
 ```figure
@@ -143,7 +145,7 @@ def diff_attention(Q1, K1, Q2, K2, V, lam):
 
 ### 步骤 5： KV cache sizes
 
-在 `N = 131072` 下打印每个变体的每层 cache size。SWA 和 sparse 变体会降低 10–100×。Differential 会翻倍。要有意识地支付你的内存账单。
+在 $N = 131072$ 下打印每个变体的每层 cache size。SWA 和 sparse 变体会降低 10–100×。Differential 会翻倍。要有意识地支付你的内存账单。
 
 ## 使用它
 
@@ -186,17 +188,17 @@ out = flex_attention(q, k, v, block_mask=mask)
 1. **Easy.** 运行 `code/main.py`。验证 `window=4` 的 SWA 会把每一行中最近 4 个 Token 之外的所有内容置零。验证 `window=n` 会 bit-identically 复现 full causal Attention。
 2. **Medium.** 在 Lesson 07 capstone 之上实现 `window=1024` 的 causal SWA。在 tinyshakespeare 上训练 1,000 steps。相比 full Attention，val loss 回退多少？peak memory 降低多少？
 3. **Hard.** 在 capstone 模型中实现 Gemma-3-style 5:1 layer mix（5 层 SWA，1 层 global）。在参数匹配的情况下，对比 pure-SWA 和 pure-global baseline 的 loss、memory 和 generation quality。
-4. **Hard.** 实现每个 head 都有学习得到的 `λ` 的 Differential Attention。在一个 synthetic retrieval task（一个 needle，2,000 个 distractors）上训练。在参数匹配的情况下，测量相对 single-attention baseline 的 retrieval accuracy。
+4. **Hard.** 实现每个 head 都有学习得到的 $\lambda$ 的 Differential Attention。在一个 synthetic retrieval task（一个 needle，2,000 个 distractors）上训练。在参数匹配的情况下，测量相对 single-attention baseline 的 retrieval accuracy。
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 `W` 个 Token；KV cache 缩小到 `O(W)`。 |
-| Effective receptive field | "模型能向后看多远" | 在一个窗口为 `W` 的 `L` 层 SWA stack 中，最多 `L × W` 个 Token。 |
+| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 $W$ 个 Token；KV cache 缩小到 $O(W)$。 |
+| Effective receptive field | "模型能向后看多远" | 在一个窗口为 $W$ 的 $L$ 层 SWA stack 中，最多 $L \times W$ 个 Token。 |
 | Longformer / BigBird | "Local + global + random" | Sparse pattern，包含少量始终 attend 的 global tokens；早期 long-context 方法。 |
 | Native Sparse Attention | "DeepSeek's kernel trick" | 学习 block-level sparsity；在保持质量的同时，在 kernel 层面跳过零 block。 |
-| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 `λ` 倍第二张 Attention map，以抵消 attention sinks。 |
+| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 $\lambda$ 倍第二张 Attention map，以抵消 attention sinks。 |
 | Attention sink | "权重泄漏到 token 0" | Softmax normalization 强制行求和为 1；信息量不足的 query 会把权重倾倒到位置 0。 |
 | FlexAttention | "Mask-as-Python" | PyTorch 2.5+ API，可将任意 mask function 编译成 FlashAttention 形状的 kernel。 |
 | Layer type mix | "5:1 SWA-to-global" | 在 stack 中交错 sparse 和 full Attention 层，以更低内存保持质量。 |

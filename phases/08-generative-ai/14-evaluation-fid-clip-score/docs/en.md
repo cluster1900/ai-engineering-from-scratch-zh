@@ -26,13 +26,13 @@
 Heusel et al. (2017)。步骤：
 
 1. 为 N 张真实图像和 N 张生成图像提取 Inception-v3 features (2048-D)。
-2. 对每个池拟合一个 Gaussian：计算 mean `μ_r, μ_g` 和 covariance `Σ_r, Σ_g`。
-3. FID = `||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2 · (Σ_r · Σ_g)^0.5)`。
+2. 对每个池拟合一个 Gaussian：计算 mean $\mu_r, \mu_g$ 和 covariance $\Sigma_r, \Sigma_g$。
+3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \mathop{\mathrm{Tr}}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$。
 
 解释：特征空间中两个多变量 Gaussian 之间的 Fréchet distance。越低 = 分布越相似。
 
 失效模式：
-- **小 N 时有偏。** FID 是对特征分布做 mean-squared 计算，小 N 会低估 covariance，给出虚假的低 FID。始终使用 N ≥ 10,000。
+- **小 N 时有偏。** FID 是对特征分布做 mean-squared 计算，小 N 会低估 covariance，给出虚假的低 FID。始终使用 $N \ge 10{,}000$。
 - **依赖 Inception。** Inception-v3 训练于 ImageNet。远离 ImageNet 的领域（人脸、艺术、文字图像）会产生无意义的 FID。使用特定领域的 feature extractor。
 - **刷分。** 过拟合 Inception prior 可以在没有视觉质量提升的情况下得到低 FID。用 CMMD（见下文）来对抗它。
 

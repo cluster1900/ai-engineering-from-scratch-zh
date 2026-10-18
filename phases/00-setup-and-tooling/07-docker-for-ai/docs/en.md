@@ -366,6 +366,16 @@ docker logs -f <container_id>
 3. 将 `flask` 添加到 Dockerfile，rebuild，并在 port 5000 上运行一个简单 API server。使用 `-p 5000:5000` map 端口
 4. 使用 `docker images` 测量 image size。尝试把 base image 从 `devel` 切换到 `runtime`，并比较大小
 
+### 提示
+
+**练习 1。** 用课程中的 `docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .` 命令构建，再通过 `docker run --rm ai-dev` 在容器内执行导入检查。在 Mac 上，按课程说明省略 `--gpus all`。容器必须打印以 `2.6.0` 开头的版本号。
+
+**练习 2。** 在 `code/` 文件夹中运行 `docker compose up -d`，再用 `docker compose exec ai-dev bash` 在 `ai-dev` 服务中打开 shell。在其中运行 `curl http://qdrant:6333/collections`；返回 JSON 就说明服务名能在 compose 网络内解析。
+
+**练习 3。** 在 Dockerfile 中添加 `RUN pip install flask`，重新构建，并用 `host="0.0.0.0"` 启动服务器，因为容器内只绑定 localhost 的服务器无法从容器外访问。在你的机器上打开 `http://localhost:5000`，确认端口映射有效。
+
+**练习 4。** 运行 `docker images ai-dev`，记录 SIZE 列。将 `FROM` 行中的 `devel` 改为 `runtime`，使用新 tag 构建，再比较两个镜像的大小；runtime 镜像不包含编译器和头文件。
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

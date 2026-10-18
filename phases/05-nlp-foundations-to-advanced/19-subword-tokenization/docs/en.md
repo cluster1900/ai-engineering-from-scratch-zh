@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-朴素实现是 O(n·|merges|)。生产实现（tiktoken、HF Tokenizers）使用 merge-rank lookup 和 priority queues，运行时间接近线性。
+朴素实现是 $O(n \cdot \lvert \text{merges} \rvert)$。生产实现（tiktoken、HF Tokenizers）使用 merge-rank lookup 和 priority queues，运行时间接近线性。
 
 ### 步骤 3： 实践中的 SentencePiece
 

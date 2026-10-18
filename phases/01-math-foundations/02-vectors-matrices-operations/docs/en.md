@@ -40,11 +40,10 @@ w = [1, 0, -2]    -- 一个 3D Vector
 
 ### Matrix：数字网格
 
-Matrix 是一个 2D 网格。由 rows 和 columns 组成。一个 m x n Matrix 有 m 行和 n 列。
+Matrix 是一个 2D 网格。由 rows 和 columns 组成。一个 $m \times n$ Matrix 有 $m$ 行和 $n$ 列。
 
-```
-A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
-    | 4  5  6 |
+```math
+A = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \quad \text{2x3 Matrix（2 行，3 列）}
 ```
 
 在 Neural Networks 中，weight matrices 会把 input vectors 转换为 output vectors。一个有 784 个 inputs 和 128 个 outputs 的 layer 使用 128x784 weight matrix。
@@ -80,16 +79,14 @@ Matrix multiplication 有严格规则：`(m x n) @ (n x p) = (m x p)`。内部�
 
 Element-wise：相同位置相乘。两个 Matrix 必须具有相同 shape。
 
-```
-| 1  2 |   | 5  6 |   | 5  12 |
-| 3  4 | * | 7  8 | = | 21 32 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} * \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 5 & 12 \\ 21 & 32 \end{bmatrix}
 ```
 
 Matrix multiplication：rows 和 columns 的 dot products。内部维度必须匹配。
 
-```
-| 1  2 |   | 5  6 |   | 1*5+2*7  1*6+2*8 |   | 19  22 |
-| 3  4 | @ | 7  8 | = | 3*5+4*7  3*6+4*8 | = | 43  50 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} @ \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\ 3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8 \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
 ```
 
 不同的运算、不同的结果、不同的规则。
@@ -319,13 +316,21 @@ NumPy 会自动把 1D bias broadcast 到两行上。这就是每个 Neural Netwo
 
 3. **构建一个 two-layer network。** 只使用你的 Matrix class（不使用 NumPy），创建一个 two-layer Neural Network：input (3) -> hidden (4) -> output (2)。初始化 random weights，运行一次 forward pass，并验证所有 shapes 都正确。
 
+### 提示
+
+**练习 1。** 对三个矩阵计算 `A @ A.inverse_2x2()`，将每个元素与单位矩阵比较，误差应在 `1e-9` 以内。对于行列式为 0 的矩阵，例如 [[1, 2], [2, 4]]，`inverse_2x2` 会抛出 `ValueError`，这是预期结果。
+
+**练习 2。** 计算 3x3 代数余子式矩阵，将其转置得到伴随矩阵，再将每个元素除以 `determinant()`。检查 `A @ A_inv` 得到单位矩阵，且每个元素与 `np.linalg.inv(A)` 的差异不超过 `1e-9`。
+
+**练习 3。** 相乘前先写出每个矩阵的 shape：与 `demo_neural_network_layer` 中一样，`W1` 为 4x3，`W2` 为 2x4。3x1 的输入必须得到 4x1 的隐藏向量和 2x1 的输出。
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Vector | “一支箭头” | 有序数字列表。在 AI 中：高维空间中的一个点。 |
 | Matrix | “一张数字表” | 一种 linear transformation。它把 vectors 从一个空间映射到另一个空间。 |
 | Matrix multiply | “就是把数字相乘” | 第一个 Matrix 的每一行与第二个 Matrix 的每一列之间的 dot products。顺序很重要。 |
-| Transpose | “翻转它” | 交换 rows 和 columns。把一个 m x n Matrix 变成 n x m。在 Backpropagation 中很关键。 |
+| Transpose | “翻转它” | 交换 rows 和 columns。把一个 $m \times n$ Matrix 变成 $n \times m$。在 Backpropagation 中很关键。 |
 | Determinant | “来自 Matrix 的某个数字” | 衡量 Matrix 对面积（2D）或体积（3D）的缩放程度。零表示这个 transformation 压扁了一个维度。 |
 | Inverse | “撤销这个 Matrix” | 反转该 transformation 的 Matrix。只有 determinant 不为零时才存在。 |
 | Identity matrix | “无聊的 Matrix” | Matrix 中等价于乘以 1 的对象。用于 residual connections（ResNets）。 |

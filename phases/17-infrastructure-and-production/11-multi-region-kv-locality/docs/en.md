@@ -27,7 +27,7 @@ Multi-region LLM serving 是 cache 问题、routing 问题和 DR hygiene 问题�
 
 请求带着 prompt 到达。Router 对 prefix 做 hash（比如前 512 tokens）；它询问每个 replica：“你有这个 prefix 的 cache 吗？”。Replica 在分配和驱逐 blocks 时，通过 pub/sub channel 发布 KV-cache events。Router 选择匹配的 replica；如果没有匹配，就回落到基于 GPU-util 的 tie-breaker。
 
-**vLLM Router**（Rust，2026 production-stack）：订阅 `kv.cache.block_added` events，维护 prefix-hash → replica index，用 O(1) lookup 路由。没有匹配时回落到 least-queue-depth。
+**vLLM Router**（Rust，2026 production-stack）：订阅 `kv.cache.block_added` events，维护 prefix-hash → replica index，用 $O(1)$ lookup 路由。没有匹配时回落到 least-queue-depth。
 
 **llm-d router**：同样的模式，Kubernetes-native。通过 ControlPlane API 发布 events。
 

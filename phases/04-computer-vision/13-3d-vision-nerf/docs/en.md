@@ -23,7 +23,7 @@ Camera 产生 2D image。LIDAR 产生一组没有顺序的 3D points。Structure
 ## 概念
 ### Point clouds
 
-Point cloud 是 R^3 中 N 个点的无序集合，每个点可选地带有 features（colour、intensity、normal）。
+Point cloud 是 $\mathbb{R}^3$ 中 $N$ 个点的无序集合，每个点可选地带有 features（colour、intensity、normal）。
 
 ```
 cloud = [
@@ -41,8 +41,8 @@ cloud = [
 
 PointNet (Qi et al., 2017) 用一个想法解决了两者：对每个点应用 shared MLP，然后用 symmetric function（max pool）聚合。结果是一个固定大小的 Vector，并且不依赖顺序。
 
-```
-f(P) = max_{p in P} MLP(p)
+```math
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 这就是 PointNet 的整个核心。更深的变体（PointNet++、Point Transformer）加入了 hierarchical sampling 和 local aggregation，但 symmetric-function 技巧保持不变。
@@ -86,22 +86,23 @@ Loss 会将渲染出的 pixel 与训练照片中的 ground-truth pixel 进行比
 
 作用在 `(x, y, z)` 上的 vanilla MLP 无法表示高频细节，因为 MLPs 在频谱上偏向低频。NeRF 通过在送入 MLP 前，将每个 coordinate 编码成 Fourier feature Vector 来修正这一点：
 
-```
-gamma(p) = (sin(2^0 pi p), cos(2^0 pi p), sin(2^1 pi p), cos(2^1 pi p), ...)
+```math
+\gamma(p) = \left(\sin(2^0 \pi p), \cos(2^0 \pi p), \sin(2^1 \pi p), \cos(2^1 \pi p), \ldots\right)
 ```
 
-最高到 L=10 个 frequency levels。这与 transformers 用于 positions 的技巧相同，也会在 diffusion time conditioning（Lesson 10）中再次出现。没有它，NeRFs 看起来会很模糊。
+最高到 $L=10$ 个 frequency levels。这与 transformers 用于 positions 的技巧相同，也会在 diffusion time conditioning（Lesson 10）中再次出现。没有它，NeRFs 看起来会很模糊。
 
 ### Volumetric rendering
 
+```math
+\begin{aligned}
+C(r) &= \sum_i T_i \left(1 - \exp(-\sigma_i \delta_i)\right) c_i \\[4pt]
+T_i &= \exp\left(-\sum_{j<i} \sigma_j \delta_j\right) \\
+\delta_i &= t_{i+1} - t_i
+\end{aligned}
 ```
-C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 
-T_i  = exp(- sum_{j<i} sigma_j * delta_j)
-delta_i = t_{i+1} - t_i
-```
-
-`T_i` 是 transmittance，也就是有多少光能到达点 i。`(1 - exp(-sigma_i * delta_i))` 是点 i 处的 opacity。`c_i` 是 colour。最终 pixel 是沿 ray 的加权和。
+`T_i` 是 transmittance，也就是有多少光能到达点 $i$。`(1 - exp(-sigma_i * delta_i))` 是点 $i$ 处的 opacity。`c_i` 是 colour。最终 pixel 是沿 ray 的加权和。
 
 ### What replaced NeRFs
 

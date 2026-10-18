@@ -864,7 +864,7 @@ Batch API 对所有 tokens 提供固定 50% 折扣。结果会在 24 小时内�
 #     return None
 ```
 
-在生产环境中，用 Vector index（Redis Vector Search、Pinecone 或 pgvector）替代线性扫描。线性扫描适用于 <1,000 条 entries。超过这个规模后，使用 ANN（approximate nearest neighbor）进行 O(log n) lookup。
+在生产环境中，用 Vector index（Redis Vector Search、Pinecone 或 pgvector）替代线性扫描。线性扫描适用于 <1,000 条 entries。超过这个规模后，使用 ANN（approximate nearest neighbor）进行 $O(\log n)$ lookup。
 
 ## 交付它
 

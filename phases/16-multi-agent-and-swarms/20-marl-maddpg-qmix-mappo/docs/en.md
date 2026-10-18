@@ -44,8 +44,8 @@ critic update:   TD on Q_i(x, a_1..n) given next-state joint estimate
 
 仅适用于 cooperative。Global reward 是每个 agent 的 Q-value 的 monotone function 之和：
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 monotonicity 保证 `argmax_a Q_tot` 可以通过每个 agent 独立选择 `argmax_{a_i} Q_i` 来计算。这正是你需要的 **decentralized execution property**。训练时，mixing network 从每个 agent 的 Q 生成 `Q_tot`。

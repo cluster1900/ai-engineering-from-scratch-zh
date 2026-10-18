@@ -28,11 +28,11 @@ Red-teaming 过去是一种手工活动。少数专家测试者构造 adversaria
 
 循环，对 k in 1..K：
 1. 用目标 G 和到目前为止的 (prompt, response) pair 历史来 prompt A。
-2. A 输出一个新的 prompt p_k。
-3. 将 p_k 提交给 T；收到响应 r_k。
-4. J 根据目标对 (p_k, r_k) 打分。
+2. A 输出一个新的 prompt $p_k$。
+3. 将 $p_k$ 提交给 T；收到响应 $r_k$。
+4. J 根据目标对 $(p_k, r_k)$ 打分。
 5. 如果 score >= threshold，则停止 — 已找到 jailbreak。
-6. 否则，将 (p_k, r_k) 追加到 A 的历史中；继续。
+6. 否则，将 $(p_k, r_k)$ 追加到 A 的历史中；继续。
 
 经验结果（NeurIPS 2023）：针对 GPT-3.5-turbo、Llama-2-7B-chat 的 attack success rate >50%；成功所需的平均 query 数在 10-20 范围内。
 

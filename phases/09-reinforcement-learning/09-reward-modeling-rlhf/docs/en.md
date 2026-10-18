@@ -21,31 +21,31 @@ RLHF（Christiano et al. 2017; Ouyang et al. 2022）把 preferences 转换成 re
 
 ![Three-stage RLHF: SFT, RM training on pairwise prefs, PPO with KL penalty](../assets/rlhf.svg)
 
-**Stage 1：Supervised Fine-Tuning（SFT）。** 从 pretrained base model 开始。在目标行为的人类编写 demonstrations 上 fine-tune（instruction-following responses、helpful replies 等）。结果是一个 `π_SFT` model，它*偏向良好行为*，但仍然有 unbounded action space。
+**Stage 1：Supervised Fine-Tuning（SFT）。** 从 pretrained base model 开始。在目标行为的人类编写 demonstrations 上 fine-tune（instruction-following responses、helpful replies 等）。结果是一个 $\pi_{\text{SFT}}$ model，它*偏向良好行为*，但仍然有 unbounded action space。
 
 **Stage 2：Reward Model training。**
 
-- 收集对 prompts `x` 的 response pairs `(y_+, y_-)`，由人类标注为“y_+ 优于 y_-。”
-- 训练 reward model `R_φ(x, y)`，让它给 `y_+` 分配更高分数。
+- 收集对 prompts $x$ 的 response pairs $(y_+, y_-)$，由人类标注为“y_+ 优于 y_-。”
+- 训练 reward model $R_\phi(x, y)$，让它给 $y_+$ 分配更高分数。
 - Loss：**Bradley-Terry pairwise logistic**：
 
-  `L(φ) = -E[ log σ(R_φ(x, y_+) - R_φ(x, y_-)) ]`
+  $L(\phi) = -\mathbb{E}[ \log \sigma(R_\phi(x, y_+) - R_\phi(x, y_-)) ]$
 
-  σ 是 sigmoid。reward 的差值隐含 preference 的 log-odds。BT 自 1952 年（Bradley-Terry）以来一直是标准方法，也是现代 RLHF 中的主流选择。
+  $\sigma$ 是 sigmoid。reward 的差值隐含 preference 的 log-odds。BT 自 1952 年（Bradley-Terry）以来一直是标准方法，也是现代 RLHF 中的主流选择。
 
-- `R_φ` 通常从 SFT model 初始化，并在顶部加一个 scalar head。相同的 transformer backbone；一个单独的 linear layer 输出 reward。
+- $R_\phi$ 通常从 SFT model 初始化，并在顶部加一个 scalar head。相同的 transformer backbone；一个单独的 linear layer 输出 reward。
 
 **Stage 3：带 KL penalty、针对 RM 的 PPO。**
 
-- 从 `π_SFT` 初始化可训练 policy `π_θ`。保留一个冻结的 *reference* `π_ref = π_SFT`。
-- Response `y` 结束时的 reward：
+- 从 $\pi_{\text{SFT}}$ 初始化可训练 policy $\pi_\theta$。保留一个冻结的 *reference* $\pi_{\text{ref}} = \pi_{\text{SFT}}$。
+- Response $y$ 结束时的 reward：
 
-  `r_total(x, y) = R_φ(x, y) - β · KL(π_θ(·|x) || π_ref(·|x))`
+  $r_{\text{total}}(x, y) = R_\phi(x, y) - \beta \cdot \mathrm{KL}(\pi_\theta(\cdot \mid x) \Vert \pi_{\text{ref}}(\cdot \mid x))$
 
-  KL penalty 防止 `π_θ` 任意漂离 `π_SFT` —— 它是一个 *regularizer*，不是硬性 trust region。`β` 通常是 `0.01`-`0.05`。
+  KL penalty 防止 $\pi_\theta$ 任意漂离 $\pi_{\text{SFT}}$ —— 它是一个 *regularizer*，不是硬性 trust region。$\beta$ 通常是 0.01-0.05。
 - 用这个 reward 运行 PPO（Lesson 08）。Advantages 在 token-level trajectory 上计算，但 RM 只给完整 response 打分。
 
-**为什么需要 KL？** 没有它，PPO 会很乐意找到 reward-hacking 策略 —— RM 只在 in-distribution completions 上训练过。一个 out-of-distribution response 可能比任何人类写的 response 分数都高。KL 让 `π_θ` 保持在 RM 训练过的 manifold 附近。它是 RLHF 中最重要的单个旋钮。
+**为什么需要 KL？** 没有它，PPO 会很乐意找到 reward-hacking 策略 —— RM 只在 in-distribution completions 上训练过。一个 out-of-distribution response 可能比任何人类写的 response 分数都高。KL 让 $\pi_\theta$ 保持在 RM 训练过的 manifold 附近。它是 RLHF 中最重要的单个旋钮。
 
 **2026 状态：**
 
@@ -98,7 +98,7 @@ def rm_train_step(w, x, y_pos, y_neg, lr):
 
 ### Step 3：RM 之上的 PPO-like policy
 
-我们的 toy policy 会从 vocabulary 中生成一个 Token。我们用 RM 给该 Token 打分，计算 `log π_θ(token | prompt)`，添加 KL-to-reference penalty，并应用 clipped PPO surrogate。
+我们的 toy policy 会从 vocabulary 中生成一个 Token。我们用 RM 给该 Token 打分，计算 $\log \pi_\theta(\text{token} \mid \text{prompt})$，添加 KL-to-reference penalty，并应用 clipped PPO surrogate。
 
 ```python
 def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Step 4：monitor KL
 
-每次更新跟踪 mean `KL(π_θ || π_ref)`。如果它爬过 `~5-10`，policy 已经漂离 `π_SFT` 很远 —— lower `β` is rising or reward hacking is starting。这是真实 RLHF 中最重要的 diagnostic。
+每次更新跟踪 mean $\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$。如果它爬过 `~5-10`，policy 已经漂离 $\pi_{\text{SFT}}$ 很远 —— lower $\beta$ is rising or reward hacking is starting。这是真实 RLHF 中最重要的 diagnostic。
 
 ### Step 5：使用 TRL 的 production recipe
 
@@ -164,7 +164,7 @@ Library 会替你做三件事。`adap_kl_ctrl=True` 实现 adaptive-β schedule�
 
 ## 陷阱
 
-- **Over-optimization / reward hacking。** RM 并不完美；`π_θ` 会找到得分高但质量差的 adversarial completions。症状：reward 无限上升，而 human eval score 持平或下降。修复：early stop、提高 `β`、拓宽 RM training data。
+- **Over-optimization / reward hacking。** RM 并不完美；$\pi_\theta$ 会找到得分高但质量差的 adversarial completions。症状：reward 无限上升，而 human eval score 持平或下降。修复：early stop、提高 $\beta$、拓宽 RM training data。
 - **Length hacking。** 在 helpful responses 上训练的 RMs 往往隐式 reward 长度。Policy 学会填充 responses。补救：length-normalized reward，或使用 length-aware RM 的 RLAIF。
 - **RM 太小。** RM 至少需要和 policy 一样大。Tiny RM 无法可靠地给 policy outputs 打分。
 - **KL tuning。** β 太低 → drift 和 reward hacking。β 太高 → policy 几乎不变。标准技巧是使用一个以固定 per-step KL 为目标的 *adaptive* β。
@@ -214,7 +214,7 @@ tags: [rl, rlhf, alignment, llm]
 ## 练习
 
 1. **简单。** 在 `code/main.py` 中用 500 个 synthetic preference pairs 训练 Bradley-Terry reward model。在 hold-out 的 100 个 pairs 上测量 pairwise accuracy。应该超过 90%。
-2. **中等。** 使用 `β ∈ {0.0, 0.1, 1.0}` 运行 toy PPO-RLHF loop。对每个值，绘制 RM score vs KL-to-reference over updates。哪些 runs 发生 reward-hack？
+2. **中等。** 使用 $\beta \in \lbrace 0.0, 0.1, 1.0 \rbrace$ 运行 toy PPO-RLHF loop。对每个值，绘制 RM score vs KL-to-reference over updates。哪些 runs 发生 reward-hack？
 3. **困难。** 在同一份 preference data 上实现 DPO（closed-form preference-likelihood loss），并与 RLHF-PPO pipeline 在使用的 compute 和达到的 final RM score 上对比。
 
 ## 关键术语
@@ -223,8 +223,8 @@ tags: [rl, rlhf, alignment, llm]
 |------|----------|----------|
 | RLHF | "Alignment RL" | 三阶段 SFT + RM + PPO pipeline（Christiano 2017, Ouyang 2022）。 |
 | Reward Model (RM) | "The scoring net" | 通过 Bradley-Terry 拟合 pairwise preferences 学到的 scalar function。 |
-| Bradley-Terry | "Pairwise logistic loss" | `P(y_+ ≻ y_-) = σ(R(y_+) - R(y_-))`；标准 RM objective。 |
-| KL penalty | "Stay near the reference" | reward 中的 `β · KL(π_θ \|\| π_ref)`；anti-reward-hacking regularizer。 |
+| Bradley-Terry | "Pairwise logistic loss" | $P(y_+ \succ y_-) = \sigma(R(y_+) - R(y_-))$；标准 RM objective。 |
+| KL penalty | "Stay near the reference" | reward 中的 $\beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$；anti-reward-hacking regularizer。 |
 | Reward hacking | "Goodhart's law" | Policy 利用 RM 缺陷；症状：reward 上升，human eval 持平。 |
 | RLAIF | "AI-labeled preferences" | 标签来自另一个 LM 而非人类的 RLHF。 |
 | PRM | "Process Reward Model" | 给 partial reasoning steps 打分；用于 reasoning pipelines。 |

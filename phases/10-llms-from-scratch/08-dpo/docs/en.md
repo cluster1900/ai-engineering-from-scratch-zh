@@ -11,7 +11,7 @@
 - 实现 DPO training，直接在 preference pairs 上优化语言模型，而不使用单独的 reward model
 - 推导 DPO Loss Function，并解释它如何通过 policy 的 log probabilities 隐式表示 reward model
 - 从训练稳定性、计算成本和所需模型数量角度比较 DPO 与 RLHF
-- 调节 beta 参数，控制训练后的 policy 偏离 reference model 的程度
+- 调节 $\beta$ 参数，控制训练后的 policy 偏离 reference model 的程度
 
 ## 问题
 你在 Lesson 07 中构建了一个 RLHF pipeline。三个阶段。三个模型。SFT model、reward model，以及用 PPO 优化的 policy model。仅 reward model 就需要数千个人类 preference pairs 和一个单独的 training loop。PPO 需要仔细调节 KL coefficient、learning rate、clip ratio 和 epochs 数量。
@@ -29,51 +29,53 @@ DPO 将 RLHF 简化为一个 supervised learning 步骤。一个模型。一个 
 
 RLHF 优化这个目标：
 
-```
-maximize: E[R(x, y)] - beta * KL(pi || pi_ref)
-```
-
-其中 R 是 reward model，pi 是 policy，pi_ref 是 reference model，beta 是 KL coefficient。
-
-DPO paper 证明，这个目标存在闭式最优解。对于任意 reward function R，最优 policy 是：
-
-```
-pi*(y | x) = pi_ref(y | x) * exp(R(x, y) / beta) / Z(x)
+```math
+\text{maximize:} \quad \mathbb{E}[R(x, y)] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
-其中 Z(x) 是归一化常数。重新排列可得：
+其中 $R$ 是 reward model，$\pi$ 是 policy，$\pi_{\text{ref}}$ 是 reference model，$\beta$ 是 KL coefficient。
 
+DPO paper 证明，这个目标存在闭式最优解。对于任意 reward function $R$，最优 policy 是：
+
+```math
+\pi^*(y \mid x) = \pi_{\text{ref}}(y \mid x) \cdot \exp(R(x, y) / \beta) / Z(x)
 ```
-R(x, y) = beta * log(pi*(y | x) / pi_ref(y | x)) + beta * log Z(x)
+
+其中 $Z(x)$ 是归一化常数。重新排列可得：
+
+```math
+R(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 这就是突破点。reward 完全用 policy model 的概率和 reference model 的概率来表达。你不需要训练单独的 reward model。reward 被*隐式*包含在概率比中。
 
 将其代入 Bradley-Terry preference model：
 
-```
-P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))
-                  = sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x)))
+```math
+\begin{aligned}
+P(y_w > y_l \mid x) &= \mathop{\mathrm{sigmoid}}(R(x, y_w) - R(x, y_l)) \\
+&= \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
+\end{aligned}
 ```
 
-Z(x) 项会抵消，因为两个 response 都以同一个 prompt x 为条件。剩下的只是 policy model 和 reference model 在 preferred 与 rejected responses 上的 log-probabilities 的函数。
+$Z(x)$ 项会抵消，因为两个 response 都以同一个 prompt $x$ 为条件。剩下的只是 policy model 和 reference model 在 preferred 与 rejected responses 上的 log-probabilities 的函数。
 
 ### The DPO Loss
 
-```
-L_DPO = -log(sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x))))
+```math
+L_{\text{DPO}} = -\log \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
 ```
 
 我们拆解每一部分：
 
-- **y_w** = preferred（winning）response
-- **y_l** = rejected（losing）response
-- **x** = prompt
-- **pi** = 当前模型（正在训练）
-- **pi_ref** = reference model（冻结的 SFT checkpoint）
-- **beta** = 控制偏离 reference 程度的 temperature 参数（通常为 0.1 到 0.5）
+- **$y_w$** = preferred（winning）response
+- **$y_l$** = rejected（losing）response
+- **$x$** = prompt
+- **$\pi$** = 当前模型（正在训练）
+- **$\pi_{\text{ref}}$** = reference model（冻结的 SFT checkpoint）
+- **$\beta$** = 控制偏离 reference 程度的 temperature 参数（通常为 0.1 到 0.5）
 
-比值 `log pi(y|x) / pi_ref(y|x)` 是 log-probability ratio。当这个比值为正时，当前模型赋予 response y 的概率高于 reference。当它为负时，当前模型赋予的概率更低。
+比值 `log pi(y|x) / pi_ref(y|x)` 是 log-probability ratio。当这个比值为正时，当前模型赋予 response $y$ 的概率高于 reference。当它为负时，当前模型赋予的概率更低。
 
 DPO Loss 会推动模型提高 preferred responses 的 log-probability ratio，并降低 rejected responses 的 log-probability ratio。beta 参数控制模型可以多激进地偏离 reference：较小的 beta 表示允许较大偏离，较大的 beta 会让模型更接近 reference。
 
@@ -634,7 +636,7 @@ if __name__ == "__main__":
 | DPO | “没有 RL 的 RLHF” | Direct Preference Optimization：一种 supervised learning algorithm，直接在 preference pairs 上优化语言模型，绕过 reward model 和 PPO |
 | Implicit reward | “reward 在模型里” | reward function 由 policy 与 reference models 之间的 log-probability ratio 决定，不需要单独的 reward model |
 | Beta (DPO) | “temperature” | 控制 policy 可以偏离 reference model 的程度：小 beta 允许大偏离，大 beta 让模型保持接近 |
-| Log-probability ratio | “模型变化了多少” | log pi(y\|x) - log pi_ref(y\|x)：正值表示当前模型分配的概率高于 reference |
+| Log-probability ratio | “模型变化了多少” | $\log \pi(y \mid x) - \log \pi_{\text{ref}}(y \mid x)$：正值表示当前模型分配的概率高于 reference |
 | Reference model | “冻结的 checkpoint” | SFT model 的一个副本，其 weights 永不改变，用作计算概率比的锚点 |
 | KTO | “没有成对数据的 DPO” | Kahneman-Tversky Optimization：使用未配对的“good”或“bad”labels，而不是要求 preference pairs |
 | ORPO | “一步 alignment” | Odds Ratio Preference Optimization：通过向 SFT Loss 添加 preference term，将 SFT 和 alignment 合并到单个 training loop |

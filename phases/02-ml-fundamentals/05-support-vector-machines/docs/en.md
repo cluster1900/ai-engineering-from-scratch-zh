@@ -25,15 +25,15 @@ SVMs 直接连接到 Phase 1：optimization 是 convex 的（Lesson 18），marg
 ## 概念
 ### 最大间隔 classifier
 
-给定 labels y_i in {-1, +1} 和 feature vectors x_i 的 linearly separable data，我们希望找到一个 hyperplane w^T x + b = 0 来分离类别。
+给定 labels $y_i \in \lbrace -1, +1 \rbrace$ 和 feature vectors $x_i$ 的 linearly separable data，我们希望找到一个 hyperplane $w^T x + b = 0$ 来分离类别。
 
-点 x_i 到 hyperplane 的距离是：
+点 $x_i$ 到 hyperplane 的距离是：
 
+```math
+\text{距离} = \frac{\lvert w^T x_i + b \rvert}{\lVert w \rVert}
 ```
-distance = |w^T x_i + b| / ||w||
-```
 
-对于正确分类的点：y_i * (w^T x_i + b) > 0。margin 是从 hyperplane 到任一侧最近点距离的两倍。
+对于正确分类的点：$y_i (w^T x_i + b) > 0$。margin 是从 hyperplane 到任一侧最近点距离的两倍。
 
 ```mermaid
 graph LR
@@ -48,19 +48,23 @@ graph LR
 
 optimization problem：
 
-```
-maximize    2 / ||w||     (margin width)
-subject to  y_i * (w^T x_i + b) >= 1  for all i
-```
-
-等价地（minimizing ||w||^2 更容易 optimize）：
-
-```
-minimize    (1/2) ||w||^2
-subject to  y_i * (w^T x_i + b) >= 1  for all i
+```math
+\begin{aligned}
+\text{最大化} \quad & \frac{2}{\lVert w \rVert} \quad \text{（间隔宽度）} \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-这是一个 convex quadratic program。它有唯一的 global solution。正好位于 margin boundaries 上的数据点（其中 y_i * (w^T x_i + b) = 1）就是 support vectors。它们是唯一决定 decision boundary 的点。移动或删除任何 non-support-vector point，boundary 都不会改变。
+等价地（minimizing $\lVert w \rVert^2$ 更容易 optimize）：
+
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
+```
+
+这是一个 convex quadratic program。它有唯一的 global solution。正好位于 margin boundaries 上的数据点（其中 $y_i (w^T x_i + b) = 1$）就是 support vectors。它们是唯一决定 decision boundary 的点。移动或删除任何 non-support-vector point，boundary 都不会改变。
 
 ### Support vectors：关键的少数点
 
@@ -82,30 +86,32 @@ support vectors 的数量也给出了 generalization error 的界。相对于 da
 
 真实数据很少是完全 separable 的。有些点可能在 boundary 的错误一侧，或者位于 margin 内部。soft margin formulation 通过引入 slack variables 来允许 violations。
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i)
-subject to  y_i * (w^T x_i + b) >= 1 - xi_i
-            xi_i >= 0  for all i
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i \xi_i \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 - \xi_i \\
+& \xi_i \ge 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-slack variable xi_i 衡量点 i 违反 margin 的程度。C 控制这种 trade-off：
+slack variable $\xi_i$ 衡量点 $i$ 违反 margin 的程度。$C$ 控制这种 trade-off：
 
-| C value | Behavior |
+| $C$ value | Behavior |
 |---------|----------|
-| Large C | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
-| Small C | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
+| Large $C$ | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
+| Small $C$ | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
 
-C 是 regularization strength 的倒数。Large C = 更少 regularization。Small C = 更多 regularization。
+$C$ 是 regularization strength 的倒数。Large $C$ = 更少 regularization。Small $C$ = 更多 regularization。
 
 ### Hinge loss：SVM 的 Loss Function
 
 soft margin SVM 可以重写为 unconstrained optimization：
 
-```
-minimize    (1/2) ||w||^2 + C * sum(max(0, 1 - y_i * (w^T x_i + b)))
+```math
+\text{最小化} \quad \frac{1}{2} \lVert w \rVert^2 + C \sum_i \max(0, 1 - y_i (w^T x_i + b))
 ```
 
-项 max(0, 1 - y_i * f(x_i)) 就是 hinge loss。当点被正确分类且位于 margin 之外时，它为零。当点位于 margin 内部或被 misclassified 时，它是线性的。
+项 $\max(0, 1 - y_i f(x_i))$ 就是 hinge loss。当点被正确分类且位于 margin 之外时，它为零。当点位于 margin 内部或被 misclassified 时，它是线性的。
 
 ```
 单个点的 Hinge loss：
@@ -127,9 +133,11 @@ loss
 
 与 logistic loss（logistic regression）比较：
 
-```
-Hinge:     max(0, 1 - y*f(x))          在 margin 处 hard cutoff
-Logistic:  log(1 + exp(-y*f(x)))        平滑，永远不会精确为零
+```math
+\begin{aligned}
+\text{Hinge：} \quad & \max(0, 1 - y f(x)) && \text{在间隔处硬截断} \\
+\text{Logistic：} \quad & \log(1 + \exp(-y f(x))) && \text{平滑，永不精确为零}
+\end{aligned}
 ```
 
 Hinge loss 产生 sparse solutions（只有 support vectors 有非零贡献）。Logistic loss 使用所有 data points。这使 SVMs 在 prediction time 更 memory-efficient。
@@ -138,36 +146,40 @@ Hinge loss 产生 sparse solutions（只有 support vectors 有非零贡献）�
 
 你可以使用 hinge loss 加 L2 regularization 上的 gradient descent 来训练 linear SVM，而不需要求解 constrained QP：
 
+```math
+\begin{aligned}
+& L(w, b) = \frac{\lambda}{2} \lVert w \rVert^2 + \frac{1}{n} \sum_i \max(0, 1 - y_i (w^T x_i + b)) \\[6pt]
+& \text{关于 } w \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w - y_i x_i \\[6pt]
+& \text{关于 } b \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial b} = 0 \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial b} = -y_i
+\end{aligned}
 ```
-L(w, b) = (lambda/2) * ||w||^2 + (1/n) * sum(max(0, 1 - y_i * (w^T x_i + b)))
 
-关于 w 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/dw = lambda * w
-  If y_i * (w^T x_i + b) < 1:   dL/dw = lambda * w - y_i * x_i
-
-关于 b 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/db = 0
-  If y_i * (w^T x_i + b) < 1:   dL/db = -y_i
-```
-
-这称为 primal formulation。它每个 epoch 的运行时间为 O(n * d)，其中 n 是 samples 的数量，d 是 features 的数量。对于大规模、sparse、高维数据（text classification），这很快。
+这称为 primal formulation。它每个 epoch 的运行时间为 $O(n \cdot d)$，其中 $n$ 是 samples 的数量，$d$ 是 features 的数量。对于大规模、sparse、高维数据（text classification），这很快。
 
 ### dual formulation 和 kernel trick
 
 SVM problem 的 Lagrangian dual（来自 Phase 1 Lesson 18，KKT conditions）是：
 
-```
-maximize    sum(alpha_i) - (1/2) * sum_ij(alpha_i * alpha_j * y_i * y_j * (x_i . x_j))
-subject to  0 <= alpha_i <= C
-            sum(alpha_i * y_i) = 0
+```math
+\begin{aligned}
+\text{最大化} \quad & \sum_i \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) \\
+\text{约束为} \quad & 0 \le \alpha_i \le C \\
+& \sum_i \alpha_i y_i = 0
+\end{aligned}
 ```
 
-dual 只涉及数据点之间的 dot products x_i . x_j。这是关键洞见。用 kernel function K(x_i, x_j) 替换每一个 dot product，SVM 就能学习 nonlinear boundaries，而不需要显式计算 transformation。
+dual 只涉及数据点之间的 dot products $x_i \cdot x_j$。这是关键洞见。用 kernel function $K(x_i, x_j)$ 替换每一个 dot product，SVM 就能学习 nonlinear boundaries，而不需要显式计算 transformation。
 
-```
-Linear kernel:      K(x, z) = x . z
-Polynomial kernel:  K(x, z) = (x . z + c)^d
-RBF (Gaussian):     K(x, z) = exp(-gamma * ||x - z||^2)
+```math
+\begin{aligned}
+\text{线性核：} \quad & K(x, z) = x \cdot z \\
+\text{多项式核：} \quad & K(x, z) = (x \cdot z + c)^d \\
+\text{RBF（高斯核）：} \quad & K(x, z) = \exp(-\gamma \lVert x - z \rVert^2)
+\end{aligned}
 ```
 
 RBF kernel 将数据映射到 infinite-dimensional space。input space 中接近的点，其 kernel value 接近 1。相距很远的点，其 kernel value 接近 0。它可以学习任意 smooth decision boundary。
@@ -183,20 +195,22 @@ graph LR
     A -->|"Kernel trick<br>K(x,z) = phi(x).phi(z)"| B
 ```
 
-kernel trick 在不进入高维空间的情况下，计算高维空间中的 dot product。对于 D 维中 degree d 的 polynomial kernel，显式 feature space 有 O(D^d) 维。但 K(x, z) 可以在 O(D) 时间内计算。
+kernel trick 在不进入高维空间的情况下，计算高维空间中的 dot product。对于 $D$ 维中 degree $d$ 的 polynomial kernel，显式 feature space 有 $O(D^d)$ 维。但 $K(x, z)$ 可以在 $O(D)$ 时间内计算。
 
 ### SVM for regression (SVR)
 
-Support Vector Regression 会围绕数据拟合一个宽度为 epsilon 的 tube。tube 内的点具有 zero loss。tube 外的点会被线性惩罚。
+Support Vector Regression 会围绕数据拟合一个宽度为 $\epsilon$ 的 tube。tube 内的点具有 zero loss。tube 外的点会被线性惩罚。
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i + xi_i*)
-subject to  y_i - (w^T x_i + b) <= epsilon + xi_i
-            (w^T x_i + b) - y_i <= epsilon + xi_i*
-            xi_i, xi_i* >= 0
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i (\xi_i + \xi_i^*) \\
+\text{约束为} \quad & y_i - (w^T x_i + b) \le \epsilon + \xi_i \\
+& (w^T x_i + b) - y_i \le \epsilon + \xi_i^* \\
+& \xi_i, \xi_i^* \ge 0
+\end{aligned}
 ```
 
-epsilon parameter 控制 tube width。tube 越宽 = support vectors 越少 = fit 更平滑。tube 越窄 = support vectors 越多 = fit 更紧。
+$\epsilon$ parameter 控制 tube width。tube 越宽 = support vectors 越少 = fit 更平滑。tube 越窄 = support vectors 越多 = fit 更紧。
 
 ### 为什么 SVMs 输给了 Deep Learning（以及它们什么时候仍然胜出）
 
@@ -205,7 +219,7 @@ SVMs 从 1990 年代末到 2010 年代初主导了 ML。Deep Learning 出于几�
 | Factor | SVMs | Deep learning |
 |--------|------|---------------|
 | Feature engineering | 需要它 | 学习 features |
-| Scalability | kernel 为 O(n^2) 到 O(n^3) | 使用 SGD 时每个 epoch 为 O(n) |
+| Scalability | kernel 为 $O(n^2)$ 到 $O(n^3)$ | 使用 SGD 时每个 epoch 为 $O(n)$ |
 | Image/text/audio | 需要 handcrafted features | 从 raw data 学习 |
 | Large datasets (>100k) | 慢 | 扩展良好 |
 | GPU acceleration | 收益有限 | 巨大加速 |
@@ -320,9 +334,9 @@ print(f"Accuracy: {clf.score(X_test, y_test):.4f}")
 print(f"Support vectors: {clf['svm'].n_support_}")
 ```
 
-重要：训练 SVM 之前始终要 scale 你的 features。SVMs 对 feature magnitudes 敏感，因为 margin 取决于 ||w||，而未 scale 的 features 会扭曲几何结构。
+重要：训练 SVM 之前始终要 scale 你的 features。SVMs 对 feature magnitudes 敏感，因为 margin 取决于 $\lVert w \rVert$，而未 scale 的 features 会扭曲几何结构。
 
-对于大数据集，使用 `LinearSVC`（primal formulation，每个 epoch 为 O(n)）而不是 `SVC`（dual formulation，O(n^2) 到 O(n^3)）：
+对于大数据集，使用 `LinearSVC`（primal formulation，每个 epoch 为 $O(n)$）而不是 `SVC`（dual formulation，$O(n^2)$ 到 $O(n^3){}$）：
 
 ```python
 from sklearn.svm import LinearSVC
@@ -336,29 +350,29 @@ clf = Pipeline([
 ## 练习
 1. 生成一个 2D linearly separable dataset。训练你的 LinearSVM，并识别 support vectors。验证 support vectors 是最接近 decision boundary 的点。
 
-2. 在一个 noisy dataset 上将 C 从 0.001 变化到 1000。为每个 C value 绘制 decision boundary。观察从 wide margin（underfitting）到 narrow margin（overfitting）的过渡。
+2. 在一个 noisy dataset 上将 $C$ 从 0.001 变化到 1000。为每个 $C$ value 绘制 decision boundary。观察从 wide margin（underfitting）到 narrow margin（overfitting）的过渡。
 
 3. 创建一个 class boundaries 为 circular（非 linear）的 dataset。展示 linear SVM 会失败。计算 RBF kernel matrix，并展示类别在 kernel-induced feature space 中变得 separable。
 
 4. 在同一个 dataset 上比较 hinge loss 与 logistic loss。训练一个 linear SVM 和 logistic regression。统计有多少 training points 会贡献到每个模型的 decision boundary（support vectors vs all points）。
 
-5. 实现 SVR（epsilon-insensitive loss）。将它拟合到 y = sin(x) + noise。绘制 predictions 周围的 epsilon tube，并突出显示 support vectors（tube 外的点）。
+5. 实现 SVR（epsilon-insensitive loss）。将它拟合到 $y = \sin(x) + \text{噪声}$。绘制 predictions 周围的 epsilon tube，并突出显示 support vectors（tube 外的点）。
 
 ## 关键术语
 | Term | What it actually means |
 |------|----------------------|
 | Support vectors | 最接近 decision boundary 的 training points。唯一决定 hyperplane 的点 |
 | Margin | decision boundary 与最近 support vectors 之间的距离。SVMs 会最大化它 |
-| Hinge loss | max(0, 1 - y*f(x))。正确分类且位于 margin 外时为零。否则为 linear penalty |
-| C parameter | margin width 与 classification errors 之间的 trade-off。Large C = narrow margin，small C = wide margin |
+| Hinge loss | $\max(0, 1 - y f(x))$。正确分类且位于 margin 外时为零。否则为 linear penalty |
+| C parameter | margin width 与 classification errors 之间的 trade-off。Large $C$ = narrow margin，small $C$ = wide margin |
 | Soft margin | 通过 slack variables 允许 margin violations 的 SVM formulation。处理 non-separable data |
 | Kernel trick | 在不显式映射到高维 feature space 的情况下，计算该空间中的 dot products |
-| Linear kernel | K(x, z) = x . z。等价于标准 dot product。用于 linearly separable data |
-| RBF kernel | K(x, z) = exp(-gamma * \|\|x-z\|\|^2)。映射到 infinite dimensions。学习任意 smooth boundary |
-| Polynomial kernel | K(x, z) = (x . z + c)^d。映射到 polynomial combinations 的 feature space |
+| Linear kernel | $K(x, z) = x \cdot z$。等价于标准 dot product。用于 linearly separable data |
+| RBF kernel | $K(x, z) = \exp(-\gamma \Vert x-z \Vert^2)$。映射到 infinite dimensions。学习任意 smooth boundary |
+| Polynomial kernel | $K(x, z) = (x \cdot z + c)^d$。映射到 polynomial combinations 的 feature space |
 | Dual formulation | SVM problem 的重写形式，只依赖数据点之间的 dot products。支持 kernels |
 | SVR | Support Vector Regression。围绕数据拟合 epsilon-tube。tube 内的点具有 zero loss |
-| Slack variables | xi_i：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
+| Slack variables | $\xi_i$：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
 | Maximum margin | 选择能够最大化到每个类别最近点距离的 hyperplane 的原则 |
 
 ## 延伸阅读

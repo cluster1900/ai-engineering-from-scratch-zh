@@ -126,6 +126,14 @@ if torch.cuda.is_available():
 2. 如果你没有 GPU，在 Google Colab 上运行它并进行比较
 3. 检查你有多少 GPU memory，并估算你能容纳的最大 model（经验法则：fp16 每个 parameter 2 bytes）
 
+### 提示
+
+**练习 1。** 原样运行“构建它”部分的代码，记录 CPU 时间、GPU 时间以及加速比所在行。再运行一次；首次 GPU 运行包含启动开销，因此应比较第二次的结果。
+
+**练习 2。** 在 Colab 中选择 Runtime > Change runtime type > GPU，再把基准测试粘贴到一个单元格。先在另一个单元格运行 `!nvidia-smi`；只有它显示 GPU 名称后，基准测试结果才有意义。
+
+**练习 3。** 按 `code/gpu_check.py` 中的方式，用 `torch.cuda.get_device_properties(0).total_memory / 1e9` 读取总显存。将以字节为单位的显存除以 2，得到 fp16 参数量估计值，再留出余量，因为激活值和 CUDA 上下文也会占用显存。
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

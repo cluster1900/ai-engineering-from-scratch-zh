@@ -82,7 +82,7 @@ flowchart TD
 
 ### Z-Score 方法
 
-最简单的方法。计算每个 feature 的 mean 和 standard deviation。标记任何距离 mean 超过 k 个 standard deviations 的点。
+最简单的方法。计算每个 feature 的 mean 和 standard deviation。标记任何距离 mean 超过 $k$ 个 standard deviations 的点。
 
 ```text
 z_score = (x - mean) / std
@@ -148,11 +148,11 @@ flowchart TD
 
 Anomaly score 基于所有 trees 的 average path length，并用 random binary search tree 的 expected path length 进行 normalization：
 
-```
-score(x) = 2^(-average_path_length(x) / c(n))
+```math
+\text{分数}(x) = 2^{-\text{average\_path\_length}(x) / c(n)}
 ```
 
-其中 `c(n)` 是 n 个 samples 的 expected path length。Score 接近 1 表示 anomaly。Score 接近 0.5 表示 normal。Score 接近 0 表示非常 normal（位于 dense clusters 深处）。
+其中 `c(n)` 是 $n$ 个 samples 的 expected path length。Score 接近 1 表示 anomaly。Score 接近 0.5 表示 normal。Score 接近 0 表示非常 normal（位于 dense clusters 深处）。
 
 **优点：** 没有 distribution assumptions。适用于 high dimensions。扩展性好（由于每棵 tree 使用 subsample，所以相对于 sample size 是 sublinear）。处理 mixed feature types。
 
@@ -168,7 +168,7 @@ score(x) = 2^(-average_path_length(x) / c(n))
 LOF 将某个点周围的 local density 与其 neighbors 周围的 density 进行比较。一个位于 sparse region、但被 dense regions 包围的点是 anomalous。
 
 **工作方式：**
-1. 对每个点，找到它的 k nearest neighbors
+1. 对每个点，找到它的 $k$ nearest neighbors
 2. 计算 local reachability density（邻域有多密）
 3. 比较每个点的 density 与其 neighbors 的 densities
 4. 如果某个点的 density 明显低于其 neighbors，它就是 outlier
@@ -182,7 +182,7 @@ LOF 将某个点周围的 local density 与其 neighbors 周围的 density 进�
 
 **优点：** 检测 local anomalies（在其邻域中异常的点，即使它们不是全局异常）。适用于不同 densities 的 clusters。
 
-**缺点：** 在大型数据集上慢（naive implementation 为 O(n^2)）。对 k 的选择敏感。在 very high dimensions 中效果不好（curse of dimensionality 会影响 distance calculations）。
+**缺点：** 在大型数据集上慢（naive implementation 为 $O(n^2)$）。对 $k$ 的选择敏感。在 very high dimensions 中效果不好（curse of dimensionality 会影响 distance calculations）。
 
 ### 对比
 
@@ -199,7 +199,7 @@ LOF 将某个点周围的 local density 与其 neighbors 周围的 density 进�
 
 - **Extreme class imbalance.** 如果 anomalies 占 0.1%，对所有内容都预测 "normal" 会得到 99.9% accuracy。Accuracy 没有用。
 - **AUROC 具有误导性。** 在严重 imbalance 下，即使 model 在实际 thresholds 下漏掉大多数 anomalies，AUROC 也可能看起来不错。
-- **更好的 metrics：** Precision@k（top k 被标记项中有多少是真 anomalies）、AUPRC（precision-recall curve 下的面积），以及在固定 false positive rate 下的 recall。
+- **更好的 metrics：** Precision@k（top $k$ 被标记项中有多少是真 anomalies）、AUPRC（precision-recall curve 下的面积），以及在固定 false positive rate 下的 recall。
 
 ```mermaid
 flowchart LR
@@ -318,7 +318,7 @@ class IsolationForest:
         return scores
 ```
 
-Normalization factor `c(n)` 是在包含 n 个 elements 的 binary search tree 中一次 unsuccessful search 的 expected path length。它等于 `2 * H(n-1) - 2*(n-1)/n`，其中 `H` 是 harmonic number。这个 normalization 确保 scores 在不同大小的数据集之间可比较。
+Normalization factor `c(n)` 是在包含 $n$ 个 elements 的 binary search tree 中一次 unsuccessful search 的 expected path length。它等于 `2 * H(n-1) - 2*(n-1)/n`，其中 `H` 是 harmonic number。这个 normalization 确保 scores 在不同大小的数据集之间可比较。
 
 ### Demo 场景
 
@@ -434,7 +434,7 @@ Anomaly score 是连续值。你需要一个 threshold 来做 binary decisions�
 
 2. **Multivariate anomalies.** 创建 2D 数据，其中每个 feature 单独看都像 normal，但组合起来是 anomalous（例如，远离 main cluster diagonal 的点）。展示逐 feature 的 Z-score 会漏掉这些点，但 Isolation Forest 能捕捉它们。
 
-3. **从零实现 LOF.** 使用 k-nearest neighbors 实现 Local Outlier Factor。在同一数据上与 sklearn 的 LocalOutlierFactor 比较。使用 k=10 和 k=50，k 的选择如何影响结果？
+3. **从零实现 LOF.** 使用 k-nearest neighbors 实现 Local Outlier Factor。在同一数据上与 sklearn 的 LocalOutlierFactor 比较。使用 $k=10$ 和 $k=50$，$k$ 的选择如何影响结果？
 
 4. **Streaming Anomaly Detection.** 修改 Z-score detector，使其在 streaming setting 中工作：随着新点到达更新 running mean 和 variance（Welford's online algorithm）。在同一数据上与 batch Z-score 比较。
 
@@ -449,10 +449,10 @@ Anomaly score 是连续值。你需要一个 threshold 来做 binary decisions�
 | Contextual anomaly | "normal 值，错误上下文" | 一个在给定上下文（时间、位置等）下异常、但在另一个上下文中可能 normal 的 observation |
 | Isolation Forest | "用 random splits 找 outliers" | 一种 random trees 的 ensemble，它能用比 normal points 更少的 splits 隔离 anomalies |
 | Local Outlier Factor | "把 density 和 neighbors 比较" | 一种标记 local density 明显低于其 neighbors density 的点的方法 |
-| Z-score | "距离 mean 的 standard deviations 数" | (x - mean) / std，用 standard deviation 为单位衡量某个点距离中心有多远 |
-| IQR | "Interquartile range" | Q3 - Q1，衡量数据中间 50% 的 spread，用于 robust outlier detection |
+| Z-score | "距离 mean 的 standard deviations 数" | $(x - \text{均值}) / \text{标准差}$，用 standard deviation 为单位衡量某个点距离中心有多远 |
+| IQR | "Interquartile range" | $Q3 - Q1$，衡量数据中间 50% 的 spread，用于 robust outlier detection |
 | Contamination | "预期 anomalies 比例" | 一个 hyperparameter，用于告诉 detector 应该将数据中多大比例标记为 anomalous |
-| Precision@k | "top k flags 中有多少是真的" | 只在 k 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
+| Precision@k | "top k flags 中有多少是真的" | 只在 $k$ 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
 | AUPRC | "Precision-recall curve 下的面积" | 一个汇总所有 thresholds 下 precision-recall 表现的 metric，对 imbalanced data 比 AUROC 更好 |
 
 ## 延伸阅读

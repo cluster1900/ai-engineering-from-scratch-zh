@@ -21,31 +21,31 @@
 
 ![Four MARL regimes: indep, centralized critic, self-play, league](../assets/marl.svg)
 
-**Formalism: Markov Game.** MDP 的泛化：states `S`、joint action `a = (a_1, …, a_n)`、transition `P(s' | s, a)`，以及每个 agent 的 rewards `R_i(s, a, s')`。每个 agent `i` 在自己的 policy `π_i` 下最大化自己的 return。如果 rewards 完全相同，它是 **fully cooperative**。如果是 zero-sum，它是 **adversarial**。如果混合，则是 **general-sum**。
+**Formalism: Markov Game.** MDP 的泛化：states $S$、joint action $a = (a_1, \ldots, a_n)$、transition $P(s' \mid s, a)$，以及每个 agent 的 rewards $R_i(s, a, s')$。每个 agent $i$ 在自己的 policy $\pi_i$ 下最大化自己的 return。如果 rewards 完全相同，它是 **fully cooperative**。如果是 zero-sum，它是 **adversarial**。如果混合，则是 **general-sum**。
 
 **核心挑战：**
 
-- **Non-stationarity.** 从 agent `i` 的视角看，`P(s' | s, a_i)` 取决于 `π_{-i}`，而它正在变化。
+- **Non-stationarity.** 从 agent $i$ 的视角看，$P(s' \mid s, a_i)$ 取决于 $\pi_{-i}$，而它正在变化。
 - **Credit assignment.** 在 shared reward 下，是哪个 agent 导致了它？
 - **Exploration coordination.** Agents 必须探索互补策略，而不是重复探索同一个 state。
-- **Scalability.** Joint action space 会随 `n` 指数级增长。
+- **Scalability.** Joint action space 会随 $n$ 指数级增长。
 - **Partial observability.** 每个 agent 只能看到自己的 observation；global state 是隐藏的。
 
 **四种主导范式：**
 
 **1. Independent Q-learning / independent PPO (IQL, IPPO).** 每个 agent 学习自己的 Q 或 policy，把其他 agents 当作环境的一部分。简单，有时有效（尤其是 experience replay 作为一种平滑的 agent-modeling 技巧时）。理论收敛性：没有。实践中：适合 loosely-coupled tasks，不适合 tightly-coupled ones。
 
-**2. Centralized training, decentralized execution (CTDE).** 最常见的现代范式。每个 agent 都有自己的 *policy* `π_i`，它以 local observation `o_i` 为条件——部署时是标准的 decentralized execution。在 *training* 期间，centralized critic `Q(s, a_1, …, a_n)` 以完整的 global state 和 joint action 为条件。示例：
+**2. Centralized training, decentralized execution (CTDE).** 最常见的现代范式。每个 agent 都有自己的 *policy* $\pi_i$，它以 local observation $o_i$ 为条件——部署时是标准的 decentralized execution。在 *training* 期间，centralized critic $Q(s, a_1, \ldots, a_n)$ 以完整的 global state 和 joint action 为条件。示例：
 - **MADDPG** (Lowe et al. 2017): 带有每个 agent 一个 centralized critic 的 DDPG。
-- **COMA** (Foerster et al. 2017): counterfactual baseline——问“如果我当时采取 action `a'`，我的 reward 会是多少？”——隔离我的贡献。
+- **COMA** (Foerster et al. 2017): counterfactual baseline——问“如果我当时采取 action $a'$，我的 reward 会是多少？”——隔离我的贡献。
 - **MAPPO** / **IPPO** with shared critic (Yu et al. 2022): 带有 centralized value function 的 PPO。2026 年 cooperative MARL 中的主导方法。
-- **QMIX** (Rashid et al. 2018): value decomposition——`Q_tot(s, a) = f(Q_1(s, a_1), …, Q_n(s, a_n))`，并使用 monotonic mixing。
+- **QMIX** (Rashid et al. 2018): value decomposition——$Q_{\text{tot}}(s, a) = f(Q_1(s, a_1), \ldots, Q_n(s, a_n))$，并使用 monotonic mixing。
 
 **3. Self-play.** 同一个 agent 的两个副本互相对战。对手的 policy *就是*我过去某个 snapshot 中的 policy。AlphaGo / AlphaZero / MuZero。OpenAI Five。最适合 zero-sum games；training signal 是对称的。
 
 **4. League play.** self-play 向 general-sum / adversarial environments 的扩展：保留一组过去和当前的 policies，从 league 中采样 opponent，并针对它们训练。加入 exploiters（专门击败当前最佳策略）和 main exploiters（专门击败 exploiters）。AlphaStar（StarCraft II）。当游戏存在“rock-paper-scissors”策略循环时，这是必要的。
 
-**Communication.** 允许 agents 互相发送 learned messages `m_i`。在 cooperative settings 中有效。Foerster et al. (2016) 表明，differentiable inter-agent communication 可以端到端训练。今天基于 LLM 的 multi-agent systems（Phase 16）本质上是在用自然语言通信。
+**Communication.** 允许 agents 互相发送 learned messages $m_i$。在 cooperative settings 中有效。Foerster et al. (2016) 表明，differentiable inter-agent communication 可以端到端训练。今天基于 LLM 的 multi-agent systems（Phase 16）本质上是在用自然语言通信。
 
 
 ```figure
@@ -102,11 +102,11 @@ def independent_q(env, episodes, alpha, gamma, epsilon):
 
 ### 步骤 3：centralized Q 与 decomposed-value update
 
-对 joint actions 使用一个 Q：`Q(s, a_1, a_2)`。用 shared reward 更新。执行时通过 marginalizing 来 decentralized：`π_i(s) = argmax_{a_i} max_{a_{-i}} Q(s, a_1, a_2)`。它用指数级的 joint action space 换取一个*正确*的 global view。
+对 joint actions 使用一个 Q：$Q(s, a_1, a_2)$。用 shared reward 更新。执行时通过 marginalizing 来 decentralized：$\pi_i(s) = \arg\max_{a_i} \max_{a_{-i}} Q(s, a_1, a_2)$。它用指数级的 joint action space 换取一个*正确*的 global view。
 
 ### 步骤 4: 简单 self-play（adversarial 2-agent）
 
-同一个 agent，两个 roles。训练 agent A 对抗 agent B；每经过 `K` 个 episodes，把 A 的 weights 复制到 B。对称训练，进展一致。AlphaZero recipe 的微缩版。
+同一个 agent，两个 roles。训练 agent A 对抗 agent B；每经过 $K$ 个 episodes，把 A 的 weights 复制到 B。对称训练，进展一致。AlphaZero recipe 的微缩版。
 
 ## 常见陷阱
 
@@ -168,11 +168,11 @@ tags: [rl, multi-agent, marl, self-play]
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Markov game | "Multi-agent MDP" | `(S, A_1, …, A_n, P, R_1, …, R_n)`；每个 agent 都有自己的 reward。 |
+| Markov game | "Multi-agent MDP" | $(S, A_1, \ldots, A_n, P, R_1, \ldots, R_n)$；每个 agent 都有自己的 reward。 |
 | CTDE | "Centralized training, decentralized execution" | Training time 使用 joint critic；每个 agent 的 policy 只使用 local obs。 |
 | IPPO | "Independent PPO" | 每个 agent 单独运行 PPO。简单 baseline；经常被低估。 |
 | MAPPO | "Multi-agent PPO" | 带有以 global state 为条件的 centralized value function 的 PPO。 |
-| QMIX | "Monotonic value decomposition" | `Q_tot = f_monotone(Q_1, …, Q_n)` 允许 decentralized argmax。 |
+| QMIX | "Monotonic value decomposition" | $Q_{\text{tot}} = f_{\text{monotone}}(Q_1, \ldots, Q_n)$ 允许 decentralized argmax。 |
 | COMA | "Counterfactual multi-agent" | Advantage = 我的 Q 减去对我的 action 做 marginalizing 后的 expected Q。 |
 | Self-play | "Agent vs past self" | 单个 agent，两个 roles；zero-sum games 的标准方法。 |
 | League play | "Population training" | 缓存过去的 policies，从 pool 中采样 opponents；处理 strategy cycles。 |

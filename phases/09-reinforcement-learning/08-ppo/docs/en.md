@@ -9,11 +9,11 @@
 
 ## 问题
 
-A2C（Lesson 07）是 on-policy 的：Gradient `E_{π_θ}[A · ∇ log π_θ]` 需要从*当前* `π_θ` 采样的数据。做一次更新后，`π_θ` 就变了；你刚用过的数据现在已经是 off-policy。重复使用它会让 Gradient 有偏。
+A2C（Lesson 07）是 on-policy 的：Gradient $\mathbb E_{\pi_\theta}[A \cdot \nabla \log \pi_\theta]$ 需要从*当前* $\pi_\theta$ 采样的数据。做一次更新后，$\pi_\theta$ 就变了；你刚用过的数据现在已经是 off-policy。重复使用它会让 Gradient 有偏。
 
 Rollout 很昂贵。在 Atari 上，跨 8 个 envs × 128 steps 的一次 rollout = 1024 个 transitions，以及十几秒的环境时间。一次 Gradient step 后就把它丢掉很浪费。
 
-Trust Region Policy Optimization（TRPO, Schulman 2015）是第一个修复方案：约束每次更新，使旧 policy 和新 policy 之间的 KL divergence 保持在 `δ` 以下。理论上很干净，但每次更新都需要一次 conjugate-gradient solve。2026 年已经没人运行 TRPO。
+Trust Region Policy Optimization（TRPO, Schulman 2015）是第一个修复方案：约束每次更新，使旧 policy 和新 policy 之间的 KL divergence 保持在 $\delta$ 以下。理论上很干净，但每次更新都需要一次 conjugate-gradient solve。2026 年已经没人运行 TRPO。
 
 PPO（Schulman et al. 2017）用一个简单的 clipped objective 替代了硬性的 trust-region 约束。只多一行代码。每次 rollout 十个 epochs。不需要 conjugate gradients。理论保证足够好。九年后，它仍然是从 MuJoCo 到 RLHF 的默认 policy-gradient 算法。
 
@@ -23,43 +23,49 @@ PPO（Schulman et al. 2017）用一个简单的 clipped objective 替代了硬�
 
 **Importance ratio。**
 
-`r_t(θ) = π_θ(a_t | s_t) / π_{θ_old}(a_t | s_t)`
+```math
+r_t(\theta) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}
+```
 
-这是新 policy 与采集数据的 policy 之间的 likelihood ratio。`r_t = 1` 表示没有变化。`r_t = 2` 表示新 policy 选择 `a_t` 的可能性是旧 policy 的两倍。
+这是新 policy 与采集数据的 policy 之间的 likelihood ratio。$r_t = 1$ 表示没有变化。$r_t = 2$ 表示新 policy 选择 $a_t$ 的可能性是旧 policy 的两倍。
 
 **Clipped surrogate。**
 
-`L^{CLIP}(θ) = E_t [ min( r_t(θ) A_t, clip(r_t(θ), 1-ε, 1+ε) A_t ) ]`
+```math
+L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \mathop{\mathrm{clip}}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+```
 
 两个项：
 
-- 如果 advantage `A_t > 0`，并且 ratio 试图增长到超过 `1 + ε`，clip 会把 Gradient 压平 —— 不要把一个好 action 推到比旧概率高出 `+ε` 以上。
-- 如果 advantage `A_t < 0`，并且 ratio 试图增长到超过 `1 - ε`（意味着相比 clipped reduction，我们会让一个坏 action 更可能发生），clip 会限制 Gradient —— 不要把一个坏 action 推到低于 `-ε`。
+- 如果 advantage $A_t > 0$，并且 ratio 试图增长到超过 $1 + \epsilon$，clip 会把 Gradient 压平 —— 不要把一个好 action 推到比旧概率高出 $+\epsilon$ 以上。
+- 如果 advantage $A_t < 0$，并且 ratio 试图增长到超过 $1 - \epsilon$（意味着相比 clipped reduction，我们会让一个坏 action 更可能发生），clip 会限制 Gradient —— 不要把一个坏 action 推到低于 $-\epsilon$。
 
 `min` 处理另一个方向：如果 ratio 已经朝*有益*方向移动，你仍然得到 Gradient（不会在对你不利的一侧 clipping）。
 
-典型值是 `ε = 0.2`。把 objective 画成 `r_t` 的函数：一个 piecewise-linear function，在“好的一侧”有平坦的顶部，在“坏的一侧”有平坦的底部。
+典型值是 $\epsilon = 0.2$。把 objective 画成 $r_t$ 的函数：一个 piecewise-linear function，在“好的一侧”有平坦的顶部，在“坏的一侧”有平坦的底部。
 
 **完整的 PPO loss。**
 
-`L(θ, φ) = L^{CLIP}(θ) - c_v · (V_φ(s_t) - V_t^{target})² + c_e · H(π_θ(·|s_t))`
+```math
+L(\theta, \phi) = L^{\text{CLIP}}(\theta) - c_v \cdot (V_\phi(s_t) - V_t^{\text{target}})^2 + c_e \cdot H(\pi_\theta(\cdot \mid s_t))
+```
 
-与 A2C 相同的 actor-critic 结构。三个系数，通常是 `c_v = 0.5`、`c_e = 0.01`、`ε = 0.2`。
+与 A2C 相同的 actor-critic 结构。三个系数，通常是 $c_v = 0.5$、$c_e = 0.01$、$\epsilon = 0.2$。
 
 **训练循环。**
 
-1. 跨 `N` 个 parallel envs，每个运行 `T` steps，收集 `N × T` 个 transitions。
+1. 跨 $N$ 个 parallel envs，每个运行 $T$ steps，收集 $N \times T$ 个 transitions。
 2. 计算 advantages（GAE），并把它们冻结为常量。
-3. 把 `π_{θ_old}` 冻结为当前 `π_θ` 的 snapshot。
-4. 对 `K` 个 epochs，对每个 `(s, a, A, V_target, log π_old(a|s))` 的 minibatch：
-   - 计算 `r_t(θ) = exp(log π_θ(a|s) - log π_old(a|s))`。
-   - 应用 `L^{CLIP}` + value loss + entropy。
+3. 把 $\pi_{\theta_{\text{old}}}$ 冻结为当前 $\pi_\theta$ 的 snapshot。
+4. 对 $K$ 个 epochs，对每个 `(s, a, A, V_target, log π_old(a|s))` 的 minibatch：
+   - 计算 $r_t(\theta) = \exp(\log \pi_\theta(a \mid s) - \log \pi_{\text{old}}(a \mid s))$。
+   - 应用 $L^{\text{CLIP}}$ + value loss + entropy。
    - Gradient step。
 5. 丢弃 rollout。回到步骤 1。
 
-`K = 10` 和 64 的 minibatches 是一组标准 hyperparameter。PPO 很 robust：精确数值在 ±50% 范围内通常都不太重要。
+$K = 10$ 和 64 的 minibatches 是一组标准 hyperparameter。PPO 很 robust：精确数值在 ±50% 范围内通常都不太重要。
 
-**KL-penalty 变体。** 原始论文提出了一个替代方案，使用 adaptive KL penalty：`L = L^{PG} - β · KL(π_θ || π_old)`，其中 `β` 根据 observed KL 调整。Clipping 版本成为主流；KL 变体在 RLHF 中保留下来（在那里，到 reference policy 的 KL 本来就是一个你始终想要的独立约束）。
+**KL-penalty 变体。** 原始论文提出了一个替代方案，使用 adaptive KL penalty：$L = L^{\text{PG}} - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$，其中 $\beta$ 根据 observed KL 调整。Clipping 版本成为主流；KL 变体在 RLHF 中保留下来（在那里，到 reference policy 的 KL 本来就是一个你始终想要的独立约束）。
 
 
 ```figure
@@ -125,19 +131,19 @@ for _ in range(K_EPOCHS):
 
 每次更新要观察三件事：
 
-- **Mean KL** `E[log π_old - log π_θ]`。应该保持在 `[0, 0.02]`。如果超过 `0.1`，降低 `K_EPOCHS` 或 `LR`。
-- **Clip fraction** —— ratio 落在 `[1-ε, 1+ε]` 之外的 samples 比例。应该是 `~0.1-0.3`。如果是 `~0`，clip 从未触发 → 提高 `LR` 或 `K_EPOCHS`。如果是 `~0.5+`，你正在 over-fitting 这个 rollout → 降低它们。
-- **Explained variance** `1 - Var(V_target - V_pred) / Var(V_target)`。Critic 质量指标。随着 critic 学习，应该向 1 上升。
+- **Mean KL** $\mathbb{E}[\log \pi_{\text{old}} - \log \pi_\theta]$。应该保持在 `[0, 0.02]`。如果超过 `0.1`，降低 `K_EPOCHS` 或 `LR`。
+- **Clip fraction** —— ratio 落在 $[1-\epsilon, 1+\epsilon]$ 之外的 samples 比例。应该是 `~0.1-0.3`。如果是 `~0`，clip 从未触发 → 提高 `LR` 或 `K_EPOCHS`。如果是 `~0.5+`，你正在 over-fitting 这个 rollout → 降低它们。
+- **Explained variance** $1 - \text{Var}(V_{\text{target}} - V_{\text{pred}}) / \text{Var}(V_{\text{target}})$。Critic 质量指标。随着 critic 学习，应该向 1 上升。
 
 ## 陷阱
 
-- **Clip coefficient 调错。** `ε = 0.2` 是事实标准。调到 `0.1` 会让更新过于保守；`0.3+` 会引入不稳定。
-- **Epochs 太多。** `K > 20` 经常会让训练不稳定，因为 policy 漂离 `π_old` 太远。限制 epochs，尤其是对大型 networks。
+- **Clip coefficient 调错。** $\epsilon = 0.2$ 是事实标准。调到 `0.1` 会让更新过于保守；`0.3+` 会引入不稳定。
+- **Epochs 太多。** $K > 20$ 经常会让训练不稳定，因为 policy 漂离 $\pi_{\text{old}}$ 太远。限制 epochs，尤其是对大型 networks。
 - **没有 reward normalization。** 大的 reward scales 会侵蚀 clip range。在计算 advantages 前先 normalize rewards（running std）。
 - **忘记 advantage normalization。** Per-batch zero-mean/unit-std normalization 是标准做法。跳过它会让 PPO 在大多数 benchmarks 上崩掉。
 - **Learning rate 没有衰减。** PPO 受益于线性 LR 衰减到零。Constant LR 往往更差。
 - **Importance ratio 数学错误。** 为了 numerical stability，始终使用 `exp(log_new - log_old)`，而不是 `new / old`。
-- **Gradient sign 错误。** 最大化 surrogate = *最小化* `-L^{CLIP}`。符号翻转是最常见的 PPO bug。
+- **Gradient sign 错误。** 最大化 surrogate = *最小化* $-L^{\text{CLIP}}$。符号翻转是最常见的 PPO bug。
 
 ## 使用它
 
@@ -181,18 +187,18 @@ tags: [rl, ppo, policy-gradient]
 
 ## 练习
 
-1. **简单。** 在 4×4 GridWorld 上运行 PPO，使用 `ε=0.2, K=4`。在匹配 env steps 的情况下，与 A2C（每次 rollout 一个 epoch）的 sample efficiency 对比。
-2. **中等。** Sweep `K ∈ {1, 4, 10, 30}`。绘制 return vs env steps，并跟踪每次更新的 mean KL。在这个任务上，`K` 到多少时 KL 会爆炸？
-3. **困难。** 用 adaptive KL penalty 替换 clipped surrogate（如果 `KL > 2·target`，`β` 翻倍；如果 `KL < target/2`，`β` 减半）。比较 final return、stability 和 clip-free-ness。
+1. **简单。** 在 4×4 GridWorld 上运行 PPO，使用 $\epsilon=0.2, K=4$。在匹配 env steps 的情况下，与 A2C（每次 rollout 一个 epoch）的 sample efficiency 对比。
+2. **中等。** Sweep $K \in \lbrace 1, 4, 10, 30 \rbrace$。绘制 return vs env steps，并跟踪每次更新的 mean KL。在这个任务上，$K$ 到多少时 KL 会爆炸？
+3. **困难。** 用 adaptive KL penalty 替换 clipped surrogate（如果 $\mathrm{KL} > 2 \cdot \text{target}$，$\beta$ 翻倍；如果 $\mathrm{KL} < \text{target}/2$，$\beta$ 减半）。比较 final return、stability 和 clip-free-ness。
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------|----------|
-| Importance ratio | "r_t(θ)" | `π_θ(a\|s) / π_old(a\|s)`；相对于采集数据的 policy 的偏离程度。 |
-| Clipped surrogate | "PPO's main trick" | `min(r·A, clip(r, 1-ε, 1+ε)·A)`；在有益侧超过 clip 后 Gradient 变平。 |
+| Importance ratio | "r_t(θ)" | $\pi_\theta(a \mid s) / \pi_{\text{old}}(a \mid s)$；相对于采集数据的 policy 的偏离程度。 |
+| Clipped surrogate | "PPO's main trick" | $\min(r \cdot A, \mathop{\mathrm{clip}}(r, 1-\epsilon, 1+\epsilon) \cdot A)$；在有益侧超过 clip 后 Gradient 变平。 |
 | Trust region | "TRPO / PPO intent" | 限制每次更新的 KL，以保证 monotone improvement。 |
-| KL penalty | "Soft trust region" | 替代 PPO：`L - β · KL(π_θ \|\| π_old)`。Adaptive `β`。 |
+| KL penalty | "Soft trust region" | 替代 PPO：$L - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$。Adaptive $\beta$。 |
 | Clip fraction | "How often clipping triggers" | Diagnostic —— 应该是 0.1-0.3；超出范围表示调参错误。 |
 | Multi-epoch training | "Data reuse" | 每次 rollout 上跑 K 个 epochs；用 variance cost 换 sample efficiency。 |
 | On-policy-ish | "Mostly on-policy" | PPO 名义上是 on-policy，但 K>1 个 epochs 会安全地使用 slightly-off-policy data。 |

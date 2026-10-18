@@ -8,7 +8,7 @@
 
 **图例：** ✅ 已完成 &nbsp;·&nbsp; 🚧 进行中 &nbsp;·&nbsp; ⬚ 已规划
 
-## Phase 0: 环境配置与工具 — ✅（约 14 小时）
+## Phase 0: 环境配置与工具 — ✅（约 16 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -24,6 +24,7 @@
 | 10 | Terminal 与 Shell | ✅ | ~45 min |
 | 11 | 面向 AI 的 Linux | ✅ | ~45 min |
 | 12 | Debugging 与 Profiling | ✅ | ~75 min |
+| 13 | 面向 AI 工程的 Python | ✅ | ~120 min |
 
 ## Phase 1: 数学基础 — ✅（约 23 小时）
 
@@ -52,7 +53,7 @@
 | 21 | 面向 ML 的图论 | ✅ | ~45 min |
 | 22 | 随机过程 | ✅ | ~45 min |
 
-## Phase 2: ML 基础 — ✅（约 21 小时）
+## Phase 2: ML 基础 — ✅（约 26 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -74,6 +75,9 @@
 | 16 | Anomaly Detection | ✅ | ~75 min |
 | 17 | 处理不平衡数据 | ✅ | ~75 min |
 | 18 | Feature Selection | ✅ | ~75 min |
+| 19 | 机器学习系统设计：从问题到已部署模型 | ✅ | ~110 min |
+| 20 | 生产模型监控：数据漂移与概念漂移 | ✅ | ~110 min |
+| 21 | 特征存储与训练—服务偏差 | ✅ | ~100 min |
 
 ## Phase 3: Deep Learning 核心 — ✅（约 15 小时）
 
@@ -314,7 +318,7 @@
 | 24 | [Multimodal RAG 与 Cross-Modal Retrieval](phases/12-multimodal-ai/24-multimodal-rag-cross-modal) | ✅ | ~180 min |
 | 25 | [Multimodal Agents 与 Computer-Use (Capstone)](phases/12-multimodal-ai/25-multimodal-agents-computer-use) | ✅ | ~240 min |
 
-## Phase 13: 工具与协议 — ✅（约 45 小时）
+## Phase 13: 工具与协议 — ✅（约 57 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -358,6 +362,11 @@
 | 38 | [调用约定与栈帧：System V、Windows x64 和 AArch64](phases/13-tools-and-protocols/38-calling-conventions-and-stack-frames/) | ✅ | ~140 min |
 | 39 | [编译器惯用模式：优化如何改写代码，以及如何反向读懂它](phases/13-tools-and-protocols/39-compiler-idioms-and-optimization/) | ✅ | ~150 min |
 | 40 | [链接、加载与剥离符号后的二进制：PLT、GOT、导入、修正与函数识别](phases/13-tools-and-protocols/40-linking-loading-and-stripped-binaries/) | ✅ | ~160 min |
+| 41 | [恢复数据与类型：结构体、数组、C++ 对象和 DWARF](phases/13-tools-and-protocols/41-recovering-data-and-types/) | ✅ | ~140 min |
+| 42 | [动态分析自己的程序：调试器、跟踪与静态结论的验证](phases/13-tools-and-protocols/42-dynamic-analysis-of-your-own-program/) | ✅ | ~130 min |
+| 43 | [超越原生代码：Python、JVM、.NET 与 WebAssembly 字节码](phases/13-tools-and-protocols/43-bytecode-and-managed-formats/) | ✅ | ~150 min |
+| 44 | [二进制差异比较与符号执行：匹配函数并求解输入](phases/13-tools-and-protocols/44-binary-diffing-and-symbolic-execution/) | ✅ | ~150 min |
+| 45 | [AI 辅助逆向工程：LLM 反编译器、分析 agent 与真值](phases/13-tools-and-protocols/45-ai-assisted-reverse-engineering/) | ✅ | ~140 min |
 
 ## Phase 14: Agent Engineering — ✅（约 42 小时）
 
@@ -475,7 +484,7 @@
 | 24 | [Evaluation 与 Coordination Benchmarks](phases/16-multi-agent-and-swarms/24-evaluation-coordination-benchmarks/) | ✅ | ~75 min |
 | 25 | [Case Studies 与 2026 State of the Art](phases/16-multi-agent-and-swarms/25-case-studies-2026-sota/) | ✅ | ~90 min |
 
-## Phase 17: Infrastructure 与 Production — ✅（约 32 小时）
+## Phase 17: Infrastructure 与 Production — ✅（约 33.5 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -507,6 +516,7 @@
 | 26 | Compliance — SOC 2, HIPAA, GDPR, EU AI Act, ISO 42001 | ✅ | ~60 min |
 | 27 | 面向 LLMs 的 FinOps — Unit Economics 与 Multi-Tenant Attribution | ✅ | ~60 min |
 | 28 | Self-Hosted Serving Selection — llama.cpp, Ollama, TGI, vLLM, SGLang | ✅ | ~45 min |
+| 29 | 模型演示界面：从函数到可分享的应用 | ✅ | ~90 min |
 
 ## Phase 18: Ethics, Safety 与 Alignment — ✅（约 31 小时）
 
@@ -635,6 +645,6 @@
 
 ---
 
-**总计：20 个 Phase，532 节课程 | 532 已完成 | 预计约 1,102 小时**
+**总计：20 个 Phase，542 节课程 | 542 已完成 | 预计约 1,123 小时**
 
 想帮忙？选择任意 ⬚ 课程并提交 PR。参见 [CONTRIBUTING.md](CONTRIBUTING.md)。
