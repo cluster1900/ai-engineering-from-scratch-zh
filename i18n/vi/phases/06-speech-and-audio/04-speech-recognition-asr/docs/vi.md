@@ -37,7 +37,7 @@ Có ba phương pháp hình thức giải quyết vấn đề này:
 
 ### WER: một số
 
-**Word Error Rate**= `(S + D + I) / N`, trong đó S = thay thế, D = xóa, I =插入, N = tham khảo văn文本词数―― nó đối với应词级 Levenshtein edit distance──越低越好──WER cao hơn 20% thường không thể sử dụng; thấp hơn 5% đối với đọc语音 để đạt được trình độ con người──2026年标准基准 数字:
+**Word Error Rate**= $(S + D + I) / N$, trong số đó $S$= thay thế,$D$= xóa,$I$=插入,$N$= Reference text text word number。 nó đối với 应词级 Levenshtein edit distance──越低越好──WER cao hơn 20% thường không thể sử dụng; thấp hơn 5% đối với đọc语音 đạt được trình độ con người──2026 年标准基准 数字:
 
 | Model | LibriSpeech test-clean | LibriSpeech test-other | Size |
 |-------|------------------------|------------------------|------|

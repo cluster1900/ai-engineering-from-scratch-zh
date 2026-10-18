@@ -24,7 +24,7 @@ Những quan điểm trong năm 2024-2026 là:**当你尝试从文本生成时�
 
 ### 核心技巧:Quantization Vektor dư thừa (RVQ)
 
-Thay vì sử dụng một cuốn sách mã khổng lồ (để có được chất lượng tốt có thể cần hàng triệu mã), Moderne Audio Codec đều sử dụng.**RVQ**Một chuỗi nhỏ codebook 级联── thứ nhất codebook 量化编码器 输出; thứ hai量化残余;依此类推── mỗi codebook có 1024 个 code¬8 个 codebook = 1024^8 = 10^24 的有效词表──
+Thay vì sử dụng một cuốn sách mã khổng lồ (để có được chất lượng tốt có thể cần hàng triệu mã), Moderne Audio Codec đều sử dụng.**RVQ**Một chuỗi nhỏ codebook 级联──第一个 codebook 量化编码器 输出;第二个量化残余;依此类推──每个 codebook có 1024 个 code¬¬8 个 codebook = $1024^8 = 10^{24}$                                                                                                                                                                                                                                                              
 
 Trong suy luận, decoder sẽ tìm kiếm và xây dựng lại mã trong mỗi  trong tất cả các code được chọn.
 
@@ -130,8 +130,8 @@ Bộ mã ngữ nghĩa 0 với WavLM đối齐. Bạn có thể đào tạo một
 
 Đối với Mimi của 12,5 Hz × 8 个 codebook, một 10 s 语音片段:
 
-```
-N_tokens = 10 * 12.5 * 8 = 1000 tokens
+```math
+N_{\text{tokens}} = 10 \times 12.5 \times 8 = 1000 \text{ tokens}
 ```
 
 1000 token đối với Transformer là rất nhỏ trên dưới đây. Một Transformer 256M có số lượng có thể tạo ra 10 giây trong GPU hiện đại.

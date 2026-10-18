@@ -23,7 +23,7 @@ Phân quang phổ của người dùng theo cách thức cảm nhận theo số 
 
 **Log-magnitude.**quy mô thô 跨越 5-6 个数量级──使用 `log(|X| + 1e-6)`Hoặc`20 * log10(|X|)`Để nén phạm vi động lực. Mỗi đường ống sản xuất đều sử dụng log-magnitude, chứ không phải là khối lượng nguyên liệu.
 
-**Mel scale.**Tần số trung bình Hz`f` Thông qua `m = 2595 * log10(1 + f / 700)`映射到 mel `m`◊ The映射在1kHz 以下大致是线性的,在1kHz以上大致是对数的──覆盖08kHz 80 个 melbin là tiêu chuẩn ASR input──
+**Mel scale.**Tần số trung bình Hz`f` Thông qua $m = 2595 \cdot \log_{10}(1 + f / 700)$映射到 mel `m`◊ The映射在1kHz 以下大致是线性的,在1kHz以上大致是对数的──覆盖08kHz 80 个 melbin là tiêu chuẩn ASR input──
 
 **Mel filterbank.**Một nhóm trong thang máy mel trên cùng khoảng cách xếp hàng các bộ lọc tam giác. Mỗi bộ lọc là tổng trọng lượng của các thùng FFT lân cận.
 
