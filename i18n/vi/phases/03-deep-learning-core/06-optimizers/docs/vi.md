@@ -18,7 +18,7 @@
 
 Bạn đã tính toán Gradient. Bạn biết # 4,721 trọng lượng nên giảm 0,003 để giảm Loss. Nhưng 0.003 đơn vị là gì? theo gì giảm? bước 1 và bước 1000 nên di chuyển cùng một lượng?
 
-Vanilla Gradient Descent trong mỗi bước đối với mỗi tham số  áp dụng cùng tốc độ học tập: w = w - lr * gradient。 điều này sẽ tạo ra ba vấn đề, làm cho đào tạo mạng thần kinh trong thực tế trở nên rất đau đớn。
+Vanilla Gradient Descent trong mỗi bước đối với mỗi tham số  áp dụng tốc độ học tập tương tự:$w = w - \text{lr} \cdot \text{gradient}$ Điều này sẽ tạo ra ba vấn đề, để đào tạo mạng thần kinh trong thực tế trở nên rất đau đớn
 
 Thứ nhất,振荡──Loss landscape 很少像一个平滑的碗──它更像一条又长又窄的山谷──Gradient指向穿越山谷的方向──方向,而不是沿山谷的方向──平缓方向──Gradient Descent 会在狭维上跳跳跳跳跳跳跳跳跳跳跳跳,而在真正有用的方向上进步很小──你已经见过这种现象:Loss 先快速下降,然后进入平台期,不是因为模型已经收到了,而是因为它在振荡──
 
@@ -34,8 +34,8 @@ Adam giải quyết ba vấn đề này. Nó bảo trì hai trung bình chạy c
 
  Optimizer                                                                                                                                                                                                                                                             
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 stochastic cho thấy bạn sử dụng dữ liệu theo từng tập hợp nhỏ để ước tính độ phân, thay vì sử dụng bộ dữ liệu hoàn chỉnh.
@@ -46,27 +46,31 @@ Tỷ lệ học tập là duy nhất. Tỷ lệ mất mát rất cao. Tỷ lệ 
 
 Các loại hình của 小球滚下山坡 được sử dụng quá nhiều, nhưng nó là chính xác. Bạn không chỉ theo Gradient tiến, mà còn duy trì một tốc độ, để tích lũy Gradient quá khứ.
 
-```
-m_t = beta * m_{t-1} + gradient
-w = w - lr * m_t
+```math
+\begin{aligned}
+m_t &= \beta \, m_{t-1} + \text{gradient} \\
+w &= w - \text{lr} \cdot m_t
+\end{aligned}
 ```
 
-Beta(thường là 0,9) kiểm soát giữ lại nhiều thông tin lịch sử。 khi beta = 0,9 时,momentum 大致等于最近10 个 Gradients的平均值(1 / (1 - 0,9) = 10)。
+Beta( thường là 0.9) kiểm soát giữ lại bao nhiêu thông tin lịch sử.$\beta = 0.9$时,momentum 大致等于最近10 Gradients的平均值$1 / (1 - 0.9) = 10$(■)
 
 Tại sao nó có thể sửa đổi振荡: hướng về cùng hướng Gradients sẽ tích lũy. hướng phản hồi xoay ngược Gradients sẽ đối kháng lẫn nhau. Trong thung lũng hẹp đó, 横穿 phân số sẽ thay đổi từng bước và bị suy yếu.
 
-Real Digital: Trong tình huống rất xấu Loss Landscape trên, sử dụng đơn lẻ SGD có thể cần 10.000 bước.
+Số thực: Trong điều kiện rất xấu Loss cảnh quan trên, sử dụng đơn lẻ SGD có thể cần 10.000 bước.$\beta = 0.9$(với các phương pháp khác nhau, các phương pháp này có thể được sử dụng để tăng tốc độ.
 
 ### RMSProp
 
 Một thực sự hiệu quả theo từng tham số tỷ lệ học tập thích nghi 方法──由 Hinton 在 Coursera 课程中提出 (从未正式发表)──
 
-```
-s_t = beta * s_{t-1} + (1 - beta) * gradient^2
-w = w - lr * gradient / (sqrt(s_t) + epsilon)
+```math
+\begin{aligned}
+s_t &= \beta \, s_{t-1} + (1 - \beta) \cdot \text{gradient}^2 \\
+w &= w - \text{lr} \cdot \frac{\text{gradient}}{\sqrt{s_t} + \epsilon}
+\end{aligned}
 ```
 
-S_t 跟踪 gradients vuông của trung bình chạy. tiếp tục có các tham số của gradients lớn hơn sẽ được phân chia với một số lớn hơn (<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+$s_t$Theo dõi tỷ lệ chạy của các gradient vuông. tiếp tục có các tham số của các gradient lớn hơn sẽ được phân chia với một số lớn hơn.
 
 Điều này giải quyết tất cả các tham số sử dụng cùng một tốc độ học vấn đề. Một người đã tiếp tục nhận được một lượng lớn cải tiến gần mục tiêu.
 
@@ -76,41 +80,45 @@ Epsilon thường là 1e-8) sẽ ở một tham số nào đó  chưa được c
 
 Adam kết hợp hai ý tưởng. Nó bảo vệ hai trung bình chuyển động thoáng qua cho mỗi tham số:
 
-```
-m_t = beta1 * m_{t-1} + (1 - beta1) * gradient        (first moment: mean)
-v_t = beta2 * v_{t-1} + (1 - beta2) * gradient^2       (second moment: variance)
-```
-
-**Bias correction**Trong bước thứ nhất, m_1 = (1 - beta1) * gradient。 khi beta1 = 0.9 时, nó là 0,1 * gradient--- 小了十倍── chuyển động trung bình chưa có预热── Bias sửa chữa sẽ được hoàn trả:
-
-```
-m_hat = m_t / (1 - beta1^t)
-v_hat = v_t / (1 - beta2^t)
+```math
+\begin{aligned}
+m_t &= \beta_1 m_{t-1} + (1 - \beta_1) \cdot \text{gradient} && \text{（一阶矩：均值）} \\
+v_t &= \beta_2 v_{t-1} + (1 - \beta_2) \cdot \text{gradient}^2 && \text{（二阶矩：方差）}
+\end{aligned}
 ```
 
-第 1 步且beta1 = 0.9 时:m_hat = m_1 / (1 - 0.9) = m_1 / 0.1 = 实际 Gradient。第 100 步时:(1 - 0.9^100) 约等于 1.0, do đó sự sửa chữa 消失── Sự sửa đổi quan trọng đối với trước ~10 步 rất quan trọng, trong ~50 步后基本无关紧要──
+**Bias correction**Đó là phần lớn các câu hỏi quan trọng mà chúng ta sẽ hiểu.$m_1 = (1 - \beta_1) \cdot \text{gradient}$$\beta_1 = 0.9$时, nó là $0.1 \cdot \text{gradient}$-- 小了十倍── chuyển động trung bình còn không có dự kiến── Bias sửa chữa 会进行补偿:
+
+```math
+\begin{aligned}
+\hat{m} &= \frac{m_t}{1 - \beta_1^t} \\
+\hat{v} &= \frac{v_t}{1 - \beta_2^t}
+\end{aligned}
+```
+
+第 1 步且$\beta_1 = 0.9$时:$\hat{m} = m_1 / (1 - 0.9) = m_1 / 0.1 =$实际 Gradient──第 100 步时:$(1 - 0.9^{100})$约等于1.0, do đó sự sửa chữa 消失──Trong phần, sự sửa đổi đối với ~10 bước trước rất quan trọng, trong ~50 bước sau đó là cơ bản không quan trọng──
 
 更新公式:
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon}
 ```
 
-Adam 默认值:lr = 0.001,beta1 = 0.9,beta2 = 0.999,epsilon = 1e-8。 Những 默认值 này áp dụng cho 80% các vấn đề──
+Adam 默认值:$\text{lr} = 0.001$- Tôi không biết.$\beta_1 = 0.9$- Tôi không biết.$\beta_2 = 0.999$- Tôi không biết.$\epsilon = 10^{-8}$ Những giá trị ẩn này áp dụng cho 80% các vấn đề  Khi chúng không áp dụng, trước thay đổi lr♦ sau đó thay đổi $\beta_2$                                                                                                                                                                                                                                                              $\beta_1$Hoặc$\epsilon$
 
 ### AdamW: 正确处理 Khối thâm trọng
 
-L2 Regularisation 会向损失 中添加兰巴 * w^2──在瓦尼拉 SGD 中,这等于减肥的
+L2 Regularisation 会向损失 中添加 $\lambda w^2$Trong SGD vani, giá trị này tương đương với giảm cân.$\lambda w$Trong Adam, mối quan hệ tương đương này sẽ không hiệu quả.
 
 Nhìn của Loshchilov & Hutter là: Khi bạn đưa L2 tăng vào Loss, sau đó để Adam xử lý Gradient 时, tỷ lệ học tập thích ứng cũng sẽ giảm theo thời gian điều chỉnh.
 
 AdamW  thông qua Adam update  sau đó trực tiếp đối với trọng lượng  áp dụng giảm cân để sửa chữa vấn đề này:
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon) - lr * lambda * w
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon} - \text{lr} \cdot \lambda w
 ```
 
-Khối thâm hụt trọng lượng không bị nhân tố thích ứng của Adam 缩放── mỗi tham số đều có được tỷ lệ giảm tương tự──
+Tiêu đề giảm cân$\text{lr} \cdot \lambda w$(v) không được nhân tố thích ứng của Adam 缩放.
 
 Đây trông giống như một chi tiết nhỏ. Không phải là. AdamW trong hầu hết các nhiệm vụ đều được thực hiện tốt hơn so với Adam + L2 thường xuyên hóa. Nó là PyTorch trong sử dụng để đào tạo các biến đổi, mô hình phân phối và hầu hết các kiến trúc hiện đại.
 
@@ -425,11 +433,11 @@ for epoch in range(100):
 
 ## 练习
 
-1. 实现 Nesterov động lực, trong đó bạn đang ở lookahead 位置(w - lr * beta * v) thay vì hiện tại vị trí tính toán Gradient。 trên bộ dữ liệu vòng tròn 上比较它 với chuẩn động lực 收情况。
+1. 实现 Nesterov động lực, trong đó bạn đang ở lookhead 位置$w - \text{lr} \cdot \beta v$(văn số) thay vì tính toán vị trí hiện tại Gradient.
 
 2. Thực hiện một lịch trình học tập nhiệt độ: trong các bước trước 10% của tập trung từ 0 线性 ramp đến max_lr, sau đó sự phân rã của cosine đến 0 ⋅ so sánh Adam + warmup với Adam không ấm lên ⋅ đo lường trên bộ dữ liệu vòng tròn đạt đến 90% chính xác ⋅ cần bao nhiêu thời đại ⋅
 
-3. Trong thời gian tập luyện của Adam, theo dõi từng tham số của tỷ lệ học hành hiệu quả.
+3. Trong thời gian tập luyện của Adam, theo dõi từng tham số của tỷ lệ học hành hiệu quả.$\text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)$◊ vẽ số 10、50 和 200 bước sau đó phân bố các tỷ lệ hiệu quả.
 
 4. 实现 gradient clipping(according to global norm clip) ――将max gradient norm 设置为 1.0──使用较高学习率(Adam 的 lr=0.01)分别在有剪辑和无剪辑的情况下训练──统计 10 种子中,有多少次运行 会发散(Loss 变为 NaN)──
 
@@ -440,12 +448,12 @@ for epoch in range(100):
 | Term | 人们通常怎么说 | 它实际意味着什么 |
 |------|----------------|----------------------|
 | Learning rate | “Step size” | Gradient update 上的标量乘数；训练中影响最大的单个 hyperparameter |
-| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 lr * gradient 来更新 weights，Gradient 在 mini-batch 上计算 |
+| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 $\text{lr} \cdot \text{gradient}$ 来更新 weights，Gradient 在 mini-batch 上计算 |
 | Momentum | “Rolling ball analogy” | 过去 Gradients 的 exponential moving average；削弱振荡，并加速一致方向 |
 | RMSProp | “Adaptive learning rate” | 用近期 Gradients 的 running RMS 除以每个 parameter 的 Gradient；均衡 learning rates |
 | Adam | “The default optimizer” | 将 momentum（first moment）和 RMSProp（second moment）结合起来，并对初始 steps 进行 bias correction |
 | AdamW | “Adam done right” | 带 decoupled weight decay 的 Adam；直接对 weights 应用 regularization，而不是通过 Gradient |
-| Bias correction | “Warmup for running averages” | 除以 (1 - beta^t)，用于补偿 Adam 的 moment estimates 的零初始化 |
+| Bias correction | “Warmup for running averages” | 除以 $(1 - \beta^t)$，用于补偿 Adam 的 moment estimates 的零初始化 |
 | Weight decay | “Shrink the weights” | 每一步减去 weight 值的一部分；一种惩罚大 weights 的 regularizer |
 | Learning rate schedule | “Changing lr over time” | 在训练期间调整 learning rate 的函数；warmup + cosine decay 是现代默认方案 |
 | Gradient clipping | “Capping the gradient norm” | 当 Gradient Vector 的 norm 超过阈值时对其进行缩放；防止 exploding gradient updates |

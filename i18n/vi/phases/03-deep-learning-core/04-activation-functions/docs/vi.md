@@ -16,7 +16,7 @@
 
 ## 问题
 
-堆叠两个线性变化:y = W2(W1x + b1) + b2。展开它:y = W2W1x + W2b1 + b2。这只是 y = Ax + c một sự biến đổi线性单一――无论你堆叠多少线性层,结果都会缩成一次矩阵乘倍――你的100层网络与单层具有相同表示能力──
+堆叠两个线性转变:$y = W_2(W_1 x + b_1) + b_2$❖ mở nó:$y = W_2 W_1 x + W_2 b_1 + b_2$ Đó chỉ là $y = Ax + c$ Một biến đổi tuyến tính đơn lẻ── bất kể bạn nạp lên bao nhiêu lớp tuyến tính, kết quả đều sẽ 缩 thành một lần nhân khối ma trận── mạng lưới 100 tầng của bạn với một lớp 具有相同的表示能力──
 
 Đây không phải là một trò chơi lý thuyết. Nó có nghĩa là mạng tuyến tính sâu 字面上无法学习XOR,无法分类螺旋数据集,无法识别人脸.
 
@@ -26,52 +26,58 @@ Các chức năng kích hoạt 打破线性── chúng thông qua chức năng
 
 ### Tại sao không dây là cần thiết
 
-Sự nhân đếm của matrix là có thể được kết hợp. Trước tiên sử dụng Matrix A nhân một vector, sau đó sử dụng Matrix B nhân kết quả, bằng giá trực tiếp nhân AB. Điều này có nghĩa là tích tụ mười lớp tuyến tính, trong toán học, bằng giá trị của một lớp tuyến tính của một Matrix lớn. Tất cả các tham số này, tất cả những chiều sâu này đều bị lãng phí. Bạn cần một cái gì đó để phá vỡ chuỗi này. Đó là tác dụng của các hàm kích hoạt.
+Matrix nhân là có thể hợp tác.$A$- Tăng bằng một vector, dùng lại Matrix.$B$Kết quả, giá bằng trực tiếp$AB$ Điều này có nghĩa là đống lên mười lớp tuyến tính, về mặt toán học, bằng với một lớp tuyến tính của một Matrix lớn. Tất cả các tham số này, tất cả những chiều sâu này đều bị lãng phí.
 
-下面是证明── một lớp tuyến tính 计算 f(x) = Wx + b──堆叠两个:
+下面是证明── một lớp tuyến tính 计算 $f(x) = Wx + b$                                                                                                                                                                                                                                                              
 
-```
-Layer 1: h = W1 * x + b1
-Layer 2: y = W2 * h + b2
+```math
+\begin{aligned}
+\text{第 1 层：} \quad h &= W_1 x + b_1 \\
+\text{第 2 层：} \quad y &= W_2 h + b_2
+\end{aligned}
 ```
 
 代入:
 
-```
-y = W2 * (W1 * x + b1) + b2
-y = (W2 * W1) * x + (W2 * b1 + b2)
-y = A * x + c
-```
-
-Một层──在层之间插入 không tuyến tính kích hoạt g():
-
-```
-h = g(W1 * x + b1)
-y = W2 * h + b2
+```math
+\begin{aligned}
+y &= W_2 (W_1 x + b_1) + b_2 \\
+y &= (W_2 W_1) x + (W_2 b_1 + b_2) \\
+y &= A x + c
+\end{aligned}
 ```
 
-现在代入被打破了──W2 * g(W1 * x + b1) + b2 不能再简化为单线性转换──网络可以表示非线性函数──每增加一层带激活的层,都会增加表示能力──
+Một层──在层之间插入非线性激活$g()$- Có thể là:
+
+```math
+\begin{aligned}
+h &= g(W_1 x + b_1) \\
+y &= W_2 h + b_2
+\end{aligned}
+```
+
+Giờ đây, chúng ta đã bị phá vỡ.$W_2 g(W_1 x + b_1) + b_2$Không thể tái đơn giản hóa thành chuyển đổi tuyến tính đơn lẻ. Mạng có thể biểu thị các chức năng không tuyến tính.
 
 ### Sigmoid
 
 Tạng thần kinh hoạt động sớm nhất.
 
-```
-sigmoid(x) = 1 / (1 + e^(-x))
+```math
+\text{sigmoid}(x) = \frac{1}{1 + e^{-x}}
 ```
 
 输出范围:(0, 1)。平滑、可微, sẽ được hiển thị bất kỳ số thực nào đến giá trị tương tự như xác suất.
 
 dẫn xuất:
 
-```
-sigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))
+```math
+\text{sigmoid}'(x) = \text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))
 ```
 
-Giá trị tối đa của phái sinh này là 0.25, xuất hiện x = 0。 Trong sự lan rộng ngược, các gradient 会逐层相乘──十层 sigmoid có nghĩa là gradient 最多会被 0.25 连续乘十次:
+Giá trị tối đa của phái sinh này là 0.25, hiện tại$x = 0$Trong sự lây lan ngược, các gradient 会逐层相乘──十层 sigmoid có nghĩa là gradient 最多会被 0.25 连续乘十次:
 
-```
-0.25^10 = 0.000000953674
+```math
+0.25^{10} = 0.000000953674
 ```
 
 Không đến hàng triệu tín hiệu ban đầu. Đây là vấn đề độ tần dần. Các độ tần giữa các lớp ban đầu trở nên rất nhỏ, trọng lượng gần như không được cải thiện.
@@ -82,33 +88,32 @@ Không đến hàng triệu tín hiệu ban đầu. Đây là vấn đề độ 
 
 sigmoid 的居中版本──
 
-```
-tanh(x) = (e^x - e^(-x)) / (e^x + e^(-x))
+```math
+\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 ```
 
 输出范围:(-1, 1)──以零为中心, có thể loại bỏ
 
 dẫn xuất:
 
-```
-tanh'(x) = 1 - tanh(x)^2
+```math
+\tanh'(x) = 1 - \tanh(x)^2
 ```
 
-Các dẫn xuất lớn nhất trong x = 0 时为 1.0比sigmoid 好四倍――但消失梯梯问题 仍然存在―― đối với rất lớn nhập正或负输, dẫn xuất 会趋近零――十层仍然会压碎梯梯,只是没有那么激烈――
+Dẫn dẫn lớn nhất trong $x = 0$时为 1.0比sigmoid 好四倍──但消失梯度问题 仍然存在──对于很大的正输入或负输入,衍生会趋近零──十层仍然会压碎梯度,只是没有那么激烈──
 
 ### Đột phá
 
 Phân tích Định hướng Đường thẳng. Nair 和 Hinton vào năm 2010 sẽ đưa nó vào học sâu.
 
-```
-relu(x) = max(0, x)
+```math
+\text{relu}(x) = \max(0, x)
 ```
 
-输出范围:[0, vô hạn) ・ dẫn xuất 非常简单:
+输出范围:$[0, \infty)$◊ dẫn xuất 非常简单:
 
-```
-relu'(x) = 1  if x > 0
-            0  if x <= 0
+```math
+\text{relu}'(x) = \begin{cases} 1 & \text{当 } x > 0 \\ 0 & \text{当 } x \le 0 \end{cases}
 ```
 
 Đối với chính input, không có gradient biến mất. gradient chính là 1, sẽ trực tiếp truyền qua. Đó là lý do vì sao các mạng sâu trở nên có thể đào tạo.
@@ -119,25 +124,24 @@ Nhưng nó có một chế độ thất bại: vấn đề thần kinh chết. N
 
 Các tế bào thần kinh chết là cách đơn giản nhất để sửa chữa.
 
-```
-leaky_relu(x) = x        if x > 0
-                alpha * x if x <= 0
+```math
+\text{leaky\_relu}(x) = \begin{cases} x & \text{当 } x > 0 \\ \alpha x & \text{当 } x \le 0 \end{cases}
 ```
 
-Trong số đó alpha là một số thường nhỏ, thường là 0.01──nửa trục tiêu có một độ nghiêng nhỏ thay vì 0, do đó, các tế bào thần kinh chết vẫn có thể nhận được tín hiệu gradient,并 có cơ hội phục hồi──
+Trong số đó $\alpha$là một số thường nhỏ, thường là 0.01──nửa trục tiêu có một độ nghiêng nhỏ thay vì 0, do đó, các tế bào thần kinh chết vẫn có thể nhận được tín hiệu gradient,并 có cơ hội phục hồi──
 
 ### GELU:现代默认选择
 
 Gaussian Error Linear Unit── do Hendrycks 和 Gimpel đưa ra vào năm 2016──是BERT、GPT以及大多数现代变压器中的默认激活──
 
-```
-gelu(x) = x * Phi(x)
+```math
+\text{gelu}(x) = x \cdot \Phi(x)
 ```
 
-Trong đó Phi(x) là chức năng phân phối tích lũy của phân bố bình thường tiêu chuẩn:
+Trong số đó $\Phi(x)$là chức năng phân phối tổng hợp của phân bố bình thường tiêu chuẩn:
 
-```
-gelu(x) ~= 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))
+```math
+\text{gelu}(x) \approx 0.5 \cdot x \cdot \left(1 + \tanh\left(\sqrt{2/\pi} \cdot (x + 0.044715 \cdot x^3)\right)\right)
 ```
 
 GELU ở vị trí thanh toán, cho phép giá trị âm thấp hơn (((không giống như ReLU 那样硬截断为零), và có một cách giải thích có thể xảy ra: nó dựa trên mỗi đầu vào trong phân bố Gaussian 下为正的可能性对其加权──
@@ -146,11 +150,11 @@ GELU ở vị trí thanh toán, cho phép giá trị âm thấp hơn (((không g
 
 bởi Ramachandran et al. Trong năm 2017 thông qua tìm kiếm tự động phát hiện hoạt động tự khóa.
 
-```
-swish(x) = x * sigmoid(x)
+```math
+\text{swish}(x) = x \cdot \text{sigmoid}(x)
 ```
 
-Swish hình thức là x * sigmoid(x)。Google 通过在激活功能空间上进行自动搜索 发现它一个神经网络在设计神经网络的一部分──
+Tương tự là:$x \cdot \text{sigmoid}(x)$Google đã tìm kiếm một mạng Neural trong thiết kế một phần của mạng Neural.
 
 Như GELU, nó平滑、非单调,并允许较小的负值──差异很微妙:Swish sử dụng sigmoid 作为门,而 GELU sử dụng Gaussian CDF──实践中,性能几乎相同──Swish sử dụng EfficientNet 和一些视觉模型──GELU则主导语言模型──
 
@@ -158,8 +162,8 @@ Như GELU, nó平滑、非单调,并允许较小的负值──差异很微妙:S
 
 Không được sử dụng cho các lớp ẩn. Softmax sẽ lấy điểm số thô (logits) của vector chuyển thành phân phối xác suất.
 
-```
-softmax(x_i) = e^(x_i) / sum(e^(x_j) for all j)
+```math
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
 ```
 
 Mỗi đầu ra đều nằm giữa 0 đến 1 ∼ tất cả các đầu ra và là 1 ∼. Điều này làm cho nó trở thành kích hoạt cuối cùng tiêu chuẩn của phân loại đa lớp. Logit lớn nhất sẽ có được xác suất cao nhất, nhưng không giống với argmax, softmax là rất nhỏ, và giữ lại thông tin tương đối đáng tin cậy.
@@ -501,11 +505,11 @@ RNNs và LSTMs đối với trạng thái ẩn sử dụng tanh, đối với c�
 
 ## 练习
 
-1. 实现 Parametric ReLU (PReLU), trong đó độ nghiêng âm alpha là một tham số có thể học được.
+1. 实现 Parametric ReLU (PReLU), trong đó có độ nghiêng âm$\alpha$là một tham số có thể học được. Trong tập hợp dữ liệu vòng tròn.
 
 2. Chuyện biến mất từ 10 tầng biến thành 50 tầng vận hành. Chụp hình ảnh của sigmoid, tanh, ReLU và GELU ở mỗi tầng.
 
-3. 实现 ELU (Exponential Linear Unit):elu(x) = x nếu x > 0, alpha * (e^x - 1) nếu x <= 0── trên cùng một mạng 上将其死神经元率与 ReLU对比──
+3. 实现 ELU (Đơn vị tuyến tính tăng trưởng):$\text{elu}(x) = x$Nếu$x \gt 0$- $\alpha (e^x - 1)$Nếu$x \le 0$Trong cùng một mạng, tỷ lệ tế bào thần kinh chết của nó tương đương với ReLU.
 
 4. Xây dựng một màn hình chăm sóc sức khỏe , trong thời gian tập luyện: mỗi thời đại  tính toán độ lớn độ tần trung bình của mỗi tầng , trong bất kỳ lớp nào  thấp hơn 0,001 hoặc vượt quá 100 , in cảnh báo 
 
@@ -519,12 +523,12 @@ RNNs và LSTMs đối với trạng thái ẩn sử dụng tanh, đối với c�
 | Vanishing gradient | “Gradients 在 deep networks 中消失” | 当 activation 的 derivative 小于 1 时，gradients 会通过 layers 指数级缩小，使早期 layers 无法训练 |
 | Exploding gradient | “Gradients 爆炸” | 当有效乘数超过 1 时，gradients 会通过 layers 指数级增长，导致训练不稳定 |
 | Dead neuron | “停止学习的 neuron” | 输入永久为负的 ReLU neuron，会产生零输出和零 gradient |
-| Sigmoid | “把值压缩到 0-1” | logistic function 1/(1+e^-x)，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
-| ReLU | “把负数裁剪为零” | max(0, x)——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
+| Sigmoid | “把值压缩到 0-1” | logistic function $1/(1+e^{-x})$，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
+| ReLU | “把负数裁剪为零” | $\max(0, x)$——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
 | GELU | “transformer activation” | Gaussian Error Linear Unit，一种平滑 activation，会根据输入为正的概率对输入加权 |
-| Swish/SiLU | “Self-gated ReLU” | x * sigmoid(x)，通过 automated search 发现，用于 EfficientNet |
+| Swish/SiLU | “Self-gated ReLU” | $x \cdot \text{sigmoid}(x)$，通过 automated search 发现，用于 EfficientNet |
 | Softmax | “把分数变成概率” | 将 logits 的 Vector 归一化为 probability distribution，其中所有值都在 (0,1) 内且总和为 1 |
-| Leaky ReLU | “不会死亡的 ReLU” | max(alpha*x, x)，其中 alpha 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
+| Leaky ReLU | “不会死亡的 ReLU” | $\max(\alpha x, x)$，其中 $\alpha$ 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
 | Saturation | “sigmoid 的平坦部分” | activation 的 derivative 趋近于零的区域，会阻断 gradient flow |
 | Logit | “softmax 之前的原始分数” | 应用 softmax 或 sigmoid 之前，final layer 的未归一化输出 |
 

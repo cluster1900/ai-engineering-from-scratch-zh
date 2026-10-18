@@ -23,7 +23,7 @@ Backpropagation  đã giải quyết vấn đề này. Một lần Forward Pass,
 ## 概念
 ### Quy tắc chuỗi, áp dụng cho mạng lên
 
-Bạn đang trong giai đoạn 01, Bài học 05 中见过链条规则──快速回顾: Nếu y = f(g(x)), thì dy/dx = f'(g(x)) * g'(x)── Bạn đi dọc theo chuỗi条相乘 phái sinh──
+Bạn đang trong giai đoạn 01, Bài học 05 trong thấy quy tắc chuỗi.$y = f(g(x))$Vậy thì$\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ 你沿链条相乘衍生物
 
 Trong mạng thần kinh, 链条 là chuỗi hoạt động từ đầu vào đến Loss. Mỗi cấp độ áp dụng trọng lượng, tăng chuyển vị trí, tái thông qua kích hoạt.
 
@@ -42,9 +42,9 @@ graph LR
     y["target"] --> loss
 ```
 
-Forward Pass: value From left to right流动──x 和 w 产生 z1 = w*x──加上 b 得到 z2──Sigmoid 给出激活 a──使用 Loss Function 将 a 与目标 y 比较──
+Forward Pass: value Từ trái sang phải流动。$x$和 $w$ tạo ra $z_1 = w x$    $b$ Đưa ra $z_2$ Sigmoid 给出 kích hoạt $a$△ sử dụng Phụng chức năng sẽ $a$Với mục tiêu$y$So sánh:
 
-Trở lại:Thời gian từ bên phải sang bên trái流动。 từ dL/da 开始。 Loss 如何随激活 改变)。乘以 da/dz2✔sigmoid derivative)。得到 dL/dz2。拆分成 dL/db(它等于 dL/dz2,因为 z2 = z1 + b) 和 dL/dz1。然后 dL/dw = dL/dz1 * x,dL/dx = dL/dz1 * w。
+Trở về phía sau: Gradient Từ phải sang trái流动。 từ $\partial L/\partial a$开始(Loss 如何随着激活 改变) △乘以 $\partial a/\partial z_2$(trái dẫn sigmoid) 。 nhận được $\partial L/\partial z_2$                                                                                                                                                                                                                                                              $\partial L/\partial b$(đúng như $\partial L/\partial z_2$Vì$z_2 = z_1 + b$) và $\partial L/\partial z_1$  $\partial L/\partial w = \partial L/\partial z_1 \cdot x$- Tôi không biết.$\partial L/\partial x = \partial L/\partial z_1 \cdot w$
 
 Trong suốt thời gian Trượt ngược, mỗi nút trong biểu đồ chỉ có một nhiệm vụ: nhận từ Gradient trên, nhân bằng dẫn xuất địa phương của nó, rồi chuyển tiếp xuống.
 
@@ -81,7 +81,7 @@ graph RL
     L1 -- "dL/dz1 = dL/da1 * sigmoid'(z1)" --> I["Input"]
 ```
 
-Trong mỗi tầng, Gradient đã được nhân bằng phái sinh sigmoid.
+Trong mỗi tầng, gradient thành phố sẽ được nhân bằng dẫn xuất sigmoid.$a(1 - a)$, giá trị tối đa là 0.25$a = 0.5$时) ・ sâu vào ba tầng sau, Gradient 至多 đã được nhân lên $0.25^3 = 0.0156$❖ sâu vào:$0.25^{10} = 0.000001$
 
 ### Các gradient biến mất
 
@@ -99,32 +99,33 @@ After 10 layers:  gradient * 0.25^10 = 0.000001x original
 
 ### 推导 2 Layer Network 的 Gradient
 
-Dưới đây là một ví dụ cụ thể về toán học: mạng có đầu vào x 带 sigmoid lớp ẩn 带 sigmoid lớp đầu ra, cũng như MSE Loss 👍
+Dưới đây là một ví dụ toán học cụ thể: mạng có đầu vào$x$、带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带 sigmoid 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带m 带
 
 Nhận chuyển:
-```
-z1 = W1 * x + b1
-a1 = sigmoid(z1)
-z2 = W2 * a1 + b2
-a2 = sigmoid(z2)
-L = (a2 - y)^2
+```math
+\begin{aligned}
+z_1 &= W_1 x + b_1 \\
+a_1 &= \text{sigmoid}(z_1) \\
+z_2 &= W_2 a_1 + b_2 \\
+a_2 &= \text{sigmoid}(z_2) \\
+L &= (a_2 - y)^2
+\end{aligned}
 ```
 
 Backward Pass (trước từ):
-```
-dL/da2 = 2(a2 - y)
-da2/dz2 = a2 * (1 - a2)
-dL/dz2 = dL/da2 * da2/dz2 = 2(a2 - y) * a2 * (1 - a2)
-
-dL/dW2 = dL/dz2 * a1
-dL/db2 = dL/dz2
-
-dL/da1 = dL/dz2 * W2
-da1/dz1 = a1 * (1 - a1)
-dL/dz1 = dL/da1 * da1/dz1
-
-dL/dW1 = dL/dz1 * x
-dL/db1 = dL/dz1
+```math
+\begin{aligned}
+\frac{\partial L}{\partial a_2} &= 2(a_2 - y) \\
+\frac{\partial a_2}{\partial z_2} &= a_2 (1 - a_2) \\
+\frac{\partial L}{\partial z_2} &= \frac{\partial L}{\partial a_2} \cdot \frac{\partial a_2}{\partial z_2} = 2(a_2 - y) \cdot a_2 (1 - a_2) \\[6pt]
+\frac{\partial L}{\partial W_2} &= \frac{\partial L}{\partial z_2} \cdot a_1 \\
+\frac{\partial L}{\partial b_2} &= \frac{\partial L}{\partial z_2} \\[6pt]
+\frac{\partial L}{\partial a_1} &= \frac{\partial L}{\partial z_2} \cdot W_2 \\
+\frac{\partial a_1}{\partial z_1} &= a_1 (1 - a_1) \\
+\frac{\partial L}{\partial z_1} &= \frac{\partial L}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \\[6pt]
+\frac{\partial L}{\partial W_1} &= \frac{\partial L}{\partial z_1} \cdot x \\
+\frac{\partial L}{\partial b_1} &= \frac{\partial L}{\partial z_1}
+\end{aligned}
 ```
 
 Mỗi gradient đều là các biến số địa phương được theo dõi từ Loss 往回 乘积. Đó là toàn bộ sự lây lan ngược.
@@ -182,9 +183,9 @@ def __mul__(self, other):
     return out
 ```
 
-Đối với việc bổ sung: d(a+b) /da = 1,d(a+b) /db = 1。 do đó hai đầu vào sẽ trực tiếp nhận được đầu ra của Gradient。
+ Đối với bổ sung:$\partial(a+b)/\partial a = 1$- Tôi không biết.$\partial(a+b)/\partial b = 1$Vì vậy, hai đầu vào sẽ trực tiếp nhận được đầu ra của Gradient.
 
-Đối với nhân: d(a*b) /da = b,d(a*b) /db = a。 mỗi đầu vào sẽ nhận được giá trị đầu vào khác 乘以 đầu ra Gradient。
+ Đối với nhân:$\partial(ab)/\partial a = b$- Tôi không biết.$\partial(ab)/\partial b = a$ Mỗi đầu vào sẽ nhận được giá trị của đầu vào khác nhân bằng cấp độ đầu ra
 
 `+=`Một giá trị có thể được nhiều hoạt động sử dụng.
 
@@ -206,7 +207,7 @@ def sigmoid(self):
     return out
 ```
 
-Tiến hóa Sigmoid:sigmoid(x) * (1 - sigmoid(x))。 我们在 Forward Pass 中已计算了 sigmoid(x) = s。复用它──不需要额外工作──
+Hạt dẫn xuất Sigmoid:$\text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))$Chúng tôi đã tính toán trong Forward Pass.$\text{sigmoid}(x) = s$❖ Sử dụng nó lại ❖ Không cần thêm công việc ❖
 
 ```python
 def mse_loss(predicted, target):
@@ -214,7 +215,7 @@ def mse_loss(predicted, target):
     return diff * diff
 ```
 
-单个输出的 MSE:(预测 - target) ^2。 我们把减算表达为加上一个取负的值──
+单个输出的 MSE:$(\text{predicted} - \text{target})^2$Chúng ta đưa trừ đi biểu hiện cho thêm một giá trị được lấy.
 
 ### 步骤 4: Hướng về phía sau
 
@@ -238,7 +239,7 @@ def backward(self):
         v._backward()
 ```
 
-Từ Loss  bắt đầu(Gradient = 1.0, vì dL/dL = 1)。 dọc theo biểu đồ thứ tự hậu 反向遍历──每个节点的`_backward`Sẽ đưa Gradient cho con cái nó.
+Từ Loss 开始(Gradient = 1,0, vì $dL/dL = 1$)― dọc theo biểu đồ thứ tự sau ngược chiều xuyên qua― mỗi nút của `_backward`Sẽ đưa Gradient cho con cái nó.
 
 ### 步骤 5: Lớp và mạng
 
@@ -298,7 +299,7 @@ class Network:
             p.grad = 0.0
 ```
 
-Một Neuron  nhận đầu vào, tính toán tổng số trọng lượng + thiên vị, sau đó áp dụng sigmoid。权重初始化按平方(2/n_inputs) 缩缩, để ngăn chặn sự bão hòa của sigmoid trong mạng sâu hơn。 một Layer là danh sách của Neuron。 một Network là danh sách của Layer。`parameters()`Phương pháp sẽ thu thập tất cả các giá trị có thể học được, để chúng ta có thể cập nhật chúng.
+Một Neuron  nhận đầu vào, tính toán tổng trọng lượng + thiên vị, sau đó áp dụng sigmoid。权重初始化按 $\sqrt{2/n_{\text{inputs}}}$缩放, để ngăn chặn sự bão hòa của các mạng lưới sâu hơn trong trung tâm.`parameters()`Phương pháp sẽ thu thập tất cả các giá trị có thể học được, để chúng ta có thể cập nhật chúng.
 
 ### Bước 6: Trong XOR 上 tập luyện
 
@@ -433,9 +434,9 @@ with torch.no_grad():
 - `outputs/prompt-gradient-debugger.md`-- một lời nhắc lặp lại, để chẩn đoán bất kỳ vấn đề cấp độ nào trong mạng thần kinh
 
 ## 练习
-1. 给值类 添加一个 `__sub__`phương pháp(a - b = a + (-1 * b))。 rồi thực hiện một `__neg__`Phương pháp: Bằng cách so sánh với biểu hiện đơn giản như (a - b) ^ 2)
+1. 给值类 添加一个 `__sub__`Phương pháp$a - b = a + (-1 \cdot b)$()  sau đó thực hiện một`__neg__`phương pháp:$(a - b)^2$(c) tính toán thủ công để so sánh, xác minh Gradient có đúng không.
 
-2. 给 giá trị 添加一个 `relu`phương pháp(output 为 max(0, x), dẫn xuất trong x > 0 时为 1,否则为 0) ・・・ trong lớp ẩn sử dụng relu 替换 sigmoid,并再次在 XOR 上训练──比较收速度──你应该会看到训练更快――这是课04的预告──
+2. 给 giá trị 添加一个 `relu`Phương pháp(tạo ra 为 $\max(0, x)$, dẫn xuất trong $x \gt 0$时为1,否则为0) ・ trong lớp ẩn sử dụng relu thay thế sigmoid,并再次在XOR上训练――比较收速度――你应该会看到训练更快――这是第04课的预告――
 
 3. Trong giá trị trên để thực hiện một sử dụng các quyền nguyên số của `__pow__`Phương pháp... dùng nó.`mse_loss`替换 thành thực sự `(predicted - target) ** 2`√ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √
 
@@ -446,14 +447,14 @@ with torch.no_grad():
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 dL/dw |
+| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 $\partial L/\partial w$ |
 | Computational graph | “Network 结构” | 一个有向无环 graph，其中 node 是 operation，edge 承载 value（forward）和 Gradient（backward） |
-| Chain rule | “把 derivative 相乘” | 如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- Backpropagation 的数学基础 |
+| Chain rule | “把 derivative 相乘” | 如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ -- Backpropagation 的数学基础 |
 | Gradient | “最陡上升方向” | Loss 相对于某个 parameter 的 partial derivative -- 告诉你如何改变该 parameter 来降低 Loss |
 | Vanishing gradient | “深层 network 学不会” | 当 Gradient 通过带有 sigmoid 这类 saturating activation 的 layer 传播时，会指数级缩小 |
 | Forward pass | “运行 network” | 通过顺序应用每一层的 operation，从 input 计算 output，并存储 intermediate value |
 | Backward pass | “计算 Gradient” | 反向遍历 Computational Graph，在每个 node 使用 chain rule 累积 Gradient |
-| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：w_new = w_old - lr * gradient |
+| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：$w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{gradient}$ |
 | Topological sort | “正确顺序” | 一种 graph node 排序方式，使每个 node 都出现在其依赖的所有 node 之后 -- 确保 Gradient 在传播前已完全累积 |
 | Autograd | “自动微分” | 一个在 forward computation 期间构建 Computational Graph，并自动计算 Gradient 的系统 -- PyTorch 的 engine 做的就是这个 |
 

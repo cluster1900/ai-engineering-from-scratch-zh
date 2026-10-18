@@ -38,21 +38,23 @@ graph LR
 
 ### Thất vả
 
-Các công nghệ điều chỉnh đơn giản nhất, nhưng có một giải thích tốt nhất. Trong thời gian tập luyện, có khả năng mỗi đầu ra của mỗi thần kinh sẽ được đặt thành 0.
+Các kỹ thuật thường xuyên nhất, nhưng có những lời giải thích tốt nhất trong quá trình đào tạo, theo tỷ lệ$p$随机将每个神经元的输出设为零.
 
+```math
+\text{output} = \text{activation}(z) \cdot \text{mask} \quad \text{其中 }\text{mask}[i] \sim \text{Bernoulli}(1 - p)
 ```
-output = activation(z) * mask    where mask[i] ~ Bernoulli(1 - p)
-```
 
-Khi p = 0,5 , mỗi lần tiến qua sẽ đặt một nửa thần kinh vào không.
+Khi đó$p = 0.5$Khi, mỗi lần đi trước, thành phố sẽ đặt một nửa các thần kinh vào không. Mạng phải học biểu hiện dư thừa, vì nó không thể dự đoán được các thần kinh có thể sử dụng. Điều này sẽ ngăn chặn sự thích nghi chung, nghĩa là các thần kinh học phụ thuộc vào sự tồn tại của các thần kinh khác cụ thể.
 
-Ensemble 解释: một có N 个神经并使用脱落的网络会创建2^N个可能的子网络 (n) ]] 所有神经开关或关的组合) ⋅ sử dụng脱落 训练近似于同时训练所有2^N个子网络,每个都在不同的小批上训练――测试时,你使用所有神经元 (n) ̇无脱落),并将输出按 (1 - p)缩小,缩小,以匹配训练期间的期望值――这等于预测对2^N个子网络的预测平均单个模型得到一个巨大的集合――
+Nhóm  giải thích: một có $N$个神经元并使用中断的网络会创建 $2^N$个可能的子网络 (nền tảng của tất cả các hệ thống thần kinh)  sử dụng bỏ học 训练近似于同时训练所有$2^N$个子网络, mỗi người trong các bộ mini khác nhau 上训练――测试时,你使用所有神经元(无落),并将输出按 $(1 - p)$缩放,                                                                                                                                                                                                                                                             $2^N$个子网络的预测取平均使用单个模型得到一个巨大的集团──
 
 实践中,缩放会在训练期间应用,而不是测试期间应用(reversed dropout):
 
-```
-During training:  output = activation(z) * mask / (1 - p)
-During testing:   output = activation(z)   (no change needed)
+```math
+\begin{aligned}
+\text{训练时：} \quad & \text{output} = \text{activation}(z) \cdot \text{mask} / (1 - p) \\
+\text{测试时：} \quad & \text{output} = \text{activation}(z) \quad \text{（无需改动）}
+\end{aligned}
 ```
 
 Như vậy thì tốt hơn, bởi vì test code hoàn toàn không cần biết bỏ qua.
@@ -63,15 +65,15 @@ Như vậy thì tốt hơn, bởi vì test code hoàn toàn không cần biết 
 
 Nâng tư nhân của Quảng lớn gia nhập Loss:
 
-```
-total_loss = task_loss + (lambda / 2) * sum(w_i^2)
+```math
+\text{total\_loss} = \text{task\_loss} + \frac{\lambda}{2} \sum_i w_i^2
 ```
 
-Các điều kiện về quy định là lambda * w. Điều này có nghĩa là trong mỗi bước, mỗi trọng lượng sẽ được giảm theo tỷ lệ lớn của nó.
+Các quy định của các quy định là:$\lambda w$ Điều này có nghĩa là trong mỗi bước, mỗi trọng lượng sẽ giảm theo tỷ lệ lớn của nó đối với tỷ lệ nhỏ.
 
 Tại sao điều này giúp phổ biến hóa: mô hình quá sức  thường có trọng lượng lớn hơn, sẽ làm tăng tiếng ồn trong dữ liệu tập luyện.
 
-Lambda siêu tham số 控制强度── điển hình giá trị:
+$\lambda$siêu tham số 控制强度──đối tượng giá trị:
 
 - Transformer 上的 AdamW Sử dụng 0.01
 - CNNs trên SGD sử dụng 1e-4
@@ -85,16 +87,18 @@ Trong khi sẽ chuyển giao đầu ra của mỗi lớp sang tầng sau, trư�
 
 Đối với một nhóm kích hoạt:
 
-```
-mu = (1/B) * sum(x_i)           (batch mean)
-sigma^2 = (1/B) * sum((x_i - mu)^2)   (batch variance)
-x_hat = (x_i - mu) / sqrt(sigma^2 + eps)   (normalize)
-y = gamma * x_hat + beta        (scale and shift)
+```math
+\begin{aligned}
+\mu &= \frac{1}{B} \sum_i x_i && \text{（批次均值）} \\
+\sigma^2 &= \frac{1}{B} \sum_i (x_i - \mu)^2 && \text{（批次方差）} \\
+\hat{x} &= \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}} && \text{（归一化）} \\
+y &= \gamma \hat{x} + \beta && \text{（缩放和平移）}
+\end{aligned}
 ```
 
 Gamma và beta là các tham số có thể học được, để mạng trong tình huống tốt nhất có thể hủy bỏ sự bình thường hóa này. Nếu không có chúng, bạn sẽ buộc mỗi lớp đầu ra đều trở thành giá trị trung bình, tỷ lệ đơn vị khác nhau, và điều này không nhất thiết là mạng muốn.
 
-**Training vs inference split:**Trong thời gian tập luyện, mu 和 sigma từ mini-batch trước đây. Trong thời gian tập luyện, bạn sử dụng trung bình chạy tích lũy trong thời gian tập luyện.
+**Training vs inference split:**Trong thời gian tập luyện,$\mu$和 $\sigma$Từ hiện tại mini-batch. Trong thời gian diễn ra, bạn sử dụng tập luyện trong thời gian tích lũy trung bình chạy.
 
 BatchNorm vì sao có hiệu quả vẫn còn tranh cãi. Bài viết ban đầu tuyên bố nó đã giảm "sự thay đổi biến đổi nội bộ" (with early layer update, layer input distribution occurs change) Saturkar et al. (2018) cho thấy giải thích này là sai lầm. Lý do thực sự là: BatchNorm 让 Loss landscape 更平滑. Gradients 更具预测性,Lipschitz constants 更小,Optimizer security có thể thực hiện bước tiến lớn hơn.
 
@@ -104,14 +108,16 @@ BatchNorm có một hạn chế cơ bản: nó phụ thuộc vào số liệu th
 
 Trong đặc tính kích thước, thay vì trong số lượng  batch  kích thước. Đối với một mẫu đơn:
 
-```
-mu = (1/D) * sum(x_j)           (feature mean)
-sigma^2 = (1/D) * sum((x_j - mu)^2)   (feature variance)
-x_hat = (x_j - mu) / sqrt(sigma^2 + eps)
-y = gamma * x_hat + beta
+```math
+\begin{aligned}
+\mu &= \frac{1}{D} \sum_j x_j && \text{（特征均值）} \\
+\sigma^2 &= \frac{1}{D} \sum_j (x_j - \mu)^2 && \text{（特征方差）} \\
+\hat{x} &= \frac{x_j - \mu}{\sqrt{\sigma^2 + \epsilon}} \\
+y &= \gamma \hat{x} + \beta
+\end{aligned}
 ```
 
-D là tính năng kích thước. Mỗi mẫu tự do được phân tích không phụ thuộc vào kích thước lô. Đó là lý do tại sao Transformer sử dụng LayerNorm thay vì BatchNorm.
+$D$Đó là lý do tại sao Transformer sử dụng LayerNorm thay vì BatchNorm.
 
 LayerNorm sẽ được áp dụng trong mỗi khối tự chú ý và mỗi khối chuyển tiếp 之后 (Post-LN), hoặc được áp dụng trước chúng (Pre-LN, training time more stable) 。
 
@@ -119,9 +125,11 @@ LayerNorm sẽ được áp dụng trong mỗi khối tự chú ý và mỗi kh�
 
 Không làm giảm giá bình quân của LayerNorm.
 
-```
-rms = sqrt((1/D) * sum(x_j^2))
-y = gamma * x / rms
+```math
+\begin{aligned}
+\text{rms} &= \sqrt{\frac{1}{D} \sum_j x_j^2} \\
+y &= \gamma \cdot \frac{x}{\text{rms}}
+\end{aligned}
 ```
 
 Về mặt này, không có giá trị trung bình tính, không có các tham số beta. Kết quả quan sát là: LayerNorm trong sự tái sinh của nó (trong khi giảm giá trị trung bình) đóng góp cho hiệu suất mô hình rất nhỏ, nhưng có chi phí tính toán.
@@ -508,8 +516,8 @@ LayerNorm, chứ không phải BatchNorm.
 |------|----------------|----------------------|
 | Overfitting | "模型记住了数据" | 当模型的训练表现显著高于测试表现时，表示它学到了噪声而不是信号 |
 | Regularization | "防止 overfitting" | 任何约束模型复杂度以改善泛化的技术：dropout、weight decay、normalization、augmentation |
-| Dropout | "随机删除神经元" | 训练期间以概率 p 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
-| Weight decay | "L2 penalty" | 每一步通过减去 lambda * w 将所有权重向零收缩；通过权重大小惩罚复杂度 |
+| Dropout | "随机删除神经元" | 训练期间以概率 $p$ 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
+| Weight decay | "L2 penalty" | 每一步通过减去 $\lambda w$ 将所有权重向零收缩；通过权重大小惩罚复杂度 |
 | Batch normalization | "按 batch 归一化" | 训练期间使用 batch statistics、推理期间使用 running averages，在 batch 维度上对层输出进行归一化 |
 | Layer normalization | "按样本归一化" | 在每个样本内部跨特征归一化；与 batch 无关，用于 batch size 可变的 Transformer |
 | RMSNorm | "没有均值的 LayerNorm" | Root mean square normalization；从 LayerNorm 中去掉均值减法，以相同 accuracy 获得 10% 加速 |

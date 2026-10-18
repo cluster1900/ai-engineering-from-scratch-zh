@@ -30,8 +30,8 @@ Bạn cần hiểu lịch trình, vì giá trị mặc định không nhất thi
 
 Cách đơn giản nhất là chọn một số, mỗi bước đều dùng nó.
 
-```
-lr(t) = lr_0
+```math
+\text{lr}(t) = \text{lr}_0
 ```
 
 很少是最优的──它要么对训练末期来说太高 (((在最小 附近振荡),要么对训练初步来说太低 ((在小步上浪费计算) ⋅对小模型和调试来说也可以──对任何需要训练超过一小时的任务都是糟糕的选择──
@@ -40,11 +40,11 @@ lr(t) = lr_0
 
 Từ ResNet 时代的老派方法──在固定 epochs 处按某个因素通常是10x) giảm tốc độ học hỏi──
 
-```
-lr(t) = lr_0 * gamma^(floor(epoch / step_size))
+```math
+\text{lr}(t) = \text{lr}_0 \cdot \gamma^{\lfloor \text{epoch} / \text{step\_size} \rfloor}
 ```
 
-Trong đó gamma = 0.1 và step_size = 30 biểu hiện: lr Mỗi 30 thời đại  giảm 10x。ResNet-50 đã sử dụng này -- lr=0.1, trong thời đại 30、60 和 90 时 giảm 10x。
+Trong số đó $\gamma = 0.1$Và bước_size = 30 biểu hiện:lr Mỗi 30 thời kỳ  giảm 10x。ResNet-50 就用这个--lr=0.1, trong thời kỳ 30、60 和 90 时降 10x。
 
 问题是: Optimal decay 点 phụ thuộc vào bộ dữ liệu và kiến trúc. 换到另一个问题,就需要重新调调什么时候降低. 转变也很突然.
 
@@ -52,24 +52,24 @@ Trong đó gamma = 0.1 và step_size = 30 biểu hiện: lr Mỗi 30 thời đ�
 
 Theo đường cong cosine, từ tỷ lệ học tập tối đa xuống mức tối thiểu:
 
+```math
+\text{lr}(t) = \text{lr}_{\min} + 0.5 \cdot (\text{lr}_{\max} - \text{lr}_{\min}) \cdot \left(1 + \cos\left(\frac{\pi t}{T}\right)\right)
 ```
-lr(t) = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T))
-```
 
-Trong đó, t là bước trước, T là tất cả các bước số.
+Trong số đó $t$Đó là bước đi trước,$T$Đó là tất cả các bước.
 
-Khi t=0 时,cosine 项为1,所以 lr = lr_max──当 t=T 时,cosine 项为 -1,所以 lr = lr_min──decay 一开始很平缓,中间加速,接近末尾时再次变得平缓──
+Khi đó$t=0$时,cosine 项为1,所以 $\text{lr} = \text{lr} _{\max}$$t=T$时,cosine 项为 -1,所以 $\text{lr} = \text{lr} _{\min}$ giảm 一开始很平缓,中间加速,接近末尾时再次变得平缓──
 
-Đây là lựa chọn mặc định của hầu hết các bài tập hiện đại. Ngoài lr_max và lr_min 之外 không cần điều chỉnh các siêu tham số.
+Đó là lựa chọn được chọn trong hầu hết các tập luyện hiện đại.$\text{lr} _{\max}$和 $\text{lr} _{\min}$ ngoài không cần điều chỉnh các siêu tham số. hình dạng có thể phù hợp với trải nghiệm: hầu hết các học tập xảy ra trong giai đoạn tập luyện.
 
 ### Tại sao lại bắt đầu từ nhỏ?
 
 Adam 和其他适应优化器 会维护 Gradient mean 和变量运行估计――在步骤 0,这些估计被初始化为零――最初几次 Gradient updates 基于很差的统计量――如果你的学习率在此段时间很大,模型会迈出巨大且方向不佳的步子――
 
-Nhiệt độ có thể sửa chữa vấn đề này. Trước tiên từ một tốc độ học tập rất nhỏ  bắt đầu (thường là lr_max / warmup_steps, thậm chí là cho không), và sau đó tăng thẳng thắn trong các bước N trước đến lr_max.
+Warmup có thể sửa chữa vấn đề này. Trước từ một tỷ lệ học rất nhỏ  bắt đầu (thường là lr_max / warmup_steps, thậm chí là cho không), và trước $N$bước giữa tuyến tính tăng lên đến $\text{lr}_{\max}$Khi bạn đạt được tốc độ học tập hoàn hảo, số lượng thống kê của Adam đã ổn định.
 
-```
-lr(t) = lr_max * (t / warmup_steps)     for t < warmup_steps
+```math
+\text{lr}(t) = \text{lr}_{\max} \cdot \frac{t}{\text{warmup\_steps}} \quad \text{当 } t < \text{warmup\_steps}
 ```
 
 Tiêu chuẩn nóng lên: tổng tập luyện bước 1-5%。Llama 3 训练 khoảng 1,8 nghìn tỷ token,并 nóng lên 已 2000 bước。GPT-3 在 375 triệu token 上进行了热升──
@@ -399,13 +399,13 @@ HuggingFace là hầu hết các kịch bản chỉnh sửa tinh tế Llama và 
 
 ## 练习
 
-1. 实现 tăng trưởng phân rã:lr(t) = lr_0 * gamma^t, trong đó gamma = 0,999── trên bộ dữ liệu vòng tròn 上与 cosine annealing 比较──
+1. 实现 sự suy giảm theo cấp số:$\text{lr}(t) = \text{lr}_0 \cdot \gamma^t$, trong số đó $\gamma = 0.999$ 在圆数据集 上与kosine annealing比较
 
 2. 实现学习率范围测试(Leslie Smith):训练几百步,同时将 LR từ 1e-7指数增加到1──绘制 Loss vs LR──最优最大 LR 位于 Loss 开始增加之前──
 
 3. Sử dụng ấm lên + cosine  luyện tập, nhưng thay đổi ấm lên 长度:总步骤的 0%、1%、5%、10%、20%── tìm được điểm ngọt nhất của luyện tập.
 
-4. 实现带热启动的共体缩 (Cosine annealing) (SGDR): mỗi bước T sẽ tăng tốc độ học tập lên lr_max, sau đó giảm lại.
+4. 实现带 warm restarts 的 cosine annealing(SGDR): mỗi $T$các bước sẽ tăng tốc độ học tập$\text{lr}_{\max}$, sau đó lại phân hủy. Trong quá trình tập luyện dài hơn,
 
 5. Xây dựng một bác sĩ phẫu thuật lịch trình, giám sát đào tạo Loss, và Loss 稳定时自动 từ nóng lên 转换到阴; nếu Loss cao nguyên 太久,则降低 lr。
 
@@ -415,12 +415,12 @@ HuggingFace là hầu hết các kịch bản chỉnh sửa tinh tế Llama và 
 |------|----------------|----------------------|
 | Learning rate | “model 学得有多快” | 用来乘以 Gradient、决定参数更新大小的标量 |
 | Schedule | “随时间改变 LR” | 将 training step 映射到 learning rate 的 function，旨在优化 convergence |
-| Warmup | “从小 LR 开始” | 在最初 N steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
-| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 lr_max 降低到 lr_min |
+| Warmup | “从小 LR 开始” | 在最初 $N$ steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
+| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 $\text{lr} _{\max}$ 降低到 $\text{lr} _{\min}$ |
 | Step decay | “在 milestones 降低 LR” | 在固定 epoch intervals，将 LR 乘以一个因子（通常是 0.1） |
 | 1cycle policy | “先上后下” | Leslie Smith 的方法：在单个 cycle 中将 LR 先 ramp up 再 ramp down，以获得更快 convergence |
 | LR range test | “找到最佳 learning rate” | 在短时间训练中逐步增加 LR，以找到 Loss 开始 diverge 的数值 |
-| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 lr_max，并再次 decay（SGDR） |
+| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 $\text{lr} _{\max}$，并再次 decay（SGDR） |
 | Eta min | “LR 的下限” | schedule 最终 decay 到的最小 learning rate |
 | Peak learning rate | “最大 LR” | 训练过程中达到的最高 LR，通常出现在 warmup 之后 |
 

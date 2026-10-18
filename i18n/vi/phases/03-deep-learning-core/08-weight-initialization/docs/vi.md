@@ -35,40 +35,40 @@ Nhưng tình cờ cũng không đủ.
 
 考虑一个具有风扇_in 个输入的单层:
 
-```
-z = w1*x1 + w2*x2 + ... + w_n*x_n
-```
-
-Nếu mỗi trọng lượng wi đều từ sự phân phối của sự biến động vì Var(w), và mỗi sự biến động của đầu vào xi là Var(x), thì sự biến động đầu ra là:
-
-```
-Var(z) = fan_in * Var(w) * Var(x)
+```math
+z = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n
 ```
 
-Nếu Var(w) = 1 且 fan_in = 512, thì sự biến động đầu ra là sự biến động đầu vào của 512 倍──经过 10 层:512^10 = 1.2e27── tín hiệu của bạn đã nổ──
+Nếu mỗi trọng lượng$w_i$Tất cả đều có sự khác biệt.$\mathrm{Var}(w)$ phân phối, và mỗi đầu vào $x_i$ở sự khác biệt$\mathrm{Var}(x)$,则输出变量 为:
 
-Nếu Var(w) = 0.001, thì sự biến động đầu ra Mỗi tầng theo 0.001 * 512 = 0.512 缩小──经过 10层:0.512^10 = 0.00013── tín hiệu của bạn đã biến mất──
+```math
+\mathrm{Var}(z) = \text{fan}_{\text{in}} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(x)
+```
 
-目标: chọn Var(w), làm cho Var(z) = Var(x)。Tầm tín hiệu ở các tầng khác nhau giữ vững.
+Nếu $\mathrm{Var}(w) = 1$且 $\text{fan}_{\text{in}} = 512$,则输出差异是输入差的512倍──经过10层:$512^{10} = 1.2 \times 10^{27}$ tín hiệu của anh đã nổ rồi.
+
+Nếu $\mathrm{Var}(w) = 0.001$,则输出变量 每层按 $0.001 \cdot 512 = 0.512$缩小──经过10层:$0.512^{10} = 0.00013$ tín hiệu của anh đã biến mất
+
+目标: chọn $\mathrm{Var}(w)$, làm cho nó$\mathrm{Var}(z) = \mathrm{Var}(x)$❖ Độ lớn tín hiệu ở các tầng khác nhau luôn cố định.
 
 ### Xavier/Glorot khởi tạo
 
 Glorot and Bengio (2010) 推导适用于 sigmoid 和 tanh kích hoạt của giải pháp.
 
-```
-Var(w) = 2 / (fan_in + fan_out)
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}
 ```
 
 Trong thực tế, trọng lượng từ phân phối dưới đây 中采样:
 
-```
-w ~ Uniform(-limit, limit)  where limit = sqrt(6 / (fan_in + fan_out))
+```math
+w \sim \text{Uniform}(-\text{limit}, \text{limit}) \quad \text{其中 } \text{limit} = \sqrt{\frac{6}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}
 ```
 
 hoặc:
 
-```
-w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}\right)
 ```
 
 Điều này là có hiệu quả, bởi vì sigmoid và tanh ở gần không 接近线性, và các hoạt động ngay sau khi khởi động chính xác nằm trong khu vực này.
@@ -79,27 +79,27 @@ ReLU sẽ giết chết một nửa đầu ra (tất cả các tiêu cực đề
 
 He et al. (2015) 调整了公式:
 
-```
-Var(w) = 2 / fan_in
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}}}
 ```
 
 Đánh nặng từ phân bố dưới đây 中采样:
 
-```
-w ~ Normal(0, sqrt(2 / fan_in))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}}}}\right)
 ```
 
-Số 2 dùng để bù đắp ReLU sẽ một nửa kích hoạt 置零 ảnh hưởng. Không có nó, tín hiệu Mỗi tầng sẽ giảm khoảng 0,5 lần.
+Số 2 dùng để bù đắp ReLU sẽ đặt một nửa kích hoạt 零 ảnh hưởng. Không có nó, tín hiệu mỗi tầng sẽ giảm khoảng 0,5 lần.$0.5^{50} = 8.8 \times 10^{-16}$Cài đặt init có thể ngăn ngừa tình huống này
 
 ### Tạo ra Transformer
 
 GPT-2 đã đưa ra một mô hình khác. Các kết nối dư sẽ đưa ra mỗi lớp phụ thêm vào đầu vào của nó:
 
-```
-x = x + sublayer(x)
+```math
+x = x + \text{sublayer}(x)
 ```
 
-Mỗi lần tăng sẽ tăng sự khác biệt. Đối với N 个 dư lớp, sự khác biệt sẽ tăng theo N 成比例. GPT-2 会将 dư lớp trọng lượng theo 1/sqrt.
+Mỗi lần tăng lên sẽ tăng sự khác biệt.$N$个 dư lớp, biến thể sẽ theo$N$成比例增长──GPT-2 会将剩余层的重量按 $1/\sqrt{2N}$缩放, trong số đó $N$Đó là một số lượng. Nó có thể giữ được cường độ tín hiệu tích lũy.
 
 Llama 3 ((405B tham số,126 lớp) sử dụng một phương pháp tương tự. Nếu không có sự thu hẹp này, dòng dư sẽ ở 126 tầng.
 
@@ -337,20 +337,20 @@ nn.init.zeros_(layer.bias)
 
 Khi bạn调用`nn.Linear(512, 256)`Khi, PyTorch 默认 sử dụng Kaiming bắt đầu đồng nhất. Đó là lý do tại sao hầu hết các mạng đơn giản chỉ hoạt động. PyTorch đã thực hiện một lựa chọn chính xác. Nhưng khi bạn xây dựng kiến trúc tùy chỉnh, hoặc đi sâu hơn 20 tầng, bạn cần phải hiểu những gì đang xảy ra, và có thể cần phải bao gồm các thiết lập默认.
 
-Đối với các biến thể, các mô hình HuggingFace thường được sử dụng trong chúng.`_init_weights`方法中处理初始化──GPT-2的实现会按1/sqrt(N) 缩放剩余投射──如果你从零开始构建变压器,需要自己添加这个点──
+Đối với các biến thể, các mô hình HuggingFace thường được sử dụng trong chúng.`_init_weights`方法中处理初始化──GPT-2 的实现会按 $1/\sqrt{N}$缩放 dự đoán dư lượng. Nếu bạn bắt đầu xây dựng biến thể từ zero, bạn cần tự thêm vào điều này.
 
 ## 交付 nó
 本课会产出:
 - `outputs/prompt-init-strategy.md`-- một để dùng để chẩn đoán trọng lượng khởi tạo  vấn đề并推 chính xác chiến lược
 
 ## 练习
-1. 添加 LeCun khởi tạo(Var = 1/fan_in,为 SELU kích hoạt 设计) ・运行 50 lớp thí nghiệm, sử dụng LeCun init + tanh,并与Xavier + tanh đối比。
+1. 添加 LeCun khởi động$\mathrm{Var} = 1/\text{fan}_{\text{in}}$,为SELU激活 (设计) ・运行50层实验, sử dụng LeCun init + tanh,并与Xavier + tanh đối比──
 
-2. Thực hiện quy mô dư thừa GPT-2: trước khi gia nhập dòng dư thừa, sẽ có kết quả của mỗi tầng nhân bằng 1/sqrt(2*N) ―― phân biệt trong tình huống có quy mô và không có quy mô hoạt động 50 tầng, đo quy mô dư thừa  tăng lên có nhiều hơn nhanh chóng。
+2. 实现 GPT-2 residual scale: 之前加入残留流 之前,将每一层的输出 乘以 $1/\sqrt{2N}$△ phân biệt trong trường hợp có quy mô và không có quy mô hoạt động 50 tầng, đo lượng lượng dư lớn  tăng lên có nhiều hơn nhanh chóng △
 
 3. Tạo một hàm "điểm sức khỏe init" , kích thước lớp và loại kích hoạt của mạng nhận, sau đó đề xuất khởi tạo chính xác, và trong hiện tại init sẽ dẫn đến vấn đề khi đưa ra cảnh báo.
 
-4. Sử dụng fan_in = 16 与 fan_in = 1024 运行实验──Xavier 和 Kaiming 会适配 fan_in, nhưng ngẫu nhiên init 不会──展示随着层变大,works和break之间的差距如何扩大──
+4. Sử dụng $\text{fan} _{\text{in}} = 16$Với$\text{fan} _{\text{in}} = 1024$运行实验──Xavier 和 Kaiming 会适配 fan_in, nhưng ngẫu nhiên init 不会──展示随着层变大,works和break之间的差距如何扩大──
 
 5. 实现 orthogonal initialization( tạo ra một matrix ngẫu nhiên, tính toán SVD của nó, sử dụng matrix orthogonal U) ―― với 50 tầng mạng ReLU 中的 Kaiming 进行比较。
 
@@ -361,10 +361,10 @@ Khi bạn调用`nn.Linear(512, 256)`Khi, PyTorch 默认 sử dụng Kaiming bắ
 | Symmetry breaking | “让 neurons 变得不同” | 使用 random initialization 确保 neurons 学习不同 features，而不是计算完全相同的函数 |
 | Fan-in | “一个 neuron 的 inputs 数量” | incoming connections 的数量，它决定 input variance 如何在 weighted sum 中累积 |
 | Fan-out | “一个 neuron 的 outputs 数量” | outgoing connections 的数量，与在 Backpropagation 期间维持 Gradient variance 有关 |
-| Xavier/Glorot init | “sigmoid initialization” | Var(w) = 2/(fan_in + fan_out)，旨在通过 sigmoid 和 tanh activations 保持 variance |
-| Kaiming/He init | “ReLU initialization” | Var(w) = 2/fan_in，考虑了 ReLU 会将一半 activations 置零 |
+| Xavier/Glorot init | “sigmoid initialization” | $\mathrm{Var}(w) = 2/(\text{fan} _{\text{in}} + \text{fan} _{\text{out}})$，旨在通过 sigmoid 和 tanh activations 保持 variance |
+| Kaiming/He init | “ReLU initialization” | $\mathrm{Var}(w) = 2/\text{fan}_{\text{in}}$，考虑了 ReLU 会将一半 activations 置零 |
 | Variance propagation | “signals 如何在 layers 中增长或缩小” | 基于 weight scale，逐层分析 activation variance 如何变化的数学分析 |
-| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 1/sqrt(2N) 缩放，以防止 variance 在 N 个 transformer layers 中增长 |
+| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 $1/\sqrt{2N}$ 缩放，以防止 variance 在 $N$ 个 transformer layers 中增长 |
 | Dead network | “什么都训练不了” | 一个因 initialization 不佳而导致所有 Gradients 为 zero 或所有 activations 饱和的 network |
 | Exploding activations | “数值走向 infinity” | 当 weight variance 过高时，activation magnitudes 会在 layers 中指数级增长 |
 

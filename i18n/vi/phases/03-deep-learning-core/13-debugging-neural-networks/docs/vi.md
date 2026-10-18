@@ -90,14 +90,14 @@ giá trị mất mát  biến thành `nan`Hoặc`inf`❖ Tập luyện đã th�
 
 参数 `w`của gradient số:
 
-```
-grad_numerical = (loss(w + eps) - loss(w - eps)) / (2 * eps)
+```math
+\text{grad\_numerical} = \frac{\text{loss}(w + \text{eps}) - \text{loss}(w - \text{eps})}{2 \cdot \text{eps}}
 ```
 
 Một致性指标 (trái độ tương đối):
 
-```
-rel_diff = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{rel\_diff} = \frac{\lvert \text{grad\_analytical} - \text{grad\_numerical} \rvert}{\max(\lvert \text{grad\_analytical} \rvert, \lvert \text{grad\_numerical} \rvert, 10^{-8})}
 ```
 
 Nếu `rel_diff < 1e-5`Đúng vậy.`rel_diff > 1e-3`Có một con bọ.

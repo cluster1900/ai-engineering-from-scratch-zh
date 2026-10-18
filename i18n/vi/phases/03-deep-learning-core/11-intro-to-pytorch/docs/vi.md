@@ -140,11 +140,11 @@ Các khối xây dựng:
 
 | Module | What it does | Parameters |
 |--------|-------------|------------|
-| nn.Linear(in, out) | Wx + b | in*out + out |
+| nn.Linear(in, out) | $Wx + b$ | in*out + out |
 | nn.Conv2d(in_ch, out_ch, k) | 2D convolution | in_ch*out_ch*k*k + out_ch |
 | nn.BatchNorm1d(features) | Normalize activations | 2 * features |
 | nn.Dropout(p) | Random zeroing | 0 |
-| nn.ReLU() | max(0, x) | 0 |
+| nn.ReLU() | $\max(0, x)$ | 0 |
 | nn.GELU() | Gaussian error linear | 0 |
 | nn.Embedding(vocab, dim) | Lookup table | vocab * dim |
 | nn.LayerNorm(dim) | Per-sample normalization | 2 * dim |
@@ -353,7 +353,7 @@ class MNISTModel(nn.Module):
 
 lớp đầu ra tạo ra 10 logit nguyên liệu ((mỗi chữ số một) ―― không sử dụng softmax`CrossEntropyLoss`Sẽ được xử lý bên trong.
 
-Số lượng tham số:784*256 + 256 + 256*128 + 128 + 128*10 + 10 = 235.146。 theo tiêu chuẩn hiện đại nhìn rất nhỏ。 GPT-2 nhỏ có 124M。 mô hình này chỉ trong vài giây mới hoàn thành bài tập。
+Số lượng tham số:$784 \cdot 256 + 256 + 256 \cdot 128 + 128 + 128 \cdot 10 + 10 = 235{,}146$❖ Với tiêu chuẩn hiện đại, trông rất nhỏ. GPT-2 nhỏ có 124M. mô hình này chỉ có thể hoàn thành tập luyện trong vài giây.
 
 ### 步骤 3: Loop đào tạo
 

@@ -30,8 +30,8 @@ Trong việc học tự giám sát, bạn thậm chí không có nhãn hiệu. K
 
 Sự chọn lọc ngẫu nhiên của sự lùi.
 
-```
-MSE = (1/n) * sum((y_pred - y_true)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{pred}} - y_{\text{true}})^2
 ```
 
 Tại sao hình vuông rất quan trọng: nó sẽ trừng phạt những sai lầm lớn theo cách thứ hai. Giá của một sai lầm 2 là 4 lần của 1 sai lầm. Giá của một sai lầm 10 là 100 lần. Điều này làm cho MSE nhạy cảm với các điểm phân lập.
@@ -40,8 +40,8 @@ Số thực: Nếu mô hình của bạn dự đoán giá nhà, thì đa số nh
 
 MSE 相对预测值 的 Gradient là:
 
-```
-dMSE/dy_pred = (2/n) * (y_pred - y_true)
+```math
+\frac{\partial \text{MSE}}{\partial y_{\text{pred}}} = \frac{2}{n} (y_{\text{pred}} - y_{\text{true}})
 ```
 
 Nó liên quan đến sai lầm tuyến tính. Sai lầm lớn hơn được cấp độ lớn hơn. Đây là một tính năng đối với Khác hoại lớn cần sửa chữa lớn.
@@ -52,31 +52,31 @@ Hàm độ mất của phân loại. Nó xuất phát từ lý thuyết thông t
 
 **Binary Cross-Entropy (BCE):**
 
-```
-BCE = -(y * log(p) + (1 - y) * log(1 - p))
+```math
+\text{BCE} = -\left(y \log(p) + (1 - y) \log(1 - p)\right)
 ```
 
-Trong đó y là thực tế标签 ((0 hoặc 1),p là dự đoán概率。
+Trong số đó $y$là thực tế标签 ((0 hoặc 1),$p$                                                                                                                                                                                                                                                              
 
-Tại sao -log(p) có hiệu quả: khi thực tế là 1 且你预测 p = 0.99 时,Loss là -log(0.99) = 0.01。 khi bạn dự đoán p = 0.01 时,Loss là -log(0.01) = 4.6。 sự khác biệt này là 460 倍 là chéo entropy có hiệu quả vì── nó sẽ nghiêm khắc trừng phạt tự tin nhưng dự đoán sai lầm, gần như không trừng phạt tự tin và đúng dự đoán──
+Tại sao ?$-\log(p)$效果:当真标签是 1 且你预测 $p = 0.99$时,Loss là $-\log(0.99) = 0.01$✿当你预测 ✿$p = 0.01$时,Loss là $-\log(0.01) = 4.6$Sự khác biệt 460 lần này là nguyên nhân có hiệu quả của sự chéo entropy. Nó sẽ trừng phạt nghiêm khắc sự tự tin nhưng dự đoán sai lầm, đồng thời hầu như không trừng phạt sự tự tin và dự đoán chính xác.
 
 Gradient 讲述 là同一个故事:
 
-```
-dBCE/dp = -(y/p) + (1-y)/(1-p)
+```math
+\frac{\partial \text{BCE}}{\partial p} = -\frac{y}{p} + \frac{1-y}{1-p}
 ```
 
-Khi y = 1 và p 接近零时,Gradient là -1/p, sẽ xu hướng负无穷―― mô hình sẽ nhận được một tín hiệu lớn để sửa lỗi―― Khi p 接近 1 时,Gradient 很小──已经正确,不需要修──
+Khi đó$y = 1$且 $p$接近零时,Gradient 是 $-1/p$, sẽ xu hướng tiêu cực vô hạn. mô hình sẽ nhận được một tín hiệu lớn để sửa lỗi.$p$接近 1 时,Gradient 很小──已正确,不需要修改──
 
 **Categorical Cross-Entropy:**
 
 Sử dụng phân loại đa lớp của mục tiêu mã hóa nóng nhất.
 
-```
-CCE = -sum(y_i * log(p_i))
+```math
+\text{CCE} = -\sum_i y_i \log(p_i)
 ```
 
-Nếu có 10 loại, tỷ lệ có thể đạt được là 0.1 (không có gì khác), nếu có thể đạt được là -log (không có gì khác), thì tỷ lệ có thể đạt được là 0.9 (không có gì khác) = 0.105 (không có gì khác).
+Chỉ có một số người có thể đóng góp Loss vì tất cả mọi thứ khác$y_i$Nếu có 10 loại, xác suất nhận được loại chính xác là 0.1 (được đoán), Loss là 0.1 (được đoán)$-\log(0.1) = 2.3$Nếu đúng loại có tỷ lệ 0,9, mất là$-\log(0.9) = 0.105$❖ mô hình sẽ học tập tập trung chất lượng xác suất vào câu trả lời chính xác.
 
 ### Tại sao MSE không phù hợp với phân loại
 
@@ -96,19 +96,19 @@ graph TD
     C3 -->|"CE Gradient<br/>在错误答案附近<br/>爆炸"| Fast["修正快速"]
 ```
 
-Khi dự đoán gần 0 hoặc 1 时, MSE Gradient 会变平 (由于 sigmoid 和) ・Cross-entropy Gradient 会补偿这一点 - -log 抵消了 sigmoid's flat region,在最需要的位置给出强 Gradient──
+Khi dự đoán gần 0 hoặc 1 时, MSE Gradient 会变平 (由于 sigmoid 和) ・ Cross-entropy Gradient 会补偿这一点 - $-\log$抵消了sigmoid's flat region, ở vị trí cần nhất, đưa ra Strong Gradient.
 
 ### Đẹp nhãn
 
 标准 one-hot 标签会会说这是100%类 3,其他类别都是0%──这是一个很强的断言──标签滑滑会软化它:
 
-```
-smooth_label = (1 - alpha) * one_hot + alpha / num_classes
+```math
+\text{smooth\_label} = (1 - \alpha) \cdot \text{one\_hot} + \frac{\alpha}{\text{num\_classes}}
 ```
 
-Khi alpha = 0.1 且有 10 个类别时: mục tiêu không còn là [0, 0, 1, 0, ...], mà là [0.01, 0.01, 0.91, 0.01,...]──
+Khi đó$\alpha = 0.1$Và có 10 个类别时: mục tiêu không còn là [0, 0, 1, 0, ...], mà là [0.01, 0.01, 0.91, 0.01,...]。
 
-Tại sao điều này hiệu quả: một nỗ lực vượt qua mô hình softmax 输出精确 1.0 , cần phải đưa logits 推向无穷── điều này sẽ dẫn đến sự tự tin quá mức, làm tổn hại khả năng phổ biến hóa,并使 mô hình đối với phân bố chuyển biến trở nên yếu đuối──Làm đơn làm mềm sẽ đặt mục tiêu giới hạn ở 0,9 ((lúc alpha=0,1 时), để logits 保持在合理范围内──GPT 和大多数现代模型都使用标签 smoothing或其等价格形式──
+Tại sao nó hiệu quả: một thử nghiệm thông qua softmax 输出精确 1.0 mô hình, cần phải đưa logits 推向无穷―― điều này sẽ dẫn đến sự tự tin quá mức, làm tổn hại khả năng phổ biến hóa,并使 mô hình đối với phân bố chuyển biến trở nên yếu đuối――Làm mềm nhãn sẽ đặt mục tiêu giới hạn ở 0,9(lúc$\alpha = 0.1$时), để logits 保持在合理范围内──GPT 和大多数现代模型都会使用标签 smoothing 或其等价形式──
 
 ### Khối lượng thua lỗ
 
@@ -118,20 +118,20 @@ Không có nhãn, không có loại, chỉ có nhập vào và một câu hỏi:
 
 取一张图像── tạo ra hai hình ảnh tăng cường của nó (crop, rotate, color jitter)── chúng là cặp tích cực - chúng nên có những nhúng tương tự── mỗi bức ảnh khác trong tập hợp sẽ tạo ra một cặp âm tính - chúng nên có những nhúng khác nhau──
 
-```
-L = -log(exp(sim(z_i, z_j) / tau) / sum(exp(sim(z_i, z_k) / tau)))
+```math
+L = -\log \frac{\exp(\text{sim}(z_i, z_j) / \tau)}{\sum_k \exp(\text{sim}(z_i, z_k) / \tau)}
 ```
 
-Trong số đó sim() là sự tương đồng cosine, z_i 和 z_j là cặp tích cực, tìm và bao gồm tất cả các tiêu cực,tau (già nhiệt)  kiểm soát phân bố cấp độ cột hơn―― thấp hơn nhiệt độ = 更难的负面 = 更激进的分离――
+Trong số đó $\text{sim}()$là sự tương đồng cosine,$z_i$和 $z_j$là cặp tích cực, tìm và bao phủ tất cả những tiêu cực,$\tau$(giải nhiệt)  kiểm soát mức độ phân bố cấp độ hơn.
 
-Số thực: kích thước lô 256 có nghĩa là mỗi cặp tích cực có 255 个 âm. Suối nhiệt tau = 0.07 ((SimCLR 默认值) ⋅ Loss này trông giống như là đối với sự tương đồng làm mềmmax - nó mong đợi sự tương đồng của cặp tích cực trong tất cả 256 个选项 cao nhất.
+Số thực: kích thước lô 256 nghĩa là mỗi cặp tích cực có 255 âm tính.$\tau = 0.07$(SimCLR 默认值) ⋅ Loss này trông giống như là đối với sự tương đồng làm mềmmax - nó mong muốn sự tương đồng của cặp tích cực là cao nhất trong tất cả 256 个选项.
 
 **Triplet Loss:**
 
 接收三个输入:đóng ︎ ︎ ︎ ︎ ︎ ︎ ︎
 
-```
-L = max(0, d(anchor, positive) - d(anchor, negative) + margin)
+```math
+L = \max\left(0, d(\text{anchor}, \text{positive}) - d(\text{anchor}, \text{negative}) + \text{margin}\right)
 ```
 
 margin(thường là 0.2-1.0) bắt buộc tích cực và âm  khoảng cách giữa  khoảng cách tối thiểu có. Nếu âm  đã đủ xa, Loss là 0 - không có Gradient, không có cập nhật.
@@ -140,14 +140,14 @@ margin(thường là 0.2-1.0) bắt buộc tích cực và âm  khoảng cách g
 
 Sử dụng tập dữ liệu không cân bằng. Các tiêu chuẩn giao hợp sẽ đối xử bình đẳng với tất cả các mẫu phân loại chính xác.
 
-```
-FL = -alpha * (1 - p_t)^gamma * log(p_t)
+```math
+\text{FL} = -\alpha (1 - p_t)^\gamma \log(p_t)
 ```
 
-Trong đó p_t là thực tế loại dự đoán tỷ lệ, gamma  kiểm soát độ tập trung.
+Trong số đó $p_t$là thực sự loại dự đoán tỷ lệ,$\gamma$控制聚焦程度──当$\gamma = 0$时, đó là tiêu chuẩn của sự hòa trộn.$\gamma = 2$(默认值)时:
 
-- Ví dụ đơn giản (p_t = 0,9): trọng lượng = (0.1) ^ 2 = 0,01──基本被忽略──
-- Ví dụ khó (p_t = 0.1): trọng lượng = (0.9) ^2 = 0.81──完整的 Gradient 信号──
+- Ví dụ đơn giản ($p_t = 0.9$): trọng lượng $= (0.1)^2 = 0.01$ cơ bản bị bỏ qua
+- Ví dụ khó ($p_t = 0.1$): trọng lượng $= (0.9)^2 = 0.81$◊完整的渐变信号──
 
 Thiếu trọng tâm do Lin và các đồng nghiệp đề xuất, được sử dụng để phát hiện đối tượng, trong đó 99% khu vực ứng cử là nền (nếu tiêu cực dễ dàng)  Không có mất trọng tâm  Khi không có sự cố, mô hình sẽ bị ngập trong các ví dụ nền dễ dàng, luôn học không kiểm tra vật thể.
 
@@ -214,7 +214,7 @@ def mse_gradient(predictions, targets):
 
 ### 步骤 2: Binary Cross-Entropy
 
-log(0)  vấn đề là thực sự tồn tại của. Nếu mô hình đối với một ví dụ tích cực 精确预测 0,log(0) =负无穷.
+log(0)  vấn đề là thực sự tồn tại của. Nếu mô hình đối với một ví dụ tích cực 精确预测 0,$\log(0) = -\infty$❖ cắt cắt có thể ngăn chặn điều này.
 
 ```python
 import math
@@ -426,15 +426,15 @@ Sử dụng `F.cross_entropy`(trừ đó `F.nll_loss`加手动软max) ・ nó s�
 
 ## 练习
 
-1. 实现 Huber loss(smooth L1 loss), nó đối với một sự nhầm lẫn nhỏ sử dụng MSE, đối với một sự nhầm lẫn lớn sử dụng MAE。 đào tạo một mạng Neural Regression 来预测 y = sin(x), và 5% 训练目标被加入随机噪音(离群点) trong trường hợp so sánh MSE với Huber。
+1. 实现 Huber mất ((mượt mà mất L1), nó đối với nhỏ lỗi sử dụng MSE, đối với lớn lỗi sử dụng MAE。 đào tạo một mạng lưới thần kinh hồi phục 来预测 $y = \sin(x)$, và 5%  tập mục tiêu được gia nhập với tiếng ồn 离群点) so sánh MSE với Huber.
 
-2. Để tăng sự mất tập trung  thêm vào phân loại nhị phân  tập trung vòng lặp  tạo ra một tập dữ liệu không cân bằng  90% lớp 0,10% lớp 1)  Bước đoan BCE với sự mất tập trung (gamma=2) trong 200 thời đại  sau đó đối với một số ít loại nhớ lại 
+2. Để tăng sự mất tập trung  thêm vào phân loại nhị phân  tập trung vòng lặp  tạo ra một tập dữ liệu không cân bằng  90% lớp 0,10% lớp 1)  So sánh tiêu chuẩn BCE với sự mất tập trung ($\gamma = 2$) Trong 200 thời đại sau đó, đối với một số ít các loại nhớ lại.
 
 3. 实现带带半硬负矿的三重损失──为 5 个类别生成 2D Embedding 数据── đối với mỗi neo, tìm thấy vẫn còn tích cực hơn hơn hơn là khó khăn nhất âm tính(半硬)──将收情况与随机三重选择进行比较──
 
 4. 运行 MSE vs cross-entropy đối với so sánh, nhưng trong quá trình đào tạo theo dõi từng tầng của Gradient magnitude── vẽ các chuẩn Gradient trung bình của mỗi thời đại──验证在模型最不确定早期 epochs,cross-entropy会产生更大的 Gradient──
 
-5. 实现 KL divergence loss,并验证当真实分布是单热时,最小化 KL(true 气体预测) 会给与交叉化相等的 Gradient──然后尝试软目标──如知识蒸化), trong đó真实分布来自教师模型的软max 输出──
+5. 实现 KL mất đi sự khác biệt,并验证当真实分布是一个热时,最小化 $\mathrm{KL}(\text{true} \Vert \text{predicted})$会给出与交叉 Entropy相似的 Gradient──然后尝试软目标 (如知识蒸化), trong đó 真分布来自教师模型的软max 输出──
 
 ## 关键术语
 
@@ -442,12 +442,12 @@ Sử dụng `F.cross_entropy`(trừ đó `F.nll_loss`加手动软max) ・ nó s�
 |------|----------------|----------------------|
 | Loss function | “模型错得有多离谱” | 一个可微函数，将预测和目标映射到 Optimizer 要最小化的标量 |
 | MSE | “平均平方误差” | 预测和目标之间平方差的均值；以二次方式惩罚大误差 |
-| Cross-entropy | “Classification 的 Loss” | 使用 -log(p) 衡量预测概率分布和真实分布之间的差异 |
-| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：-(y*log(p) + (1-y)*log(1-p)) |
+| Cross-entropy | “Classification 的 Loss” | 使用 $-\log(p)$ 衡量预测概率分布和真实分布之间的差异 |
+| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：$-(y \log(p) + (1-y) \log(1-p))$ |
 | Label smoothing | “软化目标” | 用软值（例如 0.1/0.9）替换硬 0/1 目标，以防止过度自信并提升泛化能力 |
 | Contrastive loss | “拉近，推远” | 一种通过让相似对在 Embedding 空间中更近、非相似对更远来学习表示的 Loss |
 | InfoNCE | “CLIP/SimCLR Loss” | 对相似度分数进行 normalized temperature-scaled cross-entropy；将 contrastive learning 视为 Classification |
-| Focal loss | “不平衡数据修复方案” | 用 (1-p_t)^gamma 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
+| Focal loss | “不平衡数据修复方案” | 用 $(1-p_t)^\gamma$ 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
 | Triplet loss | “Anchor-positive-negative” | 在 Embedding 空间中，使 anchor 比 negative 至少按一个 margin 更接近 positive |
 | Temperature | “尖锐度旋钮” | 作用在 logits/相似度上的标量除数，用于控制结果分布的峰值程度；越低越尖锐 |
 

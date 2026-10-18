@@ -23,7 +23,7 @@ Nghĩ Perceptron, nghĩa là hiểu lên học trong mã hóa  đến cuối là
 ## 概念
 ### Một Neuron, một quyết định
 
-Một Perceptron nhận n 个 đầu vào, sẽ mỗi đầu vào nhân bằng một trọng lượng, tìm và tăng thiên vị, sau đó đưa kết quả vào một chức năng kích hoạt.
+Một Perceptron 接收 $n$个 inputs, sẽ mỗi input 乘以 một trọng lượng, tìm和, thêm bias, sau đó đưa kết quả vào một chức năng kích hoạt.
 
 ```mermaid
 graph LR
@@ -35,11 +35,10 @@ graph LR
     step --> out["output (0 or 1)"]
 ```
 
-hàm bước 非常直接: Nếu số lượng cân nặng 加 bias >= 0, thì đầu ra 为 1──否则, đầu ra 为 0──
+chức năng bước 非常直接: nếu số lượng cân nặng 加 thiên vị $\ge 0$,则输出为 1――否则,输出为 0――
 
-```
-step(z) = 1  if z >= 0
-           0  if z < 0
+```math
+\text{step}(z) = \begin{cases} 1 & \text{当 } z \ge 0 \\ 0 & \text{当 } z < 0 \end{cases}
 ```
 
 Đây là một phân loại tuyến tính. Đánh nặng và thiên vị định nghĩa một đường.
@@ -77,7 +76,7 @@ For each training example (x, y_true):
     bias = bias + learning_rate * error
 ```
 
-Nếu dự đoán đúng, lỗi = 0, điều gì cũng không thay đổi. Nếu dự đoán là 0, nhưng nên là 1, trọng lượng sẽ tăng lên. Nếu dự đoán là 1, nhưng nên là 0, trọng lượng sẽ giảm.
+Nếu dự đoán đúng,$\text{error} = 0$,nghiều sẽ không thay đổi. Nếu nó dự đoán là 0, nhưng nên là 1, trọng lượng sẽ tăng lên. Nếu nó dự đoán là 1, nhưng nên là 0, trọng lượng sẽ giảm.
 
 ### Vấn đề XOR
 
@@ -210,7 +209,7 @@ Nó sẽ không bao giờ hội tụ. Đó là một Perceptron không thể h�
 
 ### 步骤 4: Sử dụng hai lớp  giải quyết XOR
 
-技巧是:XOR = (x1 OR x2) Và KHÔNG (x1 AND x2)
+技巧 là:$\text{XOR} = (x_1 \text{ OR } x_2) \text{ AND NOT } (x_1 \text{ AND } x_2)$◊组合三个 Perceptron:
 
 ```mermaid
 graph LR
@@ -353,7 +352,7 @@ Chỉ có một Perceptron có thể vẽ thẳng.
 
 ## 练习
 1. Trong cửa NAND, bất kỳ mạch logic nào đều có thể được xây dựng bởi NAND.
-2. 修改 Perceptron class, make it in each epoch 跟踪 quyết định giới hạn(w1*x1 + w2*x2 + b = 0) 』印在 AND gate 训练期间这条线如何移动──
+2. 修改 Perceptron lớp, làm cho nó trong mỗi thời đại theo dõi quyết định giới hạn$w_1 x_1 + w_2 x_2 + b = 0$                                                                                                                                                                                                                                                              
 3. 构建一个3输入 Perceptron: chỉ có 3输入中至少2个为1时才输出 1(多数投票函数) ―― nó có thể tách ra theo tuyến tính?为什么?
 
 ## 关键术语
@@ -365,7 +364,7 @@ Chỉ có một Perceptron có thể vẽ thẳng.
 | Activation function | “压缩数值的东西” | 一个在 weighted sum 之后应用的 function：Perceptron 使用 step function，现代 networks 使用 sigmoid/ReLU |
 | Linearly separable | “你能在它们之间画一条线” | 一个 dataset，其中单个 hyperplane 可以完美分离 classes |
 | XOR problem | “Perceptron 做不到的那件事” | single-layer networks 无法学习 non-linearly-separable functions 的证明 |
-| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane w*x + b = 0 |
+| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane $w \cdot x + b = 0$ |
 | Multi-layer perceptron | “一个真正的 Neural Network” | 按 layers 堆叠的 Perceptron，其中每一层的 output 会输入到下一层 |
 
 ## 延伸阅读
