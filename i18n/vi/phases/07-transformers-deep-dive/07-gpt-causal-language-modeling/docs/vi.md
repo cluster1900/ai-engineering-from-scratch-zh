@@ -15,7 +15,7 @@ mô hình ngôn ngữ  trả lời một vấn đề:给定前 `t-1`个 token, t
 
 Cái mặt nạ gây ra là điều này.`-inf`Các vị trí này sẽ trở thành 0... mỗi vị trí chỉ có thể tham dự đến vị trí của chính mình và sớm hơn... bởi vì bạn đã áp dụng nó một lần trên toàn bộ chuỗi, vì vậy một lần đi về phía trước sẽ có thể nhận được các dự đoán mã số tiếp theo của N 个 parallel ⋅
 
-GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   chúng là các biến đổi nhân quả chỉ có trình giải mã, vòng tròn cốt lõi giống nhau.
+GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2025), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   chúng là các biến đổi nhân quả chỉ có trình giải mã, vòng tròn cốt lõi giống nhau.
 
 ## 概念
 
@@ -23,16 +23,53 @@ GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Ll
 
 ### mặt nạ
 
-给定长度为 `N`của chuỗi, xây dựng một `N × N`Matrix:
+给定长度为 $N$của chuỗi, xây dựng một $N \times N$Matrix:
 
-```
-M[i, j] = 0       if j <= i
-M[i, j] = -inf    if j > i
+```math
+M_{ij} = \begin{cases} 0 & \text{若 } j \le i \\ -\infty & \text{若 } j > i \end{cases}
 ```
 
-Trong softmax 之前,把 `M`+ đến điểm chú ý ban đầu`exp(-inf) = 0`, vì vậy, trọng lượng đóng góp của vị trí được che là 0, mỗi dòng của trật tự chú ý chỉ là phân phối xác suất vị trí trước.
+Trong softmax 之前,把 `M`+ đến điểm chú ý ban đầu$\exp(-\infty) = 0$, vì vậy, trọng lượng đóng góp của vị trí được che là 0, mỗi dòng của trật tự chú ý chỉ là phân phối xác suất vị trí trước.
 
 实现成本: một lần `torch.tril()`调用――计算时间:纳秒级―― đối với toàn bộ lĩnh vực ảnh hưởng:一切――
+
+### 三角形 từ đâu đến
+
+Mặt nạ thường được nói là một phần bổ sung vào sự chú ý.
+
+**阶段 1：前缀平均。**                                                                                                                                                                                                                                                              $i$变为位置 $0 \ldots i$                                                                                                                                                                                                                                                              `out[i] = X[:i+1].mean(0)` Cũng có thể tính toán bằng một矩阵乘法.
+
+```python
+import numpy as np
+
+A = np.tril(np.ones((n, n)))
+A = A / A.sum(axis=1, keepdims=True)
+out = A @ X
+```
+
+$A$của thứ$i$行是 $[1/(i+1), \ldots, 1/(i+1), 0, \ldots, 0]$◊ đối với góc trên của không là tính kết quả.
+
+**阶段 2：学习权重。**平均把过去每 token都视为同等重要──用学到的分数矩阵 `S`Thay thế những 1 ⋅ lúc này mỗi đường không còn được tìm kiếm tự nhiên và là 1, do đó sử dụng softmax đối với mỗi đường kết hợp, thay vì tách thành số.`-inf`Vì`exp(-inf) = 0`- Có thể là:
+
+```python
+def softmax(x, axis):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
+
+S = S + np.triu(np.full((n, n), -np.inf), k=1)
+A = softmax(S, axis=1)
+out = A @ X
+```
+
+Cùng một hình ba giác, cùng một đường với nhau, cũng chỉ cần một lần.`-inf`mặt nạ không phải là một cơ chế mới, chỉ là chuyển đổi các yếu tố 0 của giai đoạn 1 vào vùng nhập của softmax.
+
+**阶段 3：依赖内容的权重。**Trong giai đoạn 2,`S`Trong bài tập, số lượng tùy thuộc vào các token:`S = Q @ K.T / sqrt(d_k)`其他部分完全不变──Mask、softmax、matmul, vẫn là cùng một quy trình──
+
+三段,一个不变量: 下三角行随机矩阵乘以序列──均平均、学习到的静态权重、依赖内容权重──面膜并非后添加到注意上的; nó đã được giữ lại từ trung bình运算中一直下来──
+
+```figure
+mask-derivation
+```
 
 ### Không tập luyện, không tập luyện
 
@@ -82,10 +119,6 @@ causal-mask
 ```
 
 
-```figure
-mask-derivation
-```
-
 ##  xây dựng nó
 
 ### 步骤 1: mặt nạ nguyên nhân
@@ -134,7 +167,7 @@ print(tok.decode(out[0]))
 
 Ở tầng dưới,`generate()`运行前传,取出最后位置 logits,sample 下一个代币,添加它,然后重复──每个生产级LLM inference stack(vLLM, TensorRT-LLM, llama.cpp, Ollama, MLX)都用重度优化实现同一个循环 批量预填、持续批量、KV cache paging、猜测解码──
 
-**GPT vs BERT，各用一句话：**GPT 预测 `P(x_t | x_{<t})`│BERT 预测 │`P(x_masked | x_unmasked)`◊ mất quyết định liệu mô hình có thể được tạo ra không
+**GPT vs BERT，各用一句话：**GPT 预测 $P(x_t \mid x_{<t})$│BERT 预测 │$P(x_{\text{masked}} \mid x_{\text{unmasked}})$◊ mất quyết định liệu mô hình có thể được tạo ra không
 
 ## 交付 nó
 
@@ -154,8 +187,8 @@ print(tok.decode(out[0]))
 | Next-token prediction | “loss” | 模型在每个位置上的分布与真实下一个 token 之间的 cross-entropy。 |
 | Autoregressive | “一次生成一个” | 将输出反馈为输入；并行性只存在于训练阶段，不存在于生成阶段。 |
 | Logits | “pre-softmax scores” | softmax 之前 LM head 的原始输出；sampling 就发生在这些值上。 |
-| Temperature | “创造力旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = uniform。 |
-| Top-p | “Nucleus sampling” | 将分布截断为累计和 ≥p 的最小集合；从剩余部分 sample。 |
+| Temperature | “创造力旋钮” | 将 logits 除以 $T$；$T \to 0$ = greedy，$T \to \infty$ = uniform。 |
+| Top-p | “Nucleus sampling” | 将分布截断为累计和 $\ge p$ 的最小集合；从剩余部分 sample。 |
 | Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 tokens；会根据分布尖锐程度调整 cutoff。 |
 | Speculative decoding | “draft + verify” | 便宜模型提出 N 个 tokens；大模型并行验证。 |
 | Teacher forcing | “训练技巧” | 训练时输入真实的前一个 token，而不是模型的预测。每个 seq2seq LM 的标准做法。 |

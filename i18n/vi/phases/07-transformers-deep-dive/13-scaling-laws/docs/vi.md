@@ -30,22 +30,24 @@ Năm 2026 là thế giới của Chinchilla, nhưng có một bước ngoặt qu
 
 Từ Chinchilla, Loss:
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N`= 参数(非 Nhập vào)
-- `D`= 训练 Token。
-- `α ≈ 0.34`- `β ≈ 0.28`(大致对称)
-- `E ≈ 1.69`, không thể mất đi giới hạn trên.
-- `A ≈ 406`- `B ≈ 411`
+- $N$= 参数(非 Nhập vào)
+- $D$= 训练 Token。
+- $\alpha \approx 0.34$- $\beta \approx 0.28$(大致对称)
+- $E \approx 1.69$, không thể mất đi giới hạn trên.
+- $A \approx 406$- $B \approx 411$
 
-随着扩展, hai项会彼此权衡──在固定计算中 ((C = 6ND) 下对 `N`求导并求解:
+随着扩展, hai项会彼此权衡──在固定计算$C = 6ND$) xuống đối với $N$求导并求解:
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 Tính tối ưu tính toán: mỗi参数 20 Token.
@@ -91,7 +93,7 @@ scaling-laws
 
 ##  xây dựng nó
 
-见 `code/main.py` Chúng tôi thực hiện phương pháp mất mát Chinchilla, và tính toán một số 预算 dưới tìm kiếm giải pháp tính toán tối ưu `(N, D)`
+见 `code/main.py` Chúng tôi thực hiện phương pháp mất mát Chinchilla, và tính toán một số 预算 dưới tìm kiếm giải pháp tính toán tối ưu $(N, D)$
 
 ### 步骤 1: mất Chinchilla
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-Ở cố định `C = 6ND`下,将 `L`绘制为`(N, D)`Ưu điểm cao hơn. Tìm giá trị tối thiểu.
+Ở cố định $C = 6ND$下,将 $L$绘制为$(N, D)$Ưu điểm cao hơn. Tìm giá trị tối thiểu.
 
 ### 步骤 2: 计算优优边界
 
-Đối với`1e17`Đến`1e25`FLOPs của tính toán  ngân sách, tìm thấy trong khoảng thời gian `6ND = C`下 tối thiểu hóa Loss của `(N, D)`❖ tỷ lệ chứng minh`D/N ≈ 20`
+Đối với`1e17`Đến`1e25`FLOPs của tính toán  ngân sách, tìm thấy trong khoảng thời gian $6ND = C$下 tối thiểu hóa Loss của $(N, D)$❖ tỷ lệ chứng minh$D/N \approx 20$
 
 ### 步骤 3: quá mức chi phí đào tạo
 
@@ -134,9 +136,9 @@ Bạn không quá có thể tự tập biên giới 模型...... nhưng quy mô 
 
 ## 练习
 
-1. **Easy.**运行 `code/main.py`△打印 tính toán 预算 `1e20``1e22``1e24`下的Chinchilla-optimal `(N, D)`                                                                                                                                                                                                                                                              
-2. **Medium.**实现 Hoffmann Loss-as-function-of-computing 曲线──为 compute-optimal frontier 绘制 Loss vs `log10(C)`❖ nhận ra luật pháp 预测 我们何时需要 `>10^28`FLOPs 才能让交叉entropy 再降低 0.1──
-3. **Hard.**Trong cùng bộ dữ liệu trên tập luyện 5 mô hình nhỏ ((100K đến 10M 参数), phù hợp với quy mô của riêng bạn Luật ước tính `α`和 `E`◊ Chỉ số của bạn phù hợp với kết quả đã được xuất bản như thế nào?
+1. **Easy.**运行 `code/main.py`△打印 tính toán 预算 `1e20``1e22``1e24`下的Chinchilla-optimal $(N, D)$                                                                                                                                                                                                                                                              
+2. **Medium.**实现 Hoffmann Loss-as-function-of-computing 曲线──为 compute-optimal frontier 绘制 Loss vs `log10(C)`❖ nhận ra luật pháp 预测 我们何时需要 $>10^{28}$FLOPs 才能让交叉entropy 再降低 0.1──
+3. **Hard.**Trong cùng bộ dữ liệu trên tập luyện 5 mô hình nhỏ ((100K đến 10M 参数), phù hợp với quy mô của riêng bạn Luật ước tính $\alpha$和 $E$◊ Chỉ số của bạn phù hợp với kết quả đã được xuất bản như thế nào?
 
 ## 关键术语
 
@@ -147,7 +149,7 @@ Bạn không quá có thể tự tập biên giới 模型...... nhưng quy mô 
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 

@@ -11,7 +11,7 @@
 
 Density Transformer trong suy luận 时的FLOPs等于它的参数(Forward pass 乘以 2);;扩展一个密集模型 时,每个代币都必须支付完整计算成本;;到2024年,边界 已经撞击了计算墙:要显著变得更聪明,你需要每个代币指数级更多的FLOPs;;
 
-Sự kết hợp của các chuyên gia đã phá vỡ mối quan hệ này.`E`个独立专家 + 一个为每个代币 选择 `k`个 chuyên gia của router──总参数 = `E × FFN_size`△ Tỷ số hoạt động của mỗi token = `k × FFN_size`❖ Tương tự 2026 配置:`E=256`- Tôi không biết.`k=8`❖ Kho lưu trữ`E`扩展,计算随`k`扩展──
+Sự kết hợp của các chuyên gia đã phá vỡ mối quan hệ này.$E$个独立专家 + 一个为每个代币 选择 $k$个 chuyên gia của router──总参数 = $E \times \text{FFN size}$△ Tỷ số hoạt động của mỗi token = $k \times \text{FFN size}$❖ Tương tự 2026 配置:$E=256$- Tôi không biết.$k=8$❖ Kho lưu trữ$E$扩展,计算随$k$扩展──
 
 Biên giới năm 2026  gần như toàn bộ là MoE:DeepSeek-V3(671B tổng / 37B hoạt động) 、Mixtral 8×22B、Qwen2.5-MoE、Llama 4、Kimi K2、gpt-oss。 trên bảng xếp hạng độc lập của Phân tích Kỹ thuật trên,排名前 10 của open source模型全都是 MoE。
 
@@ -46,7 +46,7 @@ Mỗi chuyên gia đều là một FFN độc lập (thường là SwiGLU). Rout
 Nếu router 让90% mã thông qua chuyên gia 3, các chuyên gia khác sẽ bị chết đói.
 
 1. **Auxiliary load-balancing loss**(Switch Transformer、Mixtral) ――Tăng một với chuyên gia tỷ lệ sử dụng khác nhau thành tỷ lệ trừng phạt.
-2. **Expert capacity + token dropping**(早期 Switch) ✿ Mỗi chuyên gia 最多处理 `C × N/E`个 Tốc Token 溢出的 Tốc Token 跳过该层──会损害质量──
+2. **Expert capacity + token dropping**(早期 Switch) ✿ Mỗi chuyên gia 最多处理 $C \times N/E$个 Tốc Token 溢出的 Tốc Token 跳过该层──会损害质量──
 3. **Auxiliary-loss-free balancing**(DeepSeek-V3)。 thêm một sự thiên vị có thể học được cho mỗi chuyên gia, được sử dụng để chuyển hướng các router trên cùng  chọn lựa── thiên vị trong việc mất tập luyện  外部更新──不对主目标添加惩罚── đây là một bước đột phá quan trọng của năm 2024──
 
 Thực hành của DeepSeek-V3: Sau mỗi bước đào tạo, đối với mỗi chuyên gia kiểm tra tỷ lệ sử dụng của nó là cao hơn hoặc thấp hơn mục tiêu.`±γ`微调 bias──选择时使用 `scores + bias` Sử dụng các khả năng chuyên gia của các cửa  vẫn sử dụng chưa sửa đổi của nguyên bản `scores` This will routing with expression 解──
@@ -59,7 +59,7 @@ DeepSeek-V2/V3 còn chia các chuyên gia thành *shared* và *routed*── m�
 
 经典 MoE(GShard、Switch): Mỗi chuyên gia 和完整FFN 一样宽──`E`较小(8-64),`k`较小(1-2)。
 
-现代 hạt mỏng MoE(DeepSeek-V3、Qwen-MoE): mỗi chuyên gia 更窄(1/8 FFN kích thước)`E`很大(256+),`k`Hơn nữa, tổng số参数 giống nhau, nhưng tổng số组合扩展快得多.`C(256, 8) = 400 trillion`种可能的每代币 专家──质量提升,延迟 保持不变──
+现代 hạt mỏng MoE(DeepSeek-V3、Qwen-MoE): mỗi chuyên gia 更窄(1/8 FFN kích thước)$E$很大(256+),$k$Hơn nữa, tổng số参数 giống nhau, nhưng tổng số组合扩展快得多.$\binom{256}{8} \approx 400$Hàng tỷ triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu triệu
 
 ### 成本图片
 
@@ -160,7 +160,7 @@ Kết luận sản xuất năm 2026: vLLM 原生支持 MoE định tuyến. SGLa
 | Auxiliary-loss-free | “DeepSeek-V3 的技巧” | 只在 router 的 selection 上通过 per-expert bias 实现 balance；没有额外 Gradient。 |
 | Shared expert | “Always on” | 每个 Token 都会经过的额外 expert；捕获通用知识。 |
 | Expert parallelism | “按 expert 分片” | 将不同 experts 分配到不同 GPUs；通过网络 route tokens。 |
-| Sparsity | “active params < total params” | 比率 `k × expert_size / (E × expert_size)`；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
+| Sparsity | “active params < total params” | 比率 $k \times \text{expert size} / (E \times \text{expert size})$；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
 
 ## 延伸阅读
 

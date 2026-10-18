@@ -9,13 +9,13 @@
 
 ## 问题
 
-Một bộ giải mã tự quay trở lại đơn giản`N`个 token 需要做 `O(N²)`工作: Mỗi bước sẽ được tính lại sự chú ý trên toàn bộ tiền. Đối với một phản ứng của 4K-token, điều này có nghĩa là 16M lần chú ý vận hành, hầu hết trong số đó là dư thừa.
+Một bộ giải mã tự quay trở lại đơn giản$N$个 token 需要做 $O(N^2)$工作: Mỗi bước sẽ được tính lại sự chú ý trên toàn bộ tiền. Đối với một phản ứng của 4K-token, điều này có nghĩa là 16M lần chú ý vận hành, hầu hết trong số đó là dư thừa.
 
 Ngoài ra, sự chú ý tự nhiên cũng sẽ di chuyển rất nhiều dữ liệu. Sự chú ý tiêu chuẩn sẽ chuyển hóa một matrix điểm N×N, đầu ra mềm tối đa N×d, đầu ra cuối cùng N×d đối với số lượng đọc đọc của HBM quá nhiều. Đối với N≥2K, sự chú ý sẽ được ràng buộc bởi bộ nhớ, chứ không phải FLOP.
 
 Dao et al.  đề xuất hai ưu đãi, đưa ra các suy nghĩ về phía trước từ 慢推到快:
 
-1. **KV cache。**存储 từng token trước K và V vector.                                                                                                                                                                                                                                                         `O(N²)`降到 `O(N)`
+1. **KV cache。**存储 từng token trước K và V vector.                                                                                                                                                                                                                                                         $O(N^2)$降到 $O(N)$
 2. **Flash Attention。**Để chú ý  tính toán làm tay, làm cho matrix N×N hoàn chỉnh  không bao giờ vào HBM。 tất cả các softmax + matmul đều hoàn thành trong SRAM。 trên A100 tăng tốc độ đồng hồ tường là 24×; trên H100 của FP8 là 510×。
 
 Đến năm 2026, cả hai đều đã được sử dụng chung. Mỗi cấp sản xuất được đưa ra.
@@ -78,7 +78,7 @@ for each block of Q (tile size ~128 × 128):
     write O_tile to HBM
 ```
 
-Mỗi tấm chỉ cần một lần HBM quay trở lại.`O(N²)`降到 `O(N)`❖ Pass ngược 会从前传中重新计算部分值, thay vì đưa chúng tất cả tồn tại 
+Mỗi tấm chỉ cần một lần HBM quay trở lại.$O(N^2)$降到 $O(N)$❖ Pass ngược 会从前传中重新计算部分值, thay vì đưa chúng tất cả tồn tại 
 
 **数值技巧。**Đi softmax trong các tấm  giữa bảo trì `(max, sum)`, do đó kết quả kết hợp là chính xác. Đây không phải là gần như.
 
@@ -127,8 +127,8 @@ flash-attention-memory
 
 见 `code/main.py`❖ Chúng tôi thực hiện:
 
-1. Một cái đơn giản `O(N²)`decoder tăng dần.
-2. Một `O(N)`KV-cache decoder
+1. Một cái đơn giản $O(N^2)$decoder tăng dần.
+2. Một $O(N)$KV-cache decoder
 3. Một mô hình Flash Attention chạy-max thuật toán của phay mềmmax
 
 ### 步骤 1: KV cache
@@ -175,7 +175,7 @@ def tiled_softmax_dot(q, K, V, tile=4):
 
 ### 步骤 3: Trong thế hệ mã thông báo 100 上比较 ngây thơ vs giải mã cache
 
-统计 chú ý 操作数――Naive:`O(N²)`= 5050。Cached:`O(N)`= 100 ⋅代码会打印二者⋅
+统计 chú ý 操作数――Naive:$O(N^2)$= 5050。Cached:$O(N)$= 100 ⋅代码会打印二者⋅
 
 ## Sử dụng nó
 

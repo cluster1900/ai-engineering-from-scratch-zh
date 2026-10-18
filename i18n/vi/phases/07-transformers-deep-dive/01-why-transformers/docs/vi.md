@@ -25,13 +25,13 @@ Bài luận 2017  chú ý là tất cả những gì bạn cần   đề xuất 
 
 ![RNN sequential compute vs Transformer parallel attention](../assets/rnn-vs-transformer.svg)
 
-**Recurrence 是瓶颈。**RNN 计算`h_t = f(h_{t-1}, x_t)`Mỗi bước đều phụ thuộc vào bước trước.`h_4`之前计算 `h_5`❖ Với hơn 10.000 GPU hiện đại và có lõi, nó sẽ lãng phí 99% diện tích trên chuỗi dài.
+**Recurrence 是瓶颈。**RNN 计算$h_t = f(h_{t-1}, x_t)$Mỗi bước đều phụ thuộc vào bước trước.$h_4$之前计算 $h_5$❖ Với hơn 10.000 GPU hiện đại và có lõi, nó sẽ lãng phí 99% diện tích trên chuỗi dài.
 
-**Attention 是广播。**Sự chú ý tự trọng sẽ dành cho mỗi đối tượng`(i, j)`Đồng thời tính toán`output_i = sum_j(a_ij * v_j)`◊ toàn bộ N×N sự chú ý trật tự 会在一次批量中填满──没有任何步骤依赖另一个步骤──GPU 喜欢这一点──
+**Attention 是广播。**Sự chú ý tự trọng sẽ dành cho mỗi đối tượng$(i, j)$Đồng thời tính toán`output_i = sum_j(a_ij * v_j)`◊ toàn bộ N×N sự chú ý trật tự 会在一次批量中填满──没有任何步骤依赖另一个步骤──GPU 喜欢这一点──
 
-**加速不是常数。**Nó là `O(N)`độ sâu hàng loạt 和 `O(1)`Trong thực tế, trong trường hợp N=512 và các phần cứng giống nhau, các biến thể mỗi thời đại có tốc độ đào tạo nhanh 510×; khi chiều dài chuỗi tăng lên, khoảng cách sẽ tiếp tục mở rộng cho đến khi chạm đến sự chú ý của`O(N²)`Căn tường bộ nhớ ((Flash Attention 后来修复了这个点见课 12)。
+**加速不是常数。**Nó là $O(N)$độ sâu hàng loạt 和 $O(1)$Trong thực tế, trong trường hợp N=512 và các phần cứng giống nhau, các biến thể mỗi thời đại có tốc độ đào tạo nhanh 510×; khi chiều dài chuỗi tăng lên, khoảng cách sẽ tiếp tục mở rộng cho đến khi chạm đến sự chú ý của$O(N^2)$Căn tường bộ nhớ ((Flash Attention 后来修复了这个点见课 12)。
 
-**transformers 的代价。**Tưởng thức chú ý 按 `O(N²)`扩展──2K ngữ cảnh 没问题──128K ngữ cảnh 则需要滑窗、RoPE外分、Flash Attention tileing,或线性注意的变化──Recurrence 在时间和内存上都是`O(N)`Các bộ biến đổi sử dụng bộ nhớ để thay đổi thời gian, sau đó qua đường đi, giành lại thời gian.
+**transformers 的代价。**Tưởng thức chú ý 按 $O(N^2)$扩展──2K ngữ cảnh 没问题──128K ngữ cảnh 则需要滑窗、RoPE外分、Flash Attention tileing,或线性注意的变化──Recurrence 在时间和内存上都是$O(N)$Các bộ biến đổi sử dụng bộ nhớ để thay đổi thời gian, sau đó qua đường đi, giành lại thời gian.
 
 **Inductive bias 的转变。**RNN  giả định địa điểm và tính gần đây. Các nhà biến đổi không giả định mỗi đối tượng vị trí là sự lựa chọn của sự chú ý. Đó là lý do tại sao các nhà biến đổi cần nhiều dữ liệu hơn để được đào tạo tốt, nhưng một khi có đủ dữ liệu thì có thể mở rộng hơn.
 
@@ -59,7 +59,7 @@ def attention_style(xs):
     return sum(xs) / len(xs)  # every x is independent
 ```
 
-Chúng tôi đối với độ dài lên đến 100.000 chuỗi phân biệt thời gian. RNN  phiên bản là O(N), và sử dụng một ống dẫn CPU đơn lẻ. Ngay cả trong Python hoàn toàn, giảm độ chú ý theo kiểu trong độ dài ≥ 1,000 cũng sẽ thắng, vì Python của `sum()`là sử dụng C 实现, và 代时不会 tạo ra giải thích viên mở bán ở mỗi bước.
+Chúng tôi đối với độ dài lên đến 100.000 chuỗi phân biệt thời gian.$O(N)$, và sử dụng một ống dẫn CPU đơn. Ngay cả trong Python hoàn toàn, giảm độ tập trung trong độ dài ≥ 1,000 cũng sẽ thắng, vì Python của`sum()`là sử dụng C 实现, và 代时不会 tạo ra giải thích viên mở bán ở mỗi bước.
 
 ### 步骤 2: 计算理论操作
 
@@ -67,7 +67,7 @@ Chúng tôi đối với độ dài lên đến 100.000 chuỗi phân biệt th�
 
 ### Bước 3: Chuyên nghiệm mở rộng trên dài trình
 
-Chúng tôi in một bảng thời gian, để O(N)  khoảng cách trở nên hiển thị. Trong sổ tay Mac năm 2026, chuỗi ít hơn 1.000 yếu tố quá nhanh, khó đo lường. 100.000 chuỗi sẽ hiển thị một quét tuyến tính rõ ràng.
+Chúng tôi in một bảng thời gian, để $O(N)$Sự khác biệt trở nên rõ ràng. Trong sổ tay Mac năm 2026, chuỗi ít hơn 1.000 yếu tố quá nhanh, khó đo lường. 100.000 chuỗi sẽ hiển thị một quét tuyến tính rõ ràng.
 
 ## Sử dụng nó
 
@@ -80,7 +80,7 @@ Chúng tôi in một bảng thời gian, để O(N)  khoảng cách trở nên h
 | 没有 matmul accelerator 的 edge device | Depthwise-separable RNN 在 FLOPs/watt 上仍然胜出 |
 | 其他任何情况（训练、batched inference、最高 128K 的 context） | Transformer |
 
-Các mô hình không gian nhà nước (SSM) như Mamba, trên bản chất là có các RNN có cấu trúc được phân tích, làm cho chúng có hai ưu điểm:`O(N)`Tự động hóa bộ nhớ quét, cũng như thông qua quét chọn lọc 实现并行训练──它们以更好的长文档扩展 恢复了90%的变体质量──到2026年, hầu hết các phòng thí nghiệm biên giới đều đang đào tạo các mô hình biến thể SSM+ lai (ví dụ như Jamba, Samba) 重复并没有死亡,它是一个组件──
+Các mô hình không gian nhà nước (SSM) như Mamba, trên bản chất là có các RNN có cấu trúc được phân tích, làm cho chúng có hai ưu điểm:$O(N)$Tự động hóa bộ nhớ quét, cũng như thông qua quét chọn lọc 实现并行训练──它们以更好的长文档扩展 恢复了90%的变体质量──到2026年, hầu hết các phòng thí nghiệm biên giới đều đang đào tạo các mô hình biến thể SSM+ lai (ví dụ như Jamba, Samba) 重复并没有死亡,它是一个组件──
 
 ## 交付 nó
 
@@ -98,11 +98,11 @@ Các mô hình không gian nhà nước (SSM) như Mamba, trên bản chất là
 |------|-----------------|-----------------------|
 | Recurrence | “RNNs 是顺序的” | step `t` 依赖 step `t-1` 的计算方式，迫使执行沿时间轴串行进行。 |
 | Serial depth | “图有多深” | 依赖操作的最长链；即使在无限硬件上也会限制 wall-clock。 |
-| Attention | “让 Tokens 彼此查看” | Weighted sum `sum_j a_ij v_j`，其中 `a_ij` 来自位置 i 和 j 之间的相似度分数。 |
+| Attention | “让 Tokens 彼此查看” | Weighted sum $\sum_j a_{ij} v_j$，其中 $a_{ij}$ 来自位置 $i$ 和 $j$ 之间的相似度分数。 |
 | Context window | “模型能看到多少” | 一个 Attention layer 可作为输入的位置数量；quadratic memory cost 在这里扩展。 |
 | Inductive bias | “架构内置的假设” | 关于数据形态的先验；CNNs 假设 translation invariance，RNNs 假设 recency。 |
 | State-space model | “背后有代数的 RNN” | 为通过结构化 state-space matrices 实现并行训练而参数化的 recurrence。 |
-| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 `O(N²)`；Flash Attention 隐藏的是常数，而不是扩展规律。 |
+| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 $O(N^2)$；Flash Attention 隐藏的是常数，而不是扩展规律。 |
 
 ## 延伸阅读
 

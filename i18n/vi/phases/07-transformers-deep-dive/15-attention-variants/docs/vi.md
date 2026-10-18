@@ -9,11 +9,11 @@
 
 ## 问题
 
-Full Attention trong bộ nhớ dài của chuỗi là `O(N²)`, tính toán chi phí cũng là`O(N²)`Với một Llama có nội dung 128K, có nghĩa là mỗi tầng có 160 tỷ chú ý, tăng lên 80 tầng.`O(N²)`kích hoạt trong bộ nhớ, nhưng sẽ không thay đổi tính toán tính toán chi phí mỗi token  vẫn sẽ tham dự đến mỗi token khác
+Full Attention trong bộ nhớ dài của chuỗi là $O(N^2)$, tính toán chi phí cũng là$O(N^2)$Với một Llama có nội dung 128K, có nghĩa là mỗi tầng có 160 tỷ chú ý, tăng lên 80 tầng.$O(N^2)$kích hoạt trong bộ nhớ, nhưng sẽ không thay đổi tính toán tính toán chi phí mỗi token  vẫn sẽ tham dự đến mỗi token khác
 
 3 loại biến thể thay đổi Matrix chú ý bản thân:
 
-1. **Sliding window attention (SWA).**Mỗi token chỉ đi đến các token gần bên trong cửa sổ cố định, thay vì tiền tố đầy đủ.`O(N · W)`, trong số đó `W`Đó là cửa sổ lớn. Gemma 2/3 Mistral 7B.
+1. **Sliding window attention (SWA).**Mỗi token chỉ đi đến các token gần bên trong cửa sổ cố định, thay vì tiền tố đầy đủ.$O(N \cdot W)$, trong số đó $W$Đó là cửa sổ lớn. Gemma 2/3 Mistral 7B.
 2. **Sparse / block attention.**Chỉ có một lựa chọn`(i, j)`Đối với cuộc họp được đánh phân; vị trí còn lại được buộc phải là 0权重. Longformer, BigBird, OpenAI thâm hụt biến.
 3. **Differential attention.**Sử dụng dự đoán Q/K độc lập 计算两张 Attention map,再相减――消除将把权重泄漏到前几个代币的 注意沉──Microsoft's DIFF Transformer(2024)。
 
@@ -23,7 +23,7 @@ Những thứ này có thể tồn tại chung. Một mô hình biên giới nă
 
 ### Chú ý cửa sổ trượt (SWA)
 
-位置 `i`Mỗi câu hỏi chỉ cần tham gia đến`[i - W, i]`(SWA nguyên nhân) hoặc `[i - W/2, i + W/2]`(tương hướng) trong vị trí.                                                                                                                                                                                                                                                           `-inf`
+位置 $i$Mỗi câu hỏi chỉ cần tham gia đến$[i - W, i]$(SWA nguyên nhân) hoặc $[i - W/2, i + W/2]$(tương hướng) trong vị trí.                                                                                                                                                                                                                                                           $-\infty$
 
 ```
 full causal:           sliding window (W=4):
@@ -39,17 +39,17 @@ positions 0-7          positions 0-7, W=4
 7 | x x x x x x x x  7 |          x x x x
 ```
 
- Đối với `N = 8192`和 `W = 1024`, điểm số Matrix 期望上有1024 × 8192 非零行 giảm 8×:
+ Đối với $N = 8192$和 $W = 1024$, điểm số Matrix 期望上有1024 × 8192 非零行 giảm 8×:
 
-**KV cache 会随 SWA 缩小。**Mỗi tầng chỉ cần giữ gần đây `W`个 Token của K 和 V── đối với một cấu hình tương tự như Gemma-3(1024 cửa sổ,128K ngữ cảnh),KV cache 会降低 128×──
+**KV cache 会随 SWA 缩小。**Mỗi tầng chỉ cần giữ gần đây $W$个 Token của K 和 V── đối với một cấu hình tương tự như Gemma-3(1024 cửa sổ,128K ngữ cảnh),KV cache 会降低 128×──
 
-**质量成本。**纯SWA Transformer 难以处理长距离检索――修复方法: 在SWA 层间交错全重视层――Gemma 3 使用 5:1 SWA:global。Mistral 7B 使用因果性SWA堆,信息通过重叠窗向前流每层都将有效感受野扩展`W`, qua `L`层后,模型 có thể đến phía sau `L × W`个Token.
+**质量成本。**纯SWA Transformer 难以处理长距离检索――修复方法: 在SWA 层间交错全重视层――Gemma 3 使用 5:1 SWA:global。Mistral 7B 使用因果性SWA堆,信息通过重叠窗向前流每层都将有效感受野扩展$W$, qua `L`层后,模型 có thể đến phía sau `L × W`个Token.
 
 ### Sự chú ý thâm hụt / ngăn chặn
 
 预先选择一个 `N × N`Mô hình thô lỗ:
 
-- **Local + strided (OpenAI sparse transformer).**Hãy đến gần đây`W`个 token, thêm vào đây mỗi phần`stride`个 Địa chỉ vị trí.`O(N · sqrt(N))`计算同时 nắm bắt địa phương và khoảng cách dài thông tin.
+- **Local + strided (OpenAI sparse transformer).**Hãy đến gần đây$W$个 token, thêm vào đây mỗi phần`stride`个 Địa chỉ vị trí.$O(N \cdot \sqrt{N})$计算同时 nắm bắt địa phương và khoảng cách dài thông tin.
 - **Longformer / BigBird.**cửa sổ địa phương + ít số tiền token toàn cầu`[CLS]`), Những Token tham dự đến tất cả Token, cũng được tất cả Token tham dự + liên kết ngẫu nhiên-sparse.
 - **Native Sparse Attention (DeepSeek, 2025).**Học những gì `(Q, K)`block 重要; 在内核层面跳过零 block──兼容 FlashAttention──
 
@@ -61,13 +61,15 @@ Sparse Attention là một kỹ thuật hạt nhân 故事──数学很简单;
 
 Sự chú ý khác biệt 通过计算**两张**Bản đồ chú ý và giảm đi để giải quyết vấn đề này:
 
-```
-A1 = softmax(Q1 K1^T / √d)
-A2 = softmax(Q2 K2^T / √d)
-DiffAttn = (A1 - λ · A2) V
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d}) \\
+\text{DiffAttn} &= (A_1 - \lambda \cdot A_2) V
+\end{aligned}
 ```
 
-Trong số đó `λ`là một học tập nhận được của thang điểm ((đường là 0,50.8)。A1  nắm bắt trọng lượng nội dung thực sự;A2  nắm bắt chìa khóa。相减会抵消 chìa khóa,把权重重新分配给相关代币。
+Trong số đó $\lambda$là một học tập nhận được của thang điểm ((đường là 0,50.8)。A1  nắm bắt trọng lượng nội dung thực sự;A2  nắm bắt chìa khóa。相减会抵消 chìa khóa,把权重重新分配给相关代币。
 
 报告结果(Microsoft 2024): sự phức tạp  giảm 510%, trong cùng một training长度 dưới bối cảnh hiệu quả 延长 1.52×,针-in-haystack 检索更敏。
 
@@ -75,12 +77,12 @@ Trong số đó `λ`là một học tập nhận được của thang điểm ((
 
 | Variant | Compute | KV cache | Quality vs full | Production use |
 |---------|---------|----------|-----------------|----------------|
-| Full attention | O(N²) | O(N) per layer | baseline | 每个模型的默认层 |
-| SWA (window 1024) | O(N·W) | O(W) per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
-| Local + strided sparse | O(N·√N) | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
-| BigBird (local + global + random) | O(N) approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
-| Native Sparse (DeepSeek-V3.2) | O(N · active fraction) | O(N) | within 0.05 ppl | DeepSeek-V3.2, 2025 |
-| Differential | O(2·N²) | O(2N) | -5 to -10% ppl | DIFF Transformer, early 2026 models |
+| Full attention | $O(N^2)$ | $O(N)$ per layer | baseline | 每个模型的默认层 |
+| SWA (window 1024) | $O(N \cdot W)$ | $O(W)$ per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
+| Local + strided sparse | $O(N \cdot \sqrt{N})$ | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
+| BigBird (local + global + random) | $O(N)$ approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
+| Native Sparse (DeepSeek-V3.2) | $O(N \cdot \text{active fraction})$ | $O(N)$ | within 0.05 ppl | DeepSeek-V3.2, 2025 |
+| Differential | $O(2 \cdot N^2)$ | $O(2N)$ | -5 to -10% ppl | DIFF Transformer, early 2026 models |
 
 
 ```figure
@@ -143,7 +145,7 @@ def diff_attention(Q1, K1, Q2, K2, V, lam):
 
 ### 步骤 5: KV cache kích thước
 
-Trong `N = 131072`Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm:
+Trong $N = 131072$Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm: Ưu điểm:
 
 ## Sử dụng nó
 
@@ -186,17 +188,17 @@ out = flex_attention(q, k, v, block_mask=mask)
 1. **Easy.**运行 `code/main.py`❖ 验证`window=4`SWA 会把每一行中最近4个代币 之外的所有内容置零――验证 `window=n`会 bit-identically 复现 toàn nguyên nhân chú ý.
 2. **Medium.**Trong bài học 07 kết quả 之上实现 `window=1024`Trong một vài phút, tôi đã có thể làm được một vài bước.
 3. **Hard.**Trong mô hình, thực hiện Gemma-3 kiểu 5:1 lớp hỗn hợp ((5 tầng SWA,1 tầng toàn cầu) ⋅ trong các điều kiện phù hợp, đối với chất lượng sản xuất của SWA tinh khiết và cơ sở toàn cầu tinh khiết
-4. **Hard.**Thực hiện mọi thứ mà mọi người đều có thể học được`λ`Trong một nhiệm vụ thu hồi tổng hợp, một kim, 2.000 个 phân tâm) trên tập luyện, trong trường hợp phù hợp với các tham số, đo độ chính xác của việc thu hồi so với đường cơ sở chỉ cần một sự chú ý.
+4. **Hard.**Thực hiện mọi thứ mà mọi người đều có thể học được$\lambda$Trong một nhiệm vụ thu hồi tổng hợp, một kim, 2.000 个 phân tâm) trên tập luyện, trong trường hợp phù hợp với các tham số, đo độ chính xác của việc thu hồi so với đường cơ sở chỉ cần một sự chú ý.
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 `W` 个 Token；KV cache 缩小到 `O(W)`。 |
-| Effective receptive field | "模型能向后看多远" | 在一个窗口为 `W` 的 `L` 层 SWA stack 中，最多 `L × W` 个 Token。 |
+| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 $W$ 个 Token；KV cache 缩小到 $O(W)$。 |
+| Effective receptive field | "模型能向后看多远" | 在一个窗口为 $W$ 的 $L$ 层 SWA stack 中，最多 $L \times W$ 个 Token。 |
 | Longformer / BigBird | "Local + global + random" | Sparse pattern，包含少量始终 attend 的 global tokens；早期 long-context 方法。 |
 | Native Sparse Attention | "DeepSeek's kernel trick" | 学习 block-level sparsity；在保持质量的同时，在 kernel 层面跳过零 block。 |
-| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 `λ` 倍第二张 Attention map，以抵消 attention sinks。 |
+| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 $\lambda$ 倍第二张 Attention map，以抵消 attention sinks。 |
 | Attention sink | "权重泄漏到 token 0" | Softmax normalization 强制行求和为 1；信息量不足的 query 会把权重倾倒到位置 0。 |
 | FlexAttention | "Mask-as-Python" | PyTorch 2.5+ API，可将任意 mask function 编译成 FlashAttention 形状的 kernel。 |
 | Layer type mix | "5:1 SWA-to-global" | 在 stack 中交错 sparse 和 full Attention 层，以更低内存保持质量。 |

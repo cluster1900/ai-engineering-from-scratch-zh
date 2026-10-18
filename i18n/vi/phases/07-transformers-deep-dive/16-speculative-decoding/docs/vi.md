@@ -9,7 +9,7 @@
 
 ## 问题
 
-Một chương trình 70B LLM trong H100 上采采样一个代币 需要约30 ms.――一个3B草案模型 需要约3 ms.――如果让3B草案提前生成5代币,然后让70B *只运行一次*来验证这5代币,总耗时就是`5×3 + 30 = 45 ms`, tối đa có thể chấp nhận 5 token; và trực tiếp tạo cần thiết `5×30 = 150 ms` Đó là điểm bán hoàn toàn của giải mã dự đoán: sử dụng ít lượng lưu trữ GPU bổ sung (Draft Model) để thay đổi 24× hơn là độ trễ giải mã thấp hơn
+Một chương trình 70B LLM trong H100 上采采样一个代币 需要约30 ms.――一个3B草案模型 需要约3 ms.――如果让3B草案提前生成5代币,然后让70B *只运行一次*来验证这5代币,总耗时就是$5 \times 3 + 30 = 45$ms, tối đa có thể chấp nhận 5 Token; và trực tuyến tạo cần `5×30 = 150 ms` Đó là điểm bán hoàn toàn của giải mã dự đoán: sử dụng ít lượng lưu trữ GPU bổ sung (Draft Model) để thay đổi 24× hơn là độ trễ giải mã thấp hơn
 
 关键 là phải giữ phân phối. Leviathan et al. (2023) và Chen et al. cùng kỳ đề xuất Tiến pháp lấy mẫu dự đoán đảm bảo phân phối chuỗi xuất với mô hình lớn khi tạo ra độc lập**完全相同**Không có chất lượng. Chỉ nhanh hơn.
 
@@ -26,30 +26,30 @@ Mỗi sản xuất cấp độ suy luận hàng năm 2026 đều默认 cung cấ
 
 ### 核心算法
 
-给定一个验证器 `M_q`Và một bản thảo rẻ hơn `M_p`- Có thể là:
+给定一个验证器 $M_q$Và một bản thảo rẻ hơn $M_p$- Có thể là:
 
-1. Làm cho`x_1..x_k`为已经解码的前音:
-2. **Draft**: sử dụng `M_p`autoregressively 提议 `d_{k+1}, d_{k+2}, ..., d_{k+N}`, đối phó với dự thảo xác suất`p_1..p_N`
-3. **并行 verify**: trong `x_1..x_k, d_{k+1}, ..., d_{k+N}`上运行 một lần `M_q`, lấy vị trí`k+1..k+N+1` của xác minh xác suất `q_1..q_{N+1}`
-4. **从左到右 accept/reject 每个 draft token**: đối với mỗi người`i`, theo tỷ lệ`min(1, q_i(d_i) / p_i(d_i))`接受──
-5. Ở vị trí `j`Lần đầu tiên bị từ chối: phân phối "đáng sót" sau khi tái sinh`(q_j - p_j)_+`Trung采样 `t_j``j`Sau đó tất cả các dự thảo đều bị bỏ rơi.
-6. Nếu tất cả`N`个都被接受: từ `q_{N+1}`采样一个额外Token `t_{N+1}`(tài báo tiền thưởng miễn phí)
+1. Làm cho$x_1 \ldots x_k$为已经解码的前音:
+2. **Draft**: sử dụng $M_p$autoregressively 提议 $d_{k+1}, d_{k+2}, \ldots, d_{k+N}$, đối phó với dự thảo xác suất$p_1 \ldots p_N$
+3. **并行 verify**: trong $x_1 \ldots x_k, d_{k+1}, \ldots, d_{k+N}$上运行 một lần $M_q$, lấy vị trí$k+1 \ldots k+N+1$ của xác minh xác suất $q_1 \ldots q_{N+1}$
+4. **从左到右 accept/reject 每个 draft token**: đối với mỗi người$i$, theo tỷ lệ$\min(1, q_i(d_i) / p_i(d_i))$接受──
+5. Ở vị trí $j$Lần đầu tiên bị từ chối: phân phối "đáng sót" sau khi tái sinh$(q_j - p_j)_+$Trung采样 $t_j$$j$Sau đó tất cả các dự thảo đều bị bỏ rơi.
+6. Nếu tất cả$N$个都被接受: từ $q_{N+1}$采样一个额外Token $t_{N+1}$(tài báo tiền thưởng miễn phí)
 
-Phân bố dư thừa kỹ thuật này là để phân phối xuất và phân phối`M_q`Từ đầu theo kiểu hoàn toàn phù hợp trong toán học.
+Phân bố dư thừa kỹ thuật này là để phân phối xuất và phân phối$M_q$Từ đầu theo kiểu hoàn toàn phù hợp trong toán học.
 
 ### 什么决定加速
 
-Làm cho`α`= Tỷ lệ chấp nhận dự kiến của mỗi dự án token `c`= tỷ lệ chi phí dự thảo đối với kiểm tra viên── mỗi bước trong:
+Làm cho$\alpha$= Tỷ lệ chấp nhận dự kiến của mỗi dự án token $c$= tỷ lệ chi phí dự thảo đối với kiểm tra viên── mỗi bước trong:
 
 - Thế hệ ngây thơ Mỗi token cần 1 lần gọi mô hình lớn.
-- Khi đó`α`很高时, n định mỗi ngày`(1 - α^{N+1}) / (1 - α) ≈ 1/(1-α)`个Token 需要1次大型号调用──
+- Khi đó$\alpha$很高时, n định mỗi ngày$(1 - \alpha^{N+1}) / (1 - \alpha) \approx 1/(1-\alpha)$个Token 需要1次大型号调用──
 
-Trong `α = 0.75`且 `N = 5`时,典型经验法则是: big-model call 减少 3×──Draft cost is 5× cheap──总体墙-clock 约下降 2.5×──
+Trong $\alpha = 0.75$且 $N = 5$时,典型经验法则是: big-model call 减少 3×──Draft cost is 5× cheap──总体墙-clock 约下降 2.5×──
 
-**α 取决于：**
+**$\alpha$ 取决于：**
 
-- Mức độ gần gũi của dự thảo đối với người xác minh.
-- Chiến lược giải mã. Đề xuất tham lam đối với xác minh tham lam:α 高。 Tiêu chuẩn lấy mẫu:更难匹配; chấp nhận 下降。
+- Mức độ gần gũi của dự thảo đối với người xác minh.$\alpha$
+- Chiến lược giải mã:$\alpha$高──Tâm lý:更难匹配; chấp nhận 下降──
 - Tiểu nhiệm vụ──Code 和 cấu trúc đầu ra 接受更多(更可预测);自由形式创意写作接受更少──
 
 ### Medusa  没有草案模型 的草案
@@ -76,7 +76,7 @@ EAGLE-3 (2025)  đã gia nhập tìm kiếm cây đối với sự tiếp tục 
 
 ### KV cache dance
 
-Việc kiểm tra sẽ được thực hiện`N`个草案 token trong một lần chuyển tiếp trung  cho xác minh.`N`项── Nếu một số dự thảo bị từ chối, bạn phải đặt cache quay lại để có được longitude của tiền tố đã chấp nhận──
+Việc kiểm tra sẽ được thực hiện$N$个草案 token trong một lần chuyển tiếp trung  cho xác minh.$N$项── Nếu một số dự thảo bị từ chối, bạn phải đặt cache quay lại để có được longitude của tiền tố đã chấp nhận──
 
 生产实现(vLLM của `--speculative-model`、TensorRT-LLM's LookaheadDecoder) thông qua việc cạo KV buffers  xử lý việc này──先写入,接受时再 commit──概念上不难,但细节很繁──
 
@@ -185,7 +185,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 **什么时候不要 spec-decode：**
 
 - Chỉ tạo ra 15 个 Token của một chuỗi thế hệ.
-- 极具创意 / Tiêu chuẩn nhiệt độ cao (α 会下降)
+- 极具创意 / Tiêu chuẩn nhiệt độ cao$\alpha$会下降) ❖
 - Việc triển khai có hạn chế bộ nhớ (Draft Model 会增加 VRAM)
 
 ## 交付 nó
@@ -195,7 +195,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 ## 练习
 
 1. **Easy。**运行 `code/main.py` xác nhận trên 50.000 Token 上, phân phối token đầu cơ phù hợp với phân phối mẫu trực tiếp của xác minh, và chi-quad p > 0.05。
-2. **Medium。**Đối với`α = 0.5, 0.7, 0.85`, vẽ tốc độ lên ((( mỗi lần lớn mô hình tiến của Token số) theo`N`                                                                                                                                                                                                                                                              `N`▽(Công báo: mỗi lần xác minh cuộc gọi ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽`(1 - α^{N+1}) / (1 - α)`◊)
+2. **Medium。**Đối với$\alpha = 0.5, 0.7, 0.85$, vẽ tốc độ lên ((( mỗi lần lớn mô hình tiến của Token số) theo$N$ Tìm ra mọi sự thay đổi$\alpha$    $N$▽(Công báo: mỗi lần xác minh cuộc gọi ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽$(1 - \alpha^{N+1}) / (1 - \alpha)$◊)
 3. **Hard。**实现一个小 Medusa:取课14的结石 GPT,添加3个额外LM头,分别预测位置 t+2、t+3、t+4──在小小shakespeare 上用联合多头损失训练──与通过截断同一个模型得到的 vanila草案比较接受率──
 4. **Hard。**实现 rollback: từ một 10 token prefix KV cache 开始,入 5 个草案代币,模拟在位置 3拒绝――验证下一轮代时你的缓存 读取结果正确匹配 "prefix + 2 đầu tiên được chấp nhận bản thảo"――
 
@@ -205,7 +205,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 |------|-----------------|-----------------------|
 | Draft model | “便宜的那个” | 一个更小的模型，用于提出候选 Token；通常比 verifier 便宜 10–50×。 |
 | Verifier | “大的那个” | 我们要保留其分布的目标模型；每个 speculative step 运行一次。 |
-| Acceptance rate (α) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
+| Acceptance rate ($\alpha$) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
 | Residual distribution | “rejection fallback” | 归一化后的 `(q - p)_+`；rejection 时从这里采样可保留 verifier 的分布。 |
 | Bonus token | “免费的那个” | 当全部 N 个 draft 被接受时，从 verifier 的 next-step distribution 再采样一个。 |
 | Medusa | “Draft-less speculative” | verifier 上的多个 LM heads 并行预测位置 t+1..t+k。 |

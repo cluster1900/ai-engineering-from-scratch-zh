@@ -11,7 +11,7 @@
 
 单个自我注意头 会计算一个注意矩阵――这个矩阵 捕捉一种关系,通常是能够在当前训练信号上最小化损失的那种关系――如果你的数据里主题verb agreement、co-reference、长距离演讲 和语法分断 全部纠在一起,单个头会把它们抹在单一的软最大分布,丢掉一半信号――
 
-Bài báo Vaswani năm 2017  đưa ra cách sửa chữa là:并行运行 nhiều chức năng chú ý, mỗi người có dự đoán Q、K、V của riêng mình, sau đó đưa ra cùng nhau.`d_model / n_heads`                                                                                                                                                                                                                                                              
+Bài báo Vaswani năm 2017  đưa ra cách sửa chữa là:并行运行 nhiều chức năng chú ý, mỗi người có dự đoán Q、K、V của riêng mình, sau đó đưa ra cùng nhau.$d_{\text{model}} / n_{\text{heads}}$                                                                                                                                                                                                                                                              
 
 Sự chú ý đa đầu là định dạng mặc định của tất cả các Transformer vào năm 2026. Vấn đề duy nhất là cần sử dụng * bao nhiêu đầu, cũng như các khóa và giá trị là không hay không dự đoán chung.
 
@@ -19,7 +19,7 @@ Sự chú ý đa đầu là định dạng mặc định của tất cả các T
 
 ![Multi-head attention splits, attends, concatenates](../assets/multi-head-attention.svg)
 
-**Split。**取形为 `(N, d_model)`của `X`△分别 dự án 到形状为 `(N, d_model)`của Q  K  V `(N, n_heads, d_head)`, trong số đó `d_head = d_model / n_heads`❖ Chuyển cho`(n_heads, N, d_head)`
+**Split。**取形为 `(N, d_model)`của `X`△分别 dự án 到形状为 `(N, d_model)`của Q  K  V `(N, n_heads, d_head)`, trong số đó $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$❖ Chuyển cho`(n_heads, N, d_head)`
 
 **并行 Attend。**Trong mỗi đầu trong运行 quy mô điểm sản phẩm chú ý.`(N, d_head)`Những đầu này hoạt động trên không gian khác nhau của Embedding, và trong quá trình tính toán sự chú ý sẽ không giao tiếp với nhau.
 
@@ -36,7 +36,7 @@ Sự chú ý đa đầu là định dạng mặc định của tất cả các T
 | Grouped-query (GQA) | N | G (e.g. N/8) | Llama 2 70B, Llama 3+, Qwen 2+, Mistral |
 | Multi-head latent (MLA) | N | compressed to low-rank | DeepSeek-V2, V3 |
 
-GQA là một giải pháp tiêu chuẩn hiện đại, vì nó có thể phù hợp.`N/G`Số lượng nhân đếm giảm bộ nhớ cache KV, đồng thời giữ chất lượng gần như hoàn chỉnh MLA Hơn nữa, hãy nén K/V vào không gian ẩn, sau đó trong dự án tính toán thời gian quay lại nó sẽ tiêu thụ FLOPs, nhưng tiết kiệm nhiều bộ nhớ hơn.
+GQA là một giải pháp tiêu chuẩn hiện đại, vì nó có thể phù hợp.$N/G$Số lượng nhân đếm giảm bộ nhớ cache KV, đồng thời giữ chất lượng gần như hoàn chỉnh MLA Hơn nữa, hãy nén K/V vào không gian ẩn, sau đó trong dự án tính toán thời gian quay lại nó sẽ tiêu thụ FLOPs, nhưng tiết kiệm nhiều bộ nhớ hơn.
 
 
 ```figure
@@ -130,7 +130,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 | Large (~1B) | 2048 | 16 | 128 |
 | Frontier (~70B) | 8192 | 64 | 128 |
 
-`d_head`几乎总是落在64或128. 它是一个头能看到多少内容的单位.`sqrt(d_head)`; cao hơn 256, bạn sẽ mất lợi ích của nhiều chuyên gia nhỏ.
+`d_head`几乎总是落在64或128. 它是一个头能看到多少内容的单位.$\sqrt{d_{\text{head}}}$; cao hơn 256, bạn sẽ mất lợi ích của nhiều chuyên gia nhỏ.
 
 ## 交付 nó
 
@@ -146,7 +146,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Head | “一个单独的 attention circuit” | 一个维度为 `d_head = d_model / n_heads` 的 Q/K/V projection，拥有自己的 attention matrix。 |
+| Head | “一个单独的 attention circuit” | 一个维度为 $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$ 的 Q/K/V projection，拥有自己的 attention matrix。 |
 | d_head | “Head dimension” | Per-head hidden width；在 production 中几乎总是 64 或 128。 |
 | Split / combine | “Reshape tricks” | Attention 前后的 `(N, d_model) ↔ (n_heads, N, d_head)` reshape+transpose。 |
 | W_o | “Output projection” | Concatenating heads 之后应用的 `(d_model, d_model)` matrix；heads 在这里混合。 |

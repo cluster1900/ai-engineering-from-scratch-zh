@@ -29,25 +29,25 @@ Phương pháp sửa chữa là một cách nào đó đưa vị trí vào các 
 
 预先计算一个形 为 `(max_len, d_model)`Matrix cố định`PE`- Có thể là:
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 Sau đó trong sự chú ý  trước khi thực hiện `X' = X + PE[:N]`◊ Mỗi chiều đều là một hình âm có tần số khác nhau.`max_len`后会失败:当模型只见过位置02047 时,没有什么告诉它位置2048 会发生什么──
 
 ### RoPE
 
-旋转 Q 和 K vector(không phải là các embedment)`(2i, 2i+1)`- Có thể là:
+旋转 Q 和 K vector(không phải là các embedment)$(2i, 2i+1)$- Có thể là:
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-Đối với vị trí`pos_k`应用相同旋转──dot sản phẩm `q'_m · k'_n`Sẽ trở nên phụ thuộc`(m - n)`của hàm:**attention score 只依赖 relative distance**, mặc dù quay là các vị trí tuyệt đối 索引的──漂亮的技巧──
+Đối với vị trí`pos_k`应用相同旋转──dot sản phẩm $q'_m \cdot k'_n$Sẽ trở nên phụ thuộc$(m - n)$của hàm:**attention score 只依赖 relative distance**, mặc dù quay là các vị trí tuyệt đối 索引的──漂亮的技巧──
 
 扩展 RoPE: có thể缩放 `base`(NTK-aware、YaRN、LongRoPE), để trong trường hợp không tái tập, phân tích đến bối cảnh dài hơn.
 
@@ -55,11 +55,11 @@ Sau đó trong sự chú ý  trước khi thực hiện `X' = X + PE[:N]`◊ M�
 
 跳过嵌入 技巧──直接给注意点加偏见:
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-Trong số đó `m_h`là nghiêng cụ thể đầu (ví dụ:`1 / 2^(8·h/H)`(■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+Trong số đó $m_h$là nghiêng cụ thể đầu (ví dụ:$1 / 2^{8h/H}$(■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 ### 2026 năm sẽ chọn gì
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键: đối với vị trí `m`của Q và vị trí `n`K  ứng dụng cùng một hàm. Các sản phẩm chấm của chúng sẽ được tạo ra trên mỗi cặp phối hợp.`cos((m-n)·θ_i)`因子──Atention 免费学到相对位置──
+关键: đối với vị trí $m$của Q và vị trí $n$K  ứng dụng cùng một hàm. Các sản phẩm chấm của chúng sẽ được tạo ra trên mỗi cặp phối hợp.$\cos((m-n) \cdot \theta_i)$因子──Atention 免费学到相对位置──
 
 ### Bước 3: Albi Bi nghiêng và thiên vị
 
@@ -169,7 +169,7 @@ model = AutoModel.from_pretrained("meta-llama/Llama-3.2-3B")
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |
