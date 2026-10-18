@@ -9,47 +9,47 @@
 
 ## El problema
 
-Quieres una para usar.`p_data(x)`Las muestras de los GANs 会玩一个经常发散的最小x游戏──VAEs 会从高斯解码器 产生模糊样本──你真正想要的是一个训练目标,它具备:(a) 单一稳定损失(没有车点,没有最小x),(b)`log p(x)`de la línea inferior de las probabilidades), así como (c) las muestras de calidad de SOTA correspondientes.
+Quieres una para usar.$p_{\text{data}}(x)$Las muestras de los GANs 会玩一个经常发散的最小x游戏──VAEs 会从高斯解码器 产生模糊样本──你真正想要的是一个训练目标,它具备:(a) 单一稳定损失(没有车点,没有最小x),(b)$\log p(x)$de la línea inferior de las probabilidades), así como (c) las muestras de calidad de SOTA correspondientes.
 
-Sohl-Dickstein et al. (2015) dio una respuesta teórica: definir una cadena de Markov que se une gradualmente al ruido gaussiano.`q(x_t | x_{t-1})`,并训练一个逆链 `p_θ(x_{t-1} | x_t)`Para denunciar. Ho, Jain, Abel, 2020) mostró la pérdida puede simplificarse en una línea  预测 noise  并整理了数学.
+Sohl-Dickstein et al. (2015) dio una respuesta teórica: definir una cadena de Markov que se une gradualmente al ruido gaussiano.$q(x_t \mid x_{t-1})$,并训练一个逆链 $p_\theta(x_{t-1} \mid x_t)$Para denunciar. Ho, Jain, Abel, 2020) mostró la pérdida puede simplificarse en una línea  预测 noise  并整理了数学.
 
 ## El concepto
 
 ![DDPM: forward noise, reverse denoise](../assets/ddpm.svg)
 
-**Forward process `q`.**En el`T`个小步骤中加入 Gaussian noise──Closed form  数学可处理的原因  是累积步骤 仍然是 Gaussian:
+**Forward process $q$.**En el$T$个小步骤中加入 Gaussian noise──Closed form  数学可处理的原因  是累积步骤 仍然是 Gaussian:
 
-```
-q(x_t | x_0) = N( sqrt(α̅_t) · x_0,  (1 - α̅_t) · I )
-```
-
-Entre ellos `α̅_t = ∏_{s=1..t} (1 - β_s)`, a uno`β_t`horario.`β_t`En T=1000 pasos dentro de 1e-4 a 0.02 lineal variación,`x_T`Me acercó`N(0, I)`¿Qué es eso?
-
-**Reverse process `p_θ`.**学习一个神经网络 `ε_θ(x_t, t)`,预测被加入的噪音──给定 `x_t`, según el término:
-
-```
-x_{t-1} = (1 / sqrt(α_t)) · ( x_t - (β_t / sqrt(1 - α̅_t)) · ε_θ(x_t, t) )  +  σ_t · z
+```math
+q(x_t \mid x_0) = \mathcal{N}\left( \sqrt{\bar{\alpha}_t} \cdot x_0, (1 - \bar{\alpha}_t) \cdot I \right)
 ```
 
-Entre ellos `σ_t`¿ Qué es eso ?`sqrt(β_t)`, o es la variación aprendida. Esta expresión es muy mala, pero es sólo un número en un determinado posterior.`q(x_{t-1} | x_t, x_0)`En caso de que se resuelva`x_{t-1}`,并用 ruido estimado 替换 `x_0`¿Qué es eso?
+Entre ellos $\bar\alpha_t = \prod_{s=1}^{t} (1 - \beta_s)$, a uno$\beta_t$horario.$\beta_t$En el$T=1000$pasos dentro de 1e-4 a 0.02 lineal variación,$x_T$Me acercó$\mathcal{N}(0, I)$¿Qué es eso?
+
+**Reverse process $p_\theta$.**学习一个神经网络 $\epsilon_\theta(x_t, t)$,预测被加入的噪音──给定 $x_t$, según el término:
+
+```math
+x_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \left( x_t - \frac{\beta_t}{\sqrt{1 - \bar{\alpha}_t}} \cdot \epsilon_\theta(x_t, t) \right) + \sigma_t \cdot z
+```
+
+Entre ellos $\sigma_t$¿ Qué es eso ?$\sqrt{\beta_t}$, o es la variación aprendida. Esta expresión es muy mala, pero es sólo un número en un determinado posterior.$q(x_{t-1} \mid x_t, x_0)$En caso de que se resuelva$x_{t-1}$,并用 ruido estimado 替换 $x_0$¿Qué es eso?
 
 **Training loss.**
 
-```
-L_simple = E_{x_0, t, ε} [ || ε - ε_θ( sqrt(α̅_t) · x_0 + sqrt(1 - α̅_t) · ε,  t ) ||² ]
+```math
+L_{\text{simple}} = \mathbb{E}_{x_0, t, \epsilon} \left[ \left\lVert \epsilon - \epsilon_\theta\left( \sqrt{\bar{\alpha}_t} \cdot x_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \epsilon, t \right) \right\rVert^2 \right]
 ```
 
-De los datos de la muestra `x_0`, con el tiempo elegir uno .`t`, muestra `ε ~ N(0, I)`, a través de forma cerrada una vez de la naturaleza calcula ruido `x_t`,并对噪音做回归──一个损失,没有最小x,没有KL,没有重设设法──
+De los datos de la muestra $x_0$, con el tiempo elegir uno .$t$, muestra $\epsilon \sim \mathcal{N}(0, I)$, a través de forma cerrada una vez de la naturaleza calcula ruido $x_t$,并对噪音做回归──一个损失,没有最小x,没有KL,没有重设设法──
 
-**Sampling.**Desde`x_T ~ N(0, I)`¿Cómo es que estás?`t = T`¿ Qué ?`1`代 paso inverso──完成──
+**Sampling.**Desde$x_T \sim \mathcal{N}(0, I)$¿Cómo es que estás?$t = T$Hasta 1 代 paso inverso.
 
 ## Por qué funciona
 
 Tres cosas directas:
 
-1. **Denoising is easy; generating is hard.**En el`t=T`Los datos son ruido puro. La red debe resolver un problema trivial.`t=0`,net sólo necesita limpiar algunos píxeles... en el medio.`t`, problema difícil, pero la red se puede obtener muchos gradientes entre el mismo grupo de pesas de cada nivel de ruido.
+1. **Denoising is easy; generating is hard.**En el$t=T$Los datos son ruido puro. La red debe resolver un problema trivial.$t=0$,net sólo necesita limpiar algunos píxeles... en el medio.$t$, problema difícil, pero la red se puede obtener muchos gradientes entre el mismo grupo de pesas de cada nivel de ruido.
 
-2. **Score matching in disguise.**Vincent(2011) prueba, predicción ruido等价格估计 `∇_x log q(x_t | x_0)`,也就是 *score*──reverse SDE Usar este puntaje 沿密度梯度 上行  一次被引导的随机走,走向高概率地区──
+2. **Score matching in disguise.**Vincent(2011) prueba, predicción ruido等价格估计 $\nabla_x \log q(x_t \mid x_0)$,也就是 *score*──reverse SDE Usar este puntaje 沿密度梯度 上行  一次被引导的随机走,走向高概率地区──
 
 3. **The ELBO reduces to simple MSE.** completa variación de la línea inferior en cada paso de tiempo tienen un término KL. Usar la parámetriz de DDPM, estos términos KL se simplificará para con coeficientes específicos de predicción de ruido MSE; ¿Cuál es el coeficiente de eliminación de los coeficientes?
 
@@ -60,7 +60,7 @@ diffusion-denoise
 
 ## Construye el mismo
 
-`code/main.py`                                                                                                                                                                                                                                                              `(x_t, t)`No se produce ruido previsto. Entrenamiento es una línea de pérdida. Muestreo de la cadena inversa.
+`code/main.py`                                                                                                                                                                                                                                                              $(x_t, t)$No se produce ruido previsto. Entrenamiento es una línea de pérdida. Muestreo de la cadena inversa.
 
 ### Paso 1: el calendario anticipado (formulario cerrado)
 
@@ -115,17 +115,17 @@ def sample(model, alpha_bars, T, rng):
 
 La red necesita saber qué es lo que está denonizando.
 
-- **Sinusoidal embedding.**类似 Transformer codificación posicional。`embed(t) = [sin(t/ω_0), cos(t/ω_0), sin(t/ω_1), ...]`❖ Transmitir en MLP, transmisión a la red en medio.
+- **Sinusoidal embedding.**类似 Transformer codificación posicional。$\text{embed}(t) = [\sin(t/\omega_0), \cos(t/\omega_0), \sin(t/\omega_1), \ldots]$❖ Transmitir en MLP, transmisión a la red en medio.
 - **Film / group-norm conditioning.**En cada bloque, el proyecto de incorporación se realiza por escala/bias de cada canal.
 
 Nosotros tenemos un código de juguete Usamos un código sinusoidal → concat.
 
 ## Las trampas
 
-- **Schedule matters a lot.**Lineal `β`Es el DDPM por defecto, pero el calendario cosino (Nichol & Dhariwal, 2021) en el mismo cálculo, abajo da un mejor FID.
-- **Timestep embedding is fragile.**¡ ¡ ¡ Qué cruda !`t`作为浮游 传入对玩具 1-D 可行,但对图像会失败;始终使用适当嵌入──
-- **V-prediction vs ε-prediction.**a un régimen estrecho (t) muy pequeño o muy grande,`ε`La predicción de la señal al ruido es muy diferente.`v = α·ε - σ·x`) más estable;SDXL、SD3 y Flux todos lo usan.
-- **Classifier-free guidance.**Inferencia 时, simultáneamente calculación condicional 和 incondicional `ε`, entonces`ε_cfg = (1 + w) · ε_cond - w · ε_uncond`, entre ellos `w ≈ 3-7`❖Ley 08 会覆盖──
+- **Schedule matters a lot.**Lineal $\beta$Es el DDPM por defecto, pero el calendario cosino (Nichol & Dhariwal, 2021) en el mismo cálculo, abajo da un mejor FID.
+- **Timestep embedding is fragile.**¡ ¡ ¡ Qué cruda !$t$作为浮游 传入对玩具 1-D 可行,但对图像会失败;始终使用适当嵌入──
+- **V-prediction vs ε-prediction.**a un régimen estrecho (t) muy pequeño o muy grande,$\epsilon$La predicción de la señal al ruido es muy diferente.$v = \alpha \cdot \epsilon - \sigma \cdot x$) más estable;SDXL、SD3 y Flux todos lo usan.
+- **Classifier-free guidance.**Inferencia 时, simultáneamente calculación condicional 和 incondicional $\epsilon$, entonces$\epsilon_{\text{cfg}} = (1 + w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$, entre ellos $w \approx 3\text{-}7$❖Ley 08 会覆盖──
 - **1000 steps is a lot.**Producción utilizando DDIM (de 20 a 50 pasos) 、DPM-Solver (de 10 a 20 pasos) o destilación (de 1 a 4 pasos) ∼see Lección 12―
 
 ## Usalo
@@ -148,19 +148,19 @@ La difusión es la columna vertebral generativa general. La coincidencia de fluj
 
 1. **Easy.**En el`code/main.py`En el caso de los modelos de producción, ¿cómo se puede deteriorar? ¿Cómo se puede deteriorar?
 2. **Medium.**Desde la predicción ε 切换到 v-prediction──重新推导 reversible step──比较最终样本质量──
-3. **Hard.**添加 instrucciones libres de clasificadores ∙以 etiqueta de clase `c ∈ {0, 1}`Como condición, en el entrenamiento 10% del tiempo de caída, y se utiliza en muestreo.`ε = (1+w)·ε_cond - w·ε_uncond`◊ la medida `w = 0, 1, 3, 7`时的 condicional-modo de la tasa de golpear
+3. **Hard.**添加 instrucciones libres de clasificadores ∙以 etiqueta de clase $c \in \lbrace 0, 1 \rbrace$Como condición, en el entrenamiento 10% del tiempo de caída, y se utiliza en muestreo.$\epsilon = (1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$◊ la medida $w = 0, 1, 3, 7$时的 condicional-modo de la tasa de golpear
 
 ## Términos clave
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Forward process | “Adding noise” | 固定 Markov chain `q(x_t \| x_{t-1})`，用于摧毁 data。 |
-| Reverse process | “Denoising” | Learned chain `p_θ(x_{t-1} \| x_t)`，用于重构 data。 |
+| Forward process | “Adding noise” | 固定 Markov chain $q(x_t \mid x_{t-1})$，用于摧毁 data。 |
+| Reverse process | “Denoising” | Learned chain $p_\theta(x_{t-1} \mid x_t)$，用于重构 data。 |
 | β schedule | “The noise ladder” | Per-step variance；linear、cosine 或 sigmoid。 |
-| α̅ | “Alpha bar” | Cumulative product `∏(1 - β)`；给出从 `x_0` 得到 `x_t` 的 closed-form。 |
-| Simple loss | “MSE on noise” | `\|\|ε - ε_θ(x_t, t)\|\|²`；所有 variational derivations 都 collapse 到这里。 |
+| α̅ | “Alpha bar” | Cumulative product $\prod (1 - \beta)$；给出从 $x_0$ 得到 $x_t$ 的 closed-form。 |
+| Simple loss | “MSE on noise” | $\lVert \epsilon - \epsilon_\theta(x_t, t) \rVert^2$；所有 variational derivations 都 collapse 到这里。 |
 | ε-prediction | “Predict noise” | 输出是被加入的 noise；standard DDPM。 |
-| V-prediction | “Predict velocity” | 输出是 `α·ε - σ·x`；在整个 t 上有更好的 conditioning。 |
+| V-prediction | “Predict velocity” | 输出是 $\alpha \cdot \epsilon - \sigma \cdot x$；在整个 t 上有更好的 conditioning。 |
 | DDPM | “The paper” | Ho et al. 2020；linear β、1000 steps、U-Net。 |
 | DDIM | “Deterministic sampler” | Non-Markov sampler，20-50 steps，同一个 training objective。 |
 | Classifier-free guidance | “CFG” | 混合 conditional 和 unconditional noise predictions 来放大 conditioning。 |
@@ -169,7 +169,7 @@ La difusión es la columna vertebral generativa general. La coincidencia de fluj
 
 Papel DDPM 运行 T=1000 pasos invertidos。 nadie lo utiliza para la producción 交付。 Cada verdadera pila de inferencias 城市会选择三种策略之一  并且每种都能清晰映射到生产框架:延迟 来源:
 
-1. **Faster sampler, same model.**DDIM(20-50 pasos)、DPM-Solver++(10-20)、UniPC(8-16)。Solución de la bucle inversa; ya entrenado `ε_θ`Los pesos 不变──将延迟 降低 20-50×──
+1. **Faster sampler, same model.**DDIM(20-50 pasos)、DPM-Solver++(10-20)、UniPC(8-16)。Solución de la bucle inversa; ya entrenado $\epsilon_\theta$Los pesos 不变──将延迟 降低 20-50×──
 2. **Distillation.**訓練 student 以更少步骤 匹配 teacher:Progressive Distillation(2 → 1)、Modelos de consistencia(arbitrario → 1-4)、LCM、SDXL-Turbo、SD3-Turbo──para reducir aún más la latencia 5-10×, se necesita reentrenamiento──
 3. **Caching and compilation.** `torch.compile(unet, mode="reduce-overhead")`、TensorRT-LLM de difusión de los retrospectivos`xformers`/SDPA atención、bf16 pesos。 va a disminuir la latencia por paso ≈ 2×──可与 (1) 和 (2) 叠加──
 

@@ -11,12 +11,12 @@
 
 Los VAEs producen muestras confusas, ya que su pérdida de decodificador MSE  para las imágenes es la mejor de Bayes, mientras que la media de muchos números razonables es un número confuso.
 
-La idea de un buen amigo: entrenar un clasificador`D(x)`Para distinguir entre imágenes reales y falsas. Entrenar un generador.`G(z)`Para engañar .`D`¿Qué es eso?`G`La señal de pérdida es`D`Cuando creí que algo parecía real, se basó en esto.`G`改进, esta señal también se actualizará, perseguir un objetivo móvil...`G`Es como si nunca hubiera escrito.`log p(x)`En el caso de las empresas, las empresas tienen que tener una gran capacidad de producción.
+La idea de un buen amigo: entrenar un clasificador$D(x)$Para distinguir entre imágenes reales y falsas. Entrenar un generador.$G(z)$Para engañar .$D$¿Qué es eso?$G$La señal de pérdida es$D$Cuando creí que algo parecía real, se basó en esto.$G$改进, esta señal también se actualizará, perseguir un objetivo móvil...$G$Es como si nunca hubiera escrito.`log p(x)`En el caso de las empresas, las empresas tienen que tener una gran capacidad de producción.
 
 Éste es el entrenamiento adversario.
 
-```
-min_G max_D  E_real[log D(x)] + E_fake[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_{\text{real}}[\log D(x)] + \mathbb{E}_{\text{fake}}[\log(1 - D(G(z)))]
 ```
 
 Para 2026, los GANs ya no son generadores de SOTA (difusión y flujo de coincidencia) pero StyleGAN 2/3 sigue siendo el modelo de cara más rentable publicado, los discriminadores de GAN se utilizan para el entrenamiento de difusión en medio de las pérdidas perceptivas, mientras que el entrenamiento adversario se apoya en destilizaciones rápidas en 1 paso (SDXL-Turbo, SD3-Turbo, LCM), que te permitan entregar difusión en tiempo real).
@@ -25,20 +25,20 @@ Para 2026, los GANs ya no son generadores de SOTA (difusión y flujo de coincide
 
 ![GAN training: generator and discriminator in minimax](../assets/gan.svg)
 
-**Generator `G(z)`。**Vector de ruido`z ~ N(0, I)`映射到 muestra `x̂`△ Un decodificador 形状的网络(dense 或 transposed conv) ⋅
+**Generator $G(z)$。**Vector de ruido$z \sim \mathcal{N}(0, I)$映射到 muestra $\hat{x}$△ Un decodificador 形状的网络(dense 或 transposed conv) ⋅
 
-**Discriminator `D(x)`。**La muestra se proyectará para la probabilidad escalar (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s)
+**Discriminator $D(x)$。**La muestra se proyectará para la probabilidad escalar (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s)
 
 **Loss。**两个交替更新:
 
-- **训练 `D`：** `loss_D = -[ log D(x) + log(1 - D(G(z))) ]`◊对 real=1, fake=0 hacer entropía cruzada binaria
-- **训练 `G`：** `loss_G = -log D(G(z))`这是好友 使用的 *non-saturating* 形式(原始的 `log(1 - D(G(z)))`Me saturé y me he ido.`D`很自信时杀死梯度) ⋅
+- **训练 $D$：** $\text{loss}_D = -[ \log D(x) + \log(1 - D(G(z))) ]$◊对 real=1, fake=0 hacer entropía cruzada binaria
+- **训练 $G$：** $\text{loss}_G = -\log D(G(z))$这是好友 使用的 *non-saturating* 形式(原始的 $\log(1 - D(G(z)))$Me saturé y me he ido.$D$很自信时杀死梯度) ⋅
 
-**Training loop。**Un paso`D`, paso a paso `G`¿Qué es eso?
+**Training loop。**Un paso$D$, paso a paso $G$¿Qué es eso?
 
-**为什么它能工作。**Si es que`G`完美匹配 `p_data`Entonces ...`D`Hacer no hasta que mejor que con la conjetura, y en el punto de salida 0.5;`G`No se puede obtener un gradiente.
+**为什么它能工作。**Si es que$G$完美匹配 $p_{\text{data}}$Entonces ...$D$Hacer no hasta que mejor que con la conjetura, y en el punto de salida 0.5;$G$No se puede obtener un gradiente.
 
-**为什么它会失效。**El modo se derrumba`G` encontrar una `D`无法分类的模式, entonces siempre造它) 、 desapareciendo gradiente(`D`Aprendiste muy rápido,`log D`Se trata de un programa de formación de formación que se desarrolla en el ámbito de la formación.
+**为什么它会失效。**El modo se derrumba$G$ encontrar una $D$无法分类的模式, entonces siempre造它) 、 desapareciendo gradiente($D$Aprendiste muy rápido,$\log D$Se trata de un programa de formación de formación que se desarrolla en el ámbito de la formación.
 
 ## 让 GANs Variantes disponibles
 
@@ -64,7 +64,7 @@ gan-minimax
 
 ### 步骤 1: pérdida no saturante
 
-pérdida de Vanilla Goodfellow .`log(1 - D(G(z)))`En este momento, el gradiente de G es esencialmente cero, G no puede ser mejorado, no saturado.`-log D(G(z))`具有相反的字符: Cuando D 很自信时它会爆增, da a G una fuerte señal―
+pérdida de Vanilla Goodfellow .$\log(1 - D(G(z)))$En este momento, el gradiente de G es esencialmente cero, G no puede ser mejorado, no saturado.$-\log D(G(z))$具有相反的字符: Cuando D 很自信时它会爆增, da a G una fuerte señal―
 
 ```python
 def g_loss(d_fake):
@@ -131,7 +131,7 @@ GANs 利但狭窄──一旦你的域名 打开,比如照片、任意文字提�
 ##  ejercicios
 
 1. **Easy。**Utilización de configuración de operación `code/main.py`。 Entonces se establece `D_LR = 5 * G_LR`¿La pérdida de G se derrumbe rápidamente hasta el número habitual?
-2. **Medium。**Utilizando pérdida WGAN  sustituyendo pérdida de Goodfellow BCE:`loss_D = E[D(fake)] - E[D(real)]`¿ Qué ?`loss_G = -E[D(fake)]`, y el clip de los pesos de D hasta `[-0.01, 0.01]`◊¿El entrenamiento es más estable?
+2. **Medium。**Utilizando pérdida WGAN  sustituyendo pérdida de Goodfellow BCE:$\text{loss}_D = \mathbb{E}[D(\text{fake})] - \mathbb{E}[D(\text{real})]$¿ Qué ?$\text{loss}_G = -\mathbb{E}[D(\text{fake})]$, y el clip de los pesos de D hasta `[-0.01, 0.01]`◊¿El entrenamiento es más estable?
 3. **Hard。**Para extender el ejemplo 1-D a los datos 2-D, se han realizado 8 combinaciones de Gauss en el anillo.
 
 ## 关键术语: "El hombre es un hombre"
@@ -140,8 +140,8 @@ GANs 利但狭窄──一旦你的域名 打开,比如照片、任意文字提�
 |------|-----------------|-----------------------|
 | Generator | "G" | noise-to-sample network，`G: z → x̂`。 |
 | Discriminator | "D" | Classifier `D: x → [0, 1]`，real vs fake。 |
-| Minimax | "The game" | joint objective 的 `min_G max_D`。 |
-| Non-saturating loss | "The fix" | 对 G 使用 `-log D(G(z))`，而不是 `log(1 - D(G(z)))`。 |
+| Minimax | "The game" | joint objective 的 $\min_G \max_D$。 |
+| Non-saturating loss | "The fix" | 对 G 使用 $-\log D(G(z))$，而不是 $\log(1 - D(G(z)))$。 |
 | Mode collapse | "G memorized one thing" | 尽管 data 多样，Generator 只产生少量不同 outputs。 |
 | WGAN | "Wasserstein" | 用 Earth-Mover distance + gradient penalty 替换 BCE；gradient 更平滑。 |
 | Spectral norm | "Lipschitz trick" | 约束 D 的 weight norms 来 bound 它的 slope；稳定 training。 |
@@ -151,7 +151,7 @@ GANs 利但狭窄──一旦你的域名 打开,比如照片、任意文字提�
 
 Las GAN en la generación de muestras de dominio abierto 上不再获胜, pero siguen en el costo de inferencia 上获胜;; en la producción-inferencia 文献词汇中, una GAN 具有:
 
-- **没有 prefill，没有 decode stages。**Una vez`G(z)`Pasado hacia adelante.
+- **没有 prefill，没有 decode stages。**Una vez$G(z)$Pasado hacia adelante.
 - **没有 KV-cache pressure。**El único estado es los pesos. El tamaño del lote recibe la memoria de activación.
 - **Trivial continuous batching。**由于 cada solicitud consume los mismos FLOPs fijos, el servidor  objetivo  porcentaje de ocupación estático por lo general es el mejor ⋅ no necesita programador en vuelo ⋅
 

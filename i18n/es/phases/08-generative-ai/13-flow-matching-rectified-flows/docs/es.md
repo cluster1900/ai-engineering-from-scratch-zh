@@ -9,9 +9,9 @@
 
 ##  problemas
 
-El proceso de reversación del DDPM es un proceso de`N(0, I)`Volver a los 1000 pasos de distribución de datos. DDIM se comprime a 20-50 pasos de determinación.
+El proceso de reversación del DDPM es un proceso de$\mathcal{N}(0, I)$Volver a los 1000 pasos de distribución de datos. DDIM se comprime a 20-50 pasos de determinación.
 
-Si puedes entrenar un modelo, hacer que el camino del ruido a los datos sea una línea directa, entonces desde`t=1`¿ Qué ?`t=0`de un solo paso de Euler 就能工作──Flow matching 直接构建这一点:定义从 `x_1 ∼ N(0, I)`¿ Qué ?`x_0 ∼ data`de línea directa, entrenar el campo vectorial `v_θ(x, t)`Para hacer una comparación con el tiempo de la dirección, y para inferir
+Si puedes entrenar un modelo, hacer que el camino del ruido a los datos sea una línea directa, entonces desde$t=1$¿ Qué ?$t=0$de un solo paso de Euler 就能工作──Flow matching 直接构建这一点:定义从 $x_1 \sim \mathcal{N}(0, I)$¿ Qué ?$x_0 \sim \text{data}$de línea directa, entrenar el campo vectorial $v_\theta(x, t)$Para hacer una comparación con el tiempo de la dirección, y para inferir
 
 Flujo rectificado (Liu 2022): más adelante: con el procedimiento de reflujo 代地拉直路径, generar un ODE gradualmente más cercano a la línea.
 
@@ -23,41 +23,41 @@ Flujo rectificado (Liu 2022): más adelante: con el procedimiento de reflujo 代
 
  definición:
 
-```
-x_t = t · x_1 + (1 - t) · x_0,   t ∈ [0, 1]
-```
-
-Entre ellos `x_0 ~ data`¿ Qué ?`x_1 ~ N(0, I)`  El número de direcciones de tiempo de esta línea recta es constante:
-
-```
-dx_t / dt = x_1 - x_0
+```math
+x_t = t \cdot x_1 + (1 - t) \cdot x_0, \quad t \in [0, 1]
 ```
 
- definir un campo de vector neuronal `v_θ(x_t, t)`,并训练它匹配这个导数:
+Entre ellos $x_0 \sim \text{data}$¿ Qué ?$x_1 \sim \mathcal{N}(0, I)$  El número de direcciones de tiempo de esta línea recta es constante:
 
-```
-L = E_{x_0, x_1, t} || v_θ(x_t, t) - (x_1 - x_0) ||²
+```math
+\frac{dx_t}{dt} = x_1 - x_0
 ```
 
-Eso es todo .**conditional flow matching**Perdida (Lipman 2023)  Entrenamiento no necesita simulación:`(x_0, x_1, t)`Y no hace Regresión.
+ definir un campo de vector neuronal $v_\theta(x_t, t)$,并训练它匹配这个导数:
+
+```math
+L = \mathbb{E}_{x_0, x_1, t} \left\lVert v_\theta(x_t, t) - (x_1 - x_0) \right\rVert^2
+```
+
+Eso es todo .**conditional flow matching**Perdida (Lipman 2023)  Entrenamiento no necesita simulación:$(x_0, x_1, t)$Y no hace Regresión.
 
 ### 采样
 
 En la inferencia, en el campo vectorial del tiempo* contra-directo*积分学到:
 
-```
-x_{t-Δt} = x_t - Δt · v_θ(x_t, t)
+```math
+x_{t-\Delta t} = x_t - \Delta t \cdot v_\theta(x_t, t)
 ```
 
-Desde`x_1 ~ N(0, I)`Comienza, con el paso de Euler.`t=0`¿Qué es eso?
+Desde$x_1 \sim \mathcal{N}(0, I)$Comienza, con el paso de Euler.$t=0$¿Qué es eso?
 
 ### Flujo rectificado (Liu 2022)
 
-El flujo directo puede funcionar, pero el camino de aprendizaje* en realidad no es directo*, porque muchos `x_0`Se puede proyectar a la misma.`x_1`❖ Paso de reflujo del flujo rectificado:
+El flujo directo puede funcionar, pero el camino de aprendizaje* en realidad no es directo*, porque muchos $x_0$Se puede proyectar a la misma.$x_1$❖ Paso de reflujo del flujo rectificado:
 
-1. Usas el modelo de flujo de entrenamiento v_1──
-2. 通过将 v_1 从 `x_1`积分到其落点 `x_0`, por ejemplo ,`(x_1, x_0)`¿Qué es eso?
-3. En estos ejemplos de parámetros, los parámetros son más simples, ya que los parámetros son más simples.
+1. Usas el modelo de flujo de entrenamiento$v_1$¿Qué es eso?
+2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $v_1$Desde$x_1$积分到其落点 $x_0$, por ejemplo ,$(x_1, x_0)$¿Qué es eso?
+3. En estos ejemplos de entrenamiento$v_2$─ Como estos pares ahora son ODE-pares, la línea directa entre ellos es realmente más plana─
 4. ¿Qué es eso?
 
 En la práctica, el reflujo de 2 veces se puede aproximar a la línea, para lograr la inferencia de 2-4 pasos.
@@ -72,7 +72,7 @@ Tres razones:
 
 ## Aplicación de flujo vs DDPM:精确联系
 
-带 Gaussian-conditional path ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ `x_t = α(t) x_0 + σ(t) x_1`horario, flujo de coincidencia, recuperar la difusión reformulada de Stratonovich, entre ellos `v = α'·x_0 - σ'·x_1`◊ Para los caminos gaussianos, ambos están en el precio igual en el número.
+带 Gaussian-conditional path ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ $x_t = \alpha(t) x_0 + \sigma(t) x_1$horario, flujo de coincidencia, recuperar la difusión reformulada de Stratonovich, entre ellos $v = \alpha' \cdot x_0 - \sigma' \cdot x_1$◊ Para los caminos gaussianos, ambos están en el precio igual en el número.
 
 El flujo de coincidencia  aumenta es: objetivo de la velocidad ordinaria 、更干净的 Loss, así como la libertad de intentar interpolantes no gaussianos 、
 
@@ -83,7 +83,7 @@ normalizing-flow
 
 ## Construirlo
 
-`code/main.py`En la mezcla Gaussian de dos cimas, se logra el flujo de coincidencia en 1D.`v_θ(x, t)`Es un pequeño MLP, usando entrenamiento de objetivos directos. En la inferencia, se dividen entre 1、2、4 y 20 pasos de Euler.
+`code/main.py`En la mezcla Gaussian de dos cimas, se logra el flujo de coincidencia en 1D.$v_\theta(x, t)$Es un pequeño MLP, usando entrenamiento de objetivos directos. En la inferencia, se dividen entre 1、2、4 y 20 pasos de Euler.
 
 ### Paso 1: Perdida de entrenamiento
 
@@ -116,10 +116,10 @@ def sample(net, num_steps):
 
 ##  fácil de coger
 
-- **Time parameterization。**Aplicación del flujo`t ∈ [0, 1]`, entre ellos `t=0`Es un dato,`t=1`Es un ruido.`t ∈ [0, T]`, entre ellos `t=0`Es un dato,`t=T`Es el mismo ruido, la misma dirección, la misma medida, la misma medida.
+- **Time parameterization。**Aplicación del flujo$t \in [0, 1]$, entre ellos $t=0$Es un dato,$t=1$Es un ruido.$t \in [0, T]$, entre ellos $t=0$Es un dato,$t=T$Es el mismo ruido, la misma dirección, la misma medida, la misma medida.
 - **Schedule choice。**La línea recta del flujo rectificado es el calendario de coincidencia de flujo, pero también puedes usar el cosino o el muestreo de t-normal lógico (SD3) para obtener una mejor cobertura de la escala.
 - **Reflow cost。**Para reflow generar un conjunto de datos de parentesco es equivalente a cada muestra que ejecuta una inferencia completa. Solo cuando realmente necesitas una inferencia de 1-2 pasos, entonces puedes hacer reflow.
-- **Classifier-free guidance 仍然适用。**Sólo necesito en línea en el grupo de la pieza:`v_cfg = (1+w) v_cond - w v_uncond`¿Qué es eso?
+- **Classifier-free guidance 仍然适用。**Sólo necesito un en línea.$\epsilon$换成   cambió$v$¿Qué es esto ?$v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$¿Qué es eso?
 
 ## Usalo
 
@@ -141,20 +141,20 @@ Sólo si un artículo del artículo de 2025-2026 años dice que es más rápido 
 ##  ejercicios
 
 1. **Easy。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py`, comparar la presentación de la distribución de datos reales en 1 paso con la de 20 pasos MSE
-2. **Medium。**Desde el uniforme`t`• ¿Se puede aumentar la calidad del modelo?
-3. **Hard。**实现一次反流 代: 通过积分第一个模型 生成对 (x_0, x_1), 在这些对上训练第二个模型,并比较1步样品质量──
+2. **Medium。**Desde el uniforme$t$• ¿Se puede aumentar la calidad del modelo?
+3. **Hard。**实现 una vez reflow 代: 通过积分第一个模型 生成对$(x_0, x_1)$, en estos pares 上训练第二个模型,并比较1步样品质量──
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Flow matching | “Straight-line diffusion” | 训练 `v_θ(x, t)`，使其沿 interpolant 匹配 `x_1 - x_0`。 |
+| Flow matching | “Straight-line diffusion” | 训练 $v_\theta(x, t)$，使其沿 interpolant 匹配 $x_1 - x_0$。 |
 | Rectified flow | “Reflow” | 拉直已学习 flows 的迭代过程。 |
-| Velocity field | “v_θ” | model 的输出，即移动 `x_t` 的方向。 |
-| Straight-line interpolant | “The path” | `x_t = (1-t)·x_0 + t·x_1`；目标导数很简单。 |
+| Velocity field | “v_θ” | model 的输出，即移动 $x_t$ 的方向。 |
+| Straight-line interpolant | “The path” | $x_t = (1-t) \cdot x_0 + t \cdot x_1$；目标导数很简单。 |
 | Euler sampler | “1st order ODE solver” | 最简单的 integrator；当路径较直时效果很好。 |
-| Logit-normal t | “SD3 sampling” | 将 `t` sampling 集中到 gradients 最强的中间值附近。 |
-| Consistency distillation | “1-step sampler” | 训练 student 将任意 `x_t` 直接映射到 `x_0`。 |
-| CFG with velocity | “v-CFG” | `v_cfg = (1+w) v_cond - w v_uncond`；同样技巧，新的变量。 |
+| Logit-normal t | “SD3 sampling” | 将 $t$ sampling 集中到 gradients 最强的中间值附近。 |
+| Consistency distillation | “1-step sampler” | 训练 student 将任意 $x_t$ 直接映射到 $x_0$。 |
+| CFG with velocity | “v-CFG” | $v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$；同样技巧，新的变量。 |
 
 ## Nota de producción:Flux.1-schnell es el mejor formato de coincidencia de flujo
 

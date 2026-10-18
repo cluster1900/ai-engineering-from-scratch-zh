@@ -8,33 +8,35 @@
 **Time:** ~75 分钟
 
 ##  problemas
-无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空照片*、*把白天场景 映射成夜间*、*给灰色图像 上色*──在所有这些任务中,你会得到一个输入图像`x`, y debe de salir con algún tipo de correspondencia semántica de `y` Cada uno `x`Todos pueden responder a muchas razones.`y`✿ El error cuadrado medio los pondrá en un resultado opaco✿ ✿ La pérdida adversaria no se produce, porque parece real  es de punta✿
+无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空照片*、*把白天场景 映射成夜间*、*给灰色图像 上色*──在所有这些任务中,你会得到一个输入图像$x$, y debe de salir con algún tipo de correspondencia semántica de $y$ Cada uno $x$Todos pueden responder a muchas razones.$y$✿ El error cuadrado medio los pondrá en un resultado opaco✿ ✿ La pérdida adversaria no se produce, porque parece real  es de punta✿
 
-GAN condicional (Mirza & Osindero, 2014) Coloque la condición `c`作为输入加入 `G`Y `D`Pix2Pix (Isola et al., 2017) ha hecho especial en esto:condición es imagen de entrada completa,generador es U-Net,discriminador es *patch-based* clasificador (PatchGAN),Poss es adversario + L1── incluso en 2026 años, este conjunto de diseños en un dominio de imagen a imagen estrecho arriba sigue ganando de la formación de texto a imagen modelo, porque se entrenan en *datas emparejadas* arriba Tu tienes es la señal necesaria─
+GAN condicional (Mirza & Osindero, 2014) Coloque la condición $c$作为输入加入 $G$Y $D$Pix2Pix (Isola et al., 2017) ha hecho especial en esto:condición es imagen de entrada completa,generador es U-Net,discriminador es *patch-based* clasificador (PatchGAN),Poss es adversario + L1── incluso en 2026 años, este conjunto de diseños en un dominio de imagen a imagen estrecho arriba sigue ganando de la formación de texto a imagen modelo, porque se entrenan en *datas emparejadas* arriba Tu tienes es la señal necesaria─
 
 ## 概念
 ![Pix2Pix: U-Net generator, PatchGAN discriminator](../assets/pix2pix.svg)
 
-**Conditional G.** `G(x, z) → y`En Pix2Pix,`z`Es un desfase interno (no hay ruido de entrada)
+**Conditional G.** $G(x, z) \to y$En Pix2Pix,$z$Es un desfase interno (no hay ruido de entrada)
 
-**Conditional D.** `D(x, y) → [0, 1]`△输入是 *pair*(condición, salida) ・・・这是关键差异:D 必须判断 `y`¿Cómo se puede`x`Un致, no sólo juzgar `y`Parece que es verdad.
+**Conditional D.** $D(x, y) \to [0, 1]$△输入是 *pair*(condición, salida) ・・・这是关键差异:D 必须判断 $y$¿Cómo se puede$x$Un致, no sólo juzgar $y$Parece que es verdad.
 
 **U-Net generator.**带有跨瓶跳连接的编码码器-decoder──对于输入和输出共享低级结构的任务至关重要──没有这些跳转,高频细节会消失──
 
-**PatchGAN discriminator.**D no se produce un solo resultado real/falso, sino que se produce un solo resultado `N×N`Grid, cada una de las células  juzgar alrededor de 70×70 píxeles de campo receptivo ∞ luego tomar media ∞ es un campo aleatorio de Markov ∞ suposición: verdad感是局部的── entrenamiento rápido, los parámetros son menos, la salida más ∞ ∞
+**PatchGAN discriminator.**D no se produce un solo resultado real/falso, sino que se produce un solo resultado $N \times N$Grid, cada una de las células  juzgar alrededor de 70×70 píxeles de campo receptivo ∞ luego tomar media ∞ es un campo aleatorio de Markov ∞ suposición: verdad感是局部的── entrenamiento rápido, los parámetros son menos, la salida más ∞ ∞
 
 **Loss.**
 
-```
-loss_G = -log D(x, G(x)) + λ · ||y - G(x)||_1
-loss_D = -log D(x, y) - log (1 - D(x, G(x)))
+```math
+\begin{aligned}
+\text{loss}_G &= -\log D(x, G(x)) + \lambda \cdot \lVert y - G(x) \rVert_1 \\
+\text{loss}_D &= -\log D(x, y) - \log(1 - D(x, G(x)))
+\end{aligned}
 ```
 
-El desarrollo de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de`λ = 100`Es el valor de la imagen.
+El desarrollo de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de la formación de$\lambda = 100$Es el valor de la imagen.
 
 ## CycleGAN  cuando no tienes pares
 
-Pix2Pix 需要 párate `(x, y)`Datos―CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*consistencia del ciclo* pérdida―dos generadores:`G: X → Y`Y `F: Y → X` Entrenarlos, hacer`F(G(x)) ≈ x`且 `G(F(y)) ≈ y` Esto te permite en caso de que no hay ejemplos pareados, transformar caballos en cebras, verano en invierno.
+Pix2Pix 需要 párate $(x, y)$Datos―CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*consistencia del ciclo* pérdida―dos generadores:$G: X \to Y$Y $F: Y \to X$ Entrenarlos, hacer$F(G(x)) \approx x$且 $G(F(y)) \approx y$ Esto te permite en caso de que no hay ejemplos pareados, transformar caballos en cebras, verano en invierno.
 
 En 2026 años, la imagen-a-imagen sin pareja se completa a través de la difusión, y no CycleGAN, pero la consistencia del ciclo sigue existiendo en casi cada una de las adaptaciones de dominio sin pareja.
 
@@ -44,7 +46,7 @@ gx-patchgan
 ```
 
 ## Construirlo
-`code/main.py`En los datos 1-D, se realiza una condición de GAN de tipo micro.`c`Es la etiqueta de clase ((0 o 1);; tarea: para una clase determinada 生成一个来自条件分布的样本──
+`code/main.py`En los datos 1-D, se realiza una condición de GAN de tipo micro.$c$Es la etiqueta de clase ((0 o 1);; tarea: para una clase determinada 生成一个来自条件分布的样本──
 
 ### Paso 1: Añadir la condición a G y D de entrada
 
@@ -81,9 +83,9 @@ for c in [0, 1]:
 
 ## 陷
 - **Condition 被忽略。**G 学会 marginar, D 从不惩罚,因为 condición señal 太弱──修复:更强地 condición D(pierna capa,而不只是 tardío), utilizar el discriminador de proyección (Miyato & Koyama 2018)──
-- **L1 weight 过低。**G 漂移到任意看起来真实输出,而不是 lo fiel ones──Pix2Pix-style 任务从 λ≈100 开始──
-- **L1 weight 过高。**G    producir resultados confusos, ya que L1   sigue siendo la norma L_p ∙                                                                                                                                                                                                                                                   
-- **D 中 ground-truth leakage。**¿ Qué ?`(x, y)`Concat como entrada D,而不只是 `y`◊否则 D 无法检查一致性──
+- **L1 weight 过低。**G 漂移到任意看起来真实输出, y no los fieles.$\lambda \approx 100$¿Qué es esto?
+- **L1 weight 过高。**G                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $L_p$Norma― entrenamiento estabilizado  después de paso a paso aneal abajo―
+- **D 中 ground-truth leakage。**¿ Qué ?$(x, y)$Concat como entrada D,而不只是 $y$◊否则 D 无法检查一致性──
 - **每个 class 的 mode collapse。**Cada clase puede colapsar independientemente.
 
 ## Usalo

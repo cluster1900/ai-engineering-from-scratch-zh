@@ -26,13 +26,13 @@ También verás: IS(punto inicial, básicamente ya retirado) 、KID、CMMD、Ima
 Heusel et al. (2017)。步骤:
 
 1. Por lo tanto, el proyecto de investigación de la Universidad de San Francisco (UFSA) se ha desarrollado en el campo de la investigación de la investigación y la investigación.
-2. Para cada grupo se calcula una media Gaussian:`μ_r, μ_g`Y la covarianza `Σ_r, Σ_g`¿Qué es eso?
-3. FID = `||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2 · (Σ_r · Σ_g)^0.5)`¿Qué es eso?
+2. Para cada grupo se calcula una media Gaussian:$\mu_r, \mu_g$Y la covarianza $\Sigma_r, \Sigma_g$¿Qué es eso?
+3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \mathop{\mathrm{Tr}}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$¿Qué es eso?
 
 Explicación: Tétra de espacio entre dos variables Gaussianas  entre la distancia de Frechet──越低 = 分布越相似──
 
 失效模式:
-- **小 N 时有偏。**FID es para la distribución de características hacer media-cuadrado 计算,小 N 会低估共变,给出虚假的低 FID──始终使用 N ≥ 10,000──
+- **小 N 时有偏。**FID es para la distribución de características hacer media-cuadrado 计算,小 N 会低估共变,给出虚假的低 FID──始终使用 $N \ge 10{,}000$¿Qué es eso?
 - **依赖 Inception。**La creación de la imagen en el campo de la imagen en el que se desarrolla la imagen en el campo de la imagen en el que se desarrolla la imagen en el campo de la imagen en el que se desarrolla la imagen en el campo de la imagen.
 - **刷分。**过拟启动前可在没有视觉质量提升的情况下获得低FID──使用CMMD见下文)来对抗它──
 

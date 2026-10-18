@@ -21,9 +21,9 @@ Esto es la difusión estable 配方──SD 1.x / 2.x Usar una 860M U-Net 处理
 
 **两个阶段，分别训练。**
 
-1. **Stage 1 — VAE.**Encodificador`E(x) → z`, decodificador `D(z) → x` objetivo de compresión: cada espacio轴下采样 8×, reajuste canal, hacer el tamaño total latente 约为 pixel count 的 1/16──Loss = reconstrucción (L1 + LPIPS perceptual) + KL(权重很小,使 `z`No será forzado a hacer demasiado Gaussian, porque no necesitamos de él.`z`Hacer un ejemplo preciso) ∼ normalmente también se acompaña a la pérdida adversaria  entrenamiento, dejar decodificar  imágenes salientes  ∼
+1. **Stage 1 — VAE.**Encodificador$E(x) \to z$, decodificador $D(z) \to x$ objetivo de compresión: cada espacio轴下采样 8×, reajuste canal, hacer el tamaño total latente 约为 pixel count 的 1/16──Loss = reconstrucción (L1 + LPIPS perceptual) + KL(权重很小,使 $z$No será forzado a hacer demasiado Gaussian, porque no necesitamos de él.$z$Hacer un ejemplo preciso) ∼ normalmente también se acompaña a la pérdida adversaria  entrenamiento, dejar decodificar  imágenes salientes  ∼
 
-2. **Stage 2 — 在 `z` 上做 diffusion。**¿ Qué ?`z = E(x_real)`Cuando se le da información, entrenan a una U-Net o a una DiT para denunciar.`z_t`◊推理时: a través de la difusión 采样 `z_0`, entonces`x = D(z_0)`¿Qué es eso?
+2. **Stage 2 — 在 $z$ 上做 diffusion。**¿ Qué ?$z = E(x_{\text{real}})$Cuando se le da información, entrenan a una U-Net o a una DiT para denunciar.$z_t$◊推理时: a través de la difusión 采样 $z_0$, entonces$x = D(z_0)$¿Qué es eso?
 
 **文本 conditioning。**También hay dos componentes extra. Un encoder de texto de SD 1.x con CLIP-L, SD 2/XL con CLIP-L+OpenCLIP-G, SD3 y Flux con T5-XXL)`[Q = image features, K = V = text tokens]`Los tokens son la única forma de influir en el texto de las imágenes.
 
@@ -59,21 +59,21 @@ def encode(x):    return x * 0.5          # toy "compression" to smaller scale
 def decode(z):    return z * 2.0
 ```
 
-El verdadero VAE tiene el peso de la formación. Para el propósito de la enseñanza, esta línea de mapeo ya es suficiente para explicar la difusión puede estar en`z`Por lo tanto, no se preocupa por el espacio de datos original.
+El verdadero VAE tiene el peso de la formación. Para el propósito de la enseñanza, esta línea de mapeo ya es suficiente para explicar la difusión puede estar en$z$Por lo tanto, no se preocupa por el espacio de datos original.
 
 ### Paso 2: en`z`-espacio en el medio de la difusión
 
-Los datos de la red que se ven son similares a los datos de la lección 06`z = E(x)`◊ En el caso de la`z_0`后, usar `D(z_0)`Descifrado
+Los datos de la red que se ven son similares a los datos de la lección 06$z = E(x)$◊ En el caso de la$z_0$后, usar $D(z_0)$Descifrado
 
 ### 步骤 3: Guía sin clasificador
 
-Durante el entrenamiento, el 10% del tiempo se deshace de la etiqueta de clase (en sustitución de la etiqueta de la clase)`ε_cond`Y `ε_uncond`, y luego:
+Durante el entrenamiento, el 10% del tiempo se deshace de la etiqueta de clase (en sustitución de la etiqueta de la clase)$\epsilon_{\text{cond}}$Y $\epsilon_{\text{uncond}}$, y luego:
 
 ```python
 eps_cfg = (1 + w) * eps_cond - w * eps_uncond
 ```
 
-`w = 0`= 无指导(完全多样性),`w = 3`= 默认值,`w = 7+`= 和 / 过化。
+$w = 0$= 无指导(完全多样性),$w = 3$= 默认值,$w = 7+$= 和 / 过化。
 
 ### 步骤 4: 文本 condicionamiento(概念,不是代码)
 
@@ -91,7 +91,7 @@ Esta es la única diferencia sustancial entre el modelo de difusión condicional
 - **Text encoder silently wrong。**SD3 需要带 >=128 tokens of T5-XXL,fallback till only CLIP 会有损──始终检查 `use_t5=True`, de lo contrario, la fidelidad se desmorona.
 - **混用 latent spaces。**SDXL、SD3、Flux usan diferentes VAEs― en los latentes SDXL  上训练的LoRA 不能用于SD3―Hugging Face difusores 0.30+ 会拒加载不匹配的检查点―
 - **CFG too high。** `w > 10`Se generaron imágenes de la variedad y se adaptaron rápidamente a la variedad.`w = 3-7`¿Qué es eso?
-- **Negative prompts leaking。**El mensaje negativo va a ser nulo; el mensaje negativo llenado va a ser`ε_uncond` Estas dos no son iguales; algunas tuberías 会静默默认使用 null──
+- **Negative prompts leaking。**El mensaje negativo va a ser nulo; el mensaje negativo llenado va a ser$\epsilon_{\text{uncond}}$ Estas dos no son iguales; algunas tuberías 会静默默认使用 null──
 
 ## Usalo
 
@@ -112,7 +112,7 @@ Producción de 2026 años:
 
 ##  ejercicios
 
-1. **Easy.**Uso de la guía `w ∈ {0, 1, 3, 7, 15}`运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py` registrar la muestra media de cada clase  en qué `w`¿La clase significa que se alejará del valor medio de los datos reales?
+1. **Easy.**Uso de la guía $w \in \lbrace 0, 1, 3, 7, 15 \rbrace$运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py` registrar la muestra media de cada clase  en qué $w$¿La clase significa que se alejará del valor medio de los datos reales?
 2. **Medium.**¿Cuál es la calidad de la muestra? ¿Cuál es la calidad de la muestra?
 3. **Hard.**Utiliza los difusores  Construye una verdadera difusión estable                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               `sdxl-base`, con CFG=7 运行 30 个 Euler pasos,并计时――然后切换到 `sdxl-turbo`, con 4 pasos 和 CFG=0── el mismo objeto, diferente calidad, describe qué cambios ocurrieron y las causas──
 
@@ -122,8 +122,8 @@ Producción de 2026 años:
 |------|-----------------|-----------------------|
 | First stage | “The VAE” | 训练好的 encoder/decoder 对；把 512² 压缩到 64²。 |
 | Second stage | “The U-Net” | latent space 上的 diffusion model。 |
-| CFG | “Guidance scale” | `(1+w)·ε_cond - w·ε_uncond`；调节 conditioning strength。 |
-| Null token | “Empty prompt embed” | 用于 `ε_uncond` 的 unconditional embed。 |
+| CFG | “Guidance scale” | $(1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$；调节 conditioning strength。 |
+| Null token | “Empty prompt embed” | 用于 $\epsilon_{\text{uncond}}$ 的 unconditional embed。 |
 | Cross-attention | “How text gets in” | 每个 U-Net block 都以 text tokens 作为 K 和 V 进行 attention。 |
 | DiT | “Diffusion Transformer” | 用作用于 latent patches 的 transformer 替换 U-Net；扩展性更好。 |
 | MMDiT | “Multi-modal DiT” | SD3 的架构：带 joint attention 的文本与图像流。 |
