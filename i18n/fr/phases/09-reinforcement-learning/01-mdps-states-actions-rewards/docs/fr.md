@@ -21,20 +21,24 @@ Avant la formalisation, vous ne pouviez pas apprendre à partir de ce flux. J'ai
 
 **五个对象。**
 
-- **States** `S`Dans GridWorld, il est joué. Dans les échecs, il est joué. Dans le LLM, il est la fenêtre contextuelle, et il y a aussi la mémoire.
-- **Actions** `A`◊可选行为──上/下/左/右移动──下一步棋──输出一个代币──
-- **Transitions** `P(s' | s, a)` Un état déterminé`s`et action `a`,départition de l'état suivant: dans le jeu, déterministe, dans l'inventaire, stochastique, dans le décoding LLM, presque déterministe.
-- **Rewards** `R(s, a, s')` Équence de signal, gagne = +1,输 = -1♦ revenu réduit de coûts, Ratio de log-probabilité en GRPO 项♦
-- **Discount** `γ ∈ [0, 1)`◊ Future reward 相对当前奖励的权重──`γ = 0.99`买到约100 étapes de l'horizon;`γ = 0.9`Je l'ai acheté à 10 ans.
+- **States** $S$Dans GridWorld, il est joué. Dans les échecs, il est joué. Dans le LLM, il est la fenêtre contextuelle, et il y a aussi la mémoire.
+- **Actions** $A$◊可选行为──上/下/左/右移动──下一步棋──输出一个代币──
+- **Transitions** $P(s' \mid s, a)$ Un état déterminé$s$et action $a$,départition de l'état suivant: dans le jeu, déterministe, dans l'inventaire, stochastique, dans le décoding LLM, presque déterministe.
+- **Rewards** $R(s, a, s')$ Équence de signal, gagne = +1,输 = -1♦ revenu réduit de coûts, Ratio de log-probabilité en GRPO 项♦
+- **Discount** $\gamma \in [0, 1)$◊ Future reward 相对当前奖励的权重──$\gamma = 0.99$买到约100 étapes de l'horizon;$\gamma = 0.9$Je l'ai acheté à 10 ans.
 
-**Markov property** `P(s_{t+1} | s_t, a_t) = P(s_{t+1} | s_0, a_0, …, s_t, a_t)`◊ futur dépend seulement de l'état actuel. Si cela n'est pas le cas, la représentation de l'état est incomplète.
+**Markov property** $P(s_{t+1} \mid s_t, a_t) = P(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t)$◊ futur dépend seulement de l'état actuel. Si cela n'est pas le cas, la représentation de l'état est incomplète.
 
-**Policies 与 returns。**Politique `π(a | s)`Mettre les états 映射到动作分布──Retour `G_t = r_t + γ r_{t+1} + γ² r_{t+2} + …` est la somme réduite des récompenses futures `V^π(s) = E[G_t | s_t = s]`Il est en politique.`π`Je suis là .`s`开始的预期回报──Q-value `Q^π(s, a) = E[G_t | s_t = s, a_t = a]`L'algorithme RL de chaque ville estimera l'une des deux, puis devrait s'améliorer.`π`Il y a une autre.
+**Policies 与 returns。**Politique $\pi(a \mid s)$Mettre les états 映射到动作分布──Retour $G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \ldots$ est la somme réduite des récompenses futures $V^\pi(s) = \mathbb{E}[G_t \mid s_t = s]$Il est en politique.$\pi$Je suis là .$s$开始的预期回报──Q-value $Q^\pi(s, a) = \mathbb{E}[G_t \mid s_t = s, a_t = a]$L'algorithme RL de chaque ville estimera l'une des deux, puis devrait s'améliorer.$\pi$Il y a une autre.
 
 **Bellman equations。**Dans cette phase, tout le contenu sera utilisé pour les équations à point fixe:
 
-`V^π(s) = Σ_a π(a|s) Σ_{s', r} P(s', r | s, a) [r + γ V^π(s')]`
-`Q^π(s, a) = Σ_{s', r} P(s', r | s, a) [r + γ Σ_{a'} π(a'|s') Q^π(s', a')]`
+```math
+\begin{aligned}
+V^\pi(s) &= \sum_a \pi(a \mid s) \sum_{s', r} P(s', r \mid s, a) [r + \gamma V^\pi(s')] \\
+Q^\pi(s, a) &= \sum_{s', r} P(s', r \mid s, a) [r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s', a')]
+\end{aligned}
+```
 
 Ils ont décomposé le rendement attendu de cette étape en plus de la valeur réduite du point de chute.
 
@@ -114,16 +118,16 @@ C'est l'évaluation politique itérative. C'est le premier algorithme de Sutton 
 
 ### Étape 4:`γ`est un hyperparamètre ayant un sens physique
 
-L' horizon est efficace .`1 / (1 - γ)`Il y a une autre.`γ = 0.9`→ 10 étapes`γ = 0.99`→ 100 pas.`γ = 0.999`→ 1000 pas
+L' horizon est efficace .$1 / (1 - \gamma)$Il y a une autre.$\gamma = 0.9$→ 10 étapes$\gamma = 0.99$→ 100 pas.$\gamma = 0.999$→ 1000 pas
 
-太低时,agent 会目光短浅──太高时,credit assignment 会变噪,因为许多早期步骤都会共同承担远未来奖励的责任──LLM RLHF`γ = 1`,因为 épisodes 短且有界──Tâches de contrôle 使用 `0.95–0.99`❖ Jeux de stratégie à long terme`0.999`Il y a une autre.
+太低时,agent 会目光短浅──太高时,credit assignment 会变噪,因为许多早期步骤都会共同承担远未来奖励的责任──LLM RLHF$\gamma = 1$,因为 épisodes 短且有界──Tâches de contrôle 使用 `0.95–0.99`❖ Jeux de stratégie à long terme`0.999`Il y a une autre.
 
 ## La trappe
 
 - **Non-Markovian state.**Si vous avez besoin de trois observations récentes 才能决策, alors state 不只是当前观察──修复:stack frames(DQN 在 Atari 上堆叠 4 ) 或使用复制状态(在观测上使用 LSTM/GRU)──
 - **Sparse rewards.**Il est possible de se faire un petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit petit
 - **Reward hacking.**Optimiser la récompense par procuration  Régulièrement générer des comportements pathologiques  OpenAI's boat-racing agent 一直原地转圈 collect powerups, plutôt que de terminer la course  Always from goal result defin reward, rather than from proxy definition ◦
-- **Discount mis-spec.**Dans une tâche à horizon infini 上使用 `γ = 1`J'ai toujours utilisé un horizon fini ou`γ < 1`Pour limiter.
+- **Discount mis-spec.**Dans une tâche à horizon infini 上使用 $\gamma = 1$J'ai toujours utilisé un horizon fini ou$\gamma < 1$Pour limiter.
 - **Reward scale.**Les récompenses de {+100, -100} et {+1, -1} donneront les mêmes politiques optimales, mais la magnitude du gradient 会非常不同──接入PPO/DQN 前,把它正常化到近似`[-1, 1]`Il y a une autre.
 
 ## Utilisez-le
@@ -168,21 +172,21 @@ tags: [rl, mdp, modeling]
 ## 练习
 
 1. **Easy.**Dans le`code/main.py`Le rapport rapport de retour est basé sur la moyenne et le rapport de retour est basé sur la moyenne.
-2. **Medium.**Pour une politique uniforme et aléatoire, usage `γ ∈ {0.5, 0.9, 0.99}`运行  référencement`policy_evaluation`- Je veux le faire.`V`打印为4×4 grid──解释为什么终端 附近的状态值会随着变大 `γ`Il y a plus de croissance.
-3. **Hard.**Pour transformer le monde du réseau en stochastique: chaque action en probabilité`p = 0.1`滑向相邻方向── réévaluer la politique uniforme──`V[start]`Ça va changer ou mieux ?
+2. **Medium.**Pour une politique uniforme et aléatoire, usage $\gamma \in \lbrace 0.5, 0.9, 0.99 \rbrace$运行  référencement`policy_evaluation`- Je veux le faire.`V`打印为4×4 grid──解释为什么终端 附近的状态值会随着变大 $\gamma$Il y a plus de croissance.
+3. **Hard.**Pour transformer le monde du réseau en stochastique: chaque action en probabilité$p = 0.1$滑向相邻方向── réévaluer la politique uniforme──`V[start]`Ça va changer ou mieux ?
 
 ## 关键术语
 
 | Term | 人们的说法 | 实际含义 |
 |------|------------|----------|
-| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 `(S, A, P, R, γ)`。 |
+| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 $(S, A, P, R, \gamma)$。 |
 | State | “Agent 看到的东西” | 在所选 policy class 下，future dynamics 的 sufficient statistic。 |
-| Policy | “Agent 的行为” | Conditional distribution `π(a \| s)` 或 deterministic map `s → a`。 |
-| Return | “Total reward” | 从当前 step 开始的 discounted sum `Σ γ^t r_t`。 |
-| Value | “一个 state 有多好” | 在 `π` 下从 `s` 开始的 expected return。 |
-| Q-value | “一个 action 有多好” | 在 `π` 下从 `s` 开始并以第一个 action `a` 开始的 expected return。 |
+| Policy | “Agent 的行为” | Conditional distribution $\pi(a \mid s)$ 或 deterministic map $s \to a$。 |
+| Return | “Total reward” | 从当前 step 开始的 discounted sum $\sum \gamma^t r_t$。 |
+| Value | “一个 state 有多好” | 在 $\pi$ 下从 $s$ 开始的 expected return。 |
+| Q-value | “一个 action 有多好” | 在 $\pi$ 下从 $s$ 开始并以第一个 action $a$ 开始的 expected return。 |
 | Bellman equation | “Dynamic programming recursion” | 把 value / Q 分解为 one-step reward 加 discounted successor value 的 fixed-point。 |
-| Discount `γ` | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 `~1/(1-γ)`。 |
+| Discount $\gamma$ | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 $\approx 1/(1-\gamma)$。 |
 
 ## 延伸阅读
 

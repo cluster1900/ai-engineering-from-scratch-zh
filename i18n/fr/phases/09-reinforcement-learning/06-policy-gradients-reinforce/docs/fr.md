@@ -11,9 +11,9 @@
 
 Q-apprentissage 和 DQN paramétriser de la est *value* fonction──你通过 `argmax Q`选择行动――这对离散行动 和离散状态 没有问题――但当行动是连续时就会失效`argmax`?), ou quand vous voulez une politique stochastique, ça va aussi échouer.`argmax`La construction est déterministe.
 
-Les gradients de politique 改为 paramétrent *politique*。`π_θ(a | s)`Il s'agit d'un réseau neural, de l'action de sortie, de la distribution de l'action.`θ`Il n'y a pas de changement de direction.`argmax`Il n'y a pas de récursion Bellman.`J(θ) = E_{π_θ}[G]`Faites une ascension gradiente.
+Les gradients de politique 改为 paramétrent *politique*。$\pi_\theta(a \mid s)$Il s'agit d'un réseau neural, de l'action de sortie, de la distribution de l'action.$\theta$Il n'y a pas de changement de direction.`argmax`Il n'y a pas de récursion Bellman.$J(\theta) = \mathbb E_{\pi_\theta}[G]$Faites une ascension gradiente.
 
-Le théorème de la force (Williams 1992)  vous dire ce gradient est calculable:`∇J(θ) = E_π[ G · ∇_θ log π_θ(a | s) ]`◊运行一个节目――计算回来――把每一步的 ◊`∇ log π_θ(a | s)`乘以 return──取平均──做 Gradient-ascent──完成──
+Le théorème de la force (Williams 1992)  vous dire ce gradient est calculable:$\nabla J(\theta) = \mathbb E_\pi[ G \cdot \nabla_\theta \log \pi_\theta(a \mid s) ]$◊运行一个节目――计算回来――把每一步的 ◊$\nabla \log \pi_\theta(a \mid s)$乘以 return──取平均──做 Gradient-ascent──完成──
 
 Chaque algorithme LLM-RL:PPO、DPO、GRPO, de 2026 ans, est un raffinement de REINFORCE, il est une condition préalable de la phase 10 · 07 (implémentation du RLHF) et de la phase 10 · 08 (DPO).
 
@@ -21,36 +21,44 @@ Chaque algorithme LLM-RL:PPO、DPO、GRPO, de 2026 ans, est un raffinement de RE
 
 ![Policy gradient: softmax policy, log-π gradient, return-weighted update](../assets/policy-gradient.svg)
 
-**Policy gradient theorem。**Pour tout`θ`politique paramétrisée `π_θ`- Le numéro de la liste:
+**Policy gradient theorem。**Pour tout$\theta$politique paramétrisée $\pi_\theta$- Le numéro de la liste:
 
-`∇J(θ) = E_{τ ~ π_θ}[ Σ_{t=0}^{T} G_t · ∇_θ log π_θ(a_t | s_t) ]`
+```math
+\nabla J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}[ \sum_{t=0}^{T} G_t \cdot \nabla_\theta \log \pi_\theta(a_t \mid s_t) ]
+```
 
-Parmi eux `G_t = Σ_{k=t}^{T} γ^{k-t} r_{k+1}`C' est de l' étape.`t`Retour à la prime de départ:`π_θ`Les trajectories complètes de l'échantillon `τ`Ce que vous avez obtenu.
+Parmi eux $G_t = \sum_{k=t}^{T} \gamma^{k-t} r_{k+1}$C' est de l' étape.$t$Retour à la prime de départ:$\pi_\theta$Les trajectories complètes de l'échantillon $\tau$Ce que vous avez obtenu.
 
-**证明很短。**Dans l' attente,`J(θ) = Σ_τ P(τ; θ) G(τ)`求导──使用 `∇P(τ; θ) = P(τ; θ) ∇ log P(τ; θ)`(truc de dérivé de log)`log P(τ; θ) = Σ log π_θ(a_t | s_t) + environment terms that do not depend on θ`Les termes environnementaux disparaissent.
+**证明很短。**Dans l' attente,$J(\theta) = \sum_\tau P(\tau; \theta) G(\tau)$求导──使用 $\nabla P(\tau; \theta) = P(\tau; \theta) \nabla \log P(\tau; \theta)$(truc de dérivé de log)$\log P(\tau; \theta) = \sum \log \pi_\theta(a_t \mid s_t) + \text{environment terms that do not depend on } \theta$Les termes environnementaux disparaissent.
 
-**Variance reduction 技巧。**La variance de la vanille est très élevée.`∇ log π`Il y a beaucoup de bruit, et la quantité est très bruyante.
+**Variance reduction 技巧。**La variance de la vanille est très élevée.$\nabla \log \pi$Il y a beaucoup de bruit, et la quantité est très bruyante.
 
-1. **Baseline subtraction。**À l' indépendance`a_t``b(s_t)`Je suis là .`G_t`替换成 `G_t - b(s_t)`Il est impartial, parce que`E[b(s_t) · ∇ log π(a_t | s_t)] = 0`◊ typical choix: par le critique `b(s_t) = V̂(s_t)`→ acteur-critique (leçon 07)
-2. **Reward-to-go。**Je ne sais pas .`Σ_t G_t · ∇ log π_θ(a_t | s_t)`替换成 `Σ_t G_t^{from t} · ∇ log π_θ(a_t | s_t)` Pour une action déterminée, seulement les retours futurs 相关, les récompenses passées ▌ contribueront à un bruit nul-ménior 
+1. **Baseline subtraction。**À l' indépendance$a_t$$b(s_t)$Je suis là .$G_t$替换成 $G_t - b(s_t)$Il est impartial, parce que$\mathbb{E}[b(s_t) \cdot \nabla \log \pi(a_t \mid s_t)] = 0$◊ typical choix: par le critique $b(s_t) = \hat{V}(s_t)$→ acteur-critique (leçon 07)
+2. **Reward-to-go。**Je ne sais pas .$\sum_t G_t \cdot \nabla \log \pi_\theta(a_t \mid s_t)$替换成 $\sum_t G_t^{\text{from } t} \cdot \nabla \log \pi_\theta(a_t \mid s_t)$ Pour une action déterminée, seulement les retours futurs 相关, les récompenses passées ▌ contribueront à un bruit nul-ménior 
 
 Je suis en train de faire ça.
 
-`∇J ≈ (1/N) Σ_{i=1}^{N} Σ_{t=0}^{T_i} [ G_t^{(i)} - V̂(s_t^{(i)}) ] · ∇_θ log π_θ(a_t^{(i)} | s_t^{(i)})`
+```math
+\nabla J \approx (1/N) \sum_{i=1}^{N} \sum_{t=0}^{T_i} [ G_t^{(i)} - \hat{V}(s_t^{(i)}) ] \cdot \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)})
+```
 
 C'est le RENFORCE de la ligne de base, et aussi l'ancêtre direct de l'A2C (leçon 07) et du PPO (leçon 08).
 
 **Softmax policy parameterization。**Pour les actions discrètes, le standard de sélection est:
 
-`π_θ(a | s) = exp(f_θ(s, a)) / Σ_{a'} exp(f_θ(s, a'))`
+```math
+\pi_\theta(a \mid s) = \exp(f_\theta(s, a)) / \sum_{a'} \exp(f_\theta(s, a'))
+```
 
-Parmi eux `f_θ`Il y a un réseau neural pour chaque action.
+Parmi eux $f_\theta$Il y a un réseau neural pour chaque action.
 
-`∇_θ log π_θ(a | s) = ∇_θ f_θ(s, a) - Σ_{a'} π_θ(a' | s) ∇_θ f_θ(s, a')`
+```math
+\nabla_\theta \log \pi_\theta(a \mid s) = \nabla_\theta f_\theta(s, a) - \sum_{a'} \pi_\theta(a' \mid s) \nabla_\theta f_\theta(s, a')
+```
 
 C'est le score de l'action prise en diminuant la valeur attendue en politique.
 
-**用于 continuous actions 的 Gaussian policy。** `π_θ(a | s) = N(μ_θ(s), σ_θ(s))`Il y a une autre.`∇ log N(a; μ, σ)`Il y a une forme fermée. C'est tout ce dont le SAC a besoin pour la phase 9 · 07 .
+**用于 continuous actions 的 Gaussian policy。** $\pi_\theta(a \mid s) = N(\mu_\theta(s), \sigma_\theta(s))$Il y a une autre.$\nabla \log N(a; \mu, \sigma)$Il y a une forme fermée. C'est tout ce dont le SAC a besoin pour la phase 9 · 07 .
 
 
 ```figure
@@ -120,19 +128,19 @@ def reinforce_step(theta, trajectory, gamma, lr, baseline=0.0):
                 theta[i][j] += lr * advantage * grad_log_pi_a[i] * s[j]
 ```
 
-Gradient `∇ log π(a|s) = e_a - π(·|s)`(le secteur de l'énergie)`a`Le système de calcul de la probabilité de réduction de la chaleur est au cœur des gradients de la politique de softmax.
+Gradient $\nabla \log \pi(a \mid s) = e_a - \pi(\cdot \mid s)$(le secteur de l'énergie)$a$Le système de calcul de la probabilité de réduction de la chaleur est au cœur des gradients de la politique de softmax.
 
 ### Étape 5: lignes de base
 
-Pour les épisodes récents `G`取 running mean, déjà assez pour faire 4×4 GridWorld  run up; environ 500 épisodes 收──把 baseline 升级为学习 `V̂(s)`On a un critique d'acteur.
+Pour les épisodes récents $G$取 running mean, déjà assez pour faire 4×4 GridWorld  run up; environ 500 épisodes 收──把 baseline 升级为学习 $\hat{V}(s)$On a un critique d'acteur.
 
 ## Les pièges
 
-- **Exploding gradients。**Les retours sont très importants.`∇ log π`之前,始终在批内把 `G`normalité à`~N(0, 1)`Il y a une autre.
-- **Entropy collapse。**Politique 过早收到近似决定性的的行动,停止探索,然后卡住──修复方式:向目标 添加 Entropy bonus `β · H(π(·|s))`Il y a une autre.
+- **Exploding gradients。**Les retours sont très importants.$\nabla \log \pi$之前,始终在批内把 $G$normalité à`~N(0, 1)`Il y a une autre.
+- **Entropy collapse。**Politique 过早收到近似决定性的的行动,停止探索,然后卡住──修复方式:向目标 添加 Entropy bonus $\beta \cdot H(\pi(\cdot \mid s))$Il y a une autre.
 - **High variance。**La réinforcement de la vanille 需要成千上万集──kritical baseline──Létion 07)
 - **Sample inefficiency。**On-policy signifie que chaque transition dans une mise à jour  après  sera abandonnée                                                                                                                                                                                                                                                    
-- **Non-stationary gradients。**100 épisodes de la même série que précédemment.`π`C'est la raison pour laquelle les méthodes de mise en œuvre de la politique sont mises à jour.
+- **Non-stationary gradients。**100 épisodes de la même série que précédemment.$\pi$C'est la raison pour laquelle les méthodes de mise en œuvre de la politique sont mises à jour.
 - **Credit assignment。**没有奖励-to-go 时,过去奖励 会贡献噪声──始终使用奖励-to-go──
 
 ## Utilisez-le
@@ -179,20 +187,20 @@ tags: [rl, policy-gradient, reinforce]
 
 1. **Easy。**Dans le 4×4 GridWorld 上, utilisez une politique de softmax linéaire 实现 REINFORCE──不使用基线, entraînez 1000 épisodes──绘制学习曲线;测量变量(retours de std)──
 2. **Medium。**添加运行平均基线――再训练――把样品效率 和差与香运行对比――基线 让收所需步骤 降低了多少?
-3. **Hard。**添加 bonus d' entropie `β · H(π)`◊ L'analyse`β ∈ {0, 0.01, 0.1, 1.0}`◊ dessiner le retour final et l'entropie politique.
+3. **Hard。**添加 bonus d' entropie $\beta \cdot H(\pi)$◊ L'analyse$\beta \in \lbrace 0, 0.01, 0.1, 1.0 \rbrace$◊ dessiner le retour final et l'entropie politique.
 
 ## Les termes clés
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Policy gradient | “直接训练 policy” | `∇J(θ) = E[G · ∇ log π_θ(a\|s)]`；由 log-derivative trick 推导而来。 |
+| Policy gradient | “直接训练 policy” | $\nabla J(\theta) = \mathbb{E}[G \cdot \nabla \log \pi_\theta(a \mid s)]$；由 log-derivative trick 推导而来。 |
 | REINFORCE | “最初的 PG algorithm” | Williams (1992)；Monte Carlo returns 乘以 log-policy Gradient。 |
-| Log-derivative trick | “Score function estimator” | `∇P(τ;θ) = P(τ;θ) · ∇ log P(τ;θ)`；让 expectations 的 gradients 变得 tractable。 |
-| Baseline | “Variance reduction” | 从 `G` 中减去的任意 `b(s)`；是 unbiased 的，因为 `E[b · ∇ log π] = 0`。 |
-| Reward-to-go | “只计算未来 returns” | 使用 `G_t^{from t}` 而不是完整的 `G_0`；正确且 variance 更低。 |
-| Entropy bonus | “鼓励探索” | `+β · H(π(·\|s))` 项防止 policy collapse。 |
+| Log-derivative trick | “Score function estimator” | $\nabla P(\tau;\theta) = P(\tau;\theta) \cdot \nabla \log P(\tau;\theta)$；让 expectations 的 gradients 变得 tractable。 |
+| Baseline | “Variance reduction” | 从 $G$ 中减去的任意 $b(s)$；是 unbiased 的，因为 $\mathbb{E}[b \cdot \nabla \log \pi] = 0$。 |
+| Reward-to-go | “只计算未来 returns” | 使用 $G_t^{\text{from } t}$ 而不是完整的 $G_0$；正确且 variance 更低。 |
+| Entropy bonus | “鼓励探索” | $+\beta \cdot H(\pi(\cdot \mid s))$ 项防止 policy collapse。 |
 | On-policy | “用你刚看到的数据训练” | Gradient expectation 是相对于当前 policy 的，不能直接复用旧数据。 |
-| Advantage | “比平均好多少” | `A(s, a) = G(s, a) - V(s)`；带 baseline 的 REINFORCE 所乘的带符号 quantity。 |
+| Advantage | “比平均好多少” | $A(s, a) = G(s, a) - V(s)$；带 baseline 的 REINFORCE 所乘的带符号 quantity。 |
 
 ## Pour en savoir plus
 

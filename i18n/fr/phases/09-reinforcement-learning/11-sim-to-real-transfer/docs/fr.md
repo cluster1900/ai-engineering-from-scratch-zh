@@ -31,7 +31,7 @@ Vous avez besoin d'une politique de distribution *sim-to-real* 具有强烈性�
 
 **Domain Adaptation。**Dans le sim, vous pouvez utiliser une petite quantité de données réelles en mode fine-tune.
 
-- **Real2Sim2Real：**Utilisez des déploiements réels.`f(s, a, z) - f_sim(s, a)`Il n'y a pas besoin de beaucoup de données réelles pour réduire la différence.
+- **Real2Sim2Real：**Utilisez des déploiements réels.$f(s, a, z) - f_{\text{sim}}(s, a)$Il n'y a pas besoin de beaucoup de données réelles pour réduire la différence.
 - **Observation adaptation：**训练一个政策, via un extracteur de fonctionnalités appris (par exemple GAN pixel-to-pixel) va être un véritable obs → sim-like obs.
 
 **Privileged learning / teacher-student。**Miki et coll. 2022(Animal quadruped) ・・・ dans la simulation entraînement une capacité d'accès aux informations privilégiées(truth friction du sol, altitude du sol, dérive IMU) de *professeur*。 re distiller un unique observation de sensors réels de *étudiant*。étudiant 学会从历史中推断特权特征,并在物理参数变下保持强──
@@ -129,7 +129,7 @@ tags: [rl, sim2real, robotics, domain-randomization]
 
 ## 练习
 
-1. **Easy。**Dans le monde de la grille à glissage fixe, on apprend à trainer un agent Q-apprentissage.
+1. **Easy。**Dans le monde de la grille à glissade fixe, on entraîne un agent Q-learning.$\text{slip} \in \lbrace 0.0, 0.1, 0.3, 0.5 \rbrace$Évaluation de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur
 2. **Medium。**train a DR Q-apprentissage agent,采样 `slip ~ Uniform[0, 0.3]`En effet, les résultats obtenus par la Commission ont été très satisfaisants.
 3. **Hard。** réaliser un programme de formation: à partir de 0,0 ), chaque fois que la politique atteint 90% de l'optimisation, élargir la gamme de DR, et atteindre 0,3 étapes de l'environnement total nécessaire, en comparaison avec la base fixe de DR.
 

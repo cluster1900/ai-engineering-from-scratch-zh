@@ -11,7 +11,7 @@
 
 L'apprentissage de Q-tabulaire  nécessite une mise en œuvre unique de la valeur Q-tabulaire  sur un tableau d'échecs  sur lequel il y a environ 1043 états  sur Atari 画面是 210×160×3 = 100 800 个特色── sur des milliers d'états  sur des milliards d'états  sur des milliards d'états 
 
-Le rétablissement est évident: avec le réseau neuronal.`Q(s, a; θ)` remplacement du tableau Q── mais après ces événements, il a apparemment fallu plusieurs décennies pour arriver ici── simple approximation des fonctions 搭配 Q-learning 会在 deadly triad 下发散: approximation des fonctions + démarrage + apprentissage hors politique──Mnih et al. (2013, 2015) 找出三个能稳定学习过程的工程技巧:
+Le rétablissement est évident: avec le réseau neuronal.$Q(s, a; \theta)$ remplacement du tableau Q── mais après ces événements, il a apparemment fallu plusieurs décennies pour arriver ici── simple approximation des fonctions 搭配 Q-learning 会在 deadly triad 下发散: approximation des fonctions + démarrage + apprentissage hors politique──Mnih et al. (2013, 2015) 找出三个能稳定学习过程的工程技巧:
 
 1. **Experience replay**让转变 去相关──
 2. **Target network**结 but de démarrage。
@@ -25,25 +25,29 @@ La DQN d'Atari est la première fois à utiliser un seul architecture et un seul
 
 **目标。**DQN dans la fonction Q-neural 上 minimiser la perte de TD en une étape:
 
-`L(θ) = E_{(s,a,r,s')~D} [ (r + γ max_{a'} Q(s', a'; θ^-) - Q(s, a; θ))² ]`
+```math
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim D}[ (r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta))^2 ]
+```
 
-`θ`= réseau en ligne, chaque étape à travers la descente graduelle 更新──`θ^-`= réseau cible, périodique`θ`Il y a une fois environ 10 000 pas.`D`= tampon de répétition des transitions passées
+$\theta$= réseau en ligne, chaque étape à travers la descente graduelle 更新──$\theta^-$= réseau cible, périodique$\theta$Il y a une fois environ 10 000 pas.$D$= tampon de répétition des transitions passées
 
 **三个技巧，按重要性排序：**
 
 **Experience replay。**Une contenue`~10⁶`Chaque étape de formation est un petit jeu de données. Cela brise le temps de la relation. Les cadres de formation sont presque identiques.
 
-**Target network。**Dans Bellman, les deux côtés utilisent le même réseau.`Q(·; θ)`, permettra au but de se déplacer à chaque mise à jour, c'est-à-dire de suivre son propre train de course.`Q(·; θ^-)`, ses poids 结──每隔 `C`步,复制 `θ → θ^-` Cela permettra de maintenir la régression dans des milliers de étapes de degré `θ^- ← τ θ + (1-τ) θ^-`(pour le DDPG, SAC) est un type de variation plus simple.
+**Target network。**Dans Bellman, les deux côtés utilisent le même réseau.$Q(\cdot; \theta)$, permettra au but de se déplacer à chaque mise à jour, c'est-à-dire de suivre son propre train de course.$Q(\cdot; \theta^-)$, ses poids 结──每隔 $C$步,复制 $\theta \to \theta^-$ Cela permettra de maintenir la régression dans des milliers de étapes de degré $\theta^- \leftarrow \tau \theta + (1-\tau) \theta^-$(pour le DDPG, SAC) est un type de variation plus simple.
 
-**Reward clipping。**La gamme de récompenses d'Atari est de 1 à 1000+`{-1, 0, +1}`On peut empêcher un seul jeu de domination Gradient. Quand la grandeur de la récompense est importante, c'est faux. Mais pour Atari, on peut, car seuls les symboles sont importants.
+**Reward clipping。**La gamme de récompenses d'Atari est de 1 à 1000+$\lbrace-1, 0, +1 \rbrace$On peut empêcher un seul jeu de domination Gradient. Quand la grandeur de la récompense est importante, c'est faux. Mais pour Atari, on peut, car seuls les symboles sont importants.
 
 **Double DQN。**Hasselt (2016) 修复了最大化偏见: utiliser le net en ligne 来*选择* action, utiliser le net cible 来* évaluer* l'action.
 
-`target = r + γ Q(s', argmax_{a'} Q(s', a'; θ); θ^-)`
+```math
+\text{target} = r + \gamma Q(s', \arg\max_{a'} Q(s', a'; \theta); \theta^-)
+```
 
 C'est un remplacement, l'effet est meilleur.
 
-**其他改进（Rainbow, 2017）：**Retour prioritaire(更多采样 transitions à forte déficience TD)`V(s)`Avec des réseaux bruyants, des résultats en n étapes, des démarches de distribution en plusieurs étapes, chaque élément entraîne une augmentation de plusieurs centaines de points, des bénéfices de plus en plus élevés.
+**其他改进（Rainbow, 2017）：**Retour prioritaire(更多采样 transitions à forte déficience TD)$V(s)$Avec des réseaux bruyants, des résultats en n étapes, des démarches de distribution en plusieurs étapes, chaque élément entraîne une augmentation de plusieurs centaines de points, des bénéfices de plus en plus élevés.
 
 
 ```figure
@@ -105,11 +109,11 @@ def train_step(online, target, batch, gamma, lr):
     apply_sgd(online, grads, lr / len(batch))
 ```
 
-Il a la forme de Q-learning dans le cours 04 et il y a seulement deux différences:`Q(·; θ)`Faire une répartition de l'indice, et non une table de référence;`Q(·; θ^-)`Il y a une autre.
+Il a la forme de Q-learning dans le cours 04 et il y a seulement deux différences:$Q(\cdot; \theta)$Faire une répartition de l'indice, et non une table de référence;$Q(\cdot; \theta^-)$Il y a une autre.
 
 ### 步骤 4: boucle de niveau extérieur
 
-Pour chaque épisode, sur la base`Q(·; θ)`执行 ε-greedy,把 transitions 放入缓冲,采样minibatch,执行一次 Gradient step,并周期性同步 `θ^- ← θ`模式如下:
+Pour chaque épisode, sur la base$Q(\cdot; \theta)$执行 ε-greedy,把 transitions 放入缓冲,采样minibatch,执行一次 Gradient step,并周期性同步 $\theta^- \leftarrow \theta$模式如下:
 
 ```python
 for episode in range(N):
@@ -182,7 +186,7 @@ tags: [rl, dqn, deep-rl]
 
 1. **Easy。**运行  référencement`code/main.py`◊ dessiner une courbe de retour par épisode―courir moyenne 超过 -10 需要多少个节目?
 2. **Medium。**禁用目标网络 (WEB 双边都使用网络)  Mètre entraînement instabilité: retour 会震荡还是发散?
-3. **Hard。**添加 Double DQN: utiliser le net en ligne 选择 `argmax a'`, utiliser le réseau cible 评估── comparer GridWorld 上训练 1,000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`À la réalité`V*(s_0)`Le parti pris.
+3. **Hard。**添加 Double DQN: utiliser le net en ligne 选择 `argmax a'`, utiliser le réseau cible 评估── comparer GridWorld 上训练 1,000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`À la réalité$V^{\ast}(s_0)$Le parti pris.
 
 ## 关键术语
 | Term | 人们怎么说 | 它实际是什么意思 |

@@ -21,31 +21,31 @@ Les applications de l'année 2026 comprennent: essaims de robots, routage de tra
 
 ![Four MARL regimes: indep, centralized critic, self-play, league](../assets/marl.svg)
 
-**Formalism: Markov Game.**MDP                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `S`、action conjointe `a = (a_1, …, a_n)`、transition `P(s' | s, a)`, ainsi que les récompenses de chaque agent `R_i(s, a, s')` Chaque agent `i`Dans sa propre politique .`π_i`Si les récompenses sont identiques, c'est ça.**fully cooperative**Si c'est une somme nulle, c'est une somme nulle.**adversarial**Si on est mélangé, alors c'est**general-sum**Il y a une autre.
+**Formalism: Markov Game.**MDP                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $S$、action conjointe $a = (a_1, \ldots, a_n)$、transition $P(s' \mid s, a)$, ainsi que les récompenses de chaque agent $R_i(s, a, s')$ Chaque agent $i$Dans sa propre politique .$\pi_i$Si les récompenses sont identiques, c'est ça.**fully cooperative**Si c'est une somme nulle, c'est une somme nulle.**adversarial**Si on est mélangé, alors c'est**general-sum**Il y a une autre.
 
 **核心挑战：**
 
-- **Non-stationarity.**De l' agent`i`À l'évidence,`P(s' | s, a_i)`取决于 `π_{-i}`Elle est en train de changer.
+- **Non-stationarity.**De l' agent$i$À l'évidence,$P(s' \mid s, a_i)$取决于 $\pi_{-i}$Elle est en train de changer.
 - **Credit assignment.**Dans la récompense partagée, quel agent l'a provoqué ?
 - **Exploration coordination.**Les agents doivent explorer des stratégies de complément mutuel, plutôt que de répéter la recherche du même État.
-- **Scalability.**Espace d'action commun`n`Le nombre de personnes qui ont été
+- **Scalability.**Espace d'action commun$n$Le nombre de personnes qui ont été
 - **Partial observability.**Chaque agent ne peut voir que ses propres observations; l'état mondial est caché.
 
 **四种主导范式：**
 
 **1. Independent Q-learning / independent PPO (IQL, IPPO).**Chaque agent apprend sa propre Q ou politique, met les autres agents dans son environnement.
 
-**2. Centralized training, decentralized execution (CTDE).**Les agents ont leur propre politique.`π_i`, il est basé sur l' observation locale .`o_i`Pour les conditions de la mise en œuvre, il s'agit d'une exécution décentralisée standard.`Q(s, a_1, …, a_n)`Dans le cadre de l'état mondial complet et de l'action commune, les conditions sont:
+**2. Centralized training, decentralized execution (CTDE).**Les agents ont leur propre politique.$\pi_i$, il est basé sur l' observation locale .$o_i$Pour les conditions de la mise en œuvre, il s'agit d'une exécution décentralisée standard.$Q(s, a_1, \ldots, a_n)$Dans le cadre de l'état mondial complet et de l'action commune, les conditions sont:
 - **MADDPG**(Lowe et coll. 2017): 带有每个代理 一个集中批评的DDPG──
-- **COMA**(Foerster et coll. 2017): base contrefactuelle 问`a'`Je ne peux pas me permettre de faire de la musique.
+- **COMA**(Foerster et coll. 2017): base contrefactuelle 问$a'$Je ne peux pas me permettre de faire de la musique.
 - **MAPPO**- Je suis là .**IPPO**avec critique partagée (Yu et coll. 2022): 带有集中价值函数的PPO──2026年合作社 MARL 中的主导方法──
-- **QMIX**(Rashid et coll. 2018): décomposition de la valeur`Q_tot(s, a) = f(Q_1(s, a_1), …, Q_n(s, a_n))`,并使用 mélange monotone。
+- **QMIX**(Rashid et coll. 2018): décomposition de la valeur$Q_{\text{tot}}(s, a) = f(Q_1(s, a_1), \ldots, Q_n(s, a_n))$,并使用 mélange monotone。
 
 **3. Self-play.**Les deux copies d'un agent se battent l'une contre l'autre. La politique de l'autre est la politique de l'AlphaGo / AlphaZero / MuZero.
 
 **4. League play.**L'expansion de l'auto-jeu vers des environnements généraux / adversitaires: conserver un ensemble de politiques du passé et du présent, de la ligue à l'échelle de l'adversaire, et de les cibler pour les entraîner.
 
-**Communication.**允许 les agents  envoyer des messages apprises `m_i` Dans les milieux coopératifs, Foerster et coll. (2016) ont montré que la communication interagente différenciable peut être mise en œuvre de manière continue.
+**Communication.**允许 les agents  envoyer des messages apprises $m_i$ Dans les milieux coopératifs, Foerster et coll. (2016) ont montré que la communication interagente différenciable peut être mise en œuvre de manière continue.
 
 
 ```figure
@@ -102,11 +102,11 @@ Il est efficace dans cette tâche, car les récompenses sont denses et en jeu. D
 
 ### 步骤3: mise à jour centralisée Q et valeur décomposée
 
-Pour les actions conjointes, utilisez un Q:`Q(s, a_1, a_2)` Avec une récompense partagée 更新──执行时通过边缘化 来分散:`π_i(s) = argmax_{a_i} max_{a_{-i}} Q(s, a_1, a_2)`Il utilise un espace d'action commun de classe index pour échanger une vision globale *correcte*
+Pour les actions conjointes, utilisez un Q:$Q(s, a_1, a_2)$ Avec une récompense partagée 更新──执行时通过边缘化 来分散:$\pi_i(s) = \arg\max_{a_i} \max_{a_{-i}} Q(s, a_1, a_2)$Il utilise un espace d'action commun de classe index pour échanger une vision globale *correcte*
 
 ### 步骤 4: 简单 jeu personnel
 
-Avec un agent, deux rôles.`K`个节目,把 A's weights 复制到 B。对称训练,进展一致── AlphaZero recipe 的缩写版──
+Avec un agent, deux rôles.$K$个节目,把 A's weights 复制到 B。对称训练,进展一致── AlphaZero recipe 的缩写版──
 
 ## 常见陷
 
@@ -168,11 +168,11 @@ tags: [rl, multi-agent, marl, self-play]
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Markov game | "Multi-agent MDP" | `(S, A_1, …, A_n, P, R_1, …, R_n)`；每个 agent 都有自己的 reward。 |
+| Markov game | "Multi-agent MDP" | $(S, A_1, \ldots, A_n, P, R_1, \ldots, R_n)$；每个 agent 都有自己的 reward。 |
 | CTDE | "Centralized training, decentralized execution" | Training time 使用 joint critic；每个 agent 的 policy 只使用 local obs。 |
 | IPPO | "Independent PPO" | 每个 agent 单独运行 PPO。简单 baseline；经常被低估。 |
 | MAPPO | "Multi-agent PPO" | 带有以 global state 为条件的 centralized value function 的 PPO。 |
-| QMIX | "Monotonic value decomposition" | `Q_tot = f_monotone(Q_1, …, Q_n)` 允许 decentralized argmax。 |
+| QMIX | "Monotonic value decomposition" | $Q_{\text{tot}} = f_{\text{monotone}}(Q_1, \ldots, Q_n)$ 允许 decentralized argmax。 |
 | COMA | "Counterfactual multi-agent" | Advantage = 我的 Q 减去对我的 action 做 marginalizing 后的 expected Q。 |
 | Self-play | "Agent vs past self" | 单个 agent，两个 roles；zero-sum games 的标准方法。 |
 | League play | "Population training" | 缓存过去的 policies，从 pool 中采样 opponents；处理 strategy cycles。 |

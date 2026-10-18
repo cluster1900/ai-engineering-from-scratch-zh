@@ -1,6 +1,6 @@
 # Acteur-critique  A2C et A3C
 
-> RENFORCE  Très bruyant。添加一个学习 `V̂(s)`Le critiste, en le retranchant, vous obtenez une attente similaire mais avec une variance beaucoup plus faible. C'est le critiste-acteur.
+> RENFORCE  Très bruyant。添加一个学习 $\hat{V}(s)$Le critiste, en le retranchant, vous obtenez une attente similaire mais avec une variance beaucoup plus faible. C'est le critiste-acteur.
 
 **Type:** Build
 **Languages:** Python
@@ -9,11 +9,13 @@
 
 ##  problématique
 
-La vanille peut travailler, mais sa variance est très mauvaise. Monte Carlo revient.`G_t`Il y a peut-être 10 fois plus de fluctuations entre les différents épisodes.`∇ log π`En moyenne, il sera produit un estimateur de degré, il faudra des milliers d'épisodes pour faire avancer la politique en utilisant beaucoup moins de mises à jour de DQN pour atteindre la distance.
+La vanille peut travailler, mais sa variance est très mauvaise. Monte Carlo revient.$G_t$Il y a peut-être 10 fois plus de fluctuations entre les différents épisodes.$\nabla \log \pi$En moyenne, il sera produit un estimateur de degré, il faudra des milliers d'épisodes pour faire avancer la politique en utilisant beaucoup moins de mises à jour de DQN pour atteindre la distance.
 
-La variance de l'utilisation des rendements bruts. Si vous déduisez une ligne de base `b(s_t)`: fonction de tout état, y compris la valeur apprise, l'attente 保持不变, tandis que la variance 会下降── la meilleure ligne de base traitable est `V̂(s_t)`Je suis en train de le faire.`∇ log π`La quantité est le *avantage*:
+La variance de l'utilisation des rendements bruts. Si vous déduisez une ligne de base $b(s_t)$: fonction de tout état, y compris la valeur apprise, l'attente 保持不变, tandis que la variance 会下降── la meilleure ligne de base traitable est $\hat{V}(s_t)$Je suis en train de le faire.$\nabla \log \pi$La quantité est le *avantage*:
 
-`A(s, a) = G - V̂(s)`
+```math
+A(s, a) = G - \hat{V}(s)
+```
 
 Si une action  produit un rendement plus élevé que la moyenne, c'est bon; si c'est moins moyen, c'est moins. Avec la RENFORCE de la critique apprise, c'est *acteur-critique*―critique  donner à un acteur un professeur de variance faible―c'est ainsi que chaque méthode de politique profonde de l'année 2015 après A2C、A3C、PPO、SAC、IMPALA)―
 
@@ -23,33 +25,39 @@ Si une action  produit un rendement plus élevé que la moyenne, c'est bon; si c
 
 **两个 networks，一个 shared loss：**
 
-- **Actor** `π_θ(a | s)`Le programme de formation est un programme de formation de la politique.
-- **Critic** `V_φ(s)`: estimation du rendement attendu de l'émission de l'État `(V_φ(s) - target)²`- Je suis en train de faire des exercices.
+- **Actor** $\pi_\theta(a \mid s)$Le programme de formation est un programme de formation de la politique.
+- **Critic** $V_\phi(s)$: estimation du rendement attendu de l'émission de l'État $(V_\phi(s) - \text{target})^2$- Je suis en train de faire des exercices.
 
 **Advantage。**两种标准形式:
 
-- *Avantage du MC*`A_t = G_t - V_φ(s_t)`Il est impartial, différent.
-- *Avantages du TD*`A_t = r_{t+1} + γ V_φ(s_{t+1}) - V_φ(s_t)`◊biased(utilisation `V_φ`),variance 低得多──也叫 *TD résiduel* `δ_t`Il y a une autre.
+- *Avantage du MC*$A_t = G_t - V_\phi(s_t)$Il est impartial, différent.
+- *Avantages du TD*$A_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)$◊biased(utilisation $V_\phi$),variance 低得多──也叫 *TD résiduel* $\delta_t$Il y a une autre.
 
 **n-step advantage。**Entre les deux, la valeur de l'intervalle:
 
-`A_t^{(n)} = r_{t+1} + γ r_{t+2} + … + γ^{n-1} r_{t+n} + γ^n V_φ(s_{t+n}) - V_φ(s_t)`
+```math
+A_t^{(n)} = r_{t+1} + \gamma r_{t+2} + \ldots + \gamma^{n-1} r_{t+n} + \gamma^n V_\phi(s_{t+n}) - V_\phi(s_t)
+```
 
-`n = 1`C'est une pure TD.`n = ∞`La plupart des applications sont utilisées par Atari.`n = 5`, en utilisant le PPO de MuJoCo `n = 2048`Il y a une autre.
+$n = 1$C'est une pure TD.$n = \infty$La plupart des applications sont utilisées par Atari.$n = 5$, en utilisant le PPO de MuJoCo $n = 2048$Il y a une autre.
 
 **Generalized Advantage Estimation (GAE)。**Schulman et coll. (2016)  proposent des moyennes pondérées exponentielles pour tous les avantages de n-étape:
 
-`A_t^{GAE} = Σ_{l=0}^{∞} (γλ)^l δ_{t+l}`
+```math
+A_t^{\text{GAE}} = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}
+```
 
-Parmi eux `λ ∈ [0, 1]`Il y a une autre.`λ = 0`Oui, la variance est faible, le biais est élevé.`λ = 1`C'est le cas de la société de l'information.`λ = 0.95`C'est la valeur par défaut de 2026: continue à régler jusqu'à ce que le dial de biais/variance atteigne la position que vous voulez.
+Parmi eux $\lambda \in [0, 1]$Il y a une autre.$\lambda = 0$Oui, la variance est faible, le biais est élevé.$\lambda = 1$C'est le cas de la société de l'information.$\lambda = 0.95$C'est la valeur par défaut de 2026: continue à régler jusqu'à ce que le dial de biais/variance atteigne la position que vous voulez.
 
-**A2C：synchronous advantage actor-critic。**Dans le`N`个 environnements parallèles 上收集 `T`Les étapes sont les plus simples et les plus évolutives.
+**A2C：synchronous advantage actor-critic。**Dans le$N$个 environnements parallèles 上收集 $T$Les étapes sont les plus simples et les plus évolutives.
 
-**A3C：asynchronous advantage actor-critic。**Mnih et coll. (2016)。initiation `N`个 worker threads, chaque thread 运行一个 env. 个工人在自己的 déploiement 上本地计算梯度, puis asynchronously 应用到共享参数服务器──不需要重复缓冲:workers 通过运行不同轨迹来去解调──A3C 证明你能在CPU上规模培训──到2026年,GPU-based A2C(batched parallel envs)占主导,因为GPUs 需要大批量──
+**A3C：asynchronous advantage actor-critic。**Mnih et coll. (2016)。initiation $N$个 worker threads, chaque thread 运行一个 env. 个工人在自己的 déploiement 上本地计算梯度, puis asynchronously 应用到共享参数服务器──不需要重复缓冲:workers 通过运行不同轨迹来去解调──A3C 证明你能在CPU上规模培训──到2026年,GPU-based A2C(batched parallel envs)占主导,因为GPUs 需要大批量──
 
 **Combined loss。**
 
-`L(θ, φ) = -E[ A_t · log π_θ(a_t | s_t) ]  +  c_v · E[(V_φ(s_t) - G_t)²]  -  c_e · E[H(π_θ(·|s_t))]`
+```math
+L(\theta, \phi) = -\mathbb{E}[ A_t \cdot \log \pi_\theta(a_t \mid s_t) ] + c_v \cdot \mathbb{E}[(V_\phi(s_t) - G_t)^2] - c_e \cdot \mathbb{E}[H(\pi_\theta(\cdot \mid s_t))]
+```
 
 3 éléments: perte de la politique-gradient, régression de la valeur, bonus entropie`c_v ~ 0.5`- Je suis là.`c_e ~ 0.01`C'est un point de départ canonique.
 
@@ -62,7 +70,7 @@ actor-critic
 
 ### Étape 1: un critique
 
-Le critique linéaire `V_φ(s) = w · features(s)`Utilisation de l' émission 更新:
+Le critique linéaire $V_\phi(s) = w \cdot \text{features}(s)$Utilisation de l' émission 更新:
 
 ```python
 def critic_update(w, x, target, lr):
@@ -77,7 +85,7 @@ Dans l'environnement tablaire, les critiques se sont retrouvés dans plusieurs c
 
 ### Étape 2: avantage de n-étape
 
-给定长度为 `T`Le déploiement et le démarrage final `V(s_T)`- Le numéro de la liste:
+给定长度为 $T$Le déploiement et le démarrage final $V(s_T)$- Le numéro de la liste:
 
 ```python
 def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
@@ -92,7 +100,7 @@ def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
     return advantages, returns
 ```
 
-`returns`C'est une cible critique.`advantages`Oui, c'est le cas.`∇ log π`Le contenu de la page
+`returns`C'est une cible critique.`advantages`Oui, c'est le cas.$\nabla \log \pi$Le contenu de la page
 
 ### Étape 3: mise à jour combinée
 
@@ -115,8 +123,8 @@ Sur la politique, chaque mise à jour, un déploiement, acteur et critique utili
 
 ### Étape 4: parallélisation (A3C contre A2C)
 
-- **A3C：** lancement `N`个线程──每个线程──运行自己的 env 和自己的前进通行──周期性地把 Gradient updates 推送到共享主──master 上不加锁:races 没关系,它们只是增加噪声──
-- **A2C：**Dans un processus unique`N`个 env instances, mettre des observations en pile 成 `[N, obs_dim]`Les résultats de l'enquête ont été obtenus en 2026 par le gouvernement de l'État de l'Union européenne.
+- **A3C：** lancement $N$个线程──每个线程──运行自己的 env 和自己的前进通行──周期性地把 Gradient updates 推送到共享主──master 上不加锁:races 没关系,它们只是增加噪声──
+- **A2C：**Dans un processus unique$N$个 env instances, mettre des observations en pile 成 `[N, obs_dim]`Les résultats de l'enquête ont été obtenus en 2026 par le gouvernement de l'État de l'Union européenne.
 
 Notre code de jouets est simple, il suffit de trois lignes de numpy.
 
@@ -126,7 +134,7 @@ Notre code de jouets est simple, il suffit de trois lignes de numpy.
 - **Advantage normalization。**Dans chaque lot, les avantages se normalisent à zéro moyenne/unité-std.
 - **Shared trunk。**Pour les entrées d'image, pour acteur et critique Utilisez l'extracteur de fonctionnalités partagées.
 - **On-policy contract。**A2C pour les données précises réutiliser une mise à jour.
-- **Entropy collapse。**Il n' y a pas de`c_e > 0`La politique sera mise à jour à plusieurs centaines de fois et sera plus déterministe.
+- **Entropy collapse。**Il n' y a pas de$c_e > 0$La politique sera mise à jour à plusieurs centaines de fois et sera plus déterministe.
 - **Reward scale。**Les magnitudes d'avantage dépendent de l'échelle de récompense. Normalizer les récompenses, par exemple en dehors de la mise en marche, afin de maintenir une cohérence entre les différentes tâches.
 
 ## Utilisez-le
@@ -171,22 +179,22 @@ tags: [rl, actor-critic, gae]
 
 ## Exercices
 
-1. **Easy。**Dans le 4×4 GridWorld 上 utiliser MC avantage(`G_t - V(s_t)`) entraînement de l'efficacité de l'échantillon de l'acteur-critique.
-2. **Medium。**切换到 TD-résiduel avantage`r + γ V(s') - V(s)`)― La variance des lots de mesure des avantages― elle a diminué combien?
-3. **Hard。**实现 GAE(λ)。扫描 `λ ∈ {0, 0.5, 0.9, 0.95, 1.0}`◊ dessiner le retour final par rapport à l'efficacité de l'échantillon.
+1. **Easy。**Dans le 4x4 GridWorld, utilisez l'avantage MC$(G_t - V(s_t))$訓練 actor-critic──与 06 中 Lesson 06 中 RÉINFORCE-with-running-median-baseline
+2. **Medium。**切换到 TD-résiduel avantage$(r + \gamma V(s') - V(s))$◊ Mesurer la variance des lots d'avantage.
+3. **Hard。**实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$◊ dessiner le retour final par rapport à l'efficacité de l'échantillon.
 
 ## Les termes clés
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Actor | “Policy net” | `π_θ(a\|s)`，由 policy gradient 更新。 |
-| Critic | “Value net” | `V_φ(s)`，通过对 returns / TD targets 做 MSE regression 更新。 |
-| Advantage | “比平均好多少” | `A(s, a) = Q(s, a) - V(s)` 或它的 estimators。`∇ log π` 的 multiplier。 |
-| TD residual | “δ” | `δ_t = r + γ V(s') - V(s)`；one-step advantage estimate。 |
-| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 `λ` parameterized。 |
+| Actor | “Policy net” | $\pi_\theta(a \mid s)$，由 policy gradient 更新。 |
+| Critic | “Value net” | $V_\phi(s)$，通过对 returns / TD targets 做 MSE regression 更新。 |
+| Advantage | “比平均好多少” | $A(s, a) = Q(s, a) - V(s)$ 或它的 estimators。$\nabla \log \pi$ 的 multiplier。 |
+| TD residual | “δ” | $\delta_t = r + \gamma V(s') - V(s)$；one-step advantage estimate。 |
+| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 $\lambda$ parameterized。 |
 | A2C | “Synchronous actor-critic” | 跨 envs batching；每个 rollout 做一次 Gradient step。 |
 | A3C | “Async actor-critic” | Worker threads 把 gradients 推送到 shared param server。Original paper；2026 年较少见。 |
-| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 `γ^n V(s_{t+n})` 来闭合求和。 |
+| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 $\gamma^n V(s_{t+n})$ 来闭合求和。 |
 
 ## Pour en savoir plus
 
