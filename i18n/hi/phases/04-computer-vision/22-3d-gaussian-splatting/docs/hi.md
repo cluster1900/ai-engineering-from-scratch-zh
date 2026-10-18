@@ -61,12 +61,13 @@ flowchart LR
 
  स्थित विश्व `mu`、 3D सह-परिवर्तन `Sigma`3 डी Gaussian, स्क्रीन स्थिति के लिए एक तस्वीर `mu'`、 2D सह-परिवर्तन `Sigma'`का 2 डी गौशियन:
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 2D Gaussian के पदचिह्न एक दीर्घवृत्त है, उसके轴是`Sigma'`इस दीर्घवृत्त के प्रत्येक पिक्सेल को इस गौशियन के योगदान का अधिग्रहण होता है, जिसका वजन `exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`
@@ -75,12 +76,13 @@ J = Jacobian of the perspective projection at mu'
 
 对于一个像素,覆盖它的高ussians会按前向排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排排排排排排排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 यह के साथ**NeRF 的 volumetric render 是同一个方程**, केवल इस तथ्य के बावजूद कि यह एक स्पष्ट दुर्लभ गौसीन संच पर गणना करता है, न कि कि एक किरण के ऊपर घने नमूनों पर गणना करता है।
@@ -97,7 +99,7 @@ c_i = eval_SH(SH_i, view_direction)    view-dependent colour
 - **Split**: जब किसी बड़े पैमाने पर गौसी का ग्रेडिएंट 很高时, इसे दो छोटे गौसी में तोड़ देगा।
 - **Prune**: हटाने अस्पष्टता 低于值的 गौशियन──它们没有贡献──
 
-घनत्व प्रत्येक N बार पुनरावृत्ति 运行一次── एक परिदृश्य आमतौर पर लगभग 100k 个初始高西人 (SfM बिंदुओं द्वारा प्रारम्भिक) से प्रशिक्षण के समाप्त होने तक 1-5M तक बढ़ता है──
+घनत्व प्रत्येक$N$अगला पुनरावृत्ति 运行一次── एक परिदृश्य आमतौर पर लगभग 100k 个初始高西人 (SfM बिंदुओं से प्रारम्भिक) से प्रशिक्षण समाप्त होने के 1-5M तक बढ़ता है──
 
 ### उपयोग एक वाक्य में गोलाकार हार्मोनिक्स को समझने के लिए
 

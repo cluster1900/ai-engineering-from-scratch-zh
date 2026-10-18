@@ -83,11 +83,13 @@ Marigold(Ke et al., CVPR 2024)将深度估计 重新表述为条件图像-to-ima
 
 गहराई में ले जाएगा`d` के पिक्सेल `(u, v)`提升为相机坐标 中的3D点 `(X, Y, Z)`:
 
-```
-fx, fy, cx, cy = camera intrinsics
-X = (u - cx) * d / fx
-Y = (v - cy) * d / fy
-Z = d
+```math
+\begin{aligned}
+f_x, f_y, c_x, c_y &= \text{相机内参} \\
+X &= (u - c_x) \cdot d / f_x \\
+Y &= (v - c_y) \cdot d / f_y \\
+Z &= d
+\end{aligned}
 ```
 
 अंतर्निहित EXIF मेटाडेटा, कैलिब्रेशन पैटर्न, या मोनोकुलर अंतर्निहित अनुमानक से प्राप्त होते हैं।
@@ -247,7 +249,7 @@ depth_np = np.array(out["depth"])
 | Monocular depth | "Single-image depth" | 从一帧 RGB 进行 depth estimation，不使用 stereo 或 LiDAR |
 | Relative depth | "Ordered depth" | 没有真实世界单位的有序 z-values |
 | Metric depth | "Absolute distance" | 以 metres 表示的 depth；需要 calibration 或使用 metric supervision 训练的 model |
-| AbsRel | "Absolute relative error" | |d_pred - d_gt| / d_gt 的平均值；标准 depth metric |
+| AbsRel | "Absolute relative error" | $\lvert d_{\text{pred}} - d_{\text{gt}} \rvert / d_{\text{gt}}$ 的平均值；标准 depth metric |
 | Delta accuracy | "delta < 1.25" | prediction 位于 ground truth 25% 以内的 pixels 占比 |
 | Pinhole camera | "fx, fy, cx, cy" | 用于将 (u, v, d) 提升到 (X, Y, Z) 的 camera model |
 | DPT | "Dense Prediction Transformer" | 位于冻结 ViT encoders 之上的 conv-based decoder，用于 depth |

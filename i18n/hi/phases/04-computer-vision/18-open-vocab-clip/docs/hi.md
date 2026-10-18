@@ -42,7 +42,7 @@ flowchart LR
 
 ###  लक्ष्य
 
-给定一个包含 N 个 (छवि, कैप्शन) जोड़े का बैच,构建一个NxN समानता मैट्रिक्स──训练两个编码器,使 diagonal(matching pairs) के उच्च समानता, जबकि ऑफ-diagonals(non-matching) के साथ कम समानता──
+给定一个包含 $N$个 (छवि, कैप्शन) जोड़े का बैच,构建一个 $N \times N$समानता मैट्रिक्स── प्रशिक्षण दो एन्कोडर, make diagonal(matching pairs) के पास उच्च समानता है, जबकि off-diagonals(non-matching) के पास कम समानता है──
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ loss = (loss_i2t + loss_t2i) / 2
 
 सिगलिप ((झाई एट अल., 2023) प्रति जोड़ी सिगमोइड के साथ  softmax को बदल दिया गयाः
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 प्रति जोड़ी हानि  हटा दिया CLIP आवश्यक बैच स्तर मानकीकरण──SigLIP छोटे बैच आकारों में नीचे प्रशिक्षण बेहतर है, और समान डेटा मात्रा में नीचे मेल या CLIP से अधिक है──

@@ -57,7 +57,7 @@ Resulting tokens:      (T / P_t) * (H / P_h) * (W / P_w) tokens
 
 स्थिति कोडिंग 3D है: प्रत्येक के लिए `(t, h, w)`坐标使用 घूर्णन या सीखा एम्बेडिंग──ध्यान हो सकता हैः
 
-- **Full joint** सभी टोकन सभी टोकन पर उपस्थित होते हैं  N 个 टोकन के लिए O  N ^ 2) 对长视频来说代价过高──
+- **Full joint** सभी टोकन सभी टोकन में शामिल हों $N$个 टोकन 是 $O(N^2)$对长视频来说价格过高
 - **Divided** 交替执行 temporal attention(एक ही स्थानिक स्थिति、跨时间:`(H*W) * T^2`) और स्थानिक ध्यान(एक ही समय की गति、跨空间:`T * (H*W)^2`)―टाइमस्फॉमर तथा अधिकांश वीडियो डायट इस तरह से उपयोग करते हैं―
 - **Window** में `(t, h, w)`中使用局部窗户──Video Swin इस तरह से प्रयोग करें──
 
@@ -210,7 +210,7 @@ class DividedAttentionBlock(nn.Module):
         return xs
 ```
 
-समय ध्यान प्रत्येक स्थानिक स्थिति में 内跨时间 attend;space attention 在每一内跨位置 attend── दो O(T^2 + (HW) ^2) 操作 के साथ, एक O((THW) ^2) 操作 के साथ, यह TimeSformer 和每个现代 वीडियो DiT का केंद्र है──
+समय ध्यान प्रत्येक स्थानिक स्थिति में内跨时间 उपस्थित; अंतरिक्ष ध्यान प्रत्येक 内跨位置 उपस्थित。用两个 $O(T^2 + (HW)^2)$操作,替代一个 $O((THW)^2)$操作── यह टाइमस्फॉर्मर व प्रत्येक आधुनिक वीडियो डीटी का केंद्र है──
 
 ### 步骤 4: 组合一个小视频 DiT
 
@@ -279,7 +279,7 @@ print(f"output {tuple(out.shape)}")
 | World model | “Learned simulator” | 一个在给定 state 和 action 时预测未来 observations 的模型 |
 | Video DiT | “Spacetime transformer” | 使用 3D patchification 和 divided attention 的 Diffusion transformer |
 | Latent action | “Inferred control” | 从帧对中推断出的离散或连续 action latent；用于条件化 next-frame generation |
-| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 O(N^2) 保持可控 |
+| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 $O(N^2)$ 保持可控 |
 | Object permanence | “Things stay real” | video models 必须学会的场景属性；在食物、玻璃器皿上的经典失败模式 |
 | FVD | “Fréchet Video Distance” | FID 的视频等价物；主要 visual quality metric |
 | Inverse dynamics model | “Observations to actions” | 给定 `(state, next state)`，输出连接二者的 action；闭合 robotics loop |

@@ -74,11 +74,13 @@ At each grid cell, every anchor emits (tx, ty, tw, th, obj, c_1, ..., c_C).
 
 मूल `tx, ty, tw, th`यह बॉक्स निर्देशांक नहीं हैं; वे पूर्व-परिवर्तन के लिए आवश्यक हैं।
 
-```
-centre x  = (sigmoid(tx) + cell_x) * stride
-centre y  = (sigmoid(ty) + cell_y) * stride
-width     = anchor_w * exp(tw)
-height    = anchor_h * exp(th)
+```math
+\begin{aligned}
+\text{中心 } x &= (\sigma(t_x) + \text{cell}_x) \cdot \text{stride} \\
+\text{中心 } y &= (\sigma(t_y) + \text{cell}_y) \cdot \text{stride} \\
+\text{宽度} &= \text{anchor}_w \cdot \exp(t_w) \\
+\text{高度} &= \text{anchor}_h \cdot \exp(t_h)
+\end{aligned}
 ```
 
 `sigmoid`केंद्र की ओर मुड़कर सेल में ही सीमित करें`exp` चौड़ाई को एंकर से मुक्त रूप से संकुचित किया जा सकता है और कोई भी परिवर्तन नहीं होता है।`stride`इसे ग्रिड निर्देशांक को संकुचित करें पिक्सल में वापस करें. यह डिकोडिंग v2 से लेकर अब तक हर YOLO संस्करण में एक ही है.
@@ -87,11 +89,11 @@ height    = anchor_h * exp(th)
 
 डिटेक्शन में दो बॉक्स तुलनात्मकता के सामान्य माप का माप करेंः
 
-```
-IoU(A, B) = area(A intersect B) / area(A union B)
+```math
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
-IoU = 1 पूरी तरह से समान है; IoU = 0 कोई ओवरलैप नहीं है; भविष्यवाणी और मूल सत्य बॉक्स के बीच IoU किसी भविष्यवाणी का निर्णय लेता है या नहीं, सही सकारात्मक गणना करना है।
+$\mathrm{IoU} = 1$पूरी तरह से समान;$\mathrm{IoU} = 0$कोई भार नहीं दिखाया गया है, भविष्यवाणी और मूल सत्य बॉक्स के बीच एक भविष्यवाणी का निर्णय लेना है या नहीं, यह सही सकारात्मक है।$\mathrm{IoU} \ge 0.5$)― दो भविष्यवाणियों के बीच IoU NMS उपयोग करने के लिए वजन के आधार पर है।
 
 ### अधिकतम से बाहर दबाए जाने
 
@@ -113,11 +115,13 @@ NMS(boxes, scores, iou_threshold):
 
 यूलो हानि तीन भार भारोत्तोलन हानि है
 
-```
-L = lambda_coord * L_box(pred, target, where obj=1)
-  + lambda_obj   * L_obj(pred, 1,     where obj=1)
-  + lambda_noobj * L_obj(pred, 0,     where obj=0)
-  + lambda_cls   * L_cls(pred, target, where obj=1)
+```math
+\begin{aligned}
+L = {} & \lambda_{\text{coord}} \cdot L_{\text{box}}(\text{pred}, \text{target}, \text{where obj}=1) \\
++ {} & \lambda_{\text{obj}} \cdot L_{\text{obj}}(\text{pred}, 1, \text{where obj}=1) \\
++ {} & \lambda_{\text{noobj}} \cdot L_{\text{obj}}(\text{pred}, 0, \text{where obj}=0) \\
++ {} & \lambda_{\text{cls}} \cdot L_{\text{cls}}(\text{pred}, \text{target}, \text{where obj}=1)
+\end{aligned}
 ```
 
 只有包含对象的细胞 才会贡献框回归和分类损失──不含对象的细胞 只有贡献对象性损失──教模型保持沉默)──`lambda_noobj`सामान्यतः कम से कम 0.5 की तुलना में, क्योंकि अधिकांश कोशिकाएं खाली हैं, अन्यथा कुल हानि का नेतृत्व करेगी।

@@ -83,8 +83,8 @@ RoIAlign 能在 COCO上免费提升 3-4 个点的 मुखौटा AP──现
 
 मास्क आर सीएनएन के पास चार प्रकार के नुकसान हैं इसके अलावाः
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`,`L_rpn_box` RPN प्रस्तावों की वस्तुनिष्ठता + बॉक्स रिग्रेशन。

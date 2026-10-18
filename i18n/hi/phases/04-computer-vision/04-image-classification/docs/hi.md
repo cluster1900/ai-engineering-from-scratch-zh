@@ -52,18 +52,20 @@ flowchart LR
 
 वर्गीकरणकर्ता 会为每张图像产生 `C`个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits. 个数字, तथाकथित logits.
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 क्रॉस-एंट्रोपी 衡量正确 वर्ग का नकारात्मक लॉग संभावनाः
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-सही तरफ प्रारूप है संख्यात्मक स्थिर प्रारूप (log-sum-exp)`nn.CrossEntropyLoss`एक Op में एक Op में एक Fusion softmax + NLL,并 सीधे कच्चे लॉजिट्स प्राप्त करते हैं── स्वयं पहले softmax 几乎总是 bug, चूंकि आप log(softmax(softmax(z)) की गणना करते हैं, यह एक अर्थहीन मात्रा है──
+सही तरफ प्रारूप है संख्यात्मक स्थिर प्रारूप (log-sum-exp)`nn.CrossEntropyLoss`एक Op में मिलावट softmax + NLL,并直接 प्राप्त कच्चे लॉजिट्स── स्वयं पहले softmax  लगभग हमेशा बग है, क्योंकि आप गणना कर रहे हैं$\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$, यह एक अर्थहीन मात्रा है.
 
 ### क्यों वृद्धि प्रभावी है
 
@@ -105,7 +107,7 @@ Cutmix:
 संकलित सटीकता असंतुलन को छिपाने के लिए होगा एक 90-10 के द्विआधारी वर्गीकरण यदि हमेशा बहुमत वर्ग भविष्यवाणी, भी प्राप्त कर सकते हैं 90%।
 
 - **Per-class accuracy** प्रत्येक वर्ग एक अंक; शीघ्र ही प्रदर्शन में कमी के वर्गों को उजागर करना
-- **Confusion matrix** C x C ग्रिड, जिसमें पंक्ति i col j = true class i 被预测为 class j का संख्या;आयामी 是正确预测,off-diagonals 才是模型 问题所在──
+- **Confusion matrix** $C \times C$ग्रिड, उनमें से पंक्ति $i$क .$j$= वास्तविक वर्ग $i$被预测为 वर्ग $j$才是模型 问题所在──
 - **Top-1 / Top-5** सही वर्ग या नहीं शीर्ष 1 या शीर्ष 5 भविष्यवाणियों में;Top-5 ImageNet  महत्वपूर्ण है, क्योंकि नोर्विच टेरियर और नोर्फ़ोक्स टेरियर जैसे वर्ग                                                                                                                                                                                                                                      
 - **Calibration (ECE)** 0.8 आत्मविश्वास का पूर्वानुमान क्या वास्तव में 80% समय सही है? आधुनिक नेटवर्क 系统性地 अति-विश्वास; तापमान स्केलिंग या लेबल चिकनाई का उपयोग कर सकते हैं 修正──
 
