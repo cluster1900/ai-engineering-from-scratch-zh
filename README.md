@@ -1099,7 +1099,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh
 
 `skills` 会写入安装期间选择的宿主与作用域，例如 `.claude/skills/`、`.cursor/skills/`、`.codex/skills/` 或其他受支持的 skills 目录。请确认所选宿主能检索到该目标路径。
 
-**课程产物（The lesson artifacts）。** The repo ships 399 skills and 99 prompts（本 repo 提供了 399 个 skill 和 99 个 prompt，位于 `phases/**/outputs/`）；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义布局。需要先克隆仓库。支持按标签过滤、dry-run 预览以及按 agent 布局：
+**课程产物（The lesson artifacts）。** The repo ships 405 skills and 99 prompts（本 repo 提供了 405 个 skill 和 99 个 prompt，位于 `phases/**/outputs/`）；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义布局。需要先克隆仓库。支持按标签过滤、dry-run 预览以及按 agent 布局：
 
 ```bash
 python3 scripts/install_skills.py <target>                                 # 所有 skill，默认 --layout skills（嵌套目录）
