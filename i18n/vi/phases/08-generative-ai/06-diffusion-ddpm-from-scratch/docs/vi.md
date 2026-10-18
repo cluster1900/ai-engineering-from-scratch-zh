@@ -9,47 +9,47 @@
 
 ## Vấn đề
 
-Anh muốn một cái để sử dụng.`p_data(x)`Các mẫu gàn sẽ chơi một trò chơi tối thiểu thường xuyên phát tán. Các VAE sẽ được phát hiện từ máy giải mã Gaussian.`log p(x)`Các mô hình có khả năng tương thích của SOTA.
+Anh muốn một cái để sử dụng.$p_{\text{data}}(x)$Các mẫu gàn sẽ chơi một trò chơi tối thiểu thường xuyên phát tán. Các VAE sẽ được phát hiện từ máy giải mã Gaussian.$\log p(x)$Các mô hình có khả năng tương thích của SOTA.
 
-Sohl-Dickstein et al. (pp. 2015) đã đưa ra câu trả lời lý thuyết: định nghĩa một chuỗi Markov dần dần gia nhập tiếng ồn Gaussian `q(x_t | x_{t-1})`,并训练 một chuỗi ngược `p_θ(x_{t-1} | x_t)`Để chỉ trích: Ho, Jain, Abel, 2020) đã chứng minh Loss có thể đơn giản hóa thành một dòng   dự đoán tiếng   并 sắp xếp toán học. Năm 2020 nó vẫn là một sự tò mò. Năm 2021 nó đã tạo ra các mẫu hiện đại. Năm 2022 nó đã trở thành Stable Diffusion. Năm 2026 nó là chất lượng cơ bản.
+Sohl-Dickstein et al. (pp. 2015) đã đưa ra câu trả lời lý thuyết: định nghĩa một chuỗi Markov dần dần gia nhập tiếng ồn Gaussian $q(x_t \mid x_{t-1})$,并训练 một chuỗi ngược $p_\theta(x_{t-1} \mid x_t)$Để chỉ trích: Ho, Jain, Abel, 2020) đã chứng minh Loss có thể đơn giản hóa thành một dòng   dự đoán tiếng   并 sắp xếp toán học. Năm 2020 nó vẫn là một sự tò mò. Năm 2021 nó đã tạo ra các mẫu hiện đại. Năm 2022 nó đã trở thành Stable Diffusion. Năm 2026 nó là chất lượng cơ bản.
 
 ## Khái niệm
 
 ![DDPM: forward noise, reverse denoise](../assets/ddpm.svg)
 
-**Forward process `q`.**Trong `T`个小步骤中加入 Gaussian noise──Tập form  数学可处理的原因  是累积步骤 仍然是Gaussian:
+**Forward process $q$.**Trong $T$个小步骤中加入 Gaussian noise──Tập form  数学可处理的原因  是累积步骤 仍然是Gaussian:
 
-```
-q(x_t | x_0) = N( sqrt(α̅_t) · x_0,  (1 - α̅_t) · I )
-```
-
-Trong số đó `α̅_t = ∏_{s=1..t} (1 - β_s)`, đối phó với một `β_t`Thời gian:`β_t`Trong T=1000 bước trong từ 1e-4 đến 0.02 线性变化,`x_T`会近似为`N(0, I)`
-
-**Reverse process `p_θ`.**Học một mạng lưới thần kinh `ε_θ(x_t, t)`,预测被加入的噪音──给定 `x_t`,按下式 biểu thị:
-
-```
-x_{t-1} = (1 / sqrt(α_t)) · ( x_t - (β_t / sqrt(1 - α̅_t)) · ε_θ(x_t, t) )  +  σ_t · z
+```math
+q(x_t \mid x_0) = \mathcal{N}\left( \sqrt{\bar{\alpha}_t} \cdot x_0, (1 - \bar{\alpha}_t) \cdot I \right)
 ```
 
-Trong số đó `σ_t`Đúng vậy.`sqrt(β_t)`, hoặc là sự khác biệt học... biểu hiện này rất xấu, nhưng nó chỉ là một số  trong một số lại`q(x_{t-1} | x_t, x_0)`Trong trường hợp tìm giải pháp`x_{t-1}`,并 sử dụng ước tính dự đoán tiếng 替换 `x_0`
+Trong số đó $\bar\alpha_t = \prod_{s=1}^{t} (1 - \beta_s)$, đối phó với một $\beta_t$Thời gian:$\beta_t$Trong $T=1000$bước trong từ 1e-4 đến 0.02 线性变化,$x_T$会近似为$\mathcal{N}(0, I)$
+
+**Reverse process $p_\theta$.**Học một mạng lưới thần kinh $\epsilon_\theta(x_t, t)$,预测被加入的噪音──给定 $x_t$,按下式 biểu thị:
+
+```math
+x_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \left( x_t - \frac{\beta_t}{\sqrt{1 - \bar{\alpha}_t}} \cdot \epsilon_\theta(x_t, t) \right) + \sigma_t \cdot z
+```
+
+Trong số đó $\sigma_t$Đúng vậy.$\sqrt{\beta_t}$, hoặc là sự khác biệt học... biểu hiện này rất xấu, nhưng nó chỉ là một số  trong một số lại$q(x_{t-1} \mid x_t, x_0)$Trong trường hợp tìm giải pháp$x_{t-1}$,并 sử dụng ước tính dự đoán tiếng 替换 $x_0$
 
 **Training loss.**
 
-```
-L_simple = E_{x_0, t, ε} [ || ε - ε_θ( sqrt(α̅_t) · x_0 + sqrt(1 - α̅_t) · ε,  t ) ||² ]
+```math
+L_{\text{simple}} = \mathbb{E}_{x_0, t, \epsilon} \left[ \left\lVert \epsilon - \epsilon_\theta\left( \sqrt{\bar{\alpha}_t} \cdot x_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \epsilon, t \right) \right\rVert^2 \right]
 ```
 
-Từ dữ liệu trong mẫu`x_0`, chọn một `t`, mẫu `ε ~ N(0, I)`, qua hình thức đóng một lần tính toán `x_t`,并对噪音做回归──一个 Loss,没有 minimax,没有 KL,没有重设技巧──
+Từ dữ liệu trong mẫu$x_0$, chọn một $t$, mẫu $\epsilon \sim \mathcal{N}(0, I)$, qua hình thức đóng một lần tính toán $x_t$,并对噪音做回归──一个 Loss,没有 minimax,没有 KL,没有重设技巧──
 
-**Sampling.**Từ `x_T ~ N(0, I)`开始──从 `t = T`Đến`1`代 bước ngược.
+**Sampling.**Từ $x_T \sim \mathcal{N}(0, I)$开始──从 $t = T$Đến 1 bước ngược lại.
 
 ## Tại sao nó hoạt động
 
 3 trực giác:
 
-1. **Denoising is easy; generating is hard.**Trong `t=T`, dữ liệu là tiếng ồn  mạng phải giải quyết là một vấn đề tầm thường.`t=0`,net chỉ cần xóa vài pixel trong giữa.`t`, vấn đề rất khó khăn, nhưng từ mỗi mức tiếng ồn sẽ có được nhiều gradient trong cùng một nhóm trọng lượng.
+1. **Denoising is easy; generating is hard.**Trong $t=T$, dữ liệu là tiếng ồn  mạng phải giải quyết là một vấn đề tầm thường.$t=0$,net chỉ cần xóa vài pixel trong giữa.$t$, vấn đề rất khó khăn, nhưng từ mỗi mức tiếng ồn sẽ có được nhiều gradient trong cùng một nhóm trọng lượng.
 
-2. **Score matching in disguise.**Vincent(2011) chứng minh, dự đoán tiếng ồn等价格估计 `∇_x log q(x_t | x_0)`,也就是 *score*──逆 SDE Sử dụng điểm này 沿着密度梯度 上行  一次被引导的随机走,走向高概率地区──
+2. **Score matching in disguise.**Vincent(2011) chứng minh, dự đoán tiếng ồn等价格估计 $\nabla_x \log q(x_t \mid x_0)$,也就是 *score*──逆 SDE Sử dụng điểm này 沿着密度梯度 上行  一次被引导的随机走,走向高概率地区──
 
 3. **The ELBO reduces to simple MSE.**完整变化下界在每步都有一个 KL thuật ngữ──使用 DDPM的参数化,这些 KL thuật ngữ sẽ được đơn giản hóa为带特定系数的噪音预测 MSE;Ho bỏ qua các系数(称其为 简单损失),质量反而 *提高* 了──
 
@@ -60,7 +60,7 @@ diffusion-denoise
 
 ## Hãy xây dựng nó
 
-`code/main.py`实现 một DDPM 1-D──Data là hỗn hợp hai chế độ──net là một MLP kiểu nhỏ,接收`(x_t, t)`并输出 dự đoán tiếng ồn.                                                                                                                                                                                                                                                           
+`code/main.py`实现 một DDPM 1-D──Data là hỗn hợp hai chế độ──net là một MLP kiểu nhỏ,接收$(x_t, t)$并输出 dự đoán tiếng ồn.                                                                                                                                                                                                                                                           
 
 ### Bước 1: lịch trình tiến hành (mẫu đóng)
 
@@ -115,17 +115,17 @@ def sample(model, alpha_bars, T, rng):
 
 net 需要知道它 đang chỉ định 哪个时间步骤──两个标准选项:
 
-- **Sinusoidal embedding.**类似 Transformer định vị mã hóa。`embed(t) = [sin(t/ω_0), cos(t/ω_0), sin(t/ω_1), ...]`❖ Chuyển vào MLP, phát sóng lên mạng
+- **Sinusoidal embedding.**类似 Transformer định vị mã hóa。$\text{embed}(t) = [\sin(t/\omega_0), \cos(t/\omega_0), \sin(t/\omega_1), \ldots]$❖ Chuyển vào MLP, phát sóng lên mạng
 - **Film / group-norm conditioning.**Trong mỗi khối Trung把 Embedding dự án 为 mỗi kênh quy mô/bias ((FiLM) ⋅
 
 Chúng tôi có mã đồ chơi sử dụng hình âm → conat.
 
 ## Những bẫy
 
-- **Schedule matters a lot.**Đường thẳng`β`Đó là mặc định của DDPM, nhưng lịch trình cosine ((Nichol & Dhariwal, 2021) trong cùng một tính toán 下给出更好的FID── nếu chất lượng cao,就切换时间表──
-- **Timestep embedding is fragile.**Đặt ra nguyên chất`t`作为浮游 传入对玩具 1-D 可行,但对图像会失败;始终使用适当嵌入──
-- **V-prediction vs ε-prediction.**đối với chế độ rất nhỏ hoặc rất lớn),`ε`很差──V- dự đoán`v = α·ε - σ·x`) ổn định hơn;SDXL、SD3 和 Flux đều sử dụng nó.
-- **Classifier-free guidance.**Inference 时, đồng thời tính điều kiện 和 vô điều kiện `ε`, rồi rồi`ε_cfg = (1 + w) · ε_cond - w · ε_uncond`, trong số đó `w ≈ 3-7`Bài học 08 会覆盖。
+- **Schedule matters a lot.**Đường thẳng$\beta$Đó là mặc định của DDPM, nhưng lịch trình cosine ((Nichol & Dhariwal, 2021) trong cùng một tính toán 下给出更好的FID── nếu chất lượng cao,就切换时间表──
+- **Timestep embedding is fragile.**Đặt ra nguyên chất$t$作为浮游 传入对玩具 1-D 可行,但对图像会失败;始终使用适当嵌入──
+- **V-prediction vs ε-prediction.**đối với chế độ rất nhỏ hoặc rất lớn),$\epsilon$很差──V- dự đoán$v = \alpha \cdot \epsilon - \sigma \cdot x$) ổn định hơn;SDXL、SD3 和 Flux đều sử dụng nó.
+- **Classifier-free guidance.**Inference 时, đồng thời tính điều kiện 和 vô điều kiện $\epsilon$, rồi rồi$\epsilon_{\text{cfg}} = (1 + w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$, trong số đó $w \approx 3\text{-}7$Bài học 08 会覆盖。
 - **1000 steps is a lot.**Sản xuất sử dụng DDIM ((20-50 bước)、DPM-Solver ((10-20 bước) hoặc chưng cất ((1-4 bước)。见课12。
 
 ## Sử dụng nó
@@ -148,19 +148,19 @@ Sự phân tán là xương sống tạo ra phổ biến. Sự phù hợp dòng 
 
 1. **Easy.**Trong `code/main.py`Trung把 T từ 40 改 thành 10 ⋅ chất lượng mẫu (visual histogram của các sản phẩm) làm thế nào để giảm?
 2. **Medium.**Từ ε- dự đoán 切换到 v- dự đoán  tái推导 bước ngược  Compare cuối cùng chất lượng mẫu 
-3. **Hard.**添加 hướng dẫn không có phân loại.`c ∈ {0, 1}`Để điều kiện, trong thời gian đào tạo 10% thời gian giảm nó, và sử dụng trong việc lấy mẫu.`ε = (1+w)·ε_cond - w·ε_uncond`   `w = 0, 1, 3, 7`时的条件模式打击率──
+3. **Hard.**添加 hướng dẫn không có phân loại.$c \in \lbrace 0, 1 \rbrace$Để điều kiện, trong thời gian đào tạo 10% thời gian giảm nó, và sử dụng trong việc lấy mẫu.$\epsilon = (1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$   $w = 0, 1, 3, 7$时的条件模式打击率──
 
 ## Các điều khoản chính
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Forward process | “Adding noise” | 固定 Markov chain `q(x_t \| x_{t-1})`，用于摧毁 data。 |
-| Reverse process | “Denoising” | Learned chain `p_θ(x_{t-1} \| x_t)`，用于重构 data。 |
+| Forward process | “Adding noise” | 固定 Markov chain $q(x_t \mid x_{t-1})$，用于摧毁 data。 |
+| Reverse process | “Denoising” | Learned chain $p_\theta(x_{t-1} \mid x_t)$，用于重构 data。 |
 | β schedule | “The noise ladder” | Per-step variance；linear、cosine 或 sigmoid。 |
-| α̅ | “Alpha bar” | Cumulative product `∏(1 - β)`；给出从 `x_0` 得到 `x_t` 的 closed-form。 |
-| Simple loss | “MSE on noise” | `\|\|ε - ε_θ(x_t, t)\|\|²`；所有 variational derivations 都 collapse 到这里。 |
+| α̅ | “Alpha bar” | Cumulative product $\prod (1 - \beta)$；给出从 $x_0$ 得到 $x_t$ 的 closed-form。 |
+| Simple loss | “MSE on noise” | $\lVert \epsilon - \epsilon_\theta(x_t, t) \rVert^2$；所有 variational derivations 都 collapse 到这里。 |
 | ε-prediction | “Predict noise” | 输出是被加入的 noise；standard DDPM。 |
-| V-prediction | “Predict velocity” | 输出是 `α·ε - σ·x`；在整个 t 上有更好的 conditioning。 |
+| V-prediction | “Predict velocity” | 输出是 $\alpha \cdot \epsilon - \sigma \cdot x$；在整个 t 上有更好的 conditioning。 |
 | DDPM | “The paper” | Ho et al. 2020；linear β、1000 steps、U-Net。 |
 | DDIM | “Deterministic sampler” | Non-Markov sampler，20-50 steps，同一个 training objective。 |
 | Classifier-free guidance | “CFG” | 混合 conditional 和 unconditional noise predictions 来放大 conditioning。 |
@@ -169,7 +169,7 @@ Sự phân tán là xương sống tạo ra phổ biến. Sự phù hợp dòng 
 
 Bảng giấy DDPM 运行 T=1000 bước ngược. Không ai dùng nó để sản xuất.
 
-1. **Faster sampler, same model.**DDIM(20-50 bước)、DPM-Solver++(10-20)、UniPC(8-16)。Phục thế chuốc vòng ngược; đã được đào tạo `ε_θ`trọng lượng 不变──将延迟 降低 20-50×──
+1. **Faster sampler, same model.**DDIM(20-50 bước)、DPM-Solver++(10-20)、UniPC(8-16)。Phục thế chuốc vòng ngược; đã được đào tạo $\epsilon_\theta$trọng lượng 不变──将延迟 降低 20-50×──
 2. **Distillation.**训练 sinh viên 以更少步骤 匹配 giáo viên:Tăng tiến Distillation(2 → 1)、Cong hoà mô hình(tự nguyện → 1-4)、LCM、SDXL-Turbo、SD3-Turbo── tiếp tục giảm độ trễ 5-10×, cần đào tạo lại。
 3. **Caching and compilation.** `torch.compile(unet, mode="reduce-overhead")`、TensorRT-LLM's diffusion backends、`xformers`/SDPA chú ý, bf16 trọng lượng, sẽ giảm khoảng 2×, có thể với (1) và (2) 叠加.
 

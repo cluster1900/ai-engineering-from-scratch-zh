@@ -8,33 +8,35 @@
 **Time:** ~75 分钟
 
 ## 问题
-无条件 GAN 会采样任意人脸。做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空图*、*把白天场景 映射成夜间*、*给灰色图像 上色*──在所有这些任务中,你会得到一个输入图像`x`, và phải xuất với một số tương ứng ngữ nghĩa của `y` Mỗi người `x`Tất cả đều có thể đối phó với nhiều điều hợp lý.`y`✿ Phản ứng không có gì, vì nó trông thật  là cực kỳ...
+无条件 GAN 会采样任意人脸。做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空图*、*把白天场景 映射成夜间*、*给灰色图像 上色*──在所有这些任务中,你会得到一个输入图像$x$, và phải xuất với một số tương ứng ngữ nghĩa của $y$ Mỗi người $x$Tất cả đều có thể đối phó với nhiều điều hợp lý.$y$✿ Phản ứng không có gì, vì nó trông thật  là cực kỳ...
 
-GAN có điều kiện (Mirza & Osindero, 2014) Đặt điều kiện `c`作为输入加入 `G`和 `D`❖Pix2Pix (Isola et al., 2017) đã làm việc đặc biệt đối với điều này: điều kiện là hình ảnh nhập hoàn chỉnh, trình tạo là U-Net, phân biệt là phân loại dựa trên các bản vá (PatchGAN), Loss là đối thủ + L1── ngay cả trong năm 2026, bộ này vẫn còn vượt qua mô hình văn bản-hình ảnh được đào tạo từ không, bởi vì nó được đào tạo trong dữ liệu đôi* trên  Bạn có đúng là tín hiệu cần thiết──
+GAN có điều kiện (Mirza & Osindero, 2014) Đặt điều kiện $c$作为输入加入 $G$和 $D$❖Pix2Pix (Isola et al., 2017) đã làm việc đặc biệt đối với điều này: điều kiện là hình ảnh nhập hoàn chỉnh, trình tạo là U-Net, phân biệt là phân loại dựa trên các bản vá (PatchGAN), Loss là đối thủ + L1── ngay cả trong năm 2026, bộ này vẫn còn vượt qua mô hình văn bản-hình ảnh được đào tạo từ không, bởi vì nó được đào tạo trong dữ liệu đôi* trên  Bạn có đúng là tín hiệu cần thiết──
 
 ## 概念
 ![Pix2Pix: U-Net generator, PatchGAN discriminator](../assets/pix2pix.svg)
 
-**Conditional G.** `G(x, z) → y` Trong Pix2Pix,`z` Không có tiếng ồn nhập  Isola 发现显式 noise 会被忽略)
+**Conditional G.** $G(x, z) \to y$ Trong Pix2Pix,$z$ Không có tiếng ồn nhập  Isola 发现显式 noise 会被忽略)
 
-**Conditional D.** `D(x, y) → [0, 1]`▽输入是 *pair*(condition, output)―这是关键差异:D 必须判断 `y``x`Một致, không chỉ phán xét `y`Có vẻ như thật không?
+**Conditional D.** $D(x, y) \to [0, 1]$▽输入是 *pair*(condition, output)―这是关键差异:D 必须判断 $y$$x$Một致, không chỉ phán xét $y$Có vẻ như thật không?
 
 **U-Net generator.**带有跨瓶跳连接的编码-decoder──对于输入和输出共享低级结构的任务至关重要──没有这些跳转,高频细节会消失──
 
-**PatchGAN discriminator.**D không xuất ra một điểm thật/sự giả, mà xuất ra một điểm `N×N`lưới, mỗi tế bào 判断 khoảng 70×70 pixel của trường thụ nhận.
+**PatchGAN discriminator.**D không xuất ra một điểm thật/sự giả, mà xuất ra một điểm $N \times N$lưới, mỗi tế bào 判断 khoảng 70×70 pixel của trường thụ nhận.
 
 **Loss.**
 
-```
-loss_G = -log D(x, G(x)) + λ · ||y - G(x)||_1
-loss_D = -log D(x, y) - log (1 - D(x, G(x)))
+```math
+\begin{aligned}
+\text{loss}_G &= -\log D(x, G(x)) + \lambda \cdot \lVert y - G(x) \rVert_1 \\
+\text{loss}_D &= -\log D(x, y) - \log(1 - D(x, G(x)))
+\end{aligned}
 ```
 
-L1 项稳定训练,并推动 G 接近已知目标──L1 hơn L2 产生更利的边缘(medians,而不是 means)──`λ = 100`Đó là giá trị được định nghĩa của Pix2Pix.
+L1 项稳定训练,并推动 G 接近已知目标──L1 hơn L2 产生更利的边缘(medians,而不是 means)──$\lambda = 100$Đó là giá trị được định nghĩa của Pix2Pix.
 
 ## CycleGAN  khi bạn không có cặp
 
-Pix2Pix  cần kết hợp `(x, y)`Data。CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*những hệ thống nhất quán của chu kỳ* mất── hai máy phát điện:`G: X → Y`和 `F: Y → X`❖ Trình luyện chúng, làm `F(G(x)) ≈ x`且 `G(F(y)) ≈ y` Để bạn có thể trong trường hợp không có các ví dụ cặp, chuyển ngựa thành zebra  mùa hè  chuyển thành mùa đông
+Pix2Pix  cần kết hợp $(x, y)$Data。CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*những hệ thống nhất quán của chu kỳ* mất── hai máy phát điện:$G: X \to Y$和 $F: Y \to X$❖ Trình luyện chúng, làm $F(G(x)) \approx x$且 $G(F(y)) \approx y$ Để bạn có thể trong trường hợp không có các ví dụ cặp, chuyển ngựa thành zebra  mùa hè  chuyển thành mùa đông
 
 Trong năm 2026, không có hình ảnh-đối với hình ảnh lớn thông qua sự phổ biến (ControlNet、IP-Adapter) hoàn thành, thay vì CycleGAN, nhưng sự nhất quán của chu kỳ vẫn tồn tại trong hầu hết các bài viết về việc thích ứng miền không có cặp trong bài luận.
 
@@ -44,7 +46,7 @@ gx-patchgan
 ```
 
 ##  xây dựng nó
-`code/main.py`Trong dữ liệu 1-D 上 thực hiện một GAN có điều kiện nhỏ.`c`: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
+`code/main.py`Trong dữ liệu 1-D 上 thực hiện một GAN có điều kiện nhỏ.$c$: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
 
 ### Bước 1: sẽ thêm điều kiện vào G và D của nhập
 
@@ -81,9 +83,9 @@ for c in [0, 1]:
 
 ## 陷
 - **Condition 被忽略。**G 学会边缘 hóa,D 从不惩罚,因为 tình trạng tín hiệu 太弱──修复:更强地 tình trạng D( lớp sớm,而不只是迟), sử dụng phân biệt so sánh (Miyato & Koyama 2018)。
-- **L1 weight 过低。**G 漂移到任意看起来真实输出, thay vì trung thực.
-- **L1 weight 过高。**G  tạo ra các kết quả không rõ ràng, vì L1  vẫn là chuẩn L_p 
-- **D 中 ground-truth leakage。**sẽ`(x, y)`concat  như D input,而不只是 `y`否则 D 无法检查一致性
+- **L1 weight 过低。**G 漂移到任意看起来真实输出, thay vì trung thành.$\lambda \approx 100$开始──
+- **L1 weight 过高。**G 产生模糊输出, vì L1  vẫn là $L_p$chuẩn mực. Trình luyện ổn định.
+- **D 中 ground-truth leakage。**sẽ$(x, y)$concat  như D input,而不只是 $y$否则 D 无法检查一致性
 - **每个 class 的 mode collapse。**Mỗi lớp đều có thể sụp đổ độc lập.
 
 ## Sử dụng nó

@@ -21,7 +21,7 @@ Mỗi thước đều sẽ chú ý đến tất cả các thước trước đó
 
 ### VQ-VAE Multi-Scale Tokenizer
 
-VAR  cần một **multi-scale discrete Tokenizer**Đối với hình ảnh x, nó sẽ tạo ra một loạt các mã thông báo 网格:
+VAR  cần một **multi-scale discrete Tokenizer**❖ Đối với hình ảnh $x$, nó sẽ tạo ra một loạt các mã thông báo phân giải dần tăng lên:
 
 ```
 x -> encoder -> latent f
@@ -31,13 +31,13 @@ f -> tokenize at 2x2: token grid z_2 of shape (2, 2)
 f -> tokenize at (H/p)x(W/p): token grid z_K of shape (H/p, W/p)
 ```
 
-Mỗi z_k sử dụng cùng một cuốn sách mã (tương tự là 4096-16384)  Tokenization trên mỗi thước không phải là độc lập với nhau, mà được đào tạo để tạo ra các yêu cầu và khả năng tái tạo các thước dư:
+Mỗi người$z_k$Sử dụng cùng một cuốn sách mã thông thường là 4096-16384).$f$- Có thể là:
 
-```
-f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size)
+```math
+f \approx \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_1), \text{target\_size}) + \cdots + \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_K), \text{target\_size})
 ```
 
-Đây là một **residual VQ**变体──尺度 k 捕获尺度 1..k-1 遗漏的内容──Decoder 接收所有尺度 嵌入的和并生成图像──
+Đây là một **residual VQ**变体――尺度 $k$捕获尺度 $1 \ldots k-1$遗漏的内容──Decoder 接收所有尺度 嵌入的和并生成图像──
 
 VQ Tokenizer đa quy mô chỉ được đào tạo một lần (như VQGAN), sau đó kết thúc.
 
@@ -50,9 +50,9 @@ Cấu trúc chuỗi đầu vào:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Đơn vị đặt cùng thời gian và vị trí trong không gian. Đơn vị đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt đặt
+Định vị Đáp nhập đồng thời mã hóa chỉ số và vị trí không gian trong thước.$k$、 vị trí $(i, j)$Đồ ký có thể chú ý đến kích thước $1 \ldots k$Tất cả các biểu tượng, cũng có thể chú ý đến kích thước $k$本身在所使用内尺度 顺序中更早出现的Token(VAR sử dụng sự chú ý định vị trí cố định, không có tính nguyên nhân trong quy mô, tức là một thước đo trong tất cả các vị trí并行预测)
 
-训练 Loss: trong mỗi thước k, given all trước thước của Token,预测 Token z_k。 đối với các mã VQ phân tán sử dụng Loss cross-entropy。 cấu trúc giống như GPT, chỉ là trong đó sequence đã trở thành một chuỗi cấu trúc quy mô。
+训练 Loss: trong mỗi thước $k$, cho tất cả các giao dịch trước, dự đoán giao dịch $z_k$△ đối với các mã VQ phân tán Sử dụng Loss entropy chéo ⋅ cấu trúc tương tự như GPT, chỉ là sequence trong đó  đã trở thành một chuỗi cấu trúc quy mô ⋅
 
 ### 生成
 
@@ -66,7 +66,7 @@ decode: f = sum of embed-and-upsample scales 1..K
 image = VAE_decoder(f)
 ```
 
-Khi K = 10 个尺度时,生成需要10次 Transformer forward pass. Mỗi lần đi qua đều đều tạo ra toàn bộ kích thước, thay vì tự quay lại trong kích thước. Đối với 256x256 hình ảnh, đó là khoảng 10 lần đi qua, trong khi DiT là 28-50 lần.
+Khi đó$K = 10$Khi kích thước, tạo cần 10 lần Transformer đi trước đi qua. Mỗi lần đi qua đều tạo ra toàn bộ kích thước, thay vì tự quay lại trong kích thước. Đối với hình ảnh 256x256, đó là khoảng 10 lần đi qua, trong khi DiT là 28-50 lần.
 
 ### Tại sao Next-Scale  thắng hơn Next-Token
 
@@ -127,7 +127,7 @@ Trong `code/main.py`Trung, bạn sẽ:
 | Multi-scale VQ tokenizer | "Residual VQ" | 生成 K 个分辨率递增 Token 网格的 VQ-VAE，decoder 会对所有尺度求和 |
 | Scale k | "Pyramid level k" | K 个分辨率层级之一，从 k=1 的 1x1 到 k=K 的 (H/p)x(W/p) |
 | Parallel-within-scale | "One forward per scale" | 尺度 k 的所有 Token 在一次 Transformer pass 中预测，而不是自回归预测 |
-| Causal-across-scales | "Scale-ordered attention" | 尺度 k 的 Token 可以 Attention 到尺度 1..k 的全部内容，但不能 Attention 到尺度 k+1..K |
+| Causal-across-scales | "Scale-ordered attention" | 尺度 $k$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的全部内容，但不能 Attention 到尺度 $k+1 \ldots K$ |
 | Residual VQ | "Additive tokenization" | 每个尺度的 Token 编码较低尺度留下的 residual；decoder 对所有尺度 Embedding 求和 |
 | VAR scaling law | "Image GPT scaling" | FID 随 compute 遵循可预测的 power law，类似语言模型的 perplexity |
 | HART | "Hybrid VAR + text" | Text-conditional VAR 变体，将 MaskGIT-style iterative decoding 与 VAR 的尺度结构结合 |

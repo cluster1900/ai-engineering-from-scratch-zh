@@ -9,9 +9,9 @@
 
 ## 问题
 
-Mô hình tạo tạo làm một điều: được định từ một phân bố không rõ`p_data(x)`抽取的训练样本,输出看起来像来自同一分布的新样本──人脸、句子、MIDI 文件、蛋白质结构如果你眼看,它们都是相同的问题──
+Mô hình tạo tạo làm một điều: được định từ một phân bố không rõ$p_{\text{data}}(x)$抽取的训练样本,输出看起来像来自同一分布的新样本──人脸、句子、MIDI 文件、蛋白质结构如果你眼看,它们都是相同的问题──
 
-难点在于,`p_data`Có một hình ảnh RGB 512x512 có khoảng 786k 维), mô hình nằm trong không gian này là một loạt rất mỏng trên, và bạn có thể chỉ có 10M mô hình.
+难点在于,$p_{\text{data}}$Có một hình ảnh RGB 512x512 có khoảng 786k 维), mô hình nằm trong không gian này là một loạt rất mỏng trên, và bạn có thể chỉ có 10M mô hình.
 
 Trong 12 năm qua, có 5 gia đình sống sót. Nhận thức những gì mỗi gia đình đã làm, sẽ cho bạn biết tại sao nó thành công trong một nhiệm vụ và thất bại trong nhiệm vụ khác.
 
@@ -19,13 +19,13 @@ Trong 12 năm qua, có 5 gia đình sống sót. Nhận thức những gì mỗi
 
 ![Generative models 的五个家族 — 按它们建模的对象分类](../assets/taxonomy.svg)
 
-**1. Explicit density, tractable。**sẽ`log p(x)`写成一个你真的能计算的求和── Autoregressive models (PixelCNN, WaveNet, GPT) sẽ được `p(x) = ∏ p(x_i | x_<i)`因式分解──Tình thường hóa dòng chảy (RealNVP, Glow) sẽ`p(x)`构成一个简单基础 分布的可逆变换――优点:精确概率,干净的训练 Loss──缺点:autoregressive 推理是顺序的(长序列会慢),流动 需要可逆架构(架构限制很强)。
+**1. Explicit density, tractable。**sẽ$\log p(x)$写成一个你真的能计算的求和── Autoregressive models (PixelCNN, WaveNet, GPT) sẽ được $p(x) = \prod_i p(x_i \mid x_{<i})$因式分解──Tình thường hóa dòng chảy (RealNVP, Glow) sẽ$p(x)$构成一个简单基础 分布的可逆变换――优点:精确概率,干净的训练 Loss──缺点:autoregressive 推理是顺序的(长序列会慢),流动 需要可逆架构(架构限制很强)。
 
-**2. Explicit density, approximate。**Từ bên dưới`log p(x)`(ELBO)并优化这个界限──VAEs (Kingma 2013) 使用带变化后的编码-解码器──Diffusion models (DDPM, Ho 2020) 训练一个指标,它隐式优化加权 ELBO──Diffusion 是 2026 年图像、视频和 3D 的主导脊柱──
+**2. Explicit density, approximate。**Từ bên dưới$\log p(x)$(ELBO)并优化这个界限──VAEs (Kingma 2013) 使用带变化后的编码-解码器──Diffusion models (DDPM, Ho 2020) 训练一个指标,它隐式优化加权 ELBO──Diffusion 是 2026 年图像、视频和 3D 的主导脊柱──
 
-**3. Implicit density。** hoàn toàn nhảy qua mật độ; học một tạo mẫu của máy phát điện `G(z)`, và một người phân biệt đối xử thực sự sai lầm .`D(x)`GAN (Goodfellow 2014) ・推理很快(一次进步通过), nhưng quá trình đào tạo đã xuất hiện khá không ổn định── ngay cả trong năm 2026, StyleGAN 1/2/3 vẫn là hiện đại nhất trong lĩnh vực nhiếp ảnh cố định.
+**3. Implicit density。** hoàn toàn nhảy qua mật độ; học một tạo mẫu của máy phát điện $G(z)$, và một người phân biệt đối xử thực sự sai lầm .$D(x)$GAN (Goodfellow 2014) ・推理很快(一次进步通过), nhưng quá trình đào tạo đã xuất hiện khá không ổn định── ngay cả trong năm 2026, StyleGAN 1/2/3 vẫn là hiện đại nhất trong lĩnh vực nhiếp ảnh cố định.
 
-**4. Score-based / continuous-time。**直接学习 log-density 的 Gradient `∇_x log p(x)`(score) ――Song & Ermon (2019)  chỉ ra kết quả phù hợp sẽ phát tán 推广为一个SDE──Flow matching (Lipman 2023) là điểm nóng của năm 2024-2026:无需模拟的训练、更直的路径、比 DDPM 快 4-10倍的采样──Stable Diffusion 3、Flux、AudioCraft 2 都使用流量匹配──
+**4. Score-based / continuous-time。**直接学习 log-density 的 Gradient $\nabla_x \log p(x)$(score) ――Song & Ermon (2019)  chỉ ra kết quả phù hợp sẽ phát tán 推广为一个SDE──Flow matching (Lipman 2023) là điểm nóng của năm 2024-2026:无需模拟的训练、更直的路径、比 DDPM 快 4-10倍的采样──Stable Diffusion 3、Flux、AudioCraft 2 都使用流量匹配──
 
 **5. 基于 Token 的离散 codes 上的 autoregressive。**Sử dụng VQ-VAE hoặc lượng tử dư sẽ nén dữ liệu cao về một chuỗi mã thông báo phân tán ngắn hơn, sau đó sử dụng Transformer cho chuỗi mã thông báo 建模.
 
@@ -53,7 +53,7 @@ Trong 12 năm qua, có 5 gia đình sống sót. Nhận thức những gì mỗi
 Khi một bài viết mô hình tạo mới xuất hiện, trước khi đọc phần phương pháp, trước tiên trả lời năm câu hỏi này.
 
 1. **建模的是什么？**Pixels, latences, token phân tán, Gaussians 3D, lưới, hình dạng sóng?
-2. **Density 是 explicit 还是 implicit？**Họ có viết ra không?`log p(x)`- Không .
+2. **Density 是 explicit 还是 implicit？**Họ có viết ra không?$\log p(x)$- Không .
 3. **Sampling：one-shot 还是 iterative？**Iterative có nghĩa là suy nghĩ chậm hơn; một phát thường có nghĩa là đối kháng hoặc chưng cất.
 4. **Conditioning：unconditional、class、text、image、pose？**Đó là quyết định của Loss và cấu trúc.
 5. **Evaluation：FID、CLIP score、IS、human preference、task accuracy？**Mỗi người đều có các chế độ thất bại đã biết được.
@@ -91,7 +91,7 @@ Năm 2026, gia đình nào phù hợp với nhiệm vụ nào?
 | Text-to-video | Diffusion Transformer + flow matching | Sora, Veo 2, Kling。 |
 | Speech + music | Token-based AR (AudioLM, VALL-E, MusicGen) 或 flow matching (AudioCraft 2) | 离散 tokens 扩展成本低。 |
 | 3D scenes | Gaussian Splatting fit, diffusion prior | 3D-GS 用于重建，diffusion 用于 novel-view。 |
-| Density estimation（不采样） | Flows | 唯一拥有精确 `log p(x)` 的家族。 |
+| Density estimation（不采样） | Flows | 唯一拥有精确 $\log p(x)$ 的家族。 |
 | Simulation / physics | Flow matching, score SDE | 直线路径，平滑 Vector fields。 |
 
 ## 交付 nó
@@ -110,11 +110,11 @@ Năm 2026, gia đình nào phù hợp với nhiệm vụ nào?
 
 | 术语 | 人们怎么说 | 它实际是什么意思 |
 |------|-----------------|-----------------------|
-| Generative model | “它会生成新东西” | 学习 `p_data(x)` 的 sampler，可选地暴露 `log p(x)`。 |
-| Explicit density | “你可以计算它” | 模型提供 closed-form 或 tractable 的 `log p(x)`。 |
-| Implicit density | “GAN-style” | 只有 sampler——无法计算给定点的 `p(x)`。 |
-| ELBO | “Evidence lower bound” | `log p(x)` 的一个 tractable 下界；VAEs 和 diffusion 会优化它。 |
-| Score | “log-density 的 Gradient” | `∇_x log p(x)`；diffusion 和 SDE models 学习这个 field。 |
+| Generative model | “它会生成新东西” | 学习 $p_{\text{data}}(x)$ 的 sampler，可选地暴露 $\log p(x)$。 |
+| Explicit density | “你可以计算它” | 模型提供 closed-form 或 tractable 的 $\log p(x)$。 |
+| Implicit density | “GAN-style” | 只有 sampler——无法计算给定点的 $p(x)$。 |
+| ELBO | “Evidence lower bound” | $\log p(x)$ 的一个 tractable 下界；VAEs 和 diffusion 会优化它。 |
+| Score | “log-density 的 Gradient” | $\nabla_x \log p(x)$；diffusion 和 SDE models 学习这个 field。 |
 | Manifold hypothesis | “数据存在于一个表面上” | 高维数据集中在低维 manifold 上；这就是 dimensionality reduction 有效的原因。 |
 | Autoregressive | “预测下一个片段” | 将 joint 因式分解为 conditionals 的乘积。 |
 | Latent | “压缩 code” | 一种低维表示，decoder 可以从中重建输入。 |

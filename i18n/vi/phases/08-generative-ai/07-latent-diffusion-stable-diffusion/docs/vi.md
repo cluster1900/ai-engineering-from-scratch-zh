@@ -21,9 +21,9 @@ Những FLOP này rất nhiều được sử dụng để đưa ra các chi ti�
 
 **两个阶段，分别训练。**
 
-1. **Stage 1 — VAE.**Mã hóa `E(x) → z`, decoder `D(z) → x` mục tiêu giảm áp suất: mỗi không gian轴下采样 8×, tái điều chỉnh kênh, làm cho tổng kích thước ẩn 约为 pixel count 的 1/16──Loss = tái tạo (L1 + LPIPS nhận thức) + KL(权重很小,使 `z`Không được ép buộc phải làm quá Gaussian, vì chúng ta không cần phải làm gì.`z`Làm một mẫu chính xác)  thường cũng sẽ đi kèm với thua đối thủ  tập, để giải mã  hình ảnh xuất hiện  hơn lợi
+1. **Stage 1 — VAE.**Mã hóa $E(x) \to z$, decoder $D(z) \to x$ mục tiêu giảm áp suất: mỗi không gian轴下采样 8×, tái điều chỉnh kênh, làm cho tổng kích thước ẩn 约为 pixel count 的 1/16──Loss = tái tạo (L1 + LPIPS nhận thức) + KL(权重很小,使 $z$Không được ép buộc phải làm quá Gaussian, vì chúng ta không cần phải làm gì.$z$Làm một mẫu chính xác)  thường cũng sẽ đi kèm với thua đối thủ  tập, để giải mã  hình ảnh xuất hiện  hơn lợi
 
-2. **Stage 2 — 在 `z` 上做 diffusion。**- Đưa đi.`z = E(x_real)`Khi đó, chúng tôi sẽ bắt đầu một cuộc chiến tranh.`z_t`◊推理时: thông qua sự pha trộn 采样 `z_0`, rồi rồi`x = D(z_0)`
+2. **Stage 2 — 在 $z$ 上做 diffusion。**- Đưa đi.$z = E(x_{\text{real}})$Khi đó, chúng tôi sẽ bắt đầu một cuộc chiến tranh.$z_t$◊推理时: thông qua sự pha trộn 采样 $z_0$, rồi rồi$x = D(z_0)$
 
 **文本 conditioning。**Ngoài ra còn có hai phần phụ hơn. Một phần kết thúc của mã hóa văn bản.`[Q = image features, K = V = text tokens]`Và kết hợp chúng vào. Các mã thông báo là cách duy nhất để văn bản ảnh hưởng đến hình ảnh.
 
@@ -59,21 +59,21 @@ def encode(x):    return x * 0.5          # toy "compression" to smaller scale
 def decode(z):    return z * 2.0
 ```
 
-VAE thực sự có quyền được đào tạo.`z`上操作, không quan tâm đến không gian dữ liệu nguyên thủy.
+VAE thực sự có quyền được đào tạo.$z$上操作, không quan tâm đến không gian dữ liệu nguyên thủy.
 
 ### Bước 2:`z`- không gian trong làm pha trộn
 
-DDPM: tương tự như bài học 06`z = E(x)`     `z_0`后,用 `D(z_0)`giải mã.
+DDPM: tương tự như bài học 06$z = E(x)$     $z_0$后,用 $D(z_0)$giải mã.
 
 ### 步骤 3: hướng dẫn không có phân loại
 
-Trong thời gian tập luyện, 10% thời gian bỏ đi nhãn lớp học (trong đó thay thế thành token không có giá trị)`ε_cond`和 `ε_uncond`, rồi:
+Trong thời gian tập luyện, 10% thời gian bỏ đi nhãn lớp học (trong đó thay thế thành token không có giá trị)$\epsilon_{\text{cond}}$和 $\epsilon_{\text{uncond}}$, rồi:
 
 ```python
 eps_cfg = (1 + w) * eps_cond - w * eps_uncond
 ```
 
-`w = 0`= 无指导(完全多样性),`w = 3`= 默认值,`w = 7+`= 和 / 过化。
+$w = 0$= 无指导(完全多样性),$w = 3$= 默认值,$w = 7+$= 和 / 过化。
 
 ### 步骤 4: 文本 điều kiện ((概念,不是代码)
 
@@ -91,7 +91,7 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 - **Text encoder silently wrong。**SD3 需要带 >=128 token của T5-XXL,fallback đến chỉ CLIP 会有损──始终检查 `use_t5=True`Nếu không thì nhanh chóng thành tín sẽ sụp đổ.
 - **混用 latent spaces。**SDXL、SD3、Flux đều sử dụng các VAE khác nhau. Trong các trần SDXL trên tập luyện LoRA không thể sử dụng SD3。 Hugging Face diffusers 0.30+ 会拒绝加载不匹配的检查点。
 - **CFG too high。** `w > 10`Sẽ tạo ra hình ảnh và các hình ảnh, và hy sinh sự đa dạng để chi phí quá phù hợp.`w = 3-7`
-- **Negative prompts leaking。**Không tính tiêu cực sẽ biến thành mã thông báo không; đầy tiêu cực sẽ biến thành`ε_uncond` Hai thứ này không giống nhau; một số đường ống sẽ được sử dụng không.
+- **Negative prompts leaking。**Không tính tiêu cực sẽ biến thành mã thông báo không; đầy tiêu cực sẽ biến thành$\epsilon_{\text{uncond}}$ Hai thứ này không giống nhau; một số đường ống sẽ được sử dụng không.
 
 ## Sử dụng nó
 
@@ -112,7 +112,7 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 
 ## 练习
 
-1. **Easy.**Sử dụng hướng dẫn `w ∈ {0, 1, 3, 7, 15}`运行 `code/main.py` ghi mẫu trung bình của mỗi lớp `w`Này, lớp có nghĩa là sẽ bị phân biệt với giá trị trung bình dữ liệu thực?
+1. **Easy.**Sử dụng hướng dẫn $w \in \lbrace 0, 1, 3, 7, 15 \rbrace$运行 `code/main.py` ghi mẫu trung bình của mỗi lớp $w$Này, lớp có nghĩa là sẽ bị phân biệt với giá trị trung bình dữ liệu thực?
 2. **Medium.**Để thay đổi cho tanh-MLP encoder/decoder đối với,并加入重建损失──在新的潜藏上重新训练扩散──样品质量 会变吗?
 3. **Hard.**Sử dụng các chất pha trộn  xây dựng một sự pha trộn ổn định thực sự                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `sdxl-base`, sử dụng CFG=7 运行 30 bước của Euler,并计时――然后切换到 `sdxl-turbo`, sử dụng 4 bước 和 CFG=0── cùng một chủ đề, chất lượng khác nhau, mô tả những thay đổi đã xảy ra và nguyên nhân──
 
@@ -122,8 +122,8 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 |------|-----------------|-----------------------|
 | First stage | “The VAE” | 训练好的 encoder/decoder 对；把 512² 压缩到 64²。 |
 | Second stage | “The U-Net” | latent space 上的 diffusion model。 |
-| CFG | “Guidance scale” | `(1+w)·ε_cond - w·ε_uncond`；调节 conditioning strength。 |
-| Null token | “Empty prompt embed” | 用于 `ε_uncond` 的 unconditional embed。 |
+| CFG | “Guidance scale” | $(1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$；调节 conditioning strength。 |
+| Null token | “Empty prompt embed” | 用于 $\epsilon_{\text{uncond}}$ 的 unconditional embed。 |
 | Cross-attention | “How text gets in” | 每个 U-Net block 都以 text tokens 作为 K 和 V 进行 attention。 |
 | DiT | “Diffusion Transformer” | 用作用于 latent patches 的 transformer 替换 U-Net；扩展性更好。 |
 | MMDiT | “Multi-modal DiT” | SD3 的架构：带 joint attention 的文本与图像流。 |

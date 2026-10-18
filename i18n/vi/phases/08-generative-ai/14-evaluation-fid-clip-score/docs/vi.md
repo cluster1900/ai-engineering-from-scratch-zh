@@ -26,13 +26,13 @@ Bạn cũng sẽ thấy:IS(số khởi điểm, cơ bản đã bị loại bỏ)
 Heusel et al. (2017)。步骤:
 
 1. 为 N 张真实图像和 N 张生成图像提取 Lập đầu v3 tính năng (2048-D) ⋅
-2. Đối với mỗi nhóm có thể được một Gaussian: tính trung bình`μ_r, μ_g`和 sự đồng hóa `Σ_r, Σ_g`
-3. FID = `||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2 · (Σ_r · Σ_g)^0.5)`
+2. Đối với mỗi nhóm có thể được một Gaussian: tính trung bình$\mu_r, \mu_g$和 sự đồng hóa $\Sigma_r, \Sigma_g$
+3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \mathop{\mathrm{Tr}}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$
 
 解释: đặc điểm không gian trong hai biến số Gaussian  giữa khoảng cách Frechet。越低 = 分布越相似。
 
 失效模式:
-- **小 N 时有偏。**FID là đối với phân bố đặc điểm làm trung bình vuông 计算,小 N 会低估共差,给出虚假的低 FID──始终使用 N ≥ 10,000──
+- **小 N 时有偏。**FID là đối với phân bố đặc điểm làm trung bình vuông 计算,小 N 会低估共差,给出虚假的低 FID──始终使用 $N \ge 10{,}000$
 - **依赖 Inception。**Inception-v3 训练于 ImageNet──远离 ImageNet领域 ([[人脸、艺术、文字图像) ]] sẽ tạo ra FID không có ý nghĩa── sử dụng bộ thu thập tính năng trong lĩnh vực cụ thể──
 - **刷分。**过拟 启动前可在没有视觉质量提升的情况下得到低FID──使用CMMD(见下文)来对抗它──
 

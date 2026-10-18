@@ -9,9 +9,9 @@
 
 ## 问题
 
-DDPM của phản向 quá trình là một trong những`N(0, I)`Trở lại 1000 bước của phân phối dữ liệu theo thời gian. DIM sẽ thu nhỏ nó thành 20-50 bước xác định. Bạn muốn ít hơn các bước, lý tưởng là chỉ cần một bước.
+DDPM của phản向 quá trình là một trong những$\mathcal{N}(0, I)$Trở lại 1000 bước của phân phối dữ liệu theo thời gian. DIM sẽ thu nhỏ nó thành 20-50 bước xác định. Bạn muốn ít hơn các bước, lý tưởng là chỉ cần một bước.
 
-Nếu bạn có thể đào tạo mô hình, làm cho đường từ tiếng ồn đến dữ liệu là một đường thẳng, thì từ `t=1`Đến`t=0`của đơn vị bước Euler 就能工作──Tình lình kết hợp dòng chảy 直接构建这一点:定义从 `x_1 ∼ N(0, I)`Đến`x_0 ∼ data`                                                                                                                                                                                                                                                              `v_θ(x, t)`Để phù hợp với số thời gian của nó, và suy luận 时积分.
+Nếu bạn có thể đào tạo mô hình, làm cho đường từ tiếng ồn đến dữ liệu là một đường thẳng, thì từ $t=1$Đến$t=0$của đơn vị bước Euler 就能工作──Tình lình kết hợp dòng chảy 直接构建这一点:定义从 $x_1 \sim \mathcal{N}(0, I)$Đến$x_0 \sim \text{data}$                                                                                                                                                                                                                                                              $v_\theta(x, t)$Để phù hợp với số thời gian của nó, và suy luận 时积分.
 
 Phong trào sửa đổi (Liu 2022): sử dụng quy trình tái lưu 代地拉直路径, tạo ra một ODE dần dần gần hơn với đường dây.
 
@@ -23,41 +23,41 @@ Phong trào sửa đổi (Liu 2022): sử dụng quy trình tái lưu 代地拉�
 
 定义:
 
-```
-x_t = t · x_1 + (1 - t) · x_0,   t ∈ [0, 1]
-```
-
-Trong số đó `x_0 ~ data`- Tôi không biết.`x_1 ~ N(0, I)`                                                                                                                                                                                                                                                              
-
-```
-dx_t / dt = x_1 - x_0
+```math
+x_t = t \cdot x_1 + (1 - t) \cdot x_0, \quad t \in [0, 1]
 ```
 
-定义一个神经向量领域 `v_θ(x_t, t)`,并训练 nó phù hợp với số này:
+Trong số đó $x_0 \sim \text{data}$- Tôi không biết.$x_1 \sim \mathcal{N}(0, I)$                                                                                                                                                                                                                                                              
 
-```
-L = E_{x_0, x_1, t} || v_θ(x_t, t) - (x_1 - x_0) ||²
+```math
+\frac{dx_t}{dt} = x_1 - x_0
 ```
 
-Đó là...**conditional flow matching**Loss(Lipman 2023)。 Training không cần mô phỏng:`(x_0, x_1, t)`Không làm sự lùi lại.
+定义一个神经向量领域 $v_\theta(x_t, t)$,并训练 nó phù hợp với số này:
+
+```math
+L = \mathbb{E}_{x_0, x_1, t} \left\lVert v_\theta(x_t, t) - (x_1 - x_0) \right\rVert^2
+```
+
+Đó là...**conditional flow matching**Loss(Lipman 2023)。 Training không cần mô phỏng:$(x_0, x_1, t)$Không làm sự lùi lại.
 
 ### 采样
 
 Trong suy luận, dọc theo thời gian* ngược向*积分学到的矢量场:
 
-```
-x_{t-Δt} = x_t - Δt · v_θ(x_t, t)
+```math
+x_{t-\Delta t} = x_t - \Delta t \cdot v_\theta(x_t, t)
 ```
 
-Từ `x_1 ~ N(0, I)` bắt đầu, dùng bước của Euler                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     `t=0`
+Từ $x_1 \sim \mathcal{N}(0, I)$ bắt đầu, dùng bước của Euler                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     $t=0$
 
 ### Phong trào được sửa đổi (Liu 2022)
 
-dòng trực tuyến có thể làm việc, nhưng cách học tập thực sự không trực tiếp, vì rất nhiều`x_0`Có thể chiếu đến cùng một `x_1`❖ Bước tái lưu của dòng chảy được sửa chữa:
+dòng trực tuyến có thể làm việc, nhưng cách học tập thực sự không trực tiếp, vì rất nhiều$x_0$Có thể chiếu đến cùng một $x_1$❖ Bước tái lưu của dòng chảy được sửa chữa:
 
-1. 用随机配对训练流模型 v_1──
-2. 通过将 v_1 từ `x_1`积分到其落点 `x_0`, mẫu N đối với`(x_1, x_0)`
-3. Trong các mô hình đối tác này tập luyện v_2── vì các đối tác này hiện đang là ODE-tích hợp, đường thẳng giữa chúng thực sự bằng hơn──
+1. Sử dụng theo cách thích hợp mô hình lưu lượng tập luyện $v_1$
+2. 通过将 $v_1$Từ $x_1$积分到其落点 $x_0$, mẫu N đối với$(x_1, x_0)$
+3. Trong những bài tập trên các mẫu$v_2$Vì những đối tượng này hiện đang được ODE-tích hợp, đường thẳng giữa chúng thực sự bằng hơn.
 4. Đổi lại
 
 Trong thực tế, 2 lần reflow 代就能接近线性,从而实现 2-4 bước suy luận.
@@ -72,7 +72,7 @@ Ba lý do:
 
 ## Tích hợp dòng chảy vs DDPM:精确联系
 
-带 Gaussian-conditional path ơm dòng chảy phù hợp chính là sử dụng* cụ thể tiếng ồn lịch trình* của Diffusion。选择 `x_t = α(t) x_0 + σ(t) x_1`Lịch trình, dòng chảy phù hợp để phục hồi sự phân tán được cải cách bởi Stratonovich, trong đó có`v = α'·x_0 - σ'·x_1`Đối với các con đường Gaussian, hai trong số đó trên giá bằng.
+带 Gaussian-conditional path ơm dòng chảy phù hợp chính là sử dụng* cụ thể tiếng ồn lịch trình* của Diffusion。选择 $x_t = \alpha(t) x_0 + \sigma(t) x_1$Lịch trình, dòng chảy phù hợp để phục hồi sự phân tán được cải cách bởi Stratonovich, trong đó có$v = \alpha' \cdot x_0 - \sigma' \cdot x_1$Đối với các con đường Gaussian, hai trong số đó trên giá bằng.
 
 Sự phù hợp dòng chảy  tăng là: mục tiêu của* độ rõ ràng性*(tốc độ bình thường)、更干净的 Loss,以及尝试非高斯的插件的自由度──
 
@@ -83,7 +83,7 @@ normalizing-flow
 
 ##  xây dựng nó
 
-`code/main.py`Trong hai đỉnh hỗn hợp Gaussian 上 đạt được sự phù hợp dòng chảy 1-D── Vênctor field `v_θ(x, t)`là một MLP nhỏ, sử dụng đào tạo mục tiêu trực tuyến. Trong suy luận, phân biệt với 1、2、4 和 20 bước của Euler.
+`code/main.py`Trong hai đỉnh hỗn hợp Gaussian 上 đạt được sự phù hợp dòng chảy 1-D── Vênctor field $v_\theta(x, t)$là một MLP nhỏ, sử dụng đào tạo mục tiêu trực tuyến. Trong suy luận, phân biệt với 1、2、4 和 20 bước của Euler.
 
 ### 步骤 1: mất tập luyện
 
@@ -116,10 +116,10 @@ def sample(net, num_steps):
 
 ##  dễ dàng đi trên crater
 
-- **Time parameterization。**Tương thích dòng chảy 使用 `t ∈ [0, 1]`, trong số đó `t=0`là dữ liệu,`t=1`                                                                                                                                                                                                                                                              `t ∈ [0, T]`, trong số đó `t=0`là dữ liệu,`t=T`                                                                                                                                                                                                                                                              
+- **Time parameterization。**Tương thích dòng chảy 使用 $t \in [0, 1]$, trong số đó $t=0$là dữ liệu,$t=1$                                                                                                                                                                                                                                                              $t \in [0, T]$, trong số đó $t=0$là dữ liệu,$t=T$                                                                                                                                                                                                                                                              
 - **Schedule choice。**Đường thẳng của dòng chảy được sửa là lịch trình phù hợp dòng chảy, nhưng bạn cũng có thể sử dụng cosine hoặc logic-normal t-sampling (SD3) để có được một quy mô tốt hơn.
 - **Reflow cost。**Để tái lưu lượng tạo bộ dữ liệu tương đương với mỗi mẫu chạy một lần suy luận hoàn chỉnh. Chỉ khi bạn thực sự cần suy luận 1-2 bước thì bạn mới thực hiện tái lưu lượng.
-- **Classifier-free guidance 仍然适用。**Chỉ cần trong bộ phận trực tuyến để chuyển ε thành v:`v_cfg = (1+w) v_cond - w v_uncond`
+- **Classifier-free guidance 仍然适用。**Chỉ cần được kết hợp trực tuyến$\epsilon$换成 $v$- Có thể là:$v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$
 
 ## Sử dụng nó
 
@@ -141,20 +141,20 @@ Chỉ cần một bài viết của năm 2025-2026 nói quá hơn sự pha trộ
 ## 练习
 
 1. **Easy。**运行 `code/main.py`, so sánh 1 bước với 20 bước MSE 相对真实数据分布的表现──
-2. **Medium。**Từ đồng phục`t`lấy mẫu 切换到logit-normal (từ chuẩn) 将采样集中在 t) ⋅ mô hình 质量是否提升?
-3. **Hard。**实现一次反流 代:通过积分第一个模型 生成对 (x_0, x_1), 在这些对上训练第二个模型,并比较1步样品质量──
+2. **Medium。**Từ đồng phục$t$lấy mẫu 切换到logit-normal (từ chuẩn) 将采样集中在 t) ⋅ mô hình 质量是否提升?
+3. **Hard。**实现一次回流 代:通过积分第一个模型 生成对$(x_0, x_1)$, trong những cặp này 上训练第二个模型,并比较 1-step sample quality──
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Flow matching | “Straight-line diffusion” | 训练 `v_θ(x, t)`，使其沿 interpolant 匹配 `x_1 - x_0`。 |
+| Flow matching | “Straight-line diffusion” | 训练 $v_\theta(x, t)$，使其沿 interpolant 匹配 $x_1 - x_0$。 |
 | Rectified flow | “Reflow” | 拉直已学习 flows 的迭代过程。 |
-| Velocity field | “v_θ” | model 的输出，即移动 `x_t` 的方向。 |
-| Straight-line interpolant | “The path” | `x_t = (1-t)·x_0 + t·x_1`；目标导数很简单。 |
+| Velocity field | “v_θ” | model 的输出，即移动 $x_t$ 的方向。 |
+| Straight-line interpolant | “The path” | $x_t = (1-t) \cdot x_0 + t \cdot x_1$；目标导数很简单。 |
 | Euler sampler | “1st order ODE solver” | 最简单的 integrator；当路径较直时效果很好。 |
-| Logit-normal t | “SD3 sampling” | 将 `t` sampling 集中到 gradients 最强的中间值附近。 |
-| Consistency distillation | “1-step sampler” | 训练 student 将任意 `x_t` 直接映射到 `x_0`。 |
-| CFG with velocity | “v-CFG” | `v_cfg = (1+w) v_cond - w v_uncond`；同样技巧，新的变量。 |
+| Logit-normal t | “SD3 sampling” | 将 $t$ sampling 集中到 gradients 最强的中间值附近。 |
+| Consistency distillation | “1-step sampler” | 训练 student 将任意 $x_t$ 直接映射到 $x_0$。 |
+| CFG with velocity | “v-CFG” | $v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$；同样技巧，新的变量。 |
 
 ## Lưu ý sản xuất:Flux.1-schnell là phù hợp nhất hình thức của dòng chảy
 
