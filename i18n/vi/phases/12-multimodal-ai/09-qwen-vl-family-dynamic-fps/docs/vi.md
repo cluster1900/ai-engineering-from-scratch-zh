@@ -68,10 +68,12 @@ Kết luận của hệ thống này: Đến năm 2025, cấu trúc Qwen-VL đã
 
 经典 RoPE 使用成对坐标,按位置 `m`Chuyển độ`d`của câu hỏi `q`- Có thể là:
 
-```
-q_rot[2i]   = q[2i]   * cos(m * theta_i) - q[2i+1] * sin(m * theta_i)
-q_rot[2i+1] = q[2i]   * sin(m * theta_i) + q[2i+1] * cos(m * theta_i)
-theta_i     = 10000^(-2i/d)
+```math
+\begin{aligned}
+q_{\text{rot}}[2i] &= q[2i] \cos(m \theta_i) - q[2i+1] \sin(m \theta_i) \\
+q_{\text{rot}}[2i+1] &= q[2i] \sin(m \theta_i) + q[2i+1] \cos(m \theta_i) \\
+\theta_i &= 10000^{-2i/d}
+\end{aligned}
 ```
 
 M-RoPE sẽ ẩn 切分为三条带――假设`d = 96` phân phối 32 độ nét 给 temporal、32 给 height、32 给 width── mỗi băng 按自己的轴位置旋转──位于 (t=5, h=10, w=20) 的补丁 会在其三条带上分别应用旋转`R_t(5)``R_h(10)``R_w(20)`

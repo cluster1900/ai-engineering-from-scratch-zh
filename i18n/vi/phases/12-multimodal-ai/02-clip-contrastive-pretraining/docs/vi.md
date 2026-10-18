@@ -32,10 +32,10 @@ CLIP có hai tháp:
 
 Hai tháp đều chuẩn hóa đầu ra thành chiều dài đơn vị.`cos(f(x), g(y)) = f(x)^T g(y)`
 
-Đối với một bao gồm N 个(photos, caption) cặp của lô, cấu trúc hình 为 `(N, N)`của sự tương đồng Matrix `S`- Có thể là:
+ Đối với một bao gồm $N$个(hình ảnh, caption) cặp của lô, cấu trúc hình 为 `(N, N)`của sự tương đồng Matrix `S`- Có thể là:
 
-```
-S[i, j] = cos(f(x_i), g(y_j)) / tau
+```math
+S[i, j] = \cos(f(x_i), g(y_j)) / \tau
 ```
 
 Trong số đó `tau`là học tập đạt nhiệt độ (CLIP khởi nghiệp là 0.07; trong log-space 中学习)
@@ -54,7 +54,7 @@ loss = (loss_i2t + loss_t2i) / 2
 
 ### Nhiệt độ
 
-`tau`控制 softmax 的尖──低 tau → 尖分布,具有硬负矿业效果──高 tau → 软,所有样本都会贡献──CLIP 学习 log(1/tau),并进行剪切以防崩──SigLIP 2 固定初始 tau,并改用学习偏见──
+`tau`控制 softmax ∙∙∙$\tau$→ phân bố sắc bén, có hoạt động khai thác tiêu cực 效果──高$\tau$→ mềm, tất cả các mẫu đều đóng góp.$\log(1/\tau)$,并 thực hiện cắt để phòng chống sụp đổ.$\tau$,并改用 học tập bias。
 
 ### Tại sao sigmoid 扩展性更好(SigLIP)
 
@@ -62,8 +62,8 @@ Softmax  cần toàn bộ sự tương đồng Matrix  giữ đồng bộ. Trong
 
 SigLIP 用 yếu tố thông minh sigmoid  thay thế softmax: đối với mỗi cặp `(i, j)`, mất là một phân loại nhị phân, phán xét Đây là cặp phù hợp?chữ hiệu lớp tích cực là đường viền, tất cả những thứ khác đều âm.
 
-```
-L = -1/N sum over (i, j) [ y_ij log sigmoid(S[i,j]) + (1-y_ij) log sigmoid(-S[i,j]) ]
+```math
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 Nếu `i == j`,则 `y_ij = 1`, nếu không thì là 0, mỗi cặp mất là độc lập, không cần phải tập hợp tất cả, mỗi GPU tính toán khối địa phương của riêng mình và tìm kiếm và tìm kiếm, SigLIP 2 có thể chi phí thấp mở rộng đến lô 32k-512k, trong khi CLIP sẽ cần phải tăng tỷ lệ giao thông.
@@ -127,7 +127,7 @@ multimodal-fusion
 
 3. Để tạo ra một phân loại không bắn.`a photo of a {class}`和 `a picture of a {class}`◊ Trong 100 张 hình ảnh thử nghiệm  đo độ chính xác.
 
-4. 计算 512-GPU、batch 32k 运行时,softmax InfoNCE với sigmoid đôi chi phí giao tiếp──哪个按 O(N) thang,哪个按 O(N^2) thang?引用 SigLIP Section 4──
+4. 计算 512-GPU、batch 32k 运行时,softmax InfoNCE với sigmoid cặp nhau chi phí giao tiếp$O(N)$quy mô, theo đó$O(N^2)$Scale? trích dẫn Chương 4 của SigLIP
 
 5. 阅读 OpenCLIP quy mô- quy luật giấy ((arXiv:2212.07143,Cherti et al.) ◦ Theo hình ảnh复现他们关于数据扩展的结论:在固定模型尺寸下,ImageNet zero-shot accuracy与训练数据尺寸之间的日线关系是什么?
 

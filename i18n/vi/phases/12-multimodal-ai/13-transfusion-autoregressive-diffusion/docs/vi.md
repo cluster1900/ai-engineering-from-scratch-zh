@@ -59,9 +59,9 @@ Trong tập luyện và suy nghĩ thực hiện để khối hình ba mặt nạ
 Thiếu biến phân tán là hình thức tiêu chuẩn: cho hình ảnh đệm 加噪声,让模型预测噪声(或等价地预测 sạch đệm) ――Thiết dịch phiên bản sử dụng phù hợp dòng chảy:预测 từ ồn đến ồn ồn của trường tốc độ sạch。
 
 训练期间:
-1. Đối với mỗi tấm hình x0, cũng như một bước thời gian tự nhiên t.
-2. 采样噪声 ε,计算 xt = (1-t) * x0 + t * ε(tích hợp dòng chảy của 线性插值)
-3. biến đổi 预测 v_theta(xt, t); mất = MSE(v_theta(xt, t), ε - x0)。
+1. Đối với mỗi tấm hình .$x_0$, như một bước thời gian tự nhiên $t$
+2. 采样噪音 $\epsilon$,计算 $x_t = (1-t) \cdot x_0 + t \cdot \epsilon$(điều lường của dòng chảy phù hợp)
+3. biến đổi 预测 $v_\theta(x_t, t)$-$\text{loss} = \mathop{\mathrm{MSE}}(v_\theta(x_t, t), \epsilon - x_0)$
 4. Với văn bản trong cùng chuỗi mất NTP một khởi động Backprop。
 
 推理时, tạo流程 là:

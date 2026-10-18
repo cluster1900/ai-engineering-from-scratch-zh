@@ -66,11 +66,11 @@ inpainting 能力来自蒙面预测 训练,几乎是免费的──蒙面 VQ-tok
 
 Mỗi bước mở mặt nạ 多少 Tokens 的日程 会塑造质量──Show-o 推 cosine:
 
-```
-mask_ratio(t) = cos(pi * t / (2 * T))   # t = 0..T
+```math
+\text{mask\_ratio}(t) = \cos\left(\frac{\pi t}{2T}\right) \qquad t = 0, \ldots, T
 ```
 
-第 0 步, tất cả các token đều được che giấu( tỷ lệ 1.0)。第 T 步, không có token được che giấu。Cosine sẽ tập trung trọng lượng vào tỷ lệ giữa các区间, nơi dự đoán có lượng thông tin nhất。
+第 0 步, tất cả các token đều được che giấu( tỷ lệ 1.0) $T$步, không có token được che giấu. Cosine sẽ tập trung trọng lượng vào tỷ lệ giữa, nơi dự đoán có lượng thông tin nhất.
 
 ### Show-o2
 
@@ -112,7 +112,7 @@ masked-diffusion-unmask
 
 3. Chương trình Cosine vs lịch trình tuyến tính: theo dõi T=8 时 mỗi bước số lượng của các token không che giấu.
 
-4. Một张 512x512 của hình ảnh hiển thị là 1024 Tokens。 trong từ K=16384 时, mô hình输出 1024 * log2(16384) = 14,336 bit(khoảng 1,75 KiB) dữ liệu。 Sản xuất ổn định Diffusion 输出 512*512*24 bit = 6,291,456 bit(khoảng 768 KiB) của nguyên liệu phích số。 tỷ lệ nén là bao nhiêu? nó đã thay đổi đến chất lượng gì?
+4. Một张 512x512 của hình ảnh hiển thị là 1024 Tokens──在词语中$K=16384$时,模型输出 $1024 \cdot \log_2(16384) = 14{,}336$bit ((khoảng 1.75 KiB) của dữ liệu.
 
 5. 阅读 LlamaGen(arXiv:2406.06525) ―― Mô hình hình ảnh tự rút theo điều kiện lớp học của LlamaGen với cách tiếp cận che giấu của Show-o Có gì khác biệt?
 

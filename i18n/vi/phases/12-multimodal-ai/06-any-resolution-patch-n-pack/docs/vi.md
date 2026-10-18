@@ -60,7 +60,7 @@ Qwen2-VL  đã giới thiệu Multimodal Rotary Position Embedding。 khác vớ
 
 M-RoPE 原生提供动态分辨率,无需重新训练――Inference 时输入任意HxW 图像,patch embedder 生成H/14 x W/14 个代币,每个代币 获得自己的 (t=0, r=row, c=col) 位置,RoPE sử dụng đúng tần số quay 关注,完成──Qwen2.5-VL 和 Qwen3-VL 延续这一点──V2PE củaInternVL3 là giống nhau, chỉ theo chế độ sử dụng có thể được thay đổi kode──
 
-Không giống với AnyRes, M-RoPE trong phân giải nguyên thủy là O(H x W / P^2) Token không có tile 带来的乘法开销. Không giống với NaViT, nó vẫn mong đợi mỗi lần tiếp tục chỉ xử lý một bức ảnh.
+Không giống như AnyRes, M-RoPE ở độ phân giải nguyên sinh là $O(H \times W / P^2)$Token không có tile 带来的乘法开销. Không giống NaViT, nó vẫn mong đợi mỗi lần tiếp tục chỉ xử lý một张图像.
 
 ### NaFlex (SigLIP 2)
 

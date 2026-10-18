@@ -27,18 +27,18 @@ Flamingo Từ结的Chinchilla 70B LLM 开始──全部70B cân 保持不变─
 
 ### Tâm đơn nhận thức
 
-Đối với các hình ảnh trong lập tức, ViT sẽ tạo ra N 个 patch token.
+对于快速中的每张图像,ViT sẽ được tạo ra $N$个 patch tokens──Perceiver resampler có $K$个固定的可学习的潜伏(Flamingo 使用 $K=64$(■■) Mỗi khối mẫu lại có hai bước:
 
-1. Sự chú ý qua nhau: K 个 latents attend đến N 个 patch tokens ((Q từ latents, K / V từ patches) ⋅
+1. - Chú ý qua nhau:$K$个 latences tham dự đến $N$个 patch tokens ((Q từ laten, K/V từ patches)
 2. Lạtên 内部的自我注意 + FFN。
 
-Sau khi trải qua 6 khối mẫu lại,输出 là K=64 个 dim 1024 của các mã thông báo trực quan, bất kể ViT sinh thành bao nhiêu bản váy. 224x224 图像(196 bản váy) và 480x480 图像(900 bản váy) đều sẽ xuất ra cho 64 个 mẫu lại mã thông báo.
+经过6 个样品块 后,输出是 $K=64$Các mã thông báo hình ảnh của 1024 个 dim, bất kể ViT 生成多少补丁──224x224 图像(196补丁) và 480x480 图像(900补丁) 都会输出为64 个复制符号──
 
-Đối với video, mẫu sẽ theo thời gian ứng dụng: mỗi lần các bản vá được tạo thành 64 个 ẩn, trong khi mã hóa vị trí thời gian 让模型区分 t=0 和 t=N。 video hoàn chỉnh được biến thành T * 64 个视觉代币。
+Đối với video, mẫu sẽ theo thời gian ứng dụng: mỗi lần của các bản vá tạo ra 64 个 ẩn, trong khi mã hóa vị trí thời gian 让模型区分 $t=0$和 $t=N$完整视频 变成 $T \cdot 64$个 hình ảnh token.
 
 ### Sự chú ý qua nhau
 
-Trong mỗi m 层 giữa M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M M
+Trong kết thúc LLM của mỗi $M$层之间(Flamingo 使用 $M=4$) vào một khối quan tâm chéo bị khóa mới:
 
 ```
 x_after_llm_block = llm_block(x_before)
@@ -142,7 +142,7 @@ cross-attention-fusion
 | OBELICS | "Interleaved web corpus" | 包含 141M 个网页的开放数据集，图像和文本按阅读顺序排列 |
 | Chinchilla | "70B frozen base" | Flamingo 的冻结文本 LLM，来自 DeepMind 的 Chinchilla paper |
 | Gate schedule | "How alpha moves" | 训练期间 cross-attention gate 打开的速率 |
-| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 M=4 |
+| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 $M=4$ |
 | OpenFlamingo | "Open reproduction" | MosaicML/LAION 的 3-9B 开放 checkpoint；architecture 与 Flamingo 相同 |
 
 ## 延伸阅读

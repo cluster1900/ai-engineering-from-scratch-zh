@@ -38,10 +38,10 @@ Sự phân tách này rất quan trọng. Người suy nghĩ phải đủ lớn 
 
 两者并行运行:
 
-1. Thinker 发发出文本 Địa chỉ t_i。
-2. Người nói 消费 t_i( thông qua phát trực tuyến),并发出语音 Điểm chỉ s_i、s_{i+1}、...、s_{i+k}。
+1. Thinker 发出文本 Địa chỉ $t_i$
+2. Người nói 消费 $t_i$(via streaming),并发出语音 Địa chỉ $s_i, s_{i+1}, \ldots, s_{i+k}$
 3. Bộ giải mã giọng nói trong biểu tượng tiếng Anh đến khi tiêu thụ chúng,并发发出音频样本.
-4. Khi người nghĩ đến văn bản Địa chỉ t_{i+3} 时, Người nói 已为 t___..t_{i+2} phát 了音频。
+4. Khi người suy nghĩ đến văn bản token $t_{i+3}$时,Talker 已经为 $t_0, \ldots, t_{i+2}$streaming 已音频:
 
 ### TMRoPE  时间对齐的 đa phương tiện 位置
 

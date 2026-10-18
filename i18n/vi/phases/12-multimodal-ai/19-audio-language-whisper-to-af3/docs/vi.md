@@ -33,7 +33,7 @@ Mỗi bộ mã hóa âm thanh đều có cùng một đặc điểm bắt đầu
 2. Sử dụng cửa sổ 25ms  10ms nhảy thực hiện chuyển đổi Fourier ngắn thời gian 
 3. 取 FFT 结果的大小──
 4. 应用 Mel filter banks (thường là 80 个在 0-8000 Hz 上按 log 间隔分布的过器),映射到感知频率──
-5. 用 log compress(log(1 + x)) xử lý phạm vi động。
+5. 用 log compress$\log(1 + x)$) xử lý phạm vi động lực.
 
 Kết quả: hình dạng为 (T, 80) của 2D mảng, trong đó T là khung thời gian 数量── đối với tốc độ khung 100 Hz clip 30 giây: hình dạng为 (3000, 80)──
 

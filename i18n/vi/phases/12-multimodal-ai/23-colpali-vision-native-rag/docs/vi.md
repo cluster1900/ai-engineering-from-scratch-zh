@@ -36,28 +36,28 @@ ColPali 的修复方式:跳过 OCR,直接对页面图像做做嵌入──使用
 
 ColBERT(Khattab & Zaharia, arXiv:2004.12832) là một phương pháp lấy lại văn bản. Nó không phải là cho mỗi tài liệu sinh thành một vector, mà là cho mỗi token sinh thành một vector.
 
-- Query token  nhận được các tích hợp riêng của mình ((N_q Vectors)
-- Các mã thông báo tài liệu 获得 Embeddings(N_d Vectors, thường sẽ được lưu trữ trong cache)
-- Score = đối với các mã thông báo truy vấn 求和, mỗi mã thông báo truy vấn 取 tất cả các mã thông báo 中 cosine similarity 的最大值:Σ_i max_j cos(q_i, d_j) 』
+- Query token  nhận được các tích hợp riêng của mình$N_q$Các vector) 
+- Các mã thông báo tài liệu 获得 Embeddings($N_d$Các vector, thường sẽ được lưu trữ trong cache)
+- Score = đối với các mã thông báo truy vấn 求和, mỗi mã thông báo truy vấn 取 tất cả các mã thông báo 中 cosine similarity 的最大值:$\sum_i \max_j \cos(q_i, d_j)$
 
 Đây là hoạt động MaxSim. Mỗi mã thông báo truy vấn sẽ chọn mã thông báo phù hợp nhất. Kết quả cuối cùng là tổng cộng các giá trị này.
 
-优点: nhớ 强,能 xử lý ngữ nghĩa cấp thuật ngữ.
+优点: nhớ 强,能处理 thuật ngữ cấp độ ngữ nghĩa。缺点: mỗi tài liệu 需要 $N_d$Các vector, lưu trữ 昂贵.
 
 ### ColPali
 
 ColPali(Faysse et al., arXiv:2407.01449) sẽ áp dụng mô hình ColBERT  áp dụng cho hình ảnh。
 
-- Mỗi một trang bởi PaliGemma(ViT + ngôn ngữ)编码为补丁嵌入:每页 N_p Vectors。
-- Mỗi truy vấn người dùng (text) được编码为 truy vấn-token embed:N_q Vectors。
-- Score = Σ_i max_j cos(q_i, p_j),也就是在查询文字符号和页面图像补丁 上做MaxSim。
+- Mỗi một trang bởi PaliGemma(ViT + ngôn ngữ)编码为补丁嵌入:每页 $N_p$Các vector.
+- Mỗi truy vấn người dùng (text) được编码为 truy vấn-token embed:$N_q$Các vector.
+- Điểm = $\sum_i \max_j \cos(q_i, p_j)$, cũng là trong truy vấn-text-tokens và trang-phần-phần-phát lên làm MaxSim.
 - 通过 tổng điểm thu hồi top-k trang.
 
 Trong thời gian nhập tài liệu: dùng PaliGemma để thực hiện Embedding trên mỗi trang, lưu trữ tất cả các bản vá được nhúng vào. Trong thời gian truy vấn: dùng token truy vấn để thực hiện Embedding, dùng tất cả các trang đã được lưu trữ.
 
 优点: Trong tài liệu giàu thị giác trên, kết thúc đến kết thúc so với văn bản-RAG cao 20-40%── mỗi bộ phận bộ phận 捕获局部布局和内容──
 
-缺点: mỗi trang N_p patches × 4byte floats × D-dim Vectors = lưu trữ 增长很快──可通过 PQ / OPQ quantization 缓解──
+缺点: mỗi trang$N_p$Các bản vá × 4 byte floats × $D$-dim Vectors = lưu trữ 增长很快──可通过 PQ / OPQ định lượng hóa 缓解──
 
 ### ColQwen2 và ColSmol
 
@@ -129,7 +129,7 @@ mm-maxsim
 
 1. Một bản báo cáo hàng năm 200 trang, mỗi trang 729 bản vá,128-dimen Emb, 4byte floats──计算 khâu nguyên liệu và khâu PQ-compressed(8x) khâu lưu trữ──
 
-2. MaxSim là Σ_i max_j cos(q_i, p_j) ・・・
+2. MaxSim là $\sum_i \max_j \cos(q_i, p_j)$◊ Chuyện này và bắt được những thông tin gì đơn giản có nghĩa là tương đồng không thể bắt được?
 
 3. ColPali sẽ chỉ dẫn các trang cho các bộ váy. Nếu thay đổi theo trình độ từ  xây dựng chỉ dẫn như ColBERT, sẽ xảy ra những thay đổi gì? Có những sự thỏa hiệp nào?
 
@@ -144,7 +144,7 @@ mm-maxsim
 | Late interaction | "ColBERT-style" | 使用 per-token 或 per-patch embeddings + MaxSim 做 retrieval，而不是 single doc Vector |
 | MaxSim | "Max-over-patches" | 对每个 query token，选择 similarity 最高的 document token；跨 query 求和 |
 | Bi-encoder | "Single-vector" | 每个 document 一个 Vector；更快，但会丢失粒度 |
-| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 N_p Vectors；storage cost 增长，但 recall 提升 |
+| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 $N_p$ Vectors；storage cost 增长，但 recall 提升 |
 | Patch embedding | "Page feature" | 来自 VLM encoder 的每个 image patch 的一个 Vector，按页 cached |
 | ViDoRe | "Vision doc bench" | ColPali 用于 visual document retrieval 的 benchmark suite |
 | PQ quantization | "Product quantization" | 在缩小 storage 约 8x 的同时保持 Vector similarity 的压缩方法 |
