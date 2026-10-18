@@ -27,7 +27,7 @@
 
 请带着快速到达.路由器对预सर्ग做哈希 (例如前512代币);它询问每个复制:你有这个预सर्ग的缓存吗?.
 
-**vLLM Router**产量: 订阅 `kv.cache.block_added`事件,维护前-hash →复制索引,使用O(1) 搜索路由──没有匹配时回落到最小队列深度──
+**vLLM Router**产量: 订阅 `kv.cache.block_added`事件,维护前-hash →复制索引,用 $O(1)$搜索路由──没有匹配时回落到最低的队列深度──
 
 **llm-d router**通过ControlPlane API发布事件.
 
