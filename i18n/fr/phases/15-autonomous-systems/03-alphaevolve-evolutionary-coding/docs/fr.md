@@ -58,7 +58,7 @@ Le système de révision de l'AlphaEvolve: utilisez un évaluateur de LLM qui n'
 
 L'LLM peut générer des modifications qui peuvent être compilées, en termes de langage, et qui semblent raisonnables.
 
-En revanche, l'évaluateur va capturer la fiction de LLM. Les LLM vont affirmer avec confiance qu'une fonction est O (n) n en cas de limite, mais elle est en fait O (n) n.
+En revanche, l'évaluateur va capturer la fiction de la LLM.$O(n \log n)$, mais il est en fait $O(n^2)$; le référentiel de l'horloge murale va faire régler le problème.
 
 ### AlphaEvolve dans la pile de frontière
 

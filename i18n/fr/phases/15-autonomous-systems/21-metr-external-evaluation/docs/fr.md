@@ -30,7 +30,7 @@ Cette partie de ce cours concerne le méthodologie de calcul de l'horizon, une p
 
 1. 收集一个任务套件,覆盖分钟级到小时级的专家完成时间──当前套件:HCAST(180+个任务)、RE-Bench(71个任务)、SWAA──
 2. 让模型运行每个任务;记录成功或失败──
-3. 拟合一条 逻辑曲线:P(success) 是 log(专家完成时间) 的函数──
+3. 拟合一条 courbe logistique:$P(\text{success})$Oui $\log(\text{专家完成时间})$La fonction de la fonction
 4. L'horizon est le succès = 0,5 de la période de spécialisation.
 
 La forme logistique-fit est adaptée, car il existe généralement une relation croissante et proche entre la capacité et la difficulté de la tâche. 50% de points est une option.
@@ -80,7 +80,7 @@ a5-horizon-fit
 
 ## Utilisez-le
 
-`code/main.py`基于合成结果集, réalisé logistique de réussite des tâches avec logement 专家时间. 报告50% horizon  METR 的主指标) 10% horizon 保守) 及90% horizon 乐观) ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅                                                                                                                                                                                                   
+`code/main.py`Œuvre de recherche et développement$\log(\text{expert time})$Il est également démontré que le taux de réussite est évalué par le contexte des jeux.
 
 ## Je le livre.
 
