@@ -91,20 +91,20 @@ graph LR
 
 **Cosine similarity**: दो वेक्टर 之间角 के余弦值── सीमा से -1(相反) तक 1( बिल्कुल समान)── भूलना आयाम, केवल दिशा पर ध्यान देना── यह RAG का默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: मूल आंतरिक उत्पाद── बड़े वेक्टर अधिक उच्च अंक प्राप्त करेंगे── जब परिमाण  जानकारी के साथ उपयोगी होगा
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**:वेक्टर स्थान मध्य के सीधी दूरी── दूरी越小 = 越相似── परिमाण 差异敏感──
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 कॉसाइन समानता मानक चयन है। यह परिमाण के माध्यम से 归一化,能优雅处理不同长度的文件── जब कोई कहता है वेक्टर खोज 时, लगभग हमेशा कॉसाइन समानता को संदर्भित करता है।

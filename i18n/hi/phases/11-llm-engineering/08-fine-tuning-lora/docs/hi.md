@@ -10,7 +10,7 @@
 
 ## 学习目标
 -                                                                                                                                                                                                                                                               
-- 計算 LoRA 相比 पूर्ण-अच्छी तरह से समायोजित करने के लिए 参数节省:rank r、d_model 维度时, प्रशिक्षण 2*r*d 个参数 है, बजाय d^2
+- 计算 LoRA 相比 पूर्ण ठीक-ट्यूनिंग 的参数节省:rank $r$$d_{\text{model}}$维度时, प्रशिक्षण है $2 \cdot r \cdot d$个参数, बजाय $d^2$
 - QLoRA प्रयोग ((4-बिट क्वांटिज़्ड बेस + LoRA एडाप्टर) फाइन-ट्यून एक मॉडल, make its适配消费级 GPU मेमोरी
 - उपयोग करने के लिए तैनाती, और तुलना करने के लिए लोरा वजन 合并回 आधार मॉडल                                                                                                                                                                                                                                                    
 
@@ -34,21 +34,21 @@ A100 80GB 勉强能装下──两张 A100 在云提供商上每小时花费 $3-
 
 数学如下── एक मानक रैखिक परत 计算:
 
-```
+```math
 y = Wx
 ```
 
-इनमें से W एक d_out x d_in मैट्रिक्स है। 4096x4096 ध्यान प्रक्षेपण के लिए, यह 16,777,216 个参数 है।
+उनमें से $W$एक है$d_{\text{out}} \times d_{\text{in}}$मैट्रिक्स ∙ 4096x4096 ध्यान प्रक्षेपण के लिए, यह 16,777,216 个参数 ∙
 
-लोरा 结 W,并添加一个低排分解:
+लोरा 结 $W$,并添加一个低排分解:
 
-```
+```math
 y = Wx + BAx
 ```
 
-इनमें से बी है (d_out x r), ए है (r x d_in) ・ रैंक r 远小于 d - आमतौर पर 8、16 या 32。
+उनमें से $B$$(d_{\text{out}} \times r)$,$A$$(r \times d_{\text{in}})$❖ रैंक$r$远小于 $d$-- आमतौर पर 8 ≈ 16 या 32 ≈ है।
 
- 4096x4096 परत के लिए ऊपर का r=16:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $r=16$:
 - मूल तत्व:4096 x 4096 = 16,777,216
 - LoRA 参数:(4096 x 16) + (16 x 4096) = 65,536 + 65,536 = 131,072
 -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
@@ -73,18 +73,18 @@ graph LR
 
 ### स्केलिंग फैक्टरः अल्फा
 
-लोरा  आउटपुट के प्रभाव की डिग्री पर निम्न स्तर के अपडेट को नियंत्रित करने के लिए एक स्केलिंग कारक अल्फा को पेश करता हैः
+लोरा  एक स्केलिंग कारक $\alpha$, आउटपुट पर प्रभाव की डिग्री पर निम्न स्तर की अद्यतन को नियंत्रित करने के लिएः
 
-```
-y = Wx + (alpha / r) * BAx
+```math
+y = Wx + \frac{\alpha}{r} \cdot BAx
 ```
 
-जब अल्फा = r 时, स्केलिंग 1x है──当 अल्फा = 2r(常见默认值)
+$\alpha = r$时, स्केलिंग है 1x.$\alpha = 2r$(常见默认值) 时, स्केलिंग 2x है. यह हाइपरपरमैटर 基本 सीखने की दर से स्वतंत्र है.
 
 实践建议:
-- alpha = 2 * rank is常见社区约定(原始论文在多数实验中使用alpha = rank)
-- अल्फा = रैंक  प्रदान 1x स्केलिंग, संरक्षित लेकिन स्थिर
-- अधिक उच्च अल्फा का अर्थ है हर कदम से अधिक अद्यतन, हो सकता है तेजी से प्राप्त, भी हो सकता है कारण अस्थिरता
+- $\alpha = 2 \cdot \text{rank}$हैवांसुरी समुदाय नियमन$\alpha = \text{rank}$)
+- $\alpha = \text{rank}$提供 1x स्केलिंग, संरक्षित लेकिन स्थिर
+- अधिक ऊंचा $\alpha$मतलब हर कदम से बड़े अपडेट, हो सकता है तेजी से प्राप्त, भी हो सकता है अस्थिरता के लिए नेतृत्व
 
 ### लोरा को कहाँ लागू किया जाए
 
@@ -101,7 +101,7 @@ y = Wx + (alpha / r) * BAx
 
 ### रैंक चयन
 
-रैंक r  नियंत्रण अनुकूलन की प्रदर्शन क्षमताः
+पद$r$ नियंत्रण अनुकूलन की अभिव्यक्ति क्षमताः
 
 | Rank | Trainable Params (per layer) | Best For |
 |------|---------------------------|----------|
@@ -112,7 +112,7 @@ y = Wx + (alpha / r) * BAx
 | 64 | 524,288 | 大多数任务收益递减 |
 | 128 | 1,048,576 | 很少值得使用 |
 
-Hu et al. ⇒ दिखाया, सरल कार्य के लिए, r=4 已经能够捕获大部分适应──r=8 和 r=16 实践中最常见的选择──r=64 很少改善质量,并开始失去洛拉的记忆优势──
+ह्यू और अन्य 表明, सरल कार्यों के लिए,$r=4$已能捕获大部分适应──$r=8$和 $r=16$                                                                                                                                                                                                                                                              $r=64$ बहुत कम गुणवत्ता में सुधार,并开始失去洛拉的记忆 优势──
 
 ### QLoRA: 4-बिट क्वांटिज़ेशन + लोरा
 
@@ -145,7 +145,7 @@ QLoRA के पास तीन तकनीकी योगदान हैं
 | QLoRA r=16 (NF4) | 47.5 | 6.61 | 13.4 |
 | QLoRA r=64 (NF4) | 48.1 | 6.70 | 14.2 |
 
-लोरा में r=16 , मेज़ॉरिटी बेंचमार्क ऊपर पूर्ण ठीक-ट्यूनिंग से तुलना में 1% तक भिन्न नहीं है।
+लोरा $r=16$时, मे मे बहुमत बेंचमार्क  ऊपर पूर्ण ठीक-ट्यूनिंग से 相差不到 1%──QLoRA 在 $r=16$时又损失零点几百分点──QLoRA在 $r=64$时基本匹配 पूर्ण-अच्छी तरह से समायोजित, साथ ही साथ कम 90% स्मृति
 
 ### वास्तविक दुनिया की लागत
 
@@ -180,7 +180,7 @@ QLoRA की लागत एक भोजन तक नहीं है। य�
 
 1. **保持分离**: लोड बेस मॉडल, उस पर लोड एडाप्टर──为不同任务切换适配器──这就是用一个基础模型 服务多个细调变的方式──
 
-2. **永久合并**: गणना W' = W + (alpha/r) * BA,并把结果保存为一个新的全模型──原始模型与原始模型相合模型 大小相同──没有推断过费──没有适配器 需要管理──
+2. **永久合并**: गणना $W' = W + (\alpha/r) \cdot BA$,并把结果保存为一个新的全模型――原始模型与合并模型 大小相同――没有推断过费――没有适配器 需要管理――
 
 यदि सेवा एकाधिक कार्य करते हैं, तो एक विशेष मॉडल तैनात करना, तो एक साथ।
 
@@ -524,11 +524,11 @@ model.save_pretrained("./lora-adapter")
 | LoRA | "Efficient fine-tuning" | Low-Rank Adaptation：冻结 base weights，训练两个小 matrices A 和 B，其乘积近似完整 weight update |
 | QLoRA | "Fine-tune on a laptop" | Quantized LoRA：以 4-bit NF4 加载 base model，在其上用 fp16 训练 LoRA adapters，从而让 7B fine-tuning 能在 6GB VRAM 中完成 |
 | Rank (r) | "How much the model can learn" | A 和 B matrices 的内部维度；控制表达能力与参数量之间的权衡 |
-| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；alpha/r 会缩放 adaptation 对 final output 的贡献 |
+| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；$\alpha/r$ 会缩放 adaptation 对 final output 的贡献 |
 | NF4 | "4-bit quantization" | Normal Float 4：一种 4-bit data type，其 quantization levels 位于 normal distribution quantiles 上，对 Neural Network weights 最优 |
 | Adapter | "The small trained part" | 作为单独文件保存的 LoRA A 和 B matrices（10-100MB），可以加载到 base model 的任意副本之上 |
 | Target modules | "Which layers to LoRA" | 注入 LoRA adapters 的特定 linear layers（q_proj、v_proj 等） |
-| Merging | "Bake it in" | 计算 W + (alpha/r) * BA 并替换原始 weight，从而消除 inference 时的 adapter overhead |
+| Merging | "Bake it in" | 计算 $W + (\alpha/r) \cdot BA$ 并替换原始 weight，从而消除 inference 时的 adapter overhead |
 | Paged optimizers | "Don't OOM during training" | 当 GPU memory 耗尽时，将 optimizer states（Adam momentum、variance）offload 到 CPU |
 | Catastrophic forgetting | "Fine-tuning broke everything else" | 更新所有 weights 导致 model 丢失先前学到的能力 |
 

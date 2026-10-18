@@ -89,7 +89,7 @@ graph LR
 - Jina-Reranker-v2 बहुभाषीःखुला वजन, समर्थन 100+ 语言
 - bge-renanker-v2-m3: खुली-वजन, मजबूत आधार रेखा
 - क्रॉस-एन्कोडर/ms-marco-MiniLM-L-6-v2: ओपन-वेट,可在CPU上运行,适合原型
-- ColBERTv2 / Jina-ColBERT-v2: देर से बातचीत बहु-वेक्टर रेनकर, में评分时时是 O(टोकन) नहीं O(डॉक्स)
+- ColBERTv2 / Jina-ColBERT-v2: देर से बातचीत बहु-वेक्टर रेंकर, में评分时时是 $O(\text{tokens})$नहीं $O(\text{docs})$
 
 ### क्वेरी परिवर्तन
 

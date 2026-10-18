@@ -1017,4 +1017,4 @@ LangChain 让你编写一个提示模板,并跨供应商 运行它──这是�
 - [Shin et al., 2023 -- "Prompt Engineering a Prompt Engineer"](https://arxiv.org/abs/2311.05661)एलएलएम का उपयोग स्वयं अनुकूलन प्रम्प्ट्स, मेटा प्रम्प्टिंग का आधार है
 - [LMSYS Chatbot Arena](https://chat.lmsys.org/)LLMs का वास्तविक समय अंधा परीक्षण तुलना मंच, आप एक ही त्वरित परीक्षण के माध्यम से कर सकते हैं,并投票选择更好的答案
 - [DAIR.AI Prompt Engineering Guide](https://www.promptingguide.ai/)详尽的快速 技术目录,包含示例零射、少射、CoT、ReAct、自律性; 实践者用以更广泛的理解快速工程 表面的参考资料
-- [Anthropic prompt library](https://docs.anthropic.com/en/prompt-library)उपयोग के मामले के अनुसार 策划 के ज्ञात-अच्छी तरह से संकेत; उत्पादन में वितरित किए जाने वाले संरचनात्मक पैटर्न प्रदर्शित किये गये।
+- [Claude 提示词编写最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)Anthropic 关于提示词结构的指南,附有具体例,取代了前任的提示图书馆──

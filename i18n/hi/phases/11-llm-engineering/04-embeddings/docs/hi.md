@@ -97,20 +97,20 @@ MTEB(मॉसिव टेक्स्ट एम्बेडिंग बें
 
 **Cosine similarity**: दो वेक्टर 之间角 के अतिरिक्त弦值── सीमा -1 से 1 तक 相反 तक 方向 समान)                                                                                                                                                                                                                                                 
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: दो वेक्टरों का मूल इनपुट। जब वेक्टरों को एकीकरण किया गया है, तो यह कॉसिन की समानता के साथ होता है।
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **Euclidean (L2) distance**: वेक्टर  अंतरिक्ष में सीधी रेखा दूरी 越小 = 越相似 ⋅ बड़े अंतर के प्रति संवेदनशील ⋅ अंतरिक्ष में पूर्ण स्थान महत्वपूर्ण है, न कि केवल दिशा महत्वपूर्ण है ⋅ उपयोग करते समय
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 何時使用哪一种:
@@ -131,7 +131,7 @@ L2(a, b) = sqrt(sum((a_i - b_i)^2))
 2.  शीर्ष परतें दुर्लभ  दूर दूरी के समूहों के बीच लंबी दूरी की कड़ी स्थापित करें
 3.                                                                                                                                                                                                                                                               
 4.  खोज शीर्ष से शुरू, लालच नीचे और धीरे धीरे विस्तृत
-5. 以 O(log n) समय वापस निकटतम शीर्ष-के परिणाम, बजाय O(n)
+5. 以 $O(\log n)$时间 वापसी करीबी शीर्ष-के परिणाम, बजाय $O(n)$
 
 एचएनएसडब्ल्यू के साथ बहुत कम सटीकता दर का नुकसान (आमतौर पर 95-99% याद) के बदले में बड़ी गति बढ़ जाती है।
 
@@ -484,7 +484,7 @@ embeddings = model.encode(["semantic search query", "another document"])
 | Embedding | “文本到数字” | 一种 dense Vector，其中几何接近性编码语义相似性 |
 | Word2Vec | “最早的经典 Embedding” | 2013 年通过预测上下文词学习 word vectors 的模型；证明 Vector arithmetic 可以编码含义 |
 | Cosine similarity | “两个 Vectors 有多相似” | Vectors 夹角的余弦值；1 = 方向相同，0 = 正交，-1 = 相反 |
-| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 O(log n) 的 approximate nearest neighbor search |
+| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 $O(\log n)$ 的 approximate nearest neighbor search |
 | Bi-encoder | “分开 Embedding，快速比较” | 将 query 和 document 独立编码为 Vectors；支持预计算和快速 retrieval |
 | Cross-encoder | “慢但准确的 reranker” | 让 query-document pair 联合通过完整模型处理；准确率更高，但无法预计算 |
 | Matryoshka embeddings | “可截断的 Vectors” | 经过训练的 Embeddings，使前 N 个维度捕捉最重要的信息，从而支持可变大小存储 |
