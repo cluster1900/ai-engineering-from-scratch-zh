@@ -82,8 +82,8 @@ No corpo marrom, esta linha de base pode alcançar uma precisão de cerca de 85%
 
 Para a probabilidade conjunta da sequência 建模:
 
-```
-P(tags, words) = prod P(tag_i | tag_{i-1}) * P(word_i | tag_i)
+```math
+P(\text{tags}, \text{words}) = \prod_i P(\text{tag}_i \mid \text{tag}_{i-1}) \cdot P(\text{word}_i \mid \text{tag}_i)
 ```
 
 两张表:probabilidades de transição ((给定前标的标签) 和排放概率 ((给定标签的词) 』 用带拉普拉斯平滑的数 来估计二者── 用 Viterbi 解码(在标签网上做动态编程) 』

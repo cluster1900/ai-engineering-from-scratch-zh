@@ -21,8 +21,8 @@ A verdadeira questão significativa é como lidar com n-gram não vistos. O mode
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`Fixação`n`(normalmente trigramas usando 3,4 gramas usando 4)
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。** qualquer treinamento que não tenha sido realizado em n-gramas, obtém zero probabilidades  Uma pesquisa de 2007 sobre o corpus de Brown descobriu que, mesmo em modelos de 4 gramas, 30% de 4 gramas não foram realizadas em treino   não fizeram suavização, não conseguiram ser avaliadas em nenhum texto real 
@@ -40,8 +40,8 @@ Kneser-Ney's洞见很深──"San Francisco"是常见大公布──"San Franci
 
 **评估：perplexity。**Em um conjunto de testes, cada palavra tem um índice de probabilidade média negativa de logar.
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 

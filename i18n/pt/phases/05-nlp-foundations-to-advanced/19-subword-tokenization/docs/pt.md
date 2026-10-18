@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-O que é o "merger" é um "merger" (ou "merger") que é um "merger" (ou "merger") que é um "merger" (ou "merger") que é um "merger" (ou "merger") ou "merger" (ou "merger").
+朴素实现是 $O(n \cdot \lvert \text{merges} \rvert)$ Produção de tokens (HF Tokenizers) usando a busca de rankings de fusão e filas de prioridade,
 
 ### 步骤 3: 实践中的 SentencePiece
 

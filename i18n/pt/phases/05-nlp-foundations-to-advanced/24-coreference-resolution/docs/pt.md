@@ -34,7 +34,7 @@ Por que é importante em 2026:
 **Architectures.**
 
 1. **Rule-based (Hobbs, 1978).**Baseado na resolução do pronome de árvore sintática, use regras gramaticais. Muito boa linha de base.
-2. **Mention-pair classifier.**Para cada um dos pontos de referência, a pré-experimentação de se são mais importantes é feita através do fechamento transitivo.
+2. **Mention-pair classifier.**Para cada referência$(m_i, m_j)$, prevê se são mais básicas.
 3. **Mention-ranking.**Para cada menção, 排序候选前史 (incluindo 無前史) ︎
 4. **Span-based end-to-end (Lee et al., 2017).**Transformador encoder──枚举所有长度上限内的候选 span──预测 menção pontuação──为每 span 预测 antecedent-probability──贪心聚类──现代默认方案──
 5. **Generative (2024+).**Prompt 一个 LLM:Lista todos os pronúncios neste texto e seus antecedentes. 在简单案例上效果不错,但在长文档和少见引用上会吃力──

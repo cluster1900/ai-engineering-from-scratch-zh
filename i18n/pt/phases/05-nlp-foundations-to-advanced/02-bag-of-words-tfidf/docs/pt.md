@@ -21,9 +21,11 @@ Este curso vai começar a construir um saco de palavras, depois construir um TF-
 
 **TF-IDF**Uma palavra que aparece em cada documento não é alta, por isso, reduz o seu peso. Uma palavra que aparece muito raramente em cada documento é sinal, por isso, reduz o seu peso.
 
-```
-TF-IDF(w, d) = TF(w, d) * IDF(w)
-             = count(w in d) / |d| * log(N / df(w))
+```math
+\begin{aligned}
+\text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
+\end{aligned}
 ```
 
 Entre eles `TF`É a frequência do termo em arquivo,`df`É a frequência do documento ((( há muitos documentos contendo este termo),`N`É o número total de arquivos.`log`O poder de manter o peso das palavras é limitado.
