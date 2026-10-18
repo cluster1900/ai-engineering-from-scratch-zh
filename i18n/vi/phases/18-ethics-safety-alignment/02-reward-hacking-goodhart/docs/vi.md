@@ -28,9 +28,11 @@ Sự xuất hiện ban đầu của Goodhart là: Khi một biện pháp trở t
 
 Gao et al. 给出了一个功能形式――令 `d = sqrt(KL(pi || pi_init))`❖令`R_proxy(d)`Để trả tiền cho người đại diện,`R_gold(d)`Vì tiền thưởng vàng...
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 Trong số đó `beta_gold > beta_proxy`Cả hai đều từ 0 KL lên lên, cả hai đều đạt đến đỉnh, nhưng đỉnh vàng còn gần hơn điểm gốc.`d`上, ngay cả khi proxy  tiếp tục tăng, vàng cũng sẽ giảm xuống mức cơ sở 以下──proxy-gold gap trong BoN sampling、PPO 和 SFT-to-best 上都呈现相同的签名──

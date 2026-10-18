@@ -28,11 +28,11 @@ Red-teaming 过去 là một hoạt động thủ công. Một số ít chuyên 
 
 循环, đối với k trong 1..K:
 1. 用目标 G 和迄今为止的 (prompt, response) cặp 历史来 prompt A。
-2. A 输出一个新的提示 p_k。
-3. sẽ gửi cho T; nhận được phản ứng r_k。
-4. J 根据目标对 (p_k, r_k) 打分──
+2. Một 输出 một prompt mới $p_k$
+3. sẽ$p_k$ gửi đến T; nhận được phản ứng $r_k$
+4. J 根据目标对 $(p_k, r_k)$打分──
 5. Nếu điểm số >= ngưỡng,则停止  已找到 jailbreak。
-6. Nếu không, sẽ (p_k, r_k) 追加到 A 的历史中;继续──
+6. 否则,将 $(p_k, r_k)$追加到 A 的历史中; tiếp tục。
 
 经验结果(NeurIPS 2023): tỷ lệ thành công của cuộc tấn công của GPT-3.5-turbo、Llama-2-7B-chat > 50%; Success required average query số trong 10-20 范围内。
 

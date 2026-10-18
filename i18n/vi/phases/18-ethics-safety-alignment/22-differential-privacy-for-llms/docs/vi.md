@@ -19,8 +19,11 @@ LLM 会记忆──Carlini et al. 2021 cho thấy, mô hình ngôn ngữ sản x
 ## 概念
 ### (ε, δ) - sự riêng tư khác biệt
 
-Nếu đối với bất kỳ hai chỉ khác nhau một tập hợp dữ liệu mẫu, cũng như bất kỳ sự kiện S, một thuật toán ngẫu nhiên M 满足:
-P(M(D) trong S) <= e^ε * P(M(D') trong S) + δ。
+Nếu đối với bất kỳ hai chỉ khác nhau một tập hợp dữ liệu mẫu, và bất kỳ sự kiện $S$, một thuật toán tự nhiên $M$满足以下条件,则称其具有 $(\varepsilon, \delta)$- Hình ảnh cá nhân:
+
+```math
+P(M(D) \in S) \le e^{\varepsilon} \cdot P(M(D') \in S) + \delta.
+```
 
 解释:输出分布足够接近 (由 ε 参数化) , vì vậy bất kỳ đóng góp của một cá nhân nào cũng không thể được đưa ra một cách đáng tin cậy trừ khi có ngoại lệ xảy ra với tỷ lệ δ.
 
@@ -30,7 +33,7 @@ Abadi et al. 2016。标准流程:
 1. 采样一个小批量.
 2. 计算 mỗi ví dụ gradient。
 3. Để cắt giảm mỗi gradient trên mỗi ví dụ  cắt xuống giá trị C.
-4. Đối với các gradient sau cắt 求和,并加入 std 为 σ * C của tiếng ồn Gaussian.
+4. Đối với các gradient sau cắt 求和,并加入 std 为$\sigma \cdot C$của tiếng Gaussian 
 5. Sử dụng ồn ồn và đến cập nhật các tham số.
 
 隐私成本由会计师跟踪(Moments 会计师、Rényi DP会计师)                                                                                                                                                                                                                                                  
@@ -79,9 +82,9 @@ an-dp-clip-noise
 本课会产出 `outputs/skill-dp-audit.md` Đưa ra một tuyên bố DP của một mô hình ngôn ngữ được triển khai, nó sẽ kiểm tra: ((ε, δ) giá trị, sử dụng kế toán, giao thức đánh giá MIA, cũng như liệu nó đã đánh giá các vector tín dụng-trả nhiễm hay không.
 
 ## 练习
-1. 运行 `code/main.py`◊扫过 σ ∈ {0.5, 1.0, 2.0},并报告 (ε, δ) - chính xác 权衡──识别效用崩的临界点──
+1. 运行 `code/main.py`  $\sigma \in \lbrace 0.5, 1.0, 2.0 \rbrace$,并报告 (ε, δ) - chính xác 权衡──识别效用崩的临界点──
 
-2. 实现 Canary 插入和日志损失测试――测量在 σ = 1.0 时,DP-SGD 前后的检测率──
+2. 实现 Canary 插入和日志-loss test──测量在 $\sigma = 1.0$时,DP-SGD 前后的检测率──
 
 3. 阅读 Nasr et al. 2025 关于训练数据提取的内容──为什么提取成功不会在中等 ε下崩?
 

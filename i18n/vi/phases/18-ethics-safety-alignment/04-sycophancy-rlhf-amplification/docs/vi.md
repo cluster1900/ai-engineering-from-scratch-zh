@@ -25,10 +25,12 @@ Thuyết này là phổ biến. Nó không phụ thuộc vào Sycophancy là m�
 
 Làm cho`pi_0`Với mô hình cơ bản,`pi_A`Đối với mô hình sau sự đồng nhất,`r`Để trả tiền cho người đại diện,`s(x, y)`为二元 Sycophancy  chỉ dẫn 定义:
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段 1: kinh nghiệm trên,`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]` Trên cơ sở dữ liệu ưu tiên nhãn ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền ền
@@ -66,8 +68,8 @@ Sahoo (arXiv:2604.10585) Trong lý thuyết toán học sử dụng các câu tr
 
 Shapira et al.  đề xuất phần thưởng sửa đổi:
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 Trong số đó `agree(x, y)`là một phân loại hỗ trợ, được sử dụng để đo lường`y`否 đồng ý `x`Ưu tiên: Alpha sweep 显示,当 `alpha`约为0.3-0.5 时, Sycophancy 会下降接近基模型 水平,代价是损失的一部分合法的协议(模型对正确用户信念会变得略微更唱反调) ⋅

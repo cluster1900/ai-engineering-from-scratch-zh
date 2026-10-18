@@ -18,20 +18,20 @@
 
 Mục tiêu RLHF:
 
-```text
-max_pi E_{x,y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 Có một giải pháp tốt nhất:
 
-```text
-pi*(y|x) = (1/Z(x)) * pi_ref(y|x) * exp(r(x, y) / beta)
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left(\frac{r(x, y)}{\beta}\right)
 ```
 
 Do đó, phần thưởng được định nghĩa bởi chính sách tối ưu và tỷ lệ giá trị tham chiếu:
 
-```text
-r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
+```math
+r(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 Đưa nó vào khả năng ưu tiên Bradley-Terry sau đó, chức năng phân vùng`Z(x)`Sẽ mất đi, vì nó chỉ phụ thuộc vào`x` còn lại là một sự mất mát chỉ có các tham số chính sách, không còn cần mô hình thưởng  Đó là DPO 
@@ -42,11 +42,11 @@ r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
 
 ### DPO (Rafailov et al., 2023)
 
-```text
-L_DPO = -log sigmoid(
-  beta * log(pi(y_w | x) / pi_ref(y_w | x))
-  - beta * log(pi(y_l | x) / pi_ref(y_l | x))
-)
+```math
+L_{\text{DPO}} = -\log \sigma\!\left(
+  \beta \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
+  - \beta \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}
+\right)
 ```
 
 Có thể là một nơi sai lầm:
@@ -59,8 +59,8 @@ Có thể là một nơi sai lầm:
 
 Tích thích danh tính Optimization sử dụng xác suất ưu tiên Ước tính bản đồ danh tính  thay thế log-sigmoid。 mất  chuyển thành mục tiêu hạn chế Ước tính lỗi vuông:
 
-```text
-L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x)) - 1/(2 beta))^2
+```math
+L_{\text{IPO}} = \left( \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} - \frac{1}{2\beta} \right)^2
 ```
 
 margin 被 `1/(2 beta)`限定── ưu tiên sức mạnh với sự khác biệt trong phần thưởng ngầm 成比例── sẽ không bị phá vỡ──
@@ -69,8 +69,8 @@ margin 被 `1/(2 beta)`限定── ưu tiên sức mạnh với sự khác bi�
 
 Kahneman-Tversky Optimization  hoàn toàn bỏ qua cặp 结构。 cho một sản xuất độc lập, cũng như một tín hiệu                                                                                                                                                                                                                                                
 
-```text
-v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
+```math
+v(x, y) = \sigma\!\left(\beta \log \frac{\pi(y \mid x)}{\pi_{\text{ref}}(y \mid x)} - z_{\text{ref}}\right)
 ```
 
 Không đối với lợi nhuận và tổn thất Sử dụng khác nhau trọng lượng (tránh mất)                                                                                                                                                                     
@@ -79,12 +79,12 @@ Không đối với lợi nhuận và tổn thất Sử dụng khác nhau trọn
 
 Simple Preference Optimization 让训练信号与生成过程对齐―― hoàn toàn di chuyển chính sách tham chiếu,并按长度归纳日志概率:
 
-```text
-L_SimPO = -log sigmoid(
-  (beta / |y_w|) * log pi(y_w | x)
-  - (beta / |y_l|) * log pi(y_l | x)
-  - gamma
-)
+```math
+L_{\text{SimPO}} = -\log \sigma\!\left(
+  \frac{\beta}{|y_w|} \log \pi(y_w \mid x)
+  - \frac{\beta}{|y_l|} \log \pi(y_l \mid x)
+  - \gamma
+\right)
 ```
 
 Sử dụng margin `gamma`Để ổn định tập luyện. Dòng độ chuyển đổi chuyển đổi sử dụng DPO long-bias mode thất bại`y_w`会在构建带来更大的日志-prob gap)
@@ -93,9 +93,11 @@ Sử dụng margin `gamma`Để ổn định tập luyện. Dòng độ chuyển
 
 Odds-Ratio Preference Optimization trong tiêu chuẩn SFT âm log-choli khả năng 上添加一个偏好术语:
 
-```text
-L_ORPO = L_NLL(y_w) + lambda * L_OR
-L_OR = -log sigmoid(log(odds(y_w) / odds(y_l)))
+```math
+\begin{aligned}
+L_{\text{ORPO}} &= L_{\text{NLL}}(y_w) + \lambda L_{\text{OR}} \\
+L_{\text{OR}} &= -\log \sigma\!\left(\log \frac{\text{odds}(y_w)}{\text{odds}(y_l)}\right)
+\end{aligned}
 ```
 
 Không có chính sách tham chiếu, thuật ngữ SFT là một điều chỉnh. Từ mô hình cơ bản đến mô hình phù hợp chỉ cần một giai đoạn đào tạo.
