@@ -24,7 +24,7 @@
 
 ### 核心技巧: Geri kalan vektör kvantizasyonu (RVQ)
 
-Büyük bir kod defteri kullanmak yerine, iyi kalite elde etmek için milyonlarca kod gerekebilir.**RVQ**Birinci kod kitabı 量化エンコーディング 输出; ikinci 量化残留;依此类推── her kod kitabı 1024 代码書──8 代码簿 = 1024^8 = 10^24 的有效词表──
+Büyük bir kod defteri kullanmak yerine, iyi kalite elde etmek için milyonlarca kod gerekebilir.**RVQ**Birinci kod kitabı 量化エンコード器 输出; ikinci 量化残留;依此类推──各代簿有1024 代码卷──8 代码簿 = $1024^8 = 10^{24}$Çıkışlı bir ifade.
 
 Sonuç olarak, dekodör her bir seçilen kodun yeniden oluşturulmasını bekler.
 
@@ -130,8 +130,8 @@ Semantik kod kitabı 0 ile WavLM 对齐. Sözcük-semantik Transformer,词表比
 
 Mimi'nin 12.5 Hz × 8 kod defteri için, bir 10 saniyelik 语音片段:
 
-```
-N_tokens = 10 * 12.5 * 8 = 1000 tokens
+```math
+N_{\text{tokens}} = 10 \times 12.5 \times 8 = 1000 \text{ tokens}
 ```
 
 1000 Token Transformer için çok küçük bir üst aşağı bölümdür. 256M  параметрli bir Transformer, modern GPU'da 10 saniyelik bir ses üretimi yapabilir.

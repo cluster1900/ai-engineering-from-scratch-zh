@@ -37,7 +37,7 @@ Bir 10 saniye 16 kHz sesli bir parça vardır. Bir bir parça almak istiyorsun. 
 
 ### WER: bir sayı
 
-**Word Error Rate**= `(S + D + I) / N`, içinde S= değiştir, D= kaldır, I=插入, N= references文文本词数──它对应词级 Levenshtein edit distance──越低越好──WER 越低越好──WER 越低于20% 通常不可用;低于5%对朗读语音而言达到人类水平──2026年标准基准 数字:
+**Word Error Rate**= $(S + D + I) / N$, içinden $S$= yerine,$D$= kaldırma,$I$=插入,$N$= Reference text text text word number。 it对应词级 Levenshtein edit distance──越低越好──WER 越低越好──WER 越低越低越好──WER 越低于20% 通常不可用;低于5% 越低于2026年标准基准数字:
 
 | Model | LibriSpeech test-clean | LibriSpeech test-other | Size |
 |-------|------------------------|------------------------|------|

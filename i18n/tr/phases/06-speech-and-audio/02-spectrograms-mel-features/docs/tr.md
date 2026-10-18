@@ -23,7 +23,7 @@ Mel spektrogramı  Daha fazla ilerleme. İnsanın sayısal olarak algılama alan
 
 **Log-magnitude.**Çiğ büyüklük 跨越 5-6 个量级──使用 `log(|X| + 1e-6)`Ya da`20 * log10(|X|)`Dönemsel aralığı sıkıştırmak için, her üretim borusunun çiğ büyüklük yerine, log büyüklüğü kullanılması gerekir.
 
-**Mel scale.**Hz Orta frekans `f`- Evet .`m = 2595 * log10(1 + f / 700)`映射到 mel `m`◊ Bu harita 1 kHz aşağıda büyüklükte linear, 1 kHz üzerinde büyüklükte sayısal ◊ kapsamı 08 kHz 80 mel binleri standart ASR giriş ◊
+**Mel scale.**Hz Orta frekans `f`- Evet .$m = 2595 \cdot \log_{10}(1 + f / 700)$映射到 mel `m`◊ Bu harita 1 kHz aşağıda büyüklükte linear, 1 kHz üzerinde büyüklükte sayısal ◊ kapsamı 08 kHz 80 mel binleri standart ASR giriş ◊
 
 **Mel filterbank.**Bir grup mel ölçeğinde yukarıdaki sırayla üçgenli filtreler vardır. Her filtrenin ağırlıklı toplamı, birbirine yakın FFT kutularıdır.
 
