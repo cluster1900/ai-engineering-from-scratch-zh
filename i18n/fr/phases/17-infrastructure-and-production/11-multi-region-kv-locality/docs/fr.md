@@ -27,7 +27,7 @@ Le programme de formation en droit multi-régions est un service de cache 问题
 
 Retour à la réplique: vous avez ce préfixe cache ?── Réplique dans la distribution et la déforestation de blocs 时, via pub/sub canal 发布 KV-cache events── Router 选择匹配的复制品;如果没有匹配,就回落到基于 GPU-util的绑定破解器──
 
-**vLLM Router**(Rust,2026 production-stack): 订阅 `kv.cache.block_added`événements,维护 préfixe-hash → index de réplication, us O(1) recherche 路由──没有匹配时回落到最小队列深度──
+**vLLM Router**(Rust,2026 production-stack): 订阅 `kv.cache.block_added`événements,维护 préfixe-hash → index de réplication,用 $O(1)$Il n'y a pas de correspondance.
 
 **llm-d router**: le même modèle,Kubernetes-native.
 
