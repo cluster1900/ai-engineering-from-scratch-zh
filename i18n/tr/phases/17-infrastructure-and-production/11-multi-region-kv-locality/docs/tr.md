@@ -27,7 +27,7 @@ Ayrıca, takımınız bir DR planı var. S3 çapraz bölgeye kaydetmiş model a�
 
 Lütfen hızlı bir şekilde ulaşın. Router'a bir önbellek için hash yapın. Her bir replikadan soruyor: 
 
-**vLLM Router**(Rust,2026 üretim aşaması): 订阅 `kv.cache.block_added`Events,维护 prefix-hash → replika indeksi, O(1) ile arama 路由──没有匹配时回落至最小队列深度──
+**vLLM Router**(Rust,2026 üretim aşaması): 订阅 `kv.cache.block_added`Events,维护 prefix-hash → replika indeksi,用 $O(1)$Arama 路由──没有匹配时回落至最小队深──
 
 **llm-d router**Aynı model, Kubernetes-native── ControlPlane API üzerinden etkinlikler yayınlamak──
 
