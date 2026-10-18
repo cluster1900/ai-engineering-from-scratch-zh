@@ -26,35 +26,32 @@ Bu ders, en az bir DDPM oluşturur: ileri gürültü, geriye dönük ifadeler, e
 
 ### ilerleme süreci
 
-Bir resim çek .`x_0`❖加入少量 Gaussian noise  get `x_1`❖ yeniden ekle  get `x_2` devam et  步, `x_T`差不多与纯高斯噪音 区分──
+Bir resim çek .`x_0`❖加入少量 Gaussian noise  get `x_1`❖ yeniden ekle  get `x_2`❖ devam et$T$步, until `x_T`差不多与纯高斯噪音 区分──
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1},  beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \; \beta_t I\right)
 ```
 
-`beta_t`T=1000'de genellikle 0.0001 線性成長から 0.02'e kadar küçük bir varyansa şablonu vardır.
+`beta_t`Bu daha küçük bir değişim programı, genellikle$T=1000$步内 0.0001 线性增长到 0.02── her adım da hafifçe küçültülen sinyaller ve yeni gürültüler yayılır──
 
 ### 闭式跳转
 
 逐步加入噪音 Markov zinciri, ama matematikte çarpılabilir:`x_0`örnek çıkış`x_t`- Evet.
 
-```
-Define alpha_t = 1 - beta_t
-Define alpha_bar_t = prod_{s=1..t} alpha_s
-
-Then:
-  q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0,  (1 - alpha_bar_t) * I)
-
-Equivalently:
-  x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon
-  where epsilon ~ N(0, I)
+```math
+\begin{aligned}
+&\text{定义 } \alpha_t = 1 - \beta_t \\
+&\text{定义 } \bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s \\[6pt]
+&\text{则：} q(x_t \mid x_0) = \mathcal{N}\left(x_t; \sqrt{\bar{\alpha}_t} \, x_0, \; (1 - \bar{\alpha}_t) I\right) \\[6pt]
+&\text{等价地：} x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1 - \bar{\alpha}_t} \, \epsilon \quad \text{其中 } \epsilon \sim \mathcal{N}(0, I)
+\end{aligned}
 ```
 
 Bu tek bir yol da yayılmaların tüm nedenlerini ortaya çıkarır.`t`Doğrudan .`x_0`örnek çıkış`x_t`,并一步完成训练,不需要模拟完整的马科夫链――
 
 ### tersine dönüşüm
 
-Önümüzdeki süreç is fixed;; ters süreç `p(x_{t-1} | x_t)`Yeni bir nöral ağı öğrenmek için.`x_{t-1}`Bu sesler ilk adımlarda uyarılıyor.`epsilon`Sonra matematik formüllerinden bir çıkış.`x_{t-1}`- Evet.
+Önümüzdeki süreç is fixed;; ters süreç `p(x_{t-1} | x_t)`Yeni bir nöral ağı öğrenmek için.`x_{t-1}`Onlar önceden de$t$步加入的噪音  步加入的噪音  步加入的噪音 `epsilon`Sonra matematik formüllerinden bir çıkış.`x_{t-1}`- Evet.
 
 ```mermaid
 flowchart LR
@@ -79,7 +76,7 @@ flowchart LR
 对于每一个训练步骤:
 
 1. örnek 一张真实图像 `x_0`- Evet.
-2. [1, T] 中均 örnek 一个时间步骤 `t`- Evet.
+2. - Evet .$[1, T]$Ortalama örnek bir zaman aşaması`t`- Evet.
 3. örnek gürültüsü `epsilon ~ N(0, I)`- Evet.
 4. 计算 `x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon`- Evet.
 5. Uzd ağı 预测 `epsilon_theta(x_t, t)`- Evet.
@@ -103,7 +100,7 @@ return x_0
 
 ### Neden 1000 adım?
 
-Önceki gürültü programının seçimi amacı, her adımı yeterince gürültüye katmak, ters adımları Gaussian'a yakınlaştırmak, adım sayıları çok az, ters adımlar Gaussian'dan uzaklaştırmak, ağlar ısırabilmesi zor.
+Önceki gürültü programının seçimi amacı, her adımı yeterince gürültüye katmak, ters adımı Gaussian'a yakınlaştırmak, adım sayısının çok az olması, ters adımı Gaussian'dan uzaklaştırmak, ağın iyi bir şekilde inşa edilmesi zor olması, adım sayısının çok fazla olması, örnekleme yapmak pahalı hale gelmesi, gelir de azalmasıdır.$T=1000$搭配 linear schedule DDPM'nin öntanımlı ayarıdır.
 
 ### DDIM:快 20 倍的样本
 
@@ -314,14 +311,14 @@ Bu ders:
 
 | Term | 人们通常怎么说 | 实际含义 |
 |------|----------------|----------------------|
-| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 T 步内把图像破坏成 Gaussian noise |
+| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 $T$ 步内把图像破坏成 Gaussian noise |
 | Reverse process | “一步步 denoise” | 学到的分布，会从 noise 逐步走回图像 |
-| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 t 步加入的 noise |
-| Beta schedule | “noise 大小” | T 个小 variance 组成的序列，定义每一步进入多少 noise |
-| alpha_bar_t | “累计保留因子” | 到时间 t 为止的 (1 - beta_s) 乘积；t 越大，剩余信号越少 |
-| DDPM sampler | “Ancestral，随机” | 从每个 x_{t-1} 的 conditional Gaussian 中 sample；1000 步 |
+| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 $t$ 步加入的 noise |
+| Beta schedule | “noise 大小” | $T$ 个小 variance 组成的序列，定义每一步进入多少 noise |
+| $\bar{\alpha}_t$ | “累计保留因子” | 到时间 $t$ 为止的 $(1 - \beta_s)$ 乘积；$t$ 越大，剩余信号越少 |
+| DDPM sampler | “Ancestral，随机” | 从每个 $x_{t-1}$ 的 conditional Gaussian 中 sample；1000 步 |
 | DDIM sampler | “确定性，快速” | 将 sampling 重写为确定性 ODE；20-100 步即可得到相似质量 |
-| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 t 的 sinusoidal embedding，让它知道 noise level |
+| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 $t$ 的 sinusoidal embedding，让它知道 noise level |
 
 ## 延伸阅读
 

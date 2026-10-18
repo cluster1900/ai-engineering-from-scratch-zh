@@ -47,8 +47,8 @@ Yukarıdan aşağı (HRNet, ViTPose) = doğru oranlı liderlik programı; aşağ
 
 Doğrudan Geri Dönme`(x, y)`Ama her bir anahtar noktaya göre bir tane.`H x W`Gerçek konum merkezinde Gaussian bir damla var.
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 Sonuçta, her sıcaklık haritasının argmax'i, tahminin anahtar noktasının konumudur.

@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Öğrenme hedefi
-- 解释 发电机与歧视者 之间的最小x 博,以及为什么平衡对应于 p_model = p_data
+-                                                                                                                                                                                                                                                               $p_{\text{model}} = p_{\text{data}}$
 - PyTorch'te DCGAN'ı gerçekleştirin ve 60 行 içinde 32x32                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 - GAN 訓練: doymayan kaybı、spektral norm、TTUR (iki kez güncelleme kuralı)
 - 读取训练曲线,区分健康收与模式 çöküş、oscillation、diskriminator-wins-tamamen
@@ -42,8 +42,8 @@ flowchart LR
 
 G 希望 D 犯错――D 希望自己判断正确――形式化地说:
 
-```
-min_G max_D  E_x[log D(x)] + E_z[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_x[\log D(x)] + \mathbb{E}_z[\log(1 - D(G(z)))]
 ```
 
 D tam olarak gerçekte olduğunu gösteriyor.`log D(real)`) ve sahte`log (1 - D(fake))`D = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =`D(G(z))`Çok yüksek.
@@ -54,9 +54,11 @@ D tam olarak gerçekte olduğunu gösteriyor.`log D(real)`) ve sahte`log (1 - D(
 
 Yukarıdaki form, sayısal değerlerde dengesiz.`D(G(z))`Her sahteye sıfır yaklaşıyor.`log(1 - D(G(z)))`G'nin Gradient 会消失──修复方法:翻转 G'in Kaybı──
 
-```
-L_D = -E_x[log D(x)] - E_z[log(1 - D(G(z)))]
-L_G = -E_z[log D(G(z))]                          # non-saturating
+```math
+\begin{aligned}
+L_D &= -\mathbb{E}_x[\log D(x)] - \mathbb{E}_z[\log(1 - D(G(z)))] \\
+L_G &= -\mathbb{E}_z[\log D(G(z))] \qquad \text{（非饱和）}
+\end{aligned}
 ```
 
 Şimdi şimdi`D(G(z))`接近零时,G 的损失 很大,Gradient 也有信息量──每个现代GAN都使用这个变体进行训练──
@@ -292,8 +294,8 @@ def build_sn_discriminator(img_channels=3, feat=64):
 |------|----------------|----------------------|
 | Generator (G) | “负责画东西的网络” | 将 noise 映射到图像；训练目标是骗过 discriminator |
 | Discriminator (D) | “评判者” | Binary classifier；训练目标是区分真实图像与生成图像 |
-| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 p_G = p_data |
-| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 -log(D(G(z)))，而不是 log(1 - D(G(z)))，以避免训练早期 Gradient 消失 |
+| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 $p_G = p_{\text{data}}$ |
+| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 $-\log(D(G(z)))$，而不是 $\log(1 - D(G(z)))$，以避免训练早期 Gradient 消失 |
 | Mode collapse | “Generator 只生成一种东西” | G 只生成数据分布中的一小部分；用 SN、minibatch discrimination 或更大的 batch 修复 |
 | TTUR | “两个 learning rates” | D 比 G 学得更快，通常快 2-4 倍；稳定训练 |
 | Spectral norm | “1-Lipschitz layer” | 一种 weight-normalisation，用来限制每层的 Lipschitz constant；防止 D 变得任意陡峭 |

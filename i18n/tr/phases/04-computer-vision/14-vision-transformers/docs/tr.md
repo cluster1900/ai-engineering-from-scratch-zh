@@ -97,7 +97,7 @@ ViT-B/16
 
 - 16x16 yama -> 196 token, standart ayar
 - 32x32 patches -> 49 token, daha hızlı ama çözünürlük daha düşük.
-- 8x8 patches -> 784 token, daha net, ama O(n^2) dikkat maliyeti 扩展性很差──
+- 8x8 patches -> 784 token, daha net, ama $O(n^2)$dikkat maliyeti 扩展性很差──
 
 Daha büyük yamalar = daha az token = daha hızlı ama uzay ayrıntıları daha az──SwinV2 hiyerarşik pencerelerde 4x4 yamalar kullanır──
 

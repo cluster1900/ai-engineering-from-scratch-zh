@@ -84,10 +84,10 @@ Dekodör
 
 ### Piksel şebekesi üstü çapraz entropisi
 
-C sınıfları içeren semantik segmentasyon için, model çıkışı`(N, C, H, W)`❖ Hedef:`(N, H, W)`, tam sayı sınıfı kimliklerini içerir.
+İçeriği için$C$个 sınıfların semantik bölünmesi, model çıkışı `(N, C, H, W)`❖ Hedef:`(N, H, W)`, tam sayı sınıfı kimliklerini içerir.
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 PyTorch 中的 `F.cross_entropy`Bu şekli yeniden şekillendirmek zorunda değil.
@@ -98,17 +98,19 @@ PyTorch 中的 `F.cross_entropy`Bu şekli yeniden şekillendirmek zorunda değil
 
 Çöp kaybı  doğrudan tahmin maskası ile gerçek maske arasındaki üst üstelik  yoluyla bu sorunu çözmek için:
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 İçlerinden `p`Bu bir sınıfın sigmoid/softmax olasılık haritası.`y`Bu, ikili temel gerçeklik maskasıdır. Sadece üst üste 完美时,損失 才为零. Çünkü oranlara dayanır, sınıf dengesizliği artık ilişkilidir.
 
 实践中,使用 **combined loss**- ...
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 Çarpışma entropi                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
@@ -117,7 +119,7 @@ L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
 
 - **Pixel accuracy** 预测 正确的像素 百分比──计算便宜──与分类中的精度一样,不平衡数据上会失效──
 - **IoU per class** Birlik üzerinde her sınıf maskesi'nin kesişişi; sınıflar arasında 求平均 = mIoU。
-- **Dice (F1 on pixels)** 类似 IoU;`Dice = 2 * IoU / (1 + IoU)`❖Tıp görüntüleme daha iyi Dice, sürücü topluluğu daha iyi IoU;
+- **Dice (F1 on pixels)** 类似 IoU;$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$❖Tıp görüntüleme daha iyi Dice, sürücü topluluğu daha iyi IoU;
 - **Boundary F1**  Tahmin edilen sınırları ve temel gerçek sınırlarının yakınlığı ölçmek, küçük bir etkisi bile cezalandırılır.
 
 Klass başına bir IOU rapor et, sadece bir IOU değil.  Ortalama IOU bir sınıfı sadece %15 kapsar, diğer dokuz sınıfın durumunun %85 olduğu durumdadır.

@@ -83,8 +83,8 @@ Her öneride, maske başı çok küçük bir FCN'dir.`28x28`çözünürlük 下�
 
 R-CNN maskası 4 çeşit kayıplara sahip.
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`- Evet .`L_rpn_box` RPN önerilerinin nesnelliği + kutu Geri dönüş

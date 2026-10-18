@@ -69,7 +69,7 @@ stack:   conv 3x3 -> conv 3x3 -> pool 2x2
 repeat:  16 or 19 conv layers
 ```
 
-İki 3x3 konvoy  Gördüğünüz giriş alanı bir 5x5 konvoy ile aynıdır, ancak parametreler daha az (2*9*C^2 = 18C^2 vs 25*C^2), ve orta ek olarak bir ReLU。 VGG Bu gözlemü tam bir yapı haline getirir.
+2 3x3 konvoy  Gördüğünüz giriş alanı 5x5 konvoy ile aynı, ama parametreler daha az ($2 \cdot 9 \cdot C^2 = 18C^2$vs $25 \cdot C^2$Bu gözlem, bütün yapılara dönüştürülmüştür. Bu gözlem, bir blok türünün, bir sonraki tüm yapıların referans noktası haline gelmesini sağlayan bir blok türünün, bir tekrar toplanmasıdır.
 
 代价:138M parametreleri, tren slow,inference 昂贵──
 
@@ -117,9 +117,11 @@ VGG 能在19层工作,是因为批量标准 (几乎同时发表) 让激活 保�
 
 Zhang, Ren, Sun, her şeyi değiştirmek için bir çözüm önerdi.
 
-```
-standard block:   y = F(x)
-residual block:   y = F(x) + x
+```math
+\begin{aligned}
+\text{标准块：} \quad & y = F(x) \\
+\text{残差块：} \quad & y = F(x) + x
+\end{aligned}
 ```
 
 `+ x`Göster katman 总能通过把 `F(x)`推到零来选择什么都不做──1000 katlı ResNet 现在最差也不会差于1 katlı ağ 差, çünkü her ekstra blokta önemsiz bir kaçış hatçası vardır──有这个保证,优化器愿意让每个块变得*稍微*有用;而稍微有用的块堆叠100次,就是最先进的──

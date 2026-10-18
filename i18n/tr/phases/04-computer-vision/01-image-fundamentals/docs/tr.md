@@ -173,8 +173,8 @@ RGB bir yakalama biçimidir, ancak bu daima model için en kullanışlı ifade d
 
 RGB'den 转灰度量, 权和, 平均值 değil, çünkü insan gözü kırmızı veya mavi renklere göre yeşil renklere daha duyarlı:
 
-```
-Y = 0.299 R + 0.587 G + 0.114 B       (ITU-R BT.601, the classic weights)
+```math
+Y = 0.299 R + 0.587 G + 0.114 B \qquad \text{(ITU-R BT.601, 经典权重)}
 ```
 
 ### Göreç oranı, boyutlandırma, interpolasyon

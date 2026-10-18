@@ -61,7 +61,7 @@ Her klasik izleyici hareket tahminleri aşamasında Kalman filtre kullanıyor.
 
 ### Macar algoritması
 
-- Bir tane.`M x N`maliyet matrisi (tracks x detections),                                                                                                                                                                                                                                                          `1 - IoU(track_bbox, detection_bbox)`, veya görünüm özelliklerinin negatif kozine benzerliği──Runtime is O(((M+N) ^3);当 M、N最高約为1000 时,通过 `scipy.optimize.linear_sum_assignment`Python'da yeterince hızlı.
+- Bir tane.`M x N`maliyet matrisi (tracks x detections),                                                                                                                                                                                                                                                          `1 - IoU(track_bbox, detection_bbox)`, veya görünüm özellikleri ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ $O((M+N)^3)$- Evet .$M, N$En iyi 1000'e kadar.`scipy.optimize.linear_sum_assignment`Python'da yeterince hızlı.
 
 ### ByteTrack'ın anahtar düşünceleri
 

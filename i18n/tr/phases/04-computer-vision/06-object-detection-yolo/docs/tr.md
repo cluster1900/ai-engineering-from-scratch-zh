@@ -74,11 +74,13 @@ Modern detektör genellikle FPN kullanır, farklı çözünürlükte farklı dem
 
 Önemli olan`tx, ty, tw, th`Kutunun koordinatları değil; çizimden önce dönüştürülmesi gereken gerileme hedefleri:
 
-```
-centre x  = (sigmoid(tx) + cell_x) * stride
-centre y  = (sigmoid(ty) + cell_y) * stride
-width     = anchor_w * exp(tw)
-height    = anchor_h * exp(th)
+```math
+\begin{aligned}
+\text{中心 } x &= (\sigma(t_x) + \text{cell}_x) \cdot \text{stride} \\
+\text{中心 } y &= (\sigma(t_y) + \text{cell}_y) \cdot \text{stride} \\
+\text{宽度} &= \text{anchor}_w \cdot \exp(t_w) \\
+\text{高度} &= \text{anchor}_h \cdot \exp(t_h)
+\end{aligned}
 ```
 
 `sigmoid`Merkez hareketini hücreye sınırlamak.`exp`Genişliği demirden serbestçe küçültür ve bir dönüş yok.`stride`Şebekeler için koordinatları küçültmek için piksellere geri dönmek gerekir. Bu çözme adımları her YOLO sürümünde aynıdır.
@@ -87,11 +89,11 @@ height    = anchor_h * exp(th)
 
 Deteksiyon ortalaması iki kutuyu ölçer:
 
-```
-IoU(A, B) = area(A intersect B) / area(A union B)
+```math
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
-IoU = 1 tamamen aynı gösterir; IoU = 0 gösterir hiçbir yüklenme yok. Önceden ve temel gerçek kutu arasındaki IoU bir tahminin doğru pozitif olup olmadığını belirler.
+$\mathrm{IoU} = 1$Tamamıyla aynı gösterir;$\mathrm{IoU} = 0$Gösterme yoktur yüklenme: öngörme ve temel gerçek kutu arasındaki IoU bir öngörmeyi karar verir Ya da doğru pozitif olarak hesaplanır$\mathrm{IoU} \ge 0.5$)。 iki tahmin arasındaki IoU NMS'nin kullanılması için ağırlıklı bir temel oluşturur。
 
 ### Maksimum olmayan baskı
 
@@ -113,11 +115,13 @@ NMS(boxes, scores, iou_threshold):
 
 YOLO kaybı üç ağırlık kaybı ile beraberdir:
 
-```
-L = lambda_coord * L_box(pred, target, where obj=1)
-  + lambda_obj   * L_obj(pred, 1,     where obj=1)
-  + lambda_noobj * L_obj(pred, 0,     where obj=0)
-  + lambda_cls   * L_cls(pred, target, where obj=1)
+```math
+\begin{aligned}
+L = {} & \lambda_{\text{coord}} \cdot L_{\text{box}}(\text{pred}, \text{target}, \text{where obj}=1) \\
++ {} & \lambda_{\text{obj}} \cdot L_{\text{obj}}(\text{pred}, 1, \text{where obj}=1) \\
++ {} & \lambda_{\text{noobj}} \cdot L_{\text{obj}}(\text{pred}, 0, \text{where obj}=0) \\
++ {} & \lambda_{\text{cls}} \cdot L_{\text{cls}}(\text{pred}, \text{target}, \text{where obj}=1)
+\end{aligned}
 ```
 
 才会贡献 box-regression 和 classification losses──不含物体的细胞──只贡献对象性损失──教模型保持沉默──`lambda_noobj`Genellikle küçüktür, çünkü çoğu hücre boştur, yoksa toplam kayıpla sonuçlanır.

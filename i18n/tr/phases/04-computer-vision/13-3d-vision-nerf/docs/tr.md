@@ -23,7 +23,7 @@ Bu iki tür temsil, farklı nedenlerle yer alıyor.Bunlardan birinde nokta bulut
 ## 概念
 ### Bıçak bulutları
 
-Nokta bulutu R^3 中 N 个点的无序集合, her nokta seçilebilir, özellikleri vardır 色、强度、正常) 
+Nokta bulutları $\mathbb{R}^3$İçeride$N$个点的无序集合,每个点可选地带有特征(色、强度、正常)
 
 ```
 cloud = [
@@ -41,8 +41,8 @@ cloud = [
 
 PointNet (Qi et al., 2017) iki şeyi bir fikirle çözdü: her noktayı paylaşan MLP uygulaması için, simetrik işlevi ile birlikte.
 
-```
-f(P) = max_{p in P} MLP(p)
+```math
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 İşte PointNet'in tüm merkezi. Daha derin bir değişim.
@@ -86,22 +86,23 @@ Kayıp 会将染染出的像素与训练照片中的地面真相像素 进行比
 
 作用在 `(x, y, z)`Üst vanilla MLP 无法表示高频细节,因为 MLPs 在频谱上偏向低频――NeRF 通过在送进 MLP 前,将每个坐标编码成Fourier özelliği vektörü 来修改这一点:
 
-```
-gamma(p) = (sin(2^0 pi p), cos(2^0 pi p), sin(2^1 pi p), cos(2^1 pi p), ...)
+```math
+\gamma(p) = \left(\sin(2^0 \pi p), \cos(2^0 \pi p), \sin(2^1 \pi p), \cos(2^1 \pi p), \ldots\right)
 ```
 
-En yüksek L=10 个 frekans seviyesi vardır. Bu, transformörlerin pozisyonları ile aynı teknikle kullanıldığından, aynı şekilde, yayılma zamanının şartlandırılmasında da ortaya çıkacaktır.
+En iyi .$L=10$个 frekans seviyeleri── bu, pozisyonları kullanan transformörlerle aynı teknikte, aynı zamanda difüzyon zaman şartlandırmasında da ortaya çıkacaktır──10 ders içinde tekrar ortaya çıkacaktır── yok, NeRF'ler çok bulanık gibi görünür.
 
 ### Volumetrik görüntüleme
 
+```math
+\begin{aligned}
+C(r) &= \sum_i T_i \left(1 - \exp(-\sigma_i \delta_i)\right) c_i \\[4pt]
+T_i &= \exp\left(-\sum_{j<i} \sigma_j \delta_j\right) \\
+\delta_i &= t_{i+1} - t_i
+\end{aligned}
 ```
-C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 
-T_i  = exp(- sum_{j<i} sigma_j * delta_j)
-delta_i = t_{i+1} - t_i
-```
-
-`T_i`- Yapabilir. - Evet.`(1 - exp(-sigma_i * delta_i))`Evet, bu kadar açık değil.`c_i`Renk. Son piksel.
+`T_i`- Yapabilecekleri kadar ışık var.$i$- Evet.`(1 - exp(-sigma_i * delta_i))`Evet .$i$处的不透明性──`c_i`Renk. Son piksel.
 
 ### NeRF'lerin yerini ne aldı?
 

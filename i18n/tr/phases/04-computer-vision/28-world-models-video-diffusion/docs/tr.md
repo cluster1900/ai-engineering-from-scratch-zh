@@ -57,7 +57,7 @@ Resulting tokens:      (T / P_t) * (H / P_h) * (W / P_w) tokens
 
 Pozisyon kodlaması 3D: her bir kişiye yönelik`(t, h, w)`坐标使用 rotary 或 learned embedding──A dikkat:
 
-- **Full joint** Tüm tokenler tüm tokenlere katılır.
+- **Full joint** Tüm tokenler tüm tokenlere katılır.$N$个 token 是 $O(N^2)$◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊  ◊ ◊ ◊    ◊ ◊ ◊            ◊                                                                                                                                                                                           
 - **Divided** 交替执行 temporal attention( aynı uzay pozisyonu、跨时间:`(H*W) * T^2`) ve uzaylı dikkat( aynı zaman aşamasında、跨空间:`T * (H*W)^2`TimeSformer ve çoğu video DiT bu şekilde kullanıyor.
 - **Window** 在 `(t, h, w)`İçinde kullanılan pencereler. Video Swin
 
@@ -210,7 +210,7 @@ class DividedAttentionBlock(nn.Module):
         return xs
 ```
 
-Zaman dikkatı, her uzay pozisyonunda, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde ve zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde ve zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde ve zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde ve zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde ve zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, zaman içinde, her zaman içinde ve zaman içinde, her zaman içinde, her zaman içinde, her zamanında, her zamanında, her zaman içinde ve her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, her zamanında, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda, herda
+Zaman dikkatı, her uzay pozisyonunda, zaman içinde, uzay dikkatinde, her yerden farklı bir konumda, iki taneyle.$O(T^2 + (HW)^2)$操作,替代一个 $O((THW)^2)$操作── TimeSformer 和每个现代 video DiT'nin merkezi budur──
 
 ### 4 adım: 组合一个小视频 DiT
 
@@ -279,7 +279,7 @@ patching 后预期  Yapıştırma`grid = (4, 8, 8)`Ve`out = (1, 256, 32)`; baş�
 | World model | “Learned simulator” | 一个在给定 state 和 action 时预测未来 observations 的模型 |
 | Video DiT | “Spacetime transformer” | 使用 3D patchification 和 divided attention 的 Diffusion transformer |
 | Latent action | “Inferred control” | 从帧对中推断出的离散或连续 action latent；用于条件化 next-frame generation |
-| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 O(N^2) 保持可控 |
+| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 $O(N^2)$ 保持可控 |
 | Object permanence | “Things stay real” | video models 必须学会的场景属性；在食物、玻璃器皿上的经典失败模式 |
 | FVD | “Fréchet Video Distance” | FID 的视频等价物；主要 visual quality metric |
 | Inverse dynamics model | “Observations to actions” | 给定 `(state, next state)`，输出连接二者的 action；闭合 robotics loop |

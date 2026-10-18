@@ -97,8 +97,8 @@ backbone.heads.head = nn.Linear(..., num_classes)                       # torchv
 
 Bu, modern ince ayarlamalar arasında kullanılan ayrımcı LR'nin daha düz versiyonu.
 
-```
-lr_layer_k = base_lr * decay^(L - k)
+```math
+\text{lr\_layer}_k = \text{base\_lr} \cdot \text{decay}^{L - k}
 ```
 
 Bu durumda, ilk blokın eğitimi LR = baş LR `0.75^11 ≈ 0.04x` Transformer ince sesleri için CNN'lere göre daha önemli; CNN'lere göre, sahne gruplarındaki LR'ler genellikle yeterli olmuştur

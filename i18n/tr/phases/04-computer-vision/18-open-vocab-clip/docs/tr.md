@@ -42,7 +42,7 @@ flowchart LR
 
 ### 目標
 
-给定一个包含 N 个 (resim, başlık) çiftler batches,构建一个NxN benzerlik matrix──训练两个编码器,使对角形(匹配对)具有高相似性,而非对角形(非匹配)具有低相似性──
+给定一个包含 $N$个 (şekil, başlık) çiftler  batch,构建一个 $N \times N$benzerlik matrisi──训练两个编码器,使对角
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ Bu simetrik, çünkü resim-metin ve metin-resim geri alımı kullanılabilir ol
 
 SigLIP ((Zhai et al., 2023) çift başına sigmoid  softmax değiştirildi:
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 Çift başına Kayıp Clip gerektiren seri seviyesinin normallendirilmesini kaldırmıştır.

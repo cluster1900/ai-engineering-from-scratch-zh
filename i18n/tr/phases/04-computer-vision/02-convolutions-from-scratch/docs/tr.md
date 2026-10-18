@@ -71,8 +71,8 @@ Bu bir formül, yani **shared weights、locality、sliding window**Bu tam bir fi
 
 给定输入空间尺寸 `H`、kernel boyutu `K`、padding `P`İşe çıkma.`S`- ...
 
-```
-H_out = floor( (H - K + 2P) / S ) + 1
+```math
+H_{\text{out}} = \left\lfloor \frac{H - K + 2P}{S} \right\rfloor + 1
 ```
 
 Unutma. Her bir mimarlıkta onu birkaç kez hesaplayacaksın.
@@ -85,7 +85,7 @@ Unutma. Her bir mimarlıkta onu birkaç kez hesaplayacaksın.
 | Pool 2x2 | 32 | 2 | 0 | 2 | 16 |
 | 大 receptive field | 32 | 7 | 3 | 2 | 16 |
 
-"Eşit dolandırma" anlamı, S'de seçilmesini sağlar. S'de seçilirken H_out == H。 K için çicik sayı, yani P = (K - 1) / 2。 bu yüzden 3x3 çekirdekleri  dominant konumdadır: onlar hala merkezi noktayı bulunan en küçük çicik sayı çekirdekleri vardır。
+"Eşit doldurma" anlamı seçimdir.$P$, yapalım .$S = 1$时  $H_{\text{out}} = H$                                                                                                                                                                                                                                                              $K$Yani ...$P = (K - 1) / 2$3x3 çekirdeklerin üstünlük kazanmasının nedeni de budur: Onlar hala merkezi noktayı olan en küçük çelişkili çekirdeklerdir
 
 ### Çekme
 

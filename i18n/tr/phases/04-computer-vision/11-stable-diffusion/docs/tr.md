@@ -52,8 +52,8 @@ flowchart LR
 
 Normal metin şartlandırılması her soruyu yönetecek.`c`Öğrenim`epsilon_theta(x_t, t, c)`CFG'nin eğitiminin %10'u aynı ağda kalır.`c`(alternatif olarak boş yerleştirme), böylece bir tane model elde edilir ve koşulsuz gürültü ve koşulsuz gürültü tahmin edilir.
 
-```
-eps = eps_uncond + w * (eps_cond - eps_uncond)
+```math
+\epsilon = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})
 ```
 
 `w`Bu bir rehberlik ölçeği.`w=0`Şartsız.`w=1`Normal şartlı,`w>1`Çıktı, çıkış hızlandı, fiyatlar düştü.`w=7.5`- Evet.

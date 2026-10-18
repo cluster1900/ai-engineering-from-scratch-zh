@@ -61,12 +61,13 @@ flowchart LR
 
 位于 dünya pozisyonu `mu`、 3D değişkenliği vardır `Sigma`3D Gaussian'ın ekran pozisyonuna bir proje yapacağım.`mu'`、 2 boyutlu bir değişkenlik gösterir `Sigma'`2D Gaussian'ın:
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 2D Gaussian'ın ayak izi bir elipse, onun akıtı ise `Sigma'`Bu elipsin içindeki her piksel bu Gaussian'ın katkılarını alır, ağırlıklı olarak `exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`- Evet.
@@ -75,12 +76,13 @@ J = Jacobian of the perspective projection at mu'
 
 对于一个像素,覆盖它的高ussians会按前向排序 (前向公式按前向排序) ◦Reng 1980'lerden beri kullanılan tüm yarı şeffaf rasteriserlerin aynı yöntemi kullanılarak kompozisyon yapılır:
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 Bu ile**NeRF 的 volumetric render 是同一个方程**Bu eşitlik, rangiyon kütlesi NeRF'ye eşleşebilmesinin nedeni olarak görülür.
@@ -97,7 +99,7 @@ Sıkı bir dizi Gaussyen'in karmaşık sahneyi kapsayacak gücü yoktur.
 - **Split**Bu, büyük bir Gaussian'ın bölgeye uyumsuz olduğunu gösterir.
 - **Prune**Bu nedenle, bu konularda, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak, birincil olarak,
 
-Densifikasyon Her N kez tekrarlama 运行一次──一个场景通常会从约100k 个初始高西人 (SfM puanları tarafından初始化) 增长到训练结束时的1-5M──
+Densifikasyon$N$Bir sonraki iterasyon 运行一次──一个场景通常会从约100k 个初始高西人 (SfM puanları tarafından初始化) 增长到训练结束时的1-5M──
 
 ### Kul harmoniklerini anlamak için
 

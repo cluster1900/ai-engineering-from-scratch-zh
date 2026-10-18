@@ -52,18 +52,20 @@ Bu döngüdeki her bir çizgi bir hata olabilir.`model(x).softmax()`%2'yi bir ar
 
 sınıflandırıcı 会为每张图像产生 `C`个数字, logits olarak adlandırılır.
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 Çarpıcı entropiy 衡量正确 sınıfının negatif log olasılığı:
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-Sağ tarafı biçim = sayı değerinin sabit biçimi (log-sum-exp)`nn.CrossEntropyLoss`Bir op içinde birleştirir softmax + NLL,并直接接收原始logits──自己先应用 softmax 几乎总是 bug,因为你计算的是 log(softmax(softmax(z))),这是一个没有意义的量──
+Sağ tarafı biçim = sayı değerinin sabit biçimi (log-sum-exp)`nn.CrossEntropyLoss`Bir op içinde birleştirir softmax + NLL,并直接接收原始logits──自己先应用 softmax 几乎总是bug,因为你计算的是$\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$Bu anlamsız bir miktar.
 
 ### Neden artış etkili?
 
@@ -105,7 +107,7 @@ Bu neden yardımcı olur: model, bir kez daha en sıcak hedefleri hatırlamıyor
 Toplam doğruluk dengesizliği örtüştürür. Eğer 90-10'un ikili sınıflandırıcısı çoğunluk sınıfını da tahmin ederse, %90'ı da elde edebilirsin.
 
 - **Per-class accuracy** Her sınıf bir sayı; hemen eksik performans gösterme sınıfı ortaya çıkarmak
-- **Confusion matrix** C x C gredi, içinde satır i col j = gerçek sınıf i; diyagonal is correct预测, off-diagonals 才是模型 问题所在。
+- **Confusion matrix** $C \times C$Şebekeler, sırada $i$Kol .$j$= gerçek sınıf$i$ 被预测为类$j$才是模型 问题所在──
 - **Top-1 / Top-5** Doğrudan sınıfı Top 1 veya 5 tahminlerde Top-5  ImageNet için  çok önemli çünkü Norwich Terrier  和 Norfolk Terrier  gibi sınıflar  gerçekten farklılıklar vardır 
 - **Calibration (ECE)** 0.8 güven tahminleri gerçekten %80'lik bir zaman doğru mu? Modern ağlar  sistematik olarak aşırı güvenlidir; sıcaklık ölçeklemesi veya etiket düzeltmesi ile yapılabilir 修正──
 
