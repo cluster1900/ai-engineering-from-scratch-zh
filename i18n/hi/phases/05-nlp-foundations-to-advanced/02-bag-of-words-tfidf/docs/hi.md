@@ -21,9 +21,11 @@
 
 **TF-IDF**एक शब्द जो प्रत्येक दस्तावेज़ में दिखाई देता है, उसका भार कम करता है, इसलिए उसका भार कम करता है।
 
-```
-TF-IDF(w, d) = TF(w, d) * IDF(w)
-             = count(w in d) / |d| * log(N / df(w))
+```math
+\begin{aligned}
+\text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
+\end{aligned}
 ```
 
 उनमें से `TF`文档中的术语频率,`df`यह दस्तावेज़ आवृत्ति है,`N`                                                                                                                                                                                                                                                              `log`会让高频常见词的权重保持有界――

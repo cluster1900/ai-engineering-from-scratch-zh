@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-सरल实现是O                                                                                                                                                                                                                                                             
+朴素实现是 $O(n \cdot \lvert \text{merges} \rvert)$◊ उत्पादन实现 ((टिकटोकन、HF टोकनाइज़र) उपयोग विलय-रैंक खोज और प्राथमिकता कतारों,运行时间接近线性──
 
 ### 步骤 3: 实践中的 वाक्य
 

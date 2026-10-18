@@ -148,7 +148,7 @@ def is_correction(utterance):
 
 ## 陷
 
-- **Full-history regeneration cost。**让 LLM 每一轮都重生状态,总 Token 成本是 O(n2) ・限制历史 或总结较早转──
+- **Full-history regeneration cost。**让LLM प्रत्येक दौर में पुनः उत्पन्न स्थिति,总 टोकन 成本是 $O(n^2)$ इतिहास या सामान्य रूप से पहले के मोड़ को सीमित करना
 - **Schema drift。**नई स्लॉट जोड़ना पुराने प्रशिक्षण डेटा को नष्ट कर देगा।
 - **Case sensitivity。** इतालवी  इतालवी  इतालवी  इतालवी                                                                                                                                                                                                                                                     
 - **Implicit inheritance。**यदि उपयोगकर्ता पहले 4 लोगों के लिए 指定 किया है, तो नया अलग समय अनुरोध नहीं चाहिए

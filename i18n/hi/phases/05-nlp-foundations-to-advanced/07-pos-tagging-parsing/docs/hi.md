@@ -82,8 +82,8 @@ def predict_mft(tokens, word_best, default_tag):
 
 क्रम की संयुक्त संभावना 建模:
 
-```
-P(tags, words) = prod P(tag_i | tag_{i-1}) * P(word_i | tag_i)
+```math
+P(\text{tags}, \text{words}) = \prod_i P(\text{tag}_i \mid \text{tag}_{i-1}) \cdot P(\text{word}_i \mid \text{tag}_i)
 ```
 
 两张表: संक्रमण संभावनाएं(给定前标签的标签) और उत्सर्जन संभावनाएं(给定标签的词)。用带拉普拉斯滑滑的计算 来估计二者──用Viterbi 解码(在标签网上做动态编程)。
