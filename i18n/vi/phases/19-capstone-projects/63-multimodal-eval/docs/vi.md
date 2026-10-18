@@ -49,15 +49,14 @@ flowchart TB
 
 ### BLEU-4
 
-```text
-BLEU-4 = BP * exp(mean(log p1, log p2, log p3, log p4))
+```math
+\text{BLEU-4} = \text{BP} \cdot \exp\big(\text{mean}(\log p_1, \log p_2, \log p_3, \log p_4)\big)
 ```
 
 Trong số đó `p_n`là n n 元语法精度 sau khi sửa đổi ((n số lượng cắt n 元语法 được tạo ra trong bất kỳ tài liệu tham khảo nào, trừ tổng số n 元语法 được tạo ra),`BP`Đó là một hình phạt đơn giản:
 
-```text
-BP = 1                if generated length > reference length
-   = exp(1 - r/g)     otherwise, where r is reference length and g is generated
+```math
+\text{BP} = \begin{cases} 1 & \text{当生成长度} > \text{参考长度} \\ \exp(1 - r/g) & \text{否则，其中 } r \text{ 为参考长度，} g \text{ 为生成长度} \end{cases}
 ```
 
  Đối với một số `p_n`Đối với bất kỳ số零, phân tử và phân tử cộng 1), đây là giá trị mặc định an toàn nhất của hệ thống số thấp.

@@ -16,7 +16,7 @@
 
 ## Vấn đề
 
-现代语言模型培训运会在数十名工人上以每秒数万样本的速度读取代码. JSONL trên đĩa trong lần đầu tiên lỗi trang lưu trữ lạnh 时就会崩: JSON parser 很慢,文档边界无法寻址,而寻找到"样本 4,217,884" 需要扫描文件──即使压缩效果很好.
+现代语言模型培训运会在数十名工人上以每秒数万样本的速度读取代码. JSONL trên đĩa trong lần đầu tiên lỗi trang lưu trữ lạnh 时就会崩: JSON parser 很慢,文档边界无法寻址,而寻找到"样本 4,217,884" 需要扫描文件──即使压缩效果很好.$O(1)$truy cập ngẫu nhiên của 平 token stream
 
 HDF5  thích hợp, vì nó cung cấp một bộ dữ liệu nhỏ, có thể điều chỉnh, chỉ có số, các bộ dữ liệu của nó 在读取时对页面缓存 友好──trainer 请求`tokens[3,200,000 : 3,200,8192]`Phần này, HDF5 sẽ đưa ra các yêu cầu của hyperslab từ trang cache  sao chép đến phân phối mới NumPy mảng.
 

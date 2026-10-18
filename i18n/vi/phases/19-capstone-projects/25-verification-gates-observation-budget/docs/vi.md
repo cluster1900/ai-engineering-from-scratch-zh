@@ -83,7 +83,7 @@ harness 会询问链――链 要么点头,要么拒绝―― Nếu nó点头, c
 
 ## Tại sao chuỗi 顺序 quan trọng
 
-Một lần phủ nhận hơn một lần cho phép hơn rẻ hơn.`WhitelistGate`运行 O(1) tìm kiếm hash`RegexGate`运行 O(mô hình * argv) 』`RecencyGate`读取 thư cửa hàng của một mảnh nhỏ.`BudgetGate`读取整个 sổ cái. Bạn cần phải theo chi phí tăng lên để xếp chúng, vì vậy được từ chối cuộc gọi.
+Một lần phủ nhận hơn một lần cho phép hơn rẻ hơn.`WhitelistGate`运行 $O(1)$Tìm kiếm hash.`RegexGate`运行 $O(\text{pattern} \cdot \text{argv})$`RecencyGate`读取 thư cửa hàng của một mảnh nhỏ.`BudgetGate`读取整个 sổ cái. Bạn cần phải theo chi phí tăng lên để xếp chúng, vì vậy được từ chối cuộc gọi.
 
 Bạn cũng phải theo bán kính blast 排序──Whitelist là chủ đề mạnh nhất: công cụ này không trong hợp đồng 中──regex gate 其次: đây là lập luận không trong hợp đồng 中──Recentness 仍然关心, nhưng gọi trong cấu trúc là hợp pháp──Budget  đặt cuối cùng, vì theo định nghĩa, nó sẽ chỉ trong tất cả các kiểm tra khác đều thông qua sau触发──
 

@@ -16,7 +16,7 @@
 
 ## 问题
 
-N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次。 Mỗi bậc có带宽缩缩为O(N),根成为瓶,并且挂钟楼层是最慢的链接乘以N。环 allreduce将其展平为大小为T/N的2(N-1) 块,因此每个级字节降至2T(N-1)/N,与集群大小无关──树 allreduce 在小N和高延迟链路上获胜,因为深度是log2(N) 跳而不是2(N-1) ─集群形状选择错误的拓,最慢的决定时间步骤──
+N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次.$O(N)$, Root trở thành một chai, và hang clock tầng là liên kết chậm nhất nhân N.$T/N$của$2(N-1)$块, do đó mỗi bậc chữ hạ xuống đến$2T(N-1)/N$,与集群大小无关── Tree allreduce 在小N 和高延迟链路上胜, vì độ sâu là $\log_2(N)$跳 thay vì $2(N-1)$                                                                                                                                                                                                                                                              
 
 Mỗi khuôn khổ tập luyện phân tán bạn sẽ đọc trong bài giảng này đều phụ thuộc vào bốn ngôn ngữ nguyên bản này. PyTorch DDP sẽ làm giảm gradient với mỗi thùng tham số cùng bước. ZeRO sẽ làm phân đoạn các điều kiện tối ưu hóa bằng cách giảm_scatter, và thông qua tất cả các điều kiện được cập nhật trên toàn bộ. FSDP sẽ hoàn toàn chuyển thành tất cả các điều kiện cộng với giảm_scatter.
 

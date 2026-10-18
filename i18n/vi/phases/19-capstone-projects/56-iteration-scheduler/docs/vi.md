@@ -62,8 +62,8 @@ flowchart TB
 
 本课使用的 UCB公式是经典 UCB1──
 
-```text
-ucb(branch) = mean_reward(branch) + c * sqrt( ln(total_runs) / runs(branch) )
+```math
+\text{ucb}(\text{branch}) = \text{mean\_reward}(\text{branch}) + c \sqrt{ \frac{\ln(\text{total\_runs})}{\text{runs}(\text{branch})} }
 ```
 
 `total_runs`là tổng số các thí nghiệm đã hoàn thành trên tất cả các chi nhánh.`c`                                                                                                                                                                                                                                                              `sqrt(2)`◊ chạy 为零的分会得到 `+inf`, vì vậy các nhánh chưa thử 总是先调调.  trung bình phần thưởng của nhánh cao sẽ giữ điểm cao cho đến khi các nhánh khác 追上; chạy nhiều lần nhưng phần thưởng của nhánh không cao sẽ được chạy ít lần hơn.

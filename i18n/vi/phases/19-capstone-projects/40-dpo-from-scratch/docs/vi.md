@@ -27,42 +27,46 @@ DPO sử dụng một lỗ giám sát  thay thế hai giai đoạn này. Mô hì
 
 Từ mô hình Bradley-Terry bắt đầu.`x`Và hai hoàn thành `y_w`(được chọn)`y_l`(được từ chối), người偏好 `y_w`√
 
-```text
-P(y_w > y_l | x) = sigmoid( r(x, y_w) - r(x, y_l) )
+```math
+P(y_w > y_l \mid x) = \sigma\big( r(x, y_w) - r(x, y_l) \big)
 ```
 
 Trong số đó `r`là một chức năng thưởng ẩn số.`r`, rồi huấn luyện chính sách `pi`, dùng neo KL tối đa hóa`r`- Có thể là:
 
-```text
-max_pi   E_{x, y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 DPO  khuyến cáo quan sát, trong mục tiêu này, dưới đây, chính sách tối ưu `pi*`Có thể dùng `r`写成 hình thức đóng:
 
-```text
-pi*(y | x) = (1/Z(x)) * pi_ref(y | x) * exp( r(x, y) / beta )
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left( \frac{r(x, y)}{\beta} \right)
 ```
 
 Đối với`r`重新整理:
 
-```text
-r(x, y) = beta * ( log pi*(y | x) - log pi_ref(y | x) ) + beta * log Z(x)
+```math
+r(x, y) = \beta \big( \log \pi^*(y \mid x) - \log \pi_{\text{ref}}(y \mid x) \big) + \beta \log Z(x)
 ```
 
 `log Z(x)`项对 `y_w`和 `y_l`相同( nó phụ thuộc `x`, thay vì `y`), do đó trong tính toán sự khác biệt ưu tiên 时会抵消:
 
-```text
-r(x, y_w) - r(x, y_l) = beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                                - log pi_theta(y_l|x) + log pi_ref(y_l|x) )
+```math
+\begin{aligned}
+r(x, y_w) - r(x, y_l) = \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+&- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big)
+\end{aligned}
 ```
 
 代入 Bradley-Terry sigmoid,并 đối với cặp ưu tiên 取 âm log xác suất:
 
-```text
-L_DPO(theta) = - E_{(x, y_w, y_l)} [
-  log sigmoid( beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                       - log pi_theta(y_l|x) + log pi_ref(y_l|x) ) )
-]
+```math
+\begin{aligned}
+L_{\text{DPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l)} \Big[
+  \log \sigma\big( \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+  &- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big) \big)
+\Big]
+\end{aligned}
 ```
 
 Đây là Loss. Nó là mỗi ví dụ của một dấu hiệu trên một khối lượng, khối lượng được tính bởi bốn log-chỉ có thể được. Không có mô hình phần thưởng riêng biệt. Không có PPO.
@@ -87,8 +91,8 @@ flowchart LR
 
 Trước khi bất kỳ bài tập nào được thực hiện, có một kiểm tra tinh thần hữu ích.`log pi_theta(y_w | x)`求 Gradient:
 
-```text
-d L_DPO / d log pi_theta(y_w | x) = - beta * (1 - sigmoid(z))
+```math
+\frac{\partial L_{\text{DPO}}}{\partial \log \pi_\theta(y_w \mid x)} = -\beta \big(1 - \sigma(z)\big)
 ```
 
 Trong số đó `z`Đó là lập luận của Sigmoid.`z`Thành phố có ý nghĩa là: nâng cao chính sách cho việc hoàn thành được chọn log-chân lý sẽ giảm Loss.`log pi_theta(y_l | x)`Ưu điểm: nâng cao xác suất ghi chép bị từ chối sẽ tăng Loss.

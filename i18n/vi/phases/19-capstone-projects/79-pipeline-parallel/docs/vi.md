@@ -16,7 +16,7 @@
 
 ## 问题
 
-Mô hình số 70B trong fp16 chỉ cần số 140 GB. Không có GPU nào có thể hỗ trợ nó. ZeRO-3 跨级分片参数, nhưng vẫn cần mỗi cấp độ cho mỗi bước chuyển tiếp thu thập toàn bộ tầng, mỗi cấp thanh toán log ((N) 跳.
+Mô hình phân tích 70B trong fp16 chỉ cần 140 GB các phân tích. Không có GPU nào của người tiêu dùng có thể hỗ trợ nó. ZeRO-3  xuyên cấp độ phân tích, nhưng vẫn cần mỗi cấp độ cho mỗi bước tiến để thu thập toàn bộ, mỗi cấp thanh toán.$\log(N)$︎ đường ống thông sử dụng các tuyến khác nhau: 将模型切割 into N 个阶段, và đặt một giai đoạn trên mỗi giai đoạn. ︎ giai đoạn 1 của giai đoạn 1 trước tiến đến giai đoạn 0 hoàn thành,并将激活张量移至第 1 级; ︎ giai đoạn 1 运行 2 层并交给 2 级;等等.
 
 气泡是管道开始时(等第一微批到最后阶段) 和结束时(等最后微批回流) 的空时间──对于M 个微批和N 个阶段,每阶段的气泡分数为 (N-1) /(M+N-1)──当M=8、N=4时,即 27%──当M=64、N=4时,为4.5%──当M=64、N=4时,为4.5%──当每阶段有很多微批时,气泡就会缩小,这意味着每个微批的批量大小较小,驱动器批量设计的约.
 
