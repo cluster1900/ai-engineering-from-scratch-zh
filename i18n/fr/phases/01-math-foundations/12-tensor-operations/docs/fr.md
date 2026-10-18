@@ -33,7 +33,7 @@ graph LR
     T3 --> T4["4D Tensor<br/>rank 4<br/>shape: (B,C,H,W)"]
 ```
 
-总元素数 = toutes les tailles de la multiplicité`(2, 3, 4)`包含 `2 * 3 * 4 = 24`Il y a des éléments.
+总元素数 = toutes les tailles de la multiplicité`(2, 3, 4)`包含 $2 \cdot 3 \cdot 4 = 24$Il y a des éléments.
 
 ### Des formes de tensions dans le milieu de l'apprentissage profond
 
@@ -229,7 +229,7 @@ batch_B = np.random.randn(4, 5, 2)
 batch_mm = np.einsum("bij,bjk->bik", batch_A, batch_B)
 ```
 
-Le coût de calcul d'une contraction est le multiplicité de toutes les tailles de l'indice (reservées et recherchées) pour B=32、I=128、J=64、K=128`bij,bjk->bik`- Le numéro de la liste:`32 * 128 * 64 * 128 = 33,554,432`Deux fois plus.
+Le coût de calcul d'une contraction est le nombre de toutes les tailles de l'indice (reservées et recherchées).$B=32$- Je suis là.$I=128$- Je suis là.$J=64$- Je suis là.$K=128$`bij,bjk->bik`- Le numéro de la liste:$32 \cdot 128 \cdot 64 \cdot 128 = 33{,}554{,}432$Deux fois plus.
 
 ### 步骤 7: Mécanisme d'attention par unité
 
@@ -313,6 +313,16 @@ Le cours est composé de deux instructions récurrentes:
 3. **Hard -- Build einsum from scratch.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `einsum(subscripts, *tensors)`fonction, au moins support:dot produit`i,i->`)、matrice multipliée`ij,jk->ik`)、produit extérieur`i,j->ij`) et transposer`ij->ji`)。 résoudre la chaîne de sous-scripts, identifier les indices contractés,并遍历所有指数组合──将你的结果与 `np.einsum`Pour le contraste.
 
 4. **Hard -- Attention shape tracker.**编写一个函数,输入 `batch_size`- Je suis là.`seq_len`- Je suis là.`embed_dim`et `num_heads`,并印印多头注意每一步的精确形状:input、Q/K/V projection、head split、attention scores、softmax weights、weighted sum、head merge、output projection──与`demo_attention_einsum()`Les résultats de l'analyse
+
+### 提示
+
+**练习 1。**- Je veux le faire .`list(range(24))`Construire un tensor, que chaque élément montre sa position.`reshape`后打印 `flatten().to_list()`, les résultats de l'examen restent dans l'ordre de 0 à 23
+
+**练习 2。** seulement lorsque deux grandes phases, ou l'une d'elles pour 1 时, cette dimension peut être diffusée, donc d'abord vérifier cette règle, ne satisfaire pas lorsqu'il est lancé une erreur.`(3, 1)`et `(1, 4)`, résultats de l' inspection `[i][j]` 元素是否等于 `a[i][0] + b[0][j]`,并将完整结果与NumPy比较──
+
+**练习 3。**按 `->`拆分下标── apparaît dans l'entrée mais non dans l'entrée, les caractères représentent la demande et l'index, donc traversent chaque caractère possédant une valeur de saisie et sont ajoutés à la position de sortie── dans un petit nombre de nombres aléatoires, utilisés `np.allclose(mine, np.einsum(...))`测试全部四种情况──
+
+**练习 4。**De la taille de la tête`embed_dim // num_heads`開始,并断言 `embed_dim % num_heads == 0`◊ la forme des scores d'attention 为 `(batch_size, num_heads, seq_len, seq_len)`, ainsi que l'impression des résultats avec cette forme et `demo_attention_einsum()`打印的形状比较──
 
 ## 关键术语
 | Term | What people say | What it actually means |

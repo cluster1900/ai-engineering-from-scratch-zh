@@ -96,7 +96,7 @@ Relative error: 19.2%
 
 Cela signifie qu'une fois que la réduction a produit une erreur relative de 19%.
 
-- Utilisation de données de moyenne valeur calculée:当 E[x] 很大时计算 `E[x^2] - E[x]^2`
+- Utilisation de données de moyenne valeur$\mathbb{E}[x]$很大时计算 $\mathbb{E}[x^2] - \mathbb{E}[x]^2$
 - Par rapport aux deux probabilités de logement presque similaires
 - Utilisation de l'epsilon  calcul des gradients de différence finie
 
@@ -141,20 +141,22 @@ Dans le milieu de la ML,`exp()`Il est présent dans le calcul de la température
 
 Cette astuce: dans la recherche d'exponents                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 
-```
-log(sum(exp(x_i))) = max(x) + log(sum(exp(x_i - max(x))))
+```math
+\log\left(\sum_i \exp(x_i)\right) = \max(x) + \log\left(\sum_i \exp(x_i - \max(x))\right)
 ```
 
 Pourquoi ça marche: réduire`max(x)`后, le plus grand exponent est `exp(0) = 1` Impossible de surcharger  Dans la demande et la demande, au moins un est 1, donc le total et au moins un est 1.`log(1) = 0`Il est impossible de faire une descente.`-inf`Il y a une autre.
 
  preuve:
 
-```
-log(sum(exp(x_i)))
-= log(sum(exp(x_i - c + c)))                    (add and subtract c)
-= log(sum(exp(x_i - c) * exp(c)))               (exp(a+b) = exp(a)*exp(b))
-= log(exp(c) * sum(exp(x_i - c)))               (factor out exp(c))
-= c + log(sum(exp(x_i - c)))                    (log(a*b) = log(a) + log(b))
+```math
+\begin{aligned}
+& \log\left(\sum_i \exp(x_i)\right) \\
+&= \log\left(\sum_i \exp(x_i - c + c)\right) && \text{（加上并减去 } c\text{）} \\
+&= \log\left(\sum_i \exp(x_i - c) \cdot \exp(c)\right) && (\exp(a+b) = \exp(a) \cdot \exp(b)) \\
+&= \log\left(\exp(c) \cdot \sum_i \exp(x_i - c)\right) && \text{（提取公因子 } \exp(c)\text{）} \\
+&= c + \log\left(\sum_i \exp(x_i - c)\right) && (\log(a \cdot b) = \log(a) + \log(b))
+\end{aligned}
 ```
 
 Pour faire`c = max(x)`Le débit est éliminé.
@@ -170,8 +172,8 @@ Cette astuce est partout dans le ML:
 
 Softmax va logits 转换为概率:
 
-```
-softmax(x_i) = exp(x_i) / sum(exp(x_j))
+```math
+\mathop{\mathrm{softmax}}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
 ```
 
 Pas de truc, les logits pour [100, 101, 102] conduirait à un débordement:
@@ -242,18 +244,18 @@ Gradients analytiques (from Backpropagation) peuvent avoir un bug.
 
 Différence centrée 公式:
 
-```
-df/dx ~= (f(x + h) - f(x - h)) / (2h)
+```math
+\frac{df}{dx} \approx \frac{f(x + h) - f(x - h)}{2h}
 ```
 
-C'est une différence de précision, bien plus grande que la différence de progression.`(f(x+h) - f(x)) / h`,后者只有O (h) ⋅
+C' est ça .$O(h^2)$精度, loin mieux que la différence avant $(f(x+h) - f(x)) / h$, le dernier seulement $O(h)$Il y a une autre.
 
-选择 h:太大则近似不准确──太小则 annulation catastrophique 会毁掉结果──`h = 1e-5`À la`1e-7`Je le vois souvent.
+选择 $h$:Too bigou approximation pas vrai.Too bigou annulation catastrophique.`h = 1e-5`À la`1e-7`Je le vois souvent.
 
 检查方式: calcul de la différence relative entre les gradients analytiques et numériques 
 
-```
-relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{relative\_error} = \frac{\lvert \text{grad}_{\text{analytical}} - \text{grad}_{\text{numerical}} \rvert}{\max(\lvert \text{grad}_{\text{analytical}} \rvert, \lvert \text{grad}_{\text{numerical}} \rvert, 10^{-8})}
 ```
 
 经验规则:
@@ -289,7 +291,7 @@ Les GPU modernes ont des hard-parts spécialisés, peuvent être comparés à fl
 5. Net effect: same update, but no underflow
 ```
 
-L'échelle de perte dynamique 会自动调整尺度因子──从一个大值(65536)开始──如果梯度过成 `inf`Si le N pas ne déborde pas, il est multiplié.
+L'échelle de perte dynamique 会自动调整尺度因子──从一个大值(65536)开始──如果梯度过成 `inf`Je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que je suis en train de vous dire que vous êtes en train de vous dire que vous êtes en train de vous dire que vous êtes en train de vous dire que vous êtes en train de vous dire que vous êtes en train de vous dire que vous êtes en train de vous dire que vous êtes en train de vous.$N$Il n'y a pas de débordement, ça va se multiplier.
 
 ### Bfloat16 vs float16: Pourquoi bfloat16 en train de gagner
 
@@ -350,8 +352,8 @@ Layer 50: values in [0, inf]
 
 Normalization 会在每一层重新居中并重新缩放激活:
 
-```
-LayerNorm(x) = (x - mean(x)) / (std(x) + epsilon) * gamma + beta
+```math
+\mathop{\mathrm{LayerNorm}}(x) = \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x) + \epsilon} \cdot \gamma + \beta
 ```
 
 `epsilon`(habituellement pour 1e-5) seront dans toutes les activations de la même époque pour empêcher de décomposition à zéro.`gamma`et `beta`Laissez le réseau récupérer à n'importe quelle échelle.
@@ -569,7 +571,7 @@ Ces stables réalisations se produiront à nouveau lors de la phase 3 de la cons
 
 ## 练习
 
-1. **Catastrophic cancellation。**Utilisez la formule naïve de float32`E[x^2] - E[x]^2`計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法计算──将误差与真实方差──0.6667) 相比──
+1. **Catastrophic cancellation。**Utilisez la formule naïve de float32$\mathbb{E}[x^2] - \mathbb{E}[x]^2$計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法计算──将误差与真实方差──0.6667) 相比──
 
 2. **Precision hunt。**Trouver la valeur de float32 la plus faible en Python`x`Je suis là .`1.0 + x == 1.0`C'est la machine qui fait le test.`numpy.finfo(numpy.float32).eps`Il y a une autre.
 
@@ -579,17 +581,29 @@ Ces stables réalisations se produiront à nouveau lors de la phase 3 de la cons
 
 5. **Loss scaling experiment。**模拟 float16 训练:创建范围在 [1e-9, 1e-3] 内的随机梯度,转换为 float16,并测量有多少比例变成零――然后应用损失规模(乘以 1024),转换为 float16,再缩小回,并再次测量零比例――
 
+### 提示
+
+**练习 1。**Dans le même temps,`np.float32`转换 these三个值, puis调用 `variance_naive`et `welford_variance`◊ float32 $10^{12}$ La distance de valeur numérique proche est supérieure à 1, donc l'attente de résultats simples est supérieure à 0,6667, tandis que Welford  résultat approche cette valeur 
+
+**练习 2。**De `x = np.float32(1.0)`Je commence, si seulement.`np.float32(1.0) + x != np.float32(1.0)`La valeur de chaque type de float32 est réduite de moitié, la valeur de chaque type de float32 est modifiée de manière à ce que la valeur du type de float32 reste variable.`numpy.finfo(numpy.float32).eps`Comparer, le dernier pour $2^{-23}$Il y a une autre.
+
+**练习 3。**Pour chaque réponse.$n$个相等的值 $c$, pour le résultat$c + \ln n$ Une seule valeur très grande, le résultat approche cette valeur.$-1000 + \ln n$, et `logsumexp_naive`Retour`-inf`, parce que chaque indice est dépassé par 0.
+
+**练习 4。**Pour le$y = Wx + b$et la perte $L$- Je suis désolé .$W$La température est la température de l'étage supérieur et la température de l'étage supérieur.$x$Les pertes sont enveloppées dans le plan de l'année.$W$ 调用 `numerical_gradient`, et de deux sortes de résultats.`check_gradient`Il y a une autre.
+
+**练习 5。**- Je veux le faire .`10 ** np.random.uniform(-9, -3, n)`Dans les échelles de taille, on utilise`np.float16`转换──Float16 无法保留小于约 $6 \times 10^{-8}$La valeur de la réduction prévue est donc de 0, tandis que la valeur de la réduction prévue est de 0,04, et la valeur de la réduction de 1024 est presque nulle.
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | IEEE 754 | “float 标准” | 定义 binary floating point formats、rounding rules 和 special values（inf、nan）的国际标准。每个现代 CPU 和 GPU 都实现了它。 |
-| Machine epsilon | “精度极限” | 在给定 float format 中，使 1.0 + e != 1.0 成立的最小值 e。对于 float32，它约为 1.19e-7。 |
+| Machine epsilon | “精度极限” | 在给定 float format 中，使 $1.0 + e \ne 1.0$ 成立的最小值 $e$。对于 float32，它约为 1.19e-7。 |
 | Catastrophic cancellation | “减法导致的精度损失” | 相减两个几乎相等的 floating point 数时，有效数字相互抵消，rounding noise 主导结果。 |
 | Overflow | “数字太大” | 结果超过最大可表示值并变成 inf。exp(89) 会使 float32 overflow。 |
 | Underflow | “数字太小” | 结果比最小可表示正数还接近零，并变成 0.0。exp(-104) 会使 float32 underflow。 |
-| Log-sum-exp trick | “先减去最大值” | 通过提出 exp(max(x)) 来计算 log(sum(exp(x)))，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
-| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 max(logits)。结果在数值上相同，且不可能 overflow。 |
+| Log-sum-exp trick | “先减去最大值” | 通过提出 $\exp(\max(x))$ 来计算 $\log(\sum \exp(x))$，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
+| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 $\max(\text{logits})$。结果在数值上相同，且不可能 overflow。 |
 | Gradient checking | “校验你的 Backpropagation” | 将 Backpropagation 得到的 analytical gradients 与 finite differences 得到的 numerical gradients 比较，以捕获实现 bug。 |
 | Mixed precision | “Float16 forward，float32 backward” | 对 speed-critical operations 使用低精度 floats，对 numerically sensitive operations 使用高精度 floats。典型提速为 2-3x。 |
 | Loss scaling | “防止 Gradient underflow” | 在 Backpropagation 前将 Loss 乘以一个大常数，使 gradients 保持在 float16 可表示范围内，然后在 weight updates 前除以同一个常数。 |
@@ -597,7 +611,7 @@ Ces stables réalisations se produiront à nouveau lors de la phase 3 de la cons
 | Gradient clipping | “限制 Gradient norm” | 缩放 Gradient Vector，使其 norm 不超过阈值。防止 exploding gradients 毁掉 weights。 |
 | NaN | “Not a Number” | 来自未定义操作（0/0、inf-inf、sqrt(-1)）的特殊 float value。会传播到所有后续 arithmetic。 |
 | Inf | “Infinity” | 来自 overflow 或除以零的特殊 float value。可以组合产生 NaN（inf - inf、inf * 0）。 |
-| Numerical gradient | “暴力求导” | 通过计算 f(x+h) 和 f(x-h)，再除以 2h 来近似 derivative。很慢，但用于校验时可靠。 |
+| Numerical gradient | “暴力求导” | 通过计算 $f(x+h)$ 和 $f(x-h)$，再除以 $2h$ 来近似 derivative。很慢，但用于校验时可靠。 |
 
 ## 延伸阅读
 

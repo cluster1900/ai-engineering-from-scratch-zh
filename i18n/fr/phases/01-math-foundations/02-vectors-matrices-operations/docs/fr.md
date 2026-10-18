@@ -40,11 +40,10 @@ Vecteur 2D `[3, 4]`Il est de taille moyenne de 5 mm.
 
 ### Matrice: numérique
 
-La matrice est une 2D 网格──由行和列组成──一个 m x n Matrice 有 m 行和 n 列──
+La matrice est une 2D 网格──由行 和列组成──一个$m \times n$Il y a une Matrice .$m$行和 $n$Il y a une autre.
 
-```
-A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
-    | 4  5  6 |
+```math
+A = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \quad \text{2x3 Matrix（2 行，3 列）}
 ```
 
 Dans les réseaux neuraux, les matrices de poids utilisent des vecteurs d'entrée en vecteurs de sortie.
@@ -80,16 +79,14 @@ Cette différence fait souvent des débutants piétiner.
 
 Élément-wise: identique position à la fois. Deux matrices doivent avoir la même forme.
 
-```
-| 1  2 |   | 5  6 |   | 5  12 |
-| 3  4 | * | 7  8 | = | 21 32 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} * \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 5 & 12 \\ 21 & 32 \end{bmatrix}
 ```
 
 Multiplication de matrice: produits de points de lignes et de colonnes.
 
-```
-| 1  2 |   | 5  6 |   | 1*5+2*7  1*6+2*8 |   | 19  22 |
-| 3  4 | @ | 7  8 | = | 3*5+4*7  3*6+4*8 | = | 43  50 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} @ \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\ 3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8 \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
 ```
 
 Différents calculs, différents résultats, différentes règles.
@@ -319,13 +316,21 @@ La classe Matrix que nous avons construite est la base de la construction d'un m
 
 3. **构建一个 two-layer network。**Il faut utiliser votre classe Matrix, créer un réseau neural à deux couches: entrée (3) -> cachée (4) -> sortie (2)──
 
+### 提示
+
+**练习 1。**Pour les trois matrices`A @ A.inverse_2x2()`, comparer chaque élément à la matrice unitaire, l'erreur doit être`1e-9`以内── Pour les matrices de la ligne 0 par exemple [1, 2], [2, 4],`inverse_2x2`Je vais sortir .`ValueError`C'est le résultat attendu.
+
+**练习 2。**計算 3x3 代数余子式矩阵, le déplacement sera accompagné de la矩阵, le recoupement de chaque élément à`determinant()` Inspection`A @ A_inv` get unité de la matrice, et chaque élément avec `np.linalg.inv(A)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `1e-9`Il y a une autre.
+
+**练习 3。**相乘前先写出每个矩阵的形状:与 `demo_neural_network_layer`Comme dans le milieu,`W1`Pour 4x3,`W2`Pour les entrées de 2x4──3x1 il faut obtenir les entrées cachées de 4x1 et les sorties de 2x1.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Vector | “一支箭头” | 有序数字列表。在 AI 中：高维空间中的一个点。 |
 | Matrix | “一张数字表” | 一种 linear transformation。它把 vectors 从一个空间映射到另一个空间。 |
 | Matrix multiply | “就是把数字相乘” | 第一个 Matrix 的每一行与第二个 Matrix 的每一列之间的 dot products。顺序很重要。 |
-| Transpose | “翻转它” | 交换 rows 和 columns。把一个 m x n Matrix 变成 n x m。在 Backpropagation 中很关键。 |
+| Transpose | “翻转它” | 交换 rows 和 columns。把一个 $m \times n$ Matrix 变成 $n \times m$。在 Backpropagation 中很关键。 |
 | Determinant | “来自 Matrix 的某个数字” | 衡量 Matrix 对面积（2D）或体积（3D）的缩放程度。零表示这个 transformation 压扁了一个维度。 |
 | Inverse | “撤销这个 Matrix” | 反转该 transformation 的 Matrix。只有 determinant 不为零时才存在。 |
 | Identity matrix | “无聊的 Matrix” | Matrix 中等价于乘以 1 的对象。用于 residual connections（ResNets）。 |

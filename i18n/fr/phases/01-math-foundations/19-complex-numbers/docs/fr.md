@@ -42,40 +42,42 @@ C'est ainsi que tu as fait de l'axe numérique une plateforme. Le nombre réel e
 
 **加法。**Il y a aussi le fait de faire des choses.
 
+```math
+\begin{aligned}
+(a + bi) + (c + di) &= (a + c) + (b + d)i \\[4pt]
+\text{示例：} (3 + 2i) + (1 + 4i) &= 4 + 6i
+\end{aligned}
 ```
-(a + bi) + (c + di) = (a + c) + (b + d)i
 
-Example: (3 + 2i) + (1 + 4i) = 4 + 6i
-```
+**乘法。**Utilisation de la loi de distribution,并记住 $i^2 = -1$Il y a une autre.
 
-**乘法。**Il est vrai que le nombre de personnes qui sont en train de vivre dans un pays de l'autre est de moins de deux ans.
-
-```
-(a + bi)(c + di) = ac + adi + bci + bdi^2
-                 = ac + adi + bci - bd
-                 = (ac - bd) + (ad + bc)i
-
-Example: (3 + 2i)(1 + 4i) = 3 + 12i + 2i + 8i^2
-                            = 3 + 14i - 8
-                            = -5 + 14i
+```math
+\begin{aligned}
+(a + bi)(c + di) &= ac + adi + bci + bdi^2 \\
+&= ac + adi + bci - bd \\
+&= (ac - bd) + (ad + bc)i \\[8pt]
+\text{示例：} (3 + 2i)(1 + 4i) &= 3 + 12i + 2i + 8i^2 \\
+&= 3 + 14i - 8 \\
+&= -5 + 14i
+\end{aligned}
 ```
 
 **共轭。**翻转虚部的符号──
 
-```
-conjugate of (a + bi) = a - bi
+```math
+(a + bi)\text{ 的共轭} = a - bi
 ```
 
 Un nombre multiplicé par son ensemble est un nombre réel:
 
-```
+```math
 (a + bi)(a - bi) = a^2 + b^2
 ```
 
 **除法。**分子和分母同时乘以分母的共──
 
-```
-(a + bi) / (c + di) = (a + bi)(c - di) / (c^2 + d^2)
+```math
+\frac{a + bi}{c + di} = \frac{(a + bi)(c - di)}{c^2 + d^2}
 ```
 
 Il disparaîtra la partie vide de la matrice, et on obtiendra un nombre de fois net.
@@ -96,23 +98,24 @@ Le nombre de fois est un point, et aussi un vecteur issu du point d'origine. Cet
 
 Tout point de la planche peut être utilisé pour décrire sa distance du point d'origine, ainsi que son angle par rapport à l'axe réel.
 
+```math
+\begin{aligned}
+z &= r (\cos\theta + i \sin\theta) \\[4pt]
+\text{其中：} r &= |z| = \sqrt{a^2 + b^2} \quad \text{（magnitude，即模）} \\
+\theta &= \mathop{\mathrm{atan2}}(b, a) \quad \text{（phase，即辐角）}
+\end{aligned}
 ```
-z = r * (cos(theta) + i*sin(theta))
 
-where:
-  r = |z| = sqrt(a^2 + b^2)     (magnitude, or modulus)
-  theta = atan2(b, a)             (phase, or argument)
-```
-
-Pour les personnes âgées, il est nécessaire de prendre des mesures pour les aider à atteindre leur objectif.
+Directement$(a + bi)$适合加法──极坐标形式 $(r, \theta)$Il est un peu plus facile de le faire.
 
 **极坐标形式下的乘法。**Il est très important de savoir si vous êtes un homme.
 
-```
-z1 = r1 * e^(i*theta1)
-z2 = r2 * e^(i*theta2)
-
-z1 * z2 = (r1 * r2) * e^(i*(theta1 + theta2))
+```math
+\begin{aligned}
+z_1 &= r_1 e^{i\theta_1} \\
+z_2 &= r_2 e^{i\theta_2} \\[4pt]
+z_1 z_2 &= (r_1 r_2) \, e^{i(\theta_1 + \theta_2)}
+\end{aligned}
 ```
 
 C'est pourquoi le nombre de fois est très adapté pour faire le tour.
@@ -121,38 +124,38 @@ C'est pourquoi le nombre de fois est très adapté pour faire le tour.
 
 Le pont entre la réelle et la réelle:
 
-```
-e^(i*theta) = cos(theta) + i*sin(theta)
-```
-
-C'est la formule la plus importante de la classe.
-
-```
-e^(i*pi) = cos(pi) + i*sin(pi) = -1 + 0i = -1
-
-Therefore: e^(i*pi) + 1 = 0
+```math
+e^{i\theta} = \cos\theta + i \sin\theta
 ```
 
-五个基本常数 ((e, i, pi, 1, 0) sont connectés ensemble dans un équation.
+C'est la formule la plus importante de la classe.$\theta = \pi$时:
+
+```math
+\begin{aligned}
+e^{i\pi} &= \cos\pi + i \sin\pi = -1 + 0i = -1 \\[4pt]
+\text{因此：} e^{i\pi} + 1 &= 0
+\end{aligned}
+```
+
+五个基本常数 (en anglais seulement)$e$- Je suis là .$i$- Je suis là .$\pi$, 1, 0) sont connectés ensemble par un équation.
 
 ### Pourquoi la formule d'Euler est importante pour le ML
 
-La formule d'Euler indique,`e^(i*theta)`Lorsque le theta = 0 时, tu es dans (1, 0) 时, tu es dans (0, 1) ・ lorsque le theta = pi 时, tu es dans (-1, 0) ・ lorsque le theta = 3 * pi / 2 时, tu es dans (0, -1) ・ complet
+La formule d'Euler indique,$e^{i\theta}$Je suis avec toi .$\theta$变化描绘单位圆──当 $\theta = 0$Tu es là.$(1, 0)$Je suis là.$\theta = \pi/2$Tu es là.$(0, 1)$Je suis là.$\theta = \pi$Tu es là.$(-1, 0)$Je suis là.$\theta = 3\pi/2$Tu es là.$(0, -1)$ 完整一圈旋转是 $\theta = 2\pi$Il y a une autre.
 
 Cela signifie que le référentiel est rotatif, tandis que le rotatif est absent dans le traitement des signaux et la gestion des données.
 
 ### Contact avec le 2D
 
-将复数 (x + yi) 乘以 e^(i*theta),会把点 (x, y) 周围原点旋转的角──
+Le nombre de fois$(x + yi)$- Je suis là .$e^{i\theta}$Je vais le mettre .$(x, y)$ autour du point d'origine $\theta$- Je suis là.
 
-```
-Rotation via complex multiplication:
-  (x + yi) * (cos(theta) + i*sin(theta))
-  = (x*cos(theta) - y*sin(theta)) + (x*sin(theta) + y*cos(theta))i
-
-Rotation via matrix multiplication:
-  [cos(theta)  -sin(theta)] [x]   [x*cos(theta) - y*sin(theta)]
-  [sin(theta)   cos(theta)] [y] = [x*sin(theta) + y*cos(theta)]
+```math
+\begin{aligned}
+&\text{通过复数乘法旋转：} \\
+&\quad (x + yi)(\cos\theta + i \sin\theta) = (x \cos\theta - y \sin\theta) + (x \sin\theta + y \cos\theta)i \\[8pt]
+&\text{通过矩阵乘法旋转：} \\
+&\quad \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} x \cos\theta - y \sin\theta \\ x \sin\theta + y \cos\theta \end{bmatrix}
+\end{aligned}
 ```
 
 它们产生完全相同的结果──复数乘法就是 2D 旋转──旋转矩阵 只是用矩阵记法写出的复数乘法──
@@ -170,55 +173,56 @@ graph TD
 
 ### Phasor et signal de rotation
 
-复指数 e^(i*omega*t) est un point de rotation à un rythme de ronde de l'omega à travers un cycle t. Avec l'augmentation de t, ce point se dessine en rond.
+复指数  référencement$e^{i\omega t}$C'est une fréquence de coupe.$\omega$绕单位圆旋的点──随随$t$增加, ceci va être dessiné en rond.
 
-Cette rotation est une partie du cosmos.
+Cette partie du tournant est$\cos(\omega t)$Il est un homme.$\sin(\omega t)$正弦信号就是旋转复数投下的影子──
 
-```
-e^(i*omega*t) = cos(omega*t) + i*sin(omega*t)
-
-Real part:      cos(omega*t)    -- a cosine wave
-Imaginary part: sin(omega*t)    -- a sine wave
+```math
+\begin{aligned}
+e^{i\omega t} &= \cos(\omega t) + i \sin(\omega t) \\[4pt]
+\text{实部：} & \cos(\omega t) \quad \text{，即 cosine wave} \\
+\text{虚部：} & \sin(\omega t) \quad \text{，即 sine wave}
+\end{aligned}
 ```
 
 C'est le phasor qui exprime la façon de faire. Vous ne suivez plus une onde de la flèche, mais une flèche de rotation plane.
 
 ### Unité de base
 
-N° de base d'unité est N° de point de distribution de l'unité de l'espace:
+$N$La seconde unité est la base de l'unité de la distribution de l'échelle.$N$个点:
 
+```math
+w_k = e^{2\pi i k/N} \quad \text{其中 } k = 0, 1, 2, \ldots, N-1
 ```
-w_k = e^(2*pi*i*k/N)    for k = 0, 1, 2, ..., N-1
-```
 
-Quand N = 4 时,根是:1, i, -1, -i(四个罗盘方向)
-Quand N = 8, vous obtiendrez quatre directions de roulement, puis quatre directions de contre-angle.
+- Je suis là .$N = 4$Je suis en train de dire:$1, i, -1, -i$Je suis en train de vous dire:
+- Je suis là .$N = 8$Quand vous obtenez quatre directions, vous pouvez ajouter quatre directions.
 
-L'unité de base est la base de la transformation discrète de Fourier.
+L'unité de base est la base de la transformation discrète de Fourier.$N$个等间隔频率分量.
 
 ### Contacts avec DFT
 
-La transformation discrète de Fourier de 信号 x[0], x[1], ..., x[N-1] est:
+ signal $x[0], x[1], \ldots, x[N-1]$La transformation discrète de Fourier est:
 
-```
-X[k] = sum_{n=0}^{N-1} x[n] * e^(-2*pi*i*k*n/N)
+```math
+X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N}
 ```
 
-Chaque X[k] mesure la proportion de signal à la racine de l'unité de la seconde K, c'est-à-dire la proportion de fréquence à la seconde d'une onde de la seconde K. Le DFT va décomposer le signal en N 个旋转phasor, et vous indiquer la portée et la phase de chacun.
+Chaque .$X[k]$衡量信号与第 $k$Le degré de connexion de l'unité, c'est-à-dire avec la fréquence.$k$处一个复正弦波的相关程度──DFT 将信号分解为 $N$个旋转phasor,并告诉你每一个振幅和相位的每个振幅和相位的位置.
 
 ### Pourquoi je ne suis pas faux
 
-Imaginary Ce mot est un hasard historique。 Descartes 曾带带着轻蔑的意思使用它──但 i并非比负数更虚──负数回答是:从3减到什么才能得到5? 虚数单位回答是:什么数平方后得到 -1?
+Imaginary Ce mot est un hasard historique.$i$Il n'y a pas de différence entre le nombre négatif et le nombre négatif. Le nombre négatif est donc:  3 décroît pour obtenir 5 ?  虚数单位 répond:  什么数平方后得到 -1 ?
 
-Il est plus utile de comprendre: i est un calcul de rotation à 90 degrés. Pour multiplier un nombre réel à un seul coup, vous faites le tour à 90 degrés jusqu'à un faux axe.
+Il est plus utile de comprendre:$i$C'est un calcul de 90 degrés.$i$Une fois, tu t'en retournes 90° à l'axe.$i$Une fois$i^2$Tu tournes à nouveau 90°, en direction de l'axe négatif.$i^2 = -1$Il n'est pas mystérieux. Il est fait de deux demi-circles constitués de quartz.
 
 C'est pourquoi le complexe n'existe pas dans l'ingénierie. Tout ce qui tourne est naturellement adapté à la description du complexe.
 
 ### 复指数 vs 三角函数
 
-Avant la formule d'Euler, l'ingénieur a écrit le signal en A*cos (Omega)  振幅 A、 fréquence omega、相位 phi。 c'est possible, mais ça va faire le calcul de douleur。
+Avant la formule d'Euler, l'ingénieur a écrit un signal.$A \cos(\omega t + \phi)$ 振幅 $A$、 fréquence $\omega$、相位 $\phi$                                                                                                                                                                                                                                                              
 
-Utilisation de l'indice de réaction, le même signal peut être écrit comme A*e^(i*(omega*t + phi))。相加两个信号只是相加两个复数。相乘(调制)只是模长相乘、角度相加。相位偏移变成角加法。频率偏移变成乘相──
+En utilisant le réindex, le même signal peut être écrit.$A e^{i(\omega t + \phi)}$◊相加两个信号只是相加两个复数――相乘(调制)只是模长相乘、角度相加――相位偏移变成角度加法――频率偏移变成乘乘相──
 
 Le domaine entier du traitement des signaux est devenu plus propre, car les mathématiques sont plus propres.
 
@@ -226,9 +230,11 @@ Le domaine entier du traitement des signaux est devenu plus propre, car les math
 
 **正弦位置编码**(original Transformer 论文):
 
-```
-PE(pos, 2i) = sin(pos / 10000^(2i/d))
-PE(pos, 2i+1) = cos(pos / 10000^(2i/d))
+```math
+\begin{aligned}
+PE(pos, 2i) &= \sin\left(pos / 10000^{2i/d}\right) \\
+PE(pos, 2i+1) &= \cos\left(pos / 10000^{2i/d}\right)
+\end{aligned}
 ```
 
 Les variations de fréquence sont différentes, mais elles sont différentes. Chaque fréquence est codée en fonction de la position de la fréquence.
@@ -237,13 +243,13 @@ Les variations de fréquence sont différentes, mais elles sont différentes. Ch
 
 | Operation | Algebraic Form | Geometric Meaning |
 |-----------|---------------|-------------------|
-| 加法 | (a+c) + (b+d)i | 平面中的 Vector 加法 |
-| 乘法 | (ac-bd) + (ad+bc)i | 旋转并缩放 |
-| 共轭 | a - bi | 关于实轴反射 |
-| 模长 | sqrt(a^2 + b^2) | 到原点的距离 |
-| 相位 | atan2(b, a) | 相对正实轴的角度 |
+| 加法 | $(a+c) + (b+d)i$ | 平面中的 Vector 加法 |
+| 乘法 | $(ac-bd) + (ad+bc)i$ | 旋转并缩放 |
+| 共轭 | $a - bi$ | 关于实轴反射 |
+| 模长 | $\sqrt{a^2 + b^2}$ | 到原点的距离 |
+| 相位 | $\mathop{\mathrm{atan2}}(b, a)$ | 相对正实轴的角度 |
 | 除法 | multiply by conjugate | 反向旋转并重新缩放 |
-| 幂 | r^n * e^(i*n*theta) | 旋转 n 次，按 r^n 缩放 |
+| 幂 | $r^n e^{in\theta}$ | 旋转 $n$ 次，按 $r^n$ 缩放 |
 
 ```mermaid
 graph LR
@@ -323,7 +329,7 @@ def euler(theta):
 
 ### 步骤 3: tour
 
-将点 (x, y) 旋转 theta 角, seulement besoin d'une fois répétée multiplication:
+Je vais le faire .$(x, y)$旋转 $\theta$Il suffit de faire une fois le nombre de fois:
 
 ```python
 point = Complex(3, 4)
@@ -347,11 +353,11 @@ def dft(signal):
     return result
 ```
 
-C'est le DFT de O(N^2) ⋅ pour chaque sortie X[k] ⋅ c'est le signal échantillon multiplié par le total de l'unité de la racine ⋅
+C' est ça .$O(N^2)$Pour chaque sortie.$X[k]$C'est le signal de l'échantillon multiplié par le total de l'unité de base.
 
 ### 步骤 5: DFT inversé
 
-La différence unique entre le DFT inverse et le signal original est que le symbole du référentiel de transformation est divisé par N.
+La différence unique entre le DFT inverse et le signal original est que le symbole du référentiel de transformation est divisé en$N$Il y a une autre.
 
 ```python
 def idft(spectrum):
@@ -377,7 +383,7 @@ def roots_of_unity(N):
 
 验证 Deux qualités:
 - Chaque racine est strictement à 1.
-- Les propriétés n'ont pas de racines et ne sont pas à l'origine de leurs propres propriétés.
+- Tout le monde$N$个根的和为零 (elles sont en effet opposées à l'autre).
 
 Ces caractéristiques rendent la DFT réversible.
 
@@ -418,29 +424,41 @@ freqs = np.fft.fftfreq(128, d=1/128)
 运行  référencement`code/complex_numbers.py`Pour générer`outputs/skill-complex-arithmetic.md`Il y a une autre.
 
 ## 练习
-1. **手算复数运算。**計算 (2 + 3i) * (4 - i),并用代码验证──然后计算 (5 + 2i) / (1 - 3i)──把两个结果都画在复平面上,并检查乘法是否旋转并缩放第一数──
+1. **手算复数运算。**计算 $(2 + 3i)(4 - i)$,并用代码验证──然后计算 $(5 + 2i) / (1 - 3i)$                                                                                                                                                                                                                                                              
 
-2. **旋转序列。**De point (1, 0) 开始──连续乘以 e^(i*pi/6) 十二次──验证 12次乘法后你会回到 (1, 0)──打印每一步的坐标,并确认它们描绘出一个正 12边形──
+2. **旋转序列。**À partir de l' étage$(1, 0)$Je suis en train de faire une série de choses.$e^{i\pi/6}$12 fois. 12 fois. Tu reviendras.$(1, 0)$ Imprimer les coordonnées de chaque étape, et confirmer qu'elles sont dessinées en une forme de 12 côtés 
 
-3. **已知信号的 DFT。**创建一个信号,它在32个点上采样 sin(2*pi*3*t) 与0.5*sin(2*pi*7*t) 之和──运行你的DFT──验证幅度频谱在频率 3 和 7 处有峰值,并且频率 7 处的峰值高度是频率 3 处的一半──
+3. **已知信号的 DFT。**Créer un signal, c'est à 32 points.$\sin(2\pi \cdot 3t)$Avec $0.5 \sin(2\pi \cdot 7t)$之和──运行你的DFT──验证幅度频谱在频率 3和7处有峰值,并且频率 7处的峰值高度是频率 3处的一半──
 
-4. **单位根可视化。**計算 8 次单位根──验证它们的和为零──验证任意根乘以本原根 e^(2 * pi*i/8) 都会得到下一个根──
+4. **单位根可视化。**計算 8 次单位根──验证它们的和为零──验证任意根乘以本原根 $e^{2\pi i/8}$Je vais avoir une autre racine.
 
 5. **旋转 Matrix 等价性。**Pour 10 angles et 10 points de variation, les résultats de l'essai de multiplication sont les mêmes que ceux de l'utilisation de la matrice rotative 2x2 pour effectuer le calcul de la multiplication de la matrice-vecteur.
+
+### 提示
+
+**练习 1。**Utilisation $i^2 = -1$展开乘积;做除法时,将分子和分母同时乘以结合 $1 + 3i$ utilisation `Complex(2, 3) * Complex(4, -1)`检查乘积:其 `magnitude()`Il faut égaler à deux multiples de magnitude,`phase()`Il faut égaler deux phases.
+
+**练习 2。**Utilisation `euler(math.pi / 6)`La taille de chaque étape est de 1°, la distance entre le dernier point et le point (1, 0) doit être d'environ 1° et 12°.
+
+**练习 3。**Utilisation $t = n/32$构建时间点,并调用 `dft`◊ Regardez seulement les poubelles de 0 à 15, parce que la moitié supérieure est l'image.$A$De l'onde sinusoïde, fils.$k$La magnitude de la zone est$AN/2$, donc l'espérance est de 16,7 à 8.
+
+**练习 4。**调用 `roots_of_unity(8)`Il faut approcher 0 pour chaque racine, et vérifier si chaque résultat est égal à`euler(2 * math.pi / 8)`Il y a une autre.
+
+**练习 5。**La matrice de rotation est [cos t, -sin t], [sin t, cos t]]──对每个角 和点,计算 `euler(t) * Complex(x, y)`Et le plus grand écart absolu de la récolte.$10^{-15}$Il y a une autre.
 
 ## 关键术语
 | Term | What it means |
 |------|---------------|
-| 复数 | 形如 a + bi 的数，其中 a 是实部，b 是虚部，并且 i^2 = -1 |
-| 虚数单位 | 数 i，定义为 i^2 = -1。它在哲学意义上并不“虚”——它是一个旋转算子 |
+| 复数 | 形如 $a + bi$ 的数，其中 $a$ 是实部，$b$ 是虚部，并且 $i^2 = -1$ |
+| 虚数单位 | 数 $i$，定义为 $i^2 = -1$。它在哲学意义上并不“虚”——它是一个旋转算子 |
 | 复平面 | x 轴为实轴、y 轴为虚轴的 2D 平面。也称为 Argand plane |
-| 模长（模） | 到原点的距离：sqrt(a^2 + b^2)。写作 \|z\| |
-| 相位（辐角） | 相对正实轴的角度：atan2(b, a)。写作 arg(z) |
-| 共轭 | 关于实轴的镜像：a + bi 的共轭是 a - bi |
-| 极坐标形式 | 将 z 表示为 r * e^(i*theta)，而不是 a + bi。让乘法变得容易 |
-| Euler's formula | e^(i*theta) = cos(theta) + i*sin(theta)。连接指数函数与三角函数 |
-| Phasor | 表示正弦信号的旋转复数 e^(i*omega*t) |
-| 单位根 | k = 0 到 N-1 时的 N 个复数 e^(2*pi*i*k/N)。单位圆上等间隔的 N 个点 |
+| 模长（模） | 到原点的距离：$\sqrt{a^2 + b^2}$。写作 $\lvert z \rvert$ |
+| 相位（辐角） | 相对正实轴的角度：$\mathop{\mathrm{atan2}}(b, a)$。写作 $\arg(z)$ |
+| 共轭 | 关于实轴的镜像：$a + bi$ 的共轭是 $a - bi$ |
+| 极坐标形式 | 将 $z$ 表示为 $r e^{i\theta}$，而不是 $a + bi$。让乘法变得容易 |
+| Euler's formula | $e^{i\theta} = \cos\theta + i \sin\theta$。连接指数函数与三角函数 |
+| Phasor | 表示正弦信号的旋转复数 $e^{i\omega t}$ |
+| 单位根 | $k = 0$ 到 $N-1$ 时的 $N$ 个复数 $e^{2\pi i k/N}$。单位圆上等间隔的 $N$ 个点 |
 | DFT | Discrete Fourier Transform。使用单位根将信号分解为复正弦分量 |
 | RoPE | Rotary Position Embedding。使用复数乘法在 Transformer Attention 中编码相对位置 |
 
@@ -448,6 +466,6 @@ freqs = np.fft.fftfreq(128, d=1/128)
 - [Visual Introduction to Euler's Formula](https://betterexplained.com/articles/intuitive-understanding-of-eulers-formula/)- dans le cas de l'utilisation du journal de la vie
 - [Su et al.: RoFormer (2021)](https://arxiv.org/abs/2104.09864)-  proposer des travaux d'intégration de position rotative à l'aide de plusieurs rotations
 - [Vaswani et al.: Attention Is All You Need (2017)](https://arxiv.org/abs/1706.03762)-  proposer position de transformateur original 论文
-- [3Blue1Brown: Euler's formula with introductory group theory](https://www.youtube.com/watch?v=mvmuCPvRoWQ)- Pour ce qui est de l'explication visible
+- [3Blue1Brown: Euler's formula with introductory group theory](https://www.youtube.com/watch?v=mvmuCPvRoWQ)- Pour quoi ?$e^{i\pi} = -1$De la visibilité
 - [Needham: Visual Complex Analysis](https://global.oup.com/academic/product/visual-complex-analysis-9780198534464)-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 - [Strang: Introduction to Linear Algebra, Ch. 10](https://math.mit.edu/~gs/linearalgebra/)- nombre de caractères et de caractères

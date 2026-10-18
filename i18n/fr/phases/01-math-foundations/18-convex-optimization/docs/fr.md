@@ -26,7 +26,7 @@ Comprendre la connotation a trois valeurs. Premièrement, elle vous dit quand le
 
 ### 凸集
 
-Si, pour le groupe S, les deux points sont totalement situés au milieu de S, le groupe S est un groupe de points.
+Si pour les collections$S$Le point de séparation entre les deux points est également parfaitement situé.$S$中,则集合 $S$C'est une bonne idée.
 
 | 凸集 | 非凸 |
 |---|---|
@@ -34,12 +34,12 @@ Si, pour le groupe S, les deux points sont totalement situés au milieu de S, le
 | **三角形**：对所有内部点都满足相同性质 | **甜甜圈/环形**：中间的孔意味着某些线段会离开集合 |
 | 任意两点之间的线段都留在集合内 | 某些点对之间的线段会离开集合 |
 
-形式化测试: Pour S 中任意点 x、y, ainsi que pour t dans [0, 1],点 tx + (1-t) y 也在 S 中。
+形式化测试: Pour$S$      $x, y$, ainsi que l' arbitre$t \in [0, 1]$Je suis là .$tx + (1-t)y$Je suis aussi$S$Dans le centre.
 
 凸集 exemple:
-- Une ligne droite, un plan, toute la R^n
+- Une ligne droite, un plan, tout le monde.$\mathbb{R}^n$
 - Une boule (ou une boule)
-- Un espace de la moitié: {x: a^T x <= b}
+- Une moitié de l'espace:$\lbrace x : a^T x \le b \rbrace$
 - L'interaction de l'ensemble
 
 Exemple non conjugué:
@@ -49,10 +49,10 @@ Exemple non conjugué:
 
 ### 凸函数
 
-Si la définition de la fonction f est un ensemble de couches, et pour les deux points x、y, ainsi que pour l'ensemble t dans [0, 1]:
+Si fonction $f$Le domaine de définition est un ensemble de points, et pour chaque point de son domaine de définition.$x, y$, ainsi que l' arbitre$t \in [0, 1]$- Le numéro de la liste:
 
-```
-f(tx + (1-t)y) <= t*f(x) + (1-t)*f(y)
+```math
+f(tx + (1-t)y) \le t f(x) + (1-t) f(y)
 ```
 
 几何上看: la ligne entre les deux points de l'image se trouve au-dessus de l'image ou sur l'image.
@@ -64,26 +64,26 @@ f(tx + (1-t)y) <= t*f(x) + (1-t)*f(y)
 | **局部最小值** | 每个局部最小值都是全局最小值 | 可能存在多个高度不同的局部最小值 |
 
 常见凸函数:
-- f(x) = x^2( parallèle
-- F(x) =) X est une valeur absolue
-- F (x) = é^x (x)
-- f(x) = max(0, x)
-- f(x) = -log(x) pour x > 0(负对数)
-- 任意线性函数 f(x) = a^T x + b(既凸又)
+- $f(x) = x^2$(Payeur de choses)
+- $f(x) = \lvert x \rvert$(Value absolue)
+- $f(x) = e^x$(indice)
+- $f(x) = \max(0, x)$(RELU, malgré le fait qu'il est séparé)
+- $f(x) = -\log(x)$pour $x > 0$( négatif)
+- 任意线性函数 $f(x) = a^T x + b$(à la fois conique et conique)
 
 ### 测试凸性
 
 Trois tests pratiques, du plus facile au plus strict.
 
-**测试 1：二阶导数测试（1D）。**Si pour tous les x il y a une f'(x) >= 0, alors f est une fonction de coupe.
+**测试 1：二阶导数测试（1D）。**Si à tout$x$Il y a des villes .$f''(x) \ge 0$, $f$C'est une fonction de coupe.
 
-- f(x) = x^2:f'(x) = 2 >= 0。凸。
-- f(x) = x^3:f'(x) = 6x。x < 0 时为负──非凸──
-- f(x) = e^x: f''(x) = e^x > 0。凸。
+- $f(x) = x^2$- Le numéro de la liste:$f''(x) = 2 \ge 0$Je suis en train de faire une fête.
+- $f(x) = x^3$- Le numéro de la liste:$f''(x) = 6x$Il y a une autre.$x < 0$Il est un peu plus fort que moi.
+- $f(x) = e^x$- Le numéro de la liste:$f''(x) = e^x > 0$Je suis en train de faire une fête.
 
-**测试 2：Hessian 测试（多变量）。**Si la matrice hessienne H ((x) est semi-définie pour tous les x, alors f est une fonction de coupe.
+**测试 2：Hessian 测试（多变量）。**Si la Matrice Hessienne $H(x)$Pour tout .$x$C'est une demi-définition positive.$f$est une matrice composée de deux phases de la fonction Hessian.
 
-**测试 3：定义测试。**直接检查不等式 f(tx + (1-t) y) <= t*f(x) + (1-t) *f(y)。适用于导数难以计算的函数。
+**测试 3：定义测试。**直接检查不等式 $f(tx + (1-t)y) \le t f(x) + (1-t) f(y)$◊ Appliqué à des fonctions de calcul difficiles à calculer
 
 ### Pourquoi est-ce important ?
 
@@ -129,20 +129,22 @@ Le modèle de la perte de la camouflage est de la camouflage. Une fois que l'on 
 
 ### Matrice hessienne
 
-函数 f: R^n -> Hessian H de R est constitué de n x n matrices
+函数 $f: \mathbb{R}^n \to \mathbb{R}$                   $H$est composé de deux niveaux de direction.$n \times n$Matrice.
 
+```math
+H_{ij} = \frac{\partial^2 f}{\partial x_i \, \partial x_j}
 ```
-H[i][j] = d^2 f / (dx_i dx_j)
-```
 
-对于 f ((x, y) = x^2 + 3xy + y^2:
+Pour le$f(x, y) = x^2 + 3xy + y^2$- Le numéro de la liste:
 
-```
-df/dx = 2x + 3y       d^2f/dx^2 = 2      d^2f/dxdy = 3
-df/dy = 3x + 2y       d^2f/dydx = 3      d^2f/dy^2 = 2
-
-H = [ 2  3 ]
-    [ 3  2 ]
+```math
+\begin{gathered}
+\begin{aligned}
+\frac{\partial f}{\partial x} &= 2x + 3y & \frac{\partial^2 f}{\partial x^2} &= 2 & \frac{\partial^2 f}{\partial x \, \partial y} &= 3 \\
+\frac{\partial f}{\partial y} &= 3x + 2y & \frac{\partial^2 f}{\partial y \, \partial x} &= 3 & \frac{\partial^2 f}{\partial y^2} &= 2
+\end{aligned} \\[8pt]
+H = \begin{bmatrix} 2 & 3 \\ 3 & 2 \end{bmatrix}
+\end{gathered}
 ```
 
 Hessian 告诉你曲率信息:
@@ -151,18 +153,17 @@ Hessian 告诉你曲率信息:
 - 符号混合: point de selle ((certains directions à l'en haut, d'autres directions à l'en bas))
 - 零 propre valeur: cette direction est plate de
 
-Pour la connotation, Hessian doit être à toutes les positions positives semi-définie, toutes les valeurs propres >= 0, et non seulement à un seul point.
+Pour la conjonctivité, Hessian doit être à toutes les positions positives semi-définie.$\ge 0$), et non seulement à un certain point.
 
 ### La méthode de Newton
 
 Gradient Descendance Utilisation d'une phase information (Gradient) ――Métode de Newton Utilisation de la phase information (Hessian) ― Il est en cours de préparation à un second approximation, puis saute directement à la valeur minimale de cette seconde fonction.
 
-```
-Update rule:
-  x_new = x - H^(-1) * gradient
-
-Compare to gradient descent:
-  x_new = x - lr * gradient
+```math
+\begin{aligned}
+\text{更新规则：} \quad & x_{\text{new}} = x - H^{-1} \cdot \text{gradient} \\
+\text{与 gradient descent 比较：} \quad & x_{\text{new}} = x - \text{lr} \cdot \text{gradient}
+\end{aligned}
 ```
 
 La méthode de Newton utilise le taux d'apprentissage de la méthode hessienne.
@@ -190,14 +191,14 @@ graph TD
 - La taille ne change pas (je peux travailler sur la taille)
 
 缺点:
-- 計算 Hessian 需要 O(n^2) 内存,求逆需要 O(n^3)
-- Pour un réseau neural de 1 million de pouvoirs, cela signifie 10 à 12 articles et 10 à 18 opérations.
+- 计算 Hessian 需要 $O(n^2)$Je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux,$O(n^3)$
+- Pour un réseau neural de 1 million de pouvoirs, ça signifie$10^{12}$个条目和 $10^{18}$Suivant
 - Pour l'apprentissage en profondeur non pratique
 
 ### 约束优化
 
-无约束优化: 在所有 x 上最小化 f(x)。
-约束优化: dans les conditions de la limite, le f (x) ⋅
+无约束优化: dans tout $x$À la réduction de la quantité$f(x)$Il y a une autre.
+Optimisation de la liaison: dans la condition de liaison minimale$f(x)$Il y a une autre.
 
 ̇ vous voulez minimiser les coûts, mais le budget est limité ̇ vous voulez minimiser les erreurs, mais la complexité du modèle est limitée ̇
 
@@ -216,22 +217,24 @@ graph LR
 
 Les multiplicateurs de la lagrange 方法把束问题转换为无束问题──
 
-问题: dans g(x) = 0 of约束下最小化 f(x)。
+问题: dans $g(x) = 0$De la limitation à la minimisation$f(x)$Il y a une autre.
 
-解法: introduire un nouveau changement (Lagrange multiplier lambda),并求解无约束问题:
+解法: introduire un nouveau changement $\lambda$),并求解无约束问题:
 
-```
-L(x, lambda) = f(x) + lambda * g(x)
-```
-
-Dans le cas de l'élément L, le gradient n'est pas:
-
-```
-dL/dx = df/dx + lambda * dg/dx = 0
-dL/dlambda = g(x) = 0
+```math
+L(x, \lambda) = f(x) + \lambda g(x)
 ```
 
-几何直觉: dans le faisceau de la valeur minimale, le gradient f doit être en phase avec le gradient g du faisceau.
+Dans le détail,$L$Le degré n°:
+
+```math
+\begin{aligned}
+\frac{\partial L}{\partial x} &= \frac{\partial f}{\partial x} + \lambda \frac{\partial g}{\partial x} = 0 \\
+\frac{\partial L}{\partial \lambda} &= g(x) = 0
+\end{aligned}
+```
+
+几何直觉: dans le groupe de la valeur minimale,$f$Le degré doit être lié à la condition$g$Si elles ne sont pas égales, vous pouvez vous déplacer le long de la ligne de coupe et la réduire encore.$f$Il y a une autre.
 
 ```mermaid
 graph LR
@@ -240,39 +243,41 @@ graph LR
     S --- C["At the solution, gradient of f is parallel to gradient of g"]
 ```
 
-Example: dans x + y = 1 de la résolution sous la minimisation f(x,y) = x^2 + y^2。
+Exemple: dans$x + y = 1$De la limitation à la minimisation$f(x,y) = x^2 + y^2$Il y a une autre.
 
+```math
+\begin{aligned}
+L &= x^2 + y^2 + \lambda(x + y - 1) \\[4pt]
+\frac{\partial L}{\partial x} &= 2x + \lambda = 0 \implies x = -\lambda/2 \\
+\frac{\partial L}{\partial y} &= 2y + \lambda = 0 \implies y = -\lambda/2 \\
+\frac{\partial L}{\partial \lambda} &= x + y - 1 = 0 \\[4pt]
+&\text{由前两个方程得：} x = y \\
+&\text{代入得：} 2x = 1, \text{因此 } x = y = 0.5, \ \lambda = -1
+\end{aligned}
 ```
-L = x^2 + y^2 + lambda(x + y - 1)
 
-dL/dx = 2x + lambda = 0  =>  x = -lambda/2
-dL/dy = 2y + lambda = 0  =>  y = -lambda/2
-dL/dlambda = x + y - 1 = 0
-
-From first two: x = y
-Substituting: 2x = 1, so x = y = 0.5, lambda = -1
-```
-
-L'intersection directe x + y = 1 est (0,5, 0,5)
+Directement$x + y = 1$Le point le plus proche est le point le plus proche.$(0.5, 0.5)$Il y a une autre.
 
 ### Conditions de la TCC
 
 Les conditions de Karush-Kuhn-Tucker vont augmenter les multiplicateurs de Lagrange à une certaine échelle.
 
-问题: dans g_i(x) <= 0,i = 1, ..., m of约束下最小化 f(x)。
+问题: dans $g_i(x) \le 0$- Je suis désolé .$i = 1, \ldots, m$De la limitation à la minimisation$f(x)$Il y a une autre.
 
 Conditions de la TCC:
 
-```
-1. Stationarity:    df/dx + sum(lambda_i * dg_i/dx) = 0
-2. Primal feasibility:  g_i(x) <= 0  for all i
-3. Dual feasibility:    lambda_i >= 0  for all i
-4. Complementary slackness:  lambda_i * g_i(x) = 0  for all i
+```math
+\begin{aligned}
+&\text{1. 驻点条件：} && \frac{\partial f}{\partial x} + \sum_i \lambda_i \frac{\partial g_i}{\partial x} = 0 \\
+&\text{2. 原始可行性：} && g_i(x) \le 0 \quad \text{对于所有 } i \\
+&\text{3. 对偶可行性：} && \lambda_i \ge 0 \quad \text{对于所有 } i \\
+&\text{4. 互补松弛：} && \lambda_i \, g_i(x) = 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-La lâcheté complémentaire est un facteur clé.
+La paresse complémentaire est un facteur clé.$g_i = 0$, solution située sur la frontière), soit le multiplicateur pour zéro (pour lequel le lien ne fonctionne pas)$\lambda = 0$Il y a une autre.
 
-Les conditions KKT sont au cœur des SVM. Les vecteurs de support sont à la limite des points de données actifs.
+Les conditions KKT sont au cœur des SVM. Les vecteurs de support sont à l'ordre du jour des points de données actifs.$\lambda > 0$)¬ tous les autres points de données $\lambda = 0$, ne pas affecter les limites de décision;;
 
 ### Régularisation  作为约束优化
 
@@ -280,25 +285,27 @@ La régularisation de L1 et L2 n'est pas une technique aléatoire.
 
 **L2 regularization (Ridge)：**
 
+```math
+\begin{aligned}
+&\text{最小化 } \text{Loss}(w) \text{，约束为 } \lVert w \rVert^2 \le t \\[4pt]
+&\text{等价的无约束形式：} \\
+&\text{最小化 } \text{Loss}(w) + \lambda \lVert w \rVert^2
+\end{aligned}
 ```
-minimize  Loss(w)  subject to  ||w||^2 <= t
 
-Equivalent unconstrained form:
-minimize  Loss(w) + lambda * ||w||^2
-```
-
-约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约    约 约     约 约               约                                                              
+Je suis un homme.$\lVert w \rVert^2 \le t$定义一个球(2D 中是圆,3D 中是球面)。解位于 Loss 等高线第一次接触这个球的位置──
 
 **L1 regularization (LASSO)：**
 
+```math
+\begin{aligned}
+&\text{最小化 } \text{Loss}(w) \text{，约束为 } \lVert w \rVert_1 \le t \\[4pt]
+&\text{等价的无约束形式：} \\
+&\text{最小化 } \text{Loss}(w) + \lambda \lVert w \rVert_1
+\end{aligned}
 ```
-minimize  Loss(w)  subject to  ||w||_1 <= t
 
-Equivalent unconstrained form:
-minimize  Loss(w) + lambda * ||w||_1
-```
-
-约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约束 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 约 
+Je suis un homme.$\lVert w \rVert_1 \le t$定义一个形(2D 中旋转的正方形)
 
 | 属性 | L2 约束（圆） | L1 约束（菱形） |
 |---|---|---|
@@ -315,11 +322,13 @@ Chaque problème de résolution de la différence est un problème de résolutio
 
 La fonction de Lagrange est double:
 
-```
-Primal: minimize f(x) subject to g(x) <= 0
-Lagrangian: L(x, lambda) = f(x) + lambda * g(x)
-Dual function: d(lambda) = min_x L(x, lambda)
-Dual problem: maximize d(lambda) subject to lambda >= 0
+```math
+\begin{aligned}
+&\text{原始问题：} && \text{最小化 } f(x) \text{，约束为 } g(x) \le 0 \\
+&\text{拉格朗日函数：} && L(x, \lambda) = f(x) + \lambda g(x) \\
+&\text{对偶函数：} && d(\lambda) = \min_x L(x, \lambda) \\
+&\text{对偶问题：} && \text{最大化 } d(\lambda) \text{，约束为 } \lambda \ge 0
+\end{aligned}
 ```
 
 Pourquoi la dualité est importante:
@@ -346,7 +355,7 @@ La fonction de perte de réseau neural 极其非凸── selon chaque norme cla
 
 **大多数局部最小值已经足够好。**Dans l'espace élevé, les points critiques de chaque point sont des points de selle, et non des valeurs minimales locales. La probabilité de perte de la valeur minimale de la zone minimale est très faible.
 
-**真正的障碍是 saddle points，而不是局部最小值。**Dans une fonction avec n 个参数, le point de selle a également une direction de courbure positive et de courbure négative. Pour un point critique aléatoire à haute altitude, toutes les valeurs propres sont en valeur minimale locale (environ 2^(-n) ⋅ la probabilité est d'environ 2^(-n) ⋅ presque tous les points critiques sont des points de selle.
+**真正的障碍是 saddle points，而不是局部最小值。**Dans un seul.$n$个参数的函数中,addle point 同时具有正曲率和负曲率方向──对高维中的随机关键点,所有 $n$个 eigenvalues 都为正 (%) 局部最小值) 的概率大约是$2^{-n}$La plupart des points critiques sont des points de selle.
 
 **Overparameterization 会平滑 landscape。**Le nombre de paramètres est plus élevé que le nombre de réseaux d'échantillons d'entraînement ayant des surfaces de perte plus plates, plus connectées.
 
@@ -365,21 +374,21 @@ La fonction de perte de réseau neural 极其非凸── selon chaque norme cla
 
 La méthode de Newton pour un grand modèle n'est pas pratique.
 
-**L-BFGS (Limited-memory BFGS)：**Utilisation de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l'option de l
+**L-BFGS (Limited-memory BFGS)：**À propos de la première$m$个 Gradient 差分近似逆 Hessian──需要 $O(mn)$Je ne suis pas là.$O(n^2)$ Appliqué aux questions de 10 000 paramètres, mais pas à l'apprentissage en profondeur.
 
 **Natural gradient：**Utiliser la matrice d'information Fisher (en anglais: Fisher Information Matrix) et non pas la norme Hessian. Ceci met en considération la probabilité de la distribution de la structure géologique.
 
-**Hessian-free optimization：**Utiliser le gradient conjugué 求解 Hx = g, sans apparemment former H―ne nécessite que des produits vectoriels hessiens, ce qui peut être fait par différenciation automatique dans O n 时间内计算―.
+**Hessian-free optimization：**Utilisation de gradient conjugué 求解 $Hx = g$, sans apparence$H$ Il suffit de produits vectoriels hessiens, ce qui peut être fait par différenciation automatique.$O(n)$Le temps est compté.
 
 **Diagonal approximations：**Le second moment d'Adam est la proximité hessienne à l'angle de la ligne. AdaHessian a élargi ce point à travers l'estimatrice de Hutchinson en utilisant des éléments diagonales hessiennes réels.
 
 | 方法 | 内存 | 每步成本 | 何时使用 |
 |--------|--------|--------------|-------------|
-| Gradient Descent | O(n) | O(n) | Baseline，大模型 |
-| Newton's method | O(n^2) | O(n^3) | 小型凸问题 |
-| L-BFGS | O(mn) | O(mn) | 中型凸问题 |
-| Adam | O(n) | O(n) | Deep Learning 默认选择 |
-| K-FAC | O(n) | 每层 O(n) | 研究、大 batch training |
+| Gradient Descent | $O(n)$ | $O(n)$ | Baseline，大模型 |
+| Newton's method | $O(n^2)$ | $O(n^3)$ | 小型凸问题 |
+| L-BFGS | $O(mn)$ | $O(mn)$ | 中型凸问题 |
+| Adam | $O(n)$ | $O(n)$ | Deep Learning 默认选择 |
+| K-FAC | $O(n)$ | 每层 $O(n)$ | 研究、大 batch training |
 
 
 ```figure
@@ -517,15 +526,27 @@ print(f"Support vectors: {svm.n_support_}")
 
 ## 练习
 
-1. **凸性画廊。**Utilisation de l'analyse de ces fonctions: f(x) = x^4、f(x) = sin(x)、f(x,y) = x^2 + y^2、f(x,y) = x*y、f(x) = max(x, 0)。 explique pourquoi chaque résultat est raisonnable。
+1. **凸性画廊。**Utilisation de ces fonctions:$f(x) = x^4$- Je suis là.$f(x) = \sin(x)$- Je suis là.$f(x,y) = x^2 + y^2$- Je suis là.$f(x,y) = xy$- Je suis là.$f(x) = \max(x, 0)$ Expliquer pourquoi chaque résultat est raisonnable
 
-2. **Newton vs Gradient Descent 竞赛。**De la première (10, 10) émerge, dans f ((x,y) = 50*x^2 + y^2 上运行两种方法──每种方法需要多少步才能达到损失 < 1e-10?
+2. **Newton vs Gradient Descent 竞赛。**Depuis le début$(10, 10)$Je suis là.$f(x,y) = 50x^2 + y^2$上运行两种方法──每种方法需要多少步骤才能达到损失 < 1e-10?当条件数(最大Hessian eigenvalue与最小Hessian eigenvalue的比值) 增加时,Gradient Descent会发生什么?
 
-3. **Lagrange multiplier 几何。**Dans le cadre de x + 2y = 4 下最小化 f(x,y) = (x-3)^2 + (y-3)^2──en passant par le contrôle de la position du gradient f et du gradient g du gradient.
+3. **Lagrange multiplier 几何。**Dans le cadre$x + 2y = 4$La réduction$f(x,y) = (x-3)^2 + (y-3)^2$ À travers la vérification$f$de la Gradient avec$g$Le niveau de la formation est de 5 à 10 degrés.
 
-4. **Regularization 约束。**实现 L1-optimisation restreinte: dans le \ x de la + y de la <= 1 de la résistance sous minimisation (x-3) ^2 + (y-2) ^2  démontrer la résolution d'un sit-on égal à zéro (par la rareté de la résistance de la forme) 
+4. **Regularization 约束。**实现 L1 optimisation restreinte:$\lvert x \rvert + \lvert y \rvert \le 1$De la limitation à la minimisation$(x-3)^2 + (y-2)^2$◊ montrer une solution à un sit-sequence égal à z:
 
 5. **Hessian eigenvalue 分析。** calculer la fonction Rosenbrock dans (1,1) et (-1,1) 处 Hessian。 calculer les valeurs propres de deux points。 Les valeurs propres  vous disent quelles sont les différences entre la courbe de la valeur minimale proche et la courbe de la valeur minimale éloignée ?
+
+### 提示
+
+**练习 1。**运行  référencement`check_convexity`Avant, avant de prévoir chaque résultat:$f''(x)$Les valeurs propres de Hessian sont observées.$f(x,y) = xy$,Les valeurs propres d'Hessian sont 1 et -1, donc le contrôleur doit rapporter cette fonction non comme une fonction de bouton.
+
+**练习 2。**Utilisation $f$调用                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `optimize_gd`Avec `newtons_method`La méthode de Newton ne nécessite qu'un pas pour résoudre la fonction quadratique.$50x^2$Le taux d'apprentissage doit être inférieur à$2/100$, donc $y$La direction se déplace très lentement.$100x^2$后重复实验, encore une fois statistiques
+
+**练习 3。**Utilisation $g(x,y) = x + 2y - 4$调用 `lagrange_solve` Dans le cadre de la demande, vérifier si elle est satisfaite $x + 2y = 4$, ainsi que $\nabla f = (2(x-3), 2(y-3))$Oui ou non$\nabla g = (1, 2)$Le nombre de fois.
+
+**练习 4。**Le minimum non restreint (3, 2) 位于 à l'extérieur de la forme, donc l'idée est de prévoir la descente du gradient:$\lvert x \rvert + \lvert y \rvert \le 1$◊ Les résultats de l'examen sont-ils satisfaits au moment de l'obtention de la même quantité, et sont-ils`demo_regularization_geometry`Comparé à...
+
+**练习 5。**Dans chaque point de réglage `rosenbrock_hessian`, et les résultats seront transmis`hessian_eigenvalues_2d` Dans le (1, 1) position, deux valeurs propres sont correctes, et leur proportion est très grande, de sorte que la vallée est très étroite dans une direction, et très plate dans l'autre direction.
 
 ## 关键术语
 
@@ -544,7 +565,7 @@ print(f"Support vectors: {svm.n_support_}")
 | Complementary slackness | 在解处，约束要么是 active 的，要么其 multiplier 为零。二者不会同时非零 |
 | Duality | 每个约束问题都有一个伴随的 dual problem。对于凸问题，二者具有相同的最优值 |
 | Strong duality | Primal 和 dual 的最优值相等。对满足 Slater's condition 的凸问题成立 |
-| L-BFGS | 近似二阶方法，存储最近 m 个 Gradient 差分，而不是完整 Hessian |
+| L-BFGS | 近似二阶方法，存储最近 $m$ 个 Gradient 差分，而不是完整 Hessian |
 | Saddle point | Gradient 为零，但在某些方向上是最小值、在另一些方向上是最大值的点 |
 | Overparameterization | 使用比训练样本更多的参数。会平滑 Loss landscape 并减少糟糕局部最小值 |
 

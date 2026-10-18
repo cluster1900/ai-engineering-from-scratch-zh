@@ -28,29 +28,31 @@ C'est le travail de PyTorch, TensorFlow et JAX. Vous allez construire une versio
 
 ### Règlement de la chaîne
 
-Si `y = f(g(x))`Alors ...`y`Par rapport à`x`Le nombre de conducteurs est:
+Si $y = f(g(x))$Alors ...$y$Par rapport à$x$Le nombre de conducteurs est:
 
-```
-dy/dx = dy/dg * dg/dx = f'(g(x)) * g'(x)
+```math
+\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx} = f'(g(x)) \cdot g'(x)
 ```
 
 沿着链条将导数相乘―― Chaque élément contribue à sa propre direction local――
 
-Pour le cas:`y = sin(x^2)`
+Pour le cas:$y = \sin(x^2)$
 
-```
-g(x) = x^2       g'(x) = 2x
-f(g) = sin(g)     f'(g) = cos(g)
-
-dy/dx = cos(x^2) * 2x
+```math
+\begin{aligned}
+g(x) &= x^2 \qquad & g'(x) &= 2x \\
+f(g) &= \sin(g) \qquad & f'(g) &= \cos(g) \\[4pt]
+\frac{dy}{dx} &= \cos(x^2) \cdot 2x
+\end{aligned}
 ```
 
 Pour la composition plus profonde, la chaîne se poursuit:
 
-```
-y = f(g(h(x)))
-
-dy/dx = f'(g(h(x))) * g'(h(x)) * h'(x)
+```math
+\begin{aligned}
+y &= f(g(h(x))) \\[4pt]
+\frac{dy}{dx} &= f'(g(h(x))) \cdot g'(h(x)) \cdot h'(x)
+\end{aligned}
 ```
 
 Chaque couche du réseau neural est une partie de cette chaîne.
@@ -88,7 +90,7 @@ Le passage arrière sera appliqué à chaque point de la règle de la chaîne, l
 
 Il y a deux façons d'appliquer la règle de chaîne sur le graphique.
 
-**Forward mode**De l'entrée en arrière, le nombre sera orienté vers l'avant.`dx/dx = 1`, et par chaque opération de diffusion.
+**Forward mode**De l'entrée en arrière, le nombre sera orienté vers l'avant.$dx/dx = 1$, et par chaque opération de diffusion.
 
 ```
 Forward mode: seed dx/dx = 1, propagate forward
@@ -98,7 +100,7 @@ Forward mode: seed dx/dx = 1, propagate forward
   y = sin(a)  (dy/dx = cos(a) * da/dx = cos(4) * 4 = -2.615)
 ```
 
-**Reverse mode**De la sortie à la sortie, le gradient vers le retrait.`dy/dy = 1`, et en ordre inversé par chaque opération de propagation, pour adapter les situations de plus en plus petites.
+**Reverse mode**De la sortie à la sortie, le gradient vers le retrait.$dy/dy = 1$, et en ordre inversé par chaque opération de propagation, pour adapter les situations de plus en plus petites.
 
 ```
 Reverse mode: seed dy/dy = 1, propagate backward
@@ -112,12 +114,12 @@ Le réseau neural a plusieurs millions d'entrées et de pertes. Le mode inverse 
 
 | Mode | Seed | Direction | Best when |
 |------|------|-----------|-----------|
-| Forward | `dx_i/dx_i = 1` | 输入到输出 | 输入少、输出多 |
-| Reverse | `dy/dy = 1` | 输出到输入 | 输入多、输出少（neural nets） |
+| Forward | $dx_i/dx_i = 1$ | 输入到输出 | 输入少、输出多 |
+| Reverse | $dy/dy = 1$ | 输出到输入 | 输入多、输出少（neural nets） |
 
 ### Utilisé en mode avant pour les doubles numéros
 
-Le mode avant peut être réalisé en utilisant des nombres doubles.`a + b*epsilon`, parmi lesquels `epsilon^2 = 0`Il y a une autre.
+Le mode avant peut être réalisé en utilisant des nombres doubles.$a + b\epsilon$, parmi lesquels $\epsilon^2 = 0$Il y a une autre.
 
 ```
 Dual number: (value, derivative)
@@ -237,7 +239,7 @@ Chaque opération créera une fermeture, il sait comment calculer le degré loca
             v._backward()
 ```
 
-Type topologique  assurer chaque point de Gradient dans la propagation à ses noeuds enfants 之前已完整计算──种子 Gradient est 1.0(dy/dy = 1)──
+Type topologique  assurer chaque point de Gradient dans la propagation à ses noeuds enfants  précède déjà complète calcul;;$dy/dy = 1$)。
 
 ### Étape 4: plus d'opération nécessaire pour un moteur complet
 
@@ -301,11 +303,11 @@ Type topologique  assurer chaque point de Gradient dans la propagation à ses no
 | Operation | Backward rule | Used in |
 |-----------|--------------|---------|
 | `__sub__` | 复用 add + neg | Loss 计算（pred - target） |
-| `__pow__` | n * x^(n-1) | Polynomial activations、MSE（error^2） |
+| `__pow__` | $n \cdot x^{n-1}$ | Polynomial activations、MSE（$\text{error}^2$） |
 | `__truediv__` | 复用 mul + pow(-1) | Normalization、learning rate scaling |
-| `exp` | exp(x) * upstream | Softmax、log-likelihood |
-| `log` | (1/x) * upstream | Cross-entropy loss、log probabilities |
-| `tanh` | (1 - tanh^2) * upstream | 经典 activation function |
+| `exp` | $\exp(x) \cdot \text{upstream}$ | Softmax、log-likelihood |
+| `log` | $(1/x) \cdot \text{upstream}$ | Cross-entropy loss、log probabilities |
+| `tanh` | $(1 - \tanh^2) \cdot \text{upstream}$ | 经典 activation function |
 
 Il y a des choses à faire:`__sub__`et `__truediv__`Elles obtiennent automatiquement le bon gradient, car la règle de chaîne va passer par le plus bas de l'add/mul/pow.
 
@@ -490,13 +492,23 @@ La classe de valeur de cette construction est la base du cycle d'entraînement d
 
 ## 练习
 
-1. À la classe de valeur 添加 `__pow__`Tu peux compter .`x ** n`                                                                                                                                                                                                                                                              `x=2`时,`d/dx(x^3)`Ça va .`12.0`Il y a une autre.
+1. À la classe de valeur 添加 `__pow__`Tu peux compter .`x ** n`                                                                                                                                                                                                                                                              $x=2$时,$\frac{d}{dx}(x^3)$Ça va .`12.0`Il y a une autre.
 
-2. 添加 `tanh`作为激活函数──验证 `tanh'(0) = 1`且 `tanh'(2) = 0.0707`(valeur proche)
+2. 添加 `tanh`作为激活函数──验证 $\tanh'(0) = 1$且 $\tanh'(2) = 0.0707$(valeur proche)
 
 3. Pour un seul neurone , construire un graphique de calcul:`y = relu(w1*x1 + w2*x2 + b)`△ calculs de tous les cinq degrés,并与 PyTorch 验证──
 
 4. Utilisez des nombres doubles pour réaliser l'autodéfinition en mode avancé.`Dual`classe,并验证 il donne le même nombre de directions que le moteur en mode inverse.
+
+### 提示
+
+**练习 1。** `Value`- Je l' ai déjà défini .`__pow__`Il est en train de mourir.`_backward`, confirmer ce qui va arriver$n x^{n-1}$乘到传入的梯度上──运行 `x = Value(2.0)`- Je suis là.`y = x ** 3`- Je suis là.`y.backward()`Le dépôt de la commission`x.grad`Il faut que ce soit 12.0
+
+**练习 2。**Dans le`_backward`中使用 $\tanh'(x) = 1 - \tanh(x)^2$                                                                                                                                                                                                                                                              $\frac{\tanh(x + h) - \tanh(x - h)}{2h}$Dans le$x = 0$et $x = 2$Il faut être en accord avec elle.
+
+**练习 3。**- Je veux le faire .`Value`Les objets de construction`w1*x1 + w2*x2 + b`, appliquer`relu`, réutiliser`backward`◊ Comparé à PyTorch`relu`Il y a une autre chose.`w1`Le degré est égal à`x1`Si on est négatif, cinq degrés sont négatifs.
+
+**练习 4。**Dans chaque .`Dual`En effet, les valeurs de conservation et de la valeur de référence sont les valeurs de conservation et de conservation.$(a, a')(b, b') = (ab, a'b + ab')$ Le nombre initial de directions d'entrée est de 1, puis le résultat est calculé par le moteur de mode inversé sur la même fonction.`x.grad`Comparé à...
 
 ## 关键术语
 
@@ -507,13 +519,13 @@ La classe de valeur de cette construction est la base du cycle d'entraînement d
 | Forward mode | “向前推导数” | 将导数从输入传播到输出的 autodiff。每个输入变量需要一次 pass。 |
 | Reverse mode | “Backpropagation” | 将 Gradient 从输出传播到输入的 autodiff。每个输出变量需要一次 pass。 |
 | Autograd | “自动 Gradient” | 一个系统：记录对值执行的操作、构建 graph，并通过 Chain Rule 计算精确 Gradient |
-| Dual numbers | “值加导数” | 形式为 a + b*epsilon（epsilon^2 = 0）的数字，可以在算术运算中携带导数信息 |
+| Dual numbers | “值加导数” | 形式为 $a + b\epsilon$（$\epsilon^2 = 0$）的数字，可以在算术运算中携带导数信息 |
 | Topological sort | “依赖顺序” | 对 graph 节点排序，使每个节点都位于其所有依赖之后。正确传播 Gradient 所必需。 |
 | Gradient accumulation | “相加，不要替换” | 当一个值流入多个操作时，它的 Gradient 是所有传入 Gradient 贡献的总和 |
 | Dynamic graph | “Define by run” | 每次 forward pass 都重新构建的 computation graph，允许模型内部使用 Python 控制流（PyTorch 风格） |
 | Gradient checking | “数值验证” | 将 autodiff Gradient 与数值 finite-difference Gradient 对比，以验证正确性。调试时必不可少。 |
 | MLP | “Multi-layer perceptron” | 一个包含一层或多层隐藏 neuron 的 Neural Network。每个 neuron 计算加权和加 bias，然后应用 activation function。 |
-| Neuron | “加权和 + activation” | 基本单元：output = activation(w1*x1 + w2*x2 + ... + b)。weights 和 bias 是可学习参数。 |
+| Neuron | “加权和 + activation” | 基本单元：$\text{output} = \text{activation}(w_1 x_1 + w_2 x_2 + \cdots + b)$。weights 和 bias 是可学习参数。 |
 
 ## 延伸阅读
 

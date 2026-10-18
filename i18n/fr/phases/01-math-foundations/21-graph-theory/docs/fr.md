@@ -31,9 +31,9 @@ Vous avez besoin de quatre choses:
 ## 概念
 ### Graphiques: nœuds et bords
 
-Un graphique G = (V, E) par les sommets (nœuds) V 和 les bords E 组成──每条 edge 连接两个节点──
+Un graphique$G = (V, E)$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $V$Avec les bords $E$组成──每条 edge 连接两个节点──
 
-**Directed vs undirected。**Dans le graphique non dirigé, l'extrémité (u, v) indique u 连接到 v,并且 v 也连接到 u── dans le graphique non dirigé, l'extrémité (u, v) indique u 指向 v,但反向不一定成立──
+**Directed vs undirected。**Dans le graphique non-directionné,$(u, v)$Indiquer $u$ Connectez à $v$, et $v$Toujours connecté$u$ Dans le graphique dirigé (digraph)$(u, v)$Indiquer $u$À l' orientation$v$Mais le contraire n'est pas forcément valable.
 
 **Weighted vs unweighted。**Dans un graphique non pondéré, les bords doivent ou non exister. Dans un graphique pondéré, chaque bord a un poids de valeur numérique, par exemple distance, coût ou force.
 
@@ -46,14 +46,13 @@ Un graphique G = (V, E) par les sommets (nœuds) V 和 les bords E 组成──�
 
 ### La matrice d'adjacence
 
-Matrice d'adjacence A est le centre de la représentation. Pour un graphique contenant n 个节点:
+matrice d' adjacence $A$Il s'agit d'un indice central.$n$个节点 的图:
 
-```
-A[i][j] = 1    if there is an edge from node i to node j
-A[i][j] = 0    otherwise
+```math
+A[i][j] = \begin{cases} 1 & \text{若存在从节点 } i \text{ 到节点 } j \text{ 的 edge} \\ 0 & \text{否则} \end{cases}
 ```
 
-Pour les graphiques non dirigés,A est symétrique:A[i][j] =A[j][i]。 Pour les graphiques pondérés,A[i][j] = poids de bord (i, j)。
+pour les graphiques non ciblés,$A$C'est symétrique:$A[i][j] = A[j][i]$ Pour les graphiques pondérés,$A[i][j]$= bord $(i, j)$Le poids de la peau.
 
 **示例：一个 triangle：**
 
@@ -66,20 +65,22 @@ A = [[0, 1, 1],
      [1, 1, 0]]
 ```
 
-Matrice d'adjacence est chaque entrée de GNN.
+La matrice d'adjacence est chaque entrée de GNN.$A$Les opérations de la matrice ci-dessus sont à l'origine des opérations de la graphie ci-dessus.
 
 ### Diplôme
 
 Le degré du nœud est connecté à ses bords 数量── Pour les graphiques dirigés, vous avez des bords de degré ((entrée) et de degré ((sortie)──
 
-Matrice de degré D est diagonale:
+matrice de degrés $D$Il est diagonal:
 
-```
-D[i][i] = degree of node i
-D[i][j] = 0    for i != j
+```math
+\begin{aligned}
+D[i][i] &= \text{节点 } i \text{ 的 degree} \\
+D[i][j] &= 0 \quad \text{其中 } i \ne j
+\end{aligned}
 ```
 
-Pour le triangle, exemple:D = diagonal (2, 2, 2), parce que chaque nœud est connecté à deux autres nœuds.
+ Pour le triangle exemple:$D = \mathop{\mathrm{diag}}(2, 2, 2)$, parce que chaque nœud est connecté à deux autres nœuds.
 
 Le degré  vous dit l'importance du nœud. Le degré élevé = nœud de centre. La distribution de degrés d'un réseau dévoile sa structure. Les réseaux sociaux suivent les lois de la puissance.
 
@@ -129,19 +130,17 @@ DFS peut être utilisé:
 
 ### Le graphe laplacien
 
-L = D - A。 théorie des graphiques spectraux 中最重要的矩阵──
+$L = D - A$◊ théorie des graphiques spectraux
 
 Pour le triangle:
 
-```
-D = [[2, 0, 0],    A = [[0, 1, 1],    L = [[2, -1, -1],
-     [0, 2, 0],         [1, 0, 1],         [-1, 2, -1],
-     [0, 0, 2]]         [1, 1, 0]]         [-1, -1,  2]]
+```math
+D = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix} \qquad A = \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \qquad L = \begin{bmatrix} 2 & -1 & -1 \\ -1 & 2 & -1 \\ -1 & -1 & 2 \end{bmatrix}
 ```
 
 La Laplacie a une nature très importante:
 
-1. **L 是 positive semi-definite。**Toutes les valeurs propres sont >= 0
+1. **$L$ 是 positive semi-definite。**Toutes les valeurs propres$\ge 0$Il y a une autre.
 
 2. **zero eigenvalues 的数量等于 connected components 的数量。**Un graphique connecté 恰恰有一个零 eigenvalue──un graphique de trois composants déconnectés ٬a trois valeurs propres zéro──
 
@@ -171,12 +170,12 @@ graph TD
 Les valeurs propres de la matrice adjacente et de la Laplacienne peuvent être révélées en cas de traversée non faite.
 
 **Spectral clustering**Le mode de travail est le suivant:
-1. 计算 Laplacien L
-2. 找到 L's k 个最小 eigenvectors(跳过第一个; Pour les graphiques connectés, c'est tout 1)
+1. 计算 Laplacien $L$
+2. 找到 $L$$k$个最小 eigenvectors(跳过第一个; Pour les graphiques connectés, il est complet 1)
 3. Utiliser ces vecteurs propres comme un nouveau symbole de chaque nœud
-4. Dans ces couloirs, on va à la ronde.
+4. Dans ces places de travail$k$- signifie
 
-Pourquoi est-ce que c'est efficace ? Les vecteurs propres de L  codé sur le graphique                                                                                                                                                                                                                                                    
+Pourquoi ça marche ?$L$Les nœuds propres sont en train de se former. Ils sont en train de se former en fonction de la structure de l'échantillon.
 
 **Random walk connection。**La distribution stationnaire de la marche aléatoire avec le degré de nœud, le temps de mélange, dépend de l'écart spectrique.
 
@@ -184,25 +183,25 @@ Pourquoi est-ce que c'est efficace ? Les vecteurs propres de L  codé sur le gra
 
 C'est le cœur de l'opération des réseaux neuraux graphiques. Chaque nœud de ses voisins collecte des messages, les regroupe, puis renouvelle son état.
 
-```
-h_v^(k+1) = UPDATE(h_v^(k), AGGREGATE({h_u^(k) : u in neighbors(v)}))
+```math
+h_v^{(k+1)} = \text{UPDATE}\left(h_v^{(k)}, \text{AGGREGATE}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
 Dans la forme la plus simple, AGGREGATE = moyenne,UPDATE = transformation linéaire + activation:
 
-```
-h_v^(k+1) = sigma(W * mean({h_u^(k) : u in neighbors(v)}))
-```
-
-Ceci est en fait une autre forme de multiplication de matrice. Si H est la matrice de toutes les caractéristiques du nœud, A est la matrice d'adjacence:
-
-```
-H^(k+1) = sigma(A_norm * H^(k) * W)
+```math
+h_v^{(k+1)} = \sigma\left(W \cdot \text{mean}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
-Parmi eux, la norme A est une matrice d'adjacentité normalisée (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x) (x)) (x) (x) (x) (x))) (x) (x)) (x)))) (x) (x)) (x) (x))) (x) (x) (x)) (x) (x)) (x) (x)) (x)
+C'est en fait une autre forme de multiplication de matrice.$H$est la matrice de toutes les caractéristiques du nœud,$A$est la matrice d'adjacence:
 
-Un message passe 让每个节点 看到它的邻居――两轮让它看到邻居的邻居――K 轮让每个节点 获得来自其K-hop社区的信息――
+```math
+H^{(k+1)} = \sigma\left(A_{\text{norm}} H^{(k)} W\right)
+```
+
+Parmi eux $A_{\text{norm}}$est une matrice d'adjacence normalisée (((
+
+Un message passe 让每个节点 看到它的邻居――两轮让它看到邻居的邻居――$K$轮让每个节点 获得从其 $K$- Le quartier du hop.
 
 ```mermaid
 graph LR
@@ -323,7 +322,7 @@ def dfs(graph, start):
     return order
 ```
 
-BFS 使用 deque(double-finition queue) pour réaliser O(1) popleft。DFS Utilisation liste 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 O(V + E)。
+BFS 使用 deque(double ligne finie) pour réaliser $O(1)$popleft──DFS Utiliser la liste 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 $O(V + E)$Il y a une autre.
 
 ### 步骤 3:Components connectés et valeurs propres Laplaciens
 
@@ -366,7 +365,7 @@ def spectral_clustering(graph, k=2):
     return labels
 ```
 
-Pour k = 2, le graphe sera divisé en deux groupes. Pour k>2, vous serez dans les prévisions de k 个 eigenvectors.
+Pour le$k=2$, Le vecteur de fiedler va être divisé en deux graphes pour$k>2$Tu seras là avant .$k$个 eigenvectors(exclusion triviale all-one eigenvector) 上运行 $k$- Ça veut dire...
 
 ### 步骤 5: Passage du message
 
@@ -457,13 +456,13 @@ Le programme de formation
 | Connected components | Preprocessing, handling disconnected graphs |
 | PageRank | Node importance ranking, attention initialization |
 
-GNN 值得特别说明──GCN(Kipf & Welling, 2017) utilisant une opération de convection de graphes utilisant une matrice d'adjacence de boucles autonomes, A_hat = A + I:
+GNN 值得特别说明──GCN(Kipf & Welling, 2017) dans l'opération de convection du graphe, utilisez la matrice d'adjacence des boucles autonomes,$\hat{A} = A + I$- Le numéro de la liste:
 
-```text
-H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
+```math
+H^{(l+1)} = \sigma\left(\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2} H^{(l)} W^{(l)}\right)
 ```
 
-Parmi eux A_hat = A + I(adjacence加自环),D_hat est une matrice de degré A_hat。auto-loops 确保每个节在集结期间包含自身特征──这正是带有对称正常化的信息传递──D_hat^(-1/2) *A_hat *D_hat^(-1/2) 是正常化的邻属性矩阵──Laplacien apparaît ici, c'est parce que cette normalisation est associée à L_sym = I - D^(-1/2) *A * D^(-1/2) 相关──理解Laplacien,就意味着理解GCNs为什么有效──
+Parmi eux $\hat{A} = A + I$(adjacence加 auto-loops),$\hat{D}$Oui $\hat{A}$Les cycles de mesure de chaque nœud contiennent des caractéristiques propres pendant l'agrégation.$\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2}$La Laplacien est présent ici, c'est parce que cette normalisation et$L_{\text{sym}} = I - D^{-1/2} A D^{-1/2}$相关── comprendre la langue laplacienne, ça signifie comprendre pourquoi les GCN sont efficaces──
 
 ## 练习
 1. **从零实现 PageRank。**Depuis les scores uniformes 开始──每一步:score(v) = (1-d) /n + d * somme(score(u) /out_degree(u)), dont u 是所有指向 v 的节点──使用d=0.85──运行直到收(变化 < 1e-6)──在一个小型网页图 上测试──
@@ -476,14 +475,26 @@ Parmi eux A_hat = A + I(adjacence加自环),D_hat est une matrice de degré A_ha
 
 5. **分析一个真实世界 graph。**Utilisation du graphique du Karate Club ((34 nœuds, 78 bords) ⋅ calcul de la répartition des degrés、 valeurs propres Laplaciennes 和 clustering spectrale。
 
+### 提示
+
+**练习 1。**Utiliser la formule donnée dans l'exercice. Les nœuds sans bordes sortantes doivent donner leur nombre de points en moyenne à tous les nœuds, sinon le total sera inférieur à 1.`pagerank(graph)`Comparé à...
+
+**练习 2。**Utilisation `add_edge`Construire deux cliques, en utilisant un bord, les connecter, puis les utiliser.`spectral_clustering(graph, k=2)` Vérifiez si chaque clique obtient le même label  progressivement ajouter des bordures à travers le groupe 时, imprimer `laplacian()`La valeur propre de la seconde est plus grande, à mesure que les deux groupes sont plus étroitement liés.
+
+**练习 3。**Utilisation `heapq`维护优先排列,总是扩展已知距离最小节点──将每条边缘的重量都设为1,检查 Dijkstra 得到的每距离是否等于`bfs(graph, start)`Le nombre de niveaux de BFS à l'intérieur du point de référence
+
+**练习 4。**Utiliser une matrice d' identité`features`, faire chaque ligne marquer un point, puis appliquer deux fois `message_passing`À ce moment-là, je suis là.$v$Les entrées non zéro en cours indiquent quels sont les points d'accès à l'information.$v$将这个集合与宽度第一搜索中距离不超过2的节点集合比较──
+
+**练习 5。** `networkx.karate_club_graph()` fournir une liste de bord, ainsi que des caractéristiques de point `club`La vérité du milieu.`Graph`En moyenne, il est vérifié s'il a 34 nœuds et 78 bords.`spectral_clustering`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `club`De même, les deux étiquettes peuvent être utilisées pour les étiquettes.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Graph | “Nodes and edges” | 一种数学结构 G=(V,E)，用于编码 pairwise relationships |
-| Adjacency matrix | “The connection table” | 一个 n x n matrix，其中如果 nodes i 和 j 相连，则 A[i][j] = 1 |
+| Graph | “Nodes and edges” | 一种数学结构 $G=(V,E)$，用于编码 pairwise relationships |
+| Adjacency matrix | “The connection table” | 一个 $n \times n$ matrix，其中如果 nodes $i$ 和 $j$ 相连，则 $A[i][j] = 1$ |
 | Degree | “一个 node 有多 connected” | 接触某个 node 的 edges 数量 |
-| Laplacian | “D minus A” | L = D - A，其 eigenvalues 会揭示 graph structure 的 matrix |
-| Fiedler value | “The algebraic connectivity” | L 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
+| Laplacian | “D minus A” | $L = D - A$，其 eigenvalues 会揭示 graph structure 的 matrix |
+| Fiedler value | “The algebraic connectivity” | $L$ 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
 | BFS | “Level-by-level search” | 在深入之前先访问所有 neighbors 的 traversal，可找到 shortest paths |
 | DFS | “Go deep first” | 在回溯之前沿一条 path 走到末端的 traversal |
 | Message passing | “Nodes talk to neighbors” | 每个 node 从其 neighbors 聚合信息，这是 GNNs 的核心 |

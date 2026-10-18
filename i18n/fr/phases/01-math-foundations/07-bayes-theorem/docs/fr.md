@@ -30,24 +30,24 @@ Si vous ne comprenez pas cela, construisez un système de gestion de machines à
 
 Vous savez déjà dans la leçon 06 que la probabilité conditionnelle est:
 
-```
-P(A|B) = P(A and B) / P(B)
+```math
+P(A \mid B) = \frac{P(A \text{ and } B)}{P(B)}
 ```
 
 Pour la première fois:
 
+```math
+P(B \mid A) = \frac{P(A \text{ and } B)}{P(A)}
 ```
-P(B|A) = P(A and B) / P(A)
-```
 
-两个表达式共享同一个分子:P(A et B)。令它们相等并重新整理:
+Deux expressions partagées par une même molécule:$P(A \text{ and } B)$❖ Les faire reorganiser:
 
-```
-P(A and B) = P(A|B) * P(B) = P(B|A) * P(A)
-
-Therefore:
-
-P(A|B) = P(B|A) * P(A) / P(B)
+```math
+\begin{aligned}
+P(A \text{ and } B) &= P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A) \\[4pt]
+&\text{因此：} \\[4pt]
+P(A \mid B) &= \frac{P(B \mid A) \cdot P(A)}{P(B)}
+\end{aligned}
 ```
 
 C'est le théorème de Bayes.
@@ -56,35 +56,35 @@ C'est le théorème de Bayes.
 
 | Part | Name | What it means |
 |------|------|---------------|
-| P(A\|B) | Posterior | 看到 evidence B 之后，你对 A 的更新后 belief |
-| P(B\|A) | Likelihood | 如果 A 为真，evidence B 出现的概率有多大 |
-| P(A) | Prior | 在看到任何 evidence 之前，你对 A 的 belief |
-| P(B) | Evidence | 在所有可能性下看到 B 的总概率 |
+| $P(A \mid B)$ | Posterior | 看到 evidence $B$ 之后，你对 $A$ 的更新后 belief |
+| $P(B \mid A)$ | Likelihood | 如果 $A$ 为真，evidence $B$ 出现的概率有多大 |
+| $P(A)$ | Prior | 在看到任何 evidence 之前，你对 $A$ 的 belief |
+| $P(B)$ | Evidence | 在所有可能性下看到 $B$ 的总概率 |
 
-Les preuves 项 P(B) 起到归一化因子的作用── vous pouvez l'étudier avec la loi de la probabilité totale:
+Les preuves$P(B)$On peut l'expliquer avec la loi de la probabilité totale:
 
-```
-P(B) = P(B|A) * P(A) + P(B|not A) * P(not A)
+```math
+P(B) = P(B \mid A) \cdot P(A) + P(B \mid \text{not } A) \cdot P(\text{not } A)
 ```
 
 ### 医学检测 exemple
 
 Une maladie affecte 1 personne sur 10 000 personnes. Le taux de dépistage est de 99%; le taux d'erreur est de 1%.
 
-```
-P(sick)          = 0.0001     (prior: disease is rare)
-P(positive|sick) = 0.99       (likelihood: test catches it)
-P(positive|healthy) = 0.01    (false positive rate)
-
-P(positive) = P(positive|sick) * P(sick) + P(positive|healthy) * P(healthy)
-            = 0.99 * 0.0001 + 0.01 * 0.9999
-            = 0.000099 + 0.009999
-            = 0.010098
-
-P(sick|positive) = P(positive|sick) * P(sick) / P(positive)
-                 = 0.99 * 0.0001 / 0.010098
-                 = 0.0098
-                 = 0.98%
+```math
+\begin{aligned}
+P(\text{sick}) &= 0.0001 \quad \text{（先验：疾病罕见）} \\
+P(\text{positive} \mid \text{sick}) &= 0.99 \quad \text{（似然：检测能检出疾病）} \\
+P(\text{positive} \mid \text{healthy}) &= 0.01 \quad \text{（假阳性率）} \\[6pt]
+P(\text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) + P(\text{positive} \mid \text{healthy}) \cdot P(\text{healthy}) \\
+&= 0.99 \cdot 0.0001 + 0.01 \cdot 0.9999 \\
+&= 0.000099 + 0.009999 \\
+&= 0.010098 \\[6pt]
+P(\text{sick} \mid \text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) / P(\text{positive}) \\
+&= 0.99 \cdot 0.0001 / 0.010098 \\
+&= 0.0098 \\
+&= 0.98\%
+\end{aligned}
 ```
 
 Il est vrai que les tests de pré-connaissance sont très rares, même si les tests de précision sont très rares, et qu'ils produisent de faux résultats.
@@ -93,18 +93,18 @@ Il est vrai que les tests de pré-connaissance sont très rares, même si les te
 
 Vous avez reçu un e-mail contenant le mot "loterie" ― c'est du spam ?
 
-```
-P(spam)                = 0.3      (30% of email is spam)
-P("lottery"|spam)      = 0.05     (5% of spam emails contain "lottery")
-P("lottery"|not spam)  = 0.001    (0.1% of legitimate emails contain "lottery")
-
-P("lottery") = 0.05 * 0.3 + 0.001 * 0.7
-             = 0.015 + 0.0007
-             = 0.0157
-
-P(spam|"lottery") = 0.05 * 0.3 / 0.0157
-                  = 0.955
-                  = 95.5%
+```math
+\begin{aligned}
+P(\text{spam}) &= 0.3 \quad \text{（30\% 的邮件是垃圾邮件）} \\
+P(\text{"lottery"} \mid \text{spam}) &= 0.05 \quad \text{（5\% 的垃圾邮件包含 "lottery"）} \\
+P(\text{"lottery"} \mid \text{not spam}) &= 0.001 \quad \text{（0.1\% 的正常邮件包含 "lottery"）} \\[6pt]
+P(\text{"lottery"}) &= 0.05 \cdot 0.3 + 0.001 \cdot 0.7 \\
+&= 0.015 + 0.0007 \\
+&= 0.0157 \\[6pt]
+P(\text{spam} \mid \text{"lottery"}) &= 0.05 \cdot 0.3 / 0.0157 \\
+&= 0.955 \\
+&= 95.5\%
+\end{aligned}
 ```
 
 Un mot a tendance à augmenter de 30% à 95,5%. Le filtre de spam réel sera appliqué simultanément sur des centaines de mots.
@@ -113,58 +113,56 @@ Un mot a tendance à augmenter de 30% à 95,5%. Le filtre de spam réel sera app
 
 Naïf Bayes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
-```
-P(class | feature_1, feature_2, ..., feature_n)
-  = P(class) * P(feature_1|class) * P(feature_2|class) * ... * P(feature_n|class)
-    / P(feature_1, feature_2, ..., feature_n)
+```math
+P(\text{class} \mid \text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n) = \frac{P(\text{class}) \cdot P(\text{feature}_1 \mid \text{class}) \cdot P(\text{feature}_2 \mid \text{class}) \cdots P(\text{feature}_n \mid \text{class})}{P(\text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n)}
 ```
 
 La partie "naïve" est l'hypothèse d'indépendance. Dans le texte, l'émergence de mots n'est pas indépendante. "Nouveau" et "York" sont liés. Mais cette hypothèse a un effet remarquable dans la pratique, car les classifications ne nécessitent que la classification des classes, et non la génération de bonnes probabilités de classement.
 
 Parce que la partition est la même pour toutes les classes, vous pouvez le surpasser en comparant les molécules:
 
-```
-score(class) = P(class) * product of P(feature_i | class)
+```math
+\text{score}(\text{class}) = P(\text{class}) \cdot \prod_i P(\text{feature}_i \mid \text{class})
 ```
 
 Choisir le meilleur de la classe.
 
 ### Évaluation maximale de probabilité (MLE)
 
-Comment obtenir des données de formation sur les caractéristiques de la classe ?
+Comment obtenir des données d'entraînement ?$P(\text{feature} \mid \text{class})$- Je suis un homme.
 
-```
-P("free"|spam) = (number of spam emails containing "free") / (total spam emails)
+```math
+P(\text{"free"} \mid \text{spam}) = \frac{\text{包含 "free" 的垃圾邮件数}}{\text{垃圾邮件总数}}
 ```
 
 C'est MLE: choisir la valeur paramétrique la plus probable de l'observation des données.
 
 问题: si un mot n'est jamais apparu dans le spam pendant l'entraînement, MLE va lui donner une probabilité de distribution de zéro.
 
-```
-P(word|class) = (count(word, class) + 1) / (total_words_in_class + vocabulary_size)
+```math
+P(\text{word} \mid \text{class}) = \frac{\text{count}(\text{word}, \text{class}) + 1}{\text{total\_words\_in\_class} + \text{vocabulary\_size}}
 ```
 
 Donnez à chaque chiffre plus 1, assurez-vous que les probabilités ne seront pas à zéro.
 
 ### Le maximum a posteriori (MAP)
 
-MLE 问的是: quels paramètres maximiser les paramètres de données ?
+MLE 问的是: quels paramètres maximiser $P(\text{data} \mid \text{parameters})$- Je suis désolé .
 
-Le MAP 问的是: quels paramètres maximiser les paramètres de données ?
+Le MAP 问的是: quels paramètres maximiser $P(\text{parameters} \mid \text{data})$- Je suis désolé .
 
 Selon le théorème de Bayes:
 
-```
-P(parameters|data) proportional to P(data|parameters) * P(parameters)
+```math
+P(\text{parameters} \mid \text{data}) \propto P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})
 ```
 
 Si vous pensez que les paramètres  devraient être plus petits, alors c'est le cas de la régulation de L2 dans ML. La régression de Ridge est la même que la régression de la "riche" dans la pénalité de la "riche".
 
 | Estimation | Optimizes | ML equivalent |
 |------------|-----------|---------------|
-| MLE | P(data\|params) | 未 regularize 的训练 |
-| MAP | P(data\|params) * P(params) | L2 / L1 regularization |
+| MLE | $P(\text{data} \mid \text{params})$ | 未 regularize 的训练 |
+| MAP | $P(\text{data} \mid \text{params}) \cdot P(\text{params})$ | L2 / L1 regularization |
 
 ### Bayésien versus fréquentiste:
 
@@ -189,7 +187,7 @@ Cette relation est plus profonde:
 
 **Priors 就是 regularization。**Les valeurs de paramètre de l'expectation sont calculées en fonction de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l'expérience de l
 
-**Posteriors 就是不确定性。**单个预测概率 ne peut pas vous dire le modèle a beaucoup de confiance dans cette estimation. Les méthodes bayésiennes vous donneront une distribution: 我认为P(spam) entre 0,8 à 0,95 
+**Posteriors 就是不确定性。**单个预测概率 ne peut pas vous dire le modèle a beaucoup de confiance dans cette estimation.$P(\text{spam})$Dans les 0,8 à 0,95 之间.
 
 **Bayes updates 就是 online learning。**Le futur d'aujourd'hui deviendra le futur de demain. Lorsque votre modèle voit de nouveaux données, il renouvelle ses croyances au lieu de se remettre en forme à partir de zéro.
 
@@ -343,26 +341,28 @@ Lorsque le précurseur et le postérieur appartiennent à la même famille de di
 
 | Likelihood | Conjugate Prior | Posterior | Example |
 |-----------|----------------|-----------|---------|
-| Bernoulli | Beta(a, b) | Beta(a + successes, b + failures) | Coin flip bias estimation |
-| Normal (known variance) | Normal(mu_0, sigma_0) | Normal(weighted mean, smaller variance) | Sensor calibration |
-| Poisson | Gamma(a, b) | Gamma(a + sum of counts, b + n) | Modeling arrival rates |
-| Multinomial | Dirichlet(alpha) | Dirichlet(alpha + counts) | Topic modeling, language models |
+| Bernoulli | $\text{Beta}(a, b)$ | $\text{Beta}(a + \text{successes}, b + \text{failures})$ | Coin flip bias estimation |
+| Normal (known variance) | $\text{Normal}(\mu_0, \sigma_0)$ | Normal(weighted mean, smaller variance) | Sensor calibration |
+| Poisson | $\text{Gamma}(a, b)$ | $\text{Gamma}(a + \text{sum of counts}, b + n)$ | Modeling arrival rates |
+| Multinomial | $\text{Dirichlet}(\alpha)$ | $\text{Dirichlet}(\alpha + \text{counts})$ | Topic modeling, language models |
 
 Ceci est important: quand il n'y a pas de précurseurs conjugués, vous avez besoin d'échantillonnage de Monte Carlo ou d'inférence variationnelle pour approcher la suite.
 
-La distribution bêta est la plus fréquente de la pratique de la conjoncture pré­rior. Beta, b) Indique votre croyance en un certain paramètre de probabilité.
+La distribution bêta est la plus fréquente de la pratique de la prédication conjuguée.$\text{Beta}(a, b)$Exprimez votre croyance en un paramètre de probabilité.$a/(a+b)$Il y a une autre.$a+b$Il y a beaucoup de monde qui est en train de se faire confiance.
 
 Les spécificités de la bêta précédente:
-- Beta(1, 1) = uniforme── tu as pas d'avis
-- Beta(10, 10) = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-- Beta(1, 10) = À l'orientation de la direction de l'inclinaison.
+- $\text{Beta}(1, 1)$= uniforme. Vous avez pas d'avis sur le paramètre.
+- $\text{Beta}(10, 10)$= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+- $\text{Beta}(1, 10)$= À l'envers, vous croyez que le paramètre est très petit.
 
 更新规则极其简单:
 
-```
-Prior:     Beta(a, b)
-Data:      s successes, f failures
-Posterior: Beta(a + s, b + f)
+```math
+\begin{aligned}
+\text{先验：} \quad & \text{Beta}(a, b) \\
+\text{数据：} \quad & s \text{ 次成功}, f \text{ 次失败} \\
+\text{后验：} \quad & \text{Beta}(a + s, b + f)
+\end{aligned}
 ```
 
 Il n'y a pas de prélèvement.
@@ -374,19 +374,19 @@ L'inference bayésienne 天然是序列的──今天的后后者会成为明�
 具体例: estimation de l'équité d'une pièce de monnaie
 
 **Day 1：还没有数据。**
-Depuis Beta(1, 1) 开始一个制服前──你没有意见──
+De $\text{Beta}(1, 1)$Vous n'avez pas d'avis.
 - Moyenne antérieure: 0,5
 - Précurseur dans [0, 1] 上是平坦的
 
 **Day 2：观察到 7 次正面，3 次反面。**
-Le référentiel est le référentiel de la carte de crédit.
-- Moyenne postérieure: 8/12 = 0,667
+$\text{Posterior} = \text{Beta}(1 + 7, 1 + 3) = \text{Beta}(8, 4)$
+- Moyenne postérieure:$8/12 = 0.667$
 - Les preuves montrent que la monnaie est orientée vers la droite
 
 **Day 3：又观察到 5 次正面，5 次反面。**
 Utilisez le passé d'hier comme le passé d'aujourd'hui.
-Le arrière est Beta(8 + 5, 4 + 5) = Beta(13, 9)
-- Moyenne postérieure: 13/22 = 0,591
+$\text{Posterior} = \text{Beta}(8 + 5, 4 + 5) = \text{Beta}(13, 9)$
+- Moyenne postérieure:$13/22 = 0.591$
 - Les données de l'équilibre ont ramené la valeur estimée à près de 0,5
 
 ```mermaid
@@ -396,7 +396,7 @@ graph LR
     C -->|"5H, 5T"| D["Posterior 2<br/>Beta(13,9)<br/>mean = 0.59"]
 ```
 
-观测顺序不重要――Beta(1,1) 一次性用全部12次正面和8次反面更新,也会得到Beta(13, 9) 结果相同──Séquentielle mise à jour 和 batch mise à jour 在数学上等价──但序列更新 允许你在每一步做决策,而不必存储原始数据──
+L'observation de la situation n'est pas importante.$\text{Beta}(1,1)$Une fois avec tout 12 fois face à face et 8 fois face à face, je vais aussi obtenir.$\text{Beta}(13, 9)$ résultats identiques.                                                                                                                                                                                                                                                            
 
 C'est la base de l'apprentissage en ligne dans le système ML de production. Pour les bandits, le prélèvement de Thompson, le système de recommandation de volume et les détecteurs d'anomalies de streaming utilisent ce modèle.
 
@@ -408,14 +408,14 @@ Les tests A/B sont en fait une hypothèse bayéenne.
 
 Test de l'A/B de Bayesian:
 
-1. **Prior。**两个 variant 都从 Beta(1, 1) 开始──没有先进偏好──
+1. **Prior。**Deux variantes$\text{Beta}(1, 1)$开始── pas de préférence préalable──
 2. **Data。**La variante A:1000 fois montrée dans 50 fois de clics.
 3. **Posteriors。**
-   - R:Béta(1 + 50, 1 + 950) = Beta(51, 951)。Média = 0,051
-   - B:Béta(1 + 65, 1 + 935) = Beta(66, 936)。Média = 0,066
-4. **Decision。**计算 P(B > A)B's vrai taux de conversion 高于 A's概率──
+   - A:$\text{Beta}(1 + 50, 1 + 950) = \text{Beta}(51, 951)$ moyenne = 0,051
+   - B:$\text{Beta}(1 + 65, 1 + 935) = \text{Beta}(66, 936)$ moyenne = 0,066
+4. **Decision。**计算 $P(B > A)$Le taux de conversion réel de B est supérieur à la probabilité de A。
 
-解析地计算 P(B > A) 很困难――但蒙特卡罗 让它变得非常简单:
+解析地计算 $P(B > A)$C'est très difficile, mais Monte Carlo le rend très simple.
 
 ```
 1. Draw 100,000 samples from Beta(51, 951)  -> samples_A
@@ -423,7 +423,7 @@ Test de l'A/B de Bayesian:
 3. P(B > A) = fraction of samples where B > A
 ```
 
-Si P(B > A) > 0,95, nous émettons la variante B ~~ Si elle est entre 0,05 et 0,95, nous continuons à collecter les données ~~ Si P(B > A) < 0,05, nous émettons la variante A ~~
+Si $P(B > A) > 0.95$, on publie la variante B. Si elle est entre 0,05 et 0,95, on continue à collecter les données.$P(B > A) < 0.05$, a été lancé la variante A:.
 
 Les avantages des tests A/B fréquentistes:
 - Vous obtiendrez une probabilité directe:
@@ -433,33 +433,43 @@ Les avantages des tests A/B fréquentistes:
 
 | Aspect | Frequentist A/B | Bayesian A/B |
 |--------|----------------|--------------|
-| Output | p-value | P(B > A) |
+| Output | p-value | $P(B > A)$ |
 | Interpretation | “如果 A=B，这些数据有多令人意外？” | “B 比 A 更好的可能性有多大？” |
 | Early stopping | 会抬高 false positives | 任意时点都是安全的（前提是 prior 选择合理且 model specification 正确） |
 | Prior knowledge | 不使用 | 编码为 Beta prior |
-| Decision rule | p < 0.05 | P(B > A) > threshold |
+| Decision rule | $p < 0.05$ | $P(B > A) > \text{threshold}$ |
 
 ## 练习
-1. **Multiple tests。**Un patient a été positif à deux tests indépendants, deux tests à 99% de précision, le taux de prévalence de la maladie est de 1 personne sur 10 000 personnes.
+1. **Multiple tests。**Un patient a été positif à deux tests indépendants, soit 99% de la population.$P(\text{sick})$Le premier test est effectué après le premier test.
 
 2. **Smoothing impact。**Utilisez les valeurs de lissage de 0.01、0.1、1.0 和 10.0 运行垃圾邮件分类器──Top word probabilities 会如何变化?当 smoothing=0 且某个词只出现 中时会发生什么?
 
-3. **Add features。**扩展 NaiveBayes class, faire en dehors du nombre de mots 之外, également utiliser la longueur du message  short/long) comme fonctionnement──从训练数据中估计 P short    和 P short  ),并把它合并到预测分中──
+3. **Add features。**扩展 NaiveBayes class, faire en dehors du nombre de mots 之外, également utiliser la longueur du message  short/long) comme fonctionnalité──从训练数据中估计 $P(\text{short} \mid \text{spam})$et $P(\text{short} \mid \text{ham})$, et l'a intégré à la note de prédiction.
 
-4. **MAP by hand。**给定观测数据(10 fois des lancements de pièces de monnaie en moyenne 7 fois des têtes), utiliser Beta(2,2) précédent 计算 bias MAP estimation──把它与 MLE estimation(7/10) faire une comparaison──
+4. **MAP by hand。**Il y a 7 têtes dans le coin.$\text{Beta}(2,2)$estimation de la carte de calcul précédente 计算偏差的MAP估计――把它与MLE估计($7/10$) effectuer une comparaison.
+
+### 提示
+
+**练习 1。**调用 une fois `bayes` get first test after test probability, re-utiliser comme première modification une fois`sequential_bayes(prior, likelihood, false_positive_rate, 2)`Il faut donner le même résultat, près de 0,5
+
+**练习 2。**Pour chaque valeur de créer un.`NaiveBayes(smoothing=s)`, avec les mêmes données, l'entraînement,并分分印 `top_words`◊smoothing Pour 0 时, non apparu dans le spam le taux de parole est 0, donc son nombre n'est pas défini ◊
+
+**练习 3。**统计垃圾邮件和正常邮件中各有多少条短消息,分别除了各类消息总数,并`predict`Le taux de probabilité de chaque catégorie est de 1 à 2.
+
+**练习 4。**Utilisation $\text{Beta}(\alpha, \beta)$Le plan de l'économie$\frac{h + \alpha - 1}{n + \alpha + \beta - 2}$- Je suis désolé.$h = 7$- Je suis là.$n = 10$; les résultats doivent être entre MLE(0.7) et les premières expériences de nombre ((0.5)
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Prior | “我的初始猜测” | 观测 evidence 之前的 P(hypothesis)。在 ML 中：regularization 项。 |
-| Likelihood | “数据拟合得有多好” | P(evidence\|hypothesis)。在特定 hypothesis 下，观测数据出现的概率有多大。 |
-| Posterior | “我更新后的 belief” | P(hypothesis\|evidence)。Prior 乘以 likelihood，然后归一化。 |
-| Evidence | “归一化常数” | 所有 hypotheses 下的 P(data)。确保 posterior 求和为 1。 |
+| Prior | “我的初始猜测” | 观测 evidence 之前的 $P(\text{hypothesis})$。在 ML 中：regularization 项。 |
+| Likelihood | “数据拟合得有多好” | $P(\text{evidence} \mid \text{hypothesis})$。在特定 hypothesis 下，观测数据出现的概率有多大。 |
+| Posterior | “我更新后的 belief” | $P(\text{hypothesis} \mid \text{evidence})$。Prior 乘以 likelihood，然后归一化。 |
+| Evidence | “归一化常数” | 所有 hypotheses 下的 $P(\text{data})$。确保 posterior 求和为 1。 |
 | Naive Bayes | “那个简单的文本分类器” | 一个假设 features 在给定 class 时相互独立的分类器。尽管该假设不成立，效果仍然很好。 |
 | Laplace smoothing | “Add-one smoothing” | 给每个 feature 增加一个小计数，以防止未见数据产生零概率。 |
-| MLE | “直接用频率” | 选择最大化 P(data\|parameters) 的 parameters。没有 prior。在小数据上可能 overfit。 |
-| MAP | “带 prior 的 MLE” | 选择最大化 P(data\|parameters) * P(parameters) 的 parameters。等价于 regularized MLE。 |
-| Log-probability | “在 log space 中工作” | 使用 log(P) 而不是 P，避免许多小数相乘时发生 floating-point underflow。 |
+| MLE | “直接用频率” | 选择最大化 $P(\text{data} \mid \text{parameters})$ 的 parameters。没有 prior。在小数据上可能 overfit。 |
+| MAP | “带 prior 的 MLE” | 选择最大化 $P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})$ 的 parameters。等价于 regularized MLE。 |
+| Log-probability | “在 log space 中工作” | 使用 $\log(P)$ 而不是 $P$，避免许多小数相乘时发生 floating-point underflow。 |
 | False positive | “错误警报” | 检测结果为阳性，但真实状态为阴性。它会推动 base rate fallacy。 |
 
 ## 延伸阅读

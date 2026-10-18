@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Objectif de l'apprentissage
-- 模拟 1D 和 2D randomisés,并验证位移的平方(n) 缩放规律
+- 模拟 1D 和 2D marche aléatoire,并验证位移的 $\sqrt{n}$缩放规律
 - Construire la chaîne Markov 模拟器,并通过自己的组合 计算其静止分布
 - réaliser la dynamique MCMC et Langevin de Metropolis-Hastings, utilisée à partir de la distribution cible
 - Pour établir un lien avec le mouvement brownien, expliquer le processus inverse
@@ -35,9 +35,9 @@ Tout cela est fondé sur quatre idées fondamentales:
 
 De la position 0 开始── chaque étape, lancer une égale pièce de monnaie──正面:向右移动(+1)──反面:向左移动(-1)──
 
-经过 n 步后, votre position est n 个随机 +/-1 值的总和──期望位置是 0((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+- Je suis passé .$n$Après, ta position est$n$Je suis là.$\pm 1$值的总和──期望位置是0(这个行程是无偏的)──但距离原点的期望距离按 $\sqrt{n}$- Je suis en train de me faire plaisir.
 
-Ceci est un point de déviation, mais avec le temps, il s'écarte du point de départ et s'éloigne de la distance.
+Cette marche est juste, les deux directions ne dérivent pas, mais au fil du temps, elle s'éloigne de son point de départ et de son point de départ.$n$步后的标准偏差是 $\sqrt{n}$Il y a une autre.
 
 ```
 Step 0:  Position = 0
@@ -48,33 +48,33 @@ Step 100: Expected distance from origin ~ 10 (sqrt(100))
 Step 10000: Expected distance from origin ~ 100 (sqrt(10000))
 ```
 
-**在 2D 中**,walk 以相等概率上、向下、向左或向右移动──距离原点同样遵循平方n 缩放规律──路径将描绘出类似碎形的模式──
+**在 2D 中**,marcher à la même fréquence de la marche vers le haut, vers le bas, vers la gauche ou vers la droite.$\sqrt{n}$缩放规律──路径会描绘出类似的分离的模式──
 
-**为什么是 sqrt(n)？**Chaque étape est en phase et la probabilité est de +1 ou -1──n 步后, position S_n = X_1 + X_2 + ... + X_n, dont chaque X_i est +/-1──n chaque étape est différente de 1, et chaque étape est indépendante de l'autre, donc Var(S_n) = n―Décécart standard = sqrt(n)──en fonction du théorème de limite centrale, S_n / sqrt(n) 收到标准正常分布──
+**为什么是 $\sqrt{n}$？**Chaque étape est de probabilité de +1 ou -1$n$步后, position $S_n = X_1 + X_2 + \cdots + X_n$, chacun d' eux .$X_i$La ville est$\pm 1$ La variance de chaque étape est 1, et chaque étape est indépendante de l'autre, donc $\mathop{\mathrm{Var}}(S_n) = n$ Déviation standard = $\sqrt{n}$Selon le théorème de la limite centrale,$S_n / \sqrt{n}$收到 une distribution normale standard
 
-Cette catégorie est composée de deux parties:
+Cette sorte de$\sqrt{n}$缩放在 ML 中随处可见──SGD 噪音按1/sqrt(batch_size) 缩放──Embedding 维度按 $\sqrt{d}$La racine carrée est un signe indépendant de l'accumulation.
 
-**与 Brownian motion 的联系。**取一个步尺为 1/sqrt(n) 、每单位时间 n 步的随机走---当 n 趋近无穷时, cette marche 会收到布朗运动 B(t)  一个连续时间过程,其中 B(t) 服从平均值为 0、变量为 t 的正常分布──
+**与 Brownian motion 的联系。**Prenez une taille de l'étape$1/\sqrt{n}$、 chaque heure $n$Une promenade aléatoire.$n$À la fin de la journée, cette marche sera suivie par le mouvement brownien.$B(t)$Un processus continu en temps, parmi lesquels$B(t)$服从平均值为 0 变量 为 $t$La répartition normale de la population.
 
 Le mouvement brownien est la base mathématique de la diffusion. Il décrit le mouvement de la fluctuation des particules dans le corps, ainsi que le processus de bruit dans les modèles de diffusion.
 
-**Gambler's ruin。**Un marcheur aléatoire de la position k 开始, en 0 和 N 处有吸收障碍──到达 N 早于到达 0 的概率是多少?
+**Gambler's ruin。**Un randonneur de la position .$k$開始,在 0 和 $N$Il y a des barrières d'absorption.$N$Quelle est la probabilité d'atteindre 0 ?$P(\text{到达 } N) = k/N$                                                                                                                                                                                                                                                              
 
 ### Chaînes de Markov
 
 La chaîne de Markov est un système qui se transforme selon la probabilité fixe entre les États.
 
-```
-P(X_{t+1} = j | X_t = i, X_{t-1} = ...) = P(X_{t+1} = j | X_t = i)
-```
-
-C'est la propriété de Markov. Cela signifie que vous pouvez utiliser une matrice de transition P pour décrire toute la dynamique:
-
-```
-P[i][j] = probability of going from state i to state j
+```math
+P(X_{t+1} = j \mid X_t = i, X_{t-1} = \ldots) = P(X_{t+1} = j \mid X_t = i)
 ```
 
-Pour chaque ligne de demande et pour 1... tu dois aller quelque part.
+C'est la propriété de Markov. Ça signifie que vous pouvez utiliser une matrice de transition.$P$décrire toute la dynamique:
+
+```math
+P[i][j] = \text{从状态 } i \text{ 转移到状态 } j \text{ 的概率}
+```
+
+$P$Tu dois aller quelque part.
 
 **示例 —— Weather：**
 
@@ -86,7 +86,7 @@ P = [[0.7, 0.1, 0.2],    (if sunny: 70% sunny, 10% rainy, 20% cloudy)
      [0.4, 0.2, 0.4]]    (if cloudy: 40% sunny, 20% rainy, 40% cloudy)
 ```
 
-De l'état arbitral 开始──经过多次过渡 后, les états de la distribution seront reçus jusqu'à la distribution stationnaire pi, dont pi * P = pi── c'est la valeur propre de P 为 1 de l'oïvectore propre gauche──
+De l'état de l'État à l'état de l'État, la répartition des États est répandue en phase fixe.$\pi$, parmi lesquels $\pi P = \pi$C'est ça.$P$La valeur propre de n'est pas le vecteur propre gauche de n'est.
 
 Pour la chaîne météo, la distribution stationnaire est [0,53, 0,18, 0,29]  长期来看, peu importe l'état de départ, soit quoi, 53% du temps est ensoleillé.
 
@@ -105,8 +105,8 @@ graph LR
 
 **计算 stationary distribution。**Il y a deux façons:
 
-1. **Power method**: sera une distribution initiale arbitraire répétée par P. Après avoir eu suffisamment d'itérations, elle sera reçue.
-2. **Eigenvalue method**: trouver la valeur propre de P pour le propre vecteur gauche de 1♦ Ceci équivaut à la valeur propre de P^T pour le propre vecteur de 1♦
+1. **Power method**: sera une répartition initiale arbitraire$P$Après avoir fait assez d'itérations, il va se faire.
+2. **Eigenvalue method**: trouver $P$La valeur propre de la valeur propre propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur propre de la valeur de la valeur propre de la valeur de la valeur propre de la valeur de la valeur propre de la valeur de la valeur de la valeur de la valeur propre de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la$P^T$La valeur propre de n'est pas un vecteur propre de n'est.
 
 Les deux méthodes exigent une chaîne de satisfaction des conditions.
 
@@ -116,63 +116,63 @@ Les deux méthodes exigent une chaîne de satisfaction des conditions.
 
 La plupart des chaînes rencontrées dans le ML satisfont à ces deux conditions.
 
-**Absorbing states。**Si une fois que vous entrez dans un état, vous ne quitterez jamais ((P[i][i] = 1), cet état est absorbant de la. Absorption des chaînes de Markov peut être utilisé pour construire avec des états terminaux.
+**Absorbing states。**Si une fois dans un état, tu ne sortiras jamais.$P[i][i] = 1$), cet état est absorbant de la. ⋅ Absorption des chaînes de Markov peuvent être utilisées pour construire avec des états terminaux  un jeu fini ⋅ un client de churn ⋅ une séquence de jetons de jetons de fin de texte en cours de vie ⋅
 
-**Mixing time。**需要多少步,chain 才会接近stationary distribution?形式化地说,就是 la distance totale de variation avec la distance de stationarité qui descend à un certain值以下所需的步数――Fast mixing = 需要的步数少──P's spectral gap(1 减去第二大自值) contrôler le temps de mélange──gap 越大,mixing 越快──
+**Mixing time。**需要多少步,chain 才会接近stationary distribution?$P$La différence spectrale de la différence de type 1 est de 1 à 2 (voir la section "Value")
 
 ### Contact avec Modèles de langage
 
 Modèle de langage 中的代币生成 近似是一个马科夫过程──给定当前文text,模型输出下一个代币 上的分布──温度 控制敏度:
 
-```
-P(token_i) = exp(logit_i / temperature) / sum(exp(logit_j / temperature))
+```math
+P(\text{token}_i) = \frac{\exp(\text{logit}_i / \text{temperature})}{\sum_j \exp(\text{logit}_j / \text{temperature})}
 ```
 
 - Température = 1,0: standard distribution
 - Température < 1,0: plus pointe(
 - Température > 1,0:更平坦(更随机)
-- Température -> 0:argmax(compulsif)
+- Température $\to 0$:argmax(coupard)
 
-Le top-k de l'échantillonnage 截断至概率最高的 k 个代币――Top-p(nucleus) de l'échantillonnage 截断至累积概率 超过 p 的最小代币 集合──两者都会修改马科夫过渡概率──
+Prise d'échantillons de haut niveau en tranche de probabilité maximale$k$个 tokens──Top-p(nucleus) échantillonnage 截断到累积概率 超过 $p$Les deux sont les plus petites probabilités de transition de Markov.
 
 ### Motion brown
 
-La limite de temps continue de marche aléatoire.
-1. B(0) = 0
-2. B(t) - B(s) 服从均值为 0、variance 为 t - s de la répartition normale de t - s
+La limite de temps continue de marche aléatoire.$B(t)$Il y a trois qualités:
+1. $B(0) = 0$
+2. $B(t) - B(s)$服从平均值为 0 变量 为 $t - s$La répartition normale des$t > s$)
 3. Increements de la région de la différence
 
 Le mouvement brownien est continu, mais il est indéfini. Il est en mouvement à chaque dimension.
 
 Dans le mouvement dispersé, vous pouvez approcher ainsi le mouvement brownien:
 
-```
-B(t + dt) = B(t) + sqrt(dt) * z,    where z ~ N(0, 1)
+```math
+B(t + dt) = B(t) + \sqrt{dt} \, z, \quad \text{其中 } z \sim \mathcal{N}(0, 1)
 ```
 
-Le thème de la réduction est important. Il est dérivé du théorème de la limite centrale des promenades aléatoires.
+$\sqrt{dt}$缩放很重要──it provient du théorème de limite centrale de la démarche aléatoire.
 
 ### Dynamique de Langevin
 
-Déclin gradient 寻找函数的最小值──Langevin Dynamics 寻找与 exp(-U(x)/T) 成正比的概率分布, dont U est la fonction énergétique, T est la température──
+Déclin de gradient 寻找最小值的函数──Langevin dynamique 寻找与 $\exp(-U(x)/T)$La répartition des probabilités est correcte.$U$est une fonction énergétique,$T$C'est la température.
 
-```
-x_{t+1} = x_t - dt * gradient(U(x_t)) + sqrt(2 * T * dt) * z_t
+```math
+x_{t+1} = x_t - dt \, \nabla U(x_t) + \sqrt{2 T \, dt} \, z_t
 ```
 
 Il y a deux forces qui agissent sur la particule:
-1. **Gradient force**- (dt * gradient(U)): pour une énergie inférieure (( similaire à la baisse du gradient)
-2. **Random force**(sqrt(2*T*dt) * z):
+1. **Gradient force**(le secteur de l'énergie)$-dt \cdot \nabla U$): "Trouver vers une énergie basse"
+2. **Random force**(le secteur de l'énergie)$\sqrt{2T dt} \cdot z$): Proposer des directions de recherche
 
-Lorsque la température T = 0 时, c'est la pure descente gradiente. La température est élevée. La température est basse.
+La température$T = 0$时, voilà la pure descente gradiente. La température est élevée.
 
 **与 diffusion models 的联系。**Le processus de diffusion du modèle est:
 
-```
-x_t = sqrt(alpha_t) * x_{t-1} + sqrt(1 - alpha_t) * noise
+```math
+x_t = \sqrt{\alpha_t} \, x_{t-1} + \sqrt{1 - \alpha_t} \cdot \text{noise}
 ```
 
-C'est une chaîne de Markov qui mélange les données et le bruit. Après avoir suivi suffisamment d'étapes, le bruit gaussien est pur.
+C'est une chaîne de Markov qui mélange progressivement les données avec le bruit.$x_T$C'est le bruit de Gauss.
 
 Le processus inverse  du bruit à la data  est aussi une chaîne de Markov, mais ses probabilités de transition sont obtenues par le réseau neural                                                                                                                                                                                                                                            
 
@@ -192,27 +192,27 @@ graph LR
 
 ### MCMC: Chaîne de Markov à Monte Carlo
 
-Parfois, vous avez besoin d'une valeur que vous pouvez obtenir (la possibilité de différer d'un nombre constant) mais vous ne pouvez pas directement adopter une distribution de p (x) en forme de modèle.
+Parfois, vous avez besoin d'une valeur que vous pouvez obtenir (la permission de différer un nombre constant) mais ne pouvez pas directement prendre la distribution.$p(x)$Les postérieurs bayésiens sont des exemples classiques. Vous savez la probabilité de multiplication précédente, mais la normalisation de la constante est difficile à traiter.
 
-**Metropolis-Hastings**构建一个静止分布 为 p(x) de la chaîne de Markov:
+**Metropolis-Hastings**Construire une distribution stationnaire $p(x)$La chaîne de Markov:
 
-1. De quelque part à x
-2. 提议一个新位置 x'
-3. 计算 acceptance ratio:a) * Q (x) = p (x)
-4. Pour les autres, il est nécessaire de prendre en compte les données de l'analyse.
+1. De quelque part.$x$ commencé
+2. De la répartition des propositions $Q(x' \mid x)$提议一个新位置 $x'$
+3. 计算 taux d'acceptation:$a = p(x') Q(x \mid x') / (p(x) Q(x' \mid x))$
+4. É probabilité $\min(1, a)$ accepté $x'$否则留在 $x$Il y a une autre.
 5. Je vous en prie.
 
-Si Q est symétrique de (exemple Q) x'x de) = Q (x, x) = N (x, x) = sigma^2)), le rapport 可简化为 a = p (x) / p (x) 你只需要概率的比率 正常化常态 会相互抵消──
+Si $Q$C'est symétrique, par exemple.$Q(x' \mid x) = Q(x \mid x') = \mathcal{N}(x, \sigma^2){}$), le ratio 可简化为 $a = p(x') / p(x)$ vous avez juste besoin de la proportion de probabilité  normaliser la constante 会相互抵消。
 
-Dans des conditions tempérées, cette chaîne assure la réception jusqu'à la p(x) ⋅ mais si la proposition 太小(random walk) ou trop grande(高拒绝), la réception est très lente.
+Dans des conditions tempérées, cette chaîne est garantie.$p(x)$ Mais si la proposition 太小(random walk) ou trop grande(high rejection),收可能很慢──调节 proposition est l'art du MCMC──
 
-**为什么它有效。**Le rapport d'acceptation  assure l'équilibre détaillé: situé x et déplacé jusqu'à x' probabilité, égale à situé x' et déplacé jusqu'à x' probabilité。 l'équilibre détaillé signifie p(x) est la distribution stationnaire de la chaîne。 par conséquent, il a été traversé suffisamment d'étapes 后, échantillons de p(x)。
+**为什么它有效。**Ratio d' acceptation  assurer l' équilibre détaillé: situé $x$Il ne bouge pas.$x'$La probabilité de la localisation est égale à la probabilité de la localisation.$x'$Il ne bouge pas.$x$Le rapport de probabilité $p(x)$C'est la distribution stationnaire de cette chaîne.$p(x)$Il y a une autre.
 
 **实践注意事项：**
-- **Burn-in**: abandonné, n'ont pas été testés, la chaîne a besoin de temps pour atteindre la distribution stationnaire.
-- **Thinning**Pour chaque échantillon, conservez-en un, afin de réduire l'autocorrélation.
+- **Burn-in**: abandonné$N$个样本――chain 需要时间从起点到静止分布――
+- **Thinning**: chaque$k$个样本保留一个, afin de réduire l'autocorrélation.
 - **Multiple chains**Si elles sont réparties dans la même distribution, il existe des preuves de réception.
-- **Acceptance rate**Pour les propositions de Gauss, le taux d'acceptation optimal est d'environ 23% (Roberts & Rosenthal, 2001):
+- **Acceptance rate**Pour:$d$维 Gaussian propositions, meilleur taux d'acceptation 大约是 23% ]]Roberts & Rosenthal, 2001) Too high signifie chaîne 几乎不移动──Too low signifie qu'elle est presque entièrement rejetée──
 
 ### Processus stochastiques dans l'IA
 
@@ -257,7 +257,7 @@ def random_walk_2d(n_steps, seed=None):
     return x, y
 ```
 
-1D marche stockage de la somme cumulée── chaque étape est +1 ou -1── traversé n 步后, position est总和──variance 随 n 线性增长, donc déviation standard 按平方(n) 增长──
+1D marche  stockage des sommes cumulées ⋅ chaque étape est +1 ou -1 ⋅ traversée ⋅$n$步后,位置就是总和──variance 随 随 随$n$线性增长, donc déviation standard 按 $\sqrt{n}$- Je suis en train de me faire plaisir.
 
 ### 步骤 2: Chaîne de Markov
 
@@ -291,7 +291,7 @@ class MarkovChain:
         return np.abs(stationary)
 ```
 
-La distribution stationnaire est la valeur propre de P pour le propre vecteur gauche de 1。 nous calculons les propres vecteurs de P^T pour le trouver(transposer les propres vecteurs gauche en propres vecteurs droits)。
+distribution stationnaire est $P$La valeur propre de la même chose est le vecteur propre gauche de 1.$P^T$Les vecteurs propres de la recherche de la même chose (transposer les vecteurs propres de gauche en vecteurs propres de droite)
 
 ### 步骤 3: Dynamique de Langevin
 
@@ -307,7 +307,7 @@ def langevin_dynamics(grad_U, x0, dt, temperature, n_steps, seed=None):
     return np.array(trajectory)
 ```
 
-Le gradient x va être poussé vers une énergie basse, le bruit empêche sa chute en phase de stagnation, le taux d'échantillonnage est de 0,7 °C.
+Gradient général$x$推向低能量──噪音──防止其陷入局部停滞──在平衡时, échantillons sont répartis avec$\exp(-U(x)/\text{temperature})$C'est vrai.
 
 ### 步骤 4: Métropole-Hastings
 
@@ -359,7 +359,7 @@ for _ in range(100):
 print(f"Stationary distribution: {np.round(distribution, 4)}")
 ```
 
-Après avoir fait suffisamment d'itérations, il sera réussi à obtenir une distribution stationnaire, peu importe de quoi vous commencez.
+La répartition initiale se répète$P$Après avoir fait suffisamment d'itérations, il obtient une distribution stationnaire, peu importe où vous commencez.
 
 ### Connexion avec le cadre réel
 
@@ -404,14 +404,14 @@ Le programme de formation
 
 Les modèles de diffusion 值得特别关注──DDPM(Ho et al., 2020) définissent une chaîne Markov avancée:
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1-beta_t) * x_{t-1}, beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1-\beta_t} \, x_{t-1}, \beta_t I\right)
 ```
 
-Parmi eux, beta_t est un schéma de bruit.
+Parmi eux $\beta_t$C'est un calendrier de bruit.$T$- Je suis en train de faire ça.$x_T$Il est presque comme$\mathcal{N}(0, I)$◊ processus inverse par un prédiction du bruit du réseau neural 参数化:
 
-```
-p_theta(x_{t-1} | x_t) = N(x_{t-1}; mu_theta(x_t, t), sigma_t^2 * I)
+```math
+p_\theta(x_{t-1} \mid x_t) = \mathcal{N}\left(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I\right)
 ```
 
 Chaque étape de la génération est une étape apprise dans la chaîne de Markov. Comprendre les chaînes de Markov signifie comprendre les modèles de diffusion  comment et pourquoi peuvent-ils générer des données.
@@ -421,24 +421,36 @@ SGLD(Stochastic Gradient Langevin Dynamics) va combiner le petit lot Gradient De
 穿越这些联系的关键洞见是: les processus stochastiques ne sont pas seulement des outils théoriques. Ils sont des mécanismes de calcul modernes à l'intérieur du système AI. Lorsque vous réglez la température de votre LLM, vous réglez une chaîne de Markov. Lorsque vous entraînez un modèle de diffusion, vous apprenez à inverser un processus similaire au mouvement brownien. Lorsque vous effectuez une inférence bayésienne, vous construisez une chaîne de réception à l'arrière.
 
 ## 练习
-1. **模拟 1000 条 10000 步的 random walks。**绘制最终位置的分布──验证它近似为平均 0、标准偏差平方rt(10000) = 100 的高斯──
+1. **模拟 1000 条 10000 步的 random walks。**绘制最终位置的分布──验证它近似为平均0、标准偏差$\sqrt{10000} = 100$Le Gausséen.
 
 2. **使用 Markov chain 构建 text generator。**Dans un petit corpus, on apprend à chaque mot à construire une matrice de transition.
 
 3. **使用 Metropolis-Hastings 实现 simulated annealing。**De haute température 开始 (pratiquement tout accepter), puis progressivement降温 (pratiquement seulement amélioration) ⋅ utiliser pour trouver la valeur minimale de la fonction avec de nombreux minima locaux.
 
-4. **比较不同 temperatures 下的 Langevin dynamics。**De potentiel de puits à double U(x) = (x^2 - 1)^2 中采样──低温 时,échantillons 聚集在一个井中──高温 时,它们分布在两个井中──找到链 在井中──混合的关键温度──
+4. **比较不同 temperatures 下的 Langevin dynamics。**Du double potentiel de puits$U(x) = (x^2 - 1)^2$Les échantillons se regroupent dans un puits à basse température.
 
 5. **实现 forward diffusion process。**De un signal 1D (par exemple une onde sine) commencer à utiliser un calendrier de bruit linéaire, en ajoutant progressivement du bruit à 100 étapes, pour montrer comment le signal se décompose en bruit pur, puis réaliser un dénicheur simple pour revenir à ce processus, même en réduisant une version naïve du bruit estimé.
+
+### 提示
+
+**练习 1。**Pour 1000 graines différentes 调用 `random_walk_1d(10000, seed=i)`, et conserve la position finale de chaque fois. Les contrôles indiquent si la déviation standard est proche de 0, ou si elle est proche de 100, ainsi que si la position finale est en train de tomber à environ 68% entre -100 et 100 .
+
+**练习 2。**统计, par nombre de fois que chaque phrase apparut à l'autre, chaque ligne divisée par la somme de la ligne, rendant chaque ligne et 1 `MarkovChain(transition_matrix, state_names)`,并调用 `simulate`◊ Check output de chaque mots appartenant à l'autre dans le corpus
+
+**练习 3。**É$\exp(-\Delta / T)$La probabilité d'accepter des points plus faibles et de suivre chaque étape.$T$乘以 un facteur, par exemple 0,99── sur une fonction de minimum connu,并与细网格搜索的结果核对──
+
+**练习 4。**Gradient est $4x(x^2 - 1)$Je vais le transmettre.`langevin_dynamics(grad_U, x0, dt, temperature, n_steps)`Il y a une autre.$x = 0$La hauteur de la barrière est de 1, donc entre 0,05 et 1 de températures différentes.$x$ modificar le nombre de fois, trouver le nombre de fois à commencer à augmenter rapidement la température ⋅
+
+**练习 5。**调用 `diffusion_forward(signal, 100)`,并将所有 $(1 - \beta_t)$À la fin, on prend la dernière étape.$\bar{\alpha}$Si vous êtes un homme$\bar{\alpha}$Le signal n'est pas encore un bruit, il faut augmenter.`beta_end`▽先使用真实的噪音 测试 dénonciateur:此时 $(x_t - \sqrt{1 - \bar{\alpha}_t} \epsilon)/\sqrt{\bar{\alpha}_t}$Il faut préciser le signal original.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Random walk | “抛硬币式移动” | 一个 position 在每一步按随机 increments 改变的过程 |
 | Markov property | “无记忆性” | future 只依赖当前 state，而不依赖 history |
-| Transition matrix | “概率表” | P[i][j] = 从 state i 移动到 state j 的概率 |
-| Stationary distribution | “长期平均” | 满足 pi*P = pi 的分布 pi —— chain 的 equilibrium |
-| Brownian motion | “随机抖动” | random walk 的 continuous-time limit，B(t) ~ N(0, t) |
+| Transition matrix | “概率表” | $P[i][j]$ = 从 state $i$ 移动到 state $j$ 的概率 |
+| Stationary distribution | “长期平均” | 满足 $\pi P = \pi$ 的分布 $\pi$ —— chain 的 equilibrium |
+| Brownian motion | “随机抖动” | random walk 的 continuous-time limit，$B(t) \sim \mathcal{N}(0, t)$ |
 | Langevin dynamics | “带噪声的 Gradient Descent” | 结合 deterministic Gradient 与 random perturbation 的 update rule |
 | MCMC | “向目标行走” | 构造一个 stationary distribution 为你想要的分布的 Markov chain |
 | Metropolis-Hastings | “提议并接受/拒绝” | 使用 acceptance ratios 来确保收敛的 MCMC algorithm |

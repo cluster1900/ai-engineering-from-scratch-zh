@@ -45,7 +45,7 @@ graph LR
 
 ### Retour
 
-La rotation 2D de l'angle pour l'angle de l'angle conserve une distance et un angle inchangé.
+angle pour $\theta$La rotation 2D maintient la distance et l'angle inchangés. Elle permet à chaque point de se déplacer le long du cercle.
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 En 3D, vous tournez autour d'un axe. Chaque axe a sa propre matrice de rotation:
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### Écalement
@@ -123,8 +117,8 @@ graph LR
 ```
 
 Matrices de découpe:
-- `Shx = [[1, k], [0, 1]]`Va x déplacer k * y
-- `Shy = [[1, 0], [k, 1]]`Va y être déplacé
+- `Shx = [[1, k], [0, 1]]`Il va$x$Retour$k \cdot y$
+- `Shy = [[1, 0], [k, 1]]`Il va$y$Retour$k \cdot x$
 
 ### Réflexion
 
@@ -196,7 +190,7 @@ Cette matrice 会沿 [1, 1] 方向把空间拉伸 3x,并保持 [1, -1] 不变─
 
 ### Composition propre
 
-Si une matrice a n'importe quel vecteur propre, elle peut être décomposée:
+Si une matrice a$n$个线性无关的自向量, il peut être décomposé:
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### Pourquoi les valeurs propres sont-elles importantes ?
 
-**PCA。**Les propres vecteurs de la matrice de covariance sont les principaux composants. Les valeurs propres vous diront combien de variance chaque composant a capturé.
+**PCA。**Les propres vecteurs de la matrice de covariance sont les principaux composants. Les valeurs propres vous diront combien de variance chaque composant a capturée.$k$Tu as une réduction de dimension.
 
 **稳定性。**Dans les réseaux récurrents et les systèmes dynamiques, les valeurs propres de magnitude > 1 entraîneraient une explosion de sortie.
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤 3: de la valeur propre à partir de zéro calculs(2x2)
 
-Pour une matrice 2x2`[[a, b], [c, d]]`,eigenvalues par équation caractéristique 求解:`lambda^2 - (a+d)*lambda + (ad - bc) = 0`Il y a une autre.
+Pour une matrice 2x2`[[a, b], [c, d]]`,eigenvalues par équation caractéristique 求解:$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$Il y a une autre.
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ Le cours est consacré à la PCA (Phase 2) et au réseau neuronal (NN) et à l'a
 
 3. 创建三个变换的组成(旋转30°,按 [1.5, 0.8] scale,使用 kx=0.3 shear),并将其应用到按圆形排列的8个点上――印变换前后的坐标――计算组成矩阵的决定数,并验证它等于各决定数的乘积――
 
+### 提示
+
+**练习 1。**- Je veux le faire .`mat_vec_mul`Il va`rotation_2d`- Je suis là.`scaling_2d`et `shearing_2d` Appliquer à chaque point de sommet Pour le rotation, calculer la longueur des 4 lignes et la longueur des 2 lignes; elles doivent toutes rester inchangées
+
+**练习 2。**写出特征方程 $\lambda^2 - (\text{trace})\lambda + \det = 0$Il est nécessaire de vérifier les résultats de l'enquête et de vérifier les résultats de l'enquête.`eigenvalues_2x2`et `np.linalg.eigvals`Comparé à...
+
+**练习 3。**Construire trois matrices, avec`shearing_2d(0.3, 0)`Construire une coupe de matrice, selon l'ordre de l'application`mat_mul`À partir de ce moment, le résultat sera de 8 points.$(\cos\theta, \sin\theta)$ La coupe de la rotation est de 1, la coupe de la rotation est également de 1, donc la coupe de la rotation est de 1.`det_2x2` doit être égal à $1.5 \times 0.8 = 1.2$Il y a une autre.
+
 ## 关键术语
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ Le cours est consacré à la PCA (Phase 2) et au réseau neuronal (NN) et à l'a
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 

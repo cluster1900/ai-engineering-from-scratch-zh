@@ -32,7 +32,7 @@ Le vecteur n'est qu'une liste numérique. Mais ces chiffres ont une significatio
 |---|---|-------|
 | 3 | 2 | 这个 Vector 从原点 (0,0) 指向平面上的 (3, 2) |
 
-Cette magnitude du vecteur est = 3^2 + 2^2) = 13), direction à l'en haut et à droite.
+La magnitude de ce vecteur est$\sqrt{3^2 + 2^2} = \sqrt{13}$, direction vers le haut et vers la droite.
 
 Dans l'IA, Vector dit tout:
 - Un mot → Un mot contient 768 个数字的矢量 (il est en intégration dans l'espace)
@@ -71,19 +71,20 @@ Dans l'IA, la Matrice est le modèle:
 
 Le produit des points de deux vecteurs vous dira qu'ils ont beaucoup de similitudes.
 
-```
-a · b = a₁×b₁ + a₂×b₂ + ... + aₙ×bₙ
-
-方向相同：      a · b > 0  （相似）
-相互垂直：      a · b = 0  （无关）
-方向相反：      a · b < 0  （不相似）
+```math
+\begin{aligned}
+a \cdot b &= a_1 \times b_1 + a_2 \times b_2 + \cdots + a_n \times b_n \\[4pt]
+\text{方向相同：} \quad a \cdot b &> 0 \quad \text{（相似）} \\
+\text{相互垂直：} \quad a \cdot b &= 0 \quad \text{（无关）} \\
+\text{方向相反：} \quad a \cdot b &< 0 \quad \text{（不相似）}
+\end{aligned}
 ```
 
 C'est exactement la façon dont les moteurs de recherche, les systèmes de recommandation et RAG travaillent - trouver des vecteurs de produits dotés plus élevés.
 
 ### Indépendance linéaire
 
-Si aucun vecteur ne peut être écrit dans un ensemble d'autres vecteurs, alors ces vecteurs sont indépendants de manière linéaire. Si v1、v2、v3 sont indépendants, ils couvrent un espace 3D. Si l'un d'eux est un ensemble d'autres vecteurs, ils couvrent seulement un plan.
+Si aucun vecteur ne peut être écrit dans un ensemble d'autres vecteurs, alors ces vecteurs sont linéairement indépendants.$v_1, v_2, v_3$indépendamment, elles couvrent un espace 3D. Si l'une d'elles est composée d'autres vecteurs, elles couvrent seulement un plan.
 
 Il est important pour l'IA: votre matrice de caractéristiques  devrait avoir des colonnes linéairement indépendantes ⋅ Si deux caractéristiques   sont complètement liées ⋅ dépendantes ⋅ linéairement, le modèle ⋅ ne peut pas distinguer leurs effets respectifs ⋅ Cela entraînera une multicollineurité dans la régression ⋅ la matrice de poids ⋅ deviendra instable, les petites variations de l'entrée entraînera une grande fluctuation ⋅
 
@@ -95,7 +96,7 @@ v2 = [0, 1, 0]
 v3 = [2, 1, 0]   # v3 = 2*v1 + v2
 ```
 
-v1 et v2 sont indépendants de - 二者都不是另一个标量倍数或组合──但 v3 = 2*v1 + v2,所以 {v1, v2, v3} est un ensemble dépendant──这些三个向量都位于 xy-plane──无论你如何组合它们,都无法达到 [0, 0, 1]──你有三个向量,但只有两个自由维度──
+$v_1$et $v_2$Il est indépendant de - deux ne sont pas un autre de la multiplicité ou la composition de la taille.$v_3 = 2 v_1 + v_2$Je suis là.$\lbrace v_1, v_2, v_3 \rbrace$Il y a un ensemble dépendant. Ces trois vecteurs sont tous situés dans le plan xy.
 
 Dans le jeu de données: si feature_3 = 2*feature_1 + feature_2, ajouter feature_3 ne donnera pas de nouvelles informations au modèle.
 
@@ -105,15 +106,15 @@ La base est un groupe de vecteurs linéairement indépendants les plus petits, q
 
 La base standard de l'espace 3D est {1,0,0], [0,1,0], [0,0,1]}──mais les trois vecteurs indépendants du 3D peuvent constituer une base valide── la base de choix se trouve dans la base de la sélection.
 
-Si le rang < min(rires, colons), cette matrice est de rang déficient. Ceci signifie:
+Matrix de rang = nombre de colonnes indépendantes linéairement = nombre de lignes indépendantes linéairement.$\text{rank} < \min(\text{rows}, \text{cols})$, cette Matrice est déficiente en grade.
 - Le système a une infinité de solutions
 - Transformation dans le vide
 - Matrice non peut être inversée
 
 | 情况 | Rank | 对 ML 的含义 |
 |-----------|------|---------------------|
-| Full rank (rank = min(m, n)) | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
-| Rank deficient (rank < min(m, n)) | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
+| Full rank $(\text{rank} = \min(m, n))$ | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
+| Rank deficient $(\text{rank} < \min(m, n))$ | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
 | Rank 1 | 1 | 每一列都是某个 Vector 的缩放副本。所有数据都位于一条线上。 |
 | Near rank-deficient（较小的 singular values） | 数值上较低 | Matrix ill-conditioned。极小的 input noise 会造成很大的 output changes。使用 SVD truncation 或 ridge regression。 |
 
@@ -121,11 +122,11 @@ Si le rang < min(rires, colons), cette matrice est de rang déficient. Ceci sign
 
 Vecteur**a**投影到 Vector **b**Je vais le faire.**a**Dans le**b**方向上的分量:
 
-```
-proj_b(a) = (a dot b / b dot b) * b
+```math
+\mathop{\mathrm{proj}}_b(a) = \frac{a \cdot b}{b \cdot b} \, b
 ```
 
-La décomposition orthogonale est la base de l'ajustement des carrés les plus petits.
+résiduel $(a - \mathop{\mathrm{proj}}_b(a))$Avec $b$垂直── cette décomposition orthogonale est la base de l'ajustement des plus petits carrés──
 
 Projection en ML:
 - Régrésion linéaire, les observations minimales à la distance de l'espace de colonnes -- 解本身就是一个投影
@@ -143,9 +144,9 @@ graph LR
     end
 ```
 
-**示例：**a = [3, 4], b = [1, 0]
+**示例：** $a = [3, 4]$- Je suis là .$b = [1, 0]$
 
-Le nombre de points de référence est le nombre de points de référence.
+$\mathop{\mathrm{proj}}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0) \cdot [1, 0] = 3 \cdot [1, 0] = [3, 0]$
 
 Cette projection a perdu y de la quantité. C'est la plus simple forme de réduction de dimension -- la direction dont vous n'avez pas à vous soucier.
 
@@ -448,6 +449,20 @@ LoRA  vale une mention particulière. Il passe par des mises à jour de poids di
 4. 验证 Gram-Schmidt output 确实是正规的:检查每一对的点产品都为 0,并且每个向量的大小都为 1
 5. Créer un rang 为 2 de 3x3 Matrice.`rank()`La méthode 验证── puis expliquer ce que sont les objets de la sphère de ces colonnes.
 6. Pour le vecteur [1, 2, 3] 投影到 [1, 1, 1] 上──结果在几何上表示什么?
+
+### 提示
+
+**练习 1。**De `cosine_similarity`開始,将结果限制在 -1 到 1 之间,再取反余弦,并将弧度转换为角──检查 `Vector([1, 0])`et `Vector([0, 1])`Le résultat est de 90, le volume et le résultat lui-même sont de 0.
+
+**练习 2。**Pour placer les deux facteurs d'encombrement sur la ligne de coupe de la matrice 2x2, les deux positions restantes doivent être remplies par 0;;
+
+**练习 3。**計算 5 个向量中每对的余弦相似度 (共 10 对), conserve la valeur maximale.
+
+**练习 4。**Pour les trois lignes, il n'y a pas de changement de volume.`gram_schmidt`, à nouveau pour chaque calcul`dot`, pour chaque volume calculé`magnitude` Utilisation par exemple `1e-9`Le nombre de points de décalage de la capacité ne donne pas de zéro précis.
+
+**练习 5。**La troisième ligne ou la troisième ligne est mise en avant et la seconde en avant.`rank()`Il faut revenir à 2, alors chaque rangée se forme en un plan de traversée du point d'origine.
+
+**练习 6。**计算缩放系数 $\frac{a \cdot b}{b \cdot b}$Il est multiplie$b$, ou à la mode `project_onto`◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊     ◊ ◊ ◊   ◊ ◊     ◊ ◊             ◊ ◊                   ◊     ◊                                                    $a$减去投影) avec [1, 1, 1] des points de
 
 ## 关键术语
 
