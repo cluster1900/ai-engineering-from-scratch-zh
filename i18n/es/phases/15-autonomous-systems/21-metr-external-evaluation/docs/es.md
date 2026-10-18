@@ -30,7 +30,7 @@ Esta clase se trata de una parte sobre el método de cálculo del horizonte, la 
 
 1. 收集一个任务套件,覆盖分钟级到小时级的专家完成时间──当前套件:HCAST(180+个任务)、RE-Bench(71个任务)、SWAA──
 2. 让模型运行每个任务;记录成功或失败──
-3. 拟合一条 逻辑曲线:P(éxito) es la función de log (专家完成时间)
+3. 拟合一条 curva logística:$P(\text{success})$Sí $\log(\text{专家完成时间})$De la función.
 4. horizonte es hacer P(éxito) = 0.5 of专家时间。
 
 La forma logística-ajusta es adecuada, ya que normalmente existe una relación entre la capacidad y la dificultad de la tarea en aumento y en aproximación a la plataforma. El 50% de puntos es una opción.
@@ -80,7 +80,7 @@ a5-horizon-fit
 
 ## Usalo
 
-`code/main.py`基于合成结果集, logró logística de logística de logro-successo y logro-tiempo de expertos.                                                                                                                                                                                                                                                
+`code/main.py` Basado en los resultados de la composición, logró el éxito de la tarea y $\log(\text{expert time})$La logística de la aplicación. Esto se traduce en un 50% de horizonte (METR                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 ##  entregarlo
 

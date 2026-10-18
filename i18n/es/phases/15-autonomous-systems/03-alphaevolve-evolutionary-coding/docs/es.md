@@ -58,7 +58,7 @@ El método de modificación de AlphaEvolve: utilizar el MLL de un evaluador no v
 
 LLM puede producir modificaciones que pueden ser compiladas, en sentido lingüístico parecen razonables. GA de una mutación de 2000 行 Python 文件 casi siempre produce errores de gramática. LLM también centra la búsqueda en el dominio vecino razonable.
 
-En cambio, el evaluador captará la ficción de LLM. LLMs afirmarán con confianza que una función en la situación extrema es O  n log n) , pero en realidad es O  n^2;
+En cambio, el evaluador captará la ficción de LLM.$O(n \log n)$, pero en realidad es $O(n^2)$El valor de referencia del reloj de pared hará que el problema se resuelva.
 
 ### AlphaEvolve en la pila de fronteras en la posición central
 
