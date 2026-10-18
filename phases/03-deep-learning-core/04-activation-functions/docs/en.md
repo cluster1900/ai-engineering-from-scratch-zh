@@ -16,7 +16,7 @@
 
 ## 问题
 
-堆叠两个 linear transformations：y = W2(W1x + b1) + b2。展开它：y = W2W1x + W2b1 + b2。这只是 y = Ax + c——一个 single linear transformation。无论你堆叠多少 linear layers，结果都会坍缩成一次 Matrix multiply。你的 100-layer network 与 single layer 具有相同的表示能力。
+堆叠两个 linear transformations：$y = W_2(W_1 x + b_1) + b_2$。展开它：$y = W_2 W_1 x + W_2 b_1 + b_2$。这只是 $y = Ax + c$——一个 single linear transformation。无论你堆叠多少 linear layers，结果都会坍缩成一次 Matrix multiply。你的 100-layer network 与 single layer 具有相同的表示能力。
 
 这不是理论上的猎奇。它意味着 deep linear network 字面上无法学习 XOR，无法分类 spiral dataset，无法识别人脸。没有 activation functions，深度只是一种幻觉。
 
@@ -26,52 +26,58 @@ Activation functions 打破线性。它们通过 nonlinear function 扭曲每一
 
 ### 为什么非线性是必要的
 
-Matrix multiplication 是可组合的。先用 Matrix A 乘以一个 Vector，再用 Matrix B 乘以结果，等价于直接乘以 AB。这意味着堆叠十个 linear layers 在数学上等价于一个带有大 Matrix 的 linear layer。所有这些 parameters，所有这些深度——都浪费了。你需要某种东西打断这条链。这就是 activation functions 的作用。
+Matrix multiplication 是可组合的。先用 Matrix $A$ 乘以一个 Vector，再用 Matrix $B$ 乘以结果，等价于直接乘以 $AB$。这意味着堆叠十个 linear layers 在数学上等价于一个带有大 Matrix 的 linear layer。所有这些 parameters，所有这些深度——都浪费了。你需要某种东西打断这条链。这就是 activation functions 的作用。
 
-下面是证明。一个 linear layer 计算 f(x) = Wx + b。堆叠两个：
+下面是证明。一个 linear layer 计算 $f(x) = Wx + b$。堆叠两个：
 
-```
-Layer 1: h = W1 * x + b1
-Layer 2: y = W2 * h + b2
+```math
+\begin{aligned}
+\text{第 1 层：} \quad h &= W_1 x + b_1 \\
+\text{第 2 层：} \quad y &= W_2 h + b_2
+\end{aligned}
 ```
 
 代入：
 
-```
-y = W2 * (W1 * x + b1) + b2
-y = (W2 * W1) * x + (W2 * b1 + b2)
-y = A * x + c
-```
-
-一层。在层之间插入 nonlinear activation g()：
-
-```
-h = g(W1 * x + b1)
-y = W2 * h + b2
+```math
+\begin{aligned}
+y &= W_2 (W_1 x + b_1) + b_2 \\
+y &= (W_2 W_1) x + (W_2 b_1 + b_2) \\
+y &= A x + c
+\end{aligned}
 ```
 
-现在代入被打破了。W2 * g(W1 * x + b1) + b2 不能再简化为 single linear transformation。network 可以表示 nonlinear functions。每增加一层带 activation 的 layer，都会增加表示能力。
+一层。在层之间插入 nonlinear activation $g()$：
+
+```math
+\begin{aligned}
+h &= g(W_1 x + b_1) \\
+y &= W_2 h + b_2
+\end{aligned}
+```
+
+现在代入被打破了。$W_2 g(W_1 x + b_1) + b_2$ 不能再简化为 single linear transformation。network 可以表示 nonlinear functions。每增加一层带 activation 的 layer，都会增加表示能力。
 
 ### Sigmoid
 
 Neural Network 最早的 activation function。
 
-```
-sigmoid(x) = 1 / (1 + e^(-x))
+```math
+\text{sigmoid}(x) = \frac{1}{1 + e^{-x}}
 ```
 
 输出范围：(0, 1)。平滑、可微，将任意实数映射到类似概率的值。
 
 derivative：
 
-```
-sigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))
+```math
+\text{sigmoid}'(x) = \text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))
 ```
 
-这个 derivative 的最大值是 0.25，出现在 x = 0。在 backpropagation 中，gradients 会逐层相乘。十层 sigmoid 意味着 gradient 最多会被 0.25 连续乘十次：
+这个 derivative 的最大值是 0.25，出现在 $x = 0$。在 backpropagation 中，gradients 会逐层相乘。十层 sigmoid 意味着 gradient 最多会被 0.25 连续乘十次：
 
-```
-0.25^10 = 0.000000953674
+```math
+0.25^{10} = 0.000000953674
 ```
 
 不到原始信号的百万分之一。这就是 vanishing gradient problem。早期 layers 中的 gradients 变得极小，weights 几乎不更新。network 看起来在学习——后面 layers 的 loss 在下降——但前面 layers 已经冻结。Deep sigmoid networks 根本训练不起来。
@@ -82,33 +88,32 @@ sigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))
 
 sigmoid 的居中版本。
 
-```
-tanh(x) = (e^x - e^(-x)) / (e^x + e^(-x))
+```math
+\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 ```
 
 输出范围：(-1, 1)。以零为中心，可以消除之字形问题。
 
 derivative：
 
-```
-tanh'(x) = 1 - tanh(x)^2
+```math
+\tanh'(x) = 1 - \tanh(x)^2
 ```
 
-最大 derivative 在 x = 0 时为 1.0——比 sigmoid 好四倍。但 vanishing gradient problem 仍然存在。对于很大的正输入或负输入，derivative 会趋近于零。十层仍然会压碎 gradient，只是没那么激烈。
+最大 derivative 在 $x = 0$ 时为 1.0——比 sigmoid 好四倍。但 vanishing gradient problem 仍然存在。对于很大的正输入或负输入，derivative 会趋近于零。十层仍然会压碎 gradient，只是没那么激烈。
 
 ### ReLU：突破
 
 Rectified Linear Unit。Nair 和 Hinton 在 2010 年将其推广到 deep learning（这个函数本身可追溯到 Fukushima 1969 年的工作），它改变了一切。
 
-```
-relu(x) = max(0, x)
+```math
+\text{relu}(x) = \max(0, x)
 ```
 
-输出范围：[0, infinity)。derivative 非常简单：
+输出范围：$[0, \infty)$。derivative 非常简单：
 
-```
-relu'(x) = 1  if x > 0
-            0  if x <= 0
+```math
+\text{relu}'(x) = \begin{cases} 1 & \text{当 } x > 0 \\ 0 & \text{当 } x \le 0 \end{cases}
 ```
 
 对于正输入，不存在 vanishing gradient。gradient 正好是 1，会直接传递过去。这就是 deep networks 变得可训练的原因——ReLU 能够跨层保留 gradient magnitude。
@@ -119,25 +124,24 @@ relu'(x) = 1  if x > 0
 
 dead neurons 最简单的修复方式。
 
-```
-leaky_relu(x) = x        if x > 0
-                alpha * x if x <= 0
+```math
+\text{leaky\_relu}(x) = \begin{cases} x & \text{当 } x > 0 \\ \alpha x & \text{当 } x \le 0 \end{cases}
 ```
 
-其中 alpha 是一个小常数，通常为 0.01。负半轴有一个小斜率而不是零，因此 dead neurons 仍然能获得 gradient signal，并有机会恢复。
+其中 $\alpha$ 是一个小常数，通常为 0.01。负半轴有一个小斜率而不是零，因此 dead neurons 仍然能获得 gradient signal，并有机会恢复。
 
 ### GELU：现代默认选择
 
 Gaussian Error Linear Unit。由 Hendrycks 和 Gimpel 于 2016 年提出。是 BERT、GPT 以及大多数现代 transformers 中的默认 activation。
 
-```
-gelu(x) = x * Phi(x)
+```math
+\text{gelu}(x) = x \cdot \Phi(x)
 ```
 
-其中 Phi(x) 是 standard normal distribution 的 cumulative distribution function。实践中使用的近似形式：
+其中 $\Phi(x)$ 是 standard normal distribution 的 cumulative distribution function。实践中使用的近似形式：
 
-```
-gelu(x) ~= 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))
+```math
+\text{gelu}(x) \approx 0.5 \cdot x \cdot \left(1 + \tanh\left(\sqrt{2/\pi} \cdot (x + 0.044715 \cdot x^3)\right)\right)
 ```
 
 GELU 处处平滑，允许较小的负值（不像 ReLU 那样硬截断为零），并且有一个概率解释：它根据每个输入在 Gaussian distribution 下为正的可能性对其加权。这种平滑 gating 在 transformer architectures 中优于 ReLU，因为它提供了更好的 gradient flow，并完全避免 dead neuron problem。
@@ -146,11 +150,11 @@ GELU 处处平滑，允许较小的负值（不像 ReLU 那样硬截断为零）
 
 由 Ramachandran et al. 在 2017 年通过 automated search 发现的 self-gated activation。
 
-```
-swish(x) = x * sigmoid(x)
+```math
+\text{swish}(x) = x \cdot \text{sigmoid}(x)
 ```
 
-Swish 的形式是 x * sigmoid(x)。Google 通过在 activation function space 上进行 automated search 发现了它——一个 Neural Network 在设计 Neural Network 的一部分。
+Swish 的形式是 $x \cdot \text{sigmoid}(x)$。Google 通过在 activation function space 上进行 automated search 发现了它——一个 Neural Network 在设计 Neural Network 的一部分。
 
 与 GELU 一样，它平滑、非单调，并允许较小的负值。差异很微妙：Swish 使用 sigmoid 作为 gating，而 GELU 使用 Gaussian CDF。实践中，性能几乎相同。Swish 用于 EfficientNet 和一些 vision models。GELU 则主导 language models。
 
@@ -158,8 +162,8 @@ Swish 的形式是 x * sigmoid(x)。Google 通过在 activation function space �
 
 不用于 hidden layers。Softmax 将 raw scores（logits）的 Vector 转换为 probability distribution。
 
-```
-softmax(x_i) = e^(x_i) / sum(e^(x_j) for all j)
+```math
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
 ```
 
 每个输出都在 0 到 1 之间。所有输出之和为 1。这使它成为 multi-class classification 的标准 final activation。最大的 logit 会得到最高概率，但与 argmax 不同，softmax 是可微的，并保留了相对置信度的信息。
@@ -501,11 +505,11 @@ RNNs 和 LSTMs 对 hidden state 使用 tanh，对 gates 使用 sigmoid，但如�
 
 ## 练习
 
-1. 实现 Parametric ReLU (PReLU)，其中 negative slope alpha 是一个 learnable parameter。在 circle dataset 上训练它，并与固定 Leaky ReLU 对比。
+1. 实现 Parametric ReLU (PReLU)，其中 negative slope $\alpha$ 是一个 learnable parameter。在 circle dataset 上训练它，并与固定 Leaky ReLU 对比。
 
 2. 将 vanishing gradient experiment 从 10 层改为 50 层运行。绘制 sigmoid、tanh、ReLU 和 GELU 在每一层的 magnitude。每种 activation 的信号在哪一层实际上到达零？
 
-3. 实现 ELU (Exponential Linear Unit)：elu(x) = x if x > 0, alpha * (e^x - 1) if x <= 0。在同一个 network 上将它的 dead neuron rate 与 ReLU 对比。
+3. 实现 ELU (Exponential Linear Unit)：$\text{elu}(x) = x$ if $x \gt 0$, $\alpha (e^x - 1)$ if $x \le 0$。在同一个 network 上将它的 dead neuron rate 与 ReLU 对比。
 
 4. 构建一个“gradient health monitor”，在训练期间运行：每个 epoch 计算每一层的 average gradient magnitude。当任意 layer 的 gradient 低于 0.001 或超过 100 时打印 warning。
 
@@ -519,12 +523,12 @@ RNNs 和 LSTMs 对 hidden state 使用 tanh，对 gates 使用 sigmoid，但如�
 | Vanishing gradient | “Gradients 在 deep networks 中消失” | 当 activation 的 derivative 小于 1 时，gradients 会通过 layers 指数级缩小，使早期 layers 无法训练 |
 | Exploding gradient | “Gradients 爆炸” | 当有效乘数超过 1 时，gradients 会通过 layers 指数级增长，导致训练不稳定 |
 | Dead neuron | “停止学习的 neuron” | 输入永久为负的 ReLU neuron，会产生零输出和零 gradient |
-| Sigmoid | “把值压缩到 0-1” | logistic function 1/(1+e^-x)，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
-| ReLU | “把负数裁剪为零” | max(0, x)——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
+| Sigmoid | “把值压缩到 0-1” | logistic function $1/(1+e^{-x})$，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
+| ReLU | “把负数裁剪为零” | $\max(0, x)$——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
 | GELU | “transformer activation” | Gaussian Error Linear Unit，一种平滑 activation，会根据输入为正的概率对输入加权 |
-| Swish/SiLU | “Self-gated ReLU” | x * sigmoid(x)，通过 automated search 发现，用于 EfficientNet |
+| Swish/SiLU | “Self-gated ReLU” | $x \cdot \text{sigmoid}(x)$，通过 automated search 发现，用于 EfficientNet |
 | Softmax | “把分数变成概率” | 将 logits 的 Vector 归一化为 probability distribution，其中所有值都在 (0,1) 内且总和为 1 |
-| Leaky ReLU | “不会死亡的 ReLU” | max(alpha*x, x)，其中 alpha 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
+| Leaky ReLU | “不会死亡的 ReLU” | $\max(\alpha x, x)$，其中 $\alpha$ 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
 | Saturation | “sigmoid 的平坦部分” | activation 的 derivative 趋近于零的区域，会阻断 gradient flow |
 | Logit | “softmax 之前的原始分数” | 应用 softmax 或 sigmoid 之前，final layer 的未归一化输出 |
 
