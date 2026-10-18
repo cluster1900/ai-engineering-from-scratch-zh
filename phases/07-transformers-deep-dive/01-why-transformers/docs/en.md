@@ -25,13 +25,13 @@ Vanishing gradients 意味着 50 个 Tokens 之前的信息已经被压缩穿过
 
 ![RNN sequential compute vs Transformer parallel attention](../assets/rnn-vs-transformer.svg)
 
-**Recurrence 是瓶颈。** RNN 计算 `h_t = f(h_{t-1}, x_t)`。每一步都依赖前一步。你不能在 `h_4` 之前计算 `h_5`。在拥有 10,000+ 并行核心的现代 GPUs 上，这会在长序列上浪费 99% 的硅面积。
+**Recurrence 是瓶颈。** RNN 计算 $h_t = f(h_{t-1}, x_t)$。每一步都依赖前一步。你不能在 $h_4$ 之前计算 $h_5$。在拥有 10,000+ 并行核心的现代 GPUs 上，这会在长序列上浪费 99% 的硅面积。
 
-**Attention 是广播。** Self-attention 会为每一对 `(i, j)` 同时计算 `output_i = sum_j(a_ij * v_j)`。整个 N×N attention matrix 会在一次 batched matmul 中填满。没有任何步骤依赖另一个步骤。GPUs 喜欢这一点。
+**Attention 是广播。** Self-attention 会为每一对 $(i, j)$ 同时计算 `output_i = sum_j(a_ij * v_j)`。整个 N×N attention matrix 会在一次 batched matmul 中填满。没有任何步骤依赖另一个步骤。GPUs 喜欢这一点。
 
-**加速不是常数。** 它是 `O(N)` serial depth 和 `O(1)` serial depth 之间的差别。实践中，在 N=512 且硬件相同的情况下，transformers 每个 epoch 的训练速度快 5–10×；随着序列长度增加，差距会继续扩大，直到触及 Attention 的 `O(N²)` memory wall（Flash Attention 后来修复了这一点——见 Lesson 12）。
+**加速不是常数。** 它是 $O(N)$ serial depth 和 $O(1)$ serial depth 之间的差别。实践中，在 N=512 且硬件相同的情况下，transformers 每个 epoch 的训练速度快 5–10×；随着序列长度增加，差距会继续扩大，直到触及 Attention 的 $O(N^2)$ memory wall（Flash Attention 后来修复了这一点——见 Lesson 12）。
 
-**transformers 的代价。** Attention memory 按 `O(N²)` 扩展。2K context 没问题。128K context 则需要 sliding windows、RoPE extrapolation、Flash Attention tiling，或 linear attention variants。Recurrence 在时间和内存上都是 `O(N)`；transformers 用内存换时间，然后通过并行性把时间赢回来。
+**transformers 的代价。** Attention memory 按 $O(N^2)$ 扩展。2K context 没问题。128K context 则需要 sliding windows、RoPE extrapolation、Flash Attention tiling，或 linear attention variants。Recurrence 在时间和内存上都是 $O(N)$；transformers 用内存换时间，然后通过并行性把时间赢回来。
 
 **Inductive bias 的转变。** RNNs 假设 locality 和 recency。Transformers 不做假设——每一对位置都是 Attention 的候选。这就是为什么 transformers 需要更多数据才能训练得好，但一旦拥有足够数据就能扩展得更远。Chinchilla（2022）形式化了这一点：给定足够多的 Tokens，Transformer 总是能击败相同参数量的 RNN。
 
@@ -59,7 +59,7 @@ def attention_style(xs):
     return sum(xs) / len(xs)  # every x is independent
 ```
 
-我们对长度最高 100,000 的序列分别计时。RNN 版本是 O(N)，并且使用单个 CPU pipeline。即使在纯 Python 中，attention-style reduction 在长度 ≥ 1,000 时也会胜出，因为 Python 的 `sum()` 是用 C 实现的，并且迭代时不会在每一步产生解释器开销。
+我们对长度最高 100,000 的序列分别计时。RNN 版本是 $O(N)$，并且使用单个 CPU pipeline。即使在纯 Python 中，attention-style reduction 在长度 ≥ 1,000 时也会胜出，因为 Python 的 `sum()` 是用 C 实现的，并且迭代时不会在每一步产生解释器开销。
 
 ### 步骤 2： 计算理论操作
 
@@ -67,7 +67,7 @@ def attention_style(xs):
 
 ### 步骤 3： 长序列上的经验扩展
 
-我们打印一个 timing table，让 O(N) 差距变得可见。在 2026 年的 Mac 笔记本上，少于 1,000 个元素的序列太快，难以测量。100,000 的序列会显示出清晰的线性扫描。把它扩展到一个 16,384-Token Transformer，并与一个 12-layer LSTM 等价模型比较，你就会明白为什么训练 wall-clock 在 2016 年是一个阻碍因素。
+我们打印一个 timing table，让 $O(N)$ 差距变得可见。在 2026 年的 Mac 笔记本上，少于 1,000 个元素的序列太快，难以测量。100,000 的序列会显示出清晰的线性扫描。把它扩展到一个 16,384-Token Transformer，并与一个 12-layer LSTM 等价模型比较，你就会明白为什么训练 wall-clock 在 2016 年是一个阻碍因素。
 
 ## 使用它
 
@@ -80,7 +80,7 @@ def attention_style(xs):
 | 没有 matmul accelerator 的 edge device | Depthwise-separable RNN 在 FLOPs/watt 上仍然胜出 |
 | 其他任何情况（训练、batched inference、最高 128K 的 context） | Transformer |
 
-State-space models（SSMs）如 Mamba，本质上是带有结构化参数化的 RNNs，使它们兼具两者优点：`O(N)` scan memory，以及通过 selective scan 实现的并行训练。它们以更好的 long-context scaling 恢复了 90% 的 Transformer 质量。到 2026 年，大多数 frontier labs 都在训练 hybrid SSM+transformer models（例如 Jamba, Samba）——recurrence 并没有死亡，它是一个组件。
+State-space models（SSMs）如 Mamba，本质上是带有结构化参数化的 RNNs，使它们兼具两者优点：$O(N)$ scan memory，以及通过 selective scan 实现的并行训练。它们以更好的 long-context scaling 恢复了 90% 的 Transformer 质量。到 2026 年，大多数 frontier labs 都在训练 hybrid SSM+transformer models（例如 Jamba, Samba）——recurrence 并没有死亡，它是一个组件。
 
 ## 交付它
 
@@ -98,11 +98,11 @@ State-space models（SSMs）如 Mamba，本质上是带有结构化参数化的 
 |------|-----------------|-----------------------|
 | Recurrence | “RNNs 是顺序的” | step `t` 依赖 step `t-1` 的计算方式，迫使执行沿时间轴串行进行。 |
 | Serial depth | “图有多深” | 依赖操作的最长链；即使在无限硬件上也会限制 wall-clock。 |
-| Attention | “让 Tokens 彼此查看” | Weighted sum `sum_j a_ij v_j`，其中 `a_ij` 来自位置 i 和 j 之间的相似度分数。 |
+| Attention | “让 Tokens 彼此查看” | Weighted sum $\sum_j a_{ij} v_j$，其中 $a_{ij}$ 来自位置 $i$ 和 $j$ 之间的相似度分数。 |
 | Context window | “模型能看到多少” | 一个 Attention layer 可作为输入的位置数量；quadratic memory cost 在这里扩展。 |
 | Inductive bias | “架构内置的假设” | 关于数据形态的先验；CNNs 假设 translation invariance，RNNs 假设 recency。 |
 | State-space model | “背后有代数的 RNN” | 为通过结构化 state-space matrices 实现并行训练而参数化的 recurrence。 |
-| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 `O(N²)`；Flash Attention 隐藏的是常数，而不是扩展规律。 |
+| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 $O(N^2)$；Flash Attention 隐藏的是常数，而不是扩展规律。 |
 
 ## 延伸阅读
 
