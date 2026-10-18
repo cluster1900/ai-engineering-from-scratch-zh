@@ -239,6 +239,16 @@ Nó sẽ tải xuống một tập dữ liệu nhỏ, chuyển nó, chia nó, v�
 3. Chuyển một tập dữ liệu thành Parquet, và sẽ có kích thước tập tin so với CSV
 4. Sử dụng hạt giống cố định 创建 70/15/15 train/val/test split,并验证 size
 
+### 提示
+
+**练习 1。**调用 `code/data_utils.py`Trung `load_and_inspect("glue", "mrpc")`, hoặc trực tiếp调用 `load_dataset("glue", "mrpc")`, 打印`ds["train"][:5]` Mỗi mẫu đều phải bao gồm `sentence1``sentence2`和 `label`字段。
+
+**练习 2。**像 `stream_dataset`Như vậy.`streaming=True`Lưu tập dữ liệu, trong vòng tròn đọc mẫu, khi`time.time()`超开始时间加 10秒时停止──打印样本数,并运行两次,因为第一次包含连接启动开销──
+
+**练习 3。**像 `convert_format`Như vậy, dùng `to_csv`和 `to_parquet`保存同一个数据集, tái sử dụng `ls -lh`Hoặc`os.path.getsize`So sánh tài liệu lớn.`load_from_parquet`重新加载 文件, kiểm tra số liệu có giữ không thay đổi.
+
+**练习 4。** Đặt `seed`, sử dụng hai lần `train_test_split`: Đầu tiên phân chia 30%, sau đó phân bổ 30% cho một nửa.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

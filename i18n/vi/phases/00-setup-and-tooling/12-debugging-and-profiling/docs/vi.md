@@ -396,3 +396,15 @@ python phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.p
 3. Sử dụng `tracemalloc`Tìm ra đường ống tải dữ liệu trong đó phân phối bộ nhớ nhiều nhất.
 4. Để một cuộc tập luyện đơn giản  thiết lập TensorBoard,并识别 mô hình
 5. Trong vòng đào tạo trong sử dụng`breakpoint()`◊ tập từ debugger prompt  kiểm tra hình dạng tensor、 thiết bị và giá trị gradient。
+
+### 提示
+
+**练习 1。**运行 `python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`, đọc mỗi hàm biểu diễn của xuất.`demo_nan_detection`Trong mô hình, làm cho nó xuất xíu, chạy lại một lần;`detect_nan`必须印带有步骤编号的 NaN 警告──
+
+**练习 2。**用 `python -m cProfile -s cumtime your_script.py`Chuyển vòng, hoặc sử dụng`cProfile.Profile()`包裹它.`cumtime`Các đường dây trên cùng của các dòng; trong đó thuộc về các hàm có mã và tốn thời gian lớn nhất của bạn, là hàm chậm nhất.
+
+**练习 3。**像 `demo_memory_tracking`Như vậy, trong dữ liệu tải mã trước调用 `tracemalloc.start()`, sau đó调用`tracemalloc.take_snapshot()`打印 `snapshot.statistics("lineno")[:5]`; 1行会显示 phân phối trong lưu trữ nhiều nhất các tài liệu và số bài.
+
+**练习 4。**Mỗi thời đại đều có.`SummaryWriter` ghi chép training loss và chứng nhận mất mát, tái vận hành `tensorboard --logdir=runs`Nếu mất tập luyện tiếp tục giảm và mất kiểm tra tăng lên, mô hình đã xảy ra quá phù hợp.
+
+**练习 5。**sẽ`breakpoint()` đặt trong vòng tròn `loss.backward()`之后,然后运行脚本──在 `(Pdb)`提示符处打印 `x.shape``x.device`和 `next(model.parameters()).grad`, nhập lại`c`继续下一步.

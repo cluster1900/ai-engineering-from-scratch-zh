@@ -160,3 +160,11 @@ Bài học này được tạo ra một bản văn chứng minh mà bất cứ a
 1. 运行验证脚本并修复 bất kỳ thất bại nào
 2. Trong khóa học này tạo ra một môi trường ảo Python, và cài đặt PyTorch
 3. Sử dụng tất cả bốn ngôn ngữ  viết một "hào thế giới",并逐个运行
+
+### 提示
+
+**练习 1。**Trong thư mục kho `python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner`, trước sửa lỗi thứ nhất, xem lại thứ sau, xem lại phần sau, tất cả các kiểm tra cần thiết đều qua, mới hoàn thành.
+
+**练习 2。**Trong thư mục kho `uv venv` tạo môi trường và kích hoạt, sử dụng lại bước 6  Trong phù hợp với phần cứng của bạn lệnh cài đặt PyTorch.`python -c "import torch; print(torch.__version__)"`;输出版本号就表示安装成功。
+
+**练习 3。**Sử dụng khái niệm trong 4 phần của công nghệ: Python, sử dụng TypeScript của Node.js, Rust và Julia.`python3``npx tsx`(Node.js không thể trực tiếp运行 `.ts`文件) 、`cargo run`Hoặc`rustc``julia`Mỗi lần chạy đều phải in tin tin của bạn, và kết thúc.

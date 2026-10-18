@@ -240,6 +240,14 @@ AI trong thường thấy dòng làm việc:
 2.  tạo một notebook đồng thời chứa dấu chỉ và các tế bào mã, tải CSV, hiển thị khung dữ liệu, và vẽ biểu đồ.
 3. - Đưa đi.`code/notebook_tips.py`Mã trong  dán vào máy tính xách tay Colab Trong,并 sử dụng GPU miễn phí 运行
 
+### 提示
+
+**练习 1。**用 `jupyter lab`Tạo JupyterLab, sẽ đưa hai phiên bản khác vào `%timeit`开头的独立单元格──两个单元都使用了100,000的规模,确保测量是相同的工作量──
+
+**练习 2。**用 `pd.read_csv`读取数据,将数据frame  đặt vào đơn vị cuối cùng để hiển thị nó, sử dụng lại `df.plot()`Hoặc matplotlib 绘图──执行 Kernel > Restart & Run All 后, mỗi đơn vị của các thiết bị tính toán thực hiện nên hiển thị số, và không nên có bất kỳ đơn vị nào báo cáo lỗi──
+
+**练习 3。**Trong Colab 中先选择 Runtime > Thay đổi loại runtime > GPU,再粘贴代码──当 `code/notebook_tips.py`Mỗi hàm trong trung tâm đều được in ra đối ứng phần, và chạy trong đơn vị.`torch.cuda.is_available()` quay lại `True`时,运行才算正确.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

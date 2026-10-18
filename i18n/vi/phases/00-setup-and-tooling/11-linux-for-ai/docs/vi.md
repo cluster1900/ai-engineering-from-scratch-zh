@@ -306,3 +306,15 @@ s0-process-fork
 3.  khởi động một phiên tmux, trong đó hoạt động `sleep 300`, rời khỏi, ra khỏi các phiên, rồi nối lại.
 4. Sử dụng `df -h`检查可用磁盘空间, sau đó sử dụng `du -sh ~/.cache/*`Tìm ra nội dung cache trong không gian chiếm đóng.
 5. Sử dụng `scp`Chuyển một tập tin từ máy địa phương sang máy xa, sau đó sử dụng `rsync`Làm tương tự truyền tải,并比较体验.
+
+### 提示
+
+**练习 1。**运行 `cd ~`, dùng`mkdir`创建新文件, tái sử dụng `cd` Đi vào nó, rồi dùng `touch`创建三个文件――在 `ls -la`Trong khi xuất, kiểm tra các file này có phải là 0, chủ sở hữu có phải là tên người dùng của bạn không.
+
+**练习 2。**用 `sudo apt install -y htop`装并启动 htop,按 `F6`(hoặc click vào danh sách)`MEM%`排序──列表顶部的进程占内存最多──
+
+**练习 3。**使用课程中 `tmux new -s train`,运行 `sleep 300`, tái sử dụng`Ctrl+B`后接 `d`分离会话――运行 `tmux ls`查看会话, tái sử dụng `tmux attach -t train`重新连接;`sleep`必须仍在运行――
+
+**练习 4。**运行 `df -h`, xem danh mục chính của hệ thống tài liệu`Avail`列──再运行 `du -sh ~/.cache/* | sort -h`, để các tài liệu lớn nhất xuất hiện trong dòng cuối cùng.
+
+**练习 5。**用 `scp file.txt user@host:~/`复制文件, tái đối với cùng một tài liệu运行 `rsync -avP file.txt user@host:~/` 第二次运行 `rsync`Khi lệnh, nó hầu như không gửi bất kỳ nội dung nào, vì các tài liệu cuối cùng không thay đổi.

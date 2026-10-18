@@ -337,6 +337,16 @@ Các trường hợp sử dụng của mỗi công cụ trong khóa học này:
 3. 用 `for i in $(seq 1 100); do echo "epoch $i loss: $(echo "scale=4; 1/$i" | bc)"; sleep 0.1; done > fake_train.log` tạo một nhật ký tập luyện giả, rồi sử dụng `grep``tail`和 `awk`Chỉ cần tăng giá trị mất mát.
 4. Vì bạn có quyền truy cập hạn chế của máy chủ  thiết lập một mục cấu hình SSH( hoặc sử dụng `localhost`练习语法) 』
 
+### 提示
+
+**练习 1。**先运行 `tmux new -s practice`,用前 `Ctrl+B`后接 `"`和 `%`Chia cửa sổ, sử dụng lại `Ctrl+B`加方向键切换窗格──用 `Ctrl+B`后接 `d`chia rẽ, vận hành`tmux ls`, tái sử dụng`tmux attach -t practice`重新连接; 3 quy trình đều phải vẫn đang hoạt động.
+
+**练习 2。**sẽ`code/shell_aliases.sh`Trung 行复制到 `~/.zshrc`Hoặc`~/.bashrc`末尾,再对该文件运行 `source` vận hành`alias`, hoặc cho một trong số đó một tên mới vận hành `type <name>`, xác nhận vỏ đã nhận ra nó.
+
+**练习 3。**先运行 `tail -5 fake_train.log`Xem mỗi dòng hình dạng, sử dụng lại`grep loss`过,并用 `awk '{print $NF}'`Chỉ in đoạn cuối cùng; xuất phát nên là 100 số dần giảm nhỏ hơn.
+
+**练习 4。**将课程中的`Host gpu`配置块复制到 `~/.ssh/config`,把 `HostName`和 `User`改成你的服务器信息,或改成 `localhost`和你的用户名──运行 `ssh -G gpu` Bác SSH sẽ sử dụng cài đặt. Nếu có truy cập và chấp nhận khóa của bạn SSH  máy chủ, chạy lại `ssh gpu`连接──
+
 ## 关键术语
 
 | 术语 | 人们怎么说 | 实际含义 |

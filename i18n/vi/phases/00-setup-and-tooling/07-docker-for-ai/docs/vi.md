@@ -366,6 +366,16 @@ Bạn đã có một môi trường phát triển AI có thể tái tạo.
 3. sẽ`flask`添加到Dockerfile,重建, và cổng 5000 上运行一个简单API server──使用 `-p 5000:5000`bản đồ 端口
 4. Sử dụng `docker images`测量 hình ảnh kích thước. 尝试把基image từ `devel`切换到 `runtime`,并比较大小
 
+### 提示
+
+**练习 1。**用课程中的`docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .`命令构建,再通过 `docker run --rm ai-dev`Trong hộp đựng thực hiện kiểm tra nhập khẩu trên Mac, theo hướng dẫn của chương trình `--gpus all`❖ Bảng phải được in`2.6.0`开头的版本号――
+
+**练习 2。**Trong `code/`文件中运行 `docker compose up -d`, tái sử dụng`docker compose exec ai-dev bash`Trong `ai-dev`服务中打开 shell. Trong đó là hoạt động.`curl http://qdrant:6333/collections`; trả về JSON 就说明服务名能在编译 网络内解析。
+
+**练习 3。**Trong Dockerfile 中添加 `RUN pip install flask`, tái xây dựng,并用 `host="0.0.0.0"` khởi động máy chủ, vì chỉ được kết nối trong container với máy chủ địa phương không thể truy cập từ bên ngoài container. `http://localhost:5000`, xác nhận端口映射有效──
+
+**练习 4。**运行 `docker images ai-dev`, ghi lại kích thước 列──将 `FROM`行中 `devel`改为 `runtime`, sử dụng thẻ mới  xây dựng, so sánh lại hai hình ảnh kích thước; thời gian chạy  hình ảnh không chứa bộ biên dịch và các tài liệu đầu.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

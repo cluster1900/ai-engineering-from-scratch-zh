@@ -260,6 +260,16 @@ Nó sẽ ở repo root tạo ra một .`.venv`,并安装和验证 các phụ thu
 3. Để một dự án đồng thời cần PyTorch và SDK nhân đạo 编写 `pyproject.toml`
 4. Vì vậy, toàn bộ bộ bộ cài đặt một gói, không kích hoạt venv, quan sát nó đi đâu, sau đó gỡ bỏ nó.
 
+### 提示
+
+**练习 1。**Trong thư mục kho `bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh`◊ từng bước đọc xuất; nếu một bài kiểm tra thất bại, hãy sửa lại bài kiểm tra trước, chạy lại văn bản cho đến khi tất cả các bài kiểm tra được thông qua.
+
+**练习 2。**Trong tài liệu mới`uv venv` tạo một môi trường thứ hai và kích hoạt, thông qua phiên bản cố định cài đặt hơn cũ numpy, ví dụ `numpy==1.26.4`分别在两个环境中运行 `python -c "import numpy; print(numpy.__version__)"`; phiên bản xuất phải khác nhau.
+
+**练习 3。**Từ pyproject.toml 基础中的例开始,在 `dependencies`中列出 `torch`和 `anthropic`在新环境中运行 `uv pip install -e .`Hoặc`uv sync`; hai gói đều có thể nhập thông thường, chỉ để giải thích các tài liệu được định vị đúng.
+
+**练习 4。**退出所有环境,运行 `pip install --user <small package>`,再运行 `pip show <package>`Không xem`Location`行──用 `pip uninstall <package>`卸载 nó, tái vận hành `pip show`确认 nó đã được di chuyển.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

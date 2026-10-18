@@ -99,6 +99,14 @@ git push origin my-progress
 2.  tạo ra một `.gitignore`, loại bỏ các tập tin kiểm soát mô hình`.pt``.pth``.safetensors`(văn)
 3. 用 `git log --oneline`Xem lịch sử tham gia của repo này, và đọc bài học là làm thế nào được thêm vào
 
+### 提示
+
+**练习 1。**Trong GitHub 上点击 Fork, sử dụng lại `git clone`克隆你自己的叉 地址──运行 `git push -u origin my-progress`Sau đó, mở cửa của bạn trên GitHub, xác nhận phân chia trong danh sách.`my-progress`, và bao gồm các tài liệu của bạn.
+
+**练习 2。**Trong thư mục kho `.gitignore`文件中为每扩名名添加一条模式, ví dụ:`*.pt` Để mở rộng tên của mỗi người tạo ra một tệp trống, rồi chạy `git status`; Những tài liệu này không nên xuất hiện trong danh sách các tài liệu không theo dõi.
+
+**练习 3。**运行 `git log --oneline`,再运行 `git log --oneline -- phases/00-setup-and-tooling`, chỉ hiển thị sửa đổi quá trình trình gửi ∙ chọn một trình gửi,运行 `git show --stat <hash>`Xem nó thêm những tài liệu khóa học nào.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

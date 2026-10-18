@@ -132,6 +132,14 @@ Bài học 会产出:
 2. 尝试 raw HTTP 版本,并将 phản hồi định dạng so với SDK 版本
 3. 故意使用错误的API key,并读错误消息
 
+### 提示
+
+**练习 1。**Trong Anthropic Console, tạo khóa, theo hướng dẫn sẽ đưa nó vào `ANTHROPIC_API_KEY`, rồi vận hành`code/first_api_call.py`                                                                                                                                                                                                                                                              
+
+**练习 2。** `code/first_api_call.py`Hai hàm trung tâm chỉ in văn bản và mã số.`call_with_sdk()`中添加 `print(response)`, trong `call_raw_http()`中添加 `print(result)`,再运行脚本查看两份完整响应──比较字段名称:原始 JSON 中的 `content``usage`和 `stop_reason`字段,会被SDK 转换为对象属性──
+
+**练习 3。**Chỉ là ở một cái cuối cùng.`ANTHROPIC_API_KEY`设置为虚假值,再次运行脚本── 在输出中找到 HTTP 状态码和错误类型;认证失败会返回 401 状态码──
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

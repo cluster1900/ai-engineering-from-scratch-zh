@@ -78,11 +78,11 @@ Mỗi sự mở rộng tác dụng:
 | Black Formatter | 保存时自动格式化，保持风格一致 |
 | Ruff | 快速 linting，捕获常见错误 |
 
-本课中 `code/.vscode/extensions.json`文件包含完整推列表──当你打开项目文件时,VS Code 会提示你安装它们──
+本课中 `code/vscode/extensions.json`文件包含完整推列表──将它复制到您的项目文件目 中中中中中`.vscode/extensions.json`; mở tập tin này, VS Code 会提示你安装这些扩展――
 
 ### 步骤 3: Configuration
 
-复制本课 `code/.vscode/settings.json`Trong cài đặt, hoặc qua `Settings > Open Settings (JSON)`Làm việc bằng tay.
+复制本课 `code/vscode/settings.json`Trong cài đặt, hoặc qua `Settings > Open Settings (JSON)`Làm việc bằng tay.
 
 Công việc AI của thiết lập chính:
 
@@ -195,6 +195,16 @@ Với thiết lập này, dòng công việc hàng ngày của bạn trông như
 2. 将本课的 `settings.json`复制到你的 VS Code config 中
 3. 打开一个Python文件,验证Pylance 显示 kiểu gợi ý, và Black 会在保存时格式化
 4. Nếu bạn có thể truy cập máy tính từ xa, configure Remote SSH và mở một tập tin trên nó
+
+### 提示
+
+**练习 1。**Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng: Ứng dụng:`code --install-extension <id>`                                          `code/vscode/extensions.json`Trung Ưng mỗi ID Ưng`code --list-extensions`, từng một với ID trong tài liệu 核对;;
+
+**练习 2。**打开  cài đặt > Open Settings (JSON),将 `code/vscode/settings.json`Nếu trong file đã được thiết lập, xin hãy kết hợp các khóa và giữ JSON hiệu quả; Mã VS sẽ sử dụng thẻ đỏ để chỉ ra các file sai lầm.
+
+**练习 3。**编写 một hàm có kiểu ghi, sẽ đặt chuột chờ đợi để điều chỉnh nó; Python sẽ hiển thị kiểu ghi nhận được ⋅ trong một dòng thêm thêm thêm khoảng trống và lưu trữ các tập tin; đen ⋅ phải định dạng lại trong lưu trữ ⋅
+
+**练习 4。**先将服务器加入 `~/.ssh/config`, xác nhận cuối cùng trong `ssh <host>`Có thể kết nối bình thường. Sử dụng Remote SSH 命令连接; khi VS Code 运行在远程机器上, trạng thái 会显示主机名──
 
 ## 关键术语
 | Term | What people say | What it actually means |
