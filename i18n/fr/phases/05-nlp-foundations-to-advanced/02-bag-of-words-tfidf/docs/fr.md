@@ -21,9 +21,11 @@ Le cours commence par la création de sacs de mots, puis la création de TF-IDF,
 
 **TF-IDF**Une fois que le texte est rédigé, le texte est rédigé en deux parties.
 
-```
-TF-IDF(w, d) = TF(w, d) * IDF(w)
-             = count(w in d) / |d| * log(N / df(w))
+```math
+\begin{aligned}
+\text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
+\end{aligned}
 ```
 
 Parmi eux `TF`La fréquence des termes est dans le document,`df`Il y a beaucoup de documents qui contiennent ce mot.`N`C'est le nombre total des archives.`log`Le pouvoir de maintenir un niveau de vie est limité.

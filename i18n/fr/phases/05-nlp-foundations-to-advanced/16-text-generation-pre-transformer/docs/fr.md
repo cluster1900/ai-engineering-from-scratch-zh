@@ -21,8 +21,8 @@ Le vrai problème est de savoir comment traiter les n-grammes non vus. Le modèl
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`❖ Fixée `n`(habituellement trigramme avec 3,4 grammes avec 4)
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。**Une étude de 2007 sur le corpus brown a révélé que même un modèle de 4 grammes, 30% des 4 grammes non observés n'étaient pas observés dans l'entraînement.
@@ -40,8 +40,8 @@ Kneser-Ney's洞见很深──"San Francisco" is常见 bigram──Unigram "Fran
 
 **评估：perplexity。**Dans le ensemble de tests, chaque mot est un indicateur de probabilité de logement moyen négatif.
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 

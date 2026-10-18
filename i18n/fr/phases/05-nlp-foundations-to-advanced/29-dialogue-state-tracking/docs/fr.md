@@ -148,7 +148,7 @@ def is_correction(utterance):
 
 ## La trappe
 
-- **Full-history regeneration cost。**让 LLM 每一轮都重生状态,总 Token 成本是 O(n2)。限制历史或总结较早转──
+- **Full-history regeneration cost。**让LLM 每一轮都重生状态,总代币 成本是 $O(n^2)$◊ limitation de l'histoire ou résultat de la première tournée.
 - **Schema drift。**Fait après ajouter de nouvelles machines à sous, détruira les données de l'ancienne formation.
 - **Case sensitivity。**L'Italie contre l'Italie contre l'Italie est en train de se normaliser.
 - **Implicit inheritance。**Si l'utilisateur a déjà désigné pour 4 personnes, la nouvelle différence de temps demande ne devrait pas être nette .

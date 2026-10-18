@@ -29,7 +29,7 @@ Ce cours sera pour les trois personnes à construire un intuition, et expliquer 
 
 Réalisation de l'année 2026:
 
-- **Outlines。**Pour chaque jeton, il est possible de modifier le code JSON ou de modifier le code JSON.
+- **Outlines。**JSON Schema ou regex 编译为有限状态机.$O(1)$查询 valid-next-token── basé sur le FSM, donc les schémas récursifs  nécessitent un aplatissement──
 - **XGrammar / llguidance。**Les moteurs de grammaire sans contexte, le traitement de JSON récursif, le traitement de JSON, le traitement de JSON récursif, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de JSON, le traitement de la version de JSON, le développement de JSON, en direct de JSON. OpenAI, en 2025.
 - **vLLM guided decoding。**通过概要、XGrammar ou lm-format-enforcer 后端内置 `guided_json`- Je suis là.`guided_regex`- Je suis là.`guided_choice`- Je suis là.`guided_grammar`Il y a une autre.
 - **Instructor。**基于 Pydantic's arbitrary LLM wrapper──验证失败时重试──跨供应商,但不会修改 logits,依赖重试+structured-output-aware prompts──
@@ -211,7 +211,7 @@ tags: [nlp, llm, structured-output]
 |------|------------|----------|
 | Constrained decoding | 强制有效输出 | 在每个生成步骤 mask invalid-token logits。 |
 | Logit processor | 执行约束的东西 | 函数：`(logits, state) -> masked_logits`。 |
-| FSM | Finite-state machine | 编译后的 grammar 表示；O(1) valid-next-token 查询。 |
+| FSM | Finite-state machine | 编译后的 grammar 表示；$O(1)$ valid-next-token 查询。 |
 | CFG | Context-free grammar | 能处理 recursion 的 grammar；比 FSM 更慢但表达力更强。 |
 | Schema field order | 它重要吗？ | 重要，first field 会形成承诺；始终把 reasoning 放在 answer 之前。 |
 | Guided decoding | vLLM 对它的称呼 | 同一概念，集成进 inference server。 |

@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-Simple réalisation est O                                                                                                                                                                                                                                                             
+朴素实现是 $O(n \cdot \lvert \text{merges} \rvert)$ Production réalisation ((tiktoken、HF Tokenizers) utilisant la recherche de classement fusionné et les files d'attente prioritaires,
 
 ### 步骤 3: 实践中的 phrasePiece
 

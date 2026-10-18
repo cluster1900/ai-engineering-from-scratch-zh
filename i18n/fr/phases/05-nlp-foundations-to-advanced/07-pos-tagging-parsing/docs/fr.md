@@ -82,8 +82,8 @@ Dans le corpus brun, cette ligne de base peut atteindre environ 85% de précisio
 
 Pour la probabilité commune de la séquence 建模:
 
-```
-P(tags, words) = prod P(tag_i | tag_{i-1}) * P(word_i | tag_i)
+```math
+P(\text{tags}, \text{words}) = \prod_i P(\text{tag}_i \mid \text{tag}_{i-1}) \cdot P(\text{word}_i \mid \text{tag}_i)
 ```
 
 两张表:probabilités de transition ((给定前标的标签) 和排放概率 ((给定标签的词) 』
