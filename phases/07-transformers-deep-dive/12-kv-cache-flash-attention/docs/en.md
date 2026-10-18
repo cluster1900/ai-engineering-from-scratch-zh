@@ -9,13 +9,13 @@
 
 ## 问题
 
-一个朴素的自回归 decoder 生成 `N` 个 tokens 需要做 `O(N²)` 工作：每一步都会在完整前缀上重新计算 attention。对于一个 4K-token 的响应，这意味着 16M 次 attention 运算，其中大多数都是冗余的。前缀 token 的每个 hidden state 一旦计算出来就是确定的——你只需要让新 token 的 query 去和此前所有 token 缓存下来的 keys 与 values 做计算。
+一个朴素的自回归 decoder 生成 $N$ 个 tokens 需要做 $O(N^2)$ 工作：每一步都会在完整前缀上重新计算 attention。对于一个 4K-token 的响应，这意味着 16M 次 attention 运算，其中大多数都是冗余的。前缀 token 的每个 hidden state 一旦计算出来就是确定的——你只需要让新 token 的 query 去和此前所有 token 缓存下来的 keys 与 values 做计算。
 
 除此之外，attention 本身也会搬运大量数据。标准 attention 会物化一个 N×N score matrix、N×d softmax output、N×d final output——对 HBM 的读写次数太多。对于 N≥2K，attention 会先成为 memory-bound，而不是 FLOP-bound。经典 attention kernel 对现代 GPU 的利用率低了 4–10×。
 
 Dao et al. 提出的两个优化，把前沿推理从“慢”推到了“快”：
 
-1. **KV cache。** 存储每个前缀 token 的 K 和 V vectors。每个新 token 的 attention 都是一个 query 对缓存 keys 的计算。推理从每个 generation step 的 `O(N²)` 降到 `O(N)`。
+1. **KV cache。** 存储每个前缀 token 的 K 和 V vectors。每个新 token 的 attention 都是一个 query 对缓存 keys 的计算。推理从每个 generation step 的 $O(N^2)$ 降到 $O(N)$。
 2. **Flash Attention。** 对 attention 计算做 tiling，使完整的 N×N matrix 永远不会进入 HBM。所有 softmax + matmul 都在 SRAM 中完成。在 A100 上 wall-clock speedup 为 2–4×；在支持 FP8 的 H100 上为 5–10×。
 
 到 2026 年，两者都已经是通用配置。每个生产级推理栈（vLLM、TensorRT-LLM、SGLang、llama.cpp）都默认假设它们存在。每个前沿模型发布时都会启用 Flash Attention。
@@ -78,7 +78,7 @@ for each block of Q (tile size ~128 × 128):
     write O_tile to HBM
 ```
 
-每个 tile 只需要一次 HBM 往返。总内存占用从 `O(N²)` 降到 `O(N)`。Backward pass 会从 forward pass 中重新计算部分值，而不是把它们都存下来——这是另一项内存收益。
+每个 tile 只需要一次 HBM 往返。总内存占用从 $O(N^2)$ 降到 $O(N)$。Backward pass 会从 forward pass 中重新计算部分值，而不是把它们都存下来——这是另一项内存收益。
 
 **数值技巧。** Running softmax 在 tiles 之间维护 `(max, sum)`，因此最终归一化是精确的。这不是近似——Flash Attention 计算出的输出与标准 attention bit-identical（除 fp16 非结合性带来的差异外）。
 
@@ -127,8 +127,8 @@ flash-attention-memory
 
 见 `code/main.py`。我们实现：
 
-1. 一个朴素的 `O(N²)` incremental decoder。
-2. 一个 `O(N)` KV-cached decoder。
+1. 一个朴素的 $O(N^2)$ incremental decoder。
+2. 一个 $O(N)$ KV-cached decoder。
 3. 一个模拟 Flash Attention running-max algorithm 的 tiled softmax。
 
 ### 步骤 1： KV cache
@@ -175,7 +175,7 @@ def tiled_softmax_dot(q, K, V, tile=4):
 
 ### 步骤 3： 在 100-token generation 上比较 naive vs cached decoding
 
-统计 attention 操作数。Naive：`O(N²)` = 5050。Cached：`O(N)` = 100。代码会打印二者。
+统计 attention 操作数。Naive：$O(N^2)$ = 5050。Cached：$O(N)$ = 100。代码会打印二者。
 
 ## 使用它
 

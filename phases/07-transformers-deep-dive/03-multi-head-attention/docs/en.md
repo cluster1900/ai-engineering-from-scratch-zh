@@ -11,7 +11,7 @@
 
 单个 self-attention head 会计算一个 attention matrix。这个 matrix 捕捉一种关系，通常是能在当前训练信号上最小化 loss 的那一种。如果你的数据里 subject-verb agreement、co-reference、long-range discourse 和 syntactic chunking 全部纠缠在一起，单个 head 会把它们抹进一个单一的 soft-max distribution，丢掉一半信号。
 
-2017 年 Vaswani paper 给出的修复方式是：并行运行多个 attention functions，每个都有自己的 Q、K、V projections，然后把输出拼接起来。每个 head 都在维度为 `d_model / n_heads` 的更小子空间中运行。总参数量保持不变。表达能力上升。
+2017 年 Vaswani paper 给出的修复方式是：并行运行多个 attention functions，每个都有自己的 Q、K、V projections，然后把输出拼接起来。每个 head 都在维度为 $d_{\text{model}} / n_{\text{heads}}$ 的更小子空间中运行。总参数量保持不变。表达能力上升。
 
 Multi-head attention 是 2026 年所有 Transformer 的默认配置。唯一的争论在于要用*多少个* heads，以及 keys 和 values 是否共享 projections（Grouped-Query Attention、Multi-Query Attention、Multi-head Latent Attention）。
 
@@ -19,7 +19,7 @@ Multi-head attention 是 2026 年所有 Transformer 的默认配置。唯一的�
 
 ![Multi-head attention splits, attends, concatenates](../assets/multi-head-attention.svg)
 
-**Split。** 取形状为 `(N, d_model)` 的 `X`。分别 projection 到形状为 `(N, d_model)` 的 Q、K、V。Reshape 为 `(N, n_heads, d_head)`，其中 `d_head = d_model / n_heads`。Transpose 为 `(n_heads, N, d_head)`。
+**Split。** 取形状为 `(N, d_model)` 的 `X`。分别 projection 到形状为 `(N, d_model)` 的 Q、K、V。Reshape 为 `(N, n_heads, d_head)`，其中 $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$。Transpose 为 `(n_heads, N, d_head)`。
 
 **并行 Attend。** 在每个 head 内运行 scaled dot-product attention。每个 head 产生 `(N, d_head)`。这些 heads 在 Embedding 的不同子空间上运行，并且在 attention computation 本身期间不会彼此通信。
 
@@ -36,7 +36,7 @@ Multi-head attention 是 2026 年所有 Transformer 的默认配置。唯一的�
 | Grouped-query (GQA) | N | G (e.g. N/8) | Llama 2 70B, Llama 3+, Qwen 2+, Mistral |
 | Multi-head latent (MLA) | N | compressed to low-rank | DeepSeek-V2, V3 |
 
-GQA 是现代默认方案，因为它能按 `N/G` 的倍数削减 KV-cache memory，同时几乎保持完整质量。MLA 更进一步，把 K/V 压缩进 latent space，然后在计算时 project 回来——它会消耗 FLOPs，但节省更多 memory。
+GQA 是现代默认方案，因为它能按 $N/G$ 的倍数削减 KV-cache memory，同时几乎保持完整质量。MLA 更进一步，把 K/V 压缩进 latent space，然后在计算时 project 回来——它会消耗 FLOPs，但节省更多 memory。
 
 
 ```figure
@@ -130,7 +130,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 | Large (~1B) | 2048 | 16 | 128 |
 | Frontier (~70B) | 8192 | 64 | 128 |
 
-`d_head` 几乎总是落在 64 或 128。它是一个 head 能“看到”多少内容的单位。低于 32，heads 就会开始和 scaling factor `sqrt(d_head)` 较劲；高于 256，你会失去“许多小型专家”的收益。
+`d_head` 几乎总是落在 64 或 128。它是一个 head 能“看到”多少内容的单位。低于 32，heads 就会开始和 scaling factor $\sqrt{d_{\text{head}}}$ 较劲；高于 256，你会失去“许多小型专家”的收益。
 
 ## 交付它
 
@@ -146,7 +146,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Head | “一个单独的 attention circuit” | 一个维度为 `d_head = d_model / n_heads` 的 Q/K/V projection，拥有自己的 attention matrix。 |
+| Head | “一个单独的 attention circuit” | 一个维度为 $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$ 的 Q/K/V projection，拥有自己的 attention matrix。 |
 | d_head | “Head dimension” | Per-head hidden width；在 production 中几乎总是 64 或 128。 |
 | Split / combine | “Reshape tricks” | Attention 前后的 `(N, d_model) ↔ (n_heads, N, d_head)` reshape+transpose。 |
 | W_o | “Output projection” | Concatenating heads 之后应用的 `(d_model, d_model)` matrix；heads 在这里混合。 |

@@ -30,22 +30,24 @@ Hoffmann et al. (2022) 训练了一组名为 Chinchilla 的小型模型家族，
 
 来自 Chinchilla 论文，Loss 遵循：
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N` = 参数（非 Embedding）。
-- `D` = 训练 Token。
-- `α ≈ 0.34`, `β ≈ 0.28`（大致对称）。
-- `E ≈ 1.69`，不可约 Loss 上限。
-- `A ≈ 406`, `B ≈ 411`。
+- $N$ = 参数（非 Embedding）。
+- $D$ = 训练 Token。
+- $\alpha \approx 0.34$, $\beta \approx 0.28$（大致对称）。
+- $E \approx 1.69$，不可约 Loss 上限。
+- $A \approx 406$, $B \approx 411$。
 
-随着扩展，两个项会彼此权衡。在固定 compute（C = 6ND）下对 `N` 求导并求解：
+随着扩展，两个项会彼此权衡。在固定 compute（$C = 6ND$）下对 $N$ 求导并求解：
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 Compute-optimal：每个参数 20 个 Token。
@@ -91,7 +93,7 @@ scaling-laws
 
 ## 构建它
 
-见 `code/main.py`。我们实现 Chinchilla Loss 方程，并在若干 compute 预算下求解 compute-optimal `(N, D)`。
+见 `code/main.py`。我们实现 Chinchilla Loss 方程，并在若干 compute 预算下求解 compute-optimal $(N, D)$。
 
 ### 步骤 1： Chinchilla loss
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-在固定 `C = 6ND` 下，将 `L` 绘制为 `(N, D)` 上的等高线。找到最小值。
+在固定 $C = 6ND$ 下，将 $L$ 绘制为 $(N, D)$ 上的等高线。找到最小值。
 
 ### 步骤 2: 计算最优边界
 
-对于从 `1e17` 到 `1e25` FLOPs 的 compute 预算，找到在约束 `6ND = C` 下最小化 Loss 的 `(N, D)`。验证比例 `D/N ≈ 20`。
+对于从 `1e17` 到 `1e25` FLOPs 的 compute 预算，找到在约束 $6ND = C$ 下最小化 Loss 的 $(N, D)$。验证比例 $D/N \approx 20$。
 
 ### 步骤 3：过度训练成本
 
@@ -134,9 +136,9 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
 
 ## 练习
 
-1. **Easy.** 运行 `code/main.py`。打印 compute 预算 `1e20`、`1e22`、`1e24` 下的 Chinchilla-optimal `(N, D)`。与真实模型表比较。
-2. **Medium.** 实现 Hoffmann Loss-as-function-of-compute 曲线。为 compute-optimal frontier 绘制 Loss vs `log10(C)`。识别该 law 预测我们何时需要 `>10^28` FLOPs 才能让 cross-entropy 再降低 0.1。
-3. **Hard.** 在同一 dataset 上训练 5 个小模型（100K 到 10M 参数），拟合你自己的 Scaling Law。估计 `α` 和 `E`。你的指数与已发表结果匹配得如何？
+1. **Easy.** 运行 `code/main.py`。打印 compute 预算 `1e20`、`1e22`、`1e24` 下的 Chinchilla-optimal $(N, D)$。与真实模型表比较。
+2. **Medium.** 实现 Hoffmann Loss-as-function-of-compute 曲线。为 compute-optimal frontier 绘制 Loss vs `log10(C)`。识别该 law 预测我们何时需要 $>10^{28}$ FLOPs 才能让 cross-entropy 再降低 0.1。
+3. **Hard.** 在同一 dataset 上训练 5 个小模型（100K 到 10M 参数），拟合你自己的 Scaling Law。估计 $\alpha$ 和 $E$。你的指数与已发表结果匹配得如何？
 
 ## 关键术语
 
@@ -147,7 +149,7 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 

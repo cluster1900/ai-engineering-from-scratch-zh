@@ -9,7 +9,7 @@
 
 ## 问题
 
-一个 70B LLM 在 H100 上采样一个 Token 需要约 30 ms。一个 3B draft model 需要约 3 ms。如果让 3B draft 提前生成 5 个 Token，然后让 70B *只运行一次* 来 verify 这 5 个 Token，总耗时就是 `5×3 + 30 = 45 ms`，最多可接受 5 个 Token；而直线生成需要 `5×30 = 150 ms`。这就是 Speculative Decoding 的完整卖点：用少量额外 GPU memory（draft model）换取 2–4× 更低的 decode latency。
+一个 70B LLM 在 H100 上采样一个 Token 需要约 30 ms。一个 3B draft model 需要约 3 ms。如果让 3B draft 提前生成 5 个 Token，然后让 70B *只运行一次* 来 verify 这 5 个 Token，总耗时就是 $5 \times 3 + 30 = 45$ ms，最多可接受 5 个 Token；而直线生成需要 `5×30 = 150 ms`。这就是 Speculative Decoding 的完整卖点：用少量额外 GPU memory（draft model）换取 2–4× 更低的 decode latency。
 
 关键在于必须保留分布。Leviathan et al. (2023) 以及 Chen et al. 同期提出的 Speculative Sampling 保证输出序列与大模型单独生成时的分布**完全相同**。没有质量折中。只是更快。
 
@@ -26,30 +26,30 @@
 
 ### 核心算法
 
-给定一个 verifier `M_q` 和一个更便宜的 draft `M_p`：
+给定一个 verifier $M_q$ 和一个更便宜的 draft $M_p$：
 
-1. 令 `x_1..x_k` 为已经 decode 的 prefix。
-2. **Draft**：使用 `M_p` autoregressively 提议 `d_{k+1}, d_{k+2}, ..., d_{k+N}`，对应 draft probabilities 为 `p_1..p_N`。
-3. **并行 verify**：在 `x_1..x_k, d_{k+1}, ..., d_{k+N}` 上运行一次 `M_q`，得到位置 `k+1..k+N+1` 的 verifier probabilities `q_1..q_{N+1}`。
-4. **从左到右 accept/reject 每个 draft token**：对每个 `i`，以概率 `min(1, q_i(d_i) / p_i(d_i))` 接受。
-5. 在位置 `j` 第一次 rejection 时：从归一化后的 "residual" distribution `(q_j - p_j)_+` 中采样 `t_j`。`j` 之后的所有 draft 都被丢弃。
-6. 如果全部 `N` 个都被接受：从 `q_{N+1}` 采样一个额外 Token `t_{N+1}`（免费的 bonus token）。
+1. 令 $x_1 \ldots x_k$ 为已经 decode 的 prefix。
+2. **Draft**：使用 $M_p$ autoregressively 提议 $d_{k+1}, d_{k+2}, \ldots, d_{k+N}$，对应 draft probabilities 为 $p_1 \ldots p_N$。
+3. **并行 verify**：在 $x_1 \ldots x_k, d_{k+1}, \ldots, d_{k+N}$ 上运行一次 $M_q$，得到位置 $k+1 \ldots k+N+1$ 的 verifier probabilities $q_1 \ldots q_{N+1}$。
+4. **从左到右 accept/reject 每个 draft token**：对每个 $i$，以概率 $\min(1, q_i(d_i) / p_i(d_i))$ 接受。
+5. 在位置 $j$ 第一次 rejection 时：从归一化后的 "residual" distribution $(q_j - p_j)_+$ 中采样 $t_j$。$j$ 之后的所有 draft 都被丢弃。
+6. 如果全部 $N$ 个都被接受：从 $q_{N+1}$ 采样一个额外 Token $t_{N+1}$（免费的 bonus token）。
 
-residual distribution 这个技巧是让输出分布与 `M_q` 从头采样完全一致的数学洞见。
+residual distribution 这个技巧是让输出分布与 $M_q$ 从头采样完全一致的数学洞见。
 
 ### 什么决定 speedup
 
-令 `α` = 每个 draft token 的期望 acceptance rate。令 `c` = draft-to-verifier cost ratio。每一步中：
+令 $\alpha$ = 每个 draft token 的期望 acceptance rate。令 $c$ = draft-to-verifier cost ratio。每一步中：
 
 - Naive generation 每个 Token 需要 1 次 big-model call。
-- 当 `α` 很高时，Speculative 每 `(1 - α^{N+1}) / (1 - α) ≈ 1/(1-α)` 个 Token 需要 1 次 big-model call。
+- 当 $\alpha$ 很高时，Speculative 每 $(1 - \alpha^{N+1}) / (1 - \alpha) \approx 1/(1-\alpha)$ 个 Token 需要 1 次 big-model call。
 
-在 `α = 0.75` 且 `N = 5` 时，典型经验法则是：big-model call 减少 3×。Draft cost 是 5× cheap。总体 wall-clock 约下降 2.5×。
+在 $\alpha = 0.75$ 且 $N = 5$ 时，典型经验法则是：big-model call 减少 3×。Draft cost 是 5× cheap。总体 wall-clock 约下降 2.5×。
 
-**α 取决于：**
+**$\alpha$ 取决于：**
 
-- draft 对 verifier 的近似程度。同 family / 同 training data 会显著提升 α。
-- Decoding strategy。Greedy draft 对 greedy verifier：α 高。Temperature sampling：更难匹配；acceptance 下降。
+- draft 对 verifier 的近似程度。同 family / 同 training data 会显著提升 $\alpha$。
+- Decoding strategy。Greedy draft 对 greedy verifier：$\alpha$ 高。Temperature sampling：更难匹配；acceptance 下降。
 - Task type。Code 和 structured output 接受更多（更可预测）；自由形式创意写作接受更少。
 
 ### Medusa — 没有 draft model 的 draft
@@ -76,7 +76,7 @@ EAGLE-3 (2025) 加入了对候选 continuation 的 tree search。vLLM 和 SGLang
 
 ### KV cache dance
 
-Verification 会把 `N` 个 draft tokens 在一次 forward pass 中喂给 verifier。这会把 verifier 的 KV cache 扩展 `N` 项。如果某些 draft 被拒绝，你必须把 cache 回滚到已接受 prefix 的长度。
+Verification 会把 $N$ 个 draft tokens 在一次 forward pass 中喂给 verifier。这会把 verifier 的 KV cache 扩展 $N$ 项。如果某些 draft 被拒绝，你必须把 cache 回滚到已接受 prefix 的长度。
 
 生产实现（vLLM 的 `--speculative-model`、TensorRT-LLM 的 LookaheadDecoder）通过 scratch KV buffers 处理这件事。先写入，接受时再 commit。概念上不难，但细节很繁琐。
 
@@ -185,7 +185,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 **什么时候不要 spec-decode：**
 
 - 只生成 1–5 个 Token 的 single-sequence generation。Overhead 占主导。
-- 极具创意 / 高 temperature sampling（α 会下降）。
+- 极具创意 / 高 temperature sampling（$\alpha$ 会下降）。
 - Memory-constrained deployments（draft model 会增加 VRAM）。
 
 ## 交付它
@@ -195,7 +195,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 ## 练习
 
 1. **Easy。** 运行 `code/main.py`。确认在 50,000 个 Token 上，speculative token distribution 与 verifier 的 direct-sample distribution 匹配，且 chi-square p > 0.05。
-2. **Medium。** 对 `α = 0.5, 0.7, 0.85`，绘制 speedup（每次 big-model forward 的 Token 数）随 `N` 的变化。找出每个 α 的最优 `N`。（Hint：每次 verify call 的期望 Token 数 = `(1 - α^{N+1}) / (1 - α)`。）
+2. **Medium。** 对 $\alpha = 0.5, 0.7, 0.85$，绘制 speedup（每次 big-model forward 的 Token 数）随 $N$ 的变化。找出每个 $\alpha$ 的最优 $N$。（Hint：每次 verify call 的期望 Token 数 = $(1 - \alpha^{N+1}) / (1 - \alpha)$。）
 3. **Hard。** 实现一个 tiny Medusa：取 Lesson 14 的 capstone GPT，添加 3 个额外 LM heads，分别预测位置 t+2、t+3、t+4。在 tinyshakespeare 上用 joint multi-head loss 训练。与通过截断同一个模型得到的 vanilla draft 比较 acceptance rates。
 4. **Hard。** 实现 rollback：从一个 10-token prefix KV cache 开始，喂入 5 个 draft tokens，模拟在位置 3 rejection。验证下一轮迭代时你的 cache 读取结果正确匹配 "prefix + first 2 accepted drafts"。
 
@@ -205,7 +205,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 |------|-----------------|-----------------------|
 | Draft model | “便宜的那个” | 一个更小的模型，用于提出候选 Token；通常比 verifier 便宜 10–50×。 |
 | Verifier | “大的那个” | 我们要保留其分布的目标模型；每个 speculative step 运行一次。 |
-| Acceptance rate (α) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
+| Acceptance rate ($\alpha$) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
 | Residual distribution | “rejection fallback” | 归一化后的 `(q - p)_+`；rejection 时从这里采样可保留 verifier 的分布。 |
 | Bonus token | “免费的那个” | 当全部 N 个 draft 被接受时，从 verifier 的 next-step distribution 再采样一个。 |
 | Medusa | “Draft-less speculative” | verifier 上的多个 LM heads 并行预测位置 t+1..t+k。 |
