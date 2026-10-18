@@ -7,58 +7,66 @@ lesson: 30
 tags: [mcp, registry, provenance, admission, drift, rollback]
 ---
 
-Given an MCP Registry response, a verified publisher identity, artifact evidence, a live server observation, and local policy, produce an admission decision and an evidence bundle.
+根据 MCP Registry 响应、已验证的发布者身份、产物证据、在线服务器观测和本地策略，给出准入决策及证据包。
 
-## Required inputs
+<a id="required-inputs"></a>
 
-- Registry source, server record, Registry-managed metadata, and retrieval time.
-- Verified namespace and the authentication method that established it.
-- Package registry, identifier, exact version, ownership result, and calculated artifact digest.
-- Live `server/discover` result, protocol versions, capabilities, diagnostic server information, and complete tool descriptors.
-- Required capabilities, prohibited tool properties, reviewers, evidence retention, and rollback policy.
-- Previously admitted pins, current routes, quarantines, and recent health observations.
+## 必需输入
 
-## Procedure
+- 注册表来源、服务器记录、注册表管理的元数据及获取时间。
+- 已验证的命名空间，以及建立该身份的认证方式。
+- 软件包注册表、标识符、准确版本、所有权结果及计算得到的产物摘要。
+- 在线 `server/discover` 结果、协议版本、能力、诊断用服务器信息和完整工具描述符。
+- 必需能力、禁止的工具属性、审查者、证据保留期限和回滚策略。
+- 以前已准入的固定版本、当前路由、隔离状态和近期健康观测。
 
-1. Validate the Registry record shape. Require a non-empty name, version, description, and at least one package or remote. Treat the Registry schema version and live MCP protocol version as independent values.
-2. Read Registry-managed status from response-level `_meta["io.modelcontextprotocol.registry/official"].status`, not from direct `_meta.status` or the publication record. Reject automatic admission unless status is `active`.
-3. Compare the name namespace exactly with the namespace established by trusted authentication. Reject prefix lookalikes and empty slugs.
-4. Join one declared execution source to verified evidence. For a package, match registry type, identifier, exact version, and transport. For a remote-only record, match URL and transport to independently verified endpoint evidence. Require a trusted SHA-256 evidence digest for either source.
-5. Hash the canonical Registry record. Hash a provenance object that joins Registry source, server name, Registry version, record digest, selected source, and source evidence digest.
-6. Observe the live endpoint. Require an accepted protocol version, required capabilities, and complete tool descriptors. Preserve result `_meta["io.modelcontextprotocol/serverInfo"]` only for display, logs, and debugging. Never use self-reported `serverInfo`, including a direct-only alias, as admission or security authority.
-7. Normalize only semantically unordered collections. Hash the full normalized descriptor surface so a name, description, schema, annotation, or tool-set change creates drift.
-8. Apply local authorization, data, network, and review policy. Registry publication is evidence, not local approval.
-9. On approval, store an immutable pin containing record, execution-source, provenance, and toolset digests. Keep approval state separate from active routing state.
-10. Append the decision, reasons, evidence references, previous ledger hash, and current entry hash to the admission ledger. Redact credentials and sensitive arguments before evidence storage.
-11. Reconcile Registry status and live descriptors on a schedule and before activation. Quarantine and deactivate a pin when status becomes deprecated or deleted, its source evidence changes, or its live behavior differs. A quarantined pin is never a rollback target.
-12. Roll back only to a previously admitted, currently eligible, healthy, non-quarantined pin. Record route restoration as a new event. Never rewrite an old publication or admission decision.
+<a id="procedure"></a>
 
-## Hard rejects
+## 步骤
 
-- Trust derived only from a familiar display name or Registry presence.
-- `startswith` namespace checks or a namespace claimed only by the submitted record.
-- `latest`, version ranges, or package coordinates without an artifact digest.
-- Publisher fields that imitate Registry-managed status or verification.
-- Missing or malformed protocol, capability, or descriptor evidence.
-- Treating self-reported `serverInfo` as namespace, provenance, endpoint, or admission authority.
-- Silent descriptor pin updates after drift.
-- Activation of deprecated, deleted, unknown, or quarantined versions.
-- Rollback to a target with no complete admission evidence.
-- Ledger evidence containing bearer tokens, cookies, package credentials, or unnecessary tool arguments.
+1. 验证注册表记录结构。要求非空的名称、版本、描述，以及至少一个软件包或远程端点。将注册表模式版本与在线 MCP 协议版本视为独立值。
+2. 从响应级 `_meta["io.modelcontextprotocol.registry/official"].status` 读取注册表管理的状态，不从直接 `_meta.status` 或发布记录中读取。除非状态为 `active`，否则拒绝自动准入。
+3. 将名称中的命名空间与通过可信认证建立的命名空间严格比较。拒绝相似前缀和空的短名称。
+4. 将一个声明的执行来源关联到已验证证据。对于软件包，匹配注册表类型、标识符、准确版本和传输方式。对于仅含远程端点的记录，将 URL 和传输方式与独立验证的端点证据匹配。两种来源都要求可信的 SHA-256 证据摘要。
+5. 对规范化注册表记录计算哈希。对关联注册表来源、服务器名称、注册表版本、记录摘要、所选来源和来源证据摘要的来源对象计算哈希。
+6. 观测在线端点。要求接受的协议版本、必需能力和完整工具描述符。结果中的 `_meta["io.modelcontextprotocol/serverInfo"]` 仅用于展示、日志和调试。绝不将自行报告的 `serverInfo`（包括仅直接出现的别名）作为准入或安全依据。
+7. 仅规范化语义上无序的集合。对完整的规范化描述符接口计算哈希，使名称、描述、模式、注解或工具集合变化都会产生漂移。
+8. 应用本地授权、数据、网络和审查策略。注册表发布是证据，不是本地批准。
+9. 批准后，保存不可变的固定版本记录，包含记录、执行来源、来源证明和工具集摘要。将审批状态与活动路由状态分开。
+10. 将决策、原因、证据引用、前一台账哈希和当前条目哈希追加到准入台账。存储证据前对凭据和敏感参数脱敏。
+11. 按计划及在激活前核对注册表状态和在线描述符。当状态变为已弃用或已删除、来源证据改变或在线行为不同，就隔离并停用该固定版本。已隔离版本绝不能成为回滚目标。
+12. 只能回滚到以前已准入、当前仍符合条件、健康且未隔离的固定版本。将路由恢复记录为新事件。绝不改写旧发布或旧准入决策。
 
-## Produce
+<a id="hard-rejects"></a>
 
-Return these sections:
+## 必须否决
 
-1. Decision: `approve`, `reject`, or `quarantine`, with stable reason codes.
-2. Namespace Proof: verified namespace, authentication source, and exact name comparison.
-3. Publication Pin: Registry source, server name, exact version, status, schema version, and record digest.
-4. Source Pin: package coordinate and transport or remote URL and transport, ownership result reference, and source evidence digest.
-5. Runtime Pin: accepted protocol version, required capabilities, toolset digest, and optional diagnostic `serverInfo`.
-6. Provenance Join: the canonical fields and resulting provenance digest.
-7. Policy Results: every passed, failed, and not-applicable control.
-8. Ledger Event: sequence, time, event, outcome, reason codes, evidence references, previous hash, and entry hash.
-9. Reconciliation Plan: next status, artifact, discovery, descriptor, and health checks.
-10. Rollback Plan: eligible prior pin, validation steps, route change, health window, and evidence to retain.
+- 仅因熟悉的展示名称或注册表中存在记录就建立信任。
+- 使用 `startswith` 检查命名空间，或仅凭提交记录自称的命名空间。
+- 使用 `latest`、版本范围，或没有产物摘要的软件包坐标。
+- 发布者字段冒充注册表管理的状态或验证信息。
+- 协议、能力或描述符证据缺失或格式错误。
+- 将自行报告的 `serverInfo` 作为命名空间、来源、端点或准入的权威依据。
+- 漂移后静默更新固定的描述符版本。
+- 激活已弃用、已删除、未知或已隔离的版本。
+- 回滚到没有完整准入证据的目标。
+- 台账证据包含持有者令牌、Cookie、软件包凭据或非必要工具参数。
 
-End with the single missing fact that would most change the decision. If no required fact is missing, state the next scheduled drift check.
+<a id="produce"></a>
+
+## 交付内容
+
+返回以下章节：
+
+1. 决策：`approve`、`reject` 或 `quarantine`，附稳定原因码。
+2. 命名空间证明：已验证命名空间、认证来源和准确名称比较。
+3. 发布固定记录：注册表来源、服务器名称、准确版本、状态、模式版本和记录摘要。
+4. 来源固定记录：软件包坐标与传输方式，或远程 URL 与传输方式，以及所有权结果引用和来源证据摘要。
+5. 运行时固定记录：接受的协议版本、必需能力、工具集摘要，以及可选的诊断用 `serverInfo`。
+6. 来源关联：规范字段和得到的来源摘要。
+7. 策略结果：每项通过、失败和不适用的控制。
+8. 台账事件：序号、时间、事件、结果、原因码、证据引用、前一哈希和条目哈希。
+9. 核对计划：下一次状态、产物、发现、描述符和健康检查。
+10. 回滚方案：符合条件的旧固定版本、验证步骤、路由变更、健康观察窗口和需保留的证据。
+
+最后指出最可能改变决策的一项缺失事实。如果没有缺失的必需事实，说明下一次计划的漂移检查。
