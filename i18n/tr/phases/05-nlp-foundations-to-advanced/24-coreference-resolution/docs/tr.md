@@ -34,7 +34,7 @@ Neden 2026 yılında önemli:
 **Architectures.**
 
 1. **Rule-based (Hobbs, 1978).**基于语法树的代词解析,使用语法规则──很好的基线──在代词上意外地难以超越──
-2. **Mention-pair classifier.**Her bir referans için, bunların daha önemli olup olmadığını tahmin etmek için geçici kapanış yoluyla 聚类──2016年前的标准做法──
+2. **Mention-pair classifier.**Her bir anlama .$(m_i, m_j)$, pre测 them are more core── geçici kapanış yoluyla 聚类──2016年前的标准做法──
 3. **Mention-ranking.**Her bir anket için, 排序候选前史 (→ 無前史) ︎) ︎
 4. **Span-based end-to-end (Lee et al., 2017).**Transformer encoder──枚举所有长度上限内的候选 span──预测提到得点──为每个 span 预测前兆-概率──贪心聚类──现代默认方案──
 5. **Generative (2024+).**Bir LLM:Bu metindeki her isim ve öncesini listele. 在简单案例上效果不错,但在长文档和少见引用上会吃力──

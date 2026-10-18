@@ -21,9 +21,11 @@ Bu ders, ZERO'dan oluşturulur, sonra TF-IDF oluşturulur. Sonra küçük bir ö
 
 **TF-IDF**Bir sözcük, her bir makalede ortaya çıkan sözcüklerin bilgisi miktarı yüksek değildir, bu yüzden onun ağırlığını düşürür.
 
-```
-TF-IDF(w, d) = TF(w, d) * IDF(w)
-             = count(w in d) / |d| * log(N / df(w))
+```math
+\begin{aligned}
+\text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
+\end{aligned}
 ```
 
 İçlerinden `TF`Dosyaların içinde term frekansı,`df`Bu ifadeyi içeren bir belge sıklığıdır.`N`Bu da bir kayıt.`log`会让高频常见词的权重保持有界──

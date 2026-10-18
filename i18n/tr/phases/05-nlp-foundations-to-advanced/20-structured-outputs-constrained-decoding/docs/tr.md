@@ -29,7 +29,7 @@ Bu ders, üç kişi için bir intuition oluşturmak için, ve hangi zaman kullan
 
 2026 yılındaki gerçekleşme:
 
-- **Outlines。**JSON Şema veya regex 编译为有限状态机──每个代币都能 O(1) 查询 valid-next-token──基于FSM,所以递归式方案需要平坦化──
+- **Outlines。**JSON Şema veya Regex için bir sonlu devlet makinesi olarak düzenlenir.$O(1)$查询 valid-next-token── FSM'ye dayalı, bu yüzden geri dönüşlü şemalar  düzeltme gerektirir──
 - **XGrammar / llguidance。**Bağlantısuz dilbilgisi motorları── İşleme rekürsif JSON Şema──解码开销接近零──OpenAI 2025'te yapılandırılmış çıkışında 实现中提到了 llguidance──
 - **vLLM guided decoding。**経由概要、XGrammar veya lm biçim uygulayıcı 后端内置 `guided_json`- Evet.`guided_regex`- Evet.`guided_choice`- Evet.`guided_grammar`- Evet.
 - **Instructor。**Pydantic'in istedikleri LLM kapsamına dayanıyor.
@@ -211,7 +211,7 @@ tags: [nlp, llm, structured-output]
 |------|------------|----------|
 | Constrained decoding | 强制有效输出 | 在每个生成步骤 mask invalid-token logits。 |
 | Logit processor | 执行约束的东西 | 函数：`(logits, state) -> masked_logits`。 |
-| FSM | Finite-state machine | 编译后的 grammar 表示；O(1) valid-next-token 查询。 |
+| FSM | Finite-state machine | 编译后的 grammar 表示；$O(1)$ valid-next-token 查询。 |
 | CFG | Context-free grammar | 能处理 recursion 的 grammar；比 FSM 更慢但表达力更强。 |
 | Schema field order | 它重要吗？ | 重要，first field 会形成承诺；始终把 reasoning 放在 answer 之前。 |
 | Guided decoding | vLLM 对它的称呼 | 同一概念，集成进 inference server。 |

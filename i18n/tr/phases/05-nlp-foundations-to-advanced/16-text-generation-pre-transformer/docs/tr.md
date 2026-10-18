@@ -21,8 +21,8 @@ Gerçek anlamlı bir soru, görülmemiş n-gramları nasıl ele alacağıdır. �
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`❖ Düzeltme`n`(genellikle 3,4 gram kullanılır 4)
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。**任何训练中没有见过的n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有见过的 n-gram 没有过的 n-gram 没有过的 n-graden 没有过的 n-graden 没有过的 n-graden 没有过的 n-graden 没有了 没有过的 n-graden 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有了 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 没有 了 了 没有 了 了 没有 没有 没有 没有 了 了 了 没有 没有 了 没有 没有 了 了 了 了 了
@@ -40,8 +40,8 @@ Kneser-Ney'in洞见很深──"San Francisco" is常见 bigram──"San Francis
 
 **评估：perplexity。**Bu testler üzerinde her kelime ortalama negatif log- olasılık göstergesi vardır.
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 

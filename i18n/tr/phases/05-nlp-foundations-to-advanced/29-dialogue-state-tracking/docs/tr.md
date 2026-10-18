@@ -148,7 +148,7 @@ def is_correction(utterance):
 
 ## 陷
 
-- **Full-history regeneration cost。**让 LLM 每一轮都重生状态,总 Token 成本是 O(n2);;限制历史或总结较早转点;;
+- **Full-history regeneration cost。**让 LLM 每一轮都重生状态,总代币 成本是 $O(n^2)$❖ kısıtlama tarih veya genel sonucu daha erken dönüşler
 - **Schema drift。**Yeni yuvalar eklenir. Eski eğitim verilerini bozacak.
 - **Case sensitivity。**İtalyan vs İtalyan vs İtalyan                                                                                                                                                                                                                                                           
 - **Implicit inheritance。**Eğer kullanıcı önceden 4 kişi için  belirlemişse, yeni farklı zaman istekleri boş insanlar için  yapılmamalıdır.
