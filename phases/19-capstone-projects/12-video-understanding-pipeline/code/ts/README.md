@@ -1,8 +1,10 @@
-# Lesson 12 - Video Understanding Pipeline（TypeScript UI）
+<a id="lesson-12---video-understanding-pipelinetypescript-ui"></a>
 
-capstone 的 TypeScript 部分。Python 侧（`code/main.py`）负责
-multi-vector index 和 temporal grounding。这个项目交付 dashboard
-部分：一个覆盖四个 pipeline stages（chunk、embed、index、qa）的 Hono app。
+# 第 12 课：视频理解流水线（TypeScript 界面）
+
+综合项目的 TypeScript 部分。Python 侧（`code/main.py`）负责
+多向量索引和时间定位。这里交付的是仪表盘：
+一个覆盖流水线四个阶段（chunk、embed、index、qa）的 Hono 应用。
 
 ## 布局
 
