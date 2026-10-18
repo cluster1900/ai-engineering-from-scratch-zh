@@ -9,9 +9,9 @@
 
 ## 问题
 
-DDPM 的反向过程是一个从 `N(0, I)` 回到 data distribution 的 1000 步随机游走。DDIM 将其压缩为 20-50 个确定性步骤。你想要更少的步骤，理想情况下只要一步。阻碍在于求解反向过程的 ODE 是 stiff 的；路径是弯曲的。
+DDPM 的反向过程是一个从 $\mathcal{N}(0, I)$ 回到 data distribution 的 1000 步随机游走。DDIM 将其压缩为 20-50 个确定性步骤。你想要更少的步骤，理想情况下只要一步。阻碍在于求解反向过程的 ODE 是 stiff 的；路径是弯曲的。
 
-如果你能训练 model，使得从噪声到 data 的路径是一条*直线*，那么从 `t=1` 到 `t=0` 的单个 Euler step 就能工作。Flow matching 直接构建这一点：定义从 `x_1 ∼ N(0, I)` 到 `x_0 ∼ data` 的直线插值，训练 Vector field `v_θ(x, t)` 去匹配它的时间导数，并在 inference 时积分。
+如果你能训练 model，使得从噪声到 data 的路径是一条*直线*，那么从 $t=1$ 到 $t=0$ 的单个 Euler step 就能工作。Flow matching 直接构建这一点：定义从 $x_1 \sim \mathcal{N}(0, I)$ 到 $x_0 \sim \text{data}$ 的直线插值，训练 Vector field $v_\theta(x, t)$ 去匹配它的时间导数，并在 inference 时积分。
 
 Rectified flow（Liu 2022）更进一步：用 reflow procedure 迭代地拉直路径，生成一个逐渐更接近线性的 ODE。经过两次 reflow 迭代后，2-step sampler 可以匹配 50-step DDPM 的质量。
 
@@ -23,41 +23,41 @@ Rectified flow（Liu 2022）更进一步：用 reflow procedure 迭代地拉直�
 
 定义：
 
-```
-x_t = t · x_1 + (1 - t) · x_0,   t ∈ [0, 1]
-```
-
-其中 `x_0 ~ data`，`x_1 ~ N(0, I)`。沿这条直线的时间导数是常数：
-
-```
-dx_t / dt = x_1 - x_0
+```math
+x_t = t \cdot x_1 + (1 - t) \cdot x_0, \quad t \in [0, 1]
 ```
 
-定义一个 Neural Vector field `v_θ(x_t, t)`，并训练它匹配这个导数：
+其中 $x_0 \sim \text{data}$，$x_1 \sim \mathcal{N}(0, I)$。沿这条直线的时间导数是常数：
 
-```
-L = E_{x_0, x_1, t} || v_θ(x_t, t) - (x_1 - x_0) ||²
+```math
+\frac{dx_t}{dt} = x_1 - x_0
 ```
 
-这就是 **conditional flow matching** Loss（Lipman 2023）。训练不需要 simulation：你从不展开 ODE。只需采样 `(x_0, x_1, t)` 并做 Regression。
+定义一个 Neural Vector field $v_\theta(x_t, t)$，并训练它匹配这个导数：
+
+```math
+L = \mathbb{E}_{x_0, x_1, t} \left\lVert v_\theta(x_t, t) - (x_1 - x_0) \right\rVert^2
+```
+
+这就是 **conditional flow matching** Loss（Lipman 2023）。训练不需要 simulation：你从不展开 ODE。只需采样 $(x_0, x_1, t)$ 并做 Regression。
 
 ### 采样
 
 在 inference 时，沿时间*反向*积分学到的 Vector field：
 
-```
-x_{t-Δt} = x_t - Δt · v_θ(x_t, t)
+```math
+x_{t-\Delta t} = x_t - \Delta t \cdot v_\theta(x_t, t)
 ```
 
-从 `x_1 ~ N(0, I)` 开始，用 Euler step 一路降到 `t=0`。
+从 $x_1 \sim \mathcal{N}(0, I)$ 开始，用 Euler step 一路降到 $t=0$。
 
 ### Rectified flow（Liu 2022）
 
-直线 flow 可以工作，但学到的路径*实际上并不直*，因为许多 `x_0` 可以映射到同一个 `x_1`。Rectified flow 的 reflow step：
+直线 flow 可以工作，但学到的路径*实际上并不直*，因为许多 $x_0$ 可以映射到同一个 $x_1$。Rectified flow 的 reflow step：
 
-1. 用随机配对训练 flow model v_1。
-2. 通过将 v_1 从 `x_1` 积分到其落点 `x_0`，采样 N 对 `(x_1, x_0)`。
-3. 在这些配对样本上训练 v_2。因为这些配对现在是 “ODE-matched” 的，它们之间的直线插值确实更平坦。
+1. 用随机配对训练 flow model $v_1$。
+2. 通过将 $v_1$ 从 $x_1$ 积分到其落点 $x_0$，采样 N 对 $(x_1, x_0)$。
+3. 在这些配对样本上训练 $v_2$。因为这些配对现在是 “ODE-matched” 的，它们之间的直线插值确实更平坦。
 4. 重复。
 
 实践中，2 次 reflow 迭代就能接近线性，从而实现 2-4 step inference。SDXL-Turbo、SD3-Turbo、LCM 都是从 flow matching model 蒸馏而来的。
@@ -72,7 +72,7 @@ x_{t-Δt} = x_t - Δt · v_θ(x_t, t)
 
 ## Flow matching vs DDPM：精确联系
 
-带 Gaussian-conditional path 的 flow matching 就是使用*特定噪声 schedule* 的 Diffusion。选择 `x_t = α(t) x_0 + σ(t) x_1` schedule，flow matching 就会恢复 Stratonovich-reformulated diffusion，其中 `v = α'·x_0 - σ'·x_1`。对于 Gaussian paths，两者在代数上等价。
+带 Gaussian-conditional path 的 flow matching 就是使用*特定噪声 schedule* 的 Diffusion。选择 $x_t = \alpha(t) x_0 + \sigma(t) x_1$ schedule，flow matching 就会恢复 Stratonovich-reformulated diffusion，其中 $v = \alpha' \cdot x_0 - \sigma' \cdot x_1$。对于 Gaussian paths，两者在代数上等价。
 
 Flow matching 增加的是：目标的*清晰性*（普通 velocity）、更干净的 Loss，以及尝试 non-Gaussian interpolants 的自由度。
 
@@ -83,7 +83,7 @@ normalizing-flow
 
 ## 构建它
 
-`code/main.py` 在双峰 Gaussian mixture 上实现 1-D flow matching。Vector field `v_θ(x, t)` 是一个小型 MLP，使用直线目标训练。在 inference 时，分别用 1、2、4 和 20 个 Euler steps 积分，并比较样本质量。
+`code/main.py` 在双峰 Gaussian mixture 上实现 1-D flow matching。Vector field $v_\theta(x, t)$ 是一个小型 MLP，使用直线目标训练。在 inference 时，分别用 1、2、4 和 20 个 Euler steps 积分，并比较样本质量。
 
 ### 步骤 1：training loss
 
@@ -116,10 +116,10 @@ def sample(net, num_steps):
 
 ## 易踩坑
 
-- **Time parameterization。** Flow matching 使用 `t ∈ [0, 1]`，其中 `t=0` 是 data，`t=1` 是噪声。DDPM 使用 `t ∈ [0, T]`，其中 `t=0` 是 data，`t=T` 是噪声。方向相同，尺度不同。论文经常把这个写错。
+- **Time parameterization。** Flow matching 使用 $t \in [0, 1]$，其中 $t=0$ 是 data，$t=1$ 是噪声。DDPM 使用 $t \in [0, T]$，其中 $t=0$ 是 data，$t=T$ 是噪声。方向相同，尺度不同。论文经常把这个写错。
 - **Schedule choice。** Rectified flow 的直线是 “the” flow-matching schedule，但你也可以使用 cosine 或 logit-normal t-sampling（SD3 这么做）来获得更好的尺度覆盖。
 - **Reflow cost。** 为 reflow 生成配对数据集相当于每个样本跑一次完整 inference。只有当你真的需要 1-2 step inference 时才做 reflow。
-- **Classifier-free guidance 仍然适用。** 只需在线性组合中把 ε 换成 v：`v_cfg = (1+w) v_cond - w v_uncond`。
+- **Classifier-free guidance 仍然适用。** 只需在线性组合中把 $\epsilon$ 换成 $v$：$v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$。
 
 ## 使用它
 
@@ -141,20 +141,20 @@ def sample(net, num_steps):
 ## 练习
 
 1. **Easy。** 运行 `code/main.py`，比较 1-step 与 20-step MSE 相对于真实 data distribution 的表现。
-2. **Medium。** 从 uniform `t` sampling 切换到 logit-normal（将采样集中在 mid-t）。model 质量是否提升？
-3. **Hard。** 实现一次 reflow 迭代：通过积分第一个 model 生成 paired (x_0, x_1)，在这些 pairs 上训练第二个 model，并比较 1-step sample quality。
+2. **Medium。** 从 uniform $t$ sampling 切换到 logit-normal（将采样集中在 mid-t）。model 质量是否提升？
+3. **Hard。** 实现一次 reflow 迭代：通过积分第一个 model 生成 paired $(x_0, x_1)$，在这些 pairs 上训练第二个 model，并比较 1-step sample quality。
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Flow matching | “Straight-line diffusion” | 训练 `v_θ(x, t)`，使其沿 interpolant 匹配 `x_1 - x_0`。 |
+| Flow matching | “Straight-line diffusion” | 训练 $v_\theta(x, t)$，使其沿 interpolant 匹配 $x_1 - x_0$。 |
 | Rectified flow | “Reflow” | 拉直已学习 flows 的迭代过程。 |
-| Velocity field | “v_θ” | model 的输出，即移动 `x_t` 的方向。 |
-| Straight-line interpolant | “The path” | `x_t = (1-t)·x_0 + t·x_1`；目标导数很简单。 |
+| Velocity field | “v_θ” | model 的输出，即移动 $x_t$ 的方向。 |
+| Straight-line interpolant | “The path” | $x_t = (1-t) \cdot x_0 + t \cdot x_1$；目标导数很简单。 |
 | Euler sampler | “1st order ODE solver” | 最简单的 integrator；当路径较直时效果很好。 |
-| Logit-normal t | “SD3 sampling” | 将 `t` sampling 集中到 gradients 最强的中间值附近。 |
-| Consistency distillation | “1-step sampler” | 训练 student 将任意 `x_t` 直接映射到 `x_0`。 |
-| CFG with velocity | “v-CFG” | `v_cfg = (1+w) v_cond - w v_uncond`；同样技巧，新的变量。 |
+| Logit-normal t | “SD3 sampling” | 将 $t$ sampling 集中到 gradients 最强的中间值附近。 |
+| Consistency distillation | “1-step sampler” | 训练 student 将任意 $x_t$ 直接映射到 $x_0$。 |
+| CFG with velocity | “v-CFG” | $v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$；同样技巧，新的变量。 |
 
 ## Production note：Flux.1-schnell 是最快形态的 flow matching
 
