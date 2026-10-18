@@ -37,13 +37,13 @@
 - 记忆:32 个层输入(小) 对比32 *(每层激活量)
 - 额外计算:每段额外 1 次前进,也就是总前进FLOP 增加了约33% ((因为后退是前进的2x,完整步骤从1 + 2 = 3 个单位变为1 + 1 + 2 = 4 个单位) 
 
-这是最初的陈等人2016年的方案:每`sqrt(L)`层放一个检查点,以平衡记忆和计算.
+这是最初的陈等人2016年的方案:每`sqrt(L)`层放一个检查点,以平衡记忆和计算.$L=64$只有8个检查站.
 
 ### 选择性检查 (科尔蒂坎蒂 2022)
 
 不是所有激活值的成本都一样.`B*L*L*heads`,并随序列长度 *二次* 增长──FFN隐藏激活 是 `B*L*4d`对于长序列,软max 占主导地位.
 
-选择性检查会保留存储成本低的激活值,只重新计算昂贵的部分,注意力.
+选择性检查会保留存储成本低的激活值,只重新计算昂贵的部分,注意力.$O(L^2)$记忆
 
 特龙核心将实现其作为选择性激活重新计算.
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174)--最初的形式化梯度检查论文

@@ -49,8 +49,8 @@
 
 层规则将减去平均值,除以STD,缩放并平移.
 
-```
-RMSNorm(x) = x / sqrt(mean(x^2) + eps) * gamma
+```math
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 没有平均值消除──没有偏见──每个代币少一次 matmul── Zhang and Sennrich (2019) 认为它在机器翻译上可以匹配LayerNorm,同时快 10%──所有现代开放模型都使用它──
@@ -75,8 +75,8 @@ score = q_rotated . k_rotated
 
  GPT-2 的 MLP 是`x -> gelu(xW1 + b1) -> (...)W2 + b2`〔SwiGLU〕Shazeer 2020) 用关闭产品 替换激活:
 
-```
-SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
+```math
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 两个并行投影,而不是一个,由Swiss激活 进行门.实证上,它在每参数的困难上更强.Llama 2 采用它,然后大家都跟进.MLP的隐藏大小通常会设置让总参数匹配原始密集 MLP:如果 GPT-2 使用`ff_dim = 4 * hidden`快速使用`ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`,我知道.
@@ -87,7 +87,7 @@ SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
 
 **Multi-Query Attention (MQA, Shazeer 2019)**在所有头脑之间共享一个K和一个V──将KV缓存按数_头数缩小,在典型模型上就是12x到32x的下降──精度在困难基准上会略有下降──
 
-**Grouped-Query Attention (GQA, Ainslie et al. 2023)**是中间方案:G组 Q头 共享一个K 和一个V──Llama 3 8B 使用GQA,包含32个Q头和8个KV头(G=8),所以相比较完整的MHA,KV缓存缩小4x──
+**Grouped-Query Attention (GQA, Ainslie et al. 2023)**是中间方案:$G$组 Q头 共享一个K 和一个V──Llama 3 8B 使用GQA,包含32个Q头和8个KV头($G=8$现在,我们已经开始了.
 
 **Multi-Head Latent Attention (MLA, DeepSeek 2024)**将K 和 V 压缩到共享的低级潜伏中,再按头投影回去. 它进一步降低了KV缓存,同时保留了每个头的表达能力.
 
@@ -151,6 +151,7 @@ graph LR
 | Qwen 2.5 72B | 2024 | 72B | 72B | RMSNorm | SwiGLU | RoPE (YaRN) | GQA (64/8) | no | 128k |
 | DeepSeek V2 236B | 2024 | 236B | 21B | RMSNorm | SwiGLU | RoPE | MLA | yes (160 experts, top-6) | 128k |
 | DeepSeek V3 | 2024 | 671B | 37B | RMSNorm | SwiGLU | RoPE | MLA | yes (256 experts, top-8) | 128k |
+| Spark-X2.5 4B | 2026 | 4.1B | 4.1B | RMSNorm | GeGLU | RoPE + sliding (3:1) | GQA (16/4)，门控输出 | 否 | 1M |
 
 扫描这些列. RMSNorm是通用的. SwiGLU 或其GGLU 近亲是通用的. RoPE是通用的.
 
@@ -173,6 +174,11 @@ graph LR
 ```
 
 每个段落都应对你已经实现的东西.
+较新的配置增加了一些将改变计算方式的字段,因此计算器将在这些字段存在时读取它们:
+
+- `head_dim`没有什么比较.`hidden_size / num_attention_heads`时,需要显式设置. 盖玛2 9B的隐藏为3584,有16个头,但`head_dim`为256,因此它的Q投影是3584 x 4096,而不是方阵.
+- `tie_word_embeddings`                                                                                                                                                                                                                                                              
+- `layer_types`和 `sliding_window`哪些层只能在最近的W 个代币中看待完整的文本.
 
 - `hidden_size`:嵌入维度
 - `intermediate_size`,我很高兴看到你能看到我的照片.
@@ -209,6 +215,15 @@ kv_cache = 2 * num_layers * num_kv_heads * head_dim * max_seq_len * bytes_per_el
 
 8B重量在BF16中是16GB──单个128k序列的KV缓存比重量还大──这就是推动GQA、MLA和KV缓存量化研究的内存压力──
 
+上述公式假设每层都缓存完整的序列――滑动窗口层始终只需要最近的W 个代币,因此对于混合型模型,需要逐层求和:
+
+```text
+kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
+           * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
+```
+
+光X2.5 4B 每一个全重视层搭配三个滑窗层$W = 512$):36层中有9个全层 和27个滑层. 在1M标记下,使用BF16时,每个序列需要约38.7GB(36 GiB) ⋅如果所有36层都缓存完整的环境,则需要154.6GB(144 GiB) ・全层承担了几乎全部开销,因此查看长文本模型时,应首先关注全层与滑层的比例.
+
 ### 每个模特都会赢得
 
 - **单张 80GB GPU，无 MoE**子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子
@@ -216,6 +231,7 @@ kv_cache = 2 * num_layers * num_kv_heads * head_dim * max_seq_len * bytes_per_el
 - **最大的 open capability，可接受 MoE 复杂度**查V3、混合8x22B──每一个活跃的FLOP的功能 最佳──
 - **Long-context 需求**通过ROPE扩展 达到128k) 深度搜索
 - **Low-latency serving**低长文本计算)
+- **较小内存预算下的长上下文**只有四分之一的层承担完整的环境的开销.
 
 
 ```figure
@@ -234,12 +250,16 @@ config = {
 }
 ```
 
-脚本会逐字段遍历架构,计算嵌入,注意,带 GQA 减少,MLP 带 SwiGLU 扩展,层规范和头的参数.
+脚本会逐字段遍历架构,计算嵌入,注意,带 GQA 减少,并配置 设置时使用显式`head_dim`并且将根据给定的文本长度按层计算KV缓存,将在各自窗户内限制滑动窗口层的缓存,并打印总结――
+
+对于密集型号,总参数与公开参数完全一致:Llama 3 8B为 8,030,261,248,Gemma 2 9B为 9,241,705,984,Spark-X2.5 4B为 4,112,079,360。Qwen 2.5 72B 相差 819,200,这也是练习1的内容──
 
 实现见`code/main.py`,我知道.
 
 ## 使用它
 运行计算器,使用脚本中捆绑的Llama 3 8B、Mistral 7B、Mixtral 8x7B 和 DeepSeek V3配置──比较参数分解──注意MoE模型的总参数远超密集型号,但活跃参数数数往往更小──注意DeepSeek V3的KV缓存虽然总参数更多,但却小于Llama 3 405B的KV缓存──这就是MLA的效果──
+
+接下来比较Gemma 2 9B 和 Spark-X2.5 4B──对于这两个模型,脚本都会打印实际需要的KV缓存,以及假如所有层都是充分关注的时需要的KV缓存──Gemma 2 在8k背景下下按:1:1 交换使用两类层,因此节省幅度不大──Spark-X2.5 在1M背景下下下采用 3:1 比例和512代币窗口,因此缓存需求缩小到四分之一──
 
 然后插入您本地任意模型的配置,阅读简介,并判断它是否适合您的GPU.
 
@@ -268,7 +288,7 @@ config = {
 | MoE | “Sparse experts” | Mixture of Experts：每个 block 有 N 个 MLPs，router 为每个 Token 选择 top-k -- 巨大的 total params，较小的 active params |
 | Top-k routing | “每个 Token 选择 k 个 experts” | Router 为每个 expert 计算分数，并激活最高的 k 个 -- 典型 k 从 2（Mixtral）到 8（DeepSeek） |
 | YaRN | “拉伸 RoPE” | Yet another RoPE extension -- 通过插值 rotary angles，在 inference 时将 context 从 8k 扩展到 128k+ |
-| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 W 个 Tokens -- 将 attention cost 限制为每 Token O(W)，用于 Gemma 2 和早期 Mistral |
+| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 $W$ 个 Tokens -- 将 attention cost 限制为每 Token $O(W)$，用于 Gemma 2 和早期 Mistral |
 | Active params | “每个 Token 实际运行的部分” | 对于 MoE models，指每个 Token 会经历 forward pass 的参数量（远小于 total params）-- 决定 per-token FLOPs |
 
 ## 延伸阅读

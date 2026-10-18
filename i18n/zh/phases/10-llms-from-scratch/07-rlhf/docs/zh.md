@@ -77,8 +77,8 @@ graph TD
 
 损失函数 使用对式偏好的布拉德利-特里模型:
 
-```
-loss = -log(sigmoid(reward(preferred) - reward(rejected)))
+```math
+\text{loss} = -\log\big(\mathop{\mathrm{sigmoid}}(\text{reward}(\text{preferred}) - \text{reward}(\text{rejected}))\big)
 ```
 
 这是关键公式.`sigmoid(reward(A) - reward(B))`给出答案 A 相比答案 B 更受偏好的概率――这个损失将推动奖励模式给偏好的答案 分配更高分数――
@@ -93,8 +93,8 @@ loss = -log(sigmoid(reward(preferred) - reward(rejected)))
 
 目标:
 
-```
-maximize: E[R(prompt, response)] - beta * KL(policy || reference)
+```math
+\text{maximize:} \quad \mathbb{E}[R(\text{prompt}, \text{response})] - \beta \cdot \mathrm{KL}(\text{policy} \,\|\, \text{reference})
 ```
 
 第一个推动模型产生高奖励的响应. 第二个:
@@ -107,7 +107,7 @@ maximize: E[R(prompt, response)] - beta * KL(policy || reference)
 
 卡洛特罚款表示:你可以改进,但不能变成一个完全不同的模型――要接近SFT版本,因为它已经相当合理――偏离太远时,卡洛特成本会压奖励――
 
-**InstructGPT numbers:**采用lr=1.5e-5、KL系数beta=0.02、256K集) 快速响应对),并且每个批量做了4个PPO时代――整个RLHF管道在GPU集群上需要几天时间――
+**InstructGPT numbers:**升率使用 lr=1.5e-5、KL系数$\beta=0.02$、256K集 ((即时响应对),并且每个批量做了4个PPO时代──整个RLHF管道在GPU集群上需要几天时间──
 
 ```mermaid
 graph LR
@@ -130,12 +130,14 @@ graph LR
 
 ### 详解 项目目标
 
-采用切断的替代目标以防止过大的更新──新政策与旧政策概率之间的比率将被切断到 [1 - , 1 + ] 范围,其中通常是0.2──
+为了防止过度更新,PPO使用削替代目标 为了防止过度更新. 新政策与旧政策之间的概率比例将被削减.$[1 - \epsilon, 1 + \epsilon]$范围,其中$\epsilon$通常是0.2
 
-```
-ratio = pi_new(action | state) / pi_old(action | state)
-clipped_ratio = clip(ratio, 1 - epsilon, 1 + epsilon)
-loss = -min(ratio * advantage, clipped_ratio * advantage)
+```math
+\begin{aligned}
+\text{ratio} &= \pi_{\text{new}}(\text{action} \mid \text{state}) / \pi_{\text{old}}(\text{action} \mid \text{state}) \\
+\text{clipped\_ratio} &= \mathop{\mathrm{clip}}(\text{ratio}, 1 - \epsilon, 1 + \epsilon) \\
+\text{loss} &= -\min(\text{ratio} \cdot \text{advantage}, \text{clipped\_ratio} \cdot \text{advantage})
+\end{aligned}
 ```
 
 优势功能 预期质量相比的预期反应很少.
@@ -600,19 +602,19 @@ if __name__ == "__main__":
 
 3. 模拟奖励黑客――创建一个给长响应高分的奖励模型(奖励 =  (回应) / 100) ⋅使用这个缺陷的奖励模型 运行PPO,观察政策模型 生成越来越长、越来越重复的输出――然后添加0.1的 KL罚款,并展示它会防止这种退化行为――
 
-4. 实现多目标奖励――训练两个奖励模式:一个用于帮助,另一个用于简洁――将它们组合为R = 0.7 *R_helpful + 0.3 *R_concise――展示组合目标会产生既有用又简洁的响应,避免单一的帮助奖励 带来的词语陷――
+4. 实现多目标的奖励――训练两个奖励模式:一个用于帮助,另一个用于简洁――将它们组合为$R = 0.7 \cdot R_{\text{helpful}} + 0.3 \cdot R_{\text{concise}}$展示组合目标会产生既有用又简洁的响应,避免单一的帮助奖励 带来的词语陷.
 
-5. 比较不同的KL系数──分别使用beta=0.001(过低,奖励黑客)、beta=0.02(标准) 和beta=0.5(过高,无法学习) 运行PPO──绘制每种设置的奖励曲线 和KL曲线──beta=0.02 的运行应表现出稳定的奖励 提升,并且KL有界点──
+5. 比较不同KL系数──分别用$\beta=0.001$钱的钱.$\beta=0.02$标准和$\beta=0.5$运行PPO──绘制每种设置的奖励曲线和KL曲线──$\beta=0.02$运行应表现出稳定的奖励提升,并且KL有界.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | RLHF | “Training with human feedback” | Reinforcement Learning from Human Feedback：一个三阶段 pipeline（SFT、reward model、PPO），使用人类偏好信号优化 language model 输出 |
 | Reward model | “A model that scores responses” | 一个带 scalar output head 的 Transformer，使用 Bradley-Terry loss 在 pairwise human preferences 上训练 |
-| Bradley-Terry | “The comparison model” | 一种概率模型，其中 P(A > B) = sigmoid(score(A) - score(B))，可将 pairwise preferences 转换为一致的 scoring function |
+| Bradley-Terry | “The comparison model” | 一种概率模型，其中 $P(A > B) = \mathop{\mathrm{sigmoid}}(\text{score}(A) - \text{score}(B))$，可将 pairwise preferences 转换为一致的 scoring function |
 | PPO | “The RL algorithm” | Proximal Policy Optimization：更新 policy 以最大化 reward，同时裁剪更新幅度以防止不稳定 |
 | KL divergence | “How different two distributions are” | 衡量 policy model 的 Token distribution 与 reference model 之间差异的指标，用作 penalty 来防止 reward hacking |
-| KL penalty | “The leash on the model” | 从 reward signal 中减去的 Beta * KL(policy \|\| reference)，防止 policy 偏离 SFT checkpoint 太远 |
+| KL penalty | “The leash on the model” | 从 reward signal 中减去的 $\beta \cdot \mathrm{KL}(\text{policy} \Vert \text{reference})$，防止 policy 偏离 SFT checkpoint 太远 |
 | Reward hacking | “Gaming the reward” | policy 通过利用 reward model 的弱点找到退化的高 reward 输出，而不是真正改进 |
 | Preference pair | “Which is better, A or B?” | 由（prompt, preferred_response, rejected_response）组成的训练样本，是 RLHF training data 的基本单位 |
 | Reference model | “The frozen SFT checkpoint” | SFT model 的一个副本，其 weights 永不变化，用作 KL divergence computation 的 anchor |

@@ -28,8 +28,8 @@
 
 对于查询`q`和钥匙`K = [k_1, ..., k_N]`关注权重是:
 
-```
-w_i = exp(q . k_i / sqrt(d)) / sum_j exp(q . k_j / sqrt(d))
+```math
+w_i = \frac{\exp(q \cdot k_i / \sqrt{d})}{\sum_j \exp(q \cdot k_j / \sqrt{d})}
 ```
 
 没有任何东西`w_i`如果是零.`k_i`与`q`完全无关,分数`q . k_i`也不是零波动,它会围绕零波动,方差为`||q||^2 / d`经过软max正常化后,每个无关代币仍将向加权和贡献`O(1/N)`△无关 标志的总贡献是 `O((N-1)/N) = O(1)`这不是一个小量.
@@ -38,17 +38,19 @@ w_i = exp(q . k_i / sqrt(d)) / sum_j exp(q . k_j / sqrt(d))
 
 ### 差异性思路
 
-将每个头的Q和K投影分成两部分:Q = (Q_1,Q_2),K = (K_1,K_2);;计算两个注意地图:
+将每个头的Q和K预测分成两个部分:$Q = (Q_1, Q_2)$没有任何$K = (K_1, K_2)$△计算两个注意力地图:
 
-```
-A_1 = softmax(Q_1 K_1^T / sqrt(d))
-A_2 = softmax(Q_2 K_2^T / sqrt(d))
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d})
+\end{aligned}
 ```
 
 输出:
 
-```
-DiffAttn = (A_1 - lambda * A_2) V
+```math
+\mathop{\mathrm{DiffAttn}} = (A_1 - \lambda \cdot A_2) V
 ```
 
 相减会抵消两个地图 共享任何噪音分布. 如果两个地图上127万个无关标志上有近似均重权 (随机初始化确实如此),这些部分将相互抵消.
@@ -63,7 +65,7 @@ DiffAttn = (A_1 - lambda * A_2) V
 
 V1 保持与基线变压器相等的参数――为了让每个头有两个查询,它将头维度减半――这牺牲了头的表达能力,更痛苦的是,还让每个头的值缓存减半――解码 每一步都必须加载值缓存 两次(每个软max分支一次) ――结果:尽管参数相同,解码仍然比基线慢――
 
-后,额外维度将被投影回去,以匹配基线变压器的O_W投影──三件事同时发生:
+根据V2将查询头数量加倍,并保持KV头 不变(从上投影 借用参数) ――头寸 保持与基线相同――相减后,额外维度将被投影回去,以匹配基线变压器的$O_W$预测:同时发生了三件事:
 
 1. 解码速度与基线的速度 持平(KV缓存只加载一次)
 2. 没有需要自定义内核) 』
@@ -140,8 +142,8 @@ out = [[sum(w * v[j] for w, v in zip(row, V)) for j in range(d_v)] for row in di
 给定一个配置,打印:
 
 - 基线变压器:Q、K、V 各自大小为`hidden * hidden`,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-- ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,`hidden * hidden`,我很小.`hidden * hidden`头部,头部,头部,头部.`lambda`参数(O(头 * d_头))
--       `2 * hidden * hidden`,K大小为`hidden * hidden`,我很小.`hidden * hidden`△额外维度会在O_W前投影回去──增加相同的`lambda`参数.
+- ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,`hidden * hidden`,我很小.`hidden * hidden`头部,头部,头部,头部.`lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$,我知道.
+-       `2 * hidden * hidden`,K大小为`hidden * hidden`,我很小.`hidden * hidden`额外维度会在$O_W$投影回去. 增加相同.`lambda`参数.
 
 玩具 会测量 V2 的额外参数成本(大约每个注意区块 额外 `hidden * hidden`),并打印出来──
 
@@ -183,8 +185,8 @@ out = [[sum(w * v[j] for w, v in zip(row, V)) for j in range(d_v)] for row in di
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
-| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 lambda 缩放），然后乘以 V |
-| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 O(1/N) 权重，在 long contexts 中会累加到 O(1) |
+| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 $\lambda$ 缩放），然后乘以 V |
+| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 $O(1/N)$ 权重，在 long contexts 中会累加到 $O(1)$ |
 | lambda | “相减的缩放系数” | 每个 head 的可学习标量，参数化为 `exp(lq1.lk1) - exp(lq2.lk2) + lambda_init`；可以为负 |
 | DIFF V1 | “ICLR 2025 版本” | 原始 Differential Transformer；将 head dim 减半以保持参数量，需要 custom kernel，decode 更慢 |
 | DIFF V2 | “2026 年 1 月修复版” | 在保持 KV heads 的同时将 Q heads 加倍；decode speed 与 baseline 持平，并兼容 FlashAttention |

@@ -39,27 +39,29 @@
 
 训练时,对于截至位置`i`的前,按深度隐藏状态为:
 
-```
-h_i^(0) = main model backbone at position i
-h_i^(k) = T_k( M_k * concat(RMSNorm(h_i^(k-1)), RMSNorm(E(t_{i+k}))) )   for k >= 1
+```math
+\begin{aligned}
+h_i^{(0)} &= \text{main model backbone at position } i \\
+h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMSNorm}}(h_i^{(k-1)}), \mathop{\mathrm{RMSNorm}}(E(t_{i+k}))\big) \Big) \quad \text{for } k \ge 1
+\end{aligned}
 ```
 
 预测为:
 
-```
-logits_{i+k} = Out(h_i^(k-1))   for k = 1..D
+```math
+\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
 ```
 
 对于基本的真理而言,`t_{i+k}`它们的交叉性:
 
-```
-L_k = CE(logits_{i+k}, t_{i+k})
+```math
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
 ```
 
 跨深度的关节损失:
 
-```
-L_MTP = (lambda / D) * sum_{k=1..D} L_k
+```math
+L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 ```
 
 `lambda`是一个较小的权重因素,深度搜索V3 在训练前10% 使用0.3,之后使用0.1──总训练损失为`L_main + L_MTP`,我知道.
@@ -175,7 +177,7 @@ def combine(prev_hidden, next_token_embed, M_k):
 
 2. 计算一个密集的70B模型 (隐藏于8192.80层) 在D=1MTP模块下面的参数开销――与DeepSeek-V3报告的14B开销进行比较――解释为什么DeepSeek的数字更高:MTP变压器块继承了相同的MoE结构,从而增加了每个模块的参数――
 
-3. 在玩具中实现D=2:添加第二个MTP模块,接收h^(1) 并预测 `t_{i+2}`验证联合损失和参数核算与深度搜索论文的方程19-21匹配.
+3. 在玩具中实现D=2:添加第二个MTP模块,接收$h^{(1)}$并预测`t_{i+2}`验证联合损失和参数核算与深度搜索论文的方程19-21匹配.
 
 4. 将玩具换为平行MTP (Gloeckle-style):在主隐藏状态上添加D个输出头,每个预测不同的偏移――测量在同一个合成信号上,每个深度的损失与序列版本相比如何――对于 k > 1,序列版本应产生更低的深度损失,因为它在中间预测为条件――
 
@@ -191,8 +193,8 @@ def combine(prev_hidden, next_token_embed, M_k):
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |
 | Shared embedding | “复用主 table” | 同一个 vocabulary embedding table 在所有地方使用；没有重复参数 |
-| Projection matrix M_k | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
-| Joint loss L_MTP | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
+| Projection matrix $M_k$ | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
+| Joint loss $L_{\text{MTP}}$ | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
 | Acceptance rate at depth 1 | “MTP draft 多常正确” | D=1 MTP module 的 top-1 prediction 等于主模型 top-1 prediction 的比例；DeepSeek-V3 上超过 80% |
 | Lambda weighting | “额外 loss 的重要性” | per-depth 缩放因子；DeepSeek-V3 在训练开始时为 0.3，之后为 0.1 |
 

@@ -71,22 +71,22 @@ graph TD
 
 记住PPO的目标(来自07课):
 
-```
-L_PPO = E[min(r(theta) * A, clip(r(theta), 1-eps, 1+eps) * A)]
+```math
+L_{\text{PPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A\right)\right]
 ```
 
 其中`A`是优势,通常使用学习价值网络`V(s)`通过GAE估计,价值网络是第二个模型,大小与政策相同.
 
- GRPO 丢弃值函数――对每个提示,它采用一组 G 个响应(通常 G=16 或 64) ――计算每个响应的回报,然后在组内归归一化:
+对于每个提示,它采用一组$G$个回答通常$G=16$或 64) ⋅计算每个反应的回报,然后在组内归纳:
 
-```
-A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
+```math
+A_i = \frac{r_i - \mathop{\mathrm{mean}}(r_1, \ldots, r_G)}{\mathop{\mathrm{std}}(r_1, \ldots, r_G)}
 ```
 
 优势是该反应的回报 相对于同组其他反应的z分数.
 
-```
-L_GRPO = E[min(r(theta) * A_group, clip(r(theta), 1-eps, 1+eps) * A_group)] - beta * KL(pi || pi_ref)
+```math
+L_{\text{GRPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A_{\text{group}}, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A_{\text{group}}\right)\right] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 针对参考模型的 KL罚款仍然存在,和PPO一样.

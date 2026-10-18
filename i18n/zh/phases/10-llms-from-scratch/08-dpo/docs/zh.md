@@ -11,7 +11,7 @@
 - 实现DPO培训,直接在偏好对上优化语言模型,而不使用单独的奖励模型
 - 推导DPO损失函数,并解释它如何通过政策的记录概率 隐式表示奖励模型
 - 从训练稳定性,计算成本和需要模型数量角度来看,比较DPO与RLHF
-- 调节beta参数,控制训练后的政策 偏离参考模型的程度
+- 调节$\beta$参数,控制训练后的政策 偏离参考模型程度
 
 ## 问题
 你在07课中构建了一个RLHF管道――三个阶段――三个模型――SFT模型、奖励模型,以及使用PPO 优化政策模型――仅需要数千个个人类偏好对和一个单独的培训循环――PPO 需要仔细调节KL系数、学习率、剪辑比和时代数量――
@@ -29,51 +29,53 @@
 
 优化这个目标:
 
-```
-maximize: E[R(x, y)] - beta * KL(pi || pi_ref)
-```
-
-其中R是奖励模型,pi是政策,pi_ref是参考模型,beta是KL系数──
-
-证明,这个目标存在于闭式最优解――对于任意的奖励函数R,最优政策是:
-
-```
-pi*(y | x) = pi_ref(y | x) * exp(R(x, y) / beta) / Z(x)
+```math
+\text{maximize:} \quad \mathbb{E}[R(x, y)] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
-其中,Z(x) 是归纳常数.
+其中$R$是奖励模式,$\pi$是政策,$\pi_{\text{ref}}$是参考模型,$\beta$是KL系数.
 
+证明这个目标存在于关闭式的最佳解答.$R$最好的政策是:
+
+```math
+\pi^*(y \mid x) = \pi_{\text{ref}}(y \mid x) \cdot \exp(R(x, y) / \beta) / Z(x)
 ```
-R(x, y) = beta * log(pi*(y | x) / pi_ref(y | x)) + beta * log Z(x)
+
+其中$Z(x)$是归化常数.
+
+```math
+R(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 这就是突破点. 奖励 完全使用政策模型的概率和参考模型的概率来表达.
 
 取代了布拉德利-特里偏好模式:
 
-```
-P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))
-                  = sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x)))
+```math
+\begin{aligned}
+P(y_w > y_l \mid x) &= \mathop{\mathrm{sigmoid}}(R(x, y_w) - R(x, y_l)) \\
+&= \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
+\end{aligned}
 ```
 
-由于两个答案都以同一个提示 x 为条件――下面仅仅是政策模型和参考模型 在优先和拒绝答案上的日志概率函数――
+$Z(x)$两种反应都会在同一时刻.$x$为条件. 下面只是政策模型和参考模型 在优先和拒绝的答案上方的日志概率函数.
 
 ### 局的损失
 
-```
-L_DPO = -log(sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x))))
+```math
+L_{\text{DPO}} = -\log \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
 ```
 
 我们拆解了每一部分:
 
-- **y_w**= 首选的答案
-- **y_l**= 拒绝了
-- **x**快速
-- **pi**现在的模型 (正在训练)
-- **pi_ref**= 参考模型 (结的SFT检查站)
-- **beta**控制偏离参考温度 参数(通常为0.1~0.5)
+- **$y_w$**= 首选的答案
+- **$y_l$**= 拒绝了
+- **$x$**快速
+- **$\pi$**现在的模型 (正在训练)
+- **$\pi_{\text{ref}}$**= 参考模型 (结的SFT检查站)
+- **$\beta$**控制偏离参考温度 参数(通常为0.1~0.5)
 
-比值`log pi(y|x) / pi_ref(y|x)`当这个比率为正时,当前模型赋予反应的概率高于参考时,当它为负时,当前模型赋予的概率更低.
+比值`log pi(y|x) / pi_ref(y|x)`当这个比值为正时,当前模型赋予反应$y$当它为负面时,当前模型赋予的概率更低.
 
 通过测试,测试结果的数据可被测到,可在测试结果中得到更大的数据.
 
@@ -634,7 +636,7 @@ if __name__ == "__main__":
 | DPO | “没有 RL 的 RLHF” | Direct Preference Optimization：一种 supervised learning algorithm，直接在 preference pairs 上优化语言模型，绕过 reward model 和 PPO |
 | Implicit reward | “reward 在模型里” | reward function 由 policy 与 reference models 之间的 log-probability ratio 决定，不需要单独的 reward model |
 | Beta (DPO) | “temperature” | 控制 policy 可以偏离 reference model 的程度：小 beta 允许大偏离，大 beta 让模型保持接近 |
-| Log-probability ratio | “模型变化了多少” | log pi(y\|x) - log pi_ref(y\|x)：正值表示当前模型分配的概率高于 reference |
+| Log-probability ratio | “模型变化了多少” | $\log \pi(y \mid x) - \log \pi_{\text{ref}}(y \mid x)$：正值表示当前模型分配的概率高于 reference |
 | Reference model | “冻结的 checkpoint” | SFT model 的一个副本，其 weights 永不改变，用作计算概率比的锚点 |
 | KTO | “没有成对数据的 DPO” | Kahneman-Tversky Optimization：使用未配对的“good”或“bad”labels，而不是要求 preference pairs |
 | ORPO | “一步 alignment” | Odds Ratio Preference Optimization：通过向 SFT Loss 添加 preference term，将 SFT 和 alignment 合并到单个 training loop |
