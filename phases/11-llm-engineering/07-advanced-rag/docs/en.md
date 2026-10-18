@@ -89,7 +89,7 @@ graph LR
 - Jina-Reranker-v2 Multilingual：open-weight，支持 100+ 语言
 - bge-reranker-v2-m3：open-weight，强 baseline
 - cross-encoder/ms-marco-MiniLM-L-6-v2：open-weight，可在 CPU 上运行，适合 prototyping
-- ColBERTv2 / Jina-ColBERT-v2：late-interaction multi-vector reranker，在评分时是 O(tokens) 而不是 O(docs)
+- ColBERTv2 / Jina-ColBERT-v2：late-interaction multi-vector reranker，在评分时是 $O(\text{tokens})$ 而不是 $O(\text{docs})$
 
 ### Query Transformation
 

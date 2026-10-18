@@ -58,9 +58,9 @@ Lloyd's algorithm：
 
 两种标准方法：
 
-**Elbow method：** 对 K = 1, 2, 3, ..., n 运行 K-Means。绘制 inertia 与 K 的关系图。寻找“elbow”，也就是继续增加 cluster 时 inertia 不再显著下降的位置。
+**Elbow method：** 对 $K = 1, 2, 3, \ldots, n$ 运行 K-Means。绘制 inertia 与 K 的关系图。寻找“elbow”，也就是继续增加 cluster 时 inertia 不再显著下降的位置。
 
-**Silhouette score：** 对每个点，衡量它与自身 cluster 的相似程度（a）相对于最近的其他 cluster（b）如何。silhouette coefficient 为 (b - a) / max(a, b)，范围从 -1（分错 cluster）到 +1（cluster 划分良好）。对所有点取平均得到全局分数。
+**Silhouette score：** 对每个点，衡量它与自身 cluster 的相似程度（$a$）相对于最近的其他 cluster（$b$）如何。silhouette coefficient 为 $(b - a) / \max(a, b)$，范围从 -1（分错 cluster）到 +1（cluster 划分良好）。对所有点取平均得到全局分数。
 
 ### DBSCAN：基于密度的 Clustering
 
@@ -112,7 +112,7 @@ GMM 可以建模椭圆形 cluster（而不仅仅是 K-Means 那样的球形）�
 |--------|----------|------------|
 | K-Means | 大型数据集、球形 cluster、已知 K | 形状不规则、存在 outlier |
 | DBSCAN | K 未知、任意形状、outlier detection | 密度差异大、维度非常高 |
-| Hierarchical | 小型数据集、需要 dendrogram、K 未知 | 大型数据集（O(n^2) memory） |
+| Hierarchical | 小型数据集、需要 dendrogram、K 未知 | 大型数据集（$O(n^2)$ memory） |
 | GMM | 重叠 cluster、需要软分配 | 非常大的数据集、维度过多 |
 
 ### 使用 Clustering 做 Anomaly Detection
@@ -489,7 +489,7 @@ gmm_model = GaussianMixture(n_components=3, random_state=42).fit(data)
 | Clustering | “把相似的事物分组” | 将数据划分为若干子集，使组内相似度高于组间相似度，并由特定距离度量来衡量 |
 | Centroid | “cluster 的中心” | 分配给某个 cluster 的所有点的均值；K-Means 将其用作 cluster 的代表 |
 | Inertia | “cluster 有多紧凑” | 每个点到其所属 centroid 的平方距离之和；越低表示越紧凑 |
-| Silhouette score | “cluster 分离得有多好” | 对每个点计算 (b - a) / max(a, b)，其中 a 是平均 cluster 内距离，b 是最近 cluster 的平均距离 |
+| Silhouette score | “cluster 分离得有多好” | 对每个点计算 $(b - a) / \max(a, b)$，其中 $a$ 是平均 cluster 内距离，$b$ 是最近 cluster 的平均距离 |
 | Core point | “稠密区域中的点” | 在 DBSCAN 中，eps 距离内至少有 min_samples 个邻居的点 |
 | EM algorithm | “软 K-Means” | Expectation-Maximization：迭代计算成员概率（E-step）并更新 distribution 参数（M-step） |
 | Dendrogram | “cluster 的树” | 一种树状图，展示 hierarchical clustering 中 cluster 被合并的顺序以及合并时的距离 |

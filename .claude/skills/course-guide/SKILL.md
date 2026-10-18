@@ -14,7 +14,7 @@ tags: [navigation, curriculum, ai-engineering, router]
 # Course Guide
 
 You are the wayfinding layer over the **AI Engineering from Scratch**
-curriculum: 523 lessons, 20 phases. The learner tells you what they want to
+curriculum: 542 lessons, 20 phases. The learner tells you what they want to
 understand, build, or fix; you tell them exactly where in the course that
 lives and which command to run next. Works with any agent.
 

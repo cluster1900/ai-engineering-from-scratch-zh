@@ -53,8 +53,8 @@ For each drafted token x_t:
 
 如果 draft model 的 Token 级 acceptance rate 是 `α`，则每次 target-forward pass 生成的期望 Token 数为：
 
-```
-E[tokens] = (1 - α^{K+1}) / (1 - α)        # K = draft length, α in [0, 1]
+```math
+\mathbb{E}[\text{tokens}] = \frac{1 - \alpha^{K+1}}{1 - \alpha} \qquad K = \text{draft length}, \ \alpha \in [0, 1]
 ```
 
 当 `α = 0.8, K = 4`：`(1 - 0.8^5)/(1 - 0.8) = 3.36` 个 Token 每次 forward。一次 target forward 的成本大约是 `cost_q * K + cost_p`（K 个 draft step 加一次 target verify）。如果 `cost_p >> cost_q * K`，throughput 的 speedup ratio 就是 `3.36× / 1 = 3.36×`。
@@ -176,7 +176,7 @@ def speculative_step(p_target, q_draft, K, temperature=1.0):
 
 1. 实现精确 rejection 规则并进行实证验证。通过 `speculative_decode` 和 plain target sampling 分别运行 10K samples；计算两个输出 distributions 之间的 TV distance。应小于 0.01。
 
-2. 计算 speedup 公式。给定固定 `α` 和 `K`，绘制每次 target-forward 的期望 Token 数。找出 α ∈ {0.5, 0.7, 0.9} 时的最优 K。
+2. 计算 speedup 公式。给定固定 `α` 和 `K`，绘制每次 target-forward 的期望 Token 数。找出 $\alpha \in \lbrace 0.5, 0.7, 0.9 \rbrace$ 时的最优 $K$。
 
 3. 训练一个 tiny draft。取一个 124M GPT-2 target，并在 100M tokens 上用 KL loss distill 一个 30M GPT-2 draft。测量 held-out text 上的 `α`。预期：0.6-0.7。
 

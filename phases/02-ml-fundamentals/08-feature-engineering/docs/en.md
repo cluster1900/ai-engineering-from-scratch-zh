@@ -51,7 +51,7 @@ flowchart LR
 
 **Binning：** 将连续值转换为类别。当 Feature 和 target 之间的关系是非线性但分段式时很有用（例如年龄组）。
 
-**Polynomial features：** 创建 x^2、x^3、x1*x2 项。让线性模型能够捕获非线性关系，代价是产生更多 Feature。
+**Polynomial features：** 创建 $x^2$、$x^3$、$x_1 x_2$ 项。让线性模型能够捕获非线性关系，代价是产生更多 Feature。
 
 ### Categorical Features
 
@@ -69,10 +69,12 @@ flowchart LR
 
 **TF-IDF：** Term Frequency-Inverse Document Frequency。根据词在文档之间的独特程度对词加权。像 “the” 这样的常见词权重低。稀有且有区分度的词权重高。
 
-```
-TF(word, doc) = count(word in doc) / total words in doc
-IDF(word) = log(total docs / docs containing word)
-TF-IDF = TF * IDF
+```math
+\begin{aligned}
+\text{TF}(\text{word}, \text{doc}) &= \frac{\text{词在文档中的出现次数}}{\text{文档总词数}} \\
+\text{IDF}(\text{word}) &= \log \frac{\text{文档总数}}{\text{包含该词的文档数}} \\
+\text{TF-IDF} &= \text{TF} \cdot \text{IDF}
+\end{aligned}
 ```
 
 ### 缺失值
@@ -87,7 +89,7 @@ TF-IDF = TF * IDF
 
 ### Feature Interaction
 
-有时关系存在于组合之中。单独的 “Height” 和 “weight” 不如 “BMI = weight / height^2” 有预测力。Feature interactions 会放大 Feature 空间，因此要用领域知识选择正确的组合。
+有时关系存在于组合之中。单独的 “Height” 和 “weight” 不如 “$\text{BMI} = \text{体重} / \text{身高}^2$” 有预测力。Feature interactions 会放大 Feature 空间，因此要用领域知识选择正确的组合。
 
 ### Feature Selection
 

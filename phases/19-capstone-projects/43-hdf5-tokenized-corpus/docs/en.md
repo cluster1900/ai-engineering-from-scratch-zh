@@ -16,7 +16,7 @@
 
 ## The Problem
 
-现代 language-model training run 会在数十个 worker 上以每秒数十万 samples 的速度读取 tokens。磁盘上的 JSONL 在第一次 cold-cache page fault 时就会崩：JSON parser 很慢，文档边界无法寻址，而 seek 到 "sample 4,217,884" 需要扫描文件。即使是压缩效果很好的 Parquet，也不适合这里，因为 trainer 不想要 columns；它想要一个带 O(1) random access 的扁平 token stream。
+现代 language-model training run 会在数十个 worker 上以每秒数十万 samples 的速度读取 tokens。磁盘上的 JSONL 在第一次 cold-cache page fault 时就会崩：JSON parser 很慢，文档边界无法寻址，而 seek 到 "sample 4,217,884" 需要扫描文件。即使是压缩效果很好的 Parquet，也不适合这里，因为 trainer 不想要 columns；它想要一个带 $O(1)$ random access 的扁平 token stream。
 
 HDF5 适合，是因为它提供一个 chunked、可调整大小、integer-only dataset，它的 chunks 在读取时对 page cache 友好。trainer 请求 `tokens[3,200,000 : 3,200,8192]` 的 slice，HDF5 就会把请求的 hyperslab 从 page cache 复制到新分配的 NumPy array。成本是每个 worker 一个打开的 file handle，以及一个 chunk 大小的 page-cache footprint；相比解码 JSONL 的成本，这可以忽略。
 

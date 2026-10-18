@@ -30,19 +30,19 @@ while True:
 
 **AlphaZero (2017)。** Silver et al. 给定一个规则已知的游戏（chess、shogi、Go）：
 
-- Policy-value network：一个塔 `f_θ(s) → (p, v)`。`p` 是合法 move 上的 prior。`v` 是期望 game outcome。
-- Monte Carlo Tree Search (MCTS)：在每一步，展开可能后续状态的树。使用 `(p, v)` 作为 prior + bootstrap。用 UCB (PUCT) 选择节点：`a* = argmax Q(s, a) + c · p(a|s) · √N(s) / (1 + N(s, a))`。
-- Self-play：让 agent-vs-agent 对局。在第 `t` 步，MCTS visit distribution `π_t` 成为 policy 训练目标。
-- Loss：`L = (v - z)² - π · log p + c · ||θ||²`。`z` 是 game outcome（+1 / 0 / -1）。
+- Policy-value network：一个塔 $f_\theta(s) \to (p, v)$。$p$ 是合法 move 上的 prior。$v$ 是期望 game outcome。
+- Monte Carlo Tree Search (MCTS)：在每一步，展开可能后续状态的树。使用 $(p, v)$ 作为 prior + bootstrap。用 UCB (PUCT) 选择节点：$a^{\ast} = \arg\max_a Q(s, a) + c \cdot p(a \mid s) \cdot \sqrt{N(s)} / (1 + N(s, a))$。
+- Self-play：让 agent-vs-agent 对局。在第 $t$ 步，MCTS visit distribution $\pi_t$ 成为 policy 训练目标。
+- Loss：$L = (v - z)^2 - \pi \cdot \log p + c \cdot \lVert \theta \rVert^2$。$z$ 是 game outcome（+1 / 0 / -1）。
 
 零人类知识。零手工 heuristic。一个单一配方，在各自数千万局 self-play 之后掌握了 chess、shogi 和 Go。
 
 **MuZero (2019)。** Schrittwieser et al. 移除了“规则已知”的要求。
 
-- 不使用固定环境，而是学习一个 *latent dynamics model* `(h, g, f)`：
-  - `h(s)`：将 observation 编码为 latent state。
-  - `g(s_latent, a)`：预测下一个 latent state + reward。
-  - `f(s_latent)`：预测 policy prior + value。
+- 不使用固定环境，而是学习一个 *latent dynamics model* $(h, g, f)$：
+  - $h(s)$：将 observation 编码为 latent state。
+  - $g(s_{\text{latent}}, a)$：预测下一个 latent state + reward。
+  - $f(s_{\text{latent}})$：预测 policy prior + value。
 - MCTS 在 *learned latent space* 中运行。相同的 search，相同的训练循环。
 - 适用于 Go、chess、shogi *以及* Atari —— 一个 algorithm，不需要规则知识。
 
@@ -54,11 +54,11 @@ while True:
 
 - “游戏”：回答 math / coding / reasoning problem。“胜利”= verifier（test case 通过、数值答案匹配）返回 1。
 - Policy：LLM。Actions：Token。State：prompt + response-so-far。
-- 没有 critic（PPO 风格的 V_φ）。相反，对每个 prompt，从 policy 采样 `G` 个 completion。计算每个 completion 的 reward。使用 **group-relative advantage** `A_i = (r_i - mean_r) / std_r` 作为 REINFORCE 风格更新的信号。
+- 没有 critic（PPO 风格的 $V_\phi$）。相反，对每个 prompt，从 policy 采样 $G$ 个 completion。计算每个 completion 的 reward。使用 **group-relative advantage** $A_i = (r_i - \text{mean}_r) / \text{std}_r$ 作为 REINFORCE 风格更新的信号。
 - 对 reference policy 加 KL penalty 以防漂移（类似 RLHF）。
 - 完整 Loss：
 
-  `L_GRPO(θ) = -E_{q, {o_i}} [ (1/G) Σ_i A_i · log π_θ(o_i | q) ] + β · KL(π_θ || π_ref)`
+  $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
 没有 reward model，没有 critic，没有 MCTS。Group-relative baseline 替代了三者。在 reasoning benchmark 上，用少得多的 compute 达到或超过 PPO-RLHF 质量。
 
@@ -145,7 +145,7 @@ Group-relative advantage 是 2024 年 DeepSeek 的技巧。不需要 critic。�
 ## 常见陷阱
 
 - **通过操纵 verifier 进行 reward hacking。** GRPO 继承了 RLHF 的风险：如果 verifier 错误或可被利用，LLM 会找到 exploit。鲁棒 verifier（多个 test cases、formal proofs）很重要。
-- **Group size 太小。** Group baseline 的方差按 `1/√G` 缩放。低于 `G = 4` 时，advantage signal 会很 noisy；标准选择是 `G = 8` 到 `64`。
+- **Group size 太小。** Group baseline 的方差按 $1/\sqrt{G}$ 缩放。低于 $G = 4$ 时，advantage signal 会很 noisy；标准选择是 $G = 8$ 到 64。
 - **Length bias。** 不同长度的 LLM completion 具有不同的 log-probabilities。按 Token 数归一化，或使用 sequence-level log-prob，或截断到 max length。
 - **纯 self-play 循环。** AlphaZero 风格训练可能在 general-sum games 中卡进 dominance loop。可通过多样化 opponent pool（league play，Lesson 10）缓解。
 - **Search-policy mismatch。** AlphaZero 训练 policy 去模仿 search output。如果 policy net 太小，无法表示 search 的 distribution，训练会停滞。
@@ -196,7 +196,7 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 ## 练习
 
-1. **Easy。** 在 `code/main.py` 中实现 GRPO bandit。在 2 个 prompt × 每个 4 个 answer Token 上训练。使用 `G=8` 在 < 1,000 次 update 内收敛。
+1. **Easy。** 在 `code/main.py` 中实现 GRPO bandit。在 2 个 prompt × 每个 4 个 answer Token 上训练。使用 $G=8$ 在 < 1,000 次 update 内收敛。
 2. **Medium。** 接入 PPO（clipped）和 vanilla REINFORCE。在同一个 bandit 上比较 sample efficiency 和 reward variance 与 GRPO 的差异。
 3. **Hard。** 扩展到长度为 2 的“reasoning chain”：agent 发出两个 Token，verifier 对 Token pair 给 reward。测量 GRPO 如何处理两步 sequence 上的 credit assignment。（提示：按 *full sequence* 计算 group advantage，并传播到两个 Token position。）
 
@@ -204,11 +204,11 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 | Term | 人们常说 | 实际含义 |
 |------|-----------------|-----------------------|
-| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned `(p, v)` prior 的 UCB1/PUCT selection。 |
+| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned $(p, v)$ prior 的 UCB1/PUCT selection。 |
 | AlphaZero | “Self-play + MCTS” | Policy-value net 被训练来匹配 MCTS visits 和 game outcome。 |
 | MuZero | “Learned-model AlphaZero” | 相同循环，但通过 learned dynamics 在 latent space 中进行。 |
 | GRPO | “Critic-free PPO” | Group Relative Policy Optimization；带 group-mean baseline + KL 的 REINFORCE。 |
-| PUCT | “AlphaZero 的 UCB” | `Q + c · p · √N / (1 + N_a)` —— 平衡 value estimate 与 prior。 |
+| PUCT | “AlphaZero 的 UCB” | $Q + c \cdot p \cdot \sqrt{N} / (1 + N_a)$ —— 平衡 value estimate 与 prior。 |
 | Self-play | “Agent vs past self” | Zero-sum 的标准做法；提供对称训练信号。 |
 | League play | “Population-based self-play” | 将 past + current + exploiters 采样为 opponents。 |
 | Verifier reward | “Verifiable RL” | Reward 来自 deterministic checker（tests pass、answer matches）。 |

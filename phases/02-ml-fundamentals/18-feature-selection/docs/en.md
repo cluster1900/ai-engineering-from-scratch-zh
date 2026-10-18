@@ -59,8 +59,8 @@ flowchart TD
 
 考虑一个 feature，在 1000 个 samples 中有 999 个都是 0.0。它的 variance 接近零。没有 model 能用它来区分类别。移除它。
 
-```
-variance(x) = mean((x - mean(x))^2)
+```math
+\text{方差}(x) = \text{均值}\bigl((x - \text{均值}(x))^2\bigr)
 ```
 
 设置一个 threshold（例如 0.01）。丢弃每个 variance 低于该 threshold 的 feature。这会在完全不查看 target variable 的情况下移除 constant 或 near-constant features。
@@ -71,17 +71,17 @@ variance(x) = mean((x - mean(x))^2)
 
 ### Mutual Information
 
-Mutual information 衡量知道 feature X 的值能在多大程度上减少对 target Y 的不确定性。
+Mutual information 衡量知道 feature $X$ 的值能在多大程度上减少对 target $Y$ 的不确定性。
 
-```
-I(X; Y) = sum_x sum_y p(x, y) * log(p(x, y) / (p(x) * p(y)))
+```math
+I(X; Y) = \sum_x \sum_y p(x, y) \cdot \log \frac{p(x, y)}{p(x) \cdot p(y)}
 ```
 
-如果 X 和 Y 独立，则 p(x, y) = p(x) * p(y)，因此 log 项为零，I(X; Y) = 0。X 能告诉你越多关于 Y 的信息，mutual information 就越高。
+如果 $X$ 和 $Y$ 独立，则 $p(x, y) = p(x) \cdot p(y)$，因此 log 项为零，$I(X; Y) = 0$。$X$ 能告诉你越多关于 $Y$ 的信息，mutual information 就越高。
 
 相对于 correlation 的关键优势：mutual information 能捕捉非线性关系。某个 feature 可能与 target 的 correlation 为零，但 mutual information 很高，因为关系可能是 quadratic 或 periodic。
 
-对于 continuous features，先 discretize 成 bins（基于 histogram 的估计）。bins 的数量会影响估计结果：bins 太少会丢失信息，bins 太多会增加 noise。常见选择：sqrt(n) bins 或 Sturges' rule（1 + log2(n)）。
+对于 continuous features，先 discretize 成 bins（基于 histogram 的估计）。bins 的数量会影响估计结果：bins 太少会丢失信息，bins 太多会增加 noise。常见选择：$\sqrt{n}$ bins 或 Sturges' rule（$1 + \log_2 n$）。
 
 ```mermaid
 flowchart LR
@@ -113,14 +113,14 @@ flowchart TD
 
 RFE 会考虑 feature interactions，因为 model 会同时看到所有剩余 features。移除一个 feature 会改变其他 features 的 importance。这让它比 filter methods 更彻底。
 
-成本：你需要训练 model N - target 次。对于 500 个 features、target 为 10 的情况，就是 490 次训练。对于昂贵的 models，这会很慢。可以通过每步移除多个 features 来加速（例如每轮移除底部 10%）。
+成本：你需要训练 model $N - \text{目标}$ 次。对于 500 个 features、target 为 10 的情况，就是 490 次训练。对于昂贵的 models，这会很慢。可以通过每步移除多个 features 来加速（例如每轮移除底部 10%）。
 
 ### L1 (Lasso) Regularization
 
 L1 regularization 会把 weights 的绝对值加入 Loss Function：
 
-```
-loss = prediction_error + alpha * sum(|w_i|)
+```math
+\text{损失} = \text{prediction\_error} + \alpha \cdot \sum \lvert w_i \rvert
 ```
 
 alpha 参数控制 features 被剪枝的激进程度。alpha 越高，越多 weights 会精确变成零。
@@ -137,12 +137,10 @@ alpha 参数控制 features 被剪枝的激进程度。alpha 越高，越多 wei
 
 Decision trees 及其 ensembles（random forests、gradient boosting）会自然地对 features 排名。每个 split 都会减少 impurity（classification 使用 Gini 或 entropy，Regression 使用 variance）。产生更大 impurity reductions 的 features 更重要。
 
-对于有 T 棵 trees 的 random forest：
+对于有 $T$ 棵 trees 的 random forest：
 
-```
-importance(feature_j) = (1/T) * sum over all trees of
-    sum over all nodes splitting on feature_j of
-        (n_samples * impurity_decrease)
+```math
+\text{重要性}(\text{特征}_j) = \frac{1}{T} \sum_{\text{所有树}} \; \sum_{\text{所有基于此特征划分的节点：} \text{特征}_j} (\text{n\_samples} \cdot \text{impurity\_decrease})
 ```
 
 这会为每个 feature 给出 normalized importance score。它能自动处理非线性关系和 feature interactions。
@@ -517,7 +515,7 @@ sklearn 版本增加了 robustness（例如，mutual_info_classif 使用 k-NN de
 | Filter method | “独立为 features 打分” | 一种 feature selection 方法，不训练 model，而是使用统计度量对 features 排名，并孤立地评估每个 feature |
 | Wrapper method | “用 model 挑 features” | 一种 feature selection 方法，通过训练 model 并使用其 performance 作为 selection criterion 来评估 feature subsets |
 | Embedded method | “model 在训练期间选择 features” | 作为 model fitting 一部分发生的 feature selection，例如 L1 regularization 会把 weights 推向零 |
-| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 X 的知识后，关于 Y 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
+| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 $X$ 的知识后，关于 $Y$ 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
 | Recursive Feature Elimination | “训练、排名、剪枝、重复” | 一种迭代式 wrapper method，会训练 model、移除最不重要的 feature(s)，并重复直到达到 target count |
 | L1 / Lasso regularization | “会消灭 features 的 penalty” | 将 weight 绝对值之和加入 Loss Function，这会把不重要 feature 的 weights 推到精确为零 |
 | Variance threshold | “移除 constant features” | 丢弃在 samples 之间 variance 低于指定 threshold 的 features，过滤掉不携带信息的 features |

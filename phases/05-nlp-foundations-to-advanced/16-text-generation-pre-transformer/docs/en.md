@@ -21,8 +21,8 @@
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`。固定 `n`（通常 trigram 用 3，4-gram 用 4）。根据计数计算：
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。** 任何训练中没见过的 n-gram 都会得到零概率。2007 年一项关于 Brown corpus 的研究发现，即使是 4-gram 模型，也有 30% 的 held-out 4-gram 在训练中未出现。不做 smoothing，就无法在任何真实文本上评估。
@@ -40,8 +40,8 @@ Kneser-Ney 的洞见很深。"San Francisco" 是常见 bigram。Unigram "Francis
 
 **评估：perplexity。** 在 held-out 测试集上，每个词平均负 log-likelihood 的指数。越低越好。Perplexity 为 100 意味着模型的困惑程度相当于在 100 个词中均匀随机选择。
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 

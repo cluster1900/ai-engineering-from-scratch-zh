@@ -47,8 +47,8 @@ Top-down（HRNet, ViTPose）是准确率领先方案；bottom-up（OpenPose, Hig
 
 不要直接 Regression `(x, y)`，而是为每个 keypoint 预测一个 `H x W` heatmap，其中在真实位置中心有一个 Gaussian blob。
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 在 inference 时，每个 heatmap 的 argmax 就是预测的 keypoint location。

@@ -24,7 +24,7 @@
 
 ### 核心技巧：Residual Vector Quantization (RVQ)
 
-与其使用一个巨大的 codebook（要获得好质量可能需要数百万个 code），现代音频 codec 都使用 **RVQ**：一串小 codebook 级联。第一个 codebook 量化 encoder 输出；第二个量化 residual；依此类推。每个 codebook 有 1024 个 code。8 个 codebook = 1024^8 = 10^24 的有效词表。
+与其使用一个巨大的 codebook（要获得好质量可能需要数百万个 code），现代音频 codec 都使用 **RVQ**：一串小 codebook 级联。第一个 codebook 量化 encoder 输出；第二个量化 residual；依此类推。每个 codebook 有 1024 个 code。8 个 codebook = $1024^8 = 10^{24}$ 的有效词表。
 
 在 inference 时，decoder 会对每一帧中所有选中的 code 求和来重建。
 
@@ -130,8 +130,8 @@ Semantic codebook 0 与 WavLM 对齐。你可以训练一个 text-to-semantic Tr
 
 对于 Mimi 的 12.5 Hz × 8 个 codebook，一个 10 s 语音片段：
 
-```
-N_tokens = 10 * 12.5 * 8 = 1000 tokens
+```math
+N_{\text{tokens}} = 10 \times 12.5 \times 8 = 1000 \text{ tokens}
 ```
 
 1000 个 Token 对 Transformer 来说是很小的上下文。一个 256M 参数的 Transformer 可以在现代 GPU 上以毫秒级生成 10 秒语音。
