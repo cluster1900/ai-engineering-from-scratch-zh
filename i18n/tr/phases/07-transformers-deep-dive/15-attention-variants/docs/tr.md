@@ -9,11 +9,11 @@
 
 ## 问题
 
-Tüm dikkat , dizinin uzunluğundaki bellek maliyeti`O(N²)`, hesaplama maliyeti de `O(N²)`❖ 128K bağlamlı bir Llama 3 70B için, bu her katın 160 milyar dikkatli olması anlamına gelir ❖ 80 katın tekrar tekrarlanması ❖ Flash dikkatli olması ❖ Ders 12) gizli`O(N²)`Aktifleştirme kaydı, ama hesaplama maliyetini değiştirmez.
+Tüm dikkat , dizinin uzunluğundaki bellek maliyeti$O(N^2)$, hesaplama maliyeti de $O(N^2)$❖ 128K bağlamlı bir Llama 3 70B için, bu her katın 160 milyar dikkatli olması anlamına gelir ❖ 80 katın tekrar tekrarlanması ❖ Flash dikkatli olması ❖ Ders 12) gizli$O(N^2)$Aktifleştirme kaydı, ama hesaplama maliyetini değiştirmez.
 
 Üç kategori değişim:
 
-1. **Sliding window attention (SWA).**Her bir simge, tam bir önbellek değil, sabit penceredeki komşu simgeye kadar devam eder.`O(N · W)`, içinden `W`Bu da bir tane.
+1. **Sliding window attention (SWA).**Her bir simge, tam bir önbellek değil, sabit penceredeki komşu simgeye kadar devam eder.$O(N \cdot W)$, içinden $W$Bu da bir tane.
 2. **Sparse / block attention.**Sadece seçilmiş .`(i, j)`Bu yüzden, bu durumun bir parçası olarak, bir diğerinden daha fazla bilgi almak için, bir diğerinden daha fazla bilgi almak için,
 3. **Differential attention.**İzdependent Q/K projesi kullanılarak 計算两张 Atention map,再相减── elimination将把权重泄漏到前几个代币的 注意沉──Microsoft's DIFF Transformer(2024)──
 
@@ -23,7 +23,7 @@ Bunlar ortak yaşanabilir. 2026 yılının bir sınır modeli onları kullanmak 
 
 ### Çekilme Penceresi Dikkat (SWA)
 
- konum `i`Her soruya sadece katılın .`[i - W, i]`(kötü nedenlik SWA) veya `[i - W/2, i + W/2]`(iki yönlü) içinde konum── pencerenin dışında Token 会在 skor Matrix 中得到 `-inf`- Evet.
+ konum $i$Her soruya sadece katılın .$[i - W, i]$(kötü nedenlik SWA) veya $[i - W/2, i + W/2]$(iki yönlü) içinde konum── pencerenin dışında Token 会在 skor Matrix 中得到 $-\infty$- Evet.
 
 ```
 full causal:           sliding window (W=4):
@@ -39,17 +39,17 @@ positions 0-7          positions 0-7, W=4
 7 | x x x x x x x x  7 |          x x x x
 ```
 
-- Evet .`N = 8192`和 `W = 1024`Matrix'in puan beklentileri 1024 × 8192 ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′ az ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′dendi ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den  ′den ′den ′den ′den   ′den ′den                                                                                                                                                          
+- Evet .$N = 8192$和 $W = 1024$Matrix'in puan beklentileri 1024 × 8192 ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′ az ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′den fazla ′dendi ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den ′den  ′den ′den ′den ′den   ′den ′den                                                                                                                                                          
 
-**KV cache 会随 SWA 缩小。**Her katın sadece yakın zamanda tutulması gerekiyor.`W`个 Token of K 和 V── için Gemma-3'a benzer bir konfigürasyon için(1024 penceresi,128K bağlamı),KV önbelleği 会降低 128×──
+**KV cache 会随 SWA 缩小。**Her katın sadece yakın zamanda tutulması gerekiyor.$W$个 Token of K 和 V── için Gemma-3'a benzer bir konfigürasyon için(1024 penceresi,128K bağlamı),KV önbelleği 会降低 128×──
 
-**质量成本。**純 SWA Transformer 難以處理長距離检索──修复方法: 在 SWA 層間交错 完全注意層──Gemma 3 使用 5:1 SWA:global──Mistral 7B 使用因果性-SWA stack,信息通过重叠窗口向前流动 每层都将有效感受野扩展`W`Geçmişte .`L`层后,模型 canı `L × W`- Göstergi.
+**质量成本。**純 SWA Transformer 難以處理長距離检索──修复方法: 在 SWA 層間交错 完全注意層──Gemma 3 使用 5:1 SWA:global──Mistral 7B 使用因果性-SWA stack,信息通过重叠窗口向前流动 每层都将有效感受野扩展$W$Geçmişte .`L`层后,模型 canı `L × W`- Göstergi.
 
 ### İzleme / Blok Et
 
 预先选择一个 `N × N`Sıkışıklık modeli:
 
-- **Local + strided (OpenAI sparse transformer).**Sonuna kadar katılın .`W`- Token, tekrar ekle.`stride`个 Token'ın konumundan.`O(N · sqrt(N))`計算同時捕捉局部と長距離情報──
+- **Local + strided (OpenAI sparse transformer).**Sonuna kadar katılın .$W$- Token, tekrar ekle.`stride`个 Token'ın konumundan.$O(N \cdot \sqrt{N})$計算同時捕捉局部と長距離情報──
 - **Longformer / BigBird.**Yerel pencere + az miktarda küresel token`[CLS]`), bu tokenler tüm tokenlere katılır, ayrıca tüm tokenlere katılır + rastgele sıfır bağlantılar──在匹配质量下经验上获得2×文脈──
 - **Native Sparse Attention (DeepSeek, 2025).**Öğrenmek ne?`(Q, K)`blok 重要; в ядра 层面跳过零 блок──兼容 FlashAttention──
 
@@ -61,13 +61,15 @@ Sparse Attention bir çekirdek mühendisliği 故事──数学 很简单(mask 
 
 Farklı Dikkat 通过计算**两张**Dikkat haritası bu sorunu çözmek için bir adım atmadı:
 
-```
-A1 = softmax(Q1 K1^T / √d)
-A2 = softmax(Q2 K2^T / √d)
-DiffAttn = (A1 - λ · A2) V
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d}) \\
+\text{DiffAttn} &= (A_1 - \lambda \cdot A_2) V
+\end{aligned}
 ```
 
-İçlerinden `λ`A1 捕捉真内容权重; A2 捕捉 sink。相减会抵消 sink,把权重重新分配相关代币。
+İçlerinden $\lambda$A1 捕捉真内容权重; A2 捕捉 sink。相减会抵消 sink,把权重重新分配相关代币。
 
 報告結果(Microsoft 2024):çılgınlık  510% azaldı, aynı eğitim uzunluğunda geçerli bağlamda 延长 1.52×,hayda iğne 检索更敏。
 
@@ -75,12 +77,12 @@ DiffAttn = (A1 - λ · A2) V
 
 | Variant | Compute | KV cache | Quality vs full | Production use |
 |---------|---------|----------|-----------------|----------------|
-| Full attention | O(N²) | O(N) per layer | baseline | 每个模型的默认层 |
-| SWA (window 1024) | O(N·W) | O(W) per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
-| Local + strided sparse | O(N·√N) | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
-| BigBird (local + global + random) | O(N) approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
-| Native Sparse (DeepSeek-V3.2) | O(N · active fraction) | O(N) | within 0.05 ppl | DeepSeek-V3.2, 2025 |
-| Differential | O(2·N²) | O(2N) | -5 to -10% ppl | DIFF Transformer, early 2026 models |
+| Full attention | $O(N^2)$ | $O(N)$ per layer | baseline | 每个模型的默认层 |
+| SWA (window 1024) | $O(N \cdot W)$ | $O(W)$ per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
+| Local + strided sparse | $O(N \cdot \sqrt{N})$ | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
+| BigBird (local + global + random) | $O(N)$ approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
+| Native Sparse (DeepSeek-V3.2) | $O(N \cdot \text{active fraction})$ | $O(N)$ | within 0.05 ppl | DeepSeek-V3.2, 2025 |
+| Differential | $O(2 \cdot N^2)$ | $O(2N)$ | -5 to -10% ppl | DIFF Transformer, early 2026 models |
 
 
 ```figure
@@ -143,7 +145,7 @@ def diff_attention(Q1, K1, Q2, K2, V, lam):
 
 ### 步骤 5: KV önbelleği boyutları
 
-- Evet .`N = 131072`Aşağı basın her değişkenin her kat sessiz boyutu──SWA 和稀 变体会降低 10100×──Differential 会翻倍──Sadarlı olarak hesaplarınızı ödemeniz gerekir──
+- Evet .$N = 131072$Aşağı basın her değişkenin her kat sessiz boyutu──SWA 和稀 变体会降低 10100×──Differential 会翻倍──Sadarlı olarak hesaplarınızı ödemeniz gerekir──
 
 ## Kullan
 
@@ -186,17 +188,17 @@ Görüyorum .`outputs/skill-attention-variant-picker.md`◊ Bu beceri, hedef ba�
 1. **Easy.**运行  İşlem`code/main.py`❖ Test`window=4`SWA'nın her satırında son 4 tane tokenin dışında olan tüm içeriği sıfırdan veriliyor.`window=n`会 bit-identically 复现 tam sebepli dikkat。
 2. **Medium.**Ders 07 başta gerçekleşen`window=1024`SWA. # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 3. **Hard.**Önemli bir şekilde, gemma-3 tarzında 5:1 katman karışımı gerçekleştirilmiştir.
-4. **Hard.**Her başın öğrenmesi gereken bir şey var .`λ`Differential Attention── in a synthetic retrieval task (Bir iğne, 2.000 个 dikkat dağıtıcı) on training── in parametre matching event, measurement relative to single-attention baseline of retrieval accuracy──
+4. **Hard.**Her başın öğrenmesi gereken bir şey var .$\lambda$Differential Attention── in a synthetic retrieval task (Bir iğne, 2.000 个 dikkat dağıtıcı) on training── in parametre matching event, measurement relative to single-attention baseline of retrieval accuracy──
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 `W` 个 Token；KV cache 缩小到 `O(W)`。 |
-| Effective receptive field | "模型能向后看多远" | 在一个窗口为 `W` 的 `L` 层 SWA stack 中，最多 `L × W` 个 Token。 |
+| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 $W$ 个 Token；KV cache 缩小到 $O(W)$。 |
+| Effective receptive field | "模型能向后看多远" | 在一个窗口为 $W$ 的 $L$ 层 SWA stack 中，最多 $L \times W$ 个 Token。 |
 | Longformer / BigBird | "Local + global + random" | Sparse pattern，包含少量始终 attend 的 global tokens；早期 long-context 方法。 |
 | Native Sparse Attention | "DeepSeek's kernel trick" | 学习 block-level sparsity；在保持质量的同时，在 kernel 层面跳过零 block。 |
-| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 `λ` 倍第二张 Attention map，以抵消 attention sinks。 |
+| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 $\lambda$ 倍第二张 Attention map，以抵消 attention sinks。 |
 | Attention sink | "权重泄漏到 token 0" | Softmax normalization 强制行求和为 1；信息量不足的 query 会把权重倾倒到位置 0。 |
 | FlexAttention | "Mask-as-Python" | PyTorch 2.5+ API，可将任意 mask function 编译成 FlashAttention 形状的 kernel。 |
 | Layer type mix | "5:1 SWA-to-global" | 在 stack 中交错 sparse 和 full Attention 层，以更低内存保持质量。 |

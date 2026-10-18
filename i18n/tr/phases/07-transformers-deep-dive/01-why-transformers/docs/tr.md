@@ -25,13 +25,13 @@ Kayıp gradientler 50 Token anlamına gelir  Önceki bilgiler 50 katınlıktan u
 
 ![RNN sequential compute vs Transformer parallel attention](../assets/rnn-vs-transformer.svg)
 
-**Recurrence 是瓶颈。**RNN 计算 `h_t = f(h_{t-1}, x_t)`Her adım öncesine bağlı. Sen burada olamazsın.`h_4`之前计算 `h_5`❖ 10.000+ ve daha fazla çekirdekli modern GPU'lara sahip olmakla birlikte, bu uzun dizide %99'u boşa harcayacaktır.
+**Recurrence 是瓶颈。**RNN 计算 $h_t = f(h_{t-1}, x_t)$Her adım öncesine bağlı. Sen burada olamazsın.$h_4$之前计算 $h_5$❖ 10.000+ ve daha fazla çekirdekli modern GPU'lara sahip olmakla birlikte, bu uzun dizide %99'u boşa harcayacaktır.
 
-**Attention 是广播。**Kendine dikkat etmek için bir çift var .`(i, j)`Aynı zamanda hesaplama`output_i = sum_j(a_ij * v_j)`◊ Tüm N×N dikkat matrisi 会在一次批量中填满──没有任何步骤依赖另一个步骤──GPUs 喜欢这一点──
+**Attention 是广播。**Kendine dikkat etmek için bir çift var .$(i, j)$Aynı zamanda hesaplama`output_i = sum_j(a_ij * v_j)`◊ Tüm N×N dikkat matrisi 会在一次批量中填满──没有任何步骤依赖另一个步骤──GPUs 喜欢这一点──
 
-**加速不是常数。**- Evet .`O(N)`Seri derinliği 和 `O(1)`Serial derinliği arasındaki farkı. Praktiki olarak, N=512 ve aynı sertede, transformörler her dönem için 510× hızla eğitim süresi; dizilerin uzunluğu arttıkça farklar dikkat çektiği kadar genişlemeye devam eder.`O(N²)`Hatırlama duvarı(Flash Dikkat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+**加速不是常数。**- Evet .$O(N)$Seri derinliği 和 $O(1)$Serial derinliği arasındaki farkı. Praktiki olarak, N=512 ve aynı sertede, transformörler her dönem için 510× hızla eğitim süresi; dizilerin uzunluğu arttıkça farklar dikkat çektiği kadar genişlemeye devam eder.$O(N^2)$Hatırlama duvarı(Flash Dikkat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
-**transformers 的代价。**Dikkat hafızası 按 `O(N²)`扩展──2K bağlamı 没问题──128K bağlamı 则需要滑窗、RoPE ekstrapolation、Flash Attention tileing,或线性注意的变量──Recurrence 在时间和内存上都是`O(N)`Transformers, zamanı kaydettikten sonra, zaman kazanmak için bir yolla geri dönüyor.
+**transformers 的代价。**Dikkat hafızası 按 $O(N^2)$扩展──2K bağlamı 没问题──128K bağlamı 则需要滑窗、RoPE ekstrapolation、Flash Attention tileing,或线性注意的变量──Recurrence 在时间和内存上都是$O(N)$Transformers, zamanı kaydettikten sonra, zaman kazanmak için bir yolla geri dönüyor.
 
 **Inductive bias 的转变。**RNN'ler 假设 lokality 和 recency──Transformers 不做假设 每对位置都是注意的候选人──这就是为什么变压器需要更多数据才能训练好,但一旦拥有足够的数据就能扩展得更远──Chinchilla(2022) bunu formalize:给定足够多的代币,Transformer 总是能击败相同的参数的RNN──
 
@@ -59,7 +59,7 @@ def attention_style(xs):
     return sum(xs) / len(xs)  # every x is independent
 ```
 
-RNN  sürümü O(N) olarak kullanılır ve tek bir CPU borusunu kullanır.`sum()`Bu, C'yi gerçekleştirmek için kullanılır ve her aşamada bir açıklayıcı üretilmez.
+Bu sayede 100 bin kişiye kadar uzunlukla bir dizi var.$O(N)$, ve tek CPU borusunu kullanmak. Hatta saf Python'da, dikkat tarzı azaltma uzunluğu ≥ 1,000 时也会胜出, çünkü Python `sum()`Bu, C'yi gerçekleştirmek için kullanılır ve her aşamada bir açıklayıcı üretilmez.
 
 ### 步骤 2: 计算理论操作
 
@@ -67,7 +67,7 @@ RNN  sürümü O(N) olarak kullanılır ve tek bir CPU borusunu kullanır.`sum()
 
 ### 步骤 3: 长序列 üzerindeki deneyimlerin genişletilmesi
 
-Bir zamanlama tablosunu yazdırırırız, O(N) ı farkı görülebilir hale getirir. 2026 Mac ı'nda, 1000'den az unsurun dizisi çok hızlı, ölçülmesi zor bir şekilde görülür. 100,000'in dizisi net bir çizgi tarama gösterir. 16.384 Token Transformer'e yayılır ve 12 katman LSTM fiyat modeli ile karşılaştırıldığında, 2016'da duvar saatini eğitmenin neden bir engel faktörü olduğunu anlayacaksınız.
+Bir zamanlama masası yazdırırırız, izin verin.$O(N)$差 görülebilir oldu. 2026 Mac'in 笔记本上, 1000'den az unsurun dizisi çok hızlı, ölçülmesi zor. 100.000'in dizisi net bir liner tarama gösterir. 16.384 Token Transformer'e genişletmek ve 12 katman LSTM gibi fiyat modelleri ile karşılaştırıldığında, 2016'da duvar saatini eğitmenin neden bir engel faktörü olduğunu anlayacaksınız.
 
 ## Kullan
 
@@ -80,7 +80,7 @@ Bir zamanlama tablosunu yazdırırırız, O(N) ı farkı görülebilir hale geti
 | 没有 matmul accelerator 的 edge device | Depthwise-separable RNN 在 FLOPs/watt 上仍然胜出 |
 | 其他任何情况（训练、batched inference、最高 128K 的 context） | Transformer |
 
-Mamba gibi devlet- uzay modelleri (SSM) aslında yapılandırılmış parametreye sahip RNN'ler, bu nedenle iki avantajı vardır:`O(N)`Skenasyon hafızası, ayrıca seçici tarama ile gerçekleştirilen paralel eğitimler. Daha iyi uzun bağlamlı ölçeklendirme ile %90'ın dönüştürücü kalitesini yeniden elde ettiler. 2026 yılına kadar, çoğu sınır laboratuvarı hibrit SSM+ dönüştürücü modellerini eğitmektedir.
+Mamba gibi devlet- uzay modelleri (SSM) aslında yapılandırılmış parametreye sahip RNN'ler, bu nedenle iki avantajı vardır:$O(N)$Skenasyon hafızası, ayrıca seçici tarama ile gerçekleştirilen paralel eğitimler. Daha iyi uzun bağlamlı ölçeklendirme ile %90'ın dönüştürücü kalitesini yeniden elde ettiler. 2026 yılına kadar, çoğu sınır laboratuvarı hibrit SSM+ dönüştürücü modellerini eğitmektedir.
 
 ## - Söyle.
 
@@ -98,11 +98,11 @@ Görüyorum .`outputs/skill-architecture-picker.md`◊ Bu beceri, uzunluğu, ür
 |------|-----------------|-----------------------|
 | Recurrence | “RNNs 是顺序的” | step `t` 依赖 step `t-1` 的计算方式，迫使执行沿时间轴串行进行。 |
 | Serial depth | “图有多深” | 依赖操作的最长链；即使在无限硬件上也会限制 wall-clock。 |
-| Attention | “让 Tokens 彼此查看” | Weighted sum `sum_j a_ij v_j`，其中 `a_ij` 来自位置 i 和 j 之间的相似度分数。 |
+| Attention | “让 Tokens 彼此查看” | Weighted sum $\sum_j a_{ij} v_j$，其中 $a_{ij}$ 来自位置 $i$ 和 $j$ 之间的相似度分数。 |
 | Context window | “模型能看到多少” | 一个 Attention layer 可作为输入的位置数量；quadratic memory cost 在这里扩展。 |
 | Inductive bias | “架构内置的假设” | 关于数据形态的先验；CNNs 假设 translation invariance，RNNs 假设 recency。 |
 | State-space model | “背后有代数的 RNN” | 为通过结构化 state-space matrices 实现并行训练而参数化的 recurrence。 |
-| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 `O(N²)`；Flash Attention 隐藏的是常数，而不是扩展规律。 |
+| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 $O(N^2)$；Flash Attention 隐藏的是常数，而不是扩展规律。 |
 
 ## 延伸阅读
 

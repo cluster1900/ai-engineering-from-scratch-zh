@@ -9,7 +9,7 @@
 
 ## 问题
 
-Bir 70B LLM H100 üzerinde bir token örneği 30 ms civarında. Bir 3B taslak modeli 3 ms civarında. Eğer 3B taslakı 5 token üretirse, 70B'nin sadece bir kez çalışmasına izin versin.`5×3 + 30 = 45 ms`, en fazla kabul edilebilir 5 Token; ve doğrudan üretimi gerekir `5×30 = 150 ms`︎ İşte Speküel Dekodlama'nın tam satış noktası: az miktarda ekstra GPU belleği ile değiştirmek için 24× daha düşük dekodlama gecikmesi︎
+Bir 70B LLM H100 üzerinde bir token örneği 30 ms civarında. Bir 3B taslak modeli 3 ms civarında. Eğer 3B taslakı 5 token üretirse, 70B'nin sadece bir kez çalışmasına izin versin.$5 \times 3 + 30 = 45$ms, en fazla 5 Token kabul edilebilir;`5×30 = 150 ms`︎ İşte Speküel Dekodlama'nın tam satış noktası: az miktarda ekstra GPU belleği ile değiştirmek için 24× daha düşük dekodlama gecikmesi︎
 
 关键在必须保留分布──Leviathan et al. (2023) 以及 Chen et al. 同期提出的投机性样本化保证输出序列与大模型单独生成时的分布**完全相同**                                                                                                                                                                                                                                                              
 
@@ -26,30 +26,30 @@ Bir 70B LLM H100 üzerinde bir token örneği 30 ms civarında. Bir 3B taslak mo
 
 ### 核心算法
 
-给定一个验证器 `M_q`Ve daha ucuz bir taslak.`M_p`- ...
+给定一个验证器 $M_q$Ve daha ucuz bir taslak.$M_p$- ...
 
-1. Yapmak`x_1..x_k`Çıktırılmış prefiks
-2. **Draft**: kullan `M_p`autoregressiv 提议 `d_{k+1}, d_{k+2}, ..., d_{k+N}`,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `p_1..p_N`- Evet.
-3. **并行 verify**: `x_1..x_k, d_{k+1}, ..., d_{k+N}`Bir kere çalışıyorum.`M_q`, konumunuzu bul .`k+1..k+N+1`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `q_1..q_{N+1}`- Evet.
-4. **从左到右 accept/reject 每个 draft token**Herkese:`i`,                `min(1, q_i(d_i) / p_i(d_i))`Kabul ediyorum.
-5. Yerinde`j`İlk reddedilme: Geri kalan dağılım.`(q_j - p_j)_+`Çeviri`t_j`- Evet.`j`Sonrasında tüm taslaklar atıldı.
-6. Eğer hepsi `N`个都被接受: 个`q_{N+1}`采样一个额外Token `t_{N+1}`(gratis bonus simgesi)
+1. Yapmak$x_1 \ldots x_k$Çıktırılmış prefiks
+2. **Draft**: kullan $M_p$autoregressiv 提议 $d_{k+1}, d_{k+2}, \ldots, d_{k+N}$,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $p_1 \ldots p_N$- Evet.
+3. **并行 verify**: $x_1 \ldots x_k, d_{k+1}, \ldots, d_{k+N}$Bir kere çalışıyorum.$M_q$, konumunuzu bul .$k+1 \ldots k+N+1$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $q_1 \ldots q_{N+1}$- Evet.
+4. **从左到右 accept/reject 每个 draft token**Herkese:$i$,                $\min(1, q_i(d_i) / p_i(d_i))$Kabul ediyorum.
+5. Yerinde$j$İlk reddedilme: Geri kalan dağılım.$(q_j - p_j)_+$Çeviri$t_j$- Evet.$j$Sonrasında tüm taslaklar atıldı.
+6. Eğer hepsi $N$个都被接受: 个$q_{N+1}$采样一个额外Token $t_{N+1}$(gratis bonus simgesi)
 
-Geri kalan dağılım bu teknik , çıkış dağılımını ve `M_q`Bu, tamamen uyumlu bir matematik anlayışıdır.
+Geri kalan dağılım bu teknik , çıkış dağılımını ve $M_q$Bu, tamamen uyumlu bir matematik anlayışıdır.
 
 ### Ne karar verir hızlandırmak
 
-Yapmak`α`= Her bir taslak token'un kabul oranı `c`= taslak ve denetleyiciler arasındaki maliyet oranı──
+Yapmak$\alpha$= Her bir taslak token'un kabul oranı $c$= taslak ve denetleyiciler arasındaki maliyet oranı──
 
 - Saçma nesil her bir token 1 büyük model çağrısı gerektirir.
-- - Evet .`α`Çok yüksek zaman, Tahminler her gün.`(1 - α^{N+1}) / (1 - α) ≈ 1/(1-α)`Bir tane büyük model çağrısı gerekiyor.
+- - Evet .$\alpha$Çok yüksek zaman, Tahminler her gün.$(1 - \alpha^{N+1}) / (1 - \alpha) \approx 1/(1-\alpha)$Bir tane büyük model çağrısı gerekiyor.
 
-- Evet .`α = 0.75`Ve`N = 5`时,典型体验法则是:大型调用 减少 3×──草案成本是5×便宜──总体壁表 约下降2.5×──
+- Evet .$\alpha = 0.75$Ve$N = 5$时,典型体验法则是:大型调用 减少 3×──草案成本是5×便宜──总体壁表 约下降2.5×──
 
-**α 取决于：**
+**$\alpha$ 取决于：**
 
-- Verifiyeci'nin yaklaşım derecesi, aile/öğrenim verileri ile birlikte önemli ölçüde artar.
-- Dekodlama stratejisi。Kırgın taslakçısı:α 高。Hava örneklemesi:更难匹配; kabul 下降。
+- Verifiyeci'nin yaklaşım derecesi, aile/öğrenim verileri ile birlikte önemli ölçüde arttı.$\alpha$- Evet.
+- Açgözlü verifikatör için açgözlü taslak:$\alpha$高── sıcaklık örneklemesi:更难匹配; kabul 下降──
 - Görev tipi──Kod ve yapılandırılmış çıktı 接受更多(更可预测);自由形式创意写作接受更少──
 
 ### Medusa  没有草案模型 的草案
@@ -76,7 +76,7 @@ EAGLE-3 (2025)
 
 ### KV önbelleği dansı
 
-Verifikasyon İzleyici`N`个草案代码在一次前进通中给验证器──这将把验证器的KV缓存扩展`N`项── Eğer bazı taslaklar reddedildiyse, öntanımlı öntanımların uzunluğuna geri dönmelisiniz.
+Verifikasyon İzleyici$N$个草案代码在一次前进通中给验证器──这将把验证器的KV缓存扩展$N$项── Eğer bazı taslaklar reddedildiyse, öntanımlı öntanımların uzunluğuna geri dönmelisiniz.
 
 生产实现(vLLM 的 `--speculative-model`、TensorRT-LLM'in LookaheadDecoder) tarafından çizim KV tamponları 处理 this thing──先写入,接受时再 commit──概念上不难,但细节很繁──
 
@@ -185,7 +185,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 **什么时候不要 spec-decode：**
 
 - Sadece 15 个 Token'in tek sıralı nesil üretmek.
-- 极具创意 / Yüksek sıcaklık örneklemesi ((α 会下降)
+- 极具创意 / Yüksek sıcaklık örneklemesi($\alpha$会下降) 〜
 - Hatıra kısıtlı uygulamalar (Draft Model 会增加 VRAM)
 
 ## - Söyle.
@@ -195,7 +195,7 @@ Görüyorum .`outputs/skill-spec-decode-picker.md`◊ bu beceri 会为新推断�
 ## 练习
 
 1. **Easy。**运行  İşlem`code/main.py`❖ Haklılık ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖  ❖
-2. **Medium。**- Evet .`α = 0.5, 0.7, 0.85`, çizim hızlandırması( her büyük model ileriye doğru`N`                                                                                                                                                                                                                                                              `N`▽(Tip: ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽`(1 - α^{N+1}) / (1 - α)`◊)
+2. **Medium。**- Evet .$\alpha = 0.5, 0.7, 0.85$, çizim hızlandırması( her büyük model ileriye doğru$N$Değişiklikler... Her birini bul.$\alpha$En iyisi$N$▽(Tip: ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽ ▽$(1 - \alpha^{N+1}) / (1 - \alpha)$◊)
 3. **Hard。**实现一个小的梅杜萨:取课14的结石GPT,添加3个额外的LM头,分别预测位置 t+2、t+3、t+4──在小摇钱树上用联合多头损失训练──与通过截断同一个模型得到的香草草草案比较接受率──
 4. **Hard。**实现 rollback: from a 10-token prefix KV cache 开始,入 5 草案代币,模拟在位置 3 প্রত্যাখ্যান──验证下一轮代时你的缓存 读取结果正确匹配 "prefix + ilk 2 kabul edilen taslak"──
 
@@ -205,7 +205,7 @@ Görüyorum .`outputs/skill-spec-decode-picker.md`◊ bu beceri 会为新推断�
 |------|-----------------|-----------------------|
 | Draft model | “便宜的那个” | 一个更小的模型，用于提出候选 Token；通常比 verifier 便宜 10–50×。 |
 | Verifier | “大的那个” | 我们要保留其分布的目标模型；每个 speculative step 运行一次。 |
-| Acceptance rate (α) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
+| Acceptance rate ($\alpha$) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
 | Residual distribution | “rejection fallback” | 归一化后的 `(q - p)_+`；rejection 时从这里采样可保留 verifier 的分布。 |
 | Bonus token | “免费的那个” | 当全部 N 个 draft 被接受时，从 verifier 的 next-step distribution 再采样一个。 |
 | Medusa | “Draft-less speculative” | verifier 上的多个 LM heads 并行预测位置 t+1..t+k。 |

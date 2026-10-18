@@ -9,13 +9,13 @@
 
 ## 问题
 
-Bir basit kendi kendine geri dönüş decoder üretildi`N`个代币 需要做 `O(N²)`工作: Her adım tamamen ön plana yeniden hesaplanır. 4K-token tepkisi için 16M kez dikkat 运算 anlamına gelir. Bunların çoğu reduktifdir.
+Bir basit kendi kendine geri dönüş decoder üretildi$N$个代币 需要做 $O(N^2)$工作: Her adım tamamen ön plana yeniden hesaplanır. 4K-token tepkisi için 16M kez dikkat 运算 anlamına gelir. Bunların çoğu reduktifdir.
 
 Ayrıca, dikkat, kendi içinde büyük miktarda veri taşımayacaktır. Standart dikkat, bir N×N puan matrisi, N×d softmax çıkışı, N×d son çıkışı, HBM'nin okuma süresi için çok fazla olacaktır. N≥2K için, dikkat önce FLOP'den ziyade hafıza bağlanmış olacaktır.
 
 Dao et al.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
-1. **KV cache。**存储 her ön  token'in K ve V vektörleri── her yeni token'ın dikkatleri 缓存 anahtarlarının hesaplanması için bir sorguydu── her nesil adımından gelen bir önerme `O(N²)`降到 `O(N)`- Evet.
+1. **KV cache。**存储 her ön  token'in K ve V vektörleri── her yeni token'ın dikkatleri 缓存 anahtarlarının hesaplanması için bir sorguydu── her nesil adımından gelen bir önerme $O(N^2)$降到 $O(N)$- Evet.
 2. **Flash Attention。**Dikkat  hesaplama yapmak, tam N×N matrisi  asla HBM'ye girmeyecek ⋅ tüm yumuşak maksimum + matmul SRAM'da tamamlanmıştır ⋅ A100'de duvar saati hızlandırması 24×; FP8'in H100'inde 510×。
 
 2026 yılına kadar, her ikisi de genel bir konuma sahip olmuştur. Her üretim aşamasında, Flash Dikkatini etkinleştirilmiştir.
@@ -78,7 +78,7 @@ for each block of Q (tile size ~128 × 128):
     write O_tile to HBM
 ```
 
-Her tek tek tek tek bir HBM'ye ihtiyaç var.`O(N²)`降到 `O(N)`❖ Geri geçiş, ileri geçişten geri geçişin değerlerini yeniden hesaplamak yerine, hepsini geri bırakmak için kullanılır.
+Her tek tek tek tek bir HBM'ye ihtiyaç var.$O(N^2)$降到 $O(N)$❖ Geri geçiş, ileri geçişten geri geçişin değerlerini yeniden hesaplamak yerine, hepsini geri bırakmak için kullanılır.
 
 **数值技巧。**Softmax                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `(max, sum)`, bu nedenle nihai birleştirme doğru değildir. Bu, hesaplanan çıkışın standart dikkat bitine benzer olması için yapılır.
 
@@ -127,8 +127,8 @@ flash-attention-memory
 
 Görüyorum .`code/main.py`❖ Biz gerçekleştirmek:
 
-1. Bir basit şey.`O(N²)`Gelişmiş dekodör.
-2. Bir tane .`O(N)`KV-cached decoder。
+1. Bir basit şey.$O(N^2)$Gelişmiş dekodör.
+2. Bir tane .$O(N)$KV-cached decoder。
 3. Bir Flash dikkat çalıştırma maksimum algoritması benzerlik softmax.
 
 ### 步骤 1: KV önbelleği
@@ -175,7 +175,7 @@ def tiled_softmax_dot(q, K, V, tile=4):
 
 ### 步骤 3: 在 100 token nesli 上比较 naïve vs. önbelleğe kodlama
 
-统计注意 操作数。 Naive:`O(N²)`= 5050♦ Kaydedilmiş:`O(N)`= 100¬代码会打印二者¬
+统计注意 操作数。 Naive:$O(N^2)$= 5050♦ Kaydedilmiş:$O(N)$= 100¬代码会打印二者¬
 
 ## Kullan
 

@@ -29,25 +29,25 @@ Bu bir kelime çantası modeli değil. Ama dil, kod, ses, video ve anlam taşıy
 
 预先计算一个形 为 `(max_len, d_model)`Düzgün Matrix`PE`- ...
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 Sonra dikkat  önce gerçekleştirmek `X' = X + PE[:N]`◊ her boyut farklı frekanslı sinusoidlerdir.`max_len`后会失败:当模型只见过位置02047 时,没有什么告诉它位置2048 会发生什么──
 
 ### RoPE
 
-旋转 Q 和 K vektörleri( gömülmemiş)。对对对 boyutları `(2i, 2i+1)`- ...
+旋转 Q 和 K vektörleri( gömülmemiş)。对对对 boyutları $(2i, 2i+1)$- ...
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-Pozisyon için`pos_k`应用相同旋转──dot product `q'_m · k'_n`Sadece bağımlılıktan dönmüş olacağım.`(m - n)`Bu da bir ifade.**attention score 只依赖 relative distance**, dönme mutlak pozisyonlar tarafından gösterilmesine rağmen.
+Pozisyon için`pos_k`应用相同旋转──dot product $q'_m \cdot k'_n$Sadece bağımlılıktan dönmüş olacağım.$(m - n)$Bu da bir ifade.**attention score 只依赖 relative distance**, dönme mutlak pozisyonlar tarafından gösterilmesine rağmen.
 
 扩展 RoPE: 可以缩放 `base`(NTK-aware、YaRN、LongRoPE), böylece yeniden eğitilmemiş durumda daha uzun bağlamlara kadar ekstrapolasyon yapılır.
 
@@ -55,11 +55,11 @@ Pozisyon için`pos_k`应用相同旋转──dot product `q'_m · k'_n`Sadece ba
 
 跳过嵌入 技巧──直接给注意分加偏见:
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-İçlerinden `m_h`Başın özel bir yamacıdır.`1 / 2^(8·h/H)`)。 Yakınlık tokenleri  güçlendirilmiş; uzaklık tokenleri  ceza görmüş。 hiç eğitim zaman maliyeti。
+İçlerinden $m_h$Başın özel bir yamacıdır.$1 / 2^{8h/H}$)。 Yakınlık tokenleri  güçlendirilmiş; uzaklık tokenleri  ceza görmüş。 hiç eğitim zaman maliyeti。
 
 ### 2026 yılında ne seçilecek?
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键: pozisyon karşısında `m`                 `n`K  uygulaması aynı işlevi ve nokta ürünü her koordinat çiftinde bir tane elde eder.`cos((m-n)·θ_i)`Çünkü çocuk.
+关键: pozisyon karşısında $m$                 $n$K  uygulaması aynı işlevi ve nokta ürünü her koordinat çiftinde bir tane elde eder.$\cos((m-n) \cdot \theta_i)$Çünkü çocuk.
 
 ### Adım 3: ALiBi yamaçları 和 tarafsızlık
 
@@ -169,7 +169,7 @@ Görüyorum .`outputs/skill-positional-encoding-picker.md`◊ bu beceri, hedef b
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |

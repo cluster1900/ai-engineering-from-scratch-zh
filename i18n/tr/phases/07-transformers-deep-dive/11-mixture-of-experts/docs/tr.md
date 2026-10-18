@@ -11,7 +11,7 @@
 
 Dense Transformer flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow flow 
 
-Uzmanların karışımı bu bağlantıyı kopardı.`E`个独立专家 + 一个为每个代币 选择 `k`个专家的路由器──总参数 = `E × FFN_size`△ Her Token'in aktif参数 sayısı = `k × FFN_size`❖2026'da tipik bir konut:`E=256`- Evet .`k=8`❖ Depolama`E`扩展,计算随 `k`扩展──
+Uzmanların karışımı bu bağlantıyı kopardı.$E$个独立专家 + 一个为每个代币 选择 $k$个专家的路由器──总参数 = $E \times \text{FFN size}$△ Her Token'in aktif参数 sayısı = $k \times \text{FFN size}$❖2026'da tipik bir konut:$E=256$- Evet .$k=8$❖ Depolama$E$扩展,计算随 $k$扩展──
 
 2026 yılının sınırı  neredeyse tamamı MoE:DeepSeek-V3(671B toplam / 37B aktif) 、Mixtral 8×22B、Qwen2.5-MoE、Llama 4、Kimi K2、gpt-oss──
 
@@ -46,7 +46,7 @@ Her uzman bağımsız bir FFN (genellikle SwiGLU) ⋅ yönlendiricisi tek bir ha
 Eğer yönlendiricinin %90'ı bir uzmanı 3'e geçse diğer uzmanlar açlıktan ölecek.
 
 1. **Auxiliary load-balancing loss**(Switch Transformer、Mixtral) ―― Bir uzmanı ile birleştirir.
-2. **Expert capacity + token dropping**(Önce Değiş)  Her uzmanın en son işlemi`C × N/E`个Token;溢出的Token 跳过该层──会损害质量──
+2. **Expert capacity + token dropping**(Önce Değiş)  Her uzmanın en son işlemi$C \times N/E$个Token;溢出的Token 跳过该层──会损害质量──
 3. **Auxiliary-loss-free balancing**(DeepSeek-V3)──Add a can-learner bias, used to shift router's top-k choice──bias in training loss 外部更新──不对主目标添加惩罚──这是2024年重要突破──
 
 DeepSeek-V3 uygulaması: Her eğitim aşamasının ardından, her uzmanın kullanım oranının yüksek veya düşük olduğunu kontrol edin.`±γ`微调偏──选择时使用 `scores + bias`◊ Giriş için kullanılan uzman olasılıkları  hala kullanın değiştirilmemiş orijinal `scores`Bu yönlendirme ile ifade 解──
@@ -59,7 +59,7 @@ DeepSeek-V2/V3 ayrıca uzmanları ayırarak *shared* ve *routed*── her token
 
 经典 MoE(GShard、Switch): Her uzman 和完整FFN 一样宽──`E`较小(8-64),`k`较小(1-2)。
 
-现代 ince tanelerli MoE(DeepSeek-V3、Qwen-MoE): her uzman 更狭(1/8 FFN boyut)`E`Çok büyük.`k`Daha büyük ((8+) ◊总参数 aynı, fakat组合数扩展快得多。`C(256, 8) = 400 trillion`种可能的每 Token 专家──质量提升,延迟 保持不变──
+现代 ince tanelerli MoE(DeepSeek-V3、Qwen-MoE): her uzman 更狭(1/8 FFN boyut)$E$Çok büyük.$k$Daha büyük ((8+) ◊总参数 aynı, fakat组合数扩展快得多。$\binom{256}{8} \approx 400$Milyarlarca tane tane token var.
 
 ### 成本画像
 
@@ -160,7 +160,7 @@ model = AutoModelForCausalLM.from_pretrained("mistralai/Mixtral-8x22B-v0.1")
 | Auxiliary-loss-free | “DeepSeek-V3 的技巧” | 只在 router 的 selection 上通过 per-expert bias 实现 balance；没有额外 Gradient。 |
 | Shared expert | “Always on” | 每个 Token 都会经过的额外 expert；捕获通用知识。 |
 | Expert parallelism | “按 expert 分片” | 将不同 experts 分配到不同 GPUs；通过网络 route tokens。 |
-| Sparsity | “active params < total params” | 比率 `k × expert_size / (E × expert_size)`；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
+| Sparsity | “active params < total params” | 比率 $k \times \text{expert size} / (E \times \text{expert size})$；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
 
 ## 延伸阅读
 

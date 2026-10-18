@@ -15,7 +15,7 @@ Tüm dizide bir sonraki aşama boyunca bir sonraki aşama boyunca bir sonraki a�
 
 Sebep maskesini yapmak işte bu.`-inf`值組成的上三角矩陣, softmax 之前加到注意分上──softmax 之后, bu konumlar 0 になる──每位置只能到自己和更早的位置出席──因为你把它一次性应用到整个序列上,所以一次性前进传就能得到N 个并行的下一个标记预测──
 
-GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   bunlar sadece dekodörlü sebepçi transformatörlerdir, çekirdek döngüsü aynı¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2025), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   bunlar sadece dekodörlü sebepçi transformatörlerdir, çekirdek döngüsü aynı¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
 
 ## 概念
 
@@ -23,16 +23,53 @@ GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Ll
 
 ### maske
 
-给定长度为 `N`Bir dizi oluşturun.`N × N`matris:
+给定长度为 $N$Bir dizi oluşturun.$N \times N$matris:
 
-```
-M[i, j] = 0       if j <= i
-M[i, j] = -inf    if j > i
+```math
+M_{ij} = \begin{cases} 0 & \text{若 } j \le i \\ -\infty & \text{若 } j > i \end{cases}
 ```
 
-Hızlı bir şekilde,`M`Üstüne ilk dikkat puanları.`exp(-inf) = 0`, maske konumunun katkısı ağırlığı sıfırdır. Dikkat matrisi'nin her satırı sadece önceki konumların olasılık dağılımına yöneliktir.
+Hızlı bir şekilde,`M`Üstüne ilk dikkat puanları.$\exp(-\infty) = 0$, maske konumunun katkısı ağırlığı sıfırdır. Dikkat matrisi'nin her satırı sadece önceki konumların olasılık dağılımına yöneliktir.
 
 实现成本: bir kere `torch.tril()`调用──计算时间:纳秒级── tüm alanın etkisine:一切──
+
+### Üç köşeler
+
+Maske genellikle dikkat üzerinde bir ekleme olarak konuşulur. Tersine, bu artık gizemli bir şey değildir: dikkat, önce ortalama üçüncü gelişme, üçgen ise sadece ortalama işlemin döngüsünün sınırını bir matç olarak yazır.
+
+**阶段 1：前缀平均。**En basit sırada sonuç özet: konum $i$变为位置 $0 \ldots i$⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒  ⇒ ⇒     ⇒ ⇒       ⇒        ⇒                                                                                                                                                                                                                                                                                  `out[i] = X[:i+1].mean(0)`△ Aynı hesaplama bir matron çarpı ile de yapılabilir. Bir elementin 1'nin aşağı üç köşesiyle, her satırın bu satırın element sayısı ile ayrılırken tekrar çarpı:
+
+```python
+import numpy as np
+
+A = np.tril(np.ones((n, n)))
+A = A / A.sum(axis=1, keepdims=True)
+out = A @ X
+```
+
+$A$- Evet .$i$行是 $[1/(i+1), \ldots, 1/(i+1), 0, \ldots, 0]$◊ Kısayolların üzerinde hiçbir şey yok.
+
+**阶段 2：学习权重。**均平均把过去每 token都视为同等重要──用学到的分数矩阵 `S`Bu sırada her satır doğal olarak 1 olarak kullanılmaya devam eder. Bu nedenle, sayı olarak ayırmak yerine her satır için yumuşak maksimum kullanın.`-inf`Çünkü ...`exp(-inf) = 0`- ...
+
+```python
+def softmax(x, axis):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
+
+S = S + np.triu(np.full((n, n), -np.inf), k=1)
+A = softmax(S, axis=1)
+out = A @ X
+```
+
+Aynı üçgen, aynı yol, aynı matmul, aynı zamanda sadece bir matmul.`-inf`Maske yeni bir mekanizma değil, sadece aşama 1'nin sıfır elementlerini softmax'in giriş alanına dönüştürmek.
+
+**阶段 3：依赖内容的权重。**2. aşamada,`S`Eğitim sonrası sabitlenme: Tokenlerin içeriği ne olursa olsun, pozisyon 7 pozisyon 3'ün ağırlığı her zaman aynıdır.`S = Q @ K.T / sqrt(d_k)`△ diğer kısım tamamen değişmez. Maske ∞ yumuşak ∞ , daha da aynı süreçtir.
+
+Üç aşama, bir değişmezlik: Aşağı üç köşeler sıradan bir sıradan bir sıraya katlanır. Ortalama  Ortalama  Öğrenilen duruş ağırlığı  İçeriğin ağırlığı  bağımlılığı  Maske  Daha sonra dikkat üzerine eklenmedi.
+
+```figure
+mask-derivation
+```
 
 ### Eğitim, eğitim ve öneriler
 
@@ -82,10 +119,6 @@ causal-mask
 ```
 
 
-```figure
-mask-derivation
-```
-
 ## Yapın onu.
 
 ### 步骤 1: sebep maskası
@@ -134,7 +167,7 @@ print(tok.decode(out[0]))
 
 Alt katta,`generate()`运行前行,取出最后位置 logits,sample 下一个代币,追加它,然后重复──每个生产级 LLM inference stack(vLLM, TensorRT-LLM, llama.cpp, Ollama, MLX)都用重度优化实现同一个循环 批量预填、持续批量、KV缓存页面、投机解码──
 
-**GPT vs BERT，各用一句话：**GPT 预测 `P(x_t | x_{<t})`│BERT 预测 │`P(x_masked | x_unmasked)`◊ kayıp modelin üretilebilmeyeceğini belirler.
+**GPT vs BERT，各用一句话：**GPT 预测 $P(x_t \mid x_{<t})$│BERT 预测 │$P(x_{\text{masked}} \mid x_{\text{unmasked}})$◊ kayıp modelin üretilebilmeyeceğini belirler.
 
 ## - Söyle.
 
@@ -154,8 +187,8 @@ Görüyorum .`outputs/skill-sampling-tuner.md`◊ Bu beceri yeni nesil görevi i
 | Next-token prediction | “loss” | 模型在每个位置上的分布与真实下一个 token 之间的 cross-entropy。 |
 | Autoregressive | “一次生成一个” | 将输出反馈为输入；并行性只存在于训练阶段，不存在于生成阶段。 |
 | Logits | “pre-softmax scores” | softmax 之前 LM head 的原始输出；sampling 就发生在这些值上。 |
-| Temperature | “创造力旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = uniform。 |
-| Top-p | “Nucleus sampling” | 将分布截断为累计和 ≥p 的最小集合；从剩余部分 sample。 |
+| Temperature | “创造力旋钮” | 将 logits 除以 $T$；$T \to 0$ = greedy，$T \to \infty$ = uniform。 |
+| Top-p | “Nucleus sampling” | 将分布截断为累计和 $\ge p$ 的最小集合；从剩余部分 sample。 |
 | Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 tokens；会根据分布尖锐程度调整 cutoff。 |
 | Speculative decoding | “draft + verify” | 便宜模型提出 N 个 tokens；大模型并行验证。 |
 | Teacher forcing | “训练技巧” | 训练时输入真实的前一个 token，而不是模型的预测。每个 seq2seq LM 的标准做法。 |

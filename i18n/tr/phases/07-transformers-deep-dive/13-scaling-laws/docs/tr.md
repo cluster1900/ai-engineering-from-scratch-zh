@@ -30,22 +30,24 @@ Hoffmann et al. (2022)  Chinchilla'nın küçük model ailesinin adıyla bir gru
 
 Chinchilla'dan alınan makalede, Kayıp aşağıdakileri içerir:
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N`= 参数(非 Embedding)
-- `D`= 訓練 Token。
-- `α ≈ 0.34`- Evet .`β ≈ 0.28`(大致对称)
-- `E ≈ 1.69`- Kayıplar.
-- `A ≈ 406`- Evet .`B ≈ 411`- Evet.
+- $N$= 参数(非 Embedding)
+- $D$= 訓練 Token。
+- $\alpha \approx 0.34$- Evet .$\beta \approx 0.28$(大致对称)
+- $E \approx 1.69$- Kayıplar.
+- $A \approx 406$- Evet .$B \approx 411$- Evet.
 
-                                                                                                                                                                                                                                                              `N`求导并求解:
+随着扩张,两个项会彼此权衡──在固定计算中($C = 6ND$) aşağı $N$求导并求解:
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 Hesaplama-optimal: her parametre 20 Token
@@ -91,7 +93,7 @@ scaling-laws
 
 ## Yapın onu.
 
-Görüyorum .`code/main.py`❖ Çincilla Kayıp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `(N, D)`- Evet.
+Görüyorum .`code/main.py`❖ Çincilla Kayıp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $(N, D)$- Evet.
 
 ### 步骤 1: Chinchilla kaybı
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-Düzgün`C = 6ND`Aşağı, geleceğim`L`Çizim için`(N, D)`Yukarıdaki en düşük değerleri bul.
+Düzgün$C = 6ND$Aşağı, geleceğim$L$Çizim için$(N, D)$Yukarıdaki en düşük değerleri bul.
 
 ### 步骤 2: 计算最优边界
 
- için `1e17`- Ne ?`1e25`FLOPs'in hesaplama  bütçe, bulmak `6ND = C`Aşağıda Kalanın Minimumlanması`(N, D)`❖ Test oranı `D/N ≈ 20`- Evet.
+ için `1e17`- Ne ?`1e25`FLOPs'in hesaplama  bütçe, bulmak $6ND = C$Aşağıda Kalanın Minimumlanması$(N, D)$❖ Test oranı $D/N \approx 20$- Evet.
 
 ### 步骤 3: aşırı eğitim maliyeti
 
@@ -134,9 +136,9 @@ Görüyorum .`outputs/skill-training-budget-estimator.md`Bu beceriler, belirli b
 
 ## 练习
 
-1. **Easy.**运行  İşlem`code/main.py`△打印 预算 `1e20`- Evet.`1e22`- Evet.`1e24`Aşağıdaki Chinchilla-optimal `(N, D)`                                                                                                                                                                                                                                                              
-2. **Medium.**实现 Hoffmann Loss-as-function-of-compute 曲线──为 compute-optimal sınır 绘制 Loss vs `log10(C)`◊ bu yasayı tanımak                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `>10^28`FLOPs 才能让交叉 Entropi 再降低 0.1──
-3. **Hard.**Aynı veri kümesi içinde 5 küçük model eğitimi (100K'ye 10M'lik parametre) kendi ölçekleme yasasına uygun olarak.`α`和 `E`◊ İndeksiniz yayınlanan sonuçlarla nasıl uyumludur?
+1. **Easy.**运行  İşlem`code/main.py`△打印 预算 `1e20`- Evet.`1e22`- Evet.`1e24`Aşağıdaki Chinchilla-optimal $(N, D)$                                                                                                                                                                                                                                                              
+2. **Medium.**实现 Hoffmann Loss-as-function-of-compute 曲线──为 compute-optimal sınır 绘制 Loss vs `log10(C)`◊ bu yasayı tanımak                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $>10^{28}$FLOPs 才能让交叉 Entropi 再降低 0.1──
+3. **Hard.**Aynı veri kümesi içinde 5 küçük model eğitimi (100K'ye 10M'lik parametre) kendi ölçekleme yasasına uygun olarak.$\alpha$和 $E$◊ İndeksiniz yayınlanan sonuçlarla nasıl uyumludur?
 
 ## 关键术语
 
@@ -147,7 +149,7 @@ Görüyorum .`outputs/skill-training-budget-estimator.md`Bu beceriler, belirli b
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 
