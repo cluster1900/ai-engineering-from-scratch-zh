@@ -39,15 +39,15 @@ features += weight_a * control_a(depth) + weight_b * control_b(pose)
 
 ### 劳拉 (Hu等,2021年)
 
-对于模型中任意的线性层`W ∈ R^{d×d}`结 `W`并添加一个低级的三角形:
+对于模型中任意的线性层$W \in \mathbb{R}^{d \times d}$结 $W$并添加一个低级的三角形:
 
+```math
+W' = W + \Delta W, \quad \Delta W = B A, \quad A \in \mathbb{R}^{r \times d}, \quad B \in \mathbb{R}^{d \times r}
 ```
-W' = W + ΔW,  ΔW = B @ A,  A ∈ R^{r×d},  B ∈ R^{d×r}
-```
 
-其中`r << d`对注意,说,排名4-16是标准配置;对重量细调,说,排名64-128更常见.`2 · d · r`没有什么.`d²`为了`d=640`为了让我们能得到更多的帮助,`r=16`时每个适配器只有20k参数,而不是410k,减少了20x──放到整个模型上,一个LoRA通常是20-200MB,而基础是5GB──
+其中$r \ll d$对注意,说,排名4-16是标准配置;对重量细调,说,排名64-128更常见.$2 \cdot d \cdot r$没有什么.$d^2$为了$d=640$为了让我们能得到更多的帮助,$r=16$时每个适配器只有20k参数,而不是410k,减少了20x──放到整个模型上,一个LoRA通常是20-200MB,而基础是5GB──
 
-在推断时,你可以缩小LORA:`W' = W + α · B @ A`,我知道.`α = 0.5-1.5`很常见. 许多LoRA会以加法方式叠加.
+在推断时,你可以缩小LORA:$W' = W + \alpha \cdot B A$,我知道.$\alpha = 0.5\text{-}1.5$很常见. 许多LoRA会以加法方式叠加.
 
 ### 适应器 (Ye et al., 2023)
 
@@ -75,7 +75,7 @@ v4-controlnet-zero
 
 `code/main.py`在1D上模拟这两种机制:
 
-1. **LoRA。**一个预训练的线性层`W`结它训练一个低级的`B @ A`让`W + BA`匹配目标线性层――展示`r = 1`足以完美学习一个级-1的纠正.
+1. **LoRA。**一个预训练的线性层$W$结它训练一个低级的$BA$让$W + BA$匹配目标线性层――展示$r = 1$足以完美学习一个级-1的纠正.
 
 2. **ControlNet-lite。**一个结的基础预测器,以及一个读取额外信号的 侧网络──侧网络的输出由一个初始化为零的可学习标量门控制 (我们的零-conv 版本) ──训练并观察门 逐步升高──
 
@@ -99,11 +99,11 @@ h = base(x) + gated
 
 ## 常见坑
 
-- **LoRA 过度缩放。** `α = 2`或`α = 3`是常见的让它更强大的,但会产生过度风格化或损坏的输出.`α ≤ 1.5`,我知道.
+- **LoRA 过度缩放。** $\alpha = 2$或$\alpha = 3$是常见的让它更强大的,但会产生过度风格化或损坏的输出.$\alpha \le 1.5$,我知道.
 - **ControlNet weight 冲突。**同时使用量 1.0 的Pose ControlNet和量 1.0 的Deepth ControlNet通常会冲冲.权重总和 ≈ 1.0 是安全默认值.
 - **LoRA 用在错误的 base 上。**由于注意力尺寸不匹配,SDXL LoRA 在SD 1.5 上会静默无操作.
 - **Textual Inversion 漂移。**在一个检查点上训练的代币,转换到另一个检查点会严重漂移.
-- **LoRA weight-merging 和存储。**您可以将LoRA烤到基模型中重量,以获得更快的推断,但会在运行时间中失去缩小.`α`能力──保留两个版本──
+- **LoRA weight-merging 和存储。**您可以将LoRA烤到基模型中重量,以获得更快的推断,但会在运行时间中失去缩小.$\alpha$能力──保留两个版本──
 
 ## 使用它
 
@@ -126,7 +126,7 @@ h = base(x) + gated
 
 1. **Easy。**在`code/main.py`中,将洛拉级`r`从1变到4......LoRA在哪个级别下可以精确匹配的2级目标三角形?
 2. **Medium。**在两个目标转变中,上训练两个独立的LORA.将它们一起加载,并展示它们的加法交互.
-3. **Hard。**使用扩散器 叠加:SDXL-base + Canny-ControlNet(重量0.8) + 一个风格LoRA(α 0.8) + IP-Adapter(重量0.6) ・・・随着堆重量变化,测量FID-vs即时-附属性交易──
+3. **Hard。**使用扩散器 叠加:SDXL-base + Canny-ControlNet(重量0.8)+ 一个风格LoRA($\alpha$随着堆积重量变化,测量FID-vs即时-附属性交易.
 
 ## 关键术语
 
@@ -134,9 +134,9 @@ h = base(x) + gated
 |------|------------|------------------|
 | ControlNet | "Spatial control" | 克隆 encoder + zero-conv skips；读取一张 conditioning image。 |
 | Zero convolution | "Starts as identity" | 初始化为零的 1×1 conv；ControlNet 一开始是 no-op。 |
-| LoRA | "Low-rank adapter" | `W + B @ A`，`r << d`；比 full fine-tune 少 100x 参数。 |
+| LoRA | "Low-rank adapter" | $W + BA$，$r \ll d$；比 full fine-tune 少 100x 参数。 |
 | rank r | "The knob" | LoRA 压缩；典型值为 4-16，重度个性化使用 64+。 |
-| α | "LoRA strength" | LoRA delta 的 runtime scaling。 |
+| $\alpha$ | "LoRA strength" | LoRA delta 的 runtime scaling。 |
 | IP-Adapter | "Reference image" | 通过 CLIP-image tokens 实现的小型 image-conditioning adapter。 |
 | DreamBooth | "Full subject fine-tune" | 在约 ~30 张主体图像上训练完整模型。 |
 | Textual Inversion | "New token" | 只学习一个新的 word embedding；旧方案，大多已被替代。 |
@@ -145,7 +145,7 @@ h = base(x) + gated
 
 一个真实的文本到图像SaaS会在同一基点上服务数百个LoRA 和十几个控制网――服务 问题很像LLM多租的(生产文献中在连续批量和LoRAX / S-LoRA 下讨论LLM场景):
 
-- **Hot-swap LoRAs，不要 merge。**将`W' = W + α·B·A`合并到底,可以让每一步推断 快约~35%,但会结`α`作为R级海域热载在VRAM中;`pipe.load_lora_weights()`其他`pipe.set_adapters([...], adapter_weights=[...])`按要求激活.`2 · d · r · num_layers`体重,即MB级,亚秒级.
+- **Hot-swap LoRAs，不要 merge。**将$W' = W + \alpha \cdot B \cdot A$合并到底,可以让每一步推断 快约~35%,但会结$\alpha$作为R级海域热载在VRAM中;`pipe.load_lora_weights()`其他`pipe.set_adapters([...], adapter_weights=[...])`按要求激活.`2 · d · r · num_layers`体重,即MB级,亚秒级.
 - **ControlNet 作为第二条 attention lane。**克隆的编码器与基层并行运行――两个重量都为 1.0 的控制网 = 每步两次额外前进通过,而不是一次合并的通过――批量大小的头 会第二次下降――为每一个活跃的控制网 预算约为 ~1.5 × 步骤成本――
 - **Quantized LoRAs 也适用。**如果您量化了基数,请见课07号,Flux在8GB上),LoRA 德尔塔也能干净地量化到8位或4位.
 

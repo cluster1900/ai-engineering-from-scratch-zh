@@ -21,7 +21,7 @@
 
 ### 视频显示器
 
-需要一个**multi-scale discrete Tokenizer**△对于图像x,它会产生一系列的分辨率逐渐提高的标志格:
+需要一个**multi-scale discrete Tokenizer**对于图像$x$它们会产生一系列的分辨率逐渐提高.
 
 ```
 x -> encoder -> latent f
@@ -31,13 +31,13 @@ f -> tokenize at 2x2: token grid z_2 of shape (2, 2)
 f -> tokenize at (H/p)x(W/p): token grid z_K of shape (H/p, W/p)
 ```
 
-每个z_k 使用相同的代码簿 (典型大小为4096-16384) . 每个尺度的标记化不是相互独立的,而是被训练为让各尺度的剩余需求和能够重建:
+每个$z_k$用相同的代码书 (典型大小为4096-16384) . 每个尺度的标记化不是相互独立的,而是被训练为让各尺度的剩余的需求和能够重建.$f$其他:
 
-```
-f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size)
+```math
+f \approx \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_1), \text{target\_size}) + \cdots + \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_K), \text{target\_size})
 ```
 
-这是一个**residual VQ**变体――尺度 k 捕获尺度 1..k-1 遗漏的内容──解码器 接收所有尺度 嵌入的和并生成图像──
+这是一个**residual VQ**变体――尺度$k$捕获尺度$1 \ldots k-1$遗漏的内容──解码器 接收所有尺度 嵌入的和并生成图像──
 
 复式VQ标记器只训练一次 (类似于VQGAN),然后结――所有生成工作都由其完成的模型完成――
 
@@ -50,9 +50,9 @@ f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-位置嵌入 同时编码尺度索引和尺度内的空间位置. 注意 在尺度顺序上是因果的:尺度 k 位置 (i, j) 的标记可以注意到尺度 1..k 的所有标记,也可以注意到尺度 k 本身在所使用的内尺度 序列中更早出现的标记(VAR 使用固定位置注意,没有内尺度因果性,即在一个尺度内所有位置并行预测) ⋅
+位置嵌入 同时编码尺度索引和尺度内的空间位置――注意 在尺度顺序上是因果的:尺度$k$位 位置$(i, j)$标志可以注意到尺度$1 \ldots k$,也可以注意到尺度$k$本身在所使用的内尺度 顺序中更早出现的标志 (VAR 使用固定位置注意,没有内尺度因果关系,即一个尺度内所有位置并行预测) ⋅
 
-训练损失:在每个尺度 k,给定所有之前尺度的代币,预测代币 z_k――对离散 VQ代码使用交叉缩损失――结构与GPT相似,只是在这里的序列变成了尺度结构化的序列――
+训练损失:在每个尺度$k$给定所有之前尺度的标志,预测标志$z_k$△对离散VQ代码使用跨缩损失──结构与GPT相似,只是在这里的序列变成了尺度结构化的序列──
 
 ### 生成
 
@@ -66,7 +66,7 @@ decode: f = sum of embed-and-upsample scales 1..K
 image = VAE_decoder(f)
 ```
 
-当K=10个尺寸时,生成需要10次变压器前进传递.每次传递都并行生成整个尺寸,而不是在尺寸内自归自归.对于256x256图像,这大约是10次传递,而DT是28-50次.
+当 当$K = 10$个尺度时,生成需要10次变压器前进传递. 每次传递都并行生成整个尺度,而不是在尺度内逐个代币自归.
 
 ### 为什么下一个规模胜过下一个代币
 
@@ -127,7 +127,7 @@ gx-var-next-scale
 | Multi-scale VQ tokenizer | "Residual VQ" | 生成 K 个分辨率递增 Token 网格的 VQ-VAE，decoder 会对所有尺度求和 |
 | Scale k | "Pyramid level k" | K 个分辨率层级之一，从 k=1 的 1x1 到 k=K 的 (H/p)x(W/p) |
 | Parallel-within-scale | "One forward per scale" | 尺度 k 的所有 Token 在一次 Transformer pass 中预测，而不是自回归预测 |
-| Causal-across-scales | "Scale-ordered attention" | 尺度 k 的 Token 可以 Attention 到尺度 1..k 的全部内容，但不能 Attention 到尺度 k+1..K |
+| Causal-across-scales | "Scale-ordered attention" | 尺度 $k$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的全部内容，但不能 Attention 到尺度 $k+1 \ldots K$ |
 | Residual VQ | "Additive tokenization" | 每个尺度的 Token 编码较低尺度留下的 residual；decoder 对所有尺度 Embedding 求和 |
 | VAR scaling law | "Image GPT scaling" | FID 随 compute 遵循可预测的 power law，类似语言模型的 perplexity |
 | HART | "Hybrid VAR + text" | Text-conditional VAR 变体，将 MaskGIT-style iterative decoding 与 VAR 的尺度结构结合 |

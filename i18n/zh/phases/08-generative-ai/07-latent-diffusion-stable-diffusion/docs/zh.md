@@ -21,9 +21,9 @@
 
 **两个阶段，分别训练。**
 
-1. **Stage 1 — VAE.**编码器`E(x) → z`解码器`D(z) → x`△目标压缩率:每个空间轴下采样 8×,再调整频道,使总潜伏尺寸约为像素数量的1/16──损失 =重建 (L1 + LPIPS感知) + KL(权重很小,使`z`我们不需要被强迫推进太高斯,因为我们不需要从`z`常常会配合对手的损失训练,让解码出来的图像更利.
+1. **Stage 1 — VAE.**编码器$E(x) \to z$解码器$D(z) \to x$△目标压缩率:每个空间轴下采样 8×,再调整频道,使总潜伏尺寸约为像素数量的1/16──损失 =重建 (L1 + LPIPS感知) + KL(权重很小,使$z$我们不需要被强迫推进太高斯,因为我们不需要从$z$常常会配合对手的损失训练,让解码出来的图像更利.
 
-2. **Stage 2 — 在 `z` 上做 diffusion。**让我`z = E(x_real)`当作数据――训练一个U-Net(或DIT) 去谴责`z_t`推理时:通过传播 采样`z_0`然后`x = D(z_0)`,我知道.
+2. **Stage 2 — 在 $z$ 上做 diffusion。**让我$z = E(x_{\text{real}})$当作数据――训练一个U-Net(或DIT) 去谴责$z_t$推理时:通过传播 采样$z_0$然后$x = D(z_0)$,我知道.
 
 **文本 conditioning。**还有两个额外组件――一个结结尾的文本编码器(SD 1.x 用CLIP-L,SD 2/XL 用CLIP-L+OpenCLIP-G,SD3 和流动用T5-XXL) ─一个跨度注意 注入:每个U-Net块接收`[Q = image features, K = V = text tokens]`图像是文字影响图像的唯一方式.
 
@@ -59,21 +59,21 @@ def encode(x):    return x * 0.5          # toy "compression" to smaller scale
 def decode(z):    return z * 2.0
 ```
 
-为了教学目的,这个线性映射已经足以说明传播可以在`z`上操作,不关心原始数据空间.
+为了教学目的,这个线性映射已经足以说明传播可以在$z$上操作,不关心原始数据空间.
 
 ### 步骤2: 在`z`- 空间中做扩散
 
-与第六课相似的DDPM.`z = E(x)`采样出`z_0`后,用`D(z_0)`解码
+与第六课相似的DDPM.$z = E(x)$采样出$z_0$后,用$D(z_0)$解码
 
 ### 步骤3:无分类器的指导
 
-训练期间,10% 的时间丢弃了类标签(替换为零代币)`ε_cond`和 `ε_uncond`然后:
+训练期间,10% 的时间丢弃了类标签(替换为零代币)$\epsilon_{\text{cond}}$和 $\epsilon_{\text{uncond}}$然后:
 
 ```python
 eps_cfg = (1 + w) * eps_cond - w * eps_uncond
 ```
 
-`w = 0`没有指导,`w = 3`默认值`w = 7+`和 / 过化──
+$w = 0$没有指导,$w = 3$默认值$w = 7+$和 / 过化──
 
 ### 步骤 4: 文本条件化 (概念,不是代码)
 
@@ -91,7 +91,7 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 - **Text encoder silently wrong。**需要带来128个代币的T5-XXL,倒退到CLIP会有损.`use_t5=True`否则会迅速崩.
 - **混用 latent spaces。**在SDXL潜伏中,LoRA不能用于SD3──Hugging Face扩散器0.30+ 会拒绝加载不匹配的检查点──
 - **CFG too high。** `w > 10`为了牺牲多样性, 图像的生成量过于适合.`w = 3-7`,我知道.
-- **Negative prompts leaking。**空的负面提示会变成零代币;填充的负面提示会变成`ε_uncond`两者不同;有些管道会静默默使用 null──
+- **Negative prompts leaking。**空的负面提示会变成零代币;填充的负面提示会变成$\epsilon_{\text{uncond}}$两者不同;有些管道会静默默使用 null──
 
 ## 使用它
 
@@ -112,7 +112,7 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 
 ## 练习
 
-1. **Easy.**使用指南`w ∈ {0, 1, 3, 7, 15}`运行`code/main.py`记录每个类的平均样本.`w`下,类型意味着会偏离真实数据平均值?
+1. **Easy.**使用指南$w \in \lbrace 0, 1, 3, 7, 15 \rbrace$运行`code/main.py`记录每个类的平均样本.$w$下,类型意味着会偏离真实数据平均值?
 2. **Medium.**换成tanh-MLP编码器/解码器对,并加入重建损失.
 3. **Hard.**使用扩散器 建立一个真正的稳定扩散 推理:加载`sdxl-base`运行30个艾勒步骤,并计时――然后切换到`sdxl-turbo`通过4步和CFG=0──相同的主体,不同质量,描述发生了什么变化以及原因──
 
@@ -122,8 +122,8 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 |------|-----------------|-----------------------|
 | First stage | “The VAE” | 训练好的 encoder/decoder 对；把 512² 压缩到 64²。 |
 | Second stage | “The U-Net” | latent space 上的 diffusion model。 |
-| CFG | “Guidance scale” | `(1+w)·ε_cond - w·ε_uncond`；调节 conditioning strength。 |
-| Null token | “Empty prompt embed” | 用于 `ε_uncond` 的 unconditional embed。 |
+| CFG | “Guidance scale” | $(1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$；调节 conditioning strength。 |
+| Null token | “Empty prompt embed” | 用于 $\epsilon_{\text{uncond}}$ 的 unconditional embed。 |
 | Cross-attention | “How text gets in” | 每个 U-Net block 都以 text tokens 作为 K 和 V 进行 attention。 |
 | DiT | “Diffusion Transformer” | 用作用于 latent patches 的 transformer 替换 U-Net；扩展性更好。 |
 | MMDiT | “Multi-modal DiT” | SD3 的架构：带 joint attention 的文本与图像流。 |
