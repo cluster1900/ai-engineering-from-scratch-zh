@@ -83,8 +83,8 @@ RoIAlign:
 
 面具R-CNN有四类损失相加:
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`现在`L_rpn_box` RPN 提案的客观性 + 框 逆转――

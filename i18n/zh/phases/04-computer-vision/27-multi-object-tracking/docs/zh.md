@@ -61,7 +61,7 @@ flowchart LR
 
 ### 匈牙利算法
 
-给定一个`M x N`查找使总成本 最小的一对一任务――成本通常是`1 - IoU(track_bbox, detection_bbox)`运行时间是O(((M+N) ^3);当M、N最高约为1000时,通过`scipy.optimize.linear_sum_assignment`在Python中足够快.
+给定一个`M x N`查找使总成本 最小的一对一任务――成本通常是`1 - IoU(track_bbox, detection_bbox)`运行时间是$O((M+N)^3)$现在$M, N$通过了1000个.`scipy.optimize.linear_sum_assignment`在Python中足够快.
 
 ### 通过"ByteTrack"的关键思想
 

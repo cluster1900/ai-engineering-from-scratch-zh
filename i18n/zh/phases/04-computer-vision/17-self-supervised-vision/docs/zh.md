@@ -178,7 +178,7 @@ print(f"InfoNCE with identical pairs:  {loss_same:.3f}")
 print(f"InfoNCE with random pairs:     {loss_random:.3f}")
 ```
 
-相同的对应应应得到较低的损失(大批和低温度下接近0) ・・・随机对应应得到log(2N-1) = ~log(31) = ~3.4,针对16对批──
+相同的对应应应得到较低的损失(大批和低温度下接近0)$\log(2N-1) \approx \log(31) \approx 3.4$针对16对的批量.
 
 ### 步骤4:MAE风格的掩饰
 

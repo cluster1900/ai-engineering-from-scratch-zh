@@ -52,18 +52,20 @@ flowchart LR
 
 分类器 会为每张图像产生`C`个数字,称为逻辑.应用软max 会将它们转换为概率分布:
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 跨体的正确类的负记录概率:
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-右侧形式是数值稳定的形式(log-sum-exp) ・PyTorch 的 `nn.CrossEntropyLoss`由于你计算的是log(softmax(softmax(z)) ,这是一个没有意义的量──
+右侧形式是数值稳定的形式(log-sum-exp) ・PyTorch 的 `nn.CrossEntropyLoss`由于你计算的是,你几乎总是错误的.$\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$这是一个无意义的量.
 
 ### 为什么增长有效
 
@@ -105,7 +107,7 @@ Cutmix:
 总的准确性会掩盖失衡. 如果永远预测多数类,也能得到90%.
 
 - **Per-class accuracy** 每个类别一个数字;会立即暴露表现不足的类别.
-- **Confusion matrix** C x C 格,其中行 i col j = true class i 被预测为类 j 的数量;直角是正确预测,离线是模型 问题所在──
+- **Confusion matrix** $C \times C$网格,其中一行$i$专长$j$实际类型$i$被预测为课程$j$只有一个模型问题所在.
 - **Top-1 / Top-5** 正确的类是不是在前1或前5预测中;前5对ImageNet很重要,因为像Norwich Terrier和Norfolk Terrier这样的类型确实存在差异.
 - **Calibration (ECE)** 0.8 的信心预测是否真的有80%的时间是正确的?现代网络 系统性地过于自信;可以使用温度扩展或标签滑滑修饰.
 

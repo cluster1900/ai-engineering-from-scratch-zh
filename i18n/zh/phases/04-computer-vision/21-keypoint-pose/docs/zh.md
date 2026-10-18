@@ -47,8 +47,8 @@ flowchart LR
 
 不要直接退缩`(x, y)`而是为每一个关键点预测一个`H x W`在真实位置中心有一个高斯斑点.
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 在推断时,每个热图的 argmax 就是预测的关键点位置.

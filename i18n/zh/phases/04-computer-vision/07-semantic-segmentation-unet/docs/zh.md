@@ -84,10 +84,10 @@ flowchart LR
 
 ### 像素格上的交叉
 
-对于包含C类的语义分类,模型输出是`(N, C, H, W)`◎目标是`(N, H, W)`包含整数类ID. 跨透与分类的场景完全相同,只是适用于每个空间位置上:
+对于包含$C$个类的语义分类,模型输出是`(N, C, H, W)`◎目标是`(N, H, W)`包含整数类ID. 跨透与分类的场景完全相同,只是适用于每个空间位置上:
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 火中的`F.cross_entropy`没有需要重新塑造.
@@ -98,17 +98,19 @@ Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]]
 
 通过直接优化预测面具与真实面具之间的重叠来解决这个问题:
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 其中`p`是某个类的sigmoid/softmax概率地图,`y`只有当重叠时,损失才为零. 因为它基于比例,类失衡不再相关.
 
 实践中,使用**combined loss**其他:
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 交叉化在训练早期提供稳定的基准; 训练后段将聚焦在真正匹配的面具形状上.
@@ -117,7 +119,7 @@ L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
 
 - **Pixel accuracy** 预测正确的像素 百分比――计算便宜――与分类中的准确性一样,在不平衡的数据上会失效――
 - **IoU per class** 每个类面具的交叉点在工会上;跨类 求平均 = mIoU。
-- **Dice (F1 on pixels)** 类似的;`Dice = 2 * IoU / (1 + IoU)`◎医疗成像更偏好 Dice,驾驶社区更偏好 IoU;
+- **Dice (F1 on pixels)** 类似的;$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$◎医疗成像更偏好 Dice,驾驶社区更偏好 IoU;
 - **Boundary F1** 测量预测边界与地面真相边界的接近程度,即使是小偏移也会受到惩罚.
 
 报告每类的IU,而不是只是一个IU.平均IU只覆盖一个类的15%,而其他九类的情况是85%的.

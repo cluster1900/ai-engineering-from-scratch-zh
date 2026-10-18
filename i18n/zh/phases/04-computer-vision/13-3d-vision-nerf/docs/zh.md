@@ -23,7 +23,7 @@
 ## 概念
 ### 点云
 
-点云是 R^3 中 N 个点的无序集合,每个点可选地带有特征 ((颜色,强度,正常) ⋅
+点云是$\mathbb{R}^3$中 中$N$个点的无序集合,每个点可选地带有特征 ((颜色,强度,正常) ⋅
 
 ```
 cloud = [
@@ -41,8 +41,8 @@ cloud = [
 
 点网 (Qi et al., 2017) 用一个想法解决了两件事:对每个点应用共享MLP,然后使用对称函数(最大池)聚合.结果是一个固定大小的向量,并且不依赖顺序.
 
-```
-f(P) = max_{p in P} MLP(p)
+```math
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 这就是PointNet的整个核心.更深层次的变体.
@@ -86,22 +86,23 @@ To render a pixel (u, v) of a new view:
 
 作用在`(x, y, z)`上的尼拉MLP 无法表示高频细节,因为MLPs 在频谱上偏向低频.NeRF 通过在送入MLP前,将每个坐标编码为Fourier特征矢量来修改这一点:
 
-```
-gamma(p) = (sin(2^0 pi p), cos(2^0 pi p), sin(2^1 pi p), cos(2^1 pi p), ...)
+```math
+\gamma(p) = \left(\sin(2^0 \pi p), \cos(2^0 \pi p), \sin(2^1 \pi p), \cos(2^1 \pi p), \ldots\right)
 ```
 
-最高到L=10个频率水平――这与变压器使用位置的技巧相同,也会在扩散时间调节中再次出现――没有它,NeRF看起来会很模糊――
+最好的到$L=10$个频率水平――这与变压器使用位置的技巧相同,也会在扩散时间调节中再次出现――没有它,NeRF看起来会很模糊――
 
 ### 量度表现
 
+```math
+\begin{aligned}
+C(r) &= \sum_i T_i \left(1 - \exp(-\sigma_i \delta_i)\right) c_i \\[4pt]
+T_i &= \exp\left(-\sum_{j<i} \sigma_j \delta_j\right) \\
+\delta_i &= t_{i+1} - t_i
+\end{aligned}
 ```
-C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 
-T_i  = exp(- sum_{j<i} sigma_j * delta_j)
-delta_i = t_{i+1} - t_i
-```
-
-`T_i`传输量也就是有多少光能到达点.`(1 - exp(-sigma_i * delta_i))`是点在处的光度.`c_i`终极像素是沿线射线的加权和.
+`T_i`传输能力,也就是有多少光能到达这个点.$i$,我知道.`(1 - exp(-sigma_i * delta_i))`是点$i$处的光度.`c_i`终极像素是沿线射线的加权和.
 
 ### 什么替代了NeRF
 

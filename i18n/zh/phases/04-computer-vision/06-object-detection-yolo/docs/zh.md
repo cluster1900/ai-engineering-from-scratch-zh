@@ -74,11 +74,13 @@ At each grid cell, every anchor emits (tx, ty, tw, th, obj, c_1, ..., c_C).
 
 原始的`tx, ty, tw, th`不是盒子坐标;它们需要在绘制前转换的回归目标:
 
-```
-centre x  = (sigmoid(tx) + cell_x) * stride
-centre y  = (sigmoid(ty) + cell_y) * stride
-width     = anchor_w * exp(tw)
-height    = anchor_h * exp(th)
+```math
+\begin{aligned}
+\text{中心 } x &= (\sigma(t_x) + \text{cell}_x) \cdot \text{stride} \\
+\text{中心 } y &= (\sigma(t_y) + \text{cell}_y) \cdot \text{stride} \\
+\text{宽度} &= \text{anchor}_w \cdot \exp(t_w) \\
+\text{高度} &= \text{anchor}_h \cdot \exp(t_h)
+\end{aligned}
 ```
 
 `sigmoid`把中心偏移限制在细胞内.`exp`让宽度可以从杆自由缩小而不会发生符号翻转.`stride`把格列坐标缩小到像素. 这个解码步骤从 v2 开始,从每一个 YOLO 版本都是一样的.
@@ -87,11 +89,11 @@ height    = anchor_h * exp(th)
 
 检测中衡量两个盒子相似度的通用指标:
 
-```
-IoU(A, B) = area(A intersect B) / area(A union B)
+```math
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
- IoU = 1 表示完全相同;IoU = 0 表示没有重叠──预测和基础真相框之间的 IoU决定某种预测是否算作真正的(通常 IoU >=0.5);;两个预测之间的 IoU 是NMS 用来重量依据──
+$\mathrm{IoU} = 1$表示完全相同;$\mathrm{IoU} = 0$表示没有重叠――预测 和基础真相框之间的 IoU决定某种预测 是否算作真正的正面$\mathrm{IoU} \ge 0.5$两个预测之间的 IoU 是NMS 用来重量依据.
 
 ### 超出最大压力
 
@@ -113,11 +115,13 @@ NMS(boxes, scores, iou_threshold):
 
 子损失是三个重量损失相加:
 
-```
-L = lambda_coord * L_box(pred, target, where obj=1)
-  + lambda_obj   * L_obj(pred, 1,     where obj=1)
-  + lambda_noobj * L_obj(pred, 0,     where obj=0)
-  + lambda_cls   * L_cls(pred, target, where obj=1)
+```math
+\begin{aligned}
+L = {} & \lambda_{\text{coord}} \cdot L_{\text{box}}(\text{pred}, \text{target}, \text{where obj}=1) \\
++ {} & \lambda_{\text{obj}} \cdot L_{\text{obj}}(\text{pred}, 1, \text{where obj}=1) \\
++ {} & \lambda_{\text{noobj}} \cdot L_{\text{obj}}(\text{pred}, 0, \text{where obj}=0) \\
++ {} & \lambda_{\text{cls}} \cdot L_{\text{cls}}(\text{pred}, \text{target}, \text{where obj}=1)
+\end{aligned}
 ```
 
 只有包含对象的细胞 才会贡献框回归和分类损失――不包含对象的细胞 只能贡献对象性损失――教模型保持沉默)`lambda_noobj`通常较小 (约0.5),因为绝大多数细胞都是空的,否则会导致总损失.

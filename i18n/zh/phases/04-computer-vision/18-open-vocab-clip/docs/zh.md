@@ -42,7 +42,7 @@ flowchart LR
 
 ### 目标
 
-给定一个包含N 个 (图片,字幕) 双的批量,构建一个NxN相似性矩阵──训练两个编码器,使对角 (相似的双) 有高相似性,而非对角 (非相似的) 有低相似性──
+给定一个包含$N$个 (图片,标题) 双子的批量,构建一个 $N \times N$类似性矩阵──训练两个编码器,使对角对具有高的相似性,而离角对的对没有低的相似性──
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ loss = (loss_i2t + loss_t2i) / 2
 
 和其他, 2023) 用每对的模块 替换了软max:
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 双损失 移除了CLIP所需的批量级标准化.

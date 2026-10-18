@@ -26,35 +26,32 @@
 
 ### 未来的过程
 
-取一张图像 `x_0`加入少量高斯噪音 得到`x_1`再加入少量噪音 得到`x_2`继续进行,直到`x_T`几乎无法与纯高斯噪音区分.
+取一张图像 `x_0`加入少量高斯噪音 得到`x_1`再加入少量噪音 得到`x_2`继续进行$T$步,直到`x_T`几乎无法与纯高斯噪音区分.
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1},  beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \; \beta_t I\right)
 ```
 
-`beta_t`变节目较小,通常在T=1000步内从 0.0001 线性增长到 0.02 步.
+`beta_t`是一个较小的变量时间表,通常在$T=1000$步内从0.0001 线性增长到0.02 个.
 
 ### 闭式跳转
 
 逐步加入噪音是一个马科夫链,但数学上可以折叠:你可以直接从一步.`x_0`样本 出`x_t`,我知道.
 
-```
-Define alpha_t = 1 - beta_t
-Define alpha_bar_t = prod_{s=1..t} alpha_s
-
-Then:
-  q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0,  (1 - alpha_bar_t) * I)
-
-Equivalently:
-  x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon
-  where epsilon ~ N(0, I)
+```math
+\begin{aligned}
+&\text{定义 } \alpha_t = 1 - \beta_t \\
+&\text{定义 } \bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s \\[6pt]
+&\text{则：} q(x_t \mid x_0) = \mathcal{N}\left(x_t; \sqrt{\bar{\alpha}_t} \, x_0, \; (1 - \bar{\alpha}_t) I\right) \\[6pt]
+&\text{等价地：} x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1 - \bar{\alpha}_t} \, \epsilon \quad \text{其中 } \epsilon \sim \mathcal{N}(0, I)
+\end{aligned}
 ```
 
 们可以选择一个.`t`直接从`x_0`样本 出`x_t`没有必要模拟完整的马科夫链.
 
 ### 逆转过程
 
-进步过程是固定的.`p(x_{t-1} | x_t)`是神经网络要学习的内容――分散模型 不直接预测 `x_{t-1}`它们预测在第一个步骤加入的噪音`epsilon`然后由数学公式推导出来`x_{t-1}`,我知道.
+进步过程是固定的.`p(x_{t-1} | x_t)`是神经网络要学习的内容――分散模型 不直接预测 `x_{t-1}`它们预测在第$t$步加入的噪音`epsilon`然后由数学公式推导出来`x_{t-1}`,我知道.
 
 ```mermaid
 flowchart LR
@@ -79,7 +76,7 @@ flowchart LR
 对于每一个训练步骤:
 
 1. 样本 一张真实图像 `x_0`,我知道.
-2. 从 [1, T] 中平均样本 一个时间步骤`t`,我知道.
+2. 从$[1, T]$中平均样本 一个时间步骤`t`,我知道.
 3. 样本噪音`epsilon ~ N(0, I)`,我知道.
 4. 计算`x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon`,我知道.
 5. 用网络预测`epsilon_theta(x_t, t)`,我知道.
@@ -103,7 +100,7 @@ return x_0
 
 ### 为什么是1000步
 
-未来噪音时间表的选择目标是让每一步加入刚好足够的噪音,使反步近似高斯人.步数太少,反步远离高斯人.网络难以很好地建模.步数太多,样本会变得昂贵,收益也会减少.
+未来噪音时间表的选择目标是让每一步都加入刚好足够的噪音,使反步近似的高斯人.$T=1000$搭配线程是DDPM的默认设置.
 
 ### 快20倍的样本采集
 
@@ -314,14 +311,14 @@ scheduler = DDPMScheduler(num_train_timesteps=1000)
 
 | Term | 人们通常怎么说 | 实际含义 |
 |------|----------------|----------------------|
-| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 T 步内把图像破坏成 Gaussian noise |
+| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 $T$ 步内把图像破坏成 Gaussian noise |
 | Reverse process | “一步步 denoise” | 学到的分布，会从 noise 逐步走回图像 |
-| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 t 步加入的 noise |
-| Beta schedule | “noise 大小” | T 个小 variance 组成的序列，定义每一步进入多少 noise |
-| alpha_bar_t | “累计保留因子” | 到时间 t 为止的 (1 - beta_s) 乘积；t 越大，剩余信号越少 |
-| DDPM sampler | “Ancestral，随机” | 从每个 x_{t-1} 的 conditional Gaussian 中 sample；1000 步 |
+| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 $t$ 步加入的 noise |
+| Beta schedule | “noise 大小” | $T$ 个小 variance 组成的序列，定义每一步进入多少 noise |
+| $\bar{\alpha}_t$ | “累计保留因子” | 到时间 $t$ 为止的 $(1 - \beta_s)$ 乘积；$t$ 越大，剩余信号越少 |
+| DDPM sampler | “Ancestral，随机” | 从每个 $x_{t-1}$ 的 conditional Gaussian 中 sample；1000 步 |
 | DDIM sampler | “确定性，快速” | 将 sampling 重写为确定性 ODE；20-100 步即可得到相似质量 |
-| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 t 的 sinusoidal embedding，让它知道 noise level |
+| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 $t$ 的 sinusoidal embedding，让它知道 noise level |
 
 ## 延伸阅读
 

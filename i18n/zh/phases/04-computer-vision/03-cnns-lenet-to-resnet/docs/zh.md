@@ -69,7 +69,7 @@ stack:   conv 3x3 -> conv 3x3 -> pool 2x2
 repeat:  16 or 19 conv layers
 ```
 
-两个3x3孔的输入面积与一个5x5孔相似,但参数更少 (2*9*C^2 = 18C^2 vs 25*C^2),并且中间额外多一个 ReLU──VGG 把这个观察变成完整的结构──它的简单性,即一个块类型反复堆叠,让它成为所有结构的后一个参照点──
+两个3x3conv 看到的输入区域与一个5x5conv 相似,但参数更少 ($2 \cdot 9 \cdot C^2 = 18C^2$其他$25 \cdot C^2$),并且中间额外多一个 ReLU――VGG 把这个观察变成完整的架构――它的简单性,即一个块类型反复堆叠,让它成为后续所有架构的参照点――
 
 代价:138M参数,训练慢,推理 昂贵
 
@@ -117,9 +117,11 @@ Stack 100 of them with gains < 1 and the gradient is effectively zero.
 
 他,张,任,孙提出了一个解决一切的改变:
 
-```
-standard block:   y = F(x)
-residual block:   y = F(x) + x
+```math
+\begin{aligned}
+\text{标准块：} \quad & y = F(x) \\
+\text{残差块：} \quad & y = F(x) + x
+\end{aligned}
 ```
 
 `+ x`表示层总能通过把`F(x)`推到零来选择什么都不做――一个1000层的ResNet现在最差也不会比1层网络差,因为每个额外的区块都有一个微不足道的逃生口――有这个保证,优化器愿意让每个区块变得*稍微*有用;而稍微有用的区块堆积100次,就是最先进的――

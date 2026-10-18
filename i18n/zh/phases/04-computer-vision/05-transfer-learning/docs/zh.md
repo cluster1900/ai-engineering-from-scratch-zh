@@ -97,8 +97,8 @@ backbone.heads.head = nn.Linear(..., num_classes)                       # torchv
 
 这是现代细调 (BEiT、DINOv2、ViT-B细调) 中使用的差别性LR的更平滑版本.
 
-```
-lr_layer_k = base_lr * decay^(L - k)
+```math
+\text{lr\_layer}_k = \text{base\_lr} \cdot \text{decay}^{L - k}
 ```
 
 当衰变 = 0.75 且L = 12 个变压器块时,第一个块的训练 LR 是头 LR 的`0.75^11 ≈ 0.04x`,对于变压器的细节比CNN更重要;对于CNN,

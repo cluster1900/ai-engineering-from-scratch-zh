@@ -61,12 +61,13 @@ flowchart LR
 
 位于世界位置`mu`、具有3D共变性`Sigma`现在,我们在看电影的位置.`mu'`、具有二维共变性`Sigma'`两个维的高斯人:
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 两维高斯人的足迹是圆形,其轴是`Sigma'`对于这个圆的每个像素都会接收这个高斯人的贡献,权重为`exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`,我知道.
@@ -75,12 +76,13 @@ J = Jacobian of the perspective projection at mu'
 
 对于一个像素,覆盖它的高西人会按前后排序,或等价地,使用反向公式按前后排序) ・颜色自1980年代以来使用的所有半透明拉斯特里斯器都在使用相同的方程进行复制:
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 这与**NeRF 的 volumetric render 是同一个方程**虽然这里是显而易见的稀疏高素集合计算,而不是在射线上密集的样本计算.
@@ -97,7 +99,7 @@ c_i = eval_SH(SH_i, view_direction)    view-dependent colour
 - **Split**很高时,将它拆成两个更小的高西亚. 这说明一个大高西亚对该地区来说很滑,不适合.
 - **Prune**它们没有贡献.
 
-每次加密 运行一次──一个场景通常从100万个初始高斯人 (由SfM点初始化) 增长到训练结束时的1-5M──
+密度每$N$另一个场景通常从100万个初始高斯人 (由SfM点初始化) 增长到训练结束时的1-5M.
 
 ### 用一段话理解球形和
 

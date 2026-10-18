@@ -52,8 +52,8 @@ flowchart LR
 
 常规文本条件化会针对每一个提示`c`学习 `epsilon_theta(x_t, t, c)`只有10%的时间会被丢弃.`c`为了实现一个能同时预测条件和无条件噪音的单一模型.
 
-```
-eps = eps_uncond + w * (eps_cond - eps_uncond)
+```math
+\epsilon = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})
 ```
 
 `w`是指导尺度.`w=0`是无条件的,`w=1`是普通的条件,`w>1`总体而言, 产量推向更快速 条件约束, 价格是多样性下降.`w=7.5`,我知道.
