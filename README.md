@@ -360,7 +360,7 @@ the agent went wrong and explain why...
 二十个 Phase。点击任意 Phase 展开其课程列表。
 
 <a id="phase-0"></a>
-### Phase 0: Setup & Tooling `12 lessons`
+### Phase 0: Setup & Tooling `13 lessons`
 > 为后续所有内容准备好你的环境。
 
 | # | 课程 | 类型 | 语言 |
@@ -377,6 +377,7 @@ the agent went wrong and explain why...
 | 10 | [Terminal & Shell](phases/00-setup-and-tooling/10-terminal-and-shell/) | 学习 | — |
 | 11 | [Linux for AI](phases/00-setup-and-tooling/11-linux-for-ai/) | 学习 | — |
 | 12 | [Debugging & Profiling](phases/00-setup-and-tooling/12-debugging-and-profiling/) | 构建 | Python |
+| 13 | [面向 AI 工程的 Python](phases/00-setup-and-tooling/13-python-for-ai-engineering/) | 构建 | Python |
 
 <details id="phase-1">
 <summary><b>Phase 1 — Math Foundations</b> &nbsp;<code>22 lessons</code>&nbsp; <em>通过代码理解每个 AI algorithm 背后的直觉。</em></summary>
@@ -410,7 +411,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-2">
-<summary><b>Phase 2 — ML Fundamentals</b> &nbsp;<code>18 lessons</code>&nbsp; <em>Classical ML —— 仍然是大多数 production AI 的主干。</em></summary>
+<summary><b>Phase 2 — ML Fundamentals</b> &nbsp;<code>21 lessons</code>&nbsp; <em>Classical ML —— 仍然是大多数 production AI 的主干。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -433,6 +434,9 @@ the agent went wrong and explain why...
 | 16 | [Anomaly Detection](phases/02-ml-fundamentals/16-anomaly-detection/) | 构建 | Python |
 | 17 | [Handling Imbalanced Data](phases/02-ml-fundamentals/17-imbalanced-data/) | 构建 | Python |
 | 18 | [Feature Selection](phases/02-ml-fundamentals/18-feature-selection/) | 构建 | Python |
+| 19 | [机器学习系统设计：从问题到已部署模型](phases/02-ml-fundamentals/19-ml-system-design/) | 构建 | Python |
+| 20 | [生产模型监控：数据漂移与概念漂移](phases/02-ml-fundamentals/20-model-monitoring-and-drift/) | 构建 | Python |
+| 21 | [特征存储与训练—服务偏差](phases/02-ml-fundamentals/21-feature-stores-and-training-serving-skew/) | 构建 | Python |
 
 </details>
 
@@ -723,7 +727,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-13">
-<summary><b>Phase 13 — 工具与协议</b> &nbsp;<code>40 节课</code>&nbsp; <em>Function calling、MCP 协议、安全与生态。</em></summary>
+<summary><b>Phase 13 — 工具与协议</b> &nbsp;<code>45 节课</code>&nbsp; <em>Function calling、MCP 协议、安全与生态。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -768,6 +772,11 @@ the agent went wrong and explain why...
 | 38 | [调用约定与栈帧：System V、Windows x64 和 AArch64](phases/13-tools-and-protocols/38-calling-conventions-and-stack-frames/) | Build | Python |
 | 39 | [编译器惯用模式：优化如何改写代码，以及如何反向读懂它](phases/13-tools-and-protocols/39-compiler-idioms-and-optimization/) | Build | Python |
 | 40 | [链接、加载与剥离符号后的二进制：PLT、GOT、导入、修正与函数识别](phases/13-tools-and-protocols/40-linking-loading-and-stripped-binaries/) | Build | Python |
+| 41 | [恢复数据与类型：结构体、数组、C++ 对象和 DWARF](phases/13-tools-and-protocols/41-recovering-data-and-types/) | Build | Python |
+| 42 | [动态分析自己的程序：调试器、跟踪与静态结论的验证](phases/13-tools-and-protocols/42-dynamic-analysis-of-your-own-program/) | Build | Python |
+| 43 | [超越原生代码：Python、JVM、.NET 与 WebAssembly 字节码](phases/13-tools-and-protocols/43-bytecode-and-managed-formats/) | Build | Python |
+| 44 | [二进制差异比较与符号执行：匹配函数并求解输入](phases/13-tools-and-protocols/44-binary-diffing-and-symbolic-execution/) | Build | Python |
+| 45 | [AI 辅助逆向工程：LLM 反编译器、分析 agent 与真值](phases/13-tools-and-protocols/45-ai-assisted-reverse-engineering/) | Build | Python |
 
 第 06-18 课与第 28-31 课构成专门的 [Model Context Protocol (MCP) 学习路径](learning-paths/model-context-protocol.json)。其清单执行顺序为 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 18, 17, 28, 29, 30, 31。
 
@@ -906,7 +915,7 @@ Phase 14 的每个 workbench 课程（31-42）都附带 `mission.md`，在 agent
 </details>
 
 <details id="phase-17">
-<summary><b>Phase 17 — Infrastructure & Production</b> &nbsp;<code>28 lessons</code>&nbsp; <em>将 AI 交付到真实世界。</em></summary>
+<summary><b>Phase 17 — Infrastructure & Production</b> &nbsp;<code>29 lessons</code>&nbsp; <em>将 AI 交付到真实世界。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -939,6 +948,7 @@ Phase 14 的每个 workbench 课程（31-42）都附带 `mission.md`，在 agent
 | 26 | [Compliance — SOC 2, HIPAA, GDPR, EU AI Act, ISO 42001](phases/17-infrastructure-and-production/26-compliance-frameworks/) | 学习 | Python |
 | 27 | [FinOps for LLMs — Unit Economics and Multi-Tenant Attribution](phases/17-infrastructure-and-production/27-finops-llms/) | 学习 | Python |
 | 28 | [Self-Hosted Serving Selection — llama.cpp, Ollama, TGI, vLLM, SGLang](phases/17-infrastructure-and-production/28-self-hosted-serving-selection/) | 学习 | Python |
+| 29 | [模型演示界面：从函数到可分享的应用](phases/17-infrastructure-and-production/29-model-demo-interfaces/) | 构建 | Python |
 
 </details>
 
