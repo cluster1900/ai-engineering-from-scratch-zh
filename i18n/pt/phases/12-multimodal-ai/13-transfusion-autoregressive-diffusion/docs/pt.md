@@ -59,9 +59,9 @@ Em treinamento e meditação, realiza-se a mascareta triangular de bloco.
 Perda de difusão é a forma padrão: dar um parche de imagem加噪声,让模型预测噪声(或等价地预测 clean patch) ――Transfusion 的版本使用流量匹配:预测从噪音到清的速度场──
 
 訓練期間:
-1. Para cada imagem de parche x0, assim como um passo no tempo.
-2. 采样噪声 ε,计算 xt = (1-t) * x0 + t * ε(fluxo de correspondência de 线性插值)
-3. transformador 预测 v_theta(xt, t); perda = MSE(v_theta(xt, t), ε - x0)。
+1. Para cada imagem de parche$x_0$, como um passo a passo .$t$- Não.
+2. 采样噪音                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $\epsilon$, calcular $x_t = (1-t) \cdot x_0 + t \cdot \epsilon$(fluxo de correspondência de linha do valor)
+3. transformador 预测 $v_\theta(x_t, t)$O artigo 2.o$\text{loss} = \mathop{\mathrm{MSE}}(v_\theta(x_t, t), \epsilon - x_0)$- Não.
 4. Com a perda de NTP no mesmo sequência de texto, a Backprop se eleva.
 
 推理时, generar o processo é:

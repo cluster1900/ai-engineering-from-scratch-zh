@@ -27,18 +27,18 @@ Flamingo 从结的Chinchilla 70B LLM 开始──全部 70B weights 保持不变
 
 ### Re-estampilador de percepção
 
-对于快速中的每张图像,ViT 会生成 N 个补丁代币――Perceptor resampler has K 个固定的可学习的潜伏(Flamingo 使用 K=64)──cada bloco de resampler tem dois passos:
+Para cada imagem do meio, ViT será gerado.$N$个 patch tokens──Re-sampler do perceptor $K$个固定的 learnable latents(Flamingo 使用 $K=64$Cada bloco de resampler tem dois passos:
 
-1. Atensão cruzada:K 个 latentes atender até N 个 patch tokens ((Q de latentes,K / V de patches) ⋅
+1. - A atenção cruzada:$K$Os latentes vão até lá.$N$个 patch tokens ((Q de patches latentes, K/V de patches)
 2. Latentes 内部的自我注意+FFN──
 
-经过 6 个样本块 后,输出是 K=64 个 dim 1024 的视觉代币,无论 ViT 生成多少补丁──224x224 图像(196补丁) 和 480x480 图像(900补丁) 都会输出为 64 个样本代币──
+Passaram por 6 blocos de amostragem.$K=64$Os tokens visuais de dim 1024 de qualquer tipo de ViT são produzidos em quantidade de parches.
 
-Para o vídeo, o modelo irá ser aplicado por tempo: cada um dos patches é produzido em 64 patches latentes, enquanto a codificação posicional temporal faz com que o vídeo completo se torne em 64 tokens visuais.
+Para o vídeo, o modelo será aplicado por tempo: cada um dos parches produz 64 latentes, enquanto a codificação posicional temporal faz diferença.$t=0$和 $t=N$完整视频 变成 $T \cdot 64$- Os tokens visuais.
 
 ### Atensão transversal
 
-Em seguida, o programa de ensino superior é lançado em um novo bloco de atenção transversal.
+Em conclusão do LLM$M$层之间(Flamingo 使用 $M=4$) inserir um novo bloco de atenção cruzada fechado:
 
 ```
 x_after_llm_block = llm_block(x_before)
@@ -142,7 +142,7 @@ cross-attention-fusion
 | OBELICS | "Interleaved web corpus" | 包含 141M 个网页的开放数据集，图像和文本按阅读顺序排列 |
 | Chinchilla | "70B frozen base" | Flamingo 的冻结文本 LLM，来自 DeepMind 的 Chinchilla paper |
 | Gate schedule | "How alpha moves" | 训练期间 cross-attention gate 打开的速率 |
-| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 M=4 |
+| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 $M=4$ |
 | OpenFlamingo | "Open reproduction" | MosaicML/LAION 的 3-9B 开放 checkpoint；architecture 与 Flamingo 相同 |
 
 ## 延伸阅读

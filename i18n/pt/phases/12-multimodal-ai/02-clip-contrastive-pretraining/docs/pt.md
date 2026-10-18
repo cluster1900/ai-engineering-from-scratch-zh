@@ -32,10 +32,10 @@ CLIP tem duas torres:
 
 As duas torres normalizam a saída para a extensão da unidade.`cos(f(x), g(y)) = f(x)^T g(y)`- Não.
 
-对于一个包含 N 个(图片,标签) pares de lote, construir forma 为 `(N, N)`Matrix de semelhança`S`- Não .
+ para um conteúdo $N$个(imagem, legenda) pares de lote, construção de forma 为 `(N, N)`Matrix de semelhança`S`- Não .
 
-```
-S[i, j] = cos(f(x_i), g(y_j)) / tau
+```math
+S[i, j] = \cos(f(x_i), g(y_j)) / \tau
 ```
 
 Entre eles `tau`É a temperatura de aprendizagem que obtemos.
@@ -54,7 +54,7 @@ loss = (loss_i2t + loss_t2i) / 2
 
 ### Temperatura
 
-`tau`控制 softmax 的尖度──低 tau →尖分布,具有硬负矿业效果──高 tau →软,所有样品都会贡献──CLIP 学习 log(1/tau),并进行剪切以防崩──SigLIP 2 固定初始 tau,并改用学习偏见──
+`tau`Controle a nitidez do softmax.$\tau$→ distribuição acentuada, com minério duro negativo 效果──高 $\tau$→ suave, todas as amostras 都会贡献──CLIP 学习 $\log(1/\tau)$,并 realizar corte para evitar o colapso.$\tau$,并改用学习偏见──
 
 ### Por que sigmoid 扩展性更好 (sigloid)
 
@@ -62,8 +62,8 @@ Softmax  necessita de toda a semelhança Matrix  manter o mesmo tempo  Em treina
 
 SigLIP Utilize elementar sigmoid  substituir softmax: para cada par `(i, j)`,perda é uma classificação binária, julgar é um par de correspondência?positivo classe rótulos é diagonal, tudo o resto são negativos。Perda é:
 
-```
-L = -1/N sum over (i, j) [ y_ij log sigmoid(S[i,j]) + (1-y_ij) log sigmoid(-S[i,j]) ]
+```math
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 Se `i == j`, , ,`y_ij = 1`, se não for 0── cada par de perda é independente── não precisa de todo-conjunto── cada GPU  calcula seu próprio bloco local 并求和──SigLIP 2 pode ser expandido a baixo custo para lote 32k-512k, enquanto CLIP 会需要比例增加通信──
@@ -127,7 +127,7 @@ multimodal-fusion
 
 3. Para gatos vs cães construir um classificador de tiro zero― tentar dois modelos de prompt:`a photo of a {class}`和 `a picture of a {class}`◊ Em 100 张 test imagens                                                                                                                                                                                                                                                           
 
-4. 計算 512-GPU、batch 32k 运行时,softmax InfoNCE e sigmoid parwise of communication cost──哪个按 O(N) escala,哪个按 O(N^2) escala?引用 SigLIP Section 4──
+4. 計算 512-GPU、batch 32k 运行时,softmax InfoNCE e sigmoid parwise 通信成本──哪个按 $O(N)$Escala, que por$O(N^2)$A escala? citação SigLIP Secção 4
 
 5. 阅读OpenCLIP escalar-leis papel(arXiv:2212.07143,Cherti et al.)。 Based on grafico复现他们关于数据扩展的结论:在固定模型尺寸下,ImageNet zero-shot accuracy and training data size 之间的日记-linear relationship 是什么?
 

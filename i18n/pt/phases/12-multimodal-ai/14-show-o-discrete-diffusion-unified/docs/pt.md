@@ -66,11 +66,11 @@ Inpainting 能力来自 masked-prediction 训练,几乎是免费的──mask VQ
 
 Cada passo desmascarar 多少 Tokens 的时间表 会塑造质量──Show-o 推 cosine:
 
-```
-mask_ratio(t) = cos(pi * t / (2 * T))   # t = 0..T
+```math
+\text{mask\_ratio}(t) = \cos\left(\frac{\pi t}{2T}\right) \qquad t = 0, \ldots, T
 ```
 
-第 0 步, todos os Tokens são mascarados(ratio 1.0)。第 T 步, nenhum Tokens é mascarado。Cosine vai concentrar seu peso em proporções entre áreas, onde prevê a maior quantidade de informações。
+第 0 步, todos os Tokens foram mascarados ((ratio 1.0) ▽ ▽ ▽$T$步, no Tokens são mascarados. O peso da caixa será concentrado em proporções entre os espaços, onde a previsão tem maior quantidade de informação.
 
 ### - O2
 
@@ -112,7 +112,7 @@ Operar, observar a máscara, como é que se resolve.
 
 3. Calendário cosínico vs calendário linear: seguimento T=8 时 cada passo número de Tokens desmascarados.
 
-4. Uma imagem de exibição de 512x512 é 1024 Tokens. Em vocab K=16384 时, modelo output 1024 * log2(16384) = 14,336 bits (cerca de 1,75 KiB) de dados.
+4. Uma imagem de 512x512 é 1024 Tokens.$K=16384$时, modelo de saída $1024 \cdot \log_2(16384) = 14{,}336$bits ((cerca de 1,75 KiB) de dados。Difusão estável 输出 512*512*24 bits = 6,291,456 bits(cerca de 768 KiB) de pixels brutos。compressão ratio é quanto?
 
 5. 阅读 LlamaGen(arXiv:2406.06525) ―― O modelo de imagem autoregressiva condicional de classe do LlamaGen com a abordagem mascarada do Show-o Há alguma diferença?
 

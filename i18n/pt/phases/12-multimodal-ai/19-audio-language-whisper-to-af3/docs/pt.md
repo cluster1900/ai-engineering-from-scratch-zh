@@ -33,7 +33,7 @@ Cada codificador de áudio tem a mesma característica: log-mail espectrogramas.
 2. Use a janela de 25ms ≈ 10ms hop fazer a transformação Fourier de curto prazo ≈
 3. 取 FFT 结果的大小──
 4.  aplicada Mel filtros bancos ((normalmente 80 个在 0-8000 Hz 上按日间隔分布的过器), mapeamento até感知频率──
-5. Use log compress (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log))))) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log))))))))) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (log) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g) (g
+5. Use compressão de log$\log(1 + x)$) processar o intervalo dinâmico.
 
 Resultados: formação em 2D de uma matriz (T, 80) em que T é um tempo de quadros.
 
