@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "Ghidra decompiled percent_change from a correct object file as a function that returns 16 bytes and takes three parameters. The source has two int parameters and returns int. What does this show?",
+      "question": "Ghidra 将一个正确目标文件中的 percent_change 反编译成了接收三个参数、返回 16 字节的函数，而源码只有两个 int 参数并返回 int。这说明什么？",
       "options": [
-        "Pseudocode is a derived claim whose type and calling-convention guesses can be wrong while every instruction is right",
-        "Ghidra cannot read ELF relocatable objects",
-        "The object file is corrupt",
-        "clang miscompiled the function"
-      ],
-      "correct": 0,
-      "explanation": "The instructions are correct and the decompiler read them correctly. Its guesses about the return value and the third parameter came from idiv writing both rax and rdx with no caller to say otherwise."
-    },
-    {
-      "stage": "check",
-      "question": "In the System V AMD64 calling convention, which register carries the second integer argument of a function?",
-      "options": [
-        "%rcx",
-        "%rdx",
-        "%rsi",
-        "%rax"
-      ],
-      "correct": 2,
-      "explanation": "The sequence is %rdi, %rsi, %rdx, %rcx, %r8, %r9 (psABI section 3.2.3). The result returns in %rax."
-    },
-    {
-      "stage": "check",
-      "question": "The lifter sees cmpl $0x4, %ecx followed by ja. Which C condition is the branch taken on?",
-      "options": [
-        "ecx >= 4 as a signed comparison",
-        "ecx > 4 as a signed comparison",
-        "(unsigned int)ecx > 4",
-        "ecx != 4"
-      ],
-      "correct": 2,
-      "explanation": "ja tests CF = 0 and ZF = 0, the unsigned above condition. A negative ecx is a very large unsigned value, so the jump also covers scores below 60 in grade."
-    },
-    {
-      "stage": "check",
-      "question": "Why does SSA construction place a phi function for the sum at the header of the loop in total?",
-      "options": [
-        "Every loop header gets a phi for every register",
-        "The header reads memory",
-        "The flags register changes inside the loop",
-        "Two definitions of the sum reach the header: the initial zero and the update inside the body"
-      ],
-      "correct": 3,
-      "explanation": "A phi is placed on the dominance frontier of each definition. The header is the join where the setup block and the loop back edge meet, so the two reaching definitions need one merged name."
-    },
-    {
-      "stage": "post",
-      "question": "grade multiplies the sign-extended score by 0x66666667, shifts the product right by 34, and adds the product's sign bit. What does this compute?",
-      "options": [
-        "score * 10",
-        "score % 10",
-        "a hash of the score",
-        "score / 10 with C truncation toward zero"
-      ],
-      "correct": 3,
-      "explanation": "0x66666667 is the ceiling of 2^34 / 10. The multiply and shift give floor(score / 10) for non-negative scores. The added sign bit moves negative quotients toward zero, which is what C division does."
-    },
-    {
-      "stage": "post",
-      "question": "Our lifter printed int total(int *param_1, int param_2) while Ghidra printed int total(long param_1, uint param_2). Which statement about the two signatures is correct?",
-      "options": [
-        "The lifter is wrong because the source says const int *",
-        "Both are consistent with the instructions. The lifter inferred a pointer from the 4-byte scaled load and Ghidra kept the register width",
-        "Ghidra is wrong because param_1 is used as a pointer",
-        "The two signatures prove the object was compiled twice"
+        "clang 错误编译了该函数",
+        "伪代码是推导出的判断，即使每条指令都正确，其类型和调用约定的猜测也可能出错",
+        "Ghidra 无法读取 ELF 可重定位目标文件",
+        "目标文件已损坏"
       ],
       "correct": 1,
-      "explanation": "Machine code has no types. The lifter turned the load from rdi + rdx * 4 into an int element access, and Ghidra kept a 64-bit integer. Neither can recover the const qualifier."
+      "explanation": "指令是正确的，反编译器也正确读取了它们。它对返回值和第三个参数的猜测源于 idiv 会同时写入 rax 和 rdx，而且没有调用者提供相反的证据。"
+    },
+    {
+      "stage": "check",
+      "question": "在 System V AMD64 调用约定中，哪个寄存器传递函数的第二个整数参数？",
+      "options": [
+        "%rcx",
+        "%rax",
+        "%rdx",
+        "%rsi"
+      ],
+      "correct": 3,
+      "explanation": "参数寄存器顺序为 %rdi、%rsi、%rdx、%rcx、%r8、%r9（psABI 第 3.2.3 节）。返回结果放在 %rax 中。"
+    },
+    {
+      "stage": "check",
+      "question": "提升器看到 cmpl $0x4, %ecx 后紧跟 ja。该分支在什么 C 条件下跳转？",
+      "options": [
+        "ecx != 4",
+        "(unsigned int)ecx > 4",
+        "按有符号数比较 ecx >= 4",
+        "按有符号数比较 ecx > 4"
+      ],
+      "correct": 1,
+      "explanation": "ja 检查 CF = 0 且 ZF = 0，即无符号大于条件。负数 ecx 被视为很大的无符号值，因此该跳转也涵盖了 grade 中低于 60 分的情况。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么构建 SSA 时，要在 total 的循环头部为累加和放置一个 phi 函数？",
+      "options": [
+        "标志寄存器会在循环内部发生变化",
+        "累加和的两个定义都能到达循环头部：初始值零和循环体中的更新值",
+        "每个循环头部都会为每个寄存器放置一个 phi 函数",
+        "循环头部会读取内存"
+      ],
+      "correct": 1,
+      "explanation": "每个定义的支配边界上都会放置 phi 函数。循环头部是初始化块与循环回边的汇合点，因此两个到达定义需要合并为同一个名字。"
+    },
+    {
+      "stage": "post",
+      "question": "grade 将符号扩展后的 score 乘以 0x66666667，把乘积右移 34 位，再加上乘积的符号位。这计算的是什么？",
+      "options": [
+        "score 的哈希值",
+        "score % 10",
+        "按 C 语言向零截断规则计算 score / 10",
+        "score * 10"
+      ],
+      "correct": 2,
+      "explanation": "0x66666667 是 2^34 / 10 向上取整的结果。对于非负分数，乘法和移位得到 floor(score / 10)。加上符号位会使负商向零靠近，与 C 语言除法的行为一致。"
+    },
+    {
+      "stage": "post",
+      "question": "我们的提升器输出 int total(int *param_1, int param_2)，而 Ghidra 输出 int total(long param_1, uint param_2)。关于这两个函数签名，哪种说法正确？",
+      "options": [
+        "提升器错了，因为源码使用的是 const int *",
+        "两者都与指令一致。提升器根据按 4 字节缩放的加载推断出指针，而 Ghidra 保留了寄存器宽度",
+        "Ghidra 错了，因为 param_1 被当作指针使用",
+        "两个签名证明目标文件被编译了两次"
+      ],
+      "correct": 1,
+      "explanation": "机器码没有类型。提升器将从 rdi + rdx * 4 加载的操作转换为 int 元素访问，而 Ghidra 保留了一个 64 位整数。两者都无法恢复 const 限定符。"
     }
   ]
 }
