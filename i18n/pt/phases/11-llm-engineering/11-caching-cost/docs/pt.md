@@ -864,7 +864,7 @@ A API de lote para todos os tokens oferece um desconto fixo de 50%. O resultado 
 #     return None
 ```
 
-Em ambiente de produção, usar o índice de vetores ((Redis Vector Search、Pinecone ou pgvector) para fazer uma pesquisa de <1,000 条条条.
+Em ambiente de produção, usar índice de vetores ((Redis Vector Search、Pinecone ou pgvector) para fazer uma leitura linear.$O(\log n)$- Não.
 
 ## Entrega-o
 

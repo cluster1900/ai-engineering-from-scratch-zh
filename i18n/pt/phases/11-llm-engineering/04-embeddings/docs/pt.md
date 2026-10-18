@@ -97,20 +97,20 @@ Dados dois vetores de inserção, há três formas de medir as suas semelhanças
 
 **Cosine similarity**: dois vetores 间角的余弦值──范围从 -1(相反) 到 1(方向相同)──忽略大小 如果一个10 词句和一个500 词文档指向相同方向,它们可以得到1.0──这是90%的默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**Quando os vetores  já se regruparam (unidade de comprimento), ele se torna similar ao cosino.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **Euclidean (L2) distance**O vector  espaço  linha reta distância 越小 = 越相似── para grande diferença sensível ⋅ quando a posição absoluta no espaço é importante, não apenas a direção é importante quando usado ⋅
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 Qual é o tipo de produto?
@@ -131,7 +131,7 @@ Base de dados vetoriais usando algoritmo Approximate Nearest Neighbor (ANN) reso
 2. A camada superior é escassa e estabelece ligações de longa distância entre aglomerados distantes.
 3. A superfície é densa e estabelece uma ligação entre os vectores próximos.
 4. Busca de cima para baixo, ganância para baixo e detalhamento gradual
-5. 以 O(log n) 时间 retornar resultados quase-c, em vez de O(n)
+5. É$O(\log n)$时间 retornar resultados quase-k top, em vez de $O(n)$
 
 HNSW utiliza muito pequena perda de precisão de taxa (normalmente 95-99% de recall) em troca de uma enorme velocidade de aumento. Em 1000 milhões de vetores, pesquisa violenta requer poucos segundos.
 
@@ -484,7 +484,7 @@ A classe VectorIndex que construímos pode ser combinada com estes quaisquer pro
 | Embedding | “文本到数字” | 一种 dense Vector，其中几何接近性编码语义相似性 |
 | Word2Vec | “最早的经典 Embedding” | 2013 年通过预测上下文词学习 word vectors 的模型；证明 Vector arithmetic 可以编码含义 |
 | Cosine similarity | “两个 Vectors 有多相似” | Vectors 夹角的余弦值；1 = 方向相同，0 = 正交，-1 = 相反 |
-| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 O(log n) 的 approximate nearest neighbor search |
+| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 $O(\log n)$ 的 approximate nearest neighbor search |
 | Bi-encoder | “分开 Embedding，快速比较” | 将 query 和 document 独立编码为 Vectors；支持预计算和快速 retrieval |
 | Cross-encoder | “慢但准确的 reranker” | 让 query-document pair 联合通过完整模型处理；准确率更高，但无法预计算 |
 | Matryoshka embeddings | “可截断的 Vectors” | 经过训练的 Embeddings，使前 N 个维度捕捉最重要的信息，从而支持可变大小存储 |

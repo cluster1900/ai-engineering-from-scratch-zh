@@ -91,20 +91,20 @@ Dados dois vetores, como medir a similaridade?
 
 **Cosine similarity**: dois vetores 之间角的余弦值──范围从 -1(相反) 到 1(完全相同)──忽略大小,只关注方向──这是RAG的默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**O produto interno original. Vectores maiores obterão maior número de pontos. Quando a magnitude é útil, os documentos mais longos podem ser mais relevantes.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**:espaço vetorial Centro de distância de linha reta.
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 A semelhança cosínica é um padrão de seleção. É através da magnitude, capaz de lidar com documentos de diferentes dimensões. Quando alguém diz que a pesquisa vectorial é quase sempre referente à semelhança cosínica.

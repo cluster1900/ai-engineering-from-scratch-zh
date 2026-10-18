@@ -21,7 +21,7 @@ Claude Opus 4.7 tem 200K Token  Window(beta 中为1M) ――GPT-5 tem 400K。Gem
 
 Abaixo está um assistente de codificação de real divisão. Sistema de execução: 500 Tokens──50 个工具的工具定义: 8,000 Tokens──Retrieved documentation: 4,000 Tokens──Conversation history(10轮): 6,000 Tokens──当前用户查询:200 Token──Generation budget(max output):4,000 Tokens──总计:22,700 Tokens──这只占据128K 窗口的18%──
 
-Mas a atenção não vai com o contexto de comprimento linear expansão. O modelo de contexto de tokens de 128K tem que pagar a segunda atenção. Os transformadores de vainilha são O (n^2), embora a maioria dos modelos de produção utilizem alta eficiência.
+Mas a atenção não vai conter a extensão do contexto.$O(n^2)$, embora a maioria dos modelos de produção usem alta eficiência Atenção 变体) ⋅ mais importante, a taxa de recuperação 准确会下降──Needle em um teste Haystack mostrou que o modelo é difícil de encontrar em um longo contexto 信息间的信息──Liu et al.
 
 Lício prático é: 200K Token disponível não significa usar 200K Token 就有效──精心选的10K Token context 往往胜过直接倾倒的100K Token context──文本工程是在文本窗口内最大化信号-噪音比的学科──
 
