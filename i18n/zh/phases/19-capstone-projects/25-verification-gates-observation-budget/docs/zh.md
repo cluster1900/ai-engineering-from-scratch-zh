@@ -83,7 +83,7 @@ flowchart TD
 
 ## 为什么链条 顺序重要
 
-一次否认比一次允许更便宜.`WhitelistGate`运行 O(1) 哈希搜索──`RegexGate`运行 O(模式 * argv) 』`RecencyGate`读取信息商店的一个小片子.`BudgetGate`读取整个账本. 你需要按成本升级排列它们,这样被拒绝的电话就能在执行昂贵的工作前短路.
+一次否认比一次允许更便宜.`WhitelistGate`运行$O(1)$哈希查找.`RegexGate`运行$O(\text{pattern} \cdot \text{argv})$,我知道.`RecencyGate`读取信息商店的一个小片子.`BudgetGate`读取整个账本. 你需要按成本升级排列它们,这样被拒绝的电话就能在执行昂贵的工作前短路.
 
 你还需要按爆炸射线排序. 白名单是最强的主张:这个工具 不在合同中.
 
