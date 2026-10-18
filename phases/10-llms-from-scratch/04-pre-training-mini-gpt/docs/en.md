@@ -142,7 +142,7 @@ graph LR
 
 ### KV Cache: 推理为什么快
 
-训练时，你会一次处理整个 sequence。Inference 时，你一次生成一个 Token。如果没有优化，生成 Token $N$ 需要为前面所有 $N-1$ 个 Token 重新计算 Attention。对于每个生成 Token，这是 $O(N)$，对于长度为 $N$ 的 sequence，总体是 $O(N^2)$ 的 Attention score 计算，并且还会重复执行大量输入侧 Matrix multiplication。
+训练时，你会一次处理整个 sequence。Inference 时，你一次生成一个 Token。如果没有优化，生成 Token $N$ 需要为前面所有 $N-1$ 个 Token 重新计算 Attention。对于每个生成 Token，这是 $O(N^2)$；对于长度为 $N$ 的 sequence，总体是 $O(N^3)$。
 
 KV Cache 解决了这个问题。为每个 Token 计算出 K 和 V 后，把它们存起来。当生成 Token $N+1$ 时，你只需要为新 Token 计算 Q，并查找所有之前 Token 的 cached K 和 V。这会把 K 和 V 计算的 per-token cost 从 $O(N)$ 降到 $O(1)$。Attention score calculation 仍然是 $O(N)$，因为你要 attend to 所有之前的位置，但你避免了对 input 进行冗余 Matrix multiplications。
 
