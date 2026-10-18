@@ -59,8 +59,8 @@ En basit filtre: Eğer bir özellik örnekler arasında neredeyse değişmezse, 
 
 ◊ bir özelliği düşünün, 1000 örnekten 999'u 0.0'dur. ◊ 0'ya yakın varyansı vardır. ◊ 0'ya yakın varansı vardır.
 
-```
-variance(x) = mean((x - mean(x))^2)
+```math
+\text{方差}(x) = \text{均值}\bigl((x - \text{均值}(x))^2\bigr)
 ```
 
 设置一个门️ (例如0.01) ・抛弃每个变异 低于这个门的特征――, bu, hedef değişkenleri tamamen görmezden gelmeden sabit veya neredeyse sabit özellikleri taşımak durumunda olacaktır──
@@ -71,17 +71,17 @@ Usescenes: Diğer yöntemlerden önceki önceden işleme aşaması olarak nerede
 
 ### Karşılıklı Bilgi
 
-Karşılıklı bilgi  Ölçmek Bilinç X'in değerinin hedefi Y'nin belirsizliğini ne ölçüde azaltabilmesi mümkün.
+Karşılıklı bilgi 衡量知道 $X$Hedef karşısında değerlerin büyük ölçüde azalması mümkün.$Y$- Kesinlikle değil.
 
-```
-I(X; Y) = sum_x sum_y p(x, y) * log(p(x, y) / (p(x) * p(y)))
+```math
+I(X; Y) = \sum_x \sum_y p(x, y) \cdot \log \frac{p(x, y)}{p(x) \cdot p(y)}
 ```
 
-Eğer X 和 Y 独立,则 p(x, y) = p(x) * p(y), bu nedenle log 项为零,I(X; Y) = 0。X 能告诉你越多关于Y 的信息,相互信息就越高。
+Eğer $X$和 $Y$独立,则 $p(x, y) = p(x) \cdot p(y)$, bu nedenle log 项为零,$I(X; Y) = 0$- Evet.$X$Sana daha fazlasını söyleyebilirim.$Y$Bilgi, karşılıklı bilgi...
 
 Önemli avantajları: Karşılıklı bilgi, ışıksız ilişkileri yakalayabilir. Bir özellik, hedef ile ilişkiyi sıfır olarak görebilir.
 
- Sürekli özellikler için, önce 成 binleri ayırt edelim.                                                                                                                                                                                                                                                       
+ Sürekli özellikler için, önce 成 binleri ayırt edin histogramı temelinde tahminler yapılır  binlerin sayısı tahmin sonuçlarını etkileyecektir:                                                                                                                                                                                                                                            $\sqrt{n}$"Sturges'in kuralları"$1 + \log_2 n$)。
 
 ```mermaid
 flowchart LR
@@ -113,14 +113,14 @@ flowchart TD
 
 RFE özellik etkileşimlerini düşünür, çünkü model aynı anda tüm kalan özellikleri görür. Bir özellik çıkarmak diğer özelliklerin önemini değiştirir. Bu, filtre yöntemlerinden daha tamamen farklı hale getirir.
 
-成本:You need to train model N - target 次。 500 özellik için 目標 为 10 durumunda, 490 kez eğitim için ⇒ 490 kez eğitim için ⇒ 490 kez eğitim için ⇒ 490 kez eğitim için ⇒ 490 ⇒ 490 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 5 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ 6 ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒    ⇒ ⇒   ⇒ ⇒ ⇒    ⇒ ⇒     ⇒ ⇒     ⇒       ⇒                        
+成本: 你需要训练模型 $N - \text{目标}$Bu durum, 500 özellik için 490 kez eğitimdir. Pahalı modeller için çok yavaş.
 
 ### L1 (Lasso) Düzenleme
 
 L1 düzenleme 会把重量的绝对值加入 Loss Fonksiyonu:
 
-```
-loss = prediction_error + alpha * sum(|w_i|)
+```math
+\text{损失} = \text{prediction\_error} + \alpha \cdot \sum \lvert w_i \rvert
 ```
 
 Alfa 参数 kontrol özellikleri 被剪枝的激进程度──alfa 越高,越多重量 会精确变成零──
@@ -137,12 +137,10 @@ L1 cezası ağırlık alanında bir 形束区域ı oluşturur. En iyi çözümü
 
 Karar ağaçları  ve ansamblları  rastgele ormanlar  gradyent artışı)  排名 排名                                                                                                                                                                                                                                               
 
-                                                                                                                                                                                                                                                              
+- Evet .$T$樹樹 的随机森林:
 
-```
-importance(feature_j) = (1/T) * sum over all trees of
-    sum over all nodes splitting on feature_j of
-        (n_samples * impurity_decrease)
+```math
+\text{重要性}(\text{特征}_j) = \frac{1}{T} \sum_{\text{所有树}} \; \sum_{\text{所有基于此特征划分的节点：} \text{特征}_j} (\text{n\_samples} \cdot \text{impurity\_decrease})
 ```
 
 Bu, her özellik için normallendirilmiş önem puanı verir.
@@ -517,7 +515,7 @@ sklearn  versiyonu dayanıklılığı arttırmıştır, örneğin, k-NN yoğunlu
 | Filter method | “独立为 features 打分” | 一种 feature selection 方法，不训练 model，而是使用统计度量对 features 排名，并孤立地评估每个 feature |
 | Wrapper method | “用 model 挑 features” | 一种 feature selection 方法，通过训练 model 并使用其 performance 作为 selection criterion 来评估 feature subsets |
 | Embedded method | “model 在训练期间选择 features” | 作为 model fitting 一部分发生的 feature selection，例如 L1 regularization 会把 weights 推向零 |
-| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 X 的知识后，关于 Y 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
+| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 $X$ 的知识后，关于 $Y$ 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
 | Recursive Feature Elimination | “训练、排名、剪枝、重复” | 一种迭代式 wrapper method，会训练 model、移除最不重要的 feature(s)，并重复直到达到 target count |
 | L1 / Lasso regularization | “会消灭 features 的 penalty” | 将 weight 绝对值之和加入 Loss Function，这会把不重要 feature 的 weights 推到精确为零 |
 | Variance threshold | “移除 constant features” | 丢弃在 samples 之间 variance 低于指定 threshold 的 features，过滤掉不携带信息的 features |

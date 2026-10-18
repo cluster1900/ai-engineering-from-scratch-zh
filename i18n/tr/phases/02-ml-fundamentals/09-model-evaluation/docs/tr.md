@@ -81,11 +81,11 @@ flowchart TB
     Fold5 --> R
 ```
 
-1. Verileri K 个大小相等 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个
-2. Her katman için, K-1 katmanlarında yukarı eğitim, ve kalan katmanlarda yukarı test
-3. K 个 onay puanları 求平均
+1. Verileri ayırırız.$K$个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等 个大小相等
+2. Her kat için,$K-1$个fold 上训练, ve kalanıfold 上验证
+3. - Evet .$K$个 onay puanları 求平均
 
-K=5 veya K=10 standart seçimdir. Her veri noktası bir kez doğrulanmaya kullanılır.
+$K=5$Ya da$K=10$Y standard seçim. Her veri noktası bir kez doğrulanmaya kullanılır.
 
 **Stratified K-fold**Eğer verileriniz %70 sınıf A ve %30 sınıf B ise, her katlama büyük oranda aynı oranı korur. Bu dengesiz veriler için çok önemlidir, çünkü bölünmesi tüm azınlık örneklerini bir katmaya sokar.
 
@@ -100,18 +100,18 @@ K=5 veya K=10 standart seçimdir. Her veri noktası bir kez doğrulanmaya kullan
 
 Bu Matrix'ten diğer tüm göstergeleri elde edebiliriz:
 
-- **Accuracy**= (TP + TN) / (TP + TN + FP + FN)。预测正确的比例──当类 不平衡时会产生误导──
-- **Precision**= TP / (TP + FP) ・・・ Tüm olumlu tahmin edilen nesneler arasında, ne kadarı gerçekten olumlu?
-- **Recall**(sansitite) = TP / (TP + FN) ・・・ tüm gerçek olumlu noktaların içinde, biz ne kadar yakaladık?
-- **F1 score**= 2 * doğruluk * hatırlama / (doğrulık + hatırlama) ―― doğruluk 和 hatırlamaların uyumlu anlamı──当二者都不明显更重要时,二者を平衡するために,
+- **Accuracy**= $(TP + TN) / (TP + TN + FP + FN)$◊预测 正确的比例──当类不平衡时会产生误导──
+- **Precision**= $TP / (TP + FP)$◊ Tüm olumlu tahminler arasında, gerçekten olumlu olanların sayısı kaç?
+- **Recall**(Sensitlik) = $TP / (TP + FN)$❖ Tüm gerçek olumlu sonuçlar arasında, ne kadarı yakaladık?
+- **F1 score**= $2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$△Düzgünlik ve hatırlama △ Harmonik anlamı △Düzgünlik ve hatırlama △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzgünlik △Düzünlük △Düzünlük △Düzlük △Düzünü △Düzünü △Düzünü △Düzünü △Düzünü △Düzünü △Düzünü △Düzünü △Düzünü △Düzünü △Düzüzüzüzük △Düzükük △Düzükük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △Düzük △D
 - **AUC-ROC**:Alıcı İşlem Karakteristik eğri 下的面积──它在不同分类门值下绘制 true positive rate与 false positive rate──AUC = 0.5 表示随机猜测,AUC = 1.0 表示完美分离──它与门值无关:衡量的是模型将正面排在负面前面的能力,而不受您选择的裁员影响──
 
 ### Regresi gösterge
 
-- **MSE**(Ortalama kare hatası) = ortalama (y_true - y_pred) ^2) ⋅以平方方式惩罚大误差──对异值 敏感──
-- **RMSE**(Kök Orta Çekirde Hata) = sqrt(MSE)。
-- **MAE**(Medi Absolute Error) = ortalama durum = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-- **R-squared**= 1 - SS_res / SS_tot, bunlardan SS_res = toplam(((y_true - y_pred) ^2),SS_tot = toplam((((y_true - y_mean) ^2)。 ifade model 解释了多少方差──R^2 = 1.0 表示完美──R^2 = 0.0 表示 model 并不比总是预测平均值更好──如果模型比预测均还差,R^2 可能为负──
+- **MSE**(Orta Çelişki Hatası)$\text{均值}((y_{\text{true}} - y_{\text{pred}})^2)$◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊  ◊ ◊  ◊          ◊                                                                                                                                                                                                                                   
+- **RMSE**(Kök ortalama kare hatası) = $\sqrt{\text{MSE}}$◊ Hedef değişken ile aynı ∞ MSE'den daha kolay açıklanmaktadır
+- **MAE**(Yarıncı Kesin Hata)$\text{均值}(\lvert y_{\text{true}} - y_{\text{pred}} \rvert)$❖ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒  ⇒ ⇒ ⇒        ⇒     ⇒                                                                                                                                                                                          
+- **R-squared**= $1 - SS_{\text{res}} / SS_{\text{tot}}$, içinden $SS_{\text{res}} = \sum (y_{\text{true}} - y_{\text{pred}})^2$- Evet .$SS_{\text{tot}} = \sum (y_{\text{true}} - y_{\text{均值}})^2$◊ Gösterim modeli ◊ açıklamak ◊$R^2 = 1.0$Tamam mı?$R^2 = 0.0$Modelleyi göstermek, genel olarak tahmin ortalama değerinden daha iyi değildir.$R^2$Belki de.
 
 ### Öğrenme Kurbalıkları
 
@@ -665,10 +665,10 @@ Bu ders:
 |------|----------------|----------------------|
 | Overfitting | “记住了 training data” | model 捕捉了 training data 中的噪声，在 training 上表现好，但在 unseen data 上表现差 |
 | Cross-validation | “在不同子集上测试” | 系统地轮换用于 validation 的数据部分，并对所有轮换的结果求平均 |
-| Precision | “预测为 positive 的里面有多少是正确的” | TP / (TP + FP)：positive predictions 中实际为 positive 的比例 |
-| Recall | “我们找到了多少真实 positives” | TP / (TP + FN)：actual positives 中被正确识别出来的比例 |
+| Precision | “预测为 positive 的里面有多少是正确的” | $TP / (TP + FP)$：positive predictions 中实际为 positive 的比例 |
+| Recall | “我们找到了多少真实 positives” | $TP / (TP + FN)$：actual positives 中被正确识别出来的比例 |
 | AUC-ROC | “model 区分类别的能力有多好” | 在所有 thresholds 下，true positive rate 与 false positive rate 曲线下的面积，范围从 0.5（随机）到 1.0（完美） |
-| R-squared | “解释了多少方差” | 1 -（squared residuals 之和 / total sum of squares）：model 捕捉到的 target variance 比例 |
+| R-squared | “解释了多少方差” | $1 - (\text{残差平方和} / \text{总平方和})$：model 捕捉到的 target variance 比例 |
 | Data leakage | “model 作弊了” | 在 training 期间使用了 prediction time 不可用的信息，导致 evaluation 过于乐观 |
 | Learning curve | “数据更多时 performance 如何变化” | training 和 validation scores 相对于 training set size 的图，用来揭示 underfitting 或 overfitting |
 | Stratified split | “保持 class ratios 平衡” | split 数据时，让每个 subset 中各 class 的比例与完整 dataset 相同 |

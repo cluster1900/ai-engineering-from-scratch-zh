@@ -14,7 +14,7 @@
 - Design a hyperparameter tuning 策略, via合适的交叉验证 避免对验证集 过拟合
 
 ## 问题
-模型 has learning rate、number of trees、max depth、min samples per leaf、subsample ratio 和 column sample ratio──也就是六个超参数── eğer her birinde 5 个合理取值 varsa, o zaman grid 就有5^6 = 15,625 组合──每次训练需要10秒──全部尝试一遍需要43 小时的计算时间──
+模型 has learning rate, number of trees, maximum depth, min sample per leaf, sub sample ratio, column sample ratio,也就是六个超参数,如果每个有五个合理取值,那么网就有$5^6 = 15{,}625$种组合──每次训练需要10秒──全部尝试一遍需要43小时的计算时间──
 
 Grid arama en net yöntemdir, aynı zamanda ölçek değişiminden sonra en kötü yöntemdir. Rastom arama daha az hesaplama miktarıyla daha iyi yapılabilir. Bayesian optimizasyon, geçmiş değerlendirmelerden öğrenmekle sonuçlar da daha iyi olacaktır.
 
@@ -28,7 +28,7 @@ Parametre, eğitim sürecinde öğrenilenlerin (veynetleri, tarafsızlıkları, 
 | Learning rate | 每次更新的步长 | 0.001 到 1.0 |
 | Number of trees/epochs | 训练时长 | 10 到 10,000 |
 | Max depth | 模型复杂度 | 1 到 30 |
-| Regularization (lambda) | 防止过拟合 | 0.0001 到 100 |
+| Regularization ($\lambda$) | 防止过拟合 | 0.0001 到 100 |
 | Batch size | Gradient 估计噪声 | 16 到 512 |
 | Dropout rate | 被丢弃的 neurons 比例 | 0.0 到 0.5 |
 
@@ -122,7 +122,7 @@ Hyperband 尤其有效── önce 1 dönem kullanır  81 yapılandırmayı baş
 | Scheduler | Formula | 何时使用 |
 |-----------|---------|-------------|
 | Step decay | 每 N 个 epochs 乘以 0.1 | 经典 CNN 训练 |
-| Cosine annealing | lr * 0.5 * (1 + cos(pi * t / T)) | 现代默认选择 |
+| Cosine annealing | $\text{lr} \cdot 0.5 \cdot (1 + \cos(\pi t / T))$ | 现代默认选择 |
 | Warmup + decay | 先线性增加，再 cosine decay | Transformers |
 | One-cycle | 在一个 cycle 内先增加再减少 | 快速收敛 |
 | Reduce on plateau | 指标停滞时按因子降低 | 稳妥默认选择 |

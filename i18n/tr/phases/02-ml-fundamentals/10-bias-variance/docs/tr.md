@@ -51,23 +51,24 @@ Yüksek Varians, modelin alt sinyal değil, uygun antrenman verilerindeki gürü
 
 ### Çürümesi
 
-任意点 x,平方损失下期望预测误差 için doğru olarak şöyle ayrıştırılabilir:
+对于任意点 $x$, kare kaybı altındaki beklenen tahmin hataları doğru olarak şöyle ayrıştırılabilir:
 
+```math
+\begin{aligned}
+& \text{期望误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声} \\[6pt]
+& \text{其中：} \\
+& \quad \text{偏差}^2 = (\mathbb{E}[\hat{f}(x)] - f(x))^2 \\
+& \quad \text{方差} = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2] \\
+& \quad \text{噪声} = \mathbb{E}[(y - f(x))^2] \quad (\sigma^2)
+\end{aligned}
 ```
-Expected Error = Bias^2 + Variance + Irreducible Noise
 
-where:
-  Bias^2   = (E[f_hat(x)] - f(x))^2
-  Variance = E[(f_hat(x) - E[f_hat(x)])^2]
-  Noise    = E[(y - f(x))^2]             (sigma^2)
-```
+- $f(x)$Evet gerçek bir işlevi
+- $\hat{f}(x)$Yaptı mı?
+- $\mathbb{E}[\ldots]$Farklı eğitim gruplarının beklentileri
+- $y$Evet, bu da bir şey.
 
-- `f(x)`Evet gerçek bir işlevi
-- `f_hat(x)`Yaptı mı?
-- `E[...]`Farklı eğitim gruplarının beklentileri
-- `y`Evet, bu da bir şey.
-
-噪音项是不可约的──在有噪音数据上,没有模型能比 sigma^2做得更好──你的任务是在偏见^2 和变异之间找到正确平衡──
+Gürültüleme bir durumdur. Gürültü verilerinde, hiçbir model karşılaştırılamaz.$\sigma^2$Daha iyi yap. Senin görevin...$\text{偏差}^2$和 之间求正确平衡──
 
 ### Modelleştirilmişlik vs Hata
 
@@ -128,9 +129,9 @@ Bu durum neden gerçekleşir? Interpolasyon eşiğinde, model sadece yeterli kap
 
 | Regime | Parameters vs Samples | Behavior |
 |--------|----------------------|----------|
-| Underparameterized | p << n | 经典 tradeoff 适用 |
-| Interpolation threshold | p ~ n | Variance 达到峰值，测试误差激增 |
-| Overparameterized | p >> n | Implicit regularization 开始起作用，测试误差下降 |
+| Underparameterized | $p \ll n$ | 经典 tradeoff 适用 |
+| Interpolation threshold | $p \sim n$ | Variance 达到峰值，测试误差激增 |
+| Overparameterized | $p \gg n$ | Implicit regularization 开始起作用，测试误差下降 |
 
 Praktiği bakış açısından: Eğer Nöral Ağlar veya büyük ağaç ensembleri kullanıyorsanız, interpolasyon eşiğinde durmayın.
 
@@ -177,7 +178,7 @@ Birleştirme yöntemleri, Varians'a karşı en pratik araçtır.
 
 **Bagging (Bootstrap Aggregating)**Üretim verilerinin farklı başlangıç örnekleri üzerinde bir çok model eğitilmiştir, sonra tahmin ortalaması alınmıştır.
 
-Matematik olarak etkili olmasının nedeni şudur: Eğer ortalama N 个独立预测, her bir预测'in değişimi sigma^2'dirse, ortalama değer değişimi sigma^2/N'dir. Bu modeller gerçekten bağımsız değildir.
+Matematikte etkili olmasının nedeni ise: Eğer ortalama ise$N$个独立预测,每个预测的变化都是 个独立预测,每个预测的变化都是$\sigma^2$O zaman ortalama değer değişimi $\sigma^2 / N$Bu modeller gerçekten bağımsız değiller, bu nedenle daha düşük bir görüntü daha düşüktür.$1/N$Ama hala oldukça güzel.
 
 **Boosting**                                                                                                                                                                                                                                                              
 
@@ -303,10 +304,10 @@ variance = np.mean(predictions.var(axis=0))
 total_error = np.mean(np.mean((predictions - y_true) ** 2, axis=1))
 ```
 
-- `mean_pred`Evet, bu yüzden de bu kadar çok şey yapmam gerekiyor.
+- `mean_pred`Bu , bir başlangıç örneği .$\mathbb{E}[\hat{f}(x)]$
 - `bias_sq`Yukarıdaki tahmin ile gerçek değer arasındaki farkın karesidir.
 - `variance`Evet, buçuktan çıkış örnekleri için
-- `total_error`应该近似等于偏差^2 + varyansa + gürültü
+- `total_error` Yaklaşık olarak $\text{偏差}^2 + \text{方差} + \text{噪声}$
 
 ### 步骤 4: Öğrenme eğri
 
@@ -434,7 +435,7 @@ Bu teşhisleri uygulamada sırayla yapacaksın:
 
 2. Bu, Varians bileşenini nasıl etkileyecek? En iyi polinom derecesi hareket edecek mi?
 
-3. 向实验添加 L2 düzenlenmesi (Ridge regression) ・・・ 固定高度多項式 (固定的高度多項式) △ 15), lambda 0 扫描到 100 ・・・ 绘制偏^2 和 变量 随 lambda 变化的函数图──
+3. L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenmesi için, L2 düzenlenme için, L2 düzenlenme için, L2 düzenlenme yapma için, L2 düzenlenme yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma yapma$\text{偏差}^2$和 varyansa 随 lambda 变化的函数图──
 
 4. 将真实函数 from polynomial 修为`sin(x)`❖ Taraflılık ayrımı nasıl değişir?
 

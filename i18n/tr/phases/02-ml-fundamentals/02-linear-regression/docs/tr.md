@@ -26,36 +26,36 @@ Bu sadece basit sorulara uygulanmaz. Lineer gerileme üretim sistemlerinde talep
 
 ### Model
 
-Düzsel gerileme  假设 input (x) ve output (y)  arasında 线性关系 vardır:
+Düzsel gerileme 假设 giriş ($x$) ile üretim ($y$)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 
-```
+```math
 y = wx + b
 ```
 
-- `w`(koleksiyon/eğim):当 x 增加 1 时,y 改变多少
-- `b`(bias/intercept):当 x = 0 时,y 的值
+- `w`(koşul/kaynak):当 $x$增加 1 时,$y$ değiştirmek
+- `b`(Örküt/Kısma):当 $x = 0$时,$y$≈ değer
 
 多个输入 (特征), it expanded for:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
-Ya da yazın vektör biçimi:`y = w^T * x + b`
+Ya da yazın vektör biçimi:$y = w^T x + b$
 
-目標: w 和 b'in değerini bul, gör gör tahmin y'nin tüm eğitim örneklerinde 上尽可能接近真实 y──
+目標: bulduk $w$和 $b$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $y$Tüm eğitim örneklerinde, mümkün olduğunca gerçeklere yaklaşır.$y$- Evet.
 
 ### Ücret fonksiyonu (Orta Çekirde Hata)
 
 如何衡量尽可能接近? 如何衡量尽可能接近? 如何衡量尽可能接近? 如何衡量尽可能接近? 您需要单一数字来表示预测有多错.
 
-```
-MSE = (1/n) * sum((y_predicted - y_actual)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{预测值}} - y_{\text{实际值}})^2
 ```
 
 Neden kare? İki nedeni vardır. Birincisi, büyük hataların cezası küçük hatalardan daha yüksek olur.
 
-Masraf fonksiyonu bir eğilimi oluşturacak. Tek ağırlık için, b ve b eğilimi için, MSE  eğilimi bir kase gibi görünür.
+Masraf fonksiyonu bir parça oluşturur.$w$和 tarafsızlık $b$,MSE 曲面 looks like a bowl (Boz)  Bozı MSE'nin en küçük konumudur.
 
 ### Aralıklı Düşüş
 
@@ -74,18 +74,22 @@ flowchart TD
 
 Gradyentler size iki şeyi söyleyecek: Her parametrenin hangi yönde hareket etmesi ve ne kadar hareket etmesi gerekir.
 
-对于 y_hat = wx + b'in MSE:
+- Evet .$\hat{y} = wx + b$MSE'nin:
 
-```
-dMSE/dw = (2/n) * sum((y_hat - y) * x)
-dMSE/db = (2/n) * sum(y_hat - y)
+```math
+\begin{aligned}
+\frac{\partial \text{MSE}}{\partial w} &= \frac{2}{n} \sum (\hat{y} - y) \, x \\
+\frac{\partial \text{MSE}}{\partial b} &= \frac{2}{n} \sum (\hat{y} - y)
+\end{aligned}
 ```
 
 更新规则:
 
-```
-w = w - learning_rate * dMSE/dw
-b = b - learning_rate * dMSE/db
+```math
+\begin{aligned}
+w &= w - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial w} \\
+b &= b - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial b}
+\end{aligned}
 ```
 
 Öğrenme hızı 控制步长──太大:会越过最小值并发散──太小:training 会耗时很久──典型起始值:0.01、0.001 或 0.0001──
@@ -94,18 +98,18 @@ b = b - learning_rate * dMSE/db
 
 Özellikle doğrusal gerileme için, herhangi bir çağlanma durumunda en iyi ağırlıkları verebilecek bir doğrudan formül vardır:
 
-```
-w = (X^T * X)^(-1) * X^T * y
+```math
+w = (X^T X)^{-1} X^T y
 ```
 
-Bu, küçük veri kümelerine çok uygundur. Büyük veri kümelerine göre, daha da ileriye doğru bir derecede düşüş önerilmektedir. Çünkü matris inversiyonu, sayısal karmaşıklıkta O (n^3) vardır.
+Matrix'in karşısına çıkıp, bir adım atıyor.$w$◊ çok uygun küçük veri kümesi için, ◊ milyonlarca çizgi veya binlerce özellik için, ◊ daha fazla önerilen dereceli düşüş, çünkü Matrix inversyonu ◊ özellikleri sayısal karmaşıklık ◊$O(n^3)$- Evet.
 
 ### Çoklu Düzsel Geri Dönüş
 
 多个特征,model 变为:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
 Bütün çalışma biçimi aynı: MSE, maliyet fonksiyonu, Gradient Descent aynı zamanda tüm ağırlıkları yeniliyor. Tek fark, bir ipersaplan yerine bir ipersaplan için uygun olmasıdır.
@@ -116,36 +120,38 @@ Bütün çalışma biçimi aynı: MSE, maliyet fonksiyonu, Gradient Descent ayn�
 
 Eğer ilişki doğrusal değilse nasıl? Hızlı gerilemeyi kullanmak için çoklu özellikler oluşturmakla hala çalışabilirsiniz:
 
-```
-y = w1*x + w2*x^2 + w3*x^3 + b
+```math
+y = w_1 x + w_2 x^2 + w_3 x^3 + b
 ```
 
-Bu hala linear  gerileme, çünkü model ağırlıklara (w1, w2, w3) 線性lidir.
+Bu hala linear  gerileme, çünkü model ağırlıklara ($w_1, w_2, w_3$- Evet, sadece kullandın.$x$Bu özellikler çizgi dışı.
 
 Daha yüksek derecede polinomlar daha karmaşık eğriye uygun olabilir, ancak aşırı uygun bir risk de vardır. 10 dereceli polinomlar 10 noktalı bir veri kümesindeki her noktayı geçecek, ancak yeni verilerde tahmin çok kötü olacaktır.
 
 ### R-Squared puanı
 
-MSE  size çok fazla ayrıntı olduğunu söyler, ancak bu rakam y'nin ölçüsüne bağlıdır. R kare (R^2)  ölçüsüne bağlı olmayan bir ölçüm göstergesi sağlar:
+MSE'ye göre çok fazla ayrıntı var ama bu sayı çok önemli.$y$尺度──R-squared ($R^2$)  ölçülmeye bağlı olmayan bir ölçüm göstergesi sağladı:
 
-```
-R^2 = 1 - (sum of squared residuals) / (sum of squared deviations from mean)
-    = 1 - SS_res / SS_tot
+```math
+\begin{aligned}
+R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} \\
+&= 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}
+\end{aligned}
 ```
 
-- R^2 = 1.0:完美预测
-- R^2 = 0.0:model değil her seferinde tahmin ortalaması daha iyi
-- R^2 < 0.0:model 比预测 mean 更差
+- $R^2 = 1.0$:完美预测
+- $R^2 = 0.0$Model: Her seferinde tahmin etmek daha iyi değil
+- $R^2 < 0.0$Model: 比预测 ortalama 更差
 
 ### Düzenleme 预览 (Ridge Regression)
 
 Eğer çok fazla özellikiniz varsa, model daha büyük ağırlıkları dağıtarak aşırı derecede uygun hale gelebilir. Ridge geri dönüşü (L2 düzenlenmesi) bir ceza programına eklenecektir:
 
-```
-Cost = MSE + lambda * sum(w_i^2)
+```math
+\text{代价} = \text{MSE} + \lambda \sum w_i^2
 ```
 
-惩罚项会抑制较大的重量──超参数 lambda 控制权衡:lambda 越高,重量 越小,规范化 越强──后课程会深入讲解这一点──现在只需要知道它存在,以及为什么它有帮助──
+罰项会抑制较大的重量──hiperparameter $\lambda$Kontrol kontrolü:$\lambda$越高,重量 越小, düzenleme 越强── sonraki dersler bu konuyu daha derinlemesine ele alacak── şimdi sadece varlığını ve neden yardımcı olduğunu bilmemiz gerekiyor──
 
 ## Yapım
 
@@ -521,24 +527,24 @@ Bu ders:
 ## 练习
 
 1. 实现批次梯次下降、ストカスティک梯次下降 (SGD) 和小型批次梯次下降──在同一数据集上比较收速度──哪个收最快?哪个成本曲线最平滑?
-2. Küp fonksiyonundan (y = ax^3 + bx^2 + cx + d + gürültü) 生成データ──拟合度 1、3 和 10'lu polinomlar── R^2 和 test R^2── hangi derecede 时过配 变得明显?
-3. 实现 Lasso regression(L1 düzenlenmesi: cezalandırma *(değer = alfa toplamı)
+2. Kübek fonksiyonundan ($y = ax^3 + bx^2 + cx + d + \text{噪声}$) 生成データ──拟合度 1、3 和 10'un polinomları──$R^2$$R^2$◊ Ne dereceye kadar                                                                                                                                                                                                                                                            
+3. 实现 Lasso regression(L1 düzenlenmesi:$\text{惩罚项} = \alpha \sum \lvert w_i \rvert$)― birçok özellikte 房价数据上训练― hangi ağırlıkların sıfır değişeceğini ve Ridge'le farkı ile karşılaştırın― neden L1 nadir çözümler üretir, L2 ise olmaz?
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Linear regression | “在数据中画一条线” | 找到 weight w 和 bias b，使 wx+b 与真实 y 值之间的平方差之和最小 |
+| Linear regression | “在数据中画一条线” | 找到 weight $w$ 和 bias $b$，使 $wx+b$ 与真实 $y$ 值之间的平方差之和最小 |
 | Cost function | “model 有多差” | 一个将 model parameters 映射为单一数字的函数，用于衡量 prediction error，并由 optimization 最小化 |
-| Mean squared error | “平方误差的平均值” | (1/n) * (predicted - actual)^2 的求和，对大误差施加不成比例的惩罚 |
+| Mean squared error | “平方误差的平均值” | $\frac{1}{n} \sum (\text{预测值} - \text{实际值})^2$，对大误差施加不成比例的惩罚 |
 | Gradient descent | “往下坡走” | 使用偏导数，沿着降低 cost function 的方向迭代调整 parameters |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 中 parameters 改变量的标量 |
-| Normal equation | “直接求解” | 闭式解 w = (X^T X)^-1 X^T y，无需迭代即可得到最优 weights |
-| R-squared | “拟合有多好” | model 所解释的 y 方差比例，范围从负无穷到 1.0 |
+| Normal equation | “直接求解” | 闭式解 $w = (X^T X)^{-1} X^T y$，无需迭代即可得到最优 weights |
+| R-squared | “拟合有多好” | model 所解释的 $y$ 方差比例，范围从负无穷到 1.0 |
 | Feature scaling | “让 features 可比较” | 将 features 转换到相近范围（例如 zero mean、unit variance），使 Gradient Descent 更快收敛 |
 | Regularization | “惩罚复杂度” | 向 cost function 添加一个会缩小 weights 的项，以防止 overfitting |
-| Ridge regression | “L2 regularization” | 向 MSE 添加 lambda * sum(w_i^2) 惩罚项的 linear regression |
-| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features (x, x^2, x^3, ...) 做 linear regression，对 weights 仍然是线性的 |
+| Ridge regression | “L2 regularization” | 向 MSE 添加 $\lambda \sum w_i^2$ 惩罚项的 linear regression |
+| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features ($x, x^2, x^3, \ldots$) 做 linear regression，对 weights 仍然是线性的 |
 | Overfitting | “记住 training data” | 使用过于复杂的 model，以至于拟合了 training data 中的噪声，并在新数据上失效 |
 
 ## 延伸阅读

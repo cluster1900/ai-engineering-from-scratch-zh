@@ -18,7 +18,7 @@
 
 想根据瘤大小预测它是恶性还是良性──你试用线性回归──它会输出0.3、1.7 或 -0.5 这样的数字──这些数字是什么意思?1.7 是非常恶性吗?-0.5 是非常良性吗?
 
-Logistik gerileme  bu sorunu çözdü. Aynı 线性组合 (wx + b) kullanır, sonra sigmoid işlevi ile, herhangi bir sayı (0, 1) aralığında sıkıştırılır.
+Logistik gerileme  bu sorunu çözdü. Aynı 线性组合 ($wx + b$), sonra sigmoid işlevi ile, herhangi bir sayı (0, 1) 范围内 olarak sıkıştırılır.
 
 Bu uygulamada kullanılan en yaygın algoritmalardan biridir. Bu isim, kullanılan lojistik (sigmoid) işleviyle ilgili değildir.
 
@@ -44,22 +44,22 @@ Sınıflama 需要一个满足以下条件的函数:
 
 Sigmoid fonksiyonu aynen böyle yapılıyor:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\sigma(z) = \frac{1}{1 + e^{-z}}
 ```
 
 Seks:
-- Z çok büyük bir sayı olduğunda, 1'e yakın.
-- Z = 0'ya yakın.
-- 当 z = 0 时,sigmoid(z) = 0.5
+- - Evet .$z$Çok büyük bir sayı.$\sigma(z)$ Yaklaşık 1
+- - Evet .$z$Çok büyük bir zararı var.$\sigma(z)$ yakın 0
+- - Evet .$z = 0$时,$\sigma(z) = 0.5$
 - 输出始终位于 0 ve 1 arasında
 - Bu işlev                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
-Onun türevleri 具有方便的形式:sigmoid'(z) = sigmoid(z) * (1 - sigmoid(z))。这让渐进式 计算更高效──
+Onun türevleri 具有方便的形式:$\sigma'(z) = \sigma(z) (1 - \sigma(z))$ This makes Gradient 计算更高效──
 
 ### Logistik Geri Dönüş = Düzsel Model + Sigmoid
 
-Model önce hesap z = wx + b(düzsel gerileme ile 相同), sonra sigmoid uygulamak:
+模型先计算  model önce hesap$z = wx + b$(Linear regresyon ile aynı) ve sonra sigmoid uygulamak:
 
 ```mermaid
 flowchart LR
@@ -70,21 +70,21 @@ flowchart LR
     D -->|No| N[Predict 0]
 ```
 
-输出 p 输出 y=1 x olarak açıklanır, yani输入属于类 1 的概率──decision boundary 位于 wx + b = 0 的位置,此时 sigmoid 输出恰好为0.5──
+输出 $p$Açıklandı$P(y=1 \mid x)$,即输入属于类 1 的概率──çevirim sınırı 位于 $wx + b = 0$Bu durumda sigmoid 0.5 olarak çıkıyor.
 
 ### Biner çapraz entropik kaybı
 
 Çekimsiz maliyet yüzeyini oluşturacak MSE, birçok yerel minimum bulunmaktadır.
 
-```
-Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
+```math
+\text{损失} = -\frac{1}{n} \sum \left( y \log(p) + (1-y) \log(1-p) \right)
 ```
 
 Neden işe yarıyor:
-- 当 y=1 且 p 接近 1 时:log(1) = 0, bu nedenle kaybı 接近 0(正确,低成本)
-- 当 y=1 且 p 接近 0 时:log(0) 接近负无穷, bu nedenle kaybı 很大(错误,高成本)
-- 当 y=0 且 p 接近 0 时:log(1) = 0, bu nedenle kaybı 接近 0(正确,低成本)
-- 当 y=0 且 p 接近 1 时:log(0) 接近负无穷, bu nedenle kaybı 很大(错误,高成本)
+- - Evet .$y=1$Ve$p$接近 1 时:$\log(1) = 0$, bu yüzden kaybı 接近 0(正确,低成本)
+- - Evet .$y=1$Ve$p$接近 0 时:$\log(0)$接近负无穷, bu yüzden kaybı 很大(错误,高成本)
+- - Evet .$y=0$Ve$p$接近 0 时:$\log(1) = 0$, bu yüzden kaybı 接近 0(正确,低成本)
+- - Evet .$y=0$Ve$p$接近 1 时:$\log(0)$接近负无穷, bu yüzden kaybı 很大(错误,高成本)
 
 Lojistik gerileme için, bu Kayıp Fonksiyonu çarpıcıdır, bu nedenle yalnızca bir küresel minimum garanti edilir.
 
@@ -92,12 +92,14 @@ Lojistik gerileme için, bu Kayıp Fonksiyonu çarpıcıdır, bu nedenle yalnız
 
 sigmoid 搭配 biner çapraz entropi 时,Gradient 具有简洁形式:
 
-```
-dL/dw = (1/n) * sum((p - y) * x)
-dL/db = (1/n) * sum(p - y)
+```math
+\begin{aligned}
+\frac{\partial L}{\partial w} &= \frac{1}{n} \sum (p - y) \, x \\
+\frac{\partial L}{\partial b} &= \frac{1}{n} \sum (p - y)
+\end{aligned}
 ```
 
-它们看起来与线性回归的渐进式完全相同──区别在p = sigmoid(wx + b),而不是p = wx + b──sigmoid 引入非线性,但渐进式 更新规则保持不变──
+Düzsel gerileme ile aynı derecede.$p = \sigma(wx + b)$- Hayır .$p = wx + b$ Sigmoid                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 ```mermaid
 flowchart TD
@@ -114,29 +116,29 @@ flowchart TD
 
 2D 输入 (İki özellik için), karar sınırı aşağıdaki koşulları karşılamak için düz çizgidir:
 
-```
-w1*x1 + w2*x2 + b = 0
+```math
+w_1 x_1 + w_2 x_2 + b = 0
 ```
 
 Bir tarafta nokta sınıflandırma olarak 1, diğer tarafta nokta sınıflandırma olarak 0 olarak ‒Logistik gerileme ‒ her zaman ‒ doğrusal karar sınırları oluşturur ‒ eğer ‒曲 sınırları gerekirse, ya polinom özellikleri eklemek ya da doğrusal olmayan model kullanmak―
 
 ### Softmax kullanılarak  Çoklu Sınıf sınıflandırması
 
-İkili lojistik gerileme 处理两个类──对于 k 个类,使用软max函数:
+İkili lojistik gerileme 处理两个类──对$k$个 sınıfları, softmax işlevi kullanın:
 
-```
-softmax(z_i) = e^(z_i) / sum(e^(z_j) for all j)
+```math
+\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
 ```
 
-Her sınıfın kendi ağırlık vektörü vardır. Model her sınıf için bir puan z_i hesaplar, sonra softmax puanları  toplam ve 1 olasılıkla dönüştürür.
+Her sınıfın kendi ağırlık vektörü vardır.$z_i$, sonra softmax puanları  toplam ve 1 olasılığı olarak dönüştürür.
 
 Kayıp Fonksiyonu 变为 kategorik çapraz entropi:
 
-```
-Loss = -(1/n) * sum(sum(y_k * log(p_k)))
+```math
+\text{损失} = -\frac{1}{n} \sum \sum_k y_k \log(p_k)
 ```
 
-İçinde y_k için gerçek sınıfı 为 1, diğer tüm sınıflar için 为 0(bir sıcak kodlama)
+İçlerinden $y_k$Gerçek sınıfı için 1, diğer sınıflara karşı 0 ((bir sıcaktan kodlama)
 
 ### Değerlendirme Metrikleri
 
@@ -150,18 +152,18 @@ Loss = -(1/n) * sum(sum(y_k * log(p_k)))
 | Actually Negative | False Positive (FP) | True Negative (TN) |
 
 **Precision**Tüm olumlu tahminler arasında, ne kadar olumlu gerçek var?
-```
-Precision = TP / (TP + FP)
+```math
+\text{精确率} = \frac{TP}{TP + FP}
 ```
 
 **Recall**(Sensitivite): Tüm gerçek olumlu örnekler arasında, ne kadar yakaladık?
-```
-Recall = TP / (TP + FN)
+```math
+\text{召回率} = \frac{TP}{TP + FN}
 ```
 
 **F1 Score**:Dikkat ve hatırlamaların uyumlu ortalaması──平衡两个指标──
-```
-F1 = 2 * (Precision * Recall) / (Precision + Recall)
+```math
+F_1 = 2 \cdot \frac{\text{精确率} \cdot \text{召回率}}{\text{精确率} + \text{召回率}}
 ```
 
  öncelikli öneme alınan durumlar:
@@ -505,7 +507,7 @@ Bu ders:
 
 ## 练习
 
-1. 生成一个不是线性分离的数据集 (例如两个同心圆) ――训练物流回归并观察它的失败――然后添加多项式特征(x1^2、x2^2、x1*x2)并再次训练――展示精度 得到提升──
+1. 生成一个不是线性分离的数据集 (例如两个同心圆) ⋅训练物流回归并观察它的失败――然后添加多项式特征)$x_1^2, x_2^2, x_1 x_2$)并再训练――展示精度――升级――
 2. Üç sınıf softmax modeli için  multi-class karışıklık matrisini gerçekleştirmek── sınıf başına hesaplama, akılda tutmak── hangi sınıfın sınıflandırılması en zor?
 3. 0'dan 1'e kadar 100 ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′ ′     ′                                                                
 
@@ -514,14 +516,14 @@ Bu ders:
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | Logistic regression | “用于 Classification 的 Regression” | 一个 linear model 后接 sigmoid function，用于输出 class probabilities |
-| Sigmoid function | “S-curve” | function 1/(1+e^(-z))，将任意实数映射到 (0, 1) 范围 |
-| Binary cross-entropy | “Log loss” | Loss Function -[y*log(p) + (1-y)*log(1-p)]，会严厉惩罚自信但错误的预测 |
+| Sigmoid function | “S-curve” | function $1/(1+e^{-z})$，将任意实数映射到 (0, 1) 范围 |
+| Binary cross-entropy | “Log loss” | Loss Function $-[y \log(p) + (1-y) \log(1-p)]$，会严厉惩罚自信但错误的预测 |
 | Decision boundary | “分界线” | 模型输出概率等于 0.5 的 surface，用于分隔 predicted classes |
 | Softmax | “Multi-class sigmoid” | 将 scores 的 Vector 转换为总和为 1 的概率的 function |
-| Precision | “选中的有多少是相关的” | TP / (TP + FP)，positive predictions 中实际为 positive 的比例 |
-| Recall | “相关的有多少被选中” | TP / (TP + FN)，actual positives 中被模型正确识别的比例 |
-| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：2*P*R / (P+R) |
+| Precision | “选中的有多少是相关的” | $TP / (TP + FP)$，positive predictions 中实际为 positive 的比例 |
+| Recall | “相关的有多少被选中” | $TP / (TP + FN)$，actual positives 中被模型正确识别的比例 |
+| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：$2PR / (P+R)$ |
 | Confusion matrix | “错误分解” | 展示每个 class pair 的 TP、TN、FP、FN 计数的表格 |
 | Threshold | “cutoff” | 超过该 probability value 时模型预测 class 1（默认 0.5，可调） |
-| One-hot encoding | “类别的二进制列” | 将 class k 表示为一个 Vector：除位置 k 为 1 外，其余位置均为 0 |
-| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 k 个 classes 的扩展，使用 one-hot encoded labels |
+| One-hot encoding | “类别的二进制列” | 将 class $k$ 表示为一个 Vector：除位置 $k$ 为 1 外，其余位置均为 0 |
+| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 $k$ 个 classes 的扩展，使用 one-hot encoded labels |

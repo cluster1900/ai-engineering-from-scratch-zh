@@ -35,25 +35,27 @@ doğruluk başarısız olacaktır, çünkü tüm doğru tahminleri eşit şekild
 | Actually Positive | 0 (TP) | 10 (FN) |
 | Actually Negative | 0 (FP) | 990 (TN) |
 
-Kesinlik = (0 + 990) / 1000 = 99,0%
+```math
+\text{准确率} = (0 + 990) / 1000 = 99.0\%
+```
 
 Model, az sayıda aldatmacılığı ve hastalıkları ele aldı. Ama doğruluk %99'u gösteriyor.
 
 ### Daha iyi bir gösterge
 
-**Precision**= TP / (TP + FP) ⋅ Tüm olumlu olarak işaret edilen örnekler arasında, gerçekten olumlu olanların sayısı ne kadar?
+**Precision**= $\text{TP} / (\text{TP} + \text{FP})$ Bütün olumlu olarak işaret edilen örnekler arasında, gerçekten olumlu olanların sayısı ne kadar?
 
-**Recall**= TP / (TP + FN) ⋅ Tüm gerçek pozitif örnekler içinde, ne kadar yakaladık?
+**Recall**= $\text{TP} / (\text{TP} + \text{FN})$Bütün gerçek pozitif örnekler arasında, ne kadar yakaladık?
 
-**F1 Score**= 2 * doğruluk * hatırlama / (doğrulık + hatırlama) ――调和平均数──相比算术平均数,它会更严厉地惩罚精度 和回忆 之间极端不平衡──
+**F1 Score**= $2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$◊调和平均数── △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                                         
 
-**F-beta Score**= (1 + beta^2) * doğruluk * hatırlama / (beta^2 * doğruluk + hatırlama) ・・・当 beta > 1 时, hatırlama 更重要。当 beta < 1 时,精度 更重要。F2 在欺诈检测中很常见(漏掉欺诈比误报更糟) ・・・
+**F-beta Score**= $(1 + \beta^2) \cdot \text{精确率} \cdot \text{召回率} / (\beta^2 \cdot \text{精确率} + \text{召回率})$- Evet.$\beta > 1$时, hatırlayın daha önemli.$\beta < 1$时,精度更重要──F2 在欺诈检测中很常见(漏掉欺诈比误报更糟)
 
 **AUPRC**(Precision-Recall Curve altında alan) ・・・ AUC-ROC'ye benzer, ancak dengesiz veri daha fazla bilgi miktarı─随机分类的 AUPRC等与正类的比例(不像ROC 那样是0.5) ・・・
 
-**Matthews Correlation Coefficient**= (TP * TN - FP * FN) / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))。 aralığı -1 ila +1─ ancak iki sınıf üzerinde model iyi performans gösterdiğinde yüksek puanlar elde edilebilir.
+**Matthews Correlation Coefficient**= $(\text{TP} \cdot \text{TN} - \text{FP} \cdot \text{FN}) / \sqrt{(\text{TP}+\text{FP})(\text{TP}+\text{FN})(\text{TN}+\text{FP})(\text{TN}+\text{FN})}$ -1'den +1'e kadar olan aralık. Sadece iki sınıf üzerinde model iyi performans gösterdiğinde yüksek puanlar elde edilir.
 
-对于上始终预测负的模型:精度 = 0/0(未定义,通常设为 0),回忆 = 0/10 = 0,F1 = 0,MCC = 0──这些指标正确地识别出该模型无价值──
+对于上始终预测 的模型:$\text{精确率} = 0/0$(未定義,通常设为 0),$\text{召回率} = 0/10 = 0$- Evet .$\text{F1} = 0$- Evet .$\text{MCC} = 0$ Bu göstergeler doğru şekilde tanımlanmıştır.
 
 ### Çevrelik (Pipeline)
 
@@ -79,9 +81,9 @@ flowchart TD
 
 SMOTE yeni sentetik azınlık 样本ler oluşturmaya başlayacak.
 
-1. Her azınlık için örnek x, diğer azınlık örnekleri arasında bulur.
+1. Her azınlık için örnek$x$Diğer azınlık örnekleri arasında bulmuştum.$k$个最近邻居
 2. # Bir komşunu seçmek için #
-3. X ve komşu arasındaki çizgi aşamasında yeni bir örnek oluşturun
+3. - Evet .$x$Ve bu komşu arasındaki çizgi aşamasında yeni bir örnek oluşturun.
 
 公式:`new_sample = x + random(0, 1) * (neighbor - x)`
 
@@ -137,24 +139,24 @@ flowchart LR
 Verileri değiştirmek yerine, modellerin yanlış işleme yöntemlerini değiştirmek gibi değildir.
 
 950. negatif ve 50 pozitif  örnek içerir ikili bir örnek için:
-- negatif sınıf 的权重 = n_samples / (2 * n_negative) = 1000 / (2 * 950) = 0.526
-- pozitif sınıfın权重 = n_samples / (2 * n_positive) = 1000 / (2 * 50) = 10.0
+- negatif sınıfın 权重 = $n_{\text{样本数}} / (2 \cdot n_{\text{负类}}) = 1000 / (2 \cdot 950) = 0.526$
+- pozitif sınıfın 权重 = $n_{\text{样本数}} / (2 \cdot n_{\text{正类}}) = 1000 / (2 \cdot 50) = 10.0$
 
 olumlu sınıfı  19 倍权重を獲得した。誤分类 負の 19 誤分类 負の 19 誤分类 モデルが少数階級を重視することを強いられた。
 
 Logistik gerileme sırasında, bu kayıp işlevi değiştirir:
 
-```
-weighted_loss = -sum(w_i * [y_i * log(p_i) + (1-y_i) * log(1-p_i)])
+```math
+\text{weighted\_loss} = -\sum \bigl( w_i \cdot [y_i \log(p_i) + (1-y_i) \log(1-p_i)] \bigr)
 ```
 
-Bunlardan biri de örneğin sınıfına bağlıdır.
+İçlerinden $w_i$取決於样本 $i$Çeviri:
 
 Sınıf ağırlıkları, matematiksel olarak eşitlik seviyelerinde, daha hızlı ve daha uygun risklerden kaçınarak yeni veri noktaları oluşturmazlar.
 
 ### Sınır ayarlama
 
-Büyük çoğunluk sınıflandırıcı bir olasılığı çıkarır. Önemli değer 0.5'dir. Eğer P (pozitif) >= 0.5 ise, tahmin olumlu olarak yapılır.
+Büyük çoğunluk sınıflandırıcı bir olasılık çıkarır.$P(\text{正类}) \ge 0.5$, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
 流程:
 1. 訓練一個模型
@@ -172,7 +174,7 @@ flowchart LR
     E --> F[Use in Production]
 ```
 
-Bir model bir dolandırıcılık işlemine karşı çıkabilir P(yalandırıcılık) = 0.15♦, 0.5  değerinde, yanlışlıkla ele alınır  0.10  değerinde, yanlışlıkla ele alınır                                                                                                                                                                                                                                       
+Bir model bir dolandırıcılık işlemine karşı çıkabilir .$P(\text{欺诈}) = 0.15$ 0.5                                                                                                                                                                                                                                                             
 
 ### Masraflara Çok Yakışıklı Öğrenme
 
@@ -180,8 +182,8 @@ Sınıf ağırlıklarının genel biçimi, birleştirme maliyetini kullanmak de�
 
 | | Predict Positive | Predict Negative |
 |--|---|---|
-| Actually Positive | 0 (correct) | C_FN = 100 |
-| Actually Negative | C_FP = 1 | 0 (correct) |
+| Actually Positive | 0 (correct) | $C_{\text{FN}} = 100$ |
+| Actually Negative | $C_{\text{FP}} = 1$ | 0 (correct) |
 
 Bir hata raporundan daha fazla maliyetle yapılan bir sahtekarlık işleminin başarısızlığı, toplam hata sayısından daha yüksek bir maliyetle sonuçlanır.
 

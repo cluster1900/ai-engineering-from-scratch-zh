@@ -24,10 +24,10 @@ Birleştirme yöntemleri işte böyle yapılır. Bunlar tablo verilerinde, Kağ�
 
 ### Neden Ensemeller Etkili
 
-假设你有N个独立分类器,每个的精度都是p > 0.5──多数票的精度为:
+- Hayal et .$N$个独立分类器,每个的精度都是 个独立分类器,每个的精度都是$p > 0.5$◊ çoğunluk oyunun doğruluğu 为:
 
-```
-P(majority correct) = sum over k > N/2 of C(N,k) * p^k * (1-p)^(N-k)
+```math
+P(\text{多数预测正确}) = \sum_{k > N/2} \binom{N}{k} p^k (1-p)^{N-k}
 ```
 
 21 sınıflandırıcı için %60 oranında doğruluk, çoğunluk oylarının doğruluğu %74 civarında. Eğer 101 sınıflandırıcı varsa, %84'e yükseltilmektedir.
@@ -132,7 +132,7 @@ Gradyent artışı 泛化到任意 Loss Function ︎; bu, örneklerin yeniden y�
 3. Final prediction: F_T(x)
 ```
 
-√2 hata kaybı için,pseudo-residüal = gerçek residüal:`r_i = y_i - F_{t-1}(x_i)`❖ Her ağaç aslında bir takım hatalar yapar.
+√2 hata kaybı için,pseudo-residüal = gerçek residüal:$r_i = y_i - F_{t-1}(x_i)$❖ Her ağaç aslında bir takım hatalar yapar.
 
 Öğrenme oranı (shrinkage) kontrol her ağaçın katkı derecesi. Daha küçük öğrenme oranları. Daha fazla ağaç gerektirir.
 

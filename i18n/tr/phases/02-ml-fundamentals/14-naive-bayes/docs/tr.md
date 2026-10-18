@@ -27,8 +27,8 @@ Bir yanlış varsaymanın neden iyi bir tahmin getirebileceğini anlamak, makine
 
 Bayes teoremi 会反转条件概率:
 
-```
-P(class | features) = P(features | class) * P(class) / P(features)
+```math
+P(\text{类别} \mid \text{特征}) = \frac{P(\text{特征} \mid \text{类别}) \cdot P(\text{类别})}{P(\text{特征})}
 ```
 
 Biz isteriz .`P(class | features)`Bu nedenle, bir belgeye ait bir sözcükün bir tür olasılığına sahip olması için, aşağıdaki birkaç sözcükten hesaplayabiliriz:
@@ -40,15 +40,15 @@ Biz isteriz .`P(class | features)`Bu nedenle, bir belgeye ait bir sözcükün bi
 
 ### Saçmacalı Bağımsızlık Dedikleri
 
-精确计算 `P(features | class)`需要估计所有特征联合出现的共同概率──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+精确计算 `P(features | class)`                                                                                                                                                                                                                                                              $2^{10{,}000}$种可能组合上的分布──不可能──
 
 Saçma varsayım: "Bütün özellikler şartlı olarak bağımsızdır".
 
-```
-P(w1, w2, ..., wn | class) = P(w1 | class) * P(w2 | class) * ... * P(wn | class)
+```math
+P(w_1, w_2, \ldots, w_n \mid \text{类别}) = P(w_1 \mid \text{类别}) \cdot P(w_2 \mid \text{类别}) \cdots P(w_n \mid \text{类别})
 ```
 
-Artık imkansız bir ortak dağılım tahmin etmiyorsunuz, ama basit bir n 个个特征分布的估计.
+Artık imkansız bir ortak dağıtım tahmin etmiyorsun.$n$个简单的个特征分布―― her bir dağılım için sadece bir sayı gerekir――
 
 Bu varsayım açıkça yanlışdır. Hiçbir dosyadaki "makine" ve "öğrenme" bağımsız değildir. Ancak sınıflandırıcı doğru olasılık tahminine ihtiyaç duymaz. Doğru sıralama gerektirir. Yani hangi sınıfın en yüksek olasılık olduğu. Bağımsızlık varsayımı sistematik hatalar getirecektir. Ancak bu hatalar tüm sınıfları benzer şekilde etkileyecek, bu nedenle sıralama doğru kalır.
 
@@ -56,7 +56,7 @@ Bu varsayım açıkça yanlışdır. Hiçbir dosyadaki "makine" ve "öğrenme" b
 
 Üç neden:
 
-1. **排序优先于校准。**Sınıflama sadece sıralama en yüksek sınıfı doğru olması gerekir. P(spam) = 0.99999, gerçek olasılığı ise 0.7, sınıflandırıcı hala doğruyu seçer.
+1. **排序优先于校准。**Sınıflandırma sadece en yüksek sınıfı doğru olması gerekir.$P(\text{垃圾邮件}) = 0.99999$, gerçek olasılık ise 0.7, sınıflandırıcı hala doğruyu seçer spam.
 
 2. **高 bias，低 variance。**Bağımsızlık varsayımı güçlü bir öncülüktir. Bu da aşırı uyumluluğu önler.
 
@@ -73,31 +73,33 @@ Bu varsayım açıkça yanlışdır. Hiçbir dosyadaki "makine" ve "öğrenme" b
 - Spam olmayan mesaj "be bedava" 5 kere, "para" 10 kere, "bir araya gelme" 100 kere, toplam 115 个词)
 - %40'ın e-posta spam, %60'ın e-posta değil.
 
-使用 Laplace düzeltme ((alpha=1):
+使用 Laplace düzeltme$\alpha=1$):
 
-```
-P(free | spam)    = (80 + 1) / (150 + 3) = 81/153 = 0.529
-P(money | spam)   = (60 + 1) / (150 + 3) = 61/153 = 0.399
-P(meeting | spam) = (10 + 1) / (150 + 3) = 11/153 = 0.072
-
-P(free | not-spam)    = (5 + 1) / (115 + 3) = 6/118 = 0.051
-P(money | not-spam)   = (10 + 1) / (115 + 3) = 11/118 = 0.093
-P(meeting | not-spam) = (100 + 1) / (115 + 3) = 101/118 = 0.856
+```math
+\begin{aligned}
+P(\text{free} \mid \text{垃圾邮件}) &= (80 + 1) / (150 + 3) = 81/153 = 0.529 \\
+P(\text{money} \mid \text{垃圾邮件}) &= (60 + 1) / (150 + 3) = 61/153 = 0.399 \\
+P(\text{meeting} \mid \text{垃圾邮件}) &= (10 + 1) / (150 + 3) = 11/153 = 0.072 \\[6pt]
+P(\text{free} \mid \text{非垃圾邮件}) &= (5 + 1) / (115 + 3) = 6/118 = 0.051 \\
+P(\text{money} \mid \text{非垃圾邮件}) &= (10 + 1) / (115 + 3) = 11/118 = 0.093 \\
+P(\text{meeting} \mid \text{非垃圾邮件}) &= (100 + 1) / (115 + 3) = 101/118 = 0.856
+\end{aligned}
 ```
 
 Yeni posta içerir: "Özgür" ((2 次) 、"Para" ((1 次) 、"Toplantı" ((0 次) ✿
 
+```math
+\begin{aligned}
+\log P(\text{垃圾邮件} \mid \text{邮件}) &= \log(0.4) + 2 \log(0.529) + 1 \log(0.399) + 0 \log(0.072) \\
+&= -0.916 + 2(-0.637) + (-0.919) + 0 \\
+&= -3.109 \\[6pt]
+\log P(\text{非垃圾邮件} \mid \text{邮件}) &= \log(0.6) + 2 \log(0.051) + 1 \log(0.093) + 0 \log(0.856) \\
+&= -0.511 + 2(-2.976) + (-2.375) + 0 \\
+&= -8.838
+\end{aligned}
 ```
-log P(spam | email) = log(0.4) + 2*log(0.529) + 1*log(0.399) + 0*log(0.072)
-                    = -0.916 + 2*(-0.637) + (-0.919) + 0
-                    = -3.109
 
-log P(not-spam | email) = log(0.6) + 2*log(0.051) + 1*log(0.093) + 0*log(0.856)
-                        = -0.511 + 2*(-2.976) + (-2.375) + 0
-                        = -8.838
-```
-
-Spam 以很大优势胜出──"free" 出現两次是支持垃圾邮件的强证──注意, " toplantı " görünmeyen zamanlarda, iki log sum 之贡献都是零(0 * log(P)) 
+Spam 以大优势胜出──"free" 出現两次是支持垃圾邮件的强烈证据──注意, " toplantı " görünmediğinde, iki günlük toplamına katkılar ise 零($0 \cdot \log P$) Multinomial NB'de,缺失词没有影响──显式建模词缺失是伯努利 NB──
 
 ### Üç Çeşit
 
@@ -107,8 +109,8 @@ Naive Bayes'in üç biçimi var. Her biri farklı bir şekilde inşa edilmektedi
 
 Bu özellikler, TF-IDF değerinin metin verilerine en uygun özellikler için kullanılır.
 
-```
-P(word_i | class) = (count of word_i in class + alpha) / (total words in class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数：} \text{词}_i \text{ 在类别中} + \alpha}{\text{类别内词总数} + \alpha \cdot \text{vocab\_size}}
 ```
 
 `alpha`Bu değişim, metin sınıflandırması 的主力。
@@ -117,8 +119,8 @@ P(word_i | class) = (count of word_i in class + alpha) / (total words in class +
 
 Her bir özellik düzenli olarak dağıtılacak.
 
-```
-P(x_i | class) = (1 / sqrt(2 * pi * var)) * exp(-(x_i - mean)^2 / (2 * var))
+```math
+P(x_i \mid \text{类别}) = \frac{1}{\sqrt{2 \pi \cdot \text{方差}}} \cdot \exp\left(-\frac{(x_i - \text{均值})^2}{2 \cdot \text{方差}}\right)
 ```
 
 Her sınıfın her bir özelliğin kendi ortalama değerine ve farklılığına sahip olacaktır.
@@ -127,8 +129,8 @@ Her sınıfın her bir özelliğin kendi ortalama değerine ve farklılığına 
 
 Bu özelliklerin her biri iki değer değişkenliği olarak belirlenir.
 
-```
-P(word_i | class) = (docs in class containing word_i + alpha) / (total docs in class + 2 * alpha)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{类别内包含该词的文档数：} \text{词}_i + \alpha}{\text{类别内文档总数} + 2 \alpha}
 ```
 
 Bir çok kelimeyle aynı değil, Bernouli bir kelime eksikliğini açıkça cezalandırır. Eğer "özgür" genellikle spam'de görünürse, ama bu e-postada bulunmazsa, Bernouli onu spam'a karşı kanıt olarak görür.
@@ -149,11 +151,11 @@ Eğer test verilerinde bir kelime ortaya çıkarsa, ama eğitim verilerinin beli
 
 Her bir özellikle bir küçük sayı da beraber olacak .`alpha`(genellikle 1):
 
-```
-P(word_i | class) = (count(word_i, class) + alpha) / (total_words_in_class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数}(\text{词}_i, \text{类别}) + \alpha}{\text{total\_words\_in\_class} + \alpha \cdot \text{vocab\_size}}
 ```
 
-Alfa=1'de her kelime en az bir küçük olasılıkla oluşur. Test postalarında "discombobulate" oluşur.
+- Evet .$\alpha=1$时, her kelime en az çok küçük bir olasılıkla oluşur. Test e-maillerinde "discombobulate" oluşur.
 
 Daha yüksek alfa daha güçlü bir düzeltme anlamına gelir.
 
@@ -172,8 +174,8 @@ Yüzlerce olasılık çarpması (doğrusu 1) yüzen noktaların aşağı akış�
 
 Çözüm: log alanında çalış¬mak, √√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√√
 
-```
-log P(class | x1, x2, ..., xn) = log P(class) + sum_i log P(xi | class)
+```math
+\log P(\text{类别} \mid x_1, x_2, \ldots, x_n) = \log P(\text{类别}) + \sum_i \log P(x_i \mid \text{类别})
 ```
 
 Bu tahminleri nokta ürünü haline getirecektir:
@@ -191,7 +193,7 @@ Bu iki metin de bir metin sınıflandırıcısı olarak kullanılır.
 
 | Aspect | Naive Bayes | Logistic Regression |
 |--------|------------|-------------------|
-| Type | Generative（建模 P(X\|Y)） | Discriminative（建模 P(Y\|X)） |
+| Type | Generative（建模 $P(X \mid Y){}$） | Discriminative（建模 $P(Y \mid X){}$） |
 | Training | 统计频率 | 优化 Loss Function |
 | Small data | 更好（强 prior 有帮助） | 更差（不足以估计权重） |
 | Large data | 更差（错误假设会拖累） | 更好（更灵活的边界） |
@@ -218,8 +220,8 @@ flowchart LR
 
 實踐中,我們在木欄空間中工作,以避免浮點下流──我們不再相乘許多小概率,而是相加他們的對數:
 
-```
-log P(class | features) = log P(class) + sum_i log P(feature_i | class)
+```math
+\log P(\text{类别} \mid \text{特征}) = \log P(\text{类别}) + \sum_i \log P(\text{特征}_i \mid \text{类别})
 ```
 
 
@@ -236,7 +238,7 @@ naive-bayes
 
 1. **fit(X, y)**: için her sınıf,统计每个特征的频率──加入拉普拉斯平调──计算日志概率──存储类的先例──类别频率的日志)──
 
-2. **predict_log_proba(X)**: için her örnek, hesap tüm sınıflar log P(sınıf) + log P(kaynak_i ≠sınıf) ∞
+2. **predict_log_proba(X)**: her örnek için, hesap tüm sınıflar $\log P(\text{类别})$+ toplamı $\log P(\text{特征}_i \mid \text{类别})$ This is a Matrix multiplication: X @ log_probs.T + log_priors。
 
 3. **predict(X)**: Geri dön log olasılığı en yüksek sınıfı
 
@@ -309,9 +311,9 @@ Sintez veri çalışma biçimi aşağıdakiler: 我们创建 200 个词(特征�
 
 ### Tahmin Hızı
 
-Naive Bayes 预测 bir Matrix çarpımıdır.
-- MultinomialNB:一次 Matrix çarpı (n x d) @ (d x k) = O(n * d * k)
-- GaussianNB:n * k 次 Gaussian PDF 求值,每次覆盖 d 个特征 = O(n * d * k)
+Naive Bayes 预测 bir Matrix çarpımıdır.$n$个样本,$d$个特征,$k$个类别:
+- MultinomialNB: once Matrix çarpma $(n \times d) \mathbin{@} (d \times k) = O(n \cdot d \cdot k)$
+- GaussianNB:$n \cdot k$İkinci Gaussian PDF 求值,每次覆盖 $d$个特征 = $O(n \cdot d \cdot k)$
 
 Her boyutta ikisi de doğaldır. KNN ile karşılaştırıldığında, RBF çekirdeğinin tüm eğitim noktalarının mesafesine kadar hesaplanması veya SVM ile birlikte çekirdeğin tüm destek vektörlerine karşı bir çekirdeğin değerlendirilmesi gerekir.
 
@@ -383,7 +385,7 @@ CountVectorizer 中的 `binary=True`标志会将所有计数转换为0/1──�
 
 ### Kalibrasyon NB Muhtemelenlikler
 
-NB 概率校准很差──NB P(spam) = 0.95 时, gerçek olasılık 0.7 olabilir.
+Not: 概率校准 çok kötü.$P(\text{垃圾邮件}) = 0.95$时, gerçek olasılık 0.7 olabilir. Eğer güvenilir olasılık tahminine ihtiyacınız varsa, örneğin değerleri ayarlamak veya diğer modeller ile birleştirmek için, lütfen sklearn'ın Kalibrasyon sınıflandırıcısını kullanın:
 
 ```python
 from sklearn.calibration import CalibratedClassifierCV
@@ -401,7 +403,7 @@ Bu, çapraz doğrulama yoluyla, NB'nin orijinal sayılarına göre bir lojistik 
 
 2. **零方差特征。**GaussianNB bir sınıfın bir özelliğinin farkı ise, olasılık hesaplama sorunu ortaya çıkar.
 
-3. **类别不平衡。**Eğer %99'un e-postaları spam değilse, öncü P(spam değil) = 0.99 会非常强, o kadar ki olasılık kanıtlarını bastırmak için──手動設定クラス優先,または使用 sklearn 中のクラス_優先参数──
+3. **类别不平衡。**Eğer %99'u spam değilse, önce$P(\text{非垃圾邮件}) = 0.99$Çok güçlüdür, olasılıkla kanıtları bastırmak için.
 
 4. **特征缩放。**MultinomialNB ölçeklendirme gerektirmez. GaussianNB ayrıca ölçeklendirme gerektirmez.
 
@@ -425,7 +427,7 @@ Bağımsızlık varsayımı yanlış düzenlemeyi (sadece yanlış olasılık de
 ## 练习
 1. **Smoothing experiment。**Metin verilerinde alfa değerinin 0.01、0.1、1.0、10.0 ve 100.0 kullanılması için çoklu değerler kullanılır.
 
-2. **Feature independence test。**取一个真文本数据集. 选择两个明显相关的词 (机器) 和学习) 计算 P 字类 (P 字类) * P 字类 (P 字类),并与 P 字类 (P 字类) 比較 ⋅ bağımsızlık varsayımı 错得多严重?
+2. **Feature independence test。**取一个真实文本数据集──选择两个明显相关的词("机器"和"学习")──计算 $P(\text{词}_1 \mid \text{类别}) \cdot P(\text{词}_2 \mid \text{类别})$,并与 $P(\text{词}_1 \text{ 且 } \text{词}_2 \mid \text{类别})$Özgürlük varsayımı  hata ne kadar ciddi? sınıflandırma doğruluğuna etkiler mi?
 
 3. **Bernoulli implementation。**扩展代码,添加一个BernoulliNB类──将包-of-words 转换为二值(present/absent),并文本数据上与多式NB比较精度──什么时候Bernoulli 会赢?
 
@@ -437,14 +439,14 @@ Bağımsızlık varsayımı yanlış düzenlemeyi (sadece yanlış olasılık de
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Naive Bayes | “简单的概率 classifier” | 一个使用 Bayes' theorem，并假设给定类别后特征 conditionally independent 的 classifier |
-| Conditional independence | “特征彼此不影响” | P(A, B \| C) = P(A \| C) * P(B \| C)——一旦知道 C，知道 B 不会告诉你关于 A 的任何新信息 |
+| Conditional independence | “特征彼此不影响” | $P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)$——一旦知道 $C$，知道 $B$ 不会告诉你关于 $A$ 的任何新信息 |
 | Laplace smoothing | “Add-one smoothing” | 给每个特征添加一个小计数，防止零概率主导预测 |
-| Prior | “看到数据之前你相信什么” | P(class)——观察任何特征之前，每个类别的概率 |
-| Likelihood | “数据拟合得有多好” | P(features \| class)——如果类别已知，观察到这些特征的概率 |
-| Posterior | “看到数据之后你相信什么” | P(class \| features)——观察到特征后，类别的更新概率 |
-| Generative model | “建模数据如何生成” | 学习 P(X \| Y) 和 P(Y)，然后使用 Bayes' theorem 得到 P(Y \| X) 的模型 |
-| Discriminative model | “建模 decision boundary” | 不建模 X 如何生成，而是直接学习 P(Y \| X) 的模型 |
-| Log probability | “避免 underflow” | 使用 log P 而不是 P，防止许多小数相乘后在浮点数中变成零 |
+| Prior | “看到数据之前你相信什么” | $P(\text{类别})$——观察任何特征之前，每个类别的概率 |
+| Likelihood | “数据拟合得有多好” | $P(\text{特征} \mid \text{类别})$——如果类别已知，观察到这些特征的概率 |
+| Posterior | “看到数据之后你相信什么” | $P(\text{类别} \mid \text{特征})$——观察到特征后，类别的更新概率 |
+| Generative model | “建模数据如何生成” | 学习 $P(X \mid Y)$ 和 $P(Y)$，然后使用 Bayes' theorem 得到 $P(Y \mid X)$ 的模型 |
+| Discriminative model | “建模 decision boundary” | 不建模 $X$ 如何生成，而是直接学习 $P(Y \mid X)$ 的模型 |
+| Log probability | “避免 underflow” | 使用 $\log P$ 而不是 $P$，防止许多小数相乘后在浮点数中变成零 |
 
 ## 延伸阅读
 - [scikit-learn Naive Bayes docs](https://scikit-learn.org/stable/modules/naive_bayes.html) 三种变体 ve onun matematiksel ayrıntıları

@@ -91,8 +91,8 @@ Eğer bir zaman dizisinin istatistik özellikleri (geçici değer, farklılık, 
 
 **如何修复：**差分──不要建模原始值,而是建模连续值之间的变化:
 
-```
-diff[t] = value[t] - value[t-1]
+```math
+\text{diff}[t] = \text{值}[t] - \text{值}[t-1]
 ```
 
 Eğer bir kez farkı düzleştiremiyorsa, bir kez daha uygulamaya başlıyoruz.
@@ -109,7 +109,7 @@ Bir sınıf farklılıkları: [2, 4, 6, 8](Hâlâ yukarı eğilimi içinde)
 
 ### Önemli
 
-Öz ilişkili ölçüm zaman t'in değeri ile zaman t-k( geçen k 步) değerleri arasındaki ilişki derecesi.
+Zaman ölçüm$t$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $t-k$(bkz: geçmiş$k$步) 的值之间的相关程度──autocorrelation function (ACF) 会绘制每次滞 $k$Bu ilişki.
 
 **ACF 告诉你：**
 - 序列能记住多远──如果ACF在5 后降至零,则5 步前的值无关紧要──
@@ -142,7 +142,7 @@ Mühendislik yapmanız gereken diğer özellikler:
 
 **多少个 lag？**Otokorelasyon fonksiyonunu kullanın. ACF'ye kadar 10 gecikme belirginse, en az 10 gecikme kullanın.
 
-**target 对齐陷阱。**                                                                                                                                                                                                                                                              
+**target 对齐陷阱。**Zamanın geride kalması, hedefin geride kalması.$t$Değerini ve tüm özelliklerini kullanmak zorundadır.$t-1$Ya da daha erken bir değere.$t$Bu özellikler içinde, mükemmel bir tahminci ve tamamen kullanışsız bir model vardır. Bu, zaman dizisi özellikleri işleminde en yaygın hatalardır.
 
 ### İleride Değerlendirme
 
@@ -178,8 +178,8 @@ flowchart TD
 ```
 
 Önceki onaylama:
-1. Zamanın sonuna kadar eğitim
-2. 预测时间 t+1(或用于多步预测的 t+1 到 t+k)
+1. Zamanın sonuna kadar.$t$Bu eğitim
+2. 预测时间 $t+1$(or için kullanılır $t+1$- Ne ?$t+k$)
 3. Çıkarım penceresi
 4. Şiddetli
 
@@ -191,11 +191,11 @@ Her test katlaması sadece tüm antrenman verilerinin ardından gelen verileri i
 
 ARIMA klasik zaman dizisi modelitir. Üç bileşeme sahiptir:
 
-- **AR (Autoregressive):**Geçmiş değerinden tahmin yapılmaktadır.
-- **I (Integrated):**通过差分实现平稳性──I(d) 应用 d 次差分──
-- **MA (Moving Average):**Geçmişte yapılan tahmin hataları kullanmak için yapılan tahminleri kullanmak.
+- **AR (Autoregressive):**Geçmiş değerinden yapılan tahminlere göre.$p$个值──
+- **I (Integrated):**通过差分实现平稳性──I(d) 应用 $d$Bir sonraki farkı var.
+- **MA (Moving Average):**Geçmişte yapılan tahmin hataları gerçekleştirmek için yapılan tahminleri.$q$个误差──
 
-ARIMA(p, d, q) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA)选择 p、d、q──
+ARIMA(p, d, q) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA)选择 $p$- Evet.$d$- Evet.$q$- Evet.
 
 Arima'yı sıfırdan gerçekleştirmeyeceğiz. Bu sayısal optimizasyon gerektirir, bu sınıfın kapsamından çok daha fazlasını gerektirir.
 
@@ -217,7 +217,7 @@ Arima'yı sıfırdan gerçekleştirmeyeceğiz. Bu sayısal optimizasyon gerektir
 
 **Recursive (iterated):**预测 下一步,预测 sonucu olarak bir sonraki adımın girişini yapın. 简单,但错误会积累 - 每个预测都使用上一个预测,因此错误会复合――
 
-**Direct:**Her ufukta  訓練獨立模型──Model-1 预测 t+1,Model-5 预测 t+5── hiçbir hata birikmedi, ama her modelin eğitim örneği daha az, ve onlar paylaşmaz bilgi──
+**Direct:**Her ufukta tek tek model eğitimi. Model-1 预测$t+1$Model-5 预测 $t+5$ hiçbir hata birikmedi, ama her modelin eğitim örneği daha az ve onlar bilgi paylaşmaz
 
 **Multi-output:**訓練一个同时输出所有视野的模型──跨视野 共享信息,但需要支持多输出模型──或自定义 Loss Function──
 
@@ -228,7 +228,7 @@ Arima'yı sıfırdan gerçekleştirmeyeceğiz. Bu sayısal optimizasyon gerektir
 | Mistake | Why it happens | How to fix |
 |---------|---------------|-----------|
 | 随机 train/test split | 来自标准 ML 的习惯 | 使用 walk-forward 或 temporal split |
-| 使用未来特征 | 误把时间 t 的特征包含进去 | 审计每个特征的时间对齐 |
+| 使用未来特征 | 误把时间 $t$ 的特征包含进去 | 审计每个特征的时间对齐 |
 | 对季节性 overfitting | 模型记住了日历模式 | 在 test set 中留出一个完整季节周期 |
 | 忽略尺度变化 | 收入翻倍但模式保持 | 建模百分比变化而非绝对值 |
 | 过多滞后特征 | “更多历史更好” | 使用 ACF 确定相关 lag |
@@ -387,7 +387,7 @@ print(f"Mean score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
 时间序列预测使用 Regression 指标,但带有时间感知的上下文:
 
-- **MAE (Mean Absolute Error):**Y_True - y_Prediksiyon'un ortalama değeri, basit birimle açıklanmaktadır.
+- **MAE (Mean Absolute Error):** $\lvert y_{\text{true}} - y_{\text{pred}} \rvert$                                                                                                                                                                                                                                                              
 - **RMSE (Root Mean Squared Error):**ortalama karelerinin karesi kökü. MAE'ye kıyasla, büyük hataların cezası daha ağırdır.
 - **MAPE (Mean Absolute Percentage Error):*** 100'ün ortalama değerinin yanlışı / gerçek değeri, ölçüm ile ilgili değildir, farklı sıralamalara uygun değildir.
 - **Naive baseline comparison:**始终与简单基线比较――季节性天才基线 会预测上一周期的值(昨天、上周) ・・・ Eğer modeliniz naifleri yenemezse, sorun olduğunu açıklayın。
@@ -445,10 +445,10 @@ Eğer üst düzey ML modeliniz mevsimsel saf bir temel çizgiyi verirse, size bi
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Stationarity | “统计量不随时间变化” | 均值、方差和自相关结构随时间保持不变的序列 |
-| Differencing | “连续值相减” | 计算 y[t] - y[t-1] 来移除趋势并实现平稳性 |
+| Differencing | “连续值相减” | 计算 $y[t] - y[t-1]$ 来移除趋势并实现平稳性 |
 | Autocorrelation (ACF) | “一个序列与自身的相关程度” | 时间序列与自身滞后副本之间的相关性，作为 lag 的函数 |
-| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag k 上的自相关 |
-| Lag features | “把过去值作为输入” | 使用 y[t-1]、y[t-2]、...、y[t-k] 作为特征来预测 y[t] |
+| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag $k$ 上的自相关 |
+| Lag features | “把过去值作为输入” | 使用 $y[t-1], y[t-2], \ldots, y[t-k]$ 作为特征来预测 $y[t]$ |
 | Walk-forward validation | “尊重时间顺序的 cross-validation” | 训练数据在时间上始终先于测试数据的评估方式 |
 | ARIMA | “经典时间序列模型” | AutoRegressive Integrated Moving Average：组合过去值（AR）、差分（I）和过去误差（MA） |
 | Seasonality | “重复的日历模式” | 与日历周期（每日、每周、每年）相关的、规则且可预测的时间序列周期 |

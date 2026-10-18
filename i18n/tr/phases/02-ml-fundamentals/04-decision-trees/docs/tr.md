@@ -48,10 +48,8 @@ Her düğümde bir grup örnek var. Biz onları bölmek istiyoruz. Böylece çoc
 
 **Gini impurity** Ölçüm: Eğer bu düğümün sınıf dağılımına göre ırk seçimi ırk seçimi ırk etiketine ırk ayrımı yapılırsa, yanlış sınıflandırılma olasılığı vardır.
 
-```
-Gini(S) = 1 - sum(p_k^2)
-
-where p_k is the proportion of class k in set S.
+```math
+\text{基尼}(S) = 1 - \sum_k p_k^2 \quad \text{其中 } p_k \text{ 是集合 } S \text{ 中类别 } k \text{ 的占比。}
 ```
 
 对于纯节点(全部属于同一个类),Gini = 0。对于 50/50类的二进分,Gini = 0.5。越低越好。
@@ -64,8 +62,8 @@ Gini = 1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48
 
 **Entropy**衡量 node 中的信息量(混乱程度) ――Fase 1 Ders 09 已覆盖──
 
-```
-Entropy(S) = -sum(p_k * log2(p_k))
+```math
+\text{熵}(S) = -\sum_k p_k \log_2(p_k)
 ```
 
 对于纯节点,entropy = 0──对于50/50 双分点,entropy = 1.0──越低越好──
@@ -81,20 +79,21 @@ Entropy = -(0.6 * log2(0.6) + 0.4 * log2(0.4))
 
 **Information gain**                                                                                                                                                                                                                                                              
 
-```
-IG(S, feature, threshold) = Impurity(S) - weighted_avg(Impurity(S_left), Impurity(S_right))
-
-where the weights are the proportions of samples in each child.
+```math
+\begin{aligned}
+& IG(S, \text{特征}, \text{阈值}) = \text{不纯度}(S) - \text{weighted\_avg}(\text{不纯度}(S_{\text{左子节点}}), \text{不纯度}(S_{\text{右子节点}})) \\[4pt]
+& \text{其中，权重是每个子节点的样本占比。}
+\end{aligned}
 ```
 
 Her düğümün üstündeki açgözlülük algoritması:`(feature, threshold)`组合──
 
 ### Bölme 如何工作
 
-对于当前节上包含 n 个特征、m 个样本的数据集:
+对于当前节点上包含 $n$个 özellikleri$m$个 örnekler 个数据集:
 
-1. J(j = 1 ~ n için:
-   - 按特征 j对样本 排序
+1. Her bir özelliğe .$j$($j = 1$- Ne ?$n$):
+   -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $j$Örneklere 排序
    - △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ 
    - 计算每个门的信息收益
 2. 选择信息获取最高特征和门
@@ -109,7 +108,7 @@ Eğer durma koşulları yoksa, ağaç her yaprak temiz olana kadar büyümeye de
 
 **Pre-pruning**Ağaçta bir süre kalmak için durmadan:
 - Maksimum derinlik:当 tree  设定深度 时停止 splitting
-- Yarpaq başına en az örnekler: Eğer bir düğümün örnekleri k'den az ise, durdurulur
+- Yarpaq başına en az örnekler: Eğer bir düğümün örnekleri az $k$,则停止
 - En az bilgi kazancı: En iyi artan artan artan artan bir eşiğden ise,
 - Maksimum yaprak düğümleri: limiti yaprakların toplam sayısı
 
@@ -125,8 +124,8 @@ Daha basit ya da daha hızlı. Kesmeden sonra genellikle daha iyi ağaçlar üre
 
 **Variance reduction**替代 bilgi kazanımı:
 
-```
-VR(S, feature, threshold) = Var(S) - weighted_avg(Var(S_left), Var(S_right))
+```math
+VR(S, \text{特征}, \text{阈值}) = \text{Var}(S) - \text{weighted\_avg}(\text{Var}(S_{\text{左子节点}}), \text{Var}(S_{\text{右子节点}}))
 ```
 
 选择使变化 降低最多的分离―― Tree 会把输入空间 划分多个区域,并在每个区域预测一个常数(平均值) ――
@@ -155,7 +154,7 @@ graph TD
 
 **Bagging（bootstrap aggregating）：**Her ağaç bir başlangıç örneğinde bulunur. Üzerinde yapılan eğitimlerin bir kısmıdır.
 
-**Feature randomization：**Bu nedenle, her bölünme sırasında, sadece bir sıradan özellik alt kümesini düşünün.
+**Feature randomization：**Her bölünme sırasında, sadece bir sıra dışı özellik alt kümesini düşünün.$\sqrt{n_{\text{特征}}}$❖ Geri dönüş için, ◦$n_{\text{特征}}/3$Bu, tüm ağaçların aynı baskın özellikte olduğunu önler.
 
 关键洞见: 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均, 求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求平均,求6.
 
@@ -165,9 +164,8 @@ Rastgele ormanlar 天然提供特色重要性スコア──最常见的方法:
 
 **Mean Decrease in Impurity (MDI)：**Her bir özellik için, tüm ağaçlarda tüm bu özellik kullanan düğümler için  toplam miktarı  toplam miktarı                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
-```
-importance(feature_j) = sum over all nodes where feature_j is used:
-    (n_samples_at_node / n_total_samples) * impurity_decrease
+```math
+\text{重要性}(\text{特征}_j) = \sum_{\text{使用特征 } j \text{ 划分的节点}} \frac{n_{\text{节点样本数}}}{n_{\text{总样本数}}} \cdot \text{impurity\_decrease}
 ```
 
 Bu yöntem çok hızlıdır, ancak yüksek kardinallık özelliklerine ve birçok olası bölünme noktasına sahip özelliklere yönelir.
@@ -349,7 +347,7 @@ Praktiki olarak, dereceli güçlendirilmiş ağaçlar (XGBoost、LightGBM、CatB
 
 1. 3 sınıf içeren bir 2 boyutlu veri kümesi içinde, bir karar ağacı üzerinde çalışmak, el izleme ve düz karar sınırlarını çizmek, maksimum derinlik = 2 ile maksimum derinlik = 10 时 sınırlarını karşılaştırmak.
 
-2. Çekilme ağaçları  gerçekleşme varyansa azaltma bölünmesi──为 200 个点生成 y = sin(x) + noise,并拟合你的回归树──将树的碎片wise-constant predictions与真实曲线一起绘图──
+2. Çekim ağaçları                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $y = \sin(x) + \text{噪声}$,并拟你的回归树──将树的碎片式-恒定预测与真曲线一起绘图──
 
 3.  yapı 1、5、10、50 和 200 樹のランダム森を含む.  図を描く訓練精度とテスト精度 樹数変化曲線と 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図鑑 図 図鑑 図鑑 図 図鑑 図書 図鑑 図書 図鑑 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書 図書
 

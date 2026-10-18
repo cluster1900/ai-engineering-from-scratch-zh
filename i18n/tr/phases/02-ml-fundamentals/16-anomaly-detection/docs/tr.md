@@ -82,7 +82,7 @@ Eğer gerçekten etiketleme anomalileri varsa, onları eğitime kullanmalı mıd
 
 ### Z-Score 方法
 
-En basit yöntem: Her özellikin ortalaması ve standart sapmalaması hesaplamak.
+En basit yöntem: ∞ her özelliğin ortalamasını hesaplamak ve standart sapma ∞ herhangi bir mesafeyi ortalamadan fazla işaretlemek$k$个 standart sapıklıklar 的点──
 
 ```text
 z_score = (x - mean) / std
@@ -148,11 +148,11 @@ flowchart TD
 
 Anomaly skor  tüm ağaçların ortalama yol uzunluğu üzerine,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
-```
-score(x) = 2^(-average_path_length(x) / c(n))
+```math
+\text{分数}(x) = 2^{-\text{average\_path\_length}(x) / c(n)}
 ```
 
-İçlerinden `c(n)`N 个 örneklerin beklenen yol uzunluğu──Score 接近 1 表示异常──Score 接近 0.5 表示正常──Score 接近 0 表示非常正常(位于密集集深处)。
+İçlerinden `c(n)`Evet .$n$个 örneklerin beklenen yol uzunluğu──Score 接近 1 表示异常──Score 接近 0.5 表示正常──Score 接近 0 表示非常正常(位于密集集深处)。
 
 **优点：**没有分布假设──适用于高尺寸──扩展性好(由于每棵使用子样本,所以相对样本大小是子线性)──处理混合特征类型──
 
@@ -168,7 +168,7 @@ score(x) = 2^(-average_path_length(x) / c(n))
 LOF, bir noktayı çevreleyen yerel yoğunluğu komşularının çevreleyen yoğunluğuna karşılaştırır.
 
 **工作方式：**
-1. Her noktaya, en yakın komşularını bul.
+1. Her noktaya, bul onu.$k$En yakın komşuları
 2. 计算当地可达性密度 (Ülkeye ulaşabilme yoğunluğu)
 3. Her noktanın yoğunluğunu komşularının yoğunluklarıyla karşılaştırın
 4. Eğer bir noktanın yoğunluğu komşularından daha düşükse, bu daha dışkardır.
@@ -182,7 +182,7 @@ LOF, bir noktayı çevreleyen yerel yoğunluğu komşularının çevreleyen yoğ
 
 **优点：**检测 local anomalies (dışınlıklarındaki farklı noktaları bile bile)
 
-**缺点：**Büyük veri kümesi üzerinde yavaş bir uygulama (O(n^2)) ◊ k'ın seçim duyarlılığı.
+**缺点：**Büyük veri kümesi üzerinde yavaş bir uygulama$O(n^2)$)―对 $k$Seçim duyarlılığı: çok yüksek boyutlarda.
 
 ### Karşılaştırma
 
@@ -199,7 +199,7 @@ LOF, bir noktayı çevreleyen yerel yoğunluğu komşularının çevreleyen yoğ
 
 - **Extreme class imbalance.**Eğer anomaliler %0.1'e ulaşırsa, tüm içerikleri "normal" olarak tahmin ederek %99.9'luk doğruluk elde edilir.
 - **AUROC 具有误导性。**Şiddetli dengesizlik içinde. Şimdiki modelde de çoğu anomaliyi kaybediyor.
-- **更好的 metrics：**Precision@k(top k 被标记项中的多少是真异常) 、AUPRC(precision-recall curve 下的面积),以及在固定 false positive rate 下的回忆──
+- **更好的 metrics：**Precision@k(top $k$(AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC)  (AUPRC) )  (AUPRC)  (AUPRC)  (AUPRC) )  (AUPRC)  (AUPRC)  (AUPRC) )  (AUPRC)  (AUPRC)  (Fixing) )  (Fixing false positive rate)  (Fixing) )  (Fixing)  (Fixing)  (Fixing) )  (Fixing)  (Fixing)  (Fixing) )  (Fixing)  (Fixing)  (Fing) ) (Fing)  (Fing)  (Fing)  (Fing)
 
 ```mermaid
 flowchart LR
@@ -318,7 +318,7 @@ class IsolationForest:
         return scores
 ```
 
-Normalleşme faktörü`c(n)`n 个元素的二进制搜索树 中一次失败搜索的预期路径长度──等于`2 * H(n-1) - 2*(n-1)/n`, içinden `H`Bu normallaştırma, farklı büyüklükteki veri kümeleri arasında puanların karşılaştırılabilmesini sağlar.
+Normalleşme faktörü`c(n)`İçeriyor.$n$个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 element 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个`2 * H(n-1) - 2*(n-1)/n`, içinden `H`Bu normallaştırma, farklı büyüklükteki veri kümeleri arasında puanların karşılaştırılabilmesini sağlar.
 
 ### Demo 场景
 
@@ -434,7 +434,7 @@ Anomaly score is连续值──你需要一个门值来做二进制决策──�
 
 2. **Multivariate anomalies.** 2D 数据 oluşturmak, her bir özelliği 单独看都像正常, fakat birleşme anormaldir (örneğin, ana küme çaprazı noktalarından uzak) ;; gösterilen her özelliğin Z-score bu noktaları atır, ancak İzolasyon Ormanı 能捕捉它们──
 
-3. **从零实现 LOF.**K-son komşuları kullanmak Local Outlier Factor'ı gerçekleştirmek. K=10 ve k=50 kullanmak, aynı verilerde ve sklearn'ın LocalOutlier Factor'ı ile karşılaştırmak.
+3. **从零实现 LOF.**K-son komşuları kullanın Local Outlier Factor'ı gerçekleştirin.$k=10$和 $k=50$- Evet .$k$Seçim sonuçları nasıl etkiler?
 
 4. **Streaming Anomaly Detection.**修改Z-score detektor,使其在流媒体设置中工作:随着新点到更新运行平均和变异(Welford'ın çevrimiçi algoritması)
 
@@ -449,10 +449,10 @@ Anomaly score is连续值──你需要一个门值来做二进制决策──�
 | Contextual anomaly | "normal 值，错误上下文" | 一个在给定上下文（时间、位置等）下异常、但在另一个上下文中可能 normal 的 observation |
 | Isolation Forest | "用 random splits 找 outliers" | 一种 random trees 的 ensemble，它能用比 normal points 更少的 splits 隔离 anomalies |
 | Local Outlier Factor | "把 density 和 neighbors 比较" | 一种标记 local density 明显低于其 neighbors density 的点的方法 |
-| Z-score | "距离 mean 的 standard deviations 数" | (x - mean) / std，用 standard deviation 为单位衡量某个点距离中心有多远 |
-| IQR | "Interquartile range" | Q3 - Q1，衡量数据中间 50% 的 spread，用于 robust outlier detection |
+| Z-score | "距离 mean 的 standard deviations 数" | $(x - \text{均值}) / \text{标准差}$，用 standard deviation 为单位衡量某个点距离中心有多远 |
+| IQR | "Interquartile range" | $Q3 - Q1$，衡量数据中间 50% 的 spread，用于 robust outlier detection |
 | Contamination | "预期 anomalies 比例" | 一个 hyperparameter，用于告诉 detector 应该将数据中多大比例标记为 anomalous |
-| Precision@k | "top k flags 中有多少是真的" | 只在 k 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
+| Precision@k | "top k flags 中有多少是真的" | 只在 $k$ 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
 | AUPRC | "Precision-recall curve 下的面积" | 一个汇总所有 thresholds 下 precision-recall 表现的 metric，对 imbalanced data 比 AUROC 更好 |
 
 ## 延伸阅读
