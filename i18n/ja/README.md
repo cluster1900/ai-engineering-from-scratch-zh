@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="../../LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
-  <a href="../../ROADMAP.md"><img src="https://img.shields.io/badge/lessons-523-3553ff?style=flat-square&labelColor=fafaf5" alt="523 节课"></a>
+  <a href="../../ROADMAP.md"><img src="https://img.shields.io/badge/lessons-532-3553ff?style=flat-square&labelColor=fafaf5" alt="532 节课"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 个 Phase"></a>
   <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh/stargazers"><img src="https://img.shields.io/github/stars/cluster1900/ai-engineering-from-scratch-zh?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
   <a href="https://ai-learn.agent-buy.com"><img src="https://img.shields.io/badge/web-ai--learn.agent--buy.com-3553ff?style=flat-square&labelColor=fafaf5" alt="网站"></a>
@@ -31,7 +31,7 @@
 > **84% 的学生已经在使用 AI 工具。只有 18% 认为自己已准备好以
 > 专业方式使用它们。** 这套课程正是为了弥合这道差距。
 >
-> 523 lessons. 20 phases. (523 节课。20 个 Phase。约 342 小时。) Python、TypeScript、Rust、Julia。每节课都会产出
+> 532 lessons. 20 phases. (523 节课。20 个 Phase。约 342 小时。) Python、TypeScript、Rust、Julia。每节课都会产出
 > 一个可复用 artifact：prompt、skill、agent、MCP server。免费、开源、MIT。
 >
 > 你不只是学习 AI。你会亲手构建它。端到端。从零开始。
@@ -117,7 +117,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh
 解释它的 loss curve。你把一个 function 接到 agent 上，却说不清在调用它的 model 内部，
 attention 究竟在做什么。
 
-这套课程是主干。20 个 Phase，523 节课，四门语言：Python、TypeScript、
+这套课程是主干。20 个 Phase，532 节课，四门语言：Python、TypeScript、
 Rust、Julia。一端是 linear algebra，另一端是 autonomous swarms。每个 algorithm
 都会先从原始数学手写构建。Backprop、Tokenizer、Attention、Agent loop。等到
 PyTorch 出场时，你已经知道它在底层做什么。
@@ -295,7 +295,7 @@ python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 </table>
 
 > 用 `python3 scripts/install_skills.py` 一次性安装全部内容。是真工具，不是作业。
-> 完成整套课程后，你会拥有一个包含 523 个 artifacts 的作品集，并且真正理解它们，
+> 完成整套课程后，你会拥有一个包含 532 个 artifacts 的作品集，并且真正理解它们，
 > 因为它们都是你亲手构建的。
 
 ### FIG_002 · 一个完整示例
@@ -1100,7 +1100,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh
 
 `skills` 会写入安装期间选择的宿主与作用域，例如 `.claude/skills/`、`.cursor/skills/`、`.codex/skills/` 或其他受支持的 skills 目录。请确认所选宿主能检索到该目标路径。
 
-**课程产物（The lesson artifacts）。** The repo ships 396 skills and 99 prompts（本 repo 提供了 396 个 skill 和 99 个 prompt，位于 `phases/**/outputs/`）；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义布局。需要先克隆仓库。支持按标签过滤、dry-run 预览以及按 agent 布局：
+**课程产物（The lesson artifacts）。** The repo ships 399 skills and 99 prompts（本 repo 提供了 399 个 skill 和 99 个 prompt，位于 `phases/**/outputs/`）；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义布局。需要先克隆仓库。支持按标签过滤、dry-run 预览以及按 agent 布局：
 
 ```bash
 python3 scripts/install_skills.py <target>                                 # 所有 skill，默认 --layout skills（嵌套目录）
@@ -1251,7 +1251,7 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 
 ## プロジェクトを支援する
 
-免费，MIT-licensed，523 节课。感谢所有让这项工作成为可能的赞助者和支持者。[查看所有赞助者与支持者](../../BACKERS.md)。
+免费，MIT-licensed，532 节课。感谢所有让这项工作成为可能的赞助者和支持者。[查看所有赞助者与支持者](../../BACKERS.md)。
 
 想要支持本项目？请查看 [赞助方案选项](../../SPONSORS.md)，包括 [硬件实验室合作伙伴](../../SPONSORS.md#hardware-lab-partner)，或前往 [GitHub Sponsors 赞助](https://github.com/sponsors/rohitg00)。
 
