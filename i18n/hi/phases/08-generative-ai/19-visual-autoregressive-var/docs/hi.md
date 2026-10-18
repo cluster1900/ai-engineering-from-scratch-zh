@@ -21,7 +21,7 @@ VAR 通过改变生成对象来解决生成顺序问题──VAR 不在空间中
 
 ### VQ-VAE बहु-मात्रा टोकनाइज़र
 
-VAR  जरूरत एक **multi-scale discrete Tokenizer**. छवि x के लिए, यह एक श्रृंखला उत्पन्न करेगा जो धीरे-धीरे रिज़ॉल्यूशन में सुधार करेगी।
+VAR  जरूरत एक **multi-scale discrete Tokenizer** प्रतिमा के लिए $x$, यह एक श्रृंखला उत्पन्न करेगा जो धीरे-धीरे सुधारित संकल्प टोकन 网格:
 
 ```
 x -> encoder -> latent f
@@ -31,13 +31,13 @@ f -> tokenize at 2x2: token grid z_2 of shape (2, 2)
 f -> tokenize at (H/p)x(W/p): token grid z_K of shape (H/p, W/p)
 ```
 
-प्रत्येक z_k एक ही कोडबुक का उपयोग करते हैं। प्रत्येक पैमाने पर टोकनाइज़ेशन एक दूसरे से स्वतंत्र नहीं है, बल्कि प्रत्येक पैमाने के अवशिष्ट की मांग और पुनः निर्माण करने में सक्षम होने के लिए प्रशिक्षित किया जाता हैः
+प्रत्येक $z_k$प्रयोग समान कोडबुक (सामान्य आकार 4096-16384)  प्रत्येक पैमाने पर टोकनाइज़ेशन एक दूसरे से स्वतंत्र नहीं है, बल्कि प्रत्येक पैमाने के अवशिष्ट के लिए प्रशिक्षित किया जाता है।$f$:
 
-```
-f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size)
+```math
+f \approx \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_1), \text{target\_size}) + \cdots + \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_K), \text{target\_size})
 ```
 
-यह एक है**residual VQ**变体──尺度 k 捕获尺度 1..k-1 遗漏的内容──Decoder 接收所有尺度嵌入的和并生成图像──
+यह एक है**residual VQ**变体――尺度 $k$捕获尺度 $1 \ldots k-1$遗漏的内容──Decoder 接收所有尺度嵌入的和并生成图像──
 
 बहु-मात्रा VQ Tokenizer केवल एक बार प्रशिक्षण (VQGAN के समान) के बाद, सभी उत्पन्न कार्य पूर्ण होते हैं।
 
@@ -50,9 +50,9 @@ f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-स्थिति सम्मिलन 同时编码尺度索引和尺度内的空间位置──注意 在尺度顺序上是因果的:尺度 k、位置 (i, j) के टोकन Attention 可以 Attention 到尺度 1..k के सभी टोकन,也可以 Attention 到尺度 k 本身在所用内尺度 序列中更早出现的 टोकन(VAR उपयोग स्थिर स्थिति ध्यान, कोई आंतरिक पैमाने कारणता, यानी एक पैमाने के भीतर सभी स्थानों并行预测) 
+स्थिति सम्मिलित करना 同时编码尺度索引和尺度内的空间位置──注意 在尺度顺序上是因果的:尺度$k$、 स्थान $(i, j)$के प्रतीक ध्यान करने के लिए आकार $1 \ldots k$सभी टोकन, भी ध्यान करने के लिए माप सकते हैं$k$VAR उपयोग स्थिर स्थिति ध्यान, कोई अंतर-मात्रा कारणता, अर्थात् एक पैमाने में सभी स्थानों并行预测)
 
-训练损失:在每个尺度 k,给定所有之前尺度的代币,预测代币 z_k――对离散 VQ代码使用交叉 Entropy Loss──结构与GPT相似,只是在这里序列变成了尺度结构化的序列──
+ प्रशिक्षण हानि: प्रत्येक माप में $k$, सभी पूर्व माप टोकन, पूर्वानुमान टोकन $z_k$对离散VQ कोड 使用交叉 Entropy Loss 结构与GPT相似,只是在这里序列变成了尺度结构化序列
 
 ### 生成
 
@@ -66,7 +66,7 @@ decode: f = sum of embed-and-upsample scales 1..K
 image = VAE_decoder(f)
 ```
 
-जब K = 10 个尺度时,生成需要10次 变压器前进通过──每次通过都并行生成整个尺度,而不是在尺度内逐个代币自归──对于 256x256 图像,这大约是10次通过,而DiT是28-50次──
+$K = 10$个尺度时,生成需要10次 变形器前进通过──每次通过都并行生成整个尺度,而不是在尺度内逐个代币自归──对于256x256 图像,这大约是10次通过,而DiT是28-50次──
 
 ### Next-Scale क्यों Next-Token से ज्यादा जीत
 
@@ -127,7 +127,7 @@ gx-var-next-scale
 | Multi-scale VQ tokenizer | "Residual VQ" | 生成 K 个分辨率递增 Token 网格的 VQ-VAE，decoder 会对所有尺度求和 |
 | Scale k | "Pyramid level k" | K 个分辨率层级之一，从 k=1 的 1x1 到 k=K 的 (H/p)x(W/p) |
 | Parallel-within-scale | "One forward per scale" | 尺度 k 的所有 Token 在一次 Transformer pass 中预测，而不是自回归预测 |
-| Causal-across-scales | "Scale-ordered attention" | 尺度 k 的 Token 可以 Attention 到尺度 1..k 的全部内容，但不能 Attention 到尺度 k+1..K |
+| Causal-across-scales | "Scale-ordered attention" | 尺度 $k$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的全部内容，但不能 Attention 到尺度 $k+1 \ldots K$ |
 | Residual VQ | "Additive tokenization" | 每个尺度的 Token 编码较低尺度留下的 residual；decoder 对所有尺度 Embedding 求和 |
 | VAR scaling law | "Image GPT scaling" | FID 随 compute 遵循可预测的 power law，类似语言模型的 perplexity |
 | HART | "Hybrid VAR + text" | Text-conditional VAR 变体，将 MaskGIT-style iterative decoding 与 VAR 的尺度结构结合 |
