@@ -27,7 +27,7 @@ O Mestrado em Direito Multicorregional que serve é cache 问题、routing 问�
 
 Por favor, leve-o com o tempo suficiente para chegar. Router para prefixo fazer hash (por exemplo, 512 tokens); ele pergunta a cada réplica:  Você tem este prefixo em cache? 🏼 Réplica em blocos de distribuição e expulso 时, através de um canal público / sub  publicar eventos de cache KV. Router selecionar uma réplica adequada; se não houver uma correspondência, volta para o tie-breaker baseado em GPU-util 😇
 
-**vLLM Router**(Rust,2026 produção-pilha): 订阅 `kv.cache.block_added`eventos,维护 prefixo-hash → índice de réplica, us O(1) busca 路由──没有匹配时回落到最小排列深度──
+**vLLM Router**(Rust,2026 produção-pilha): 订阅 `kv.cache.block_added`eventos,维护 prefixo-hash → índice de réplica,用 $O(1)$Não há correspondência, mas a linha de entrada é a mais baixa.
 
 **llm-d router**O mesmo modelo, Kubernetes-nativo, através da API do ControlPlane, publica eventos.
 
