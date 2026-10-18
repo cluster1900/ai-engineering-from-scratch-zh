@@ -28,11 +28,11 @@ Le red-teaming est un mouvement manuel. Une minorité de testateurs spécialisé
 
 循环, pour k en 1..K:
 1. Utilisation de l'objectif G et jusqu'à présent de la paire (prompte, réponse) 历史来提示 A。
-2. Une nouvelle demande de réponse
-3. R_k  soumettre à T; recevoir la réponse r_k ⋅
-4. J 根据目标对 (p_k, r_k) 打分。
+2. Une nouvelle demande de sortie$p_k$Il y a une autre.
+3. Il va$p_k$ soumettre à T; recevoir réponse $r_k$Il y a une autre.
+4. J 根据目标对 $(p_k, r_k)$Je suis désolé.
 5. Si le score >= seuil, alors arrêtez  已找到 jailbreak──
-6. 否则,将 (p_k, r_k) 追加到 A 的历史中;继续──
+6. 否则,将 $(p_k, r_k)$追加到 A 的历史中; continuer。
 
 经验结果(NeurIPS 2023): pour les attaques GPT-3.5-turbo、Llama-2-7B-chat, le taux de réussite > 50%; la requête moyenne requise pour réussir est de 10-20 .
 

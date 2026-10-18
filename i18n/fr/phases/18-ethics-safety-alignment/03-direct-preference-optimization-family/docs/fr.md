@@ -18,20 +18,20 @@
 
 Objectif du RLHF:
 
-```text
-max_pi E_{x,y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 Il y a une meilleure solution:
 
-```text
-pi*(y|x) = (1/Z(x)) * pi_ref(y|x) * exp(r(x, y) / beta)
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left(\frac{r(x, y)}{\beta}\right)
 ```
 
 Ainsi, la récompense est définie par la politique optimale et la référence:
 
-```text
-r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
+```math
+r(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 La mettre dans la probabilité de préférence Bradley-Terry, puis la fonction de partition.`Z(x)`Ça va disparaître, parce que ça dépend seulement.`x`Il ne reste plus qu'une perte de paramètres politiques, il n'y a plus besoin de modèle de récompense.
@@ -42,11 +42,11 @@ Le problème réside dans le fait que les données de préférence sont en distr
 
 ### DPO (Rafailov et coll., 2023)
 
-```text
-L_DPO = -log sigmoid(
-  beta * log(pi(y_w | x) / pi_ref(y_w | x))
-  - beta * log(pi(y_l | x) / pi_ref(y_l | x))
-)
+```math
+L_{\text{DPO}} = -\log \sigma\!\left(
+  \beta \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
+  - \beta \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}
+\right)
 ```
 
 Peut-être dans un mauvais endroit:
@@ -59,8 +59,8 @@ Peut-être dans un mauvais endroit:
 
 Optimisation des préférences d'identité Utilisation de la probabilité de préférence de la carte d'identité de la mise en place du log-sigmoid, la perte de la mise en place de la cible limitée de la mise en place de l'erreur carrée:
 
-```text
-L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x)) - 1/(2 beta))^2
+```math
+L_{\text{IPO}} = \left( \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} - \frac{1}{2\beta} \right)^2
 ```
 
 marge `1/(2 beta)`限定── la force de préférence par rapport à l'écart entre la récompense implicite et la proportion── ne disparaîtra pas──
@@ -69,8 +69,8 @@ marge `1/(2 beta)`限定── la force de préférence par rapport à l'écart 
 
 L'optimisation de Kahneman-Tversky  complètement éliminé par paire 结构── donné une sortie unique de marque, ainsi qu'un signal désirable ou undesirable de 2元, il sera mappé à l'utilité de la théorie des perspectives:
 
-```text
-v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
+```math
+v(x, y) = \sigma\!\left(\beta \log \frac{\pi(y \mid x)}{\pi_{\text{ref}}(y \mid x)} - z_{\text{ref}}\right)
 ```
 
 Il est également possible d'utiliser des données non partagées, mais ces types de données doivent être très riches.
@@ -79,12 +79,12 @@ Il est également possible d'utiliser des données non partagées, mais ces type
 
 Optimisation des préférences simples 让训练信号与生成过程对齐── complètement déplacer la politique de référence,并按长度归纳化日志-概率:
 
-```text
-L_SimPO = -log sigmoid(
-  (beta / |y_w|) * log pi(y_w | x)
-  - (beta / |y_l|) * log pi(y_l | x)
-  - gamma
-)
+```math
+L_{\text{SimPO}} = -\log \sigma\!\left(
+  \frac{\beta}{|y_w|} \log \pi(y_w \mid x)
+  - \frac{\beta}{|y_l|} \log \pi(y_l \mid x)
+  - \gamma
+\right)
 ```
 
 Marge de consommation `gamma`Pour établir l'entraînement, la longueur de reprise est déplacée en utilisant le mode d'échec du DPO avec un biais de longueur.`y_w`L'élaboration de la structure entraîne un écart de log-prob plus grand)
@@ -93,9 +93,11 @@ Marge de consommation `gamma`Pour établir l'entraînement, la longueur de repri
 
 Optimisation des préférences dans la norme SFT probabilité de log négatif 上添加一个偏好术语:
 
-```text
-L_ORPO = L_NLL(y_w) + lambda * L_OR
-L_OR = -log sigmoid(log(odds(y_w) / odds(y_l)))
+```math
+\begin{aligned}
+L_{\text{ORPO}} &= L_{\text{NLL}}(y_w) + \lambda L_{\text{OR}} \\
+L_{\text{OR}} &= -\log \sigma\!\left(\log \frac{\text{odds}(y_w)}{\text{odds}(y_l)}\right)
+\end{aligned}
 ```
 
  pas de politique de référence, le terme SFT est un régulateur  de modèle de base à modèle aligné  seulement besoin d'une formation en un seul étape  pas besoin d'un point de contrôle SFT séparé

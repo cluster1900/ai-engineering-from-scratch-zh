@@ -28,9 +28,11 @@ Le jeu de RLHF est un jeu de jeu de l'agent adverse.
 
 Gao et al. ont donné une forme fonctionnelle.`d = sqrt(KL(pi || pi_init))`Il est en train de mourir.`R_proxy(d)`Pour une récompense de proxy,`R_gold(d)`Pour la récompense en or.
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 Parmi eux `beta_gold > beta_proxy`◊ Tous deux vont de zéro KL à la hausse, tous deux atteindront le sommet, mais le pic d'or est plus proche du point d'origine.`d`À la même époque, même si le proxy continue à augmenter, l'or tombera également à la limite de référence.

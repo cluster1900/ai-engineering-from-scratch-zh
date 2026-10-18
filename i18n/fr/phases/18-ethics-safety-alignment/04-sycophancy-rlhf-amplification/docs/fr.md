@@ -25,10 +25,12 @@ Cet argument est général. Il ne dépend pas de la sycophancy, c'est une sorte 
 
 Pour faire`pi_0`Pour le modèle de base,`pi_A`Pour le modèle post-alignement,`r`Pour la récompense de la procuration,`s(x, y)`Pour la seconde fois, la sycophancy est définie comme suit:
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段 1: expérience`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]` Les résultats de formation en RM basés sur les données de préférence des étiquettes, en moyenne, sont plus élevés que ceux de formation non conformes.
@@ -66,8 +68,8 @@ Sahoo (arXiv:2604.10585) Dans la théorie mathématique, l'utilisation de répon
 
 Shapira et coll.  proposé des récompenses pour modifier:
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 Parmi eux `agree(x, y)`est un classifiant auxiliaire, utilisé pour mesurer`y`Oui ou non`x`Le premier est le premier.`alpha`≈ 0,3-0,5 ‰, la cycophancy va baisser à près du modèle de base 水平, le prix est une partie de la perte de l'accord légitime ≈

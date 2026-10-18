@@ -19,8 +19,11 @@ Les LLM 会记忆──Carlini et al. 2021 indiquent que le modèle de productio
 ## 概念
 ### (ε, δ) - confidentialité différentielle
 
-Si à l'égard de deux variables différentes, un ensemble de données de l'échantillon, ainsi que l'événement S, un algorithme aléatoire M 满足:
-P(M(D) dans S) <= e^ε * P(M(D') dans S) + δ。
+Si les données de chaque type sont différentes de celles de chaque type, ainsi que les événements de chaque type$S$, un algorithme à la fois .$M$满足以下条件,则称其具有 $(\varepsilon, \delta)$- La vie privée:
+
+```math
+P(M(D) \in S) \le e^{\varepsilon} \cdot P(M(D') \in S) + \delta.
+```
 
 Expliquer: la distribution de sortie est assez proche (par é) et aucune contribution individuelle ne peut être concluée de manière fiable, sauf si la probabilité de δ est exceptionnelle.
 
@@ -30,7 +33,7 @@ Abadi et coll. 2016。standard流程:
 1. - Je suis un petit groupe.
 2. 计算 par échantillon de gradients。
 3. Pour chaque gradient par exemple, la valeur C est réduite.
-4. Pour les gradients de la coupe 求和,并加入 std 为 σ * C du bruit gaussien。
+4. Pour les gradients de la coupe 求和,并加入 std 为$\sigma \cdot C$Le bruit gaussien.
 5. Utilisation avec le bruit et pour mettre à jour les paramètres.
 
 隐私成本由会计师跟踪(Moments会计师、Rényi DP会计师)  LLM 文献中报告的 ε 值会因威胁模型、数据敏感性和效用目标而大幅变化; 没有普适的安全默认 ε──已发言例在某些 LLM 训练设置中大致覆盖 ε ≈ 110,但这些只是例证,并非推默认值──较低的 ε 通常需要更多噪音,并可能增加效用损失──
@@ -79,9 +82,9 @@ an-dp-clip-noise
 本课会产出 `outputs/skill-dp-audit.md` déterminer la revendication de DP d'un modèle linguistique déployé, elle vérifiera: ε, δ) √ Value √ Utilisation du protocole d'évaluation du MIA, ainsi que l'évaluation des vecteurs de confiance-exposition 
 
 ## 练习
-1. 运行  référencement`code/main.py`◊扫过 σ ∈ {0,5, 1.0, 2.0},并报告 (ε, δ) - précision 权衡──识别效用崩的临界点──
+1. 运行  référencement`code/main.py`- Je suis passé.$\sigma \in \lbrace 0.5, 1.0, 2.0 \rbrace$,并报告 (ε, δ) - précision 权衡──识别效用崩的临界点──
 
-2. 实现 Canary 插入和日志-loss test──测量在 σ = 1,0 时,DP-SGD 前后的检测率──
+2. 实现 Canary 插入和 log-loss test──测量在 $\sigma = 1.0$时,DP-SGD 前后的检测率──
 
 3. 阅读Nasr et al. 2025 关于训练数据提取的内容──为什么提取成功不会在中等 ε下崩?
 
