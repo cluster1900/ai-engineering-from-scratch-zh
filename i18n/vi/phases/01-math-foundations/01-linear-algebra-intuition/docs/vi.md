@@ -32,7 +32,7 @@ Vector chỉ là một danh sách số. Nhưng những số này có ý nghĩa.
 |---|---|-------|
 | 3 | 2 | 这个 Vector 从原点 (0,0) 指向平面上的 (3, 2) |
 
-Độ lớn của vector này là 3^2 + 2^2) = 13), hướng lên và hướng phải.
+Vêctor này có kích thước là$\sqrt{3^2 + 2^2} = \sqrt{13}$, hướng lên và hướng phải.
 
 Trong AI, Vector biểu hiện mọi thứ:
 - Một từ → một chứa 768 个数字的向量(它 đang được tích hợp trong không gian 含义)
@@ -71,19 +71,20 @@ Trong AI, Matrix là mô hình:
 
 Kết quả điểm của hai vector sẽ cho bạn biết chúng có nhiều điểm tương tự.
 
-```
-a · b = a₁×b₁ + a₂×b₂ + ... + aₙ×bₙ
-
-方向相同：      a · b > 0  （相似）
-相互垂直：      a · b = 0  （无关）
-方向相反：      a · b < 0  （不相似）
+```math
+\begin{aligned}
+a \cdot b &= a_1 \times b_1 + a_2 \times b_2 + \cdots + a_n \times b_n \\[4pt]
+\text{方向相同：} \quad a \cdot b &> 0 \quad \text{（相似）} \\
+\text{相互垂直：} \quad a \cdot b &= 0 \quad \text{（无关）} \\
+\text{方向相反：} \quad a \cdot b &< 0 \quad \text{（不相似）}
+\end{aligned}
 ```
 
 Đây chính là cách thức của công cụ tìm kiếm, hệ thống đề xuất và RAG - tìm ra các vector sản phẩm điểm cao hơn.
 
 ### Tự do tuyến tính
 
-Nếu trong tập hợp không có bất kỳ một vector nào có thể được viết thành một tập hợp của các vector khác, thì các vector này là một cách tuyến tính độc lập. Nếu v1、v2、v3 độc lập, chúng sẽ trải dài một không gian 3D. Nếu một trong số đó là một tập hợp của các vector khác, chúng chỉ trải dài một bình diện.
+Nếu trong tập hợp không có một đối tượng nào có thể được viết thành các bộ phận của các đối tượng khác, thì những đối tượng này là không liên quan trực tuyến.$v_1, v_2, v_3$độc lập, chúng sẽ trải dài một không gian 3D. Nếu một trong số đó là một bộ phận của các vector khác, chúng chỉ trải dài một平面.
 
 Nó quan trọng đối với AI: các tính năng của bạn nên có các cột độc lập tuyến tính. Nếu hai tính năng hoàn toàn liên quan, mô hình sẽ không thể phân biệt được tác động của chúng. Điều này sẽ gây ra tính đa tuyến tính trong sự trôi qua.
 
@@ -95,7 +96,7 @@ v2 = [0, 1, 0]
 v3 = [2, 1, 0]   # v3 = 2*v1 + v2
 ```
 
-v1 và v2 là độc lập của - 二者都不是另一个标量倍数或组合――但 v3 = 2*v1 + v2,所以 {v1, v2, v3} là một tập hợp phụ thuộc――这三个向量都位于xy-plane──无论你如何组合它们,都无法达到 [0, 0, 1]──你有三个向量,但只有两个自由维度──
+$v_1$和 $v_2$là độc lập của - hai không phải là một số hoặc một bộ phận khác của các mô hình.$v_3 = 2 v_1 + v_2$, vì vậy $\lbrace v_1, v_2, v_3 \rbrace$Đó là một tập hợp phụ thuộc. Tất cả ba vector đều nằm trên xy-plane. Bất kể bạn kết hợp chúng như thế nào, bạn không thể đạt đến [0, 0, 1]. Bạn có ba vector, nhưng chỉ có hai chiều kích tự do.
 
 Trong bộ dữ liệu: Nếu feature_3 = 2*feature_1 + feature_2, hãy tham gia feature_3 sẽ không mang lại bất kỳ thông tin mới nào cho mô hình.
 
@@ -105,15 +106,15 @@ Cơ sở là một nhóm các vector độc lập tuyến tính nhỏ nhất, ch
 
 Cơ sở tiêu chuẩn của 3D 空间 là {1,0,0], [0,1,0], [0,0,1]}── nhưng bất kỳ ba Dấu sao độc lập nào trong 3D đều có thể tạo thành cơ sở hợp lệ── chọn dựa trên cơ sở chính là chọn坐标──
 
-Matrix của hàng = số lượng hàng tự do tuyến tính = số lượng hàng tự do tuyến tính. Nếu hàng < m ((( hàng, hàng), Matrix này là thiếu hàng.
+Matrix của hàng = số lượng cột độc lập tuyến tính = số lượng hàng độc lập tuyến tính.$\text{rank} < \min(\text{rows}, \text{cols})$, Matrix là thiếu cấp bậc.
 - Hệ thống có vô tận nhiều giải pháp (hoặc không giải pháp)
 - chuyển đổi 中丢失信息
 - Matrix không thể được đảo ngược
 
 | 情况 | Rank | 对 ML 的含义 |
 |-----------|------|---------------------|
-| Full rank (rank = min(m, n)) | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
-| Rank deficient (rank < min(m, n)) | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
+| Full rank $(\text{rank} = \min(m, n))$ | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
+| Rank deficient $(\text{rank} < \min(m, n))$ | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
 | Rank 1 | 1 | 每一列都是某个 Vector 的缩放副本。所有数据都位于一条线上。 |
 | Near rank-deficient（较小的 singular values） | 数值上较低 | Matrix ill-conditioned。极小的 input noise 会造成很大的 output changes。使用 SVD truncation 或 ridge regression。 |
 
@@ -121,11 +122,11 @@ Matrix của hàng = số lượng hàng tự do tuyến tính = số lượng h
 
 将 Vector**a**投影到 Vector **b**Nào, sẽ được **a**Trong **b**方向上的分量:
 
-```
-proj_b(a) = (a dot b / b dot b) * b
+```math
+\mathop{\mathrm{proj}}_b(a) = \frac{a \cdot b}{b \cdot b} \, b
 ```
 
-Hết thọ (a - proj_b(a)) 与 b 垂直── loại phân hủy trực giác này là nền tảng của các hình vuông nhỏ nhất.
+còn sót lại $(a - \mathop{\mathrm{proj}}_b(a))$Với$b$垂直── loại phân hủy trực giác này là nền tảng của các hình vuông nhỏ nhất.
 
 Dự án trong ML không còn:
 - Lịch chiếu trôi ngược tối thiểu quan sát đến khoảng cách của không gian cột -- 解本身就是一个投影
@@ -143,9 +144,9 @@ graph LR
     end
 ```
 
-**示例：**a = [3, 4], b = [1, 0]
+**示例：** $a = [3, 4]$- $b = [1, 0]$
 
-Proj_b(a) = (3*1 + 4*0) / (1*1 + 0*0) * [1, 0] = 3 * [1, 0] = [3, 0]
+$\mathop{\mathrm{proj}}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0) \cdot [1, 0] = 3 \cdot [1, 0] = [3, 0]$
 
 Dự án này đã bỏ y phân tích. Đây là hình thức đơn giản nhất của việc giảm chiều kích.
 
@@ -448,6 +449,20 @@ LoRA 值得特别说明──它通过将重量更新 分解为低级矩阵 来�
 4. 验证 Gram-Schmidt đầu ra thực sự là orthonormal của: kiểm tra mỗi một đối số của sản phẩm chấm là 0, và mỗi vector của kích thước là 1
 5.  tạo ra một thứ hạng 为 2 của 3x3 Matrix。 sử dụng `rank()`Phương pháp xác minh. Sau đó giải thích các cột này trải dài của các đối tượng hình học là gì.
 6. 将 vector [1, 2, 3] 投投到 [1, 1, 1] 上──结果在几何上表示什么?
+
+### 提示
+
+**练习 1。**Từ `cosine_similarity`开始,将结果限制在 -1 到 1 之间,再取反余弦,并将弧度转换为角.`Vector([1, 0])`和 `Vector([0, 1])`Kết quả là 90, khối lượng và kết quả của chính nó là 0.
+
+**练习 2。**Để đặt hai yếu tố thu nhỏ lên đường đối góc của matrix 2x2, hai vị trí còn lại sẽ được lấp đầy bằng 0 ⋅ nhập vào [1, 1] kết quả của nó phải là [2, 3] ⋅
+
+**练习 3。**计算 5 个向量中每对的余弦相似度 (共 10 对), giữ cho giá trị tối đa.
+
+**练习 4。**Đối với 3 tính năng không liên quan đến quy mô`gram_schmidt`, tái đối với mỗi đối với tính toán`dot`, đối với mỗi khối lượng tính toán`magnitude`△ sử dụng ví dụ `1e-9`Sự khác biệt dung lượng, vì số điểm không cung cấp một cái gì đó chính xác.
+
+**练习 5。**Đặt đường thứ ba hoặc thứ ba cho hai thứ hai trước, làm cho một hướng lặp lại.`rank()`必须返回 2,此时各列张成一个经过原点的平面.
+
+**练习 6。**计算缩放系数 $\frac{a \cdot b}{b \cdot b}$Và nhân$b$, hoặc调用 `project_onto`△ kiểm tra dư lượng$a$减去投影) với [1, 1, 1] điểm积为 0──
 
 ## 关键术语
 

@@ -28,10 +28,10 @@ Bài học này sẽ xây dựng từng công thức từ không, để bạn th
 
 Khi những gì không thể xảy ra xảy ra, nó mang lại nhiều thông tin hơn.
 
-概率 cho các sự kiện số lượng thông tin là:
+概率为$p$Số lượng thông tin về sự kiện là:
 
-```
-I(x) = -log(p(x))
+```math
+I(x) = -\log(p(x))
 ```
 
 Sử dụng 2 vì đáy log  nhận được bit ⋅ sử dụng log tự nhiên  nhận được nats⋅ cùng một ý tưởng, đơn vị khác nhau⋅
@@ -50,98 +50,104 @@ Sự kiện xác định mang theo không thông tin.
 
 Entropy là một sự phân phối trong tất cả những kết quả có thể được mong đợi bất ngờ.
 
-```
-H(P) = -sum( p(x) * log(p(x)) )  for all x
+```math
+H(P) = -\sum_{x} p(x) \log(p(x))
 ```
 
 公平硬币 đối với biến số nhị phân 具有最大的透:1 bit──偏置硬币(99% 正面)具有低透:0.08 bits──你已经知道会发生什么,因此每次抛几乎不会告诉你任何信息──
 
-```
-Fair coin:    H = -(0.5 * log2(0.5) + 0.5 * log2(0.5)) = 1.0 bit
-Biased coin:  H = -(0.99 * log2(0.99) + 0.01 * log2(0.01)) = 0.08 bits
+```math
+\begin{aligned}
+\text{公平硬币：} \quad & H = -(0.5 \log_2(0.5) + 0.5 \log_2(0.5)) = 1.0 \text{ bit} \\
+\text{偏置硬币：} \quad & H = -(0.99 \log_2(0.99) + 0.01 \log_2(0.01)) = 0.08 \text{ bits}
+\end{aligned}
 ```
 
 Entropy đo lường một phân phối trong sự không chắc chắn không thể kiểm soát được. Bạn không thể nén xuống dưới nó.
 
 ### Cross-Entropy (你每日使用的损失函数)
 
-Cross-entropy  đo lường khi bạn sử dụng phân phối Q 来编码 thực sự từ phân phối P 的事件时, surprise trung bình là bao nhiêu。
+Cross-entropy 衡量当你使用分布 $Q$Quá trình thực tế đến từ phân phối$P$Trong những sự kiện, sự ngạc nhiên trung bình là bao nhiêu?
 
+```math
+H(P, Q) = -\sum_{x} p(x) \log(q(x))
 ```
-H(P, Q) = -sum( p(x) * log(q(x)) )  for all x
-```
 
-P là phân phối đúng đắn (tiêu đề) ・Q là dự đoán của mô hình của bạn ・ Nếu Q và P hoàn toàn phù hợp, sự chéo-tròp như entropy ・ bất cứ sự không phù hợp nào sẽ làm cho nó trở nên lớn hơn ・
+$P$Đó là sự phân phối đúng đắn.$Q$Đó là dự đoán của mô hình của bạn. Nếu.$Q$Với$P$完全匹配,交叉 Entropy等于 Entropy. Bất cứ điều gì không phù hợp đều sẽ làm cho nó trở nên lớn hơn.
 
-Trong phân loại, P là một vector nóng (true class) có tỷ lệ 1, còn lại là 0).
+Trong phân loại,$P$là một vector nóng (true class) có tỷ lệ 1, còn lại là 0).
 
-```
-H(P, Q) = -log(q(true_class))
+```math
+H(P, Q) = -\log(q(\text{true\_class}))
 ```
 
 Đây là công thức của phân loại ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞
 
 ### KL Sự khác biệt (Tân phân  giữa khoảng cách)
 
-KL khác biệt  đo lường sử dụng Q thay vì P sẽ mang lại nhiều bất ngờ bổ sung.
+KL sự khác biệt 衡量使用 $Q$Không phải$P$Sẽ mang lại nhiều bất ngờ hơn nữa.
 
-```
-D_KL(P || Q) = sum( p(x) * log(p(x) / q(x)) )  for all x
-             = H(P, Q) - H(P)
+```math
+\begin{aligned}
+D_{KL}(P \,\|\, Q) &= \sum_{x} p(x) \log(p(x) / q(x)) \\
+&= H(P, Q) - H(P)
+\end{aligned}
 ```
 
 Cross-entropy là entropy 加 KL divergence。由于 thực phân phối của entropy trong quá trình tập luyện là thường, tối thiểu hóa cross-entropy 等等同于最小化 KL divergence。你是在把模型的分布推向真分布──
 
-KL divergence 不是对称的:D_KL(P  Q) != D_KL(Q  P)── nó không phải là một phép đo khoảng cách thực sự──
+KL khác biệt không phải đối称:$D_{KL}(P \Vert Q) \ne D_{KL}(Q \Vert P)$Không phải là một phép đo khoảng cách thực sự.
 
 ### Thông tin lẫn nhau
 
 Thông tin lẫn nhau  đo biết một biến 能 nói cho bạn một biến khác 多少信息──
 
-```
-I(X; Y) = H(X) - H(X|Y)
-        = H(X) + H(Y) - H(X, Y)
+```math
+\begin{aligned}
+I(X; Y) &= H(X) - H(X \mid Y) \\
+&= H(X) + H(Y) - H(X, Y)
+\end{aligned}
 ```
 
-Nếu X và Y  độc lập, thông tin lẫn nhau là không. Biết rằng một trong số đó sẽ không nói cho bạn bất kỳ thông tin nào của khác. Nếu chúng hoàn toàn liên quan, thông tin lẫn nhau giống như sự xâm nhập của một biến.
+Nếu $X$和 $Y$独立,互通信息 为零. 知道其中一个不会告诉你另一个信息. Nếu chúng hoàn toàn liên quan,互通信息等于任一变量的.
 
 Trong sự lựa chọn tính năng, thông tin chung giữa tính năng và mục tiêu  高, có nghĩa là tính năng này có sử dụng ⋅ thông tin chung ⋅ thấp, có nghĩa là nó là tiếng ⋅
 
 ### Entropy có điều kiện
 
-H(Y khi X) 衡观察到X 后, về Y còn còn còn còn còn nhiều sự không chắc chắn.
+$H(Y \mid X)$衡观察到 $X$后, về $Y$Còn nhiều sự không chắc chắn còn lại.
 
-```
-H(Y|X) = H(X,Y) - H(X)
+```math
+H(Y \mid X) = H(X,Y) - H(X)
 ```
 
 两个极端:
-- Nếu X hoàn toàn quyết định Y, thì H(YX không) = 0── biết X sẽ loại bỏ tất cả sự không chắc chắn về Y── ví dụ: X = 摄氏温度, Y = 华氏温度──
-- Nếu X đối với Y  không có bất kỳ thông tin nào, thì H  Y trong X) = H )                                                                                                                                                                                                                                                  
+- Nếu $X$完全决定 $Y$Vậy thì$H(Y \mid X) = 0$✿ biết ✿$X$会消除关于$Y$Tất cả sự không chắc chắn.$X$= 摄氏温度,$Y$= 华氏温度.
+- Nếu $X$Đối với$Y$Không có thông tin gì cả.$H(Y \mid X) = H(Y)$✿ biết ✿$X$完全不会降低你的不确定性── Ví dụ:$X$= 抛硬币结果,$Y$= Cuaca ngày mai
 
-Entropy điều kiện 始终非负,并且永远不超过 H(Y):
+Trọng lượng điều kiện 始终非负,并且永远不超过 $H(Y)$- Có thể là:
 
+```math
+0 \le H(Y \mid X) \le H(Y)
 ```
-0 <= H(Y|X) <= H(Y)
-```
 
-Trong Machine Learning, entropy điều kiện xuất hiện trên cây quyết định. Trong mỗi lần phân chia, thuật toán sẽ chọn để làm cho H(Y khiếtX) tính năng nhỏ nhất X, cũng là loại bỏ tính năng không chắc chắn nhất về nhãn Y.
+Trong Machine Learning, entropy có điều kiện xuất hiện hiện trên các cây quyết định. Trong mỗi lần phân chia, thuật toán sẽ chọn cho$H(Y \mid X)$Khác nhất$X$, cũng là chuyển về nhãn$Y$Đặc điểm không chắc chắn tối đa:
 
 ### Nhóm nhôm
 
-H(X,Y) là sự phân phối chung của X và Y ︎.
+$H(X,Y)$ $X$和 $Y$Sự phân bố chung của một sự phân phối.
 
-```
-H(X,Y) = -sum sum p(x,y) * log(p(x,y))   for all x, y
+```math
+H(X,Y) = -\sum_{x} \sum_{y} p(x,y) \log(p(x,y))
 ```
 
 关键性质:
 
-```
-H(X,Y) <= H(X) + H(Y)
+```math
+H(X,Y) \le H(X) + H(Y)
 ```
 
-Khi X và Y 独立时等号成立──如果它们共享信息, entropy chung就小于各自的 entropy 之和──这个缺失的 entropy 正是相互信息──
+Khi đó$X$和 $Y$Nếu chúng chia sẻ thông tin, entropy chung sẽ nhỏ hơn entropy của riêng mình.
 
 ```mermaid
 graph TD
@@ -167,50 +173,52 @@ graph TD
 ```
 
 Những mối quan hệ này:
-- H(X,Y) = H(X) + H(Y
-- (X;Y) = H(X) - H(IX
-- H(X,Y) = H(X) + H(Y) - I(X;Y)
+- $H(X,Y) = H(X) + H(Y \mid X) = H(Y) + H(X \mid Y)$
+- $I(X;Y) = H(X) - H(X \mid Y) = H(Y) - H(Y \mid X)$
+- $H(X,Y) = H(X) + H(Y) - I(X;Y)$
 
 ### Thông tin lẫn nhau (Dep Dive)
 
-Thông tin lẫn nhau I(X;Y) 量化知道一个变量会减少关于另一个变量的多少不确定性──
+Thông tin lẫn nhau $I(X;Y)$量化 biết một biến sẽ giảm sự không chắc chắn về một biến khác.
 
-```
-I(X;Y) = H(X) - H(X|Y)
-       = H(Y) - H(Y|X)
-       = H(X) + H(Y) - H(X,Y)
-       = sum sum p(x,y) * log(p(x,y) / (p(x) * p(y)))
+```math
+\begin{aligned}
+I(X;Y) &= H(X) - H(X \mid Y) \\
+&= H(Y) - H(Y \mid X) \\
+&= H(X) + H(Y) - H(X,Y) \\
+&= \sum_{x} \sum_{y} p(x,y) \log\left(\frac{p(x,y)}{p(x) \, p(y)}\right)
+\end{aligned}
 ```
 
 性质:
-- I(X;Y) >= 0 始终成立──观察某事永远不会让你失去信息──
-- Khi và chỉ khi X và Y 独立时,I(X;Y) = 0。
-- I(X;Y) = I(Y;X)。 nó là đối称的, khác với sự khác biệt KL。
-- I(X;X) = H(X)。 một biến với bản thân chia sẻ toàn bộ thông tin。
+- $I(X;Y) \ge 0$始终成立──观察某事永远不会让你失去信息──
+- Khi và chỉ khi$X$和 $Y$独立时,$I(X;Y) = 0$
+- $I(X;Y) = I(Y;X)$Nó là đối称, khác với sự khác biệt KL.
+- $I(X;X) = H(X)$Một biến chia sẻ toàn bộ thông tin với bản thân
 
 **用于 feature selection 的 mutual information。**Trong ML, các tính năng bạn muốn đối với mục tiêu có số lượng thông tin. Thông tin lẫn nhau cung cấp cho bạn một cách có nguyên tắc để sắp xếp các tính năng:
 
-1. Đối với mỗi tính năng X_i,计算 I(X_i; Y), trong đó Y là biến mục tiêu.
+1. Đối với mỗi tính năng$X_i$,计算 $I(X_i; Y)$, trong số đó $Y$là biến mục tiêu.
 2. 按MI điểm 排序 tính năng。
-3. Bảo trì các tính năng.
+3. 保留前 $k$个 đặc điểm.
 
 Đây là một ứng dụng cho bất kỳ mối quan hệ nào giữa tính năng và mục tiêu: tuyến tính, không tuyến tính, đơn giản hoặc các mối quan hệ khác.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|
-| Pearson correlation | Linear relationships | O(n) | No |
-| Spearman correlation | Monotonic relationships | O(n log n) | No |
-| Mutual information | 任意 statistical dependency | O(n log n) with binning | Yes |
+| Pearson correlation | Linear relationships | $O(n)$ | No |
+| Spearman correlation | Monotonic relationships | $O(n \log n)$ | No |
+| Mutual information | 任意 statistical dependency | $O(n \log n)$ with binning | Yes |
 
 ### Đơn vị làm mềm nhãn và Cross-Entropy
 
 标准分类 使用 khó mục tiêu:[0, 0, 1, 0]──true class 的概率为 1,其他全部为 0──Légal smoothing 会用软目标 替换它们:
 
-```
-soft_target = (1 - epsilon) * hard_target + epsilon / num_classes
+```math
+\text{soft\_target} = (1 - \epsilon) \cdot \text{hard\_target} + \epsilon / \text{num\_classes}
 ```
 
-当 epsilon = 0.1 且有4 个类 时:
+Khi đó$\epsilon = 0.1$Có 4 lớp học:
 - Mục tiêu cứng: [0, 0, 1, 0]
 - Mục tiêu mềm: [0,025, 0,025, 0,925, 0,025]
 
@@ -224,8 +232,8 @@ Tại sao nó giúp ích:
 
 Sử dụng nhãn làm mượt 变为:
 
-```
-L = (1 - epsilon) * CE(hard_target, prediction) + epsilon * H_uniform(prediction)
+```math
+L = (1 - \epsilon) \cdot \text{CE}(\text{hard\_target}, \text{prediction}) + \epsilon \cdot H_{\text{uniform}}(\text{prediction})
 ```
 
 Thứ hai sẽ trừng phạt những dự đoán xa lánh đồng nhất, đó là trực tiếp đối với sự tin tưởng  thực hiện quy định.
@@ -236,12 +244,14 @@ Thứ hai sẽ trừng phạt những dự đoán xa lánh đồng nhất, đó 
 
 **Information Theory 视角。**Cross-entropy  đo phân phối sử dụng mô hình của bạn thay vì phân phối thực sự 浪费了多少位──最小化它, sẽ làm cho mô hình của bạn  trở thành mã hóa hiệu quả cao nhất của thực tế──
 
-**Maximum likelihood 视角。**Đối với các lớp thực n 个 为 y_i của các mẫu đào tạo:
+**Maximum likelihood 视角。** Đối với $N$个 lớp thực $y_i$Các mẫu đào tạo:
 
-```
-Likelihood     = product( q(y_i) )
-Log-likelihood = sum( log(q(y_i)) )
-Negative log-likelihood = -sum( log(q(y_i)) )
+```math
+\begin{aligned}
+\text{似然} &= \prod_i q(y_i) \\
+\text{对数似然} &= \sum_i \log(q(y_i)) \\
+\text{负对数似然} &= -\sum_i \log(q(y_i))
+\end{aligned}
 ```
 
 Cuối cùng là mất đi nhiệt độ chéo-entropy, giảm thiểu nhiệt độ chéo = tối đa hóa dữ liệu đào tạo trên mô hình của bạn, giảm khả năng.
@@ -258,15 +268,17 @@ log base e   -> nats      (machine learning convention)
 log base 10  -> hartleys  (rarely used)
 ```
 
-1 nat = 1/ln(2) bit = 1.4427 bit。PyTorch 和 TensorFlow 默认使用自然 log(nats)。
+1 nat = $1/\ln(2)$Bit = 1.4427 bit──PyTorch 和 TensorFlow 默认使用自然 log(nats)──
 
 ### Sự bối rối
 
 Sự bối rối là chỉ số của sự phân cực. Nó cho bạn biết mô hình không chắc chắn.
 
-```
-Perplexity = 2^H(P,Q)   (if using bits)
-Perplexity = e^H(P,Q)   (if using nats)
+```math
+\begin{aligned}
+\text{Perplexity} &= 2^{H(P,Q)} \quad \text{（使用 bits 时）} \\
+\text{Perplexity} &= e^{H(P,Q)} \quad \text{（使用 nats 时）}
+\end{aligned}
 ```
 
 Sự bối rối vì mô hình ngôn ngữ 50 , trung bình nhìn, như phải từ 50 个可能的下一个代币中均选择一样困惑──越低越好──
@@ -446,19 +458,29 @@ Anh đã xây dựng từ không`torch.nn.CrossEntropyLoss()` internal done thin
 
 2. Một mô hình đối với mẫu thực lớp 为 1 输出 logits [5.0, 2.0, 0.5]──手算 chéo entropy mất, sau đó sử dụng của bạn `cross_entropy_loss`- Phụ kiện nào sẽ tạo ra mất mát không?
 
-3. 证明 KL divergence 不是对称的── chọn hai phân bố P 和 Q, D_KL(P 計算 Q) 和 D_K 計算 Q) 和 D_L(Q  P)──解释它们为什么不同──
+3. chứng minh sự khác biệt KL không phải đối称 của. chọn hai phân phối.$P$和 $Q$,计算 $D_{KL}(P \Vert Q)$和 $D_{KL}(Q \Vert P)$ giải thích tại sao chúng khác nhau.
 
 4. 构建一个函数,为一段代码预测 序列计算困惑──给定一个由 (true_token_index, predicted_logits) cặp 组成的列表,返回该序列的困惑──
+
+### 提示
+
+**练习 1。**Sử dụng 26 个相等的概率调调`entropy`, kết quả phải là$\log_2 26 \approx 4.70$bit──trực lượng chữ cái không đồng đều, do đó sử dụng tần suất thực được  phải thấp hơn──
+
+**练习 2。**Đối với logits 计算 `softmax`, tái đối với chỉ số 1 处的概率取 $-\ln$,并与 `cross_entropy_loss(1, logits)`So sánh; hai đều nên gần 3.06 ⋅ chỉ khi logit của lớp 1 远大于其他两个时, mất 才趋近 0.
+
+**练习 3。**Sử dụng hình dạng khác nhau hai phân bố nhỏ, ví dụ:$P = [0.9, 0.1]$和 $Q = [0.5, 0.5]$, phân biệt với hai thứ tự điều chỉnh`kl_divergence`◊ Hai giá trị phải khác nhau, vì mỗi hướng phân phối đối với số lượng giá trị tăng lên khác nhau.
+
+**练习 4。**Đối với mỗi đối với nhập toán`cross_entropy_loss(true_token_index, predicted_logits)`, lấy giá trị trung bình`perplexity` $V$个 token 上的均 logits 检验:perplexity 必须为 $V$
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：-log(p) |
+| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：$-\log(p)$ |
 | Entropy | “Randomness” | 一个 distribution 中所有 outcomes 的平均 surprise。衡量不可约 uncertainty。 |
-| Cross-entropy | “The loss function” | 使用 model distribution Q 编码来自 true distribution P 的事件时的平均 surprise。 |
-| KL divergence | “Distance between distributions” | 使用 Q 而不是 P 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
-| Mutual information | “How related are X and Y” | 知道 Y 后，关于 X 的 uncertainty 减少量。为零表示独立。 |
+| Cross-entropy | “The loss function” | 使用 model distribution $Q$ 编码来自 true distribution $P$ 的事件时的平均 surprise。 |
+| KL divergence | “Distance between distributions” | 使用 $Q$ 而不是 $P$ 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
+| Mutual information | “How related are $X$ and $Y$” | 知道 $Y$ 后，关于 $X$ 的 uncertainty 减少量。为零表示独立。 |
 | Softmax | “Turn logits into probabilities” | 取指数并归一化。将任意 real-valued vector 映射为有效 probability distribution。 |
 | Perplexity | “How confused the model is” | Cross-entropy 的指数。model 在每一步从中选择的有效 vocabulary size。 |
 | Bits | “Shannon's unit” | 使用以 2 为底的 log 衡量的信息。一个 bit 解决一次公平抛硬币。 |

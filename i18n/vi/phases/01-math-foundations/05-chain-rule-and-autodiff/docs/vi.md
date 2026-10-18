@@ -28,29 +28,31 @@ Quy tắc chuỗi  đưa ra cơ sở toán học. Định dạng tự động. �
 
 ### Quy tắc chuỗi
 
-Nếu `y = f(g(x))`Vậy thì`y`So với `x`导数 là:
+Nếu $y = f(g(x))$Vậy thì$y$So với $x$导数 là:
 
-```
-dy/dx = dy/dg * dg/dx = f'(g(x)) * g'(x)
+```math
+\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx} = f'(g(x)) \cdot g'(x)
 ```
 
 沿着链条将导数相乘―― mỗi环节 đóng góp bản địa của mình导数――
 
-Ví dụ:`y = sin(x^2)`
+Ví dụ:$y = \sin(x^2)$
 
-```
-g(x) = x^2       g'(x) = 2x
-f(g) = sin(g)     f'(g) = cos(g)
-
-dy/dx = cos(x^2) * 2x
+```math
+\begin{aligned}
+g(x) &= x^2 \qquad & g'(x) &= 2x \\
+f(g) &= \sin(g) \qquad & f'(g) &= \cos(g) \\[4pt]
+\frac{dy}{dx} &= \cos(x^2) \cdot 2x
+\end{aligned}
 ```
 
 Đối với các cấu trúc sâu hơn, chuỗi sẽ tiếp tục kéo dài:
 
-```
-y = f(g(h(x)))
-
-dy/dx = f'(g(h(x))) * g'(h(x)) * h'(x)
+```math
+\begin{aligned}
+y &= f(g(h(x))) \\[4pt]
+\frac{dy}{dx} &= f'(g(h(x))) \cdot g'(h(x)) \cdot h'(x)
+\end{aligned}
 ```
 
 Mỗi tầng trong mạng thần kinh, đều là một phần trong chuỗi này.
@@ -88,7 +90,7 @@ Hướng ngược sẽ được áp dụng tại mỗi nút của quy tắc chu�
 
 Có hai cách bạn có thể áp dụng trong biểu đồ Quy tắc chuỗi.
 
-**Forward mode**Từ nhập bắt đầu, sẽ dẫn số hướng trước推──它计算 `dx/dx = 1`,并通过每操作传播――适合输入少、输出多场景――
+**Forward mode**Từ nhập bắt đầu, sẽ dẫn số hướng trước推──它计算 $dx/dx = 1$,并通过每操作传播――适合输入少、输出多场景――
 
 ```
 Forward mode: seed dx/dx = 1, propagate forward
@@ -98,7 +100,7 @@ Forward mode: seed dx/dx = 1, propagate forward
   y = sin(a)  (dy/dx = cos(a) * da/dx = cos(4) * 4 = -2.615)
 ```
 
-**Reverse mode**Từ đầu ra, sẽ Gradient hướng về phía sau.`dy/dy = 1`, và theo thứ tự ngược chiều thông qua mỗi hoạt động truyền đi.
+**Reverse mode**Từ đầu ra, sẽ Gradient hướng về phía sau.$dy/dy = 1$, và theo thứ tự ngược chiều thông qua mỗi hoạt động truyền đi.
 
 ```
 Reverse mode: seed dy/dy = 1, propagate backward
@@ -112,12 +114,12 @@ Mạng thần kinh có hàng triệu lượt vào (trọng lượng) và một l
 
 | Mode | Seed | Direction | Best when |
 |------|------|-----------|-----------|
-| Forward | `dx_i/dx_i = 1` | 输入到输出 | 输入少、输出多 |
-| Reverse | `dy/dy = 1` | 输出到输入 | 输入多、输出少（neural nets） |
+| Forward | $dx_i/dx_i = 1$ | 输入到输出 | 输入少、输出多 |
+| Reverse | $dy/dy = 1$ | 输出到输入 | 输入多、输出少（neural nets） |
 
 ### Sử dụng theo chế độ Forward của số đôi
 
-Phương thức tiến có thể sử dụng số hai 优雅地实现──双数的形式是`a + b*epsilon`, trong số đó `epsilon^2 = 0`
+Phương thức tiến có thể sử dụng số hai 优雅地实现──双数的形式是$a + b\epsilon$, trong số đó $\epsilon^2 = 0$
 
 ```
 Dual number: (value, derivative)
@@ -237,7 +239,7 @@ Mỗi hoạt động sẽ tạo ra một kết thúc, nó biết làm thế nào
             v._backward()
 ```
 
-Loại topological  đảm bảo từng node của Gradient 在传播到其子节点 之前已完整计算──种子 Gradient là 1.0 ((dy/dy = 1)。
+Loại topological  đảm bảo từng node của Gradient trong truyền đến các node trẻ  trước đã hoàn chỉnh tính toán.$dy/dy = 1$(■)
 
 ### Bước 4: Máy động hoàn chỉnh cần nhiều hơn
 
@@ -301,11 +303,11 @@ Loại topological  đảm bảo từng node của Gradient 在传播到其子�
 | Operation | Backward rule | Used in |
 |-----------|--------------|---------|
 | `__sub__` | 复用 add + neg | Loss 计算（pred - target） |
-| `__pow__` | n * x^(n-1) | Polynomial activations、MSE（error^2） |
+| `__pow__` | $n \cdot x^{n-1}$ | Polynomial activations、MSE（$\text{error}^2$） |
 | `__truediv__` | 复用 mul + pow(-1) | Normalization、learning rate scaling |
-| `exp` | exp(x) * upstream | Softmax、log-likelihood |
-| `log` | (1/x) * upstream | Cross-entropy loss、log probabilities |
-| `tanh` | (1 - tanh^2) * upstream | 经典 activation function |
+| `exp` | $\exp(x) \cdot \text{upstream}$ | Softmax、log-likelihood |
+| `log` | $(1/x) \cdot \text{upstream}$ | Cross-entropy loss、log probabilities |
+| `tanh` | $(1 - \tanh^2) \cdot \text{upstream}$ | 经典 activation function |
 
 巧妙之处 nằm ở:`__sub__`和 `__truediv__`Nó được xác định bởi các hoạt động đã có. Chúng sẽ tự động nhận được Gradient chính xác, vì Chain Rule sẽ đi qua các add/mul/pow 操作组组合.
 
@@ -490,13 +492,23 @@ Các lớp giá trị được xây dựng trong đó là cơ sở của vòng t
 
 ## 练习
 
-1. 向 giá trị lớp 添加 `__pow__`, để bạn có thể tính toán `x ** n`❖ 验证在 `x=2`时,`d/dx(x^3)`Đúng vậy.`12.0`
+1. 向 giá trị lớp 添加 `__pow__`, để bạn có thể tính toán `x ** n`❖ 验证在 $x=2$时,$\frac{d}{dx}(x^3)$Đúng vậy.`12.0`
 
-2. 添加 `tanh`作为激活函数──验证 `tanh'(0) = 1`且 `tanh'(2) = 0.0707`(đáng gần)
+2. 添加 `tanh`作为激活函数──验证 $\tanh'(0) = 1$且 $\tanh'(2) = 0.0707$(đáng gần)
 
 3. Để tạo ra một biểu đồ tính toán của một tế bào thần kinh:`y = relu(w1*x1 + w2*x2 + b)`△计算全部五个 Gradient,并与 PyTorch 验证──
 
 4. Sử dụng số hai 实现 forward-mode autodiff── tạo một `Dual`lớp,并验证 nó cung cấp số dẫn cùng với chế độ ngược 引擎.
+
+### 提示
+
+**练习 1。** `Value` đã định nghĩa `__pow__`❖ đọc nó `_backward`, xác nhận sẽ$n x^{n-1}$乘到传入的梯度上――运行 `x = Value(2.0)``y = x ** 3``y.backward()`-`x.grad`必须为 12.0 ⋅
+
+**练习 2。**Trong `_backward`中使用 $\tanh'(x) = 1 - \tanh(x)^2$❖ Sử dụng các sự khác biệt giới hạn của bản thân:$\frac{\tanh(x + h) - \tanh(x - h)}{2h}$Trong $x = 0$和 $x = 2$处必须与之吻合──
+
+**练习 3。**用 `Value`Thiết kế đối tượng`w1*x1 + w2*x2 + b`, ứng dụng `relu`, tái调用 `backward`与 PyTorch 比较前,先手工核对:若 `relu`của nhập vào vì chính xác,`w1``x1`Nếu có, 5 thang đều là 0.
+
+**练习 4。**Trong mỗi `Dual`Trung lưu lượng và số dẫn,乘法 áp dụng luật乘积 $(a, a')(b, b') = (ab, a'b + ab')$ Số lượng đầu tiên của dòng nhập được đặt là 1, sau đó kết quả sẽ được tính toán với động cơ phản chiều với cùng một hàm.`x.grad`So sánh:
 
 ## 关键术语
 
@@ -507,13 +519,13 @@ Các lớp giá trị được xây dựng trong đó là cơ sở của vòng t
 | Forward mode | “向前推导数” | 将导数从输入传播到输出的 autodiff。每个输入变量需要一次 pass。 |
 | Reverse mode | “Backpropagation” | 将 Gradient 从输出传播到输入的 autodiff。每个输出变量需要一次 pass。 |
 | Autograd | “自动 Gradient” | 一个系统：记录对值执行的操作、构建 graph，并通过 Chain Rule 计算精确 Gradient |
-| Dual numbers | “值加导数” | 形式为 a + b*epsilon（epsilon^2 = 0）的数字，可以在算术运算中携带导数信息 |
+| Dual numbers | “值加导数” | 形式为 $a + b\epsilon$（$\epsilon^2 = 0$）的数字，可以在算术运算中携带导数信息 |
 | Topological sort | “依赖顺序” | 对 graph 节点排序，使每个节点都位于其所有依赖之后。正确传播 Gradient 所必需。 |
 | Gradient accumulation | “相加，不要替换” | 当一个值流入多个操作时，它的 Gradient 是所有传入 Gradient 贡献的总和 |
 | Dynamic graph | “Define by run” | 每次 forward pass 都重新构建的 computation graph，允许模型内部使用 Python 控制流（PyTorch 风格） |
 | Gradient checking | “数值验证” | 将 autodiff Gradient 与数值 finite-difference Gradient 对比，以验证正确性。调试时必不可少。 |
 | MLP | “Multi-layer perceptron” | 一个包含一层或多层隐藏 neuron 的 Neural Network。每个 neuron 计算加权和加 bias，然后应用 activation function。 |
-| Neuron | “加权和 + activation” | 基本单元：output = activation(w1*x1 + w2*x2 + ... + b)。weights 和 bias 是可学习参数。 |
+| Neuron | “加权和 + activation” | 基本单元：$\text{output} = \text{activation}(w_1 x_1 + w_2 x_2 + \cdots + b)$。weights 和 bias 是可学习参数。 |
 
 ## 延伸阅读
 

@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## Học mục tiêu
-- Thông qua lặp lại năng lượng 实现 SVD,并解释 U、Sigma 和 V^T 的几何含义
+- Thông qua việc lặp lại năng lượng 实现 SVD,并解释 $U$$\Sigma$和 $V^T$                                                                                                                                                                                                                                                              
 -  áp dụng SVD cắt giảm  thực hiện nén hình ảnh,并 đo quan hệ giữa tỷ lệ nén và sự khác biệt xây dựng lại
 - Thông qua SVD  tính toán Moore-Penrose pseudoinverse, để tìm giải pháp siêu xác định các hình vuông tối thiểu  hệ thống
 - Để kết nối SVD với PCA、推系统(lần số trễ) và phân tích ngữ nghĩa trễ trong NLP  liên kết
@@ -23,17 +23,14 @@ SVD  áp dụng cho bất kỳ Matrix nào  hình dạng tùy chọn  cấ
 
 Mỗi Matrix, bất kể hình dạng của nó là gì, đều sẽ theo thứ tự thực hiện ba hoạt động: xoay xoay, rút gọn, xoay.
 
-```
-A = U * Sigma * V^T
-
-      m x n     m x m    m x n    n x n
-     (任意)    (旋转)   (缩放)   (旋转)
+```math
+\underset{\substack{m \times n \\ \text{（任意形状）}}}{A} = \underset{\substack{m \times m \\ \text{（旋转）}}}{U} \cdot \underset{\substack{m \times n \\ \text{（缩放）}}}{\Sigma} \cdot \underset{\substack{n \times n \\ \text{（旋转）}}}{V^T}
 ```
 
-给定任意 Matrix A,SVD sẽ phân giải thành:
-- V^T 旋转输入空间 ((n 维) trong vector
-- Sigma 沿每个轴进行缩放 (拉伸或压缩)
-- U sẽ kết quả quay sang không gian xuất khẩu
+给定任意 Matrix $A$,SVD sẽ phân giải thành:
+- $V^T$旋转输入空间$n$维) trong Vector
+- $\Sigma$沿每个轴进行缩放 (拉伸或压缩)
+- $U$Kết quả sẽ quay sang không gian xuất khẩu$m$维)
 
 ```mermaid
 graph LR
@@ -41,35 +38,35 @@ graph LR
     B -->|"U\n(旋转)"| C["输出空间 (m-dim)\n旋转到输出\n方向"]
 ```
 
-Bạn sẽ biết:  Matrix sẽ đầu tiên sử dụng V^T  quay vào bóng, sau đó sử dụng Sigma để kéo dài nó thành bóng, cuối cùng sử dụng U  quay vào bóng này .
+Có thể hiểu như vậy. Bạn đưa một Matrix cho SVD. Nó sẽ nói với bạn:$V^T$Chuyển vào bóng, rồi dùng$\Sigma$Để kéo dài thành bóng, cuối cùng dùng$U$Chuyển bóng này. Giá trị kỳ lạ là chiều dài của mỗi trục của quả bóng này.
 
 ### Sự phân hủy đầy đủ
 
-Đối với hình dạng m x n của Matrix A:
+Đối với hình dạng$m \times n$của Matrix $A$- Có thể là:
 
+```math
+\begin{aligned}
+& A = U \cdot \Sigma \cdot V^T \\[6pt]
+& \text{其中：} \\
+& \quad U \text{ 为 } m \times m, \text{，正交 } (U^T U = I) \\
+& \quad \Sigma \text{ 为 } m \times n, \text{，对角矩阵（对角线为奇异值）} \\
+& \quad V \text{ 为 } n \times n, \text{，正交 } (V^T V = I) \\[6pt]
+& \text{奇异值 } \sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0 \\
+& \text{其中 } r = \mathop{\mathrm{rank}}(A)
+\end{aligned}
 ```
-A = U * Sigma * V^T
 
-其中：
-  U     是 m x m，正交 (U^T U = I)
-  Sigma 是 m x n，对角（奇异值位于对角线上）
-  V     是 n x n，正交 (V^T V = I)
-
-奇异值 sigma_1 >= sigma_2 >= ... >= sigma_r > 0
-其中 r = rank(A)
-```
-
-Các chuỗi U được gọi là Vêctơ khác biệt trái. Các chuỗi V được gọi là Vêctơ khác biệt phải. Các phần tử đối diện của Sigma được gọi là Vêctơ khác biệt.
+$U$Các dòng được gọi là Vêctor Xuyên Xuyên.$V$Các dòng được gọi là Vêctơ khác nhau bên phải.$\Sigma$Các đối góc của các nguyên tố được gọi là giá trị khác nhau. Chúng là vô cùng không âm tính, và theo quy tắc sau đó xếp hàng.
 
 ### Các vector đơn bên trái ≠ giá trị đơn bên phải ≠ vector đơn bên phải
 
 Mỗi thành phần của SVD có ý nghĩa khác nhau.
 
-**Right singular vectors（V 的列）：**Chúng tạo thành một nhóm các định dạng chính xác. Chúng là các định hướng trong không gian nhập, và các định dạng này sẽ được chuyển sang các định hướng chính xác trong không gian nhập.
+**Right singular vectors（$V$ 的列）：**Chúng là để nhập vào không gian.$\mathbb{R}^n$(văn) cấu thành một nhóm cơ sở hoặcthông thường. Chúng là các hướng trong không gian nhập, các hướng này sẽ được chiếu vào các hướng chính trong không gian xuất.
 
-**Singular values（Sigma 的对角线）：**Chúng là các yếu tố nhỏ hơn. Thứ nhất, các giá trị khác nhau cho bạn biết, Matrix 沿第 nhất 右 奇异向量 方向将向量 拉伸多少──奇异值为零 nghĩa là Matrix sẽ áp lực hoàn toàn hướng đó.
+**Singular values（$\Sigma$ 的对角线）：**Chúng là các yếu tố nhỏ hơn. Thứ nhất, các giá trị khác nhau cho bạn biết, Matrix 沿第 nhất 右 奇异向量 方向将向量 拉伸多少──奇异值为零 nghĩa là Matrix sẽ áp lực hoàn toàn hướng đó.
 
-**Left singular vectors（U 的列）：**它们为输出空间(R^m) cấu thành một nhóm cơ sở thông thường.
+**Left singular vectors（$U$ 的列）：**Chúng là để xuất khẩu không gian.$\mathbb{R}^m$(v) cấu thành một nhóm cơ sở thông thường.
 
 Sự liên hệ giữa chúng:
 
@@ -95,20 +92,20 @@ A = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T + ... + sigma_r * u_r * v_r^T
 
 Đây là hình thức cơ sở của sự tiếp cận cấp thấp. Mỗi thứ đều thêm một tầng cấu trúc. Thứ nhất là nắm bắt một mô hình đơn quan trọng nhất. thứ hai là nắm bắt một mô hình quan trọng thứ hai.
 
-```
-Rank-1 approx:    A_1 = sigma_1 * u_1 * v_1^T
-                  (捕获主导模式)
-
-Rank-2 approx:    A_2 = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T
-                  (捕获两个最重要的模式)
-
-Rank-k approx:    A_k = top k 项之和
-                  (根据 Eckart-Young theorem，这是最优的)
+```math
+\begin{aligned}
+\text{秩 1 近似：} \quad & A_1 = \sigma_1 u_1 v_1^T \\
+& \text{（捕捉主导模式）} \\[6pt]
+\text{秩 2 近似：} \quad & A_2 = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T \\
+& \text{（捕捉最重要的两个模式）} \\[6pt]
+\text{秩 }k\text{ 近似：} \quad & A_k = \text{前 } k \text{ 项之和} \\
+& \text{（由 Eckart-Young 定理可知最优）}
+\end{aligned}
 ```
 
 ### Mối quan hệ với sự kết hợp của riêng mình
 
-SVD và cấu trúc riêng có mối liên hệ sâu sắc. A của các giá trị riêng và các vector riêng trực tiếp từ A^T A và A^T của các giá trị riêng với các vector riêng.
+SVD và sự kết hợp của nó có mối liên hệ sâu sắc.$A$Các giá trị kỳ lạ và các vector kỳ lạ trực tiếp từ$A^T A$和 $A A^T$của eigenvalues với eigenvectors
 
 ```
 A^T A = V * Sigma^T * U^T * U * Sigma * V^T
@@ -132,41 +129,41 @@ A A^T = U * Sigma * V^T * V * Sigma^T * U^T
 
 Cái liên lạc này nói với anh 3 điều:
 1. 奇异值总是实数且非负 (nói là các giá trị riêng của một số lượng tử hình bán xác định tích cực) ⋅
-2. Bạn có thể tính toán SVD bằng cách làm cho A^T A cấu trúc riêng của mình, nhưng nó sẽ làm cho số điều kiện vuông và mất giá trị số chính xác.
-3. Khi A là một hình dạng và có tính đối xứng tích cực bán xác định, SVD và sự kết hợp của nó là cùng một điều.
+2. Bạn có thể qua được $A^T A$Làm một cấu trúc riêng để tính SVD, nhưng đây sẽ là số điều kiện vuông và mất giá trị số chính xác.
+3. Khi đó$A$时,SVD 和自身组合是同一件事.
 
 ### SVD cắt giảm:Tương gần cấp thấp
 
-Tiến lý Eckart-Young-Mirsky  chỉ ra,A của tốt nhất xếp hạng gần giống như k ((( trong chuẩn Frobenius và chuẩn phổ 下) có thể chỉ qua duy trì giá trị trên k 个奇异及其对应向量 得到:
+Định lý Eckart-Young-Mirsky cho thấy,$A$$\text{rank-}k$gần giống như trong chuẩn Frobenius và chuẩn quang phổ dưới) chỉ có thể qua để giữ trên $k$个奇异值及其对应 벡ctor được:
 
+```math
+\begin{aligned}
+& A_k = U_k \cdot \Sigma_k \cdot V_k^T \\[6pt]
+& \text{其中：} \\
+& \quad U_k \text{ 为 } m \times k \quad \text{（前 } k \text{ 列，来自 } U\text{）} \\
+& \quad \Sigma_k \text{ 为 } k \times k \quad \text{（左上角 } k \times k \text{ 子块，来自 } \Sigma\text{）} \\
+& \quad V_k \text{ 为 } n \times k \quad \text{（前 } k \text{ 列，来自 } V\text{）} \\[6pt]
+& \text{近似误差} = \sigma_{k+1} \quad \text{（谱范数下）} \\
+& \text{近似误差} = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_r^2} \quad \text{（Frobenius 范数下）}
+\end{aligned}
 ```
-A_k = U_k * Sigma_k * V_k^T
 
-其中：
-  U_k     是 m x k  (U 的前 k 列)
-  Sigma_k 是 k x k  (Sigma 的左上 k x k 块)
-  V_k     是 n x k  (V 的前 k 列)
-
-近似误差 = sigma_{k+1}  (在 spectral norm 下)
-         = sqrt(sigma_{k+1}^2 + ... + sigma_r^2)  (在 Frobenius norm 下)
-```
-
-Đây không chỉ là một cách gần gũi tốt hơn. Nó là thứ hạng tốt nhất gần gũi hơn. Không có thứ hạng khác của Matrix có thể gần gũi hơn với A.
+Đây không chỉ là một cách tốt hơn, nó là một thứ hạng tốt nhất.$k$gần như... không có gì khác.$\text{rank-}k$Matrix 能更接近 $A$
 
 | Component | Relative magnitude | Kept in rank-3 approx? |
 |-----------|-------------------|------------------------|
-| sigma_1 | 最大 | 是 |
-| sigma_2 | 大 | 是 |
-| sigma_3 | 中等偏大 | 是 |
-| sigma_4 | 中等 | 否（误差） |
-| sigma_5 | 中等偏小 | 否（误差） |
-| sigma_6 | 小 | 否（误差） |
-| sigma_7 | 很小 | 否（误差） |
-| sigma_8 | 极小 | 否（误差） |
+| $\sigma_1$ | 最大 | 是 |
+| $\sigma_2$ | 大 | 是 |
+| $\sigma_3$ | 中等偏大 | 是 |
+| $\sigma_4$ | 中等 | 否（误差） |
+| $\sigma_5$ | 中等偏小 | 否（误差） |
+| $\sigma_6$ | 小 | 否（误差） |
+| $\sigma_7$ | 很小 | 否（误差） |
+| $\sigma_8$ | 极小 | 否（误差） |
 
-保留 top 3:A_3 捕获三个最大的奇异值──误差 = 剩余值(sigma_4 到 sigma_8)。
+Bảo trì top 3:$A_3$捕获三个最大的奇异值──误差 = 剩余值($\sigma_4$Đến$\sigma_8$(■)
 
-Nếu sự suy giảm bất thường nhanh chóng, một k rất nhỏ sẽ có thể nắm bắt được phần lớn thông tin của Matrix. Nếu suy giảm chậm, Matrix sẽ không có cấu trúc thấp.
+Nếu giá trị bất thường giảm nhanh, một rất nhỏ $k$Nếu sự suy giảm chậm, Matrix sẽ không có cấu trúc hạng thấp.
 
 ### Sử dụng SVD  để làm ảnh nén
 
@@ -208,9 +205,9 @@ Giải thưởng Netflix 让这一点广为人知──你有一个用户电影�
 核心思想:这个评分 矩阵 具有低级别──用户的品味不是完全独立──有几个隐藏因素──动作对剧情、旧对新、理性对感官) có thể giải thích hầu hết các sở thích──
 
 Đối với các phân tích Matrix làm SVD, sẽ được phân tích thành:
-- U:trung factor không gian 中的用户配置
-- Sigma: tầm quan trọng của mỗi yếu tố tiềm ẩn
-- V^T: không gian yếu tố trần gian 中的电影资料
+- $U$:latent factor space 中的用户配置
+- $\Sigma$: tầm quan trọng của mỗi yếu tố tiềm ẩn
+- $V^T$:trung factors không gian 中的电影资料
 
 Người dùng cho một bộ phim, là người dùng hồ sơ và điểm sản phẩm của hồ sơ phim.
 
@@ -250,23 +247,23 @@ Thông tin về tiếng ồn thường tập trung tín hiệu vào các giá tr
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 接近零 | 可忽略 |
-| sigma_5 | 接近零 | 可忽略 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 接近零 | 可忽略 |
+| $\sigma_5$ | 接近零 | 可忽略 |
 
 **有噪声信号的奇异值（噪声会加到所有分量上）：**
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 小 | 噪声 |
-| sigma_5 | 小 | 噪声 |
-| sigma_6 | 小 | 噪声 |
-| sigma_7 | 小 | 噪声 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 小 | 噪声 |
+| $\sigma_5$ | 小 | 噪声 |
+| $\sigma_6$ | 小 | 噪声 |
+| $\sigma_7$ | 小 | 噪声 |
 
 ```mermaid
 graph TD
@@ -280,7 +277,7 @@ Nó được sử dụng để xử lý tín hiệu, đo lường khoa học và
 
 ### Phép đảo ngược qua SVD
 
-Moore-Penrose pseudoinverse A + sẽ đưa sự đảo ngược của Matrix 推广到非方阵和奇异Matrix──SVD 让它的计算变得非常简单──
+Phép đảo Moore-Penrose $A^+$Để biến đổi matrix 推广到非方阵和奇异matrix──SVD 让它的计算变得非常简单──
 
 ```
 如果 A = U * Sigma * V^T，那么：
@@ -296,7 +293,7 @@ A+ = V * Sigma+ * U^T
 对于 Sigma (m x n)：  Sigma+ 是 (n x m)
 ```
 
-Phép đảo có thể tìm kiếm các hình vuông nhỏ nhất 问题──如果 Ax = b 没有精确解(超定系统),那么 x = A+ b 就是最小的平方 解(最小化的Ax - b 时时时) ‖
+Phép-trái ngược có thể tìm kiếm giải pháp các hình vuông nhỏ nhất 问题──如果$Ax = b$Không có sự xác định rõ ràng, vậy thì$x = A^+ b$Đó là số lượng nhỏ nhất.$\lVert Ax - b \rVert$(■)
 
 ```
 超定系统（方程数多于未知数）：
@@ -314,7 +311,7 @@ Phép đảo có thể tìm kiếm các hình vuông nhỏ nhất 问题──�
 
 ### Thường độ ổn định số 优势
 
-计算 A^T A của riêng kết hợp 会平方奇异值(A^T A của eigenvalues là sigma_i^2)。
+计算 $A^T A$của riêng thành phần 会平方奇异值$A^T A$của giá trị riêng là $\sigma_i^2$)― Đây sẽ là số điều kiện vuông, do đó làm tăng sự khác biệt số giá trị.
 
 ```
 示例：
@@ -329,7 +326,7 @@ Phép đảo có thể tìm kiếm các hình vuông nhỏ nhất 问题──�
                    （额外损失 6 位精度）
 ```
 
-现代 SVD 算法(Golub-Kahan bi-diagonalization) trực tiếp ở A 上工作,从不构建 A^T A──这就是为什么你应该始终优先使用`np.linalg.svd(A)`, thay vì `np.linalg.eig(A.T @ A)`
+现代 SVD 算法(Golub-Kahan duyên lý hóa) trực tiếp$A$上工作,从不构造 $A^T A$Đó là lý do tại sao bạn nên luôn sử dụng ưu tiên.`np.linalg.svd(A)`, thay vì `np.linalg.eig(A.T @ A)`
 
 ### Kết nối với PCA
 
@@ -365,7 +362,7 @@ svd-rank-reconstruction
 ##  xây dựng nó
 ### 步骤 1: SVD từ đầu sử dụng lặp lại năng lượng
 
-思路: Để tìm được giá trị kỳ lạ nhất và các vector của nó, bạn có thể sử dụng A^T A((hoặc A^T) sử dụng lặp lại năng lượng.
+Để tìm được giá trị kỳ lạ lớn nhất và các vector, chúng ta có thể đối với$A^T A$(hoặc $A A^T$(Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, và Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, và Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, và Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, và Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, Mỹ, và Mỹ, Mỹ, Mỹ, và Mỹ, Mỹ, và Mỹ, và Mỹ, Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, và Mỹ, theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo theo
 
 ```python
 import numpy as np
@@ -507,7 +504,7 @@ julia svd.jl
 - `outputs/skill-svd.md`- Một kỹ năng được sử dụng để hiểu khi nào và làm thế nào để áp dụng SVD trong các dự án thực tế
 
 ## 练习
-1. Từ zero để thực hiện SVD hoàn chỉnh, không sử dụng lặp lại năng lượng。改为计算 A^T A's eigencomposition 来得到 V 和奇异值,然后计算 U = A V Sigma^{-1}──将数值精度与你的功率 lặp lại 版本以及NumPy 进行比较。
+1. Từ零实现完整SVD, không sử dụng lặp lại năng lượng.$A^T A$của riêng thành phần để có được $V$Và giá trị khác nhau, rồi tính toán$U = A V \Sigma^{-1}$△ sẽ số giá trị chính xác với các phiên bản của bạn và số số
 
 2. Lên một bức ảnh màu đen thực tế (hoặc sẽ chuyển đổi một bức ảnh thành màu đen) ⋅ ở các bậc 1、5、10、25、50、100 ⋅ sưng nó xuống ⋅ đối với mỗi bậc, tính toán tỷ lệ sưng và sự sai lầm tương đối ⋅ tìm ra một hình ảnh trên hình ảnh trở nên chấp nhận được ⋅
 
@@ -515,22 +512,34 @@ julia svd.jl
 
 4. Tạo một Matrix tài liệu dài hạn 100x50, bao gồm 3 chủ đề tổng hợp. Mỗi chủ đề có 5 từ liên quan.
 
-5. 生成一个干净的低级矩阵(排名 3,大小 50x40),并不同水平下添加高斯噪音(sigma = 0.1、0.5、1.0、2.0)。 đối với mỗi mức độ tiếng ồn, thông qua từ k=1 đến 40 扫描并测量 so với các lỗi tái tạo của干净矩阵, tìm ra mức độ cắt giảm tốt nhất。 vẽ tốt nhất k 如何随着噪音水平变化──
+5. 生成一个干净的低级矩阵(级别 3,大小 50x40), và ở mức độ khác nhau$\sigma$= 0.1、0.5、1.0、2.0) ◦ đối với mỗi mức tiếng ồn, qua $k$=1 đến 40 扫描并测量 so với các lỗi xây dựng lại của Matrix sạch, tìm ra xếp hạng cắt tốt nhất.$k$如何随噪音水平变化──
+
+### 提示
+
+**练习 1。**计算 $A^T A$, dùng`np.linalg.eigh`得到其特征值和特征向量,并按特征值降序列──奇异值是特征值的平方根;检查 $U \Sigma V^T$能重构 $A$,并将差与 `svd_from_scratch`和 `np.linalg.svd`So sánh:
+
+**练习 2。**Đối với mỗi cấp độ 调用 `truncated_svd`, dùng`reconstruct`重构图像, dùng `compression_ratio(m, n, k)`计算大小──相对差异必须随着等级 增长而下降; thứ nhất看不出明显块状失真等级就是答案──
+
+**练习 3。**标记缺失单元格, sử dụng 填充, tái sử dụng `truncated_svd`和 `reconstruct`重构级 3 近似──随后测量结果:统计超出评分范围的预测数量,并印印已知单元格中最大变化──级 3 近似不保证这两性质,因此如果需要合法评分,应把预测剪切到评分范围──
+
+**练习 4。**Để mỗi chủ đề phân chia 5 khối bao gồm các từ, để tài liệu chủ đề có số lượng cao hơn trên các từ này, thêm vào ít tiếng ồn hơn.
+
+**练习 5。**Đưa một 50x3 đường trượt với một 3x40 đường trượt, lấy một đường trượt, quay lại đối với mỗi đường trượt.$\sigma$加入噪声──对每个人$k$, so sánh cấp độ$k$重构与干净矩阵; dự đoán thấp tiếng ồn$k$接近3,高噪音时更小──
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| SVD | “Factor 任意 Matrix” | 将 A 分解为 U Sigma V^T，其中 U 和 V 是正交的，Sigma 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
-| Singular value | “这个 component 有多重要” | Sigma 的第 i 个对角元素。衡量 Matrix 沿第 i 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
-| Left singular vector | “输出方向” | U 的一列。第 i 个右奇异Vector 经过 sigma_i 缩放后映射到的输出空间方向。 |
-| Right singular vector | “输入方向” | V 的一列。输入空间中的一个方向，Matrix 会将其映射到第 i 个左奇异Vector（经过 sigma_i 缩放后）。 |
-| Truncated SVD | “Low-rank approximation” | 只保留 top k 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 rank-k 近似（Eckart-Young theorem）。 |
+| SVD | “Factor 任意 Matrix” | 将 $A$ 分解为 $U \Sigma V^T$，其中 $U$ 和 $V$ 是正交的，$\Sigma$ 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
+| Singular value | “这个 component 有多重要” | $\Sigma$ 的第 $i$ 个对角元素。衡量 Matrix 沿第 $i$ 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
+| Left singular vector | “输出方向” | $U$ 的一列。第 $i$ 个右奇异Vector 经过 $\sigma_i$ 缩放后映射到的输出空间方向。 |
+| Right singular vector | “输入方向” | $V$ 的一列。输入空间中的一个方向，Matrix 会将其映射到第 $i$ 个左奇异Vector（经过 $\sigma_i$ 缩放后）。 |
+| Truncated SVD | “Low-rank approximation” | 只保留 top $k$ 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 $\text{rank-}k$ 近似（Eckart-Young theorem）。 |
 | Rank | “真实维度” | 非零奇异值的数量。告诉你 Matrix 实际使用了多少个独立方向。 |
-| Pseudoinverse | “广义逆” | V Sigma+ U^T。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
-| Condition number | “对误差有多敏感” | sigma_max / sigma_min。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
+| Pseudoinverse | “广义逆” | $V \Sigma^+ U^T$。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
+| Condition number | “对误差有多敏感” | $\sigma_{\max} / \sigma_{\min}$。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
 | Latent factor | “隐藏变量” | SVD 发现的 low-rank space 中的一个维度。在推荐中，latent factor 可能对应类型偏好。在 NLP 中，它可能对应一个主题。 |
 | Frobenius norm | “Matrix 的总大小” | 所有元素平方和的平方根。等于所有奇异值平方和的平方根。用于衡量近似误差。 |
-| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank k，truncated SVD 会在所有可能的 rank-k Matrix 中最小化近似误差。 |
+| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank $k$，truncated SVD 会在所有可能的 $\text{rank-}k$ Matrix 中最小化近似误差。 |
 | Power iteration | “找到最大的 eigenvector” | 反复用 Matrix 乘以一个随机 Vector 并归一化。会收敛到具有最大 eigenvalue 的 eigenvector。它是许多 SVD 算法的构建模块。 |
 
 ## 延伸阅读

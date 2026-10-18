@@ -45,7 +45,7 @@ graph LR
 
 ### Chuyển đổi
 
-角度为 theta 2D quay sẽ giữ khoảng cách và góc không thay đổi. Nó làm cho mỗi điểm di chuyển dọc theo vòng vòng.
+ góc$\theta$Chuyển đổi 2D sẽ giữ khoảng cách và góc không thay đổi. Nó cho phép mỗi điểm di chuyển dọc theo vòng tròn.
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 Trong 3D, bạn sẽ xoay quanh một trục xoay. Mỗi trục có trục xoay riêng của mình:
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### Tăng quy mô
@@ -123,8 +117,8 @@ graph LR
 ```
 
 Các matrices cắt:
-- `Shx = [[1, k], [0, 1]]`sẽ x 平移 k * y
-- `Shy = [[1, 0], [k, 1]]`将 y 平移 k * x
+- `Shx = [[1, k], [0, 1]]`sẽ$x$平移 $k \cdot y$
+- `Shy = [[1, 0], [k, 1]]`sẽ$y$平移 $k \cdot x$
 
 ### Nhận xét
 
@@ -196,7 +190,7 @@ Cái tràng này 会沿 [1, 1] 方向把空间拉伸 3x,并保持 [1, -1] 不变
 
 ### Thành phần của nó
 
-Nếu một matrix có n 个线性 không liên quan của các vector riêng, nó có thể được phân giải:
+Nếu có một matrix$n$Các vector tự không liên quan, nó có thể được phân giải:
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### Tại sao giá trị riêng  quan trọng
 
-**PCA。**Các vector chính của matrix tính biến động là các thành phần chính. Các giá trị riêng sẽ cho bạn biết mỗi thành phần đã bắt được bao nhiêu sự biến động.
+**PCA。**Các vector chính của matrix tính biến động chính là các thành phần chính.$k$个, bạn đã có được sự giảm kích thước.
 
 **稳定性。**Trong các mạng tái phát và các hệ thống động lực, các giá trị riêng của độ lớn > 1 sẽ dẫn đến phát nổ.
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤 3: từ zero tính toán giá trị riêng của mình(2x2)
 
-Đối với một matrix 2x2`[[a, b], [c, d]]`,eigenvalues bởi phương trình đặc trưng 求解:`lambda^2 - (a+d)*lambda + (ad - bc) = 0`
+Đối với một matrix 2x2`[[a, b], [c, d]]`,eigenvalues bởi phương trình đặc trưng 求解:$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 
 3. 创建三个变换的组合(旋转30 độ,按 [1.5, 0.8] thang, sử dụng kx=0.3 shear),并将其应用到按圆形排列的8个点上――印变换前后的坐标――计算组成矩阵的决定因素,并验证它等于各决定因素的乘积――
 
+### 提示
+
+**练习 1。**用 `mat_vec_mul`sẽ`rotation_2d``scaling_2d`和 `shearing_2d` áp dụng cho mỗi điểm trên. Đối với vòng quay, tính toán thay đổi trước sau 4 条边长 và 2 条 đối với chiều dài đường góc; tất cả đều phải giữ không thay đổi.
+
+**练习 2。**写出特征方程 $\lambda^2 - (\text{trace})\lambda + \det = 0$Và tìm giải pháp. kiểm tra hai kết quả của và tương đương với các dấu hiệu.`eigenvalues_2x2`和 `np.linalg.eigvals`So sánh:
+
+**练习 3。**构建三个矩阵,用 `shearing_2d(0.3, 0)` cấu trúc cắt矩阵, theo quy trình ứng dụng `mat_mul`相乘,再将结果作用于 8 个点 $(\cos\theta, \sin\theta)$ Đường tròn của mô hình quay là 1, cắt mô hình tròn của mô hình quay cũng là 1, do đó, kết hợp mô hình `det_2x2` phải bằng $1.5 \times 0.8 = 1.2$
+
 ## 关键术语
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 

@@ -33,7 +33,7 @@ graph LR
     T3 --> T4["4D Tensor<br/>rank 4<br/>shape: (B,C,H,W)"]
 ```
 
-总元素数 = 所有尺寸的乘积――形`(2, 3, 4)`包含 `2 * 3 * 4 = 24`个元素.
+总元素数 = 所有尺寸的乘积――形`(2, 3, 4)`包含 $2 \cdot 3 \cdot 4 = 24$个元素.
 
 ### Các hình dạng Tensor trong Deep Learning
 
@@ -229,7 +229,7 @@ batch_B = np.random.randn(4, 5, 2)
 batch_mm = np.einsum("bij,bjk->bik", batch_A, batch_B)
 ```
 
-Chi phí tính toán của một sự suy giảm là số lượng của tất cả các kích thước chỉ số (trong và tìm kiếm) đối với B = 32 I = 128 J = 64 K = 128`bij,bjk->bik`- Có thể là:`32 * 128 * 64 * 128 = 33,554,432`次 nhân-lưu-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã
+Chi phí tính toán của một sự suy giảm là số lượng của tất cả các kích thước chỉ số (trong và tìm kiếm) đối với$B=32$$I=128$$J=64$$K=128$của `bij,bjk->bik`- Có thể là:$32 \cdot 128 \cdot 64 \cdot 128 = 33{,}554{,}432$次 nhân-lưu-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã-đã
 
 ### 步骤 7: Cơ chế chú ý qua einsum
 
@@ -313,6 +313,16 @@ PyTorch  tăng autograd、GPU hỗ trợ và tối ưu hóa các hạt nhân BLA
 3. **Hard -- Build einsum from scratch.**实现一个基础的 `einsum(subscripts, *tensors)`chức năng, ít nhất ủng hộ:dot sản phẩm`i,i->`(■) số tử số`ij,jk->ik`(■ sản phẩm bên ngoài`i,j->ij`) và chuyển giao`ij->ji`)。 phân tích chuỗi chữ cái, nhận ra các chỉ số hợp đồng,并遍历 tất cả các kết hợp chỉ số──将你的结果与 `np.einsum`Đối với...
 
 4. **Hard -- Attention shape tracker.**编写一个函数,输入 `batch_size``seq_len``embed_dim`和 `num_heads`,并打印 Multi-Head Attention Mỗi bước hình dạng chính xác: input, Q/K/V projection,head split, attention scores,softmax weights, weighted sum,head merge, output projection, và`demo_attention_einsum()`sản xuất  tiến hành kiểm tra.
+
+### 提示
+
+**练习 1。**用 `list(range(24))`Xây dựng tensor, để mỗi yếu tố cho thấy vị trí của mình.`reshape`后打印 `flatten().to_list()`, kết quả kiểm tra vẫn theo thứ tự từ 0 đến 23.
+
+**练习 2。**Chỉ có khi hai hình lớn như vậy, hoặc một trong số đó là 1 giờ, thì kích thước này có thể được phát sóng, vì vậy trước tiên kiểm tra quy tắc này, không thỏa mãn khi ném ra sai lầm.`(3, 1)`和 `(1, 4)`, kiểm tra kết quả của`[i][j]`元素是否等于 `a[i][0] + b[0][j]`,并将完整结果与NumPy比较──
+
+**练习 3。**按 `->`拆分下标── xuất hiện trong nhập nhưng không xuất hiện trong xuất hiện biểu tượng từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ từ.`np.allclose(mine, np.einsum(...))`测试全部四种情况──
+
+**练习 4。**Từ kích thước đầu `embed_dim // num_heads`开始,并断言 `embed_dim % num_heads == 0`◊ hình dạng điểm chú ý 为 `(batch_size, num_heads, seq_len, seq_len)`, do đó sẽ in kết quả với hình dạng này và`demo_attention_einsum()`打印的形状比较──
 
 ## 关键术语
 | Term | What people say | What it actually means |

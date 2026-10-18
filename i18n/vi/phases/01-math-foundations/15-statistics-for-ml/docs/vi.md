@@ -41,7 +41,7 @@ Mode:   出现最频繁的值
         对 categorical data 有用。对 continuous data，通常信息量很低。
 ```
 
-trung bình là điểm cân bằng, trung bình là điểm trung bình. Khi người khác rời đi, phân bố của bạn là bị lệch.
+mean is equilib equilibrat point. median is middle point. khi người khác rời đi, phân bố của bạn là bị lệch.$\text{mean} \gg \text{median}$(Do tỷ phú gây ra sự lệch bên phải)$\text{mean} \ll \text{median}$(Bởi vì sự ngơ ngơ bên trái)
 
 **Measures of spread**                                                                                                                                                                                                                                                              
 
@@ -72,14 +72,16 @@ IQR:        Q3 - Q1 (interquartile range)
 
 Trong ML, bạn sẽ tập trung vào phần trăm, sử dụng để suy luận độ trễ, phân phối sự tin tưởng dự đoán, cũng như hiểu phân phối lỗi. Một lỗi trung bình rất thấp nhưng lỗi P99 rất tồi tệ, cho các ứng dụng quan trọng về an toàn có thể không có ích gì.
 
-**Sample vs population statistics.**Từ mẫu 计算 biến số 时, dùng (n-1) thay vì n như số trừ số. Đây là sự sửa đổi của Bessel. Nó bù đắp cho mẫu trung bình không phải là thực dân trung bình.
+**Sample vs population statistics.**Từ mẫu 计算 sự khác biệt 时,用 $(n-1)$Không phải$n$Như là số phân số. Đó là sự điều chỉnh của Bessel. Nó bù đắp cho con số mẫu không phải là con số thực sự.$n$, bạn sẽ có hệ thống đánh giá thấp sự khác biệt thực tế... Nếu phân tử là $(n-1)$, ước tính là không thiên vị.
 
-```
-Population variance: sigma^2 = (1/N) * sum((x_i - mu)^2)
-Sample variance:     s^2     = (1/(n-1)) * sum((x_i - x_bar)^2)
+```math
+\begin{aligned}
+\text{总体方差：} \quad \sigma^2 &= \frac{1}{N} \sum (x_i - \mu)^2 \\
+\text{样本方差：} \quad s^2 &= \frac{1}{n-1} \sum (x_i - \bar{x})^2
+\end{aligned}
 ```
 
-Thực tế: Nếu n  rất lớn ((1000 mẫu), sự khác biệt có thể bị bỏ qua. Nếu n  rất nhỏ ((几十样), nó là rất quan trọng.
+实践中: Nếu $n$                                                                                                                                                                                                                                                              $n$很小(几十个样本), nó là rất quan trọng.
 
 ### Sự tương quan: 变量如何一起变化
 
@@ -97,7 +99,7 @@ r =  0:  无线性关系（但可能存在非线性关系！）
 Range: [-1, 1]
 ```
 
-Pearson giả định mối quan hệ là tuyến tính, và hai biến đều tuân theo phân bố bình thường. Nó nhạy cảm với các điểm ngoại lệ.
+Pearson giả định mối quan hệ là tuyến tính, và hai biến đều tuân theo phân bố bình thường.$r$Từ 0,1 đến 0,9...
 
 **Spearman rank correlation**衡量单调关联:
 
@@ -136,7 +138,7 @@ Cov(X, Y) < 0:  当 X 增加时，Y 倾向于减少
 Cov(X, Y) = 0:  无线性共同变化
 ```
 
-Đối với d 个 tính năng, matrix covariance C là một d x d Matrix, trong đó C[i][j] = Cov(feature_i, feature_j)。 đối với các góc line C[i][i] là sự khác biệt của mỗi tính năng。
+ Đối với $d$个 tính năng, matrix covariance $C$Là một $d \times d$Matrix, trong số đó $C[i][j] = \mathop{\mathrm{Cov}}(\text{feature}_i, \text{feature}_j)$◊ đối với các đường$C[i][i]$là sự khác biệt của mỗi tính năng.
 
 ```
 C = | Var(x1)      Cov(x1,x2)  Cov(x1,x3) |
@@ -152,7 +154,7 @@ Properties:
 
 **与 PCA 的联系。**PCA đối với matrix có biến thể làm cho cấu trúc riêng của mình. Eigenvectors là các thành phần chính. Eigenvalues nói với bạn mỗi thành phần đã nắm bắt được bao nhiêu biến thể. Đây chính là nội dung của Bài học 10.
 
-**与 correlation 的联系。**Matrix tương quan là matrix covariance của các biến số chuẩn hóa (standardised variable) (các biến số đều trừ bằng cách lệch chuẩn của riêng mình).
+**与 correlation 的联系。**Matrix tương quan là matrix covariance của các biến số chuẩn hóa (các biến số đều trừ bằng sự lệch chuẩn của riêng mình).$[-1, 1]$
 
 ### Kiểm tra giả thuyết
 
@@ -202,10 +204,11 @@ T-test 比较 phương tiện. Có vài hình thức.
 
 **One-sample t-test:**dân số có khác với một giả định?
 
-```
-t = (x_bar - mu_0) / (s / sqrt(n))
-
-degrees of freedom = n - 1
+```math
+\begin{aligned}
+t &= \frac{\bar{x} - \mu_0}{s / \sqrt{n}} \\[4pt]
+\text{自由度} &= n - 1
+\end{aligned}
 ```
 
 **Two-sample t-test (independent):**两组 nhóm có nghĩa là có khác nhau không?
@@ -294,19 +297,20 @@ Practically significant? 0.03% 的提升不值得
 
 **Effect size**Sự khác biệt về quy mô có nhiều, và độc lập với kích thước mẫu:
 
-```
-Cohen's d = (mean_1 - mean_2) / pooled_std
-
-d = 0.2:  small effect
-d = 0.5:  medium effect
-d = 0.8:  large effect
+```math
+\begin{aligned}
+\text{Cohen's } d &= \frac{\text{mean}_1 - \text{mean}_2}{\text{pooled\_std}} \\[4pt]
+d &= 0.2: \quad \text{小效应} \\
+d &= 0.5: \quad \text{中等效应} \\
+d &= 0.8: \quad \text{大效应}
+\end{aligned}
 ```
 
 始终同时报告 p-value 和效果大小──p-value 告诉你差异是否真实──效果大小──告诉你差异是否重要──
 
 ### Vấn đề so sánh nhiều lần
 
-Khi bạn kiểm tra rất nhiều giả thuyết, một số trong số đó sẽ trở nên quan trọng bởi tình cờ. Nếu bạn kiểm tra 20 điều, ngay cả khi không có bất kỳ hiệu ứng thực nào, cũng dự kiến sẽ xuất hiện 1 dương tính sai.
+Khi bạn kiểm tra rất nhiều giả thuyết, một số trong số đó sẽ trở nên quan trọng bởi tình cờ.$\alpha = 0.05$20 điều, ngay cả khi không có bất kỳ hiệu ứng thực tế nào, cũng dự kiến sẽ xuất hiện 1 dương tính sai.
 
 ```
 P(at least one false positive) = 1 - (1 - alpha)^m
@@ -317,7 +321,7 @@ P(false positive) = 1 - 0.95^20 = 0.64
 你有 64% 的概率至少得到一个 false positive。
 ```
 
-**Bonferroni correction:**Để alpha trừ bằng các thử nghiệm số lượng.
+**Bonferroni correction:**sẽ$\alpha$Ngoài các thử nghiệm số lượng.
 
 ```
 Adjusted alpha = alpha / m = 0.05 / 20 = 0.0025
@@ -414,11 +418,11 @@ Kruskal-Wallis:     比较多个 groups（替代 ANOVA）
 - 更高 statistical power（更擅长检测真实差异）
 ```
 
-Trong thí nghiệm ML, bạn thường chỉ có n nhỏ n(5 hoặc 10 gấp hợp hợp hợp lệ chéo), vì vậy như Wilcoxon ký-đang như các bài kiểm tra không tham số này 往往比 t-test 更合适──
+Trong thí nghiệm ML, bạn thường chỉ có rất nhỏ.$n$(5 hoặc 10 lần xác nhận chéo), do đó như Wilcoxon đã ký-đang như các bài kiểm tra không tham số 往往比 t-test 更合适──
 
 ### Lý thuyết giới hạn trung tâm: tác động thực tế
 
-CLT cho thấy, theo n 增长, phân bố phương tiện mẫu sẽ gần như phân phối bình thường, bất kể phân bố dân số tầng dưới là gì.
+CLT 表明, theo $n$增大,样本平均分布将趋近正常分布,无论底层人口分布是什么.
 
 ```
 If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
@@ -470,7 +474,7 @@ If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
 
 9. **在数据不独立时假设 independence。**Từ hình ảnh y tế của cùng một bệnh nhân, từ nhiều câu trong cùng một tài liệu.
 
-10. **P-hacking。**Không ngừng thử các thử nghiệm khác nhau, các nhóm phụ hoặc các tiêu chí loại trừ cho đến khi có được p < 0.05. Kết quả chỉ là một tác phẩm của quá trình tìm kiếm.
+10. **P-hacking。**Không ngừng thử các thử nghiệm khác nhau, các nhóm phụ hoặc các tiêu chí loại trừ cho đến khi có được$p < 0.05$Kết quả chỉ là một tác phẩm của quá trình tìm kiếm.
 
 ## Xây dựng nó
 
@@ -486,7 +490,7 @@ Bạn sẽ thực hiện:
 3. **Hypothesis tests**(một mẫu t-test, hai mẫu t-test, chi-quad test)
 4. **Bootstrap confidence intervals**(được áp dụng cho số liệu thống kê tùy ý, không cần giả định)
 5. **A/B test simulator**(tạo dữ liệu, kiểm tra, kiểm tra lỗi loại I và loại II)
-6. **Statistical vs practical significance demo**(thể hiện cách làm mọi thứ trở nên quan trọng)
+6. **Statistical vs practical significance demo**(mô tả lớn $n$Làm thế nào để mọi thứ trở nên quan trọng?
 
 Tất cả từ không thực hiện, chỉ sử dụng `math`和 `random`❖不使用 numpy,不使用 scipy。
 
@@ -498,7 +502,7 @@ Tất cả từ không thực hiện, chỉ sử dụng `math`和 `random`❖不
 | Standard deviation | variance 的平方根。以原始单位衡量 spread。 |
 | Percentile | 给定百分比的数据低于该值。 |
 | IQR | Interquartile range。Q3 减 Q1。中间 50% 的 spread。 |
-| Pearson correlation | 衡量两个变量之间的线性关联。Range [-1, 1]。 |
+| Pearson correlation | 衡量两个变量之间的线性关联。Range $[-1, 1]$。 |
 | Spearman correlation | 使用 ranks 衡量单调关联。 |
 | Covariance matrix | 所有 features 两两 covariances 组成的 Matrix。 |
 | Null hypothesis | 默认假设，即无效应或无差异。 |

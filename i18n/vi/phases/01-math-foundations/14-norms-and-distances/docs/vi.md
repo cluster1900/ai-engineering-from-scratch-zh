@@ -28,14 +28,14 @@ Bài này sẽ xây dựng từng hàm khoảng cách chính từ không, giải
 
 ### Các chuẩn: đo lường vector
 
-范数 đo một vector của 2 vector. Mỗi hàm khoảng cách giữa hai vector có thể được viết thành các khác biệt của chúng.
+范数 đo một vector của 大小── mỗi hàm khoảng cách giữa hai vector có thể được viết thành các số của các giá trị khác nhau của chúng:$d(a, b) = \lVert a - b \rVert$Vì vậy, hiểu范数 là hiểu khoảng cách.
 
 ### L1 Norm ((trường Manhattan)
 
 L1 chuẩn đối với tất cả các phân tích giá trị tuyệt đối
 
-```
-||x||_1 = |x_1| + |x_2| + ... + |x_n|
+```math
+\lVert x \rVert_1 = |x_1| + |x_2| + \cdots + |x_n|
 ```
 
 Nó được gọi là khoảng cách Manhattan, vì nó đo lường khoảng cách bạn đi trong mạng lưới thành phố, nơi bạn chỉ có thể di chuyển theo trục trục, không thể đi về góc.
@@ -54,7 +54,7 @@ On a grid, you walk 3 blocks east and 4 blocks north.
 - Khi bạn muốn đối với các điểm khác biệt hơn ổn định thì một sự khác biệt lớn sẽ không dẫn đến kết quả)
 - Đặc điểm chọn vấn đề (L1 regularization 会促进稀疏性)
 
-Liên hệ với L1 regularization (Lasso): Trong hàm Loss1, sẽ tham gia vào các tác phẩm của bạn để trừng phạt trọng lượng của mình đối với giá trị tuyệt đối của nó và.
+Liên hệ với L1 Regularisation (Lasso): Trong hàm Loss của bạn$\lVert w \rVert_1$, sẽ trừng phạt trọng lượng đối với giá trị tuyệt đối của và. Nó sẽ đẩy trọng lượng nhỏ hơn đến nét chính xác, do đó thực hiện tự động lựa chọn đặc điểm. L1 hình phạt sẽ tạo ra một vùng  hình trong không gian trọng lượng, trong khi góc hình nằm trên trục trục, nơi một số trọng lượng là nét.
 
 Liên hệ với Hỗn Loss:Mán độ Hỏng hoàn toàn (MAE) là giá trị trung bình của khoảng cách L1 giữa giá trị dự đoán và giá trị mục tiêu.
 
@@ -62,11 +62,11 @@ Liên hệ với Hỗn Loss:Mán độ Hỏng hoàn toàn (MAE) là giá trị t
 
 L2 chuẩn là đường thẳng khoảng cách. Nó tương đương với phần vuông của phân tích và gốc vuông.
 
-```
-||x||_2 = sqrt(x_1^2 + x_2^2 + ... + x_n^2)
+```math
+\lVert x \rVert_2 = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2}
 ```
 
-Đó là cách bạn học trong các lớp học về địa chất.
+Đó là khoảng cách mà anh học trong lớp học địa chất.$n$维中勾股定理──
 
 ```
 Point A = (1, 1)
@@ -83,24 +83,26 @@ The straight line, cutting diagonally through the grid.
 - 物理距离(空间数据、传感器读数)
 - Tương tự hình ảnh của cấp độ hình ảnh
 
-Liên hệ với L2 regularization (Ridge): Trong hàm Loss (Loss) 中加入你的物流的重量2^2, sẽ trừng phạt trọng lượng lớn hơn. Không giống với L1, nó sẽ không đẩy trọng lượng xuống 0, nó sẽ giảm trọng lượng theo tỷ lệ, giảm trọng lượng.
+Liên hệ với L2 Regularisation (Ridge)$\lVert w \rVert_2^2$, sẽ trừng phạt trọng lượng lớn hơn. Không giống như L1, nó sẽ không đẩy trọng lượng xuống 0, nó sẽ giảm trọng lượng theo tỷ lệ để giảm trọng lượng.
 
 Liên hệ với hàm mất:Mức độ lỗi vuông trung bình (MSE) là khoảng cách L2 平方的平均值──平方会比小误差更重地惩罚大误差──
 
-```
-MAE (L1 loss):  |y - y_hat|         Linear penalty. Robust to outliers.
-MSE (L2 loss):  (y - y_hat)^2       Quadratic penalty. Sensitive to outliers.
+```math
+\begin{aligned}
+\text{MAE（L1 loss）：} \quad & |y - \hat{y}| && \text{线性惩罚。对离群值稳健。} \\
+\text{MSE（L2 loss）：} \quad & (y - \hat{y})^2 && \text{二次惩罚。对离群值敏感。}
+\end{aligned}
 ```
 
 ### Lp Norm: chung
 
 L1 và L2 là đặc điểm của Lp chuẩn:
 
-```
-||x||_p = (|x_1|^p + |x_2|^p + ... + |x_n|^p)^(1/p)
+```math
+\lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-Các p 值 khác nhau sẽ tạo ra các hình dạng khác nhau của các quả bóng đơn vị  ((tránh từ điểm gốc là 1 của tất cả các điểm):
+Không giống nhau.$p$值会产生不同形状的单位球(距离原点为 1 的所有点的集合):
 
 ```
 p=1:    Diamond shape      (corners on axes)
@@ -111,19 +113,20 @@ p=inf:  Square/hypercube   (flat sides along axes)
 
 ### L-không giới hạn Norm ((Chebyshev khoảng cách)
 
-Khi p 趋近无穷大时, Lp chuẩn 收到最大绝对分量──
+Khi đó$p$趋近无穷大时,Lp chuẩn 收到最大绝对分量──
 
-```
-||x||_inf = max(|x_1|, |x_2|, ..., |x_n|)
+```math
+\lVert x \rVert_\infty = \max(|x_1|, |x_2|, \ldots, |x_n|)
 ```
 
 Khoảng cách giữa hai điểm được quyết định bởi kích thước lớn nhất của chúng. Tất cả các kích thước khác đều bị bỏ qua.
 
-```
-Point A = (1, 1)
-Point B = (4, 5)
-
-L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
+```math
+\begin{aligned}
+\text{点 } A &= (1, 1) \\
+\text{点 } B &= (4, 5) \\[6pt]
+L_\infty \text{ 距离} &= \max(|4-1|, |5-1|) = \max(3, 4) = 4
+\end{aligned}
 ```
 
 何時使用 L-infinity:
@@ -135,19 +138,20 @@ L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
 
 Sự tương đồng của cosine đo lường góc giữa hai vector, bỏ qua kích thước của chúng.
 
-```
-cos_sim(a, b) = (a . b) / (||a||_2 * ||b||_2)
+```math
+\text{cos\_sim}(a, b) = \frac{a \cdot b}{\lVert a \rVert_2 \, \lVert b \rVert_2}
 ```
 
 phạm vi của nó là -1 (( hướng相反) đến +1 (( hướng tương tự) ―― Sự tương đồng cosine của các vector trực tuyến 为 0。
 
 Khoảng cách cosine sẽ chuyển đổi thành khoảng cách: cosine_distance = 1 - cosine_similarity。 phạm vi là 0(nghĩa tương tự) đến 2(nghĩa tương phản)。
 
-```
-a = (1, 0)    b = (1, 1)
-
-cos_sim = (1*1 + 0*1) / (1 * sqrt(2)) = 1/sqrt(2) = 0.707
-cos_dist = 1 - 0.707 = 0.293
+```math
+\begin{aligned}
+& a = (1, 0) \qquad b = (1, 1) \\[6pt]
+& \text{cos\_sim} = \frac{1 \cdot 1 + 0 \cdot 1}{1 \cdot \sqrt{2}} = \frac{1}{\sqrt{2}} = 0.707 \\
+& \text{cos\_dist} = 1 - 0.707 = 0.293
+\end{aligned}
 ```
 
 Tại sao cosine trong NLP và embedings chiếm chủ quyền: Trong văn bản, độ dài văn bản không nên ảnh hưởng đến sự tương đồng. Một bài viết về cat văn bản thậm chí còn nên là 2 lần so với bài viết khác về cat văn bản dài, cũng vẫn nên là  tương tự.
@@ -162,16 +166,17 @@ Tại sao cosine trong NLP và embedings chiếm chủ quyền: Trong văn bản
 
 两个向量的点产量是:
 
-```
-a . b = a_1*b_1 + a_2*b_2 + ... + a_n*b_n
-      = ||a|| * ||b|| * cos(angle)
+```math
+\begin{aligned}
+a \cdot b &= a_1 b_1 + a_2 b_2 + \cdots + a_n b_n \\
+&= \lVert a \rVert \, \lVert b \rVert \cos(\text{角度})
+\end{aligned}
 ```
 
 Sự tương đồng của cosine là theo hai lớn nhỏ kết hợp sau sản phẩm chấm.
 
-```
-If ||a|| = 1 and ||b|| = 1:
-    a . b = cos(angle between a and b)
+```math
+\text{如果 } \lVert a \rVert = 1 \text{ 与 } \lVert b \rVert = 1: \quad a \cdot b = \cos(\text{夹角，介于 } a \text{ 与 } b)
 ```
 
 Trong một số hệ thống tìm kiếm, nếu bạn muốn xếp hạng hàng hóa 热门物品 cao hơn, điều này rất quan trọng.
@@ -197,13 +202,13 @@ Khoảng cách Euclidean  bình đẳng đối với tất cả các chiều kí
 
 Khoảng cách của Mahalanobis sẽ xem xét dữ liệu của sự thay đổi cấu trúc.
 
-```
-d_M(x, y) = sqrt((x - y)^T * S^(-1) * (x - y))
+```math
+d_M(x, y) = \sqrt{(x - y)^T S^{-1} (x - y)}
 ```
 
-Trong đó S là matrix tính biến của dữ liệu.
+Trong số đó $S$là matrix tính biến của dữ liệu.
 
-直观理解: khoảng cách của Mahalanobis 会先对数据去相关并归归一化(whitening), sau đó trong thay đổi后的空间中计算 L2 khoảng cách。 nếu S là matrix danh tính ((不相关、单位差特征), khoảng cách của Mahalanobis sẽ trở lại cho khoảng cách Euclidean。
+直观理解: khoảng cách của Mahalanobis 会先对数据去相关并归归一化(whitening), sau đó trong thay đổi sau của không gian tính toán khoảng cách L2──如果$S$là các mô hình dạng dạng không liên quan, khoảng cách của Mahalanobis sẽ được chuyển thành khoảng cách Euclidean.
 
 ```
 Example: height and weight are correlated.
@@ -225,8 +230,8 @@ because it accounts for the height-weight correlation.
 
 Sự tương đồng Jaccard đo lường mức độ chồng chéo giữa hai tập hợp.
 
-```
-J(A, B) = |A intersect B| / |A union B|
+```math
+J(A, B) = \frac{|A \cap B|}{|A \cup B|}
 ```
 
 Kích thước của nó là 0( không chồng lên) đến 1( tập hợp giống nhau)。 khoảng cách Jackard = 1 - Sự tương đồng Jackard。
@@ -263,7 +268,7 @@ sittin -> sitting (insert g)
 Edit distance = 3
 ```
 
-Sử dụng động thái lập trình tính toán. 填充一个矩阵, trong đó条目 (i, j) là khoảng cách chỉnh sửa giữa字符串 A của i 个字符串 và字符串 B của i 个字符串.
+Sử dụng động thái lập trình tính toán.$(i, j)$是字符串 A 的前 $i$个字符与字符串 B 的前 $j$个字符之间的 chỉnh sửa khoảng cách
 
 ```
         ""  s  i  t  t  i  n  g
@@ -286,20 +291,20 @@ Sử dụng động thái lập trình tính toán. 填充一个矩阵, trong đ
 
 KL sự khác biệt đo lường sự khác biệt giữa phân bố xác suất và phân bố xác suất khác. Nội dung này đã được nói trong Bài học 09 nhưng nó thuộc về cuộc thảo luận này, vì mọi người thường dùng nó như là khoảng cách, mặc dù nó không phải là khoảng cách.
 
-```
-D_KL(P || Q) = sum(p(x) * log(p(x) / q(x)))
+```math
+D_{KL}(P \,\|\, Q) = \sum_x p(x) \log\frac{p(x)}{q(x)}
 ```
 
 关键性质:KL divergence 不是对称的──
 
-```
-D_KL(P || Q) != D_KL(Q || P)
+```math
+D_{KL}(P \,\|\, Q) \ne D_{KL}(Q \,\|\, P)
 ```
 
 Điều này có nghĩa là nó không đáp ứng yêu cầu cơ bản về độ khoảng cách. Nó cũng không đáp ứng các phương pháp khác nhau.
 
-Chuyển tiếp KL(D_KL(P   Q)) là tìm kiếm ý nghĩa:Q 试图覆盖 P 的所有模式──
-Reverse KL(D_KL(Q  P)) là tìm kiếm chế độ:Q 专注于P 的单个模式──
+Chuyển KL($D_{KL}(P \Vert Q)$) là tìm kiếm ý nghĩa:$Q$试图覆盖 $P$Tất cả các chế độ.
+Chuyển ngược KL($D_{KL}(Q \Vert P)$) là tìm kiếm chế độ:$Q$专注于$P$Định hướng đơn lẻ.
 
 Bạn sẽ thấy sự khác biệt KL ở những nơi này:
 - VAEs ((ELBO 中的 KL 项会把隐藏分布 推向前)
@@ -311,14 +316,14 @@ Bạn sẽ thấy sự khác biệt KL ở những nơi này:
 
 Khoảng cách Wasserstein  đo chuyển phân bố xác suất thành phân bố xác suất khác. Có thể hiểu như thế này: Nếu một phân bố là một đống đất, một khác là một crater, bạn cần phải di chuyển bao nhiêu đất  di chuyển bao nhiêu xa?
 
-```
-W(P, Q) = inf over all transport plans gamma of E[d(x, y)]
+```math
+W(P, Q) = \inf_{\gamma} \mathbb{E}[d(x, y)] \quad \text{（遍历所有运输方案 } \gamma\text{）}
 ```
 
 Đối với phân bố 1D, nó sẽ được đơn giản hóa thành tích lũy phân bố hàm tuyệt đối khác biệt:
 
-```
-W_1(P, Q) = integral |CDF_P(x) - CDF_Q(x)| dx
+```math
+W_1(P, Q) = \int |\text{CDF}_P(x) - \text{CDF}_Q(x)| \, dx
 ```
 
 Tại sao Wasserstein  quan trọng:
@@ -353,7 +358,7 @@ Wasserstein gives a meaningful gradient. KL does not.
 | 集合重叠（标签、类别） | Jaccard | 数据天然是集合值，而不是 Vector 型 |
 | 字符串匹配 | Edit distance | 操作映射到人类编辑直觉 |
 | Outlier detection | Mahalanobis | 考虑特征相关性和尺度 |
-| 比较分布 | KL divergence | 衡量使用 Q 而不是 P 时丢失的信息 |
+| 比较分布 | KL divergence | 衡量使用 $Q$ 而不是 $P$ 时丢失的信息 |
 | GAN training | Wasserstein | 即使分布不重叠也能提供 Gradients |
 | Embeddings（vector DB） | Cosine or dot product | Embeddings 被训练为在方向中编码含义 |
 | 推荐 | Dot product | 大小可以编码流行度或置信度 |
@@ -404,7 +409,7 @@ Tại sao L1 sẽ tạo ra sự hiếm khi L2 không: tưởng tượng 2D  tr�
 
 Mỗi hàm khoảng cách đều bao gồm một tìm kiếm hàng xóm gần nhất  vấn đề: cho một điểm truy vấn, trong tập dữ liệu tìm thấy điểm gần nhất.
 
-Tìm kiếm hàng xóm gần nhất trong tập dữ liệu có chứa n 个点, độ phức tạp của mỗi lần truy vấn là O(n * d) ;; Đối với tập dữ liệu lớn, nó quá chậm.
+Tìm kiếm hàng xóm gần nhất trong bao gồm$n$个点,$d$个维度的数据集, mỗi lần truy vấn phức tạp là $O(n \cdot d)$Đối với các tập hợp dữ liệu lớn, nó quá chậm.
 
 Phương pháp gần nhất của hàng xóm (ANN) với tỷ lệ xác định nhỏ để đổi lấy tốc độ tăng trưởng lớn:
 
@@ -470,7 +475,7 @@ Khi bạn调用`model.encode(text)`Sau đó tìm kiếm cơ sở dữ liệu vec
 
 ## 练习
 
-1. 计算 (1, 2, 3) 和 (4, 0, 6)  giữa L1、L2 和 L-không giới hạn khoảng cách。验证 đối với bất kỳ một đối tượng nào,总有 L-inf <= L2 <= L1。证明为什么这个顺序一定成立──
+1. 计算 (1, 2, 3) 和 (4, 0, 6)  giữa L1、L2 和 L-lực lượng không giới hạn 验证 đối với bất kỳ một đối tượng điểm,总有 $L_\infty \le L_2 \le L_1$ chứng minh tại sao thứ tự này phải được thành lập
 
 2. 创建两个向量,使宇宙相似性 很高(> 0.9), nhưng khoảng cách L2 很大(> 10)。 从几何角度解释发生了什么──然后创建两个向量,使宇宙相似性 很低(< 0.3),但 L2 khoảng cách 很小(< 0.5)。
 
@@ -480,6 +485,18 @@ Khi bạn调用`model.encode(text)`Sau đó tìm kiếm cơ sở dữ liệu vec
 
 5. Để thực hiện tương đồng Jaccard gần như 实现 MinHash──生成 100 个随机集合,计算所有对的精确 Jaccard,并使用 50、100、200 个 hash hàm của MinHash 近似进行比较──绘制近似误差──
 
+### 提示
+
+**练习 1。**差向量为 (-3, 2, -3), vì vậy sử dụng `l1_norm``l2_norm`和 `linf_norm`计算该向量的三种范数――证明时,将最大的 $\lvert d_i \rvert$Với tỷ lệ vuông và so sánh, tái phân tích tỷ lệ vuông và so sánh vuông với tỷ lệ vô cùng.
+
+**练习 2。**Sự tương đồng của cosine  bỏ qua chiều dài, do đó trước tiên lấy hai hướng gần như cùng một chiều dài, và làm cho một trong số đó dài hơn một khác.`cosine_similarity`和 `l2_distance`检验两个条件――
+
+**练习 3。**分別用 `l1_distance``l2_distance``cosine_distance`和 `mahalanobis_distance`调用 một lần `find_nearest_neighbor(query, dataset, distance_fn)``demo_different_neighbors` hiển thị các dữ liệu khác nhau để đưa ra kết quả khác nhau, do đó trước tiên đọc nó, điều chỉnh lại từng điểm, cho đến khi bốn câu trả lời hoàn toàn khác nhau.
+
+**练习 4。**Tác lại sự tích lũy và phân bố của mỗi phân bố, thêm vào giá trị tuyệt đối của hai nhóm tích lũy và sự khác biệt.`wasserstein_1d(p, q)`检查两次计算结果, tái sử dụng xác suất chất lượng phải di chuyển giải thích khoảng cách lớn hơn kết quả.
+
+**练习 5。**Đối với mỗi hàm hash, MinHash của một tập hợp  chữ ký là giá trị hash tối thiểu của các yếu tố của nó; hai tập hợp có tỷ lệ của hàm hash tối thiểu của cùng giá trị, có thể ước tính sự tương đồng Jaccard của chúng.`jaccard_similarity`So sánh; đối với$k$个哈希函数, lỗi差应大致按 $1/\sqrt{k}$Này, xuống đây.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |
@@ -487,15 +504,15 @@ Khi bạn调用`model.encode(text)`Sau đó tìm kiếm cơ sở dữ liệu vec
 | Norm | “Vector 的大小” | 一个把 Vector 映射到非负标量的函数，满足三角不等式、绝对齐次性，并且只有零 Vector 的值为零 |
 | L1 norm | “Manhattan distance” | 分量绝对值之和。在优化中产生稀疏性。对 outliers 稳健 |
 | L2 norm | “Euclidean distance” | 平方分量之和的平方根。Euclidean space 中的直线距离 |
-| Lp norm | “Generalized norm” | 分量绝对值 p 次方之和的 p 次根。L1 和 L2 是特殊情况 |
-| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 p 趋近无穷大时 Lp 的极限 |
+| Lp norm | “Generalized norm” | 分量绝对值 $p$ 次方之和的 $p$ 次根。L1 和 L2 是特殊情况 |
+| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 $p$ 趋近无穷大时 Lp 的极限 |
 | Cosine similarity | “Vectors 之间的角度” | 按两个大小归一化的 dot product。范围从 -1 到 +1。忽略 Vector 长度 |
 | Cosine distance | “1 minus cosine similarity” | 将 cosine similarity 转换为距离。范围从 0 到 2 |
 | Dot product | “Unnormalized cosine” | 按分量相乘后求和。等于 cosine similarity 乘以两个大小 |
 | Mahalanobis distance | “Correlation-aware distance” | 在使用数据 covariance matrix 进行 whitened（去相关和归一化）后的空间中的 L2 distance |
 | Jaccard similarity | “Set overlap” | 交集大小除以并集大小。用于集合，而不是 Vectors |
 | Edit distance | “Levenshtein distance” | 将一个字符串转换为另一个字符串所需的最少插入、删除和替换次数 |
-| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 Q 编码 P 时产生的额外 bits |
+| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 $Q$ 编码 $P$ 时产生的额外 bits |
 | Wasserstein distance | “Earth mover's distance” | 将质量从一个分布运输到另一个分布所需的最小 work。真正的 metric |
 | Approximate nearest neighbor | “ANN search” | 比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
 | HNSW | “The vector DB algorithm” | Hierarchical Navigable Small World graph。用于快速 approximate nearest neighbor search 的多层图 |

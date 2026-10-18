@@ -24,7 +24,7 @@ Mỗi lần dự đoán được thực hiện bởi mô hình là một phân p
 
 ### Các sự kiện √Các không gian mẫu và khả năng
 
-không gian mẫu S là tập hợp tất cả các kết quả có thể. Sự kiện là một tập hợp của không gian mẫu.
+không gian mẫu $S$là tất cả các kết quả có thể của tập hợp. Sự kiện là một tập hợp của không gian mẫu.
 
 ```
 Coin flip:
@@ -37,15 +37,15 @@ Single die roll:
 ```
 
 Ba lý thuyết định nghĩa toàn bộ hệ thống tỷ lệ:
-1. Đối với sự kiện bất kỳ A,P(A) >= 0
-2. P(S) = 1(总会发生某事)
-3. 当 A 和 B 不能同时发生时,P(A hoặc B) = P(A) + P(B)
+1. Đối với bất kỳ sự kiện nào$A$- Tôi không biết.$P(A) \ge 0$
+2. $P(S) = 1$(Điều gì sẽ xảy ra luôn)
+3. Khi đó$A$和 $B$Không thể xảy ra cùng lúc,$P(A \text{ or } B) = P(A) + P(B)$
 
 Tất cả các nội dung khác của Bayes' thuyết, kỳ vọng, phân phối có thể được đưa ra từ các quy tắc này.
 
 ### Có thể có điều kiện và độc lập
 
-P  A  B) biểu hiện tỷ lệ xảy ra của A trong điều kiện B  đã xảy ra.
+$P(A \mid B)$biểu diễn trong $B$được diễn ra $A$概率 xảy ra
 
 ```
 P(A|B) = P(A and B) / P(B)
@@ -58,9 +58,11 @@ Example: deck of cards
 
 Khi biết một sự kiện về sự kiện khác không có bất kỳ thông tin nào tăng lên, hai sự kiện này là độc lập:
 
-```
-Independent:   P(A|B) = P(A)
-Equivalent to: P(A and B) = P(A) * P(B)
+```math
+\begin{aligned}
+\text{相互独立：} \quad & P(A \mid B) = P(A) \\
+\text{等价于：} \quad & P(A \text{ and } B) = P(A) \cdot P(B)
+\end{aligned}
 ```
 
 抛硬币是独立的──不放回抽牌则不是──
@@ -98,27 +100,33 @@ integral from -inf to +inf of f(x) dx = 1
 
 **Bernoulli：**Một lần thử nghiệm, hai kết quả.
 
-```
-P(X = 1) = p
-P(X = 0) = 1 - p
-Mean = p,  Variance = p(1-p)
+```math
+\begin{aligned}
+P(X = 1) &= p \\
+P(X = 0) &= 1 - p \\
+\text{均值} = p, &\quad \text{方差} = p(1-p)
+\end{aligned}
 ```
 
-**Categorical：**Một lần thử nghiệm, k 个 kết quả.
+**Categorical：**Một lần thử nghiệm,$k$个 kết quả. 个 kết quả.
 
-```
-P(X = i) = p_i,  where sum of p_i = 1
-Example: P(cat) = 0.7,  P(dog) = 0.2,  P(bird) = 0.1
+```math
+\begin{aligned}
+& P(X = i) = p_i, \quad \text{其中 } \textstyle\sum_i p_i = 1 \\
+& \text{示例：} P(\text{cat}) = 0.7, \quad P(\text{dog}) = 0.2, \quad P(\text{bird}) = 0.1
+\end{aligned}
 ```
 
 **Uniform：**Tất cả kết quả 等概率── được sử dụng để tự động khởi tạo──
 
-```
-Discrete: P(X = k) = 1/n for k in {1, ..., n}
-Continuous: f(x) = 1/(b-a) for x in [a, b]
+```math
+\begin{aligned}
+\text{离散：} \quad & P(X = k) = 1/n \text{ for } k \in \lbrace 1, \ldots, n \rbrace \\
+\text{连续：} \quad & f(x) = 1/(b-a) \text{ for } x \in [a, b]
+\end{aligned}
 ```
 
-**Normal（Gaussian）：**钟形曲线──由 mean(mu) và sự khác biệt(sigma^2)参数化──
+**Normal（Gaussian）：**钟形曲线──由 nghĩa là$\mu$) và sự khác biệt$\sigma^2$(văn số hóa).
 
 ```
 f(x) = (1 / sqrt(2*pi*sigma^2)) * exp(-(x - mu)^2 / (2*sigma^2))
@@ -131,45 +139,51 @@ Standard normal: mu = 0, sigma = 1
 
 **Poisson：**Số lượng các sự kiện hiếm gặp trong khu vực cố định.
 
-```
-P(X = k) = (lambda^k * e^(-lambda)) / k!
-Mean = lambda,  Variance = lambda
+```math
+\begin{aligned}
+P(X = k) &= \frac{\lambda^k e^{-\lambda}}{k!} \\
+\text{均值} = \lambda, &\quad \text{方差} = \lambda
+\end{aligned}
 ```
 
 ### Giá trị dự kiến và sự biến động
 
 Giá trị dự kiến là kết quả của tăng giá trung bình.
 
-```
-Discrete:   E[X] = sum of x_i * P(X = x_i)
-Continuous: E[X] = integral of x * f(x) dx
+```math
+\begin{aligned}
+\text{离散：} \quad & \mathbb{E}[X] = \sum_i x_i \, P(X = x_i) \\
+\text{连续：} \quad & \mathbb{E}[X] = \int x \, f(x) \, dx
+\end{aligned}
 ```
 
 Sự biến động đo lường mức độ phân tán xung quanh trung bình.
 
-```
-Var(X) = E[(X - E[X])^2] = E[X^2] - (E[X])^2
-Standard deviation = sqrt(Var(X))
+```math
+\begin{aligned}
+\mathrm{Var}(X) &= \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 \\
+\text{标准差} &= \sqrt{\mathrm{Var}(X)}
+\end{aligned}
 ```
 
 Trong ML, giá trị dự kiến sẽ xuất hiện dưới dạng hàm Loss (Phung tích Loss trung bình trên phân bố dữ liệu)  Variance  mô tả mô hình ổn định  Sự khác biệt cao của các gradient có nghĩa là tập luyện tiếng ồn lớn 
 
 ### Phân phối chung và biên giới
 
-phân phối chung P(X, Y) 同时 mô tả hai biến ngẫu nhiên.
+phân phối chung $P(X, Y)$Đồng thời mô tả hai biến ngẫu nhiên.
 
-PMF chung 示例(X = thời tiết,Y = dù):
+PMF chung示例$X$= thời tiết,$Y$= dù):
 
-| | Y=0（不带伞） | Y=1（带伞） | Marginal P(X) |
+| | $Y=0$（不带伞） | $Y=1$（带伞） | Marginal $P(X)$ |
 |---|---|---|---|
-| X=0（晴天） | 0.40 | 0.10 | P(X=0) = 0.50 |
-| X=1（下雨） | 0.05 | 0.45 | P(X=1) = 0.50 |
-| **Marginal P(Y)** | P(Y=0) = 0.45 | P(Y=1) = 0.55 | 1.00 |
+| $X=0$（晴天） | 0.40 | 0.10 | $P(X=0) = 0.50$ |
+| $X=1$（下雨） | 0.05 | 0.45 | $P(X=1) = 0.50$ |
+| **Marginal $P(Y)$** | $P(Y=0) = 0.45$ | $P(Y=1) = 0.55$ | 1.00 |
 
 Phân bố biên sẽ chuyển đổi khác tìm và tiêu diệt:
 
-```
-P(X = x) = sum over all y of P(X = x, Y = y)
+```math
+P(X = x) = \sum_{y} P(X = x, Y = y)
 ```
 
 Trong biểu đồ trên, các tập hợp và tập hợp là các biên giới.
@@ -196,23 +210,27 @@ This works for ANY starting distribution.
 
 Sự xác suất ban đầu sẽ gây ra các vấn đề về giá trị số.
 
-```
-P(sentence) = P(word1) * P(word2) * ... * P(word_n)
-            = 0.01 * 0.003 * 0.02 * ...
-            -> 0.0 (underflow after ~30 terms)
+```math
+\begin{aligned}
+P(\text{sentence}) &= P(\text{word}_1) \cdot P(\text{word}_2) \cdot \ldots \cdot P(\text{word}_n) \\
+&= 0.01 \cdot 0.003 \cdot 0.02 \cdot \ldots \\
+&\to 0.0 \quad \text{（在约 } \sim 30 \text{ 项后下溢）}
+\end{aligned}
 ```
 
 Log xác suất có thể giải quyết vấn đề này.
 
-```
-log P(sentence) = log P(word1) + log P(word2) + ... + log P(word_n)
-                = -4.6 + -5.8 + -3.9 + ...
-                -> finite number (no underflow)
+```math
+\begin{aligned}
+\log P(\text{sentence}) &= \log P(\text{word}_1) + \log P(\text{word}_2) + \ldots + \log P(\text{word}_n) \\
+&= -4.6 + -5.8 + -3.9 + \ldots \\
+&\to \text{有限数值（不会下溢）}
+\end{aligned}
 ```
 
 Quy tắc:
-- log(a * b) = log(a) + log(b)
-- log xác suất 总是 <= 0(因为 0 < P <= 1)
+- $\log(a \cdot b) = \log(a) + \log(b)$
+- log xác suất 总是 $\le 0$( vì $0 < P \le 1$(văn)
 - 越负 = 越不可能
 - Thiệt hại giao hợp entropy là đúng lớp của xác suất log âm
 
@@ -431,24 +449,34 @@ Bạn đã xây dựng những nội dung này từ không. Bây giờ bạn bi�
 
 4.  biên tập một hàm, nhận một nhóm xác suất log, và trả lại chuỗi có thể nhất  tổng xác suất log, cũng như xác suất nguyên thủy của giá tương đương  dùng một câu 50 từ để kiểm tra nó, trong đó xác suất của mỗi từ là 0.01 ⋅
 
+### 提示
+
+**练习 1。**Từ phân bố trung bình`u`, quay lại$-\ln(1 - u) / \lambda$◊ kiểm tra liệu giá trị trung bình mẫu có gần $1/\lambda$, trực quan trong các khu vực có phù hợp không$\lambda e^{-\lambda x}$
+
+**练习 2。**填写 một biểu đồ 6x6, mỗi biểu đồ là một xác suất, tất cả các biểu đồ của và là 1, sau đó调用 `joint_to_marginals` Sử dụng`check_independence`Chỉ có mỗi vị trí bằng với nhân số của tỷ lệ đối với hai bên, hai vị trí là độc lập với nhau.
+
+**练习 3。**Đối với các logits  ứng dụng `softmax`, tái đối với chỉ số 3 ̊ tỷ lệ$-\ln$Kết quả nên gần 0.421, với`nn.CrossEntropyLoss`Đối với cùng một nhóm logits và mục tiêu  đưa ra kết quả phù hợp.
+
+**练习 4。**Để tăng tỷ lệ xác suất số, không phải tăng tỷ lệ xác suất nguyên thủy.$50 \ln(0.01) \approx -230.26$, nguyên始概率为$10^{-100}$
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Sample space | “所有可能性” | 实验中每个可能 outcome 构成的集合 S |
+| Sample space | “所有可能性” | 实验中每个可能 outcome 构成的集合 $S$ |
 | PMF | “概率函数” | 给出每个离散 outcome 精确概率的函数，所有概率之和为 1 |
 | PDF | “概率曲线” | 用于连续变量的 density function。对某个区间积分即可得到概率 |
-| Conditional probability | “给定某事的概率” | P(A\|B) = P(A and B) / P(B)。Bayesian thinking 和 Bayes' theorem 的基础 |
-| Independence | “它们互不影响” | P(A and B) = P(A) * P(B)。知道一个 event 对另一个没有任何信息增益 |
+| Conditional probability | “给定某事的概率” | $P(A \mid B) = P(A \text{ and } B) / P(B)$。Bayesian thinking 和 Bayes' theorem 的基础 |
+| Independence | “它们互不影响” | $P(A \text{ and } B) = P(A) \cdot P(B)$。知道一个 event 对另一个没有任何信息增益 |
 | Expected value | “平均值” | 所有 outcomes 的概率加权和。Loss function 就是一个 expected value |
 | Variance | “分散程度” | 相对 mean 的 squared deviation 的期望。High variance = 噪声大、不稳定的估计 |
-| Normal distribution | “钟形曲线” | f(x) = (1/sqrt(2*pi*sigma^2)) * exp(-(x-mu)^2/(2*sigma^2))。由于 CLT 而无处不在 |
+| Normal distribution | “钟形曲线” | $f(x) = (1/\sqrt{2\pi\sigma^2}) \cdot \exp(-(x-\mu)^2/(2\sigma^2))$。由于 CLT 而无处不在 |
 | Central Limit Theorem | “平均值会变成 normal” | 无论来源如何，许多 independent samples 的 mean 都会收敛到 normal distribution |
-| Joint distribution | “两个变量放在一起” | P(X, Y) 描述 X 和 Y outcomes 每一种组合的概率 |
-| Marginal distribution | “把另一个变量求和消去” | P(X) = sum_y P(X, Y)。从 joint 中恢复单个变量的 distribution |
-| Log probability | “概率的 log” | log P(x)。把乘积变成求和，避免长序列中的数值下溢 |
-| Softmax | “把分数变成概率” | softmax(z_i) = exp(z_i) / sum(exp(z_j))。将实值 logits 映射为有效的 probability distribution |
-| Cross-entropy | “Loss function” | -sum(p_true * log(p_predicted))。衡量两个 distributions 有多不同。越低越好 |
+| Joint distribution | “两个变量放在一起” | $P(X, Y)$ 描述 $X$ 和 $Y$ outcomes 每一种组合的概率 |
+| Marginal distribution | “把另一个变量求和消去” | $P(X) = \sum_y P(X, Y)$。从 joint 中恢复单个变量的 distribution |
+| Log probability | “概率的 log” | $\log P(x)$。把乘积变成求和，避免长序列中的数值下溢 |
+| Softmax | “把分数变成概率” | $\text{softmax}(z_i) = \exp(z_i) / \sum_j \exp(z_j)$。将实值 logits 映射为有效的 probability distribution |
+| Cross-entropy | “Loss function” | $-\sum p_{\text{true}} \cdot \log(p_{\text{predicted}})$。衡量两个 distributions 有多不同。越低越好 |
 | Logits | “模型原始输出” | softmax 之前的未归一化分数。命名来自 logistic function |
 | Sampling | “抽取随机值” | 按照 probability distribution 生成值。模型生成输出的方式 |
 

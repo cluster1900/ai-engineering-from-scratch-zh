@@ -9,7 +9,7 @@
 
 ## Học mục tiêu
 
-- 计算常见 ML 函数(x^2、sigmoid、cross-entropy) của số lượng định giá và số lượng phân tích
+- 计算常见 ML 函数($x^2$、sigmoid、cross-entropy) số lượng và phân tích
 - Từ zero thực hiện giảm độ, trong 1D và 2D tối thiểu hóa Loss Function
 - 推导 tuyến tính hồi quy 模型的渐变,并通过手动更新权重来训练它
 - Giải thích Hessian Matrix、Taylor series gần giống, cũng như mối liên hệ của chúng với phương pháp tối ưu hóa
@@ -24,59 +24,58 @@ Không có điểm nhỏ, đào tạo mạng thần kinh là cố gắng thay đ
 
 ### - Quý vị là gì?
 
-导数衡变率── đối với hàm y = f(x),导数 f'(x) sẽ nói với bạn: Nếu bạn đẩy x 微小地 một điểm, y sẽ thay đổi bao nhiêu?
+导数衡变化率── đối với hàm $y = f(x)$,导数 $f'(x)$Anh sẽ nói với anh nếu anh...$x$微小地 đẩy một chút,$y$Sẽ thay đổi bao nhiêu?
 
 Từ quan điểm, số dẫn là độ nghiêng của một đường cắt ở một điểm nào đó.
 
-**f(x) = x^2：**
+**$f(x) = x^2$：**
 
-| x | f(x) | f'(x)（斜率） |
+| $x$ | $f(x)$ | $f'(x)$（斜率） |
 |---|------|---------------|
 | 0 | 0    | 0（平坦，在底部） |
 | 1 | 1    | 2 |
 | 2 | 4    | 4（该点处切线的斜率） |
 | 3 | 9    | 6 |
 
-Khi x=2, tỷ lệ trượt là 4... nếu bạn đặt x về phía phải di chuyển rất nhỏ, y sẽ tăng số lượng di chuyển này 4 lần...
+Trong $x=2$时, tỷ lệ nghiêng là 4... nếu bạn đưa $x$Nhìn về bên phải.$y$Đại hội tăng số lượng chuyển động này 4 lần.$x=0$时, tỷ lệ nghiêng là 0...
 
 形式化定义:
 
-```
-f'(x) = lim   f(x + h) - f(x)
-        h->0  -----------------
-                     h
+```math
+f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}
 ```
 
-Trong mã, bạn sẽ nhảy qua giới hạn, trực tiếp sử dụng một h rất nhỏ.
+Trong mã, bạn sẽ nhảy qua giới hạn, trực tiếp sử dụng một rất nhỏ $h$ Đó là số giá trị của số.
 
 ### 偏导数: một lần chỉ nhìn một biến số
 
 Thực hàm có rất nhiều đầu vào. Khung mất mạng thần kinh phụ thuộc vào hàng ngàn trọng lượng.
 
-```
-f(x, y) = x^2 + 3xy + y^2
-
-df/dx = 2x + 3y     (treat y as a constant)
-df/dy = 3x + 2y     (treat x as a constant)
+```math
+\begin{aligned}
+f(x, y) &= x^2 + 3xy + y^2 \\[4pt]
+\frac{\partial f}{\partial x} &= 2x + 3y \quad \text{（将 } y \text{ 视为常量）} \\
+\frac{\partial f}{\partial y} &= 3x + 2y \quad \text{（将 } x \text{ 视为常量）}
+\end{aligned}
 ```
 
 Mỗi số hướng dẫn trả lời là: Nếu tôi chỉ giảm trọng lượng này, mất sẽ thay đổi như thế nào?
 
 ### Gradient: tất cả các đường dẫn cấu thành của vector
 
-Gradient 会把每个偏导数集合成一个向量. Đối với hàm f ((x, y, z), Gradient là:
+Gradient sẽ thu thập mỗi định hướng số thành một vector.$f(x, y, z)$,Gradient là:
 
-```
-grad f = [ df/dx, df/dy, df/dz ]
+```math
+\nabla f = \left[ \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right]
 ```
 
 Gradient chỉ hướng lên nhất. Để tối thiểu hóa một hàm, hãy hướng ngược hướng đi.
 
-**f(x,y) = x^2 + y^2 的等高线图：**
+**$f(x,y) = x^2 + y^2$ 的等高线图：**
 
 Hàm này hình thành một hình dạng cong,等高线是同心圆.
 
-| 点 | grad f | -grad f（下降方向） |
+| 点 | $\nabla f$ | $-\nabla f$（下降方向） |
 |-------|--------|----------------------------|
 | (1, 1) | [2, 2]（指向上坡，远离最小值） | [-2, -2]（指向下坡，朝向最小值） |
 | (0, 0) | [0, 0]（平坦，在最小值处） | [0, 0] |
@@ -85,7 +84,7 @@ Hàm này hình thành một hình dạng cong,等高线是同心圆.
 
 ### Liên hệ với Optimization
 
-训练 Neural Network 就是优化──你有一个 Loss Function L(w1, w2, ..., wn), nó đo mô hình có nhiều lỗi──你想最小化它──
+训练 Neural Network 就是优化. Bạn có một chức năng mất mát.$L(w_1, w_2, \ldots, w_n)$Nó đo lường mô hình có nhiều sai lầm.
 
 ```
 Gradient descent update rule:
@@ -102,7 +101,7 @@ Tốc độ học tập  kiểm soát bước dài.  quá lớn sẽ vượt qu�
 
 **Loss landscape（1D 切片）：**
 
-Loss Function L(w)  Với sự thay đổi của trọng lượng w hình thành một đường cong có đỉnh có谷.
+Phụ thể mất tích$L(w)$ Với trọng lượng $w$Sự thay đổi hình thành một đường cong có đỉnh có thung lũng.
 
 | 特征 | 描述 |
 |---------|-------------|
@@ -116,9 +115,9 @@ Sự giảm dần sẽ theo chiều dốc giảm. Nó có thể rơi vào mức 
 
 计算导数 có hai cách:
 
-解析方式:手动应用微积分规则── đối với f(x) = x^2,导数是 f'(x) = 2x──精确,快速──
+解析方式:手动应用微积分规则── đối với $f(x) = x^2$,导数 là $f'(x) = 2x$                                                                                                                                                                                                                            
 
-Cách số giá trị: sử dụng định nghĩa để tiến hành gần似── đối với một h rất nhỏ 计算 f(x+h) 和 f(x-h), sau đó lấy差分──
+Số giá trị cách: sử dụng định nghĩa để thực hiện gần giống.$h$计算 $f(x+h)$和 $f(x-h)$, rồi lấy khác biệt.
 
 ```
 Numerical (central difference):
@@ -148,7 +147,7 @@ f(x) = ln(x)   f'(x) = 1/x     Cross-entropy loss
 f(x) = 1/(1+e^-x)  f'(x) = f(x)(1-f(x))   Sigmoid activation
 ```
 
-对于 f(x) = x^2:
+ Đối với $f(x) = x^2$- Có thể là:
 
 ```
 f(x) = x^2    f'(x) = 2x
@@ -161,7 +160,7 @@ f(x) = x^2    f'(x) = 2x
    2    4       4      slope tilts right (increasing)
 ```
 
-对于 f(w) = wx + b,且 x=3、b=1:
+ Đối với $f(w) = wx + b$, và$x=3$$b=1$- Có thể là:
 
 ```
 f(w) = 3w + 1    f'(w) = 3
@@ -189,17 +188,16 @@ Mạng thần kinh là một chuỗi hàm: input -> linear -> activation -> line
 
 Gradient 告诉你斜率──Hessian 告诉你曲率──
 
-Hessian là thứ hai của các số định hướng cấu thành Matrix。 đối với hàm f ((x1, x2, ..., xn), Hessian của (i, j) 项 là:
+Hessian là một matrix cấu thành các hàm.$f(x_1, x_2, \ldots, x_n)$,Hessian của $(i, j)$项 là:
 
-```
-H[i][j] = d^2f / (dx_i * dx_j)
+```math
+H_{ij} = \frac{\partial^2 f}{\partial x_i \, \partial x_j}
 ```
 
-对于二变量函数 f ((x, y):
+对于二变量函数 $f(x, y)$- Có thể là:
 
-```
-H = | d^2f/dx^2    d^2f/dxdy |
-    | d^2f/dydx    d^2f/dy^2 |
+```math
+H = \begin{bmatrix} \dfrac{\partial^2 f}{\partial x^2} & \dfrac{\partial^2 f}{\partial x \, \partial y} \\[8pt] \dfrac{\partial^2 f}{\partial y \, \partial x} & \dfrac{\partial^2 f}{\partial y^2} \end{bmatrix}
 ```
 
 **Hessian 在临界点（Gradient = 0 的地方）告诉你什么：**
@@ -210,7 +208,7 @@ H = | d^2f/dx^2    d^2f/dxdy |
 | 负定（所有 eigenvalues < 0） | Local maximum | 向下开口的碗 |
 | 不定（eigenvalues 正负混合） | Saddle point | 马鞍形 |
 
-**示例：**f(x, y) = x^2 - y^2(một cái ghế 函数)
+**示例：** $f(x, y) = x^2 - y^2$(một saddle 函数)
 
 ```
 df/dx = 2x       df/dy = -2y
@@ -223,7 +221,7 @@ Eigenvalues: 2 and -2 (one positive, one negative)
 --> Saddle point at (0, 0)
 ```
 
-与 f(x, y) = x^2 + y^2(一个碗形函数)
+Với$f(x, y) = x^2 + y^2$(一个碗形函数)
 
 ```
 H = | 2  0 |
@@ -237,22 +235,24 @@ Eigenvalues: 2 and 2 (both positive)
 
 Phương pháp Newton sử dụng Hessian để áp dụng hơn là giảm độ tốt hơn. Nó không chỉ theo đường cong, cũng sẽ xem xét tỷ lệ cong:
 
-```
-Newton's update:    w_new = w_old - H^(-1) * gradient
-Gradient descent:   w_new = w_old - lr * gradient
+```math
+\begin{aligned}
+\text{牛顿法更新：} \quad & w_{\text{new}} = w_{\text{old}} - H^{-1} \cdot \text{梯度} \\
+\text{梯度下降：} \quad & w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{梯度}
+\end{aligned}
 ```
 
 Phương pháp của Newton 收更快, vì Hessian 会 tái缩缩 Gradient:方向的步子更小,平坦方向的步子更大──
 
- Vấn đề nằm ở: Đối với mạng thần kinh có N 参数, Hessian là N x N. Một mô hình có 100 triệu参数 cần một matrix có chứa 1 tỷ nguyên tố. Đó là lý do chúng tôi sử dụng phương pháp gần gũi.
+ vấn đề là: đối với có$N$个参数 của mạng thần kinh, Hessian là $N \times N$Một mô hình có 100 triệu tham số cần một matrix chứa 1 tỷ nguyên tố. Đó là lý do tại sao chúng ta sử dụng phương pháp gần gũi.
 
 | 方法 | 使用什么 | 成本 | 收敛 |
 |--------|-------------|------|-------------|
-| Gradient Descent | 只使用一阶导数 | 每步 O(N) | 慢（线性） |
-| Newton's method | 完整 Hessian | 每步 O(N^3) | 快（二次） |
-| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 O(N) | 中等（超线性） |
-| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 O(N) | 中等 |
-| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 O(N^2) | 快 |
+| Gradient Descent | 只使用一阶导数 | 每步 $O(N)$ | 慢（线性） |
+| Newton's method | 完整 Hessian | 每步 $O(N^3)$ | 快（二次） |
+| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 $O(N)$ | 中等（超线性） |
+| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 $O(N)$ | 中等 |
+| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 $O(N^2)$ | 快 |
 
 Trong thực tế, Adam là Optimizer mặc định của Deep Learning. Nó theo dõi mỗi yếu tố của Gradient, để giảm chi phí gần như 2 giai đoạn thông tin.
 
@@ -260,17 +260,17 @@ Trong thực tế, Adam là Optimizer mặc định của Deep Learning. Nó the
 
 Bất kỳ hàm phẳng nào có thể được sử dụng nhiều phương pháp gần như:
 
-```
-f(x + h) = f(x) + f'(x)*h + (1/2)*f''(x)*h^2 + (1/6)*f'''(x)*h^3 + ...
+```math
+f(x + h) = f(x) + f'(x)\,h + \frac{1}{2} f''(x)\,h^2 + \frac{1}{6} f'''(x)\,h^3 + \cdots
 ```
 
-包含的项越多,近似越好, nhưng chỉ ở điểm x 附近成立──
+包含的项越多,近似越好, nhưng chỉ ở điểm $x$附近成立──
 
 **为什么 Taylor series 对 ML 重要：**
 
-- **一阶 Taylor = Gradient Descent。**Khi bạn sử dụng f(x + h) ~ f(x) + f'(x) *h 时, bạn đang làm đường tính gần giống。 Gradient Descent 会最小化这个线性模型,从而选择 h = -lr * f'(x)。
+- **一阶 Taylor = Gradient Descent。**当你使用 $f(x + h) \approx f(x) + f'(x) h$Khi, bạn đang làm đường dẫn gần giống.$h = -\text{lr} \cdot f'(x)$
 
-- **二阶 Taylor = Newton's method。**Sử dụng f(x + h) ~ f(x) + f'(x) *h + (1/2) *f'(x) *h^2 时, bạn nhận được một mô hình thứ hai.
+- **二阶 Taylor = Newton's method。**Sử dụng $f(x + h) \approx f(x) + f'(x) h + \frac{1}{2} f''(x) h^2$Khi, bạn có được một mô hình thứ hai.$h = -f'(x)/f''(x)$Đó là bước đi của Newton.
 
 - **Loss Function 设计。**MSE và cross-entropy là trơn tru, có nghĩa là sự mở rộng Taylor của chúng biểu hiện tốt.
 
@@ -291,27 +291,27 @@ Higher orders          Finer structure     Rarely used in ML
 
 Trong ML, bạn rất ít tính toán bằng tay, nhưng khái niệm này không có ở đâu cả:
 
-**概率。**Đối với sự biến đổi liên tục có mật độ p (x):
+**概率。**Đối với độ mật độ$p(x)$                                                                                                                                                                                                                                                              
+```math
+P(a < X < b) = \int_a^b p(x) \, dx
 ```
-P(a < X < b) = integral from a to b of p(x) dx
-```
-概率 độ mật độ đường cong trong a và b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+概率 độ 曲线 $a$和 $b$间面积,就是落在该区间内的概率──
 
 **期望值。**按概率加权的平均结果:
-```
-E[f(X)] = integral of f(x) * p(x) dx
+```math
+\mathbb{E}[f(X)] = \int f(x) \, p(x) \, dx
 ```
 Sự mất mát dự kiến trên phân bố dữ liệu là một积分―― tập luyện tối thiểu hóa là kinh nghiệm của nó gần như――
 
 **KL divergence。**- đo hai phân bố khác nhau:
-```
-KL(p || q) = integral of p(x) * log(p(x) / q(x)) dx
+```math
+\mathrm{KL}(p \,\|\, q) = \int p(x) \log \frac{p(x)}{q(x)} \, dx
 ```
 Sử dụng VAEs, phân giải tri thức và suy luận Bayesian.
 
 **归一化常数。**Trong suy luận Bayesian 中:
-```
-p(w | data) = p(data | w) * p(w) / integral of p(data | w) * p(w) dw
+```math
+p(w \mid \text{data}) = \frac{p(\text{data} \mid w) \, p(w)}{\int p(\text{data} \mid w) \, p(w) \, dw}
 ```
 分母 là số lượng của tất cả các giá trị tham số có thể. Nó thường là không thể xử lý, đó là lý do chúng tôi sử dụng MCMC và suy luận biến đổi, ví dụ.
 
@@ -353,16 +353,16 @@ Tất cả nội dung của backpropagation là: từ đầu ra đến nhập, h
 
 Khi một hàm把 Vector 映射到 Vector 时(ví dụ như lớp mạng thần kinh), số dẫn của nó là một Matrix。 Jacobian 包含每个输出对每个输入的所有偏导数。
 
-Đối với f: R^n -> R^m, Jacobian J là một m x n Matrix:
+ Đối với $f: \mathbb{R}^n \to \mathbb{R}^m$, Giacobia $J$Là một $m \times n$Matrix:
 
-| | x1 | x2 | ... | xn |
+| | $x_1$ | $x_2$ | ... | $x_n$ |
 |---|---|---|---|---|
-| f1 | df1/dx1 | df1/dx2 | ... | df1/dxn |
-| f2 | df2/dx1 | df2/dx2 | ... | df2/dxn |
+| $f_1$ | $\partial f_1/\partial x_1$ | $\partial f_1/\partial x_2$ | ... | $\partial f_1/\partial x_n$ |
+| $f_2$ | $\partial f_2/\partial x_1$ | $\partial f_2/\partial x_2$ | ... | $\partial f_2/\partial x_n$ |
 | ... | ... | ... | ... | ... |
-| fm | dfm/dx1 | dfm/dx2 | ... | dfm/dxn |
+| $f_m$ | $\partial f_m/\partial x_1$ | $\partial f_m/\partial x_2$ | ... | $\partial f_m/\partial x_n$ |
 
-Bạn sẽ không làm việc với mạng Neural Handlet tính toán Jacobian。PyTorch sẽ xử lý nó。 nhưng biết nó tồn tại, giúp bạn hiểu được hình dạng trong Backpropagation: Nếu một lớp đặt R^n 映射 đến R^m, Jacobian của nó là m x n。Gradient sẽ qua chuyển đổi của Matrix này sang dòng chảy sau。
+Bạn sẽ không làm việc với mạng Neural Hand-Moving Jacobian. Python sẽ xử lý nó. Nhưng biết nó tồn tại, sẽ giúp bạn hiểu hình dạng trong Backpropagation.$\mathbb{R}^n$映射到 $\mathbb{R}^m$, nó là Jacobian là $m \times n$❖ Gradient 会通过这个矩阵的转移向后流动――
 
 ### Tại sao điều này rất quan trọng đối với mạng thần kinh?
 
@@ -446,7 +446,7 @@ for step in range(20):
     print(f"step {step:2d}  x={x:8.4f}  f(x)={x**2:10.6f}")
 ```
 
-Từ x=5  bắt đầu, mỗi bước sẽ gần x=0 ((mức tối thiểu) ⋅
+Từ $x=5$ bắt đầu, mỗi bước sẽ gần hơn $x=0$(đối thiểu giá trị)
 
 ### 步骤 4: thực hiện Gradient Descent trên hàm 2D
 
@@ -532,7 +532,7 @@ for h in [0.1, 0.5, 1.0, 2.0]:
     print(f"h={h:.1f}  sin(h)={true_val:.4f}  order1={t1:.4f}  order2={t2:.4f}")
 ```
 
-Ở x0=0 附近,sin(x) ~ x(一阶泰勒) ―― Đối với h rất nhỏ, phương pháp này giống như rất tốt; nhưng đối với h lớn hơn, nó sẽ thất bại── đó là lý do tại sao sự giảm cấp trong tỷ lệ học tập nhỏ 下效率 tốt nhất: mỗi bước đều giả định phương pháp này giống như chính xác──
+Trong $x_0=0$附近,$\sin(x) \approx x$(一阶泰勒) ✿对于很小的$h$, gần như rất tốt; nhưng đối với lớn hơn $h$, nó sẽ không hiệu quả. Đó là lý do tại sao Gradient Descent ở tỷ lệ học tập nhỏ:
 
 ### Bước 8: Tại sao điều này rất quan trọng đối với mạng thần kinh
 
@@ -601,9 +601,17 @@ Bạn刚刚从零构建 Gradient Descent──PyTorch 会 tự động hoàn th�
 
 ## 练习
 
-1. Sử dụng调用两次 `numerical_derivative`Cách thực hiện`numerical_second_derivative(f, x)` Thử nghiệm x^3 trong x=2 处的二阶导数是12──
-2. 使用 Gradient Descent 找到 f(x, y) = (x - 3) ^ 2 + (y + 1) ^ 2 的最小值──从 (0, 0) 开始──答案应收到 (3, -1)──
-3. Trong vòng tròn giảm cấp độ, bạn có thể thêm động lực:维护一个会累积过去
+1. Sử dụng调用两次 `numerical_derivative`Cách thực hiện`numerical_second_derivative(f, x)`❖ 验证$x^3$Trong $x=2$Số thứ hai của 处 là 12 ⋅
+2. 使用 Gradient Descent 找到 $f(x, y) = (x - 3)^2 + (y + 1)^2$≈ ≈ ≈ ≈ ≈ ≈ ≈$(0, 0)$开始──答案应收到 $(3, -1)$
+3. Trong vòng tròn giảm cấp độ gia nhập động lực:维护一个会累积过去$f(x) = x^4 - 3x^2$Tăng tốc độ nhận động lực
+
+### 提示
+
+**练习 1。**定义一个返回 `numerical_derivative(f, x)`của phụ trợ hàm, tái đưa nó truyền cho `numerical_derivative` Nếu kết quả tiếng ồn lớn hơn, hai lần điều chỉnh đều sử dụng bước dài lớn hơn, ví dụ:`h=1e-4`; trong $x=2$Kết quả của việc làm nên gần 12
+
+**练习 2。**写出梯度 $(2(x - 3), 2(y + 1))$, hoặc sử dụng `numerical_gradient`, từ$(0, 0)$ bắt đầu调用 `gradient_descent_nd`❖ Mỗi 10 bước in một lần 坐标; nó phải hướng tới $(3, -1)$ di chuyển, mất mát phải giảm xuống gần 0:
+
+**练习 3。**保存速度 `v`,按 `v = momentum * v - lr * grad`更新,再将 `v`Chuyện này`x`上── 2 phương pháp thống kê cần nhiều bước để làm cho độ gần với 0; giá trị tối thiểu nằm ở $x = \pm\sqrt{1.5} \approx \pm 1.225$
 
 ## 关键术语
 
@@ -614,12 +622,12 @@ Bạn刚刚从零构建 Gradient Descent──PyTorch 会 tự động hoàn th�
 | Gradient | “最陡上升方向” | 由所有偏导数组成的 Vector。指向让函数增长最快的方向。 |
 | Gradient Descent | “往下坡走” | 从参数中减去 Gradient（乘以 learning rate），从而降低 Loss。Neural Network 训练的核心。 |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 有多大的标量。太大：发散。太小：收敛缓慢。 |
-| Chain rule | “把导数相乘” | 对复合函数求导的规则：df/dx = df/dg * dg/dx。Backpropagation 的数学基础。 |
+| Chain rule | “把导数相乘” | 对复合函数求导的规则：$\frac{df}{dx} = \frac{df}{dg} \cdot \frac{dg}{dx}$。Backpropagation 的数学基础。 |
 | Jacobian | “导数 Matrix” | 当一个函数把 Vector 映射到 Vector 时，Jacobian 是所有输出相对于输入的偏导数组成的 Matrix。 |
 | Numerical derivative | “有限差分” | 通过在两个相邻点上评估函数并计算它们之间的斜率来近似导数。 |
 | Backpropagation | “Reverse-mode autodiff” | 使用链式法则，从输出到输入逐层计算 Gradient。Neural Network 就是这样学习的。 |
 | Hessian | “二阶导数 Matrix” | 所有二阶偏导数组成的 Matrix。描述函数的曲率。在临界点处 Hessian 正定意味着 local minimum。 |
-| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：f(x+h) ~ f(x) + f'(x)h + (1/2)f''(x)h^2 + ... 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
+| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：$f(x+h) \approx f(x) + f'(x)h + \frac{1}{2}f''(x)h^2 + \cdots$ 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
 | Integral | “曲线下面积” | 某个量在一个范围内的累积。在 ML 中，积分定义概率、期望值和 KL divergence。 |
 
 ## 延伸阅读

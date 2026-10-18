@@ -30,24 +30,24 @@ Nếu bạn không hiểu được điều này trong khi xây dựng hệ thố
 
 Bạn đã biết trong bài học 06 khả năng có điều kiện là:
 
-```
-P(A|B) = P(A and B) / P(B)
+```math
+P(A \mid B) = \frac{P(A \text{ and } B)}{P(B)}
 ```
 
 Đối với:
 
+```math
+P(B \mid A) = \frac{P(A \text{ and } B)}{P(A)}
 ```
-P(B|A) = P(A and B) / P(A)
-```
 
-Hai biểu hiện chia sẻ cùng một phân tử: P(A và B) ――令它们相等并重新整理:
+Hai biểu hiện chia sẻ cùng một phân tử:$P(A \text{ and } B)$❖ để chúng相等并重新整理:
 
-```
-P(A and B) = P(A|B) * P(B) = P(B|A) * P(A)
-
-Therefore:
-
-P(A|B) = P(B|A) * P(A) / P(B)
+```math
+\begin{aligned}
+P(A \text{ and } B) &= P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A) \\[4pt]
+&\text{因此：} \\[4pt]
+P(A \mid B) &= \frac{P(B \mid A) \cdot P(A)}{P(B)}
+\end{aligned}
 ```
 
 Đó là định lý Bayes.
@@ -56,35 +56,35 @@ P(A|B) = P(B|A) * P(A) / P(B)
 
 | Part | Name | What it means |
 |------|------|---------------|
-| P(A\|B) | Posterior | 看到 evidence B 之后，你对 A 的更新后 belief |
-| P(B\|A) | Likelihood | 如果 A 为真，evidence B 出现的概率有多大 |
-| P(A) | Prior | 在看到任何 evidence 之前，你对 A 的 belief |
-| P(B) | Evidence | 在所有可能性下看到 B 的总概率 |
+| $P(A \mid B)$ | Posterior | 看到 evidence $B$ 之后，你对 $A$ 的更新后 belief |
+| $P(B \mid A)$ | Likelihood | 如果 $A$ 为真，evidence $B$ 出现的概率有多大 |
+| $P(A)$ | Prior | 在看到任何 evidence 之前，你对 $A$ 的 belief |
+| $P(B)$ | Evidence | 在所有可能性下看到 $B$ 的总概率 |
 
-Bằng chứng 项 P(B) 起归一化因子的作用──你可以用总概率法 展开它:
+Bằng chứng 项 $P(B)$起到归化因子的作用―― bạn có thể sử dụng luật xác suất tổng thể để giải thích nó:
 
-```
-P(B) = P(B|A) * P(A) + P(B|not A) * P(not A)
+```math
+P(B) = P(B \mid A) \cdot P(A) + P(B \mid \text{not } A) \cdot P(\text{not } A)
 ```
 
 ### 医学检测 ví dụ
 
 Một căn bệnh ảnh hưởng đến 1 người trong 10.000 người. Tỷ lệ kiểm tra chính xác là 99%.
 
-```
-P(sick)          = 0.0001     (prior: disease is rare)
-P(positive|sick) = 0.99       (likelihood: test catches it)
-P(positive|healthy) = 0.01    (false positive rate)
-
-P(positive) = P(positive|sick) * P(sick) + P(positive|healthy) * P(healthy)
-            = 0.99 * 0.0001 + 0.01 * 0.9999
-            = 0.000099 + 0.009999
-            = 0.010098
-
-P(sick|positive) = P(positive|sick) * P(sick) / P(positive)
-                 = 0.99 * 0.0001 / 0.010098
-                 = 0.0098
-                 = 0.98%
+```math
+\begin{aligned}
+P(\text{sick}) &= 0.0001 \quad \text{（先验：疾病罕见）} \\
+P(\text{positive} \mid \text{sick}) &= 0.99 \quad \text{（似然：检测能检出疾病）} \\
+P(\text{positive} \mid \text{healthy}) &= 0.01 \quad \text{（假阳性率）} \\[6pt]
+P(\text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) + P(\text{positive} \mid \text{healthy}) \cdot P(\text{healthy}) \\
+&= 0.99 \cdot 0.0001 + 0.01 \cdot 0.9999 \\
+&= 0.000099 + 0.009999 \\
+&= 0.010098 \\[6pt]
+P(\text{sick} \mid \text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) / P(\text{positive}) \\
+&= 0.99 \cdot 0.0001 / 0.010098 \\
+&= 0.0098 \\
+&= 0.98\%
+\end{aligned}
 ```
 
 Không đến 1%──Trang số chủ yếu──Khi một tình huống rất hiếm, ngay cả khi kiểm tra chính xác cũng có thể tạo ra kết quả sai.
@@ -93,18 +93,18 @@ Không đến 1%──Trang số chủ yếu──Khi một tình huống rất 
 
 Bạn nhận được một email có chứa một từ "những cuộc đấu" . Nó là spam ư?
 
-```
-P(spam)                = 0.3      (30% of email is spam)
-P("lottery"|spam)      = 0.05     (5% of spam emails contain "lottery")
-P("lottery"|not spam)  = 0.001    (0.1% of legitimate emails contain "lottery")
-
-P("lottery") = 0.05 * 0.3 + 0.001 * 0.7
-             = 0.015 + 0.0007
-             = 0.0157
-
-P(spam|"lottery") = 0.05 * 0.3 / 0.0157
-                  = 0.955
-                  = 95.5%
+```math
+\begin{aligned}
+P(\text{spam}) &= 0.3 \quad \text{（30\% 的邮件是垃圾邮件）} \\
+P(\text{"lottery"} \mid \text{spam}) &= 0.05 \quad \text{（5\% 的垃圾邮件包含 "lottery"）} \\
+P(\text{"lottery"} \mid \text{not spam}) &= 0.001 \quad \text{（0.1\% 的正常邮件包含 "lottery"）} \\[6pt]
+P(\text{"lottery"}) &= 0.05 \cdot 0.3 + 0.001 \cdot 0.7 \\
+&= 0.015 + 0.0007 \\
+&= 0.0157 \\[6pt]
+P(\text{spam} \mid \text{"lottery"}) &= 0.05 \cdot 0.3 / 0.0157 \\
+&= 0.955 \\
+&= 95.5\%
+\end{aligned}
 ```
 
 Một từ sẽ đưa tỷ lệ từ 30%  tăng lên 95,5% ⋅ thực tế lọc spam sẽ được áp dụng trên hàng trăm từ ⋅
@@ -113,58 +113,56 @@ Một từ sẽ đưa tỷ lệ từ 30%  tăng lên 95,5% ⋅ thực tế lọc
 
 Bayes ngây thơ 通过假设 tất cả các tính năng trong các điều kiện của một lớp nhất định, mở rộng suy nghĩ này thành nhiều tính năng:
 
-```
-P(class | feature_1, feature_2, ..., feature_n)
-  = P(class) * P(feature_1|class) * P(feature_2|class) * ... * P(feature_n|class)
-    / P(feature_1, feature_2, ..., feature_n)
+```math
+P(\text{class} \mid \text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n) = \frac{P(\text{class}) \cdot P(\text{feature}_1 \mid \text{class}) \cdot P(\text{feature}_2 \mid \text{class}) \cdots P(\text{feature}_n \mid \text{class})}{P(\text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n)}
 ```
 
 Một phần của "tâm" là giả định độc lập. Trong văn bản, sự xuất hiện của từ không phải là độc lập. "New" và "York" là liên quan.
 
 Vì phân tử đối với tất cả các lớp đều giống nhau, bạn có thể nhảy qua nó, chỉ so sánh phân tử:
 
-```
-score(class) = P(class) * product of P(feature_i | class)
+```math
+\text{score}(\text{class}) = P(\text{class}) \cdot \prod_i P(\text{feature}_i \mid \text{class})
 ```
 
 选择 điểm số cao nhất lớp:
 
 ### Đánh giá xác suất tối đa (MLE)
 
-如何从训练数据得到P                                                                                                                                                                                                                                                           
+Làm thế nào để có được dữ liệu từ đào tạo$P(\text{feature} \mid \text{class})$- Số lượng.
 
-```
-P("free"|spam) = (number of spam emails containing "free") / (total spam emails)
+```math
+P(\text{"free"} \mid \text{spam}) = \frac{\text{包含 "free" 的垃圾邮件数}}{\text{垃圾邮件总数}}
 ```
 
 Đây là MLE: chọn để cho các tham số dữ liệu quan sát có thể xuất hiện nhất. Bạn đang tối đa hóa hàm xác suất; đối với số phân tán, nó sẽ được đơn giản hóa thành tần số tương đối.
 
 问题: Nếu một từ trong quá trình tập luyện chưa bao giờ xuất hiện trong spam, MLE sẽ phân phối cho nó tỷ lệ xác suất 0.
 
-```
-P(word|class) = (count(word, class) + 1) / (total_words_in_class + vocabulary_size)
+```math
+P(\text{word} \mid \text{class}) = \frac{\text{count}(\text{word}, \text{class}) + 1}{\text{total\_words\_in\_class} + \text{vocabulary\_size}}
 ```
 
 Đưa cho mỗi con số thêm 1, đảm bảo bất kỳ xác suất nào sẽ không bị đánh giá 0.
 
 ### Tối đa a posteriori (MAP)
 
-MLE 问的是: Which parameters maximize P((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+MLE 问的是: Which parameters maximize $P(\text{data} \mid \text{parameters})$- Không .
 
-MAP 问: những tham số nào tối đa hóa các tham số trong dữ liệu)?
+MAP 问的是: Which parameters maximize $P(\text{parameters} \mid \text{data})$- Không .
 
 Theo định lý Bayes:
 
-```
-P(parameters|data) proportional to P(data|parameters) * P(parameters)
+```math
+P(\text{parameters} \mid \text{data}) \propto P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})
 ```
 
 MAP sẽ được đặt trên các tham số tự nhiên để gia nhập một hình phạt trước đây. Nếu bạn nghĩ các tham số  nên nhỏ hơn, hãy mã hóa nó để trừng phạt giá trị lớn trước đây.
 
 | Estimation | Optimizes | ML equivalent |
 |------------|-----------|---------------|
-| MLE | P(data\|params) | 未 regularize 的训练 |
-| MAP | P(data\|params) * P(params) | L2 / L1 regularization |
+| MLE | $P(\text{data} \mid \text{params})$ | 未 regularize 的训练 |
+| MAP | $P(\text{data} \mid \text{params}) \cdot P(\text{params})$ | L2 / L1 regularization |
 
 ### Bayesian vs frequentist: thực tế差异
 
@@ -189,7 +187,7 @@ Sự liên quan này là:
 
 **Priors 就是 regularization。**trọng lượng trên của Gaussian trước là L2 thường xuyên hóa. Lỗ trước là L1. Mỗi lần thêm thường xuyên hóa. Khi bạn đang đối với các giá trị tham số mong đợi, bạn đang thực hiện một câu lệnh Bayesian.
 
-**Posteriors 就是不确定性。**单个预测概率 không thể nói cho bạn mô hình có nhiều sự tự tin đối với ước tính này.
+**Posteriors 就是不确定性。**单个预测概率 không thể nói cho bạn mô hình có nhiều sự tự tin về ước tính này.$P(\text{spam})$Trong 0,8 đến 0,95 之间.
 
 **Bayes updates 就是 online learning。**Những gì sau ngày hôm nay sẽ trở thành những gì trước ngày mai. Khi mô hình của bạn nhìn thấy dữ liệu mới, nó sẽ tăng cường cải tiến niềm tin của mình, thay vì luyện tập từ không.
 
@@ -343,26 +341,28 @@ Khi trước và sau thuộc cùng một gia đình phân phối, trước này 
 
 | Likelihood | Conjugate Prior | Posterior | Example |
 |-----------|----------------|-----------|---------|
-| Bernoulli | Beta(a, b) | Beta(a + successes, b + failures) | Coin flip bias estimation |
-| Normal (known variance) | Normal(mu_0, sigma_0) | Normal(weighted mean, smaller variance) | Sensor calibration |
-| Poisson | Gamma(a, b) | Gamma(a + sum of counts, b + n) | Modeling arrival rates |
-| Multinomial | Dirichlet(alpha) | Dirichlet(alpha + counts) | Topic modeling, language models |
+| Bernoulli | $\text{Beta}(a, b)$ | $\text{Beta}(a + \text{successes}, b + \text{failures})$ | Coin flip bias estimation |
+| Normal (known variance) | $\text{Normal}(\mu_0, \sigma_0)$ | Normal(weighted mean, smaller variance) | Sensor calibration |
+| Poisson | $\text{Gamma}(a, b)$ | $\text{Gamma}(a + \text{sum of counts}, b + n)$ | Modeling arrival rates |
+| Multinomial | $\text{Dirichlet}(\alpha)$ | $\text{Dirichlet}(\alpha + \text{counts})$ | Topic modeling, language models |
 
 Đây là lý do tại sao quan trọng: khi không có tiền lệ kết hợp, bạn cần mẫu Monte Carlo hoặc suy luận biến đổi từ gần như sau.
 
-Phân bố beta là sự kết hợp phổ biến nhất trong thực tế.
+Phân bố beta là sự kết hợp trước phổ biến nhất trong thực tế.$\text{Beta}(a, b)$Cụ thể hóa niềm tin của bạn đối với một tham số xác suất.$a/(a+b)$$a+b$越大, phân phối 越集中(越自信)
 
 Đặc biệt của beta trước:
-- Beta(1, 1) = đồng nhất.
-- Beta(10, 10) = Ở gần 0,5  đạt đỉnh.
-- Beta(1, 10) = 向 0 偏斜──你相信参数 很小──
+- $\text{Beta}(1, 1)$= đồng nhất. Bạn không có ý kiến về các tham số.
+- $\text{Beta}(10, 10)$= Ở gần 0,5  đạt đỉnh  Bạn tin tưởng mạnh mẽ tham số  gần 0,5 
+- $\text{Beta}(1, 10)$= 向 0 偏斜──你相信参数 很小──
 
 更新规则极其简单:
 
-```
-Prior:     Beta(a, b)
-Data:      s successes, f failures
-Posterior: Beta(a + s, b + f)
+```math
+\begin{aligned}
+\text{先验：} \quad & \text{Beta}(a, b) \\
+\text{数据：} \quad & s \text{ 次成功}, f \text{ 次失败} \\
+\text{后验：} \quad & \text{Beta}(a + s, b + f)
+\end{aligned}
 ```
 
 Không có mô hình, chỉ có thêm.
@@ -374,19 +374,19 @@ Kết luận Bayesian 天然是序列的──今天的后后将成为明天的�
 Ví dụ cụ thể: ước tính một đồng tiền có công bằng không.
 
 **Day 1：还没有数据。**
-Từ Beta ((1, 1) 开始一个制服前你没有意见──
+Từ $\text{Beta}(1, 1)$开始一个制服前――你没有意见――
 - Tỷ lệ trung bình trước: 0,5
 - Prior trong [0, 1] 上是平坦的
 
 **Day 2：观察到 7 次正面，3 次反面。**
-Sau = Beta(1 + 7, 1 + 3) = Beta(8, 4)
-- Tỷ lệ trung bình sau:8/12 = 0,667
+$\text{Posterior} = \text{Beta}(1 + 7, 1 + 3) = \text{Beta}(8, 4)$
+- Tỷ lệ trung bình sau:$8/12 = 0.667$
 - Bằng chứng cho thấy đồng tiền có xu hướng hướng thẳng
 
 **Day 3：又观察到 5 次正面，5 次反面。**
 Sử dụng ngày hôm qua sau như ngày hôm nay trước.
-Sau = Beta(8 + 5, 4 + 5) = Beta(13, 9)
-- Tỷ lệ trung bình sau: 13/22 = 0,591
+$\text{Posterior} = \text{Beta}(8 + 5, 4 + 5) = \text{Beta}(13, 9)$
+- Tỷ lệ trung bình sau:$13/22 = 0.591$
 - Số liệu cân bằng mới đã đưa giá trị ước tính trở lại gần 0,5 
 
 ```mermaid
@@ -396,7 +396,7 @@ graph LR
     C -->|"5H, 5T"| D["Posterior 2<br/>Beta(13,9)<br/>mean = 0.59"]
 ```
 
-观测顺序不重要――Beta(1,1) 一次性用全部12次正面和8次反面更新,也会得到Beta(13, 9) 结果相同── 序列更新和批次更新 在数学上等价──但序列更新 允许你在每一步做决策,而不必存储原始数据──
+观测顺序 không quan trọng.$\text{Beta}(1,1)$Một lần dùng tất cả 12 lần đúng mặt và 8 lần ngược mặt, cũng sẽ được $\text{Beta}(13, 9)$Kết quả giống nhau. Sản ứng theo dõi và bản cập nhật hàng loạt trên toán học. Nhưng bản cập nhật theo dõi cho phép bạn đưa ra quyết định ở mỗi bước, không cần phải lưu trữ dữ liệu nguyên thủy.
 
 Đây là nền tảng của việc học trực tuyến trong hệ thống ML cấp sản xuất.
 
@@ -408,14 +408,14 @@ A/B testing trên thực chất là giả thuyết Bayesian xuất hiện.
 
 Kiểm tra A/B Bayesian:
 
-1. **Prior。**2 biến thể đều từ Beta ((1, 1) 开始── không có ưu tiên trước đây──
+1. **Prior。**Hai biến thể đều có.$\text{Beta}(1, 1)$开始── không có ưu tiên trước──
 2. **Data。**Phân biến A:1000 lần trình bày中 50 lần点击──B:1000 lần trình bày中 65 lần点击──
 3. **Posteriors。**
-   - A:Beta(1 + 50, 1 + 950) = Beta(51, 951)。Tỷ lệ trung bình = 0,051
-   - B:Beta(1 + 65, 1 + 935) = Beta(66, 936)。Tỷ lệ trung bình = 0,066
-4. **Decision。**计算 P(B > A)B của tỷ lệ chuyển đổi thực sự 高于 A 的概率──
+   - A:$\text{Beta}(1 + 50, 1 + 950) = \text{Beta}(51, 951)$❖Tỷ lệ trung bình = 0,051
+   - B:$\text{Beta}(1 + 65, 1 + 935) = \text{Beta}(66, 936)$❖Tỷ lệ trung bình = 0,066
+4. **Decision。**计算 $P(B > A)$Tỷ lệ chuyển đổi thực sự của B cao hơn tỷ lệ A.
 
-解析地计算 P(B > A) 很困难――但蒙特卡罗 让它变得非常简单:
+解析地计算 $P(B > A)$Nhưng Monte Carlo làm cho nó trở nên rất đơn giản:
 
 ```
 1. Draw 100,000 samples from Beta(51, 951)  -> samples_A
@@ -423,7 +423,7 @@ Kiểm tra A/B Bayesian:
 3. P(B > A) = fraction of samples where B > A
 ```
 
-Nếu P(B > A) > 0,95, hãy phát hành biến thể B. Nếu nó nằm giữa 0,05 và 0,95, hãy tiếp tục thu thập dữ liệu. Nếu P(B > A) < 0,05, hãy phát hành biến thể A。
+Nếu $P(B > A) > 0.95$, phát hành biến thể B. Nếu nó nằm giữa 0.05 và 0.95, hãy tiếp tục thu thập dữ liệu.$P(B > A) < 0.05$, đã phát hành phiên bản A:.
 
 相比 A/B thử nghiệm thường xuyên:
 - Bạn sẽ nhận được một xác suất trực tiếp:
@@ -433,33 +433,43 @@ Nếu P(B > A) > 0,95, hãy phát hành biến thể B. Nếu nó nằm giữa 0
 
 | Aspect | Frequentist A/B | Bayesian A/B |
 |--------|----------------|--------------|
-| Output | p-value | P(B > A) |
+| Output | p-value | $P(B > A)$ |
 | Interpretation | “如果 A=B，这些数据有多令人意外？” | “B 比 A 更好的可能性有多大？” |
 | Early stopping | 会抬高 false positives | 任意时点都是安全的（前提是 prior 选择合理且 model specification 正确） |
 | Prior knowledge | 不使用 | 编码为 Beta prior |
-| Decision rule | p < 0.05 | P(B > A) > threshold |
+| Decision rule | $p < 0.05$ | $P(B > A) > \text{threshold}$ |
 
 ## 练习
-1. **Multiple tests。**Một bệnh nhân trong hai lần kiểm tra độc lập đều dương tính với bệnh 99%  Định, tỷ lệ lây lan bệnh là 1 trong 10.000 người.
+1. **Multiple tests。**Một bệnh nhân trong hai lần kiểm tra độc lập đều dương tính.$P(\text{sick})$Đánh giá lần đầu tiên được nhận được sau như là trước khi kiểm tra lần thứ hai.
 
 2. **Smoothing impact。**Sử dụng 0.01、0.1、1.0 和 10.0 của các giá trị làm trơn 运行 spam classifier。Thiều khả năng từ cao nhất 会如何变化?
 
-3. **Add features。**扩展 NaiveBayes lớp, làm cho nó ngoài số từ 之外, cũng sử dụng message length(short/long) như một tính năng。 từ training data中估计 P(shortfallspam) 和 P(shortfallham),并把它合并到预测分中。
+3. **Add features。**扩展 NaiveBayes lớp, làm cho nó ngoài số lượng từ  ngoài, cũng sử dụng message length(short/long) như một tính năng。 từ training数据中估计 $P(\text{short} \mid \text{spam})$和 $P(\text{short} \mid \text{ham})$,并把它合并到预测分中.
 
-4. **MAP by hand。**给定观测数据 ((10 lần ném đồng xu trong có 7 lần đầu), sử dụng Beta(2,2) trước đó 计算 bias của ước tính MAP。把它 với ước tính MLE(7/10) để so sánh。
+4. **MAP by hand。**给定观测数据 ((10 lần ném đồng xu trong đó có 7 lần đầu), sử dụng $\text{Beta}(2,2)$ước tính của MAP trước 计算 bias $7/10$(c) so sánh:
+
+### 提示
+
+**练习 1。**调用 một lần `bayes`得到第一次检测后后验概率,再将其作为先验调一次──`sequential_bayes(prior, likelihood, false_positive_rate, 2)`应给出相同的结果,接近0.5
+
+**练习 2。**Để mỗi người có giá trị tạo ra một .`NaiveBayes(smoothing=s)`, sử dụng cùng một dữ liệu đào tạo,并分印 `top_words`◊smoothing 为 0 时, không xuất hiện trong thư rác tỷ lệ từ là 0, vì vậy nó không có định nghĩa đối với số lượng ◊
+
+**练习 3。**统计垃圾邮件 và thư thông thường có bao nhiêu bài viết ngắn, phân biệt bằng tổng số các loại tin nhắn, và`predict`Trung sẽ cho tỷ lệ đối số này vào số phân số.
+
+**练习 4。**Sử dụng $\text{Beta}(\alpha, \beta)$Trước đây,MAP  ước tính là$\frac{h + \alpha - 1}{n + \alpha + \beta - 2}$代入 $h = 7$$n = 10$; kết quả phải được giữa MLE(0.7) và số lượng trước đây(0.5)
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Prior | “我的初始猜测” | 观测 evidence 之前的 P(hypothesis)。在 ML 中：regularization 项。 |
-| Likelihood | “数据拟合得有多好” | P(evidence\|hypothesis)。在特定 hypothesis 下，观测数据出现的概率有多大。 |
-| Posterior | “我更新后的 belief” | P(hypothesis\|evidence)。Prior 乘以 likelihood，然后归一化。 |
-| Evidence | “归一化常数” | 所有 hypotheses 下的 P(data)。确保 posterior 求和为 1。 |
+| Prior | “我的初始猜测” | 观测 evidence 之前的 $P(\text{hypothesis})$。在 ML 中：regularization 项。 |
+| Likelihood | “数据拟合得有多好” | $P(\text{evidence} \mid \text{hypothesis})$。在特定 hypothesis 下，观测数据出现的概率有多大。 |
+| Posterior | “我更新后的 belief” | $P(\text{hypothesis} \mid \text{evidence})$。Prior 乘以 likelihood，然后归一化。 |
+| Evidence | “归一化常数” | 所有 hypotheses 下的 $P(\text{data})$。确保 posterior 求和为 1。 |
 | Naive Bayes | “那个简单的文本分类器” | 一个假设 features 在给定 class 时相互独立的分类器。尽管该假设不成立，效果仍然很好。 |
 | Laplace smoothing | “Add-one smoothing” | 给每个 feature 增加一个小计数，以防止未见数据产生零概率。 |
-| MLE | “直接用频率” | 选择最大化 P(data\|parameters) 的 parameters。没有 prior。在小数据上可能 overfit。 |
-| MAP | “带 prior 的 MLE” | 选择最大化 P(data\|parameters) * P(parameters) 的 parameters。等价于 regularized MLE。 |
-| Log-probability | “在 log space 中工作” | 使用 log(P) 而不是 P，避免许多小数相乘时发生 floating-point underflow。 |
+| MLE | “直接用频率” | 选择最大化 $P(\text{data} \mid \text{parameters})$ 的 parameters。没有 prior。在小数据上可能 overfit。 |
+| MAP | “带 prior 的 MLE” | 选择最大化 $P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})$ 的 parameters。等价于 regularized MLE。 |
+| Log-probability | “在 log space 中工作” | 使用 $\log(P)$ 而不是 $P$，避免许多小数相乘时发生 floating-point underflow。 |
 | False positive | “错误警报” | 检测结果为阳性，但真实状态为阴性。它会推动 base rate fallacy。 |
 
 ## 延伸阅读

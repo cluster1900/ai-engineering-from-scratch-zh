@@ -31,9 +31,9 @@ Anh cần 4 thứ:
 ## 概念
 ### Hình đồ: nút và cạnh
 
-Một biểu đồ G = (V, E) bởi các đỉnh (đốt) V 和 cạnh E 组成──每条边 连接两个节点──
+Một biểu đồ$G = (V, E)$由 đỉnh (đối) $V$和 cạnh $E$组成──每条边 连接两个节点──
 
-**Directed vs undirected。**Trong biểu đồ không hướng 中,edge (u, v) biểu thị u 连接到 v,并且 v 也连接到 u── trong biểu đồ không hướng 中,edge (u, v) biểu thị u 指向 v,但反向不一定成立──
+**Directed vs undirected。**Trong biểu đồ không hướng 中,edge $(u, v)$ 表示$u$ liên kết đến $v$, và $v$Cũng kết nối với $u$△ trên biểu đồ hướng (digraph) 中,edge $(u, v)$ 表示$u$指向 $v$Nhưng ngược lại không nhất thiết là đúng.
 
 **Weighted vs unweighted。**Trong biểu đồ không cân nặng, cạnh phải hoặc không phải có. Trong biểu đồ cân nặng, mỗi cạnh có một trọng lượng số, ví dụ như khoảng cách, chi phí hoặc sức mạnh.
 
@@ -46,14 +46,13 @@ Một biểu đồ G = (V, E) bởi các đỉnh (đốt) V 和 cạnh E 组成�
 
 ### Matrix gần nhau
 
-Matrix lân cận A là biểu hiện lõi. Đối với một biểu đồ có chứa n 个 nút:
+Matrix lân cận $A$                                                                                                                                                                                                                                                              $n$Chữ đồ của các nút:
 
-```
-A[i][j] = 1    if there is an edge from node i to node j
-A[i][j] = 0    otherwise
+```math
+A[i][j] = \begin{cases} 1 & \text{若存在从节点 } i \text{ 到节点 } j \text{ 的 edge} \\ 0 & \text{否则} \end{cases}
 ```
 
-Đối với các biểu đồ không định hướng, A là đối xứng: A[i][j] = A[j][i]。 Đối với các biểu đồ có trọng lượng, A[i][j] = trọng lượng của cạnh (i, j)。
+Đối với các biểu đồ không định hướng,$A$là đối xứng:$A[i][j] = A[j][i]$❖ Đối với biểu đồ cân nặng,$A[i][j]$= cạnh$(i, j)$Đáng nặng.
 
 **示例：一个 triangle：**
 
@@ -66,20 +65,22 @@ A = [[0, 1, 1],
      [1, 1, 0]]
 ```
 
-Matrix lân cận là mỗi input của GNN.
+Matrix lân cận là mỗi GNN của输入。$A$Các hoạt động trên Matrix đối với biểu đồ trên
 
 ### Bằng cấp
 
 Độ độ của node là kết nối với các cạnh số lượng. Đối với các biểu đồ hướng, bạn có độ độ vào và độ ra.
 
-Dấu số độ D là đường viền:
+Matrix độ $D$Đường chéo:
 
-```
-D[i][i] = degree of node i
-D[i][j] = 0    for i != j
+```math
+\begin{aligned}
+D[i][i] &= \text{节点 } i \text{ 的 degree} \\
+D[i][j] &= 0 \quad \text{其中 } i \ne j
+\end{aligned}
 ```
 
-Đối với hình tam giác:D = diag(2,2,2), vì mỗi nút đều kết nối với hai nút khác.
+ Đối với hình tam giác ví dụ:$D = \mathop{\mathrm{diag}}(2, 2, 2)$, vì mỗi nút đều kết nối với hai nút khác.
 
 Cấp độ 告诉你节点的重要性――Cấp độ cao = nút trung tâm―― phân bố cấp độ của một mạng lưới 揭示了它的结构――Mạng xã hội 遵循权力规律(少量枢纽,许多叶节)――Tình đồ ngẫu nhiên 具有Poisson-分布式级――
 
@@ -129,19 +130,17 @@ DFS có thể được sử dụng:
 
 ### Chữ đồ họa Laplacian
 
-L = D - A。 lý thuyết đồ thị quang phổ 中最重要的矩阵──
+$L = D - A$◊ lý thuyết đồ thị quang phổ 中最重要的矩阵――
 
 Đối với tam giác:
 
-```
-D = [[2, 0, 0],    A = [[0, 1, 1],    L = [[2, -1, -1],
-     [0, 2, 0],         [1, 0, 1],         [-1, 2, -1],
-     [0, 0, 2]]         [1, 1, 0]]         [-1, -1,  2]]
+```math
+D = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix} \qquad A = \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \qquad L = \begin{bmatrix} 2 & -1 & -1 \\ -1 & 2 & -1 \\ -1 & -1 & 2 \end{bmatrix}
 ```
 
 Laplacian có tính chất rất quan trọng:
 
-1. **L 是 positive semi-definite。**Tất cả các giá trị riêng đều >= 0
+1. **$L$ 是 positive semi-definite。**Tất cả các giá trị riêng của thành phố$\ge 0$
 
 2. **zero eigenvalues 的数量等于 connected components 的数量。**Một biểu đồ kết nối 恰恰 có một giá trị riêng không. Một có 3 thành phần không kết nối.
 
@@ -171,12 +170,12 @@ graph TD
 Các giá trị riêng của matrix lân cận và Laplacian có thể được tiết lộ trong trường hợp không làm bất kỳ quá trình nào.
 
 **Spectral clustering**:
-1. 计算 Laplacian L
-2. 找到 L của k 个最小 eigenvectors(跳过第一个; đối với các biểu đồ kết nối, nó là toàn 1)
+1. 计算 Laplacian $L$
+2. 找到 $L$của $k$个最小 eigenvectors(跳过第一个; đối với các biểu đồ kết nối, nó là全 1)
 3. Sử dụng các vector riêng này làm điểm mới của mỗi nút
-4. Trong những điểm này vận hành k-means
+4. Trong những điểm này vận hành $k$- nghĩa là
 
-Tại sao điều này hiệu quả?L của các vector tự động được mã hóa trên biểu đồ trên các hàm 平滑 ........................................................................................................................................................................................................
+Tại sao nó hiệu quả?$L$Các mô hình tự thể được lập trình trên biểu đồ trên. Các mô hình tự thể được lập trình trên biểu đồ tự thể được lập trình trên biểu đồ tự thể.
 
 **Random walk connection。**Lần trôi qua của người Laplacian có thể được phân phối bằng cách ngẫu nhiên.
 
@@ -184,25 +183,25 @@ Tại sao điều này hiệu quả?L của các vector tự động được m�
 
 Đây là hoạt động cốt lõi của Graph Neural Networks. Mỗi nút từ hàng xóm của nó thu thập thông điệp, tập hợp chúng, và sau đó cập nhật trạng thái của nó.
 
-```
-h_v^(k+1) = UPDATE(h_v^(k), AGGREGATE({h_u^(k) : u in neighbors(v)}))
+```math
+h_v^{(k+1)} = \text{UPDATE}\left(h_v^{(k)}, \text{AGGREGATE}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
 Trong hình thức đơn giản nhất, AGGREGATE = trung bình,UPDATE = chuyển đổi tuyến tính + kích hoạt:
 
-```
-h_v^(k+1) = sigma(W * mean({h_u^(k) : u in neighbors(v)}))
-```
-
-Đây thực sự là giả vờ thành một hình thức khác của nhân số ma trận. Nếu H là ma trận của tất cả các tính năng nút, A là ma trận lân cận:
-
-```
-H^(k+1) = sigma(A_norm * H^(k) * W)
+```math
+h_v^{(k+1)} = \sigma\left(W \cdot \text{mean}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
-Trong đó A_norm là một matrix lân cận bình thường (nói chung)
+Đây thực sự là một hình thức nhân số tử liệu khác. Nếu$H$là tất cả các tính năng node của matrix,$A$là matrix sát liền:
 
-Một vòng thông điệp đi qua 让每个节点 看到它的邻居.
+```math
+H^{(k+1)} = \sigma\left(A_{\text{norm}} H^{(k)} W\right)
+```
+
+Trong số đó $A_{\text{norm}}$là một matrix dọc theo bình thường (nói là 1).
+
+Một vòng thông điệp đi qua 让每个节点看到它的邻居.$K$轮让每个节点 获得来自其 $K$-Hồ phố của thông tin:
 
 ```mermaid
 graph LR
@@ -323,7 +322,7 @@ def dfs(graph, start):
     return order
 ```
 
-BFS 使用 deque(double-ending queue) để thực hiện O(1) popleft。DFS 使用 list 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 O(V + E)。
+BFS 使用 deque(quay hai cuối) để thực hiện $O(1)$popleft。DFS Sử dụng danh sách 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 $O(V + E)$
 
 ### 步骤 3: Các thành phần kết nối và giá trị riêng Laplacian
 
@@ -366,7 +365,7 @@ def spectral_clustering(graph, k=2):
     return labels
 ```
 
-Đối với k=2, các phương tiện của filedler sẽ chia ra thành hai cluster. Đối với k>2, bạn sẽ ở trước k 个 eigenvectors.
+ Đối với $k=2$,Fidler vector của biểu tượng sẽ đồ thị chia thành hai cụm.$k>2$, anh sẽ ở phía trước $k$个 eigenvectors( loại trừ trivial all-one eigenvector) 上运行 $k$- Ý tôi là...
 
 ### 步骤 5: Thông điệp
 
@@ -457,13 +456,13 @@ Fiedler vector 承担了主要工作──正值条目位于一个集群,负值�
 | Connected components | Preprocessing, handling disconnected graphs |
 | PageRank | Node importance ranking, attention initialization |
 
-GNNs 值得特别说明──GCN(Kipf & Welling, 2017) trong hoạt động xoắn đồ họa 使用添加了自循环的邻接矩阵,A_hat = A + I:
+GNN 值得特别说明──GCN(Kipf & Welling, 2017) trong hoạt động xoay quanh đồ họa sử dụng thêm các matrix lề của tự vòng,$\hat{A} = A + I$- Có thể là:
 
-```text
-H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
+```math
+H^{(l+1)} = \sigma\left(\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2} H^{(l)} W^{(l)}\right)
 ```
 
-Trong đó A_hat = A + I(adjacency加自环),D_hat là một dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải dải d dải dải d d dải dải dải d d d dải dải d d dải d d d dải dải d d d d dải d d d d dải d d d d dải dải d d d d d dải d d d d d d d d d d dải d d d d d d d d dải d d d d d d d d d d d d d d d d d d d d d d d d d d d d d
+Trong số đó $\hat{A} = A + I$(đối diện cộng với tự vòng),$\hat{D}$ $\hat{A}$Các mô hình tự động của các mô hình tự động của các mô hình tự động của các mô hình tự động của các mô hình tự động của các mô hình tự động.$\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2}$là một trật tự hợp lý. Laplacian xuất hiện ở đây, là vì sự bình thường hóa này với$L_{\text{sym}} = I - D^{-1/2} A D^{-1/2}$相关── hiểu tiếng Laplacian,就意味着 hiểu GCN 为何有效──
 
 ## 练习
 1. **从零实现 PageRank。**Từ điểm số đồng nhất 开始──每一步:score(v) = (1-d) /n + d * sum(score(u) /out_degree(u)), trong đó u là tất cả các nút hướng v──使用 d=0.85──运行直到收(变化 < 1e-6)──在一个小型网页图 上测试──
@@ -476,14 +475,26 @@ Trong đó A_hat = A + I(adjacency加自环),D_hat là một dải dải dải d
 
 5. **分析一个真实世界 graph。**Sử dụng biểu đồ Câu lạc bộ Karate(34 nút, 78 cạnh)。 tính toán phân bố độ、Laplacian eigenvalues 和 quang phổ clustering。将 quang phổ clustering 结果与已知地面真理分比比──
 
+### 提示
+
+**练习 1。**Sử dụng công thức trong bài tập. Các nút không có cạnh ra phải phân chia số điểm trung bình cho tất cả các nút, nếu không thì tổng số điểm sẽ nhỏ hơn 1.`pagerank(graph)`So sánh:
+
+**练习 2。**Sử dụng `add_edge` tạo ra hai nhóm, dùng một cạnh  kết nối chúng, rồi调用 `spectral_clustering(graph, k=2)` kiểm tra mỗi nhấp chuột có nhận được nhãn tương tự không.`laplacian()`Giá trị tự của 2; khi hai nhóm kết nối chặt chẽ hơn, giá trị này sẽ tăng lên.
+
+**练习 3。**Sử dụng `heapq`维护优先队列,总是扩展已知距离最小节点――将每条边的重量都设为1,检查 Dijkstra 得到的每距离是否等于`bfs(graph, start)`Trung 节点所在的BFS 层数──
+
+**练习 4。**将 danh tính matrix 用作 `features`, để mỗi hàng đánh dấu một nút, và áp dụng hai lần `message_passing`       $v$Các mục không có gì trong các mục hiện hành cho thấy thông tin về các node đã đến$v$将这个集合与宽度第一搜索中距离不超过2的节点集合比较
+
+**练习 5。** `networkx.karate_club_graph()`提供边缘清单,以及节点属性 `club`Trung tâm thực tại căn bản.`Graph`Trung,并 kiểm tra xem nó có 34 节点 và 78 条边.`spectral_clustering` nhận được nhãn với `club`                                                                                                                                                                                                                                                              
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Graph | “Nodes and edges” | 一种数学结构 G=(V,E)，用于编码 pairwise relationships |
-| Adjacency matrix | “The connection table” | 一个 n x n matrix，其中如果 nodes i 和 j 相连，则 A[i][j] = 1 |
+| Graph | “Nodes and edges” | 一种数学结构 $G=(V,E)$，用于编码 pairwise relationships |
+| Adjacency matrix | “The connection table” | 一个 $n \times n$ matrix，其中如果 nodes $i$ 和 $j$ 相连，则 $A[i][j] = 1$ |
 | Degree | “一个 node 有多 connected” | 接触某个 node 的 edges 数量 |
-| Laplacian | “D minus A” | L = D - A，其 eigenvalues 会揭示 graph structure 的 matrix |
-| Fiedler value | “The algebraic connectivity” | L 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
+| Laplacian | “D minus A” | $L = D - A$，其 eigenvalues 会揭示 graph structure 的 matrix |
+| Fiedler value | “The algebraic connectivity” | $L$ 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
 | BFS | “Level-by-level search” | 在深入之前先访问所有 neighbors 的 traversal，可找到 shortest paths |
 | DFS | “Go deep first” | 在回溯之前沿一条 path 走到末端的 traversal |
 | Message passing | “Nodes talk to neighbors” | 每个 node 从其 neighbors 聚合信息，这是 GNNs 的核心 |

@@ -38,9 +38,9 @@ Dimension    Avg distance ratio (max/min between random points)
 1000         ~1.02
 ```
 
-**体积集中在角落。**d 维 đơn vị siêu khối có 2 个角. Trong 100 维, hầu hết các khối lượng đều ở góc, xa trung tâm.
+**体积集中在角落。** $d$维 đơn vị siêu khối có $2^d$Trong 100 chiều, hầu hết các khối lượng đều ở góc, xa trung tâm. Điểm dữ liệu sẽ lan rộng đến các cạnh, trong khi các mô hình của bạn trong khu vực nội bộ sẽ thiếu dữ liệu.
 
-**你需要指数级更多的数据。**Để giữ cùng mật độ mẫu trong một không gian, từ 2D đến 20D có nghĩa là bạn cần 10^18 lần dữ liệu. Bạn sẽ không bao giờ có đủ dữ liệu.
+**你需要指数级更多的数据。**Để giữ cùng một mật độ mẫu trong một không gian, từ 2D đến 20D có nghĩa là bạn cần$10^{18}$倍的数据―― bạn sẽ không bao giờ có đủ dữ liệu―― giảm quy mô sẽ làm cho mật độ dữ liệu trở lại phạm vi xử lý――
 
 ### PCA: tìm các hướng dẫn quan trọng
 
@@ -88,7 +88,7 @@ Khi sự biến thể giải thích tích lũy đạt 0,95 , bạn đã biết c
 
 1. **Threshold.**Giữ đủ nhiều thành phần, để giải thích sự khác biệt 90-95%
 2. **Elbow method.**绘制 từng thành phần có sự khác biệt giải thích  tìm kiếm điểm giảm tốc rõ ràng 
-3. **Downstream performance.**Để sử dụng PCA để xử lý trước, hãy xem xét độ chính xác của mô hình và đo lường.
+3. **Downstream performance.**Để sử dụng PCA để xử lý trước.$k$,并测量模型的精度──最佳$k$进入平台期的位置──
 
 ### T-SNE: bảo vệ các khu phố
 
@@ -101,7 +101,7 @@ T-SNE's Key Nature:
 - Stochastic. khác nhau.
 - Sự bối rối 参数控制考虑多少邻居 (Tình hình: 5-50)
 - 输出中 cluster  khoảng cách giữa các cluster không có ý nghĩa. Chỉ có cluster có ý nghĩa.
-- Trong các tập dữ liệu lớn 上很慢──默认是 O(n^2)──
+- Trong các tập dữ liệu lớn 上很慢──默认是$O(n^2)$
 
 ### UMAP: cấu trúc toàn cầu nhanh hơn, tốt hơn
 
@@ -135,27 +135,27 @@ UMAP trong高维空间中 xây dựng một biểu đồ cân nặng (tức là 
 Kernel PCA trong không gian tính năng cao được kích thích bởi chức năng kernel  áp dụng PCA, không rõ ràng tính toán các điểm ngồi trong không gian này. Đây là thủ thuật của kernel, đó là cùng một ý tưởng đằng sau SVMs.
 
 算法:
-1. 计算 hạt nhân matrix K, trong đó K_ij = k(x_i, x_j)
+1. 计算 hạt nhân matrix $K$, trong số đó $K_{ij} = k(x_i, x_j)$
 2. Trong không gian tính năng Trung tâm lõi matrix
 3. Đối với các mô-trix hạt nhân tập trung làm riêng
-4. 顶部 eigenvectors(按1/sqrt(eigenvalue) 缩放) là các dự đoán
+4. 顶部 eigenvectors$1/\sqrt{\text{eigenvalue}}$缩放) là dự đoán
 
 常见 hàm hạt nhân:
 
 | Kernel | Formula | Good for |
 |--------|---------|----------|
-| RBF (Gaussian) | exp(-gamma * \|\|x - y\|\|^2) | 大多数 nonlinear data、smooth manifolds |
-| Polynomial | (x . y + c)^d | Polynomial relationships |
-| Sigmoid | tanh(alpha * x . y + c) | Neural network-like mappings |
+| RBF (Gaussian) | $\exp(-\gamma \lVert x - y \rVert^2)$ | 大多数 nonlinear data、smooth manifolds |
+| Polynomial | $(x \cdot y + c)^d$ | Polynomial relationships |
+| Sigmoid | $\tanh(\alpha x \cdot y + c)$ | Neural network-like mappings |
 
 何時使用内核 PCA thay vì PCA tiêu chuẩn:
 
 | Criterion | Standard PCA | Kernel PCA |
 |-----------|-------------|------------|
 | Data structure | Linear subspace | Nonlinear manifold |
-| Speed | O(min(n^2 d, d^2 n)) | O(n^2 d + n^3) |
+| Speed | $O(\min(n^2 d, d^2 n))$ | $O(n^2 d + n^3)$ |
 | Interpretability | Components are linear combinations of features | Components lack direct feature interpretation |
-| Scalability | Works on millions of samples | Kernel matrix is n x n, memory-limited |
+| Scalability | Works on millions of samples | Kernel matrix is $n \times n$, memory-limited |
 | Reconstruction | Direct inverse transform | Requires pre-image approximation |
 
 Ví dụ điển hình: 2D trong vòng tròn tập trung. 2 vòng tròn bên trong vòng tròn khác.
@@ -165,22 +165,24 @@ Ví dụ điển hình: 2D trong vòng tròn tập trung. 2 vòng tròn bên tro
 Sự giảm chiều kích của bạn có gì tốt? Bạn đã nén 784 dimension thành 50 dimension. Bạn đã mất gì?
 
 测量 lỗi tái tạo:
-1. 将数据投影到 k 维:X_reduced = X @ W_k
-2. 重建: X_hat = X_reduced @ W_k^T
-3. 计算 MSE: trung bình((X - X_hat) ^2)
+1. 将数据投影到$k$维:$X_{\text{reduced}} = X W_k$
+2. Đặt:$\hat{X} = X_{\text{reduced}} W_k^T$
+3. 计算 MSE:$\text{mean}((X - \hat{X})^2)$
 
 Đối với PCA, lỗi tái thiết với sự khác biệt giải thích có mối quan hệ rõ ràng:
 
-```
-Reconstruction error = sum of eigenvalues NOT included
-Total variance = sum of ALL eigenvalues
-Fraction lost = (sum of dropped eigenvalues) / (sum of all eigenvalues)
+```math
+\begin{aligned}
+\text{重建误差} &= \text{未保留的特征值之和} \\
+\text{总方差} &= \text{全部特征值之和} \\
+\text{损失比例} &= \frac{\text{丢弃的特征值之和}}{\text{全部特征值之和}}
+\end{aligned}
 ```
 
 Tỷ lệ biến số giải thích của mỗi thành phần là:
 
-```
-explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
+```math
+\text{explained\_ratio}_k = \frac{\text{eigenvalue}_k}{\sum \text{所有特征值}}
 ```
 
 Để kết hợp các biến thể được giải thích tích lũy đối với các thành phần số lượng, sẽ có được đường cong "công tay" ⋅ phù hợp các thành phần số lượng nằm ở:
@@ -188,7 +190,7 @@ explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
 - Sự biến đổi tích lũy  vượt qua ngưỡng của bạn vị trí của bạn thường là 0,90 hoặc 0,95)
 - Hoạt động nhiệm vụ dòng chảy 进入平台期的位置
 
-Trận lỗi tái thiết không chỉ được sử dụng để chọn k. Bạn có thể sử dụng nó để phát hiện bất thường: lỗi tái thiết cao của mẫu là ngoại lệ, chúng không phù hợp với không gian phụ được học. Đây là cơ sở phát hiện bất thường trong các hệ thống sản xuất dựa trên PCA.
+Trận lỗi tái tạo không chỉ dùng để chọn$k$ Bạn có thể sử dụng nó để phát hiện bất thường: lỗi tái thiết cao của mẫu là ngoại lệ, chúng không phù hợp với không gian phụ của học.
 
 
 ```figure
@@ -354,6 +356,14 @@ Hiệu suất sẽ ở xa hơn 784 维时进入平台期.
 
 3.  lấy một bộ dữ liệu có 50 tính năng, nhưng chỉ có 5 tính năng thông tin `sklearn.datasets.make_classification`生成) ・ ứng dụng PCA,并检查 giải thích đường cong biến số liệu liệu thực sự là 5 chiều.
 
+### 提示
+
+**练习 1。**阅读 `PCA`类中 `inverse_transform`,并 cho mỗi số thành phần chính riêng biệt phù hợp với một mô hình.`reconstruction_error`; khi số lượng thành phần chính tăng lên, sai sót phải giảm đi.
+
+**练习 2。**Trong cùng một tập dữ liệu phù hợp`sklearn.manifold.TSNE`Ba lần, chỉ thay đổi thôi.`perplexity`, giữ nguyên như nhau `random_state`: Sự bối rối thấp hơn chỉ xem xét ít người hàng xóm, do đó hình thành một nhóm nhỏ hơn và chặt chẽ hơn; sự bối rối cao hơn xem xét nhiều người hàng xóm, do đó hình thành một nhóm lớn hơn, dễ dàng hơn.
+
+**练习 3。**调用 `make_classification(n_features=50, n_informative=5, n_redundant=45)`,拟合 `PCA`,并印累累计解释方差──冗余特征是有效特征的线性组合, do đó đường cong ở 5 thành phần chính là gần 1.0──然后尝试`n_redundant=0`: 45 đặc điểm còn lại là tiếng ồn độc lập, đường cong sẽ không xu hướng bình thường.
+
 ## Các điều khoản chính
 
 | Term | What people say | What it actually means |
@@ -361,8 +371,8 @@ Hiệu suất sẽ ở xa hơn 784 维时进入平台期.
 | Curse of dimensionality | "Too many features" | 随着维度增长，距离、体积和数据密度都会表现得反直觉。Models 需要指数级更多的数据来补偿。 |
 | PCA | "Reduce dimensions" | 旋转你的坐标系，使各轴与 maximum variance 的方向对齐，然后丢弃 low-variance axes。 |
 | Principal component | "An important direction" | Covariance matrix 的一个 eigenvector。Feature space 中数据变化最大的方向。 |
-| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 k 个 ratios 求和，就能看到 k 个 components 保留了多少信息。 |
-| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry (i,j) 衡量 feature i 和 feature j 如何共同变化。Diagonal entries 是各自的 variances。 |
+| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 $k$ 个 ratios 求和，就能看到 $k$ 个 components 保留了多少信息。 |
+| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry $(i,j)$ 衡量 feature $i$ 和 feature $j$ 如何共同变化。Diagonal entries 是各自的 variances。 |
 | t-SNE | "That cluster plot" | 一种 nonlinear 方法，通过保留 pairwise neighborhood probabilities 将高维数据映射到 2D。适合可视化，不适合 preprocessing。 |
 | UMAP | "Faster t-SNE" | 一种基于 topological data analysis 的 nonlinear 方法。既保留 local structure，也保留部分 global structure。比 t-SNE 更容易扩展。 |
 | Perplexity | "A t-SNE knob" | 控制每个点考虑的有效邻居数量。低 perplexity 聚焦非常 local 的结构。高 perplexity 捕获更宽泛的模式。 |
