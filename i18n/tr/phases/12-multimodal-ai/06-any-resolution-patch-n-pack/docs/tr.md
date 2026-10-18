@@ -60,7 +60,7 @@ Qwen2-VL, Multimodal Rotary Position Embedding'i başlattı. NaViT'in kısayol k
 
 M-RoPE 原生 提供动态分辨率,无需重新训练――Inference 时输入任意 HxW 图像,patch embedder 生成 H/14 x W/14 个代币,每个代币 获得自己的 (t=0, r=row, c=col) 位置,RoPE 用正确频率旋转注意,完成──Qwen2.5-VL 和 Qwen3-VL 延续了这一点──InternVL3 的 V2PE 是相同的思路,只是按方式使用可编码──
 
-Not Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not: Not
+Herhangi bir resminden farklı olarak, M-RoPE, orijinal çözünürlük altında.$O(H \times W / P^2)$Token no tile 带来的乘法开销── NaViT'den farklı olarak, hala ileriye doğru ilerlemeyi bekliyor.
 
 ### NaFlex (SigLIP 2)
 

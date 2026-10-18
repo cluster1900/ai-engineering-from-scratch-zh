@@ -33,7 +33,7 @@ Her ses kodlayıcı aynı özellikten başlıyor: log-mail spektrogramı.
 2. 25 ms penceresi kullanın 10 ms atlayın kısa Fourier dönüşümü yapın.
 3. 取 FFT 结果的大小──
 4. 应用 Mel filter banks (genellikle 80 个在 0-8000 Hz 上按 log 间隔分布的过器), 映射到感知频率──
-5. Uzal log kompresı(log(1 + x)) dinamik aralığı işleme
+5. Kullanıcıya bir kompresse$\log(1 + x)$) dinamik aralığı işleme için:
 
 结果:形状为 (T, 80) 2D dizi, T ise zaman çerçeveleri 数量──对 100 Hz çerçeve hızının 30 saniye klip:形状为 (3000, 80)──
 

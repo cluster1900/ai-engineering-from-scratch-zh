@@ -66,11 +66,11 @@ Renkleme 能力来自 masked-prediction 训练,几乎是免费的──mask VQ-t
 
 Her adım maskeyi açın 多少 Tokens 的时间表 会塑造质量──Show-o 推 cosine:
 
-```
-mask_ratio(t) = cos(pi * t / (2 * T))   # t = 0..T
+```math
+\text{mask\_ratio}(t) = \cos\left(\frac{\pi t}{2T}\right) \qquad t = 0, \ldots, T
 ```
 
-第 0 步, tüm Tokens maskeli yerleştirilmiştir(1.0 oranı) ・第 T 步, hiç Tokens maskeli yerleştirilmiştir。Cosine, en fazla bilgi miktarını öngördüğü orta bölge oranlarında ağırlık yoğunlaştıracak。Hızlı grafikler de kullanılabilir, ancak daha hızlı platoya girer。
+第 0 步, tüm Tokenler maskeli oldular(1.0 oranı)$T$步, no Tokens 被掩盖了──Cosine权重集中在中间区间的比例中,预测最有信息量──线性表也可用,但更快进入平原──
 
 ### Gösterme
 
@@ -112,7 +112,7 @@ masked-diffusion-unmask
 
 3. Cosine şablonu vs çizgi şablonu: takip T=8 时 her adım açığa çıkmış Tokens'ın sayısı── hangi daha dengeli?
 
-4. Bir张 512x512'in Gösterme görüntüsi 1024 Token. K=16384 时,模型输出 1024 * log2(16384) = 14,336 bit (約1.75 KiB) DATA──Stable Diffusion 输出 512*512*24 bit = 6,291,456 bit (約768 KiB) 料像素──圧縮比是多少?
+4. Bir 张 512x512 ın gösterim görüntüsü 1024 Token ⋅ on Vocab $K=16384$时,模型输出 $1024 \cdot \log_2(16384) = 14{,}336$Bitler(yaklaşık 1.75 KiB) DATA¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
 
 5. LlamaGen'in sınıf koşullu autoregressive görüntü modeli ile Show-o'nun maskeli yaklaşımından ne farkı var?
 

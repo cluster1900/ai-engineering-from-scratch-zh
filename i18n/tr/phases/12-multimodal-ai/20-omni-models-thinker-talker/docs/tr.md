@@ -38,10 +38,10 @@ Bu ayrım önemlidir. Düşünen, iyi düşünme yeteneğine sahip olmak için y
 
 两者并行运行:
 
-1. Düşünceci 发出文本
-2. Konuşmacı 消费 t_i(通過流),并发出语音 Token s_i、s_{i+1}、...、s_{i+k}。
+1. Düşünceci 发出文本 İşaret $t_i$- Evet.
+2. Konuşmacı 消费 $t_i$(Dışı yoluyla),并发出语音 Token $s_i, s_{i+1}, \ldots, s_{i+k}$- Evet.
 3. Konuşma dekodörü, ses simgesi olarak kullanılırken, sesli örnekler çıkarılır.
-4. Düşünceci geldiğinde, konuşmacı zaten yayını yapıyor.
+4. Düşünceci , metin işaretine ulaştı .$t_{i+3}$Konuşmacı zaten hazır.$t_0, \ldots, t_{i+2}$Akış 了音频──
 
 ### TMRoPE  时间对齐的 çok modal 位置
 

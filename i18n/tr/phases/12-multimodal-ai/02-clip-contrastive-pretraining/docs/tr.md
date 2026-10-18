@@ -32,10 +32,10 @@ CLIP'in cevabı: Sehif-sırh çiftlerini birleştirmek. Bu iki şeyin bir arada 
 
 İki kule, çıkışını birim uzunluğuna normalleştirdi.`cos(f(x), g(y)) = f(x)^T g(y)`- Evet.
 
-对于一个包含N 个(图片,标题) 双的批,构建形 为 `(N, N)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `S`- ...
+İçeriği bir şey için.$N$个(şekil, başlık) çiftler, yapı biçimi 为 `(N, N)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `S`- ...
 
-```
-S[i, j] = cos(f(x_i), g(y_j)) / tau
+```math
+S[i, j] = \cos(f(x_i), g(y_j)) / \tau
 ```
 
 İçlerinden `tau`Clip başlangıç 0.07; log-space 中学习)
@@ -54,7 +54,7 @@ loss = (loss_i2t + loss_t2i) / 2
 
 ### Temperatür
 
-`tau`控制 softmax 的尖度──低 tau → 尖分布,具有硬负矿业效果──高 tau → 软,所有样品都会贡献──CLIP 学习 log(1/tau),并进行剪断以防崩──SigLIP 2 固定初始 tau,并改用学习偏见──
+`tau`kontrol softmax ın keskinliği。$\tau$→ keskin dağılım, sert negatif madencilik 效果──高 $\tau$→ yumuşak, tüm örnekler şehir katkısı。CLIP 学习 $\log(1/\tau)$,并进行剪切以防崩──SigLIP 2 固定初始 $\tau$,并改用学习偏见──
 
 ### Neden sigmoid 扩展性更好(SigLIP)
 
@@ -62,8 +62,8 @@ Softmax  tüm benzerlik gerektirir Matrix
 
 SigLIP UZ element-wise sigmoid 替代软max:对对对 `(i, j)`, kaybı ikili bir sınıflandırma, karar  bu eşleşen çift değil mi?  pozitif sınıf etiketleri diyagonal, diğer tüm negatiflerdir.
 
-```
-L = -1/N sum over (i, j) [ y_ij log sigmoid(S[i,j]) + (1-y_ij) log sigmoid(-S[i,j]) ]
+```math
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 Eğer `i == j`,则 `y_ij = 1`, yoksa 0 için. Her çiftin kaybı bağımsızdır. Tümünü toplamak gerekecek değildir.
@@ -127,7 +127,7 @@ multimodal-fusion
 
 3. Kedi vs köpek için sıfır atış sınıflandırıcı oluşturun.`a photo of a {class}`和 `a picture of a {class}`◊ 100 张 test görüntülerinde ölçüm doğruluğu── Şablonların ansamblosu tek şablondan daha iyi mi?
 
-4. 計算 512-GPU、batch 32k 运行时,softmax InfoNCE ile sigmoid çift olarak iletişim maliyeti──哪个按 O(N) ölçek,哪个按 O(N^2) ölçek?引用 SigLIP Bölüm 4──
+4. 計算 512-GPU、batch 32k 运行时,softmax InfoNCE ile sigmoid çift olarak iletişim maliyeti──哪个按 $O(N)$Ölçüsü, hangi ölçüsü?$O(N^2)$Skala? Citation SigLIP Bölüm 4
 
 5. 阅读OpenCLIP ölçekleme- yasaları kağıdı(arXiv:2212.07143,Cherti et al.)。 Grafu Reviews of Data Scaling:
 

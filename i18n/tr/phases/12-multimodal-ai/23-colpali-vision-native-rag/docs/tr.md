@@ -36,28 +36,28 @@ ColPali'nın modification方式: OCR'den atlamak, doğrudan sayfa resmini yapmak
 
 ColBERT(Khattab & Zaharia, arXiv:2004.12832) bir metin kurtarma yöntemi.
 
-- Sorgu simgeler  elde kendi içe gömülmeleri  N_q vektörleri)
-- Belge simgeler 获得 Embeddings(N_d vektörleri, genellikle önbelleğe alınır)。
-- Score = sorgu simgeler 求和, her sorgu simgeler 取所有文档 tokens 中 cosine benzerliği:Σ_i max_j cos(q_i, d_j) 』
+- Sorgu simgeler  elde kendi yerleşimleri($N_q$vektörler)
+- Belge simgeler 获得 Embeddings($N_d$Vektörler, genellikle önbelleğe alınır.
+- Score = sorgu simgeler 求和, her sorgu simgeler 取 tüm belge simgeler 中 cosine benzerliği' nin maksimum değeri:$\sum_i \max_j \cos(q_i, d_j)$- Evet.
 
 Bu MaxSim işlevi. Her sorgu simgesi, en uygun belge simgesi seçilir.
 
-优点: hatırlayın 强,能处理 term-level semantics──缺点: her belge 需要 N_d vectors, storage 昂贵──
+优点: hatırlayın 强,能处理 term-level semantics──缺点:每个文档 需要 $N_d$Vektörler, depolama 昂贵.
 
 ### KolPali
 
 ColPali(Faysse et al., arXiv:2407.01449) ColBERT örneğini  uygulama resimlere
 
-- Her bir sayfa PaliGemma tarafından düzenlenir.
-- Her kullanıcı sorgu(metin) sorgu-tökeni yerleştirmeleri için编码:N_q vektörleri。
-- Not = Σ_i max_j cos(q_i, p_j),也就是在查询文本标记和页面图像补丁 上做MaxSim。
+- Her bir sayfa PaliGemma tarafından düzenlenir.$N_p$vektörler.
+- Her kullanıcı sorguyu (teski) sorgu-token yerleştirmeleri için编码:$N_q$vektörler.
+- Not = $\sum_i \max_j \cos(q_i, p_j)$,也就是在查询文字符号和页面图像补丁上做MaxSim──
 - Top-k sayfaları üzerinden toplam puan alımı
 
 Doküman-yıklama zamanı: PaliGemma ile her sayfada embed, depolama tüm yama embedleri için.
 
 优点: 在视觉丰富文档上,端到端比文本RAG高 20-40%──每个补丁向量 捕获局部布局和内容──
 
-缺点:每页 N_p yamaları × 4 byet yüzen × D-dim vektörler = depolama 增长很快──可通过 PQ / OPQ 缓解──
+缺点: 每页 $N_p$Çizgiçeler × 4 baytlı yüzenler × $D$-dim Vectors = depolama 增长很快──可通过 PQ / OPQ 缓解──
 
 ### ColQwen2 和 ColSmol
 
@@ -129,7 +129,7 @@ mm-maxsim
 
 1. Bir 200 sayfalık yıllık rapor, her sayfa 729 patch,128-dimensiyonlu emb, 4-bayt yüzen,
 
-2. MaxSim is Σ_i max_j cos(q_i, p_j) ・・・ bu sorgu ve hangi basit ortalama benzerliği yakaladı?
+2. MaxSim $\sum_i \max_j \cos(q_i, p_j)$Bu sorgu ve yakalama hangi basit ortalama benzerlikleri yakalama yetmez bilgi?
 
 3. ColPali sayfaları ötendirme için birleştirir. Eğer sözcük seviyesine göre ötendirme oluşturmak için değiştirirse, ne değişir?
 
@@ -144,7 +144,7 @@ mm-maxsim
 | Late interaction | "ColBERT-style" | 使用 per-token 或 per-patch embeddings + MaxSim 做 retrieval，而不是 single doc Vector |
 | MaxSim | "Max-over-patches" | 对每个 query token，选择 similarity 最高的 document token；跨 query 求和 |
 | Bi-encoder | "Single-vector" | 每个 document 一个 Vector；更快，但会丢失粒度 |
-| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 N_p Vectors；storage cost 增长，但 recall 提升 |
+| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 $N_p$ Vectors；storage cost 增长，但 recall 提升 |
 | Patch embedding | "Page feature" | 来自 VLM encoder 的每个 image patch 的一个 Vector，按页 cached |
 | ViDoRe | "Vision doc bench" | ColPali 用于 visual document retrieval 的 benchmark suite |
 | PQ quantization | "Product quantization" | 在缩小 storage 约 8x 的同时保持 Vector similarity 的压缩方法 |
