@@ -11,7 +11,7 @@
 
 单个自我注意力头 会计算一个注意力矩阵. 这个矩阵 捕捉一种关系,通常是能够在当前训练信号上最小化损失的那种. 如果你的数据里主题verb协议,co-reference,长距离的演讲和语法分断,全部纠在一起,单个头会把它们抹在单个软最大分布,丢掉一半信号.
 
-2017年瓦斯瓦尼论文 给出的修复方式是:并行运行多个注意力功能,每个都有自己的Q、K、V投影,然后把输出拼接起来──每个头都在维度为`d_model / n_heads`总参数保持不变.表达能力上升.
+2017年瓦斯瓦尼论文 给出的修复方式是:并行运行多个注意力功能,每个都有自己的Q、K、V投影,然后把输出拼接起来──每个头都在维度为$d_{\text{model}} / n_{\text{heads}}$总参数保持不变.表达能力上升.
 
 单一的争论是需要使用多少头,以及关键和值是否共享预测.
 
@@ -19,7 +19,7 @@
 
 ![Multi-head attention splits, attends, concatenates](../assets/multi-head-attention.svg)
 
-**Split。**取形状为`(N, d_model)`的`X`△分别投影到形状为`(N, d_model)`,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,`(N, n_heads, d_head)`在其中`d_head = d_model / n_heads`‧ 转移为`(n_heads, N, d_head)`,我知道.
+**Split。**取形状为`(N, d_model)`的`X`△分别投影到形状为`(N, d_model)`,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,`(N, n_heads, d_head)`在其中$d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$‧ 转移为`(n_heads, N, d_head)`,我知道.
 
 **并行 Attend。**在每个头内运行量化点产品关注.`(N, d_head)`,这些头在嵌入的不同子空间上运行,并且在注意力计算中,不会在本身期间相互通信.
 
@@ -36,7 +36,7 @@
 | Grouped-query (GQA) | N | G (e.g. N/8) | Llama 2 70B, Llama 3+, Qwen 2+, Mistral |
 | Multi-head latent (MLA) | N | compressed to low-rank | DeepSeek-V2, V3 |
 
-由于它能按`N/G`倍数减轻KV缓存内存,同时几乎保持完整质量――MLA 更进一步,把K/V 压缩到隐藏空间,然后在计算时项目回来它会消耗FLOPs,但节省更多的内存――
+由于它能按$N/G$倍数减轻KV缓存内存,同时几乎保持完整质量――MLA 更进一步,把K/V 压缩到隐藏空间,然后在计算时项目回来它会消耗FLOPs,但节省更多的内存――
 
 
 ```figure
@@ -130,7 +130,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 | Large (~1B) | 2048 | 16 | 128 |
 | Frontier (~70B) | 8192 | 64 | 128 |
 
-`d_head`几乎总是落在64或128个. 它是一个头可以看到多少内容单位.`sqrt(d_head)`较高于256,你会失去许多小专家的收益.
+`d_head`几乎总是落在64或128个. 它是一个头可以看到多少内容单位.$\sqrt{d_{\text{head}}}$较高于256,你会失去许多小专家的收益.
 
 ## 交付它
 
@@ -146,7 +146,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Head | “一个单独的 attention circuit” | 一个维度为 `d_head = d_model / n_heads` 的 Q/K/V projection，拥有自己的 attention matrix。 |
+| Head | “一个单独的 attention circuit” | 一个维度为 $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$ 的 Q/K/V projection，拥有自己的 attention matrix。 |
 | d_head | “Head dimension” | Per-head hidden width；在 production 中几乎总是 64 或 128。 |
 | Split / combine | “Reshape tricks” | Attention 前后的 `(N, d_model) ↔ (n_heads, N, d_head)` reshape+transpose。 |
 | W_o | “Output projection” | Concatenating heads 之后应用的 `(d_model, d_model)` matrix；heads 在这里混合。 |

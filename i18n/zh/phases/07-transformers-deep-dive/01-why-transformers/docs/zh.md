@@ -25,13 +25,13 @@
 
 ![RNN sequential compute vs Transformer parallel attention](../assets/rnn-vs-transformer.svg)
 
-**Recurrence 是瓶颈。**计算`h_t = f(h_{t-1}, x_t)`,每一步都取决于前一步.`h_4`之前计算`h_5`在拥有1万+的现代GPU中,将浪费99%的面积在长序列中.
+**Recurrence 是瓶颈。**计算$h_t = f(h_{t-1}, x_t)$,每一步都取决于前一步.$h_4$之前计算$h_5$在拥有1万+的现代GPU中,将浪费99%的面积在长序列中.
 
-**Attention 是广播。**自我注意会为每对`(i, j)`同时计算`output_i = sum_j(a_ij * v_j)`△整个N×N注意力矩阵会在一次批量中填满──没有任何步骤依赖另一个步骤──GPU 喜欢这一点──
+**Attention 是广播。**自我注意会为每对$(i, j)$同时计算`output_i = sum_j(a_ij * v_j)`△整个N×N注意力矩阵会在一次批量中填满──没有任何步骤依赖另一个步骤──GPU 喜欢这一点──
 
-**加速不是常数。**它是`O(N)`连续深度和`O(1)`在实践中,在N=512和硬件相同的情况下,变压器每时代的训练速度快510×;随着序列长度增加,差距将继续扩大,直到触及注意力`O(N²)`闪光注意 后来修复了这一点见第12课.
+**加速不是常数。**它是$O(N)$连续深度和$O(1)$在实践中,在N=512和硬件相同的情况下,变压器每时代的训练速度快510×;随着序列长度增加,差距将继续扩大,直到触及注意力$O(N^2)$闪光注意 后来修复了这一点见第12课.
 
-**transformers 的代价。**按 注意力记忆`O(N²)`扩展──2K背景 没问题──128K背景 则需要滑窗──RoPE外分──Flash 注意,或线性注意变量──回复 在时间和内存上都是`O(N)`转变器用内存换时间,然后通过并行性把时间赢回来.
+**transformers 的代价。**按 注意力记忆$O(N^2)$扩展──2K背景 没问题──128K背景 则需要滑窗──RoPE外分──Flash 注意,或线性注意变量──回复 在时间和内存上都是$O(N)$转变器用内存换时间,然后通过并行性把时间赢回来.
 
 **Inductive bias 的转变。**转变器不做假设 每个位置都是注意的候选人. 这就是为什么转变器需要更多的数据才能训练得好,但一旦拥有足够的数据就能扩展得更远.
 
@@ -59,7 +59,7 @@ def attention_style(xs):
     return sum(xs) / len(xs)  # every x is independent
 ```
 
-我们对长度最高的100,000序列分别计时.RNN版本是O(N),并且使用单个CPU管道.即使在纯Python中,注意力式降低在长度≥1000时也会胜出,因为Python的`sum()`代代不会在每一步都产生解释器开销.
+我们对长度最高的序列分别计时.$O(N)$尽管在纯Python中,注意力式的减轻在长度 ≥ 1,000 时也会胜出,因为Python 的`sum()`代代不会在每一步都产生解释器开销.
 
 ### 步骤 2: 计算理论操作
 
@@ -67,7 +67,7 @@ def attention_style(xs):
 
 ### 步骤3:长序列上的经验扩展
 
-我们打印了一个时间表,让O(N) 差距变得可见. 在2026年Mac笔记本上,少于1,000个元素的序列太快,难以测量.100,000个序列将显示出清晰的线性扫描.将其扩展到16,384个Token变压器,并与12层LSTM等价格模型相比,你就会明白为什么训练墙钟在2016年是一个阻碍因素.
+我们打印一个时间表,让$O(N)$差距变得可见――在2026年Mac笔记本上,少于1000个元素的序列太快,难以测量――100,000个序列将显示出清晰的线性扫描――将其扩展到16,384个Token变压器,并与12层LSTM等价格模型相比,你就会明白为什么训练墙钟在2016年是一个阻碍因素――
 
 ## 使用它
 
@@ -80,7 +80,7 @@ def attention_style(xs):
 | 没有 matmul accelerator 的 edge device | Depthwise-separable RNN 在 FLOPs/watt 上仍然胜出 |
 | 其他任何情况（训练、batched inference、最高 128K 的 context） | Transformer |
 
-像Mamba这样的国家空间模型 (SSM) 质上是带有结构化参数化的RNN,使它们具有两种优势:`O(N)`通过选择性扫描进行并行训练.它们以更好的长文本扩展恢复了90%的变压器质量. 到2026年,大多数边界实验室都在训练混合SSM+变压器模型.例如,Jamba,Samba) 重复并没有死亡,它是一个组件.
+像Mamba这样的国家空间模型 (SSM) 质上是带有结构化参数化的RNN,使它们具有两种优势:$O(N)$通过选择性扫描进行并行训练.它们以更好的长文本扩展恢复了90%的变压器质量. 到2026年,大多数边界实验室都在训练混合SSM+变压器模型.例如,Jamba,Samba) 重复并没有死亡,它是一个组件.
 
 ## 交付它
 
@@ -98,11 +98,11 @@ def attention_style(xs):
 |------|-----------------|-----------------------|
 | Recurrence | “RNNs 是顺序的” | step `t` 依赖 step `t-1` 的计算方式，迫使执行沿时间轴串行进行。 |
 | Serial depth | “图有多深” | 依赖操作的最长链；即使在无限硬件上也会限制 wall-clock。 |
-| Attention | “让 Tokens 彼此查看” | Weighted sum `sum_j a_ij v_j`，其中 `a_ij` 来自位置 i 和 j 之间的相似度分数。 |
+| Attention | “让 Tokens 彼此查看” | Weighted sum $\sum_j a_{ij} v_j$，其中 $a_{ij}$ 来自位置 $i$ 和 $j$ 之间的相似度分数。 |
 | Context window | “模型能看到多少” | 一个 Attention layer 可作为输入的位置数量；quadratic memory cost 在这里扩展。 |
 | Inductive bias | “架构内置的假设” | 关于数据形态的先验；CNNs 假设 translation invariance，RNNs 假设 recency。 |
 | State-space model | “背后有代数的 RNN” | 为通过结构化 state-space matrices 实现并行训练而参数化的 recurrence。 |
-| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 `O(N²)`；Flash Attention 隐藏的是常数，而不是扩展规律。 |
+| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 $O(N^2)$；Flash Attention 隐藏的是常数，而不是扩展规律。 |
 
 ## 延伸阅读
 

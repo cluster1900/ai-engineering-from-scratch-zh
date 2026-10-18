@@ -9,11 +9,11 @@
 
 ## 问题
 
-完全注意序列长度上的内存成本是`O(N²)`计算成本也是如此`O(N²)`对于一个128K背景的Llama370B,这意味着每个层有160亿个注意条目,再乘以80层.`O(N²)`激活内存,但不会改变算术计算成本每个代币 仍然会参加到每个其他代币.
+完全注意序列长度上的内存成本是$O(N^2)$计算成本也是如此$O(N^2)$对于一个128K背景的Llama370B,这意味着每个层有160亿个注意条目,再乘以80层.$O(N^2)$激活内存,但不会改变算术计算成本每个代币 仍然会参加到每个其他代币.
 
 三类变体会改变注意力矩阵本身拓:
 
-1. **Sliding window attention (SWA).**每个代币只会到固定窗口内邻近代币,而不是完整的前.`O(N · W)`在其中`W`是窗户大小──Gemma 2/3──Mistral 7B的前几层──Phi-3-Long──
+1. **Sliding window attention (SWA).**每个代币只会到固定窗口内邻近代币,而不是完整的前.$O(N \cdot W)$在其中$W$是窗户大小──Gemma 2/3──Mistral 7B的前几层──Phi-3-Long──
 2. **Sparse / block attention.**只有选择`(i, j)`对于会被打分;其余位置被强制为零权重.
 3. **Differential attention.**用独立的Q/K投影 计算两张注意力地图,再相减――消除将把权重泄漏到前几个代币的注意力沉──微软的DIFF变压器(2024)。
 
@@ -23,7 +23,7 @@
 
 ### 滑动窗口注意 (SWA)
 
-位置`i`只有在每一个问题上`[i - W, i]`(因果性SWA) 或`[i - W/2, i + W/2]`在中位置──窗口外的标志 会在分数矩阵中得到 `-inf`,我知道.
+位置$i$只有在每一个问题上$[i - W, i]$(因果性SWA) 或$[i - W/2, i + W/2]$在中位置──窗口外的标志 会在分数矩阵中得到 $-\infty$,我知道.
 
 ```
 full causal:           sliding window (W=4):
@@ -39,17 +39,17 @@ positions 0-7          positions 0-7, W=4
 7 | x x x x x x x x  7 |          x x x x
 ```
 
-对于`N = 8192`和 `W = 1024`马特里克斯预期的成绩减少了1024 × 8192个非零行
+对于$N = 8192$和 $W = 1024$马特里克斯预期的成绩减少了1024 × 8192个非零行
 
-**KV cache 会随 SWA 缩小。**每层只需要保留最近.`W`个标志的K 和 V──对于类似Gemma-3的配置(1024窗口,128K文本),KV缓存会降低128×──
+**KV cache 会随 SWA 缩小。**每层只需要保留最近.$W$个标志的K 和 V──对于类似Gemma-3的配置(1024窗口,128K文本),KV缓存会降低128×──
 
-**质量成本。**纯SWA变压器 难以处理长距离检索――修复方法:在SWA层间交错全重注意层――Gemma 3 使用 5:1 SWA:全球――Mistral 7B 使用因果性-SWA堆,信息通过重叠窗向前流动每层都将使有效感受野扩展`W`经过`L`层后,模型可以向后参加`L × W`个标志.
+**质量成本。**纯SWA变压器 难以处理长距离检索――修复方法:在SWA层间交错全重注意层――Gemma 3 使用 5:1 SWA:全球――Mistral 7B 使用因果性-SWA堆,信息通过重叠窗向前流动每层都将使有效感受野扩展$W$经过`L`层后,模型可以向后参加`L × W`个标志.
 
 ### 缩/阻注意力
 
 预先选择一个`N × N`性模式:
 
-- **Local + strided (OpenAI sparse transformer).**接下来就来看看`W`个标志,再加上此前每隔`stride`个标志的位置.`O(N · sqrt(N))`计算同时捕捉局部和长距离信息.
+- **Local + strided (OpenAI sparse transformer).**接下来就来看看$W$个标志,再加上此前每隔`stride`个标志的位置.$O(N \cdot \sqrt{N})$计算同时捕捉局部和长距离信息.
 - **Longformer / BigBird.**地方窗口 + 少量全球代币`[CLS]`),这些代币参加到所有代币,也被所有代币参加 + 随机散链接――在匹配质量下经验上获得2×背景――
 - **Native Sparse Attention (DeepSeek, 2025).**学习哪些 `(Q, K)`区块重要;在内核层面跳过零区块――兼容 FlashAttention――
 
@@ -61,13 +61,15 @@ positions 0-7          positions 0-7, W=4
 
 通过计算**两张**关注地图并没有减轻来解决这个问题:
 
-```
-A1 = softmax(Q1 K1^T / √d)
-A2 = softmax(Q2 K2^T / √d)
-DiffAttn = (A1 - λ · A2) V
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d}) \\
+\text{DiffAttn} &= (A_1 - \lambda \cdot A_2) V
+\end{aligned}
 ```
 
-其中`λ`是一个学习得到的尺度 (通常为0.50.8) △A1 捕捉真实内容权重;A2 捕捉沉;相减会抵消沉,把权重重新分配给相关代币.
+其中$\lambda$是一个学习得到的尺度 (通常为0.50.8) △A1 捕捉真实内容权重;A2 捕捉沉;相减会抵消沉,把权重重新分配给相关代币.
 
 报告结果(微软2024):尬程度降低510%,在同样的训练长度下有效的背景延长1.52×,针在草中检索更敏。
 
@@ -75,12 +77,12 @@ DiffAttn = (A1 - λ · A2) V
 
 | Variant | Compute | KV cache | Quality vs full | Production use |
 |---------|---------|----------|-----------------|----------------|
-| Full attention | O(N²) | O(N) per layer | baseline | 每个模型的默认层 |
-| SWA (window 1024) | O(N·W) | O(W) per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
-| Local + strided sparse | O(N·√N) | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
-| BigBird (local + global + random) | O(N) approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
-| Native Sparse (DeepSeek-V3.2) | O(N · active fraction) | O(N) | within 0.05 ppl | DeepSeek-V3.2, 2025 |
-| Differential | O(2·N²) | O(2N) | -5 to -10% ppl | DIFF Transformer, early 2026 models |
+| Full attention | $O(N^2)$ | $O(N)$ per layer | baseline | 每个模型的默认层 |
+| SWA (window 1024) | $O(N \cdot W)$ | $O(W)$ per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
+| Local + strided sparse | $O(N \cdot \sqrt{N})$ | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
+| BigBird (local + global + random) | $O(N)$ approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
+| Native Sparse (DeepSeek-V3.2) | $O(N \cdot \text{active fraction})$ | $O(N)$ | within 0.05 ppl | DeepSeek-V3.2, 2025 |
+| Differential | $O(2 \cdot N^2)$ | $O(2N)$ | -5 to -10% ppl | DIFF Transformer, early 2026 models |
 
 
 ```figure
@@ -143,7 +145,7 @@ def diff_attention(Q1, K1, Q2, K2, V, lam):
 
 ### 步骤 5: KV缓存尺寸
 
-在`N = 131072`下印每变体的每层缓存尺寸――SWA 和稀少变体会降低10100×――差异会翻倍――要意识地支付你的内存账单――
+在$N = 131072$下印每变体的每层缓存尺寸――SWA 和稀少变体会降低10100×――差异会翻倍――要意识地支付你的内存账单――
 
 ## 使用它
 
@@ -186,17 +188,17 @@ out = flex_attention(q, k, v, block_mask=mask)
 1. **Easy.**运行`code/main.py`验证`window=4`现在,我们已经在SWA会把每一行中最近的4个代币的所有内容置零.`window=n`会比特-同样复现全因果注意力――
 2. **Medium.**在07课的结石上实现`window=1024`由于这些,我们可以看到一个人在一个小时内,
 3. **Hard.**在结石模型中实现了Gemma-3式 5:1层混合,5层SWA,1层全球) ・在参数匹配的情况下,对比纯SWA和纯全球基线的损失、记忆和生成质量──
-4. **Hard.**实现每个头脑都能学习`λ`在参数匹配的情况下,测量与单重视基线相对的检索精度.
+4. **Hard.**实现每个头脑都能学习$\lambda$在参数匹配的情况下,测量与单重视基线相对的检索精度.
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 `W` 个 Token；KV cache 缩小到 `O(W)`。 |
-| Effective receptive field | "模型能向后看多远" | 在一个窗口为 `W` 的 `L` 层 SWA stack 中，最多 `L × W` 个 Token。 |
+| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 $W$ 个 Token；KV cache 缩小到 $O(W)$。 |
+| Effective receptive field | "模型能向后看多远" | 在一个窗口为 $W$ 的 $L$ 层 SWA stack 中，最多 $L \times W$ 个 Token。 |
 | Longformer / BigBird | "Local + global + random" | Sparse pattern，包含少量始终 attend 的 global tokens；早期 long-context 方法。 |
 | Native Sparse Attention | "DeepSeek's kernel trick" | 学习 block-level sparsity；在保持质量的同时，在 kernel 层面跳过零 block。 |
-| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 `λ` 倍第二张 Attention map，以抵消 attention sinks。 |
+| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 $\lambda$ 倍第二张 Attention map，以抵消 attention sinks。 |
 | Attention sink | "权重泄漏到 token 0" | Softmax normalization 强制行求和为 1；信息量不足的 query 会把权重倾倒到位置 0。 |
 | FlexAttention | "Mask-as-Python" | PyTorch 2.5+ API，可将任意 mask function 编译成 FlashAttention 形状的 kernel。 |
 | Layer type mix | "5:1 SWA-to-global" | 在 stack 中交错 sparse 和 full Attention 层，以更低内存保持质量。 |

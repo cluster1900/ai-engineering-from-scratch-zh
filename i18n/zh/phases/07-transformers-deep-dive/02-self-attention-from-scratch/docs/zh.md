@@ -11,7 +11,7 @@
 
 - 仅使用NumPy 从零实现规模点产品自注意,包括查询/关键/价值 投影和软max 加权求和
 - 构建多头注意力层,用于拆分头,计算并行注意力,并拼接结果
-- 追踪注意力矩阵 如何捕捉代币 关系,并解释为什么除以平方
+- 追踪注意力矩阵 如何捕捉标记 关系,并解释为什么除以$\sqrt{d_k}$可以防止软max 和
 - 应用因果化掩饰,将双向注意力 转换为自动降低式码器式注意力
 
 ## 问题
@@ -109,10 +109,10 @@ attention-matrix
 
 ### 为什么要缩小?
 
-如果dk=64,dot产品可能达到几十的范围,把软max推进渐变消失的区域.
+点产品会随尺度$d_k$增大.如果.$d_k = 64$微小的产品可能达到几十个范围,把软max推进到渐变消失区域.$\sqrt{d_k}$,我知道.
 
-```
-Scaled scores = (Q @ K^T) / sqrt(dk)
+```math
+\text{缩放后的分数} = \frac{Q K^T}{\sqrt{d_k}}
 ```
 
 这将使数值保持在软max 能产生有用的梯度范围内.
@@ -159,8 +159,8 @@ flowchart LR
 
 一行公式:
 
-```
-Attention(Q, K, V) = softmax( Q @ K^T / sqrt(dk) ) @ V
+```math
+\text{Attention}(Q, K, V) = \mathop{\mathrm{softmax}}\left( \frac{Q K^T}{\sqrt{d_k}} \right) V
 ```
 
 ```figure
@@ -302,7 +302,7 @@ print(f"\nAttn weights (averaged over heads):")
 print(attn_weights[0].detach().numpy().round(3))
 ```
 
-关键区别:多头注意 会并行运行多个注意力功能,每个都有自己的Q、K、V投影,大小为dk = d_model / n_heads,然后拼接结果──这使得模型能够同时参加不同类型的关系──
+关键区别:多头注意 会并行运行多个注意力功能,每个都有自己的Q、K、V投影,大小为$d_k = d_{\text{model}} / n_{\text{heads}}$之后拼接结果. 这使得模型能够同时参与不同类型的关系.
 
 ## 交付它
 
@@ -322,7 +322,7 @@ print(attn_weights[0].detach().numpy().round(3))
 | Query (Q) | “问题 Vector” | 输入的一个学习投影，表示这个 Token 正在寻找什么信息 |
 | Key (K) | “标签 Vector” | 一个学习投影，表示这个 Token 包含什么信息，并会与 queries 进行匹配 |
 | Value (V) | “内容 Vector” | 一个学习投影，携带会基于 attention scores 被聚合的实际信息 |
-| Scaled dot-product attention | “Attention 公式” | softmax(QK^T / sqrt(dk)) @ V - 缩放可以防止高维中的 softmax 饱和 |
+| Scaled dot-product attention | “Attention 公式” | $\mathop{\mathrm{softmax}}(QK^T / \sqrt{d_k}) V$ - 缩放可以防止高维中的 softmax 饱和 |
 | Self-attention | “Token 看自己和其他 Token” | Q、K、V 都来自同一序列的 Attention，让每个位置都能 attend 到其他每个位置 |
 | Attention weights | “关注程度” | 位置上的概率分布，由 scaled dot products 上的 softmax 产生 |
 | Multi-head attention | “并行 Attention” | 使用不同 projections 运行多个 attention functions，然后拼接结果，以获得更丰富的 representations |

@@ -29,25 +29,25 @@
 
 预先计算一个形状 为`(max_len, d_model)`固定矩阵`PE`其他:
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 然后在注意之前执行`X' = X + PE[:N]`△每个维度都是不同频率的阴影.`max_len`后会失败:当模型只看到位置 02047 时,没有什么告诉它位置 2048 会发生什么.
 
 ### 子
 
-旋转Q和K向量 (不是嵌入式) △对对尺寸`(2i, 2i+1)`其他:
+旋转Q和K向量 (不是嵌入式) △对对尺寸$(2i, 2i+1)$其他:
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-对于位置`pos_k`的关键 应用相同的旋转.`q'_m · k'_n`变得依赖`(m - n)`的函数──也就是说:**attention score 只依赖 relative distance**虽然旋转是绝对的位置指引的.
+对于位置`pos_k`的关键 应用相同的旋转.$q'_m \cdot k'_n$变得依赖$(m - n)$的函数──也就是说:**attention score 只依赖 relative distance**虽然旋转是绝对的位置指引的.
 
 扩展 可缩放`base`为了在不重新训练的情况下,将其推移到更长的背景下.
 
@@ -55,11 +55,11 @@ PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
 
 跳过嵌入 技巧──直接给注意力分数加偏见:
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-其中`m_h`是头部特定的斜率`1 / 2^(8·h/H)`,长度抽出比突状,并与RoPE相平.
+其中$m_h$是头部特定的斜率$1 / 2^{8h/H}$,长度抽出比突状,并与RoPE相平.
 
 ### 2026年该选择什么
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键:对位置`m`和位置`n`它们的点产量会在每个坐标对上获得一个.`cos((m-n)·θ_i)`因子──注意 免费学到相对位置──
+关键:对位置$m$和位置$n$它们的点产量会在每个坐标对上获得一个.$\cos((m-n) \cdot \theta_i)$因子──注意 免费学到相对位置──
 
 ### 步骤3:ALiBi斜率和偏差
 
@@ -169,7 +169,7 @@ model = AutoModel.from_pretrained("meta-llama/Llama-3.2-3B")
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |

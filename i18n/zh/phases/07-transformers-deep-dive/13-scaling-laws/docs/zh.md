@@ -30,22 +30,24 @@
 
 ,我不想让你这样做.
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N`参数 (非嵌入式)
-- `D`训练标志
-- `α ≈ 0.34`现在`β ≈ 0.28`们都在着.
-- `E ≈ 1.69`没有什么可惜的损失.
-- `A ≈ 406`现在`B ≈ 411`,我知道.
+- $N$参数 (非嵌入式)
+- $D$训练标志
+- $\alpha \approx 0.34$现在$\beta \approx 0.28$们都在着.
+- $E \approx 1.69$没有什么可惜的损失.
+- $A \approx 406$现在$B \approx 411$,我知道.
 
-随着扩张,两个项会相互权衡.`N`求导并求解:
+随着扩展,两个项会相互权衡.$C = 6ND$下对$N$求导并求解:
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 计算最佳:每个参数有20个代币.
@@ -91,7 +93,7 @@ scaling-laws
 
 ## 构建它
 
-见`code/main.py`我们实现了鱼损失方程,并进行了一些计算 预算下求解计算最佳`(N, D)`,我知道.
+见`code/main.py`我们实现了鱼损失方程,并进行了一些计算 预算下求解计算最佳$(N, D)$,我知道.
 
 ### 步骤1: 鱼的损失
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-在固定`C = 6ND`下,将`L`绘制为`(N, D)`找到最小值.
+在固定$C = 6ND$下,将$L$绘制为$(N, D)$找到最小值.
 
 ### 步骤2: 计算最优边界
 
-对于`1e17`到了`1e25`计算 预算,找到在约束 `6ND = C`下最小化损失的`(N, D)`△验证比例`D/N ≈ 20`,我知道.
+对于`1e17`到了`1e25`计算 预算,找到在约束 $6ND = C$下最小化损失的$(N, D)$△验证比例$D/N \approx 20$,我知道.
 
 ### 步骤3:过度训练成本
 
@@ -134,9 +136,9 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
 
 ## 练习
 
-1. **Easy.**运行`code/main.py`打印计算 预算`1e20`,我知道.`1e22`,我知道.`1e24`下的鱼最好`(N, D)`与真实模型表相比较
-2. **Medium.**实现霍夫曼损失作为计算函数 曲线――为计算最佳边界 绘制损失与`log10(C)`识别这个法律 预测我们何时需要`>10^28`才能让交叉缩再降低0.1
-3. **Hard.**在同一数据集上训练 5个小模型 (参数100K到10M),适合您自己的规模定律.`α`和 `E`您的指数与已发表的结果如何相匹配?
+1. **Easy.**运行`code/main.py`打印计算 预算`1e20`,我知道.`1e22`,我知道.`1e24`下的鱼最好$(N, D)$与真实模型表相比较
+2. **Medium.**实现霍夫曼损失作为计算函数 曲线――为计算最佳边界 绘制损失与`log10(C)`识别这个法律 预测我们何时需要$>10^{28}$才能让交叉缩再降低0.1
+3. **Hard.**在同一数据集上训练 5个小模型 (参数100K到10M),适合您自己的规模定律.$\alpha$和 $E$您的指数与已发表的结果如何相匹配?
 
 ## 关键术语
 
@@ -147,7 +149,7 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 

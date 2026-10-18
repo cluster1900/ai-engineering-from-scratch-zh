@@ -11,7 +11,7 @@
 
 密集变压器在推断时的FLOPs等于其参数(前进通过 乘以 2) ;;扩展一个密集模型 时,每个代币都必须支付完整的计算成本――到2024年,边界已经撞击了计算墙:要显著变得更聪明,你需要每个代币指数级更多的FLOPs――
 
-专家组合 打破了这种关联.`E`个独立专家 + 一个为每个代币 选择 `k`个专家的路由器――总参数 = `E × FFN_size`△每个代币的活跃参数数 = `k × FFN_size`△典型的2026年配置:`E=256`没有任何`k=8`│ 存储随`E`扩展,计算随`k`扩展.
+专家组合 打破了这种关联.$E$个独立专家 + 一个为每个代币 选择 $k$个专家的路由器――总参数 = $E \times \text{FFN size}$△每个代币的活跃参数数 = $k \times \text{FFN size}$△典型的2026年配置:$E=256$没有任何$k=8$│ 存储随$E$扩展,计算随$k$扩展.
 
 2026年边界 几乎全是MoE:DeepSeek-V3(671B总 / 37B活跃) 、混合 8×22B、Qwen2.5-MoE、Llama 4、Kimi K2、gpt-oss──在人工分析的独立排名榜上,排名第 10 的开源模型全是MoE──
 
@@ -46,7 +46,7 @@ h = h + sum_{e in top_k}(
 如果路由器让90%的代币经过3个专家,其他专家就会饿死.
 
 1. **Auxiliary load-balancing loss**另外,它可以增加一个超参数和第二个分数信号.
-2. **Expert capacity + token dropping**对于每一个专家,`C × N/E`个标志;溢出的标志 跳过这个层――会损害质量――
+2. **Expert capacity + token dropping**对于每一个专家,$C \times N/E$个标志;溢出的标志 跳过这个层――会损害质量――
 3. **Auxiliary-loss-free balancing**对于2024年,这是一个重要突破.
 
 深度搜索V3的做法:每一个培训阶段后,对每个专家进行检查,`±γ`微调偏见──选择时使用 `scores + bias`△用于关门的专家概率 仍然使用未修改的原始`scores`,这将与表达方式进行路由.
@@ -59,7 +59,7 @@ h = h + sum_{e in top_k}(
 
 经典的MOE(GShard、Switch): 每个专家和完整的FFN 一样宽──`E`较小(8-64),`k`较小(1-2) 』
 
-现代细粒度MoE(深度搜索V3、Qwen-MoE):每个专家更窄(1/8FFN大小)`E`很大(256+),`k`更大(8+) △总参数相同,但组合数量扩展快得多。`C(256, 8) = 400 trillion`种可能的每一个代币 专家 质量提升,延迟 保持不变
+现代细粒度MoE(深度搜索V3、Qwen-MoE):每个专家更窄(1/8FFN大小)$E$很大(256+),$k$更大(8+) △总参数相同,但组合数量扩展快得多。$\binom{256}{8} \approx 400$质量提升,延迟保持不变.
 
 ### 成本图片
 
@@ -160,7 +160,7 @@ model = AutoModelForCausalLM.from_pretrained("mistralai/Mixtral-8x22B-v0.1")
 | Auxiliary-loss-free | “DeepSeek-V3 的技巧” | 只在 router 的 selection 上通过 per-expert bias 实现 balance；没有额外 Gradient。 |
 | Shared expert | “Always on” | 每个 Token 都会经过的额外 expert；捕获通用知识。 |
 | Expert parallelism | “按 expert 分片” | 将不同 experts 分配到不同 GPUs；通过网络 route tokens。 |
-| Sparsity | “active params < total params” | 比率 `k × expert_size / (E × expert_size)`；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
+| Sparsity | “active params < total params” | 比率 $k \times \text{expert size} / (E \times \text{expert size})$；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
 
 ## 延伸阅读
 
