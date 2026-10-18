@@ -18,12 +18,12 @@
       "stage": "pre",
       "question": "AlphaEvolve 是为哪一类问题构建的？",
       "options": [
+        "Vector search 排序",
         "自由形式的散文生成",
-        "具有机器可检查、确定性 fitness function 的优化问题",
         "多轮聊天记忆",
-        "Vector search 排序"
+        "具有机器可检查、确定性 fitness function 的优化问题"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Evolutionary search 需要确定性的 evaluator；AlphaEvolve 面向存在这种 evaluator 的领域。"
     },
     {
@@ -42,12 +42,12 @@
       "stage": "check",
       "question": "课程引用了 AlphaEvolve 的哪项结果？",
       "options": [
-        "56 年来首次在 4x4 complex matrix multiplication 上改进 Strassen",
-        "让 Gemini 上的 inference 加速 10 倍",
+        "首次证明 P=NP",
         "在 HumanEval 上击败 GPT-4",
-        "首次证明 P=NP"
+        "让 Gemini 上的 inference 加速 10 倍",
+        "56 年来首次在 4x4 complex matrix multiplication 上改进 Strassen"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "AlphaEvolve 为 4x4 complex matmul 找到了 48 次 scalar multiplications，这是 56 年来首次改进 Strassen。"
     },
     {
@@ -55,21 +55,21 @@
       "question": "HTN 中哪个元素是带有 preconditions 和 effects、可直接执行的 primitive action？",
       "options": [
         "Task",
+        "State",
         "Method",
-        "Operator",
-        "State"
+        "Operator"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": "Operators 是 primitives；methods 分解 compound tasks；state 是 facts 的集合。"
     },
     {
       "stage": "post",
       "question": "课程对没有真实 evaluator 的 AlphaEvolve 提出了什么警告？",
       "options": [
-        "它很慢",
-        "询问 LLM 代码是否更好不是 fitness function；evaluator 必须是确定性且快速的",
         "它违反 Apache 2.0",
-        "它不能在 GPUs 上运行"
+        "询问 LLM 代码是否更好不是 fitness function；evaluator 必须是确定性且快速的",
+        "它不能在 GPUs 上运行",
+        "它很慢"
       ],
       "correct": 1,
       "explanation": "没有确定性的 evaluator，search 就没有可收敛的信号。"
@@ -78,12 +78,12 @@
       "stage": "post",
       "question": "什么时候应该选择 ReAct 或 ReWOO，而不是 HTN 或 AlphaEvolve？",
       "options": [
+        "当 latency 低于 100 ms 时",
         "永远不要；HTN 严格更好",
         "当你不需要 formal soundness 或机器可检查的 fitness 时；大多数 agent tasks 都属于这里",
-        "当你有可用的 GPU cluster 时",
-        "当 latency 低于 100 ms 时"
+        "当你有可用的 GPU cluster 时"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "课程明确警告不要过度工程化：大多数任务不需要 formal planning 或 evolutionary search。"
     }
   ]
