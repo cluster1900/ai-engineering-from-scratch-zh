@@ -59,8 +59,8 @@ Ceci est important pour les systèmes de LLM: vous pouvez externaliser les tâch
 
 绑定 DID's reputation score  从已确认贡献中累积──一个简单更新规则:
 
-```
-rep(i, t+1) = alpha * rep(i, t) + (1 - alpha) * contribution_quality(i, t)
+```math
+\text{rep}(i, t+1) = \alpha \cdot \text{rep}(i, t) + (1 - \alpha) \cdot \text{contribution\_quality}(i, t)
 ```
 
 Parmi eux, le facteur de déclin.`alpha`接近 1―Réputation:

@@ -44,8 +44,8 @@ Pourquoi utiliser CTDE: En entraînement, nous savons l'action de chacun; nous u
 
 仅适用于合作社――Global reward 之和:
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 monotonie 保证 `argmax_a Q_tot`Il peut être choisi par chaque agent.`argmax_{a_i} Q_i`C'est exactement ce dont tu as besoin.**decentralized execution property** En train, mélangez le réseau de chaque agent`Q_tot`Il y a une autre.

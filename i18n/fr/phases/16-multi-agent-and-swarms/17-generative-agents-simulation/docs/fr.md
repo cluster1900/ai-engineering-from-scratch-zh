@@ -118,7 +118,7 @@ Règles de production:
 
 - **Memory 就是数据库。**Dans la mémoire, le stockage est uniquement adapté au prototype.
 - **记录 retrieval trace。**Pour chaque action, le record déplace ses souvenirs top-k.
-- **为每个 agent 预算 tokens。**Chaque tique Entraînez chaque agent de récupérer + refléter + plan est O(k) LLM appels;;
+- **为每个 agent 预算 tokens。**Chaque tique de chaque agent de récupérer + réfléchir + plan est $O(k)$Les appels de LLM. Les agents × T-ticks × appels-par-tick.
 - **周期性 compact memory。**Résumé-et-réduction 条目――Rétention politique est la décision de conception, pas les détails.
 - **显式检测空间 / 社会规范违规。**L'architecture ne les apprendra pas.
 
