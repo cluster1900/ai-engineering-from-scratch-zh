@@ -4,12 +4,12 @@
     "stage": "pre",
     "question": "在 ML pipelines 的语境中，什么是 data leakage？",
     "options": [
-      "数据在 preprocessing 过程中被意外删除",
       "来自 test set 或未来数据的信息污染了 training process",
+      "数据在 preprocessing 过程中被意外删除",
       "model 处理数据太慢",
       "features 在 encoding 过程中被丢弃"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "当训练时使用了预测时无法获得的信息，就会发生 data leakage。示例：在包含 test data 的完整 dataset 上计算 scaler 的 mean/std。"
   },
   {
@@ -30,12 +30,12 @@
     "stage": "post",
     "question": "在 sklearn 中，对 pipeline step 调用 fit_transform 和 transform 有什么区别？",
     "options": [
-      "它们完全相同 -- 都会 fit 和 transform",
-      "fit_transform 从数据中学习参数并应用 transform；transform 只应用先前学到的参数",
       "transform 用于 training data；fit_transform 用于 test data",
-      "fit_transform 更慢但更准确"
+      "fit_transform 更慢但更准确",
+      "它们完全相同 -- 都会 fit 和 transform",
+      "fit_transform 从数据中学习参数并应用 transform；transform 只应用先前学到的参数"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "fit_transform 会从数据中计算统计量（例如 mean, std）并对其进行 transform。transform 会应用已经学到的统计量，而不重新计算。在 test data 上，你必须使用 transform 以避免 leakage。"
   },
   {
@@ -43,12 +43,12 @@
     "stage": "post",
     "question": "为什么真实世界 datasets 需要 ColumnTransformer？",
     "options": [
-      "它让 pipeline 在多个 CPU 上 parallel 运行",
       "它在同一个 pipeline 中对 numeric 和 categorical columns 应用不同的 preprocessing steps",
+      "它会把所有 columns 转换为相同的数据类型",
       "它会自动移除带有 missing values 的 columns",
-      "它会把所有 columns 转换为相同的数据类型"
+      "它让 pipeline 在多个 CPU 上 parallel 运行"
     ],
-    "correct": 1,
+    "correct": 0,
     "explanation": "真实 datasets 具有混合类型。Numeric columns 需要 scaling，categorical columns 需要 encoding。ColumnTransformer 会在单个 pipeline 中把每个 column subset 路由到合适的 transformer。"
   },
   {
@@ -56,8 +56,8 @@
     "stage": "post",
     "question": "一个 production model 收到了训练时从未见过的 categorical value（'new_category'）。pipeline 应该处理什么？",
     "options": [
-      "完全忽略该 row，并且不返回 prediction",
       "从头重新训练整个 model",
+      "完全忽略该 row，并且不返回 prediction",
       "优雅地处理 unknown categories，例如使用 'unknown' bucket，或在 target encoding 中使用 global mean",
       "把 unknown category 转换为数字零"
     ],
