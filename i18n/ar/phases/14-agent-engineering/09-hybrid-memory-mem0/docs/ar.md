@@ -29,7 +29,7 @@ Mem0 (arXiv: 2504.19413, أبريل 2025)`add(text, user_id, metadata)`时:
 
 1. من مقال في تحديد المواقف المختارة
 2. 将每个事实写入 矢量商店(嵌入) ،用于语义搜索──
-3. 将每个事实写进 KV store,以 (user_id, fact_type, entity) 为钥匙,用于 O(1) 查找。
+3. كتابة كل حقيقة في مخزن KV،以 (user_id، fact_type، entity) كفتاح، للاستخدام$O(1)$-بحث
 4. 写入 Graph store (Mem0g) ، لاستخدام استفسارات العلاقات
 
 في`search(query, user_id)`时:
