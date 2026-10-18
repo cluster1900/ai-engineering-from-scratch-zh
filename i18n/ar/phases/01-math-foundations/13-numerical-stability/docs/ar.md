@@ -96,7 +96,7 @@ Relative error: 19.2%
 
 هذا يعني أنّه في حالة تخفيض واحد، فإنّها تنتج خطأ نسبيّ بنسبة 19%.
 
-- استخدام 很大时计算 `E[x^2] - E[x]^2`
+- استخدام متوسط القيمة البيانات حساب الاختلاف:当 $\mathbb{E}[x]$很大时计算 $\mathbb{E}[x^2] - \mathbb{E}[x]^2$
 - مقارنة مع احتمالات التسجيل
 - استخدام过小 epsilon  حساب تراجع الفرق المحدودة
 
@@ -141,20 +141,22 @@ log(1e-46) = -inf        (input underflowed to 0, then log(0) = -inf)
 
 هذه الخدعة: في طلب المعبر  قبل أولاً خفض القيمة القصوى
 
-```
-log(sum(exp(x_i))) = max(x) + log(sum(exp(x_i - max(x))))
+```math
+\log\left(\sum_i \exp(x_i)\right) = \max(x) + \log\left(\sum_i \exp(x_i - \max(x))\right)
 ```
 
 لماذا هو فعال: خفض`max(x)`بعد، أكبر معبر هو`exp(0) = 1` لا يمكن أن يحدث تجاوزات  لا يقل عن واحد من الطلبات و الاختيارات هو 1 ، لذلك مجموعات و الاختيارات على الأقل هي 1`log(1) = 0`لا يمكن أن تدفق إلى`-inf`.
 
 دليل:
 
-```
-log(sum(exp(x_i)))
-= log(sum(exp(x_i - c + c)))                    (add and subtract c)
-= log(sum(exp(x_i - c) * exp(c)))               (exp(a+b) = exp(a)*exp(b))
-= log(exp(c) * sum(exp(x_i - c)))               (factor out exp(c))
-= c + log(sum(exp(x_i - c)))                    (log(a*b) = log(a) + log(b))
+```math
+\begin{aligned}
+& \log\left(\sum_i \exp(x_i)\right) \\
+&= \log\left(\sum_i \exp(x_i - c + c)\right) && \text{（加上并减去 } c\text{）} \\
+&= \log\left(\sum_i \exp(x_i - c) \cdot \exp(c)\right) && (\exp(a+b) = \exp(a) \cdot \exp(b)) \\
+&= \log\left(\exp(c) \cdot \sum_i \exp(x_i - c)\right) && \text{（提取公因子 } \exp(c)\text{）} \\
+&= c + \log\left(\sum_i \exp(x_i - c)\right) && (\log(a \cdot b) = \log(a) + \log(b))
+\end{aligned}
 ```
 
 جعل`c = max(x)`،الانتشار تم إزالة
@@ -170,8 +172,8 @@ log(sum(exp(x_i)))
 
 سوف سوف سوف سوف تسجل 转换为概率:
 
-```
-softmax(x_i) = exp(x_i) / sum(exp(x_j))
+```math
+\mathop{\mathrm{softmax}}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
 ```
 
 لا يوجد خدعة، التخفيف سيؤدي إلى الإفراط
@@ -242,18 +244,18 @@ math.isfinite(x)    # True if x is neither nan nor inf
 
 الفرق المركزية 公式:
 
-```
-df/dx ~= (f(x + h) - f(x - h)) / (2h)
+```math
+\frac{df}{dx} \approx \frac{f(x + h) - f(x - h)}{2h}
 ```
 
-هذا هو O  h^2) 精度, أفضل من الفرق إلى الأمام `(f(x+h) - f(x)) / h`, وآخر فقط O  ه
+هذا هو$O(h^2)$精度, أفضل بعيد عن الفرق إلى الأمام $(f(x+h) - f(x)) / h$، آخر واحد فقط$O(h)$.
 
-选择 h:太大则近似不准确──太小则 فسخ كارثية 会毁掉结果──`h = 1e-5`إلى`1e-7`很常见──
+选择 $h$::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::`h = 1e-5`إلى`1e-7`很常见──
 
 طريقة الاختبار: الفرق النسبي بين التراجع التحليلي والرقمي
 
-```
-relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{relative\_error} = \frac{\lvert \text{grad}_{\text{analytical}} - \text{grad}_{\text{numerical}} \rvert}{\max(\lvert \text{grad}_{\text{analytical}} \rvert, \lvert \text{grad}_{\text{numerical}} \rvert, 10^{-8})}
 ```
 
 经验规则:
@@ -289,7 +291,7 @@ relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |gr
 5. Net effect: same update, but no underflow
 ```
 
-تحديد النطاقات الديناميكية للخسائر 会自动调整尺度因素──从一个大值(65536) بدأ──如果梯度过溢 成 `inf`،就减半. إذا لم يكن هناك إفراط،就加倍.
+تحديد النطاقات الديناميكية للخسائر 会自动调整尺度因素──从一个大值(65536) بدأ──如果梯度过溢 成 `inf`, نحن نقصنا نصفها$N$لا يوجد إفراط في التدفق،
 
 ### بفلوت16 مقابل بفلوت16: لماذا بفلوت16 فى التدريب
 
@@ -350,8 +352,8 @@ Layer 50: values in [0, inf]
 
 التطبيع سوف يكون في كل طبقة من التنشيطات:
 
-```
-LayerNorm(x) = (x - mean(x)) / (std(x) + epsilon) * gamma + beta
+```math
+\mathop{\mathrm{LayerNorm}}(x) = \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x) + \epsilon} \cdot \gamma + \beta
 ```
 
 `epsilon`(عادةً على 1e-5) سوف تكون في جميع التفعيلات في نفس الوقت لمنع التخلص من صفر.`gamma`和 `beta`让网络 能恢复它需要任何规模──
@@ -569,7 +571,7 @@ check_tensor("ugly", [1.0, float('inf'), 3.0])
 
 ## التدريب
 
-1. **Catastrophic cancellation。**استخدام فلوات32 中的 ساذجة الصيغة `E[x^2] - E[x]^2`計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法 计算──将误差与真实方差(0.6667) 比较──
+1. **Catastrophic cancellation。**استخدام فلوات32 中的 ساذجة الصيغة $\mathbb{E}[x^2] - \mathbb{E}[x]^2$計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法 计算──将误差与真实方差(0.6667) 比较──
 
 2. **Precision hunt。**في Python إيجاد أدنى قيمة صحيحة`x`, جعل ذلك`1.0 + x == 1.0`هذا هو الآلة الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول إلى الوصول`numpy.finfo(numpy.float32).eps`.
 
@@ -579,17 +581,29 @@ check_tensor("ugly", [1.0, float('inf'), 3.0])
 
 5. **Loss scaling experiment。**模拟 float16 训练:创建范围在 [1e-9, 1e-3] 内的随机梯度,转换为 float16,并测量有多少比例变成零――然后应用损失规模(乘以 1024),转换为 float16,再扩展回,并再次测量零比例――
 
+### 提示
+
+**练习 1。**في مربع قبل استخدام `np.float32`转换 these三个值, ثم调用 `variance_naive`和 `welford_variance`◊float32 在 $10^{12}$العدد القريب بين القيمة أكبر من 1، لذلك توقعات النتيجة البسيطة بعيدة عن 0.6667, بينما ‬الـ Welford ‬ نتج عن تقرب إلى هذه القيمة‬
+
+**练习 2。**من`x = np.float32(1.0)`-بدا، طالما`np.float32(1.0) + x != np.float32(1.0)`دع كل قيمة تبقى طائرة32  النوع، وإعادة آخر سوف تغير قيمة الطلب والنتيجة مع `numpy.finfo(numpy.float32).eps`مقارنة، آخر$2^{-23}$.
+
+**练习 3。**قبل التنبؤ لكل إجابة$n$个相等的值 $c$, نتيجة$c + \ln n$ فقط قيمة كبيرة جداً، النتيجة تقترب من هذه القيمة.$-1000 + \ln n$و`logsumexp_naive`عودتي`-inf`، لأن كل مؤشر ينخفض إلى 0
+
+**练习 4。**لـ$y = Wx + b$و الخسارة$L$،$W$                                                                                                                                                                                                                                                              $x$من الخارج. سوف تخسر$W$调用 `numerical_gradient`، و سوف نقول نتائج`check_gradient`.
+
+**练习 5。**استخدام`10 ** np.random.uniform(-9, -3, n)`في مقياسات العدد على القيمة العددية الكبيرة، لم يستخدم `np.float16`转换──Float16 无法保留小于约 $6 \times 10^{-8}$قيمة، لذلك المتوقع أن تتغير قيمة قبل التكفيض نحو ربع واحد إلى صفر، بينما ضرب 1024 بعد لا يوجد أي قيمة تتغير إلى صفر.
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | IEEE 754 | “float 标准” | 定义 binary floating point formats、rounding rules 和 special values（inf、nan）的国际标准。每个现代 CPU 和 GPU 都实现了它。 |
-| Machine epsilon | “精度极限” | 在给定 float format 中，使 1.0 + e != 1.0 成立的最小值 e。对于 float32，它约为 1.19e-7。 |
+| Machine epsilon | “精度极限” | 在给定 float format 中，使 $1.0 + e \ne 1.0$ 成立的最小值 $e$。对于 float32，它约为 1.19e-7。 |
 | Catastrophic cancellation | “减法导致的精度损失” | 相减两个几乎相等的 floating point 数时，有效数字相互抵消，rounding noise 主导结果。 |
 | Overflow | “数字太大” | 结果超过最大可表示值并变成 inf。exp(89) 会使 float32 overflow。 |
 | Underflow | “数字太小” | 结果比最小可表示正数还接近零，并变成 0.0。exp(-104) 会使 float32 underflow。 |
-| Log-sum-exp trick | “先减去最大值” | 通过提出 exp(max(x)) 来计算 log(sum(exp(x)))，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
-| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 max(logits)。结果在数值上相同，且不可能 overflow。 |
+| Log-sum-exp trick | “先减去最大值” | 通过提出 $\exp(\max(x))$ 来计算 $\log(\sum \exp(x))$，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
+| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 $\max(\text{logits})$。结果在数值上相同，且不可能 overflow。 |
 | Gradient checking | “校验你的 Backpropagation” | 将 Backpropagation 得到的 analytical gradients 与 finite differences 得到的 numerical gradients 比较，以捕获实现 bug。 |
 | Mixed precision | “Float16 forward，float32 backward” | 对 speed-critical operations 使用低精度 floats，对 numerically sensitive operations 使用高精度 floats。典型提速为 2-3x。 |
 | Loss scaling | “防止 Gradient underflow” | 在 Backpropagation 前将 Loss 乘以一个大常数，使 gradients 保持在 float16 可表示范围内，然后在 weight updates 前除以同一个常数。 |
@@ -597,7 +611,7 @@ check_tensor("ugly", [1.0, float('inf'), 3.0])
 | Gradient clipping | “限制 Gradient norm” | 缩放 Gradient Vector，使其 norm 不超过阈值。防止 exploding gradients 毁掉 weights。 |
 | NaN | “Not a Number” | 来自未定义操作（0/0、inf-inf、sqrt(-1)）的特殊 float value。会传播到所有后续 arithmetic。 |
 | Inf | “Infinity” | 来自 overflow 或除以零的特殊 float value。可以组合产生 NaN（inf - inf、inf * 0）。 |
-| Numerical gradient | “暴力求导” | 通过计算 f(x+h) 和 f(x-h)，再除以 2h 来近似 derivative。很慢，但用于校验时可靠。 |
+| Numerical gradient | “暴力求导” | 通过计算 $f(x+h)$ 和 $f(x-h)$，再除以 $2h$ 来近似 derivative。很慢，但用于校验时可靠。 |
 
 ## 延伸阅读
 

@@ -30,24 +30,24 @@
 
 أنت تعلمت بالفعل في الدروس الستة احتمال الشرطية هي:
 
-```
-P(A|B) = P(A and B) / P(B)
+```math
+P(A \mid B) = \frac{P(A \text{ and } B)}{P(B)}
 ```
 
 على أرض الواقع:
 
+```math
+P(B \mid A) = \frac{P(A \text{ and } B)}{P(A)}
 ```
-P(B|A) = P(A and B) / P(A)
-```
 
-两个表达式共享同一个分子:P(A وB)。令它们相等并重新整理:
+ اثنين من التعبيرات المشتركة في نفس الجزيئ:$P(A \text{ and } B)$令它们相等并重新整理:
 
-```
-P(A and B) = P(A|B) * P(B) = P(B|A) * P(A)
-
-Therefore:
-
-P(A|B) = P(B|A) * P(A) / P(B)
+```math
+\begin{aligned}
+P(A \text{ and } B) &= P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A) \\[4pt]
+&\text{因此：} \\[4pt]
+P(A \mid B) &= \frac{P(B \mid A) \cdot P(A)}{P(B)}
+\end{aligned}
 ```
 
 هذا هو نظرية بايز.
@@ -56,35 +56,35 @@ P(A|B) = P(B|A) * P(A) / P(B)
 
 | Part | Name | What it means |
 |------|------|---------------|
-| P(A\|B) | Posterior | 看到 evidence B 之后，你对 A 的更新后 belief |
-| P(B\|A) | Likelihood | 如果 A 为真，evidence B 出现的概率有多大 |
-| P(A) | Prior | 在看到任何 evidence 之前，你对 A 的 belief |
-| P(B) | Evidence | 在所有可能性下看到 B 的总概率 |
+| $P(A \mid B)$ | Posterior | 看到 evidence $B$ 之后，你对 $A$ 的更新后 belief |
+| $P(B \mid A)$ | Likelihood | 如果 $A$ 为真，evidence $B$ 出现的概率有多大 |
+| $P(A)$ | Prior | 在看到任何 evidence 之前，你对 $A$ 的 belief |
+| $P(B)$ | Evidence | 在所有可能性下看到 $B$ 的总概率 |
 
-دليل 项 P(B) 起到归一化因子的作用──你可以用总概率法 展开它:
+الأدلة$P(B)$يمكنك أن تظهر ذلك باستخدام قانون الاحتمال الكلي:
 
-```
-P(B) = P(B|A) * P(A) + P(B|not A) * P(not A)
+```math
+P(B) = P(B \mid A) \cdot P(A) + P(B \mid \text{not } A) \cdot P(\text{not } A)
 ```
 
 ### 医学检测 نموذج
 
 يؤثر مرض واحد على 1 شخص من كل 10 آلاف شخص.
 
-```
-P(sick)          = 0.0001     (prior: disease is rare)
-P(positive|sick) = 0.99       (likelihood: test catches it)
-P(positive|healthy) = 0.01    (false positive rate)
-
-P(positive) = P(positive|sick) * P(sick) + P(positive|healthy) * P(healthy)
-            = 0.99 * 0.0001 + 0.01 * 0.9999
-            = 0.000099 + 0.009999
-            = 0.010098
-
-P(sick|positive) = P(positive|sick) * P(sick) / P(positive)
-                 = 0.99 * 0.0001 / 0.010098
-                 = 0.0098
-                 = 0.98%
+```math
+\begin{aligned}
+P(\text{sick}) &= 0.0001 \quad \text{（先验：疾病罕见）} \\
+P(\text{positive} \mid \text{sick}) &= 0.99 \quad \text{（似然：检测能检出疾病）} \\
+P(\text{positive} \mid \text{healthy}) &= 0.01 \quad \text{（假阳性率）} \\[6pt]
+P(\text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) + P(\text{positive} \mid \text{healthy}) \cdot P(\text{healthy}) \\
+&= 0.99 \cdot 0.0001 + 0.01 \cdot 0.9999 \\
+&= 0.000099 + 0.009999 \\
+&= 0.010098 \\[6pt]
+P(\text{sick} \mid \text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) / P(\text{positive}) \\
+&= 0.99 \cdot 0.0001 / 0.010098 \\
+&= 0.0098 \\
+&= 0.98\%
+\end{aligned}
 ```
 
 لا يصل إلى 1%.  الهيمنة الاولى. عندما تكون حالات نادرة جدا، حتى الاختبار الدقيق غالبا ما ينتج إيجابيات كاذبة.
@@ -93,18 +93,18 @@ P(sick|positive) = P(positive|sick) * P(sick) / P(positive)
 
 هل تلقيت رسالة بريد إلكتروني تتضمن كلمة "لوتري" ؟
 
-```
-P(spam)                = 0.3      (30% of email is spam)
-P("lottery"|spam)      = 0.05     (5% of spam emails contain "lottery")
-P("lottery"|not spam)  = 0.001    (0.1% of legitimate emails contain "lottery")
-
-P("lottery") = 0.05 * 0.3 + 0.001 * 0.7
-             = 0.015 + 0.0007
-             = 0.0157
-
-P(spam|"lottery") = 0.05 * 0.3 / 0.0157
-                  = 0.955
-                  = 95.5%
+```math
+\begin{aligned}
+P(\text{spam}) &= 0.3 \quad \text{（30\% 的邮件是垃圾邮件）} \\
+P(\text{"lottery"} \mid \text{spam}) &= 0.05 \quad \text{（5\% 的垃圾邮件包含 "lottery"）} \\
+P(\text{"lottery"} \mid \text{not spam}) &= 0.001 \quad \text{（0.1\% 的正常邮件包含 "lottery"）} \\[6pt]
+P(\text{"lottery"}) &= 0.05 \cdot 0.3 + 0.001 \cdot 0.7 \\
+&= 0.015 + 0.0007 \\
+&= 0.0157 \\[6pt]
+P(\text{spam} \mid \text{"lottery"}) &= 0.05 \cdot 0.3 / 0.0157 \\
+&= 0.955 \\
+&= 95.5\%
+\end{aligned}
 ```
 
 كلمة واحدة على الاحتمال من 30% 推高 إلى 95.5% ‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
@@ -113,58 +113,56 @@ P(spam|"lottery") = 0.05 * 0.3 / 0.0157
 
 بايز البديل من خلال فرض جميع الميزات في ظل ظروف فئة معينة مستقلة عن بعضها البعض، ووضع هذا الفكر في العديد من الميزات:
 
-```
-P(class | feature_1, feature_2, ..., feature_n)
-  = P(class) * P(feature_1|class) * P(feature_2|class) * ... * P(feature_n|class)
-    / P(feature_1, feature_2, ..., feature_n)
+```math
+P(\text{class} \mid \text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n) = \frac{P(\text{class}) \cdot P(\text{feature}_1 \mid \text{class}) \cdot P(\text{feature}_2 \mid \text{class}) \cdots P(\text{feature}_n \mid \text{class})}{P(\text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n)}
 ```
 
 جزء من "سافية" هو افتراض الاستقلال. في الكتاب، ظهور الكلمات ليس مستقلًا. ولكن هذا الافتراض يؤدي بشكل غريب في الممارسة العملية، لأن الجهاز التقسيمي يتطلب فقط ترتيب الفئات، وليس إنتاج احتمالات جيدة للتصنيف.
 
 لأن كل الفئات هي نفسها، يمكنك أن تتجاوزها، فقط مقارنة الجزيئات:
 
-```
-score(class) = P(class) * product of P(feature_i | class)
+```math
+\text{score}(\text{class}) = P(\text{class}) \cdot \prod_i P(\text{feature}_i \mid \text{class})
 ```
 
 اختيار أفضل درجة
 
 ### تقدير الحد الأقصى للاحتمالات (MLE)
 
-كيفية الحصول على البيانات من التدريب في الميزات في الفئة؟
+كيفية الحصول على البيانات من التدريب$P(\text{feature} \mid \text{class})$-أجل
 
-```
-P("free"|spam) = (number of spam emails containing "free") / (total spam emails)
+```math
+P(\text{"free"} \mid \text{spam}) = \frac{\text{包含 "free" 的垃圾邮件数}}{\text{垃圾邮件总数}}
 ```
 
 هذا هو MLE: اختيار جعل بيانات المشاهدة من الممكن أن تظهر القيمة المعايير.
 
 问题: إذا كان كلمة ما لم تظهر في البريد الإلكتروني خلال التدريب، سوف تعطيه توزيع صفر احتمالات. 问题: إذا كان كلمة ما لم تظهر في البريد الإلكتروني خلال التدريب، سوف تعطيه توزيع صفر احتمالات. 问题:
 
-```
-P(word|class) = (count(word, class) + 1) / (total_words_in_class + vocabulary_size)
+```math
+P(\text{word} \mid \text{class}) = \frac{\text{count}(\text{word}, \text{class}) + 1}{\text{total\_words\_in\_class} + \text{vocabulary\_size}}
 ```
 
 أعط كل عدد إضافة إلى 1، تأكد من أن أي احتمالات لن تكون صفر.
 
 ### الحد الأقصى a posteriori (MAP)
 
-MLE 问的是: أي معايير تحسين P(معلومات معايير) ؟
+MLE  سؤال هو: ما هي المعايير الأكبر$P(\text{data} \mid \text{parameters})$- ماذا ؟
 
-السؤال هو: ما هي المعايير التي تُحدد أكبر قدر من المعايير التي يتم استخدامها في البيانات ؟
+السؤال هو: ما هي المعايير الأكبر$P(\text{parameters} \mid \text{data})$- ماذا ؟
 
 وفقًا لنظرية (بايز):
 
-```
-P(parameters|data) proportional to P(data|parameters) * P(parameters)
+```math
+P(\text{parameters} \mid \text{data}) \propto P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})
 ```
 
 MAP سوف تكون في المعلمات نفسها إضافة إلى سابقة. إذا كنت تعتقد أن المعلمات  ينبغي أن تكون أصغر، فلتقوم بتعديلها لتحديد القيمة الكبيرة من قبل.
 
 | Estimation | Optimizes | ML equivalent |
 |------------|-----------|---------------|
-| MLE | P(data\|params) | 未 regularize 的训练 |
-| MAP | P(data\|params) * P(params) | L2 / L1 regularization |
+| MLE | $P(\text{data} \mid \text{params})$ | 未 regularize 的训练 |
+| MAP | $P(\text{data} \mid \text{params}) \cdot P(\text{params})$ | L2 / L1 regularization |
 
 ### البايسية مقابل المتكررة:实践差异
 
@@ -189,7 +187,7 @@ MAP سوف تكون في المعلمات نفسها إضافة إلى سابق�
 
 **Priors 就是 regularization。**الوزن العليا من قبل غوسيان هو L2 التنظيم.
 
-**Posteriors 就是不确定性。**单个预测概率不能告诉你模型对该估算有多信心.                                                                                                                                                                                                                                                      
+**Posteriors 就是不确定性。**单个预测概率不能告诉你模型对该估算有多信心.$P(\text{spam})$بين 0.8 إلى 0.95 
 
 **Bayes updates 就是 online learning。**ما بعد اليوم سوف يصبح ما قبل الغد. عندما ترى نموذجك البيانات الجديدة، فإنه سوف يزيد من تحديث معتقداته بدلا من إعادة التدريب من الصفر.
 
@@ -343,26 +341,28 @@ for msg, pred in zip(test_messages, predictions):
 
 | Likelihood | Conjugate Prior | Posterior | Example |
 |-----------|----------------|-----------|---------|
-| Bernoulli | Beta(a, b) | Beta(a + successes, b + failures) | Coin flip bias estimation |
-| Normal (known variance) | Normal(mu_0, sigma_0) | Normal(weighted mean, smaller variance) | Sensor calibration |
-| Poisson | Gamma(a, b) | Gamma(a + sum of counts, b + n) | Modeling arrival rates |
-| Multinomial | Dirichlet(alpha) | Dirichlet(alpha + counts) | Topic modeling, language models |
+| Bernoulli | $\text{Beta}(a, b)$ | $\text{Beta}(a + \text{successes}, b + \text{failures})$ | Coin flip bias estimation |
+| Normal (known variance) | $\text{Normal}(\mu_0, \sigma_0)$ | Normal(weighted mean, smaller variance) | Sensor calibration |
+| Poisson | $\text{Gamma}(a, b)$ | $\text{Gamma}(a + \text{sum of counts}, b + n)$ | Modeling arrival rates |
+| Multinomial | $\text{Dirichlet}(\alpha)$ | $\text{Dirichlet}(\alpha + \text{counts})$ | Topic modeling, language models |
 
 هذا ما يهم: عندما لا توجد سابقات متضاربة، تحتاج إلى عينات مونت كارلو أو استنتاجات تغيرية من قريبة إلى عقب.
 
-التوزيع البيتا هو الأكثر شيوعاً في الممارسة التجريبية.
+توزيع بيتا هو الأكثر شيوعا في الممارسة من قبل المشتركة.$\text{Beta}(a, b)$أظهار اعتقادك بمعيار احتمالي$a/(a+b)$.$a+b$越大, التوزيع 越集中(越自信)
 
 حالة خاصة من قبل البيتا:
-- بيتا ((1، 1) = متساوية。 أنت على المعيار 没有意见。
-- بيتا ((10, 10) = في 0.5  بالقرب من الوصول إلى القمة.
-- بيتا ((1، 10) = إلى 0 偏斜──你相信参数 很小──
+- $\text{Beta}(1, 1)$= متساوية.
+- $\text{Beta}(10, 10)$= في 0.5  بالقرب من الوصول إلى القمة.
+- $\text{Beta}(1, 10)$= إلى 0 偏斜──你相信参数 很小──
 
 更新规则极其简单:
 
-```
-Prior:     Beta(a, b)
-Data:      s successes, f failures
-Posterior: Beta(a + s, b + f)
+```math
+\begin{aligned}
+\text{先验：} \quad & \text{Beta}(a, b) \\
+\text{数据：} \quad & s \text{ 次成功}, f \text{ 次失败} \\
+\text{后验：} \quad & \text{Beta}(a + s, b + f)
+\end{aligned}
 ```
 
 لا يوجد أي نموذج، لا يوجد سوى إضافة
@@ -374,19 +374,19 @@ Posterior: Beta(a + s, b + f)
 مثال محدد: تقدير ما إذا كان واحد العملة عادلة.
 
 **Day 1：还没有数据。**
-من Beta ((1, 1) 开始一个制服前──你没有意见──
+من$\text{Beta}(1, 1)$بدأتُ في وضع الزيّاد من قبل
 - متوسط سابق: 0.5
 - السابق في [0, 1] 上是平坦的
 
 **Day 2：观察到 7 次正面，3 次反面。**
-الخلفي = بيتا ((1 + 7 ، 1 + 3) = بيتا ((8, 4)
-- متوسط الخلفي:8/12 = 0.667
+$\text{Posterior} = \text{Beta}(1 + 7, 1 + 3) = \text{Beta}(8, 4)$
+- المتوسط الخلفي:$8/12 = 0.667$
 - الأدلة تظهر أن العملة الرقمية متجهة نحو الصواب
 
 **Day 3：又观察到 5 次正面，5 次反面。**
 استخدام البارحة اللاحقة كـ الاسبوع الراهن
-الخلفي = بيتا ((8 + 5 ، 4 + 5) = بيتا ((13, 9)
-- المتوسط الخلفي: 13/22 = 0.591
+$\text{Posterior} = \text{Beta}(8 + 5, 4 + 5) = \text{Beta}(13, 9)$
+- المتوسط الخلفي:$13/22 = 0.591$
 - و قد عادت قيمة التوازن الجديدة إلى حوالي 0.5
 
 ```mermaid
@@ -396,7 +396,7 @@ graph LR
     C -->|"5H, 5T"| D["Posterior 2<br/>Beta(13,9)<br/>mean = 0.59"]
 ```
 
-观测顺序不重要――Beta(1,1) 一次性用全部12次正面和8次反面更新,也会得到Beta(13, 9) 结果相同── 序列更新和批次更新 在数学上等价──但序列更新 允许你在每一步做决定,而不必存储原始数据──
+观测顺序 ليس مهما ً$\text{Beta}(1,1)$مرة واحدة مع كل 12 مرة على وجه الخصوص و 8 مرة على وجه الخصوص تحديث، وسوف تحصل أيضا $\text{Beta}(13, 9)$ النتيجة نفسها.‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
 
 هذا هو أساس التعلم عبر الإنترنت في نظام ML من الدرجة الإنتاجية. تستخدم عينة تومبسون للصوص.
 
@@ -408,14 +408,14 @@ graph LR
 
 اختبار بييزيان A/B:
 
-1. **Prior。**2 فاريان                                                                                                                                                                                                                                                            
+1. **Prior。**هناك نوعان من$\text{Beta}(1, 1)$开始── بدون تفضيل سابق──
 2. **Data。**الفارقة A:1000 مرة عرضها 50 مرة点击── الفارقة B:1000 مرة عرضها 65 مرة点击──
 3. **Posteriors。**
-   - أ:بيتا ((1 + 50 ، 1 + 950) = بيتا ((51, 951)
-   - ب:بيتا ((1 + 65، 1 + 935) = بيتا ((66, 936) ――المتوسط = 0.066
-4. **Decision。**计算 P(B > A) B ٪ معدلات التحويل الحقيقية 高于 A 的概率──
+   - أ:$\text{Beta}(1 + 50, 1 + 950) = \text{Beta}(51, 951)$ المتوسط = 0.051
+   - ب:$\text{Beta}(1 + 65, 1 + 935) = \text{Beta}(66, 936)$متوسط = 0.066
+4. **Decision。**计算 $P(B > A)$B                                                                                                                                                                                                                                                              
 
-解析地计算 P(B > A) 很困难――但 مونت كارلو 让它变得非常简单:
+解析地计算 $P(B > A)$لكن مونت كارلو جعلها بسيطة جداً
 
 ```
 1. Draw 100,000 samples from Beta(51, 951)  -> samples_A
@@ -423,7 +423,7 @@ graph LR
 3. P(B > A) = fraction of samples where B > A
 ```
 
-إذا كان P(B > A) > 0.95, فلنصدر الفارقة B.
+إذا$P(B > A) > 0.95$إذا كان بين 0.05 و 0.95 ، فنتواصل جمع البيانات.$P(B > A) < 0.05$، على إصدار النوع A:
 
 مقارنة مع اختبار A/B المتكرر:
 - ستحصل على احتمال مباشر:
@@ -433,33 +433,43 @@ graph LR
 
 | Aspect | Frequentist A/B | Bayesian A/B |
 |--------|----------------|--------------|
-| Output | p-value | P(B > A) |
+| Output | p-value | $P(B > A)$ |
 | Interpretation | “如果 A=B，这些数据有多令人意外？” | “B 比 A 更好的可能性有多大？” |
 | Early stopping | 会抬高 false positives | 任意时点都是安全的（前提是 prior 选择合理且 model specification 正确） |
 | Prior knowledge | 不使用 | 编码为 Beta prior |
-| Decision rule | p < 0.05 | P(B > A) > threshold |
+| Decision rule | $p < 0.05$ | $P(B > A) > \text{threshold}$ |
 
 ## التدريب
-1. **Multiple tests。**كان مريض واحد مثير للإيجابية في اثنين من الاختبارات المستقلة، والتي كانت 99٪ صحيحة، معدل انتشار المرض هو 1 شخص من كل 10,000 شخص.
+1. **Multiple tests。**كان مريض واحد إيجابيًا في اثنين من الاختبارات المستقلة ، وكانت الاختبارات الثانية 99٪ صحيحة ، معدل انتشار المرض هو 1 شخص في كل 10,000 شخص)$P(\text{sick})$كم؟ ضع الاختبار الأول في الاعتبار كسبق الاختبار الثاني
 
 2. **Smoothing impact。**استخدام 0.01、0.1、1.0 و 10.0 من قيم التسهيل 运行垃圾邮件 تصنيف.
 
-3. **Add features。**扩展 NaiveBayes class, make it apart from word counts 之外,也使用消息长度(短/长) كميزة──从训练数据中估计 P((((((((短短的),并把它合并到预测分数 中──
+3. **Add features。**扩展 NaiveBayes class,使它除了字数 之外,也使用消息长度(短/长) 作为功能──从训练数据中估计 $P(\text{short} \mid \text{spam})$和 $P(\text{short} \mid \text{ham})$, ووضعها مع بعضها البعض في النتيجة التنبؤية
 
-4. **MAP by hand。**给定观测数据 ((10 مرات مناقشة العملة في وسط 7 مرات الرأس) ، باستخدام Beta(2,2) قبل 计算 التحيز التقديرات المخططات.
+4. **MAP by hand。**给定观测数据 ((10 مرات ضياع العملات في وسط 7 مرات الرأس) ، استخدام $\text{Beta}(2,2)$تقدير خريطة التحيزات السابقة 计算偏差的图图估计――把它与MLE估计($7/10$) للمقارنة
+
+### 提示
+
+**练习 1。**调用一次 `bayes`الحصول على احتمالات الاختبار اللاحق بعد الاختبار الأول، وإعادة استخدامها كمرحلة أولى.`sequential_bayes(prior, likelihood, false_positive_rate, 2)`يجب أن تعطى نفس النتيجة، تقارب 0.5
+
+**练习 2。**كل شخص يُحسب قيمة إنشاء واحد`NaiveBayes(smoothing=s)`، باستخدام نفس التدريبات البيانية ،并分别打印 `top_words`◊ التسهيل = 0 时, غير المظهر في البريد المزخرف احتمال الكلمات = 0, لذلك لا يوجد تعريف لها للعدد
+
+**练习 3。**统计垃圾邮件和正常邮件中各有多少条短消息,分别除了各类消息总数,并`predict`وسوف يتم تعديل النسبة على عدد المشاركين في النسبة المشاركة.
+
+**练习 4。**استخدام $\text{Beta}(\alpha, \beta)$في السابق، كانت خريطة التقديرات$\frac{h + \alpha - 1}{n + \alpha + \beta - 2}$. . . .$h = 7$.$n = 10$النتيجة يجب أن تكون بين MLE(0.7) والعدد الأول من تجربة ((0.5)
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Prior | “我的初始猜测” | 观测 evidence 之前的 P(hypothesis)。在 ML 中：regularization 项。 |
-| Likelihood | “数据拟合得有多好” | P(evidence\|hypothesis)。在特定 hypothesis 下，观测数据出现的概率有多大。 |
-| Posterior | “我更新后的 belief” | P(hypothesis\|evidence)。Prior 乘以 likelihood，然后归一化。 |
-| Evidence | “归一化常数” | 所有 hypotheses 下的 P(data)。确保 posterior 求和为 1。 |
+| Prior | “我的初始猜测” | 观测 evidence 之前的 $P(\text{hypothesis})$。在 ML 中：regularization 项。 |
+| Likelihood | “数据拟合得有多好” | $P(\text{evidence} \mid \text{hypothesis})$。在特定 hypothesis 下，观测数据出现的概率有多大。 |
+| Posterior | “我更新后的 belief” | $P(\text{hypothesis} \mid \text{evidence})$。Prior 乘以 likelihood，然后归一化。 |
+| Evidence | “归一化常数” | 所有 hypotheses 下的 $P(\text{data})$。确保 posterior 求和为 1。 |
 | Naive Bayes | “那个简单的文本分类器” | 一个假设 features 在给定 class 时相互独立的分类器。尽管该假设不成立，效果仍然很好。 |
 | Laplace smoothing | “Add-one smoothing” | 给每个 feature 增加一个小计数，以防止未见数据产生零概率。 |
-| MLE | “直接用频率” | 选择最大化 P(data\|parameters) 的 parameters。没有 prior。在小数据上可能 overfit。 |
-| MAP | “带 prior 的 MLE” | 选择最大化 P(data\|parameters) * P(parameters) 的 parameters。等价于 regularized MLE。 |
-| Log-probability | “在 log space 中工作” | 使用 log(P) 而不是 P，避免许多小数相乘时发生 floating-point underflow。 |
+| MLE | “直接用频率” | 选择最大化 $P(\text{data} \mid \text{parameters})$ 的 parameters。没有 prior。在小数据上可能 overfit。 |
+| MAP | “带 prior 的 MLE” | 选择最大化 $P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})$ 的 parameters。等价于 regularized MLE。 |
+| Log-probability | “在 log space 中工作” | 使用 $\log(P)$ 而不是 $P$，避免许多小数相乘时发生 floating-point underflow。 |
 | False positive | “错误警报” | 检测结果为阳性，但真实状态为阴性。它会推动 base rate fallacy。 |
 
 ## 延伸阅读

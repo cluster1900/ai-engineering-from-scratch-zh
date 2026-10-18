@@ -38,9 +38,9 @@ Dimension    Avg distance ratio (max/min between random points)
 1000         ~1.02
 ```
 
-**体积集中在角落。**d 维 واحد كوب هائبركوب لديه 2 个角. في 100 维, تقريبا كل الحجم في كوب, بعيدا عن المركز. نقاط البيانات سوف تنتشر إلى الحافة, و النماذج الخاصة بك في المنطقة الداخلية سوف تفتقر إلى البيانات.
+**体积集中在角落。** $d$维 وحدة الكوب المضاد$2^d$个角── في 100 维, تقريبا كل الكمبيوترات في 角落里, بعيدا عن المركز── نقاط البيانات ستنتشر إلى الحافة, بينما النماذج الخاصة بك في المنطقة الداخلية ستفتقر إلى البيانات──
 
-**你需要指数级更多的数据。**للحفاظ على نفس كثافة العينات في الفضاء، من 2D إلى 20D يعني أنك بحاجة إلى 10^18 مضاعفة البيانات.
+**你需要指数级更多的数据。**لكي تحافظ على نفس كثافة النموذج في الفضاء، من 2D إلى 20D يعني ما تحتاجه$10^{18}$倍的数据──你永远不会有足够的数据──降低维度将数据密度带回可处理范围──
 
 ### الـ "PCA": العثور على الاتجاهات التي تهم
 
@@ -88,7 +88,7 @@ PC4          0.89          0.089              0.925
 
 1. **Threshold.**الحفاظ على العديد من المكونات، لتفسير التباين 90-95%
 2. **Elbow method.**رسم التباين الموضح لكل مكون.
-3. **Downstream performance.**سوف تستخدم PCA باستخدام عملية التحضير المسبق.
+3. **Downstream performance.**سوف تستخدم PCA معالجة مسبقة.$k$,并测量模型的精度──最佳 $k$هو دقة دخول موقع موقع الموقع
 
 ### الحفاظ على الأحياء
 
@@ -101,7 +101,7 @@ PC4          0.89          0.089              0.925
 - ستوكاستيكا ً مختلفة النشاطات ستحدث ترتيب مختلف
 - الارتباكات 参数控制考虑多少邻居(典型范围:5-50)
 - 输出中集群 距离没有意义――只有集群本身有意义――
-- في مجموعات بيانات كبيرة 上很慢──默认是 O(n^2)。
+- في مجموعات بيانات كبيرة 上很慢──默认是 $O(n^2)$.
 
 ### الـ UMAP: هيكل عالمي أسرع وأفضل
 
@@ -135,27 +135,27 @@ PC4          0.89          0.089              0.925
 الكرنيل PCA في الفضاء المكون من الميزات عالية الجودة التي تُحثّر من قبل وظيفة الكرنيل  تطبيق PCA، دون حساب واضح لل坐标 في هذا الفضاء ‒ هذا هو خدعة الكرنيل، ويعني نفس الفكرة وراء SVMs ‒
 
 算法:
-1. 计算 نجم المصفوفة K، من بينها K_ij = k(x_i، x_j)
+1. 计算 جوهر المصفوفة $K$، من بينهم$K_{ij} = k(x_i, x_j)$
 2. في مساحة الميزات وسط ماتريكس النواة
 3. لتركيز المصفوفة النواة صنع نفسه
-4. 顶部 eigenvectors(按1/sqrt(eigenvalue) 缩放)就是 التنبؤات
+4. 顶部 eigenvectors 按$1/\sqrt{\text{eigenvalue}}$缩放) هو التنبؤات
 
 وظائف النواة العادية:
 
 | Kernel | Formula | Good for |
 |--------|---------|----------|
-| RBF (Gaussian) | exp(-gamma * \|\|x - y\|\|^2) | 大多数 nonlinear data、smooth manifolds |
-| Polynomial | (x . y + c)^d | Polynomial relationships |
-| Sigmoid | tanh(alpha * x . y + c) | Neural network-like mappings |
+| RBF (Gaussian) | $\exp(-\gamma \lVert x - y \rVert^2)$ | 大多数 nonlinear data、smooth manifolds |
+| Polynomial | $(x \cdot y + c)^d$ | Polynomial relationships |
+| Sigmoid | $\tanh(\alpha x \cdot y + c)$ | Neural network-like mappings |
 
 何時使用内核 PCA وليس PCA القياسية:
 
 | Criterion | Standard PCA | Kernel PCA |
 |-----------|-------------|------------|
 | Data structure | Linear subspace | Nonlinear manifold |
-| Speed | O(min(n^2 d, d^2 n)) | O(n^2 d + n^3) |
+| Speed | $O(\min(n^2 d, d^2 n))$ | $O(n^2 d + n^3)$ |
 | Interpretability | Components are linear combinations of features | Components lack direct feature interpretation |
-| Scalability | Works on millions of samples | Kernel matrix is n x n, memory-limited |
+| Scalability | Works on millions of samples | Kernel matrix is $n \times n$, memory-limited |
 | Reconstruction | Direct inverse transform | Requires pre-image approximation |
 
 مثال كلاسيكي: نقطة حلقة مركزة في 2D: نقطة حلقة واحدة داخل حلقة أخرى: ستضع PCA المعيارية كلتا الحلقتين على نفس الخط ، وهذا لا يستخدم التصنيف.
@@ -165,22 +165,24 @@ PC4          0.89          0.089              0.925
 هل خفض الابعاد جيد؟ قمت بتقليص 784 إلى 50 طول؟ ماذا فقدت؟
 
 خطأ إعادة بناء القياس:
-1. 将数据投影到 k 维:X_reduced = X @ W_k
-2. 重建: X_hat = X_reduced @ W_k^T
-3. 计算 MSE:معدل (((X - X_hat) ^2)
+1. ستقوم بإلقاء البيانات$k$维:$X_{\text{reduced}} = X W_k$
+2. (شويش)$\hat{X} = X_{\text{reduced}} W_k^T$
+3. 计算 MSE:$\text{mean}((X - \hat{X})^2)$
 
 بالنسبة لـ PCA، خطأ إعادة الإعمار مع التباين الموضح
 
-```
-Reconstruction error = sum of eigenvalues NOT included
-Total variance = sum of ALL eigenvalues
-Fraction lost = (sum of dropped eigenvalues) / (sum of all eigenvalues)
+```math
+\begin{aligned}
+\text{重建误差} &= \text{未保留的特征值之和} \\
+\text{总方差} &= \text{全部特征值之和} \\
+\text{损失比例} &= \frac{\text{丢弃的特征值之和}}{\text{全部特征值之和}}
+\end{aligned}
 ```
 
 نسبة التباين الموضحة لكل مكون هي:
 
-```
-explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
+```math
+\text{explained\_ratio}_k = \frac{\text{eigenvalue}_k}{\sum \text{所有特征值}}
 ```
 
 وضع التباين المكتمل الموضح للمكونات عدد الصور، سوف تحصل على منحنى "كوع"
@@ -188,7 +190,7 @@ explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
 - التباين التراكمي  عبر عتبة الخاص بك مكانة ((عادة 0.90 أو 0.95)
 - أداء المهام التدريجية 进入平台期的位置
 
-خطأ إعادة التكوين ليس فقط للاختيار. يمكنك استخدامه للكشف عن الفجوة: خطأ إعادة التكوين عالية النموذج هي فجوات، فهي لا تتوافق مع الفضاء الفرعي المتعلم.
+خطأ إعادة الإعمار غير المستخدم فقط في اختيار$k$يمكن استخدامها للكشف عن الفجوات: خطأ إعادة الإعمار. النموذج العالي هو فاشل، فهي لا تتوافق مع الفضاء الفرعي الذي تمت تعلمه.
 
 
 ```figure
@@ -354,6 +356,14 @@ for k in [10, 30, 50, 100, 200]:
 
 3. خذ واحد لديه 50 ميزة ولكن فقط 5 ميزات معلومات مجموعة بيانات`sklearn.datasets.make_classification`生成) ・ تطبيق PCA،并检查 شرح منحنى التباين نعم أم لا صحيحة التعرف على البيانات في الواقع هو 5 بعدها‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
 
+### 提示
+
+**练习 1。**阅读 `PCA`类中 `inverse_transform`، و تُصَلّحُ لكلّ مُعدّل مُصَنّعٍ رئيسيّ بشكلٍ منفصلٍ إلى نموذجٍ واحدٍ.`reconstruction_error`عندما يزداد عدد المكونات الرئيسية، يجب أن ينخفض الفجوة.
+
+**练习 2。**في نفس المجموعة البيانية`sklearn.manifold.TSNE`ثلاث مرات فقط تغير`perplexity`, لم يبقوا متشابهين`random_state`■التشويش الأقل يُنظر فقط إلى عدد قليل من الجيران، ولهذا يتكون مجموعات صغيرة وثيقة؛ ويتكون التشويش الأعلى يُنظر إلى المزيد من الجيران، ولهذا يتكون مجموعات أكبر و أكثر سلاسة.
+
+**练习 3。**调用 `make_classification(n_features=50, n_informative=5, n_redundant=45)`,拟合 `PCA`، ومطبوعة التفسيرات التراكمية. الخصائص الزائدة هي مجموعة من الخصائص السريعة، لذلك الخصائص السريعة في 5 مكونات رئيسية تقترب من 1.0. ثم حاول`n_redundant=0`: بقية 45 خصائص هي ضوضاء مستقلة، لا تتجه منحنى إلى السطح.
+
 ## الشروط الرئيسية
 
 | Term | What people say | What it actually means |
@@ -361,8 +371,8 @@ for k in [10, 30, 50, 100, 200]:
 | Curse of dimensionality | "Too many features" | 随着维度增长，距离、体积和数据密度都会表现得反直觉。Models 需要指数级更多的数据来补偿。 |
 | PCA | "Reduce dimensions" | 旋转你的坐标系，使各轴与 maximum variance 的方向对齐，然后丢弃 low-variance axes。 |
 | Principal component | "An important direction" | Covariance matrix 的一个 eigenvector。Feature space 中数据变化最大的方向。 |
-| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 k 个 ratios 求和，就能看到 k 个 components 保留了多少信息。 |
-| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry (i,j) 衡量 feature i 和 feature j 如何共同变化。Diagonal entries 是各自的 variances。 |
+| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 $k$ 个 ratios 求和，就能看到 $k$ 个 components 保留了多少信息。 |
+| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry $(i,j)$ 衡量 feature $i$ 和 feature $j$ 如何共同变化。Diagonal entries 是各自的 variances。 |
 | t-SNE | "That cluster plot" | 一种 nonlinear 方法，通过保留 pairwise neighborhood probabilities 将高维数据映射到 2D。适合可视化，不适合 preprocessing。 |
 | UMAP | "Faster t-SNE" | 一种基于 topological data analysis 的 nonlinear 方法。既保留 local structure，也保留部分 global structure。比 t-SNE 更容易扩展。 |
 | Perplexity | "A t-SNE knob" | 控制每个点考虑的有效邻居数量。低 perplexity 聚焦非常 local 的结构。高 perplexity 捕获更宽泛的模式。 |

@@ -8,7 +8,7 @@
 **Time:** ~90 分钟
 
 ## 學习目标
-- من التحقق من DFT،并使用 O(N log N) من كولي-توكي FFT 验证它
+- من التحقق من DFT،并用 $O(N \log N)$من كولي-توكي FFT 验证它
 - فهم معايير التردد: من الإشارة إلى النطاق النطاق والمرحلة و الطيف الكهربائي
 - تطبيق نظرية التخزين، من خلال مضاعفة FFT  تنفيذ التخزين
 - سوف تتميز تدمير تردد فوريير مع ترانسفورمات التشفير الموضعي و CNN طبقات التحول
@@ -25,67 +25,64 @@
 ## 概念
 ### تعريف DFT
 
-给定 N 个样本 x[0],x[1], ..., x[N-1],Discrete Fourier Transform 会生成 N 个频率系数 X[0],X[1], ...,X[N-1]:
+- نعم$N$عينة$x[0], x[1], \ldots, x[N-1]$, تحويل فوريه متخفف$N$معايير التردد$X[0], X[1], \ldots, X[N-1]$:
 
-```
-X[k] = sum_{n=0}^{N-1} x[n] * e^(-2*pi*i*k*n/N)
-
-for k = 0, 1, ..., N-1
+```math
+X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-كل X[k] هو عدد معقد. حجمها. X[k] أيضا يعبر عن عرض التردد k.
+كل واحد$X[k]$إنها رقم معقد$\lvert X[k] \rvert$تعريف التردد$k$...الامتداد$\angle X[k]$تعبر عن تعويضات مرحلة في التردد
 
-关键洞见:`e^(-2*pi*i*k*n/N)`هو فازور يدور في تردد k.DFT. يعد التواصل بين الإشارة و N 个等间隔频率. إذا كان الإشارة تحتوي على طاقة في تردد k، فإن التواصل كبير جدا.
+关键洞见:$e^{-2\pi i k n/N}$هو واحد في التردد$k$旋转的phasor──DFT 计算是信号与 $N$个等间隔频率 中每一个的相关性.$k$على المحتويات الطاقة، والارتباط على حد كبير.
 
 ### معنى كل عدد
 
-**X[0]: DC component。**هذا هو مجموع جميع العينات، مع متوسط النسبة 成比例── يعبر عن ثابتة الإشارة ((صفر التردد) المُعاقبة──
+**$X[0]$: DC component。**هذا هو مجموع جميع العينات، مع متوسط النسبة 成比例── يعبر عن ثابتة الإشارة ((صفر التردد) المُعاقبة──
 
+```math
+X[0] = \sum_{n=0}^{N-1} x[n] \, e^0 = \text{全部 samples 之和}
 ```
-X[0] = sum_{n=0}^{N-1} x[n] * e^0 = sum of all samples
-```
 
-**X[k] for 1 <= k <= N/2: positive frequencies。**X[k] يعبر عن كل نموذج من النقاط في الدورات الكلية.
+**$X[k]$ for $1 \le k \le N/2$: positive frequencies。** $X[k]$表示每 $N$个 عينات 中 $k$تكرار الدورات$k$越大,تردد 越高(التذبذب 越快)
 
-**X[N/2]: Nyquist frequency。**هذا هو أعلى تردد يمكن أن يعرضه عينات N 个.
+**$X[N/2]$: Nyquist frequency。**هذا هو$N$个样本 能表示的最高频率──超过 هذا التردد، فستظهر الاسم الأدنى،也就是 ارتفاع الترددات 伪装成低频──
 
-**X[k] for N/2 < k < N: negative frequencies。**بالنسبة للإشارات ذات القيمة الحقيقية، X[N-k] = conj(X[k])。 الترددات السلبية هي صور الإيجابية── هذا هو السبب في وجود المعلومات المفيدة في وسط معايير N/2 + 1 ‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
+**$X[k]$ for $N/2 < k < N$: negative frequencies。**بالنسبة للإشارات ذات القيمة الحقيقية$X[N-k] = \overline{X[k]}$الترددات السلبية هي مرآة للاتجاهات الإيجابية، وهذا هو السبب في وجود المعلومات المفيدة.$N/2 + 1$معايير 中。
 
 ### الـ DFT العكس
 
 عكس DFT تجمع من معايير التردد 重建原始信号:
 
-```
-x[n] = (1/N) * sum_{k=0}^{N-1} X[k] * e^(2*pi*i*k*n/N)
-
-for n = 0, 1, ..., N-1
+```math
+x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X[k] \, e^{2\pi i k n/N} \qquad \text{其中 } n = 0, 1, \ldots, N-1
 ```
 
-الفرق الوحيد بينها وبين DFT المقبلة هو: العضو وسط رمز لل正(ليس منخفض) ، ويكون هناك عامل تطبيع 1/N.
+هو الفرق الوحيد بين DFT إلى الأمام هو: العضو وسط رمز لل正(ليس منخفضة) ، و هناك واحد $1/N$عامل التطبيع
 
 إن DFT العكسية هي إعادة بناء مثالية، ولا تفقد أي معلومات، يمكنك التحول من نطاق الزمن إلى نطاق التردد، والعودة مرة أخرى، دون أي خطأ.
 
 ### الـ (ف.إف.تي): جعل الأمر سريعاً
 
-إذا حدد DFT هو O(N^2): لكل واحد من معايير الناتج N 个, يجب أن يكون على عينات المدخل N 求和── عندما N = 1 مليون 时, هذا هو 10^12 مرات العمليات──
+كما هو محدد في أعلاه$O(N^2)$:对 $N$معايير الناتج في كل واحد من بينهم، يجب أن نضعها على$N$عينة دخول 求和──当 $N$= 1 مليون 时، هذا هو$10^{12}$عمليات أخرى
 
-سوف يتم تحويل فوريه سريع (FFT) باستخدام O  N log N) 计算同样结果──当 N = 1 مليون 时,这大约是20000000次操作,而不是10亿次──这使频率分析 变得可行──
+تحويل فوريه سريع (FFT) 会以$O(N \log N)$计算同样结果──当 $N$= 1 مليون 时، هذا حوالي 20 مليون عملية، وليس مليون مرة.
 
 خوارزمية كولي-توكي ((أسوأ شيوع في FFT) استخدام تقسيم والغزو:
 
 1. سوف تفرق الإشارة إلى عينات متصفحة مساوية ومعينة متصفحة غير مساوية
 2. 递归计算每一半的DFT──
-3. استخدام "عاملات مزدوجة" e^(-2*pi*i*k/N) 合并两个 DFT نصف حجمها
+3. استخدام "عوامل المزدوجة" $e^{-2\pi i k/N}$合并两个 DFT نصف حجمها
 
+```math
+\begin{aligned}
+X[k] &= E[k] + e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\
+X[k + N/2] &= E[k] - e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\[6pt]
+\text{其中 } E &= \text{偶数索引 samples 的 DFT} \\
+O &= \text{奇数索引 samples 的 DFT}
+\end{aligned}
 ```
-X[k] = E[k] + e^(-2*pi*i*k/N) * O[k]          for k = 0, ..., N/2 - 1
-X[k + N/2] = E[k] - e^(-2*pi*i*k/N) * O[k]    for k = 0, ..., N/2 - 1
 
-where E = DFT of even-indexed samples
-      O = DFT of odd-indexed samples
-```
-
-هذه التناظرة تعني أن كل طبقة من المرجعي تقوم بعمل O  N ، و هناك أيضاً علامة 2  N                                                                                                                                                                                                                                               
+هذه التناظرة تعني أن كل طبقة من التنفيذ المتردد$O(N)$العمل، و هناك$\log_2(N)$層──總计:$O(N \log N)$.
 
 ```mermaid
 graph TD
@@ -107,23 +104,27 @@ graph TD
 
 ### تحليل الطيف
 
-**power spectrum**نعم، هو X [k] في^2، أي أن معدل كل تردد هو حجم مربعها.
+**power spectrum**نعم$\lvert X[k] \rvert^2$، وذلك هو الكبيرة المربعة لكل معدل تردد.
 
-**phase spectrum**هو الزاوية ((X[k]),也就是 كل تكرار من مراحل التكفيف.
+**phase spectrum**نعم$\angle X[k]$،也就是 كل التردد من مرحلة التكفيف. بالنسبة لمعظم مهام التحليل، أنت مهتمة بقطاع الطاقة، و سوف تتجاهل المرحلة.
 
-```
-Power at frequency k:  P[k] = |X[k]|^2 = X[k].real^2 + X[k].imag^2
-Phase at frequency k:  phi[k] = atan2(X[k].imag, X[k].real)
+```math
+\begin{aligned}
+\text{频率 } k \text{ 处的 Power：} \quad P[k] &= |X[k]|^2 = \mathop{\mathrm{Re}}(X[k])^2 + \mathop{\mathrm{Im}}(X[k])^2 \\
+\text{频率 } k \text{ 处的 Phase：} \quad \phi[k] &= \mathop{\mathrm{atan2}}(\mathop{\mathrm{Im}}(X[k]), \mathop{\mathrm{Re}}(X[k]))
+\end{aligned}
 ```
 
 ### تحديد التردد
 
-قرار تردد DFT يعتمد على عينات عدد N و معدل أخذ العينات fs。
+قرار تردد DFT  يعتمد على عينات عدد $N$و معدل أخذ العينات$f_s$.
 
-```
-Frequency of bin k:      f_k = k * fs / N
-Frequency resolution:    delta_f = fs / N
-Maximum frequency:       f_max = fs / 2  (Nyquist)
+```math
+\begin{aligned}
+\text{bin } k \text{ 对应的频率：} \quad & f_k = k \cdot f_s / N \\
+\text{频率分辨率：} \quad & \Delta f = f_s / N \\
+\text{最高频率：} \quad & f_{\max} = f_s / 2 \quad \text{(Nyquist)}
+\end{aligned}
 ```
 
 لتحديد ترددات قريبة جداً، تحتاج إلى المزيد من العينات، لتمسيق ترددات عالية، تحتاج إلى معدل أعلى من العينات.
@@ -134,20 +135,21 @@ Maximum frequency:       f_max = fs / 2  (Nyquist)
 
 **time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。**
 
-```
-x * h = IFFT(FFT(x) . FFT(h))
-
-where * is convolution and . is element-wise multiplication
+```math
+\begin{aligned}
+& x * h = \text{IFFT}(\text{FFT}(x) \cdot \text{FFT}(h)) \\[4pt]
+& \text{其中 } * \text{ 表示 convolution，} \cdot \text{ 表示 element-wise multiplication}
+\end{aligned}
 ```
 
 لماذا هذا مهم:
 
-- 两个长度为 N 和 M من الإشارات 直接 convolution 需要 O(N*M) العمليات。
-- 基于 FFT 的卷曲 需要 O(N log N):تحويل 两者、乘、تحويل مرة أخرى‬
+- 两个长度为 $N$和 $M$إشارات  تحويل مباشر  تحتاج $O(NM)$العمليات
+-  على أساس FFT  ضرورت$O(N \log N)$:تحول 两者、乘 、تحول مرة أخرى‬
 - بالنسبة للجذور الكبيرة، سوف تكون صيغة FFT سريعة.
 - هذا ما يحدث في الطبقات المتحركة التي لديها مجالات استقبلية كبيرة
 
-انتباه:DFT  حساب هو التخدير الدائري ((إشارة 会 لف حول) ・・・ بالنسبة للتخدير الخطى ((( بدون لف) ، يرجى في حساب قبل سوف تكون الإشارات صفر-باد إلى طول N + M - 1 ・・・
+انتباه:DFT  حساب هو التخلب الدائري ((إشارة 会 لف حول) ・・・ بالنسبة للتخلب الخطية ((( بدون لف) ، يرجى في حساب قبل سوف تكون الإشارات صفر-باد إلى طول$N + M - 1$.
 
 ```mermaid
 graph LR
@@ -167,7 +169,7 @@ graph LR
 
 ### النوافذ
 
-إشارة DFT افتراضية هي دورية ، أي أن نضع عينات                                                                                                                                                                                                                                                      
+إشارة DFT 假设 是周期的,也就是把 $N$个样本 视为一个无限重复信号的周期──如果 starting point 和终点的信号不是相同的值,就会产生不连续性在边界,并表现为虚假的高频内容──这被称为光谱泄漏──
 
 في حسابات النوافذ، سوف يقلل الإشارة من النقطة إلى الصفر، مما يقلل من التسرب.
 
@@ -180,9 +182,11 @@ graph LR
 | Hamming | Modified cosine | 中等 | 更低 (-42 dB) | Audio processing、speech analysis |
 | Blackman | Triple cosine | 宽 | 非常低 (-58 dB) | 当 side lobe suppression 至关重要时 |
 
-```
-Hann window:    w[n] = 0.5 * (1 - cos(2*pi*n / (N-1)))
-Hamming window: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
+```math
+\begin{aligned}
+\text{Hann window：} \quad & w[n] = 0.5 \left(1 - \cos\frac{2\pi n}{N-1}\right) \\
+\text{Hamming window：} \quad & w[n] = 0.54 - 0.46 \cos\frac{2\pi n}{N-1}
+\end{aligned}
 ```
 
 قبل DFT ، سوف نستخدم نافذة مع إشارة جعل مضاعفة العنصر الحكيمة لنفذة:`X = DFT(x * w)`.
@@ -191,13 +195,13 @@ Hamming window: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
 
 | Property | Time Domain | Frequency Domain |
 |----------|-------------|-----------------|
-| Linearity | a*x + b*y | a*X + b*Y |
-| Time shift | x[n - k] | X[f] * e^(-2*pi*i*f*k/N) |
-| Frequency shift | x[n] * e^(2*pi*i*f0*n/N) | X[f - f0] |
-| Convolution | x * h | X * H (pointwise) |
-| Multiplication | x * h (pointwise) | X * H (circular convolution, scaled by 1/N) |
-| Parseval's theorem | sum \|x[n]\|^2 | (1/N) * sum \|X[k]\|^2 |
-| Conjugate symmetry (real input) | x[n] real | X[k] = conj(X[N-k]) |
+| Linearity | $ax + by$ | $aX + bY$ |
+| Time shift | $x[n - k]$ | $X[f] e^{-2\pi i f k/N}$ |
+| Frequency shift | $x[n] e^{2\pi i f_0 n/N}$ | $X[f - f_0]$ |
+| Convolution | $x * h$ | $X \cdot H$ (pointwise) |
+| Multiplication | $x \cdot h$ (pointwise) | $X * H$ (circular convolution, scaled by $1/N$) |
+| Parseval's theorem | $\sum \lvert x[n] \rvert^2$ | $\frac{1}{N} \sum \lvert X[k] \rvert^2$ |
+| Conjugate symmetry (real input) | $x[n]$ real | $X[k] = \overline{X[N-k]}$ |
 
 نظرية بارسيفال تعبر عن الطاقة الإجمالية في مجالاتين متشابهة. الطاقة في عملية التحول.
 
@@ -205,18 +209,20 @@ Hamming window: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
 
 المصدر الأصلي استخدام تشفيرات المواقع السينوسيدالية:
 
-```
-PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
-PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```math
+\begin{aligned}
+PE(pos, 2i) &= \sin\left(pos / 10000^{2i/d_{\text{model}}}\right) \\
+PE(pos, 2i+1) &= \cos\left(pos / 10000^{2i/d_{\text{model}}}\right)
+\end{aligned}
 ```
 
-كل واحد على الأبعاد (2i، 2i+1) يختلف في ترددات ترددها. ترددات من ارتفاع (أبعاد) 0.1) إلى انخفاض (أبعاد) في التنظيم الهندسية. هذا يجعل كل موقف في جميع فئات التردد لديه نمط فريد، مثل معايير فوريير كيفية التعرف على إشارة واحدة بشكل فريد.
+كل واحد من الأبعاد$(2i, 2i+1)$تتذبذب ترددات مختلفة. ترددات من ارتفاع (أبعاد 0.1) إلى أدنى (أبعاد) حسب المسافة الهندسية.
 
 وهي توفر خصائص رئيسية:
 
 - **Uniqueness:**أي موقعين لن يكون لديهم نفس التشفير.
-- **Bounded values:**و معنى ذلك
-- **Relative position:**يمكن أن يعبر عن التشفير للوضع p 处 التشفير للعمل الخطى。 النموذج يمكن أن يتعلم التركيز على المواقع النسبية。
+- **Bounded values:**وكل شيء في نهاية المطاف$[-1, 1]$...
+- **Relative position:**الموقف$p+k$يمكن أن يعبر عن موقع$p$处 تشفير وظيفة خطية──نموذج يمكن تعلم التركيز على المواقع النسبية──
 
 ### اتصال مع قنوات سي إن إن
 
@@ -228,7 +234,7 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
 3. في مجال التردد مضاعفة
 4. لنتائج تنفيذ IFFT
 
-标准 CNN 实现使用直接 convolution(对小型3x3 kernels 更快) ・・・ ولكن بالنسبة للنواة الكبيرة أو التحويل العالمي، فإن طريقة FFT القائمة على FFT سوف تكون أكثر سرعة كبيرة. بعض الهندسة المعمارية (مثل FNet) تستخدم FFT بشكل كامل 替代 الاهتمام، في O(N log N) بدلا من O(N^2) تعقيد أسفل الحصول على دقة متنافسة.
+标准 CNN 实现使用直接 convolution(对小型3x3 kernels 更快)  ولكن بالنسبة للنواة الكبيرة أو التحويل العالمي، فإن طريقة FFT القائمة على FFT سوف تكون بشكل ملحوظ أسرع.$O(N \log N)$و لا$O(N^2)$التعقيد، والحصول على دقة من النفس.
 
 ### الطيفيات و تحويل فوريه قصير الوقت
 
@@ -251,7 +257,7 @@ STFT procedure:
 
 ### التعبير
 
-إذا كان الإشارة 包含高于 fs/2 (تردد Nyquist) ، في معدل fs العينات سوف تنتج نسخة مستعارة.
+إذا الإشارة 包含高于 $f_s/2$(ترددات النيوكست) ، في المعدل$f_s$العينات ستنتج نسخة مستعارة. إشارة 90 هرتز من العينات 100 هرتز تبدو تماما نفسها مع إشارة 10 هرتز.
 
 ```
 Example:
@@ -270,7 +276,7 @@ Example:
 
 واحد من الأسوأ المعروف هو: في FFT قبل إشارة  إجراء إضافة الصفرة 会提升 تردد القرارات── انها لن تكون── صفر إضافة  مجرد بين القمامة الموجودة تردد  القيمة، جعل الطيف تبدو أكثر سلاسة── ولكن لا يمكن أن تكشف التفاصيل المترددة التي لا توجد في عينات الأصل──
 
-إنّ قرار التردد الحقيقي يعتمد فقط على وقت الملاحظة T = N / fs‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
+إنّ تحديد تردد حقيقي يعتمد فقط على وقت المراقبة$T = N / f_s$ يجب أن تفهم الفارق $\Delta f$من ترددات، أنت على الأقل تحتاج $T = 1 / \Delta f$秒的数据── مهما كان عدد المكملات الصفرية، لا يمكن تغيير هذا الحد الأساسي──
 
 
 ```figure
@@ -280,7 +286,7 @@ fourier-synthesis
 ## بناءها
 ### الخطوة 1: DFT من الصفر
 
-O  N^2) DFT  مباشرة من تعريف
+$O(N^2)$DFT 直接来自定义──
 
 ```python
 import math
@@ -304,7 +310,7 @@ def dft(x):
 
 ### 步骤 2: DFT العكسية
 
-结构相同,المجرد 为正,并除以 N。
+结构相同,المجرد 为正,并除以 $N$.
 
 ```python
 def idft(X):
@@ -420,32 +426,44 @@ spectrogram = np.abs(Zxx) ** 2
 ## التدريب
 1. **Pure tone identification。**创建信号,其中包含单个阴影波 (不知频率(1到50Hz 之间) ,以128Hz采样1秒──使用你的DFT 识别频率──验证答案是否匹配──现在加入标准偏差为0.5的高斯噪音,并重复──噪音 如何影响频谱?
 
-2. **FFT vs DFT verification。**生成一个长度为 64 随机信号――同时计算 DFT(O(N^2)) و FFT──验证所有系数在 1e-10 以内匹配──在长度为 256、512、1024 和 2048 信号 上分别计时两个函数──绘制 DFT时间与 FFT时间的比例──
+2. **FFT vs DFT verification。**生成一个长度为 64 的随机信号──同时计算DFT($O(N^2){}$) و FFT── تثبيت جميع المعاملات في 1e-10 以内匹配── في طول إشارات 256、512、1024 و 2048 上分別计时两个函数── رسم DFT وقت ونسبة FFT وقت──
 
 3. **Convolution theorem proof by example。**创建信号 x = [1, 2, 3, 4, 0, 0, 0, 0] 和过 h = [1, 1, 1, 0, 0, 0, 0, 0]──直接计算它们的圆形卷曲 (圈圈)──然后通过FFT 计算(转换、乘、逆转转)──验证结果匹配──现在通过适当的零 执行线性卷曲──
 
 4. **Windowing effects。**إنشاء إشارة، إنها 10 هرتز و 12 هرتز ((قريب جداً) موجات الصناعيين و ‬‬بإستعراض 128 هرتز 1 ثانية‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
 
-5. **Positional encoding analysis。**نسبة d_model = 128 和 max_pos = 512 生成 سينوسايدال وضعية التشفيرات. على كل واحد من المواقع (p1, p2), حسابها التشفيرات من نقطة المنتج.
+5. **Positional encoding analysis。**为 d_model = 128 和 max_pos = 512 生成 سينوسوايدل وضعية التشفيرات$(p_1, p_2)$، حسابها تشفيرات نقطة المنتج$\lvert p_1 - p_2 \rvert$، لا تعتمد على المواقع المطلقة. مع زيادة المسافة، النقطة المنتجة سوف يحدث؟
+
+### 提示
+
+**练习 1。**في 1 ثانية من خلال 128 مرة$k$على$k$لذلك، بالنسبة لمعدل عدد كامل، فإن أكبر قيمة بين الحلبات 1 إلى 63 هي هذه التردد.`generate_signal`和 `magnitude_spectrum` بعد إضافة الضجيج، تحقق ما إذا كان القيمة القصوى لا تزال في نفس القمامة، بينما ارتفع قيمة القمامة الأخرى بشكل كبير.
+
+**练习 2。**استخدام 2 次长度, لأن `fft`سوف يتم إشارة إلى نصف التفريق.`max(abs(a - b))`◊ استهلاك الوقت مقارنة$N / \log_2 N$增长‬
+
+**练习 3。**لتحويل دائري، الحساب$n$= 0 、1 、2 时的$y[n] = \sum_k h[k] x[(n-k) \bmod 8]$,并比较 `convolve_direct`和 `convolve_fft`√ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √  √                                                                 
+
+**练习 4。**استخدام `hann_window`.`hamming_window`.`apply_window`和 `power_spectrum`، ومحتوى أن هناك عدد من التفاصيل بين 9 إلى 13 هرتز. 10 هرتز و 12 هرتز في 1 ثانية تماماً لإكمال عدد كامل من الدورات، لذلك لا تضيف نافذة قد تبدو أفضل.
+
+**练习 5。**استخدام `positional_encoding(pos, 128)`计算每个编码──比较位置 (0, 10) 的点产量 和位置 (100, 110) 的点产量: 差别必须在约1e-10 以内──然后固定一个 $p_1$, رسم نقطة المنتج$\lvert p_1 - p_2 \rvert$变化的曲线──
 
 ## 关键术语
 | Term | What it means |
 |------|---------------|
-| DFT (Discrete Fourier Transform) | 将 N 个 time-domain samples 转换为 N 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
-| FFT (Fast Fourier Transform) | 用于计算 DFT 的 O(N log N) algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
-| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 1/N scaling |
-| Frequency bin | DFT output 中的每个 index k 表示 frequency k*fs/N Hz。"bin" 是离散的 frequency slot |
-| DC component | X[0]，zero-frequency coefficient。与 signal mean 成比例 |
-| Nyquist frequency | fs/2，在 sampling rate fs 下可表示的最大 frequency。高于它的 frequencies 会 alias |
-| Power spectrum | \|X[k]\|^2，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
-| Phase spectrum | angle(X[k])，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
+| DFT (Discrete Fourier Transform) | 将 $N$ 个 time-domain samples 转换为 $N$ 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
+| FFT (Fast Fourier Transform) | 用于计算 DFT 的 $O(N \log N)$ algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
+| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 $1/N$ scaling |
+| Frequency bin | DFT output 中的每个 index $k$ 表示 frequency $k f_s/N$ Hz。"bin" 是离散的 frequency slot |
+| DC component | $X[0]$，zero-frequency coefficient。与 signal mean 成比例 |
+| Nyquist frequency | $f_s/2$，在 sampling rate $f_s$ 下可表示的最大 frequency。高于它的 frequencies 会 alias |
+| Power spectrum | $\lvert X[k] \rvert^2$，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
+| Phase spectrum | $\angle X[k]$，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
 | Spectral leakage | 将 non-periodic signal 当作 periodic 处理导致的虚假 frequency content。可通过 windowing 减少 |
 | Window function | 在 DFT 前应用的 tapering function（Hann、Hamming、Blackman），用于减少 spectral leakage |
-| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential e^(-2*pi*i*k/N) |
+| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential $e^{-2\pi i k/N}$ |
 | Convolution theorem | time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。它是 signal processing 和 CNNs 的基础 |
 | Circular convolution | signal 会 wrap around 的 convolution。这是 DFT 自然计算的内容 |
 | Linear convolution | 没有 wraparound 的标准 convolution。通过在 DFT 前 zero-padding 实现 |
-| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。sum \|x[n]\|^2 = (1/N) sum \|X[k]\|^2 |
+| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。$\sum \lvert x[n] \rvert^2 = \frac{1}{N} \sum \lvert X[k] \rvert^2$ |
 | Aliasing | 当 sampling rate 不足时，高于 Nyquist 的 frequencies 表现为较低 frequencies |
 
 ## 延伸阅读

@@ -40,11 +40,10 @@ w = [1, 0, -2]    -- 一个 3D Vector
 
 ### المصفوفة: رقم
 
-المصفوفة هي 2D 网格──由行 和 الأعمدة 组成──一个 m x n المصفوفة 有 m 行和 n 列──
+المصفوفة هي 2D 网格──由行 和 الأعمدة 组成──一个 $m \times n$المصفوفة لديها$m$行和 $n$列──
 
-```
-A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
-    | 4  5  6 |
+```math
+A = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \quad \text{2x3 Matrix（2 行，3 列）}
 ```
 
 في الشبكات العصبية، ستقوم المصفوفات الوزنية بتحويل متجهات المدخلات إلى متجهات الخروج.
@@ -80,16 +79,14 @@ A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
 
 في العنصر: نفس الموقع 乘── المصفوفات 必须具有相同形状──
 
-```
-| 1  2 |   | 5  6 |   | 5  12 |
-| 3  4 | * | 7  8 | = | 21 32 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} * \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 5 & 12 \\ 21 & 32 \end{bmatrix}
 ```
 
 مضاعفة المصفوفة: الصفوف و أعمدة منتجات النقاط.
 
-```
-| 1  2 |   | 5  6 |   | 1*5+2*7  1*6+2*8 |   | 19  22 |
-| 3  4 | @ | 7  8 | = | 3*5+4*7  3*6+4*8 | = | 43  50 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} @ \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\ 3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8 \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
 ```
 
 مختلفة النتائج مختلفة القواعد مختلفة
@@ -319,13 +316,21 @@ NumPy 会自动把1D تحيز البث إلى اثنين من الخطوط عل�
 
 3. **构建一个 two-layer network。**فقط باستخدام صف ماتريسك (((不使用NumPy) ، إنشاء شبكة عصبية ذات طبقتين: المدخل (3) -> مخفي (4) -> الخروج (2)── ابتداء الوزن العشوائية،运行一次向前,并验证所有形状都正确──
 
+### 提示
+
+**练习 1。**على ثلاثة محورات`A @ A.inverse_2x2()`، وكل عنصر مع الوحدة المصفوفة ، والخطاء يجب أن يكون في `1e-9`以内── بالنسبة للموامل التي تمتد إلى 0، على سبيل المثال [[1, 2] ، [2, 4] ،`inverse_2x2`سأخرج`ValueError`، هذا هو النتيجة المطلوبة
+
+**练习 2。**计算 3x3 代数余子式矩阵,将其转置得到伴随矩阵,再将每个元素除以 `determinant()` التفتيش`A @ A_inv`تحصل على الوحدة المربطة، وكل عنصر مع`np.linalg.inv(A)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `1e-9`.
+
+**练习 3。**相乘前先写出每个矩阵的形状:与 `demo_neural_network_layer`مثلما هو الحال`W1`4x3`W2`وبالنسبة إلى إدخال 2x4──3x1 يجب الحصول على 4x1 من التخفيضات المتخفيضة والإخراج 2x1──
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Vector | “一支箭头” | 有序数字列表。在 AI 中：高维空间中的一个点。 |
 | Matrix | “一张数字表” | 一种 linear transformation。它把 vectors 从一个空间映射到另一个空间。 |
 | Matrix multiply | “就是把数字相乘” | 第一个 Matrix 的每一行与第二个 Matrix 的每一列之间的 dot products。顺序很重要。 |
-| Transpose | “翻转它” | 交换 rows 和 columns。把一个 m x n Matrix 变成 n x m。在 Backpropagation 中很关键。 |
+| Transpose | “翻转它” | 交换 rows 和 columns。把一个 $m \times n$ Matrix 变成 $n \times m$。在 Backpropagation 中很关键。 |
 | Determinant | “来自 Matrix 的某个数字” | 衡量 Matrix 对面积（2D）或体积（3D）的缩放程度。零表示这个 transformation 压扁了一个维度。 |
 | Inverse | “撤销这个 Matrix” | 反转该 transformation 的 Matrix。只有 determinant 不为零时才存在。 |
 | Identity matrix | “无聊的 Matrix” | Matrix 中等价于乘以 1 的对象。用于 residual connections（ResNets）。 |

@@ -28,29 +28,31 @@
 
 ### قاعدة السلسلة
 
-إذا`y = f(g(x))`، إذاً`y`مقارنة`x`导数 هي:
+إذا$y = f(g(x))$، إذاً$y$مقارنة$x$导数 هي:
 
-```
-dy/dx = dy/dg * dg/dx = f'(g(x)) * g'(x)
+```math
+\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx} = f'(g(x)) \cdot g'(x)
 ```
 
 沿着链条将导数相乘―― كل环节贡献自己的局部导数――
 
-نموذج:`y = sin(x^2)`
+نموذج:$y = \sin(x^2)$
 
-```
-g(x) = x^2       g'(x) = 2x
-f(g) = sin(g)     f'(g) = cos(g)
-
-dy/dx = cos(x^2) * 2x
+```math
+\begin{aligned}
+g(x) &= x^2 \qquad & g'(x) &= 2x \\
+f(g) &= \sin(g) \qquad & f'(g) &= \cos(g) \\[4pt]
+\frac{dy}{dx} &= \cos(x^2) \cdot 2x
+\end{aligned}
 ```
 
 对于更深的组合,链条会继续延伸:
 
-```
-y = f(g(h(x)))
-
-dy/dx = f'(g(h(x))) * g'(h(x)) * h'(x)
+```math
+\begin{aligned}
+y &= f(g(h(x))) \\[4pt]
+\frac{dy}{dx} &= f'(g(h(x))) \cdot g'(h(x)) \cdot h'(x)
+\end{aligned}
 ```
 
 كل طبقة من شبكة العصبية هي جزء من هذه السلسلة
@@ -88,7 +90,7 @@ graph TD
 
 هناك طريقتان يمكن تطبيقها في الرسم البياني قاعدة السلسلة
 
-**Forward mode**من النقل إلى النقل، سوف يُحسب`dx/dx = 1`، ومع كل عملية تنتشر.
+**Forward mode**من النقل إلى النقل، سوف يُحسب$dx/dx = 1$، ومع كل عملية تنتشر.
 
 ```
 Forward mode: seed dx/dx = 1, propagate forward
@@ -98,7 +100,7 @@ Forward mode: seed dx/dx = 1, propagate forward
   y = sin(a)  (dy/dx = cos(a) * da/dx = cos(4) * 4 = -2.615)
 ```
 
-**Reverse mode**من الخروج إلى الخروج، سوف تصل إلى الخلف.`dy/dy = 1`، وفقًا للانتقال العكسي من خلال كل عملية انتشار.
+**Reverse mode**من الخروج إلى الخروج، سوف تصل إلى الخلف.$dy/dy = 1$، وفقًا للانتقال العكسي من خلال كل عملية انتشار.
 
 ```
 Reverse mode: seed dy/dy = 1, propagate backward
@@ -112,12 +114,12 @@ Reverse mode: seed dy/dy = 1, propagate backward
 
 | Mode | Seed | Direction | Best when |
 |------|------|-----------|-----------|
-| Forward | `dx_i/dx_i = 1` | 输入到输出 | 输入少、输出多 |
-| Reverse | `dy/dy = 1` | 输出到输入 | 输入多、输出少（neural nets） |
+| Forward | $dx_i/dx_i = 1$ | 输入到输出 | 输入少、输出多 |
+| Reverse | $dy/dy = 1$ | 输出到输入 | 输入多、输出少（neural nets） |
 
 ### باستخدام وضع الأمام الأرقام المزدوجة
 
-الوضع الأمامي يمكن استخدام الأرقام المزدوجة 优雅地实现──形式的双数是`a + b*epsilon`، من بينهم`epsilon^2 = 0`.
+الوضع الأمامي يمكن استخدام الأرقام المزدوجة 优雅地实现──形式的双数是$a + b\epsilon$، من بينهم$\epsilon^2 = 0$.
 
 ```
 Dual number: (value, derivative)
@@ -237,7 +239,7 @@ class Value:
             v._backward()
 ```
 
-النوع التوبولوجي  ضمان كل نقطة من درجاتها في الانتشار إلى أعصابها الاولى 之前已完整计算──种子 درجاتها هي 1.0(dy/dy = 1)。
+نوع التوبولوجي  ضمان كل نقطة من درجات في الانتشار إلى أعصاب الطفل  قبل أن يكون كامل الحساب.$dy/dy = 1$(‬)
 
 ### الخطوة 4: محرك كامل يتطلب المزيد من العمليات
 
@@ -301,11 +303,11 @@ class Value:
 | Operation | Backward rule | Used in |
 |-----------|--------------|---------|
 | `__sub__` | 复用 add + neg | Loss 计算（pred - target） |
-| `__pow__` | n * x^(n-1) | Polynomial activations、MSE（error^2） |
+| `__pow__` | $n \cdot x^{n-1}$ | Polynomial activations、MSE（$\text{error}^2$） |
 | `__truediv__` | 复用 mul + pow(-1) | Normalization、learning rate scaling |
-| `exp` | exp(x) * upstream | Softmax、log-likelihood |
-| `log` | (1/x) * upstream | Cross-entropy loss、log probabilities |
-| `tanh` | (1 - tanh^2) * upstream | 经典 activation function |
+| `exp` | $\exp(x) \cdot \text{upstream}$ | Softmax、log-likelihood |
+| `log` | $(1/x) \cdot \text{upstream}$ | Cross-entropy loss、log probabilities |
+| `tanh` | $(1 - \tanh^2) \cdot \text{upstream}$ | 经典 activation function |
 
 巧妙之处在:`__sub__`和 `__truediv__`يستخدمون تعريفات العمليات المحددة. فإنها تحصل تلقائيا على الصوابية الصحيحة، لأن قاعدة السلسلة سوف تمر من خلال الطبقة السفلية من إضافة / مول / Pow  العمليات المجمعة.
 
@@ -490,13 +492,23 @@ print(f"df/dc = {c.grad}")  #  1.0
 
 ## التدريب
 
-1. إلى فئة القيمة 添加 `__pow__`، لذا يمكنك أن تحسب`x ** n` 验证在 `x=2`时،`d/dx(x^3)`... و هكذا`12.0`.
+1. إلى فئة القيمة 添加 `__pow__`، لذا يمكنك أن تحسب`x ** n` 验证在 $x=2$时،$\frac{d}{dx}(x^3)$... و هكذا`12.0`.
 
-2. إضافة`tanh`作为激活函数──验证 `tanh'(0) = 1`و`tanh'(2) = 0.0707`(قريبة القيمة)
+2. إضافة`tanh`作为激活函数──验证 $\tanh'(0) = 1$و$\tanh'(2) = 0.0707$(قريبة القيمة)
 
 3. لأحد الخلايا العصبية  بنية الرسم البياني الحسابي:`y = relu(w1*x1 + w2*x2 + b)`△ حساب جميع خمسة درجات,并与 PyTorch 验证──
 
 4. استخدام الأرقام المزدوجة  تحقيق التأثير الذاتي في الوضع المضي قدمها ‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬`Dual`الطبقة،并验证 it gives the same number with reverse-mode engine.
+
+### 提示
+
+**练习 1。** `Value`لقد حددت`__pow__`‬ ‫تقرأها‬`_backward`, تأكيد$n x^{n-1}$乘到传入的梯度上──运行 `x = Value(2.0)`.`y = x ** 3`.`y.backward()`(إنه)`x.grad`يجب أن يكون 12.0
+
+**练习 2。**في`_backward`中使用 $\tanh'(x) = 1 - \tanh(x)^2$  باستخدامك لتحقيق التفاوتات المحدودة:$\frac{\tanh(x + h) - \tanh(x - h)}{2h}$في$x = 0$和 $x = 2$يجب أن تتوافق مع ذلك
+
+**练习 3。**استخدام`Value`بناء المواد`w1*x1 + w2*x2 + b`، تطبيق`relu`, إعادة استخدام`backward`与 PyTorch 比较前,先手工核对:若 `relu`من الإدخال إلى الصواب،`w1`                                     `x1`إذا كان ذلك، فالخمسة درجات هي 0
+
+**练习 4。**في كل واحد`Dual`中保存值和导数,乘法采用乘积法 $(a, a')(b, b') = (ab, a'b + ab')$ سيتم تعيين عدد الإدخال الأولي لـ 1 ، ثم سيتم حساب النتيجة مع محرك الوضع المعاكس للعمل نفسه`x.grad`مقارنة
 
 ## 关键术语
 
@@ -507,13 +519,13 @@ print(f"df/dc = {c.grad}")  #  1.0
 | Forward mode | “向前推导数” | 将导数从输入传播到输出的 autodiff。每个输入变量需要一次 pass。 |
 | Reverse mode | “Backpropagation” | 将 Gradient 从输出传播到输入的 autodiff。每个输出变量需要一次 pass。 |
 | Autograd | “自动 Gradient” | 一个系统：记录对值执行的操作、构建 graph，并通过 Chain Rule 计算精确 Gradient |
-| Dual numbers | “值加导数” | 形式为 a + b*epsilon（epsilon^2 = 0）的数字，可以在算术运算中携带导数信息 |
+| Dual numbers | “值加导数” | 形式为 $a + b\epsilon$（$\epsilon^2 = 0$）的数字，可以在算术运算中携带导数信息 |
 | Topological sort | “依赖顺序” | 对 graph 节点排序，使每个节点都位于其所有依赖之后。正确传播 Gradient 所必需。 |
 | Gradient accumulation | “相加，不要替换” | 当一个值流入多个操作时，它的 Gradient 是所有传入 Gradient 贡献的总和 |
 | Dynamic graph | “Define by run” | 每次 forward pass 都重新构建的 computation graph，允许模型内部使用 Python 控制流（PyTorch 风格） |
 | Gradient checking | “数值验证” | 将 autodiff Gradient 与数值 finite-difference Gradient 对比，以验证正确性。调试时必不可少。 |
 | MLP | “Multi-layer perceptron” | 一个包含一层或多层隐藏 neuron 的 Neural Network。每个 neuron 计算加权和加 bias，然后应用 activation function。 |
-| Neuron | “加权和 + activation” | 基本单元：output = activation(w1*x1 + w2*x2 + ... + b)。weights 和 bias 是可学习参数。 |
+| Neuron | “加权和 + activation” | 基本单元：$\text{output} = \text{activation}(w_1 x_1 + w_2 x_2 + \cdots + b)$。weights 和 bias 是可学习参数。 |
 
 ## 延伸阅读
 

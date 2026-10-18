@@ -35,8 +35,8 @@ minimize L(w) where:
 
 أسهل طريقة للتحسين. حساب الخسارة مقارنة مع كل خطوة من الوزن.
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 هذا هو الحساب الكامل
@@ -91,9 +91,11 @@ graph LR
 
 إن كان التراجع في نسبة الفانيليا متواضعًا في المدار الحالي، فإن النسبة تتحرك بشكل عام في الوادي الضيق، فإن التقدم سيكون بطيء.
 
-```
-v = beta * v + gradient
-w = w - lr * v
+```math
+\begin{aligned}
+v &= \beta \cdot v + \text{gradient} \\
+w &= w - \text{lr} \cdot v
+\end{aligned}
 ```
 
 类比是: كرة تتدفق نحو الجبل. لا تتوقف في كل صعوبة وتبدأ مرة أخرى.
@@ -121,17 +123,17 @@ graph TD
 
 (آدم) تقدير اللحظة التكيفية) سيكون لكل وزن و بعد ذلك أمرين:
 
-1. اللحظة الأولى ((م): المتوسط الجاري للدرجات ((شبه الزخم)
-2. اللحظة الثانية ((v):معدل تدريجية مربع
+1. اللحظة الأولى$m$): المتوسط الجاري للدرجات ((مثل الزخم)
+2. اللحظة الثانية$v$):معدل تدريجية مربع
 
-```
-m = beta1 * m + (1 - beta1) * gradient
-v = beta2 * v + (1 - beta2) * gradient^2
-
-m_hat = m / (1 - beta1^t)    bias correction
-v_hat = v / (1 - beta2^t)    bias correction
-
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+\begin{aligned}
+m &= \beta_1 \cdot m + (1 - \beta_1) \cdot \text{gradient} \\
+v &= \beta_2 \cdot v + (1 - \beta_2) \cdot \text{gradient}^2 \\[4pt]
+\hat{m} &= m / (1 - \beta_1^t) \quad \text{偏差校正} \\
+\hat{v} &= v / (1 - \beta_2^t) \quad \text{偏差校正} \\[4pt]
+w &= w - \text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)
+\end{aligned}
 ```
 
 إضافة إلى`sqrt(v_hat)`يُعرف أنّ الوزن الذي يُعَدّهُ كبيراً من الدرجات سيتمّ تعزيزه بعددٍ كبيرٍ (فعالٍ) ، و يُعَدّ الوزن الذي يُعَدّهُ كبيراً من الدرجات الصغيرة سيتمّ تعزيزه بعددٍ صغيرٍ (فعالٍ) ، و يُعَدّ كلّ وزن يُحصل على معدل التعلم التكيفيّ الخاصّ به.
@@ -146,14 +148,14 @@ w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
 
 | Schedule | Formula | Use case |
 |----------|---------|----------|
-| Step decay | lr = lr * factor every N epochs | 简单，手动控制 |
-| Exponential decay | lr = lr_0 * decay^t | 平滑降低 |
-| Cosine annealing | lr = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T)) | Transformers，现代训练 |
+| Step decay | $\text{lr} = \text{lr} \cdot \text{factor}$，每 $N$ 个 epochs 更新 | 简单，手动控制 |
+| Exponential decay | $\text{lr} = \text{lr}_0 \cdot \text{decay}^t$ | 平滑降低 |
+| Cosine annealing | $\text{lr} = \text{lr} _{\min} + 0.5 \cdot (\text{lr} _{\max} - \text{lr} _{\min}) \cdot (1 + \cos(\pi t / T))$ | Transformers，现代训练 |
 | Warmup + decay | 线性上升，然后 decay | 大模型，防止早期不稳定 |
 
 ### الملتوية مقابل غير الملتوية
 
-وظيفة مخروطة 只有حد أدنى  التنزل التدريجي 总能找到它‬ ‬`f(x) = x^2`مثل هذا التربيعي هو متواصل
+وظيفة مخروطة 只有حد أدنى  التنزل التدريجي 总能找到它‬ ‬$f(x) = x^2$مثل هذا التربيعي هو متواصل
 
 وظائف فقدان الشبكة العصبية غير متواصلة.
 
@@ -202,8 +204,8 @@ gradient-descent
 
 وظيفة روزنبروك هي معيار التحسين الكلاسيكي. يقع الحد الأدنى له (1, 1), يقع في وادي صغير من الجبال.
 
-```
-f(x, y) = (1 - x)^2 + 100 * (y - x^2)^2
+```math
+f(x, y) = (1 - x)^2 + 100 \cdot (y - x^2)^2
 ```
 
 ```python
@@ -345,9 +347,19 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(adam, T_max=100)
 
 2. **Momentum comparison.**في وظيفة روزنبروك 上 استخدام قيم الزخم [0.0, 0.5, 0.9, 0.99] 运行带动力 的 SGD──跟踪每一步的损失──哪个动力值 收最快?哪个会超越?
 
-3. **Saddle point escape.**定义函数 `f(x, y) = x^2 - y^2`(أصل نقطة واحدة نقطة السرير) ∼ (0.01, 0.01) 开始── Comparar vanilla GD、带 momentum 的 SGD 和 Adam 的行为──哪个能逃离 Saddle Point?
+3. **Saddle point escape.**定义函数 $f(x, y) = x^2 - y^2$(أصل نقطة واحدة نقطة السرير) ∼ (0.01, 0.01) 开始── Comparar vanilla GD、带 momentum 的 SGD 和 Adam 的行为──哪个能逃离 Saddle Point?
 
 4. **Implement learning rate decay.**لصف GradientDescent اضافة جدول التدهور المتفاضل:`lr = lr_0 * 0.999^step` مقارنة في وظيفة روزنبروك 上 استخدام التهالك مع عدم استخدام التهالك
+
+### 提示
+
+**练习 1。**عبر كل معدل التعلم، لكل إنشاء`GradientDescent(lr=...)`, مع `rosenbrock`和 `rosenbrock_gradient`إرسالها`optimize`عندما ينفجر، فإن الخسارة تزداد أو تتحول`nan`؛ الحد الأدنى للقيمة$(1, 1)$, خسارة 0:
+
+**练习 2。**لجميع قيمة الإنشاء`SGDMomentum(momentum=m)`, سجل كل خطوة بعد الخسارة`find_convergence_step`مقارنة السرعة، ومع الخسارة وتكرار الارتفاع لتحديد أكثر من الهدف.
+
+**练习 3。**كتب خارج التعدد $(2x, -2y)$, دع ثلاثة محاولات تحسين كل من (0.01, 0.01)  بدأ العمل.$y$:使 $\lvert y \rvert$تحسينات كبيرة هي تحسينات الهروب من النقاط
+
+**练习 4。**في`GradientDescent`中保存 `lr_0`و الحاسبة`step`内计算 `lr = lr_0 * 0.999 ** step` انطلاقاً من 0 و 1000 خطوة، يجب أن يكون`lr_0`降到约 $0.37 \times \text{lr}_0$.
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -358,7 +370,7 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(adam, T_max=100)
 | SGD | “Random sampling” | Stochastic gradient descent。用随机子集而不是完整 dataset 计算 Gradient。实践中几乎总是指 mini-batch SGD。 |
 | Mini-batch | “A chunk of data” | 用于估计 Gradient 的一小部分训练数据（32-256 个样本）。平衡速度与 Gradient 准确性。 |
 | Adam | “The default optimizer” | Adaptive Moment Estimation。跟踪每个 weight 的 Gradients 和 squared gradients 的 running averages，从而为每个 weight 提供自己的 learning rate。 |
-| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 (1 - beta^t) 进行补偿。 |
+| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 $(1 - \beta^t)$ 进行补偿。 |
 | Learning rate schedule | “Change lr over time” | 在训练过程中调整 learning rate 的函数。早期大步，后期小步。 |
 | Convex function | “One valley” | 任意 local minimum 都是 global minimum 的函数。Gradient descent 总能找到它。Neural Network losses 不是 convex。 |
 | Saddle point | “Flat but not a minimum” | Gradient 为零，但在某些方向上是 minimum、在另一些方向上是 maximum 的点。高维空间中很常见。 |

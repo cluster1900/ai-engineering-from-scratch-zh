@@ -45,7 +45,7 @@ graph LR
 
 ### التناوب
 
-角度为 图的2D旋转会保持距离和角度不变──它让每个点沿圆弧移动──
+    $\theta$الدوران الثنائي الأبعاد سوف يبقى المسافة والزاوية ثابتة.
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 في 3D، سوف تدور حول محور ما. كل محور لديه ماتريسكة الدوران الخاصة به:
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### التوسع
@@ -123,8 +117,8 @@ graph LR
 ```
 
 المصفوفات المقطوعة:
-- `Shx = [[1, k], [0, 1]]`ستقوم بـ x 平移 k * y
-- `Shy = [[1, 0], [k, 1]]`سوف يُحرك
+- `Shx = [[1, k], [0, 1]]`ستعمل$x$平移 $k \cdot y$
+- `Shy = [[1, 0], [k, 1]]`ستعمل$y$平移 $k \cdot x$
 
 ### التفكير
 
@@ -196,7 +190,7 @@ Eigenvector [1, -1] with eigenvalue 1:
 
 ### التكوين الخاص
 
-إذا كانت المصفوفة لديها n 个线性 لا علاقة لها بالمتجهات الخاصة، يمكن تفكيكها:
+إذا كان هناك ماتريكس$n$الجهاز نفسه غير المتعلقة بالشكل، يمكن تفكيره:
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### لماذا قيمها الخاصة مهمة
 
-**PCA。**المتجهات الخاصة لمصفوفة التباين هي المكونات الرئيسية. ستخبرك قيم التباينات عن كل عنصر.
+**PCA。**المتجهات الخاصة للمصفوفة التناغم هي المكونات الرئيسية.$k$لقد حصلت على خفض الأبعاد
 
 **稳定性。**في الشبكات المتكررة وفي الأنظمة الديناميكية، فإن القيم الخاصة للقوة > 1 ستؤدي إلى انفجار الناتج.
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤 3: من صفر حساب القيم الخاصة ((2x2)
 
-لـ 2 × 2 المصفوفة`[[a, b], [c, d]]`,القييمات الخاصة من المعادلة المميزة 求解:`lambda^2 - (a+d)*lambda + (ad - bc) = 0`.
+لـ 2 × 2 المصفوفة`[[a, b], [c, d]]`,القييمات الخاصة من المعادلة المميزة 求解:$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$.
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 
 3. 创建三个变换的组合(旋转30度,按 [1.5, 0.8] 尺度,使用 kx=0.3切割),并将其应用到按圆形排列的8个点上――印变换前后的坐标――计算组合矩阵的决定因素,并验证它等于各决定因素的乘积――
 
+### 提示
+
+**练习 1。**استخدام`mat_vec_mul`ستعمل`rotation_2d`.`scaling_2d`和 `shearing_2d`تطبيق إلى كل نقطة أعلى. لتحول، الحسابات تغيرت قبل وبعد 4 条 طول الحافة و 2 条 طول الزاوية.
+
+**练习 2。**写出特征方程 $\lambda^2 - (\text{trace})\lambda + \det = 0$وطلب الحل. تحقق نتائج اثنين و يساوي الامتثال.`eigenvalues_2x2`和 `np.linalg.eigvals`مقارنة
+
+**练习 3。**بناء ثلاثة محطات، استخدام`shearing_2d(0.3, 0)` بناء قطعة المربع، حسب التطبيقات `mat_mul`相乘,再将结果作用于 8 个点 $(\cos\theta, \sin\theta)$ صفوف الموجات المتحركة هي 1 ، وتقطيع صفوف الموجات المتحركة هي 1 ، لذلك مجموعة الموجات`det_2x2`يجب أن يكون مثل$1.5 \times 0.8 = 1.2$.
+
 ## 关键术语
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 
