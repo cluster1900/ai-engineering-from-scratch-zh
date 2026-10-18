@@ -36,28 +36,28 @@ ColPali 的修复方式:跳过 OCR,直接对页面图像做做嵌入──使用
 
 ColBERT(Khattab & Zaharia, arXiv:2004.12832) est une méthode de récupération de texte. Elle ne se produit pas pour chaque document, mais pour chaque jeton.
 
-- Les jetons de requête  obtenir leurs propres emplacements  N_q Vecteurs)
-- Les jetons de document  obtenez des emplacements  N_d Vecteurs, généralement cachés)
-- Score = pour les jetons de requête 求和, chaque jeton de requête 取所有文档 jetons 中 cosine similarity 的最大值:Σ_i max_j cos(q_i, d_j) 』
+- Obtenir des jetons de requête$N_q$Vecteurs)
+- Les jetons de document  obtenir Embeddings($N_d$Vecteurs, généralement cachés)
+- Score = pour les jetons de requête 求和, chaque jeton de requête 取 tous les jetons de document 中 cosine similarity 的最大值:$\sum_i \max_j \cos(q_i, d_j)$Il y a une autre.
 
 C'est l'opération MaxSim. Chaque requête de jeton sera sélectionnée pour le jeton de document le plus approprié.
 
-优点:remember 强,能处理 term-level semantics。缺点: chaque document 需要 N_d vecteurs, storage 昂贵。
+优点:remember 强,能处理 terme-niveau sémantique。缺点: chaque document 需要 $N_d$Vecteurs, stockage
 
 ### ColPali
 
 ColPali(Faysse et al., arXiv:2407.01449) va appliquer le modèle ColBERT aux images
 
-- Chaque page est réalisée par PaliGemma (ViT + langage)
-- Chaque requête utilisateur (text) est codée pour les emblèmes de jetons de requête: N_q Vecteurs。
-- Score = Σ_i max_j cos(q_i, p_j),也就是在查询文字标记和页面图像补丁 上做MaxSim。
+- Chaque page est imprimée par PaliGemma(ViT + langue)编码为补丁嵌入:每页 $N_p$Vecteurs
+- Chaque requête utilisateur (text) est codé pour les emblèmes de jetons de requête:$N_q$Vecteurs
+- Score = $\sum_i \max_j \cos(q_i, p_j)$, y' a-t-il dans les jetons de texte de requête et les patchs d'image de page
 - 通过 total score retrieval top-k pages。
 
 Pendant le temps d'ingestion de documents: utilisez PaliGemma pour chaque page faire Embedding, stockage de tous les emplacements de patch. Pendant le temps de requête: pour les jetons de requête faire Embedding, pour tous les emplacements de page déjà stockés.
 
 优点: Dans des documents riches en visuels, haut, bout à bout par rapport au texte-RAG High 20-40%── chaque vecteur de correction 捕获局部布局和内容──
 
-缺点: chaque page N_p patches × 4 bytes flottantes × D-dim Vecteurs = stockage 增长很快──可通过 PQ / OPQ quantization 缓解──
+缺点: chaque page $N_p$patches × 4 bytes flottantes × $D$-dim Vecteurs = stockage 增长很快──可通过 PQ / OPQ quantization 缓解──
 
 ### ColQwen2 et ColSmol
 
@@ -129,7 +129,7 @@ mm-maxsim
 
 1. Un rapport annuel de 200 pages, 729 patches par page, 128 emb, 4 bytes flottantes, calcul de stockage brut et de stockage comprimé en PQ, 8x.
 
-2. MaxSim est Σ_i max_j cos(q_i, p_j) ・・・ cette demande et la capture de quelles similitudes simples de la moyenne  capture de l'information ?
+2. MaxSim est $\sum_i \max_j \cos(q_i, p_j)$◊ Cette demande et capture de quelles informations simples sont similaires ?
 
 3. ColPali va référencer les pages pour les ensembles de correctifs. Si on change pour le niveau de mot, qu'est-ce qui va changer ?
 
@@ -144,7 +144,7 @@ mm-maxsim
 | Late interaction | "ColBERT-style" | 使用 per-token 或 per-patch embeddings + MaxSim 做 retrieval，而不是 single doc Vector |
 | MaxSim | "Max-over-patches" | 对每个 query token，选择 similarity 最高的 document token；跨 query 求和 |
 | Bi-encoder | "Single-vector" | 每个 document 一个 Vector；更快，但会丢失粒度 |
-| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 N_p Vectors；storage cost 增长，但 recall 提升 |
+| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 $N_p$ Vectors；storage cost 增长，但 recall 提升 |
 | Patch embedding | "Page feature" | 来自 VLM encoder 的每个 image patch 的一个 Vector，按页 cached |
 | ViDoRe | "Vision doc bench" | ColPali 用于 visual document retrieval 的 benchmark suite |
 | PQ quantization | "Product quantization" | 在缩小 storage 约 8x 的同时保持 Vector similarity 的压缩方法 |

@@ -33,7 +33,7 @@ Chaque encodeur audio a le même caractère: le spectrogramme log-mail.
 2. Utilisez une fenêtre de 25ms ≈ 10ms pour effectuer une transformation Fourier à court terme ≈
 3. 取 FFT 结果的大小──
 4. 应用 Mel filter banks (habituellement 80 个在 0-8000 Hz 上按 log 间隔分布的过器),映射到感知频率──
-5. Utilisez le compression log.
+5. Uzal log compresser$\log(1 + x)$) traiter la gamme dynamique.
 
 结果:形状为 (T, 80) de l'ensemble 2D, dont T est des cadres de temps 数量── pour la fréquence d'image de 100 Hz de 30 secondes clip:形状为 (3000, 80)──
 

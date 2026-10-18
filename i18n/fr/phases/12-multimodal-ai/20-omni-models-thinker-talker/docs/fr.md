@@ -38,10 +38,10 @@ Cette séparation est importante. Le penseur doit être assez grand pour avoir u
 
 两者并行运行:
 
-1. Le penseur 发发出文本 Token t_i。
-2. Parleur 消费 t_i(通过流),并发出语音 Token s_i、s_{i+1}、...、s_{i+k}。
+1. Réflexion 发出文本 Token $t_i$Il y a une autre.
+2. Parleur 消费 $t_i$(via streaming),并发出语音 Token $s_i, s_{i+1}, \ldots, s_{i+k}$Il y a une autre.
 3. Décodeur de discours dans les jetons de langage jusqu'à leur consommation,并发发发音频样本──
-4. Quand le penseur arrive dans le texte, le parleur est déjà en streaming.
+4. Quand le penseur arrive à la lettre de marque$t_{i+3}$时, le conférencier 已经为 $t_0, \ldots, t_{i+2}$En streaming 了音频.
 
 ### TMRoPE  时间对齐的 Multimodal 位置
 

@@ -59,9 +59,9 @@ Dans l'entraînement et la réflexion, réaliser un masque triangulaire de bloc.
 Perte de diffusion est la forme standard: donner un patch d'image加噪音,让模型预测噪声(或等价地预测 un patch propre)。Utilisation de la version de la transfusion parallèle de flux: prédiction du champ de vitesse du bruit au propre。
 
 Pendant la formation:
-1. Pour chaque image de patch x0, une étape de temps aléatoire t.
-2. 采样噪音 ε,计算 xt = (1-t) * x0 + t * ε(l'allumage correspondant de la valeur de l'entrée de courant)
-3. Le taux de change est le taux de change de la valeur de l'équipement de transformation.
+1. Pour chaque image patch$x_0$, comme une étape à la fois .$t$Il y a une autre.
+2. - Je suis un peu bruyante .$\epsilon$, calcul $x_t = (1-t) \cdot x_0 + t \cdot \epsilon$(coïncidence du flux de la valeur de l'entrée)
+3. transformateur 预测 $v_\theta(x_t, t)$Le dépôt de la commission$\text{loss} = \mathop{\mathrm{MSE}}(v_\theta(x_t, t), \epsilon - x_0)$Il y a une autre.
 4. Avec la perte de NTP du texte dans la même séquence, un Backprop apparaît.
 
 推理时, générer le processus est:

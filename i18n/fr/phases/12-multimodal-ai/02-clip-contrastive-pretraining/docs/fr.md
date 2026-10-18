@@ -32,10 +32,10 @@ Il y a deux tours:
 
 Les deux tours ont normalité de sortie jusqu'à la longueur de l'unité.`cos(f(x), g(y)) = f(x)^T g(y)`Il y a une autre.
 
-Pour un lot de paires contenant N 个(image, sous-titre, forme de construction 为 `(N, N)` Matrix de similitude`S`- Le numéro de la liste:
+Pour une contenue$N$个(image, sous-titre) paires de lot, forme de construction 为 `(N, N)` Matrix de similitude`S`- Le numéro de la liste:
 
-```
-S[i, j] = cos(f(x_i), g(y_j)) / tau
+```math
+S[i, j] = \cos(f(x_i), g(y_j)) / \tau
 ```
 
 Parmi eux `tau`C'est la température de l'apprentissage que vous obtenez.
@@ -54,7 +54,7 @@ C'est le softmax de l'InfoNCE──CE 强制每张图像与其标题的匹配程
 
 ### Température
 
-`tau`控制 softmax 的尖──低 tau →尖分布,具有硬负矿业效果──高 tau →软,所有样品都会贡献──CLIP 学习 log(1/tau),并进行剪切以防崩──SigLIP 2 固定初始 tau,并改用学习偏见──
+`tau`Contrôle de la netteté de la douceur.$\tau$→ une distribution nette, avec une mineraiement dur négatif 效果──高 $\tau$→ doux, tous les échantillons$\log(1/\tau)$,并 effectuer des coupes pour éviter l' effondrement.$\tau$,并改用appris bias──
 
 ### Pourquoi sigmoid 扩展性更好(SigLIP)
 
@@ -62,8 +62,8 @@ Softmax  nécessite toute la similitude Matrice  garder le même rythme  Dans l'
 
 SigLIP Utilisation de sigmoïdes à base d'éléments  remplacement de la douceur max: pour chaque paire `(i, j)`,perte est une classification binaire, juger si c'est une paire de correspondances ?Les étiquettes de classe positives sont diagonales, tout le reste est négatif──perte est:
 
-```
-L = -1/N sum over (i, j) [ y_ij log sigmoid(S[i,j]) + (1-y_ij) log sigmoid(-S[i,j]) ]
+```math
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 Si `i == j`, `y_ij = 1`, sinon pour 0── chaque paire de perte est indépendante── ne nécessite pas de tout rassembler── chaque GPU  calculer son propre bloc local 并求和──SigLIP 2 peut être étendu à faible coût à 32k-512k lot, tandis que CLIP 会需要比例增加通信──
@@ -127,7 +127,7 @@ multimodal-fusion
 
 3. Pour les chats contre les chiens, construisez un classifiateur à tir zéro.`a photo of a {class}`et `a picture of a {class}`◊ dans 100 张 images de test  la précision de mesure ◊ ensemble de modèles est-il supérieur à un seul modèle ?
 
-4. 計算 512-GPU、batch 32k 运行时,softmax InfoNCE avec sigmoid par pair de coûts de communication──哪个按 O(N) échelle,哪个按 O(N^2) échelle?引用 SigLIP Section 4──
+4. 计算 512-GPU、batch 32k 运行时,softmax InfoNCE et sigmoid par rapport à la communication coût──哪个按 $O(N)$La taille, quelle selon $O(N^2)$La Commission a adopté une décision concernant la mise en œuvre de la directive.
 
 5. 阅读OpenCLIP scaling-law paper(arXiv:2212.07143,Cherti et al.)。 Basé sur le diagramme de leur réaction concernant l'échelle des données:
 

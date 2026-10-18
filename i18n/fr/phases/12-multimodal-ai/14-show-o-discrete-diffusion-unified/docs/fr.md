@@ -66,11 +66,11 @@ En peinture  capacité de prédiction masquée  entraînement, presque gratuit.
 
 Chaque étape démasquer 多少 Tokens 的时间表 会塑造质量──Show-o 推 cosine:
 
-```
-mask_ratio(t) = cos(pi * t / (2 * T))   # t = 0..T
+```math
+\text{mask\_ratio}(t) = \cos\left(\frac{\pi t}{2T}\right) \qquad t = 0, \ldots, T
 ```
 
-第 0 步, tous les Tokens sont masqués(ratio 1.0)。第 T 步, aucun Tokens est masqué。Cosine va se concentrer sur les ratios du milieu, où la prédiction a le plus d'informations。Les calendriers linéaires sont également disponibles, mais plus rapidement pénétrer dans le plateau。
+第 0 步, tous les jetons ont été masqués(ratio 1.0) $T$步, no Tokens 被掩盖──Cosine va se concentrer sur les rapports entre les zones, où la prédiction a le plus d'informations──Linéaires des horaires sont également disponibles, mais plus rapidement dans le plateau──
 
 ### Le spectacle
 
@@ -112,7 +112,7 @@ masked-diffusion-unmask
 
 3. Calendrier cosine vs calendrier linéaire: suivre T=8 时 chaque étape du nombre de jetons démasqués.
 
-4. Une image de 512x512 est une image de 1024 Tokens. Dans le vocabulaire K = 16384 时, modèle输出 1024 * log2(16384) = 14,336 bits (environ 1,75 KiB) de données.
+4. Une image de 512x512 est 1024 Tokens.$K=16384$时, modèle de sortie $1024 \cdot \log_2(16384) = 14{,}336$Les données de bits (environ 1,75 KiB)  Diffusion stable 输出 512*512*24 bits = 6,291,456 bits (environ 768 KiB)  ratio de compression  est combien?
 
 5. 阅读 LlamaGen(arXiv:2406.06525) ―― Quel est le différent entre le modèle d'image autorégressive classal de LlamaGen et l'approche masquée de Show-o ?
 
