@@ -11,7 +11,7 @@
 
 - 仅使用 NumPy 从零实现 规模点-产品自注意,包括查询/关键/价值 投影和软max 加权求和
 - 构建多头注意层,用于拆分头、计算并行注意,并拼接结果
--  تتبع المصفوفة الاهتمام  كيفية التقاط الوهم  علاقة,并解释为什么除以 sqrt(d_k) يمكن منع softmax 和
+-  تتبع المصفوفة الاهتمام  كيفية التقاط الوهم  العلاقة,并解释为什么除以 $\sqrt{d_k}$يمكن منع softmax 和
 -  تطبيق التخفيض العامل،将 توجيهيه الاهتمام 转换为 autoregressive(decoder-style) الاهتمام
 
 ## 问题
@@ -109,10 +109,10 @@ attention-matrix
 
 ### لماذا يجب أن تكون ضيقة؟
 
-إن كان dk = 64، فإن منتجات dk قد تصل إلى عدة عشرات، فيمكنك إدخال softmax إلى منطقة غياب الدرجة.
+المنتجات ستتناسب مع الامتداد$d_k$增大──如果 $d_k = 64$، منتجات نقطة قد تصل إلى عشرات من النطاقات، وضع softmax 推进$\sqrt{d_k}$.
 
-```
-Scaled scores = (Q @ K^T) / sqrt(dk)
+```math
+\text{缩放后的分数} = \frac{Q K^T}{\sqrt{d_k}}
 ```
 
 هذا سوف يبقي القيمة العددية في نطاق من المواد المفيدة يمكن أن تنتج
@@ -159,8 +159,8 @@ flowchart LR
 
 واحد:
 
-```
-Attention(Q, K, V) = softmax( Q @ K^T / sqrt(dk) ) @ V
+```math
+\text{Attention}(Q, K, V) = \mathop{\mathrm{softmax}}\left( \frac{Q K^T}{\sqrt{d_k}} \right) V
 ```
 
 ```figure
@@ -302,7 +302,7 @@ print(f"\nAttn weights (averaged over heads):")
 print(attn_weights[0].detach().numpy().round(3))
 ```
 
-关键区别: الاهتمام متعدد الرؤوس 会并行运行多 وظائف الاهتمام، كل منها لديه توقعات Q、K、V الخاصة به،大小为 dk = d_model / n_heads، ثم拼接结果──这让模型 能够同时 attend到不同类型的关系──
+关键区别: الاهتمام متعدد الرؤوس 会并行运行多 وظائف الاهتمام، كل لديه توقعات Q、K、V الخاصة به،大小为$d_k = d_{\text{model}} / n_{\text{heads}}$، ثم نُصِب النتيجة. هذا يُسمح للنموذج بالانضمام إلى أنواع مختلفة من العلاقات في نفس الوقت.
 
 ## 交付 it
 
@@ -322,7 +322,7 @@ print(attn_weights[0].detach().numpy().round(3))
 | Query (Q) | “问题 Vector” | 输入的一个学习投影，表示这个 Token 正在寻找什么信息 |
 | Key (K) | “标签 Vector” | 一个学习投影，表示这个 Token 包含什么信息，并会与 queries 进行匹配 |
 | Value (V) | “内容 Vector” | 一个学习投影，携带会基于 attention scores 被聚合的实际信息 |
-| Scaled dot-product attention | “Attention 公式” | softmax(QK^T / sqrt(dk)) @ V - 缩放可以防止高维中的 softmax 饱和 |
+| Scaled dot-product attention | “Attention 公式” | $\mathop{\mathrm{softmax}}(QK^T / \sqrt{d_k}) V$ - 缩放可以防止高维中的 softmax 饱和 |
 | Self-attention | “Token 看自己和其他 Token” | Q、K、V 都来自同一序列的 Attention，让每个位置都能 attend 到其他每个位置 |
 | Attention weights | “关注程度” | 位置上的概率分布，由 scaled dot products 上的 softmax 产生 |
 | Multi-head attention | “并行 Attention” | 使用不同 projections 运行多个 attention functions，然后拼接结果，以获得更丰富的 representations |

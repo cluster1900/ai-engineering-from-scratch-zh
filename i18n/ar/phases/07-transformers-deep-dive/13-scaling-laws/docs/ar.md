@@ -30,22 +30,24 @@
 
 من مقال (تشينشيلا) ، "الخسارة" تتبع:
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N`= 参数(非 إدراج)
-- `D`= 训练 Token。
-- `α ≈ 0.34`،`β ≈ 0.28`(大致对称)
-- `E ≈ 1.69`لا يمكن أن تخسر
-- `A ≈ 406`،`B ≈ 411`.
+- $N$= 参数(非 إدراج)
+- $D$= 训练 Token。
+- $\alpha \approx 0.34$،$\beta \approx 0.28$(大致对称)
+- $E \approx 1.69$لا يمكن أن تخسر
+- $A \approx 406$،$B \approx 411$.
 
-مع التوسع، يزن المجموعتين بعضها البعض.`N`求导并求解:
+مع التوسع، يزن المجموعتين بعضها البعض.$C = 6ND$)$N$求导并求解:
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 الحساب المثالي: لكل عنصر 20 رمز
@@ -91,7 +93,7 @@ scaling-laws
 
 ## بناءها
 
-见 `code/main.py` نحقق طريقة خسارة الشينشيللا و نحسب عدد من الحسابات`(N, D)`.
+见 `code/main.py` نحقق طريقة خسارة الشينشيللا و نحسب عدد من الحسابات$(N, D)$.
 
 ### الخطوة 1: فقدان الشينشيل
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-في ثابتة`C = 6ND`下,将 `L`رسم ل`(N, D)`العلويات العلوية..
+في ثابتة$C = 6ND$下,将 $L$رسم ل$(N, D)$العلويات العلوية..
 
 ### الخطوة الثانية:
 
-对于从 `1e17`إلى`1e25`حسابات FLOPs  الميزانية, وجدت في الحزمة `6ND = C`下最小化 الخسارة `(N, D)` نسبة التحقق`D/N ≈ 20`.
+对于从 `1e17`إلى`1e25`حسابات FLOPs  الميزانية, وجدت في الحزمة $6ND = C$下最小化 الخسارة $(N, D)$ نسبة التحقق$D/N \approx 20$.
 
 ### الخطوة الثالثة: تكلفة التدريب المفرطة
 
@@ -134,9 +136,9 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
 
 ## التدريب
 
-1. **Easy.**运行 `code/main.py` طباعة الحسابات  الميزانية `1e20`.`1e22`.`1e24`أسفل Chinchilla-أفضل `(N, D)` بالمقارنة مع النموذج الحقيقي
-2. **Medium.**实现 Hoffmann Loss-as-function-of-compute 曲线──为 compute-optimal frontier 绘制 Loss vs `log10(C)` تحديد القانون                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `>10^28`فلوف 才能让交叉 الانتروبيا 再降低 0.1
-3. **Hard.**في نفس مجموعة البيانات 上训练 5 个小模型(100K إلى 10M 参数) ، لتتناسب مع قانون تقدير الخاص بك.`α`和 `E`◊ كيف تتطابق مؤشراتك مع النتائج المنشورة؟
+1. **Easy.**运行 `code/main.py` طباعة الحسابات  الميزانية `1e20`.`1e22`.`1e24`أسفل Chinchilla-أفضل $(N, D)$ بالمقارنة مع النموذج الحقيقي
+2. **Medium.**实现 Hoffmann Loss-as-function-of-compute 曲线──为 compute-optimal frontier 绘制 Loss vs `log10(C)` تحديد القانون                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $>10^{28}$فلوف 才能让交叉 الانتروبيا 再降低 0.1
+3. **Hard.**في نفس مجموعة البيانات 上训练 5 个小模型(100K إلى 10M 参数) ، لتتناسب مع قانون تقدير الخاص بك.$\alpha$和 $E$◊ كيف تتطابق مؤشراتك مع النتائج المنشورة؟
 
 ## 关键术语
 
@@ -147,7 +149,7 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 

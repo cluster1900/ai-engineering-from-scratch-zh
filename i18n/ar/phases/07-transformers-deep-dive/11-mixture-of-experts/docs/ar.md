@@ -11,7 +11,7 @@
 
 معدل التغيرات الكثيفة في الاستنتاجات  فلوفات                                                                                                                                                                                                                                                      
 
-مزيج من الخبراء 打破了这种关联──把每一个FFN 替换成`E`خبراء مستقلين + واحد لكل رمز`k`个专家的路由器──总参数 = `E × FFN_size` عدد فعال لكل رمز = `k × FFN_size` تكوين عام 2026:`E=256`،`k=8`الاحتفاظ`E`扩展,计算随 `k`扩展‬
+مزيج من الخبراء 打破了这种关联──把每一个FFN 替换成$E$خبراء مستقلين + واحد لكل رمز$k$个专家的路由器──总参数 = $E \times \text{FFN size}$ عدد فعال لكل رمز = $k \times \text{FFN size}$ تكوين عام 2026:$E=256$،$k=8$الاحتفاظ$E$扩展,计算随 $k$扩展‬
 
 حدود 2026 سنة  تقريبا كاملة هي MoE:DeepSeek-V3(671B إجمالي / 37B نشط) 、مختل 8×22B、Qwen2.5-MoE、Llama 4、Kimi K2、gpt-oss。
 
@@ -46,7 +46,7 @@ h = h + sum_{e in top_k}(
 إذا كان الجهاز الجهاز يسمح لـ 90% من الوهمات أن تمر من قبل الخبير 3 ، الخبراء الآخرون سوف يموتون من الجوع.
 
 1. **Auxiliary load-balancing loss**(تحول المتحول  مختلط)  إضافة مع الخبير استخدام معدل التفاوت إلى مقارنة مع العقوبة
-2. **Expert capacity + token dropping**(مبدل مبكر) ✿ كل خبير 最多处理 `C × N/E`个 टोकن;溢出的 Token 跳过该层──会损害质量──
+2. **Expert capacity + token dropping**(مبدل مبكر) ✿ كل خبير 最多处理 $C \times N/E$个 टोकن;溢出的 Token 跳过该层──会损害质量──
 3. **Auxiliary-loss-free balancing**(DeepSeek-V3)── إضافة تحيز يمكن تعلمه لكل خبير، لتحويل أفضل اختيارات الجهاز التوجيهي── التحيز في فقدان التدريب 部更新──不对主目标添加惩罚──这是突破重要2024年──
 
 ممارسة DeepSeek-V3: بعد كل خطوة تدريبية، تحقق مع كل خبير أن معدل استخدامها مرتفع أو أقل من الهدف.`±γ`微调偏选择时使用 `scores + bias` استخدام احتمالات الخبراء في البوابات  لا يزال يستخدم غير المعدل`scores`هذا سيقوم بتوجيه مع تعبير
@@ -59,7 +59,7 @@ DeepSeek-V2/V3 أيضاً تحوي الخبراء إلى *مشتركة* و *مُ
 
 كل خبير وكل FFN`E`较小(8-64) ،`k`较小(1-2)。
 
-现代 حبة صغيرة من الحبة (DeepSeek-V3、Qwen-MoE): كل خبير 更窄(1/8 حجم FFN)`E`很大(256+) ،`k`更大(8+)。总参数相同, ولكن مجموعة عدد توسع 快得多。`C(256, 8) = 400 trillion`种可能的每代币 专家──质量提升,延迟 保持不变──
+现代 حبة صغيرة من الحبة (DeepSeek-V3、Qwen-MoE): كل خبير 更窄(1/8 حجم FFN)$E$很大(256+) ،$k$更大(8+)。总参数相同, ولكن مجموعة عدد توسع 快得多。$\binom{256}{8} \approx 400$المليارات من الـ "توكين" المختصين
 
 ### 成本图片
 
@@ -160,7 +160,7 @@ model = AutoModelForCausalLM.from_pretrained("mistralai/Mixtral-8x22B-v0.1")
 | Auxiliary-loss-free | “DeepSeek-V3 的技巧” | 只在 router 的 selection 上通过 per-expert bias 实现 balance；没有额外 Gradient。 |
 | Shared expert | “Always on” | 每个 Token 都会经过的额外 expert；捕获通用知识。 |
 | Expert parallelism | “按 expert 分片” | 将不同 experts 分配到不同 GPUs；通过网络 route tokens。 |
-| Sparsity | “active params < total params” | 比率 `k × expert_size / (E × expert_size)`；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
+| Sparsity | “active params < total params” | 比率 $k \times \text{expert size} / (E \times \text{expert size})$；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
 
 ## 延伸阅读
 
