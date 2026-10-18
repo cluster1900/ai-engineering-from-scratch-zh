@@ -82,7 +82,7 @@ Trong thực tế, hệ thống tốt nhất sẽ kết hợp hai: sử dụng p
 
 ### Z-Score 方法
 
-Cách đơn giản nhất:  tính toán trung bình và lệch chuẩn của mỗi tính năng  ghi bất kỳ khoảng cách nào từ trung bình vượt quá các điểm lệch chuẩn 
+Cách đơn giản nhất:  Lưu ý trung bình và lệch chuẩn của mỗi tính năng  Đánh dấu bất kỳ khoảng cách nào vượt quá trung bình $k$个 tiêu chuẩn lệch của điểm:.
 
 ```text
 z_score = (x - mean) / std
@@ -148,11 +148,11 @@ flowchart TD
 
 Điểm số bất thường dựa trên chiều dài đường trung bình của tất cả các cây, và sử dụng cây tìm kiếm nhị phân ngẫu nhiên chiều dài đường dự kiến của cây để thực hiện bình thường hóa:
 
-```
-score(x) = 2^(-average_path_length(x) / c(n))
+```math
+\text{分数}(x) = 2^{-\text{average\_path\_length}(x) / c(n)}
 ```
 
-Trong số đó `c(n)`là n 个 mẫu của đường dài dự kiến──Score 接近 1 biểu hiện bất thường──Score 接近 0.5 biểu hiện bình thường──Score 接近 0 biểu hiện rất bình thường(位于密集集 cluster 深处)。
+Trong số đó `c(n)` $n$个 mẫu của đường dài dự kiến──Score 接近 1 表示异常──Score 接近 0.5 表示正常──Score 接近 0 表示非常正常(位于密集集团深处)。
 
 **优点：**Không có giả định phân phối.  Được sử dụng cho kích thước cao.                                                                                                                                                                                                                                                       
 
@@ -168,7 +168,7 @@ Trong số đó `c(n)`là n 个 mẫu của đường dài dự kiến──Scor
 LOF sẽ so sánh mật độ địa phương xung quanh một điểm nào đó với mật độ xung quanh hàng xóm của nó. Một trong những khu vực nằm ở vùng hiếm, nhưng được bao quanh bởi các khu vực dày đặc.
 
 **工作方式：**
-1. Đối với mỗi điểm, tìm thấy các hàng xóm gần nhất của nó k
+1. Để mỗi điểm, tìm nó.$k$hàng xóm gần nhất
 2. 计算 mật độ tiếp cận địa phương (đường gần có nhiều)
 3. So sánh mật độ của mỗi điểm với mật độ của hàng xóm của nó
 4. Nếu mật độ của một điểm nào đó rõ ràng thấp hơn các hàng xóm của nó, nó là ngoại lệ
@@ -182,7 +182,7 @@ LOF sẽ so sánh mật độ địa phương xung quanh một điểm nào đó
 
 **优点：**检测 địa phương bất thường (nếu không phải là bất thường)  được áp dụng cho các cụm có mật độ khác nhau.
 
-**缺点：**Trong tập dữ liệu lớn chậm hơn, việc thực hiện ngây thơ sẽ ảnh hưởng đến tính toán khoảng cách.
+**缺点：**Trong tập hợp dữ liệu lớn, việc thực hiện chậm$O(n^2)$() đối với$k$Trong các chiều kích rất cao 中效果不好(lạy của chiều kích sẽ ảnh hưởng đến tính toán khoảng cách)
 
 ### Đối với
 
@@ -199,7 +199,7 @@ LOF sẽ so sánh mật độ địa phương xung quanh một điểm nào đó
 
 - **Extreme class imbalance.**Nếu bất thường chiếm 0,1%, tất cả các dự đoán "tình thường" sẽ đạt được độ chính xác 99,9%.
 - **AUROC 具有误导性。**Trong sự mất cân bằng nghiêm trọng, ngay cả khi mô hình trong ngưỡng thực tế, giảm thiểu hầu hết các bất thường, AUROC cũng có thể trông không đúng.
-- **更好的 metrics：**Precision@k(top k 被标记项中有多少是真相异常) 、AUPRC(precision-recall curve 下面积),以及在固定假正率 下的回忆──
+- **更好的 metrics：**Precision@k(top $k$Nhiều trong số các mục được đánh dấu là bất thường thực sự) 、AUPRC ((đường quay chính xác-đường quay xuống) 下面积), cũng như ở tỷ lệ cố định tích cực sai trái 下的回忆──
 
 ```mermaid
 flowchart LR
@@ -318,7 +318,7 @@ class IsolationForest:
         return scores
 ```
 
-Tỷ lệ bình thường hóa`c(n)`là trong chứa n 个元素 của cây tìm kiếm nhị phân trong một lần tìm kiếm không thành công của đường dài dự kiến. Nó tương đương với`2 * H(n-1) - 2*(n-1)/n`, trong số đó `H`Đây là số hợp nhất. Việc bình thường hóa này đảm bảo điểm số có thể so sánh giữa các tập dữ liệu lớn khác nhau.
+Tỷ lệ bình thường hóa`c(n)`$n$个元素的二进制搜索树 中一次失败搜索的预期路径长度──它等于`2 * H(n-1) - 2*(n-1)/n`, trong số đó `H`Đây là số hợp nhất. Việc bình thường hóa này đảm bảo điểm số có thể so sánh giữa các tập dữ liệu lớn khác nhau.
 
 ### Demo 场景
 
@@ -434,7 +434,7 @@ Trong hai trường hợp, ngưỡng tối ưu phụ thuộc vào tỷ lệ chi 
 
 2. **Multivariate anomalies.**Tạo dữ liệu 2D, mỗi tính năng 单独看都像正常, nhưng kết hợp lên là bất thường (ví dụ, xa góc diagonal của cụm chính)  trình bày điểm Z của mỗi tính năng sẽ bỏ qua những điểm này, nhưng rừng cách ly 能 nắm bắt chúng 
 
-3. **从零实现 LOF.**Sử dụng k-cô lân cận 实现 Local Outlier Factor── trên cùng dữ liệu với LocalOutlierFactor của sklearn
+3. **从零实现 LOF.**Sử dụng k-cô lân cận 实现 Local Outlier Factor──在同一数据上与 sklearn的 LocalOutlierFactor 比较──使用 $k=10$和 $k=50$- Tôi không biết.$k$Sự lựa chọn ảnh hưởng đến kết quả như thế nào?
 
 4. **Streaming Anomaly Detection.**修改 Z-score detector,使其在流媒体设置中工作:随着新点到达更新运行平均和变异(Welford's online algorithm) ⋅ 在同一数据上与批次 Z-score比较──
 
@@ -449,10 +449,10 @@ Trong hai trường hợp, ngưỡng tối ưu phụ thuộc vào tỷ lệ chi 
 | Contextual anomaly | "normal 值，错误上下文" | 一个在给定上下文（时间、位置等）下异常、但在另一个上下文中可能 normal 的 observation |
 | Isolation Forest | "用 random splits 找 outliers" | 一种 random trees 的 ensemble，它能用比 normal points 更少的 splits 隔离 anomalies |
 | Local Outlier Factor | "把 density 和 neighbors 比较" | 一种标记 local density 明显低于其 neighbors density 的点的方法 |
-| Z-score | "距离 mean 的 standard deviations 数" | (x - mean) / std，用 standard deviation 为单位衡量某个点距离中心有多远 |
-| IQR | "Interquartile range" | Q3 - Q1，衡量数据中间 50% 的 spread，用于 robust outlier detection |
+| Z-score | "距离 mean 的 standard deviations 数" | $(x - \text{均值}) / \text{标准差}$，用 standard deviation 为单位衡量某个点距离中心有多远 |
+| IQR | "Interquartile range" | $Q3 - Q1$，衡量数据中间 50% 的 spread，用于 robust outlier detection |
 | Contamination | "预期 anomalies 比例" | 一个 hyperparameter，用于告诉 detector 应该将数据中多大比例标记为 anomalous |
-| Precision@k | "top k flags 中有多少是真的" | 只在 k 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
+| Precision@k | "top k flags 中有多少是真的" | 只在 $k$ 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
 | AUPRC | "Precision-recall curve 下的面积" | 一个汇总所有 thresholds 下 precision-recall 表现的 metric，对 imbalanced data 比 AUROC 更好 |
 
 ## 延伸阅读

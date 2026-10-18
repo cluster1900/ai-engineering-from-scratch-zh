@@ -24,10 +24,10 @@ Các phương pháp tập hợp chính là cách này. Chúng được sử dụ
 
 ### Tại sao các tập đoàn có hiệu quả
 
-假设 bạn có N 个独立分类器, chính xác của mỗi đều là p > 0,5;; chính xác của đa số phiếu 为:
+假设 bạn có $N$个独立分类器, chính xác của mỗi thành phố là $p > 0.5$Sự chính xác của phiếu bầu đa số 为:
 
-```
-P(majority correct) = sum over k > N/2 of C(N,k) * p^k * (1-p)^(N-k)
+```math
+P(\text{多数预测正确}) = \sum_{k > N/2} \binom{N}{k} p^k (1-p)^{N-k}
 ```
 
 Đối với 21 loại chính xác 平均为60% phân loại, số phiếu chính xác đại đa số là khoảng 74%── Nếu có 101 loại, sẽ tăng lên 84%──
@@ -132,7 +132,7 @@ Tăng cường độ phân tử sẽ tăng 泛化 thành hàm mất tích tùy �
 3. Final prediction: F_T(x)
 ```
 
-Đối với lỗ lỗi vuông, dư giả là dư thực tế:`r_i = y_i - F_{t-1}(x_i)`❖ Mỗi cây thực tế đều có lỗi trong việc chuẩn bị cho một tập hợp trước.
+Đối với lỗ lỗi vuông, dư giả là dư thực tế:$r_i = y_i - F_{t-1}(x_i)$❖ Mỗi cây thực tế đều có lỗi trong việc chuẩn bị cho một tập hợp trước.
 
 Tốc độ học tập (shrinkage) kiểm soát mức độ đóng góp của mỗi cây.
 

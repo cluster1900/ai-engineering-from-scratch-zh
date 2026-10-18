@@ -91,8 +91,8 @@ Nếu tính toán của một chuỗi thời gian không thay đổi theo thời
 
 **如何修复：**差分── không xây dựng giá trị nguyên bản, mà xây dựng sự thay đổi giữa giá trị liên tục:
 
-```
-diff[t] = value[t] - value[t-1]
+```math
+\text{diff}[t] = \text{值}[t] - \text{值}[t-1]
 ```
 
 Nếu một lần khác biệt không thể làm cho chuỗi ổn định, hãy áp dụng một lần nữa.
@@ -109,7 +109,7 @@ Các chuỗi ban đầu có xu hướng hai. Một giai đoạn phân biệt bi�
 
 ### 自 liên quan
 
-Từ liên quan đo lường thời gian t của giá trị với thời gian t-k(t 步) của giá trị trong quá khứ.
+自相关衡量时间 $t$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $t-k$(过去 $k$步) của giá trị  mức độ liên quan giữa các hàm tương quan tự động (ACF) 会绘制 mỗi lần $k$Sự liên quan này.
 
 **ACF 告诉你：**
 - 序列能记住多远──如果 ACF ở lag 5 后降至零,则 5 步前的值无关紧要──
@@ -142,7 +142,7 @@ Các đặc điểm khác của công nghệ:
 
 **多少个 lag？**Sử dụng hàm tương quan tự động. Nếu ACF đến độ trễ 10 là đáng kể, hãy sử dụng ít nhất 10 độ trễ. Nếu có độ trễ 7 (có thể bao gồm 14) thì độ trễ nhiều hơn sẽ cung cấp cho mô hình thông tin lịch sử nhiều hơn, nhưng cũng sẽ tăng số lượng các tính năng phù hợp, do đó tăng nguy cơ quá phù hợp.
 
-**target 对齐陷阱。**Khi tạo ra các đặc điểm trễ, mục tiêu phải là giá trị của thời gian t, và tất cả các đặc điểm đều phải sử dụng giá trị thời gian t-1 hoặc sớm hơn. Nếu bạn không muốn xem giá trị thời gian t như một đặc điểm bao gồm, bạn đã có một máy dự đoán hoàn hảo - và một mô hình hoàn toàn vô dụng. Đây là lỗi phổ biến nhất trong công trình trình tự thời gian.
+**target 对齐陷阱。** tạo ra                                                                                                                                                                                                                                                             $t$Đáng giá, và tất cả các tính năng đều phải sử dụng thời gian.$t-1$Hoặc là giá trị sớm hơn... nếu không muốn dùng thời gian.$t$Giá trị của một tính năng bao gồm vào, bạn đã có một máy dự đoán hoàn hảo - và một mô hình hoàn toàn vô dụng. Đây là lỗi phổ biến nhất trong công trình tính năng chuỗi thời gian.
 
 ### Đăng bằng tiến
 
@@ -178,8 +178,8 @@ flowchart TD
 ```
 
 Định đắc tiến:
-1. Trong thời gian đến ngày t' dữ liệu trên đào tạo
-2. 预测时间 t+1(或用于多步预测的 t+1 到 t+k)
+1. Trong thời gian tới$t$DATA trên đào tạo
+2. 预测时间 $t+1$(hoặc dùng cho nhiều bước dự đoán của $t+1$Đến$t+k$(văn)
 3. 将 cửa sổ hướng trước
 4. 重复
 
@@ -191,11 +191,11 @@ Mỗi lần thử chỉ chứa dữ liệu sau khi tập luyện. Không có ti�
 
 ARIMA là mô hình chuỗi thời gian cổ điển. Nó có ba thành phần:
 
-- **AR (Autoregressive):**Từ giá trị quá khứ để thực hiện dự đoán.
-- **I (Integrated):**通过差分实现平稳性──I(d) 应用 d 次差分──
-- **MA (Moving Average):**Từ quá khứ dự đoán sai lầm để thực hiện dự đoán.
+- **AR (Autoregressive):**Từ quá khứ giá trị để thực hiện dự đoán.$p$个值.
+- **I (Integrated):**通过差分实现平稳性──I(d) 应用 $d$- Tôi không biết.
+- **MA (Moving Average):**Từ quá khứ dự đoán sai lầm thực hiện dự đoán.$q$个错差──
 
-ARIMA(p, d, q) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) chọn p、d、q──
+ARIMA(p, d, q) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) chọn $p$$d$$q$
 
 Chúng ta sẽ không thực hiện ARIMA từ không - nó cần tối ưu hóa số, vượt ra ngoài phạm vi của bài học này.
 
@@ -217,7 +217,7 @@ Chúng ta sẽ không thực hiện ARIMA từ không - nó cần tối ưu hóa
 
 **Recursive (iterated):**预测 Next step, hãy xem kết quả dự đoán như là bước tiếp theo của các bước nhập. 简单, nhưng sai lầm sẽ tích lũy - mỗi dự đoán đều sử dụng một dự đoán trên, do đó sai lầm sẽ phức tạp.
 
-**Direct:**Đối với mỗi đường chân trời  đào tạo mô hình riêng biệt. Mô hình 1  dự đoán t+1, Mô hình 5  dự đoán t+5── không có sự tích lũy sai lầm, nhưng mô hình đào tạo của mỗi mô hình ít hơn, và chúng không chia sẻ thông tin.
+**Direct:**Đối với mỗi đường chân trời 训练单独模型――Model-1 预测 $t+1$,Model-5 预测 $t+5$Không có sự tích lũy sai lầm, nhưng mỗi mô hình có ít mẫu đào tạo hơn, và chúng không chia sẻ thông tin.
 
 **Multi-output:**训练一个同时输出所有视界的模型――跨视界共享信息,但需要支持多输出模型(或自定义 Loss Function)。
 
@@ -228,7 +228,7 @@ Chúng ta sẽ không thực hiện ARIMA từ không - nó cần tối ưu hóa
 | Mistake | Why it happens | How to fix |
 |---------|---------------|-----------|
 | 随机 train/test split | 来自标准 ML 的习惯 | 使用 walk-forward 或 temporal split |
-| 使用未来特征 | 误把时间 t 的特征包含进去 | 审计每个特征的时间对齐 |
+| 使用未来特征 | 误把时间 $t$ 的特征包含进去 | 审计每个特征的时间对齐 |
 | 对季节性 overfitting | 模型记住了日历模式 | 在 test set 中留出一个完整季节周期 |
 | 忽略尺度变化 | 收入翻倍但模式保持 | 建模百分比变化而非绝对值 |
 | 过多滞后特征 | “更多历史更好” | 使用 ACF 确定相关 lag |
@@ -387,7 +387,7 @@ print(f"Mean score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
 时间序列预测 sử dụng Regression 指标, nhưng带有时间感知的上下文:
 
-- **MAE (Mean Absolute Error):**y_true - y_pred_time ơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơơ
+- **MAE (Mean Absolute Error):** $\lvert y_{\text{true}} - y_{\text{pred}} \rvert$                                                                                                                                                                                                                                                              
 - **RMSE (Root Mean Squared Error):**Phạm vi vuông trung bình của đường vuông.
 - **MAPE (Mean Absolute Percentage Error):**◎ lỗi / giá trị thực trong * 100 giá trị trung bình.
 - **Naive baseline comparison:**始终与简单基线比较――季节性天真基线 会预测上一周期的价值(昨天、上周) ・・・ Nếu mô hình của bạn không thể đánh bại ngây thơ, hãy giải thích có vấn đề――
@@ -445,10 +445,10 @@ Nếu mô hình ML cao cấp của bạn đưa ra cơ sở ngây thơ theo mùa,
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Stationarity | “统计量不随时间变化” | 均值、方差和自相关结构随时间保持不变的序列 |
-| Differencing | “连续值相减” | 计算 y[t] - y[t-1] 来移除趋势并实现平稳性 |
+| Differencing | “连续值相减” | 计算 $y[t] - y[t-1]$ 来移除趋势并实现平稳性 |
 | Autocorrelation (ACF) | “一个序列与自身的相关程度” | 时间序列与自身滞后副本之间的相关性，作为 lag 的函数 |
-| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag k 上的自相关 |
-| Lag features | “把过去值作为输入” | 使用 y[t-1]、y[t-2]、...、y[t-k] 作为特征来预测 y[t] |
+| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag $k$ 上的自相关 |
+| Lag features | “把过去值作为输入” | 使用 $y[t-1], y[t-2], \ldots, y[t-k]$ 作为特征来预测 $y[t]$ |
 | Walk-forward validation | “尊重时间顺序的 cross-validation” | 训练数据在时间上始终先于测试数据的评估方式 |
 | ARIMA | “经典时间序列模型” | AutoRegressive Integrated Moving Average：组合过去值（AR）、差分（I）和过去误差（MA） |
 | Seasonality | “重复的日历模式” | 与日历周期（每日、每周、每年）相关的、规则且可预测的时间序列周期 |

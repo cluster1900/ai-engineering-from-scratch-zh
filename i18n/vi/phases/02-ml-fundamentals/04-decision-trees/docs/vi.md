@@ -48,10 +48,8 @@ Cây 通过上下 方式构建: 在每个节点, chọn các tính năng và ng�
 
 **Gini impurity**Đường là: Nếu theo phân phối lớp của nút này  đưa cho một nhãn 贴 mẫu tùy chọn, nó sẽ bị phân loại sai 👍
 
-```
-Gini(S) = 1 - sum(p_k^2)
-
-where p_k is the proportion of class k in set S.
+```math
+\text{基尼}(S) = 1 - \sum_k p_k^2 \quad \text{其中 } p_k \text{ 是集合 } S \text{ 中类别 } k \text{ 的占比。}
 ```
 
 Đối với các node tinh khiết (tất cả thuộc cùng một lớp), Gini = 0。 đối với phân chia nhị phân của các lớp 50/50, Gini = 0.5。越低越好。
@@ -64,8 +62,8 @@ Gini = 1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48
 
 **Entropy**衡节 中的信息量(混乱程度) ――Phase 1 Bài học 09 已覆盖──
 
-```
-Entropy(S) = -sum(p_k * log2(p_k))
+```math
+\text{熵}(S) = -\sum_k p_k \log_2(p_k)
 ```
 
 Đối với nút tinh khiết, entropy = 0。 đối với phân chia nhị phân 50/50, entropy = 1.0。越低越好。
@@ -81,20 +79,21 @@ Entropy = -(0.6 * log2(0.6) + 0.4 * log2(0.4))
 
 **Information gain**là chia  hậu tạp hóa (entropy hoặc Gini) giảm lượng.
 
-```
-IG(S, feature, threshold) = Impurity(S) - weighted_avg(Impurity(S_left), Impurity(S_right))
-
-where the weights are the proportions of samples in each child.
+```math
+\begin{aligned}
+& IG(S, \text{特征}, \text{阈值}) = \text{不纯度}(S) - \text{weighted\_avg}(\text{不纯度}(S_{\text{左子节点}}), \text{不纯度}(S_{\text{右子节点}})) \\[4pt]
+& \text{其中，权重是每个子节点的样本占比。}
+\end{aligned}
 ```
 
 Mỗi nút trên của tham lam thuật toán: cố gắng mỗi tính năng và mỗi có thể ngưỡng.`(feature, threshold)`组合──
 
 ### Chia 如何工作
 
-Đối với hiện tại nút 上 chứa n 个 tính năng m 个 mẫu của bộ dữ liệu:
+Đối với nút hiện tại 上包含 $n$个 đặc điểm$m$个 mẫu của bộ dữ liệu:
 
-1. Đối với mỗi tính năng j ((j = 1 đến n):
-   - 按 tính năng j đối với các mẫu 排序
+1. Đối với mỗi tính năng$j$($j = 1$Đến$n$):
+   - 按 tính năng $j$Đối với các mẫu 排序
    - sẽ tương ứng với mỗi điểm trung bình giữa các giá trị khác nhau như ngưỡng
    - 计算 mỗi ngưỡng thu nhập thông tin
 2.  chọn thông tin thu nhập tính năng và ngưỡng cao nhất
@@ -109,7 +108,7 @@ Nếu không ngừng điều kiện, cây sẽ tiếp tục phát triển, cho �
 
 **Pre-pruning**会在树上 完全长成之前停止:
 - Độ sâu tối đa:当 tree  đạt được độ sâu được thiết lập 时停止分裂
-- Mức mẫu tối thiểu trên mỗi lá: Nếu một nút nhỏ hơn k, thì dừng lại
+- Mức mẫu tối thiểu trên mỗi lá: Nếu một nút có mẫu ít hơn$k$,则停止
 - Lợi ích thông tin tối thiểu: Nếu phân chia tốt nhất đối với sự cải thiện của sự sa thải nhỏ hơn một ngưỡng nào đó, thì dừng lại
 - Số lượng nút lá tối đa: giới hạn tổng số lá
 
@@ -125,8 +124,8 @@ Pre-cutting 更简单也更快──Post-cutting thường có thể tạo ra c�
 
 **Variance reduction**替代 thu nhập thông tin:
 
-```
-VR(S, feature, threshold) = Var(S) - weighted_avg(Var(S_left), Var(S_right))
+```math
+VR(S, \text{特征}, \text{阈值}) = \text{Var}(S) - \text{weighted\_avg}(\text{Var}(S_{\text{左子节点}}), \text{Var}(S_{\text{右子节点}}))
 ```
 
 选择使变化 降低最多的分化―― Tree 会把输入空间 划分为多个区域,并预测一个常数 (平均值) 在每个区域中预测一个常数 (平均值) ――
@@ -155,7 +154,7 @@ graph TD
 
 **Bagging（bootstrap aggregating）：**Mỗi cây đều có trong một mẫu bootstrap 上训练, tức là trong dữ liệu đào tạo có được có được được trả lại theo thời gian rút lấy mẫu.
 
-**Feature randomization：**Trong mỗi lần phân chia, chỉ cần xem xét một bộ phụ thuộc tính năng tùy chọn. Đối với phân loại,默认是 sqrt(n_features)  Đối với sự trượt, là n_features/3── điều này sẽ ngăn chặn tất cả các cây đều ở trong cùng một tính năng thống trị trên phân chia.
+**Feature randomization：**Trong mỗi lần phân chia, chỉ xem xét một bộ phụ thuộc tính năng tùy chọn. Đối với phân loại,默认是$\sqrt{n_{\text{特征}}}$ Đối với sự lùi lại,$n_{\text{特征}}/3$ Điều này sẽ ngăn chặn tất cả các cây đều ở trong cùng một đặc điểm thống trị trên phân chia
 
 关键洞见: đối với nhiều cây không liên kết 求平均, có thể giảm sự khác biệt trong trường hợp không tăng thiên vị ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎
 
@@ -165,9 +164,8 @@ Rừng ngẫu nhiên 天然 cung cấp tính năng điểm số tầm quan trọ
 
 **Mean Decrease in Impurity (MDI)：**Đối với mỗi tính năng, tất cả các cây trong tất cả các nút sử dụng tính năng này 带来的 sự giảm tạp hóa 总量── trong các phân chia sớm hơn 带来了更大的污染减少的特征更重要──
 
-```
-importance(feature_j) = sum over all nodes where feature_j is used:
-    (n_samples_at_node / n_total_samples) * impurity_decrease
+```math
+\text{重要性}(\text{特征}_j) = \sum_{\text{使用特征 } j \text{ 划分的节点}} \frac{n_{\text{节点样本数}}}{n_{\text{总样本数}}} \cdot \text{impurity\_decrease}
 ```
 
 Phương pháp này rất nhanh (trong thời gian tập luyện có thể tính toán), nhưng sẽ hướng đến các tính năng có tính năng cardinality cao cũng như có nhiều tính năng có thể chia rẽ điểm.
@@ -349,7 +347,7 @@ Trong thực tế, cây tăng cường cấp độ thường mạnh hơn rừng 
 
 1. Trong một tập dữ liệu 2D có chứa 3 lớp, trên tập trung một cây quyết định.
 
-2. 为 hồi quy cây 实现变量减少分化――为 200 个点生成 y = sin(x) + noise,并拟合你的回归树――将树的碎片式-常数预测与真实曲线一起绘图――
+2. 为 regression trees 实现 sự phân chia giảm biến số.$y = \sin(x) + \text{噪声}$,并适合你的回归树──将树的分数-常数预测与真曲线一起绘图──
 
 3. 构建包含1、5、10、50 和 200 树的随机森林──绘制训练精度和测试精度 随着树木数量变化的曲线──观察测试精度 会达到平台期,但不会下降──森林 抵抗过)──
 

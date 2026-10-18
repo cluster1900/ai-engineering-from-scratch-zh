@@ -14,7 +14,7 @@
 -  thiết kế một kiểu điều chỉnh siêu tham số  chiến lược, thông qua hợp lý của validation chéo  tránh đối với validation set  quá hợp lý
 
 ## 问题
-Bạn có tỷ lệ tăng gradient  mô hình có tốc độ học hỏi, số lượng cây, chiều sâu tối đa, mẫu trong mỗi lá, tỷ lệ mẫu và tỷ lệ mẫu cột.
+Bạn của gradient tăng  mô hình có tốc độ học  số lượng cây  tối đa độ sâu  mìn mẫu mỗi lá  tỉ lệ mẫu và tỷ lệ mẫu cột ‒ cũng là sáu siêu tham số ‒ nếu mỗi có 5 giá trị hợp lý, thì lưới sẽ có$5^6 = 15{,}625$种组合―― mỗi lần tập luyện mất 10 giây――全部尝试一遍需要43小时的计算时间――
 
 Tìm kiếm lưới là phương pháp trực tiếp nhất, cũng là phương pháp lớn nhất sau khi thay đổi quy mô. Tìm kiếm ngẫu nhiên sử dụng ít lượng tính toán hơn có thể làm tốt hơn.
 
@@ -28,7 +28,7 @@ Các tham số là trong quá trình đào tạo học được của các trọ
 | Learning rate | 每次更新的步长 | 0.001 到 1.0 |
 | Number of trees/epochs | 训练时长 | 10 到 10,000 |
 | Max depth | 模型复杂度 | 1 到 30 |
-| Regularization (lambda) | 防止过拟合 | 0.0001 到 100 |
+| Regularization ($\lambda$) | 防止过拟合 | 0.0001 到 100 |
 | Batch size | Gradient 估计噪声 | 16 到 512 |
 | Dropout rate | 被丢弃的 neurons 比例 | 0.0 到 0.5 |
 
@@ -122,7 +122,7 @@ Tốc độ học tập 几乎总是最重要的超参数――与其保持固�
 | Scheduler | Formula | 何时使用 |
 |-----------|---------|-------------|
 | Step decay | 每 N 个 epochs 乘以 0.1 | 经典 CNN 训练 |
-| Cosine annealing | lr * 0.5 * (1 + cos(pi * t / T)) | 现代默认选择 |
+| Cosine annealing | $\text{lr} \cdot 0.5 \cdot (1 + \cos(\pi t / T))$ | 现代默认选择 |
 | Warmup + decay | 先线性增加，再 cosine decay | Transformers |
 | One-cycle | 在一个 cycle 内先增加再减少 | 快速收敛 |
 | Reduce on plateau | 指标停滞时按因子降低 | 稳妥默认选择 |

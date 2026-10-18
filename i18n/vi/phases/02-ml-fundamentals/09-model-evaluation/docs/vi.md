@@ -81,11 +81,11 @@ flowchart TB
     Fold5 --> R
 ```
 
-1. chia dữ liệu thành các gấp lớn và nhỏ
-2. Đối với mỗi gấp, trong K-1 个 gấp lên tập luyện, và phần còn lại gấp lên kiểm tra
-3. Đối với điểm xác thực K 个 求平均
+1. Sẽ chia dữ liệu$K$个大小相等的折叠
+2. Đối với mỗi lần, trong $K-1$个 gấp 上训练, và phần còn lại gấp 上验证
+3. Đối với$K$个 điểm xác thực 求平均
 
-K=5 hoặc K=10 là tiêu chuẩn lựa chọn. Mỗi điểm dữ liệu đều được sử dụng để xác nhận một lần. Điểm trung bình là ước tính ổn định hơn so với bất kỳ phân chia đơn lẻ nào.
+$K=5$Hoặc$K=10$Đó là một tiêu chuẩn lựa chọn. Mỗi điểm dữ liệu đều được sử dụng để xác nhận một lần.
 
 **Stratified K-fold**Trong mỗi gấp, giữ phân phối lớp. Nếu bộ dữ liệu của bạn là 70% lớp A và 30% lớp B, thì mỗi gấp sẽ giữ tỷ lệ tương tự. Điều này rất quan trọng đối với các bộ dữ liệu không cân bằng, bởi vì bất cứ khi nào phân chia có thể đưa tất cả các mẫu thiểu số vào một gấp.
 
@@ -100,18 +100,18 @@ K=5 hoặc K=10 là tiêu chuẩn lựa chọn. Mỗi điểm dữ liệu đều
 
 Từ Matrix này có thể lấy tất cả các chỉ số khác:
 
-- **Accuracy**= (TP + TN) / (TP + TN + FP + FN)。预测正确的比例──当类 不平衡时会产生误导──
-- **Precision**= TP / (TP + FP) ―― Trong tất cả các đối tượng dự đoán tích cực, có bao nhiêu thực sự tích cực?
-- **Recall**Trong tất cả những điều tích cực thực sự, chúng ta đã nắm bắt được bao nhiêu? Trong những điều tiêu cực sai lầm 代价高时使用(ví dụ như sàng lọc ung thư 漏掉 khối u) 
-- **F1 score**= 2 * chính xác * nhớ lại / (sự chính xác + nhớ lại) ―― chính xác 和 nhớ lại của nghĩa hài hòa──当二者都不明显更重要时,用它来平衡两者──
+- **Accuracy**= $(TP + TN) / (TP + TN + FP + FN)$                                                                                                                                                                                                                                                              
+- **Precision**= $TP / (TP + FP)$Trong tất cả các đối tượng dự đoán tích cực, có bao nhiêu thực sự tích cực?
+- **Recall**(sự nhạy cảm) = $TP / (TP + FN)$Trong tất cả những điều tích cực thực sự, chúng ta đã nắm bắt được bao nhiêu?
+- **F1 score**= $2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$△ độ chính xác và nghĩa đồng bộ của việc nhớ lại △ quan trọng hơn, sử dụng nó để cân bằng hai △
 - **AUC-ROC**:Receiver Operating Characteristic curve 下的面积──它 nằm trong các ngưỡng phân loại khác nhau 下绘制 true positive rate 与 false positive rate──AUC = 0,5 表示随机猜测,AUC = 1.0 表示完美分离──它与门无关:衡量的是模型将正面排在负面前面的能力,而不受你选择的裁员影响──
 
 ### Tái ngược 指标
 
-- **MSE**(Mức độ lỗi bình phương) = trung bình y_true - y_pred) ^2)
-- **RMSE**(Rot Mean Square Error) = sqrt(MSE)。 Với biến mục tiêu 单位相同──比 MSE 更容易解释──
-- **MAE**(Mức độ sai lầm tuyệt đối) = trung bình của các điểm khác biệt hơn hơn.
-- **R-squared**= 1 - SS_res / SS_tot, trong đó SS_res = tổng hợp(((y_true - y_pred) ^2),SS_tot = tổng hợp(((y_true - y_mean) ^2)。 biểu hiện mô hình 解释了多少方差──R^2 = 1.0 表示完美──R^2 = 0.0 表示 mô hình 并不比总是预测平均值更好──如果模型比预测均还差,R^2 可能为负──
+- **MSE**(Phạm vi bình phương trung bình) = $\text{均值}((y_{\text{true}} - y_{\text{pred}})^2)$◊以平方方式惩罚大差异―― đối với các điểm khác biệt ⋅
+- **RMSE**(Rot Mean Quadrat Error) = $\sqrt{\text{MSE}}$◊ Với biến mục tiêu 单位 giống nhau ◊ 比 MSE 更容易解释
+- **MAE**(Tầm là lỗi tuyệt đối) = $\text{均值}(\lvert y_{\text{true}} - y_{\text{pred}} \rvert)$❖ đối xử trực tuyến với tất cả những sai lầm ❖
+- **R-squared**= $1 - SS_{\text{res}} / SS_{\text{tot}}$, trong số đó $SS_{\text{res}} = \sum (y_{\text{true}} - y_{\text{pred}})^2$- Tôi không biết.$SS_{\text{tot}} = \sum (y_{\text{true}} - y_{\text{均值}})^2$◊ biểu hiện mô hình 解释了多少方差──$R^2 = 1.0$biểu hiện hoàn hảo.$R^2 = 0.0$Mô hình không kém so với tổng giá trị trung bình dự đoán tốt hơn. Nếu mô hình còn kém so với giá trị trung bình dự đoán,$R^2$Có thể là vì...
 
 ### Lập trình học tập
 
@@ -665,10 +665,10 @@ Từ Zero thực hiện phiên bản sẽ hiển thị rõ ràng xác thực ch�
 |------|----------------|----------------------|
 | Overfitting | “记住了 training data” | model 捕捉了 training data 中的噪声，在 training 上表现好，但在 unseen data 上表现差 |
 | Cross-validation | “在不同子集上测试” | 系统地轮换用于 validation 的数据部分，并对所有轮换的结果求平均 |
-| Precision | “预测为 positive 的里面有多少是正确的” | TP / (TP + FP)：positive predictions 中实际为 positive 的比例 |
-| Recall | “我们找到了多少真实 positives” | TP / (TP + FN)：actual positives 中被正确识别出来的比例 |
+| Precision | “预测为 positive 的里面有多少是正确的” | $TP / (TP + FP)$：positive predictions 中实际为 positive 的比例 |
+| Recall | “我们找到了多少真实 positives” | $TP / (TP + FN)$：actual positives 中被正确识别出来的比例 |
 | AUC-ROC | “model 区分类别的能力有多好” | 在所有 thresholds 下，true positive rate 与 false positive rate 曲线下的面积，范围从 0.5（随机）到 1.0（完美） |
-| R-squared | “解释了多少方差” | 1 -（squared residuals 之和 / total sum of squares）：model 捕捉到的 target variance 比例 |
+| R-squared | “解释了多少方差” | $1 - (\text{残差平方和} / \text{总平方和})$：model 捕捉到的 target variance 比例 |
 | Data leakage | “model 作弊了” | 在 training 期间使用了 prediction time 不可用的信息，导致 evaluation 过于乐观 |
 | Learning curve | “数据更多时 performance 如何变化” | training 和 validation scores 相对于 training set size 的图，用来揭示 underfitting 或 overfitting |
 | Stratified split | “保持 class ratios 平衡” | split 数据时，让每个 subset 中各 class 的比例与完整 dataset 相同 |

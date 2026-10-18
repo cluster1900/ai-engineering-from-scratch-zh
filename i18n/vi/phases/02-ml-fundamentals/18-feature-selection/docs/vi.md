@@ -59,8 +59,8 @@ flowchart TD
 
 考虑一个特征, trong 1000 mẫu có 999 个都是0.0――它的变量接近零――没有模型能用它来区分类――移除它――
 
-```
-variance(x) = mean((x - mean(x))^2)
+```math
+\text{方差}(x) = \text{均值}\bigl((x - \text{均值}(x))^2\bigr)
 ```
 
 设置 một ngưỡng (ví dụ 0.01)  bỏ qua mỗi biến số thấp hơn ngưỡng này  Điều này sẽ xảy ra trong trường hợp hoàn toàn không xem xét biến mục tiêu  chuyển đổi các tính năng liên tục hoặc gần liên tục 
@@ -71,17 +71,17 @@ Sử dụng trường hợp: như các bước xử lý trước các phương p
 
 ### Thông tin lẫn nhau
 
-Thông tin lẫn nhau  đo lường giá trị của tính năng X có thể giảm đáng kể về sự không chắc chắn của mục tiêu Y.
+Thông tin lẫn nhau 衡量知道 tính năng $X$Giá trị có thể giảm nhiều so với mục tiêu$Y$Sự không chắc chắn.
 
-```
-I(X; Y) = sum_x sum_y p(x, y) * log(p(x, y) / (p(x) * p(y)))
+```math
+I(X; Y) = \sum_x \sum_y p(x, y) \cdot \log \frac{p(x, y)}{p(x) \cdot p(y)}
 ```
 
-Nếu X 和 Y 独立,则 p(x, y) = p(x) * p(y), do đó log 项为零,I(X; Y) = 0。X 能告诉你越多关于Y的信息,互通信息就越高。
+Nếu $X$和 $Y$独立,则 $p(x, y) = p(x) \cdot p(y)$, vì vậy log 项为零,$I(X; Y) = 0$$X$能 nói cho bạn biết nhiều hơn về $Y$Thông tin, thông tin lẫn nhau...
 
 Đối với mối tương quan quan quan trọng: thông tin lẫn nhau có thể nắm bắt mối quan hệ không liên quan. Một tính năng có thể có mối tương quan với mục tiêu là không, nhưng thông tin lẫn nhau là rất cao, vì mối quan hệ có thể là hình vuông hoặc định kỳ.
 
-Đối với các tính năng liên tục, hãy phân định trước 成 bins (được dựa trên ước tính histogram) ・ số lượng bins sẽ ảnh hưởng đến kết quả ước tính:bins (tất nhiều sẽ mất thông tin, quá ít sẽ tăng tiếng ồn).
+Đối với các tính năng liên tục, hãy phân định trước thành bins (được dựa trên ước tính histogram) ―― số lượng bins sẽ ảnh hưởng đến kết quả ước tính: bins 太少会丢失信息,bins 太多会增加噪音──常见选择:$\sqrt{n}$Quy tắc của Sturges$1 + \log_2 n$(■)
 
 ```mermaid
 flowchart LR
@@ -113,14 +113,14 @@ flowchart TD
 
 RFE sẽ xem xét các tương tác tính năng, vì mô hình sẽ nhìn thấy tất cả các tính năng còn lại cùng một lúc.
 
-成本:You need to train model N - target 次。 Đối với 500 tính năng 目標 为 10 tình huống,就是 490 lần đào tạo。 Đối với các mô hình đắt tiền, điều này sẽ rất chậm── có thể thông qua từng bước di chuyển nhiều tính năng để tăng tốc (ví dụ: mỗi vòng di chuyển phần dưới 10%)。
+成本: Bạn cần mô hình tập luyện $N - \text{目标}$Đối với 500 tính năng, mục tiêu là 10 là 490 lần tập luyện. Đối với các mô hình đắt tiền, điều này sẽ rất chậm.
 
 ### L1 (Lasso) Chuẩn bị
 
 L1 Regularisation 会把 weights 的绝对值加入 Loss Function:
 
-```
-loss = prediction_error + alpha * sum(|w_i|)
+```math
+\text{损失} = \text{prediction\_error} + \alpha \cdot \sum \lvert w_i \rvert
 ```
 
 Alpha 参数 kiểm soát các tính năng 被剪枝的激进程度──alpha 越高,越多重会精确变成零──
@@ -137,12 +137,10 @@ Tại sao sẽ chính xác cho không? L1 hình phạt trong không gian trọng
 
 Cây quyết định  và các tập hợp của nó (quang rừng ngẫu nhiên, tăng cường theo cấp độ) sẽ tự nhiên đối với các tính năng 排名.
 
-Đối với những cây cây                                                                                                                                                                                                                                                             
+ Đối với có $T$树木 的随机森林:
 
-```
-importance(feature_j) = (1/T) * sum over all trees of
-    sum over all nodes splitting on feature_j of
-        (n_samples * impurity_decrease)
+```math
+\text{重要性}(\text{特征}_j) = \frac{1}{T} \sum_{\text{所有树}} \; \sum_{\text{所有基于此特征划分的节点：} \text{特征}_j} (\text{n\_samples} \cdot \text{impurity\_decrease})
 ```
 
 Nó sẽ cho mỗi tính năng  chỉ số tầm quan trọng bình thường. Nó có thể tự động xử lý các mối quan hệ không tuyến tính và tương tác tính năng.
@@ -517,7 +515,7 @@ Kỹ thuật này được sử dụng để phân loại các loại máy tính
 | Filter method | “独立为 features 打分” | 一种 feature selection 方法，不训练 model，而是使用统计度量对 features 排名，并孤立地评估每个 feature |
 | Wrapper method | “用 model 挑 features” | 一种 feature selection 方法，通过训练 model 并使用其 performance 作为 selection criterion 来评估 feature subsets |
 | Embedded method | “model 在训练期间选择 features” | 作为 model fitting 一部分发生的 feature selection，例如 L1 regularization 会把 weights 推向零 |
-| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 X 的知识后，关于 Y 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
+| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 $X$ 的知识后，关于 $Y$ 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
 | Recursive Feature Elimination | “训练、排名、剪枝、重复” | 一种迭代式 wrapper method，会训练 model、移除最不重要的 feature(s)，并重复直到达到 target count |
 | L1 / Lasso regularization | “会消灭 features 的 penalty” | 将 weight 绝对值之和加入 Loss Function，这会把不重要 feature 的 weights 推到精确为零 |
 | Variance threshold | “移除 constant features” | 丢弃在 samples 之间 variance 低于指定 threshold 的 features，过滤掉不携带信息的 features |

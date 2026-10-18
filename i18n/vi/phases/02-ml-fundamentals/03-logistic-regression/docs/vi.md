@@ -18,7 +18,7 @@
 
 Bạn nghĩ theo 瘤大小预测 nó là ác tính hay tốt lành. Bạn thử sử dụng sự lùi lại tuyến tính. Nó sẽ xuất phát 0.3、1.7 hoặc -0.5 như vậy. Những con số này có nghĩa là gì?1.7  rất ác tính??-0.5  rất tốt lành?
 
-Khối tháo hậu cần  đã giải quyết vấn đề này. Nó sử dụng cùng một kết hợp 线性组合 (wx + b), sau đó thông qua hàm sigmoid, sẽ được nén bất kỳ số nào đến (0, 1) 范围内.
+Lập ngược hậu cần  giải quyết vấn đề này. Nó sử dụng cùng một kết hợp tính chất ($wx + b$), sau đó thông qua hàm sigmoid, sẽ bất kỳ số nào được nén xuống (0, 1) 范围内。输出就是概率。你设定一个门(通常是0.5),然后做出决策。
 
 Đây là một trong những thuật toán được sử dụng rộng rãi nhất trong thực tế. Mặc dù có sự lùi lại, sự lùi lại hậu cần là một thuật toán phân loại, chứ không phải thuật toán lùi lại.
 
@@ -44,22 +44,22 @@ actual: 0   0   0   0   1   1   1   1   1   1
 
 chức năng sigmoid 正是这样做:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\sigma(z) = \frac{1}{1 + e^{-z}}
 ```
 
 性质:
-- Khi z là số lượng chính xác lớn,sigmoid(z)  gần 1
-- Khi z là số lượng lớn,sigmoid(z)  gần 0
-- 当 z = 0 时,sigmoid(z) = 0,5
+- Khi đó$z$Đó là một số lượng lớn.$\sigma(z)$ gần 1
+- Khi đó$z$Đó là một số lượng lớn.$\sigma(z)$ gần 0
+- Khi đó$z = 0$时,$\sigma(z) = 0.5$
 - 输出始终位于0 和 1 之间
 - Chức năng này là đơn giản và dễ dàng
 
-Nó của dẫn xuất 具有方便的形式:sigmoid'(z) = sigmoid(z) * (1 - sigmoid(z))。这让 Gradient 计算更高效。
+Các dẫn xuất của nó có hình thức thuận tiện:$\sigma'(z) = \sigma(z) (1 - \sigma(z))$ This makes Gradient 计算更高效
 
 ### Lệ nở logistics = mô hình tuyến tính + Sigmoid
 
-模型先计算 z = wx + b(与线性回归相同), rồi áp dụng sigmoid:
+模型先计算 $z = wx + b$(Bằng ngược tuyến tính tương tự), sau đó áp dụng sigmoid:
 
 ```mermaid
 flowchart LR
@@ -70,21 +70,21 @@ flowchart LR
     D -->|No| N[Predict 0]
 ```
 
-输出 p được giải thích là P(y=1 ∈ x), tức là输入 thuộc lớp 1 của tỷ lệ có thể xảy ra.
+输出 $p$Được giải thích vì$P(y=1 \mid x)$,即输入属于类 1 的概率── quyết định giới hạn 位于 $wx + b = 0$ở vị trí, ở đây ở ở ở ở ở ở ở ở 0.5
 
 ### Loss Cross-Entropy Binary
 
 Không có khả năng trong sự lùi hậu cần sử dụng MSE。带 sigmoid của MSE 会产生非凸的成本表面,并存在许多地方最小──应使用二进制交叉缩 (tạm dịch:
 
-```
-Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
+```math
+\text{损失} = -\frac{1}{n} \sum \left( y \log(p) + (1-y) \log(1-p) \right)
 ```
 
 Tại sao nó hiệu quả:
-- 当 y=1 且 p 接近 1 时:log(1) = 0, do đó, mất mát 接近 0(正确,低成本)
-- 当 y=1 且 p 接近 0 时:log(0) 接近负无穷, do đó mất mát 很大(错误,高成本)
-- 当 y=0 且 p 接近 0 时:log(1) = 0, do đó, mất mát 接近 0(正确,低成本)
-- 当 y=0 且 p 接近 1 时:log(0) 接近负无穷, do đó mất mát 很大(错误,高成本)
+- Khi đó$y=1$且 $p$接近 1 时:$\log(1) = 0$, vì vậy mất mát  gần 0(正确,低成本)
+- Khi đó$y=1$且 $p$接近 0 时:$\log(0)$接近负无穷, do đó mất mát 很大(错误,高成本)
+- Khi đó$y=0$且 $p$接近 0 时:$\log(1) = 0$, vì vậy mất mát  gần 0(正确,低成本)
+- Khi đó$y=0$且 $p$接近 1 时:$\log(0)$接近负无穷, do đó mất mát 很大(错误,高成本)
 
 Đối với sự lùi hậu cần, chức năng mất mát này là cao, do đó đảm bảo chỉ có một mức tối thiểu toàn cầu.
 
@@ -92,12 +92,14 @@ Tại sao nó hiệu quả:
 
 sigmoid 搭配 binary cross-entropy 时,Gradient 具有简洁形式:
 
-```
-dL/dw = (1/n) * sum((p - y) * x)
-dL/db = (1/n) * sum(p - y)
+```math
+\begin{aligned}
+\frac{\partial L}{\partial w} &= \frac{1}{n} \sum (p - y) \, x \\
+\frac{\partial L}{\partial b} &= \frac{1}{n} \sum (p - y)
+\end{aligned}
 ```
 
-它们看起来与线性回归的渐进式完全相同──区别在于p = sigmoid(wx + b),而不是p = wx + b──sigmoid 引入非线性,但渐进式 更新规则保持不变──
+Chúng trông giống như Gradient của sự lùi đường thẳng hoàn toàn giống nhau. Sự khác biệt nằm ở$p = \sigma(wx + b)$, thay vì $p = wx + b$ Sigmoid  đã đưa ra không线性, nhưng Gradient 更新规则保持不变──
 
 ```mermaid
 flowchart TD
@@ -114,29 +116,29 @@ flowchart TD
 
 Đối với 2D 输入( hai tính năng), ranh giới quyết định là đáp ứng các điều kiện sau:
 
-```
-w1*x1 + w2*x2 + b = 0
+```math
+w_1 x_1 + w_2 x_2 + b = 0
 ```
 
 Một bên của điểm được phân loại là 1, bên kia của điểm được phân loại là 0―― Lập ngược logic 总是产生线性决策界限――如果需要曲的界限,要么添加多项函数,要么使用非线性模型――
 
 ### Sử dụng Softmax  thực hiện phân loại đa lớp
 
-Trình ngược hậu cần nhị phân  xử lý hai lớp。 đối với các lớp k 个, sử dụng hàm softmax:
+Trình ngược hậu cần nhị phân  xử lý hai lớp ⋅ đối với $k$个 lớp, sử dụng hàm softmax:
 
-```
-softmax(z_i) = e^(z_i) / sum(e^(z_j) for all j)
+```math
+\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
 ```
 
-Mỗi lớp có vector trọng lượng riêng của mình. Mô hình cho mỗi lớp tính toán một điểm z_i, sau đó softmax sẽ chuyển đổi điểm thành tổng và tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ số tỷ số tỷ số tỷ lệ tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ tỷ tỷ số tỷ số tỷ tỷ tỷ tỷ tỷ số tỷ số tỷ tỷ tỷ số tỷ số tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ tỷ
+Mỗi lớp có vector trọng lượng riêng của mình. mô hình cho mỗi lớp tính toán một điểm.$z_i$, sau đó softmax sẽ chuyển điểm thành tổng cộng và tỷ lệ xác suất là 1 .
 
 Hàm mất 变为 phân loại chéo entropy:
 
-```
-Loss = -(1/n) * sum(sum(y_k * log(p_k)))
+```math
+\text{损失} = -\frac{1}{n} \sum \sum_k y_k \log(p_k)
 ```
 
-Trong đó y_k đối với lớp thực 为 1, đối với tất cả các lớp khác 为 0(một mã hóa nóng)
+Trong số đó $y_k$Đối với lớp thực 为 1, đối với tất cả các lớp khác 为 0 ((một mã hóa nóng)
 
 ### Các số liệu đánh giá
 
@@ -150,18 +152,18 @@ Chỉ dựa vào độ chính xác không đủ. Đối với một tập dữ l
 | Actually Negative | False Positive (FP) | True Negative (TN) |
 
 **Precision**Trong tất cả các dự đoán tích cực, có bao nhiêu thực tế là tích cực?
-```
-Precision = TP / (TP + FP)
+```math
+\text{精确率} = \frac{TP}{TP + FP}
 ```
 
 **Recall**(Sensitivity): Trong tất cả các mẫu thực sự tích cực, chúng ta đã bắt được bao nhiêu?
-```
-Recall = TP / (TP + FN)
+```math
+\text{召回率} = \frac{TP}{TP + FN}
 ```
 
 **F1 Score**: độ chính xác và trung bình hài hòa của việc thu hồi.
-```
-F1 = 2 * (Precision * Recall) / (Precision + Recall)
+```math
+F_1 = 2 \cdot \frac{\text{精确率} \cdot \text{召回率}}{\text{精确率} + \text{召回率}}
 ```
 
  ưu tiên:
@@ -505,7 +507,7 @@ Bạn từ đầu thực hiện sẽ tạo ra cùng một ranh giới quyết đ
 
 ## 练习
 
-1. 生成一个不是线性分离的数据集 (例如两个同心圆) ――训练物流回归并观察它的失败――然后添加多项函数 (x1^2、x2^2、x1*x2)并再次训练――展示精度得到提升――
+1. 生成一个不是线性分离的数据集 (例如两个同心圆) ――训练物流回归并观察它的失败――然后添加多项函数 (poly-numeric) $x_1^2, x_2^2, x_1 x_2$(并再训练――展示 精度得到提升――) 并再训练――展示
 2. Để mô hình softmax 3 lớp  thực hiện một matrix nhầm lẫn đa lớp ⋅ tính toán chính xác mỗi lớp 和 nhớ lại ⋅ loại nào khó nhất?
 3. Từ zero cấu trúc đường cong ROC── đối với 100 giá trị ngưỡng giữa 0 đến 1 , tính toán tỷ lệ tích cực thực và tỷ lệ tích cực sai── sử dụng quy tắc trapezoidal  tính toán AUC(vùng dưới đường cong)。
 
@@ -514,14 +516,14 @@ Bạn từ đầu thực hiện sẽ tạo ra cùng một ranh giới quyết đ
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | Logistic regression | “用于 Classification 的 Regression” | 一个 linear model 后接 sigmoid function，用于输出 class probabilities |
-| Sigmoid function | “S-curve” | function 1/(1+e^(-z))，将任意实数映射到 (0, 1) 范围 |
-| Binary cross-entropy | “Log loss” | Loss Function -[y*log(p) + (1-y)*log(1-p)]，会严厉惩罚自信但错误的预测 |
+| Sigmoid function | “S-curve” | function $1/(1+e^{-z})$，将任意实数映射到 (0, 1) 范围 |
+| Binary cross-entropy | “Log loss” | Loss Function $-[y \log(p) + (1-y) \log(1-p)]$，会严厉惩罚自信但错误的预测 |
 | Decision boundary | “分界线” | 模型输出概率等于 0.5 的 surface，用于分隔 predicted classes |
 | Softmax | “Multi-class sigmoid” | 将 scores 的 Vector 转换为总和为 1 的概率的 function |
-| Precision | “选中的有多少是相关的” | TP / (TP + FP)，positive predictions 中实际为 positive 的比例 |
-| Recall | “相关的有多少被选中” | TP / (TP + FN)，actual positives 中被模型正确识别的比例 |
-| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：2*P*R / (P+R) |
+| Precision | “选中的有多少是相关的” | $TP / (TP + FP)$，positive predictions 中实际为 positive 的比例 |
+| Recall | “相关的有多少被选中” | $TP / (TP + FN)$，actual positives 中被模型正确识别的比例 |
+| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：$2PR / (P+R)$ |
 | Confusion matrix | “错误分解” | 展示每个 class pair 的 TP、TN、FP、FN 计数的表格 |
 | Threshold | “cutoff” | 超过该 probability value 时模型预测 class 1（默认 0.5，可调） |
-| One-hot encoding | “类别的二进制列” | 将 class k 表示为一个 Vector：除位置 k 为 1 外，其余位置均为 0 |
-| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 k 个 classes 的扩展，使用 one-hot encoded labels |
+| One-hot encoding | “类别的二进制列” | 将 class $k$ 表示为一个 Vector：除位置 $k$ 为 1 外，其余位置均为 0 |
+| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 $k$ 个 classes 的扩展，使用 one-hot encoded labels |

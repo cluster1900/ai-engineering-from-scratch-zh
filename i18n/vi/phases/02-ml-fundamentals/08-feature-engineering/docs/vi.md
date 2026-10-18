@@ -51,7 +51,7 @@ Số nguyên thủy rất ít có thể được sử dụng trực tiếp cho m
 
 **Binning：**Sẽ chuyển đổi giá trị liên tục thành loại. Khi mối quan hệ giữa tính năng và mục tiêu không phải là tuyến tính nhưng rất hữu ích khi chia đoạn (ví dụ: nhóm tuổi)
 
-**Polynomial features：**创建 x^2、x^3、x1*x2 项──让线性模型能够捕获非线性关系,代价是产生更多特征──
+**Polynomial features：**创建 $x^2$$x^3$$x_1 x_2$ Để mô hình trực tuyến có thể nắm bắt các mối quan hệ không liên kết, giá cả là tạo ra nhiều tính năng hơn.
 
 ### Các tính năng danh mục
 
@@ -69,10 +69,12 @@ Số nguyên thủy rất ít có thể được sử dụng trực tiếp cho m
 
 **TF-IDF：**Thuật ngữ Tần số - Tần số tài liệu ngược ⋅ Theo mức độ đặc biệt giữa các từ trong tài liệu đối với từ tăng quyền ⋅ như the
 
-```
-TF(word, doc) = count(word in doc) / total words in doc
-IDF(word) = log(total docs / docs containing word)
-TF-IDF = TF * IDF
+```math
+\begin{aligned}
+\text{TF}(\text{word}, \text{doc}) &= \frac{\text{词在文档中的出现次数}}{\text{文档总词数}} \\
+\text{IDF}(\text{word}) &= \log \frac{\text{文档总数}}{\text{包含该词的文档数}} \\
+\text{TF-IDF} &= \text{TF} \cdot \text{IDF}
+\end{aligned}
 ```
 
 ### 缺失值
@@ -87,7 +89,7 @@ Thực tế dữ liệu sẽ có lỗ hổng.
 
 ### Các tính năng tương tác
 
-Có khi có mối quan hệ trong các bộ phận. Có khi có sự tương tác giữa các bộ phận.
+Có khi có mối quan hệ giữa các thành phần.$\text{BMI} = \text{体重} / \text{身高}^2$ 有预测力── Feature interactions 会放大 Feature 空间, do đó cần sử dụng lĩnh vực kiến thức chọn đúng sự kết hợp──
 
 ### Chọn tính năng
 

@@ -27,8 +27,8 @@ Hiểu tại sao giả định sai lầm có thể mang lại một dự đoán 
 
 Lý thuyết Bayes 会反转条件概率:
 
-```
-P(class | features) = P(features | class) * P(class) / P(features)
+```math
+P(\text{类别} \mid \text{特征}) = \frac{P(\text{特征} \mid \text{类别}) \cdot P(\text{类别})}{P(\text{特征})}
 ```
 
 Chúng tôi muốn`P(class | features)`, đó là sau từ trong tài liệu nhất định, tài liệu này thuộc về một loại xác suất. Chúng ta có thể tính toán nó từ một vài điều sau:
@@ -40,15 +40,15 @@ Chúng tôi muốn`P(class | features)`, đó là sau từ trong tài liệu nh�
 
 ### Giả sử độc lập ngây thơ
 
-精确计算 `P(features | class)`需要估估所有特征联合出现的共同概率──对于包含10,000个词的词汇, bạn cần ước tính2^10,000种可能组合上的分布──不可能──
+精确计算 `P(features | class)`需要估计所有特征联合出现的共同概率――对于包含10,000词的词汇,你需要估计$2^{10{,}000}$种可能组合上的分布――不可能――
 
 Giả sử ngây thơ là: cho các loại, mỗi đặc điểm đều độc lập theo điều kiện.
 
-```
-P(w1, w2, ..., wn | class) = P(w1 | class) * P(w2 | class) * ... * P(wn | class)
+```math
+P(w_1, w_2, \ldots, w_n \mid \text{类别}) = P(w_1 \mid \text{类别}) \cdot P(w_2 \mid \text{类别}) \cdots P(w_n \mid \text{类别})
 ```
 
-Bạn không còn ước tính một phân bố chung không thể, mà ước tính n đơn giản phân bố từng đặc điểm.
+Bạn không còn ước tính một phân phối chung không thể, mà ước tính.$n$个简单的个特征分布. Mỗi phân bố chỉ cần một tính toán.
 
 Hiểu này rõ ràng là sai lầm. Trong bất kỳ tài liệu nào, "cỗ máy" và "làm học" không phải là độc lập. Nhưng phân loại không cần ước tính xác suất chính xác. Nó cần xếp hạng chính xác, đó là loại có xác suất cao nhất.
 
@@ -56,7 +56,7 @@ Hiểu này rõ ràng là sai lầm. Trong bất kỳ tài liệu nào, "cỗ m�
 
 Ba lý do:
 
-1. **排序优先于校准。**Đánh phân chỉ cần xếp hạng cao nhất trong các loại chính xác. Ngay cả khi P(spam) = 0.99999, tỷ lệ xác suất thực là 0.7, người phân loại vẫn sẽ chọn spam chính xác. Chúng tôi không cần tỷ lệ xác suất chính xác. Chúng tôi cần loại chiến thắng chính xác.
+1. **排序优先于校准。**Đánh phân chỉ cần xếp hạng cao nhất loại chính xác.$P(\text{垃圾邮件}) = 0.99999$, trong khi tỷ lệ xác suất thực tế là 0.7, phân loại vẫn sẽ chọn spam đúng.
 
 2. **高 bias，低 variance。**Hiểu thuyết độc lập là một mô hình trước tiên. Nó có thể ngăn chặn sự quá phù hợp. Trong quá trình tập luyện, một mô hình nhỏ sai nhưng ổn định sẽ thắng một mô hình lý thuyết đúng nhưng không ổn định.
 
@@ -73,31 +73,33 @@ Ba lý do:
 - Không spam 邮件 đề cập đến "tự do" 5 次、"tiền" 10 次、"làm cuộc họp" 100 次( tổng số 115 个词)
 - 40% của thư là spam, 60% là không spam
 
-使用 Laplace làm trơn ((alpha=1):
+使用 Laplace làm trơn$\alpha=1$):
 
-```
-P(free | spam)    = (80 + 1) / (150 + 3) = 81/153 = 0.529
-P(money | spam)   = (60 + 1) / (150 + 3) = 61/153 = 0.399
-P(meeting | spam) = (10 + 1) / (150 + 3) = 11/153 = 0.072
-
-P(free | not-spam)    = (5 + 1) / (115 + 3) = 6/118 = 0.051
-P(money | not-spam)   = (10 + 1) / (115 + 3) = 11/118 = 0.093
-P(meeting | not-spam) = (100 + 1) / (115 + 3) = 101/118 = 0.856
+```math
+\begin{aligned}
+P(\text{free} \mid \text{垃圾邮件}) &= (80 + 1) / (150 + 3) = 81/153 = 0.529 \\
+P(\text{money} \mid \text{垃圾邮件}) &= (60 + 1) / (150 + 3) = 61/153 = 0.399 \\
+P(\text{meeting} \mid \text{垃圾邮件}) &= (10 + 1) / (150 + 3) = 11/153 = 0.072 \\[6pt]
+P(\text{free} \mid \text{非垃圾邮件}) &= (5 + 1) / (115 + 3) = 6/118 = 0.051 \\
+P(\text{money} \mid \text{非垃圾邮件}) &= (10 + 1) / (115 + 3) = 11/118 = 0.093 \\
+P(\text{meeting} \mid \text{非垃圾邮件}) &= (100 + 1) / (115 + 3) = 101/118 = 0.856
+\end{aligned}
 ```
 
 新邮件包含:" miễn phí"(2 次) 、"tiền"(1 次) 、"làm họp"(0 次) ✿
 
+```math
+\begin{aligned}
+\log P(\text{垃圾邮件} \mid \text{邮件}) &= \log(0.4) + 2 \log(0.529) + 1 \log(0.399) + 0 \log(0.072) \\
+&= -0.916 + 2(-0.637) + (-0.919) + 0 \\
+&= -3.109 \\[6pt]
+\log P(\text{非垃圾邮件} \mid \text{邮件}) &= \log(0.6) + 2 \log(0.051) + 1 \log(0.093) + 0 \log(0.856) \\
+&= -0.511 + 2(-2.976) + (-2.375) + 0 \\
+&= -8.838
+\end{aligned}
 ```
-log P(spam | email) = log(0.4) + 2*log(0.529) + 1*log(0.399) + 0*log(0.072)
-                    = -0.916 + 2*(-0.637) + (-0.919) + 0
-                    = -3.109
 
-log P(not-spam | email) = log(0.6) + 2*log(0.051) + 1*log(0.093) + 0*log(0.856)
-                        = -0.511 + 2*(-2.976) + (-2.375) + 0
-                        = -8.838
-```
-
-Spam 以很大优势胜出──" miễn phí" xuất hiện hai lần là hỗ trợ spam của bằng chứng mạnh mẽ── chú ý, "quá trình" khi chưa xuất hiện, đóng góp của hai log sum là零(0 * log(P)) Trong số các NB đa nguyên, thiếu sót từ không ảnh hưởng── rõ ràng xây dựng từ thiếu sót là Bernoulli NB──
+Spam 以大优胜出──" miễn phí" xuất hiện hai lần là bằng chứng mạnh mẽ về hỗ trợ spam── chú ý, "quá trình" không xuất hiện, đóng góp cho hai log tổng là 0($0 \cdot \log P$Trong đa số NB, thiếu từ không ảnh hưởng.
 
 ### Ba biến thể
 
@@ -107,8 +109,8 @@ Bayes ngây thơ có ba hình thức. Mỗi hình thức đều được xây d�
 
 Để tạo mỗi đặc điểm thành một số.
 
-```
-P(word_i | class) = (count of word_i in class + alpha) / (total words in class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数：} \text{词}_i \text{ 在类别中} + \alpha}{\text{类别内词总数} + \alpha \cdot \text{vocab\_size}}
 ```
 
 `alpha`là Laplace smoothing () 
@@ -117,8 +119,8 @@ P(word_i | class) = (count of word_i in class + alpha) / (total words in class +
 
 Để tạo mô hình cho phân phối đúng tình trạng.
 
-```
-P(x_i | class) = (1 / sqrt(2 * pi * var)) * exp(-(x_i - mean)^2 / (2 * var))
+```math
+P(x_i \mid \text{类别}) = \frac{1}{\sqrt{2 \pi \cdot \text{方差}}} \cdot \exp\left(-\frac{(x_i - \text{均值})^2}{2 \cdot \text{方差}}\right)
 ```
 
 Mỗi loại sẽ có giá trị trung bình và khác biệt riêng cho mỗi đặc điểm. Khi các đặc điểm trong mỗi loại thực sự tuân theo đường cong hình, phương pháp này hiệu quả rất tốt.
@@ -127,8 +129,8 @@ Mỗi loại sẽ có giá trị trung bình và khác biệt riêng cho mỗi �
 
 将每个特征建模为二值变量 (出现或未出现) ⋅适合短文本或二值特征向量⋅
 
-```
-P(word_i | class) = (docs in class containing word_i + alpha) / (total docs in class + 2 * alpha)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{类别内包含该词的文档数：} \text{词}_i + \alpha}{\text{类别内文档总数} + 2 \alpha}
 ```
 
 Không giống như Multinomial, Bernouli sẽ rõ ràng trừng phạt sự thiếu hụt của một từ. Nếu "tự do" thường xuất hiện trong spam, nhưng trong thư này không có, Bernouli sẽ coi nó là bằng chứng chống lại spam.
@@ -149,11 +151,11 @@ Không có sự trơn tru:`P(word | class) = 0/N = 0`Một số lượng không,
 
 Lượt độ của chỗ sẽ cho mỗi tính năng tính thêm một tính nhỏ`alpha`(thường là 1):
 
-```
-P(word_i | class) = (count(word_i, class) + alpha) / (total_words_in_class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数}(\text{词}_i, \text{类别}) + \alpha}{\text{total\_words\_in\_class} + \alpha \cdot \text{vocab\_size}}
 ```
 
-Khi alpha=1 时, mỗi từ ít nhất có một tỷ lệ rất nhỏ. Trong test mail xuất hiện "discombobulate" 不再会让垃圾邮件 概率归零.
+Khi đó$\alpha=1$Trong bài viết này, mỗi từ có ít nhất một tỷ lệ rất nhỏ. Trong bài viết này, có một tỷ lệ "đánh phân" không bao giờ để spam có tỷ lệ giảm.
 
 Alpha cao hơn có nghĩa là làm trơn hơn mạnh hơn (distribution more average) ⋅ alpha thấp hơn có nghĩa là mô hình hơn tin tưởng dữ liệu⋅ Alpha là cần điều chỉnh các siêu tham số⋅
 
@@ -172,8 +174,8 @@ Cần số tỷ lệ xác suất gấp trăm lần (tất cả số nhỏ hơn 1
 
 Giải pháp: Trong không gian log, không phải là tỷ lệ tỷ lệ, mà là tỷ lệ tỷ lệ của chúng:
 
-```
-log P(class | x1, x2, ..., xn) = log P(class) + sum_i log P(xi | class)
+```math
+\log P(\text{类别} \mid x_1, x_2, \ldots, x_n) = \log P(\text{类别}) + \sum_i \log P(x_i \mid \text{类别})
 ```
 
 Điều này sẽ biến dự đoán thành sản phẩm điểm:
@@ -191,7 +193,7 @@ Cả hai đều được sử dụng để phân loại tính chất văn bản.
 
 | Aspect | Naive Bayes | Logistic Regression |
 |--------|------------|-------------------|
-| Type | Generative（建模 P(X\|Y)） | Discriminative（建模 P(Y\|X)） |
+| Type | Generative（建模 $P(X \mid Y){}$） | Discriminative（建模 $P(Y \mid X){}$） |
 | Training | 统计频率 | 优化 Loss Function |
 | Small data | 更好（强 prior 有帮助） | 更差（不足以估计权重） |
 | Large data | 更差（错误假设会拖累） | 更好（更灵活的边界） |
@@ -218,8 +220,8 @@ flowchart LR
 
 Trong thực tế, chúng tôi làm việc trong không gian log, để tránh dòng chảy dưới các điểm nổi. Chúng tôi không còn tăng nhiều tỷ lệ, mà tăng số lượng của chúng:
 
-```
-log P(class | features) = log P(class) + sum_i log P(feature_i | class)
+```math
+\log P(\text{类别} \mid \text{特征}) = \log P(\text{类别}) + \sum_i \log P(\text{特征}_i \mid \text{类别})
 ```
 
 
@@ -236,7 +238,7 @@ Từ zero thực hiện:
 
 1. **fit(X, y)**: đối với mỗi loại, thống kê mỗi đặc điểm của tần suất.
 
-2. **predict_log_proba(X)**: đối với mỗi mẫu, tính toán tất cả các loại log P( lớp) + tổng của log P(chương vị_i ➡ lớp) ➡ Đây là một lần nhân số Matrix:X @ log_probs.T + log_priors‬
+2. **predict_log_proba(X)**: đối với mỗi mẫu, tính tất cả các loại $\log P(\text{类别})$+ tổng của $\log P(\text{特征}_i \mid \text{类别})$Đây là một lần nhân số Matrix: X @ log_probs.T + log_priors。
 
 3. **predict(X)**: quay lại log xác suất tối đa của các loại.
 
@@ -309,9 +311,9 @@ Cách làm việc của dữ liệu tổng hợp là như sau: 我们创建 200 
 
 ### Tốc độ dự đoán
 
-Bayes ngây thơ 预测 là một lần nhân số Matrix.
-- MultinomialNB:一次 Matrix nhân (n x d) @ (d x k) = O(n * d * k)
-- GaussianNB:n * k 次 Gaussian PDF 求值,每次覆盖 d 个特征 = O(n * d * k)
+Bayes ngây thơ 预测 là một lần nhân số Matrix.$n$个样本,$d$个特征$k$个类别:
+- MultinomialNB: một lần nhân Matrix $(n \times d) \mathbin{@} (d \times k) = O(n \cdot d \cdot k)$
+- GaussianNB:$n \cdot k$次 Gaussian PDF 求值, mỗi lần覆盖 $d$个特征 = $O(n \cdot d \cdot k)$
 
 两者在每个维度都是线性的――将其与 KNN (需要计算到所有训练点的距离) 或带RBF kernel的 SVM (需要对所有支持向量进行内核评估) 相比,NB 在预测时快几数级――
 
@@ -383,7 +385,7 @@ CountVectorizer 中的 `binary=True`标志会将所有计数转换为0/1──�
 
 ### Định so sánh NB Khả năng
 
-NB 概率校准很差. NB nói P(spam) = 0.95 时, thực sự xác suất có thể là 0.7 ⋅ Nếu bạn cần ước tính xác suất đáng tin cậy (ví dụ, để thiết lập giá trị hoặc kết hợp với các mô hình khác), hãy sử dụng Klassifier Calibrated của sklearn:
+NB 概率校准 rất khác nhau.$P(\text{垃圾邮件}) = 0.95$Nếu bạn cần ước tính xác suất đáng tin cậy (ví dụ, để thiết lập giá trị hoặc kết hợp với các mô hình khác), hãy sử dụng Skelarn's CalibratedClassifierCV:
 
 ```python
 from sklearn.calibration import CalibratedClassifierCV
@@ -401,7 +403,7 @@ proba = calibrated_nb.predict_proba(X_test)
 
 2. **零方差特征。**GaussianNB sẽ phân biệt so với so với khác biệt. Nếu một loại có một đặc điểm khác biệt là 0, tất cả các giá trị đều giống nhau, tỷ lệ tính toán sẽ xuất hiện.
 
-3. **类别不平衡。**Nếu 99% của thư là không spam, trước P(không spam) = 0,99 会非常强, cho đến khi áp đặt bằng chứng xác suất. Bạn có thể đặt trước lớp, hoặc sử dụng sklearn 中的 class_prior 参数.
+3. **类别不平衡。**Nếu 99% thư của bạn không phải là spam, trước $P(\text{非垃圾邮件}) = 0.99$会非常强, cho đến khi áp đặt bằng chứng xác suất. Bạn có thể tự đặt các class prior, hoặc sử dụng các class_prior 参数 trong sklearn.
 
 4. **特征缩放。**MultinomialNB không cần quy mô (để xử lý) GaussianNB cũng không cần quy mô (để ước tính từng đặc điểm)
 
@@ -425,7 +427,7 @@ Trong thực tế, đối với phân loại văn bản, những chế độ th�
 ## 练习
 1. **Smoothing experiment。**Trong dữ liệu văn bản sử dụng alpha  giá trị 0.01、0.1、1.0、10.0 和 100.0  luyện tập MultinomialNB── vẽ chính xác so với alpha── hiệu suất ở đâu đạt được đỉnh điểm?
 
-2. **Feature independence test。**取一个真文本数据集. 选择两个明显相关词语 (("机器"和"学习") 计算 P(word1 类) * P(word2 类),并与 P(word1 AND word2 类) 比较――假设独立 错得多严重?
+2. **Feature independence test。**取一个真实文本数据集──选择两个明显相关的词语("机器"和"学习")──计算 $P(\text{词}_1 \mid \text{类别}) \cdot P(\text{词}_2 \mid \text{类别})$,并与 $P(\text{词}_1 \text{ 且 } \text{词}_2 \mid \text{类别})$So sánh: giả định độc lập  sai lầm có gì nghiêm trọng? Nó sẽ ảnh hưởng đến độ chính xác phân loại ư?
 
 3. **Bernoulli implementation。**扩展代码, thêm một lớp BernoulliNB──将包-of-words 转换为二值(present/absent), và trên văn bản dữ liệu so sánh chính xác với MultinomialNB──什么时候 Bernoulli 会赢?
 
@@ -437,14 +439,14 @@ Trong thực tế, đối với phân loại văn bản, những chế độ th�
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Naive Bayes | “简单的概率 classifier” | 一个使用 Bayes' theorem，并假设给定类别后特征 conditionally independent 的 classifier |
-| Conditional independence | “特征彼此不影响” | P(A, B \| C) = P(A \| C) * P(B \| C)——一旦知道 C，知道 B 不会告诉你关于 A 的任何新信息 |
+| Conditional independence | “特征彼此不影响” | $P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)$——一旦知道 $C$，知道 $B$ 不会告诉你关于 $A$ 的任何新信息 |
 | Laplace smoothing | “Add-one smoothing” | 给每个特征添加一个小计数，防止零概率主导预测 |
-| Prior | “看到数据之前你相信什么” | P(class)——观察任何特征之前，每个类别的概率 |
-| Likelihood | “数据拟合得有多好” | P(features \| class)——如果类别已知，观察到这些特征的概率 |
-| Posterior | “看到数据之后你相信什么” | P(class \| features)——观察到特征后，类别的更新概率 |
-| Generative model | “建模数据如何生成” | 学习 P(X \| Y) 和 P(Y)，然后使用 Bayes' theorem 得到 P(Y \| X) 的模型 |
-| Discriminative model | “建模 decision boundary” | 不建模 X 如何生成，而是直接学习 P(Y \| X) 的模型 |
-| Log probability | “避免 underflow” | 使用 log P 而不是 P，防止许多小数相乘后在浮点数中变成零 |
+| Prior | “看到数据之前你相信什么” | $P(\text{类别})$——观察任何特征之前，每个类别的概率 |
+| Likelihood | “数据拟合得有多好” | $P(\text{特征} \mid \text{类别})$——如果类别已知，观察到这些特征的概率 |
+| Posterior | “看到数据之后你相信什么” | $P(\text{类别} \mid \text{特征})$——观察到特征后，类别的更新概率 |
+| Generative model | “建模数据如何生成” | 学习 $P(X \mid Y)$ 和 $P(Y)$，然后使用 Bayes' theorem 得到 $P(Y \mid X)$ 的模型 |
+| Discriminative model | “建模 decision boundary” | 不建模 $X$ 如何生成，而是直接学习 $P(Y \mid X)$ 的模型 |
+| Log probability | “避免 underflow” | 使用 $\log P$ 而不是 $P$，防止许多小数相乘后在浮点数中变成零 |
 
 ## 延伸阅读
 - [scikit-learn Naive Bayes docs](https://scikit-learn.org/stable/modules/naive_bayes.html) 三种变体及其数学细节

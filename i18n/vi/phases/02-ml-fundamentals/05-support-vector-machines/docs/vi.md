@@ -25,15 +25,15 @@ SVM  trực tiếp kết nối đến giai đoạn 1: tối ưu hóa là cong co
 ## 概念
 ### Cân loại chia cắt tối đa
 
-给定 label y_i trong {-1, +1} và các vector tính x_i của dữ liệu phân tách tuyến tính, chúng tôi muốn tìm thấy một siêu phẳng w^T x + b = 0 来分离类别。
+给定标签 $y_i \in \lbrace -1, +1 \rbrace$和 các vector tính năng $x_i$của dữ liệu phân tách tuyến tính, chúng tôi muốn tìm thấy một siêu phẳng $w^T x + b = 0$Để phân biệt lớp.
 
-Điểm x_i đến hyperplane khoảng cách là:
+Điểm$x_i$Khoảng cách từ siêu phẳng là:
 
+```math
+\text{距离} = \frac{\lvert w^T x_i + b \rvert}{\lVert w \rVert}
 ```
-distance = |w^T x_i + b| / ||w||
-```
 
-Đối với đúng phân loại điểm:y_i * (w^T x_i + b) > 0──về biên là từ siêu phẳng đến phía gần điểm cách nhau hai lần──
+Đối với các điểm chính xác:$y_i (w^T x_i + b) > 0$◊đánh giá là từ siêu phẳng đến phía gần nhất điểm khoảng cách hai lần.
 
 ```mermaid
 graph LR
@@ -48,19 +48,23 @@ graph LR
 
 vấn đề tối ưu hóa:
 
-```
-maximize    2 / ||w||     (margin width)
-subject to  y_i * (w^T x_i + b) >= 1  for all i
-```
-
-等地(minimizing 更价格的价格的价格的价格:
-
-```
-minimize    (1/2) ||w||^2
-subject to  y_i * (w^T x_i + b) >= 1  for all i
+```math
+\begin{aligned}
+\text{最大化} \quad & \frac{2}{\lVert w \rVert} \quad \text{（间隔宽度）} \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-Đây là một chương trình hình vuông ốc. Nó có giải pháp toàn cầu duy nhất. Nó nằm ở các ranh giới trên các điểm dữ liệu. Trong đó y_i * (w^T x_i + b) = 1) là các vector hỗ trợ. Chúng là điểm quyết định duy nhất của ranh giới quyết định.
+等价地(đối thiểu $\lVert w \rVert^2$Hơn dễ dàng tối ưu hóa):
+
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
+```
+
+Đây là một chương trình hình vuông ng. Nó có giải pháp toàn cầu duy nhất. Nó nằm ở biên giới biên giới trên các điểm dữ liệu.$y_i (w^T x_i + b) = 1$(c) là các vector hỗ trợ. Chúng là điểm quyết định duy nhất của ranh giới quyết định.
 
 ### Các vector hỗ trợ:关键的少数点
 
@@ -82,30 +86,32 @@ Số lượng các vector hỗ trợ cũng cho thấy lỗi tổng quát.
 
 Thực tế dữ liệu rất ít là hoàn toàn phân tách được. Có một số điểm có thể nằm ở bên sai của biên giới, hoặc nằm bên trong biên giới.
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i)
-subject to  y_i * (w^T x_i + b) >= 1 - xi_i
-            xi_i >= 0  for all i
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i \xi_i \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 - \xi_i \\
+& \xi_i \ge 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-thay đổi lỏng xi_i 衡量点 i 违反差距的程度──C 控制这种交易:
+biến tính $\xi_i$Đường điểm$i$违反差距的程度──$C$控制 tradeoff này:
 
-| C value | Behavior |
+| $C$ value | Behavior |
 |---------|----------|
-| Large C | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
-| Small C | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
+| Large $C$ | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
+| Small $C$ | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
 
-C là sức mạnh của sự điều chỉnh.
+$C$là sức mạnh của sự điều chỉnh của倒数──Lớn $C$= 更少 quy định.$C$= 更多规范化──
 
 ### Loss Hinge:SVM của Loss Function
 
 SVM margin mềm có thể được viết lại cho tối ưu hóa không hạn chế:
 
-```
-minimize    (1/2) ||w||^2 + C * sum(max(0, 1 - y_i * (w^T x_i + b)))
+```math
+\text{最小化} \quad \frac{1}{2} \lVert w \rVert^2 + C \sum_i \max(0, 1 - y_i (w^T x_i + b))
 ```
 
-项 max(0, 1 - y_i * f(x_i)) là mất vòng xoắn。 khi điểm được chính xác phân loại và nằm bên ngoài biên 时, nó为零── khi điểm nằm bên trong biên 时, nó là tuyến tính──
+项 $\max(0, 1 - y_i f(x_i))$Đó là sự mất mát của vòng tròn. Khi điểm được phân loại đúng và nằm bên ngoài biên giới, nó là không. Khi điểm nằm bên trong biên giới hoặc bị phân loại sai, nó là tuyến tính.
 
 ```
 单个点的 Hinge loss：
@@ -127,9 +133,11 @@ loss
 
 Comparison:
 
-```
-Hinge:     max(0, 1 - y*f(x))          在 margin 处 hard cutoff
-Logistic:  log(1 + exp(-y*f(x)))        平滑，永远不会精确为零
+```math
+\begin{aligned}
+\text{Hinge：} \quad & \max(0, 1 - y f(x)) && \text{在间隔处硬截断} \\
+\text{Logistic：} \quad & \log(1 + \exp(-y f(x))) && \text{平滑，永不精确为零}
+\end{aligned}
 ```
 
 Thiếu hinge  tạo ra các giải pháp hiếm có( chỉ có các vector hỗ trợ 有非零贡献) ―― Thiếu hư hỏng logic Sử dụng tất cả các điểm dữ liệu── điều này làm cho SVM trong thời gian dự đoán hiệu quả hơn trí nhớ──
@@ -138,36 +146,40 @@ Thiếu hinge  tạo ra các giải pháp hiếm có( chỉ có các vector hỗ
 
 Bạn có thể sử dụng mất sợi đệm cộng với L2 điều chỉnh giảm độ cao để đào tạo SVM tuyến tính, không cần phải tìm giải pháp QP bị hạn chế:
 
+```math
+\begin{aligned}
+& L(w, b) = \frac{\lambda}{2} \lVert w \rVert^2 + \frac{1}{n} \sum_i \max(0, 1 - y_i (w^T x_i + b)) \\[6pt]
+& \text{关于 } w \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w - y_i x_i \\[6pt]
+& \text{关于 } b \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial b} = 0 \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial b} = -y_i
+\end{aligned}
 ```
-L(w, b) = (lambda/2) * ||w||^2 + (1/n) * sum(max(0, 1 - y_i * (w^T x_i + b)))
 
-关于 w 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/dw = lambda * w
-  If y_i * (w^T x_i + b) < 1:   dL/dw = lambda * w - y_i * x_i
-
-关于 b 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/db = 0
-  If y_i * (w^T x_i + b) < 1:   dL/db = -y_i
-```
-
-Đây được gọi là công thức ban đầu. Thời gian vận hành của mỗi thời đại là O(n * d), trong đó n là số lượng mẫu, d là số lượng các tính năng.
+Đây được gọi là công thức ban đầu.$O(n \cdot d)$, trong số đó $n$Số lượng mẫu,$d$Đó là số lượng các tính năng. Đối với quy mô lớn, không gian, dữ liệu cao, phân loại văn bản, đây là rất nhanh.
 
 ### Công thức kép và thủ thuật hạt nhân
 
 Vấn đề SVM của Lagrangian dual (được học từ giai đoạn 1 Bài học 18, điều kiện KKT) là:
 
-```
-maximize    sum(alpha_i) - (1/2) * sum_ij(alpha_i * alpha_j * y_i * y_j * (x_i . x_j))
-subject to  0 <= alpha_i <= C
-            sum(alpha_i * y_i) = 0
+```math
+\begin{aligned}
+\text{最大化} \quad & \sum_i \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) \\
+\text{约束为} \quad & 0 \le \alpha_i \le C \\
+& \sum_i \alpha_i y_i = 0
+\end{aligned}
 ```
 
-dual chỉ liên quan đến các sản phẩm chấm giữa các điểm dữ liệu x_i. x_j。这是关键洞见──用内核函数 K(x_i, x_j) 替换每一个点产品,SVM 就能学习非线性界限,无需显式计算转化──
+Dual chỉ liên quan đến các sản phẩm điểm giữa các điểm dữ liệu $x_i \cdot x_j$ Đó là quan trọng trong quan điểm.$K(x_i, x_j)$Thay vì mỗi sản phẩm điểm, SVM 就能学习非线性界限, không cần phải chuyển đổi toán học rõ ràng.
 
-```
-Linear kernel:      K(x, z) = x . z
-Polynomial kernel:  K(x, z) = (x . z + c)^d
-RBF (Gaussian):     K(x, z) = exp(-gamma * ||x - z||^2)
+```math
+\begin{aligned}
+\text{线性核：} \quad & K(x, z) = x \cdot z \\
+\text{多项式核：} \quad & K(x, z) = (x \cdot z + c)^d \\
+\text{RBF（高斯核）：} \quad & K(x, z) = \exp(-\gamma \lVert x - z \rVert^2)
+\end{aligned}
 ```
 
 RBF hạt nhân sẽ hiển thị dữ liệu vào không gian không gian không giới hạn. Không gian đầu vào trung bình gần điểm, giá trị hạt nhân của nó gần 1.
@@ -183,20 +195,22 @@ graph LR
     A -->|"Kernel trick<br>K(x,z) = phi(x).phi(z)"| B
 ```
 
-Trick của hạt nhân Trong trường hợp không vào trong không gian cao, tính toán các điểm trong không gian cao. Đối với hạt nhân đa nguyên tố của D 维 trung độ d, không gian tính năng rõ ràng có O (D ^ d) 维;; nhưng K (x, z) có thể trong O (D) 时间内计算。
+Trick của kernel trong trường hợp không vào trong không gian cao, tính toán các điểm trong không gian cao.$D$维中 độ $d$của hạt nhân đa nôn, không gian tính năng rõ ràng có$O(D^d)$Nhưng...$K(x, z)$Có thể là $O(D)$时间内计算――
 
 ### SVM cho sự lùi (SVR)
 
-Hỗ trợ Vector Regression 会围绕数据拟合一个宽度为 epsilon的管──tube 内的点具有零损失──tube 外的点会被线性惩罚──
+Hỗ trợ Vector Regression sẽ xoay quanh dữ liệu phù hợp với một độ rộng cho $\epsilon$Các điểm bên trong ống có lỗ không.
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i + xi_i*)
-subject to  y_i - (w^T x_i + b) <= epsilon + xi_i
-            (w^T x_i + b) - y_i <= epsilon + xi_i*
-            xi_i, xi_i* >= 0
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i (\xi_i + \xi_i^*) \\
+\text{约束为} \quad & y_i - (w^T x_i + b) \le \epsilon + \xi_i \\
+& (w^T x_i + b) - y_i \le \epsilon + \xi_i^* \\
+& \xi_i, \xi_i^* \ge 0
+\end{aligned}
 ```
 
-tham số epsilon  kiểm soát chiều rộng ống  ống 越宽 = hỗ trợ vector 越少 = phù hợp 更平滑── ống 越窄 = hỗ trợ vector 越多 = phù hợp 更紧。
+$\epsilon$tham số 控制 ống rộng── ống 越宽 = hỗ trợ vector 越少 = phù hợp 更平滑── ống 越窄 = hỗ trợ vector 越多 = phù hợp 更紧──
 
 ### Tại sao SVM 输给了深度学习 (Điều gì chúng vẫn đang làm)
 
@@ -205,7 +219,7 @@ SVM từ cuối thập niên 1990 đến đầu thập niên 2010 đã chủ y�
 | Factor | SVMs | Deep learning |
 |--------|------|---------------|
 | Feature engineering | 需要它 | 学习 features |
-| Scalability | kernel 为 O(n^2) 到 O(n^3) | 使用 SGD 时每个 epoch 为 O(n) |
+| Scalability | kernel 为 $O(n^2)$ 到 $O(n^3)$ | 使用 SGD 时每个 epoch 为 $O(n)$ |
 | Image/text/audio | 需要 handcrafted features | 从 raw data 学习 |
 | Large datasets (>100k) | 慢 | 扩展良好 |
 | GPU acceleration | 收益有限 | 巨大加速 |
@@ -320,9 +334,9 @@ print(f"Accuracy: {clf.score(X_test, y_test):.4f}")
 print(f"Support vectors: {clf['svm'].n_support_}")
 ```
 
-重要: training SVM 之前始终要规模你的特征──SVMs đối với tính năng magnitudes 敏感, vì biên giới 取决于其所需的,而未规模的特征将扭曲几何结构──
+重要: training SVM 之前始终要规模你的特征──SVMs đối với tính năng magnitudes 敏感,因为 边界 取决于 $\lVert w \rVert$, và các tính năng không có quy mô sẽ bị biến dạng về cấu trúc.
 
-对于大数据集,使用 `LinearSVC`(pháp nguyên thủy, mỗi thời đại 为 O  n)) thay vì `SVC`(pháp kép,O(n^2) đến O(n^3)):
+对于大数据集,使用 `LinearSVC`(pháp nguyên, mỗi thời đại 为 $O(n)$) thay vì `SVC`(sự tạo ra đôi,$O(n^2)$Đến$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC
@@ -336,29 +350,29 @@ clf = Pipeline([
 ## 练习
 1. 生成一个2D线性分离数据集──训练你的线性SVM,并识别支持向量──验证支持向量是最接近决策边界的点──
 
-2. Trong một tập dữ liệu ồn ào 上将 C từ 0.001  biến đổi đến 1000。为每 C giá trị 绘制 quyết định giới hạn。观察从宽边缘(不适合) 到狭边缘(过适合) 的过渡。
+2. Trong một bộ dữ liệu ồn ào  上将 $C$Từ 0,001  biến đổi đến 1000 ⋅ cho mỗi $C$giá trị  vẽ ranh giới quyết định。观察 từ biên giới rộng(lên phù hợp) đến biên giới hẹp(lên phù hợp) 过渡。
 
 3. 创建一个类界限 为圆形(非线性) 的数据集──展示线性SVM 会失败──计算RBF核矩阵,并展示类别在内核诱导功能空间 中变得可分离──
 
 4. Trong cùng một tập dữ liệu 上比较                                                                                                                                                                                                                                                           
 
-5. 实现 SVR(epsilon-insensitive loss) ――将它拟合到 y = sin(x) + noise──绘制预测 周围的epsilon tube,并突出显示支持向量(tube 外的点)──
+5. 实现 SVR(epsilon-insensitive loss) ⋅将它拟合到 $y = \sin(x) + \text{噪声}$◊ vẽ dự đoán 周围的epsilon tube,并突出显示支持向量(tube 外的点)。
 
 ## 关键术语
 | Term | What it actually means |
 |------|----------------------|
 | Support vectors | 最接近 decision boundary 的 training points。唯一决定 hyperplane 的点 |
 | Margin | decision boundary 与最近 support vectors 之间的距离。SVMs 会最大化它 |
-| Hinge loss | max(0, 1 - y*f(x))。正确分类且位于 margin 外时为零。否则为 linear penalty |
-| C parameter | margin width 与 classification errors 之间的 trade-off。Large C = narrow margin，small C = wide margin |
+| Hinge loss | $\max(0, 1 - y f(x))$。正确分类且位于 margin 外时为零。否则为 linear penalty |
+| C parameter | margin width 与 classification errors 之间的 trade-off。Large $C$ = narrow margin，small $C$ = wide margin |
 | Soft margin | 通过 slack variables 允许 margin violations 的 SVM formulation。处理 non-separable data |
 | Kernel trick | 在不显式映射到高维 feature space 的情况下，计算该空间中的 dot products |
-| Linear kernel | K(x, z) = x . z。等价于标准 dot product。用于 linearly separable data |
-| RBF kernel | K(x, z) = exp(-gamma * \|\|x-z\|\|^2)。映射到 infinite dimensions。学习任意 smooth boundary |
-| Polynomial kernel | K(x, z) = (x . z + c)^d。映射到 polynomial combinations 的 feature space |
+| Linear kernel | $K(x, z) = x \cdot z$。等价于标准 dot product。用于 linearly separable data |
+| RBF kernel | $K(x, z) = \exp(-\gamma \Vert x-z \Vert^2)$。映射到 infinite dimensions。学习任意 smooth boundary |
+| Polynomial kernel | $K(x, z) = (x \cdot z + c)^d$。映射到 polynomial combinations 的 feature space |
 | Dual formulation | SVM problem 的重写形式，只依赖数据点之间的 dot products。支持 kernels |
 | SVR | Support Vector Regression。围绕数据拟合 epsilon-tube。tube 内的点具有 zero loss |
-| Slack variables | xi_i：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
+| Slack variables | $\xi_i$：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
 | Maximum margin | 选择能够最大化到每个类别最近点距离的 hyperplane 的原则 |
 
 ## 延伸阅读

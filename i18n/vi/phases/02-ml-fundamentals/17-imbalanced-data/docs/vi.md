@@ -35,25 +35,27 @@ chính xác sẽ thất bại, bởi vì nó coi tất cả các dự đoán ch�
 | Actually Positive | 0 (TP) | 10 (FN) |
 | Actually Negative | 0 (FP) | 990 (TN) |
 
-Độ chính xác = (0 + 990) / 1000 = 99,0%
+```math
+\text{准确率} = (0 + 990) / 1000 = 99.0\%
+```
 
 Mô hình bắt kịp với sự lừa đảo không gian. Không có bệnh tật. Không có lỗ hổng.
 
 ### Chỉ số tốt hơn
 
-**Precision**= TP / (TP + FP) ⋅ Trong tất cả các mẫu được đánh dấu là tích cực, có bao nhiêu thực sự là tích cực?
+**Precision**= $\text{TP} / (\text{TP} + \text{FP})$Trong tất cả các mẫu được đánh dấu là tích cực, có bao nhiêu thực sự là tích cực?
 
-**Recall**= TP / (TP + FN) ⋅ Trong tất cả các mẫu tích cực thực sự, chúng ta đã nắm bắt bao nhiêu?
+**Recall**= $\text{TP} / (\text{TP} + \text{FN})$Trong tất cả những mẫu tích cực thực sự, chúng ta đã nắm được bao nhiêu?
 
-**F1 Score**= 2 * độ chính xác * nhớ lại / ( độ chính xác + nhớ lại) ――调和平均数──相比算术平均数,它会更严厉地惩罚精度 和召回 之间极端不平衡──
+**F1 Score**= $2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$◊调和平均数――相比算术平均数, nó sẽ nghiêm khắc hơn trừng phạt chính xác và nhớ 极端不平衡――
 
-**F-beta Score**= (1 + beta^2) * chính xác * nhớ lại / (beta^2 * chính xác + nhớ lại) ―― khi beta > 1 时, nhớ lại 更重要。 khi beta < 1 时, chính xác 更重要。
+**F-beta Score**= $(1 + \beta^2) \cdot \text{精确率} \cdot \text{召回率} / (\beta^2 \cdot \text{精确率} + \text{召回率})$$\beta > 1$时, nhớ hơn quan trọng hơn.$\beta < 1$时, độ chính xác hơn là quan trọng. F2 trong kiểm tra lừa đảo rất phổ biến.
 
 **AUPRC**(Phần dưới đường cong thu hồi chính xác) ―― tương tự như AUC-ROC, nhưng đối với không cân bằng dữ liệu có lượng thông tin hơn── AUPRC của phân loại tự nhiên tương tự như tỷ lệ của lớp tích cực(不像ROC 那样是0.5)──这使改进更容易被看──
 
-**Matthews Correlation Coefficient**= (TP * TN - FP * FN) / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))。 phạm vi từ -1 đến +1。 chỉ khi mô hình trên hai loại đều hoạt động tốt thì mới sẽ cung cấp cao分。 ngay cả khi sự khác biệt về quy mô của các loại rất lớn, cũng giữ cân bằng。
+**Matthews Correlation Coefficient**= $(\text{TP} \cdot \text{TN} - \text{FP} \cdot \text{FN}) / \sqrt{(\text{TP}+\text{FP})(\text{TP}+\text{FN})(\text{TN}+\text{FP})(\text{TN}+\text{FN})}$ phạm vi từ -1 đến +1── chỉ khi mô hình trong hai loại đều hoạt động tốt thì sẽ đưa ra điểm cao── ngay cả khi sự khác biệt về quy mô lớp rất lớn, cũng giữ được sự cân bằng──
 
-Đối với trên 始终预测负的模型:精度 = 0/0(未定义,通常设为0),回忆 = 0/10 = 0,F1 = 0,MCC = 0──这些指标正确地识别出该模型无价值──
+Đối với trên 始终预测 âm  的模型:$\text{精确率} = 0/0$(未定义, thường设为 0),$\text{召回率} = 0/10 = 0$- Tôi không biết.$\text{F1} = 0$- Tôi không biết.$\text{MCC} = 0$ Những chỉ số này xác định đúng mô hình không có giá trị
 
 ### Không cân bằng dữ liệu đường ống dẫn
 
@@ -79,9 +81,9 @@ flowchart TD
 
 SMOTE sẽ tạo ra các mẫu thiểu số tổng hợp mới, những mẫu này trông hợp lý, nhưng không phải là phụ bản.
 
-1. Đối với mỗi nhóm thiểu số mẫu x, trong các nhóm thiểu số khác tìm thấy các k 个 gần gũi
+1. Đối với mỗi nhóm thiểu số$x$, trong các mẫu khác thiểu số tìm thấy nó .$k$个 gần đây
 2. 随机选择一个邻居
-3. X và các hàng x tạo ra một mẫu mới trên đường giữa hàng x và hàng x
+3. Trong $x$Và tạo ra một mẫu mới trên đường dây giữa các hàng xóm
 
 公式:`new_sample = x + random(0, 1) * (neighbor - x)`
 
@@ -137,24 +139,24 @@ flowchart LR
 Thay vì thay đổi dữ liệu, không giống như thay đổi mô hình đối với cách xử lý sai lầm.
 
 Đối với một chứa 950  âm và 50  tích cực  mẫu 2 tỷ số các vấn đề:
-- lớp âm 的权重 = n_samples / (2 * n_negative) = 1000 / (2 * 950) = 0.526
-- lớp tích cực 的权重 = n_samples / (2 * n_positive) = 1000 / (2 * 50) = 10,0
+- lớp âm của权重 = $n_{\text{样本数}} / (2 \cdot n_{\text{负类}}) = 1000 / (2 \cdot 950) = 0.526$
+- lớp tích cực của quyền trọng = $n_{\text{样本数}} / (2 \cdot n_{\text{正类}}) = 1000 / (2 \cdot 50) = 10.0$
 
 lớp tích cực  đạt được 19 倍权重──误分类 Một mẫu tích cực 价格, tương đương với phân loại sai 19 个负面 样本──模型被迫关注少数类──
 
 Trong quá trình hồi quy logistics, điều này sẽ sửa đổi chức năng Loss:
 
-```
-weighted_loss = -sum(w_i * [y_i * log(p_i) + (1-y_i) * log(1-p_i)])
+```math
+\text{weighted\_loss} = -\sum \bigl( w_i \cdot [y_i \log(p_i) + (1-y_i) \log(1-p_i)] \bigr)
 ```
 
-Trong đó, các loại phụ thuộc vào mẫu i.
+Trong số đó $w_i$取决于样本 $i$                                                                                                                                                                                                                                                              
 
 Đánh nặng lớp học trong nghĩa kỳ vọng với việc lấy mẫu quá mức trong giá toán học, nhưng không tạo ra các điểm dữ liệu mới. Điều này làm cho chúng nhanh hơn, và tránh rủi ro quá phù hợp của các mẫu tái tạo.
 
 ### Định hướng ngưỡng
 
-Đại đa số phân loại sẽ xuất hiện một tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ lệ tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ số tỷ
+Đại đa số phân loại sẽ xuất một tỷ lệ...$P(\text{正类}) \ge 0.5$, hãy dự đoán là tích cực. Nhưng 0.5 là tùy ý. Khi các loại không cân bằng, giá trị tối ưu thường thấp hơn nhiều.
 
 流程:
 1. 训练一个模型
@@ -172,7 +174,7 @@ flowchart LR
     E --> F[Use in Production]
 ```
 
-Một mô hình có thể phát ra một giao dịch gian lận P( gian lận) = 0.15── ở giá trị 0.5 dưới, nó sẽ được phân loại là không gian lận── ở giá trị 0.10 dưới, nó sẽ được nắm bắt đúng đắn── tầm quan trọng của xác định xác suất thấp hơn thứ tự: miễn là xác suất nhận mẫu gian lận cao hơn mẫu không gian lận, có một giá trị có thể phân loại chúng──
+Một mô hình có thể đối với một giao dịch lừa đảo .$P(\text{欺诈}) = 0.15$在值 0.5 下, nó sẽ được phân loại là không gian lận.在值 0.10 下, nó sẽ được nắm bắt đúng.                                                                                                                                                                                                                                              
 
 ### Học hỏi có giá trị
 
@@ -180,8 +182,8 @@ Các loại trọng lượng của hình thức phổ biến không phải sử 
 
 | | Predict Positive | Predict Negative |
 |--|---|---|
-| Actually Positive | 0 (correct) | C_FN = 100 |
-| Actually Negative | C_FP = 1 | 0 (correct) |
+| Actually Positive | 0 (correct) | $C_{\text{FN}} = 100$ |
+| Actually Negative | $C_{\text{FP}} = 1$ | 0 (correct) |
 
 漏掉一笔欺诈交易 (FN) 的成本比一次误报 (FP) 高 100 倍――模型优化是总成本,而不是总错误数――
 

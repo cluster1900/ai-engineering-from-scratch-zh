@@ -176,7 +176,7 @@ flowchart LR
 
 Bộ thử nghiệm là thánh. Bạn chỉ có thể xem nó một lần. Nếu bạn liên tục theo kết quả thử nghiệm.
 
-Đối với tập dữ liệu nhỏ, sử dụng xác thực chéo k-fold:把数据分成 k 份, trong k-1 份训练, trong còn lại 1 份验证,轮换,并对结果取平均――
+Đối với tập dữ liệu nhỏ, sử dụng xác thực chéo k-fold:把数据分成$k$份, trong $k-1$份上训练,在剩余1份上验证,轮换进行,并对结果取平均──
 
 ### Overfitting vs Underfitting
 
@@ -242,9 +242,9 @@ Các dấu hiệu của sự quá phù hợp:
 | 刚好合适 | Medium | Medium | 良好的 generalization |
 | 过高（用 degree-20 polynomial 拟合 10 个点） | Low | High | Overfitting |
 
-总 error = Bias^2 + Variance + noise không thể tránh khỏi
+$\text{总误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声}$
 
-Bạn không thể giảm tiếng ồn không thể giảm được. Nó là tự nhiên của dữ liệu. Bạn cần tìm ra để tạo ra sự thiên vị 2 + sự khác biệt.
+Bạn không thể giảm tiếng ồn không thể giảm được. Đó là tự nhiên của dữ liệu.$\text{偏差}^2 + \text{方差}$Điểm tốt nhất nhỏ nhất.
 
 ### Không có lý thuyết bữa trưa miễn phí
 

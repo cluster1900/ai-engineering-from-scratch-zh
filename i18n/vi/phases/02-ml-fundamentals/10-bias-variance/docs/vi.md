@@ -51,23 +51,24 @@ High Variance có nghĩa là mô hình trong dữ liệu tập luyện phù hợ
 
 ### Sự phân hủy
 
-Đối với bất kỳ điểm x, dự đoán sai sót dưới dạng lỗ vuông có thể được phân giải chính xác thành:
+Đối với bất cứ điểm nào$x$, dự kiến dự đoán sai sót dưới thiệt hại vuông có thể được phân tích chính xác thành:
 
+```math
+\begin{aligned}
+& \text{期望误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声} \\[6pt]
+& \text{其中：} \\
+& \quad \text{偏差}^2 = (\mathbb{E}[\hat{f}(x)] - f(x))^2 \\
+& \quad \text{方差} = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2] \\
+& \quad \text{噪声} = \mathbb{E}[(y - f(x))^2] \quad (\sigma^2)
+\end{aligned}
 ```
-Expected Error = Bias^2 + Variance + Irreducible Noise
 
-where:
-  Bias^2   = (E[f_hat(x)] - f(x))^2
-  Variance = E[(f_hat(x) - E[f_hat(x)])^2]
-  Noise    = E[(y - f(x))^2]             (sigma^2)
-```
+- $f(x)$是真实函数
+- $\hat{f}(x)$是模型预测
+- $\mathbb{E}[\ldots]$Đương nhiên là những mong đợi của các tập đoàn đào tạo khác nhau
+- $y$是观测到的标签(真实函数加噪声)
 
-- `f(x)`是真实函数
-- `f_hat(x)`是模型预测
-- `E[...]`Đương nhiên là những mong đợi của các tập đoàn đào tạo khác nhau
-- `y`是观测到的标签(真实函数加噪声)
-
-噪音项 là không thể đối phó. Trong dữ liệu có tiếng ồn, không có mô hình nào có thể làm tốt hơn sigma^2. Nhiệm vụ của bạn là tìm sự cân bằng đúng đắn giữa sự thiên vị^2 và sự khác biệt.
+ngồn là không thể kiểm soát được.$\sigma^2$Làm tốt hơn. Nhiệm vụ của anh là...$\text{偏差}^2$和 sự khác biệt 之间 tìm thấy sự cân bằng chính xác.
 
 ### Mô hình phức tạp so với lỗi
 
@@ -128,9 +129,9 @@ Tại sao điều này xảy ra? Ở ngưỡng phân cực, mô hình chỉ có 
 
 | Regime | Parameters vs Samples | Behavior |
 |--------|----------------------|----------|
-| Underparameterized | p << n | 经典 tradeoff 适用 |
-| Interpolation threshold | p ~ n | Variance 达到峰值，测试误差激增 |
-| Overparameterized | p >> n | Implicit regularization 开始起作用，测试误差下降 |
+| Underparameterized | $p \ll n$ | 经典 tradeoff 适用 |
+| Interpolation threshold | $p \sim n$ | Variance 达到峰值，测试误差激增 |
+| Overparameterized | $p \gg n$ | Implicit regularization 开始起作用，测试误差下降 |
 
 Từ góc độ thực tế: Nếu bạn sử dụng mạng thần kinh hoặc các tập hợp cây lớn, đừng dừng lại ở ngưỡng phân cực.
 
@@ -177,7 +178,7 @@ Các phương pháp tập hợp là công cụ thực tế nhất để chống 
 
 **Bagging (Bootstrap Aggregating)**Trong các mẫu bootstrap khác nhau của tập luyện dữ liệu, tập luyện nhiều mô hình, sau đó tập trung trung bình. Mỗi mô hình riêng biệt có sự biến động cao, nhưng giá trị trung bình của sự biến động phải thấp hơn nhiều.
 
-Lý do nó có hiệu quả về mặt toán học là: nếu trung bình N 个独立预测, mỗi dự đoán khác biệt đều là sigma^2, thì sự khác biệt của giá trị trung bình là sigma^2 / N. Những mô hình này không thực sự độc lập (theo đó chúng đều thấy dữ liệu tương tự), do đó, giảm幅 nhỏ hơn 1/N, nhưng vẫn khá đáng nhìn thấy.
+Đó là lý do tại sao nó có hiệu quả về mặt toán học là: nếu bạn trung bình$N$个独立预测, mỗi dự đoán của sự khác biệt đều là $\sigma^2$, thì sự khác biệt của giá trị trung bình là $\sigma^2 / N$ Những mô hình này không thực sự độc lập (tất cả chúng đều thấy dữ liệu tương tự), do đó giảm hiệu suất nhỏ hơn$1/N$Nhưng vẫn khá đáng chú ý.
 
 **Boosting**Thông qua các mô hình xây dựng theo thứ tự để giảm Bias, trong đó mỗi mô hình mới đều quan tâm đến sai lầm của tập thể hiện tại.
 
@@ -303,10 +304,10 @@ variance = np.mean(predictions.var(axis=0))
 total_error = np.mean(np.mean((predictions - y_true) ** 2, axis=1))
 ```
 
-- `mean_pred`Ước tính xuất hiện từ các mẫu bootstrap
+- `mean_pred`Ước tính xuất hiện từ các mẫu bootstrap $\mathbb{E}[\hat{f}(x)]$
 - `bias_sq`là khoảng cách giữa giá trị dự đoán trung bình và giá trị thực
 - `variance`là xuyên bootstrap mẫu của dự đoán trung bình phân tán mức độ
-- `total_error`应该近似等于偏差^2 + sự khác biệt + tiếng ồn
+- `total_error` nên gần giống như $\text{偏差}^2 + \text{方差} + \text{噪声}$
 
 ### 步骤 4: Lập học
 
@@ -434,7 +435,7 @@ Trong thực tế, bạn sẽ theo trật tự thực hiện các chẩn đoán 
 
 2. sẽ tăng từ 30 lên 300... Điều này sẽ ảnh hưởng đến thành phần biến số như thế nào?
 
-3. 向实验添加 L2 regularisation (Ridge regression) ―― đối với một polynomial độ cao cố định (grade 15)), sẽ làm lambda từ 0 扫描 đến 100― vẽ bias^2 和 biến thể (随 lambda 变化的函数图――).
+3. 向实验添加 L2 regularisation (Ridge regression) ―― đối với một polynomial độ cao cố định (grade 15) sẽ lambda từ 0 扫描到 100―绘制$\text{偏差}^2$和 biến số 随 lambda 变化的函数图──
 
 4. 将真实函数 từ đa nôn 修为`sin(x)`❖ Sự phân biệt sự khác biệt phân giải sẽ thay đổi như thế nào?
 

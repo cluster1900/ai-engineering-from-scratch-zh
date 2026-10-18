@@ -53,12 +53,12 @@ K là siêu tham số duy nhất. Nó kiểm soát sự phân biệt sự thiên
 
 | K | 行为 |
 |---|----------|
-| K = 1 | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
+| $K = 1$ | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
 | Small K (3-5) | 对局部结构敏感。可以捕捉复杂边界 |
 | Large K | 边界更平滑。对噪声更稳健。可能 underfit |
-| K = N | 对每个点都预测多数类。最大 bias |
+| $K = N$ | 对每个点都预测多数类。最大 bias |
 
-常见起点是对包含 N 个点的数据集使用 K = sqrt(N)。二分类时使用奇数 K,以避免平票。
+常见起点是对包含 $N$个点的数据集使用 $K = \sqrt{N}$△二分类时使用奇数 K, để tránh bình chọn。
 
 ```mermaid
 graph LR
@@ -80,32 +80,33 @@ graph LR
 
 **L2 (Euclidean)**                                                                                                                                                                                                                                                              
 
-```
-d(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+d(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 Đối với các đặc điểm kích thước nhạy cảm. Sử dụng L2 và KNN trước, luôn luôn cần tiêu chuẩn hóa các đặc điểm.
 
 **L1 (Manhattan)**Đối với sự khác biệt tuyệt đối và hơn L2 có thể chống lại các giá trị ngoại lệ, vì nó sẽ không đối với sự khác biệt của giá trị vuông.
 
-```
-d(a, b) = sum(|a_i - b_i|)
+```math
+d(a, b) = \sum_i \lvert a_i - b_i \rvert
 ```
 
 **Cosine distance**衡量 向 之间的角度,忽略大小── đối với văn bản và Nhập dữ liệu rất quan trọng──
 
-```
-d(a, b) = 1 - (a . b) / (||a|| * ||b||)
+```math
+d(a, b) = 1 - \frac{a \cdot b}{\lVert a \rVert \, \lVert b \rVert}
 ```
 
-**Minkowski**Sử dụng các tham số P 泛化 L1 和 L2。
+**Minkowski**使用参数 $p$泛化 L1 和 L2──
 
-```
-d(a, b) = (sum(|a_i - b_i|^p))^(1/p)
-
-p=1: Manhattan
-p=2: Euclidean
-p->inf: Chebyshev (max absolute difference)
+```math
+\begin{aligned}
+& d(a, b) = \left( \sum_i \lvert a_i - b_i \rvert^p \right)^{1/p} \\[6pt]
+& p=1\text{：曼哈顿距离} \\
+& p=2\text{：欧氏距离} \\
+& p \to \infty\text{：切比雪夫距离（最大绝对差）}
+\end{aligned}
 ```
 
 Sử dụng loại đo phụ thuộc vào dữ liệu:
@@ -124,14 +125,15 @@ Sử dụng loại đo phụ thuộc vào dữ liệu:
 
 **Distance-weighted KNN**按距离的倒数为每个邻居加权:
 
+```math
+\begin{aligned}
+& \text{权重}_i = \frac{1}{\text{距离}_i + \epsilon} \\[6pt]
+& \text{分类：加权投票} \\
+& \text{回归：加权平均} = \frac{\sum_i w_i y_i}{\sum_i w_i}
+\end{aligned}
 ```
-weight_i = 1 / (distance_i + epsilon)
 
-For classification: weighted vote
-For regression:     weighted average = sum(w_i * y_i) / sum(w_i)
-```
-
-Khi điểm hỏi và điểm huấn luyện phù hợp hoàn toàn, epsilon có thể ngăn chặn phân chia thành không.
+Khi điểm hỏi và điểm huấn luyện phù hợp hoàn toàn,$\epsilon$Có thể ngăn chặn được phân loại từ 0.
 
 KNN trọng lượng đối với sự lựa chọn của K không quá nhạy cảm, vì những người hàng xóm xa xôi 无论如何贡献都很小.
 
@@ -159,7 +161,7 @@ Kết quả thực tế:KNN trong khoảng 20-50 đặc điểm biểu hiện t�
 
 ### KD-trái:快速 hàng xóm gần nhất 搜索
 
-KNN sẽ tính toán các điểm truy vấn từ khoảng cách của mỗi điểm đào tạo.
+KNN sẽ tính toán các điểm truy vấn từ khoảng cách của mỗi điểm huấn luyện.$O(n \cdot d)$Với dữ liệu lớn, nó quá chậm.
 
 KD-tree 会沿特征轴递归划分空间. Ở mỗi tầng, nó sẽ được phân chia theo một chiều kích theo số trung bình.
 
@@ -175,7 +177,7 @@ graph TD
 
 Để tìm kiếm hàng xóm gần nhất, trước tiên đi qua cây để chứa lá của điểm tìm kiếm, sau đó quay lại, và chỉ có thể chứa các điểm gần hơn trong khu vực lân cận để kiểm tra chúng.
 
-平均查询时间:低维时为 O(log n) ・・・ nhưng cây KD 在高维(d > 20) sẽ trở lại thành O(n), vì phân支 bị loại lại càng trở lại ít hơn。
+平均查询时间:低维时为 $O(\log n)$Nhưng cây KD ở cao độ$d > 20$) sẽ trở thành$O(n)$, vì các phân nhánh có thể loại bỏ trở lại ngày càng ít hơn.
 
 ### Cây bóng: 更适合中等维度
 
@@ -194,8 +196,8 @@ KNN là học viên lười biếng: tập luyện không làm việc, tất c�
 
 | 方面 | Lazy (KNN) | Eager (SVM, neural net) |
 |--------|------------|------------------------|
-| 训练时间 | O(1)，只存储数据 | O(n * epochs) |
-| 预测时间 | 每次查询 O(n * d) | O(d) 或 O(parameters) |
+| 训练时间 | $O(1)$，只存储数据 | $O(n \cdot \text{训练轮数})$ |
+| 预测时间 | 每次查询 $O(n \cdot d)$ | $O(d)$ 或 $O(\text{参数量})$ |
 | 预测时内存 | 存储整个训练集 | 只存储模型参数 |
 | 适应新数据 | 立即添加点 | 重新训练模型 |
 | 决策边界 | 隐式，在运行时计算 | 显式，训练后固定 |
@@ -210,12 +212,12 @@ Học lười 适合以下场景:
 
 KNN Regression không làm đa số bỏ phiếu, mà đối với K 个 hàng xóm của mục tiêu giá trị lấy trung bình.
 
-```
-prediction = (1/K) * sum(y_i for i in K nearest neighbors)
-
-Or with distance weighting:
-prediction = sum(w_i * y_i) / sum(w_i)
-where w_i = 1 / distance_i
+```math
+\begin{aligned}
+& \text{预测值} = \frac{1}{K} \sum_{i \in K \text{ 个最近邻}} y_i \\[6pt]
+& \text{或使用距离加权：} \\
+& \text{预测值} = \frac{\sum_i w_i y_i}{\sum_i w_i} \quad \text{其中 } w_i = \frac{1}{\text{距离}_i + \epsilon}
+\end{aligned}
 ```
 
 KNN Regression 产生分段常数预测(使用加权时为分段平滑) ・・・ nó không thể được đưa ra ngoài phạm vi dữ liệu đào tạo。 Nếu mục tiêu đào tạo toàn đều nằm trong 0 đến 100, KNN 永远不会预测 200。
@@ -340,7 +342,7 @@ distances, indices = index.search(query_vectors, k=5)
 ```
 
 ## 练习
-1. Trong một tập hợp dữ liệu 2D bao gồm 3 loại để thực hiện phân loại KNN.
+1. Trong một tập hợp dữ liệu 2D bao gồm 3 loại thực hiện phân loại KNN.$K=1$$K=5$$K=15$和 $K=N$                                                                                                                                                                                                                                                              
 
 2. Trong 2、5、10、50、100 和 500 维中生成 1000 个随机点── đối với mỗi维度, tính toán tỷ lệ khoảng cách đôi lớn nhất và khoảng cách đôi nhỏ nhất── vẽ tỷ lệ này theo hình ảnh thay đổi chiều kích, để hình dung các thảm họa chiều kích──
 
@@ -348,7 +350,7 @@ distances, indices = index.search(query_vectors, k=5)
 
 4. Thực hiện cây KD, và trong 2D、10D và 50D, phân biệt đối với 1k、10k và 100k điểm tập hợp dữ liệu đo thời gian truy vấn và lực thô tương đối.
 
-5. 为 y = sin(x) + tiếng ồn 构建一个重量KN regressor──将它与K=3、10、30的不重量KN比较──展示加权会产生更平滑的预测,特别是在K 较大时──
+5. Vì vậy$y = \sin(x) + \text{噪声}$Xây dựng một bộ trục bộ KNN trọng lượng.$K=3, 10, 30$Các KNN không cân bằng so sánh.
 
 ## 关键术语
 | 术语 | 它实际意味着什么 |
@@ -357,14 +359,14 @@ distances, indices = index.search(query_vectors, k=5)
 | Lazy learning | 训练时不进行计算。所有工作都发生在预测时。KNN 是典型例子 |
 | Eager learning | 训练时进行大量计算以构建紧凑模型。大多数 ML 算法都是 eager |
 | Curse of dimensionality | 在高维中，距离会收敛，neighborhoods 会扩展到覆盖空间的大部分，使 KNN 失效 |
-| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 O(log n) |
+| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 $O(\log n)$ |
 | Ball tree | 嵌套超球体构成的树。在中等维度（最高约 ~50）中比 KD-trees 表现更好 |
 | Weighted KNN | neighbors 按距离倒数加权。更近的 neighbors 对预测影响更大 |
 | Feature scaling | 将特征归一化到可比较范围。KNN 等基于距离的方法需要它 |
 | Majority vote | 通过统计 K 个 neighbors 中哪个类别最常见来进行 Classification |
-| Brute force search | 计算到每个训练点的距离。每次查询 O(n*d)。精确但在大 n 时很慢 |
+| Brute force search | 计算到每个训练点的距离。每次查询 $O(n \cdot d)$。精确但在大 $n$ 时很慢 |
 | Approximate nearest neighbor | 能比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
-| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。K=1 KNN 会产生 Voronoi 边界 |
+| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。$K=1$ KNN 会产生 Voronoi 边界 |
 
 ## 延伸阅读
 - [Cover & Hart: Nearest Neighbor Pattern Classification (1967)](https://ieeexplore.ieee.org/document/1053964)- 奠基性的 KNN 论文, chứng minh tỷ lệ lỗi của nó tối đa là hai lần của Bayes

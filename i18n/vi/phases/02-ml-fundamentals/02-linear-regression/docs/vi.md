@@ -26,36 +26,36 @@ Sự lùi ngược tuyến tính sẽ cung cấp cho bạn đường này. Quan 
 
 ### Mô hình
 
-Lịch chiếu trục xuất đường thẳng  giả định có mối quan hệ giữa đầu vào (x) và đầu ra (y):
+Lịch chiếu đường thẳng 假设 input ($x$(%) và sản lượng ($y$)  giữa các mối quan hệ tình dục:
 
-```
+```math
 y = wx + b
 ```
 
-- `w`( trọng lượng/ độ nghiêng):当 x 增加 1 时,y 改变多少
-- `b`(vi-as/intercept):当 x = 0 时,y 的值
+- `w`( trọng lượng/ độ nghiêng):当 $x$增加 1 时,$y$ thay đổi nhiều
+- `b`(tránh/cắt):当 $x = 0$时,$y$∆ giá trị
 
 Đối với nhiều đầu vào (các tính năng), nó mở rộng thành:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
-hoặc viết thành Vector 形式:`y = w^T * x + b`
+hoặc viết thành Vector 形式:$y = w^T x + b$
 
-目标: tìm w 和 b 的值,使预测 của y trong tất cả các ví dụ đào tạo 上尽可能接近真实的 y。
+目标: tìm thấy$w$和 $b$       $y$Trong tất cả các thí dụ về đào tạo,$y$
 
 ### Chức năng chi phí (Lỗi bình phương trung bình)
 
 如何衡量尽可能接近? bạn cần một con số đơn để cho thấy dự đoán có nhiều lỗi.
 
-```
-MSE = (1/n) * sum((y_predicted - y_actual)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{预测值}} - y_{\text{实际值}})^2
 ```
 
 Tại sao phải hình vuông? có hai lý do. Thứ nhất, nó trừng phạt lỗi lớn cao hơn lỗi nhỏ.
 
-Chức năng chi phí sẽ hình thành một hình dạng. Đối với trọng lượng đơn lẻ w 和 bias b,MSE 曲面 trông giống như một bát (văn) ⋅ bát đáy là MSE 最小的位置── đào tạo là tìm ra phần đáy này──
+Chức năng chi phí sẽ hình thành một hình dạng.$w$和 thiên vị $b$,MSE 曲面 trông giống như một bát (凸抛物面) ∙ Bottom of the bowl is the lowest position of MSE∙
 
 ### Sự giảm dần
 
@@ -74,18 +74,22 @@ flowchart TD
 
 Các học sinh sẽ nói với bạn hai điều: mỗi tham số nên di chuyển theo hướng nào, và di chuyển bao nhiêu.
 
-Đối với y_hat = wx + b của MSE:
+ Đối với $\hat{y} = wx + b$của MSE:
 
-```
-dMSE/dw = (2/n) * sum((y_hat - y) * x)
-dMSE/db = (2/n) * sum(y_hat - y)
+```math
+\begin{aligned}
+\frac{\partial \text{MSE}}{\partial w} &= \frac{2}{n} \sum (\hat{y} - y) \, x \\
+\frac{\partial \text{MSE}}{\partial b} &= \frac{2}{n} \sum (\hat{y} - y)
+\end{aligned}
 ```
 
 更新规则:
 
-```
-w = w - learning_rate * dMSE/dw
-b = b - learning_rate * dMSE/db
+```math
+\begin{aligned}
+w &= w - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial w} \\
+b &= b - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial b}
+\end{aligned}
 ```
 
 Tốc độ học tập 控制步长──太大:会过最小值并发散──太小: đào tạo 会耗时很久──典型起始值:0.01、0.001 或 0.0001──
@@ -94,18 +98,18 @@ Tốc độ học tập 控制步长──太大:会过最小值并发散──�
 
 Khusus đối với sự lùi ngược tuyến tính, có một công thức trực tiếp có thể cung cấp trọng lượng tối ưu nhất trong trường hợp không có bất kỳ hệ thống nào:
 
-```
-w = (X^T * X)^(-1) * X^T * y
+```math
+w = (X^T X)^{-1} X^T y
 ```
 
-Nó thông qua tìm kiếm ngược Matrix, bước giải thoát w. Nó rất phù hợp với tập dữ liệu nhỏ. Đối với tập dữ liệu lớn (vài triệu đường hoặc hàng ngàn tính năng), nó còn được đề xuất giảm độ thang, vì sự phức tạp của sự đảo ngược của Matrix trong tính năng số là O (n ^ 3) ⋅
+Nó đi qua Matrix ngược lại, bước giải thoát.$w$◊ Nó rất phù hợp với tập hợp dữ liệu nhỏ. Đối với tập hợp dữ liệu lớn (vài triệu đường hoặc hàng ngàn tính năng), nó được khuyến cáo giảm cấp độ, bởi vì sự đảo ngược của matrix trong tính năng số lượng là$O(n^3)$
 
 ### Sự lùi lại hàng tuyến
 
 Đối với nhiều tính năng, mô hình biến đổi:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
 Một cách làm việc giống nhau:MSE là chức năng chi phí,Thời gian giảm cùng lúc cập nhật tất cả trọng lượng.
@@ -116,36 +120,38 @@ Tính năng quy mô ở đây rất quan trọng. Nếu một tính năng có ph
 
 Nếu mối quan hệ không phải là tuyến tính thì làm thế nào? bạn vẫn có thể tạo các tính năng đa nôn để sử dụng sự hồi quy tuyến tính:
 
-```
-y = w1*x + w2*x^2 + w3*x^3 + b
+```math
+y = w_1 x + w_2 x^2 + w_3 x^3 + b
 ```
 
-Đây vẫn là sự lùi lại tuyến tính, bởi vì mô hình đối với trọng lượng (w1, w2, w3) là tuyến tính. Bạn chỉ sử dụng các tính năng không tuyến tính của x.
+Đây vẫn là sự lùi ngược tuyến tính, vì mô hình đối với trọng lượng ($w_1, w_2, w_3$(Từ 1 năm qua)$x$Các tính năng không tuyến tính của:
 
 Các đa nguyên cao cấp có thể phù hợp với đường cong phức tạp hơn, nhưng cũng có rủi ro quá phù hợp.
 
 ### Điểm số R-Tứ
 
-MSE  nói với bạn có nhiều phân số, nhưng con số này phụ thuộc vào kích thước của y. R-quad (R ^ 2) cung cấp một chỉ số đo không phụ thuộc vào kích thước:
+MSE nói với anh rằng có nhiều thứ khác nhau, nhưng con số này phụ thuộc vào$y$≈ R-quad ($R^2$) cung cấp một chỉ số đo không phụ thuộc vào quy mô:
 
-```
-R^2 = 1 - (sum of squared residuals) / (sum of squared deviations from mean)
-    = 1 - SS_res / SS_tot
+```math
+\begin{aligned}
+R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} \\
+&= 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}
+\end{aligned}
 ```
 
-- R^2 = 1.0:完美预测
-- R^2 = 0.0: mô hình không so với mỗi lần đều dự đoán trung bình tốt hơn
-- R^2 < 0.0: mô hình 比预测 trung bình 更差
+- $R^2 = 1.0$:完美预测
+- $R^2 = 0.0$: mô hình không so với mỗi lần dự đoán có nghĩa là tốt hơn
+- $R^2 < 0.0$:model 比预测 trung bình 更差
 
 ### Chuyển đổi 预览 (Ridge Regression)
 
 Khi bạn có nhiều tính năng, mô hình có thể thông qua phân phối trọng lượng lớn hơn để vượt quá.
 
-```
-Cost = MSE + lambda * sum(w_i^2)
+```math
+\text{代价} = \text{MSE} + \lambda \sum w_i^2
 ```
 
-惩罚项会抑制较大的重量──超参数 lambda 控制权衡:lambda 越高,重量 越小,规范化 越强──后课程会深入讲解这一点──现在只需要知道它存在,以及为什么它有帮助──
+惩罚项会抑制 trọng lượng lớn hơn.$\lambda$控制权衡:$\lambda$越高,重量 越小,规范化 越强―― next class will delve deep into this point―― bây giờ chỉ cần biết nó tồn tại, cũng như vì sao nó có ích――
 
 ## 构建
 
@@ -521,24 +527,24 @@ Bạn của từ đầu 实现和 scikit-learn 会产生相同的结果──区
 ## 练习
 
 1. 实现批次梯梯降, Stochastic gradient descent (SGD) 和 mini-batch gradient descent──在同一数据集上比较收速度──哪个收最快?哪个成本曲线最平滑?
-2. Từ hàm khối (y = ax^3 + bx^2 + cx + d + tiếng ồn) 生成数据──拟合度 1、3 和 10 的多项式──比较训练 R^2 和测试 R^2──到哪个程度时过变得明显?
-3. 实现 Lasso regression(L1 regularization: penalty * alpha sum *(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+2. Từ hàm khối ($y = ax^3 + bx^2 + cx + d + \text{噪声}$(), sinh成数据──拟合度1、3 和 10 của các đa nguyên tắc──so sánh đào tạo $R^2$和 thử nghiệm $R^2$ Trong mức độ nào quá phù hợp trở nên rõ ràng?
+3. 实现 Lasso regression(L1 regularization:$\text{惩罚项} = \alpha \sum \lvert w_i \rvert$(■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Linear regression | “在数据中画一条线” | 找到 weight w 和 bias b，使 wx+b 与真实 y 值之间的平方差之和最小 |
+| Linear regression | “在数据中画一条线” | 找到 weight $w$ 和 bias $b$，使 $wx+b$ 与真实 $y$ 值之间的平方差之和最小 |
 | Cost function | “model 有多差” | 一个将 model parameters 映射为单一数字的函数，用于衡量 prediction error，并由 optimization 最小化 |
-| Mean squared error | “平方误差的平均值” | (1/n) * (predicted - actual)^2 的求和，对大误差施加不成比例的惩罚 |
+| Mean squared error | “平方误差的平均值” | $\frac{1}{n} \sum (\text{预测值} - \text{实际值})^2$，对大误差施加不成比例的惩罚 |
 | Gradient descent | “往下坡走” | 使用偏导数，沿着降低 cost function 的方向迭代调整 parameters |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 中 parameters 改变量的标量 |
-| Normal equation | “直接求解” | 闭式解 w = (X^T X)^-1 X^T y，无需迭代即可得到最优 weights |
-| R-squared | “拟合有多好” | model 所解释的 y 方差比例，范围从负无穷到 1.0 |
+| Normal equation | “直接求解” | 闭式解 $w = (X^T X)^{-1} X^T y$，无需迭代即可得到最优 weights |
+| R-squared | “拟合有多好” | model 所解释的 $y$ 方差比例，范围从负无穷到 1.0 |
 | Feature scaling | “让 features 可比较” | 将 features 转换到相近范围（例如 zero mean、unit variance），使 Gradient Descent 更快收敛 |
 | Regularization | “惩罚复杂度” | 向 cost function 添加一个会缩小 weights 的项，以防止 overfitting |
-| Ridge regression | “L2 regularization” | 向 MSE 添加 lambda * sum(w_i^2) 惩罚项的 linear regression |
-| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features (x, x^2, x^3, ...) 做 linear regression，对 weights 仍然是线性的 |
+| Ridge regression | “L2 regularization” | 向 MSE 添加 $\lambda \sum w_i^2$ 惩罚项的 linear regression |
+| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features ($x, x^2, x^3, \ldots$) 做 linear regression，对 weights 仍然是线性的 |
 | Overfitting | “记住 training data” | 使用过于复杂的 model，以至于拟合了 training data 中的噪声，并在新数据上失效 |
 
 ## 延伸阅读
