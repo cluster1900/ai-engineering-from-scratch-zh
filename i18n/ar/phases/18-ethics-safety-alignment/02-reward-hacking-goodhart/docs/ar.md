@@ -28,9 +28,11 @@
 
 غاو وآخرون أعطوا شكل وظيفي`d = sqrt(KL(pi || pi_init))`❖令 `R_proxy(d)`للاستثمار المكلفة،`R_gold(d)`"من أجل المكافأة الذهبية":
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 من بينهم`beta_gold > beta_proxy` كلتا الاثنين يصلون إلى القمة من الصفر KL إلى الأعلى، ولكن ذروة الذهب أقرب إلى النقطة الأصلية  في أكبر`d`أعلى، حتى لو استمر الوكيل في الارتفاع، سوف يقع الذهب أيضا إلى الحد الأساسي أدناه.
