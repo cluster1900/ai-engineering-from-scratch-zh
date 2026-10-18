@@ -20,8 +20,8 @@
       "options": [
         "一全减",
         "梯度上的一个reduce_scatter加上更新参数上的一个allgather",
-        "一播",
-        "没有什么"
+        "没有什么",
+        "一播"
       ],
       "correct": 1,
       "explanation": "Reduce_scatter 仅提供每个等级的梯度分片； allgather 将更新后的参数分片分发回来。总字节数等于 allreduce，内存除以 N。"
@@ -30,12 +30,12 @@
       "stage": "check",
       "question": "为什么每步带宽与DDP相同？",
       "options": [
-        "魔法",
-        "Allreduce 等于 reduce_scatter 加上 allgather 的带宽； ZeRO 根据不同的数据将其分成两半",
+        "不一样",
         "ZeRO 使用压缩",
-        "不一样"
+        "魔法",
+        "Allreduce 等于 reduce_scatter 加上 allgather 的带宽； ZeRO 根据不同的数据将其分成两半"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "Ring allreduce 被实现为先reduce_scatter 然后allgather。 ZeRO 执行相同的两个操作，但 allgather 旋转更新的参数，而不是求和的梯度。"
     },
     {
@@ -43,11 +43,11 @@
       "question": "对于 Adam 在 8 级混合精度下的 7B 模型，与普通 DDP 相比，内存下降是多少？",
       "options": [
         "10%",
+        "0%",
         "约 65%（普通 16P 与 ZeRO-1 4P + 12P/N = 5.5P）",
-        "99%",
-        "0%"
+        "99%"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "原版：2P + 2P + 4P + 4P + 4P = 16P。 ZeRO-1：2P + 2P + (4P+4P+4P)/8 = 5.5P。下降率为 (16-5.5)/16 = 65.6%。"
     },
     {
@@ -55,11 +55,11 @@
       "question": "ZeRO-2 比 ZeRO-1 增加了什么？",
       "options": [
         "没有什么",
+        "删除优化器",
         "在reduce_scatter之后还删除非分片梯度，释放每个等级的梯度内存；带宽保持不变",
-        "将后端切换到 NCCL",
-        "删除优化器"
+        "将后端切换到 NCCL"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "ZeRO-2在reduce_scatter之后将非分片梯度部分归零；与 ZeRO-1 相同的带宽，但梯度内存较低。"
     },
     {
@@ -67,11 +67,11 @@
       "question": "为什么ZeRO需要优化器状态检查点来记录哪个等级拥有哪个分片？",
       "options": [
         "化妆品",
-        "如果没有每个等级的所有权，则保存的状态在重新启动时将无法读取；恢复相同的世界大小需要将正确的分片放回正确的排名",
         "它不",
-        "压缩"
+        "压缩",
+        "如果没有每个等级的所有权，则保存的状态在重新启动时将无法读取；恢复相同的世界大小需要将正确的分片放回正确的排名"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "第 80 课精确构建分片检查点清单，以便 ZeRO 运行可以在相同的拓扑上恢复。"
     }
   ]
