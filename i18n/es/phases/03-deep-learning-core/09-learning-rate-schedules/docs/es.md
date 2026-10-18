@@ -30,8 +30,8 @@ Usted necesita entender los horarios, porque el valor predeterminado no siempre 
 
 El método más simple es... escoger un número, usarlo cada paso.
 
-```
-lr(t) = lr_0
+```math
+\text{lr}(t) = \text{lr}_0
 ```
 
 很少是最优的──它要么对训练末期来说太高 (((在最小的 附近的振荡),要么对训练初步来说太低 ((在小步上浪费计算) ──对小模型和调试来说也可以──对任何需要训练超过一小时的任务都是糟糕的选择──
@@ -40,11 +40,11 @@ lr(t) = lr_0
 
 Desde ResNet 时代的老派方法── en épocas fijas 处按某因子 (generalmente 10x) disminuir la tasa de aprendizaje──
 
-```
-lr(t) = lr_0 * gamma^(floor(epoch / step_size))
+```math
+\text{lr}(t) = \text{lr}_0 \cdot \gamma^{\lfloor \text{epoch} / \text{step\_size} \rfloor}
 ```
 
-Entre ellos gamma = 0,1 y step_size = 30 indican:lr Cada 30 épocas  disminuir 10x──ResNet-50 就用了这个 --lr=0.1, en épocas 30、60 和 90 时降低 10x──
+Entre ellos $\gamma = 0.1$且 step_size = 30 表示:lr Cada 30 épocas 降低 10x──ResNet-50 就用了这个 -- lr=0.1,在30、60 和 90 时降低 10x──
 
 问题是:最优衰变 点取决于数据集和结构――转到另一个问题,就需要重新调调什么时候降低――转变也很突然--当速度突然变时,Loss可能会峰――
 
@@ -52,24 +52,24 @@ Entre ellos gamma = 0,1 y step_size = 30 indican:lr Cada 30 épocas  disminuir 1
 
 Según la curva cosínica, desde el máximo de aprendizaje tasa de desintegración plana al mínimo valor:
 
+```math
+\text{lr}(t) = \text{lr}_{\min} + 0.5 \cdot (\text{lr}_{\max} - \text{lr}_{\min}) \cdot \left(1 + \cos\left(\frac{\pi t}{T}\right)\right)
 ```
-lr(t) = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T))
-```
 
-Entre ellos t es el paso actual, T es el número de pasos.
+Entre ellos $t$Es el paso siguiente,$T$Es todo un paso.
 
-Cuando t=0 时,cosin 项为1,所以 lr = lr_max──当 t=T 时,cosin 项为 -1,所以 lr = lr_min──decay 一开始很平缓,中间加速,接近末尾时再次变得平缓──
+Cuando$t=0$时,cosine 项为 1,所以 $\text{lr} = \text{lr} _{\max}$¿Qué es esto?$t=T$时,cosine 项为 -1, por lo que $\text{lr} = \text{lr} _{\min}$decay 一开始很平缓,中间加速,接近末尾时再次变得平缓──
 
-Es la opción de la mayoría de los entrenamientos modernos. Además de lr_max y lr_min, no hay necesidad de ajustar los hiperparámetros.
+Es la opción de la mayoría de los entrenamientos modernos.$\text{lr} _{\max}$Y $\text{lr} _{\min}$ no necesita ajustar los hiperparámetros cosina forma conforme a la experiencia observada: la mayoría de los aprendizajes ocurren en el entrenamiento en esta etapa clave, en la que se desea el tamaño del paso 合理──
 
 ### ¿Por qué empezar desde pequeño?
 
 Adam 和其他适应优化器 会维护 Gradient mean 和 variance 运行估计――在步骤0中, estas estimaciones fueron iniciadas en zERO―― las primeras actualizaciones de Gradient 基于很差的统计量――
 
-El calentamiento puede reparar este problema. Primero, desde una tasa de aprendizaje muy pequeña, se inicia, normalmente, en lr_max / warmup_steps, incluso para zero, y luego, en los primeros N pasos, se incrementa linealmente hasta lr_max.
+Calentamiento puede solucionar este problema. Primero desde una tasa de aprendizaje muy pequeña.$N$Los pasos entre linealmente ramp up hasta $\text{lr}_{\max}$Cuando alcanzas el ritmo de aprendizaje completo, la estadística de Adam ya está estable.
 
-```
-lr(t) = lr_max * (t / warmup_steps)     for t < warmup_steps
+```math
+\text{lr}(t) = \text{lr}_{\max} \cdot \frac{t}{\text{warmup\_steps}} \quad \text{当 } t < \text{warmup\_steps}
 ```
 
 典型暖化:总训练步骤的 1-5%──Llama 3 训练了约1.8万亿代币,并暖化了2000步骤──GPT-3 在375 millones de代币上进行了暖化──
@@ -399,13 +399,13 @@ Encuentro de trabajo:
 
 ##  ejercicios
 
-1. 实现 decadencia exponencial:lr(t) = lr_0 * gamma^t, de los cuales gamma = 0,999── en el conjunto de datos del círculo 上与 cosino annealing 比较──
+1. 实现 decadencia exponencial:$\text{lr}(t) = \text{lr}_0 \cdot \gamma^t$, entre ellos $\gamma = 0.999$在圆数据集上与共弦的比较──
 
 2. 实现 aprendizaje de la tasa de rango de prueba(Leslie Smith): entrenar varios cientos de pasos, al mismo tiempo que LR aumentará de 1e-7 índice a 1― dibujar pérdida vs LR―, lo mejor máximo LR 位于 Loss 开始增加之前―,
 
 3. Utiliza calentamiento + cosino entrenamiento, pero cambia calentamiento 长度:总步骤的 0%、1%、5%、10%、20%── encontrar el mejor lugar estable del entrenamiento──
 
-4. 实现带热启动的共振: cada paso de T se pondrá el ritmo de aprendizaje en lr_max, luego se desmorona nuevamente.
+4. 实现带 warm restarts of cosine annealing(SGDR): cada $T$los pasos de la tasa de aprendizaje se vuelven a$\text{lr}_{\max}$, luego se descompone otra vez. En el entrenamiento de más largo tiempo, se compara con el estándar cosino.
 
 5. Construir un quadro de cirujano, controlar el entrenamiento Loss, y en 稳定时自动从加热转换到阴; si Loss plateau 太久,则降低 lr。
 
@@ -415,12 +415,12 @@ Encuentro de trabajo:
 |------|----------------|----------------------|
 | Learning rate | “model 学得有多快” | 用来乘以 Gradient、决定参数更新大小的标量 |
 | Schedule | “随时间改变 LR” | 将 training step 映射到 learning rate 的 function，旨在优化 convergence |
-| Warmup | “从小 LR 开始” | 在最初 N steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
-| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 lr_max 降低到 lr_min |
+| Warmup | “从小 LR 开始” | 在最初 $N$ steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
+| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 $\text{lr} _{\max}$ 降低到 $\text{lr} _{\min}$ |
 | Step decay | “在 milestones 降低 LR” | 在固定 epoch intervals，将 LR 乘以一个因子（通常是 0.1） |
 | 1cycle policy | “先上后下” | Leslie Smith 的方法：在单个 cycle 中将 LR 先 ramp up 再 ramp down，以获得更快 convergence |
 | LR range test | “找到最佳 learning rate” | 在短时间训练中逐步增加 LR，以找到 Loss 开始 diverge 的数值 |
-| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 lr_max，并再次 decay（SGDR） |
+| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 $\text{lr} _{\max}$，并再次 decay（SGDR） |
 | Eta min | “LR 的下限” | schedule 最终 decay 到的最小 learning rate |
 | Peak learning rate | “最大 LR” | 训练过程中达到的最高 LR，通常出现在 warmup 之后 |
 

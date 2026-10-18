@@ -75,8 +75,8 @@ Cada neural hace tres cosas:
 
 Ahora, la función activada es sigmoide:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\text{sigmoid}(z) = \frac{1}{1 + e^{-z}}
 ```
 
 Sigmoides se comprimirán a cualquier número en el rango (0, 1) ⋅ más grande de entrada positiva se moverá hacia 1 ⋅ más grande de entrada negativa se moverá hacia 0 ⋅ 0 ⋅ 0.0 ⋅ 0.5 ⋅ esta curva plana hace posible el aprendizaje - diferente a la percepción de la percepción de la dura etapa, sigmoides en cada posición tienen Gradiente ⋅
@@ -99,9 +99,11 @@ graph TD
 
 En cada uno de los niveles, tres operaciones suceden en orden:
 
-```
-z = W * input + b       (linear transformation)
-a = sigmoid(z)           (activation)
+```math
+\begin{aligned}
+z &= W \cdot \text{input} + b \quad \text{（线性变换）} \\
+a &= \text{sigmoid}(z) \quad \text{（激活）}
+\end{aligned}
 ```
 
 Una capa de entrada se convierte en una capa inferior.
@@ -112,13 +114,13 @@ Una capa de entrada se convierte en una capa inferior.
 
 | Step | Operation | Dimensions | Result Shape |
 |------|-----------|------------|-------------|
-| 输入 | x | -- | (2,) |
-| Hidden 线性部分 | W1 * x + b1 | W1: (3, 2), b1: (3,) | (3,) |
-| Hidden 激活 | sigmoid(z1) | -- | (3,) |
-| 输出线性部分 | W2 * h + b2 | W2: (1, 3), b2: (1,) | (1,) |
-| 输出激活 | sigmoid(z2) | -- | (1,) |
+| 输入 | $x$ | -- | (2,) |
+| Hidden 线性部分 | $W_1 x + b_1$ | $W_1$: (3, 2), $b_1$: (3,) | (3,) |
+| Hidden 激活 | $\text{sigmoid}(z_1)$ | -- | (3,) |
+| 输出线性部分 | $W_2 h + b_2$ | $W_2$: (1, 3), $b_2$: (1,) | (1,) |
+| 输出激活 | $\text{sigmoid}(z_2)$ | -- | (1,) |
 
-规则:第 k 层的权重矩阵 W 的形状是 (neurones_in_layer_k, neurones_in_layer_k_minus_1) 』行对应应应上一层──列对应上一层──如果形对不上,你就有bug──
+规则: 第 $k$La matriz de la capa de peso$W$La forma es (neuronas en la capa, neuronas en la capa menos la 1) ▽ 行对应应应上一层──列对应上一层──如果形对不上,你就有bug──
 
 ### Teorema de la aproximación universal
 
@@ -169,7 +171,7 @@ Si se pone el valor de la sujeción a [500, 500] puede evitar la revuelta.`math.
 
 ### 步骤 2: Clase de capa
 
-Todas las operaciones más importantes en el aprendizaje profundo son la matriz 乘法──每一层、每次注意头──每次前进通过-- 底层都是matmul──一线层 接收一个输入向量,将它乘以权重矩阵,并加上偏差向量:y = Wx + b── esta unidad de la ruta ocupa el 90% de la cantidad de cálculo en la red neuronal──
+Todas las operaciones más importantes en el aprendizaje profundo son la matriz 乘法── cada uno de los niveles ‧ cada cabeza de atención ‧ cada paso hacia adelante ‧ la base de los niveles es matmul── una capa lineal ‧ recibe un vector de entrada, y lo multiplicará por la matriz de peso, y añadirá un vector de sesgo:$y = Wx + b$◊ Este único proceso ocupa el 90% de la cantidad de cálculos en la red neuronal.
 
 Una capa de almacenamiento de una matriz de peso y un vector de sesgo. Su método de avance recibe un vector de entrada y vuelve a activar la salida.
 
@@ -205,7 +207,7 @@ class Layer:
 
 ### Paso 3: Clasificación de red
 
-Una red es una lista de niveles. El pase delantero los enlazará: las salidas de la segunda capa ingresan a la tercera capa k+1.
+Una red es una lista de capas.$k$层的输出输入到第 $k+1$La capa.
 
 ```python
 class Network:
@@ -347,11 +349,11 @@ Cuando necesites decidir cuántos niveles de neuronas por nivel y qué funciones
 | Hidden layer | “中间部分” | 输入和输出之间的任意层，其值不会在数据中被直接观察到 |
 | Multi-layer network | “一个深的 Neural Network” | 按顺序堆叠的神经元层，其中每一层的输出会输入到下一层 |
 | Activation function | “非线性” | 在线性变换之后应用的函数，用来把曲线引入决策边界 |
-| Sigmoid | “S 曲线” | sigma(z) = 1/(1+e^(-z))，将任意实数压缩到 (0,1)，平滑且处处可微 |
-| Weight matrix | “参数” | 一个 shape 为 (current_layer_neurons, previous_layer_neurons) 的 Matrix W，包含可学习的连接强度 |
+| Sigmoid | “S 曲线” | $\sigma(z) = 1/(1+e^{-z})$，将任意实数压缩到 (0,1)，平滑且处处可微 |
+| Weight matrix | “参数” | 一个 shape 为 (current_layer_neurons, previous_layer_neurons) 的 Matrix $W$，包含可学习的连接强度 |
 | Bias vector | “偏移量” | 在 Matrix 乘法之后添加的 Vector，使神经元即使在所有输入为零时也能激活 |
 | Universal approximation | “Neural Network 可以学习任何东西” | 一个拥有足够多神经元的单 hidden layer 可以逼近任意连续函数 -- 但“足够多”可能意味着数十亿 |
-| Linear transformation | “Matrix 乘法步骤” | z = W * x + b，激活前的计算，将输入映射到一个新空间 |
+| Linear transformation | “Matrix 乘法步骤” | $z = W x + b$，激活前的计算，将输入映射到一个新空间 |
 | Decision boundary | “分类器切换的地方” | 输入空间中的一个曲面，网络输出在这里跨过分类阈值 |
 
 ## 延伸阅读

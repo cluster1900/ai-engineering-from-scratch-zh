@@ -30,8 +30,8 @@ Aquí hay un ejemplo concreto. Hay una clasificación binaria 任务── dos c
 
 El cálculo de la diferencia entre el valor de la predicción y el valor objetivo en el cuadrado, y la media en todas las muestras.
 
-```
-MSE = (1/n) * sum((y_pred - y_true)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{pred}} - y_{\text{true}})^2
 ```
 
 Por qué el cuadrado es importante: se castiga de forma secundaria los grandes errores. El precio de los errores de 2 es 4 veces el precio de 1 error. El precio de los errores de 10 es 100 veces. Esto hace que el MSE sea sensible a los puntos de separación.
@@ -40,8 +40,8 @@ Número real: si tu modelo prevé el precio de la casa, se diferencia en la mayo
 
 MSE relativa al valor de pronóstico es:
 
-```
-dMSE/dy_pred = (2/n) * (y_pred - y_true)
+```math
+\frac{\partial \text{MSE}}{\partial y_{\text{pred}}} = \frac{2}{n} (y_{\text{pred}} - y_{\text{true}})
 ```
 
 Esto se refiere a la Regresión es una característica (el gran error requiere una gran corrección), a la Clasificación es un problema (quiere un punimiento de índice de la respuesta a la confianza pero la equivocación, en lugar de un punimiento lineal).
@@ -52,31 +52,31 @@ La función de pérdida de clasificación se deriva de la teoría de la informac
 
 **Binary Cross-Entropy (BCE):**
 
-```
-BCE = -(y * log(p) + (1 - y) * log(1 - p))
+```math
+\text{BCE} = -\left(y \log(p) + (1 - y) \log(1 - p)\right)
 ```
 
-Entre ellos y es el verdadero indicador ((0 o 1),p es la probabilidad de pronóstico.
+Entre ellos $y$Es verdad que es un "marcado"$p$Es una probabilidad de que haya un error.
 
-Por qué -log(p) tiene efecto: cuando el verdadero marcador es 1 y tu predicción p = 0.99 时,Loss es -log(0.99) = 0.01。 Cuando tu predicción p = 0.01 时,Loss es -log(0.01) = 4.6。 esta diferencia de 460 倍 es de entropía cruzada tiene efecto.
+¿ Por qué ?$-\log(p)$Éficacia: Cuando el verdadero etiquetas es 1 y tu pronóstico $p = 0.99$时,Loss es $-\log(0.99) = 0.01$✿ Cuando tú prevé $p = 0.01$时,Loss es $-\log(0.01) = 4.6$  Esta diferencia de 460 veces es la causa efectiva de la entropía cruzada                                                                                                                                                                                                                                                    
 
 Gradient 讲述是同一个故事:
 
-```
-dBCE/dp = -(y/p) + (1-y)/(1-p)
+```math
+\frac{\partial \text{BCE}}{\partial p} = -\frac{y}{p} + \frac{1-y}{1-p}
 ```
 
-Cuando y = 1 y p 接近零时, Gradiente es -1/p, tendencia negativa infinita. El modelo obtiene una señal enorme para corregir el error.
+Cuando$y = 1$且 $p$接近零时,Gradiente es $-1/p$, tendrán tendencia negativa infinita. El modelo obtendrá una señal enorme para corregir el error.$p$接近 1 时,Gradient 很小──已经正确了, no necesita ser corregido──
 
 **Categorical Cross-Entropy:**
 
 Utilizado para la clasificación de múltiples clases de un único objetivo de codificación.
 
-```
-CCE = -sum(y_i * log(p_i))
+```math
+\text{CCE} = -\sum_i y_i \log(p_i)
 ```
 
-只有真实类别会贡献损失(因为所有其他 y_i 都是零) ⋅ Si hay 10 categorías, la probabilidad de obtener la clase correcta es 0.1 ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅   ⋅ ⋅    ⋅                                                                                                                                                 
+只有真实类别会贡献                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      $y_i$Si hay 10 categorías, la probabilidad de obtener las categorías correctas es 0.1 (con suposición de que hay una pérdida)$-\log(0.1) = 2.3$Si la probabilidad de obtener la clase correcta es 0.9, la pérdida es $-\log(0.9) = 0.105$ El modelo aprenderá a concentrar la probabilidad en la respuesta correcta.
 
 ### ¿Por qué el MSE no se ajusta a la clasificación?
 
@@ -96,19 +96,19 @@ graph TD
     C3 -->|"CE Gradient<br/>在错误答案附近<br/>爆炸"| Fast["修正快速"]
 ```
 
-Cuando el pronóstico se acerca a 0 o 1 时, el gradiente de MSE cambia de plano debido a la sigmoide 和) ―― el gradiente de entropía cruzada compensa este punto -- -log 抵消了sigmoide's flat region,在最需要的位置给出强的 gradient──
+Cuando el pronóstico se acerca a 0 o 1 时, el Gradiente MSE se vuelve plano (debido a la sigmoide 和) ⋅$-\log$抵消了sigmoid's flat region, en la posición más necesaria para dar un fuerte gradiente.
 
 ### Limpiación de etiquetas
 
                                                                                                                                                                                                                                                               
 
-```
-smooth_label = (1 - alpha) * one_hot + alpha / num_classes
+```math
+\text{smooth\_label} = (1 - \alpha) \cdot \text{one\_hot} + \frac{\alpha}{\text{num\_classes}}
 ```
 
-Cuando alfa = 0,1 且有10 个类别时: objetivo ya no es [0, 0, 1, 0, ...], sino [0,01, 0.01, 0.91, 0.01,...]── el objetivo del modelo es 0.91, no 1.0──
+Cuando$\alpha = 0.1$且有10个类别时:目标不再是 [0, 0, 1, 0, ...],而是 [0.01, 0.01, 0.91, 0.01,...]──
 
-Por qué esto es efectivo: un intento de pasar por softmax 输出精确 1.0 de modelos, necesita mover los logits 推向无穷── esto conducirá a una exceso de confianza, dañar la capacidad de generalización, y hacer que el modelo se vuelva vulnerable a la distribución desviada──Liftilagering Linizaje objetivo limitado a 0.9 ((cuando alfa=0.1 时), hacer que los logits 保持 en un rango razonable──GPT y la mayoría de los modelos modernos usan la forma de suavizamiento de etiquetas o similares──
+Por qué esto es efectivo: un intento de pasar por softmax 输出精确 1.0 de modelos, necesita mover logits 推向无穷―― esto conducirá a la exceso de confianza, dañar la capacidad de generalización, y hacer que el modelo se vuelva vulnerable a la distribución desviada―Limiterando el etiquetado Limitará el objetivo a 0.9(cuando$\alpha = 0.1$时), hacer que los logits 保持在合理范围内──GPT 和大多数现代模型都会使用标签滑滑或其等价形式──
 
 ### Perdida contrastada
 
@@ -118,20 +118,20 @@ Por qué esto es efectivo: un intento de pasar por softmax 输出精确 1.0 de m
 
 取一张图像── crear sus dos aumentos视图(crop、rotate、color jitter)── ellas son un par positivo - 它们 deben tener embebidos similares── cada una de las otras imágenes en el lote forma un par negativo - 它们 deben tener diferentes embebidos──
 
-```
-L = -log(exp(sim(z_i, z_j) / tau) / sum(exp(sim(z_i, z_k) / tau)))
+```math
+L = -\log \frac{\exp(\text{sim}(z_i, z_j) / \tau)}{\sum_k \exp(\text{sim}(z_i, z_k) / \tau)}
 ```
 
-Entre ellos sim() es la similitud cosínica, z_i 和 z_j es el par positivo, y busca y cubre todos los negativos,tau (temperatura)  control de la distribución de punta 程度──更低的温度 = 更难的负面 = 更激进的分离──
+Entre ellos $\text{sim}()$Es la similitud cosina,$z_i$Y $z_j$Es un par positivo, busca y cubre todos los negativos,$\tau$(temperatura)  controlar la distribución de grado más alto.
 
-El número verdadero: tamaño del lote 256 significa cada par positivo tiene 255 个负面――Temperatura tau = 0.07(SimCLR 默认值)。 Esta pérdida parece ser a la similitud de hacer softmax-- espera que la similitud de la pareja positiva sea la más alta de las 256 opciones─
+El número verdadero: tamaño del lote 256 significa que cada par positivo tiene 255 negativos.$\tau = 0.07$(SimCLR 默认值) ⋅ esta pérdida parece ser la máxima de similitud a la de la pareja positiva en todas las 256 opciones.
 
 **Triplet Loss:**
 
 接收三个输入:anchor、positive(same类别)、negativo(不同类别)。
 
-```
-L = max(0, d(anchor, positive) - d(anchor, negative) + margin)
+```math
+L = \max\left(0, d(\text{anchor}, \text{positive}) - d(\text{anchor}, \text{negative}) + \text{margin}\right)
 ```
 
 Margen (normalmente 0.2-1.0) Forza la distancia positiva y negativa entre el mínimo de intervalos. Si el negativo ya está lo suficientemente lejos, la pérdida es zero.
@@ -140,14 +140,14 @@ Margen (normalmente 0.2-1.0) Forza la distancia positiva y negativa entre el mí
 
 Usó en un conjunto de datos desequilibrados. Entropias cruzas estándar se trata de igual a igual a todos los ejemplos de diferentes clases.
 
-```
-FL = -alpha * (1 - p_t)^gamma * log(p_t)
+```math
+\text{FL} = -\alpha (1 - p_t)^\gamma \log(p_t)
 ```
 
-Entre ellos p_t es la probabilidad de pronóstico de la gama  control de concentración. Cuando gamma = 0 时, esto es el estándar de entropía cruzada.
+Entre ellos $p_t$Es una probabilidad de pronóstico real.$\gamma$Control de concentración.$\gamma = 0$时, esto es el estándar de entropía cruzada.$\gamma = 2$(默认值) 时:
 
-- Ejemplo fácil (p_t = 0,9): peso = (0,1) ^2 = 0,01──基本被忽略──
-- Ejemplo duro (p_t = 0.1): peso = (0.9) ^2 = 0.81──完整的 Gradient 信号──
+- Ejemplo fácil ($p_t = 0.9$): peso $= (0.1)^2 = 0.01$                                                                                                                                                                                                                                                              
+- Ejemplo difícil ($p_t = 0.1$): peso $= (0.9)^2 = 0.81$◊ perfectos de la señal de gradiente.
 
 La pérdida focal, propuesta por Lin et al., para la detección de objetos, el 99% de las áreas candidatas son de fondo (fácil negativo) ⋅ sin pérdida focal ⋅ cuando el modelo se inunda en ejemplos de fondo fáciles, siempre aprenderá a examinar objetos⋅ si lo tiene, el modelo concentrará su capacidad en dificultades realmente importantes、模糊样本⋅
 
@@ -214,7 +214,7 @@ def mse_gradient(predictions, targets):
 
 ### 步骤 2:Entropía binaria cruzada
 
-log(0)   problema es real existente de. Si el modelo a un ejemplo positivo 精确预测 0,log(0) = 负无穷.
+log(0)  el problema es real de existencia.$\log(0) = -\infty$❖ El corte puede prevenir esto.
 
 ```python
 import math
@@ -426,15 +426,15 @@ Encuentro de trabajo:
 
 ##  ejercicios
 
-1. 实现 Huber loss(smooth L1 loss), se trata de un pequeño error utilizando MSE, un gran error utilizando MAE。 entrenar una Red Neural de Regressión 来预测 y = sin(x), y un 5% 训练目标被加入随机噪音(离群点) en caso de MSE y Huber。 comparar el error de prueba final。
+1. 实现 Huber loss(smooth L1 loss), se trata de un pequeño error usando MSE, un gran error usando MAE── entrenar una red neuronal de regresión 来预测 $y = \sin(x)$, y en el 5%                                                                                                                                                                                                                                                             
 
-2. La pérdida focal se añade a la clasificación binaria  entrenamiento en ciclo  crear un conjunto de datos desequilibrado  90% clase 0,10% clase 1)  Comparar el estándar BCE con la pérdida focal (gamma=2) en 200 épocas  después de la recuerdo de una minoría de clases 
+2. Clasificación binaria  formación en ciclo  crear un conjunto de datos desequilibrado  90% clase 0,10% clase 1)  Compare estándar BCE con la pérdida focal ($\gamma = 2$En 200 épocas, se ha hecho un recuerdo de la minoría.
 
 3. 实现带带半硬负矿的三重损失──为 5 个类别生成 2D Embedding 数据──对每一个基,找到仍然比积极更远的最硬负半硬)──将收情况与随机三重选择进行比较──
 
 4. 运行 MSE vs. cross-entropy对比, pero durante el entrenamiento, seguir cada uno de los niveles de magnitud de gradiente―) trazar la norma de gradiente media de cada época―) 验证在模型最不确定早期 epochs,cross-entropy 会产生更大的 gradient―).
 
-5. 实现 KL divergencia pérdida,并验证当真实分布是一热时,最小化 KL(true 精算预测) 会给与交叉的相似的 Gradient──然后尝试软目标──如知识蒸化), 真实分布来自教师模型的软max 输出──
+5. 实现 KL divergencia pérdida,并验证当真实分布是一热时,最小化 $\mathrm{KL}(\text{true} \Vert \text{predicted})$Se puede obtener un grado similar a la entropía cruzada. Luego se pueden probar objetivos blandos, como la destilación del conocimiento, entre los cuales se puede obtener una distribución real de la distribución de la producción de softmax del modelo docente.
 
 ## 关键术语: "El hombre es un hombre"
 
@@ -442,12 +442,12 @@ Encuentro de trabajo:
 |------|----------------|----------------------|
 | Loss function | “模型错得有多离谱” | 一个可微函数，将预测和目标映射到 Optimizer 要最小化的标量 |
 | MSE | “平均平方误差” | 预测和目标之间平方差的均值；以二次方式惩罚大误差 |
-| Cross-entropy | “Classification 的 Loss” | 使用 -log(p) 衡量预测概率分布和真实分布之间的差异 |
-| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：-(y*log(p) + (1-y)*log(1-p)) |
+| Cross-entropy | “Classification 的 Loss” | 使用 $-\log(p)$ 衡量预测概率分布和真实分布之间的差异 |
+| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：$-(y \log(p) + (1-y) \log(1-p))$ |
 | Label smoothing | “软化目标” | 用软值（例如 0.1/0.9）替换硬 0/1 目标，以防止过度自信并提升泛化能力 |
 | Contrastive loss | “拉近，推远” | 一种通过让相似对在 Embedding 空间中更近、非相似对更远来学习表示的 Loss |
 | InfoNCE | “CLIP/SimCLR Loss” | 对相似度分数进行 normalized temperature-scaled cross-entropy；将 contrastive learning 视为 Classification |
-| Focal loss | “不平衡数据修复方案” | 用 (1-p_t)^gamma 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
+| Focal loss | “不平衡数据修复方案” | 用 $(1-p_t)^\gamma$ 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
 | Triplet loss | “Anchor-positive-negative” | 在 Embedding 空间中，使 anchor 比 negative 至少按一个 margin 更接近 positive |
 | Temperature | “尖锐度旋钮” | 作用在 logits/相似度上的标量除数，用于控制结果分布的峰值程度；越低越尖锐 |
 

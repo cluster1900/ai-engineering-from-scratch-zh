@@ -23,7 +23,7 @@ Comprender Perceptron, significa entender el aprendizaje en el código hasta que
 ## 概念
 ### Un neurón, una decisión.
 
-Un Perceptron 接收 n 个输入,将每一个输入 乘以一个权重,求和,加偏,然后把结果传入一个激活函数――
+Un Perceptron 接收 $n$个 inputs, dará cada entrada 乘以一个重量,求和,加偏, y luego transmitirá el resultado en una función de activación.
 
 ```mermaid
 graph LR
@@ -35,11 +35,10 @@ graph LR
     step --> out["output (0 or 1)"]
 ```
 
-Función de paso 非常直接: si la suma ponderada加 bias >= 0, entonces la salida 为 1──否则, la salida 为 0──
+Función de paso 非常直接: si suma ponderada加 bias $\ge 0$, entonces la salida 为 1──否则, la salida 为 0──
 
-```
-step(z) = 1  if z >= 0
-           0  if z < 0
+```math
+\text{step}(z) = \begin{cases} 1 & \text{当 } z \ge 0 \\ 0 & \text{当 } z < 0 \end{cases}
 ```
 
 Este es un clasificador lineal. Los pesos y los sesgos definen una línea o definen un hiperplano en el espacio superior.
@@ -77,7 +76,7 @@ For each training example (x, y_true):
     bias = bias + learning_rate * error
 ```
 
-Si la predicción es correcta, error = 0, todo no cambiará. Si se predice a 0 pero debería ser 1, los pesos aumentarán. Si se predice a 1, pero debería ser 0, los pesos disminuirán.
+Si la predicción es correcta,$\text{error} = 0$, nada cambiará. Si se predice a 0 pero debería ser 1, los pesos aumentarán. Si se predice a 1, pero debería ser 0, los pesos disminuirán.
 
 ### El problema de la XOR
 
@@ -210,7 +209,7 @@ Nunca converge. Es una sola prueba de que el Perceptron no puede aprender XOR.
 
 ### Paso 4: Con dos capas  resolver XOR
 
-技巧是:XOR = (x1 O x2) Y NO (x1 Y x2)
+技巧是:$\text{XOR} = (x_1 \text{ OR } x_2) \text{ AND NOT } (x_1 \text{ AND } x_2)$◊ 组合三个 Perceptron:
 
 ```mermaid
 graph LR
@@ -353,7 +352,7 @@ Encuentro de trabajo:
 
 ##  ejercicios
 1. En la puerta NAND, cualquier circuito lógico puede ser construido por NAND.
-2. Modificar la clase Perceptron, hacer que en cada época Seguir el límite de decisión ((w1*x1 + w2*x2 + b = 0) ▽ 印印在 AND gate 训练期间这条线如何移动──
+2. Modificar la clase Perceptron, hacer que en cada época con el límite de decisión$w_1 x_1 + w_2 x_2 + b = 0$(■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 3. Construir un Perceptron de 3 entradas: sólo cuando 3 entradas entre al menos 2 个为 1 时才输出 1(función de voto mayoritario) ;;¿es linealmente separable de? ¿por qué?
 
 ## 关键术语: "El hombre es un hombre"
@@ -365,7 +364,7 @@ Encuentro de trabajo:
 | Activation function | “压缩数值的东西” | 一个在 weighted sum 之后应用的 function：Perceptron 使用 step function，现代 networks 使用 sigmoid/ReLU |
 | Linearly separable | “你能在它们之间画一条线” | 一个 dataset，其中单个 hyperplane 可以完美分离 classes |
 | XOR problem | “Perceptron 做不到的那件事” | single-layer networks 无法学习 non-linearly-separable functions 的证明 |
-| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane w*x + b = 0 |
+| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane $w \cdot x + b = 0$ |
 | Multi-layer perceptron | “一个真正的 Neural Network” | 按 layers 堆叠的 Perceptron，其中每一层的 output 会输入到下一层 |
 
 ## 延伸阅读

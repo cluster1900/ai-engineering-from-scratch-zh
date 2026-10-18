@@ -140,11 +140,11 @@ Cuando estás en`__init__`En el medio`nn.Module`O `nn.Parameter`Cuando se le da 
 
 | Module | What it does | Parameters |
 |--------|-------------|------------|
-| nn.Linear(in, out) | Wx + b | in*out + out |
+| nn.Linear(in, out) | $Wx + b$ | in*out + out |
 | nn.Conv2d(in_ch, out_ch, k) | 2D convolution | in_ch*out_ch*k*k + out_ch |
 | nn.BatchNorm1d(features) | Normalize activations | 2 * features |
 | nn.Dropout(p) | Random zeroing | 0 |
-| nn.ReLU() | max(0, x) | 0 |
+| nn.ReLU() | $\max(0, x)$ | 0 |
 | nn.GELU() | Gaussian error linear | 0 |
 | nn.Embedding(vocab, dim) | Lookup table | vocab * dim |
 | nn.LayerNorm(dim) | Per-sample normalization | 2 * dim |
@@ -353,7 +353,7 @@ class MNISTModel(nn.Module):
 
 capa de salida  producir 10 个 logits en bruto( cada dígito 一个) ――不使用softmax`CrossEntropyLoss`Me gustaría que lo tratara internamente.
 
-El parámetro de cuenta: 784*256 + 256 + 256*128 + 128 + 128*10 + 10 = 235.146。 en el estándar moderno para ver muy pequeño。 GPT-2 pequeño tiene 124M。 este modelo en unos segundos es capaz de completar el entrenamiento。
+Conto de parámetros:$784 \cdot 256 + 256 + 256 \cdot 128 + 128 + 128 \cdot 10 + 10 = 235{,}146$◊ En los estándares modernos, se ve muy pequeño. GPT-2 pequeño, tiene 124M. Este modelo puede completar el entrenamiento en pocos segundos.
 
 ### Paso 3: Bucle de entrenamiento
 
