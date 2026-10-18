@@ -16,7 +16,7 @@
 
 ##  problématique
 
-堆叠两个线性转变:y = W2(W1x + b1) + b2。展开它:y = W2W1x + W2b1 + b2。这只是 y = Ax + c一个单一线性转变──无论你堆叠多少线性层,结果都会缩短成一次矩阵乘倍──你的100层网络与单层 具有相同表示能力──
+Deux transformations linéaires sont complétées:$y = W_2(W_1 x + b_1) + b_2$Il est ouvert.$y = W_2 W_1 x + W_2 b_1 + b_2$C'est tout simplement ça.$y = Ax + c$ Une transformation linéaire unique― peu importe combien de couches linéaires vous composez, les résultats se réduisent à une fois la matrice multipliée― votre réseau de 100 couches a la même capacité de représentation que la couche unique―
 
 Ceci n'est pas une spéculation théorique. Il signifie que le réseau linéaire profond 字面上不能学习 XOR, impossible à classer en spirale, impossible à reconnaître les visages de l'homme 没有激活功能,深度只是一种幻觉.
 
@@ -26,52 +26,58 @@ Les fonctions d'activation 打破线性── elles passent par une fonction non
 
 ### Pourquoi l'inline est nécessaire
 
-La multiplication de matrice est comptable. Toutes ces paramètres, toutes ces profondeurs sont gaspillées. Vous avez besoin de quelque chose pour briser cette chaîne.
+La multiplication de matrice est possible.$A$En utilisant un vecteur, refaire une matrice.$B$乘以结果, égal à direct$AB$ Cela signifie que dix couches linéaires sont constituées, mathématiquement, égales à une couche linéaire avec une grande matrice Tous ces paramètres, toutes ces profondeurs sont gaspillés Vous avez besoin de quelque chose pour briser cette chaîne C'est le rôle des fonctions d'activation
 
-Une couche linéaire 计算 f(x) = Wx + b──堆叠两个:
+La preuve est la suivante:$f(x) = Wx + b$Il y a deux choses qui se sont déroulées:
 
-```
-Layer 1: h = W1 * x + b1
-Layer 2: y = W2 * h + b2
+```math
+\begin{aligned}
+\text{第 1 层：} \quad h &= W_1 x + b_1 \\
+\text{第 2 层：} \quad y &= W_2 h + b_2
+\end{aligned}
 ```
 
 Je suis en train de vous dire:
 
-```
-y = W2 * (W1 * x + b1) + b2
-y = (W2 * W1) * x + (W2 * b1 + b2)
-y = A * x + c
-```
-
-Une couche. Une activation non linéaire entre couches:
-
-```
-h = g(W1 * x + b1)
-y = W2 * h + b2
+```math
+\begin{aligned}
+y &= W_2 (W_1 x + b_1) + b_2 \\
+y &= (W_2 W_1) x + (W_2 b_1 + b_2) \\
+y &= A x + c
+\end{aligned}
 ```
 
-现在代入被打破了──W2 * g(W1 * x + b1) + b2 不能再简化为单线性转变──网络可以表示非线性函数──每增加一层带激活的层,都会增加表示能力──
+Un niveau. Entre les niveaux, une activation non linéaire est insérée.$g()$- Le numéro de la liste:
+
+```math
+\begin{aligned}
+h &= g(W_1 x + b_1) \\
+y &= W_2 h + b_2
+\end{aligned}
+```
+
+Maintenant, c'est comme si on était en train de se casser.$W_2 g(W_1 x + b_1) + b_2$Il est possible de simplifier le processus en transformation linéaire unique.
 
 ### Sigmoïde
 
 La dernière fonction d'activation du réseau neuronal.
 
-```
-sigmoid(x) = 1 / (1 + e^(-x))
+```math
+\text{sigmoid}(x) = \frac{1}{1 + e^{-x}}
 ```
 
 输出范围:(0, 1)──平滑、可微, sera le nombre réel arbitrary de cartographier à la valeur similaire de la probabilité──
 
 dérivé:
 
-```
-sigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))
+```math
+\text{sigmoid}'(x) = \text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))
 ```
 
-Cette dérivée a une valeur maximale de 0,25, apparaissant à x = 0── dans la propagation de retour, les gradients seront classés étape par étape.
+Cette dérivé a une valeur maximale de 0,25, apparaît.$x = 0$ Dans la propagation arrière, les gradients seront classés par étapes.
 
-```
-0.25^10 = 0.000000953674
+```math
+0.25^{10} = 0.000000953674
 ```
 
 Le problème des gradients disparaît. Les gradients des premières couches deviennent très petits, les poids sont presque inchangés. Le réseau semble être en train de se détériorer.
@@ -82,33 +88,32 @@ Le problème des gradients disparaît. Les gradients des premières couches devi
 
 Sigmoid est une version de la série.
 
-```
-tanh(x) = (e^x - e^(-x)) / (e^x + e^(-x))
+```math
+\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 ```
 
 输出范围:(-1, 1)──以零为中心,可以消除之字形问题──
 
 dérivé:
 
-```
-tanh'(x) = 1 - tanh(x)^2
+```math
+\tanh'(x) = 1 - \tanh(x)^2
 ```
 
-Le dérivé maximal dans x = 0 时为 1.0比sigmoid 好四倍──但消失梯度问题 仍然存在──对于很大的正输入或负输入, dérivé 会趋近零──十层仍然会压碎梯度,只是没有那么激烈──
+Le plus gros dérivé$x = 0$Le problème du gradient de disparition demeure cependant présent. Pour les grandes entrées positives ou négatives, les dérivés tendent à être à zéro.
 
 ### Je suis désolé .
 
 La fonction même remonte à Fukushima 1969), elle a tout changé.
 
-```
-relu(x) = max(0, x)
+```math
+\text{relu}(x) = \max(0, x)
 ```
 
-输出范围:[0, infinité) ・ dérivé 非常简单:
+输出范围:$[0, \infty)$◊ dérivé 非常简单:
 
-```
-relu'(x) = 1  if x > 0
-            0  if x <= 0
+```math
+\text{relu}'(x) = \begin{cases} 1 & \text{当 } x > 0 \\ 0 & \text{当 } x \le 0 \end{cases}
 ```
 
 Pour les réseaux de transmission, il n'y a pas de gradient qui disparaît. Le gradient est correctement 1, il sera transmis directement au passé.
@@ -119,25 +124,24 @@ Mais il a un mode d'échec: problème de neurones morts. Si une entrée pondér�
 
 Les neurones morts sont les plus simples à réparer.
 
-```
-leaky_relu(x) = x        if x > 0
-                alpha * x if x <= 0
+```math
+\text{leaky\_relu}(x) = \begin{cases} x & \text{当 } x > 0 \\ \alpha x & \text{当 } x \le 0 \end{cases}
 ```
 
-Parmi eux, l'alpha est un petit nombre ordinaire, généralement de 0,01──un demi-axe négatif ayant une petite inclination plutôt que zéro, de sorte que les neurones morts peuvent toujours obtenir un signal de gradient, et ont la chance de récupérer──.
+Parmi eux $\alpha$C'est un petit nombre ordinaire, généralement de 0,01⋅m. L'axe négatif a une petite inclination plutôt que de zéro, de sorte que les neurones morts peuvent toujours obtenir le signal de gradient, et ont la chance de récupérer.
 
 ### GELU:现代默认选择
 
 Unité linéaire d'erreur gaussienne ⋅ proposée en 2016 par Hendrycks 和 Gimpel ⋅ est l'activation par défaut de la plupart des transformateurs modernes ⋅
 
-```
-gelu(x) = x * Phi(x)
+```math
+\text{gelu}(x) = x \cdot \Phi(x)
 ```
 
-Parmi eux, Phi(x) est la fonction de distribution cumulée de la distribution normale standard.
+Parmi eux $\Phi(x)$est la fonction de distribution cumulative de la distribution normale standard, la forme approximative utilisée dans la pratique:
 
-```
-gelu(x) ~= 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))
+```math
+\text{gelu}(x) \approx 0.5 \cdot x \cdot \left(1 + \tanh\left(\sqrt{2/\pi} \cdot (x + 0.044715 \cdot x^3)\right)\right)
 ```
 
 GELU est en position de plat, permet une plus petite valeur négative (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
@@ -146,11 +150,11 @@ GELU est en position de plat, permet une plus petite valeur négative ((((((((((
 
 Par Ramachandran et coll. En 2017, par la recherche automatisée, l'activation auto-arrêtée de la découverte.
 
-```
-swish(x) = x * sigmoid(x)
+```math
+\text{swish}(x) = x \cdot \text{sigmoid}(x)
 ```
 
-La forme de Swish est x * sigmoid(x)。 Google a effectué une recherche automatisée dans l'espace de fonction d'activation  trouvé un réseau neural dans la conception de la partie du réseau neural。
+La forme de la Suisse est $x \cdot \text{sigmoid}(x)$ Google a effectué une recherche automatisée dans l'espace de fonction d'activation  a trouvé qu'il s'agissait d'un réseau neural dans la conception de la partie du réseau neural 
 
 Comme GELU, il est relativement simple, il permet une plus petite négativité. La différence est très subtile:Swish utilise le sigmoïde comme un gateau, tandis que GELU utilise le CDF gaussien.
 
@@ -158,8 +162,8 @@ Comme GELU, il est relativement simple, il permet une plus petite négativité. 
 
 Non utilisé pour les couches cachées。Softmax va utiliser les scores bruts (logits) du vecteur 转换为概率分布。
 
-```
-softmax(x_i) = e^(x_i) / sum(e^(x_j) for all j)
+```math
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
 ```
 
 Chaque sortie est entre 0 et 1 ⋅ toutes les sorties et pour 1⋅ ce qui en fait l'activation finale standard de la classification multi-classe⋅ la logite la plus grande obtiendra la plus grande probabilité, mais différente de l'argmax, le softmax est minuscule, et conserve des informations relativement fiables⋅
@@ -501,11 +505,11 @@ Le cours est ouvert à:
 
 ## 练习
 
-1. 实现 Parametric ReLU (PReLU), dont la pente négative alpha est un paramètre appréciable.
+1. 实现 Parametric ReLU (PReLU), dont la pente négative $\alpha$C'est un paramètre appréciable.
 
 2. L'expérience de gradient de disparition va être transformée de 10 niveaux en 50 niveaux de fonctionnement.
 
-3. 实现 ELU (Unité linéaire exponentielle):elu(x) = x si x > 0, alpha * (e^x - 1) si x <= 0── dans le même réseau 上将它的 taux de neurones morts par rapport à la RELU──
+3. 实现 ELU (unité linéaire exponentielle):$\text{elu}(x) = x$si $x \gt 0$- Je suis là .$\alpha (e^x - 1)$si $x \le 0$Dans le même réseau, le taux de neurones morts est supérieur à celui de la RELU.
 
 4. Construire un moniteur de santé à degré, pendant la formation: pour chaque époque, calculer la magnitude moyenne du gradient de chaque couche, lorsque le gradient de chaque couche est inférieur à 0,001 ou supérieur à 100 heures.
 
@@ -519,12 +523,12 @@ Le cours est ouvert à:
 | Vanishing gradient | “Gradients 在 deep networks 中消失” | 当 activation 的 derivative 小于 1 时，gradients 会通过 layers 指数级缩小，使早期 layers 无法训练 |
 | Exploding gradient | “Gradients 爆炸” | 当有效乘数超过 1 时，gradients 会通过 layers 指数级增长，导致训练不稳定 |
 | Dead neuron | “停止学习的 neuron” | 输入永久为负的 ReLU neuron，会产生零输出和零 gradient |
-| Sigmoid | “把值压缩到 0-1” | logistic function 1/(1+e^-x)，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
-| ReLU | “把负数裁剪为零” | max(0, x)——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
+| Sigmoid | “把值压缩到 0-1” | logistic function $1/(1+e^{-x})$，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
+| ReLU | “把负数裁剪为零” | $\max(0, x)$——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
 | GELU | “transformer activation” | Gaussian Error Linear Unit，一种平滑 activation，会根据输入为正的概率对输入加权 |
-| Swish/SiLU | “Self-gated ReLU” | x * sigmoid(x)，通过 automated search 发现，用于 EfficientNet |
+| Swish/SiLU | “Self-gated ReLU” | $x \cdot \text{sigmoid}(x)$，通过 automated search 发现，用于 EfficientNet |
 | Softmax | “把分数变成概率” | 将 logits 的 Vector 归一化为 probability distribution，其中所有值都在 (0,1) 内且总和为 1 |
-| Leaky ReLU | “不会死亡的 ReLU” | max(alpha*x, x)，其中 alpha 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
+| Leaky ReLU | “不会死亡的 ReLU” | $\max(\alpha x, x)$，其中 $\alpha$ 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
 | Saturation | “sigmoid 的平坦部分” | activation 的 derivative 趋近于零的区域，会阻断 gradient flow |
 | Logit | “softmax 之前的原始分数” | 应用 softmax 或 sigmoid 之前，final layer 的未归一化输出 |
 

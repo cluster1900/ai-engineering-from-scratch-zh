@@ -30,8 +30,8 @@ Il y a un exemple spécifique. Vous avez une classification binaire 任务。 de
 
 Régrésion de la sélection par défaut.
 
-```
-MSE = (1/n) * sum((y_pred - y_true)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{pred}} - y_{\text{true}})^2
 ```
 
 Pourquoi le carré est important: il punirait les grandes erreurs de manière secondaire. Le coût d'une erreur de 2 est 4 fois celui d'une erreur de 1 fois. Le coût d'une erreur de 10 fois est 100 fois.
@@ -40,8 +40,8 @@ Si votre modèle prévoit le prix de la maison, il y a une différence de la plu
 
 Le gradient de MSE par rapport à la valeur de prédiction est:
 
-```
-dMSE/dy_pred = (2/n) * (y_pred - y_true)
+```math
+\frac{\partial \text{MSE}}{\partial y_{\text{pred}}} = \frac{2}{n} (y_{\text{pred}} - y_{\text{true}})
 ```
 
 Il est lié à l'erreur de ligne. Les erreurs plus grandes obtiennent un degré plus grand. Ceci est une caractéristique de la régression.
@@ -52,31 +52,31 @@ La fonction de perte de classification, qui est basée sur l'information, mesure
 
 **Binary Cross-Entropy (BCE):**
 
-```
-BCE = -(y * log(p) + (1 - y) * log(1 - p))
+```math
+\text{BCE} = -\left(y \log(p) + (1 - y) \log(1 - p)\right)
 ```
 
-Parmi eux y est le réel étiquette ((0 ou 1),p est la probabilité de prédiction。
+Parmi eux $y$est réellement identique (0 ou 1),$p$C'est une prédiction.
 
-Pourquoi -log(p) Effectif: lorsque le vrai étiquette est 1 et vous prédictez p = 0,99 时, Loss est -log(0,99) = 0,01。 lorsque vous prédictez p = 0,01 时, Loss est -log(0,01) = 4,6。 cette différence de 460 倍 est la croisée entropie Effectif des raisons。 il sera sévèrement punir la confiance mais la prédiction erronée, presque non punir la confiance et la prédiction correcte。
+Pourquoi ?$-\log(p)$Effectif: quand le vrai étiquette est 1 et vous prévenez $p = 0.99$La perte est$-\log(0.99) = 0.01$当你预测 $p = 0.01$La perte est$-\log(0.01) = 4.6$◊ Cette différence de 460 fois est la raison de l'entropie croisée.
 
 Gradient raconte la même histoire:
 
-```
-dBCE/dp = -(y/p) + (1-y)/(1-p)
+```math
+\frac{\partial \text{BCE}}{\partial p} = -\frac{y}{p} + \frac{1-y}{1-p}
 ```
 
-Lorsque y = 1 et p 接近零时, le gradient est -1/p, tendra vers le négatif et il n'y a pas de fin. Le modèle obtient un signal énorme pour corriger l'erreur.
+- Je suis là .$y = 1$且 $p$接近零时,Gradient est $-1/p$Le modèle obtient un signal énorme pour corriger l'erreur.$p$Le grade est très petit.
 
 **Categorical Cross-Entropy:**
 
 Utilisé pour la classification multi-classe d'objectifs de code unique.
 
-```
-CCE = -sum(y_i * log(p_i))
+```math
+\text{CCE} = -\sum_i y_i \log(p_i)
 ```
 
-只有真实类别会贡献损失(因为其他所有 y_i 都是零) ⋅如果有10类别,正确类别得到的概率是0.1(随机猜测),Loss是 -log(0.1) = 2.3──如果正确类别得到的概率是0.9,Loss是 -log(0.9) =0.105──模型会学习把概率质量集中到正确答案上──
+只有真实类别会贡献 Losses $y_i$Si il y a 10 catégories, la probabilité d'obtenir une catégorie correcte est de 0,1 (concerns), la perte est de 0.$-\log(0.1) = 2.3$Si la probabilité d'obtenir une classe correcte est de 0,9, la perte est$-\log(0.9) = 0.105$◊ le modèle apprendra à concentrer la qualité de la probabilité sur la bonne réponse.
 
 ### Pourquoi les EMS ne sont pas conformes à la classification
 
@@ -96,19 +96,19 @@ graph TD
     C3 -->|"CE Gradient<br/>在错误答案附近<br/>爆炸"| Fast["修正快速"]
 ```
 
-Lorsque le prévé­sage approche 0 ou 1 时, le gradient MSE change de niveau (en raison du gradient sigmoïde) 和) ── le gradient cross-entropie compensé ce point - - -log 抵消了sigmoïde's flat region, en fournissant un gradient fort en position la plus nécessaire──
+Lorsque le prévé­sage approche 0 ou 1 时, le MSE Gradient 会变平 (en raison du sigmoïde 和) ⋅$-\log$抵消了sigmoid's flat zone, dans la position la plus nécessaire donner un fort gradient.
 
 ### Légalisation des étiquettes
 
                                                                                                                                                                                                                                                               
 
-```
-smooth_label = (1 - alpha) * one_hot + alpha / num_classes
+```math
+\text{smooth\_label} = (1 - \alpha) \cdot \text{one\_hot} + \frac{\alpha}{\text{num\_classes}}
 ```
 
-Lorsque alpha = 0,1 且有10 个类别时: l'objectif n'est plus [0, 0, 1, 0, ...], mais [0,01, 0.01, 0.91, 0.01,...]。
+- Je suis là .$\alpha = 0.1$Il y a aussi 10 catégories: l'objectif n'est plus [0, 0, 1, 0, ...], mais [0,01, 0.01, 0.91, 0.01,...]。
 
-Pourquoi cela est efficace: une tentative de passer par un modèle de softmax 输出精确 1.0 , nécessite de faire avancer les logits 推向无穷── ceci entraînera une trop grande confiance en soi, une perte de la capacité de généralisation, et rendra le modèle plus fragile face au décalage de distribution── étiquette de lissage.
+Pourquoi cela fonctionne: une tentative de passer par un modèle de softmax 输出精确 1.0 nécessite de faire avancer les logits 推向无穷── ceci entraînera une trop grande confiance en soi, une perte de la capacité de généralisation, et rendra le modèle plus vulnérable face à la déviation de la distribution── étiquette de l'étiquette.$\alpha = 0.1$时), faire tenir les logits dans un cadre raisonnable.
 
 ### Perte de contraste
 
@@ -118,20 +118,20 @@ Pourquoi cela est efficace: une tentative de passer par un modèle de softmax �
 
 取一张图像── Créer ses deux augmentations视图 (crop, rotate, color jitter)── elles sont une paire positive - elles devraient avoir des embellissements similaires── elles forment une paire négative - elles devraient avoir des embellissements différents──
 
-```
-L = -log(exp(sim(z_i, z_j) / tau) / sum(exp(sim(z_i, z_k) / tau)))
+```math
+L = -\log \frac{\exp(\text{sim}(z_i, z_j) / \tau)}{\sum_k \exp(\text{sim}(z_i, z_k) / \tau)}
 ```
 
-Parmi les sim() est la similitude cosine, z_i 和 z_j est une paire positive, et couvre tous les négatifs,tau (température)  contrôler la distribution de pointe ◦°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Parmi eux $\text{sim}()$C'est une similitude cosine,$z_i$et $z_j$C'est une paire positive, et elle couvre tous les négatifs.$\tau$(température)  contrôler le degré de pointe de la distribution.
 
-Réel: taille de lot 256 signifie chaque paire positive il y a 255 个负面――Temperature tau = 0.07(SimCLR 默认值)。 Cette perte ressemble à une comparaison à la douceur max - elle veut que la comparaison de paire positive soit la plus élevée de toutes les 256 个选项──
+Le nombre de lots est 256 et chaque paire positive est 255 négatifs.$\tau = 0.07$(SimCLR 默认值) ⋅ Cette perte semble être la plus faible de la similitude - elle veut que la similitude de la paire positive soit la plus élevée de toutes les 256 options ⋅
 
 **Triplet Loss:**
 
 接收三个输入:anchor、positive(同一类别)、negative(不同类别)。
 
-```
-L = max(0, d(anchor, positive) - d(anchor, negative) + margin)
+```math
+L = \max\left(0, d(\text{anchor}, \text{positive}) - d(\text{anchor}, \text{negative}) + \text{margin}\right)
 ```
 
 Marge (en général 0,2-1.0) Forcez la distance positive et négative entre les deux à la plus petite distance possible. Si le négatif est assez loin, la perte est zero.
@@ -140,14 +140,14 @@ Marge (en général 0,2-1.0) Forcez la distance positive et négative entre les 
 
 Utilisé pour des données inéquilibrées. Les normes de l'entropie croisée sont égales à toutes les formes de traitement.
 
-```
-FL = -alpha * (1 - p_t)^gamma * log(p_t)
+```math
+\text{FL} = -\alpha (1 - p_t)^\gamma \log(p_t)
 ```
 
-Parmi les p_t, il y a une probabilité de prédiction de la gamma, une concentration de gamma à la charge.
+Parmi eux $p_t$C'est une vraie probabilité de prédiction.$\gamma$控制聚焦程度──当 $\gamma = 0$C'est le standard de l'entropie croisée.$\gamma = 2$(définition)
 
-- Exemple simple (p_t = 0,9): poids = (0,1) ^2 = 0,01── fondamentalement été ignoré──
-- Exemple dur (p_t = 0,1): poids = (0,9) ^2 = 0,81──完整的渐进信号──
+- Exemple simple ($p_t = 0.9$): poids $= (0.1)^2 = 0.01$Il est essentiellement négligé.
+- Exemple difficile ($p_t = 0.1$): poids $= (0.9)^2 = 0.81$◊ la définition de la valeur de la valeur de l'indicateur.
 
 La perte de focus proposée par Lin et coll. est utilisée pour la détection d'objets, dont 99% des zones candidates sont des arrière-plan (faibles négatives) ⋅ sans perte de focus ⋅ le modèle se noie dans des exemples de fond faciles, il ne peut jamais tester un objet.
 
@@ -214,7 +214,7 @@ def mse_gradient(predictions, targets):
 
 ### 步骤 2: Entropie croisée binaire
 
-log(0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+log(0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           $\log(0) = -\infty$Il faut éviter cela.
 
 ```python
 import math
@@ -426,15 +426,15 @@ Le cours est ouvert à:
 
 ## 练习
 
-1. 实现 Huber loss(smooth L1 loss), il se confronte à une petite erreur en utilisant MSE, à une grande erreur en utilisant MAE。 entraînement d'un réseau neural de régression 来预测 y = sin(x), et à 5% 训练目标被加入随机噪声(离群点) comparer MSE avec Huber。 comparer
+1. 实现 Huber loss(smooth L1 loss), il est utilisé pour les petites erreurs de MSE, pour les grandes erreurs de MAE;;$y = \sin(x)$, et 5% de l'objectif de formation est inclus dans le cas de bruit de groupe (environ 200 points) comparer MSE à Huber.
 
-2. Pour ce faire, il est nécessaire de créer un ensemble de données non équilibré (90% classe 0,10% classe 1) ⋅ comparer la norme BCE avec la perte de focus (gamma=2) dans 200 époques ⋅ après le rappel de la minorité de classes ⋅
+2. Pour les données de la classe 0,10% classe 1, il faut ajouter une classification binaire à la classe 0,10% de la classe 0,10% de la classe 1, et la classe 0,10% de la classe 0,10% de la classe 1, la classe 0,10% de la classe 0,10% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,0% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,1% de la classe 0,9 de la classe 0,9 de la classe 0,9 de la classe de la classe 0,9 de la classe 0,9 de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de la moyenne de$\gamma = 2$) Au cours de 200 époques, le rappel de la minorité a été effectué.
 
 3. 实现带带半硬负矿的三重损失──为 5 个类别生成 2D Embedding 数据──对每个,找到仍然比积极更远的最硬负(半硬)──将收情况与随机三重选择进行比较──
 
 4. 运行 MSE vs entropie croisée par rapport à la comparaison, mais pendant l'entraînement suivre chaque couche de magnitude de gradient―, dessiner la norme moyenne de gradient de chaque époque―, vérifier dans les époques précoces du modèle les plus incertaines, l'entropie croisée aura un plus grand gradient―.
 
-5. 实现 KL divergence loss,并验证当真实分布是单热时,最小化 KL(true 预测) 会给与交叉 Entropie相同的 Gradient──然后尝试软目标──如知识蒸留),其中真实分布来自教师模型的软max 输出──
+5. 实现 KL divergence loss,并验证当真实分布是一个热时,最小化 $\mathrm{KL}(\text{true} \Vert \text{predicted})$Il est possible de trouver des objectifs doux, tels que la distillation des connaissances, dont la répartition réelle provient du modèle de l'enseignant.
 
 ## 关键术语
 
@@ -442,12 +442,12 @@ Le cours est ouvert à:
 |------|----------------|----------------------|
 | Loss function | “模型错得有多离谱” | 一个可微函数，将预测和目标映射到 Optimizer 要最小化的标量 |
 | MSE | “平均平方误差” | 预测和目标之间平方差的均值；以二次方式惩罚大误差 |
-| Cross-entropy | “Classification 的 Loss” | 使用 -log(p) 衡量预测概率分布和真实分布之间的差异 |
-| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：-(y*log(p) + (1-y)*log(1-p)) |
+| Cross-entropy | “Classification 的 Loss” | 使用 $-\log(p)$ 衡量预测概率分布和真实分布之间的差异 |
+| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：$-(y \log(p) + (1-y) \log(1-p))$ |
 | Label smoothing | “软化目标” | 用软值（例如 0.1/0.9）替换硬 0/1 目标，以防止过度自信并提升泛化能力 |
 | Contrastive loss | “拉近，推远” | 一种通过让相似对在 Embedding 空间中更近、非相似对更远来学习表示的 Loss |
 | InfoNCE | “CLIP/SimCLR Loss” | 对相似度分数进行 normalized temperature-scaled cross-entropy；将 contrastive learning 视为 Classification |
-| Focal loss | “不平衡数据修复方案” | 用 (1-p_t)^gamma 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
+| Focal loss | “不平衡数据修复方案” | 用 $(1-p_t)^\gamma$ 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
 | Triplet loss | “Anchor-positive-negative” | 在 Embedding 空间中，使 anchor 比 negative 至少按一个 margin 更接近 positive |
 | Temperature | “尖锐度旋钮” | 作用在 logits/相似度上的标量除数，用于控制结果分布的峰值程度；越低越尖锐 |
 

@@ -35,40 +35,40 @@ Mais le hasard n'est pas suffisant. L'échelle de l'accident décide si le rése
 
 考虑一个具有风扇_in 个输入的单层:
 
-```
-z = w1*x1 + w2*x2 + ... + w_n*x_n
-```
-
-Si chaque poids wi provient de la variance pour la distribution de Var(w), et chaque variance de x de l'entrée pour Var(x), alors la variance de sortie pour:
-
-```
-Var(z) = fan_in * Var(w) * Var(x)
+```math
+z = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n
 ```
 
-Si Var(w) = 1 且 fan_in = 512, alors la variance de sortie est la variance de sortie de 512 倍── traversé 10 niveaux:512^10 = 1.2e27── votre signal 已爆炸──
+Si chaque poids $w_i$Tout est différent .$\mathrm{Var}(w)$La distribution et chaque entrée$x_i$La variance est de$\mathrm{Var}(x)$,则 sortie de la variance 为:
 
-Si Var(w) = 0,001, alors la variance de sortie Chaque niveau selon 0,001 * 512 = 0,512 缩小──经过 10 层:0.512^10 = 0,00013── votre signal 已消失──
+```math
+\mathrm{Var}(z) = \text{fan}_{\text{in}} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(x)
+```
 
-目標:选择 Var(w), rendant Var(z) = Var(x)。La magnitude du signal dans les différents niveaux reste constante。
+Si $\mathrm{Var}(w) = 1$且 $\text{fan}_{\text{in}} = 512$, , la variance de sortie est la variance de sortie de 512 fois.$512^{10} = 1.2 \times 10^{27}$Ton signal est déjà explosé.
+
+Si $\mathrm{Var}(w) = 0.001$, alors la variance de sortie$0.001 \cdot 512 = 0.512$Il y a 10 étages:$0.512^{10} = 0.00013$Ton signal est parti.
+
+目标: choisir $\mathrm{Var}(w)$Je suis là .$\mathrm{Var}(z) = \mathrm{Var}(x)$La magnitude du signal reste constante entre les niveaux.
 
 ### L'initialisation Xavier/Glorot
 
 Glorot et Bengio (2010) 推导了适用于sigmoid 和 tanh activations 的解──为了在前方和后方通过 中都保持变异恒定:
 
-```
-Var(w) = 2 / (fan_in + fan_out)
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}
 ```
 
 实践中,poids de la distribution suivante dans la taille:
 
-```
-w ~ Uniform(-limit, limit)  where limit = sqrt(6 / (fan_in + fan_out))
+```math
+w \sim \text{Uniform}(-\text{limit}, \text{limit}) \quad \text{其中 } \text{limit} = \sqrt{\frac{6}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}
 ```
 
 Ou:
 
-```
-w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}\right)
 ```
 
 Ceci est donc efficace, parce que la sigmoïde et le tanh sont à proximité de zéro, tandis que les activations post-initialisation sont bien situées dans cette région.
@@ -79,27 +79,27 @@ ReLU va tuer la moitié des sorties (toutes les sorties négatives deviennent z�
 
 He et al. (2015) 调整了公式:
 
-```
-Var(w) = 2 / fan_in
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}}}
 ```
 
 Poids de la distribution suivante:
 
-```
-w ~ Normal(0, sqrt(2 / fan_in))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}}}}\right)
 ```
 
-Le nombre 2 utilisé pour compenser la RELU va mettre la moitié des activations à zéro. Il n'y a pas de signal. Chaque couche se réduit à environ 0,5 fois.
+Le nombre 2 utilise pour compenser la RELU, la moitié des activations sera mise à zéro.$0.5^{50} = 8.8 \times 10^{-16}$En cas de problème, il est possible de prévenir cette situation
 
 ### Initialisation du transformateur
 
 GPT-2 introduit un autre mode: Les connexions résiduelles vont augmenter la sortie de chaque sous-couche à son entrée:
 
-```
-x = x + sublayer(x)
+```math
+x = x + \text{sublayer}(x)
 ```
 
-Pour N couches résiduelles, la variance sera augmentée en N 成比例 augmentation, GPT-2 va réduire le poids des couches résiduelles en 1/sqrt, dont N est le nombre de couches, ce qui peut maintenir la magnitude du signal accumulé.
+Chaque fois que la différence augmente,$N$个 résiduelles couches, variance$N$成比例增长──GPT-2 会将残层的重量按 $1/\sqrt{2N}$缩放, parmi eux $N$Il peut maintenir la magnitude du signal accumulé stable.
 
 Llama 3 ((405B paramètres,126 couches) a utilisé un schéma similaire.
 
@@ -337,20 +337,20 @@ nn.init.zeros_(layer.bias)
 
 Quand tu t' en fais`nn.Linear(512, 256)`时,PyTorch 默认使用Kaiming uniform initialisation。 Voilà pourquoi la plupart des réseaux simples just work -- PyTorch 已经做了正确选择──, mais lorsque vous construisez des architectures personnalisées, ou en profondeur de plus de 20 niveaux, vous devez comprendre ce qui se passe, et vous devrez peut-être couvrir les paramètres默认──
 
-Pour les transformateurs, les modèles HuggingFace sont généralement présents.`_init_weights`方法中处理初始化── GPT-2 实现会按1/sqrt(N) 缩放残投影── Si vous commencez à construire un transformateur à partir de zéro, vous devez vous y ajouter.
+Pour les transformateurs, les modèles HuggingFace sont généralement présents.`_init_weights`方法中处理初始化──GPT-2 实现会按 $1/\sqrt{N}$缩放残投影── si vous commencez à construire un transformateur à partir de zéro, vous devez vous-même ajouter ce point──
 
 ## Je le livre.
 Le cours est ouvert à:
 - `outputs/prompt-init-strategy.md`-- une initialisation du poids pour le diagnostic  problème并推正确策略的提示
 
 ## 练习
-1. 添加 LeCun initialisation(Var = 1/fan_in,为 SELU activation 设计) ・运行50 couches d'expérience, utiliser LeCun init + tanh,并与Xavier + tanh对比──
+1. 添加 LeCun d'initialisation$\mathrm{Var} = 1/\text{fan}_{\text{in}}$, pour l'activation de SELU 设计) ・运行50 couches d'expérience, utilisant LeCun init + tanh,并与Xavier + tanh对比──
 
-2. 实现 GPT-2 résiduel d'échelle: avant d'ajouter le flux résiduel , la production de chaque couche 乘以1/sqrt(2*N) ――分别在有规模和无规模的情况下运行50层,测量残积大小 增多快──
+2. ¢ réaliser l'échelle des résidus de GPT-2: ¢ avant d'intégrer le flux résiduel ¢, ¢ augmenter la production de chaque couche ¢$1/\sqrt{2N}$ Se décomposer en fonction de 50 niveaux, mesurer la magnitude résiduelle  augmenter de plus en plus rapidement
 
 3. Créer une fonction de "commande init" de santé, de la dimension de couche du réseau de réception et de type d'activation, puis de recommander une initialisation correcte, et de donner un avertissement à l'initial présent.
 
-4. Utilisation de fan_in = 16 avec fan_in = 1024 运行实验──Xavier 和 Kaiming 会适配 fan_in,但随机 init 不会──展示随着层变大,工作和断之间的差距如何扩大──
+4. Utilisation $\text{fan} _{\text{in}} = 16$Avec $\text{fan} _{\text{in}} = 1024$运行实验──Xavier 和 Kaiming 会适配 fan_in, mais init init init 不会──how to expand with layer 变大,works和break之间的 différence
 
 5. 实现 orthogonal initialisation(Generer une matrice aléatoire, calculer son SVD, utiliser la matrice orthogonale U)。 Avec des réseaux de 50 niveaux ReLU
 
@@ -361,10 +361,10 @@ Le cours est ouvert à:
 | Symmetry breaking | “让 neurons 变得不同” | 使用 random initialization 确保 neurons 学习不同 features，而不是计算完全相同的函数 |
 | Fan-in | “一个 neuron 的 inputs 数量” | incoming connections 的数量，它决定 input variance 如何在 weighted sum 中累积 |
 | Fan-out | “一个 neuron 的 outputs 数量” | outgoing connections 的数量，与在 Backpropagation 期间维持 Gradient variance 有关 |
-| Xavier/Glorot init | “sigmoid initialization” | Var(w) = 2/(fan_in + fan_out)，旨在通过 sigmoid 和 tanh activations 保持 variance |
-| Kaiming/He init | “ReLU initialization” | Var(w) = 2/fan_in，考虑了 ReLU 会将一半 activations 置零 |
+| Xavier/Glorot init | “sigmoid initialization” | $\mathrm{Var}(w) = 2/(\text{fan} _{\text{in}} + \text{fan} _{\text{out}})$，旨在通过 sigmoid 和 tanh activations 保持 variance |
+| Kaiming/He init | “ReLU initialization” | $\mathrm{Var}(w) = 2/\text{fan}_{\text{in}}$，考虑了 ReLU 会将一半 activations 置零 |
 | Variance propagation | “signals 如何在 layers 中增长或缩小” | 基于 weight scale，逐层分析 activation variance 如何变化的数学分析 |
-| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 1/sqrt(2N) 缩放，以防止 variance 在 N 个 transformer layers 中增长 |
+| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 $1/\sqrt{2N}$ 缩放，以防止 variance 在 $N$ 个 transformer layers 中增长 |
 | Dead network | “什么都训练不了” | 一个因 initialization 不佳而导致所有 Gradients 为 zero 或所有 activations 饱和的 network |
 | Exploding activations | “数值走向 infinity” | 当 weight variance 过高时，activation magnitudes 会在 layers 中指数级增长 |
 

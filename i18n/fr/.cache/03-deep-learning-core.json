@@ -1,15 +1,15 @@
 {
-  "phases/03-deep-learning-core/01-the-perceptron/docs/en.md": "a3f799db81bc3e1a39cf47ee7f11bde8c5d60a77c271d0bc855bf7586c948538",
-  "phases/03-deep-learning-core/02-multi-layer-networks/docs/en.md": "cd4abc759c15befb2090b6b1c4baf2fe63ae0337de9f45bcd2ce86f0556ef78f",
-  "phases/03-deep-learning-core/03-backpropagation/docs/en.md": "c30a1567581d2fd2a6593e98a1de1bc522b1557432e7fe37e7ef49e73de86e63",
-  "phases/03-deep-learning-core/04-activation-functions/docs/en.md": "1b369b6c89cd47e57fb9de1ad0720fd5ec78be9d79b71f6e83e8c73ea7a94ca5",
-  "phases/03-deep-learning-core/05-loss-functions/docs/en.md": "90bb54a5d62a4177719e322d9489f32a7c687d026b0e5dd9e745feafefa91da4",
-  "phases/03-deep-learning-core/06-optimizers/docs/en.md": "8e0126601376850ffd1634f97858f13766507c8342e697d91450a4d71d7a88ac",
-  "phases/03-deep-learning-core/07-regularization/docs/en.md": "a20c0db10ea7cfb672f9ab86fd3a0274109559184bb2219e9367813dc9c1073d",
-  "phases/03-deep-learning-core/08-weight-initialization/docs/en.md": "f20e052f32577cb2552396416c8ad629aa617a7e3ef9c1e720627ce4ee08a5ef",
-  "phases/03-deep-learning-core/09-learning-rate-schedules/docs/en.md": "0f2c79b4f56d2e26f60b4f3b806d90ad02182fa7ef3d340cbfba7b5048f0c131",
+  "phases/03-deep-learning-core/01-the-perceptron/docs/en.md": "6b356751aeb673f51310c289759ad2399fb4b9827f958c0e70cdfd4982168e19",
+  "phases/03-deep-learning-core/02-multi-layer-networks/docs/en.md": "5077199affe5590f8e0a5e1db4355f819ecd2898623aa2da1b912e7a286c36df",
+  "phases/03-deep-learning-core/03-backpropagation/docs/en.md": "7fb8a51fadc6eb9daa3acae73a676c46302226644af8e30323dff83e06507d24",
+  "phases/03-deep-learning-core/04-activation-functions/docs/en.md": "deba5171b7df50a7693e68d84164ef1f743fc65e12e65980a8c628e88b1b0d38",
+  "phases/03-deep-learning-core/05-loss-functions/docs/en.md": "ea597ee6f9bbff771f3865fd894d053021d6f2b5d93a61191e99fe05dd41b5d2",
+  "phases/03-deep-learning-core/06-optimizers/docs/en.md": "6f849ee5f1d24e31c6883c624b8bf7beb232dd5626a71c1ad45b152c8f798602",
+  "phases/03-deep-learning-core/07-regularization/docs/en.md": "ccdf0850ef3e2a412793991c4e58e635315f21abd5e40d411ab23768229cb230",
+  "phases/03-deep-learning-core/08-weight-initialization/docs/en.md": "f22f575aa3d055d61020cb2dc7dae4e4b3c8e3d4bdc45fa3248c56f8f8d46e17",
+  "phases/03-deep-learning-core/09-learning-rate-schedules/docs/en.md": "2f348ccbf337b45bb1ec88ae7e5a54a1f03738fe3ccbeafe66a1eee81b980ced",
   "phases/03-deep-learning-core/10-mini-framework/docs/en.md": "5844da83477c9cd3499095356fb9ed0933c8ac658298c8f985583d983ca44ecd",
-  "phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md": "1a8a96ac4ecef40902e78982bcd91cffbd975cc78a0891c604d4c1473adc2785",
+  "phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md": "37aad19896b2b22037d87225141336dc0d0667983d87ab850d6a613d4e17d07a",
   "phases/03-deep-learning-core/12-intro-to-jax/docs/en.md": "a421026682857c4b63992e6bd07126ad0600bb0fedee6567a118f1b1fef2f7b4",
-  "phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md": "159a8b1600b4d0cc3bf9cc74a638d550c9034028ed64ced570c8c5204bd0a5ca"
+  "phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md": "326b2d3249c53313fe188ef398bdbf869d6a20b7997c9b91748fea76770fa364"
 }

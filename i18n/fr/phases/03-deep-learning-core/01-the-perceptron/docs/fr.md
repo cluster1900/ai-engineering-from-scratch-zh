@@ -23,7 +23,7 @@ Comprendre Perceptron, ça signifie comprendre le code dans le code.
 ## 概念
 ### Un neurone, une décision.
 
-Un Perceptron reçoit n'importe quel input, multiplie chaque input par un poids, demande et ajoute un biais, puis transfère le résultat dans une fonction d'activation.
+Un Perceptron est en train de recevoir .$n$个 inputs, va chaque entrée 乘以 un poids, chercher和, ajouter biais, puis transmettre le résultat dans une fonction d'activation.
 
 ```mermaid
 graph LR
@@ -35,11 +35,10 @@ graph LR
     step --> out["output (0 or 1)"]
 ```
 
-fonction de étape 非常直接: si la somme pondérée加 bias >= 0, alors la sortie 为 1──否则, la sortie 为 0──
+fonction de étape 非常直接: si la somme pondérée加 bias $\ge 0$, si la sortie est = 1
 
-```
-step(z) = 1  if z >= 0
-           0  if z < 0
+```math
+\text{step}(z) = \begin{cases} 1 & \text{当 } z \ge 0 \\ 0 & \text{当 } z < 0 \end{cases}
 ```
 
 Ceci est un classifiateur linéaire. Les poids et les biais définissent une ligne.
@@ -77,7 +76,7 @@ For each training example (x, y_true):
     bias = bias + learning_rate * error
 ```
 
-Si la prédiction est correcte, l'erreur = 0, tout ne changera pas. Si elle prévoit 0 mais devrait être 1, les poids augmenteront. Si elle prévoit 1 mais devrait être 0, les poids diminueront.
+Si la prédiction est vraie,$\text{error} = 0$,tout ne changera pas. Si elle prévoit 0 mais devrait être 1, les poids augmenteront. Si elle prévoit 1 mais devrait être 0, les poids diminueront.
 
 ### Le problème de la XOR
 
@@ -210,7 +209,7 @@ Il ne converge jamais. C'est une seule preuve que le Perceptron ne peut pas appr
 
 ### 步骤 4: Avec deux couches  résoudre XOR
 
-技巧是:XOR = (x1 OR x2) ET NON (x1 ET x2)
+Il est le cas.$\text{XOR} = (x_1 \text{ OR } x_2) \text{ AND NOT } (x_1 \text{ AND } x_2)$◊ 组合三个 Perceptron:
 
 ```mermaid
 graph LR
@@ -353,7 +352,7 @@ Le cours est ouvert à:
 
 ## 练习
 1. Dans la porte NAND, tout circuit logique peut être construit par NAND.
-2. Modifier la classe Perceptron, faire en sorte qu'elle se déplace à chaque époque avec la limite de décision ((w1*x1 + w2*x2 + b = 0) ▽ 打印在 AND gate 训练期间这条线如何移动──
+2. Modifier la classe Perceptron, en le faisant suivre les limites de décision à chaque époque$w_1 x_1 + w_2 x_2 + b = 0$Comment la ligne se déplace pendant l'entraînement ?
 3. Construire un Perceptron à 3 entrées: seulement lorsque 3 entrées sont en production 1 个为 1 时才输出 1 个 (la fonction de vote majoritaire) ⋅ est-il séparable de manière linéaire ? Pourquoi ?
 
 ## 关键术语
@@ -365,7 +364,7 @@ Le cours est ouvert à:
 | Activation function | “压缩数值的东西” | 一个在 weighted sum 之后应用的 function：Perceptron 使用 step function，现代 networks 使用 sigmoid/ReLU |
 | Linearly separable | “你能在它们之间画一条线” | 一个 dataset，其中单个 hyperplane 可以完美分离 classes |
 | XOR problem | “Perceptron 做不到的那件事” | single-layer networks 无法学习 non-linearly-separable functions 的证明 |
-| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane w*x + b = 0 |
+| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane $w \cdot x + b = 0$ |
 | Multi-layer perceptron | “一个真正的 Neural Network” | 按 layers 堆叠的 Perceptron，其中每一层的 output 会输入到下一层 |
 
 ## 延伸阅读

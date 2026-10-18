@@ -18,7 +18,7 @@
 
 Vous avez calculé le gradient. Vous savez que les 4,721 unités de poids devraient être réduites de 0,003 pour réduire les pertes. Mais quelle est la taille de 0,003 ?
 
-La dégradation du gradient de vanille dans chaque étape de chaque paramètre  appliquer le même taux d'apprentissage: w = w - lr * gradient。 Cela entraînera trois problèmes, faire entraîner le réseau neural dans la pratique devient très douloureux。
+La baisse du degré de vanille à chaque étape de chaque paramètre  appliquer le même taux d'apprentissage:$w = w - \text{lr} \cdot \text{gradient}$ Cela entraînera trois problèmes, et la formation du réseau neural deviendra très douloureuse en pratique
 
 La perte de paysage est très rare comme une plaine de boisson. Elle ressemble plus à une longue et étroite vallée. La perte de paysage est orientée vers la direction de la vallée.
 
@@ -34,8 +34,8 @@ Adam a résolu ces trois problèmes. Il a maintenu deux moyennes courantes pour 
 
 Le plus simple est l'optimisateur.
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 stochastique indique que vous utilisez des données de type random (miniremplacement) pour estimer le gradient, plutôt que d'utiliser un ensemble de données complet. Ce bruit est en fait utile - il aide à échapper aux minima locaux les plus élevés.
@@ -46,27 +46,31 @@ Le taux d'apprentissage est unique. Trop élevé: Perte de diffusion. Trop bas: 
 
 Les classes de petit ball roll down mountain slope sont utilisées trop souvent, mais c'est exact. Vous ne vous contentez pas de la progression du gradient, mais de maintenir une vitesse, pour accumuler les gradients passés.
 
-```
-m_t = beta * m_{t-1} + gradient
-w = w - lr * m_t
+```math
+\begin{aligned}
+m_t &= \beta \, m_{t-1} + \text{gradient} \\
+w &= w - \text{lr} \cdot m_t
+\end{aligned}
 ```
 
-Beta(habituellement à 0,9) contrôle conserver beaucoup d'informations historiques;; lorsque beta = 0,9 时,momentum 大致等于最近10 个 Gradients的平均值;;1/ (1 - 0,9) = 10);;
+Beta(habituellement à 0,9) contrôler la conservation de nombreuses informations historiques.$\beta = 0.9$时,momentum 大致 équivaut à la moyenne des 10 derniers gradients$1 / (1 - 0.9) = 10$)。
 
 Pourquoi cela peut-il réparer la vibration: les gradients se rassemblent dans la même direction. Les gradients se contredisent les uns les autres. Dans cette section étroite de la vallée, la partition change à chaque étape et est affaiblie.
 
-Réel: dans un paysage de perte très difficile, l'utilisation de SGD peut nécessiter 10 000 étapes. Avec SGD de dynamique, la bêta est de 0,9.
+En réalité, le nombre de pertes est très faible.$\beta = 0.9$Il faut généralement 3 000 à 5 000 pas pour le même problème.
 
 ### RMSProp
 
 La première méthode d'apprentissage adaptatif réellement efficace par paramètre ⋅ proposée par Hinton en cours ⋅ coursera ⋅ jamais publiée officiellement
 
-```
-s_t = beta * s_{t-1} + (1 - beta) * gradient^2
-w = w - lr * gradient / (sqrt(s_t) + epsilon)
+```math
+\begin{aligned}
+s_t &= \beta \, s_{t-1} + (1 - \beta) \cdot \text{gradient}^2 \\
+w &= w - \text{lr} \cdot \frac{\text{gradient}}{\sqrt{s_t} + \epsilon}
+\end{aligned}
 ```
 
-s_t Suivre la moyenne de fonctionnement des gradients carrés──continuer à avoir des paramètres de plus grands gradients − divisés par un nombre plus grand − moins élevé − taux d'apprentissage efficace − − les gradients − plus faibles − par un nombre plus petit − plus élevé − taux d'apprentissage efficace − −
+$s_t$Suivre la moyenne de fonctionnement des gradients carrés. Continuer à avoir des paramètres de plus grands gradients seront divisés par un nombre plus grand.
 
 Ceci a résolu tous les paramètres à l'aide du même taux d'apprentissage. Un a continuellement obtenu un poids considérablement amélioré.
 
@@ -76,41 +80,45 @@ Epsilon (habituellement pour 1e-8) se situe dans un paramètre qui n'a pas encor
 
 Adam a combiné deux types de pensées. Il maintient deux moyennes mobiles exponentielles pour chaque paramètre:
 
-```
-m_t = beta1 * m_{t-1} + (1 - beta1) * gradient        (first moment: mean)
-v_t = beta2 * v_{t-1} + (1 - beta2) * gradient^2       (second moment: variance)
-```
-
-**Bias correction**La plupart des explications vont sauter de la clé des détails. Dans la première étape, m_1 = (1 - beta1) * gradient.
-
-```
-m_hat = m_t / (1 - beta1^t)
-v_hat = v_t / (1 - beta2^t)
+```math
+\begin{aligned}
+m_t &= \beta_1 m_{t-1} + (1 - \beta_1) \cdot \text{gradient} && \text{（一阶矩：均值）} \\
+v_t &= \beta_2 v_{t-1} + (1 - \beta_2) \cdot \text{gradient}^2 && \text{（二阶矩：方差）}
+\end{aligned}
 ```
 
-La correction de la partialité à l'égard des précédents ~ 10 étapes est importante, après ~50 étapes, elle est fondamentalement sans importance.
+**Bias correction**C'est la plupart des explications qui sautent.$m_1 = (1 - \beta_1) \cdot \text{gradient}$Je suis là.$\beta_1 = 0.9$Ça, c'est ça.$0.1 \cdot \text{gradient}$-- 小了十倍── moyenne mobile 还没有预热── Bias correction 会进行补偿:
+
+```math
+\begin{aligned}
+\hat{m} &= \frac{m_t}{1 - \beta_1^t} \\
+\hat{v} &= \frac{v_t}{1 - \beta_2^t}
+\end{aligned}
+```
+
+1° étape et$\beta_1 = 0.9$时:$\hat{m} = m_1 / (1 - 0.9) = m_1 / 0.1 =$实际 Gradient──第 100 步时:$(1 - 0.9^{100})$La correction de partialité à l'égard des précédents ~ 10 étapes est importante, après ~ 50 étapes elle est fondamentalement inutile.
 
 更新公式:
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon}
 ```
 
-Adam 默认值:lr = 0,001,beta1 = 0,9,beta2 = 0,999,epsilon = 1e-8。 ces valeurs de faille s'appliquent à 80% des problèmes。 lorsque elles ne s'appliquent pas, d'abord modifier lr。 puis modifier beta2── presque jamais ne pas modifier beta1 ou epsilon。
+Adam 默认值:$\text{lr} = 0.001$- Je suis désolé .$\beta_1 = 0.9$- Je suis désolé .$\beta_2 = 0.999$- Je suis désolé .$\epsilon = 10^{-8}$ Ces valeurs par défaut s'appliquent à 80% des questions  Lorsque elles ne s'appliquent pas, d'abord modifier lr⋅ puis modifier $\beta_2$Il ne faut pas changer.$\beta_1$Ou $\epsilon$Il y a une autre.
 
 ### AdamW: C' est vraiment une perte de poids
 
-L2 régularisation 会向损失 中添加兰布 * w^2──在瓦尼拉 SGD, this is equivalent to weight decay((每步从重中减去兰布 * w)──在亚当,这种等价关系会失效──
+L2 régularisation 会向损失 中添加 $\lambda w^2$Dans le SGD de la vanille, cela équivaut à une perte de poids à chaque étape.$\lambda w$Dans Adam, cette relation d'équivalence est inefficace.
 
 Loshchilov & Hutter's洞见是: lorsque vous mettez L2 dans la perte, puis laissez Adam traiter Gradient 时, taux d'apprentissage adaptatif aussi diminuer le terme de régularisation.
 
 AdamW                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon) - lr * lambda * w
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon} - \text{lr} \cdot \lambda w
 ```
 
-Le terme de déclin du poids (lr * lambda * w) ne sera pas affecté par le facteur d'adaptation d'Adam 缩放── chaque paramètre a obtenu le même pourcentage de contraction──
+Déclin de poids$\text{lr} \cdot \lambda w$) ne sera pas réduit par le facteur d'adaptation d'Adam.
 
 Il est utilisé dans les transformateurs de formation PyTorch, les modèles de diffusion et la plupart des architectures modernes, l'optimisateur par défaut.
 
@@ -425,11 +433,11 @@ Le programme de formation
 
 ## 练习
 
-1. 实现 Nesterov momentum, dans lequel vous êtes dans lookhead 位置(w - lr * beta * v) plutôt que dans la position actuelle calculer Gradient。
+1. Réaliser l'élan de Nesterov, parmi lesquels vous êtes en position de regard$w - \text{lr} \cdot \beta v$) au lieu de calculer la position actuelle Gradient.
 
 2.  réaliser un calendrier de réchauffement de taux d'apprentissage: dans les étapes de 10% de l'entraînement, de 0 à la rampe linéaire max_lr, puis de la décomposition cosytique à 0 ⋅ comparer Adam + réchauffement avec Adam sans réchauffement ⋅ mesurer dans un ensemble de données de cercle à 90% de précision ⋅ nécessiter plusieurs époques ⋅
 
-3. Pendant l'entraînement, suivre le taux d'apprentissage efficace de chaque paramètre. Le taux d'apprentissage efficace est lr * m_hat / (sqrt(v_hat) + eps)
+3. Le taux d'apprentissage efficace de chaque paramètre pendant l'entraînement d'Adam$\text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)$◊ Le tableau 10 ̊50 和 200 ̊ étapes après la répartition des taux de validité ◊ tous les paramètres sont-ils mis à jour à la même vitesse ?
 
 4. 实现 gradient clipping(according to global norm clip) ・・・将max gradient norm 设置为 1.0。使用较高学习率(Adam's lr=0.01)分别在有剪裁和无剪裁的情况下训练──统计10 种子中,有多少次运行 会发散(Loss 变为 NaN) ・・・
 
@@ -440,12 +448,12 @@ Le programme de formation
 | Term | 人们通常怎么说 | 它实际意味着什么 |
 |------|----------------|----------------------|
 | Learning rate | “Step size” | Gradient update 上的标量乘数；训练中影响最大的单个 hyperparameter |
-| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 lr * gradient 来更新 weights，Gradient 在 mini-batch 上计算 |
+| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 $\text{lr} \cdot \text{gradient}$ 来更新 weights，Gradient 在 mini-batch 上计算 |
 | Momentum | “Rolling ball analogy” | 过去 Gradients 的 exponential moving average；削弱振荡，并加速一致方向 |
 | RMSProp | “Adaptive learning rate” | 用近期 Gradients 的 running RMS 除以每个 parameter 的 Gradient；均衡 learning rates |
 | Adam | “The default optimizer” | 将 momentum（first moment）和 RMSProp（second moment）结合起来，并对初始 steps 进行 bias correction |
 | AdamW | “Adam done right” | 带 decoupled weight decay 的 Adam；直接对 weights 应用 regularization，而不是通过 Gradient |
-| Bias correction | “Warmup for running averages” | 除以 (1 - beta^t)，用于补偿 Adam 的 moment estimates 的零初始化 |
+| Bias correction | “Warmup for running averages” | 除以 $(1 - \beta^t)$，用于补偿 Adam 的 moment estimates 的零初始化 |
 | Weight decay | “Shrink the weights” | 每一步减去 weight 值的一部分；一种惩罚大 weights 的 regularizer |
 | Learning rate schedule | “Changing lr over time” | 在训练期间调整 learning rate 的函数；warmup + cosine decay 是现代默认方案 |
 | Gradient clipping | “Capping the gradient norm” | 当 Gradient Vector 的 norm 超过阈值时对其进行缩放；防止 exploding gradient updates |

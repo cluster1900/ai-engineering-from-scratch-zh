@@ -23,7 +23,7 @@ La répartition de l'arrière-plan a résolu ce problème. Une fois avant, une f
 ## 概念
 ### Règlement de chaîne, appliqué au réseau
 
-Vous êtes en phase 01, leçon 05 中见过链条规则──快速回顾:
+Vous êtes en phase 01, leçon 05 en classe.$y = f(g(x))$Alors ...$\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$你沿链条相乘衍生子 
 
 Dans le réseau neuronal, 链条 est la séquence d'opération de l'entrée à la perte. Chaque couche d'application a un poids de charge, une mise en place de la position, une réaction de mise en activation. La fonction de perte comporte la sortie finale et la mise en relation avec la cible.
 
@@ -42,9 +42,9 @@ graph LR
     y["target"] --> loss
 ```
 
-Passage à l'avant: valeur de gauche vers droite流动──x 和 w 产生 z1 = w*x──加上 b 得到 z2──Sigmoid 给出激活 a──使用 Loss Function 将 a 与 target y 比较──
+Pass avant: valeur de gauche à droite$x$et $w$ générer $z_1 = w x$Il y a une autre.$b$Je l' ai reçu .$z_2$ Sigmoïde  donner une activation $a$ utiliser La fonction de perte$a$Avec l' objectif $y$Comparé à...
 
-Pass en arrière:Gradient de droite vers gauche流动。 de dL/da 开始(Loss 如何随激活 改变)。乘以 da/dz2(sigmoid derivative)。 obtenir dL/dz2。拆分成 dL/db((il équivaut à dL/dz2, puisque z2 = z1 + b) 和 dL/dz1。 puis dL/dw = dL/dz1 * x,dL/dx = dL/dz1 * w。
+Passage à l'arrière: Gradient de droite à gauche$\partial L/\partial a$开始(Loss 如何随着激活变) 乘以$\partial a/\partial z_2$(dérivé sigmoïde) ⋅ obtenir $\partial L/\partial z_2$- Je suis désolé.$\partial L/\partial b$(il est égal à $\partial L/\partial z_2$Je suis désolé .$z_2 = z_1 + b$) et $\partial L/\partial z_1$Alors...$\partial L/\partial w = \partial L/\partial z_1 \cdot x$- Je suis désolé .$\partial L/\partial x = \partial L/\partial z_1 \cdot w$Il y a une autre.
 
 Chaque nœud dans le graphique pendant le passage en arrière a une seule tâche: recevoir le gradient du passage en haut, multiplier par son propre dérivé local, puis le transmettre vers le bas.
 
@@ -81,7 +81,7 @@ graph RL
     L1 -- "dL/dz1 = dL/da1 * sigmoid'(z1)" --> I["Input"]
 ```
 
-Dans chaque couche, le gradient est multiplié par une dérivation sigmoïde. La dérivation sigmoïde est un * (1 - a), la valeur maximale est 0,25 ((quand a = 0,5 时) ⋅ profondément dans les trois couches, le gradient jusqu'à présent est multiplié par 0,25^3 = 0,0156⋅ profondément dans les dix couches: 0,25^10 = 0,000001⋅
+Dans chaque couche, le gradient est multiplié par le dérivé sigmoïde.$a(1 - a)$, la valeur maximale est de 0,25$a = 0.5$时) ・ profondément dans les trois niveaux, Gradient jusqu'à ce que le plus est déjà multiplié $0.25^3 = 0.0156$❖ En profondeur:$0.25^{10} = 0.000001$Il y a une autre.
 
 ### Des gradients qui disparaissent
 
@@ -99,32 +99,33 @@ C'est pourquoi le réseau sigmoïde de profondeur est presque impossible à entr
 
 ### 推导 Gradient du réseau à deux couches
 
-Le tableau ci-dessous est un exemple mathématique concret: réseau avec une entrée x 带 sigmoid de couche cachée 带 sigmoid de couche de sortie, ainsi que MSE Loss ⋅
+Voici un exemple mathématique spécifique:$x$L'écoulement de la couche cachée du sigmoïde, ainsi que la perte de MSE
 
 Pass avant:
-```
-z1 = W1 * x + b1
-a1 = sigmoid(z1)
-z2 = W2 * a1 + b2
-a2 = sigmoid(z2)
-L = (a2 - y)^2
+```math
+\begin{aligned}
+z_1 &= W_1 x + b_1 \\
+a_1 &= \text{sigmoid}(z_1) \\
+z_2 &= W_2 a_1 + b_2 \\
+a_2 &= \text{sigmoid}(z_2) \\
+L &= (a_2 - y)^2
+\end{aligned}
 ```
 
 Pass rétrograde (à l'arrière)
-```
-dL/da2 = 2(a2 - y)
-da2/dz2 = a2 * (1 - a2)
-dL/dz2 = dL/da2 * da2/dz2 = 2(a2 - y) * a2 * (1 - a2)
-
-dL/dW2 = dL/dz2 * a1
-dL/db2 = dL/dz2
-
-dL/da1 = dL/dz2 * W2
-da1/dz1 = a1 * (1 - a1)
-dL/dz1 = dL/da1 * da1/dz1
-
-dL/dW1 = dL/dz1 * x
-dL/db1 = dL/dz1
+```math
+\begin{aligned}
+\frac{\partial L}{\partial a_2} &= 2(a_2 - y) \\
+\frac{\partial a_2}{\partial z_2} &= a_2 (1 - a_2) \\
+\frac{\partial L}{\partial z_2} &= \frac{\partial L}{\partial a_2} \cdot \frac{\partial a_2}{\partial z_2} = 2(a_2 - y) \cdot a_2 (1 - a_2) \\[6pt]
+\frac{\partial L}{\partial W_2} &= \frac{\partial L}{\partial z_2} \cdot a_1 \\
+\frac{\partial L}{\partial b_2} &= \frac{\partial L}{\partial z_2} \\[6pt]
+\frac{\partial L}{\partial a_1} &= \frac{\partial L}{\partial z_2} \cdot W_2 \\
+\frac{\partial a_1}{\partial z_1} &= a_1 (1 - a_1) \\
+\frac{\partial L}{\partial z_1} &= \frac{\partial L}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \\[6pt]
+\frac{\partial L}{\partial W_1} &= \frac{\partial L}{\partial z_1} \cdot x \\
+\frac{\partial L}{\partial b_1} &= \frac{\partial L}{\partial z_1}
+\end{aligned}
 ```
 
 Chaque gradient est une dérivé locale de la perte suivie par la multiplication.
@@ -182,9 +183,9 @@ def __mul__(self, other):
     return out
 ```
 
-Pour l'ajout: d(a+b)/da = 1,d(a+b)/db = 1── donc les deux entrées seront directement obtenues en sortie.
+ Pour l'ajout:$\partial(a+b)/\partial a = 1$- Je suis désolé .$\partial(a+b)/\partial b = 1$ donc deux entrées sont directement obtenues Gradient de sortie
 
-Pour la multiplication:d(a*b)/da = b,d(a*b)/db = a。 chaque entrée aura une autre valeur d'entrée 乘以 sortie Gradient。
+ Pour la multiplication:$\partial(ab)/\partial a = b$- Je suis désolé .$\partial(ab)/\partial b = a$ chaque entrée obtient une autre valeur d'entrée  par le gradient de sortie
 
 `+=`Une valeur peut être utilisée par plusieurs opérations. Son gradient est le gradient de tous les chemins.
 
@@ -206,7 +207,7 @@ def sigmoid(self):
     return out
 ```
 
-Dérivé de sigmoïde: sigmoïde(x) * (1 - sigmoïde(x))。
+dérivé sigmoïde:$\text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))$Nous avons déjà calculé dans le Forward Pass.$\text{sigmoid}(x) = s$◊ Refaire usage de celui-ci.
 
 ```python
 def mse_loss(predicted, target):
@@ -214,7 +215,7 @@ def mse_loss(predicted, target):
     return diff * diff
 ```
 
-单个输出的 MSE:(prévisible - target) ^2── 我们把减法表达为加上一个取负的值──
+单个产出的MSE:$(\text{predicted} - \text{target})^2$ Nous avons exprimé la soustraction en ajoutant une valeur négative
 
 ### 步骤 4: Passage à l' arrière
 
@@ -238,7 +239,7 @@ def backward(self):
         v._backward()
 ```
 
-Depuis la perte 开始(Gradient = 1.0, parce que dL/dL = 1)。 le graphe suivant la séquence △`_backward`Gradient va être envoyé à ses enfants.
+从 Loss 开始(Gradient = 1,0, parce que $dL/dL = 1$)― le graphe suivant la séquence de chaque nœud`_backward`Gradient va être envoyé à ses enfants.
 
 ### 步骤 5: Couche et réseau
 
@@ -298,7 +299,7 @@ class Network:
             p.grad = 0.0
 ```
 
-Un Neuron recevoir l'entrée, calculer la somme pondérée + biais, puis appliquer le sigmoïde── le poids de départ en fonction du squrt (2/n_inputs) réduire, pour empêcher la saturation de sigmoïdes dans le réseau plus profond── une couche est la liste des neurones── une réseau est la liste des couches──`parameters()`La méthode va collecter toutes les valeurs à apprendre, afin que nous puissions les mettre à jour.
+Un neurone reçoit l'entrée, calcule la somme pondérée + le biais, puis applique le sigmoïde.$\sqrt{2/n_{\text{inputs}}}$缩放, pour prévenir la saturation sigmoïde du réseau plus profond.`parameters()`La méthode va collecter toutes les valeurs à apprendre, afin que nous puissions les mettre à jour.
 
 ### Étape 6: entraînement au XOR
 
@@ -433,9 +434,9 @@ Le cours est ouvert à:
 - `outputs/prompt-gradient-debugger.md`-- une requête réutilisable, pour diagnostiquer tout problème de gradient dans le réseau neural
 
 ## 练习
-1. 给 Value class 添加一个 `__sub__`méthode ((a - b = a + (-1 * b))― puis réaliser une `__neg__`La méthode de calcul manuel (a - b) ^ 2) est comparée à la méthode de calcul simple (a - b) ^ 2 par exemple.
+1. 给 Value class 添加一个 `__sub__`méthode$a - b = a + (-1 \cdot b)$Il y a une autre.`__neg__`méthode── par la simple expression$(a - b)^2$) de calcul manuel pour effectuer une comparaison, vérifier Gradient si oui ou non correct.
 
-2.  donner une valeur  ajouter une `relu`méthode(output 为 max(0, x), dérivé 在 x > 0 时为 1,否则为 0) ・・・ dans la couche cachée dans l'utilisation de relu 替换 sigmoid,并再次在 XOR 上训练──比较收速度──你应该会看到训练更快――这是第04课的预告──
+2.  donner une valeur  ajouter une `relu`méthode(développement$\max(0, x)$, dérivé en$x \gt 0$时为 1,否则为 0) ・ dans la couche cachée, utilisez le train 替换 sigmoid,并再次在 XOR 上训练――比较收速度――你应该看到训练更快――这是第04课的预告――
 
 3. Dans la valeur de réaliser une utilisation de pouvoirs entiers de `__pow__`La méthode...`mse_loss`替换成真正的 `(predicted - target) ** 2`Éprouvées: △ Éprouvées: Gradient avec original réalisation
 
@@ -446,14 +447,14 @@ Le cours est ouvert à:
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 dL/dw |
+| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 $\partial L/\partial w$ |
 | Computational graph | “Network 结构” | 一个有向无环 graph，其中 node 是 operation，edge 承载 value（forward）和 Gradient（backward） |
-| Chain rule | “把 derivative 相乘” | 如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- Backpropagation 的数学基础 |
+| Chain rule | “把 derivative 相乘” | 如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ -- Backpropagation 的数学基础 |
 | Gradient | “最陡上升方向” | Loss 相对于某个 parameter 的 partial derivative -- 告诉你如何改变该 parameter 来降低 Loss |
 | Vanishing gradient | “深层 network 学不会” | 当 Gradient 通过带有 sigmoid 这类 saturating activation 的 layer 传播时，会指数级缩小 |
 | Forward pass | “运行 network” | 通过顺序应用每一层的 operation，从 input 计算 output，并存储 intermediate value |
 | Backward pass | “计算 Gradient” | 反向遍历 Computational Graph，在每个 node 使用 chain rule 累积 Gradient |
-| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：w_new = w_old - lr * gradient |
+| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：$w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{gradient}$ |
 | Topological sort | “正确顺序” | 一种 graph node 排序方式，使每个 node 都出现在其依赖的所有 node 之后 -- 确保 Gradient 在传播前已完全累积 |
 | Autograd | “自动微分” | 一个在 forward computation 期间构建 Computational Graph，并自动计算 Gradient 的系统 -- PyTorch 的 engine 做的就是这个 |
 
