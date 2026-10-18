@@ -21,8 +21,8 @@
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`〔固定〕`n`根据计数计算:
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。**任何训练中没有见过的n-gram都会得到零概率――2007年关于布朗体研究发现,即使是4gram模型,也有30%的持久4gram在训练中没有出现――不做滑滑,就无法在任何真实文本上评估――
@@ -40,8 +40,8 @@ P(w | context) = count(context, w) / count(context)
 
 **评估：perplexity。**在进行的测试集中,每个词平均负负 log-likelihood的指数──越低越好──困惑为100意味着模型的困惑程度相当于在100个词中均随机选择──
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 

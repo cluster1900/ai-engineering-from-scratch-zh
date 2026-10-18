@@ -148,7 +148,7 @@ def is_correction(utterance):
 
 ## 陷
 
-- **Full-history regeneration cost。**让LLM 每一轮都重新生成状态,总代币 成本是O(n2);;限制历史或总结较早转──
+- **Full-history regeneration cost。**让LLM 每一轮都重新生成状态,总代币 成本是$O(n^2)$◎限制历史或总结较早的转变
 - **Schema drift。**后添加新机场会破坏旧训练数据.
 - **Case sensitivity。**意大利人 vs 意大利人 总是要正常化.
 - **Implicit inheritance。**如果用户之前指定了4人,新不同时间请求不应该清空的人──始终传入完整历史──

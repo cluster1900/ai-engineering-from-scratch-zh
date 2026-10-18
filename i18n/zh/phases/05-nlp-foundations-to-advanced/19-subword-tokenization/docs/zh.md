@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-简单实现是O                                                                                                                                                                                                                                                            
+简单实现是$O(n \cdot \lvert \text{merges} \rvert)$△生产实现 (标,HF标记) 使用并列查找和优先排列,运行时间接近线性――
 
 ### 步骤3: 实践中的句子
 
