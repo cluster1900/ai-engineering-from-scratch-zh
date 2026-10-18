@@ -59,9 +59,9 @@ M[i, j] = 1 if:
 diffusion loss 是标准形式：给图像 patch 加噪声，让模型预测噪声（或等价地预测 clean patch）。Transfusion 的版本使用 flow matching：预测从 noisy 到 clean 的 velocity field。
 
 训练期间：
-1. 对每个图像 patch x0，采样一个随机 timestep t。
-2. 采样噪声 ε，计算 xt = (1-t) * x0 + t * ε（flow matching 的线性插值）。
-3. transformer 预测 v_theta(xt, t)；loss = MSE(v_theta(xt, t), ε - x0)。
+1. 对每个图像 patch $x_0$，采样一个随机 timestep $t$。
+2. 采样噪声 $\epsilon$，计算 $x_t = (1-t) \cdot x_0 + t \cdot \epsilon$（flow matching 的线性插值）。
+3. transformer 预测 $v_\theta(x_t, t)$；$\text{loss} = \mathop{\mathrm{MSE}}(v_\theta(x_t, t), \epsilon - x_0)$。
 4. 与同一序列中的文本 NTP loss 一起 Backprop。
 
 推理时，生成流程是：

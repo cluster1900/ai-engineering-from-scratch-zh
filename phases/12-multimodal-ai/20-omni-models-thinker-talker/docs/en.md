@@ -38,10 +38,10 @@ Qwen2.5-Omni 的分解：
 
 两者并行运行：
 
-1. Thinker 发出文本 Token t_i。
-2. Talker 消费 t_i（通过 streaming），并发出语音 Token s_i、s_{i+1}、...、s_{i+k}。
+1. Thinker 发出文本 Token $t_i$。
+2. Talker 消费 $t_i$（通过 streaming），并发出语音 Token $s_i, s_{i+1}, \ldots, s_{i+k}$。
 3. Speech decoder 在语音 Token 到达时消费它们，并发出音频 samples。
-4. 当 Thinker 到达文本 Token t_{i+3} 时，Talker 已经为 t_0..t_{i+2} streaming 了音频。
+4. 当 Thinker 到达文本 Token $t_{i+3}$ 时，Talker 已经为 $t_0, \ldots, t_{i+2}$ streaming 了音频。
 
 ### TMRoPE — 时间对齐的 Multimodal 位置
 
