@@ -53,8 +53,8 @@ Entre eles `(p - q)+`Expressão de valor de diferença de pontos.`p ≈ q`) , qu
 
 Se a taxa de aceitação do modelo de projeto de Token 级 é `α`, então cada passagem de destino para frente 生成の期望トークン 数为:
 
-```
-E[tokens] = (1 - α^{K+1}) / (1 - α)        # K = draft length, α in [0, 1]
+```math
+\mathbb{E}[\text{tokens}] = \frac{1 - \alpha^{K+1}}{1 - \alpha} \qquad K = \text{draft length}, \ \alpha \in [0, 1]
 ```
 
 - Não .`α = 0.8, K = 4`- Não .`(1 - 0.8^5)/(1 - 0.8) = 3.36`个 Token Cada vez para frente. 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个`cost_q * K + cost_p`(K 个 projeto passo加一次目标验证)`cost_p >> cost_q * K`, o índice de aceleração da produção é`3.36× / 1 = 3.36×`- Não.
@@ -176,7 +176,7 @@ def speculative_step(p_target, q_draft, K, temperature=1.0):
 
 1. 实现精确拒绝 规则并进行实证验证──通过 `speculative_decode`和 simples amostragem de alvo 分別运行 10K amostras; calcular duas distribuições de saída 间 TV distância──应小于0.01──
 
-2. 計算 speedup 公式──给定固定 `α`和 `K`, desenhar cada vez o objetivo-para-a frente de expectativas Token números── encontrar o ∈ α {0,5, 0,7, 0,9} 时的最优 K──
+2. 計算 speedup 公式──给定固定 `α`和 `K`, desenhar cada meta-ahead of expectations Token numer──找出 $\alpha \in \lbrace 0.5, 0.7, 0.9 \rbrace$O melhor de tudo$K$- Não.
 
 3. Treinar um pequeno esboço. Tome um alvo de 124M GPT-2, e coloque 100M tokens.`α` Previsão: 0,6-0,7
 

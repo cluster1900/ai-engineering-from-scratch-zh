@@ -181,7 +181,7 @@ moe-routing
 | num_experts_per_tok | “Top-k routing” | 每个 token 会触发多少个 routed experts；DeepSeek-V3 使用 8 |
 | Shared experts | “Always-on experts” | 无论 routing 如何都会处理每个 token 的 experts；DeepSeek-V3 使用 1 |
 | Auxiliary-loss-free routing | “Bias-adjusted load balance” | 在训练期间调整按 expert 的 bias 项，以在不添加 Loss 项的情况下保持 expert 负载均衡 |
-| MTP module | “额外 prediction head” | 从 h^(1) 和 E(t+1) 预测 t+2 的 Transformer block；更密集训练，免费的 speculative-decoding draft |
+| MTP module | “额外 prediction head” | 从 $h^{(1)}$ 和 $E(t+1)$ 预测 $t+2$ 的 Transformer block；更密集训练，免费的 speculative-decoding draft |
 | DualPipe | “Bidirectional pipeline” | 将 forward/backward 计算与跨节点 all-to-all 重叠的 training schedule |
 | Active parameter ratio | “Sparsity” | active_params / total_params；DeepSeek-V3 达到 5.5% |
 | FP8 training | “8-bit training” | 使用 FP8 存储训练数据，并在许多 compute ops 中使用 FP8；相比 BF16 大约内存减半，质量代价很小 |

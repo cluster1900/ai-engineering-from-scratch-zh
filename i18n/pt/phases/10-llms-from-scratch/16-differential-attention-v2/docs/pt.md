@@ -28,8 +28,8 @@ O DIFF V1 tem três problemas, o que o torna incapaz de entrar no pipeline de pr
 
  para a consulta `q`和 chaves `K = [k_1, ..., k_N]`,Attenção 权重是:
 
-```
-w_i = exp(q . k_i / sqrt(d)) / sum_j exp(q . k_j / sqrt(d))
+```math
+w_i = \frac{\exp(q \cdot k_i / \sqrt{d})}{\sum_j \exp(q \cdot k_j / \sqrt{d})}
 ```
 
 Não há nada .`w_i`- Não, não.`k_i`Com`q`Não há problema, pontuação.`q . k_i`Também não é 0  ele vai girar em volta de zero, diferença de `||q||^2 / d` Após a normalização de softmax, cada token continua a aumentar o seu poder e contribuições`O(1/N)`△无关 Token 的总贡献是 `O((N-1)/N) = O(1)`Não é uma pequena quantidade.
@@ -38,17 +38,19 @@ Não há nada .`w_i`- Não, não.`k_i`Com`q`Não há problema, pontuação.`q . 
 
 ### Diferencial 思路
 
-Para cada cabeça de Q e K projeções 拆成两份:Q = (Q_1, Q_2),K = (K_1, K_2)。计算两个注意地图:
+Para cada cabeça de Q e K projeções divididas em duas partes:$Q = (Q_1, Q_2)$- Não .$K = (K_1, K_2)$ calcular dois mapas de atenção:
 
-```
-A_1 = softmax(Q_1 K_1^T / sqrt(d))
-A_2 = softmax(Q_2 K_2^T / sqrt(d))
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d})
+\end{aligned}
 ```
 
 输出:
 
-```
-DiffAttn = (A_1 - lambda * A_2) V
+```math
+\mathop{\mathrm{DiffAttn}} = (A_1 - \lambda \cdot A_2) V
 ```
 
 相减会抵消两个图共享的任何噪声分布―― Se dois mapas em 127k 无关标志上有近似均重权 (quando iniciada随机确实如此), estes componentes se mutuamente抵消――信号少数真正相关标志上的尖峰权 (peso máximo) só será抵消的当两个图中出现相同幅度时,而模型训练后不会保持这种状态――
@@ -63,7 +65,7 @@ Pode-se imaginar como dois microfones com ruído em um mesmo som. Ambos são gra
 
 V1  manteve o mesmo parâmetro que o Transformer de linha de base. Para que cada cabeça tenha duas consultas, ele reduzirá a dimensão da cabeça para metade. Isso sacrificou a capacidade de expressão da cabeça, mais doloroso ainda, também faz com que o cache de valor de cada cabeça seja reduzido para metade.
 
-V2 vai fazer cabeças de consulta número multiplicado,并保持 KV heads 不变(de projeção de alta 借用参数) ――Dimenção de cabeça 保持与基线相同──相减后,额外维度将被投影回去,以匹配基线变压器的O_W投影──三件事同时发生:
+V2 irá cabeças de consulta número multiplicado,并保持 KV cabeças 不变(de projeção de alta 借用参数)  Dimensão de cabeça 保持与基线相同──相减后,额外维度将被投影回去,以匹配基线变压器的 $O_W$Projeção: três coisas acontecem ao mesmo tempo:
 
 1. A velocidade de decodificação é comparada com a linha de base.
 2. FlashAttention 可原样运行(Não é necessário kernel personalizado)。
@@ -140,8 +142,8 @@ Construir uma sequência de composição de 1024 de longitude.
 给定一个配置 ((hidden=4096, heads=32, d_head=128),打印:
 
 - Transformador de linha de base: Q、K、V V`hidden * hidden`, MLP é 4 * escondido
-- DIFF V1: Q、K Vólos de tamanho`hidden * hidden`, V grande por`hidden * hidden`(不变), cabeça dim 在内部减半──增加 per-head `lambda`- Não, não. - Não, não.
-- DIFF V2: Q`2 * hidden * hidden`, K , grande por`hidden * hidden`, V grande por`hidden * hidden`◊ Extra-dimensional                                                                                                                                                                                                                                                            `lambda`- É o que é?
+- DIFF V1: Q、K Vólos de tamanho`hidden * hidden`, V grande por`hidden * hidden`(不变), cabeça dim 在内部减半──增加 per-head `lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$- Não.
+- DIFF V2: Q`2 * hidden * hidden`, K , grande por`hidden * hidden`, V grande por`hidden * hidden`◊ Extra-dimensional $O_W$Antes de lançar, depois de lançar, aumenta o mesmo.`lambda`- É o que é?
 
 O custo extra do tamanho do brinquedo V2 `hidden * hidden`),并打印出来──
 
@@ -183,8 +185,8 @@ Não vais escolher a cena:
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
-| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 lambda 缩放），然后乘以 V |
-| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 O(1/N) 权重，在 long contexts 中会累加到 O(1) |
+| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 $\lambda$ 缩放），然后乘以 V |
+| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 $O(1/N)$ 权重，在 long contexts 中会累加到 $O(1)$ |
 | lambda | “相减的缩放系数” | 每个 head 的可学习标量，参数化为 `exp(lq1.lk1) - exp(lq2.lk2) + lambda_init`；可以为负 |
 | DIFF V1 | “ICLR 2025 版本” | 原始 Differential Transformer；将 head dim 减半以保持参数量，需要 custom kernel，decode 更慢 |
 | DIFF V2 | “2026 年 1 月修复版” | 在保持 KV heads 的同时将 Q heads 加倍；decode speed 与 baseline 持平，并兼容 FlashAttention |

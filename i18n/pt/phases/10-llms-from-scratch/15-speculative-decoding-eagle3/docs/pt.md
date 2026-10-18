@@ -33,8 +33,8 @@ Que`p(t)`Indicar em um prefixo abaixo rascunho para a distribuição do Token se
 
 Que`α`Para cada Token projetado, a expectativa de aceitação é de:`c = cost(draft) / cost(verifier)`Por custo comparado.
 
-```
-E[accepted] = (1 - α^(N+1)) / (1 - α)
+```math
+\mathbb{E}[\text{accepted}] = \frac{1 - \alpha^{N+1}}{1 - \alpha}
 ```
 
 Cada recebimento de Token espera total tempo de parede é `(N * c + 1) / E[accepted]` Com relação `N`O melhor que se pode fazer é conseguir o melhor.`α = 0.8, c = 0.05`: 最优 `N`É aproximadamente 57, aceleração é de 3,2×...`α = 0.95, c = 0.02`: 最优 `N`É cerca de 810x10, aceleração aproximada de 5x.

@@ -49,8 +49,8 @@ Em todos os modelos abertos de 2024-2026, seis modelos de design apareceram repe
 
 LayerNorm 会减减平均值、除以 std、缩放并平移──RMSNorm apenas manter em menor:
 
-```
-RMSNorm(x) = x / sqrt(mean(x^2) + eps) * gamma
+```math
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 没有均值消除──没有偏见──每个代币少一次 matmul──Zhang and Sennrich (2019) 认为它在机器翻译上可以匹配LayerNorm,同时快 10%──所有现代开放模型都使用它──
@@ -75,8 +75,8 @@ Cada Llama、Mistral、Qwen、DeepSeek 和 Gemma 都使用 RoPE──Gemma 2 使
 
 A MLP do GPT-2 é`x -> gelu(xW1 + b1) -> (...)W2 + b2`──SwiGLU(Shazeer 2020) Used gated product 替换激活:
 
-```
-SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
+```math
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 两个并行投射,而不是一个,由Swiss激活 进行 gate。实证上,它在每参数困难上更强。Llama 2 采用它,随后大家都跟进──MLP 隐藏大小通常会设置让总参数匹配原始密集 MLP:如果GPT-2 使用`ff_dim = 4 * hidden`,SwiGLU `ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`- Não.
@@ -87,7 +87,7 @@ GPT-2 使用 **Multi-Head Attention (MHA)**Cada cabeça tem sua própria projeç
 
 **Multi-Query Attention (MQA, Shazeer 2019)**Em todos os cabeças  compartilhar um K e um V ⋅ vai KV cache 按 num_heads 缩减, em modelo típico é 12x até 32x de baixa ⋅ Precision 在困难基准上会略有下降──
 
-**Grouped-Query Attention (GQA, Ainslie et al. 2023)**É o meio-termo: G 组 Q heads 共享一个 K 和一个 V。Llama 3 8B GQA, contém 32 个 Q heads 和 8 个 KV heads(G=8), então相相较完整MHA,KV cache 缩小4x。
+**Grouped-Query Attention (GQA, Ainslie et al. 2023)**É um meio-termo:$G$组 Q cabeças 共享一个K 和一个V──Llama 3 8B 使用 GQA, contém 32 个Q cabeças 和 8 个KV cabeças($G=8$), assim que comparado com o MHA completo, KV cache  reduzido 4x ⋅
 
 **Multi-Head Latent Attention (MLA, DeepSeek 2024)**Em um ambiente latente de baixo nível, reapressa-se o teste 投影回去── ele reduz ainda mais o cache KV, enquanto mantém a capacidade de expressão de cada cabeça──DeepSeek-V2 和 V3 depende de ele para alcançar o desempenho de longo contexto──
 
@@ -151,6 +151,7 @@ A seguinte tabela especifica tudo o que está em seu conteúdo.
 | Qwen 2.5 72B | 2024 | 72B | 72B | RMSNorm | SwiGLU | RoPE (YaRN) | GQA (64/8) | no | 128k |
 | DeepSeek V2 236B | 2024 | 236B | 21B | RMSNorm | SwiGLU | RoPE | MLA | yes (160 experts, top-6) | 128k |
 | DeepSeek V3 | 2024 | 671B | 37B | RMSNorm | SwiGLU | RoPE | MLA | yes (256 experts, top-8) | 128k |
+| Spark-X2.5 4B | 2026 | 4.1B | 4.1B | RMSNorm | GeGLU | RoPE + sliding (3:1) | GQA (16/4)，门控输出 | 否 | 1M |
 
 扫描这些列──RMSNorm é comum──SwiGLU ou seu GeGLU 近亲是通用──RoPE é comum──7B 以上 GQA é comum, salvo que seja substituído por MLA──MoE é o ponto de diferença do modelo de topo──
 
@@ -173,6 +174,11 @@ Llama 3 8B configuração:
 ```
 
 Cada episódio é para o que já conseguiste.
+A nova configuração adicionou alguns parágrafos que mudarão o modo de cálculo, de modo que o calculador os irá ler quando estes parágrafos existem:
+
+- `head_dim`Quando não é igual a`hidden_size / num_attention_heads`Gemma 2 9B's Hidden 为 3584, há 16 cabeças, mas `head_dim`Por isso, sua projeção Q é 3584 x 4096, e não quadrado.
+- `tie_word_embeddings`LM head é o mesmo que a matriz de inserção. Llama 3 8B não compartilha os dois, portanto, se calcular apenas uma vez a inserção, perderá 525M de parâmetros.
+- `layer_types`和 `sliding_window`Quais as camadas atendem ao contexto completo, quais apenas atendem aos tokens W 个 mais recentes.
 
 - `hidden_size`: dimensão de inserção:
 - `intermediate_size`: MLP tamanho oculto ((3.5x oculto -- SwiGLU 数学) 』
@@ -209,6 +215,15 @@ Llama 3 8B em contexto 128k ЅF16 Ѕhead_dim = oculto / num_heads = 128 时:
 
 Os pesos de 8B em BF16 são 16 GB. Em uma sequência de 128k, o cache KV é maior do que os pesos. Isso é o que impulsiona a quantização do cache GQA, MLA e KV.
 
+Para os modelos híbridos, é necessário obter uma sequência completa.
+
+```text
+kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
+           * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
+```
+
+Spark-X2.5 4B Cada uma camada de atenção completa 搭配三个滑窗层($W = 512$):36 层中有9 层满层 和 27 层滑滑. 下, usando BF16 时, cada sequência 约需要 38.7 GB(36 GiB) ⋅如果全部36 层都缓存完整的背景,则需要 154.6 GB(144 GiB) ⋅ Layer 承担了几乎全部开销,因此查看长文本模型 时,应首先关注全与滑层的比例.
+
 ### Quando cada modelo ganha
 
 - **单张 80GB GPU，无 MoE**Llama 3 8B、Mistral 7B、Gemma 2 9B。
@@ -216,6 +231,7 @@ Os pesos de 8B em BF16 são 16 GB. Em uma sequência de 128k, o cache KV é maio
 - **最大的 open capability，可接受 MoE 复杂度**Profundidade: Procurar V3、Mixtral 8x22B― para cada FLOP ativo 
 - **Long-context 需求**A Llama 3 (a partir da escalação do RoPE) alcança 128k (a) ∆ Profundos Buscas (a)  MLA 优势) 
 - **Low-latency serving**:Gemma 2 9B(janela deslizante 降低 computação de longo contexto)
+- **较小内存预算下的长上下文**:Spark-X2.5 4B etc modelos híbridos de janela deslizante, apenas quatro camadas  assume todo o contexto 开销――
 
 
 ```figure
@@ -234,12 +250,16 @@ config = {
 }
 ```
 
-脚本会逐字段遍历架构,计算嵌入、attention(带 GQA reduction)、MLP(带 SwiGLU expansion)、layernorms 和 head 的参数──然后它会根据给定的背景长度计算 KV cache,并打印总结──
+脚本会逐字段遍历架构,计算嵌入、attention(带 GQA redução, e config 设置时使用显式 `head_dim`O MLP (Multiplier) (incluindo a expansão SwiGLU ou GeGLU) (Layer Norms, bem como não com o incorporar em seu conteúdo) (Layer Head 参数, em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês) (em inglês)), (em alemão) (em inglês) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em alem) (em) (em alem) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em) (em)
+
+Para modelos densos, o total de参数 e o total de参数 está em total harmonia: Llama 3 8B = 8,030,261,248, Gemma 2 9B = 9,241,705,984, Spark-X2.5 4B = 4,112,079,360;; Qwen 2.5 72B = 819,200, este é o conteúdo do exercício 1.
 
 实现见 `code/main.py`- Não.
 
 ## Use-o
 运行计算器, usando o script em conjunto Llama 3 8B、Mistral 7B、Mixtral 8x7B 和 DeepSeek V3 configurações。 comparar parâmetros de desintegração。 atenção MoE modelos de parâmetros de parâmetros de parâmetros de parâmetros muito densos, mas a contagem ativa 往往更小。 atenção DeepSeek V3 KV cache 虽然总参数更多,但小于 Llama 3 405B 的 KV cache ―这就是 MLA 的效果──
+
+ Comparar Gemma 2 9B 和 Spark-X2.5 4B。 Para estes dois modelos, o script também imprimirá o cache KV de necessidade real, bem como se todas as camadas fossem totalmente atentas  quando necessário KV cache。 Gemma 2 em contexto 8k  em relação a 1:1  em troca de uso de duas camadas, portanto, a economia de amplitude não é grande。 Spark-X2.5 em contexto 1M  em relação a 3:1  em relação a janelas de 512-token, portanto, a demanda de cache se reduz para um quarto de cada uma。
 
 Depois, coloque o configurador do seu modelo local, leia o resumo e decida se ele é adequado para a sua GPU.
 
@@ -268,7 +288,7 @@ Depois, coloque o configurador do seu modelo local, leia o resumo e decida se el
 | MoE | “Sparse experts” | Mixture of Experts：每个 block 有 N 个 MLPs，router 为每个 Token 选择 top-k -- 巨大的 total params，较小的 active params |
 | Top-k routing | “每个 Token 选择 k 个 experts” | Router 为每个 expert 计算分数，并激活最高的 k 个 -- 典型 k 从 2（Mixtral）到 8（DeepSeek） |
 | YaRN | “拉伸 RoPE” | Yet another RoPE extension -- 通过插值 rotary angles，在 inference 时将 context 从 8k 扩展到 128k+ |
-| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 W 个 Tokens -- 将 attention cost 限制为每 Token O(W)，用于 Gemma 2 和早期 Mistral |
+| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 $W$ 个 Tokens -- 将 attention cost 限制为每 Token $O(W)$，用于 Gemma 2 和早期 Mistral |
 | Active params | “每个 Token 实际运行的部分” | 对于 MoE models，指每个 Token 会经历 forward pass 的参数量（远小于 total params）-- 决定 per-token FLOPs |
 
 ## 延伸阅读

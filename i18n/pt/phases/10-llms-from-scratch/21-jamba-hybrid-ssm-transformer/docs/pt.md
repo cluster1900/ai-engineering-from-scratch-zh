@@ -27,12 +27,14 @@ Esta aula irá ler este artigo e formar uma escolha correta de proporções de m
 
 Modelo espacial do Estado                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `h`处理序列  processamento`x_1, ..., x_N`- Não .
 
-```
-h_t = A h_{t-1} + B x_t
-y_t = C h_t
+```math
+\begin{aligned}
+h_t &= A h_{t-1} + B x_t \\
+y_t &= C h_t
+\end{aligned}
 ```
 
-Em cada passo, o estado passa por um movimento de energia.`A`演化,接收输入 `B x_t`,并输出 `C h_t`- Não.`A, B, C`Todos podem aprender.`y_t`Só preciso.`h_{t-1}`和 `x_t`Não precisa de nada mais cedo.`x`△内存是常量──推理是每个符号 O(1)。
+Em cada passo, o estado passa por um movimento de energia.`A`演化,接收输入 `B x_t`,并输出 `C h_t`- Não.`A, B, C`Todos podem aprender.`y_t`Só preciso.`h_{t-1}`和 `x_t`Não precisa de nada mais cedo.`x`O "内存" é uma quantidade constante.$O(1)$- Não.
 
 建模质量                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `A`                                                                                                                                                                                                                                                              `A, B, C`替换为依赖数据的形式 (也就是 选择性)  Mamba-2 (Mamba-2)  2024  进一步简化了结构 (Mamba-3 (Mamba-3)  2026) 则在特定位置重新加入复杂性 (Mamba-2) 
 

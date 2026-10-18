@@ -39,11 +39,11 @@ INT8:  [1 sign] [7 value]                   = 8  bits (uniform steps)
 INT4:  [1 sign] [3 value]                   = 4  bits (16 levels total)
 ```
 
-**FP32**É de total precisão. 23 bits mantissa  给你大约7位十进制精度.
+**FP32**É preciso. 23 bits de mantissa. Dá-lhe cerca de 7 bits de precisão.$1.2 \times 10^{-38}$Até$3.4 \times 10^{38}$ O treinamento passado                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
 **FP16**Colocar bits em metade, mas durante o treinamento pode haver um aumento repentino de ativações e gradientes, muito perigoso.
 
-**BF16**(Brain Float 16) Manter o exponente de 8 bits do FP32, mas reduzir a mantissa para 7 bits. O alcance e o FP32 são iguais, precisão é igual ao FP16.
+**BF16**(Brain Float 16) Manter o exponente de 8 bits do FP32, mas reduzir a mantissa para 7 bits. O alcance e o FP32 são iguais, precisão é menor do que o FP16.$10^{-20}$O grau de subfluxo no FP16 é de 0, mas o peso de 0,07342 no BF16 é de 0,07344 em torno do 0,07344.
 
 **FP8**Há duas formas: E4M3 (4, exponente, 3 mantissa) para inferir os pesos e ativas durante o treino.
 

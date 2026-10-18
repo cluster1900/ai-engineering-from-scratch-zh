@@ -138,13 +138,13 @@ graph LR
     style V fill:#1a1a2e,stroke:#0f3460,color:#fff
 ```
 
-Além de em sqrt(d_k) sqrt(64) = 8 é escalado。 sem ele, o produto de ponto do alto nível do vetor vai ficar muito grande, trar suavemax 推到 Gradiente 几乎为零的区域──这是原始 注意是你需要的纸 中的关键洞见之一──
+Além de$\sqrt{d_k}$$\sqrt{64} = 8$是扩展──没有它,高维矢量的点产品会变得很大,把软max 推到 Gradient 几乎为零的区域──这是原始 注意是你需要的纸中的关键洞见之一──
 
 ### KV Cache: 推理为什么快
 
-訓練時,你會一次處理整個序列──Inference時,你一次生成 Token──如果沒有優化,生成 Token N 需要为前面所有 N-1 个 Token 重新计算 注意──對每個生成 Token,這是 O(N),對長度為 N 的序列,總体是 O(N^2) 的注意分數 計算,并且也會重複執行大量输入側矩陣乘──
+訓練時,你會一次處理整個序列──Inference時,你一次生成 Token──如果沒有優化,生成 Token──$N$需要为前面所有 $N-1$个 Token 重新计算 Atenção.$O(N^2)$Para a duração$N$A sequência é, de facto,$O(N^3)$- Não.
 
-KV Cache  resolveu este problema. Por cada token  calculado K 和 V 后, colocá-los em guarda. Quando gerar um token N + 1 时, você só precisa de um novo token 计算 Q,并查找所有之前 Token 的缓存 K 和 V ;; isso vai colocar o custo por token de K 和 V 计算从 O(N) 降至 O(1);;
+KV Cache  resolveu este problema. Para cada token  calcula-se K 和 V 后,把它们存起来.$N+1$时, você só precisa de um novo token 计算 Q,并查找所有之前的代币的缓存 K 和 V.$O(N)$- Desce para aqui .$O(1)$❖ Calculo de pontuação de atenção  ainda $O(N)$Porque vais atender a todas as posições anteriores, mas evitaste a entrada de multiplicações redundantes da Matriz.
 
 对于包含12层和12头的GPT-2,KV cache 会为每个代币 存储 2(K + V) x 12层 x 12头 x 64 dims = 18,432 个值。对于1024-Token sequência,这在FP32 下大约是75MB──对于拥有128层的Llama 3 405B,单个序列的KV cache 可能超过10GB──这就是为什么长文段推断受了内存约束──
 
@@ -208,7 +208,7 @@ A taxa de aprendizagem de GPT-2 em 2000 passos, de 0 a 0 para o pico de aprendiz
 |-----------|-------|------------|
 | Token embeddings | (50257, 768) | 38,597,376 |
 | Position embeddings | (1024, 768) | 786,432 |
-| Per-block attention (W_q, W_k, W_v, W_out) | 4 x (768, 768) | 2,359,296 |
+| Per-block attention ($W_q, W_k, W_v, W_{\text{out}}$) | 4 x (768, 768) | 2,359,296 |
 | Per-block FFN (up + down) | (768, 3072) + (3072, 768) | 4,718,592 |
 | Per-block LayerNorms (2x) | 2 x 768 x 2 | 3,072 |
 | Final LayerNorm | 768 x 2 | 1,536 |
@@ -259,7 +259,7 @@ def attention(Q, K, V, mask=None):
     return weights @ V
 ```
 
-softmax 实现会在指数化前减去最大值──否则,exp(large_number) 会溢出成无限──这是一个数值稳定性技巧,并不会改变输出,因为对于任意常数 c,softmax(x - c) = softmax(x)──
+softmax 实现会在指数化前减减最大值──否则,exp(large_number) 会溢出成无限──这是一个数值稳定性技巧,不会改变输出,因为对于任意常数$c$- Não .$\mathop{\mathrm{softmax}}(x - c) = \mathop{\mathrm{softmax}}(x)$- Não.
 
 ### 步骤 3: Atenção Multi-Head
 
@@ -498,7 +498,7 @@ Em pequenos modelos, gerar textos pode ser apenas meio-consumido. Ele pode ser a
 ## 练习
 1. O modelo será modificado para usar 24 camadas e 16 cabeças, em vez de 12/12―.
 
-2. 实现 GELU ativação função(GELU(x) = x * 0.5 * (1 + erf(x / sqrt(2)))),并替换 feedforward network 中的 ReLU──分别使用两种激活 训练 500步,并比较最终损失──
+2. 实现 função de ativação GELU$(\mathop{\mathrm{GELU}}(x) = x \cdot 0.5 \cdot (1 + \mathop{\mathrm{erf}}(x / \sqrt{2})))$,并替换 feedforward network 中的 ReLU──分别使用两种激活 训练500步,并比较最终损失──
 
 3. 给生成函数 添加 KV cache──在第一次前传后,存储每层的 K 和 V tensors,并在后续代币中复用它们──测量速度:分别在有缓存和没有缓存的情况下生成200个代币,并比较墙钟时间──
 
@@ -518,7 +518,7 @@ Em pequenos modelos, gerar textos pode ser apenas meio-consumido. Ele pode ser a
 | Weight tying | “共享 embeddings” | 对 input Token embeddings 和 output projection head 使用同一个 Matrix——在 GPT-2 中节省 38M 参数 |
 | Residual connection | “Skip connection” | 将 input 直接加到 sublayer 的 output 上（x + sublayer(x)）——支持 deep networks 中的 Gradient flow |
 | Layer normalization | “规范化 activations” | 沿 feature dimension 规范化到 mean 0 和 variance 1，并带有可学习的 scale 与 bias 参数 |
-| Cross-entropy loss | “预测错得有多离谱” | -log(分配给正确 next Token 的概率)，在所有 position 上取平均——标准 LLM 训练目标 |
+| Cross-entropy loss | “预测错得有多离谱” | $-\log(\text{分配给正确 next Token 的概率})$，在所有 position 上取平均——标准 LLM 训练目标 |
 
 ## 延伸阅读
 - [Radford et al., 2019 -- "Language Models are Unsupervised Multitask Learners" (GPT-2)](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf)-- 介绍 124M até 1,5B 参数家族的GPT-2 papel

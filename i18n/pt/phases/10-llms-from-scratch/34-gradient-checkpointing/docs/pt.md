@@ -37,13 +37,13 @@ Demonstração: Transformador de 32 camadas 拆分32 个段,每个段1层──
 - Memória:32 个 camadas de entrada ((小) em relação a 32 *(
 - 额外计算: cada segmento 额外 1 次 前进,也就是总 前进 FLOPs 约增加 33%(因为 后退是 前进的 2x,完整步骤从 1 + 2 = 3 个单位变为 1 + 1 + 2 = 4 个单位) 
 
-É o primeiro Chen et al. 2016                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      `sqrt(L)`Em termos de memória e computação, para L=64, é 8 pontos de controlo.
+É o primeiro Chen et al. 2016                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      `sqrt(L)`Coloque um ponto de controlo, para equilibrar a memória e a computação.$L=64$É o que eu faço .
 
 ### Controlos seletivos (Korthikanti 2022)
 
 Não é o mesmo custo de todos os valores activados.`B*L*L*heads`,并随序列长度 *二次* 增长──FFN ativação oculta é `B*L*4d`, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
-O ponto de verificação seletivo irá manter o custo de armazenamento baixo do valor ativo (projeções lineares, resíduos), apenas recalculando parte cara (attenção) ⋅ você usa muito poucas FLOPs (novas calculações), mas economiza memória (L^2) ⋅
+O ponto de controlo seletivo irá manter o valor de atividade do custo de armazenamento baixo, mas apenas recalculará parte cara da sua capacidade de cálculo.$O(L^2)$Memória.
 
 Megatron-Core irá implementá-lo para recomputamento seletivo de ativação. A maioria dos cursos de treinamento de fronteira de 2024+ estão usando-o.
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174)-- inicialmente formalizado gradiente de controlo de pontos de vista
