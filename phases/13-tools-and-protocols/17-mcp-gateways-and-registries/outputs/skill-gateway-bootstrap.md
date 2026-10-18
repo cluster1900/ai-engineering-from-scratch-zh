@@ -7,44 +7,52 @@ lesson: 17
 tags: [mcp, gateway, stateless, registry, rbac, subscriptions, tasks]
 ---
 
-Given clients, backends, authorization requirements, and compliance constraints, produce a gateway design.
+根据客户端、后端、授权要求和合规约束，给出网关设计。
 
-## Required inputs
+<a id="required-inputs"></a>
 
-- Public gateway resource URI, accepted protocol revisions, and transport.
-- Authenticated principal and role model.
-- Backend endpoints, issuers, resources, registry records, publisher evidence, and approved descriptors.
-- Tool visibility, argument policy, cost classes, and data sensitivity.
-- Streaming, change-notification, MRTR, and Tasks requirements.
-- Audit, retention, trace, and redaction requirements.
+## 必需输入
 
-## Produce
+- 公开网关资源 URI、接受的协议修订版和传输方式。
+- 已认证主体和角色模型。
+- 后端端点、签发者、资源、注册表记录、发布者证据及已批准的描述符。
+- 工具可见性、参数策略、成本类别和数据敏感程度。
+- 流式传输、变更通知、MRTR 和 Tasks 要求。
+- 审计、保留期限、追踪和脱敏要求。
 
-1. Stateless ingress. One POST endpoint, per-request version and capabilities, matching method and name headers, JSON or request-scoped SSE, and 405 for modern GET and DELETE. Validate header equality before version support. Specify HTTP 400 `-32020`, HTTP 400 `-32022` with exact supported and requested data, HTTP 404 `-32601`, optional error data serialization, and 202 empty-body notification handling.
-2. Discovery plan. Implement gateway `server/discover`, discover each backend, expose only safe end-to-end capability intersections, and include current `resultType`, `ttlMs`, `cacheScope`, and server identity metadata.
-3. Admission table. Validate the official Registry `server.json` publication shape and `com.example/*` style name separately from security admission. For every backend, join the record to external verified publisher namespace, provenance source, endpoint, version policy, descriptor digest, issuer, resource, approval, and expiry state.
-4. Namespace map. Give every backend tool a stable qualified public name and retain a valid object-root `inputSchema` on every `tools/list` descriptor. Reject collision-by-order.
-5. Authorization matrix. Map principal and role to public tool, resource, arguments, and scopes. Keep outer and backend credentials separate and issuer-bound.
-6. Forwarding contract. Build a fresh self-contained backend request, advertise only mediated client capabilities, validate the backend result, and preserve trace correlation.
-7. Cache plan. Make principal-dependent discovery and lists private. Set bounded TTLs and invalidation behavior.
-8. Rate and audit policy. Key limits by principal, issuer, resource, tool, cost class, and time. Redact credentials and unnecessary sensitive arguments.
-9. Interaction routing. Describe request-scoped SSE, `subscriptions/listen` acknowledgment and reconnect behavior, byte-exact MRTR state forwarding, and Tasks routing by task id in `Mcp-Name`.
-10. Transport adapter. If the gateway receives parsed requests and headers, label it an in-process protocol model and connect it to Lesson 09 for JSON Content-Type and JSON plus SSE Accept enforcement.
-11. Compatibility adapter. Fence older initialization, session ids, GET streams, resource subscriptions, and experimental task methods away from the modern gateway core.
+<a id="produce"></a>
 
-## Hard rejects
+## 交付内容
 
-- Session affinity, session stores, or session-id rewriting presented as required for 2026-07-28.
-- Trusting registry presence or a display name without admission evidence.
-- Silent tool collisions or descriptor pin updates without re-approval.
-- Reusing the outer bearer token at a backend or a backend token at another issuer or resource.
-- Public caching of a principal-filtered list.
-- A standalone modern GET event stream, Last-Event-ID replay, or resource subscribe method.
-- New `tasks/list` or `tasks/result` behavior.
-- Rate limits keyed only by a removed protocol session.
-- Security verification invented inside `server.json` instead of separate verified admission and provenance state.
-- Namespaced tool descriptors that omit `inputSchema`.
+1. 无状态入口。一个 POST 端点，逐请求版本与能力，匹配的方法和名称请求头，JSON 或请求范围内的 SSE，以及对现代协议 GET 和 DELETE 返回 405。在检查版本支持之前验证请求头是否一致。规定 HTTP 400 `-32020`、包含准确支持版本与请求版本数据的 HTTP 400 `-32022`、HTTP 404 `-32601`、可选错误数据的序列化，以及返回空响应体 202 的通知处理。
+2. 发现方案。实现网关 `server/discover`，发现每个后端，仅暴露安全的端到端能力交集，并包含当前的 `resultType`、`ttlMs`、`cacheScope` 和服务器身份元数据。
+3. 准入表。验证官方 Registry 的 `server.json` 发布结构和 `com.example/*` 风格名称，并将其与安全准入分开。为每个后端，将记录关联到外部已验证的发布者命名空间、来源证明、端点、版本策略、描述符摘要、签发者、资源、审批和过期状态。
+4. 命名空间映射。为每个后端工具提供稳定且带限定前缀的公开名称，并在每个 `tools/list` 描述符上保留有效的对象根 `inputSchema`。拒绝按顺序解决冲突。
+5. 授权矩阵。将主体和角色映射到公开工具、资源、参数与权限范围。将外层凭据和后端凭据分离，并分别绑定签发者。
+6. 转发契约。构建新的、自包含的后端请求，仅声明经过网关协调的客户端能力，验证后端结果，并保留追踪关联。
+7. 缓存方案。将依赖主体的发现结果和列表设为私有。设置有界 TTL 和失效行为。
+8. 限流与审计策略。按主体、签发者、资源、工具、成本类别和时间设置限制。对凭据及非必要的敏感参数进行脱敏。
+9. 交互路由。描述请求范围内的 SSE、`subscriptions/listen` 确认与重连行为、逐字节保真的 MRTR 状态转发，以及通过 `Mcp-Name` 中的任务 ID 进行的 Tasks 路由。
+10. 传输适配器。如果网关接收已解析的请求和请求头，将其标为进程内协议模型，并接入第 09 课，强制执行 JSON Content-Type 及同时包含 JSON 和 SSE 的 Accept 检查。
+11. 兼容适配器。将旧版初始化、会话 ID、GET 流、资源订阅和实验性任务方法隔离在现代网关核心之外。
 
-## Output format
+<a id="hard-rejects"></a>
 
-Return sections named Ingress, Discovery, Admission, Namespace Map, Authorization, Forwarding, Cache, Rate Limits, Audit, Interactions, and Legacy Adapter. End with the one route that requires the strongest acceptance test.
+## 必须否决
+
+- 将会话亲和性、会话存储或会话 ID 重写描述为 `2026-07-28` 的必需机制。
+- 没有准入证据，仅凭注册表中存在记录或展示名称就建立信任。
+- 静默处理工具冲突，或未经重新批准就更新固定的描述符版本。
+- 在后端复用外层持有者令牌，或在另一签发者或资源处复用后端令牌。
+- 对按主体过滤的列表使用公共缓存。
+- 使用独立的现代协议 GET 事件流、Last-Event-ID 重放或资源订阅方法。
+- 新增 `tasks/list` 或 `tasks/result` 行为。
+- 仅以已移除的协议会话作为限流键。
+- 在 `server.json` 内自创安全验证字段，而不是独立维护已验证的准入和来源状态。
+- 带命名空间的工具描述符缺少 `inputSchema`。
+
+<a id="output-format"></a>
+
+## 输出格式
+
+返回以下章节：入口、发现、准入、命名空间映射、授权、转发、缓存、限流、审计、交互、旧版适配器。最后指出最需要严格验收测试的一条路由。

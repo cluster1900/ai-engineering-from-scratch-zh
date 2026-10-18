@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "为什么 prompt caching 在受监管领域 RAG chatbot 中如此重要？",
       "options": [
-        "它消除了对 Vector database 的需求",
         "在 60-80% hit rate 下，它通过对稳定前缀 tokens 打折，将每次查询成本降低 3-5 倍",
+        "它提升 rerank 阶段的 recall",
         "它消除了幻觉",
-        "它提升 rerank 阶段的 recall"
+        "它消除了对 Vector database 的需求"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -19,23 +19,23 @@
       "question": "每个请求的 cache header 和 uncached suffix 分别包含什么？",
       "options": [
         "用于达到 cache size 的随机文本填充",
+        "System prompt 和静态 policies 放在 cache header 中，reranked context 作为 cache extension，user question 作为 uncached suffix",
         "只有检索到的文档",
-        "User question 在前，system prompt 在后",
-        "System prompt 和静态 policies 放在 cache header 中，reranked context 作为 cache extension，user question 作为 uncached suffix"
+        "User question 在前，system prompt 在后"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
       "stage": "check",
       "question": "retrieval layer 如何遵守 GDPR 或 HIPAA 这样的 jurisdiction tags？",
       "options": [
-        "它为每个国家运行一个单独的 index",
-        "它只在 generation 之后阻止响应",
         "它按区域重写 user question",
-        "Role 和 jurisdiction filters 在 hybrid search merge 之前应用，因此用户范围之外的 chunks 永远不会被 reranked"
+        "Role 和 jurisdiction filters 在 hybrid search merge 之前应用，因此用户范围之外的 chunks 永远不会被 reranked",
+        "它为每个国家运行一个单独的 index",
+        "它只在 generation 之后阻止响应"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": ""
     },
     {
@@ -44,8 +44,8 @@
       "options": [
         "只在输入上使用 Llama Guard 4",
         "Llama Guard 4、NeMo Guardrails policy rails 和 Presidio PII scrub，再加上 citation enforcement",
-        "仅一个输出 PII regex",
-        "单个 LLM-judge faithfulness check"
+        "单个 LLM-judge faithfulness check",
+        "仅一个输出 PII regex"
       ],
       "correct": 1,
       "explanation": ""
@@ -54,36 +54,36 @@
       "stage": "check",
       "question": "drift dashboard 会对什么发出告警？",
       "options": [
-        "底层 LLM provider 的变化",
-        "Latency 超过 200ms",
         "retrieval-quality 下降，例如 nDCG 或 citation score 周环比下降 5%",
-        "任何新文档被添加到 index"
+        "底层 LLM provider 的变化",
+        "任何新文档被添加到 index",
+        "Latency 超过 200ms"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "用于约束交付物 correctness rubric 的 golden set 有多大？",
       "options": [
+        "2000 个 synthetic questions",
         "5 个 demo queries",
-        "200 个带有 citations 的专家标注 question/answer pairs",
         "20 个问题",
-        "2000 个 synthetic questions"
+        "200 个带有 citations 的专家标注 question/answer pairs"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": ""
     },
     {
       "stage": "post",
       "question": "每轮在线跟踪哪些 RAGAS scores？",
       "options": [
+        "Token count 和 dollar cost",
         "Throughput、GPU utilization 和 queue depth",
         "BLEU、ROUGE 和 METEOR",
-        "Faithfulness、answer relevance 和 context precision",
-        "Token count 和 dollar cost"
+        "Faithfulness、answer relevance 和 context precision"
       ],
-      "correct": 2,
+      "correct": 3,
       "explanation": ""
     }
   ]

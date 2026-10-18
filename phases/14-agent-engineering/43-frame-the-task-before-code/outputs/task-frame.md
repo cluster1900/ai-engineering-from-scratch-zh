@@ -1,21 +1,33 @@
-# Task Frame: Prevent duplicate email addresses during signup
+<a id="task-frame-prevent-duplicate-email-addresses-during-signup"></a>
 
-Status: READY
+# 任务框架：防止注册时使用重复邮箱地址
 
-## Repository facts
-- Account writes use AccountStore (`app/accounts.py:18`)
-- Duplicate errors use status 409 (`tests/test_accounts.py:44`)
+状态：READY
 
-## Allowed paths
+<a id="repository-facts"></a>
+
+## 仓库事实
+- 账户写入使用 AccountStore (`app/accounts.py:18`)
+- 重复账户错误使用状态码 409 (`tests/test_accounts.py:44`)
+
+<a id="allowed-paths"></a>
+
+## 允许修改的路径
 - `app/accounts.py`
 - `tests/test_accounts.py`
 
-## Forbidden paths
+<a id="forbidden-paths"></a>
+
+## 禁止修改的路径
 - `migrations/**`
 - `deploy/**`
 
-## Acceptance evidence
+<a id="acceptance-evidence"></a>
+
+## 验收证据
 - `python3 -m unittest tests.test_accounts`
 
-## Unknowns
-- Whether email comparison is case-insensitive
+<a id="unknowns"></a>
+
+## 待确认事项
+- 邮箱地址比较是否忽略大小写
