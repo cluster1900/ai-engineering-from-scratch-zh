@@ -1,5 +1,7 @@
-# Phase 9: Reinforcement Learning
+<a id="phase-9-reinforcement-learning"></a>
 
-> 通过实践学习的 Agents。RLHF 的基础。
+# 阶段 9：强化学习
+
+> 通过实践学习的智能体。RLHF 的基础。
 
 完整课程计划见 [ROADMAP.md](../../ROADMAP.md)。
