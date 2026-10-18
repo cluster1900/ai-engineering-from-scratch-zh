@@ -29,25 +29,25 @@ O método de modificação é de alguma forma inserir a posição em embutidos.
 
 预先计算一个形 为 `(max_len, d_model)`Matrix fixa`PE`- Não .
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 Então, em atenção, antes de executar.`X' = X + PE[:N]`◊ Cada dimensão são sinusoides de diferentes frequências ◊ modelo de aprendizagem de padrão de fase 中读取位置 ◊超过 `max_len`后会失败: Quando o modelo só viu posições 02047 时, nada diz que a posição 2048 会发生什么.
 
 ### RoPE
 
-旋转 Q 和 K vectores(não são embutidos)`(2i, 2i+1)`- Não .
+旋转 Q 和 K vectores(não são embutidos)$(2i, 2i+1)$- Não .
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-Para a posição`pos_k` aplicada o mesmo rotativo.`q'_m · k'_n`Vai ficar dependente.`(m - n)`Definição:**attention score 只依赖 relative distance**, apesar de a rotação ser feita por posições absolutas.
+Para a posição`pos_k` aplicada o mesmo rotativo.$q'_m \cdot k'_n$Vai ficar dependente.$(m - n)$Definição:**attention score 只依赖 relative distance**, apesar de a rotação ser feita por posições absolutas.
 
 扩展 RoPE: pode ser reduzido `base`(NTK-consciente、YaRN、LongRoPE), para extrapolar até um contexto mais longo em um contexto de não re-treino.
 
@@ -55,11 +55,11 @@ Para a posição`pos_k` aplicada o mesmo rotativo.`q'_m · k'_n`Vai ficar depend
 
 跳过嵌入 技巧──直接给注意分加偏见:
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-Entre eles `m_h`É inclinação específica da cabeça.`1 / 2^(8·h/H)`O que é um exemplo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de
+Entre eles $m_h$É inclinação específica da cabeça.$1 / 2^{8h/H}$O que é um exemplo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de um estudo de
 
 ### 2026 ano que escolher
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键: em posição `m`de Q 和 posição `n`de K  aplicada a mesma função. O produto de pontos deles vai em cada par de coordenadas para obter um.`cos((m-n)·θ_i)`因子──Attention 免费学到相对位置──
+关键: em posição $m$de Q 和 posição $n$de K  aplicada a mesma função. O produto de pontos deles vai em cada par de coordenadas para obter um.$\cos((m-n) \cdot \theta_i)$因子──Attention 免费学到相对位置──
 
 ### Passo 3: Alíbi inclinações 和 viés
 
@@ -169,7 +169,7 @@ model = AutoModel.from_pretrained("meta-llama/Llama-3.2-3B")
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |

@@ -11,7 +11,7 @@
 
 单个自我注意头 会计算一个注意矩阵―― essa matriz 捕捉一种关系, normalmente é aquela que pode minimizar a perda no sinal de treinamento atual―― se o seu data em assunto-verbo acordo、co-referência、discurso de longo alcance 和 sintaxis chunking  纠 全部,单个头 会将它们抹抹进一个单一的软-max分布,丢失一半信号――
 
-O Vaswani Paper de 2017 deu um método de revisão:并行运行多个注意功能, cada um tem suas próprias projeções Q、K、V, então, colocar o output拼接起来── cada cabeça está em dimensão para`d_model / n_heads`O número de componentes permanece inalterado.
+O Vaswani Paper de 2017 deu um método de revisão:并行运行多个注意功能, cada um tem suas próprias projeções Q、K、V, então, colocar o output拼接起来── cada cabeça está em dimensão para$d_{\text{model}} / n_{\text{heads}}$O número de componentes permanece inalterado.
 
 A atenção multi-cabeça é a configuração padrão de todos os transformadores em 2026 e o único debate está em usar * quantas cabeças *, bem como as chaves e valores
 
@@ -19,7 +19,7 @@ A atenção multi-cabeça é a configuração padrão de todos os transformadore
 
 ![Multi-head attention splits, attends, concatenates](../assets/multi-head-attention.svg)
 
-**Split。**取形为 `(N, d_model)`de `X`△分别 projeção 到形为 `(N, d_model)`De Q 、K 、V 、Resshape 为 `(N, n_heads, d_head)`, entre os `d_head = d_model / n_heads`❖ Transpor`(n_heads, N, d_head)`- Não.
+**Split。**取形为 `(N, d_model)`de `X`△分别 projeção 到形为 `(N, d_model)`De Q 、K 、V 、Resshape 为 `(N, n_heads, d_head)`, entre os $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$❖ Transpor`(n_heads, N, d_head)`- Não.
 
 **并行 Attend。**Em cada cabeça dentro de um processo de escalação de atenção de produto de ponto.`(N, d_head)` Estes cabeças funcionam em diferentes espaços de incorporação, e durante a computação de atenção não se comunicam entre si
 
@@ -36,7 +36,7 @@ A atenção multi-cabeça é a configuração padrão de todos os transformadore
 | Grouped-query (GQA) | N | G (e.g. N/8) | Llama 2 70B, Llama 3+, Qwen 2+, Mistral |
 | Multi-head latent (MLA) | N | compressed to low-rank | DeepSeek-V2, V3 |
 
-O GQA é um programa moderno, pois pode ser aplicado.`N/G`O multiplicador reduz a memória de cache KV, mantendo quase a qualidade completa. MLA Mais adiante, reduzir o K/V para o espaço latente, e depois, no projeto de cálculo, voltar, ele consumirá FLOPs, mas economizará mais memória.
+O GQA é um programa moderno, pois pode ser aplicado.$N/G$O multiplicador reduz a memória de cache KV, mantendo quase a qualidade completa. MLA Mais adiante, reduzir o K/V para o espaço latente, e depois, no projeto de cálculo, voltar, ele consumirá FLOPs, mas economizará mais memória.
 
 
 ```figure
@@ -130,7 +130,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 | Large (~1B) | 2048 | 16 | 128 |
 | Frontier (~70B) | 8192 | 64 | 128 |
 
-`d_head` quase sempre está em 64 ou 128 ⋅ é uma cabeça  pode ver  quanto conteúdo unidades ⋅ inferior a 32, cabeças ⋅ começar e factor de escala `sqrt(d_head)`Com mais de 256, você perderá os benefícios de muitos pequenos especialistas.
+`d_head` quase sempre está em 64 ou 128 ⋅ é uma cabeça  pode ver  quanto conteúdo unidades ⋅ inferior a 32, cabeças ⋅ começar e factor de escala $\sqrt{d_{\text{head}}}$Com mais de 256, você perderá os benefícios de muitos pequenos especialistas.
 
 ## Entrega-o
 
@@ -146,7 +146,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Head | “一个单独的 attention circuit” | 一个维度为 `d_head = d_model / n_heads` 的 Q/K/V projection，拥有自己的 attention matrix。 |
+| Head | “一个单独的 attention circuit” | 一个维度为 $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$ 的 Q/K/V projection，拥有自己的 attention matrix。 |
 | d_head | “Head dimension” | Per-head hidden width；在 production 中几乎总是 64 或 128。 |
 | Split / combine | “Reshape tricks” | Attention 前后的 `(N, d_model) ↔ (n_heads, N, d_head)` reshape+transpose。 |
 | W_o | “Output projection” | Concatenating heads 之后应用的 `(d_model, d_model)` matrix；heads 在这里混合。 |

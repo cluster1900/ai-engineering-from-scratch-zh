@@ -9,7 +9,7 @@
 
 ## 问题
 
-Um 70B LLM em H100 上采采样一个代币 需要约30ms──一个3B草案模型 需要约3ms──如果让3B草案提前生成5代币,然后让70B *只运行一次*来验证这5代币,总耗时就是`5×3 + 30 = 45 ms`, o máximo aceitável 5 Tokens; e diretamente gerar necessários `5×30 = 150 ms`︎ é o ponto de venda completo da descodificação especulativa: usando uma pequena quantidade extra de memória GPU (modelo de projeto) em troca de 24× mais baixa latência de decodificação︎
+Um 70B LLM em H100 上采采样一个代币 需要约30ms──一个3B草案模型 需要约3ms──如果让3B草案提前生成5代币,然后让70B *只运行一次*来验证这5代币,总耗时就是$5 \times 3 + 30 = 45$ms, o máximo aceitável 5 Tokens; e diretamente gerar `5×30 = 150 ms`︎ é o ponto de venda completo da descodificação especulativa: usando uma pequena quantidade extra de memória GPU (modelo de projeto) em troca de 24× mais baixa latência de decodificação︎
 
 关键在必须保留分布──Leviathan et al. (2023) 以及 Chen et al. 同期提出的投机样本保证输出序列与大模型单独生成时的分布**完全相同**Não há um volume de folga.
 
@@ -26,30 +26,30 @@ Cada estaca de inferência de produção de 2026 anos estão em conformidade for
 
 ### 核心算法
 
-给定一个验证器 `M_q`E um projecto mais barato.`M_p`- Não .
+给定一个验证器 $M_q$E um projecto mais barato.$M_p$- Não .
 
-1. Que`x_1..x_k`Por já descifrado.
-2. **Draft**: utilização `M_p`autoregressivamente 提议 `d_{k+1}, d_{k+2}, ..., d_{k+N}`, para lidar com os projetos de probabilidades`p_1..p_N`- Não.
-3. **并行 verify**- Não .`x_1..x_k, d_{k+1}, ..., d_{k+N}`- Não .`M_q`- Não .`k+1..k+N+1`de probabilidades de verificação `q_1..q_{N+1}`- Não.
-4. **从左到右 accept/reject 每个 draft token**Para cada um .`i`, em probabilidade`min(1, q_i(d_i) / p_i(d_i))`- Aceitação.
-5. Em posição`j`Primeira rejeição: distribuição "residual" da regeneração posterior.`(q_j - p_j)_+`- Não .`t_j`- Não.`j`Depois, todos os projetos foram abandonados.
-6. Se tudo .`N`个都被接受: de `q_{N+1}`采样一个额外 Token `t_{N+1}`(título de bônus gratuito)
+1. Que$x_1 \ldots x_k$Por já descifrado.
+2. **Draft**: utilização $M_p$autoregressivamente 提议 $d_{k+1}, d_{k+2}, \ldots, d_{k+N}$, para lidar com os projetos de probabilidades$p_1 \ldots p_N$- Não.
+3. **并行 verify**- Não .$x_1 \ldots x_k, d_{k+1}, \ldots, d_{k+N}$- Não .$M_q$- Não .$k+1 \ldots k+N+1$de probabilidades de verificação $q_1 \ldots q_{N+1}$- Não.
+4. **从左到右 accept/reject 每个 draft token**Para cada um .$i$, em probabilidade$\min(1, q_i(d_i) / p_i(d_i))$- Aceitação.
+5. Em posição$j$Primeira rejeição: distribuição "residual" da regeneração posterior.$(q_j - p_j)_+$- Não .$t_j$- Não.$j$Depois, todos os projetos foram abandonados.
+6. Se tudo .$N$个都被接受: de $q_{N+1}$采样一个额外 Token $t_{N+1}$(título de bônus gratuito)
 
-Distribuição residual Esta técnica é fazer distribuição de saída com`M_q`A partir do princípio, um teor matemático totalmente harmonioso.
+Distribuição residual Esta técnica é fazer distribuição de saída com$M_q$A partir do princípio, um teor matemático totalmente harmonioso.
 
 ### O que é que se resolve ?
 
-Que`α`= taxa de aceitação esperada de cada projeto de token.`c`= relação custo-projeto-verificador:
+Que$\alpha$= taxa de aceitação esperada de cada projeto de token.$c$= relação custo-projeto-verificador:
 
 - Geração ingênua Cada token precisa de um grande modelo de chamada.
-- - Não .`α`Muito bem, especulativo.`(1 - α^{N+1}) / (1 - α) ≈ 1/(1-α)`- Títulos. - Preciso de um grande modelo.
+- - Não .$\alpha$Muito bem, especulativo.$(1 - \alpha^{N+1}) / (1 - \alpha) \approx 1/(1-\alpha)$- Títulos. - Preciso de um grande modelo.
 
-Em`α = 0.75`且 `N = 5`时,典型经验法则是:big-model call 减少 3×──Draft cost is 5× cheap──总体墙-clock 约下降 2.5×──
+Em$\alpha = 0.75$且 $N = 5$时,典型经验法则是:big-model call 减少 3×──Draft cost is 5× cheap──总体墙-clock 约下降 2.5×──
 
-**α 取决于：**
+**$\alpha$ 取决于：**
 
-- A aproximação do projeto ao verificador, com os dados familiares/formação, aumentará significativamente.
-- Estratégia de decodificação. Draft avariado.
+- A aproximação do projeto ao verificador, com os dados familiares/formação, aumentará significativamente.$\alpha$- Não.
+- Estratégia de decodificação:$\alpha$高── amostras de temperatura:更难匹配; aceitação 下降──
 - Tipo de tarefa;; Código e saída estruturada  接受更多(更可预测); 自由形式创意写作接受更少──
 
 ### Medusa  没有草案模型 的草案
@@ -76,7 +76,7 @@ EAGLE-3 (2025)
 
 ### Dança de cache KV
 
-Verificação`N`个草案代币 在一次前进通中给验证器──这将将验证器的KV缓存 扩展 `N`项── Se algum projeto for rejeitado, você deve colocar o cache de volta para a comprimento do prefixo aceito──
+Verificação$N$个草案代币 在一次前进通中给验证器──这将将验证器的KV缓存 扩展 $N$项── Se algum projeto for rejeitado, você deve colocar o cache de volta para a comprimento do prefixo aceito──
 
 Produção de realização`--speculative-model`、TensorRT-LLM's LookaheadDecoder) através de raspar os buffers KV 处理 this thing──先写入,接受时再 commit──概念上不难,但细节很繁──
 
@@ -185,7 +185,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 **什么时候不要 spec-decode：**
 
 - Apenas gerar 15 个 Token de geração de sequência única.
-- 极具创意 / Amostra de alta temperatura ((α 会下降) ⋅
+- 极具创意 / Amostração de alta temperatura($\alpha$- Não, não.
 - Deploições com restrições de memória (Draft Model 会增加 VRAM)
 
 ## Entrega-o
@@ -195,7 +195,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 ## 练习
 
 1. **Easy。**运行 `code/main.py` Confirmar em 50.000 Token 上, distribuição especulativa de tokens coincide com a distribuição de amostra direta do verificador, e p = 0,05 ⋅
-2. **Medium。**Para o`α = 0.5, 0.7, 0.85`, desenhar velocidade ((( cada vez grande modelo para a frente de Token número)`N`De variação. Encontrar o melhor de cada α.`N`◊(Ponto: cada vez verifique chamada ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞`(1 - α^{N+1}) / (1 - α)`◊)
+2. **Medium。**Para o$\alpha = 0.5, 0.7, 0.85$, desenhar velocidade ((( cada vez grande modelo para a frente de Token número)$N$De variação...$\alpha$O melhor$N$◊(Ponto: cada vez verifique chamada ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞$(1 - \alpha^{N+1}) / (1 - \alpha)$◊)
 3. **Hard。**实现一个小米杜萨:取课14的顶石GPT,添加3个额外LM头,分别预测位置 t+2、t+3、t+4──在小摇钱树上用联合多头损失训练──与通过截断同一个模型得到的香草草比较接受率──
 4. **Hard。**实现 rollback: de um prefixo KV cache de 10 tokens 开始,入 5 个草案代币,模拟在位置 3 rejeição。验证下一轮代时你的缓存 读取结果正确匹配 "prefixo + primeiro 2 projectos aceitos"。
 
@@ -205,7 +205,7 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
 |------|-----------------|-----------------------|
 | Draft model | “便宜的那个” | 一个更小的模型，用于提出候选 Token；通常比 verifier 便宜 10–50×。 |
 | Verifier | “大的那个” | 我们要保留其分布的目标模型；每个 speculative step 运行一次。 |
-| Acceptance rate (α) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
+| Acceptance rate ($\alpha$) | “draft 有多常对” | verifier 接受 draft 的 per-token probability。典型为 0.7–0.9。 |
 | Residual distribution | “rejection fallback” | 归一化后的 `(q - p)_+`；rejection 时从这里采样可保留 verifier 的分布。 |
 | Bonus token | “免费的那个” | 当全部 N 个 draft 被接受时，从 verifier 的 next-step distribution 再采样一个。 |
 | Medusa | “Draft-less speculative” | verifier 上的多个 LM heads 并行预测位置 t+1..t+k。 |

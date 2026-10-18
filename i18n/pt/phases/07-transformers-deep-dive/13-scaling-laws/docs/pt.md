@@ -30,22 +30,24 @@ Hoffmann et al. (2022)  treinar um grupo chamado Chinchilla's小型模型家族,
 
 De Chinchilla, Loss segue:
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N`= 参数(非 Embedding)
-- `D`= Token de treinamento
-- `α ≈ 0.34`- Não .`β ≈ 0.28`(大致对称)
-- `E ≈ 1.69`Não há perda.
-- `A ≈ 406`- Não .`B ≈ 411`- Não.
+- $N$= 参数(非 Embedding)
+- $D$= Token de treinamento
+- $\alpha \approx 0.34$- Não .$\beta \approx 0.28$(大致对称)
+- $E \approx 1.69$Não há perda.
+- $A \approx 406$- Não .$B \approx 411$- Não.
 
-Com a expansão, dois conjuntos se pesam entre si.`N`求导并求解:
+Com a expansão, dois conjuntos se pesam entre si.$C = 6ND$) abaixo para $N$求导并求解:
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 Computação-ótima: cada parametro 20 Tokens
@@ -91,7 +93,7 @@ scaling-laws
 
 ## Construí-lo
 
-- Não .`code/main.py` Nós realizamos o Chinchilla Loss Equation, e em vários cálculos  orçamento abaixo procura resolver o cálculo-ótimo `(N, D)`- Não.
+- Não .`code/main.py` Nós realizamos o Chinchilla Loss Equation, e em vários cálculos  orçamento abaixo procura resolver o cálculo-ótimo $(N, D)$- Não.
 
 ### 步骤 1: Perda de chinchilla
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-Em fixação`C = 6ND`Baixo, vai`L`绘制为 `(N, D)`A linha superior é a linha superior.
+Em fixação$C = 6ND$Baixo, vai$L$绘制为 $(N, D)$A linha superior é a linha superior.
 
 ### 步骤 2: 计算最优边界
 
- para `1e17`Até`1e25`FLOPs de computação  orçamento, encontrar em约束 `6ND = C`下 Minimizar perdas de `(N, D)` Processo de verificação`D/N ≈ 20`- Não.
+ para `1e17`Até`1e25`FLOPs de computação  orçamento, encontrar em约束 $6ND = C$下 Minimizar perdas de $(N, D)$ Processo de verificação$D/N \approx 20$- Não.
 
 ### 步骤 3: custos de formação excessiva
 
@@ -134,9 +136,9 @@ Não é muito possível treinar a fronteira, mas as leis de escalação podem di
 
 ## 练习
 
-1. **Easy.**运行 `code/main.py`△ impressão computacional  orçamento `1e20`- Não.`1e22`- Não.`1e24`Baixo Chinchilla-óptimo `(N, D)` Comparar com modelos reais
-2. **Medium.**实现 Hoffmann Loss-as-function-of-computação 曲线──为 computação-ótimais fronteira 绘制 Loss vs `log10(C)`Identificar esta lei                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `>10^28`FLOPs 才能让交叉热再降低 0.1──
-3. **Hard.**Em um mesmo conjunto de dados, treine 5 modelos menores (parâmetros de 100K a 10M), para se adequar à sua própria Lei de Escalação.`α`和 `E`Como se encaixa o seu índice com os resultados publicados?
+1. **Easy.**运行 `code/main.py`△ impressão computacional  orçamento `1e20`- Não.`1e22`- Não.`1e24`Baixo Chinchilla-óptimo $(N, D)$ Comparar com modelos reais
+2. **Medium.**实现 Hoffmann Loss-as-function-of-computação 曲线──为 computação-ótimais fronteira 绘制 Loss vs `log10(C)`Identificar esta lei                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $>10^{28}$FLOPs 才能让交叉热再降低 0.1──
+3. **Hard.**Em um mesmo conjunto de dados, treine 5 modelos menores (parâmetros de 100K a 10M), para se adequar à sua própria Lei de Escalação.$\alpha$和 $E$Como se encaixa o seu índice com os resultados publicados?
 
 ## 关键术语
 
@@ -147,7 +149,7 @@ Não é muito possível treinar a fronteira, mas as leis de escalação podem di
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 

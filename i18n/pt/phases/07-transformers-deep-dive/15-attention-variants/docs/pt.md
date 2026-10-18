@@ -9,11 +9,11 @@
 
 ## 问题
 
-Atenção total no custo de memória na duração do processo é `O(N²)`, calcular o custo também `O(N²)`Para um Llama de 128K, o que significa que cada camada tem 160 bilhões de notas de atenção, multiplicadas por 80 notas.`O(N²)`Ativação dentro da memória, mas não vai mudar o cálculo custo de cada token ainda irá participar de cada outro token.
+Atenção total no custo de memória na duração do processo é $O(N^2)$, calcular o custo também $O(N^2)$Para um Llama de 128K, o que significa que cada camada tem 160 bilhões de notas de atenção, multiplicadas por 80 notas.$O(N^2)$Ativação dentro da memória, mas não vai mudar o cálculo custo de cada token ainda irá participar de cada outro token.
 
 Três tipos de mudanças na Matriz de Atenção
 
-1. **Sliding window attention (SWA).**Cada token só atende a um token próximo dentro da janela fixa, em vez de um prefixo completo.`O(N · W)`, entre os `W`É uma grande janela. Gemma 2/3
+1. **Sliding window attention (SWA).**Cada token só atende a um token próximo dentro da janela fixa, em vez de um prefixo completo.$O(N \cdot W)$, entre os $W$É uma grande janela. Gemma 2/3
 2. **Sparse / block attention.**只有选定的 `(i, j)`Para o evento foram divididos; o restante da posição foi forçado para o zero peso.
 3. **Differential attention.**Utilize independente Q/K projeção 计算两张 Atenção mapa,再相减―― elimina将把权重泄漏到前几个代币的 Attention sink──Microsoft's DIFF Transformer──2024)──
 
@@ -23,7 +23,7 @@ Estes podem coexistir. Um modelo de fronteira de 2026 往往会混合使用它�
 
 ### Atenção à janela deslizante (SWA)
 
-- O que é ?`i`De cada consulta só atender até `[i - W, i]`(SWA causal) ou `[i - W/2, i + W/2]`(bidirecional) 间位置──窗口外的 Token 会在分数矩阵 中得到 `-inf`- Não.
+- O que é ?$i$De cada consulta só atender até $[i - W, i]$(SWA causal) ou $[i - W/2, i + W/2]$(bidirecional) 间位置──窗口外的 Token 会在分数矩阵 中得到 $-\infty$- Não.
 
 ```
 full causal:           sliding window (W=4):
@@ -39,17 +39,17 @@ positions 0-7          positions 0-7, W=4
 7 | x x x x x x x x  7 |          x x x x
 ```
 
-Para o`N = 8192`和 `W = 1024`O resultado da Matrix foi reduzido 8x:
+Para o$N = 8192$和 $W = 1024$O resultado da Matrix foi reduzido 8x:
 
-**KV cache 会随 SWA 缩小。**Cada camada só precisa ser mantida por perto.`W`个 Token of K 和 V── para uma configuração similar a Gemma-3(1024 janela,128K contexto),KV cache 会降低 128×──
+**KV cache 会随 SWA 缩小。**Cada camada só precisa ser mantida por perto.$W$个 Token of K 和 V── para uma configuração similar a Gemma-3(1024 janela,128K contexto),KV cache 会降低 128×──
 
-**质量成本。**純 SWA Transformer 難以處理長距離检索──修复方法: 在 SWA 層間交错 完全注意層──Gemma 3 使用 5:1 SWA:global──Mistral 7B 使用因果性-SWA stack,信息通过重叠窗口向前流动每一层都将有效感受野扩展`W`, passando`L`O modelo pode vir para trás.`L × W`- O que é isso?
+**质量成本。**純 SWA Transformer 難以處理長距離检索──修复方法: 在 SWA 層間交错 完全注意層──Gemma 3 使用 5:1 SWA:global──Mistral 7B 使用因果性-SWA stack,信息通过重叠窗口向前流动每一层都将有效感受野扩展$W$, passando`L`O modelo pode vir para trás.`L × W`- O que é isso?
 
 ### Atenção de pouca / bloqueio
 
 预先选择一个 `N × N`Padrão de esparcidade:
 
-- **Local + strided (OpenAI sparse transformer).**Atender até o último .`W`- O sinal, mais uma vez.`stride`Posição do Token.`O(N · sqrt(N))`计算同时捕捉局部和长距离信息──
+- **Local + strided (OpenAI sparse transformer).**Atender até o último .$W$- O sinal, mais uma vez.`stride`Posição do Token.$O(N \cdot \sqrt{N})$计算同时捕捉局部和长距离信息──
 - **Longformer / BigBird.**Janela local + menor quantidade de tokens globais (por exemplo)`[CLS]`), estes Token attend 到所有 Token, também被所有 Token attend + links random-sparse──在匹配质量下经验上获得2× context──
 - **Native Sparse Attention (DeepSeek, 2025).**Aprender o que é que é?`(Q, K)`Bloco importante; em nível do kernel 跳过零 block──兼容 FlashAttention──
 
@@ -61,13 +61,15 @@ Sparse Attention é uma engenharia de kernel 故事──数学很简单(mask sc
 
 Atenção Diferencial 通过计算**两张**O mapa da atenção não foi reduzido para resolver este problema:
 
-```
-A1 = softmax(Q1 K1^T / √d)
-A2 = softmax(Q2 K2^T / √d)
-DiffAttn = (A1 - λ · A2) V
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d}) \\
+\text{DiffAttn} &= (A_1 - \lambda \cdot A_2) V
+\end{aligned}
 ```
 
-Entre eles `λ`É uma escala que se consegue aprender, normalmente 0,50,8)。A1 捕捉真实内容权重;A2 捕捉 sink。相减会抵消 sink,把权重重新分配给相关代币。
+Entre eles $\lambda$É uma escala que se consegue aprender, normalmente 0,50,8)。A1 捕捉真实内容权重;A2 捕捉 sink。相减会抵消 sink,把权重重新分配给相关代币。
 
 報告結果(Microsoft 2024):perplexidade 降低 510%,在相同训练长度下有效文text 延长 1.52×,agulha-em-haystack 检索更敏。
 
@@ -75,12 +77,12 @@ Entre eles `λ`É uma escala que se consegue aprender, normalmente 0,50,8)。A1 
 
 | Variant | Compute | KV cache | Quality vs full | Production use |
 |---------|---------|----------|-----------------|----------------|
-| Full attention | O(N²) | O(N) per layer | baseline | 每个模型的默认层 |
-| SWA (window 1024) | O(N·W) | O(W) per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
-| Local + strided sparse | O(N·√N) | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
-| BigBird (local + global + random) | O(N) approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
-| Native Sparse (DeepSeek-V3.2) | O(N · active fraction) | O(N) | within 0.05 ppl | DeepSeek-V3.2, 2025 |
-| Differential | O(2·N²) | O(2N) | -5 to -10% ppl | DIFF Transformer, early 2026 models |
+| Full attention | $O(N^2)$ | $O(N)$ per layer | baseline | 每个模型的默认层 |
+| SWA (window 1024) | $O(N \cdot W)$ | $O(W)$ per layer | -0.1 ppl，搭配 global layers 效果好 | Gemma 2/3, Phi-3-Long |
+| Local + strided sparse | $O(N \cdot \sqrt{N})$ | mixed | 类似 SWA | OpenAI sparse transformer, Longformer |
+| BigBird (local + global + random) | $O(N)$ approx | mixed | 在 2× context 下匹配 full | early long-context BERT |
+| Native Sparse (DeepSeek-V3.2) | $O(N \cdot \text{active fraction})$ | $O(N)$ | within 0.05 ppl | DeepSeek-V3.2, 2025 |
+| Differential | $O(2 \cdot N^2)$ | $O(2N)$ | -5 to -10% ppl | DIFF Transformer, early 2026 models |
 
 
 ```figure
@@ -143,7 +145,7 @@ def diff_attention(Q1, K1, Q2, K2, V, lam):
 
 ### 步骤 5: tamanhos do cache KV
 
-Em`N = 131072`Imprimir cada camada de cache de cada variação. SWA 和稀稀变体会降低 10100×── Diferencial 会翻倍──
+Em$N = 131072$Imprimir cada camada de cache de cada variação. SWA 和稀稀变体会降低 10100×── Diferencial 会翻倍──
 
 ## Use-o
 
@@ -186,17 +188,17 @@ Este será composto em auto-definir kernel Triton. Para padrão comum, a velocid
 1. **Easy.**运行 `code/main.py`❖ O teste `window=4`O SWA 会把每一行中最近4个代币 之外的所有内容置零――验证 `window=n`会 bit-identicamente 复现 plena atenção causal。
 2. **Medium.**Na lição 07 , a pedra angular é a realização .`window=1024`O que é que é o SWA causal?
 3. **Hard.**Em um modelo de capstone, é possível realizar uma mistura de camadas de 5:1 de estilo Gemma-3 (5,1 camadas SWA, 1 camada global) ⋅ em condições de correspondência, em comparação com a perda de memória e qualidade de geração de base de SWA e de base global pura.
-4. **Hard.**Realizar cada cabeça tem que aprender`λ`Em uma tarefa de recuperação sintética (uma agulha, 2.000 distractores) em um ensaio, a precisão de recuperação em relação à linha de base de atenção única é medida em caso de correspondência de parâmetros.
+4. **Hard.**Realizar cada cabeça tem que aprender$\lambda$Em uma tarefa de recuperação sintética (uma agulha, 2.000 distractores) em um ensaio, a precisão de recuperação em relação à linha de base de atenção única é medida em caso de correspondência de parâmetros.
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 `W` 个 Token；KV cache 缩小到 `O(W)`。 |
-| Effective receptive field | "模型能向后看多远" | 在一个窗口为 `W` 的 `L` 层 SWA stack 中，最多 `L × W` 个 Token。 |
+| Sliding window attention (SWA) | "Local attention" | 每个 query attend 到最近 $W$ 个 Token；KV cache 缩小到 $O(W)$。 |
+| Effective receptive field | "模型能向后看多远" | 在一个窗口为 $W$ 的 $L$ 层 SWA stack 中，最多 $L \times W$ 个 Token。 |
 | Longformer / BigBird | "Local + global + random" | Sparse pattern，包含少量始终 attend 的 global tokens；早期 long-context 方法。 |
 | Native Sparse Attention | "DeepSeek's kernel trick" | 学习 block-level sparsity；在保持质量的同时，在 kernel 层面跳过零 block。 |
-| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 `λ` 倍第二张 Attention map，以抵消 attention sinks。 |
+| Differential attention | "Two maps, one subtracts" | DIFF Transformer：从第一张 Attention map 中减去学习得到的 $\lambda$ 倍第二张 Attention map，以抵消 attention sinks。 |
 | Attention sink | "权重泄漏到 token 0" | Softmax normalization 强制行求和为 1；信息量不足的 query 会把权重倾倒到位置 0。 |
 | FlexAttention | "Mask-as-Python" | PyTorch 2.5+ API，可将任意 mask function 编译成 FlashAttention 形状的 kernel。 |
 | Layer type mix | "5:1 SWA-to-global" | 在 stack 中交错 sparse 和 full Attention 层，以更低内存保持质量。 |

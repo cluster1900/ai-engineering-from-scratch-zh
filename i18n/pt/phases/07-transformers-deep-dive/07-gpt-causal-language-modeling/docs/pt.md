@@ -15,7 +15,7 @@ Para realizar o treinamento de ponta a ponta em toda a sequência, você precisa
 
 Mas a máscara causal é o que fazemos.`-inf`∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆
 
-GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   são transformadores causais apenas para decodificadores, o ciclo central é o mesmo.
+GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2025), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   são transformadores causais apenas para decodificadores, o ciclo central é o mesmo.
 
 ## 概念
 
@@ -23,16 +23,53 @@ GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Ll
 
 ### Mascarete
 
-给定长度为 `N`Sequência, construção de um`N × N`Matriz:
+给定长度为 $N$Sequência, construção de um$N \times N$Matriz:
 
-```
-M[i, j] = 0       if j <= i
-M[i, j] = -inf    if j > i
+```math
+M_{ij} = \begin{cases} 0 & \text{若 } j \le i \\ -\infty & \text{若 } j > i \end{cases}
 ```
 
-Em suavidade, antes de`M`Adição a pontuação de atenção original`exp(-inf) = 0`, por isso, o peso da contribuição da posição da máscara é de zero.
+Em suavidade, antes de`M`Adição a pontuação de atenção original$\exp(-\infty) = 0$, por isso, o peso da contribuição da posição da máscara é de zero.
 
 实现成本: uma vez `torch.tril()`调用――计算时间:纳秒级―― para o impacto de todo o campo:一切――
+
+### O que é que vem?
+
+Mascara é normalmente falado como um complemento adicionado à atenção. Ao contrário, não é mais misterioso: a atenção é a terceira melhoria da média anterior, enquanto o triângulo simplesmente transforma o ciclo da média em uma matriz.
+
+**阶段 1：前缀平均。**Última ordem de ordem:$i$变为位置 $0 \ldots i$O valor médio é o ciclo de escrita.`out[i] = X[:i+1].mean(0)`O mesmo cálculo pode ser feito com uma matriz multiplicada.
+
+```python
+import numpy as np
+
+A = np.tril(np.ones((n, n)))
+A = A / A.sum(axis=1, keepdims=True)
+out = A @ X
+```
+
+$A$- Não .$i$- Não .$[1/(i+1), \ldots, 1/(i+1), 0, \ldots, 0]$◊ O zero é a causalidade da linha de frente.
+
+**阶段 2：学习权重。**均平均把过去每 token都视为同等重要──用学到的分数矩阵 `S`O Softmax não produz zero precisos, o que prejudica a causalidade, a menos que o fraccionamento da posição futura seja definido.`-inf`Porque ...`exp(-inf) = 0`- Não .
+
+```python
+def softmax(x, axis):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
+
+S = S + np.triu(np.full((n, n), -np.inf), k=1)
+A = softmax(S, axis=1)
+out = A @ X
+```
+
+Assim como um triângulo, assim como uma linha, assim como apenas uma matmul.`-inf`Mascara não é um novo mecanismo, apenas transformar o elemento zero da fase 1 em softmax de entrada.
+
+**阶段 3：依赖内容的权重。**Em fase 2,`S`Em treinamento, fixar: independentemente do conteúdo dos tokens, posição 7 para posição 3 tem sempre o mesmo peso.`S = Q @ K.T / sqrt(d_k)`Mas mas mas mas mas mas mas mas mas ainda é o mesmo processo
+
+Três fases, uma constante: a linha do baixo três esquemas de rotas multiplicadas por sequências.
+
+```figure
+mask-derivation
+```
 
 ### Não fizemos treinamento, não fizemos recomendações.
 
@@ -82,10 +119,6 @@ causal-mask
 ```
 
 
-```figure
-mask-derivation
-```
-
 ## Construí-lo
 
 ### 步骤 1: máscara causal
@@ -134,7 +167,7 @@ print(tok.decode(out[0]))
 
 No fundo,`generate()`运行前传,取出最后位置 logits,sample 下一个代币,追加它,然后重复──每个生产级 LLM inference stack(vLLM, TensorRT-LLM, llama.cpp, Ollama, MLX)都用重度优化实现同一个循环  batched prefill、continuous batching、KV cache paging、speculative decoding──
 
-**GPT vs BERT，各用一句话：**GPT 预测 `P(x_t | x_{<t})`BERT 预测 `P(x_masked | x_unmasked)`◊ perda decide se o modelo pode ser produzido
+**GPT vs BERT，各用一句话：**GPT 预测 $P(x_t \mid x_{<t})$BERT 预测 $P(x_{\text{masked}} \mid x_{\text{unmasked}})$◊ perda decide se o modelo pode ser produzido
 
 ## Entrega-o
 
@@ -154,8 +187,8 @@ No fundo,`generate()`运行前传,取出最后位置 logits,sample 下一个代�
 | Next-token prediction | “loss” | 模型在每个位置上的分布与真实下一个 token 之间的 cross-entropy。 |
 | Autoregressive | “一次生成一个” | 将输出反馈为输入；并行性只存在于训练阶段，不存在于生成阶段。 |
 | Logits | “pre-softmax scores” | softmax 之前 LM head 的原始输出；sampling 就发生在这些值上。 |
-| Temperature | “创造力旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = uniform。 |
-| Top-p | “Nucleus sampling” | 将分布截断为累计和 ≥p 的最小集合；从剩余部分 sample。 |
+| Temperature | “创造力旋钮” | 将 logits 除以 $T$；$T \to 0$ = greedy，$T \to \infty$ = uniform。 |
+| Top-p | “Nucleus sampling” | 将分布截断为累计和 $\ge p$ 的最小集合；从剩余部分 sample。 |
 | Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 tokens；会根据分布尖锐程度调整 cutoff。 |
 | Speculative decoding | “draft + verify” | 便宜模型提出 N 个 tokens；大模型并行验证。 |
 | Teacher forcing | “训练技巧” | 训练时输入真实的前一个 token，而不是模型的预测。每个 seq2seq LM 的标准做法。 |

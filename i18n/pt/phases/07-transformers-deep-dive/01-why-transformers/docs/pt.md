@@ -25,13 +25,13 @@ Até 2026, este resultado já dominou todas as modalidades.
 
 ![RNN sequential compute vs Transformer parallel attention](../assets/rnn-vs-transformer.svg)
 
-**Recurrence 是瓶颈。**RNN 计算 `h_t = f(h_{t-1}, x_t)`Cada passo depende do primeiro.`h_4`之前计算 `h_5`❖ Com mais de 10.000 GPUs modernos em linha central, isso desperdiça 99% da sua área em longas séries.
+**Recurrence 是瓶颈。**RNN 计算 $h_t = f(h_{t-1}, x_t)$Cada passo depende do primeiro.$h_4$之前计算 $h_5$❖ Com mais de 10.000 GPUs modernos em linha central, isso desperdiça 99% da sua área em longas séries.
 
-**Attention 是广播。**A auto-atenção vai ser para cada um .`(i, j)`Sim , assim .`output_i = sum_j(a_ij * v_j)`Toda a matriz de atenção N×N 会在一次批量中填满──没有任何步骤依赖另一步──GPUs 喜欢这一点──
+**Attention 是广播。**A auto-atenção vai ser para cada um .$(i, j)$Sim , assim .`output_i = sum_j(a_ij * v_j)`Toda a matriz de atenção N×N 会在一次批量中填满──没有任何步骤依赖另一步──GPUs 喜欢这一点──
 
-**加速不是常数。**É isso.`O(N)`profundidade serial 和 `O(1)`Na prática, em N=512 e no mesmo hardware, os transformadores de cada época têm uma velocidade de treinamento de 510×; com o aumento da duração da série, a diferença continuará a aumentar até atingir a atenção.`O(N²)`Parede de memória ((Flash Attention                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+**加速不是常数。**É isso.$O(N)$profundidade serial 和 $O(1)$Na prática, em N=512 e no mesmo hardware, os transformadores de cada época têm uma velocidade de treinamento de 510×; com o aumento da duração da série, a diferença continuará a aumentar até atingir a atenção.$O(N^2)$Parede de memória ((Flash Attention                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
-**transformers 的代价。**Memória de atenção 按 `O(N²)`扩展──2K contexto 没问题──128K contexto 则需要滑窗、RoPE extrapolation、Flash Attention tileing,或线性注意变量──Recurrence 在时间和内存上都是`O(N)`Os transformadores usam o tempo para mudar de memória, e depois ganham o tempo.
+**transformers 的代价。**Memória de atenção 按 $O(N^2)$扩展──2K contexto 没问题──128K contexto 则需要滑窗、RoPE extrapolation、Flash Attention tileing,或线性注意变量──Recurrence 在时间和内存上都是$O(N)$Os transformadores usam o tempo para mudar de memória, e depois ganham o tempo.
 
 **Inductive bias 的转变。**RNNs 假设地方 和近況──Transformers não fazem假设每一对位置都是注意的候选人──这就是为什么变压器需要更多数据才能训练得好,但一旦拥有足够的数据就能扩展得更远──Chinchilla(2022) formalizou este ponto:
 
@@ -59,7 +59,7 @@ def attention_style(xs):
     return sum(xs) / len(xs)  # every x is independent
 ```
 
-Nós temos uma duração de até 100.000 sequências de diferentes tempos. A versão RNN é O (N), e usa um único pipeline de CPU. Mesmo em Python puro, a redução de estilo de atenção na duração ≥ 1.000 também vai ganhar, porque Python.`sum()`É com C 实现, e não se produzem explicações em cada passo.
+Nós temos uma duração máxima de 100.000 sequências separadas.$O(N)$, e usar um único pipeline de CPU. Mesmo em puro Python, a redução de estilo de atenção em comprimento ≥ 1.000  também vai ganhar, porque Python `sum()`É com C 实现, e não se produzem explicações em cada passo.
 
 ### 步骤 2: 计算理论操作
 
@@ -67,7 +67,7 @@ Os dois algoritmos fazem N 次加法。区别在于 *dependency depth*:在下一
 
 ### 步骤 3: Expansão da experiência na longa sequência
 
-Nós imprimimos uma tabela de cronometragem, para que a diferença se torne visível. Em 2026 Mac  notebook, menos de 1.000 elementos sequência muito rápido, difícil de medir. 100 mil sequências mostram uma clara linear digitalização.
+Vamos imprimir uma tabela de cronometragem, vamos.$O(N)$ Diferença se torna visível. Em 2026 Mac  notebook, menos de 1.000 elementos sequência muito rápido, difícil de medir. 100 mil sequências mostram uma clara linear digitalização. Se você expandir para um 16,384-Token Transformer, e comparado com um modelo de preço LSTM de 12 camadas, você já vai entender por que treinamento de relógio de parede em 2016 é um fator de obstáculo.
 
 ## Use-o
 
@@ -80,7 +80,7 @@ Nós imprimimos uma tabela de cronometragem, para que a diferença se torne vis�
 | 没有 matmul accelerator 的 edge device | Depthwise-separable RNN 在 FLOPs/watt 上仍然胜出 |
 | 其他任何情况（训练、batched inference、最高 128K 的 context） | Transformer |
 
-Os modelos de espaço-estado (SSM) como Mamba, são, em essência, RNNs estruturados e numerados, o que os torna com duas vantagens:`O(N)`A memória de digitalização, bem como a seletiva de digitalização ⋅ são realizadas em treinamento em longo contexto ⋅ são recuperadas em 90% de qualidade do transformador ⋅ até 2026, a maioria dos laboratórios de fronteira estão treinando modelos híbridos de transformadores SSM + ⋅ Jamba, Samba) ⋅ recorrência não está morta, é um componente ⋅
+Os modelos de espaço-estado (SSM) como Mamba, são, em essência, RNNs estruturados e numerados, o que os torna com duas vantagens:$O(N)$A memória de digitalização, bem como a seletiva de digitalização ⋅ são realizadas em treinamento em longo contexto ⋅ são recuperadas em 90% de qualidade do transformador ⋅ até 2026, a maioria dos laboratórios de fronteira estão treinando modelos híbridos de transformadores SSM + ⋅ Jamba, Samba) ⋅ recorrência não está morta, é um componente ⋅
 
 ## Entrega-o
 
@@ -98,11 +98,11 @@ Os modelos de espaço-estado (SSM) como Mamba, são, em essência, RNNs estrutur
 |------|-----------------|-----------------------|
 | Recurrence | “RNNs 是顺序的” | step `t` 依赖 step `t-1` 的计算方式，迫使执行沿时间轴串行进行。 |
 | Serial depth | “图有多深” | 依赖操作的最长链；即使在无限硬件上也会限制 wall-clock。 |
-| Attention | “让 Tokens 彼此查看” | Weighted sum `sum_j a_ij v_j`，其中 `a_ij` 来自位置 i 和 j 之间的相似度分数。 |
+| Attention | “让 Tokens 彼此查看” | Weighted sum $\sum_j a_{ij} v_j$，其中 $a_{ij}$ 来自位置 $i$ 和 $j$ 之间的相似度分数。 |
 | Context window | “模型能看到多少” | 一个 Attention layer 可作为输入的位置数量；quadratic memory cost 在这里扩展。 |
 | Inductive bias | “架构内置的假设” | 关于数据形态的先验；CNNs 假设 translation invariance，RNNs 假设 recency。 |
 | State-space model | “背后有代数的 RNN” | 为通过结构化 state-space matrices 实现并行训练而参数化的 recurrence。 |
-| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 `O(N²)`；Flash Attention 隐藏的是常数，而不是扩展规律。 |
+| Quadratic bottleneck | “为什么 context 这么昂贵” | Attention memory = 序列长度上的 $O(N^2)$；Flash Attention 隐藏的是常数，而不是扩展规律。 |
 
 ## 延伸阅读
 

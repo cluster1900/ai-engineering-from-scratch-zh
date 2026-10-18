@@ -9,13 +9,13 @@
 
 ## 问题
 
-Um simples decodificador de auto-regressão`N`个 tokens 需要做 `O(N²)`工作: cada passo será recalculado atenção em uma completa ante. Em relação a uma resposta de 4K-token, isso significa 16M vezes atenção 运算, a maioria delas são redundantes.
+Um simples decodificador de auto-regressão$N$个 tokens 需要做 $O(N^2)$工作: cada passo será recalculado atenção em uma completa ante. Em relação a uma resposta de 4K-token, isso significa 16M vezes atenção 运算, a maioria delas são redundantes.
 
 Além disso, a atenção pessoalmente também irá transportar uma grande quantidade de dados. Atenção padrão irá materializar uma matriz de pontuação N×N, N×d softmax output, N×d final output, para o número de vezes que o HBM pode ler. Para N≥2K, a atenção será primeiro limitada à memória, em vez de FLOP.
 
 Dao et al.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
-1. **KV cache。**存储每个前代币的K和V向量──每个新代币的注意 都是缓存键的计算的查询──推理从每个代步的推理──`O(N²)`- Desce para aqui .`O(N)`- Não.
+1. **KV cache。**存储每个前代币的K和V向量──每个新代币的注意 都是缓存键的计算的查询──推理从每个代步的推理──$O(N^2)$- Desce para aqui .$O(N)$- Não.
 2. **Flash Attention。**Para atenção  calcular fazer tijolo, fazer a matriz N×N completa  nunca entrará em HBM── todos os softmax + matmul são completados em SRAM── em A100 para cima de parede de relógio de aceleração é 24×; em apoio FP8 para H100 para cima de 510×──
 
 Até 2026, ambos já são de uso geral. Cada nível de produção de sugestões.
@@ -78,7 +78,7 @@ for each block of Q (tile size ~128 × 128):
     write O_tile to HBM
 ```
 
-Cada telha só precisa de uma vez para o HBM.`O(N²)`- Desce para aqui .`O(N)`❖ Passagem para trás 会从前进pass 中重新计算部分值, em vez de todos eles sobreviver para baixo 这是另内存收益
+Cada telha só precisa de uma vez para o HBM.$O(N^2)$- Desce para aqui .$O(N)$❖ Passagem para trás 会从前进pass 中重新计算部分值, em vez de todos eles sobreviver para baixo 这是另内存收益
 
 **数值技巧。**Correndo softmax em azulejos  entre manutenção `(max, sum)`, portanto, a redução final é precisa. Não é quase o mesmo que a saída calculada com o bit de atenção padrão.
 
@@ -127,8 +127,8 @@ flash-attention-memory
 
 - Não .`code/main.py`❖ Nós realizamos:
 
-1. Um simples.`O(N²)`Decodificador incremental.
-2. Um .`O(N)`Descóderas em cache KV:
+1. Um simples.$O(N^2)$Decodificador incremental.
+2. Um .$O(N)$Descóderas em cache KV:
 3. Uma simulação do Flash Attention running-max algoritmo de softmax de azulejos.
 
 ### 步骤 1: cache KV
@@ -175,7 +175,7 @@ def tiled_softmax_dot(q, K, V, tile=4):
 
 ### 步 3: Na geração de 100 tokens 上比较天真 vs. em cache decodificação
 
-统计注意 操作数――Naive:`O(N²)`= 5050──Cachado:`O(N)`= 100...
+统计注意 操作数――Naive:$O(N^2)$= 5050──Cachado:$O(N)$= 100...
 
 ## Use-o
 
