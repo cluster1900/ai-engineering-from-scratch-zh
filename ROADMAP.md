@@ -314,7 +314,7 @@
 | 24 | [Multimodal RAG 与 Cross-Modal Retrieval](phases/12-multimodal-ai/24-multimodal-rag-cross-modal) | ✅ | ~180 min |
 | 25 | [Multimodal Agents 与 Computer-Use (Capstone)](phases/12-multimodal-ai/25-multimodal-agents-computer-use) | ✅ | ~240 min |
 
-## Phase 13: 工具与协议 — ✅（约 24.5 小时）
+## Phase 13: 工具与协议 — ✅（约 45 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -635,6 +635,6 @@
 
 ---
 
-**总计：20 个 Phase，523 节课程 | 523 已完成 | 预计约 1,081 小时**
+**总计：20 个 Phase，532 节课程 | 532 已完成 | 预计约 1,102 小时**
 
 想帮忙？选择任意 ⬚ 课程并提交 PR。参见 [CONTRIBUTING.md](CONTRIBUTING.md)。
