@@ -29,7 +29,7 @@ Mem0 (arXiv:2504.19413, tháng 4 năm 2025)`add(text, user_id, metadata)`时:
 
 1. Từ văn bản中提取候选事实 (một bước dẫn dắt của LLM)
 2. 将每个事实写入 Vector store (trình tích hợp) được sử dụng để tìm kiếm ngữ义.
-3. 将每个事实写入 KV store,以 (user_id, fact_type, entity) 为关键,用于 O(1) 查找。
+3. Để viết mỗi sự thật vào cửa hàng KV,以 (user_id, fact_type, entity) như một chìa khóa, được sử dụng$O(1)$Tìm kiếm.
 4. Để mỗi sự kiện được đánh dấu như cạnh 写入 Graph store (Mem0g), dùng để truy vấn liên quan.
 
 Trong `search(query, user_id)`时:

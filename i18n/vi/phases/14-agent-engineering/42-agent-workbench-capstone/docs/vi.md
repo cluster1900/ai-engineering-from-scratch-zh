@@ -13,6 +13,7 @@
 - Fixed schema、script 和 template,让新 repo 获得一个已知可用的基线──
 - Thêm một kịch bản cài đặt, sử dụng cách như vậy để đặt gói này.
 - Quyết định những gì trong gói, những gì ở bên ngoài, và cho mỗi người lấy biện hộ.
+- 展示 một lần 协助完成仓库变更,并提供审核员能够复现的证据──
 
 ## 问题
 
@@ -133,6 +134,78 @@ Bác là công thức. Mỗi lần cài đặt là một dịch vụ.
 3. 添加一个 `bin/uninstall.sh`, an toàn chuyển gói, và lưu trữ trong hồ sơ nhà nước có lịch sử bất thường khi từ chối thực hiện.
 4. 添加一个 `lint_pack.py`, đóng gói       `VERSION`时失败──把它 vào gói 自身 repo 的 CI──
 5. 写 một cuốn sách chạy từ bàn làm việc làm tay  chuyển sang gói này  Những hoạt động nào có thể giảm thiểu thời gian ngừng hoạt động?
+
+## 职业实践: chứng minh một lần kho biến đổi
+
+打包演示证明组装程序能够运行并生成文件――它不能证明你的代理能完成新任务――检查生成能够验证该任务,或已部署的系统能正常工作――请区分这些结论――
+
+Trong kho chứa mà bạn sở hữu hoặc được phép sửa đổi, chọn một nhiệm vụ nhỏ thực sự. Sử dụng một đại lý lập trình mà bạn đã có thể truy cập.
+
+Ngoài việc thử nghiệm, bạn sẽ có thể đặt một thời gian làm việc khác.`learning-artifacts/`Hiện tại trong thư viện: lưu trữ các mẫu và gói đã có trong kho, như là tài liệu tham khảo:
+
+### 1. 明确任务并选择自主程度
+
+Sử dụng khung nhiệm vụ của Chương 43 và kế hoạch chứng minh của Chương 44.
+
+ chọn một mô hình làm việc: hướng dẫn từng bước, thực hiện các điểm kiểm tra, hoặc thực hiện tự do rõ ràng về biên giới.
+
+设定实际耗时预算; nếu đại lý 提供相关功能,还需设定代币或费用上限.
+
+### 2.  chuẩn bị cho môi trường tối thiểu và hữu ích
+
+Tìm kiếm các ứng dụng liên quan, sử dụng, kiểm tra và chỉ thị địa phương. ghi lại mỗi nguồn vì sao nên vào trên và dưới, cũng như những bằng chứng hiện tại nào có thể xoay chuyển các ghi chép quá khứ.
+
+Đối với mỗi loại mở rộng liên quan xác định lựa chọn: kỹ năng (skill) cung cấp quy trình có thể sử dụng lặp lại; MCP (instrument) cung cấp khả năng truy cập; 子 (hook) thực hiện kiểm tra xác định;插件 (plugin) 打包 (plugin) cung cấp khả năng; chỉ giữ cho việc thực sự cần mở rộng,并 chỉ cấp quyền tối thiểu cần thiết để làm cho công việc bình thường của nó.
+
+ ghi lại một dự án mới mà bạn đã từ chối sẽ mang lại chi phí bảo trì hoặc lưu trữ trên . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+
+### 3. 记录基线并实现
+
+编辑 trước, chạy các kiểm tra hiện tại liên quan nhất, hiển thị trạng thái hiện tại của hành vi cần thiết. 保留命令、版本、结果和证据位置.
+
+让代理在任务约定内实现变更. 保留干预日志,说明 nguyên nhân của mỗi sửa chữa, quyền thay đổi hoặc kế hoạch điều chỉnh. 委派是可选的; nếu thực sự hữu ích, trước khi bổ sung một người thực thi khác, trước tiên áp dụng Điều 45 责任归属与集成约定.
+
+### 4. 质疑证据
+
+选择能够观察变更界面的验证方式―― đối với UI, tái cấu trúc, và kiểm tra thực tế quy trình cung cấp dịch vụ dưới chiều rộng quan điểm liên quan―― đối với API, yêu cầu kiểm tra và phản ứng sau chuỗi―― đối với CLI, lệnh sau khi xây dựng, kiểm tra xuất mã và xuất―― chọn nhiệm vụ cần kiểm tra, và giải thích giới hạn của chúng――
+
+Theo nhiệm vụ, viết kết quả dự kiến độc lập, không nên đưa ra phản đề xuất của người thực hiện. Trong bản sao một lần, đưa ra một kết quả sai lầm cụ thể, ví dụ: chấp nhận không hiệu quả hoặc bỏ lỡ các đoạn đáp ứng cần thiết.
+
+Nếu kiểm tra vẫn thông qua, trước tiên tăng cường cách xác nhận hoặc quan sát, tái tin tưởng nó, phục hồi đúng thực hiện,并 tái vận hành cho đến khi thông qua, giữ lại hai lần thực hiện chứng cứ, không kể cả kiểm tra đã trở lại thiếu sót,
+
+Đối với mục tiêu ban đầu và cho phép thay đổi, đánh giá khác biệt cuối cùng, bao gồm cả thay đổi của thử nghiệm.
+
+### 5. 演练运行与恢复
+
+Các giao hàng được chuyển giao sau khi thay đổi trong môi trường địa phương hoặc môi trường phát hành trước.`local``staging`Hoặc`live`,并注明确版本或交付物标识──本地演练只支持本地结论;本地演练不要求部署到生产环境──
+
+ chọn một tín hiệu thất bại liên quan đến nhiệm vụ, thiết lập giá trị, cửa sổ quan sát và trách nhiệm.
+
+演练回滚到已知可用交付物件,并检查是否恢复前行为. 适用时,应考虑持久化数据:只替换二进制文件不一定能撤销数据变更.
+
+### 6. 改进 下一次执行并交接
+
+Kết quả sẽ được so sánh với các cơ sở, bao gồm cả thời gian thực tế, dữ liệu lượng có thể lấy và sự can thiệp nhân tạo. Một nhiệm vụ chỉ có thể giải thích những gì đã xảy ra trong nhiệm vụ, không thể chứng minh một đại lý  tổng thể nhanh hơn hoặc đáng tin cậy hơn.
+
+Theo bài học 46 , sẽ chuyển đổi một lần sửa chữa thực tế xảy ra thành thử nghiệm, giới hạn quyền hạn nhỏ hơn, quy trình tự động hóa hoặc ví dụ rõ ràng hơn.
+
+### Nhân công đánh giá tiêu chuẩn
+
+Xin thẩm phán kiểm tra chứng cứ tài liệu,并 ít nhất có thể kiểm tra nhận được yếu nhất.`demonstrated`(đã chứng minh)`needs revision`(đáng cần sửa đổi) hoặc `unverified`(未验证) như trạng thái, đồng thời đưa ra bằng chứng vị trí và lý do.
+
+| 维度 | 评审者应质疑的证据 |
+|---|---|
+| 任务与自主程度 | 初始行为、边界明确的目标、合理的权限与预算，以及可执行的停止规则 |
+| 上下文与环境 | 相关来源、合理的工具访问权限，以及经过重新核查的退役决定 |
+| 验证 | 变更前后的实际行为，以及相同检查能够拒绝的、刻意引入的错误结果 |
+| 评审与运行 | 已检查的差异、独立质疑、标明环境的运行观测，以及演练过的恢复流程 |
+| 迭代与交接 | 一项经过验证的改进、如实说明的局限、干净的最终状态，以及可复现的下一步行动 |
+
+Trong tuyên bố nhiệm vụ hoàn thành, giải quyết được đánh dấu là`needs revision`Các vấn đề: không có bằng chứng nên được giữ lại`unverified`,并相应缩小结论的范围―― tập hợp các tác phẩm cho thấy khả năng phán đoán về công việc trong một nhiệm vụ rõ ràng, không đảm bảo nhận được việc làm hoặc có điều kiện triển khai.
+
+## 交付物
+
+Giữ gói có thể được sử dụng lại, và bạn hoàn thành [career-agent-evidence.md](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/42-agent-workbench-capstone/outputs/career-agent-evidence.md)副本──该模板将任务框架、执行计划、运行证书、审核、恢复练习和交互整合为一个可审核的案例研究──
 
 ## 关键术语
 

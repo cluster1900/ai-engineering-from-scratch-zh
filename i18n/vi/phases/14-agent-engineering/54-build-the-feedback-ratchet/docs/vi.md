@@ -13,6 +13,7 @@
 - Để xác định các tín hiệu khác nhau từ đường đến các bài viết dưới đây, các tập hợp đánh giá, các chiến lược an toàn, thời gian vận hành hoặc nhu cầu chờ đợi.
 -  Định vị ưu tiên đối với rủi ro tái phát dựa trên mức độ nghiêm trọng và thường xuyên tái phát.
 - Đối với mỗi cơ chế kiểm soát hệ thống thiết lập xác định các điều kiện退役 (Retirement Condition)
+- 沟通交付决策, cung cấp bằng chứng, cân nhắc, kiểm soát và xác định những người quyết định có trách nhiệm.
 
 ## 反本身也是基础设施
 
@@ -95,6 +96,84 @@ python3 -m unittest discover code/tests -v
 
 尝试添加一个运行时超时信号,验证它 sẽ được chính xác chuyển từ tầng kiểm soát thời gian vận hành, chứ không phải là tổng hợp vào danh sách chờ đợi nhu cầu chung.
 
+## Thực hành thực hành: chịu trách nhiệm quyết định sau khi thất bại
+
+Từ các dự án tập hợp các tác phẩm của bạn, chọn một dòng công việc.[职业交付模板](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/54-build-the-feedback-ratchet/outputs/career-delivery-evidence.md)Ở giữa.
+
+Python 实验 sẽ tạo ra các ví dụ chờ hành động. Nó sẽ không quan sát người dùng, đo lường hiệu quả dự phòng, cũng không chứng minh bạn đã có khả năng chiến thắng trong nghề.
+
+### 1. Đúng là đã xảy ra gì.
+
+记录用户,任务, hiện tại dòng chảy làm việc, cũng như kết quả bạn muốn cải thiện. 链接 đến ghi chép quan sát thông qua sự đồng ý, ghi chép hỗ trợ đã bị mất nhạy cảm, hoặc đường ray nhiệm vụ có thể thực hiện.
+
+Tìm ra một thất bại: giả thuyết thất bại, kết quả không thể sử dụng, chi phí bất ngờ, hoặc sự chậm trễ của giao tiếp.
+
+Nếu không thể tiếp cận người dùng, hãy cùng với đồng nghiệp thực hiện mô phỏng của các dấu hiệu rõ ràng, hoặc dựa trên mô phỏng của các tình huống rõ ràng.
+
+### 2. Trong phạm vi quyền hạn tiến hành
+
+列出未知项目, chọn成本最低,可逆,且有望解决影响最重大未知项目行动――说明 những gì bạn có thể quyết định, những lựa chọn nào bị ràng buộc, những hoạt động nào cần được cấp phép trước để thực hiện――
+
+Ví dụ, trong khi chờ đợi sự cho phép sử dụng dữ liệu khách hàng, bạn có thể chuẩn bị trước cho việc phát hành trực tuyến đã bị mất cấp. Tiến hành chủ động có nghĩa là hoàn thành công việc được ủy quyền, và sẽ bị cản trở quyết định nói rõ; nó sẽ không mở rộng quyền truy cập hoặc quyền phê duyệt của bạn.
+
+### 3. So sánh các quy trình và hướng tới trách nhiệm quyết định
+
+Vì không cần biết chi tiết thực hiện, người viết một bản báo ngắn về quyết định bao gồm:
+
+- Các vấn đề của người dùng, cũng như bằng chứng về kế hoạch thay đổi;
+- Ít nhất hai loại chương trình; khi có khả năng hợp lý, đưa vào chương trình nhân công chi phí thấp hơn hoặc chương trình không cần phát triển;
+- - chất lượng, giao dịch thiết kế, lượng công việc, chi phí vận hành và cân bằng rủi ro;
+- Những lời khuyên của bạn, những bất ổn còn sót lại, cũng như những quyết định cần đưa ra;
+-  người chịu trách nhiệm quyết định, các bên liên quan bị ảnh hưởng, và ngày cần đưa ra quyết định.
+
+Xin đồng hành đại diện cho một người liên quan quan bị ảnh hưởng,质疑其中之一权衡――记录异议,并说明 nó thay đổi như thế nào, hoặc tại sao không thay đổi đề xuất của bạn―― sẽ đóng vai trò chống đánh dấu như giả; nó không thể thay thế sự đồng ý của người liên quan thực sự――
+
+### 4.  tiến hành các thí nghiệm rõ ràng về biên giới
+
+根据需要答题,选择原型、试点或生产阶段工作──在收集结果之前,明确受众、数据、授权、持续时间、回滚方案,以及继续、调整或停止的条件──
+
+Từ khi người dùng bắt đầu đến khi hoàn thành nhiệm vụ, đi qua toàn bộ quá trình giao tiếp.
+
+Việc kiểm tra và sửa chữa nhân tạo sẽ được tính vào toàn bộ quy trình công việc.
+
+### 5. So sánh kết quả với kinh tế
+
+Sử dụng các chỉ số xác định, tổng thể nhiệm vụ, phương pháp thu thập và cửa sổ quan sát có thể so sánh, ghi lại các kết quả tiếp theo và kết quả tiếp theo.
+
+ Đưa vào một kết quả người dùng  một chỉ số chất lượng hoặc an toàn, cũng như tổng số lượng kiểm tra nhân tạo.
+
+Ước tính chi phí hoàn thành thành công mỗi nhiệm vụ, tính vào mô hình điều chỉnh, thử nghiệm lại, dịch vụ phụ trợ và kiểm toán nhân tạo.
+
+ Thông qua đã có [LLM FinOps 课程](https://aiengineeringfromscratch.com/lesson?path=phases/17-infrastructure-and-production/27-finops-llms), học thêm chi phí thuộc về tính kinh tế đơn vị. Thay đổi mô hình chỉ là một trong những cách ứng phó có thể; thu hẹp phạm vi lưu lượng công việc hoặc giữ lại các bước nhân tạo, có thể là quyết định sản phẩm tốt hơn.
+
+### 6. 完成闭环
+
+Theo tiêu chuẩn của tuyên bố trước đó, khuyến nghị tiếp tục, điều chỉnh hoặc dừng lại. Nếu bằng chứng vẫn chưa xác định, chỉ ra sự thiếu hụt quan sát, cũng như các xét nghiệm rõ ràng bên dưới. ghi lại phản ứng của người quyết định chịu trách nhiệm; nếu chưa đưa ra quyết định, hãy giữ lại cho trạng thái chờ đợi.
+
+ chọn một cải tiến cho quá trình giao hàng: khung nhiệm vụ rõ ràng hơn, người dùng tìm kiếm sớm hơn, kiểm tra tốt hơn, đơn vị giao dịch nhỏ hơn, hoặc các trường hợp đánh giá nhắm mục tiêu hơn, chỉ định người chịu trách nhiệm và thời gian kiểm tra lại.
+
+Khi kiểm tra lại, quyết định giữ lại, sửa đổi hay loại bỏ sự cải tiến này.
+
+## 交付物
+
+sẽ[career-delivery-evidence.md](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/54-build-the-feedback-ratchet/outputs/career-delivery-evidence.md)复制 vào dự án của riêng bạn, và sử dụng chứng cứ liên kết để lấp đầy. 让仓库中的模板保持可复制. 将决策简报,交互走查,量度比较,以及有明确责任归属后续行动,并纳入你的职业作品集交付物品.
+
+## 验证
+
+Với đồng nghiệp sử dụng các tiêu chuẩn nhận nhân tạo sau đây.**met**(đã được thỏa mãn)**needs work**(đáng cải tiến) hoặc **not observed**( chưa xem xét),并提供证据链接或具体缺失的观测──填好了字段,并不能证明判断合理──
+
+| 检查项 | 满足标准的证据 |
+|---|---|
+| 工作流有事实依据 | 可追溯的观测支持问题定义；他人报告、推断和模拟均有标记。 |
+| 遵守授权边界 | 下一项可逆工作明确，任何受限操作都等待真正的决策责任人授权。 |
+| 权衡沟通清晰 | 记录可信的替代方案、利益相关方的异议、建议，以及明确的决策请求。 |
+| 交互经过测试 | 走查覆盖成功、失败、恢复，以及人工审核工作量。 |
+| 结果经过比较 | 基线与后续度量的定义一致；样本、护栏指标、成本和比较局限清晰可见。 |
+| 对挫折承担责任 | 证据改变了继续、调整或停止的决策，并导向一项有明确责任人的后续行动。 |
+| 流程得到改进 | 一项工作流改进具备责任人、复审日期，以及基于证据的保留、修改或退役决定。 |
+
+Ngay cả khi mỗi bước mô phỏng đều được thông qua, hành vi người dùng thực sự chưa được quan sát vẫn là một sự thiếu hụt bằng chứng. Trong kết luận tập hợp các tác phẩm, vẫn giữ được biên giới này, và rõ ràng cần có những gì quan sát để lấp đầy sự thiếu hụt.
+
 ## 课后练习
 
 1. Một số vụ vi phạm trong thời gian gần đây và một vụ phàn nàn thực sự của người dùng, được chuyển thành các hoạt động cụ thể.
@@ -111,4 +190,4 @@ python3 -m unittest discover code/tests -v
 
 ## 交付物沉
 
-Bảo trì`outputs/feedback-backlog.json`它是产品判断力与交付产品判断和交付学习路径的收束产品,也开启下一个预期产出框架的输入起点
+Bảo trì`outputs/feedback-backlog.json`作为路由示例,并保留你完成的职业交付证据,记录自己的决策──两者共同为产品判断力与交付──产品判断和交付) 学习路径结尾,并为下一个预期产出框架提供依据──
