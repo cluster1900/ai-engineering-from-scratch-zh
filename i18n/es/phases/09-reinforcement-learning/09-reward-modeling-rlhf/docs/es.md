@@ -21,31 +21,31 @@ Hasta 2026 años, el PPO 步骤大多 será sustituido por DPO (Fase 10 · 08) p
 
 ![Three-stage RLHF: SFT, RM training on pairwise prefs, PPO with KL penalty](../assets/rlhf.svg)
 
-**Stage 1：Supervised Fine-Tuning（SFT）。**Desde el modelo base pre-entrenado 开始──在目标行为的人类编写示范 上细调(respuestas que siguen instrucciones、respuestas útiles etc)──结果是一个`π_SFT`El modelo, que está orientado hacia el buen comportamiento, pero todavía tiene un espacio de acción ilimitado.
+**Stage 1：Supervised Fine-Tuning（SFT）。**Desde el modelo base pre-entrenado 开始──在目标行为的人类编写示范 上细调(respuestas que siguen instrucciones、respuestas útiles etc)──结果是一个$\pi_{\text{SFT}}$El modelo, que está orientado hacia el buen comportamiento, pero todavía tiene un espacio de acción ilimitado.
 
 **Stage 2：Reward Model training。**
 
-- 收集对提示                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `x`de los pares de respuesta `(y_+, y_-)`, por humanos etiquetado por y_+ 优于 y_──
--  entrenamiento modelo de recompensa `R_φ(x, y)`, déjame hacerlo .`y_+`Por lo tanto, no hay más que un número de partes.
+- 收集对提示                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $x$de los pares de respuesta $(y_+, y_-)$, por humanos etiquetado por y_+ 优于 y_──
+-  entrenamiento modelo de recompensa $R_\phi(x, y)$, déjame hacerlo .$y_+$Por lo tanto, no hay más que un número de partes.
 - Las pérdidas:**Bradley-Terry pairwise logistic**¿Qué es esto ?
 
-  `L(φ) = -E[ log σ(R_φ(x, y_+) - R_φ(x, y_-)) ]`
+  $L(\phi) = -\mathbb{E}[ \log \sigma(R_\phi(x, y_+) - R_\phi(x, y_-)) ]$
 
-  σ 是 sigmoid──reward 的差值隐含偏好 的 log-odds──BT desde 1952 años (Bradley-Terry) desde siempre es el método estándar, también es la principal opción en RLHF moderno──
+  $\sigma$Es un método de segmoididad. El valor de diferencia de la recompensa implica preferencias.
 
-- `R_φ`Normalmente se inicia desde el modelo SFT, y en la parte superior se añade una cabeza escalar. La misma columna vertebral del transformador; una capa lineal única.
+- $R_\phi$Normalmente se inicia desde el modelo SFT, y en la parte superior se añade una cabeza escalar. La misma columna vertebral del transformador; una capa lineal única.
 
 **Stage 3：带 KL penalty、针对 RM 的 PPO。**
 
-- Desde`π_SFT`Política de formación inicial`π_θ`                                                                                                                                                                                                                                                              `π_ref = π_SFT`¿Qué es eso?
-- Respuesta `y`结束时的奖励:
+- Desde$\pi_{\text{SFT}}$Política de formación inicial$\pi_\theta$                                                                                                                                                                                                                                                              $\pi_{\text{ref}} = \pi_{\text{SFT}}$¿Qué es eso?
+- Respuesta $y$结束时的奖励:
 
-  `r_total(x, y) = R_φ(x, y) - β · KL(π_θ(·|x) || π_ref(·|x))`
+  $r_{\text{total}}(x, y) = R_\phi(x, y) - \beta \cdot \mathrm{KL}(\pi_\theta(\cdot \mid x) \Vert \pi_{\text{ref}}(\cdot \mid x))$
 
-  KL penalidad 防止 `π_θ`任意漂离                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `π_SFT` Es un *regulador*, no una región de confianza de la dureza―`β`Normalmente es`0.01`- ¿ Qué ?`0.05`¿Qué es eso?
+  KL penalidad 防止 $\pi_\theta$任意漂离                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $\pi_{\text{SFT}}$ Es un *regulador*, no una región de confianza de la dureza―$\beta$Normalmente es de 0.01-0.05
 - Utiliza esta recompensa 运行 PPO(Ley 08)。Ventajas en la trayectoria de nivel de token 上计算, pero RM sólo da una respuesta completa 打分。
 
-**为什么需要 KL？**没有它,PPO 会很乐意找到奖励黑客策略  RM 只有在分销完成上训过;;`π_θ`保持在 RM 训练过的多元体 附近──它是RLHF中最重要的单个旋──
+**为什么需要 KL？**没有它,PPO 会很乐意找到奖励黑客策略  RM 只有在分销完成上训过;;$\pi_\theta$保持在 RM 训练过的多元体 附近──它是RLHF中最重要的单个旋──
 
 **2026 状态：**
 
@@ -98,7 +98,7 @@ Después de haber pasado por cientos de actualizaciones,`w`Le daré los tokens d
 
 ### Paso 3: Política similar a la PPO en la RM 之
 
-Nuestra política de juguete se basa en el vocabulario para generar un token.`log π_θ(token | prompt)`, Añadir KL-a-referencia penalidad,并应用 recortado PPO sustituto。
+Nuestra política de juguete se basa en el vocabulario para generar un token.$\log \pi_\theta(\text{token} \mid \text{prompt})$, Añadir KL-a-referencia penalidad,并应用 recortado PPO sustituto。
 
 ```python
 def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Paso 4: monitoreo KL
 
-Cada actualización de seguimiento significa`KL(π_θ || π_ref)`Si se ha subido`~5-10`, política  ya está lejos `π_SFT`很远  más bajo `β`¿Está aumentando o está comenzando el hacking de recompensas?
+Cada actualización de seguimiento significa$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Si se ha subido`~5-10`, política  ya está lejos $\pi_{\text{SFT}}$很远  más bajo $\beta$¿Está aumentando o está comenzando el hacking de recompensas?
 
 ### Paso 5: utilizar la receta de producción de TRL
 
@@ -164,7 +164,7 @@ La biblioteca te reemplazará por tres cosas.`adap_kl_ctrl=True`实现 el calend
 
 ## 陷
 
-- **Over-optimization / reward hacking。**RM no está perfecto;`π_θ`Se encontrará un resultado alto pero de calidad inferior de los resultados adversarios.`β`、 ampliar datos de formación RM¬
+- **Over-optimization / reward hacking。**RM no está perfecto;$\pi_\theta$Se encontrará un resultado alto pero de calidad inferior de los resultados adversarios.$\beta$、 ampliar datos de formación RM¬
 - **Length hacking。**En respuestas útiles 上训练的RMs 往往隐式奖励 长度──Politics 学会填充回应──补救:length-normalized reward,或使用长度意识的RLAIF的RM──
 - **RM 太小。**RM Minimally Needs and Policy Una forma grande.
 - **KL tuning。**β 太低 → drift 和 reward hacking──β 太高 → política 几乎不变──标准技巧是使用一个以固定为每步 KL 为目标的 *adaptive* β──
@@ -214,7 +214,7 @@ tags: [rl, rlhf, alignment, llm]
 ##  ejercicios
 
 1. **简单。**En el`code/main.py`En el caso de las máquinas de control de velocidad, el modelo de recompensas de Bradley-Terry debe ser más de 90%.
-2. **中等。**Uso `β ∈ {0.0, 0.1, 1.0}`¿Qué es lo que ocurre con el hackeo de recompensas?
+2. **中等。**Uso $\beta \in \lbrace 0.0, 0.1, 1.0 \rbrace$¿Qué es lo que ocurre con el hackeo de recompensas?
 3. **困难。**En los mismos datos de preferencias, se logra la pérdida de probabilidad de preferencias de forma cerrada (DPO), se compara con el RLHF-PPO en la computación de uso y se alcanza el puntaje final de RM.
 
 ## 关键术语: "El hombre es un hombre"
@@ -223,8 +223,8 @@ tags: [rl, rlhf, alignment, llm]
 |------|----------|----------|
 | RLHF | "Alignment RL" | 三阶段 SFT + RM + PPO pipeline（Christiano 2017, Ouyang 2022）。 |
 | Reward Model (RM) | "The scoring net" | 通过 Bradley-Terry 拟合 pairwise preferences 学到的 scalar function。 |
-| Bradley-Terry | "Pairwise logistic loss" | `P(y_+ ≻ y_-) = σ(R(y_+) - R(y_-))`；标准 RM objective。 |
-| KL penalty | "Stay near the reference" | reward 中的 `β · KL(π_θ \|\| π_ref)`；anti-reward-hacking regularizer。 |
+| Bradley-Terry | "Pairwise logistic loss" | $P(y_+ \succ y_-) = \sigma(R(y_+) - R(y_-))$；标准 RM objective。 |
+| KL penalty | "Stay near the reference" | reward 中的 $\beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$；anti-reward-hacking regularizer。 |
 | Reward hacking | "Goodhart's law" | Policy 利用 RM 缺陷；症状：reward 上升，human eval 持平。 |
 | RLAIF | "AI-labeled preferences" | 标签来自另一个 LM 而非人类的 RLHF。 |
 | PRM | "Process Reward Model" | 给 partial reasoning steps 打分；用于 reasoning pipelines。 |

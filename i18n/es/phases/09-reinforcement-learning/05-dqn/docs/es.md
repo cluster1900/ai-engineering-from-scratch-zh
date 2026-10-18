@@ -11,7 +11,7 @@
 
 El aprendizaje de Q tabulado  necesita para cada uno (estado, acción) para guardar un valor Q. Una tabla de ajedrez ∼ aproximadamente 1043 estados ∼ una  Atari 画面是 210×160×3 = 100,800 个特征── Tabulado RL en varios miles de estados 时就会失效,更不用说数十亿个州──
 
-Lo que pasa es que es evidente que se ha modificado con la red neuronal.`Q(s, a; θ)` sustituir la tabla Q-¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+Lo que pasa es que es evidente que se ha modificado con la red neuronal.$Q(s, a; \theta)$ sustituir la tabla Q-¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
 
 1. **Experience replay**让过渡 去相关──
 2. **Target network**结 objetivo de arranque.
@@ -25,25 +25,29 @@ El DQN de Atari arriba es la primera vez que utiliza un único arquitetura y un 
 
 **目标。**DQN en función Neural Q 上 minimizar pérdida TD de un paso:
 
-`L(θ) = E_{(s,a,r,s')~D} [ (r + γ max_{a'} Q(s', a'; θ^-) - Q(s, a; θ))² ]`
+```math
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim D}[ (r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta))^2 ]
+```
 
-`θ`= red en línea, cada paso a través de Descenso Gradiente 更新──`θ^-`= red objetivo, periodicidad desde`θ`复制(约每10,000 步一次)`D`= Buffer de reproducción de las transiciones pasadas.
+$\theta$= red en línea, cada paso a través de Descenso Gradiente 更新──$\theta^-$= red objetivo, periodicidad desde$\theta$复制(约每10,000 步一次)$D$= Buffer de reproducción de las transiciones pasadas.
 
 **三个技巧，按重要性排序：**
 
 **Experience replay。**Un contenido`~10⁶`Cada paso de entrenamiento está en un pequeño grupo. Esto rompe el tiempo de la conexión. Las marcas de entrenamiento son casi idénticas.
 
-**Target network。**En Bellman  Equipo ambos lados usan la misma red `Q(·; θ)`, dejará que el objetivo en cada actualización se mueva, es decir, seguir su propio tabotape running──`Q(·; θ^-)`, sus pesos 结──每隔 `C`步,复制 `θ → θ^-`Esto permitirá que el objetivo de regresión en miles de pasos graduales en mantenerse estable.`θ^- ← τ θ + (1-τ) θ^-`(para DDPG, SAC) es un cambio más suave.
+**Target network。**En Bellman  Equipo ambos lados usan la misma red $Q(\cdot; \theta)$, dejará que el objetivo en cada actualización se mueva, es decir, seguir su propio tabotape running──$Q(\cdot; \theta^-)$, sus pesos 结──每隔 $C$步,复制 $\theta \to \theta^-$Esto permitirá que el objetivo de regresión en miles de pasos graduales en mantenerse estable.$\theta^- \leftarrow \tau \theta + (1-\tau) \theta^-$(para DDPG, SAC) es un cambio más suave.
 
-**Reward clipping。**La amplitud de recompensa de Atari es de 1 a 1000+`{-1, 0, +1}`Puede detener un Gradiente de dominio de un solo juego. Cuando la magnitud de la recompensa es importante, es un error. Pero para Atari, puede, porque sólo los símbolos son importantes.
+**Reward clipping。**La amplitud de recompensa de Atari es de 1 a 1000+$\lbrace-1, 0, +1 \rbrace$Puede detener un Gradiente de dominio de un solo juego. Cuando la magnitud de la recompensa es importante, es un error. Pero para Atari, puede, porque sólo los símbolos son importantes.
 
 **Double DQN。**Hasselt (2016) 修复了最大化偏见: usar la red en línea 来*选择* acción, usar la red de objetivo 来*评估*它。
 
-`target = r + γ Q(s', argmax_{a'} Q(s', a'; θ); θ^-)`
+```math
+\text{target} = r + \gamma Q(s', \arg\max_{a'} Q(s', a'; \theta); \theta^-)
+```
 
 Esto es un reemplazo de caída, el efecto está mejor.
 
-**其他改进（Rainbow, 2017）：**Reproducción priorizada(更多采样 alto TD-error transiciones) ]] Dueling arquitectura(分离 `V(s)`Y las cabezas de ventaja) 、 redes ruidosas) 、 exploración aprendida) 、 n-grados de retorno 、 Q (C51/QR-DQN) 、 multi-grados de arranque ‖ cada uno de ellos traerá varios cientos de puntos de aumento; ‖
+**其他改进（Rainbow, 2017）：**Reproducción priorizada(更多采样 alto TD-error transiciones) ]] Dueling arquitectura(分离 $V(s)$Y las cabezas de ventaja) 、 redes ruidosas) 、 exploración aprendida) 、 n-grados de retorno 、 Q (C51/QR-DQN) 、 multi-grados de arranque ‖ cada uno de ellos traerá varios cientos de puntos de aumento; ‖
 
 
 ```figure
@@ -105,11 +109,11 @@ def train_step(online, target, batch, gamma, lr):
     apply_sgd(online, grads, lr / len(batch))
 ```
 
-Su forma es Q-learning en la lección 04 , sólo hay dos puntos de diferencia:`Q(·; θ)`Hacer la retropropagación, en lugar de la tabla de indicios;`Q(·; θ^-)`¿Qué es eso?
+Su forma es Q-learning en la lección 04 , sólo hay dos puntos de diferencia:$Q(\cdot; \theta)$Hacer la retropropagación, en lugar de la tabla de indicios;$Q(\cdot; \theta^-)$¿Qué es eso?
 
 ### Paso 4: Bucle de la capa exterior
 
-Para cada episodio, basado en`Q(·; θ)` ejecutar ε-compulsivo,把 transiciones 放入缓冲,采样 minibatch, ejecutar una vez Gradiente paso,并周期性同步 `θ^- ← θ`❖ Modelo como:
+Para cada episodio, basado en$Q(\cdot; \theta)$ ejecutar ε-compulsivo,把 transiciones 放入缓冲,采样 minibatch, ejecutar una vez Gradiente paso,并周期性同步 $\theta^- \leftarrow \theta$❖ Modelo como:
 
 ```python
 for episode in range(N):
@@ -182,7 +186,7 @@ tags: [rl, dqn, deep-rl]
 
 1. **Easy。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py`◊ dibujar una curva de retorno por episodio―circuito medio 超-10 需要多少集?
 2. **Medium。**禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用目标网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用网络 (en inglés) 禁用 (en inglés) 禁用 (en inglés) 禁用 (en inglés) 禁用 (en inglés) 禁用) 禁用 (en inglés) 禁用 (en inglés) 禁用 (en inglés)
-3. **Hard。**添加 Double DQN: usar red en línea 选择 `argmax a'`, utilizar la red de destino 评估──Compare ruidosos retribuciones GridWorld 上训练 1,000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`En realidad`V*(s_0)`El sesgo.
+3. **Hard。**添加 Double DQN: usar red en línea 选择 `argmax a'`, utilizar la red de destino 评估──Compare ruidosos retribuciones GridWorld 上训练 1,000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`En realidad$V^{\ast}(s_0)$El sesgo.
 
 ## 关键术语: "El hombre es un hombre"
 | Term | 人们怎么说 | 它实际是什么意思 |

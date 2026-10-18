@@ -21,20 +21,24 @@ Antes de la formalización, no podías aprender de esta corriente. I saw what、
 
 **五个对象。**
 
-- **States** `S`En el GridWorld, es un juego. En el ajedrez, es un juego. En el LLM, es una ventana de contexto, además de cualquier memoria.
-- **Actions** `A`△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
-- **Transitions** `P(s' | s, a)` Un estado determinado`s`y acción `a`,diferencia del siguiente estado: en el ajedrez, el centro es determinista, en el inventario, el centro es estocástico, en el decodificación LLM, casi determinista.
-- **Rewards** `R(s, a, s')` 标量信号──赢 = +1,输 = -1──收入减成本──GRPO 中的日志-概率比项──
-- **Discount** `γ ∈ [0, 1)`◊ recompensa futura 相對当前的回報的权重──`γ = 0.99`买到约100 pasos del horizonte;`γ = 0.9`¿Qué es eso?
+- **States** $S$En el GridWorld, es un juego. En el ajedrez, es un juego. En el LLM, es una ventana de contexto, además de cualquier memoria.
+- **Actions** $A$△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
+- **Transitions** $P(s' \mid s, a)$ Un estado determinado$s$y acción $a$,diferencia del siguiente estado: en el ajedrez, el centro es determinista, en el inventario, el centro es estocástico, en el decodificación LLM, casi determinista.
+- **Rewards** $R(s, a, s')$ 标量信号──赢 = +1,输 = -1──收入减成本──GRPO 中的日志-概率比项──
+- **Discount** $\gamma \in [0, 1)$◊ recompensa futura 相對当前的回報的权重──$\gamma = 0.99$买到约100 pasos del horizonte;$\gamma = 0.9$¿Qué es eso?
 
-**Markov property** `P(s_{t+1} | s_t, a_t) = P(s_{t+1} | s_0, a_0, …, s_t, a_t)`◊ el futuro sólo depende del estado actual. Si no existe, la representación estatal es incompleta.
+**Markov property** $P(s_{t+1} \mid s_t, a_t) = P(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t)$◊ el futuro sólo depende del estado actual. Si no existe, la representación estatal es incompleta.
 
-**Policies 与 returns。**Política `π(a | s)`Añadir estados  mapu a las distribuciones de acción―Return `G_t = r_t + γ r_{t+1} + γ² r_{t+2} + …`Es la suma descuentada de las recompensas futuras.`V^π(s) = E[G_t | s_t = s]`Es en política.`π`De abajo`s`开始的预期回报──Q-value `Q^π(s, a) = E[G_t | s_t = s, a_t = a]`Es un regreso esperado de una acción específica. Cada algoritmo de RL estimará uno de estos dos y luego se debe mejorar.`π`¿Qué es eso?
+**Policies 与 returns。**Política $\pi(a \mid s)$Añadir estados  mapu a las distribuciones de acción―Return $G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \ldots$Es la suma descuentada de las recompensas futuras.$V^\pi(s) = \mathbb{E}[G_t \mid s_t = s]$Es en política.$\pi$De abajo$s$开始的预期回报──Q-value $Q^\pi(s, a) = \mathbb{E}[G_t \mid s_t = s, a_t = a]$Es un regreso esperado de una acción específica. Cada algoritmo de RL estimará uno de estos dos y luego se debe mejorar.$\pi$¿Qué es eso?
 
 **Bellman equations。**En esta fase todo el contenido se utilizará hasta las ecuaciones de punto fijo:
 
-`V^π(s) = Σ_a π(a|s) Σ_{s', r} P(s', r | s, a) [r + γ V^π(s')]`
-`Q^π(s, a) = Σ_{s', r} P(s', r | s, a) [r + γ Σ_{a'} π(a'|s') Q^π(s', a')]`
+```math
+\begin{aligned}
+V^\pi(s) &= \sum_a \pi(a \mid s) \sum_{s', r} P(s', r \mid s, a) [r + \gamma V^\pi(s')] \\
+Q^\pi(s, a) &= \sum_{s', r} P(s', r \mid s, a) [r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s', a')]
+\end{aligned}
+```
 
 它们 desglosan el rendimiento esperado de este paso 加上落点的折扣值──递归──本 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -114,16 +118,16 @@ Es la evaluación iterativa de políticas. Es el primer algoritmo de Sutton & Ba
 
 ### Paso 4:`γ`Es un hiperparámetro de significado físico.
 
-El horizonte efectivo es aproximadamente`1 / (1 - γ)`¿Qué es eso?`γ = 0.9`→ 10 pasos.`γ = 0.99`→ 100 pasos.`γ = 0.999`→ 1000 pasos
+El horizonte efectivo es aproximadamente$1 / (1 - \gamma)$¿Qué es eso?$\gamma = 0.9$→ 10 pasos.$\gamma = 0.99$→ 100 pasos.$\gamma = 0.999$→ 1000 pasos
 
-太低时,代理会目光短浅──太高时,信贷分配会变噪,因为许多早期步骤都会共同承担远未来奖励的责任──LLM RLHF normalmente se utiliza `γ = 1`,因为 episodios 短且有界──Trabajos de control 使用 `0.95–0.99`❖ Juegos de estrategia de largo horizonte `0.999`¿Qué es eso?
+太低时,代理会目光短浅──太高时,信贷分配会变噪,因为许多早期步骤都会共同承担远未来奖励的责任──LLM RLHF normalmente se utiliza $\gamma = 1$,因为 episodios 短且有界──Trabajos de control 使用 `0.95–0.99`❖ Juegos de estrategia de largo horizonte `0.999`¿Qué es eso?
 
 ## 陷
 
 - **Non-Markovian state.**Si necesitas tres observaciones recientes 才能决策, entonces state 不只是当前观察──修复:stack frames(DQN 在 Atari 上堆叠 4 ) o usar estado recurrente(在观察上使用LSTM/GRU)──
 - **Sparse rewards.**Sólo en el momento de la victoria, dará recompensa, hará que el aprendizaje en los espacios de gran estado sea casi imposible.
 - **Reward hacking.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-- **Discount mis-spec.**En tarea de horizonte infinito 上使用 `γ = 1`¡Ahora que cada valor se vuelva infinito! ¡Siempre usando horizontes finitos!`γ < 1`Para limitar.
+- **Discount mis-spec.**En tarea de horizonte infinito 上使用 $\gamma = 1$¡Ahora que cada valor se vuelva infinito! ¡Siempre usando horizontes finitos!$\gamma < 1$Para limitar.
 - **Reward scale.**Las recompensas de {+100, -100} con {+1, -1} darán las mismas políticas óptimas, pero la magnitud del gradiente 会非常不同──接入PPO/DQN 前,把它正常化到近似`[-1, 1]`¿Qué es eso?
 
 ## Usalo
@@ -168,21 +172,21 @@ tags: [rl, mdp, modeling]
 ##  ejercicios
 
 1. **Easy.**En el`code/main.py`En el caso de la aplicación de la política de 4×4 GridWorld, el rollout de la política de 4×4 GridWorld y el rollout de la política de 10 000 episodios, el rollo de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld, el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×4 GridWorld y el rollout de la política de 4×6
-2. **Medium.**Para la política uniforme aleatoria, uso `γ ∈ {0.5, 0.9, 0.99}`运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `policy_evaluation`把 cada uno `V`Impresión para 4×4 red,.. Explica por qué terminal  Valores de estado cercanos 会随之大大`γ`Más rápido crecimiento.
-3. **Hard.**Transformar la RedWorld en estocástica: cada acción en probabilidad`p = 0.1`滑向相邻方向── reevaluación de la política uniforme──`V[start]`¿Vamos a ser mejores o peores?
+2. **Medium.**Para la política uniforme aleatoria, uso $\gamma \in \lbrace 0.5, 0.9, 0.99 \rbrace$运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `policy_evaluation`把 cada uno `V`Impresión para 4×4 red,.. Explica por qué terminal  Valores de estado cercanos 会随之大大$\gamma$Más rápido crecimiento.
+3. **Hard.**Transformar la RedWorld en estocástica: cada acción en probabilidad$p = 0.1$滑向相邻方向── reevaluación de la política uniforme──`V[start]`¿Vamos a ser mejores o peores?
 
 ## 关键术语: "El hombre es un hombre"
 
 | Term | 人们的说法 | 实际含义 |
 |------|------------|----------|
-| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 `(S, A, P, R, γ)`。 |
+| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 $(S, A, P, R, \gamma)$。 |
 | State | “Agent 看到的东西” | 在所选 policy class 下，future dynamics 的 sufficient statistic。 |
-| Policy | “Agent 的行为” | Conditional distribution `π(a \| s)` 或 deterministic map `s → a`。 |
-| Return | “Total reward” | 从当前 step 开始的 discounted sum `Σ γ^t r_t`。 |
-| Value | “一个 state 有多好” | 在 `π` 下从 `s` 开始的 expected return。 |
-| Q-value | “一个 action 有多好” | 在 `π` 下从 `s` 开始并以第一个 action `a` 开始的 expected return。 |
+| Policy | “Agent 的行为” | Conditional distribution $\pi(a \mid s)$ 或 deterministic map $s \to a$。 |
+| Return | “Total reward” | 从当前 step 开始的 discounted sum $\sum \gamma^t r_t$。 |
+| Value | “一个 state 有多好” | 在 $\pi$ 下从 $s$ 开始的 expected return。 |
+| Q-value | “一个 action 有多好” | 在 $\pi$ 下从 $s$ 开始并以第一个 action $a$ 开始的 expected return。 |
 | Bellman equation | “Dynamic programming recursion” | 把 value / Q 分解为 one-step reward 加 discounted successor value 的 fixed-point。 |
-| Discount `γ` | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 `~1/(1-γ)`。 |
+| Discount $\gamma$ | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 $\approx 1/(1-\gamma)$。 |
 
 ## 延伸阅读
 

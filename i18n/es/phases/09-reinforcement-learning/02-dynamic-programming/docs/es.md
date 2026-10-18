@@ -1,6 +1,6 @@
 # Programación dinámica  Iteración de políticas y iteración de valores
 
-> La programación dinámica es la RL de la contagia. Ya sabes las funciones de transición y recompensa. Sólo necesitas repetir la ecuación de Bellman hasta que`V`O `π`No se vuelve a cambiar. Es un método basado en muestras que se trata de acercarse a la base.
+> La programación dinámica es la RL de la contagia. Ya sabes las funciones de transición y recompensa. Sólo necesitas repetir la ecuación de Bellman hasta que$V$O $\pi$No se vuelve a cambiar. Es un método basado en muestras que se trata de acercarse a la base.
 
 **Type:** Build
 **Languages:** Python
@@ -9,11 +9,11 @@
 
 ##  problemas
 
-Usted tiene un modelo conocido de MDP: usted puede hacer cualquier par de acción de estado  consulta `P(s' | s, a)`Y `R(s, a, s')` Gestión de reservas sabe la demanda de distribución  juegos de tablero tienen transiciones definidas  GridWorld sólo necesita cuatro líneas de Python  tienes un *modelo*♦
+Usted tiene un modelo conocido de MDP: usted puede hacer cualquier par de acción de estado  consulta $P(s' \mid s, a)$Y $R(s, a, s')$ Gestión de reservas sabe la demanda de distribución  juegos de tablero tienen transiciones definidas  GridWorld sólo necesita cuatro líneas de Python  tienes un *modelo*♦
 
 RL libre de modelos ((Q-learning、PPO、REINFORCE) es una situación desarrollada por el hecho de que no hay modelos, es decir, que solo puedes probar en el entorno. Pero cuando realmente tienes un modelo, hay un método más rápido y mejor: la programación dinámica. Bellman diseñó estos métodos en 1957.
 
-Usted en 2026 todavía las necesita, por razones hay tres puntos. Primero, la investigación de RL en cada entorno tabular (GridWorld, FrozenLake, CliffWalking) utilizará DP para obtener una solución, para generar una política de oro estándar. Segundo, los valores precisos pueden permitir que *debug* métodos de muestreo: si Q-learning para`V*(s_0)`La evaluación de la respuesta de DP es de 30%, tu aprendizaje de Q tiene un error.
+Usted en 2026 todavía las necesita, por razones hay tres puntos. Primero, la investigación de RL en cada entorno tabular (GridWorld, FrozenLake, CliffWalking) utilizará DP para obtener una solución, para generar una política de oro estándar. Segundo, los valores precisos pueden permitir que *debug* métodos de muestreo: si Q-learning para$V^{\ast}(s_0)$La evaluación de la respuesta de DP es de 30%, tu aprendizaje de Q tiene un error.
 
 ## 概念
 
@@ -23,20 +23,22 @@ Usted en 2026 todavía las necesita, por razones hay tres puntos. Primero, la in
 
 **Policy iteration。**交替执行两个步骤, hasta que la política no cambie más.
 
-1. *Evaluación:* 给定 política `π`,反复应用 `V(s) ← Σ_a π(a|s) Σ_{s',r} P(s',r|s,a) [r + γ V(s')]`, hasta que reciba, para calcular.`V^π`¿Qué es eso?
-2. * Mejoramiento:* 给定 `V^π`, hacer `π`En comparación con`V^π`变为 codicioso:`π(s) ← argmax_a Σ_{s',r} P(s',r|s,a) [r + γ V(s')]`¿Qué es eso?
+1. *Evaluación:* 给定 política $\pi$,反复应用 $V(s) \leftarrow \sum_a \pi(a \mid s) \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]$, hasta que reciba, para calcular.$V^\pi$¿Qué es eso?
+2. * Mejoramiento:* 给定 $V^\pi$, hacer $\pi$En comparación con$V^\pi$变为 codicioso:$\pi(s) \leftarrow \arg\max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]$¿Qué es eso?
 
-收是有保证的, porque (a) cada paso de mejora debe mantenerse `π`No cambia, ¿tiene que mejorar estrictamente ciertos estados `V^π`,(b) El espacio de las políticas deterministas es limitado. Incluso en grandes espacios de estado, normalmente también se encuentran en aproximadamente 520 veces iteraciones externas.
+收是有保证的, porque (a) cada paso de mejora debe mantenerse $\pi$No cambia, ¿tiene que mejorar estrictamente ciertos estados $V^\pi$,(b) El espacio de las políticas deterministas es limitado. Incluso en grandes espacios de estado, normalmente también se encuentran en aproximadamente 520 veces iteraciones externas.
 
 **Value iteration。**La evaluación y mejora se realizarán en una sola prueba.
 
-`V(s) ← max_a Σ_{s',r} P(s',r|s,a) [r + γ V(s')]`
+```math
+V(s) \leftarrow \max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]
+```
 
-- ¿Qué pasa ?`max_s |V_{new}(s) - V(s)| < ε`◊ Finalmente, por medio de la elección de la acción codiciosa 提取政策── cada vez más 严格更快, pues no hay un ciclo interno de evaluación, pero normalmente se necesitan más iteraciones 才能收──
+- ¿Qué pasa ?$\max_s \lvert V_{\text{new}}(s) - V(s) \rvert < \epsilon$◊ Finalmente, por medio de la elección de la acción codiciosa 提取政策── cada vez más 严格更快, pues no hay un ciclo interno de evaluación, pero normalmente se necesitan más iteraciones 才能收──
 
 **Generalized policy iteration (GPI)。**统一视角──La función de valor y la política están bloqueadas en un ciclo de mejora bidireccional; cualquier simultáneo fomento de los dos hacia un método coherente.
 
-**为什么 `γ < 1` 很重要。**Operador Bellman en la sup-norma abajo es un`γ`- contracción:`||T V - T V'||_∞ ≤ γ ||V - V'||_∞`◊ Contracción significa único punto fijo 和几何收── desaparecer `γ < 1`, tu ya has perdido la seguridad, necesitas un horizonte finito o un estado terminal de absorción.
+**为什么 $\gamma < 1$ 很重要。**Operador Bellman en la sup-norma abajo es un$\gamma$- contracción:$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$◊ Contracción significa único punto fijo 和几何收── desaparecer $\gamma < 1$, tu ya has perdido la seguridad, necesitas un horizonte finito o un estado terminal de absorción.
 
 ## 动手构建 动手构建
 
@@ -60,7 +62,7 @@ def transitions(state, action):
 
 ### Paso 2: Evaluación de las políticas
 
-给定 política `π(s) = {action: prob}`, 代 Bellman ecuación, hasta `V`No se puede cambiar.
+给定 política `π(s) = {action: prob}`, 代 Bellman ecuación, hasta $V$No se puede cambiar.
 
 ```python
 def policy_evaluation(policy, gamma=0.99, tol=1e-6):
@@ -79,7 +81,7 @@ def policy_evaluation(policy, gamma=0.99, tol=1e-6):
 
 ### Paso 3: Mejora de las políticas
 
-Usado en comparación con`V`La política de la codicia`π`Si es que`π`No hay cambios, regresamos, porque ya hemos alcanzado el óptimo.
+Usado en comparación con$V$La política de la codicia$\pi$Si es que$\pi$No hay cambios, regresamos, porque ya hemos alcanzado el óptimo.
 
 ```python
 def policy_improvement(V, gamma=0.99):
@@ -107,7 +109,7 @@ def policy_iteration(gamma=0.99):
         policy = new_policy
 ```
 
-En 4×4 上典型会在 46 veces iteraciones externas 内收──输出 `V*(0,0) ≈ -6`, así como una política de reducción de la cantidad de pasos.
+En 4×4 上典型会在 46 veces iteraciones externas 内收──输出 $V^{\ast}(0,0) \approx -6$, así como una política de reducción de la cantidad de pasos.
 
 ### Paso 5: iteración de valor
 
@@ -136,7 +138,7 @@ El mismo punto fijo, menor número de código de la línea.
 - **Sup-norm vs L2 convergence。**Uso `max |V_new - V|`, no utilice el valor medio. La teoría asegura que la sup-norma es superior.
 - **In-place vs synchronous updates。**Originalmente actualizada`V[s]`(Gauss-Seidel) Comparado con el uso individual`V_new`dict(Jacobi)收更快──Código de producción Utiliza en el lugar──
 - **Policy ties。**Si dos acciones tienen el mismo valor Q,`argmax`Puede que cada iteración use different ways to break the平局, conduciendo a la estabilidad de la política  检查振荡── utilizar un equilibrio estable  固定顺序中的第一个动作)
-- **State-space explosion。**DP cada vez que barremos es`O(|S| · |A|)`◊ más utilizado en aproximadamente 107 estados. ◊ Más allá de esta escala, necesitas una aproximación de la función.
+- **State-space explosion。**DP cada vez que barremos es$O(\lvert S \rvert \cdot \lvert A \rvert)$◊ más utilizado en aproximadamente 107 estados. ◊ Más allá de esta escala, necesitas una aproximación de la función.
 
 
 ```figure
@@ -150,12 +152,12 @@ En 2026 años, el DP es el verdadero punto de partida, también el circuito inte
 | Use case | Method |
 |----------|--------|
 | 精确求解小型 tabular MDP | Value iteration（更简单）或 policy iteration（outer steps 更少） |
-| 验证 Q-learning / PPO 实现 | 在 toy environment 上与 DP-optimal V* 对比 |
+| 验证 Q-learning / PPO 实现 | 在 toy environment 上与 DP-optimal $V^{\ast}$ 对比 |
 | Model-based RL（Phase 9 · 10） | 在 learned transition model 上做 Bellman backup |
 | AlphaZero / MuZero 中的 Planning | Monte Carlo Tree Search = async Bellman backup |
 | Offline RL（CQL、IQL） | Conservative Q-iteration，即带有 OOD actions penalty 的 DP |
 
-Cada vez que alguien dice que la función de valor óptimo, se refiere a que el punto fijo DP.`V*`O `Q*`时, por favor, imagina este ciclo.
+Cada vez que alguien dice que la función de valor óptimo, se refiere a que el punto fijo DP.$V^{\ast}$O $Q^{\ast}$时, por favor, imagina este ciclo.
 
 ##  entregarlo
 
@@ -184,21 +186,21 @@ tags: [rl, dynamic-programming, bellman]
 
 ##  ejercicios
 
-1. **Easy.**En 4×4 GridWorld 上使用 `γ ∈ {0.9, 0.99}`运行 Iteración de valor.`max |ΔV| < 1e-6`¿Cuántas veces se barría?`V*`打印为4×4 grid──
-2. **Medium.**En el mundo de la rejilla de probabilidad`0.1`) sobre comparación de la iteración de la política y la iteración de valor.`V*(0,0)`¿Cuál es el más rápido en las iteraciones?
-3. **Hard.**构建修改政策反复:在评估阶段 中,只运行 `k`Se hace un barrido, en vez de un barrido.`k ∈ {1, 2, 5, 10, 50}` dibujo `V*(0,0)`error vs `k`◊ esta curva  ¿Te dice qué información de la evaluación / mejora de la compensación?
+1. **Easy.**En 4×4 GridWorld 上使用 $\gamma \in \lbrace 0.9, 0.99 \rbrace$运行 Iteración de valor.$\max \lvert \Delta V \rvert < 10^{-6}$¿Cuántas veces se barría?$V^{\ast}$打印为4×4 grid──
+2. **Medium.**En el mundo de la rejilla de probabilidad`0.1`) sobre comparación de la iteración de la política y la iteración de valor.$V^{\ast}(0,0)$¿Cuál es el más rápido en las iteraciones?
+3. **Hard.**构建修改政策反复:在评估阶段 中,只运行 $k$Se hace un barrido, en vez de un barrido.$k \in \lbrace 1, 2, 5, 10, 50 \rbrace$ dibujo $V^{\ast}(0,0)$error vs $k$◊ esta curva  ¿Te dice qué información de la evaluación / mejora de la compensación?
 
 ## 关键术语: "El hombre es un hombre"
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Policy iteration | “DP algorithm” | 交替进行 evaluation（`V^π`）和 improvement（相对于 `V^π` 的 greedy `π`），直到 policy 不再变化。 |
-| Value iteration | “Faster DP” | Bellman optimality backup 在一次 sweep 中应用；几何收敛到 `V*`。 |
-| Bellman operator | “The recursion” | `(T V)(s) = max_a Σ P (r + γ V(s'))`；sup-norm 下的 `γ`-contraction。 |
-| Contraction | “Why DP converges” | 任何满足 `\|\|T x - T y\|\| ≤ γ \|\|x - y\|\|` 的 operator `T` 都有唯一 fixed point。 |
-| GPI | “Everything is DP” | Generalized Policy Iteration：任何推动 `V` 和 `π` 达到相互一致的方法。 |
-| Synchronous update | “Jacobi-style” | 在一次 sweep 中始终使用旧的 `V`；便于清晰分析，但更慢。 |
-| In-place update | “Gauss-Seidel-style” | 使用正在被更新的 `V`；实践中收敛更快。 |
+| Policy iteration | “DP algorithm” | 交替进行 evaluation（$V^\pi$）和 improvement（相对于 $V^\pi$ 的 greedy $\pi$），直到 policy 不再变化。 |
+| Value iteration | “Faster DP” | Bellman optimality backup 在一次 sweep 中应用；几何收敛到 $V^{\ast}$。 |
+| Bellman operator | “The recursion” | $(T V)(s) = \max_a \sum P (r + \gamma V(s'))$；sup-norm 下的 $\gamma$-contraction。 |
+| Contraction | “Why DP converges” | 任何满足 $\lVert T x - T y \rVert \le \gamma \lVert x - y \rVert$ 的 operator $T$ 都有唯一 fixed point。 |
+| GPI | “Everything is DP” | Generalized Policy Iteration：任何推动 $V$ 和 $\pi$ 达到相互一致的方法。 |
+| Synchronous update | “Jacobi-style” | 在一次 sweep 中始终使用旧的 $V$；便于清晰分析，但更慢。 |
+| In-place update | “Gauss-Seidel-style” | 使用正在被更新的 $V$；实践中收敛更快。 |
 
 ## 延伸阅读
 

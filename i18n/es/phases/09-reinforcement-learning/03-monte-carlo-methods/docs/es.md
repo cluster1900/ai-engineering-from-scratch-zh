@@ -9,7 +9,7 @@
 
 ##  problemas
 
-La programación dinámica es muy buena, pero supone que puedes hacer preguntas sobre cada estado y acción.`P(s' | s, a)`△ en el mundo real casi nada funciona así―Robot 无法解析地计算施施加合扭矩 后摄像头像素的分布― algoritmo de precios 无法对待每种可能客户反应 积分―LLM 无法枚举某代币 后所有可能延续――
+La programación dinámica es muy buena, pero supone que puedes hacer preguntas sobre cada estado y acción.$P(s' \mid s, a)$△ en el mundo real casi nada funciona así―Robot 无法解析地计算施施加合扭矩 后摄像头像素的分布― algoritmo de precios 无法对待每种可能客户反应 积分―LLM 无法枚举某代币 后所有可能延续――
 
 Necesitas una única estrategia de desarrollo que dependa del medio ambiente.`s_0, a_0, r_1, s_1, a_1, r_2, …, s_T`Usé el valor de la estimación.
 
@@ -19,30 +19,32 @@ La transición de DP a MC es importante en la filosofía: nos desplazamos de *mo
 
 ![Monte Carlo: rollout, compute returns, average; first-visit vs every-visit](../assets/monte-carlo.svg)
 
-**核心思想，一行表达：** `V^π(s) = E_π[G_t | s_t = s] ≈ (1/N) Σ_i G^{(i)}(s)`, entre ellos `G^{(i)}(s)`Es en política.`π`Siguiente visita`s`后观察到的回报──
+**核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, entre ellos $G^{(i)}(s)$Es en política.$\pi$Siguiente visita$s$后观察到的回报──
 
-**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `s`En el caso de los primeros visitantes, el MC sólo tiene una primera visita después de la vuelta; cada visita MC 统计所有访问──二者在极限下都是无偏见──第一访问更容易分析(iid样本)──每次访问 每次访问 使用更多数据,在实践中通常收更快──
+**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $s$En el caso de los primeros visitantes, el MC sólo tiene una primera visita después de la vuelta; cada visita MC 统计所有访问──二者在极限下都是无偏见──第一访问更容易分析(iid样本)──每次访问 每次访问 使用更多数据,在实践中通常收更快──
 
 **Incremental mean。**No se almacena todo, sino que se actualiza el promedio de ejecución:
 
-`V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]`
+```math
+V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
+```
 
-Cuentas de nuevo:`V_new = V_old + α · (target - V_old)`, entre ellos `α = 1/n`¿Qué es eso?`1/n`换成 constante tamaño de paso `α ∈ (0, 1)`, tienes un estimador de MC no estacionario, que seguirá`π`Este movimiento es el salto de MC a TD, volver a saltar a todos los algoritmos RL modernos.
+Cuentas de nuevo:$V_{\text{new}} = V_{\text{old}} + \alpha \cdot (\text{target} - V_{\text{old}})$, entre ellos $\alpha = 1/n$¿Qué es eso?$1/n$换成 constante tamaño de paso $\alpha \in (0, 1)$, tienes un estimador de MC no estacionario, que seguirá$\pi$Este movimiento es el salto de MC a TD, volver a saltar a todos los algoritmos RL modernos.
 
-**Exploration 现在成了问题。**DP 通过枚举触及每个州──MC 只有看到政策 会访问的州──如果`π`Es determinista, el espacio de estado, la región entera nunca será muestrada, sus estimaciones de valor permanecerán siempre en el zero.
+**Exploration 现在成了问题。**DP 通过枚举触及每个州──MC 只有看到政策 会访问的州──如果$\pi$Es determinista, el espacio de estado, la región entera nunca será muestrada, sus estimaciones de valor permanecerán siempre en el zero.
 
 1. **Exploring starts。**Desde随机 (s, a) par 开始每个集──保证 覆盖;实践中不现实(你不能把机器人 重置到任意状态)──
-2. **ε-greedy。**Comparado con el actual Q  adoptar acciones codiciosas, pero con probabilidad `ε`选择随机action── todos los pares de acciones de estado fueron tomados en muestra.
-3. **Off-policy MC。**En la política de comportamiento`μ`Recolección de datos, mediante muestreo de importancia`π` Variación alta, pero es un puente de métodos de repetición de buffer para DQN.
+2. **ε-greedy。**Comparado con el actual Q  adoptar acciones codiciosas, pero con probabilidad $\epsilon$选择随机action── todos los pares de acciones de estado fueron tomados en muestra.
+3. **Off-policy MC。**En la política de comportamiento$\mu$Recolección de datos, mediante muestreo de importancia$\pi$ Variación alta, pero es un puente de métodos de repetición de buffer para DQN.
 
 **Monte Carlo Control。**Evaluar → mejorar → evaluar,就像政策代代一样,但评估是基于样本:
 
-1. 运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `π`, tengo un episodio.
-2. Según los resultados observados  actualización `Q(s, a)`¿Qué es eso?
-3. ¿ Qué ?`π`En comparación con`Q`变成 ε-compulsivo。
+1. 运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           $\pi$, tengo un episodio.
+2. Según los resultados observados  actualización $Q(s, a)$¿Qué es eso?
+3. ¿ Qué ?$\pi$En comparación con$Q$变成 ε-compulsivo。
 4. ¿Qué es eso?
 
-En condiciones de temperatura, cada pareja recibe visitas ilimitadas.`α`满足 Robbins-Monro), se reunirá con una probabilidad de 1 收到 `Q*`Y `π*`¿Qué es eso?
+En condiciones de temperatura, cada pareja recibe visitas ilimitadas.$\alpha$满足 Robbins-Monro), se reunirá con una probabilidad de 1 收到 $Q^{\ast}$Y $\pi^{\ast}$¿Qué es eso?
 
 ## 动手构建 动手构建
 
@@ -76,7 +78,7 @@ def returns_from(trajectory, gamma):
     return list(reversed(returns))
 ```
 
-Una vez,`O(T)` Contra la recurrencia`G_t = r_{t+1} + γ G_{t+1}`避免了重复求和──
+Una vez,$O(T)$ Contra la recurrencia$G_t = r_{t+1} + \gamma G_{t+1}$避免了重复求和──
 
 ### Paso 3: Evaluación de la primera visita de MC
 
@@ -126,15 +128,15 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 
 ### Paso 5: Con respecto al estándar de oro DP
 
-Cuando los episodios → ∞ 时, tu对 `V^π`El resultado de la lección 02 debería compararse con el resultado de la DP. En la práctica: en 4×4 GridWorld, se ejecutaron 50.000 episodios, se puede alcanzar una diferencia entre el resultado de la DP y el resultado de la lección 02`~0.1`En el ámbito de la...
+Cuando los episodios → ∞ 时, tu对 $V^\pi$El resultado de la lección 02 debería compararse con el resultado de la DP. En la práctica: en 4×4 GridWorld, se ejecutaron 50.000 episodios, se puede alcanzar una diferencia entre el resultado de la DP y el resultado de la lección 02`~0.1`En el ámbito de la...
 
 ## 常见陷
 
 - **Infinite episodes。**MC   exigen episodios  deben *terminar*― Si su política podría ser un ciclo para siempre, por favor configurar `max_steps`Por lo tanto, no hay que olvidar que el tiempo de espera de la política de la red mundial es normal, siempre y cuando se asegure de que el cálculo es correcto.
-- **Variance。**MC utiliza retornos completos. En los episodios más largos, la variación es grande, la última vez que se vuelve la recompensa será igual.`V(s_0)` métodos de TD (Lección 04) a través de bootstrapping 降低这一点──
+- **Variance。**MC utiliza retornos completos. En los episodios más largos, la variación es grande, la última vez que se vuelve la recompensa será igual.$V(s_0)$ métodos de TD (Lección 04) a través de bootstrapping 降低这一点──
 - **State coverage。**En el nuevo Q 上做贪 MC, si aparecen lazos, sólo continuará intentando una acción.
-- **Non-stationary policies。**Si es que`π`发生变化(如 MC control 中那样), viejo retorno de diferentes políticas.
-- **Off-policy importance sampling。**权重         `π(a|s)/μ(a|s)`Se puede utilizar la opción de "Corte de IS" ponderada por decisión, o de "Cambio a TD").
+- **Non-stationary policies。**Si es que$\pi$发生变化(如 MC control 中那样), viejo retorno de diferentes políticas.
+- **Off-policy importance sampling。**权重         $\pi(a \mid s)/\mu(a \mid s)$Se puede utilizar la opción de "Corte de IS" ponderada por decisión, o de "Cambio a TD").
 
 
 ```figure
@@ -151,10 +153,10 @@ Métodos de Monte Carlo en el año 2026:
 | Logged policy 的 offline evaluation | 对 stored trajectories 的 discounted returns 求平均。 |
 | Monte Carlo Tree Search（AlphaZero） | 从 tree leaves 发起的 MC rollouts 指导 selection。 |
 | LLM RL evaluation | 为给定 policy 计算 sampled completions 的 average reward。 |
-| PPO 中的 baseline estimation | Advantage target `A_t = G_t - V(s_t)` 使用 MC `G_t`。 |
+| PPO 中的 baseline estimation | Advantage target $A_t = G_t - V(s_t)$ 使用 MC $G_t$。 |
 | RL 教学 | 最简单且真正有效的 algorithm；去掉 bootstrapping 就能看到核心。 |
 
-Los algoritmos modernos de RL profundos (PPO、SAC) pasarán`n`-retorno de paso o GAE, en puro MC (retorno completo) y puro TD (retorno de arranque de un paso) entre el valor de inserción.
+Los algoritmos modernos de RL profundos (PPO、SAC) pasarán$n$-retorno de paso o GAE, en puro MC (retorno completo) y puro TD (retorno de arranque de un paso) entre el valor de inserción.
 
 ##  entregarlo
 
@@ -183,20 +185,20 @@ tags: [rl, monte-carlo, evaluation]
 
 ##  ejercicios
 
-1. **Easy.**实现 4×4 GridWorld 上 uniforme-random policy 首次访问MC评价──运行 10,000 episodios──将 `V(0,0)`随着剧集数 变化的曲线与 DP 答案对照绘制──
-2. **Medium.**¿ Qué ?`ε ∈ {0.01, 0.1, 0.3}`实现 ε-greedy MC control──comparar 20.000 episodios 后的平均回归──Curve 看起来是什么样?
-3. **Hard.**Utilización de muestreo de importancia                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     `μ`Se recopilan datos, se evalúa la política óptima determinista `π`de la `V^π`◊ Comparar la diferencia IS ≠ por decisión IS 和 ponderada IS ⋅ ¿cuál es la variación mínima?
+1. **Easy.**实现 4×4 GridWorld 上 uniforme-random policy 首次访问MC评价──运行 10,000 episodios──将 $V(0,0)$随着剧集数 变化的曲线与 DP 答案对照绘制──
+2. **Medium.**¿ Qué ?$\epsilon \in \lbrace 0.01, 0.1, 0.3 \rbrace$实现 ε-greedy MC control──comparar 20.000 episodios 后的平均回归──Curve 看起来是什么样?
+3. **Hard.**Utilización de muestreo de importancia                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     $\mu$Se recopilan datos, se evalúa la política óptima determinista $\pi$de la $V^\pi$◊ Comparar la diferencia IS ≠ por decisión IS 和 ponderada IS ⋅ ¿cuál es la variación mínima?
 
 ## 关键术语: "El hombre es un hombre"
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
-| Return `G_t` | “Future reward” | 从 step `t` 到 episode 结束的 discounted rewards 总和：`Σ_{k≥0} γ^k r_{t+k+1}`。 |
+| Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
 | Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
-| ε-greedy | “Exploration noise” | 以概率 `1-ε` 选择 greedy action；以概率 `ε` 选择 random action。 |
-| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 `π(a\|s)/μ(a\|s)` 乘积对 returns 重新加权，从 `μ` 数据估计 `V^π`。 |
+| ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
+| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |
 | Off-policy | “Learn from someone else's data” | Target policy ≠ behavior policy。Importance-sampled MC、Q-learning、DQN。 |
 
