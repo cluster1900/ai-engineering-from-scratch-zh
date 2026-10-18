@@ -240,6 +240,14 @@ AI 中常见的工作流：
 2. 创建一个同时包含 markdown 和 code cells 的 notebook，加载 CSV、显示 dataframe，并绘制 chart。然后运行 Kernel > Restart & Run All 验证它能从上到下正常运行
 3. 把 `code/notebook_tips.py` 中的 code 粘贴到 Colab notebook 中，并使用免费 GPU 运行
 
+### 提示
+
+**练习 1。** 用 `jupyter lab` 启动 JupyterLab，将两个版本分别放进以 `%timeit` 开头的独立单元格。两个单元格都使用 100,000 的规模，确保测量的是相同的工作量。
+
+**练习 2。** 用 `pd.read_csv` 读取数据，将 dataframe 放在单元格最后一行以显示它，再用 `df.plot()` 或 matplotlib 绘图。执行 Kernel > Restart & Run All 后，每个单元格的执行计数器都应显示数字，且不应有任何单元格报错。
+
+**练习 3。** 在 Colab 中先选择 Runtime > Change runtime type > GPU，再粘贴代码。当 `code/notebook_tips.py` 中的每个函数都打印出对应部分，且在单元格中运行 `torch.cuda.is_available()` 返回 `True` 时，运行才算正确。
+
 ## 关键术语
 
 | Term | What people say | What it actually means |
