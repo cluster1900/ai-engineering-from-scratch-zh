@@ -59,8 +59,8 @@ Google Research (Google Research) ने बड़ी भाषा मॉडल 
 
 绑定 DID के प्रतिष्ठा स्कोर से 已确认贡献中累积──一个简单更新规则:
 
-```
-rep(i, t+1) = alpha * rep(i, t) + (1 - alpha) * contribution_quality(i, t)
+```math
+\text{rep}(i, t+1) = \alpha \cdot \text{rep}(i, t) + (1 - \alpha) \cdot \text{contribution\_quality}(i, t)
 ```
 
 उनमें से गिरावट कारक `alpha`接近 1── प्रतिष्ठाः

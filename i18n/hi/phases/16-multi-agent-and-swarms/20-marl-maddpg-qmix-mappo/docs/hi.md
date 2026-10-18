@@ -44,8 +44,8 @@ critic update:   TD on Q_i(x, a_1..n) given next-state joint estimate
 
  केवल सहकारी के लिए उपयुक्त है वैश्विक पुरस्कार प्रत्येक एजेंट के Q-मूल्य के एकतरफा फ़ंक्शन 之和:
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 एकादशी 保证 `argmax_a Q_tot`प्रत्येक एजेंट के माध्यम से किया जा सकता है  स्वतंत्र चयन `argmax_{a_i} Q_i`यह आप की जरूरत है।**decentralized execution property** प्रशिक्षण के दौरान, प्रत्येक एजेंट के Q से मिशिंग नेटवर्क`Q_tot`
