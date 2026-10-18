@@ -29,7 +29,7 @@
 
 إنجاز عام 2026:
 
-- **Outlines。**将 JSON Schema 或 regex 编译为有限状态机──每个代币都能 O(1) 查询 valid-next-token──基于FSM,所以 recursive schemes 需要平坦化──
+- **Outlines。**سوف نضع نظام JSON أو regex 编译为机器状态有限──每个代币都能 $O(1)$استفسار صحيح-التي تليها-البرمجة:
 - **XGrammar / llguidance。**محركات اللغة الخالية من السياقات. تعالج مخطط JSON التكراري.
 - **vLLM guided decoding。**通過 الخطوط المخططات XGrammar أو lm-format-enforcer 后端内置 `guided_json`.`guided_regex`.`guided_choice`.`guided_grammar`.
 - **Instructor。**على أساس Pydantic من أي LLM لفافاتها‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
@@ -211,7 +211,7 @@ tags: [nlp, llm, structured-output]
 |------|------------|----------|
 | Constrained decoding | 强制有效输出 | 在每个生成步骤 mask invalid-token logits。 |
 | Logit processor | 执行约束的东西 | 函数：`(logits, state) -> masked_logits`。 |
-| FSM | Finite-state machine | 编译后的 grammar 表示；O(1) valid-next-token 查询。 |
+| FSM | Finite-state machine | 编译后的 grammar 表示；$O(1)$ valid-next-token 查询。 |
 | CFG | Context-free grammar | 能处理 recursion 的 grammar；比 FSM 更慢但表达力更强。 |
 | Schema field order | 它重要吗？ | 重要，first field 会形成承诺；始终把 reasoning 放在 answer 之前。 |
 | Guided decoding | vLLM 对它的称呼 | 同一概念，集成进 inference server。 |

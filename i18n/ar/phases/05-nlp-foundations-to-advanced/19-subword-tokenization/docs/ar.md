@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-                                                                                                                                                                                                                                                              
+朴素实现是 $O(n \cdot \lvert \text{merges} \rvert)$ توليد تنفيذ ((تيكتونات、HF Tokenizers) باستخدام البحث عن الرتبة المدمجة 和 صفوف الأولوية،
 
 ### 步骤 3: 实践中的 SentencePiece
 

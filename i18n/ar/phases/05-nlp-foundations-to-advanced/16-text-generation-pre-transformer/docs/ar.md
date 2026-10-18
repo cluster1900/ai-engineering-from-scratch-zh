@@ -21,8 +21,8 @@
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})` ثابتة`n`(عادةً تكرار باستخدام 3,4 جرام باستخدام 4)
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。**任何 تدريب لم يظهر n-grams في المدينة الحصول على صفر احتمالات ∙ 2007 دراسة حول براون كوربوس وجدت، حتى في 4 غرام 模型، هناك 30% من الاحتفاظ 4 غرام في التدريب لم يظهر ∙ لا تفعل تسريحة، لا يمكن تقييمها في أي من المواد الحقيقية ∙
@@ -40,8 +40,8 @@ P(w | context) = count(context, w) / count(context)
 
 **评估：perplexity。**في مجموعات الاختبارات المُتَمَرَّدة، كل كلمة تتسم بمعدل احتمالات التخفيف المتوسط.
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 
