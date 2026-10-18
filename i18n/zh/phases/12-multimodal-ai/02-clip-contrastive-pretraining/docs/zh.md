@@ -32,10 +32,10 @@
 
 两个塔都把输出正常化到单位长度.`cos(f(x), g(y)) = f(x)^T g(y)`,我知道.
 
-对于一个包含N 个的组件,构建形状为`(N, N)`的相似性矩阵`S`其他:
+对于一个包含$N$个(图片,标题) 双子的批量,构建形状 为 `(N, N)`的相似性矩阵`S`其他:
 
-```
-S[i, j] = cos(f(x_i), g(y_j)) / tau
+```math
+S[i, j] = \cos(f(x_i), g(y_j)) / \tau
 ```
 
 其中`tau`是学习得到的温度 ((CLIP初始化为0.07;在日记空间中学习)
@@ -54,7 +54,7 @@ loss = (loss_i2t + loss_t2i) / 2
 
 ### 温度
 
-`tau`控制软max的尖度──低tau →尖分布,具有硬负面挖矿效果──高tau →软,所有样本都会贡献──CLIP 学习日志(1/tau),并进行剪辑以防崩──SigLIP 2 固定初始tau,并改用学习偏见──
+`tau`控制软max的敏度.$\tau$具有强度负面的挖矿效果.$\tau$软,所有样本都会贡献――CLIP 学习 $\log(1/\tau)$进行剪切以防崩.$\tau$没有改用学到的偏见.
 
 ### 为什么sigmoid 扩展性更好(SigLIP)
 
@@ -62,8 +62,8 @@ loss = (loss_i2t + loss_t2i) / 2
 
 标签 用元素智能的标签 替代软max:对每对`(i, j)`输出是二进制分类,判断这是匹配对吗?正分类标签是横向,其他所有都是负面.
 
-```
-L = -1/N sum over (i, j) [ y_ij log sigmoid(S[i,j]) + (1-y_ij) log sigmoid(-S[i,j]) ]
+```math
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 如果`i == j`则`y_ij = 1`否则为0――每对的损失是独立的――不需要全部收集――每个GPU 计算自己的本地块并求和――SigLIP 2可以低成本扩展到32k-512k批量,而CLIP 会需要按比例增加通信――
@@ -127,7 +127,7 @@ multimodal-fusion
 
 3. 为猫与狗 构建一个零射击分类器.`a photo of a {class}`和 `a picture of a {class}`△在100张测试图像上测量精度――模板的组合是否优于单个模板?
 
-4. 计算 512-GPU、批量 32k 运行时,软max InfoNCE 与 sigmoid 双向通信成本──哪个按 O N) 尺度,哪个按 O N^2 尺度?引用 SigLIP 第4节──
+4. 计算512GPU、批量32k运行时,软max InfoNCE与sigmoid对称通信成本──哪个按$O(N)$按哪个尺度$O(N^2)$标签: 标签: 标签: 标签: 标签: 标签: 标签: 标签: 标签: 标签: 标签:
 
 5. 阅读OpenCLIP扩展规则论文 ((arXiv:2212.07143,Cherti等.) 根据图表复现他们关于数据扩展的结论:在固定模型尺寸下,ImageNet零截图准确性与训练数据尺寸之间的日志线性关系是什么?
 

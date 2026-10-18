@@ -36,28 +36,28 @@ ColPali 的修复方式:跳过OCR,直接对页面图像做嵌入式──使用C
 
 科尔伯特 (Khattab & Zaharia, arXiv:2004.12832) 是一种文本检索方法. 它不是为每一个文档生成一个向量,而是为每一个代币生成一个向量.
 
-- 查询代币 获得各自的嵌入式向量)
-- 文件代币 获得嵌入式向量,通常会缓存)
-- 评分 = 对查询代币求和,每个查询代币取所有文档代币 中 cosine相似性的最大值:Σ_i max_j cos(q_i,d_j) 』
+- 查询代币 获得各自的嵌入式$N_q$矢量) 
+- 文件代币 获得嵌入式($N_d$矢量通常会被缓存) ⋅
+- 评分 = 对查询代币 求和,每个查询代币 取所有文档代币 中 cosine相似性的最大值:$\sum_i \max_j \cos(q_i, d_j)$,我知道.
 
 这就是MaxSim操作.每个查询代币会选择最匹配的文档代币.最终的分数是这些值的总和.
 
-优点:回忆强,能处理术语级语义――缺点:每个文档需要N_d向量,存储昂贵――
+优点:回忆强,能处理术语级语义――缺点:每个文档 需要$N_d$传输器,存储量
 
 ### 鱼
 
 们的图像是很像的.
 
-- 每一页由PaliGemma(ViT +语言)编码为补丁嵌入:每页 N_p 矢量──
-- 每个用户查询 (文字) 被编码为查询标志嵌入:N_q 矢量.
-- 评分 = Σ_i max_j cos(q_i, p_j),也就是在查询文本标记和页面图像补丁上做MaxSim。
+- 每一页由PaliGemma(ViT +语言)编码为补丁嵌入:每页 $N_p$矢量
+- 每个用户查询 (文字) 被编码为查询标志嵌入:$N_q$矢量
+- 评分 = $\sum_i \max_j \cos(q_i, p_j)$通过查询文字标记和页面图像补丁上做MaxSim.
 - 通过总分数检索的顶级页面.
 
 在文件吞时间:用PaliGemma对每页做嵌入,存储所有补丁嵌入. 在查询时间:对查询代币做嵌入,对所有已存储的页面嵌入 计算MaxSim,返回顶级k页面.
 
 优点:在视觉丰富的文档上,端到端比文本RAG高20-40%──每个补丁向量 捕获局部布局和内容──
 
-缺点:每页 N_p 补丁 × 4 字节浮动 × D-dim 矢量 = 存储 增长很快――可通过 PQ / OPQ 量化缓解――
+缺点:每页$N_p$补丁 × 4 字节的浮动 × $D$通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化缓解──可通过PQ/OPQ量化量化缓解──可通过
 
 ### 素和素
 
@@ -129,7 +129,7 @@ mm-maxsim
 
 1. 一份200页的年度报告,每页729个补丁,128-dimemb,4字节浮游物――计算原料存储和PQ压缩的存储――8x
 
-2. 求和捕获了哪些简单的平均相似性 捕获未到的信息?
+2. 马克西姆是$\sum_i \max_j \cos(q_i, p_j)$,这个求和捕获了什么简单的平均相似性?
 
 3. 如果改为字面级建索引,就像ColBERT一样,会发生什么变化?有什么交易?
 
@@ -144,7 +144,7 @@ mm-maxsim
 | Late interaction | "ColBERT-style" | 使用 per-token 或 per-patch embeddings + MaxSim 做 retrieval，而不是 single doc Vector |
 | MaxSim | "Max-over-patches" | 对每个 query token，选择 similarity 最高的 document token；跨 query 求和 |
 | Bi-encoder | "Single-vector" | 每个 document 一个 Vector；更快，但会丢失粒度 |
-| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 N_p Vectors；storage cost 增长，但 recall 提升 |
+| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 $N_p$ Vectors；storage cost 增长，但 recall 提升 |
 | Patch embedding | "Page feature" | 来自 VLM encoder 的每个 image patch 的一个 Vector，按页 cached |
 | ViDoRe | "Vision doc bench" | ColPali 用于 visual document retrieval 的 benchmark suite |
 | PQ quantization | "Product quantization" | 在缩小 storage 约 8x 的同时保持 Vector similarity 的压缩方法 |
