@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "Which rule applies to every analysis target in lessons 32 to 36?",
+      "question": "第 32 至 36 课的所有分析目标都必须遵守哪条规则？",
       "options": [
-        "The target is a program you wrote and compiled yourself",
-        "The target is a program with a published source map",
-        "The target is a program smaller than one megabyte",
-        "The target is any program installed on your machine"
-      ],
-      "correct": 0,
-      "explanation": "The track analyzes only code you own. That keeps every lesson inside the authorization rules of 17 U.S.C. 1201(f), Directive 2009/24/EC, Sega, and Connectix."
-    },
-    {
-      "stage": "check",
-      "question": "A symbol in a relocatable object has st_value 0x10 and st_shndx 2, and section 2 has sh_offset 0x40 and sh_addr 0. Where are its bytes in the file?",
-      "options": [
-        "At file offset 0x50, the section offset plus the value",
-        "At file offset 0x42, the section index plus the value",
-        "At file offset 0x10, because st_value is a file offset",
-        "At file offset 0x40, the start of its section"
-      ],
-      "correct": 0,
-      "explanation": "In an object st_value is an offset inside the symbol's section. The file offset is sh_offset + st_value - sh_addr, here 0x40 + 0x10 - 0 = 0x50."
-    },
-    {
-      "stage": "check",
-      "question": "A record in .rela.text reads offset 0x36, R_X86_64_PC32, .rodata+0x10, and the lea instruction that holds the field ends at 0x3a. Where does the lea point after linking?",
-      "options": [
-        "At .rodata+0x36, the offset of the field",
-        "At .rodata+0x10, the addend names the target",
-        "At .text+0x10, relocations always point into the patched section",
-        "At .rodata+0x14, since S + A - P is added to the end of the instruction"
-      ],
-      "correct": 3,
-      "explanation": "The processor adds the stored value to 0x3a. The stored value is S + A - P with P = 0x36, so the result is .rodata + 0x10 + 4 = .rodata + 0x14."
-    },
-    {
-      "stage": "check",
-      "question": "Which structure does the ELF loader read to map an executable into memory?",
-      "options": [
-        "The string table, found through e_shstrndx",
-        "The program header table, found through e_phoff",
-        "The symbol table, found through .symtab",
-        "The section header table, found through e_shoff"
-      ],
-      "correct": 1,
-      "explanation": "Program headers are the execution view. A stripped executable can have no section header table at all and still run."
-    },
-    {
-      "stage": "post",
-      "question": "How does a Mach-O reader find the length of a function from an nlist_64 entry?",
-      "options": [
-        "It reads the n_desc field, which stores the function size in bytes",
-        "It takes the next symbol address in the same section minus this one",
-        "It reads the size from the section_64 record that contains the symbol",
-        "It reads the size from the LC_SYMTAB command, one field per symbol"
-      ],
-      "correct": 1,
-      "explanation": "nlist_64 has n_strx, n_type, n_sect, n_desc, and n_value, and no size field. The ELF st_size has no Mach-O counterpart in an object file."
-    },
-    {
-      "stage": "post",
-      "question": "Why do the lesson tests compare the reader with captured llvm-objdump text instead of running the tool?",
-      "options": [
-        "Because captured text parses faster than running the tool in each test",
-        "Because llvm-objdump cannot read relocatable objects without a Linux sysroot",
-        "Because the comparison runs on any machine and the oracle cannot drift",
-        "Because the course forbids every external tool, including the compiler"
+        "目标必须是已公开源码映射的程序",
+        "目标必须是小于一兆字节的程序",
+        "目标必须是你自己编写并编译的程序",
+        "目标可以是你机器上安装的任何程序"
       ],
       "correct": 2,
-      "explanation": "The fixture holds the tool output from one known tool version. The tests need no tool installed, and a later tool release cannot change what the reader is compared against."
+      "explanation": "本学习路线仅分析你拥有的代码。这样可使每节课都处于《美国法典》第 17 编第 1201(f) 条、2009/24/EC 指令以及 Sega 和 Connectix 案确立的授权规则范围内。"
+    },
+    {
+      "stage": "check",
+      "question": "某个可重定位目标文件中的符号，其 st_value 为 0x10，st_shndx 为 2；第 2 节的 sh_offset 为 0x40，sh_addr 为 0。该符号的字节位于文件中的什么位置？",
+      "options": [
+        "文件偏移 0x50，即节偏移加上该符号的值",
+        "文件偏移 0x42，即节索引加上该符号的值",
+        "文件偏移 0x40，即该符号所在节的起点",
+        "文件偏移 0x10，因为 st_value 就是文件偏移"
+      ],
+      "correct": 0,
+      "explanation": "在目标文件中，st_value 是符号在所属节内的偏移。文件偏移为 sh_offset + st_value - sh_addr，此处为 0x40 + 0x10 - 0 = 0x50。"
+    },
+    {
+      "stage": "check",
+      "question": ".rela.text 中一条记录的偏移为 0x36，类型为 R_X86_64_PC32，目标为 .rodata+0x10；包含该字段的 lea 指令结束于 0x3a。链接后，这条 lea 指向哪里？",
+      "options": [
+        ".text+0x10，因为重定位总是指向被修补的节内部",
+        ".rodata+0x36，即该字段的偏移",
+        ".rodata+0x10，因为加数指定了目标",
+        ".rodata+0x14，因为 S + A - P 会加到指令结束地址上"
+      ],
+      "correct": 3,
+      "explanation": "处理器将字段中存储的值加到 0x3a 上。该值为 S + A - P，其中 P = 0x36，因此结果为 .rodata + 0x10 + 4 = .rodata + 0x14。"
+    },
+    {
+      "stage": "check",
+      "question": "ELF 加载器读取哪种结构来将可执行文件映射到内存？",
+      "options": [
+        "通过 e_shoff 找到的节头表",
+        "通过 e_phoff 找到的程序头表",
+        "通过 .symtab 找到的符号表",
+        "通过 e_shstrndx 找到的字符串表"
+      ],
+      "correct": 1,
+      "explanation": "程序头提供执行视图。剥离后的可执行文件即使完全没有节头表，也仍然可以运行。"
+    },
+    {
+      "stage": "post",
+      "question": "Mach-O 读取器如何根据 nlist_64 条目确定函数的长度？",
+      "options": [
+        "从 LC_SYMTAB 命令中读取大小，每个符号对应一个字段",
+        "从包含该符号的 section_64 记录中读取大小",
+        "读取 n_desc 字段，其中以字节为单位存储函数大小",
+        "用同一节中下一个符号的地址减去当前符号的地址"
+      ],
+      "correct": 3,
+      "explanation": "nlist_64 包含 n_strx、n_type、n_sect、n_desc 和 n_value，没有大小字段。在 Mach-O 目标文件中，没有与 ELF 的 st_size 对应的字段。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么本课测试将读取器的结果与预先保存的 llvm-objdump 文本比较，而不是直接运行该工具？",
+      "options": [
+        "因为解析预先保存的文本比每次测试都运行工具更快",
+        "因为课程禁止使用任何外部工具，包括编译器",
+        "因为没有 Linux sysroot 时，llvm-objdump 无法读取可重定位目标文件",
+        "因为这样在任何机器上都能进行比较，且判定基准不会漂移"
+      ],
+      "correct": 3,
+      "explanation": "测试夹具保存了某个已知工具版本的输出。测试不需要安装该工具，而且后续工具版本也无法改变读取器用于比较的判定基准。"
     }
   ]
 }
