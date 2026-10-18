@@ -10,7 +10,7 @@
 
 ## Học mục tiêu
 - Thông qua các matrix chuyển đổi sẽ thấp và B) Thêm vào các lớp chú ý của mô hình được đào tạo trước để thực hiện LoRA
-- 计算 LoRA 相比 đầy đủ điều chỉnh của các tham số节省:rank r、d_model 维度时, tập luyện là 2*r*d 个参数, chứ không phải d^2
+- 计算 LoRA 相比 đầy đủ điều chỉnh tinh tế 的参数节省:rank $r$$d_{\text{model}}$维度时, tập luyện là $2 \cdot r \cdot d$个参数, thay vì $d^2$
 - Sử dụng QLoRA(4 bit quàn bộ hóa cơ sở + LoRA bộ chuyển đổi) tinh chỉnh một mô hình, làm cho nó thích hợp tiêu thụ cấp độ bộ nhớ GPU
 - Để phân tích trọng lượng LoRA 合并回 cơ sở mô hình dùng để triển khai,并比较带适配器与不带适配器的推断速度
 
@@ -34,21 +34,21 @@ Edward Hu và đồng nghiệp của Microsoft đã xuất bản LoRA vào thán
 
 数学如下──一个标准线性层 计算:
 
-```
+```math
 y = Wx
 ```
 
-Trong đó W là một d_out x d_in matrix. Đối với 4096x4096 dự đoán chú ý, đó là 16,777,216 个参数.
+Trong số đó $W$Là một $d_{\text{out}} \times d_{\text{in}}$Đối với 4096x4096 dự đoán chú ý, đó là 16,777,216 个参数.
 
-LoRA 结 W,并添加一个低排分解:
+LoRA 结 $W$,并添加一个低排分解:
 
-```
+```math
 y = Wx + BAx
 ```
 
-Trong đó B là (d_out x r), A là (r x d_in)。 xếp hạng r 远小于 d - thường là 8、16 hoặc 32。
+Trong số đó $B$ $(d_{\text{out}} \times r)$- Tôi không biết.$A$ $(r \times d_{\text{in}})$❖ Đơn vị $r$远小于 $d$- Thường là 8 ∼ 16 hoặc 32 ∼
 
-Đối với lớp 4096x4096 trên của r=16:
+Đối với lớp trên 4096x4096$r=16$- Có thể là:
 - Các nguyên tố: 4996 x 4096 = 16,777,216
 - LoRA 参数:(4096 x 16) + (16 x 4096) = 65,536 + 65,536 = 131,072
 -  giảm tỷ lệ:131,072 / 16,777,216 = 0,78%
@@ -73,18 +73,18 @@ A 使用随机 Gaussian 初始化──B 初始化为零── nghĩa là đóng
 
 ### Tỷ lệ quy mô: Alpha
 
-LoRA  đưa ra một yếu tố quy mô alpha, để kiểm soát mức độ ảnh hưởng của việc cập nhật thấp:
+LoRA 引入一个扩展因素 $\alpha$, để kiểm soát mức độ ảnh hưởng của việc cập nhật cấp thấp:
 
-```
-y = Wx + (alpha / r) * BAx
+```math
+y = Wx + \frac{\alpha}{r} \cdot BAx
 ```
 
-Khi alpha = r 时, quy mô là 1x。当 alpha = 2r(常见默认值) Khi, quy mô là 2x。
+Khi đó$\alpha = r$时, quy mô là 1x.$\alpha = 2r$(常见默认值) 时, quy mô là 2x。 hyperparameter này 独立于基础学习率 控制 LoRA path 的学习率。
 
 实践建议:
-- alpha = 2 * rank 是常见社区约定(原始论文 在多数实验中使用 alpha = rank)
-- alpha = xếp hạng  cung cấp 1x quy mô, bảo trì nhưng ổn định
-- Alpha cao hơn có nghĩa là mỗi bước có nhiều cập nhật hơn, có thể tăng tốc nhận, cũng có thể dẫn đến sự bất ổn
+- $\alpha = 2 \cdot \text{rank}$是常见社区约定(原始论文 在多数实验中使用 $\alpha = \text{rank}$(văn)
+- $\alpha = \text{rank}$ cung cấp 1x quy mô, bảo trì nhưng ổn định
+- Hơn nữa $\alpha$Có nghĩa là mỗi bước mới hơn, có thể tăng tốc nhận, cũng có thể dẫn đến sự bất ổn
 
 ### Lần sử dụng LoRA
 
@@ -101,7 +101,7 @@ Một biến thể có nhiều lớp tuyến tính. Bạn không cần phải ch
 
 ### Chọn cấp độ
 
-cấp độ r  kiểm soát khả năng biểu hiện thích ứng:
+cấp $r$控制适应的表达能力:
 
 | Rank | Trainable Params (per layer) | Best For |
 |------|---------------------------|----------|
@@ -112,7 +112,7 @@ cấp độ r  kiểm soát khả năng biểu hiện thích ứng:
 | 64 | 524,288 | 大多数任务收益递减 |
 | 128 | 1,048,576 | 很少值得使用 |
 
-Hu et al. 表明, đối với các nhiệm vụ đơn giản, r=4 đã có thể nắm bắt được phần lớn các thích ứng. r=8 和 r=16 là lựa chọn phổ biến nhất trong thực tế.
+Hu et al. 表明, đối với các nhiệm vụ đơn giản,$r=4$已能捕获大部分适应性──$r=8$和 $r=16$là lựa chọn phổ biến nhất trong thực tế.$r=64$很少改善质量,并开始失去LoRA 优势──
 
 ### QLoRA: Quantization 4-bit + LoRA
 
@@ -145,7 +145,7 @@ QLoRA có ba công nghệ đóng góp:
 | QLoRA r=16 (NF4) | 47.5 | 6.61 | 13.4 |
 | QLoRA r=64 (NF4) | 48.1 | 6.70 | 14.2 |
 
-LoRA ở r=16 时,在大多数基准上与全细调相差不到1%──QLoRA ở r=16 时又损失零点几百分点──QLoRA ở r=64 时基本匹配全细调,同时使用90% bộ nhớ──
+LoRa ở $r=16$Trong hầu hết các điểm chuẩn, điểm chuẩn trên với độ chỉnh hoàn chỉnh tương đương với 1%──QLoRA trong$r=16$时又损失零点几百分点──QLoRA 在 $r=64$时基本匹配 hoàn chỉnh, đồng thời sử dụng ít bộ nhớ 90%
 
 ### Chi phí thực tế
 
@@ -180,7 +180,7 @@ Sau khi tập luyện, bạn có hai thứ: mô hình cơ bản và một bộ c
 
 1. **保持分离**: tải mẫu cơ sở, trên đó tải bộ chuyển đổi.
 
-2. **永久合并**:计算 W' = W + (alpha/r) * BA,并把结果保存为一个新的完整模型──合并模型与原始模型 大小相同──没有推断过费──没有适配器 需要管理──
+2. **永久合并**:计算 $W' = W + (\alpha/r) \cdot BA$,并把结果保存为一个新的全模型――合并模型与原始模型大小相同――没有推断过费――没有适配器 需要管理――
 
 Nếu dịch vụ nhiều nhiệm vụ (客户支持适配器,代码适配器,翻译适配器), giữ phân离. Nếu triển khai mô hình riêng lẻ, thì hợp并.
 
@@ -524,11 +524,11 @@ model.save_pretrained("./lora-adapter")
 | LoRA | "Efficient fine-tuning" | Low-Rank Adaptation：冻结 base weights，训练两个小 matrices A 和 B，其乘积近似完整 weight update |
 | QLoRA | "Fine-tune on a laptop" | Quantized LoRA：以 4-bit NF4 加载 base model，在其上用 fp16 训练 LoRA adapters，从而让 7B fine-tuning 能在 6GB VRAM 中完成 |
 | Rank (r) | "How much the model can learn" | A 和 B matrices 的内部维度；控制表达能力与参数量之间的权衡 |
-| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；alpha/r 会缩放 adaptation 对 final output 的贡献 |
+| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；$\alpha/r$ 会缩放 adaptation 对 final output 的贡献 |
 | NF4 | "4-bit quantization" | Normal Float 4：一种 4-bit data type，其 quantization levels 位于 normal distribution quantiles 上，对 Neural Network weights 最优 |
 | Adapter | "The small trained part" | 作为单独文件保存的 LoRA A 和 B matrices（10-100MB），可以加载到 base model 的任意副本之上 |
 | Target modules | "Which layers to LoRA" | 注入 LoRA adapters 的特定 linear layers（q_proj、v_proj 等） |
-| Merging | "Bake it in" | 计算 W + (alpha/r) * BA 并替换原始 weight，从而消除 inference 时的 adapter overhead |
+| Merging | "Bake it in" | 计算 $W + (\alpha/r) \cdot BA$ 并替换原始 weight，从而消除 inference 时的 adapter overhead |
 | Paged optimizers | "Don't OOM during training" | 当 GPU memory 耗尽时，将 optimizer states（Adam momentum、variance）offload 到 CPU |
 | Catastrophic forgetting | "Fine-tuning broke everything else" | 更新所有 weights 导致 model 丢失先前学到的能力 |
 

@@ -91,20 +91,20 @@ Trong bài học này, chúng tôi sẽ sử dụng TF-IDF để xây dựng b�
 
 **Cosine similarity**: hai vector 之间角的余弦值──范围从 -1(相反) 到 1(完全相同)──忽略大小, chỉ chú ý đến hướng──这是RAG's默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: nguyên thủy sản phẩm bên trong. Các vector lớn hơn sẽ nhận được số lượng lớn hơn. Khi kích thước  mang thông tin có ích.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**: không gian vector Trung tâm đường thẳng khoảng cách── khoảng cách越小 = 越相似── đối với độ lớn 差异敏感──
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 Sự tương đồng của cosine là tiêu chuẩn lựa chọn. Nó thông qua quy mô 归一化,能优雅 xử lý các tài liệu có độ dài khác nhau. Khi người ta nói  vector search, gần như luôn chỉ về sự tương đồng của cosine.

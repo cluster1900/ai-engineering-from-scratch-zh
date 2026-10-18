@@ -864,7 +864,7 @@ API hàng cho tất cả các token  cung cấp giá giảm 50% cố định. K�
 #     return None
 ```
 
-Trong môi trường sản xuất, sử dụng chỉ số vector ((Redis Vector Search、Pinecone hoặc pgvector) thay thế đường bộ quét。 đường bộ quét được áp dụng cho <1,000 条 mục。 vượt quá quy mô này, sử dụng ANN(cấp gần nhất hàng xóm) để thực hiện O(log n) tìm kiếm。
+Trong môi trường sản xuất, sử dụng chỉ số vector ((Redis Vector Search、Pinecone hoặc pgvector) thay thế đường bộ quét。 đường bộ quét được áp dụng cho <1,000 条 mục。 vượt quá quy mô này sau đó, sử dụng ANN(cấp gần nhất hàng xóm) để thực hiện$O(\log n)$tìm kiếm.
 
 ## 交付 nó
 

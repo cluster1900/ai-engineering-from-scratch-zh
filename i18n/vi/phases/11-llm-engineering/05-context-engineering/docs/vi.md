@@ -21,7 +21,7 @@ Claude Opus 4.7 có 200K Token  cửa sổ(beta trung bình là 1M) ――GPT-5 
 
 下面是一个编码助手的真实拆分──System prompt:500 Token──50 个工具的工具的定义:8,000 Token──检索文件:4,000 Token──对话史(10轮):6,000 Token──当前用户查询:200 Token──生成预算(最大输出):4,000 Token──总计:22,700 Token──这只占 128K 窗口的18%──
 
-Nhưng sự chú ý không phải là theo chiều dài ngữ cảnh 线性扩展―― có mô hình ngữ cảnh mã thông báo 128K phải trả giá 2 lần chú ý 成本(n^2), mặc dù hầu hết các mô hình sản xuất sử dụng hiệu quả cao (Cơ quan 变体)  Quan trọng hơn,Tăng tốc độ xác thực sẽ giảm đi――Nước trong một thử nghiệm Haystack cho thấy, mô hình rất khó tìm thấy được đặt trong ngữ cảnh dài.
+Nhưng sự chú ý không phải theo chiều dài ngữ cảnh 线性扩展──拥有128K Token context模型要付出第二次注意 成本(变压器 中是$O(n^2)$, mặc dù hầu hết các mô hình sản xuất sử dụng hiệu quả cao (trọng tâm) 变体) ⋅ quan trọng hơn,Tỷ lệ tìm kiếm 准确会下降──Needle trong một thử nghiệm Haystack cho thấy, mô hình rất khó tìm thấy trong bối cảnh dài 信息间的信息──Liu et al.
 
 实际教训是:可用200K Token并非意味着使用200K Token 就有效──精心选的10K Token context 往往胜过直接倾倒的100K Token context──文本工程是在文本窗口内最大化信号-噪音比的学科──
 

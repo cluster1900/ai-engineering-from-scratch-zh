@@ -1017,4 +1017,4 @@ Python 代码(`code/prompt_engineering.py`) là một vòng kiểm tra độc l�
 - [Shin et al., 2023 -- "Prompt Engineering a Prompt Engineer"](https://arxiv.org/abs/2311.05661) sử dụng LLM tự động tối ưu hóa lời nhắc, là cơ sở của meta-phục hồi
 - [LMSYS Chatbot Arena](https://chat.lmsys.org/)LLMs của thực thời gian mù bài kiểm tra so sánh nền tảng, bạn có thể xuyên mô hình kiểm tra cùng một nhanh chóng,并投票选择更好的答案
 - [DAIR.AI Prompt Engineering Guide](https://www.promptingguide.ai/)详尽的快速 技术目录,包含示例;;零射、少射、CoT、ReAct、自连性); là các chuyên gia sử dụng để hiểu rộng hơn Prompt engineering 表面的参考资料──
-- [Anthropic prompt library](https://docs.anthropic.com/en/prompt-library) theo trường hợp sử dụng 策划 quen thuộc; thể hiện các mô hình cấu trúc có thể giao hàng trong sản xuất
+- [Claude 提示词编写最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)Anthropic 关于提示词结构的指南,附有具体示例,取代了前先的快速库──
