@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## 学习目标
-- 通过功率代实现SVD,并解释U、Sigma 和 V^T的几何含义
+- 通过功率代实现SVD,并解释$U$,我知道.$\Sigma$和 $V^T$的几何含义
 - 应用缩短SVD 进行图像压缩,并衡量压缩率与重建差异之间的关系
 - 通过SVD计算摩尔-罗斯伪逆,以求解超定最小平方
 - 将SVD与PCA、推系统 (置因素) 和NLP中置语义分析联系起来
@@ -23,17 +23,14 @@
 
 每个矩阵,无论形状如何,都会按顺序执行三个操作:旋转,缩放,旋转.
 
-```
-A = U * Sigma * V^T
-
-      m x n     m x m    m x n    n x n
-     (任意)    (旋转)   (缩放)   (旋转)
+```math
+\underset{\substack{m \times n \\ \text{（任意形状）}}}{A} = \underset{\substack{m \times m \\ \text{（旋转）}}}{U} \cdot \underset{\substack{m \times n \\ \text{（缩放）}}}{\Sigma} \cdot \underset{\substack{n \times n \\ \text{（旋转）}}}{V^T}
 ```
 
-给定任意矩阵A,SVD将其分解为:
-- 在空间中的向量
-- 随着每个轴进行缩放 (拉伸或压缩)
-- 结果将转到输出空间 (m 维)
+给定任意矩阵$A$根据SVD的规定,
+- $V^T$旋转输入空间$n$维) 中的向量
+- $\Sigma$沿每个轴进行缩放 (拉伸或压缩)
+- $U$将结果转到输出空间$m$维)
 
 ```mermaid
 graph LR
@@ -41,35 +38,35 @@ graph LR
     B -->|"U\n(旋转)"| C["输出空间 (m-dim)\n旋转到输出\n方向"]
 ```
 
-可以理解. 你把一个矩阵交给SVD. 它会告诉你:这个矩阵会先使用V^T旋转输入球体,然后使用Sigma将其拉伸成球体,最后使用U旋转这个球体.
+现在你把一个矩阵交给SVD.$V^T$旋转输入球体,然后使用$\Sigma$将它拉伸成球,最后使用$U$旋转这个球. 奇异的值就是这个球的各轴的长度.
 
 ### 完全的分解
 
-对于形状为m x n 的矩阵 A:
+对于形状为$m \times n$的矩阵$A$其他:
 
+```math
+\begin{aligned}
+& A = U \cdot \Sigma \cdot V^T \\[6pt]
+& \text{其中：} \\
+& \quad U \text{ 为 } m \times m, \text{，正交 } (U^T U = I) \\
+& \quad \Sigma \text{ 为 } m \times n, \text{，对角矩阵（对角线为奇异值）} \\
+& \quad V \text{ 为 } n \times n, \text{，正交 } (V^T V = I) \\[6pt]
+& \text{奇异值 } \sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0 \\
+& \text{其中 } r = \mathop{\mathrm{rank}}(A)
+\end{aligned}
 ```
-A = U * Sigma * V^T
 
-其中：
-  U     是 m x m，正交 (U^T U = I)
-  Sigma 是 m x n，对角（奇异值位于对角线上）
-  V     是 n x n，正交 (V^T V = I)
-
-奇异值 sigma_1 >= sigma_2 >= ... >= sigma_r > 0
-其中 r = rank(A)
-```
-
-U 的列称为左奇异向量. V 的列称为右奇异向量.
+$U$的列称为左奇异向量.$V$的列称为右奇异向量──$\Sigma$它们总是非负,并且按照惯例下列.
 
 ### 左单向量"",单向值"",右单向量
 
 每个SVD组成部分都有不同的几何含义.
 
-**Right singular vectors（V 的列）：**它们为输入空间 (R^n) 构成一组的正规基础.它们是输入空间中的方向,矩阵将这些方向映射到输出空间中的正交方向.
+**Right singular vectors（$V$ 的列）：**它们为输入空间$\mathbb{R}^n$) 构成一个组的正规基础.它们是输入空间中的方向,矩阵将这些方向映射到输出空间中的正交方向.
 
-**Singular values（Sigma 的对角线）：**它们是缩小的因子. 第一个奇异值告诉你,矩阵沿着第一个右边奇异向量 方向将向量 拉伸多少――奇异值为零意味着矩阵将把该方向完全压──
+**Singular values（$\Sigma$ 的对角线）：**它们是缩小的因子. 第一个奇异值告诉你,矩阵沿着第一个右边奇异向量 方向将向量 拉伸多少――奇异值为零意味着矩阵将把该方向完全压──
 
-**Left singular vectors（U 的列）：**它们为输出空间 (R^m) 构成一组正规基础.
+**Left singular vectors（$U$ 的列）：**它们为输出空间$\mathbb{R}^m$) 构成一组正规基础――第一个左奇异向量是第一个右奇异向量经过缩放后在输出空间中落到的方向――
 
 它们之间的关系:
 
@@ -95,20 +92,20 @@ A = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T + ... + sigma_r * u_r * v_r^T
 
 这种形式是低级近似的基础. 每个项目都增加了一个层结构. 第一,捕获最重要的单一模式. 第二,捕获最重要的第二模式.
 
-```
-Rank-1 approx:    A_1 = sigma_1 * u_1 * v_1^T
-                  (捕获主导模式)
-
-Rank-2 approx:    A_2 = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T
-                  (捕获两个最重要的模式)
-
-Rank-k approx:    A_k = top k 项之和
-                  (根据 Eckart-Young theorem，这是最优的)
+```math
+\begin{aligned}
+\text{秩 1 近似：} \quad & A_1 = \sigma_1 u_1 v_1^T \\
+& \text{（捕捉主导模式）} \\[6pt]
+\text{秩 2 近似：} \quad & A_2 = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T \\
+& \text{（捕捉最重要的两个模式）} \\[6pt]
+\text{秩 }k\text{ 近似：} \quad & A_k = \text{前 } k \text{ 项之和} \\
+& \text{（由 Eckart-Young 定理可知最优）}
+\end{aligned}
 ```
 
 ### 关于自己的组成的关系
 
-奇异值和奇异向量直接来自A^T A 和A^T的 eigenvalues 与 eigenvectors.
+它们与自主构成有着深厚的联系.$A$奇异值和奇异向量直接来自$A^T A$和 $A A^T$的自值与自向量──
 
 ```
 A^T A = V * Sigma^T * U^T * U * Sigma * V^T
@@ -132,41 +129,41 @@ A A^T = U * Sigma * V^T * V * Sigma^T * U^T
 
 这位联系人告诉你三个事情:
 1. 奇异值总是实数且非负数,它们是正面半定义矩阵的本值的平方根.
-2. 通过A^T A来计算SVD,你可以做自己的组合,但这会导致平方条件数并损失数值精度.
-3. 当A 是方阵且为对称正半确时,SVD 和自身构成是同一件事.
+2. 你可以通过对$A^T A$为了计算SVD,做自己的组合,但这会导致平方条件数并损失数值精度.
+3. 当 当$A$方阵和为对称正面半确式时,SVD 和自身组合是同一件事.
 
 ### 缩短的SVD:低级近似
 
-埃卡特-年轻-米尔斯基定理表明,A 的最佳级别近似在弗罗贝尼斯规范和光谱规范下) 通过只能保留顶级 k 个奇异值及其对应向量得到:
+埃卡特-年轻-米尔斯基定理表明,$A$最好的$\text{rank-}k$像在弗罗贝尼斯规范和光谱规范下) 通过只能保留上$k$个奇异值及其对应向量得到:
 
+```math
+\begin{aligned}
+& A_k = U_k \cdot \Sigma_k \cdot V_k^T \\[6pt]
+& \text{其中：} \\
+& \quad U_k \text{ 为 } m \times k \quad \text{（前 } k \text{ 列，来自 } U\text{）} \\
+& \quad \Sigma_k \text{ 为 } k \times k \quad \text{（左上角 } k \times k \text{ 子块，来自 } \Sigma\text{）} \\
+& \quad V_k \text{ 为 } n \times k \quad \text{（前 } k \text{ 列，来自 } V\text{）} \\[6pt]
+& \text{近似误差} = \sigma_{k+1} \quad \text{（谱范数下）} \\
+& \text{近似误差} = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_r^2} \quad \text{（Frobenius 范数下）}
+\end{aligned}
 ```
-A_k = U_k * Sigma_k * V_k^T
 
-其中：
-  U_k     是 m x k  (U 的前 k 列)
-  Sigma_k 是 k x k  (Sigma 的左上 k x k 块)
-  V_k     是 n x k  (V 的前 k 列)
-
-近似误差 = sigma_{k+1}  (在 spectral norm 下)
-         = sqrt(sigma_{k+1}^2 + ... + sigma_r^2)  (在 Frobenius norm 下)
-```
-
-这不仅仅是一个好的近似――它是可证明的最佳级 k近似――没有其他级 k矩阵能更接近A――
+这不仅仅是好的近似.$k$几乎没有其他东西.$\text{rank-}k$矩阵更接近$A$,我知道.
 
 | Component | Relative magnitude | Kept in rank-3 approx? |
 |-----------|-------------------|------------------------|
-| sigma_1 | 最大 | 是 |
-| sigma_2 | 大 | 是 |
-| sigma_3 | 中等偏大 | 是 |
-| sigma_4 | 中等 | 否（误差） |
-| sigma_5 | 中等偏小 | 否（误差） |
-| sigma_6 | 小 | 否（误差） |
-| sigma_7 | 很小 | 否（误差） |
-| sigma_8 | 极小 | 否（误差） |
+| $\sigma_1$ | 最大 | 是 |
+| $\sigma_2$ | 大 | 是 |
+| $\sigma_3$ | 中等偏大 | 是 |
+| $\sigma_4$ | 中等 | 否（误差） |
+| $\sigma_5$ | 中等偏小 | 否（误差） |
+| $\sigma_6$ | 小 | 否（误差） |
+| $\sigma_7$ | 很小 | 否（误差） |
+| $\sigma_8$ | 极小 | 否（误差） |
 
-保留 top 3:A_3 捕获三个最大的奇异值──误差 = 剩余值(sigma_4 到 sigma_8) ⋅
+留在前三位:$A_3$捕获三个最大的奇异值――误差 = 剩余值$\sigma_4$到了$\sigma_8$
 
-如果奇异值很快衰退,一个很小的 k 就能捕获矩阵的大部分信息.
+如果奇异值很快减弱,一个很小的.$k$如果衰退很慢,这个矩阵就没有低级结构.
 
 ### 使用SVD 进行图像压缩
 
@@ -208,9 +205,9 @@ rank k 的 SVD：
 核心思想:这个评分矩阵具有低级别的.用户的品味并非完全独立的.
 
 对于填后的评分,将其分解为:
-- U:隐藏因素空间 中的用户配置文件
-- 号:每个隐形因素的重要性
-- 视频中部电影介绍
+- $U$: 隐藏因素空间 中的用户配置文件
+- $\Sigma$隐形因素的重要性
+- $V^T$电影介绍 中的电影介绍
 
 用户对某部电影的预测评分,就是该用户配置文件与电影配置文件的点产品 (由奇异值加权) .
 
@@ -250,23 +247,23 @@ LSA是最早成功的方法之一从原始文本中捕获语义相似性. 它是
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 接近零 | 可忽略 |
-| sigma_5 | 接近零 | 可忽略 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 接近零 | 可忽略 |
+| $\sigma_5$ | 接近零 | 可忽略 |
 
 **有噪声信号的奇异值（噪声会加到所有分量上）：**
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 小 | 噪声 |
-| sigma_5 | 小 | 噪声 |
-| sigma_6 | 小 | 噪声 |
-| sigma_7 | 小 | 噪声 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 小 | 噪声 |
+| $\sigma_5$ | 小 | 噪声 |
+| $\sigma_6$ | 小 | 噪声 |
+| $\sigma_7$ | 小 | 噪声 |
 
 ```mermaid
 graph TD
@@ -280,7 +277,7 @@ graph TD
 
 ### 通过SVD进行伪逆转
 
-摩尔-罗斯伪逆转 A+ 将矩阵逆转推广到非方阵和奇异矩阵――SVD 让它的计算变得非常简单――
+摩尔-罗斯伪逆$A^+$将矩阵逆转推广到非方阵和奇异矩阵――SVD 让它的计算变得非常简单――
 
 ```
 如果 A = U * Sigma * V^T，那么：
@@ -296,7 +293,7 @@ A+ = V * Sigma+ * U^T
 对于 Sigma (m x n)：  Sigma+ 是 (n x m)
 ```
 
-如果Ax = b 没有精确解 ((超定系统),那么x = A+b 就是最小的平方 解 ((最小化 解 解 Ax - b 时的时间)
+假方体可以求解最小方体问题.$Ax = b$没有精确解答,那么$x = A^+ b$就是最小的平方 解 最小化$\lVert Ax - b \rVert$
 
 ```
 超定系统（方程数多于未知数）：
@@ -314,7 +311,7 @@ A+ = V * Sigma+ * U^T
 
 ### 数字稳定性 优势
 
-计算A^T A 的自定义组合 会平方奇异值(A^T A 的自定义值是 sigma_i^2)。 这会平方条件数,从而增加数值差距──
+计算$A^T A$的自定义会平方奇异值$A^T A$的本值是$\sigma_i^2$)──这会为平方条件数,从而增加数值差距──
 
 ```
 示例：
@@ -329,7 +326,7 @@ A+ = V * Sigma+ * U^T
                    （额外损失 6 位精度）
 ```
 
-现代SVD算法 (Golub-Kahan双诊断) 直在 A 上工作,从不构建 A^T A.`np.linalg.svd(A)`没有什么.`np.linalg.eig(A.T @ A)`,我知道.
+现代SVD 算法(Golub-Kahan双诊断) 直在$A$上工作,从不构造$A^T A$这就是为什么你应该永远优先使用它.`np.linalg.svd(A)`没有什么.`np.linalg.eig(A.T @ A)`,我知道.
 
 ### 连接到PCA
 
@@ -365,7 +362,7 @@ svd-rank-reconstruction
 ## 构建它
 ### 步骤1:使用功率代的SVD从零开始
 
-想路:要找到最大的奇异值及其向量,可以对A^T A(或A^T) 使用功率代――然后对矩阵做了缩,并重复寻找下一个奇异值――
+想找到最大的奇异值及其向量,可以对$A^T A$(或 $A A^T$之后对矩阵做了缩,并重复寻找下一个奇异值.
 
 ```python
 import numpy as np
@@ -507,7 +504,7 @@ julia svd.jl
 - `outputs/skill-svd.md`- 一个用于理解什么时候以及如何在真实项目中应用SVD的技能
 
 ## 练习
-1. 从零实现完整SVD,不使用功率代――改为计算A^T A的自成组合 来得到V 和奇异值,然后计算U =A V Sigma^{-1}──将数值精度与你的功率代和NumPy 进行比较――
+1. 从零实现完整的SVD,不使用功率代.$A^T A$自己的组成得到$V$奇异值,然后计算$U = A V \Sigma^{-1}$△将数值精度与你的功率代版本以及NumPy进行比较.
 
 2. 加载一张真实灰度图像 ((或将一张图像转换为灰度) ⋅在排列1、5、10、25、50、100下压缩它──对每个排列,计算压缩率和相对差异──找到图像在视觉上变得可接受的排列──
 
@@ -515,22 +512,34 @@ julia svd.jl
 
 4. 创建一个100x50的文档术语矩阵,包含3个合成主题――每个主题有5个关联词项――添加噪音――应用SVD,并验证前3个奇异值明显大于其余奇异值――将文档投影到3D隐形空间,并检查来自同一主题的文档是否聚集在一起――
 
-5. 生成一个干净的低级矩阵 (排名 3,大小 50x40),并在不同水平下添加高斯噪音 (sigma = 0.1、0.5、1.0、2.0) .通过从 k=1到 40 扫描并测量对干净矩阵的重建错误,找到最好的截断级别.
+5. 生成一个干净的低级矩阵(排名 3,大小 50x40),并不同水平下添加高斯噪音($\sigma$通过 声水平,对每个噪音水平进行了$k$扫描并测量与干净矩阵重建差异相比,找到最优的截断排名.$k$如何随着噪音水平的变化而来.
+
+### 提示
+
+**练习 1。**计算$A^T A$用`np.linalg.eigh`得到其特征值和特征向量,并按特征值降级序列.$U \Sigma V^T$能重构$A$并将差异与`svd_from_scratch`和 `np.linalg.svd`比较
+
+**练习 2。**调用每一个级别`truncated_svd`用`reconstruct`重构图像,用`compression_ratio(m, n, k)`计算大小──相对差异必须随着排名的增长而下降;第一个看不出明显的块状失真排名就是答案──
+
+**练习 3。**标记缺失单元格,使用行平均值填充,再使用`truncated_svd`和 `reconstruct`重构排名 3 近似──随后测量结果:统计超出评分范围的预测数量,并印出已知单元格中最大变化──排名 3 近似不保证这两种性质,因此如果需要合法评分,应将预测剪切到评分范围──
+
+**练习 4。**为每一个主题分配5个词项组成的块,使该主题文档在这些词项上有较高的数量,再加入少量噪音――打印奇异值:前3个必须远大于第四个――然后根据主题给3D 坐标色,检查每个主题是否形成一个组――
+
+**练习 5。**乘以50x3随机矩阵和3x40随机矩阵,得到净矩阵,再针对每一个$\sigma$加入噪音. 对每个.$k$级比较$k$重构与干净矩阵;预期低噪音时最优$k$接近3个,高噪声时更小.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| SVD | “Factor 任意 Matrix” | 将 A 分解为 U Sigma V^T，其中 U 和 V 是正交的，Sigma 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
-| Singular value | “这个 component 有多重要” | Sigma 的第 i 个对角元素。衡量 Matrix 沿第 i 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
-| Left singular vector | “输出方向” | U 的一列。第 i 个右奇异Vector 经过 sigma_i 缩放后映射到的输出空间方向。 |
-| Right singular vector | “输入方向” | V 的一列。输入空间中的一个方向，Matrix 会将其映射到第 i 个左奇异Vector（经过 sigma_i 缩放后）。 |
-| Truncated SVD | “Low-rank approximation” | 只保留 top k 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 rank-k 近似（Eckart-Young theorem）。 |
+| SVD | “Factor 任意 Matrix” | 将 $A$ 分解为 $U \Sigma V^T$，其中 $U$ 和 $V$ 是正交的，$\Sigma$ 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
+| Singular value | “这个 component 有多重要” | $\Sigma$ 的第 $i$ 个对角元素。衡量 Matrix 沿第 $i$ 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
+| Left singular vector | “输出方向” | $U$ 的一列。第 $i$ 个右奇异Vector 经过 $\sigma_i$ 缩放后映射到的输出空间方向。 |
+| Right singular vector | “输入方向” | $V$ 的一列。输入空间中的一个方向，Matrix 会将其映射到第 $i$ 个左奇异Vector（经过 $\sigma_i$ 缩放后）。 |
+| Truncated SVD | “Low-rank approximation” | 只保留 top $k$ 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 $\text{rank-}k$ 近似（Eckart-Young theorem）。 |
 | Rank | “真实维度” | 非零奇异值的数量。告诉你 Matrix 实际使用了多少个独立方向。 |
-| Pseudoinverse | “广义逆” | V Sigma+ U^T。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
-| Condition number | “对误差有多敏感” | sigma_max / sigma_min。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
+| Pseudoinverse | “广义逆” | $V \Sigma^+ U^T$。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
+| Condition number | “对误差有多敏感” | $\sigma_{\max} / \sigma_{\min}$。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
 | Latent factor | “隐藏变量” | SVD 发现的 low-rank space 中的一个维度。在推荐中，latent factor 可能对应类型偏好。在 NLP 中，它可能对应一个主题。 |
 | Frobenius norm | “Matrix 的总大小” | 所有元素平方和的平方根。等于所有奇异值平方和的平方根。用于衡量近似误差。 |
-| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank k，truncated SVD 会在所有可能的 rank-k Matrix 中最小化近似误差。 |
+| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank $k$，truncated SVD 会在所有可能的 $\text{rank-}k$ Matrix 中最小化近似误差。 |
 | Power iteration | “找到最大的 eigenvector” | 反复用 Matrix 乘以一个随机 Vector 并归一化。会收敛到具有最大 eigenvalue 的 eigenvector。它是许多 SVD 算法的构建模块。 |
 
 ## 延伸阅读

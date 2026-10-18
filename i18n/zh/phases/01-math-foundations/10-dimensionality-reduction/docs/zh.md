@@ -38,9 +38,9 @@ Dimension    Avg distance ratio (max/min between random points)
 1000         ~1.02
 ```
 
-**体积集中在角落。**在100维中,几乎所有的体积都在角落里,远离中心. 数据点将扩散到边缘,而你的模型在内部区域会缺少数据.
+**体积集中在角落。** $d$维单位超立方 有$2^d$个角. 在100维中,几乎所有的体积都在角落里,远离中心.
 
-**你需要指数级更多的数据。**为了在一个空间中保持相同的样本密度,从2D到20D意味着你需要10^18倍的数据――你永远不会有足够的数据――降低的维度将数据密度带来可处理的范围――
+**你需要指数级更多的数据。**为了在一个空间中保持相同的样本密度,从2D到20D意味着你需要$10^{18}$倍的数据――你永远不会有足够的数据――降低的维度将使数据密度带来可处理的范围――
 
 ### 查找重要的方向
 
@@ -88,7 +88,7 @@ PC4          0.89          0.089              0.925
 
 1. **Threshold.**保持足够多的组件,解释90-95%的差异.
 2. **Elbow method.**绘制每个组件的解释变异――寻找明显的快速下降点――
-3. **Downstream performance.**将PCA 用作预处理――扫描 k,并测量模型的精度――最佳 k 是精度 进入平台期的位置――
+3. **Downstream performance.**将PCA 用作预处理.$k$并测量模型的精度.$k$是准确的 进入平台期的位置.
 
 ### 保护社区
 
@@ -101,7 +101,7 @@ t-分布式的静态邻居嵌入式 (t-SNE) 是为可视化设计的. 它将高�
 - 不同运行会产生不同的布局.
 - 参数控制考虑多少邻居 (典型范围:5-50)
 - 输出中集群之间的距离没有意义.
-- 在大型数据集上很慢.默认是O (n) 2.
+- 在大型数据集上很慢.默认是.$O(n^2)$,我知道.
 
 ### 快速,更好的全球结构
 
@@ -135,27 +135,27 @@ t-分布式的静态邻居嵌入式 (t-SNE) 是为可视化设计的. 它将高�
 核心PCA在内核函数诱导的高维功能空间中应用PCA,而显然不计算该空间中的坐标――这就是内核技巧,也就是SVM背后的同一个思想――
 
 算法:
-1. 计算内核矩阵K,其中K_ij = k(x_i,x_j)
+1. 计算内核矩阵$K$在其中$K_{ij} = k(x_i, x_j)$
 2. 在功能空间中中核矩阵
 3. 对中心内核矩阵做自己的组合
-4. 顶部的自向量按1/sqrt的自值值缩放就是投影
+4. 顶部自向量按$1/\sqrt{\text{eigenvalue}}$缩放)就是预测
 
 常见内核函数:
 
 | Kernel | Formula | Good for |
 |--------|---------|----------|
-| RBF (Gaussian) | exp(-gamma * \|\|x - y\|\|^2) | 大多数 nonlinear data、smooth manifolds |
-| Polynomial | (x . y + c)^d | Polynomial relationships |
-| Sigmoid | tanh(alpha * x . y + c) | Neural network-like mappings |
+| RBF (Gaussian) | $\exp(-\gamma \lVert x - y \rVert^2)$ | 大多数 nonlinear data、smooth manifolds |
+| Polynomial | $(x \cdot y + c)^d$ | Polynomial relationships |
+| Sigmoid | $\tanh(\alpha x \cdot y + c)$ | Neural network-like mappings |
 
 何時使用内核PCA而不是标准PCA:
 
 | Criterion | Standard PCA | Kernel PCA |
 |-----------|-------------|------------|
 | Data structure | Linear subspace | Nonlinear manifold |
-| Speed | O(min(n^2 d, d^2 n)) | O(n^2 d + n^3) |
+| Speed | $O(\min(n^2 d, d^2 n))$ | $O(n^2 d + n^3)$ |
 | Interpretability | Components are linear combinations of features | Components lack direct feature interpretation |
-| Scalability | Works on millions of samples | Kernel matrix is n x n, memory-limited |
+| Scalability | Works on millions of samples | Kernel matrix is $n \times n$, memory-limited |
 | Reconstruction | Direct inverse transform | Requires pre-image approximation |
 
 经典例子:2D 中的圆点――两圈点,一圈在另一圈内――标准PCA将它们投影到同一条线上,这对分类没有用处――带着RBF内核的内圈PCA将内圈和外圈映射到不同的区域,使它们线性分离――
@@ -165,22 +165,24 @@ t-分布式的静态邻居嵌入式 (t-SNE) 是为可视化设计的. 它将高�
 你把784维缩小到50维.你丢了什么?
 
 测量重建错误:
-1. 将数据投影到 k 维:X_reduced = X @ W_k
-2. 重建:X_hat = X_reduced @ W_k^T
-3. 计算 MSE:平均水平
+1. 将数据投影到$k$维:$X_{\text{reduced}} = X W_k$
+2. 重建:$\hat{X} = X_{\text{reduced}} W_k^T$
+3. 计算 金融市场:$\text{mean}((X - \hat{X})^2)$
 
 对于PCA,重建错误与解释变异有明确关系:
 
-```
-Reconstruction error = sum of eigenvalues NOT included
-Total variance = sum of ALL eigenvalues
-Fraction lost = (sum of dropped eigenvalues) / (sum of all eigenvalues)
+```math
+\begin{aligned}
+\text{重建误差} &= \text{未保留的特征值之和} \\
+\text{总方差} &= \text{全部特征值之和} \\
+\text{损失比例} &= \frac{\text{丢弃的特征值之和}}{\text{全部特征值之和}}
+\end{aligned}
 ```
 
 每个组件的解释变量比是:
 
-```
-explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
+```math
+\text{explained\_ratio}_k = \frac{\text{eigenvalue}_k}{\sum \text{所有特征值}}
 ```
 
 总结解释分数的变异,将得到"肘部"曲线.
@@ -188,7 +190,7 @@ explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
 - 累积变异 跨越你的门的位置(通常是0.90或0.95)
 - 下游任务执行 进入平台期的位置
 
-重建错误不仅用于选择k.你可以将其用于异常检测:重建错误高的样本是异常值,它们不符合学习的子空间.
+重建错误 不仅用于选择$k$△可用它用于异常检测:重建错误 高的样本是异常值,它们不符合学习的子空间.
 
 
 ```figure
@@ -354,6 +356,14 @@ for k in [10, 30, 50, 100, 200]:
 
 3. 取一个有50个功能,但只有5个信息功能的数据集`sklearn.datasets.make_classification`生成) ・应用PCA,并检查解释了变量曲线 是否正确识别出数据实际上是五维的──
 
+### 提示
+
+**练习 1。**阅读 `PCA`类中`inverse_transform`计算10、50和200个主要成分对应的模型.`reconstruction_error`由于主要成分数量增加,误差必须降低.
+
+**练习 2。**在同一数据集中合适`sklearn.manifold.TSNE`只有改变`perplexity`保持相同的`random_state`较低的困惑只会考虑少量的邻居,因此形成较小,紧密的群体;较高的困惑会考虑更多的邻居,因此形成更大的,更平滑的群体.
+
+**练习 3。**调用`make_classification(n_features=50, n_informative=5, n_redundant=45)`拟合`PCA`冗余特征是有效特征的线性组合,因此曲线在5个主要成分处接近1.0.`n_redundant=0`其他45个特征是独立的噪音,曲线不会趋于平坦.
+
 ## 关键词
 
 | Term | What people say | What it actually means |
@@ -361,8 +371,8 @@ for k in [10, 30, 50, 100, 200]:
 | Curse of dimensionality | "Too many features" | 随着维度增长，距离、体积和数据密度都会表现得反直觉。Models 需要指数级更多的数据来补偿。 |
 | PCA | "Reduce dimensions" | 旋转你的坐标系，使各轴与 maximum variance 的方向对齐，然后丢弃 low-variance axes。 |
 | Principal component | "An important direction" | Covariance matrix 的一个 eigenvector。Feature space 中数据变化最大的方向。 |
-| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 k 个 ratios 求和，就能看到 k 个 components 保留了多少信息。 |
-| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry (i,j) 衡量 feature i 和 feature j 如何共同变化。Diagonal entries 是各自的 variances。 |
+| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 $k$ 个 ratios 求和，就能看到 $k$ 个 components 保留了多少信息。 |
+| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry $(i,j)$ 衡量 feature $i$ 和 feature $j$ 如何共同变化。Diagonal entries 是各自的 variances。 |
 | t-SNE | "That cluster plot" | 一种 nonlinear 方法，通过保留 pairwise neighborhood probabilities 将高维数据映射到 2D。适合可视化，不适合 preprocessing。 |
 | UMAP | "Faster t-SNE" | 一种基于 topological data analysis 的 nonlinear 方法。既保留 local structure，也保留部分 global structure。比 t-SNE 更容易扩展。 |
 | Perplexity | "A t-SNE knob" | 控制每个点考虑的有效邻居数量。低 perplexity 聚焦非常 local 的结构。高 perplexity 捕获更宽泛的模式。 |

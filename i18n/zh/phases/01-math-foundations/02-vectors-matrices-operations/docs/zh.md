@@ -40,11 +40,10 @@ w = [1, 0, -2]    -- 一个 3D Vector
 
 ### 矩阵:数字网格
 
-矩阵是一个2D网格──由行和列组成──一个m x n矩阵有m 行和n 列──
+矩阵是一个2D网格──由行和列组成──一个.$m \times n$子有$m$行和 $n$列列
 
-```
-A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
-    | 4  5  6 |
+```math
+A = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \quad \text{2x3 Matrix（2 行，3 列）}
 ```
 
 在神经网络中,重量矩阵将输入向量转换为输出向量――一个有784个输入和128个输出的层使用128x784重量矩阵――
@@ -80,16 +79,14 @@ A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
 
 元素:相同位置相乘──两个矩阵必须具有相同的形状──
 
-```
-| 1  2 |   | 5  6 |   | 5  12 |
-| 3  4 | * | 7  8 | = | 21 32 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} * \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 5 & 12 \\ 21 & 32 \end{bmatrix}
 ```
 
 矩阵乘法:行和列的点产品.
 
-```
-| 1  2 |   | 5  6 |   | 1*5+2*7  1*6+2*8 |   | 19  22 |
-| 3  4 | @ | 7  8 | = | 3*5+4*7  3*6+4*8 | = | 43  50 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} @ \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\ 3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8 \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
 ```
 
 不同运算,不同的结果,不同的规则.
@@ -319,13 +316,21 @@ print(matrix + bias)
 
 3. **构建一个 two-layer network。**只使用你的矩阵类(不使用NumPy),创建一个两个层神经网络:输入 (3) ->隐藏 (4) ->输出 (2)──初始化随机权重,运行一次前进传递,并验证所有形状都正确──
 
+### 提示
+
+**练习 1。**对于三个矩阵计算`A @ A.inverse_2x2()`对于每个元素和单位矩阵的比较,误差应在`1e-9`以内──对于行列式为0 的矩阵,例如 [[1, 2], [2, 4],`inverse_2x2`会抛出`ValueError`这就是预期结果.
+
+**练习 2。**计算3x3 代数余子式矩阵,将其转换得到与矩阵的伴随,再将每个元素除为`determinant()`查查`A @ A_inv`得到单位矩阵,并且每个元素与`np.linalg.inv(A)`的差异不超过`1e-9`,我知道.
+
+**练习 3。**相乘前先写出每个矩阵的形状:与`demo_neural_network_layer`像在中间,`W1`为4x3,`W2`为2x4──3x1的输入必须得到4x1的隐藏向量和2x1的输出──
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Vector | “一支箭头” | 有序数字列表。在 AI 中：高维空间中的一个点。 |
 | Matrix | “一张数字表” | 一种 linear transformation。它把 vectors 从一个空间映射到另一个空间。 |
 | Matrix multiply | “就是把数字相乘” | 第一个 Matrix 的每一行与第二个 Matrix 的每一列之间的 dot products。顺序很重要。 |
-| Transpose | “翻转它” | 交换 rows 和 columns。把一个 m x n Matrix 变成 n x m。在 Backpropagation 中很关键。 |
+| Transpose | “翻转它” | 交换 rows 和 columns。把一个 $m \times n$ Matrix 变成 $n \times m$。在 Backpropagation 中很关键。 |
 | Determinant | “来自 Matrix 的某个数字” | 衡量 Matrix 对面积（2D）或体积（3D）的缩放程度。零表示这个 transformation 压扁了一个维度。 |
 | Inverse | “撤销这个 Matrix” | 反转该 transformation 的 Matrix。只有 determinant 不为零时才存在。 |
 | Identity matrix | “无聊的 Matrix” | Matrix 中等价于乘以 1 的对象。用于 residual connections（ResNets）。 |

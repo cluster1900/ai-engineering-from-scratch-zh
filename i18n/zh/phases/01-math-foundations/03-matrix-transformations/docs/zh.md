@@ -45,7 +45,7 @@ graph LR
 
 ### 转动
 
-角为图的二维旋转会保持距离和角度不变――它让每个点沿圆弧移动――
+角度为$\theta$两维旋转会保持距离和角度不变.
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 在3D中,你会围绕一个轴旋转.
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### 规模化
@@ -123,8 +117,8 @@ graph LR
 ```
 
 切割矩阵:
-- `Shx = [[1, k], [0, 1]]`将 x 平移 k * y
-- `Shy = [[1, 0], [k, 1]]`将 y 平移 k * x
+- `Shx = [[1, k], [0, 1]]`将$x$平移 $k \cdot y$
+- `Shy = [[1, 0], [k, 1]]`将$y$平移 $k \cdot x$
 
 ### 思考
 
@@ -196,7 +190,7 @@ Eigenvector [1, -1] with eigenvalue 1:
 
 ### 自身组成
 
-如果一个矩阵有n个线性无关的自向量,它可以分解:
+如果一个矩阵有$n$个线性无关的自向量,可以分解:
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### 为什么自有价值 重要
 
-**PCA。**根据本值排序,保留前 k 个,你就得到了维度减少.
+**PCA。**变量矩阵的自向量就是主要组件――自值值会告诉你每个组件 捕获了多少变量――按自值排序,保留前$k$个,你已经得到了维度减少.
 
 **稳定性。**在复发网络和动态系统中,大小 > 1 的自值值会导致输出爆炸.
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤3:从零计算的本值(2x2)
 
-对于一个2x2矩阵`[[a, b], [c, d]]`求解: 求解:`lambda^2 - (a+d)*lambda + (ad - bc) = 0`,我知道.
+对于一个2x2矩阵`[[a, b], [c, d]]`求解: 求解:$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$,我知道.
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 
 3. 创建三个变换的组合,按 [1.5,0.8] 尺度旋转,使用 kx=0.3 切割),并将其应用到按圆形排列的8个点上――打印变换前后的坐标――计算组合矩阵的决定因素,并验证它等于各决定因素的乘积――
 
+### 提示
+
+**练习 1。**用`mat_vec_mul`将`rotation_2d`,我知道.`scaling_2d`和 `shearing_2d`适用于每一个顶点. 对于旋转,计算变前后的4条边长和2条对角线长度;它们都必须保持不变.
+
+**练习 2。**写出特征方程$\lambda^2 - (\text{trace})\lambda + \det = 0$检查两个结果之和等于行列式7) 乘积等于行列式 (10)`eigenvalues_2x2`和 `np.linalg.eigvals`比较
+
+**练习 3。**构建三个矩阵,用`shearing_2d(0.3, 0)`按应用顺序构建剪切矩阵`mat_mul`结果将作用于8个点.$(\cos\theta, \sin\theta)$△旋矩阵的行列式为 1,切割矩阵的行列式也为 1,因此组合矩阵的`det_2x2`必须等于$1.5 \times 0.8 = 1.2$,我知道.
+
 ## 关键术语
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 

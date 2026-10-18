@@ -33,7 +33,7 @@ graph LR
     T3 --> T4["4D Tensor<br/>rank 4<br/>shape: (B,C,H,W)"]
 ```
 
-总元素数 = 所有尺寸的乘积――形状`(2, 3, 4)`包含`2 * 3 * 4 = 24`个元素.
+总元素数 = 所有尺寸的乘积――形状`(2, 3, 4)`包含$2 \cdot 3 \cdot 4 = 24$个元素.
 
 ### 深度学习中的压形状
 
@@ -229,7 +229,7 @@ batch_B = np.random.randn(4, 5, 2)
 batch_mm = np.einsum("bij,bjk->bik", batch_A, batch_B)
 ```
 
-一个缩减的计算成本是所有指数尺寸的乘积.`bij,bjk->bik`其他:`32 * 128 * 64 * 128 = 33,554,432`乘以加量次
+一个收缩的计算成本是所有指数尺寸的乘积.$B=32$,我知道.$I=128$,我知道.$J=64$,我知道.$K=128$的`bij,bjk->bik`其他:$32 \cdot 128 \cdot 64 \cdot 128 = 33{,}554{,}432$乘以加量次
 
 ### 步骤 7:通过一数的注意力机制
 
@@ -313,6 +313,16 @@ torch.einsum("ik,kj->ij", A, B)
 3. **Hard -- Build einsum from scratch.**实现一个基础`einsum(subscripts, *tensors)`函数,至少支持:dot产品`i,i->`)、矩阵乘以`ij,jk->ik`)、外产品`i,j->ij`) 和转换`ij->ji`)――解析字符串,识别合约指数,并遍历所有指数组合――将你的结果与 `np.einsum`对于比较.
 
 4. **Hard -- Attention shape tracker.**编写一个函数,输入`batch_size`,我知道.`seq_len`,我知道.`embed_dim`和 `num_heads`并打印多头注意力 每一步的精确形状:输入,Q/K/V投影,头分,注意力分数,软最大重量,加权总和,头合并,输出投影.`demo_attention_einsum()`输出 进行验证――
+
+### 提示
+
+**练习 1。**用`list(range(24))`构建子,使每个元素显示自己的位置.`reshape`后打印`flatten().to_list()`检查结果仍然按照0到23的顺序进行.
+
+**练习 2。**只有当两个大小相等,或者其中一个为1时,该维度才能传播,因此先检查这个规则,不满足时抛出错误.`(3, 1)`和 `(1, 4)`检查结果`[i][j]`元素是否等于`a[i][0] + b[0][j]`并将与NumPy比较完整的结果.
+
+**练习 3。**按 `->`拆分下标. 在输入中出现但不在输出中出现的字母代表求和索引,因此遍历每个字母的所有取值并累加到输出位置. 在小型随机数组上,使用`np.allclose(mine, np.einsum(...))`测试全部四种情况――
+
+**练习 4。**从头部大小`embed_dim // num_heads`开始,并断言`embed_dim % num_heads == 0`△注意力分数的形状 为`(batch_size, num_heads, seq_len, seq_len)`结果与此形状以及`demo_attention_einsum()`打印的形状比较
 
 ## 关键术语
 | Term | What people say | What it actually means |

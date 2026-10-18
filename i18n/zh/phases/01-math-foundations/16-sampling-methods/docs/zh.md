@@ -39,7 +39,7 @@
 
 ### 统一的随机抽样
 
-每种样本采集方法都从这里开始. 统一的随机数生成器会在 [0, 1) 中产生数值,其中任意等长子区间都有相等概率.
+每种样本采集方法都从这里开始.$[0, 1)$中产生数值,其中任意等长子区间都有相等概率.
 
 ```
 U ~ Uniform(0, 1)
@@ -51,7 +51,7 @@ Properties:
   Var(U) = 1/12
 ```
 
-要从 n个项目中分散集合中均抽样,生成 U 并返回地板(n * U) ――要从连续区间 [a, b] 中抽样,计算 a + (b - a) * U。
+需要$n$个项目的分散集合中均的样本,生成$U$并回来了$\lfloor n U \rfloor$要从连续区间$[a, b]$中采样,计算$a + (b - a) U$,我知道.
 
 关键洞察:单个统一的随机数恰好包含在任意分布中生成一个样本的随机性.
 
@@ -69,7 +69,7 @@ Properties:
   F maps the real line to [0, 1]
 ```
 
-如果 U ~ 均的(0, 1),那么 X = F_inverse(U) 服从目标分布──
+逆转CDF 会把概率映射回数值.$U \sim \text{Uniform}(0, 1)$现在,$X = F^{-1}(U)$服从目标分布.
 
 ```
 Algorithm:
@@ -95,9 +95,9 @@ Since (1 - U) and U have the same distribution:
   x = -ln(u) / lambda
 ```
 
-当你能写出封闭形式的F_inverse 时,这种方法效果完美――对于正常分布,没有封闭形式的反向CDF,因此我们使用其他方法 ((Box-Muller,或数值近似) 』――
+当你能写出封闭的形式$F^{-1}$时,这种方法效果完美.对于正常分布,没有封闭形式的反向CDF,因此我们使用其他方法.
 
-**离散版本：**对于分离分布,把CDF构成累积数,生成U,然后找到累积数超过U的第一个指数.`sample_categorical`的工作方式.
+**离散版本：**对于分离分布,把CDF构建为累计总量,生成$U$之后找到累计的总数超过$U$第一个指数. 这就是第六课中.`sample_categorical`的工作方式.
 
 ### 拒绝样本
 
@@ -117,15 +117,15 @@ Algorithm:
 Acceptance rate = 1/M
 ```
 
-在高维中,接受率会下降,因为大部分的提案量都会被拒绝.
+绑定$M$越紧,接受率越高,在低维度 (−1) 中,拒绝采样结果很好. 在高维度,接受率会下降,因为大部分的提案量都会被拒绝.
 
-**示例：从 truncated normal 中 sampling。**在缩小范围上使用统一的建议──包裹M是该区间正常的 PDF 的最大值──
+**示例：从 truncated normal 中 sampling。**在缩短范围上使用统一的建议.$M$是该区间内正常的 PDF 的最大值.
 
-**示例：从 semicircle 中 sampling。**在边缘矩形中均的提案.如果点落在半圆内,则接受.
+**示例：从 semicircle 中 sampling。**在边缘矩形中均的提案.如果点落在半圆内,则接受.$\pi$的方式:接受率等于面积比$\pi/4$,我知道.
 
 ### 重要性样本
 
-有时你不需要来自目标分布 p(x) 的样本――你需要估计下面的期望,而且你有来自另一个分布 q(x) 的样本――
+有时你不需要来自目标分布.$p(x)$您需要估计$p(x)$下一个期望,你有来自另一个分布.$q(x)$它们的样本.
 
 ```
 Goal: estimate E_p[f(x)] = integral of f(x) * p(x) dx
@@ -140,12 +140,12 @@ Estimator:
   E_p[f(x)] ~ (1/N) * sum(f(x_i) * w(x_i))    where x_i ~ q(x)
 ```
 
-在加强学习中非常关键. 在PPO (近距离政策优化) 中,你在旧政策中收集轨迹,但希望优化新政策 pi_new──重要重量是 pi_news) / pi_olds.
+在"增强学习"中非常关键. 在"PPO"中,你在旧政策中.$\pi_{\text{old}}$下收集轨迹,但希望优化新的政策$\pi_{\text{new}}$△重要重量 是$\pi_{\text{new}}(a \mid s) / \pi_{\text{old}}(a \mid s)$PPO会剪辑这些权重,防止新政策 偏离旧政策 太远了.
 
-重要性采样估计器的差异取决于q与p的相似程度. 如果q与p非常不同,少数样本会获得巨大的重量并主导估计.
+重要性样本估计器的差异取决于$q$与$p$类似程度.$q$与$p$非常不同,少数样本会得到巨大的重量并主导估计.
 
-```
-E_p[f(x)] ~ sum(w_i * f(x_i)) / sum(w_i)
+```math
+\mathbb{E}_p[f(x)] \approx \frac{\sum_i w_i \, f(x_i)}{\sum_i w_i}
 ```
 
 ### 蒙特卡罗估计
@@ -183,7 +183,7 @@ Variance of the estimator = Var(f(X)) / N
 
 ### 马科夫链蒙特卡罗 (MCMC):大都会-哈斯廷斯
 
- MCMC 构建一个马科夫链,使其静止分布是目标分布 p(x) ・经过足够多步后,链中样本就像是来自 p(x) 的样本.
+ MCMC 构建一个马科夫链,使其静止分布是目标分布$p(x)$经过足够的步骤后,链中样本就像是来自$p(x)$它们的样本.
 
 ```
 Target: p(x)  (known up to a normalizing constant)
@@ -202,13 +202,13 @@ Metropolis-Hastings algorithm:
   4. Return remaining samples
 ```
 
-对于对称性提案 (q) 对于对称性提案 (q) 对于对称性提案 (q) 对于对称性提案 (q) 对于对称性提案 (q) 对于对称性提案 (q) 对于对称性提案 (q) 对称性建议 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对称性比 (q) 对于对称性比 (q) 对于对称性比 (x) 对于对称性比 (x) 对于对称性比 (x) 对于对称性比 (x) 对于对称性比 (x) 对于对称性比) 则是原始的 Metropolis算法 ()
+对于对称的提案$q(x' \mid x) = q(x \mid x')$),比例会简化为$p(x')/p(x)$这就是原始的都市算法.
 
-**为什么有效。**接受规则保证详细平衡:处于 x 并移动到 x 的概率,等于处于 x 并移动到 x 的概率.
+**为什么有效。**接受规则保证详细平衡:处于$x$并移动到$x'$概率等于在$x'$并移动到$x$的概率――详细平衡意味着$p(x)$是该链的静止分布.
 
 **实践注意事项：**
 - 燃烧:在链中 达到平衡 之前丢弃早期样本
-- 稀释:每隔一个样本保留一个,以减少自动相关性
+- 稀释:每隔$k$个样本保留一个,以减少自动相关性
 - 太小会让链 移动缓慢(高接受,缓慢探索);太大会让大多数提案被拒绝(低接受,停留)
 - 高维中高斯人的最佳接受率约为0.234
 
@@ -227,7 +227,7 @@ Algorithm:
     Sample x_d^{t+1} ~ p(x_d | x_1^{t+1}, x_2^{t+1}, ..., x_{d-1}^{t+1})
 ```
 
-基布斯的样本取样需要你从每个条件分布中取样.
+吉布斯样本 要求你能从每个条件分布$p(x_i \mid x_{-i})$对于很多模型来说,这是非常直接的:
 - 贝叶斯网络:从图结构的条件
 - 斯混合物:条件是斯
 - 单轮模型:每个旋转的条件只依赖于其邻居
@@ -238,7 +238,7 @@ Algorithm:
 
 ### 温度样本采用 (用于LLM)
 
-语言模型 会为词汇 中每个代号输出 logits z_1, ..., z_V──软max 会把它们转换为概率──温度 会在软max 前重新缩放 logits:
+语言模型 会为词汇 中每个标志 输出记录 $z_1, \ldots, z_V$‧软max 会将它们转换为概率‧温度 会在软max 前重新缩小的逻辑:
 
 ```
 p_i = exp(z_i / T) / sum(exp(z_j / T))
@@ -250,20 +250,20 @@ T < 1.0: sharpens the distribution (more confident, less diverse)
 T > 1.0: flattens the distribution (less confident, more diverse)
 ```
 
-**为什么有效。**如果z_1 = 2且z_2 = 1,用T = 0.5 除后得到z_1/T = 4 和z_2/T = 2,使差距变大.经过软max 之后,最高的logit的代币会获得更大的概率份额.
+**为什么有效。**用$T < 1$除了位,会增加位之间的差异.$z_1 = 2$且$z_2 = 1$用$T = 0.5$得到后面$z_1/T = 4$和 $z_2/T = 2$通过软max 后,最高逻辑的代币会获得更大的概率份额.
 
 **实践中：**
-- 率为0.0:贪的解码,最适合事实型问答
-- 适合代码生成的创意性
-- 率: 0.7-1.0:平衡,适合一般对话
-- 创意写作,大脑风暴
-- 越来越随机,通常很少有用
+- $T = 0.0$的解码,最适合事实类型的问答
+- $T = 0.3\text{-}0.7$适合代码生成的创意性
+- $T = 0.7\text{-}1.0$平衡,适合一般对话
+- $T = 1.0\text{-}1.5$创意写作,脑海暴风
+- $T > 1.5$随着时间的推移,通常很少有用.
 
 温度不会改变任何代币是可能的. 它改变分配给每个代币的概率量.
 
 ### 顶部样本
 
-顶级k样本会将选项集合限制在最高概率的 k 个标志,然后重新归结并从该受限集合中样本.
+选民集群将被限制为最高概率的$k$个标志,然后重新归归一化,并从该受限集合中采样.
 
 ```
 Algorithm:
@@ -278,11 +278,11 @@ k = V:  no filtering (standard sampling)
 k = 40: typical setting, removes long tail of unlikely tokens
 ```
 
-问题在于:无论上下文如何,k 都是固定的. 当模型很有把握时,k = 40 仍然允许 39 个替代项. 当模型不确定时,k = 40 个截止合理选择.
+问题在于:无论上下文如何,$k$标记有95%的概率,$k = 40$仍会允许39个替代项──当模型不确定时(概率分散在1000个代币上),$k = 40$截断合理的选择.
 
 ### 顶部 (核) 样本
 
-顶部p样本集 会动态调整候选集合大小――它不是保留固定数量的代币,而是保留累计概率超过p的最小代币集――
+标记的数量不是保留固定的,而是保留累计概率超过$p$最小的标志集合.
 
 ```
 Algorithm:
@@ -332,13 +332,13 @@ Reparameterized sampling:
   Gradients flow through mu and sigma.
 ```
 
-这之所以有效,是因为N(mu,sigma^2) 与mu +sigma *N(0,1) 具有相同的分布.关键洞察是:把随机性移动到一个无参数源 (epsilon),然后把表示样本为参数可微转化.
+这就是有效的,是因为$\mathcal{N}(\mu, \sigma^2)$与$\mu + \sigma \cdot \mathcal{N}(0, 1)$具有相同分布.关键洞察是:把随机性移动到一个无参数源.$\epsilon$),然后把样本表示参数的可微转换.
 
 **在 VAE training loop 中：**
-1. 编码器为每一个输入输出 mu 和 log(sigma^2)
-2. 样本 (N(0,1)
-3. 计算 z = mu + sigma * epsilon
-4. 解码 z 以重建输入
+1. 编码器为每个输入输出$\mu$和 $\log(\sigma^2)$
+2. 样本$\epsilon \sim \mathcal{N}(0, 1)$
+3. 计算$z = \mu + \sigma \epsilon$
+4. 解码$z$以重建输入
 5. 通过步骤 4、3、2、1 进行反扩散(可行,因为步骤 3 是可微的)
 
 没有重构化技巧,VAE就无法使用标准的反扩散训练.
@@ -410,7 +410,7 @@ For piecewise-constant functions, stratified sampling is exact.
 
 ### 连接到扩散模型
 
-通过采样过程生成图像――前进过程 会在T 步中向图像添加高斯噪音,直到它变成纯噪音――反转过程 学习毁,逐步恢复原始图像――
+通过采样过程生成图像――前进过程 会在$T$步中向图像添加高斯噪音,直到它变成纯噪音.
 
 ```
 Forward process (known):
@@ -428,7 +428,7 @@ Reverse process (learned):
 
 与本课程的联系:
 - 每个指责步骤都使用重设方法 (样本噪音,应用定性转换)
-- 控制一种温度调节
+- 噪音时间表$\lbrace \alpha_t \rbrace$控制一种温度缩
 - 训练使用蒙特卡罗估计 来近似 ELBO (证据下限)
 - 扩散模型中的祖先采样是一个马科夫链 (每一步只依赖于当前状态)
 
@@ -454,7 +454,7 @@ def sample_exponential_inverse_cdf(lam):
     return -math.log(u) / lam
 ```
 
-生成10,000个指数样本并验证平均值为1/lambda──
+生成10,000个指数样本并验证平均值为$1/\lambda$,我知道.
 
 ### 步骤2:拒绝采样
 
@@ -481,7 +481,7 @@ def importance_sampling_estimate(f, target_pdf, proposal_pdf, proposal_sample, n
     return total / n
 ```
 
-使用统一提案 估计正常分布 下的 E[X^2]──与已知答案 ((mu^2 + sigma^2) 比较──
+使用统一的建议 估计正常分布 下面$\mathbb{E}[X^2]$△已知答案$\mu^2 + \sigma^2$较量
 
 ### 步骤 4:蒙特卡罗估计 pi
 
@@ -637,36 +637,48 @@ print(f"Sampled token index: {token}")
 你已经从零开始构建了这些方法.
 
 ## 练习
-1. 为缓慢分布实现反向CDF采样――CDF是F(x) =0.5+ arctan(x)/pi──生成10,000个样本,并把历史图与真实的PDF图画在一起――注意重尾 (重尾)
+1. 为缓慢分布实现反向CDF样本化.$F(x) = 0.5 + \arctan(x)/\pi$△生成10,000个样本,并将历史图与真实的PDF图画在一起.
 
 2. 使用拒绝样本,通过统一的(0, 1) 提案 从 Beta(2, 5) 分布 生成样本──把接受的样本与真实Beta PDF 画在一起──理论接受率是多少?
 
-3. 使用蒙特卡罗,使用1000、10,000 和100,000 个样本 估计罪 (x) 从0到pi的积分――比较每个级别的误差――验证误差按O(1/sqrt(N)) 缩放――
+3. 根据蒙特卡洛的数据,使用1000,10,000和100,000个样本.$\sin(x)$从0到$\pi$积分――比较各级的误差――验证误差按$O(1/\sqrt{N})$缩放:
 
-4. 实现大都会-哈斯廷斯,从2D分布中采样,其中 p(x,y) 与 exp(-(x^2 * y^2 + x^2 + y^2 - 8*x - 8*y) / 2);;绘制样本 和链路轨迹──尝试不同的提案标准偏差──
+4. 实现了"都市-哈斯廷斯"的2D分布中样本采集,其中$p(x, y)$比例到$\exp(-(x^2 y^2 + x^2 + y^2 - 8x - 8y) / 2)$△绘制样本和链路轨迹――尝试不同的提案标准偏差――
 
 5. 构建一个完整的文本生成演示:给定一个包含10个词和符号的词汇,使用 (a) 贪、(b) 温度=0.7、((c) 顶-k=3、((d) 顶-p=0.9 生成长度为20个符号的序列──比较 5 次运行中输出多样性──
+
+### 提示
+
+**练习 1。**从$u = F(x)$解出$x$得到了$x = \tan(\pi(u - 0.5))$△检查样本中位数接近0,且约6%的样本满足$\lvert x \rvert > 10$理论概率为$1 - (2/\pi)\arctan(10)$,我知道.
+
+**练习 2。**的密度为$30x(1-x)^4$在众多中$x = 1/5$处求出最大值,并将该值作为`rejection_sample`的$M$△理论接受率为$1/M$对于受理的提案,
+
+**练习 3。**精确值为2――对每一个$n$调用`monte_carlo_integral(math.sin, 0, math.pi, n)`并且使用多种随机种子重复每次实验.$n$增加10倍时,平均差距应减少约$\sqrt{10} \approx 3.2$倍子
+
+**练习 4。**写出目标密度的对数,即$-(x^2 y^2 + x^2 + y^2 - 8x - 8y)/2$传给我`metropolis_hastings_2d`记录每项提议标准差对应的接受率:标准差很小时几乎接受每一步,但移动缓慢;标准差很大时几乎拒绝每一步.
+
+**练习 5。**贪解码 在每一步选择最大的逻辑的索引.`temperature_sample`,我知道.`top_k_sample`和 `top_p_sample`利在所有5次运行中必须产生相同的序列,因此统计每种方法产生的不同序列数量来衡量多样性.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Sampling | “抽取随机值” | 按照 probability distribution 生成数值。所有 generative AI 背后的机制 |
-| Uniform distribution | “所有值同等可能” | [a, b] 中每个值都有相同 probability density 1/(b-a)。所有 sampling methods 的起点 |
-| Inverse CDF | “概率变换” | F_inverse(U) 会把 uniform sample 转换成来自任意已知 CDF 分布的 sample。精确且高效 |
+| Uniform distribution | “所有值同等可能” | $[a, b]$ 中每个值都有相同 probability density $1/(b-a)$。所有 sampling methods 的起点 |
+| Inverse CDF | “概率变换” | $F^{-1}(U)$ 会把 uniform sample 转换成来自任意已知 CDF 分布的 sample。精确且高效 |
 | Rejection sampling | “提出并接受/拒绝” | 从简单 proposal 中生成，按 target/proposal ratio 成比例的概率接受。精确但浪费 samples |
-| Importance sampling | “重新加权 samples” | 使用来自 q(x) 的 samples，通过用 p(x)/q(x) 加权每个 sample，估计 p(x) 下的期望。RL 中 PPO 的核心 |
-| Monte Carlo | “平均 random samples” | 将积分近似为 sample averages。误差 O(1/sqrt(N))，与维度无关 |
+| Importance sampling | “重新加权 samples” | 使用来自 $q(x)$ 的 samples，通过用 $p(x)/q(x)$ 加权每个 sample，估计 $p(x)$ 下的期望。RL 中 PPO 的核心 |
+| Monte Carlo | “平均 random samples” | 将积分近似为 sample averages。误差 $O(1/\sqrt{N})$，与维度无关 |
 | MCMC | “会收敛的 random walk” | 构造一个 Markov chain，使其 stationary distribution 是目标分布。Metropolis-Hastings 是基础算法 |
 | Metropolis-Hastings | “接受上坡，有时接受下坡” | 提出 moves，基于 density ratio 接受。Detailed balance 确保收敛到目标分布 |
 | Gibbs sampling | “一次一个 variable” | 在固定其他 variables 的情况下，从每个 variable 的 conditional distribution 中更新。Acceptance rate 为 100% |
-| Temperature | “置信度旋钮” | 在 softmax 前用 T 除以 logits。T<1 使分布更尖锐（更自信），T>1 使分布更平坦（更多样） |
-| Top-k sampling | “保留最好的 k 个” | 除概率最高的 k 个 Token 外全部置零，重新归一化，然后 sampling。候选集合大小固定 |
-| Nucleus sampling (top-p) | “保留可能性高的那些” | 保留累计概率超过 p 的最小 Token 集合。候选集合大小自适应 |
-| Reparameterization trick | “把随机性移到外部” | 写成 z = mu + sigma * epsilon，其中 epsilon ~ N(0,1)。让 sampling 可微。VAE training 的关键 |
+| Temperature | “置信度旋钮” | 在 softmax 前用 $T$ 除以 logits。$T<1$ 使分布更尖锐（更自信），$T>1$ 使分布更平坦（更多样） |
+| Top-k sampling | “保留最好的 $k$ 个” | 除概率最高的 $k$ 个 Token 外全部置零，重新归一化，然后 sampling。候选集合大小固定 |
+| Nucleus sampling (top-p) | “保留可能性高的那些” | 保留累计概率超过 $p$ 的最小 Token 集合。候选集合大小自适应 |
+| Reparameterization trick | “把随机性移到外部” | 写成 $z = \mu + \sigma \epsilon$，其中 $\epsilon \sim \mathcal{N}(0,1)$。让 sampling 可微。VAE training 的关键 |
 | Gumbel-Softmax | “软 categorical sampling” | 使用 Gumbel noise + 带 temperature 的 softmax，对 categorical sampling 做可微近似 |
 | Stratified sampling | “强制覆盖” | 把 sample space 分成 strata，并从每个 stratum 中 sampling。方差总是低于 naive Monte Carlo |
 | Burn-in | “预热期” | 在 chain 达到其 stationary distribution 之前丢弃的初始 MCMC samples |
-| Detailed balance | “可逆性条件” | p(x) * T(x->y) = p(y) * T(y->x)。这是 p 成为 Markov chain stationary distribution 的充分条件 |
+| Detailed balance | “可逆性条件” | $p(x) T(x \to y) = p(y) T(y \to x)$。这是 $p$ 成为 Markov chain stationary distribution 的充分条件 |
 | Diffusion sampling | “迭代 denoising” | 从 noise 开始，并应用学到的 denoising steps 来生成数据。每一步都是 conditional sampling operation |
 
 ## 延伸阅读

@@ -31,9 +31,9 @@
 ## 概念
 ### 图:节点和边缘
 
-一个图 G = (V,E) 由顶点 (节点) V 和边缘 E 组成──每条边缘 连接两个节点──
+一个图$G = (V, E)$由顶点 (节点) $V$和边缘$E$组成──每条边缘 连接两个节点──
 
-**Directed vs undirected。**在未定向图中,边缘 (u, v) 表示 u 连接到 v,并且 v 也连接到 u. 在未定向图中,边缘 (u, v) 表示 u 指向 v,但反向不一定成立──
+**Directed vs undirected。**在未定向图中,边缘$(u, v)$表示$u$连接到$v$并且$v$也连接到$u$△在指向图中,边缘$(u, v)$表示$u$指向$v$但反向不一定是存在的.
 
 **Weighted vs unweighted。**在未加权图中,边缘要么存在,要么不存在. 在加权图中,每个边缘都有数值重量,例如距离,成本或强度.
 
@@ -46,14 +46,13 @@
 
 ### 接近矩阵
 
-邻近矩阵 A 是核心表示──对于一个包含n个节点的图:
+邻近矩阵$A$是核心表示──对一个包含$n$个节点的图表:
 
-```
-A[i][j] = 1    if there is an edge from node i to node j
-A[i][j] = 0    otherwise
+```math
+A[i][j] = \begin{cases} 1 & \text{若存在从节点 } i \text{ 到节点 } j \text{ 的 edge} \\ 0 & \text{否则} \end{cases}
 ```
 
-对于未定向图形,A 是对称:A[i][j] =A[j][i]。对于权重图形,A[i][j] =边缘 (i,j) 的重量。
+对于未定向图表,$A$是对称:$A[i][j] = A[j][i]$△对于权重图表,$A[i][j]$子$(i, j)$体重
 
 **示例：一个 triangle：**
 
@@ -66,20 +65,22 @@ A = [[0, 1, 1],
      [1, 1, 0]]
 ```
 
-邻接矩阵是每个 GNN 的输入.
+邻近矩阵是每个 GNN 的输入.$A$上面的矩阵操作对应图上面的操作.
 
 ### 学位
 
 对于导向图表,你有进度的边缘 (进入边缘) 和外度的边缘 (出去边缘)
 
-度矩阵 D 是对角:
+度数矩阵$D$是对角:
 
-```
-D[i][i] = degree of node i
-D[i][j] = 0    for i != j
+```math
+\begin{aligned}
+D[i][i] &= \text{节点 } i \text{ 的 degree} \\
+D[i][j] &= 0 \quad \text{其中 } i \ne j
+\end{aligned}
 ```
 
-对于三角形示例:D =  diag(2,2,2),因为每个节点都连接到另外两个节点.
+对于三角形的示例:$D = \mathop{\mathrm{diag}}(2, 2, 2)$由于每个节点都连接到另外两个节点.
 
 程度告诉你节点的重要性――高度 = 枢纽节点――网络的程度分布 揭示了它的结构――社会网络 遵循电力规律――少量枢纽,许多叶子节点――随机图形 具有波森分布式的度量――
 
@@ -129,19 +130,17 @@ DFS from node 0:
 
 ### 拉普拉西亚图
 
-L = D - A──光谱图理论 中最重要的矩阵──
+$L = D - A$△光谱图理论 中最重要的矩阵――
 
 对于三角形:
 
-```
-D = [[2, 0, 0],    A = [[0, 1, 1],    L = [[2, -1, -1],
-     [0, 2, 0],         [1, 0, 1],         [-1, 2, -1],
-     [0, 0, 2]]         [1, 1, 0]]         [-1, -1,  2]]
+```math
+D = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix} \qquad A = \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \qquad L = \begin{bmatrix} 2 & -1 & -1 \\ -1 & 2 & -1 \\ -1 & -1 & 2 \end{bmatrix}
 ```
 
 拉普拉西亚具有非常重要的性质:
 
-1. **L 是 positive semi-definite。**所有的本值都 >= 0──
+1. **$L$ 是 positive semi-definite。**所有的本价值都$\ge 0$,我知道.
 
 2. **zero eigenvalues 的数量等于 connected components 的数量。**一个连接的图形恰好有一个零的自值. 一个有3个离线的组件.
 
@@ -171,12 +170,12 @@ graph TD
 邻近矩阵和拉普拉西亚的本值可以在没有任何穿越的情况下揭示结构性质.
 
 **Spectral clustering**的工作方式如下:
-1. 计算 拉普拉西亚 L
-2. 找到 L 的 k 个最小的自向量(跳过第一个;对于连接图表,它是全 1)
+1. 计算拉普拉西亚人$L$
+2. 找到$L$的$k$个最小的自向量(跳过第一个;对于连接图表,它是全 1)
 3. 将这些自向量用作每个节点的新标记
-4. 在这些坐标上运行 k-means
+4. 在这些坐标上运行$k$- 意思是
 
-为什么这有效?L的自向量编码了图上最平滑的函数――连接良好的节点会得到相似的自向量值――被瓶分离的节点会得到不同的值――自向量会自然分离集群――
+为什么这有效?$L$个体向量编码了图 上最平滑的函数――连接良好节点会得到相似的个体向量值――被瓶分离节点会得到不同的值――个体向量会自然分离集群――
 
 **Random walk connection。**随机步行的静止分布与节点度 成比例――混合时间(步行 收得有多快) 取决于光谱差距――
 
@@ -184,25 +183,25 @@ graph TD
 
 这就是图神经网络的核心操作. 每个节点从邻居收集信息,聚合它们,然后更新自己的状态.
 
-```
-h_v^(k+1) = UPDATE(h_v^(k), AGGREGATE({h_u^(k) : u in neighbors(v)}))
+```math
+h_v^{(k+1)} = \text{UPDATE}\left(h_v^{(k)}, \text{AGGREGATE}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
 在最简单的形式中,AGGREGATE = 中,UPDATE =线性转换 +激活:
 
-```
-h_v^(k+1) = sigma(W * mean({h_u^(k) : u in neighbors(v)}))
-```
-
-这实际上是伪装成另一种形式的矩阵乘法. 如果H是所有节点特征的矩阵,A是邻立矩阵:
-
-```
-H^(k+1) = sigma(A_norm * H^(k) * W)
+```math
+h_v^{(k+1)} = \sigma\left(W \cdot \text{mean}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
-其中A_norm是正常化的邻近矩阵 (每行求和为 1) ⋅
+这实际上是伪装成另一种形式的矩阵乘法.$H$是所有节点的矩阵,$A$是邻近矩阵:
 
-一轮消息传递 让每个节点 看到它的邻居――两轮让它看到邻居的邻居――K 轮让每个节点 获得来自其K-hop社区的信息――
+```math
+H^{(k+1)} = \sigma\left(A_{\text{norm}} H^{(k)} W\right)
+```
+
+其中$A_{\text{norm}}$是正常化的邻立矩阵 (每一行求和为1)
+
+一轮消息传递 让每个节点看到它近邻的两个节点让它看到邻居的邻居的两个节点.$K$轮让每个节点从其获得$K$哈尔的信息
 
 ```mermaid
 graph LR
@@ -323,7 +322,7 @@ def dfs(graph, start):
     return order
 ```
 
-BFS 使用 deque(双端排队) 实现O(1) 弹左──DFS 使用列表 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为O(V + E)──
+实现的BFS 使用deque(双终队列)$O(1)$作为堆的列表.$O(V + E)$,我知道.
 
 ### 步骤3:连接组件和拉普拉斯的本值
 
@@ -366,7 +365,7 @@ def spectral_clustering(graph, k=2):
     return labels
 ```
 
-对于 k=2,Fiedler向量的符号会将图分为两个集群.对于 k>2,你会在前 k 个个个个个向量 (排除微不足道的所有个个个个个的个向量) 上运行 k-means.
+对于$k=2$对于 图表的分为两个集群.$k>2$你会在前面$k$个自向量 (个自向量) 排除微不足道的所有自向量 (个自向量) 上运行 $k$- 这意味着.
 
 ### 步骤5: 传递消息
 
@@ -457,13 +456,13 @@ print(f"Cluster B: {group_b}")
 | Connected components | Preprocessing, handling disconnected graphs |
 | PageRank | Node importance ranking, attention initialization |
 
-在GCN (Kipf & Welling, 2017) 中使用添加了自行循环的邻接矩阵,A_hat = A + I:
+在GCN (Kipf & Welling, 2017) 中的图形卷积操作使用添加了自行循环的邻接矩阵,$\hat{A} = A + I$其他:
 
-```text
-H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
+```math
+H^{(l+1)} = \sigma\left(\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2} H^{(l)} W^{(l)}\right)
 ```
 
-其中A_hat =A + I(相邻加自环),D_hat 是A_hat 的级矩阵──自环 确保每个节点在集成期间包含自身的特征──这正是带有对称正常化的消息传递──D_hat^(-1/2) *A_hat *D_hat^(-1/2) 是正常化的邻近矩阵──Laplacian 出现在这里,是因为这种正常化与L_sym =I - D^(-1/2) *A * D^(-1/2) 相关──理解拉普拉斯人,就意味着理解GCN为什么有效.
+其中$\hat{A} = A + I$它们是的,$\hat{D}$是 $\hat{A}$通过一个对称的正常化传递信息.$\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2}$拉普拉西亚人现在在这里,是因为这种正常化与$L_{\text{sym}} = I - D^{-1/2} A D^{-1/2}$相关――理解拉普拉西亚语,就意味着理解GCN为什么有效――
 
 ## 练习
 1. **从零实现 PageRank。**从统一分数开始──每一步:分数 ((v) = (1-d) /n + d * 总数(分数(u) /out_degree(u)),其中 u 是所有指向v的节点──使用 d=0.85──运行直到收(变化 < 1e-6)──在一个小型的网页图上 上测试──
@@ -476,14 +475,26 @@ H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
 
 5. **分析一个真实世界 graph。**使用卡拉特俱乐部图片(34节点,78边) ――计算度分布、拉普拉西亚自值 和光谱集群──将光谱集群 结果与已知地面真理分比比──
 
+### 提示
+
+**练习 1。**使用练习中给出的公式──没有出口边缘的节点必须将分数平均分给所有节点,否则总分会小于1──检查每一步后所有的分数之和是否为1,并将结果与`pagerank(graph)`比较
+
+**练习 2。**使用 `add_edge`构建两个小组,用一条边缘连接它们,然后调用`spectral_clustering(graph, k=2)`检查每个点击是否各自获得相同的标签.`laplacian()`两个组的连接越来越紧密,该值将会增加.
+
+**练习 3。**使用 `heapq`维护优先排列,总是扩展已知距离最小节点.`bfs(graph, start)`中该节点所在的BFS层数量.
+
+**练习 4。**将身份矩阵 用作 `features`让每列标记一个节点,然后应用两次`message_passing`现在,节点$v$现行非零条目显示了哪些节点的信息已经到达$v$△将这个集合与宽度第一搜索中距离不超过2个节点集合相比较.
+
+**练习 5。** `networkx.karate_club_graph()`提供边缘列表以及节点属性`club`现在,我们要把这些边缘复制成一个.`Graph`中,并检查是否有34个节点和78个边缘.`spectral_clustering`得到标签与`club`的值,允许两个标签的名称互换.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Graph | “Nodes and edges” | 一种数学结构 G=(V,E)，用于编码 pairwise relationships |
-| Adjacency matrix | “The connection table” | 一个 n x n matrix，其中如果 nodes i 和 j 相连，则 A[i][j] = 1 |
+| Graph | “Nodes and edges” | 一种数学结构 $G=(V,E)$，用于编码 pairwise relationships |
+| Adjacency matrix | “The connection table” | 一个 $n \times n$ matrix，其中如果 nodes $i$ 和 $j$ 相连，则 $A[i][j] = 1$ |
 | Degree | “一个 node 有多 connected” | 接触某个 node 的 edges 数量 |
-| Laplacian | “D minus A” | L = D - A，其 eigenvalues 会揭示 graph structure 的 matrix |
-| Fiedler value | “The algebraic connectivity” | L 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
+| Laplacian | “D minus A” | $L = D - A$，其 eigenvalues 会揭示 graph structure 的 matrix |
+| Fiedler value | “The algebraic connectivity” | $L$ 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
 | BFS | “Level-by-level search” | 在深入之前先访问所有 neighbors 的 traversal，可找到 shortest paths |
 | DFS | “Go deep first” | 在回溯之前沿一条 path 走到末端的 traversal |
 | Message passing | “Nodes talk to neighbors” | 每个 node 从其 neighbors 聚合信息，这是 GNNs 的核心 |

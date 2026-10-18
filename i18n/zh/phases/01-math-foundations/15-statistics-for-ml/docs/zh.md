@@ -41,7 +41,7 @@ Mode:   出现最频繁的值
         对 categorical data 有用。对 continuous data，通常信息量很低。
 ```
 
-平均是平衡点,平均是中点标记.当二者偏离时,你的分布是偏差.收入分布通常意味着:
+平均是平衡点,平均是中点标记.$\text{mean} \gg \text{median}$训练期间的损失通常分布$\text{mean} \ll \text{median}$(由简单样本造成的左偏)
 
 **Measures of spread**答案: 数据可能散发?
 
@@ -72,14 +72,16 @@ IQR:        Q3 - Q1 (interquartile range)
 
 在 ML 中,你会关注百分比,用于推断延迟,预测信心分布,以及理解错误分布.
 
-**Sample vs population statistics.**从样本计算变量时,用 (n-1) 而不是n作为除数――这是贝塞尔的修正――它补偿了样本的平均值 不是真实人口的平均值 这一事实――如果分母是n,你会会系统性低估真实变量――如果分母是 (n-1),估计是无偏见――
+**Sample vs population statistics.**从样本 计算变量 时,用 $(n-1)$而不是$n$作为除数. 这就是贝塞尔的修正. 它补偿了样本的平均值. 不是真实人口的平均值. 这一事实.$n$您会系统低估真实变异.$(n-1)$估计是无偏见的.
 
-```
-Population variance: sigma^2 = (1/N) * sum((x_i - mu)^2)
-Sample variance:     s^2     = (1/(n-1)) * sum((x_i - x_bar)^2)
+```math
+\begin{aligned}
+\text{总体方差：} \quad \sigma^2 &= \frac{1}{N} \sum (x_i - \mu)^2 \\
+\text{样本方差：} \quad s^2 &= \frac{1}{n-1} \sum (x_i - \bar{x})^2
+\end{aligned}
 ```
 
-实践中:如果n 很大 ((数千个样本),差异可以忽略.
+实践中:如果$n$很大,有数千个样本,差异可以忽略.$n$很小的几十个样本,它就很重要.
 
 ### 变量如何变化
 
@@ -97,7 +99,7 @@ r =  0:  无线性关系（但可能存在非线性关系！）
 Range: [-1, 1]
 ```
 
-皮尔森假设关系是线性的,并且两个变量都大致遵循正常分布.
+皮尔森假设关系是线性的,并且两个变量都大致服从正常分布.$r$从0.1拉到0.9
 
 **Spearman rank correlation**衡量单调关联:
 
@@ -136,7 +138,7 @@ Cov(X, Y) < 0:  当 X 增加时，Y 倾向于减少
 Cov(X, Y) = 0:  无线性共同变化
 ```
 
-对于d个特征,covariance矩阵C 是一个d x d矩阵,其中C[i][j] =Cov(feature_i, feature_j) ――对角线项C[i][i] 是每个特征的变化──
+对于$d$个特征,可变性矩阵$C$是一个$d \times d$子,其中一个$C[i][j] = \mathop{\mathrm{Cov}}(\text{feature}_i, \text{feature}_j)$△对角线项$C[i][i]$是每个特征的变化.
 
 ```
 C = | Var(x1)      Cov(x1,x2)  Cov(x1,x3) |
@@ -152,7 +154,7 @@ Properties:
 
 **与 PCA 的联系。**对于共变矩阵做自己的组合――自变量是主要的组件―― 它们的值告诉你每个组件 捕获了多少变量―― 这正是第十课的内容,但现在你能看到为什么共变矩阵是适合分解的对象:它编码了数据中的所有对线性关系――
 
-**与 correlation 的联系。**相关性矩阵是标准化变量的共变矩阵 (),每个变量都除了自己的标准偏差) ⋅ 相关性会归结为共变,使所有值落在 [-1, 1]⋅
+**与 correlation 的联系。**相关性矩阵是标准化变量的共变矩阵 (每个变量都除了自己的标准偏差).$[-1, 1]$,我知道.
 
 ### 假设测试
 
@@ -202,10 +204,11 @@ where z = 1.96 for 95% confidence
 
 **One-sample t-test:**人口平均值是否不同于某种假设值?
 
-```
-t = (x_bar - mu_0) / (s / sqrt(n))
-
-degrees of freedom = n - 1
+```math
+\begin{aligned}
+t &= \frac{\bar{x} - \mu_0}{s / \sqrt{n}} \\[4pt]
+\text{自由度} &= n - 1
+\end{aligned}
 ```
 
 **Two-sample t-test (independent):**两组组组是否不同?
@@ -294,19 +297,20 @@ Practically significant? 0.03% 的提升不值得
 
 **Effect size**量化差异很大,并且独立于样本大小:
 
-```
-Cohen's d = (mean_1 - mean_2) / pooled_std
-
-d = 0.2:  small effect
-d = 0.5:  medium effect
-d = 0.8:  large effect
+```math
+\begin{aligned}
+\text{Cohen's } d &= \frac{\text{mean}_1 - \text{mean}_2}{\text{pooled\_std}} \\[4pt]
+d &= 0.2: \quad \text{小效应} \\
+d &= 0.5: \quad \text{中等效应} \\
+d &= 0.8: \quad \text{大效应}
+\end{aligned}
 ```
 
 始终同时报告p值和效果大小──p值 告诉你差异是否真实──效果大小──告诉你差异是否重要──
 
 ### 多种比较问题
 
-当你检查许多假设时,其中一些会因为偶然而变得显著.如果你在alpha =0.05下检查20件事,即使没有任何真实效果,也预计会出现1个错误阳性.
+当你检查许多假设时,其中一些会因为偶然而变得重要.$\alpha = 0.05$尽管没有任何实际效果,也预计会出现1个错误阳性.
 
 ```
 P(at least one false positive) = 1 - (1 - alpha)^m
@@ -317,7 +321,7 @@ P(false positive) = 1 - 0.95^20 = 0.64
 你有 64% 的概率至少得到一个 false positive。
 ```
 
-**Bonferroni correction:**测试量量.
+**Bonferroni correction:**将$\alpha$除了测试量量.
 
 ```
 Adjusted alpha = alpha / m = 0.05 / 20 = 0.0025
@@ -414,11 +418,11 @@ Kruskal-Wallis:     比较多个 groups（替代 ANOVA）
 - 更高 statistical power（更擅长检测真实差异）
 ```
 
-在ML实验中,你通常只有很小的 n  5 或 10 个交叉验证折叠),因此像威尔科森签名等级这样的非参数测试往往比t测试更合适.
+在 ML 实验中,你通常只有很小的$n$像威尔科森签名等级的这种非参数测试往往比t测试更合适.
 
 ### 中央限度定理:实际影响
 
-随着样本的分布的增加, 样本的分布将趋于正常分布, 不管底层人口分布是什么.
+随着$n$增长,样本的分布将接近正常分布,无论底层人口分布是什么.
 
 ```
 If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
@@ -470,7 +474,7 @@ If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
 
 9. **在数据不独立时假设 independence。**医疗图像来自同一档案的多句话.
 
-10. **P-hacking。**不断尝试不同的测试,子组或排除标准,直到得到p <0.05──结果只是搜索过程的文物──
+10. **P-hacking。**不断尝试不同的测试,子组或排除标准,直到得到$p < 0.05$结果只是搜索过程中的文物.
 
 ## 建立它
 
@@ -486,7 +490,7 @@ f3-bootstrap-resample
 3. **Hypothesis tests**(一个样本的t测试,2个样本的t测试,5个平方测试)
 4. **Bootstrap confidence intervals**(适用于任意统计,不需要假设)
 5. **A/B test simulator**(生成数据、测试、检查类型I和类型II错误)
-6. **Statistical vs practical significance demo**(展示大 n 如何让一切变得重要)
+6. **Statistical vs practical significance demo**(展示大$n$如何让一切变得重要?
 
 完全从零实现,只使用`math`和 `random`不用,不用.
 
@@ -498,7 +502,7 @@ f3-bootstrap-resample
 | Standard deviation | variance 的平方根。以原始单位衡量 spread。 |
 | Percentile | 给定百分比的数据低于该值。 |
 | IQR | Interquartile range。Q3 减 Q1。中间 50% 的 spread。 |
-| Pearson correlation | 衡量两个变量之间的线性关联。Range [-1, 1]。 |
+| Pearson correlation | 衡量两个变量之间的线性关联。Range $[-1, 1]$。 |
 | Spearman correlation | 使用 ranks 衡量单调关联。 |
 | Covariance matrix | 所有 features 两两 covariances 组成的 Matrix。 |
 | Null hypothesis | 默认假设，即无效应或无差异。 |

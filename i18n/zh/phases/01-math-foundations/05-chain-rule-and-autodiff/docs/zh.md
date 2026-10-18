@@ -28,29 +28,31 @@
 
 ### 链条规则
 
-如果`y = f(g(x))`现在,`y`对于`x`的导数是:
+如果$y = f(g(x))$现在,$y$对于$x$的导数是:
 
-```
-dy/dx = dy/dg * dg/dx = f'(g(x)) * g'(x)
+```math
+\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx} = f'(g(x)) \cdot g'(x)
 ```
 
 沿着链条将导数相乘――每个环节贡献自己的局部导数――
 
-示例:`y = sin(x^2)`
+示例:$y = \sin(x^2)$
 
-```
-g(x) = x^2       g'(x) = 2x
-f(g) = sin(g)     f'(g) = cos(g)
-
-dy/dx = cos(x^2) * 2x
+```math
+\begin{aligned}
+g(x) &= x^2 \qquad & g'(x) &= 2x \\
+f(g) &= \sin(g) \qquad & f'(g) &= \cos(g) \\[4pt]
+\frac{dy}{dx} &= \cos(x^2) \cdot 2x
+\end{aligned}
 ```
 
 对于更深的组合,链条会继续延伸:
 
-```
-y = f(g(h(x)))
-
-dy/dx = f'(g(h(x))) * g'(h(x)) * h'(x)
+```math
+\begin{aligned}
+y &= f(g(h(x))) \\[4pt]
+\frac{dy}{dx} &= f'(g(h(x))) \cdot g'(h(x)) \cdot h'(x)
+\end{aligned}
 ```
 
 网络中每一个层,都是链上一个环节.
@@ -88,7 +90,7 @@ graph TD
 
 链条规则可以在图中应用两种方式.
 
-**Forward mode**从输入开始,将导数向前推――它计算`dx/dx = 1`通过每个操作传播. 适合输入少,输出多场景.
+**Forward mode**从输入开始,将导数向前推――它计算$dx/dx = 1$通过每个操作传播. 适合输入少,输出多场景.
 
 ```
 Forward mode: seed dx/dx = 1, propagate forward
@@ -98,7 +100,7 @@ Forward mode: seed dx/dx = 1, propagate forward
   y = sin(a)  (dy/dx = cos(a) * da/dx = cos(4) * 4 = -2.615)
 ```
 
-**Reverse mode**从输出开始,将渐进向后拉回.`dy/dy = 1`通过每个操作进行反向顺序传播.
+**Reverse mode**从输出开始,将渐进向后拉回.$dy/dy = 1$通过每个操作进行反向顺序传播.
 
 ```
 Reverse mode: seed dy/dy = 1, propagate backward
@@ -112,12 +114,12 @@ Reverse mode: seed dy/dy = 1, propagate backward
 
 | Mode | Seed | Direction | Best when |
 |------|------|-----------|-----------|
-| Forward | `dx_i/dx_i = 1` | 输入到输出 | 输入少、输出多 |
-| Reverse | `dy/dy = 1` | 输出到输入 | 输入多、输出少（neural nets） |
+| Forward | $dx_i/dx_i = 1$ | 输入到输出 | 输入少、输出多 |
+| Reverse | $dy/dy = 1$ | 输出到输入 | 输入多、输出少（neural nets） |
 
 ### 用前进模式的双数字
 
-进步模式可以使用双数 优雅地实现――双数的形式是`a + b*epsilon`在其中`epsilon^2 = 0`,我知道.
+进步模式可以使用双数 优雅地实现――双数的形式是$a + b\epsilon$在其中$\epsilon^2 = 0$,我知道.
 
 ```
 Dual number: (value, derivative)
@@ -237,7 +239,7 @@ class Value:
             v._backward()
 ```
 
-确保每个节点的梯度在传播到其子节点之前已经完整计算.
+确保每个节点的分数在传播到其子节点之前已经完整计算.种子分数是1.0$dy/dy = 1$
 
 ### 步骤 4:完整的引擎需要更多操作
 
@@ -301,11 +303,11 @@ class Value:
 | Operation | Backward rule | Used in |
 |-----------|--------------|---------|
 | `__sub__` | 复用 add + neg | Loss 计算（pred - target） |
-| `__pow__` | n * x^(n-1) | Polynomial activations、MSE（error^2） |
+| `__pow__` | $n \cdot x^{n-1}$ | Polynomial activations、MSE（$\text{error}^2$） |
 | `__truediv__` | 复用 mul + pow(-1) | Normalization、learning rate scaling |
-| `exp` | exp(x) * upstream | Softmax、log-likelihood |
-| `log` | (1/x) * upstream | Cross-entropy loss、log probabilities |
-| `tanh` | (1 - tanh^2) * upstream | 经典 activation function |
+| `exp` | $\exp(x) \cdot \text{upstream}$ | Softmax、log-likelihood |
+| `log` | $(1/x) \cdot \text{upstream}$ | Cross-entropy loss、log probabilities |
+| `tanh` | $(1 - \tanh^2) \cdot \text{upstream}$ | 经典 activation function |
 
 巧妙之处在于:`__sub__`和 `__truediv__`它们会自动得到正确的格式,因为链条规则会通过底层的加/mul/pow 操作组合起来.
 
@@ -490,13 +492,23 @@ print(f"df/dc = {c.grad}")  #  1.0
 
 ## 练习
 
-1. 向值类 添加 `__pow__`现在你就可以计算.`x ** n`△验证在`x=2`时,`d/dx(x^3)`等于`12.0`,我知道.
+1. 向值类 添加 `__pow__`现在你就可以计算.`x ** n`△验证在$x=2$时,$\frac{d}{dx}(x^3)$等于`12.0`,我知道.
 
-2. 添加`tanh`作为激活函数──验证`tanh'(0) = 1`且`tanh'(2) = 0.0707`没有什么可做.
+2. 添加`tanh`作为激活函数──验证$\tanh'(0) = 1$且$\tanh'(2) = 0.0707$没有什么可做.
 
 3. 为单个神经元构建计算图:`y = relu(w1*x1 + w2*x2 + b)`△计算全部五个分数,并与 PyTorch 验证.
 
 4. 使用双数实现前进模式的自动化.`Dual`导数与反模式引擎相同.
+
+### 提示
+
+**练习 1。** `Value`已经定义了`__pow__`阅读它`_backward`确认其将$n x^{n-1}$乘到传入的梯度上.运行.`x = Value(2.0)`,我知道.`y = x ** 3`,我知道.`y.backward()`其他`x.grad`必须为12.0
+
+**练习 2。**在`_backward`中使用 $\tanh'(x) = 1 - \tanh(x)^2$ 凭借你自己实现的有限差分验证:$\frac{\tanh(x + h) - \tanh(x - h)}{2h}$在$x = 0$和 $x = 2$处必须与之相吻合.
+
+**练习 3。**用`Value`构建物体`w1*x1 + w2*x2 + b`应用`relu`调用`backward`△与 PyTorch 比较前,先手工核对:若 `relu`输入为正确,`w1`梯度等于`x1`五个梯度都为零.
+
+**练习 4。**在每个地方`Dual`中保存值和导数,乘法采用乘积法则 $(a, a')(b, b') = (ab, a'b + ab')$△将输入的初始导数设为1,再将结果与反向模式引擎对同一函数计算出来.`x.grad`比较
 
 ## 关键术语
 
@@ -507,13 +519,13 @@ print(f"df/dc = {c.grad}")  #  1.0
 | Forward mode | “向前推导数” | 将导数从输入传播到输出的 autodiff。每个输入变量需要一次 pass。 |
 | Reverse mode | “Backpropagation” | 将 Gradient 从输出传播到输入的 autodiff。每个输出变量需要一次 pass。 |
 | Autograd | “自动 Gradient” | 一个系统：记录对值执行的操作、构建 graph，并通过 Chain Rule 计算精确 Gradient |
-| Dual numbers | “值加导数” | 形式为 a + b*epsilon（epsilon^2 = 0）的数字，可以在算术运算中携带导数信息 |
+| Dual numbers | “值加导数” | 形式为 $a + b\epsilon$（$\epsilon^2 = 0$）的数字，可以在算术运算中携带导数信息 |
 | Topological sort | “依赖顺序” | 对 graph 节点排序，使每个节点都位于其所有依赖之后。正确传播 Gradient 所必需。 |
 | Gradient accumulation | “相加，不要替换” | 当一个值流入多个操作时，它的 Gradient 是所有传入 Gradient 贡献的总和 |
 | Dynamic graph | “Define by run” | 每次 forward pass 都重新构建的 computation graph，允许模型内部使用 Python 控制流（PyTorch 风格） |
 | Gradient checking | “数值验证” | 将 autodiff Gradient 与数值 finite-difference Gradient 对比，以验证正确性。调试时必不可少。 |
 | MLP | “Multi-layer perceptron” | 一个包含一层或多层隐藏 neuron 的 Neural Network。每个 neuron 计算加权和加 bias，然后应用 activation function。 |
-| Neuron | “加权和 + activation” | 基本单元：output = activation(w1*x1 + w2*x2 + ... + b)。weights 和 bias 是可学习参数。 |
+| Neuron | “加权和 + activation” | 基本单元：$\text{output} = \text{activation}(w_1 x_1 + w_2 x_2 + \cdots + b)$。weights 和 bias 是可学习参数。 |
 
 ## 延伸阅读
 

@@ -26,7 +26,7 @@
 
 ### 凸集
 
-如果对集合 S 中任意两个点,它们之间的线段也完全位于 S 中,则集合 S 是凸集.
+如果对集合$S$两点之间,它们之间的线段也完全位于$S$中,则集合$S$是一个凸集.
 
 | 凸集 | 非凸 |
 |---|---|
@@ -34,12 +34,12 @@
 | **三角形**：对所有内部点都满足相同性质 | **甜甜圈/环形**：中间的孔意味着某些线段会离开集合 |
 | 任意两点之间的线段都留在集合内 | 某些点对之间的线段会离开集合 |
 
-形式化测试:对于 S 中任意点 x、y,以及任意t 在 [0, 1],点 tx + (1-t) y 也在 S 中。
+形式化测试:对于$S$中任意点 $x, y$及任意$t \in [0, 1]$点$tx + (1-t)y$也在$S$在中.
 
 凸集示例:
-- 一条直线 一平面 一整条R^n
+- 一条直线 一个平面 一个整体$\mathbb{R}^n$
 - 一个球 (圆球体)
-- 一个半空间: {x: a^T x <= b}
+- 一个半空间:$\lbrace x : a^T x \le b \rbrace$
 - 任意数量凸集的交交集
 
 非凸集示例:
@@ -49,10 +49,10 @@
 
 ### 凸函数
 
-如果函数 f 的定义域是凸集,并且对于其定义域中的任意两点 x、y,以及任意 t 在 [0, 1]:
+如果函数$f$定义域是凸集,并且对其定义域中的任意两点.$x, y$及任意$t \in [0, 1]$其他:
 
-```
-f(tx + (1-t)y) <= t*f(x) + (1-t)*f(y)
+```math
+f(tx + (1-t)y) \le t f(x) + (1-t) f(y)
 ```
 
 几何上看:图像上任意两点之间的线段位于图像上或图像上.
@@ -64,26 +64,26 @@ f(tx + (1-t)y) <= t*f(x) + (1-t)*f(y)
 | **局部最小值** | 每个局部最小值都是全局最小值 | 可能存在多个高度不同的局部最小值 |
 
 常见凸函数:
-- 抛物线 (抛物线)
-- 没有什么值
--  () =  ()
-- 虽然是分段线性的)
-- 对于 x > 0 负对数)
-- 任意线性函数 f(x) = a^T x + b(既凸又)
+- $f(x) = x^2$子,子,子,子,子,子
+- $f(x) = \lvert x \rvert$没有任何其他方法.
+- $f(x) = e^x$其他
+- $f(x) = \max(0, x)$(ReLU,尽管是分段线性的)
+- $f(x) = -\log(x)$为了$x > 0$负对数
+- 任意线性函数$f(x) = a^T x + b$,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.
 
 ### 测试凸性
 
 试验从最容易到最严谨.
 
-**测试 1：二阶导数测试（1D）。**如果对所有x都有f'(x) >=0,则f是凸函数.
+**测试 1：二阶导数测试（1D）。**如果对所有$x$城市有$f''(x) \ge 0$则$f$是凸函数.
 
-- 子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子子
--  () = x^3:f' () = 6x。x < 0 时为负──非凸──
--  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  () =  ()
+- $f(x) = x^2$其他:$f''(x) = 2 \ge 0$凸
+- $f(x) = x^3$其他:$f''(x) = 6x$,我知道.$x < 0$时为负――非凸――
+- $f(x) = e^x$其他:$f''(x) = e^x > 0$凸
 
-**测试 2：Hessian 测试（多变量）。**如果Hessian矩阵H(x) 对所有x都是正的半定义,则f是凸函数――Hessian是二阶偏导数组成的矩阵――
+**测试 2：Hessian 测试（多变量）。**如果赫西亚矩阵$H(x)$对于所有人$x$总是正面的半确,则$f$是凸函数――Hessian 是二阶偏导数组成的矩阵――
 
-**测试 3：定义测试。**直接检查不等式 f(tx + (1-t) y) <= t*f(x) + (1-t) *f(y) 』适用于导数难以计算的函数──
+**测试 3：定义测试。**直接检查不等式$f(tx + (1-t)y) \le t f(x) + (1-t) f(y)$△适用于导数难以计算的函数──
 
 ### 为什么重要
 
@@ -129,20 +129,22 @@ graph LR
 
 ### 赫西亚矩阵
 
-函数 f: R^n -> R 的Hessian H 是由二阶偏导数组成的 n x n矩阵──
+函数$f: \mathbb{R}^n \to \mathbb{R}$的赫西亚语$H$是由二阶偏导数组成的$n \times n$矩阵
 
+```math
+H_{ij} = \frac{\partial^2 f}{\partial x_i \, \partial x_j}
 ```
-H[i][j] = d^2 f / (dx_i dx_j)
-```
 
-对于f ((x,y) =x^2 +3xy + y^2:
+对于$f(x, y) = x^2 + 3xy + y^2$其他:
 
-```
-df/dx = 2x + 3y       d^2f/dx^2 = 2      d^2f/dxdy = 3
-df/dy = 3x + 2y       d^2f/dydx = 3      d^2f/dy^2 = 2
-
-H = [ 2  3 ]
-    [ 3  2 ]
+```math
+\begin{gathered}
+\begin{aligned}
+\frac{\partial f}{\partial x} &= 2x + 3y & \frac{\partial^2 f}{\partial x^2} &= 2 & \frac{\partial^2 f}{\partial x \, \partial y} &= 3 \\
+\frac{\partial f}{\partial y} &= 3x + 2y & \frac{\partial^2 f}{\partial y \, \partial x} &= 3 & \frac{\partial^2 f}{\partial y^2} &= 2
+\end{aligned} \\[8pt]
+H = \begin{bmatrix} 2 & 3 \\ 3 & 2 \end{bmatrix}
+\end{gathered}
 ```
 
 赫西安 告诉你曲率信息:
@@ -151,18 +153,17 @@ H = [ 2  3 ]
 - 符号混合:车点(某些方向上曲,其他方向向下曲)
 - 零自值:该方向上是平坦的(退化)
 
-对于凸性,Hessian 必须在所有位置都是正面半确的,所有自值 >= 0),而不仅仅在某个点.
+对于凸性,Hessian 必须在所有位置都是正面的半确值$\ge 0$),而不是仅仅在某个点.
 
 ### 牛顿的方法
 
 渐进式下降 使用一阶段信息(渐进式) ――牛顿方法 使用二阶段信息(赫西安式) ――它在当前点拟合一次近似,然后直接跳到该二次函数的最小值──
 
-```
-Update rule:
-  x_new = x - H^(-1) * gradient
-
-Compare to gradient descent:
-  x_new = x - lr * gradient
+```math
+\begin{aligned}
+\text{更新规则：} \quad & x_{\text{new}} = x - H^{-1} \cdot \text{gradient} \\
+\text{与 gradient descent 比较：} \quad & x_{\text{new}} = x - \text{lr} \cdot \text{gradient}
+\end{aligned}
 ```
 
 根据局部曲率自动调整步长和方向.
@@ -190,14 +191,14 @@ graph TD
 - 尺度不变 (不管你如何参数化问题都能工作)
 
 缺点:
-- 计算 需要 O                                                                                                                                                                                                                                                             
-- 对于一个重量100万的神经网络,这意味着1012条条和1018次操作.
+- 计算 需要 $O(n^2)$求逆需要$O(n^3)$
+- 对于一个重量100万的神经网络,这意味着$10^{12}$个条目和 $10^{18}$下一个操作
 - 对深度学习不实用
 
 ### 约束优化
 
-无约束优化:在所有 x 上最小化 f(x) ⋅
-约束优化:在约束条件下最小化 f ((x) ⋅
+无约束优化:在所有$x$上最小化$f(x)$,我知道.
+约束优化:在约束条件下最小化$f(x)$,我知道.
 
 现实问题有限制. 你想最小化成本,但预算有限.
 
@@ -216,22 +217,24 @@ graph LR
 
 拉格兰奇乘法 方法把束问题转换为无束问题.
 
-问题:在g(x) = 0 的约束下最小化 f(x)。
+问题:在$g(x) = 0$限制下最小化$f(x)$,我知道.
 
-解法:引入一个新变量 (Lagrange乘法 lambda),并求解无约束问题:
+解法:引入一个新的变量$\lambda$),并求解无约束问题:
 
-```
-L(x, lambda) = f(x) + lambda * g(x)
-```
-
-在解处,L 的渐进为零:
-
-```
-dL/dx = df/dx + lambda * dg/dx = 0
-dL/dlambda = g(x) = 0
+```math
+L(x, \lambda) = f(x) + \lambda g(x)
 ```
 
-几何直觉:在束中最小值处,f 的梯度必须与束 g 的梯度平行相等.如果它们不平行,你可以沿束曲面移动,并进一步降低f.
+在解开处,$L$的渐变为零:
+
+```math
+\begin{aligned}
+\frac{\partial L}{\partial x} &= \frac{\partial f}{\partial x} + \lambda \frac{\partial g}{\partial x} = 0 \\
+\frac{\partial L}{\partial \lambda} &= g(x) = 0
+\end{aligned}
+```
+
+几何直觉:在约束最小值处,$f$级必须与约束$g$如果它们不平行,你可以沿着约束曲面移动,并进一步降低.$f$,我知道.
 
 ```mermaid
 graph LR
@@ -240,39 +243,41 @@ graph LR
     S --- C["At the solution, gradient of f is parallel to gradient of g"]
 ```
 
-示例:在 x + y = 1 的约束下最小化 f(x,y) = x^2 + y^2。
+示例:在$x + y = 1$限制下最小化$f(x,y) = x^2 + y^2$,我知道.
 
+```math
+\begin{aligned}
+L &= x^2 + y^2 + \lambda(x + y - 1) \\[4pt]
+\frac{\partial L}{\partial x} &= 2x + \lambda = 0 \implies x = -\lambda/2 \\
+\frac{\partial L}{\partial y} &= 2y + \lambda = 0 \implies y = -\lambda/2 \\
+\frac{\partial L}{\partial \lambda} &= x + y - 1 = 0 \\[4pt]
+&\text{由前两个方程得：} x = y \\
+&\text{代入得：} 2x = 1, \text{因此 } x = y = 0.5, \ \lambda = -1
+\end{aligned}
 ```
-L = x^2 + y^2 + lambda(x + y - 1)
 
-dL/dx = 2x + lambda = 0  =>  x = -lambda/2
-dL/dy = 2y + lambda = 0  =>  y = -lambda/2
-dL/dlambda = x + y - 1 = 0
-
-From first two: x = y
-Substituting: 2x = 1, so x = y = 0.5, lambda = -1
-```
-
-直线 x + y = 1 上距离原点最近的点是 (0.5,0.5) 
+直线 $x + y = 1$距离原点的最近点是$(0.5, 0.5)$,我知道.
 
 ### 卡卡特条件
 
 卡鲁什-库恩-图克条件将拉格兰奇乘法扩展到不等式约束.
 
-问题:在g_i(x) <= 0,i = 1, ..., m 的约束下最小化 f(x) 』
+问题:在$g_i(x) \le 0$没有任何$i = 1, \ldots, m$限制下最小化$f(x)$,我知道.
 
  KKT条件:
 
-```
-1. Stationarity:    df/dx + sum(lambda_i * dg_i/dx) = 0
-2. Primal feasibility:  g_i(x) <= 0  for all i
-3. Dual feasibility:    lambda_i >= 0  for all i
-4. Complementary slackness:  lambda_i * g_i(x) = 0  for all i
+```math
+\begin{aligned}
+&\text{1. 驻点条件：} && \frac{\partial f}{\partial x} + \sum_i \lambda_i \frac{\partial g_i}{\partial x} = 0 \\
+&\text{2. 原始可行性：} && g_i(x) \le 0 \quad \text{对于所有 } i \\
+&\text{3. 对偶可行性：} && \lambda_i \ge 0 \quad \text{对于所有 } i \\
+&\text{4. 互补松弛：} && \lambda_i \, g_i(x) = 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-补充性惰是关键洞见:约束要么是活跃的(g_i = 0,解位于边界上),要么是乘以为零(该约束不起作用) ――不影响解约束有 lambda = 0。
+补充的惰是关键洞见:约束要么是活跃的$g_i = 0$解在边界上),要么乘以为零 (该约束不起作用) ――不影响解的约束有$\lambda = 0$,我知道.
 
- KKT条件是SVM的核心──支持向量是约束的数据点的数据点──lambda > 0)──所有其他数据点的 lambda = 0,不影响决策边界──
+基质测量条件是SVM的核心.$\lambda > 0$其他所有数据点$\lambda = 0$没有影响决策的边界.
 
 ### 规范化 作为约束优化
 
@@ -280,25 +285,27 @@ Substituting: 2x = 1, so x = y = 0.5, lambda = -1
 
 **L2 regularization (Ridge)：**
 
+```math
+\begin{aligned}
+&\text{最小化 } \text{Loss}(w) \text{，约束为 } \lVert w \rVert^2 \le t \\[4pt]
+&\text{等价的无约束形式：} \\
+&\text{最小化 } \text{Loss}(w) + \lambda \lVert w \rVert^2
+\end{aligned}
 ```
-minimize  Loss(w)  subject to  ||w||^2 <= t
 
-Equivalent unconstrained form:
-minimize  Loss(w) + lambda * ||w||^2
-```
-
-约束时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时时
+约束 $\lVert w \rVert^2 \le t$定义一个球(2D 中是圆,3D 中是球面) ――解位于损失等高线第一次接触这个球的位置――
 
 **L1 regularization (LASSO)：**
 
+```math
+\begin{aligned}
+&\text{最小化 } \text{Loss}(w) \text{，约束为 } \lVert w \rVert_1 \le t \\[4pt]
+&\text{等价的无约束形式：} \\
+&\text{最小化 } \text{Loss}(w) + \lambda \lVert w \rVert_1
+\end{aligned}
 ```
-minimize  Loss(w)  subject to  ||w||_1 <= t
 
-Equivalent unconstrained form:
-minimize  Loss(w) + lambda * ||w||_1
-```
-
-约束的东西在一个 形状的形状
+约束 $\lVert w \rVert_1 \le t$定义一个形(2D 中旋转的正方形) 』
 
 | 属性 | L2 约束（圆） | L1 约束（菱形） |
 |---|---|---|
@@ -315,11 +322,13 @@ minimize  Loss(w) + lambda * ||w||_1
 
 拉格兰基双函数:
 
-```
-Primal: minimize f(x) subject to g(x) <= 0
-Lagrangian: L(x, lambda) = f(x) + lambda * g(x)
-Dual function: d(lambda) = min_x L(x, lambda)
-Dual problem: maximize d(lambda) subject to lambda >= 0
+```math
+\begin{aligned}
+&\text{原始问题：} && \text{最小化 } f(x) \text{，约束为 } g(x) \le 0 \\
+&\text{拉格朗日函数：} && L(x, \lambda) = f(x) + \lambda g(x) \\
+&\text{对偶函数：} && d(\lambda) = \min_x L(x, \lambda) \\
+&\text{对偶问题：} && \text{最大化 } d(\lambda) \text{，约束为 } \lambda \ge 0
+\end{aligned}
 ```
 
 为什么二元性很重要:
@@ -346,7 +355,7 @@ Replace x_i^T x_j with K(x_i, x_j) to get the kernel trick.
 
 **大多数局部最小值已经足够好。**在高维空间中,随机关键点 (随机关键点) 是杆点,而不是局部最小值.
 
-**真正的障碍是 saddle points，而不是局部最小值。**在一个有 n 个参数的函数中,车点同时具有正曲率和负曲率方向──对于高维中的随机关键点,所有 n 个自值值都为正的 (局部最小值) 的概率大约是 2^(-n) ⋅几乎所有关键点都是车点──SGD的噪音帮助逃离它们──
+**真正的障碍是 saddle points，而不是局部最小值。**在一个有$n$个参数的函数中,点 同时具有正曲率和负曲率方向――对高维中的随机关键点,所有$n$个自值都为正 (局部最小值) 的概率大约是$2^{-n}$几乎所有关键点都是车点.
 
 **Overparameterization 会平滑 landscape。**参数数量多于训练样本的网络具有更平滑的,更连接的损失表面.
 
@@ -365,21 +374,21 @@ Replace x_i^T x_j with K(x_i, x_j) to get the kernel trick.
 
 纯牛顿的方法对大模型不实用.
 
-**L-BFGS (Limited-memory BFGS)：**使用最近的 m 个 个 差分近似逆赫西亚语──需要 O   内存,而不是 O  n ^ 2)──适用于最多约 10,000 个参数问题──用于经典的 ML 逻辑回归、CRF,但不用于深度学习──
+**L-BFGS (Limited-memory BFGS)：**使用最近 $m$个渐进差分近似反赫西亚.$O(mn)$存储,而不是$O(n^2)$△适用于最多约10,000个参数问题──用于经典的ML(物流回归、CRF),但不用于深度学习──
 
 **Natural gradient：**使用费舍尔信息矩阵 (Fisher Information Matrix) 作为Hessian 标准而不是Hessian 标准.
 
-**Hessian-free optimization：**使用结合梯度 求解 Hx = g,而不显然形成 H――只需要Hessian-vector产品,这可以通过自动差异化在 O  时间内计算――
+**Hessian-free optimization：**使用合梯度 求解 $Hx = g$显然形成$H$需要Hessian向量产品,这可以通过自动区分在$O(n)$时间内计算.
 
 **Diagonal approximations：**亚当的第二个时刻是赫西亚对角线的对角近似.
 
 | 方法 | 内存 | 每步成本 | 何时使用 |
 |--------|--------|--------------|-------------|
-| Gradient Descent | O(n) | O(n) | Baseline，大模型 |
-| Newton's method | O(n^2) | O(n^3) | 小型凸问题 |
-| L-BFGS | O(mn) | O(mn) | 中型凸问题 |
-| Adam | O(n) | O(n) | Deep Learning 默认选择 |
-| K-FAC | O(n) | 每层 O(n) | 研究、大 batch training |
+| Gradient Descent | $O(n)$ | $O(n)$ | Baseline，大模型 |
+| Newton's method | $O(n^2)$ | $O(n^3)$ | 小型凸问题 |
+| L-BFGS | $O(mn)$ | $O(mn)$ | 中型凸问题 |
+| Adam | $O(n)$ | $O(n)$ | Deep Learning 默认选择 |
+| K-FAC | $O(n)$ | 每层 $O(n)$ | 研究、大 batch training |
 
 
 ```figure
@@ -517,15 +526,27 @@ print(f"Support vectors: {svm.n_support_}")
 
 ## 练习
 
-1. **凸性画廊。**使用检查器测试这些函数的凸性:f(x) = x^4、f(x) = sin(x)、f(x,y) = x^2 + y^2、f(x,y) = x*y、f(x) = max(x,0) ⋅解释为什么每个结果都是合理的。
+1. **凸性画廊。**使用检查器测试这些函数的凸性:$f(x) = x^4$,我知道.$f(x) = \sin(x)$,我知道.$f(x,y) = x^2 + y^2$,我知道.$f(x,y) = xy$,我知道.$f(x) = \max(x, 0)$解释为什么每个结果都是合理的.
 
-2. **Newton vs Gradient Descent 竞赛。**从起点 (10, 10) 出发,在f(x,y) = 50*x^2 + y^2 上运行两种方法──每种方法需要多少步才能达到损失 < 1e-10?当条件数(最大的赫西安本值与最小的赫西安本值的比值) 增加时,渐进下降会发生什么?
+2. **Newton vs Gradient Descent 竞赛。**从起点$(10, 10)$发出,在$f(x,y) = 50x^2 + y^2$上运行两种方法. 每种方法需要多少步骤才能达到损失 < 1e-10?当条件数 ((最大的赫西安本值与最小的赫西安本值的比值) 增加时,渐进下降会发生什么?
 
-3. **Lagrange multiplier 几何。**在约束 x + 2y = 4 下最小化 f(x,y) = (x-3)^2 + (y-3)^2──通过检查解处 f 的梯度与 g 的梯度平行来验证解──
+3. **Lagrange multiplier 几何。**在约束中$x + 2y = 4$下最小化$f(x,y) = (x-3)^2 + (y-3)^2$通过检查解处$f$率与$g$率平行来验证解.
 
-4. **Regularization 约束。**实现L1限制优化:在 \ x 进 \ y 进 \ = 1 的约束下最小化 (x-3) ^ 2 + (y-2) ^ 2 ,展示解有一个坐标等于零 ,由形约束产生的稀疏性)
+4. **Regularization 约束。**实现L1限制优化:在$\lvert x \rvert + \lvert y \rvert \le 1$限制下最小化$(x-3)^2 + (y-2)^2$△展示解有一个坐标等于零
 
 5. **Hessian eigenvalue 分析。**计算罗森布洛克函数 在 (1,1) 和 (-1,1) 处的赫西亚式――计算两个点处的自值――自值值 告诉你最小值附近和最小值处的曲率有什么区别?
+
+### 提示
+
+**练习 1。**运行`check_convexity`前,先预测每个结果: 在一维中,观察 $f''(x)$在二维中,观察赫西安的本值.$f(x,y) = xy$赫西安的本值是1和-1,因此检查器必须报告该函数不是凸函数.
+
+**练习 2。**使用 $f$的格式和赫西语调用`optimize_gd`与`newtons_method`△纽顿的方法只需要一个步骤就能求解方形函数――对于梯度下降,由于存在$50x^2$项,学习率必须小于$2/100$为了$y$方向移动很慢.$100x^2$后重复实验,再次统计步数――
+
+**练习 3。**使用 $g(x,y) = x + 2y - 4$调用`lagrange_solve`在求解处,检查是否满足$x + 2y = 4$及$\nabla f = (2(x-3), 2(y-3))$是否为$\nabla g = (1, 2)$它们的数量.
+
+**练习 4。**没有限制的最小 (3, 2) 位于形外,因此答案在边界上.$\lvert x \rvert + \lvert y \rvert \le 1$△检查结果是否在取等号时满足约束,并与`demo_regularization_geometry`比较
+
+**练习 5。**在每个调节点`rosenbrock_hessian`并将结果传入`hessian_eigenvalues_2d`在 (1, 1) 处,两个自值都是正确的,而且它们的比值很大,因此在一个方向上很窄,在另一个方向上很平.
 
 ## 关键术语
 
@@ -544,7 +565,7 @@ print(f"Support vectors: {svm.n_support_}")
 | Complementary slackness | 在解处，约束要么是 active 的，要么其 multiplier 为零。二者不会同时非零 |
 | Duality | 每个约束问题都有一个伴随的 dual problem。对于凸问题，二者具有相同的最优值 |
 | Strong duality | Primal 和 dual 的最优值相等。对满足 Slater's condition 的凸问题成立 |
-| L-BFGS | 近似二阶方法，存储最近 m 个 Gradient 差分，而不是完整 Hessian |
+| L-BFGS | 近似二阶方法，存储最近 $m$ 个 Gradient 差分，而不是完整 Hessian |
 | Saddle point | Gradient 为零，但在某些方向上是最小值、在另一些方向上是最大值的点 |
 | Overparameterization | 使用比训练样本更多的参数。会平滑 Loss landscape 并减少糟糕局部最小值 |
 
