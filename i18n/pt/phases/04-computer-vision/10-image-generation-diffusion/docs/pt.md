@@ -26,35 +26,32 @@ A "Stable Diffusion" irá integrá-la num sistema de produção, que contém um 
 
 ### processo avançado
 
-取一张图像 `x_0` 加入少量 Gaussian noise 得到 `x_1`△ re-instação de menor volume de ruído  get `x_2`Continuar a fazer o T                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `x_T`差不多与纯高斯噪音 区分── quase impossível comparar-se ao ruído gaussiano.
+取一张图像 `x_0` 加入少量 Gaussian noise 得到 `x_1`△ re-instação de menor volume de ruído  get `x_2`Continuar a prosseguir$T$步, até `x_T`差不多与纯高斯噪音 区分── quase impossível comparar-se ao ruído gaussiano.
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1},  beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \; \beta_t I\right)
 ```
 
-`beta_t`É um menor cronograma de variação, geralmente em T=1000 步内 de 0,0001 线性增长到0.02── cada passo reduzirá ligeiramente o sinal e injetará um novo ruído──
+`beta_t`É um menor horário de variação, normalmente em$T=1000$步内 线性增长 0.0001 线性增长 0.02 ⋅ 步内 线性增长 0.0001 线性增长 0.02 ⋅ 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步   步 步 步        步 步                                                                                                                                       
 
 ### 闭式跳转
 
 Passo a passo, o ruído é uma cadeia de Markov, mas matematicamente pode ser dobrado.`x_0`amostra 出 `x_t`- Não.
 
-```
-Define alpha_t = 1 - beta_t
-Define alpha_bar_t = prod_{s=1..t} alpha_s
-
-Then:
-  q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0,  (1 - alpha_bar_t) * I)
-
-Equivalently:
-  x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon
-  where epsilon ~ N(0, I)
+```math
+\begin{aligned}
+&\text{定义 } \alpha_t = 1 - \beta_t \\
+&\text{定义 } \bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s \\[6pt]
+&\text{则：} q(x_t \mid x_0) = \mathcal{N}\left(x_t; \sqrt{\bar{\alpha}_t} \, x_0, \; (1 - \bar{\alpha}_t) I\right) \\[6pt]
+&\text{等价地：} x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1 - \bar{\alpha}_t} \, \epsilon \quad \text{其中 } \epsilon \sim \mathcal{N}(0, I)
+\end{aligned}
 ```
 
 Esta única forma de difusão é capaz de ser implementada.`t`, directamente de`x_0`amostra 出 `x_t`,并一步完成训练, não precisa de simular a cadeia completa de Markov.
 
 ### processo inverso
 
-Processo avançado é fixo.`p(x_{t-1} | x_t)`É uma rede neural que precisa aprender o seu conteúdo.`x_{t-1}`; prevêem o ruído no segundo passo `epsilon`, e depois , por uma fórmula matemática ,`x_{t-1}`- Não.
+Processo avançado é fixo.`p(x_{t-1} | x_t)`É uma rede neural que precisa aprender o seu conteúdo.`x_{t-1}`Eles prevéem em segundo .$t$步加入的噪音  步加入的噪音  步加入的噪音 `epsilon`, e depois , por uma fórmula matemática ,`x_{t-1}`- Não.
 
 ```mermaid
 flowchart LR
@@ -79,7 +76,7 @@ flowchart LR
  Para cada passo de treinamento:
 
 1. amostra 一张真实图像 `x_0`- Não.
-2. De [1, T] 中均样本 一个时间步骤 `t`- Não.
+2. De$[1, T]$中平均サンプル 一つの時間ステップ `t`- Não.
 3. ruído de amostra `epsilon ~ N(0, I)`- Não.
 4. 计算 `x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon`- Não.
 5. Utilizando a rede 预测 `epsilon_theta(x_t, t)`- Não.
@@ -103,7 +100,7 @@ O essencial é que, embora a condição inversa não tenha uma forma de encerram
 
 ### Porquê mil passos?
 
-O objetivo da seleção de cronograma de ruído avançado é fazer com que cada passo se inscreva no ruído suficiente, fazendo com que o passo inverso seja quase como Gaussian.
+O objetivo da seleção de um cronograma de ruído avançado é fazer com que cada passo se inclua no ruído suficiente, fazendo com que o passo inverso seja quase como Gaussian.$T=1000$O cronograma linear é o padrão de configuração do DDPM.
 
 ### DDIM:快 20 倍的采样
 
@@ -314,14 +311,14 @@ No estudo,`k-diffusion`(Katherine Crowson) Há as melhores variantes de amostrag
 
 | Term | 人们通常怎么说 | 实际含义 |
 |------|----------------|----------------------|
-| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 T 步内把图像破坏成 Gaussian noise |
+| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 $T$ 步内把图像破坏成 Gaussian noise |
 | Reverse process | “一步步 denoise” | 学到的分布，会从 noise 逐步走回图像 |
-| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 t 步加入的 noise |
-| Beta schedule | “noise 大小” | T 个小 variance 组成的序列，定义每一步进入多少 noise |
-| alpha_bar_t | “累计保留因子” | 到时间 t 为止的 (1 - beta_s) 乘积；t 越大，剩余信号越少 |
-| DDPM sampler | “Ancestral，随机” | 从每个 x_{t-1} 的 conditional Gaussian 中 sample；1000 步 |
+| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 $t$ 步加入的 noise |
+| Beta schedule | “noise 大小” | $T$ 个小 variance 组成的序列，定义每一步进入多少 noise |
+| $\bar{\alpha}_t$ | “累计保留因子” | 到时间 $t$ 为止的 $(1 - \beta_s)$ 乘积；$t$ 越大，剩余信号越少 |
+| DDPM sampler | “Ancestral，随机” | 从每个 $x_{t-1}$ 的 conditional Gaussian 中 sample；1000 步 |
 | DDIM sampler | “确定性，快速” | 将 sampling 重写为确定性 ODE；20-100 步即可得到相似质量 |
-| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 t 的 sinusoidal embedding，让它知道 noise level |
+| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 $t$ 的 sinusoidal embedding，让它知道 noise level |
 
 ## 延伸阅读
 

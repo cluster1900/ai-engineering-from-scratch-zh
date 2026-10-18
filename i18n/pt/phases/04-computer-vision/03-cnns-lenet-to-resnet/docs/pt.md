@@ -69,7 +69,7 @@ stack:   conv 3x3 -> conv 3x3 -> pool 2x2
 repeat:  16 or 19 conv layers
 ```
 
-两个3x3 convs 看到的输入区域与一个5x5 conv相等,但参数更少 (2*9*C^2 = 18C^2 vs 25*C^2),并且中间额外多多一个 ReLU──VGG 把这个观察变成完整的结构──它的简单性,即一个块类型反复堆叠,让它成为所有结构的后点参照──
+2 convases 3x3 See de entrada área com um 5x5 convases é igual, mas os parâmetros são menores ($2 \cdot 9 \cdot C^2 = 18C^2$- Não .$25 \cdot C^2$), e no meio extra um ReLU。VGG Colocar esta observação em uma estrutura completa。 Sua simplicidade, ou seja, um tipo de bloco 反复堆叠, deixá-la ser um ponto de referência de todas as subsequentes construções。
 
 - 38M parâmetros, treinamento lento, inferência
 
@@ -117,9 +117,11 @@ O VGG pode trabalhar em 19 níveis, é por causa da norma de lote (quase em simu
 
 Ele, Zhang, Ren, Sun propuseram uma solução para tudo.
 
-```
-standard block:   y = F(x)
-residual block:   y = F(x) + x
+```math
+\begin{aligned}
+\text{标准块：} \quad & y = F(x) \\
+\text{残差块：} \quad & y = F(x) + x
+\end{aligned}
 ```
 
 `+ x`Expressão camada 总能通过把 `F(x)`推到零来选择什么都不做──A ResNet de 1.000 camadas 现在最差也不差比1-layer network 差,因为 cada bloco extra tem uma pequena escotilha de escape──有这个保证,优化器愿意让每个块 变得*稍微*有用;而稍微有用的块 堆叠100次,就是最先进的──

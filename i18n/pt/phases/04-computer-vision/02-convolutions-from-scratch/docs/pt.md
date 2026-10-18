@@ -71,8 +71,8 @@ The kernel slides across every valid 3 x 3 window. Output Y is 3 x 3:
 
 给定输入空间尺寸 `H`Dimensão do núcleo`K`Padding`P`- É um passo.`S`- Não .
 
-```
-H_out = floor( (H - K + 2P) / S ) + 1
+```math
+H_{\text{out}} = \left\lfloor \frac{H - K + 2P}{S} \right\rfloor + 1
 ```
 
 Lembra-te disso. Você vai calcular isso várias vezes em cada arquitetura.
@@ -85,7 +85,7 @@ Lembra-te disso. Você vai calcular isso várias vezes em cada arquitetura.
 | Pool 2x2 | 32 | 2 | 0 | 2 | 16 |
 | 大 receptive field | 32 | 7 | 3 | 2 | 16 |
 
-"Same padding" significa escolher P, para que quando S == 1 时 H_out == H。 para o número raro K, é o mesmo que P = (K - 1) / 2。 É por isso que os núcleos 3x3 ocupam o status dominante: eles são ainda o menor núcleo raro do centro de pontos。
+"O mesmo enchimento" significa escolha.$P$, para fazer isso$S = 1$时  $H_{\text{out}} = H$                                                                                                                                                                                                                                                              $K$- Não , não .$P = (K - 1) / 2$ É por isso que os núcleos 3x3 dominam: eles ainda possuem o menor núcleo de pontos centrais
 
 ### Padding
 

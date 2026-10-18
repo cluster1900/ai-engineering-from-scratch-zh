@@ -178,7 +178,7 @@ print(f"InfoNCE with identical pairs:  {loss_same:.3f}")
 print(f"InfoNCE with random pairs:     {loss_random:.3f}")
 ```
 
-Para os pares similares, devem ser perdidas mais baixas (para o lote grande e a temperatura baixa, para o lote inferior).
+Paralelas de par                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $\log(2N-1) \approx \log(31) \approx 3.4$, para 16 pares de lote.
 
 ### 步骤 4: Mascaramento no estilo MAE
 

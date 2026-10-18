@@ -173,8 +173,8 @@ Para a maioria das modernas CNN, você vai entrar no RGB.
 
 A partir da escala de cinza RGB 转灰是加权和,不是平均值,因为 o olho humano é mais sensível ao verde do que ao vermelho ou ao azul:
 
-```
-Y = 0.299 R + 0.587 G + 0.114 B       (ITU-R BT.601, the classic weights)
+```math
+Y = 0.299 R + 0.587 G + 0.114 B \qquad \text{(ITU-R BT.601, 经典权重)}
 ```
 
 ### Relação de aspecto, dimensionamento e interpolação

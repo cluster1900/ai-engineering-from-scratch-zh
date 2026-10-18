@@ -47,8 +47,8 @@ Top-down (HRNet, ViTPose) é o principal esquema; bottom-up (OpenPose, HigherHRN
 
 Não há regressão direta.`(x, y)`Mas para cada ponto chave, pré-determinar um.`H x W`Mapa de calor, no centro da verdadeira posição, há uma mancha gaussiana.
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 Em inferência, o argmax de cada heatmap é a localização do ponto chave da previsão.

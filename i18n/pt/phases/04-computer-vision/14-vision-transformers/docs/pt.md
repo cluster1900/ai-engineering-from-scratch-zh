@@ -97,7 +97,7 @@ ViT-B/16
 
 - 16x16 patches -> 196 tokens, padrão de configuração
 - 32x32 patches -> 49 tokens, mais rápido mas resolução menor.
-- 8x8 patches -> 784 tokens, mais preciso, mas O(n^2) atenção custo 扩展性很差──
+- 8x8 patches -> 784 tokens, mais preciso, mas $O(n^2)$O custo de atenção  扩展性很差──
 
 Pior patches = piores tokens = piores, mas menos espaço.
 

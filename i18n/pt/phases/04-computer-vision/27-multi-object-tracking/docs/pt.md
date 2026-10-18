@@ -61,7 +61,7 @@ Cada rastreador clássico está em fase de previsão de movimento usando o filtr
 
 ### Algoritmo húngaro
 
-- Não .`M x N`Matriz de custos ((tracks x detections), busca fazer o total custo, a menor das tarefas.`1 - IoU(track_bbox, detection_bbox)`, ou características de aparência de semelhança cosínica negativa. O tempo de execução é O(((M+N) ^3); quando M、N máxima é de aproximadamente 1000 时, através `scipy.optimize.linear_sum_assignment`É muito rápido.
+- Não .`M x N`Matriz de custos ((tracks x detections), busca fazer o total custo, a menor das tarefas.`1 - IoU(track_bbox, detection_bbox)`, ou características de aparência de semelhança cosínica negativa.$O((M+N)^3)$- Não .$M, N$O máximo é de 1000 horas.`scipy.optimize.linear_sum_assignment`É muito rápido.
 
 ### ByteTrack's principais ideias
 

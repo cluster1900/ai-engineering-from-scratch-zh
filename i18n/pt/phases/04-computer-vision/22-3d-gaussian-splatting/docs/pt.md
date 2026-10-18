@@ -61,12 +61,13 @@ flowchart LR
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `mu`、 têm covariância 3D `Sigma`O Gaussian 3D, vai fazer uma projeção para a posição da tela.`mu'`、 têm covariância 2D `Sigma'`O Gaussian 2D:
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 A pegada Gaussiana 2D é uma elipse, sua essência é`Sigma'`de vetores próprios. Cada pixel dentro desta elipse recebe a contribuição de Gaussian.`exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`- Não.
@@ -75,12 +76,13 @@ A pegada Gaussiana 2D é uma elipse, sua essência é`Sigma'`de vetores próprio
 
 对于一个像素,覆盖它的高ussians会按前向排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排序 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 排 
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 Isto é com**NeRF 的 volumetric render 是同一个方程**, apenas embora aqui seja calculado num conjunto de Gaussianos raros de forma evidente, em vez de em amostras densas de raios acima.
@@ -97,7 +99,7 @@ O número fixo de Gaussians 无法覆盖复杂场景――o treinamento inclui d
 - **Split**Quando um gradiente gaussiano de grande escala é muito alto, ele será dividido em dois gaussianos menores.
 - **Prune**A sua contribuição é de:
 
-Densificação Cada N vezes Iteração 运行一次── 一场景通常会从约100k 个初始高西人 (do ponto SfM初始化) 增长到训练结束时的1-5M──
+Densificação$N$A segunda iteração 运行一次──a cena geralmente vai de cerca de 100k 个初始高西人 (do ponto SfM初始化) crescer até ao fim do treino 1-5M──
 
 ### Usage of the word compreender os armônicos esféricos
 

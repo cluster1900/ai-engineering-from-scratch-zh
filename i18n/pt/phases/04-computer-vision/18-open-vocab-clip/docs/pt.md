@@ -42,7 +42,7 @@ flowchart LR
 
 ### 目標
 
-给定一个包含 N 个 (imagem, legenda) pares de lote, construir uma matriz de similaridade NxN。训练两个编码器,使 diagonal(combinação pares) com alta similaridade, enquanto fora de diagonais(non-combinação) com baixa similaridade。
+给定一个包含 $N$个 (imagem, legenda) pares de lote,构建一个 $N \times N$Matriz de semelhança── training dois codificadores, fazendo com que os pares diagonais (do tipo "pares de correspondência") tenham uma alta semelhança, enquanto os fora de diagonais (do tipo "pares de correspondência") não tenham uma baixa semelhança──
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ loss = (loss_i2t + loss_t2i) / 2
 
 SigLIP(Zhai et al., 2023) usou sigmoide por par  substituído softmax:
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 Per-pair Loss  remove CLIP necessária para a normalização de nível de lote.

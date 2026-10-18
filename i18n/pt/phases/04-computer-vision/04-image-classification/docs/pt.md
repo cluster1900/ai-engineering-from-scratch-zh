@@ -52,18 +52,20 @@ Cada linha neste ciclo pode estar com bugs. Recebe logs brutos, não softmax, en
 
 classificador 会为每张图像产生 `C`个数字, denominado logits. 应用 softmax 会把它们转换为概率分布:
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 Cross-entropy 衡量正确 class 的负记录概率:
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-Forma do lado direito é forma do número de valores estáveis (log-sum-exp)`nn.CrossEntropyLoss`会在一个 op 中融合 softmax + NLL,并直接接收原始logits──自己先应用 softmax 几乎总是 bug,因为你计算的是 log(softmax(softmax(z))),这是一个没有意义的量──
+Forma do lado direito é forma do número de valores estáveis (log-sum-exp)`nn.CrossEntropyLoss`O software é um sistema de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de software de base de software de software de software de software de software de software de software de software de software de software de software de base de software de software de software de base de software de software de software de base de base de base de software de software de base de software de base de base de software de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de base de$\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$É uma quantidade sem sentido.
 
 ### Por que a ampliação é eficaz
 
@@ -105,7 +107,7 @@ Não mexa com os meus amigos.`[0, 0, 1, 0, 0]`Como objetivo de treinamento, mas 
 A precisão agregada irá ocultar o desequilíbrio. Se você sempre prever a classe de maioria, também pode obter 90%.
 
 - **Per-class accuracy** Cada classe um número; irá imediatamente expor a classe de desempenho insuficiente.
-- **Confusion matrix** Gradeira C x C, em que a linha i col j = classe verdadeira i é pré-estimada para a quantidade de classes j; diagonal é verdadeiramente pré-estimada, fora de diagonal 才是模型 问题所在。
+- **Confusion matrix**- Não .$C \times C$Grade, entre as filas $i$Col.$j$= classe verdadeira $i$Fui previamente para a classe.$j$才是模型 问题所在──
 - **Top-1 / Top-5** Classe verdadeira se está no top 1 ou top 5 previsiões; Top-5 para ImageNet  é importante, porque classes como Norwich Terrier 和 Norfolk Terrier 确实存在差义──
 - **Calibration (ECE)** 0,8 confiança prevê que há 80% do tempo é correto? redes modernas  sistematicamente super confiantes; pode ser usado para escalar a temperatura ou suavizar a etiqueta 修正──
 

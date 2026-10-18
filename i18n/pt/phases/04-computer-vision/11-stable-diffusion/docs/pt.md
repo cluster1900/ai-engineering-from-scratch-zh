@@ -52,8 +52,8 @@ flowchart LR
 
 Normal text conditionalizações para cada pedido `c` 学习 `epsilon_theta(x_t, t, c)`O CFG está na mesma rede, mas 10% do tempo é perdido.`c`(substituição para embutidos em espaço), para obter um modelo único de som condicional e sem condições.
 
-```
-eps = eps_uncond + w * (eps_cond - eps_uncond)
+```math
+\epsilon = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})
 ```
 
 `w`É a escala de orientação.`w=0`É incondicional.`w=1`É normal condicional,`w>1`O preço é de baixa variabilidade.`w=7.5`- Não.

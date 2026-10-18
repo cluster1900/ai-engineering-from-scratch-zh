@@ -83,8 +83,8 @@ Colocar uma amostra de máscara de 28x28 para a proposta.
 
 Mascaras R-CNN tem quatro tipos de perdas.
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`- Não .`L_rpn_box` Objetividade das propostas do RPN + caixa Regressão。

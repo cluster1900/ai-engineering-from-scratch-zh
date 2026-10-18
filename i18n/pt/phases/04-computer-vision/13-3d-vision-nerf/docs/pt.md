@@ -23,7 +23,7 @@ Estas duas categorias de representações, por diferentes razões, são dominada
 ## 概念
 ### Nuvens de ponto
 
-Nuvem de pontos é um conjunto de pontos em N, cada ponto pode ser escolhido com características de cor, intensidade, normalidade.
+Nuvem de pontos é $\mathbb{R}^3$- Não .$N$个点的无序集合, cada ponto pode ser escolhido com características ((color, intensidade, normal) ⋅
 
 ```
 cloud = [
@@ -41,8 +41,8 @@ Não há rede, não há conectividade.
 
 PointNet (Qi et al., 2017) utilizou uma ideia para resolver duas coisas: para cada aplicativo de ponto compartilhado MLP, e depois com função simétrica ((max pool)聚合── resultado é um vetor de tamanho fixo, e não depende da ordem──
 
-```
-f(P) = max_{p in P} MLP(p)
+```math
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 É o núcleo inteiro da PointNet.
@@ -86,22 +86,23 @@ Loss 会将染出像素与训练照片中的地面真相像素 进行比较─�
 
 作用在 `(x, y, z)`O MLP de vanilla de cima não pode indicar alta frequência, porque os MLP de cima em baixo são de baixa frequência.
 
-```
-gamma(p) = (sin(2^0 pi p), cos(2^0 pi p), sin(2^1 pi p), cos(2^1 pi p), ...)
+```math
+\gamma(p) = \left(\sin(2^0 \pi p), \cos(2^0 \pi p), \sin(2^1 \pi p), \cos(2^1 \pi p), \ldots\right)
 ```
 
-O máximo até L=10 níveis de frequência. Isto é o mesmo que os transformadores usam para posições, também aparecerá novamente no condicionamento de tempo de difusão.
+O melhor que posso fazer$L=10$个 frequência níveis── isto é o mesmo que os transformadores usam para posições, também aparecerá novamente no tempo de difusão condição (Lessão 10)
 
 ### Renderamento volumétrico
 
+```math
+\begin{aligned}
+C(r) &= \sum_i T_i \left(1 - \exp(-\sigma_i \delta_i)\right) c_i \\[4pt]
+T_i &= \exp\left(-\sum_{j<i} \sigma_j \delta_j\right) \\
+\delta_i &= t_{i+1} - t_i
+\end{aligned}
 ```
-C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 
-T_i  = exp(- sum_{j<i} sigma_j * delta_j)
-delta_i = t_{i+1} - t_i
-```
-
-`T_i`É transmitência, é que há muita luz que pode chegar ao ponto.`(1 - exp(-sigma_i * delta_i))`É um ponto de opacidade.`c_i`É cor. O pixel final é o aumento do raio.
+`T_i`É a transmissão, é que há muita luz que pode chegar ao ponto.$i$- Não.`(1 - exp(-sigma_i * delta_i))`É isso .$i$A opacidade do lado.`c_i`É cor. O pixel final é o aumento do raio.
 
 ### O que substituiu as NeRF
 

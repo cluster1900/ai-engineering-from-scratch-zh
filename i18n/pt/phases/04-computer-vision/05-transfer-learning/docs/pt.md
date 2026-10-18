@@ -97,8 +97,8 @@ Para pequenos conjuntos de dados, uma única camada linear geralmente é suficie
 
 É a versão mais simples de LR de "modern fine-tuning" (que é usada em "BEiT"",DINOv2"",ViT-B") não é dividir as camadas em fases, mas fazer com que cada camada de LR seja menor do que a seguinte:
 
-```
-lr_layer_k = base_lr * decay^(L - k)
+```math
+\text{lr\_layer}_k = \text{base\_lr} \cdot \text{decay}^{L - k}
 ```
 
 Quando decomposição = 0,75 且 L = 12 blocos transformadores 时,第一个块的训练 LR 是头 LR 的 `0.75^11 ≈ 0.04x` Isto é mais importante para os tons finos do transformador do que para as CNNs; para as CNNs, as LRs agrupadas em palcos geralmente já são suficientes

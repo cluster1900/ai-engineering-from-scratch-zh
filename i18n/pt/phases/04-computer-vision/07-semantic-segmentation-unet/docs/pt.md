@@ -84,10 +84,10 @@ O segundo é o que se pode ver no projeto real.
 
 ### Grade de pixels de cima de entropia cruzada
 
-对于包含C 个类的语义细分,model output是 `(N, C, H, W)`❖ O alvo é `(N, H, W)`, contém IDs de classe inteira. A entropia cruzada é completamente a mesma que a Classificação, apenas aplicada em cada posição espacial.
+对于包含 $C$个 classes 的语义分区,output modelo é `(N, C, H, W)`❖ O alvo é `(N, H, W)`, contém IDs de classe inteira. A entropia cruzada é completamente a mesma que a Classificação, apenas aplicada em cada posição espacial.
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 PyTorch 中的 `F.cross_entropy`Não é preciso remodelar.
@@ -98,17 +98,19 @@ A entropia cruzada é igual a cada pixel. Quando a maior parte da estrutura de o
 
 Perda de dados  através da optimização direta da mascara prevista e da sobreposição entre a mascara verdadeira  para resolver este problema:
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 Entre eles `p`é um mapa de probabilidade de sigmoid/softmax de uma classe,`y`É a máscara de verdade binária. Só quando se sobrepõem, perdas são para zero. Porque é baseada em relação, desequilíbrio de classes não está mais relacionado.
 
 实践中, utilização **combined loss**- Não .
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 A entropia cruzada no treinamento   inicial fornecer um gradiente estável; Dice  posterior   formação                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
@@ -117,7 +119,7 @@ A entropia cruzada no treinamento   inicial fornecer um gradiente estável; Dice
 
 - **Pixel accuracy** 预测正确的像素 百分比──计算便宜──与分类中的精度一样,在不平衡的数据上会失效──
 - **IoU per class** Cada classe de máscara de intersecção sobre a união; entre as classes 求平均 = mIoU。
-- **Dice (F1 on pixels)** 类似 IoU;`Dice = 2 * IoU / (1 + IoU)`❖ Imagem médica, mais preferido Dice, condução da comunidade, mais preferido IoU;
+- **Dice (F1 on pixels)** 类似 IoU;$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$❖ Imagem médica, mais preferido Dice, condução da comunidade, mais preferido IoU;
 - **Boundary F1**  Medir as fronteiras previstas e a proximidade das fronteiras da verdade e da terra, mesmo que um pequeno desvio seja punido.   Para as tarefas de alta precisão de inspeção de semicondutores, etc.       
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
