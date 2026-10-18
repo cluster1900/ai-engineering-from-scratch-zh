@@ -27,7 +27,7 @@ El programa de LLM multi-regional que sirve es el caché 问题、路由 问题�
 
 Por favor, llegue con rapidez. Router hace hash a los prefijos (por ejemplo, 512 tokens); pregunta a cada réplica: ¿Tienes este prefijo en caché? 🏼 Réplica en bloques de distribución y expulsión 时, por medio de un canal público / sub 发布 KV-cache events。 Router selecciona una réplica que se ajuste; si no se ajuste, se retrocede a un tie-breaker basado en GPU-utile。
 
-**vLLM Router**(Rust,2026 producción-estaca): 订阅 `kv.cache.block_added`eventos,维护 prefijo-hash → índice de réplica, usando O(1) búsqueda 路由──没有匹配时回落到最小排列深──
+**vLLM Router**(Rust,2026 producción-estaca): 订阅 `kv.cache.block_added`eventos,维护 prefijo-hash → índice de réplica,用 $O(1)$Buscar 路由──没有匹配时回落到最低排列深度──
 
 **llm-d router**: el mismo modelo,Kubernetes nativo.
 
