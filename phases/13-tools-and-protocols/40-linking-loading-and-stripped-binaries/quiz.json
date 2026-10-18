@@ -4,87 +4,87 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A relocatable object carries R_X86_64_PLT32 on every call, including calls to functions defined in another object of the same link. What does that record say about the final executable?",
+      "question": "一个可重定位目标文件为每次调用都附带 R_X86_64_PLT32，包括对同一次链接中另一个目标文件所定义函数的调用。这条记录能说明最终可执行文件的什么情况？",
       "options": [
-        "Every call will go through a PLT entry",
-        "The object was built with -fno-plt",
-        "The function is in a shared library",
-        "Only that the field is a call displacement; the link editor reduces PLT32 to a direct distance when the symbol is defined in the inputs and makes a PLT entry only for undefined symbols"
-      ],
-      "correct": 3,
-      "explanation": "Compilers emit PLT32 on all calls since binutils 2.31 and LLVM 7. The decision belongs to the link editor, which is why the lesson's plan finds four direct calls and two PLT symbols in the same object."
-    },
-    {
-      "stage": "check",
-      "question": "In tiny-dyn-x86_64 the .got.plt slot for puts holds 0x206 in the file, and puts@plt starts at 0x200 with jmpq *slot(%rip). What happens on the first call?",
-      "options": [
-        "The program jumps to 0x206, the pushq $0 inside its own PLT entry, then to PLT0, which enters the dynamic linker through GOT+16; the resolver processes R_X86_64_JUMP_SLOT puts and writes the real address into the slot",
-        "The program crashes because 0x206 is not in libc",
-        "The call is resolved by the link editor and the slot is unused",
-        "The slot already holds the address of puts because the link editor read libc.so.6"
-      ],
-      "correct": 0,
-      "explanation": "psABI 5.2 says the slot initially holds the address of the following pushq. The first call takes the long path through PLT0 and the resolver, and every later call takes one indirect jump."
-    },
-    {
-      "stage": "check",
-      "question": "The word at 0x100004038 in ledger_main reads 0x8010000000000007 in the file. What is it?",
-      "options": [
-        "A code signature hash",
-        "A pointer into kernel memory",
-        "A chained fixup: bit 63 means bind, the next field is 2 units of four bytes, and ordinal 7 names _puts from the second library; dyld replaces the word with the address of _puts at load",
-        "The address of the stub for _puts"
+        "每次调用都会经过一个 PLT 条目",
+        "该目标文件使用 -fno-plt 构建",
+        "它只能说明这个字段是调用位移；当符号在链接输入中已有定义时，链接器会将 PLT32 化为直接调用的距离，只有未定义符号才会生成 PLT 条目",
+        "该函数位于共享库中"
       ],
       "correct": 2,
-      "explanation": "dyld_chained_ptr_64_bind packs ordinal:24, addend:8, next:12, and bind:1. The imports table entry 7 is _puts with library ordinal 2, which is /usr/lib/libSystem.B.dylib."
+      "explanation": "自 binutils 2.31 和 LLVM 7 起，编译器会为所有调用生成 PLT32。最终如何处理由链接器决定，这也解释了为什么本课的链接计划在同一个目标文件中找到了四次直接调用和两个 PLT 符号。"
     },
     {
       "stage": "check",
-      "question": "In tiny-x86_64.exe the IAT at RVA 0x2040 holds 0x2058 and 0x2060, which are RVAs inside .rdata. Why are these not the addresses of puts and exit?",
+      "question": "在 tiny-dyn-x86_64 中，puts 对应的 .got.plt 槽位在文件中存放 0x206，而 puts@plt 从 0x200 开始，首条指令是 jmpq *slot(%rip)。第一次调用时会发生什么？",
       "options": [
-        "The functions are exported, so no import is needed",
-        "puts and exit are called by ordinal",
-        "The IAT is identical to the import lookup table until the image is bound; the values are hint/name entries, and the Windows loader overwrites the IAT with 64-bit addresses at load time",
-        "The image is corrupt"
+        "程序崩溃，因为 0x206 不在 libc 中",
+        "该槽位已经存放 puts 的地址，因为链接器读取了 libc.so.6",
+        "程序跳到 0x206，即自身 PLT 条目内的 pushq $0，然后跳到 PLT0，通过 GOT+16 进入动态链接器；解析器处理 R_X86_64_JUMP_SLOT puts，并将真实地址写入该槽位",
+        "调用已由链接器解析，该槽位不会被使用"
       ],
       "correct": 2,
-      "explanation": "The PE Format page says the IAT matches the lookup table until binding and is overwritten with 32-bit or 64-bit addresses. Bit 63 clear in each entry means import by name through a hint/name entry."
+      "explanation": "psABI 5.2 规定，该槽位最初存放后续 pushq 指令的地址。第一次调用会走经过 PLT0 和解析器的较长路径，之后每次调用只需一次间接跳转。"
     },
     {
       "stage": "check",
-      "question": "After strip with no options, nm prints no symbols for libledger.stripped.dylib. A fresh main.c still links against it and the program runs. Why?",
+      "question": "ledger_main 中位于 0x100004038 的字在文件中的值为 0x8010000000000007。它是什么？",
       "options": [
-        "The dylib was signed",
-        "strip only hides symbols from nm",
-        "The functions were inlined into main",
-        "The link editor and dyld read the exports trie in LC_DYLD_EXPORTS_TRIE, which strip leaves in place, and LC_SYMTAB is not used for binding"
+        "代码签名哈希",
+        "_puts 桩代码的地址",
+        "指向内核内存的指针",
+        "一条链式修正记录：第 63 位表示 bind，next 字段的值为 2、单位为 4 字节，序号 7 对应第二个库中的 _puts；加载时 dyld 会将这个字替换为 _puts 的地址"
       ],
       "correct": 3,
-      "explanation": "The lesson shows LC_SYMTAB with 0 records while dyld_info -exports still lists the four functions at their offsets. Only global symbols serve dynamic linking, and the trie carries them."
+      "explanation": "dyld_chained_ptr_64_bind 将 ordinal:24、addend:8、next:12 和 bind:1 打包存储。导入表的第 7 号条目是 _puts，库序号为 2，对应 /usr/lib/libSystem.B.dylib。"
+    },
+    {
+      "stage": "check",
+      "question": "在 tiny-x86_64.exe 中，RVA 0x2040 处的 IAT 存放着 0x2058 和 0x2060，它们都是 .rdata 内的 RVA。为什么它们不是 puts 和 exit 的地址？",
+      "options": [
+        "这两个函数已被导出，因此无需导入",
+        "puts 和 exit 按序号调用",
+        "映像完成绑定前，IAT 与导入查找表相同；这些值指向提示值/名称条目，Windows 加载器会在加载时用 64 位地址覆盖 IAT",
+        "该映像已损坏"
+      ],
+      "correct": 2,
+      "explanation": "PE Format 文档说明，IAT 在绑定前与导入查找表一致，之后会被 32 位或 64 位地址覆盖。每个条目的第 63 位为 0，表示通过提示值/名称条目按名称导入。"
+    },
+    {
+      "stage": "check",
+      "question": "对 libledger.stripped.dylib 执行不带任何选项的 strip 后，nm 显示没有符号。但新编写的 main.c 仍能链接该库，程序也能运行。为什么？",
+      "options": [
+        "这些函数已被内联到 main 中",
+        "该 dylib 已签名",
+        "链接器和 dyld 读取的是 LC_DYLD_EXPORTS_TRIE 中的导出前缀树，strip 会保留它，而绑定过程不使用 LC_SYMTAB",
+        "strip 只是让 nm 看不到符号"
+      ],
+      "correct": 2,
+      "explanation": "本课展示的 LC_SYMTAB 中记录数为 0，但 dyld_info -exports 仍列出了四个函数及其偏移量。只有全局符号参与动态链接，而前缀树承载了这些符号。"
     },
     {
       "stage": "post",
-      "question": "On static-arm64-O2.stripped a scan for stp x29, x30, [sp, #-0x10]! finds 0 of 5 functions and a scan for sub sp, sp, #imm finds 1 of 5. LC_FUNCTION_STARTS finds 5 of 5. What explains the difference?",
+      "question": "在 static-arm64-O2.stripped 中，扫描 stp x29, x30, [sp, #-0x10]! 在五个函数中一个也找不到，扫描 sub sp, sp, #imm 只能找到其中一个，而 LC_FUNCTION_STARTS 能找到全部五个。如何解释这种差异？",
       "options": [
-        "The four missed functions are not real functions",
-        "LC_FUNCTION_STARTS is rebuilt by nm",
-        "Prologue scans report only what the compiler emitted: clang writes sub sp then stp with a positive offset, and four leaf functions have no frame at all, while the link editor wrote the starts table for every function and strip keeps it",
-        "The scans were run on the wrong section"
+        "漏掉的四个函数不是真正的函数",
+        "序言扫描只能识别编译器实际生成的模式：clang 先生成 sub sp，再生成使用正偏移量的 stp，而四个叶子函数根本没有栈帧；链接器则为每个函数写入了起始地址表，strip 也会保留它",
+        "LC_FUNCTION_STARTS 由 nm 重建",
+        "扫描选错了节"
       ],
-      "correct": 2,
-      "explanation": "At -O0 the sub sp scan finds all five because every function has a frame. At -O2 percent_change, grade, total, and grade_label are leaf functions, so only the starts table and the bl targets find them."
+      "correct": 1,
+      "explanation": "在 -O0 下，扫描 sub sp 能找到全部五个函数，因为每个函数都有栈帧。在 -O2 下，percent_change、grade、total 和 grade_label 都是叶子函数，因此只有起始地址表和 bl 的目标地址能找到它们。"
     },
     {
       "stage": "post",
-      "question": "The FLIRT-shaped signatures for grade and grade_label at -O2 have the same 32-byte pattern and the same CRC16 over four bytes. How does the matcher name the two functions correctly?",
+      "question": "在 -O2 下，grade 和 grade_label 的类 FLIRT 签名具有相同的 32 字节模式，对后续四个字节计算得到的 CRC16 也相同。匹配器如何正确识别这两个函数的名称？",
       "options": [
-        "It picks the first signature in the file",
-        "It cannot, and both are left unnamed",
-        "It compares a tail byte where the two functions differ, byte 44 is 0x20 in grade and 0x28 in grade_label, and their lengths are 60 and 72",
-        "It uses the symbol table of the stripped binary"
+        "使用已剥离二进制文件的符号表",
+        "比较两个函数不同的尾部字节：第 44 字节在 grade 中是 0x20，在 grade_label 中是 0x28，且两者的长度分别为 60 和 72",
+        "选择文件中的第一个签名",
+        "无法识别，两者都保持未命名"
       ],
-      "correct": 2,
-      "explanation": "Hex-Rays documents the same order: pattern, CRC16, then tail bytes and referenced names. grade_label inlined grade, so the first 36 bytes are shared and only the tail separates them."
+      "correct": 1,
+      "explanation": "Hex-Rays 文档给出了相同的匹配顺序：先匹配模式，再匹配 CRC16，最后检查尾部字节和引用名称。grade_label 内联了 grade，因此前 36 字节相同，只能靠尾部区分。"
     }
   ]
 }
