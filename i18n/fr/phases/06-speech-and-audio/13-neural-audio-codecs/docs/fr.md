@@ -24,7 +24,7 @@ Les perspectives de l'année 2024-2026 sont les suivantes:**当你尝试从文�
 
 ### 核心技巧:Quantification des vecteurs résiduels (RVQ)
 
-Au lieu d'utiliser un codec énorme, il faut des millions de codes pour obtenir une bonne qualité.**RVQ**: un petit codebook 级联──le premier codebook 量化编码器 输出; le second quantization residual; selon ce type de recommandation── chaque codebook a 1024 个码库──8 个码库 = 1024^8 = 10^24 的有效词表──
+Au lieu d'utiliser un codec énorme, il faut des millions de codes pour obtenir une bonne qualité.**RVQ**: un petit codebook 级联──le premier codebook 量化编码器 输出; le second reste de la quantité; selon ce type de recommandation── chaque codebook a 1024 代码──8 代码簿 = $1024^8 = 10^{24}$Le mot est "fait".
 
 En déduction, le décodeur va rechercher et reconstruire le code de chaque édition.
 
@@ -130,8 +130,8 @@ Le code de la sémantique 0 avec WavLM 对齐. Vous pouvez entraîner un transfo
 
 Pour Mimi, 12,5 Hz × 8 codes, un film de 10 secondes:
 
-```
-N_tokens = 10 * 12.5 * 8 = 1000 tokens
+```math
+N_{\text{tokens}} = 10 \times 12.5 \times 8 = 1000 \text{ tokens}
 ```
 
 1000 Tokens pour Transformer pour dire un très petit sur la page ci-dessous. Un Transformer de 256M parametres peut être généré en 10 secondes par GPU moderne.

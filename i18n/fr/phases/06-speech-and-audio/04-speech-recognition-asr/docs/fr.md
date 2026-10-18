@@ -37,7 +37,7 @@ En 2026, le taux de SOTA de LibriSpeech test-clean est de 1,4% (Parakeet-TDT-1.1
 
 ### WER: un chiffre
 
-**Word Error Rate**- Je suis là.`(S + D + I) / N`, dont S = remplacement, D = suppression, I = insertion, N = référence dans le texte.
+**Word Error Rate**- Je suis là.$(S + D + I) / N$, parmi lesquels $S$= au lieu de$D$= suppression,$I$= pénétrer,$N$= référence en textes de référence. Il est à l'échelle de l'humanité.
 
 | Model | LibriSpeech test-clean | LibriSpeech test-other | Size |
 |-------|------------------------|------------------------|------|

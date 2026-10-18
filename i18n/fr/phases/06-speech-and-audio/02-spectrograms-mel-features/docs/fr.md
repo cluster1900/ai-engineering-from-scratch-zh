@@ -23,7 +23,7 @@ Le spectrogramme de méle est le même à 1000 Hz que 2000 Hz. L'échelle de mé
 
 **Log-magnitude.**La taille brute 跨越 5-6 个数量级──使用 `log(|X| + 1e-6)`Ou `20 * log10(|X|)`Pour réduire la gamme dynamique, chaque pipeline de production utilise une magnitude de log, et non une magnitude brute.
 
-**Mel scale.**Fréquence moyenne Hz `f`- Je suis là.`m = 2595 * log10(1 + f / 700)`映射到 mel `m`◊ Le tableau de bord est à 1 kHz, le plus grand est à 1 kHz, le plus grand est à un nombre de ◊ couvrant 80 bits de 08 kHz, c'est l'entrée standard ASR.
+**Mel scale.**Fréquence moyenne Hz `f`- Je suis là.$m = 2595 \cdot \log_{10}(1 + f / 700)$映射到 mel `m`◊ Le tableau de bord est à 1 kHz, le plus grand est à 1 kHz, le plus grand est à un nombre de ◊ couvrant 80 bits de 08 kHz, c'est l'entrée standard ASR.
 
 **Mel filterbank.**Un groupe de filtres triangulaires à l'échelle de la méle. Chaque filtre est la somme pondérée des poubelles FFT adjacentes.
 
