@@ -864,7 +864,7 @@ API المجموعة على جميع الرموز اليدوية  تقدم خص�
 #     return None
 ```
 
-في بيئة الإنتاج، باستخدام مؤشر المتجهات ((Redis Vector Search、Pinecone أو pgvector) بديلة لقطاع التسجيل.
+في بيئة الإنتاج، باستخدام مؤشر المتجهات ((Redis Vector Search、Pinecone أو pgvector) بديلة التسجيلات$O(\log n)$البحث
 
 ## 交付 it
 

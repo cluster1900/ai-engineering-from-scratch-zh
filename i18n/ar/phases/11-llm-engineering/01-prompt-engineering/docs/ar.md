@@ -1017,4 +1017,4 @@ Python 代码(`code/prompt_engineering.py`) هو حزمة اختبار مستق�
 - [Shin et al., 2023 -- "Prompt Engineering a Prompt Engineer"](https://arxiv.org/abs/2311.05661)استخدام LLM تحسين الذات التحذيرات، هو أساس التحذيرات التالية
 - [LMSYS Chatbot Arena](https://chat.lmsys.org/)LLMs                                                                                                                                                                                                                                                             
 - [DAIR.AI Prompt Engineering Guide](https://www.promptingguide.ai/)详尽的快速 技术目录,包含示例(零射、少数射、CoT、ReAct、自连性); 是从业者用以更广泛的理解 Prompt engineering 表面的参考资料──
-- [Anthropic prompt library](https://docs.anthropic.com/en/prompt-library) حسب حالة الاستخدام تخطيط إشارات معروفة جيدة؛ تظهر أنماط هيكلية يمكن تسليمها في الإنتاج
+- [Claude 提示词编写最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)أنثروپيك 关于提示词结构的指南,附有具体示例,取代了前先的提示图书馆──

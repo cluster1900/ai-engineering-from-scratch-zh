@@ -91,20 +91,20 @@ graph LR
 
 **Cosine similarity**: اثنين من المتجهات 之间角的余弦值──范围从 -1(相反) إلى 1(完全相同)──忽略大小,只关注方向──这是RAG默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: المنتج الداخلي الأصلي. المتجهات الأكبر ستحصل على عدد أعلى.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**: مساحة متجهة وسطاً على طول الطريق. المسافة فوق الصغر = زيادة التشابه.
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 تشابه الكوسين هو معيار الاختيار. فإنه من خلال الكبيرة، يمكن أن يعالج المستندات من مختلف طولات. عندما يقول البعض:
