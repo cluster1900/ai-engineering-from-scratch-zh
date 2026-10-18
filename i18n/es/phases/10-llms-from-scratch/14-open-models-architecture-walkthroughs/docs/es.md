@@ -49,8 +49,8 @@ En todos los modelos abiertos de vanguardia de 2024-2026, también aparecen seis
 
 LayerNorm se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de valores, se reduce en el promedio de los promedio de valores, se reduce en el promedio de los promedio de los promedios de los promedios de la norma:
 
-```
-RMSNorm(x) = x / sqrt(mean(x^2) + eps) * gamma
+```math
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 没有均值消除──没有偏见──每个代币少一次 matmul──Zhang and Sennrich (2019) 认为它在机器翻译上可以匹配LayerNorm,同时快 10%──所有现代开放模型都使用它──
@@ -75,8 +75,8 @@ Cada Llama, Mistral, Quwen, DeepSeek y Gemma usan RoPE.
 
 La MLP de GPT-2 es`x -> gelu(xW1 + b1) -> (...)W2 + b2`──SwiGLU(Shazeer 2020) con producto cerrado  sustitución de activación:
 
-```
-SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
+```math
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 两个并行投射, en lugar de una, por activación de Swish 进行 gate。实证上, it in per parameter perplexity 上更强。Llama 2 采用它,随后大家都跟进──MLP 隐藏尺寸通常会设置让总参数匹配原始密集 MLP:如果 GPT-2 使用 `ff_dim = 4 * hidden`,SwiGLU `ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`¿Qué es eso?
@@ -87,7 +87,7 @@ GPT-2 使用 **Multi-Head Attention (MHA)**Cada cabeza tiene su propia proyecci�
 
 **Multi-Query Attention (MQA, Shazeer 2019)**En todos los cabezas  compartiendo una K y una V ⋅ se reducirá el caché KV  según el número de cabezas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 
-**Grouped-Query Attention (GQA, Ainslie et al. 2023)**Es el medio de la solución: G 组 Q heads 共享一个 K 和一个 V。Llama 3 8B 使用 GQA, contiene 32 个 Q heads 和 8 个 KV heads(G=8), por lo que相比较完整MHA,KV cache 缩小4x。
+**Grouped-Query Attention (GQA, Ainslie et al. 2023)**Es el medio medio:$G$组 Q cabezas 共享一个K 和一个V──Llama 3 8B 使用 GQA, contiene 32 个Q cabezas 和 8 个KV cabezas($G=8$), por lo que comparado con el MHA completo, KV cache  reducido 4x ⋅
 
 **Multi-Head Latent Attention (MLA, DeepSeek 2024)**Cumplir K y V                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
@@ -151,6 +151,7 @@ En el siguiente cuadro se especifica todo el contenido.
 | Qwen 2.5 72B | 2024 | 72B | 72B | RMSNorm | SwiGLU | RoPE (YaRN) | GQA (64/8) | no | 128k |
 | DeepSeek V2 236B | 2024 | 236B | 21B | RMSNorm | SwiGLU | RoPE | MLA | yes (160 experts, top-6) | 128k |
 | DeepSeek V3 | 2024 | 671B | 37B | RMSNorm | SwiGLU | RoPE | MLA | yes (256 experts, top-8) | 128k |
+| Spark-X2.5 4B | 2026 | 4.1B | 4.1B | RMSNorm | GeGLU | RoPE + sliding (3:1) | GQA (16/4)，门控输出 | 否 | 1M |
 
 扫描这些列──RMSNorm es común.──SwiGLU o su GeGLU 近亲是通用.──RoPE es común.──7B 以上 GQA es común.
 
@@ -173,6 +174,11 @@ Configuración de Llama 3 8B:
 ```
 
 Cada pasaje está a la altura de lo que ya has logrado.
+La nueva configuración añadió algunos segmentos que cambiarán el modo de calcular, por lo que el calculador los leerá en estos segmentos:
+
+- `head_dim`Cuando no es igual a`hidden_size / num_attention_heads`时, necesita una configuración clara. Gemma 2 9B de escondido 3584, hay 16 cabezas, pero `head_dim`Por lo tanto, su proyección Q es 3584 x 4096, y no cuadrangular.
+- `tie_word_embeddings`:LM head 是否复用嵌入矩阵──Llama 3 8B 不共享两者, por lo que si sólo se calcula una vez de embebimiento, se perderá 525M 参数──
+- `layer_types`Y `sliding_window`¿Qué capas asisten al contexto completo, qué sólo asisten a los tokens W 个 más recientes?
 
 - `hidden_size`: dimensiones de incorporación.
 - `intermediate_size`: MLP tamaño oculto(3.5x oculto -- SwiGLU 数学) 』
@@ -209,6 +215,15 @@ Llama 3 8B en el contexto 128k ЅF16 Ѕhead_dim = oculto / num_heads = 128 时:
 
 Los pesos de 8B en BF16 son de 16 GB. El caché KV de una sola secuencia de 128 k es mayor que los pesos. Esto es lo que impulsa la cuantificación de la memoria de GQA, MLA y KV.
 
+Estas fórmulas supusieron que cada una de las capas de la ventana de deslizamiento solo necesita los tokens W 个 más recientes, por lo que para los modelos híbridos, se requiere una secuencia completa.
+
+```text
+kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
+           * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
+```
+
+Spark-X2.5 4B Cada una de las capas de atención completa 搭配三个 capas de ventanas correderas$W = 512$):36 层中有9 层满层 和 27 层滑滑. 下, en el contexto de 1M-token, usando BF16 时, cada secuencia 约需要 38.7 GB(36 GiB) ⋅如果全部36 层都缓存完整的背景,则需要154.6 GB(144 GiB) ⋅ Layer 承担了几乎全部开销,因此查看长文本模型 时,应首先关注全与滑层的比例.
+
 ### Cuando cada modelo gana
 
 - **单张 80GB GPU，无 MoE**Llama 3 8B、Mistral 7B、Gemma 2 9B── fácil de servir, herramienta 广泛──
@@ -216,6 +231,7 @@ Los pesos de 8B en BF16 son de 16 GB. El caché KV de una sola secuencia de 128 
 - **最大的 open capability，可接受 MoE 复杂度**: Profundo Buscar V3、Mixtral 8x22B― cada capacidad activa de FLOP― 最佳―
 - **Long-context 需求**El objetivo de la investigación es mejorar la calidad de la información y la calidad de la información.
 - **Low-latency serving**:Gemma 2 9B(ventana deslizante 降低 computación de contexto largo)
+- **较小内存预算下的长上下文**:Spark-X2.5 4B etc modelos híbridos de ventanas correderas, sólo cuatro de las capas  asumen el contexto completo 开销──
 
 
 ```figure
@@ -234,12 +250,16 @@ config = {
 }
 ```
 
-脚本会逐字段遍历架构,计算嵌入,注意, GQA reducción, MLP expansión, SwiGLU expansión, y la norma de capas y los parámetros de la cabeza.
+脚本会逐字段遍历架构,计算嵌入、注意(带 GQA reducción, y en configuración 设置时使用显式 `head_dim`(Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple) (Multiple)
+
+Para modelos densos, el total de los parámetros con el número de parámetros abiertos es totalmente compatible: Llama 3 8B = 8,030,261,248, Gemma 2 9B = 9,241,705,984, Spark-X2.5 4B = 4,112,079,360;; Qwen 2.5 72B = 819,200, esto es también el contenido del ejercicio 1.
 
 实现见 `code/main.py`¿Qué es eso?
 
 ## Usalo
 运行计算器, usando el script de Llama 3 8B、Mistral 7B、Mixtral 8x7B 和 DeepSeek V3 configuraciones。 Compare los parámetros desglosados。 note la suma de los modelos MoE de parámetros es muy densa, pero el número de parámetros activos es más pequeño。 note el cache KV de DeepSeek V3 虽然总参数更多,但小于 Llama 3 405B de KV cache −这是 MLA 的效果──
+
+ Seguir comparando Gemma 2 9B y Spark-X2.5 4B。 Para estos dos modelos, el guión imprimirá la caché KV real necesaria, así como si todas las capas fueran totalmente atentas  cuando se requiere caché KV。 Gemma 2 en el contexto 8k  en el contexto 1:1  en el uso de dos tipos de capas, por lo que el ahorro de amplitud no es grande。 Spark-X2.5 en el contexto 1M  en el uso de 3:1  en el caso de 512-token window, por lo que la demanda de caché se reduce a cuatro por ciento.
 
 Luego inserta la configuración de tu modelo local, lee el resumen y decide si es adecuado para tu GPU.
 
@@ -268,7 +288,7 @@ Luego inserta la configuración de tu modelo local, lee el resumen y decide si e
 | MoE | “Sparse experts” | Mixture of Experts：每个 block 有 N 个 MLPs，router 为每个 Token 选择 top-k -- 巨大的 total params，较小的 active params |
 | Top-k routing | “每个 Token 选择 k 个 experts” | Router 为每个 expert 计算分数，并激活最高的 k 个 -- 典型 k 从 2（Mixtral）到 8（DeepSeek） |
 | YaRN | “拉伸 RoPE” | Yet another RoPE extension -- 通过插值 rotary angles，在 inference 时将 context 从 8k 扩展到 128k+ |
-| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 W 个 Tokens -- 将 attention cost 限制为每 Token O(W)，用于 Gemma 2 和早期 Mistral |
+| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 $W$ 个 Tokens -- 将 attention cost 限制为每 Token $O(W)$，用于 Gemma 2 和早期 Mistral |
 | Active params | “每个 Token 实际运行的部分” | 对于 MoE models，指每个 Token 会经历 forward pass 的参数量（远小于 total params）-- 决定 per-token FLOPs |
 
 ## 延伸阅读

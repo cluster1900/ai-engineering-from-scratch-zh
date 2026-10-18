@@ -39,11 +39,11 @@ INT8:  [1 sign] [7 value]                   = 8  bits (uniform steps)
 INT4:  [1 sign] [3 value]                   = 4  bits (16 levels total)
 ```
 
-**FP32**Es la precisión total.  23 个 mantissa bits 给你大约7 位十进制精度──范围:大约从1.2 x 10^-38到3.4 x 10^38──过去训练 几乎只用FP32──现在它仍然用于积累(matrix multiplication 期间运行求和) 
+**FP32**Es una precisión completa. 23 bits de mantissa.$1.2 \times 10^{-38}$¿ Qué ?$3.4 \times 10^{38}$ En el pasado, el entrenamiento se utilizaba casi solo en el FP32  en la actualidad, todavía se utiliza en la acumulación  en la multiplicación de matrices  en el período de operaciones  en el período de
 
 **FP16**Colocar bits  reducidos a la mitad──10 个 mantissa bits 给出约 3.3 位进制精度──exponent 缩小到5 bits,范围大幅缩小(最大值约 65,504)──这对权重没问题(权重聚集在零附近),但对训练期间可能突然增加激活和梯度 很危险──FP16训练需要损失扩展以防止下流──
 
-**BF16**(Brain Float 16) Mantenga el exponente de 8 bits de FP32, pero reduce la mantissa a 7 bits. El alcance y el FP32 son iguales, con precisión superior a FP16 y más bajo. Google lo ha diseñado específicamente para Deep Learning.
+**BF16**(Brain Float 16) Mantenga el exponente de 8 bits de FP32, pero reduzca la mantissa a 7 bits. El alcance es igual al de FP32, más bajo que el de FP16.$10^{-20}$El gradiente en el FP16 se reduce a cero, pero en el BF16 se puede retener. Un peso de 0.07342 en el BF16 se redondea hasta 0.0734.
 
 **FP8**Hay dos formas: E4M3 (4, exponente 3, mantissa) para la inferencia de los pesos y las activaciones durante el entrenamiento.
 

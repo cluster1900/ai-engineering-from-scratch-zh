@@ -33,8 +33,8 @@ Fase 7 · Lección 16 给你是数学──本课给你是训练── un buen b
 
 ¿ Qué ?`α`Por cada Token redactado la tasa de aceptación esperada.`c = cost(draft) / cost(verifier)`Por el costo comparado. Por el tiempo de prueba del futuro de la expectativa de aceptación de Token:
 
-```
-E[accepted] = (1 - α^(N+1)) / (1 - α)
+```math
+\mathbb{E}[\text{accepted}] = \frac{1 - \alpha^{N+1}}{1 - \alpha}
 ```
 
 Cada aceptación de Token de la expectativa total tiempo de pared es `(N * c + 1) / E[accepted]`◊ En comparación con `N`Lo más mínimo que pueda conseguir es el mejor punto.`α = 0.8, c = 0.05`: 最优 `N`Es aproximadamente 57, aceleración de 3,2×...`α = 0.95, c = 0.02`: 最优 `N`Es aproximadamente 810 y se acelera cerca de 5×.

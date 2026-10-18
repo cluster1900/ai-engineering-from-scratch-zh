@@ -27,12 +27,14 @@ Esta clase leerá estos tres artículos y formará la opción correcta de propor
 
 Modelo espacial del estado                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `h`处理序列   procesamiento`x_1, ..., x_N`¿Qué es esto ?
 
-```
-h_t = A h_{t-1} + B x_t
-y_t = C h_t
+```math
+\begin{aligned}
+h_t &= A h_{t-1} + B x_t \\
+y_t &= C h_t
+\end{aligned}
 ```
 
-Cada paso, el estado pasa por la línea de movimiento.`A`演化,接收输入 `B x_t`,并输出 `C h_t`¿Qué es eso?`A, B, C`Todo lo que podemos aprender.`y_t`Sólo necesito`h_{t-1}`Y `x_t`No necesito nada más temprano.`x`△内存是常量──推理是每个代币 O(1)。
+Cada paso, el estado pasa por la línea de movimiento.`A`演化,接收输入 `B x_t`,并输出 `C h_t`¿Qué es eso?`A, B, C`Todo lo que podemos aprender.`y_t`Sólo necesito`h_{t-1}`Y `x_t`No necesito nada más temprano.`x`◊内存是常量――推理是每个代币 ◊ 推理是每个代币 ◊ 内存是常量――推理是每个代币$O(1)$¿Qué es eso?
 
 建模质量                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `A`La estructura es la de la estructura de la estructura.`A, B, C`替换为依据数据的形式 (也就是 选择性) 部分 (Mamba-2(2024) 替换为依据数据的形式 (也就是 选择性)  Mamba-2(2024) 进一步简化了结构── Mamba-3(2026) 则在特定位置重新加入复杂性──
 

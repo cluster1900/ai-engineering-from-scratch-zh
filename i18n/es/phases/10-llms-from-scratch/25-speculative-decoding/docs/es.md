@@ -53,8 +53,8 @@ Entre ellos `(p - q)+`Indicar el valor de diferencia de puntos.`p ≈ q`Cuando s
 
 Si el tipo de aceptación de los tokens es `α`, entonces cada paso de destino hacia adelante 生成的期望代币 数为:
 
-```
-E[tokens] = (1 - α^{K+1}) / (1 - α)        # K = draft length, α in [0, 1]
+```math
+\mathbb{E}[\text{tokens}] = \frac{1 - \alpha^{K+1}}{1 - \alpha} \qquad K = \text{draft length}, \ \alpha \in [0, 1]
 ```
 
 Cuando`α = 0.8, K = 4`¿Qué es esto ?`(1 - 0.8^5)/(1 - 0.8) = 3.36`个 Token Cada vez adelante. 个目标前的成本大约是`cost_q * K + cost_p`(K 个 proyecto paso加一次目标验证)`cost_p >> cost_q * K`,la velocidad de la velocidad de rendimiento es`3.36× / 1 = 3.36×`¿Qué es eso?
@@ -176,7 +176,7 @@ def speculative_step(p_target, q_draft, K, temperature=1.0):
 
 1. 实现精确拒绝 规则并进行实证验证──通过 `speculative_decode`Y muestreo objetivo simple 分別运行 10K muestras; calcular dos distribuciones de salida 间电视距离──应小于0.01──
 
-2. 计算加快公式──给定固定 `α`Y `K`, dibujar cada vez el objetivo-avance de la expectativa Token número── encontrar el ∈ {0.5, 0.7, 0.9} 时的最优 K──
+2. 计算加快公式──给定固定 `α`Y `K`, dibujar cada objetivo de la expectativa de Token número.$\alpha \in \lbrace 0.5, 0.7, 0.9 \rbrace$时的最优 $K$¿Qué es eso?
 
 3. entrenar un pequeño borrador──Toma un objetivo de 124M GPT-2 y luego destila un borrador de 30M GPT-2 `α` Previo tiempo: 0,6-0,7
 

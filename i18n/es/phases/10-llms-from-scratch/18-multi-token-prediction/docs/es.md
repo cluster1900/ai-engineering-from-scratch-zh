@@ -39,27 +39,29 @@ Modulo `k`包含:
 
                                                                                                                                                                                                                                                               `i`El prefijo, por estado oculto profundo 为:
 
-```
-h_i^(0) = main model backbone at position i
-h_i^(k) = T_k( M_k * concat(RMSNorm(h_i^(k-1)), RMSNorm(E(t_{i+k}))) )   for k >= 1
+```math
+\begin{aligned}
+h_i^{(0)} &= \text{main model backbone at position } i \\
+h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMSNorm}}(h_i^{(k-1)}), \mathop{\mathrm{RMSNorm}}(E(t_{i+k}))\big) \Big) \quad \text{for } k \ge 1
+\end{aligned}
 ```
 
 Previsión por profundidad 为:
 
-```
-logits_{i+k} = Out(h_i^(k-1))   for k = 1..D
+```math
+\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
 ```
 
 La pérdida de profundidad es en relación con la verdad fundamental.`t_{i+k}`La entropía cruzada:
 
-```
-L_k = CE(logits_{i+k}, t_{i+k})
+```math
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
 ```
 
 跨 profundidad de pérdida articular:
 
-```
-L_MTP = (lambda / D) * sum_{k=1..D} L_k
+```math
+L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 ```
 
 `lambda`Es un factor de peso menor, Profundo Buscar-V3 en el entrenamiento del 10% antes de usar 0.3, después de usar 0.1―`L_main + L_MTP`¿Qué es eso?
@@ -175,7 +177,7 @@ No está en condiciones de utilizarse:
 
 2. 计算一个密集70B 模型(oculto 8192,80 层) en el módulo D=1 MTP 下的参数开销──与 DeepSeek-V3 报告的 14B 开销进行比较──解释为什么 DeepSeek 的数字更高:MTP变压器块 继承了相同的MoE 结构,从而增加了每模块参数──
 
-3. En el juego se realiza D=2: añadir un segundo módulo MTP, recibir h^(1) 并预测 `t_{i+2}` Verificación de pérdida conjunta 和 parametros de cálculo con las ecuaciones de DeepSeek paper 19-21 匹配──
+3. En el juego implementar D=2: Añadir un segundo módulo MTP, recibir $h^{(1)}$Y no se prevé`t_{i+2}` Verificación de pérdida conjunta 和 parametros de cálculo con las ecuaciones de DeepSeek paper 19-21 匹配──
 
 4. 将玩具 切换为平行MTP(Gloeckle-style): en el estado oculto principal 之上添加D 个输出头,每预测不同的抵消――测量在同一个合成信号上,每次深度的损失与序列版本相比如何――对于 k > 1,sequential 版本应产生更低的深度-k损失,因为它在中间预测为条件――
 
@@ -191,8 +193,8 @@ No está en condiciones de utilizarse:
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |
 | Shared embedding | “复用主 table” | 同一个 vocabulary embedding table 在所有地方使用；没有重复参数 |
-| Projection matrix M_k | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
-| Joint loss L_MTP | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
+| Projection matrix $M_k$ | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
+| Joint loss $L_{\text{MTP}}$ | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
 | Acceptance rate at depth 1 | “MTP draft 多常正确” | D=1 MTP module 的 top-1 prediction 等于主模型 top-1 prediction 的比例；DeepSeek-V3 上超过 80% |
 | Lambda weighting | “额外 loss 的重要性” | per-depth 缩放因子；DeepSeek-V3 在训练开始时为 0.3，之后为 0.1 |
 

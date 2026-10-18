@@ -36,8 +36,8 @@ Para cada consulta, la NSA se dirige a la caché KV de tres diferentes vídeos.
 
 Tres分支的输出通过学习的位置门组合:
 
-```
-out = g_cmp * out_cmp + g_sel * out_sel + g_win * out_win
+```math
+\text{out} = g_{\text{cmp}} \cdot \text{out}_{\text{cmp}} + g_{\text{sel}} \cdot \text{out}_{\text{sel}} + g_{\text{win}} \cdot \text{out}_{\text{win}}
 ```
 
 `g_cmp, g_sel, g_win`Es la pregunta sobre los pesos de puertas producidos por pequeños MLP.
@@ -172,7 +172,7 @@ NSA está en Profundo Buscar su propio proceso de formación previo a largo plaz
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
-| Compressed branch | “粗粒度视图” | 在 block-averaged keys 上做 Attention，以每个 query `O(N/l)` 个 keys 提供 global context |
+| Compressed branch | “粗粒度视图” | 在 block-averaged keys 上做 Attention，以每个 query $O(N/l)$ 个 keys 提供 global context |
 | Selected branch | “Top-k blocks” | 在 compressed-branch scores 最高的 `k` 个 blocks 上做细粒度 Attention |
 | Sliding window | “Local context” | 在最后 `W` 个 Token 上做 Attention，以捕获短程模式 |
 | Native trainability | “打开 sparsity 进行 pre-train” | sparsity pattern 在 pre-training 期间学习，而不是在 inference 时外挂 |

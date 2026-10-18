@@ -71,22 +71,22 @@ DeepSeek introdujo GRPO en el documento DeepSeekMath (2024), y lo consideró com
 
 El objetivo de la PPO viene de la Lección 07):
 
-```
-L_PPO = E[min(r(theta) * A, clip(r(theta), 1-eps, 1+eps) * A)]
+```math
+L_{\text{PPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A\right)\right]
 ```
 
 Entre ellos `A`Es ventaja, normalmente con la red de valores aprendidos.`V(s)`通过GAE 估计──值网络是第二个模型,大小与政策相同──它会使内存翻倍,并引入自己的培训循环──
 
-GRPO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+GRPO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $G$个 respuestas(normalmente $G=16$O 64): calcular la recompensa de cada respuesta, y luego en el grupo se vuelve unida:
 
-```
-A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
+```math
+A_i = \frac{r_i - \mathop{\mathrm{mean}}(r_1, \ldots, r_G)}{\mathop{\mathrm{std}}(r_1, \ldots, r_G)}
 ```
 
 ventaja es la recompensa de la respuesta en comparación con la z-score de la otra respuesta del grupo.
 
-```
-L_GRPO = E[min(r(theta) * A_group, clip(r(theta), 1-eps, 1+eps) * A_group)] - beta * KL(pi || pi_ref)
+```math
+L_{\text{GRPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A_{\text{group}}, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A_{\text{group}}\right)\right] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 针对参考模型的 KL penalty 仍然存在,和PPO 一样──clip ratio 也仍然存在──消失的是独立评论──

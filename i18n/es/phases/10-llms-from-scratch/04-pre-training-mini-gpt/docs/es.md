@@ -138,13 +138,13 @@ graph LR
     style V fill:#1a1a2e,stroke:#0f3460,color:#fff
 ```
 
-Además de en sqrt(d_k) sqrt(64) = 8 es escalado。 sin ella, el producto de puntos de un alto nivel vector se vuelve muy grande, y la suavidad máxima se reduce a la región de casi 零.
+Además de$\sqrt{d_k}$ El$\sqrt{64} = 8$是扩展──没有它,高维矢量的点产品会变得很大,把软max 推到 Gradient 几乎为零的区域──这是原始 注意是你需要的纸中的关键洞见之一──
 
 ### KV Cache: 推理为什么快
 
-训练时,你会处理整个序列一次――Inference 时,你会生成一个代币――如果没有优化,生成代币 N 需要为前面所有N-1 个代币 重新计算注意――对于每个生成代币,这是O(N),对长度为N的序列,总体是O(N^2) 的注意分 计算,并且还会重复执行大量输入侧矩阵乘点――
+訓練時,你會一次處理整個序列──Inference時,你一次生成 Token──如果沒有優化,生成 Token $N$需要为前面所有 $N-1$个代币 重新计算 Atención.$O(N^2)$Para la duración$N$La secuencia, en general es $O(N^3)$¿Qué es eso?
 
-KV Cache  solucionó este problema. Por cada token  calcular K 和 V 后, ponerlos en almacenamiento. Cuando se genera un token N + 1 时, sólo necesitas un nuevo token 计算 Q,并查找所有之前的 token 缓存的 K 和 V ;; esto pondrá el costo de K 和 V 计算的每 token de O(N) 降至 O(1);; El cálculo de la puntuación de atención 仍然是 O(N), porque debes atender a la posición anterior, pero evitas realizar multiplicidades redundantes de la matriz ⋅
+KV Cache  solucionó este problema― para cada Token  calculado K 和 V 后,把它们存储──当生成 Token $N+1$时,you only need for new Token 计算 Q,并查找所有之前的代币的缓存 K 和 V.$O(N)$降到 $O(1)$◊ Calculo de la puntuación de atención 仍然是 $O(N)$, porque quieres atender a todas las posiciones anteriores, pero evitas hacer multiplicidades redundantes de la matriz en la entrada.
 
 对于包含12 capas和12 capas GPT-2,KV cache 会为每 token 存储 2(K + V) x 12 capas x 12 capas x 64 dims = 18,432 个值。对于1024-Token secuencia,这在FP32 下大约是75MB──对于拥有128 capas Llama 3 405B,单个 secuencia的KV cache可能超过10GB──这就是为什么长文段推论受了内存约束──
 
@@ -208,7 +208,7 @@ El ritmo de aprendizaje es más importante que lo que piensas. En los primeros 2
 |-----------|-------|------------|
 | Token embeddings | (50257, 768) | 38,597,376 |
 | Position embeddings | (1024, 768) | 786,432 |
-| Per-block attention (W_q, W_k, W_v, W_out) | 4 x (768, 768) | 2,359,296 |
+| Per-block attention ($W_q, W_k, W_v, W_{\text{out}}$) | 4 x (768, 768) | 2,359,296 |
 | Per-block FFN (up + down) | (768, 3072) + (3072, 768) | 4,718,592 |
 | Per-block LayerNorms (2x) | 2 x 768 x 2 | 3,072 |
 | Final LayerNorm | 768 x 2 | 1,536 |
@@ -259,7 +259,7 @@ def attention(Q, K, V, mask=None):
     return weights @ V
 ```
 
-softmax 实现会在 exponenciando 前减去最大值──否则,exp(large_number) 会溢出成无限──这是一个数值稳定性技巧,并不会改变输出,因为对于任意常数 c,softmax(x - c) = softmax(x)──
+softmax 实现会在 exponenciando 前减去最大值──否则,exp(large_number) 会溢出成无限──这是一个数值稳定性技巧,不会改变输出,因为对于任意常数$c$¿ Qué ?$\mathop{\mathrm{softmax}}(x - c) = \mathop{\mathrm{softmax}}(x)$¿Qué es eso?
 
 ### Paso 3: Atención de múltiples cabezas
 
@@ -498,7 +498,7 @@ En los pequeños lenguajes y pequeños modelos, la generación de textos puede c
 ##  ejercicios
 1. ¿Qué diferencia hay entre el modelo modificado para utilizar 24 capas y 16 cabezas, en lugar de 12/12?
 
-2. 实现 GELU activación función(GELU(x) = x * 0.5 * (1 + erf(x / sqrt(2)))),并替换输送网络 中的 ReLU──分别使用两种激活 训练500步,并比较最终损失──
+2. 实现 la función de activación GELU$(\mathop{\mathrm{GELU}}(x) = x \cdot 0.5 \cdot (1 + \mathop{\mathrm{erf}}(x / \sqrt{2})))$,并替换反网络中的 ReLU──分别使用两种激活 训练500步,并比较最终损失──
 
 3. 给生成函数 添加 KV cache──在第一次前传后,存储每层的 K 和 V紧缩器,并后续代币中复用它们──测量加快:分别在有缓存和没有缓存的情况下生成200代币,并比较墙钟时间──
 
@@ -518,7 +518,7 @@ En los pequeños lenguajes y pequeños modelos, la generación de textos puede c
 | Weight tying | “共享 embeddings” | 对 input Token embeddings 和 output projection head 使用同一个 Matrix——在 GPT-2 中节省 38M 参数 |
 | Residual connection | “Skip connection” | 将 input 直接加到 sublayer 的 output 上（x + sublayer(x)）——支持 deep networks 中的 Gradient flow |
 | Layer normalization | “规范化 activations” | 沿 feature dimension 规范化到 mean 0 和 variance 1，并带有可学习的 scale 与 bias 参数 |
-| Cross-entropy loss | “预测错得有多离谱” | -log(分配给正确 next Token 的概率)，在所有 position 上取平均——标准 LLM 训练目标 |
+| Cross-entropy loss | “预测错得有多离谱” | $-\log(\text{分配给正确 next Token 的概率})$，在所有 position 上取平均——标准 LLM 训练目标 |
 
 ## 延伸阅读
 - [Radford et al., 2019 -- "Language Models are Unsupervised Multitask Learners" (GPT-2)](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf)-- 介绍 124M hasta 1.5B 参数家族的 GPT-2 papel

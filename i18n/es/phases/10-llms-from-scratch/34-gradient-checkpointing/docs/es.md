@@ -37,13 +37,13 @@ Ejemplo: Transformer de 32 capas 拆分32 个段, cada segmento 1 层──
 - Memoria:32 个 capas de entrada ((小) en comparación con 32 *( cada nivel de volumen de activación)
 - 额外计算: cada segmento 额外 1 次 前进,也就是总前进FLOPs 约增加33%(因为后退是前进的2x,完整步骤从1 + 2 = 3个单位变为1 + 1 + 2 = 4个单位) 
 
-Este fue el primer programa de Chen et al. 2016:`sqrt(L)`层放一个检查点,以平衡记忆和计算――对于L=64,就是8检查点――
+Este fue el primer programa de Chen et al. 2016:`sqrt(L)`层放一个检查点,以平衡记忆和计算.$L=64$,就是 8 puntos de control.
 
 ### Control selectivo (Korthikanti 2022)
 
 No todos los costos de valor activado son iguales.`B*L*L*heads`,并随序列长度 *二次* 增长──FFN activación oculta 是 `B*L*4d`, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
-El punto de control selectivo conservará un bajo costo de almacenamiento de la activación de las proyecciones lineales, sólo volverá a calcular el costoso porción de la atención.
+El punto de control selectivo conservará un valor activo de bajo coste de almacenamiento, pero ahorrará.$O(L^2)$memoria.
 
 Megatron-Core se implementará para la recomputada de activación selectiva. La mayoría de las carreras de entrenamiento fronterizo de 2024+ están en uso.
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174)-- inicialmente formalizado control de gradientes
