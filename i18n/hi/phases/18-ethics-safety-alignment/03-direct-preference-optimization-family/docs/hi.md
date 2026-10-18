@@ -18,20 +18,20 @@
 
 आरएलएचएफ उद्देश्य:
 
-```text
-max_pi E_{x,y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 एक ज्ञात सबसे अच्छा समाधान हैः
 
-```text
-pi*(y|x) = (1/Z(x)) * pi_ref(y|x) * exp(r(x, y) / beta)
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left(\frac{r(x, y)}{\beta}\right)
 ```
 
 इसलिए इनाम की इष्टतम नीति से संदर्भ के अनुपात की परिभाषा हैः
 
-```text
-r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
+```math
+r(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 इसे ब्रैडली-टेरी प्राथमिकता संभावना में डाल `Z(x)`मैं इसे समाप्त कर दूंगा, क्योंकि यह केवल निर्भर करता है`x` शेष केवल नीतिगत मापदंडों के साथ एक हानि है, इसके लिए पुरस्कार मॉडल की आवश्यकता नहीं है
@@ -42,11 +42,11 @@ r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
 
 ### डीपीओ (राफेलोव एट अल., 2023)
 
-```text
-L_DPO = -log sigmoid(
-  beta * log(pi(y_w | x) / pi_ref(y_w | x))
-  - beta * log(pi(y_l | x) / pi_ref(y_l | x))
-)
+```math
+L_{\text{DPO}} = -\log \sigma\!\left(
+  \beta \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
+  - \beta \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}
+\right)
 ```
 
 शायद गलत जगहः
@@ -59,8 +59,8 @@ L_DPO = -log sigmoid(
 
 पहचान प्राथमिकता अनुकूलन प्राथमिकता संभावना का उपयोग करें ऊपर की पहचान मानचित्रण  लॉग-सिग्मोइड को प्रतिस्थापित करें  हानि  सीमाबद्ध लक्ष्य ऊपर की वर्ग त्रुटि में बदलेंः
 
-```text
-L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x)) - 1/(2 beta))^2
+```math
+L_{\text{IPO}} = \left( \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} - \frac{1}{2\beta} \right)^2
 ```
 
 मार्जिन `1/(2 beta)`限定── प्राथमिकता बल से सम्मोहित-पुरस्कार अंतर 成比例──不会爆掉──
@@ -69,8 +69,8 @@ L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x))
 
 Kahneman-Tversky अनुकूलन  पूरी तरह से जोड़ी के रूप में गायब  संरचना  एक एकल अद्वितीय चिह्नित आउटपुट, साथ ही एक द्विवार्षिक  वांछनीय या  अवांछनीय संकेत, यह संभावना सिद्धांत उपयोगिता में मैग्रिगेट किया जाएगाः
 
-```text
-v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
+```math
+v(x, y) = \sigma\!\left(\beta \log \frac{\pi(y \mid x)}{\pi_{\text{ref}}(y \mid x)} - z_{\text{ref}}\right)
 ```
 
 लाभ और हानि के लिए उपयोग करें अलग-अलग वजन (विभिन्न वजन) ।
@@ -79,12 +79,12 @@ v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
 
 सरल प्राथमिकता अनुकूलन 让训练信号与生成过程对齐―― पूर्ण रूप से हटाने संदर्भ नीति,并按长度归纳化日志-सम्भाव्यता:
 
-```text
-L_SimPO = -log sigmoid(
-  (beta / |y_w|) * log pi(y_w | x)
-  - (beta / |y_l|) * log pi(y_l | x)
-  - gamma
-)
+```math
+L_{\text{SimPO}} = -\log \sigma\!\left(
+  \frac{\beta}{|y_w|} \log \pi(y_w \mid x)
+  - \frac{\beta}{|y_l|} \log \pi(y_l \mid x)
+  - \gamma
+\right)
 ```
 
 उपयोग सीमा `gamma` स्थिर प्रशिक्षण                                                                                                                                                                                                                                                             `y_w`इस पर निर्माण में अधिक लॉग-प्रोब अंतर होगा।
@@ -93,9 +93,11 @@ L_SimPO = -log sigmoid(
 
 Odds-Ratio प्राथमिकता अनुकूलन मानक SFT नकारात्मक लॉग-संभाव्यता ऊपर जोड़ें एक प्राथमिकता शब्दः
 
-```text
-L_ORPO = L_NLL(y_w) + lambda * L_OR
-L_OR = -log sigmoid(log(odds(y_w) / odds(y_l)))
+```math
+\begin{aligned}
+L_{\text{ORPO}} &= L_{\text{NLL}}(y_w) + \lambda L_{\text{OR}} \\
+L_{\text{OR}} &= -\log \sigma\!\left(\log \frac{\text{odds}(y_w)}{\text{odds}(y_l)}\right)
+\end{aligned}
 ```
 
  कोई संदर्भ नीति नहीं, एसएफटी शब्द है नियामक  आधार मॉडल से संरेखित मॉडल तक केवल एक चरण की प्रशिक्षण  की आवश्यकता है 

@@ -28,9 +28,11 @@ Goodhart का मूल अभिव्यक्ति है:जब कोई
 
 Gao et al. 给出了一个功能形式──令 `d = sqrt(KL(pi || pi_init))`令 `R_proxy(d)`एक औसत प्रॉक्सी पुरस्कार के लिए,`R_gold(d)` औसत स्वर्ण पुरस्कार
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 उनमें से `beta_gold > beta_proxy` दोनों शून्य से ऊपर KL ऊपर, दोनों शिखर तक पहुँचेंगे, लेकिन सोने का शिखर अधिक निकट मूल बिंदु `d`ऊपर, भले ही प्रॉक्सी  बढ़ना जारी रहे, सोना भी बेसलाइन तक गिर जाएगा नीचे, प्रॉक्सी-गोल्ड गैप में बोएन नमूनाकरण  पीओ और एसएफटी-टू-बेस्ट ऊपर सभी समान हस्ताक्षर प्रस्तुत करते हैं।

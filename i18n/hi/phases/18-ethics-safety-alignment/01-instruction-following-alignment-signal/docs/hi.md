@@ -32,8 +32,8 @@ SFT कुछ देता है: मॉडल अब प्रश्न का
 
 प्रत्येक प्रॉम्प्ट के लिए, SFT मॉडल से 采样 K 个完成── लेबलर के लिए 它们排序── प्रशिक्षण एक इनाम मॉडल, के लिए किसी भी प्रॉम्प्ट-रिस्पॉन्स जोड़ी 打分, ताकि `y_w`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `y_l`के जोड़ेः
 
-```
-L_RM = -log sigmoid(r(x, y_w) - r(x, y_l))
+```math
+L_{\text{RM}} = -\log \sigma\big(r(x, y_w) - r(x, y_l)\big)
 ```
 
 यह ब्रैडली-टेरी जोड़ी प्राथमिकता हानि है। आरएम आमतौर पर एसएफटी मॉडल से आरंभिक रूप से, एलएम सिर को स्केलर सिर में बदल दिया जाता है।
@@ -44,8 +44,8 @@ L_RM = -log sigmoid(r(x, y_w) - r(x, y_l))
 
 परिभाषित उद्देश्यः
 
-```
-J(pi) = E_{x~D, y~pi(.|x)} [ r(x, y) ] - beta * KL(pi(.|x) || pi_SFT(.|x))
+```math
+J(\pi) = \mathbb{E}_{x \sim D,\, y \sim \pi(\cdot \mid x)} \big[ r(x, y) \big] - \beta \, \mathrm{KL}\big(\pi(\cdot \mid x) \,\|\, \pi_{\text{SFT}}(\cdot \mid x)\big)
 ```
 
 PPO अधिकतमकरण हेतु उपयोग करें`pi`️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️
@@ -56,8 +56,8 @@ KL गुणांक `beta`RLHF सबसे महत्वपूर्ण ह
 
 RLHF के बाद, मॉडल अधिक मानवीय प्राथमिकता प्राप्त करता है, लेकिन मानक बेंचमार्क में (SquAD、HellaSwag、DROP) ऊपर退步。Ouyang et al. इसे संरेखण कर कहा जाएगा, PPO-ptx का उपयोग नहीं करता है।
 
-```
-J_ptx(pi) = J(pi) + gamma * E_{x~D_pretrain} [ log pi(x) ]
+```math
+J_{\text{ptx}}(\pi) = J(\pi) + \gamma \, \mathbb{E}_{x \sim D_{\text{pretrain}}} \big[ \log \pi(x) \big]
 ```
 
 पीपीओ-पीटीएक्स 成为标准做法──Anthropic、DeepMind 和 Meta 都使用某种变化──
@@ -85,7 +85,7 @@ al-instruct-pipeline
 देखना है सामग्रीः
 
 - `beta = 0.1``beta = 0.0`नीचे की इनाम की प्रक्षेपवक्र
-- प्रशिक्षण चरण 中的 KL pi pi SFT)
+-  प्रशिक्षण चरणों 中中 $\mathrm{KL}(\pi \Vert \pi_{\text{SFT}})$
 - लेबलर प्राथमिकता के मुकाबले अंतिम क्रिया वितरण
 
 ## इसे भेजें
@@ -110,7 +110,7 @@ al-instruct-pipeline
 |------|-----------------|------------------------|
 | SFT | “instruction tuning” | Stage 1：在 prompt-response pairs 上用 cross-entropy fine-tune |
 | Reward model | “the RM” | 在 (prompt, response) 上的 scalar regressor，使用 Bradley-Terry 在 pairwise labels 上训练 |
-| Bradley-Terry | “pairwise preference loss” | -log sigmoid(r_w - r_l)；把 pairwise ranking 约简为 binary classification |
+| Bradley-Terry | “pairwise preference loss” | $-\log \sigma(r_w - r_l)$；把 pairwise ranking 约简为 binary classification |
 | KL penalty | “the regularizer” | `beta * KL(pi \|\| pi_SFT)` — 让 RL policy 保持接近 SFT anchor |
 | PPO-ptx | “PPO with pretraining mix” | 向 PPO objective 加入一部分 pre-training log-likelihood，用来抵消 alignment tax |
 | Alignment tax | “the RLHF regression” | RLHF 之后，在 RLHF 未针对的标准 benchmarks 上下降 |

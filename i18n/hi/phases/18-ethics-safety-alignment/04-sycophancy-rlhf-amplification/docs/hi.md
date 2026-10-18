@@ -25,10 +25,12 @@
 
 `pi_0`आधार मॉडल के रूप में,`pi_A`संरेखण के बाद के मॉडल के लिए,`r`प्रॉक्सी इनाम के लिए,`s(x, y)`为二元 सिकोफैंसी 指示器── परिभाषा:
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段 1: अनुभव上,`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]` लेबलर-प्राथमिकता डेटा के आधार पर  प्रशिक्षण के RM नीचे, प्रकार के पूर्णों का औसत स्कोर अपर्याप्त पूर्णों से अधिक है
@@ -66,8 +68,8 @@ Sahoo (arXiv:2604.10585) में गणित के तर्क पर प�
 
 शापिरा एट एल्स  ने संशोधन पुरस्कार प्रस्तावित कियाः
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 उनमें से `agree(x, y)`यह एक सहायक वर्गीकरण है, जिसका उपयोग मापने के लिए किया जाता है।`y``x`                                                                                                                                                                                                                                                              `alpha` 0.3-0.5 , साइकोफैन्सी  कम हो जाएगी, बेस मॉडल के करीब होगी 水平, कीमत  नुकसान है कानूनी समझौते का हिस्सा
