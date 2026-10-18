@@ -53,12 +53,12 @@ K هو المعيار المفرط الوحيد.
 
 | K | 行为 |
 |---|----------|
-| K = 1 | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
+| $K = 1$ | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
 | Small K (3-5) | 对局部结构敏感。可以捕捉复杂边界 |
 | Large K | 边界更平滑。对噪声更稳健。可能 underfit |
-| K = N | 对每个点都预测多数类。最大 bias |
+| $K = N$ | 对每个点都预测多数类。最大 bias |
 
-常见起点是对包含N 个点的数据集使用 K = sqrt(N)。二分类时使用奇数 K,以避免平票。
+常见起点是对包含 $N$个点的数据集使用 $K = \sqrt{N}$二分类时使用奇数K,以避免平票
 
 ```mermaid
 graph LR
@@ -80,32 +80,33 @@ graph LR
 
 **L2 (Euclidean)**هو اختيار متوقع.
 
-```
-d(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+d(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 حساسة للميزات. استخدام L2 و KNN.
 
 **L1 (Manhattan)**على الاختلافات المطلقة.
 
-```
-d(a, b) = sum(|a_i - b_i|)
+```math
+d(a, b) = \sum_i \lvert a_i - b_i \rvert
 ```
 
 **Cosine distance**衡量                                                                                                                                                                                                                                                             
 
-```
-d(a, b) = 1 - (a . b) / (||a|| * ||b||)
+```math
+d(a, b) = 1 - \frac{a \cdot b}{\lVert a \rVert \, \lVert b \rVert}
 ```
 
-**Minkowski**استخدام المعايير p 泛化 L1 و L2
+**Minkowski**استخدامات $p$泛化 L1 و L2
 
-```
-d(a, b) = (sum(|a_i - b_i|^p))^(1/p)
-
-p=1: Manhattan
-p=2: Euclidean
-p->inf: Chebyshev (max absolute difference)
+```math
+\begin{aligned}
+& d(a, b) = \left( \sum_i \lvert a_i - b_i \rvert^p \right)^{1/p} \\[6pt]
+& p=1\text{：曼哈顿距离} \\
+& p=2\text{：欧氏距离} \\
+& p \to \infty\text{：切比雪夫距离（最大绝对差）}
+\end{aligned}
 ```
 
 استخدام أي نوع من القياسات يعتمد على البيانات:
@@ -124,14 +125,15 @@ p->inf: Chebyshev (max absolute difference)
 
 **Distance-weighted KNN**按距离的倒数为每个邻居加权:
 
+```math
+\begin{aligned}
+& \text{权重}_i = \frac{1}{\text{距离}_i + \epsilon} \\[6pt]
+& \text{分类：加权投票} \\
+& \text{回归：加权平均} = \frac{\sum_i w_i y_i}{\sum_i w_i}
+\end{aligned}
 ```
-weight_i = 1 / (distance_i + epsilon)
 
-For classification: weighted vote
-For regression:     weighted average = sum(w_i * y_i) / sum(w_i)
-```
-
-عندما تتطابق نقاط الاستفسار مع نقاط التدريب تماما، يمكن أن يمنع الاختلاف إلى صفر.
+عندما تتطابق نقاط الاستفسار مع نقاط التدريب تماما،$\epsilon$يمكن منع التخلص من الصفر
 
 الوزن KNN لا حساس جدا لخيار K، لأن الجيران البعيدين  مهما كان المساهمة  هم صغير جدا.
 
@@ -159,7 +161,7 @@ When all distances are nearly equal, "nearest" is meaningless.
 
 ### شجرة كيه دي: أسرع سرعت الجار القريب 搜索
 
-قوة القوة الخامة KNN سوف يحسب نقطة استفسار إلى مسافة كل نقطة تدريب. تعقيد كل استفسار هو O(n * d) ◊ بالنسبة لمجموعة بيانات كبيرة، وهذا بطيء جدا.
+قوة القوة القاسية KNN 会 حساب نقاط الاستفسار إلى مسافة كل نقطة تدريب.$O(n \cdot d)$بالنسبة لمجموعة بيانات كبيرة، هذا بطيء جدا.
 
 كيه دي-شجرة سوف تتبع خصائص المحور المرتدي إلى الفضاء المقطوع. في كل طبقة، فإنه يتم القيام بتقطيعها على طول طول واحد حسب الوسط.
 
@@ -175,7 +177,7 @@ graph TD
 
 为了 البحث عن أقرب جيران، أولاً عبر الأشجار إلى تحتوي على ورقة من نقاط البحث، ثم العودة، ويمكن فقط في المنطقة المجاورة أن تحتوي على نقاط أقرب فقط فحصها.
 
-平均查询时间:低维时为 O(log n) ・・・ ولكن الأشجار KD 在高维(d > 20) سوف تتحول إلى O(n) ، لأن التداول يمكن إزالة التداولات
+平均查询时间: 低维时为$O(\log n)$لكن الأشجار الكهربائية في أعلى درجاتها$d > 20$) سيُسحب$O(n)$، لأن الفرق التي يمكن إزالتها تتزايد
 
 ### أشجار الكرة: 更适合中等维度
 
@@ -194,8 +196,8 @@ graph TD
 
 | 方面 | Lazy (KNN) | Eager (SVM, neural net) |
 |--------|------------|------------------------|
-| 训练时间 | O(1)，只存储数据 | O(n * epochs) |
-| 预测时间 | 每次查询 O(n * d) | O(d) 或 O(parameters) |
+| 训练时间 | $O(1)$，只存储数据 | $O(n \cdot \text{训练轮数})$ |
+| 预测时间 | 每次查询 $O(n \cdot d)$ | $O(d)$ 或 $O(\text{参数量})$ |
 | 预测时内存 | 存储整个训练集 | 只存储模型参数 |
 | 适应新数据 | 立即添加点 | 重新训练模型 |
 | 决策边界 | 隐式，在运行时计算 | 显式，训练后固定 |
@@ -210,12 +212,12 @@ graph TD
 
 إن رجعة KNN لا تقوم بأغلبية التصويت، بل تحدد قيمة الأهداف المتوسطة للجيران.
 
-```
-prediction = (1/K) * sum(y_i for i in K nearest neighbors)
-
-Or with distance weighting:
-prediction = sum(w_i * y_i) / sum(w_i)
-where w_i = 1 / distance_i
+```math
+\begin{aligned}
+& \text{预测值} = \frac{1}{K} \sum_{i \in K \text{ 个最近邻}} y_i \\[6pt]
+& \text{或使用距离加权：} \\
+& \text{预测值} = \frac{\sum_i w_i y_i}{\sum_i w_i} \quad \text{其中 } w_i = \frac{1}{\text{距离}_i + \epsilon}
+\end{aligned}
 ```
 
 إن رجعة KNN 产生分段常数预测(استخدام加权时为分段平滑) ・・・ لا يمكن أن يتم خارجها خارج نطاق بيانات التدريب。 إذا كان هدف التدريب كله بين 0 إلى 100 ، فإن KNN 永远 لن يتوقع 200。
@@ -340,7 +342,7 @@ distances, indices = index.search(query_vectors, k=5)
 ```
 
 ## التدريب
-1. في مجموعة بيانات ثنائية الأبعاد التي تحتوي على 3 فئات لتحقيق تصنيف KNN. رسم K=1 K=5 K=15 و K=N الحدود القرارية. مراقبة من التحول من الملاءمة المفرطة إلى عدم الملاءمة.
+1. في مجموعة من البيانات 2D التي تحتوي على 3 فئات لتحقيق تصنيف KNN.$K=1$.$K=5$.$K=15$和 $K=N$الحدود القرارية: تغيرات من المبالغة إلى عدم المبالغة
 
 2. في 2、5、10、50、100 和 500 维中生成 1000 个随机点──对每维度,计算最大对距离与最小对距离的比值──绘制该比值随维度变化的图,以可视化维度灾难──
 
@@ -348,7 +350,7 @@ distances, indices = index.search(query_vectors, k=5)
 
 4. 实现 KD-tree، و في 2D、10D و 50D، بشكل منفصل على 1k、10k و 100k نقطة مجموعة بيانات قياس استفسار الوقت مع مقارنة القوة الخامة.
 
-5. 为 y = sin(x) + ضجيج 构建一个重量KNregressor──将它与K=3、10、30的不重量KN比较──展示加权会产生更平滑的预测,特别是在K 较大时──
+5. لأجل$y = \sin(x) + \text{噪声}$بناء مُراجعة KNN الموزعة$K=3, 10, 30$تظهر الاختبارات المزدوجة أن تكون أكثر سلاسة، خاصة في الوقت الذي تكون فيه الكبيرة.
 
 ## 关键术语
 | 术语 | 它实际意味着什么 |
@@ -357,14 +359,14 @@ distances, indices = index.search(query_vectors, k=5)
 | Lazy learning | 训练时不进行计算。所有工作都发生在预测时。KNN 是典型例子 |
 | Eager learning | 训练时进行大量计算以构建紧凑模型。大多数 ML 算法都是 eager |
 | Curse of dimensionality | 在高维中，距离会收敛，neighborhoods 会扩展到覆盖空间的大部分，使 KNN 失效 |
-| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 O(log n) |
+| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 $O(\log n)$ |
 | Ball tree | 嵌套超球体构成的树。在中等维度（最高约 ~50）中比 KD-trees 表现更好 |
 | Weighted KNN | neighbors 按距离倒数加权。更近的 neighbors 对预测影响更大 |
 | Feature scaling | 将特征归一化到可比较范围。KNN 等基于距离的方法需要它 |
 | Majority vote | 通过统计 K 个 neighbors 中哪个类别最常见来进行 Classification |
-| Brute force search | 计算到每个训练点的距离。每次查询 O(n*d)。精确但在大 n 时很慢 |
+| Brute force search | 计算到每个训练点的距离。每次查询 $O(n \cdot d)$。精确但在大 $n$ 时很慢 |
 | Approximate nearest neighbor | 能比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
-| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。K=1 KNN 会产生 Voronoi 边界 |
+| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。$K=1$ KNN 会产生 Voronoi 边界 |
 
 ## 延伸阅读
 - [Cover & Hart: Nearest Neighbor Pattern Classification (1967)](https://ieeexplore.ieee.org/document/1053964)- 奠基性的 KNN 论文, يثبت معدل خطأها إلى حد ما لـ Bayes المثالي

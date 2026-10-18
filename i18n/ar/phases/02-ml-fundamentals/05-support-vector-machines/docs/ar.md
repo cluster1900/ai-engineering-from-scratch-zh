@@ -25,15 +25,15 @@
 ## 概念
 ### أكبر فصيلة
 
-给定标签 y_i في {-1, +1} 和 ميزة المتجهات x_i من البيانات القابلة للفصل بشكل خطي، نحن نريد العثور على طائرة فائقة w^T x + b = 0 来分离类别。
+给定标签 $y_i \in \lbrace -1, +1 \rbrace$و متجهات الميزات$x_i$من البيانات المنفصلة خطيا، نريد أن نجد طائرة خارقة$w^T x + b = 0$لـمـنْ يـُفـصلُ عن الفئةِ
 
-المسافة من x_i إلى hyperplane هي:
+$x_i$المسافة إلى الطائرة المضطربة هي:
 
+```math
+\text{距离} = \frac{\lvert w^T x_i + b \rvert}{\lVert w \rVert}
 ```
-distance = |w^T x_i + b| / ||w||
-```
 
-بالنسبة للنقطة: y_i * (w^T x_i + b) > 0。الفرق هو من المرحلة العابرة إلى الجانب الأقرب من النقطة بضع مرات.
+对于正确分类的点:$y_i (w^T x_i + b) > 0$الهرم هو من الطائرة المضطربة إلى الجانب الأقرب من نقطة المسافة
 
 ```mermaid
 graph LR
@@ -48,19 +48,23 @@ graph LR
 
 مشكلة تحسين:
 
-```
-maximize    2 / ||w||     (margin width)
-subject to  y_i * (w^T x_i + b) >= 1  for all i
-```
-
-等地(حد من أسعار النفقات المعدلة)
-
-```
-minimize    (1/2) ||w||^2
-subject to  y_i * (w^T x_i + b) >= 1  for all i
+```math
+\begin{aligned}
+\text{最大化} \quad & \frac{2}{\lVert w \rVert} \quad \text{（间隔宽度）} \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-هذا هو برنامج مربع متواصلة. لديها حل عالمي وحيد. يقع في حدود الحدود العليا.
+等价地(حد من القدر $\lVert w \rVert^2$أكثر سهولة في التحسين):
+
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
+```
+
+هذا برنامج مربع متواصل. لديه حل عالمي وحيد.$y_i (w^T x_i + b) = 1$) هي المتجهات الداعمة. أنها نقطة تحديد الحدود القرارية الوحيدة.
 
 ### متجهات الدعم:关键的少数点
 
@@ -82,30 +86,32 @@ graph TD
 
 البيانات الحقيقية نادرًا ما تكون قابلة للانفصال بالكامل. بعض النقاط قد تكون على الجانب الخطأ من الحدود، أو في الحافة.
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i)
-subject to  y_i * (w^T x_i + b) >= 1 - xi_i
-            xi_i >= 0  for all i
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i \xi_i \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 - \xi_i \\
+& \xi_i \ge 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-المتغيرات السريعة xi_i 衡量点 i 违反 الهامش 的程度──C 控制
+متغيرات السخرية$\xi_i$衡量点 $i$ درجة الانتهاك من الهامش$C$控制 هذا التداول:
 
-| C value | Behavior |
+| $C$ value | Behavior |
 |---------|----------|
-| Large C | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
-| Small C | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
+| Large $C$ | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
+| Small $C$ | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
 
-C هو قوة التنظيمات.
+$C$هو قوة التنظيمات 倒数── كبير $C$= 更少定期化── صغير $C$= 更多 تنظيمها
 
 ### خسارة المضغوطة: وظيفة الخسارة SVM
 
 يمكن إعادة كتابة SVM الحد الناعم لتحسين غير مقيد:
 
-```
-minimize    (1/2) ||w||^2 + C * sum(max(0, 1 - y_i * (w^T x_i + b)))
+```math
+\text{最小化} \quad \frac{1}{2} \lVert w \rVert^2 + C \sum_i \max(0, 1 - y_i (w^T x_i + b))
 ```
 
-项 max(0, 1 - y_i * f(x_i)) هو خسارة الزجاجات.
+项 $\max(0, 1 - y_i f(x_i))$عندما تكون النقطة صحيحة في الفئة وتقع خارج الحافة ، فإنها تكون صفر. عندما تكون النقطة موجودة في الحافة أو تكون مصنفة بشكل خاطئ ، فإنها تكون خطية.
 
 ```
 单个点的 Hinge loss：
@@ -127,9 +133,11 @@ loss
 
 مقارنة مع الخسارة اللوجستية
 
-```
-Hinge:     max(0, 1 - y*f(x))          在 margin 处 hard cutoff
-Logistic:  log(1 + exp(-y*f(x)))        平滑，永远不会精确为零
+```math
+\begin{aligned}
+\text{Hinge：} \quad & \max(0, 1 - y f(x)) && \text{在间隔处硬截断} \\
+\text{Logistic：} \quad & \log(1 + \exp(-y f(x))) && \text{平滑，永不精确为零}
+\end{aligned}
 ```
 
 فقدان الجهازات التشويلية  تسبب حلول نادرة                                                                                                                                                                                                                                                       
@@ -138,36 +146,40 @@ Logistic:  log(1 + exp(-y*f(x)))        平滑，永远不会精确为零
 
 يمكنك استخدام خسارة الزجاجات زائد L2 التنظيم الصعودية التنحدر لتدريب SVM خطية، دون الحاجة إلى حل QP المحدود:
 
+```math
+\begin{aligned}
+& L(w, b) = \frac{\lambda}{2} \lVert w \rVert^2 + \frac{1}{n} \sum_i \max(0, 1 - y_i (w^T x_i + b)) \\[6pt]
+& \text{关于 } w \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w - y_i x_i \\[6pt]
+& \text{关于 } b \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial b} = 0 \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial b} = -y_i
+\end{aligned}
 ```
-L(w, b) = (lambda/2) * ||w||^2 + (1/n) * sum(max(0, 1 - y_i * (w^T x_i + b)))
 
-关于 w 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/dw = lambda * w
-  If y_i * (w^T x_i + b) < 1:   dL/dw = lambda * w - y_i * x_i
-
-关于 b 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/db = 0
-  If y_i * (w^T x_i + b) < 1:   dL/db = -y_i
-```
-
-هذا يسمى الصيغة الأساسية. وقت عمل كل عصر هو O(n * d) ، من بينها n هو عدد العينات، d هو عدد الميزات.
+هذا يسمى الصيغة الأساسية.$O(n \cdot d)$، من بينهم$n$عدد العينات$d$هو عدد الميزات. بالنسبة للكبير.
 
 ### صياغة مزدوجة و خدعة النواة
 
 مشكلة SVM من لغرانجيين مزدوجة ((من المرحلة 1 الدروس 18، ككت) هي:
 
-```
-maximize    sum(alpha_i) - (1/2) * sum_ij(alpha_i * alpha_j * y_i * y_j * (x_i . x_j))
-subject to  0 <= alpha_i <= C
-            sum(alpha_i * y_i) = 0
+```math
+\begin{aligned}
+\text{最大化} \quad & \sum_i \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) \\
+\text{约束为} \quad & 0 \le \alpha_i \le C \\
+& \sum_i \alpha_i y_i = 0
+\end{aligned}
 ```
 
-يتعلق الأمر فقط بمنتجات النقاط بين النقاط البيانية x_i . x_j。 هذا هو المفتاح فى رؤيةها. باستخدام وظيفة النواة K(x_i, x_j) بدل كل منتج نقطة، SVM 就能学习非线性界限, دون الحاجة إلى تحويلات حسابية واضحة。
+المنتجات المزدوجة تتعلق فقط بالقطرات بين النقاط البيانية$x_i \cdot x_j$                                                                                                                                                                                                                                                              $K(x_i, x_j)$بدلاً من كل منتج نقطة، SVM 就能学习非线性界限، دون الحاجة إلى تحويلات حسابية واضحة.
 
-```
-Linear kernel:      K(x, z) = x . z
-Polynomial kernel:  K(x, z) = (x . z + c)^d
-RBF (Gaussian):     K(x, z) = exp(-gamma * ||x - z||^2)
+```math
+\begin{aligned}
+\text{线性核：} \quad & K(x, z) = x \cdot z \\
+\text{多项式核：} \quad & K(x, z) = (x \cdot z + c)^d \\
+\text{RBF（高斯核）：} \quad & K(x, z) = \exp(-\gamma \lVert x - z \rVert^2)
+\end{aligned}
 ```
 
 يُمكن أن يتعلم أي حد قرار سلس.
@@ -183,20 +195,22 @@ graph LR
     A -->|"Kernel trick<br>K(x,z) = phi(x).phi(z)"| B
 ```
 
-خدعة النواة في حالة عدم دخول عالية القدر من الفضاء، حساب النقاط في الفضاء عالية القدر من النواة. بالنسبة ل D 维 中度 d من النواة الكلياتية، واضحة الفضاء الميزة لديه O (D ^ d) 维。 ولكن K (x, z) يمكن أن يكون في O (D) 时间内计算。
+خدعة النواة في حالة عدم دخول الفضاء العالي، حساب النقطة المنتجة في الفضاء العالي.$D$درجة الوسطى$d$نجم الكليات، مساحة ميزة واضحة$O(D^d)$لكن$K(x, z)$يمكن أن يكون$O(D)$时间内计算──
 
 ### (SVR)
 
-دعم الانسحاب المتجهة سوف تتحيط بالبيانات الملائمة لرياضة عرضة للأنبوب.
+دعم الجهاز التراجعي سوف تتحيط بالبيانات المتناسبة مع عرض واحد$\epsilon$النقاط داخل الأنابيب لديها خسارة صفر. النقاط الخارجية من الأنابيب ستعاقب بشكل طبيعي.
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i + xi_i*)
-subject to  y_i - (w^T x_i + b) <= epsilon + xi_i
-            (w^T x_i + b) - y_i <= epsilon + xi_i*
-            xi_i, xi_i* >= 0
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i (\xi_i + \xi_i^*) \\
+\text{约束为} \quad & y_i - (w^T x_i + b) \le \epsilon + \xi_i \\
+& (w^T x_i + b) - y_i \le \epsilon + \xi_i^* \\
+& \xi_i, \xi_i^* \ge 0
+\end{aligned}
 ```
 
-المعلمة الايبسونية 控制管宽──tube 越宽 = متجهات دعم 越少 = تناسب 更平滑──tube 越窄 = متجهات دعم 越多 = تناسب 更紧──
+$\epsilon$المعلمة 控制管宽──tube 越宽 = متجهات دعم 越少 = تناسب 更平滑──tube 越窄 = متجهات دعم 越多 = تناسب 更紧──
 
 ### لماذا يُعطى الـ SVM التعلم العميق و ما الذي يزال ينجح في ذلك ؟
 
@@ -205,7 +219,7 @@ subject to  y_i - (w^T x_i + b) <= epsilon + xi_i
 | Factor | SVMs | Deep learning |
 |--------|------|---------------|
 | Feature engineering | 需要它 | 学习 features |
-| Scalability | kernel 为 O(n^2) 到 O(n^3) | 使用 SGD 时每个 epoch 为 O(n) |
+| Scalability | kernel 为 $O(n^2)$ 到 $O(n^3)$ | 使用 SGD 时每个 epoch 为 $O(n)$ |
 | Image/text/audio | 需要 handcrafted features | 从 raw data 学习 |
 | Large datasets (>100k) | 慢 | 扩展良好 |
 | GPU acceleration | 收益有限 | 巨大加速 |
@@ -320,9 +334,9 @@ print(f"Accuracy: {clf.score(X_test, y_test):.4f}")
 print(f"Support vectors: {clf['svm'].n_support_}")
 ```
 
-مهم: تدريب SVM  قبل أن يكون دائما على مقياس خصائصك.
+مهم: تدريب SVM  قبل دائما ما يجب أن نطاق خصائصك.$\lVert w \rVert$، و الميزات غير المتوسطة ستعكس الهيكل الهجري
 
-对于大数据集,使用 `LinearSVC`(الصيغة الأولية، كل عصر 为 O  n)) بدلا من `SVC`(الصيغة المزدوجة،O  n^2) إلى O  n^3)):
+对于大数据集,使用 `LinearSVC`(الصيغة الأولية، كل عصر 为 $O(n)$) بدلاً من ذلك`SVC`(صيغة مزدوجة)$O(n^2)$إلى$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC
@@ -336,29 +350,29 @@ clf = Pipeline([
 ## التدريب
 1. 生成 2D خطيا قابل للنفصل مجموعة بيانات──訓練你的 LinearSVM,并识别支持向量──验证支持向量是最接近决策边界的点──
 
-2. في مجموعة بيانات ضوضاء 上将 C من 0.001 变化 إلى 1000──为每 C 值 رسم الحدود القرارية──观察从宽边缘(不合适) إلى ضيق边缘(超合) 过渡──
+2. في مجموعة بيانات ضوضاء 上将 $C$من 0.001  تغير إلى 1000 ∙$C$القيمة رسم حدود القرارات ✿ مشاهدة من الهامش الواسع ✿ غير الملائمة ✿ إلى الهامش الضيق ✿ الملائمة ✿
 
 3. 创建一个类界限 为圆形(非线性) 的数据集──展示线性SVM 会失败──计算RBF内核矩阵,并展示类别在内核诱导功能空间 中变得可分离──
 
 4. في مجموعة بيانات واحدة، على مقارنة خسارة العقدة مع الخسارة اللوجستية. تدريب SVM خطي و رجعة اللوجستية.
 
-5. 实现 SVR(إكسيلون-غير حساسية الخسارة) ――将它拟合到 y = sin(x) + noise── رسم التنبؤات 周围的epsilon tube,并突出显示支持向量(tube 外的点)。
+5. ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬$y = \sin(x) + \text{噪声}$ رسم التنبؤات  حول أنبوب الـ epsilon,并突出显示 دعم المتجهات ((أنبوب خارج النقاط) 
 
 ## 关键术语
 | Term | What it actually means |
 |------|----------------------|
 | Support vectors | 最接近 decision boundary 的 training points。唯一决定 hyperplane 的点 |
 | Margin | decision boundary 与最近 support vectors 之间的距离。SVMs 会最大化它 |
-| Hinge loss | max(0, 1 - y*f(x))。正确分类且位于 margin 外时为零。否则为 linear penalty |
-| C parameter | margin width 与 classification errors 之间的 trade-off。Large C = narrow margin，small C = wide margin |
+| Hinge loss | $\max(0, 1 - y f(x))$。正确分类且位于 margin 外时为零。否则为 linear penalty |
+| C parameter | margin width 与 classification errors 之间的 trade-off。Large $C$ = narrow margin，small $C$ = wide margin |
 | Soft margin | 通过 slack variables 允许 margin violations 的 SVM formulation。处理 non-separable data |
 | Kernel trick | 在不显式映射到高维 feature space 的情况下，计算该空间中的 dot products |
-| Linear kernel | K(x, z) = x . z。等价于标准 dot product。用于 linearly separable data |
-| RBF kernel | K(x, z) = exp(-gamma * \|\|x-z\|\|^2)。映射到 infinite dimensions。学习任意 smooth boundary |
-| Polynomial kernel | K(x, z) = (x . z + c)^d。映射到 polynomial combinations 的 feature space |
+| Linear kernel | $K(x, z) = x \cdot z$。等价于标准 dot product。用于 linearly separable data |
+| RBF kernel | $K(x, z) = \exp(-\gamma \Vert x-z \Vert^2)$。映射到 infinite dimensions。学习任意 smooth boundary |
+| Polynomial kernel | $K(x, z) = (x \cdot z + c)^d$。映射到 polynomial combinations 的 feature space |
 | Dual formulation | SVM problem 的重写形式，只依赖数据点之间的 dot products。支持 kernels |
 | SVR | Support Vector Regression。围绕数据拟合 epsilon-tube。tube 内的点具有 zero loss |
-| Slack variables | xi_i：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
+| Slack variables | $\xi_i$：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
 | Maximum margin | 选择能够最大化到每个类别最近点距离的 hyperplane 的原则 |
 
 ## 延伸阅读
