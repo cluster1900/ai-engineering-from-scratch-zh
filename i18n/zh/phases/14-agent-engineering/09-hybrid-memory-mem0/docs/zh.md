@@ -29,7 +29,7 @@
 
 1. 从文本中提取候选事实 (一个 LLM 驱动的步骤)
 2. 将每个事实写入向量存储器 (嵌),用于语义搜索.
-3. 将每个事实写入KV商店,以 (user_id, fact_type, entity) 为关键,用于O(1) 查找。
+3. 将每个事实写入KV商店,以 (user_id, fact_type, entity) 为关键,用于$O(1)$找找
 4. 将每个事实作为打字边缘 写入图库 (Mem0g),用于关系查询.
 
 在`search(query, user_id)`时:
