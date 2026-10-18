@@ -326,7 +326,7 @@ pseudoinverse 可以求解 least-squares 问题。如果 $Ax = b$ 没有精确�
                    （额外损失 6 位精度）
 ```
 
-现代 SVD 算法（Golub-Kahan bidiagonalization）直接在 $A$ 上工作，从不构造 $A^T A$。这就是为什么你应该始终优先使用 `np.linalg.svd($A$)`，而不是 `np.linalg.eig($A$.T @ $A$)`。
+现代 SVD 算法（Golub-Kahan bidiagonalization）直接在 $A$ 上工作，从不构造 $A^T A$。这就是为什么你应该始终优先使用 `np.linalg.svd(A)`，而不是 `np.linalg.eig(A.T @ A)`。
 
 ### Connection to PCA
 
