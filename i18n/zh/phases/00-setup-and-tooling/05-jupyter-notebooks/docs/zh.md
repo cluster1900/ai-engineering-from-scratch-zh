@@ -240,6 +240,14 @@ display(Image(filename="architecture.png"))
 2. 创建一个同时包含标记和代码细胞的笔记本,加载CSV、显示数据框架,并绘制图片――然后运行内核>重启和运行所有验证它可以从上到下正常运行
 3. 让我`code/notebook_tips.py`中的代码 粘贴到Colab笔记本 中,并使用免费的GPU运行
 
+### 提示
+
+**练习 1。**用`jupyter lab`启动JupyterLab,将两种版本分开放到`%timeit`开头的独立单元格――两个单元都使用了100,000的规模,确保测量是相同的工作量――
+
+**练习 2。**用`pd.read_csv`读取数据,将数据框架放在单元上最后一行显示它,再使用`df.plot()`或 matplotlib 绘图──执行Kernel > 重启和运行所有后,每个单元的执行计数器都应显示数字,并且不应有任何单元格报错.
+
+**练习 3。**在 Colab 中先选择运行时间 > 改变运行时间类型 > GPU,再粘贴代码──当`code/notebook_tips.py`中间的每个函数都打印出应对部分,然后在单元格中运行.`torch.cuda.is_available()`返回`True`时,运行才算正确.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

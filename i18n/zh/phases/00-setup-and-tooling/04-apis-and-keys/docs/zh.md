@@ -132,6 +132,14 @@ with urllib.request.urlopen(req) as resp:
 2. 尝试原始 HTTP 版本,并将响应格式与 SDK 版本进行比较
 3. 故意使用错误的API键,并阅读错误信息
 
+### 提示
+
+**练习 1。**在人类控制台中创建密钥,按课程说明将它放进.`ANTHROPIC_API_KEY`然后运行`code/first_api_call.py`◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎
+
+**练习 2。** `code/first_api_call.py`中间两个函数只印出文本和符号数量.`call_with_sdk()`中添加 `print(response)`在`call_raw_http()`中添加 `print(result)`查看两份完整响应──比较字段名称:原始 JSON 中的 `content`,我知道.`usage`和 `stop_reason`字段,会被 SDK 转换为对象属性.
+
+**练习 3。**只有一个终端中将`ANTHROPIC_API_KEY`设置为虚假值,再次运行脚本──在输出中找到HTTP状态码和错误类型;认证失败会返回401状态码──
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

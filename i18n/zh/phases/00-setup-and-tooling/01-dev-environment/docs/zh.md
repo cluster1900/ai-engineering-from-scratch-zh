@@ -160,3 +160,11 @@ python phases/00-setup-and-tooling/01-dev-environment/code/verify.py
 1. 运行验证脚本并修复任何失败项
 2. 创建一个Python虚拟环境,并安装PyTorch
 3. 用四种语言写一个"你好世界",并逐个运行
+
+### 提示
+
+**练习 1。**在仓库根目录运行`python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner`首先修复第一个失败项,再查看下一个项.
+
+**练习 2。**在仓库根目录中使用`uv venv`创建环境并激活,再使用步骤 6 中适合您的硬件的命令安装 PyTorch── 在该环境中运行 `python -c "import torch; print(torch.__version__)"`输出版本号就表示安装成功.
+
+**练习 3。**使用概念部分技术中的四种运行时:Python、运行到 Node.js 的TypeScript、Rust 和 Julia──分别编写一个小文件,用`python3`,我知道.`npx tsx`(Node.js 不能直接运行 `.ts`文件)`cargo run`或`rustc`,我知道.`julia`每次运行都必须打印你的消息,并以退出码0结束.

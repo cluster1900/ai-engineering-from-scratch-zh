@@ -366,6 +366,16 @@ docker logs -f <container_id>
 3. 将`flask`添加到Docker文件,重建,并运行一个简单的API服务器.`-p 5000:5000`地图端口
 4. 使用 `docker images`测量图像大小――试把基础图像从 `devel`切换到`runtime`并比较大小
 
+### 提示
+
+**练习 1。**用课程中`docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .`命令构建,再通过`docker run --rm ai-dev`在容器内执行导入检查. 在Mac上,按课程说明省略.`--gpus all`容器必须打印`2.6.0`开头的版本号.
+
+**练习 2。**在`code/`文件中运行`docker compose up -d`再使用`docker compose exec ai-dev bash`在`ai-dev`服务中打开子. 在其中运行.`curl http://qdrant:6333/collections`返回JSON就说明服务名名能在编译网络内解析.
+
+**练习 3。**在Docker文件中添加`RUN pip install flask`重建,并使用`host="0.0.0.0"`启动服务器,因为容器内只绑定本地主机的服务器无法从容器外访问.`http://localhost:5000`确认端口映射有效.
+
+**练习 4。**运行`docker images ai-dev`记录大小的列.`FROM`行中的`devel`改为`runtime`使用新标签 构建,再比较两个镜像大小;运行时间 镜像不包含编译器和头文件.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

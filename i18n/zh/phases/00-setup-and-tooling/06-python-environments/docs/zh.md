@@ -260,6 +260,16 @@ bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh
 3. 为了同时需要 PyTorch 和人类 SDK 的项目 编写`pyproject.toml`
 4. 为了整局安装一个包,然后把它卸下.
 
+### 提示
+
+**练习 1。**在仓库根目录运行`bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh`△逐行阅读输出;如果某项检查失败,就先修复该项,再运行脚本,直到所有检查通过.
+
+**练习 2。**在新文件中使用`uv venv`创建第二个环境并激活,通过版本固定安装较旧的 numpy,例如`numpy==1.26.4`◎分别在两个环境中运行`python -c "import numpy; print(numpy.__version__)"`输出版本必须不同.
+
+**练习 3。**从pyproject.toml 基础中的示例开始,在`dependencies`中列出 `torch`和 `anthropic`在新环境中运行`uv pip install -e .`或`uv sync`两包都能正常导入,才说明文件配置正确.
+
+**练习 4。**退出所有环境,运行`pip install --user <small package>`运行`pip show <package>`查看`Location`走了`pip uninstall <package>`卸载它,再运行`pip show`确认它已经移除了.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

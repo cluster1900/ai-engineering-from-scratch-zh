@@ -396,3 +396,15 @@ python phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.p
 3. 使用 `tracemalloc`找出数据加载管道 中哪一行分配了最多的内存.
 4. 为一个简单的训练运行设置机板,并识别模型是否过度适合.
 5. 在训练循环内使用`breakpoint()`△从调试器提示练习 检查子形状、设备和梯度值──
+
+### 提示
+
+**练习 1。**运行`python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`阅读每个演示函数的输出.`demo_nan_detection`中的模型,使其输出除以零,再运行一次;`detect_nan`必须印印带有步骤编号的NAN警告.
+
+**练习 2。**用`python -m cProfile -s cumtime your_script.py`运行循环,或用`cProfile.Profile()`包裹它.`cumtime`列顶部的行列;其中属于你自己代码的最大函数,就是最慢的函数.
+
+**练习 3。**像`demo_memory_tracking`像,在数据加载代码之前调用`tracemalloc.start()`后调用`tracemalloc.take_snapshot()`打印`snapshot.statistics("lineno")[:5]`首行显示分布内存最多的文件和行号.
+
+**练习 4。**每个时代都用`SummaryWriter`记录训练损失和验证损失,再运行`tensorboard --logdir=runs`,如果训练损失持续下降,验证损失上升,说明模型发生过了适应.
+
+**练习 5。**将`breakpoint()`放在内部的循环中`loss.backward()`之后,然后运行脚本.`(Pdb)`提示符处打印`x.shape`,我知道.`x.device`和 `next(model.parameters()).grad`输入`c`继续下一步.
