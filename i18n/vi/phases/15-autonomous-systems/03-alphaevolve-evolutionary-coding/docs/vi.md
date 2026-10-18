@@ -58,7 +58,7 @@ Phương pháp sửa đổi trong AlphaEvolve: sử dụng LLM từ một đánh
 
 LLM có thể tạo ra những thay đổi có thể biên dịch được ừ ngữ nghĩa có vẻ hợp lý. GA của một 2000 行 Python 文件 có thể tự động biến đổi gần như luôn tạo ra những sai lầm về ngữ pháp. LLM cũng sẽ tập trung tìm kiếm vào một vùng lân cận hợp lý.
 
-Ngược lại, nhà đánh giá sẽ nắm bắt giả thuyết của LLM. LLM sẽ tự tin tuyên bố một chức năng trong trường hợp tối đa là O  n log n) , nhưng nó thực tế là O  n^2;
+Ngược lại, nhà đánh giá sẽ nắm bắt giả thuyết của LLM. LLM sẽ tự tin tuyên bố một chức năng trong trường hợp tối đa là$O(n \log n)$, nhưng nó thực sự là $O(n^2)$;chỉ số đồng hồ tường sẽ làm cho vấn đề được xác định.
 
 ### AlphaEvolve ở vị trí trung tâm của hàng biên giới
 

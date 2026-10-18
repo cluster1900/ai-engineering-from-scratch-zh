@@ -30,7 +30,7 @@ Một phần trong bài này về phương pháp học (How to calculate horizon
 
 1. 收集一个任务套件,覆盖分钟级到小时级的专家完成时间──当前套件:HCAST(180+个任务)、RE-Bench(71个任务)、SWAA──
 2. 让模型运行每个任务; ghi lại thành công hoặc thất bại.
-3. 拟合一条 逻辑 đường cong:P(success) 是 log(专家完成时间) 的函数──
+3. 拟合一条 đường cong logistics:$P(\text{success})$ $\log(\text{专家完成时间})$của hàm:
 4. Horizon là làm cho P(success) = 0.5 的专家时间。
 
 Hình dạng phù hợp với hậu cần, vì khả năng thường có một mối quan hệ gia tăng và gần gũi giữa khó khăn nhiệm vụ và thời gian nền tảng. 50% điểm là một lựa chọn.
@@ -80,7 +80,7 @@ a5-horizon-fit
 
 ## Sử dụng nó
 
-`code/main.py`Dựa trên kết quả tổng hợp, đạt được sự phù hợp hậu cần của thành công nhiệm vụ với log của thời gian chuyên gia. Nó báo cáo 50% đường chân trời (METR)  chỉ số chính) ≈10% đường chân trời (METR) 保守) và 90% đường chân trời (乐观) ⋅ đồng thời thể hiện tỷ lệ thành công được đánh giá trong bối cảnh chơi game người vì nâng cao sẽ xảy ra những thay đổi.
+`code/main.py`Dựa trên kết quả tổng hợp, đạt được thành công trong nhiệm vụ và$\log(\text{expert time})$Ưu điểm logistics: Nó báo cáo 50% đường chân trời (METR 的主指标) ✓ 10% đường chân trời (保守) ✓ 90% đường chân trời (乐观) ✓ Đồng thời, tỷ lệ thành công được đánh giá trong bối cảnh chơi game người dùng nâng cao sẽ thay đổi gì ✓
 
 ## 交付 nó
 
