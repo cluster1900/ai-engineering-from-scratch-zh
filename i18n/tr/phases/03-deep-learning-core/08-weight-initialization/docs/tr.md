@@ -35,40 +35,40 @@ Ama rastlantı yetmez. *Sakalınca* ağın eğitim yapıp yapamayacağını beli
 
 考虑一个具有风扇_in 个输入的单层:
 
-```
-z = w1*x1 + w2*x2 + ... + w_n*x_n
-```
-
-Eğer her ağırlık wi varansı var var ((w) dağılımından gelirse ve her giriş xi varansı var ((x), output varansı var (():
-
-```
-Var(z) = fan_in * Var(w) * Var(x)
+```math
+z = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n
 ```
 
-Eğer Var(w) = 1 ve fan_in = 512, ise çıkış varyansi 512 倍── input varyansi ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ 
+Eğer her bir ağırlık $w_i$Her şey farklılıktan geliyor .$\mathrm{Var}(w)$Her giriş ve dağıtım.$x_i$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\mathrm{Var}(x)$,则 çıktı varyansi 为:
 
-Eğer Var(w) = 0.001,则 çıkış değişimi Her kat 0.001 * 512 = 0.512 缩小──经过 10 层:0.512^10 = 0.00013──你的信号 已消失──
+```math
+\mathrm{Var}(z) = \text{fan}_{\text{in}} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(x)
+```
 
-目標:选择 Var(w), makes Var(z) = Var(x) ・・・Signal büyüklüğü 在各层之间保持恒定──
+Eğer $\mathrm{Var}(w) = 1$Ve$\text{fan}_{\text{in}} = 512$,则输出变化是输入变化的 512 倍──经过 10层:$512^{10} = 1.2 \times 10^{27}$Senin sinyalin patlamış.
+
+Eğer $\mathrm{Var}(w) = 0.001$, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,$0.001 \cdot 512 = 0.512$10 katlıklık:$0.512^{10} = 0.00013$Senin sinyalin kayboldu.
+
+目標: Seçim$\mathrm{Var}(w)$- Evet .$\mathrm{Var}(z) = \mathrm{Var}(x)$❖ Sinyal büyüklüğü her katman arasında sabit kalır.
 
 ### Xavier/Glorot Başlangıç
 
 Glorot and Bengio (2010) 推导了适用于sigmoid 和 tanh aktivasyonlarının çözümü──为了在前和后的通过 中都保持变异恒定:
 
-```
-Var(w) = 2 / (fan_in + fan_out)
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}
 ```
 
 实践中, weights From aşağıdaki dağılım 中采样:
 
-```
-w ~ Uniform(-limit, limit)  where limit = sqrt(6 / (fan_in + fan_out))
+```math
+w \sim \text{Uniform}(-\text{limit}, \text{limit}) \quad \text{其中 } \text{limit} = \sqrt{\frac{6}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}
 ```
 
 Ya da:
 
-```
-w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}\right)
 ```
 
 Bu nedenle etkili, çünkü sigmoid 和 tanh sıfırın yakınında linear olarak, doğru başlangıç sonrası aktivasyonlar bu bölgede bulunmaktadır.
@@ -79,27 +79,27 @@ ReLU, tüm negatiflerin yarısını öldürür. Tüm negatiflerin sıfır haline
 
 He et al. (2015) 调整了公式:
 
-```
-Var(w) = 2 / fan_in
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}}}
 ```
 
 Ağırlıklar aşağıdaki dağılımdan 中采样:
 
-```
-w ~ Normal(0, sqrt(2 / fan_in))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}}}}\right)
 ```
 
-2 kullanılır ReLU yarısını etkinleştirir 置零 etkilenir 没有它,信号 每层会缩小约0.5倍──50层后:0.5^50 = 8.8e-16──Kaiming init 可以防止这种情况──
+2'yi kullanmak için ReLU'nun yarısını aktifleştirmek 置零的影响―― 没有它,信号 每层会缩小约0.5倍――50层后:$0.5^{50} = 8.8 \times 10^{-16}$❖ Kaiming init bu durumu önleyebilir.
 
 ### Transformer Başlatma
 
 GPT-2 başka bir modü başlattı. Geri kalan bağlantılar her alt katmanın çıkışını ve girişini artırır:
 
-```
-x = x + sublayer(x)
+```math
+x = x + \text{sublayer}(x)
 ```
 
-Her zaman artışlar varyansa artır. N'de kalan katmanlar için, varyansa N'de gerçekleşir.
+Her zaman artış varyasyonu artıracak.$N$个残留层,变量 会按 $N$成比例增长──GPT-2 会将残層の重量按 $1/\sqrt{2N}$缩放, içinden $N$Bu, sinyal büyüklüğünü sabit tutabilir.
 
 Llama 3 ((405B parametreleri,126 katman) benzer bir yöntem kullanmıştır. Bu kısaltma yoksa, geri kalan akım 126 katman üzerinde olacaktır.
 
@@ -337,20 +337,20 @@ nn.init.zeros_(layer.bias)
 
 - Ne ? - Ne ?`nn.Linear(512, 256)`时,PyTorch 默认使用Kaiming 统一初始化――这就是为什么大多数简单网络 只是工作--PyTorch 已经做了正确选择――但是当你构建自定义架构时,或者深入到超过20层时,你需要理解正在发生的情况,并且可能需要覆盖默认设置――
 
-Transformatörler için, HuggingFace modelleri genellikle bunlar arasında olur.`_init_weights`方法中处理 initialization── GPT-2 realization will meet according 1/sqrt(N) 缩放 residual projections── Eğer sıfırdan bir transformatör inşa etmeye başlarsanız, kendinize ekleme gerekmektedir──
+Transformatörler için, HuggingFace modelleri genellikle bunlar arasında olur.`_init_weights`方法中处理 initialization──GPT-2 实现会按$1/\sqrt{N}$缩放残余投射── eğer sıfırdan bir transformatör inşa etmeye başlarsanız, kendinizi eklemeniz gerekir.
 
 ## - Söyle.
 Bu ders:
 - `outputs/prompt-init-strategy.md`-- bir teşhis ağırlığı başlangıç  sorun并推正确策略的提示
 
 ## 练习
-1. 添加 LeCun initialization(Var = 1/fan_in,为 SELU activation 设计) ・运行50 katlı deney, LeCun init + tanh,并与Xavier + tanh对比──
+1. 添加 LeCun başlangıç$\mathrm{Var} = 1/\text{fan}_{\text{in}}$, SELU etkinleştirme için デザイン) ・运行50 katlı deney, LeCun init + tanh,并与Xavier + tanh对比──
 
-2. 实现 GPT-2 geri kalan ölçekleme: 加入残留流 之前, 乘以1/sqrt(2*N) 』 分别在有规模和无规模的情况下运行 50 层,测量残留大小 增多多快──
+2. 实现 GPT-2 geri kalan ölçeklendirme:  before joining residual stream  before, will output of each layer fold $1/\sqrt{2N}$△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                                                           
 
 3. 创建一个"init health check" 函数,接收网络的层维度和激活类型,然后推正确的初始化,并当前 init 会导致问题时给出警告──
 
-4. Xavyer ve Kaiming, fan_in'e uygun bir şekilde uyumlu olarak kullanıyor, ama rastgele bir şekilde değil.
+4. Kullanım$\text{fan} _{\text{in}} = 16$ile$\text{fan} _{\text{in}} = 1024$运行实验──Xavier 和 Kaiming 会适配 fan_in,但随机 init 不会──展示 变大,工作和断之间的差如何扩大──
 
 5. Ortogonal başlangıç yapmayı gerçekleştirmek, rastgele bir matris oluşturmak, SVD'sini hesaplamak, ortogonal matris U) ・ ile 50 katlı ReLU ağları arasında Kaiming  karşılaştırmak
 
@@ -361,10 +361,10 @@ Bu ders:
 | Symmetry breaking | “让 neurons 变得不同” | 使用 random initialization 确保 neurons 学习不同 features，而不是计算完全相同的函数 |
 | Fan-in | “一个 neuron 的 inputs 数量” | incoming connections 的数量，它决定 input variance 如何在 weighted sum 中累积 |
 | Fan-out | “一个 neuron 的 outputs 数量” | outgoing connections 的数量，与在 Backpropagation 期间维持 Gradient variance 有关 |
-| Xavier/Glorot init | “sigmoid initialization” | Var(w) = 2/(fan_in + fan_out)，旨在通过 sigmoid 和 tanh activations 保持 variance |
-| Kaiming/He init | “ReLU initialization” | Var(w) = 2/fan_in，考虑了 ReLU 会将一半 activations 置零 |
+| Xavier/Glorot init | “sigmoid initialization” | $\mathrm{Var}(w) = 2/(\text{fan} _{\text{in}} + \text{fan} _{\text{out}})$，旨在通过 sigmoid 和 tanh activations 保持 variance |
+| Kaiming/He init | “ReLU initialization” | $\mathrm{Var}(w) = 2/\text{fan}_{\text{in}}$，考虑了 ReLU 会将一半 activations 置零 |
 | Variance propagation | “signals 如何在 layers 中增长或缩小” | 基于 weight scale，逐层分析 activation variance 如何变化的数学分析 |
-| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 1/sqrt(2N) 缩放，以防止 variance 在 N 个 transformer layers 中增长 |
+| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 $1/\sqrt{2N}$ 缩放，以防止 variance 在 $N$ 个 transformer layers 中增长 |
 | Dead network | “什么都训练不了” | 一个因 initialization 不佳而导致所有 Gradients 为 zero 或所有 activations 饱和的 network |
 | Exploding activations | “数值走向 infinity” | 当 weight variance 过高时，activation magnitudes 会在 layers 中指数级增长 |
 

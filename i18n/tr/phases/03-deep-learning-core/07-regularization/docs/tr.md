@@ -38,21 +38,23 @@ graph LR
 
 ### İptal
 
-En basit düzenleme  tekniği, en iyi açıklama vardır.
+En basit düzenleme teknikleri, en iyi açıklamaları vardır.$p$Her sinirün çıkışı zamanla sıfır olarak belirlenir.
 
+```math
+\text{output} = \text{activation}(z) \cdot \text{mask} \quad \text{其中 }\text{mask}[i] \sim \text{Bernoulli}(1 - p)
 ```
-output = activation(z) * mask    where mask[i] ~ Bernoulli(1 - p)
-```
 
-P = 0.5'de, her ileri geçiş, yarım nöronun sıfırına bırakılmasını sağlar. Ağ, hangi nöronların kullanılabileceğini tahmin edemediği için reduktif ifade öğrenmelidir. Bu, uyum sağlanmasını engeller.
+- Evet .$p = 0.5$Bu, neöronların ne kadar kullanılabileceğini tahmin edemediği için, ağın yarısını sıfırdan ayırması gerekir. Bu, uyum sağlanmasını engeller.
 
-Birlikte açıklayın: bir n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n
+Birlikte  açıklayın:$N$个神经元并使用中断的网络会创建 $2^N$个可能的子网络 (), tüm sinirlerin açık veya bağlı bir kombinasyonu) ⋅ kullanımı abandon 训练近似于同时训练所有$2^N$个子网络,每个都在不同的迷你批上训练――测试时,你使用所有神经元(无落),并将输出按 $(1 - p)$缩,                                                                                                                                                                                                                                                              $2^N$个子网络的预测取平均单个模型的得到一个巨大的集团──
 
 实践中,缩放会在训练期间应用,而不是测试期间应用(inverse dropout):
 
-```
-During training:  output = activation(z) * mask / (1 - p)
-During testing:   output = activation(z)   (no change needed)
+```math
+\begin{aligned}
+\text{训练时：} \quad & \text{output} = \text{activation}(z) \cdot \text{mask} / (1 - p) \\
+\text{测试时：} \quad & \text{output} = \text{activation}(z) \quad \text{（无需改动）}
+\end{aligned}
 ```
 
 Bu daha temiz, çünkü test kodları tamamen bırakmak zorunda değil.
@@ -63,15 +65,15 @@ Bu daha temiz, çünkü test kodları tamamen bırakmak zorunda değil.
 
 Ülkeyi yeniden oluşturmak için:
 
-```
-total_loss = task_loss + (lambda / 2) * sum(w_i^2)
+```math
+\text{total\_loss} = \text{task\_loss} + \frac{\lambda}{2} \sum_i w_i^2
 ```
 
-Düzenlenme 项 ̆s Gradient is lambda * w。 bu, her adımda, her ağırlık, büyüklüğü oranında genişliği ile sıfır kısaltmaya göre gerçekleşir. Büyük ağırlık daha güçlü bir ceza alıyor。 model tek bir ağırlık yönetiminin olmadığı bir çözümle yönlendirilir。
+Düzenlenme 项 ın Gradienti $\lambda w$Bu, her adımda, her bir ağırlığın büyüklüğü oranında genişliği sıfıra küçülmesi anlamına gelir.
 
 Bu neden genelleşmeye yardımcı olur: aşırı fitness model genellikle daha büyük bir ağırlık taşır, antrenman verilerindeki gürültüyi arttırır.
 
-lambda hiperparametre 控制强度── tipik değer:
+$\lambda$hiperparametre 控制强度── tipik değer:
 
 - Transformer 上的 AdamW 0.01 kullan
 - CNN'lerin üstündeki SGD 1e-4 kullan
@@ -85,16 +87,18 @@ Her katmanın çıkışı aşağı katmana aktarılmadan önce, önce mini-batch
 
 某一层的一批激活:
 
-```
-mu = (1/B) * sum(x_i)           (batch mean)
-sigma^2 = (1/B) * sum((x_i - mu)^2)   (batch variance)
-x_hat = (x_i - mu) / sqrt(sigma^2 + eps)   (normalize)
-y = gamma * x_hat + beta        (scale and shift)
+```math
+\begin{aligned}
+\mu &= \frac{1}{B} \sum_i x_i && \text{（批次均值）} \\
+\sigma^2 &= \frac{1}{B} \sum_i (x_i - \mu)^2 && \text{（批次方差）} \\
+\hat{x} &= \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}} && \text{（归一化）} \\
+y &= \gamma \hat{x} + \beta && \text{（缩放和平移）}
+\end{aligned}
 ```
 
 Gamma ve beta, öğrenilebilir parametrelerdir, böylece en iyi koşullarda ağ bu normallaşmayı geri alabilir.
 
-**Training vs inference split:**訓練期間,mu 和 sigma 来自当前ミニ-batch──推理期間,你使用訓練期間累计的运行平均(momentum = 0.1'in eksponensial hareketli ortalaması,也就是90% 旧值 + 10% 新值) ・・・
+**Training vs inference split:**訓練 sırasında,$\mu$和 $\sigma$Bu süre içinde, antrenman sırasında toplam koşuş ortalamaları elde ediliyor.
 
 BatchNorm neden geçerli olduğu tartışmaya devam ediyor. Asıl makale bunun "daha iç değişkenlik değişimi"ni azaltdığını iddia ediyor.
 
@@ -104,14 +108,16 @@ BatchNorm has one fundamental limit: it depends on batch statistics. Batch size 
 
 √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √
 
-```
-mu = (1/D) * sum(x_j)           (feature mean)
-sigma^2 = (1/D) * sum((x_j - mu)^2)   (feature variance)
-x_hat = (x_j - mu) / sqrt(sigma^2 + eps)
-y = gamma * x_hat + beta
+```math
+\begin{aligned}
+\mu &= \frac{1}{D} \sum_j x_j && \text{（特征均值）} \\
+\sigma^2 &= \frac{1}{D} \sum_j (x_j - \mu)^2 && \text{（特征方差）} \\
+\hat{x} &= \frac{x_j - \mu}{\sqrt{\sigma^2 + \epsilon}} \\
+y &= \gamma \hat{x} + \beta
+\end{aligned}
 ```
 
-D ise özellik boyutu, her örnek bağımsız olarak birleştirilmeye bağlı değildir. Bu yüzden Transformer LayerNorm'i kullanır ve BatchNorm'i kullanmaz.
+$D$Bu nedenle, Transformer LayerNorm'i BatchNorm yerine kullanır. Bu nedenle, bir dizi uzunluğu değişebilir, seri boyutu genellikle çok küçüktür.
 
 Transformer'ın Orta LayerNorm 会 Apply in Each Self-Attention Block 和 Each Feed-Forward Block 之后 (Post-LN), or apply in them before (Post-LN), pre-LN, training time more stable) 。
 
@@ -119,9 +125,11 @@ Transformer'ın Orta LayerNorm 会 Apply in Each Self-Attention Block 和 Each F
 
                                                                                                                                                                                                                                                               
 
-```
-rms = sqrt((1/D) * sum(x_j^2))
-y = gamma * x / rms
+```math
+\begin{aligned}
+\text{rms} &= \sqrt{\frac{1}{D} \sum_j x_j^2} \\
+y &= \gamma \cdot \frac{x}{\text{rms}}
+\end{aligned}
 ```
 
 Bu nedenle, bu değerlerin bir kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer kısmı olarak, bir diğer bir kısmı olarak, bir diğer bir kısmı olarak, bir diğer bir kısmı olarak, bir diğer bir kısmı olarak, bir diğer bir kısmı olarak, bir diğer bir kısmı olarak, bir diğer bir kısmı olarak, bir diğer bir diğerinden daha olarak, bir diğer bir diğerinden daha daha fazla değerlendirilmiştir.
@@ -508,8 +516,8 @@ Bu ders:
 |------|----------------|----------------------|
 | Overfitting | "模型记住了数据" | 当模型的训练表现显著高于测试表现时，表示它学到了噪声而不是信号 |
 | Regularization | "防止 overfitting" | 任何约束模型复杂度以改善泛化的技术：dropout、weight decay、normalization、augmentation |
-| Dropout | "随机删除神经元" | 训练期间以概率 p 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
-| Weight decay | "L2 penalty" | 每一步通过减去 lambda * w 将所有权重向零收缩；通过权重大小惩罚复杂度 |
+| Dropout | "随机删除神经元" | 训练期间以概率 $p$ 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
+| Weight decay | "L2 penalty" | 每一步通过减去 $\lambda w$ 将所有权重向零收缩；通过权重大小惩罚复杂度 |
 | Batch normalization | "按 batch 归一化" | 训练期间使用 batch statistics、推理期间使用 running averages，在 batch 维度上对层输出进行归一化 |
 | Layer normalization | "按样本归一化" | 在每个样本内部跨特征归一化；与 batch 无关，用于 batch size 可变的 Transformer |
 | RMSNorm | "没有均值的 LayerNorm" | Root mean square normalization；从 LayerNorm 中去掉均值减法，以相同 accuracy 获得 10% 加速 |

@@ -23,7 +23,7 @@ Perceptron'u anlamak, koddaki öğrenmeyi anlamak demektir.
 ## 概念
 ### Bir nöron, bir karar.
 
-Bir Perceptron n giriş alır, her girişini bir ağırlık, bir gerginlik, bir önyargı ile çarpır ve sonuçları bir etkinleştirme fonksiyonuna aktarır.
+Bir Perceptron 接收 $n$个输入, 个输入, 个输入 乘以一个重量,求和,加偏,然后把结果传入一个激活函数――
 
 ```mermaid
 graph LR
@@ -35,11 +35,10 @@ graph LR
     step --> out["output (0 or 1)"]
 ```
 
-Adım fonksiyonu 非常直接: Eğer ağırlıklı toplam加偏 >= 0, onda çıkış 为 1──否则,output 为 0──
+Adım fonksiyonu 非常直接: Eğer ağırlıklı toplam加偏$\ge 0$,则输出为 1――否则,输出为 0――
 
-```
-step(z) = 1  if z >= 0
-           0  if z < 0
+```math
+\text{step}(z) = \begin{cases} 1 & \text{当 } z \ge 0 \\ 0 & \text{当 } z < 0 \end{cases}
 ```
 
 Bu bir çizgisi sınıflandırıcıdır. Ağırlıklar ve tarafsızlıklar, bir çizgi tanımlıyor.
@@ -77,7 +76,7 @@ For each training example (x, y_true):
     bias = bias + learning_rate * error
 ```
 
-Eğer tahmin doğru ise, hata = 0, hiçbir şey değişmez. Eğer tahmin 0 ise, ancak 1, ağırlıklar artacaktır. Eğer tahmin 1 ise, ama 0, ağırlıklar düşecek.
+Eğer tahmin doğruysa,$\text{error} = 0$, hiçbir şey değişmez. Eğer 0 olarak tahmin ederse, 1, ağırlıklar artacaktır. Eğer 1 olarak tahmin ederse, 0, ağırlıklar düşecek.
 
 ### XOR Sorunu
 
@@ -210,7 +209,7 @@ Bu tek bir Perceptron'un XOR'u öğrenemediği kesin bir kanıt.
 
 ### 步骤 4: İki katman ile  XOR çöz
 
-技巧是:XOR = (x1 YA da x2) ve NOT (x1 YEN x2)
+技巧是:$\text{XOR} = (x_1 \text{ OR } x_2) \text{ AND NOT } (x_1 \text{ AND } x_2)$◊组合三个 Perceptron:
 
 ```mermaid
 graph LR
@@ -353,7 +352,7 @@ Bu ders:
 
 ## 练习
 1. NAND kapısı, herhangi bir mantıksal devrenin NAND tarafından yapılandırılabilmesi için kullanılır.
-2. 修改 Perceptron sınıfı,使其在每个时代跟踪决策界面(w1*x1 + w2*x2 + b = 0) 』印在 AND gate 训练期间这条线如何移动──
+2. Perceptron sınıfını değiştir, her dönem boyunca karar sınırını takip et.$w_1 x_1 + w_2 x_2 + b = 0$Bu çizgi nasıl hareket eder?
 3. 构建一个3输入 Perceptron:只有当3输入中至少2个为1时才输出1(多数投票函数) ――它是线性分离的吗?为什么?
 
 ## 关键术语
@@ -365,7 +364,7 @@ Bu ders:
 | Activation function | “压缩数值的东西” | 一个在 weighted sum 之后应用的 function：Perceptron 使用 step function，现代 networks 使用 sigmoid/ReLU |
 | Linearly separable | “你能在它们之间画一条线” | 一个 dataset，其中单个 hyperplane 可以完美分离 classes |
 | XOR problem | “Perceptron 做不到的那件事” | single-layer networks 无法学习 non-linearly-separable functions 的证明 |
-| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane w*x + b = 0 |
+| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane $w \cdot x + b = 0$ |
 | Multi-layer perceptron | “一个真正的 Neural Network” | 按 layers 堆叠的 Perceptron，其中每一层的 output 会输入到下一层 |
 
 ## 延伸阅读

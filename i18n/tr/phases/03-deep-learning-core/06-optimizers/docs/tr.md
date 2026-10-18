@@ -18,7 +18,7 @@
 
 Gradient'i hesapladın. Biliyor musun 4.721'in ağırlığı kaybı azaltmak için 0.003'e düşmeli. Ama 0.003'in birimi nedir?
 
-Vanilla Gradient Descent her adım her parametre  aynı öğrenme oranını uygula: w = w - lr * gradient。 bu üç soruna neden olur, pratikte sinir ağının eğitimi çok acı verici hale gelmesine neden olur。
+Vanilla Gradient Descent her adım için her parametre  aynı öğrenme oranı uygula:$w = w - \text{lr} \cdot \text{gradient}$Bu üç sorunun ortaya çıkmasına neden olur.
 
 İlk olarak, titreşim. Bu kayıp manzarası  çok az bir düz bir kavanoz gibi. Daha çok bir uzun ve dar bir dağ vadisi gibi. Devamlı düşüş, vadinin boyunca değil, vadinin boyunca ilerlemektedir.
 
@@ -34,8 +34,8 @@ Adam  bu üç sorunu çözdü. Bu, her parametreden iki çalışkan ortalama - o
 
 En basit Optimizer. On-batch 上计算 Gradient,并朝相反方向前进一步.
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 stochastic                                                                                                                                                                                                                                                            
@@ -46,27 +46,31 @@ stochastic
 
 Küçük top roll down mountain slope'nin biçimleri çok fazla kullanılır, ama doğru bir şekilde kullanılır. Sadece ileriye gitme derecesine göre değil, geçmişe gitme derecesini toplamak için bir hız korumak için kullanılır.
 
-```
-m_t = beta * m_{t-1} + gradient
-w = w - lr * m_t
+```math
+\begin{aligned}
+m_t &= \beta \, m_{t-1} + \text{gradient} \\
+w &= w - \text{lr} \cdot m_t
+\end{aligned}
 ```
 
-Beta(genellikle 0.9) kontrol ederken, tarihsel bilgiyi saklamak için çok fazla bilgi vardır.
+Beta( genellikle 0.9) kontrol ederken, çok fazla tarihsel bilgiyi saklar.$\beta = 0.9$时,momentum 大致                                                                                                                                                                                                                                                           $1 / (1 - 0.9) = 10$)。
 
 Neden bu canlandırma bozulması: Aynı yönde işaret eden Gradientler Birbirlerine karşı karşı karşıya gelecektir.
 
-Gerçek rakam: Çok kötü koşullarda Kayıp manzarası üzerinde, tek başına SGD kullanmak 10.000 adım gerekebilir.
+Gerçek rakam: Çok kötü koşullarda Kayıp manzarası Üstünde, tek başına kullanmak için SGD 10.000 adım gerekebilir.$\beta = 0.9$) Aynı sorunun üzerinde genellikle 3.000-5.000 adım gerekmektedir.
 
 ### RMSProp
 
 İlk gerçekten etkili bir parametresi başına adapte öğrenme oranı 方法── Hinton tarafından önerilen  Coursera  cours中中
 
-```
-s_t = beta * s_{t-1} + (1 - beta) * gradient^2
-w = w - lr * gradient / (sqrt(s_t) + epsilon)
+```math
+\begin{aligned}
+s_t &= \beta \, s_{t-1} + (1 - \beta) \cdot \text{gradient}^2 \\
+w &= w - \text{lr} \cdot \frac{\text{gradient}}{\sqrt{s_t} + \epsilon}
+\end{aligned}
 ```
 
-s_t Follow square gradients'in yürüyüş ortalaması── sürekli daha büyük gradients'in parametreleri olacaktır daha büyük bir sayı ile ayrılırlar── daha küçük etkili öğrenme oranı─ Gradients'in daha küçük parametreleri olacaktır daha küçük bir sayı ile ayrılırlar── daha büyük etkili öğrenme oranı──
+$s_t$Following square gradients' running average──continuous having larger gradients' parameters 会除以 a larger number (((smaller effective learning rate)──Gradients smaller parameters 会除以 a smaller number ((smaller effective learning rate))──
 
 Bu, tüm parametreleri aynı öğrenme hızını kullanarak çözdü. Bir kişi sürekli olarak büyük bir şekilde yenileme ağırlığı kazanıyor.
 
@@ -76,41 +80,45 @@ Epsilon (önteminde 1e-8) bir parametrede  henüz yenilenmemişken çıkartılma
 
 Adam iki düşünceyi birleştirdi. Her bir parametre için iki eksponensial hareketli ortalama korudu:
 
-```
-m_t = beta1 * m_{t-1} + (1 - beta1) * gradient        (first moment: mean)
-v_t = beta2 * v_{t-1} + (1 - beta2) * gradient^2       (second moment: variance)
-```
-
-**Bias correction**Bu, bir sonraki aşamada, m_1 = (1 - beta1) * gradient── beta1 = 0.9 时, bu 0.1 * gradient── 小了十倍──移動平均還沒有预熱──偏見修正 会進行補償:
-
-```
-m_hat = m_t / (1 - beta1^t)
-v_hat = v_t / (1 - beta2^t)
+```math
+\begin{aligned}
+m_t &= \beta_1 m_{t-1} + (1 - \beta_1) \cdot \text{gradient} && \text{（一阶矩：均值）} \\
+v_t &= \beta_2 v_{t-1} + (1 - \beta_2) \cdot \text{gradient}^2 && \text{（二阶矩：方差）}
+\end{aligned}
 ```
 
-第 1 步且 beta1 = 0.9 时:m_hat = m_1 / (1 - 0.9) = m_1 / 0.1 = 实际 Gradient。第 100 步时:(1 - 0.9^100) 约等于 1.0,因此纠正消失──偏差纠正对前 ~10 步非常重要,在 ~50 步后基本无关紧要──
+**Bias correction**Çoğu açıklamalar geçecek.$m_1 = (1 - \beta_1) \cdot \text{gradient}$- Evet.$\beta_1 = 0.9$- Evet, öyle.$0.1 \cdot \text{gradient}$-- 小了十倍── hareketli ortalama henüz hiç pre热── Bias düzeltmesi 会进行补偿:
+
+```math
+\begin{aligned}
+\hat{m} &= \frac{m_t}{1 - \beta_1^t} \\
+\hat{v} &= \frac{v_t}{1 - \beta_2^t}
+\end{aligned}
+```
+
+第 1 步且$\beta_1 = 0.9$时:$\hat{m} = m_1 / (1 - 0.9) = m_1 / 0.1 =$实际 Gradient──第 100 步时:$(1 - 0.9^{100})$≈ 1.0'a eşit, bu nedenle düzeltme ≈ yok olmuştur. ≈ 10 ≈ adım önündeki tarafsızlık düzeltmesi çok önemlidir, ≈ 50 ≈ adım sonrasında temel olarak önemli değildir.
 
 Yeni bir resmi:
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon}
 ```
 
-Adam 默认值:lr = 0.001,beta1 = 0.9,beta2 = 0.999,epsilon = 1e-8。 Bunlar %80'lik sorunlara uygundur。 Bunlar uygulanmadığında önce lr¬yi değiştirir。 sonra beta2¬yi değiştirir。 neredeyse asla beta1 veya epsilonı değiştirmez。
+Adam 默认值:$\text{lr} = 0.001$- Evet .$\beta_1 = 0.9$- Evet .$\beta_2 = 0.999$- Evet .$\epsilon = 10^{-8}$ Bu gizlilik değerleri %80'lik sorulara uygulanır.$\beta_2$Neredeyse asla değişmez.$\beta_1$Ya da$\epsilon$- Evet.
 
 ### AdamW: 正确处理 Ağırlık kaybı
 
-L2 düzenlenme Kayba yönelişinde lambda * w^2♦ eklenir. Vanilya SGD'de, bu değer ağırlık kaybına denk gelir.
+L2 düzenlenmesi 会向损失 中添加 $\lambda w^2$Vanil SGD'de, bu kilo kaybına denk gelir.$\lambda w$Âdem'de bu eşitlik ilişkisi geçersiz olacaktır.
 
 Loshchilov & Hutter'ın açı: L2'yi Kayba Eklerken, Sonra Adam'ı  Gradient 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Learning Rate 时, Adaptive Rate 时, Adaptive Rate 时, Adaptive Rate 时, Adaptive Rate 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 时, 
 
 AdamW                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon) - lr * lambda * w
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon} - \text{lr} \cdot \lambda w
 ```
 
-Ağırlık kaybı terimi (lr * lambda * w) Adem'in uyarlayıcı faktörü tarafından kabul edilmez 缩放── her parametrenin eşit oranında küçülmesi elde edilir──
+Ağırlık azalması termini$\text{lr} \cdot \lambda w$) Adem'in adaptatif faktörü tarafından küçültülmez.
 
 Bu küçük bir detay gibi görünüyor. Yok. AdamW neredeyse tüm görevlerde tüm olarak Adam + L2 düzenlenmesi 收到更好的解──它是PyTorch 中用于训练变压器、扩散模型和大多数现代建筑的默认优化器──BERT、GPT、LLaMA、Stable Diffusion -- 都是使用 AdamW 训练的──
 
@@ -425,11 +433,11 @@ CNN'ler için, birçok uygulayıcı hala momentum ile birlikte SGD'yi kullanmay�
 
 ## 练习
 
-1. 实现 Nesterov momentum, içinde siz lookhead 位置 (w - lr * beta * v) yerine mevcut konum hesaplama gradient.
+1. Nesterov'un hızını gerçekleştirmek için, sen de bir anda bir yerlerde duruyorsun.$w - \text{lr} \cdot \beta v$) yerine mevcut konum hesaplama Gradient.
 
 2. ❖ Öğrenme oranı ısınma programını gerçekleştirmek:  Eğitim öncesinde %10'un adımları  0 线性 ramp'tan maksimum  lr'ye kadar, sonra kozin çöküşüne kadar                                                                                                                                                                                                                                                    
 
-3. Adam trenman sırasında takip eden her parametre'nin geçerli öğrenme oranı── geçerli oranı lr * m_hat / (sqrt(v_hat) + eps)── çizim 10.、50 和 200 步后有效率的分布── tüm parametreler aynı hızda mı yeniliyor?
+3. Adam                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)$◊ 10 ̊50 ̊ ve 200 ̊ adım sonrası geçerli oranların dağılımını çizmek ◊ tüm parametreler aynı hızda güncellenir mi?
 
 4. 实现梯度剪裁 (→ Global Norm Clip) ∼将最大梯度標準 设置为 1.0──使用较高学习率(Adam'ın lr=0.01) 分别在有剪裁和无剪裁的情况下训练──统计 10 个随机种子中,有多少次运行 会发散(Loss 变为 NaN) ・・・
 
@@ -440,12 +448,12 @@ CNN'ler için, birçok uygulayıcı hala momentum ile birlikte SGD'yi kullanmay�
 | Term | 人们通常怎么说 | 它实际意味着什么 |
 |------|----------------|----------------------|
 | Learning rate | “Step size” | Gradient update 上的标量乘数；训练中影响最大的单个 hyperparameter |
-| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 lr * gradient 来更新 weights，Gradient 在 mini-batch 上计算 |
+| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 $\text{lr} \cdot \text{gradient}$ 来更新 weights，Gradient 在 mini-batch 上计算 |
 | Momentum | “Rolling ball analogy” | 过去 Gradients 的 exponential moving average；削弱振荡，并加速一致方向 |
 | RMSProp | “Adaptive learning rate” | 用近期 Gradients 的 running RMS 除以每个 parameter 的 Gradient；均衡 learning rates |
 | Adam | “The default optimizer” | 将 momentum（first moment）和 RMSProp（second moment）结合起来，并对初始 steps 进行 bias correction |
 | AdamW | “Adam done right” | 带 decoupled weight decay 的 Adam；直接对 weights 应用 regularization，而不是通过 Gradient |
-| Bias correction | “Warmup for running averages” | 除以 (1 - beta^t)，用于补偿 Adam 的 moment estimates 的零初始化 |
+| Bias correction | “Warmup for running averages” | 除以 $(1 - \beta^t)$，用于补偿 Adam 的 moment estimates 的零初始化 |
 | Weight decay | “Shrink the weights” | 每一步减去 weight 值的一部分；一种惩罚大 weights 的 regularizer |
 | Learning rate schedule | “Changing lr over time” | 在训练期间调整 learning rate 的函数；warmup + cosine decay 是现代默认方案 |
 | Gradient clipping | “Capping the gradient norm” | 当 Gradient Vector 的 norm 超过阈值时对其进行缩放；防止 exploding gradient updates |

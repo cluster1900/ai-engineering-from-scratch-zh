@@ -75,8 +75,8 @@ Her sinir üç şey yapar:
 
 Şimdi, aktivasyon işlevi sigmoid:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\text{sigmoid}(z) = \frac{1}{1 + e^{-z}}
 ```
 
 Sigmoid, herhangi bir sayısal sıkıştırmayı (0, 1) aralığında yapar. Büyük doğru giriş 1'e doğru ilerler. Büyük negatif giriş 0'e doğru ilerler.
@@ -99,9 +99,11 @@ graph TD
 
 Her aşamada üç işlem sırayla gerçekleşir:
 
-```
-z = W * input + b       (linear transformation)
-a = sigmoid(z)           (activation)
+```math
+\begin{aligned}
+z &= W \cdot \text{input} + b \quad \text{（线性变换）} \\
+a &= \text{sigmoid}(z) \quad \text{（激活）}
+\end{aligned}
 ```
 
 Bir katın giriş, bir katın giriş olur.
@@ -112,13 +114,13 @@ Bir katın giriş, bir katın giriş olur.
 
 | Step | Operation | Dimensions | Result Shape |
 |------|-----------|------------|-------------|
-| 输入 | x | -- | (2,) |
-| Hidden 线性部分 | W1 * x + b1 | W1: (3, 2), b1: (3,) | (3,) |
-| Hidden 激活 | sigmoid(z1) | -- | (3,) |
-| 输出线性部分 | W2 * h + b2 | W2: (1, 3), b2: (1,) | (1,) |
-| 输出激活 | sigmoid(z2) | -- | (1,) |
+| 输入 | $x$ | -- | (2,) |
+| Hidden 线性部分 | $W_1 x + b_1$ | $W_1$: (3, 2), $b_1$: (3,) | (3,) |
+| Hidden 激活 | $\text{sigmoid}(z_1)$ | -- | (3,) |
+| 输出线性部分 | $W_2 h + b_2$ | $W_2$: (1, 3), $b_2$: (1,) | (1,) |
+| 输出激活 | $\text{sigmoid}(z_2)$ | -- | (1,) |
 
-規則:第 k 層の重量 Matrix W'ın şekli 〜 (neurons_in_layer_k, neurons_in_layer_k_minus_1) 』 行对应应应上一层。列对应应上一层。 Eğer şekil 对不上,你就有 bug。
+规则:第 $k$层的权重矩阵 $W$Bu nedenle, bu tür bir sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğer sistemin bir parçası olarak, bir diğerine göre, bir diğer sistemin bir parçası olarak, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, bir diğerine göre, diğer bir diğerine göre, diğer bir diğerine göre, diğer diğer diğerine göre, diğer diğerine göre, diğer diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre, diğerine göre,
 
 ### Evrensel Yaklaşım Teoremi
 
@@ -169,7 +171,7 @@ Değerini [500, 500]'e kadar tutarak, aşırı çıkışın önlenmesini sağlay
 
 ### 步骤 2: Katman sınıfı
 
-Tüm Derin Öğrenme'de en önemli işlem Matrix 乘法──每一层、每一次注意头──每次前进通过-- 底层都是matmul── 一层线性层 接收一个输入向量,将它乘以权重矩阵,并加上偏差向向:y = Wx + b──
+Tüm Derin Öğrenme'de en önemli işlem Matrix 乘法──每一层、每一次注意头、每次 前進通过-- 底层都是matmul── 一个线性层 接收一个输入向量,将它乘重权矩阵,并加上偏向向向量:$y = Wx + b$Bu tek bir yöntemi Nöral Ağ'ın hesaplama miktarının %90'ını oluşturur.
 
 Bir katman bir ağırlık matrisi ve bir tarafsızlık vektörü korur. Önüne doğru yöntemi bir giriş vektörü alır ve aktifleştirildikten sonra çıkışını geri gönderir.
 
@@ -205,7 +207,7 @@ class Layer:
 
 ### 步骤 3: Ağ Sınıfı
 
-Bir ağ katmanlı bir listedir.Forward pass onları bir araya getirecektir:
+Bir ağ, bir katlı listedir.$k$层的输出输入到第 $k+1$- Yüzelim.
 
 ```python
 class Network:
@@ -347,11 +349,11 @@ Eğer belirli bir sorunun ne kadar katman kullanılması gerektiği belirlenirke
 | Hidden layer | “中间部分” | 输入和输出之间的任意层，其值不会在数据中被直接观察到 |
 | Multi-layer network | “一个深的 Neural Network” | 按顺序堆叠的神经元层，其中每一层的输出会输入到下一层 |
 | Activation function | “非线性” | 在线性变换之后应用的函数，用来把曲线引入决策边界 |
-| Sigmoid | “S 曲线” | sigma(z) = 1/(1+e^(-z))，将任意实数压缩到 (0,1)，平滑且处处可微 |
-| Weight matrix | “参数” | 一个 shape 为 (current_layer_neurons, previous_layer_neurons) 的 Matrix W，包含可学习的连接强度 |
+| Sigmoid | “S 曲线” | $\sigma(z) = 1/(1+e^{-z})$，将任意实数压缩到 (0,1)，平滑且处处可微 |
+| Weight matrix | “参数” | 一个 shape 为 (current_layer_neurons, previous_layer_neurons) 的 Matrix $W$，包含可学习的连接强度 |
 | Bias vector | “偏移量” | 在 Matrix 乘法之后添加的 Vector，使神经元即使在所有输入为零时也能激活 |
 | Universal approximation | “Neural Network 可以学习任何东西” | 一个拥有足够多神经元的单 hidden layer 可以逼近任意连续函数 -- 但“足够多”可能意味着数十亿 |
-| Linear transformation | “Matrix 乘法步骤” | z = W * x + b，激活前的计算，将输入映射到一个新空间 |
+| Linear transformation | “Matrix 乘法步骤” | $z = W x + b$，激活前的计算，将输入映射到一个新空间 |
 | Decision boundary | “分类器切换的地方” | 输入空间中的一个曲面，网络输出在这里跨过分类阈值 |
 
 ## 延伸阅读

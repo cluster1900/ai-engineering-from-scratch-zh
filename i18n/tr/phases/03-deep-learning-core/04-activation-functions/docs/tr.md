@@ -16,7 +16,7 @@
 
 ## 问题
 
-堆叠两个线性变化:y = W2(W1x + b1) + b2。展开它:y = W2W1x + W2b1 + b2。这是只是 y = Ax + c一个单线性变化──无论你堆叠多少线性层,结果都会缩成一次矩阵乘──你的100层网络与单层 具有相同表示能力──
+İki doğrusal dönüşüm üzerine:$y = W_2(W_1 x + b_1) + b_2$Açın şunu:$y = W_2 W_1 x + W_2 b_1 + b_2$Bu sadece...$y = Ax + c$ Tek bir çizgi dönüşümü── ne kadar çizgi katman topladığın olursa olsun, sonuç bir kez Matrix katlaması haline gelir──100 katlı ağın tek katlı ile aynı gösterim kapasitesine sahiptir──
 
 Bu teorik bir hırsızlık değil. Bu derin bir çizgi ağ anlamına gelir. XOR'u öğrenemez, spiral veri kümesini ayırt edemez, insan yüzünü tanımamaktadır.
 
@@ -26,52 +26,58 @@ Aktiflik fonksiyonları 打破线性── bunlar çizgi dışı fonksiyonlar �
 
 ### Neden bu gereklidir?
 
-Matrix çarpımı yapılandırılabilir. İlk olarak Matrix A'yı bir vektörle çarpır, sonra Matrix B'yi çarpır, sonuçta AB'yi doğrudan çarpır. Bu da matematikte on doğrusal katmanın bir büyük Matrix'in doğrusal katmanına eşit olduğu anlamına gelir. Tüm bu parametreler, tüm bu derinlikler boşa çıkar. Bu zinciri kesmek için bir şeye ihtiyacınız var. Bu, etkinleştirme fonksiyonlarının etkisi.
+Matrix çarpımı                                                                                                                                                                                                                                                             $A$Bir vektörle tekrar Matrix'i kullan.$B$乘以结果,等价于直接乘以 $AB$Bu, matematikte büyük bir Matrix'in doğrusal katmanına denk olan on doğrusal katmanın bir araya gelmesi anlamına gelir. Tüm bu parametreler, tüm bu derinlikler boşa çıkar.
 
-Aşağıda bir kanıt var. Bir çizgi katman f (x) = Wx + b (b) ∈ R
+Aşağıda bir kanıt var.$f(x) = Wx + b$❖ İki tane toplan:
 
-```
-Layer 1: h = W1 * x + b1
-Layer 2: y = W2 * h + b2
+```math
+\begin{aligned}
+\text{第 1 层：} \quad h &= W_1 x + b_1 \\
+\text{第 2 层：} \quad y &= W_2 h + b_2
+\end{aligned}
 ```
 
 代入:
 
-```
-y = W2 * (W1 * x + b1) + b2
-y = (W2 * W1) * x + (W2 * b1 + b2)
-y = A * x + c
-```
-
-Bir katlılık. Bir katlılık arasında g()
-
-```
-h = g(W1 * x + b1)
-y = W2 * h + b2
+```math
+\begin{aligned}
+y &= W_2 (W_1 x + b_1) + b_2 \\
+y &= (W_2 W_1) x + (W_2 b_1 + b_2) \\
+y &= A x + c
+\end{aligned}
 ```
 
-现在代入被打破了──W2 * g(W1 * x + b1) + b2 不能再简化为单线性转换──网络可以表示非线性函数──每增加一层带激活的层,都会增加表示能力──
+Bir katman. Bir katman arasında yerleştirilen çizgisiz etkinleştirme.$g()$- ...
+
+```math
+\begin{aligned}
+h &= g(W_1 x + b_1) \\
+y &= W_2 h + b_2
+\end{aligned}
+```
+
+Şimdi de kırılmış.$W_2 g(W_1 x + b_1) + b_2$Çekilme, bir ağın tek bir çizgi dönüşümüne yeniden basitleştirilmesine neden olmaktadır.
 
 ### Sigmoid
 
 Nöral Ağ'ın en erken etkinleştirme fonksiyonu:
 
-```
-sigmoid(x) = 1 / (1 + e^(-x))
+```math
+\text{sigmoid}(x) = \frac{1}{1 + e^{-x}}
 ```
 
 输出范围:(0, 1)──平滑、可微,任意实数映射到类似概率的值──
 
 Derivat:
 
-```
-sigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))
+```math
+\text{sigmoid}'(x) = \text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))
 ```
 
-Bu türevin en büyük değeri 0.25, x = 0 olarak ortaya çıkar. Geri yayılmada, gradientler bir adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım adım
+Bu türevin en büyük değeri 0.25, görüntülenebilir $x = 0$△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                        
 
-```
-0.25^10 = 0.000000953674
+```math
+0.25^{10} = 0.000000953674
 ```
 
 İlk katmanlardaki katmanlar 极小变得,重量 几乎不更新──网络 看起来在学习后层的损失 在下降但前层已结──深度sigmoid网络 根本训练不起──
@@ -82,33 +88,32 @@ Bu türevin en büyük değeri 0.25, x = 0 olarak ortaya çıkar. Geri yayılmad
 
 Sigmoid'in iç versiyonu:
 
-```
-tanh(x) = (e^x - e^(-x)) / (e^x + e^(-x))
+```math
+\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 ```
 
 输出范围:(-1, 1)──以零为中心,可以消除之字形问题──
 
 Derivat:
 
-```
-tanh'(x) = 1 - tanh(x)^2
+```math
+\tanh'(x) = 1 - \tanh(x)^2
 ```
 
-Maksimum türev x = 0 时为 1.0比sigmoid 好四倍――但消失梯度问题 仍然存在――对很大的正输入或负输入,衍生会趋近零――十层仍然会压碎梯度,只是没有那么激烈――
+En büyük türeği$x = 0$时为 1.0比sigmoid 好四倍──但消失梯度问题 仍然存在──对于很大的正输入或负输入,衍生会趋近零──十层仍然会压碎梯度,只是没有那么激烈──
 
 ### - Ne demek istiyorsun ?
 
 Düzgün Linyal Birim──Nair 和 Hinton 2010 yılında derin öğrenmeye yayıldı. Bu işlev kendisinin Fukushima 1969 çalışmalarına kadar uzanır.
 
-```
-relu(x) = max(0, x)
+```math
+\text{relu}(x) = \max(0, x)
 ```
 
-输出范围:[0, sonsuzluk) ・derivative 非常简单:
+输出范围:$[0, \infty)$◊Derivative 非常简单:
 
-```
-relu'(x) = 1  if x > 0
-            0  if x <= 0
+```math
+\text{relu}'(x) = \begin{cases} 1 & \text{当 } x > 0 \\ 0 & \text{当 } x \le 0 \end{cases}
 ```
 
 正输入 için, yok oluşan bir gradient yok.  gradient 正好是 1,会直接传递过去.
@@ -119,25 +124,24 @@ Ancak bir başarısızlık moduna sahiptir: ölü nöron sorunu. Eğer bir nöro
 
 Ölü nöronlar en basit onarım yolu.
 
-```
-leaky_relu(x) = x        if x > 0
-                alpha * x if x <= 0
+```math
+\text{leaky\_relu}(x) = \begin{cases} x & \text{当 } x > 0 \\ \alpha x & \text{当 } x \le 0 \end{cases}
 ```
 
-Bunlardan alfa, genellikle 0.01 olarak küçük bir sabitdir.
+İçlerinden $\alpha$Bu sayede ölü nöronlar                                                                                                                                                                                                                                                           
 
 ### GELU:现代默认选择
 
 Gaussian Error Linear Unit── Hendrycks 和 Gimpel tarafından 2016 yılında önerilmiş───: BERT、GPT ve çoğu modern transformörün arasında default aktivasyonu──
 
-```
-gelu(x) = x * Phi(x)
+```math
+\text{gelu}(x) = x \cdot \Phi(x)
 ```
 
-Bunların arasında Phi(x) standart normal dağılımın kumülatîf dağılım fonksiyonu。 pratikte kullanılan yakın biçim:
+İçlerinden $\Phi(x)$Bu standart normal dağılımın kumülatîf dağılım fonksiyonu.
 
-```
-gelu(x) ~= 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))
+```math
+\text{gelu}(x) \approx 0.5 \cdot x \cdot \left(1 + \tanh\left(\sqrt{2/\pi} \cdot (x + 0.044715 \cdot x^3)\right)\right)
 ```
 
 GELU'da daha küçük bir negatif değer olmasına izin verir. Bu da bir olasılık açıklaması vardır: Gaussian dağılımında yer alan her giriş üzerine doğru bir olasılık vardır. Bu düz kaplama, daha iyi bir gradient akışı sağladığı için transformatör mimarisi arasında ReLU'dan daha iyidir.
@@ -146,11 +150,11 @@ GELU'da daha küçük bir negatif değer olmasına izin verir. Bu da bir olasıl
 
 Ramachandran et al. tarafından 2017 yılında otomatik arama yoluyla 发现的自闭门激活──
 
-```
-swish(x) = x * sigmoid(x)
+```math
+\text{swish}(x) = x \cdot \text{sigmoid}(x)
 ```
 
-Swish'in biçimi x * sigmoid(x) ・・・ Google tarafından aktifleştirme fonksiyonu alanında otomatik arama yapıldı.
+Swish'in biçimi:$x \cdot \text{sigmoid}(x)$Google, aktifleştirme fonksiyon alanında otomatik arama yaparak, bir sinir ağının bir parçası olduğunu buldu.
 
 GELU gibi, daha küçük bir negatif değerlere izin verir. Fark çok ince:Swish sigmoid'i geçit olarak kullanırken GELU Gaussian CDF'yi kullanır.
 
@@ -158,8 +162,8 @@ GELU gibi, daha küçük bir negatif değerlere izin verir. Fark çok ince:Swish
 
 Gizli katmanlar için kullanılmıyor. Softmax, çamur puanlar (logits) vectörünü olasılık dağılımına dönüştürür.
 
-```
-softmax(x_i) = e^(x_i) / sum(e^(x_j) for all j)
+```math
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
 ```
 
 Her çıkış 0 ile 1 arasında yer alır. Tüm çıkışlar 1 ile oluşur. Bu da onu çok sınıf sınıflandırma standartlarının son etkinleştirilmesine dönüştürür. En büyük logit en yüksek olasılığı elde eder, ancak argmax ile farklıdır.
@@ -501,11 +505,11 @@ Bu ders:
 
 ## 练习
 
-1. 实现 Parametric ReLU (PReLU), negatif eğim alfa bir öğrenilebilir parametredir.
+1. 实现 Parametric ReLU (PReLU), bunlardan negatif bir eğim $\alpha$Bu bir öğrenilebilir parametredir.
 
 2. 10 katlılıktan 50 katlılıkta çalışacak. Sigmoid, Tanh, RELU ve GELU'yu her katlılıkta çizmek.
 
-3. 实现 ELU (Exponential Linear Unit):elu(x) = x eğer x > 0, alfa * (e^x - 1) eğer x <= 0──
+3. 实现 ELU (Kısayollu Hattı Birim):$\text{elu}(x) = x$Eğer$x \gt 0$- Evet .$\alpha (e^x - 1)$Eğer$x \le 0$Aynı ağda ölü nöron oranı ile RLU oranı arasında.
 
 4. Gradient sağlık monitörü inşa et, trening period during operation: Each epoch  calculate the average gradient magnitude of each layer── herhangi bir katmanın gradienti  0.001'den düşük veya 100'den fazla olduğunda uyarı yazın──
 
@@ -519,12 +523,12 @@ Bu ders:
 | Vanishing gradient | “Gradients 在 deep networks 中消失” | 当 activation 的 derivative 小于 1 时，gradients 会通过 layers 指数级缩小，使早期 layers 无法训练 |
 | Exploding gradient | “Gradients 爆炸” | 当有效乘数超过 1 时，gradients 会通过 layers 指数级增长，导致训练不稳定 |
 | Dead neuron | “停止学习的 neuron” | 输入永久为负的 ReLU neuron，会产生零输出和零 gradient |
-| Sigmoid | “把值压缩到 0-1” | logistic function 1/(1+e^-x)，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
-| ReLU | “把负数裁剪为零” | max(0, x)——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
+| Sigmoid | “把值压缩到 0-1” | logistic function $1/(1+e^{-x})$，历史上很重要，但会在 deep networks 中导致 vanishing gradients |
+| ReLU | “把负数裁剪为零” | $\max(0, x)$——通过保留 gradient magnitude 让 deep learning 变得实用的 activation |
 | GELU | “transformer activation” | Gaussian Error Linear Unit，一种平滑 activation，会根据输入为正的概率对输入加权 |
-| Swish/SiLU | “Self-gated ReLU” | x * sigmoid(x)，通过 automated search 发现，用于 EfficientNet |
+| Swish/SiLU | “Self-gated ReLU” | $x \cdot \text{sigmoid}(x)$，通过 automated search 发现，用于 EfficientNet |
 | Softmax | “把分数变成概率” | 将 logits 的 Vector 归一化为 probability distribution，其中所有值都在 (0,1) 内且总和为 1 |
-| Leaky ReLU | “不会死亡的 ReLU” | max(alpha*x, x)，其中 alpha 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
+| Leaky ReLU | “不会死亡的 ReLU” | $\max(\alpha x, x)$，其中 $\alpha$ 很小（0.01），通过允许较小的 negative gradients 来防止 dead neurons |
 | Saturation | “sigmoid 的平坦部分” | activation 的 derivative 趋近于零的区域，会阻断 gradient flow |
 | Logit | “softmax 之前的原始分数” | 应用 softmax 或 sigmoid 之前，final layer 的未归一化输出 |
 

@@ -23,7 +23,7 @@ Geri yayılma  bu sorunu çözdü. Bir kez ileri geçiş, bir kez geri geçiş, 
 ## 概念
 ### Zincir Kuralı, Ağ Üstüne Uygulanır
 
-Eğer y = f(g(x) ise, dy/dx = f'(g(x)) * g'(x) ・・・
+1. aşamada, 5. derste zincir kuralını gördün.$y = f(g(x))$- Öyleyse .$\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$You along 链条相乘衍生
 
 Nöral Ağlarda, 链条 is input to Loss'un işletim sırası. Her aşama uygulama ağırlığı, 偏置, 再通过的活性化加上. Loss Fungsi, son çıkışı hedefe karşılaştırır.
 
@@ -42,9 +42,9 @@ graph LR
     y["target"] --> loss
 ```
 
-Forward Pass: value From left to right流动──x 和 w 产生 z1 = w*x──加上 b 得到 z2──Sigmoid 给出激活 a──使用 Loss Fungsi 将 a 与 target y 比较──
+Forward Pass: değer  left to right流动$x$和 $w$ oluşuyor$z_1 = w x$❖ 加上 $b$- Al .$z_2$Sigmoid                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           $a$△ Use Loss Fonksiyonı $a$Hedef ile$y$Ben de.
 
-Geriye Geçit: Gradient:DL/DZ2 = z1 + b) ve dL/DZ1 olarak değişir.
+Geriye Geçit: Gradyent                                                                                                                                                                                                                                                           $\partial L/\partial a$开始(Loss 如何随着激活 改变) △乘以 $\partial a/\partial z_2$(sigmoid türev) ◊ Get $\partial L/\partial z_2$Çıkarıp dağıt.$\partial L/\partial b$(Böyle bir şey.$\partial L/\partial z_2$Çünkü ...$z_2 = z_1 + b$) ve $\partial L/\partial z_1$Sonra.$\partial L/\partial w = \partial L/\partial z_1 \cdot x$- Evet .$\partial L/\partial x = \partial L/\partial z_1 \cdot w$- Evet.
 
 Grafdaki her düğümün Arka Yolu sırasında sadece bir görev vardır: yukarıdan gelen dereceleri al, kendi yerel türevini çarpıp aşağıya doğru gönderir.
 
@@ -81,7 +81,7 @@ graph RL
     L1 -- "dL/dz1 = dL/da1 * sigmoid'(z1)" --> I["Input"]
 ```
 
-Bu nedenle, bir simgelik derivatif olarak, bir simgelik derivatif olarak, bir simgelik derivatif olarak, bir * (1 - a) olarak, en büyük değeri 0.25 olarak kullanılır.
+Bu, bir simgelik derivatif olarak çarpılır.$a(1 - a)$, en büyük değeri 0.25 .$a = 0.5$Üç kat derinlere girdi, dereceleri birden fazla oldu.$0.25^3 = 0.0156$❖ derin derin 10 kat:$0.25^{10} = 0.000001$- Evet.
 
 ### Kaybolan Değillikler
 
@@ -99,32 +99,33 @@ Bu yüzden derin seviye sigmoid ağı  neredeyse imkansız eğitim 修复方法 
 
 ### 推导 2 katmanlı ağın derecesi
 
-Aşağıda belirli bir matematik örneği bulunmaktadır: ağlar x 带 sigmoid'in gizli katmanı 带 sigmoid'in çıkış katmanı ve MSE Kayıpları 
+Aşağıda bir matematik örneği bulunuyor:$x$、带 sigmoid'in gizli katmanı、带 sigmoid'in çıkış katmanı, ayrıca MSE Kayıpları
 
 Ön geçit:
-```
-z1 = W1 * x + b1
-a1 = sigmoid(z1)
-z2 = W2 * a1 + b2
-a2 = sigmoid(z2)
-L = (a2 - y)^2
+```math
+\begin{aligned}
+z_1 &= W_1 x + b_1 \\
+a_1 &= \text{sigmoid}(z_1) \\
+z_2 &= W_2 a_1 + b_2 \\
+a_2 &= \text{sigmoid}(z_2) \\
+L &= (a_2 - y)^2
+\end{aligned}
 ```
 
 Geriye Geçme (逐步应用链条):
-```
-dL/da2 = 2(a2 - y)
-da2/dz2 = a2 * (1 - a2)
-dL/dz2 = dL/da2 * da2/dz2 = 2(a2 - y) * a2 * (1 - a2)
-
-dL/dW2 = dL/dz2 * a1
-dL/db2 = dL/dz2
-
-dL/da1 = dL/dz2 * W2
-da1/dz1 = a1 * (1 - a1)
-dL/dz1 = dL/da1 * da1/dz1
-
-dL/dW1 = dL/dz1 * x
-dL/db1 = dL/dz1
+```math
+\begin{aligned}
+\frac{\partial L}{\partial a_2} &= 2(a_2 - y) \\
+\frac{\partial a_2}{\partial z_2} &= a_2 (1 - a_2) \\
+\frac{\partial L}{\partial z_2} &= \frac{\partial L}{\partial a_2} \cdot \frac{\partial a_2}{\partial z_2} = 2(a_2 - y) \cdot a_2 (1 - a_2) \\[6pt]
+\frac{\partial L}{\partial W_2} &= \frac{\partial L}{\partial z_2} \cdot a_1 \\
+\frac{\partial L}{\partial b_2} &= \frac{\partial L}{\partial z_2} \\[6pt]
+\frac{\partial L}{\partial a_1} &= \frac{\partial L}{\partial z_2} \cdot W_2 \\
+\frac{\partial a_1}{\partial z_1} &= a_1 (1 - a_1) \\
+\frac{\partial L}{\partial z_1} &= \frac{\partial L}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \\[6pt]
+\frac{\partial L}{\partial W_1} &= \frac{\partial L}{\partial z_1} \cdot x \\
+\frac{\partial L}{\partial b_1} &= \frac{\partial L}{\partial z_1}
+\end{aligned}
 ```
 
 Her derecede kayıptan geriye izlenen yerel türevler vardır. Bu da geri yayılmaların tamamıdır.
@@ -182,9 +183,9 @@ def __mul__(self, other):
     return out
 ```
 
-◊a+b) /da = 1,d(a+b) /db = 1── bu nedenle iki giriş doğrudan çıkış elde eder.
+Kısayol için:$\partial(a+b)/\partial a = 1$- Evet .$\partial(a+b)/\partial b = 1$ Bu nedenle iki giriş doğrudan çıkış elde etmek için bir Gradient 
 
-对于乘法:d(a*b)/da = b,d(a*b)/db = a。 her giriş şehir bir diğer giriş değerini elde eder 乘以输出级──
+ çarpma için:$\partial(ab)/\partial a = b$- Evet .$\partial(ab)/\partial b = a$ her giriş başka bir giriş değerini elde eder  çıkarma derecesi 
 
 `+=`很关键──一个值可能会被多个操作使用──它的渐进是来自所有路径的渐进之和──
 
@@ -206,7 +207,7 @@ def sigmoid(self):
     return out
 ```
 
-Sigmoid türev:sigmoid(x) * (1 - sigmoid(x))。
+Sigmoid türevli:$\text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))$Önceki geçitlerimize göre hesaplanmıştır.$\text{sigmoid}(x) = s$❖ tekrar kullanmak ❖ fazladan iş gerekmiyor
 
 ```python
 def mse_loss(predicted, target):
@@ -214,7 +215,7 @@ def mse_loss(predicted, target):
     return diff * diff
 ```
 
-单个输出的 MSE:(预测 - target) ^ 2。 我们把减算表达为加上一个取负的值──
+单个输出的 MSE:$(\text{predicted} - \text{target})^2$                                                                                                                                                                                                                                                              
 
 ### 4 adım: Geriye Geçit
 
@@ -238,7 +239,7 @@ def backward(self):
         v._backward()
 ```
 
-开始从 Loss  Gradient = 1.0,因为 dL/dL = 1)──沿着排序后的图反向遍历──每个节点的`_backward`Gradient'i çocuklarına göndereceğim.
+开始 从 Loss (Gradient = 1.0,因为 $dL/dL = 1$)。 Ardından sıralanmış grafikler boyunca ters yönde çapında── her düğümün `_backward`Gradient'i çocuklarına göndereceğim.
 
 ### 步骤 5: Katman ve Ağ
 
@@ -298,7 +299,7 @@ class Network:
             p.grad = 0.0
 ```
 
-Bir Nöron  Girişi al, ağırlıklı toplam + tarafsızlığı hesapla, sonra sigmoidı uygula.`parameters()`Metod, öğrenilebilecek tüm değerleri toplar, böylece onları güncelleyebiliriz.
+Bir Nöron  Girişi alır, ağırlıklı toplam + önyargıyı hesaplar, sonra sigmoidı uygulaar.$\sqrt{2/n_{\text{inputs}}}$缩放, daha derin ağlardaki sigmoid doymuşluğunu önlemek için.`parameters()`Metod, öğrenilebilecek tüm değerleri toplar, böylece onları güncelleyebiliriz.
 
 ### Adım 6: XOR'da eğitim
 
@@ -433,9 +434,9 @@ Bu ders:
 - `outputs/prompt-gradient-debugger.md`-- bir tekrarlanabilir istek, herhangi bir sinir ağının gradient problemini teşhis etmek için kullanılır
 
 ## 练习
-1. 给值类 添加一个 `__sub__`yöntem ((a - b = a + (-1 * b))。 sonra bir `__neg__`(a - b) ^2) gibi bir yöntemle yapılan bir hesaplama ile karşılaştırmak için, test Gradient doğru olup olmadığını göstermek için
+1. 给值类 添加一个 `__sub__`yöntem($a - b = a + (-1 \cdot b)$)― sonra bir tane gerçekleştirmek`__neg__`yöntem── geçişi­n ve basit ifade­me­şle­$(a - b)^2$) ile karşılaştırmak için, doğrulama derecesi doğru mu değil mi?
 
-2. 给值 添加一个 `relu`yöntem(output 为 max(0, x),derivative 在 x > 0 时为 1,否则为 0) ・・・ gizli katman içinde relu 替换 sigmoid,并再次在 XOR 上训练──比较收速度──你应该看到训练更快--这是课04的预告──
+2. 给值 添加一个 `relu`yöntem(çıkış 为 $\max(0, x)$,Derivat$x \gt 0$时为1,否则为0) ・ gizli katman içinde relü 换 sigmoid,并再次在XOR上训练――比较收速度――你应该看到训练更快――这是第04 Sınıfın预告――
 
 3. Değerleri gerçekleştirmek için kullanılır tam sayı güçleri `__pow__`Metodı kullan.`mse_loss`Gerçek bir şeyle değiştir.`(predicted - target) ** 2`Özetle: Test Gradient ile orijinal gerçekleşme uyumlu.
 
@@ -446,14 +447,14 @@ Bu ders:
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 dL/dw |
+| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 $\partial L/\partial w$ |
 | Computational graph | “Network 结构” | 一个有向无环 graph，其中 node 是 operation，edge 承载 value（forward）和 Gradient（backward） |
-| Chain rule | “把 derivative 相乘” | 如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- Backpropagation 的数学基础 |
+| Chain rule | “把 derivative 相乘” | 如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ -- Backpropagation 的数学基础 |
 | Gradient | “最陡上升方向” | Loss 相对于某个 parameter 的 partial derivative -- 告诉你如何改变该 parameter 来降低 Loss |
 | Vanishing gradient | “深层 network 学不会” | 当 Gradient 通过带有 sigmoid 这类 saturating activation 的 layer 传播时，会指数级缩小 |
 | Forward pass | “运行 network” | 通过顺序应用每一层的 operation，从 input 计算 output，并存储 intermediate value |
 | Backward pass | “计算 Gradient” | 反向遍历 Computational Graph，在每个 node 使用 chain rule 累积 Gradient |
-| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：w_new = w_old - lr * gradient |
+| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：$w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{gradient}$ |
 | Topological sort | “正确顺序” | 一种 graph node 排序方式，使每个 node 都出现在其依赖的所有 node 之后 -- 确保 Gradient 在传播前已完全累积 |
 | Autograd | “自动微分” | 一个在 forward computation 期间构建 Computational Graph，并自动计算 Gradient 的系统 -- PyTorch 的 engine 做的就是这个 |
 

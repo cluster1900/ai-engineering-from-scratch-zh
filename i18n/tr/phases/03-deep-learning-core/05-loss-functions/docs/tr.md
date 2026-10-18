@@ -30,8 +30,8 @@ Burada bir örnek vardır. Burada iki sınıflandırma vardır. Sorunlar, 50/50 
 
 Geri dönüşün öntanımlı seçeneği: hesaplama tahmin değeri ve hedef değeri arasındaki farkın kare ve tüm örneklere ortalama olarak değerlendirilmesi
 
-```
-MSE = (1/n) * sum((y_pred - y_true)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{pred}} - y_{\text{true}})^2
 ```
 
 Neden kare önemli: Büyük hataları ikinci bir şekilde cezalandıracaktır. 2'nin fiyatı 1'in 4 katıdır. 10'un fiyatı 100 katıdır. Bu da MSE'yi bölge noktalarına karşı hassas hale getirir.
@@ -40,8 +40,8 @@ Gerçek rakam: Eğer modeliniz ev fiyatını tahmin ederse, çoğu evin farkı $
 
 MSE karşı karşı tahmin değerinin derecesi:
 
-```
-dMSE/dy_pred = (2/n) * (y_pred - y_true)
+```math
+\frac{\partial \text{MSE}}{\partial y_{\text{pred}}} = \frac{2}{n} (y_{\text{pred}} - y_{\text{true}})
 ```
 
 Bu, Regresyon'un özelliği, sınıflandırmanın sorunu, güvenle ama yanlış cevaplara yönelik bir dizi cezası yerine, bir dizi cezası olmasını istersin.
@@ -52,31 +52,31 @@ Sınıflandırma Kayıp Fonksiyonu── bu bilgi teorisi'nden kaynaklanıyor --
 
 **Binary Cross-Entropy (BCE):**
 
-```
-BCE = -(y * log(p) + (1 - y) * log(1 - p))
+```math
+\text{BCE} = -\left(y \log(p) + (1 - y) \log(1 - p)\right)
 ```
 
-Bu da gerçek bir 标签dir.
+İçlerinden $y$Evet, evet.$p$Evet, tahmin olasılığı.
 
-Neden -log(p) 有效:当真标签是1 且你预测 p = 0.99 时,Loss is -log(0.99) = 0.01。当你预测 p = 0.01 时,Loss is -log(0.01) = 4.6。 Bu 460 倍 差的差就是交叉热 有效的原因──它会严厉惩罚自信但错误的预测,几乎不惩罚自信且正确的预测──
+Neden ?$-\log(p)$效果:当真标签是 1 且你预测 $p = 0.99$Kayıplar.$-\log(0.99) = 0.01$当你预测 $p = 0.01$Kayıplar.$-\log(0.01) = 4.6$ Bu 460 katlık fark, çapraz entropiye için etkili bir nedendir.  Bu, güvenin ancak yanlış tahminlere karşı sert bir ceza verecek, aynı zamanda güvenin ve doğru tahminlerin neredeyse cezasını vermeyecek.
 
 Gradient 讲述是同一个故事:
 
-```
-dBCE/dp = -(y/p) + (1-y)/(1-p)
+```math
+\frac{\partial \text{BCE}}{\partial p} = -\frac{y}{p} + \frac{1-y}{1-p}
 ```
 
-Y = 1 ve p ≈ 0 时, Gradient ≈ -1/p, ≈ -负 ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈
+- Evet .$y = 1$Ve$p$接近零时,Gradient 是 $-1/p$Bu model, hataları düzeltmek için büyük bir sinyal alacaktır.$p$Yaklaşık 1 saat, Gradient çok küçük.
 
 **Categorical Cross-Entropy:**
 
 Tek ısılı 编码 hedefinin çok sınıf sınıflandırılması için kullanılmıştır.
 
-```
-CCE = -sum(y_i * log(p_i))
+```math
+\text{CCE} = -\sum_i y_i \log(p_i)
 ```
 
-只有真实类别会贡献损失(因为其他所有 y_i 都是零) ⋅ Eğer 10 类 varsa,正确类别得到的概率是0.1 (随机猜测),Loss is -log (log) ⋅0.1) = 2.3 (■■■ Eğer正确类别得到的概率是0.9,Loss is -log (log) ⋅0.9) =0.105 (■■■■■■■■■■■ Model,概率质量集中到正确答案上――
+Sadece gerçek bir kayıp var .$y_i$Eğer 10 sınıf varsa, doğru sınıf elde etme olasılığı 0.1 olur.$-\log(0.1) = 2.3$Eğer doğru sınıf elde etme olasılığı 0.9 ise, Kayıp 0.9 ise.$-\log(0.9) = 0.105$❖ Model, olasılık kalitesini doğru cevaplara odaklanmayı öğrenir.
 
 ### Neden MSE sınıflandırmaya uygun değil ?
 
@@ -96,19 +96,19 @@ graph TD
     C3 -->|"CE Gradient<br/>在错误答案附近<br/>爆炸"| Fast["修正快速"]
 ```
 
-Bu noktayı karşılayan, MSE Gradientı 和 nedeniyle 和) ⋅Sigmoid'in düz bölgesi, en çok ihtiyaç duyduğu yerde güçlü bir Gradient vermiştir.
+Bu noktada, MSE Gradient 会变平 (MSE Gradient 会变平) 和 (Sigmoid 和) ) $-\log$Sigmoid'in düz bölgesi, en çok ihtiyaç duyduğu yerde güçlü bir derece verir.
 
 ### Etiket Düzeltme
 
 標準 one-hot 标签会会说这是100%类3,其他类别都是0%──这是一个强烈的断言──标签滑滑会软化它:
 
-```
-smooth_label = (1 - alpha) * one_hot + alpha / num_classes
+```math
+\text{smooth\_label} = (1 - \alpha) \cdot \text{one\_hot} + \frac{\alpha}{\text{num\_classes}}
 ```
 
-Alfa = 0.1 且有 10 个类别时:目标不再是 [0, 0, 1, 0, ...],而是 [0.01, 0.01, 0.91, 0.01,...]──模型的目标是0.91,而不是 1.0──
+- Evet .$\alpha = 0.1$且有 10 个类别时: 目标不再是 [0, 0, 1, 0, ...],而是 [0.01, 0.01, 0.91, 0.01,...]──模型的目标是0.91,而不是 1.0──
 
-Neden bu işe yarıyor: Softmax 输出精确 1.0 modelinden geçmeye çalışmak, logitleri 推向无穷的方向に推移する必要がある. Bu aşırı güven, genelleşme yeteneğini bozmak, modellerin dağılımsal etkisi zayıf hale gelmesine neden olur. Etiket düzeltmesi, hedef sınırını 0.9 ((alfa=0.1 时) olarak belirleyecek.
+Neden bu işe yarıyor: Softmax'in doğru 1.0 modelini çıkarmaya çalışmak için, logitleri ırmaklara doğru yönlendirmek gerekir. Bu aşırı kendine güven, genelleşme yeteneğini bozmak ve modellerin dağılımsal etkisi zayıflaşmasına neden olur. Etiket düzeltmesi hedef sınırını 0.9'a düşürür.$\alpha = 0.1$时), let logits 保持在合理范围内──GPT 和大多数现代模型都会使用标签滑滑或其等价形式──
 
 ### Karşılıklı Kayıp
 
@@ -118,20 +118,20 @@ Neden bu işe yarıyor: Softmax 输出精确 1.0 modelinden geçmeye çalışmak
 
 取一张图像──创建它的两个增强视图──作物,旋转,色动──它们是积极对──它们应该有相似的嵌入──rütfede bulunan diğer her 张图像都形成一个负面对──它们应该有不同的嵌入──
 
-```
-L = -log(exp(sim(z_i, z_j) / tau) / sum(exp(sim(z_i, z_k) / tau)))
+```math
+L = -\log \frac{\exp(\text{sim}(z_i, z_j) / \tau)}{\sum_k \exp(\text{sim}(z_i, z_k) / \tau)}
 ```
 
-İçinde sim() y y cosine benzerliği, z_i 和 z_j y pozitif çift,求和覆盖所有负面,tau ( sıcaklık) 控制分布的尖程度──更低的温度 = 更难的负面 = 更激进的分离──
+İçlerinden $\text{sim}()$- Evet, benzerlik.$z_i$和 $z_j$Evet, bu iki çift olumlu, bu iki çift de tüm negatifleri kapsar.$\tau$(temperatür) 控制分布的尖程度──更低的温度 = 更难的负面 = 更激进的分离──
 
-Gerçek rakam: seri boyutu 256 yani her olumlu çift için 255  negatif vardır. Su sıcaklığı tau = 0.07(SimCLR 默认值) ・・・ bu Kayıp, yumuşak maksimum yapma benzerliği karşı görünüyor.
+Gerçek rakam: seri boyutu 256 yani her olumlu çift 255 negatif var.$\tau = 0.07$(SimCLR 默认值) ◊ bu Kayıp, benzerlik karşısında yumuşaklık gösterir gibi görünüyor - bu, olumlu çiftin benzerliği tüm 256 seçeneğin en yüksekinde olmasını istiyor.
 
 **Triplet Loss:**
 
 接收三个输入:ankör、pozitfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıfıf
 
-```
-L = max(0, d(anchor, positive) - d(anchor, negative) + margin)
+```math
+L = \max\left(0, d(\text{anchor}, \text{positive}) - d(\text{anchor}, \text{negative}) + \text{margin}\right)
 ```
 
 Marjinin (öntemde 0.2-1.0) zorunlu pozitif ve negatif arasındaki mesafe en az bir ara vardır. Eğer negatif  yeterince uzaksa, Kayıp ise ise ise 零,  Gradient yok, yenilik yok. Bu, antrenmanın daha etkili olmasına neden olur, ancak dikkatli bir üçlü madencilik yapılması gerekir.
@@ -140,14 +140,14 @@ Marjinin (öntemde 0.2-1.0) zorunlu pozitif ve negatif arasındaki mesafe en az 
 
 Uses in unbalanced data sets. Standart cross-entropy 会等待所有正确分类样本.
 
-```
-FL = -alpha * (1 - p_t)^gamma * log(p_t)
+```math
+\text{FL} = -\alpha (1 - p_t)^\gamma \log(p_t)
 ```
 
-Bu nedenle, bu değerler, bir diğer değerden daha fazla değer içerir.
+İçlerinden $p_t$Evet, bu gerçek bir tahmin.$\gamma$Kontrol et bir yoğunluk seviyesi.$\gamma = 0$Bu standart çapraz entropi.$\gamma = 2$(默认值)时:
 
-- Basit örnek (p_t = 0,9): ağırlık = (0.1) ^ 2 = 0.01──基本被忽略──
-- Sert örnek (p_t = 0.1): ağırlık = (0.9) ^2 = 0.81──完整的 Gradient 信号──
+- Basit bir örnek ($p_t = 0.9$): ağırlık $= (0.1)^2 = 0.01$Asıl olarak göz ardı edilmiştir.
+- Zor bir örnek ($p_t = 0.1$): ağırlık $= (0.9)^2 = 0.81$◊ 完整的渐进信号──
 
 Lin ve diğerleri tarafından önerilen, nesne tespitinde kullanılırken, bunların %99'unun seçimi bölgesi arka plandır.
 
@@ -214,7 +214,7 @@ def mse_gradient(predictions, targets):
 
 ### 步骤 2: Binary Cross-Entropy
 
-log(0)  sorun gerçek varlıklı bir soru. Eğer model olumlu bir örnekle karşı karşıya kalırsa 精确预测 0,log(0) =负无穷──剪可以防止这一点──
+log(0)  problem ≠ real existence ⋅ if model                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $\log(0) = -\infty$Bunu önleyebiliriz.
 
 ```python
 import math
@@ -426,15 +426,15 @@ Bu ders:
 
 ## 练习
 
-1. 实现 Huber loss(smooth L1 loss), it对小误差使用MSE,对大误差使用MAE──训练一个回归神经网络 来预测 y = sin(x),并加入随机噪音(离群点) 训练目标的5%的情况下 MSE 与 Huber──比较最终测试误差──
+1. 实现 Huber kaybı(smooth L1 kaybı), it对小误差使用MSE,对大误差使用MAE──训练一个回归神经网络 来预测 $y = \sin(x)$, ve % 5 ı eğitim hedefi ile birlikte gürültü yapılırsa MSE ile Huber ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆ ̆
 
-2. Fokal kaybı ekle biner sınıflandırma  eğitim döngüsünde  Create an imbalance data collection 90% class 0,10% class 1)  Comparison standard BCE with focal loss (gamma=2) in 200  epochs                                                                                                                                                                                                                                    
+2. Fokal kaybı ekle biner sınıflandırmaya  eğitim döngüsü içinde── oluşturmak bir dengesiz veri kümesi ((90% sınıfı 0,10% sınıfı 1)──$\gamma = 2$200 dönemden sonra az sayıda kişiye geri çağırıldı.
 
 3. 实现带带半硬负矿的三重损失──为 5个类别生成 2D Embedding 数据──对每一个 ancor,找到仍然比积极更远的最硬负面(半硬)──将收情况与随机三重选择进行比较──
 
 4. 运行 MSE vs. cross-entropy对比, ancak eğitim sırasında her aşamasının Gradient büyüklüğünü takip etmek, her döneminin ortalama Gradient normını çizmek, modelin en belirsiz erken dönemlerinde, cross-entropy daha büyük bir Gradient oluşturacaktır.
 
-5. 实现 KL divergence loss,并验证当真实分布是一热时,最小化 KL(true 精算预测) 会给与交叉 Entropy 相同的 Gradient──然后尝试软目标──如知识蒸化),其中真实分布来自教师模型的软max 输出──
+5. 实现 KL divergense kaybı,并验证当真实分布是一热时,最小化 $\mathrm{KL}(\text{true} \Vert \text{predicted})$Bu, öğretmen modelinin yumuşaklıklı 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输                                                                                                                                                                                     
 
 ## 关键术语
 
@@ -442,12 +442,12 @@ Bu ders:
 |------|----------------|----------------------|
 | Loss function | “模型错得有多离谱” | 一个可微函数，将预测和目标映射到 Optimizer 要最小化的标量 |
 | MSE | “平均平方误差” | 预测和目标之间平方差的均值；以二次方式惩罚大误差 |
-| Cross-entropy | “Classification 的 Loss” | 使用 -log(p) 衡量预测概率分布和真实分布之间的差异 |
-| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：-(y*log(p) + (1-y)*log(1-p)) |
+| Cross-entropy | “Classification 的 Loss” | 使用 $-\log(p)$ 衡量预测概率分布和真实分布之间的差异 |
+| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：$-(y \log(p) + (1-y) \log(1-p))$ |
 | Label smoothing | “软化目标” | 用软值（例如 0.1/0.9）替换硬 0/1 目标，以防止过度自信并提升泛化能力 |
 | Contrastive loss | “拉近，推远” | 一种通过让相似对在 Embedding 空间中更近、非相似对更远来学习表示的 Loss |
 | InfoNCE | “CLIP/SimCLR Loss” | 对相似度分数进行 normalized temperature-scaled cross-entropy；将 contrastive learning 视为 Classification |
-| Focal loss | “不平衡数据修复方案” | 用 (1-p_t)^gamma 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
+| Focal loss | “不平衡数据修复方案” | 用 $(1-p_t)^\gamma$ 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
 | Triplet loss | “Anchor-positive-negative” | 在 Embedding 空间中，使 anchor 比 negative 至少按一个 margin 更接近 positive |
 | Temperature | “尖锐度旋钮” | 作用在 logits/相似度上的标量除数，用于控制结果分布的峰值程度；越低越尖锐 |
 
