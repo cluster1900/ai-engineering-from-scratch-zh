@@ -160,3 +160,11 @@ Regardez !`outputs/prompt-env-check.md`, dont une aide rapide, à l'aide des ass
 1. 运行验证脚本并修复 tout échec
 2. Pour ce cours, créer un environnement virtuel Python, et installer PyTorch
 3. Avec toutes les quatre langues, j'écris un "bonjour au monde", et je fais un tour à tour.
+
+### 提示
+
+**练习 1。**Dans le catalogue des magasins`python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner`, d'abord réparer le premier échec, revoir le suivant, refaire le script, passer tous les contrôles nécessaires, et terminer le processus.
+
+**练习 2。**Dans le répertoire de stockage`uv venv` Créer un environnement et activer, réutiliser étape 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `python -c "import torch; print(torch.__version__)"`;输出版本号就表示安装成功。
+
+**练习 3。**Utilisation  concept partie de la technique dans les quatre modes de fonctionnement: Python  fonctionne sur le typeScript de Node.js  Rust 和 Julia 分别编写一个小文件,用 `python3`- Je suis là.`npx tsx`(Node.js 不能直接运行 `.ts`文件) 、`cargo run`Ou `rustc`- Je suis là.`julia`Chaque fois que tu fais ça, tu dois imprimer ton message et le faire sortir.

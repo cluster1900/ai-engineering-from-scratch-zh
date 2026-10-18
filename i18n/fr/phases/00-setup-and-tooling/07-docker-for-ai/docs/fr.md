@@ -366,6 +366,16 @@ Vous avez maintenant un environnement de développement d'IA réalisable.
 3. Il va`flask`添加到Dockerfile, reconstruire, et le port 5000 上运行一个简单API服务器──使用 `-p 5000:5000`carte 端口
 4. Utilisation `docker images`Mesurer la taille de l'image.`devel`切换到 `runtime`,并比较大小
 
+### 提示
+
+**练习 1。**Dans le cours.`docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .`- Je veux que tu le fasses.`docker run --rm ai-dev`Dans le récipient, effectuer l'importation et le contrôle.`--gpus all` Le récipient doit être imprimé`2.6.0`开头的版本号──
+
+**练习 2。**Dans le`code/`文件中运行 `docker compose up -d`, à nouveau .`docker compose exec ai-dev bash`Dans le`ai-dev`服务中打开 shell──在其中运行 `curl http://qdrant:6333/collections`; retourner JSON 就说明服务名能在编译 网络内解析。
+
+**练习 3。**Dans le fichier Docker`RUN pip install flask`, reconstruit,并用 `host="0.0.0.0"`Initialement du serveur, car le serveur de l'hôte local n'est pas accessible à partir du contenant. `http://localhost:5000`, confirmer le port de projection valide.
+
+**练习 4。**运行  référencement`docker images ai-dev`, enregistrer la taille 列──将 `FROM` 行中  dans le`devel`改为 `runtime`, utiliser une nouvelle balise construire, revoir la taille des deux images; runtime 镜像不含编译器和头文件──
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

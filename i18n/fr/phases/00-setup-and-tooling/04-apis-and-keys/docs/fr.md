@@ -132,6 +132,14 @@ Leçon de l'écriture
 2. 尝试 raw HTTP 版本,并将响应格式与SDK 版本进行比较
 3. 故意使用错误的API key,并阅读错误消息
 
+### 提示
+
+**练习 1。**Dans Anthropic Console, créer la clé, selon le cours indique l'insérer `ANTHROPIC_API_KEY`, puis il fonctionne .`code/first_api_call.py`                                                                                                                                                                                                                                                              
+
+**练习 2。** `code/first_api_call.py`Les deux fonctions intermédiaires n'ont qu'à imprimer le texte et le nombre de symboles.`call_with_sdk()`À la suite de`print(response)`, dans le`call_raw_http()`À la suite de`print(result)`, re运行脚本查看两份完整响应──比较字段名称:原始 JSON 中的 `content`- Je suis là.`usage`et `stop_reason`字段, seront transformés en attributs d'objet.
+
+**练习 3。**Il n'y a qu'un seul bout en arrière.`ANTHROPIC_API_KEY`configuré en faux, redémarrer le script.  dans le sort, trouver le code d'état HTTP et le type d'erreur.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

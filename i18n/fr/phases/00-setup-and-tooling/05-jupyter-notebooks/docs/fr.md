@@ -240,6 +240,14 @@ Le cours est ouvert à:
 2. Créer un bloc-notes qui contient des cellules de code et de marquage, charger CSV, afficher un cadre de données, et dessiner un graphique, puis exécuter le noyau > Restarter et exécuter tout
 3. Je ne sais pas .`code/notebook_tips.py`Enregistrer le code en utilisant le GPU gratuit
 
+### 提示
+
+**练习 1。**- Je veux le faire .`jupyter lab`Lancer JupyterLab, mettre deux versions séparément.`%timeit`Les deux unités utilisent une taille de 100 000 pour s'assurer que la mesure est la même quantité de travail.
+
+**练习 2。**- Je veux le faire .`pd.read_csv`读取数据,将数据frame                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     `df.plot()`Ou matplotlib 绘图──执行 Kernel > Restart & Run All 后, chaque unité de calcul de l'exécution doit afficher un nombre, et ne doit pas avoir d'erreur de chaque unité.
+
+**练习 3。**Dans le cadre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en.`code/notebook_tips.py`Chaque fonction du centre est imprimée sur la partie correspondante et fonctionne dans le même format.`torch.cuda.is_available()`Retour`True`C'est vrai que ça marche.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

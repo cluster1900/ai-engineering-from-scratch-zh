@@ -337,6 +337,16 @@ Scénario d'utilisation de chaque outil dans ce cours:
 3. - Je veux le faire .`for i in $(seq 1 100); do echo "epoch $i loss: $(echo "scale=4; 1/$i" | bc)"; sleep 0.1; done > fake_train.log`Créer un faux journal d'entraînement, puis l'utiliser.`grep`- Je suis là.`tail`et `awk`Il suffit de prendre des valeurs de perte.
 4. Pour avoir un accès limité au serveur  configurer une entrée de configuration SSH(ou utiliser `localhost`练习语法) ⋅
 
+### 提示
+
+**练习 1。**Précédent`tmux new -s practice`, avec l' avant`Ctrl+B`后接 `"`et `%`Partagez le tableau, réutilisez-le.`Ctrl+B`加方向键切换窗格──用 `Ctrl+B`后接 `d`Je suis en train de faire une course.`tmux ls`, à nouveau .`tmux attach -t practice`Les trois processus doivent être toujours en cours de fonctionnement.
+
+**练习 2。**Il va`code/shell_aliases.sh`Le centre de la rédaction`~/.zshrc`Ou `~/.bashrc`末尾, encore une fois pour ce dossier`source` La mise en œuvre`alias`, ou pour un nouveau nom de l' entreprise .`type <name>`, confirme la coquille 已识别它──
+
+**练习 3。**Précédent`tail -5 fake_train.log`查看每行格式, encore une fois `grep loss`过,并用 `awk '{print $NF}'`Il suffit d'imprimer le dernier passage; la sortie doit être de 100 chiffres progressivement réduits.
+
+**练习 4。**Le cours sera terminé.`Host gpu`配置块复制到 `~/.ssh/config`Je suis là .`HostName`et `User`改成你的服务器信息, ou改成 `localhost`Et votre nom d'utilisateur.`ssh -G gpu`Imprimez SSH  serveur  Si vous avez accès et acceptez votre clé SSH  serveur, redémarrer `ssh gpu`Je suis en train de vous parler.
+
 ## 关键术语
 
 | 术语 | 人们怎么说 | 实际含义 |

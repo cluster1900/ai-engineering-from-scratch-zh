@@ -239,6 +239,16 @@ Le programme de formation
 3. Transformer un ensemble de données en parquet, et réduire la taille du fichier par rapport au CSV
 4. Utilisation de semences fixes 创建 70/15/15 train/val/test split,并验证 size
 
+### 提示
+
+**练习 1。**调用 `code/data_utils.py`Le centre`load_and_inspect("glue", "mrpc")`, ou directement调用 `load_dataset("glue", "mrpc")`, imprimé`ds["train"][:5]` Tous les échantillons doivent être inclus `sentence1`- Je suis là.`sentence2`et `label`Je suis en train de vous dire:
+
+**练习 2。**像 `stream_dataset`Comme pour l' usage.`streaming=True`Lire la suite de l'article`time.time()`超开始时间加 10秒时停止── 印样本数,并运行两次,因为第一次包含连接启动开销──
+
+**练习 3。**像 `convert_format`Comme ça, avec.`to_csv`et `to_parquet`Save avec un ensemble de données, réutiliser `ls -lh`Ou `os.path.getsize`Comparer les documents en taille.`load_from_parquet`Révision du projet de loi sur les droits de l'homme
+
+**练习 4。** Fixée `seed`, utiliser deux fois `train_test_split`: d'abord, 30%, puis, 30% pour la moitié. Les trois séries doivent être égales à la longueur d'origine.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

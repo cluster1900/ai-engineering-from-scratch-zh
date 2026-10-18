@@ -396,3 +396,15 @@ Regardez !`outputs/prompt-debug-ai-code.md`, dont une aide pour diagnostiquer de
 3. Utilisation `tracemalloc`找出数据 loading pipeline 中哪一行分配了最多的内存──
 4. Pour une simple formation, la mise en place de TensorBoard, et la reconnaissance du modèle,
 5. Dans la boucle d'entraînement`breakpoint()`◊ Exercice de débogage prompt  vérifier les formes tensors、appareils 和 valeurs de gradient。
+
+### 提示
+
+**练习 1。**运行  référencement`python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`, lire chaque fonction de démonstration de sortie.`demo_nan_detection`Modèle central, en faisant sa sortie à zéro, réutilisé une fois;`detect_nan`Il faut imprimer avec un numéro de la mise en garde.
+
+**练习 2。**- Je veux le faire .`python -m cProfile -s cumtime your_script.py`运行循环, ou util `cProfile.Profile()`Je l'ai emballé.`cumtime`列顶部的行; parmi lesquelles appartient votre propre code et la fonction la plus longue, est la fonction la plus lente.
+
+**练习 3。**像 `demo_memory_tracking`Comme, dans le code de chargement de données pré pré-régulièrement`tracemalloc.start()`, après调用 `tracemalloc.take_snapshot()`◊ imprimer `snapshot.statistics("lineno")[:5]`; la première ligne affiche le plus grand nombre de documents et de pages de l'archivage distribué.
+
+**练习 4。**Chaque époque est une époque.`SummaryWriter` enregistrement de la perte de formation et de la perte de vérification, réutilisation `tensorboard --logdir=runs`Si les pertes de formation continuent de diminuer et que les pertes de vérification augmentent, il est indiqué que le modèle est trop adapté.
+
+**练习 5。**Il va`breakpoint()` dans le cycle intérieur `loss.backward()`Après, puis je vais faire le script.`(Pdb)`提示符处打印 `x.shape`- Je suis là.`x.device`et `next(model.parameters()).grad`, re-import`c`Continuez à l'étape suivante.

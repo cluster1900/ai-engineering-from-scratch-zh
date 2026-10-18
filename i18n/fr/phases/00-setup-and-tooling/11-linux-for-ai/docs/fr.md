@@ -306,3 +306,15 @@ s0-process-fork
 3. Initier une session tmux, en fonctionnement `sleep 300`, détach, séances de départ, puis reattacher.
 4. Utilisation `df -h`检查可用磁盘空间, puis utiliser `du -sh ~/.cache/*`找出 cache 中占占空间的内容──
 5. Utilisation `scp`Transférer un fichier d'une machine locale à une machine à distance, puis l'utiliser.`rsync`Faites la même transmission, et comparez l'expérience.
+
+### 提示
+
+**练习 1。**运行  référencement`cd ~`, utilisez `mkdir`创建新文件, réutiliser `cd`- Il est dans le coin.`touch`Il y a trois documents.`ls -la`输出中, vérifiez si la taille de ces trois fichiers est 0, si le propriétaire est votre nom d'utilisateur.
+
+**练习 2。**- Je veux le faire .`sudo apt install -y htop`Installation et démarrage`F6`(ou cliquez sur le nom)`MEM%`排序── le processus du haut de la liste occupe le plus de l'intimidation──
+
+**练习 3。** 使用课程中  cours de cours`tmux new -s train`,运行 `sleep 300`, à nouveau .`Ctrl+B`后接 `d`Je suis en train de faire une course.`tmux ls`查看会话, encore une fois `tmux attach -t train`Réinitialisation du réseau`sleep`Il faut encore en fonctionnement.
+
+**练习 4。**运行  référencement`df -h`, voir le répertoire principal du système de fichiers`Avail`列──再运行 `du -sh ~/.cache/* | sort -h`, la plus grande liste de documents est en dernière ligne.
+
+**练习 5。**- Je veux le faire .`scp file.txt user@host:~/`复制文件, re对同文件运行 `rsync -avP file.txt user@host:~/`第二次运行 `rsync`En cas d'ordre, il ne renvoie presque aucun contenu, car les fichiers de fin de file ne changent pas.

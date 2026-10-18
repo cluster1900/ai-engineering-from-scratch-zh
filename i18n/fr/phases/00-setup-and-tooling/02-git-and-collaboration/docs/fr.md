@@ -99,6 +99,14 @@ Pour les cours, il n'y a pas besoin de base, de sélection ou de sous-modules.
 2. Créer une`.gitignore`, éliminer les dossiers des points de contrôle`.pt`- Je suis là.`.pth`- Je suis là.`.safetensors`)
 3. - Je veux le faire .`git log --oneline`查看这个 repo's commit history,并阅读教训是如何被添加的
 
+### 提示
+
+**练习 1。**Dans GitHub, cliquez sur Fork, réutilisez `git clone`克隆你自己的 fourchette 地址──运行 `git push -u origin my-progress`Ensuite, sur GitHub, ouvre ta fourchette, confirme que la liste est en partie`my-progress`, et contient vos documents.
+
+**练习 2。**Dans le répertoire de l'entrepôt`.gitignore`文件中为每扩展名添加一条模式, par exemple `*.pt`Pour chaque extension, créez un fichier vide, puis fonctionnez.`git status`Ces documents ne devraient pas apparaître dans la liste des documents non suivis.
+
+**练习 3。**运行  référencement`git log --oneline`, re运行 `git log --oneline -- phases/00-setup-and-tooling`, seulement montrer modifié sur cette phase de soumission.`git show --stat <hash>`Regardez ce qu'il a ajouté.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

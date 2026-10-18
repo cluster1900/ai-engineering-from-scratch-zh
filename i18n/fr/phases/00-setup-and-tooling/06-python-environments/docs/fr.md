@@ -260,6 +260,16 @@ bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh
 3. Pour un projet en même temps PyTorch et SDK anthropic 编写 `pyproject.toml`
 4. Donc, tout le monde a mis en place un paquet, il ne l'a pas activé, il l'a regardé où il est allé, puis il l'a déchargé.
 
+### 提示
+
+**练习 1。**Dans le catalogue des magasins`bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh`◊ progressivement lire la sortie; si un projet échoue, révisez d'abord le projet, et redoublez le travail jusqu'à ce que tous les projets soient passés.
+
+**练习 2。**Dans un nouveau dossier`uv venv` Créer un deuxième environnement et activer, par la version fixe installé sur l'ancien numpy, par exemple `numpy==1.26.4`分別在两个环境中运行 `python -c "import numpy; print(numpy.__version__)"`Les versions de sortie doivent être différentes.
+
+**练习 3。**pyproject.toml 基础中的 exemples`dependencies`Le dépôt`torch`et `anthropic`◊ dans un nouvel environnement`uv pip install -e .`Ou `uv sync`Les deux paquets peuvent être importés normalement, pour que le dossier soit correctement configuré.
+
+**练习 4。**退出所有环境,运行 `pip install --user <small package>`, re运行 `pip show <package>`Il n' y a pas de problème .`Location`Je vais vous aider.`pip uninstall <package>`Je le décharge, je le reprends.`pip show`Confirmer qu'il a été déplacé.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

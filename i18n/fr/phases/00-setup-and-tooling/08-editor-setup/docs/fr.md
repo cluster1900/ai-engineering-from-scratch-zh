@@ -78,11 +78,11 @@ Chaque extension de l'action:
 | Black Formatter | 保存时自动格式化，保持风格一致 |
 | Ruff | 快速 linting，捕获常见错误 |
 
-Dans le cours`code/.vscode/extensions.json`文件包含完整推列表──当你打开项目文件时,VS Code 会提示你安装它们──
+Dans le cours`code/vscode/extensions.json`文件包含完整推列表──将它复制到您的项目文件中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中`.vscode/extensions.json`Le code VS vous invite à installer ces extensions.
 
 ### 步骤 3: Configuration de la mise en page
 
-复制本课 `code/.vscode/settings.json`En milieu de réglages, ou par`Settings > Open Settings (JSON)`Application manuelle
+复制本课 `code/vscode/settings.json`En milieu de réglages, ou par`Settings > Open Settings (JSON)`Application manuelle
 
 Les paramètres clés du travail de l'IA:
 
@@ -195,6 +195,16 @@ Avec ce kit, votre flux de travail quotidien ressemble à ceci:
 2. Le cours sera suivi`settings.json`复制到你的 VS Code config 中
 3. 打开一个Python文件,验证Pylance 显示类型提示,并且黑会在保存时格式化
 4. Si vous pouvez accéder à un appareil à distance, configurez SSH à distance et ouvrez un fichier dessus
+
+### 提示
+
+**练习 1。**Installation étape 2  表格中的扩展, ou `code --install-extension <id>`Montage`code/vscode/extensions.json`Chaque numéro de téléphone est disponible.`code --list-extensions`, à titre individuel et dans le dossier
+
+**练习 2。**打开 Paramètres > Paramètres ouverts (JSON),将 `code/vscode/settings.json`Si le fichier est configuré, veuillez ajouter les touches et conserver JSON efficace; le code VS utilisera le code rouge pour identifier les fichiers erronés.
+
+**练习 3。** écrivez une fonction avec un type d'annulation, le raton suspendu à sa modification; Python montrera le type de conclusion.  Ajouter un espace supplémentaire dans une ligne et sauvegarder le fichier.
+
+**练习 4。**先将服务器加入 `~/.ssh/config`, confirmer terminé dans le `ssh <host>`Les commandes de connexion peuvent être utilisées à distance.
 
 ## 关键术语
 | Term | What people say | What it actually means |
