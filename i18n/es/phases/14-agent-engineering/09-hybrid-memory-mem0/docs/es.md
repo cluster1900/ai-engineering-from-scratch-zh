@@ -29,7 +29,7 @@ Mem0 (arXiv:2504.19413, abril 2025) Location`add(text, user_id, metadata)`时:
 
 1. Desde el texto en el que se trata de un candidato (en inglés)
 2. 将每个事实写入 Vector store (Embedding), para la búsqueda de palabras.
-3. Para escribir cada hecho en KV store,以 (usu_id, fact_type, entity) como clave, para usar O(1) 查找。
+3. Para escribir cada hecho en KV store, en (user_id, fact_type, entity) como clave, para usar $O(1)$Buscar.
 4. Para cada hecho, escribir en el gráfico (Mem0g), para la consulta de relaciones.
 
 En el`search(query, user_id)`时:

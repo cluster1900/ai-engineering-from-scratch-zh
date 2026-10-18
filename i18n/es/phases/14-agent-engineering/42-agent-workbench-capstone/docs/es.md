@@ -13,6 +13,7 @@
 - Fixed schema、script 和 template, hacer que un nuevo repo  obtenga una línea de base ya disponible―
 - Añade un script de instalación, coloca este paquete de la misma manera.
 - Decide qué contenido queda en el paquete, qué contenido queda en el exterior, y para cada uno de ellos.
+-  demostrar una vez que el agente  asistido a la realización de cambios en el almacén, y proporcionar pruebas de que el revisor pueda volver a la práctica 
 
 ##  problemas
 
@@ -133,6 +134,78 @@ El paquete es una receta. Cada vez que se instala es una porción.
 3. Añade uno.`bin/uninstall.sh`¿Qué es lo que es extraordinario?
 4. Añade uno.`lint_pack.py`, envasado  alejamiento `VERSION`时失败──把它连接到包 自身 repo 的CI──
 5. ¿Qué orden de operación puede minimizar el tiempo de inactividad?
+
+## 职业实践: demostrar una vez que el almacén cambia
+
+打包演示证明组装程序能够运行并生成文件──它不能证明你的代理能完成新任务──生成的检查能够验证该任务,或已部署的系统能正常工作──请区分这些结论──
+
+En el almacén que poseas o obtienes permiso para modificar, selecciona una verdadera pequeña tarea―, utilizando un agente de programación que ya has podido visitar―, incluso puede―, reparar las deficiencias―, lograr funciones definidas por fronteras, o mejorar el funcionamiento y el proceso de la instalación de varios agentes, no es el contenido del ejercicio―.
+
+Además de la experiencia de trabajo, otra reserva una vez en el trabajo.`learning-artifacts/`Preservar los modelos y paquetes existentes en el almacén, como referencia.
+
+### 1. 明确任务并选择自主程度
+
+Utilice el marco de tareas de la clase 43 y el plan de pruebas de la clase 44.
+
+ seleccionar un modelo de trabajo: guiar paso a paso 带检查点的实现, o ejecutar de forma autónoma una clara frontera  explicar por qué apoyan esta opción la incertidumbre  los posibles efectos y la reversibilidad  Reconstruir localmente una pequeña gama, puede requerir menos controles que los cambios de control de visita 
+
+ Establecer un presupuesto de tiempo real; si el agente  proporciona funciones relacionadas, también debe establecer un token o un límite de gastos  para datos de medida no accesibles, como registros reales para la reincidencia de fracasos  nuevas necesidades de derechos  El presupuesto  se agota o no resuelve  para el trabajo 
+
+### 2.  Preparar el ambiente mínimo y útil
+
+查找相关实现、调用方、测试和本地指令──记录每一个来源为什么应进入上下文,以及哪些现有证据能够推翻过时的笔记──不要默认加载整个仓库──
+
+Para cada tipo de expansión, se debe determinar la capacidad de: habilidad: habilidad: proporcionar un proceso de uso repetible; MCP: herramienta: proporcionar capacidad de acceso; 子: habilidad de ejecutar un control de determinación;
+
+registrar un nuevo proyecto que usted rechazó conllevará un costo de mantenimiento o de continuación. Reverificar un recuerdo o instrucción pasada. Si la evidencia apoya la retirada o sustitución, se ejecuta en un entorno de aprendizaje administrado por usted mismo.
+
+### 3. 记录基线并实现
+
+ editar antes, ejecutar los controles existentes más relevantes, mostrar el estado actual del comportamiento requerido, mantener órdenes, versiones, resultados y posiciones de pruebas, funciones que aún no existen, también tienen bases: registrar las respuestas observadas o operaciones no apoyadas.
+
+让代理在任务约定内实现变更――保留干预日志,说明每次纠正、权限变更或计划调整的原因――委派是可选的; si es realmente útil, primero aplicar la responsabilidad de la clase 45 de la atribución y integración de la obligación, antes de agregar otro ejecutor―
+
+### 4. 质疑证据 (problema de seguridad)
+
+选择能够观察变更界面的验证方式――对 UI,重建,并对相关视口宽度下检查实际提供服务的用户流程――对 API,检查请求和序列化后的响应――对 CLI,运行构建后的命令,检查退出码和输出――select任务所需的检查,并说明它们的局限性――
+
+Según la tarea, no se escriba el resultado esperado, no se introduce un resultado de error específico en la copia de una vez, por ejemplo, aceptar la ineficacia o la falta de respuesta necesaria.
+
+Si el control sigue siendo aprobado, primero se fortalece el método de observación, vuelve a creer en él, vuelve a realizarse correctamente, y vuelve a ejecutarse hasta que se haya aprobado, conservando dos veces el título de ejecución, no importa si el sistema de prueba ha sido revisado o ha sido destruido.
+
+En el caso de los objetivos originales y de la vía de modificación, la diferencia final de la evaluación, incluidos los cambios en la evaluación.
+
+### 5. 演练运行与恢复
+
+En el entorno local o en el entorno de la publicación previa de una vez, se realizarán entregas posteriores a cambios.`local`¿Qué es esto?`staging`O `live`,并注明确版本或交付物标识──本地演练只支持本地结论;本地演练不要求部署到生产环境──
+
+ seleccionar una señal de fracaso relacionada con la tarea, establecer value、observation window y responsibilityperson──explicar cómo debe responder a la sobrevaluación
+
+演练回滚到已知可用交付物件,并检查是否恢复前行为. 应考虑持久化数据:只替换二进制文件不一定能撤销数据变更. 记录任何未经验证的恢复步骤. 转移到已知可用交付物件,并检查是否恢复前行为. 应考虑持久化数据:只替换二进制文件不一定能撤销数据变. 记录任何未经验证的恢复步骤.
+
+### 6. 改进 próxima vez ejecutar并交接
+
+Los resultados se compararán con los resultados de la base, incluyendo el tiempo de consumo real, la cantidad de datos disponibles y la intervención artificial. Una misión sólo puede explicar lo que ocurrió en la misión, no puede demostrar que un agente es más rápido o más fiable en general.
+
+ En el curso 46  , se transformará una corrección real en prueba ∞, menor límite de poder ∞, proceso de automatización o ejemplos más claros ∞, reutilización de los controles afectados ∞, eliminación de los cambios de la introducción temporal, y para la próxima reunión, la división final del documento ∞, el riesgo no resuelto y el siguiente paso de acción ∞.
+
+### Sector de trabajo
+
+Por favor, revise el documento de prueba del auditor, y al menos repite el examen de aceptación más débil.`demonstrated`(ha demostrado)`needs revision`(necesita modificación) o `unverified`(未验证) Como estado, al mismo tiempo que se da evidencia de la posición y el motivo.
+
+| 维度 | 评审者应质疑的证据 |
+|---|---|
+| 任务与自主程度 | 初始行为、边界明确的目标、合理的权限与预算，以及可执行的停止规则 |
+| 上下文与环境 | 相关来源、合理的工具访问权限，以及经过重新核查的退役决定 |
+| 验证 | 变更前后的实际行为，以及相同检查能够拒绝的、刻意引入的错误结果 |
+| 评审与运行 | 已检查的差异、独立质疑、标明环境的运行观测，以及演练过的恢复流程 |
+| 迭代与交接 | 一项经过验证的改进、如实说明的局限、干净的最终状态，以及可复现的下一步行动 |
+
+En la declaración de tareas antes de completar, resolver el marcador para`needs revision`Las pruebas de que no se puede obtener deben conservarse.`unverified`,并相应缩小结论的范围── los trabajos del conjunto muestran que el ingeniero puede juzgar en una tarea definida en una frontera, no garantiza obtener un empleo o tener condiciones de despliegue―
+
+## 交付物  entrega
+
+Mantenga el paquete de uso repetible, así como lo que haya terminado.[career-agent-evidence.md](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/42-agent-workbench-capstone/outputs/career-agent-evidence.md)副本──该模板将任务框架、执行计划、运行证书、评审、恢复演习和交互整合为一个可评审的案例研究──
 
 ## 关键术语: "El hombre es un hombre"
 
