@@ -32,7 +32,7 @@ O vetor é apenas uma lista de números. Mas esses números têm significado.
 |---|---|-------|
 | 3 | 2 | 这个 Vector 从原点 (0,0) 指向平面上的 (3, 2) |
 
-Essa magnitude do vetor é = 3^2 + 2^2) = 13), direção para cima e para direita.
+Esta magnitude do vetor é$\sqrt{3^2 + 2^2} = \sqrt{13}$, direcção para cima e para a direita.
 
 Em AI, Vector diz tudo:
 - Um termo → um que contém 768 números de vetor (esta em incorporação 空间中的含义)
@@ -71,19 +71,20 @@ Em IA, a Matrix é o modelo:
 
 O produto de pontos de dois vetores vai dizer-lhe que eles têm muitas semelhanças.
 
-```
-a · b = a₁×b₁ + a₂×b₂ + ... + aₙ×bₙ
-
-方向相同：      a · b > 0  （相似）
-相互垂直：      a · b = 0  （无关）
-方向相反：      a · b < 0  （不相似）
+```math
+\begin{aligned}
+a \cdot b &= a_1 \times b_1 + a_2 \times b_2 + \cdots + a_n \times b_n \\[4pt]
+\text{方向相同：} \quad a \cdot b &> 0 \quad \text{（相似）} \\
+\text{相互垂直：} \quad a \cdot b &= 0 \quad \text{（无关）} \\
+\text{方向相反：} \quad a \cdot b &< 0 \quad \text{（不相似）}
+\end{aligned}
 ```
 
 É o que o motor de busca, o sistema de recomendação e o RAG fazem: encontram vetores de produto de pontos mais altos.
 
 ### Independência Linear
 
-Se no conjunto não houver nenhum vetor que possa ser escrito em conjunto de outros vetores, então esses vetores são linearmente independentes. Se v1、v2、v3 independentes, eles abrangem um espaço 3D. Se um deles for um conjunto de outros vetores, eles apenas abrangem um plano.
+Se no conjunto não houver nenhum vetor que possa ser escrito em conjunto de outros vetores, então esses vetores são linearmente independentes.$v_1, v_2, v_3$Independentes, elas vão abranger um espaço 3D. Se um deles for a combinação de outros vetores, elas vão apenas abranger um plano.
 
 É importante para a IA: sua matriz de características  deve ter colunas linearmente independentes ▌se duas características ▌ estão totalmente relacionadas ▌linearmente dependentes), o modelo não pode distinguir os seus respectivos efeitos ▌, o que causará multicolinariedade na Regressão ▌ - a matriz de peso ▌ vai ficar instável, as pequenas variações de entrada levarão à saída ▌
 
@@ -95,7 +96,7 @@ v2 = [0, 1, 0]
 v3 = [2, 1, 0]   # v3 = 2*v1 + v2
 ```
 
-V1 e v2 são independentes de -- 二者都不是另一个标量倍数或组合──但 v3 = 2*v1 + v2,所以 {v1, v2, v3} é um conjunto dependente── estes três vetores estão todos no plano xy── não importa como você os reunir, não pode chegar a [0, 0, 1]── você tem três vetores, mas apenas duas dimensões livres──
+$v_1$和 $v_2$É independente de -- os dois não são outros de um número de múltiplas ou composição.$v_3 = 2 v_1 + v_2$, Então $\lbrace v_1, v_2, v_3 \rbrace$É um conjunto dependente. Todos estes três vetores estão no plano xy. Não importa como você os assemble, não pode chegar a [0, 0, 1].
 
 Em conjunto de dados: se feature_3 = 2*feature_1 + feature_2, adere feature_3 não vai dar o modelo  trazer qualquer nova informação.
 
@@ -105,15 +106,15 @@ Base é um conjunto de vectores linearmente independentes menores, que abrangem 
 
 A base padrão do espaço 3D é {1,0,0], [0,1,0], [0,0,1]}── mas qualquer três vetores independentes no 3D podem constituir uma base válida── base de seleção é a base de seleção 坐标系────
 
-Matrix of rank = linearmente independente colunas de número = linearmente independente linhas de número de linhas.
+Matrix de rank = número de colunas linearmente independentes = número de linhas linearmente independentes.$\text{rank} < \min(\text{rows}, \text{cols})$Esta Matrix é deficiente em grau.
 - O sistema tem infinitos soluções (ou não)
 - Transformação 中丢失信息
 - Matrix Não pode ser invertida
 
 | 情况 | Rank | 对 ML 的含义 |
 |-----------|------|---------------------|
-| Full rank (rank = min(m, n)) | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
-| Rank deficient (rank < min(m, n)) | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
+| Full rank $(\text{rank} = \min(m, n))$ | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
+| Rank deficient $(\text{rank} < \min(m, n))$ | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
 | Rank 1 | 1 | 每一列都是某个 Vector 的缩放副本。所有数据都位于一条线上。 |
 | Near rank-deficient（较小的 singular values） | 数值上较低 | Matrix ill-conditioned。极小的 input noise 会造成很大的 output changes。使用 SVD truncation 或 ridge regression。 |
 
@@ -121,11 +122,11 @@ Matrix of rank = linearmente independente colunas de número = linearmente indep
 
 Vector**a**投影到 Vector **b**- Eu vou.**a**Em**b**方向上的分量:
 
-```
-proj_b(a) = (a dot b / b dot b) * b
+```math
+\mathop{\mathrm{proj}}_b(a) = \frac{a \cdot b}{b \cdot b} \, b
 ```
 
-A decomposição ortogonal é a base do ajuste dos mínimos quadrados.
+Residual $(a - \mathop{\mathrm{proj}}_b(a))$Com$b$垂直── esta decomposição ortogonalizada é a base do ajuste de menores quadrados──
 
 Projeção em ML
 - Regressão linear Minimizar observações até espaço coluna de distância - 解本身就是一个投影
@@ -143,9 +144,9 @@ graph LR
     end
 ```
 
-**示例：**A) A posição de referência do produto
+**示例：** $a = [3, 4]$- Não .$b = [1, 0]$
 
-Proj_b(a) = (3*1 + 4*0) / (1*1 + 0*0) * [1, 0] = 3 * [1, 0] = [3, 0]
+$\mathop{\mathrm{proj}}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0) \cdot [1, 0] = 3 \cdot [1, 0] = [3, 0]$
 
 Esta projeção perdeu o y-part-volume. É a forma mais simples de redução de dimensão.
 
@@ -448,6 +449,20 @@ LoRA  Vale a pena um especial detalhe. Ele passa por atualizações de peso divi
 4. 验证 Gram-Schmidt output 确实是正规的:检查每一对的点产品都为 0,并且每个向量的大小都为 1
 5. Crear uma classificação 为 2 de 3x3 Matrix── utiliza `rank()`método 验证── Então explicar que é o que são estes objetos de geometria de expansão colunas.
 6. 将 vector [1, 2, 3] 投投到 [1, 1, 1] 上──结果在几何上表示什么?
+
+### 提示
+
+**练习 1。**De`cosine_similarity`開始,将结果限制在-1到1之间,再取反余弦,并将弧度转换为角──检查 `Vector([1, 0])`和 `Vector([0, 1])`O resultado é 90, a massa e o resultado são 0.
+
+**练习 2。**Para colocar dois fatores de envelhecimento em 2x2 em linha de contra-esquina da matriz, os dois restantes lugares preenchem 0⋅ entrada [1, 1] o resultado deve ser [2, 3]。
+
+**练习 3。**計算 5 个向量中每对对的余弦相似度 (共 10 对), retenção do valor máximo.
+
+**练习 4。**Para três linhas não têm relação ao volume de`gram_schmidt`, re-separação por um`dot`, para cada volume calculado`magnitude` Usar, por exemplo `1e-9`de capacidade, pois o número de pontos não dá um zero preciso.
+
+**练习 5。**Seja a terceira linha ou a terceira linha se estabelecer para o primeiro e o segundo, fazendo uma direção repetida.`rank()`必須返回 2,此時各列张成一经过原点的平面──
+
+**练习 6。**计算缩放系数 $\frac{a \cdot b}{b \cdot b}$E não se multiplicam .$b$, ou调用 `project_onto`△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                                                                          $a$减去投影) com [1, 1, 1] de pontos de acumulação = 0。
 
 ## 关键术语
 

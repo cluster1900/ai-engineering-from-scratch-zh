@@ -33,7 +33,7 @@ graph LR
     T3 --> T4["4D Tensor<br/>rank 4<br/>shape: (B,C,H,W)"]
 ```
 
-总元素数 = todos os tamanhos de multiplicidade.`(2, 3, 4)`包含 `2 * 3 * 4 = 24`个元素──
+总元素数 = todos os tamanhos de multiplicidade.`(2, 3, 4)`包含 $2 \cdot 3 \cdot 4 = 24$个元素──
 
 ### Forma de tensor no meio do aprendizado profundo
 
@@ -229,7 +229,7 @@ batch_B = np.random.randn(4, 5, 2)
 batch_mm = np.einsum("bij,bjk->bik", batch_A, batch_B)
 ```
 
-O custo de cálculo de uma contração é a multiplicidade de todos os tamanhos do índice (reservados e solicitados) para B=32、I=128、J=64、K=128`bij,bjk->bik`- Não .`32 * 128 * 64 * 128 = 33,554,432`O número de vezes adicionadas.
+O custo de cálculo de uma contração é a multiplicidade de todos os tamanhos do índice (reservados e solicitados).$B=32$- Não.$I=128$- Não.$J=64$- Não.$K=128$de `bij,bjk->bik`- Não .$32 \cdot 128 \cdot 64 \cdot 128 = 33{,}554{,}432$O número de vezes adicionadas.
 
 ### 步骤 7: Mecanismo de atenção através de einsum
 
@@ -313,6 +313,16 @@ O curso é elaborado em dois tipos de instruções:
 3. **Hard -- Build einsum from scratch.**Realizar uma base`einsum(subscripts, *tensors)`função, pelo menos suport:dot produto`i,i->`)、matrix multiplicar`ij,jk->ik`)、produto externo`i,j->ij`) e transponder`ij->ji`)── resolver uma cadeia de subscritos, identificar índices contratados,并遍历所有指数组合──将你的结果与 `np.einsum`Comparado.
 
 4. **Hard -- Attention shape tracker.**编写一个函数,输入 `batch_size`- Não.`seq_len`- Não.`embed_dim`和 `num_heads`,并印印多头注意每步的精确形:input、Q/K/V projeção、head split、attention scores、softmax weights、weighted sum、head merge、output projeção──与`demo_attention_einsum()`Output  fazer testes
+
+### 提示
+
+**练习 1。**- Não .`list(range(24))`Construir tensor, para que cada elemento mostre sua posição.`reshape`后打印 `flatten().to_list()`, os resultados da verificação continuam em ordem de 0 a 23.
+
+**练习 2。**Só quando duas grandes dimensões, ou uma delas é de 1 hora, essa dimensão pode ser divulgada, portanto, primeiro verifique esta regra, não se satisfaça quando lança erros.`(3, 1)`和 `(1, 4)`, resultados da inspecção`[i][j]`Elementos são equivalentes a`a[i][0] + b[0][j]`,并将完整结果与NumPy比较──
+
+**练习 3。**按 `->`拆分下标── aparece na entrada, mas não na saída, representação de quer e índice, portanto, atravessa o valor de cada letra e aumenta para a posição de saída── em pequenos números de azar, usam `np.allclose(mine, np.einsum(...))`测试全部四种情况──
+
+**练习 4。**Do tamanho da cabeça .`embed_dim // num_heads`Começa,并断言`embed_dim % num_heads == 0`◊ Forma das pontuações de atenção 为 `(batch_size, num_heads, seq_len, seq_len)`, por isso, o resultado da impressão será impresso com esta forma e`demo_attention_einsum()`打印的形状比较──
 
 ## 关键术语
 | Term | What people say | What it actually means |

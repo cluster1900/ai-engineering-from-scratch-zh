@@ -28,14 +28,14 @@ Esta aula irá construir cada função de distância principal a partir de zero,
 
 ### Normas: Vector de medida
 
-Cada função de distância entre dois vetores pode ser escrita como um diferencial de valores de um vetor: d, b) = a - b = a = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b = b
+范数衡量一个向量的大小── cada função de distância entre dois vetores pode ser escrita como seu diferencial de valores:$d(a, b) = \lVert a - b \rVert$ Então entender o número é entender a distância
 
 ### L1 Norma (distância de Manhattan)
 
 Norma L1 para todos os valores absolutos de divisões
 
-```
-||x||_1 = |x_1| + |x_2| + ... + |x_n|
+```math
+\lVert x \rVert_1 = |x_1| + |x_2| + \cdots + |x_n|
 ```
 
 É chamado de distância de Manhattan, porque mede a distância que você percorre no meio da rede urbana, onde você só pode se mover ao longo do eixo do eixo, não pode andar em direção a um canto.
@@ -54,7 +54,7 @@ Qual é o problema?
 - Quando você quer que os valores sejam mais estáveis, as diferenças enormes não vão conduzir o resultado.
 - 特征选择问题(L1 regularização 会促进稀疏性)
 
-Com relação à regularização L1 (Lasso): Na função de perda, você vai participar de um punimento de peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do peso do
+Com L1 regularização ((Lasso) 联系: 在你的损失函数 中加入 $\lVert w \rVert_1$O peso do peso é estimado em um ponto de referência, o que impede que o peso do peso seja estimado em um ponto de referência.
 
 Com relação às funções de perda:Erro absoluto médio (MAE) é o valor médio da distância entre o valor de previsão e o valor-alvo L1.
 
@@ -62,11 +62,11 @@ Com relação às funções de perda:Erro absoluto médio (MAE) é o valor médi
 
 A norma L2 é a distância direta. É igual à raiz quadrada da divisão de quantidade e da raiz quadrada.
 
-```
-||x||_2 = sqrt(x_1^2 + x_2^2 + ... + x_n^2)
+```math
+\lVert x \rVert_2 = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2}
 ```
 
-É o que você aprendeu em matemática.
+É a distância que aprendeste na aula de Geografia.$n$维中勾股定理──
 
 ```
 Point A = (1, 1)
@@ -83,24 +83,26 @@ Qual é o problema?
 - 物理距离(空间数据、传感器读数)
 - A semelhança de imagem de nível de imagem
 
-Com L2 regularização (Ridge) 联系: 中中加入你的 Loss Function2^2,将惩罚更大的权重――与 L1 不同,它不会推推重至零――它将比例把所有权重向零收缩――L2 penalty 会产生圆形约束区域,所以坐标轴上没有角──权重会变小,但很少精确为零――
+Contato com L2 regularização ((Ridge):$\lVert w \rVert_2^2$, vai castigar um peso maior. Não é diferente do L1, não vai colocar o peso em zero.
 
 Com relação às funções de perda:Erro médio quadrado (MSE) é a L2 distâncias 平方的平均值──平方会比小误差更重地惩罚大误差──
 
-```
-MAE (L1 loss):  |y - y_hat|         Linear penalty. Robust to outliers.
-MSE (L2 loss):  (y - y_hat)^2       Quadratic penalty. Sensitive to outliers.
+```math
+\begin{aligned}
+\text{MAE（L1 loss）：} \quad & |y - \hat{y}| && \text{线性惩罚。对离群值稳健。} \\
+\text{MSE（L2 loss）：} \quad & (y - \hat{y})^2 && \text{二次惩罚。对离群值敏感。}
+\end{aligned}
 ```
 
 ### Normas de Lp:
 
 L1 e L2 são as circunstâncias especiais da norma Lp:
 
-```
-||x||_p = (|x_1|^p + |x_2|^p + ... + |x_n|^p)^(1/p)
+```math
+\lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-Diferentes p                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+Diferente .$p$Valor de forma diferente de forma a formar bolas de unidade:
 
 ```
 p=1:    Diamond shape      (corners on axes)
@@ -111,19 +113,20 @@ p=inf:  Square/hypercube   (flat sides along axes)
 
 ### L-infinidade Norma ((Chebyshev distância)
 
-Quando a p                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+- Não .$p$趋近无穷大时,Lp norma 收到最大绝对分量──
 
-```
-||x||_inf = max(|x_1|, |x_2|, ..., |x_n|)
+```math
+\lVert x \rVert_\infty = \max(|x_1|, |x_2|, \ldots, |x_n|)
 ```
 
 A distância entre dois pontos é determinada pela maior diferença entre eles. Todas as outras dimensões são ignoradas.
 
-```
-Point A = (1, 1)
-Point B = (4, 5)
-
-L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
+```math
+\begin{aligned}
+\text{点 } A &= (1, 1) \\
+\text{点 } B &= (4, 5) \\[6pt]
+L_\infty \text{ 距离} &= \max(|4-1|, |5-1|) = \max(3, 4) = 4
+\end{aligned}
 ```
 
 何時使用 L-infinity:
@@ -135,19 +138,20 @@ L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
 
 A semelhança cosínica mede os ângulos entre dois vetores, ignorando-os em grandeza.
 
-```
-cos_sim(a, b) = (a . b) / (||a||_2 * ||b||_2)
+```math
+\text{cos\_sim}(a, b) = \frac{a \cdot b}{\lVert a \rVert_2 \, \lVert b \rVert_2}
 ```
 
 Seu alcance é -1 ((direção相反) até +1 ((direção mesma) ⋅ semelhança cosínica de vetores vertical 为 0。
 
 Distância cosínea vai transformá-lo em distância:cosínea_distância = 1 - cosínea_similaridade── alcance é 0(direção igual) para 2(direção相反)──
 
-```
-a = (1, 0)    b = (1, 1)
-
-cos_sim = (1*1 + 0*1) / (1 * sqrt(2)) = 1/sqrt(2) = 0.707
-cos_dist = 1 - 0.707 = 0.293
+```math
+\begin{aligned}
+& a = (1, 0) \qquad b = (1, 1) \\[6pt]
+& \text{cos\_sim} = \frac{1 \cdot 1 + 0 \cdot 1}{1 \cdot \sqrt{2}} = \frac{1}{\sqrt{2}} = 0.707 \\
+& \text{cos\_dist} = 1 - 0.707 = 0.293
+\end{aligned}
 ```
 
 Por que o cosino em NLP e embutidos domina: em textos, a duração do arquivo não deve afetar a similaridade.
@@ -162,16 +166,17 @@ Por que o cosino em NLP e embutidos domina: em textos, a duração do arquivo n�
 
 Produto de pontos dos dois vetores é:
 
-```
-a . b = a_1*b_1 + a_2*b_2 + ... + a_n*b_n
-      = ||a|| * ||b|| * cos(angle)
+```math
+\begin{aligned}
+a \cdot b &= a_1 b_1 + a_2 b_2 + \cdots + a_n b_n \\
+&= \lVert a \rVert \, \lVert b \rVert \cos(\text{角度})
+\end{aligned}
 ```
 
 A semelhança cosínica é de acordo com dois grandes números de pontos de produto de uma unificação posterior.
 
-```
-If ||a|| = 1 and ||b|| = 1:
-    a . b = cos(angle between a and b)
+```math
+\text{如果 } \lVert a \rVert = 1 \text{ 与 } \lVert b \rVert = 1: \quad a \cdot b = \cos(\text{夹角，介于 } a \text{ 与 } b)
 ```
 
 它们不同的情况:dot product 包含大小信息──大小更大的矢量会得到更高的点 product 分数──在一些检查系统中, se você quiser que os produtos de alta classificação sejam classificados, este ponto é muito importante──大小会作为隐式质量或重要性信号──
@@ -197,13 +202,13 @@ A distância euclidiana é igual a todas as dimensões. Mas se as suas caracter�
 
 A distância de Mahalanobis irá considerar a covariância da estrutura dos dados.
 
-```
-d_M(x, y) = sqrt((x - y)^T * S^(-1) * (x - y))
+```math
+d_M(x, y) = \sqrt{(x - y)^T S^{-1} (x - y)}
 ```
 
-Entre elas, S é a matriz de covariância dos dados.
+Entre eles $S$É a matriz de covariância dos dados.
 
-直观理解:Mahalanobis distância 会先对数据去相关并归归一化(whitening), então em transformação de espaço calcula L2 distância。 se S é matriz de identidade(不相关、单位差特征),Mahalanobis distância 就会退化为尤克利德的距离。
+直观理解:Mahalanobis distância 会先对数据去相关并归归一化(whitening), então em transformação posterior do espaço calcula L2 distância──如果$S$É uma matriz de identidade (→ Não relacionados, unidade de diferença), a distância de Mahalanobis é considerada a distância de Euclides.
 
 ```
 Example: height and weight are correlated.
@@ -225,8 +230,8 @@ because it accounts for the height-weight correlation.
 
 A semelhança de Jaccard mede a intensidade de sobreposição entre dois conjuntos.
 
-```
-J(A, B) = |A intersect B| / |A union B|
+```math
+J(A, B) = \frac{|A \cap B|}{|A \cup B|}
 ```
 
 Seu alcance é 0 ((( não se sobrepõe) até 1 (( conjunto é igual) ・・・ Distância de Jaccard = 1 - Semelhança de Jaccard。
@@ -263,7 +268,7 @@ sittin -> sitting (insert g)
 Edit distance = 3
 ```
 
-Utilize动态规划计算──填充一个矩阵,其中条目 (i, j) 是字符串 A 的前 i 个字符串与字符串 B 的前 j 个字符之间的编辑距离──
+Utilize动态规划计算──fill in a Matrix, entre eles 条目 $(i, j)$É um símbolo de um$i$个字符与字符串 B 的前 $j$Distância de edição entre os caracteres:
 
 ```
         ""  s  i  t  t  i  n  g
@@ -286,20 +291,20 @@ Utilize动态规划计算──填充一个矩阵,其中条目 (i, j) 是字符�
 
 A diferença KL é a diferença entre uma distribuição de probabilidade e outra distribuição de probabilidade. Este conteúdo foi mencionado na lição 09 , mas pertence a esta discussão, porque as pessoas costumam usá-lo como uma distância, embora não seja distância.
 
-```
-D_KL(P || Q) = sum(p(x) * log(p(x) / q(x)))
+```math
+D_{KL}(P \,\|\, Q) = \sum_x p(x) \log\frac{p(x)}{q(x)}
 ```
 
 关键性质:KL divergência não é对称的──
 
-```
-D_KL(P || Q) != D_KL(Q || P)
+```math
+D_{KL}(P \,\|\, Q) \ne D_{KL}(Q \,\|\, P)
 ```
 
 Isto significa que não satisfaz os requisitos básicos da quantidade de distância.
 
-Forward KL(D_KL(P   Q)) é meaning-seeking:Q 试图覆盖 P 的所有模式──
-Reverso KL(D_KL(Q   P)) é mode-seeking:Q 专注于P 的单个模式──
+Forward KL($D_{KL}(P \Vert Q)$) é a procura de significado:$Q$试图覆盖 $P$Todos os modos.
+Reversão KL($D_{KL}(Q \Vert P)$) é a procura de moda:$Q$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $P$De modo único.
 
 Você vai ver divergências KL nesses lugares:
 - VAEs ((ELBO 项 中的 KL 项会把 latente distribuição 推向前)
@@ -311,14 +316,14 @@ Você vai ver divergências KL nesses lugares:
 
 Distância de Wasserstein  medir transformar uma distribuição de probabilidade em outra distribuição de probabilidade  trabalhos mínimos necessários── pode-se entender assim: se uma distribuição é um monte de terra, a outra é um cratera, você precisa mover quantas terras  mover quantas distâncias?
 
-```
-W(P, Q) = inf over all transport plans gamma of E[d(x, y)]
+```math
+W(P, Q) = \inf_{\gamma} \mathbb{E}[d(x, y)] \quad \text{（遍历所有运输方案 } \gamma\text{）}
 ```
 
 Para 1D distribuição, ele se simplifica para a função de distribuição acumulativa de diferença absoluta:
 
-```
-W_1(P, Q) = integral |CDF_P(x) - CDF_Q(x)| dx
+```math
+W_1(P, Q) = \int |\text{CDF}_P(x) - \text{CDF}_Q(x)| \, dx
 ```
 
 Por que Wasserstein  importante:
@@ -353,7 +358,7 @@ Wasserstein gives a meaningful gradient. KL does not.
 | 集合重叠（标签、类别） | Jaccard | 数据天然是集合值，而不是 Vector 型 |
 | 字符串匹配 | Edit distance | 操作映射到人类编辑直觉 |
 | Outlier detection | Mahalanobis | 考虑特征相关性和尺度 |
-| 比较分布 | KL divergence | 衡量使用 Q 而不是 P 时丢失的信息 |
+| 比较分布 | KL divergence | 衡量使用 $Q$ 而不是 $P$ 时丢失的信息 |
 | GAN training | Wasserstein | 即使分布不重叠也能提供 Gradients |
 | Embeddings（vector DB） | Cosine or dot product | Embeddings 被训练为在方向中编码含义 |
 | 推荐 | Dot product | 大小可以编码流行度或置信度 |
@@ -404,7 +409,7 @@ Por que L1 irá produzir raridade e L2 não vai: imagine 2D  área de restriçã
 
 Cada função de distância inclui uma busca de vizinho mais próximo.
 
-Pesquisa de vizinho mais próxima em um conjunto de dados de dimensão n,d, a complexidade de cada consulta é O ((n * d) ⋅ para grandes conjuntos de dados, é muito lento.
+Buscar vizinho mais próximo está incluído$n$- Não.$d$A complexidade de cada consulta é$O(n \cdot d)$Para grandes conjuntos de dados, é muito lento.
 
 Algoritmos de aproximação do vizinho mais próximo (ANN) com menor quantidade de precisão em troca de uma grande velocidade:
 
@@ -470,7 +475,7 @@ Quando você está a usar`model.encode(text)`Então, quando você pesquisa o vec
 
 ## 练习
 
-1. 計算 (1, 2, 3) 和 (4, 0, 6)   之间的 L1、L2 和 L-infinity distances。验证对于任意一对点,总有L-inf <= L2 <= L1。证明为为这个顺序一定成立──
+1. 計算 (1, 2, 3) 和 (4, 0, 6)       L1、 L2 和 L-infinity distances──验证对任意一对点,总有 $L_\infty \le L_2 \le L_1$prova por que esta ordem deve existir
 
 2. 创建两个向量,使宇宙相似性 很高(> 0.9),但 L2 distância 很大(> 10)。 从几何角度解释发生了什么――然后创建两个向量,使宇宙相似性 很低(< 0.3),但 L2 distância 很小(< 0.5)。
 
@@ -480,6 +485,18 @@ Quando você está a usar`model.encode(text)`Então, quando você pesquisa o vec
 
 5. Para obter similaridade de Jaccard 实现 MinHash── gerar 100 个随机集合, calcular todos os pares de Jaccard,并使用 50、100、200 个 hash funções  MinHash 近似进行比较──绘制近似误差──
 
+### 提示
+
+**练习 1。**差向量为 (-3, 2, -3), portanto us `l1_norm`- Não.`l2_norm`和 `linf_norm`計算该向量的三种范数──证明时,将最大的 $\lvert d_i \rvert$Comparar com o quadrado e comparar com o valor absoluto e comparar com o quadrado e comparar com o valor absoluto e comparar com o quadrado e comparar com o valor absoluto e comparar com o valor absoluto e comparar com o valor absoluto e comparar com o valor absoluto e comparar com o valor absoluto e comparar com o valor absoluto.
+
+**练习 2。**A semelhança cosínica  ignora a longitude, portanto, primeiro toma dois direções de quase o mesmo veículo, e faz um deles muito longo do outro.`cosine_similarity`和 `l2_distance`检验两个条件――
+
+**练习 3。**- Não .`l1_distance`- Não.`l2_distance`- Não.`cosine_distance`和 `mahalanobis_distance`调用一次 `find_nearest_neighbor(query, dataset, distance_fn)`- Não.`demo_different_neighbors`O que é que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é.
+
+**练习 4。**Escrever o acumulado de cada distribuição, re-examinando o valor absoluto de dois grupos de acumulado e diferença.`wasserstein_1d(p, q)`查查两次计算结果, reutilizar a probabilidade de que a quantidade deve mover-se para explicar a distância maior do resultado.
+
+**练习 5。**Para cada função hash, a assinatura MinHash de um conjunto é o mínimo hash valor de seus elementos; dois conjuntos obtêm a mesma menor taxa de hash, que pode ser estimada em relação à sua similaridade Jaccard.`jaccard_similarity`Comparar; para $k$个哈希函数, erro差应大致按 $1/\sqrt{k}$Baixa-te.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |
@@ -487,15 +504,15 @@ Quando você está a usar`model.encode(text)`Então, quando você pesquisa o vec
 | Norm | “Vector 的大小” | 一个把 Vector 映射到非负标量的函数，满足三角不等式、绝对齐次性，并且只有零 Vector 的值为零 |
 | L1 norm | “Manhattan distance” | 分量绝对值之和。在优化中产生稀疏性。对 outliers 稳健 |
 | L2 norm | “Euclidean distance” | 平方分量之和的平方根。Euclidean space 中的直线距离 |
-| Lp norm | “Generalized norm” | 分量绝对值 p 次方之和的 p 次根。L1 和 L2 是特殊情况 |
-| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 p 趋近无穷大时 Lp 的极限 |
+| Lp norm | “Generalized norm” | 分量绝对值 $p$ 次方之和的 $p$ 次根。L1 和 L2 是特殊情况 |
+| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 $p$ 趋近无穷大时 Lp 的极限 |
 | Cosine similarity | “Vectors 之间的角度” | 按两个大小归一化的 dot product。范围从 -1 到 +1。忽略 Vector 长度 |
 | Cosine distance | “1 minus cosine similarity” | 将 cosine similarity 转换为距离。范围从 0 到 2 |
 | Dot product | “Unnormalized cosine” | 按分量相乘后求和。等于 cosine similarity 乘以两个大小 |
 | Mahalanobis distance | “Correlation-aware distance” | 在使用数据 covariance matrix 进行 whitened（去相关和归一化）后的空间中的 L2 distance |
 | Jaccard similarity | “Set overlap” | 交集大小除以并集大小。用于集合，而不是 Vectors |
 | Edit distance | “Levenshtein distance” | 将一个字符串转换为另一个字符串所需的最少插入、删除和替换次数 |
-| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 Q 编码 P 时产生的额外 bits |
+| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 $Q$ 编码 $P$ 时产生的额外 bits |
 | Wasserstein distance | “Earth mover's distance” | 将质量从一个分布运输到另一个分布所需的最小 work。真正的 metric |
 | Approximate nearest neighbor | “ANN search” | 比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
 | HNSW | “The vector DB algorithm” | Hierarchical Navigable Small World graph。用于快速 approximate nearest neighbor search 的多层图 |

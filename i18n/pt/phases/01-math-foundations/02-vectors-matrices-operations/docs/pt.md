@@ -40,11 +40,10 @@ Vector 2D `[3, 4]`Indicações de longitudes em quadrado (3, 4)
 
 ### Matriz: digital网格
 
-Matriz é uma 2D 网格──由行 和列 组成──一个 m x n Matrix 有 m 行和 n 列──
+Matriz é uma 2D 网格──由行 和列 组成──一个 $m \times n$Matrix tem .$m$行和 $n$- Não.
 
-```
-A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
-    | 4  5  6 |
+```math
+A = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \quad \text{2x3 Matrix（2 行，3 列）}
 ```
 
 Em redes neurais, matrizes de peso vão transformar vetores de entrada em vetores de saída.
@@ -80,16 +79,14 @@ Esta diferença faz com que os iniciantes caçam no chão.
 
 Elementos-wise: mesma posição相乘── duas matriz 必須具有相同形──
 
-```
-| 1  2 |   | 5  6 |   | 5  12 |
-| 3  4 | * | 7  8 | = | 21 32 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} * \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 5 & 12 \\ 21 & 32 \end{bmatrix}
 ```
 
 Multiplicação de matriz: linhas e colunas dos produtos de pontos.
 
-```
-| 1  2 |   | 5  6 |   | 1*5+2*7  1*6+2*8 |   | 19  22 |
-| 3  4 | @ | 7  8 | = | 3*5+4*7  3*6+4*8 | = | 43  50 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} @ \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\ 3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8 \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
 ```
 
 Diferentes cálculos, diferentes resultados, diferentes regras.
@@ -319,13 +316,21 @@ A classe Matrix que construímos aqui é a base para construir o mini framework 
 
 3. **构建一个 two-layer network。**Apenas usando sua classe Matrix((不使用NumPy), criar uma rede neural de duas camadas: entrada (3) -> oculta (4) -> saída (2)── inicialização de pesos aleatórios,运行一次前传,并验证所有形状都正确──
 
+### 提示
+
+**练习 1。**Para três matrizes`A @ A.inverse_2x2()`, comparar cada elemento com a matriz de unidade, o erro deve ser`1e-9`以内── para a linha de 0 de matrizes, por exemplo [[1, 2], [2, 4],`inverse_2x2`- Vou sair .`ValueError`É o resultado esperado.
+
+**练习 2。**計算 3x3 代数余子式矩阵,将其转置得到伴随矩阵,再将每个元素除为 `determinant()` Inspecção`A @ A_inv` get unit matrices, e cada elemento com `np.linalg.inv(A)` 的差异不超过 `1e-9`- Não.
+
+**练习 3。**相乘前先写出每个矩阵的形状:与 `demo_neural_network_layer`Como no meio,`W1`Por 4x3,`W2`Para 2x4──3x1 de entrada deve ser obtida 4x1 de veículo oculto e 2x1 de saída──
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Vector | “一支箭头” | 有序数字列表。在 AI 中：高维空间中的一个点。 |
 | Matrix | “一张数字表” | 一种 linear transformation。它把 vectors 从一个空间映射到另一个空间。 |
 | Matrix multiply | “就是把数字相乘” | 第一个 Matrix 的每一行与第二个 Matrix 的每一列之间的 dot products。顺序很重要。 |
-| Transpose | “翻转它” | 交换 rows 和 columns。把一个 m x n Matrix 变成 n x m。在 Backpropagation 中很关键。 |
+| Transpose | “翻转它” | 交换 rows 和 columns。把一个 $m \times n$ Matrix 变成 $n \times m$。在 Backpropagation 中很关键。 |
 | Determinant | “来自 Matrix 的某个数字” | 衡量 Matrix 对面积（2D）或体积（3D）的缩放程度。零表示这个 transformation 压扁了一个维度。 |
 | Inverse | “撤销这个 Matrix” | 反转该 transformation 的 Matrix。只有 determinant 不为零时才存在。 |
 | Identity matrix | “无聊的 Matrix” | Matrix 中等价于乘以 1 的对象。用于 residual connections（ResNets）。 |

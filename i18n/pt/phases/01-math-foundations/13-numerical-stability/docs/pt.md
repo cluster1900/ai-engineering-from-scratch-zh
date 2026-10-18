@@ -96,7 +96,7 @@ Relative error: 19.2%
 
 Isto significa que uma vez que a redução produz um erro relativo de 19%...
 
-- Utilize data mean value calculação:当 E[x] 很大时计算 `E[x^2] - E[x]^2`
+- Utilize data de média de valor calculada:当 $\mathbb{E}[x]$ muito grande $\mathbb{E}[x^2] - \mathbb{E}[x]^2$
 - Relativamente às probabilidades de logar de quase duas
 - Utilize过小 epsilon  calcular gradientes de diferença finita
 
@@ -141,20 +141,22 @@ Em meio ao ML,`exp()`Aparece no cálculo de softmax, sigmoide e probabilidade.`l
 
 Esse truque: em busca de exponente                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
-```
-log(sum(exp(x_i))) = max(x) + log(sum(exp(x_i - max(x))))
+```math
+\log\left(\sum_i \exp(x_i)\right) = \max(x) + \log\left(\sum_i \exp(x_i - \max(x))\right)
 ```
 
 Por que é eficaz: reduzir`max(x)`后, o maior exponente é `exp(0) = 1`△ não é possível ocorrer sobreflow― △ em busca e em busca pelo menos um item é 1, portanto o total e pelo menos é 1, enquanto ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de 1, e ∞ é um elemento de uma ordem de ∞ é um ∞`log(1) = 0`Não é possível.`-inf`- Não.
 
 prova:
 
-```
-log(sum(exp(x_i)))
-= log(sum(exp(x_i - c + c)))                    (add and subtract c)
-= log(sum(exp(x_i - c) * exp(c)))               (exp(a+b) = exp(a)*exp(b))
-= log(exp(c) * sum(exp(x_i - c)))               (factor out exp(c))
-= c + log(sum(exp(x_i - c)))                    (log(a*b) = log(a) + log(b))
+```math
+\begin{aligned}
+& \log\left(\sum_i \exp(x_i)\right) \\
+&= \log\left(\sum_i \exp(x_i - c + c)\right) && \text{（加上并减去 } c\text{）} \\
+&= \log\left(\sum_i \exp(x_i - c) \cdot \exp(c)\right) && (\exp(a+b) = \exp(a) \cdot \exp(b)) \\
+&= \log\left(\exp(c) \cdot \sum_i \exp(x_i - c)\right) && \text{（提取公因子 } \exp(c)\text{）} \\
+&= c + \log\left(\sum_i \exp(x_i - c)\right) && (\log(a \cdot b) = \log(a) + \log(b))
+\end{aligned}
 ```
 
 Que`c = max(x)`O fluxo excesivo é eliminado.
@@ -170,8 +172,8 @@ Este truque é visto em todos os lugares do ML:
 
 Softmax vai fazer logits 转换为概率:
 
-```
-softmax(x_i) = exp(x_i) / sum(exp(x_j))
+```math
+\mathop{\mathrm{softmax}}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
 ```
 
 Não há truque, o logiteiro vai levar ao desbordamento.
@@ -242,18 +244,18 @@ Gradientes analíticos (de Backpropagation) pode haver bugs.
 
 Diferença centralizada 公式:
 
-```
-df/dx ~= (f(x + h) - f(x - h)) / (2h)
+```math
+\frac{df}{dx} \approx \frac{f(x + h) - f(x - h)}{2h}
 ```
 
-É o O (h^2) 精度, muito melhor que a diferença para a frente `(f(x+h) - f(x)) / h`,后者只有 O (h) ⋅
+É isso .$O(h^2)$精度, distante melhor que a diferença para a frente $(f(x+h) - f(x)) / h$O último só .$O(h)$- Não.
 
-选择 h:太大则近似不准确──太小则 灾难性取消 会毁掉结果──`h = 1e-5`Até`1e-7`É muito comum.
+选择 $h$O que é que é que é? O que é que é que é que é que é?`h = 1e-5`Até`1e-7`É muito comum.
 
 检查方式: cálculo diferença relativa entre gradientes analíticos e numéricos 
 
-```
-relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{relative\_error} = \frac{\lvert \text{grad}_{\text{analytical}} - \text{grad}_{\text{numerical}} \rvert}{\max(\lvert \text{grad}_{\text{analytical}} \rvert, \lvert \text{grad}_{\text{numerical}} \rvert, 10^{-8})}
 ```
 
 经验规则:
@@ -289,7 +291,7 @@ Cada vez que se realiza uma nova camada ou Função de Perda, temos que verifica
 5. Net effect: same update, but no underflow
 ```
 
-Dinâmica de perda de escala 会自动调整尺度因子──从一个大值(65536)开始──如果梯度过成 `inf`Se N 步 não se sobrecarregar, aumenta-se.
+Dinâmica de perda de escala 会自动调整尺度因子──从一个大值(65536)开始──如果梯度过成 `inf`- Não, não.$N$Não há sobreflow, apenas aumenta.
 
 ### Bfloat16 vs. Float16: Por que Bfloat16 Em treinamento
 
@@ -350,8 +352,8 @@ Layer 50: values in [0, inf]
 
 Normalização 会在每一层重新居中并重新缩放激活:
 
-```
-LayerNorm(x) = (x - mean(x)) / (std(x) + epsilon) * gamma + beta
+```math
+\mathop{\mathrm{LayerNorm}}(x) = \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x) + \epsilon} \cdot \gamma + \beta
 ```
 
 `epsilon`(normalmente para 1e-5) irá em todas as atividades estar simultaneamente a impedir a eliminação de zero.`gamma`和 `beta`Deixe a rede recuperar qualquer escala que precise.
@@ -569,7 +571,7 @@ Estes estáveis serão realizados na fase 3 da construção de um ciclo de trein
 
 ## 练习
 
-1. **Catastrophic cancellation。**Use float32 中的天真公式 `E[x^2] - E[x]^2`計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法 计算──将误差与真实方差──0.6667) 相比──
+1. **Catastrophic cancellation。**Use float32 中的天真公式 $\mathbb{E}[x^2] - \mathbb{E}[x]^2$計算 [1000000.0, 1000001.0, 1000002.0] 的方差──然后使用威尔福德的在线算法 计算──将误差与真实方差──0.6667) 相比──
 
 2. **Precision hunt。**Em Python encontrar o mínimo de float32  valor`x`, fazer `1.0 + x == 1.0`É a máquina que faz a epsilon.`numpy.finfo(numpy.float32).eps`- Não.
 
@@ -579,17 +581,29 @@ Estes estáveis serão realizados na fase 3 da construção de um ciclo de trein
 
 5. **Loss scaling experiment。**模拟 float16 训练:创建范围在 [1e-9, 1e-3] 内的随机梯度,转换为 float16,并测量有多少比例变成零――然后应用损失规模(乘以 1024),转换为 float16,再规模回,并再次测量零比例――
 
+### 提示
+
+**练习 1。**Em primeiro lugar,`np.float32`转换 these三个值,然后调用 `variance_naive`和 `welford_variance`◊ float32 $10^{12}$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+
+**练习 2。**De`x = np.float32(1.0)`Começa, só que`np.float32(1.0) + x != np.float32(1.0)`Em relação ao valor de cada tipo, o valor de cada tipo de tipo de float32 continua a ser alterado.`numpy.finfo(numpy.float32).eps`Comparar, último $2^{-23}$- Não.
+
+**练习 3。**Previo antecedente para cada resposta.$n$个相等的值                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $c$, resultado para$c + \ln n$ Apenas um valor muito grande, o resultado se aproxima desse valor  Para o valor de -1000, o resultado se aproxima $-1000 + \ln n$, e`logsumexp_naive` Retorno `-inf`, porque cada índice é inferior a 0
+
+**练习 4。**Para o$y = Wx + b$E perdas$L$- Não .$W$A escala é a escala superior com a escala superior.$x$O resultado é o resultado da perda.$W$Of função,调用 `numerical_gradient`, e transmitirão resultados .`check_gradient`- Não.
+
+**练习 5。**- Não .`10 ** np.random.uniform(-9, -3, n)`Em comparação com a escala, a quantidade de valores é de grande dimensão, não é utilizada.`np.float16`转换──Float16 无法保留小于约 $6 \times 10^{-8}$O valor de um valor de 1024 quase não varia para zero.
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | IEEE 754 | “float 标准” | 定义 binary floating point formats、rounding rules 和 special values（inf、nan）的国际标准。每个现代 CPU 和 GPU 都实现了它。 |
-| Machine epsilon | “精度极限” | 在给定 float format 中，使 1.0 + e != 1.0 成立的最小值 e。对于 float32，它约为 1.19e-7。 |
+| Machine epsilon | “精度极限” | 在给定 float format 中，使 $1.0 + e \ne 1.0$ 成立的最小值 $e$。对于 float32，它约为 1.19e-7。 |
 | Catastrophic cancellation | “减法导致的精度损失” | 相减两个几乎相等的 floating point 数时，有效数字相互抵消，rounding noise 主导结果。 |
 | Overflow | “数字太大” | 结果超过最大可表示值并变成 inf。exp(89) 会使 float32 overflow。 |
 | Underflow | “数字太小” | 结果比最小可表示正数还接近零，并变成 0.0。exp(-104) 会使 float32 underflow。 |
-| Log-sum-exp trick | “先减去最大值” | 通过提出 exp(max(x)) 来计算 log(sum(exp(x)))，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
-| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 max(logits)。结果在数值上相同，且不可能 overflow。 |
+| Log-sum-exp trick | “先减去最大值” | 通过提出 $\exp(\max(x))$ 来计算 $\log(\sum \exp(x))$，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
+| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 $\max(\text{logits})$。结果在数值上相同，且不可能 overflow。 |
 | Gradient checking | “校验你的 Backpropagation” | 将 Backpropagation 得到的 analytical gradients 与 finite differences 得到的 numerical gradients 比较，以捕获实现 bug。 |
 | Mixed precision | “Float16 forward，float32 backward” | 对 speed-critical operations 使用低精度 floats，对 numerically sensitive operations 使用高精度 floats。典型提速为 2-3x。 |
 | Loss scaling | “防止 Gradient underflow” | 在 Backpropagation 前将 Loss 乘以一个大常数，使 gradients 保持在 float16 可表示范围内，然后在 weight updates 前除以同一个常数。 |
@@ -597,7 +611,7 @@ Estes estáveis serão realizados na fase 3 da construção de um ciclo de trein
 | Gradient clipping | “限制 Gradient norm” | 缩放 Gradient Vector，使其 norm 不超过阈值。防止 exploding gradients 毁掉 weights。 |
 | NaN | “Not a Number” | 来自未定义操作（0/0、inf-inf、sqrt(-1)）的特殊 float value。会传播到所有后续 arithmetic。 |
 | Inf | “Infinity” | 来自 overflow 或除以零的特殊 float value。可以组合产生 NaN（inf - inf、inf * 0）。 |
-| Numerical gradient | “暴力求导” | 通过计算 f(x+h) 和 f(x-h)，再除以 2h 来近似 derivative。很慢，但用于校验时可靠。 |
+| Numerical gradient | “暴力求导” | 通过计算 $f(x+h)$ 和 $f(x-h)$，再除以 $2h$ 来近似 derivative。很慢，但用于校验时可靠。 |
 
 ## 延伸阅读
 

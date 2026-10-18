@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## Objectivo de aprendizagem
-- 通過功率反復 实现 SVD,并解释 U、Sigma 和 V^T 的几何含义
+- 通過電源代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代$U$- Não.$\Sigma$和 $V^T$De geometria
 -  aplicado SVD truncado  realizar compressão de imagem,并 medir a relação entre a taxa de compressão e o erro de reconstrução
 -  através de SVD  calcular Moore-Penrose pseudoinverso, para buscar solução super-determinado mínimos-quadrados  sistema
 - Para identificar os fatores latentes (LATENTS) e a análise semântica latente da PNL
@@ -23,17 +23,14 @@ O SVD é aplicável a qualquer Matriz. Qualquer forma, qualquer grau, qualquer c
 
 Cada Matriz, independentemente da forma, executará três operações em ordem: rotação, encolhimento, rotação.
 
-```
-A = U * Sigma * V^T
-
-      m x n     m x m    m x n    n x n
-     (任意)    (旋转)   (缩放)   (旋转)
+```math
+\underset{\substack{m \times n \\ \text{（任意形状）}}}{A} = \underset{\substack{m \times m \\ \text{（旋转）}}}{U} \cdot \underset{\substack{m \times n \\ \text{（缩放）}}}{\Sigma} \cdot \underset{\substack{n \times n \\ \text{（旋转）}}}{V^T}
 ```
 
-给定任意 Matrix A,SVD将将其分解为:
-- V^T 旋转输入空间 (n 维) Vector em
-- Sigma  em cada eixo para ser acessado 拉伸或压缩)
-- U 将结果旋转到输出空间 (m 维)
+给定任意 Matrix $A$,SVD irá descompô-lo em:
+- $V^T$旋转输入空间 (transformação de espaço)$n$Vector em 维)
+- $\Sigma$沿每个轴进行缩放 (拉伸或压缩)
+- $U$O resultado vai virar para o espaço de saída.$m$维)
 
 ```mermaid
 graph LR
@@ -41,35 +38,35 @@ graph LR
     B -->|"U\n(旋转)"| C["输出空间 (m-dim)\n旋转到输出\n方向"]
 ```
 
-Pode-se entender assim. Você coloca uma Matriz em SVD. Ela diz-lhe:  Esta Matriz irá primeiro usar V^T  rotar para inserir o esboço, depois usar Sigma para estender-se em  bola, e finalmente usar U  rota esta  bola.  O valor estranho é a comprimento de cada eixo da bola.
+Pode-se perceber assim. Você entregou uma Matriz para a SVD.$V^T$旋转输入球体, então usar $\Sigma$E depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois, depois de mais, de mais, depois, depois, de mais, de mais, depois, de mais, de mais, de mais, mais, mais, mais, mais, mais, mais, mais mais, mais mais mais, mais mais mais, mais mais mais mais, mais mais mais, mais mais mais mais mais mais mais mais mais, mais mais mais mais uma vez, mais uma.$U$O valor de rotação é a extensão de cada eixo da bola.
 
 ### A completa decomposição
 
-对于形为 m x n 的矩阵 A:
+对于形为 $m \times n$De Matrix $A$- Não .
 
+```math
+\begin{aligned}
+& A = U \cdot \Sigma \cdot V^T \\[6pt]
+& \text{其中：} \\
+& \quad U \text{ 为 } m \times m, \text{，正交 } (U^T U = I) \\
+& \quad \Sigma \text{ 为 } m \times n, \text{，对角矩阵（对角线为奇异值）} \\
+& \quad V \text{ 为 } n \times n, \text{，正交 } (V^T V = I) \\[6pt]
+& \text{奇异值 } \sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0 \\
+& \text{其中 } r = \mathop{\mathrm{rank}}(A)
+\end{aligned}
 ```
-A = U * Sigma * V^T
 
-其中：
-  U     是 m x m，正交 (U^T U = I)
-  Sigma 是 m x n，对角（奇异值位于对角线上）
-  V     是 n x n，正交 (V^T V = I)
-
-奇异值 sigma_1 >= sigma_2 >= ... >= sigma_r > 0
-其中 r = rank(A)
-```
-
-U de uma linha é chamada de V de um vector estranho. A linha de V é chamada de V de um vector estranho.
+$U$É chamado de Vêctor de Curiosidade.$V$É chamado de Vêctor de Diferença Direita.$\Sigma$Os elementos de um canto são chamados de valores estranhos.
 
 ### Vêctores singulares de esquerda, valores singulares, vetores singulares de direita
 
 Cada componente do SVD tem diferentes significados geográficos.
 
-**Right singular vectors（V 的列）：**Eles são direções no espaço de entrada, a matriz irá mapear essas direções para direções de saída no espaço de entrada.
+**Right singular vectors（$V$ 的列）：**它们为输入空间($\mathbb{R}^n$(a) constituem um conjunto de bases ortônormais. São direções no espaço de entrada, a matriz irá mapear essas direções para direções de saída.
 
-**Singular values（Sigma 的对角线）：**Eles são factores de enfraquecimento. O primeiro valor de uma matriz é o segundo valor de uma matriz.
+**Singular values（$\Sigma$ 的对角线）：**Eles são factores de enfraquecimento. O primeiro valor de uma matriz é o segundo valor de uma matriz.
 
-**Left singular vectors（U 的列）：**它们为输出空间(R^m) compõem um conjunto de bases ortónómicas。
+**Left singular vectors（$U$ 的列）：**Eles são para o espaço de saída.$\mathbb{R}^m$) constituir um conjunto de base ortônormal. O primeiro vetor esquerdário é o segundo vetor direito.
 
 Relações entre elas:
 
@@ -95,20 +92,20 @@ A = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T + ... + sigma_r * u_r * v_r^T
 
 Esta forma é a base da aproximação de baixo nível. Cada um deles adiciona uma estrutura de uma camada. O primeiro capta um modelo mais importante. O segundo capta um modelo mais importante.
 
-```
-Rank-1 approx:    A_1 = sigma_1 * u_1 * v_1^T
-                  (捕获主导模式)
-
-Rank-2 approx:    A_2 = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T
-                  (捕获两个最重要的模式)
-
-Rank-k approx:    A_k = top k 项之和
-                  (根据 Eckart-Young theorem，这是最优的)
+```math
+\begin{aligned}
+\text{秩 1 近似：} \quad & A_1 = \sigma_1 u_1 v_1^T \\
+& \text{（捕捉主导模式）} \\[6pt]
+\text{秩 2 近似：} \quad & A_2 = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T \\
+& \text{（捕捉最重要的两个模式）} \\[6pt]
+\text{秩 }k\text{ 近似：} \quad & A_k = \text{前 } k \text{ 项之和} \\
+& \text{（由 Eckart-Young 定理可知最优）}
+\end{aligned}
 ```
 
 ### Relação com a sua própria composição
 
-SVD e sua própria composição têm uma profunda ligação. A de valores estranhos e vetores estranhos provêm diretamente dos valores próprios de A^T A e A^T com os vetores próprios.
+A SVD e a sua própria composição têm uma profunda ligação.$A$O vector estranho e o estranho vêm diretamente de$A^T A$和 $A A^T$de valores próprios e de vetores próprios.
 
 ```
 A^T A = V * Sigma^T * U^T * U * Sigma * V^T
@@ -132,41 +129,41 @@ A A^T = U * Sigma * V^T * V * Sigma^T * U^T
 
 Este contacto diz-te três coisas:
 1. 奇异值总是实数且非负 () 它们是正半确矩阵的自值的平方根) 
-2. Você pode fazer sua própria composição com A^T A para calcular SVD, mas isso vai causar um número de condição quadrada e não perder a precisão da quantidade.
-3. Quando A é uma forma de forma simétrica e é semi-definida, a SVD e sua própria composição são a mesma coisa.
+2. Podes passar por lá.$A^T A$Faça sua própria composição para calcular o SVD, mas este número de condição quadrada não perderá a precisão da quantidade.
+3. - Não .$A$Se for de forma simétrica e positiva semi-definida, a SVD e a sua própria composição são a mesma coisa.
 
 ### SVD truncado: aproximação de baixo nível
 
-O teorema de Eckart-Young-Mirsky mostra que a melhor classificação de K é similar à norma de Frobenius e à norma espectral abaixo, podendo ser apenas retido através do valor superior de K e seu vector de correspondência.
+O teorema de Eckart-Young-Mirsky mostra,$A$O melhor$\text{rank-}k$Próximo à norma de Frobenius e à norma espectral abaixo, só pode ser reservado o topo.$k$个奇异值及其对应 Vector 得到:
 
+```math
+\begin{aligned}
+& A_k = U_k \cdot \Sigma_k \cdot V_k^T \\[6pt]
+& \text{其中：} \\
+& \quad U_k \text{ 为 } m \times k \quad \text{（前 } k \text{ 列，来自 } U\text{）} \\
+& \quad \Sigma_k \text{ 为 } k \times k \quad \text{（左上角 } k \times k \text{ 子块，来自 } \Sigma\text{）} \\
+& \quad V_k \text{ 为 } n \times k \quad \text{（前 } k \text{ 列，来自 } V\text{）} \\[6pt]
+& \text{近似误差} = \sigma_{k+1} \quad \text{（谱范数下）} \\
+& \text{近似误差} = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_r^2} \quad \text{（Frobenius 范数下）}
+\end{aligned}
 ```
-A_k = U_k * Sigma_k * V_k^T
 
-其中：
-  U_k     是 m x k  (U 的前 k 列)
-  Sigma_k 是 k x k  (Sigma 的左上 k x k 块)
-  V_k     是 n x k  (V 的前 k 列)
-
-近似误差 = sigma_{k+1}  (在 spectral norm 下)
-         = sqrt(sigma_{k+1}^2 + ... + sigma_r^2)  (在 Frobenius norm 下)
-```
-
-Não é apenas uma boa aproximação. É a melhor classificação de aproximação. Não há outra matriz de classificação que possa se aproximar mais de A.
+Não é apenas uma boa aproximação, é a melhor classificação.$k$Não há outro.$\text{rank-}k$Matrix 能更接近 $A$- Não.
 
 | Component | Relative magnitude | Kept in rank-3 approx? |
 |-----------|-------------------|------------------------|
-| sigma_1 | 最大 | 是 |
-| sigma_2 | 大 | 是 |
-| sigma_3 | 中等偏大 | 是 |
-| sigma_4 | 中等 | 否（误差） |
-| sigma_5 | 中等偏小 | 否（误差） |
-| sigma_6 | 小 | 否（误差） |
-| sigma_7 | 很小 | 否（误差） |
-| sigma_8 | 极小 | 否（误差） |
+| $\sigma_1$ | 最大 | 是 |
+| $\sigma_2$ | 大 | 是 |
+| $\sigma_3$ | 中等偏大 | 是 |
+| $\sigma_4$ | 中等 | 否（误差） |
+| $\sigma_5$ | 中等偏小 | 否（误差） |
+| $\sigma_6$ | 小 | 否（误差） |
+| $\sigma_7$ | 很小 | 否（误差） |
+| $\sigma_8$ | 极小 | 否（误差） |
 
-保留 top 3:A_3 捕获三个最大奇异值──误差 = 剩余值(sigma_4 到 sigma_8)。
+Mantém o top 3:$A_3$Capturar os três maiores valores estranhos.$\sigma_4$Até$\sigma_8$)。
 
-Se o valor de uma anomalia diminuir rapidamente, um k muito pequeno pode capturar a maior parte da informação da matriz. Se a anomalia diminuir lentamente, a matriz não terá uma estrutura de baixo nível.
+Se o valor estranho diminuir rapidamente, um muito pequeno.$k$Se a decadência for lenta, a Matriz não terá uma estrutura de baixo nível.
 
 ### Utilize SVD  para fazer compressão de imagem
 
@@ -208,9 +205,9 @@ O Netflix Prize 让这个点广为人知──你有一个用户电影评分矩�
 核心思想:这个评分 矩阵 具有低级别──用户的品味不是完全独立──有几个隐藏因素──动作 vs.剧情、旧 vs.新、理性 vs.感官) 可以解释大多数偏好──
 
 Para ((reempleno) de) avaliações Matrix fazer SVD, vai se descompõe em:
-- U:espaço de fatores latentes 中的用户配置
-- Sigma: importância de cada fator latente
-- V^T:espaço de fatores latentes 中的电影资料
+- $U$:latent factor space 中的用户配置文件
+- $\Sigma$: importância de cada fator latente
+- $V^T$:latent factor space 中的电影配置文件
 
 O perfil do usuário é comparado com o produto do perfil do filme.
 
@@ -250,23 +247,23 @@ Os dados de ruído geralmente concentram o sinal no valor de alto estrangeiro, e
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 接近零 | 可忽略 |
-| sigma_5 | 接近零 | 可忽略 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 接近零 | 可忽略 |
+| $\sigma_5$ | 接近零 | 可忽略 |
 
 **有噪声信号的奇异值（噪声会加到所有分量上）：**
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 小 | 噪声 |
-| sigma_5 | 小 | 噪声 |
-| sigma_6 | 小 | 噪声 |
-| sigma_7 | 小 | 噪声 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 小 | 噪声 |
+| $\sigma_5$ | 小 | 噪声 |
+| $\sigma_6$ | 小 | 噪声 |
+| $\sigma_7$ | 小 | 噪声 |
 
 ```mermaid
 graph TD
@@ -280,7 +277,7 @@ Isto é usado para processamento de sinais, medição científica e limpeza de d
 
 ### Pseudoinversos através de SVD
 
-Moore-Penrose pseudoinverso A+ irá inversionar a Matriz                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+Moore-Penrose pseudo-inversário $A^+$Para que a inversão da matriz se torne muito simples,
 
 ```
 如果 A = U * Sigma * V^T，那么：
@@ -296,7 +293,7 @@ A+ = V * Sigma+ * U^T
 对于 Sigma (m x n)：  Sigma+ 是 (n x m)
 ```
 
-pseudoinverso pode ser solicitado menos-quadrados 问题──如果Ax = b 没有精确解(超定系统),那么x = A+b 就是最小-quadrados 解(最小化 Ax - b 时时时时时) ‖
+pseudoinverso pode ser solicitado para resolver os mínimos quadrados 问题──如果 $Ax = b$Não há uma solução, então...$x = A^+ b$É o menor número de quadrados.$\lVert Ax - b \rVert$)。
 
 ```
 超定系统（方程数多于未知数）：
@@ -314,7 +311,7 @@ pseudoinverso pode ser solicitado menos-quadrados 问题──如果Ax = b 没�
 
 ### Estabilidade numérica 优势
 
-計算 A^T A's eigendecomposition 会平方奇异值(A^T A's eigenvalues are sigma_i^2)。
+计算 $A^T A$De sua própria composição 会平方奇异值$A^T A$Os valores próprios são:$\sigma_i^2$O número de condição quadrada aumenta o número de erros de valor.
 
 ```
 示例：
@@ -329,7 +326,7 @@ pseudoinverso pode ser solicitado menos-quadrados 问题──如果Ax = b 没�
                    （额外损失 6 位精度）
 ```
 
-现代 SVD 算法(Golub-Kahan bi-diagonalização) diretamente em A 上工作,从不构建 A^T A── é por isso que você deve sempre priorizar o uso `np.linalg.svd(A)`- Não .`np.linalg.eig(A.T @ A)`- Não.
+现代 SVD 算法(Golub-Kahan bi-diagonalização) diretamente em $A$上工作,从不构造 $A^T A$É por isso que deves sempre priorizar o uso.`np.linalg.svd(A)`- Não .`np.linalg.eig(A.T @ A)`- Não.
 
 ### Conexão ao PCA
 
@@ -365,7 +362,7 @@ svd-rank-reconstruction
 ## Construí-lo
 ### 步骤 1: SVD a partir do zero usando iteração de potência
 
-Pensa: para encontrar o maior valor estranho e seu vetor, podemos usar a iteração de potência A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T A^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^T^
+Pensamento: para encontrar o maior valor estranho e seu vetor, podemos$A^T A$(ou $A A^T$(MATRICS) e depois faz deflação,并重复寻找下一个奇异值──
 
 ```python
 import numpy as np
@@ -507,7 +504,7 @@ julia svd.jl
 - `outputs/skill-svd.md`- uma habilidade para entender quando e como aplicar o SVD em projetos reais
 
 ## 练习
-1. Desde zero para realizar um SVD completo, não usar a iteração de potência.
+1. Desde zero realizar SVD completo, não usar iteração de potência.$A^T A$A composição própria para obter$V$E depois, calcula-se.$U = A V \Sigma^{-1}$△将数值精度与你的功率反复 版本以及 NumPy 进行比较──
 
 2. Carregar uma imagem de graça real (ou transformar uma imagem em graça) ⋅ em 1⁄5, 10⁄2, 25⁄5, 50⁄100 ⋅ em cada posição, calcular a taxa de compressão e os erros relativos ⋅ encontrar uma imagem que se torne aceitável na visão ⋅
 
@@ -515,22 +512,34 @@ julia svd.jl
 
 4.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
-5. 生成一个干净的低级矩阵(rank 3,大小 50x40),并不同水平下添加高斯噪音(sigma = 0,1、0.5、1.0、2.0)。 para cada nível de ruído, através de k=1 até 40 扫描并测量对干净矩阵的重建错误, encontrar a melhor classificação de corte。
+5. 生成一个干净的低级矩阵(rank 3,大小 50x40), e em diferentes níveis abaixo adicionar ruído gaussiano($\sigma$= 0,1 ̊ 0,5 ̊ 1,0 ̊ 2,0) ̊ para cada nível de ruído, através de $k$=1 a 40 扫描并测量对干净矩阵的重建错误,找到最优截断排名──绘制最优$k$Como o nível do ruído varia?
+
+### 提示
+
+**练习 1。**计算 $A^T A$, usá-lo`np.linalg.eigh` get its characteristic value and characteristic value,并按特征值降排列──奇异值是特征值的平方根;检查 $U \Sigma V^T$能重构 $A$,并将误差与 `svd_from_scratch`和 `np.linalg.svd`Comparar.
+
+**练习 2。**Para cada categoria`truncated_svd`, usá-lo`reconstruct`Gravamento de imagens, us `compression_ratio(m, n, k)`計算大小──相对差差必须随着等级 增长而下降; primeiro não parece sair de um bloqueo obvio de erro de ranking é a resposta──
+
+**练习 3。**标记缺失单元格, 填充, 再使用 `truncated_svd`和 `reconstruct`Gravamento de classificação 3 近似──随后衡量结果:统计超出评分范围的预测数量,并印印已知单元格中最大变化──rango 3 近似不保证这两性质,因此, se for necessário uma avaliação legal, deve cortar a previsão para a categoria de avaliação──
+
+**练习 4。**Para cada tema, distribuir 5 blocos de palavras, que o arquivo do tema tenha um maior número de palavras, reincorporando uma pequena quantidade de ruído.
+
+**练习 5。**Se você está usando uma matriz de 50x3 e uma matriz de 3x40, obtém uma matriz de cada um.$\sigma$加入噪声──对每个 $k$, Comparar com o rank $k$Gravamento e produção de águas residuais; pré-espectos de baixa ruído$k$接近3,高噪声时更小──
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| SVD | “Factor 任意 Matrix” | 将 A 分解为 U Sigma V^T，其中 U 和 V 是正交的，Sigma 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
-| Singular value | “这个 component 有多重要” | Sigma 的第 i 个对角元素。衡量 Matrix 沿第 i 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
-| Left singular vector | “输出方向” | U 的一列。第 i 个右奇异Vector 经过 sigma_i 缩放后映射到的输出空间方向。 |
-| Right singular vector | “输入方向” | V 的一列。输入空间中的一个方向，Matrix 会将其映射到第 i 个左奇异Vector（经过 sigma_i 缩放后）。 |
-| Truncated SVD | “Low-rank approximation” | 只保留 top k 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 rank-k 近似（Eckart-Young theorem）。 |
+| SVD | “Factor 任意 Matrix” | 将 $A$ 分解为 $U \Sigma V^T$，其中 $U$ 和 $V$ 是正交的，$\Sigma$ 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
+| Singular value | “这个 component 有多重要” | $\Sigma$ 的第 $i$ 个对角元素。衡量 Matrix 沿第 $i$ 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
+| Left singular vector | “输出方向” | $U$ 的一列。第 $i$ 个右奇异Vector 经过 $\sigma_i$ 缩放后映射到的输出空间方向。 |
+| Right singular vector | “输入方向” | $V$ 的一列。输入空间中的一个方向，Matrix 会将其映射到第 $i$ 个左奇异Vector（经过 $\sigma_i$ 缩放后）。 |
+| Truncated SVD | “Low-rank approximation” | 只保留 top $k$ 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 $\text{rank-}k$ 近似（Eckart-Young theorem）。 |
 | Rank | “真实维度” | 非零奇异值的数量。告诉你 Matrix 实际使用了多少个独立方向。 |
-| Pseudoinverse | “广义逆” | V Sigma+ U^T。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
-| Condition number | “对误差有多敏感” | sigma_max / sigma_min。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
+| Pseudoinverse | “广义逆” | $V \Sigma^+ U^T$。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
+| Condition number | “对误差有多敏感” | $\sigma_{\max} / \sigma_{\min}$。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
 | Latent factor | “隐藏变量” | SVD 发现的 low-rank space 中的一个维度。在推荐中，latent factor 可能对应类型偏好。在 NLP 中，它可能对应一个主题。 |
 | Frobenius norm | “Matrix 的总大小” | 所有元素平方和的平方根。等于所有奇异值平方和的平方根。用于衡量近似误差。 |
-| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank k，truncated SVD 会在所有可能的 rank-k Matrix 中最小化近似误差。 |
+| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank $k$，truncated SVD 会在所有可能的 $\text{rank-}k$ Matrix 中最小化近似误差。 |
 | Power iteration | “找到最大的 eigenvector” | 反复用 Matrix 乘以一个随机 Vector 并归一化。会收敛到具有最大 eigenvalue 的 eigenvector。它是许多 SVD 算法的构建模块。 |
 
 ## 延伸阅读
