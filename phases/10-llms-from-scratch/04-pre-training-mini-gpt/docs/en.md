@@ -138,13 +138,13 @@ graph LR
     style V fill:#1a1a2e,stroke:#0f3460,color:#fff
 ```
 
-除以 sqrt(d_k)——sqrt(64) = 8——是 scaling。没有它，高维 Vector 的 dot product 会变得很大，把 softmax 推到 Gradient 几乎为零的区域。这是原始 “Attention Is All You Need” paper 中的关键洞见之一。
+除以 $\sqrt{d_k}$——$\sqrt{64} = 8$——是 scaling。没有它，高维 Vector 的 dot product 会变得很大，把 softmax 推到 Gradient 几乎为零的区域。这是原始 “Attention Is All You Need” paper 中的关键洞见之一。
 
 ### KV Cache: 推理为什么快
 
-训练时，你会一次处理整个 sequence。Inference 时，你一次生成一个 Token。如果没有优化，生成 Token N 需要为前面所有 N-1 个 Token 重新计算 Attention。对于每个生成 Token，这是 O(N)，对于长度为 N 的 sequence，总体是 O(N^2) 的 Attention score 计算，并且还会重复执行大量输入侧 Matrix multiplication。
+训练时，你会一次处理整个 sequence。Inference 时，你一次生成一个 Token。如果没有优化，生成 Token $N$ 需要为前面所有 $N-1$ 个 Token 重新计算 Attention。对于每个生成 Token，这是 $O(N)$，对于长度为 $N$ 的 sequence，总体是 $O(N^2)$ 的 Attention score 计算，并且还会重复执行大量输入侧 Matrix multiplication。
 
-KV Cache 解决了这个问题。为每个 Token 计算出 K 和 V 后，把它们存起来。当生成 Token N+1 时，你只需要为新 Token 计算 Q，并查找所有之前 Token 的 cached K 和 V。这会把 K 和 V 计算的 per-token cost 从 O(N) 降到 O(1)。Attention score calculation 仍然是 O(N)，因为你要 attend to 所有之前的位置，但你避免了对 input 进行冗余 Matrix multiplications。
+KV Cache 解决了这个问题。为每个 Token 计算出 K 和 V 后，把它们存起来。当生成 Token $N+1$ 时，你只需要为新 Token 计算 Q，并查找所有之前 Token 的 cached K 和 V。这会把 K 和 V 计算的 per-token cost 从 $O(N)$ 降到 $O(1)$。Attention score calculation 仍然是 $O(N)$，因为你要 attend to 所有之前的位置，但你避免了对 input 进行冗余 Matrix multiplications。
 
 对于包含 12 layers 和 12 heads 的 GPT-2，KV cache 会为每个 Token 存储 2（K + V）x 12 layers x 12 heads x 64 dims = 18,432 个值。对于 1024-Token sequence，这在 FP32 下大约是 75MB。对于拥有 128 layers 的 Llama 3 405B，单个 sequence 的 KV cache 可能超过 10GB。这就是为什么 long-context inference 受 memory 约束。
 
@@ -208,7 +208,7 @@ learning rate schedule 比你想象的更重要。GPT-2 在前 2,000 steps 中�
 |-----------|-------|------------|
 | Token embeddings | (50257, 768) | 38,597,376 |
 | Position embeddings | (1024, 768) | 786,432 |
-| Per-block attention (W_q, W_k, W_v, W_out) | 4 x (768, 768) | 2,359,296 |
+| Per-block attention ($W_q, W_k, W_v, W_{\text{out}}$) | 4 x (768, 768) | 2,359,296 |
 | Per-block FFN (up + down) | (768, 3072) + (3072, 768) | 4,718,592 |
 | Per-block LayerNorms (2x) | 2 x 768 x 2 | 3,072 |
 | Final LayerNorm | 768 x 2 | 1,536 |
@@ -259,7 +259,7 @@ def attention(Q, K, V, mask=None):
     return weights @ V
 ```
 
-softmax 实现会在 exponentiating 前减去最大值。否则，exp(large_number) 会 overflow 成 infinity。这是一个数值稳定性技巧，并不会改变输出，因为对于任意常数 c，softmax(x - c) = softmax(x)。
+softmax 实现会在 exponentiating 前减去最大值。否则，exp(large_number) 会 overflow 成 infinity。这是一个数值稳定性技巧，并不会改变输出，因为对于任意常数 $c$，$\mathop{\mathrm{softmax}}(x - c) = \mathop{\mathrm{softmax}}(x)$。
 
 ### 步骤 3： Multi-Head Attention
 
@@ -498,7 +498,7 @@ print(f"\nGenerated: {generated_text}")
 ## 练习
 1. 将模型改为使用 24 layers 和 16 heads，而不是 12/12。统计参数量。加倍 depth 与加倍 width（Embedding dimension）相比有什么差异？
 
-2. 实现 GELU activation function（GELU(x) = x * 0.5 * (1 + erf(x / sqrt(2))))，并替换 feedforward network 中的 ReLU。分别使用两种 activation 训练 500 steps，并比较最终 Loss。
+2. 实现 GELU activation function$(\mathop{\mathrm{GELU}}(x) = x \cdot 0.5 \cdot (1 + \mathop{\mathrm{erf}}(x / \sqrt{2})))$，并替换 feedforward network 中的 ReLU。分别使用两种 activation 训练 500 steps，并比较最终 Loss。
 
 3. 给 generation function 添加 KV cache。在第一次 forward pass 后，存储每一层的 K 和 V tensors，并在后续 Token 中复用它们。测量 speedup：分别在有 cache 和无 cache 的情况下生成 200 个 Token，并比较 wall-clock time。
 
@@ -518,7 +518,7 @@ print(f"\nGenerated: {generated_text}")
 | Weight tying | “共享 embeddings” | 对 input Token embeddings 和 output projection head 使用同一个 Matrix——在 GPT-2 中节省 38M 参数 |
 | Residual connection | “Skip connection” | 将 input 直接加到 sublayer 的 output 上（x + sublayer(x)）——支持 deep networks 中的 Gradient flow |
 | Layer normalization | “规范化 activations” | 沿 feature dimension 规范化到 mean 0 和 variance 1，并带有可学习的 scale 与 bias 参数 |
-| Cross-entropy loss | “预测错得有多离谱” | -log(分配给正确 next Token 的概率)，在所有 position 上取平均——标准 LLM 训练目标 |
+| Cross-entropy loss | “预测错得有多离谱” | $-\log(\text{分配给正确 next Token 的概率})$，在所有 position 上取平均——标准 LLM 训练目标 |
 
 ## 延伸阅读
 - [Radford et al., 2019 -- "Language Models are Unsupervised Multitask Learners" (GPT-2)](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) -- 介绍 124M 到 1.5B 参数家族的 GPT-2 paper
