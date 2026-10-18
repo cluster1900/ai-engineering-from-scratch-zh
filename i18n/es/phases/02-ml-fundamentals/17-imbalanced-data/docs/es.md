@@ -35,25 +35,27 @@ La precisión fracasará, porque trata todas las predicciones correctas de igual
 | Actually Positive | 0 (TP) | 10 (FN) |
 | Actually Negative | 0 (FP) | 990 (TN) |
 
-Precisión = (0 + 990) / 1000 = 99,0%
+```math
+\text{准确率} = (0 + 990) / 1000 = 99.0\%
+```
 
 El modelo ha capturado el engaño de la infamiación, la enfermedad y la falta de la precisión, pero el 99% de la precisión es el resultado de la precisión.
 
 ### Mejor indicador
 
-**Precision**= TP / (TP + FP) ―― En todos los ejemplos marcados como positivos, ¿hay realmente mucho positivo?
+**Precision**¿ Qué es esto ?$\text{TP} / (\text{TP} + \text{FP})$ De todos los ejemplos marcados como positivos, ¿cuántos realmente son positivos?
 
-**Recall**= TP / (TP + FN) ⋅ En todos los ejemplos de verdadero positivo, ¿qué cantidad hemos capturado?
+**Recall**¿ Qué es esto ?$\text{TP} / (\text{TP} + \text{FN})$En todos los ejemplos de cosas positivas reales, ¿cuánto hemos capturado?
 
-**F1 Score**= 2 * precisión * recuerdo / (precisión + recuerdo) ――调和平均数──相比算术平均数,它会更严厉地惩罚精度和回忆 之间极端不平衡──
+**F1 Score**¿ Qué es esto ?$2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$◊调和平均数──相比算术平均数, será más severamente castigar la precisión y el recuerdo 极端不平衡──
 
-**F-beta Score**= (1 + beta^2) * precisión * recuerdo / (beta^2 * precisión + recuerdo) ―― cuando beta > 1 时, recuerdo 更重要──当 beta < 1 时, precisión 更重要──F2 在欺诈检测中很常见(漏掉欺诈比误报更糟)
+**F-beta Score**¿ Qué es esto ?$(1 + \beta^2) \cdot \text{精确率} \cdot \text{召回率} / (\beta^2 \cdot \text{精确率} + \text{召回率})$¿Qué es esto?$\beta > 1$时, recuerda más importante.$\beta < 1$时, precisión más importante. F2 En el análisis de fraude es muy común.
 
 **AUPRC**(Area Bajo Curva de Recuerdo de Precisión) ―― similar a AUC-ROC, pero para los datos no equilibrados tiene más información.
 
-**Matthews Correlation Coefficient**= (TP * TN - FP * FN) / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))。 Rango de -1 a +1。 Sólo cuando el modelo en dos categorías se desempeñe bien, cuando sólo dará un alto分── incluso si la diferencia de tamaño de las categorías es grande, también mantener el equilibrio──
+**Matthews Correlation Coefficient**¿ Qué es esto ?$(\text{TP} \cdot \text{TN} - \text{FP} \cdot \text{FN}) / \sqrt{(\text{TP}+\text{FP})(\text{TP}+\text{FN})(\text{TN}+\text{FP})(\text{TN}+\text{FN})}$ El rango de -1 a +1  Sólo se dará un alto puntaje cuando el modelo se desempeñe bien en ambas categorías  Incluso si la diferencia de tamaño de la clase es grande, también se mantendrá equilibrado 
 
-对于上始终预测负的模型:精度 = 0/0(未定义,通常设为0),回忆 = 0/10 = 0,F1 = 0,MCC = 0──这些指标正确地识别出该模型无价值──
+Para los modelos de  Always                                                                                                                                                                                                                                                            $\text{精确率} = 0/0$(未定义, normalmente设为 0),$\text{召回率} = 0/10 = 0$¿ Qué ?$\text{F1} = 0$¿ Qué ?$\text{MCC} = 0$ Estos indicadores correctamente identifican que el modelo no tiene valor
 
 ### Inequilibrio de datos
 
@@ -79,9 +81,9 @@ flowchart TD
 
 SMOTE se creará un nuevo ejemplar de minoría sintética, estos ejemplos parecen razonables, pero no secundarios.
 
-1. Para cada minoría muestra x, entre otras minorías muestra encontrar su k 个近邻
+1. Para cada minoría$x$, en otros ejemplos minoritarios encontrarlo.$k$个近邻
 2. 随机选择一个邻居
-3. En la línea entre x y el vecino crear un nuevo modelo
+3. En el$x$Y en el intersección entre los vecinos, crear un nuevo modelo.
 
 公式:`new_sample = x + random(0, 1) * (neighbor - x)`
 
@@ -137,24 +139,24 @@ flowchart LR
 En lugar de cambiar los datos, no se puede cambiar el modelo de manejo de errores.
 
  Para un ejemplar de dos divisas que contiene 950 negativos y 50 positivos:
-- clase negativa 的权重 = n_samples / (2 * n_negativo) = 1000 / (2 * 950) = 0.526
-- clase positiva 的权重 = n_samples / (2 * n_positive) = 1000 / (2 * 50) = 10,0
+- clase negativa de peso = $n_{\text{样本数}} / (2 \cdot n_{\text{负类}}) = 1000 / (2 \cdot 950) = 0.526$
+- clase positiva de peso = $n_{\text{样本数}} / (2 \cdot n_{\text{正类}}) = 1000 / (2 \cdot 50) = 10.0$
 
 clase positiva  obtuvo 19 倍权重──误分类 错分类 错分类 错分类 错分类 错分类 19 负类 错分类 错分类 错分类 错分类 错分类 负类 模型被迫关注少数阶级──
 
 En la regresión logística, esto modificará la función de pérdida:
 
-```
-weighted_loss = -sum(w_i * [y_i * log(p_i) + (1-y_i) * log(1-p_i)])
+```math
+\text{weighted\_loss} = -\sum \bigl( w_i \cdot [y_i \log(p_i) + (1-y_i) \log(1-p_i)] \bigr)
 ```
 
-Entre ellos, se basa en la categoría de muestras.
+Entre ellos $w_i$取決于样本                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $i$de la categoría:
 
 Los pesos de clase en el sentido esperado y el sobre-muestreo en el precio matemático, pero no crean nuevos puntos de datos. Esto los hace más rápidos, y evita el riesgo de sobreadaptación de repetición de muestras.
 
 ### La regulación del umbral
 
-La mayoría de los clasificadores se producen con una probabilidad. Si P (p) = 0.5, el valor de la probabilidad es 0.5.
+La mayoría de los clasificadores se producen en una probabilidad.$P(\text{正类}) \ge 0.5$, la predicción es positiva, pero 0.5 es arbitraria, cuando la clase es desequilibrada, el valor óptimo suele ser mucho menor.
 
 流程:
 1. 训练一个模型
@@ -172,7 +174,7 @@ flowchart LR
     E --> F[Use in Production]
 ```
 
-Un modelo puede ser clasificado como no fraudulento en un negocio de fraude P (fraude) = 0.15♦ en el valor de 0.5♦, se clasificará como no fraudulento en el valor de 0.10♦, se clasificará correctamente en el caso de la clasificación. La importancia de la calificación de la probabilidad es menor que la de la clasificación: siempre que la probabilidad de obtener una muestra de fraude sea mayor que la de no fraude, existe un valor que puede dividirlas.
+Un modelo puede ser un fraude de transacción .$P(\text{欺诈}) = 0.15$En el valor de 0.10 se clasificará como no engañoso. En el valor de 0.10 se clasificará correctamente. La importancia de la calificación de la probabilidad es menor que la de la clasificación: siempre que la probabilidad de obtener una muestra de engaño sea mayor que la de no engaño, existe un valor que puede dividirlas.
 
 ### Aprendizaje económico
 
@@ -180,8 +182,8 @@ Forma generalizada de los pesos de clase: no se utiliza el coste de la unificaci
 
 | | Predict Positive | Predict Negative |
 |--|---|---|
-| Actually Positive | 0 (correct) | C_FN = 100 |
-| Actually Negative | C_FP = 1 | 0 (correct) |
+| Actually Positive | 0 (correct) | $C_{\text{FN}} = 100$ |
+| Actually Negative | $C_{\text{FP}} = 1$ | 0 (correct) |
 
 漏掉一笔欺诈交易 (FN) 漏掉一笔欺诈交易 (FN) 漏掉一笔欺诈交易 (FN) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一次) 漏掉一笔欺诈交易 (FP) 漏掉一次的成本比一次错报 (FP) 漏错报) 漏错误总成本,而不是总错误数――
 

@@ -51,7 +51,7 @@ Los números primitivos muy pocos pueden ser utilizados directamente en el model
 
 **Binning：**Se puede utilizar el método de clasificación de la función y el objetivo de la función.
 
-**Polynomial features：**创建 x^2、x^3、x1*x2 项──让线性模型能够捕获非线性关系,代价是产生更多特征──
+**Polynomial features：** Crear $x^2$¿Qué es esto?$x^3$¿Qué es esto?$x_1 x_2$ Que el modelo lineal pueda capturar relaciones no lineal, el precio es producir más características.
 
 ### Características de la categoría
 
@@ -69,10 +69,12 @@ Los números primitivos muy pocos pueden ser utilizados directamente en el model
 
 **TF-IDF：**Término Frecuencia-Inversión de la frecuencia de documentos. De acuerdo con la singularidad entre los términos en el archivo, se puede decir que el valor de los documentos es bajo.
 
-```
-TF(word, doc) = count(word in doc) / total words in doc
-IDF(word) = log(total docs / docs containing word)
-TF-IDF = TF * IDF
+```math
+\begin{aligned}
+\text{TF}(\text{word}, \text{doc}) &= \frac{\text{词在文档中的出现次数}}{\text{文档总词数}} \\
+\text{IDF}(\text{word}) &= \log \frac{\text{文档总数}}{\text{包含该词的文档数}} \\
+\text{TF-IDF} &= \text{TF} \cdot \text{IDF}
+\end{aligned}
 ```
 
 ### 缺失值
@@ -87,7 +89,7 @@ Los datos reales tendrán huecos.
 
 ### Interacción de las características
 
-Algunas veces existe una relación entre los componentes. Se trata de un conjunto de elementos que se componen de forma independiente.
+Algunas veces existe una relación entre los componentes.$\text{BMI} = \text{体重} / \text{身高}^2$ 有预测力──Feature interactions 会放大 Feature 空间, por lo tanto, es necesario utilizar el conocimiento del campo para seleccionar la combinación correcta──
 
 ### Selección de características
 

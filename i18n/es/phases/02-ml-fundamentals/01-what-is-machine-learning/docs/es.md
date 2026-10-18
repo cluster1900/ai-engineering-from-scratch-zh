@@ -176,7 +176,7 @@ flowchart LR
 
 El conjunto de pruebas es sagrado. Sólo puedes verlo una vez. Si sigues ajustando el modelo de pruebas, estás en el conjunto de pruebas, tu número de informes también no tiene sentido.
 
-对于小数据集,使用k-fold cross-validation:把数据分成k 份,在k-1 份训练,在剩余1 份验证,轮换进行,并对结果取平均――
+对于小数据集, utilizar k-fold cruzada de validación:把数据分成 $k$份, en $k-1$份上训练,在剩余1份上验证,轮换进行,并对结果取平均──
 
 ### El exceso de ajuste vs el exceso de ajuste
 
@@ -242,9 +242,9 @@ Es el marco matemático detrás de la sobresposición y la sobresposición.
 | 刚好合适 | Medium | Medium | 良好的 generalization |
 | 过高（用 degree-20 polynomial 拟合 10 个点） | Low | High | Overfitting |
 
-总 error = Bias^2 + Varianza + ruido incontrolável
+$\text{总误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声}$
 
-Usted no puede reducir el ruido irreducible (es un fenómeno de datos en sí mismo)
+Usted no puede reducir el ruido irreducible (es un hecho de datos)$\text{偏差}^2 + \text{方差}$Lo más pequeño de lo mejor.
 
 ### No hay teorema del almuerzo gratis
 

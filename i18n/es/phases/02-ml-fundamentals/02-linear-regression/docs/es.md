@@ -26,36 +26,36 @@ Esto no sólo se aplica a simples problemas. La regresión lineal se utiliza en 
 
 ### Modelo
 
-Regresión lineal 假设 entre entrada (x) y salida (y)  existe una relación lineal:
+Regresión lineal 假设 entrada ($x$) con respecto a la producción ($y$)   entre las relaciones sexuales:
 
-```
+```math
 y = wx + b
 ```
 
-- `w`(peso/inclinación): Cuando x  aumentó 1 时, y  cambió mucho
-- `b`(bias/intercepción): Cuando x = 0 时,y 的值
+- `w`(peso/inclinación):当 $x$增加 1 时,$y$ cambiar cuánto
+- `b`(previación/intercepción):当 $x = 0$时,$y$de valor
 
 对于多个输入 (功能), se expandió para:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
-O escribir en forma vectorial:`y = w^T * x + b`
+O escribir en forma vectorial:$y = w^T x + b$
 
-目標: encontrar w 和 b 的值, hacer la predicción de y en todos los ejemplos de entrenamiento 上尽可能接近真实 y。
+目标: encontrar $w$Y $b$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $y$En todos los ejemplos de entrenamiento , lo más posible , se acercará a la realidad .$y$¿Qué es eso?
 
 ### Función de costo (error medio cuadrado)
 
 ¿Cómo medir尽可能接近? necesitas un solo número para indicar que hay muchos errores. La opción más común es el Error Media Cuadrado (MSE):
 
-```
-MSE = (1/n) * sum((y_predicted - y_actual)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{预测值}} - y_{\text{实际值}})^2
 ```
 
 Por qué es necesario cuadrar? hay dos razones. Primero, el castigo de grandes errores es mayor que los pequeños errores.
 
-Función de costo se forma una curva. Para un solo peso w y sesgo b, el MSE 曲面 se parece a una taza.
+La función de costo formará una curva.$w$Y el sesgo$b$,MSE 曲面看起来像一个碗凸抛物面) ∙碗底就是MSE 最小的位置──训练就是找到这个底部──
 
 ### Descenso gradual
 
@@ -74,18 +74,22 @@ flowchart TD
 
 Los graduantes te dirán dos cosas: cada parámetro debe moverse en qué dirección, y cuántos.
 
-对于 y_hat = wx + b de MSE:
+ para $\hat{y} = wx + b$de las MSE:
 
-```
-dMSE/dw = (2/n) * sum((y_hat - y) * x)
-dMSE/db = (2/n) * sum(y_hat - y)
+```math
+\begin{aligned}
+\frac{\partial \text{MSE}}{\partial w} &= \frac{2}{n} \sum (\hat{y} - y) \, x \\
+\frac{\partial \text{MSE}}{\partial b} &= \frac{2}{n} \sum (\hat{y} - y)
+\end{aligned}
 ```
 
 更新规则:
 
-```
-w = w - learning_rate * dMSE/dw
-b = b - learning_rate * dMSE/db
+```math
+\begin{aligned}
+w &= w - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial w} \\
+b &= b - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial b}
+\end{aligned}
 ```
 
 Rate de aprendizaje 控制步长──太大:会过过最小值并发散──太小:training 会耗时很久──典型起始值: 0.01、0.001 或 0.0001──
@@ -94,18 +98,18 @@ Rate de aprendizaje 控制步长──太大:会过过最小值并发散──�
 
  Especialmente para la regresión lineal, hay una fórmula directa que puede dar los mejores pesos en caso de no tener ninguna generación:
 
-```
-w = (X^T * X)^(-1) * X^T * y
+```math
+w = (X^T X)^{-1} X^T y
 ```
 
-Se trata de un conjunto de datos de gran tamaño (con millones de líneas o miles de características), más recomendable es el Descenso Gradiente, ya que la inversión de la matriz en la complejidad de las características es O (n^3):
+Se pasa por la matriz, un paso por el otro.$w$◊ Es muy adecuado para pequeños grupos de datos. Para grandes grupos de datos (con millones de líneas o miles de características), más recomendable es el Descenso Gradiente, ya que la inversión de la matriz en la complejidad de las características es$O(n^3)$¿Qué es eso?
 
 ### Regresión lineal múltiple
 
 对于多个特征,model 变为:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
 Una forma de trabajo es la misma:MSE es función de costo, Descenso Gradiente, actualización de todos los pesos. La única diferencia es que se adapta a un hiperplano, no a una línea.
@@ -116,36 +120,38 @@ La escalación de características es muy importante aquí. Si una característi
 
 Si la relación no es lineal ¿cómo se hace? todavía se puede mediante la creación de características polinómicas para usar regresión lineal:
 
-```
-y = w1*x + w2*x^2 + w3*x^3 + b
+```math
+y = w_1 x + w_2 x^2 + w_3 x^3 + b
 ```
 
-Esto sigue siendo una regresión lineal, porque el modelo de los pesos (w1, w2, w3) es lineal.
+Esto sigue siendo una regresión lineal, ya que el modelo se basa en los pesos ($w_1, w_2, w_3$Es de sexo. Sólo lo usaste.$x$Las características no lineales de la
 
 Los polinomios de mayor grado pueden adaptarse a curvas más complejas, pero también tienen un riesgo de sobreajuste. Los polinomios de grado 10 atravesarán cada uno de los puntos del conjunto de datos, pero la predicción en los nuevos datos es muy mala.
 
 ### Punto de la cuadrada
 
-MSE  te dice que hay muchos tipos de despliegue, pero este número depende de la medida de y. R-cuadrado (R^2)  proporciona un indicador de medida no dependiente de la medida:
+MSE te dice que hay muchos errores, pero este número depende de$y$La medida de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la superficie de la cuadra ($R^2$)  proporcionó un indicador de medida no dependiente de la medida:
 
-```
-R^2 = 1 - (sum of squared residuals) / (sum of squared deviations from mean)
-    = 1 - SS_res / SS_tot
+```math
+\begin{aligned}
+R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} \\
+&= 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}
+\end{aligned}
 ```
 
-- R^2 = 1,0:完美预测
-- R^2 = 0.0:modelo no es mejor que cada vez
-- R^2 < 0.0:modelo比预测 medio 更差
+- $R^2 = 1.0$:完美预测
+- $R^2 = 0.0$:modelo no es mejor que cada vez
+- $R^2 < 0.0$Modelo: 比预测 media 更差
 
 ### Regularización 预览 (Regressión de la Ridge)
 
 Cuando tienes muchas características, el modelo puede pasar por la distribución de pesas más grandes para sobresalir. La regresión de Ridge (regularización L2) se suma a un castigo:
 
-```
-Cost = MSE + lambda * sum(w_i^2)
+```math
+\text{代价} = \text{MSE} + \lambda \sum w_i^2
 ```
 
-惩罚项会抑制较大的重量──超参数 lambda 控制权衡:lambda 越高,重量 越小,规范化 越强──后课程会深入讲解这一点──现在只需要知道它存在,以及为什么它有帮助──
+惩罚项会抑制 mayores pesas―hiperparámetro $\lambda$ control权衡:$\lambda$越高,重量 越小,regularización 越强── los siguientes cursos se enfocarán en esto. Ahora sólo necesitamos saber que existe y por qué es útil.
 
 ## Construcción
 
@@ -521,24 +527,24 @@ Encuentro de trabajo:
 ##  ejercicios
 
 1. 实现 descenso de gradiente de lote  descenso de gradienteestocástico (SGD) 和 descenso de gradiente de mini lote  在同一数据集上比较收速度──哪个收最快?哪个成本曲线最平滑?
-2. Desde la función cúbica (y = ax^3 + bx^2 + cx + d + ruido) 生成数据──拟合度 1、3 和 10 的多項式──比较训练 R^2 和测试 R^2──到哪个度时过匹配 变得明显?
-3. 实现 Lasso regression(L1 regularización: penalidad * alfa suma *(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+2. Desde la función cúbica ($y = ax^3 + bx^2 + cx + d + \text{噪声}$) 生成数据──拟合等级 1、3 和 10 de polinomios──comparación de formación $R^2$y prueba $R^2$¿Hasta qué punto se ha vuelto evidente el exceso de aptitud?
+3. 实现 regresión de Lasso(L1 regularización:$\text{惩罚项} = \alpha \sum \lvert w_i \rvert$En el caso de los modelos de la industria de la construcción, ¿por qué L1 producirá soluciones escasas y L2 no?
 
 ## 关键术语: "El hombre es un hombre"
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Linear regression | “在数据中画一条线” | 找到 weight w 和 bias b，使 wx+b 与真实 y 值之间的平方差之和最小 |
+| Linear regression | “在数据中画一条线” | 找到 weight $w$ 和 bias $b$，使 $wx+b$ 与真实 $y$ 值之间的平方差之和最小 |
 | Cost function | “model 有多差” | 一个将 model parameters 映射为单一数字的函数，用于衡量 prediction error，并由 optimization 最小化 |
-| Mean squared error | “平方误差的平均值” | (1/n) * (predicted - actual)^2 的求和，对大误差施加不成比例的惩罚 |
+| Mean squared error | “平方误差的平均值” | $\frac{1}{n} \sum (\text{预测值} - \text{实际值})^2$，对大误差施加不成比例的惩罚 |
 | Gradient descent | “往下坡走” | 使用偏导数，沿着降低 cost function 的方向迭代调整 parameters |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 中 parameters 改变量的标量 |
-| Normal equation | “直接求解” | 闭式解 w = (X^T X)^-1 X^T y，无需迭代即可得到最优 weights |
-| R-squared | “拟合有多好” | model 所解释的 y 方差比例，范围从负无穷到 1.0 |
+| Normal equation | “直接求解” | 闭式解 $w = (X^T X)^{-1} X^T y$，无需迭代即可得到最优 weights |
+| R-squared | “拟合有多好” | model 所解释的 $y$ 方差比例，范围从负无穷到 1.0 |
 | Feature scaling | “让 features 可比较” | 将 features 转换到相近范围（例如 zero mean、unit variance），使 Gradient Descent 更快收敛 |
 | Regularization | “惩罚复杂度” | 向 cost function 添加一个会缩小 weights 的项，以防止 overfitting |
-| Ridge regression | “L2 regularization” | 向 MSE 添加 lambda * sum(w_i^2) 惩罚项的 linear regression |
-| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features (x, x^2, x^3, ...) 做 linear regression，对 weights 仍然是线性的 |
+| Ridge regression | “L2 regularization” | 向 MSE 添加 $\lambda \sum w_i^2$ 惩罚项的 linear regression |
+| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features ($x, x^2, x^3, \ldots$) 做 linear regression，对 weights 仍然是线性的 |
 | Overfitting | “记住 training data” | 使用过于复杂的 model，以至于拟合了 training data 中的噪声，并在新数据上失效 |
 
 ## 延伸阅读

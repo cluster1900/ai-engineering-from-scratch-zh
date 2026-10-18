@@ -24,10 +24,10 @@ Los métodos de ensamblaje se hacen así. Son los datos tablales de la competenc
 
 ### ¿Por qué los conjuntos son efectivos?
 
-假设你有N 个独立分类器, cada una de ellas tiene una precisión de p > 0.5──la precisión de la mayoría de los votos 为:
+ Fase que tienes $N$个独立分类器, cada una de las precisiones $p > 0.5$◊ exactitud del voto de la mayoría 为:
 
-```
-P(majority correct) = sum over k > N/2 of C(N,k) * p^k * (1-p)^(N-k)
+```math
+P(\text{多数预测正确}) = \sum_{k > N/2} \binom{N}{k} p^k (1-p)^{N-k}
 ```
 
  Para 21  la precisión  media es del 60% de los clasificadores, la precisión de la mayoría de votos  aproximadamente es del 74% Si hay 101  clasificadores, se elevará al 84% Cuando el modelo comete diferentes errores, los errores se oponen mutuamente
@@ -132,7 +132,7 @@ El aumento de gradiente aumentará la generalización a la función de pérdida 
 3. Final prediction: F_T(x)
 ```
 
-Para la pérdida cuadrada de error, los pseudo-residuos son los residuos reales:`r_i = y_i - F_{t-1}(x_i)`◊ Cada árbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+Para la pérdida cuadrada de error, los pseudo-residuos son los residuos reales:$r_i = y_i - F_{t-1}(x_i)$◊ Cada árbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 Rate de aprendizaje (concisión) control de cada árbol grado de contribución.
 

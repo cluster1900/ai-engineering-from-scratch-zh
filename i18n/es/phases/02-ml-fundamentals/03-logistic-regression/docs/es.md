@@ -18,7 +18,7 @@
 
 Usted piensa según el tumor tamaño pronóstico es maligno o benigno. Usted intenta usar regresión lineal. Se producirá 0.3、1.7 o -0.5 números de este tipo. ¿Qué significan estos números?1.7 ¿es  muy maligno??-0.5  muy benigno?
 
-La regresión logística  resolvió este problema― utiliza el mismo conjunto de líneas (wx + b), luego a través de la función sigmoide, se comprimirá cualquier número a (0, 1) 范围内―输出就是概率―.
+Regresión logística  solucionó este problema  utiliza el mismo componente de la línea ($wx + b$), luego a través de la función sigmoide, se comprimirá el número arbitrario hasta (0, 1) 范围内;;输出就是概率;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Es uno de los algoritmos más amplios utilizados en la práctica. Aunque el nombre de la regresión, la regresión logística es un algoritmo de clasificación, no un algoritmo de regresión.
 
@@ -44,22 +44,22 @@ Clasificación  necesita una función satisfactoria de las siguientes condicione
 
 La función sigmoide está haciendo esto:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\sigma(z) = \frac{1}{1 + e^{-z}}
 ```
 
 Sexualidad:
-- Cuando z es un gran número de veces, sigmoid(z)  casi 1
-- Cuando z es un gran número negativo, sigmoid(z)  casi 0
-- Cuando z = 0 时,sigmoid(z) = 0,5
+- Cuando$z$Es un gran número de veces,$\sigma(z)$ cerca de 1
+- Cuando$z$Es un gran número de negativos,$\sigma(z)$ cerca de 0
+- Cuando$z = 0$时,$\sigma(z) = 0.5$
 - 输出始终位于 0 y 1 之间
 - La función está en forma plana y fácil
 
-Su derivada tiene una forma muy fácil: sigmoid'(z) = sigmoid(z) * (1 - sigmoid(z))
+Su derivada tiene una forma conveniente:$\sigma'(z) = \sigma(z) (1 - \sigma(z))$ This makes Gradient 计算更高效──
 
 ### Regresión logística = Modelo lineal + sigmoide
 
-模型先计算 z = wx + b( con regresión lineal 相同), luego aplicar sigmoide:
+模型先计算 $z = wx + b$(con regresión lineal similar), luego aplicar sigmoide:
 
 ```mermaid
 flowchart LR
@@ -70,21 +70,21 @@ flowchart LR
     D -->|No| N[Predict 0]
 ```
 
-输出 p Explicado como P  y = 1  x), es decir, la probabilidad de entrada pertenece a la clase 1   decisión límite  se encuentra en la posición de wx + b = 0, en este momento sigmoide 输出恰好为 0.5 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $p$Fue explicado por$P(y=1 \mid x)$, es decir, la probabilidad de entrada pertenece a la clase 1 ∞ límite de decisión ∞$wx + b = 0$La posición de la sigmoide es de 0,5°.
 
 ### Perdida de entropía cruzada binaria
 
 En la regresión logística, el uso de MSE se produce en una superficie de costes no elevadora, existen muchos mínimos locales.
 
-```
-Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
+```math
+\text{损失} = -\frac{1}{n} \sum \left( y \log(p) + (1-y) \log(1-p) \right)
 ```
 
 ¿Por qué es efectivo?
-- Cuando y=1 y p 接近 1 时:log(1) = 0, por lo tanto, la pérdida 接近 0(正确,低成本)
-- Cuando y=1 y p 接近 0 时:log(0) 接近负无穷, por lo tanto pérdida 很大(错误,高成本)
-- Cuando y=0 y p 接近 0 时:log(1) = 0, por lo tanto la pérdida 接近 0(正确,低成本)
-- Cuando y=0 y p 接近 1 时:log(0) 接近负无穷, por lo tanto pérdida 很大(错误,高成本)
+- Cuando$y=1$且 $p$接近 1 时:$\log(1) = 0$, por lo tanto pérdida  casi 0(正确, bajo costo)
+- Cuando$y=1$且 $p$接近 0 时:$\log(0)$接近负无穷, por lo tanto pérdida 很大(错误,高成本)
+- Cuando$y=0$且 $p$接近 0 时:$\log(1) = 0$, por lo tanto pérdida  casi 0(正确, bajo costo)
+- Cuando$y=0$且 $p$接近 1 时:$\log(0)$接近负无穷, por lo tanto pérdida 很大(错误,高成本)
 
  Para la regresión logística, esta función de pérdida es de forma simbólica, por lo que garantiza sólo un mínimo global
 
@@ -92,12 +92,14 @@ Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
 
 sigmoide 搭配 binaria entropía cruzada 时,Gradiente 具有简洁形式:
 
-```
-dL/dw = (1/n) * sum((p - y) * x)
-dL/db = (1/n) * sum(p - y)
+```math
+\begin{aligned}
+\frac{\partial L}{\partial w} &= \frac{1}{n} \sum (p - y) \, x \\
+\frac{\partial L}{\partial b} &= \frac{1}{n} \sum (p - y)
+\end{aligned}
 ```
 
-Se ven como un gradiente de regresión lineal 完全相同──区别在于p = sigmoid(wx + b), en lugar de p = wx + b──sigmoid 引入非线性,但 gradient 更新规则保持不变──
+Se ven exactamente igual al gradiente de regresión lineal.$p = \sigma(wx + b)$, en lugar de$p = wx + b$ Sigmoid  introdujo no lineal, pero Gradient 更新规则保持不变──
 
 ```mermaid
 flowchart TD
@@ -114,29 +116,29 @@ flowchart TD
 
 对于2D 输入((两个 características), el límite de decisión es satisfacer las siguientes condiciones:
 
-```
-w1*x1 + w2*x2 + b = 0
+```math
+w_1 x_1 + w_2 x_2 + b = 0
 ```
 
 Un lado de los puntos es clasificado como 1, el otro lado de los puntos es clasificado como 0―La regresión lógica 总是产生线性的 decisión límite―Si se necesita 曲的边界,要么添加多项的特征,要么使用非线性模型―
 
 ### Utiliza Softmax  realizar Clasificación de clases múltiples
 
-Regresión logística binaria 处理两个类──对于 k 个类,使用软max函数:
+Regresión logística binaria 处理两个类──对 $k$个 clases, usar la función softmax:
 
-```
-softmax(z_i) = e^(z_i) / sum(e^(z_j) for all j)
+```math
+\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
 ```
 
-Cada clase tiene su propio vector de peso. El modelo para cada clase calcula una puntuación z_i, luego la softmax se convierte en probabilidad total y de 1 . La clase de predicción es la clase con mayor probabilidad.
+Cada clase tiene su propio vector de peso.$z_i$, entonces softmax se convertirá en la probabilidad total y para 1 . La clase de pronóstico es la clase de probabilidad más alta .
 
 Función de pérdida 变为 entropía cruzada categórica:
 
-```
-Loss = -(1/n) * sum(sum(y_k * log(p_k)))
+```math
+\text{损失} = -\frac{1}{n} \sum \sum_k y_k \log(p_k)
 ```
 
-Entre ellos y_k para la clase verdadera 为 1, para todas las demás clases 为 0(un codificación caliente)
+Entre ellos $y_k$Para la clase real 为 1, para todas las demás clases 为 0 ((una codificación caliente)
 
 ### Metricas de evaluación
 
@@ -150,18 +152,18 @@ Sólo con precisión no es suficiente para un conjunto de datos de 95% negativo 
 | Actually Negative | False Positive (FP) | True Negative (TN) |
 
 **Precision**En todos los ejemplos de predicciones positivas, ¿cuántos son positivos?
-```
-Precision = TP / (TP + FP)
+```math
+\text{精确率} = \frac{TP}{TP + FP}
 ```
 
 **Recall**(Sensibilidad): En todos los ejemplos positivos reales, ¿cuánto hemos capturado?
-```
-Recall = TP / (TP + FN)
+```math
+\text{召回率} = \frac{TP}{TP + FN}
 ```
 
 **F1 Score**:precisión y media armónica de recuerdo.
-```
-F1 = 2 * (Precision * Recall) / (Precision + Recall)
+```math
+F_1 = 2 \cdot \frac{\text{精确率} \cdot \text{召回率}}{\text{精确率} + \text{召回率}}
 ```
 
  prioridades de la situación:
@@ -505,7 +507,7 @@ Encuentro de trabajo:
 
 ##  ejercicios
 
-1. 生成一个不是 linealmente separable conjunto de datos (例如两个同心圆) ―― entrenar la regresión logística 并观察它的失败──然后添加多项式特征(x1^2、x2^2、x1*x2)并再次训练──展示精度 得到提升──
+1. 生成一个不是 un conjunto de datos linealmente separable (por ejemplo, dos con el centro de un círculo) ⋅ entrenar la regresión logística 并观察它的失败──然后添加多项的特征($x_1^2, x_2^2, x_1 x_2$)并再训练――展示 精度 得到提升――
 2. Por el modelo de 3 clases softmax  lograr una matriz de confusión de múltiples clases ⋅ calcular la precisión por clase 和 recordar ⋅ ¿Cuál clase es la más difícil de clasificar?
 3. Desde la construcción de la curva de ROC, desde 0 hasta 1 ∼ 100 valores de umbral, calcular la tasa positiva verdadera y la tasa positiva falsa, utilizar la regla trapezoidal  calcular la AUC, la zona debajo de la curva)
 
@@ -514,14 +516,14 @@ Encuentro de trabajo:
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | Logistic regression | “用于 Classification 的 Regression” | 一个 linear model 后接 sigmoid function，用于输出 class probabilities |
-| Sigmoid function | “S-curve” | function 1/(1+e^(-z))，将任意实数映射到 (0, 1) 范围 |
-| Binary cross-entropy | “Log loss” | Loss Function -[y*log(p) + (1-y)*log(1-p)]，会严厉惩罚自信但错误的预测 |
+| Sigmoid function | “S-curve” | function $1/(1+e^{-z})$，将任意实数映射到 (0, 1) 范围 |
+| Binary cross-entropy | “Log loss” | Loss Function $-[y \log(p) + (1-y) \log(1-p)]$，会严厉惩罚自信但错误的预测 |
 | Decision boundary | “分界线” | 模型输出概率等于 0.5 的 surface，用于分隔 predicted classes |
 | Softmax | “Multi-class sigmoid” | 将 scores 的 Vector 转换为总和为 1 的概率的 function |
-| Precision | “选中的有多少是相关的” | TP / (TP + FP)，positive predictions 中实际为 positive 的比例 |
-| Recall | “相关的有多少被选中” | TP / (TP + FN)，actual positives 中被模型正确识别的比例 |
-| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：2*P*R / (P+R) |
+| Precision | “选中的有多少是相关的” | $TP / (TP + FP)$，positive predictions 中实际为 positive 的比例 |
+| Recall | “相关的有多少被选中” | $TP / (TP + FN)$，actual positives 中被模型正确识别的比例 |
+| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：$2PR / (P+R)$ |
 | Confusion matrix | “错误分解” | 展示每个 class pair 的 TP、TN、FP、FN 计数的表格 |
 | Threshold | “cutoff” | 超过该 probability value 时模型预测 class 1（默认 0.5，可调） |
-| One-hot encoding | “类别的二进制列” | 将 class k 表示为一个 Vector：除位置 k 为 1 外，其余位置均为 0 |
-| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 k 个 classes 的扩展，使用 one-hot encoded labels |
+| One-hot encoding | “类别的二进制列” | 将 class $k$ 表示为一个 Vector：除位置 $k$ 为 1 外，其余位置均为 0 |
+| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 $k$ 个 classes 的扩展，使用 one-hot encoded labels |

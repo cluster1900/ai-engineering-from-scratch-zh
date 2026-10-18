@@ -25,15 +25,15 @@ Los SVM  directamente conectados a la Fase 1: la optimización es convexa de la 
 ## 概念
 ### Clasificador de máximo intervalo
 
-给定 y_i labels in {-1, +1} 和 feature vectors x_i de datos linealmente separables, nosotros queremos encontrar un hiperplano w^T x + b = 0 来分离类别。
+给定标签 $y_i \in \lbrace -1, +1 \rbrace$y vectores de características $x_i$Los datos linealmente separables, queremos encontrar un hiperplano $w^T x + b = 0$Para separarse de la clase.
 
-La distancia de punto x_i a hiperplano es:
+Por qué ?$x_i$La distancia del hiperplano es:
 
+```math
+\text{距离} = \frac{\lvert w^T x_i + b \rvert}{\lVert w \rVert}
 ```
-distance = |w^T x_i + b| / ||w||
-```
 
-对于正确分类的点:y_i * (w^T x_i + b) > 0──margen es de hiperplano hasta el lado más cercano de la distancia de punto dos veces──
+对于正确分类的点:$y_i (w^T x_i + b) > 0$◊ margen es dos veces más de la distancia del punto más cercano desde el hiperplano hasta el lado inferior.
 
 ```mermaid
 graph LR
@@ -48,19 +48,23 @@ graph LR
 
 problema de optimización:
 
-```
-maximize    2 / ||w||     (margin width)
-subject to  y_i * (w^T x_i + b) >= 1  for all i
-```
-
-Éras­ti­mos de reducción de los precios de los productos:
-
-```
-minimize    (1/2) ||w||^2
-subject to  y_i * (w^T x_i + b) >= 1  for all i
+```math
+\begin{aligned}
+\text{最大化} \quad & \frac{2}{\lVert w \rVert} \quad \text{（间隔宽度）} \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-Este es un programa cuadrático convexo. Tiene una solución global única. Está en los límites de márgenes de los puntos de datos.
+等价地(minimizando $\lVert w \rVert^2$Más fácil de optimizar):
+
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
+```
+
+Este es un programa cuadrático convexo. Tiene una solución global única. Está en los límites de margen.$y_i (w^T x_i + b) = 1$) es el apoyo de los vectores. Ellos son los únicos puntos que determinan el límite de decisión.
 
 ### Véctores de apoyo:关键的少数点
 
@@ -82,30 +86,32 @@ El número de vectores de soporte también dio un límite de error de generaliza
 
 Los datos reales son muy pocos y completamente separables. Algunos puntos pueden estar en el lado equivocado del límite, o en el interior del margen.
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i)
-subject to  y_i * (w^T x_i + b) >= 1 - xi_i
-            xi_i >= 0  for all i
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i \xi_i \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 - \xi_i \\
+& \xi_i \ge 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-Variable de flexibilidad xi_i 衡量点 i 违反分差的程度──C 控制:
+variable de laxidad $\xi_i$衡量点 $i$ grado de margen de violación:$C$ controlar este tradeoff:
 
-| C value | Behavior |
+| $C$ value | Behavior |
 |---------|----------|
-| Large C | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
-| Small C | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
+| Large $C$ | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
+| Small $C$ | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
 
-C es la fuerza de regularización de la caída de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad. C es la fuerza de regularización de la cantidad.
+$C$Es la fuerza de regularización de los números de inversiones.$C$= 更少定期化──Pequeña $C$= 更多 regularización。
 
 ### Perdida de colmillos:Función de pérdida de SVM
 
 SVM de margen blando puede ser reescribible para optimización sin restricciones:
 
-```
-minimize    (1/2) ||w||^2 + C * sum(max(0, 1 - y_i * (w^T x_i + b)))
+```math
+\text{最小化} \quad \frac{1}{2} \lVert w \rVert^2 + C \sum_i \max(0, 1 - y_i (w^T x_i + b))
 ```
 
-项 max(0, 1 - y_i * f(x_i)) es la pérdida de bisagra.
+项        $\max(0, 1 - y_i f(x_i))$Cuando el punto está en el margen o está mal clasificado, es lineal.
 
 ```
 单个点的 Hinge loss：
@@ -127,9 +133,11 @@ loss
 
 Con pérdida logística (regresión logística)
 
-```
-Hinge:     max(0, 1 - y*f(x))          在 margin 处 hard cutoff
-Logistic:  log(1 + exp(-y*f(x)))        平滑，永远不会精确为零
+```math
+\begin{aligned}
+\text{Hinge：} \quad & \max(0, 1 - y f(x)) && \text{在间隔处硬截断} \\
+\text{Logistic：} \quad & \log(1 + \exp(-y f(x))) && \text{平滑，永不精确为零}
+\end{aligned}
 ```
 
 Perdida de colmillos  producen soluciones escasas(sólo vectores de soporte 有非零贡献) ――perdida lógica Utiliza todos los puntos de datos―, lo que hace que los SVM en el tiempo de predicción sean más eficientes en memoria―.
@@ -138,36 +146,40 @@ Perdida de colmillos  producen soluciones escasas(sólo vectores de soporte 有�
 
 Puedes usar la pérdida de bisagra + regularización de L2 de descenso de gradiente para entrenar SVM lineal, sin necesidad de buscar la solución QP restringida:
 
+```math
+\begin{aligned}
+& L(w, b) = \frac{\lambda}{2} \lVert w \rVert^2 + \frac{1}{n} \sum_i \max(0, 1 - y_i (w^T x_i + b)) \\[6pt]
+& \text{关于 } w \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w - y_i x_i \\[6pt]
+& \text{关于 } b \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial b} = 0 \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial b} = -y_i
+\end{aligned}
 ```
-L(w, b) = (lambda/2) * ||w||^2 + (1/n) * sum(max(0, 1 - y_i * (w^T x_i + b)))
 
-关于 w 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/dw = lambda * w
-  If y_i * (w^T x_i + b) < 1:   dL/dw = lambda * w - y_i * x_i
-
-关于 b 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/db = 0
-  If y_i * (w^T x_i + b) < 1:   dL/db = -y_i
-```
-
-Esto se llama formulación primaria. El tiempo de funcionamiento de cada época es O(n * d), de los cuales n es el número de muestras, d es el número de características.
+Esto se llama formulación primaria.$O(n \cdot d)$, entre ellos $n$Es la cantidad de muestras,$d$Es la cantidad de características. Para la gran escala, la cantidad de datos, la clasificación de texto, esto es muy rápido.
 
 ### La fórmula doble y el truco del núcleo
 
 El problema de SVM de la doble Lagrangiana (desde la fase 1 de la lección 18, condiciones de KKKT) es:
 
-```
-maximize    sum(alpha_i) - (1/2) * sum_ij(alpha_i * alpha_j * y_i * y_j * (x_i . x_j))
-subject to  0 <= alpha_i <= C
-            sum(alpha_i * y_i) = 0
+```math
+\begin{aligned}
+\text{最大化} \quad & \sum_i \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) \\
+\text{约束为} \quad & 0 \le \alpha_i \le C \\
+& \sum_i \alpha_i y_i = 0
+\end{aligned}
 ```
 
-Sólo se trata de productos de puntos de datos entre puntos x_i. x_j。 es un punto clave.
+Dual sólo se refiere a productos de puntos entre los puntos de datos $x_i \cdot x_j$                                                                                                                                                                                                                                                              $K(x_i, x_j)$ sustituir cada producto de puntos, SVM 就能学习非线线边界, no necesita una transformación de cálculo evidente.
 
-```
-Linear kernel:      K(x, z) = x . z
-Polynomial kernel:  K(x, z) = (x . z + c)^d
-RBF (Gaussian):     K(x, z) = exp(-gamma * ||x - z||^2)
+```math
+\begin{aligned}
+\text{线性核：} \quad & K(x, z) = x \cdot z \\
+\text{多项式核：} \quad & K(x, z) = (x \cdot z + c)^d \\
+\text{RBF（高斯核）：} \quad & K(x, z) = \exp(-\gamma \lVert x - z \rVert^2)
+\end{aligned}
 ```
 
 RBF kernel se proyectará datos en espacio de dimensiones infinitas. En el espacio de entrada se puede aprender cualquier límite de decisión suave.
@@ -183,20 +195,22 @@ graph LR
     A -->|"Kernel trick<br>K(x,z) = phi(x).phi(z)"| B
 ```
 
-Trik de núcleo en el caso de no entrar en el espacio de dimensiones, calcular el producto de puntos en el espacio de dimensiones.
+Trik del núcleo en el caso de no entrar en el espacio alto, calcular el producto de puntos en el espacio alto.$D$Grado medio$d$del núcleo polinómico, espacio de características de forma clara$O(D^d)$Pero sí.$K(x, z)$Puede estar en$O(D)$时间内计算──
 
 ### MPS para regresión (MPS)
 
-Regressión de vectores de apoyo se realizará alrededor de datos que se ajustan a una amplitud para un tubo de epsilon.
+Retrocesión de vectores de apoyo se realizará alrededor de datos adaptados a una amplitud de$\epsilon$Los puntos dentro del tubo tienen pérdidas cero.
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i + xi_i*)
-subject to  y_i - (w^T x_i + b) <= epsilon + xi_i
-            (w^T x_i + b) - y_i <= epsilon + xi_i*
-            xi_i, xi_i* >= 0
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i (\xi_i + \xi_i^*) \\
+\text{约束为} \quad & y_i - (w^T x_i + b) \le \epsilon + \xi_i \\
+& (w^T x_i + b) - y_i \le \epsilon + \xi_i^* \\
+& \xi_i, \xi_i^* \ge 0
+\end{aligned}
 ```
 
-Parámetro de epsilon  control de ancho del tubo 越宽 = vectores de soporte 越少 = fit 更平滑──tube 越窄 = vectores de soporte 越多 = fit 更紧──
+$\epsilon$Parámetro  controlar ancho del tubo──tubo 越宽 = vectores de soporte 越少 = fit 更平滑──tubo 越窄 = vectores de soporte 越多 = fit 更紧──
 
 ### ¿Por qué los SVM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
@@ -205,7 +219,7 @@ Los SVM desde finales de 1990 hasta principios de 2010 dominaron el aprendizaje 
 | Factor | SVMs | Deep learning |
 |--------|------|---------------|
 | Feature engineering | 需要它 | 学习 features |
-| Scalability | kernel 为 O(n^2) 到 O(n^3) | 使用 SGD 时每个 epoch 为 O(n) |
+| Scalability | kernel 为 $O(n^2)$ 到 $O(n^3)$ | 使用 SGD 时每个 epoch 为 $O(n)$ |
 | Image/text/audio | 需要 handcrafted features | 从 raw data 学习 |
 | Large datasets (>100k) | 慢 | 扩展良好 |
 | GPU acceleration | 收益有限 | 巨大加速 |
@@ -320,9 +334,9 @@ print(f"Accuracy: {clf.score(X_test, y_test):.4f}")
 print(f"Support vectors: {clf['svm'].n_support_}")
 ```
 
-importante: entrenar SVM  Antes de siempre es necesario escalar Sus características;. Los SVM son sensibles a las magnitudes de las características   porque el margen  depende de la cantidad de datos disponibles, mientras que las características no escaladas                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+importante: entrenar SVM  Antes de siempre es necesario escalar tus características ⋅SVMs son sensibles a las magnitudes de las características                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\lVert w \rVert$, y las características de la escala no se torcerán en la estructura geográfica.
 
-对于大数据集,使用 `LinearSVC`(Fórmulación primaria, cada época 为 O  n)) en lugar de `SVC`(formación doble,O  n^2) hasta O  n^3)):
+对于大数据集,使用 `LinearSVC`(Fórmulación primaria, cada época 为 $O(n)$) en lugar de `SVC`(dupla formulación,$O(n^2)$¿ Qué ?$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC
@@ -336,29 +350,29 @@ clf = Pipeline([
 ##  ejercicios
 1. 生成 2D linearmente separable conjunto de datos。 training your LinearSVM,并识别支持向量──验证支持向量是最接近决策边界的点──
 
-2. En un conjunto de datos ruidosos 上将 C de 0.001 变化到 1000──为每 C value 绘制决策边界──观察从宽边缘(不适合) 到狭边边缘(过) 的过渡──
+2. En un conjunto de datos ruidosos$C$Desde 0,001  variación a 1000 ⋅ por cada $C$Valor Descubrir el límite de decisión― observar desde el margen amplio  subadjustación  hasta el margen estrecho  sobreadjustación  de transición―
 
 3. 创建一个类界限 为圆形(非线性) 的数据集──展示线性SVM 会失败──计算RBF kernel matrix,并展示类别在内核诱导功能空间 中变得分离的──
 
 4. En el mismo conjunto de datos, comparar la pérdida de carcasa con la pérdida logística. Entrenar un SVM lineal y regresión logística.
 
-5. 实现 SVR(epsilon-insensitivo de pérdida) ――将它拟合到 y = sin(x) + ruido──绘制预测 周围的epsilon tube,并突出显示支持向量(tube 外的点)。
+5.  Realizar la pérdida de SVR                                                                                                                                                                             $y = \sin(x) + \text{噪声}$◊ dibujar predicciones 周围的epsilon tube,并突出显示支持向量(tube 外的点) ⋅
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What it actually means |
 |------|----------------------|
 | Support vectors | 最接近 decision boundary 的 training points。唯一决定 hyperplane 的点 |
 | Margin | decision boundary 与最近 support vectors 之间的距离。SVMs 会最大化它 |
-| Hinge loss | max(0, 1 - y*f(x))。正确分类且位于 margin 外时为零。否则为 linear penalty |
-| C parameter | margin width 与 classification errors 之间的 trade-off。Large C = narrow margin，small C = wide margin |
+| Hinge loss | $\max(0, 1 - y f(x))$。正确分类且位于 margin 外时为零。否则为 linear penalty |
+| C parameter | margin width 与 classification errors 之间的 trade-off。Large $C$ = narrow margin，small $C$ = wide margin |
 | Soft margin | 通过 slack variables 允许 margin violations 的 SVM formulation。处理 non-separable data |
 | Kernel trick | 在不显式映射到高维 feature space 的情况下，计算该空间中的 dot products |
-| Linear kernel | K(x, z) = x . z。等价于标准 dot product。用于 linearly separable data |
-| RBF kernel | K(x, z) = exp(-gamma * \|\|x-z\|\|^2)。映射到 infinite dimensions。学习任意 smooth boundary |
-| Polynomial kernel | K(x, z) = (x . z + c)^d。映射到 polynomial combinations 的 feature space |
+| Linear kernel | $K(x, z) = x \cdot z$。等价于标准 dot product。用于 linearly separable data |
+| RBF kernel | $K(x, z) = \exp(-\gamma \Vert x-z \Vert^2)$。映射到 infinite dimensions。学习任意 smooth boundary |
+| Polynomial kernel | $K(x, z) = (x \cdot z + c)^d$。映射到 polynomial combinations 的 feature space |
 | Dual formulation | SVM problem 的重写形式，只依赖数据点之间的 dot products。支持 kernels |
 | SVR | Support Vector Regression。围绕数据拟合 epsilon-tube。tube 内的点具有 zero loss |
-| Slack variables | xi_i：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
+| Slack variables | $\xi_i$：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
 | Maximum margin | 选择能够最大化到每个类别最近点距离的 hyperplane 的原则 |
 
 ## 延伸阅读

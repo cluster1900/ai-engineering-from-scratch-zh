@@ -82,7 +82,7 @@ Si realmente hay anomalías de etiquetado, ¿deberíamos usarlas para entrenar l
 
 ### Z-Score 方法
 
-El método más simple es calcular la media y la desviación estándar de cada característica.
+La forma más simple de calcular la media y la desviación estándar de cada característica es marcar cualquier distancia que exceda la media.$k$个 desviaciones estándar de los puntos
 
 ```text
 z_score = (x - mean) / std
@@ -148,11 +148,11 @@ flowchart TD
 
 Anomaly score  Based on all trees                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
-```
-score(x) = 2^(-average_path_length(x) / c(n))
+```math
+\text{分数}(x) = 2^{-\text{average\_path\_length}(x) / c(n)}
 ```
 
-Entre ellos `c(n)`Es decir, el número de muestras de la muestra es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0,0 y el número de muestras es de 0, y el número de muestras es de 0, y el número de muestras es de 0, y el número de muestras es de la cifra es de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la cifra de la que se ha de la que se habiendo en la que se habiendo en la que se habiendo en el de la del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del del
+Entre ellos `c(n)`Sí $n$个 muestras de longitud del camino esperado──Cota 接近 1 表示异常──Cota 接近 0.5 表示正常──Cota 接近 0 表示非常正常(位于密集集深处)。
 
 **优点：**没有 hipótesis de distribución── se aplica a grandes dimensiones── expand性好(由于每棵树使用子样本,所以相对于样本大小是子线性)──处理混合特征类型──
 
@@ -168,7 +168,7 @@ Entre ellos `c(n)`Es decir, el número de muestras de la muestra es de 0,0 y el 
 LOF comparará la densidad local alrededor de un punto con la densidad de sus vecinos.
 
 **工作方式：**
-1. Para cada punto, encontrar su k vecinos más cercanos
+1. Para cada punto, encontrarlo.$k$vecinos más cercanos
 2. 计算 local de la densidad de accesibilidad (desacidad de accesibilidad local)
 3. Comparar la densidad de cada punto con la densidad de sus vecinos
 4. Si la densidad de un punto es menor que la de sus vecinos, es más extrema.
@@ -182,7 +182,7 @@ LOF comparará la densidad local alrededor de un punto con la densidad de sus ve
 
 **优点：**检测 local anomalies (en sus vecinos de dominio de puntos de anomalía, incluso si no son de anomalía de la zona entera) ⋅ se aplica a grupos de diferentes densidades ⋅
 
-**缺点：**En grandes datos, la implementación es lenta (n^2): (■) en las dimensiones muy altas, el efecto es malo (■) en las dimensiones muy altas, la maldición de la dimensión afectará los cálculos de distancia).
+**缺点：**En grandes conjuntos de datos, la implementación es lenta.$O(n^2)$¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡$k$La maldición de la dimensionalidad afectará los cálculos de distancia)
 
 ### En comparación
 
@@ -199,7 +199,7 @@ evaluación de detectores de anomalías en comparación con los clasificadores d
 
 - **Extreme class imbalance.**Si las anomalías representan el 0,1%, se predice que todo el contenido es "normal" y obtiene una precisión del 99,9%.
 - **AUROC 具有误导性。**En un grave desequilibrio, incluso en los umbrales reales, el AUROC también puede parecer mal.
-- **更好的 metrics：**Precision@k(top k 被标记项中的多少是真相异常) 、AUPRC(precision-recall curve 下面积),以及在固定假正率下的回忆──
+- **更好的 metrics：**Precision@k(top $k$Muchos de los puntos marcados son anomalías reales (), AUPRC (curva de recalco de precisión) y en la tasa de recalco de falso positivo fija ().
 
 ```mermaid
 flowchart LR
@@ -318,7 +318,7 @@ class IsolationForest:
         return scores
 ```
 
-Fáctor de normalización `c(n)`Está en el árbol de búsqueda binaria de n 个元素 中一次失败搜索的预期路径长度──它等于`2 * H(n-1) - 2*(n-1)/n`, entre ellos `H`Es un número armónico. Esta normalización garantiza que los puntajes se comparan entre diferentes grupos de datos.
+Fáctor de normalización `c(n)`Es en contenidos$n$个 elementos de árbol de búsqueda binaria 中一次失败搜索的预期路径长度──它等于`2 * H(n-1) - 2*(n-1)/n`, entre ellos `H`Es un número armónico. Esta normalización garantiza que los puntajes se comparan entre diferentes grupos de datos.
 
 ### Demo 场景
 
@@ -434,7 +434,7 @@ En dos casos, el umbral óptimo depende de la proporción de costes entre falsos
 
 2. **Multivariate anomalies.** Crea datos 2D, cada una de las características 单独看都像正常, pero la combinación se encuentra anómala, por ejemplo, lejos de los puntos diagonales del cúmulo principal.
 
-3. **从零实现 LOF.**Utiliza k-vicinos más cercanos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+3. **从零实现 LOF.**Utilice el factor local de salida de los vecinos más cercanos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $k=10$Y $k=50$¿ Qué ?$k$¿Cómo influye la elección en el resultado?
 
 4. **Streaming Anomaly Detection.**Modificar el detector de Z-score, hacer que sea en el entorno de transmisión.
 
@@ -449,10 +449,10 @@ En dos casos, el umbral óptimo depende de la proporción de costes entre falsos
 | Contextual anomaly | "normal 值，错误上下文" | 一个在给定上下文（时间、位置等）下异常、但在另一个上下文中可能 normal 的 observation |
 | Isolation Forest | "用 random splits 找 outliers" | 一种 random trees 的 ensemble，它能用比 normal points 更少的 splits 隔离 anomalies |
 | Local Outlier Factor | "把 density 和 neighbors 比较" | 一种标记 local density 明显低于其 neighbors density 的点的方法 |
-| Z-score | "距离 mean 的 standard deviations 数" | (x - mean) / std，用 standard deviation 为单位衡量某个点距离中心有多远 |
-| IQR | "Interquartile range" | Q3 - Q1，衡量数据中间 50% 的 spread，用于 robust outlier detection |
+| Z-score | "距离 mean 的 standard deviations 数" | $(x - \text{均值}) / \text{标准差}$，用 standard deviation 为单位衡量某个点距离中心有多远 |
+| IQR | "Interquartile range" | $Q3 - Q1$，衡量数据中间 50% 的 spread，用于 robust outlier detection |
 | Contamination | "预期 anomalies 比例" | 一个 hyperparameter，用于告诉 detector 应该将数据中多大比例标记为 anomalous |
-| Precision@k | "top k flags 中有多少是真的" | 只在 k 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
+| Precision@k | "top k flags 中有多少是真的" | 只在 $k$ 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
 | AUPRC | "Precision-recall curve 下的面积" | 一个汇总所有 thresholds 下 precision-recall 表现的 metric，对 imbalanced data 比 AUROC 更好 |
 
 ## 延伸阅读

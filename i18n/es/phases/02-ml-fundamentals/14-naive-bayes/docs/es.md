@@ -27,8 +27,8 @@ Comprender por qué una hipótesis errónea puede traer una buena predicción, t
 
 Teorema de Bayes 会反转条件概率:
 
-```
-P(class | features) = P(features | class) * P(class) / P(features)
+```math
+P(\text{类别} \mid \text{特征}) = \frac{P(\text{特征} \mid \text{类别}) \cdot P(\text{类别})}{P(\text{特征})}
 ```
 
 Queremos que`P(class | features)`, es decir, después de un determinado archivo, el archivo pertenece a una clase de probabilidad. Podemos calcularlo a partir de los siguientes números:
@@ -40,15 +40,15 @@ Queremos que`P(class | features)`, es decir, después de un determinado archivo,
 
 ### Una suposición ingenua de independencia
 
-精确计算 `P(features | class)`需要估估计所有特征联合出现的共同概率──对于包含10,000 词汇的词汇库,你需要估估2^10,000 种可能组合上的分布──不可能──
+精确计算 `P(features | class)`需要估估所有特征联合出现的共同概率──对于包含10,000 词词汇的词汇,你需要估估$2^{10{,}000}$种可能组合上的分布―― imposible――
 
 La suposición ingenua es que, dado que cada clase tiene características condicionalmente independientes,
 
-```
-P(w1, w2, ..., wn | class) = P(w1 | class) * P(w2 | class) * ... * P(wn | class)
+```math
+P(w_1, w_2, \ldots, w_n \mid \text{类别}) = P(w_1 \mid \text{类别}) \cdot P(w_2 \mid \text{类别}) \cdots P(w_n \mid \text{类别})
 ```
 
-Ya no se estima una distribución conjunta imposible, sino que se estima una distribución simple por rasgo. Cada distribución sólo necesita un cuadro.
+Ya no estimas una distribución conjunta imposible, sino estimas.$n$个简单的个特征分布―― cada distribución sólo necesita un cuadro――
 
 Esta hipótesis es obviamente errónea. En cualquier documento, la "máquina" y el "aprendizaje" no son independientes. Pero el clasificador no necesita una estimación correcta de probabilidad. Requiere una clasificación correcta, es decir, la probabilidad más alta de qué clase. La suposición de independencia introducirá errores sistémicos, pero estos errores afectan a todas las clases de manera similar, por lo que la clasificación sigue siendo correcta.
 
@@ -56,7 +56,7 @@ Esta hipótesis es obviamente errónea. En cualquier documento, la "máquina" y 
 
 Tres razones:
 
-1. **排序优先于校准。**Clasificación sólo necesita clasificar la categoría más alta correcta── incluso P(spam) = 0.99999, mientras que la probabilidad real es 0.7, clasificador  todavía va a seleccionar el spam── nosotros no necesitamos la probabilidad correcta── necesitamos la probabilidad correcta de ganar la categoría──
+1. **排序优先于校准。**Clasificación sólo necesita clasificar los más altos categorías correctamente.$P(\text{垃圾邮件}) = 0.99999$, mientras que la probabilidad real es de 0,7, el clasificador sigue correctamente seleccionando el spam.
 
 2. **高 bias，低 variance。**La suposición de independencia es un modelo fuerte de prioridad. Esto evita el sobreajuste. En el entrenamiento de datos limitados, un modelo pequeño de error pero estable, va a ganar un modelo teóricamente correcto pero extremadamente inestable.
 
@@ -73,31 +73,33 @@ entrenamiento datos:
 - No-spam 邮件 menciona "gratis" 5 次、"dinero" 10 次、"reunión" 100 次(total 115 个词)
 - El 40% de los mensajes son spam, el 60% no son spam.
 
-Uso de la limpieza de Laplace:
+Uso de suavizador Laplace$\alpha=1$):
 
-```
-P(free | spam)    = (80 + 1) / (150 + 3) = 81/153 = 0.529
-P(money | spam)   = (60 + 1) / (150 + 3) = 61/153 = 0.399
-P(meeting | spam) = (10 + 1) / (150 + 3) = 11/153 = 0.072
-
-P(free | not-spam)    = (5 + 1) / (115 + 3) = 6/118 = 0.051
-P(money | not-spam)   = (10 + 1) / (115 + 3) = 11/118 = 0.093
-P(meeting | not-spam) = (100 + 1) / (115 + 3) = 101/118 = 0.856
+```math
+\begin{aligned}
+P(\text{free} \mid \text{垃圾邮件}) &= (80 + 1) / (150 + 3) = 81/153 = 0.529 \\
+P(\text{money} \mid \text{垃圾邮件}) &= (60 + 1) / (150 + 3) = 61/153 = 0.399 \\
+P(\text{meeting} \mid \text{垃圾邮件}) &= (10 + 1) / (150 + 3) = 11/153 = 0.072 \\[6pt]
+P(\text{free} \mid \text{非垃圾邮件}) &= (5 + 1) / (115 + 3) = 6/118 = 0.051 \\
+P(\text{money} \mid \text{非垃圾邮件}) &= (10 + 1) / (115 + 3) = 11/118 = 0.093 \\
+P(\text{meeting} \mid \text{非垃圾邮件}) &= (100 + 1) / (115 + 3) = 101/118 = 0.856
+\end{aligned}
 ```
 
 Nueva邮件包含:"libre"(2 次) 、"dinero"(1 次) 、"reunión"(0 次) ✿
 
+```math
+\begin{aligned}
+\log P(\text{垃圾邮件} \mid \text{邮件}) &= \log(0.4) + 2 \log(0.529) + 1 \log(0.399) + 0 \log(0.072) \\
+&= -0.916 + 2(-0.637) + (-0.919) + 0 \\
+&= -3.109 \\[6pt]
+\log P(\text{非垃圾邮件} \mid \text{邮件}) &= \log(0.6) + 2 \log(0.051) + 1 \log(0.093) + 0 \log(0.856) \\
+&= -0.511 + 2(-2.976) + (-2.375) + 0 \\
+&= -8.838
+\end{aligned}
 ```
-log P(spam | email) = log(0.4) + 2*log(0.529) + 1*log(0.399) + 0*log(0.072)
-                    = -0.916 + 2*(-0.637) + (-0.919) + 0
-                    = -3.109
 
-log P(not-spam | email) = log(0.6) + 2*log(0.051) + 1*log(0.093) + 0*log(0.856)
-                        = -0.511 + 2*(-2.976) + (-2.375) + 0
-                        = -8.838
-```
-
-Spam 以很大优势胜出──"free" 出現两次是支持垃圾邮件的强证──注意, "reunión" no apareció, las contribuciones a dos log sumes son零(0 * log(P))En la NB multinomial, la falta de palabras no afecta──
+El spam 以很大优势胜出──"libre" surgió dos veces es fuerte evidencia de apoyo al spam──nota, "reunión" no surgió, las contribuciones a dos logs sumados son de 0$0 \cdot \log P$)En el NB multinomial, la falta de palabras no afecta.
 
 ### Tres variantes
 
@@ -107,8 +109,8 @@ Bayes ingenuo tiene tres formas. Cada una de ellas se construye de una manera di
 
 Capacitará cada característica para calcular la cantidad de datos en texto de la característica más adecuada para el valor de TF-IDF.
 
-```
-P(word_i | class) = (count of word_i in class + alpha) / (total words in class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数：} \text{词}_i \text{ 在类别中} + \alpha}{\text{类别内词总数} + \alpha \cdot \text{vocab\_size}}
 ```
 
 `alpha`Es la clasificación de la literatura.
@@ -117,8 +119,8 @@ P(word_i | class) = (count of word_i in class + alpha) / (total words in class +
 
 La distribución de cada característica se hará en el estado correcto.
 
-```
-P(x_i | class) = (1 / sqrt(2 * pi * var)) * exp(-(x_i - mean)^2 / (2 * var))
+```math
+P(x_i \mid \text{类别}) = \frac{1}{\sqrt{2 \pi \cdot \text{方差}}} \cdot \exp\left(-\frac{(x_i - \text{均值})^2}{2 \cdot \text{方差}}\right)
 ```
 
 Cada categoría tiene su propio valor medio y diferencia para cada característica. Cuando las características dentro de cada categoría realmente se ajustan a la curva de la horquilla, este método funciona muy bien.
@@ -127,8 +129,8 @@ Cada categoría tiene su propio valor medio y diferencia para cada característi
 
 La función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la función de la cuta de la cuta de la cuta de la cuta de la cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cuta de cu
 
-```
-P(word_i | class) = (docs in class containing word_i + alpha) / (total docs in class + 2 * alpha)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{类别内包含该词的文档数：} \text{词}_i + \alpha}{\text{类别内文档总数} + 2 \alpha}
 ```
 
 A diferencia de Multinomial, Bernouli lo consideraría como una prueba de que el "libre" aparece en el correo no spam.
@@ -149,11 +151,11 @@ Si aparece una palabra en los datos de prueba, pero nunca aparece en una categor
 
 El suavización de la zona dará a cada característica un recuento más un pequeño recuento .`alpha`(normalmente para 1):
 
-```
-P(word_i | class) = (count(word_i, class) + alpha) / (total_words_in_class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数}(\text{词}_i, \text{类别}) + \alpha}{\text{total\_words\_in\_class} + \alpha \cdot \text{vocab\_size}}
 ```
 
-Cuando alfa=1 时, cada palabra tiene al menos una muy pequeña probabilidad. En el testmail aparece un "discombobulate" (descombotar) (no volverá a dejar que el spam se vuelva a cero).
+Cuando$\alpha=1$时, cada palabra tiene al menos una muy pequeña probabilidad. En el testmail aparece un "discombobulate" (discombotar) que no deja que el spam se vuelva a reducir a cero.
 
 Más alto alfa significa más fuerte de suavizamiento (distribución más media) ⋅ menos alfa significa más confianza en los datos.
 
@@ -172,8 +174,8 @@ Si se multiplican cientos de probabilidades, cada uno de ellos menor a 1) conduc
 
  solución: en el espacio de registro, no se trabaja en la probabilidad de multiplicarse, sino en la proporción de multiplicarse:
 
-```
-log P(class | x1, x2, ..., xn) = log P(class) + sum_i log P(xi | class)
+```math
+\log P(\text{类别} \mid x_1, x_2, \ldots, x_n) = \log P(\text{类别}) + \sum_i \log P(x_i \mid \text{类别})
 ```
 
 Esto convertirá la predicción en producto de puntos:
@@ -191,7 +193,7 @@ Los dos son clasificadores lineales de texto. La diferencia es en los objetos qu
 
 | Aspect | Naive Bayes | Logistic Regression |
 |--------|------------|-------------------|
-| Type | Generative（建模 P(X\|Y)） | Discriminative（建模 P(Y\|X)） |
+| Type | Generative（建模 $P(X \mid Y){}$） | Discriminative（建模 $P(Y \mid X){}$） |
 | Training | 统计频率 | 优化 Loss Function |
 | Small data | 更好（强 prior 有帮助） | 更差（不足以估计权重） |
 | Large data | 更差（错误假设会拖累） | 更好（更灵活的边界） |
@@ -218,8 +220,8 @@ flowchart LR
 
 En la práctica, trabajamos en el espacio de registro para evitar el flujo inferior de puntos flotantes.
 
-```
-log P(class | features) = log P(class) + sum_i log P(feature_i | class)
+```math
+\log P(\text{类别} \mid \text{特征}) = \log P(\text{类别}) + \sum_i \log P(\text{特征}_i \mid \text{类别})
 ```
 
 
@@ -236,7 +238,7 @@ Desde el 0:
 
 1. **fit(X, y)**: para cada clase, estadística de cada característica de la frecuencia.
 
-2. **predict_log_proba(X)**: para cada muestra, calcular todos los tipos de registro P(clase) + suma de registro P(feature_i ➡ clase) ➡ Esto es una multiplicación de Matriz: X @ log_probs.T + log_priors✔
+2. **predict_log_proba(X)**: para cada muestra, calcular todas las clases $\log P(\text{类别})$+ suma de $\log P(\text{特征}_i \mid \text{类别})$This es una multiplicación de Matrix: X @ log_probs.T + log_priors
 
 3. **predict(X)**: regresar probabilidad de registro
 
@@ -309,9 +311,9 @@ También se muestra:
 
 ### Velocidad de predicción
 
-Naive Bayes 预测 es una multiplicación de la matriz― para n 个样本、d 个特征、k 个类别:
-- MultinomioNB: una vez multiplicando la matriz (n x d) @ (d x k) = O(n * d * k)
-- GaussianNB:n * k veces Gaussian PDF 求值,每次覆盖 d 个特征 = O(n * d * k)
+Naive Bayes 预测 es una multiplicación de la Matriz―$n$¿Cómo es esto?$d$个特征,$k$个类别:
+- MultinomioNB: una vez multiplicando la matriz $(n \times d) \mathbin{@} (d \times k) = O(n \cdot d \cdot k)$
+- GaussianNB:$n \cdot k$Dos Gaussian PDF 求值,每次覆盖 $d$个特征 = $O(n \cdot d \cdot k)$
 
 Los dos son lineales en cada dimensión. En comparación con KNN, se necesita calcular hasta la distancia de todos los puntos de entrenamiento) o con SVM del núcleo RBF, se necesita hacer una evaluación del núcleo en todos los vectores de soporte.
 
@@ -383,7 +385,7 @@ Conto de vectorizador 中的 `binary=True`标志会将所有计数转换为0/1�
 
 ### Calibración NB Probabilidades
 
-NB 概率校准很差──NB dice P(spam) = 0.95 时, la verdadera probabilidad es posible 0.7──Si necesitas una estimación de probabilidad fiable, por ejemplo, para establecer 值 o en combinación con otros modelos, por favor, usa el Clasificador Calibrado de sklearnCV:
+NB 概率校准很差──当NB 说 $P(\text{垃圾邮件}) = 0.95$时, la probabilidad real puede ser de 0.7 . Si necesitas una estimación de probabilidad fiable, por ejemplo, para establecer valores o combinaciones con otros modelos, utiliza el CalibradoClasificador CV de sklearn:
 
 ```python
 from sklearn.calibration import CalibratedClassifierCV
@@ -401,7 +403,7 @@ Esto se realizará a través de la validación cruzada, en la que se ajustará u
 
 2. **零方差特征。**GaussianNB se divide en diferencias. Si una clase de características de una determinada clase difiere en un valor igual, la probabilidad de cálculo se presenta como un problema.
 
-3. **类别不平衡。**Si el 99% de los mensajes es no spam, previo P(no spam) = 0.99 会非常强, en lo que respecta a la evidencia de probabilidad de presión. Puedes establecer manualmente los prefijos de clase, o usar el prefijo de clase de sklearn.
+3. **类别不平衡。**Si el 99% de los mensajes no son spam, antes.$P(\text{非垃圾邮件}) = 0.99$会非常强, hasta el punto de que se suprimió la probabilidad de evidencia. Puedes establecer manualmente los parámetros de prioridad de clase, o usar los parámetros de prioridad de clase de sklearn.
 
 4. **特征缩放。**MultinomioNB no necesita escalar (la cuenta de procesamiento) GaussianNB también no necesita escalar (la estimación de cada característica) Esto es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo que es lo es lo que es lo es lo que es lo es lo que es lo es lo que es lo es lo que es lo es lo es lo que es lo es lo es lo que es lo es lo es lo que es lo es lo es lo es lo que es lo es lo es lo que es lo es lo es lo es lo es lo es lo que es lo es lo es lo que es lo es lo es lo es lo es lo es lo es lo es lo es lo que es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo que es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo es lo
 
@@ -425,7 +427,7 @@ En la práctica, para la clasificación del texto, estos modos de falla no son c
 ##  ejercicios
 1. **Smoothing experiment。**En el texto de datos, se utiliza el valor alfa 0.01、0.1、1.0、10.0 y 100.0  entrenamiento MultinomioNB── dibujar con precisión frente al alfa── ¿Dónde alcanza el máximo rendimiento? ¿Por qué muy alto alfa 会伤害性能?
 
-2. **Feature independence test。**取一个真文本数据集. 选择两个 palabras claramente relacionadas ("máquina"和"aprendizaje") 计算 P1word 类) * P2word 类),并与 P1word AND word2class) Compare. 假设独立 错得多严重? ¿Esto afectará a la precisión de la clasificación ?
+2. **Feature independence test。**取一个真实文本数据集──选择两个明显相关词("máquina"和"aprendizaje")──计算 $P(\text{词}_1 \mid \text{类别}) \cdot P(\text{词}_2 \mid \text{类别})$,并与 $P(\text{词}_1 \text{ 且 } \text{词}_2 \mid \text{类别})$¿Se puede decir que el error de la hipótesis de independencia es grave? ¿Efectará la precisión de la clasificación?
 
 3. **Bernoulli implementation。**扩展代码, añadir una clase BernoulliNB──将包-of-words 转换为二值(present/absent), y en el texto datos con la comparación con MultinomialNB── ¿Cuándo Bernoulli 会赢?
 
@@ -437,14 +439,14 @@ En la práctica, para la clasificación del texto, estos modos de falla no son c
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Naive Bayes | “简单的概率 classifier” | 一个使用 Bayes' theorem，并假设给定类别后特征 conditionally independent 的 classifier |
-| Conditional independence | “特征彼此不影响” | P(A, B \| C) = P(A \| C) * P(B \| C)——一旦知道 C，知道 B 不会告诉你关于 A 的任何新信息 |
+| Conditional independence | “特征彼此不影响” | $P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)$——一旦知道 $C$，知道 $B$ 不会告诉你关于 $A$ 的任何新信息 |
 | Laplace smoothing | “Add-one smoothing” | 给每个特征添加一个小计数，防止零概率主导预测 |
-| Prior | “看到数据之前你相信什么” | P(class)——观察任何特征之前，每个类别的概率 |
-| Likelihood | “数据拟合得有多好” | P(features \| class)——如果类别已知，观察到这些特征的概率 |
-| Posterior | “看到数据之后你相信什么” | P(class \| features)——观察到特征后，类别的更新概率 |
-| Generative model | “建模数据如何生成” | 学习 P(X \| Y) 和 P(Y)，然后使用 Bayes' theorem 得到 P(Y \| X) 的模型 |
-| Discriminative model | “建模 decision boundary” | 不建模 X 如何生成，而是直接学习 P(Y \| X) 的模型 |
-| Log probability | “避免 underflow” | 使用 log P 而不是 P，防止许多小数相乘后在浮点数中变成零 |
+| Prior | “看到数据之前你相信什么” | $P(\text{类别})$——观察任何特征之前，每个类别的概率 |
+| Likelihood | “数据拟合得有多好” | $P(\text{特征} \mid \text{类别})$——如果类别已知，观察到这些特征的概率 |
+| Posterior | “看到数据之后你相信什么” | $P(\text{类别} \mid \text{特征})$——观察到特征后，类别的更新概率 |
+| Generative model | “建模数据如何生成” | 学习 $P(X \mid Y)$ 和 $P(Y)$，然后使用 Bayes' theorem 得到 $P(Y \mid X)$ 的模型 |
+| Discriminative model | “建模 decision boundary” | 不建模 $X$ 如何生成，而是直接学习 $P(Y \mid X)$ 的模型 |
+| Log probability | “避免 underflow” | 使用 $\log P$ 而不是 $P$，防止许多小数相乘后在浮点数中变成零 |
 
 ## 延伸阅读
 - [scikit-learn Naive Bayes docs](https://scikit-learn.org/stable/modules/naive_bayes.html) 三种变体 y sus detalles matemáticos

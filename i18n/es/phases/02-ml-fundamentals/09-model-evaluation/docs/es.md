@@ -81,11 +81,11 @@ flowchart TB
     Fold5 --> R
 ```
 
-1. Dividir los datos en K 个大相等的折叠
-2. Para cada plegado, en K-1 plegadas entrenamiento, y en el resto de plegados
-3. Por lo tanto, el valor de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la evaluación de la cuadro de la evaluación de la evaluación de la evaluación de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de la cuadro de cuadro
+1. Se dividirá el dato$K$个大小相等 de pliegues
+2. Para cada plegado, en$K-1$个 pliegue 上训练, y el resto de pliegue 上验证
+3. ¿ Qué ?$K$个 puntuaciones de validación 求平均
 
-K=5 o K=10 es el estándar de selección. Cada punto de datos fue utilizado para validar una vez.
+$K=5$O $K=10$Es un estándar de selección. Cada punto de datos se utiliza para validar una vez.
 
 **Stratified K-fold**En cada pliegue, mantenga la distribución de clases. Si su conjunto de datos es de 70% de clase A y 30% de clase B, entonces cada pliegue mantendrá aproximadamente la misma proporción. Esto es importante para los conjuntos de datos desequilibrados, ya que, a su vez, la división puede colocar todas las muestras de minorías en un mismo pliegue.
 
@@ -100,18 +100,18 @@ K=5 o K=10 es el estándar de selección. Cada punto de datos fue utilizado para
 
 De esta Matrix se pueden obtener todos los demás indicadores:
 
-- **Accuracy**= (TP + TN) / (TP + TN + FP + FN)。预测正确的比例──当类 不平衡时会产生误导──
-- **Precision**= TP / (TP + FP) ――En todos los objetos de pronóstico positivos, ¿cuánto es realmente positivo?
-- **Recall**(sensibilidad) = TP / (TP + FN) ――En todos los positivos reales, ¿cuánto hemos capturado?
-- **F1 score**= 2 * precisión * recall / (precisión + recall) ――precisión 和 recall mean harmónico──当二者都不明显更重要时,用它来平衡两者──
+- **Accuracy**¿ Qué es esto ?$(TP + TN) / (TP + TN + FP + FN)$◊ Predicción de proporción correcta― Cuando las clases desequilibradas producen errores―
+- **Precision**¿ Qué es esto ?$TP / (TP + FP)$◊ En todos los objetos de pronóstico positivo, ¿cuánto es realmente positivo? ◊ falsos positivos ¢ precio alto ¢ uso (por ejemplo, filtro de spam, marque el correo real como spam) ◊
+- **Recall**(sensibilidad) = $TP / (TP + FN)$ Entre todos los positivos reales, ¿cuánto hemos capturado?
+- **F1 score**¿ Qué es esto ?$2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$△ Precisión y medio armónico de recuerdo― Cuando los dos son más importantes, usalas para equilibrarlos―
 - **AUC-ROC**:Receptor Operating Characteristic curve 下的面积──它在不同分类门下绘制 true positive rate与 false positive rate──AUC = 0.5 表示随机猜测,AUC = 1.0 表示完美分离──它与门无关:衡量的是模型将将正面排在负面前面的能力,而不受你选择的切断影响──
 
 ### Regreso de la actividad
 
-- **MSE**(Medio de Error Cuadrado) = medio de y_true - y_pred) ^2)
-- **RMSE**(Erro cuadrado de la mediana raíz) = sqrt(MSE)。 con la variable objetivo 单位相同──比 MSE 更容易解释──
-- **MAE**(Medio de error absoluto) = medio de error y verdad - y_precedencia)
-- **R-squared**= 1 - SS_res / SS_tot, en el cual SS_res = suma(((y_true - y_pred) ^2), SS_tot = suma((((y_true - y_mean) ^2)。 muestra modelo 解释了多少方差──R^2 = 1.0 表示完美──R^2 = 0.0 表示模型 并不比总是预测平均值更好──如果模型比预测均还差,R^2 可能为负──
+- **MSE**(Erro cuadrado medio) = $\text{均值}((y_{\text{true}} - y_{\text{pred}})^2)$◊ en el modo cuadrado castigar grandes errores ◊ en los valores de excedencia ◊
+- **RMSE**(Erro de la raíz media cuadrada) = $\sqrt{\text{MSE}}$◊ Con la variable objetivo ∞ es igual ∞ es más fácil de explicar ∞
+- **MAE**(Medio de error absoluto)$\text{均值}(\lvert y_{\text{true}} - y_{\text{pred}} \rvert)$◊ lineal tratamiento de todos los errores―en comparación con los valores de los EMS en los valores de los valores de los valores de los EMS.
+- **R-squared**¿ Qué es esto ?$1 - SS_{\text{res}} / SS_{\text{tot}}$, entre ellos $SS_{\text{res}} = \sum (y_{\text{true}} - y_{\text{pred}})^2$¿ Qué ?$SS_{\text{tot}} = \sum (y_{\text{true}} - y_{\text{均值}})^2$◊ Expresar el modelo ◊ Explicar el número de diferencias$R^2 = 1.0$Muestra lo perfecto.$R^2 = 0.0$Indicar que el modelo no es mejor que el promedio de pronóstico general.$R^2$Puede ser por el lado negativo.
 
 ### Curvas de aprendizaje
 
@@ -665,10 +665,10 @@ Encuentro de trabajo:
 |------|----------------|----------------------|
 | Overfitting | “记住了 training data” | model 捕捉了 training data 中的噪声，在 training 上表现好，但在 unseen data 上表现差 |
 | Cross-validation | “在不同子集上测试” | 系统地轮换用于 validation 的数据部分，并对所有轮换的结果求平均 |
-| Precision | “预测为 positive 的里面有多少是正确的” | TP / (TP + FP)：positive predictions 中实际为 positive 的比例 |
-| Recall | “我们找到了多少真实 positives” | TP / (TP + FN)：actual positives 中被正确识别出来的比例 |
+| Precision | “预测为 positive 的里面有多少是正确的” | $TP / (TP + FP)$：positive predictions 中实际为 positive 的比例 |
+| Recall | “我们找到了多少真实 positives” | $TP / (TP + FN)$：actual positives 中被正确识别出来的比例 |
 | AUC-ROC | “model 区分类别的能力有多好” | 在所有 thresholds 下，true positive rate 与 false positive rate 曲线下的面积，范围从 0.5（随机）到 1.0（完美） |
-| R-squared | “解释了多少方差” | 1 -（squared residuals 之和 / total sum of squares）：model 捕捉到的 target variance 比例 |
+| R-squared | “解释了多少方差” | $1 - (\text{残差平方和} / \text{总平方和})$：model 捕捉到的 target variance 比例 |
 | Data leakage | “model 作弊了” | 在 training 期间使用了 prediction time 不可用的信息，导致 evaluation 过于乐观 |
 | Learning curve | “数据更多时 performance 如何变化” | training 和 validation scores 相对于 training set size 的图，用来揭示 underfitting 或 overfitting |
 | Stratified split | “保持 class ratios 平衡” | split 数据时，让每个 subset 中各 class 的比例与完整 dataset 相同 |

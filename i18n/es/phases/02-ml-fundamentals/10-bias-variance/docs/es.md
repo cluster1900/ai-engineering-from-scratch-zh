@@ -51,23 +51,24 @@ Alta Variación significa que el modelo se encuentra en el ruido de los datos de
 
 ### La descomposición
 
-Para cualquier punto x, el esperado error de previsión bajo el perdido cuadrado se puede desglosar con precisión en:
+对于任意点   por cualquier punto$x$, el esperado error de previsión por pérdida cuadrada puede ser dividido en:
 
+```math
+\begin{aligned}
+& \text{期望误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声} \\[6pt]
+& \text{其中：} \\
+& \quad \text{偏差}^2 = (\mathbb{E}[\hat{f}(x)] - f(x))^2 \\
+& \quad \text{方差} = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2] \\
+& \quad \text{噪声} = \mathbb{E}[(y - f(x))^2] \quad (\sigma^2)
+\end{aligned}
 ```
-Expected Error = Bias^2 + Variance + Irreducible Noise
 
-where:
-  Bias^2   = (E[f_hat(x)] - f(x))^2
-  Variance = E[(f_hat(x) - E[f_hat(x)])^2]
-  Noise    = E[(y - f(x))^2]             (sigma^2)
-```
+- $f(x)$Es una función real
+- $\hat{f}(x)$Es un modelo
+- $\mathbb{E}[\ldots]$Es la expectativa de diferentes grupos de entrenamiento
+- $y$Es la etiqueta de la observación (la verdadera función es el aumento del ruido)
 
-- `f(x)`Es una función real
-- `f_hat(x)`Es un modelo
-- `E[...]`Es la expectativa de diferentes grupos de entrenamiento
-- `y`Es la etiqueta de la observación (la verdadera función es el aumento del ruido)
-
-En los datos de ruido, ningún modelo puede hacer mejor que sigma^2. Tu tarea es encontrar el equilibrio correcto entre el sesgo^2 y la variación.
+El ruido es incontrolável. En los datos de ruido, no hay un modelo comparable.$\sigma^2$Hacerlo mejor. Tu tarea es...$\text{偏差}^2$Y la variación entre encontrar el equilibrio correcto.
 
 ### Complejidad del modelo frente a error
 
@@ -128,9 +129,9 @@ Este "doble descenso" explica por qué las redes neuronales sobreparametrizadas 
 
 | Regime | Parameters vs Samples | Behavior |
 |--------|----------------------|----------|
-| Underparameterized | p << n | 经典 tradeoff 适用 |
-| Interpolation threshold | p ~ n | Variance 达到峰值，测试误差激增 |
-| Overparameterized | p >> n | Implicit regularization 开始起作用，测试误差下降 |
+| Underparameterized | $p \ll n$ | 经典 tradeoff 适用 |
+| Interpolation threshold | $p \sim n$ | Variance 达到峰值，测试误差激增 |
+| Overparameterized | $p \gg n$ | Implicit regularization 开始起作用，测试误差下降 |
 
 Desde el punto de vista práctico: si utilizas redes neuronales o grandes conjuntos de árboles, no te detengas en el umbral de interpolación, o bien bien bien lejos de ella, o bien bien bien lejos de ella.
 
@@ -177,7 +178,7 @@ Los métodos de ensamblaje son los instrumentos más prácticos para la lucha co
 
 **Bagging (Bootstrap Aggregating)**Las muestras de diferentes arranques de datos de entrenamiento se entrenan en varios modelos, luego se prevé que el promedio. Cada modelo individual tiene una alta variación, pero la variación media tiene que ser mucho menor.
 
-Es matemáticamente válido porque si la media de N 个独立预测, cada variación de la predicción es sigma^2, entonces la variación de la media de valor es sigma^2 / N. Estos modelos no son realmente independientes, por lo que la reducción de la amplitud es menor que 1/N, pero sigue siendo bastante observable.
+Es matemáticamente eficaz porque si es promedio$N$个独立预测, cada predicción de la variación de la ciudad es $\sigma^2$, entonces la variación del valor medio es $\sigma^2 / N$Estos modelos no son realmente independientes, por lo que la reducción de la amplitud es menor que la de los modelos anteriores.$1/N$Pero todavía es bastante espectacular.
 
 **Boosting**通过顺序构建模型来降低 Bias, cada uno de los nuevos modelos se centran en los errores del conjunto actual.  El aumento de gradiente y el AdaBoost son ejemplos principales.
 
@@ -303,10 +304,10 @@ variance = np.mean(predictions.var(axis=0))
 total_error = np.mean(np.mean((predictions - y_true) ** 2, axis=1))
 ```
 
-- `mean_pred`Es de muestras de arranque  estimación de E[f_hat(x)
+- `mean_pred`Es de muestras de arranque  estimación $\mathbb{E}[\hat{f}(x)]$
 - `bias_sq`Es el cuadrado de la diferencia entre el valor promedio y el valor real
 - `variance`Es decir, el número de muestras de bootstrap de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la empresa de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de la marca de marca de la marca de marca de marca de la marca de la marca de la marca de la marca de marca de la marca de marca de marca de la marca de la marca de marca de la marca de marca de marca de la marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de marca de
-- `total_error` debería aproximarse igual a sesgo^2 + variación + ruido
+- `total_error` debería ser similar a $\text{偏差}^2 + \text{方差} + \text{噪声}$
 
 ### Paso 4: Curvas de aprendizaje
 
@@ -434,7 +435,7 @@ Para la mayoría de los conjuntos de datos tablales, esto requiere 10-15 minutos
 
 2. ¿Cómo afectará esto el componente de variación? ¿El grado polinómico óptimo se moverá?
 
-3. Para experimentar la regularización de L2 (Ridge regreso) ⋅ para un polinomio de alto grado fijo (grado 15) ⋅ para calcular la variación de la función de variación de la lambda ⋅ para calcular la variación de la variación de la variación de la variación de la lambda ⋅ para calcular la variación de la variación de la variación de la variación de la variación de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de la longitud de
+3. Para experimentar la regularización de L2 (Ridge regression) ― para un polinomio de alto grado fijo (degree 15) ―, se puede dibujar desde 0 hasta 100―.$\text{偏差}^2$和 variación 随 lambda 变化的函数图──
 
 4. 将真实函数 de polinomio 修改为 `sin(x)`¿Cómo se ha cambiado la variación de sesgo? ¿Existe todavía un grado óptimo de claridad?
 
