@@ -23,7 +23,7 @@ Espectograma de mel  más avanzado. El espectro humano en sentido numérico de p
 
 **Log-magnitude.**magnitud bruta 跨越 5-6 个数量级──使用 `log(|X| + 1e-6)`O `20 * log10(|X|)`Para comprimir el rango dinámico, cada tubería de producción utiliza la magnitud de registro, en lugar de la magnitud en bruto.
 
-**Mel scale.**Frecuencia de Hz mediana `f` Por el `m = 2595 * log10(1 + f / 700)`映射到 mel `m`◊ El programa se ejecuta a 1 kHz, en 1 kHz, en 80 millas de 08 kHz, que son las entradas estándar de ASR.
+**Mel scale.**Frecuencia de Hz mediana `f` Por el $m = 2595 \cdot \log_{10}(1 + f / 700)$映射到 mel `m`◊ El programa se ejecuta a 1 kHz, en 1 kHz, en 80 millas de 08 kHz, que son las entradas estándar de ASR.
 
 **Mel filterbank.**Un grupo en la escala mel arriba entre los intervalos de filas de filtros triangulares. Cada filtro es la suma ponderada de los contenedores FFT vecinos.
 

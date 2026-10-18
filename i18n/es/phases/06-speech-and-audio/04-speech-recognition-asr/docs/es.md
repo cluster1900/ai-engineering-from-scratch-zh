@@ -37,7 +37,7 @@ Hasta 2026 años, el SOTA de LibriSpeech test-clean arriba fue de 1.4% (Parakeet
 
 ### WER: Una cifra
 
-**Word Error Rate**¿ Qué es esto ?`(S + D + I) / N`, entre los cuales S= sustitución, D= eliminación, I= inserción, N= referencia en el texto.
+**Word Error Rate**¿ Qué es esto ?$(S + D + I) / N$, entre ellos $S$= sustitución,$D$= eliminación,$I$= en el interior,$N$= referencia en el texto palabra número. La distancia de edición de Levenshtein.
 
 | Model | LibriSpeech test-clean | LibriSpeech test-other | Size |
 |-------|------------------------|------------------------|------|

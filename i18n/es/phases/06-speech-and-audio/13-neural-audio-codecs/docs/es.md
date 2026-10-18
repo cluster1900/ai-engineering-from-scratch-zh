@@ -24,7 +24,7 @@ Las perspectivas de 2024-2026 son:**当你尝试从文本生成时，纯 reconst
 
 ### 核心技巧: Cuantización de vectores residuales (RVQ)
 
-En lugar de usar un libro de códigos enorme, puede necesitar millones de códigos para obtener un buen código.**RVQ**:一串小代码簿 级联──第一代码簿 量化编码器 输出;第二代量化残留;依此类推── cada código libro tiene 1024 代码簿──8 代码簿 = 1024^8 = 10^24 的有效词表──
+En lugar de usar un libro de códigos enorme, puede necesitar millones de códigos para obtener un buen código.**RVQ**:一串小代码簿 级联──第一代码簿 量化编码器 输出;第二代量化残留;依此类推──每代码簿有1024 代码簿──8 代码簿 = $1024^8 = 10^{24}$Su nombre es el de la familia de los niños.
 
 En la inferencia, el decodificador se reunirá con todos los códigos seleccionados para que se reestructuren.
 
@@ -130,8 +130,8 @@ Se puede entrenar un transformer de texto a semántica, palabra表比直接到�
 
 对于Mimi 的 12.5 Hz × 8 个代码书, una 10 s 语音片段:
 
-```
-N_tokens = 10 * 12.5 * 8 = 1000 tokens
+```math
+N_{\text{tokens}} = 10 \times 12.5 \times 8 = 1000 \text{ tokens}
 ```
 
 1000 Tokens para el Transformer para decirlo es muy pequeño en la siguiente página. Un Transformer de 256M puede generarse en 10 segundos en la GPU moderna.
