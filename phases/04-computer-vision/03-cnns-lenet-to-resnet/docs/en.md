@@ -69,7 +69,7 @@ stack:   conv 3x3 -> conv 3x3 -> pool 2x2
 repeat:  16 or 19 conv layers
 ```
 
-两个 3x3 convs 看到的 input area 与一个 5x5 conv 相同，但 parameters 更少 (2*9*C^2 = 18C^2 vs 25*C^2)，并且中间额外多了一个 ReLU。VGG 把这个观察变成了完整架构。它的简单性，即一种 block type 反复堆叠，让它成为后续所有架构的参照点。
+两个 3x3 convs 看到的 input area 与一个 5x5 conv 相同，但 parameters 更少 ($2 \cdot 9 \cdot C^2 = 18C^2$ vs $25 \cdot C^2$)，并且中间额外多了一个 ReLU。VGG 把这个观察变成了完整架构。它的简单性，即一种 block type 反复堆叠，让它成为后续所有架构的参照点。
 
 代价：138M parameters，训练慢，inference 昂贵。
 
@@ -117,9 +117,11 @@ VGG 能在 19 层工作，是因为 batch norm（几乎同时发表）让 activa
 
 He, Zhang, Ren, Sun 提出了一个解决一切的改动：
 
-```
-standard block:   y = F(x)
-residual block:   y = F(x) + x
+```math
+\begin{aligned}
+\text{标准块：} \quad & y = F(x) \\
+\text{残差块：} \quad & y = F(x) + x
+\end{aligned}
 ```
 
 `+ x` 表示 layer 总能通过把 `F(x)` 推到零来选择什么都不做。一个 1,000-layer ResNet 现在最差也不会比 1-layer network 差，因为每个额外 block 都有一个 trivial escape hatch。有了这个保证，Optimizer 愿意让每个 block 变得*稍微*有用；而稍微有用的 block 堆叠 100 次，就是 state-of-the-art。
