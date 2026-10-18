@@ -32,8 +32,8 @@ SFT  te da algo: el modelo ahora responderá a la pregunta, en lugar de continua
 
 Para cada respuesta, desde el modelo SFT 采样 K 个完成──Labeler对它们排序──训练一个奖励模型,为任意快速反应对 打分,使对于 `y_w`Fue muy bien ganado.`y_l`de los pares:
 
-```
-L_RM = -log sigmoid(r(x, y_w) - r(x, y_l))
+```math
+L_{\text{RM}} = -\log \sigma\big(r(x, y_w) - r(x, y_l)\big)
 ```
 
 Es la pérdida de preferencia en pareja Bradley-Terry. RM normalmente se inicia en el modelo SFT, sustituyendo la cabeza LM por la cabeza escalar.
@@ -44,8 +44,8 @@ Los modelos de recompensas 很小:6B 足足服务 175B InstructGPT──它们 t
 
 definición de objetivo:
 
-```
-J(pi) = E_{x~D, y~pi(.|x)} [ r(x, y) ] - beta * KL(pi(.|x) || pi_SFT(.|x))
+```math
+J(\pi) = \mathbb{E}_{x \sim D,\, y \sim \pi(\cdot \mid x)} \big[ r(x, y) \big] - \beta \, \mathrm{KL}\big(\pi(\cdot \mid x) \,\|\, \pi_{\text{SFT}}(\cdot \mid x)\big)
 ```
 
 Utilizando el término PPO maximizar.`pi`No se apartará de la política de SFT 太远──没有它, Optimizer encontrará ejemplos adversarios, es decir, en RM Bajo puntajes muy altos, la razón no es que los humanos realmente prefieran a ellos, sino que RM nunca los ha visto──
@@ -56,8 +56,8 @@ Coeficiente KL `beta`Es el RLHF, el mayor parámetro de la RLHF.
 
 Después de RLHF, el modelo se encuentra más prefijado por los humanos, pero en los puntos de referencia estándar (SquAD、HellaSwag、DROP) se le llama impuesto de alineación, y no se utiliza PPO-ptx 修复:
 
-```
-J_ptx(pi) = J(pi) + gamma * E_{x~D_pretrain} [ log pi(x) ]
+```math
+J_{\text{ptx}}(\pi) = J(\pi) + \gamma \, \mathbb{E}_{x \sim D_{\text{pretrain}}} \big[ \log \pi(x) \big]
 ```
 
 PPO-ptx 成为标准做法──Antropic、DeepMind 和 Meta 都使用某种变化──
@@ -85,7 +85,7 @@ al-instruct-pipeline
 Para observar el contenido:
 
 - `beta = 0.1`Con`beta = 0.0`La trayectoria de recompensa de abajo.
-- Entrenamiento pasos 中的 KL pi pi SFT)
+-  Entrenamiento pasos $\mathrm{KL}(\pi \Vert \pi_{\text{SFT}})$¿Qué es eso?
 - Distribución de acción final en comparación con la preferencia del etiquetador.
 
 ## Envío
@@ -110,7 +110,7 @@ Para observar el contenido:
 |------|-----------------|------------------------|
 | SFT | “instruction tuning” | Stage 1：在 prompt-response pairs 上用 cross-entropy fine-tune |
 | Reward model | “the RM” | 在 (prompt, response) 上的 scalar regressor，使用 Bradley-Terry 在 pairwise labels 上训练 |
-| Bradley-Terry | “pairwise preference loss” | -log sigmoid(r_w - r_l)；把 pairwise ranking 约简为 binary classification |
+| Bradley-Terry | “pairwise preference loss” | $-\log \sigma(r_w - r_l)$；把 pairwise ranking 约简为 binary classification |
 | KL penalty | “the regularizer” | `beta * KL(pi \|\| pi_SFT)` — 让 RL policy 保持接近 SFT anchor |
 | PPO-ptx | “PPO with pretraining mix” | 向 PPO objective 加入一部分 pre-training log-likelihood，用来抵消 alignment tax |
 | Alignment tax | “the RLHF regression” | RLHF 之后，在 RLHF 未针对的标准 benchmarks 上下降 |

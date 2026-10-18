@@ -19,8 +19,11 @@ LLMs 会记忆──Carlini et al. 2021 indican que el modelo de producción de 
 ## 概念
 ### (ε, δ) - privacidad diferencial
 
-Si a cualquier dos sólo diferencia un conjunto de datos de muestra, así como cualquier evento S, un algoritmo aleatorio M  satisface:
-P(M(D) en S) <= e^ε * P(M(D') en S) + δ。
+Si se trata de dos datos de cualquier tipo que difieren sólo en un conjunto de datos de muestra, así como cualquier evento.$S$, un algoritmo a su vez $M$满足以下条件,则称其具有 $(\varepsilon, \delta)$- Diferencia de privacidad:
+
+```math
+P(M(D) \in S) \le e^{\varepsilon} \cdot P(M(D') \in S) + \delta.
+```
 
 解释:输出分布足够接近 (由 ε 参数化)), por lo que ninguna contribución de un individuo puede ser concluida con confianza, a menos que se produzca una excepción en la probabilidad de δ.
 
@@ -30,7 +33,7 @@ Abadi et al. 2016。标准流程:
 1. Como un mini lote.
 2. 计算 por ejemplo de gradientes。
 3. Cortar cada gradiente por ejemplo a un valor C.
-4. Para los gradientes de corte posterior 求和,并加入 std 为 σ * C de ruido gaussiano。
+4. Para los gradientes de corte posterior 求和,并加入 std 为$\sigma \cdot C$El ruido gaussiano.
 5. Utiliza con el ruido y para actualizar los parámetros.
 
 隐私成本由会计师跟踪(Moments会计师、Rényi DP会计师)  LLM 文献中报告的 ε 价值会因威胁模型、数据敏感性和效用目标而大幅变化; no existe普适的安全默认 ε──已发出表示例在某些 LLM 训练设置中大致覆盖 ε ≈ 110,但这些只是例证,并非推默认值──较低的 ε 通常需要更多噪音,并可能增加效用损失──
@@ -79,9 +82,9 @@ an-dp-clip-noise
 本课会产出                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `outputs/skill-dp-audit.md` Determinar la afirmación de DP de un modelo de lenguaje, que audita: ε, δ) 值、使用的会计者、MIA evaluation protocol,以及是否已经评估了信任暴露向量──
 
 ##  ejercicios
-1. 运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py`◊扫过 σ ∈ {0.5, 1.0, 2.0},并报告 (ε, δ) -acurate 权衡──识别效用崩的临界点──
+1. 运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py`¿Qué pasa?$\sigma \in \lbrace 0.5, 1.0, 2.0 \rbrace$,并报告 (ε, δ) - exactitud 权衡──识别效用崩的临界点──
 
-2. 实现 Canary 插入和日志损失测量在 σ = 1.0 时,DP-SGD 前后的检测率──
+2. 实现 Canary 插入和日志损失测试──测量在 $\sigma = 1.0$时,DP-SGD 前后的检测率──
 
 3. 阅读Nasr et al. 2025 关于培训数据提取的内容──为什么提取成功不会在中等 ε下崩? ¿Qué significa esto para evaluar la MIA?
 

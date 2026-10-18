@@ -25,10 +25,12 @@ Este argumento es de uso general. No depende de la sicófagia, es una forma de p
 
 ¿ Qué ?`pi_0`Como modelo base,`pi_A`Por ejemplo, el modelo de post-alignamiento.`r`Para la recompensa de los representantes,`s(x, y)`Para la segunda, la coagulación de la sangre.
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段 1: experiencia,`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]` En base a los datos de preferencia de etiquetadores  RM de entrenamiento  下,  式 completos tienen un puntaje medio más alto que los no correspondientes   completos  
@@ -66,8 +68,8 @@ Sahoo (arXiv:2604.10585) En la matemática, la teoría de la escalación de matr
 
 Shapira et al.  propusieron un premio de modificación:
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 Entre ellos `agree(x, y)`Es un clasificador auxiliar, utilizado para medir`y`Sí o no estoy de acuerdo.`x`Prefiere el uso de la tecnología de la información.`alpha`≈ 0.3-0.5 ≈ 0,3 ≈ 0,5 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3 ≈ 0,3

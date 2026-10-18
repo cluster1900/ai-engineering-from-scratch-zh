@@ -28,11 +28,11 @@ Red-teaming 过去 es una actividad manual. Un pequeño grupo de expertos crean 
 
 循环, por k en 1..K:
 1. Usado objetivo G y hasta el momento de (prompto, respuesta) par 历史来提示 A。
-2. Una nueva llamada de entrada.
-3. Se presentará a T; se recibirá la respuesta r_k。
-4. J 根据目标对 (p_k, r_k) 打分──
+2. Una nueva llamada de salida .$p_k$¿Qué es eso?
+3. ¿ Qué ?$p_k$ presentar a T; recibir respuesta $r_k$¿Qué es eso?
+4. J 根据目标对 $(p_k, r_k)$¿Qué pasa?
 5. Si el puntaje >= umbral, entonces parar  已 encontrado jailbreak。
-6. 否则,将 (p_k, r_k) 追加到 A 的历史中;继续──
+6. 否则,将 $(p_k, r_k)$追加到 A 的历史中; continuar。
 
 经验结果(NeurIPS 2023): para GPT-3.5-turbo、Llama-2-7B-chat tasa de éxito de ataque >50%; la consulta media necesaria para el éxito es de 10-20    
 

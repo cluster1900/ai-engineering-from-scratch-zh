@@ -28,9 +28,11 @@ Cuando una medida se convierte en un objetivo, deja de ser una buena medida. Man
 
 Gao et al. 给出了一个功能形式──令 `d = sqrt(KL(pi || pi_init))`¿Qué es eso?`R_proxy(d)`Para la recompensa de la proxy,`R_gold(d)`Por el precio de oro.
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 Entre ellos `beta_gold > beta_proxy`◊ ambos se elevan desde cero KL, ambos alcanzan la cima, pero el pico de oro está más cerca del punto de partida.`d`arriba, incluso si el proxy  continúa subiendo, el oro también caerá al nivel de referencia abajo.
