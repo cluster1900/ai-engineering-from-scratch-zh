@@ -27,18 +27,18 @@ Flamingo 从冻结的 Chinchilla 70B LLM 开始。全部 70B weights 保持不�
 
 ### Perceiver resampler
 
-对于 prompt 中的每张图像，ViT 会生成 N 个 patch tokens。Perceiver resampler 有 K 个固定的 learnable latents（Flamingo 使用 K=64）。每个 resampler block 有两个子步骤：
+对于 prompt 中的每张图像，ViT 会生成 $N$ 个 patch tokens。Perceiver resampler 有 $K$ 个固定的 learnable latents（Flamingo 使用 $K=64$）。每个 resampler block 有两个子步骤：
 
-1. Cross-attention：K 个 latents attend 到 N 个 patch tokens（Q 来自 latents，K/V 来自 patches）。
+1. Cross-attention：$K$ 个 latents attend 到 $N$ 个 patch tokens（Q 来自 latents，K/V 来自 patches）。
 2. Latents 内部的 Self-Attention + FFN。
 
-经过 6 个 resampler blocks 后，输出是 K=64 个 dim 1024 的 visual tokens，无论 ViT 生成了多少 patches。224x224 图像（196 patches）和 480x480 图像（900 patches）都会输出为 64 个 resampler tokens。
+经过 6 个 resampler blocks 后，输出是 $K=64$ 个 dim 1024 的 visual tokens，无论 ViT 生成了多少 patches。224x224 图像（196 patches）和 480x480 图像（900 patches）都会输出为 64 个 resampler tokens。
 
-对于 video，resampler 会按时间应用：每一帧的 patches 生成 64 个 latents，而 temporal positional encoding 让模型区分 t=0 和 t=N。完整 video 变成 T * 64 个 visual tokens。
+对于 video，resampler 会按时间应用：每一帧的 patches 生成 64 个 latents，而 temporal positional encoding 让模型区分 $t=0$ 和 $t=N$。完整 video 变成 $T \cdot 64$ 个 visual tokens。
 
 ### Gated cross-attention
 
-在冻结 LLM 的每 M 层之间（Flamingo 使用 M=4）插入一个新的 gated cross-attention block：
+在冻结 LLM 的每 $M$ 层之间（Flamingo 使用 $M=4$）插入一个新的 gated cross-attention block：
 
 ```
 x_after_llm_block = llm_block(x_before)
@@ -142,7 +142,7 @@ cross-attention-fusion
 | OBELICS | "Interleaved web corpus" | 包含 141M 个网页的开放数据集，图像和文本按阅读顺序排列 |
 | Chinchilla | "70B frozen base" | Flamingo 的冻结文本 LLM，来自 DeepMind 的 Chinchilla paper |
 | Gate schedule | "How alpha moves" | 训练期间 cross-attention gate 打开的速率 |
-| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 M=4 |
+| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 $M=4$ |
 | OpenFlamingo | "Open reproduction" | MosaicML/LAION 的 3-9B 开放 checkpoint；architecture 与 Flamingo 相同 |
 
 ## 延伸阅读
