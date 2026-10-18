@@ -61,7 +61,7 @@ Chaque traceur classique est en phase de prévision de mouvement. Utilisez le fi
 
 ### Algoritme hongrois
 
-Je vous en donne une .`M x N`Matrice de coûts (traces x détections), chercher faire le total coût, la plus petite tâche à faire, le coût est généralement`1 - IoU(track_bbox, detection_bbox)`, ou des caractéristiques d'apparence de la similitude cosine négative. Le temps de fonctionnement est O(((M+N) ^3);`scipy.optimize.linear_sum_assignment`Dans Python, assez rapide.
+Je vous en donne une .`M x N`Matrice de coûts (traces x détections), chercher faire le total coût, la plus petite tâche à faire, le coût est généralement`1 - IoU(track_bbox, detection_bbox)`, ou des caractéristiques d'apparence de la similitude négative cosine.$O((M+N)^3)$- Je suis là .$M, N$Le maximum est de 1000 heures.`scipy.optimize.linear_sum_assignment`Dans Python, assez rapide.
 
 ### Les principaux aspects de ByteTrack
 

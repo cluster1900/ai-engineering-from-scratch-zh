@@ -23,7 +23,7 @@ Les nuages de point sont des capteurs 免费给你东西──NeRFs 及其后者
 ## 概念
 ### Nuages de pointe
 
-Le nuage de point est un ensemble sans ordre de points N, chaque point est sélectionné avec des caractéristiques (color, intensité, normalité).
+Le point nuage est $\mathbb{R}^3$- Je suis là .$N$个点的无序集合, chaque point choisis est caractéristique de la couleur, de l'intensité, de la normalité)
 
 ```
 cloud = [
@@ -41,8 +41,8 @@ Il n'y a pas de réseau, pas de connectivité.
 
 PointNet (Qi et al., 2017) utilise une idée pour résoudre deux choses: pour chaque application de point partagé MLP, puis avec une fonction symétrique ((max pool)聚合── le résultat est un vecteur de taille fixe, et ne dépend pas de l'ordre──
 
-```
-f(P) = max_{p in P} MLP(p)
+```math
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 C'est le cœur de PointNet. Les variantes plus profondes de PointNet++ ∞ Point Transformer) ont été ajoutées à l'échantillonnage hiérarchique et à l'agrégation locale, mais la fonction symétrique ∞ technique reste inchangée.
@@ -86,22 +86,23 @@ Loss 会将染出像素与训练照片中的地面真相像素 进行比较─�
 
 作用在 `(x, y, z)`Le MLP de vanille de la première génération ne peut pas indiquer de fréquence élevée, car les MLP de la dernière génération sont orientés vers la basse génération.
 
-```
-gamma(p) = (sin(2^0 pi p), cos(2^0 pi p), sin(2^1 pi p), cos(2^1 pi p), ...)
+```math
+\gamma(p) = \left(\sin(2^0 \pi p), \cos(2^0 \pi p), \sin(2^1 \pi p), \cos(2^1 \pi p), \ldots\right)
 ```
 
-Le maximum à L=10 niveaux de fréquence. Ceci est le même que les transformateurs utilisant les mêmes techniques de position, aussi apparaîtra à nouveau dans le temps de diffusion.
+Le meilleur à .$L=10$个 fréquence niveaux── ceci est la même technique que les transformateurs utilisent pour les positions, aussi apparaîtra dans le temps de diffusion conditionnement (leçon 10) ⋅ sans elle, les NeRFs semblent être très flou──
 
 ### Rendering volumétrique
 
+```math
+\begin{aligned}
+C(r) &= \sum_i T_i \left(1 - \exp(-\sigma_i \delta_i)\right) c_i \\[4pt]
+T_i &= \exp\left(-\sum_{j<i} \sigma_j \delta_j\right) \\
+\delta_i &= t_{i+1} - t_i
+\end{aligned}
 ```
-C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 
-T_i  = exp(- sum_{j<i} sigma_j * delta_j)
-delta_i = t_{i+1} - t_i
-```
-
-`T_i`C'est la transmission, c'est aussi le nombre de luminaires qui peuvent atteindre le point d'accès.`(1 - exp(-sigma_i * delta_i))`Il y a une opacité.`c_i`Le pixel final est le rayonnement de la couleur.
+`T_i`C'est la transmission, c'est aussi le point où la lumière peut atteindre.$i$Il y a une autre.`(1 - exp(-sigma_i * delta_i))`C' est ça .$i$Il y a une opacité.`c_i`Le pixel final est le rayonnement de la couleur.
 
 ### Ce qui a remplacé les NERF
 

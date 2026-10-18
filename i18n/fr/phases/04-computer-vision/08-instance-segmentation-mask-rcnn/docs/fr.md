@@ -83,8 +83,8 @@ Mettez le masque 28x28 en plus de l'échantillon à la proposition de la taille 
 
 Le masque R-CNN a quatre types de pertes en plus:
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`- Je suis là .`L_rpn_box` Objettivité des propositions RPN + boîte Régrésion。

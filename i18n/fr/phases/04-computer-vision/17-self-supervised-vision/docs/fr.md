@@ -178,7 +178,7 @@ print(f"InfoNCE with identical pairs:  {loss_same:.3f}")
 print(f"InfoNCE with random pairs:     {loss_random:.3f}")
 ```
 
-Les paires de même type  devraient obtenir une perte plus faible( dans le lot et à basse température, sous la pression de 0)。 les paires de même type  devraient obtenir un log(2N-1) = ~log(31) = ~3.4, pour les paires de 16 par lots。
+Parallèlement aux paires  devrait obtenir des pertes inférieures  dans le grand lot 和 basse température 下接近 0) $\log(2N-1) \approx \log(31) \approx 3.4$, pour les lots de 16 paires.
 
 ### 步骤 4: Masquage à la mode MAE
 

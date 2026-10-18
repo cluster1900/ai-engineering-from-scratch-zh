@@ -47,8 +47,8 @@ Le réseau de haute résistance (HRNet, ViTPose) est le premier programme; le r�
 
 Ne pas régresser directement`(x, y)`, mais pour chaque point clé  prédiction un `H x W`Carte thermique, au centre de la vraie position, il y a une tache gaussienne.
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 En inférence, l'argmax de chaque carte thermique est la localisation du point clé de prédiction.

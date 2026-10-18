@@ -26,35 +26,32 @@ Le cours de la formation de la formation de la formation de la formation de la f
 
 ### processus à long terme
 
-取一张图像  Je suis en train de faire une photo`x_0` Ajouter un peu de bruit gaussien  get `x_1`◊ Rejoindre moins de bruit  get `x_2` Continuer à faire des progrès jusqu'à`x_T`Il est presque impossible de comparer le bruit gaussien pur.
+取一张图像  Je suis en train de faire une photo`x_0` Ajouter un peu de bruit gaussien  get `x_1`◊ Rejoindre moins de bruit  get `x_2` Continuer à se poursuivre $T$步, jusqu'à `x_T`Il est presque impossible de comparer le bruit gaussien pur.
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1},  beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \; \beta_t I\right)
 ```
 
-`beta_t`C'est un programme de variance plus petit, généralement en T=1000 étapes, passant de 0,0001 à 0,02 ∞.
+`beta_t`Il y a une plus petite variance dans le calendrier, habituellement en$T=1000$步内 线性增长 0.0001 线性增长 0.02 . 步内 线性增长 0.02 步内 步内 步内 线性增长 0.0001 线性增长 0.02 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步内 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步 步
 
 ### 闭式跳转
 
 Le bruit est une chaîne de Markov, mais on peut le plier mathématiquement.`x_0`échantillon `x_t`Il y a une autre.
 
-```
-Define alpha_t = 1 - beta_t
-Define alpha_bar_t = prod_{s=1..t} alpha_s
-
-Then:
-  q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0,  (1 - alpha_bar_t) * I)
-
-Equivalently:
-  x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon
-  where epsilon ~ N(0, I)
+```math
+\begin{aligned}
+&\text{定义 } \alpha_t = 1 - \beta_t \\
+&\text{定义 } \bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s \\[6pt]
+&\text{则：} q(x_t \mid x_0) = \mathcal{N}\left(x_t; \sqrt{\bar{\alpha}_t} \, x_0, \; (1 - \bar{\alpha}_t) I\right) \\[6pt]
+&\text{等价地：} x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1 - \bar{\alpha}_t} \, \epsilon \quad \text{其中 } \epsilon \sim \mathcal{N}(0, I)
+\end{aligned}
 ```
 
 Cette seule méthode est la diffusion, et c'est la raison pour laquelle elle peut être mise en pratique.`t`, directement de`x_0`échantillon `x_t`,并一步完成训练, pas besoin de simuler la chaîne Markov complète.
 
 ### processus inverse
 
-Le processus à l'avant est fixe.`p(x_{t-1} | x_t)`Il est nécessaire d'apprendre le contenu du réseau neuronal.`x_{t-1}`Ils prédisent le bruit de l'entrée dans la phase suivante.`epsilon`, puis par des formules mathématiques`x_{t-1}`Il y a une autre.
+Le processus à l'avant est fixe.`p(x_{t-1} | x_t)`Il est nécessaire d'apprendre le contenu du réseau neuronal.`x_{t-1}`Ils prédisent la vie.$t$步加入的噪音 `epsilon`, puis par des formules mathématiques`x_{t-1}`Il y a une autre.
 
 ```mermaid
 flowchart LR
@@ -79,7 +76,7 @@ flowchart LR
 Pour chaque étape de formation:
 
 1. échantillon 一张真实图像 `x_0`Il y a une autre.
-2. De [1, T] en moyenne échantillon un pas en temps `t`Il y a une autre.
+2. De $[1, T]$Le taux d'échantillonnage moyen est un pas en temps`t`Il y a une autre.
 3. le bruit de l'échantillon `epsilon ~ N(0, I)`Il y a une autre.
 4. 计算 `x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon`Il y a une autre.
 5. Utilisez le réseau`epsilon_theta(x_t, t)`Il y a une autre.
@@ -103,7 +100,7 @@ Le principal est que, bien que les conditions inverses généralement ne soient 
 
 ### Pourquoi 1000 pas ?
 
-Le choix du programme de bruit à l'avant est de faire en sorte que chaque étape soit suffisamment bruyante, de sorte que l'étape inverse soit proche de Gaussia.
+Le but de la sélection du programme de bruit à l'avenir est de faire en sorte que chaque étape soit suffisamment bruyante, que l'étape inverse soit proche de Gaussia.$T=1000$Le schéma linéaire de l'accompagnement est la configuration par défaut du DDPM.
 
 ### DDIM: rapide 20 fois de l'échantillonnage
 
@@ -314,14 +311,14 @@ Le cours est ouvert à:
 
 | Term | 人们通常怎么说 | 实际含义 |
 |------|----------------|----------------------|
-| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 T 步内把图像破坏成 Gaussian noise |
+| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 $T$ 步内把图像破坏成 Gaussian noise |
 | Reverse process | “一步步 denoise” | 学到的分布，会从 noise 逐步走回图像 |
-| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 t 步加入的 noise |
-| Beta schedule | “noise 大小” | T 个小 variance 组成的序列，定义每一步进入多少 noise |
-| alpha_bar_t | “累计保留因子” | 到时间 t 为止的 (1 - beta_s) 乘积；t 越大，剩余信号越少 |
-| DDPM sampler | “Ancestral，随机” | 从每个 x_{t-1} 的 conditional Gaussian 中 sample；1000 步 |
+| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 $t$ 步加入的 noise |
+| Beta schedule | “noise 大小” | $T$ 个小 variance 组成的序列，定义每一步进入多少 noise |
+| $\bar{\alpha}_t$ | “累计保留因子” | 到时间 $t$ 为止的 $(1 - \beta_s)$ 乘积；$t$ 越大，剩余信号越少 |
+| DDPM sampler | “Ancestral，随机” | 从每个 $x_{t-1}$ 的 conditional Gaussian 中 sample；1000 步 |
 | DDIM sampler | “确定性，快速” | 将 sampling 重写为确定性 ODE；20-100 步即可得到相似质量 |
-| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 t 的 sinusoidal embedding，让它知道 noise level |
+| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 $t$ 的 sinusoidal embedding，让它知道 noise level |
 
 ## 延伸阅读
 

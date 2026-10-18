@@ -52,8 +52,8 @@ flowchart LR
 
 Les conditions de texte ordinaires seront pour chaque demande.`c`Apprendre à apprendre`epsilon_theta(x_t, t, c)` CFG  entraînement du même réseau, mais 10% du temps sera perdu `c`(en remplacement pour l'embedding vide), afin d'obtenir un modèle unique de sonorités conditionnelles et inconditionnelles en même temps:
 
-```
-eps = eps_uncond + w * (eps_cond - eps_uncond)
+```math
+\epsilon = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})
 ```
 
 `w`C'est une échelle de référence.`w=0`C'est inconditionnel.`w=1`C'est une condition normale,`w>1`La production est en baisse, le prix est en baisse.`w=7.5`Il y a une autre.

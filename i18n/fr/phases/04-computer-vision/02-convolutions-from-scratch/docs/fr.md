@@ -71,8 +71,8 @@ Ceci est une formule, c'est ça.**shared weights、locality、sliding window**To
 
 给定输入空间尺寸 `H`Taille du noyau`K`- Le rembourrage`P`- Je suis en train de marcher.`S`- Le numéro de la liste:
 
-```
-H_out = floor( (H - K + 2P) / S ) + 1
+```math
+H_{\text{out}} = \left\lfloor \frac{H - K + 2P}{S} \right\rfloor + 1
 ```
 
 Tu le calculeras dans chaque architecture.
@@ -85,7 +85,7 @@ Tu le calculeras dans chaque architecture.
 | Pool 2x2 | 32 | 2 | 0 | 2 | 16 |
 | 大 receptive field | 32 | 7 | 3 | 2 | 16 |
 
-"Same padding" signifie sélectionner P, de sorte que lorsque S == 1 时 H_out == H。 pour le nombre de nombres étranges K, y'a P = (K - 1) / 2。 c'est pourquoi les noyaux 3x3 occupent la position dominante: ils sont toujours possédant le noyau de nombres étranges le plus petit au centre de leur point。
+"Le même rembourrage" signifie "sélection"$P$Je suis là .$S = 1$时 $H_{\text{out}} = H$Pour le nombre de choses.$K$Je suis là .$P = (K - 1) / 2$C'est pourquoi les noyaux 3x3 occupent la position dominante: ils sont toujours le noyau de la plus petite taille au centre.
 
 ### Padding
 

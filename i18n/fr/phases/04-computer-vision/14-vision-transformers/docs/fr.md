@@ -97,7 +97,7 @@ ViT-B/16
 
 - 16x16 patches -> 196 jetons, standard setting。
 - 32x32 patches -> 49 jetons, plus rapide mais moins résolu.
-- 8x8 patches -> 784 jetons, plus précis, mais O(n^2) coût de l'attention 扩展性很差──
+- 8x8 patches -> 784 jetons, plus précisément, mais $O(n^2)$Le coût de l'attention est très faible.
 
 Les patches plus grandes = les jetons plus petits = les jetons plus rapides mais les détails spatiaux plus petits。SwinV2 utilise des patches 4x4 dans les fenêtres hiérarchiques。
 

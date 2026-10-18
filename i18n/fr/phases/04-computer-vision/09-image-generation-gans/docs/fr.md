@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Objectif de l'apprentissage
-- Expliquer le minimum entre générateur et discriminateur, ainsi que pourquoi l'équilibre correspond au modèle = données
+- Expliquer le minimum entre générateur et discriminateur, ainsi que pourquoi l'équilibre doit être$p_{\text{model}} = p_{\text{data}}$
 - Dans PyTorch, mettez DCGAN en place et faites en sorte qu'il génère des images 32x32 synthétisées en continu en 60 pages
 - Utilisation de trois critères techniques de stabilisation de la GAN  entraînement: perte non saturante, norme spectrale, Règlement de mise à jour à deux échelles
 - 读取训练曲线,区分健康收与模式崩,oscillation, discriminateur-gains-completement
@@ -42,8 +42,8 @@ flowchart LR
 
 G 希望 D 犯错――D 希望自己判断正确――形式化地说:
 
-```
-min_G max_D  E_x[log D(x)] + E_z[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_x[\log D(x)] + \mathbb{E}_z[\log(1 - D(G(z)))]
 ```
 
 De droite à gauche:D est en train de le maximiser en réalité`log D(real)`) et faux`log (1 - D(fake))`) la précision de l'image. G est en train de minimiser D dans la fausse précision de la hauteur  il veut `D(G(z))`Très haut.
@@ -54,9 +54,11 @@ Bon compagnon, il a prouvé que le minimum existe dans l'équilibre général.`p
 
 La forme de la figure ci-dessus est instable sur la valeur numérique.`D(G(z))`Pour chaque faux, c'est presque nul.`log(1 - D(G(z)))`Pour G's Gradient 会消失──修复方法:翻转 G's Loss──
 
-```
-L_D = -E_x[log D(x)] - E_z[log(1 - D(G(z)))]
-L_G = -E_z[log D(G(z))]                          # non-saturating
+```math
+\begin{aligned}
+L_D &= -\mathbb{E}_x[\log D(x)] - \mathbb{E}_z[\log(1 - D(G(z)))] \\
+L_G &= -\mathbb{E}_z[\log D(G(z))] \qquad \text{（非饱和）}
+\end{aligned}
 ```
 
 Je suis là.`D(G(z))`接近零时,G 的损失 很大,Gradient 也有信息量──每现代GAN都使用这个变体进行训练──
@@ -292,8 +294,8 @@ Le programme de formation
 |------|----------------|----------------------|
 | Generator (G) | “负责画东西的网络” | 将 noise 映射到图像；训练目标是骗过 discriminator |
 | Discriminator (D) | “评判者” | Binary classifier；训练目标是区分真实图像与生成图像 |
-| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 p_G = p_data |
-| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 -log(D(G(z)))，而不是 log(1 - D(G(z)))，以避免训练早期 Gradient 消失 |
+| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 $p_G = p_{\text{data}}$ |
+| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 $-\log(D(G(z)))$，而不是 $\log(1 - D(G(z)))$，以避免训练早期 Gradient 消失 |
 | Mode collapse | “Generator 只生成一种东西” | G 只生成数据分布中的一小部分；用 SN、minibatch discrimination 或更大的 batch 修复 |
 | TTUR | “两个 learning rates” | D 比 G 学得更快，通常快 2-4 倍；稳定训练 |
 | Spectral norm | “1-Lipschitz layer” | 一种 weight-normalisation，用来限制每层的 Lipschitz constant；防止 D 变得任意陡峭 |

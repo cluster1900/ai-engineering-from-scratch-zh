@@ -97,8 +97,8 @@ Pour les petits ensembles de données, une seule couche linéaire est générale
 
 C'est une version plus simple de LR utilisée dans le mode moderne de réglage fin (BEiT、DINOv2、ViT-B) et non pour séparer les couches en étapes, mais pour que chaque couche de LR soit plus petite que la première.
 
-```
-lr_layer_k = base_lr * decay^(L - k)
+```math
+\text{lr\_layer}_k = \text{base\_lr} \cdot \text{decay}^{L - k}
 ```
 
 Lorsque la décomposition = 0,75 et L = 12 blocs transformateurs 时, le premier bloc de formation LR est la tête LR `0.75^11 ≈ 0.04x`Pour les transformateurs, c'est plus important que pour les CNN. Pour les CNN, les LR de groupe de scène sont généralement suffisants.

@@ -84,10 +84,10 @@ Les deux projets concrets sont tous visibles.
 
 ### Grille de pixels de l' entropique croisée
 
-Pour la segmentation sémantique de la classe C, la sortie du modèle est`(N, C, H, W)`❖ L'objectif est`(N, H, W)`, contient des identifiants de classe entière.
+对于包含 $C$个 classes 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class 个 class  class   class   class   class   class   class   class   class   class   class   class  class   class  class  class  class   class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class  class`(N, C, H, W)`❖ L'objectif est`(N, H, W)`, contient des identifiants de classe entière.
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 PyTorch 中的 `F.cross_entropy`Origines pour traiter cette forme.
@@ -98,17 +98,19 @@ L'entropie croisée est égale à chaque pixel. Dans la grande majorité des ima
 
 Perte de dés  via une optimisation directe de la superposition entre le masque prédit et le masque réel  pour résoudre ce problème:
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 Parmi eux `p`C'est une carte de probabilité sigmoïde/softmax de classe.`y`C'est une vérité de base binaire. Mais quand on se chevauche, la perte est à zéro.
 
 实践中, usage **combined loss**- Le numéro de la liste:
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 La croisée entropie dans la formation  début fournir un gradient stable; Dice va donner une formation 后段聚焦在真正匹配面具形上――. Ce composé est un schéma standard de l'imagerie médicale, dans tout ensemble de données déséquilibré en classe 上都很难被超越――.
@@ -117,7 +119,7 @@ La croisée entropie dans la formation  début fournir un gradient stable; Dice 
 
 - **Pixel accuracy** 预测 百分比──计算便宜──与分类中精度一样,在失衡数据上会失效──
 - **IoU per class** Chaque classe de masque de l'intersection sur l'union;
-- **Dice (F1 on pixels)** 类似 IoU;`Dice = 2 * IoU / (1 + IoU)`❖ Imagerie médicale, plus préférée Dice, conduite de la communauté, plus préférée IoU;
+- **Dice (F1 on pixels)** 类似 IoU;$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$❖ Imagerie médicale, plus préférée Dice, conduite de la communauté, plus préférée IoU;
 - **Boundary F1** Mesurer les limites prévues et la proximité des limites de la vérité au sol, même les petits décalages seront punis.
 
  Rapport de l'UO par classe, pas seulement de l'UO.  La moyenne de l'UO couvrirait une classe de seulement 15% ‒ tandis que les neuf autres classes avaient 85% de la situation ‒

@@ -57,7 +57,7 @@ Resulting tokens:      (T / P_t) * (H / P_h) * (W / P_w) tokens
 
 Le codage positionnel est 3D: pour chaque personne`(t, h, w)`坐标使用 rotary 或 learning embedding──Attention peut être:
 
-- **Full joint** Tous les jetons attendent tous les jetons。 Pour N 个 token ≠ O(N^2)。 Pour长视频来说代价过高。
+- **Full joint** Tous les jetons attendent tous les jetons ∙$N$个 Tokens est $O(N^2)$Pour les longs vidéos, le prix est trop élevé.
 - **Divided** 交替执行 temporal attention  la même position spatiale 跨时间:`(H*W) * T^2`) et l'attention spatiale( le même temps 、 traverses espaces:`T * (H*W)^2`La plupart des artistes utilisent cette méthode.
 - **Window**- Je suis là.`(t, h, w)`Dans les fenêtres de la salle de bain, les vidéos sont utilisées de cette façon.
 
@@ -210,7 +210,7 @@ class DividedAttentionBlock(nn.Module):
         return xs
 ```
 
-L'attention dans le temps est une fonction de temps et d'espace.
+Attention dans le temps et dans l'espace, attention dans le temps et dans l'espace.$O(T^2 + (HW)^2)$操作,替代一个 $O((THW)^2)$C'est le cœur de chaque vidéo moderne.
 
 ### 步骤 4: 组合一个小视频 DiT
 
@@ -279,7 +279,7 @@ Le programme de formation
 | World model | “Learned simulator” | 一个在给定 state 和 action 时预测未来 observations 的模型 |
 | Video DiT | “Spacetime transformer” | 使用 3D patchification 和 divided attention 的 Diffusion transformer |
 | Latent action | “Inferred control” | 从帧对中推断出的离散或连续 action latent；用于条件化 next-frame generation |
-| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 O(N^2) 保持可控 |
+| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 $O(N^2)$ 保持可控 |
 | Object permanence | “Things stay real” | video models 必须学会的场景属性；在食物、玻璃器皿上的经典失败模式 |
 | FVD | “Fréchet Video Distance” | FID 的视频等价物；主要 visual quality metric |
 | Inverse dynamics model | “Observations to actions” | 给定 `(state, next state)`，输出连接二者的 action；闭合 robotics loop |

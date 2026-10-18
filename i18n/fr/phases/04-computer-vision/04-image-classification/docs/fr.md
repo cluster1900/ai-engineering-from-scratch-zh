@@ -52,18 +52,20 @@ Chaque ligne de ce cycle peut contenir des bugs.`model(x).softmax()`Les augmenta
 
 Classifiateur 会为每张图像产生 `C`个数字, appelés logits. Applique softmax 会把它们转换为概率分布:
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 Cross-entropie 衡量正确 class 的 log négatif probabilité:
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-Le côté droit forme est la forme de valeur stable de la log-sum-exp.`nn.CrossEntropyLoss`La mise en œuvre de la logique de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de
+Le côté droit forme est la forme de valeur stable de la log-sum-exp.`nn.CrossEntropyLoss`La mise en œuvre de la logique de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de logiciel de$\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$C'est une quantité sans sens.
 
 ### Pourquoi augmentation efficace
 
@@ -105,7 +107,7 @@ Ne pas utiliser.`[0, 0, 1, 0, 0]`作为训练目标,而用 `[eps/C, eps/C, 1-eps
 La précision globale va couvrir le déséquilibre. Si on prédit toujours la classe majoritaire, on peut aussi obtenir 90%.
 
 - **Per-class accuracy** Chaque classe un chiffre; seront immédiatement exposés à des catégories de manque de performance.
-- **Confusion matrix** Grille C x C, dont la ligne i col j = vraie classe i est prévue pour le nombre de classes j; diagonale est correct prévue, hors diagonale 才是模型 问题所在。
+- **Confusion matrix** $C \times C$réseau, parmi les rangées $i$Col.$j$= vraie classe $i$ 被预测为class  été classé$j$Le nombre de diagonales est correct, les diagonales sont non-diagonales.
 - **Top-1 / Top-5** Classe exacte oui ou non dans le top 1 ou dans le top 5 prédictions; Top-5 pour ImageNet  très important, parce que comme Norwich Terrier et Norfolk Terrier de ces classes 确实存在歧义──
 - **Calibration (ECE)** 0.8 confiance prédiction Est-ce que 80% du temps est exact ? Les réseaux modernes  systématieusement trop confiants; peut être utilisé pour l'échelle de température ou l'étiquette de lissage 修正。
 

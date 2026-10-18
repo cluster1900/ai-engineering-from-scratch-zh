@@ -69,7 +69,7 @@ stack:   conv 3x3 -> conv 3x3 -> pool 2x2
 repeat:  16 or 19 conv layers
 ```
 
-两个 conve 3x3 看到的输入面积与一个5x5 conv相似,但参数更少 (2*9*C^2 = 18C^2 vs 25*C^2),并且中间额外多多一个 ReLU──VGG 把这个观察变成完整的架构──它的简单性,即一个块类型反复堆叠,让它成为所有架构的后点参照──
+∆ 2 conv 3x3 ∆ voir la zone d'entrée par rapport à une conv 5x5 est similaire, mais les paramètres sont plus faibles ($2 \cdot 9 \cdot C^2 = 18C^2$contre$25 \cdot C^2$), et en milieu d'une extraordinaire RELU―VGG Placez cette observation dans une architecture complète― sa simplicité, c'est-à-dire un type de bloc répétant, laissez-la devenir le point de référence de toutes les architectures ultérieures―
 
 Paramètres de 138 M, entraînement lent, inférence
 
@@ -117,9 +117,11 @@ Les VGG peuvent être activés à 19 niveaux, en raison de la norme de lot (envi
 
 Il, Zhang, Ren, Sun ont proposé une solution pour tout changer:
 
-```
-standard block:   y = F(x)
-residual block:   y = F(x) + x
+```math
+\begin{aligned}
+\text{标准块：} \quad & y = F(x) \\
+\text{残差块：} \quad & y = F(x) + x
+\end{aligned}
 ```
 
 `+ x`La couche de définition 总能通过把 `F(x)`推到零来选择什么都不做── Un réseau résidentiel de 1000 couches 现在最差也不差于1 layer network 差,因为每个额外块都有一个轻微的逃离门──有这个保证,优化器愿意让每个块 变得*稍微*有用;而一个稍微有用的块 堆叠100次,就是最先进的――

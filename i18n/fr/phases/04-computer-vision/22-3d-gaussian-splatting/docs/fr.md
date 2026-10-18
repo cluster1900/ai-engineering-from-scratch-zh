@@ -61,12 +61,13 @@ flowchart LR
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `mu`、 ont une covariance en 3D `Sigma`Le 3D Gaussian, sera projeté pour la position de l'écran `mu'`、 ont une covariance en 2D `Sigma'`Le Gausséen 2D:
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 L'empreinte gaussienne 2D est une ellipse, son axe est `Sigma'`Les vecteurs propres de cette ellipse ⋅ chaque pixel ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅           `exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`Il y a une autre.
@@ -75,12 +76,13 @@ L'empreinte gaussienne 2D est une ellipse, son axe est `Sigma'`Les vecteurs prop
 
 Pour un pixel, couvrir ses gaussiens seront en revanche 排序(((ou等价地, avec une inverse formule en revanche 排序) ▽Color utilisé depuis les années 1980 tous les rasterisateurs semi-transparents sont en cours d'utilisation pour composer le même équation:
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 Ceci avec**NeRF 的 volumetric render 是同一个方程**, mais ici on calcule sur un ensemble de Gaussiens rares, et non sur des échantillons denses au-dessus du rayon.
@@ -97,7 +99,7 @@ Le nombre fixe de Gaussiens ne peut pas couvrir les complexes scénarios.
 - **Split**: Quand un Gaussian de grande échelle est un gradient très élevé, il va être décomposé en deux Gaussian plus petits.
 - **Prune**: supprimer l'opacité des Gaussins de valeur inférieure à 
 
-Densité Chaque N fois d'itération 运行一次── un scénario s'étend généralement d'environ 100 000 个初始高西人 (environ 1-5M) à la fin de l'entraînement.
+Densité$N$La prochaine itération 运行一次── un scénario se déroule généralement de 100 000 Gaussiens initiaux (environ 1 à 5 M) à la fin de l'entraînement.
 
 ### Uzal一段话 comprendre les harmoniques sphériques
 
