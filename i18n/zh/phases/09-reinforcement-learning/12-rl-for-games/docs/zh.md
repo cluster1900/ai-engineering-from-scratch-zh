@@ -30,19 +30,19 @@ while True:
 
 **AlphaZero (2017)。**给定一个规则已知的游戏:
 
-- 政策价值网络:一个塔 `f_θ(s) → (p, v)`,我知道.`p`是合法的上升前.`v`是期望的游戏结果.
-- 蒙特卡洛树搜索 (MCTS):在每一步,展开可能后续状态的树.`(p, v)`作为先前+启动节点:`a* = argmax Q(s, a) + c · p(a|s) · √N(s) / (1 + N(s, a))`,我知道.
-- 让代理对代理对局.`t`步,MCTS访问分布`π_t`成为政策的目标
-- 损失:`L = (v - z)² - π · log p + c · ||θ||²`,我知道.`z`是游戏结果 ((+1 / 0 / -1) ⋅
+- 政策价值网络:一个塔 $f_\theta(s) \to (p, v)$,我知道.$p$是合法的上升前.$v$是期望的游戏结果.
+- 蒙特卡洛树搜索 (MCTS):在每一步,展开可能后续状态的树.$(p, v)$作为先前+启动节点:$a^{\ast} = \arg\max_a Q(s, a) + c \cdot p(a \mid s) \cdot \sqrt{N(s)} / (1 + N(s, a))$,我知道.
+- 让代理对代理对局.$t$步,MCTS访问分布$\pi_t$成为政策的目标
+- 损失:$L = (v - z)^2 - \pi \cdot \log p + c \cdot \lVert \theta \rVert^2$,我知道.$z$是游戏结果 ((+1 / 0 / -1) ⋅
 
 零人类知识――零手工学―― 一个单一的配方,在各自的数千万局自动玩之后掌握了棋牌、shogi 和 Go――
 
 **MuZero (2019)。**移除了已知规则的要求.
 
-- 不使用固定环境,而是学习一个*潜伏动态模型*`(h, g, f)`其他:
-  - `h(s)`作为一个潜伏状态的观察.
-  - `g(s_latent, a)`预测下一个隐藏状态 + 奖励――
-  - `f(s_latent)`:预测政策前 +值──
+- 不使用固定环境,而是学习一个*潜伏动态模型*$(h, g, f)$其他:
+  - $h(s)$作为一个潜伏状态的观察.
+  - $g(s_{\text{latent}}, a)$预测下一个隐藏状态 + 奖励――
+  - $f(s_{\text{latent}})$:预测政策前 +值──
 -  MCTS 在*学习的隐形空间中运行――相同的搜索,相同的训练循环――
 - 适用于Go、棋牌、shogi *以及*阿塔利  一个算法,不需要规则知识
 
@@ -54,11 +54,11 @@ while True:
 
 - 游戏:回答数学/编码/推理问题──胜利=验证器(测试案例 通过、数值答案匹配) 回复 1──
 - 政策:LLM──行动:标签──状态:快速+反应-迄今为止──
-- 没有批评,相反,对每一个提示,从政策采样`G`个完成――计算每个完成的奖励――使用 **group-relative advantage** `A_i = (r_i - mean_r) / std_r`作为强大力量的新信号.
+- 没有批评$V_\phi$另一方面,对每一个提示,从政策采样$G$个完成――计算每个完成的奖励――使用 **group-relative advantage** $A_i = (r_i - \text{mean}_r) / \text{std}_r$作为强大力量的新信号.
 - 对于参考政策加 KL罚款 以防漂移(类似于RLHF)
 - 完整的损失:
 
-  `L_GRPO(θ) = -E_{q, {o_i}} [ (1/G) Σ_i A_i · log π_θ(o_i | q) ] + β · KL(π_θ || π_ref)`
+  $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
 没有奖励模型,没有批评者,没有MCTS──组相关基线 替换了三者──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF质量──
 
@@ -145,7 +145,7 @@ def grpo_step(theta, p_idx, G=8, beta=0.01, lr=0.1, rng=None):
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**由于这些问题,如果验证器错误或可被利用,LLM会找到利用者.
-- **Group size 太小。**根据组基线的差异`1/√G`缩放.`G = 4`时,优势信号会很;标准选择是`G = 8`到了`64`,我知道.
+- **Group size 太小。**根据组基线的差异$1/\sqrt{G}$缩放.$G = 4$时,优势信号会很;标准选择是$G = 8$到64岁.
 - **Length bias。**不同长度的LLM完成 具有不同的日志概率.
 - **纯 self-play 循环。**球运动的风格在一般数量游戏中卡进主导循环.
 - **Search-policy mismatch。**训练政策 去模仿搜索结果. 如果政策网太小,无法显示搜索的分布,训练会停滞.
@@ -196,7 +196,7 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 ## 练习
 
-1. **Easy。**在`code/main.py`中实现GRPO强盗──在 2 个提示 × 每个 4 个答案代币 上训练──使用 `G=8`在"1000次更新内收──
+1. **Easy。**在`code/main.py`中实现GRPO强盗──在 2 个提示 × 每个 4 个答案代币 上训练──使用 $G=8$在"1000次更新内收──
 2. **Medium。**接入PPO(剪辑) 和尼拉 REINFORCE──在同一强盗上比较样本效率和奖励差异与GRPO的差异──
 3. **Hard。**扩展到长度为 2 的推理链:代理发发出两个代币,验证者对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代币对代代币对代币对代币对代代代币对代代代币对代币对代代代代代代代代代代币对代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代代
 
@@ -204,11 +204,11 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 | Term | 人们常说 | 实际含义 |
 |------|-----------------|-----------------------|
-| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned `(p, v)` prior 的 UCB1/PUCT selection。 |
+| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned $(p, v)$ prior 的 UCB1/PUCT selection。 |
 | AlphaZero | “Self-play + MCTS” | Policy-value net 被训练来匹配 MCTS visits 和 game outcome。 |
 | MuZero | “Learned-model AlphaZero” | 相同循环，但通过 learned dynamics 在 latent space 中进行。 |
 | GRPO | “Critic-free PPO” | Group Relative Policy Optimization；带 group-mean baseline + KL 的 REINFORCE。 |
-| PUCT | “AlphaZero 的 UCB” | `Q + c · p · √N / (1 + N_a)` —— 平衡 value estimate 与 prior。 |
+| PUCT | “AlphaZero 的 UCB” | $Q + c \cdot p \cdot \sqrt{N} / (1 + N_a)$ —— 平衡 value estimate 与 prior。 |
 | Self-play | “Agent vs past self” | Zero-sum 的标准做法；提供对称训练信号。 |
 | League play | “Population-based self-play” | 将 past + current + exploiters 采样为 opponents。 |
 | Verifier reward | “Verifiable RL” | Reward 来自 deterministic checker（tests pass、answer matches）。 |

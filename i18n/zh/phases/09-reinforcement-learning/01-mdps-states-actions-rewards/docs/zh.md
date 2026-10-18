@@ -21,20 +21,24 @@
 
 **五个对象。**
 
-- **States** `S`在网球世界,是格子.在棋牌中,是棋盘.在LLM中,是背景窗口加上任何记忆.
-- **Actions** `A`△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
-- **Transitions** `P(s' | s, a)`给定状态`s`和行动`a`在棋中是决定性,在库存中是 Stochastic,在 LLM解码中几乎是决定性.
-- **Rewards** `R(s, a, s')`△标量信号──赢 = +1,输 = -1──收入减成本──GRPO 中的日志概率比率
-- **Discount** `γ ∈ [0, 1)`△未来的奖励 相对于当前的奖励权重.`γ = 0.99`买到大约100步的视界;`γ = 0.9`买到大约10个.
+- **States** $S$在网球世界,是格子.在棋牌中,是棋盘.在LLM中,是背景窗口加上任何记忆.
+- **Actions** $A$△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
+- **Transitions** $P(s' \mid s, a)$给定状态$s$和行动$a$在棋中是决定性,在库存中是 Stochastic,在 LLM解码中几乎是决定性.
+- **Rewards** $R(s, a, s')$△标量信号──赢 = +1,输 = -1──收入减成本──GRPO 中的日志概率比率
+- **Discount** $\gamma \in [0, 1)$△未来的奖励 相对于当前的奖励权重.$\gamma = 0.99$买到大约100步的视界;$\gamma = 0.9$买到大约10个.
 
-**Markov property** `P(s_{t+1} | s_t, a_t) = P(s_{t+1} | s_0, a_0, …, s_t, a_t)`未来只依赖于当前状态. 如果不成立,说明国家代表性不完整.
+**Markov property** $P(s_{t+1} \mid s_t, a_t) = P(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t)$未来只依赖于当前状态. 如果不成立,说明国家代表性不完整.
 
-**Policies 与 returns。**政策`π(a | s)`把状态映射到行动分布――回归`G_t = r_t + γ r_{t+1} + γ² r_{t+2} + …`是未来奖励的折扣金额――价值`V^π(s) = E[G_t | s_t = s]`是在政策中`π`下从`s`开始的预期回报──Q值`Q^π(s, a) = E[G_t | s_t = s, a_t = a]`每个RL算法都会估计其中一个,然后相应改进`π`,我知道.
+**Policies 与 returns。**政策$\pi(a \mid s)$把状态映射到行动分布――回归$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \ldots$是未来奖励的折扣金额――价值$V^\pi(s) = \mathbb{E}[G_t \mid s_t = s]$是在政策中$\pi$下从$s$开始的预期回报──Q值$Q^\pi(s, a) = \mathbb{E}[G_t \mid s_t = s, a_t = a]$每个RL算法都会估计其中一个,然后相应改进$\pi$,我知道.
 
 **Bellman equations。**在本阶段,所有内容都将被用于固定点方程:
 
-`V^π(s) = Σ_a π(a|s) Σ_{s', r} P(s', r | s, a) [r + γ V^π(s')]`
-`Q^π(s, a) = Σ_{s', r} P(s', r | s, a) [r + γ Σ_{a'} π(a'|s') Q^π(s', a')]`
+```math
+\begin{aligned}
+V^\pi(s) &= \sum_a \pi(a \mid s) \sum_{s', r} P(s', r \mid s, a) [r + \gamma V^\pi(s')] \\
+Q^\pi(s, a) &= \sum_{s', r} P(s', r \mid s, a) [r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s', a')]
+\end{aligned}
+```
 
 它们将预期的回报 拆成 此步的回报加上落点的折扣值──递归──本9期中每个算法,要么将这个方程代到收收──动态编程),要么从中采样──蒙特卡罗,要么用一步进行启动──时间差距)──
 
@@ -114,16 +118,16 @@ def policy_evaluation(policy, gamma=0.99, tol=1e-6):
 
 ### 步骤4:`γ`是具有物理含义的超参数
 
-有效的视野大约是`1 / (1 - γ)`,我知道.`γ = 0.9`十个步骤.`γ = 0.99`百步.`γ = 0.999`千个步骤.
+有效的视野大约是$1 / (1 - \gamma)$,我知道.$\gamma = 0.9$十个步骤.$\gamma = 0.99$百步.$\gamma = 0.999$千个步骤.
 
-太低时,代理会目光短浅――太高时,信用分配会变得,因为许多早期步骤都会共同承担远未来的奖励责任――LLM RLHF通常使用`γ = 1`由于剧情短且有界限.`0.95–0.99`◎ 长远战略游戏 使用`0.999`,我知道.
+太低时,代理会目光短浅――太高时,信用分配会变得,因为许多早期步骤都会共同承担远未来的奖励责任――LLM RLHF通常使用$\gamma = 1$由于剧情短且有界限.`0.95–0.99`◎ 长远战略游戏 使用`0.999`,我知道.
 
 ## 陷
 
 - **Non-Markovian state.**如果您需要最近三次观测才能做出决策,那么, 状态 不仅仅是当前观测──修复:堆框架 (DQN 在 Atari 上堆叠 4 ) 或使用复制状态 (在观测上上使用 LSTM/GRU) ──
 - **Sparse rewards.**只有在胜利时给予奖励,会让大状态空间中学习几乎不可能.
 - **Reward hacking.**优化代理奖励 经常产生病态行为――OpenAI的船车竞赛代理 一直原地转圈收集强势,而不是完成比赛――始终从目标结果定义奖励,而不是从代理定义――
-- **Discount mis-spec.**在无限视界任务上使用 `γ = 1`让每个值都变成无穷.`γ < 1`限制.
+- **Discount mis-spec.**在无限视界任务上使用 $\gamma = 1$让每个值都变成无穷.$\gamma < 1$限制.
 - **Reward scale.**随着 {+100, -100} 与 {+1, -1} 的回报会给出相同的最佳政策,但渐进大小会非常不同.`[-1, 1]`,我知道.
 
 ## 用它
@@ -168,21 +172,21 @@ tags: [rl, mdp, modeling]
 ## 练习
 
 1. **Easy.**在`code/main.py`中实现4×4 GridWorld 和随机政策推广――运行10,000个集――报告回报的平均和std――与最佳回报――6) 比较――
-2. **Medium.**对于统一随机政策,使用`γ ∈ {0.5, 0.9, 0.99}`运行`policy_evaluation`把每个`V`打印为4×4格子.解释为什么终端附近的状态值会变得更大.`γ`更快增长.
-3. **Hard.**把网格世界 转化为股票:每一个行动以概率`p = 0.1`滑向相邻方向――重新评估统一政策――`V[start]`变得好还是坏?
+2. **Medium.**对于统一随机政策,使用$\gamma \in \lbrace 0.5, 0.9, 0.99 \rbrace$运行`policy_evaluation`把每个`V`打印为4×4格子.解释为什么终端附近的状态值会变得更大.$\gamma$更快增长.
+3. **Hard.**把网格世界 转化为股票:每一个行动以概率$p = 0.1$滑向相邻方向――重新评估统一政策――`V[start]`变得好还是坏?
 
 ## 关键术语
 
 | Term | 人们的说法 | 实际含义 |
 |------|------------|----------|
-| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 `(S, A, P, R, γ)`。 |
+| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 $(S, A, P, R, \gamma)$。 |
 | State | “Agent 看到的东西” | 在所选 policy class 下，future dynamics 的 sufficient statistic。 |
-| Policy | “Agent 的行为” | Conditional distribution `π(a \| s)` 或 deterministic map `s → a`。 |
-| Return | “Total reward” | 从当前 step 开始的 discounted sum `Σ γ^t r_t`。 |
-| Value | “一个 state 有多好” | 在 `π` 下从 `s` 开始的 expected return。 |
-| Q-value | “一个 action 有多好” | 在 `π` 下从 `s` 开始并以第一个 action `a` 开始的 expected return。 |
+| Policy | “Agent 的行为” | Conditional distribution $\pi(a \mid s)$ 或 deterministic map $s \to a$。 |
+| Return | “Total reward” | 从当前 step 开始的 discounted sum $\sum \gamma^t r_t$。 |
+| Value | “一个 state 有多好” | 在 $\pi$ 下从 $s$ 开始的 expected return。 |
+| Q-value | “一个 action 有多好” | 在 $\pi$ 下从 $s$ 开始并以第一个 action $a$ 开始的 expected return。 |
 | Bellman equation | “Dynamic programming recursion” | 把 value / Q 分解为 one-step reward 加 discounted successor value 的 fixed-point。 |
-| Discount `γ` | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 `~1/(1-γ)`。 |
+| Discount $\gamma$ | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 $\approx 1/(1-\gamma)$。 |
 
 ## 延伸阅读
 

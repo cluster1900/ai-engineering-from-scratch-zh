@@ -13,7 +13,7 @@
 
 动态编程则相反:零方差的启动备份,但要求已知模型──
 
-根据单个过渡期,学习的时间差异 (TD) 折中了两者.`(s, a, r, s')`构建一个单步目标`r + γ V(s')`并把`V(s)`由于在RHS上使用近似的`V`虽然会引入偏差,但偏差远低于MC,并且从第一步开始就能在线更新.
+根据单个过渡期,学习的时间差异 (TD) 折中了两者.$(s, a, r, s')$构建一个单步目标$r + \gamma V(s')$并把$V(s)$由于在RHS上使用近似的$V$虽然会引入偏差,但偏差远低于MC,并且从第一步开始就能在线更新.
 
 这是所有现代RL (DQN、A2C、PPO、SAC) 所依赖的支点――9 阶段 剩下的内容,都是在你将在本课中写的单步TD更新 之上叠加函数近似和技巧――
 
@@ -23,31 +23,39 @@
 
 **用于 V 的 TD(0) update：**
 
-`V(s) ← V(s) + α [r + γ V(s') - V(s)]`
+```math
+V(s) \leftarrow V(s) + \alpha [r + \gamma V(s') - V(s)]
+```
 
-方括号中的量是 TD 错误`δ = r + γ V(s') - V(s)`,这是一个MC中.`G_t - V(s_t)`收取要求`α`满足罗宾斯-蒙罗`Σ α = ∞`没有任何`Σ α² < ∞`),并且所有国家都受到无限次访问.
+方括号中的量是 TD 错误$\delta = r + \gamma V(s') - V(s)$,这是一个MC中.$G_t - V(s_t)$收取要求$\alpha$满足罗宾斯-蒙罗$\sum \alpha = \infty$没有任何$\sum \alpha^2 < \infty$),并且所有国家都受到无限次访问.
 
 **Q-learning。**一种用于控制的非政策 TD 方法:
 
-`Q(s, a) ← Q(s, a) + α [r + γ max_{a'} Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \max_{a'} Q(s', a') - Q(s, a)]
+```
 
-`max`假设从`s'`开始遵循*贪*政策,不管代理人实际上采取什么行动――这种解让Q学习在代理人通过 ε-贪 探索时仍然学习`Q*`〔Mnih et al. (2015) 将将其转换为Atari 上的深度Q学习(05课程〕
+`max`假设从$s'$开始遵循*贪*政策,不管代理人实际上采取什么行动――这种解让Q学习在代理人通过 ε-贪 探索时仍然学习$Q^{\ast}$〔Mnih et al. (2015) 将将其转换为Atari 上的深度Q学习(05课程〕
 
 **SARSA。**一种政策上的TD方法:
 
-`Q(s, a) ← Q(s, a) + α [r + γ Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma Q(s', a') - Q(s, a)]
+```
 
-这个名字来自tuple.`(s, a, r, s', a')`◎ SARSA 使用代理 下一步*实际*采取行动`a'`没有贪.`argmax`,它会收到当前运行的任意 ε-贪`π`应对`Q^π`在极限`ε → 0`下会变化`Q*`,我知道.
+这个名字来自tuple.$(s, a, r, s', a')$◎ SARSA 使用代理 下一步*实际*采取行动$a'$没有贪.`argmax`,它会收到当前运行的任意 ε-贪$\pi$应对$Q^\pi$在极限$\epsilon \to 0$下会变化$Q^{\ast}$,我知道.
 
-**cliff-walking 的差异。**在经典的悬崖走路任务中,Q-学习学习沿悬崖边缘最好的路径,但在探索期间偶尔会吃到惩罚.SARSA将学习从悬崖远走更安全的路径,因为它将探索噪音计入了自己的Q-值.随着训练,在`ε → 0`时两者都将达到最佳水平. 在实践中,这是很重要的:当部署时确实正在进行探索,SARSA的行为将更保持.
+**cliff-walking 的差异。**在经典的悬崖走路任务中,Q-学习学习沿悬崖边缘最好的路径,但在探索期间偶尔会吃到惩罚.SARSA将学习从悬崖远走更安全的路径,因为它将探索噪音计入了自己的Q-值.随着训练,在$\epsilon \to 0$时两者都将达到最佳水平. 在实践中,这是很重要的:当部署时确实正在进行探索,SARSA的行为将更保持.
 
-**Expected SARSA。**用`π`下的期望值替换`Q(s', a')`其他:
+**Expected SARSA。**用$\pi$下的期望值替换$Q(s', a')$其他:
 
-`Q(s, a) ← Q(s, a) + α [r + γ Σ_{a'} π(a'|s') Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \sum_{a'} \pi(a' \mid s') Q(s', a') - Q(s, a)]
+```
 
-方差低于SARSA(不对`a'`采样),目标也在政策上.现代教材通常将其视为默认选择.
+方差低于SARSA(不对$a'$采样),目标也在政策上.现代教材通常将其视为默认选择.
 
-**n-step TD 和 TD(λ)。**通过等待`n`步再启动,在 TD(0) 和 MC 之间插值.`n=1`是TD,`n=∞`是MC──TD(λ) 用几何权重`(1-λ)λ^{n-1}`对于所有人`n`求平均――大多数深度RL使用3到20之间`n`,我知道.
+**n-step TD 和 TD(λ)。**通过等待$n$步再启动,在 TD(0) 和 MC 之间插值.$n=1$是TD,$n=\infty$是MC──TD(λ) 用几何权重$(1-\lambda)\lambda^{n-1}$对于所有人$n$求平均――大多数深度RL使用3到20之间$n$,我知道.
 
 
 ```figure
@@ -105,18 +113,18 @@ def q_learning(env, episodes, alpha=0.1, gamma=0.99, epsilon=0.1):
 
 ### 步骤3:学习曲线
 
-随着每100集的平均回归──Q-学习 在简单的确定性格里德世界上收更快;SARSA 在悬崖上行走上更保守──在`code/main.py`两者之间.`α=0.1, ε=0.1`下,大约2000集后都接近最优.
+随着每100集的平均回归──Q-学习 在简单的确定性格里德世界上收更快;SARSA 在悬崖上行走上更保守──在`code/main.py`两者之间.$\alpha=0.1, \epsilon=0.1$下,大约2000集后都接近最优.
 
 ### 步骤 4:与DP真值比较
 
-运行值反复(课02)得到 `Q*`查查`max_{s,a} |Q_learned(s,a) - Q*(s,a)|`,一个健康的表表格TD代理在4×4格林世界上训练10,000个集后,应落在`~0.5`在内
+运行值反复(课02)得到 $Q^{\ast}$查查$\max_{s,a} \lvert Q_{\text{learned}}(s,a) - Q^{\ast}(s,a) \rvert$,一个健康的表表格TD代理在4×4格林世界上训练10,000个集后,应落在`~0.5`在内
 
 ## 陷
 
-- **初始 Q values 很重要。**乐观初始化 负奖励 任务中`Q = 0`们的丧可能永远困在贪的政策中.
-- **α schedule。**常数`α`对于不平稳问题是可以的.`α_n = 1/n`在理论上能收,但在实践中太慢;把`α`固定在`[0.05, 0.3]`并监控学习曲线.
-- **ε schedule。**从高值开始`ε=1.0`),衰减到`ε=0.05`,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-- **Q-learning 中的 max bias。**当 当`Q`有噪音,`max`操作员存在上偏差――会导致高估;哈塞尔特的双重Q学习(05课中DDQN使用的做法) 用两个Q表修复这个问题――
+- **初始 Q values 很重要。**乐观初始化 负奖励 任务中$Q = 0$们的丧可能永远困在贪的政策中.
+- **α schedule。**常数$\alpha$对于不平稳问题是可以的.$\alpha_n = 1/n$在理论上能收,但在实践中太慢;把$\alpha$固定在`[0.05, 0.3]`并监控学习曲线.
+- **ε schedule。**从高值开始$\epsilon=1.0$),衰减到$\epsilon=0.05$,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+- **Q-learning 中的 max bias。**当 当$Q$有噪音,`max`操作员存在上偏差――会导致高估;哈塞尔特的双重Q学习(05课中DDQN使用的做法) 用两个Q表修复这个问题――
 - **非终止 episodes。**标准做法:把上限视为非终端,继续启动.
 - **State hashing。**如果状态是体/体,使用可哈希的键(体,不是列表;四舍五进后的浮体,不是原始浮体)
 
@@ -164,16 +172,16 @@ Refuse to apply tabular TD to state spaces > 10⁶. Refuse to ship a Q-learning 
 
 1. **Easy。**在4×4 GridWorld 上实现Q学习和SARSA──绘制2000个节目的学习曲线――每100个节目的平均回报――谁收更快?
 2. **Medium。**构建一个悬崖走路环境,4×12,最后一行是悬崖,奖励 -100并重置到起点) ――比较Q学习和SARSA的最终政策――截图展示它们各自走过的路径――哪个更接近悬崖?
-3. **Hard。**实现双重Q学习――在噪音奖励 GridWorld 上(给每步奖励 添加高斯噪音 σ=5),展示Q学习 会明显高估 `V*(0,0)`双重Q学习会不会.
+3. **Hard。**实现双重Q学习. 在噪音奖励网格世界上,给每步奖励.$\sigma=5$),展示Q学习会明显高估 $V^{\ast}(0,0)$双重Q学习会不会.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| TD error | "The update signal" | `δ = r + γ V(s') - V(s)`，bootstrapped residual。 |
+| TD error | "The update signal" | $\delta = r + \gamma V(s') - V(s)$，bootstrapped residual。 |
 | TD(0) | "One-step TD" | 每次 transition 后只使用 next state's estimate 进行更新。 |
-| Q-learning | "Off-policy RL 101" | 对 next-state actions 使用 `max` 的 TD update；无论 behavior policy 如何，都会学习 `Q*`。 |
-| SARSA | "On-policy Q-learning" | 使用实际 next action 的 TD update；为当前 ε-greedy π 学习 `Q^π`。 |
-| Expected SARSA | "The low-variance SARSA" | 用 π 下的期望替换采样得到的 `a'`。 |
+| Q-learning | "Off-policy RL 101" | 对 next-state actions 使用 `max` 的 TD update；无论 behavior policy 如何，都会学习 $Q^{\ast}$。 |
+| SARSA | "On-policy Q-learning" | 使用实际 next action 的 TD update；为当前 ε-greedy π 学习 $Q^\pi$。 |
+| Expected SARSA | "The low-variance SARSA" | 用 π 下的期望替换采样得到的 $a'$。 |
 | GLIE | "Correct exploration schedule" | Greedy in the Limit with Infinite Exploration；Q-learning 收敛所需。 |
 | Bootstrapping | "Using current estimate in the target" | 区分 TD 和 MC 的关键。是偏差来源，但能大幅降低方差。 |
 | Maximization bias | "Q-learning overestimates" | 对有噪声 estimates 取 `max` 会产生向上偏差；由 Double Q-learning 修复。 |

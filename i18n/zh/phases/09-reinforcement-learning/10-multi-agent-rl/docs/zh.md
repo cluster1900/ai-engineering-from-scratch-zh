@@ -21,31 +21,31 @@
 
 ![Four MARL regimes: indep, centralized critic, self-play, league](../assets/marl.svg)
 
-**Formalism: Markov Game.**民党的泛化:国家`S`、联合行动`a = (a_1, …, a_n)`过渡`P(s' | s, a)`并且每个代理人的奖励.`R_i(s, a, s')`,每个代理人`i`在自己的政策中`π_i`如果奖励完全相同,它是**fully cooperative**如果是零和,它是**adversarial**如果混合,则是**general-sum**,我知道.
+**Formalism: Markov Game.**民党的泛化:国家$S$、联合行动$a = (a_1, \ldots, a_n)$过渡$P(s' \mid s, a)$并且每个代理人的奖励.$R_i(s, a, s')$,每个代理人$i$在自己的政策中$\pi_i$如果奖励完全相同,它是**fully cooperative**如果是零和,它是**adversarial**如果混合,则是**general-sum**,我知道.
 
 **核心挑战：**
 
-- **Non-stationarity.**经纪人`i`视角看,`P(s' | s, a_i)`取决于`π_{-i}`现在它正在变化.
+- **Non-stationarity.**经纪人$i$视角看,$P(s' \mid s, a_i)$取决于$\pi_{-i}$现在它正在变化.
 - **Credit assignment.**在分享奖励下,是哪个代理导致它?
 - **Exploration coordination.**代理人必须探索互补策略,而不是重复探索同一个国家.
-- **Scalability.**共同行动空间 会随`n`升的数量.
+- **Scalability.**共同行动空间 会随$n$升的数量.
 - **Partial observability.**每个特工只能看到自己的观察;
 
 **四种主导范式：**
 
 **1. Independent Q-learning / independent PPO (IQL, IPPO).**每个代理学习自己的Q或政策,把其他代理当作环境的一部分――简单,有时有效――特别是经验重演作为一种平滑的代理模型――技巧时――理论收性:没有――实践中:适合宽的任务,不适合紧密的任务――
 
-**2. Centralized training, decentralized execution (CTDE).**每个代理都有自己的政策.`π_i`通过当地观察.`o_i`为了实现部署时是标准的分散执行.`Q(s, a_1, …, a_n)`以完整的全球状态和联合行动为条件.
+**2. Centralized training, decentralized execution (CTDE).**每个代理都有自己的政策.$\pi_i$通过当地观察.$o_i$为了实现部署时是标准的分散执行.$Q(s, a_1, \ldots, a_n)$以完整的全球状态和联合行动为条件.
 - **MADDPG**带有每个代理人一个集中批评的DPG──
-- **COMA**问题:如果我当时采取行动`a'`我会得到多少奖励?
+- **COMA**问题:如果我当时采取行动$a'$我会得到多少奖励?
 - **MAPPO**现在,**IPPO**带有集中价值函数的PPO──2026年合作社MARL 中的主导方法──
-- **QMIX**值分解`Q_tot(s, a) = f(Q_1(s, a_1), …, Q_n(s, a_n))`,并使用单调的混合物──
+- **QMIX**值分解$Q_{\text{tot}}(s, a) = f(Q_1(s, a_1), \ldots, Q_n(s, a_n))$,并使用单调的混合物──
 
 **3. Self-play.**同一个代理的两个副本对战对手的政策 *就是*我过去某个快照 中的政策──阿尔法戈 / 阿尔法零 / 穆泽罗──OpenAI Five──最适合零积分游戏;训练信号是对称的──
 
 **4. League play.**专注击败当前最佳策略) 和主要利用者 (专注击败利用者) ‧阿尔法星 (StarCraft II) ・当游戏存在时岩纸刀策略循环时,这是必要的──
 
-**Communication.**允许代理人互相发送学习信息`m_i`在合作环境中有效──Foerster等人 (2016) 表明,可分辨的代理间通信可以端到端训练──今天基于LLM的多代理系统 (Phase 16) 本质上是用自然语言通信──
+**Communication.**允许代理人互相发送学习信息$m_i$在合作环境中有效──Foerster等人 (2016) 表明,可分辨的代理间通信可以端到端训练──今天基于LLM的多代理系统 (Phase 16) 本质上是用自然语言通信──
 
 
 ```figure
@@ -102,11 +102,11 @@ def independent_q(env, episodes, alpha, gamma, epsilon):
 
 ### 步骤3:集中式Q与分解值更新
 
-对于联合行动使用一个Q:`Q(s, a_1, a_2)`〔使用共享奖励〕 更新──执行时通过边缘化来分散:`π_i(s) = argmax_{a_i} max_{a_{-i}} Q(s, a_1, a_2)`换一个*正确*的全球观.
+对于联合行动使用一个Q:$Q(s, a_1, a_2)$〔使用共享奖励〕 更新──执行时通过边缘化来分散:$\pi_i(s) = \arg\max_{a_i} \max_{a_{-i}} Q(s, a_1, a_2)$换一个*正确*的全球观.
 
 ### 步骤4: 简单的自动玩
 
-一个代理,两个角色. 一个训练代理, 一个对抗代理.`K`个节目,把A的重量 复制到B──对称训练,进展一致──阿尔法零食谱的缩写版──
+一个代理,两个角色. 一个训练代理, 一个对抗代理.$K$个节目,把A的重量 复制到B──对称训练,进展一致──阿尔法零食谱的缩写版──
 
 ## 常见陷
 
@@ -168,11 +168,11 @@ tags: [rl, multi-agent, marl, self-play]
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Markov game | "Multi-agent MDP" | `(S, A_1, …, A_n, P, R_1, …, R_n)`；每个 agent 都有自己的 reward。 |
+| Markov game | "Multi-agent MDP" | $(S, A_1, \ldots, A_n, P, R_1, \ldots, R_n)$；每个 agent 都有自己的 reward。 |
 | CTDE | "Centralized training, decentralized execution" | Training time 使用 joint critic；每个 agent 的 policy 只使用 local obs。 |
 | IPPO | "Independent PPO" | 每个 agent 单独运行 PPO。简单 baseline；经常被低估。 |
 | MAPPO | "Multi-agent PPO" | 带有以 global state 为条件的 centralized value function 的 PPO。 |
-| QMIX | "Monotonic value decomposition" | `Q_tot = f_monotone(Q_1, …, Q_n)` 允许 decentralized argmax。 |
+| QMIX | "Monotonic value decomposition" | $Q_{\text{tot}} = f_{\text{monotone}}(Q_1, \ldots, Q_n)$ 允许 decentralized argmax。 |
 | COMA | "Counterfactual multi-agent" | Advantage = 我的 Q 减去对我的 action 做 marginalizing 后的 expected Q。 |
 | Self-play | "Agent vs past self" | 单个 agent，两个 roles；zero-sum games 的标准方法。 |
 | League play | "Population training" | 缓存过去的 policies，从 pool 中采样 opponents；处理 strategy cycles。 |
