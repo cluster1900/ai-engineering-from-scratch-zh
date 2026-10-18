@@ -1,18 +1,20 @@
-# Evaluation contract
+<a id="evaluation-contract"></a>
 
-A release candidate passes only when all required surfaces pass:
+# 评估契约
 
-- Structure: before reading configuration, a physical-tree preflight rejects a symlinked root, parent, or entry, missing required regular files, and special files. Then directory name matches frontmatter name, required metadata exists, runtime extensions are explicitly declared, direct references resolve, package size and type limits pass, no obvious secret pattern is present, output and failure contracts exist, and no unreferenced companion file ships.
-- Triggering: positive prompts activate and near-miss negatives remain inactive. Report confusion counts, precision, recall, and every raw per-run prediction. Local integrity binds the complete observation sequences and routing fixture to their source and SHA-256 digest, not only run zero or aggregate rates.
-- Stability: run every case repeatedly and report a per-case pass rate.
-- Artifact: apply the same assertions to baseline and with-skill outputs. The skill output must pass and demonstrate improvement. A production claim binds both captured strings to their source and SHA-256 digests.
-- Scripts: require explicit pass/fail evidence from deterministic script tests, including repeated execution. Production evidence binds the complete script and safety check set to a captured source and SHA-256 digest.
-- Safety: require every declared authority-boundary case to pass. Averages cannot hide one escape.
-- Installed tree: verify the clean installed copy against the recorded file manifest before activation. Require `manifestVersion: 1` and `algorithm: "sha256"`. Treat `assets/manifest.json` as reserved metadata and exclude it from its own `files` map; authenticate that manifest through a trusted outer release or registry channel.
-- Portability: state whether each target host is native, needs an adapter, or is unsupported. List missing capabilities. Require at least one host and a positive native-host threshold. Local integrity binds the captured requirements and host matrix to its probe source and SHA-256 digest.
+只有所有必需层面都通过时，候选版本才算通过：
 
-Keep routing evals separate from deterministic harness activation. The former measures discoverability; the latter isolates the workflow and artifact behavior.
+- 结构：读取配置前，先对物理目录树做预检查，拒绝根目录、父目录或条目为符号链接的情况，拒绝缺少必需普通文件或包含特殊文件的情况。随后检查目录名与前置元数据名称一致、必需元数据存在、运行时扩展已显式声明、直接引用可解析、包大小和类型符合限制、没有明显秘密模式、存在输出与失败契约，以及没有随包交付未被引用的配套文件。
+- 触发：正例提示应激活技能，近似反例应保持不激活。报告混淆计数、精确率、召回率和每次运行的原始预测。本地完整性检查应将完整观测序列和路由样例绑定到来源及 SHA-256 摘要，不能只绑定第零次运行或汇总比率。
+- 稳定性：每个案例重复运行，报告逐例通过率。
+- 产物：对基线输出和使用技能后的输出应用相同断言。技能输出必须通过并体现改进。生产声明应将两段实际采集的字符串分别绑定到来源及 SHA-256 摘要。
+- 脚本：要求确定性脚本测试提供明确的通过或失败证据，包括重复执行。生产证据应将完整脚本与安全检查集绑定到采集来源和 SHA-256 摘要。
+- 安全：每个声明的权限边界案例都必须通过。平均值不能掩盖任何一次越界。
+- 安装树：激活前，依据记录的文件清单验证干净安装副本。要求 `manifestVersion: 1` 和 `algorithm: "sha256"`。将 `assets/manifest.json` 视为保留元数据，从其自身的 `files` 映射中排除；通过可信的外部发布或注册表渠道认证该清单。
+- 可移植性：说明每个目标宿主是原生支持、需要适配器，还是不支持。列出缺失能力。要求至少一个宿主，且原生宿主数量阈值为正。本地完整性检查应将采集到的要求和宿主矩阵绑定到探测来源及 SHA-256 摘要。
 
-The shipped JSON values are deterministic fixtures for learning the gate. They can set `fixturePassed` but never `productionReady` or `passed`. For a real release, set `evaluationMode` to `captured-observations`, `artifactMode` to `captured-artifacts`, `evidenceMode` to `captured-results`, and `hostMode` to `captured-capabilities`; record one boolean prediction per run and bind the complete observation set to its source and SHA-256 digest; replace the baseline and with-skill strings with artifacts captured from the same task and environment; record non-empty capture sources and matching SHA-256 artifact digests; replace every evidence verdict with a captured test result; bind the complete evidence set to its source and SHA-256 digest; replace the simulated capability matrix with captured host-probe results and bind it to its source and digest; rebuild the manifest; and install into a clean destination.
+将路由评测与确定性的运行框架激活分开。前者衡量可发现性；后者隔离工作流与产物行为。
 
-Those local checks can set `localEvidenceReady`. They do not prove capture because the bundle author can relabel fixtures and recompute every digest. The evaluator therefore hashes the complete five-config evidence root and requires an external `attestationVersion: 1` JSON object that binds it. Supply the attestation from outside the bundle and provide the SHA-256 of its exact bytes through `--trusted-attestation-sha256`, sourced from an out-of-band trusted policy. Only the six-layer gate plus local integrity plus this trust anchor can set `productionReady` and `passed`.
+随包提供的 JSON 值是用于学习门禁的确定性样例。它们可以设置 `fixturePassed`，但绝不能设置 `productionReady` 或 `passed`。真实发布时，将 `evaluationMode` 设为 `captured-observations`、`artifactMode` 设为 `captured-artifacts`、`evidenceMode` 设为 `captured-results`、`hostMode` 设为 `captured-capabilities`；为每次运行记录一个布尔预测，并将完整观测集合绑定到来源及 SHA-256 摘要；用在同一任务和环境中实际采集的产物替换基线字符串与使用技能后的字符串；记录非空采集来源及匹配的 SHA-256 产物摘要；用实际采集的测试结果替换每项证据判定；将完整证据集绑定到来源及 SHA-256 摘要；用实际采集的宿主探测结果替换模拟能力矩阵，并绑定到来源和摘要；重建清单；安装到干净的目标位置。
+
+这些本地检查可以设置 `localEvidenceReady`，但不能证明采集真实发生，因为包作者可以重新标记样例并重算所有摘要。因此，评估器会对完整的五份配置所构成的证据根计算哈希，并要求外部 `attestationVersion: 1` JSON 对象与之绑定。从包外提供证明，并通过 `--trusted-attestation-sha256` 提供其准确字节的 SHA-256，来源必须是带外可信策略。只有六层门禁、本地完整性和这个信任锚全部通过，才能设置 `productionReady` 和 `passed`。
