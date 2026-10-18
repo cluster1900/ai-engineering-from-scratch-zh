@@ -97,7 +97,7 @@ ViT-B/16  堆积 12 khối như thế này, mỗi khối có 12 đầu chú ý, 
 
 - 16x16 patches -> 196 token, tiêu chuẩn đặt
 - 32x32 patches -> 49 token, nhanh hơn nhưng độ phân giải thấp hơn.
-- 8x8 patches -> 784 token, hơn精细, nhưng O(n^2) chi phí chú ý 扩展性很差──
+- 8x8 patches -> 784 token, hơn精细, nhưng $O(n^2)$chi phí chú ý 扩展性很差──
 
 Các bản vá lớn hơn = ít hơn các token = nhanh hơn nhưng không gian chi tiết hơn. SwinV2 sử dụng các bản vá 4x4 trong các cửa sổ cấp bậc.
 

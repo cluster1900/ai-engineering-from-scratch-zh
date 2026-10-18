@@ -59,8 +59,8 @@ DDPM sẽ tiến hành quy trình  định nghĩa là một SDE ồn ào, trong 
 
 Phòng chảy sửa đổi  định nghĩa giữa dữ liệu sạch và tiếng ồn sạch**直线**插值:
 
-```
-x_t = (1 - t) * x_0 + t * epsilon,     t in [0, 1]
+```math
+x_t = (1 - t) \, x_0 + t \, \epsilon, \qquad t \in [0, 1]
 ```
 
 训练一个网络来预测速度 `v_theta(x_t, t) = epsilon - x_0`也就是沿着从清洁数据到噪音的直线路径的前进方向(`dx_t/dt`()                                                                                                                                                                                                                                                              
@@ -339,7 +339,7 @@ out = pipe(prompt, guidance_scale=3.5, num_inference_steps=28).images[0]
 | DiT | “Diffusion transformer” | 替代 U-Net 作为 diffusion denoiser 的 Transformer；在 patchified latents 上运行 |
 | AdaLN | “Adaptive layer norm” | 通过学习到的 scale、shift、gate 进行 timestep/text conditioning，并在 LayerNorm 之后应用；每个现代 DiT 的标准做法 |
 | MMDiT | “Multi-modal DiT (SD3)” | 为 text tokens 和 image tokens 使用独立 weight streams，并共享一个 joint self-attention |
-| Single-stream / double-stream | “FLUX trick” | 前 N 个 blocks 为 double-stream（每种 modality 使用独立 weights），后续 blocks 为 single-stream（concat + shared weights），以提升效率 |
+| Single-stream / double-stream | “FLUX trick” | 前 $N$ 个 blocks 为 double-stream（每种 modality 使用独立 weights），后续 blocks 为 single-stream（concat + shared weights），以提升效率 |
 | Rectified flow | “Straight-line noise-to-data” | data 与 noise 之间的线性插值；网络预测 velocity；inference 所需 ODE steps 更少 |
 | Velocity target | “epsilon - x_0” | rectified flow 中的 Regression target；从 clean data 指向 noise |
 | CFG guidance | “classifier-free guidance” | 混合 conditional 与 unconditional predictions；rectified-flow models 中仍然使用 |

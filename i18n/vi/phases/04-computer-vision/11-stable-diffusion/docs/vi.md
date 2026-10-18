@@ -52,8 +52,8 @@ flowchart LR
 
 Thông thường văn bản điều kiện sẽ nhắm vào mỗi yêu cầu `c`Học tập`epsilon_theta(x_t, t, c)` CFG  đào tạo cùng một mạng, nhưng có 10% thời gian sẽ bị bỏ qua `c`(đổi thay cho không gian nhúng), để có được một có thể đồng thời dự đoán điều kiện 和 không điều kiện tiếng ồn một mô hình.
 
-```
-eps = eps_uncond + w * (eps_cond - eps_uncond)
+```math
+\epsilon = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})
 ```
 
 `w`Đó là quy mô hướng dẫn.`w=0`Không có điều kiện,`w=1`là điều kiện bình thường,`w>1`会把输出推向更快 条件约束, giá cả là nhiều tính năng giảm.`w=7.5`

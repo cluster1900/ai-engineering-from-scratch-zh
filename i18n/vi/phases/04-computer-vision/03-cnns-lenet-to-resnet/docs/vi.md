@@ -69,7 +69,7 @@ stack:   conv 3x3 -> conv 3x3 -> pool 2x2
 repeat:  16 or 19 conv layers
 ```
 
-Hai conv 3x3  nhìn thấy không gian đầu vào tương tự như một conv 5x5, nhưng các tham số hơn (2 * 9 * C^2 = 18C^2 so với 25 * C^2), và giữa thêm nhiều một ReLU。 VGG Đặt quan sát này thành một cấu trúc hoàn chỉnh。 tính đơn giản của nó, đó là một loại khối phản复堆叠, để nó trở thành điểm tham chiếu sau tất cả các cấu trúc。
+2 conv 3x3  nhìn thấy vùng đầu vào tương tự như một conv 5x5, nhưng các tham số ít hơn ($2 \cdot 9 \cdot C^2 = 18C^2$vs $25 \cdot C^2$), và giữa một phần còn lại là một ReLU――VGG Đặt quan sát này thành một cấu trúc hoàn chỉnh―― tính đơn giản của nó, đó là một loại khối phản复堆叠, để nó trở thành điểm tham chiếu của tất cả các cấu trúc tiếp theo――
 
 代价:138M tham số, huấn luyện chậm, suy luận 昂贵
 
@@ -117,9 +117,11 @@ VGG có thể làm việc ở 19 tầng, vì chuẩn hàng loạt gần như xu�
 
 Anh ấy, Zhang, Ren, Sun đã đưa ra một kế hoạch thay đổi mọi thứ:
 
-```
-standard block:   y = F(x)
-residual block:   y = F(x) + x
+```math
+\begin{aligned}
+\text{标准块：} \quad & y = F(x) \\
+\text{残差块：} \quad & y = F(x) + x
+\end{aligned}
 ```
 
 `+ x`biểu hiện lớp 总能通过把 `F(x)`推到零来选择什么都不做──一个1000层 ResNet 现在最差也不差于1层网络 差,因为 mỗi khối bổ sung đều có một lỗ thoát hiểm tầm thường── có đảm bảo này, Optimizer 愿意让每个块变得*稍微* hữu ích;而一个稍微有用的块 堆叠100次,就是最先进的──

@@ -61,12 +61,13 @@ flowchart LR
 
 位于 thế giới vị trí `mu`、 có sự tương tác 3D `Sigma`của Gaussian 3D, sẽ chiếu cho vị trí màn hình `mu'`、 có sự tương tác 2D `Sigma'`của 2D Gaussian:
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 Biểu tượng Gaussian 2D là một hình elip, có một trục`Sigma'`Các vector riêng của hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả hả h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h`exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`
@@ -75,12 +76,13 @@ Biểu tượng Gaussian 2D là một hình elip, có một trục`Sigma'`Các v
 
 Đối với một pixel, bao gồm các Gaussians sẽ theo back-to-front 排序((hoặc等价地, sử dụng ngược向公式 theo front-to-back 排序)  Màu sử dụng từ những năm 1980 tất cả các rasteriser bán minh bạch đều được sử dụng trong cùng một phương pháp để soạn:
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 Đây là**NeRF 的 volumetric render 是同一个方程**, chỉ có thể ở đây là một sự xuất hiện của các Gaussian hiếm 集合 计算, chứ không phải là trên các mẫu dày đặc trên tia 计算.
@@ -97,7 +99,7 @@ Số lượng cố định Gaussians không thể bao gồm các trường hợp
 - **Split**Khi một số Gaussian lớn Gradient 很高时, sẽ tách nó thành hai Gaussian nhỏ hơn.
 - **Prune**: xóa độ mơ hồ 低于值的Gaussians──它们没有贡献──
 
-Thiết lập Mỗi lần lặp lại chạy một lần. Một trường hợp thường từ khoảng 100k đầu tiên Gaussians (được bắt đầu bởi điểm SfM) tăng lên đến 1-5M khi kết thúc tập luyện.
+Thiết bị mật$N$Tiếp theo lặp lại 运行一次── một trường hợp thường từ khoảng 100k 个初始高西人 (được bắt đầu từ điểm SfM) tăng lên đến 1-5M khi kết thúc tập luyện──
 
 ### 用一段话 hiểu các âm thanh âm thanh hình cầu
 

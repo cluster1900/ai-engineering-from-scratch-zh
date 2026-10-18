@@ -74,11 +74,13 @@ At each grid cell, every anchor emits (tx, ty, tw, th, obj, c_1, ..., c_C).
 
  原始的`tx, ty, tw, th`Không phải là các phối hợp hộp; chúng là các mục tiêu Regression cần được chuyển đổi trước khi vẽ:
 
-```
-centre x  = (sigmoid(tx) + cell_x) * stride
-centre y  = (sigmoid(ty) + cell_y) * stride
-width     = anchor_w * exp(tw)
-height    = anchor_h * exp(th)
+```math
+\begin{aligned}
+\text{中心 } x &= (\sigma(t_x) + \text{cell}_x) \cdot \text{stride} \\
+\text{中心 } y &= (\sigma(t_y) + \text{cell}_y) \cdot \text{stride} \\
+\text{宽度} &= \text{anchor}_w \cdot \exp(t_w) \\
+\text{高度} &= \text{anchor}_h \cdot \exp(t_h)
+\end{aligned}
 ```
 
 `sigmoid`Để tập trung chuyển giới hạn trong tế bào bên trong.`exp`让宽可以从号自由缩缩而不会发生符号翻转.`stride`Hãy đưa các điều phối lưới 缩放 trở lại các pixel. Đây là bước giải mã từ v2 đến nay trong mỗi phiên bản YOLO đều giống nhau.
@@ -87,11 +89,11 @@ height    = anchor_h * exp(th)
 
 Phân tích trong đo hai hộp:
 
-```
-IoU(A, B) = area(A intersect B) / area(A union B)
+```math
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
-IoU = 1 biểu hiện hoàn toàn giống nhau;IoU = 0 biểu hiện không có chồng lên. Ước tính và hộp thực tại cơ bản Ước tính một dự đoán nào đó là có hay không tính toán thành tích thực (truly positive) thường IoU >= 0.5);;
+$\mathrm{IoU} = 1$表示 hoàn toàn giống nhau;$\mathrm{IoU} = 0$biểu hiện không có sự chồng lên: dự đoán và hộp thực-cũng thực giữa IoU quyết định một dự đoán đó là có tính toán đúng tích cực thường$\mathrm{IoU} \ge 0.5$(■) IoU giữa hai dự đoán là NMS dùng để dựa vào trọng lượng.
 
 ### Phong trào không tối đa
 
@@ -113,11 +115,13 @@ NMS(boxes, scores, iou_threshold):
 
 Lãng mất là 3 lỗ nặng hơn:
 
-```
-L = lambda_coord * L_box(pred, target, where obj=1)
-  + lambda_obj   * L_obj(pred, 1,     where obj=1)
-  + lambda_noobj * L_obj(pred, 0,     where obj=0)
-  + lambda_cls   * L_cls(pred, target, where obj=1)
+```math
+\begin{aligned}
+L = {} & \lambda_{\text{coord}} \cdot L_{\text{box}}(\text{pred}, \text{target}, \text{where obj}=1) \\
++ {} & \lambda_{\text{obj}} \cdot L_{\text{obj}}(\text{pred}, 1, \text{where obj}=1) \\
++ {} & \lambda_{\text{noobj}} \cdot L_{\text{obj}}(\text{pred}, 0, \text{where obj}=0) \\
++ {} & \lambda_{\text{cls}} \cdot L_{\text{cls}}(\text{pred}, \text{target}, \text{where obj}=1)
+\end{aligned}
 ```
 
 只有包含对象的细胞 才会贡献框回归和分类损失──不包含对象的细胞 只贡献对象性损失──教模型保持沉默)──`lambda_noobj`Thông thường hơn khoảng 0,5, vì hầu hết các tế bào đều trống rỗng, nếu không sẽ dẫn đến tổng tổn thất.

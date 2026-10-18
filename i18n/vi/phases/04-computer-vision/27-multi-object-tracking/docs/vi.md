@@ -61,7 +61,7 @@ Mỗi bộ theo dõi cổ điển đều có bước dự đoán chuyển độn
 
 ### Algoritm Hungary
 
-Đưa một`M x N`Matrix chi phí(các đường dẫn x phát hiện), tìm kiếm để tạo tổng chi phí 最小一对一任务──Cost thường là `1 - IoU(track_bbox, detection_bbox)`, hoặc các tính năng ngoại hình của sự tương đồng cosine ⋅ Tiếng chạy là O(((M+N) ^3);当 M、N 最高约为 1000 时,通过 `scipy.optimize.linear_sum_assignment`Trong Python là đủ nhanh.
+Đưa một`M x N`Matrix chi phí(các đường dẫn x phát hiện), tìm kiếm để tạo tổng chi phí 最小一对一任务──Cost thường là `1 - IoU(track_bbox, detection_bbox)`, hoặc tính năng ngoại hình của sự tương đồng cosine tiêu cực.$O((M+N)^3)$;当 $M, N$Tối cao là 1000, qua `scipy.optimize.linear_sum_assignment`Trong Python là đủ nhanh.
 
 ### ByteTrack's quan trọng
 

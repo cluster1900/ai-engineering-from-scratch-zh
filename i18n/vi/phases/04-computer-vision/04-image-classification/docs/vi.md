@@ -52,18 +52,20 @@ Mỗi dòng trong vòng này có thể chứa lỗi. Cross-entropy nhận logits
 
 phân loại sẽ tạo ra mỗi bức ảnh`C`个数字, được gọi là logits. ứng dụng softmax 会把它们转换为概率分布:
 
-```
-softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+```math
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 Cross-entropy 衡量正确 class 的 âm log xác suất:
 
-```
-CE(z, y) = -log( softmax(z)_y )
-        = -z_y + log( sum_j exp(z_j) )
+```math
+\begin{aligned}
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
+&= -z_y + \log\left( \sum_j \exp(z_j) \right)
+\end{aligned}
 ```
 
-Right side forma is numeric value stable forma (trước đây là hình thức số-tổng-tổng)`nn.CrossEntropyLoss`会在一个 op 中融合 softmax + NLL,并直接接收原始logits──自己先应用 softmax 几乎总是 bug,因为你计算的是 log(softmax(softmax(z))),这是一个没有意义的量──
+Right side forma is numeric value stable forma (trước đây là hình thức số-tổng-tổng)`nn.CrossEntropyLoss`会在一个 op 中融合 softmax + NLL,并直接接收原始logits──自己先应用 softmax 几乎总是 bug,因为你计算的是$\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$, đó là một lượng không có ý nghĩa.
 
 ### Tại sao tăng cường hiệu quả
 
@@ -105,7 +107,7 @@ Nó có ích vì sao: mô hình không nhớ lại các mục tiêu nóng nhất
 Độ chính xác tổng hợp sẽ che giấu sự mất cân bằng. Nếu luôn dự đoán lớp đa số, cũng có thể đạt được 90%.
 
 - **Per-class accuracy** Mỗi lớp một số; sẽ ngay lập tức lộ ra những lớp học thiếu hiệu suất.
-- **Confusion matrix** C x C lưới, trong đó hàng i col j = class i thực i được dự đoán là class j số lượng; hình dạng là đúng dự đoán, off-diagonals 才是 model 问题所在。
+- **Confusion matrix** $C \times C$lưới, trong đó hàng $i$Col $j$= lớp thực $i$被预测为 lớp học$j$Số lượng; hình dạng là đúng dự đoán, hình dạng không hình dạng là mô hình 问题所在.
 - **Top-1 / Top-5** Cổ số chính xác có trong số 1 hoặc 5 dự đoán hàng đầu không;Top-5 đối với ImageNet  rất quan trọng, bởi vì như Norwich Terrier 和 Norfolk Terrier những lớp như vậy 确实存在差义──
 - **Calibration (ECE)** 0.8 độ tin cậy dự đoán có thực sự có 80% thời gian là đúng?
 

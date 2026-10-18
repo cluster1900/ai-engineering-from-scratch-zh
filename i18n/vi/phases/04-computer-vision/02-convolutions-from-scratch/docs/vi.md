@@ -71,8 +71,8 @@ The kernel slides across every valid 3 x 3 window. Output Y is 3 x 3:
 
 给定输入空间尺寸 `H`、 kích thước hạt nhân `K`、đóng đệm `P`、 bước đi `S`- Có thể là:
 
-```
-H_out = floor( (H - K + 2P) / S ) + 1
+```math
+H_{\text{out}} = \left\lfloor \frac{H - K + 2P}{S} \right\rfloor + 1
 ```
 
 Hãy nhớ nó. Bạn sẽ tính toán nó vài lần trong mỗi kiến trúc.
@@ -85,7 +85,7 @@ Hãy nhớ nó. Bạn sẽ tính toán nó vài lần trong mỗi kiến trúc.
 | Pool 2x2 | 32 | 2 | 0 | 2 | 16 |
 | 大 receptive field | 32 | 7 | 3 | 2 | 16 |
 
-"Đồng độ đệm" có nghĩa là chọn P, để làm cho khi S == 1 时 H_out == H。 đối với số kỳ lạ K, cũng là P = (K - 1) / 2。 Đó là lý do tại sao các hạt nhân 3x3 chiếm vị trí chủ yếu: chúng vẫn có hạt nhân kỳ lạ tối thiểu ở trung tâm điểm。
+"Đồng độ đệm" có nghĩa là chọn $P$, để làm cho nó$S = 1$时 $H_{\text{out}} = H$ Đối với số lạ $K$, cũng vậy$P = (K - 1) / 2$Đó là lý do tại sao các hạt nhân 3x3 chiếm vị trí chủ yếu: chúng vẫn có hạt nhân ít nhất ở điểm trung tâm.
 
 ### Đánh đệm
 

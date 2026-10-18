@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Học mục tiêu
-- 解释 tối thiểu giữa nhà phát triển và phân biệt đối xử, và tại sao cân bằng đối với p_model = p_data
+- Giải thích giới hạn giữa nhà sản xuất và phân biệt đối xử, và lý do tại sao sự cân bằng đối với$p_{\text{model}} = p_{\text{data}}$
 - Trong PyTorch thực hiện DCGAN, và trong 60 行 để nó tạo ra liên tục 32x32 hình ảnh tổng hợp
 - Sử dụng三种标准技巧稳定 GAN 训练: mất không bão hòa, tiêu chuẩn quang phổ, TTUR (quyền cập nhật hai lần)
 - 读取训练曲线,区分健康收与模式崩, dao động, phân biệt đối xử-lợi nhuận-làm toàn bộ
@@ -42,8 +42,8 @@ flowchart LR
 
 G 希望 D 犯错――D 希望自己判断正确――形式化地说:
 
-```
-min_G max_D  E_x[log D(x)] + E_z[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_x[\log D(x)] + \mathbb{E}_z[\log(1 - D(G(z)))]
 ```
 
 Từ phải sang trái đọc:D đang làm tối đa hóa nó trong thực`log D(real)`(với giả)`log (1 - D(fake))`(G đang được tối thiểu hóa D trong giả trên độ chính xác của nó mong muốn)`D(G(z))` rất cao.
@@ -54,9 +54,11 @@ Người bạn tốt đã chứng minh rằng tối thiểu là sự cân bằng
 
 hình thức trên trên không ổn định trên số lượng.`D(G(z))`Đối với mỗi giả đều gần như không, vì vậy`log(1 - D(G(z)))`Đối với G của Gradient 会消失──修复方法:翻转 G của Loss──
 
-```
-L_D = -E_x[log D(x)] - E_z[log(1 - D(G(z)))]
-L_G = -E_z[log D(G(z))]                          # non-saturating
+```math
+\begin{aligned}
+L_D &= -\mathbb{E}_x[\log D(x)] - \mathbb{E}_z[\log(1 - D(G(z)))] \\
+L_G &= -\mathbb{E}_z[\log D(G(z))] \qquad \text{（非饱和）}
+\end{aligned}
 ```
 
 现在当 `D(G(z))`接近零时,G 的损失 很大,Gradient 也有信息量──每个现代GAN都使用这个变体进行训练──
@@ -292,8 +294,8 @@ sẽ`Discriminator`替换为 `build_sn_discriminator()`Sau đó, bạn thường
 |------|----------------|----------------------|
 | Generator (G) | “负责画东西的网络” | 将 noise 映射到图像；训练目标是骗过 discriminator |
 | Discriminator (D) | “评判者” | Binary classifier；训练目标是区分真实图像与生成图像 |
-| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 p_G = p_data |
-| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 -log(D(G(z)))，而不是 log(1 - D(G(z)))，以避免训练早期 Gradient 消失 |
+| Minimax | “这个博弈” | 在 adversarial loss 上对 G 取 min、对 D 取 max；均衡是 $p_G = p_{\text{data}}$ |
+| Non-saturating loss | “数值上合理的版本” | G 的 Loss 是 $-\log(D(G(z)))$，而不是 $\log(1 - D(G(z)))$，以避免训练早期 Gradient 消失 |
 | Mode collapse | “Generator 只生成一种东西” | G 只生成数据分布中的一小部分；用 SN、minibatch discrimination 或更大的 batch 修复 |
 | TTUR | “两个 learning rates” | D 比 G 学得更快，通常快 2-4 倍；稳定训练 |
 | Spectral norm | “1-Lipschitz layer” | 一种 weight-normalisation，用来限制每层的 Lipschitz constant；防止 D 变得任意陡峭 |

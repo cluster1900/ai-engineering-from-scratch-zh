@@ -97,8 +97,8 @@ backbone.heads.head = nn.Linear(..., num_classes)                       # torchv
 
 Đây là phiên bản mềm hơn của LR được sử dụng trong các giai điệu tinh tế hiện đại (BeiT, Dinov2, ViT-B). Không phân loại các lớp thành các giai đoạn, mà để mỗi lớp LR đều nhỏ hơn nó:
 
-```
-lr_layer_k = base_lr * decay^(L - k)
+```math
+\text{lr\_layer}_k = \text{base\_lr} \cdot \text{decay}^{L - k}
 ```
 
 Khi phân rã = 0,75 且 L = 12 khối biến đổi 时,第一个块的训练 LR 是头 LR 的 `0.75^11 ≈ 0.04x` Điều này đối với các âm thanh tinh tế biến đổi hơn đối với CNN; đối với CNN, các LR nhóm sân khấu thường đã đủ.

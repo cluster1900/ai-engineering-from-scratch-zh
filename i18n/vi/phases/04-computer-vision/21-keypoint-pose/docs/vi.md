@@ -47,8 +47,8 @@ Top-down (HRNet, ViTPose) là chính xác tỷ lệ dẫn đầu; bottom-up (Ope
 
 Đừng quay lại trực tiếp`(x, y)`, nhưng cho mỗi điểm chính 预测 một `H x W`Bản đồ nhiệt, trong đó có một khối lượng Gaussian ở trung tâm vị trí thực tế.
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 Trong suy luận, argmax của mỗi heatmap là vị trí điểm chính của dự đoán.

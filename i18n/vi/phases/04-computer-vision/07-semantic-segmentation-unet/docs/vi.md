@@ -84,10 +84,10 @@ Trong các dự án thực tế, tất cả đều có thể thấy được.
 
 ### Trình pixel trên của Cross-entropy
 
-Đối với bao gồm các lớp C phân đoạn ngữ nghĩa, mô hình đầu ra là`(N, C, H, W)`❖ Mục tiêu là `(N, H, W)`, chứa các ID lớp toàn số. Cross-entropy với Classification 场景 hoàn toàn giống nhau, chỉ áp dụng ở mỗi vị trí không gian trên:
+对于包含 $C$个 lớp của phân đoạn ngữ nghĩa, mô hình sản xuất là `(N, C, H, W)`❖ Mục tiêu là `(N, H, W)`, chứa các ID lớp toàn số. Cross-entropy với Classification 场景 hoàn toàn giống nhau, chỉ áp dụng ở mỗi vị trí không gian trên:
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 PyTorch 中的 `F.cross_entropy`Đáng tạo để xử lý hình dạng này.
@@ -98,17 +98,19 @@ Cross-entropy  bình đẳng đối xử với mỗi pixel. Khi một lớp chi�
 
 Sự mất mát đường đốm  thông qua trực tiếp tối ưu hóa sự chồng chéo giữa mặt nạ dự đoán và mặt nạ thực sự để giải quyết vấn đề này:
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 Trong số đó `p`là một lớp của bản đồ xác suất sigmoid / softmax,`y`Đó là mặt nạ thực sự nhị phân. Chỉ khi chồng chéo, mất mát chỉ là không. Bởi vì nó dựa trên tỷ lệ, mất cân bằng lớp học không liên quan nữa.
 
 实践中, sử dụng **combined loss**- Có thể là:
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 Cross-entropy trong đào tạo 早期提供稳定的 Gradient;Dice 将培训 后段聚焦在真正匹配面具形上――这个组合是医学图像的默认方案,在任何类-不平衡的数据集上都很难被超越――
@@ -117,7 +119,7 @@ Cross-entropy trong đào tạo 早期提供稳定的 Gradient;Dice 将培训 �
 
 - **Pixel accuracy** 预测 chính xác của các pixel 百分比──计算便宜──与分类中的精度一样,在不平衡的数据上会失效──
 - **IoU per class** Mỗi lớp mặt nạ của giao lộ trên liên đoàn; qua các lớp 求平均 = mIoU。
-- **Dice (F1 on pixels)** 类似 IoU;`Dice = 2 * IoU / (1 + IoU)`❖ hình ảnh y tế hơn hơn hơn hơn Dice, lái xe cộng đồng hơn hơn hơn IoU;
+- **Dice (F1 on pixels)** 类似 IoU;$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$❖ hình ảnh y tế hơn hơn hơn hơn Dice, lái xe cộng đồng hơn hơn hơn IoU;
 - **Boundary F1** Đánh giá các ranh giới dự đoán với mức độ gần gũi của ranh giới thực-cơ sở, ngay cả khi có sự chuyển động nhỏ cũng sẽ bị trừng phạt.
 
 报告 IoU cho mỗi lớp, không chỉ là mIoU.  Tỷ lệ trung bình IoU sẽ chỉ bao gồm một lớp chỉ 15%; trong khi chín lớp khác có 85% tình huống.

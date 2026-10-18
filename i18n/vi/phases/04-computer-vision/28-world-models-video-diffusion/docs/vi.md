@@ -57,7 +57,7 @@ Resulting tokens:      (T / P_t) * (H / P_h) * (W / P_w) tokens
 
 Mã hóa vị trí là 3D của: đối với mỗi `(t, h, w)`坐标使用 xoay hoặc học tập nhúng.
 
-- **Full joint** Tất cả các token tham dự đến tất cả các token.
+- **Full joint** Tất cả các token tham dự đến tất cả các token.$N$个 token là $O(N^2)$◊ đối với长视频来说价格过高――
 - **Divided** 交替执行 temporal attention( cùng vị trí không gian、跨时间:`(H*W) * T^2`(với sự chú ý không gian) cùng thời gian bước 跨空间:`T * (H*W)^2`TimeSformer và hầu hết các video DiT đều sử dụng phương pháp này.
 - **Window** 在 `(t, h, w)`中使用局部窗──Video Swin 使用方式──
 
@@ -210,7 +210,7 @@ class DividedAttentionBlock(nn.Module):
         return xs
 ```
 
-Time attention 在每个空间位置内跨时间 attend;space attention 在每一内跨位置 attend──用两个 O(T^2 + (HW) ^2) 操作,替换一个 O((THW) ^2) 操作──这是TimeSformer 和每个现代视频 DiT的核心──
+Time Attention trong mỗi vị trí không gian 内跨时间 attend; space attention 在每一内跨位置 attend──用两个 $O(T^2 + (HW)^2)$操作,替代一个 $O((THW)^2)$Đó là cốt lõi của TimeSformer và mỗi video hiện đại DiT.
 
 ### 步骤 4: 组合一个小视频 DiT
 
@@ -279,7 +279,7 @@ Mô hình sản xuất năm 2026:
 | World model | “Learned simulator” | 一个在给定 state 和 action 时预测未来 observations 的模型 |
 | Video DiT | “Spacetime transformer” | 使用 3D patchification 和 divided attention 的 Diffusion transformer |
 | Latent action | “Inferred control” | 从帧对中推断出的离散或连续 action latent；用于条件化 next-frame generation |
-| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 O(N^2) 保持可控 |
+| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 $O(N^2)$ 保持可控 |
 | Object permanence | “Things stay real” | video models 必须学会的场景属性；在食物、玻璃器皿上的经典失败模式 |
 | FVD | “Fréchet Video Distance” | FID 的视频等价物；主要 visual quality metric |
 | Inverse dynamics model | “Observations to actions” | 给定 `(state, next state)`，输出连接二者的 action；闭合 robotics loop |

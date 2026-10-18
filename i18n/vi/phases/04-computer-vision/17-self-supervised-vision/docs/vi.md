@@ -178,7 +178,7 @@ print(f"InfoNCE with identical pairs:  {loss_same:.3f}")
 print(f"InfoNCE with random pairs:     {loss_random:.3f}")
 ```
 
-相同对应应应得到较低损失(大批 和低温度下接近 0) ・・・随机对应应应得到 log(2N-1) = ~log(31) = ~3.4, đối với 16 cặp lô。
+Các cặp tương tự  nên có được ít hơn mất ((( trong loạt lớn 和 nhiệt độ thấp 下接近 0) ⋅随机 cặp  nên có được $\log(2N-1) \approx \log(31) \approx 3.4$, đối với 16 cặp lô.
 
 ### 步骤 4:Mặt mặt nạ theo kiểu MAE
 

@@ -42,7 +42,7 @@ Hai bộ mã hóa cuối cùng sẽ được chiếu qua đường thẳng 投�
 
 ### 目标
 
-给定一个包含 N 个 (图像, caption) cặp của lô, cấu trúc một matrix tương đồng NxN。训练两个编码,使 diagonal(tích đôi) có sự tương đồng cao, còn ngoài hình dạng hình dạng(không phù hợp) có sự tương đồng thấp。
+Định một bao gồm$N$个 (hình ảnh, caption) cặp của lô,构建一个 $N \times N$Matrix tương đồng──训练 hai bộ mã hóa, làm cho các cặp hình dạng tương thích (diagonals) có sự tương đồng cao, trong khi các hình dạng ngoại hình (non-matching) có sự tương đồng thấp──
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ loss = (loss_i2t + loss_t2i) / 2
 
 SigLIP(Zhai et al., 2023) dùng sigmoid mỗi cặp 替换了 softmax:
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 Per-pair Loss 移除 CLIP cần thiết chuẩn hóa cấp lô.

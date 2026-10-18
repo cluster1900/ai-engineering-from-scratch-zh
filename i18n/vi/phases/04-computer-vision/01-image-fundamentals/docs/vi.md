@@ -173,8 +173,8 @@ RGB là định dạng chụp, nhưng nó không phải luôn luôn là biểu h
 
 Từ RGB 转灰度 là tăng权和, không phải là trung bình, vì mắt người nhạy cảm hơn với màu xanh lá cây so với màu đỏ hoặc xanh dương:
 
-```
-Y = 0.299 R + 0.587 G + 0.114 B       (ITU-R BT.601, the classic weights)
+```math
+Y = 0.299 R + 0.587 G + 0.114 B \qquad \text{(ITU-R BT.601, 经典权重)}
 ```
 
 ### Tỷ lệ hình ảnh, kích thước và phân cực

@@ -26,35 +26,32 @@ Ngoài việc đào tạo ổn định, cấu trúc của Diffusion cũng giải
 
 ### tiến trình
 
-取一张图像 `x_0`❖加入少量 Gaussian noise 得到 `x_1`                                                                                                                                                                                                                                                              `x_2` tiếp tục tiến hành các bước này cho đến khi`x_T`几乎无法与纯 Gaussian noise 区分──
+取一张图像 `x_0`❖加入少量 Gaussian noise 得到 `x_1`                                                                                                                                                                                                                                                              `x_2`❖ tiếp tục$T$步, đến `x_T`几乎无法与纯 Gaussian noise 区分──
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1},  beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \; \beta_t I\right)
 ```
 
-`beta_t`Đây là một lịch trình biến thể nhỏ hơn, thường trong T=1000 bước từ 0.0001 线性增长到0.02── mỗi bước sẽ giảm nhẹ tín hiệu và truyền vào tiếng ồn mới──
+`beta_t`là một lịch trình khác biệt nhỏ hơn, thường là$T=1000$步内 từ 0.0001 线性增长到 0.02── mỗi bước đều sẽ giảm nhẹ tín hiệu và truyền vào tiếng ồn mới──
 
 ### 闭式跳转
 
 Tiếp theo, tiếng ồn là một chuỗi Markov, nhưng toán học có thể gấp đôi: bạn có thể tiến một bước trực tiếp từ `x_0`mẫu xuất `x_t`
 
-```
-Define alpha_t = 1 - beta_t
-Define alpha_bar_t = prod_{s=1..t} alpha_s
-
-Then:
-  q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0,  (1 - alpha_bar_t) * I)
-
-Equivalently:
-  x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon
-  where epsilon ~ N(0, I)
+```math
+\begin{aligned}
+&\text{定义 } \alpha_t = 1 - \beta_t \\
+&\text{定义 } \bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s \\[6pt]
+&\text{则：} q(x_t \mid x_0) = \mathcal{N}\left(x_t; \sqrt{\bar{\alpha}_t} \, x_0, \; (1 - \bar{\alpha}_t) I\right) \\[6pt]
+&\text{等价地：} x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1 - \bar{\alpha}_t} \, \epsilon \quad \text{其中 } \epsilon \sim \mathcal{N}(0, I)
+\end{aligned}
 ```
 
 Cái cách duy nhất này là sự phân tán có thể thực hiện được tất cả các lý do. Khi tập luyện, bạn tự chọn một.`t`, trực tiếp từ`x_0`mẫu xuất `x_t`,并一步完成训练, không cần phải mô phỏng toàn bộ chuỗi Markov.
 
 ### quá trình ngược lại
 
-tiến trình là cố định.`p(x_{t-1} | x_t)`Là mạng thần kinh cần học nội dung.`x_{t-1}`; chúng dự đoán trong bước thứ 3 加入的噪音 `epsilon`, rồi do các công thức toán học đưa ra`x_{t-1}`
+tiến trình là cố định.`p(x_{t-1} | x_t)`Là mạng thần kinh cần học nội dung.`x_{t-1}`; chúng dự đoán trong第 $t$步加入的噪音 `epsilon`, rồi do các công thức toán học đưa ra`x_{t-1}`
 
 ```mermaid
 flowchart LR
@@ -79,7 +76,7 @@ flowchart LR
 Đối với mỗi bước tập luyện:
 
 1. mẫu 一张真实图像 `x_0`
-2. Từ [1, T] 中 trung bình mẫu một bước thời gian `t`
+2. Từ $[1, T]$Trung bình mẫu một bước thời gian`t`
 3. Phản ứng âm thanh mẫu `epsilon ~ N(0, I)`
 4. 计算 `x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * epsilon`
 5. 用 mạng 预测 `epsilon_theta(x_t, t)`
@@ -103,7 +100,7 @@ return x_0
 
 ### Sao lại là 1000 bước?
 
-Mục tiêu của việc chọn lịch âm thanh tiến tới là để mỗi bước gia nhập một số lượng âm thanh đủ tốt, làm cho bước ngược gần giống với Gaussian.
+Mục tiêu của việc chọn lịch trình tiếng ồn tiến là để mỗi bước gia nhập tiếng ồn đủ tốt, làm cho bước ngược gần giống với Gaussian。 bước số quá ít, bước ngược sẽ xa xa Gaussian, mạng 难以建好地模── bước số quá nhiều, việc lấy mẫu sẽ trở nên đắt tiền, lợi nhuận cũng sẽ giảm──$T=1000$Lịch trình tuyến tính là cài đặt mặc định của DDPM.
 
 ### DDIM:快 20 倍的抽样
 
@@ -314,14 +311,14 @@ Trong nghiên cứu,`k-diffusion`(Katherine Crowson) có những phương pháp 
 
 | Term | 人们通常怎么说 | 实际含义 |
 |------|----------------|----------------------|
-| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 T 步内把图像破坏成 Gaussian noise |
+| Forward process | “随时间加入 noise” | 一个固定的 Markov chain，会在 $T$ 步内把图像破坏成 Gaussian noise |
 | Reverse process | “一步步 denoise” | 学到的分布，会从 noise 逐步走回图像 |
-| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 t 步加入的 noise |
-| Beta schedule | “noise 大小” | T 个小 variance 组成的序列，定义每一步进入多少 noise |
-| alpha_bar_t | “累计保留因子” | 到时间 t 为止的 (1 - beta_s) 乘积；t 越大，剩余信号越少 |
-| DDPM sampler | “Ancestral，随机” | 从每个 x_{t-1} 的 conditional Gaussian 中 sample；1000 步 |
+| Epsilon prediction | “预测 noise” | 训练目标：`epsilon_theta(x_t, t)` 预测在第 $t$ 步加入的 noise |
+| Beta schedule | “noise 大小” | $T$ 个小 variance 组成的序列，定义每一步进入多少 noise |
+| $\bar{\alpha}_t$ | “累计保留因子” | 到时间 $t$ 为止的 $(1 - \beta_s)$ 乘积；$t$ 越大，剩余信号越少 |
+| DDPM sampler | “Ancestral，随机” | 从每个 $x_{t-1}$ 的 conditional Gaussian 中 sample；1000 步 |
 | DDIM sampler | “确定性，快速” | 将 sampling 重写为确定性 ODE；20-100 步即可得到相似质量 |
-| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 t 的 sinusoidal embedding，让它知道 noise level |
+| Time conditioning | “告诉 model 当前是哪个 t” | 注入 U-Net 的 $t$ 的 sinusoidal embedding，让它知道 noise level |
 
 ## 延伸阅读
 

@@ -23,7 +23,7 @@ Tầm nhìn 3D rất quan trọng, bởi vì hầu hết các nhiệm vụ robot
 ## 概念
 ### Những đám mây điểm
 
-Point cloud là tập hợp không trật tự của các điểm R^3 trong N 个点, mỗi điểm có tính năng màu sắc, cường độ, bình thường)
+Đám mây điểm là $\mathbb{R}^3$Trung $N$个点的无序集合, mỗi điểm có thể chọn có đặc điểm ((色, cường độ, bình thường) ]]
 
 ```
 cloud = [
@@ -41,8 +41,8 @@ Không có lưới điện, không có kết nối. Hai tính chất khiến cho
 
 PointNet (Qi et al., 2017) dùng một ý tưởng giải quyết hai điều: đối với mỗi ứng dụng điểm chia sẻ MLP, sau đó sử dụng hàm đối xứng (max pool)聚合── kết quả là một vector cố định lớn, và không phụ thuộc vào thứ tự.
 
-```
-f(P) = max_{p in P} MLP(p)
+```math
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 Đây là toàn bộ lõi của PointNet. Các biến thể sâu hơn của PointNet (PointNet++、Point Transformer) đã gia nhập các mẫu phân cấp và tổng hợp địa phương, nhưng các kỹ năng đối xứng không thay đổi.
@@ -86,22 +86,23 @@ Loss 会将染出像素与训练照片中的地面真相像素 进行比较─�
 
 作用在 `(x, y, z)`MLP vanilla trên không thể biểu hiện chi tiết频 cao, vì MLP trên tần số chuyển sang频 thấp. NeRF thông qua chuyển vào MLP trước, sẽ sửa đổi mỗi phối hợp thành Vêctơ tính năng Fourier:
 
-```
-gamma(p) = (sin(2^0 pi p), cos(2^0 pi p), sin(2^1 pi p), cos(2^1 pi p), ...)
+```math
+\gamma(p) = \left(\sin(2^0 \pi p), \cos(2^0 \pi p), \sin(2^1 \pi p), \cos(2^1 \pi p), \ldots\right)
 ```
 
-Tối cao đến L=10 个 tần số. Đây là cùng một kỹ thuật với các biến áp sử dụng các vị trí, cũng sẽ xuất hiện trong điều kiện thời gian phân phối (Dân học 10) một lần nữa. Không có nó, NeRF trông sẽ rất mờ.
+Tốt nhất là$L=10$个 tần số cấp độ. Đây là cùng một kỹ thuật của các biến đổi sử dụng vị trí, cũng sẽ xuất hiện trong điều kiện thời gian phân phối.
 
 ### Phân tích khối lượng
 
+```math
+\begin{aligned}
+C(r) &= \sum_i T_i \left(1 - \exp(-\sigma_i \delta_i)\right) c_i \\[4pt]
+T_i &= \exp\left(-\sum_{j<i} \sigma_j \delta_j\right) \\
+\delta_i &= t_{i+1} - t_i
+\end{aligned}
 ```
-C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 
-T_i  = exp(- sum_{j<i} sigma_j * delta_j)
-delta_i = t_{i+1} - t_i
-```
-
-`T_i`Đó là sự truyền tải, đó là có nhiều ánh sáng có thể đạt đến điểm i.`(1 - exp(-sigma_i * delta_i))`n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n`c_i`là màu. Cuối cùng, pixel là trên xơ xơ.
+`T_i`Đó là sự truyền tải, đó là có nhiều ánh sáng có thể đạt đến điểm.$i$`(1 - exp(-sigma_i * delta_i))`Ừ $i$处的不透明度──`c_i`là màu. Cuối cùng, pixel là trên xơ xơ.
 
 ### Điều gì thay thế NeRF
 
