@@ -7,106 +7,116 @@ lesson: 29
 tags: [mcp, reliability, cancellation, idempotency, sse, backpressure]
 ---
 
-Review one MCP operation from request start through failure recovery.
+审查一次 MCP 操作，从请求开始一直覆盖到失败恢复。
 
-Ask for these inputs if they are absent:
+若缺少以下输入，请要求补充：
 
-1. Transport: stdio or Streamable HTTP.
-2. Operation semantics and side effects.
-3. Idle and absolute maximum timeouts.
-4. Progress-token behavior and rate limits.
-5. Retry policy and business idempotency storage.
-6. SSE buffer, proxy, keepalive, and reconnect settings.
-7. Durable Task behavior, if the operation uses the Tasks extension.
+1. 传输方式：stdio 或 Streamable HTTP。
+2. 操作语义及副作用。
+3. 空闲超时和绝对最大超时。
+4. 进度令牌行为及限流。
+5. 重试策略和业务幂等性存储。
+6. SSE 缓冲区、代理、保活和重连设置。
+7. 如果操作使用 Tasks 扩展，提供持久化任务行为。
 
-Produce the following sections.
+输出以下章节。
 
-## Cancellation wire
+<a id="cancellation-wire"></a>
 
-- For stdio, require a client-sent `notifications/cancelled` notification that references an active request id.
-- For Streamable HTTP, require closure of that request's response stream. Reject an ordinary cancellation POST.
-- Require no JSON-RPC response to a cancellation notification.
-- Reserve server-sent `notifications/cancelled` for stdio `subscriptions/listen` teardown.
-- State what happens when cancellation is unknown, malformed, late, or impossible.
+## 取消消息
 
-## Race table
+- 对 stdio，要求客户端发送 `notifications/cancelled` 通知，引用活动请求 ID。
+- 对 Streamable HTTP，要求关闭该请求的响应流。拒绝普通的取消 POST。
+- 取消通知不得收到 JSON-RPC 响应。
+- 服务器发送的 `notifications/cancelled` 仅用于拆除 stdio `subscriptions/listen`。
+- 说明取消目标未知、格式错误、到达过晚或无法取消时会发生什么。
 
-Give deterministic outcomes for:
+<a id="race-table"></a>
 
-| Event order | Server terminal state | Final response | Client behavior |
+## 竞态表
+
+为以下情况给出确定性结果：
+
+| 事件顺序 | 服务器终态 | 最终响应 | 客户端行为 |
 |------------|-----------------------|----------------|-----------------|
-| Cancel then complete | Cancelled | Suppressed | Continue recovery |
-| Complete then cancel | Completed | Preserved | Ignore late cancellation |
-| Timeout then late response | Transport-dependent cancellation | Ignore or suppress by observed order | Reconcile before unsafe retry |
-| Disconnect during progress | Cancelled in-flight request | No resumable stream | Reconnect and refetch |
+| 先取消后完成 | 已取消 | 抑制响应 | 继续恢复 |
+| 先完成后取消 | 已完成 | 保留响应 | 忽略迟到的取消 |
+| 超时后响应迟到 | 依传输方式执行取消 | 按观测顺序忽略或抑制 | 不安全重试前先核对状态 |
+| 进度更新期间断连 | 取消进行中的请求 | 不支持流续传 | 重连并重新获取 |
 
-## Deadline policy
+<a id="deadline-policy"></a>
 
-Require both an idle timeout and an absolute maximum timeout. Progress may reset idle time only when it is valid, monotonic, and rate-limited. Keepalive comments do not count as semantic progress. The maximum timeout never resets.
+## 截止时间策略
 
-## Retry classification
+同时要求空闲超时和绝对最大超时。只有有效、单调且受限流约束的进度更新才能重置空闲计时。保活注释不算语义上的进展。最大超时绝不重置。
 
-Return one class per operation:
+<a id="retry-classification"></a>
 
-- `SAFE`: application contract proves no side effect.
-- `CONDITIONAL`: mutation has one durable idempotency key reused with identical arguments.
-- `UNSAFE`: mutation lacks authoritative deduplication.
+## 重试分类
 
-Never treat a new JSON-RPC id, a tool annotation, or a transport reconnect as business idempotency.
+为每个操作返回一个类别：
 
-For conditional retries, require a stored argument fingerprint and committed result. Reject one key reused with changed arguments.
+- `SAFE`：应用契约证明没有副作用。
+- `CONDITIONAL`：修改操作使用一个持久化幂等键，重试时复用该键且参数完全相同。
+- `UNSAFE`：修改操作缺少权威去重机制。
 
-Require one atomic, durable ledger boundary for the key claim, argument
-fingerprint, business effect record, and committed result. A process-local
-dictionary or lock is not durable and does not coordinate replicas. Accept a
-shared database transaction, transactional outbox, or upstream provider that
-enforces the same key. State which effect is actually inside that boundary.
+绝不将新的 JSON-RPC ID、工具注解或传输重连视为业务幂等性。
 
-Return a defensive copy of a committed result. Never expose a mutable object
-held by the ledger. Prove both properties with a concurrent same-key fixture,
-a reopen fixture, and a mutation-alias fixture.
+对于有条件重试，要求存储参数指纹和已提交结果。拒绝同一个键搭配不同参数的复用。
 
-## Flow control
+要求键占用、参数指纹、业务效果记录和已提交结果位于同一个原子且持久的台账边界内。
+进程内字典或锁不具备持久性，也无法协调副本。可以使用共享数据库事务、
+事务发件箱，或强制执行相同键的上游提供商。明确指出哪些效果真正位于该边界内。
 
-- Set an explicit per-stream or per-client capacity.
-- Coalesce replaceable progress.
-- Mark dropped progress as requiring authoritative refetch.
-- Preserve final JSON-RPC responses.
-- Set `Content-Type: text/event-stream`, `Cache-Control: no-cache`, and `X-Accel-Buffering: no` for SSE.
-- Define keepalive cadence separately from operation progress.
-- Reject an unbounded queue.
+返回已提交结果的防御性副本。绝不暴露台账持有的可变对象。
+通过同键并发样例、重新打开存储的样例，以及修改别名对象的样例，证明这两项性质。
 
-## Reconnect plan
+<a id="flow-control"></a>
 
-- Open a new request with a new id.
-- Restore subscription filters.
-- Do not use `Last-Event-ID` for MCP 2026-07-28.
-- Refetch affected resources, lists, prompts, or Tasks.
-- Do not replay unsafe mutations automatically.
-- Use capped exponential backoff with jitter.
+## 流量控制
 
-## Durable Tasks
+- 明确设置每条流或每个客户端的容量。
+- 合并可替代的进度更新。
+- 将丢弃的进度标记为需要重新获取权威状态。
+- 保留最终 JSON-RPC 响应。
+- 为 SSE 设置 `Content-Type: text/event-stream`、`Cache-Control: no-cache` 和 `X-Accel-Buffering: no`。
+- 将保活频率与操作进度分别定义。
+- 拒绝无界队列。
 
-When a Task exists, keep `tasks/cancel` separate from request cancellation. A complete acknowledgement proves only that cancellation intent was accepted. Poll or listen until the durable task reaches a terminal state.
+<a id="reconnect-plan"></a>
 
-## Required fixtures
+## 重连方案
 
-Return at least these executable scenarios:
+- 使用新 ID 发起新请求。
+- 恢复订阅过滤器。
+- MCP 2026-07-28 不使用 `Last-Event-ID`。
+- 重新获取受影响的资源、列表、提示词或 Tasks。
+- 不自动重放不安全的修改操作。
+- 使用带抖动且有上限的指数退避。
 
-1. stdio cancel before completion;
-2. stdio completion before late cancellation;
-3. HTTP stream closure before completion;
-4. progress resetting idle timeout while maximum timeout still fires;
-5. duplicate mutation with two JSON-RPC ids and no idempotency key;
-6. duplicate mutation with one key and identical arguments;
-7. key reuse with changed arguments;
-8. slow consumer exceeding the progress buffer;
-9. stream drop followed by new subscription and authoritative refetch;
-10. `tasks/cancel` acknowledgement followed by delayed worker cancellation.
-11. two independent ledger connections racing on one key and identical arguments;
-12. caller mutation of a returned result followed by a clean replay from the durable record.
+<a id="durable-tasks"></a>
 
-Refuse a production-ready verdict when retry policy is described only as
-"retry on timeout", the ledger is process-local, the external effect sits
-outside the claimed atomic boundary without an outbox or upstream key, returned
-records alias mutable storage, or queue capacity is unspecified.
+## 持久化任务
+
+存在 Task 时，将 `tasks/cancel` 与请求取消区分开。完整确认仅证明取消意图已被接受。继续轮询或监听，直到持久化任务进入终态。
+
+<a id="required-fixtures"></a>
+
+## 必需样例
+
+至少返回以下可执行场景：
+
+1. stdio 在完成前取消；
+2. stdio 完成后收到迟到的取消；
+3. HTTP 流在完成前关闭；
+4. 进度更新重置空闲超时，但最大超时仍触发；
+5. 两个 JSON-RPC ID、无幂等键的重复修改；
+6. 同一键、相同参数的重复修改；
+7. 使用不同参数复用键；
+8. 慢消费者超过进度缓冲容量；
+9. 流断开后建立新订阅并重新获取权威状态；
+10. `tasks/cancel` 确认后，工作进程延迟取消。
+11. 两个独立台账连接以同一键和相同参数竞争；
+12. 调用方修改返回结果后，仍能从持久记录中干净重放。
+
+如果重试策略仅描述为“超时就重试”、台账仅存在于进程内、外部效果位于声称的原子边界之外且没有发件箱或上游幂等键、返回记录与可变存储共享引用，或队列容量未定义，拒绝给出可投入生产的结论。
