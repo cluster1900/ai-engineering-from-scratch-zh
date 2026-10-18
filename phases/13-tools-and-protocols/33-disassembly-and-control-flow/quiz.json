@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A disassembly listing from llvm-objdump shows every byte of a function decoded into real mnemonics. What does that prove?",
+      "question": "llvm-objdump 的反汇编清单将一个函数的每个字节都解码成了实际存在的助记符。这能证明什么？",
       "options": [
-        "That the function has no indirect jumps",
-        "That every instruction in the listing executes",
-        "That the control-flow graph is complete",
-        "Only that a linear sweep found an instruction boundary for every byte, which can still be wrong where data sits inside the code"
-      ],
-      "correct": 3,
-      "explanation": "A sweep decodes data as code and re-synchronises within a few bytes, so a plausible listing is not proof of the instruction boundaries or of reachability."
-    },
-    {
-      "stage": "check",
-      "question": "The bytes 48 8d 0d 00 00 00 00 decode to leaq (%rip), %rcx and .rela.text holds R_X86_64_PC32 .rodata-0x4 at the displacement field. Where does the operand point after linking?",
-      "options": [
-        ".rodata+0x0, because the processor adds the field to the next instruction address, which is 4 bytes past the field",
-        ".rodata-0x4",
-        "The address of the lea itself",
-        ".rodata+0x4"
+        "只能证明线性扫描为每个字节找到了指令边界；当数据嵌在代码中时，这些边界仍可能是错的",
+        "清单中的每条指令都会执行",
+        "该函数没有间接跳转",
+        "控制流图是完整的"
       ],
       "correct": 0,
-      "explanation": "R_X86_64_PC32 stores S + A - P. The field is the last 4 bytes of the instruction, so the final target is S + A + 4 = .rodata + 0."
+      "explanation": "线性扫描会将数据解码为代码，并在几个字节内重新对齐，因此看似合理的清单并不能证明指令边界正确，也不能证明指令可达。"
     },
     {
       "stage": "check",
-      "question": "In the trap fixture the table bytes are 31 c0 90 48 and the next real instruction is 83 c0 01 (addl $1, %eax). What does a linear sweep print at the jump target 0x14?",
+      "question": "字节 48 8d 0d 00 00 00 00 解码为 leaq (%rip), %rcx，且 .rela.text 在位移字段处包含 R_X86_64_PC32 .rodata-0x4。链接后，该操作数指向哪里？",
       "options": [
-        "A nop at 0x14",
-        "An invalid opcode error at 0x13",
-        "addl $0x1, %eax at 0x14",
-        "Nothing starts at 0x14. The 48 at 0x13 becomes a REX prefix and the sweep prints addq $0x1, %rax spanning 0x13 to 0x17"
-      ],
-      "correct": 3,
-      "explanation": "The REX byte joins the three bytes of the real add, so the listing shows a 64-bit add one byte early and no instruction at the branch target."
-    },
-    {
-      "stage": "check",
-      "question": "Recursive descent over grade at -O0 stops at jmpq *%rax and reports three blocks. What evidence lets it continue to the four case blocks?",
-      "options": [
-        "The bytes of the table in .rodata, which are all zero in the object file",
-        "The function size in the symbol table",
-        "The lea relocation that names the table, the cmp or sub plus ja that bounds the index, and the five R_X86_64_PC32 entries in .rela.rodata that give target = addend - 4k",
-        "The order of the blocks in the listing"
+        ".rodata+0x4",
+        ".rodata-0x4",
+        ".rodata+0x0，因为处理器将该字段的值加到下一条指令的地址上，而该地址比字段起点高 4 字节",
+        "lea 指令本身的地址"
       ],
       "correct": 2,
-      "explanation": "In a relocatable object the table holds placeholders. The relocations on the table entries are the only source of the targets, and the bounds check gives the entry count."
+      "explanation": "R_X86_64_PC32 存储 S + A - P。该字段占指令的最后 4 字节，因此最终目标为 S + A + 4 = .rodata + 0。"
+    },
+    {
+      "stage": "check",
+      "question": "在陷阱测试夹具中，表的字节为 31 c0 90 48，下一条真正的指令为 83 c0 01（addl $1, %eax）。线性扫描会在跳转目标 0x14 处输出什么？",
+      "options": [
+        "没有指令从 0x14 开始。0x13 处的 48 成为 REX 前缀，扫描输出一条跨越 0x13 至 0x17 的 addq $0x1, %rax",
+        "位于 0x13 的无效操作码错误",
+        "位于 0x14 的 addl $0x1, %eax",
+        "位于 0x14 的一条 nop"
+      ],
+      "correct": 0,
+      "explanation": "REX 字节与真正的 add 指令的三个字节结合，导致清单提前一个字节显示了一条 64 位加法指令，而分支目标处没有指令。"
+    },
+    {
+      "stage": "check",
+      "question": "对 -O0 下的 grade 进行递归下降分析时，分析停在 jmpq *%rax 并报告三个基本块。哪些证据能让分析继续到四个 case 块？",
+      "options": [
+        ".rodata 中表的字节，它们在目标文件中全为零",
+        "指定该表的 lea 重定位、限制索引范围的 cmp 或 sub 与 ja，以及 .rela.rodata 中给出 target = addend - 4k 的五条 R_X86_64_PC32 记录",
+        "清单中的基本块顺序",
+        "符号表中的函数大小"
+      ],
+      "correct": 1,
+      "explanation": "在可重定位目标文件中，表内存放的是占位值。表项上的重定位是目标地址的唯一来源，而边界检查给出了表项数量。"
     },
     {
       "stage": "post",
-      "question": "Why does the iterative dominator algorithm of Cooper, Harvey, and Kennedy process blocks in reverse postorder?",
+      "question": "为什么 Cooper、Harvey 和 Kennedy 的迭代支配节点算法按逆后序处理基本块？",
       "options": [
-        "Because the entry block must be processed last",
-        "So that most predecessors of a block already have an immediate dominator when the block is visited, which lets the fixpoint converge in few passes",
-        "Because it removes the need for the intersect step",
-        "Because reverse postorder is the order of addresses in memory"
+        "因为这样就不再需要求交步骤",
+        "因为入口块必须最后处理",
+        "为了让访问一个块时，其大多数前驱已经有直接支配节点，从而使不动点在少量遍历后收敛",
+        "因为逆后序就是内存中的地址顺序"
       ],
-      "correct": 1,
-      "explanation": "Reverse postorder visits a block after its forward predecessors, so each pass propagates dominators along forward edges and only back edges need another pass."
+      "correct": 2,
+      "explanation": "逆后序在访问一个块的前向前驱后才访问该块，因此每次遍历都能沿前向边传播支配节点信息，只有回边需要下一轮遍历。"
     },
     {
       "stage": "post",
-      "question": "At -O1 clang compiles grade to cmpl $4, %ecx; ja; leaq (%rip), %rcx with a relocation to .rodata; movl (%rcx,%rax,4), %eax; retq. What should the analysis report?",
+      "question": "在 -O1 下，clang 将 grade 编译为 cmpl $4, %ecx; ja; leaq (%rip), %rcx（带有指向 .rodata 的重定位）；movl (%rcx,%rax,4), %eax; retq。分析应报告什么？",
       "options": [
-        "A call through the table",
-        "A value table at .rodata+0x14 holding 1, 2, 3, 4, 4, three basic blocks, and no indirect transfer",
-        "An unresolved indirect jump",
-        "A jump table with five code targets"
+        "位于 .rodata+0x14、内容为 1、2、3、4、4 的值表，三个基本块，且没有间接控制转移",
+        "一个未解析的间接跳转",
+        "通过表进行的一次调用",
+        "一个包含五个代码目标的跳转表"
       ],
-      "correct": 1,
-      "explanation": "The load is a plain movl and the function returns right after it. The optimizer replaced the case blocks with a table of return values, which changes a load and not the control flow."
+      "correct": 0,
+      "explanation": "这次加载使用的是普通 movl，函数紧接着就返回。优化器将 case 块替换为返回值表，改变的是加载的值，而不是控制流。"
     }
   ]
 }
