@@ -148,7 +148,7 @@ def is_correction(utterance):
 
 ## 陷阱
 
-- **Full-history regeneration cost。** 让 LLM 每一轮都重新生成 state，总 Token 成本是 O(n²)。限制 history 或总结较早 turns。
+- **Full-history regeneration cost。** 让 LLM 每一轮都重新生成 state，总 Token 成本是 $O(n^2)$。限制 history 或总结较早 turns。
 - **Schema drift。** 事后添加新 slots 会破坏旧训练数据。为 schema 做版本管理。
 - **Case sensitivity。** “Italian” vs “italian” vs “ITALIAN” —— 到处都要 normalize。
 - **Implicit inheritance。** 如果用户之前指定过 “for 4 people”，新的不同时间请求不应该清空 people。始终传入完整 history。
