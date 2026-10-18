@@ -723,7 +723,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-13">
-<summary><b>Phase 13 — 工具与协议</b> &nbsp;<code>31 节课</code>&nbsp; <em>Function calling、MCP 协议、安全与生态。</em></summary>
+<summary><b>Phase 13 — 工具与协议</b> &nbsp;<code>40 节课</code>&nbsp; <em>Function calling、MCP 协议、安全与生态。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -759,6 +759,15 @@ the agent went wrong and explain why...
 | 29 | [MCP 可靠性、取消与流控](phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/) | Build | Python |
 | 30 | [MCP Registry 供应链：准入、漂移与回滚](phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/) | Build | Python |
 | 31 | [MCP 一致性工程：版本控制、证据与运维](phases/13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/) | Build | Python |
+| 32 | [程序解剖：从零编写 ELF 读取器](phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch/) | Build | Python |
+| 33 | [反汇编与控制流：从字节到可验证的图](phases/13-tools-and-protocols/33-disassembly-and-control-flow/) | Build | Python |
+| 34 | [提升为伪代码：从零构建 IR、SSA 与结构化](phases/13-tools-and-protocols/34-lifting-to-pseudocode/) | Build | Python |
+| 35 | [二进制分析中的证据、置信度与未知项](phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns/) | Build | Python |
+| 36 | [重建并证明等价：差分测试、字节比较与证据闭环](phases/13-tools-and-protocols/36-rebuild-and-prove-equal/) | Build | Python |
+| 37 | [逆向工程全景：历史、工具家族与反编译器的构建方式](phases/13-tools-and-protocols/37-the-reverse-engineering-landscape/) | Build | Python |
+| 38 | [调用约定与栈帧：System V、Windows x64 和 AArch64](phases/13-tools-and-protocols/38-calling-conventions-and-stack-frames/) | Build | Python |
+| 39 | [编译器惯用模式：优化如何改写代码，以及如何反向读懂它](phases/13-tools-and-protocols/39-compiler-idioms-and-optimization/) | Build | Python |
+| 40 | [链接、加载与剥离符号后的二进制：PLT、GOT、导入、修正与函数识别](phases/13-tools-and-protocols/40-linking-loading-and-stripped-binaries/) | Build | Python |
 
 第 06-18 课与第 28-31 课构成专门的 [Model Context Protocol (MCP) 学习路径](learning-paths/model-context-protocol.json)。其清单执行顺序为 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 18, 17, 28, 29, 30, 31。
 
