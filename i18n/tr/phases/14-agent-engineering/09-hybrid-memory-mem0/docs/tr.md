@@ -29,7 +29,7 @@ Mem0 (arXiv:2504.19413, Nisan 2025) Location`add(text, user_id, metadata)`时:
 
 1. Özetle: Özetleme ve eğitim programı
 2. Bu, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir de, bir deyişle, bir de,
-3. KV mağazasına, (user_id, fact_type, entity) olarak anahtar olarak yazmayı, O(1) 查找──
+3. KV mağazasına her gerçeği yazmak, (user_id, fact_type, entity) anahtar olarak kullanmak için.$O(1)$Arama.
 4. Her olayı tiplenmiş kenarlar olarak yazmak 写入 Graph store (Mem0g), ilişki sorguları için kullanılır.
 
 - Evet .`search(query, user_id)`时:
