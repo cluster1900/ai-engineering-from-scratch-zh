@@ -13,7 +13,7 @@ Monte Carlo é possível, mas tem duas exigências muito altas. Ele precisa de t
 
 Programação dinâmica 则相反:零方差的 bootstrapped backups, mas exige um modelo já conhecido.
 
-Diferença temporal (TD) aprendizagem 折中了两者──根据单个过渡 `(s, a, r, s')`, Construir um alvo de um passo .`r + γ V(s')`,并把 `V(s)`朝它推近──不需要模型──不需要完整的集──由于在RHS上使用近似的`V`A diferença é muito menor do que a MC e pode ser atualizada desde o primeiro passo.
+Diferença temporal (TD) aprendizagem 折中了两者──根据单个过渡 $(s, a, r, s')$, Construir um alvo de um passo .$r + \gamma V(s')$,并把 $V(s)$朝它推近──不需要模型──不需要完整的集──由于在RHS上使用近似的$V$A diferença é muito menor do que a MC e pode ser atualizada desde o primeiro passo.
 
 É tudo o que a RL moderna (DQN, A2C, PPO, SAC) depende de.
 
@@ -23,31 +23,39 @@ Diferença temporal (TD) aprendizagem 折中了两者──根据单个过渡 `(
 
 **用于 V 的 TD(0) update：**
 
-`V(s) ← V(s) + α [r + γ V(s') - V(s)]`
+```math
+V(s) \leftarrow V(s) + \alpha [r + \gamma V(s') - V(s)]
+```
 
-方括号中量是 TD erro `δ = r + γ V(s') - V(s)`É o MC Central.`G_t - V(s_t)`O que é que é que é o que é que é que é?`α`满足 Robbins-Monro`Σ α = ∞`- Não .`Σ α² < ∞`), e todos os estados são visitados sem limites.
+方括号中量是 TD erro $\delta = r + \gamma V(s') - V(s)$É o MC Central.$G_t - V(s_t)$O que é que é que é o que é que é que é?$\alpha$满足 Robbins-Monro$\sum \alpha = \infty$- Não .$\sum \alpha^2 < \infty$), e todos os estados são visitados sem limites.
 
 **Q-learning。**Uma forma de controlo de TD fora da política:
 
-`Q(s, a) ← Q(s, a) + α [r + γ max_{a'} Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \max_{a'} Q(s', a') - Q(s, a)]
+```
 
-`max`假设从 `s'`開始會遵循 *貪的政策,不管代理 实际采取了什么行动──这种解让Q-learning 在代理 通过 ε-贪的探索时仍然学习`Q*`❖Mnih et al. (2015) 将将将它转换为Atari 上的深度Q-learning (Lesson 05) ❖
+`max`假设从 $s'$開始會遵循 *貪的政策,不管代理 实际采取了什么行动──这种解让Q-learning 在代理 通过 ε-贪的探索时仍然学习$Q^{\ast}$❖Mnih et al. (2015) 将将将它转换为Atari 上的深度Q-learning (Lesson 05) ❖
 
 **SARSA。**Uma espécie de TD sobre política:
 
-`Q(s, a) ← Q(s, a) + α [r + γ Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma Q(s', a') - Q(s, a)]
+```
 
-O nome vem de tuple .`(s, a, r, s', a')` SARSA Utilize agent                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `a'`, em vez de ganancioso .`argmax`◊ Ela vai receber até o momento de operar arbitrariamente ε-compassivo `π`Para o`Q^π`- Em limite .`ε → 0`Vai mudar .`Q*`- Não.
+O nome vem de tuple .$(s, a, r, s', a')$ SARSA Utilize agent                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $a'$, em vez de ganancioso .`argmax`◊ Ela vai receber até o momento de operar arbitrariamente ε-compassivo $\pi$Para o$Q^\pi$- Em limite .$\epsilon \to 0$Vai mudar .$Q^{\ast}$- Não.
 
-**cliff-walking 的差异。**Em tarefas clássicas de caminhada em penhascos, a aprendizagem Q-aprende a percorrer o melhor caminho ao longo da borda do penhasco, mas ocasionalmente come a punição durante a exploração. A SARSA vai aprender a percorrer um caminho mais seguro para um passo longe do penhasco, pois ele incorpora o ruído da exploração em seu próprio Q-valor.`ε → 0`O que é importante na prática é que, quando a implementação é realmente em curso, o comportamento da SARSA será mais conservado.
+**cliff-walking 的差异。**Em tarefas clássicas de caminhada em penhascos, a aprendizagem Q-aprende a percorrer o melhor caminho ao longo da borda do penhasco, mas ocasionalmente come a punição durante a exploração. A SARSA vai aprender a percorrer um caminho mais seguro para um passo longe do penhasco, pois ele incorpora o ruído da exploração em seu próprio Q-valor.$\epsilon \to 0$O que é importante na prática é que, quando a implementação é realmente em curso, o comportamento da SARSA será mais conservado.
 
-**Expected SARSA。**- Não .`π`O valor de espera substitui`Q(s', a')`- Não .
+**Expected SARSA。**- Não .$\pi$O valor de espera substitui$Q(s', a')$- Não .
 
-`Q(s, a) ← Q(s, a) + α [r + γ Σ_{a'} π(a'|s') Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \sum_{a'} \pi(a' \mid s') Q(s', a') - Q(s, a)]
+```
 
-方差低于 SARSA(不对 `a'`采样), o objetivo é igualmente na política.
+方差低于 SARSA(不对 $a'$采样), o objetivo é igualmente na política.
 
-**n-step TD 和 TD(λ)。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `n`步再 bootstrap, em TD(0) e MC 之间插值──`n=1`É TD,`n=∞`É MC―TD (L) Us几何权重 `(1-λ)λ^{n-1}`Para tudo .`n`求平均──                                                                                                                                                                                                                                                             `n`- Não.
+**n-step TD 和 TD(λ)。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $n$步再 bootstrap, em TD(0) e MC 之间插值──$n=1$É TD,$n=\infty$É MC―TD (L) Us几何权重 $(1-\lambda)\lambda^{n-1}$Para tudo .$n$求平均──                                                                                                                                                                                                                                                             $n$- Não.
 
 
 ```figure
@@ -105,18 +113,18 @@ def q_learning(env, episodes, alpha=0.1, gamma=0.99, epsilon=0.1):
 
 ### 步骤 3: curvas de aprendizagem
 
-Seguir por 100 episódios de retorno médio. Q-learning em simples determinação. GridWorld 上收更快; SARSA 在悬崖上更保守.`code/main.py`O 4x4 GridWorld está em um ambiente de grande qualidade.`α=0.1, ε=0.1`Há cerca de 2.000 episódios.
+Seguir por 100 episódios de retorno médio. Q-learning em simples determinação. GridWorld 上收更快; SARSA 在悬崖上更保守.`code/main.py`O 4x4 GridWorld está em um ambiente de grande qualidade.$\alpha=0.1, \epsilon=0.1$Há cerca de 2.000 episódios.
 
 ### 步骤 4: Comparar com DP
 
-运行 valor Iteração ((Lessão 02) get `Q*` Inspecção`max_{s,a} |Q_learned(s,a) - Q*(s,a)|`❖ Um agente TD tabuleiro saudável em 4×4 GridWorld  Treinamento 10.000 episódios                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    `~0.5`É dentro.
+运行 valor Iteração ((Lessão 02) get $Q^{\ast}$ Inspecção$\max_{s,a} \lvert Q_{\text{learned}}(s,a) - Q^{\ast}(s,a) \rvert$❖ Um agente TD tabuleiro saudável em 4×4 GridWorld  Treinamento 10.000 episódios                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    `~0.5`É dentro.
 
 ## 陷
 
-- **初始 Q values 很重要。**乐观初始化 负奖励 任务中                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 `Q = 0`O que é que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é.
-- **α schedule。**常数 `α`Para o problema da estabilidade não é possível.`α_n = 1/n`Em teoria, pode ser recebido, mas na prática, é muito lento.`α`Fixa-se`[0.05, 0.3]`,并monitoring learning curve。
-- **ε schedule。**Desde o alto da sua posição`ε=1.0`), decadência`ε=0.05`"GLI" (avididade no limite com exploração infinita)
-- **Q-learning 中的 max bias。**- Não .`Q`Há ruído,`max`O operador 存在向上偏差──会导致高估;Hasselt's Double Q-learning(Lesson 05 中 DDQN 使用的做法) usando duas tabelas de Q 修复这个问题──
+- **初始 Q values 很重要。**乐观初始化 负奖励 任务中                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $Q = 0$O que é que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é o que é.
+- **α schedule。**常数 $\alpha$Para o problema da estabilidade não é possível.$\alpha_n = 1/n$Em teoria, pode ser recebido, mas na prática, é muito lento.$\alpha$Fixa-se`[0.05, 0.3]`,并monitoring learning curve。
+- **ε schedule。**Desde o alto da sua posição$\epsilon=1.0$), decadência$\epsilon=0.05$"GLI" (avididade no limite com exploração infinita)
+- **Q-learning 中的 max bias。**- Não .$Q$Há ruído,`max`O operador 存在向上偏差──会导致高估;Hasselt's Double Q-learning(Lesson 05 中 DDQN 使用的做法) usando duas tabelas de Q 修复这个问题──
 - **非终止 episodes。**TD pode ser aprendido em condições sem terminais, mas você precisa limitar o número de passos, ou em cima de limite de processar correctamente bootstrap.
 - **State hashing。**Se os estados são tuples/tenseiros, use可 hash 的键(tuple, não lista; 四舍五入后的浮游 tuple, não são flotas cruas) 
 
@@ -164,16 +172,16 @@ Refuse to apply tabular TD to state spaces > 10⁶. Refuse to ship a Q-learning 
 
 1. **Easy。**Em 4×4 GridWorld 上实现 Q-learning 和 SARSA── desenhar curvas de aprendizagem de 2.000 episódios( cada 100 episódios de retorno médio)──谁收更快?
 2. **Medium。**Construir um ambiente de caminhada em penhascos ⋅ 4×12, última linha é penhasco, recompensa -100 e restabelecer até o ponto de partida ⋅ Compare políticas finais de Q-learning e SARSA ⋅ Cretagem mostrando os seus caminhos ⋅ Qual é o mais próximo do penhasco?
-3. **Hard。**实现 Double Q-learning──在 noisy-reward GridWorld 上(给每步奖励 添加高斯音 σ=5), demonstrar Q-learning 会明显高估 `V*(0,0)`E o Double Q não vai acontecer.
+3. **Hard。**实现 Double Q-learning──在 gridworld 上(给每步奖励 添加高斯音音 $\sigma=5$), mostrar Q-learning 会明显高估 $V^{\ast}(0,0)$E o Double Q não vai acontecer.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| TD error | "The update signal" | `δ = r + γ V(s') - V(s)`，bootstrapped residual。 |
+| TD error | "The update signal" | $\delta = r + \gamma V(s') - V(s)$，bootstrapped residual。 |
 | TD(0) | "One-step TD" | 每次 transition 后只使用 next state's estimate 进行更新。 |
-| Q-learning | "Off-policy RL 101" | 对 next-state actions 使用 `max` 的 TD update；无论 behavior policy 如何，都会学习 `Q*`。 |
-| SARSA | "On-policy Q-learning" | 使用实际 next action 的 TD update；为当前 ε-greedy π 学习 `Q^π`。 |
-| Expected SARSA | "The low-variance SARSA" | 用 π 下的期望替换采样得到的 `a'`。 |
+| Q-learning | "Off-policy RL 101" | 对 next-state actions 使用 `max` 的 TD update；无论 behavior policy 如何，都会学习 $Q^{\ast}$。 |
+| SARSA | "On-policy Q-learning" | 使用实际 next action 的 TD update；为当前 ε-greedy π 学习 $Q^\pi$。 |
+| Expected SARSA | "The low-variance SARSA" | 用 π 下的期望替换采样得到的 $a'$。 |
 | GLIE | "Correct exploration schedule" | Greedy in the Limit with Infinite Exploration；Q-learning 收敛所需。 |
 | Bootstrapping | "Using current estimate in the target" | 区分 TD 和 MC 的关键。是偏差来源，但能大幅降低方差。 |
 | Maximization bias | "Q-learning overestimates" | 对有噪声 estimates 取 `max` 会产生向上偏差；由 Double Q-learning 修复。 |

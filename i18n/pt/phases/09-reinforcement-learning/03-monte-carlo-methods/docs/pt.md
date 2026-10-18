@@ -9,7 +9,7 @@
 
 ## 问题
 
-Programação dinâmica é muito bonita, mas supõe que você pode fazer perguntas para cada estado e ação.`P(s' | s, a)`◊ Na realidade, quase nada funciona assim. ◊ Robô ⋅ não pode resolver ⋅ calcular ⋅ aplicar torque conjunto ⋅ distribuição de pixels da câmera ⋅ algoritmo de preços ⋅ não pode lidar com todas as reações possíveis do cliente ⋅ L ⋅ não pode exibir qualquer token ⋅ todas as possíveis continuações ⋅
+Programação dinâmica é muito bonita, mas supõe que você pode fazer perguntas para cada estado e ação.$P(s' \mid s, a)$◊ Na realidade, quase nada funciona assim. ◊ Robô ⋅ não pode resolver ⋅ calcular ⋅ aplicar torque conjunto ⋅ distribuição de pixels da câmera ⋅ algoritmo de preços ⋅ não pode lidar com todas as reações possíveis do cliente ⋅ L ⋅ não pode exibir qualquer token ⋅ todas as possíveis continuações ⋅
 
 Você precisa de um método que depende apenas do ambiente.`s_0, a_0, r_1, s_1, a_1, r_2, …, s_T`Usá-lo para avaliar os valores.
 
@@ -19,30 +19,32 @@ A mudança do DP para o MC é importante em termos de raciocínio: nós passamos
 
 ![Monte Carlo: rollout, compute returns, average; first-visit vs every-visit](../assets/monte-carlo.svg)
 
-**核心思想，一行表达：** `V^π(s) = E_π[G_t | s_t = s] ≈ (1/N) Σ_i G^{(i)}(s)`, entre os `G^{(i)}(s)`É política.`π`下访问 `s`后观察到的回报──
+**核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, entre os $G^{(i)}(s)$É política.$\pi$下访问 $s$后观察到的回报──
 
-**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `s`O primeiro MC só tem a primeira visita após o retorno; cada visita MC 统计所有访问──二者在极限下都是无偏见── Primeiro MC é mais fácil de analisar.
+**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $s$O primeiro MC só tem a primeira visita após o retorno; cada visita MC 统计所有访问──二者在极限下都是无偏见── Primeiro MC é mais fácil de analisar.
 
 **Incremental mean。**Não armazenar todos os retornos, mas atualizar a média corrente:
 
-`V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]`
+```math
+V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
+```
 
-重新整理:`V_new = V_old + α · (target - V_old)`, entre os `α = 1/n`- Não.`1/n`换成 constante de tamanho de passo `α ∈ (0, 1)`E depois, tens um estimador de MC não estacionário, que vai seguir.`π`O movimento é de MC 跳到TD, re-jumping para todos os algoritmos RL modernos.
+重新整理:$V_{\text{new}} = V_{\text{old}} + \alpha \cdot (\text{target} - V_{\text{old}})$, entre os $\alpha = 1/n$- Não.$1/n$换成 constante de tamanho de passo $\alpha \in (0, 1)$E depois, tens um estimador de MC não estacionário, que vai seguir.$\pi$O movimento é de MC 跳到TD, re-jumping para todos os algoritmos RL modernos.
 
-**Exploration 现在成了问题。**DP 通過枚举触及各州──MC 只有看政策 会访问各州──如果`π`É determinista, o espaço de estado, toda a região, nunca será amostrada, suas estimativas de valor, permanecerão eternamente em zero.
+**Exploration 现在成了问题。**DP 通過枚举触及各州──MC 只有看政策 会访问各州──如果$\pi$É determinista, o espaço de estado, toda a região, nunca será amostrada, suas estimativas de valor, permanecerão eternamente em zero.
 
 1. **Exploring starts。**Desde随机 (s, a) par 开始每个集──保证 覆盖;实践中不现实(你不能把机器人 重置到任意状态)──
-2. **ε-greedy。**Comparado com o actual Q                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `ε`选择随机action── todos os pares de ações estatais são gradualmente amostragados──
-3. **Off-policy MC。**Em política de comportamento`μ`Recolher dados, através de amostragem de importância, aprender política-alvo `π`❖ Variação alta, mas é um ponto de partida para o DQN e outros métodos de replay-buffer.
+2. **ε-greedy。**Comparado com o actual Q                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $\epsilon$选择随机action── todos os pares de ações estatais são gradualmente amostragados──
+3. **Off-policy MC。**Em política de comportamento$\mu$Recolher dados, através de amostragem de importância, aprender política-alvo $\pi$❖ Variação alta, mas é um ponto de partida para o DQN e outros métodos de replay-buffer.
 
 **Monte Carlo Control。**Avaliação → melhoria → avaliação, assim como a iteração da política, assim, mas a avaliação é baseada em amostragem:
 
-1. 运行 `π`- Não, não.
-2. De acordo com os resultados observados`Q(s, a)`- Não.
-3. - Não .`π`Comparado com`Q`Tornar-se e-avidas.
+1. 运行 $\pi$- Não, não.
+2. De acordo com os resultados observados$Q(s, a)$- Não.
+3. - Não .$\pi$Comparado com$Q$Tornar-se e-avidas.
 4. - Não, não.
 
-Em condições de temperatura, cada par é visitado sem limites.`α`满足 Robbins-Monro), vai receber até `Q*`和 `π*`- Não.
+Em condições de temperatura, cada par é visitado sem limites.$\alpha$满足 Robbins-Monro), vai receber até $Q^{\ast}$和 $\pi^{\ast}$- Não.
 
 ## 动手构建
 
@@ -76,7 +78,7 @@ def returns_from(trajectory, gamma):
     return list(reversed(returns))
 ```
 
-Uma vez,`O(T)` Contra a recorrência`G_t = r_{t+1} + γ G_{t+1}`避免了重复求和──
+Uma vez,$O(T)$ Contra a recorrência$G_t = r_{t+1} + \gamma G_{t+1}$避免了重复求和──
 
 ### Passo 3: Avaliação do MC na primeira visita
 
@@ -126,15 +128,15 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 
 ### Passo 5: Comparado com o padrão de ouro DP
 
-Quando episódios → ∞ 时, você é contra `V^π`A estimativa do MC  deveria comparar com o resultado do DP na Lesson 02                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `~0.1`No âmbito da sua acção.
+Quando episódios → ∞ 时, você é contra $V^\pi$A estimativa do MC  deveria comparar com o resultado do DP na Lesson 02                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `~0.1`No âmbito da sua acção.
 
 ## 常见陷
 
 - **Infinite episodes。**MC                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `max_steps`A política de GridWorld é regularmente interrompida, é normal, desde que se certifique de que a sua contabilidade é correta.
-- **Variance。**MC utiliza retornos completos. Em episódios longos, variação é grande, a recompensa final será igual.`V(s_0)` Métodos de TD (Lessão 04) através do bootstrapping  降低这一点──
+- **Variance。**MC utiliza retornos completos. Em episódios longos, variação é grande, a recompensa final será igual.$V(s_0)$ Métodos de TD (Lessão 04) através do bootstrapping  降低这一点──
 - **State coverage。**Em novo Q 上做贪 MC, se aparecerem laços, apenas vai continuar tentando uma ação.
-- **Non-stationary policies。**Se `π`发生变化(如 MC control 中那样), old returns from different policy──Constant-α MC pode tratar este ponto; sample-average MC 不行──
-- **Off-policy importance sampling。**权重 `π(a|s)/μ(a|s)`A variação irá aumentar a velocidade de rotação de uma rotação de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de
+- **Non-stationary policies。**Se $\pi$发生变化(如 MC control 中那样), old returns from different policy──Constant-α MC pode tratar este ponto; sample-average MC 不行──
+- **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$A variação irá aumentar a velocidade de rotação de uma rotação de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de
 
 
 ```figure
@@ -151,10 +153,10 @@ Métodos de Monte Carlo em 2026
 | Logged policy 的 offline evaluation | 对 stored trajectories 的 discounted returns 求平均。 |
 | Monte Carlo Tree Search（AlphaZero） | 从 tree leaves 发起的 MC rollouts 指导 selection。 |
 | LLM RL evaluation | 为给定 policy 计算 sampled completions 的 average reward。 |
-| PPO 中的 baseline estimation | Advantage target `A_t = G_t - V(s_t)` 使用 MC `G_t`。 |
+| PPO 中的 baseline estimation | Advantage target $A_t = G_t - V(s_t)$ 使用 MC $G_t$。 |
 | RL 教学 | 最简单且真正有效的 algorithm；去掉 bootstrapping 就能看到核心。 |
 
-Algoritmos modernos de RL profundos (PPO、SAC) passam`n`-step returns ou GAE, em puro MC (full returns) e puro TD (one-step bootstrap) entre inserção de valor.
+Algoritmos modernos de RL profundos (PPO、SAC) passam$n$-step returns ou GAE, em puro MC (full returns) e puro TD (one-step bootstrap) entre inserção de valor.
 
 ## Entrega-o
 
@@ -183,20 +185,20 @@ tags: [rl, monte-carlo, evaluation]
 
 ## 练习
 
-1. **Easy.**实现 4×4 GridWorld 上 uniform-random policy 首次访问 MC 评价──运行 10,000 episódios──将 `V(0,0)`随剧数 变化的曲线与 DP 答案对照绘制──
-2. **Medium.**- Não .`ε ∈ {0.01, 0.1, 0.3}`实现 ε-greedy MC control──比较20.000 episódios 后的平均回归──曲线看起来是什么样?
-3. **Hard.**Utilizando a amostragem de importância                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   `μ`                                                                                                                                                                                                                                                              `π`de `V^π`◊ Comparar simples IS 、 por decisão IS 和 ponderado IS ⋅ Qual a variação mais baixa?
+1. **Easy.**实现 4×4 GridWorld 上 uniform-random policy 首次访问 MC 评价──运行 10,000 episódios──将 $V(0,0)$随剧数 变化的曲线与 DP 答案对照绘制──
+2. **Medium.**- Não .$\epsilon \in \lbrace 0.01, 0.1, 0.3 \rbrace$实现 ε-greedy MC control──比较20.000 episódios 后的平均回归──曲线看起来是什么样?
+3. **Hard.**Utilizando a amostragem de importância                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   $\mu$                                                                                                                                                                                                                                                              $\pi$de $V^\pi$◊ Comparar simples IS 、 por decisão IS 和 ponderado IS ⋅ Qual a variação mais baixa?
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
-| Return `G_t` | “Future reward” | 从 step `t` 到 episode 结束的 discounted rewards 总和：`Σ_{k≥0} γ^k r_{t+k+1}`。 |
+| Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
 | Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
-| ε-greedy | “Exploration noise” | 以概率 `1-ε` 选择 greedy action；以概率 `ε` 选择 random action。 |
-| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 `π(a\|s)/μ(a\|s)` 乘积对 returns 重新加权，从 `μ` 数据估计 `V^π`。 |
+| ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
+| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |
 | Off-policy | “Learn from someone else's data” | Target policy ≠ behavior policy。Importance-sampled MC、Q-learning、DQN。 |
 

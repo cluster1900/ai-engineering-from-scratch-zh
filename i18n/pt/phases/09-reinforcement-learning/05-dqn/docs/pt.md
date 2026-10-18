@@ -11,7 +11,7 @@
 
 Tabela Q-learning  necessita para cada (estado, ação) para guardar de forma individual um Q-valor。 uma tabela de xadrez ∼ aproximadamente 1043 estados。 uma  Atari 画面是210×160×3 = 100,800 个特色。 Tabula RL ∼ em alguns mil estados 时就会失效,更不用说数十亿州。
 
-O que acontece é que o método de reparação é óbvio:`Q(s, a; θ)` substituir a tabela Q-, mas depois de esse tipo de eventos, obviamente, levou várias décadas para chegar até aqui                                                                                                                                                                                                                                                
+O que acontece é que o método de reparação é óbvio:$Q(s, a; \theta)$ substituir a tabela Q-, mas depois de esse tipo de eventos, obviamente, levou várias décadas para chegar até aqui                                                                                                                                                                                                                                                
 
 1. **Experience replay**让过渡 去相关──
 2. **Target network**- O alvo do bootstrap.
@@ -25,25 +25,29 @@ O DQN do Atari é o primeiro a usar uma única estrutura e um único hiperparâm
 
 **目标。**DQN em Neural Q-função 上 Minimizar perda TD de um passo:
 
-`L(θ) = E_{(s,a,r,s')~D} [ (r + γ max_{a'} Q(s', a'; θ^-) - Q(s, a; θ))² ]`
+```math
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim D}[ (r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta))^2 ]
+```
 
-`θ`= rede online, cada passo através do Descenso Gradiente 更新──`θ^-`= rede-alvo, periodicamente desde `θ`复制(约每10,000步一次)`D`= Buffer de repetição de transições passadas.
+$\theta$= rede online, cada passo através do Descenso Gradiente 更新──$\theta^-$= rede-alvo, periodicamente desde $\theta$复制(约每10,000步一次)$D$= Buffer de repetição de transições passadas.
 
 **三个技巧，按重要性排序：**
 
 **Experience replay。**Um conteúdo`~10⁶`O sistema de transições é um sistema de transições de transições. Cada passo de treinamento é um sistema de transição de transições.
 
-**Target network。**Em Bellman, ambos os lados usam a mesma rede.`Q(·; θ)`, vai deixar o alvo em cada atualização mover, ou seja, seguir seu próprio rabo de corrida.`Q(·; θ^-)`, seus pesos 结──每隔 `C`步,复制 `θ → θ^-`❖ Isso permitirá que o alvo de regressão em milhares de passos gradiais mantenha-se estável― Soft updates `θ^- ← τ θ + (1-τ) θ^-`(para DDPG, SAC) é uma variação mais suave.
+**Target network。**Em Bellman, ambos os lados usam a mesma rede.$Q(\cdot; \theta)$, vai deixar o alvo em cada atualização mover, ou seja, seguir seu próprio rabo de corrida.$Q(\cdot; \theta^-)$, seus pesos 结──每隔 $C$步,复制 $\theta \to \theta^-$❖ Isso permitirá que o alvo de regressão em milhares de passos gradiais mantenha-se estável― Soft updates $\theta^- \leftarrow \tau \theta + (1-\tau) \theta^-$(para DDPG, SAC) é uma variação mais suave.
 
-**Reward clipping。**A amplitude de recompensa da Atari é de 1 a 1000+`{-1, 0, +1}`Pode impedir um determinado jogo, mas só o símbolo é importante.
+**Reward clipping。**A amplitude de recompensa da Atari é de 1 a 1000+$\lbrace-1, 0, +1 \rbrace$Pode impedir um determinado jogo, mas só o símbolo é importante.
 
 **Double DQN。**Hasselt (2016) 修复了最大化偏见: usar a rede online 来*选择* ação, usar a rede alvo 来* avalia* é。
 
-`target = r + γ Q(s', argmax_{a'} Q(s', a'; θ); θ^-)`
+```math
+\text{target} = r + \gamma Q(s', \arg\max_{a'} Q(s', a'; \theta); \theta^-)
+```
 
 É um substituto, o efeito está melhor.
 
-**其他改进（Rainbow, 2017）：**Reprodução prioritária (((更多采样高TD-error transitions) ]]`V(s)`O que é mais importante é que o sistema de informação seja um sistema de informação e de informação, que seja um sistema de informação e de informação.
+**其他改进（Rainbow, 2017）：**Reprodução prioritária (((更多采样高TD-error transitions) ]]$V(s)$O que é mais importante é que o sistema de informação seja um sistema de informação e de informação, que seja um sistema de informação e de informação.
 
 
 ```figure
@@ -105,11 +109,11 @@ def train_step(online, target, batch, gamma, lr):
     apply_sgd(online, grads, lr / len(batch))
 ```
 
-A forma dele é a de Q-learning na lição 04 , só há duas diferenças:`Q(·; θ)`Fazer a propagação de volta, em vez de uma tabela de indicação;`Q(·; θ^-)`- Não.
+A forma dele é a de Q-learning na lição 04 , só há duas diferenças:$Q(\cdot; \theta)$Fazer a propagação de volta, em vez de uma tabela de indicação;$Q(\cdot; \theta^-)$- Não.
 
 ### 步骤 4: Loop de nível externo
 
-Para cada episódio, baseado em`Q(·; θ)` Execução de transições                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `θ^- ← θ`模式如下:
+Para cada episódio, baseado em$Q(\cdot; \theta)$ Execução de transições                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $\theta^- \leftarrow \theta$模式如下:
 
 ```python
 for episode in range(N):
@@ -182,7 +186,7 @@ tags: [rl, dqn, deep-rl]
 
 1. **Easy。**运行 `code/main.py`◊ desenhar uma curva de retorno por episódio―uma média de execução 超過 -10 需要多少話?
 2. **Medium。**禁用目标网络 (禁用目标网络) 在Bellman target 两侧都使用网) 测量训练不稳定性:回归 会震荡还是发散?
-3. **Hard。**添加 Double DQN: usar net online 选择 `argmax a'`, usar a rede-alvo  avaliação── comparar gridworld  treinamento 1.000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`Comparado à realidade`V*(s_0)`De preconceito.
+3. **Hard。**添加 Double DQN: usar net online 选择 `argmax a'`, usar a rede-alvo  avaliação── comparar gridworld  treinamento 1.000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`Comparado à realidade$V^{\ast}(s_0)$De preconceito.
 
 ## 关键术语
 | Term | 人们怎么说 | 它实际是什么意思 |

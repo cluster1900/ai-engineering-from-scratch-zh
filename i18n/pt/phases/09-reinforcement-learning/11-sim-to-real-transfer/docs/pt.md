@@ -31,7 +31,7 @@ Você precisa de uma política de distribuição *sim-to-real* 具有强烈性�
 
 **Domain Adaptation。**Em simulação, reutilize uma pequena quantidade de dados reais de sintonia.
 
-- **Real2Sim2Real：**Usar as instalações reais, aprender um simulador residual.`f(s, a, z) - f_sim(s, a)`Não é preciso muito dados reais para reduzir a diferença.
+- **Real2Sim2Real：**Usar as instalações reais, aprender um simulador residual.$f(s, a, z) - f_{\text{sim}}(s, a)$Não é preciso muito dados reais para reduzir a diferença.
 - **Observation adaptation：**訓練一個政策, através do extractor de recursos aprendido (por exemplo, GAN pixel-to-pixel) vai ser real obs → sim-like obs──controller 仍然停留在sim中──
 
 **Privileged learning / teacher-student。**Miki et al. 2022(Animal quadruped) ・・・ em simulação entraînamentone one can access privileged information(ground truth friction、terrain height、IMU drift) of *teacher*。再 distill 一个只看到真正传感器观测的 *student*。student 学会从历史中推断特特色,并在物理参数变下保持强──
@@ -129,7 +129,7 @@ tags: [rl, sim2real, robotics, domain-randomization]
 
 ## 练习
 
-1. **Easy。**Em Slip-Fixed GridWorld(slip=0.0)                                                                                                                                                                                                                                                       
+1. **Easy。**Em GridWorld de deslizamento fixo ((slip=0.0) 上訓練一個Q-learning agent──在 $\text{slip} \in \lbrace 0.0, 0.1, 0.3, 0.5 \rbrace$上评估── desenhar retorno versus deslize──
 2. **Medium。**Treinar um agente de aprendizagem DR Q, 采样 `slip ~ Uniform[0, 0.3]` avaliar o mesmo grupo de varredura  em queda = 0,5  fora de distribuição)
 3. **Hard。** Realizar um currículo: a partir de sli=0.0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 

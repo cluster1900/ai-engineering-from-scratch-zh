@@ -9,11 +9,11 @@
 
 ## 问题
 
-A2C ((Lessão 07) é sobre política `E_{π_θ}[A · ∇ log π_θ]`需要从*当前* `π_θ`Depois de uma nova actualização,`π_θ`Já mudou; os dados que usaste agora estão fora da política.
+A2C ((Lessão 07) é sobre política $\mathbb E_{\pi_\theta}[A \cdot \nabla \log \pi_\theta]$需要从*当前* $\pi_\theta$Depois de uma nova actualização,$\pi_\theta$Já mudou; os dados que usaste agora estão fora da política.
 
 Rollout 很昂贵──在Atari上,跨 8 个 envs × 128 步骤的一次 rollout = 1024 步骤的转变,以及十几秒的环境时间──一次渐进步步 后就把它丢掉很浪费──
 
-Otimizar as políticas da região de confiança (TRPO, Schulman 2015) é o primeiro programa de revisão:约束每次更新,使旧政策和新政策  KL divergência 保持在 `δ`A teoria é muito clara, mas cada vez que a actualização é feita, é necessário uma solução conjugada-gradiente.
+Otimizar as políticas da região de confiança (TRPO, Schulman 2015) é o primeiro programa de revisão:约束每次更新,使旧政策和新政策  KL divergência 保持在 $\delta$A teoria é muito clara, mas cada vez que a actualização é feita, é necessário uma solução conjugada-gradiente.
 
 PPO(Schulman et al. 2017) substituiu a região de confiança de hardware 约束──只多一行代码──每次推出十个时代──不需要结合梯度──理论保证足够好──九年后,它仍然是从 MuJoCo到RLHF的默认政策-gradient 算法──
 
@@ -23,43 +23,49 @@ PPO(Schulman et al. 2017) substituiu a região de confiança de hardware 约束�
 
 **Importance ratio。**
 
-`r_t(θ) = π_θ(a_t | s_t) / π_{θ_old}(a_t | s_t)`
+```math
+r_t(\theta) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}
+```
 
-Esta é a relação de probabilidade entre a nova política e a política de recolha de dados.`r_t = 1`Não há mudança.`r_t = 2`Indicar nova política 选择 `a_t`A probabilidade é duas vezes maior que a política anterior.
+Esta é a relação de probabilidade entre a nova política e a política de recolha de dados.$r_t = 1$Não há mudança.$r_t = 2$Indicar nova política 选择 $a_t$A probabilidade é duas vezes maior que a política anterior.
 
 **Clipped surrogate。**
 
-`L^{CLIP}(θ) = E_t [ min( r_t(θ) A_t, clip(r_t(θ), 1-ε, 1+ε) A_t ) ]`
+```math
+L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \mathop{\mathrm{clip}}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+```
 
 ∆ Dois elementos:
 
-- Se vantagem `A_t > 0`, e a taxa 试图 crescer para exceder `1 + ε`Não se preocupe com uma boa ação , não se preocupe com uma probabilidade maior do que a anterior .`+ε`- Não.
-- Se vantagem `A_t < 0`, e a taxa 试图 crescer para exceder `1 - ε`(Significa redução em comparação com cortado, vamos fazer uma ação ruim mais possível acontecer), clip irá limitar Gradiente  Não colocar uma ação ruim  puxar para baixo `-ε`- Não.
+- Se vantagem $A_t > 0$, e a taxa 试图 crescer para exceder $1 + \epsilon$Não se preocupe com uma boa ação , não se preocupe com uma probabilidade maior do que a anterior .$+\epsilon$- Não.
+- Se vantagem $A_t < 0$, e a taxa 试图 crescer para exceder $1 - \epsilon$(Significa redução em comparação com cortado, vamos fazer uma ação ruim mais possível acontecer), clip irá limitar Gradiente  Não colocar uma ação ruim  puxar para baixo $-\epsilon$- Não.
 
 `min`处理另一个方向: se a relação 已朝*有益*方向移动, você ainda obtém Gradient ( não está em um lado desfavorável para você) 
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `ε = 0.2`- O objetivo é o que se passa.`r_t`Função: uma função linear de pedaço, em um lado bom, em outro lado plano, em outro lado ruim, em outro lado plano.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\epsilon = 0.2$- O objetivo é o que se passa.$r_t$Função: uma função linear de pedaço, em um lado bom, em outro lado plano, em outro lado ruim, em outro lado plano.
 
 **完整的 PPO loss。**
 
-`L(θ, φ) = L^{CLIP}(θ) - c_v · (V_φ(s_t) - V_t^{target})² + c_e · H(π_θ(·|s_t))`
+```math
+L(\theta, \phi) = L^{\text{CLIP}}(\theta) - c_v \cdot (V_\phi(s_t) - V_t^{\text{target}})^2 + c_e \cdot H(\pi_\theta(\cdot \mid s_t))
+```
 
-Comparado com A2C, a estrutura actor-crítica é de três fatores, normalmente são`c_v = 0.5`- Não.`c_e = 0.01`- Não.`ε = 0.2`- Não.
+Comparado com A2C, a estrutura actor-crítica é de três fatores, normalmente são$c_v = 0.5$- Não.$c_e = 0.01$- Não.$\epsilon = 0.2$- Não.
 
 **训练循环。**
 
-1. 跨 `N`个 paralelo envs, cada运行 `T`Passo, recolha.`N × T`个 transições。
+1. 跨 $N$个 paralelo envs, cada运行 $T$Passo, recolha.$N \times T$个 transições。
 2. 計算優勢 (GAE),并把它们结为常量──
-3. - Não .`π_{θ_old}`结为当前 `π_θ`- É uma foto.
-4. Para o`K`个 épocas, para cada um `(s, a, A, V_target, log π_old(a|s))`O minibatch:
-   - 计算 `r_t(θ) = exp(log π_θ(a|s) - log π_old(a|s))`- Não.
-   -  aplicativo `L^{CLIP}`+ perda de valor + entropia。
+3. - Não .$\pi_{\theta_{\text{old}}}$结为当前 $\pi_\theta$- É uma foto.
+4. Para o$K$个 épocas, para cada um `(s, a, A, V_target, log π_old(a|s))`O minibatch:
+   - 计算 $r_t(\theta) = \exp(\log \pi_\theta(a \mid s) - \log \pi_{\text{old}}(a \mid s))$- Não.
+   -  aplicativo $L^{\text{CLIP}}$+ perda de valor + entropia。
    - Passo gradual.
 5. Deixe o lançamento. Volte ao passo 1.
 
-`K = 10`E 64 de mini-batches é um conjunto de hiperparâmetros padrão.
+$K = 10$E 64 de mini-batches é um conjunto de hiperparâmetros padrão.
 
-**KL-penalty 变体。**O artigo original propôs um esquema alternativo, usando a penalidade KL adaptativa:`L = L^{PG} - β · KL(π_θ || π_old)`, entre os `β`De acordo com a observação KL 调整──Clipping 版本成为主流; KL 变体在RLHF保留下来((在那里,到参考政策的 KL 本来就是一个你始终想要的独立约束)
+**KL-penalty 变体。**O artigo original propôs um esquema alternativo, usando a penalidade KL adaptativa:$L = L^{\text{PG}} - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$, entre os $\beta$De acordo com a observação KL 调整──Clipping 版本成为主流; KL 变体在RLHF保留下来((在那里,到参考政策的 KL 本来就是一个你始终想要的独立约束)
 
 
 ```figure
@@ -125,19 +131,19 @@ Clipped → zero gradient  模式 é o núcleo da PPO.
 
 Cada vez que eu faço uma nova coisa, tenho que ver três coisas:
 
-- **Mean KL** `E[log π_old - log π_θ]`❖ Deve ficar em `[0, 0.02]`Se exceder`0.1`, reduzir`K_EPOCHS`Ou `LR`- Não.
-- **Clip fraction** ratio 落在 `[1-ε, 1+ε]`- Existem amostras de fora, por exemplo.`~0.1-0.3`Se é assim.`~0`,Clip 从未触发 → 提高 `LR`Ou `K_EPOCHS`Se é assim.`~0.5+`Estás a passar-te a esta exposição →  reduzi-las 
-- **Explained variance** `1 - Var(V_target - V_pred) / Var(V_target)`❖ Critical 质量指标── com o aprendizado crítico, deve subir para 1 ⋅
+- **Mean KL** $\mathbb{E}[\log \pi_{\text{old}} - \log \pi_\theta]$❖ Deve ficar em `[0, 0.02]`Se exceder`0.1`, reduzir`K_EPOCHS`Ou `LR`- Não.
+- **Clip fraction** ratio 落在 $[1-\epsilon, 1+\epsilon]$- Existem amostras de fora, por exemplo.`~0.1-0.3`Se é assim.`~0`,Clip 从未触发 → 提高 `LR`Ou `K_EPOCHS`Se é assim.`~0.5+`Estás a passar-te a esta exposição →  reduzi-las 
+- **Explained variance** $1 - \text{Var}(V_{\text{target}} - V_{\text{pred}}) / \text{Var}(V_{\text{target}})$❖ Critical 质量指标── com o aprendizado crítico, deve subir para 1 ⋅
 
 ## 陷
 
-- **Clip coefficient 调错。** `ε = 0.2`É um facto.`0.1`会让更新过保守;`0.3+`Vai haver uma incerteza.
-- **Epochs 太多。** `K > 20` frequentemente fazer o treino inestabilizar, porque a política 漂离 `π_old`                                                                                                                                                                                                                                                              
+- **Clip coefficient 调错。** $\epsilon = 0.2$É um facto.`0.1`会让更新过保守;`0.3+`Vai haver uma incerteza.
+- **Epochs 太多。** $K > 20$ frequentemente fazer o treino inestabilizar, porque a política 漂离 $\pi_{\text{old}}$                                                                                                                                                                                                                                                              
 - **没有 reward normalization。**Mas, a maior parte das vezes, os resultados são de uma forma diferente.
 - **忘记 advantage normalization。**A normalização de média zero/unidade-std por lote é uma prática padrão.
 - **Learning rate 没有衰减。**PPO 受益于线性 LR 衰减到零──Constant LR 往往更差──
 - **Importance ratio 数学错误。**始终使用                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `exp(log_new - log_old)`- Não .`new / old`- Não.
-- **Gradient sign 错误。**Maximization surrogate = * minimization* `-L^{CLIP}`◊ 符号翻转是最常见的PPO bug──
+- **Gradient sign 错误。**Maximization surrogate = * minimization* $-L^{\text{CLIP}}$◊ 符号翻转是最常见的PPO bug──
 
 ## Use-o
 
@@ -181,18 +187,18 @@ tags: [rl, ppo, policy-gradient]
 
 ## 练习
 
-1. **简单。**Em 4×4 GridWorld 上运行 PPO, usar `ε=0.2, K=4`◊ Em caso de medidas de ambiente de correspondência, a eficiência da amostra em relação ao A2C (a) por implantação de uma época (a)
-2. **中等。**Esvaziar`K ∈ {1, 4, 10, 30}` desenhar os passos de retorno versus env,并跟踪 cada vez actualizar o meio KL──`K`Até quando o KL explodirá?
-3. **困难。**Usar a penalidade adaptativa KL  substituir o substituto cortado `KL > 2·target`- Não .`β`翻倍; se `KL < target/2`- Não .`β`减半) ・Compare retorno final, estabilidade, e não-clip-free­ness.
+1. **简单。**Em 4×4 GridWorld 上运行 PPO, usar $\epsilon=0.2, K=4$◊ Em caso de medidas de ambiente de correspondência, a eficiência da amostra em relação ao A2C (a) por implantação de uma época (a)
+2. **中等。**Esvaziar$K \in \lbrace 1, 4, 10, 30 \rbrace$ desenhar os passos de retorno versus env,并跟踪 cada vez actualizar o meio KL──$K$Até quando o KL explodirá?
+3. **困难。**Usar a penalidade adaptativa KL  substituir o substituto cortado $\mathrm{KL} > 2 \cdot \text{target}$- Não .$\beta$翻倍; se $\mathrm{KL} < \text{target}/2$- Não .$\beta$减半) ・Compare retorno final, estabilidade, e não-clip-free­ness.
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------|----------|
-| Importance ratio | "r_t(θ)" | `π_θ(a\|s) / π_old(a\|s)`；相对于采集数据的 policy 的偏离程度。 |
-| Clipped surrogate | "PPO's main trick" | `min(r·A, clip(r, 1-ε, 1+ε)·A)`；在有益侧超过 clip 后 Gradient 变平。 |
+| Importance ratio | "r_t(θ)" | $\pi_\theta(a \mid s) / \pi_{\text{old}}(a \mid s)$；相对于采集数据的 policy 的偏离程度。 |
+| Clipped surrogate | "PPO's main trick" | $\min(r \cdot A, \mathop{\mathrm{clip}}(r, 1-\epsilon, 1+\epsilon) \cdot A)$；在有益侧超过 clip 后 Gradient 变平。 |
 | Trust region | "TRPO / PPO intent" | 限制每次更新的 KL，以保证 monotone improvement。 |
-| KL penalty | "Soft trust region" | 替代 PPO：`L - β · KL(π_θ \|\| π_old)`。Adaptive `β`。 |
+| KL penalty | "Soft trust region" | 替代 PPO：$L - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$。Adaptive $\beta$。 |
 | Clip fraction | "How often clipping triggers" | Diagnostic —— 应该是 0.1-0.3；超出范围表示调参错误。 |
 | Multi-epoch training | "Data reuse" | 每次 rollout 上跑 K 个 epochs；用 variance cost 换 sample efficiency。 |
 | On-policy-ish | "Mostly on-policy" | PPO 名义上是 on-policy，但 K>1 个 epochs 会安全地使用 slightly-off-policy data。 |

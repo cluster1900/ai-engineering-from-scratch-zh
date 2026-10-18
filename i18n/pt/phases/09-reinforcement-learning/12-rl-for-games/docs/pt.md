@@ -30,19 +30,19 @@ while True:
 
 **AlphaZero (2017)。**Silver et al. 给定一个规则已知的游戏(chá,shogi,Go):
 
-- Rede de valores políticos:一个塔 `f_θ(s) → (p, v)`- Não.`p`É um movimento legal.`v`É o resultado esperado do jogo.
-- Monte Carlo Tree Search (MCTS): em cada passo,展开可能后续状态的树──使用 `(p, v)`作为前 + bootstrap──用 UCB (PUCT) 选择节点:`a* = argmax Q(s, a) + c · p(a|s) · √N(s) / (1 + N(s, a))`- Não.
-- A jogada de si mesmo: fazer agente contra agente para a partida.`t`步,distribuição das visitas do MCTS `π_t`成为政策 训练目标──
-- Perda:`L = (v - z)² - π · log p + c · ||θ||²`- Não.`z`É o resultado do jogo ((+1 / 0 / -1)。
+- Rede de valores políticos:一个塔 $f_\theta(s) \to (p, v)$- Não.$p$É um movimento legal.$v$É o resultado esperado do jogo.
+- Monte Carlo Tree Search (MCTS): em cada passo,展开可能后续状态的树──使用 $(p, v)$作为前 + bootstrap──用 UCB (PUCT) 选择节点:$a^{\ast} = \arg\max_a Q(s, a) + c \cdot p(a \mid s) \cdot \sqrt{N(s)} / (1 + N(s, a))$- Não.
+- A jogada de si mesmo: fazer agente contra agente para a partida.$t$步,distribuição das visitas do MCTS $\pi_t$成为政策 训练目标──
+- Perda:$L = (v - z)^2 - \pi \cdot \log p + c \cdot \lVert \theta \rVert^2$- Não.$z$É o resultado do jogo ((+1 / 0 / -1)。
 
 零人类知识――零手工演学―― uma única preparação, depois de milhares de milhões de jogos de auto-jogo 掌握棋牌、shogi 和 Go――
 
 **MuZero (2019)。**Schrittwieser et al. 移除了规则已知的要求──
 
-- Não usar ambiente fixo, mas aprender um *modelo de dinâmica latente* `(h, g, f)`- Não .
-  - `h(s)`:将 observação 编码为潜伏状态──
-  - `g(s_latent, a)`Prefeito de Cidade:
-  - `f(s_latent)`: pré测 política prior + valor。
+- Não usar ambiente fixo, mas aprender um *modelo de dinâmica latente* $(h, g, f)$- Não .
+  - $h(s)$:将 observação 编码为潜伏状态──
+  - $g(s_{\text{latent}}, a)$Prefeito de Cidade:
+  - $f(s_{\text{latent}})$: pré测 política prior + valor。
 - MCTS em *aprendizado espaço latente* 中运行── identica busca, identica formação ciclo──
 - Aplica-se a Go, xadrez, shogi, e também a Atari, um algoritmo, não precisa de regras.
 
@@ -54,11 +54,11 @@ while True:
 
 - 游戏: responder a um problema de matemática / codificação / raciocínio.
 - Política:LLM。Ações:Token。Estado:prompt + resposta-até-o-o-o-o-o-o¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
--  não criticar                                                                                                                                                                                                                                                            `G`个完成──计算每个完成的奖励──使用 **group-relative advantage** `A_i = (r_i - mean_r) / std_r`作为 REINFORCE 风格更新的信号──
+- Não há críticas.$V_\phi$)― Por outro lado, para cada instante, desde a política 采样 $G$个完成──计算每个完成的奖励──使用 **group-relative advantage** $A_i = (r_i - \text{mean}_r) / \text{std}_r$作为 REINFORCE 风格更新的信号──
 - Para a política de referência, adição de penalidades KL, 以防漂移 (RLHF)
 - Perda completa:
 
-  `L_GRPO(θ) = -E_{q, {o_i}} [ (1/G) Σ_i A_i · log π_θ(o_i | q) ] + β · KL(π_θ || π_ref)`
+  $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
 Não há modelo de recompensa, não há críticos, não há MCTS──linha de base relativa ao grupo  substituí­la os três── em referência de raciocínio, com menos computação  atingir ou superar PPO-RLHF 质量──
 
@@ -145,7 +145,7 @@ Com RLHF análogos diagnósticos: até a referência de KL mean 、 política en
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-- **Group size 太小。**Diferença de grupo de referência`1/√G`- Não.`G = 4`时, sinal de vantagem 会 muito barulhento; 标准选择是`G = 8`Até`64`- Não.
+- **Group size 太小。**Diferença de grupo de referência$1/\sqrt{G}$- Não.$G = 4$时, sinal de vantagem 会 muito barulhento; 标准选择是$G = 8$Até 64...
 - **Length bias。**Diferente de duração de conclusão de LLM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 - **纯 self-play 循环。**AlphaZero 风格训练可能在一般数游戏中卡进统治循环──可通过多样化对手池联赛比赛,Lesson 10)缓解──
 - **Search-policy mismatch。**AlphaZero trenagem política 去模仿搜索结果──如果政策网太小,不能表示搜索的分布,训练会停滞──
@@ -196,7 +196,7 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 ## 练习
 
-1. **Easy。**Em`code/main.py`中实现 GRPO bandit──在 2 个提示 × 每 4 个答案 Token 上训练──使用 `G=8`Em < 1000 vezes atualização
+1. **Easy。**Em`code/main.py`中实现 GRPO bandit──在 2 个提示 × 每 4 个答案 Token 上训练──使用 $G=8$Em < 1000 vezes atualização
 2. **Medium。**接入 PPO(clip) 和香莉 REINFORCE──在同一个强盗上比较样本效率和奖励差与GRPO的差──
 3. **Hard。**扩展到长度为 2 的理性链:agent 发发发两个代币,verifier对代币对代币 给奖励──测量GRPO 如何处理两步序列 上的信用分配──(提示:按 *full sequence* 计算组优势,并传播到两个代币位置──)
 
@@ -204,11 +204,11 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 | Term | 人们常说 | 实际含义 |
 |------|-----------------|-----------------------|
-| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned `(p, v)` prior 的 UCB1/PUCT selection。 |
+| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned $(p, v)$ prior 的 UCB1/PUCT selection。 |
 | AlphaZero | “Self-play + MCTS” | Policy-value net 被训练来匹配 MCTS visits 和 game outcome。 |
 | MuZero | “Learned-model AlphaZero” | 相同循环，但通过 learned dynamics 在 latent space 中进行。 |
 | GRPO | “Critic-free PPO” | Group Relative Policy Optimization；带 group-mean baseline + KL 的 REINFORCE。 |
-| PUCT | “AlphaZero 的 UCB” | `Q + c · p · √N / (1 + N_a)` —— 平衡 value estimate 与 prior。 |
+| PUCT | “AlphaZero 的 UCB” | $Q + c \cdot p \cdot \sqrt{N} / (1 + N_a)$ —— 平衡 value estimate 与 prior。 |
 | Self-play | “Agent vs past self” | Zero-sum 的标准做法；提供对称训练信号。 |
 | League play | “Population-based self-play” | 将 past + current + exploiters 采样为 opponents。 |
 | Verifier reward | “Verifiable RL” | Reward 来自 deterministic checker（tests pass、answer matches）。 |
