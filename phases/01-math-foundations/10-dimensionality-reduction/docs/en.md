@@ -38,9 +38,9 @@ Dimension    Avg distance ratio (max/min between random points)
 1000         ~1.02
 ```
 
-**体积集中在角落。** d 维 unit hypercube 有 2^d 个角。在 100 维中，几乎所有体积都在角落里，远离中心。Data points 会扩散到边缘，而你的 models 在内部区域会缺少数据。
+**体积集中在角落。** $d$ 维 unit hypercube 有 $2^d$ 个角。在 100 维中，几乎所有体积都在角落里，远离中心。Data points 会扩散到边缘，而你的 models 在内部区域会缺少数据。
 
-**你需要指数级更多的数据。** 为了在一个空间中保持相同的样本密度，从 2D 到 20D 意味着你需要 10^18 倍的数据。你永远都不会有足够的数据。降低维度会把数据密度带回可处理的范围。
+**你需要指数级更多的数据。** 为了在一个空间中保持相同的样本密度，从 2D 到 20D 意味着你需要 $10^{18}$ 倍的数据。你永远都不会有足够的数据。降低维度会把数据密度带回可处理的范围。
 
 ### PCA: find the directions that matter
 
@@ -88,7 +88,7 @@ PC4          0.89          0.089              0.925
 
 1. **Threshold.** 保留足够多的 components，以解释 90-95% 的 variance。
 2. **Elbow method.** 绘制每个 component 的 explained variance。寻找明显的快速下降点。
-3. **Downstream performance.** 将 PCA 用作 preprocessing。扫描 k，并测量 model 的 accuracy。最佳 k 是 accuracy 进入平台期的位置。
+3. **Downstream performance.** 将 PCA 用作 preprocessing。扫描 $k$，并测量 model 的 accuracy。最佳 $k$ 是 accuracy 进入平台期的位置。
 
 ### t-SNE: preserve neighborhoods
 
@@ -101,7 +101,7 @@ t-SNE 的关键性质：
 - Stochastic。不同运行会产生不同 layout。
 - Perplexity 参数控制考虑多少邻居（典型范围：5-50）。
 - 输出中 clusters 之间的距离没有意义。只有 clusters 本身有意义。
-- 在大型 datasets 上很慢。默认是 O(n^2)。
+- 在大型 datasets 上很慢。默认是 $O(n^2)$。
 
 ### UMAP: faster, better global structure
 
@@ -135,27 +135,27 @@ UMAP 在高维空间中构建一个 weighted graph（"fuzzy topological represen
 Kernel PCA 在由 kernel function 诱导出的高维 feature space 中应用 PCA，而不显式计算该空间中的坐标。这就是 kernel trick，也就是 SVMs 背后的同一个思想。
 
 算法：
-1. 计算 kernel matrix K，其中 K_ij = k(x_i, x_j)
+1. 计算 kernel matrix $K$，其中 $K_{ij} = k(x_i, x_j)$
 2. 在 feature space 中 center kernel matrix
 3. 对 centered kernel matrix 做 eigendecompose
-4. 顶部 eigenvectors（按 1/sqrt(eigenvalue) 缩放）就是 projections
+4. 顶部 eigenvectors（按 $1/\sqrt{\text{eigenvalue}}$ 缩放）就是 projections
 
 常见 kernel functions：
 
 | Kernel | Formula | Good for |
 |--------|---------|----------|
-| RBF (Gaussian) | exp(-gamma * \|\|x - y\|\|^2) | 大多数 nonlinear data、smooth manifolds |
-| Polynomial | (x . y + c)^d | Polynomial relationships |
-| Sigmoid | tanh(alpha * x . y + c) | Neural network-like mappings |
+| RBF (Gaussian) | $\exp(-\gamma \lVert x - y \rVert^2)$ | 大多数 nonlinear data、smooth manifolds |
+| Polynomial | $(x \cdot y + c)^d$ | Polynomial relationships |
+| Sigmoid | $\tanh(\alpha x \cdot y + c)$ | Neural network-like mappings |
 
 何时使用 kernel PCA 而不是 standard PCA：
 
 | Criterion | Standard PCA | Kernel PCA |
 |-----------|-------------|------------|
 | Data structure | Linear subspace | Nonlinear manifold |
-| Speed | O(min(n^2 d, d^2 n)) | O(n^2 d + n^3) |
+| Speed | $O(\min(n^2 d, d^2 n))$ | $O(n^2 d + n^3)$ |
 | Interpretability | Components are linear combinations of features | Components lack direct feature interpretation |
-| Scalability | Works on millions of samples | Kernel matrix is n x n, memory-limited |
+| Scalability | Works on millions of samples | Kernel matrix is $n \times n$, memory-limited |
 | Reconstruction | Direct inverse transform | Requires pre-image approximation |
 
 经典例子：2D 中的 concentric circles。两圈点，一圈在另一圈内部。标准 PCA 会把两者投影到同一条线上，这对 classification 没用。带 RBF kernel 的 Kernel PCA 会把内圈和外圈映射到不同区域，使它们 linearly separable。
@@ -165,22 +165,24 @@ Kernel PCA 在由 kernel function 诱导出的高维 feature space 中应用 PCA
 你的 dimensionality reduction 有多好？你把 784 维压缩到了 50 维。你丢失了什么？
 
 测量 reconstruction error：
-1. 将数据投影到 k 维：X_reduced = X @ W_k
-2. 重建：X_hat = X_reduced @ W_k^T
-3. 计算 MSE：mean((X - X_hat)^2)
+1. 将数据投影到 $k$ 维：$X_{\text{reduced}} = X W_k$
+2. 重建：$\hat{X} = X_{\text{reduced}} W_k^T$
+3. 计算 MSE：$\text{mean}((X - \hat{X})^2)$
 
 对于 PCA，reconstruction error 与 explained variance 有清晰关系：
 
-```
-Reconstruction error = sum of eigenvalues NOT included
-Total variance = sum of ALL eigenvalues
-Fraction lost = (sum of dropped eigenvalues) / (sum of all eigenvalues)
+```math
+\begin{aligned}
+\text{重建误差} &= \text{未保留的特征值之和} \\
+\text{总方差} &= \text{全部特征值之和} \\
+\text{损失比例} &= \frac{\text{丢弃的特征值之和}}{\text{全部特征值之和}}
+\end{aligned}
 ```
 
 每个 component 的 explained variance ratio 是：
 
-```
-explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
+```math
+\text{explained\_ratio}_k = \frac{\text{eigenvalue}_k}{\sum \text{所有特征值}}
 ```
 
 把 cumulative explained variance 对 components 数量作图，会得到 "elbow" curve。合适的 components 数量位于：
@@ -188,7 +190,7 @@ explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
 - Cumulative variance 跨过你的 threshold 的位置（通常是 0.90 或 0.95）
 - Downstream task performance 进入平台期的位置
 
-Reconstruction error 不只用于选择 k。你可以把它用于 anomaly detection：reconstruction error 高的样本是 outliers，它们不符合学习到的 subspace。这是 production systems 中基于 PCA 的 anomaly detection 的基础。
+Reconstruction error 不只用于选择 $k$。你可以把它用于 anomaly detection：reconstruction error 高的样本是 outliers，它们不符合学习到的 subspace。这是 production systems 中基于 PCA 的 anomaly detection 的基础。
 
 
 ```figure
@@ -361,8 +363,8 @@ Performance 会在远小于 784 维时进入平台期。这个平台期就是你
 | Curse of dimensionality | "Too many features" | 随着维度增长，距离、体积和数据密度都会表现得反直觉。Models 需要指数级更多的数据来补偿。 |
 | PCA | "Reduce dimensions" | 旋转你的坐标系，使各轴与 maximum variance 的方向对齐，然后丢弃 low-variance axes。 |
 | Principal component | "An important direction" | Covariance matrix 的一个 eigenvector。Feature space 中数据变化最大的方向。 |
-| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 k 个 ratios 求和，就能看到 k 个 components 保留了多少信息。 |
-| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry (i,j) 衡量 feature i 和 feature j 如何共同变化。Diagonal entries 是各自的 variances。 |
+| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 $k$ 个 ratios 求和，就能看到 $k$ 个 components 保留了多少信息。 |
+| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry $(i,j)$ 衡量 feature $i$ 和 feature $j$ 如何共同变化。Diagonal entries 是各自的 variances。 |
 | t-SNE | "That cluster plot" | 一种 nonlinear 方法，通过保留 pairwise neighborhood probabilities 将高维数据映射到 2D。适合可视化，不适合 preprocessing。 |
 | UMAP | "Faster t-SNE" | 一种基于 topological data analysis 的 nonlinear 方法。既保留 local structure，也保留部分 global structure。比 t-SNE 更容易扩展。 |
 | Perplexity | "A t-SNE knob" | 控制每个点考虑的有效邻居数量。低 perplexity 聚焦非常 local 的结构。高 perplexity 捕获更宽泛的模式。 |
