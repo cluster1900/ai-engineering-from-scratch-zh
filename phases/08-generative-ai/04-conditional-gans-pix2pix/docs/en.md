@@ -8,33 +8,35 @@
 **Time:** ~75 分钟
 
 ## 问题
-无条件 GAN 会采样任意人脸。做 demo 有用，进 production 没用。你想要的是：*把 sketch 映射成 photo*、*把 map 映射成 aerial photo*、*把 daytime scene 映射成 nighttime*、*给 grayscale image 上色*。在所有这些任务中，你会得到一个 input image `x`，并且必须输出带有某种 semantic correspondence 的 `y`。每个 `x` 都可能对应许多合理的 `y`。Mean-squared error 会把它们压平成糊状结果。Adversarial loss 不会，因为“看起来真实”是尖锐的。
+无条件 GAN 会采样任意人脸。做 demo 有用，进 production 没用。你想要的是：*把 sketch 映射成 photo*、*把 map 映射成 aerial photo*、*把 daytime scene 映射成 nighttime*、*给 grayscale image 上色*。在所有这些任务中，你会得到一个 input image $x$，并且必须输出带有某种 semantic correspondence 的 $y$。每个 $x$ 都可能对应许多合理的 $y$。Mean-squared error 会把它们压平成糊状结果。Adversarial loss 不会，因为“看起来真实”是尖锐的。
 
-Conditional GAN (Mirza & Osindero, 2014) 把 condition `c` 作为输入加入 `G` 和 `D`。Pix2Pix (Isola et al., 2017) 对此做了专门化：condition 是完整 input image，generator 是 U-Net，discriminator 是 *patch-based* classifier (PatchGAN)，Loss 是 adversarial + L1。即使在 2026 年，这套配方在狭窄的 image-to-image domain 上仍然胜过从零训练的 text-to-image model，因为它训练在 *paired data* 上 —— 你拥有的正是所需信号。
+Conditional GAN (Mirza & Osindero, 2014) 把 condition $c$ 作为输入加入 $G$ 和 $D$。Pix2Pix (Isola et al., 2017) 对此做了专门化：condition 是完整 input image，generator 是 U-Net，discriminator 是 *patch-based* classifier (PatchGAN)，Loss 是 adversarial + L1。即使在 2026 年，这套配方在狭窄的 image-to-image domain 上仍然胜过从零训练的 text-to-image model，因为它训练在 *paired data* 上 —— 你拥有的正是所需信号。
 
 ## 概念
 ![Pix2Pix: U-Net generator, PatchGAN discriminator](../assets/pix2pix.svg)
 
-**Conditional G.** `G(x, z) → y`。在 Pix2Pix 中，`z` 是 G 内部的 dropout（没有 input noise —— Isola 发现显式 noise 会被忽略）。
+**Conditional G.** $G(x, z) \to y$。在 Pix2Pix 中，$z$ 是 G 内部的 dropout（没有 input noise —— Isola 发现显式 noise 会被忽略）。
 
-**Conditional D.** `D(x, y) → [0, 1]`。输入是 *pair*（condition, output）。这是关键差异：D 必须判断 `y` 是否与 `x` 一致，而不只是判断 `y` 看起来是否真实。
+**Conditional D.** $D(x, y) \to [0, 1]$。输入是 *pair*（condition, output）。这是关键差异：D 必须判断 $y$ 是否与 $x$ 一致，而不只是判断 $y$ 看起来是否真实。
 
 **U-Net generator.** 带有跨 bottleneck skip connections 的 encoder-decoder。对于 input 和 output 共享 low-level structure（edges、silhouette）的任务至关重要。没有这些 skips，high-frequency detail 会消失。
 
-**PatchGAN discriminator.** D 不输出单个 real/fake score，而是输出一个 `N×N` grid，其中每个 cell 判断约 70×70 pixels 的 receptive field。然后取平均。这是一个 Markov random field 假设：真实感是局部的。训练快得多，参数更少，输出更锐利。
+**PatchGAN discriminator.** D 不输出单个 real/fake score，而是输出一个 $N \times N$ grid，其中每个 cell 判断约 70×70 pixels 的 receptive field。然后取平均。这是一个 Markov random field 假设：真实感是局部的。训练快得多，参数更少，输出更锐利。
 
 **Loss.**
 
-```
-loss_G = -log D(x, G(x)) + λ · ||y - G(x)||_1
-loss_D = -log D(x, y) - log (1 - D(x, G(x)))
+```math
+\begin{aligned}
+\text{loss}_G &= -\log D(x, G(x)) + \lambda \cdot \lVert y - G(x) \rVert_1 \\
+\text{loss}_D &= -\log D(x, y) - \log(1 - D(x, G(x)))
+\end{aligned}
 ```
 
-L1 项稳定训练，并推动 G 接近已知 target。L1 比 L2 产生更锐利的 edges（medians，而不是 means）。`λ = 100` 是 Pix2Pix 默认值。
+L1 项稳定训练，并推动 G 接近已知 target。L1 比 L2 产生更锐利的 edges（medians，而不是 means）。$\lambda = 100$ 是 Pix2Pix 默认值。
 
 ## CycleGAN — when you don't have pairs
 
-Pix2Pix 需要 paired `(x, y)` data。CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求：*cycle consistency* loss。两个 generators：`G: X → Y` 和 `F: Y → X`。训练它们，使 `F(G(x)) ≈ x` 且 `G(F(y)) ≈ y`。这让你可以在没有 paired examples 的情况下，把 horses 转成 zebras、summer 转成 winter。
+Pix2Pix 需要 paired $(x, y)$ data。CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求：*cycle consistency* loss。两个 generators：$G: X \to Y$ 和 $F: Y \to X$。训练它们，使 $F(G(x)) \approx x$ 且 $G(F(y)) \approx y$。这让你可以在没有 paired examples 的情况下，把 horses 转成 zebras、summer 转成 winter。
 
 在 2026 年，unpaired image-to-image 大多通过 diffusion（ControlNet、IP-Adapter）完成，而不是 CycleGAN，但 cycle-consistency 思想仍存在于几乎每一篇 unpaired domain adaptation 论文中。
 
@@ -44,7 +46,7 @@ gx-patchgan
 ```
 
 ## 构建它
-`code/main.py` 在 1-D data 上实现了一个微型 conditional GAN。condition `c` 是 class label（0 或 1）。任务：为给定 class 生成一个来自 conditional distribution 的 sample。
+`code/main.py` 在 1-D data 上实现了一个微型 conditional GAN。condition $c$ 是 class label（0 或 1）。任务：为给定 class 生成一个来自 conditional distribution 的 sample。
 
 ### 步骤 1: 将 condition 追加到 G 和 D 的输入
 
@@ -81,9 +83,9 @@ for c in [0, 1]:
 
 ## 陷阱
 - **Condition 被忽略。** G 学会 marginalize，D 从不惩罚，因为 condition signal 太弱。修复：更强地 condition D（early layer，而不只是 late），使用 projection discriminator (Miyato & Koyama 2018)。
-- **L1 weight 过低。** G 漂移到任意看起来真实的 outputs，而不是忠实的 ones。Pix2Pix-style 任务从 λ≈100 开始。
-- **L1 weight 过高。** G 产生模糊 outputs，因为 L1 仍然是 L_p norm。训练稳定后逐步 anneal down。
-- **D 中 ground-truth leakage。** 将 `(x, y)` concat 作为 D input，而不只是 `y`。否则 D 无法检查一致性。
+- **L1 weight 过低。** G 漂移到任意看起来真实的 outputs，而不是忠实的 ones。Pix2Pix-style 任务从 $\lambda \approx 100$ 开始。
+- **L1 weight 过高。** G 产生模糊 outputs，因为 L1 仍然是 $L_p$ norm。训练稳定后逐步 anneal down。
+- **D 中 ground-truth leakage。** 将 $(x, y)$ concat 作为 D input，而不只是 $y$。否则 D 无法检查一致性。
 - **每个 class 的 mode collapse。** 每个 class 都可能独立 collapse。运行 class-conditional diversity checks。
 
 ## 使用它

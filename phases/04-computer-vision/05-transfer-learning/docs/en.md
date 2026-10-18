@@ -97,8 +97,8 @@ backbone.heads.head = nn.Linear(..., num_classes)                       # torchv
 
 这是现代 fine-tuning（BEiT、DINOv2、ViT-B fine-tunes）中使用的 discriminative LR 的更平滑版本。不是把 layers 分到 stages，而是让每一层的 LR 都比它上一层略小：
 
-```
-lr_layer_k = base_lr * decay^(L - k)
+```math
+\text{lr\_layer}_k = \text{base\_lr} \cdot \text{decay}^{L - k}
 ```
 
 当 decay = 0.75 且 L = 12 transformer blocks 时，第一个 block 的训练 LR 是 head LR 的 `0.75^11 ≈ 0.04x`。这对 transformer fine-tunes 比对 CNNs 更重要；对于 CNNs，stage-grouped LRs 通常已经足够。

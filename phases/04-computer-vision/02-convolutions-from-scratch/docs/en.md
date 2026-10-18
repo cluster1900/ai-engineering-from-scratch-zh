@@ -71,8 +71,8 @@ The kernel slides across every valid 3 x 3 window. Output Y is 3 x 3:
 
 给定输入空间尺寸 `H`、kernel size `K`、padding `P`、stride `S`：
 
-```
-H_out = floor( (H - K + 2P) / S ) + 1
+```math
+H_{\text{out}} = \left\lfloor \frac{H - K + 2P}{S} \right\rfloor + 1
 ```
 
 记住它。你会在每个 architecture 中计算它几十次。
@@ -85,7 +85,7 @@ H_out = floor( (H - K + 2P) / S ) + 1
 | Pool 2x2 | 32 | 2 | 0 | 2 | 16 |
 | 大 receptive field | 32 | 7 | 3 | 2 | 16 |
 
-"Same padding" 的意思是选择 P，使得当 S == 1 时 H_out == H。对于奇数 K，也就是 P = (K - 1) / 2。这就是为什么 3x3 kernels 占主导地位：它们是仍然拥有中心点的最小奇数 kernel。
+"Same padding" 的意思是选择 $P$，使得当 $S = 1$ 时 $H_{\text{out}} = H$。对于奇数 $K$，也就是 $P = (K - 1) / 2$。这就是为什么 3x3 kernels 占主导地位：它们是仍然拥有中心点的最小奇数 kernel。
 
 ### Padding
 

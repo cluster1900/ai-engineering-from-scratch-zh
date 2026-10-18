@@ -8,7 +8,7 @@
 **Time:** ~90 分钟
 
 ## 学习目标
-- 从零实现 DFT，并用 O(N log N) 的 Cooley-Tukey FFT 验证它
+- 从零实现 DFT，并用 $O(N \log N)$ 的 Cooley-Tukey FFT 验证它
 - 理解 frequency coefficients：从 signal 中提取 amplitude、phase 和 power spectrum
 - 应用 convolution theorem，通过 FFT multiplication 执行 convolution
 - 将 Fourier frequency decomposition 与 transformer positional encodings 和 CNN convolution layers 联系起来
@@ -25,67 +25,64 @@ Fourier transform 会把数据从 time domain 转换到 frequency domain。它�
 ## 概念
 ### The DFT definition
 
-给定 N 个 samples x[0], x[1], ..., x[N-1]，Discrete Fourier Transform 会生成 N 个 frequency coefficients X[0], X[1], ..., X[N-1]：
+给定 $N$ 个 samples $x[0], x[1], \ldots, x[N-1]$，Discrete Fourier Transform 会生成 $N$ 个 frequency coefficients $X[0], X[1], \ldots, X[N-1]$：
 
-```
-X[k] = sum_{n=0}^{N-1} x[n] * e^(-2*pi*i*k*n/N)
-
-for k = 0, 1, ..., N-1
+```math
+X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-每个 X[k] 都是 complex number。它的 magnitude |X[k]| 表示 frequency k 的 amplitude。它的 phase angle(X[k]) 表示该 frequency 的 phase offset。
+每个 $X[k]$ 都是 complex number。它的 magnitude $\lvert X[k] \rvert$ 表示 frequency $k$ 的 amplitude。它的 phase $\angle X[k]$ 表示该 frequency 的 phase offset。
 
-关键洞见：`e^(-2*pi*i*k*n/N)` 是一个以 frequency k 旋转的 phasor。DFT 计算的是 signal 与 N 个等间隔 frequencies 中每一个的 correlation。如果 signal 在 frequency k 上包含 energy，correlation 就很大。否则，它接近零。
+关键洞见：$e^{-2\pi i k n/N}$ 是一个以 frequency $k$ 旋转的 phasor。DFT 计算的是 signal 与 $N$ 个等间隔 frequencies 中每一个的 correlation。如果 signal 在 frequency $k$ 上包含 energy，correlation 就很大。否则，它接近零。
 
 ### 每个系数的含义
 
-**X[0]: DC component。** 这是所有 samples 的总和，与 mean 成比例。它表示 signal 的 constant（zero-frequency）offset。
+**$X[0]$: DC component。** 这是所有 samples 的总和，与 mean 成比例。它表示 signal 的 constant（zero-frequency）offset。
 
+```math
+X[0] = \sum_{n=0}^{N-1} x[n] \, e^0 = \text{全部 samples 之和}
 ```
-X[0] = sum_{n=0}^{N-1} x[n] * e^0 = sum of all samples
-```
 
-**X[k] for 1 <= k <= N/2: positive frequencies。** X[k] 表示每 N 个 samples 中 k 个 cycles 的 frequency。k 越大，frequency 越高（oscillation 越快）。
+**$X[k]$ for $1 \le k \le N/2$: positive frequencies。** $X[k]$ 表示每 $N$ 个 samples 中 $k$ 个 cycles 的 frequency。$k$ 越大，frequency 越高（oscillation 越快）。
 
-**X[N/2]: Nyquist frequency。** 这是 N 个 samples 能表示的最高 frequency。超过这个 frequency，就会出现 aliasing，也就是 high frequencies 伪装成 low ones。
+**$X[N/2]$: Nyquist frequency。** 这是 $N$ 个 samples 能表示的最高 frequency。超过这个 frequency，就会出现 aliasing，也就是 high frequencies 伪装成 low ones。
 
-**X[k] for N/2 < k < N: negative frequencies。** 对于 real-valued signals，X[N-k] = conj(X[k])。negative frequencies 是 positive ones 的镜像。这就是为什么有用信息位于前 N/2 + 1 个 coefficients 中。
+**$X[k]$ for $N/2 < k < N$: negative frequencies。** 对于 real-valued signals，$X[N-k] = \overline{X[k]}$。negative frequencies 是 positive ones 的镜像。这就是为什么有用信息位于前 $N/2 + 1$ 个 coefficients 中。
 
 ### Inverse DFT
 
 Inverse DFT 会从 frequency coefficients 重建原始 signal：
 
-```
-x[n] = (1/N) * sum_{k=0}^{N-1} X[k] * e^(2*pi*i*k*n/N)
-
-for n = 0, 1, ..., N-1
+```math
+x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X[k] \, e^{2\pi i k n/N} \qquad \text{其中 } n = 0, 1, \ldots, N-1
 ```
 
-它与 forward DFT 的唯一区别是：exponent 中的符号为正（不是负），并且有一个 1/N normalization factor。
+它与 forward DFT 的唯一区别是：exponent 中的符号为正（不是负），并且有一个 $1/N$ normalization factor。
 
 Inverse DFT 是 perfect reconstruction。不会丢失任何信息。你可以从 time domain 到 frequency domain，再返回来，而不产生任何误差。DFT 是一种 change of basis，也就是用不同的 coordinate system 重新表达同一份信息。
 
 ### The FFT: making it fast
 
-如上定义的 DFT 是 O(N^2)：对 N 个 output coefficients 中的每一个，都要对 N 个 input samples 求和。当 N = 1 million 时，这就是 10^12 次 operations。
+如上定义的 DFT 是 $O(N^2)$：对 $N$ 个 output coefficients 中的每一个，都要对 $N$ 个 input samples 求和。当 $N$ = 1 million 时，这就是 $10^{12}$ 次 operations。
 
-Fast Fourier Transform (FFT) 会以 O(N log N) 计算同样的结果。当 N = 1 million 时，这大约是 2000 万次 operations，而不是一万亿次。这让 frequency analysis 变得可行。
+Fast Fourier Transform (FFT) 会以 $O(N \log N)$ 计算同样的结果。当 $N$ = 1 million 时，这大约是 2000 万次 operations，而不是一万亿次。这让 frequency analysis 变得可行。
 
 Cooley-Tukey algorithm（最常见的 FFT）使用 divide and conquer：
 
 1. 将 signal 拆分为 even-indexed 和 odd-indexed samples。
 2. 递归计算每一半的 DFT。
-3. 使用 "twiddle factors" e^(-2*pi*i*k/N) 合并两个 half-size DFTs。
+3. 使用 "twiddle factors" $e^{-2\pi i k/N}$ 合并两个 half-size DFTs。
 
+```math
+\begin{aligned}
+X[k] &= E[k] + e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\
+X[k + N/2] &= E[k] - e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\[6pt]
+\text{其中 } E &= \text{偶数索引 samples 的 DFT} \\
+O &= \text{奇数索引 samples 的 DFT}
+\end{aligned}
 ```
-X[k] = E[k] + e^(-2*pi*i*k/N) * O[k]          for k = 0, ..., N/2 - 1
-X[k + N/2] = E[k] - e^(-2*pi*i*k/N) * O[k]    for k = 0, ..., N/2 - 1
 
-where E = DFT of even-indexed samples
-      O = DFT of odd-indexed samples
-```
-
-这种 symmetry 意味着递归的每一层执行 O(N) work，并且有 log2(N) 层。总计：O(N log N)。
+这种 symmetry 意味着递归的每一层执行 $O(N)$ work，并且有 $\log_2(N)$ 层。总计：$O(N \log N)$。
 
 ```mermaid
 graph TD
@@ -107,23 +104,27 @@ FFT 要求 signal length 是 2 的幂。在实践中，signals 通常会 zero-pa
 
 ### Spectral analysis
 
-**power spectrum** 是 |X[k]|^2，也就是每个 frequency coefficient 的 squared magnitude。它显示每个 frequency 上有多少 energy。
+**power spectrum** 是 $\lvert X[k] \rvert^2$，也就是每个 frequency coefficient 的 squared magnitude。它显示每个 frequency 上有多少 energy。
 
-**phase spectrum** 是 angle(X[k])，也就是每个 frequency 的 phase offset。对于大多数 analysis tasks，你关心的是 power spectrum，并会忽略 phase。
+**phase spectrum** 是 $\angle X[k]$，也就是每个 frequency 的 phase offset。对于大多数 analysis tasks，你关心的是 power spectrum，并会忽略 phase。
 
-```
-Power at frequency k:  P[k] = |X[k]|^2 = X[k].real^2 + X[k].imag^2
-Phase at frequency k:  phi[k] = atan2(X[k].imag, X[k].real)
+```math
+\begin{aligned}
+\text{频率 } k \text{ 处的 Power：} \quad P[k] &= |X[k]|^2 = \mathop{\mathrm{Re}}(X[k])^2 + \mathop{\mathrm{Im}}(X[k])^2 \\
+\text{频率 } k \text{ 处的 Phase：} \quad \phi[k] &= \mathop{\mathrm{atan2}}(\mathop{\mathrm{Im}}(X[k]), \mathop{\mathrm{Re}}(X[k]))
+\end{aligned}
 ```
 
 ### Frequency resolution
 
-DFT 的 frequency resolution 取决于 samples 数量 N 和 sampling rate fs。
+DFT 的 frequency resolution 取决于 samples 数量 $N$ 和 sampling rate $f_s$。
 
-```
-Frequency of bin k:      f_k = k * fs / N
-Frequency resolution:    delta_f = fs / N
-Maximum frequency:       f_max = fs / 2  (Nyquist)
+```math
+\begin{aligned}
+\text{bin } k \text{ 对应的频率：} \quad & f_k = k \cdot f_s / N \\
+\text{频率分辨率：} \quad & \Delta f = f_s / N \\
+\text{最高频率：} \quad & f_{\max} = f_s / 2 \quad \text{(Nyquist)}
+\end{aligned}
 ```
 
 要分辨两个非常接近的 frequencies，你需要更多 samples。要捕获 high frequencies，你需要更高的 sampling rate。
@@ -134,20 +135,21 @@ Maximum frequency:       f_max = fs / 2  (Nyquist)
 
 **time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。**
 
-```
-x * h = IFFT(FFT(x) . FFT(h))
-
-where * is convolution and . is element-wise multiplication
+```math
+\begin{aligned}
+& x * h = \text{IFFT}(\text{FFT}(x) \cdot \text{FFT}(h)) \\[4pt]
+& \text{其中 } * \text{ 表示 convolution，} \cdot \text{ 表示 element-wise multiplication}
+\end{aligned}
 ```
 
 为什么这很重要：
 
-- 两个长度为 N 和 M 的 signals 直接 convolution 需要 O(N*M) operations。
-- 基于 FFT 的 convolution 需要 O(N log N)：transform 两者、multiply、transform back。
+- 两个长度为 $N$ 和 $M$ 的 signals 直接 convolution 需要 $O(NM)$ operations。
+- 基于 FFT 的 convolution 需要 $O(N \log N)$：transform 两者、multiply、transform back。
 - 对于 large kernels，FFT convolution 会快得多。
 - 这正是具有 large receptive fields 的 convolutional layers 中发生的事情。
 
-注意：DFT 计算的是 circular convolution（signal 会 wrap around）。对于 linear convolution（无 wraparound），请在计算前将两个 signals zero-pad 到长度 N + M - 1。
+注意：DFT 计算的是 circular convolution（signal 会 wrap around）。对于 linear convolution（无 wraparound），请在计算前将两个 signals zero-pad 到长度 $N + M - 1$。
 
 ```mermaid
 graph LR
@@ -167,7 +169,7 @@ graph LR
 
 ### Windowing
 
-DFT 假设 signal 是 periodic 的，也就是把 N 个 samples 视为一个无限重复 signal 的一个周期。如果 signal 的起点和终点不是同一个值，就会在边界产生 discontinuity，并表现为虚假的 high-frequency content。这称为 spectral leakage。
+DFT 假设 signal 是 periodic 的，也就是把 $N$ 个 samples 视为一个无限重复 signal 的一个周期。如果 signal 的起点和终点不是同一个值，就会在边界产生 discontinuity，并表现为虚假的 high-frequency content。这称为 spectral leakage。
 
 Windowing 会在计算 DFT 前将 signal 两端 taper 到零，从而减少 leakage。
 
@@ -180,9 +182,11 @@ Windowing 会在计算 DFT 前将 signal 两端 taper 到零，从而减少 leak
 | Hamming | Modified cosine | 中等 | 更低 (-42 dB) | Audio processing、speech analysis |
 | Blackman | Triple cosine | 宽 | 非常低 (-58 dB) | 当 side lobe suppression 至关重要时 |
 
-```
-Hann window:    w[n] = 0.5 * (1 - cos(2*pi*n / (N-1)))
-Hamming window: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
+```math
+\begin{aligned}
+\text{Hann window：} \quad & w[n] = 0.5 \left(1 - \cos\frac{2\pi n}{N-1}\right) \\
+\text{Hamming window：} \quad & w[n] = 0.54 - 0.46 \cos\frac{2\pi n}{N-1}
+\end{aligned}
 ```
 
 在 DFT 之前，将 window 与 signal 做 element-wise multiplication 来应用 window：`X = DFT(x * w)`。
@@ -191,13 +195,13 @@ Hamming window: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
 
 | Property | Time Domain | Frequency Domain |
 |----------|-------------|-----------------|
-| Linearity | a*x + b*y | a*X + b*Y |
-| Time shift | x[n - k] | X[f] * e^(-2*pi*i*f*k/N) |
-| Frequency shift | x[n] * e^(2*pi*i*f0*n/N) | X[f - f0] |
-| Convolution | x * h | X * H (pointwise) |
-| Multiplication | x * h (pointwise) | X * H (circular convolution, scaled by 1/N) |
-| Parseval's theorem | sum \|x[n]\|^2 | (1/N) * sum \|X[k]\|^2 |
-| Conjugate symmetry (real input) | x[n] real | X[k] = conj(X[N-k]) |
+| Linearity | $ax + by$ | $aX + bY$ |
+| Time shift | $x[n - k]$ | $X[f] e^{-2\pi i f k/N}$ |
+| Frequency shift | $x[n] e^{2\pi i f_0 n/N}$ | $X[f - f_0]$ |
+| Convolution | $x * h$ | $X \cdot H$ (pointwise) |
+| Multiplication | $x \cdot h$ (pointwise) | $X * H$ (circular convolution, scaled by $1/N$) |
+| Parseval's theorem | $\sum \lvert x[n] \rvert^2$ | $\frac{1}{N} \sum \lvert X[k] \rvert^2$ |
+| Conjugate symmetry (real input) | $x[n]$ real | $X[k] = \overline{X[N-k]}$ |
 
 Parseval's theorem 表示总 energy 在两个 domains 中相同。Energy 在 transform 过程中守恒。
 
@@ -205,18 +209,20 @@ Parseval's theorem 表示总 energy 在两个 domains 中相同。Energy 在 tra
 
 原始 Transformer 使用 sinusoidal positional encodings：
 
-```
-PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
-PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```math
+\begin{aligned}
+PE(pos, 2i) &= \sin\left(pos / 10000^{2i/d_{\text{model}}}\right) \\
+PE(pos, 2i+1) &= \cos\left(pos / 10000^{2i/d_{\text{model}}}\right)
+\end{aligned}
 ```
 
-每一对 dimensions (2i, 2i+1) 都以不同 frequency oscillate。frequencies 从高（dimension 0,1）到低（最后的 dimensions）按 geometric spacing 排列。这让每个 position 在所有 frequency bands 上都有唯一 pattern，类似于 Fourier coefficients 如何唯一识别一个 signal。
+每一对 dimensions $(2i, 2i+1)$ 都以不同 frequency oscillate。frequencies 从高（dimension 0,1）到低（最后的 dimensions）按 geometric spacing 排列。这让每个 position 在所有 frequency bands 上都有唯一 pattern，类似于 Fourier coefficients 如何唯一识别一个 signal。
 
 它提供的关键 properties：
 
 - **Uniqueness:** 任意两个 positions 都不会有相同 encoding。
-- **Bounded values:** sin 和 cos 始终在 [-1, 1] 内。
-- **Relative position:** position p+k 的 encoding 可以表示为 position p 处 encoding 的 linear function。model 可以学习关注 relative positions。
+- **Bounded values:** sin 和 cos 始终在 $[-1, 1]$ 内。
+- **Relative position:** position $p+k$ 的 encoding 可以表示为 position $p$ 处 encoding 的 linear function。model 可以学习关注 relative positions。
 
 ### Connection to CNNs
 
@@ -228,7 +234,7 @@ Convolution layer 通过在 signal 或 image 上滑动一个 learned filter（ke
 3. 在 frequency domain 中 multiply
 4. 对结果执行 IFFT
 
-标准 CNN 实现使用 direct convolution（对小型 3x3 kernels 更快）。但对于 large kernels 或 global convolution，基于 FFT 的方法会显著更快。一些 architectures（例如 FNet）完全用 FFT 替代 attention，在 O(N log N) 而非 O(N^2) complexity 下取得有竞争力的 accuracy。
+标准 CNN 实现使用 direct convolution（对小型 3x3 kernels 更快）。但对于 large kernels 或 global convolution，基于 FFT 的方法会显著更快。一些 architectures（例如 FNet）完全用 FFT 替代 attention，在 $O(N \log N)$ 而非 $O(N^2)$ complexity 下取得有竞争力的 accuracy。
 
 ### Spectrograms 和 Short-Time Fourier Transform
 
@@ -251,7 +257,7 @@ Spectrograms 是 audio ML models 的标准 input representation。Speech recogni
 
 ### Aliasing
 
-如果 signal 包含高于 fs/2（Nyquist frequency）的 frequencies，以 rate fs sampling 会产生 aliased copies。一个以 100 Hz sampling 的 90 Hz signal 看起来与 10 Hz signal 完全相同。仅凭 samples 无法区分它们。
+如果 signal 包含高于 $f_s/2$（Nyquist frequency）的 frequencies，以 rate $f_s$ sampling 会产生 aliased copies。一个以 100 Hz sampling 的 90 Hz signal 看起来与 10 Hz signal 完全相同。仅凭 samples 无法区分它们。
 
 ```
 Example:
@@ -270,7 +276,7 @@ Example:
 
 一个常见误解是：在 FFT 前对 signal 进行 zero-padding 会提升 frequency resolution。它不会。Zero-padding 只是在现有 frequency bins 之间插值，让 spectrum 看起来更平滑。但它无法揭示原始 samples 中不存在的 frequency detail。
 
-真正的 frequency resolution 只取决于 observation time T = N / fs。要分辨相差 delta_f 的两个 frequencies，你至少需要 T = 1 / delta_f 秒的数据。无论做多少 zero-padding，都无法改变这个 fundamental limit。
+真正的 frequency resolution 只取决于 observation time $T = N / f_s$。要分辨相差 $\Delta f$ 的两个 frequencies，你至少需要 $T = 1 / \Delta f$ 秒的数据。无论做多少 zero-padding，都无法改变这个 fundamental limit。
 
 
 ```figure
@@ -280,7 +286,7 @@ fourier-synthesis
 ## 构建它
 ### 步骤 1： DFT from scratch
 
-O(N^2) DFT 直接来自定义。
+$O(N^2)$ DFT 直接来自定义。
 
 ```python
 import math
@@ -304,7 +310,7 @@ def dft(x):
 
 ### 步骤 2： Inverse DFT
 
-结构相同，exponent 为正，并除以 N。
+结构相同，exponent 为正，并除以 $N$。
 
 ```python
 def idft(X):
@@ -420,32 +426,44 @@ spectrogram Matrix 的 shape 是 (n_frequencies, n_time_frames)。每一列都�
 ## 练习
 1. **Pure tone identification。** 创建一个 signal，其中包含一个未知 frequency（1 到 50 Hz 之间）的单个 sine wave，以 128 Hz sampling 1 秒。使用你的 DFT 识别 frequency。验证答案是否匹配。现在加入 standard deviation 为 0.5 的 Gaussian noise，并重复。noise 如何影响 spectrum？
 
-2. **FFT vs DFT verification。** 生成一个长度为 64 的 random signal。同时计算 DFT（O(N^2)）和 FFT。验证所有 coefficients 在 1e-10 以内匹配。在长度为 256、512、1024 和 2048 的 signals 上分别计时两个 functions。绘制 DFT time 与 FFT time 的 ratio。
+2. **FFT vs DFT verification。** 生成一个长度为 64 的 random signal。同时计算 DFT（$O(N^2){}$）和 FFT。验证所有 coefficients 在 1e-10 以内匹配。在长度为 256、512、1024 和 2048 的 signals 上分别计时两个 functions。绘制 DFT time 与 FFT time 的 ratio。
 
 3. **Convolution theorem proof by example。** 创建 signal x = [1, 2, 3, 4, 0, 0, 0, 0] 和 filter h = [1, 1, 1, 0, 0, 0, 0, 0]。直接计算它们的 circular convolution（nested loop）。然后通过 FFT 计算（transform、multiply、inverse transform）。验证结果匹配。现在通过适当 zero-padding 执行 linear convolution。
 
 4. **Windowing effects。** 创建一个 signal，它是 10 Hz 和 12 Hz（非常接近）两个 sine waves 的和。以 128 Hz sampling 1 秒。分别在无 window、Hann window 和 Hamming window 下计算 power spectrum。哪个 window 最容易区分两个 peaks？为什么？
 
-5. **Positional encoding analysis。** 为 d_model = 128 和 max_pos = 512 生成 sinusoidal positional encodings。对每一对 positions (p1, p2)，计算它们 encodings 的 dot product。说明 dot product 只依赖于 |p1 - p2|，而不依赖 absolute positions。随着 distance 增加，dot product 会发生什么？
+5. **Positional encoding analysis。** 为 d_model = 128 和 max_pos = 512 生成 sinusoidal positional encodings。对每一对 positions $(p_1, p_2)$，计算它们 encodings 的 dot product。说明 dot product 只依赖于 $\lvert p_1 - p_2 \rvert$，而不依赖 absolute positions。随着 distance 增加，dot product 会发生什么？
+
+### 提示
+
+**练习 1。** 在 1 秒内采样 128 次时，bin $k$ 对应 $k$ Hz，因此对于整数频率，bins 1 到 63 中最大值的索引就是该频率。选择一个整数 Hz 的频率。位于两个 bins 之间的频率会扩散到相邻 bins，峰值只能给出最近的 bin。使用 `generate_signal` 和 `magnitude_spectrum`。加入噪声后，检查峰值是否仍位于同一个 bin，而其他 bins 的值有所上升。
+
+**练习 2。** 使用 2 的幂次长度，因为 `fft` 会将信号对半拆分。对全部 coefficients 检查 `max(abs(a - b))`。耗时之比应大致按 $N / \log_2 N$ 增长。
+
+**练习 3。** 对 circular convolution，手算 $n$ = 0、1、2 时的 $y[n] = \sum_k h[k] x[(n-k) \bmod 8]$，并比较 `convolve_direct` 和 `convolve_fft` 的前三个值。Linear convolution 的长度是 4 + 3 - 1 = 6，因此先检查长度 8 是否已经足够。
+
+**练习 4。** 使用 `hann_window`、`hamming_window`、`apply_window` 和 `power_spectrum`，并统计 9 到 13 Hz 之间有多少个分离的峰。10 Hz 和 12 Hz 在 1 秒内都恰好完成整数个周期，因此不加 window 可能看起来最好。换成 10.5 Hz 和 12.5 Hz 重复实验，观察 window 能减少的 spectral leakage。
+
+**练习 5。** 使用 `positional_encoding(pos, 128)` 计算每个 encoding。比较位置 (0, 10) 的 dot product 和位置 (100, 110) 的 dot product：两者的差必须在约 1e-10 以内。然后固定一个 $p_1$，绘制 dot product 随 $\lvert p_1 - p_2 \rvert$ 变化的曲线。
 
 ## 关键术语
 | Term | What it means |
 |------|---------------|
-| DFT (Discrete Fourier Transform) | 将 N 个 time-domain samples 转换为 N 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
-| FFT (Fast Fourier Transform) | 用于计算 DFT 的 O(N log N) algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
-| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 1/N scaling |
-| Frequency bin | DFT output 中的每个 index k 表示 frequency k*fs/N Hz。"bin" 是离散的 frequency slot |
-| DC component | X[0]，zero-frequency coefficient。与 signal mean 成比例 |
-| Nyquist frequency | fs/2，在 sampling rate fs 下可表示的最大 frequency。高于它的 frequencies 会 alias |
-| Power spectrum | \|X[k]\|^2，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
-| Phase spectrum | angle(X[k])，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
+| DFT (Discrete Fourier Transform) | 将 $N$ 个 time-domain samples 转换为 $N$ 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
+| FFT (Fast Fourier Transform) | 用于计算 DFT 的 $O(N \log N)$ algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
+| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 $1/N$ scaling |
+| Frequency bin | DFT output 中的每个 index $k$ 表示 frequency $k f_s/N$ Hz。"bin" 是离散的 frequency slot |
+| DC component | $X[0]$，zero-frequency coefficient。与 signal mean 成比例 |
+| Nyquist frequency | $f_s/2$，在 sampling rate $f_s$ 下可表示的最大 frequency。高于它的 frequencies 会 alias |
+| Power spectrum | $\lvert X[k] \rvert^2$，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
+| Phase spectrum | $\angle X[k]$，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
 | Spectral leakage | 将 non-periodic signal 当作 periodic 处理导致的虚假 frequency content。可通过 windowing 减少 |
 | Window function | 在 DFT 前应用的 tapering function（Hann、Hamming、Blackman），用于减少 spectral leakage |
-| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential e^(-2*pi*i*k/N) |
+| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential $e^{-2\pi i k/N}$ |
 | Convolution theorem | time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。它是 signal processing 和 CNNs 的基础 |
 | Circular convolution | signal 会 wrap around 的 convolution。这是 DFT 自然计算的内容 |
 | Linear convolution | 没有 wraparound 的标准 convolution。通过在 DFT 前 zero-padding 实现 |
-| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。sum \|x[n]\|^2 = (1/N) sum \|X[k]\|^2 |
+| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。$\sum \lvert x[n] \rvert^2 = \frac{1}{N} \sum \lvert X[k] \rvert^2$ |
 | Aliasing | 当 sampling rate 不足时，高于 Nyquist 的 frequencies 表现为较低 frequencies |
 
 ## 延伸阅读

@@ -99,6 +99,14 @@ git push origin my-progress
 2. 创建一个 `.gitignore`，排除 model checkpoint files（`.pt`、`.pth`、`.safetensors`）
 3. 用 `git log --oneline` 查看这个 repo 的 commit history，并阅读 lessons 是如何被添加的
 
+### 提示
+
+**练习 1。** 在 GitHub 上点击 Fork，再用 `git clone` 克隆你自己的 fork 地址。运行 `git push -u origin my-progress` 后，在 GitHub 上打开你的 fork，确认分支列表中有 `my-progress`，且包含你的文件。
+
+**练习 2。** 在仓库根目录的 `.gitignore` 文件中为每个扩展名添加一条模式，例如 `*.pt`。为各个扩展名创建一个空文件，然后运行 `git status`；这些文件都不应出现在未跟踪文件列表中。
+
+**练习 3。** 运行 `git log --oneline`，再运行 `git log --oneline -- phases/00-setup-and-tooling`，只显示修改过本 phase 的提交。选择一个提交，运行 `git show --stat <hash>`，查看它添加了哪些课程文件。
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

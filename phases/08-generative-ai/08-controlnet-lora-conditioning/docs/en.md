@@ -39,15 +39,15 @@ features += weight_a * control_a(depth) + weight_b * control_b(pose)
 
 ### LoRA (Hu et al., 2021)
 
-对于模型中任意 linear layer `W ∈ R^{d×d}`，冻结 `W` 并添加一个 low-rank delta：
+对于模型中任意 linear layer $W \in \mathbb{R}^{d \times d}$，冻结 $W$ 并添加一个 low-rank delta：
 
+```math
+W' = W + \Delta W, \quad \Delta W = B A, \quad A \in \mathbb{R}^{r \times d}, \quad B \in \mathbb{R}^{d \times r}
 ```
-W' = W + ΔW,  ΔW = B @ A,  A ∈ R^{r×d},  B ∈ R^{d×r}
-```
 
-其中 `r << d`。对 attention 来说，rank 4-16 是标准配置；对重度 fine-tune 来说，rank 64-128 更常见。新增参数数量是 `2 · d · r`，而不是 `d²`。对于 `d=640` 的 SDXL attention，`r=16` 时每个 adapter 只有 20k 参数，而不是 410k，减少了 20x。放到整个模型上，一个 LoRA 通常是 20-200MB，而 base 是 5GB。
+其中 $r \ll d$。对 attention 来说，rank 4-16 是标准配置；对重度 fine-tune 来说，rank 64-128 更常见。新增参数数量是 $2 \cdot d \cdot r$，而不是 $d^2$。对于 $d=640$ 的 SDXL attention，$r=16$ 时每个 adapter 只有 20k 参数，而不是 410k，减少了 20x。放到整个模型上，一个 LoRA 通常是 20-200MB，而 base 是 5GB。
 
-在 inference 时，你可以缩放 LoRA：`W' = W + α · B @ A`。`α = 0.5-1.5` 很常见。多个 LoRA 会以加法方式叠加（通常需要注意它们会以非线性方式相互影响）。
+在 inference 时，你可以缩放 LoRA：$W' = W + \alpha \cdot B A$。$\alpha = 0.5\text{-}1.5$ 很常见。多个 LoRA 会以加法方式叠加（通常需要注意它们会以非线性方式相互影响）。
 
 ### IP-Adapter (Ye et al., 2023)
 
@@ -75,7 +75,7 @@ v4-controlnet-zero
 
 `code/main.py` 在 1-D 上模拟这两种机制：
 
-1. **LoRA。** 一个 pretrained linear layer `W`。冻结它。训练一个 low-rank `B @ A`，使 `W + BA` 匹配目标 linear layer。展示 `r = 1` 足以完美学习一个 rank-1 correction。
+1. **LoRA。** 一个 pretrained linear layer $W$。冻结它。训练一个 low-rank $BA$，使 $W + BA$ 匹配目标 linear layer。展示 $r = 1$ 足以完美学习一个 rank-1 correction。
 
 2. **ControlNet-lite。** 一个 “frozen base” predictor，以及一个读取额外信号的 “side network”。side network 的输出由一个初始化为零的可学习标量 gate 控制（我们的 zero-conv 版本）。训练并观察 gate 逐步升高。
 
@@ -99,11 +99,11 @@ h = base(x) + gated
 
 ## 常见坑
 
-- **LoRA 过度缩放。** `α = 2` 或 `α = 3` 是一种常见的“让它更强”的 hack，但会产生过度风格化或损坏的输出。保持 `α ≤ 1.5`。
+- **LoRA 过度缩放。** $\alpha = 2$ 或 $\alpha = 3$ 是一种常见的“让它更强”的 hack，但会产生过度风格化或损坏的输出。保持 $\alpha \le 1.5$。
 - **ControlNet weight 冲突。** 同时使用 weight 1.0 的 Pose ControlNet 和 weight 1.0 的 Depth ControlNet 通常会过冲。权重总和 ≈ 1.0 是安全默认值。
 - **LoRA 用在错误的 base 上。** SDXL LoRA 在 SD 1.5 上会静默 no-op，因为 attention dimensions 不匹配。Diffusers 在 0.30+ 会发出警告。
 - **Textual Inversion 漂移。** 在一个 checkpoint 上训练的 tokens，换到另一个 checkpoint 会严重漂移。LoRA 更可移植。
-- **LoRA weight-merging 和存储。** 你可以把 LoRA bake 到 base model weights 中，以获得更快 inference（没有 runtime addition），但会失去在 runtime 缩放 `α` 的能力。保留两个版本。
+- **LoRA weight-merging 和存储。** 你可以把 LoRA bake 到 base model weights 中，以获得更快 inference（没有 runtime addition），但会失去在 runtime 缩放 $\alpha$ 的能力。保留两个版本。
 
 ## 使用它
 
@@ -126,7 +126,7 @@ h = base(x) + gated
 
 1. **Easy。** 在 `code/main.py` 中，将 LoRA rank `r` 从 1 改到 4。LoRA 在什么 rank 下能精确匹配 rank-2 target delta？
 2. **Medium。** 在两个 target transforms 上训练两个独立的 LoRA。将它们一起加载，并展示它们的加法交互。什么时候这种交互会打破线性？
-3. **Hard。** 使用 diffusers 叠加：SDXL-base + Canny-ControlNet（weight 0.8）+ 一个 style LoRA（α 0.8）+ IP-Adapter（weight 0.6）。随着 stack weights 变化，测量 FID-vs-prompt-adherence trade-off。
+3. **Hard。** 使用 diffusers 叠加：SDXL-base + Canny-ControlNet（weight 0.8）+ 一个 style LoRA（$\alpha$ 0.8）+ IP-Adapter（weight 0.6）。随着 stack weights 变化，测量 FID-vs-prompt-adherence trade-off。
 
 ## 关键术语
 
@@ -134,9 +134,9 @@ h = base(x) + gated
 |------|------------|------------------|
 | ControlNet | "Spatial control" | 克隆 encoder + zero-conv skips；读取一张 conditioning image。 |
 | Zero convolution | "Starts as identity" | 初始化为零的 1×1 conv；ControlNet 一开始是 no-op。 |
-| LoRA | "Low-rank adapter" | `W + B @ A`，`r << d`；比 full fine-tune 少 100x 参数。 |
+| LoRA | "Low-rank adapter" | $W + BA$，$r \ll d$；比 full fine-tune 少 100x 参数。 |
 | rank r | "The knob" | LoRA 压缩；典型值为 4-16，重度个性化使用 64+。 |
-| α | "LoRA strength" | LoRA delta 的 runtime scaling。 |
+| $\alpha$ | "LoRA strength" | LoRA delta 的 runtime scaling。 |
 | IP-Adapter | "Reference image" | 通过 CLIP-image tokens 实现的小型 image-conditioning adapter。 |
 | DreamBooth | "Full subject fine-tune" | 在约 ~30 张主体图像上训练完整模型。 |
 | Textual Inversion | "New token" | 只学习一个新的 word embedding；旧方案，大多已被替代。 |
@@ -145,7 +145,7 @@ h = base(x) + gated
 
 一个真实的 text-to-image SaaS 会在同一个 base checkpoint 上服务数百个 LoRA 和十几个 ControlNet。serving 问题很像 LLM multi-tenancy（生产文献中在 continuous batching 和 LoRAX / S-LoRA 下讨论 LLM 场景）：
 
-- **Hot-swap LoRAs，不要 merge。** 将 `W' = W + α·B·A` merge 到 base 中，可以让每步 inference 快约 ~3-5%，但会冻结 `α` 和 base。把 LoRA 作为 rank-r deltas 热加载在 VRAM 中；diffusers 暴露了 `pipe.load_lora_weights()` + `pipe.set_adapters([...], adapter_weights=[...])`，可用于按请求激活。swap 成本是 `2 · d · r · num_layers` weights，即 MB 级、亚秒级。
+- **Hot-swap LoRAs，不要 merge。** 将 $W' = W + \alpha \cdot B \cdot A$ merge 到 base 中，可以让每步 inference 快约 ~3-5%，但会冻结 $\alpha$ 和 base。把 LoRA 作为 rank-r deltas 热加载在 VRAM 中；diffusers 暴露了 `pipe.load_lora_weights()` + `pipe.set_adapters([...], adapter_weights=[...])`，可用于按请求激活。swap 成本是 `2 · d · r · num_layers` weights，即 MB 级、亚秒级。
 - **ControlNet 作为第二条 attention lane。** 克隆的 encoder 与 base 并行运行。两个 weight 都为 1.0 的 ControlNet = 每步两次额外 forward passes，而不是一次 merged pass。Batch-size headroom 会二次下降。为每个 active ControlNet 预算约 ~1.5× step cost。
 - **Quantized LoRAs 也适用。** 如果你量化了 base（见 Lesson 07，Flux on 8GB），LoRA delta 也能干净地量化到 8-bit 或 4-bit。QLoRA-style loading 让你可以在 4-bit Flux base 上叠加 5-10 个 LoRA，而不会撑爆内存。
 

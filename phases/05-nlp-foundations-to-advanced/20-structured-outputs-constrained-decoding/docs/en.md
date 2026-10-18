@@ -29,7 +29,7 @@
 
 2026 年的实现：
 
-- **Outlines。** 将 JSON Schema 或 regex 编译为 finite-state machine。每个 token 都能 O(1) 查询 valid-next-token。基于 FSM，所以 recursive schemas 需要 flattening。
+- **Outlines。** 将 JSON Schema 或 regex 编译为 finite-state machine。每个 token 都能 $O(1)$ 查询 valid-next-token。基于 FSM，所以 recursive schemas 需要 flattening。
 - **XGrammar / llguidance。** Context-free grammar engines。处理 recursive JSON Schema。解码开销接近零。OpenAI 在其 2025 structured output 实现中提到了 llguidance。
 - **vLLM guided decoding。** 通过 Outlines、XGrammar 或 lm-format-enforcer 后端内置 `guided_json`、`guided_regex`、`guided_choice`、`guided_grammar`。
 - **Instructor。** 基于 Pydantic 的任意 LLM wrapper。验证失败时重试。跨 provider，但不会修改 logits，依赖 retries + structured-output-aware prompts。
@@ -211,7 +211,7 @@ tags: [nlp, llm, structured-output]
 |------|------------|----------|
 | Constrained decoding | 强制有效输出 | 在每个生成步骤 mask invalid-token logits。 |
 | Logit processor | 执行约束的东西 | 函数：`(logits, state) -> masked_logits`。 |
-| FSM | Finite-state machine | 编译后的 grammar 表示；O(1) valid-next-token 查询。 |
+| FSM | Finite-state machine | 编译后的 grammar 表示；$O(1)$ valid-next-token 查询。 |
 | CFG | Context-free grammar | 能处理 recursion 的 grammar；比 FSM 更慢但表达力更强。 |
 | Schema field order | 它重要吗？ | 重要，first field 会形成承诺；始终把 reasoning 放在 answer 之前。 |
 | Guided decoding | vLLM 对它的称呼 | 同一概念，集成进 inference server。 |

@@ -84,10 +84,10 @@ Decoder 必须扩展 spatial dimensions。有两种选择：
 
 ### pixel grid 上的 Cross-entropy
 
-对于包含 C 个 classes 的 semantic segmentation，model output 是 `(N, C, H, W)`。Target 是 `(N, H, W)`，包含 integer class IDs。Cross-entropy 与 Classification 场景完全相同，只是应用在每个 spatial position 上：
+对于包含 $C$ 个 classes 的 semantic segmentation，model output 是 `(N, C, H, W)`。Target 是 `(N, H, W)`，包含 integer class IDs。Cross-entropy 与 Classification 场景完全相同，只是应用在每个 spatial position 上：
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 PyTorch 中的 `F.cross_entropy` 原生处理这种 shape。不需要 reshape。
@@ -98,17 +98,19 @@ Cross-entropy 平等对待每个 pixel。当一个 class 占据 frame 的绝大�
 
 Dice loss 通过直接优化 predicted mask 与 true mask 之间的 overlap 来解决这个问题：
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 其中 `p` 是某个 class 的 sigmoid/softmax probability map，`y` 是 binary ground-truth mask。只有当 overlap 完美时，loss 才为零。因为它基于 ratio，class imbalance 不再相关。
 
 实践中，使用 **combined loss**：
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 Cross-entropy 在 training 早期提供稳定的 Gradient；Dice 将 training 后段聚焦在真正匹配 mask shape 上。这个组合是 medical-imaging 的默认方案，在任何 class-imbalanced dataset 上都很难被超越。
@@ -117,7 +119,7 @@ Cross-entropy 在 training 早期提供稳定的 Gradient；Dice 将 training �
 
 - **Pixel accuracy** — 预测正确的 pixels 百分比。计算便宜。与 Classification 中的 accuracy 一样，在 imbalanced data 上会失效。
 - **IoU per class** — 每个 class mask 的 intersection over union；跨 classes 求平均 = mIoU。
-- **Dice (F1 on pixels)** — 类似 IoU；`Dice = 2 * IoU / (1 + IoU)`。Medical imaging 更偏好 Dice，driving community 更偏好 IoU；二者单调相关。
+- **Dice (F1 on pixels)** — 类似 IoU；$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$。Medical imaging 更偏好 Dice，driving community 更偏好 IoU；二者单调相关。
 - **Boundary F1** — 衡量 predicted boundaries 与 ground-truth boundaries 的接近程度，即使是小幅偏移也会被惩罚。对 semiconductor inspection 等 high-precision tasks 很重要。
 
 报告 IoU per class，而不只是 mIoU。Mean IoU 会掩盖一个 class 只有 15%、而其他九个 class 都有 85% 的情况。

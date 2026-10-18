@@ -18,7 +18,7 @@
 
 你已经计算出了 Gradient。你知道第 #4,721 个权重应该减少 0.003 才能降低 Loss。但 0.003 的单位是什么？按什么缩放？第 1 步和第 1,000 步应该移动同样的量吗？
 
-Vanilla Gradient Descent 在每一步对每个 parameter 应用相同的 learning rate：w = w - lr * gradient。这会产生三个问题，让训练 Neural Network 在实践中变得很痛苦。
+Vanilla Gradient Descent 在每一步对每个 parameter 应用相同的 learning rate：$w = w - \text{lr} \cdot \text{gradient}$。这会产生三个问题，让训练 Neural Network 在实践中变得很痛苦。
 
 第一，振荡。Loss landscape 很少像一个平滑的碗。它更像一条又长又窄的山谷。Gradient 指向穿过山谷的方向（陡峭方向），而不是沿着山谷的方向（平缓方向）。Gradient Descent 会在狭窄维度上来回弹跳，而在真正有用的方向上进展很小。你已经见过这种现象：Loss 先快速下降，然后进入平台期，不是因为 model 已经收敛，而是因为它在振荡。
 
@@ -34,8 +34,8 @@ Adam 解决了这三个问题。它为每个 parameter 维护两个 running aver
 
 最简单的 Optimizer。在 mini-batch 上计算 Gradient，并朝相反方向前进一步。
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 “stochastic” 表示你使用数据的随机子集（mini-batch）来估计 Gradient，而不是使用完整 dataset。这种噪声实际上是有用的 -- 它有助于逃离尖锐的 local minima。但噪声也会导致振荡。
@@ -46,27 +46,31 @@ Learning rate 是唯一的旋钮。太高：Loss 发散。太低：训练会耗�
 
 小球滚下山坡的类比被用得太多，但它是准确的。你不是只按 Gradient 前进，而是维护一个 velocity，用来累积过去的 Gradients。
 
-```
-m_t = beta * m_{t-1} + gradient
-w = w - lr * m_t
+```math
+\begin{aligned}
+m_t &= \beta \, m_{t-1} + \text{gradient} \\
+w &= w - \text{lr} \cdot m_t
+\end{aligned}
 ```
 
-Beta（通常为 0.9）控制保留多少历史信息。当 beta = 0.9 时，momentum 大致等于最近 10 个 Gradients 的平均值（1 / (1 - 0.9) = 10）。
+Beta（通常为 0.9）控制保留多少历史信息。当 $\beta = 0.9$ 时，momentum 大致等于最近 10 个 Gradients 的平均值（$1 / (1 - 0.9) = 10$）。
 
 为什么这能修复振荡：指向相同方向的 Gradients 会累积。方向反复翻转的 Gradients 会相互抵消。在那条狭窄山谷中，“横穿”分量每一步都会变号并被削弱。“沿着”分量保持一致并被放大。结果是在有用方向上平滑加速。
 
-真实数字：在条件很差的 Loss landscape 上，单独使用 SGD 可能需要 10,000 步。带 momentum 的 SGD（beta=0.9）在同一问题上通常需要 3,000-5,000 步。这个加速并不微小。
+真实数字：在条件很差的 Loss landscape 上，单独使用 SGD 可能需要 10,000 步。带 momentum 的 SGD（$\beta = 0.9$）在同一问题上通常需要 3,000-5,000 步。这个加速并不微小。
 
 ### RMSProp
 
 第一个真正有效的 per-parameter adaptive learning rate 方法。由 Hinton 在 Coursera 课程中提出（从未正式发表）。
 
-```
-s_t = beta * s_{t-1} + (1 - beta) * gradient^2
-w = w - lr * gradient / (sqrt(s_t) + epsilon)
+```math
+\begin{aligned}
+s_t &= \beta \, s_{t-1} + (1 - \beta) \cdot \text{gradient}^2 \\
+w &= w - \text{lr} \cdot \frac{\text{gradient}}{\sqrt{s_t} + \epsilon}
+\end{aligned}
 ```
 
-s_t 跟踪 squared gradients 的 running average。持续拥有较大 Gradients 的 parameters 会除以一个较大的数（更小的有效 learning rate）。Gradients 较小的 parameters 会除以一个较小的数（更大的有效 learning rate）。
+$s_t$ 跟踪 squared gradients 的 running average。持续拥有较大 Gradients 的 parameters 会除以一个较大的数（更小的有效 learning rate）。Gradients 较小的 parameters 会除以一个较小的数（更大的有效 learning rate）。
 
 这解决了“所有 parameters 使用同一个 learning rate”的问题。一个已经持续获得大幅更新的 weight 很可能接近目标 -- 放慢它。一个一直只得到很小更新的 weight 可能训练不足 -- 加快它。
 
@@ -76,41 +80,45 @@ Epsilon（通常为 1e-8）会在某个 parameter 尚未更新时防止除以零
 
 Adam 结合了两种思想。它为每个 parameter 维护两个 exponential moving averages：
 
-```
-m_t = beta1 * m_{t-1} + (1 - beta1) * gradient        (first moment: mean)
-v_t = beta2 * v_{t-1} + (1 - beta2) * gradient^2       (second moment: variance)
-```
-
-**Bias correction** 是大多数解释会跳过的关键细节。在第 1 步，m_1 = (1 - beta1) * gradient。当 beta1 = 0.9 时，它是 0.1 * gradient -- 小了十倍。moving average 还没有预热。Bias correction 会进行补偿：
-
-```
-m_hat = m_t / (1 - beta1^t)
-v_hat = v_t / (1 - beta2^t)
+```math
+\begin{aligned}
+m_t &= \beta_1 m_{t-1} + (1 - \beta_1) \cdot \text{gradient} && \text{（一阶矩：均值）} \\
+v_t &= \beta_2 v_{t-1} + (1 - \beta_2) \cdot \text{gradient}^2 && \text{（二阶矩：方差）}
+\end{aligned}
 ```
 
-第 1 步且 beta1 = 0.9 时：m_hat = m_1 / (1 - 0.9) = m_1 / 0.1 = 实际 Gradient。第 100 步时：(1 - 0.9^100) 约等于 1.0，因此 correction 消失。Bias correction 对前 ~10 步很重要，在 ~50 步之后基本无关紧要。
+**Bias correction** 是大多数解释会跳过的关键细节。在第 1 步，$m_1 = (1 - \beta_1) \cdot \text{gradient}$。当 $\beta_1 = 0.9$ 时，它是 $0.1 \cdot \text{gradient}$ -- 小了十倍。moving average 还没有预热。Bias correction 会进行补偿：
+
+```math
+\begin{aligned}
+\hat{m} &= \frac{m_t}{1 - \beta_1^t} \\
+\hat{v} &= \frac{v_t}{1 - \beta_2^t}
+\end{aligned}
+```
+
+第 1 步且 $\beta_1 = 0.9$ 时：$\hat{m} = m_1 / (1 - 0.9) = m_1 / 0.1 =$ 实际 Gradient。第 100 步时：$(1 - 0.9^{100})$ 约等于 1.0，因此 correction 消失。Bias correction 对前 ~10 步很重要，在 ~50 步之后基本无关紧要。
 
 更新公式：
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon}
 ```
 
-Adam 默认值：lr = 0.001，beta1 = 0.9，beta2 = 0.999，epsilon = 1e-8。这些默认值适用于 80% 的问题。当它们不适用时，先改 lr。然后改 beta2。几乎永远不要改 beta1 或 epsilon。
+Adam 默认值：$\text{lr} = 0.001$，$\beta_1 = 0.9$，$\beta_2 = 0.999$，$\epsilon = 10^{-8}$。这些默认值适用于 80% 的问题。当它们不适用时，先改 lr。然后改 $\beta_2$。几乎永远不要改 $\beta_1$ 或 $\epsilon$。
 
 ### AdamW: 正确处理 Weight Decay
 
-L2 regularization 会向 Loss 中添加 lambda * w^2。在 vanilla SGD 中，这等价于 weight decay（每一步从 weight 中减去 lambda * w）。在 Adam 中，这种等价关系会失效。
+L2 regularization 会向 Loss 中添加 $\lambda w^2$。在 vanilla SGD 中，这等价于 weight decay（每一步从 weight 中减去 $\lambda w$）。在 Adam 中，这种等价关系会失效。
 
 Loshchilov & Hutter 的洞见是：当你把 L2 加到 Loss 中，然后让 Adam 处理 Gradient 时，adaptive learning rate 也会缩放 regularization term。Gradient variance 大的 parameters 得到更少 regularization。Variance 小的 parameters 得到更多。这不是你想要的 -- 你想要的是不依赖 Gradient statistics 的统一 regularization。
 
 AdamW 通过在 Adam update 之后直接对 weights 应用 weight decay 来修复这个问题：
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon) - lr * lambda * w
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon} - \text{lr} \cdot \lambda w
 ```
 
-Weight decay term（lr * lambda * w）不会被 Adam 的 adaptive factor 缩放。每个 parameter 都获得相同的比例收缩。
+Weight decay term（$\text{lr} \cdot \lambda w$）不会被 Adam 的 adaptive factor 缩放。每个 parameter 都获得相同的比例收缩。
 
 这看起来像一个小细节。并不是。AdamW 在几乎所有任务上都会比 Adam + L2 regularization 收敛到更好的解。它是 PyTorch 中用于训练 transformers、diffusion models 和多数现代 architectures 的默认 Optimizer。BERT、GPT、LLaMA、Stable Diffusion -- 都是用 AdamW 训练的。
 
@@ -425,11 +433,11 @@ for epoch in range(100):
 
 ## 练习
 
-1. 实现 Nesterov momentum，其中你在 “lookahead” 位置（w - lr * beta * v）而不是当前位置计算 Gradient。在 circle dataset 上比较它与标准 momentum 的收敛情况。
+1. 实现 Nesterov momentum，其中你在 “lookahead” 位置（$w - \text{lr} \cdot \beta v$）而不是当前位置计算 Gradient。在 circle dataset 上比较它与标准 momentum 的收敛情况。
 
 2. 实现一个 learning rate warmup schedule：在训练前 10% 的 steps 中从 0 线性 ramp 到 max_lr，然后 cosine decay 到 0。比较 Adam + warmup 与无 warmup 的 Adam。测量在 circle dataset 上达到 90% accuracy 需要多少 epochs。
 
-3. 在 Adam 训练期间跟踪每个 parameter 的有效 learning rate。有效 rate 是 lr * m_hat / (sqrt(v_hat) + eps)。绘制第 10、50 和 200 步之后有效 rates 的分布。所有 parameters 都以相同速度更新吗？
+3. 在 Adam 训练期间跟踪每个 parameter 的有效 learning rate。有效 rate 是 $\text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)$。绘制第 10、50 和 200 步之后有效 rates 的分布。所有 parameters 都以相同速度更新吗？
 
 4. 实现 gradient clipping（按 global norm clip）。将 max gradient norm 设置为 1.0。使用较高 learning rate（Adam 的 lr=0.01）分别在有 clipping 和无 clipping 的情况下训练。统计 10 个 random seeds 中，有多少次 run 会发散（Loss 变为 NaN）。
 
@@ -440,12 +448,12 @@ for epoch in range(100):
 | Term | 人们通常怎么说 | 它实际意味着什么 |
 |------|----------------|----------------------|
 | Learning rate | “Step size” | Gradient update 上的标量乘数；训练中影响最大的单个 hyperparameter |
-| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 lr * gradient 来更新 weights，Gradient 在 mini-batch 上计算 |
+| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 $\text{lr} \cdot \text{gradient}$ 来更新 weights，Gradient 在 mini-batch 上计算 |
 | Momentum | “Rolling ball analogy” | 过去 Gradients 的 exponential moving average；削弱振荡，并加速一致方向 |
 | RMSProp | “Adaptive learning rate” | 用近期 Gradients 的 running RMS 除以每个 parameter 的 Gradient；均衡 learning rates |
 | Adam | “The default optimizer” | 将 momentum（first moment）和 RMSProp（second moment）结合起来，并对初始 steps 进行 bias correction |
 | AdamW | “Adam done right” | 带 decoupled weight decay 的 Adam；直接对 weights 应用 regularization，而不是通过 Gradient |
-| Bias correction | “Warmup for running averages” | 除以 (1 - beta^t)，用于补偿 Adam 的 moment estimates 的零初始化 |
+| Bias correction | “Warmup for running averages” | 除以 $(1 - \beta^t)$，用于补偿 Adam 的 moment estimates 的零初始化 |
 | Weight decay | “Shrink the weights” | 每一步减去 weight 值的一部分；一种惩罚大 weights 的 regularizer |
 | Learning rate schedule | “Changing lr over time” | 在训练期间调整 learning rate 的函数；warmup + cosine decay 是现代默认方案 |
 | Gradient clipping | “Capping the gradient norm” | 当 Gradient Vector 的 norm 超过阈值时对其进行缩放；防止 exploding gradient updates |

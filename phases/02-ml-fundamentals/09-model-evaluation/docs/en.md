@@ -81,11 +81,11 @@ flowchart TB
     Fold5 --> R
 ```
 
-1. 将数据分成 K 个大小相等的 folds
-2. 对每个 fold，在 K-1 个 folds 上训练，并在剩余 fold 上验证
-3. 对 K 个 validation scores 求平均
+1. 将数据分成 $K$ 个大小相等的 folds
+2. 对每个 fold，在 $K-1$ 个 folds 上训练，并在剩余 fold 上验证
+3. 对 $K$ 个 validation scores 求平均
 
-K=5 或 K=10 是标准选择。每个 data point 都恰好被用于 validation 一次。平均 score 比任何单次 split 都是更稳定的估计。
+$K=5$ 或 $K=10$ 是标准选择。每个 data point 都恰好被用于 validation 一次。平均 score 比任何单次 split 都是更稳定的估计。
 
 **Stratified K-fold**：在每个 fold 中保留 class distribution。如果你的 dataset 是 70% class A 和 30% class B，那么每个 fold 都会大致保持相同比例。这对 imbalanced datasets 很重要，因为随机 split 可能会把所有 minority samples 都放进一个 fold。
 
@@ -100,18 +100,18 @@ K=5 或 K=10 是标准选择。每个 data point 都恰好被用于 validation �
 
 从这个 Matrix 可以得到所有其他指标：
 
-- **Accuracy** = (TP + TN) / (TP + TN + FP + FN)。预测正确的比例。当 classes 不平衡时会产生误导。
-- **Precision** = TP / (TP + FP)。在所有预测为 positive 的对象中，有多少确实是 positive？当 false positives 代价高时使用（例如 spam filter 把真实邮件标记为 spam）。
-- **Recall**（sensitivity）= TP / (TP + FN)。在所有真实 positives 中，我们抓住了多少？当 false negatives 代价高时使用（例如 cancer screening 漏掉 tumor）。
-- **F1 score** = 2 * precision * recall / (precision + recall)。precision 和 recall 的 harmonic mean。当二者都不明显更重要时，用它来平衡两者。
+- **Accuracy** = $(TP + TN) / (TP + TN + FP + FN)$。预测正确的比例。当 classes 不平衡时会产生误导。
+- **Precision** = $TP / (TP + FP)$。在所有预测为 positive 的对象中，有多少确实是 positive？当 false positives 代价高时使用（例如 spam filter 把真实邮件标记为 spam）。
+- **Recall**（sensitivity）= $TP / (TP + FN)$。在所有真实 positives 中，我们抓住了多少？当 false negatives 代价高时使用（例如 cancer screening 漏掉 tumor）。
+- **F1 score** = $2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$。precision 和 recall 的 harmonic mean。当二者都不明显更重要时，用它来平衡两者。
 - **AUC-ROC**：Receiver Operating Characteristic curve 下的面积。它在不同 classification thresholds 下绘制 true positive rate 与 false positive rate。AUC = 0.5 表示随机猜测，AUC = 1.0 表示完美分离。它与 threshold 无关：衡量的是 model 将 positives 排在 negatives 前面的能力，而不受你选择的 cutoff 影响。
 
 ### Regression 指标
 
-- **MSE**（Mean Squared Error）= mean((y_true - y_pred)^2)。以平方方式惩罚大误差。对 outliers 敏感。
-- **RMSE**（Root Mean Squared Error）= sqrt(MSE)。与 target variable 单位相同。比 MSE 更容易解释。
-- **MAE**（Mean Absolute Error）= mean(|y_true - y_pred|)。线性对待所有误差。比 MSE 对 outliers 更稳健。
-- **R-squared** = 1 - SS_res / SS_tot，其中 SS_res = sum((y_true - y_pred)^2)，SS_tot = sum((y_true - y_mean)^2)。表示 model 解释了多少方差。R^2 = 1.0 表示完美。R^2 = 0.0 表示 model 并不比总是预测均值更好。如果 model 比预测均值还差，R^2 可能为负。
+- **MSE**（Mean Squared Error）= $\text{均值}((y_{\text{true}} - y_{\text{pred}})^2)$。以平方方式惩罚大误差。对 outliers 敏感。
+- **RMSE**（Root Mean Squared Error）= $\sqrt{\text{MSE}}$。与 target variable 单位相同。比 MSE 更容易解释。
+- **MAE**（Mean Absolute Error）= $\text{均值}(\lvert y_{\text{true}} - y_{\text{pred}} \rvert)$。线性对待所有误差。比 MSE 对 outliers 更稳健。
+- **R-squared** = $1 - SS_{\text{res}} / SS_{\text{tot}}$，其中 $SS_{\text{res}} = \sum (y_{\text{true}} - y_{\text{pred}})^2$，$SS_{\text{tot}} = \sum (y_{\text{true}} - y_{\text{均值}})^2$。表示 model 解释了多少方差。$R^2 = 1.0$ 表示完美。$R^2 = 0.0$ 表示 model 并不比总是预测均值更好。如果 model 比预测均值还差，$R^2$ 可能为负。
 
 ### Learning Curves
 
@@ -665,10 +665,10 @@ scores = cross_val_score(model, X, y, cv=StratifiedKFold(5), scoring="f1")
 |------|----------------|----------------------|
 | Overfitting | “记住了 training data” | model 捕捉了 training data 中的噪声，在 training 上表现好，但在 unseen data 上表现差 |
 | Cross-validation | “在不同子集上测试” | 系统地轮换用于 validation 的数据部分，并对所有轮换的结果求平均 |
-| Precision | “预测为 positive 的里面有多少是正确的” | TP / (TP + FP)：positive predictions 中实际为 positive 的比例 |
-| Recall | “我们找到了多少真实 positives” | TP / (TP + FN)：actual positives 中被正确识别出来的比例 |
+| Precision | “预测为 positive 的里面有多少是正确的” | $TP / (TP + FP)$：positive predictions 中实际为 positive 的比例 |
+| Recall | “我们找到了多少真实 positives” | $TP / (TP + FN)$：actual positives 中被正确识别出来的比例 |
 | AUC-ROC | “model 区分类别的能力有多好” | 在所有 thresholds 下，true positive rate 与 false positive rate 曲线下的面积，范围从 0.5（随机）到 1.0（完美） |
-| R-squared | “解释了多少方差” | 1 -（squared residuals 之和 / total sum of squares）：model 捕捉到的 target variance 比例 |
+| R-squared | “解释了多少方差” | $1 - (\text{残差平方和} / \text{总平方和})$：model 捕捉到的 target variance 比例 |
 | Data leakage | “model 作弊了” | 在 training 期间使用了 prediction time 不可用的信息，导致 evaluation 过于乐观 |
 | Learning curve | “数据更多时 performance 如何变化” | training 和 validation scores 相对于 training set size 的图，用来揭示 underfitting 或 overfitting |
 | Stratified split | “保持 class ratios 平衡” | split 数据时，让每个 subset 中各 class 的比例与完整 dataset 相同 |

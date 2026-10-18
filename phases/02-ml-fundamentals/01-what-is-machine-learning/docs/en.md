@@ -176,7 +176,7 @@ flowchart LR
 
 test set 是神圣的。你只能看它一次。如果你不断根据 test performance 调整 model，你实际上是在 test set 上训练，你报告的数字也就没有意义。
 
-对于小数据集，使用 k-fold cross-validation：把数据分成 k 份，在 k-1 份上训练，在剩余 1 份上验证，轮换进行，并对结果取平均。
+对于小数据集，使用 k-fold cross-validation：把数据分成 $k$ 份，在 $k-1$ 份上训练，在剩余 1 份上验证，轮换进行，并对结果取平均。
 
 ### Overfitting vs Underfitting
 
@@ -242,9 +242,9 @@ Overfitting 的迹象：
 | 刚好合适 | Medium | Medium | 良好的 generalization |
 | 过高（用 degree-20 polynomial 拟合 10 个点） | Low | High | Overfitting |
 
-总 error = Bias^2 + Variance + 不可约 noise
+$\text{总误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声}$
 
-你无法降低 irreducible noise（它是数据本身的随机性）。你要找到让 bias^2 + variance 最小的最佳点。
+你无法降低 irreducible noise（它是数据本身的随机性）。你要找到让 $\text{偏差}^2 + \text{方差}$ 最小的最佳点。
 
 ### No Free Lunch Theorem
 

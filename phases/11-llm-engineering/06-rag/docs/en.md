@@ -91,20 +91,20 @@ Embedding model 会把文本转换成 dense vector。相似文本会在这个高
 
 **Cosine similarity**：两个 vectors 之间夹角的余弦值。范围从 -1（相反）到 1（完全相同）。忽略 magnitude，只关注 direction。这是 RAG 的默认选择。
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**：原始 inner product。更大的 vectors 会得到更高分数。当 magnitude 携带信息时有用（更长的 documents 可能更相关）。
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**：vector space 中的直线距离。距离越小 = 越相似。对 magnitude 差异敏感。
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 Cosine similarity 是标准选择。它通过 magnitude 归一化，能优雅处理不同长度的 documents。当有人说 “vector search” 时，几乎总是在指 cosine similarity。

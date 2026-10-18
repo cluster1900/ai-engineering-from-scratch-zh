@@ -58,7 +58,7 @@ AlphaEvolve 中的修复方式：使用 LLM 从未见过的 held-out evaluator�
 
 LLM 可以产生可编译、语义上看似合理的修改。对一个 2000 行 Python 文件进行随机 mutation 的 GA 几乎总是产生语法错误。LLM 还会把搜索集中到合理邻域（修改一个函数，而不是随机 bytes），这会显著减少浪费的 evaluator 调用。
 
-反过来，evaluator 会捕捉 LLM 的虚构。LLMs 会自信地声称某个函数“在极限情况下是 O(n log n)”，但它实际上是 O(n^2)；wall-clock benchmark 会让问题尘埃落定。
+反过来，evaluator 会捕捉 LLM 的虚构。LLMs 会自信地声称某个函数“在极限情况下是 $O(n \log n)$”，但它实际上是 $O(n^2)$；wall-clock benchmark 会让问题尘埃落定。
 
 ### AlphaEvolve 在 frontier stack 中的位置
 

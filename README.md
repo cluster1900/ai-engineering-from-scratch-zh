@@ -4,8 +4,6 @@
 
 > Fork 自 [rohitg00/ai-engineering-from-scratch](https://github.com/rohitg00/ai-engineering-from-scratch)。
 
-> **同步状态：** 正在通过 [bot-hub #5](https://github.com/cluster1900/bot-hub/issues/5) 分批审阅上游 `7a181b46 → fe27da89` 的新增及变更文本。剩余 10 节新增课程在 ROADMAP 中标为“🚧 文档同步中”；源码、测试、测验和交互图示依赖由 [#16](https://github.com/cluster1900/bot-hub/issues/16) 单独同步。目录链接不表示课程已可运行，待相关 PR 合并并通过检查后再更新状态。本次集成使用仓库现有计数脚本更新源计数；后续仍使用同一检查流程。
-
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
   <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-542-3553ff?style=flat-square&labelColor=fafaf5" alt="542 节课"></a>
@@ -436,7 +434,7 @@ the agent went wrong and explain why...
 | 16 | [Anomaly Detection](phases/02-ml-fundamentals/16-anomaly-detection/) | 构建 | Python |
 | 17 | [Handling Imbalanced Data](phases/02-ml-fundamentals/17-imbalanced-data/) | 构建 | Python |
 | 18 | [Feature Selection](phases/02-ml-fundamentals/18-feature-selection/) | 构建 | Python |
-| 19 | [ML 系统设计：从问题到部署模型](phases/02-ml-fundamentals/19-ml-system-design/) | 构建 | Python |
+| 19 | [机器学习系统设计：从问题到已部署模型](phases/02-ml-fundamentals/19-ml-system-design/) | 构建 | Python |
 | 20 | [生产模型监控：数据漂移与概念漂移](phases/02-ml-fundamentals/20-model-monitoring-and-drift/) | 构建 | Python |
 | 21 | [特征存储与训练—服务偏差](phases/02-ml-fundamentals/21-feature-stores-and-training-serving-skew/) | 构建 | Python |
 
@@ -465,7 +463,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-4">
-<summary><b>Phase 4 — Computer Vision</b> &nbsp;<code>29 lessons</code>&nbsp; <em>从 pixels 到理解 —— image、video、3D、VLMs 和 world models。</em></summary>
+<summary><b>Phase 4 — Computer Vision</b> &nbsp;<code>28 lessons</code>&nbsp; <em>从 pixels 到理解 —— image、video、3D、VLMs 和 world models。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -774,11 +772,11 @@ the agent went wrong and explain why...
 | 38 | [调用约定与栈帧：System V、Windows x64 和 AArch64](phases/13-tools-and-protocols/38-calling-conventions-and-stack-frames/) | Build | Python |
 | 39 | [编译器惯用模式：优化如何改写代码，以及如何反向读懂它](phases/13-tools-and-protocols/39-compiler-idioms-and-optimization/) | Build | Python |
 | 40 | [链接、加载与剥离符号后的二进制：PLT、GOT、导入、修正与函数识别](phases/13-tools-and-protocols/40-linking-loading-and-stripped-binaries/) | Build | Python |
-| 41 | [数据与类型恢复](phases/13-tools-and-protocols/41-recovering-data-and-types/) | 构建 | Python, C, C++, x86-64 assembly |
-| 42 | [自有程序的动态分析](phases/13-tools-and-protocols/42-dynamic-analysis-of-your-own-program/) | 构建 | Python, C, arm64 assembly, lldb command language |
-| 43 | [Python、JVM、.NET 与 WebAssembly 字节码](phases/13-tools-and-protocols/43-bytecode-and-managed-formats/) | 构建 | Python, Java, C#, WebAssembly text |
-| 44 | [二进制差异分析与符号执行](phases/13-tools-and-protocols/44-binary-diffing-and-symbolic-execution/) | 构建 | Python, C, x86-64 assembly, Java (one Ghidra script) |
-| 45 | [AI 辅助逆向工程](phases/13-tools-and-protocols/45-ai-assisted-reverse-engineering/) | 构建 | Python, C |
+| 41 | [恢复数据与类型：结构体、数组、C++ 对象和 DWARF](phases/13-tools-and-protocols/41-recovering-data-and-types/) | Build | Python |
+| 42 | [动态分析自己的程序：调试器、跟踪与静态结论的验证](phases/13-tools-and-protocols/42-dynamic-analysis-of-your-own-program/) | Build | Python |
+| 43 | [超越原生代码：Python、JVM、.NET 与 WebAssembly 字节码](phases/13-tools-and-protocols/43-bytecode-and-managed-formats/) | Build | Python |
+| 44 | [二进制差异比较与符号执行：匹配函数并求解输入](phases/13-tools-and-protocols/44-binary-diffing-and-symbolic-execution/) | Build | Python |
+| 45 | [AI 辅助逆向工程：LLM 反编译器、分析 agent 与真值](phases/13-tools-and-protocols/45-ai-assisted-reverse-engineering/) | Build | Python |
 
 第 06-18 课与第 28-31 课构成专门的 [Model Context Protocol (MCP) 学习路径](learning-paths/model-context-protocol.json)。其清单执行顺序为 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 18, 17, 28, 29, 30, 31。
 
@@ -950,7 +948,7 @@ Phase 14 的每个 workbench 课程（31-42）都附带 `mission.md`，在 agent
 | 26 | [Compliance — SOC 2, HIPAA, GDPR, EU AI Act, ISO 42001](phases/17-infrastructure-and-production/26-compliance-frameworks/) | 学习 | Python |
 | 27 | [FinOps for LLMs — Unit Economics and Multi-Tenant Attribution](phases/17-infrastructure-and-production/27-finops-llms/) | 学习 | Python |
 | 28 | [Self-Hosted Serving Selection — llama.cpp, Ollama, TGI, vLLM, SGLang](phases/17-infrastructure-and-production/28-self-hosted-serving-selection/) | 学习 | Python |
-| 29 | [模型演示界面：从函数到可分享应用](phases/17-infrastructure-and-production/29-model-demo-interfaces/) | 构建 | Python |
+| 29 | [模型演示界面：从函数到可分享的应用](phases/17-infrastructure-and-production/29-model-demo-interfaces/) | 构建 | Python |
 
 </details>
 

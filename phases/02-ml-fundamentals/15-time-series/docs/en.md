@@ -91,8 +91,8 @@ flowchart TD
 
 **如何修复：** 差分。不要建模原始值，而是建模连续值之间的变化：
 
-```
-diff[t] = value[t] - value[t-1]
+```math
+\text{diff}[t] = \text{值}[t] - \text{值}[t-1]
 ```
 
 如果一次差分不能让序列平稳，就再应用一次（二阶差分）。大多数真实世界序列最多需要两次。
@@ -109,7 +109,7 @@ diff[t] = value[t] - value[t-1]
 
 ### 自相关
 
-自相关衡量时间 t 的值与时间 t-k（过去 k 步）的值之间的相关程度。autocorrelation function (ACF) 会绘制每个 lag k 的这种相关性。
+自相关衡量时间 $t$ 的值与时间 $t-k$（过去 $k$ 步）的值之间的相关程度。autocorrelation function (ACF) 会绘制每个 lag $k$ 的这种相关性。
 
 **ACF 告诉你：**
 - 序列能记住多远。如果 ACF 在 lag 5 后降到零，则 5 步以前的值无关紧要。
@@ -142,7 +142,7 @@ diff[t] = value[t] - value[t-1]
 
 **多少个 lag？** 使用 autocorrelation function。如果 ACF 到 lag 10 都显著，就至少使用 10 个 lag。如果存在周季节性，包含 lag 7（也可能包含 14）。更多 lag 会给模型更多历史信息，但也会增加需要拟合的特征数量，从而提高 overfitting 风险。
 
-**target 对齐陷阱。** 创建滞后特征时，target 必须是时间 t 的值，并且所有特征都必须使用时间 t-1 或更早的值。如果你不小心把时间 t 的值作为特征包含进去，你就拥有了一个完美预测器 -- 以及一个完全无用的模型。这是时间序列特征工程中最常见的 bug。
+**target 对齐陷阱。** 创建滞后特征时，target 必须是时间 $t$ 的值，并且所有特征都必须使用时间 $t-1$ 或更早的值。如果你不小心把时间 $t$ 的值作为特征包含进去，你就拥有了一个完美预测器 -- 以及一个完全无用的模型。这是时间序列特征工程中最常见的 bug。
 
 ### Walk-Forward Validation
 
@@ -178,8 +178,8 @@ flowchart TD
 ```
 
 Walk-forward validation：
-1. 在截至时间 t 的数据上训练
-2. 预测时间 t+1（或用于多步预测的 t+1 到 t+k）
+1. 在截至时间 $t$ 的数据上训练
+2. 预测时间 $t+1$（或用于多步预测的 $t+1$ 到 $t+k$）
 3. 将窗口向前滑动
 4. 重复
 
@@ -191,11 +191,11 @@ Walk-forward validation：
 
 ARIMA 是经典的时间序列模型。它有三个组件：
 
-- **AR (Autoregressive):** 从过去值进行预测。AR(p) 使用最近 p 个值。
-- **I (Integrated):** 通过差分实现平稳性。I(d) 应用 d 次差分。
-- **MA (Moving Average):** 从过去预测误差进行预测。MA(q) 使用最近 q 个误差。
+- **AR (Autoregressive):** 从过去值进行预测。AR(p) 使用最近 $p$ 个值。
+- **I (Integrated):** 通过差分实现平稳性。I(d) 应用 $d$ 次差分。
+- **MA (Moving Average):** 从过去预测误差进行预测。MA(q) 使用最近 $q$ 个误差。
 
-ARIMA(p, d, q) 组合了三者。你基于 ACF/PACF 分析或自动搜索（auto-ARIMA）选择 p、d、q。
+ARIMA(p, d, q) 组合了三者。你基于 ACF/PACF 分析或自动搜索（auto-ARIMA）选择 $p$、$d$、$q$。
 
 我们不会从零实现 ARIMA -- 它需要数值优化，超出了本课范围。关键洞察是理解每个组件的作用，这样你就能解释 ARIMA 结果，并知道何时使用它。
 
@@ -217,7 +217,7 @@ ARIMA(p, d, q) 组合了三者。你基于 ACF/PACF 分析或自动搜索（auto
 
 **Recursive (iterated):** 预测下一步，把预测结果作为下一步的输入。简单，但误差会累积 -- 每个预测都使用上一个预测，因此错误会复合。
 
-**Direct:** 为每个 horizon 训练单独的模型。Model-1 预测 t+1，Model-5 预测 t+5。没有误差累积，但每个模型的训练样本更少，而且它们不共享信息。
+**Direct:** 为每个 horizon 训练单独的模型。Model-1 预测 $t+1$，Model-5 预测 $t+5$。没有误差累积，但每个模型的训练样本更少，而且它们不共享信息。
 
 **Multi-output:** 训练一个同时输出所有 horizon 的模型。跨 horizon 共享信息，但需要支持多输出的模型（或自定义 Loss Function）。
 
@@ -228,7 +228,7 @@ ARIMA(p, d, q) 组合了三者。你基于 ACF/PACF 分析或自动搜索（auto
 | Mistake | Why it happens | How to fix |
 |---------|---------------|-----------|
 | 随机 train/test split | 来自标准 ML 的习惯 | 使用 walk-forward 或 temporal split |
-| 使用未来特征 | 误把时间 t 的特征包含进去 | 审计每个特征的时间对齐 |
+| 使用未来特征 | 误把时间 $t$ 的特征包含进去 | 审计每个特征的时间对齐 |
 | 对季节性 overfitting | 模型记住了日历模式 | 在 test set 中留出一个完整季节周期 |
 | 忽略尺度变化 | 收入翻倍但模式保持 | 建模百分比变化而非绝对值 |
 | 过多滞后特征 | “更多历史更好” | 使用 ACF 确定相关 lag |
@@ -387,7 +387,7 @@ print(f"Mean score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
 时间序列预测使用 Regression 指标，但带有时间感知的上下文：
 
-- **MAE (Mean Absolute Error):** |y_true - y_pred| 的平均值。容易用原始单位解释。“平均而言，预测偏差为 3.2 度。”
+- **MAE (Mean Absolute Error):** $\lvert y_{\text{true}} - y_{\text{pred}} \rvert$ 的平均值。容易用原始单位解释。“平均而言，预测偏差为 3.2 度。”
 - **RMSE (Root Mean Squared Error):** mean squared error 的平方根。相比 MAE，它对大误差惩罚更重。当大错误比很多小错误更糟时使用。
 - **MAPE (Mean Absolute Percentage Error):** |error / true_value| * 100 的平均值。与尺度无关，适合比较不同序列。但当 true values 为零时未定义。
 - **Naive baseline comparison:** 始终与简单 baseline 比较。seasonal naive baseline 会预测上一周期的值（昨天、上周）。如果你的模型无法击败 naive，就说明有问题。
@@ -445,10 +445,10 @@ print(f"Mean score: {scores.mean():.4f} +/- {scores.std():.4f}")
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Stationarity | “统计量不随时间变化” | 均值、方差和自相关结构随时间保持不变的序列 |
-| Differencing | “连续值相减” | 计算 y[t] - y[t-1] 来移除趋势并实现平稳性 |
+| Differencing | “连续值相减” | 计算 $y[t] - y[t-1]$ 来移除趋势并实现平稳性 |
 | Autocorrelation (ACF) | “一个序列与自身的相关程度” | 时间序列与自身滞后副本之间的相关性，作为 lag 的函数 |
-| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag k 上的自相关 |
-| Lag features | “把过去值作为输入” | 使用 y[t-1]、y[t-2]、...、y[t-k] 作为特征来预测 y[t] |
+| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag $k$ 上的自相关 |
+| Lag features | “把过去值作为输入” | 使用 $y[t-1], y[t-2], \ldots, y[t-k]$ 作为特征来预测 $y[t]$ |
 | Walk-forward validation | “尊重时间顺序的 cross-validation” | 训练数据在时间上始终先于测试数据的评估方式 |
 | ARIMA | “经典时间序列模型” | AutoRegressive Integrated Moving Average：组合过去值（AR）、差分（I）和过去误差（MA） |
 | Seasonality | “重复的日历模式” | 与日历周期（每日、每周、每年）相关的、规则且可预测的时间序列周期 |

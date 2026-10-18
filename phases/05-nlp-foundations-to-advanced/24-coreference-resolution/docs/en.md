@@ -34,7 +34,7 @@ Coreference Resolution 会把所有指向同一个真实世界 entity 的表达�
 **Architectures.**
 
 1. **Rule-based (Hobbs, 1978).** 基于 syntactic tree 的 pronoun resolution，使用 grammar rules。很好的 baseline。在 pronoun 上意外地难以超越。
-2. **Mention-pair classifier.** 对每一对 mention（m_i, m_j），预测它们是否 corefer。通过 transitive closure 聚类。2016 年前的标准做法。
+2. **Mention-pair classifier.** 对每一对 mention $(m_i, m_j)$，预测它们是否 corefer。通过 transitive closure 聚类。2016 年前的标准做法。
 3. **Mention-ranking.** 对每个 mention，排序候选 antecedent（包括 “no antecedent”）。选择最高分。
 4. **Span-based end-to-end (Lee et al., 2017).** Transformer encoder。枚举所有长度上限内的候选 span。预测 mention score。为每个 span 预测 antecedent-probability。贪心聚类。现代默认方案。
 5. **Generative (2024+).** Prompt 一个 LLM：“List every pronoun in this text and its antecedent.” 在简单案例上效果不错，但在长文档和少见 referent 上会吃力。

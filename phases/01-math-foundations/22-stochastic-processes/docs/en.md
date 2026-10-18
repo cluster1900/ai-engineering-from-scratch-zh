@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## 学习目标
-- 模拟 1D 和 2D random walks，并验证位移的 sqrt(n) 缩放规律
+- 模拟 1D 和 2D random walks，并验证位移的 $\sqrt{n}$ 缩放规律
 - 构建 Markov chain 模拟器，并通过 eigendecomposition 计算其 stationary distribution
 - 实现 Metropolis-Hastings MCMC 和 Langevin dynamics，用于从目标分布采样
 - 将 forward diffusion process 与 Brownian motion 联系起来，并解释 reverse process 如何生成数据
@@ -35,9 +35,9 @@ MCMC sampling 是 Bayesian inference 的支柱，它构造一个 Markov chain，
 
 从位置 0 开始。每一步，抛一枚公平硬币。正面：向右移动（+1）。反面：向左移动（-1）。
 
-经过 n 步后，你的位置是 n 个随机 +/-1 值的总和。期望位置是 0（这个 walk 是 unbiased 的）。但距离原点的期望距离按 sqrt(n) 增长。
+经过 $n$ 步后，你的位置是 $n$ 个随机 $\pm 1$ 值的总和。期望位置是 0（这个 walk 是 unbiased 的）。但距离原点的期望距离按 $\sqrt{n}$ 增长。
 
-这有点反直觉。这个 walk 是公平的，两个方向都没有 drift。但随着时间推移，它会离起点越来越远。n 步后的 standard deviation 是 sqrt(n)。
+这有点反直觉。这个 walk 是公平的，两个方向都没有 drift。但随着时间推移，它会离起点越来越远。$n$ 步后的 standard deviation 是 $\sqrt{n}$。
 
 ```
 Step 0:  Position = 0
@@ -48,33 +48,33 @@ Step 100: Expected distance from origin ~ 10 (sqrt(100))
 Step 10000: Expected distance from origin ~ 100 (sqrt(10000))
 ```
 
-**在 2D 中**，walk 以相等概率向上、向下、向左或向右移动。距离原点同样遵循 sqrt(n) 缩放规律。路径会描绘出类似 fractal 的模式。
+**在 2D 中**，walk 以相等概率向上、向下、向左或向右移动。距离原点同样遵循 $\sqrt{n}$ 缩放规律。路径会描绘出类似 fractal 的模式。
 
-**为什么是 sqrt(n)？** 每一步都以相等概率为 +1 或 -1。n 步后，位置 S_n = X_1 + X_2 + ... + X_n，其中每个 X_i 都是 +/-1。每一步的 variance 是 1，并且各步相互独立，所以 Var(S_n) = n。Standard deviation = sqrt(n)。根据 central limit theorem，S_n / sqrt(n) 收敛到 standard normal distribution。
+**为什么是 $\sqrt{n}$？** 每一步都以相等概率为 +1 或 -1。$n$ 步后，位置 $S_n = X_1 + X_2 + \cdots + X_n$，其中每个 $X_i$ 都是 $\pm 1$。每一步的 variance 是 1，并且各步相互独立，所以 $\mathop{\mathrm{Var}}(S_n) = n$。Standard deviation = $\sqrt{n}$。根据 central limit theorem，$S_n / \sqrt{n}$ 收敛到 standard normal distribution。
 
-这种 sqrt(n) 缩放在 ML 中随处可见。SGD 噪声按 1/sqrt(batch_size) 缩放。Embedding 维度按 sqrt(d) 缩放。平方根是独立随机加和的标志。
+这种 $\sqrt{n}$ 缩放在 ML 中随处可见。SGD 噪声按 1/sqrt(batch_size) 缩放。Embedding 维度按 $\sqrt{d}$ 缩放。平方根是独立随机加和的标志。
 
-**与 Brownian motion 的联系。** 取一个 step size 为 1/sqrt(n)、每单位时间 n 步的 random walk。当 n 趋近无穷时，这个 walk 会收敛到 Brownian motion B(t) —— 一个 continuous-time process，其中 B(t) 服从均值为 0、variance 为 t 的 normal distribution。
+**与 Brownian motion 的联系。** 取一个 step size 为 $1/\sqrt{n}$、每单位时间 $n$ 步的 random walk。当 $n$ 趋近无穷时，这个 walk 会收敛到 Brownian motion $B(t)$ —— 一个 continuous-time process，其中 $B(t)$ 服从均值为 0、variance 为 $t$ 的 normal distribution。
 
 Brownian motion 是 diffusion 的数学基础。它刻画流体中粒子的随机抖动、股票价格的波动，以及关键地，diffusion models 中的噪声过程。
 
-**Gambler's ruin。** 一个 random walker 从位置 k 开始，在 0 和 N 处有 absorbing barriers。到达 N 早于到达 0 的概率是多少？对于公平 walk：P(reach N) = k/N。这非常简单而优雅。它连接到 martingales 理论 —— 公平 random walk 是一个 martingale（expected future value = current value）。
+**Gambler's ruin。** 一个 random walker 从位置 $k$ 开始，在 0 和 $N$ 处有 absorbing barriers。到达 $N$ 早于到达 0 的概率是多少？对于公平 walk：$P(\text{到达 } N) = k/N$。这非常简单而优雅。它连接到 martingales 理论 —— 公平 random walk 是一个 martingale（expected future value = current value）。
 
 ### Markov Chains
 
 Markov chain 是一个系统，它按照固定概率在 states 之间转换。关键性质是：下一个 state 只依赖当前 state，而不依赖历史。
 
-```
-P(X_{t+1} = j | X_t = i, X_{t-1} = ...) = P(X_{t+1} = j | X_t = i)
-```
-
-这就是 Markov property。它意味着你可以用一个 transition matrix P 描述整个 dynamics：
-
-```
-P[i][j] = probability of going from state i to state j
+```math
+P(X_{t+1} = j \mid X_t = i, X_{t-1} = \ldots) = P(X_{t+1} = j \mid X_t = i)
 ```
 
-P 的每一行求和为 1（你必须去往某个地方）。
+这就是 Markov property。它意味着你可以用一个 transition matrix $P$ 描述整个 dynamics：
+
+```math
+P[i][j] = \text{从状态 } i \text{ 转移到状态 } j \text{ 的概率}
+```
+
+$P$ 的每一行求和为 1（你必须去往某个地方）。
 
 **示例 —— Weather：**
 
@@ -86,7 +86,7 @@ P = [[0.7, 0.1, 0.2],    (if sunny: 70% sunny, 10% rainy, 20% cloudy)
      [0.4, 0.2, 0.4]]    (if cloudy: 40% sunny, 20% rainy, 40% cloudy)
 ```
 
-从任意 state 开始。经过多次 transitions 后，states 的分布会收敛到 stationary distribution pi，其中 pi * P = pi。这是 P 的 eigenvalue 为 1 的 left eigenvector。
+从任意 state 开始。经过多次 transitions 后，states 的分布会收敛到 stationary distribution $\pi$，其中 $\pi P = \pi$。这是 $P$ 的 eigenvalue 为 1 的 left eigenvector。
 
 对于 weather chain，stationary distribution 可能是 [0.53, 0.18, 0.29] —— 长期来看，无论起始 state 是什么，53% 的时间都是 sunny。
 
@@ -105,8 +105,8 @@ graph LR
 
 **计算 stationary distribution。** 有两种方法：
 
-1. **Power method**：将任意初始分布反复乘以 P。经过足够多 iterations 后，它会收敛。
-2. **Eigenvalue method**：找到 P 的 eigenvalue 为 1 的 left eigenvector。这等价于 P^T 的 eigenvalue 为 1 的 eigenvector。
+1. **Power method**：将任意初始分布反复乘以 $P$。经过足够多 iterations 后，它会收敛。
+2. **Eigenvalue method**：找到 $P$ 的 eigenvalue 为 1 的 left eigenvector。这等价于 $P^T$ 的 eigenvalue 为 1 的 eigenvector。
 
 两种方法都要求 chain 满足收敛条件。
 
@@ -116,63 +116,63 @@ graph LR
 
 你在 ML 中遇到的大多数 chains 都满足这两个条件。
 
-**Absorbing states。** 如果一旦进入某个 state 就永远不会离开（P[i][i] = 1），这个 state 就是 absorbing 的。Absorbing Markov chains 可用于建模带有 terminal states 的过程 —— 一个结束的游戏、一个 churn 的客户、一个命中 end-of-text token 的 token sequence。
+**Absorbing states。** 如果一旦进入某个 state 就永远不会离开（$P[i][i] = 1$），这个 state 就是 absorbing 的。Absorbing Markov chains 可用于建模带有 terminal states 的过程 —— 一个结束的游戏、一个 churn 的客户、一个命中 end-of-text token 的 token sequence。
 
-**Mixing time。** 需要多少步，chain 才会“接近”stationary distribution？形式化地说，就是 total variation distance 与 stationarity 的距离降到某个阈值以下所需的步数。Fast mixing = 需要的步数少。P 的 spectral gap（1 减去第二大 eigenvalue）控制 mixing time。gap 越大，mixing 越快。
+**Mixing time。** 需要多少步，chain 才会“接近”stationary distribution？形式化地说，就是 total variation distance 与 stationarity 的距离降到某个阈值以下所需的步数。Fast mixing = 需要的步数少。$P$ 的 spectral gap（1 减去第二大 eigenvalue）控制 mixing time。gap 越大，mixing 越快。
 
 ### 与 Language Models 的联系
 
 Language model 中的 token generation 近似是一个 Markov process。给定当前 context，模型输出 next token 上的分布。Temperature 控制 sharpness：
 
-```
-P(token_i) = exp(logit_i / temperature) / sum(exp(logit_j / temperature))
+```math
+P(\text{token}_i) = \frac{\exp(\text{logit}_i / \text{temperature})}{\sum_j \exp(\text{logit}_j / \text{temperature})}
 ```
 
 - Temperature = 1.0：标准分布
 - Temperature < 1.0：更尖锐（更 deterministic）
 - Temperature > 1.0：更平坦（更 random）
-- Temperature -> 0：argmax（greedy）
+- Temperature $\to 0$：argmax（greedy）
 
-Top-k sampling 截断到概率最高的 k 个 tokens。Top-p（nucleus）sampling 截断到 cumulative probability 超过 p 的最小 token 集合。两者都会修改 Markov transition probabilities。
+Top-k sampling 截断到概率最高的 $k$ 个 tokens。Top-p（nucleus）sampling 截断到 cumulative probability 超过 $p$ 的最小 token 集合。两者都会修改 Markov transition probabilities。
 
 ### Brownian Motion
 
-random walk 的 continuous-time limit。位置 B(t) 有三个性质：
-1. B(0) = 0
-2. B(t) - B(s) 服从均值为 0、variance 为 t - s 的 normal distribution（对 t > s）
+random walk 的 continuous-time limit。位置 $B(t)$ 有三个性质：
+1. $B(0) = 0$
+2. $B(t) - B(s)$ 服从均值为 0、variance 为 $t - s$ 的 normal distribution（对 $t > s$）
 3. 不重叠区间上的 increments 相互独立
 
 Brownian motion 是连续的，但处处不可微 —— 它在每个尺度上都在抖动。其路径在平面中的 fractal dimension 为 2。
 
 在离散模拟中，你可以这样近似 Brownian motion：
 
-```
-B(t + dt) = B(t) + sqrt(dt) * z,    where z ~ N(0, 1)
+```math
+B(t + dt) = B(t) + \sqrt{dt} \, z, \quad \text{其中 } z \sim \mathcal{N}(0, 1)
 ```
 
-sqrt(dt) 缩放很重要。它来自应用于 random walks 的 central limit theorem。
+$\sqrt{dt}$ 缩放很重要。它来自应用于 random walks 的 central limit theorem。
 
 ### Langevin Dynamics
 
-Gradient Descent 寻找函数的最小值。Langevin dynamics 寻找与 exp(-U(x)/T) 成正比的 probability distribution，其中 U 是 energy function，T 是 temperature。
+Gradient Descent 寻找函数的最小值。Langevin dynamics 寻找与 $\exp(-U(x)/T)$ 成正比的 probability distribution，其中 $U$ 是 energy function，$T$ 是 temperature。
 
-```
-x_{t+1} = x_t - dt * gradient(U(x_t)) + sqrt(2 * T * dt) * z_t
+```math
+x_{t+1} = x_t - dt \, \nabla U(x_t) + \sqrt{2 T \, dt} \, z_t
 ```
 
 有两种力作用在 particle 上：
-1. **Gradient force**（-dt * gradient(U)）：推向低 energy（类似 Gradient Descent）
-2. **Random force**（sqrt(2*T*dt) * z）：推向随机方向（exploration）
+1. **Gradient force**（$-dt \cdot \nabla U$）：推向低 energy（类似 Gradient Descent）
+2. **Random force**（$\sqrt{2T dt} \cdot z$）：推向随机方向（exploration）
 
-当 temperature T = 0 时，这就是纯 Gradient Descent。高 temperature 下，它几乎是 random walk。在合适的 temperature 下，particle 会探索 energy landscape，并在 low-energy regions 中停留更久。
+当 temperature $T = 0$ 时，这就是纯 Gradient Descent。高 temperature 下，它几乎是 random walk。在合适的 temperature 下，particle 会探索 energy landscape，并在 low-energy regions 中停留更久。
 
 **与 diffusion models 的联系。** Diffusion model 的 forward process 是：
 
-```
-x_t = sqrt(alpha_t) * x_{t-1} + sqrt(1 - alpha_t) * noise
+```math
+x_t = \sqrt{\alpha_t} \, x_{t-1} + \sqrt{1 - \alpha_t} \cdot \text{noise}
 ```
 
-这是一个逐渐将 data 与 noise 混合的 Markov chain。经过足够多 steps 后，x_T 就是纯 Gaussian noise。
+这是一个逐渐将 data 与 noise 混合的 Markov chain。经过足够多 steps 后，$x_T$ 就是纯 Gaussian noise。
 
 reverse process —— 从 noise 回到 data —— 也是一个 Markov chain，但它的 transition probabilities 由 Neural Network 学习得到。网络学习预测每一步加入的 noise，然后将其减去。
 
@@ -192,27 +192,27 @@ graph LR
 
 ### MCMC: Markov Chain Monte Carlo
 
-有时你需要从一个可以求值（允许差一个常数）但无法直接采样的分布 p(x) 中采样。Bayesian posteriors 是经典例子 —— 你知道 likelihood 乘以 prior，但 normalizing constant 难以处理。
+有时你需要从一个可以求值（允许差一个常数）但无法直接采样的分布 $p(x)$ 中采样。Bayesian posteriors 是经典例子 —— 你知道 likelihood 乘以 prior，但 normalizing constant 难以处理。
 
-**Metropolis-Hastings** 构造一个 stationary distribution 为 p(x) 的 Markov chain：
+**Metropolis-Hastings** 构造一个 stationary distribution 为 $p(x)$ 的 Markov chain：
 
-1. 从某个位置 x 开始
-2. 从 proposal distribution Q(x'|x) 提议一个新位置 x'
-3. 计算 acceptance ratio：a = p(x') * Q(x|x') / (p(x) * Q(x'|x))
-4. 以概率 min(1, a) 接受 x'。否则留在 x。
+1. 从某个位置 $x$ 开始
+2. 从 proposal distribution $Q(x' \mid x)$ 提议一个新位置 $x'$
+3. 计算 acceptance ratio：$a = p(x') Q(x \mid x') / (p(x) Q(x' \mid x))$
+4. 以概率 $\min(1, a)$ 接受 $x'$。否则留在 $x$。
 5. 重复。
 
-如果 Q 是 symmetric 的（例如 Q(x'|x) = Q(x|x') = N(x, sigma^2)），ratio 可简化为 a = p(x') / p(x)。你只需要概率的 ratio —— normalizing constant 会相互抵消。
+如果 $Q$ 是 symmetric 的（例如 $Q(x' \mid x) = Q(x \mid x') = \mathcal{N}(x, \sigma^2){}$），ratio 可简化为 $a = p(x') / p(x)$。你只需要概率的 ratio —— normalizing constant 会相互抵消。
 
-在温和条件下，这个 chain 保证收敛到 p(x)。但如果 proposal 太小（random walk）或太大（高 rejection），收敛可能很慢。调节 proposal 是 MCMC 的艺术。
+在温和条件下，这个 chain 保证收敛到 $p(x)$。但如果 proposal 太小（random walk）或太大（高 rejection），收敛可能很慢。调节 proposal 是 MCMC 的艺术。
 
-**为什么它有效。** acceptance ratio 确保 detailed balance：位于 x 并移动到 x' 的概率，等于位于 x' 并移动到 x 的概率。Detailed balance 意味着 p(x) 是该 chain 的 stationary distribution。因此经过足够多 steps 后，samples 来自 p(x)。
+**为什么它有效。** acceptance ratio 确保 detailed balance：位于 $x$ 并移动到 $x'$ 的概率，等于位于 $x'$ 并移动到 $x$ 的概率。Detailed balance 意味着 $p(x)$ 是该 chain 的 stationary distribution。因此经过足够多 steps 后，samples 来自 $p(x)$。
 
 **实践注意事项：**
-- **Burn-in**：丢弃前 N 个 samples。chain 需要时间从起点到达 stationary distribution。
-- **Thinning**：每隔 k 个 sample 保留一个，以减少 autocorrelation。
+- **Burn-in**：丢弃前 $N$ 个 samples。chain 需要时间从起点到达 stationary distribution。
+- **Thinning**：每隔 $k$ 个 sample 保留一个，以减少 autocorrelation。
 - **Multiple chains**：从不同起点运行多个 chains。如果它们收敛到同一分布，就有收敛的证据。
-- **Acceptance rate**：对于 d 维 Gaussian proposals，最佳 acceptance rate 大约是 23%（Roberts & Rosenthal, 2001）。太高意味着 chain 几乎不移动。太低意味着它几乎全部 reject。
+- **Acceptance rate**：对于 $d$ 维 Gaussian proposals，最佳 acceptance rate 大约是 23%（Roberts & Rosenthal, 2001）。太高意味着 chain 几乎不移动。太低意味着它几乎全部 reject。
 
 ### Stochastic Processes in AI
 
@@ -257,7 +257,7 @@ def random_walk_2d(n_steps, seed=None):
     return x, y
 ```
 
-1D walk 存储 cumulative sums。每一步是 +1 或 -1。经过 n 步后，位置就是总和。variance 随 n 线性增长，因此 standard deviation 按 sqrt(n) 增长。
+1D walk 存储 cumulative sums。每一步是 +1 或 -1。经过 $n$ 步后，位置就是总和。variance 随 $n$ 线性增长，因此 standard deviation 按 $\sqrt{n}$ 增长。
 
 ### 步骤 2： Markov chain
 
@@ -291,7 +291,7 @@ class MarkovChain:
         return np.abs(stationary)
 ```
 
-stationary distribution 是 P 的 eigenvalue 为 1 的 left eigenvector。我们通过计算 P^T 的 eigenvectors 来找到它（转置会把 left eigenvectors 变成 right eigenvectors）。
+stationary distribution 是 $P$ 的 eigenvalue 为 1 的 left eigenvector。我们通过计算 $P^T$ 的 eigenvectors 来找到它（转置会把 left eigenvectors 变成 right eigenvectors）。
 
 ### 步骤 3： Langevin dynamics
 
@@ -307,7 +307,7 @@ def langevin_dynamics(grad_U, x0, dt, temperature, n_steps, seed=None):
     return np.array(trajectory)
 ```
 
-Gradient 将 x 推向低 energy。noise 防止它陷入局部停滞。在 equilibrium 时，samples 的分布与 exp(-U(x)/temperature) 成正比。
+Gradient 将 $x$ 推向低 energy。noise 防止它陷入局部停滞。在 equilibrium 时，samples 的分布与 $\exp(-U(x)/\text{temperature})$ 成正比。
 
 ### 步骤 4： Metropolis-Hastings
 
@@ -359,7 +359,7 @@ for _ in range(100):
 print(f"Stationary distribution: {np.round(distribution, 4)}")
 ```
 
-将初始分布反复乘以 P。经过足够多 iterations 后，它会收敛到 stationary distribution，无论你从哪里开始。这就是寻找 dominant left eigenvector 的 power method。
+将初始分布反复乘以 $P$。经过足够多 iterations 后，它会收敛到 stationary distribution，无论你从哪里开始。这就是寻找 dominant left eigenvector 的 power method。
 
 ### 与真实框架的连接
 
@@ -404,14 +404,14 @@ spectral gap 告诉你 chain 忘记其 initial state 的速度。gap 为 0.2 意
 
 Diffusion models 值得特别关注。DDPM（Ho et al., 2020）定义了一个 forward Markov chain：
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1-beta_t) * x_{t-1}, beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1-\beta_t} \, x_{t-1}, \beta_t I\right)
 ```
 
-其中 beta_t 是一个 noise schedule。经过 T 步后，x_T 近似为 N(0, I)。reverse process 由一个预测 noise 的 Neural Network 参数化：
+其中 $\beta_t$ 是一个 noise schedule。经过 $T$ 步后，$x_T$ 近似为 $\mathcal{N}(0, I)$。reverse process 由一个预测 noise 的 Neural Network 参数化：
 
-```
-p_theta(x_{t-1} | x_t) = N(x_{t-1}; mu_theta(x_t, t), sigma_t^2 * I)
+```math
+p_\theta(x_{t-1} \mid x_t) = \mathcal{N}\left(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I\right)
 ```
 
 generation 的每一步都是 learned Markov chain 中的一步。理解 Markov chains，就意味着理解 diffusion models 如何以及为什么能够生成数据。
@@ -421,24 +421,36 @@ SGLD（Stochastic Gradient Langevin Dynamics）将 mini-batch Gradient Descent �
 贯穿这些联系的关键洞见是：stochastic processes 不只是理论工具。它们是现代 AI 系统内部的计算机制。当你调节 LLM 的 temperature 时，你是在调整一个 Markov chain。当你训练 diffusion model 时，你是在学习反转一个类似 Brownian motion 的过程。当你运行 Bayesian inference 时，你是在构造一个收敛到 posterior 的 chain。
 
 ## 练习
-1. **模拟 1000 条 10000 步的 random walks。** 绘制 final positions 的分布。验证它近似为 mean 0、standard deviation sqrt(10000) = 100 的 Gaussian。
+1. **模拟 1000 条 10000 步的 random walks。** 绘制 final positions 的分布。验证它近似为 mean 0、standard deviation $\sqrt{10000} = 100$ 的 Gaussian。
 
 2. **使用 Markov chain 构建 text generator。** 在一个小 corpus 上训练：对每个 word，统计到下一个 word 的 transitions。构建 transition matrix。通过从 chain 中采样生成新句子。
 
 3. **使用 Metropolis-Hastings 实现 simulated annealing。** 从高 temperature 开始（几乎接受所有内容），然后逐渐降温（只接受改进）。用它寻找具有许多 local minima 的函数最小值。
 
-4. **比较不同 temperatures 下的 Langevin dynamics。** 从 double-well potential U(x) = (x^2 - 1)^2 中采样。低 temperature 时，samples 聚集在一个 well 中。高 temperature 时，它们分布到两个 well。找到 chain 在 wells 之间 mix 的 critical temperature。
+4. **比较不同 temperatures 下的 Langevin dynamics。** 从 double-well potential $U(x) = (x^2 - 1)^2$ 中采样。低 temperature 时，samples 聚集在一个 well 中。高 temperature 时，它们分布到两个 well。找到 chain 在 wells 之间 mix 的 critical temperature。
 
 5. **实现 forward diffusion process。** 从一个 1D signal（例如 sine wave）开始。使用 linear noise schedule，在 100 步中逐渐添加 noise。展示 signal 如何退化为 pure noise。然后实现一个简单的 denoiser 来反转该过程（即使是一个仅减去 estimated noise 的 naive 版本也可以）。
+
+### 提示
+
+**练习 1。** 对 1000 个不同的 seeds 调用 `random_walk_1d(10000, seed=i)`，并保留每次的最终位置。检查 mean 是否接近 0、standard deviation 是否接近 100，以及最终位置是否约有 68% 落在 -100 到 100 之间。
+
+**练习 2。** 统计每对相邻单词出现的次数，再将每一行除以该行的总和，使每行之和为 1。将矩阵传入 `MarkovChain(transition_matrix, state_names)`，并调用 `simulate`。检查输出中的每对相邻单词是否也出现在 corpus 中。
+
+**练习 3。** 以 $\exp(-\Delta / T)$ 的概率接受更差的点，并在每一步之后将 $T$ 乘以一个因子，例如 0.99。在一个已知 minimum 的函数上测试，并与细网格搜索的结果核对。
+
+**练习 4。** Gradient 是 $4x(x^2 - 1)$，将它传给 `langevin_dynamics(grad_U, x0, dt, temperature, n_steps)`。$x = 0$ 处的 barrier 高度为 1，因此在 0.05 到 1 的不同 temperatures 下，统计 $x$ 改变符号的次数，找出该次数开始快速上升时的 temperature。
+
+**练习 5。** 调用 `diffusion_forward(signal, 100)`，并将所有 $(1 - \beta_t)$ 相乘，得到最后一步的 $\bar{\alpha}$。如果 $\bar{\alpha}$ 仍远离 0，信号还不是纯噪声，需要增大 `beta_end`。先使用真实的 noise 测试 denoiser：此时 $(x_t - \sqrt{1 - \bar{\alpha}_t} \epsilon)/\sqrt{\bar{\alpha}_t}$ 必须精确还原原始信号。
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Random walk | “抛硬币式移动” | 一个 position 在每一步按随机 increments 改变的过程 |
 | Markov property | “无记忆性” | future 只依赖当前 state，而不依赖 history |
-| Transition matrix | “概率表” | P[i][j] = 从 state i 移动到 state j 的概率 |
-| Stationary distribution | “长期平均” | 满足 pi*P = pi 的分布 pi —— chain 的 equilibrium |
-| Brownian motion | “随机抖动” | random walk 的 continuous-time limit，B(t) ~ N(0, t) |
+| Transition matrix | “概率表” | $P[i][j]$ = 从 state $i$ 移动到 state $j$ 的概率 |
+| Stationary distribution | “长期平均” | 满足 $\pi P = \pi$ 的分布 $\pi$ —— chain 的 equilibrium |
+| Brownian motion | “随机抖动” | random walk 的 continuous-time limit，$B(t) \sim \mathcal{N}(0, t)$ |
 | Langevin dynamics | “带噪声的 Gradient Descent” | 结合 deterministic Gradient 与 random perturbation 的 update rule |
 | MCMC | “向目标行走” | 构造一个 stationary distribution 为你想要的分布的 Markov chain |
 | Metropolis-Hastings | “提议并接受/拒绝” | 使用 acceptance ratios 来确保收敛的 MCMC algorithm |

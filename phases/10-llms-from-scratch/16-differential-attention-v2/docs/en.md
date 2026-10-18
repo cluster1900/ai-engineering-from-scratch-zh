@@ -28,8 +28,8 @@ DIFF V1 有三个问题，使它无法进入前沿 pre-training pipeline。它�
 
 对于 query `q` 和 keys `K = [k_1, ..., k_N]`，Attention 权重是：
 
-```
-w_i = exp(q . k_i / sqrt(d)) / sum_j exp(q . k_j / sqrt(d))
+```math
+w_i = \frac{\exp(q \cdot k_i / \sqrt{d})}{\sum_j \exp(q \cdot k_j / \sqrt{d})}
 ```
 
 没有任何 `w_i` 会是零。如果 `k_i` 与 `q` 完全无关，score `q . k_i` 也不是 0——它会围绕零波动，方差为 `||q||^2 / d`。经过 softmax normalization 后，每个无关 Token 仍会向加权和贡献 `O(1/N)`。无关 Token 的总贡献是 `O((N-1)/N) = O(1)`——这不是一个小量。
@@ -38,17 +38,19 @@ w_i = exp(q . k_i / sqrt(d)) / sum_j exp(q . k_j / sqrt(d))
 
 ### Differential 思路
 
-将每个 head 的 Q 和 K projections 拆成两份：Q = (Q_1, Q_2)，K = (K_1, K_2)。计算两个 Attention maps：
+将每个 head 的 Q 和 K projections 拆成两份：$Q = (Q_1, Q_2)$，$K = (K_1, K_2)$。计算两个 Attention maps：
 
-```
-A_1 = softmax(Q_1 K_1^T / sqrt(d))
-A_2 = softmax(Q_2 K_2^T / sqrt(d))
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d})
+\end{aligned}
 ```
 
 输出：
 
-```
-DiffAttn = (A_1 - lambda * A_2) V
+```math
+\mathop{\mathrm{DiffAttn}} = (A_1 - \lambda \cdot A_2) V
 ```
 
 相减会抵消两个 maps 共享的任何噪声分布。如果两个 maps 在 127k 个无关 Token 上都有近似均匀的权重（在随机初始化时确实如此），这些部分会相互抵消。信号——少数真正相关 Token 上的尖峰权重——只有在两个 maps 中以相同幅度出现时才会被抵消，而模型训练后不会保持这种状态。
@@ -63,7 +65,7 @@ DiffAttn = (A_1 - lambda * A_2) V
 
 V1 保持了与 baseline Transformer 相同的参数量。为了让每个 head 有两个 queries，它将 head dimension 减半。这牺牲了 head 的表达能力，更痛的是，还让每个 head 的 value cache 减半。Decode 每一步都必须加载 value cache 两次（每个 softmax branch 一次）。结果：尽管参数量相同，decode 仍比 baseline 慢。
 
-V2 将 query heads 数量加倍，并保持 KV heads 不变（从 up-projection 借用参数）。Head dimension 保持与 baseline 相同。相减之后，额外维度会被投影回去，以匹配 baseline Transformer 的 O_W projection。三件事同时发生：
+V2 将 query heads 数量加倍，并保持 KV heads 不变（从 up-projection 借用参数）。Head dimension 保持与 baseline 相同。相减之后，额外维度会被投影回去，以匹配 baseline Transformer 的 $O_W$ projection。三件事同时发生：
 
 1. Decode speed 与 baseline 持平（KV cache 只加载一次）。
 2. FlashAttention 可原样运行（无需 custom kernel）。
@@ -140,8 +142,8 @@ out = [[sum(w * v[j] for w, v in zip(row, V)) for j in range(d_v)] for row in di
 给定一个 config（hidden=4096, heads=32, d_head=128），打印：
 
 - Baseline Transformer：Q、K、V 各自大小为 `hidden * hidden`，MLP 为 4 * hidden。
-- DIFF V1：Q、K 各自大小为 `hidden * hidden`，V 大小为 `hidden * hidden`（不变），head dim 在内部减半。增加 per-head `lambda` 参数（O(heads * d_head)）。
-- DIFF V2：Q 大小为 `2 * hidden * hidden`，K 大小为 `hidden * hidden`，V 大小为 `hidden * hidden`。额外维度会在 O_W 前投影回去。增加相同的 `lambda` 参数。
+- DIFF V1：Q、K 各自大小为 `hidden * hidden`，V 大小为 `hidden * hidden`（不变），head dim 在内部减半。增加 per-head `lambda` 参数$(O(\text{heads} \cdot d_{\text{head}}))$。
+- DIFF V2：Q 大小为 `2 * hidden * hidden`，K 大小为 `hidden * hidden`，V 大小为 `hidden * hidden`。额外维度会在 $O_W$ 前投影回去。增加相同的 `lambda` 参数。
 
 toy 会测量 V2 的额外参数成本（大约每个 Attention block 额外 `hidden * hidden`），并打印出来。
 
@@ -183,8 +185,8 @@ toy 会测量 V2 的额外参数成本（大约每个 Attention block 额外 `hi
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
-| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 lambda 缩放），然后乘以 V |
-| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 O(1/N) 权重，在 long contexts 中会累加到 O(1) |
+| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 $\lambda$ 缩放），然后乘以 V |
+| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 $O(1/N)$ 权重，在 long contexts 中会累加到 $O(1)$ |
 | lambda | “相减的缩放系数” | 每个 head 的可学习标量，参数化为 `exp(lq1.lk1) - exp(lq2.lk2) + lambda_init`；可以为负 |
 | DIFF V1 | “ICLR 2025 版本” | 原始 Differential Transformer；将 head dim 减半以保持参数量，需要 custom kernel，decode 更慢 |
 | DIFF V2 | “2026 年 1 月修复版” | 在保持 KV heads 的同时将 Q heads 加倍；decode speed 与 baseline 持平，并兼容 FlashAttention |
