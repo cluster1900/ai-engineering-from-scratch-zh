@@ -24,10 +24,10 @@ Ensemble methods 正是这样做的。它们是在 tabular data 上赢得 Kaggle
 
 ### 为什么 Ensembles 有效
 
-假设你有 N 个独立 classifiers，每个的 accuracy 都是 p > 0.5。majority vote 的 accuracy 为：
+假设你有 $N$ 个独立 classifiers，每个的 accuracy 都是 $p > 0.5$。majority vote 的 accuracy 为：
 
-```
-P(majority correct) = sum over k > N/2 of C(N,k) * p^k * (1-p)^(N-k)
+```math
+P(\text{多数预测正确}) = \sum_{k > N/2} \binom{N}{k} p^k (1-p)^{N-k}
 ```
 
 对于 21 个 accuracy 均为 60% 的 classifiers，majority vote accuracy 大约是 74%。如果有 101 个 classifiers，会提升到 84%。当模型犯不同错误时，错误会相互抵消。
@@ -132,7 +132,7 @@ Gradient boosting 将 boosting 泛化到任意 Loss Function。它不是重新�
 3. Final prediction: F_T(x)
 ```
 
-对于 squared error loss，pseudo-residuals 就是实际 residuals：`r_i = y_i - F_{t-1}(x_i)`。每棵 tree 实际上都在拟合前一个 ensemble 的错误。
+对于 squared error loss，pseudo-residuals 就是实际 residuals：$r_i = y_i - F_{t-1}(x_i)$。每棵 tree 实际上都在拟合前一个 ensemble 的错误。
 
 learning rate（shrinkage）控制每棵 tree 的贡献程度。更小的 learning rates 需要更多 trees，但泛化效果更好。典型取值：0.01 到 0.3。
 

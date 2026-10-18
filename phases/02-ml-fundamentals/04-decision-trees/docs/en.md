@@ -48,10 +48,8 @@ Tree 通过 top-down 方式构建：在每个 node，选择最能分离数据的
 
 **Gini impurity** 衡量的是：如果按照该 node 的 class distribution 给一个随机选择的 sample 贴 label，它被 misclassified 的概率。
 
-```
-Gini(S) = 1 - sum(p_k^2)
-
-where p_k is the proportion of class k in set S.
+```math
+\text{基尼}(S) = 1 - \sum_k p_k^2 \quad \text{其中 } p_k \text{ 是集合 } S \text{ 中类别 } k \text{ 的占比。}
 ```
 
 对于 pure node（全部属于同一个 class），Gini = 0。对于 50/50 classes 的 binary split，Gini = 0.5。越低越好。
@@ -64,8 +62,8 @@ Gini = 1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48
 
 **Entropy** 衡量 node 中的信息量（混乱程度）。Phase 1 Lesson 09 已覆盖。
 
-```
-Entropy(S) = -sum(p_k * log2(p_k))
+```math
+\text{熵}(S) = -\sum_k p_k \log_2(p_k)
 ```
 
 对于 pure node，entropy = 0。对于 50/50 binary split，entropy = 1.0。越低越好。
@@ -81,20 +79,21 @@ Entropy = -(0.6 * log2(0.6) + 0.4 * log2(0.4))
 
 **Information gain** 是 split 之后 impurity（entropy 或 Gini）的降低量。
 
-```
-IG(S, feature, threshold) = Impurity(S) - weighted_avg(Impurity(S_left), Impurity(S_right))
-
-where the weights are the proportions of samples in each child.
+```math
+\begin{aligned}
+& IG(S, \text{特征}, \text{阈值}) = \text{不纯度}(S) - \text{weighted\_avg}(\text{不纯度}(S_{\text{左子节点}}), \text{不纯度}(S_{\text{右子节点}})) \\[4pt]
+& \text{其中，权重是每个子节点的样本占比。}
+\end{aligned}
 ```
 
 每个 node 上的 greedy algorithm：尝试每个 feature 和每个可能的 threshold。选择使 information gain 最大的 `(feature, threshold)` 组合。
 
 ### Splitting 如何工作
 
-对于当前 node 上包含 n 个 features、m 个 samples 的 dataset：
+对于当前 node 上包含 $n$ 个 features、$m$ 个 samples 的 dataset：
 
-1. 对每个 feature j（j = 1 到 n）：
-   - 按 feature j 对 samples 排序
+1. 对每个 feature $j$（$j = 1$ 到 $n$）：
+   - 按 feature $j$ 对 samples 排序
    - 将相邻不同取值之间的每个 midpoint 作为 threshold 尝试
    - 计算每个 threshold 的 information gain
 2. 选择 information gain 最高的 feature 和 threshold
@@ -109,7 +108,7 @@ where the weights are the proportions of samples in each child.
 
 **Pre-pruning** 会在 tree 完全长成之前停止：
 - Maximum depth：当 tree 达到设定 depth 时停止 splitting
-- Minimum samples per leaf：如果某个 node 的 samples 少于 k，则停止
+- Minimum samples per leaf：如果某个 node 的 samples 少于 $k$，则停止
 - Minimum information gain：如果最佳 split 对 impurity 的改善小于某个 threshold，则停止
 - Maximum leaf nodes：限制 leaves 的总数
 
@@ -125,8 +124,8 @@ Pre-pruning 更简单也更快。Post-pruning 通常能产生更好的 trees，�
 
 **Variance reduction** 替代 information gain：
 
-```
-VR(S, feature, threshold) = Var(S) - weighted_avg(Var(S_left), Var(S_right))
+```math
+VR(S, \text{特征}, \text{阈值}) = \text{Var}(S) - \text{weighted\_avg}(\text{Var}(S_{\text{左子节点}}), \text{Var}(S_{\text{右子节点}}))
 ```
 
 选择使 variance 降低最多的 split。Tree 会把 input space 划分为多个区域，并在每个区域中预测一个常数（均值）。
@@ -155,7 +154,7 @@ graph TD
 
 **Bagging（bootstrap aggregating）：** 每棵 tree 都在一个 bootstrap sample 上训练，也就是从 training data 中进行有放回随机抽样得到的样本。每个 bootstrap 中大约会出现原始 samples 的 63%（其余是 out-of-bag samples，可用于 validation）。
 
-**Feature randomization：** 在每次 split 时，只考虑一个随机 feature subset。对于 Classification，默认是 sqrt(n_features)。对于 Regression，是 n_features/3。这会防止所有 trees 都在同一个 dominant feature 上 split。
+**Feature randomization：** 在每次 split 时，只考虑一个随机 feature subset。对于 Classification，默认是 $\sqrt{n_{\text{特征}}}$。对于 Regression，是 $n_{\text{特征}}/3$。这会防止所有 trees 都在同一个 dominant feature 上 split。
 
 关键洞见：对许多 decorrelated trees 求平均，可以在不增加 bias 的情况下降低 variance。每棵单独的 tree 可能表现一般，但 ensemble 很强。
 
@@ -165,9 +164,8 @@ Random forests 天然提供 feature importance scores。最常见的方法：
 
 **Mean Decrease in Impurity (MDI)：** 对每个 feature，汇总所有 trees 中所有使用该 feature 的 nodes 带来的 impurity reduction 总量。在更早 splits 中带来更大 impurity reduction 的 features 更重要。
 
-```
-importance(feature_j) = sum over all nodes where feature_j is used:
-    (n_samples_at_node / n_total_samples) * impurity_decrease
+```math
+\text{重要性}(\text{特征}_j) = \sum_{\text{使用特征 } j \text{ 划分的节点}} \frac{n_{\text{节点样本数}}}{n_{\text{总样本数}}} \cdot \text{impurity\_decrease}
 ```
 
 这种方法很快（训练期间即可计算），但会偏向 high-cardinality features 以及具有许多可能 split points 的 features。
@@ -349,7 +347,7 @@ print(f"Feature importances: {rf.feature_importances_}")
 
 1. 在一个包含 3 个 classes 的 2D dataset 上训练单棵 decision tree。手动追踪 splits，并画出矩形 decision boundaries。比较 max_depth=2 与 max_depth=10 时的 boundaries。
 
-2. 为 regression trees 实现 variance reduction splitting。为 200 个点生成 y = sin(x) + noise，并拟合你的 regression tree。将 tree 的 piecewise-constant predictions 与真实曲线一起绘图。
+2. 为 regression trees 实现 variance reduction splitting。为 200 个点生成 $y = \sin(x) + \text{噪声}$，并拟合你的 regression tree。将 tree 的 piecewise-constant predictions 与真实曲线一起绘图。
 
 3. 构建包含 1、5、10、50 和 200 棵 trees 的 random forest。绘制 training accuracy 和 test accuracy 随 trees 数量变化的曲线。观察 test accuracy 会达到平台期，但不会下降（forests 抵抗 overfitting）。
 

@@ -23,7 +23,7 @@ Mel spectrogram 进一步推进。人类以对数方式感知 pitch：100 Hz vs 
 
 **Log-magnitude.** raw magnitude 跨越 5-6 个数量级。使用 `log(|X| + 1e-6)` 或 `20 * log10(|X|)` 来压缩 dynamic range。每个 production pipeline 都使用 log-magnitude，而不是 raw magnitude。
 
-**Mel scale.** Hz 中的 frequency `f` 通过 `m = 2595 * log10(1 + f / 700)` 映射到 mel `m`。该映射在 1 kHz 以下大致是线性的，在 1 kHz 以上大致是对数的。覆盖 0–8 kHz 的 80 个 mel bins 是标准 ASR input。
+**Mel scale.** Hz 中的 frequency `f` 通过 $m = 2595 \cdot \log_{10}(1 + f / 700)$ 映射到 mel `m`。该映射在 1 kHz 以下大致是线性的，在 1 kHz 以上大致是对数的。覆盖 0–8 kHz 的 80 个 mel bins 是标准 ASR input。
 
 **Mel filterbank.** 一组在 mel scale 上等间距排列的 triangular filters。每个 filter 是相邻 FFT bins 的 weighted sum。将 STFT magnitude 乘以 filterbank Matrix，即可通过一次 matmul 得到 mel spectrogram。
 

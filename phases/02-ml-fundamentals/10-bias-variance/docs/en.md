@@ -51,23 +51,24 @@ Variance 衡量的是当你在不同数据子集上训练时，预测会变化�
 
 ### The Decomposition
 
-对于任意点 x，平方损失下的期望预测误差可以精确分解为：
+对于任意点 $x$，平方损失下的期望预测误差可以精确分解为：
 
+```math
+\begin{aligned}
+& \text{期望误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声} \\[6pt]
+& \text{其中：} \\
+& \quad \text{偏差}^2 = (\mathbb{E}[\hat{f}(x)] - f(x))^2 \\
+& \quad \text{方差} = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2] \\
+& \quad \text{噪声} = \mathbb{E}[(y - f(x))^2] \quad (\sigma^2)
+\end{aligned}
 ```
-Expected Error = Bias^2 + Variance + Irreducible Noise
 
-where:
-  Bias^2   = (E[f_hat(x)] - f(x))^2
-  Variance = E[(f_hat(x) - E[f_hat(x)])^2]
-  Noise    = E[(y - f(x))^2]             (sigma^2)
-```
+- $f(x)$ 是真实函数
+- $\hat{f}(x)$ 是模型预测
+- $\mathbb{E}[\ldots]$ 是对不同训练集的期望
+- $y$ 是观测到的 label（真实函数加噪声）
 
-- `f(x)` 是真实函数
-- `f_hat(x)` 是模型预测
-- `E[...]` 是对不同训练集的期望
-- `y` 是观测到的 label（真实函数加噪声）
-
-噪声项是不可约的。在有噪声数据上，没有模型能比 sigma^2 做得更好。你的任务是在 bias^2 和 variance 之间找到正确平衡。
+噪声项是不可约的。在有噪声数据上，没有模型能比 $\sigma^2$ 做得更好。你的任务是在 $\text{偏差}^2$ 和 variance 之间找到正确平衡。
 
 ### Model Complexity vs Error
 
@@ -128,9 +129,9 @@ graph LR
 
 | Regime | Parameters vs Samples | Behavior |
 |--------|----------------------|----------|
-| Underparameterized | p << n | 经典 tradeoff 适用 |
-| Interpolation threshold | p ~ n | Variance 达到峰值，测试误差激增 |
-| Overparameterized | p >> n | Implicit regularization 开始起作用，测试误差下降 |
+| Underparameterized | $p \ll n$ | 经典 tradeoff 适用 |
+| Interpolation threshold | $p \sim n$ | Variance 达到峰值，测试误差激增 |
+| Overparameterized | $p \gg n$ | Implicit regularization 开始起作用，测试误差下降 |
 
 从实践角度看：如果你使用 Neural Networks 或大型 tree ensembles，不要停在 interpolation threshold。要么远低于它（配合 explicit regularization），要么远高于它。最糟的位置就是正好在 threshold 上。
 
@@ -177,7 +178,7 @@ Ensemble methods 是对抗 Variance 最实用的工具。
 
 **Bagging (Bootstrap Aggregating)** 会在训练数据的不同 bootstrap samples 上训练多个模型，然后对预测取平均。每个单独模型都有高 Variance，但平均值的 Variance 要低得多。Random forests 是将 bagging 应用于 decision trees。
 
-它在数学上有效的原因是：如果你平均 N 个独立预测，每个预测的 variance 都是 sigma^2，那么平均值的 variance 是 sigma^2 / N。这些模型并不真正独立（它们都看到相似的数据），因此降低幅度小于 1/N，但仍然相当可观。
+它在数学上有效的原因是：如果你平均 $N$ 个独立预测，每个预测的 variance 都是 $\sigma^2$，那么平均值的 variance 是 $\sigma^2 / N$。这些模型并不真正独立（它们都看到相似的数据），因此降低幅度小于 $1/N$，但仍然相当可观。
 
 **Boosting** 通过按顺序构建模型来降低 Bias，其中每个新模型都关注当前 ensemble 的错误。Gradient boosting 和 AdaBoost 是主要例子。如果添加太多模型，Boosting 可能 overfit，因此你需要 early stopping 或 regularization。
 
@@ -303,10 +304,10 @@ variance = np.mean(predictions.var(axis=0))
 total_error = np.mean(np.mean((predictions - y_true) ** 2, axis=1))
 ```
 
-- `mean_pred` 是从 bootstrap samples 估计出的 E[f_hat(x)]
+- `mean_pred` 是从 bootstrap samples 估计出的 $\mathbb{E}[\hat{f}(x)]$
 - `bias_sq` 是平均预测与真实值之间差距的平方
 - `variance` 是跨 bootstrap samples 的预测平均离散程度
-- `total_error` 应该近似等于 bias^2 + variance + noise
+- `total_error` 应该近似等于 $\text{偏差}^2 + \text{方差} + \text{噪声}$
 
 ### 步骤 4： Learning Curves
 
@@ -434,7 +435,7 @@ for alpha in alphas:
 
 2. 将训练集大小从 30 增加到 300。这会如何影响 Variance component？最优 polynomial degree 是否会移动？
 
-3. 向实验添加 L2 regularization（Ridge regression）。对于固定的 high-degree polynomial（degree 15），将 lambda 从 0 扫描到 100。绘制 bias^2 和 variance 随 lambda 变化的函数图。
+3. 向实验添加 L2 regularization（Ridge regression）。对于固定的 high-degree polynomial（degree 15），将 lambda 从 0 扫描到 100。绘制 $\text{偏差}^2$ 和 variance 随 lambda 变化的函数图。
 
 4. 将真实函数从 polynomial 修改为 `sin(x)`。Bias-Variance 分解会如何变化？是否仍然有清晰的最优 degree？
 

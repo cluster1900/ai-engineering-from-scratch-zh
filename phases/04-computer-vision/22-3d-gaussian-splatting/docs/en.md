@@ -61,12 +61,13 @@ flowchart LR
 
 位于 world position `mu`、具有 3D covariance `Sigma` 的 3D Gaussian，会投影为 screen position `mu'`、具有 2D covariance `Sigma'` 的 2D Gaussian：
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 2D Gaussian 的 footprint 是一个 ellipse，其轴是 `Sigma'` 的 eigenvectors。该 ellipse 内的每个 pixel 都会接收这个 Gaussian 的贡献，权重为 `exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`。
@@ -75,12 +76,13 @@ J = Jacobian of the perspective projection at mu'
 
 对于一个 pixel，覆盖它的 Gaussians 会按 back-to-front 排序（或等价地，用反向公式按 front-to-back 排序）。Colour 使用自 1980 年代以来所有 semi-transparent rasteriser 都在使用的同一个方程进行 compositing：
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 这与 **NeRF 的 volumetric render 是同一个方程**，只不过这里是在一个显式的稀疏 Gaussians 集合上计算，而不是在 ray 上的 dense samples 上计算。这个等价性就是渲染质量能匹配 NeRF 的原因：二者都在积分同一个 radiance-field 方程。
@@ -97,7 +99,7 @@ c_i = eval_SH(SH_i, view_direction)    view-dependent colour
 - **Split**：当某个大 scale Gaussian 的 Gradient 很高时，将它拆成两个更小的 Gaussian。这说明一个大的 Gaussian 对该区域来说太平滑，无法拟合。
 - **Prune**：删除 opacity 低于阈值的 Gaussians。它们没有贡献。
 
-Densification 每 N 次 iteration 运行一次。一个场景通常会从约 100k 个初始 Gaussians（由 SfM points 初始化）增长到训练结束时的 1-5M。
+Densification 每 $N$ 次 iteration 运行一次。一个场景通常会从约 100k 个初始 Gaussians（由 SfM points 初始化）增长到训练结束时的 1-5M。
 
 ### 用一段话理解 spherical harmonics
 
