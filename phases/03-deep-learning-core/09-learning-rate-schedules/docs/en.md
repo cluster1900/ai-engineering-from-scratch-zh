@@ -30,8 +30,8 @@
 
 最简单的方法。选一个数，每一步都用它。
 
-```
-lr(t) = lr_0
+```math
+\text{lr}(t) = \text{lr}_0
 ```
 
 很少是最优的。它要么对训练末期来说太高（在 minimum 附近 oscillation），要么对训练初期来说太低（在小步上浪费 compute）。对小 model 和 debugging 来说还可以。对任何需要训练超过一小时的任务来说都是糟糕选择。
@@ -40,11 +40,11 @@ lr(t) = lr_0
 
 来自 ResNet 时代的老派方法。在固定 epochs 处按某个因子（通常是 10x）降低 learning rate。
 
-```
-lr(t) = lr_0 * gamma^(floor(epoch / step_size))
+```math
+\text{lr}(t) = \text{lr}_0 \cdot \gamma^{\lfloor \text{epoch} / \text{step\_size} \rfloor}
 ```
 
-其中 gamma = 0.1 且 step_size = 30 表示：lr 每 30 个 epochs 降低 10x。ResNet-50 就用了这个 -- lr=0.1，在 epochs 30、60 和 90 时降低 10x。
+其中 $\gamma = 0.1$ 且 step_size = 30 表示：lr 每 30 个 epochs 降低 10x。ResNet-50 就用了这个 -- lr=0.1，在 epochs 30、60 和 90 时降低 10x。
 
 问题是：最优 decay 点取决于 dataset 和 architecture。换到另一个问题，就需要重新调什么时候降低。转变也很突然 -- 当 rate 突然变化时，Loss 可能会 spike。
 
@@ -52,24 +52,24 @@ lr(t) = lr_0 * gamma^(floor(epoch / step_size))
 
 按照 cosine 曲线，从最大学习率平滑 decay 到最小值：
 
+```math
+\text{lr}(t) = \text{lr}_{\min} + 0.5 \cdot (\text{lr}_{\max} - \text{lr}_{\min}) \cdot \left(1 + \cos\left(\frac{\pi t}{T}\right)\right)
 ```
-lr(t) = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T))
-```
 
-其中 t 是当前 step，T 是总 steps 数。
+其中 $t$ 是当前 step，$T$ 是总 steps 数。
 
-当 t=0 时，cosine 项为 1，所以 lr = lr_max。当 t=T 时，cosine 项为 -1，所以 lr = lr_min。decay 一开始很平缓，中间加速，接近末尾时再次变得平缓。
+当 $t=0$ 时，cosine 项为 1，所以 $\text{lr} = \text{lr} _{\max}$。当 $t=T$ 时，cosine 项为 -1，所以 $\text{lr} = \text{lr} _{\min}$。decay 一开始很平缓，中间加速，接近末尾时再次变得平缓。
 
-这是大多数现代训练运行的默认选择。除了 lr_max 和 lr_min 之外没有需要调的 hyperparameters。cosine 形状符合经验观察：大多数学习发生在训练中段 -- 在这个关键阶段，你希望 step size 合理。
+这是大多数现代训练运行的默认选择。除了 $\text{lr} _{\max}$ 和 $\text{lr} _{\min}$ 之外没有需要调的 hyperparameters。cosine 形状符合经验观察：大多数学习发生在训练中段 -- 在这个关键阶段，你希望 step size 合理。
 
 ### Warmup：为什么要从小开始
 
 Adam 和其他 adaptive Optimizer 会维护 Gradient mean 和 variance 的 running estimates。在 step 0，这些 estimates 被初始化为零。最初几个 Gradient updates 基于很差的统计量。如果你的 learning rate 在这段时间很大，model 会迈出巨大且方向不佳的步子。
 
-Warmup 可以修复这个问题。先从一个很小的 learning rate 开始（通常是 lr_max / warmup_steps，甚至为零），并在前 N steps 中 linearly ramp up 到 lr_max。当你达到完整 learning rate 时，Adam 的统计量已经稳定。
+Warmup 可以修复这个问题。先从一个很小的 learning rate 开始（通常是 lr_max / warmup_steps，甚至为零），并在前 $N$ steps 中 linearly ramp up 到 $\text{lr}_{\max}$。当你达到完整 learning rate 时，Adam 的统计量已经稳定。
 
-```
-lr(t) = lr_max * (t / warmup_steps)     for t < warmup_steps
+```math
+\text{lr}(t) = \text{lr}_{\max} \cdot \frac{t}{\text{warmup\_steps}} \quad \text{当 } t < \text{warmup\_steps}
 ```
 
 典型 warmup：总训练 steps 的 1-5%。Llama 3 训练了约 1.8 trillion tokens，并 warmup 了 2000 steps。GPT-3 在 375 million tokens 上进行了 warmup。
@@ -399,13 +399,13 @@ HuggingFace function 是大多数 Llama 和 GPT fine-tuning scripts 使用的方
 
 ## 练习
 
-1. 实现 exponential decay：lr(t) = lr_0 * gamma^t，其中 gamma = 0.999。在 circle dataset 上与 cosine annealing 比较。
+1. 实现 exponential decay：$\text{lr}(t) = \text{lr}_0 \cdot \gamma^t$，其中 $\gamma = 0.999$。在 circle dataset 上与 cosine annealing 比较。
 
 2. 实现 learning rate range test（Leslie Smith）：训练几百步，同时将 LR 从 1e-7 指数增加到 1。绘制 Loss vs LR。最优 max LR 位于 Loss 开始增加之前。
 
 3. 使用 warmup + cosine 训练，但改变 warmup 长度：总 steps 的 0%、1%、5%、10%、20%。找到训练最稳定的 sweet spot。
 
-4. 实现带 warm restarts 的 cosine annealing（SGDR）：每 T steps 将 learning rate 重置为 lr_max，然后再次 decay。在更长的训练运行中与标准 cosine 比较。
+4. 实现带 warm restarts 的 cosine annealing（SGDR）：每 $T$ steps 将 learning rate 重置为 $\text{lr}_{\max}$，然后再次 decay。在更长的训练运行中与标准 cosine 比较。
 
 5. 构建一个“schedule surgeon”，监控训练 Loss，并在 Loss 稳定时自动从 warmup 切换到 cosine；如果 Loss plateau 太久，则降低 lr。
 
@@ -415,12 +415,12 @@ HuggingFace function 是大多数 Llama 和 GPT fine-tuning scripts 使用的方
 |------|----------------|----------------------|
 | Learning rate | “model 学得有多快” | 用来乘以 Gradient、决定参数更新大小的标量 |
 | Schedule | “随时间改变 LR” | 将 training step 映射到 learning rate 的 function，旨在优化 convergence |
-| Warmup | “从小 LR 开始” | 在最初 N steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
-| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 lr_max 降低到 lr_min |
+| Warmup | “从小 LR 开始” | 在最初 $N$ steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
+| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 $\text{lr} _{\max}$ 降低到 $\text{lr} _{\min}$ |
 | Step decay | “在 milestones 降低 LR” | 在固定 epoch intervals，将 LR 乘以一个因子（通常是 0.1） |
 | 1cycle policy | “先上后下” | Leslie Smith 的方法：在单个 cycle 中将 LR 先 ramp up 再 ramp down，以获得更快 convergence |
 | LR range test | “找到最佳 learning rate” | 在短时间训练中逐步增加 LR，以找到 Loss 开始 diverge 的数值 |
-| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 lr_max，并再次 decay（SGDR） |
+| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 $\text{lr} _{\max}$，并再次 decay（SGDR） |
 | Eta min | “LR 的下限” | schedule 最终 decay 到的最小 learning rate |
 | Peak learning rate | “最大 LR” | 训练过程中达到的最高 LR，通常出现在 warmup 之后 |
 

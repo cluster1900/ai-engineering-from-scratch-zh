@@ -23,7 +23,7 @@ Backpropagation 解决了这个问题。一次 Forward Pass，一次 Backward Pa
 ## 概念
 ### Chain Rule，应用到 Network 上
 
-你在 Phase 01, Lesson 05 中见过 chain rule。快速回顾：如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x)。你沿着链条相乘 derivative。
+你在 Phase 01, Lesson 05 中见过 chain rule。快速回顾：如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$。你沿着链条相乘 derivative。
 
 在 Neural Network 中，“链条”是从 input 到 Loss 的操作序列。每一层应用权重、加上偏置、再通过 activation。Loss Function 将最终 output 与 target 进行比较。Backpropagation 会沿着这条链反向追踪，计算每个操作对 error 的贡献。
 
@@ -42,9 +42,9 @@ graph LR
     y["target"] --> loss
 ```
 
-Forward Pass：value 从左向右流动。x 和 w 产生 z1 = w*x。加上 b 得到 z2。Sigmoid 给出 activation a。使用 Loss Function 将 a 与 target y 比较。
+Forward Pass：value 从左向右流动。$x$ 和 $w$ 产生 $z_1 = w x$。加上 $b$ 得到 $z_2$。Sigmoid 给出 activation $a$。使用 Loss Function 将 $a$ 与 target $y$ 比较。
 
-Backward Pass：Gradient 从右向左流动。从 dL/da 开始（Loss 如何随 activation 改变）。乘以 da/dz2（sigmoid derivative）。得到 dL/dz2。拆分成 dL/db（它等于 dL/dz2，因为 z2 = z1 + b）和 dL/dz1。然后 dL/dw = dL/dz1 * x，dL/dx = dL/dz1 * w。
+Backward Pass：Gradient 从右向左流动。从 $\partial L/\partial a$ 开始（Loss 如何随 activation 改变）。乘以 $\partial a/\partial z_2$（sigmoid derivative）。得到 $\partial L/\partial z_2$。拆分成 $\partial L/\partial b$（它等于 $\partial L/\partial z_2$，因为 $z_2 = z_1 + b$）和 $\partial L/\partial z_1$。然后 $\partial L/\partial w = \partial L/\partial z_1 \cdot x$，$\partial L/\partial x = \partial L/\partial z_1 \cdot w$。
 
 Graph 中每个 node 在 Backward Pass 期间只有一个任务：接收来自上游的 Gradient，乘以它自己的 local derivative，然后向下游传递。
 
@@ -81,7 +81,7 @@ graph RL
     L1 -- "dL/dz1 = dL/da1 * sigmoid'(z1)" --> I["Input"]
 ```
 
-在每一层，Gradient 都会乘以 sigmoid derivative。sigmoid derivative 是 a * (1 - a)，最大值是 0.25（当 a = 0.5 时）。深入三层后，Gradient 至多已经乘以 0.25^3 = 0.0156。深入十层：0.25^10 = 0.000001。
+在每一层，Gradient 都会乘以 sigmoid derivative。sigmoid derivative 是 $a(1 - a)$，最大值是 0.25（当 $a = 0.5$ 时）。深入三层后，Gradient 至多已经乘以 $0.25^3 = 0.0156$。深入十层：$0.25^{10} = 0.000001$。
 
 ### Vanishing Gradients
 
@@ -99,32 +99,33 @@ After 10 layers:  gradient * 0.25^10 = 0.000001x original
 
 ### 推导 2-Layer Network 的 Gradient
 
-下面是一个具体数学例子：network 有 input x、带 sigmoid 的 hidden layer、带 sigmoid 的 output layer，以及 MSE Loss。
+下面是一个具体数学例子：network 有 input $x$、带 sigmoid 的 hidden layer、带 sigmoid 的 output layer，以及 MSE Loss。
 
 Forward Pass:
-```
-z1 = W1 * x + b1
-a1 = sigmoid(z1)
-z2 = W2 * a1 + b2
-a2 = sigmoid(z2)
-L = (a2 - y)^2
+```math
+\begin{aligned}
+z_1 &= W_1 x + b_1 \\
+a_1 &= \text{sigmoid}(z_1) \\
+z_2 &= W_2 a_1 + b_2 \\
+a_2 &= \text{sigmoid}(z_2) \\
+L &= (a_2 - y)^2
+\end{aligned}
 ```
 
 Backward Pass（逐步应用 chain rule）：
-```
-dL/da2 = 2(a2 - y)
-da2/dz2 = a2 * (1 - a2)
-dL/dz2 = dL/da2 * da2/dz2 = 2(a2 - y) * a2 * (1 - a2)
-
-dL/dW2 = dL/dz2 * a1
-dL/db2 = dL/dz2
-
-dL/da1 = dL/dz2 * W2
-da1/dz1 = a1 * (1 - a1)
-dL/dz1 = dL/da1 * da1/dz1
-
-dL/dW1 = dL/dz1 * x
-dL/db1 = dL/dz1
+```math
+\begin{aligned}
+\frac{\partial L}{\partial a_2} &= 2(a_2 - y) \\
+\frac{\partial a_2}{\partial z_2} &= a_2 (1 - a_2) \\
+\frac{\partial L}{\partial z_2} &= \frac{\partial L}{\partial a_2} \cdot \frac{\partial a_2}{\partial z_2} = 2(a_2 - y) \cdot a_2 (1 - a_2) \\[6pt]
+\frac{\partial L}{\partial W_2} &= \frac{\partial L}{\partial z_2} \cdot a_1 \\
+\frac{\partial L}{\partial b_2} &= \frac{\partial L}{\partial z_2} \\[6pt]
+\frac{\partial L}{\partial a_1} &= \frac{\partial L}{\partial z_2} \cdot W_2 \\
+\frac{\partial a_1}{\partial z_1} &= a_1 (1 - a_1) \\
+\frac{\partial L}{\partial z_1} &= \frac{\partial L}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \\[6pt]
+\frac{\partial L}{\partial W_1} &= \frac{\partial L}{\partial z_1} \cdot x \\
+\frac{\partial L}{\partial b_1} &= \frac{\partial L}{\partial z_1}
+\end{aligned}
 ```
 
 每个 Gradient 都是从 Loss 往回追踪得到的 local derivative 乘积。这就是 Backpropagation 的全部。
@@ -182,9 +183,9 @@ def __mul__(self, other):
     return out
 ```
 
-对于 addition：d(a+b)/da = 1，d(a+b)/db = 1。因此两个 input 都会直接获得 output 的 Gradient。
+对于 addition：$\partial(a+b)/\partial a = 1$，$\partial(a+b)/\partial b = 1$。因此两个 input 都会直接获得 output 的 Gradient。
 
-对于 multiplication：d(a*b)/da = b，d(a*b)/db = a。每个 input 都会获得另一个 input 的 value 乘以 output Gradient。
+对于 multiplication：$\partial(ab)/\partial a = b$，$\partial(ab)/\partial b = a$。每个 input 都会获得另一个 input 的 value 乘以 output Gradient。
 
 `+=` 很关键。一个 Value 可能会被多个 operation 使用。它的 Gradient 是来自所有路径的 Gradient 之和。
 
@@ -206,7 +207,7 @@ def sigmoid(self):
     return out
 ```
 
-Sigmoid derivative：sigmoid(x) * (1 - sigmoid(x))。我们在 Forward Pass 中已经计算了 sigmoid(x) = s。复用它。不需要额外工作。
+Sigmoid derivative：$\text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))$。我们在 Forward Pass 中已经计算了 $\text{sigmoid}(x) = s$。复用它。不需要额外工作。
 
 ```python
 def mse_loss(predicted, target):
@@ -214,7 +215,7 @@ def mse_loss(predicted, target):
     return diff * diff
 ```
 
-单个 output 的 MSE：(predicted - target)^2。我们把 subtraction 表达为加上一个取负的 Value。
+单个 output 的 MSE：$(\text{predicted} - \text{target})^2$。我们把 subtraction 表达为加上一个取负的 Value。
 
 ### 步骤 4： Backward Pass
 
@@ -238,7 +239,7 @@ def backward(self):
         v._backward()
 ```
 
-从 Loss 开始（Gradient = 1.0，因为 dL/dL = 1）。沿着排序后的 graph 反向遍历。每个 node 的 `_backward` 会把 Gradient 推送给它的 children。
+从 Loss 开始（Gradient = 1.0，因为 $dL/dL = 1$）。沿着排序后的 graph 反向遍历。每个 node 的 `_backward` 会把 Gradient 推送给它的 children。
 
 ### 步骤 5： Layer and Network
 
@@ -298,7 +299,7 @@ class Network:
             p.grad = 0.0
 ```
 
-一个 Neuron 接收 input，计算 weighted sum + bias，然后应用 sigmoid。权重初始化按 sqrt(2/n_inputs) 缩放，用于防止更深 network 中的 sigmoid saturation。一个 Layer 是 Neuron 的列表。一个 Network 是 Layer 的列表。`parameters()` method 会收集所有可学习的 Value，这样我们就可以更新它们。
+一个 Neuron 接收 input，计算 weighted sum + bias，然后应用 sigmoid。权重初始化按 $\sqrt{2/n_{\text{inputs}}}$ 缩放，用于防止更深 network 中的 sigmoid saturation。一个 Layer 是 Neuron 的列表。一个 Network 是 Layer 的列表。`parameters()` method 会收集所有可学习的 Value，这样我们就可以更新它们。
 
 ### 步骤 6： 在 XOR 上训练
 
@@ -433,9 +434,9 @@ with torch.no_grad():
 - `outputs/prompt-gradient-debugger.md` -- 一个可复用的 prompt，用于诊断任何 Neural Network 中的 Gradient 问题（vanishing、exploding、NaN）
 
 ## 练习
-1. 给 Value class 添加一个 `__sub__` method（a - b = a + (-1 * b)）。然后实现一个 `__neg__` method。通过与简单表达式（如 (a - b)^2）的手动计算进行比较，验证 Gradient 是否正确。
+1. 给 Value class 添加一个 `__sub__` method（$a - b = a + (-1 \cdot b)$）。然后实现一个 `__neg__` method。通过与简单表达式（如 $(a - b)^2$）的手动计算进行比较，验证 Gradient 是否正确。
 
-2. 给 Value 添加一个 `relu` method（output 为 max(0, x)，derivative 在 x > 0 时为 1，否则为 0）。在 hidden layer 中用 relu 替换 sigmoid，并再次在 XOR 上训练。比较收敛速度。你应该会看到训练更快 -- 这是 Lesson 04 的预告。
+2. 给 Value 添加一个 `relu` method（output 为 $\max(0, x)$，derivative 在 $x \gt 0$ 时为 1，否则为 0）。在 hidden layer 中用 relu 替换 sigmoid，并再次在 XOR 上训练。比较收敛速度。你应该会看到训练更快 -- 这是 Lesson 04 的预告。
 
 3. 在 Value 上实现一个用于 integer powers 的 `__pow__` method。用它把 `mse_loss` 替换成真正的 `(predicted - target) ** 2` 表达式。验证 Gradient 与原始实现一致。
 
@@ -446,14 +447,14 @@ with torch.no_grad():
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 dL/dw |
+| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 $\partial L/\partial w$ |
 | Computational graph | “Network 结构” | 一个有向无环 graph，其中 node 是 operation，edge 承载 value（forward）和 Gradient（backward） |
-| Chain rule | “把 derivative 相乘” | 如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- Backpropagation 的数学基础 |
+| Chain rule | “把 derivative 相乘” | 如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ -- Backpropagation 的数学基础 |
 | Gradient | “最陡上升方向” | Loss 相对于某个 parameter 的 partial derivative -- 告诉你如何改变该 parameter 来降低 Loss |
 | Vanishing gradient | “深层 network 学不会” | 当 Gradient 通过带有 sigmoid 这类 saturating activation 的 layer 传播时，会指数级缩小 |
 | Forward pass | “运行 network” | 通过顺序应用每一层的 operation，从 input 计算 output，并存储 intermediate value |
 | Backward pass | “计算 Gradient” | 反向遍历 Computational Graph，在每个 node 使用 chain rule 累积 Gradient |
-| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：w_new = w_old - lr * gradient |
+| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：$w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{gradient}$ |
 | Topological sort | “正确顺序” | 一种 graph node 排序方式，使每个 node 都出现在其依赖的所有 node 之后 -- 确保 Gradient 在传播前已完全累积 |
 | Autograd | “自动微分” | 一个在 forward computation 期间构建 Computational Graph，并自动计算 Gradient 的系统 -- PyTorch 的 engine 做的就是这个 |
 

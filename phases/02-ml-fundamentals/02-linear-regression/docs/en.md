@@ -26,36 +26,36 @@ Linear regression 会给你这条线。更重要的是，它引入了完整的 M
 
 ### Model
 
-Linear regression 假设 input (x) 与 output (y) 之间存在线性关系：
+Linear regression 假设 input ($x$) 与 output ($y$) 之间存在线性关系：
 
-```
+```math
 y = wx + b
 ```
 
-- `w` (weight/slope)：当 x 增加 1 时，y 改变多少
-- `b` (bias/intercept)：当 x = 0 时，y 的值
+- `w` (weight/slope)：当 $x$ 增加 1 时，$y$ 改变多少
+- `b` (bias/intercept)：当 $x = 0$ 时，$y$ 的值
 
 对于多个 inputs (features)，它扩展为：
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
-或写成 Vector 形式：`y = w^T * x + b`
+或写成 Vector 形式：$y = w^T x + b$
 
-目标：找到 w 和 b 的值，使预测的 y 在所有 training examples 上尽可能接近真实的 y。
+目标：找到 $w$ 和 $b$ 的值，使预测的 $y$ 在所有 training examples 上尽可能接近真实的 $y$。
 
 ### Cost Function (Mean Squared Error)
 
 如何衡量“尽可能接近”？你需要一个单一数字来表示预测有多错。最常见的选择是 Mean Squared Error (MSE)：
 
-```
-MSE = (1/n) * sum((y_predicted - y_actual)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{预测值}} - y_{\text{实际值}})^2
 ```
 
 为什么要平方？有两个原因。第一，它对大误差的惩罚高于小误差（误差 10 比误差 1 糟糕 100 倍，而不是 10 倍）。第二，平方函数处处平滑且可微，这让优化变得直接。
 
-Cost function 会形成一个曲面。对于单个 weight w 和 bias b，MSE 曲面看起来像一个碗（凸抛物面）。碗底就是 MSE 最小的位置。Training 就是找到这个底部。
+Cost function 会形成一个曲面。对于单个 weight $w$ 和 bias $b$，MSE 曲面看起来像一个碗（凸抛物面）。碗底就是 MSE 最小的位置。Training 就是找到这个底部。
 
 ### Gradient Descent
 
@@ -74,18 +74,22 @@ flowchart TD
 
 Gradients 会告诉你两件事：每个 parameter 应该朝哪个方向移动，以及移动多少。
 
-对于 y_hat = wx + b 的 MSE：
+对于 $\hat{y} = wx + b$ 的 MSE：
 
-```
-dMSE/dw = (2/n) * sum((y_hat - y) * x)
-dMSE/db = (2/n) * sum(y_hat - y)
+```math
+\begin{aligned}
+\frac{\partial \text{MSE}}{\partial w} &= \frac{2}{n} \sum (\hat{y} - y) \, x \\
+\frac{\partial \text{MSE}}{\partial b} &= \frac{2}{n} \sum (\hat{y} - y)
+\end{aligned}
 ```
 
 更新规则：
 
-```
-w = w - learning_rate * dMSE/dw
-b = b - learning_rate * dMSE/db
+```math
+\begin{aligned}
+w &= w - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial w} \\
+b &= b - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial b}
+\end{aligned}
 ```
 
 learning rate 控制步长。太大：会越过最小值并发散。太小：training 会耗时很久。典型起始值：0.01、0.001 或 0.0001。
@@ -94,18 +98,18 @@ learning rate 控制步长。太大：会越过最小值并发散。太小：tra
 
 专门对于 linear regression，有一个直接公式可以在没有任何迭代的情况下给出最优 weights：
 
-```
-w = (X^T * X)^(-1) * X^T * y
+```math
+w = (X^T X)^{-1} X^T y
 ```
 
-它通过求逆 Matrix，一步解出 w。它非常适合小数据集。对于大数据集（数百万行或数千个 features），更推荐 Gradient Descent，因为 Matrix inversion 在 feature 数量上的复杂度是 O(n^3)。
+它通过求逆 Matrix，一步解出 $w$。它非常适合小数据集。对于大数据集（数百万行或数千个 features），更推荐 Gradient Descent，因为 Matrix inversion 在 feature 数量上的复杂度是 $O(n^3)$。
 
 ### Multiple Linear Regression
 
 对于多个 features，model 变为：
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
 一切工作方式相同：MSE 是 cost function，Gradient Descent 同时更新所有 weights。唯一的区别是你拟合的是一个 hyperplane，而不是一条线。
@@ -116,36 +120,38 @@ Feature scaling 在这里很重要。如果一个 feature 的范围是 0 到 1�
 
 如果关系不是线性的怎么办？你仍然可以通过创建 polynomial features 来使用 linear regression：
 
-```
-y = w1*x + w2*x^2 + w3*x^3 + b
+```math
+y = w_1 x + w_2 x^2 + w_3 x^3 + b
 ```
 
-这仍然是 “linear” regression，因为 model 对 weights (w1, w2, w3) 是线性的。你只是使用了 x 的 nonlinear features。
+这仍然是 “linear” regression，因为 model 对 weights ($w_1, w_2, w_3$) 是线性的。你只是使用了 $x$ 的 nonlinear features。
 
 更高阶的 polynomials 可以拟合更复杂的曲线，但也有 overfitting 风险。degree-10 polynomial 会穿过 10 点数据集中的每一个点，但在新数据上预测很差。
 
 ### R-Squared Score
 
-MSE 告诉你错得有多离谱，但这个数字取决于 y 的尺度。R-squared (R^2) 提供了一个不依赖尺度的衡量指标：
+MSE 告诉你错得有多离谱，但这个数字取决于 $y$ 的尺度。R-squared ($R^2$) 提供了一个不依赖尺度的衡量指标：
 
-```
-R^2 = 1 - (sum of squared residuals) / (sum of squared deviations from mean)
-    = 1 - SS_res / SS_tot
+```math
+\begin{aligned}
+R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} \\
+&= 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}
+\end{aligned}
 ```
 
-- R^2 = 1.0：完美预测
-- R^2 = 0.0：model 并不比每次都预测 mean 更好
-- R^2 < 0.0：model 比预测 mean 更差
+- $R^2 = 1.0$：完美预测
+- $R^2 = 0.0$：model 并不比每次都预测 mean 更好
+- $R^2 < 0.0$：model 比预测 mean 更差
 
 ### Regularization 预览 (Ridge Regression)
 
 当你有很多 features 时，model 可能会通过分配较大的 weights 来 overfit。Ridge regression (L2 regularization) 会加入一个惩罚项：
 
-```
-Cost = MSE + lambda * sum(w_i^2)
+```math
+\text{代价} = \text{MSE} + \lambda \sum w_i^2
 ```
 
-惩罚项会抑制较大的 weights。hyperparameter lambda 控制权衡：lambda 越高，weights 越小，regularization 越强。后续课程会深入讲解这一点。现在只需要知道它存在，以及它为什么有帮助。
+惩罚项会抑制较大的 weights。hyperparameter $\lambda$ 控制权衡：$\lambda$ 越高，weights 越小，regularization 越强。后续课程会深入讲解这一点。现在只需要知道它存在，以及它为什么有帮助。
 
 ## 构建
 
@@ -521,24 +527,24 @@ print(f"Ridge coefficient: {ridge.coef_[0]:.4f}")
 ## 练习
 
 1. 实现 batch gradient descent、stochastic gradient descent (SGD) 和 mini-batch gradient descent。在同一数据集上比较收敛速度。哪个收敛最快？哪个 cost curve 最平滑？
-2. 从 cubic function (y = ax^3 + bx^2 + cx + d + noise) 生成数据。拟合 degree 1、3 和 10 的 polynomials。比较 training R^2 和 test R^2。到哪个 degree 时 overfitting 变得明显？
-3. 实现 Lasso regression（L1 regularization：penalty = alpha * sum(|w_i|)）。在多 feature 房价数据上 training。比较哪些 weights 会变为零，以及与 Ridge 的区别。为什么 L1 会产生 sparse solutions，而 L2 不会？
+2. 从 cubic function ($y = ax^3 + bx^2 + cx + d + \text{噪声}$) 生成数据。拟合 degree 1、3 和 10 的 polynomials。比较 training $R^2$ 和 test $R^2$。到哪个 degree 时 overfitting 变得明显？
+3. 实现 Lasso regression（L1 regularization：$\text{惩罚项} = \alpha \sum \lvert w_i \rvert$）。在多 feature 房价数据上 training。比较哪些 weights 会变为零，以及与 Ridge 的区别。为什么 L1 会产生 sparse solutions，而 L2 不会？
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Linear regression | “在数据中画一条线” | 找到 weight w 和 bias b，使 wx+b 与真实 y 值之间的平方差之和最小 |
+| Linear regression | “在数据中画一条线” | 找到 weight $w$ 和 bias $b$，使 $wx+b$ 与真实 $y$ 值之间的平方差之和最小 |
 | Cost function | “model 有多差” | 一个将 model parameters 映射为单一数字的函数，用于衡量 prediction error，并由 optimization 最小化 |
-| Mean squared error | “平方误差的平均值” | (1/n) * (predicted - actual)^2 的求和，对大误差施加不成比例的惩罚 |
+| Mean squared error | “平方误差的平均值” | $\frac{1}{n} \sum (\text{预测值} - \text{实际值})^2$，对大误差施加不成比例的惩罚 |
 | Gradient descent | “往下坡走” | 使用偏导数，沿着降低 cost function 的方向迭代调整 parameters |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 中 parameters 改变量的标量 |
-| Normal equation | “直接求解” | 闭式解 w = (X^T X)^-1 X^T y，无需迭代即可得到最优 weights |
-| R-squared | “拟合有多好” | model 所解释的 y 方差比例，范围从负无穷到 1.0 |
+| Normal equation | “直接求解” | 闭式解 $w = (X^T X)^{-1} X^T y$，无需迭代即可得到最优 weights |
+| R-squared | “拟合有多好” | model 所解释的 $y$ 方差比例，范围从负无穷到 1.0 |
 | Feature scaling | “让 features 可比较” | 将 features 转换到相近范围（例如 zero mean、unit variance），使 Gradient Descent 更快收敛 |
 | Regularization | “惩罚复杂度” | 向 cost function 添加一个会缩小 weights 的项，以防止 overfitting |
-| Ridge regression | “L2 regularization” | 向 MSE 添加 lambda * sum(w_i^2) 惩罚项的 linear regression |
-| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features (x, x^2, x^3, ...) 做 linear regression，对 weights 仍然是线性的 |
+| Ridge regression | “L2 regularization” | 向 MSE 添加 $\lambda \sum w_i^2$ 惩罚项的 linear regression |
+| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features ($x, x^2, x^3, \ldots$) 做 linear regression，对 weights 仍然是线性的 |
 | Overfitting | “记住 training data” | 使用过于复杂的 model，以至于拟合了 training data 中的噪声，并在新数据上失效 |
 
 ## 延伸阅读

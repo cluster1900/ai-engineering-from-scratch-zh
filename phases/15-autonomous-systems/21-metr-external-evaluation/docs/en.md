@@ -30,7 +30,7 @@ METR 是 2024–2026 年间的外部评估组织，定义了其中许多数字�
 
 1. 收集一个任务套件，覆盖分钟级到小时级的专家完成时间。当前套件：HCAST（180+ 个任务）、RE-Bench（71 个任务）、SWAA。
 2. 让模型运行每个任务；记录成功或失败。
-3. 拟合一条 logistic curve：P(success) 是 log(专家完成时间) 的函数。
+3. 拟合一条 logistic curve：$P(\text{success})$ 是 $\log(\text{专家完成时间})$ 的函数。
 4. horizon 是使 P(success) = 0.5 的专家时间。
 
 logistic-fit 形状是合适的，因为能力通常与任务难度之间存在一种递增并接近平台期的关系。50% 点是一种选择（也可以是 10%、90%）；METR 在详细 paper 中报告多个阈值，但以 50% 作为主指标，因为它最直观。
@@ -80,7 +80,7 @@ a5-horizon-fit
 
 ## 使用它
 
-`code/main.py` 基于合成结果集，实现了 task-success 与 log(expert time) 的 logistic fit。它报告 50% horizon（METR 的主指标）、10% horizon（保守）和 90% horizon（乐观）。同时演示当成功率被 eval-context gaming 人为抬高时会发生什么变化。
+`code/main.py` 基于合成结果集，实现了 task-success 与 $\log(\text{expert time})$ 的 logistic fit。它报告 50% horizon（METR 的主指标）、10% horizon（保守）和 90% horizon（乐观）。同时演示当成功率被 eval-context gaming 人为抬高时会发生什么变化。
 
 ## 交付它
 

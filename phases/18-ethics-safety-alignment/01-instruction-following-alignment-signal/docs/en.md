@@ -32,8 +32,8 @@ SFT 给你的东西：模型现在会回答问题，而不是继续补全问题�
 
 对每个 prompt，从 SFT model 采样 K 个 completions。Labeler 对它们排序。训练一个 reward model，为任意 prompt-response pair 打分，使得对于 `y_w` 被偏好胜过 `y_l` 的 pairs：
 
-```
-L_RM = -log sigmoid(r(x, y_w) - r(x, y_l))
+```math
+L_{\text{RM}} = -\log \sigma\big(r(x, y_w) - r(x, y_l)\big)
 ```
 
 这是 Bradley-Terry pairwise preference loss。RM 通常从 SFT model 初始化，把 LM head 替换成 scalar head。
@@ -44,8 +44,8 @@ Reward models 很小：6B 足够服务 175B InstructGPT。它们也很脆弱，�
 
 定义 objective：
 
-```
-J(pi) = E_{x~D, y~pi(.|x)} [ r(x, y) ] - beta * KL(pi(.|x) || pi_SFT(.|x))
+```math
+J(\pi) = \mathbb{E}_{x \sim D,\, y \sim \pi(\cdot \mid x)} \big[ r(x, y) \big] - \beta \, \mathrm{KL}\big(\pi(\cdot \mid x) \,\|\, \pi_{\text{SFT}}(\cdot \mid x)\big)
 ```
 
 用 PPO 最大化。KL term 让 `pi` 不会偏离 SFT policy 太远。没有它，Optimizer 会找到 adversarial examples，也就是在 RM 下得分很高的 strings，原因不是人类真的偏好它们，而是 RM 从没见过它们。
@@ -56,8 +56,8 @@ KL coefficient `beta` 是 RLHF 最重要的 hyperparameter。太低：reward hac
 
 RLHF 之后，模型更受人类偏好，但在标准 benchmarks（SQuAD、HellaSwag、DROP）上退步。Ouyang et al. 将其称为 alignment tax，并用 PPO-ptx 修复：把 pre-training gradients 混入 RL objective，这样模型不会忘记如何完成那些从未被 reward 的 downstream tasks。
 
-```
-J_ptx(pi) = J(pi) + gamma * E_{x~D_pretrain} [ log pi(x) ]
+```math
+J_{\text{ptx}}(\pi) = J(\pi) + \gamma \, \mathbb{E}_{x \sim D_{\text{pretrain}}} \big[ \log \pi(x) \big]
 ```
 
 PPO-ptx 成为标准做法。Anthropic、DeepMind 和 Meta 都使用某种 variant。
@@ -85,7 +85,7 @@ al-instruct-pipeline
 要观察的内容：
 
 - `beta = 0.1` 与 `beta = 0.0` 下的 reward trajectory。
-- 训练 steps 中的 KL(pi || pi_SFT)。
+- 训练 steps 中的 $\mathrm{KL}(\pi \Vert \pi_{\text{SFT}})$。
 - 与 labeler preference 相比的最终 action distribution。
 
 ## Ship It
@@ -110,7 +110,7 @@ al-instruct-pipeline
 |------|-----------------|------------------------|
 | SFT | “instruction tuning” | Stage 1：在 prompt-response pairs 上用 cross-entropy fine-tune |
 | Reward model | “the RM” | 在 (prompt, response) 上的 scalar regressor，使用 Bradley-Terry 在 pairwise labels 上训练 |
-| Bradley-Terry | “pairwise preference loss” | -log sigmoid(r_w - r_l)；把 pairwise ranking 约简为 binary classification |
+| Bradley-Terry | “pairwise preference loss” | $-\log \sigma(r_w - r_l)$；把 pairwise ranking 约简为 binary classification |
 | KL penalty | “the regularizer” | `beta * KL(pi \|\| pi_SFT)` — 让 RL policy 保持接近 SFT anchor |
 | PPO-ptx | “PPO with pretraining mix” | 向 PPO objective 加入一部分 pre-training log-likelihood，用来抵消 alignment tax |
 | Alignment tax | “the RLHF regression” | RLHF 之后，在 RLHF 未针对的标准 benchmarks 上下降 |

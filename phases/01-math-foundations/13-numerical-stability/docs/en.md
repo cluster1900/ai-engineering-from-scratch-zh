@@ -96,7 +96,7 @@ Relative error: 19.2%
 
 这意味着一次减法就产生了 19% 的 relative error。在 ML 中，这种情况会出现在：
 
-- 使用大均值数据计算方差：当 E[x] 很大时计算 `E[x^2] - E[x]^2`
+- 使用大均值数据计算方差：当 $\mathbb{E}[x]$ 很大时计算 $\mathbb{E}[x^2] - \mathbb{E}[x]^2$
 - 相减两个几乎相等的 log-probabilities
 - 使用过小 epsilon 计算 finite-difference gradients
 
@@ -141,20 +141,22 @@ log(1e-46) = -inf        (input underflowed to 0, then log(0) = -inf)
 
 这个 trick：在求 exponent 之前先减去最大值。
 
-```
-log(sum(exp(x_i))) = max(x) + log(sum(exp(x_i - max(x))))
+```math
+\log\left(\sum_i \exp(x_i)\right) = \max(x) + \log\left(\sum_i \exp(x_i - \max(x))\right)
 ```
 
 为什么它有效：减去 `max(x)` 后，最大的 exponent 是 `exp(0) = 1`。不可能发生 overflow。求和中至少有一项是 1，所以总和至少是 1，而 `log(1) = 0`。不可能 underflow 到 `-inf`。
 
 证明：
 
-```
-log(sum(exp(x_i)))
-= log(sum(exp(x_i - c + c)))                    (add and subtract c)
-= log(sum(exp(x_i - c) * exp(c)))               (exp(a+b) = exp(a)*exp(b))
-= log(exp(c) * sum(exp(x_i - c)))               (factor out exp(c))
-= c + log(sum(exp(x_i - c)))                    (log(a*b) = log(a) + log(b))
+```math
+\begin{aligned}
+& \log\left(\sum_i \exp(x_i)\right) \\
+&= \log\left(\sum_i \exp(x_i - c + c)\right) && \text{（加上并减去 } c\text{）} \\
+&= \log\left(\sum_i \exp(x_i - c) \cdot \exp(c)\right) && (\exp(a+b) = \exp(a) \cdot \exp(b)) \\
+&= \log\left(\exp(c) \cdot \sum_i \exp(x_i - c)\right) && \text{（提取公因子 } \exp(c)\text{）} \\
+&= c + \log\left(\sum_i \exp(x_i - c)\right) && (\log(a \cdot b) = \log(a) + \log(b))
+\end{aligned}
 ```
 
 令 `c = max(x)`，overflow 就被消除了。
@@ -170,8 +172,8 @@ log(sum(exp(x_i)))
 
 Softmax 将 logits 转换为概率：
 
-```
-softmax(x_i) = exp(x_i) / sum(exp(x_j))
+```math
+\mathop{\mathrm{softmax}}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
 ```
 
 没有这个 trick，logits 为 [100, 101, 102] 会导致 overflow：
@@ -242,18 +244,18 @@ Analytical gradients（来自 Backpropagation）可能有 bug。Numerical gradie
 
 Centered difference 公式：
 
-```
-df/dx ~= (f(x + h) - f(x - h)) / (2h)
+```math
+\frac{df}{dx} \approx \frac{f(x + h) - f(x - h)}{2h}
 ```
 
-这是 O(h^2) 精度，远好于 forward difference `(f(x+h) - f(x)) / h`，后者只有 O(h)。
+这是 $O(h^2)$ 精度，远好于 forward difference $(f(x+h) - f(x)) / h$，后者只有 $O(h)$。
 
-选择 h：太大则近似不准确。太小则 catastrophic cancellation 会毁掉结果。`h = 1e-5` 到 `1e-7` 很常见。
+选择 $h$：太大则近似不准确。太小则 catastrophic cancellation 会毁掉结果。`h = 1e-5` 到 `1e-7` 很常见。
 
 检查方式：计算 analytical 和 numerical gradients 之间的 relative difference。
 
-```
-relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{relative\_error} = \frac{\lvert \text{grad}_{\text{analytical}} - \text{grad}_{\text{numerical}} \rvert}{\max(\lvert \text{grad}_{\text{analytical}} \rvert, \lvert \text{grad}_{\text{numerical}} \rvert, 10^{-8})}
 ```
 
 经验规则：
@@ -289,7 +291,7 @@ relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |gr
 5. Net effect: same update, but no underflow
 ```
 
-Dynamic loss scaling 会自动调整 scale factor。从一个大值（65536）开始。如果 gradients overflow 成 `inf`，就减半。如果 N 步没有 overflow，就加倍。
+Dynamic loss scaling 会自动调整 scale factor。从一个大值（65536）开始。如果 gradients overflow 成 `inf`，就减半。如果 $N$ 步没有 overflow，就加倍。
 
 ### bfloat16 vs float16：为什么 bfloat16 在训练中胜出
 
@@ -350,8 +352,8 @@ Layer 50: values in [0, inf]
 
 Normalization 会在每一层重新居中并重新缩放 activations：
 
-```
-LayerNorm(x) = (x - mean(x)) / (std(x) + epsilon) * gamma + beta
+```math
+\mathop{\mathrm{LayerNorm}}(x) = \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x) + \epsilon} \cdot \gamma + \beta
 ```
 
 `epsilon`（通常为 1e-5）会在所有 activations 都相同时防止除以零。Learned parameters `gamma` 和 `beta` 让 network 能恢复它需要的任何 scale。
@@ -569,7 +571,7 @@ check_tensor("ugly", [1.0, float('inf'), 3.0])
 
 ## 练习
 
-1. **Catastrophic cancellation。** 使用 float32 中的 naive formula `E[x^2] - E[x]^2` 计算 [1000000.0, 1000001.0, 1000002.0] 的方差。然后使用 Welford's online algorithm 计算。将误差与真实方差（0.6667）比较。
+1. **Catastrophic cancellation。** 使用 float32 中的 naive formula $\mathbb{E}[x^2] - \mathbb{E}[x]^2$ 计算 [1000000.0, 1000001.0, 1000002.0] 的方差。然后使用 Welford's online algorithm 计算。将误差与真实方差（0.6667）比较。
 
 2. **Precision hunt。** 在 Python 中找出最小的正 float32 值 `x`，使得 `1.0 + x == 1.0`。这就是 machine epsilon。验证它是否匹配 `numpy.finfo(numpy.float32).eps`。
 
@@ -579,17 +581,29 @@ check_tensor("ugly", [1.0, float('inf'), 3.0])
 
 5. **Loss scaling experiment。** 模拟 float16 训练：创建范围在 [1e-9, 1e-3] 内的随机 gradients，转换为 float16，并测量有多少比例变成零。然后应用 loss scaling（乘以 1024），转换为 float16，再 scale back，并再次测量零比例。
 
+### 提示
+
+**练习 1。** 在平方之前用 `np.float32` 转换这三个值，然后调用 `variance_naive` 和 `welford_variance`。float32 在 $10^{12}$ 附近的数值间距远大于 1，因此预期朴素结果远离 0.6667，而 Welford 结果接近该值。
+
+**练习 2。** 从 `x = np.float32(1.0)` 开始，只要 `np.float32(1.0) + x != np.float32(1.0)` 就将其减半。让每个值保持 float32 类型，再将最后一个仍会改变求和结果的值与 `numpy.finfo(numpy.float32).eps` 比较，后者为 $2^{-23}$。
+
+**练习 3。** 先预测每个答案。对于 $n$ 个相等的值 $c$，结果为 $c + \ln n$。只有一个很大的值时，结果接近该值。对于接近 -1000 的值，结果接近 $-1000 + \ln n$，而 `logsumexp_naive` 返回 `-inf`，因为每个指数项都下溢为 0。
+
+**练习 4。** 对于 $y = Wx + b$ 和 loss $L$，$W$ 的梯度是上游梯度与 $x$ 的外积。将 loss 封装为展平后的 $W$ 的函数，调用 `numerical_gradient`，并将两种结果传给 `check_gradient`。
+
+**练习 5。** 用 `10 ** np.random.uniform(-9, -3, n)` 在对数尺度上采样数值大小，并用 `np.float16` 转换。Float16 无法保留小于约 $6 \times 10^{-8}$ 的值，因此预期缩放前约四分之一的值变为零，而乘以 1024 后几乎没有值变为零。
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | IEEE 754 | “float 标准” | 定义 binary floating point formats、rounding rules 和 special values（inf、nan）的国际标准。每个现代 CPU 和 GPU 都实现了它。 |
-| Machine epsilon | “精度极限” | 在给定 float format 中，使 1.0 + e != 1.0 成立的最小值 e。对于 float32，它约为 1.19e-7。 |
+| Machine epsilon | “精度极限” | 在给定 float format 中，使 $1.0 + e \ne 1.0$ 成立的最小值 $e$。对于 float32，它约为 1.19e-7。 |
 | Catastrophic cancellation | “减法导致的精度损失” | 相减两个几乎相等的 floating point 数时，有效数字相互抵消，rounding noise 主导结果。 |
 | Overflow | “数字太大” | 结果超过最大可表示值并变成 inf。exp(89) 会使 float32 overflow。 |
 | Underflow | “数字太小” | 结果比最小可表示正数还接近零，并变成 0.0。exp(-104) 会使 float32 underflow。 |
-| Log-sum-exp trick | “先减去最大值” | 通过提出 exp(max(x)) 来计算 log(sum(exp(x)))，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
-| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 max(logits)。结果在数值上相同，且不可能 overflow。 |
+| Log-sum-exp trick | “先减去最大值” | 通过提出 $\exp(\max(x))$ 来计算 $\log(\sum \exp(x))$，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
+| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 $\max(\text{logits})$。结果在数值上相同，且不可能 overflow。 |
 | Gradient checking | “校验你的 Backpropagation” | 将 Backpropagation 得到的 analytical gradients 与 finite differences 得到的 numerical gradients 比较，以捕获实现 bug。 |
 | Mixed precision | “Float16 forward，float32 backward” | 对 speed-critical operations 使用低精度 floats，对 numerically sensitive operations 使用高精度 floats。典型提速为 2-3x。 |
 | Loss scaling | “防止 Gradient underflow” | 在 Backpropagation 前将 Loss 乘以一个大常数，使 gradients 保持在 float16 可表示范围内，然后在 weight updates 前除以同一个常数。 |
@@ -597,7 +611,7 @@ check_tensor("ugly", [1.0, float('inf'), 3.0])
 | Gradient clipping | “限制 Gradient norm” | 缩放 Gradient Vector，使其 norm 不超过阈值。防止 exploding gradients 毁掉 weights。 |
 | NaN | “Not a Number” | 来自未定义操作（0/0、inf-inf、sqrt(-1)）的特殊 float value。会传播到所有后续 arithmetic。 |
 | Inf | “Infinity” | 来自 overflow 或除以零的特殊 float value。可以组合产生 NaN（inf - inf、inf * 0）。 |
-| Numerical gradient | “暴力求导” | 通过计算 f(x+h) 和 f(x-h)，再除以 2h 来近似 derivative。很慢，但用于校验时可靠。 |
+| Numerical gradient | “暴力求导” | 通过计算 $f(x+h)$ 和 $f(x-h)$，再除以 $2h$ 来近似 derivative。很慢，但用于校验时可靠。 |
 
 ## 延伸阅读
 

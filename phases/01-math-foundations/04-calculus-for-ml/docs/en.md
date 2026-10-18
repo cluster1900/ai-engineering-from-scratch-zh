@@ -9,7 +9,7 @@
 
 ## 学习目标
 
-- 计算常见 ML 函数（x^2、sigmoid、cross-entropy）的数值导数与解析导数
+- 计算常见 ML 函数（$x^2$、sigmoid、cross-entropy）的数值导数与解析导数
 - 从零实现 Gradient Descent，在 1D 和 2D 中最小化 Loss Function
 - 推导 linear regression 模型的 Gradient，并通过手动更新权重来训练它
 - 解释 Hessian Matrix、Taylor series 近似，以及它们与优化方法的联系
@@ -24,59 +24,58 @@
 
 ### 什么是导数？
 
-导数衡量变化率。对于函数 y = f(x)，导数 f'(x) 会告诉你：如果你把 x 微小地推动一点，y 会变化多少？
+导数衡量变化率。对于函数 $y = f(x)$，导数 $f'(x)$ 会告诉你：如果你把 $x$ 微小地推动一点，$y$ 会变化多少？
 
 从几何上看，导数就是某一点处切线的斜率。
 
-**f(x) = x^2：**
+**$f(x) = x^2$：**
 
-| x | f(x) | f'(x)（斜率） |
+| $x$ | $f(x)$ | $f'(x)$（斜率） |
 |---|------|---------------|
 | 0 | 0    | 0（平坦，在底部） |
 | 1 | 1    | 2 |
 | 2 | 4    | 4（该点处切线的斜率） |
 | 3 | 9    | 6 |
 
-在 x=2 时，斜率是 4。如果你把 x 向右移动很小一点，y 大约会增加这个移动量的 4 倍。在 x=0 时，斜率是 0。你位于碗底。
+在 $x=2$ 时，斜率是 4。如果你把 $x$ 向右移动很小一点，$y$ 大约会增加这个移动量的 4 倍。在 $x=0$ 时，斜率是 0。你位于碗底。
 
 形式化定义：
 
-```
-f'(x) = lim   f(x + h) - f(x)
-        h->0  -----------------
-                     h
+```math
+f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}
 ```
 
-在代码中，你会跳过极限，直接使用一个非常小的 h。这就是数值导数。
+在代码中，你会跳过极限，直接使用一个非常小的 $h$。这就是数值导数。
 
 ### 偏导数：一次只看一个变量
 
 真实函数有很多输入。Neural Network 的 Loss 依赖于成千上万个权重。偏导数会保持除一个变量之外的所有变量不变，然后对这一个变量求导。
 
-```
-f(x, y) = x^2 + 3xy + y^2
-
-df/dx = 2x + 3y     (treat y as a constant)
-df/dy = 3x + 2y     (treat x as a constant)
+```math
+\begin{aligned}
+f(x, y) &= x^2 + 3xy + y^2 \\[4pt]
+\frac{\partial f}{\partial x} &= 2x + 3y \quad \text{（将 } y \text{ 视为常量）} \\
+\frac{\partial f}{\partial y} &= 3x + 2y \quad \text{（将 } x \text{ 视为常量）}
+\end{aligned}
 ```
 
 每个偏导数回答的是：如果我只微调这一个权重，Loss 会如何变化？
 
 ### Gradient：所有偏导数构成的 Vector
 
-Gradient 会把每个偏导数收集成一个 Vector。对于函数 f(x, y, z)，Gradient 是：
+Gradient 会把每个偏导数收集成一个 Vector。对于函数 $f(x, y, z)$，Gradient 是：
 
-```
-grad f = [ df/dx, df/dy, df/dz ]
+```math
+\nabla f = \left[ \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right]
 ```
 
 Gradient 指向最陡上升的方向。要最小化一个函数，就朝相反方向走。
 
-**f(x,y) = x^2 + y^2 的等高线图：**
+**$f(x,y) = x^2 + y^2$ 的等高线图：**
 
 这个函数形成一个碗形曲面，等高线是同心圆。最小值在 (0, 0)。
 
-| 点 | grad f | -grad f（下降方向） |
+| 点 | $\nabla f$ | $-\nabla f$（下降方向） |
 |-------|--------|----------------------------|
 | (1, 1) | [2, 2]（指向上坡，远离最小值） | [-2, -2]（指向下坡，朝向最小值） |
 | (0, 0) | [0, 0]（平坦，在最小值处） | [0, 0] |
@@ -85,7 +84,7 @@ Gradient 指向最陡上升的方向。要最小化一个函数，就朝相反�
 
 ### 与优化的联系
 
-训练 Neural Network 就是优化。你有一个 Loss Function L(w1, w2, ..., wn)，它衡量模型有多错。你想最小化它。
+训练 Neural Network 就是优化。你有一个 Loss Function $L(w_1, w_2, \ldots, w_n)$，它衡量模型有多错。你想最小化它。
 
 ```
 Gradient descent update rule:
@@ -102,7 +101,7 @@ learning rate 控制步长。太大就会越过目标。太小就会爬得很慢
 
 **Loss landscape（1D 切片）：**
 
-Loss Function L(w) 随着权重 w 的变化形成一条有峰有谷的曲线。
+Loss Function $L(w)$ 随着权重 $w$ 的变化形成一条有峰有谷的曲线。
 
 | 特征 | 描述 |
 |---------|-------------|
@@ -116,9 +115,9 @@ Gradient Descent 会沿着斜率下坡。它可能陷入 local minima，但在�
 
 计算导数有两种方式。
 
-解析方式：手动应用微积分规则。对于 f(x) = x^2，导数是 f'(x) = 2x。精确，快速。
+解析方式：手动应用微积分规则。对于 $f(x) = x^2$，导数是 $f'(x) = 2x$。精确，快速。
 
-数值方式：使用定义进行近似。对一个很小的 h 计算 f(x+h) 和 f(x-h)，然后取差分。
+数值方式：使用定义进行近似。对一个很小的 $h$ 计算 $f(x+h)$ 和 $f(x-h)$，然后取差分。
 
 ```
 Numerical (central difference):
@@ -148,7 +147,7 @@ f(x) = ln(x)   f'(x) = 1/x     Cross-entropy loss
 f(x) = 1/(1+e^-x)  f'(x) = f(x)(1-f(x))   Sigmoid activation
 ```
 
-对于 f(x) = x^2：
+对于 $f(x) = x^2$：
 
 ```
 f(x) = x^2    f'(x) = 2x
@@ -161,7 +160,7 @@ f(x) = x^2    f'(x) = 2x
    2    4       4      slope tilts right (increasing)
 ```
 
-对于 f(w) = wx + b，且 x=3、b=1：
+对于 $f(w) = wx + b$，且 $x=3$、$b=1$：
 
 ```
 f(w) = 3w + 1    f'(w) = 3
@@ -189,17 +188,16 @@ Neural Network 是一串函数：input -> linear -> activation -> linear -> acti
 
 Gradient 告诉你斜率。Hessian 告诉你曲率。
 
-Hessian 是二阶偏导数组成的 Matrix。对于函数 f(x1, x2, ..., xn)，Hessian 的 (i, j) 项是：
+Hessian 是二阶偏导数组成的 Matrix。对于函数 $f(x_1, x_2, \ldots, x_n)$，Hessian 的 $(i, j)$ 项是：
 
-```
-H[i][j] = d^2f / (dx_i * dx_j)
+```math
+H_{ij} = \frac{\partial^2 f}{\partial x_i \, \partial x_j}
 ```
 
-对于二变量函数 f(x, y)：
+对于二变量函数 $f(x, y)$：
 
-```
-H = | d^2f/dx^2    d^2f/dxdy |
-    | d^2f/dydx    d^2f/dy^2 |
+```math
+H = \begin{bmatrix} \dfrac{\partial^2 f}{\partial x^2} & \dfrac{\partial^2 f}{\partial x \, \partial y} \\[8pt] \dfrac{\partial^2 f}{\partial y \, \partial x} & \dfrac{\partial^2 f}{\partial y^2} \end{bmatrix}
 ```
 
 **Hessian 在临界点（Gradient = 0 的地方）告诉你什么：**
@@ -210,7 +208,7 @@ H = | d^2f/dx^2    d^2f/dxdy |
 | 负定（所有 eigenvalues < 0） | Local maximum | 向下开口的碗 |
 | 不定（eigenvalues 正负混合） | Saddle point | 马鞍形 |
 
-**示例：** f(x, y) = x^2 - y^2（一个 saddle 函数）
+**示例：** $f(x, y) = x^2 - y^2$（一个 saddle 函数）
 
 ```
 df/dx = 2x       df/dy = -2y
@@ -223,7 +221,7 @@ Eigenvalues: 2 and -2 (one positive, one negative)
 --> Saddle point at (0, 0)
 ```
 
-与 f(x, y) = x^2 + y^2（一个碗形函数）比较：
+与 $f(x, y) = x^2 + y^2$（一个碗形函数）比较：
 
 ```
 H = | 2  0 |
@@ -237,22 +235,24 @@ Eigenvalues: 2 and 2 (both positive)
 
 Newton's method 使用 Hessian 来采取比 Gradient Descent 更好的优化步。它不只是沿着斜率走，还会考虑曲率：
 
-```
-Newton's update:    w_new = w_old - H^(-1) * gradient
-Gradient descent:   w_new = w_old - lr * gradient
+```math
+\begin{aligned}
+\text{牛顿法更新：} \quad & w_{\text{new}} = w_{\text{old}} - H^{-1} \cdot \text{梯度} \\
+\text{梯度下降：} \quad & w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{梯度}
+\end{aligned}
 ```
 
 Newton's method 收敛更快，因为 Hessian 会“重新缩放”Gradient：陡峭方向的步子更小，平坦方向的步子更大。
 
-问题在于：对于有 N 个参数的 Neural Network，Hessian 是 N x N。一个有 100 万参数的模型需要一个包含 1 万亿个元素的 Matrix。这就是我们使用近似方法的原因。
+问题在于：对于有 $N$ 个参数的 Neural Network，Hessian 是 $N \times N$。一个有 100 万参数的模型需要一个包含 1 万亿个元素的 Matrix。这就是我们使用近似方法的原因。
 
 | 方法 | 使用什么 | 成本 | 收敛 |
 |--------|-------------|------|-------------|
-| Gradient Descent | 只使用一阶导数 | 每步 O(N) | 慢（线性） |
-| Newton's method | 完整 Hessian | 每步 O(N^3) | 快（二次） |
-| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 O(N) | 中等（超线性） |
-| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 O(N) | 中等 |
-| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 O(N^2) | 快 |
+| Gradient Descent | 只使用一阶导数 | 每步 $O(N)$ | 慢（线性） |
+| Newton's method | 完整 Hessian | 每步 $O(N^3)$ | 快（二次） |
+| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 $O(N)$ | 中等（超线性） |
+| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 $O(N)$ | 中等 |
+| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 $O(N^2)$ | 快 |
 
 实践中，Adam 是 Deep Learning 的默认 Optimizer。它通过跟踪每个参数 Gradient 的运行均值和方差，以低成本近似二阶信息。
 
@@ -260,17 +260,17 @@ Newton's method 收敛更快，因为 Hessian 会“重新缩放”Gradient：�
 
 任何平滑函数都可以在局部用多项式近似：
 
-```
-f(x + h) = f(x) + f'(x)*h + (1/2)*f''(x)*h^2 + (1/6)*f'''(x)*h^3 + ...
+```math
+f(x + h) = f(x) + f'(x)\,h + \frac{1}{2} f''(x)\,h^2 + \frac{1}{6} f'''(x)\,h^3 + \cdots
 ```
 
-包含的项越多，近似越好，但只在点 x 附近成立。
+包含的项越多，近似越好，但只在点 $x$ 附近成立。
 
 **为什么 Taylor series 对 ML 重要：**
 
-- **一阶 Taylor = Gradient Descent。** 当你使用 f(x + h) ~ f(x) + f'(x)*h 时，你是在做线性近似。Gradient Descent 会最小化这个线性模型，从而选择 h = -lr * f'(x)。
+- **一阶 Taylor = Gradient Descent。** 当你使用 $f(x + h) \approx f(x) + f'(x) h$ 时，你是在做线性近似。Gradient Descent 会最小化这个线性模型，从而选择 $h = -\text{lr} \cdot f'(x)$。
 
-- **二阶 Taylor = Newton's method。** 使用 f(x + h) ~ f(x) + f'(x)*h + (1/2)*f''(x)*h^2 时，你得到一个二次模型。最小化它会得到 h = -f'(x)/f''(x)，也就是 Newton's step。
+- **二阶 Taylor = Newton's method。** 使用 $f(x + h) \approx f(x) + f'(x) h + \frac{1}{2} f''(x) h^2$ 时，你得到一个二次模型。最小化它会得到 $h = -f'(x)/f''(x)$，也就是 Newton's step。
 
 - **Loss Function 设计。** MSE 和 cross-entropy 是平滑的，这意味着它们的 Taylor expansions 表现良好。这不是巧合。平滑的 Loss 会让优化更可预测。
 
@@ -291,27 +291,27 @@ Higher orders          Finer structure     Rarely used in ML
 
 在 ML 中，你很少手动计算积分，但这个概念无处不在：
 
-**概率。** 对于具有密度 p(x) 的连续随机变量：
+**概率。** 对于具有密度 $p(x)$ 的连续随机变量：
+```math
+P(a < X < b) = \int_a^b p(x) \, dx
 ```
-P(a < X < b) = integral from a to b of p(x) dx
-```
-概率密度曲线在 a 和 b 之间的面积，就是落在该区间内的概率。
+概率密度曲线在 $a$ 和 $b$ 之间的面积，就是落在该区间内的概率。
 
 **期望值。** 按概率加权的平均结果：
-```
-E[f(X)] = integral of f(x) * p(x) dx
+```math
+\mathbb{E}[f(X)] = \int f(x) \, p(x) \, dx
 ```
 数据分布上的 expected loss 是一个积分。训练最小化的是它的经验近似。
 
 **KL divergence。** 衡量两个分布有多不同：
-```
-KL(p || q) = integral of p(x) * log(p(x) / q(x)) dx
+```math
+\mathrm{KL}(p \,\|\, q) = \int p(x) \log \frac{p(x)}{q(x)} \, dx
 ```
 用于 VAEs、knowledge distillation 和 Bayesian inference。
 
 **归一化常数。** 在 Bayesian inference 中：
-```
-p(w | data) = p(data | w) * p(w) / integral of p(data | w) * p(w) dw
+```math
+p(w \mid \text{data}) = \frac{p(\text{data} \mid w) \, p(w)}{\int p(\text{data} \mid w) \, p(w) \, dw}
 ```
 分母是对所有可能参数值的积分。它通常是不可处理的，这就是我们使用 MCMC 和 variational inference 等近似方法的原因。
 
@@ -353,16 +353,16 @@ Backpropagation 的全部内容就是：从输出到输入，系统地在 comput
 
 当一个函数把 Vector 映射到 Vector 时（比如 Neural Network layer），它的导数是一个 Matrix。Jacobian 包含每个输出相对于每个输入的所有偏导数。
 
-对于 f: R^n -> R^m，Jacobian J 是一个 m x n Matrix：
+对于 $f: \mathbb{R}^n \to \mathbb{R}^m$，Jacobian $J$ 是一个 $m \times n$ Matrix：
 
-| | x1 | x2 | ... | xn |
+| | $x_1$ | $x_2$ | ... | $x_n$ |
 |---|---|---|---|---|
-| f1 | df1/dx1 | df1/dx2 | ... | df1/dxn |
-| f2 | df2/dx1 | df2/dx2 | ... | df2/dxn |
+| $f_1$ | $\partial f_1/\partial x_1$ | $\partial f_1/\partial x_2$ | ... | $\partial f_1/\partial x_n$ |
+| $f_2$ | $\partial f_2/\partial x_1$ | $\partial f_2/\partial x_2$ | ... | $\partial f_2/\partial x_n$ |
 | ... | ... | ... | ... | ... |
-| fm | dfm/dx1 | dfm/dx2 | ... | dfm/dxn |
+| $f_m$ | $\partial f_m/\partial x_1$ | $\partial f_m/\partial x_2$ | ... | $\partial f_m/\partial x_n$ |
 
-你不会为 Neural Network 手动计算 Jacobian。PyTorch 会处理它。但知道它存在，有助于你理解 Backpropagation 中的形状：如果一个 layer 把 R^n 映射到 R^m，它的 Jacobian 就是 m x n。Gradient 会通过这个 Matrix 的转置向后流动。
+你不会为 Neural Network 手动计算 Jacobian。PyTorch 会处理它。但知道它存在，有助于你理解 Backpropagation 中的形状：如果一个 layer 把 $\mathbb{R}^n$ 映射到 $\mathbb{R}^m$，它的 Jacobian 就是 $m \times n$。Gradient 会通过这个 Matrix 的转置向后流动。
 
 ### 为什么这对 Neural Network 很重要
 
@@ -446,7 +446,7 @@ for step in range(20):
     print(f"step {step:2d}  x={x:8.4f}  f(x)={x**2:10.6f}")
 ```
 
-从 x=5 开始，每一步都会更接近 x=0（最小值）。
+从 $x=5$ 开始，每一步都会更接近 $x=0$（最小值）。
 
 ### 步骤 4：在 2D 函数上执行 Gradient Descent
 
@@ -532,7 +532,7 @@ for h in [0.1, 0.5, 1.0, 2.0]:
     print(f"h={h:.1f}  sin(h)={true_val:.4f}  order1={t1:.4f}  order2={t2:.4f}")
 ```
 
-在 x0=0 附近，sin(x) ~ x（一阶 Taylor）。对于很小的 h，这个近似非常好；但对于较大的 h，它会失效。这就是为什么 Gradient Descent 在较小 learning rates 下效果最好：每一步都假设线性近似是准确的。
+在 $x_0=0$ 附近，$\sin(x) \approx x$（一阶 Taylor）。对于很小的 $h$，这个近似非常好；但对于较大的 $h$，它会失效。这就是为什么 Gradient Descent 在较小 learning rates 下效果最好：每一步都假设线性近似是准确的。
 
 ### 步骤 8：为什么这对 Neural Network 很重要
 
@@ -601,9 +601,17 @@ print(f"Learned: y = {w:.2f}x + {b:.2f}")
 
 ## 练习
 
-1. 使用调用两次 `numerical_derivative` 的方式实现 `numerical_second_derivative(f, x)`。验证 x^3 在 x=2 处的二阶导数是 12。
-2. 使用 Gradient Descent 找到 f(x, y) = (x - 3)^2 + (y + 1)^2 的最小值。从 (0, 0) 开始。答案应收敛到 (3, -1)。
-3. 在 Gradient Descent 循环中加入 momentum：维护一个会累积过去 Gradient 的 velocity Vector。在 f(x) = x^4 - 3x^2 上比较有无 momentum 的收敛速度。
+1. 使用调用两次 `numerical_derivative` 的方式实现 `numerical_second_derivative(f, x)`。验证 $x^3$ 在 $x=2$ 处的二阶导数是 12。
+2. 使用 Gradient Descent 找到 $f(x, y) = (x - 3)^2 + (y + 1)^2$ 的最小值。从 $(0, 0)$ 开始。答案应收敛到 $(3, -1)$。
+3. 在 Gradient Descent 循环中加入 momentum：维护一个会累积过去 Gradient 的 velocity Vector。在 $f(x) = x^4 - 3x^2$ 上比较有无 momentum 的收敛速度。
+
+### 提示
+
+**练习 1。** 定义一个返回 `numerical_derivative(f, x)` 的辅助函数，再把它传给 `numerical_derivative`。如果结果噪声较大，两次调用都使用较大的步长，例如 `h=1e-4`；在 $x=2$ 处的结果应接近 12。
+
+**练习 2。** 写出梯度 $(2(x - 3), 2(y + 1))$，或使用 `numerical_gradient`，从 $(0, 0)$ 开始调用 `gradient_descent_nd`。每 10 步打印一次坐标；它必须向 $(3, -1)$ 移动，损失必须降到接近 0。
+
+**练习 3。** 保存速度 `v`，按 `v = momentum * v - lr * grad` 更新，再将 `v` 加到 `x` 上。统计两种方法各需要多少步才能使梯度接近 0；最小值位于 $x = \pm\sqrt{1.5} \approx \pm 1.225$。
 
 ## 关键术语
 
@@ -614,12 +622,12 @@ print(f"Learned: y = {w:.2f}x + {b:.2f}")
 | Gradient | “最陡上升方向” | 由所有偏导数组成的 Vector。指向让函数增长最快的方向。 |
 | Gradient Descent | “往下坡走” | 从参数中减去 Gradient（乘以 learning rate），从而降低 Loss。Neural Network 训练的核心。 |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 有多大的标量。太大：发散。太小：收敛缓慢。 |
-| Chain rule | “把导数相乘” | 对复合函数求导的规则：df/dx = df/dg * dg/dx。Backpropagation 的数学基础。 |
+| Chain rule | “把导数相乘” | 对复合函数求导的规则：$\frac{df}{dx} = \frac{df}{dg} \cdot \frac{dg}{dx}$。Backpropagation 的数学基础。 |
 | Jacobian | “导数 Matrix” | 当一个函数把 Vector 映射到 Vector 时，Jacobian 是所有输出相对于输入的偏导数组成的 Matrix。 |
 | Numerical derivative | “有限差分” | 通过在两个相邻点上评估函数并计算它们之间的斜率来近似导数。 |
 | Backpropagation | “Reverse-mode autodiff” | 使用链式法则，从输出到输入逐层计算 Gradient。Neural Network 就是这样学习的。 |
 | Hessian | “二阶导数 Matrix” | 所有二阶偏导数组成的 Matrix。描述函数的曲率。在临界点处 Hessian 正定意味着 local minimum。 |
-| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：f(x+h) ~ f(x) + f'(x)h + (1/2)f''(x)h^2 + ... 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
+| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：$f(x+h) \approx f(x) + f'(x)h + \frac{1}{2}f''(x)h^2 + \cdots$ 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
 | Integral | “曲线下面积” | 某个量在一个范围内的累积。在 ML 中，积分定义概率、期望值和 KL divergence。 |
 
 ## 延伸阅读

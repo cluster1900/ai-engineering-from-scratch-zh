@@ -132,6 +132,14 @@ with urllib.request.urlopen(req) as resp:
 2. 尝试 raw HTTP 版本，并将 response format 与 SDK 版本进行比较
 3. 故意使用错误的 API key，并阅读 error message
 
+### 提示
+
+**练习 1。** 在 Anthropic Console 中创建密钥，按课程说明将它放入 `ANTHROPIC_API_KEY`，然后运行 `code/first_api_call.py`。脚本打印模型回复且没有报错，即表示调用成功。
+
+**练习 2。** `code/first_api_call.py` 中的两个函数都只打印文本和 token 数量。在 `call_with_sdk()` 中添加 `print(response)`，在 `call_raw_http()` 中添加 `print(result)`，再运行脚本查看两份完整响应。比较字段名称：原始 JSON 中的 `content`、`usage` 和 `stop_reason` 字段，会被 SDK 转换成对象属性。
+
+**练习 3。** 只在一个终端中将 `ANTHROPIC_API_KEY` 设置为虚假值，再次运行脚本。在输出中找到 HTTP 状态码和错误类型；认证失败会返回 401 状态码。
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

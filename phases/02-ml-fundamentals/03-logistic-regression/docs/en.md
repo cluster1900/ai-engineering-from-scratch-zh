@@ -18,7 +18,7 @@
 
 你想根据肿瘤大小预测它是 malignant 还是 benign。你尝试使用 linear regression。它会输出 0.3、1.7 或 -0.5 这样的数字。这些数字是什么意思？1.7 是“非常 malignant”吗？-0.5 是“非常 benign”吗？Linear regression 输出的是无界数字。Classification 需要 0 到 1 之间的有界概率，以及明确的决策：是或否。
 
-Logistic regression 解决了这个问题。它使用相同的线性组合 (wx + b)，然后通过 sigmoid function，将任意数字压缩到 (0, 1) 范围内。输出就是概率。你设置一个 threshold（通常是 0.5），然后做出决策。
+Logistic regression 解决了这个问题。它使用相同的线性组合 ($wx + b$)，然后通过 sigmoid function，将任意数字压缩到 (0, 1) 范围内。输出就是概率。你设置一个 threshold（通常是 0.5），然后做出决策。
 
 这是实践中使用最广泛的算法之一。尽管名字里有 regression，logistic regression 是一个 Classification algorithm，而不是 Regression algorithm。这个名字来自它所使用的 logistic（sigmoid）function。
 
@@ -44,22 +44,22 @@ Classification 需要一个满足以下条件的 function：
 
 sigmoid function 正是这样做的：
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\sigma(z) = \frac{1}{1 + e^{-z}}
 ```
 
 性质：
-- 当 z 是很大的正数时，sigmoid(z) 接近 1
-- 当 z 是很大的负数时，sigmoid(z) 接近 0
-- 当 z = 0 时，sigmoid(z) = 0.5
+- 当 $z$ 是很大的正数时，$\sigma(z)$ 接近 1
+- 当 $z$ 是很大的负数时，$\sigma(z)$ 接近 0
+- 当 $z = 0$ 时，$\sigma(z) = 0.5$
 - 输出始终位于 0 和 1 之间
 - 该 function 处处平滑且可微
 
-它的 derivative 具有方便的形式：sigmoid'(z) = sigmoid(z) * (1 - sigmoid(z))。这让 Gradient 计算更高效。
+它的 derivative 具有方便的形式：$\sigma'(z) = \sigma(z) (1 - \sigma(z))$。这让 Gradient 计算更高效。
 
 ### Logistic Regression = Linear Model + Sigmoid
 
-模型先计算 z = wx + b（与 linear regression 相同），然后应用 sigmoid：
+模型先计算 $z = wx + b$（与 linear regression 相同），然后应用 sigmoid：
 
 ```mermaid
 flowchart LR
@@ -70,21 +70,21 @@ flowchart LR
     D -->|No| N[Predict 0]
 ```
 
-输出 p 被解释为 P(y=1 | x)，即输入属于 class 1 的概率。decision boundary 位于 wx + b = 0 的位置，此时 sigmoid 输出恰好为 0.5。
+输出 $p$ 被解释为 $P(y=1 \mid x)$，即输入属于 class 1 的概率。decision boundary 位于 $wx + b = 0$ 的位置，此时 sigmoid 输出恰好为 0.5。
 
 ### Binary Cross-Entropy Loss
 
 不能在 logistic regression 中使用 MSE。带 sigmoid 的 MSE 会产生非凸的 cost surface，并存在许多 local minima。应使用 binary cross-entropy（log loss）：
 
-```
-Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
+```math
+\text{损失} = -\frac{1}{n} \sum \left( y \log(p) + (1-y) \log(1-p) \right)
 ```
 
 为什么它有效：
-- 当 y=1 且 p 接近 1 时：log(1) = 0，因此 loss 接近 0（正确，低成本）
-- 当 y=1 且 p 接近 0 时：log(0) 接近负无穷，因此 loss 很大（错误，高成本）
-- 当 y=0 且 p 接近 0 时：log(1) = 0，因此 loss 接近 0（正确，低成本）
-- 当 y=0 且 p 接近 1 时：log(0) 接近负无穷，因此 loss 很大（错误，高成本）
+- 当 $y=1$ 且 $p$ 接近 1 时：$\log(1) = 0$，因此 loss 接近 0（正确，低成本）
+- 当 $y=1$ 且 $p$ 接近 0 时：$\log(0)$ 接近负无穷，因此 loss 很大（错误，高成本）
+- 当 $y=0$ 且 $p$ 接近 0 时：$\log(1) = 0$，因此 loss 接近 0（正确，低成本）
+- 当 $y=0$ 且 $p$ 接近 1 时：$\log(0)$ 接近负无穷，因此 loss 很大（错误，高成本）
 
 对于 logistic regression，这个 Loss Function 是凸的，因此保证只有一个 global minimum。
 
@@ -92,12 +92,14 @@ Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
 
 sigmoid 搭配 binary cross-entropy 时，Gradient 具有简洁形式：
 
-```
-dL/dw = (1/n) * sum((p - y) * x)
-dL/db = (1/n) * sum(p - y)
+```math
+\begin{aligned}
+\frac{\partial L}{\partial w} &= \frac{1}{n} \sum (p - y) \, x \\
+\frac{\partial L}{\partial b} &= \frac{1}{n} \sum (p - y)
+\end{aligned}
 ```
 
-它们看起来与 linear regression 的 Gradient 完全相同。区别在于 p = sigmoid(wx + b)，而不是 p = wx + b。sigmoid 引入了非线性，但 Gradient 更新规则保持不变。
+它们看起来与 linear regression 的 Gradient 完全相同。区别在于 $p = \sigma(wx + b)$，而不是 $p = wx + b$。sigmoid 引入了非线性，但 Gradient 更新规则保持不变。
 
 ```mermaid
 flowchart TD
@@ -114,29 +116,29 @@ flowchart TD
 
 对于 2D 输入（两个 features），decision boundary 是满足以下条件的直线：
 
-```
-w1*x1 + w2*x2 + b = 0
+```math
+w_1 x_1 + w_2 x_2 + b = 0
 ```
 
 一侧的点被 Classification 为 1，另一侧的点被 Classification 为 0。Logistic regression 总是产生线性的 decision boundary。如果需要弯曲的 boundary，要么添加 polynomial features，要么使用 nonlinear model。
 
 ### 使用 Softmax 进行 Multi-Class Classification
 
-Binary logistic regression 处理两个 classes。对于 k 个 classes，使用 softmax function：
+Binary logistic regression 处理两个 classes。对于 $k$ 个 classes，使用 softmax function：
 
-```
-softmax(z_i) = e^(z_i) / sum(e^(z_j) for all j)
+```math
+\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
 ```
 
-每个 class 都有自己的 weight vector。模型为每个 class 计算一个 score z_i，然后 softmax 将 scores 转换为总和为 1 的概率。预测 class 是概率最高的那个 class。
+每个 class 都有自己的 weight vector。模型为每个 class 计算一个 score $z_i$，然后 softmax 将 scores 转换为总和为 1 的概率。预测 class 是概率最高的那个 class。
 
 Loss Function 变为 categorical cross-entropy：
 
-```
-Loss = -(1/n) * sum(sum(y_k * log(p_k)))
+```math
+\text{损失} = -\frac{1}{n} \sum \sum_k y_k \log(p_k)
 ```
 
-其中 y_k 对 true class 为 1，对所有其他 classes 为 0（one-hot encoding）。
+其中 $y_k$ 对 true class 为 1，对所有其他 classes 为 0（one-hot encoding）。
 
 ### Evaluation Metrics
 
@@ -150,18 +152,18 @@ Loss = -(1/n) * sum(sum(y_k * log(p_k)))
 | Actually Negative | False Positive (FP) | True Negative (TN) |
 
 **Precision**：在所有预测为 positive 的样本中，有多少实际是 positive？
-```
-Precision = TP / (TP + FP)
+```math
+\text{精确率} = \frac{TP}{TP + FP}
 ```
 
 **Recall**（Sensitivity）：在所有实际为 positive 的样本中，我们抓住了多少？
-```
-Recall = TP / (TP + FN)
+```math
+\text{召回率} = \frac{TP}{TP + FN}
 ```
 
 **F1 Score**：precision 和 recall 的 harmonic mean。平衡两个 metrics。
-```
-F1 = 2 * (Precision * Recall) / (Precision + Recall)
+```math
+F_1 = 2 \cdot \frac{\text{精确率} \cdot \text{召回率}}{\text{精确率} + \text{召回率}}
 ```
 
 优先考虑的场景：
@@ -505,7 +507,7 @@ print(f"\nClassification Report:\n{classification_report(y_te, y_pred)}")
 
 ## 练习
 
-1. 生成一个不是 linearly separable 的 dataset（例如两个同心圆）。训练 logistic regression 并观察它的失败。然后添加 polynomial features（x1^2、x2^2、x1*x2）并再次训练。展示 Accuracy 得到提升。
+1. 生成一个不是 linearly separable 的 dataset（例如两个同心圆）。训练 logistic regression 并观察它的失败。然后添加 polynomial features（$x_1^2, x_2^2, x_1 x_2$）并再次训练。展示 Accuracy 得到提升。
 2. 为 3-class softmax model 实现一个 multi-class confusion matrix。计算 per-class precision 和 recall。哪个 class 最难 Classification？
 3. 从零构建 ROC curve。对 0 到 1 之间的 100 个 threshold values，计算 true positive rate 和 false positive rate。使用 trapezoidal rule 计算 AUC（area under the curve）。
 
@@ -514,14 +516,14 @@ print(f"\nClassification Report:\n{classification_report(y_te, y_pred)}")
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | Logistic regression | “用于 Classification 的 Regression” | 一个 linear model 后接 sigmoid function，用于输出 class probabilities |
-| Sigmoid function | “S-curve” | function 1/(1+e^(-z))，将任意实数映射到 (0, 1) 范围 |
-| Binary cross-entropy | “Log loss” | Loss Function -[y*log(p) + (1-y)*log(1-p)]，会严厉惩罚自信但错误的预测 |
+| Sigmoid function | “S-curve” | function $1/(1+e^{-z})$，将任意实数映射到 (0, 1) 范围 |
+| Binary cross-entropy | “Log loss” | Loss Function $-[y \log(p) + (1-y) \log(1-p)]$，会严厉惩罚自信但错误的预测 |
 | Decision boundary | “分界线” | 模型输出概率等于 0.5 的 surface，用于分隔 predicted classes |
 | Softmax | “Multi-class sigmoid” | 将 scores 的 Vector 转换为总和为 1 的概率的 function |
-| Precision | “选中的有多少是相关的” | TP / (TP + FP)，positive predictions 中实际为 positive 的比例 |
-| Recall | “相关的有多少被选中” | TP / (TP + FN)，actual positives 中被模型正确识别的比例 |
-| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：2*P*R / (P+R) |
+| Precision | “选中的有多少是相关的” | $TP / (TP + FP)$，positive predictions 中实际为 positive 的比例 |
+| Recall | “相关的有多少被选中” | $TP / (TP + FN)$，actual positives 中被模型正确识别的比例 |
+| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：$2PR / (P+R)$ |
 | Confusion matrix | “错误分解” | 展示每个 class pair 的 TP、TN、FP、FN 计数的表格 |
 | Threshold | “cutoff” | 超过该 probability value 时模型预测 class 1（默认 0.5，可调） |
-| One-hot encoding | “类别的二进制列” | 将 class k 表示为一个 Vector：除位置 k 为 1 外，其余位置均为 0 |
-| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 k 个 classes 的扩展，使用 one-hot encoded labels |
+| One-hot encoding | “类别的二进制列” | 将 class $k$ 表示为一个 Vector：除位置 $k$ 为 1 外，其余位置均为 0 |
+| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 $k$ 个 classes 的扩展，使用 one-hot encoded labels |

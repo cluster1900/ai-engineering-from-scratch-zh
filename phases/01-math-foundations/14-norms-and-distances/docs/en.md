@@ -28,14 +28,14 @@
 
 ### Norms：测量 Vector 大小
 
-范数衡量一个 Vector 的“大小”。两个 Vectors 之间的每个距离函数都可以写成它们差值的范数：d(a, b) = ||a - b||。所以理解范数就是理解距离。
+范数衡量一个 Vector 的“大小”。两个 Vectors 之间的每个距离函数都可以写成它们差值的范数：$d(a, b) = \lVert a - b \rVert$。所以理解范数就是理解距离。
 
 ### L1 Norm（Manhattan distance）
 
 L1 norm 对所有分量的绝对值求和。
 
-```
-||x||_1 = |x_1| + |x_2| + ... + |x_n|
+```math
+\lVert x \rVert_1 = |x_1| + |x_2| + \cdots + |x_n|
 ```
 
 它被称为 Manhattan distance，因为它衡量的是你在城市网格中行走的距离，在那里你只能沿坐标轴移动，不能走对角线。
@@ -54,7 +54,7 @@ On a grid, you walk 3 blocks east and 4 blocks north.
 - 当你希望对 outliers 更稳健时（单个巨大差异不会主导结果）
 - 特征选择问题（L1 regularization 会促进稀疏性）
 
-与 L1 regularization（Lasso）的联系：在你的 Loss Function 中加入 ||w||_1，会惩罚权重绝对值之和。这会把较小的权重推到精确的零，从而执行自动特征选择。L1 penalty 会在权重空间中产生菱形约束区域，而菱形的角位于坐标轴上，在那里某些权重为零。
+与 L1 regularization（Lasso）的联系：在你的 Loss Function 中加入 $\lVert w \rVert_1$，会惩罚权重绝对值之和。这会把较小的权重推到精确的零，从而执行自动特征选择。L1 penalty 会在权重空间中产生菱形约束区域，而菱形的角位于坐标轴上，在那里某些权重为零。
 
 与 Loss Functions 的联系：Mean Absolute Error（MAE）是预测值和目标值之间 L1 distance 的平均值。它线性惩罚所有误差，因此相比 MSE 对 outliers 更稳健。
 
@@ -62,11 +62,11 @@ On a grid, you walk 3 blocks east and 4 blocks north.
 
 L2 norm 是直线距离。它等于平方分量之和的平方根。
 
-```
-||x||_2 = sqrt(x_1^2 + x_2^2 + ... + x_n^2)
+```math
+\lVert x \rVert_2 = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2}
 ```
 
-这就是你在几何课上学过的距离。n 维中的勾股定理。
+这就是你在几何课上学过的距离。$n$ 维中的勾股定理。
 
 ```
 Point A = (1, 1)
@@ -83,24 +83,26 @@ The straight line, cutting diagonally through the grid.
 - 物理距离（空间数据、传感器读数）
 - 像素级别的图像相似度
 
-与 L2 regularization（Ridge）的联系：在你的 Loss Function 中加入 ||w||_2^2，会惩罚较大的权重。与 L1 不同，它不会把权重推到零。它会按比例把所有权重向零收缩。L2 penalty 会产生圆形约束区域，所以坐标轴上没有角。权重会变小，但很少精确为零。
+与 L2 regularization（Ridge）的联系：在你的 Loss Function 中加入 $\lVert w \rVert_2^2$，会惩罚较大的权重。与 L1 不同，它不会把权重推到零。它会按比例把所有权重向零收缩。L2 penalty 会产生圆形约束区域，所以坐标轴上没有角。权重会变小，但很少精确为零。
 
 与 Loss Functions 的联系：Mean Squared Error（MSE）是 L2 distances 平方的平均值。平方会比小误差更重地惩罚大误差。
 
-```
-MAE (L1 loss):  |y - y_hat|         Linear penalty. Robust to outliers.
-MSE (L2 loss):  (y - y_hat)^2       Quadratic penalty. Sensitive to outliers.
+```math
+\begin{aligned}
+\text{MAE（L1 loss）：} \quad & |y - \hat{y}| && \text{线性惩罚。对离群值稳健。} \\
+\text{MSE（L2 loss）：} \quad & (y - \hat{y})^2 && \text{二次惩罚。对离群值敏感。}
+\end{aligned}
 ```
 
 ### Lp Norms：通用族
 
 L1 和 L2 是 Lp norm 的特殊情况：
 
-```
-||x||_p = (|x_1|^p + |x_2|^p + ... + |x_n|^p)^(1/p)
+```math
+\lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-不同的 p 值会产生不同形状的“unit balls”（距离原点为 1 的所有点的集合）：
+不同的 $p$ 值会产生不同形状的“unit balls”（距离原点为 1 的所有点的集合）：
 
 ```
 p=1:    Diamond shape      (corners on axes)
@@ -111,19 +113,20 @@ p=inf:  Square/hypercube   (flat sides along axes)
 
 ### L-infinity Norm（Chebyshev distance）
 
-当 p 趋近无穷大时，Lp norm 收敛到最大绝对分量。
+当 $p$ 趋近无穷大时，Lp norm 收敛到最大绝对分量。
 
-```
-||x||_inf = max(|x_1|, |x_2|, ..., |x_n|)
+```math
+\lVert x \rVert_\infty = \max(|x_1|, |x_2|, \ldots, |x_n|)
 ```
 
 两个点之间的距离由它们差异最大的那个维度决定。所有其他维度都会被忽略。
 
-```
-Point A = (1, 1)
-Point B = (4, 5)
-
-L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
+```math
+\begin{aligned}
+\text{点 } A &= (1, 1) \\
+\text{点 } B &= (4, 5) \\[6pt]
+L_\infty \text{ 距离} &= \max(|4-1|, |5-1|) = \max(3, 4) = 4
+\end{aligned}
 ```
 
 何时使用 L-infinity：
@@ -135,19 +138,20 @@ L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
 
 Cosine similarity 衡量两个 Vectors 之间的角度，忽略它们的大小。
 
-```
-cos_sim(a, b) = (a . b) / (||a||_2 * ||b||_2)
+```math
+\text{cos\_sim}(a, b) = \frac{a \cdot b}{\lVert a \rVert_2 \, \lVert b \rVert_2}
 ```
 
 它的范围是 -1（方向相反）到 +1（方向相同）。垂直 Vectors 的 cosine similarity 为 0。
 
 Cosine distance 将它转换为距离：cosine_distance = 1 - cosine_similarity。范围是 0（方向相同）到 2（方向相反）。
 
-```
-a = (1, 0)    b = (1, 1)
-
-cos_sim = (1*1 + 0*1) / (1 * sqrt(2)) = 1/sqrt(2) = 0.707
-cos_dist = 1 - 0.707 = 0.293
+```math
+\begin{aligned}
+& a = (1, 0) \qquad b = (1, 1) \\[6pt]
+& \text{cos\_sim} = \frac{1 \cdot 1 + 0 \cdot 1}{1 \cdot \sqrt{2}} = \frac{1}{\sqrt{2}} = 0.707 \\
+& \text{cos\_dist} = 1 - 0.707 = 0.293
+\end{aligned}
 ```
 
 为什么 cosine 在 NLP 和 embeddings 中占主导：在文本中，文档长度不应影响相似度。一篇关于猫的文档即使比另一篇关于猫的文档长两倍，也仍然应该是“相似”的。Cosine similarity 会忽略大小（长度），只关心方向。两个词分布相同但长度不同的文档指向同一方向，并得到 1.0 的 cosine similarity。
@@ -162,16 +166,17 @@ cos_dist = 1 - 0.707 = 0.293
 
 两个 Vectors 的 dot product 是：
 
-```
-a . b = a_1*b_1 + a_2*b_2 + ... + a_n*b_n
-      = ||a|| * ||b|| * cos(angle)
+```math
+\begin{aligned}
+a \cdot b &= a_1 b_1 + a_2 b_2 + \cdots + a_n b_n \\
+&= \lVert a \rVert \, \lVert b \rVert \cos(\text{角度})
+\end{aligned}
 ```
 
 Cosine similarity 是按两个大小归一化后的 dot product。当两个 Vectors 已经是单位归一化（大小 = 1）时，dot product 和 cosine similarity 完全相同。
 
-```
-If ||a|| = 1 and ||b|| = 1:
-    a . b = cos(angle between a and b)
+```math
+\text{如果 } \lVert a \rVert = 1 \text{ 与 } \lVert b \rVert = 1: \quad a \cdot b = \cos(\text{夹角，介于 } a \text{ 与 } b)
 ```
 
 它们不同的情况：dot product 包含大小信息。大小更大的 Vector 会得到更高的 dot product 分数。在一些检索系统中，如果你希望“热门”物品排名更高，这一点很重要。大小会作为隐式的质量或重要性信号。
@@ -197,13 +202,13 @@ Euclidean distance 平等对待所有维度。但如果你的特征相关，或�
 
 Mahalanobis distance 会考虑数据的 covariance 结构。
 
-```
-d_M(x, y) = sqrt((x - y)^T * S^(-1) * (x - y))
+```math
+d_M(x, y) = \sqrt{(x - y)^T S^{-1} (x - y)}
 ```
 
-其中 S 是数据的 covariance matrix。
+其中 $S$ 是数据的 covariance matrix。
 
-直观理解：Mahalanobis distance 会先对数据去相关并归一化（whitening），然后在变换后的空间中计算 L2 distance。如果 S 是 identity matrix（不相关、单位方差特征），Mahalanobis distance 就会退化为 Euclidean distance。
+直观理解：Mahalanobis distance 会先对数据去相关并归一化（whitening），然后在变换后的空间中计算 L2 distance。如果 $S$ 是 identity matrix（不相关、单位方差特征），Mahalanobis distance 就会退化为 Euclidean distance。
 
 ```
 Example: height and weight are correlated.
@@ -225,8 +230,8 @@ because it accounts for the height-weight correlation.
 
 Jaccard similarity 衡量两个集合之间的重叠程度。
 
-```
-J(A, B) = |A intersect B| / |A union B|
+```math
+J(A, B) = \frac{|A \cap B|}{|A \cup B|}
 ```
 
 它的范围是 0（没有重叠）到 1（集合相同）。Jaccard distance = 1 - Jaccard similarity。
@@ -263,7 +268,7 @@ sittin -> sitting (insert g)
 Edit distance = 3
 ```
 
-使用动态规划计算。填充一个 Matrix，其中条目 (i, j) 是字符串 A 的前 i 个字符与字符串 B 的前 j 个字符之间的 edit distance。
+使用动态规划计算。填充一个 Matrix，其中条目 $(i, j)$ 是字符串 A 的前 $i$ 个字符与字符串 B 的前 $j$ 个字符之间的 edit distance。
 
 ```
         ""  s  i  t  t  i  n  g
@@ -286,20 +291,20 @@ Edit distance = 3
 
 KL divergence 衡量一个概率分布与另一个概率分布的差异。本内容在 Lesson 09 中讲过，但它属于这次讨论，因为人们经常把它当作“距离”使用，尽管它并不是距离。
 
-```
-D_KL(P || Q) = sum(p(x) * log(p(x) / q(x)))
+```math
+D_{KL}(P \,\|\, Q) = \sum_x p(x) \log\frac{p(x)}{q(x)}
 ```
 
 关键性质：KL divergence 不是对称的。
 
-```
-D_KL(P || Q) != D_KL(Q || P)
+```math
+D_{KL}(P \,\|\, Q) \ne D_{KL}(Q \,\|\, P)
 ```
 
 这意味着它不满足距离度量的基本要求。它也不满足三角不等式。它是 divergence，不是 distance。
 
-Forward KL（D_KL(P || Q)）是“mean-seeking”：Q 试图覆盖 P 的所有 modes。
-Reverse KL（D_KL(Q || P)）是“mode-seeking”：Q 专注于 P 的单个 mode。
+Forward KL（$D_{KL}(P \Vert Q)$）是“mean-seeking”：$Q$ 试图覆盖 $P$ 的所有 modes。
+Reverse KL（$D_{KL}(Q \Vert P)$）是“mode-seeking”：$Q$ 专注于 $P$ 的单个 mode。
 
 你会在这些地方看到 KL divergence：
 - VAEs（ELBO 中的 KL 项会把 latent distribution 推向 prior）
@@ -311,14 +316,14 @@ Reverse KL（D_KL(Q || P)）是“mode-seeking”：Q 专注于 P 的单个 mode
 
 Wasserstein distance 衡量把一个概率分布转换成另一个概率分布所需的最小“work”。可以这样理解：如果一个分布是一堆土，另一个是一个坑，你需要移动多少土、移动多远？
 
-```
-W(P, Q) = inf over all transport plans gamma of E[d(x, y)]
+```math
+W(P, Q) = \inf_{\gamma} \mathbb{E}[d(x, y)] \quad \text{（遍历所有运输方案 } \gamma\text{）}
 ```
 
 对于 1D 分布，它会简化为累计分布函数绝对差的积分：
 
-```
-W_1(P, Q) = integral |CDF_P(x) - CDF_Q(x)| dx
+```math
+W_1(P, Q) = \int |\text{CDF}_P(x) - \text{CDF}_Q(x)| \, dx
 ```
 
 为什么 Wasserstein 重要：
@@ -353,7 +358,7 @@ Wasserstein gives a meaningful gradient. KL does not.
 | 集合重叠（标签、类别） | Jaccard | 数据天然是集合值，而不是 Vector 型 |
 | 字符串匹配 | Edit distance | 操作映射到人类编辑直觉 |
 | Outlier detection | Mahalanobis | 考虑特征相关性和尺度 |
-| 比较分布 | KL divergence | 衡量使用 Q 而不是 P 时丢失的信息 |
+| 比较分布 | KL divergence | 衡量使用 $Q$ 而不是 $P$ 时丢失的信息 |
 | GAN training | Wasserstein | 即使分布不重叠也能提供 Gradients |
 | Embeddings（vector DB） | Cosine or dot product | Embeddings 被训练为在方向中编码含义 |
 | 推荐 | Dot product | 大小可以编码流行度或置信度 |
@@ -404,7 +409,7 @@ Elastic Net:                  loss + lambda_1 * ||w||_1 + lambda_2 * ||w||_2^2
 
 每个距离函数都隐含一个 nearest neighbor search 问题：给定一个 query point，在数据集中找到最接近的点。
 
-Exact nearest neighbor search 在包含 n 个点、d 个维度的数据集中，每次查询的复杂度是 O(n * d)。对于大型数据集来说，这太慢了。
+Exact nearest neighbor search 在包含 $n$ 个点、$d$ 个维度的数据集中，每次查询的复杂度是 $O(n \cdot d)$。对于大型数据集来说，这太慢了。
 
 Approximate Nearest Neighbor（ANN）算法用少量准确率换取巨大的速度提升：
 
@@ -470,7 +475,7 @@ print(f"Similarities: {similarities[top_k]}")
 
 ## 练习
 
-1. 计算 (1, 2, 3) 和 (4, 0, 6) 之间的 L1、L2 和 L-infinity distances。验证对于任意一对点，总有 L-inf <= L2 <= L1。证明为什么这个顺序一定成立。
+1. 计算 (1, 2, 3) 和 (4, 0, 6) 之间的 L1、L2 和 L-infinity distances。验证对于任意一对点，总有 $L_\infty \le L_2 \le L_1$。证明为什么这个顺序一定成立。
 
 2. 创建两个 Vectors，使 cosine similarity 很高（> 0.9），但 L2 distance 很大（> 10）。从几何角度解释发生了什么。然后创建两个 Vectors，使 cosine similarity 很低（< 0.3），但 L2 distance 很小（< 0.5）。
 
@@ -480,6 +485,18 @@ print(f"Similarities: {similarities[top_k]}")
 
 5. 为近似 Jaccard similarity 实现 MinHash。生成 100 个随机集合，计算所有 pair 的精确 Jaccard，并用 50、100、200 个 hash functions 的 MinHash 近似进行比较。绘制近似误差。
 
+### 提示
+
+**练习 1。** 差向量为 (-3, 2, -3)，因此用 `l1_norm`、`l2_norm` 和 `linf_norm` 计算该向量的三种范数。证明时，将最大的 $\lvert d_i \rvert$ 与平方和比较，再将平方和与绝对值之和的平方比较。
+
+**练习 2。** Cosine similarity 忽略长度，因此先取两个方向几乎相同的向量，并让其中一个远长于另一个。第二种情况则使用原点附近指向不同方向的两个短向量，再用 `cosine_similarity` 和 `l2_distance` 检验两个条件。
+
+**练习 3。** 分别用 `l1_distance`、`l2_distance`、`cosine_distance` 和 `mahalanobis_distance` 调用一次 `find_nearest_neighbor(query, dataset, distance_fn)`。`demo_different_neighbors` 展示了不同度量给出不同结果的数据集，因此先阅读它，再调整各点，直到四种答案全部不同。
+
+**练习 4。** 写出每个分布的累积和，再将两组累积和之差的绝对值相加。用 `wasserstein_1d(p, q)` 检查两次手算结果，再用概率质量必须移动的距离解释较大的结果。
+
+**练习 5。** 对每个哈希函数，一个集合的 MinHash 签名是其元素的最小哈希值；两个集合得到相同最小值的哈希函数所占比例，可估计它们的 Jaccard similarity。将每个估计与 `jaccard_similarity` 比较；对于 $k$ 个哈希函数，误差应大致按 $1/\sqrt{k}$ 下降。
+
 ## 关键术语
 
 | Term | What people say | What it actually means |
@@ -487,15 +504,15 @@ print(f"Similarities: {similarities[top_k]}")
 | Norm | “Vector 的大小” | 一个把 Vector 映射到非负标量的函数，满足三角不等式、绝对齐次性，并且只有零 Vector 的值为零 |
 | L1 norm | “Manhattan distance” | 分量绝对值之和。在优化中产生稀疏性。对 outliers 稳健 |
 | L2 norm | “Euclidean distance” | 平方分量之和的平方根。Euclidean space 中的直线距离 |
-| Lp norm | “Generalized norm” | 分量绝对值 p 次方之和的 p 次根。L1 和 L2 是特殊情况 |
-| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 p 趋近无穷大时 Lp 的极限 |
+| Lp norm | “Generalized norm” | 分量绝对值 $p$ 次方之和的 $p$ 次根。L1 和 L2 是特殊情况 |
+| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 $p$ 趋近无穷大时 Lp 的极限 |
 | Cosine similarity | “Vectors 之间的角度” | 按两个大小归一化的 dot product。范围从 -1 到 +1。忽略 Vector 长度 |
 | Cosine distance | “1 minus cosine similarity” | 将 cosine similarity 转换为距离。范围从 0 到 2 |
 | Dot product | “Unnormalized cosine” | 按分量相乘后求和。等于 cosine similarity 乘以两个大小 |
 | Mahalanobis distance | “Correlation-aware distance” | 在使用数据 covariance matrix 进行 whitened（去相关和归一化）后的空间中的 L2 distance |
 | Jaccard similarity | “Set overlap” | 交集大小除以并集大小。用于集合，而不是 Vectors |
 | Edit distance | “Levenshtein distance” | 将一个字符串转换为另一个字符串所需的最少插入、删除和替换次数 |
-| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 Q 编码 P 时产生的额外 bits |
+| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 $Q$ 编码 $P$ 时产生的额外 bits |
 | Wasserstein distance | “Earth mover's distance” | 将质量从一个分布运输到另一个分布所需的最小 work。真正的 metric |
 | Approximate nearest neighbor | “ANN search” | 比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
 | HNSW | “The vector DB algorithm” | Hierarchical Navigable Small World graph。用于快速 approximate nearest neighbor search 的多层图 |

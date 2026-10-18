@@ -27,12 +27,14 @@ Pure-SSM 模型（Mamba、Mamba-2）在小规模下能匹配 Transformer perplex
 
 State space model 通过固定大小的状态 `h` 处理序列 `x_1, ..., x_N`：
 
-```
-h_t = A h_{t-1} + B x_t
-y_t = C h_t
+```math
+\begin{aligned}
+h_t &= A h_{t-1} + B x_t \\
+y_t &= C h_t
+\end{aligned}
 ```
 
-每一步中，状态通过线性动力学 `A` 演化，接收输入 `B x_t`，并输出 `C h_t`。`A, B, C` 都可以学习。注意这个关键性质：计算 `y_t` 只需要 `h_{t-1}` 和 `x_t`，不需要任何更早的 `x`。内存是常量。推理是每个 token O(1)。
+每一步中，状态通过线性动力学 `A` 演化，接收输入 `B x_t`，并输出 `C h_t`。`A, B, C` 都可以学习。注意这个关键性质：计算 `y_t` 只需要 `h_{t-1}` 和 `x_t`，不需要任何更早的 `x`。内存是常量。推理是每个 token $O(1)$。
 
 建模质量的关键在于 `A` 的结构。S4（Gu 2021）使用了一个高度结构化的 matrix，在训练期间可以作为长 convolution 高效求值。Mamba（Gu, Dao 2023）将固定的 `A, B, C` 替换为依赖数据的形式（也就是 “selective” 部分）。Mamba-2（2024）进一步简化了结构。Mamba-3（2026）则在特定位置重新加入复杂性。
 

@@ -32,10 +32,10 @@ CLIP 有两个 towers：
 
 两个 towers 都把输出 normalize 到 unit length。由于二者都是 unit-norm，similarity 是 `cos(f(x), g(y)) = f(x)^T g(y)`。
 
-对于一个包含 N 个（image, caption）pairs 的 batch，构建 shape 为 `(N, N)` 的 similarity Matrix `S`：
+对于一个包含 $N$ 个（image, caption）pairs 的 batch，构建 shape 为 `(N, N)` 的 similarity Matrix `S`：
 
-```
-S[i, j] = cos(f(x_i), g(y_j)) / tau
+```math
+S[i, j] = \cos(f(x_i), g(y_j)) / \tau
 ```
 
 其中 `tau` 是学习得到的 temperature（CLIP 初始化为 0.07；在 log-space 中学习）。
@@ -54,7 +54,7 @@ loss = (loss_i2t + loss_t2i) / 2
 
 ### Temperature
 
-`tau` 控制 softmax 的 sharpness。低 tau → sharp distribution，具有 hard negative mining 效果。高 tau → soft，所有 samples 都会贡献。CLIP 学习 log(1/tau)，并进行 clipping 以防 collapse。SigLIP 2 固定初始 tau，并改用 learned bias。
+`tau` 控制 softmax 的 sharpness。低 $\tau$ → sharp distribution，具有 hard negative mining 效果。高 $\tau$ → soft，所有 samples 都会贡献。CLIP 学习 $\log(1/\tau)$，并进行 clipping 以防 collapse。SigLIP 2 固定初始 $\tau$，并改用 learned bias。
 
 ### 为什么 sigmoid 扩展性更好（SigLIP）
 
@@ -62,8 +62,8 @@ Softmax 需要整个 similarity Matrix 保持同步。在 distributed training �
 
 SigLIP 用 element-wise sigmoid 替代 softmax：对于每个 pair `(i, j)`，loss 是一个 binary classification，判断“这是不是匹配 pair？”positive class labels 是 diagonal，其他所有都是 negative。Loss 是：
 
-```
-L = -1/N sum over (i, j) [ y_ij log sigmoid(S[i,j]) + (1-y_ij) log sigmoid(-S[i,j]) ]
+```math
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 如果 `i == j`，则 `y_ij = 1`，否则为 0。每个 pair 的 loss 是独立的。不需要 all-gather。每个 GPU 计算自己的 local block 并求和。SigLIP 2 可以低成本扩展到 batch 32k-512k，而 CLIP 会需要按比例增加通信。
@@ -127,7 +127,7 @@ multimodal-fusion
 
 3. 为 cats vs dogs 构建一个 zero-shot classifier。尝试两个 prompt templates：`a photo of a {class}` 和 `a picture of a {class}`。在 100 张 test images 上测量 accuracy。Templates 的 ensemble 是否优于单个 template？
 
-4. 计算 512-GPU、batch 32k 运行时，softmax InfoNCE 与 sigmoid pairwise 的 communication cost。哪个按 O(N) scale，哪个按 O(N^2) scale？引用 SigLIP Section 4。
+4. 计算 512-GPU、batch 32k 运行时，softmax InfoNCE 与 sigmoid pairwise 的 communication cost。哪个按 $O(N)$ scale，哪个按 $O(N^2)$ scale？引用 SigLIP Section 4。
 
 5. 阅读 OpenCLIP scaling-laws paper（arXiv:2212.07143，Cherti et al.）。根据图表复现他们关于 data scaling 的结论：在 fixed model size 下，ImageNet zero-shot accuracy 与 training data size 之间的 log-linear relationship 是什么？
 

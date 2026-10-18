@@ -31,9 +31,9 @@ Graph Neural Networks (GNNs) 是 Deep Learning 中增长最快的领域。它们
 ## 概念
 ### Graphs: Nodes and Edges
 
-一个 graph G = (V, E) 由 vertices (nodes) V 和 edges E 组成。每条 edge 连接两个 nodes。
+一个 graph $G = (V, E)$ 由 vertices (nodes) $V$ 和 edges $E$ 组成。每条 edge 连接两个 nodes。
 
-**Directed vs undirected。** 在 undirected graph 中，edge (u, v) 表示 u 连接到 v，并且 v 也连接到 u。在 directed graph (digraph) 中，edge (u, v) 表示 u 指向 v，但反向不一定成立。
+**Directed vs undirected。** 在 undirected graph 中，edge $(u, v)$ 表示 $u$ 连接到 $v$，并且 $v$ 也连接到 $u$。在 directed graph (digraph) 中，edge $(u, v)$ 表示 $u$ 指向 $v$，但反向不一定成立。
 
 **Weighted vs unweighted。** 在 unweighted graph 中，edges 要么存在，要么不存在。在 weighted graph 中，每条 edge 都有一个数值 weight，比如 distance、cost 或 strength。
 
@@ -46,14 +46,13 @@ Graph Neural Networks (GNNs) 是 Deep Learning 中增长最快的领域。它们
 
 ### The Adjacency Matrix
 
-adjacency matrix A 是核心表示。对于一个包含 n 个 nodes 的 graph：
+adjacency matrix $A$ 是核心表示。对于一个包含 $n$ 个 nodes 的 graph：
 
-```
-A[i][j] = 1    if there is an edge from node i to node j
-A[i][j] = 0    otherwise
+```math
+A[i][j] = \begin{cases} 1 & \text{若存在从节点 } i \text{ 到节点 } j \text{ 的 edge} \\ 0 & \text{否则} \end{cases}
 ```
 
-对于 undirected graphs，A 是 symmetric：A[i][j] = A[j][i]。对于 weighted graphs，A[i][j] = edge (i, j) 的 weight。
+对于 undirected graphs，$A$ 是 symmetric：$A[i][j] = A[j][i]$。对于 weighted graphs，$A[i][j]$ = edge $(i, j)$ 的 weight。
 
 **示例：一个 triangle：**
 
@@ -66,20 +65,22 @@ A = [[0, 1, 1],
      [1, 1, 0]]
 ```
 
-adjacency matrix 是每个 GNN 的输入。A 上的 Matrix operations 对应 graph 上的操作。
+adjacency matrix 是每个 GNN 的输入。$A$ 上的 Matrix operations 对应 graph 上的操作。
 
 ### Degree
 
 node 的 degree 是连接到它的 edges 数量。对于 directed graphs，你有 in-degree（进入的 edges）和 out-degree（出去的 edges）。
 
-degree matrix D 是 diagonal：
+degree matrix $D$ 是 diagonal：
 
-```
-D[i][i] = degree of node i
-D[i][j] = 0    for i != j
+```math
+\begin{aligned}
+D[i][i] &= \text{节点 } i \text{ 的 degree} \\
+D[i][j] &= 0 \quad \text{其中 } i \ne j
+\end{aligned}
 ```
 
-对于 triangle 示例：D = diag(2, 2, 2)，因为每个 node 都连接到另外两个 nodes。
+对于 triangle 示例：$D = \mathop{\mathrm{diag}}(2, 2, 2)$，因为每个 node 都连接到另外两个 nodes。
 
 Degree 告诉你 node 的重要性。High degree = hub node。一个 network 的 degree distribution 揭示了它的结构。Social networks 遵循 power laws（少量 hubs，许多 leaf nodes）。Random graphs 具有 Poisson-distributed degrees。
 
@@ -129,19 +130,17 @@ DFS 可用于：
 
 ### The Graph Laplacian
 
-L = D - A。spectral graph theory 中最重要的 matrix。
+$L = D - A$。spectral graph theory 中最重要的 matrix。
 
 对于 triangle：
 
-```
-D = [[2, 0, 0],    A = [[0, 1, 1],    L = [[2, -1, -1],
-     [0, 2, 0],         [1, 0, 1],         [-1, 2, -1],
-     [0, 0, 2]]         [1, 1, 0]]         [-1, -1,  2]]
+```math
+D = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix} \qquad A = \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \qquad L = \begin{bmatrix} 2 & -1 & -1 \\ -1 & 2 & -1 \\ -1 & -1 & 2 \end{bmatrix}
 ```
 
 Laplacian 具有非常重要的性质：
 
-1. **L 是 positive semi-definite。** 所有 eigenvalues 都 >= 0。
+1. **$L$ 是 positive semi-definite。** 所有 eigenvalues 都 $\ge 0$。
 
 2. **zero eigenvalues 的数量等于 connected components 的数量。** 一个 connected graph 恰好有一个 zero eigenvalue。一个有 3 个 disconnected components 的 graph 有三个 zero eigenvalues。
 
@@ -171,12 +170,12 @@ graph TD
 adjacency matrix 和 Laplacian 的 eigenvalues 可以在不做任何 traversal 的情况下揭示 structural properties。
 
 **Spectral clustering** 的工作方式如下：
-1. 计算 Laplacian L
-2. 找到 L 的 k 个最小 eigenvectors（跳过第一个；对于 connected graphs，它是全 1）
+1. 计算 Laplacian $L$
+2. 找到 $L$ 的 $k$ 个最小 eigenvectors（跳过第一个；对于 connected graphs，它是全 1）
 3. 将这些 eigenvectors 用作每个 node 的新坐标
-4. 在这些坐标上运行 k-means
+4. 在这些坐标上运行 $k$-means
 
-为什么这有效？L 的 eigenvectors 编码了 graph 上最“平滑”的函数。连接良好的 nodes 会得到相似的 eigenvector values。被 bottleneck 分隔的 nodes 会得到不同的值。eigenvectors 会自然地分离 clusters。
+为什么这有效？$L$ 的 eigenvectors 编码了 graph 上最“平滑”的函数。连接良好的 nodes 会得到相似的 eigenvector values。被 bottleneck 分隔的 nodes 会得到不同的值。eigenvectors 会自然地分离 clusters。
 
 **Random walk connection。** normalized Laplacian 与 graph 上的 random walks 有关。random walk 的 stationary distribution 与 node degree 成比例。mixing time（walk 收敛得有多快）取决于 spectral gap。
 
@@ -184,25 +183,25 @@ adjacency matrix 和 Laplacian 的 eigenvalues 可以在不做任何 traversal �
 
 这是 Graph Neural Networks 的核心操作。每个 node 从其 neighbors 收集 messages，聚合它们，然后更新自己的 state。
 
-```
-h_v^(k+1) = UPDATE(h_v^(k), AGGREGATE({h_u^(k) : u in neighbors(v)}))
+```math
+h_v^{(k+1)} = \text{UPDATE}\left(h_v^{(k)}, \text{AGGREGATE}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
 在最简单的形式中，AGGREGATE = mean，UPDATE = linear transform + activation：
 
-```
-h_v^(k+1) = sigma(W * mean({h_u^(k) : u in neighbors(v)}))
-```
-
-这其实是伪装成另一种形式的 matrix multiplication。如果 H 是所有 node features 的 matrix，A 是 adjacency matrix：
-
-```
-H^(k+1) = sigma(A_norm * H^(k) * W)
+```math
+h_v^{(k+1)} = \sigma\left(W \cdot \text{mean}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
-其中 A_norm 是 normalized adjacency matrix（每一行求和为 1）。
+这其实是伪装成另一种形式的 matrix multiplication。如果 $H$ 是所有 node features 的 matrix，$A$ 是 adjacency matrix：
 
-一轮 message passing 让每个 node “看到”它的 immediate neighbors。两轮让它看到 neighbors of neighbors。K 轮让每个 node 获得来自其 K-hop neighborhood 的信息。
+```math
+H^{(k+1)} = \sigma\left(A_{\text{norm}} H^{(k)} W\right)
+```
+
+其中 $A_{\text{norm}}$ 是 normalized adjacency matrix（每一行求和为 1）。
+
+一轮 message passing 让每个 node “看到”它的 immediate neighbors。两轮让它看到 neighbors of neighbors。$K$ 轮让每个 node 获得来自其 $K$-hop neighborhood 的信息。
 
 ```mermaid
 graph LR
@@ -323,7 +322,7 @@ def dfs(graph, start):
     return order
 ```
 
-BFS 使用 deque（double-ended queue）以实现 O(1) popleft。DFS 使用 list 作为 stack。两者都会恰好访问每个 node 一次，时间复杂度为 O(V + E)。
+BFS 使用 deque（double-ended queue）以实现 $O(1)$ popleft。DFS 使用 list 作为 stack。两者都会恰好访问每个 node 一次，时间复杂度为 $O(V + E)$。
 
 ### 步骤 3：Connected components 和 Laplacian eigenvalues
 
@@ -366,7 +365,7 @@ def spectral_clustering(graph, k=2):
     return labels
 ```
 
-对于 k=2，Fiedler vector 的符号会将 graph 分成两个 clusters。对于 k>2，你会在前 k 个 eigenvectors（排除 trivial all-ones eigenvector）上运行 k-means。
+对于 $k=2$，Fiedler vector 的符号会将 graph 分成两个 clusters。对于 $k>2$，你会在前 $k$ 个 eigenvectors（排除 trivial all-ones eigenvector）上运行 $k$-means。
 
 ### 步骤 5： Message passing
 
@@ -457,13 +456,13 @@ Fiedler vector 承担了主要工作。正值条目位于一个 cluster，负值
 | Connected components | Preprocessing, handling disconnected graphs |
 | PageRank | Node importance ranking, attention initialization |
 
-GNNs 值得特别说明。GCN（Kipf & Welling, 2017）中的 graph convolution operation 使用添加了 self-loops 的 adjacency matrix，A_hat = A + I：
+GNNs 值得特别说明。GCN（Kipf & Welling, 2017）中的 graph convolution operation 使用添加了 self-loops 的 adjacency matrix，$\hat{A} = A + I$：
 
-```text
-H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
+```math
+H^{(l+1)} = \sigma\left(\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2} H^{(l)} W^{(l)}\right)
 ```
 
-其中 A_hat = A + I（adjacency 加 self-loops），D_hat 是 A_hat 的 degree matrix。self-loops 确保每个 node 在 aggregation 期间包含自身 features。这正是带有 symmetric normalization 的 message passing。D_hat^(-1/2) * A_hat * D_hat^(-1/2) 是 normalized adjacency matrix。Laplacian 出现在这里，是因为这种 normalization 与 L_sym = I - D^(-1/2) * A * D^(-1/2) 相关。理解 Laplacian，就意味着理解 GCNs 为什么有效。
+其中 $\hat{A} = A + I$（adjacency 加 self-loops），$\hat{D}$ 是 $\hat{A}$ 的 degree matrix。self-loops 确保每个 node 在 aggregation 期间包含自身 features。这正是带有 symmetric normalization 的 message passing。$\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2}$ 是 normalized adjacency matrix。Laplacian 出现在这里，是因为这种 normalization 与 $L_{\text{sym}} = I - D^{-1/2} A D^{-1/2}$ 相关。理解 Laplacian，就意味着理解 GCNs 为什么有效。
 
 ## 练习
 1. **从零实现 PageRank。** 从 uniform scores 开始。每一步：score(v) = (1-d)/n + d * sum(score(u)/out_degree(u))，其中 u 是所有指向 v 的 nodes。使用 d=0.85。运行直到收敛（change < 1e-6）。在一个小型 web graph 上测试。
@@ -476,14 +475,26 @@ H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
 
 5. **分析一个真实世界 graph。** 使用 Karate Club graph（34 nodes, 78 edges）。计算 degree distribution、Laplacian eigenvalues 和 spectral clustering。将 spectral clustering 结果与已知 ground truth split 比较。
 
+### 提示
+
+**练习 1。** 使用练习中给出的公式。没有 outgoing edges 的节点必须将其分数平均分给所有节点，否则总分会小于 1。检查每一步之后所有分数之和是否为 1，并将结果与 `pagerank(graph)` 比较。
+
+**练习 2。** 使用 `add_edge` 构造两个 cliques，用一条 edge 连接它们，然后调用 `spectral_clustering(graph, k=2)`。检查每个 clique 是否各自获得同一个 label。逐渐添加跨组 edges 时，打印 `laplacian()` 的第二小 eigenvalue；随着两组连接得更紧密，该值会增大。
+
+**练习 3。** 使用 `heapq` 维护 priority queue，总是扩展已知距离最小的节点。将每条 edge 的 weight 都设为 1，检查 Dijkstra 得到的每个距离是否等于 `bfs(graph, start)` 中该节点所在的 BFS 层数。
+
+**练习 4。** 将 identity matrix 用作 `features`，使每一列标记一个节点，然后应用两次 `message_passing`。此时，节点 $v$ 所在行的非零 entries 表明哪些节点的信息到达了 $v$。将这个集合与 breadth-first search 中距离不超过 2 的节点集合比较。
+
+**练习 5。** `networkx.karate_club_graph()` 提供 edge list，以及节点属性 `club` 中的 ground truth。将这些 edges 复制到一个 `Graph` 中，并检查它是否有 34 个节点和 78 条 edges。比较 `spectral_clustering` 得到的 labels 与 `club` 的值，允许两个 label 的名称互换。
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Graph | “Nodes and edges” | 一种数学结构 G=(V,E)，用于编码 pairwise relationships |
-| Adjacency matrix | “The connection table” | 一个 n x n matrix，其中如果 nodes i 和 j 相连，则 A[i][j] = 1 |
+| Graph | “Nodes and edges” | 一种数学结构 $G=(V,E)$，用于编码 pairwise relationships |
+| Adjacency matrix | “The connection table” | 一个 $n \times n$ matrix，其中如果 nodes $i$ 和 $j$ 相连，则 $A[i][j] = 1$ |
 | Degree | “一个 node 有多 connected” | 接触某个 node 的 edges 数量 |
-| Laplacian | “D minus A” | L = D - A，其 eigenvalues 会揭示 graph structure 的 matrix |
-| Fiedler value | “The algebraic connectivity” | L 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
+| Laplacian | “D minus A” | $L = D - A$，其 eigenvalues 会揭示 graph structure 的 matrix |
+| Fiedler value | “The algebraic connectivity” | $L$ 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
 | BFS | “Level-by-level search” | 在深入之前先访问所有 neighbors 的 traversal，可找到 shortest paths |
 | DFS | “Go deep first” | 在回溯之前沿一条 path 走到末端的 traversal |
 | Message passing | “Nodes talk to neighbors” | 每个 node 从其 neighbors 聚合信息，这是 GNNs 的核心 |

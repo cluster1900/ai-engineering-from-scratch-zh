@@ -49,15 +49,14 @@ flowchart TB
 
 ### BLEU-4
 
-```text
-BLEU-4 = BP * exp(mean(log p1, log p2, log p3, log p4))
+```math
+\text{BLEU-4} = \text{BP} \cdot \exp\big(\text{mean}(\log p_1, \log p_2, \log p_3, \log p_4)\big)
 ```
 
 其中 `p_n` 是修改后的 n 元语法精度（出现在任何参考文献中的生成的 n 元语法的裁剪计数，除以生成的 n 元语法总数），`BP` 是简洁性惩罚：
 
-```text
-BP = 1                if generated length > reference length
-   = exp(1 - r/g)     otherwise, where r is reference length and g is generated
+```math
+\text{BP} = \begin{cases} 1 & \text{当生成长度} > \text{参考长度} \\ \exp(1 - r/g) & \text{否则，其中 } r \text{ 为参考长度，} g \text{ 为生成长度} \end{cases}
 ```
 
 对于一些 `p_n` 为零的小样本，需要进行平滑。该实现使用 Chen 和 Cherry 的“方法 1”（对于任何零计数，分子和分母加 1），这是低计数制度最安全的默认值。

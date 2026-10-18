@@ -19,8 +19,11 @@ LLMs 会记忆。Carlini et al. 2021 表明，生产语言模型会按需逐字�
 ## 概念
 ### (ε, δ)-differential privacy
 
-如果对任意两个仅相差一个样本的数据集，以及任意事件 S，一个 randomized algorithm M 满足：
-P(M(D) in S) <= e^ε * P(M(D') in S) + δ。
+如果对任意两个仅相差一个样本的数据集，以及任意事件 $S$，一个随机算法 $M$ 满足以下条件，则称其具有 $(\varepsilon, \delta)$-差分隐私：
+
+```math
+P(M(D) \in S) \le e^{\varepsilon} \cdot P(M(D') \in S) + \delta.
+```
 
 解释：输出分布足够接近（由 ε 参数化），使任何单个个体的贡献都不能被可靠推断，除非以 δ 的概率发生例外。
 
@@ -30,7 +33,7 @@ Abadi et al. 2016。标准流程：
 1. 采样一个 mini-batch。
 2. 计算 per-example gradients。
 3. 将每个 per-example gradient 裁剪到阈值 C。
-4. 对裁剪后的 gradients 求和，并加入 std 为 σ * C 的 Gaussian noise。
+4. 对裁剪后的 gradients 求和，并加入 std 为 $\sigma \cdot C$ 的 Gaussian noise。
 5. 使用带噪声的和来更新参数。
 
 隐私成本由 accountant 跟踪（Moments Accountant、Rényi DP accountant）。LLM 文献中报告的 ε 值会因威胁模型、数据敏感性和效用目标而大幅变化；不存在普适的“安全”默认 ε。已发表示例在某些 LLM 训练设置中大致覆盖 ε ≈ 1–10，但这些只是示例，并非推荐默认值。较低的 ε 通常需要更多噪声，并可能增加效用损失。
@@ -79,9 +82,9 @@ an-dp-clip-noise
 本课会产出 `outputs/skill-dp-audit.md`。给定某个语言模型部署的 DP claim，它会 audit：(ε, δ) 值、使用的 accountant、MIA evaluation protocol，以及是否已经评估 confidence-exposure vectors。
 
 ## 练习
-1. 运行 `code/main.py`。扫过 σ ∈ {0.5, 1.0, 2.0}，并报告 (ε, δ)-accuracy 权衡。识别效用崩溃的临界点。
+1. 运行 `code/main.py`。扫过 $\sigma \in \lbrace 0.5, 1.0, 2.0 \rbrace$，并报告 (ε, δ)-accuracy 权衡。识别效用崩溃的临界点。
 
-2. 实现 Canary 插入和 log-loss test。测量在 σ = 1.0 时，DP-SGD 前后的检测率。
+2. 实现 Canary 插入和 log-loss test。测量在 $\sigma = 1.0$ 时，DP-SGD 前后的检测率。
 
 3. 阅读 Nasr et al. 2025 关于 training-data extraction 的内容。为什么 extraction success 不会在中等 ε 下崩溃？这对将 MIA 作为 evaluation 意味着什么？
 

@@ -33,8 +33,8 @@ Phase 7 · Lesson 16 给你的是数学。本课给你的是训练栈。一个�
 
 令 `α` 为每个 drafted Token 的期望接受率。令 `c = cost(draft) / cost(verifier)` 为成本比。每次验证器 forward 的期望接受 Token 数为：
 
-```
-E[accepted] = (1 - α^(N+1)) / (1 - α)
+```math
+\mathbb{E}[\text{accepted}] = \frac{1 - \alpha^{N+1}}{1 - \alpha}
 ```
 
 每个接受 Token 的期望总 wall time 是 `(N * c + 1) / E[accepted]`。相对于 `N` 最小化它，就能得到最佳点。对于 `α = 0.8, c = 0.05`：最优 `N` 大约是 5–7，加速为 3.2×。对于 `α = 0.95, c = 0.02`：最优 `N` 大约是 8–10，加速接近 5×。
