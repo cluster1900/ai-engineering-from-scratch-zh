@@ -27,42 +27,46 @@ DPO 用一个 supervised loss 替代这两个阶段。reward model 从未显式�
 
 从 Bradley-Terry model 开始。给定 prompt `x` 和两个 completions `y_w`（chosen）与 `y_l`（rejected），人类偏好 `y_w` 的概率是
 
-```text
-P(y_w > y_l | x) = sigmoid( r(x, y_w) - r(x, y_l) )
+```math
+P(y_w > y_l \mid x) = \sigma\big( r(x, y_w) - r(x, y_l) \big)
 ```
 
 其中 `r` 是某个 latent reward function。RLHF 先从 preferences 拟合 `r`，然后训练 policy `pi`，用 KL anchor 最大化 `r`：
 
-```text
-max_pi   E_{x, y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 DPO 推导观察到，在这个 objective 下，optimal policy `pi*` 可以用 `r` 写成 closed form：
 
-```text
-pi*(y | x) = (1/Z(x)) * pi_ref(y | x) * exp( r(x, y) / beta )
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left( \frac{r(x, y)}{\beta} \right)
 ```
 
 对 `r` 重新整理：
 
-```text
-r(x, y) = beta * ( log pi*(y | x) - log pi_ref(y | x) ) + beta * log Z(x)
+```math
+r(x, y) = \beta \big( \log \pi^*(y \mid x) - \log \pi_{\text{ref}}(y \mid x) \big) + \beta \log Z(x)
 ```
 
 `log Z(x)` 项对 `y_w` 和 `y_l` 相同（它依赖 `x`，而不是 `y`），因此在计算 preference difference 时会抵消：
 
-```text
-r(x, y_w) - r(x, y_l) = beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                                - log pi_theta(y_l|x) + log pi_ref(y_l|x) )
+```math
+\begin{aligned}
+r(x, y_w) - r(x, y_l) = \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+&- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big)
+\end{aligned}
 ```
 
 代入 Bradley-Terry sigmoid，并对 preference pairs 取 negative log likelihood：
 
-```text
-L_DPO(theta) = - E_{(x, y_w, y_l)} [
-  log sigmoid( beta * ( log pi_theta(y_w|x) - log pi_ref(y_w|x)
-                       - log pi_theta(y_l|x) + log pi_ref(y_l|x) ) )
-]
+```math
+\begin{aligned}
+L_{\text{DPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l)} \Big[
+  \log \sigma\big( \beta \big( &\log \pi_\theta(y_w \mid x) - \log \pi_{\text{ref}}(y_w \mid x) \\
+  &- \log \pi_\theta(y_l \mid x) + \log \pi_{\text{ref}}(y_l \mid x) \big) \big)
+\Big]
+\end{aligned}
 ```
 
 这就是 Loss。它是每个样例一个标量上的 sigmoid，该标量由四个 log-probabilities 计算得到。没有单独的 reward model。没有 PPO。Loss 中没有 KL term；KL constraint 被 baked into closed-form derivation。
@@ -87,8 +91,8 @@ flowchart LR
 
 任何训练运行之前都有一个有用的 sanity check。对 `log pi_theta(y_w | x)` 求 Gradient：
 
-```text
-d L_DPO / d log pi_theta(y_w | x) = - beta * (1 - sigmoid(z))
+```math
+\frac{\partial L_{\text{DPO}}}{\partial \log \pi_\theta(y_w \mid x)} = -\beta \big(1 - \sigma(z)\big)
 ```
 
 其中 `z` 是 sigmoid 的 argument。它对所有 `z` 都为负，这意味着：提高 policy 对 chosen completion 的 log-probability 会降低 Loss。对称地，关于 `log pi_theta(y_l | x)` 的 Gradient 为正：提高 rejected log-probability 会增加 Loss。训练会把 chosen 往上推，把 rejected 往下推。reference 是 frozen；它不会移动。

@@ -62,8 +62,8 @@ flowchart TB
 
 本课使用的 UCB 公式是经典 UCB1。
 
-```text
-ucb(branch) = mean_reward(branch) + c * sqrt( ln(total_runs) / runs(branch) )
+```math
+\text{ucb}(\text{branch}) = \text{mean\_reward}(\text{branch}) + c \sqrt{ \frac{\ln(\text{total\_runs})}{\text{runs}(\text{branch})} }
 ```
 
 `total_runs` 是所有 branches 上已完成 experiments 的总数。`c` 是 exploration weight；本课默认值为 `sqrt(2)`。runs 为零的 branch 会得到 `+inf`，所以未尝试的 branches 总是先被调度。mean reward 高的 branch 会保持高 score，直到其他 branches 追上；运行很多次但 reward 不高的 branch 会被运行次数更少的 alternatives 超过。

@@ -137,10 +137,12 @@ skill-eval-layers
 
 对于二元调用判定：
 
-```text
-precision = true_positives / (true_positives + false_positives)
-recall = true_positives / (true_positives + false_negatives)
-f1 = 2 * precision * recall / (precision + recall)
+```math
+\begin{aligned}
+\text{precision} &= \frac{\text{true\_positives}}{\text{true\_positives} + \text{false\_positives}} \\[4pt]
+\text{recall} &= \frac{\text{true\_positives}}{\text{true\_positives} + \text{false\_negatives}} \\[4pt]
+\text{f1} &= \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}
+\end{aligned}
 ```
 
 同时汇报原始计数与比率。10 个中的 10 个与 100 个中的 100 个都是 100%，但提供的置信证据截然不同。
