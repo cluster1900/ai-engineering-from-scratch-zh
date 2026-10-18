@@ -27,7 +27,7 @@ Các ngành LLM đa khu vực phục vụ là cache 问题、路由 问题和 DR
 
  Bạn có cache của prefix này ?🏻                                                                                                                                                                                                                                                        
 
-**vLLM Router**(Rust,2026 sản xuất-stack): 订阅 `kv.cache.block_added`events,维护 tiền tố hash → replica index, dùng O(1) tìm kiếm 路由──没有匹配时回落到最小排行深──
+**vLLM Router**(Rust,2026 sản xuất-stack): 订阅 `kv.cache.block_added`events,维护 tiền tố-hash → replica index,用 $O(1)$tìm kiếm 路由──没有匹配时回落到最低排行深度──
 
 **llm-d router**: tương tự mô hình,Kubernetes-native── thông qua ControlPlane API 发布 sự kiện──
 
