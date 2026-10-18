@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-Simple realiza es O                                                                                                                                                                                                                                                             
+朴素实现是 $O(n \cdot \lvert \text{merges} \rvert)$ Producir logros (ticktoken, HF Tokenizers) utilizando búsqueda de rango de fusión y colas de prioridad, tiempo de ejecución
 
 ### 步骤 3: 实践中的 SentencePiece
 

@@ -148,7 +148,7 @@ def is_correction(utterance):
 
 ## 陷
 
-- **Full-history regeneration cost。**让 LLM 每一轮都重生状态,总 Token 成本是 O(n2)。限制历史或总结较早转──
+- **Full-history regeneration cost。**让LLM Cada una de las rondas de la nueva generación de estado,总 Token 成本是 $O(n^2)$◊ limita la historia o el resultado de los primeros tiempos.
 - **Schema drift。**Añadir nuevas ranuras destruirá el viejo entrenamiento de datos.
 - **Case sensitivity。**Italiano Italiano Italiano Italiano   hasta donde todo debe normalizarse
 - **Implicit inheritance。**Si el usuario previamente ha especificado  para 4 personas, nuevo diferente tiempo de solicitud no debería limpiar personas.

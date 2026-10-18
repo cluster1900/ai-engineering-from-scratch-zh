@@ -21,9 +21,11 @@ Este curso se desarrollará desde la creación de la bolsa de palabras, luego se
 
 **TF-IDF**Una palabra que aparece en cada documento no es alta, por lo que su peso es reducido. Una palabra que aparece en cada documento es muy poco común en el archivo de lenguaje, pero en cada documento aparece frecuentemente como un señal, por lo que su peso es elevado.
 
-```
-TF-IDF(w, d) = TF(w, d) * IDF(w)
-             = count(w in d) / |d| * log(N / df(w))
+```math
+\begin{aligned}
+\text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
+\end{aligned}
 ```
 
 Entre ellos `TF`Es la frecuencia del término en el archivo,`df`Es la frecuencia del documento (((hay muchos documentos que contienen este palabra),`N`Es el número total de archivos.`log`El poder de mantener el peso de las palabras frecuentes tiene límites.

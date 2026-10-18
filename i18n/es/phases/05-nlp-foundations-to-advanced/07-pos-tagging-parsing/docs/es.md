@@ -82,8 +82,8 @@ En el corpus marrón, esta línea de base puede alcanzar una precisión del 85%.
 
 Para la probabilidad conjunta de la secuencia 建模:
 
-```
-P(tags, words) = prod P(tag_i | tag_{i-1}) * P(word_i | tag_i)
+```math
+P(\text{tags}, \text{words}) = \prod_i P(\text{tag}_i \mid \text{tag}_{i-1}) \cdot P(\text{word}_i \mid \text{tag}_i)
 ```
 
 两张表:probabilidades de transición(给定前标的标签) y probabilidades de emisión(给定标签的词) ――用带拉普拉斯平滑的计算 来估计二者──用Viterbi 解码(在标签网上做动态编程)。

@@ -21,8 +21,8 @@ El verdadero problema es cómo manejar los n-gramos no vistos. El modelo primiti
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`❖ Fija`n`(normalmente trigrama con 3,4 gramos con 4)
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。** Los n-gramos que no se hayan visto en cualquier entrenamiento obtendrán una probabilidad de 0.  Un estudio de 2007 sobre el cuerpo de Brown encontró que incluso en un modelo de 4 gramos, hay un 30% de 4 gramos que no se han mantenido en el entrenamiento                                                                                                                                                                                                                               
@@ -40,8 +40,8 @@ Kneser-Ney's洞见很深──"San Francisco"是常见的bigram──Unigram "Fr
 
 **评估：perplexity。**En el ensayo de ensayos realizado, cada palabra tiene un índice de probabilidad de logro promedio negativo.
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 

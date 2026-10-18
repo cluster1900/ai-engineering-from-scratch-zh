@@ -29,7 +29,7 @@ Esta clase se dedicará a tres personas para construir la percepción, y explica
 
 Realización del año 2026:
 
-- **Outlines。**将 JSON Schema 或 regex 编译为有限状态机──每个代币都能 O(1) 查询 valid-next-token──基于FSM,因此递归的代码需要平坦化──
+- **Outlines。**JSON Schema o regex 编译为有限状态机.$O(1)$查询 valid-next-token── basado en FSM, por lo que los esquemas recursivos  necesitan aplanar──
 - **XGrammar / llguidance。**Los motores de gramática sin contexto── procesar esquemas JSON recursivos──解码开销接近零──OpenAI en su producción estructurada 2025 实现中提到了 llguidance──
 - **vLLM guided decoding。**通过概要、XGrammar o lm-format-enforcer 后端内置 `guided_json`¿Qué es esto?`guided_regex`¿Qué es esto?`guided_choice`¿Qué es esto?`guided_grammar`¿Qué es eso?
 - **Instructor。**基于 Pydantic's arbitrario LLM wrapper──验证失败时重试──跨供应商, pero no modificará logits, dependiendo de retries + estructurados-output-consciente de las instrucciones──
@@ -211,7 +211,7 @@ tags: [nlp, llm, structured-output]
 |------|------------|----------|
 | Constrained decoding | 强制有效输出 | 在每个生成步骤 mask invalid-token logits。 |
 | Logit processor | 执行约束的东西 | 函数：`(logits, state) -> masked_logits`。 |
-| FSM | Finite-state machine | 编译后的 grammar 表示；O(1) valid-next-token 查询。 |
+| FSM | Finite-state machine | 编译后的 grammar 表示；$O(1)$ valid-next-token 查询。 |
 | CFG | Context-free grammar | 能处理 recursion 的 grammar；比 FSM 更慢但表达力更强。 |
 | Schema field order | 它重要吗？ | 重要，first field 会形成承诺；始终把 reasoning 放在 answer 之前。 |
 | Guided decoding | vLLM 对它的称呼 | 同一概念，集成进 inference server。 |
