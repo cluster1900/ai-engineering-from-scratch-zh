@@ -37,7 +37,7 @@ Até 2026, o teste de LibriSpeech-clean 上的SOTA WER为1.4% (Parakeet-TDT-1.1B
 
 ### WER: um número
 
-**Word Error Rate**- Não .`(S + D + I) / N`, em que S= substituir, D= eliminar, I= inserir, N= referência文文本词数──它对应词级 Levenshtein edit distance──越低越好──WER Superior a 20% normalmente inconveniente; inferior a 5% para atingir o nível humano──2026年标准基准 数字:
+**Word Error Rate**- Não .$(S + D + I) / N$, entre os $S$= substituir,$D$= eliminação,$I$= inserir,$N$= referência text文文文词数──它对应词级 Levenshtein edit distance──越低越好──WER Mais de 20% normalmente inconveniente; Menos de 5% para atingir o nível humano enquanto leitura.
 
 | Model | LibriSpeech test-clean | LibriSpeech test-other | Size |
 |-------|------------------------|------------------------|------|

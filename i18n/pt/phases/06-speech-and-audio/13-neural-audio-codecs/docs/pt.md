@@ -24,7 +24,7 @@ As perspectivas para 2024-2026 são:**当你尝试从文本生成时，纯 recon
 
 ### 核心技巧: Quantização de vetores residuais (RVQ)
 
-Em vez de usar um livro de códigos gigantesco, para obter boa qualidade, talvez seja necessário milhões de códigos, o moderno codec de rádio é usado.**RVQ**:一串小代码簿 级联──第一代码簿 量化编码器 输出;第二代量化残留;依此类推──每代码簿有1024 代码簿──8 代码簿 = 1024^8 = 10^24 的有效词表──
+Em vez de usar um livro de códigos gigantesco, para obter boa qualidade, talvez seja necessário milhões de códigos, o moderno codec de rádio é usado.**RVQ**:一串小代码簿 级联──第一代码簿 量化编码器 输出;第二代量化残留;依此类推──每个代码簿有1024 代码簿──8 代码簿 = $1024^8 = 10^{24}$É um termo que vale a pena.
 
 Em inferência, o decodificador irá reedificar todos os códigos selecionados em cada um.
 
@@ -130,8 +130,8 @@ Código semântico 0 Com WavLM 对齐. Você pode treinar um Transformador de te
 
 Para Mimi, 12,5 Hz × 8 códigos, um 10 s 语音片段:
 
-```
-N_tokens = 10 * 12.5 * 8 = 1000 tokens
+```math
+N_{\text{tokens}} = 10 \times 12.5 \times 8 = 1000 \text{ tokens}
 ```
 
 1000 Tokens para Transformer é muito pequeno. Um Transformer com 256M de parâmetros pode ser gerado em 10 segundos em GPUs modernos.

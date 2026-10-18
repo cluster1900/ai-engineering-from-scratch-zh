@@ -23,7 +23,7 @@ Mel espectrograma  avanço adicional. O espectro humano em sentido numérico per
 
 **Log-magnitude.**grandeza bruta 跨越 5-6 个数量级──使用 `log(|X| + 1e-6)`Ou `20 * log10(|X|)`Para comprimir a gama dinâmica, cada linha de produção utiliza a magnitude de log, em vez de magnitude bruta.
 
-**Mel scale.**Frequência de Hz`f` através `m = 2595 * log10(1 + f / 700)`- Não .`m`◊ O que é o que se faz em 1 kHz abaixo é linear, em 1 kHz acima é o que se faz em número.
+**Mel scale.**Frequência de Hz`f` através $m = 2595 \cdot \log_{10}(1 + f / 700)$- Não .`m`◊ O que é o que se faz em 1 kHz abaixo é linear, em 1 kHz acima é o que se faz em número.
 
 **Mel filterbank.**Uma série de filtros triangulares em escala de mel, em escala de alta distância, em linha de linha. Cada filtro é a soma ponderada de depósitos de FFT próximos.
 
