@@ -28,9 +28,11 @@ Goodhart'ın orijinal ifade:Bir ölçü hedefe dönüştüğünde, iyi bir ölç
 
 Gao et al.  给出了一个功能形式──令 `d = sqrt(KL(pi || pi_init))`❖ 令`R_proxy(d)`- Yeterince ödül.`R_gold(d)`"Günahın altını"
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 İçlerinden `beta_gold > beta_proxy`❖ Her ikisi de sıfırdan KL yukarı yükselmiş, her ikisi de zirveye ulaşmış, ama altın zirvesi daha yakın bir başlangıç noktasına ❖ daha büyük ❖`d`Üst, proxy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

@@ -19,8 +19,11 @@ LLMs 会记忆──Carlini et al. 2021'de, üretim dil modeli, ihtiyaçta olan 
 ## 概念
 ### (ε, δ) - Farklı gizlilik
 
-Eğer herhangi iki sadece farklı bir örnek veriler, ve herhangi bir olay S, bir rastgele algoritma M 满足:
-S) <= e^ε * P(M(D') S) + δ。
+Eğer herhangi iki örnekten farklı bir veri kümesi varsa, ve herhangi bir olay$S$, bir kendiliğinden algoritma $M$满足以下条件,则称其具有 $(\varepsilon, \delta)$- Gizlilik farkı:
+
+```math
+P(M(D) \in S) \le e^{\varepsilon} \cdot P(M(D') \in S) + \delta.
+```
 
 解释:输出分布足够接近 (由 ε 参数化) ), böylece δ olasılığı istisnalar dışında herhangi bir bireyin katkılarının güvenilir olarak tahmin edilmesi mümkün değildir.
 
@@ -30,7 +33,7 @@ Abadi et al. 2016。标准流程:
 1. - Mini seri gibi.
 2. 计算 per-example gradients。
 3. Örnek için her gradient 剪切到值 C──
-4. Kürümden sonra gradientlere 求和,并加入 std 为 σ * C'nin Gaussian noise。
+4. Kürümden sonra gradientler 求和,并加入 std 为$\sigma \cdot C$Gaussian gürültüsü.
 5. Use带噪音的和来更新参数──
 
 隐私成本由会计师跟踪(Moments 会计师、Rényi DP 会计师)  LLM 文献中报告的 ε 值会因威胁模型、数据敏感性和效用目标而大幅变化; 没有普适的安全默认 ε──已发言例在某些 LLM 训练设置中大致覆盖 ε ≈ 110,但这些只是例,并非推默认值──较低的 ε 通常需要更多的噪音,并可能增加效用损失──
@@ -79,9 +82,9 @@ an-dp-clip-noise
 本课会产 出 `outputs/skill-dp-audit.md`◊ belirli bir dil modelinin deploymesi DP iddiasını belirler, bu da: ((ε, δ) 值、 kullanımı mühasib、MIA değerlendirme protokolü, ve güveni-dayanış vektörlerini değerlendirdiğini ödüllendirir.
 
 ## 练习
-1. 运行  İşlem`code/main.py`◊扫过 σ ∈ {0.5, 1.0, 2.0},并报告 (ε, δ) - doğruluk 权衡──识别效用崩的临界点──
+1. 运行  İşlem`code/main.py`- Evet.$\sigma \in \lbrace 0.5, 1.0, 2.0 \rbrace$,并报告 (ε, δ) - doğruluk 权衡──识别效用崩的临界点──
 
-2. 实现 Canary 插入和日志-loss test──测量在 σ = 1.0 时,DP-SGD 前后的检测率──
+2. 实现 Canary 插入和 log-loss test──测量在 $\sigma = 1.0$时,DP-SGD 前后的检测率──
 
 3. Nasr et al. 2025  Training-data extraction content── neden çıkarım başarısı ortalama bir çöküşe uğramıyor?
 

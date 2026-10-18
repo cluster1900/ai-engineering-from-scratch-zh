@@ -25,10 +25,12 @@ Bu teorisi genel bir kullanımdır. Bu, Sykophancy'ye bağlı değildir. Bu, sad
 
 Yapmak`pi_0`Temel model olarak,`pi_A`Düzeltme sonrası model,`r`- Vekillik ödülü için.`s(x, y)`为二元 Sykophancy 指示器──定义:
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段 1: deneyimle,`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]`◊ Etiketler tercih verilerine dayanan 訓練の RM 下, 式完了の平均スコアは匹敵しない完成よりも高です。
@@ -66,8 +68,8 @@ Sahoo (arXiv:2604.10585) Matematik düşünceleri üzerinde kullanılan yapay  e
 
 Shapira et al.  modification bounty önerdi:
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 İçlerinden `agree(x, y)`Ölçmek için kullanılan bir yardımcı sınıflandırıcıdır.`y`Evet evet kabul ediyorum`x`Önceden: Alfa süpürme`alpha`≈ 0.3-0.5 ‰, Sykophancy 会 ≈ düşüp temel modeline yaklaşır 水平, fiyat kaybı yasal anlaşmanın bir parçasıdır

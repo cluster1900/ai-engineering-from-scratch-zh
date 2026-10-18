@@ -32,8 +32,8 @@ SFT size bir şey verir: model şimdi soruya cevap verir, tamamlanmaya devam etm
 
 SFT modelinden 采样 K 个完成――Labeler对它们排序――训练一个奖励模型,为任意快速响应对 打分,使对对 打分,使对 `y_w`Yaptığım şey çok güzel .`y_l`Çiftler:
 
-```
-L_RM = -log sigmoid(r(x, y_w) - r(x, y_l))
+```math
+L_{\text{RM}} = -\log \sigma\big(r(x, y_w) - r(x, y_l)\big)
 ```
 
 Bu Bradley-Terry çiftlik tercih kaybı. RM genellikle SFT modelinden başlangıçta, LM başını ıpta başına değiştirmek için kullanılır.
@@ -44,8 +44,8 @@ Bu Bradley-Terry çiftlik tercih kaybı. RM genellikle SFT modelinden başlangı
 
 defini hedef:
 
-```
-J(pi) = E_{x~D, y~pi(.|x)} [ r(x, y) ] - beta * KL(pi(.|x) || pi_SFT(.|x))
+```math
+J(\pi) = \mathbb{E}_{x \sim D,\, y \sim \pi(\cdot \mid x)} \big[ r(x, y) \big] - \beta \, \mathrm{KL}\big(\pi(\cdot \mid x) \,\|\, \pi_{\text{SFT}}(\cdot \mid x)\big)
 ```
 
 PPO Maksimum化──KL terimi 让 `pi`SFT politikasından çok uzakta. O olmadan, Optimizer karşıt örnekler bulur, yani RM'de çok yüksek puanlar elde eder.
@@ -56,8 +56,8 @@ KL katılamı `beta`RLHF en önemli hiperparametre ise çok düşüktür. Ödül
 
 RLHF  sonrasında, model daha fazla insan tercihine sahip, ancak standart referanslarda ((SQuAD、HellaSwag、DROP) 上退步。Ouyang et al. bunu bir uyum vergisi olarak adlandırır, PPO-ptx 修复: Pre-training gradients 混入 RL objective, böylece model asla ödüllendirilmemiş aşağı akıntılı görevleri nasıl tamamlayacağını unutmaz。
 
-```
-J_ptx(pi) = J(pi) + gamma * E_{x~D_pretrain} [ log pi(x) ]
+```math
+J_{\text{ptx}}(\pi) = J(\pi) + \gamma \, \mathbb{E}_{x \sim D_{\text{pretrain}}} \big[ \log \pi(x) \big]
 ```
 
 PPO-ptx  become standard practice──Antropic、DeepMind 和 Meta 都使用某种变化──
@@ -85,7 +85,7 @@ al-instruct-pipeline
 Gözlem için içeriği:
 
 - `beta = 0.1`ile`beta = 0.0`Aşağıdaki ödül yolculuğu...
-- Eğitim adımları 中的 KL pi pi SFT)
+-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $\mathrm{KL}(\pi \Vert \pi_{\text{SFT}})$- Evet.
 - Etiketleme tercihlerine göre son eylem dağılımı
 
 ## Gönder
@@ -110,7 +110,7 @@ Gözlem için içeriği:
 |------|-----------------|------------------------|
 | SFT | “instruction tuning” | Stage 1：在 prompt-response pairs 上用 cross-entropy fine-tune |
 | Reward model | “the RM” | 在 (prompt, response) 上的 scalar regressor，使用 Bradley-Terry 在 pairwise labels 上训练 |
-| Bradley-Terry | “pairwise preference loss” | -log sigmoid(r_w - r_l)；把 pairwise ranking 约简为 binary classification |
+| Bradley-Terry | “pairwise preference loss” | $-\log \sigma(r_w - r_l)$；把 pairwise ranking 约简为 binary classification |
 | KL penalty | “the regularizer” | `beta * KL(pi \|\| pi_SFT)` — 让 RL policy 保持接近 SFT anchor |
 | PPO-ptx | “PPO with pretraining mix” | 向 PPO objective 加入一部分 pre-training log-likelihood，用来抵消 alignment tax |
 | Alignment tax | “the RLHF regression” | RLHF 之后，在 RLHF 未针对的标准 benchmarks 上下降 |

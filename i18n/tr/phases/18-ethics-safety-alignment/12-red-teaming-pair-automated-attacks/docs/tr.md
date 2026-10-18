@@ -28,11 +28,11 @@ Red-teaming 过去 bir el iş faaliyeti olacaktır. Kısa bir grup uzman denetç
 
 循环, k'de 1..K:
 1. G ve bugüne kadar (sürekli, cevap) çift 历史来提示 A。
-2. Yeni bir istek çıkartmak.
-3. T'ye gönderilmek; cevap alınmak.
-4. J 根据目标对 (p_k, r_k) 打分──
+2. Yeni bir çıkış yolu .$p_k$- Evet.
+3. - Ben de .$p_k$ T'ye gönderilmek; cevap alınmak $r_k$- Evet.
+4. J 根据目标对 $(p_k, r_k)$- Evet.
 5. Eğer puan >= eşiği varsa,则停止  已找到 jailbreak──
-6. 否则,将 (p_k, r_k) 追加到 A 的历史中;继续──
+6. 否则,将 $(p_k, r_k)$追加到 A 的历史中; devam。
 
 经验结果(NeurIPS 2023): GPT-3.5-turbo、Llama-2-7B-chat saldırı başarısı oranı >50%; başarının gerektirdiği ortalama sorgu sayı 10-20 范围内。
 

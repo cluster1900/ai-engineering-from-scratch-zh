@@ -18,20 +18,20 @@
 
 RLHF amacı:
 
-```text
-max_pi E_{x,y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 En iyi çözüm var:
 
-```text
-pi*(y|x) = (1/Z(x)) * pi_ref(y|x) * exp(r(x, y) / beta)
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left(\frac{r(x, y)}{\beta}\right)
 ```
 
 Bu nedenle ödül, optimum politika ile referans oranı olarak tanımlanır:
 
-```text
-r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
+```math
+r(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 Bradley-Terry tercih olasılığı fonksiyonuna çevir.`Z(x)`Bu sadece bir şeyle bağlı.`x`                                                                                                                                                                                                                                                              
@@ -42,11 +42,11 @@ Bradley-Terry tercih olasılığı fonksiyonuna çevir.`Z(x)`Bu sadece bir şeyl
 
 ### DPO (Rafailov et al., 2023)
 
-```text
-L_DPO = -log sigmoid(
-  beta * log(pi(y_w | x) / pi_ref(y_w | x))
-  - beta * log(pi(y_l | x) / pi_ref(y_l | x))
-)
+```math
+L_{\text{DPO}} = -\log \sigma\!\left(
+  \beta \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
+  - \beta \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}
+\right)
 ```
 
 Yanlış bir yerde olabilir:
@@ -59,8 +59,8 @@ Yanlış bir yerde olabilir:
 
 Kimlik Tercihi Optimize edilmesi; tercihleri kullanma olasılığı;                                                                                                                                                                                                                                                     
 
-```text
-L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x)) - 1/(2 beta))^2
+```math
+L_{\text{IPO}} = \left( \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} - \frac{1}{2\beta} \right)^2
 ```
 
 Marjin `1/(2 beta)`限定── üstünlük gücü ve içten ödül farkı 成比例──不会爆掉──
@@ -69,8 +69,8 @@ Marjin `1/(2 beta)`限定── üstünlük gücü ve içten ödül farkı 成�
 
 Kahneman-Tversky Optimizasyon  tamamen çiftli struktur ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅    ⋅                                                                                                                                                                                                                 
 
-```text
-v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
+```math
+v(x, y) = \sigma\!\left(\beta \log \frac{\pi(y \mid x)}{\pi_{\text{ref}}(y \mid x)} - z_{\text{ref}}\right)
 ```
 
 Not against gains and losses Use different weight weight (Düzgün olan ise, eşleşmemiş verileri kullanabilirsiniz, bu tür veriler çok daha fazla olmalıdır.
@@ -79,12 +79,12 @@ Not against gains and losses Use different weight weight (Düzgün olan ise, eş
 
 Basit Seçenek Optimizasyonu 让训练信号与生成过程对齐―― tamamen kaldırma referans politikası,并按长度归归化日志-概率:
 
-```text
-L_SimPO = -log sigmoid(
-  (beta / |y_w|) * log pi(y_w | x)
-  - (beta / |y_l|) * log pi(y_l | x)
-  - gamma
-)
+```math
+L_{\text{SimPO}} = -\log \sigma\!\left(
+  \frac{\beta}{|y_w|} \log \pi(y_w \mid x)
+  - \frac{\beta}{|y_l|} \log \pi(y_l \mid x)
+  - \gamma
+\right)
 ```
 
 Uygulama Marjı`gamma`DPO uzunluk-bias başarısızlık modunun kullanımı teşviklerini kaldırmak için uzunluk birleştirme eğitimi yapıldı.`y_w`Yapımcılık üzerinde daha büyük bir log-prob boşluğu getirir.
@@ -93,9 +93,11 @@ Uygulama Marjı`gamma`DPO uzunluk-bias başarısızlık modunun kullanımı teş
 
 Odds-Ratio Preference Optimization standard SFT negatif log-probability 上添加一个偏好术语:
 
-```text
-L_ORPO = L_NLL(y_w) + lambda * L_OR
-L_OR = -log sigmoid(log(odds(y_w) / odds(y_l)))
+```math
+\begin{aligned}
+L_{\text{ORPO}} &= L_{\text{NLL}}(y_w) + \lambda L_{\text{OR}} \\
+L_{\text{OR}} &= -\log \sigma\!\left(\log \frac{\text{odds}(y_w)}{\text{odds}(y_l)}\right)
+\end{aligned}
 ```
 
 SFT terimi, düzenleyici, temel modelden uyumlu modelye kadar tek bir aşama eğitim gerektirir.
