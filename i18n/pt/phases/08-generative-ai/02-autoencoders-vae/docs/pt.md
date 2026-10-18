@@ -1,6 +1,6 @@
 # Autoencodadores e Autoencodadores Variáveis (VAE)
 
-> Normal Autoencoder Pre-compressão Re-construção. É uma memória. Não gerará.`z = μ + σ·ε`A reparametrização, é por que cada modelo de difusão latente e de correspondência de fluxo de imagem que você usará em 2026 tem um VAE no extremo de entrada.
+> Normal Autoencoder Pre-compressão Re-construção. É uma memória. Não gerará.$z = \mu + \sigma \cdot \epsilon$A reparametrização, é por que cada modelo de difusão latente e de correspondência de fluxo de imagem que você usará em 2026 tem um VAE no extremo de entrada.
 
 **Type:** Build
 **Languages:** Python
@@ -11,9 +11,9 @@
 
 Colocar um número MNIST de 784 pixels  compacta em 16 números de código, então reconstruir. O autoencoder comum funciona bem na reconstrução do MSE, mas o espaço de código é uma mistura de confusão.
 
-O que você realmente quer é: a) espaço de código é uma distribuição de uma amostra, por exemplo, Gaussian isotrópico`N(0, I)`,(b) decodificar qualquer amostra pode produzir um dígito razoável,(c) codificador e decodificador  ainda pode ser muito bem comprimido──────────────────────────────────────────────────────────────────────────────────────────────────────────
+O que você realmente quer é: a) espaço de código é uma distribuição de uma amostra, por exemplo, Gaussian isotrópico$\mathcal{N}(0, I)$,(b) decodificar qualquer amostra pode produzir um dígito razoável,(c) codificador e decodificador  ainda pode ser muito bem comprimido──────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-Kingma's 2013 VAE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `q(z|x) = N(μ(x), σ(x)²)`Para resolver o problema, coloque a distribuição para o lado de fora.`N(0, I)`, e depois em decodificação`q(z|x)`amostra `z`Quando a inferência, perdemos o codificador, a amostra.`z ~ N(0, I)`A penalidade KL é um mecanismo de estruturação do espaço de código.
+Kingma's 2013 VAE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $q(z \mid x) = \mathcal{N}(\mu(x), \sigma(x)^2)$Para resolver o problema, coloque a distribuição para o lado de fora.$\mathcal{N}(0, I)$, e depois em decodificação$q(z \mid x)$amostra $z$Quando a inferência, perdemos o codificador, a amostra.$z \sim \mathcal{N}(0, I)$A penalidade KL é um mecanismo de estruturação do espaço de código.
 
 Em 2026, VAE 很少单独交付  在原始图像质量上它们已经被扩散超越  但它们是每个隐藏扩散模型的首选编码器 (SD 1/2/XL/3、Flux、AudioCraft)
 
@@ -21,22 +21,24 @@ Em 2026, VAE 很少单独交付  在原始图像质量上它们已经被扩散�
 
 ![Autoencoder vs VAE: the reparameterization trick](../assets/vae.svg)
 
-**Autoencoder.** `z = encoder(x)`- Não .`x̂ = decoder(z)`, perda = `||x - x̂||²`Espaço de código 无结构。
+**Autoencoder.** $z = \text{encoder}(x)$- Não .$\hat{x} = \text{decoder}(z)$, perda = $\lVert x - \hat{x} \rVert^2$Espaço de código 无结构。
 
-**VAE encoder.**输出 dois vetores:`μ(x)`和 `log σ²(x)` Eles definiram `q(z|x) = N(μ, diag(σ²))`- Não.
+**VAE encoder.**输出 dois vetores:$\mu(x)$和 $\log \sigma^2(x)$ Eles definiram $q(z \mid x) = \mathcal{N}(\mu, \mathop{\mathrm{diag}}(\sigma^2))$- Não.
 
-**Reparameterization trick.**De`q(z|x)`amostra indissoluível.`z = μ + σ·ε`, entre os `ε ~ N(0, I)`Agora.`z`Sim `(μ, σ)`Adição de função determinista de ruído sem parâmetros  gradientes podem fluir `μ`和 `σ`- Não.
+**Reparameterization trick.**De$q(z \mid x)$amostra indissoluível.$z = \mu + \sigma \cdot \epsilon$, entre os $\epsilon \sim \mathcal{N}(0, I)$Agora.$z$Sim $(\mu, \sigma)$Adição de função determinista de ruído sem parâmetros  gradientes podem fluir `μ`和 $\sigma$- Não.
 
 **Loss.**Evidência Bando inferior (ELBO), dois elementos:
 
-```
-loss = reconstruction + β · KL[q(z|x) || N(0, I)]
-     = ||x - x̂||²  + β · Σ_i ( σ_i² + μ_i² - log σ_i² - 1 ) / 2
+```math
+\begin{aligned}
+\text{loss} &= \text{重建误差} + \beta \cdot \mathrm{KL}[q(z \mid x) \,\Vert\, \mathcal{N}(0, I)] \\
+&= \lVert x - \hat{x} \rVert^2 + \beta \cdot \sum_i \frac{\sigma_i^2 + \mu_i^2 - \log \sigma_i^2 - 1}{2}
+\end{aligned}
 ```
 
-Reconstrução`x̂`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `x`- Não, não.`q(z|x)`推向前──它们相互权衡──小 β (<1) = 更利的样本,代码空间 不那么 Gaussian──大 β (>1) = 更干净的代码空间,更模糊的样本──β-VAE(Higgins 2017) Deixe este giro se tornar famoso,并开启分解研究──
+Reconstrução$\hat{x}$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $x$- Não, não.$q(z \mid x)$推向前──它们相互权衡──小 $\beta$($<1$) = mais de amostras, espaço de código 不那么 Gaussian──大$\beta$($>1$) = 更干净的代码空间,更模糊的样本──β-VAE(Higgins 2017) fez esse giro se tornar famoso,并开启了分解研究──
 
-**Sampling.**Inferência 时:抽取 `z ~ N(0, I)`,para frente através do decodificador. Uma vez para frente passagem.
+**Sampling.**Inferência 时:抽取 $z \sim \mathcal{N}(0, I)$,para frente através do decodificador. Uma vez para frente passagem.
 
 
 ```figure
@@ -57,7 +59,7 @@ def encode(x, enc):
     return mu, log_sigma2
 ```
 
-Utilização `log σ²`Não é?`σ`, assim a saída da rede não é limitada ((para σ fazer softplus é uma armadilha  在 σ ≈ 0 时梯会消失) 
+Utilização $\log \sigma^2$Não é?$\sigma$, assim a saída da rede não é limitada$\sigma \approx 0$时 gradientes 会消失)
 
 ### Passo 2: reparametrizar e decodificar
 
@@ -95,9 +97,9 @@ def sample(dec, z_dim, rng):
 
 ## Encurralagens
 
-- **Posterior collapse.**KL termo 过于激进地驱动 `q(z|x) → N(0, I)`, que conduz`z`Não tenho nada a ver com isso.`x`É possível que o número de bits seja de 1 bits livres ou em dimensões inativas.
+- **Posterior collapse.**KL termo 过于激进地驱动 $q(z \mid x) \to \mathcal{N}(0, I)$, que conduz$z$Não tenho nada a ver com isso.$x$É um problema de saúde.$\beta=0$Começa, gradualmente sobe para 1) 、bites livres, ou em dimensões inativas, salta KL ⋅
 - **Blurry samples.**A probabilidade de decodificador gaussiano significa reconstrução de MSE, ela é para L2 Bayes-optimal (média)  一组合理数字的意思是一个模糊数字──修复:discrete decoder (VQ-VAE、NVAE), ou apenas usar VAE como encodificador, e em latentes acima acumulação de difusão (Stable Diffusion就是這樣做) 
-- **β too large, too early.**见后后崩──从 β≈0.01 开始并逐步走坡──
+- **β too large, too early.**Veja o colapso posterior.$\beta \approx 0.01$Começa a andar de um passo para o outro.
 - **Latent dim too small.**16-D  Aplica-se para MNIST,256-D  Aplica-se para ImageNet 2562,2048-D  Aplica-se para ImageNet 10242。 VAE de Diffusão Estavel vai ser 512×512×3  Compressão para 64×64×4;; área espacial acima 32x fator de amostra descendente, canais acima 32x)。
 
 ## Usá-lo
@@ -119,32 +121,32 @@ O modelo de difusão latente é um modelo de difusão, situado entre o codificad
 
 保存 `outputs/skill-vae-trainer.md`- Não.
 
-Competência 接收:profil do conjunto de dados + meta latente-dim + uso a jusante(reconstrução, amostragem ou entrada de difusão latente),并输出: escolha de arquitetura(plain/β/VQ/RVQ)、β cronograma、 latente dim、decoder probabilidade(Gaussian vs categorical), bem como plano de avaliação(reconhecimento MSE、KL por dim、`q(z|x)`和 `N(0, I)`Distância entre os dois (Fréchet distance)
+Competência 接收:profil do conjunto de dados + meta latente-dim + uso a jusante(reconstrução, amostragem ou entrada de difusão latente),并输出: escolha de arquitetura(plain/β/VQ/RVQ)、β cronograma、 latente dim、decoder probabilidade(Gaussian vs categorical), bem como plano de avaliação(reconhecimento MSE、KL por dim、$q(z \mid x)$和 $\mathcal{N}(0, I)$Distância entre os dois (Fréchet distance)
 
 ## Exercícios
 
-1. **Easy.**- Não .`code/main.py`Em meio`β`改为 `0.01`- Não.`0.1`- Não.`1.0`- Não.`5.0` Record final reconstrução MSE 和 KL♦ Para os seus dados sintéticos, qual β é o melhor Pareto?
+1. **Easy.**- Não .`code/main.py`Em meio$\beta$改为 `0.01`- Não.`0.1`- Não.`1.0`- Não.`5.0` Record final reconstrução MSE 和 KL── para os seus dados sintéticos, qual $\beta$É o melhor para o Pareto?
 2. **Medium.**Use Bernoulli probabilidade (cross-entropy loss) substituir Gaussian decoder probabilidade (GD)
-3. **Hard.**- Não .`code/main.py`扩展成一个 mini VQ-VAE:用 K=32 entradas  中的近邻搜索 替换连续 `z`❖ Comparar a reconstrução MSE,并 report há quantas entradas de código-boco são usadas ((o colapso do código-boco é real) ⋅
+3. **Hard.**- Não .`code/main.py`扩展成一个 mini VQ-VAE:用 K=32 entradas  中的近邻搜索 替换连续 $z$❖ Comparar a reconstrução MSE,并 report há quantas entradas de código-boco são usadas ((o colapso do código-boco é real) ⋅
 
 ## Termos-chave
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Autoencoder | Encode-decode network | `x → z → x̂`，学习 MSE。不是 generative。 |
+| Autoencoder | Encode-decode network | $x \to z \to \hat{x}$，学习 MSE。不是 generative。 |
 | VAE | 带 sampler 的 AE | Encoder 输出一个 distribution，KL penalty 塑造 code space。 |
-| ELBO | Evidence lower bound | `log p(x) ≥ recon - KL[q(z\|x) \|\| p(z)]`；当 `q = p(z\|x)` 时 tight。 |
-| Reparameterization | `z = μ + σ·ε` | 将 stochastic node 重写为 deterministic + pure noise。使 sampling 可参与 backprop。 |
-| Prior | `p(z)` | latent 的目标 distribution，通常是 `N(0, I)`。 |
-| Posterior collapse | “KL term wins” | Encoder 忽略 `x`，输出 prior；decoder 必须 hallucinate。 |
-| β-VAE | 可调 KL weight | `loss = recon + β·KL`。更高 β = 更 disentangled 但更模糊。 |
-| VQ-VAE | Discrete latent | 用 nearest codebook vector 替换 continuous `z`；支持 transformer modelling。 |
+| ELBO | Evidence lower bound | $\log p(x) \ge \text{recon} - \mathrm{KL}[q(z \mid x) \Vert p(z)]$；当 $q = p(z \mid x)$ 时 tight。 |
+| Reparameterization | $z = \mu + \sigma \cdot \epsilon$ | 将 stochastic node 重写为 deterministic + pure noise。使 sampling 可参与 backprop。 |
+| Prior | $p(z)$ | latent 的目标 distribution，通常是 $\mathcal{N}(0, I)$。 |
+| Posterior collapse | “KL term wins” | Encoder 忽略 $x$，输出 prior；decoder 必须 hallucinate。 |
+| β-VAE | 可调 KL weight | $\text{loss} = \text{recon} + \beta \cdot \mathrm{KL}$。更高 $\beta$ = 更 disentangled 但更模糊。 |
+| VQ-VAE | Discrete latent | 用 nearest codebook vector 替换 continuous $z$；支持 transformer modelling。 |
 
 ## 生产提示:VAE é um servidor de difusão
 
 Em Stable Diffusion / Flux / SD3 pipeline,VAE Cada solicitação será utilizada duas vezes  Uma vez para codificar (((se fazer img2img / inpainting), uma vez para decodificar;; em 10242 时, o decodificador passa 往往是整条 pipeline 中单个最大激活-memória pico, pois é`128×128×16`latentes upsample 回 `1024×1024×3`❖ Duas consequências reais:
 
-- **对 decode 做 slicing 或 tiling。** `diffusers` exposição `pipe.vae.enable_slicing()`和 `pipe.vae.enable_tiling()`❖ Tiling 用少量 sew artefact 换取 `O(tile²)`Memória, em vez de `O(H·W)`◊ Para GPUs de consumo  上的 10242+ 至关重要──
+- **对 decode 做 slicing 或 tiling。** `diffusers` exposição `pipe.vae.enable_slicing()`和 `pipe.vae.enable_tiling()`❖ Tiling 用少量 sew artefact 换取 $O(\text{tile}^2)$Memória, em vez de $O(H \cdot W)$◊ Para GPUs de consumo  上的 10242+ 至关重要──
 - **bf16 decoder，最终 resize 使用 fp32 numerics。**SD 1.x VAE 以 fp32 发布,并在10242+ 被 cast到fp16 时会 *静默产生NaNs*──SDXL 提供 `madebyollin/sdxl-vae-fp16-fix` 总是优先使用fp16-fix variant,或使用bf16──
 
 ## Mais leitura

@@ -8,33 +8,35 @@
 **Time:** ~75 分钟
 
 ## 问题
-无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空图*、*把白天场景 映射成夜间*、*给灰色尺度图片 上色*──在所有这些任务中,你会得到一个输入图片`x`, e deve ser emitido com alguma correspondência semântica.`y`Todos.`x`Todos podem responder a muitas razões.`y`◊ Erro quadrado médio vai os empurrar em resultados opacos.
+无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空图*、*把白天场景 映射成夜间*、*给灰色尺度图片 上色*──在所有这些任务中,你会得到一个输入图片$x$, e deve ser emitido com alguma correspondência semântica.$y$Todos.$x$Todos podem responder a muitas razões.$y$◊ Erro quadrado médio vai os empurrar em resultados opacos.
 
-GAN condicional (Mirza & Osindero, 2014) Coloque condição `c`作为输入加入 `G`和 `D`Pix2Pix (Isola et al., 2017) fez especialismo para isso: condição é imagem de entrada completa, gerador é U-Net, discriminador é *patch-based* classifier (PatchGAN), Loss é adversário + L1── mesmo em 2026 anos, este conjunto de configuração em estreito domínio imagem-à-imagem 上 ainda venceu de zero treinamento de modelo de texto-à-imagem, pois ele treina em *pared data* 上  Você tem o que é necessário sinal──
+GAN condicional (Mirza & Osindero, 2014) Coloque condição $c$作为输入加入 $G$和 $D$Pix2Pix (Isola et al., 2017) fez especialismo para isso: condição é imagem de entrada completa, gerador é U-Net, discriminador é *patch-based* classifier (PatchGAN), Loss é adversário + L1── mesmo em 2026 anos, este conjunto de configuração em estreito domínio imagem-à-imagem 上 ainda venceu de zero treinamento de modelo de texto-à-imagem, pois ele treina em *pared data* 上  Você tem o que é necessário sinal──
 
 ## 概念
 ![Pix2Pix: U-Net generator, PatchGAN discriminator](../assets/pix2pix.svg)
 
-**Conditional G.** `G(x, z) → y` Em Pix2Pix,`z`Não há ruído de entrada  Isola 发现显式噪音 会被忽略)
+**Conditional G.** $G(x, z) \to y$ Em Pix2Pix,$z$Não há ruído de entrada  Isola 发现显式噪音 会被忽略)
 
-**Conditional D.** `D(x, y) → [0, 1]`                                                                                                                                                                                                                                                                                                                                         `y`Sim ou não`x`Uma致, não apenas julgar `y`Parece ser real.
+**Conditional D.** $D(x, y) \to [0, 1]$                                                                                                                                                                                                                                                                                                                                         $y$Sim ou não$x$Uma致, não apenas julgar $y$Parece ser real.
 
 **U-Net generator.**带有跨瓶跳连接的编码码器-decoder──对于输入和输出共享低级结构(边缘、轮) 的任务至关重要──没有这些跳转,高频细节会消失──
 
-**PatchGAN discriminator.**D não sai um único resultado real/falso, mas sai um `N×N`Grade, cada célula  julgar cerca de 70×70 pixels de campo receptivo ∞ depois tomar média ∞ é um campo aleatório de Markov ∞ suposição:
+**PatchGAN discriminator.**D não sai um único resultado real/falso, mas sai um $N \times N$Grade, cada célula  julgar cerca de 70×70 pixels de campo receptivo ∞ depois tomar média ∞ é um campo aleatório de Markov ∞ suposição:
 
 **Loss.**
 
-```
-loss_G = -log D(x, G(x)) + λ · ||y - G(x)||_1
-loss_D = -log D(x, y) - log (1 - D(x, G(x)))
+```math
+\begin{aligned}
+\text{loss}_G &= -\log D(x, G(x)) + \lambda \cdot \lVert y - G(x) \rVert_1 \\
+\text{loss}_D &= -\log D(x, y) - \log(1 - D(x, G(x)))
+\end{aligned}
 ```
 
-L1 项稳定训练,并推动 G 接近已知目标──L1 产生更利的边缘 (medianos, não meios) ⋅`λ = 100`É Pix2Pix 默认值──
+L1 项稳定训练,并推动 G 接近已知目标──L1 产生更利的边缘 (medianos, não meios) ⋅$\lambda = 100$É Pix2Pix 默认值──
 
 ## CycleGAN  quando não tiver pares
 
-Pix2Pix 需要对`(x, y)`Data──CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*consistência do ciclo* perda──dois geradores:`G: X → Y`和 `F: Y → X`Treinar-as, fazer-te.`F(G(x)) ≈ x`且 `G(F(y)) ≈ y`                                                                                                                                                                                                                                                              
+Pix2Pix 需要对$(x, y)$Data──CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*consistência do ciclo* perda──dois geradores:$G: X \to Y$和 $F: Y \to X$Treinar-as, fazer-te.$F(G(x)) \approx x$且 $G(F(y)) \approx y$                                                                                                                                                                                                                                                              
 
 Em 2026, imagem-para-imagem não pareada (ControlNet、IP-Adapter) é finalizada, não CycleGAN, mas a consistência do ciclo 思想仍然存在几乎每一篇 未对域适应 论文中。
 
@@ -44,7 +46,7 @@ gx-patchgan
 ```
 
 ## Construí-lo
-`code/main.py`Em dados 1-D, é possível implementar uma condicional GAN de micro tipo.`c`É a etiqueta de classe ((0 ou 1);;
+`code/main.py`Em dados 1-D, é possível implementar uma condicional GAN de micro tipo.$c$É a etiqueta de classe ((0 ou 1);;
 
 ### 步骤 1: 将条件 添加到 G 和 D 的输入
 
@@ -81,9 +83,9 @@ for c in [0, 1]:
 
 ## 陷
 - **Condition 被忽略。**G 学会 marginalize,D 从不惩罚,因为 condição sinal 太弱──修复:更强地 condição D(arreto inicial,而不只是迟), usando discriminador de projeção (Miyato & Koyama 2018)。
-- **L1 weight 过低。**G 漂移到任意看起来真实输出,而不是忠实的输出――Pix2Pix-style 任务从 λ≈100 开始──
-- **L1 weight 过高。**G                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-- **D 中 ground-truth leakage。**- Não .`(x, y)`concat como entrada D, não apenas `y`◊ não pode verificar a concordância.
+- **L1 weight 过低。**G 漂移到任意看起来真实输出,而不是忠实的输出――Pix2Pix-style 任务从 $\lambda \approx 100$Começa.
+- **L1 weight 过高。**G                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $L_p$Norma... treino estável... passo a passo...
+- **D 中 ground-truth leakage。**- Não .$(x, y)$concat como entrada D, não apenas $y$◊ não pode verificar a concordância.
 - **每个 class 的 mode collapse。**Cada classe pode colapsar de forma independente.
 
 ## Use-o

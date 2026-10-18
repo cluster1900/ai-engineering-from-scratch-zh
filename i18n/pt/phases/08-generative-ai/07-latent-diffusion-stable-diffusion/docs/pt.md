@@ -21,9 +21,9 @@ Estes FLOPs, muito gasto em colocar no sentido de detalhes não importantes lan�
 
 **两个阶段，分别训练。**
 
-1. **Stage 1 — VAE.**Encoder `E(x) → z`, decodificador `D(z) → x` O objetivo da compressão: cada espaço轴下采样 8×, reajuste canal, fazer o tamanho total latente 约为 pixel count 的 1/16──Loss = reconstrução (L1 + LPIPS perceptual) + KL(权重很小,使 `z`Não será forçado a fazer isso, porque não precisamos de isso.`z`Faça uma análise precisa.
+1. **Stage 1 — VAE.**Encoder $E(x) \to z$, decodificador $D(z) \to x$ O objetivo da compressão: cada espaço轴下采样 8×, reajuste canal, fazer o tamanho total latente 约为 pixel count 的 1/16──Loss = reconstrução (L1 + LPIPS perceptual) + KL(权重很小,使 $z$Não será forçado a fazer isso, porque não precisamos de isso.$z$Faça uma análise precisa.
 
-2. **Stage 2 — 在 `z` 上做 diffusion。**- Não .`z = E(x_real)`Quando o meu pai me disse que eu estava a falar com ele, ele disse que eu estava a falar com ele.`z_t`◊ 推理时: através da difusão 采样 `z_0`, então`x = D(z_0)`- Não.
+2. **Stage 2 — 在 $z$ 上做 diffusion。**- Não .$z = E(x_{\text{real}})$Quando o meu pai me disse que eu estava a falar com ele, ele disse que eu estava a falar com ele.$z_t$◊ 推理时: através da difusão 采样 $z_0$, então$x = D(z_0)$- Não.
 
 **文本 conditioning。**Há também dois componentes extra. O código de texto é o SD 1.x com CLIP-L, SD 2/XL com CLIP-L+OpenCLIP-G, SD3 e Flux com T5-XXL.`[Q = image features, K = V = text tokens]`Não os mistura. Os tokens são a única maneira de influenciar o texto nas imagens.
 
@@ -59,21 +59,21 @@ def encode(x):    return x * 0.5          # toy "compression" to smaller scale
 def decode(z):    return z * 2.0
 ```
 
-O verdadeiro VAE tem o poder de ser treinado. Para fins de ensino, esta linha de mapeamento já é suficiente para explicar a difusão pode ser`z`Não se preocupe com o espaço original.
+O verdadeiro VAE tem o poder de ser treinado. Para fins de ensino, esta linha de mapeamento já é suficiente para explicar a difusão pode ser$z$Não se preocupe com o espaço original.
 
 ### Passo 2:`z`- espaço em meio à difusão
 
-A mesma DDPM que a lição 06 ∙`z = E(x)`                                                                                                                                                                                                                                                              `z_0`后,用 `D(z_0)`Descifrar.
+A mesma DDPM que a lição 06 ∙$z = E(x)$                                                                                                                                                                                                                                                              $z_0$后,用 $D(z_0)$Descifrar.
 
 ### 步骤 3: Orientação sem classificador
 
-Durante o treinamento, 10% do tempo foi perdido no rótulo de classe (traduzido para token zero).`ε_cond`和 `ε_uncond`E depois:
+Durante o treinamento, 10% do tempo foi perdido no rótulo de classe (traduzido para token zero).$\epsilon_{\text{cond}}$和 $\epsilon_{\text{uncond}}$E depois:
 
 ```python
 eps_cfg = (1 + w) * eps_cond - w * eps_uncond
 ```
 
-`w = 0`= 无指导 (não há orientação)`w = 3`= 默认值,`w = 7+`= 和 / 过化。
+$w = 0$= 无指导 (não há orientação)$w = 3$= 默认值,$w = 7+$= 和 / 过化。
 
 ### 步骤 4: 文本 condicionamento (concept, não é código)
 
@@ -91,7 +91,7 @@ Esta é a única diferença substancial entre o modelo de difusão condicional d
 - **Text encoder silently wrong。**SD3 需要带 >=128 tokens 的 T5-XXL,fallback till only CLIP 会有损──始终检查 `use_t5=True`Se não, a fidelidade imediata irá cair.
 - **混用 latent spaces。**SDXL、SD3、Flux todos usam diferentes VAEs。 em latentes SDXL 上训练的LoRA 不能用于SD3。Hugging Face difusores 0.30+ 会拒加载不匹配的检查点。
 - **CFG too high。** `w > 10`A produção de imagens e de óleos, e a oferta de diversidade, em troca de um preço, foi muito adequada.`w = 3-7`- Não.
-- **Negative prompts leaking。**O prompt negativo de zero se tornará um token nulo; o prompt negativo preenchido se tornará um token zero .`ε_uncond` Estas duas coisas não são iguais; alguns canais 会静默默认使用 null
+- **Negative prompts leaking。**O prompt negativo de zero se tornará um token nulo; o prompt negativo preenchido se tornará um token zero .$\epsilon_{\text{uncond}}$ Estas duas coisas não são iguais; alguns canais 会静默默认使用 null
 
 ## Use-o
 
@@ -112,7 +112,7 @@ Produção de 2026:
 
 ## 练习
 
-1. **Easy.**Use orientação `w ∈ {0, 1, 3, 7, 15}`运行 `code/main.py`记录 cada classe de amostra média在什么`w`A classe significa que vai desviar-se do valor médio dos dados reais?
+1. **Easy.**Use orientação $w \in \lbrace 0, 1, 3, 7, 15 \rbrace$运行 `code/main.py`记录 cada classe de amostra média在什么$w$A classe significa que vai desviar-se do valor médio dos dados reais?
 2. **Medium.**Colocar um codificador linear de brinquedos em vez de um codificador/decodificador tanh-MLP, e adicionar a perda de reconstrução.
 3. **Hard.**Use difusores  Construir uma verdadeira difusão estável                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `sdxl-base`, usando CFG=7 运行 30 个 Euler passos,并计时――然后切换到 `sdxl-turbo`, usando 4 passos 和 CFG=0── o mesmo objeto, diferente qualidade, descreve o que aconteceu e as causas──
 
@@ -122,8 +122,8 @@ Produção de 2026:
 |------|-----------------|-----------------------|
 | First stage | “The VAE” | 训练好的 encoder/decoder 对；把 512² 压缩到 64²。 |
 | Second stage | “The U-Net” | latent space 上的 diffusion model。 |
-| CFG | “Guidance scale” | `(1+w)·ε_cond - w·ε_uncond`；调节 conditioning strength。 |
-| Null token | “Empty prompt embed” | 用于 `ε_uncond` 的 unconditional embed。 |
+| CFG | “Guidance scale” | $(1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$；调节 conditioning strength。 |
+| Null token | “Empty prompt embed” | 用于 $\epsilon_{\text{uncond}}$ 的 unconditional embed。 |
 | Cross-attention | “How text gets in” | 每个 U-Net block 都以 text tokens 作为 K 和 V 进行 attention。 |
 | DiT | “Diffusion Transformer” | 用作用于 latent patches 的 transformer 替换 U-Net；扩展性更好。 |
 | MMDiT | “Multi-modal DiT” | SD3 的架构：带 joint attention 的文本与图像流。 |

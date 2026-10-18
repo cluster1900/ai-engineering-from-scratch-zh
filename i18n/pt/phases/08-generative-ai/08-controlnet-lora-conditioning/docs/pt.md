@@ -39,15 +39,15 @@ features += weight_a * control_a(depth) + weight_b * control_b(pose)
 
 ### LoRA (Hu et al., 2021)
 
-对于模型中任意线性层 `W ∈ R^{d×d}`, 结 `W`Não adicione um delta de baixo nível:
+对于模型中任意线性层 $W \in \mathbb{R}^{d \times d}$, 结 $W$Não adicione um delta de baixo nível:
 
+```math
+W' = W + \Delta W, \quad \Delta W = B A, \quad A \in \mathbb{R}^{r \times d}, \quad B \in \mathbb{R}^{d \times r}
 ```
-W' = W + ΔW,  ΔW = B @ A,  A ∈ R^{r×d},  B ∈ R^{d×r}
-```
 
-Entre eles `r << d` Para atenção, por exemplo, o 4-16 é a classificação padrão; para a gravidade, o 64-128 é mais comum.`2 · d · r`- Não .`d²` `d=640`A atenção do SDXL,`r=16`时 cada adaptador 只有 20k 参数,而不是410k,减少了20x──放到整个模型上,一个LoRA通常是20-200MB,而基础是5GB──
+Entre eles $r \ll d$ Para atenção, por exemplo, o 4-16 é a classificação padrão; para a gravidade, o 64-128 é mais comum.$2 \cdot d \cdot r$- Não .$d^2$ $d=640$A atenção do SDXL,$r=16$时 cada adaptador 只有 20k 参数,而不是410k,减少了20x──放到整个模型上,一个LoRA通常是20-200MB,而基础是5GB──
 
-Em inferência, você pode reduzir a LoRA:`W' = W + α · B @ A`- Não.`α = 0.5-1.5`很常见──多个LoRA会以加法方式叠加 (normalmente é preciso notar que elas se afetam de forma não linear)──
+Em inferência, você pode reduzir a LoRA:$W' = W + \alpha \cdot B A$- Não.$\alpha = 0.5\text{-}1.5$很常见──多个LoRA会以加法方式叠加 (normalmente é preciso notar que elas se afetam de forma não linear)──
 
 ### Adaptador IP (Ye et al., 2023)
 
@@ -75,7 +75,7 @@ v4-controlnet-zero
 
 `code/main.py`Em 1-D acima simula estes dois mecanismos:
 
-1. **LoRA。**Uma camada linear pré-treinada .`W`Treinar um de baixo nível.`B @ A`,使 `W + BA`匹配目标 linear layer── mostra `r = 1`足以完美学习 一级1 修正──
+1. **LoRA。**Uma camada linear pré-treinada .$W$Treinar um de baixo nível.$BA$,使 $W + BA$匹配目标 linear layer── mostra $r = 1$足以完美学习 一级1 修正──
 
 2. **ControlNet-lite。**Um predictor base congelado, bem como uma leitura extra sinal de rede lateral. A saída da rede lateral é feita por um gate inicialmente configurado para zero.
 
@@ -99,11 +99,11 @@ Em passo 0, saída e base são completamente iguais.`gate`Não haverá deslocame
 
 ## 常见坑
 
-- **LoRA 过度缩放。** `α = 2`Ou `α = 3`É uma forma comum de torná-lo mais forte, mas pode produzir excesso de formação ou perda de saída.`α ≤ 1.5`- Não.
+- **LoRA 过度缩放。** $\alpha = 2$Ou $\alpha = 3$É uma forma comum de torná-lo mais forte, mas pode produzir excesso de formação ou perda de saída.$\alpha \le 1.5$- Não.
 - **ControlNet weight 冲突。**Ao mesmo tempo de uso peso 1.0 de Pose ControlNet e peso 1.0 de Depth ControlNet normalmente serão superados.
 - **LoRA 用在错误的 base 上。**SDXL LoRA em SD 1.5 上会静默 no-op, pois as dimensões de atenção não se correspondem.
 - **Textual Inversion 漂移。**Em um ponto de controlo, os tokens de treinamento, trocados para outro ponto de controlo, vão ser gravemente deslocados.
-- **LoRA weight-merging 和存储。**Você pode colocar o LoRA em pedaços de peso do modelo base, para obter inferências mais rápidas, mas perderá no tempo de execução.`α`De que forma?
+- **LoRA weight-merging 和存储。**Você pode colocar o LoRA em pedaços de peso do modelo base, para obter inferências mais rápidas, mas perderá no tempo de execução.$\alpha$De que forma?
 
 ## Use-o
 
@@ -126,7 +126,7 @@ Em passo 0, saída e base são completamente iguais.`gate`Não haverá deslocame
 
 1. **Easy。**Em`code/main.py`- Não, não.`r`De 1 a 4... LoRA em que nível?
 2. **Medium。**Em duas transformações alvo, treinar dois LoRA independentes. Carregar juntos e mostrar a sua interacção. Quando essa interacção irá romper com a linha?
-3. **Hard。**Utilize difusores 叠加:SDXL-base + Canny-ControlNet(peso 0,8) + 一个风格 LoRA(α 0,8) + IP-Adapter(peso 0,6)。
+3. **Hard。**Utilize difusores 叠加:SDXL-base + Canny-ControlNet(peso 0,8)+ 一个风格 LoRA($\alpha$0,8) + Adaptador IP ((peso 0,6)。 Com os pesos da pilha 变化,测量 FID-vs-immediate-adherence trade-off──
 
 ## 关键术语
 
@@ -134,9 +134,9 @@ Em passo 0, saída e base são completamente iguais.`gate`Não haverá deslocame
 |------|------------|------------------|
 | ControlNet | "Spatial control" | 克隆 encoder + zero-conv skips；读取一张 conditioning image。 |
 | Zero convolution | "Starts as identity" | 初始化为零的 1×1 conv；ControlNet 一开始是 no-op。 |
-| LoRA | "Low-rank adapter" | `W + B @ A`，`r << d`；比 full fine-tune 少 100x 参数。 |
+| LoRA | "Low-rank adapter" | $W + BA$，$r \ll d$；比 full fine-tune 少 100x 参数。 |
 | rank r | "The knob" | LoRA 压缩；典型值为 4-16，重度个性化使用 64+。 |
-| α | "LoRA strength" | LoRA delta 的 runtime scaling。 |
+| $\alpha$ | "LoRA strength" | LoRA delta 的 runtime scaling。 |
 | IP-Adapter | "Reference image" | 通过 CLIP-image tokens 实现的小型 image-conditioning adapter。 |
 | DreamBooth | "Full subject fine-tune" | 在约 ~30 张主体图像上训练完整模型。 |
 | Textual Inversion | "New token" | 只学习一个新的 word embedding；旧方案，大多已被替代。 |
@@ -145,7 +145,7 @@ Em passo 0, saída e base são completamente iguais.`gate`Não haverá deslocame
 
 Uma verdadeira SaaS de texto para imagem, realizada em um mesmo ponto de controle base, serviu centenas de LoRAs e dez de ControlNet, serviu problemas como a multi-pensificação de LLM (produção de literatura em batches contínuos e LoRAX / S-LoRA).
 
-- **Hot-swap LoRAs，不要 merge。**- Não .`W' = W + α·B·A`Merger para a base, podemos fazer inferências por cada passo quase ~ 3-5%, mas vai acabar `α`E basei-lo em loura como rank-r de delta.`pipe.load_lora_weights()`+ `pipe.set_adapters([...], adapter_weights=[...])`, pode ser usado a pedido para ativar.`2 · d · r · num_layers`Pesos, ou seja, MB 级、亚秒级。
+- **Hot-swap LoRAs，不要 merge。**- Não .$W' = W + \alpha \cdot B \cdot A$Merger para a base, podemos fazer inferências por cada passo quase ~ 3-5%, mas vai acabar $\alpha$E basei-lo em loura como rank-r de delta.`pipe.load_lora_weights()`+ `pipe.set_adapters([...], adapter_weights=[...])`, pode ser usado a pedido para ativar.`2 · d · r · num_layers`Pesos, ou seja, MB 级、亚秒级。
 - **ControlNet 作为第二条 attention lane。**O codificador do clone e a base e a execução dos dois movimentos. O peso do clone é de 1.0 de ControlNet = cada passo de dois passes adicionais adicionais, em vez de um passes combinados.
 - **Quantized LoRAs 也适用。**Se você quantificar base (cf. Lição 07, Fluxo em 8GB), LoRA delta também pode fazer a quantificação de 8 bits ou 4 bits.
 

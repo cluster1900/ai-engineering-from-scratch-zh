@@ -21,7 +21,7 @@ Cada medida vai prestar atenção a todas as medidas anteriores (a) e a sua pró
 
 ### O Tokenizer VQ-VAE em Multicálculo
 
-VAR   precisa de um **multi-scale discrete Tokenizer** Para imagem x, ela gerará uma série de resoluções gradualmente melhoradas:
+VAR   precisa de um **multi-scale discrete Tokenizer**❖ Para imagens $x$, que gerará uma série de resolução gradualmente melhorando Token 网格:
 
 ```
 x -> encoder -> latent f
@@ -31,13 +31,13 @@ f -> tokenize at 2x2: token grid z_2 of shape (2, 2)
 f -> tokenize at (H/p)x(W/p): token grid z_K of shape (H/p, W/p)
 ```
 
-Cada z_k utiliza o mesmo livro de códigos (tipo: 4096-16384) ⋅ Tokenization em cada escala não é independente, mas é treinado para fazer com que cada escala seja capaz de reconstruir o resíduo de cada uma delas:
+Cada um .$z_k$Utilizando o mesmo livro de códigos, a Tokenization em cada escala não é independente, mas é treinada para fazer com que cada escala seja restante e possa ser reconstruída.$f$- Não .
 
-```
-f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size)
+```math
+f \approx \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_1), \text{target\_size}) + \cdots + \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_K), \text{target\_size})
 ```
 
-É um .**residual VQ**变体──尺度 k 捕获尺度 1..k-1 遗漏的内容──decoder 接收所有尺度 嵌入的和并生成图像──
+É um .**residual VQ**- O que é isso?$k$捕获尺度 $1 \ldots k-1$遗漏的内容──Decoder 接收所有尺度 嵌入的和并生成图像──
 
 Multi-escala VQ Tokenizer apenas treinar uma vez, assim como VQGAN), então结── todos os trabalhos gerados são realizados por seu Autoregressivo 模型完成──
 
@@ -50,9 +50,9 @@ Estrutura de sequência de entrada:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Posição Embedding 同时编码尺度索引和尺度内的空间位置──Attention 在尺度顺序上是因果的:尺度 k、位置 (i, j) 的标记可以注意到尺度 1..k 的所有标记,也可以注意到尺度 k 本身在所使用的内尺度 序列中更早出现的标记(VAR utiliza atenção fixa posicional, não há causalidade intra-escala, isto é, todas as posições dentro de uma escala并行预测) 
+Posição de inserção, simultaneamente codificação de medida de índice e medida em espaço.$k$Localização$(i, j)$O sinal pode ser atento à medida.$1 \ldots k$Todos os Tokens, também pode atenção à medida $k$Os dados são dados por um grupo de dados que são utilizados para determinar a posição de um objeto.
 
-訓練 Loss:在每个尺度 k,给定所有之前尺度的代币,预测代币 z_k。对离散 VQ codes 使用交叉热损耗──结构与GPT相似,只是在这里序列变成了尺度结构化的序列──
+ Treinamento Perda: em cada medida $k$, dando-nos todos os Tokens de medida, Prediction Token $z_k$ Em relação aos códigos de VQ de separação, a estrutura é semelhante à GPT, mas a sequência se transformou em sequência estruturada de dimensão.
 
 ### O que é o que é?
 
@@ -66,7 +66,7 @@ decode: f = sum of embed-and-upsample scales 1..K
 image = VAE_decoder(f)
 ```
 
-Quando K = 10 个尺度时,生成需要10次 Transformer forward pass. Per pass 都并行生成整个尺度,而不是在尺度内逐个代币自归.
+- Não .$K = 10$个尺时,生成需要10次 Transformer forward pass. 个尺时,生成需要10次 Transformer forward pass. 个尺时,生成成尺度,而不是在尺度内逐个代币自归归. 对于256x256图像,这大约是10次通过,而DiT是28-50次.
 
 ### Por que a próxima escala vence a próxima token
 
@@ -127,7 +127,7 @@ Em`code/main.py`- Não, não.
 | Multi-scale VQ tokenizer | "Residual VQ" | 生成 K 个分辨率递增 Token 网格的 VQ-VAE，decoder 会对所有尺度求和 |
 | Scale k | "Pyramid level k" | K 个分辨率层级之一，从 k=1 的 1x1 到 k=K 的 (H/p)x(W/p) |
 | Parallel-within-scale | "One forward per scale" | 尺度 k 的所有 Token 在一次 Transformer pass 中预测，而不是自回归预测 |
-| Causal-across-scales | "Scale-ordered attention" | 尺度 k 的 Token 可以 Attention 到尺度 1..k 的全部内容，但不能 Attention 到尺度 k+1..K |
+| Causal-across-scales | "Scale-ordered attention" | 尺度 $k$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的全部内容，但不能 Attention 到尺度 $k+1 \ldots K$ |
 | Residual VQ | "Additive tokenization" | 每个尺度的 Token 编码较低尺度留下的 residual；decoder 对所有尺度 Embedding 求和 |
 | VAR scaling law | "Image GPT scaling" | FID 随 compute 遵循可预测的 power law，类似语言模型的 perplexity |
 | HART | "Hybrid VAR + text" | Text-conditional VAR 变体，将 MaskGIT-style iterative decoding 与 VAR 的尺度结构结合 |

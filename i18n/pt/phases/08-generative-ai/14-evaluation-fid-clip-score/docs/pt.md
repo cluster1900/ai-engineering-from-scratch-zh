@@ -26,13 +26,13 @@ Você também verá: IS(score inicial, essencialmente já retirado) 、KID、CMM
 Heusel et al. (2017)。步骤:
 
 1. Por N 张真实图像和 N 张生成图像提取 Inception-v3 recursos (2048-D) ⋅
-2. Para cada grupo de um Gaussian: calcular a média`μ_r, μ_g`E a covariância`Σ_r, Σ_g`- Não.
-3. FID = `||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2 · (Σ_r · Σ_g)^0.5)`- Não.
+2. Para cada grupo de um Gaussian: calcular a média$\mu_r, \mu_g$E a covariância$\Sigma_r, \Sigma_g$- Não.
+3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \mathop{\mathrm{Tr}}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$- Não.
 
 Explicação: Tétra do espaço em dois valores variáveis Gaussian Distância entre os dois.
 
 失效模式:
-- **小 N 时有偏。**FID é uma distribuição de características em quadrado médio, calculada, pequena N 会低估共差, dá falsos níveis baixos FID──始终使用 N ≥ 10,000──
+- **小 N 时有偏。**FID é uma distribuição de características em quadrado médio calculada, pequena N 会低估共差, giveout falsos de baixa FID──始终使用 $N \ge 10{,}000$- Não.
 - **依赖 Inception。**Inception-v3 訓練于 ImageNet──远离 ImageNet's domain ([[人脸、艺术、文字图像) ]]) irá produzir FID── sem sentido, usando um extractor de características de um determinado domínio──
 - **刷分。**过拟 启动前可在没有视觉质量提升的情况下得到低 FID──使用CMMD见下文)来对抗它──
 

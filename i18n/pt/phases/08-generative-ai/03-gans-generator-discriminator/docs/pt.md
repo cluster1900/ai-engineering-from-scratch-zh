@@ -11,12 +11,12 @@
 
 Os VAEs geram amostras confusas, porque a perda de decodificador MSE delas é a melhor para as imagens Bayes, enquanto a média de muitos números razoáveis é um número confuso. Você quer uma perda de recompensa* razoável, em vez de uma recompensa com um objetivo no nível pixel-wise.
 
-Ideia de um bom amigo: treinar um classificador `D(x)`Para distinguir imagens reais e falsas. Treinar um gerador.`G(z)`Para enganar .`D`- Não.`G`O sinal de perda é:`D`Quando pensamos que algo parece real,`G`Melhore, este sinal também será atualizado, perseguindo um objetivo móvel.`G`É o que nunca escrevi.`log p(x)`Em caso de aprendizagem, a distribuição de dados.
+Ideia de um bom amigo: treinar um classificador $D(x)$Para distinguir imagens reais e falsas. Treinar um gerador.$G(z)$Para enganar .$D$- Não.$G$O sinal de perda é:$D$Quando pensamos que algo parece real,$G$Melhore, este sinal também será atualizado, perseguindo um objetivo móvel.$G$É o que nunca escrevi.`log p(x)`Em caso de aprendizagem, a distribuição de dados.
 
 É um jogo de adversários.
 
-```
-min_G max_D  E_real[log D(x)] + E_fake[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_{\text{real}}[\log D(x)] + \mathbb{E}_{\text{fake}}[\log(1 - D(G(z)))]
 ```
 
 Até 2026, os GANs já não são geradores de SOTA (difusão e correspondência de fluxo) mas o StyleGAN 2/3 continua sendo o modelo de rosto mais lucrativo publicado, os discriminadores GAN são utilizados para treinamento de difusão em *perdas perceptivas*, enquanto o treinamento adversário é apoiado em distillações rápidas em 1 passo (SDXL-Turbo, SD3-Turbo, LCM), permitindo que você possa entregar difusão em tempo real).
@@ -25,20 +25,20 @@ Até 2026, os GANs já não são geradores de SOTA (difusão e correspondência 
 
 ![GAN training: generator and discriminator in minimax](../assets/gan.svg)
 
-**Generator `G(z)`。**Vector de ruído`z ~ N(0, I)`映射到样品 `x̂`△ um decodificador 形状的网络(dense 或 transposed conv) △
+**Generator $G(z)$。**Vector de ruído$z \sim \mathcal{N}(0, I)$映射到样品 $\hat{x}$△ um decodificador 形状的网络(dense 或 transposed conv) △
 
-**Discriminator `D(x)`。**A amostra será projetada para probabilidade escalar (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) (s) (s) ▽ (s) (s) (s) (s) (s) ▽ (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) ) (s)
+**Discriminator $D(x)$。**A amostra será projetada para probabilidade escalar (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) ▽ (s) (s) (s) ▽ (s) (s) (s) (s) (s) ▽ (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) (s) ) (s)
 
 **Loss。**两个交替更新:
 
-- **训练 `D`：** `loss_D = -[ log D(x) + log(1 - D(G(z))) ]`◊对 real=1, fake=0 fazer entropia binária cruzada.
-- **训练 `G`：** `loss_G = -log D(G(z))`这是好友 使用的 *non-saturating* 形式(原始的 `log(1 - D(G(z)))`Vai saturar-se e vai-se`D`Muito confiante, quando a gente está a matar gradientes.
+- **训练 $D$：** $\text{loss}_D = -[ \log D(x) + \log(1 - D(G(z))) ]$◊对 real=1, fake=0 fazer entropia binária cruzada.
+- **训练 $G$：** $\text{loss}_G = -\log D(G(z))$这是好友 使用的 *non-saturating* 形式(原始的 $\log(1 - D(G(z)))$Vai saturar-se e vai-se$D$Muito confiante, quando a gente está a matar gradientes.
 
-**Training loop。**Uma etapa`D`, passo a passo `G`- Não, não.
+**Training loop。**Uma etapa$D$, passo a passo $G$- Não, não.
 
-**为什么它能工作。**Se `G`完美匹配 `p_data`- Então ?`D`Fazer melhor que adivinhar, e fazer melhor que sair 0,5;`G`Não se consegue mais obter gradiente.
+**为什么它能工作。**Se $G$完美匹配 $p_{\text{data}}$- Então ?$D$Fazer melhor que adivinhar, e fazer melhor que sair 0,5;$G$Não se consegue mais obter gradiente.
 
-**为什么它会失效。**Colapso de modo`G`找到一个 `D`Não posso distinguir o modo, e depois, sempre, o fazer.`D`Aprendi muito depressa.`log D`Saturações) ̳instabilidade do treino ̳tas de aprendizagem ̳tama de lote ̳qualquer coisa) ̳
+**为什么它会失效。**Colapso de modo$G$找到一个 $D$Não posso distinguir o modo, e depois, sempre, o fazer.$D$Aprendi muito depressa.$\log D$Saturações) ̳instabilidade do treino ̳tas de aprendizagem ̳tama de lote ̳qualquer coisa) ̳
 
 ## 让 GANs Variantes utilizáveis
 
@@ -64,7 +64,7 @@ gan-minimax
 
 ### 步骤 1: perda não saturante
 
-Vanilla Goodfellow perda`log(1 - D(G(z)))`A concentração de G em G é de alta confiança, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração.`-log D(G(z))`具有相反的表情: Quando D 很自信时它会爆增, dá a G um sinal forte.
+Vanilla Goodfellow perda$\log(1 - D(G(z)))$A concentração de G em G é de alta confiança, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração, o G é de baixa concentração.$-\log D(G(z))$具有相反的表情: Quando D 很自信时它会爆增, dá a G um sinal forte.
 
 ```python
 def g_loss(d_fake):
@@ -131,7 +131,7 @@ GANs 利但狭窄── once your domain 打开, e.g. fotos、任意 text prompt
 ## 练习
 
 1. **Easy。**Utilize默认设置运行 `code/main.py`。 Então, configuração `D_LR = 5 * G_LR`Não voltar a funcionar. Perda de G.
-2. **Medium。**Utilize perda WGAN  substituir perda Goodfellow BCE:`loss_D = E[D(fake)] - E[D(real)]`- Não .`loss_G = -E[D(fake)]`, e vai fazer o clip de peso de D até `[-0.01, 0.01]`◊ Treinamento é mais estável? Comparado com a convergência do relógio de parede ◊
+2. **Medium。**Utilize perda WGAN  substituir perda Goodfellow BCE:$\text{loss}_D = \mathbb{E}[D(\text{fake})] - \mathbb{E}[D(\text{real})]$- Não .$\text{loss}_G = -\mathbb{E}[D(\text{fake})]$, e vai fazer o clip de peso de D até `[-0.01, 0.01]`◊ Treinamento é mais estável? Comparado com a convergência do relógio de parede ◊
 3. **Hard。**Para ampliar o exemplo 1-D para os dados 2-D ((8 √ Gaussians mistura) ∞ seguimento gerador em etapas 1k、5k、10k ∞ capturar 8 ∞ modos ∞ implementar a discriminação de minibatch ∞ re-medida ∞
 
 ## 关键术语
@@ -140,8 +140,8 @@ GANs 利但狭窄── once your domain 打开, e.g. fotos、任意 text prompt
 |------|-----------------|-----------------------|
 | Generator | "G" | noise-to-sample network，`G: z → x̂`。 |
 | Discriminator | "D" | Classifier `D: x → [0, 1]`，real vs fake。 |
-| Minimax | "The game" | joint objective 的 `min_G max_D`。 |
-| Non-saturating loss | "The fix" | 对 G 使用 `-log D(G(z))`，而不是 `log(1 - D(G(z)))`。 |
+| Minimax | "The game" | joint objective 的 $\min_G \max_D$。 |
+| Non-saturating loss | "The fix" | 对 G 使用 $-\log D(G(z))$，而不是 $\log(1 - D(G(z)))$。 |
 | Mode collapse | "G memorized one thing" | 尽管 data 多样，Generator 只产生少量不同 outputs。 |
 | WGAN | "Wasserstein" | 用 Earth-Mover distance + gradient penalty 替换 BCE；gradient 更平滑。 |
 | Spectral norm | "Lipschitz trick" | 约束 D 的 weight norms 来 bound 它的 slope；稳定 training。 |
@@ -151,7 +151,7 @@ GANs 利但狭窄── once your domain 打开, e.g. fotos、任意 text prompt
 
 GANs em qualidade de amostra de geração de domínio aberto 上不再获胜, mas eles ainda estão em custo de inferência 上获胜;;
 
-- **没有 prefill，没有 decode stages。**Uma vez.`G(z)`Passagem avançada.
+- **没有 prefill，没有 decode stages。**Uma vez.$G(z)$Passagem avançada.
 - **没有 KV-cache pressure。**O único estado é o peso. O tamanho do lote é limitado pela memória de ativação.
 - **Trivial continuous batching。**Como cada pedido consome os mesmos FLOPs fixos, o servidor geralmente é o melhor. Não é necessário um agendador de voo.
 
