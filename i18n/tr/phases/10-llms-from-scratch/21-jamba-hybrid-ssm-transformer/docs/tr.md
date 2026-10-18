@@ -27,12 +27,14 @@ Bu dersi bu üç makaleyi okuyacak ve doğru oranı seçmek için bir düşünce
 
 Devlet uzay modeli  通过固定大小的状态 `h`处理序列  Yapım`x_1, ..., x_N`- ...
 
-```
-h_t = A h_{t-1} + B x_t
-y_t = C h_t
+```math
+\begin{aligned}
+h_t &= A h_{t-1} + B x_t \\
+y_t &= C h_t
+\end{aligned}
 ```
 
-Her adım, durum, doğal hareketlilik ile geçiyor.`A`演化,接收输入 `B x_t`,并输出 `C h_t`- Evet.`A, B, C`Öğrenmek için kullanılabilir.`y_t`Sadece ihtiyacım var.`h_{t-1}`和 `x_t`Daha önce bir şey gerekmiyor.`x`△内存 is常量―推理是每个符号 O(1)。
+Her adım, durum, doğal hareketlilik ile geçiyor.`A`演化,接收输入 `B x_t`,并输出 `C h_t`- Evet.`A, B, C`Öğrenmek için kullanılabilir.`y_t`Sadece ihtiyacım var.`h_{t-1}`和 `x_t`Daha önce bir şey gerekmiyor.`x`内存 is a constant quantity 推理 is a token$O(1)$- Evet.
 
 建模质量的关键在于 `A`Bu nedenle, bu programın en önemli yönü, eğitim sırasında uzun bir konvulsiyon olarak kullanılmasıdır.`A, B, C`替换为依赖数据的形式 (也就是 选择性) 部分 (Mamba-2)  2024 daha da basitleştirilmiştir 结构 (结构)  Mamba-3 (数据)  2026), 则在特定位置重新加入复杂性──
 

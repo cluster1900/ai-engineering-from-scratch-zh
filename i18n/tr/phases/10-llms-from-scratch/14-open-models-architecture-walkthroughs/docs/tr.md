@@ -49,8 +49,8 @@ Tüm 2024-2026 yılları önde açık modellerde, aynı şekilde altı tasarım 
 
 LayerNorm, ortalama değerini küçültmek için, std'den çıkarmak için, küçültmek için ve düzeltmek için kullanılır.
 
-```
-RMSNorm(x) = x / sqrt(mean(x^2) + eps) * gamma
+```math
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 没有均值消除──没有偏见──每个代币少一次 matmul── Zhang and Sennrich (2019) 认为它在机器翻译上可以匹配LayerNorm,同时快 10%──所有现代开放模型都使用它──
@@ -75,8 +75,8 @@ Her Llama、Mistral、Qwen、DeepSeek 和 Gemma 都使用 RoPE──Gemma 2 使�
 
 GPT-2' nin MLP'si`x -> gelu(xW1 + b1) -> (...)W2 + b2`▽SwiGLU(Shazeer 2020) Gated Product 替换激活:
 
-```
-SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
+```math
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 两个并行投射,一个而不是一个,由Swiss激活 进行 gate──实证上,它在每参数困难上更强──Llama 2 采用它,随后大家都跟进──MLP'nin gizli boyutu genellikle toplam参数 miktarını orijinal yoğun MLP'ye uyumlu hale getirmek için ayarlanır: eğer GPT-2 kullanılırsa`ff_dim = 4 * hidden`,SwiGLU  kullan`ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`- Evet.
@@ -87,7 +87,7 @@ GPT-2 使用 **Multi-Head Attention (MHA)**Her başın kendi Q 、K 、V projesi
 
 **Multi-Query Attention (MQA, Shazeer 2019)**Tüm başlar arasında bir K ve bir V paylaşmak KV kasesi  num_heads  küçülmek, tipik modelde 12x ile 32x arasında düşüştür.
 
-**Grouped-Query Attention (GQA, Ainslie et al. 2023)**Bu arada, G 组 Q başları 共享一个 K 和一个 V。Llama 3 8B GQA kullanın, içerir 32 个 Q başları 和 8 个 KV başları(G=8), bu yüzden tamamlanmış MHA, KV önbelleği 缩小4x。
+**Grouped-Query Attention (GQA, Ainslie et al. 2023)**Bu arada:$G$组 Q başları 共享一个K 和一个V──Llama 3 8B 使用 GQA,包含32 个Q başları 和8 个KV başları($G=8$Bu yüzden daha iyi bir MHA, KV kasesi 4x daha az.
 
 **Multi-Head Latent Attention (MLA, DeepSeek 2024)**K ve V'yi paylaşımdaki düşük dereceli latente basarak, yeniden başla 投影回去── daha da azaltarak KV önbelleğini azaltırken her başın ifade yeteneğini korur. DeepSeek-V2 ve V3 uzun bağlamlı 性能¬ları elde etmeye bağlıdır.
 
@@ -151,6 +151,7 @@ Aşağıda, tüm içeriği belirtiyor.
 | Qwen 2.5 72B | 2024 | 72B | 72B | RMSNorm | SwiGLU | RoPE (YaRN) | GQA (64/8) | no | 128k |
 | DeepSeek V2 236B | 2024 | 236B | 21B | RMSNorm | SwiGLU | RoPE | MLA | yes (160 experts, top-6) | 128k |
 | DeepSeek V3 | 2024 | 671B | 37B | RMSNorm | SwiGLU | RoPE | MLA | yes (256 experts, top-8) | 128k |
+| Spark-X2.5 4B | 2026 | 4.1B | 4.1B | RMSNorm | GeGLU | RoPE + sliding (3:1) | GQA (16/4)，门控输出 | 否 | 1M |
 
 扫描这些列──RMSNorm is通用──SwiGLU 或其GeGLU 近亲是通用──RoPE is通用──7B 以上 GQA is通用,除非被MLA 替代──MoE 是最高端模型的差异点──
 
@@ -173,6 +174,11 @@ Llama 3 8B yapılandırması:
 ```
 
 Her bölümde, başardığın her şeye karşılık.
+Yeni yapılandırma, bazı hesaplama biçimlerini değiştiren kısımları ekledi, bu nedenle hesaplama makinesi bu kısımlar varken onları okuyacaktır:
+
+- `head_dim`- Ne demek istiyorsun ?`hidden_size / num_attention_heads`时, 显式设置. Gemma 2 9B'nin gizli olduğu 3584'e 16 baş var.`head_dim`256'ya göre, Q projesi 3584 x 4096'dır, değil.
+- `tie_word_embeddings`LM başı ise, yerleştirme matrisini kullanıyor değil mi? Llama 3 8B ̇shared ̇ ikisi de, bu yüzden sadece bir yerleştirme hesaplanırsa, 525M 参数 ̇ kayboluyor.
+- `layer_types`和 `sliding_window`Hangi katmanlar tam bağlamda, hangi sadece son W 个 tokenlerde bulunur.
 
 - `hidden_size`: yerleştirme boyutu:
 - `intermediate_size`: MLP gizli boyut ((3.5x gizli -- SwiGLU 数学) 』
@@ -209,6 +215,15 @@ Llama 3 8B 128k bağlamında BF16 √ baş_dim = gizli / num_head = 128 时:
 
 8B ağırlıkları BF16'da 16 GB'dır. 128k dizisi KV kaydı daha büyüktür. Bu, GQA'yı güçlendirir.
 
+Yukarıdaki formüller, her katman için tam bir diziyi depolamak için kullanılır.
+
+```text
+kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
+           * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
+```
+
+Spark-X2.5 4B Her bir dikkat katmanı 搭配三个滑窗层($W = 512$):36 katmanlardan 9 tane tam katman var 和 27 tane kaydırıcı katman. BF16 kullanıldığında, her bir dizide yaklaşık 38.7 GB'lık bir katman gerekiyor. 36 GiB'lik katman da tam bir katman için kaydedilmiştir. Eğer tüm 36 katman varsa 154.6 GB'lık bir katman gerekiyor.
+
 ### Her Model Kazanırken
 
 - **单张 80GB GPU，无 MoE**Llama 3 8B、Mistral 7B、Gemma 2 9B。 Hizmet etmek kolaydır, araçlar 广泛。
@@ -216,6 +231,7 @@ Llama 3 8B 128k bağlamında BF16 √ baş_dim = gizli / num_head = 128 时:
 - **最大的 open capability，可接受 MoE 复杂度**DeepSeek V3、Mixtral 8x22B── her aktif FLOP'un en iyi kapasitesi
 - **Long-context 需求**Llama 3 ((Rope Scaling  128k'e ulaşmak)
 - **Low-latency serving**:Gemma 2 9B(Gizleme penceresi 降低 uzun bağlamlı hesaplama)
+- **较小内存预算下的长上下文**:Spark-X2.5 4B等 hibrid sürükleyici- pencereler, sadece dört katman 承担完整的背景的开销──
 
 
 ```figure
@@ -234,12 +250,16 @@ config = {
 }
 ```
 
-脚本会逐字段遍历架构,计算嵌入、attention(带 GQA azaltımı)、MLP(带 SwiGLU genişletilmesi)、layernorms 和 head 的参数──然后它会根据给定的背景长度计算 KV缓存,并打印总结──
+脚本会逐字段遍历架构,计算嵌入、注意(带 GQA azaltımı, ve konfig 设置时使用显式 `head_dim`)、MLP(带SwiGLU veya GeGLU genişleme)、layernorms,以及不与嵌入 共享权重时的 LM başı 参数──然后它将根据给定的语境长度 层次计算 KV缓存,将将滑窗层的缓存限制在各自窗内,并打印总结──
+
+                                                                                                                                                                                                                                                              
 
 实现见 `code/main.py`- Evet.
 
 ## Kullan
 运行计算器,脚本中捆绑的Llama 3 8B、Mistral 7B、Mixtral 8x7B 和 DeepSeek V3 konfigüratörleri kullanılarak.
+
+Gemma 2 9B 和 Spark-X2.5 4B。 Bu iki model için,脚本都会打印实际需要的 KV缓存,以及假如所有层都是全关注的时需要的 KV缓存。 Gemma 2 8k bağlamında 下按 1:1 交换使用两类层,因此节省幅度不大──Spark-X2.5 1M bağlamında 下采用 3:1 比例和512-token window,因此缓存需求缩小到四分之一──
 
 Sonra kendi modelinizin yapılandırmasını ekleyin, özet okuyun ve GPU'ya uygun olup olmadığını belirleyin.
 
@@ -268,7 +288,7 @@ Sonra kendi modelinizin yapılandırmasını ekleyin, özet okuyun ve GPU'ya uyg
 | MoE | “Sparse experts” | Mixture of Experts：每个 block 有 N 个 MLPs，router 为每个 Token 选择 top-k -- 巨大的 total params，较小的 active params |
 | Top-k routing | “每个 Token 选择 k 个 experts” | Router 为每个 expert 计算分数，并激活最高的 k 个 -- 典型 k 从 2（Mixtral）到 8（DeepSeek） |
 | YaRN | “拉伸 RoPE” | Yet another RoPE extension -- 通过插值 rotary angles，在 inference 时将 context 从 8k 扩展到 128k+ |
-| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 W 个 Tokens -- 将 attention cost 限制为每 Token O(W)，用于 Gemma 2 和早期 Mistral |
+| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 $W$ 个 Tokens -- 将 attention cost 限制为每 Token $O(W)$，用于 Gemma 2 和早期 Mistral |
 | Active params | “每个 Token 实际运行的部分” | 对于 MoE models，指每个 Token 会经历 forward pass 的参数量（远小于 total params）-- 决定 per-token FLOPs |
 
 ## 延伸阅读

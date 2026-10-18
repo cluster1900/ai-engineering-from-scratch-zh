@@ -33,8 +33,8 @@ Yapmak`p(t)`Bir önbellek üzerinde aşağı çizilen bir çizgi gösterir.`q(t)
 
 Yapmak`α`Bu, her bir çekilen Token'in kabul edilmesi için bir düzenleme.`c = cost(draft) / cost(verifier)`Çekim oranı için.
 
-```
-E[accepted] = (1 - α^(N+1)) / (1 - α)
+```math
+\mathbb{E}[\text{accepted}] = \frac{1 - \alpha^{N+1}}{1 - \alpha}
 ```
 
 Her bir token kabul edilmesi için tüm duvar süresi`(N * c + 1) / E[accepted]`                                                                                                                                                                                                                                                              `N`En küçük şey, en iyi noktayı elde edebilmek.`α = 0.8, c = 0.05`En iyi`N`Yaklaşık 57'e, hızlanma 3,2×.`α = 0.95, c = 0.02`En iyi`N`Yaklaşık 810'dur, hızlanıp 5'e yaklaşıyor.

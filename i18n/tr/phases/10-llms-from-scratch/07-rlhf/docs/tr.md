@@ -77,8 +77,8 @@ graph TD
 
 Kayıp Fonksiyonu Bradley-Terry modeli çiftlik tercihleri kullanın:
 
-```
-loss = -log(sigmoid(reward(preferred) - reward(rejected)))
+```math
+\text{loss} = -\log\big(\mathop{\mathrm{sigmoid}}(\text{reward}(\text{preferred}) - \text{reward}(\text{rejected}))\big)
 ```
 
 Bu önemli bir formül.`sigmoid(reward(A) - reward(B))`                                                                                                                                                                                                                                                              
@@ -93,8 +93,8 @@ PPO bir güçlendirme öğrenme algoritmasıdır. RLHF'de,  çevre  ödül model
 
 目標:
 
-```
-maximize: E[R(prompt, response)] - beta * KL(policy || reference)
+```math
+\text{maximize:} \quad \mathbb{E}[R(\text{prompt}, \text{response})] - \beta \cdot \mathrm{KL}(\text{policy} \,\|\, \text{reference})
 ```
 
 İlk adım, modelin yüksek ödül üretmesini teşvik etmek. İkinci adım, modelin SFT kontrol noktasından uzaklaşmasını önlemek.
@@ -107,7 +107,7 @@ Neden KL cezası gerekiyor? yoksa, model geri dönüşümünü bulacaktır. Öd�
 
 KL cezası gösterir: iyileştirebilirsin, ama tamamen farklı bir model haline gelemez. SFT versiyonuna yaklaşmak gerekir, çünkü oldukça mantıklıdır.
 
-**InstructGPT numbers:**PPO eğitim kullanın lr=1.5e-5、KL katılamı beta=0.02、256K bölümler(sürekli- yanıt çiftleri), ve her parti 4 个 PPO dönemleri yapın。 GPU kümesindeki tüm RLHF borusu 上需要数天时间──
+**InstructGPT numbers:**PPO eğitimı kullan lr=1.5e-5、KL katılamı $\beta=0.02$、256K bölümler(sürekli yanıt çiftleri), ve her parti 4 个 PPO dönemleri yaptı.
 
 ```mermaid
 graph LR
@@ -130,12 +130,14 @@ graph LR
 
 ### PPO Hedefi 详解
 
-PPO kullan cliped surrogate objective                                                                                                                                                                                                                                                         
+Yeni politika ile eski politika arasındaki oran                                                                                                                                                                                                                                                            $[1 - \epsilon, 1 + \epsilon]$                                                                                  $\epsilon$Genellikle 0,2'dir.
 
-```
-ratio = pi_new(action | state) / pi_old(action | state)
-clipped_ratio = clip(ratio, 1 - epsilon, 1 + epsilon)
-loss = -min(ratio * advantage, clipped_ratio * advantage)
+```math
+\begin{aligned}
+\text{ratio} &= \pi_{\text{new}}(\text{action} \mid \text{state}) / \pi_{\text{old}}(\text{action} \mid \text{state}) \\
+\text{clipped\_ratio} &= \mathop{\mathrm{clip}}(\text{ratio}, 1 - \epsilon, 1 + \epsilon) \\
+\text{loss} &= -\min(\text{ratio} \cdot \text{advantage}, \text{clipped\_ratio} \cdot \text{advantage})
+\end{aligned}
 ```
 
 Avantaj fonksiyonu  tahmin edilmiştir                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -600,19 +602,19 @@ if __name__ == "__main__":
 
 3. 模拟奖励黑客──创建一个给长响应高分的奖励模型(奖励 = len(回应) / 100)──使用这个缺陷的奖励模型 运行PPO,观察政策模型 生成越来越长、越来越重复的输出──然后添加 0.1 的 KL 罚款,并显示它防止这种退化行为──
 
-4. 实现多目的奖励──训练两个奖励模型:一个用于帮助,另一个用于简洁性──将它们组合为R = 0.7 * R_helpful + 0.3 * R_concise──展示组合目标会产生既有用又简洁的响应,避免单一帮助奖励 带来的词语陷──
+4. 实现多目的奖励──训练两个奖励模式:一个用于帮助,另一个用于简洁性──将它们组合为 $R = 0.7 \cdot R_{\text{helpful}} + 0.3 \cdot R_{\text{concise}}$◊ göstermek ◊ hedefler ◊ üretmek hem yararlı hem de kısa cevaplar, ◊ kaçınmak ◊ tek yararlılık ödül ◊ getiren sözcük tuzağı ◊
 
-5. Bireysel KL katılıkları arasında ayrılığa göre, beta=0.001 ((over low, reward hacking)、beta=0.02 ((standard) ve beta=0.5 ((over high, cannot learn) için PPO kullanılır.
+5. Farklı KL katılıkları ile karşılaştırın.$\beta=0.001$(Üç düşük, ödül hackeri)$\beta=0.02$(standard) ve $\beta=0.5$(过高,无法学习)运行 PPO──绘制每种设置的奖励曲和 KL曲──$\beta=0.02$Operasyonlar sabit bir ödül göstermek için yükseltilmelidir ve KL'nin sınırları vardır.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | RLHF | “Training with human feedback” | Reinforcement Learning from Human Feedback：一个三阶段 pipeline（SFT、reward model、PPO），使用人类偏好信号优化 language model 输出 |
 | Reward model | “A model that scores responses” | 一个带 scalar output head 的 Transformer，使用 Bradley-Terry loss 在 pairwise human preferences 上训练 |
-| Bradley-Terry | “The comparison model” | 一种概率模型，其中 P(A > B) = sigmoid(score(A) - score(B))，可将 pairwise preferences 转换为一致的 scoring function |
+| Bradley-Terry | “The comparison model” | 一种概率模型，其中 $P(A > B) = \mathop{\mathrm{sigmoid}}(\text{score}(A) - \text{score}(B))$，可将 pairwise preferences 转换为一致的 scoring function |
 | PPO | “The RL algorithm” | Proximal Policy Optimization：更新 policy 以最大化 reward，同时裁剪更新幅度以防止不稳定 |
 | KL divergence | “How different two distributions are” | 衡量 policy model 的 Token distribution 与 reference model 之间差异的指标，用作 penalty 来防止 reward hacking |
-| KL penalty | “The leash on the model” | 从 reward signal 中减去的 Beta * KL(policy \|\| reference)，防止 policy 偏离 SFT checkpoint 太远 |
+| KL penalty | “The leash on the model” | 从 reward signal 中减去的 $\beta \cdot \mathrm{KL}(\text{policy} \Vert \text{reference})$，防止 policy 偏离 SFT checkpoint 太远 |
 | Reward hacking | “Gaming the reward” | policy 通过利用 reward model 的弱点找到退化的高 reward 输出，而不是真正改进 |
 | Preference pair | “Which is better, A or B?” | 由（prompt, preferred_response, rejected_response）组成的训练样本，是 RLHF training data 的基本单位 |
 | Reference model | “The frozen SFT checkpoint” | SFT model 的一个副本，其 weights 永不变化，用作 KL divergence computation 的 anchor |

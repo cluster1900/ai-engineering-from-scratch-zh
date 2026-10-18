@@ -37,13 +37,13 @@ Example:32-kataman transformatör 32 katman, her katman 1 katman olarak ayrılı
 - Hatıra:32 个 katman girişleri(小) karşılığı 32 *(per layer activation volume)
 - 额外计算: her segment 额外 1 次前,也就是总前 FLOPs 约增加33%(因为后退是前的2x,完整步骤从1 + 2 = 3个单位变为1 + 1 + 2 = 4个单位) 
 
-Bu ilk olarak Chen et al. 2016'daki programı:`sqrt(L)`Bir kontrol noktası, belleği ve hesaplamaları dengelemek için. L=64, 8 kontrol noktası.
+Bu ilk olarak Chen et al. 2016'daki programı:`sqrt(L)`Bir kontrol noktası, belleği ve hesaplamaları dengelemek için.$L=64$,就是 8 kontrol noktası.
 
 ### Seçimsel Kontrol Noktası (Korthikanti 2022)
 
 Tüm etkinleştirme değerlerinin maliyeti aynı değil.`B*L*L*heads`,并随序列长度 *二次* 增长──FFN gizli etkinleştirme 是 `B*L*4d`, 線性增长──長序列,softmax 占主导──
 
-Seçimsel kontrol noktası, depolama maliyetinin düşük aktif değerini tutmak, sadece pahalı kısımları yeniden hesaplamak, dikkat etmek, çok az FLOP kullanmak, ancak O(L^2) hafızayı tasarruf etmek.
+Seçimsel kontrol noktası, depolama maliyetinin düşük aktif değerini tutmakla birlikte, sadece pahalı kısımları yeniden hesaplamakla birlikte, dikkatinizi çekmek için çok az FLOP kullanıyorsunuz.$O(L^2)$Hatıra.
 
 Megatron-Core, bunu seçici bir şekilde yeniden hesaplama için gerçekleştirir. 2024'te sınır eğitimlerinin çoğu kullanılıyor.
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174)-- İlk olarak biçimlendirilmiş gradient kontrol noktası

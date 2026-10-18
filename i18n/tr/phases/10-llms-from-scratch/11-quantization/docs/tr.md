@@ -39,11 +39,11 @@ INT8:  [1 sign] [7 value]                   = 8  bits (uniform steps)
 INT4:  [1 sign] [3 value]                   = 4  bits (16 levels total)
 ```
 
-**FP32**Bu, bir dizi farklı metrikler oluşturur. Bu, bir dizi metrikler oluşturur.
+**FP32**Tam bir hassasiyet var. 23 adet mantissa bit.$1.2 \times 10^{-38}$- Ne ?$3.4 \times 10^{38}$▽ geçmiş eğitim 几乎只使用FP32──现在它仍然用于积累矩阵乘法 期间运行求和) ⋅
 
 **FP16**Bu, ağırlık kaybı sorunudur, ancak eğitim sırasında niden artan aktivasyonlar ve gradientler nce tehlikelidirFP16 eğitiminde nce kayıp ölçeklendirme gerektirir 
 
-**BF16**(Brain Float 16) FP32'nin 8 bitli katılımcılığını korur, ancak mantissa'yı 7 bitlere kadar küçültür. FP16'a göre daha düşük. Google'ın Deep Learning için tasarladığı bir uygulama.
+**BF16**(Brain Float 16) FP32'nin 8 bitli katılımcılığını koru, ancak mantissa'yı 7 bitlere küçültü FP32'yle aynı boyutta, FP16'dan daha düşük doğrulukta. Google bunu derin öğrenme için tasarladı.$10^{-20}$BF16'da 0.07342'in ağırlığı 0.0734'e kadar yuvarlanır. Ayrıca, her modern eğitim koşusu BF16 veya BF16/FP32 混合¬ları kullanır.
 
 **FP8**E4M3,4 katı, 3 mantissa) eğitici süreci  ağırlıkları ve aktivasyonları  sonucu olarak kullanılır E5M2,5 katı, 2 mantissa) eğitim süreci  gradientleri, bu zaman aralığı daha doğruluk daha önemlidir H100 GPU'larda, FP8 sonucu karşılaştırıldığında FP16 30-50% hızlandırılabilir, ve kalite kaybı göz ardı edilebilir.
 

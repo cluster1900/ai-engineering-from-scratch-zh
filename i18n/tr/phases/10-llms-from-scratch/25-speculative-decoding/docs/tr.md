@@ -53,8 +53,8 @@ For each drafted token x_t:
 
 Eğer proje modelinin Token 级 kabul oranı ise `α`,则每次目标前进通过 生成的期望代币 数为:
 
-```
-E[tokens] = (1 - α^{K+1}) / (1 - α)        # K = draft length, α in [0, 1]
+```math
+\mathbb{E}[\text{tokens}] = \frac{1 - \alpha^{K+1}}{1 - \alpha} \qquad K = \text{draft length}, \ \alpha \in [0, 1]
 ```
 
 - Evet .`α = 0.8, K = 4`- ...`(1 - 0.8^5)/(1 - 0.8) = 3.36`个 Token Her seferinde. 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个`cost_q * K + cost_p`(K 个 taslak adım bir kez hedef doğrulama)`cost_p >> cost_q * K`,sürüm oranı hızlandırma oranı`3.36× / 1 = 3.36×`- Evet.
@@ -176,7 +176,7 @@ def speculative_step(p_target, q_draft, K, temperature=1.0):
 
 1. 实现精确拒绝 规则并进行实证验证──通过 `speculative_decode`和 basit hedef örnekleme 分別运行 10K örnekler; hesaplamak iki çıkış dağıtımları  arasındaki TV mesafe──应小于0.01──
 
-2. 計算 公式──给定固定 `α`和 `K`, çizmek için her hedef-geri 期望 Token 数── bulmak ∈ {0.5, 0.7, 0.9} 时的最优 K──
+2. 計算 公式──给定固定 `α`和 `K`, her hedef önümüzdeki beklentileri çizmek Token sayı---outfinding $\alpha \in \lbrace 0.5, 0.7, 0.9 \rbrace$时的最优 $K$- Evet.
 
 3. 訓練一小草稿──取一小 124M GPT-2 hedefi, ve 100M tokens 上用 KL loss destill 一小 30M GPT-2草稿──测量 held-out text 上的 `α`❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖
 

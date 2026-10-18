@@ -11,7 +11,7 @@
 - 实现 DPO eğitim, doğrudan preference çiftleri 上优化语言模型, tek başına ödül modeli kullanmadan
 - 推导 DPO Kayıp Fonksiyonu,并解释它如何通过政策的日志概率 隐式表示奖励模型
 - DPO ile RLHF arasındaki eğitim sabitliği, hesaplama maliyeti ve model sayısı açısından
-- 调节 beta 参数,控制训练后的政策 偏离参考模型的程度
+- 调节 $\beta$参数, kontrol eğitim sonrası politika  偏离参考模型程度
 
 ## 问题
 Ders 07'de RLHF borusunu oluşturmuş olursunuz. Üç aşama. Üç model. SFT modeli, ödül modeli, PPO'nun optimize edilmesiyle birlikte ödül modeli. Sadece ödül modeli, binlerce bireysel tercih çifti ve tek başına bir eğitim döngüsü gerektirir.
@@ -29,51 +29,53 @@ DPO RLHF'yi denetim altında öğrenme adımlarına ▌ bir model ▌ bir Kayıp
 
 RLHF 优化这个目标:
 
-```
-maximize: E[R(x, y)] - beta * KL(pi || pi_ref)
-```
-
-R, ödül modeli, pi, politika, pi_ref referans modeli, beta, KL katılamıdır.
-
-DPO kağıdı 証明,この目標存在閉式最优解──任意報酬関数 R için,最优政策 şudur:
-
-```
-pi*(y | x) = pi_ref(y | x) * exp(R(x, y) / beta) / Z(x)
+```math
+\text{maximize:} \quad \mathbb{E}[R(x, y)] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
-Z (x) arasında birleştirilmiş normal sayı vardır.
+İçlerinden $R$Ödül modeli,$\pi$Politikası,$\pi_{\text{ref}}$referans modeli,$\beta$KL katılamı.
 
+DPO kağıdı  kanıt, bu hedef kapanmış en iyi çözüm var.$R$En iyi politika:
+
+```math
+\pi^*(y \mid x) = \pi_{\text{ref}}(y \mid x) \cdot \exp(R(x, y) / \beta) / Z(x)
 ```
-R(x, y) = beta * log(pi*(y | x) / pi_ref(y | x)) + beta * log Z(x)
+
+İçlerinden $Z(x)$Yeniden düzenlenebilir:
+
+```math
+R(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 Bu, bir atılım noktası. Ödül, tamamen politika modeli ve referans modeli olasılıklarını kullanarak ifade edilmektedir.
 
 Bradley-Terry tercih modeli yerine:
 
-```
-P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))
-                  = sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x)))
+```math
+\begin{aligned}
+P(y_w > y_l \mid x) &= \mathop{\mathrm{sigmoid}}(R(x, y_w) - R(x, y_l)) \\
+&= \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
+\end{aligned}
 ```
 
-Z(x) 项会抵消, çünkü iki cevap aynı istekle x 为条件――下面只是政策模型和参考模型 在上的 log-probabilities的函数 在偏好与拒绝的答案上的日志概率――下面只是政策模型和参考模型 在上的 log-probabilities的函数在上的 log-probabilities 在上的 log-probabilities 在上的 log-probabilities 在上的 log-probabilities 在上的 log-probabilities 在上的 log-probabilities 在上的 log-probabilities 在上的 log-probabilities 在上的 log-probabilities 在上的 log-probability 在上的 log-probability 在上的 log-probability 在上的 log-probability 在上的 log-probability 在
+$Z(x)$Bu cevaplar bir anda cevaplanır.$x$"Şartlı"" Geri kalan sadece politika modeli ve referans modeli, tercih edilen ve reddedilen yanıtların log- olasılıklarının üstü fonksiyonudur.
 
 ### DPO Kaybesi
 
-```
-L_DPO = -log(sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x))))
+```math
+L_{\text{DPO}} = -\log \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
 ```
 
 Her bölümünü çözeceğiz:
 
-- **y_w**= tercih edilen(kazan) cevap
-- **y_l**= redded ((losing) cevap
-- **x**= hızlı
-- **pi**= 当前模型(正在训练)
-- **pi_ref**= referans modeli ((结的 SFT kontrol noktası)
-- **beta**= 控制偏离 参照 温度 参数(genellikle 0,1 ila 0,5)
+- **$y_w$**= tercih edilen(kazan) cevap
+- **$y_l$**= redded ((losing) cevap
+- **$x$**= hızlı
+- **$\pi$**= 当前模型(正在训练)
+- **$\pi_{\text{ref}}$**= referans modeli ((结的 SFT kontrol noktası)
+- **$\beta$**= 控制偏离 参照 温度 参数(genellikle 0,1 ila 0,5)
 
-比值 `log pi(y|x) / pi_ref(y|x)`Bu oran doğru zaman, mevcut modelin yanıt vermesinin olasılığı referanstan daha yüksek olduğunda, mevcut modelin vermesinin olasılığı daha düşüktür.
+比值 `log pi(y|x) / pi_ref(y|x)`Bu oranın doğru zaman için geçerli olduğu zaman, mevcut model cevap verir.$y$Referans oranı daha yüksek ve negatif olduğunda, mevcut model verildiği oran daha düşüktür.
 
 DPO Loss, tercih edilen yanıtların log- olasılık oranını arttırır ve reddedilen yanıtların log- olasılık oranını düşürür. Beta  Parametr kontrol modeli daha fazla hareket ettirebilir: daha küçük beta daha büyük bir kayıp, daha büyük beta modeli daha yakın bir referans olmasına izin verir.
 
@@ -634,7 +636,7 @@ if __name__ == "__main__":
 | DPO | “没有 RL 的 RLHF” | Direct Preference Optimization：一种 supervised learning algorithm，直接在 preference pairs 上优化语言模型，绕过 reward model 和 PPO |
 | Implicit reward | “reward 在模型里” | reward function 由 policy 与 reference models 之间的 log-probability ratio 决定，不需要单独的 reward model |
 | Beta (DPO) | “temperature” | 控制 policy 可以偏离 reference model 的程度：小 beta 允许大偏离，大 beta 让模型保持接近 |
-| Log-probability ratio | “模型变化了多少” | log pi(y\|x) - log pi_ref(y\|x)：正值表示当前模型分配的概率高于 reference |
+| Log-probability ratio | “模型变化了多少” | $\log \pi(y \mid x) - \log \pi_{\text{ref}}(y \mid x)$：正值表示当前模型分配的概率高于 reference |
 | Reference model | “冻结的 checkpoint” | SFT model 的一个副本，其 weights 永不改变，用作计算概率比的锚点 |
 | KTO | “没有成对数据的 DPO” | Kahneman-Tversky Optimization：使用未配对的“good”或“bad”labels，而不是要求 preference pairs |
 | ORPO | “一步 alignment” | Odds Ratio Preference Optimization：通过向 SFT Loss 添加 preference term，将 SFT 和 alignment 合并到单个 training loop |

@@ -39,27 +39,29 @@ Modül`k`包含:
 
 訓練時,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `i`Prefiks, derinliklere göre gizli durum 为:
 
-```
-h_i^(0) = main model backbone at position i
-h_i^(k) = T_k( M_k * concat(RMSNorm(h_i^(k-1)), RMSNorm(E(t_{i+k}))) )   for k >= 1
+```math
+\begin{aligned}
+h_i^{(0)} &= \text{main model backbone at position } i \\
+h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMSNorm}}(h_i^{(k-1)}), \mathop{\mathrm{RMSNorm}}(E(t_{i+k}))\big) \Big) \quad \text{for } k \ge 1
+\end{aligned}
 ```
 
 Derinlik tahminı 为:
 
-```
-logits_{i+k} = Out(h_i^(k-1))   for k = 1..D
+```math
+\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
 ```
 
 Derinlik kaybı , temel gerçeğe göre .`t_{i+k}`Çelişkili entropi:
 
-```
-L_k = CE(logits_{i+k}, t_{i+k})
+```math
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
 ```
 
 跨 depth                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
-```
-L_MTP = (lambda / D) * sum_{k=1..D} L_k
+```math
+L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 ```
 
 `lambda`Daha küçük bir ağırlık faktörü, DeepSeek-V3 için %10 kullanın.`L_main + L_MTP`- Evet.
@@ -175,7 +177,7 @@ Yeni bir tren sürümünde MTP kullanma sahnesi:
 
 2. 計算一個密集 70B 模型 ((隱藏 8192,80 層) 在 D=1 MTP 模組下的参数开销── DeepSeek-V3 報告的 14B 开销與进行比较──解释为什么 DeepSeek'in 數字更高:MTP 變壓器積木 继承了相同的 MoE 结构,从而增加了每模組 参数──
 
-3. Oyuncak içinde gerçekleştirilen D=2: Ekle ikinci MTP modülü, al h^(1) 并预测 `t_{i+2}`❖ Testing joint loss 和 parametre核算与DeepSeek kağıdı △ 19-21 匹配──
+3. Oyuncak içinde gerçekleştirilen D=2: ekle ikinci MTP modülü, almak $h^{(1)}$Not:`t_{i+2}`❖ Testing joint loss 和 parametre核算与DeepSeek kağıdı △ 19-21 匹配──
 
 4. Bu oyuncak paralel MTP olarak değiştirilmiştir: Hedefi gizli durumda 之上 D 个输出头,每个预测不同的抵消――测量在同一个合成信号上,每个深度的损失与序列的版本相比如何――对于 k > 1,sequential 版本应产生更低的深度的损失,因为它在中间预测为条件――
 
@@ -191,8 +193,8 @@ Yeni bir tren sürümünde MTP kullanma sahnesi:
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |
 | Shared embedding | “复用主 table” | 同一个 vocabulary embedding table 在所有地方使用；没有重复参数 |
-| Projection matrix M_k | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
-| Joint loss L_MTP | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
+| Projection matrix $M_k$ | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
+| Joint loss $L_{\text{MTP}}$ | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
 | Acceptance rate at depth 1 | “MTP draft 多常正确” | D=1 MTP module 的 top-1 prediction 等于主模型 top-1 prediction 的比例；DeepSeek-V3 上超过 80% |
 | Lambda weighting | “额外 loss 的重要性” | per-depth 缩放因子；DeepSeek-V3 在训练开始时为 0.3，之后为 0.1 |
 

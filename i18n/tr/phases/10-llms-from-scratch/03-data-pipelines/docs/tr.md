@@ -161,11 +161,13 @@ Dikkat maskası 必須正确設定──同一个包装序列 中,Document A 的
 
 ### Chinchilla Ölçekleme Yasası
 
-固定计算预算 C(以 FLOPs 衡量),最优模型大小 N 和数据集 大小 D 遵循:
+                                                                        $C$(以 FLOPs 衡量),最优模型大小 $N$和 veri kümesi$D$遵循:
 
-```
-N_opt ~ C^0.5
-D_opt ~ C^0.5
+```math
+\begin{aligned}
+N_{\text{opt}} &\sim C^{0.5} \\
+D_{\text{opt}} &\sim C^{0.5}
+\end{aligned}
 ```
 
  Praktiki olarak, bu, büyüklükte ve büyüklükte genişleme oranında bir model oluşturmanız gerektiği anlamına gelir.
@@ -433,7 +435,7 @@ Bu ders, LLM eğitim borusunu test ve düzenlemek için bir anında ortaya çık
 |------|----------------|----------------------|
 | Common Crawl | “互联网” | 一个每月抓取 web 的非营利组织：约 250TB 原始数据，是大多数 LLM 训练数据的起点 |
 | MinHash | “某种 hashing trick” | 一种使用固定大小 signature 来估计集合间 Jaccard similarity 的技术：支持大规模 near-duplicate detection |
-| LSH | “Locality-Sensitive Hashing” | 一种把相似项分到同一 bucket 的方法：将 pairwise comparisons 从 O(n^2) 降到接近线性 |
+| LSH | “Locality-Sensitive Hashing” | 一种把相似项分到同一 bucket 的方法：将 pairwise comparisons 从 $O(n^2)$ 降到接近线性 |
 | Sequence packing | “拼接文档” | 用正确的 attention masks 把多个文档放入固定长度序列：消除 padding 浪费 |
 | Chinchilla scaling | “在更多数据上训练” | 对于固定计算预算，最优性能要求模型大小和训练 Token 数大致等比例扩展 |
 | Fertility | “Tokens per word” | 每个词平均对应的 Token 数：GPT-4 中英文约为 1.3，非拉丁文字系统更高 |
