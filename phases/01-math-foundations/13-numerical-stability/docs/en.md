@@ -250,7 +250,7 @@ Centered difference 公式：
 
 这是 $O(h^2)$ 精度，远好于 forward difference $(f(x+h) - f(x)) / h$，后者只有 $O(h)$。
 
-选择 $h$：太大则近似不准确。太小则 catastrophic cancellation 会毁掉结果。`$h$ = 1e-5` 到 `1e-7` 很常见。
+选择 $h$：太大则近似不准确。太小则 catastrophic cancellation 会毁掉结果。`h = 1e-5` 到 `1e-7` 很常见。
 
 检查方式：计算 analytical 和 numerical gradients 之间的 relative difference。
 
