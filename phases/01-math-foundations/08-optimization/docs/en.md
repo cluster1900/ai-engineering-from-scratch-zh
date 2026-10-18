@@ -35,8 +35,8 @@ minimize L(w) where:
 
 最简单的 Optimizer。计算 Loss 相对于每个 weight 的 Gradient。让每个 weight 沿其 Gradient 的反方向移动。用 learning rate 缩放这一步。
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 这就是完整算法。一行。
@@ -91,9 +91,11 @@ SGD 和 mini-batch 中的噪声不是 bug。它有助于逃离浅层 local minim
 
 Vanilla gradient descent 只看当前 Gradient。如果 Gradient 来回之字形摆动（在狭窄山谷中很常见），进展就会很慢。Momentum 通过把过去的 Gradients 累积到一个 velocity 项中来解决这个问题。
 
-```
-v = beta * v + gradient
-w = w - lr * v
+```math
+\begin{aligned}
+v &= \beta \cdot v + \text{gradient} \\
+w &= w - \text{lr} \cdot v
+\end{aligned}
 ```
 
 类比是：一个向山下滚动的球。它不会在每个小凸起处停下再重新开始。它会在一致的方向上积累速度，并抑制震荡。
@@ -121,17 +123,17 @@ graph TD
 
 Adam（Adaptive Moment Estimation）会为每个 weight 跟踪两件事：
 
-1. First moment（m）：Gradients 的 running average（类似 momentum）
-2. Second moment（v）：squared gradients 的 running average（Gradient magnitude）
+1. First moment（$m$）：Gradients 的 running average（类似 momentum）
+2. Second moment（$v$）：squared gradients 的 running average（Gradient magnitude）
 
-```
-m = beta1 * m + (1 - beta1) * gradient
-v = beta2 * v + (1 - beta2) * gradient^2
-
-m_hat = m / (1 - beta1^t)    bias correction
-v_hat = v / (1 - beta2^t)    bias correction
-
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+\begin{aligned}
+m &= \beta_1 \cdot m + (1 - \beta_1) \cdot \text{gradient} \\
+v &= \beta_2 \cdot v + (1 - \beta_2) \cdot \text{gradient}^2 \\[4pt]
+\hat{m} &= m / (1 - \beta_1^t) \quad \text{偏差校正} \\
+\hat{v} &= v / (1 - \beta_2^t) \quad \text{偏差校正} \\[4pt]
+w &= w - \text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)
+\end{aligned}
 ```
 
 除以 `sqrt(v_hat)` 是关键洞察。具有大 Gradients 的 weights 会被一个大数相除（有效步长小）。具有小 Gradients 的 weights 会被一个小数相除（有效步长大）。每个 weight 都会获得自己的 adaptive learning rate。
@@ -146,14 +148,14 @@ w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
 
 | Schedule | Formula | Use case |
 |----------|---------|----------|
-| Step decay | lr = lr * factor every N epochs | 简单，手动控制 |
-| Exponential decay | lr = lr_0 * decay^t | 平滑降低 |
-| Cosine annealing | lr = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T)) | Transformers，现代训练 |
+| Step decay | $\text{lr} = \text{lr} \cdot \text{factor}$，每 $N$ 个 epochs 更新 | 简单，手动控制 |
+| Exponential decay | $\text{lr} = \text{lr}_0 \cdot \text{decay}^t$ | 平滑降低 |
+| Cosine annealing | $\text{lr} = \text{lr} _{\min} + 0.5 \cdot (\text{lr} _{\max} - \text{lr} _{\min}) \cdot (1 + \cos(\pi t / T))$ | Transformers，现代训练 |
 | Warmup + decay | 线性上升，然后 decay | 大模型，防止早期不稳定 |
 
 ### Convex vs non-convex
 
-Convex function 只有一个 minimum。Gradient descent 总能找到它。像 `f(x) = x^2` 这样的 quadratic 是 convex。
+Convex function 只有一个 minimum。Gradient descent 总能找到它。像 $f(x) = x^2$ 这样的 quadratic 是 convex。
 
 Neural Network Loss functions 是 non-convex。它们有许多 local minima、saddle points 和平坦区域。
 
@@ -202,8 +204,8 @@ gradient-descent
 
 Rosenbrock function 是经典 optimization benchmark。它的 minimum 位于 (1, 1)，处在一条狭窄弯曲的山谷中，容易找到但很难沿着它前进。
 
-```
-f(x, y) = (1 - x)^2 + 100 * (y - x^2)^2
+```math
+f(x, y) = (1 - x)^2 + 100 \cdot (y - x^2)^2
 ```
 
 ```python
@@ -345,9 +347,19 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(adam, T_max=100)
 
 2. **Momentum comparison.** 在 Rosenbrock function 上使用 momentum values [0.0, 0.5, 0.9, 0.99] 运行带 momentum 的 SGD。跟踪每一步的 Loss。哪个 momentum value 收敛最快？哪个会 overshoot？
 
-3. **Saddle point escape.** 定义函数 `f(x, y) = x^2 - y^2`（原点处有一个 saddle point）。从 (0.01, 0.01) 开始。比较 vanilla GD、带 momentum 的 SGD 和 Adam 的行为。哪个能逃离 saddle point？
+3. **Saddle point escape.** 定义函数 $f(x, y) = x^2 - y^2$（原点处有一个 saddle point）。从 (0.01, 0.01) 开始。比较 vanilla GD、带 momentum 的 SGD 和 Adam 的行为。哪个能逃离 saddle point？
 
 4. **Implement learning rate decay.** 为 GradientDescent class 添加 exponential decay schedule：`lr = lr_0 * 0.999^step`。比较在 Rosenbrock function 上使用 decay 与不使用 decay 的收敛表现。
+
+### 提示
+
+**练习 1。** 遍历各个学习率，为每一个创建 `GradientDescent(lr=...)`，与 `rosenbrock` 和 `rosenbrock_gradient` 一起传给 `optimize`。发散时，损失会增大或变成 `nan`；最小值位于 $(1, 1)$，损失为 0。
+
+**练习 2。** 为每个值创建 `SGDMomentum(momentum=m)`，记录每一步后的损失。用 `find_convergence_step` 比较速度，并通过损失反复升降来识别越过目标的情况。
+
+**练习 3。** 写出梯度 $(2x, -2y)$，让三个优化器都从 (0.01, 0.01) 开始运行。每 100 步打印一次 $y$：使 $\lvert y \rvert$ 变大的优化器就是逃离鞍点的优化器。
+
+**练习 4。** 在 `GradientDescent` 中保存 `lr_0` 和步数计数器，在 `step` 内计算 `lr = lr_0 * 0.999 ** step`。打印第 0 步和第 1000 步的学习率；它必须从 `lr_0` 降到约 $0.37 \times \text{lr}_0$。
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -358,7 +370,7 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(adam, T_max=100)
 | SGD | “Random sampling” | Stochastic gradient descent。用随机子集而不是完整 dataset 计算 Gradient。实践中几乎总是指 mini-batch SGD。 |
 | Mini-batch | “A chunk of data” | 用于估计 Gradient 的一小部分训练数据（32-256 个样本）。平衡速度与 Gradient 准确性。 |
 | Adam | “The default optimizer” | Adaptive Moment Estimation。跟踪每个 weight 的 Gradients 和 squared gradients 的 running averages，从而为每个 weight 提供自己的 learning rate。 |
-| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 (1 - beta^t) 进行补偿。 |
+| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 $(1 - \beta^t)$ 进行补偿。 |
 | Learning rate schedule | “Change lr over time” | 在训练过程中调整 learning rate 的函数。早期大步，后期小步。 |
 | Convex function | “One valley” | 任意 local minimum 都是 global minimum 的函数。Gradient descent 总能找到它。Neural Network losses 不是 convex。 |
 | Saddle point | “Flat but not a minimum” | Gradient 为零，但在某些方向上是 minimum、在另一些方向上是 maximum 的点。高维空间中很常见。 |
