@@ -27,18 +27,18 @@ Flamingo 结的Chinchilla 70B LLM 开始──全部 70B वजन 保持不变�
 
 ### रिसेप्टर रिसेम्पलर
 
-对于快速中的每张图像,ViT 会生成 N 个补丁代币──感知器复制器有 K 个固定的可学习的潜伏(Flamingo 使用 K=64)──每个复制器块有两个步骤:
+ शीघ्र मध्य के प्रति  चित्र के लिए, ViT उत्पन्न होगा $N$个 पैच टोकन──प्रेक्षक पुनः नमूना है $K$个固定的 लर्नेबल लटेंट्स(फ्लैमिंगो प्रयोग $K=64$)― प्रत्येक नमूना ब्लॉक में दो चरण होते हैंः
 
-1. क्रॉस-अटेंशन: K 个 लटेंट्स तक N 个 पैच टोकन तक उपस्थित होते हैं
+1. पार ध्यानः$K$个 लटेंट्स तक उपस्थित $N$个 पैच टोकन(Q लातेंट्स से,K/V पैच से)
 2. लातेंट 内部的 स्व-ध्यान + FFN。
 
-经过6 个复制模块 后,输出是K=64 个 dim 1024 के दृश्य टोकन,无论 ViT 生成多少补丁──224x224 图像(196补丁) और 480x480 图像(900补丁)都会输出为64 个复制模块的 टोकन──
+ 6  नमूना ब्लॉक  के बाद, आउटपुट है $K=64$个 dim 1024 के दृश्य टोकन, चाहे ViT 生成多少补丁──224x224 图像(196补丁) और 480x480 图像(900补丁)都会输出为64 样本补丁──
 
-对于视频,resampler 会按时间应用: प्रत्येक  के पैच उत्पन्न 64 个潜伏, जबकि temporal positional encoding 让模型区分 t=0 和 t=N── पूर्ण वीडियो 变成 T * 64 个视觉代币──
+ वीडियो के लिए, नमूना समय के अनुसार आवेदनः प्रत्येक  के पैच उत्पन्न 64  लटेंट, जबकि temporal positional encoding  मॉडल अंतर $t=0$和 $t=N$完整视频 变成 $T \cdot 64$个 दृश्य टोकन──
 
 ### ग्लिटेड क्रॉस-अटेंशन
 
-में结 LLM के प्रत्येक M 层 के बीच(Flamingo उपयोग M=4) एक नए गेट पार ध्यान ब्लॉक में插插插入:
+LLM के प्रत्येक 结$M$层之间(फ्लैमिंगो 使用 $M=4$) एक नए बंद क्रॉस-अटेंशन ब्लॉक में प्रवेश करनाः
 
 ```
 x_after_llm_block = llm_block(x_before)
@@ -142,7 +142,7 @@ cross-attention-fusion
 | OBELICS | "Interleaved web corpus" | 包含 141M 个网页的开放数据集，图像和文本按阅读顺序排列 |
 | Chinchilla | "70B frozen base" | Flamingo 的冻结文本 LLM，来自 DeepMind 的 Chinchilla paper |
 | Gate schedule | "How alpha moves" | 训练期间 cross-attention gate 打开的速率 |
-| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 M=4 |
+| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 $M=4$ |
 | OpenFlamingo | "Open reproduction" | MosaicML/LAION 的 3-9B 开放 checkpoint；architecture 与 Flamingo 相同 |
 
 ## 延伸阅读
