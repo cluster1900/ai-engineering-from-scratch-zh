@@ -7,27 +7,27 @@ lesson: "23"
 tags: [mcp, capstone, ecosystem, architecture, a2a, otel]
 ---
 
-Given a product need (research, summarization, automation, any agent-driven workflow), produce the full architecture.
+针对产品需求（研究、摘要、自动化或任何智能体驱动的工作流），给出完整架构。
 
-Produce:
+交付内容：
 
-1. MCP surface. Define `server/discover`, the per-request protocol metadata, tools, resources, prompts, and cache policy. Name any `ui://` Apps.
-2. Extensions. If work is asynchronous, declare `io.modelcontextprotocol/tasks` and design `tasks/get`, `tasks/update`, and `tasks/cancel`. Keep the initial handle at `resultType: task`, make polling results `resultType: complete`, and do not use `tasks/result` or `tasks/list`.
-3. Security posture. OAuth 2.1 scope set, gateway RBAC matrix, pinned hash manifest, Rule of Two audit.
-4. A2A collaboration. Identify any sub-agent calls. Define their Agent Cards.
-5. Telemetry. OTel GenAI span hierarchy. Exporter and backend choice.
-6. Packaging. AGENTS.md, SKILL.md, and deployment surface (Docker Compose, K8s).
-7. Mapping to Phase 13 lessons. Which lesson each design choice traces back to.
+1. MCP 接口。定义 `server/discover`、逐请求协议元数据、工具、资源、提示词和缓存策略。列出所有 `ui://` Apps。
+2. 扩展。如果工作是异步的，声明 `io.modelcontextprotocol/tasks`，并设计 `tasks/get`、`tasks/update` 和 `tasks/cancel`。初始句柄保持 `resultType: task`，轮询结果使用 `resultType: complete`，不要使用 `tasks/result` 或 `tasks/list`。
+3. 安全体系。OAuth 2.1 权限范围集合、网关 RBAC 矩阵、固定哈希清单，以及二要素规则（Rule of Two）审计。
+4. A2A 协作。指出所有子智能体调用，定义各自的 Agent Card。
+5. 遥测。OTel GenAI span 层级，以及导出器和后端选型。
+6. 打包。AGENTS.md、SKILL.md 和部署方式（Docker Compose、K8s）。
+7. 与阶段 13 课程的映射。每项设计决策可追溯到哪节课。
 
-Hard rejects:
-- Any architecture that combines untrusted input, sensitive data, and consequential action in a single turn (Rule of Two).
-- Any architecture without trace propagation across MCP and A2A hops.
-- Any architecture without at least one fallback provider on the LLM layer.
-- Any current MCP design that depends on `initialize`, `Mcp-Session-Id`, `tasks/result`, or `tasks/list`.
+必须否决：
+- 在单轮中同时结合不可信输入、敏感数据和具有重要后果的操作的架构（二要素规则）。
+- 无法跨 MCP 和 A2A 跳点传播追踪信息的架构。
+- 大语言模型层没有至少一个备用提供商的架构。
+- 依赖 `initialize`、`Mcp-Session-Id`、`tasks/result` 或 `tasks/list` 的当前 MCP 设计。
 
-Refusal rules:
-- If the product need is better served by a direct LLM call, refuse to scaffold the full ecosystem.
-- If the team lacks the operational capacity for a gateway, recommend a managed gateway and document the trust transfer.
-- If the architecture involves payments, require a separately reviewed payment authorization protocol and explicit signoff.
+拒绝规则：
+- 如果直接调用大语言模型更适合产品需求，拒绝搭建完整生态系统。
+- 如果团队不具备网关运维能力，建议使用托管网关，并记录信任转移。
+- 如果架构涉及支付，要求单独审查的支付授权协议和明确签字批准。
 
-Output: a one-page blueprint with the primitives, security posture, A2A hops, telemetry plan, packaging, and lesson map. End with one sentence identifying the single hardest operational risk for the deployment.
+输出：一页蓝图，包含原语、安全体系、A2A 跳点、遥测方案、打包方式和课程映射。最后用一句话指出部署中最难处理的一项运维风险。
