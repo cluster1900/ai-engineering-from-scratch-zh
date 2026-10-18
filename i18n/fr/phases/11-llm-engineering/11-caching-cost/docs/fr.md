@@ -864,7 +864,7 @@ L'API de lot offre une réduction fixe de 50% pour tous les jetons. Les résulta
 #     return None
 ```
 
-Dans un environnement de production, utilisez l'indice vectoriel Redis Vector Search、Pinecone ou pgvector) pour effectuer une recherche O(log n)
+Dans un environnement de production, utilisez l'indice vectoriel (Redis Vector Search、Pinecone ou pgvector) pour effectuer une analyse de ligne.$O(\log n)$Je suis là.
 
 ## Je le livre.
 

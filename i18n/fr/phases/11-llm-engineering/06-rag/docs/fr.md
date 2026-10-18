@@ -91,20 +91,20 @@ Dans cette classe, nous utiliserons TF-IDF pour construire notre propre intégra
 
 **Cosine similarity**: deux vecteurs 之间角的余弦值──范围从 -1(相反) 到 1(完全相同)──忽略大小,只关注方向──这是RAG的默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: Produit intérieur original. Vecteurs plus grands Obtiendront un nombre plus élevé.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**: espace vectoriel en milieu de la distance directe.
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 La similitude cosytique est un standard de sélection. Elle est largement reconnue et peut être utilisée pour traiter des documents de différentes longitudes.

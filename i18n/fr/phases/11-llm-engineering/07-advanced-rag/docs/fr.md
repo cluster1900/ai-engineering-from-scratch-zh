@@ -89,7 +89,7 @@ graph LR
 - Jina-Reranker-v2 Multilingue:ouvert, support 100+ 语言
 - bge-renanker-v2-m3: poids ouvert, ligne de base forte
 - - le codeur croisé/ms-marco-MiniLM-L-6-v2: poids ouvert, disponible sur le processeur, adapté au prototypage
-- ColBERTv2 / Jina-ColBERT-v2: ré-ranger multi-vectoriel à interaction tardive, dans le temps de la révision sont des jetons O() et non des O(docs)
+- ColBERTv2 / Jina-ColBERT-v2: ré-ranger multi-vectoriel à interaction tardive, dans le temps de l'évaluation $O(\text{tokens})$Au lieu de$O(\text{docs})$
 
 ### Transformation de requête
 

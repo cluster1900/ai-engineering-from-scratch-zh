@@ -21,7 +21,7 @@ Claude Opus 4.7 a 200K Token  Window(beta en moyenne pour 1M) ――GPT-5 a 400K
 
 Le code est un assistant de codage. Il est un serveur de codage. Il est un serveur de codage. Il est un serveur de codage.
 
-Mais l'attention ne suit pas la longueur du contexte 线性扩展── posséder un modèle de contexte de jetons 128K doit payer une seconde attention 成本(n^2), bien que la plupart des modèles de production utilisent des variables attention 变体)── encore plus important, la récupération 准确率会下降──Needle dans un test Haystack montre que le modèle est difficile à trouver en long contexte 信息中间.
+Mais l'attention ne dépend pas de la longueur du contexte 线性扩展── posséder 128K Token contextes modèle doit payer Second Attention 成本(Vanilla transformateurs 中是$O(n^2)$La plupart des modèles de production utilisent un haut rendement Attention 变体) ⋅ Plus important encore, le taux de récupération 准确会下降──Needle dans un test Haystack montre que les études réalisées en 2023 dans le cadre de Liu et al. ⋅ montrent que les LLM sont très difficiles à trouver dans un contexte long.
 
  Leçons pratiques sont: 200K Token sont disponibles et ne signifie pas utiliser 200K Token dès le début.
 

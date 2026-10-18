@@ -10,7 +10,7 @@
 
 ## Objectif de l'apprentissage
 - 通过将低排适配矩阵(A 和 B) Inject dans les couches d'attention du modèle prétrainé pour réaliser LoRA
-- 計算 LoRA 相比全细调的参数节省:rank r、d_model 维度时, entraînement est de 2*r*d 个参数, plutôt que d^2
+- 计算 LoRA 相比全细调的参数节省:rank $r$- Je suis là.$d_{\text{model}}$La formation est la suivante:$2 \cdot r \cdot d$个参数, plutôt que $d^2$
 - Utilisez QLoRA(4 bits de base quantifiée + adaptateurs LoRA) fine-tune un modèle, en faisant adaptation à la mémoire GPU de niveau
 - Pour déployer, comparer les adaptateurs avec les adaptateurs sans
 
@@ -34,21 +34,21 @@ Edward Hu et ses collègues de Microsoft ont publié en juin 2021 LoRA。 un art
 
 Un niveau de calcul est le niveau de calcul.
 
-```
+```math
 y = Wx
 ```
 
-Parmi eux, W est une matrice d_out x d_in. Pour une projection d'attention de 4096x4096, c'est 16,777,216 个参数.
+Parmi eux $W$Oui, c'est une.$d_{\text{out}} \times d_{\text{in}}$Pour la projection d'attention 4096x4096, c'est 16 777 216 paramètres.
 
-LoRA 结 W,并添加一个低排分解:
+LORA 结 $W$,并添加一个低排分解:
 
-```
+```math
 y = Wx + BAx
 ```
 
-Parmi eux, B est (d_out x r), A est (r x d_in)。rangement r 远小于 d -- habituellement 8、16 ou 32。
+Parmi eux $B$Oui $(d_{\text{out}} \times r)$- Je suis désolé .$A$Oui $(r \times d_{\text{in}})$- Le rang$r$远小于 $d$-- habituellement 8 16 ou 32
 
-Pour la couche 4096x4096 supérieure de r = 16:
+Pour la couche supérieure de 4096x4096$r=16$- Le numéro de la liste:
 - Parmi les éléments de base:
 - Le nombre de points de vente est de 4096 x 16) + (16 x 4096) = 65 536 + 65 536 = 131 072
 - réduction du pourcentage: 131,072 / 16,777,216 = 0,78%
@@ -73,18 +73,18 @@ Un usage随机 Gaussian 初始化──B 初始化为零── ce qui signifie c
 
 ### Le facteur d'échelle: Alpha
 
-LoRA introduit un facteur d'échelle alpha, pour contrôler la mise à jour des niveaux de production:
+L' ARE introduit un facteur d' évolutions.$\alpha$, pour contrôler la mise à jour des niveaux de production:
 
-```
-y = Wx + (alpha / r) * BAx
+```math
+y = Wx + \frac{\alpha}{r} \cdot BAx
 ```
 
-Lorsque alpha = r 时, l'échelle est 1x。当 alpha = 2r(常见默认值)
+- Je suis là .$\alpha = r$L'échelle est de 1x.$\alpha = 2r$(常见默认值) 时, l'échelle est 2x。 ce hyperparamètre 独立于基础学习率 控制 LoRA path 的学习率。
 
 实践建议:
-- alpha = 2 * rang est habituel
-- alpha = rang  fournir 1x d'échelle, conservé mais stable
-- L'alpha plus élevé signifie que chaque étape plus de mises à jour, peut accélérer les recettes, peut également entraîner une instabilité
+- $\alpha = 2 \cdot \text{rank}$est habituellement utilisé dans la plupart des expériences.$\alpha = \text{rank}$)
+- $\alpha = \text{rank}$ fournir 1x d'échelle, conservé mais stable
+- Plus haut $\alpha$Cela signifie que chaque étape plus grande mise à jour, pourrait accélérer la réception, peut également entraîner l'instabilité
 
 ### Où appliquer le LoRA
 
@@ -101,7 +101,7 @@ La plupart des tâches sont sucrées: q_proj + v_proj。 Ceci se produit en se c
 
 ### Sélection de rang
 
-Rangour de l'adaptation  contrôle
+rang $r$ contrôle de l'adaptation de l'expression:
 
 | Rank | Trainable Params (per layer) | Best For |
 |------|---------------------------|----------|
@@ -112,7 +112,7 @@ Rangour de l'adaptation  contrôle
 | 64 | 524,288 | 大多数任务收益递减 |
 | 128 | 1,048,576 | 很少值得使用 |
 
-Hu et al. ont montré que, pour les tâches simples, r=4  déjà capable de capturer la plupart des adaptations ⋅r=8 和 r=16                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+Hu et al. 表明, pour des tâches simples,$r=4$已能捕获大部分的适应性──$r=8$et $r=16$C'est le choix le plus courant de la pratique.$r=64$ très peu améliorer la qualité,并开始失去 LoRA 优势。
 
 ### QLoRA: Quantification à 4 bits + LoRA
 
@@ -145,7 +145,7 @@ QLoRA a trois contributions techniques:
 | QLoRA r=16 (NF4) | 47.5 | 6.61 | 13.4 |
 | QLoRA r=64 (NF4) | 48.1 | 6.70 | 14.2 |
 
-Le LORA en r=16 ⋅ est en majorité comparable à la réglage complet, mais il utilise moins de 90% de mémoire.
+- Je suis là .$r=16$时, dans la majorité des benchmarks, la hauteur est inférieure à 1% de la mise à jour complète.$r=16$Il y a encore une perte de quelques centaines de points.$r=64$时基本匹配 full fine-tuning, tout en utilisant moins de 90% de mémoire.
 
 ### Coûts réels
 
@@ -180,7 +180,7 @@ Après l'entraînement, vous avez deux choses: un modèle de base et un petit ad
 
 1. **保持分离**: Charger un modèle de base, en lui charger un adaptateur.
 
-2. **永久合并**: calcul W' = W + (alpha/r) * BA,并把结果保存为一个新的完整模型──merged model与原始模型大小相同──没有推断过head──没有适配器 需要管理──
+2. **永久合并**: calcul $W' = W + (\alpha/r) \cdot BA$,并把结果保存为一个新的全模型――合并模型与原始模型大小相同――没有推断过费――没有适配器 需要管理――
 
 Si vous déployez un modèle spécial, alors vous pouvez utiliser un modèle spécial.
 
@@ -524,11 +524,11 @@ Le programme de formation
 | LoRA | "Efficient fine-tuning" | Low-Rank Adaptation：冻结 base weights，训练两个小 matrices A 和 B，其乘积近似完整 weight update |
 | QLoRA | "Fine-tune on a laptop" | Quantized LoRA：以 4-bit NF4 加载 base model，在其上用 fp16 训练 LoRA adapters，从而让 7B fine-tuning 能在 6GB VRAM 中完成 |
 | Rank (r) | "How much the model can learn" | A 和 B matrices 的内部维度；控制表达能力与参数量之间的权衡 |
-| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；alpha/r 会缩放 adaptation 对 final output 的贡献 |
+| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；$\alpha/r$ 会缩放 adaptation 对 final output 的贡献 |
 | NF4 | "4-bit quantization" | Normal Float 4：一种 4-bit data type，其 quantization levels 位于 normal distribution quantiles 上，对 Neural Network weights 最优 |
 | Adapter | "The small trained part" | 作为单独文件保存的 LoRA A 和 B matrices（10-100MB），可以加载到 base model 的任意副本之上 |
 | Target modules | "Which layers to LoRA" | 注入 LoRA adapters 的特定 linear layers（q_proj、v_proj 等） |
-| Merging | "Bake it in" | 计算 W + (alpha/r) * BA 并替换原始 weight，从而消除 inference 时的 adapter overhead |
+| Merging | "Bake it in" | 计算 $W + (\alpha/r) \cdot BA$ 并替换原始 weight，从而消除 inference 时的 adapter overhead |
 | Paged optimizers | "Don't OOM during training" | 当 GPU memory 耗尽时，将 optimizer states（Adam momentum、variance）offload 到 CPU |
 | Catastrophic forgetting | "Fine-tuning broke everything else" | 更新所有 weights 导致 model 丢失先前学到的能力 |
 
