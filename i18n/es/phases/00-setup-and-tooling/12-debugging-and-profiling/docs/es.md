@@ -396,3 +396,15 @@ python phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.p
 3. Uso `tracemalloc`找出数据 loading pipeline 中哪一行分配了最多内存的部分──
 4. Para una simple carrera de entrenamiento, configurar TensorBoard,并识别模型 是否过合──
 5. En el ciclo de entrenamiento`breakpoint()`◊ practicar desde el desembolso de la solicitud  inspeccionar las formas del tensor、 dispositivos 和 valores de gradiente。
+
+### 提示
+
+**练习 1。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`, leer las salidas de cada función de demostración. Luego modificar.`demo_nan_detection`Modelo medio, que haga su salida a cero, reutilizar una vez;`detect_nan`necesita imprimir                                                                                                                                                                                                                                                           
+
+**练习 2。**¿ Qué ?`python -m cProfile -s cumtime your_script.py`运行循环, o utilizar `cProfile.Profile()`Lo empaqueté.`cumtime`列顶部的行; entre ellas pertenece a tu propio código y la función más grande y más tardía es la función más lenta.
+
+**练习 3。**¿ Qué ?`demo_memory_tracking`Así, en el código de carga de datos antes de la llamada`tracemalloc.start()`, después调用 `tracemalloc.take_snapshot()`❖ Impresión `snapshot.statistics("lineno")[:5]`La primera línea muestra la mayor cantidad de documentos y números de registro distribuidos.
+
+**练习 4。**Cada época es una historia.`SummaryWriter` registros de entrenamiento y pérdida de certificación, re-operación `tensorboard --logdir=runs`Si la pérdida de entrenamiento continúa bajando y la pérdida de prueba aumenta, el modelo se ha producido sobreadaptado.
+
+**练习 5。**¿ Qué ?`breakpoint()` en el círculo interno `loss.backward()`Después, luego, ejecutar el libro.`(Pdb)`提示符处打印                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `x.shape`¿Qué es esto?`x.device`Y `next(model.parameters()).grad`, re-import `c`Continuar el siguiente paso.

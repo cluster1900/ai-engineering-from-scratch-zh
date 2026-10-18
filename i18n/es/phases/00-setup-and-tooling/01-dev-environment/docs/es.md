@@ -160,3 +160,11 @@ Este curso se produce un guión de verificación que cualquier persona puede usa
 1. 运行验证脚本并修复 cualquier fallo
 2. Para este curso crear un entorno virtual Python, y instalar PyTorch
 3. Usando todos los cuatro idiomas, escribe un "hola mundo", y cada uno de ellos se ejecuta.
+
+### 提示
+
+**练习 1。**En el registro de almacenamiento`python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner`, primero revisar el primer error, volver a ver el siguiente, volver a ejecutar el guión, todos los controles necesarios son pasados, sólo se puede completar.
+
+**练习 2。**En el registro de almacenamiento`uv venv`Crear ambiente y activar, volver a usar paso 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 `python -c "import torch; print(torch.__version__)"`Por lo tanto, el proyecto de ley no tiene ningún efecto.
+
+**练习 3。**Utiliza concept部分技术中的四种运行时:Python、运行到 Node.js' TypeScript、Rust 和 Julia──分别编写一个小文件,用`python3`¿Qué es esto?`npx tsx`(Node.js 不能直接运行 `.ts`文件) 、`cargo run`O `rustc`¿Qué es esto?`julia`运行──每次运行都必须打印你的消息,并以退出码 0 结束──

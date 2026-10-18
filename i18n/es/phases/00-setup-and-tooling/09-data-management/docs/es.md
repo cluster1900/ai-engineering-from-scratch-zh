@@ -239,6 +239,16 @@ Se descargará un pequeño conjunto de datos, se transformará, se dividirá, se
 3. Convertir un conjunto de datos en Parquet, y el tamaño del archivo en relación con el CSV
 4. Utiliza semillas fijas 创建 70/15/15 tren/val/test split,并验证 tamaños
 
+### 提示
+
+**练习 1。**调用                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/data_utils.py`En el centro`load_and_inspect("glue", "mrpc")`, o directamente调用 `load_dataset("glue", "mrpc")`, imprimir`ds["train"][:5]` Cada muestra debe incluir `sentence1`¿Qué es esto?`sentence2`Y `label`¿Qué es eso?
+
+**练习 2。**¿ Qué ?`stream_dataset`Como se usa`streaming=True`Cargar datos, en el ciclo de lectura de muestras, cuando`time.time()`超开始时间加 10秒时停止──印印样本数,并运行两次,因为第一次包含连接启动开销──
+
+**练习 3。**¿ Qué ?`convert_format`Como, usar.`to_csv`Y `to_parquet`Save同一个数据集, reutilizar `ls -lh`O `os.path.getsize`Comparar documentos en tamaño.`load_from_parquet`重新加载 Parquet 文件, check行数是否保持不变──
+
+**练习 4。** Fija `seed`, usar dos veces `train_test_split`Se divide primero el 30%, se vuelve a poner este 30% en la mitad. La longitud de los tres tramos debe ser igual a la longitud original.
+
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

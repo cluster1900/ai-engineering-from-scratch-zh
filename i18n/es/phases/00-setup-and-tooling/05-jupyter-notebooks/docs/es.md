@@ -240,6 +240,14 @@ Encuentro de trabajo:
 2. Crear una libreta que contenga marcas y células de código, cargar CSV, mostrar un marco de datos, y dibujar un gráfico.
 3. ¿ Qué ?`code/notebook_tips.py`Enlace de código en el portátil Colab en el portátil de la aplicación
 
+### 提示
+
+**练习 1。**¿ Qué ?`jupyter lab`Iniciar JupyterLab, se pondrán dos versiones separadas en`%timeit`开头的独立单元格──两个单元格都使用了100,000的规模,确保测量是相同的工作量──
+
+**练习 2。**¿ Qué ?`pd.read_csv`读取数据,将数据frame 放在单元中最后一行显示它,再使用 `df.plot()`O matplotlib 绘图── ejecutar Kernel > Reiniciar y ejecutar Todos 后, cada uno de los dispositivos de cálculo de ejecución de los componentes deben mostrar números, y no debe haber ningún elemento de error.
+
+**练习 3。**En Colab, primero elija Runtime > Cambia el tipo de tiempo de ejecución > GPU, re-pegar código.`code/notebook_tips.py`Cada función del medio se imprime en la parte correspondiente y se ejecuta en el mismo.`torch.cuda.is_available()` regresar `True`时,运行才算正确♪
+
 ## 关键术语: "El hombre es un hombre"
 
 | Term | What people say | What it actually means |

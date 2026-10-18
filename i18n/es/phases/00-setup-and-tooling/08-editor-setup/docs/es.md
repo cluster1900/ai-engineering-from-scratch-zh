@@ -78,11 +78,11 @@ Cada extensión de la acción:
 | Black Formatter | 保存时自动格式化，保持风格一致 |
 | Ruff | 快速 linting，捕获常见错误 |
 
-本课中   en el curso`code/.vscode/extensions.json`文件包含完整推列表──当你打开项目文件时,VS Code 会提示你安装它们──
+本课中   en el curso`code/vscode/extensions.json`文件包含完整推列表──将它复制到你的项目文件中中中的 文件包含完整推列表──将它复制到你的项目文件中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中`.vscode/extensions.json`Cuando abras el archivo, el código VS te aconseja instalar estas extensiones.
 
 ### Paso 3: Configuración de configuración
 
-复制本课                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `code/.vscode/settings.json`En medio de la configuración, o a través de `Settings > Open Settings (JSON)`Aplicación manual.
+复制本课                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `code/vscode/settings.json`En medio de la configuración, o a través de `Settings > Open Settings (JSON)`Aplicación manual.
 
 Configuración clave de trabajo de IA:
 
@@ -195,6 +195,16 @@ Con este conjunto de configuraciones, tu flujo de trabajo diario se ve así:
 2. ¿Qué es esto?`settings.json`复制到你的 VS código configuración 中
 3. Abre un archivo Python, verifique Pylance muestra sugerencias de tipo y Black 会在保存时格式化
 4. Si puedes acceder a una máquina remota, configure Remote SSH y abra un archivo en ella
+
+### 提示
+
+**练习 1。**Instalación paso 2  表格中的扩展, o `code --install-extension <id>`Instalación`code/vscode/extensions.json`En el centro de cada ID.`code --list-extensions`, cada uno con el ID en el archivo 核对;;
+
+**练习 2。**打开 Configuraciones > Configuraciones abiertas (JSON),将 `code/vscode/settings.json`Si el archivo ya está configurado, por favor, agrega todos los teclados y mantenga JSON efectivo; el código VS se utilizará para marcar los archivos errores en línea roja.
+
+**练习 3。** redactar una función con tipo de inhalción, el ratón estará suspendido en su uso; Python mostrará el tipo de inhalción.  Añadir un espacio libre y guardar el archivo en una línea;  Black  Reformulación en la línea.
+
+**练习 4。**先将服务器加入 `~/.ssh/config`, confirmen terminal `ssh <host>`Puede conectarse normalmente. Reutilizar el comando de conexión remota de SSH. Cuando el código VS se ejecuta en un dispositivo de distancia, el estado muestra el nombre del usuario.
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |

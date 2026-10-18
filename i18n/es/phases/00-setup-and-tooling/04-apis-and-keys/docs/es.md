@@ -132,6 +132,14 @@ Esta lección se produce:
 2. 尝试 raw HTTP 版本,并将响应格式与SDK 版本进行比较
 3. Por lo tanto, el uso erróneo de API clave,并阅读 error message
 
+### 提示
+
+**练习 1。**En la consola antropológica en crear la clave, según el curso de instrucción lo pondrá en `ANTHROPIC_API_KEY`, y luego se ejecuta .`code/first_api_call.py`❖ 脚本印印模型回复且没有报错,即表示调用成功──
+
+**练习 2。** `code/first_api_call.py`Las dos funciones medias sólo imprimen texto y símbolo de número.`call_with_sdk()`En el mismo tiempo`print(response)`, en el`call_raw_http()`En el mismo tiempo`print(result)`, re运行脚本查看两份完整响应──比较字段名称:原始 JSON 中的 `content`¿Qué es esto?`usage`Y `stop_reason`字段,会被SDK 转换为对象属性──
+
+**练习 3。**Sólo en un terminal.`ANTHROPIC_API_KEY`configurar para un valor falso, volver a ejecutar el guión―en la salida encontrar HTTP  estado de código y error tipo;认证失败会返回 401 状态码―
+
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

@@ -306,3 +306,15 @@ s0-process-fork
 3. Iniciar una sesión de tmux, en la que se ejecuta`sleep 300`, desprender, las sesiones de salida, y luego volver a unir.
 4. Uso `df -h`检查可用磁盘空间, luego usar `du -sh ~/.cache/*`找出 cache 中占空间的内容──
 5. Uso `scp`Transmitir un archivo desde la máquina local a la máquina remota, y luego usarlo.`rsync`Hacer el mismo transmisión,并比较体验.
+
+### 提示
+
+**练习 1。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `cd ~`, usar `mkdir`创建新文件, reutilizar `cd`Entrar en ella, y luego usar.`touch`Crear tres archivos.`ls -la`输出中, check these three files size is 0, owner is for your user name──
+
+**练习 2。**¿ Qué ?`sudo apt install -y htop`Installación y iniciación en la parte superior, en la dirección`F6`(or punto de la lista)`MEM%`排序── los procesos de la parte superior de la lista ocupan la mayor cantidad de memoria──
+
+**练习 3。**Uso de las clases `tmux new -s train`,运行 `sleep 300`, reutilizar`Ctrl+B`后接 `d`¿Qué pasa?`tmux ls`查看会话, volver a usar `tmux attach -t train`Cuentas de nuevo enlace;`sleep`must still in operation♪
+
+**练习 4。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `df -h`, ver el directorio principal del sistema de archivos`Avail`列──再运行   列──再运行 `du -sh ~/.cache/* | sort -h`, hacer que el mayor archivo se quede en la última línea.
+
+**练习 5。**¿ Qué ?`scp file.txt user@host:~/`复制文件,再对同一文件运行 `rsync -avP file.txt user@host:~/`第二次运行 `rsync`Cuando ordenan, casi no envían ningún contenido, porque los documentos no han cambiado.

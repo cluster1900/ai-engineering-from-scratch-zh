@@ -366,6 +366,16 @@ Ahora tienes un entorno de desarrollo de IA replicable.
 3. ¿ Qué ?`flask`添加到Dockerfile,rebuild, y en el puerto 5000 上运行一个简单API server──使用 `-p 5000:5000`mapa 端口
 4. Uso `docker images`测量 imagen size──尝试把 base de imagen de `devel`切换到 `runtime`,并比较大小
 
+### 提示
+
+**练习 1。**En el curso.`docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .`命令构建,再通过 `docker run --rm ai-dev`En el recipiente ejecutar la entrada de control. En el Mac, según el manual de instrucción.`--gpus all` El recipiente debe ser impreso`2.6.0`开头的版本号──
+
+**练习 2。**En el`code/`文件中运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `docker compose up -d`, reutilizar`docker compose exec ai-dev bash`En el`ai-dev`服务中打开 shell──在其中运行 `curl http://qdrant:6333/collections`; Retorno JSON 就说明服务名能在 网络内解析
+
+**练习 3。**En el archivo de Docker`RUN pip install flask`, reconstruir,并使用 `host="0.0.0.0"`Activa el servidor, ya que el servidor del localhost sólo está ligado dentro del contenedor no puede acceder desde fuera del contenedor ∙`http://localhost:5000`, confirmación de la terminal de la aplicación de datos
+
+**练习 4。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `docker images ai-dev`, registros de tamaño 列──将 `FROM`En el`devel`改为     cambió por`runtime`, usando una nueva etiqueta construir, volver a comparar dos imágenes de tamaño; tiempo de ejecución 镜像不包含编译器和头文件──
+
 ## 关键术语: "El hombre es un hombre"
 
 | Term | What people say | What it actually means |

@@ -260,6 +260,16 @@ Esto se hará en la raíz de repo Crear uno`.venv`,并安装和验证 dependenci
 3. Para un proyecto simultáneo de PyTorch y SDK Antropico 编写 `pyproject.toml`
 4. Por lo tanto, todo el equipo ha instalado un paquete, no ha activado el venv, lo ha visto y lo ha desmontado.
 
+### 提示
+
+**练习 1。**En el registro de almacenamiento`bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh`◊ por la corriente de lectura de la salida; si alguna de las inspecciones falla, primero revisar la misma, re-ejecutar el guión, hasta que todas las inspecciones pasen.
+
+**练习 2。**En el nuevo archivo`uv venv`Crear un segundo ambiente y activar, a través de la versión fija instalar en el antiguo numpy, por ejemplo `numpy==1.26.4`分別在两个环境中运行 `python -c "import numpy; print(numpy.__version__)"`La versión de salida debe ser diferente.
+
+**练习 3。**Desde el proyecto.toml 基础 中的示例开始,在 `dependencies`En el centro`torch`Y `anthropic`◊ en el nuevo entorno`uv pip install -e .`O `uv sync`Dos paquetes pueden entrar normalmente, sólo se puede indicar que el archivo está configurado correctamente.
+
+**练习 4。**退出所有环境,运行 `pip install --user <small package>`, re运行 `pip show <package>`No lo veo.`Location`¡¡Por qué no lo haces!`pip uninstall <package>`Larga y vuelve a operar `pip show`Confirmar que se ha movido.
+
 ## 关键术语: "El hombre es un hombre"
 
 | Term | What people say | What it actually means |

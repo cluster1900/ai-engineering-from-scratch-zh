@@ -99,6 +99,14 @@ En este curso no se necesita una base de base o submodules.
 2. Crear uno .`.gitignore`, eliminación de archivos de los puntos de control de modelo`.pt`¿Qué es esto?`.pth`¿Qué es esto?`.safetensors`(en inglés)
 3. ¿ Qué ?`git log --oneline`查看这个 repo de historial de compromisos,并阅读教训是如何被添加的
 
+### 提示
+
+**练习 1。**En GitHub arriba haga clic en Fork, volver a usar `git clone`克隆你自己的叉 地址──运行 `git push -u origin my-progress`Después, en GitHub, abre tu bifurcación, confirma que está en la lista.`my-progress`, y contiene sus documentos.
+
+**练习 2。**En el registro de los almacenes`.gitignore`文件中为每扩展名添加一条模式, por ejemplo `*.pt`◊ Crear un archivo vacío para cada extensión, y luego ejecutarlo `git status`Estos documentos no deben aparecer en la lista de documentos no seguidos.
+
+**练习 3。**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `git log --oneline`, re运行 `git log --oneline -- phases/00-setup-and-tooling`, sólo muestra modificaciones de la fase de presentación.`git show --stat <hash>`, mira qué documentos de clases añade.
+
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

@@ -337,6 +337,16 @@ En este curso, cada instrumento se utiliza en:
 3. ¿ Qué ?`for i in $(seq 1 100); do echo "epoch $i loss: $(echo "scale=4; 1/$i" | bc)"; sleep 0.1; done > fake_train.log`Crear un falso diario de entrenamiento, y luego usarlo.`grep`¿Qué es esto?`tail`Y `awk`Sólo se pueden obtener valores de pérdida.
 4. Por lo que tienes el derecho de acceso al servidor  Configurar una entrada de configuración SSH(o usar `localhost`练习语法) ⋅
 
+### 提示
+
+**练习 1。**¿ Qué es eso ?`tmux new -s practice`,用前 `Ctrl+B`后接 `"`Y `%`Se divide en ventanas, se vuelve a usar.`Ctrl+B`加方向键切换窗格──用 `Ctrl+B`后接 `d`Se separó de la conversación, se marchó.`tmux ls`, reutilizar`tmux attach -t practice`Nuevo enlace; los tres procedimientos deben seguir funcionando.
+
+**练习 2。**¿ Qué ?`code/shell_aliases.sh`En el medio de la línea de reproducción`~/.zshrc`O `~/.bashrc`末尾,再对该文件运行 `source` ¿Qué es lo que está pasando?`alias`, o para uno de ellos un nuevo nombre operar .`type <name>`, confirme el caparazón 已识别它──
+
+**练习 3。**¿ Qué es eso ?`tail -5 fake_train.log`查看每行格式, reutilizar `grep loss`过,并用 `awk '{print $NF}'`Sólo imprime el último párrafo; la salida debe ser de 100 números gradualmente reducidos.
+
+**练习 4。**¿En el curso?`Host gpu`配置块复制到                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `~/.ssh/config`,把 `HostName`Y `User`改成你的服务器信息, o改成 `localhost`Y tu nombre de usuario.`ssh -G gpu`Imprimir SSH  Configuración de uso. Si tiene acceso y acepta su clave SSH  servidor, volver a funcionar `ssh gpu`连接── y luego
+
 ## 关键术语: "El hombre es un hombre"
 
 | 术语 | 人们怎么说 | 实际含义 |
