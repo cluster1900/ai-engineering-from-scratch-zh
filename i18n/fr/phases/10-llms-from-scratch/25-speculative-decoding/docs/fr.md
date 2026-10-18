@@ -53,8 +53,8 @@ Parmi eux `(p - q)+`Indiquer la valeur de différence de pointes.`p ≈ q`), acc
 
 Si le taux d'acceptation du modèle de projet de jeton est `α`, alors chaque passe cible-avant 生成的期望令牌数为:
 
-```
-E[tokens] = (1 - α^{K+1}) / (1 - α)        # K = draft length, α in [0, 1]
+```math
+\mathbb{E}[\text{tokens}] = \frac{1 - \alpha^{K+1}}{1 - \alpha} \qquad K = \text{draft length}, \ \alpha \in [0, 1]
 ```
 
 - Je suis là .`α = 0.8, K = 4`- Le numéro de la liste:`(1 - 0.8^5)/(1 - 0.8) = 3.36`个 Token Chaque fois en avant.`cost_q * K + cost_p`(K 个 ébauche étape + une fois vérifier l'objectif)`cost_p >> cost_q * K`Le taux de vitesse de la production est de`3.36× / 1 = 3.36×`Il y a une autre.
@@ -176,7 +176,7 @@ def speculative_step(p_target, q_draft, K, temperature=1.0):
 
 1. 实现精确拒绝 规则并进行实证验证──通过 `speculative_decode`和 simple prélèvement d'échantillons cibles 分别运行 10K échantillons; calculer les distances entre les deux distributions de sortie 电视间――应小于0.01──
 
-2. 计算加速 公式──给定固定 `α`et `K`, dessiner chaque fois l'attente de la cible à l'avant Token numéros.
+2. 计算加速 公式──给定固定 `α`et `K`, dessiner chaque fois l'espérance de l'avance$\alpha \in \lbrace 0.5, 0.7, 0.9 \rbrace$Le meilleur de l' heure$K$Il y a une autre.
 
 3. entraînement un petit projet── prendre une cible 124M GPT-2 et mettre 100M jetons  utiliser KL perte distiller un projet 30M GPT-2── mesurer texte tenu `α` préférence: 0,6-0,7
 

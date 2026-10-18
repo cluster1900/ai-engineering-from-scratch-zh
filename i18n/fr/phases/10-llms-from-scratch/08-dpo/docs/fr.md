@@ -11,7 +11,7 @@
 - ¢ réaliser une formation en DPO, directement dans les paires de préférences 上优化语言模型, sans utiliser un modèle de récompense unique
 - 推导 DPO Perte de fonction,并解释它如何通过政策的日志概率 隐式表示奖励模型
 - En termes de stabilité de formation, de coûts de calcul et de quantité de modèles nécessaires, comparer le DPO à la RLHF
-- 调节 beta 参数, contrôler la politique de formation 偏离参考模型 的程度
+- 调节 $\beta$Paramètres, politique de contrôle après formation  degré de déviation du modèle de référence
 
 ##  problématique
 Vous avez construit un pipeline RLHF en 07 dans le cours. Trois phases.
@@ -29,51 +29,53 @@ Le DPO va simplifier le RLHF en un processus d'apprentissage supervisé 步骤�
 
 RLHF 优化这个目标:
 
-```
-maximize: E[R(x, y)] - beta * KL(pi || pi_ref)
-```
-
-Parmi eux, R est le modèle de récompense, pi est la politique, pi_ref est le modèle de référence, bêta est le coefficient KL。
-
-Le document DPO prova, cet objectif existe fermement le meilleur. Pour une fonction de récompense R, la politique le mieux est:
-
-```
-pi*(y | x) = pi_ref(y | x) * exp(R(x, y) / beta) / Z(x)
+```math
+\text{maximize:} \quad \mathbb{E}[R(x, y)] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
-Parmi eux, Z(x) est le nombre de références régulières.
+Parmi eux $R$C'est le modèle de récompense,$\pi$La politique est$\pi_{\text{ref}}$est un modèle de référence,$\beta$Il s'agit du coefficient KL.
 
+Le papier du DPO prouve que cet objectif existe en termes de fonction de récompense.$R$La meilleure politique est:
+
+```math
+\pi^*(y \mid x) = \pi_{\text{ref}}(y \mid x) \cdot \exp(R(x, y) / \beta) / Z(x)
 ```
-R(x, y) = beta * log(pi*(y | x) / pi_ref(y | x)) + beta * log Z(x)
+
+Parmi eux $Z(x)$Il est possible de réorganiser:
+
+```math
+R(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 C'est le point de rupture. La récompense est entièrement exprimée par le modèle de politique de probabilité et le modèle de référence de probabilité.
 
 Le modèle de préférence Bradley-Terry:
 
-```
-P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))
-                  = sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x)))
+```math
+\begin{aligned}
+P(y_w > y_l \mid x) &= \mathop{\mathrm{sigmoid}}(R(x, y_w) - R(x, y_l)) \\
+&= \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
+\end{aligned}
 ```
 
-Z(x) 项会抵消, parce que deux réponses sont toutes les mêmes x 为条件――剩下只是政策模型和参考模型 在优先和拒绝答案上的日志概率函数――
+$Z(x)$Je vais l'éliminer, car deux réponses sont toutes au même moment.$x$Pour condition, il ne reste plus que le modèle de politique et le modèle de référence, dans les réponses préférées et rejetées, en fonction des probabilités de logement.
 
 ### La perte du DPO
 
-```
-L_DPO = -log(sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x))))
+```math
+L_{\text{DPO}} = -\log \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
 ```
 
 Nous avons démantelé chaque partie:
 
-- **y_w**= réponse préférée
-- **y_l**= réfuté (perte) de réponse
-- **x**= rapidement
-- **pi**= 当前模型(正在训练)
-- **pi_ref**= modèle de référence ((结的 SFT checkpoint)
-- **beta**= 控制偏离 度温参数 参数(habituellement de 0,1 à 0,5)
+- **$y_w$**= réponse préférée
+- **$y_l$**= réfuté (perte) de réponse
+- **$x$**= rapidement
+- **$\pi$**= 当前模型(正在训练)
+- **$\pi_{\text{ref}}$**= modèle de référence ((结的 SFT checkpoint)
+- **$\beta$**= 控制偏离 度温参数 参数(habituellement de 0,1 à 0,5)
 
-比值 `log pi(y|x) / pi_ref(y|x)`Il s'agit du rapport de probabilité logée. Lorsque ce rapport est correct, la probabilité de réponse du modèle actuel est plus élevée que la référence.
+比值 `log pi(y|x) / pi_ref(y|x)`C'est le rapport de probabilité log. Lorsque ce rapport est correct, le modèle actuel donne une réponse.$y$La probabilité de l'offre est plus élevée que la référence.
 
 La perte de DPO va favoriser le modèle pour augmenter le rapport de probabilité de log des réponses préférées, et réduire le rapport de probabilité de log des réponses rejetées.
 
@@ -634,7 +636,7 @@ if __name__ == "__main__":
 | DPO | “没有 RL 的 RLHF” | Direct Preference Optimization：一种 supervised learning algorithm，直接在 preference pairs 上优化语言模型，绕过 reward model 和 PPO |
 | Implicit reward | “reward 在模型里” | reward function 由 policy 与 reference models 之间的 log-probability ratio 决定，不需要单独的 reward model |
 | Beta (DPO) | “temperature” | 控制 policy 可以偏离 reference model 的程度：小 beta 允许大偏离，大 beta 让模型保持接近 |
-| Log-probability ratio | “模型变化了多少” | log pi(y\|x) - log pi_ref(y\|x)：正值表示当前模型分配的概率高于 reference |
+| Log-probability ratio | “模型变化了多少” | $\log \pi(y \mid x) - \log \pi_{\text{ref}}(y \mid x)$：正值表示当前模型分配的概率高于 reference |
 | Reference model | “冻结的 checkpoint” | SFT model 的一个副本，其 weights 永不改变，用作计算概率比的锚点 |
 | KTO | “没有成对数据的 DPO” | Kahneman-Tversky Optimization：使用未配对的“good”或“bad”labels，而不是要求 preference pairs |
 | ORPO | “一步 alignment” | Odds Ratio Preference Optimization：通过向 SFT Loss 添加 preference term，将 SFT 和 alignment 合并到单个 training loop |

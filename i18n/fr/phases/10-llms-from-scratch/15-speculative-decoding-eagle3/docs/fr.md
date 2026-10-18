@@ -33,8 +33,8 @@ Je ne sais pas .`N`Suivant la procédure suivante, utilisez un testateur pour la
 
 Pour faire`α`Pour chaque jeton élaboré, le taux d'acceptation est attendu.`c = cost(draft) / cost(verifier)`Pour le coût comparatif, l'attendance de l'avant de chaque testateur pour accepter un jeton est:
 
-```
-E[accepted] = (1 - α^(N+1)) / (1 - α)
+```math
+\mathbb{E}[\text{accepted}] = \frac{1 - \alpha^{N+1}}{1 - \alpha}
 ```
 
 Chaque acceptation de jeton est une attente totale de temps de paroi`(N * c + 1) / E[accepted]`◊ par rapport à `N`Pour le plus petit, on peut obtenir le meilleur point.`α = 0.8, c = 0.05`: le meilleur `N`Il est environ 57, accélération de 3,2 x...`α = 0.95, c = 0.02`: le meilleur `N`C'est environ 810°, accélérer près de 5°.

@@ -77,8 +77,8 @@ Pour chaque demande, le markant voit deux réponses et choisit la meilleure. Cec
 
 La fonction de perte utilise des préférences par paires du modèle Bradley-Terry:
 
-```
-loss = -log(sigmoid(reward(preferred) - reward(rejected)))
+```math
+\text{loss} = -\log\big(\mathop{\mathrm{sigmoid}}(\text{reward}(\text{preferred}) - \text{reward}(\text{rejected}))\big)
 ```
 
 C'est une formule clé.`sigmoid(reward(A) - reward(B))` donner une réponse A par rapport à une réponse B plus de probabilité de recevoir une meilleure probabilité  Cette perte favorisera le modèle de récompense  donner une réponse préférée  分配更高分数
@@ -93,8 +93,8 @@ Le PPO est un type d'algorithme d'apprentissage renforcé. Dans le RLHF, l'envir
 
 目标:
 
-```
-maximize: E[R(prompt, response)] - beta * KL(policy || reference)
+```math
+\text{maximize:} \quad \mathbb{E}[R(\text{prompt}, \text{response})] - \beta \cdot \mathrm{KL}(\text{policy} \,\|\, \text{reference})
 ```
 
 Première étape: la réaction du modèle générant une grande récompense.
@@ -107,7 +107,7 @@ Pourquoi faut-il une pénalité KL? sans elle, le modèle trouvera une décompos
 
 KL penalty express: vous pouvez améliorer, mais ne pouvez pas devenir un modèle complètement différent― il faut approcher la version SFT, car elle est déjà assez raisonnable―
 
-**InstructGPT numbers:**Prise en charge de la formation de PPO Utilisez lr=1.5e-5、KL coefficient bêta=0.02、256K épisodes(pares de réponse rapide), et chaque lot effectue 4 个PPO époques。 l'ensemble du pipeline RLHF dans le cluster GPU 上需要数天时间。
+**InstructGPT numbers:**Formation en PPO Utilisation de lr=1,5e-5、KL coefficient $\beta=0.02$、256K épisodes(pares de réponse rapide), et chaque lot fait 4 个PPO époques。 l'ensemble du pipeline RLHF dans le cluster GPU 上需要几天时间。
 
 ```mermaid
 graph LR
@@ -130,12 +130,14 @@ graph LR
 
 ### Objectif du PPO 详解
 
-Le ratio entre la nouvelle politique et l'ancienne politique de probabilité sera réduit en [1 - epsilon, 1 + epsilon]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+Le rapport entre la nouvelle politique et l'ancienne politique de probabilité sera réduit.$[1 - \epsilon, 1 + \epsilon]$ étendue, parmi lesquelles $\epsilon$Normalement c'est 0,2 .
 
-```
-ratio = pi_new(action | state) / pi_old(action | state)
-clipped_ratio = clip(ratio, 1 - epsilon, 1 + epsilon)
-loss = -min(ratio * advantage, clipped_ratio * advantage)
+```math
+\begin{aligned}
+\text{ratio} &= \pi_{\text{new}}(\text{action} \mid \text{state}) / \pi_{\text{old}}(\text{action} \mid \text{state}) \\
+\text{clipped\_ratio} &= \mathop{\mathrm{clip}}(\text{ratio}, 1 - \epsilon, 1 + \epsilon) \\
+\text{loss} &= -\min(\text{ratio} \cdot \text{advantage}, \text{clipped\_ratio} \cdot \text{advantage})
+\end{aligned}
 ```
 
 Fonction avantageuse  estimation de la réponse actuelle par rapport à la qualité prévue beaucoup moins.
@@ -600,19 +602,19 @@ if __name__ == "__main__":
 
 3. 模拟奖励黑客──创建一个给长响应高分的奖励模型(奖励 = len(回应) / 100)──使用这个有缺陷的奖励模型 运行PPO,观察政策模型 生成越来越长、越来越重复的输出──然后添加 0.1 的 KL罚款,并显示它会防止这种退化行为──
 
-4. 实现 multi-objectif récompense── entraîner deux modèles de récompense: un pour l'utilité, l'autre pour la concision── les combiner pour R = 0,7 * R_helpful + 0,3 * R_concise── présenter le groupe de objectifs produira des réponses aussi concises, éviter une seule récompense d'utilité 带来的 Verboselity Trap──
+4.  réaliser une récompense multi-objectif.  entraîner deux modèles de récompense: un pour l'utilité, un autre pour la concision.$R = 0.7 \cdot R_{\text{helpful}} + 0.3 \cdot R_{\text{concise}}$ démontrer les objectifs de la mise en œuvre de la stratégie de réaction, en évitant une seule récompense de l'utilité,
 
-5. Comparez différents coefficients KL。分别用beta=0.001(过低,reward hacking)、beta=0.02(标准)和beta=0.5(过高,无法学习) pour effectuer la PPO。 dessiner chaque type de courbe de récompense et la courbe KL。beta=0.02 de la fonction devrait se produire une récompense stable 提升,并且 KL有界──
+5. Comparer avec différents coefficients KL.$\beta=0.001$(sur-bas, piratage de récompenses)$\beta=0.02$(standard) et $\beta=0.5$(过高,无法学习)运行 PPO──绘制每种设置的奖励曲线 和 KL曲线──$\beta=0.02$Le fonctionnement devrait se révéler stable, la récompense augmenter, et KL a un niveau.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | RLHF | “Training with human feedback” | Reinforcement Learning from Human Feedback：一个三阶段 pipeline（SFT、reward model、PPO），使用人类偏好信号优化 language model 输出 |
 | Reward model | “A model that scores responses” | 一个带 scalar output head 的 Transformer，使用 Bradley-Terry loss 在 pairwise human preferences 上训练 |
-| Bradley-Terry | “The comparison model” | 一种概率模型，其中 P(A > B) = sigmoid(score(A) - score(B))，可将 pairwise preferences 转换为一致的 scoring function |
+| Bradley-Terry | “The comparison model” | 一种概率模型，其中 $P(A > B) = \mathop{\mathrm{sigmoid}}(\text{score}(A) - \text{score}(B))$，可将 pairwise preferences 转换为一致的 scoring function |
 | PPO | “The RL algorithm” | Proximal Policy Optimization：更新 policy 以最大化 reward，同时裁剪更新幅度以防止不稳定 |
 | KL divergence | “How different two distributions are” | 衡量 policy model 的 Token distribution 与 reference model 之间差异的指标，用作 penalty 来防止 reward hacking |
-| KL penalty | “The leash on the model” | 从 reward signal 中减去的 Beta * KL(policy \|\| reference)，防止 policy 偏离 SFT checkpoint 太远 |
+| KL penalty | “The leash on the model” | 从 reward signal 中减去的 $\beta \cdot \mathrm{KL}(\text{policy} \Vert \text{reference})$，防止 policy 偏离 SFT checkpoint 太远 |
 | Reward hacking | “Gaming the reward” | policy 通过利用 reward model 的弱点找到退化的高 reward 输出，而不是真正改进 |
 | Preference pair | “Which is better, A or B?” | 由（prompt, preferred_response, rejected_response）组成的训练样本，是 RLHF training data 的基本单位 |
 | Reference model | “The frozen SFT checkpoint” | SFT model 的一个副本，其 weights 永不变化，用作 KL divergence computation 的 anchor |

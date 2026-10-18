@@ -71,22 +71,22 @@ DeepSeek introduit GRPO dans un article de DeepSeekMath (2024) et le considère 
 
 Souvenirs de l'objectif de la PPO (leçon 07):
 
-```
-L_PPO = E[min(r(theta) * A, clip(r(theta), 1-eps, 1+eps) * A)]
+```math
+L_{\text{PPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A\right)\right]
 ```
 
 Parmi eux `A`Il est avantageux, habituellement avec le réseau de valeur apprise `V(s)`通過GAE 估计──值网络是第二个模型,大小与政策相同──它会使内存翻倍,并引入自己的培训循环──
 
-GRPO 丢弃值函数──对每个提示,它采样一组 G 个响应(通常 G=16 或 64)──计算每个响应的回报,然后在组内归一化:
+GRPO abandonner la fonction de valeur ⋅ pour chaque prompt, il prend la forme d'un groupe $G$个 réponses $G=16$Ou 64): calculer la récompense de chaque réponse, puis la regrouper:
 
-```
-A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
+```math
+A_i = \frac{r_i - \mathop{\mathrm{mean}}(r_1, \ldots, r_G)}{\mathop{\mathrm{std}}(r_1, \ldots, r_G)}
 ```
 
 Le résultat est la récompense de cette réponse par rapport au z-score de l'autre réponse du groupe.
 
-```
-L_GRPO = E[min(r(theta) * A_group, clip(r(theta), 1-eps, 1+eps) * A_group)] - beta * KL(pi || pi_ref)
+```math
+L_{\text{GRPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A_{\text{group}}, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A_{\text{group}}\right)\right] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
  la pénalité KL pour le modèle de référence    encore existe, et le ratio de clips   PPO                                                                                                                                                                                                                                                 

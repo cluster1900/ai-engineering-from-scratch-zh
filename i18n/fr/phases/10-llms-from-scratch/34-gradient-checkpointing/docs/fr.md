@@ -37,13 +37,13 @@ Example: Transformateur à 32 couches 拆分32 个段,每个段1层──
 - La mémoire: 32 个 couche-entrée (小) contre 32 *(
 - 额外计算: chaque segment 额外 1 fois en avant, soit le total de FLOP à l'avant 约 33% augmentation 由于 l'arrière est en avant de 2x, l'étape complète de 1 + 2 = 3 个单位变为 1 + 1 + 2 = 4 个单位) 
 
-C' est le premier Chen et collègues de 2016`sqrt(L)`Pour L=64, il y a 8 points de contrôle.
+C' est le premier Chen et collègues de 2016`sqrt(L)`La mise en place d'un point de contrôle, pour équilibrer la mémoire et la computaison.$L=64$, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
 ### Le contrôle sélectif (Korthikanti 2022)
 
 Tout le coût de la valeur active n'est pas le même. Attention softmax 输出是 `B*L*L*heads`,并随序列长度 *二次* 增长──FFN activation cachée 是 `B*L*4d`, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
-Le point de contrôle sélectif Réserve la valeur active du coût de stockage basse, des projections linéaires, des résidus, ne fait que recalculer la partie la plus chère, attention, mais économise la mémoire O (L^2)
+Le point de contrôle sélectif Réserve la valeur active du coût de stockage basse, mais économisez.$O(L^2)$La mémoire
 
 Megatron-Core sera réalisé pour la recomputation d'activation sélective. La plupart des entraînements frontaliers de 2024+ sont en cours d'utilisation.
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174)-- article de contrôle des gradients formalisés
