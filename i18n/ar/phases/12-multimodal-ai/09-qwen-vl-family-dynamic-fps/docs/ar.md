@@ -68,10 +68,12 @@ Qwen3-VL هو مرة واحدة زيادة في حجم التحسين، والت
 
 经典 RoPE 使用成对坐标,按位置 `m`旋转维度为 `d``q`:
 
-```
-q_rot[2i]   = q[2i]   * cos(m * theta_i) - q[2i+1] * sin(m * theta_i)
-q_rot[2i+1] = q[2i]   * sin(m * theta_i) + q[2i+1] * cos(m * theta_i)
-theta_i     = 10000^(-2i/d)
+```math
+\begin{aligned}
+q_{\text{rot}}[2i] &= q[2i] \cos(m \theta_i) - q[2i+1] \sin(m \theta_i) \\
+q_{\text{rot}}[2i+1] &= q[2i] \sin(m \theta_i) + q[2i+1] \cos(m \theta_i) \\
+\theta_i &= 10000^{-2i/d}
+\end{aligned}
 ```
 
 M-RoPE سوف تختفي dim 切分为三条带――假设 `d = 96` تقسيم 32 ضيق 给 temporal、32 给 height、32 给 width── كل شريط 按自己的轴位置旋转──位于 (t=5, h=10, w=20)`R_t(5)`.`R_h(10)`.`R_w(20)`.
