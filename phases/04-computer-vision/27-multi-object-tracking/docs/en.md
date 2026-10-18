@@ -61,7 +61,7 @@ Kalman filter 为每条 track 维护一个带 covariance 的状态 `(x, y, w, h,
 
 ### Hungarian algorithm
 
-给定一个 `M x N` cost matrix（tracks x detections），寻找使总 cost 最小的一对一 assignment。Cost 通常是 `1 - IoU(track_bbox, detection_bbox)`，或者 appearance features 的负 cosine similarity。Runtime 是 O((M+N)^3)；当 M、N 最高约为 1000 时，通过 `scipy.optimize.linear_sum_assignment` 在 Python 中足够快。
+给定一个 `M x N` cost matrix（tracks x detections），寻找使总 cost 最小的一对一 assignment。Cost 通常是 `1 - IoU(track_bbox, detection_bbox)`，或者 appearance features 的负 cosine similarity。Runtime 是 $O((M+N)^3)$；当 $M, N$ 最高约为 1000 时，通过 `scipy.optimize.linear_sum_assignment` 在 Python 中足够快。
 
 ### ByteTrack 的关键思想
 
