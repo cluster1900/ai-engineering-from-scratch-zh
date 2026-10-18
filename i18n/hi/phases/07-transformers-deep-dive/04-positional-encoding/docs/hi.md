@@ -29,25 +29,25 @@
 
 预先计算一个形 为 `(max_len, d_model)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `PE`:
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 फिर ध्यान में  पहले निष्पादन `X' = X + PE[:N]`◊ प्रत्येक आयाम अलग-अलग आवृत्ति का सिनोसाइड है ◊ मॉडल चरण पैटर्न से सीखता है`max_len`后会失败:当模型只见过位置02047 时,没有什么告诉它位置2048会发生什么──
 
 ### रोपी
 
-旋转 Q 和 K वेक्टर (नहीं एम्बेड किए गए) ∼对对对 आयाम `(2i, 2i+1)`:
+旋转 Q 和 K वेक्टर (नहीं एम्बेड किए गए) ∼对对对 आयाम $(2i, 2i+1)$:
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-स्थिति के लिए`pos_k`应用相同旋转──dot उत्पाद `q'_m · k'_n`मैं निर्भर हो जाएगा`(m - n)`का फ़ंक्शन──也就是说:**attention score 只依赖 relative distance**, हालांकि घूर्णन पूर्ण स्थिति से प्रेरित है।
+स्थिति के लिए`pos_k`应用相同旋转──dot उत्पाद $q'_m \cdot k'_n$मैं निर्भर हो जाएगा$(m - n)$का फ़ंक्शन──也就是说:**attention score 只依赖 relative distance**, हालांकि घूर्णन पूर्ण स्थिति से प्रेरित है।
 
 扩展 RoPE:可以缩放 `base`(NTK-aware、YaRN、LongRoPE), ताकि अनपढ़ प्रशिक्षण के मामले में अधिकतर संदर्भ तक एक्सट्रापोलेट किया जा सके。Llama 3 यहीं इस तरह से 8K से 128K संदर्भ तक विस्तारित किया जा सकता है。
 
@@ -55,11 +55,11 @@ PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
 
 跳过嵌入 技巧──直接给注意点加偏见:
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-उनमें से `m_h`है सिर विशिष्ट ढलान (उदाहरण के लिए)`1 / 2^(8·h/H)`)。 निकट टोकन  बढ़ते हैं; दूर टोकन  दंडित होते हैं。 कोई प्रशिक्षण समय लागत नहीं──论文显示, लंबाई एक्सट्रैपोलेशन 优于 sinusidal,并在原始训练长度上与 RoPE 持平──
+उनमें से $m_h$है सिर विशिष्ट ढलान (उदाहरण के लिए)$1 / 2^{8h/H}$)。 निकट टोकन  बढ़ते हैं; दूर टोकन  दंडित होते हैं。 कोई प्रशिक्षण समय लागत नहीं──论文显示, लंबाई एक्सट्रैपोलेशन 优于 sinusidal,并在原始训练长度上与 RoPE 持平──
 
 ### 2026 साल में क्या चुनना है
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键: स्थिति के लिए `m`का Q 和 स्थिति `n`के के  अनुप्रयोग एक ही फ़ंक्शन ∙ उनके डॉट उत्पाद ∙ प्रत्येक निर्देशांक जोड़ी में एक प्राप्त करने के लिए `cos((m-n)·θ_i)`因子──Atention 免费学到相对位置──
+关键: स्थिति के लिए $m$का Q 和 स्थिति $n$के के  अनुप्रयोग एक ही फ़ंक्शन ∙ उनके डॉट उत्पाद ∙ प्रत्येक निर्देशांक जोड़ी में एक प्राप्त करने के लिए $\cos((m-n) \cdot \theta_i)$因子──Atention 免费学到相对位置──
 
 ### चरण 3: ALiBi ढलान और पूर्वाग्रह
 
@@ -169,7 +169,7 @@ model = AutoModel.from_pretrained("meta-llama/Llama-3.2-3B")
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |

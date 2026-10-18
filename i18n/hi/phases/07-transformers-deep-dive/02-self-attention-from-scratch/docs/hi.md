@@ -11,7 +11,7 @@
 
 - 仅使用NumPy 零 零 零 实现 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零 零    零 零 零 零 零 零  零 零                                                                                                                                                                                                                                                                                                                            
 - 构建多头注意层,用于拆分头、计算并行注意,并拼接结果
--  ट्रैकिंग ध्यान मैट्रिक्स  कैसे पकड़ें टोकन  संबंध,并解释为什么除以 sqrt(d_k) softmax 和 को रोक सकता है
+-  ट्रैकिंग ध्यान मैट्रिक्स  कैसे पकड़ें टोकन  संबंध,并解释为什么除以 $\sqrt{d_k}$यह सॉफ्टमैक्स को रोक सकता है
 -  लागू कारणों का मुखौटा,将 द्विदिश ध्यान 转换为 ऑटोरेग्रेसिव(डेकोडर शैली) ध्यान
 
 ## 问题
@@ -109,10 +109,10 @@ attention-matrix
 
 ### क्यों संकुचित करना?
 
-यदि dk = 64,dot उत्पाद हो सकता है कि कुछ दशकों की सीमा तक पहुँच जाए, तो इसे सॉफ्टमैक्स में डालकर ग्रेडिएंट गायब क्षेत्र में लाया जाए।
+उत्पाद आकार के साथ-साथ$d_k$增大──如果 $d_k = 64$, डॉट उत्पादों को कई दायरे तक पहुंच सकता है, सॉफ्टमैक्स को ग्रेडिएंट गायब क्षेत्र में धकेलें।$\sqrt{d_k}$
 
-```
-Scaled scores = (Q @ K^T) / sqrt(dk)
+```math
+\text{缩放后的分数} = \frac{Q K^T}{\sqrt{d_k}}
 ```
 
 यह संख्यात्मक मान को नरम अधिकतम के भीतर बनाए रखेगा ताकि उपयोगी ग्रेडिएंट उत्पन्न हो सके।
@@ -159,8 +159,8 @@ flowchart LR
 
 एक सूत्र
 
-```
-Attention(Q, K, V) = softmax( Q @ K^T / sqrt(dk) ) @ V
+```math
+\text{Attention}(Q, K, V) = \mathop{\mathrm{softmax}}\left( \frac{Q K^T}{\sqrt{d_k}} \right) V
 ```
 
 ```figure
@@ -302,7 +302,7 @@ print(f"\nAttn weights (averaged over heads):")
 print(attn_weights[0].detach().numpy().round(3))
 ```
 
-关键区别:बहु-हेड ध्यान 会并行运行多个注意功能, प्रत्येक के पास अपने स्वयं के Q、K、V प्रोजेक्शन हैं,大小为 dk = d_model / n_heads,然后拼接结果──这让模型能够同时参加不同类型的关系──
+关键区别:बहु-हेड ध्यान 会并行运行多个注意功能, प्रत्येक के पास अपना स्वयं का Q、K、V प्रोजेक्शन है,大小为$d_k = d_{\text{model}} / n_{\text{heads}}$, फिर परिणामों को पुनः प्रस्तुत करना। यह मॉडल को एक ही समय में विभिन्न प्रकार के संबंधों में भाग लेने में सक्षम बनाता है।
 
 ## 交付 यह
 
@@ -322,7 +322,7 @@ print(attn_weights[0].detach().numpy().round(3))
 | Query (Q) | “问题 Vector” | 输入的一个学习投影，表示这个 Token 正在寻找什么信息 |
 | Key (K) | “标签 Vector” | 一个学习投影，表示这个 Token 包含什么信息，并会与 queries 进行匹配 |
 | Value (V) | “内容 Vector” | 一个学习投影，携带会基于 attention scores 被聚合的实际信息 |
-| Scaled dot-product attention | “Attention 公式” | softmax(QK^T / sqrt(dk)) @ V - 缩放可以防止高维中的 softmax 饱和 |
+| Scaled dot-product attention | “Attention 公式” | $\mathop{\mathrm{softmax}}(QK^T / \sqrt{d_k}) V$ - 缩放可以防止高维中的 softmax 饱和 |
 | Self-attention | “Token 看自己和其他 Token” | Q、K、V 都来自同一序列的 Attention，让每个位置都能 attend 到其他每个位置 |
 | Attention weights | “关注程度” | 位置上的概率分布，由 scaled dot products 上的 softmax 产生 |
 | Multi-head attention | “并行 Attention” | 使用不同 projections 运行多个 attention functions，然后拼接结果，以获得更丰富的 representations |
