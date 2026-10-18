@@ -30,22 +30,24 @@ Hoffmann et coll. (2022) ont formé un groupe de modèles de famille de petits C
 
 Il est en train de perdre.
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N`= 参数(非 Embedding)
-- `D`= 训练 Token。
-- `α ≈ 0.34`- Je suis là .`β ≈ 0.28`Je suis en train de faire une petite fête.
-- `E ≈ 1.69`Il y a une perte de valeur.
-- `A ≈ 406`- Je suis là .`B ≈ 411`Il y a une autre.
+- $N$= 参数(非 Embedding)
+- $D$= 训练 Token。
+- $\alpha \approx 0.34$- Je suis là .$\beta \approx 0.28$Je suis en train de faire une petite fête.
+- $E \approx 1.69$Il y a une perte de valeur.
+- $A \approx 406$- Je suis là .$B \approx 411$Il y a une autre.
 
- Avec l'expansion, deux éléments se pesent les uns les autres `N`求导并求解:
+随着扩张, deux项会彼此权衡──在固定计算$C = 6ND$) à la$N$求导并求解:
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 Optimale de calcul: chaque paramètre 20 Tokens
@@ -91,7 +93,7 @@ scaling-laws
 
 ## - Je le construis.
 
-Je vous en prie .`code/main.py` Nous avons réalisé la méthode de perte de Chinchilla, et en calculant plusieurs  budgétaire `(N, D)`Il y a une autre.
+Je vous en prie .`code/main.py` Nous avons réalisé la méthode de perte de Chinchilla, et en calculant plusieurs  budgétaire $(N, D)$Il y a une autre.
 
 ### 步骤 1: Perte de la canne à sucre
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-Dans le fixe `C = 6ND`Je vais le faire.`L`          `(N, D)`Pour trouver la valeur minimale,
+Dans le fixe $C = 6ND$Je vais le faire.$L$          $(N, D)$Pour trouver la valeur minimale,
 
 ### 步骤 2: 计算最优边界
 
-Pour le`1e17`À la`1e25`Compte de FLOPs  Budget, trouver dans le cadre `6ND = C`La réduction des pertes`(N, D)` Pourcentage de la vérification`D/N ≈ 20`Il y a une autre.
+Pour le`1e17`À la`1e25`Compte de FLOPs  Budget, trouver dans le cadre $6ND = C$La réduction des pertes$(N, D)$ Pourcentage de la vérification$D/N \approx 20$Il y a une autre.
 
 ### 步骤 3: coût de formation excessif
 
@@ -134,9 +136,9 @@ Je vous en prie .`outputs/skill-training-budget-estimator.md` Cette compéten
 
 ## 练习
 
-1. **Easy.**运行  référencement`code/main.py` Impression de calcul  budget `1e20`- Je suis là.`1e22`- Je suis là.`1e24`Je suis en train de faire une petite boucle .`(N, D)` Comparer avec le modèle réel
-2. **Medium.**实现 Hoffmann Loss-as-function-of-compute 曲线──为 compute-optimal frontier 绘制 Loss vs `log10(C)`Identifier cette loi prédire notre temps nécessaire`>10^28`Les FLOP 才能让交叉ენტropie 再降低 0.1──
-3. **Hard.**Dans le même ensemble de données, 5 modèles sont formés à partir de 100K à 10M, pour s'adapter à votre propre loi d'échelle.`α`et `E`◊ Comment votre indice correspond-il aux résultats publiés ?
+1. **Easy.**运行  référencement`code/main.py` Impression de calcul  budget `1e20`- Je suis là.`1e22`- Je suis là.`1e24`Je suis en train de faire une petite boucle .$(N, D)$ Comparer avec le modèle réel
+2. **Medium.**实现 Hoffmann Loss-as-function-of-compute 曲线──为 compute-optimal frontier 绘制 Loss vs `log10(C)`Identifier cette loi prédire notre temps nécessaire$>10^{28}$Les FLOP 才能让交叉ენტropie 再降低 0.1──
+3. **Hard.**Dans le même ensemble de données, 5 modèles sont formés à partir de 100K à 10M, pour s'adapter à votre propre loi d'échelle.$\alpha$et $E$◊ Comment votre indice correspond-il aux résultats publiés ?
 
 ## 关键术语
 
@@ -147,7 +149,7 @@ Je vous en prie .`outputs/skill-training-budget-estimator.md` Cette compéten
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 

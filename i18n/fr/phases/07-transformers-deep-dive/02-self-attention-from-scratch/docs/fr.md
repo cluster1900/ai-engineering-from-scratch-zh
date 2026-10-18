@@ -11,7 +11,7 @@
 
 - 仅使用 NumPy 从零实现 la prise en compte de produit à l'échelle de la dot, y compris la requête/clés/valeur 投影和 softmax 加权求和
 - Construire des couches d'attention multi-têtes, pour décomposer la tête 計算并行注意,并拼接结果
--  suivre la matrice d'attention  comment capturer Token  relation,并解释为什么除以 sqrt(d_k) peut empêcher softmax 和
+-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $\sqrt{d_k}$Il peut être utilisé pour éviter les doux
 -  appliquer le masquage causal,将 attention bidirectionnelle 转换为 autorégressive(décodage style) attention
 
 ##  problématique
@@ -109,10 +109,10 @@ attention-matrix
 
 ### Pourquoi vous en voulez ?
 
-Les produits dotés augmentent avec la dimension dk                                                                                                                                                                                                                                                          
+Les produits dotés seront en fonction de la taille$d_k$Il y a beaucoup de choses à faire.$d_k = 64$, les produits dotés peuvent atteindre plusieurs dizaines de rangs, et la douceur maximale peut être introduite dans la zone de disparition du gradient.$\sqrt{d_k}$Il y a une autre.
 
-```
-Scaled scores = (Q @ K^T) / sqrt(dk)
+```math
+\text{缩放后的分数} = \frac{Q K^T}{\sqrt{d_k}}
 ```
 
 Cela permettra de maintenir la valeur numérique dans la limite de la douceur maximale de pouvoir produire des gradients utiles.
@@ -159,8 +159,8 @@ flowchart LR
 
 Une seule formule:
 
-```
-Attention(Q, K, V) = softmax( Q @ K^T / sqrt(dk) ) @ V
+```math
+\text{Attention}(Q, K, V) = \mathop{\mathrm{softmax}}\left( \frac{Q K^T}{\sqrt{d_k}} \right) V
 ```
 
 ```figure
@@ -302,7 +302,7 @@ print(f"\nAttn weights (averaged over heads):")
 print(attn_weights[0].detach().numpy().round(3))
 ```
 
-关键区别:attention multi-tête 会并行运行多个注意功能, chacun a ses propres projections Q、K、V,大小为 dk = d_model / n_heads, puis拼接结果──这让模型能够同时参加到不同类型的关系──
+关键区别:attention multi-tête 会并行运行多个注意功能, chacun a ses propres projections Q、K、V,大小为 $d_k = d_{\text{model}} / n_{\text{heads}}$, puis le résultat est le même. Cela permet au modèle de participer simultanément à différents types de relations.
 
 ## Je le livre.
 
@@ -322,7 +322,7 @@ Le cours est ouvert à:
 | Query (Q) | “问题 Vector” | 输入的一个学习投影，表示这个 Token 正在寻找什么信息 |
 | Key (K) | “标签 Vector” | 一个学习投影，表示这个 Token 包含什么信息，并会与 queries 进行匹配 |
 | Value (V) | “内容 Vector” | 一个学习投影，携带会基于 attention scores 被聚合的实际信息 |
-| Scaled dot-product attention | “Attention 公式” | softmax(QK^T / sqrt(dk)) @ V - 缩放可以防止高维中的 softmax 饱和 |
+| Scaled dot-product attention | “Attention 公式” | $\mathop{\mathrm{softmax}}(QK^T / \sqrt{d_k}) V$ - 缩放可以防止高维中的 softmax 饱和 |
 | Self-attention | “Token 看自己和其他 Token” | Q、K、V 都来自同一序列的 Attention，让每个位置都能 attend 到其他每个位置 |
 | Attention weights | “关注程度” | 位置上的概率分布，由 scaled dot products 上的 softmax 产生 |
 | Multi-head attention | “并行 Attention” | 使用不同 projections 运行多个 attention functions，然后拼接结果，以获得更丰富的 representations |

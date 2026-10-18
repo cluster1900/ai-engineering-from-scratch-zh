@@ -11,7 +11,7 @@
 
 个个自我注意头 会计算一个注意矩阵―― Cette matrice 捕捉一种 relation, généralement celle qui peut minimiser les pertes sur les signaux de formation en cours―― si dans vos données, l'accord sujet-verbe、co-référence、discours à long terme 和 syntaxique chunking                                                                                                                                                                                                                           
 
-Le papier Vaswani de 2017 a donné une modification:并行运行多个注意功能, chacun a ses propres projections Q、K、V, puis le faire sortir avec un coup de tête.`d_model / n_heads`Le nombre de participants reste le même.
+Le papier Vaswani de 2017 a donné une modification:并行运行多个注意功能, chacun a ses propres projections Q、K、V, puis le faire sortir avec un coup de tête.$d_{\text{model}} / n_{\text{heads}}$Le nombre de participants reste le même.
 
 L'attention multi-tête est la configuration par défaut de tous les transformateurs en 2026[6]. Le seul débat se pose ici est de savoir combien de têtes doivent être utilisées, ainsi que les clés et les valeurs y a-t-il des projections communes ou non.
 
@@ -19,7 +19,7 @@ L'attention multi-tête est la configuration par défaut de tous les transformat
 
 ![Multi-head attention splits, attends, concatenates](../assets/multi-head-attention.svg)
 
-**Split。**取形为 `(N, d_model)``X`△分别 projection jusqu'à la forme`(N, d_model)`Le Q 、K 、V ∙ La forme pour `(N, n_heads, d_head)`, parmi lesquels `d_head = d_model / n_heads`❖ Transposer pour`(n_heads, N, d_head)`Il y a une autre.
+**Split。**取形为 `(N, d_model)``X`△分别 projection jusqu'à la forme`(N, d_model)`Le Q 、K 、V ∙ La forme pour `(N, n_heads, d_head)`, parmi lesquels $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$❖ Transposer pour`(n_heads, N, d_head)`Il y a une autre.
 
 **并行 Attend。**Dans chaque tête, dans chaque opération, on évalue l'attention du produit.`(N, d_head)` Ces têtes fonctionnent dans différents espaces de l'intégration, et ne communiquent pas entre elles pendant le calcul de l'attention.
 
@@ -36,7 +36,7 @@ L'attention multi-tête est la configuration par défaut de tous les transformat
 | Grouped-query (GQA) | N | G (e.g. N/8) | Llama 2 70B, Llama 3+, Qwen 2+, Mistral |
 | Multi-head latent (MLA) | N | compressed to low-rank | DeepSeek-V2, V3 |
 
-La GQA est un programme standard moderne, car elle peut être appliquée.`N/G`Le nombre de fois réduit la mémoire de cache KV, tout en maintenant presque la qualité complète.
+La GQA est un programme standard moderne, car elle peut être appliquée.$N/G$Le nombre de fois réduit la mémoire de cache KV, tout en maintenant presque la qualité complète.
 
 
 ```figure
@@ -130,7 +130,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 | Large (~1B) | 2048 | 16 | 128 |
 | Frontier (~70B) | 8192 | 64 | 128 |
 
-`d_head` presque toujours en 64 ou 128  c'est une tête  voir combien unités de contenu  en moins de 32, les têtes  commenceront avec le facteur d'échelle `sqrt(d_head)`Vous perdrez les bénéfices de nombreux petits spécialistes.
+`d_head` presque toujours en 64 ou 128  c'est une tête  voir combien unités de contenu  en moins de 32, les têtes  commenceront avec le facteur d'échelle $\sqrt{d_{\text{head}}}$Vous perdrez les bénéfices de nombreux petits spécialistes.
 
 ## Je le livre.
 
@@ -146,7 +146,7 @@ Je vous en prie .`outputs/skill-mha-configurator.md`◊ cette compétence sera b
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Head | “一个单独的 attention circuit” | 一个维度为 `d_head = d_model / n_heads` 的 Q/K/V projection，拥有自己的 attention matrix。 |
+| Head | “一个单独的 attention circuit” | 一个维度为 $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$ 的 Q/K/V projection，拥有自己的 attention matrix。 |
 | d_head | “Head dimension” | Per-head hidden width；在 production 中几乎总是 64 或 128。 |
 | Split / combine | “Reshape tricks” | Attention 前后的 `(N, d_model) ↔ (n_heads, N, d_head)` reshape+transpose。 |
 | W_o | “Output projection” | Concatenating heads 之后应用的 `(d_model, d_model)` matrix；heads 在这里混合。 |

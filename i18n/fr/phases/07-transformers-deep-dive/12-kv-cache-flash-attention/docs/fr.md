@@ -9,13 +9,13 @@
 
 ##  problématique
 
-Un décodeur de retour automatique simple`N`个代币 需要做 `O(N²)`工作: chaque étape sera recalculée sur la totalité de la réponse de la 4K-token, ce qui signifie 16M fois d'attention 运算, la plupart d'entre eux sont redondants 工作: chaque état caché de la première jeton une fois calculé est déterminé  vous avez seulement besoin de faire la requête de la nouvelle jeton  去和此前所有的代币 缓存下来的钥匙和值做计算
+Un décodeur de retour automatique simple$N$个代币 需要做 $O(N^2)$工作: chaque étape sera recalculée sur la totalité de la réponse de la 4K-token, ce qui signifie 16M fois d'attention 运算, la plupart d'entre eux sont redondants 工作: chaque état caché de la première jeton une fois calculé est déterminé  vous avez seulement besoin de faire la requête de la nouvelle jeton  去和此前所有的代币 缓存下来的钥匙和值做计算
 
 En outre, l'attention elle-même va également transporter une grande quantité de données. L'attention standard se matérialise dans une matrice de score N×N, une sortie de softmax N×d, une sortie finale N×d.
 
 Dao et al. ont proposé deux optimisations, en passant de la lenteur à la lenteur:
 
-1. **KV cache。**存储每个前代币的K和V向量──每个新代币的注意都是一个查询对缓存键的计算──推理从每个代步的推理`O(N²)`- Je ne sais pas .`O(N)`Il y a une autre.
+1. **KV cache。**存储每个前代币的K和V向量──每个新代币的注意都是一个查询对缓存键的计算──推理从每个代步的推理$O(N^2)$- Je ne sais pas .$O(N)$Il y a une autre.
 2. **Flash Attention。**Pour l'attention  calculer la taille des carreaux, rendre la matrice N×N complète  ne pénétrera jamais dans le HBM。 tous les softmax + matmul sont terminés dans le SRAM。 en A100 en haut accélération du mur-horloge pour 24×; en support du H100 de FP8 pour 510×。
 
 D'ici 2026, les deux sont déjà conçus. Chaque classe de production propose une hypothèse de leur existence.
@@ -78,7 +78,7 @@ for each block of Q (tile size ~128 × 128):
     write O_tile to HBM
 ```
 
-Chaque carreaux ne nécessite qu'une seule HBM.`O(N²)`- Je ne sais pas .`O(N)`❖ Pass rétrograde 会从前进pass 中重新计算部分值,而不是把它们全部存存下来
+Chaque carreaux ne nécessite qu'une seule HBM.$O(N^2)$- Je ne sais pas .$O(N)$❖ Pass rétrograde 会从前进pass 中重新计算部分值,而不是把它们全部存存下来
 
 **数值技巧。**Retour à la douceur max dans les carreaux entre les réparations`(max, sum)`, donc la définition finale est précise. Ceci n'est pas approximatif.
 
@@ -127,8 +127,8 @@ flash-attention-memory
 
 Je vous en prie .`code/main.py`❖ Nous réalisons:
 
-1. Une simple.`O(N²)`décodeur incrémental.
-2. Une .`O(N)`Décoder en cache KV
+1. Une simple.$O(N^2)$décodeur incrémental.
+2. Une .$O(N)$Décoder en cache KV
 3. Une analogie de Flash Attention running-max algorithme de softmax en carreaux
 
 ### 步骤 1: cache KV
@@ -175,7 +175,7 @@ def tiled_softmax_dot(q, K, V, tile=4):
 
 ### 步骤 3: Dans la génération de 100 jetons 上比较 naïf vs décodage caché
 
-统计注意 操作数。Naïve:`O(N²)`= 5050♦ en caisse:`O(N)`= 100... - Je vais vous en faire une.
+统计注意 操作数。Naïve:$O(N^2)$= 5050♦ en caisse:$O(N)$= 100... - Je vais vous en faire une.
 
 ## Utilisez-le
 

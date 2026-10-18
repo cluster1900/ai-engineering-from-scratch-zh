@@ -15,7 +15,7 @@ Pour effectuer un entraînement de bout en bout sur toute la séquence, vous dev
 
 Le masque de causalité est fait pour ça.`-inf`√ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √
 
-GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi                                                                                                                                                                                                                                         
+GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2025), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi                                                                                                                                                                                                                                         
 
 ## 概念
 
@@ -23,16 +23,53 @@ GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Ll
 
 ### masque
 
-给定长度为 `N`La séquence, construire un`N × N`matrice:
+给定长度为 $N$La séquence, construire un$N \times N$matrice:
 
-```
-M[i, j] = 0       if j <= i
-M[i, j] = -inf    if j > i
+```math
+M_{ij} = \begin{cases} 0 & \text{若 } j \le i \\ -\infty & \text{若 } j > i \end{cases}
 ```
 
-Dans le softmax, avant,`M`À la première note d'attention.`exp(-inf) = 0`, donc le poids de contribution de la position du masque est de zéro. Chaque ligne de la matrice d'attention est simplement une répartition des probabilités de la position précédente.
+Dans le softmax, avant,`M`À la première note d'attention.$\exp(-\infty) = 0$, donc le poids de contribution de la position du masque est de zéro. Chaque ligne de la matrice d'attention est simplement une répartition des probabilités de la position précédente.
 
 实现成本: une fois `torch.tril()`调用──计算时间:纳秒级── sur l'impact de tout le domaine:一切──
+
+### Triangle de quoi ?
+
+Le masque est généralement présenté comme un supplément à l'attention. En revanche, il ne s'agit plus de mystère: l'attention est la troisième amélioration de la moyenne précédente, tandis que le triangle ne fait que transformer le cycle du calcul moyen en une matrice.
+
+**阶段 1：前缀平均。**Le plus simple des séries résumé: position$i$变为位置 $0 \ldots i$La valeur moyenne de la circulation est de`out[i] = X[:i+1].mean(0)`◊ Le même calcul peut être effectué par une même matrice multiplicée.
+
+```python
+import numpy as np
+
+A = np.tril(np.ones((n, n)))
+A = A / A.sum(axis=1, keepdims=True)
+out = A @ X
+```
+
+$A$La première$i$Je suis là.$[1/(i+1), \ldots, 1/(i+1), 0, \ldots, 0]$◊ Le zéro est la causalité de la ligne de l'angle.
+
+**阶段 2：学习权重。**均平均把过去每 token都视为同等重要──用学到的分数矩阵 `S` Remplacer les 1 ⋅ à ce moment-là chaque ligne cesse de se demander naturellement et de se faire 1, donc utiliser la softmax pour chaque ligne de regroupement, plutôt que de décomposer en nombre.`-inf`Je suis désolé .`exp(-inf) = 0`- Le numéro de la liste:
+
+```python
+def softmax(x, axis):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
+
+S = S + np.triu(np.full((n, n), -np.inf), k=1)
+A = softmax(S, axis=1)
+out = A @ X
+```
+
+Comme un triangle, comme une même ligne, comme une seule matmul.`-inf`Le masque n'est pas un nouveau mécanisme, il s'agit simplement de transformer les éléments zéro de la phase 1 dans le domaine d'entrée de softmax.
+
+**阶段 3：依赖内容的权重。**Dans la phase 2,`S`En formation, le poids des jetons est toujours le même.`S = Q @ K.T / sqrt(d_k)`◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊        ◊                                                                                                                                                                                                                                 
+
+Trois étapes, un immutable: la ligne des trois côtés avec la matrice multipliée par la séquence.
+
+```figure
+mask-derivation
+```
 
 ### Il n'a pas fait d'entraînement, il a fait des recommandations.
 
@@ -82,10 +119,6 @@ causal-mask
 ```
 
 
-```figure
-mask-derivation
-```
-
 ## - Je le construis.
 
 ### 步骤 1: masque de causalité
@@ -134,7 +167,7 @@ print(tok.decode(out[0]))
 
 Dans le fond,`generate()`运行前行,取出最后位置 logits,sample 下一个代币,追加它,然后重复──每个生产级LLM inference stack(vLLM, TensorRT-LLM, llama.cpp, Ollama, MLX)都用重度优化实现同一个循环 批量预填、连续批量、KV cache paging、投机解码──
 
-**GPT vs BERT，各用一句话：**GPT 预测 `P(x_t | x_{<t})`│BERT 预测 │`P(x_masked | x_unmasked)`◊perte décide si le modèle peut être généré
+**GPT vs BERT，各用一句话：**GPT 预测 $P(x_t \mid x_{<t})$│BERT 预测 │$P(x_{\text{masked}} \mid x_{\text{unmasked}})$◊perte décide si le modèle peut être généré
 
 ## Je le livre.
 
@@ -154,8 +187,8 @@ Je vous en prie .`outputs/skill-sampling-tuner.md`◊ Cette compétence sera uti
 | Next-token prediction | “loss” | 模型在每个位置上的分布与真实下一个 token 之间的 cross-entropy。 |
 | Autoregressive | “一次生成一个” | 将输出反馈为输入；并行性只存在于训练阶段，不存在于生成阶段。 |
 | Logits | “pre-softmax scores” | softmax 之前 LM head 的原始输出；sampling 就发生在这些值上。 |
-| Temperature | “创造力旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = uniform。 |
-| Top-p | “Nucleus sampling” | 将分布截断为累计和 ≥p 的最小集合；从剩余部分 sample。 |
+| Temperature | “创造力旋钮” | 将 logits 除以 $T$；$T \to 0$ = greedy，$T \to \infty$ = uniform。 |
+| Top-p | “Nucleus sampling” | 将分布截断为累计和 $\ge p$ 的最小集合；从剩余部分 sample。 |
 | Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 tokens；会根据分布尖锐程度调整 cutoff。 |
 | Speculative decoding | “draft + verify” | 便宜模型提出 N 个 tokens；大模型并行验证。 |
 | Teacher forcing | “训练技巧” | 训练时输入真实的前一个 token，而不是模型的预测。每个 seq2seq LM 的标准做法。 |

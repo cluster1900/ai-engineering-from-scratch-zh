@@ -11,7 +11,7 @@
 
 En déduisant les FLOPs de la transformateur dans les déductions , il est possible de calculer les FLOPs de la transformateur .............................................................................................................................................................................................................................................
 
-Un mélange d'experts a brisé ce lien.`E`个独立专家 + 一个为每个代币 选择 `k`个专家的路由器──总参数 = `E × FFN_size`◊ la quantité active de chaque jeton = `k × FFN_size` Configuration typique pour l'année 2026:`E=256`- Je suis désolé .`k=8`◊ stockage avec`E`扩展,计算随 `k`- Je suis en train de me lancer.
+Un mélange d'experts a brisé ce lien.$E$个独立专家 + 一个为每个代币 选择 $k$个专家的路由器──总参数 = $E \times \text{FFN size}$◊ la quantité active de chaque jeton = $k \times \text{FFN size}$ Configuration typique pour l'année 2026:$E=256$- Je suis désolé .$k=8$◊ stockage avec$E$扩展,计算随 $k$- Je suis en train de me lancer.
 
 La frontière de 2026 est presque entière: MoE:DeepSeek-V3(671B total / 37B actif) 、Mixtral 8×22B、Qwen2.5-MoE、Llama 4、Kimi K2、gpt-oss。
 
@@ -46,7 +46,7 @@ Chaque expert est un FFN indépendant (habituellement SwiGLU) ― routeur est un
 Si le routeur 让90% de Token 经过专家3, les autres experts 会被饿死――
 
 1. **Auxiliary load-balancing loss**(Switch Transformer、Mixtral) ◦ Ajouter un avec expert utilisation des taux de différence de correction ◦
-2. **Expert capacity + token dropping**(Mécanisme de mise en place)  Chaque expert,`C × N/E`个 Token;溢出的 Token 跳过该层──会损害质量──
+2. **Expert capacity + token dropping**(Mécanisme de mise en place)  Chaque expert,$C \times N/E$个 Token;溢出的 Token 跳过该层──会损害质量──
 3. **Auxiliary-loss-free balancing**(DeepSeek-V3)── Ajouter un biais par expert pouvant être appris, utilisé pour déplacer le haut de la ligne de routeur 选择──bias en train de perdre de l'entraînement  外部更新──不对主目标添加惩罚──这是2024年重要突破──
 
 Pratique de DeepSeek-V3: après chaque étape de formation, chaque expert doit vérifier si son taux d'utilisation est élevé ou faible.`±γ`微调 bias──选择时使用 `scores + bias` Les probabilités d'expertise utilisées pour le gateing  encore utilisées `scores` This will routing with expression 解──
@@ -59,7 +59,7 @@ DeepSeek-V2/V3 aussi des experts divisés en *shared* et *routed*── chaque t
 
 经典 MoE(GShard、Switch): chaque expert 和完整FFN 一样宽──`E`较小(8-64),`k`Je suis un peu plus jeune que toi.
 
-现代 MoE à grains fins DeepSeek-V3、Qwen-MoE): chaque expert 更狭`E`Il y a plus de 256 personnes.`k`Les composants sont les mêmes, mais le nombre de composants est plus rapide.`C(256, 8) = 400 trillion`种可能的每代币 专家 ──质量提升,延迟 保持不变──
+现代 MoE à grains fins DeepSeek-V3、Qwen-MoE): chaque expert 更狭$E$Il y a plus de 256 personnes.$k$Les composants sont les mêmes, mais le nombre de composants est plus rapide.$\binom{256}{8} \approx 400$Des millions de dollars de dollars pour chaque jeton.
 
 ### 成本图片
 
@@ -160,7 +160,7 @@ Les résultats de la production de 2026: vLLM Orig生支持MoE routing──SGLa
 | Auxiliary-loss-free | “DeepSeek-V3 的技巧” | 只在 router 的 selection 上通过 per-expert bias 实现 balance；没有额外 Gradient。 |
 | Shared expert | “Always on” | 每个 Token 都会经过的额外 expert；捕获通用知识。 |
 | Expert parallelism | “按 expert 分片” | 将不同 experts 分配到不同 GPUs；通过网络 route tokens。 |
-| Sparsity | “active params < total params” | 比率 `k × expert_size / (E × expert_size)`；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
+| Sparsity | “active params < total params” | 比率 $k \times \text{expert size} / (E \times \text{expert size})$；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
 
 ## 延伸阅读
 

@@ -29,25 +29,25 @@ La méthode de réparation est de mettre la position dans les embeddings de quel
 
 预先计算一个形 为 `(max_len, d_model)`La Matrice fixe`PE`- Le numéro de la liste:
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 Ensuite, attention avant d'exécuter`X' = X + PE[:N]`◊ chaque dimension sont des sinus de différentes fréquences ◊ modèle de l'apprentissage du modèle de phase 中读取位置 ◊超过 `max_len`后会失败: lorsque le modèle ne voit que les positions 02047 时, rien ne lui dit que la position 2048 会发生──
 
 ### REPE
 
-旋转 Q 和 K vecteurs( ne sont pas intégrés)`(2i, 2i+1)`- Le numéro de la liste:
+旋转 Q 和 K vecteurs( ne sont pas intégrés)$(2i, 2i+1)$- Le numéro de la liste:
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-Pour la position`pos_k`应用相同旋转──dot produit `q'_m · k'_n`Je deviendrai dépendant.`(m - n)`La fonction est:**attention score 只依赖 relative distance**, bien que le tour soit fait par des positions absolues.
+Pour la position`pos_k`应用相同旋转──dot produit $q'_m \cdot k'_n$Je deviendrai dépendant.$(m - n)$La fonction est:**attention score 只依赖 relative distance**, bien que le tour soit fait par des positions absolues.
 
 扩展 RoPE: se peut réduire `base`(NTK-conscient、YaRN、LongRoPE), afin d'extrapolier dans un contexte de re-entraînement à un contexte plus long。Llama 3 est utilisé de cette manière de passer de 8K à 128K en contexte。
 
@@ -55,11 +55,11 @@ Pour la position`pos_k`应用相同旋转──dot produit `q'_m · k'_n`Je devi
 
 跳过嵌入 技巧──直接给注意分加偏见:
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-Parmi eux `m_h`C'est une pente spécifique à la tête.`1 / 2^(8·h/H)`Les étoiles de proximité sont augmentées; les étoiles de proximité sont pénalisées.
+Parmi eux $m_h$C'est une pente spécifique à la tête.$1 / 2^{8h/H}$Les étoiles de proximité sont augmentées; les étoiles de proximité sont pénalisées.
 
 ### 2026 année à choisir quoi
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键: à la position `m`de Q et position `n`Le produit de leur point s'applique à chaque paire de coordonnées.`cos((m-n)·θ_i)`Parce que le temps est venu pour que je puisse me faire une idée de ce que je fais.
+关键: à la position $m$de Q et position $n$Le produit de leur point s'applique à chaque paire de coordonnées.$\cos((m-n) \cdot \theta_i)$Parce que le temps est venu pour que je puisse me faire une idée de ce que je fais.
 
 ### Étape 3: Pistes de l'ALIBi et biais
 
@@ -169,7 +169,7 @@ Je vous en prie .`outputs/skill-positional-encoding-picker.md`◊ Cette compéte
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |
