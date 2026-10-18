@@ -9,9 +9,9 @@
 
 ##  problématique
 
-Modèle génératif faire une chose: déterminer une distribution inconnue`p_data(x)`extraction de l'échantillon d'entraînement, la sortie semble provenir d'un nouveau échantillon de la même distribution 
+Modèle génératif faire une chose: déterminer une distribution inconnue$p_{\text{data}}(x)$extraction de l'échantillon d'entraînement, la sortie semble provenir d'un nouveau échantillon de la même distribution 
 
-Il est difficile de trouver`p_data`Il existe dans un espace de plusieurs millions de dimensions (une image RGB 512x512 avec environ 786k dimensions), le modèle se trouve dans cet espace avec une très petite variété de variétés, et vous ne pouvez avoir que 10M de variétés. La densité de recherche de résolution est sans espoir.
+Il est difficile de trouver$p_{\text{data}}$Il existe dans un espace de plusieurs millions de dimensions (une image RGB 512x512 avec environ 786k dimensions), le modèle se trouve dans cet espace avec une très petite variété de variétés, et vous ne pouvez avoir que 10M de variétés. La densité de recherche de résolution est sans espoir.
 
 Au cours des 12 dernières années, cinq familles ont survécu. Comprendre ce que chaque famille fait, vous dira pourquoi elle réussit sur certaines missions et pourquoi elle s'effondre sur d'autres.
 
@@ -19,13 +19,13 @@ Au cours des 12 dernières années, cinq familles ont survécu. Comprendre ce qu
 
 ![Generative models 的五个家族 — 按它们建模的对象分类](../assets/taxonomy.svg)
 
-**1. Explicit density, tractable。**Il va`log p(x)`写成一个你真的能计算的求和──Modèles autorégressifs (PixelCNN, WaveNet, GPT) seront `p(x) = ∏ p(x_i | x_<i)`Pour les flux de normalisation (NVP réel, Glow)`p(x)`构建一个简单基础 分布的可逆变换――优点:精确概率,干净的训练 Loss──缺点:autorégressive 推理是顺序的(长序列会慢),流动 需要可逆架构(架构限制很强)。
+**1. Explicit density, tractable。**Il va$\log p(x)$写成一个你真的能计算的求和──Modèles autorégressifs (PixelCNN, WaveNet, GPT) seront $p(x) = \prod_i p(x_i \mid x_{<i})$Pour les flux de normalisation (NVP réel, Glow)$p(x)$构建一个简单基础 分布的可逆变换――优点:精确概率,干净的训练 Loss──缺点:autorégressive 推理是顺序的(长序列会慢),流动 需要可逆架构(架构限制很强)。
 
-**2. Explicit density, approximate。**De la définition ci-dessous`log p(x)`(ELBO)并优化这个界限──VAEs (Kingma 2013) 使用带变化后的编码-decoder──Diffusion models (DDPM, Ho 2020) 训练一个指标,它隐式优化加权 ELBO──Diffusion is 2026 年图像、视频和 3D 的主导脊柱──
+**2. Explicit density, approximate。**De la définition ci-dessous$\log p(x)$(ELBO)并优化这个界限──VAEs (Kingma 2013) 使用带变化后的编码-decoder──Diffusion models (DDPM, Ho 2020) 训练一个指标,它隐式优化加权 ELBO──Diffusion is 2026 年图像、视频和 3D 的主导脊柱──
 
-**3. Implicit density。** complètement sauter la densité; apprendre un générateur de génération de l'échantillon `G(z)`, ainsi qu' un discriminateur de jugement vrai et faux .`D(x)`GANs (Goodfellow 2014) 推理很快(一次进步通过), mais le processus de formation est devenu un succès incertain── même en 2026, StyleGAN 1/2/3 dans le domaine du photoréalisme fixe ((人脸、卧室) est toujours à la pointe de la technologie──
+**3. Implicit density。** complètement sauter la densité; apprendre un générateur de génération de l'échantillon $G(z)$, ainsi qu' un discriminateur de jugement vrai et faux .$D(x)$GANs (Goodfellow 2014) 推理很快(一次进步通过), mais le processus de formation est devenu un succès incertain── même en 2026, StyleGAN 1/2/3 dans le domaine du photoréalisme fixe ((人脸、卧室) est toujours à la pointe de la technologie──
 
-**4. Score-based / continuous-time。**直接学习 log-densité de la gradient `∇_x log p(x)`(score) ――Song & Ermon (2019)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+**4. Score-based / continuous-time。**直接学习 log-densité de la gradient $\nabla_x \log p(x)$(score) ――Song & Ermon (2019)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
 **5. 基于 Token 的离散 codes 上的 autoregressive。**Utilisez VQ-VAE ou quantificateur résiduel pour compresser les données en un segment de séquences de jetons dispersés plus courts, puis utilisez Transformer pour la séquence de jetons 建模──Parti、MuseNet、AudioLM、VALL-E、Sora.
 
@@ -53,7 +53,7 @@ Au cours des 12 dernières années, cinq familles ont survécu. Comprendre ce qu
 Lorsque un nouveau modèle génératif apparaît, avant de commencer à lire la section méthode, réponds à ces cinq questions:
 
 1. **建模的是什么？**Des pixels, des latences, des jetons de dispersion, des gaussiens 3D, des réseaux, des formes d'onde ?
-2. **Density 是 explicit 还是 implicit？**Ils ont écrit ?`log p(x)`- Je suis désolé .
+2. **Density 是 explicit 还是 implicit？**Ils ont écrit ?$\log p(x)$- Je suis désolé .
 3. **Sampling：one-shot 还是 iterative？**Iteratif signifie "attendre plus lentement"; un coup signifie généralement "adversitaire" ou "destilé".
 4. **Conditioning：unconditional、class、text、image、pose？**C'est ce qui décide de la perte et de la construction.
 5. **Evaluation：FID、CLIP score、IS、human preference、task accuracy？**Chacun a des modes d'échec connus.
@@ -91,7 +91,7 @@ En 2026, quelle famille va s'adapter à quelles missions ?
 | Text-to-video | Diffusion Transformer + flow matching | Sora, Veo 2, Kling。 |
 | Speech + music | Token-based AR (AudioLM, VALL-E, MusicGen) 或 flow matching (AudioCraft 2) | 离散 tokens 扩展成本低。 |
 | 3D scenes | Gaussian Splatting fit, diffusion prior | 3D-GS 用于重建，diffusion 用于 novel-view。 |
-| Density estimation（不采样） | Flows | 唯一拥有精确 `log p(x)` 的家族。 |
+| Density estimation（不采样） | Flows | 唯一拥有精确 $\log p(x)$ 的家族。 |
 | Simulation / physics | Flow matching, score SDE | 直线路径，平滑 Vector fields。 |
 
 ## Je le livre.
@@ -110,11 +110,11 @@ Cette compétence  recevoir une tâche description并输出: 1) utiliser quelles
 
 | 术语 | 人们怎么说 | 它实际是什么意思 |
 |------|-----------------|-----------------------|
-| Generative model | “它会生成新东西” | 学习 `p_data(x)` 的 sampler，可选地暴露 `log p(x)`。 |
-| Explicit density | “你可以计算它” | 模型提供 closed-form 或 tractable 的 `log p(x)`。 |
-| Implicit density | “GAN-style” | 只有 sampler——无法计算给定点的 `p(x)`。 |
-| ELBO | “Evidence lower bound” | `log p(x)` 的一个 tractable 下界；VAEs 和 diffusion 会优化它。 |
-| Score | “log-density 的 Gradient” | `∇_x log p(x)`；diffusion 和 SDE models 学习这个 field。 |
+| Generative model | “它会生成新东西” | 学习 $p_{\text{data}}(x)$ 的 sampler，可选地暴露 $\log p(x)$。 |
+| Explicit density | “你可以计算它” | 模型提供 closed-form 或 tractable 的 $\log p(x)$。 |
+| Implicit density | “GAN-style” | 只有 sampler——无法计算给定点的 $p(x)$。 |
+| ELBO | “Evidence lower bound” | $\log p(x)$ 的一个 tractable 下界；VAEs 和 diffusion 会优化它。 |
+| Score | “log-density 的 Gradient” | $\nabla_x \log p(x)$；diffusion 和 SDE models 学习这个 field。 |
 | Manifold hypothesis | “数据存在于一个表面上” | 高维数据集中在低维 manifold 上；这就是 dimensionality reduction 有效的原因。 |
 | Autoregressive | “预测下一个片段” | 将 joint 因式分解为 conditionals 的乘积。 |
 | Latent | “压缩 code” | 一种低维表示，decoder 可以从中重建输入。 |

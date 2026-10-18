@@ -26,13 +26,13 @@ Vous verrez également: IS(score d'initiation, fondamentalement déjà retiré) 
 Heusel et al. (2017)。步骤:
 
 1. Pour N 张真像和 N 张生成图像提取 Inception-v3 fonctionnalités (2048-D) ⋅
-2. Pour chaque pile de l' un Gaussian: calculer la moyenne`μ_r, μ_g`et la co-variance `Σ_r, Σ_g`Il y a une autre.
-3. FID = `||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2 · (Σ_r · Σ_g)^0.5)`Il y a une autre.
+2. Pour chaque pile de l' un Gaussian: calculer la moyenne$\mu_r, \mu_g$et la co-variance $\Sigma_r, \Sigma_g$Il y a une autre.
+3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \mathop{\mathrm{Tr}}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$Il y a une autre.
 
 解释:特征空间中两个多变量 Gaussian 之间的 Fréchet distance──越低 = 分布越相似──
 
 失效模式:
-- **小 N 时有偏。**FID est une moyenne de la distribution des caractéristiques en carré 计算,小 N 会低估共差,给出虚假的低 FID──始终使用 N ≥ 10,000──
+- **小 N 时有偏。**FID est une moyenne de la distribution des caractéristiques en carré  calcul,小 N 会低估共差,给出虚假的低 FID──始终使用 $N \ge 10{,}000$Il y a une autre.
 - **依赖 Inception。**Inception-v3 训练于 ImageNet──远离 ImageNet's domain ([[人脸、艺术、文字图像) ) générera une FID sans signification── en utilisant un extracteur de fonctionnalités dans un domaine spécifique──
 - **刷分。**过拟应Inception préalable peut obtenir un faible FID sans amélioration de la qualité visuelle.
 

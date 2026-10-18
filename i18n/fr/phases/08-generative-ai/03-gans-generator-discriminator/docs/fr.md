@@ -11,12 +11,12 @@
 
 Les VAE produisent des échantillons flou, car leur perte de décodeur MSE est la meilleure pour les images Bayes, tandis que la moyenne de nombreux nombres raisonnables est un nombre flou. Vous voulez une perte de récompense* de raisonnabilité* plutôt que de récompense avec un objectif à un niveau approximatif de pixel.
 
-Bon compagnon de l' idée: entraîner un classifiateur `D(x)`Pour distinguer la réalité et la fausse image.`G(z)`Pour vous tromper .`D`Il y a une autre.`G`Le signal de perte est le suivant:`D`On pense que quelque chose semble réel.`G`改进, ce signal sera également mis à jour, poursuite d'un objectif mobile.`G`Je n'ai jamais écrit.`log p(x)`Dans le cas où les données sont distribuées,
+Bon compagnon de l' idée: entraîner un classifiateur $D(x)$Pour distinguer la réalité et la fausse image.$G(z)$Pour vous tromper .$D$Il y a une autre.$G$Le signal de perte est le suivant:$D$On pense que quelque chose semble réel.$G$改进, ce signal sera également mis à jour, poursuite d'un objectif mobile.$G$Je n'ai jamais écrit.`log p(x)`Dans le cas où les données sont distribuées,
 
 C'est une formation à l'adversité.
 
-```
-min_G max_D  E_real[log D(x)] + E_fake[log(1 - D(G(z)))]
+```math
+\min_G \max_D \; \mathbb{E}_{\text{real}}[\log D(x)] + \mathbb{E}_{\text{fake}}[\log(1 - D(G(z)))]
 ```
 
 Dès 2026, les GAN ne sont plus générateurs de SOTA, mais les deux tiers des modèles de faces les plus utiles ont encore été publiés, les discriminateurs GAN sont utilisés pour la diffusion dans la formation des pertes perceptuelles*, tandis que la formation des adversaires est basée sur des distillations rapides en 1 étape, SDXL-Turbo, SD3-Turbo, LCM, permettant la diffusion en temps réel.
@@ -25,20 +25,20 @@ Dès 2026, les GAN ne sont plus générateurs de SOTA, mais les deux tiers des m
 
 ![GAN training: generator and discriminator in minimax](../assets/gan.svg)
 
-**Generator `G(z)`。**Vecteur de bruit`z ~ N(0, I)`映射到样品 `x̂`◊ Un décodeur 形状的网络(dense 或转换 conv)
+**Generator $G(z)$。**Vecteur de bruit$z \sim \mathcal{N}(0, I)$映射到样品 $\hat{x}$◊ Un décodeur 形状的网络(dense 或转换 conv)
 
-**Discriminator `D(x)`。**Pour le modèle, la probabilité de la probabilité est de 0,0 .
+**Discriminator $D(x)$。**Pour le modèle, la probabilité de la probabilité est de 0,0 .
 
 **Loss。**两个交替更新:
 
-- **训练 `D`：** `loss_D = -[ log D(x) + log(1 - D(G(z))) ]`Pour faire une entropie binaire croisée,
-- **训练 `G`：** `loss_G = -log D(G(z))`C'est un bon compagnon utilisé par les gens qui ne sont pas saturés.`log(1 - D(G(z)))`Il se saturait et il se sentait bien.`D`Je suis très confiant.
+- **训练 $D$：** $\text{loss}_D = -[ \log D(x) + \log(1 - D(G(z))) ]$Pour faire une entropie binaire croisée,
+- **训练 $G$：** $\text{loss}_G = -\log D(G(z))$C'est un bon compagnon utilisé par les gens qui ne sont pas saturés.$\log(1 - D(G(z)))$Il se saturait et il se sentait bien.$D$Je suis très confiant.
 
-**Training loop。**Un pas`D`, étape `G`Je suis en train de vous dire.
+**Training loop。**Un pas$D$, étape $G$Je suis en train de vous dire.
 
-**为什么它能工作。**Si `G`完美匹配 `p_data`Alors ...`D`Faire des suppositions est mieux que faire des suppositions, et il y a des sorties de 0,5;`G`Il n'y a pas de dégradation.
+**为什么它能工作。**Si $G$完美匹配 $p_{\text{data}}$Alors ...$D$Faire des suppositions est mieux que faire des suppositions, et il y a des sorties de 0,5;$G$Il n'y a pas de dégradation.
 
-**为什么它会失效。**L'effondrement du mode`G`Trouver une`D`Je ne peux pas le faire, puis je le fais.`D`Je suis très rapide.`log D`Les taux d'apprentissage sont très élevés.
+**为什么它会失效。**L'effondrement du mode$G$Trouver une$D$Je ne peux pas le faire, puis je le fais.$D$Je suis très rapide.$\log D$Les taux d'apprentissage sont très élevés.
 
 ## 让 GANs Variantes utilisables
 
@@ -64,7 +64,7 @@ gan-minimax
 
 ### 步骤 1: perte non saturante
 
-La perte de la vanille Goodfellow`log(1 - D(G(z)))`Le gradient de G est essentiellement à zéro, G ne peut pas être amélioré, non saturant.`-log D(G(z))`具有相反的表情: Quand D 很自信时它会爆增, donnez à G un signal fort.
+La perte de la vanille Goodfellow$\log(1 - D(G(z)))$Le gradient de G est essentiellement à zéro, G ne peut pas être amélioré, non saturant.$-\log D(G(z))$具有相反的表情: Quand D 很自信时它会爆增, donnez à G un signal fort.
 
 ```python
 def g_loss(d_fake):
@@ -131,7 +131,7 @@ Les GAN sont très rares mais restreintes. Une fois que votre domaine est ouvert
 ## 练习
 
 1. **Easy。**Utilisation de paramètres de fonctionnement`code/main.py` puis mise en place `D_LR = 5 * G_LR`La perte de G s'est effondrée rapidement.
-2. **Medium。**Utilisation de la perte WGAN  remplacement de la perte de la BCE de Goodfellow:`loss_D = E[D(fake)] - E[D(real)]`- Je suis désolé .`loss_G = -E[D(fake)]`, et va faire le clip de poids de D à `[-0.01, 0.01]`◊ La formation est-elle plus stable ?
+2. **Medium。**Utilisation de la perte WGAN  remplacement de la perte de la BCE de Goodfellow:$\text{loss}_D = \mathbb{E}[D(\text{fake})] - \mathbb{E}[D(\text{real})]$- Je suis désolé .$\text{loss}_G = -\mathbb{E}[D(\text{fake})]$, et va faire le clip de poids de D à `[-0.01, 0.01]`◊ La formation est-elle plus stable ?
 3. **Hard。**Pour étendre l'exemple 1-D aux données 2-D, le générateur de suivi des 8 mélanges gaussiens sur le cercle a capturé 8 modes, dont plusieurs ont été réalisés et a reconditionné les mesures.
 
 ## 关键术语
@@ -140,8 +140,8 @@ Les GAN sont très rares mais restreintes. Une fois que votre domaine est ouvert
 |------|-----------------|-----------------------|
 | Generator | "G" | noise-to-sample network，`G: z → x̂`。 |
 | Discriminator | "D" | Classifier `D: x → [0, 1]`，real vs fake。 |
-| Minimax | "The game" | joint objective 的 `min_G max_D`。 |
-| Non-saturating loss | "The fix" | 对 G 使用 `-log D(G(z))`，而不是 `log(1 - D(G(z)))`。 |
+| Minimax | "The game" | joint objective 的 $\min_G \max_D$。 |
+| Non-saturating loss | "The fix" | 对 G 使用 $-\log D(G(z))$，而不是 $\log(1 - D(G(z)))$。 |
 | Mode collapse | "G memorized one thing" | 尽管 data 多样，Generator 只产生少量不同 outputs。 |
 | WGAN | "Wasserstein" | 用 Earth-Mover distance + gradient penalty 替换 BCE；gradient 更平滑。 |
 | Spectral norm | "Lipschitz trick" | 约束 D 的 weight norms 来 bound 它的 slope；稳定 training。 |
@@ -151,7 +151,7 @@ Les GAN sont très rares mais restreintes. Une fois que votre domaine est ouvert
 
 Les GAN en génération de domaine ouvert ne gagnent plus en qualité d'échantillon, mais ils restent en coût d'inférence.
 
-- **没有 prefill，没有 decode stages。**Une fois`G(z)`Passage à l'avant:
+- **没有 prefill，没有 decode stages。**Une fois$G(z)$Passage à l'avant:
 - **没有 KV-cache pressure。**L'état unique est les poids. La taille du lot est limitée par la mémoire d'activation.
 - **Trivial continuous batching。**Comme chaque demande consomme les mêmes FLOP fixes, le serveur  objectif de l'occupation du lot statique est généralement le meilleur de la plupart.
 

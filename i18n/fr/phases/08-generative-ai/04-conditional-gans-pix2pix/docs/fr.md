@@ -8,33 +8,35 @@
 **Time:** ~75 分钟
 
 ##  problématique
-无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空图*、*把白天场景 映射成夜间*、*给灰色图片 上色*──在所有这些任务中,你会得到一个输入图片`x`, et doit être produite avec une correspondance sémantique de`y`Tout le monde.`x`Tout est possible pour beaucoup de choses raisonnables.`y`◊ L'erreur de la moyenne carré les réduira en erreur.
+无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空图*、*把白天场景 映射成夜间*、*给灰色图片 上色*──在所有这些任务中,你会得到一个输入图片$x$, et doit être produite avec une correspondance sémantique de$y$Tout le monde.$x$Tout est possible pour beaucoup de choses raisonnables.$y$◊ L'erreur de la moyenne carré les réduira en erreur.
 
-GAN conditionnelle (Mirza & Osindero, 2014)`c`作为输入加入 `G`et `D`Pix2Pix (Isola et coll., 2017) a fait une spécialisation à ce sujet: condition est une image d'entrée complète, générateur est U-Net, discriminateur est un classifiateur par patch (PatchGAN), Perte est adversaire + L1── même en 2026 année, ce ensemble de composition est encore plus important que le modèle texte-image, car il s'entraîne sur les données parées*.
+GAN conditionnelle (Mirza & Osindero, 2014)$c$作为输入加入 $G$et $D$Pix2Pix (Isola et coll., 2017) a fait une spécialisation à ce sujet: condition est une image d'entrée complète, générateur est U-Net, discriminateur est un classifiateur par patch (PatchGAN), Perte est adversaire + L1── même en 2026 année, ce ensemble de composition est encore plus important que le modèle texte-image, car il s'entraîne sur les données parées*.
 
 ## 概念
 ![Pix2Pix: U-Net generator, PatchGAN discriminator](../assets/pix2pix.svg)
 
-**Conditional G.** `G(x, z) → y`Dans Pix2Pix,`z`Il n'y a pas de bruit de sortie  Isola 发现显式噪音 会被忽略)
+**Conditional G.** $G(x, z) \to y$Dans Pix2Pix,$z$Il n'y a pas de bruit de sortie  Isola 发现显式噪音 会被忽略)
 
-**Conditional D.** `D(x, y) → [0, 1]`◊输入是 *pair*(condition, sortie) ◊这是关键差异:D 必须判断 `y`      `x`Un coup, et pas seulement juger.`y`Ça semble être vrai.
+**Conditional D.** $D(x, y) \to [0, 1]$◊输入是 *pair*(condition, sortie) ◊这是关键差异:D 必须判断 $y$      $x$Un coup, et pas seulement juger.$y$Ça semble être vrai.
 
 **U-Net generator.**带有跨瓶跳连接的编码器-decoder──对于输入和输出共享低级结构的任务至关重要──没有这些跳转,高频细节会消失──
 
-**PatchGAN discriminator.**D ne sort pas un seul score réel/faux, mais une seule.`N×N`Grille, chaque cellule juge environ 70×70 pixels de champ réceptif.
+**PatchGAN discriminator.**D ne sort pas un seul score réel/faux, mais une seule.$N \times N$Grille, chaque cellule juge environ 70×70 pixels de champ réceptif.
 
 **Loss.**
 
-```
-loss_G = -log D(x, G(x)) + λ · ||y - G(x)||_1
-loss_D = -log D(x, y) - log (1 - D(x, G(x)))
+```math
+\begin{aligned}
+\text{loss}_G &= -\log D(x, G(x)) + \lambda \cdot \lVert y - G(x) \rVert_1 \\
+\text{loss}_D &= -\log D(x, y) - \log(1 - D(x, G(x)))
+\end{aligned}
 ```
 
-L1 项稳定训练,并推动 G 接近已知目标──L1 产生更利的边缘 (médiens, et non moyens) ⋅`λ = 100`C'est la valeur par défaut de Pix2Pix.
+L1 项稳定训练,并推动 G 接近已知目标──L1 产生更利的边缘 (médiens, et non moyens) ⋅$\lambda = 100$C'est la valeur par défaut de Pix2Pix.
 
 ## CycleGAN  lorsque vous n'avez pas de paires
 
-Pix2Pix 需要对合 `(x, y)`Les données CycleGAN (Zhu et coll., 2017) 通过额外的 Loss 放弃这个要求:*consistance du cycle* perte――deux générateurs:`G: X → Y`et `F: Y → X` Les entraîner, faire`F(G(x)) ≈ x`且 `G(F(y)) ≈ y`                                                                                                                                                                                                                                                              
+Pix2Pix 需要对合 $(x, y)$Les données CycleGAN (Zhu et coll., 2017) 通过额外的 Loss 放弃这个要求:*consistance du cycle* perte――deux générateurs:$G: X \to Y$et $F: Y \to X$ Les entraîner, faire$F(G(x)) \approx x$且 $G(F(y)) \approx y$                                                                                                                                                                                                                                                              
 
 En 2026, une image à image non couplée (ControlNet、IP-Adapter) est terminée, et non CycleGAN, mais la cohérence du cycle est toujours présente dans presque tous les domaines d'adaptation non couplée.
 
@@ -44,7 +46,7 @@ gx-patchgan
 ```
 
 ## - Je le construis.
-`code/main.py`Dans les données 1D, une condition conditionnelle GAN est mise en œuvre.`c`≈ étiquette de classe ≈ 0 ou 1) ≈ mission: ≈ pour une classe déterminée 生成一个来自条件分布的样本──
+`code/main.py`Dans les données 1D, une condition conditionnelle GAN est mise en œuvre.$c$≈ étiquette de classe ≈ 0 ou 1) ≈ mission: ≈ pour une classe déterminée 生成一个来自条件分布的样本──
 
 ### 步骤 1: Va condition 添加到 G 和 D 的输入
 
@@ -81,9 +83,9 @@ for c in [0, 1]:
 
 ## La trappe
 - **Condition 被忽略。**G 学会 marginaliser, D 从不惩罚,因为 condition signal 太弱──修复:更强地 condition D(région précoce,而不只是 tard), utiliser le discriminateur de projection (Miyato & Koyama 2018)──
-- **L1 weight 过低。**G 漂移到任意看起来真实输出, plutôt que fidèles ones──Pix2Pix style 任务从 λ≈100 开始──
-- **L1 weight 过高。**G                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-- **D 中 ground-truth leakage。**Il va`(x, y)`Concat  comme entrée D,而不只是 `y`◊ sinon D 无法检查一致性──
+- **L1 weight 过低。**G 漂移到任意看起来真实输出, plutôt que fidèles ones──Pix2Pix style 任务从 $\lambda \approx 100$Je commence.
+- **L1 weight 过高。**G                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $L_p$Normalité: formation stable après progression
+- **D 中 ground-truth leakage。**Il va$(x, y)$Concat  comme entrée D,而不只是 $y$◊ sinon D 无法检查一致性──
 - **每个 class 的 mode collapse。**Chaque classe peut s'effondrer indépendamment.
 
 ## Utilisez-le

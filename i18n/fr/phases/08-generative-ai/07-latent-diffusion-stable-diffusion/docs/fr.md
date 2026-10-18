@@ -21,9 +21,9 @@ C' est la diffusion stable . SD 1.x / 2.x Utilisez un 860M U-Net  traitement `64
 
 **两个阶段，分别训练。**
 
-1. **Stage 1 — VAE.**Le codeur `E(x) → z`, décodeur `D(z) → x` taux de contraction de l'objectif: pour chaque espace axé sous la forme de 8×, réajustement du canal, rendant la taille totale latente d'environ 1/16 du nombre de pixels.`z`Je ne serai pas forcé de faire trop de Gaussian, parce que nous n'avons pas besoin de lui.`z`Faites un bon exemple. Il est généralement accompagné de la perte de l'adversaire.
+1. **Stage 1 — VAE.**Le codeur $E(x) \to z$, décodeur $D(z) \to x$ taux de contraction de l'objectif: pour chaque espace axé sous la forme de 8×, réajustement du canal, rendant la taille totale latente d'environ 1/16 du nombre de pixels.$z$Je ne serai pas forcé de faire trop de Gaussian, parce que nous n'avons pas besoin de lui.$z$Faites un bon exemple. Il est généralement accompagné de la perte de l'adversaire.
 
-2. **Stage 2 — 在 `z` 上做 diffusion。**Je ne sais pas .`z = E(x_real)`Quand on est en train de dénoncer`z_t`◊ 推理时: par diffusion 采样 `z_0`Alors ...`x = D(z_0)`Il y a une autre.
+2. **Stage 2 — 在 $z$ 上做 diffusion。**Je ne sais pas .$z = E(x_{\text{real}})$Quand on est en train de dénoncer$z_t$◊ 推理时: par diffusion 采样 $z_0$Alors ...$x = D(z_0)$Il y a une autre.
 
 **文本 conditioning。**Il y a aussi deux extra-components. Un codeur de texte: SD 1.x avec CLIP-L, SD 2/XL avec CLIP-L+OpenCLIP-G, SD3 et Flux avec T5-XXL)`[Q = image features, K = V = text tokens]`Les jetons sont le seul moyen de modifier le texte.
 
@@ -59,21 +59,21 @@ def encode(x):    return x * 0.5          # toy "compression" to smaller scale
 def decode(z):    return z * 2.0
 ```
 
-Pour les besoins de l'enseignement, cette carte de la ligne est suffisante pour expliquer la diffusion peut être`z`Il est aussi un élément clé de la stratégie de l'entreprise.
+Pour les besoins de l'enseignement, cette carte de la ligne est suffisante pour expliquer la diffusion peut être$z$Il est aussi un élément clé de la stratégie de l'entreprise.
 
 ### Pas 2:`z`- diffusion dans l'espace
 
-Les données vues sur le réseau sont les mêmes que celles de la leçon 06`z = E(x)`- Je suis en train de le faire.`z_0`后,用 `D(z_0)`décodeur
+Les données vues sur le réseau sont les mêmes que celles de la leçon 06$z = E(x)$- Je suis en train de le faire.$z_0$后,用 $D(z_0)$décodeur
 
 ### 步骤 3: orientation sans classifiant
 
-Pendant l'entraînement, 10% du temps a été abandonné pour la classe.`ε_cond`et `ε_uncond`Puis:
+Pendant l'entraînement, 10% du temps a été abandonné pour la classe.$\epsilon_{\text{cond}}$et $\epsilon_{\text{uncond}}$Puis:
 
 ```python
 eps_cfg = (1 + w) * eps_cond - w * eps_uncond
 ```
 
-`w = 0`= 无指导(完全多样性),`w = 3`= 默认值,`w = 7+`= 和 / 过化。
+$w = 0$= 无指导(完全多样性),$w = 3$= 默认值,$w = 7+$= 和 / 过化。
 
 ### 步骤 4: 文本 conditioning(概念,不是代码)
 
@@ -91,7 +91,7 @@ C'est la seule différence substantielle entre le modèle de diffusion condition
 - **Text encoder silently wrong。**SD3 需要带 >=128 tokens of T5-XXL, fallback till only CLIP 会有损──始终检查 `use_t5=True`Si ce n'est pas le cas, la fidélité sera immédiate.
 - **混用 latent spaces。**SDXL、SD3、Flux sont utilisés dans différents VAEs。 dans les latences SDXL, le LoRA de l'entraînement n'est pas utilisé dans le SD3。 Les diffuseurs de la face en éclats 0.30+ refusent de charger des points de contrôle non correspondants。
 - **CFG too high。** `w > 10`Il a été créé pour la production d'images et de dessins, et a été adapté rapidement à la variété.`w = 3-7`Il y a une autre.
-- **Negative prompts leaking。**Le prompt négatif vide deviendra un jeton nul; le prompt négatif rempli deviendra un jeton`ε_uncond` Les deux ne sont pas les mêmes; certains pipelines seront utilisés en silence sans valeur
+- **Negative prompts leaking。**Le prompt négatif vide deviendra un jeton nul; le prompt négatif rempli deviendra un jeton$\epsilon_{\text{uncond}}$ Les deux ne sont pas les mêmes; certains pipelines seront utilisés en silence sans valeur
 
 ## Utilisez-le
 
@@ -112,7 +112,7 @@ Production de 2026:
 
 ## 练习
 
-1. **Easy.**Utiliser des conseils `w ∈ {0, 1, 3, 7, 15}`运行  référencement`code/main.py`◊ enregistrer l'échantillon moyen de chaque classe ◊ dans quoi `w`La classe signifie-t-elle qu'elle sera différente de la moyenne des données réelles ?
+1. **Easy.**Utiliser des conseils $w \in \lbrace 0, 1, 3, 7, 15 \rbrace$运行  référencement`code/main.py`◊ enregistrer l'échantillon moyen de chaque classe ◊ dans quoi $w$La classe signifie-t-elle qu'elle sera différente de la moyenne des données réelles ?
 2. **Medium.**Pour remplacer le codeur de jouets en ligne par un codeur/découreur tanh-MLP, rejoindre la perte de reconstruction.
 3. **Hard.**Utilisez des diffuseurs pour créer une réelle diffusion stable`sdxl-base`, avec CFG=7 运行 30 个 Euler steps,并计时――然后切换到 `sdxl-turbo`, en utilisant 4 étapes 和 CFG=0── le même sujet, de qualité différente, décrivant ce qui a changé et les causes──
 
@@ -122,8 +122,8 @@ Production de 2026:
 |------|-----------------|-----------------------|
 | First stage | “The VAE” | 训练好的 encoder/decoder 对；把 512² 压缩到 64²。 |
 | Second stage | “The U-Net” | latent space 上的 diffusion model。 |
-| CFG | “Guidance scale” | `(1+w)·ε_cond - w·ε_uncond`；调节 conditioning strength。 |
-| Null token | “Empty prompt embed” | 用于 `ε_uncond` 的 unconditional embed。 |
+| CFG | “Guidance scale” | $(1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$；调节 conditioning strength。 |
+| Null token | “Empty prompt embed” | 用于 $\epsilon_{\text{uncond}}$ 的 unconditional embed。 |
 | Cross-attention | “How text gets in” | 每个 U-Net block 都以 text tokens 作为 K 和 V 进行 attention。 |
 | DiT | “Diffusion Transformer” | 用作用于 latent patches 的 transformer 替换 U-Net；扩展性更好。 |
 | MMDiT | “Multi-modal DiT” | SD3 的架构：带 joint attention 的文本与图像流。 |

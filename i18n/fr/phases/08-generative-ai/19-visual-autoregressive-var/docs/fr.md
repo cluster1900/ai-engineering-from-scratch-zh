@@ -21,7 +21,7 @@ Chaque mesure se met à regarder toutes les mesures précédentes (en fonction d
 
 ### Le marqueur à échelle multiple VQ-VAE
 
-VAR  besoin d' un **multi-scale discrete Tokenizer**Pour une image x, il génère une série de jetons qui augmentent progressivement leur résolution:
+VAR  besoin d' un **multi-scale discrete Tokenizer**Pour les images$x$, il génère une série de résolutions progressivement améliorées de jetons:
 
 ```
 x -> encoder -> latent f
@@ -31,13 +31,13 @@ f -> tokenize at 2x2: token grid z_2 of shape (2, 2)
 f -> tokenize at (H/p)x(W/p): token grid z_K of shape (H/p, W/p)
 ```
 
-Chaque z_k utilise le même codebook (typiquement 4096-16384) ⋅ Tokenization à chaque échelle n'est pas indépendante de l'autre, mais est entraînée à faire des besoins et à pouvoir reconstruire les résidus de chaque échelle:
+Chaque .$z_k$Utilisation du même codebook (typique: 4096-16384)  Tokenization à chaque échelle n'est pas indépendante de l'autre, mais est formée pour permettre à chaque échelle de se reconstruire.$f$- Le numéro de la liste:
 
-```
-f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size)
+```math
+f \approx \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_1), \text{target\_size}) + \cdots + \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_K), \text{target\_size})
 ```
 
-C' est un .**residual VQ**变体──尺度 k 捕获尺度 1..k-1 遗漏的内容──Decoder 接收所有尺度 嵌入的和并生成图像──
+C' est un .**residual VQ**La taille$k$La taille de la taille$1 \ldots k-1$遗漏的内容──Decoder 接收所有尺度 嵌入的和并生成图像──
 
 Le Tokenizer VQ à grande échelle ne fait que s'entraîner une fois, alors tout le travail généré est réalisé par le modèle autorégressif.
 
@@ -50,9 +50,9 @@ Structure de séquence d'entrée:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Position Embedding avec code de mesure indication et position spatiale dans la mesure. L'attention sur la mesure de séquence est causelle de: mesure k, position (i, j) du Token Attention à la mesure 1..k de tous les Tokens, ou attention à la mesure k est utilisé dans l'ordre de l'ordre de l'échelle.
+Position Embedding avec code de mesure indice et mesure position spatiale dans la mesure. Attention sur la mesure de l'ordre est causelle de: mesure.$k$Localisation$(i, j)$Les symboles peuvent être attentifs à la taille $1 \ldots k$Toutes les jetons, attention à la taille.$k$Dans le même temps, les données de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur sont les valeurs de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de
 
-訓練 Loss: dans chaque mesure k, given all previousmeasure's Token, prédiction Token z_k。对离散 VQ codes ⇒ Utilisation de la perte de l'entropie croisée。 structure et GPT sont similaires, juste ici sequence est devenue une séquence structurée de la mesure。
+L' entraînement: dans chaque mesure$k$, à déterminer tous les précédents mesures de jeton, prédiction jeton $z_k$ Les codes VQ utilisés pour la perte d'entropie croisée  La structure est similaire à celle du GPT, mais la séquence de la même est devenue une séquence structurée de dimension 
 
 ### Produit
 
@@ -66,7 +66,7 @@ decode: f = sum of embed-and-upsample scales 1..K
 image = VAE_decoder(f)
 ```
 
-Lorsque K = 10 dimensions, la génération nécessite 10 fois Transformer passer en avant. Chaque passage est effectué pour générer toute la taille, plutôt que de se retourner à chaque jeton dans la mesure. Pour 256x256 images, c'est environ 10 fois de passer, tandis que le DiT est de 28 à 50 fois.
+- Je suis là .$K = 10$个尺时,生成需要10次 Transformer forward pass. 个尺时,生成需要10次 Transformer forward pass. 个尺时,生成成个尺度,而不是在尺度内逐个代币自归.
 
 ### Pourquoi la prochaine échelle gagne la prochaine échelle ?
 
@@ -127,7 +127,7 @@ Ceci est une mise en œuvre de jouets. L'important est de voir la dimension stru
 | Multi-scale VQ tokenizer | "Residual VQ" | 生成 K 个分辨率递增 Token 网格的 VQ-VAE，decoder 会对所有尺度求和 |
 | Scale k | "Pyramid level k" | K 个分辨率层级之一，从 k=1 的 1x1 到 k=K 的 (H/p)x(W/p) |
 | Parallel-within-scale | "One forward per scale" | 尺度 k 的所有 Token 在一次 Transformer pass 中预测，而不是自回归预测 |
-| Causal-across-scales | "Scale-ordered attention" | 尺度 k 的 Token 可以 Attention 到尺度 1..k 的全部内容，但不能 Attention 到尺度 k+1..K |
+| Causal-across-scales | "Scale-ordered attention" | 尺度 $k$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的全部内容，但不能 Attention 到尺度 $k+1 \ldots K$ |
 | Residual VQ | "Additive tokenization" | 每个尺度的 Token 编码较低尺度留下的 residual；decoder 对所有尺度 Embedding 求和 |
 | VAR scaling law | "Image GPT scaling" | FID 随 compute 遵循可预测的 power law，类似语言模型的 perplexity |
 | HART | "Hybrid VAR + text" | Text-conditional VAR 变体，将 MaskGIT-style iterative decoding 与 VAR 的尺度结构结合 |

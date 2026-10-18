@@ -39,15 +39,15 @@ features += weight_a * control_a(depth) + weight_b * control_b(pose)
 
 ### L'ACE (Hu et coll., 2021)
 
-Pour la couche linéaire`W ∈ R^{d×d}`, 结 `W`Il n'y a pas de delta de rang inférieur.
+Pour la couche linéaire$W \in \mathbb{R}^{d \times d}$, 结 $W$Il n'y a pas de delta de rang inférieur.
 
+```math
+W' = W + \Delta W, \quad \Delta W = B A, \quad A \in \mathbb{R}^{r \times d}, \quad B \in \mathbb{R}^{d \times r}
 ```
-W' = W + ΔW,  ΔW = B @ A,  A ∈ R^{r×d},  B ∈ R^{d×r}
-```
 
-Parmi eux `r << d`Pour la position de la charge, le rang 4-16 est la classification standard; pour la position de la gravité, le rang 64-128 est le plus fréquent.`2 · d · r`, au lieu de `d²`Pour le`d=640`L'attention de SDXL,`r=16`Lorsque chaque adaptateur ne contient que 20k de paramètres, au lieu de 410k, réduit de 20x, il est mis sur l'ensemble du modèle, un LORA est généralement de 20 à 200MB, tandis que la base est de 5GB.
+Parmi eux $r \ll d$Pour la position de la charge, le rang 4-16 est la classification standard; pour la position de la gravité, le rang 64-128 est le plus fréquent.$2 \cdot d \cdot r$, au lieu de $d^2$Pour le$d=640$L'attention de SDXL,$r=16$Lorsque chaque adaptateur ne contient que 20k de paramètres, au lieu de 410k, réduit de 20x, il est mis sur l'ensemble du modèle, un LORA est généralement de 20 à 200MB, tandis que la base est de 5GB.
 
-En déduisant, vous pouvez réduire LORA:`W' = W + α · B @ A`Il y a une autre.`α = 0.5-1.5`很常见──多个LoRA会加法方式叠加(habituellement, il faut noter qu'elles se affectent mutuellement de manière non-linéaire)──
+En déduisant, vous pouvez réduire LORA:$W' = W + \alpha \cdot B A$Il y a une autre.$\alpha = 0.5\text{-}1.5$很常见──多个LoRA会加法方式叠加(habituellement, il faut noter qu'elles se affectent mutuellement de manière non-linéaire)──
 
 ### Adapteur IP (Ye et coll., 2023)
 
@@ -75,7 +75,7 @@ v4-controlnet-zero
 
 `code/main.py`Dans la 1re dimension, on peut simuler ces deux mécanismes:
 
-1. **LoRA。**Une couche linéaire prétrainée .`W`- Il est un peu trop petit.`B @ A`,使 `W + BA`L'objectif est de faire correspondre la couche linéaire.`r = 1`足以完美学习 une correction de rang 1
+1. **LoRA。**Une couche linéaire prétrainée .$W$- Il est un peu trop petit.$BA$,使 $W + BA$L'objectif est de faire correspondre la couche linéaire.$r = 1$足以完美学习 une correction de rang 1
 
 2. **ControlNet-lite。**Un prédicteur de base gelé, ainsi qu'un signal supplémentaire de lecture du réseau de côté, la sortie du réseau de côté est effectuée par un gateau de volume de formation initiale à zéro.
 
@@ -99,11 +99,11 @@ Dans l'étape 0, le sort et la base sont exactement les mêmes.`gate`, ne se pro
 
 ## 常见坑
 
-- **LoRA 过度缩放。** `α = 2`Ou `α = 3`C'est une méthode courante pour le rendre plus fort, mais qui entraîne une sur-formation ou une détérioration des sorties.`α ≤ 1.5`Il y a une autre.
+- **LoRA 过度缩放。** $\alpha = 2$Ou $\alpha = 3$C'est une méthode courante pour le rendre plus fort, mais qui entraîne une sur-formation ou une détérioration des sorties.$\alpha \le 1.5$Il y a une autre.
 - **ControlNet weight 冲突。**Le poids de la pose de 1.0 et le poids de la profondeur de 1.0 sont généralement utilisés.
 - **LoRA 用在错误的 base 上。**SDXL LoRA dans SD 1.5 上会静默 no-op, parce que les dimensions d'attention ne correspondent pas.
 - **Textual Inversion 漂移。**Dans un point de contrôle, les jetons de formation, changés à un autre point de contrôle, seront gravement déplacés.
-- **LoRA weight-merging 和存储。**Vous pouvez faire cuire le LoRA à la base des poids du modèle, pour obtenir une inférence plus rapide, sans ajout de temps de course, mais perdra en temps de course  diminution `α`La capacité de conserver deux versions.
+- **LoRA weight-merging 和存储。**Vous pouvez faire cuire le LoRA à la base des poids du modèle, pour obtenir une inférence plus rapide, sans ajout de temps de course, mais perdra en temps de course  diminution $\alpha$La capacité de conserver deux versions.
 
 ## Utilisez-le
 
@@ -126,7 +126,7 @@ Dans l'étape 0, le sort et la base sont exactement les mêmes.`gate`, ne se pro
 
 1. **Easy。**Dans le`code/main.py`Le rang de l'Agence Loira`r`De 1 à 4... Où est le delta cible de la classe 2 ?
 2. **Medium。**Dans les deux transformations cibles, on entraîne deux LORA indépendantes. On les charge ensemble et on montre leur interaction accrue.
-3. **Hard。**Utilisation de diffuseurs 叠加:SDXL-base + Canny-ControlNet(poids 0,8) + un style LoRA(α 0,8) + IP-adapter(poids 0,6)。 Avec les poids de pile 变化, mesure FID-vs-prompt-adhésion-off。
+3. **Hard。**Utilisation de diffuseurs 叠加:SDXL-base + Canny-ControlNet(poids 0,8) + un style LoRA($\alpha$0,8) + Adapteur IP ((poids 0,6)。 avec les poids de pile 变化, mesure FID-vs-immédiat-adhésion trade-off。
 
 ## 关键术语
 
@@ -134,9 +134,9 @@ Dans l'étape 0, le sort et la base sont exactement les mêmes.`gate`, ne se pro
 |------|------------|------------------|
 | ControlNet | "Spatial control" | 克隆 encoder + zero-conv skips；读取一张 conditioning image。 |
 | Zero convolution | "Starts as identity" | 初始化为零的 1×1 conv；ControlNet 一开始是 no-op。 |
-| LoRA | "Low-rank adapter" | `W + B @ A`，`r << d`；比 full fine-tune 少 100x 参数。 |
+| LoRA | "Low-rank adapter" | $W + BA$，$r \ll d$；比 full fine-tune 少 100x 参数。 |
 | rank r | "The knob" | LoRA 压缩；典型值为 4-16，重度个性化使用 64+。 |
-| α | "LoRA strength" | LoRA delta 的 runtime scaling。 |
+| $\alpha$ | "LoRA strength" | LoRA delta 的 runtime scaling。 |
 | IP-Adapter | "Reference image" | 通过 CLIP-image tokens 实现的小型 image-conditioning adapter。 |
 | DreamBooth | "Full subject fine-tune" | 在约 ~30 张主体图像上训练完整模型。 |
 | Textual Inversion | "New token" | 只学习一个新的 word embedding；旧方案，大多已被替代。 |
@@ -145,7 +145,7 @@ Dans l'étape 0, le sort et la base sont exactement les mêmes.`gate`, ne se pro
 
 Un vrai SaaS texte à image se trouve dans le même point de contrôle de base.
 
-- **Hot-swap LoRAs，不要 merge。**Il va`W' = W + α·B·A`fusionner à la base, nous pouvons faire des inférences à chaque étape`α`Et la base. Il y a des délits de la LRA dans le VRAM.`pipe.load_lora_weights()`+ `pipe.set_adapters([...], adapter_weights=[...])`, pouvant être utilisé sur demande pour activer.`2 · d · r · num_layers`Les poids, c'est-à-dire les poids de MB
+- **Hot-swap LoRAs，不要 merge。**Il va$W' = W + \alpha \cdot B \cdot A$fusionner à la base, nous pouvons faire des inférences à chaque étape$\alpha$Et la base. Il y a des délits de la LRA dans le VRAM.`pipe.load_lora_weights()`+ `pipe.set_adapters([...], adapter_weights=[...])`, pouvant être utilisé sur demande pour activer.`2 · d · r · num_layers`Les poids, c'est-à-dire les poids de MB
 - **ControlNet 作为第二条 attention lane。**                                                                                                                                                                                                                                                              
 - **Quantized LoRAs 也适用。**Si vous avez mesuré la base (voir leçon 07, Flux sur 8 Go), LoRA delta peut également être mesuré à 8 bits ou 4 bits.
 

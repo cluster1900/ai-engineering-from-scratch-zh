@@ -9,9 +9,9 @@
 
 ##  problématique
 
-Le processus de réaction du DDPM est un processus de réaction.`N(0, I)`Retour à la distribution des données 1000 étapes avec le processus de détail. Le DIM est réduit à 20 à 50 étapes de détermination.
+Le processus de réaction du DDPM est un processus de réaction.$\mathcal{N}(0, I)$Retour à la distribution des données 1000 étapes avec le processus de détail. Le DIM est réduit à 20 à 50 étapes de détermination.
 
-Si vous pouvez entraîner un modèle, faire de la route du bruit aux données une ligne droite, alors de `t=1`À la`t=0`Le processus de construction de l'équipement de l'équipement est de type:`x_1 ∼ N(0, I)`À la`x_0 ∼ data`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `v_θ(x, t)`Pour le faire correspondre à son temps, et en déduire le temps de calcul.
+Si vous pouvez entraîner un modèle, faire de la route du bruit aux données une ligne droite, alors de $t=1$À la$t=0$Le processus de construction de l'équipement de l'équipement est de type:$x_1 \sim \mathcal{N}(0, I)$À la$x_0 \sim \text{data}$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $v_\theta(x, t)$Pour le faire correspondre à son temps, et en déduire le temps de calcul.
 
 Le flux rectifié (Liu 2022) est plus approfondi: avec la procédure de reflux 代地拉直路径, générer un ODE progressivement plus proche de la ligne.
 
@@ -23,41 +23,41 @@ Le flux rectifié (Liu 2022) est plus approfondi: avec la procédure de reflux �
 
 定义:
 
-```
-x_t = t · x_1 + (1 - t) · x_0,   t ∈ [0, 1]
-```
-
-Parmi eux `x_0 ~ data`- Je suis désolé .`x_1 ~ N(0, I)` Le nombre de temps de la ligne droite est le nombre constant:
-
-```
-dx_t / dt = x_1 - x_0
+```math
+x_t = t \cdot x_1 + (1 - t) \cdot x_0, \quad t \in [0, 1]
 ```
 
- définir un champ de vecteur neuronal `v_θ(x_t, t)`,并训练它匹配这个导数:
+Parmi eux $x_0 \sim \text{data}$- Je suis désolé .$x_1 \sim \mathcal{N}(0, I)$ Le nombre de temps de la ligne droite est le nombre constant:
 
-```
-L = E_{x_0, x_1, t} || v_θ(x_t, t) - (x_1 - x_0) ||²
+```math
+\frac{dx_t}{dt} = x_1 - x_0
 ```
 
-C' est ça .**conditional flow matching**Loss(Lipman 2023)。 entraînement n'a pas besoin de simulation:`(x_0, x_1, t)`Il n'y a pas de régression.
+ définir un champ de vecteur neuronal $v_\theta(x_t, t)$,并训练它匹配这个导数:
+
+```math
+L = \mathbb{E}_{x_0, x_1, t} \left\lVert v_\theta(x_t, t) - (x_1 - x_0) \right\rVert^2
+```
+
+C' est ça .**conditional flow matching**Loss(Lipman 2023)。 entraînement n'a pas besoin de simulation:$(x_0, x_1, t)$Il n'y a pas de régression.
 
 ### 采样
 
 Dans l'inférence, le champ vectoriel de l'instruction est:
 
-```
-x_{t-Δt} = x_t - Δt · v_θ(x_t, t)
+```math
+x_{t-\Delta t} = x_t - \Delta t \cdot v_\theta(x_t, t)
 ```
 
-De `x_1 ~ N(0, I)`Commencez avec l'étape d'Euler.`t=0`Il y a une autre.
+De $x_1 \sim \mathcal{N}(0, I)$Commencez avec l'étape d'Euler.$t=0$Il y a une autre.
 
 ### Flux rectifié (Liu 2022)
 
-Le flux direct peut fonctionner, mais le chemin de l'apprentissage* n'est pas en fait direct*, car il y a beaucoup de`x_0`Ça peut être diffusé sur le même.`x_1`❖ Étapes de reflux du débit rectifié:
+Le flux direct peut fonctionner, mais le chemin de l'apprentissage* n'est pas en fait direct*, car il y a beaucoup de$x_0$Ça peut être diffusé sur le même.$x_1$❖ Étapes de reflux du débit rectifié:
 
-1. Utilisation de l'entraînement avec le modèle de flux v_1──
-2. 通过将 v_1 从 `x_1`积分到其落点 `x_0`, en ce qui concerne`(x_1, x_0)`Il y a une autre.
-3. En effet, ces deux types de couplage sont actuellement en phase avec l'ODE, la ligne d'interaction entre eux est plus plate.
+1. Utiliser le modèle de flux de formation$v_1$Il y a une autre.
+2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $v_1$De $x_1$积分到其落点 $x_0$, en ce qui concerne$(x_1, x_0)$Il y a une autre.
+3. Dans ces couples de l' entraînement$v_2$因为这些配对现在是ODE-matched的, la ligne d'intervalle entre elles est vraiment plus plate
 4. Je vous en prie.
 
 En pratique, 2 fois le reflux est capable de se rapprocher de la ligne, ce qui permet de réaliser une inférence en 2 à 4 étapes.
@@ -72,7 +72,7 @@ Trois raisons:
 
 ## Parallèle des flux versus DDPM:
 
-带 Gauss conditionné de la trajectoire de flux correspondant est l'utilisation de * un programme de bruit spécifique * de Diffusion。选择 `x_t = α(t) x_0 + σ(t) x_1`Le calendrier, le flux correspondant, et la diffusion réformée par Stratonovich, entre autres.`v = α'·x_0 - σ'·x_1`Pour les chemins gaussiens, les deux sont égaux en prix.
+带 Gauss conditionné de la trajectoire de flux correspondant est l'utilisation de * un programme de bruit spécifique * de Diffusion。选择 $x_t = \alpha(t) x_0 + \sigma(t) x_1$Le calendrier, le flux correspondant, et la diffusion réformée par Stratonovich, entre autres.$v = \alpha' \cdot x_0 - \sigma' \cdot x_1$Pour les chemins gaussiens, les deux sont égaux en prix.
 
 Le flux de correspondance est augmenté par: objectif de la * clarté de la * normale de la vitesse)
 
@@ -83,7 +83,7 @@ normalizing-flow
 
 ## - Je le construis.
 
-`code/main.py`Dans le double sommet de la mixture gaussienne, il est possible de réaliser une correspondance de flux en 1D.`v_θ(x, t)`Il s'agit d'un petit MLP, en utilisant une formation directe de but.
+`code/main.py`Dans le double sommet de la mixture gaussienne, il est possible de réaliser une correspondance de flux en 1D.$v_\theta(x, t)$Il s'agit d'un petit MLP, en utilisant une formation directe de but.
 
 ### 步骤 1: Perte de formation
 
@@ -116,10 +116,10 @@ Le prélèvement de l'échantillon de 4 étapes est déjà capable de répondre 
 
 ## - C' est facile.
 
-- **Time parameterization。**Correspondance de débit`t ∈ [0, 1]`, parmi lesquels `t=0`Les données sont`t=1`Il y a beaucoup de bruit.`t ∈ [0, T]`, parmi lesquels `t=0`Les données sont`t=T`C'est le même bruit, les mêmes directions, les mêmes dimensions.
+- **Time parameterization。**Correspondance de débit$t \in [0, 1]$, parmi lesquels $t=0$Les données sont$t=1$Il y a beaucoup de bruit.$t \in [0, T]$, parmi lesquels $t=0$Les données sont$t=T$C'est le même bruit, les mêmes directions, les mêmes dimensions.
 - **Schedule choice。**Le flux rectifié de l'échantillonnage est le calendrier de correspondance de flux, mais vous pouvez également utiliser le cosine ou le t-échantillonnage normal logique (SD3) pour obtenir une meilleure mesure de couverture.
 - **Reflow cost。**Pour reflux, un ensemble de données de production de reflux est équivalent à chaque échantillon qui fait une inférence complète une fois.
-- **Classifier-free guidance 仍然适用。**Il suffit de mettre en ligne le composé et de le changer en v:`v_cfg = (1+w) v_cond - w v_uncond`Il y a une autre.
+- **Classifier-free guidance 仍然适用。**Il suffit de le mettre en ligne.$\epsilon$- Je suis là !$v$- Le numéro de la liste:$v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$Il y a une autre.
 
 ## Utilisez-le
 
@@ -141,20 +141,20 @@ Il s'agit de la même méthode de distillation.
 ## 练习
 
 1. **Easy。**运行  référencement`code/main.py`, comparer la performance de la distribution de données réelles par rapport à la MSE de 1 étape et de 20 étapes.
-2. **Medium。**De l'uniforme`t`Le prélèvement 切换到logit-normal (en anglais) 将采样集中在中 t) ・model 质量是否提升?
-3. **Hard。**实现一次回流 代: 通过积分第一个模型 生成对 (x_0, x_1), 在这些对上训练第二个模型,并比较1步样品质量──
+2. **Medium。**De l'uniforme$t$Le prélèvement 切换到logit-normal (en anglais) 将采样集中在中 t) ・model 质量是否提升?
+3. **Hard。**实现一次回流 代: 通过积分第一个模型 生成对$(x_0, x_1)$, en ces paires 上训练第二个模型,并比较1步样品质量──
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Flow matching | “Straight-line diffusion” | 训练 `v_θ(x, t)`，使其沿 interpolant 匹配 `x_1 - x_0`。 |
+| Flow matching | “Straight-line diffusion” | 训练 $v_\theta(x, t)$，使其沿 interpolant 匹配 $x_1 - x_0$。 |
 | Rectified flow | “Reflow” | 拉直已学习 flows 的迭代过程。 |
-| Velocity field | “v_θ” | model 的输出，即移动 `x_t` 的方向。 |
-| Straight-line interpolant | “The path” | `x_t = (1-t)·x_0 + t·x_1`；目标导数很简单。 |
+| Velocity field | “v_θ” | model 的输出，即移动 $x_t$ 的方向。 |
+| Straight-line interpolant | “The path” | $x_t = (1-t) \cdot x_0 + t \cdot x_1$；目标导数很简单。 |
 | Euler sampler | “1st order ODE solver” | 最简单的 integrator；当路径较直时效果很好。 |
-| Logit-normal t | “SD3 sampling” | 将 `t` sampling 集中到 gradients 最强的中间值附近。 |
-| Consistency distillation | “1-step sampler” | 训练 student 将任意 `x_t` 直接映射到 `x_0`。 |
-| CFG with velocity | “v-CFG” | `v_cfg = (1+w) v_cond - w v_uncond`；同样技巧，新的变量。 |
+| Logit-normal t | “SD3 sampling” | 将 $t$ sampling 集中到 gradients 最强的中间值附近。 |
+| Consistency distillation | “1-step sampler” | 训练 student 将任意 $x_t$ 直接映射到 $x_0$。 |
+| CFG with velocity | “v-CFG” | $v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$；同样技巧，新的变量。 |
 
 ## Note de production:Flux.1-schnell est le plus rapide de forme de correspondance de flux
 
