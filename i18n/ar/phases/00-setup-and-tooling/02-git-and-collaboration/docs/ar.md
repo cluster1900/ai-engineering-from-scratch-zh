@@ -99,6 +99,14 @@ git push origin my-progress
 2. إنشاء واحد`.gitignore`، إزالة ملفات النموذجية لمراقبة النقاط`.pt`.`.pth`.`.safetensors`)
 3. استخدام`git log --oneline`انظر تاريخ التزامات هذا الإيداع، وقراءة الدروس كيف تم إضافة
 
+### 提示
+
+**练习 1。**في GitHub 上点击 فورك، استخدام مرة أخرى `git clone`克隆你自己的叉 地址──运行 `git push -u origin my-progress`بعد ذلك، في GitHub، فتح مفتاحك، تأكد من أن التفاصيل في قائمة`my-progress`و يحتوي على ملفاتك
+
+**练习 2。**في مخزن الارقام`.gitignore`文件中为每扩名名添加一条模式,例如 `*.pt`◊ لجميع التوسع إعداد ملف فارغ ثم تشغيل `git status`هذه الملفات لا ينبغي أن تظهر في قائمة الملفات غير المتابعة.
+
+**练习 3。**运行 `git log --oneline`,再运行`git log --oneline -- phases/00-setup-and-tooling`, فقط أظهر تعديل على هذه المرحلة`git show --stat <hash>`انظروا ما الملفات التي تضيفها
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

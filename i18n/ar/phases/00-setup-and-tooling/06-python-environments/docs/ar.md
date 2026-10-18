@@ -260,6 +260,16 @@ bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh
 3. لإنشاء مشروع في وقت واحد من PyTorch و SDK الأنثروبية 编写 `pyproject.toml`
 4. لذا فكل المحطة تقوم بتثبيت حزمة (لا تنشيط (فين) ، ثم تنظر إليها
 
+### 提示
+
+**练习 1。**في مخزن أساسية`bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh`◊ يُرجع إلى الناتج؛ إذا فشلت عملية فحص، فاصنعها أولاً، واصنع الكتابة، حتى يتمّ إجراء جميع المراجعات.
+
+**练习 2。**في الملفات الجديدة`uv venv`خلق بيئة ثانية و تفعيل، من خلال إصدار ثابت تركيب من قديم numpy، على سبيل المثال `numpy==1.26.4`分分在两个环境中运行 `python -c "import numpy; print(numpy.__version__)"`الإصدارات المخرجة يجب أن تكون مختلفة
+
+**练习 3。**من pyproject.toml 基础 中的示例开始,在 `dependencies`中列出 `torch`和 `anthropic`在新环境中运行 `uv pip install -e .`أو`uv sync`؛ كلتا الحزمين يمكن إدخالها بشكل طبيعي، فقط تشرح أن الملفات مرتبة بشكل صحيح
+
+**练习 4。**退出所有环境,运行 `pip install --user <small package>`,再运行`pip show <package>`لم تُشاهد`Location`行──用 `pip uninstall <package>`إزالتها، إعادة النقل`pip show`تأكد من أنه تم نقله
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

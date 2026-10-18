@@ -396,3 +396,15 @@ python phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.p
 3. استخدام `tracemalloc`找出数据 loading pipeline 中哪一行分配了最多的存储量──
 4. لـ إعداد تنسوربورد، ومعرفة النموذج
 5. في حلقة التدريب داخل استخدام`breakpoint()`◊ تمرين من إزالة الخطأ  تحقق أشكال الجهازات و قيم التراجع
+
+### 提示
+
+**练习 1。**运行 `python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`، قراءة كل تصدر من أداء وظيفة التمثيل.`demo_nan_detection`النموذج المركزي، جعلها خارجة إلى صفر، وإعادة تشغيل مرة واحدة.`detect_nan`يجب أن يتم طباعة مع رقم خطوات
+
+**练习 2。**استخدام`python -m cProfile -s cumtime your_script.py`运行循环، أو استخدام `cProfile.Profile()`-حزمة .`cumtime`صفوف العدد العلوي: من بينها تملك أكبر وظيفة في الكود الخاص بك، هي أبطأ وظيفة.
+
+**练习 3。**像 `demo_memory_tracking`مثل، في البيانات تحميل الكود قبل استخدام `tracemalloc.start()`, بعد调用`tracemalloc.take_snapshot()`‬ ‫الطباعة`snapshot.statistics("lineno")[:5]`؛ أول صفحة تظهر أكبر عدد من الملفات والخطوط في التوزيع
+
+**练习 4。**كل عصر يستعمل`SummaryWriter` سجل التدريب الخسارة و التحقق من الخسارة، إعادة التنفيذ `tensorboard --logdir=runs`إذا استمر انخفاض خسائر التدريب وتزايد خسائر التحقق، فإن النموذج قد حدث بشكل غير ملائم.
+
+**练习 5。**ستعمل`breakpoint()`في الدائرة الداخلية`loss.backward()`بعد ذلك، ثمّ نُعمل الكتاب.`(Pdb)`提示符处打印 `x.shape`.`x.device`和 `next(model.parameters()).grad`, إعادة الإدخال`c`استمر بالخطوة التالية
