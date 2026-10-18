@@ -52,8 +52,8 @@ flowchart LR
 
 普通文本条件化会针对每个 prompt `c` 学习 `epsilon_theta(x_t, t, c)`。CFG 训练同一个 network，但有 10% 的时间会丢弃 `c`（替换为空 embedding），从而得到一个能同时预测 conditional 和 unconditional noise 的单一模型。在 inference 时：
 
-```
-eps = eps_uncond + w * (eps_cond - eps_uncond)
+```math
+\epsilon = \epsilon_{\text{uncond}} + w \cdot (\epsilon_{\text{cond}} - \epsilon_{\text{uncond}})
 ```
 
 `w` 是 guidance scale。`w=0` 是 unconditional，`w=1` 是普通 conditional，`w>1` 会把输出推向“更受 prompt 条件约束”，代价是多样性下降。SD 默认值是 `w=7.5`。

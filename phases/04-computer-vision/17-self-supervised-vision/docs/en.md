@@ -178,7 +178,7 @@ print(f"InfoNCE with identical pairs:  {loss_same:.3f}")
 print(f"InfoNCE with random pairs:     {loss_random:.3f}")
 ```
 
-相同 pairs 应该得到较低 loss（在大 batch 和低 temperature 下接近 0）。随机 pairs 应该得到 log(2N-1) = ~log(31) = ~3.4，针对 16-pair batch。
+相同 pairs 应该得到较低 loss（在大 batch 和低 temperature 下接近 0）。随机 pairs 应该得到 $\log(2N-1) \approx \log(31) \approx 3.4$，针对 16-pair batch。
 
 ### 步骤 4：MAE-style masking
 
