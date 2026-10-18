@@ -118,7 +118,7 @@ python3 code/main.py
 
 - **Memory 就是数据库。** 在规模化时选择真实存储（Vector DB、Postgres）。In-memory stdlib 只适合 prototype。
 - **记录 retrieval trace。** 对每个 action，记录驱动它的 top-k memories。这就是你的 debug 能力。
-- **为每个 agent 预算 tokens。** 每个 tick 中每个 agent 的 retrieve + reflect + plan 是 O(k) LLM calls。N agents × T ticks × calls-per-tick 可能压垮你的预算。
+- **为每个 agent 预算 tokens。** 每个 tick 中每个 agent 的 retrieve + reflect + plan 是 $O(k)$ LLM calls。N agents × T ticks × calls-per-tick 可能压垮你的预算。
 - **周期性 compact memory。** Summarize-and-prune 低 importance 条目。Retention policy 是设计决策，不是细节。
 - **显式检测空间 / 社会规范违规。** 该架构不会学会它们。
 
