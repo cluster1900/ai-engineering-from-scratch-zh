@@ -89,7 +89,7 @@ graph LR
 - Jina-Reranker-v2 Çok Dilli:Açık ağırlık,支持 100+ 语言
 - bge-re-ranker-v2-m3: açık ağırlıklı, güçlü başlangıç çizgi
 - Çarşı kodlayıcı/ms-marco-MiniLM-L-6-v2: açık ağırlıklı, CPU 上运行, uygun prototipleme
-- ColBERTv2 / Jina-ColBERT-v2: geç etkileşim çok vektör yeniden sıralamacı, 评分时是 O(tokens) değil O(docs)
+- ColBERTv2 / Jina-ColBERT-v2: geç etkileşim çok vektör yeniden sıralamacı, $O(\text{tokens})$Hayır.$O(\text{docs})$
 
 ### Sorgu dönüşümü
 

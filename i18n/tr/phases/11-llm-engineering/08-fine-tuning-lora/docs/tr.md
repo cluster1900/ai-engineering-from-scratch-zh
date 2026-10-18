@@ -10,7 +10,7 @@
 
 ## Öğrenme hedefi
 - 通過将低排調整調整矩陣(A 和 B) LoRA'yı gerçekleştirmek için önceden eğitilmiş modellerin dikkat katmanlarına entegre
-- 計算 LoRA 相比全细调的参数节省:rank r、d_model 维度时, training is 2*r*d 个参数, not d^2
+- 计算 LoRA 相比全细调 的参数节省:rank $r$- Evet.$d_{\text{model}}$维度时, eğitim $2 \cdot r \cdot d$个参数, değil $d^2$
 - QLoRA kullanın(4 bit kuantit bazı + LoRA adaptörleri) ince ayarlı bir model, GPU belleğini uygun hale getirir
 - LoRA ağırlıklarını 合并回基模型 用于部署,并比较带适配器与不带适配器的推理速度
 
@@ -34,21 +34,21 @@ Edward Hu ve Microsoft'un meslektaşları LoRA'yı Haziran 2021'de yayınladıla
 
 数学如下──一个标准线性层 计算:
 
-```
+```math
 y = Wx
 ```
 
-W'nin içinde bir d_out x d_in matrisi vardır. 4096x4096 dikkat projesi için 16,777,216 个参数 vardır.
+İçlerinden $W$Evet, bir tane.$d_{\text{out}} \times d_{\text{in}}$Matrix: 4096x4096 dikkat projesi için 16,777,216 个参数
 
-LoRA 结 W,并添加一个低排分解:
+LoRA 结 $W$,并添加一个低排分解:
 
-```
+```math
 y = Wx + BAx
 ```
 
-Bunlardan B ise (d_out x r), A ise (r x d_in)。rank r 远小于 d-- genellikle 8、16 veya 32、
+İçlerinden $B$Evet .$(d_{\text{out}} \times r)$- Evet .$A$Evet .$(r \times d_{\text{in}})$❖ Renk$r$远小于 $d$- Genellikle 8 ̊16 veya 32 ̊.
 
-4096x4096 katman için   上的 r=16:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $r=16$- ...
 - İlk elementler: 4996 x 4096 = 16 777 216
 - LoRA 参数:(4096 x 16) + (16 x 4096) = 65,536 + 65,536 = 131,072
 -  減少比例:131,072 / 16,777,216 = 0,78%
@@ -73,18 +73,18 @@ Bir Gaussian başlangıçlı kullanımı.B başlangıçlı olarak sıfır. Bu, L
 
 ### Ölçekleme Faktörü: Alfa
 
-LoRA, düşük sıralama güncelleştirmesini kontrol etmek için bir ölçekleme faktörü alfa'yı kullanıyor:
+LoRA                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $\alpha$, düşük sıralama güncelleştirmesini kontrol etmek için çıkışın etkisinin derecesini:
 
-```
-y = Wx + (alpha / r) * BAx
+```math
+y = Wx + \frac{\alpha}{r} \cdot BAx
 ```
 
-Bu hiperparametre  temel öğrenme oranından bağımsız  kontrol LoRA yolunun öğrenme oranını。
+- Evet .$\alpha = r$时, ölçeklenme 1x.$\alpha = 2r$(常见默认值) zaman, ölçeklendirme 2x¬¬dir. Bu hiperparametre  temel öğrenme oranından bağımsız  kontrol LoRA yolunun öğrenme oranını¬dır.
 
 实践建议:
-- alfa = 2 * sıralama is常见社区约定(原始论文在多数实验中使用 alfa = sıralama)
-- Alfa = sıralama 提供 1x ölçekleme,保守但稳定
-- Daha yüksek alfa, her adım daha büyük güncellemeler, daha hızlı gelir, ve de kararsızlığa yol açabilir.
+- $\alpha = 2 \cdot \text{rank}$Yapılan çalışmaların çoğu ,$\alpha = \text{rank}$)
+- $\alpha = \text{rank}$1x ölçeklendirme, korunmuş ama sabit
+- Daha yüksek .$\alpha$Bu, her adım daha büyük güncellemeler, belki de daha hızlı bir şekilde alınan, hatta kararsızlığa yol açan bir şey.
 
 ### LoRA Nereye Uygulabilir
 
@@ -101,7 +101,7 @@ Bir Transformer çok sayıda doğrusal katman var.
 
 ### Renk Seçimi
 
-r  kontrol uyumluluk gösterme yeteneği:
+Renk$r$控制适应的表达能力:
 
 | Rank | Trainable Params (per layer) | Best For |
 |------|---------------------------|----------|
@@ -112,7 +112,7 @@ r  kontrol uyumluluk gösterme yeteneği:
 | 64 | 524,288 | 大多数任务收益递减 |
 | 128 | 1,048,576 | 很少值得使用 |
 
-Hu et al.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+Hu et al. 表明, basit görevler için,$r=4$已能捕获大部分的适应──$r=8$和 $r=16$Bu, uygulamada en yaygın seçimdir.$r=64$ çok az kaliteli iyileştirmek, LRA'nın hafızasını kaybetmeye başlamak 优势。
 
 ### QLoRA: 4 bitli kuantitasyon + LoRA
 
@@ -145,7 +145,7 @@ QLoRA üç teknik katkı sağladı:
 | QLoRA r=16 (NF4) | 47.5 | 6.61 | 13.4 |
 | QLoRA r=64 (NF4) | 48.1 | 6.70 | 14.2 |
 
-LoRA r=16'da, çoğu referans değerinde, %1 oranında değişikliği vardır.
+- Ne ?$r=16$时, 大多数基准上与全细调相差不到1%──QLoRA 在 $r=16$Bir kaç yüz puan kaybettim.$r=64$时基本匹配全细调,同时使用90%内存.
 
 ### Gerçek Dünya Masrafları
 
@@ -180,7 +180,7 @@ Treyning sonrasında, iki şey var: 结的基模型和一个小型LoRA adaptör�
 
 1. **保持分离**: yükleme temel modeli, üzerinde yükleme adaptörü, farklı görev değiştirme adaptörleri için.
 
-2. **永久合并**:计算 W' = W + (alfa/r) * BA,并把结果保存为一个新的全模型──原始模型与合并模型 大小相同──没有推断过费──没有适配器 需要管理──
+2. **永久合并**:计算 $W' = W + (\alpha/r) \cdot BA$,并把结果保存为一个新的全模型――原始模型与合并模型 大小相同――没有推断过费――没有适配器 需要管理――
 
 Eğer servis çok görevli ise, bu durumda, tek özel model kullanırsa, bu da aynı şekilde yapılır.
 
@@ -524,11 +524,11 @@ model.save_pretrained("./lora-adapter")
 | LoRA | "Efficient fine-tuning" | Low-Rank Adaptation：冻结 base weights，训练两个小 matrices A 和 B，其乘积近似完整 weight update |
 | QLoRA | "Fine-tune on a laptop" | Quantized LoRA：以 4-bit NF4 加载 base model，在其上用 fp16 训练 LoRA adapters，从而让 7B fine-tuning 能在 6GB VRAM 中完成 |
 | Rank (r) | "How much the model can learn" | A 和 B matrices 的内部维度；控制表达能力与参数量之间的权衡 |
-| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；alpha/r 会缩放 adaptation 对 final output 的贡献 |
+| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；$\alpha/r$ 会缩放 adaptation 对 final output 的贡献 |
 | NF4 | "4-bit quantization" | Normal Float 4：一种 4-bit data type，其 quantization levels 位于 normal distribution quantiles 上，对 Neural Network weights 最优 |
 | Adapter | "The small trained part" | 作为单独文件保存的 LoRA A 和 B matrices（10-100MB），可以加载到 base model 的任意副本之上 |
 | Target modules | "Which layers to LoRA" | 注入 LoRA adapters 的特定 linear layers（q_proj、v_proj 等） |
-| Merging | "Bake it in" | 计算 W + (alpha/r) * BA 并替换原始 weight，从而消除 inference 时的 adapter overhead |
+| Merging | "Bake it in" | 计算 $W + (\alpha/r) \cdot BA$ 并替换原始 weight，从而消除 inference 时的 adapter overhead |
 | Paged optimizers | "Don't OOM during training" | 当 GPU memory 耗尽时，将 optimizer states（Adam momentum、variance）offload 到 CPU |
 | Catastrophic forgetting | "Fine-tuning broke everything else" | 更新所有 weights 导致 model 丢失先前学到的能力 |
 

@@ -97,20 +97,20 @@ MTEB(Massive Text Embedding Benchmark) v2  100+ 个任务, including retrieval, 
 
 **Cosine similarity**İki vektör arasındaki 角in 余弦值── -1 相反) ile 1 方向相同)  忽略大小 Eğer bir 10 词句と一 500 词文档が同じ方向を指すならば, 1.0  ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.0 ∈ 0.
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**İki vektörün orijinal içi oluşumu. Vektörler 归化 (yüksek uzunluk) olduğunda, kozin benzerliği ile 归化 (eşitli) olur.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **Euclidean (L2) distance**:Vektor  uzaydaki düz çizgi mesafe¬¬¬越小 = 越相似¬¬¬¬ büyük farklara duyarlı¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 何時使用哪一种:
@@ -131,7 +131,7 @@ Vector veritabanları Using Approximate Nearest Neighbor (ANN) algoritması solv
 2. Yukarı katılıklar arasında uzun mesafeli bağlantılar kurulur.
 3. Alt kat yoğun bir  yakın vektörler arasında küçük bir bağlantı oluşturur
 4. Arama üst düzeyden başlıyor, açgözlülük düşüyor ve yavaş yavaş ayrıntılılaşıyor.
-5. 以 O(log n) 时间返回近似 top-k sonuçları, yerine O(n)
+5. E$O(\log n)$时间返回近似 top-k sonuçları, yerine $O(n)$
 
 HNSW'nin çok küçük doğruluk oranı kaybı (genellikle 95-99% hatırlama) büyük hızla yükselmeye dönüştürülür.
 
@@ -484,7 +484,7 @@ Biz oluşturduğumuz VectorIndex sınıfı bu istedikleri programları kullanmak
 | Embedding | “文本到数字” | 一种 dense Vector，其中几何接近性编码语义相似性 |
 | Word2Vec | “最早的经典 Embedding” | 2013 年通过预测上下文词学习 word vectors 的模型；证明 Vector arithmetic 可以编码含义 |
 | Cosine similarity | “两个 Vectors 有多相似” | Vectors 夹角的余弦值；1 = 方向相同，0 = 正交，-1 = 相反 |
-| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 O(log n) 的 approximate nearest neighbor search |
+| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 $O(\log n)$ 的 approximate nearest neighbor search |
 | Bi-encoder | “分开 Embedding，快速比较” | 将 query 和 document 独立编码为 Vectors；支持预计算和快速 retrieval |
 | Cross-encoder | “慢但准确的 reranker” | 让 query-document pair 联合通过完整模型处理；准确率更高，但无法预计算 |
 | Matryoshka embeddings | “可截断的 Vectors” | 经过训练的 Embeddings，使前 N 个维度捕捉最重要的信息，从而支持可变大小存储 |

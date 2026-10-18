@@ -21,7 +21,7 @@ Claude Opus 4.7 200K Token  Window(beta ortalaması 1M) ・・・GPT-5 400K ・�
 
 Aşağıda bir kodlama asistanı var. Sistem promptı: 500 Token──50 个 个工具 工具的工具定义: 8,000 Token──检索文件:4,000 Token──对话历史(10轮): 6,000 Token──当前用户查询:200 Token──生成预算──最大输出):4,000 Token──总计:22,700 Token──这只占 128K 窗口的 18%──
 
-Ancak dikkat bağlam uzunluğu 線性拡張── 128K Token bağlamı modeline sahip olmak ikinci dikkat ödemelidir 成本(n^2), ancak çoğu üretim modeli yüksek verimlilik kullanır dikkat 变体)── daha da önemlisi, geri kazanma 准确率会下降──Haystack 测试'taki İhtilaf, modelin uzun bağlamda yerleştirilmesi zor olduğunu gösterdi.
+Ancak dikkat bağlam uzunluğu 线性扩展──拥有 128K Token context的模型要付出第二次注意 成本(瓦尼拉变压器 中是$O(n^2)$, çoğu üretim modeli yüksek verimlilik kullansa da dikkat 变体) 〜 daha önemlisi, Haystack testinde  İpuçlama 准确率会下降──Needle gösterir ki, model uzun bağlamda ortalama bilgi  Liu et al.
 
 實踐上的教學是:可用200K Token并非意味着使用200K Token 就有效──精心选的10K Token context 往往胜过直接倾倒的100K Token context──文本工程 是在文本窗口内最大化信号-噪音比的学科──
 
