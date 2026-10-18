@@ -44,8 +44,8 @@ critic update:   TD on Q_i(x, a_1..n) given next-state joint estimate
 
 仅适用于合作社. 全球奖励是每个代理的Q值的单调函数.
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 单调性保证`argmax_a Q_tot`可以通过每个代理人 独立选择`argmax_{a_i} Q_i`计算. 这就是你需要的.**decentralized execution property**◎ 训练时,从每个代理的Q 生成`Q_tot`,我知道.
