@@ -173,8 +173,8 @@ RGB 是 capture format，但它并不总是对模型最有用的表示。
 
 从 RGB 转 grayscale 是加权和，不是平均值，因为人眼对绿色比对红色或蓝色更敏感：
 
-```
-Y = 0.299 R + 0.587 G + 0.114 B       (ITU-R BT.601, the classic weights)
+```math
+Y = 0.299 R + 0.587 G + 0.114 B \qquad \text{(ITU-R BT.601, 经典权重)}
 ```
 
 ### Aspect ratio、resizing 和 interpolation
