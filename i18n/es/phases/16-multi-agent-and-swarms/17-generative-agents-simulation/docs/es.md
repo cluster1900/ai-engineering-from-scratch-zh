@@ -118,7 +118,7 @@ Reglas de producción:
 
 - **Memory 就是数据库。**En la escalación, seleccionar el almacenamiento real de datos.
 - **记录 retrieval trace。**Para cada acción, el registro impulsa sus memorias de mayor calidad.
-- **为每个 agent 预算 tokens。**Cada tick 中 Cada agente de recuperar + reflejar + plan es O(k) LLM llamadas;;N agentes × T ticks × llamadas-por-tick 可能压你的预算──
+- **为每个 agent 预算 tokens。**Cada marca de cada agente de recuperar + reflejar + plan es $O(k)$LLM llamadas. N agentes × T ticks × llamadas por tick.
 - **周期性 compact memory。**Resumen y recorte 条目――La política de retención es la decisión de diseño, no la sección―
 - **显式检测空间 / 社会规范违规。**La arquitectura no aprenderá a conocerlos.
 

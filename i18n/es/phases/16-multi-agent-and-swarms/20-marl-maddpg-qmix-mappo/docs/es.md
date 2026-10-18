@@ -44,8 +44,8 @@ Por qué usar CTDE: cuando entrenamos, sabemos la acción de todos; usamos esta 
 
 仅适用于合作社――Global reward 之和: 之和: 之和: 适用于合作社. Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和 之和: Global reward 之和 之和: Global reward 之和 之和 之和: Global reward 之和 之和 之和 之和 之和: Global reward 之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 Monotonismo , seguro .`argmax_a Q_tot`Puede pasar por cada agente  Independent Select `argmax_{a_i} Q_i`Para calcular esto es lo que necesitas.**decentralized execution property** Entrenamiento, mezcla de red de cada agente de la Q 生成 `Q_tot`¿Qué es eso?
