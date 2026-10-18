@@ -337,6 +337,16 @@ Bu derste her bir araç kullanımı:
 3. Kullan .`for i in $(seq 1 100); do echo "epoch $i loss: $(echo "scale=4; 1/$i" | bc)"; sleep 0.1; done > fake_train.log`创建一个假的训练日志,然后使用 `grep`- Evet.`tail`和 `awk`Sadece kayıp değerlerini artırmak için.
 4. Çekilme hakkı için bir SSH yapılandırma girişini ayarlayın`localhost`练习语法) ・・・
 
+### 提示
+
+**练习 1。**Önceki işlem`tmux new -s practice`,用前 `Ctrl+B`后接 `"`和 `%`Çekil, tekrar kullan `Ctrl+B`Daha yönlü bir pencerenin değiştirilmesi.`Ctrl+B`后接 `d`Ayrılık, yürüyüş.`tmux ls`, tekrar kullan `tmux attach -t practice`Yeniden bağlantı; üç işlem de devam etmektedir.
+
+**练习 2。**- Ben de .`code/shell_aliases.sh`Çekilme ve Çekilme`~/.zshrc`Ya da`~/.bashrc`Sonunda, tekrar bu dosya işleyişi yap.`source` İşlem`alias`Ya da bir başka isim için .`type <name>`, tesbit yapın .
+
+**练习 3。**Önceki işlem`tail -5 fake_train.log`Her zamanki biçimi, tekrar kullanın.`grep loss`过,并用 `awk '{print $NF}'`Sadece son satır yazdırın; çıkış 100'den az sayıdır.
+
+**练习 4。**Dersler içinde`Host gpu`配置块复制到 `~/.ssh/config`, `HostName`和 `User`改成你的服务器信息,或改成 `localhost`Üzerinde bir iş var.`ssh -G gpu`SSH'yi basın ve kullanılacak ayarları kullanın. Eğer SSH'nin anahtarını erişilebilir ve kabul ediyorsanız, tekrar çalıştırın.`ssh gpu`Bağlantı.
+
 ## 关键术语
 
 | 术语 | 人们怎么说 | 实际含义 |

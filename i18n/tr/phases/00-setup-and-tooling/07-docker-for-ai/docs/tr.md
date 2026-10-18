@@ -366,6 +366,16 @@ docker logs -f <container_id>
 3. - Ben de .`flask`Dockerfile'e ekle, yeniden oluştur ve port 5000'e yükle.`-p 5000:5000`harita 端口
 4. Kullanım`docker images`测量图像大小──试把基层图像 从 `devel`切换到 `runtime`,并比较大小
 
+### 提示
+
+**练习 1。**Kullanılan dersler`docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .`命令构建,再通过 `docker run --rm ai-dev`İçeride yapılan kontroller Mac'de, ders açıklamasıyla`--gpus all`❖ Kapaklar basılmalıdır.`2.6.0`Başlangıç:
+
+**练习 2。**- Evet .`code/`文件中运行 `docker compose up -d`, tekrar kullan `docker compose exec ai-dev bash`- Evet .`ai-dev`Servis içinde açılmış kabuğumuz var.`curl http://qdrant:6333/collections`JSON'u göndermek için; JSON'u göndermek için;
+
+**练习 3。**Docker Dosyası İçin Ekle`RUN pip install flask`, yeniden inşa,并用 `host="0.0.0.0"`Bunu başlatın, çünkü konteyner içinde sadece yerel sunucu bağlanmıştır.`http://localhost:5000`, terminalı onaylamak için geçerli.
+
+**练习 4。**运行  İşlem`docker images ai-dev`, 记录 SIZE 列──将 `FROM`行中 `devel`改为 `runtime`, yeni bir etiket kullanarak  yapılandırmak, iki görüntü yeniden karşılaştırmak;
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

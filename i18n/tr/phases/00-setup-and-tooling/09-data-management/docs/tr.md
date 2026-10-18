@@ -239,6 +239,16 @@ Küçük bir veri kümesi indirir, onu dönüştürür, ayırır, özetini bası
 3. Bir veri kümesini Parket olarak dönüştürmek ve dosya boyutunu CSV ile karşılaştırmak
 4. Use Fixed Seed 创建 70/15/15 tren/val/test split,并验证 boyutları
 
+### 提示
+
+**练习 1。**调用 `code/data_utils.py`Orta `load_and_inspect("glue", "mrpc")`, veya doğrudan düzenlenir `load_dataset("glue", "mrpc")`,打印 `ds["train"][:5]` her örnek içermektedir.`sentence1`- Evet.`sentence2`和 `label`- Evet.
+
+**练习 2。**- Evet .`stream_dataset`Bir şekilde kullanılır.`streaming=True`Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretim: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üretir: Üret`time.time()`超开始时间加 10秒时停止──打印样本数,并运行两次,因为第一次包含连接启动开销──
+
+**练习 3。**- Evet .`convert_format`Ben de kullanıyorum.`to_csv`和 `to_parquet`保存同一个数据集,再使用 `ls -lh`Ya da`os.path.getsize`Gösterme dosyası büyüktür.`load_from_parquet`Şimdiki durumlar, bu konuda bir değişiklik yapmıyor mu?
+
+**练习 4。** Düzgün `seed`, kullanın iki kez `train_test_split`İlk olarak %30'u ayırın, sonra %30'u yarıya ayırın. Üç bölümün uzunluğu da orijinal uzunluğu ile eşit olmalıdır. Aynı tohum kullanıldığında ve tekrar çalışıldığında, her bölümün ilk satırı da aynı olmalıdır.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

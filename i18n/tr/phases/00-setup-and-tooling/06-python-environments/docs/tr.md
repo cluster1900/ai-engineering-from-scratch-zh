@@ -260,6 +260,16 @@ Bu repo kökü içinde olacak bir tane oluştur .`.venv`,并安装和验证 çek
 3. Aynı zamanda PyTorch ve Anthropic SDK projesinin de bir parçası olmak için .`pyproject.toml`
 4. Bu yüzden tüm bölge bir paket yükle, onu kontrol et ve sonra yükle.
 
+### 提示
+
+**练习 1。**Hızlı bir iş.`bash phases/00-setup-and-tooling/06-python-environments/code/env_setup.sh`◊ adım adım okuma çıkışı; eğer bir kontrol başarısız olursa, önce onu düzelt, tüm kontroller geçene kadar tekrar çalıştır.
+
+**练习 2。**Yeni bir dosya kullanın`uv venv`创建第二环境并激活,通过版本固定安装较旧的numpy,例如 `numpy==1.26.4`❖ 分別在两个环境中运行 `python -c "import numpy; print(numpy.__version__)"`Çıkış sürümü farklı olmalıdır.
+
+**练习 3。**pyproject.toml 基础中的例开始,在 `dependencies`Çıkış`torch`和 `anthropic`❖ Yeni bir ortamda çalışmak`uv pip install -e .`Ya da`uv sync`Bu iki paket normal olarak içeri girebilir, dosyaların doğru şekilde düzenlendiğini göstermek için.
+
+**练习 4。**退出所有环境,运行 `pip install --user <small package>`,再运行 `pip show <package>`Görme`Location`Gitmek istiyorum.`pip uninstall <package>`Çıkar, tekrar yürüt.`pip show`- Çıkarıldığını onayla.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

@@ -396,3 +396,15 @@ python phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.p
 3. Kullanım`tracemalloc`En fazla hafıza dağıtılan bölümlerin hangisi?
 4. Basit bir eğitim çalışması için TensorBoard ayarlayın, model tanımlayın
 5. Eğitim döngüsünde kullanın`breakpoint()`△ Debugger prompt'tan pratik yaparak  Tensor şekilleri, cihazları ve gradient değerlerini kontrol etmektedir.
+
+### 提示
+
+**练习 1。**运行  İşlem`python3 phases/00-setup-and-tooling/12-debugging-and-profiling/code/debug_tools.py`, her gösterim işlevi'nin çıkışını okuyun. Sonra değiştirin.`demo_nan_detection`Modelle, çıkışı sıfırdan çıkarıp tekrar çalıştırmak için;`detect_nan`                                                                                                                                                                                                                                                              
+
+**练习 2。**Kullan .`python -m cProfile -s cumtime your_script.py`运行循环, veya `cProfile.Profile()`- Tamam. - Tamam.`cumtime`列顶部的行; içinde kendi kodunuzun en büyük işlevi, en yavaş işlevi vardır.
+
+**练习 3。**- Evet .`demo_memory_tracking`Benzer şekilde, önce kod yükleme için kullanılır.`tracemalloc.start()`,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `tracemalloc.take_snapshot()`❖ 打印 `snapshot.statistics("lineno")[:5]`İlk satır en fazla kayıtlı dosya ve sayıyı gösterir.
+
+**练习 4。**Her dönemde kullanılır.`SummaryWriter`Kayıt eğitim kaybı ve onay kaybı, yeniden çalıştırma`tensorboard --logdir=runs` Eğer eğitim kaybı azalırken test kaybı artırsa, modelin uygunsuz olduğunu gösterir.
+
+**练习 5。**- Ben de .`breakpoint()`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `loss.backward()`Sonra da bir yazı yürütürüz.`(Pdb)`提示符处打印 `x.shape`- Evet.`x.device`和 `next(model.parameters()).grad`, yeniden giriş`c`İlerleyici adım.

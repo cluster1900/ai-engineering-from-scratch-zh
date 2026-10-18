@@ -132,6 +132,14 @@ Bu ders 会产出:
 2. 尝试 raw HTTP 版本,并将响应格式与SDK 版本进行比较
 3. Yapılan hatalar için API anahtarı kullanmak,
 
+### 提示
+
+**练习 1。**Antropic Console'da oluşturma anahtarı, ders açıklamasıyla içeri koyacağız.`ANTHROPIC_API_KEY`Sonra da yürüyüşe çıkardık .`code/first_api_call.py`❖ 脚本印印模型回复且没有报错,即表示调用成功──
+
+**练习 2。** `code/first_api_call.py`Ortadaki iki işlevi sadece metin ve simge sayısı olarak basıyor.`call_with_sdk()`İçeride eklenir`print(response)`, `call_raw_http()`İçeride eklenir`print(result)`,再运行脚本查看两份完整响应──比较字段名称:原始 JSON 中的 `content`- Evet.`usage`和 `stop_reason`字段,会被SDK 转换为对象属性──
+
+**练习 3。**Sadece bir sonucun ortasında olacak.`ANTHROPIC_API_KEY`虚假值 olarak ayarlayın, tekrar çalıştırın.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

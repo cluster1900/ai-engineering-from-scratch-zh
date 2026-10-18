@@ -306,3 +306,15 @@ s0-process-fork
 3. Tmux seansı başlatın, içinde çalışın `sleep 300`Ayrıl, ayrılma seansları, sonra tekrar bağlan.
 4. Kullanım`df -h`检查可用磁盘空间, sonra kullan `du -sh ~/.cache/*`找出 cache 中占空间的内容──
 5. Kullanım`scp`Bir dosyayı yerel makineden uzaktan makinelere aktarıp kullanın.`rsync`Aynı şekilde aktarım yapın, ve deneyim karşılaştırın.
+
+### 提示
+
+**练习 1。**运行  İşlem`cd ~`, `mkdir`Yeni bir dosya oluşturun, tekrar kullanın.`cd`İçeri gir, sonra kullan.`touch`Üç dosya oluşturmak.`ls -la`输出中, kontrol bu üç dosyanın büyüklüğü 0, sahibi sizin kullanıcı adınız mıdır.
+
+**练习 2。**Kullan .`sudo apt install -y htop`Installation并启动 htop,按 `F6`(or点击列名)`MEM%`排序──列表顶部的进程占内存最多──
+
+**练习 3。**Kullanım Kursları `tmux new -s train`,运行 `sleep 300`, tekrar kullan `Ctrl+B`后接 `d`Çıkışlar.`tmux ls`查看会话,再用 `tmux attach -t train`重新连接;`sleep`İletişimde olmalıyız.
+
+**练习 4。**运行  İşlem`df -h`Başlık defterini okuyun.`Avail`列──再运行 `du -sh ~/.cache/* | sort -h`En büyük dosyayı son satırda bırakın.
+
+**练习 5。**Kullan .`scp file.txt user@host:~/`复制文件,再对同文件运行 `rsync -avP file.txt user@host:~/`İkinci sefer`rsync`Emir sırasında neredeyse hiçbir içerik göndermez çünkü uzak uç dosyaları değişmez.

@@ -99,6 +99,14 @@ Bu derslere temel oluşturma, çerez seçme veya alt modüller gerekmez.
 2. Bir tane oluştur .`.gitignore`, kontrol nokta dosyalarını kaldırmak`.pt`- Evet.`.pth`- Evet.`.safetensors`)
 3. Kullan .`git log --oneline`Bu repo'nun commit tarihi ile ilgili dersleri okuyun.
 
+### 提示
+
+**练习 1。**GitHub'da Fork'e tıklayarak tekrar kullanın.`git clone`克隆你自己的叉 地址──运行 `git push -u origin my-progress`GitHub'da şarjını açıp, bir listeye girdiğini doğrula.`my-progress`Dosyalarını da içerir.
+
+**练习 2。**Depoya kök defterinde`.gitignore`文件中为每扩名名添加一条模式, örneğin `*.pt`◊ her bir genişleme için boş bir dosya oluşturun ve sonra çalıştırın `git status`Bu belgeler, takip edilmeyen belgeler listesinde görünmemeli.
+
+**练习 3。**运行  İşlem`git log --oneline`,再运行 `git log --oneline -- phases/00-setup-and-tooling`, sadece göster değiştirilen bu aşamada gönderilenleri gösterir.`git show --stat <hash>`Ne ders dosyaları eklediğine bak.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

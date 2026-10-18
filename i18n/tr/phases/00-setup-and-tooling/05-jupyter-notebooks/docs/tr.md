@@ -240,6 +240,14 @@ Bu ders:
 2. ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓    ✓ ✓ ✓ ✓ ✓         ✓   ✓ ✓ ✓                                                                         
 3. - Ne ?`code/notebook_tips.py`İçeri kod  Colab notbukuna yapıştır  İçeri,并使用免费GPU 运行
 
+### 提示
+
+**练习 1。**Kullan .`jupyter lab`JupyterLab'ı başlatın. İki versiyon ayrı ayrı olarak içeriye sokulacak.`%timeit`开头的独立单元格──两个单元格都使用了100,000的规模,确保测量是相同的工作量──
+
+**练习 2。**Kullan .`pd.read_csv`读取数据,将数据frame 放在单元中最后一行显示它,再使用 `df.plot()`Ya da matplotlib 绘图──执行 Kernel > Restart & Run All 后, her birim için bir işlemci olarak bir rakam gösterilmelidir, hiçbir birim için bir işlemci olarak bir hata yapılmamalıdır.
+
+**练习 3。**在 Colab 中先选择 Runtime > Runtime tipi değiştir > GPU,再粘贴代码──当 `code/notebook_tips.py`Ortalama her işlevi karşılama bölümünden basılmış ve tek bir yapı içinde çalışmaktadır.`torch.cuda.is_available()`Geri dön .`True`İşim tam olarak doğru.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |

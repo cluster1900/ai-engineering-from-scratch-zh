@@ -78,11 +78,11 @@ Her bir uzatma etkisi:
 | Black Formatter | 保存时自动格式化，保持风格一致 |
 | Ruff | 快速 linting，捕获常见错误 |
 
-本课中 `code/.vscode/extensions.json`文件包含完整推列表──当你打开项目文件时,VS Code 会提示你安装它们──
+本课中 `code/vscode/extensions.json`文件包含完整推列表──将它复制到你的项目文件中中的 文件包含完整推列表──将它复制到你的项目文件中中的 文件包含完整推列表──将它复制到你的项目文件中的 文件包含完整推列表──将它复制到你的项目文件中的 文件中的`.vscode/extensions.json`Bu dosyayı açtığında, VS Kodı, bu genişlemeleri yüklemenizi tavsiye eder.
 
 ### 步骤 3: yapılandırma ayarları
 
-复制本课 `code/.vscode/settings.json`İç ayarlar veya geçiş yoluyla`Settings > Open Settings (JSON)`Ellemel uygulama.
+复制本课 `code/vscode/settings.json`İç ayarlar veya geçiş yoluyla`Settings > Open Settings (JSON)`Ellemel uygulama.
 
 AI çalışmalarının anahtar ayarları:
 
@@ -195,6 +195,16 @@ Bu ayarlama ile günlük iş akışınız şöyle görünüyor:
 2. Sınıfı`settings.json`复制到你的 VS kod yapılandırması 中
 3. Bir Python dosyası aç, Python'u doğrulay, Tip ipucu göster ve Black 会在保存时格式化
 4. Uzaktan bir makineye erişebilirseniz, Uzak SSH'yi yapılandırın ve üzerindeki bir dosyayı açın.
+
+### 提示
+
+**练习 1。**Installation step 2 表格中的扩展, veya kullan `code --install-extension <id>`- Yapımcılık`code/vscode/extensions.json`İçinde her kimlik var.`code --list-extensions`, birbirine ilişkin dosyada bulunan kimlik 核对──
+
+**练习 2。**打开 Ayarlar > Açık Ayarlar (JSON),将 `code/vscode/settings.json`Eğer dosyada ayarlanmışsa, lütfen her anahtarı birleştirin ve JSON etkin tutun.
+
+**练习 3。**Bir türlü bir işlev yazın, fareyi ayarlama üzerinde bekleyecektir; Pilot sonucu ortaya çıkan türleri gösterir. Bir satırda fazla boşluk ekle ve dosyaları kaydet; Siyah ısaca kaydetme sırasında yeniden biçimlendirilmelidir.
+
+**练习 4。**Önceden servisçi `~/.ssh/config`, 确认终端中 `ssh <host>`Normal bağlantı yapılabilir. Uzak SSH 命令连接; VS Code 远程机器上运行时,状态会显示主机名──
 
 ## 关键术语
 | Term | What people say | What it actually means |

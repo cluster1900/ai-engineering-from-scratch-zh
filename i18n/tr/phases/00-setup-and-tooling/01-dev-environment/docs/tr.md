@@ -160,3 +160,11 @@ Bu dersi, herkesin kendi kuruluşunu kontrol etmek için kullanabileceği bir te
 1. 运行验证脚本并修复 herhangi bir başarısızlık
 2. Bu derste Python sanal ortamı oluşturun ve PyTorch'u yükleyin.
 3. Tüm dört dilde "Merhaba dünya" yazın.
+
+### 提示
+
+**练习 1。**Hızlı bir iş.`python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner`, önce ilk başarısızlıkları düzeltmek, tekrar aşağıdakiları kontrol etmek, tekrar çalıştırmak, tüm gerekli kontroller tamamlanmak için geçerlidir.
+
+**练习 2。**Depoda kök kaydı kullanılır`uv venv` Create environment并 activate, reuse step 6  PyTorch'ı yükle.`python -c "import torch; print(torch.__version__)"`Bu da bir başarıdır.
+
+**练习 3。**Python, Node.js'in TypeScript'ine, Rust ve Julia'ya, farklı bir dosya yazıyor.`python3`- Evet.`npx tsx`(Node.js 不能直接运行)`.ts`文件) 、`cargo run`Ya da`rustc`- Evet.`julia`Her seferinde mesajınızı basmak zorundasınız.
