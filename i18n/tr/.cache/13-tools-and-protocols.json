@@ -29,5 +29,8 @@
   "phases/13-tools-and-protocols/28-mcp-tool-contracts-and-content/docs/en.md": "c7291630a8343bab68fe976e5a933986783b856f16a3b892c5dacea189e62337",
   "phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/docs/en.md": "e51ce32d0a4358c392e76aecc4edadc87813fe5c4e68b8ee4d7f739efd50aacb",
   "phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/docs/en.md": "5f273736861ea003fe2d9fa3c3c944237745451738aecea5dc8d30e04e150679",
-  "phases/13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md": "7157e00d59542bcacbd6723779135942103e55c74c5a7958d8020f3131950911"
+  "phases/13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md": "7157e00d59542bcacbd6723779135942103e55c74c5a7958d8020f3131950911",
+  "phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md": "f77acd336c72c4aedf8d1a15192dc18325441984e6c00865b24b24266821b4c4",
+  "phases/13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md": "218b05ddbad6f84c7e7e1e24e94ce90f9a5a3accfb31c7333fa9e5d65d2f0d0e",
+  "phases/13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md": "a41163843e6e76244b3560981e0242c93bc1fe44e102f1a51b8b22e9e9003ae0"
 }
