@@ -1,15 +1,17 @@
-# Primitive decision model
+<a id="primitive-decision-model"></a>
 
-Select by responsibility. More than one primitive may be correct.
+# 原语决策模型
 
-| Need | Primitive | Boundary |
+按职责选择；正确答案可以包含多种原语。
+
+| 需求 | 原语 | 边界 |
 |---|---|---|
-| One-off instruction | Prompt | Exists for the current interaction |
-| Repository-wide default | AGENTS.md | Applies while working in that repository scope |
-| Reusable task method | Agent Skill | Loads procedural knowledge for a task |
-| External operation or data | MCP tool | Exposes a callable capability with an input contract |
-| Reaction to a runtime event | Hook | Runs at a host-defined lifecycle point |
-| Deterministic transformation | Ordinary code | Produces repeatable output without model judgment |
-| Isolated or parallel context | Subagent | Delegates a bounded task into a separate context window |
+| 一次性指令 | 提示词 | 仅存在于当前交互中 |
+| 仓库级默认规则 | AGENTS.md | 在相应仓库范围内工作时适用 |
+| 可复用任务方法 | Agent Skill | 加载任务所需的过程性知识 |
+| 外部操作或数据 | MCP 工具 | 暴露具有输入契约的可调用能力 |
+| 对运行时事件的响应 | 钩子 | 在宿主定义的生命周期节点运行 |
+| 确定性变换 | 普通代码 | 无需模型判断即可产生可重复的输出 |
+| 隔离或并行上下文 | 子智能体 | 将有界任务委派到独立上下文窗口 |
 
-A release-review method that queries a remote service may use both an Agent Skill and an MCP tool. Repository test conventions may add AGENTS.md. A post-tool audit may add a hook. Stable parsing belongs in ordinary code. Independent research that benefits from context isolation may use a subagent.
+需要查询远程服务的发布审查方法，可以同时使用 Agent Skill 和 MCP 工具。仓库测试约定可以通过 AGENTS.md 补充。工具调用后的审计可以增加钩子。稳定的解析逻辑属于普通代码。受益于上下文隔离的独立研究可以使用子智能体。
