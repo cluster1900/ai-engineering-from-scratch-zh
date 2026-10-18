@@ -21,31 +21,31 @@ RLHF(Christiano et al. 2017; Ouyang et al. 2022) tercihleri 转换成奖励模�
 
 ![Three-stage RLHF: SFT, RM training on pairwise prefs, PPO with KL penalty](../assets/rlhf.svg)
 
-**Stage 1：Supervised Fine-Tuning（SFT）。**Önceden eğitilmiş temel modelden 开始──在目标行为的人类编写示范 上细调( talimatları takip eden yanıtlar、有用的答案等)  sonuç bir `π_SFT`model, iyi davranış yönünde, ama hala sınırsız bir eylem alanı vardır.
+**Stage 1：Supervised Fine-Tuning（SFT）。**Önceden eğitilmiş temel modelden 开始──在目标行为的人类编写示范 上细调( talimatları takip eden yanıtlar、有用的答案等)  sonuç bir $\pi_{\text{SFT}}$model, iyi davranış yönünde, ama hala sınırsız bir eylem alanı vardır.
 
 **Stage 2：Reward Model training。**
 
-- 收集对提示 `x`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `(y_+, y_-)`,由人類标注为y_+ 优于 y_-。
-- 训练 ödül modeli `R_φ(x, y)`- Ver .`y_+`分配更高分数──
+- 收集对提示 $x$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $(y_+, y_-)$,由人類标注为y_+ 优于 y_-。
+- 训练 ödül modeli $R_\phi(x, y)$- Ver .$y_+$分配更高分数──
 - Kayıp:**Bradley-Terry pairwise logistic**- ...
 
-  `L(φ) = -E[ log σ(R_φ(x, y_+) - R_φ(x, y_-)) ]`
+  $L(\phi) = -\mathbb{E}[ \log \sigma(R_\phi(x, y_+) - R_\phi(x, y_-)) ]$
 
-  σ 是 sigmoid──reward 的差值隐含偏好 的 log-odds──BT 1952 yılından beri Bradley-Terry) beri her zaman standart yöntemdir, aynı zamanda çağdaş RLHF'de baskın seçimlerdir──
+  $\sigma$Bu, bir ödülün farklı değerini içerir.
 
-- `R_φ`Genellikle SFT modeli başlangıç, ve üst kısmında bir skalar başı eklenir. Aynı transformatör omurgası; tek bir doğrusal katman 输出 reward。
+- $R_\phi$Genellikle SFT modeli başlangıç, ve üst kısmında bir skalar başı eklenir. Aynı transformatör omurgası; tek bir doğrusal katman 输出 reward。
 
 **Stage 3：带 KL penalty、针对 RM 的 PPO。**
 
-- - Evet .`π_SFT`İlk başta eğitim politikaları`π_θ`                                                                                                                                                                                                                                                              `π_ref = π_SFT`- Evet.
-- Cevap`y`Ödül:
+- - Evet .$\pi_{\text{SFT}}$İlk başta eğitim politikaları$\pi_\theta$                                                                                                                                                                                                                                                              $\pi_{\text{ref}} = \pi_{\text{SFT}}$- Evet.
+- Cevap$y$Ödül:
 
-  `r_total(x, y) = R_φ(x, y) - β · KL(π_θ(·|x) || π_ref(·|x))`
+  $r_{\text{total}}(x, y) = R_\phi(x, y) - \beta \cdot \mathrm{KL}(\pi_\theta(\cdot \mid x) \Vert \pi_{\text{ref}}(\cdot \mid x))$
 
-  KL cezası 防止 `π_θ`任意漂离 `π_SFT` Bu bir * düzenleyici*, sert bir güven bölgesi değil.`β`Genellikle `0.01`- Ne oldu ?`0.05`- Evet.
+  KL cezası 防止 $\pi_\theta$任意漂离 $\pi_{\text{SFT}}$ Bu bir * düzenleyici*, sert bir güven bölgesi değil.$\beta$Genellikle 0.01-0.05'dir.
 - Bu ödülü kullanın PPO'yu yürütün. Ders 08):
 
-**为什么需要 KL？**Bu yüzden, bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de`π_θ`RM'de eğitim görmüş bir sürüden yakınında kalmak RLHF'de en önemli tek bir dönüm noktasıdır.
+**为什么需要 KL？**Bu yüzden, bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de bir de$\pi_\theta$RM'de eğitim görmüş bir sürüden yakınında kalmak RLHF'de en önemli tek bir dönüm noktasıdır.
 
 **2026 状态：**
 
@@ -98,7 +98,7 @@ Yüzlerce güncelleme sonrasında,`w`İyi kelime simgelerini paylaşıyoruz, kö
 
 ### Adım 3: RM 之deki PPO benzeri politika
 
-Bizim oyuncak politikamız sözlükten bir işaret oluşturacak.`log π_θ(token | prompt)`, KL referans cezası ekle,并应用 Cliped PPO surrogate──
+Bizim oyuncak politikamız sözlükten bir işaret oluşturacak.$\log \pi_\theta(\text{token} \mid \text{prompt})$, KL referans cezası ekle,并应用 Cliped PPO surrogate──
 
 ```python
 def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Adım 4: KL izleyici
 
-Her güncellemenin bir anlamı var .`KL(π_θ || π_ref)`Eğer tırmanırsa.`~5-10`, politika 已漂离 `π_SFT`很远 低`β`Bu gerçek RLHF'de en önemli teşhis yöntemidir.
+Her güncellemenin bir anlamı var .$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Eğer tırmanırsa.`~5-10`, politika 已漂离 $\pi_{\text{SFT}}$很远 低$\beta$Bu gerçek RLHF'de en önemli teşhis yöntemidir.
 
 ### Adım 5: TRL'yi kullanın
 
@@ -164,7 +164,7 @@ Kitaplık senin için üç şey yapacak.`adap_kl_ctrl=True`实现 adaptive-β sc
 
 ## 陷
 
-- **Over-optimization / reward hacking。**RM mükemmel değil.`π_θ`Bu nedenle, bu durumun bir sonucu olarak, bir kişinin değerlendirme puanının yükselmesinin ve değerlendirme puanının yükselmesinin bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, belirlenmektedir.`β`、 geniş RM eğitim verileri
+- **Over-optimization / reward hacking。**RM mükemmel değil.$\pi_\theta$Bu nedenle, bu durumun bir sonucu olarak, bir kişinin değerlendirme puanının yükselmesinin ve değerlendirme puanının yükselmesinin bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, bir sonucu olarak, belirlenmektedir.$\beta$、 geniş RM eğitim verileri
 - **Length hacking。**Bu nedenle, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak, bu yöntemin kullanımı ile ilgili olarak,
 - **RM 太小。**RM en az ihtiyaç ve politikalar bir yandan büyüktür.
 - **KL tuning。**太低 → drift 和 reward hacking──β 太高 → politika 几乎不变──标准技巧是使用一个以固定为每步 KL 为目标的 *适应性* β──
@@ -214,7 +214,7 @@ tags: [rl, rlhf, alignment, llm]
 ## 练习
 
 1. **简单。**- Evet .`code/main.py`Ortalama 500 ¢¢ sintetik tercih çiftleri ¢ antrenman Bradley-Terry ödül modeli ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ ¢ 
-2. **中等。**Kullanım`β ∈ {0.0, 0.1, 1.0}`Oyuncak PPO-RLHF döngüsü. Her değer için, RM puanı vs. KL-referans üzerinde güncellemeler çizmek. Hangi atışlar  ödül-hack gerçekleşir?
+2. **中等。**Kullanım$\beta \in \lbrace 0.0, 0.1, 1.0 \rbrace$Oyuncak PPO-RLHF döngüsü. Her değer için, RM puanı vs. KL-referans üzerinde güncellemeler çizmek. Hangi atışlar  ödül-hack gerçekleşir?
 3. **困难。**Aynı tercih verileri içinde DPO'yu gerçekleştirmek için, RLHF-PPO borusuna göre, kullanımı hesaplama ve son RM puanına ulaşmak için,
 
 ## 关键术语
@@ -223,8 +223,8 @@ tags: [rl, rlhf, alignment, llm]
 |------|----------|----------|
 | RLHF | "Alignment RL" | 三阶段 SFT + RM + PPO pipeline（Christiano 2017, Ouyang 2022）。 |
 | Reward Model (RM) | "The scoring net" | 通过 Bradley-Terry 拟合 pairwise preferences 学到的 scalar function。 |
-| Bradley-Terry | "Pairwise logistic loss" | `P(y_+ ≻ y_-) = σ(R(y_+) - R(y_-))`；标准 RM objective。 |
-| KL penalty | "Stay near the reference" | reward 中的 `β · KL(π_θ \|\| π_ref)`；anti-reward-hacking regularizer。 |
+| Bradley-Terry | "Pairwise logistic loss" | $P(y_+ \succ y_-) = \sigma(R(y_+) - R(y_-))$；标准 RM objective。 |
+| KL penalty | "Stay near the reference" | reward 中的 $\beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$；anti-reward-hacking regularizer。 |
 | Reward hacking | "Goodhart's law" | Policy 利用 RM 缺陷；症状：reward 上升，human eval 持平。 |
 | RLAIF | "AI-labeled preferences" | 标签来自另一个 LM 而非人类的 RLHF。 |
 | PRM | "Process Reward Model" | 给 partial reasoning steps 打分；用于 reasoning pipelines。 |

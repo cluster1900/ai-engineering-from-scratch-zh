@@ -1,6 +1,6 @@
 # Aktör-Kritik  A2C ve A3C
 
-> DİYİNİŞ  Çok gürültülü。添加一个学习 `V̂(s)`Bu, aktör-kritiklerin birbiriyle aynı ama farklılıkları olan daha az avantajı vardır. A2C aynı şekilde çalışır. A3C, birbiriyle aynı şekilde çalışır.
+> DİYİNİŞ  Çok gürültülü。添加一个学习 $\hat{V}(s)$Bu, aktör-kritiklerin birbiriyle aynı ama farklılıkları olan daha az avantajı vardır. A2C aynı şekilde çalışır. A3C, birbiriyle aynı şekilde çalışır.
 
 **Type:** Build
 **Languages:** Python
@@ -9,11 +9,13 @@
 
 ## 问题
 
-Vanilla REINFORCE 能工作, ama onun değişimi 很糟──Monte Carlo geri döner `G_t`Farklı bölümler arasında 10 kat daha fazla ses çıkartılabilir.`∇ log π`Yeniden ortalama olarak, bir Gradient tahmincisi üretilir. Politikayı daha az DQN güncellemeleri ile ilerletmek için binlerce bölüm gerekebilir.
+Vanilla REINFORCE 能工作, ama onun değişimi 很糟──Monte Carlo geri döner $G_t$Farklı bölümler arasında 10 kat daha fazla ses çıkartılabilir.$\nabla \log \pi$Yeniden ortalama olarak, bir Gradient tahmincisi üretilir. Politikayı daha az DQN güncellemeleri ile ilerletmek için binlerce bölüm gerekebilir.
 
-Eğer bir temel değerini düşürürsen`b(s_t)`Bu, öğrenilen değer, beklenti 保持不变,而变化 会下降──最好的可处理的基线是 `V̂(s_t)`Şimdi de.`∇ log π`Bu miktarın önemi:
+Eğer bir temel değerini düşürürsen$b(s_t)$Bu, öğrenilen değer, beklenti 保持不变,而变化 会下降──最好的可处理的基线是 $\hat{V}(s_t)$Şimdi de.$\nabla \log \pi$Bu miktarın önemi:
 
-`A(s, a) = G - V̂(s)`
+```math
+A(s, a) = G - \hat{V}(s)
+```
 
 Eğer bir eylem  ortalama oranla yüksek bir getiri elde ederse, bu iyi olur; eğer ortalama oranla düşük ise, bu farklılıktan  öğrenilmiş eleştirmenlerin REINFORCE'si  *aktör eleştirmen*♦ eleştirmen  aktörlere düşük bir varyasyon öğretmeni  bu, 2015 yılından sonra her derin politika yöntemi  A2C、 A3C、 PPO、 SAC、 IMPALA) 
 
@@ -23,33 +25,39 @@ Eğer bir eylem  ortalama oranla yüksek bir getiri elde ederse, bu iyi olur; e�
 
 **两个 networks，一个 shared loss：**
 
-- **Actor** `π_θ(a | s)`Politikası: Öz örneği, eylemlere katılacak Politik derecesi 
-- **Critic** `V_φ(s)`: Devletten çıkış beklenen getiri tahminleri.`(V_φ(s) - target)²`訓練──
+- **Actor** $\pi_\theta(a \mid s)$Politikası: Öz örneği, eylemlere katılacak Politik derecesi 
+- **Critic** $V_\phi(s)$: Devletten çıkış beklenen getiri tahminleri.$(V_\phi(s) - \text{target})^2$訓練──
 
 **Advantage。**两种标准形式:
 
-- *MC avantajı:* `A_t = G_t - V_φ(s_t)`Tarafsızlık, değişim daha yüksek.
-- *TD avantajı:* `A_t = r_{t+1} + γ V_φ(s_{t+1}) - V_φ(s_t)`△ tarafsız △ kullanımı`V_φ`),varians 低得多──也叫 *TD residual* `δ_t`- Evet.
+- *MC avantajı:* $A_t = G_t - V_\phi(s_t)$Tarafsızlık, değişim daha yüksek.
+- *TD avantajı:* $A_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)$△ tarafsız △ kullanımı$V_\phi$),varians 低得多──也叫 *TD residual* $\delta_t$- Evet.
 
 **n-step advantage。**Arasındaki değer:
 
-`A_t^{(n)} = r_{t+1} + γ r_{t+2} + … + γ^{n-1} r_{t+n} + γ^n V_φ(s_{t+n}) - V_φ(s_t)`
+```math
+A_t^{(n)} = r_{t+1} + \gamma r_{t+2} + \ldots + \gamma^{n-1} r_{t+n} + \gamma^n V_\phi(s_{t+n}) - V_\phi(s_t)
+```
 
-`n = 1`Tam bir TD.`n = ∞`MC. çoğu uygulama Atari 上使用`n = 5`, MuJoCo' nun PPO's üzerinde kullanımı `n = 2048`- Evet.
+$n = 1$Tam bir TD.$n = \infty$MC. çoğu uygulama Atari 上使用$n = 5$, MuJoCo' nun PPO's üzerinde kullanımı $n = 2048$- Evet.
 
 **Generalized Advantage Estimation (GAE)。**Schulman et al. (2016)  tüm n- adım avantajları için eksponansal olarak ağırlanan ortalama yapmayı önerdi:
 
-`A_t^{GAE} = Σ_{l=0}^{∞} (γλ)^l δ_{t+l}`
+```math
+A_t^{\text{GAE}} = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}
+```
 
-İçlerinden `λ ∈ [0, 1]`- Evet.`λ = 0`Evet TD( düşük varyansa, yüksek önyargı)`λ = 1`Evet MC(yüksek farklılık, tarafsız)`λ = 0.95`Evet 2026 yılının öntanımlı değeri: devamlı düzenleme, tarafsızlık / değişkenlik diyalığı istediğiniz yere ulaşana kadar.
+İçlerinden $\lambda \in [0, 1]$- Evet.$\lambda = 0$Evet TD( düşük varyansa, yüksek önyargı)$\lambda = 1$Evet MC(yüksek farklılık, tarafsız)$\lambda = 0.95$Evet 2026 yılının öntanımlı değeri: devamlı düzenleme, tarafsızlık / değişkenlik diyalığı istediğiniz yere ulaşana kadar.
 
-**A2C：synchronous advantage actor-critic。**- Evet .`N`个 paralel ortamlar 上收集 `T`adımlar──为每一步 计算优点──在组合批上更新演员 和评论──重复──这是A3C 更简单、更可扩展的兄弟姐妹──
+**A2C：synchronous advantage actor-critic。**- Evet .$N$个 paralel ortamlar 上收集 $T$adımlar──为每一步 计算优点──在组合批上更新演员 和评论──重复──这是A3C 更简单、更可扩展的兄弟姐妹──
 
-**A3C：asynchronous advantage actor-critic。**Mnih et al. (2016)。启动 `N`个 worker threads,每个线程 运行一个环境――每个 worker 在自己的推出上本地计算梯度,然后异步 应用到共享参数服务器――不需要重复缓冲:workers 通过运行不同轨迹来去调解――A3C 证明了你可以在CPU上规模培训――到2026年,GPU-based A2C(batched parallel envs) 主导,因为GPUs 需要大批量――
+**A3C：asynchronous advantage actor-critic。**Mnih et al. (2016)。启动 $N$个 worker threads,每个线程 运行一个环境――每个 worker 在自己的推出上本地计算梯度,然后异步 应用到共享参数服务器――不需要重复缓冲:workers 通过运行不同轨迹来去调解――A3C 证明了你可以在CPU上规模培训――到2026年,GPU-based A2C(batched parallel envs) 主导,因为GPUs 需要大批量――
 
 **Combined loss。**
 
-`L(θ, φ) = -E[ A_t · log π_θ(a_t | s_t) ]  +  c_v · E[(V_φ(s_t) - G_t)²]  -  c_e · E[H(π_θ(·|s_t))]`
+```math
+L(\theta, \phi) = -\mathbb{E}[ A_t \cdot \log \pi_\theta(a_t \mid s_t) ] + c_v \cdot \mathbb{E}[(V_\phi(s_t) - G_t)^2] - c_e \cdot \mathbb{E}[H(\pi_\theta(\cdot \mid s_t))]
+```
 
 Üç bölüm:Politika-gradyen kaybı,değer gerileme,entropik bonus`c_v ~ 0.5`- Evet.`c_e ~ 0.01`Bu kanonik başlangıç noktası.
 
@@ -62,7 +70,7 @@ actor-critic
 
 ### Adım 1: eleştirmen
 
-Düzsel eleştirmen`V_φ(s) = w · features(s)`MSE 更新:
+Düzsel eleştirmen$V_\phi(s) = w \cdot \text{features}(s)$MSE 更新:
 
 ```python
 def critic_update(w, x, target, lr):
@@ -77,7 +85,7 @@ Tablo ortamında, eleştirmenler birkaç yüz bölümde oturdu. Atari'de, liner 
 
 ### Adım 2: N-adım avantajı
 
-给定长度为 `T`Çıkış ve açılış finalı`V(s_T)`- ...
+给定长度为 $T$Çıkış ve açılış finalı$V(s_T)$- ...
 
 ```python
 def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
@@ -92,7 +100,7 @@ def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
     return advantages, returns
 ```
 
-`returns`Bu kritik hedef.`advantages`Evet.`∇ log π`İçeriği:
+`returns`Bu kritik hedef.`advantages`Evet.$\nabla \log \pi$İçeriği:
 
 ### Adım 3: birleşik güncelleme
 
@@ -115,8 +123,8 @@ Politikada, her güncelleme, bir rol, aktör ve eleştirmen,
 
 ### Adım 4: paralellik (A3C vs. A2C)
 
-- **A3C：**Başlatma`N`个线程──每个线程──运行自己的env和自己的前进通行──周期性地把 Gradient updates 推送到共享 master──master 上不加锁:races 没关系,它们只是增加噪声──
-- **A2C：**Tek bir süreçte çalışın.`N`个 env örnekleri, 把 gözlemler yığın 成 `[N, obs_dim]`Batch, Execute batched forward pass,batched backward pass,GPU utilization, 更高,deterministic,更容易推理,──2026年的默认选择,──
+- **A3C：**Başlatma$N$个线程──每个线程──运行自己的env和自己的前进通行──周期性地把 Gradient updates 推送到共享 master──master 上不加锁:races 没关系,它们只是增加噪声──
+- **A2C：**Tek bir süreçte çalışın.$N$个 env örnekleri, 把 gözlemler yığın 成 `[N, obs_dim]`Batch, Execute batched forward pass,batched backward pass,GPU utilization, 更高,deterministic,更容易推理,──2026年的默认选择,──
 
 Oyuncak kodumuz, tek ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli ipli bir ipli ipli bir ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ipli ip
 
@@ -126,7 +134,7 @@ Oyuncak kodumuz, tek ipli bir ipli bir ipli bir ipli bir ipli bir ipli bir ipli 
 - **Advantage normalization。**Bu nedenle, bu programın en iyi yönleri, en iyi yönleri ve en iyi yönleri, en iyi yönleri ve en iyi yönleri ile, en iyi yönleri ve en iyi yönleri ile, en iyi yönleri ve en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ve en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi yönleri ile, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde, en iyi şekilde,
 - **Shared trunk。**Resim girişleri için, aktör ve eleştirmen için paylaşılan özellik çıkarıcı kullanın. Paylaşılan özellikler aynı anda iki kayıptan yararlanabilir.
 - **On-policy contract。**A2C'nin veriyi doğrulamak için bir güncelleme kullanmak gerekir.
-- **Entropy collapse。**Hiç .`c_e > 0`Politikası birkaç yüz kez güncelledi.
+- **Entropy collapse。**Hiç .$c_e > 0$Politikası birkaç yüz kez güncelledi.
 - **Reward scale。**Avantaj büyüklükleri ödül ölçeğine bağlıdır.Örn. ödülleri normalleştirmek için farklı görevler arasında uyumlu bir şekilde çalışmak için.
 
 ## Kullan
@@ -171,22 +179,22 @@ tags: [rl, actor-critic, gae]
 
 ## Egzersizler
 
-1. **Easy。**4×4 GridWorld'de MC avantajı kullanın`G_t - V(s_t)`) eğitim aktör-kritik──与 06 中 Ders REINFORCE-with-running-mean-baseline'nin örnek verimliliği karşılaştırma─
-2. **Medium。**切换到 TD-residual advantage (TD-residual advantage)`r + γ V(s') - V(s)`)― ölçüm avantajı seri varyasyonı― ne kadar düştü?
-3. **Hard。**实现 GAE(λ)。扫描 `λ ∈ {0, 0.5, 0.9, 0.95, 1.0}`◊ Son dönüşü vs örnek verimliliği çizmek ◊ bu görev ◊ bu görevin önyargısı / değişkenlik tatlı noktası nerede?
+1. **Easy。**4×4 GridWorld'de MC avantajı kullan$(G_t - V(s_t))$訓練演員批評──与 06 中 Ders REINFORCE-with-running-mean-baseline'nin örnek verimliliği karşılaştırma─
+2. **Medium。**切换到 TD-residual avantajı$(r + \gamma V(s') - V(s))$◊ ölçüm avantajı seri varyasyonı― ne kadar düştü?
+3. **Hard。**实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$◊ Son dönüşü vs örnek verimliliği çizmek ◊ bu görev ◊ bu görevin önyargısı / değişkenlik tatlı noktası nerede?
 
 ## Anahtar Terimler
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Actor | “Policy net” | `π_θ(a\|s)`，由 policy gradient 更新。 |
-| Critic | “Value net” | `V_φ(s)`，通过对 returns / TD targets 做 MSE regression 更新。 |
-| Advantage | “比平均好多少” | `A(s, a) = Q(s, a) - V(s)` 或它的 estimators。`∇ log π` 的 multiplier。 |
-| TD residual | “δ” | `δ_t = r + γ V(s') - V(s)`；one-step advantage estimate。 |
-| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 `λ` parameterized。 |
+| Actor | “Policy net” | $\pi_\theta(a \mid s)$，由 policy gradient 更新。 |
+| Critic | “Value net” | $V_\phi(s)$，通过对 returns / TD targets 做 MSE regression 更新。 |
+| Advantage | “比平均好多少” | $A(s, a) = Q(s, a) - V(s)$ 或它的 estimators。$\nabla \log \pi$ 的 multiplier。 |
+| TD residual | “δ” | $\delta_t = r + \gamma V(s') - V(s)$；one-step advantage estimate。 |
+| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 $\lambda$ parameterized。 |
 | A2C | “Synchronous actor-critic” | 跨 envs batching；每个 rollout 做一次 Gradient step。 |
 | A3C | “Async actor-critic” | Worker threads 把 gradients 推送到 shared param server。Original paper；2026 年较少见。 |
-| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 `γ^n V(s_{t+n})` 来闭合求和。 |
+| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 $\gamma^n V(s_{t+n})$ 来闭合求和。 |
 
 ## Daha Fazla Okumak
 

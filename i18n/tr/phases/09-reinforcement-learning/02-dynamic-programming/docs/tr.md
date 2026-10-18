@@ -1,6 +1,6 @@
 # Dinamik Programlama  Politika İterasyonu & Değer İterasyonu
 
-> Dinamik programlama RL'nin bir parçası. Sen geçiş ve ödül fonksiyonlarını biliyorsun.`V`Ya da`π`Sürekli değişim. Her örnekleme tabanlı yöntemin temeline yaklaşmaya çalışması.
+> Dinamik programlama RL'nin bir parçası. Sen geçiş ve ödül fonksiyonlarını biliyorsun.$V$Ya da$\pi$Sürekli değişim. Her örnekleme tabanlı yöntemin temeline yaklaşmaya çalışması.
 
 **Type:** Build
 **Languages:** Python
@@ -9,11 +9,11 @@
 
 ## 问题
 
-Bilinen bir modeliniz var . Herhangi bir devlet eylem çiftini sorabilirsiniz .`P(s' | s, a)`和 `R(s, a, s')`△ stok yöneticisi ihtiyaç dağılımını bilir △棋盘 oyunları kesin geçişler vardır △ GridWorld sadece dört satır Python gerekir △ bir *model* vardır △
+Bilinen bir modeliniz var . Herhangi bir devlet eylem çiftini sorabilirsiniz .$P(s' \mid s, a)$和 $R(s, a, s')$△ stok yöneticisi ihtiyaç dağılımını bilir △棋盘 oyunları kesin geçişler vardır △ GridWorld sadece dört satır Python gerekir △ bir *model* vardır △
 
 Modelsiz RL ((Q-öğrenme、PPO、REINFORCE) modelsiz bir durum için ortaya çıkarılmıştır, yani sadece ortamdan örnek alabilirsiniz. Ancak modeliniz olduğunda, daha hızlı ve daha iyi bir yöntem vardır: dinamik programlama. Bellman 1957 yılında bu yöntemleri tasarladı.
 
-2026 yılında yine de ihtiyaç duyarsınız, çünkü üç nokta vardır. İlk olarak, RL araştırmasında her tablo ortamında (GridWorld, FrozenLake, CliffWalking) altın standart politikaları oluşturmak için DP'yi kullanmak için çözümler bulmaya çalışılır.`V*(s_0)`%30 oranında fark var. Q öğrenme konusunda hata var.
+2026 yılında yine de ihtiyaç duyarsınız, çünkü üç nokta vardır. İlk olarak, RL araştırmasında her tablo ortamında (GridWorld, FrozenLake, CliffWalking) altın standart politikaları oluşturmak için DP'yi kullanmak için çözümler bulmaya çalışılır.$V^{\ast}(s_0)$%30 oranında fark var. Q öğrenme konusunda hata var.
 
 ## 概念
 
@@ -23,20 +23,22 @@ Modelsiz RL ((Q-öğrenme、PPO、REINFORCE) modelsiz bir durum için ortaya ç�
 
 **Policy iteration。**Politikası değişene kadar iki adım yerine getirmek.
 
-1. *Değerlendirme:* 给定 politikası `π`,反复应用 `V(s) ← Σ_a π(a|s) Σ_{s',r} P(s',r|s,a) [r + γ V(s')]`, hadi kabul edelim, böylece hesap edelim.`V^π`- Evet.
-2. *Yenileştirme:* 给定 `V^π`,让 `π`                `V^π`变为 açgözlülük:`π(s) ← argmax_a Σ_{s',r} P(s',r|s,a) [r + γ V(s')]`- Evet.
+1. *Değerlendirme:* 给定 politikası $\pi$,反复应用 $V(s) \leftarrow \sum_a \pi(a \mid s) \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]$, hadi kabul edelim, böylece hesap edelim.$V^\pi$- Evet.
+2. *Yenileştirme:* 给定 $V^\pi$,让 $\pi$                $V^\pi$变为 açgözlülük:$\pi(s) \leftarrow \arg\max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]$- Evet.
 
-- Bu garantili bir şey. Çünkü her gelişme adımını tutmak zorundasın.`π`Değişmez, ya da ciddi bir şekilde bazı devletlerin yükseltmesi `V^π`,(b) Deterministik politikaların alanı sınırlıdır. Büyük devlet alanlarında bile genellikle yaklaşık 520 kez dış iterasyonlarda gerçekleşir.
+- Bu garantili bir şey. Çünkü her gelişme adımını tutmak zorundasın.$\pi$Değişmez, ya da ciddi bir şekilde bazı devletlerin yükseltmesi $V^\pi$,(b) Deterministik politikaların alanı sınırlıdır. Büyük devlet alanlarında bile genellikle yaklaşık 520 kez dış iterasyonlarda gerçekleşir.
 
 **Value iteration。**Bu değerlendirme ve geliştirme bir kez süpürülmüştür. Bellman *optimallık* denklemini uygula:
 
-`V(s) ← max_a Σ_{s',r} P(s',r|s,a) [r + γ V(s')]`
+```math
+V(s) \leftarrow \max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]
+```
 
-Tekrar tekrar `max_s |V_{new}(s) - V(s)| < ε`❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖  ❖ ❖    ❖ ❖          ❖ ❖                                                                                                 
+Tekrar tekrar $\max_s \lvert V_{\text{new}}(s) - V(s) \rvert < \epsilon$❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖  ❖ ❖    ❖ ❖          ❖ ❖                                                                                                 
 
 **Generalized policy iteration (GPI)。**统一视角──Değer fonksiyonu 和 politikası iki yönlü bir geliştirme döngüsünde kilitlenir; herhangi bir zamanda iki yönlü birbirine uyumlu bir yöntem geliştirir.
 
-**为什么 `γ < 1` 很重要。**Bellman operatörü, "Sup-Norma"nın altında.`γ`-Küçükleşme:`||T V - T V'||_∞ ≤ γ ||V - V'||_∞`◊Kontaksiyon tek sabit noktayı ifade eder 和几何收──`γ < 1`, sen zaten güvence kaybetti, sınırlı ufuk veya emekleme terminal durumu gerekir.
+**为什么 $\gamma < 1$ 很重要。**Bellman operatörü, "Sup-Norma"nın altında.$\gamma$-Küçükleşme:$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$◊Kontaksiyon tek sabit noktayı ifade eder 和几何收──$\gamma < 1$, sen zaten güvence kaybetti, sınırlı ufuk veya emekleme terminal durumu gerekir.
 
 ## 动手构建
 
@@ -60,7 +62,7 @@ def transitions(state, action):
 
 ### Adım 2: Politika değerlendirme
 
-给定政策 `π(s) = {action: prob}`Bellman denklemini,`V`İçeğişmez:
+给定政策 `π(s) = {action: prob}`Bellman denklemini,$V$İçeğişmez:
 
 ```python
 def policy_evaluation(policy, gamma=0.99, tol=1e-6):
@@ -79,7 +81,7 @@ def policy_evaluation(policy, gamma=0.99, tol=1e-6):
 
 ### Adım 3: Politikayı iyileştirmek
 
-Üz karşı karşı`V`Açgözlülük politikası                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `π` `π`Değişiklik yok, geri dön, çünkü en iyisine ulaştık.
+Üz karşı karşı$V$Açgözlülük politikası                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $\pi$ $\pi$Değişiklik yok, geri dön, çünkü en iyisine ulaştık.
 
 ```python
 def policy_improvement(V, gamma=0.99):
@@ -107,7 +109,7 @@ def policy_iteration(gamma=0.99):
         policy = new_policy
 ```
 
-4×4 上典型会在 46次外回复内收──输出 `V*(0,0) ≈ -6`Bu, bir sonraki yıllarda da gerçekleşecek.
+4×4 上典型会在 46次外回复内收──输出 $V^{\ast}(0,0) \approx -6$Bu, bir sonraki yıllarda da gerçekleşecek.
 
 ### Adım 5: değer iteraasyonu(单 loop 版本)
 
@@ -136,7 +138,7 @@ Aynı sabit nokta, daha az kod sayısı.
 - **Sup-norm vs L2 convergence。**Kullanım`max |V_new - V|`, ortalama değeri kullanmayın. Teorik güvence sup-norm üstedir.
 - **In-place vs synchronous updates。**Yenilemeler`V[s]`(Gauss-Seidel)`V_new`Dict(Jacobi)收更快──Prodüksiyon kodu
 - **Policy ties。**Eğer iki eylem aynı Q değeri varsa,`argmax`Bu, politikayı sabitleştirmek için bir düzenleme yapılması için kullanılır.
-- **State-space explosion。**DP her seferinde süpürürür.`O(|S| · |A|)`◊ en fazla 107 eyalette kullanılabilir. ◊ bu ölçekten fazla, fonksiyon yaklaşımına ihtiyacınız var.
+- **State-space explosion。**DP her seferinde süpürürür.$O(\lvert S \rvert \cdot \lvert A \rvert)$◊ en fazla 107 eyalette kullanılabilir. ◊ bu ölçekten fazla, fonksiyon yaklaşımına ihtiyacınız var.
 
 
 ```figure
@@ -150,12 +152,12 @@ value-iteration-gamma
 | Use case | Method |
 |----------|--------|
 | 精确求解小型 tabular MDP | Value iteration（更简单）或 policy iteration（outer steps 更少） |
-| 验证 Q-learning / PPO 实现 | 在 toy environment 上与 DP-optimal V* 对比 |
+| 验证 Q-learning / PPO 实现 | 在 toy environment 上与 DP-optimal $V^{\ast}$ 对比 |
 | Model-based RL（Phase 9 · 10） | 在 learned transition model 上做 Bellman backup |
 | AlphaZero / MuZero 中的 Planning | Monte Carlo Tree Search = async Bellman backup |
 | Offline RL（CQL、IQL） | Conservative Q-iteration，即带有 OOD actions penalty 的 DP |
 
-Herkesin söylediği en iyi değer fonksiyonu, DP sabit noktasını ifade ediyor.`V*`Ya da`Q*`Bu döngüyü düşünün.
+Herkesin söylediği en iyi değer fonksiyonu, DP sabit noktasını ifade ediyor.$V^{\ast}$Ya da$Q^{\ast}$Bu döngüyü düşünün.
 
 ## - Söyle.
 
@@ -184,21 +186,21 @@ tags: [rl, dynamic-programming, bellman]
 
 ## 练习
 
-1. **Easy.**4×4 GridWorld'de kullanılıyor.`γ ∈ {0.9, 0.99}`运行 değer iteraasyonu──直到 `max |ΔV| < 1e-6`Ne kadar süpürme gerekiyor?`V*`4×4 şebekesi için basıldı.
-2. **Medium.***Stochastic* GridWorld'de *Slip olasılığı`0.1`) 上比较政策 반복 和 değer iteration──统计:sweeps、壁-saat zamanı、最终 `V*(0,0)`Hangi sürümler daha hızlı?
-3. **Hard.**构建修改政策反复:在评估阶段 中,只运行 `k`Bir sonraki tarama, yerine bir sonraki tarama.`k ∈ {1, 2, 5, 10, 50}`Çizim`V*(0,0)`hata vs `k`Bu eğri size değerlendirme/iyileştirme anlaşmasının ne olduğunu söyler mi?
+1. **Easy.**4×4 GridWorld'de kullanılıyor.$\gamma \in \lbrace 0.9, 0.99 \rbrace$运行 değer iteraasyonu──直到 $\max \lvert \Delta V \rvert < 10^{-6}$Ne kadar süpürme gerekiyor?$V^{\ast}$4×4 şebekesi için basıldı.
+2. **Medium.***Stochastic* GridWorld'de *Slip olasılığı`0.1`) 上比较政策 반복 和 değer iteration──统计:sweeps、壁-saat zamanı、最终 $V^{\ast}(0,0)$Hangi sürümler daha hızlı?
+3. **Hard.**构建修改政策反复:在评估阶段 中,只运行 $k$Bir sonraki tarama, yerine bir sonraki tarama.$k \in \lbrace 1, 2, 5, 10, 50 \rbrace$Çizim$V^{\ast}(0,0)$hata vs $k$Bu eğri size değerlendirme/iyileştirme anlaşmasının ne olduğunu söyler mi?
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Policy iteration | “DP algorithm” | 交替进行 evaluation（`V^π`）和 improvement（相对于 `V^π` 的 greedy `π`），直到 policy 不再变化。 |
-| Value iteration | “Faster DP” | Bellman optimality backup 在一次 sweep 中应用；几何收敛到 `V*`。 |
-| Bellman operator | “The recursion” | `(T V)(s) = max_a Σ P (r + γ V(s'))`；sup-norm 下的 `γ`-contraction。 |
-| Contraction | “Why DP converges” | 任何满足 `\|\|T x - T y\|\| ≤ γ \|\|x - y\|\|` 的 operator `T` 都有唯一 fixed point。 |
-| GPI | “Everything is DP” | Generalized Policy Iteration：任何推动 `V` 和 `π` 达到相互一致的方法。 |
-| Synchronous update | “Jacobi-style” | 在一次 sweep 中始终使用旧的 `V`；便于清晰分析，但更慢。 |
-| In-place update | “Gauss-Seidel-style” | 使用正在被更新的 `V`；实践中收敛更快。 |
+| Policy iteration | “DP algorithm” | 交替进行 evaluation（$V^\pi$）和 improvement（相对于 $V^\pi$ 的 greedy $\pi$），直到 policy 不再变化。 |
+| Value iteration | “Faster DP” | Bellman optimality backup 在一次 sweep 中应用；几何收敛到 $V^{\ast}$。 |
+| Bellman operator | “The recursion” | $(T V)(s) = \max_a \sum P (r + \gamma V(s'))$；sup-norm 下的 $\gamma$-contraction。 |
+| Contraction | “Why DP converges” | 任何满足 $\lVert T x - T y \rVert \le \gamma \lVert x - y \rVert$ 的 operator $T$ 都有唯一 fixed point。 |
+| GPI | “Everything is DP” | Generalized Policy Iteration：任何推动 $V$ 和 $\pi$ 达到相互一致的方法。 |
+| Synchronous update | “Jacobi-style” | 在一次 sweep 中始终使用旧的 $V$；便于清晰分析，但更慢。 |
+| In-place update | “Gauss-Seidel-style” | 使用正在被更新的 $V$；实践中收敛更快。 |
 
 ## 延伸阅读
 

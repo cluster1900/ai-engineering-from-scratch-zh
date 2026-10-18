@@ -30,19 +30,19 @@ while True:
 
 **AlphaZero (2017)。**Silver et al. 给定一个规则已知的游戏(şah,shogi,Go):
 
-- Politika-değer ağı:一个塔 `f_θ(s) → (p, v)`- Evet.`p`Yasal bir hareket.`v`Bu oyunun sonucu beklenir.
-- Monte Carlo Ağaç Arama (MCTS): On each step,展开可能后续状态的树──使用 `(p, v)`作为前 + bootstrap──用 UCB (PUCT) 选择节点:`a* = argmax Q(s, a) + c · p(a|s) · √N(s) / (1 + N(s, a))`- Evet.
-- Kendi oyununu oynayın: Ajan karşısına oynayın.`t`步,MCTS ziyaret dağıtımı `π_t`Politikaya başlamak için eğitim hedefleri.
-- Kayıp:`L = (v - z)² - π · log p + c · ||θ||²`- Evet.`z`Evet, oyunun sonucu.
+- Politika-değer ağı:一个塔 $f_\theta(s) \to (p, v)$- Evet.$p$Yasal bir hareket.$v$Bu oyunun sonucu beklenir.
+- Monte Carlo Ağaç Arama (MCTS): On each step,展开可能后续状态的树──使用 $(p, v)$作为前 + bootstrap──用 UCB (PUCT) 选择节点:$a^{\ast} = \arg\max_a Q(s, a) + c \cdot p(a \mid s) \cdot \sqrt{N(s)} / (1 + N(s, a))$- Evet.
+- Kendi oyununu oynayın: Ajan karşısına oynayın.$t$步,MCTS ziyaret dağıtımı $\pi_t$Politikaya başlamak için eğitim hedefleri.
+- Kayıp:$L = (v - z)^2 - \pi \cdot \log p + c \cdot \lVert \theta \rVert^2$- Evet.$z$Evet, oyunun sonucu.
 
 零人类知识――零手工 heuristik―― tek bir yapım, kendi milyonlarca oyunları kendi oyunları  sonra satranç, shogi 和 Go¬
 
 **MuZero (2019)。**Schrittwieser et al. 移除了规则已知的要求──
 
-- Hâlâ sabit bir ortam kullanmıyoruz, bir *latent dinamik modeli öğrenmek için*`(h, g, f)`- ...
-  - `h(s)`:将观察 编码为潜伏状态――
-  - `g(s_latent, a)`:预测下一个潜伏状态 + ödül。
-  - `f(s_latent)`:预测 politika ön + değer
+- Hâlâ sabit bir ortam kullanmıyoruz, bir *latent dinamik modeli öğrenmek için*$(h, g, f)$- ...
+  - $h(s)$:将观察 编码为潜伏状态――
+  - $g(s_{\text{latent}}, a)$:预测下一个潜伏状态 + ödül。
+  - $f(s_{\text{latent}})$:预测 politika ön + değer
 - MCTS içinde * öğrenilen gizli alanı* 中运行──同じ検索,同じトレーニングサイクル──
 - 适用于Go、棋、shogi *以及* Atari  一个算法,不需要规则知识──
 
@@ -54,11 +54,11 @@ while True:
 
 - 游戏: cevap matematik / kodlama / akıl yürütme sorunu。胜利= doğrulayıcı(test vaka 通過、数值答案匹配)返回 1。
 - Politikası:LLM。Yapışmalar:Token。State:prompt + response-so far。
-- 没有批评(PPO 风格的 V_φ) ;;相反,对每一个提示,从政策 采样 `G`个完成──计算每个完成的奖励──使用 **group-relative advantage** `A_i = (r_i - mean_r) / std_r`作为 REINFORCE 风格更新的信号──
+- 没有批评(PPO 风格的 $V_\phi$)¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬$G$个完成──计算每个完成的奖励──使用 **group-relative advantage** $A_i = (r_i - \text{mean}_r) / \text{std}_r$作为 REINFORCE 风格更新的信号──
 - Referans politikasına ek KL cezası 以防漂移(RLHF'ye benzer)
 - 完整 Loss:
 
-  `L_GRPO(θ) = -E_{q, {o_i}} [ (1/G) Σ_i A_i · log π_θ(o_i | q) ] + β · KL(π_θ || π_ref)`
+  $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
 没有奖励模型,没有批评者,没有MCTS──grup-relative baseline 替换了三者──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF 质量──
 
@@ -145,7 +145,7 @@ RLHF ile benzer teşhisler: referans ortalaması KL、 politika entropi、 ödü
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO RLHF'nin riskini üstlenmiştir: Eğer doğrulayıcı  yanlış veya kullanılabilirse, LLM'de bir sömürü bulacaktır.
-- **Group size 太小。**Grup başlangıç çizgisine göre `1/√G`缩放――低于 缩放─`G = 4`时, avantaj sinyalleri  会很噪音; 标准选择是`G = 8`- Ne ?`64`- Evet.
+- **Group size 太小。**Grup başlangıç çizgisine göre $1/\sqrt{G}$缩放――低于 缩放─$G = 4$时, avantaj sinyalleri  会很噪音; 标准选择是$G = 8$64'e kadar.
 - **Length bias。**Önemli bir süre boyunca, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir sürececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececece
 - **纯 self-play 循环。**AlphaZero 风格训练可能在一般总数游戏中卡进统治循环──可通过多样化对手池联赛比赛,Lesson 10)缓解──
 - **Search-policy mismatch。**AlphaZero trening policy 去模仿搜索结果──如果政策网太小,无法表示搜索的分布,训练会停滞──
@@ -196,7 +196,7 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 ## 练习
 
-1. **Easy。**- Evet .`code/main.py`Orta GRPO banditı gerçekleştirmek için. 2 个提示 × 每个 4 个回答 标签 上训练。使用`G=8`1000 kez güncelleme yapın.
+1. **Easy。**- Evet .`code/main.py`Orta GRPO banditı gerçekleştirmek için. 2 个提示 × 每个 4 个回答 标签 上训练。使用$G=8$1000 kez güncelleme yapın.
 2. **Medium。**接入 PPO(cliped) 和瓦尼莉 REINFORCE──在同一个强盗上比较样本效率和奖励差与GRPO的差──
 3. **Hard。**扩展到长度为 2 的推理链:agent 发发发两个代币,verifier对代币对对发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发发
 
@@ -204,11 +204,11 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 | Term | 人们常说 | 实际含义 |
 |------|-----------------|-----------------------|
-| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned `(p, v)` prior 的 UCB1/PUCT selection。 |
+| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned $(p, v)$ prior 的 UCB1/PUCT selection。 |
 | AlphaZero | “Self-play + MCTS” | Policy-value net 被训练来匹配 MCTS visits 和 game outcome。 |
 | MuZero | “Learned-model AlphaZero” | 相同循环，但通过 learned dynamics 在 latent space 中进行。 |
 | GRPO | “Critic-free PPO” | Group Relative Policy Optimization；带 group-mean baseline + KL 的 REINFORCE。 |
-| PUCT | “AlphaZero 的 UCB” | `Q + c · p · √N / (1 + N_a)` —— 平衡 value estimate 与 prior。 |
+| PUCT | “AlphaZero 的 UCB” | $Q + c \cdot p \cdot \sqrt{N} / (1 + N_a)$ —— 平衡 value estimate 与 prior。 |
 | Self-play | “Agent vs past self” | Zero-sum 的标准做法；提供对称训练信号。 |
 | League play | “Population-based self-play” | 将 past + current + exploiters 采样为 opponents。 |
 | Verifier reward | “Verifiable RL” | Reward 来自 deterministic checker（tests pass、answer matches）。 |

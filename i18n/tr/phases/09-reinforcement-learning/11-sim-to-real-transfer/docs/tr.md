@@ -31,7 +31,7 @@ You need a against *sim-to-real distribution shift* 具有 robust 性政策─�
 
 **Domain Adaptation。**Sim training, yeniden kullanın az miktarda gerçek veri ince ayarlamak.
 
-- **Real2Sim2Real：**Gerçek bir simülatör kullanın.`f(s, a, z) - f_sim(s, a)`, yeniden düzenlenmiş simler içinde antrenman.
+- **Real2Sim2Real：**Gerçek bir simülatör kullanın.$f(s, a, z) - f_{\text{sim}}(s, a)$, yeniden düzenlenmiş simler içinde antrenman.
 - **Observation adaptation：**訓練一個政策, öğrenilen özellik çıkarıcıı (örneğin GAN pikselden piksel) kullanarak gerçek obs → sim gibi obs──controller 仍然停留在sim中──
 
 **Privileged learning / teacher-student。**Miki et al. 2022 ((Yeni dörtlü) ・・・ Simülasyonda eğitim bir görebilir ayrıcalıklı bilgilere erişmek için (→terrain truth friction、terrain height、IMU drift) ⇒ *öğretmen*。再蒸留 一个只看到真正的传感器观测的 *öğrenc*。学生 学会从历史中推断着特权特征,并于物理参数 变化下保持强──
@@ -129,7 +129,7 @@ tags: [rl, sim2real, robotics, domain-randomization]
 
 ## 练习
 
-1. **Easy。**Bu nedenle, bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri, bu programın en önemli yönleri ve bu programın en önemli yönleri ile yapılmıştır.
+1. **Easy。**Bu yüzden, bu bir şey değil.$\text{slip} \in \lbrace 0.0, 0.1, 0.3, 0.5 \rbrace$Ünce değerlendirme: Geri dönüş vs. kayma
 2. **Medium。**訓練一個 DR Q-öğrenme ajanı,采样 `slip ~ Uniform[0, 0.3]`◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊                                                                                                                                                                                                                                          
 3. **Hard。** Bir kurikulum gerçekleştirmek: Slip=0.0'dan başlayarak, politika % 90'a ulaştığında, DR aralığını genişletmek,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak,  % 0.3'e ulaşmak, % 0.3'e ulaşmak, % 0.3'e ulaşmak için % 0.3'e ulaşmak için % 0.3'e ulaşmak için % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 

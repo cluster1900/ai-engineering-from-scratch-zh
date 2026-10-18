@@ -9,7 +9,7 @@
 
 ## 问题
 
-Dinamik programlama çok güzel ama her devlete ve eylem sorgularına göre yapabileceğini varsayır.`P(s' | s, a)`△ gerçek dünyada neredeyse hiçbir şey böyle bir şekilde çalışmıyor. △ Robotlar ∞ çözemiyor ∞ hesaplamak ∞ ortak tortu ∞ kamera piksellerinin dağılımını ∞ fiyatlama algoritması ∞ her olası müşteri tepkisine ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ 
+Dinamik programlama çok güzel ama her devlete ve eylem sorgularına göre yapabileceğini varsayır.$P(s' \mid s, a)$△ gerçek dünyada neredeyse hiçbir şey böyle bir şekilde çalışmıyor. △ Robotlar ∞ çözemiyor ∞ hesaplamak ∞ ortak tortu ∞ kamera piksellerinin dağılımını ∞ fiyatlama algoritması ∞ her olası müşteri tepkisine ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ 
 
 Çevreye bağlı bir yöntem gerekir.`s_0, a_0, r_1, s_1, a_1, r_2, …, s_T`- Bu Monte Carlo'nun değeri.
 
@@ -19,30 +19,32 @@ DP'den MC'ye dönüşümün bir fikri çok önemlidir: * bilinmiş modelden + ta
 
 ![Monte Carlo: rollout, compute returns, average; first-visit vs every-visit](../assets/monte-carlo.svg)
 
-**核心思想，一行表达：** `V^π(s) = E_π[G_t | s_t = s] ≈ (1/N) Σ_i G^{(i)}(s)`, içinden `G^{(i)}(s)`Politikada.`π`Aşağı ziyaret`s`之后观察到的回报──
+**核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, içinden $G^{(i)}(s)$Politikada.$\pi$Aşağı ziyaret$s$之后观察到的回报──
 
-**First-visit vs every-visit MC。**给定一个多次访问状态 `s`İlk ziyaret MC sadece ilk ziyaret sonrası geri dönüş; her ziyaret MC 统计所有访问──二者在极限下都是公正──初訪問更容易分析(iid örnekleri)──Her ziyaret Her bölüm daha fazla veriden yararlanır, pratikte genellikle daha hızlı olarak gelir──
+**First-visit vs every-visit MC。**给定一个多次访问状态 $s$İlk ziyaret MC sadece ilk ziyaret sonrası geri dönüş; her ziyaret MC 统计所有访问──二者在极限下都是公正──初訪問更容易分析(iid örnekleri)──Her ziyaret Her bölüm daha fazla veriden yararlanır, pratikte genellikle daha hızlı olarak gelir──
 
 **Incremental mean。**Tüm kaydetme, ancak yenileme çalışkan ortalama:
 
-`V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]`
+```math
+V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
+```
 
-Şimdiki düzenleme:`V_new = V_old + α · (target - V_old)`, içinden `α = 1/n`- Evet.`1/n`换成常量 step size `α ∈ (0, 1)`Bir sabit olmayan MC tahmincisi var, takip eder.`π`Bu hareket MC'den TD'ye atlamak, her modern RL algoritmasının tüm anahtarlarına atlamak.
+Şimdiki düzenleme:$V_{\text{new}} = V_{\text{old}} + \alpha \cdot (\text{target} - V_{\text{old}})$, içinden $\alpha = 1/n$- Evet.$1/n$换成常量 step size $\alpha \in (0, 1)$Bir sabit olmayan MC tahmincisi var, takip eder.$\pi$Bu hareket MC'den TD'ye atlamak, her modern RL algoritmasının tüm anahtarlarına atlamak.
 
-**Exploration 现在成了问题。**DP 通過枚举触及各州──MC sadece politika görecektir ziyaret edilen eyaletler──如果`π`Bu, bir deterministik, devlet alanı, tüm bölge asla örneklenmeyecek, değer tahminleri, tarihsel sırayla, ebediyen sıfırda kalmayacaktır.
+**Exploration 现在成了问题。**DP 通過枚举触及各州──MC sadece politika görecektir ziyaret edilen eyaletler──如果$\pi$Bu, bir deterministik, devlet alanı, tüm bölge asla örneklenmeyecek, değer tahminleri, tarihsel sırayla, ebediyen sıfırda kalmayacaktır.
 
 1. **Exploring starts。**⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒    ⇒ ⇒       ⇒             ⇒                                                                                                                                                                     
-2. **ε-greedy。**Öte yandan, daha fazla riskli bir davranışta bulunmak için.`ε`选择随机action── tüm devlet eylem çiftleri 逐渐近地 নমুনা olarak alınmıştır──
-3. **Off-policy MC。**Davranış politikasında`μ`Aşağıdaki verileri toplamak, önemlilik örneği almak öğrenmek hedef politika `π`❖ Yüksek değişkenlik, ama bu DQN ve diğer tekrarlama tampon yöntemlerinin bir köprü.
+2. **ε-greedy。**Öte yandan, daha fazla riskli bir davranışta bulunmak için.$\epsilon$选择随机action── tüm devlet eylem çiftleri 逐渐近地 নমুনা olarak alınmıştır──
+3. **Off-policy MC。**Davranış politikasında$\mu$Aşağıdaki verileri toplamak, önemlilik örneği almak öğrenmek hedef politika $\pi$❖ Yüksek değişkenlik, ama bu DQN ve diğer tekrarlama tampon yöntemlerinin bir köprü.
 
 **Monte Carlo Control。**Değerlendirme → geliştirme → değerlendirme,就像政策反复 一样,但评估是基于样本测试:
 
-1. 运行  İşlem`π`Bir bölüm aldım.
-2. Gözlemlere göre , yenilemeler`Q(s, a)`- Evet.
-3. 让  `π`                `Q`变成 ε-cinsel.
+1. 运行  İşlem$\pi$Bir bölüm aldım.
+2. Gözlemlere göre , yenilemeler$Q(s, a)$- Evet.
+3. 让  $\pi$                $Q$变成 ε-cinsel.
 4. Tekrarlıyorum.
 
-Her çiftin sınırsız ziyaretleri vardır.`α`Robbins-Monro ' yu karşılamak için , 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  `Q*`和 `π*`- Evet.
+Her çiftin sınırsız ziyaretleri vardır.$\alpha$Robbins-Monro ' yu karşılamak için , 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  $Q^{\ast}$和 $\pi^{\ast}$- Evet.
 
 ## 动手构建
 
@@ -76,7 +78,7 @@ def returns_from(trajectory, gamma):
     return list(reversed(returns))
 ```
 
-Bir kere geçiyor,`O(T)`❖ Geri dönüşe karşı`G_t = r_{t+1} + γ G_{t+1}`避免了重复求和──
+Bir kere geçiyor,$O(T)$❖ Geri dönüşe karşı$G_t = r_{t+1} + \gamma G_{t+1}$避免了重复求和──
 
 ### Adım 3: İlk ziyaret MC değerlendirme
 
@@ -126,15 +128,15 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 
 ### Adım 5: DP Altın Standartı ile karşılaştırma
 
-Bu arada, sen de...`V^π`MC'nin tahminleri  devrait avec DP sonuçları Lection 02 中 一致── pratikte: 4×4 GridWorld 上运行 50,000 bölüm, DP 答案相差差 `~0.1`- Evet.
+Bu arada, sen de...$V^\pi$MC'nin tahminleri  devrait avec DP sonuçları Lection 02 中 一致── pratikte: 4×4 GridWorld 上运行 50,000 bölüm, DP 答案相差差 `~0.1`- Evet.
 
 ## 常见陷
 
 - **Infinite episodes。**MC'nin istekleri bölümleri, eğer politikası sonsuza dek kalırsa, ayarlayın.`max_steps`Yukarı sınır, gizli başarısızlıklara ulaştı.
-- **Variance。**MC kullanın tam geri dönüşleri. Uzun bölümlerde, değişim  Büyük, son bir kez                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `V(s_0)`TD yöntemleri (Desin 04) ⇒Bootstrapping 降低这一点──
+- **Variance。**MC kullanın tam geri dönüşleri. Uzun bölümlerde, değişim  Büyük, son bir kez                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $V(s_0)$TD yöntemleri (Desin 04) ⇒Bootstrapping 降低这一点──
 - **State coverage。**Yeni bir MC yapma. Eğer bağlar ortaya çıkarsa, sadece bir eylem yapmaya çalışırım.
-- **Non-stationary policies。**Eğer `π`发生变化(如 MC kontrol 中那样), eski gelenler farklı politikalardan.
-- **Off-policy importance sampling。**权重 `π(a|s)/μ(a|s)`连乘──Variance 会随地平线 爆炸──用 per-decision weighted IS 截断,或切换到 TD──
+- **Non-stationary policies。**Eğer $\pi$发生变化(如 MC kontrol 中那样), eski gelenler farklı politikalardan.
+- **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$连乘──Variance 会随地平线 爆炸──用 per-decision weighted IS 截断,或切换到 TD──
 
 
 ```figure
@@ -151,10 +153,10 @@ Monte Carlo yöntemleri 2026 yılında rol:
 | Logged policy 的 offline evaluation | 对 stored trajectories 的 discounted returns 求平均。 |
 | Monte Carlo Tree Search（AlphaZero） | 从 tree leaves 发起的 MC rollouts 指导 selection。 |
 | LLM RL evaluation | 为给定 policy 计算 sampled completions 的 average reward。 |
-| PPO 中的 baseline estimation | Advantage target `A_t = G_t - V(s_t)` 使用 MC `G_t`。 |
+| PPO 中的 baseline estimation | Advantage target $A_t = G_t - V(s_t)$ 使用 MC $G_t$。 |
 | RL 教学 | 最简单且真正有效的 algorithm；去掉 bootstrapping 就能看到核心。 |
 
-现代 derin-RL algoritmaları PPO、SAC) 通過`n`-step return veya GAE, in pure MC(full returns) ve pure TD(one-step bootstrap) arasında插值──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+现代 derin-RL algoritmaları PPO、SAC) 通過$n$-step return veya GAE, in pure MC(full returns) ve pure TD(one-step bootstrap) arasında插值──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 ## - Söyle.
 
@@ -183,20 +185,20 @@ tags: [rl, monte-carlo, evaluation]
 
 ## 练习
 
-1. **Easy.**4×4 GridWorld 上 üniform-random politika ilk ziyaret MC değerlendirme gerçekleştirmek──运行 10,000 bölümleri──将 `V(0,0)` Bölüm sayısına göre  değişim eğilimi ve DP 答案对照绘制──
-2. **Medium.**Kullan .`ε ∈ {0.01, 0.1, 0.3}`实现 ε-greedy MC control──比较20,000 bölüm 后的平均回报──曲線看起来是什么样?
-3. **Hard.**Önemlilik örneklemesi 实现 *off-policy* MC:在统一随机政策 `μ`Aşağıda veriler toplamak, belirleyici en iyi politika tahminleri`π``V^π`◊Compared plain IS、per-decision IS 和 weighted IS── hangi varyansa en düşük?
+1. **Easy.**4×4 GridWorld 上 üniform-random politika ilk ziyaret MC değerlendirme gerçekleştirmek──运行 10,000 bölümleri──将 $V(0,0)$ Bölüm sayısına göre  değişim eğilimi ve DP 答案对照绘制──
+2. **Medium.**Kullan .$\epsilon \in \lbrace 0.01, 0.1, 0.3 \rbrace$实现 ε-greedy MC control──比较20,000 bölüm 后的平均回报──曲線看起来是什么样?
+3. **Hard.**Önemlilik örneklemesi 实现 *off-policy* MC:在统一随机政策 $\mu$Aşağıda veriler toplamak, belirleyici en iyi politika tahminleri$\pi$$V^\pi$◊Compared plain IS、per-decision IS 和 weighted IS── hangi varyansa en düşük?
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
-| Return `G_t` | “Future reward” | 从 step `t` 到 episode 结束的 discounted rewards 总和：`Σ_{k≥0} γ^k r_{t+k+1}`。 |
+| Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
 | Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
-| ε-greedy | “Exploration noise” | 以概率 `1-ε` 选择 greedy action；以概率 `ε` 选择 random action。 |
-| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 `π(a\|s)/μ(a\|s)` 乘积对 returns 重新加权，从 `μ` 数据估计 `V^π`。 |
+| ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
+| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |
 | Off-policy | “Learn from someone else's data” | Target policy ≠ behavior policy。Importance-sampled MC、Q-learning、DQN。 |
 

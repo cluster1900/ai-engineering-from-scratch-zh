@@ -9,11 +9,11 @@
 
 ## 问题
 
-A2C(Lection 07) on-policy 的:Gradient `E_{π_θ}[A · ∇ log π_θ]`需要从*当前* `π_θ`Bu da bir güncellemeden sonra.`π_θ`Değişti, şimdi kullandığın veriler artık politika dışı.
+A2C(Lection 07) on-policy 的:Gradient $\mathbb E_{\pi_\theta}[A \cdot \nabla \log \pi_\theta]$需要从*当前* $\pi_\theta$Bu da bir güncellemeden sonra.$\pi_\theta$Değişti, şimdi kullandığın veriler artık politika dışı.
 
 Atari'de 8 env × 128 adım bir kez dağıtılması = 1024 geçiş ve bir kaç saniyelik ortam süresi.
 
-Trust Region Policy Optimization (TRPO, Schulman 2015) ilk modification programı:约束每次更新, make old policy 和 new policy  KL arasındaki farklılık 保持在 `δ`Aşağıda, teorik olarak çok temiz, ama her güncelleme için bir konjugat-gradyen çözümü gerekmektedir.
+Trust Region Policy Optimization (TRPO, Schulman 2015) ilk modification programı:约束每次更新, make old policy 和 new policy  KL arasındaki farklılık 保持在 $\delta$Aşağıda, teorik olarak çok temiz, ama her güncelleme için bir konjugat-gradyen çözümü gerekmektedir.
 
 PPO(Schulman et al. 2017) basit bir kesilmiş hedef ile 硬性的 güven bölgesini 约束──只多一行代码── her seferinde 十个时代──不需要结合梯度──理论保证足够好──九年后,它仍然是从MuJoCo到RLHF 的默认政策-gradient 算法──
 
@@ -23,43 +23,49 @@ PPO(Schulman et al. 2017) basit bir kesilmiş hedef ile 硬性的 güven bölges
 
 **Importance ratio。**
 
-`r_t(θ) = π_θ(a_t | s_t) / π_{θ_old}(a_t | s_t)`
+```math
+r_t(\theta) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}
+```
 
-Bu yeni politika ile veri toplama politikası arasındaki olasılık oranıdır.`r_t = 1`Değişiklik göstermedi.`r_t = 2`Yeni politika göster 选择 `a_t`Oldukça politikadan iki kat daha fazla olasılıktır.
+Bu yeni politika ile veri toplama politikası arasındaki olasılık oranıdır.$r_t = 1$Değişiklik göstermedi.$r_t = 2$Yeni politika göster 选择 $a_t$Oldukça politikadan iki kat daha fazla olasılıktır.
 
 **Clipped surrogate。**
 
-`L^{CLIP}(θ) = E_t [ min( r_t(θ) A_t, clip(r_t(θ), 1-ε, 1+ε) A_t ) ]`
+```math
+L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \mathop{\mathrm{clip}}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+```
 
 İki konu:
 
-- Eğer avantajlı `A_t > 0`, ve oran 试图增长到超过 `1 + ε`, clip will make it Gradient 压平                                                                                                                                                                                                                                                          `+ε`Daha fazla.
-- Eğer avantajlı `A_t < 0`, ve oran 试图增长到超过 `1 - ε`(Klip oranında azalanma anlamına gelir, biz kötü bir eylem daha da gerçekleşebilir), klip bir kötü eylem sınırlama `-ε`- Evet.
+- Eğer avantajlı $A_t > 0$, ve oran 试图增长到超过 $1 + \epsilon$, clip will make it Gradient 压平                                                                                                                                                                                                                                                          $+\epsilon$Daha fazla.
+- Eğer avantajlı $A_t < 0$, ve oran 试图增长到超过 $1 - \epsilon$(Klip oranında azalanma anlamına gelir, biz kötü bir eylem daha da gerçekleşebilir), klip bir kötü eylem sınırlama $-\epsilon$- Evet.
 
 `min`处理另一个方向: If ratio 已朝*有益*方向移动, you still get Gradient (Böylece, oranın 已朝*有益*方向移动se, yine de gradyen elde ediyorsun)
 
-Tipik değer `ε = 0.2`❖ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯  ◯ ◯ ◯  ◯ ◯ ◯   ◯ ◯    ◯ ◯    ◯ ◯              ◯       ◯                                                                                                                                                                                                           `r_t`Bu işlevi: Bir parça-düzsel işlevi, iyi bir tarafta düz bir üst, kötü bir tarafta düz bir alt vardır.
+Tipik değer $\epsilon = 0.2$❖ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯ ◯  ◯ ◯ ◯  ◯ ◯ ◯   ◯ ◯    ◯ ◯    ◯ ◯              ◯       ◯                                                                                                                                                                                                           $r_t$Bu işlevi: Bir parça-düzsel işlevi, iyi bir tarafta düz bir üst, kötü bir tarafta düz bir alt vardır.
 
 **完整的 PPO loss。**
 
-`L(θ, φ) = L^{CLIP}(θ) - c_v · (V_φ(s_t) - V_t^{target})² + c_e · H(π_θ(·|s_t))`
+```math
+L(\theta, \phi) = L^{\text{CLIP}}(\theta) - c_v \cdot (V_\phi(s_t) - V_t^{\text{target}})^2 + c_e \cdot H(\pi_\theta(\cdot \mid s_t))
+```
 
-A2C ile karşılaştırıldığında oyuncu-kritik  yapı── üç系数, genellikle `c_v = 0.5`- Evet.`c_e = 0.01`- Evet.`ε = 0.2`- Evet.
+A2C ile karşılaştırıldığında oyuncu-kritik  yapı── üç系数, genellikle $c_v = 0.5$- Evet.$c_e = 0.01$- Evet.$\epsilon = 0.2$- Evet.
 
 **训练循环。**
 
-1. 跨 `N`个 paralel ortam, her运行 `T`Adımlar, toplama `N × T`个 geçişleri。
+1. 跨 $N$个 paralel ortam, her运行 $T$Adımlar, toplama $N \times T$个 geçişleri。
 2. 計算優勢 (GAE),并把它们结为常量──
-3. - Ne ?`π_{θ_old}`结为当前 `π_θ`Bu fotoğrafın...
-4. - Evet .`K`个 epochs,对每个 `(s, a, A, V_target, log π_old(a|s))`- Minibatch:
-   - 计算 `r_t(θ) = exp(log π_θ(a|s) - log π_old(a|s))`- Evet.
-   -  uygulama `L^{CLIP}`+ değer kaybı + entropi。
+3. - Ne ?$\pi_{\theta_{\text{old}}}$结为当前 $\pi_\theta$Bu fotoğrafın...
+4. - Evet .$K$个 epochs,对每个 `(s, a, A, V_target, log π_old(a|s))`- Minibatch:
+   - 计算 $r_t(\theta) = \exp(\log \pi_\theta(a \mid s) - \log \pi_{\text{old}}(a \mid s))$- Evet.
+   -  uygulama $L^{\text{CLIP}}$+ değer kaybı + entropi。
    - İlerleyici adım.
 5. Çıkarmayı bırakın.
 
-`K = 10`和 64'in minibatchleri bir grup standart hiperparametrelidir.
+$K = 10$和 64'in minibatchleri bir grup standart hiperparametrelidir.
 
-**KL-penalty 变体。**Originiş论文, adapte KL cezasını kullanarak bir alternatif önerdi:`L = L^{PG} - β · KL(π_θ || π_old)`, içinden `β`KL 调整──Clipping 版本 became mainstream; KL 变体 in RLHF in retained below below.
+**KL-penalty 变体。**Originiş论文, adapte KL cezasını kullanarak bir alternatif önerdi:$L = L^{\text{PG}} - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$, içinden $\beta$KL 调整──Clipping 版本 became mainstream; KL 变体 in RLHF in retained below below.
 
 
 ```figure
@@ -125,19 +131,19 @@ cliped → zero gradient 模式 PPO'nun merkezi. Yeni politika vevevevevevevevev
 
 Her gün üç şeyi gözlemlemek gerekir:
 
-- **Mean KL** `E[log π_old - log π_θ]`❖ Olmalı.`[0, 0.02]` Eğer aşarsa `0.1`,降低 `K_EPOCHS`Ya da`LR`- Evet.
-- **Clip fraction** oran 落在 `[1-ε, 1+ε]` dışı örnekler örneğin.`~0.1-0.3`Eğer öyleyse.`~0`,clip 从未触发 → 提高 `LR`Ya da`K_EPOCHS`Eğer öyleyse.`~0.5+`Bu yayını çok fazla ayarlıyorsun.
-- **Explained variance** `1 - Var(V_target - V_pred) / Var(V_target)`❖ Kritik 質量指标── kritik öğrenmekle birlikte, 1 yukarı yükselmelidir。
+- **Mean KL** $\mathbb{E}[\log \pi_{\text{old}} - \log \pi_\theta]$❖ Olmalı.`[0, 0.02]` Eğer aşarsa `0.1`,降低 `K_EPOCHS`Ya da`LR`- Evet.
+- **Clip fraction** oran 落在 $[1-\epsilon, 1+\epsilon]$ dışı örnekler örneğin.`~0.1-0.3`Eğer öyleyse.`~0`,clip 从未触发 → 提高 `LR`Ya da`K_EPOCHS`Eğer öyleyse.`~0.5+`Bu yayını çok fazla ayarlıyorsun.
+- **Explained variance** $1 - \text{Var}(V_{\text{target}} - V_{\text{pred}}) / \text{Var}(V_{\text{target}})$❖ Kritik 質量指标── kritik öğrenmekle birlikte, 1 yukarı yükselmelidir。
 
 ## 陷
 
-- **Clip coefficient 调错。** `ε = 0.2`Evet, gerçek standartlar.`0.1`Güncellemeyi çok korumacı hale getirir.`0.3+`Bu da bir kararsızlık.
-- **Epochs 太多。** `K > 20`经常会让训练不稳定,因为政策 漂离 `π_old`太遠── sınırlama çağları, özellikle büyük ağlar için──
+- **Clip coefficient 调错。** $\epsilon = 0.2$Evet, gerçek standartlar.`0.1`Güncellemeyi çok korumacı hale getirir.`0.3+`Bu da bir kararsızlık.
+- **Epochs 太多。** $K > 20$经常会让训练不稳定,因为政策 漂离 $\pi_{\text{old}}$太遠── sınırlama çağları, özellikle büyük ağlar için──
 - **没有 reward normalization。**Büyük ödül ölçekleri 会侵蚀 clip aralığı──在计算优点 前先正常化奖励(running std)──
 - **忘记 advantage normalization。**Satır başına sıfır ortalama/birlik-std normallaştırma standart bir uygulama.
 - **Learning rate 没有衰减。**PPO 線性 LR 衰减到零──常態 LR 往往更差──
 - **Importance ratio 数学错误。**始终使用 `exp(log_new - log_old)`- Hayır .`new / old`- Evet.
-- **Gradient sign 错误。**Maksimalist alternatif = * minimalist* `-L^{CLIP}`◊ 符号翻转是最常见的PPO bug──
+- **Gradient sign 错误。**Maksimalist alternatif = * minimalist* $-L^{\text{CLIP}}$◊ 符号翻转是最常见的PPO bug──
 
 ## Kullan
 
@@ -181,18 +187,18 @@ tags: [rl, ppo, policy-gradient]
 
 ## 练习
 
-1. **简单。**4×4 GridWorld 上运行 PPO, kullan `ε=0.2, K=4`◊ uyumlu çevre adımları durumunda, A2C ◊ her atış bir dönem) örnek verimliliği karşılaştırma
-2. **中等。**Tarama`K ∈ {1, 4, 10, 30}` Geri dönüş vs. env adımları çizmek, ve her güncelleme ortalamasını takip etmek`K`KL ne kadar patlayacak?
-3. **困难。**Kullanıcı KL cezası  değiştirilmiş yer değiştirmek  Eğer`KL > 2·target`- Evet .`β`翻倍; eğer `KL < target/2`- Evet .`β`减半) ・比较最终回报、稳定和 clip-freeness──
+1. **简单。**4×4 GridWorld 上运行 PPO, kullan $\epsilon=0.2, K=4$◊ uyumlu çevre adımları durumunda, A2C ◊ her atış bir dönem) örnek verimliliği karşılaştırma
+2. **中等。**Tarama$K \in \lbrace 1, 4, 10, 30 \rbrace$ Geri dönüş vs. env adımları çizmek, ve her güncelleme ortalamasını takip etmek$K$KL ne kadar patlayacak?
+3. **困难。**Kullanıcı KL cezası  değiştirilmiş yer değiştirmek  Eğer$\mathrm{KL} > 2 \cdot \text{target}$- Evet .$\beta$翻倍; eğer $\mathrm{KL} < \text{target}/2$- Evet .$\beta$减半) ・比较最终回报、稳定和 clip-freeness──
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------|----------|
-| Importance ratio | "r_t(θ)" | `π_θ(a\|s) / π_old(a\|s)`；相对于采集数据的 policy 的偏离程度。 |
-| Clipped surrogate | "PPO's main trick" | `min(r·A, clip(r, 1-ε, 1+ε)·A)`；在有益侧超过 clip 后 Gradient 变平。 |
+| Importance ratio | "r_t(θ)" | $\pi_\theta(a \mid s) / \pi_{\text{old}}(a \mid s)$；相对于采集数据的 policy 的偏离程度。 |
+| Clipped surrogate | "PPO's main trick" | $\min(r \cdot A, \mathop{\mathrm{clip}}(r, 1-\epsilon, 1+\epsilon) \cdot A)$；在有益侧超过 clip 后 Gradient 变平。 |
 | Trust region | "TRPO / PPO intent" | 限制每次更新的 KL，以保证 monotone improvement。 |
-| KL penalty | "Soft trust region" | 替代 PPO：`L - β · KL(π_θ \|\| π_old)`。Adaptive `β`。 |
+| KL penalty | "Soft trust region" | 替代 PPO：$L - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$。Adaptive $\beta$。 |
 | Clip fraction | "How often clipping triggers" | Diagnostic —— 应该是 0.1-0.3；超出范围表示调参错误。 |
 | Multi-epoch training | "Data reuse" | 每次 rollout 上跑 K 个 epochs；用 variance cost 换 sample efficiency。 |
 | On-policy-ish | "Mostly on-policy" | PPO 名义上是 on-policy，但 K>1 个 epochs 会安全地使用 slightly-off-policy data。 |

@@ -13,7 +13,7 @@ Monte Carlo yapılabilir, ama iki yüksek fiyatlı talebi vardır. Son bölümle
 
 Dinamik programlama 则相反:零方差的 bootstrapped backups,但要求已知模型──
 
-Zaman farkı (TD) öğrenme 折中了两者──根据单个过渡 `(s, a, r, s')`Bir adımlı bir hedef oluştur .`r + γ V(s')`,并把 `V(s)`朝它推近──不需要模型──不需要完整的集──由于在RHS上使用近似的`V`Bu, bir fark oluşturur, ancak fark MC'den çok daha düşüktür ve ilk adımdan beri çevrimiçi olarak güncellenir.
+Zaman farkı (TD) öğrenme 折中了两者──根据单个过渡 $(s, a, r, s')$Bir adımlı bir hedef oluştur .$r + \gamma V(s')$,并把 $V(s)$朝它推近──不需要模型──不需要完整的集──由于在RHS上使用近似的$V$Bu, bir fark oluşturur, ancak fark MC'den çok daha düşüktür ve ilk adımdan beri çevrimiçi olarak güncellenir.
 
 Bu tüm modern RL ((DQN、A2C、PPO、SAC) bağımlılıklılıklı支点。Fase 9 余下的内容,都在你将在本课中写的一步TD更新 之上叠加函数近似和技巧──
 
@@ -23,31 +23,39 @@ Bu tüm modern RL ((DQN、A2C、PPO、SAC) bağımlılıklılıklı支点。Fase
 
 **用于 V 的 TD(0) update：**
 
-`V(s) ← V(s) + α [r + γ V(s') - V(s)]`
+```math
+V(s) \leftarrow V(s) + \alpha [r + \gamma V(s') - V(s)]
+```
 
-方括号中量是 TD hatası `δ = r + γ V(s') - V(s)`MC'de.`G_t - V(s_t)`Bu yüzden, bu konuda bir şey yapmamalıyız.`α`Robbins-Monro'nun tatmin edilmesi için.`Σ α = ∞`- Evet .`Σ α² < ∞`), ve tüm eyaletler ∞
+方括号中量是 TD hatası $\delta = r + \gamma V(s') - V(s)$MC'de.$G_t - V(s_t)$Bu yüzden, bu konuda bir şey yapmamalıyız.$\alpha$Robbins-Monro'nun tatmin edilmesi için.$\sum \alpha = \infty$- Evet .$\sum \alpha^2 < \infty$), ve tüm eyaletler ∞
 
 **Q-learning。**Bir çeşit kontrol için kullanılan politika dışı TD  yöntemi:
 
-`Q(s, a) ← Q(s, a) + α [r + γ max_{a'} Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \max_{a'} Q(s', a') - Q(s, a)]
+```
 
-`max`假设从 `s'`開始會遵循 *貪的政策,不管代理 实际采取了什么行动──这种解让Q-learning在代理 通过 ε-贪的探索时仍然学习`Q*`❖Mnih et al. (2015) bunu Atari 上'nin derin Q öğrenimi olarak dönüştürecek.
+`max`假设从 $s'$開始會遵循 *貪的政策,不管代理 实际采取了什么行动──这种解让Q-learning在代理 通过 ε-贪的探索时仍然学习$Q^{\ast}$❖Mnih et al. (2015) bunu Atari 上'nin derin Q öğrenimi olarak dönüştürecek.
 
 **SARSA。**Bir çeşit politika içi TD 方法:
 
-`Q(s, a) ← Q(s, a) + α [r + γ Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma Q(s', a') - Q(s, a)]
+```
 
-Bu isim Tuple ' den geliyor .`(s, a, r, s', a')`◊SARSA Uygulama ajanı 下一步*实际* action `a'`Açgözlülükten ziyade .`argmax`                                                                                                                                                                                                                                                              `π`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `Q^π`Öte yandan .`ε → 0`Aşağıya döner.`Q*`- Evet.
+Bu isim Tuple ' den geliyor .$(s, a, r, s', a')$◊SARSA Uygulama ajanı 下一步*实际* action $a'$Açgözlülükten ziyade .`argmax`                                                                                                                                                                                                                                                              $\pi$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $Q^\pi$Öte yandan .$\epsilon \to 0$Aşağıya döner.$Q^{\ast}$- Evet.
 
-**cliff-walking 的差异。**Klasik uçurum yürüyüşleri sırasında , (( düşmek uçurum = ödül -100), Q-öğrenme uçurum kenarında en iyi yolu öğrenir, ancak keşif sırasında bazen cezalandırılır.`ε → 0`Bu, uygulamada çok önemli bir şeydir: İşlem sırasında gerçekten de araştırmalar yapılıyor, SARSA'nın davranışları daha iyi korunmaktadır.
+**cliff-walking 的差异。**Klasik uçurum yürüyüşleri sırasında , (( düşmek uçurum = ödül -100), Q-öğrenme uçurum kenarında en iyi yolu öğrenir, ancak keşif sırasında bazen cezalandırılır.$\epsilon \to 0$Bu, uygulamada çok önemli bir şeydir: İşlem sırasında gerçekten de araştırmalar yapılıyor, SARSA'nın davranışları daha iyi korunmaktadır.
 
-**Expected SARSA。**Kullan .`π`Aşağıdaki beklenmedik değer değişimi`Q(s', a')`- ...
+**Expected SARSA。**Kullan .$\pi$Aşağıdaki beklenmedik değer değişimi$Q(s', a')$- ...
 
-`Q(s, a) ← Q(s, a) + α [r + γ Σ_{a'} π(a'|s') Q(s', a') - Q(s, a)]`
+```math
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \sum_{a'} \pi(a' \mid s') Q(s', a') - Q(s, a)]
+```
 
-方差低于 SARSA(不对 `a'`采样), hedef aynı zamanda politika üzerinde.
+方差低于 SARSA(不对 $a'$采样), hedef aynı zamanda politika üzerinde.
 
-**n-step TD 和 TD(λ)。**Bekleyip bekle.`n`步再 bootstrap,在 TD(0) 和 MC 之间插值──`n=1`Evet TD,`n=∞`Evet, çok önemli.`(1-λ)λ^{n-1}`Her şeye .`n`求平均── çoğu derin-RL kullanımı 3 ila 20   `n`- Evet.
+**n-step TD 和 TD(λ)。**Bekleyip bekle.$n$步再 bootstrap,在 TD(0) 和 MC 之间插值──$n=1$Evet TD,$n=\infty$Evet, çok önemli.$(1-\lambda)\lambda^{n-1}$Her şeye .$n$求平均── çoğu derin-RL kullanımı 3 ila 20   $n$- Evet.
 
 
 ```figure
@@ -105,18 +113,18 @@ def q_learning(env, episodes, alpha=0.1, gamma=0.99, epsilon=0.1):
 
 ### 步骤 3: Öğrenme eğri
 
-Sonraki 100 bölümden ortalama dönüşü. Q-öğrenme.`code/main.py`4×4 GridWorld 中,两者在 `α=0.1, ε=0.1`Aşağıda, yaklaşık 2.000 bölüm var.
+Sonraki 100 bölümden ortalama dönüşü. Q-öğrenme.`code/main.py`4×4 GridWorld 中,两者在 $\alpha=0.1, \epsilon=0.1$Aşağıda, yaklaşık 2.000 bölüm var.
 
 ### 步骤 4: DP ile gerçek değer karşılaştır
 
-运行 değer iterasyon(Dene 02) get `Q*`❖ Kontrol`max_{s,a} |Q_learned(s,a) - Q*(s,a)|`❖ Sağlıklı bir tablolar TD ajanı 4×4 GridWorld'da 10 bin bölümden sonra, 应落在`~0.5`İçinde.
+运行 değer iterasyon(Dene 02) get $Q^{\ast}$❖ Kontrol$\max_{s,a} \lvert Q_{\text{learned}}(s,a) - Q^{\ast}(s,a) \rvert$❖ Sağlıklı bir tablolar TD ajanı 4×4 GridWorld'da 10 bin bölümden sonra, 应落在`~0.5`İçinde.
 
 ## 陷
 
-- **初始 Q values 很重要。**乐观初始化 负 任务中  负  ödül`Q = 0`Bu yüzden, bu, bir çok insanın hayatını değiştirmek için bir fırsat.
-- **α schedule。**常数 `α`Düzsel olmayan sorunlar için de geçerlidir.`α_n = 1/n`Teorik olarak kabul edilebilir ama pratikte çok yavaş.`α`Düzgün`[0.05, 0.3]`,并监控 learning curve──
-- **ε schedule。**# Başlamak için yüksek değeri #`ε=1.0`), düşüşe kadar `ε=0.05`"GELİ" (sırıncılık)
-- **Q-learning 中的 max bias。**- Evet .`Q`Bir gürültü var.`max`Operatör 存在上偏差──会导致高估;Hasselt'in Double Q-learning(DQN Kullanım Praktiği Ders 05 中 DDQN 使用的做法) iki Q tabloyla 修复这个问题──
+- **初始 Q values 很重要。**乐观初始化 负 任务中  负  ödül$Q = 0$Bu yüzden, bu, bir çok insanın hayatını değiştirmek için bir fırsat.
+- **α schedule。**常数 $\alpha$Düzsel olmayan sorunlar için de geçerlidir.$\alpha_n = 1/n$Teorik olarak kabul edilebilir ama pratikte çok yavaş.$\alpha$Düzgün`[0.05, 0.3]`,并监控 learning curve──
+- **ε schedule。**# Başlamak için yüksek değeri #$\epsilon=1.0$), düşüşe kadar $\epsilon=0.05$"GELİ" (sırıncılık)
+- **Q-learning 中的 max bias。**- Evet .$Q$Bir gürültü var.`max`Operatör 存在上偏差──会导致高估;Hasselt'in Double Q-learning(DQN Kullanım Praktiği Ders 05 中 DDQN 使用的做法) iki Q tabloyla 修复这个问题──
 - **非终止 episodes。**TD, terminalsiz bir durumda öğrenebilir, ancak adım sayısını sınırlamak veya yukarıdaki sınırda doğru bir şekilde çalıştırmak gerekir.
 - **State hashing。**Eğer durumlar tuples/tenzorlar ise kullanılabilir hash anahtarı ((tuple, list değil;四舍五入后的浮游图ple,不原浮游)
 
@@ -164,16 +172,16 @@ Refuse to apply tabular TD to state spaces > 10⁶. Refuse to ship a Q-learning 
 
 1. **Easy。**4×4 GridWorld'da Q-öğrenmeyi ve SARSA'yı gerçekleştirmek için 2.000 bölüm öğrenme eğri çizmek için, her 100 bölümden ortalama geri dönüşü yapan kişi daha hızlı mı?
 2. **Medium。**4×12, final line is cliff, reward -100 and reset to start point)  Compare Q-learning and SARSA's final policies──截图 show their respective traveled pathways── which one is closer to cliff?
-3. **Hard。**实现双Q-学习──在噪音-reward GridWorld 上(给每步奖励 添加高斯噪音 σ=5),展示 Q-学习 会明显高估 `V*(0,0)`İki kez öğrenmek de olmaz.
+3. **Hard。**实现 Double Q-learning──在噪音-reward GridWorld 上(给每步奖励 添加高斯噪音 $\sigma=5$), Q-öğrenme göstermek$V^{\ast}(0,0)$İki kez öğrenmek de olmaz.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| TD error | "The update signal" | `δ = r + γ V(s') - V(s)`，bootstrapped residual。 |
+| TD error | "The update signal" | $\delta = r + \gamma V(s') - V(s)$，bootstrapped residual。 |
 | TD(0) | "One-step TD" | 每次 transition 后只使用 next state's estimate 进行更新。 |
-| Q-learning | "Off-policy RL 101" | 对 next-state actions 使用 `max` 的 TD update；无论 behavior policy 如何，都会学习 `Q*`。 |
-| SARSA | "On-policy Q-learning" | 使用实际 next action 的 TD update；为当前 ε-greedy π 学习 `Q^π`。 |
-| Expected SARSA | "The low-variance SARSA" | 用 π 下的期望替换采样得到的 `a'`。 |
+| Q-learning | "Off-policy RL 101" | 对 next-state actions 使用 `max` 的 TD update；无论 behavior policy 如何，都会学习 $Q^{\ast}$。 |
+| SARSA | "On-policy Q-learning" | 使用实际 next action 的 TD update；为当前 ε-greedy π 学习 $Q^\pi$。 |
+| Expected SARSA | "The low-variance SARSA" | 用 π 下的期望替换采样得到的 $a'$。 |
 | GLIE | "Correct exploration schedule" | Greedy in the Limit with Infinite Exploration；Q-learning 收敛所需。 |
 | Bootstrapping | "Using current estimate in the target" | 区分 TD 和 MC 的关键。是偏差来源，但能大幅降低方差。 |
 | Maximization bias | "Q-learning overestimates" | 对有噪声 estimates 取 `max` 会产生向上偏差；由 Double Q-learning 修复。 |

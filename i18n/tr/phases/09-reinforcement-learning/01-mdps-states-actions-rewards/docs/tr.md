@@ -21,20 +21,24 @@ Formasyon öncesi, bu akıştan öğrenemezsiniz. Bu aşamada, son RLHF ve GRPO 
 
 **五个对象。**
 
-- **States** `S`◊Agent karar vermek için gereken her şeyi yapar. ◊ GridWorld'de, ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊    ◊ ◊ ◊  ◊      ◊ ◊      ◊                        
-- **Actions** `A`△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
-- **Transitions** `P(s' | s, a)`❖ belirlenmiş bir durum`s`Hüküm ve eylem`a`,sonraki devletin dağılımı── satrançta ortalama belirleyici, envanterde stohastı, LLM'de neredeyse belirleyici──
-- **Rewards** `R(s, a, s')` 标量信号──赢 = +1,输 = -1── gelir azaltma maliyeti──GRPO'nun log- olasılık oranı 项──
-- **Discount** `γ ∈ [0, 1)`Gelecek ödülü, mevcut ödülün ağırlığıyla karşılaştırıldığında.`γ = 0.99`买到约100 adım ufuk;`γ = 0.9`10'a kadar aldım.
+- **States** $S$◊Agent karar vermek için gereken her şeyi yapar. ◊ GridWorld'de, ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊    ◊ ◊ ◊  ◊      ◊ ◊      ◊                        
+- **Actions** $A$△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
+- **Transitions** $P(s' \mid s, a)$❖ belirlenmiş bir durum$s$Hüküm ve eylem$a$,sonraki devletin dağılımı── satrançta ortalama belirleyici, envanterde stohastı, LLM'de neredeyse belirleyici──
+- **Rewards** $R(s, a, s')$ 标量信号──赢 = +1,输 = -1── gelir azaltma maliyeti──GRPO'nun log- olasılık oranı 项──
+- **Discount** $\gamma \in [0, 1)$Gelecek ödülü, mevcut ödülün ağırlığıyla karşılaştırıldığında.$\gamma = 0.99$买到约100 adım ufuk;$\gamma = 0.9$10'a kadar aldım.
 
-**Markov property** `P(s_{t+1} | s_t, a_t) = P(s_{t+1} | s_0, a_0, …, s_t, a_t)`Gelecek sadece mevcut devlete bağlıdır. Eğer oluşmazsa, devlet temsilinin eksik olduğunu gösterir.
+**Markov property** $P(s_{t+1} \mid s_t, a_t) = P(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t)$Gelecek sadece mevcut devlete bağlıdır. Eğer oluşmazsa, devlet temsilinin eksik olduğunu gösterir.
 
-**Policies 与 returns。**Politikası `π(a | s)`映射到动作分布──返回 `G_t = r_t + γ r_{t+1} + γ² r_{t+2} + …`Evet, gelecek ödüllerin indirimli miktarı.`V^π(s) = E[G_t | s_t = s]`Politikada.`π`Aşağıdan`s`开始的预期回报──Q-value `Q^π(s, a) = E[G_t | s_t = s, a_t = a]`Bu iki işlemin birincil olarak gerçekleşmesi için RL algoritması bu iki işlemin birincil olarak gerçekleşmesi için birincil olarak değişmesi gerekir.`π`- Evet.
+**Policies 与 returns。**Politikası $\pi(a \mid s)$映射到动作分布──返回 $G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \ldots$Evet, gelecek ödüllerin indirimli miktarı.$V^\pi(s) = \mathbb{E}[G_t \mid s_t = s]$Politikada.$\pi$Aşağıdan$s$开始的预期回报──Q-value $Q^\pi(s, a) = \mathbb{E}[G_t \mid s_t = s, a_t = a]$Bu iki işlemin birincil olarak gerçekleşmesi için RL algoritması bu iki işlemin birincil olarak gerçekleşmesi için birincil olarak değişmesi gerekir.$\pi$- Evet.
 
 **Bellman equations。**Bu aşamada tüm içerikler sabit nokta denklemleri kullanılacak:
 
-`V^π(s) = Σ_a π(a|s) Σ_{s', r} P(s', r | s, a) [r + γ V^π(s')]`
-`Q^π(s, a) = Σ_{s', r} P(s', r | s, a) [r + γ Σ_{a'} π(a'|s') Q^π(s', a')]`
+```math
+\begin{aligned}
+V^\pi(s) &= \sum_a \pi(a \mid s) \sum_{s', r} P(s', r \mid s, a) [r + \gamma V^\pi(s')] \\
+Q^\pi(s, a) &= \sum_{s', r} P(s', r \mid s, a) [r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s', a')]
+\end{aligned}
+```
 
 Bu aşamada beklenen getiriyi                                                                                                                                                                                                                                                            
 
@@ -114,16 +118,16 @@ Bu, Sutton & Barto'nun ilk algoritmasıdır ve her RL yöntemi'nin teorik temeli
 
 ### Dördüncü adım:`γ`Fiziksel anlamı olan bir hiperparametre
 
-Etkili ufuk yaklaşık olarak `1 / (1 - γ)`- Evet.`γ = 0.9`→ 10 adım.`γ = 0.99`→ 100 adım.`γ = 0.999`→ 1000 adım.
+Etkili ufuk yaklaşık olarak $1 / (1 - \gamma)$- Evet.$\gamma = 0.9$→ 10 adım.$\gamma = 0.99$→ 100 adım.$\gamma = 0.999$→ 1000 adım.
 
-太低时,代理会目光短浅──太高时,kredit atanımı 会变噪, çünkü birçok erken adım şehirler birlikte uzak gelecek ödül sorumluluğunu üstlenecektir──LLM RLHF genellikle kullanılır `γ = 1`,因为 episodes 短且有界──Control tasks 使用 `0.95–0.99`❖ Uzun vadede strateji oyunları`0.999`- Evet.
+太低时,代理会目光短浅──太高时,kredit atanımı 会变噪, çünkü birçok erken adım şehirler birlikte uzak gelecek ödül sorumluluğunu üstlenecektir──LLM RLHF genellikle kullanılır $\gamma = 1$,因为 episodes 短且有界──Control tasks 使用 `0.95–0.99`❖ Uzun vadede strateji oyunları`0.999`- Evet.
 
 ## 陷
 
 - **Non-Markovian state.**Eğer son üç gözlem gereksinim varsa 才能决策, state 不只是当前观察──修复:stack frames (DQN 在 Atari 上堆叠 4 ) 或使用复制状态 (→ tekrarlayıcı durum)
 - **Sparse rewards.**Sadece kazançlı bir ödül verirseniz, büyük devlet alanlarında öğrenmek neredeyse imkansız olacaktır.
 - **Reward hacking.**优化代理奖励 经常产生病态行为──OpenAI'nin tekne yarış ajanı 一直原地转圈收集 powerups,而不是完成比赛──始终从目标结果定义奖励,而不是从代理定义──
-- **Discount mis-spec.**Enfine ufuk görevi 上使用 `γ = 1`Her değerin sonsuz olmasına izin ver.`γ < 1`Sınırlama.
+- **Discount mis-spec.**Enfine ufuk görevi 上使用 $\gamma = 1$Her değerin sonsuz olmasına izin ver.$\gamma < 1$Sınırlama.
 - **Reward scale.**{+100, -100} ile {+1, -1} ödülleri aynı optimal politikalar verecektir, ama Gradient büyüklüğü 会 çok farklı olacaktır.`[-1, 1]`- Evet.
 
 ## Kullan
@@ -168,21 +172,21 @@ tags: [rl, mdp, modeling]
 ## 练习
 
 1. **Easy.**- Evet .`code/main.py`Ortalama 4×4 GridWorld ve rastgele politika dağıtımını gerçekleştirmek, 10 bin bölümden oluşmak, rapor geri dönüşünün ortalaması ve en iyi geri dönüşü ile karşılaştırmak.
-2. **Medium.**Üniformal rastgele politika, kullanımı`γ ∈ {0.5, 0.9, 0.99}`运行  İşlem`policy_evaluation`- Her birini.`V`4×4 şebekesi için basın. Terminal'in değerleri giderek daha büyük olur.`γ`Daha hızlı büyümüştür.
-3. **Hard.**GridWorld'ı stokastik olarak değiştirmek: her eylem için olasılık`p = 0.1`滑向相邻方向── yeniden değerlendirme`V[start]`- İyi mi yoksa kötü mi olacak?
+2. **Medium.**Üniformal rastgele politika, kullanımı$\gamma \in \lbrace 0.5, 0.9, 0.99 \rbrace$运行  İşlem`policy_evaluation`- Her birini.`V`4×4 şebekesi için basın. Terminal'in değerleri giderek daha büyük olur.$\gamma$Daha hızlı büyümüştür.
+3. **Hard.**GridWorld'ı stokastik olarak değiştirmek: her eylem için olasılık$p = 0.1$滑向相邻方向── yeniden değerlendirme`V[start]`- İyi mi yoksa kötü mi olacak?
 
 ## 关键术语
 
 | Term | 人们的说法 | 实际含义 |
 |------|------------|----------|
-| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 `(S, A, P, R, γ)`。 |
+| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 $(S, A, P, R, \gamma)$。 |
 | State | “Agent 看到的东西” | 在所选 policy class 下，future dynamics 的 sufficient statistic。 |
-| Policy | “Agent 的行为” | Conditional distribution `π(a \| s)` 或 deterministic map `s → a`。 |
-| Return | “Total reward” | 从当前 step 开始的 discounted sum `Σ γ^t r_t`。 |
-| Value | “一个 state 有多好” | 在 `π` 下从 `s` 开始的 expected return。 |
-| Q-value | “一个 action 有多好” | 在 `π` 下从 `s` 开始并以第一个 action `a` 开始的 expected return。 |
+| Policy | “Agent 的行为” | Conditional distribution $\pi(a \mid s)$ 或 deterministic map $s \to a$。 |
+| Return | “Total reward” | 从当前 step 开始的 discounted sum $\sum \gamma^t r_t$。 |
+| Value | “一个 state 有多好” | 在 $\pi$ 下从 $s$ 开始的 expected return。 |
+| Q-value | “一个 action 有多好” | 在 $\pi$ 下从 $s$ 开始并以第一个 action $a$ 开始的 expected return。 |
 | Bellman equation | “Dynamic programming recursion” | 把 value / Q 分解为 one-step reward 加 discounted successor value 的 fixed-point。 |
-| Discount `γ` | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 `~1/(1-γ)`。 |
+| Discount $\gamma$ | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 $\approx 1/(1-\gamma)$。 |
 
 ## 延伸阅读
 

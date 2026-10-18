@@ -11,7 +11,7 @@
 
 Tablolar Q-öğrenme                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
-Son görünüşte, düzeltme yöntemleri çok açık:`Q(s, a; θ)`deadly triad 下发散:function approximation + bootstrapping + policy learning。Mnih et al. (2013, 2015) deadline learning processin üç teknikini buldu:
+Son görünüşte, düzeltme yöntemleri çok açık:$Q(s, a; \theta)$deadly triad 下发散:function approximation + bootstrapping + policy learning。Mnih et al. (2013, 2015) deadline learning processin üç teknikini buldu:
 
 1. **Experience replay**让过渡 去相关──
 2. **Target network**结 bootstrap hedefi。
@@ -25,25 +25,29 @@ Atari'nin DQN'i ilk kez tek bir yapı ve tek bir hiperparametrle oluşturulmuşt
 
 **目标。**DQN Nöral Q fonksiyonda bir adımlı TD kaybını en aza indirmek:
 
-`L(θ) = E_{(s,a,r,s')~D} [ (r + γ max_{a'} Q(s', a'; θ^-) - Q(s, a; θ))² ]`
+```math
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim D}[ (r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta))^2 ]
+```
 
-`θ`= çevrimiçi ağ, her adım Gradient Descent 更新──`θ^-`= hedef ağ, döngüsel olarak `θ`复制(約每 10,000 步一次)`D`= geçmiş geçişlerin tekrarlama tamponu
+$\theta$= çevrimiçi ağ, her adım Gradient Descent 更新──$\theta^-$= hedef ağ, döngüsel olarak $\theta$复制(約每 10,000 步一次)$D$= geçmiş geçişlerin tekrarlama tamponu
 
 **三个技巧，按重要性排序：**
 
 **Experience replay。**Bir içerik`~10⁶`Bu, zaman ilişkileriyi kırır, ağın nadir ödüllendirici geçişlerden yararlanmasına izin verir.
 
-**Target network。**Bellman'ın yolunun her iki tarafı aynı ağı kullanıyor.`Q(·; θ)`, hedef her güncelleme sırasında hareket eder, yani  kendi尾巴 koşusunu takip ──`Q(·; θ^-)`, onun ağırlıkları 结──每隔 `C`步,复制 `θ → θ^-`Bu, binlerce adımdan sonra gerileme hedefini sabit tutmaya yardımcı olur.`θ^- ← τ θ + (1-τ) θ^-`(DDPG, SAC için kullanılır) daha düz bir değişim.
+**Target network。**Bellman'ın yolunun her iki tarafı aynı ağı kullanıyor.$Q(\cdot; \theta)$, hedef her güncelleme sırasında hareket eder, yani  kendi尾巴 koşusunu takip ──$Q(\cdot; \theta^-)$, onun ağırlıkları 结──每隔 $C$步,复制 $\theta \to \theta^-$Bu, binlerce adımdan sonra gerileme hedefini sabit tutmaya yardımcı olur.$\theta^- \leftarrow \tau \theta + (1-\tau) \theta^-$(DDPG, SAC için kullanılır) daha düz bir değişim.
 
-**Reward clipping。**Atari'nin ödül oranı 1 ila 1000+ arasında değişir.`{-1, 0, +1}`Bir tek oyunun yönetimini engelleyebilirsiniz. Ödül büyüklüğü önemli olduğunda bu yanlış olur.
+**Reward clipping。**Atari'nin ödül oranı 1 ila 1000+ arasında değişir.$\lbrace-1, 0, +1 \rbrace$Bir tek oyunun yönetimini engelleyebilirsiniz. Ödül büyüklüğü önemli olduğunda bu yanlış olur.
 
 **Double DQN。**Hasselt (2016) 修复了最大化偏见:使用网 来*选择*行动,使用目标网 来*评估*它──
 
-`target = r + γ Q(s', argmax_{a'} Q(s', a'; θ); θ^-)`
+```math
+\text{target} = r + \gamma Q(s', \arg\max_{a'} Q(s', a'; \theta); \theta^-)
+```
 
 Bu bir alternatif, daha iyi bir etki.
 
-**其他改进（Rainbow, 2017）：**öncelikli tekrarlama(更多采样 yüksek TD hata geçişleri)  duelleme mimarisi(分离 `V(s)`Ve avantajlı başlar) ̳Gürültülü ağlar(bilimli keşif) ̳N-adım geri dönüşü ̳Kütleyici Q (C51/QR-DQN) ̳Kulti-adımlı başlatma ̳
+**其他改进（Rainbow, 2017）：**öncelikli tekrarlama(更多采样 yüksek TD hata geçişleri)  duelleme mimarisi(分离 $V(s)$Ve avantajlı başlar) ̳Gürültülü ağlar(bilimli keşif) ̳N-adım geri dönüşü ̳Kütleyici Q (C51/QR-DQN) ̳Kulti-adımlı başlatma ̳
 
 
 ```figure
@@ -105,11 +109,11 @@ def train_step(online, target, batch, gamma, lr):
     apply_sgd(online, grads, lr / len(batch))
 ```
 
-Bu, 04 dersi içindeki Q öğrenme şeklidir. Sadece iki farklılık var:`Q(·; θ)`İndirim tablosu değil, geri yayım yapın.`Q(·; θ^-)`- Evet.
+Bu, 04 dersi içindeki Q öğrenme şeklidir. Sadece iki farklılık var:$Q(\cdot; \theta)$İndirim tablosu değil, geri yayım yapın.$Q(\cdot; \theta^-)$- Evet.
 
 ### 步骤 4: dış katlı döngü
 
-Her bölümde,`Q(·; θ)`执行 ε-greedy,把 transitions 放入缓冲,采样minibatch,执行一次 Gradient step,并周期性同步 `θ^- ← θ`❖ Şekil:
+Her bölümde,$Q(\cdot; \theta)$执行 ε-greedy,把 transitions 放入缓冲,采样minibatch,执行一次 Gradient step,并周期性同步 $\theta^- \leftarrow \theta$❖ Şekil:
 
 ```python
 for episode in range(N):
@@ -182,7 +186,7 @@ tags: [rl, dqn, deep-rl]
 
 1. **Easy。**运行  İşlem`code/main.py`◊ bölüm başına geri dönüş eğri çizmek― devam ortalaması ∼10  kaç bölüm gerekecek?
 2. **Medium。**禁用目标网络 (Bellman hedefi) 两侧都使用网) 测量训练不稳定性:回归 会震荡还是发散?
-3. **Hard。**添加 Çift DQN: kullanın online net 选择 `argmax a'`, target net kullan 评估。Comparer noisy-reward GridWorld 上 тренинг 1,000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`Gerçekle karşılaştırıldığında`V*(s_0)`Önyargılılık.
+3. **Hard。**添加 Çift DQN: kullanın online net 选择 `argmax a'`, target net kullan 评估。Comparer noisy-reward GridWorld 上 тренинг 1,000 个集 后,使用与不使用双DQN 时`Q(s_0, best_a)`Gerçekle karşılaştırıldığında$V^{\ast}(s_0)$Önyargılılık.
 
 ## 关键术语
 | Term | 人们怎么说 | 它实际是什么意思 |

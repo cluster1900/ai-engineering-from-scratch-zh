@@ -21,31 +21,31 @@ Bu, tablolar birleştirme kanıtlarını bozacaktır. Bu da, akılsızca derin R
 
 ![Four MARL regimes: indep, centralized critic, self-play, league](../assets/marl.svg)
 
-**Formalism: Markov Game.**MDP'nin genelleşmesi: Devletler`S`、birlikte hareket`a = (a_1, …, a_n)`Değişiklik`P(s' | s, a)`, ve her ajanın ödülleri .`R_i(s, a, s')`❖ Her ajan `i`Kendi politikasındadır .`π_i`Eğer ödüller tamamen aynısa, bu da...**fully cooperative**Eğer sıfır toplam ise, bu da **adversarial** If mixed, 则是**general-sum**- Evet.
+**Formalism: Markov Game.**MDP'nin genelleşmesi: Devletler$S$、birlikte hareket$a = (a_1, \ldots, a_n)$Değişiklik$P(s' \mid s, a)$, ve her ajanın ödülleri .$R_i(s, a, s')$❖ Her ajan $i$Kendi politikasındadır .$\pi_i$Eğer ödüller tamamen aynısa, bu da...**fully cooperative**Eğer sıfır toplam ise, bu da **adversarial** If mixed, 则是**general-sum**- Evet.
 
 **核心挑战：**
 
-- **Non-stationarity.**Ajanın yanında .`i`Bu bakış açısından,`P(s' | s, a_i)`取決于`π_{-i}`Ama değişmeye başladı.
+- **Non-stationarity.**Ajanın yanında .$i$Bu bakış açısından,$P(s' \mid s, a_i)$取決于$\pi_{-i}$Ama değişmeye başladı.
 - **Credit assignment.**Paylaşılan ödülde, hangi ajan buna yol açtı?
 - **Exploration coordination.**Ajanlar aynı devleti tekrar araştırmak yerine karşılıklı bir strateji keşfetmeliler.
-- **Scalability.**Ortak eylem alanı 会随 `n`İndeksi seviyesi büyüme
+- **Scalability.**Ortak eylem alanı 会随 $n$İndeksi seviyesi büyüme
 - **Partial observability.**Her ajan sadece kendi gözlemlerini görebilir; küresel durum gizli.
 
 **四种主导范式：**
 
 **1. Independent Q-learning / independent PPO (IQL, IPPO).**Her ajan kendi Q veya politikasını öğrenir, diğer ajanları bir çevrenin parçası yapar. 简单,有时有效,特别是经验重播 作为一种平滑的代理-model 技巧时) 理论收性:没有.
 
-**2. Centralized training, decentralized execution (CTDE).**Her ajanın kendi politikası var.`π_i`Yerel gözlemle yapılıyor.`o_i`Bu, standartların merkezi olmayan yürütülmesidir.`Q(s, a_1, …, a_n)`Bu durumun bir bütün olarak gerçekleşmesi ve ortak eylemlerin koşulları:
+**2. Centralized training, decentralized execution (CTDE).**Her ajanın kendi politikası var.$\pi_i$Yerel gözlemle yapılıyor.$o_i$Bu, standartların merkezi olmayan yürütülmesidir.$Q(s, a_1, \ldots, a_n)$Bu durumun bir bütün olarak gerçekleşmesi ve ortak eylemlerin koşulları:
 - **MADDPG**(Lowe et al. 2017): 带有每个代理 一个集中批评的DDPG──
-- **COMA**(Foerster et al. 2017): karşı gerçekli bir temel 问`a'`Benim ödülüm ne kadar olacak?
+- **COMA**(Foerster et al. 2017): karşı gerçekli bir temel 问$a'$Benim ödülüm ne kadar olacak?
 - **MAPPO**- Ne ?**IPPO**ortak eleştirmenle (Yu et al. 2022): 带有集中价值函数的 PPO──2026年合作社 MARL 中的主导方法──
-- **QMIX**(Rashid et al. 2018): değer parçalanması`Q_tot(s, a) = f(Q_1(s, a_1), …, Q_n(s, a_n))`,并使用单调混合──
+- **QMIX**(Rashid et al. 2018): değer parçalanması$Q_{\text{tot}}(s, a) = f(Q_1(s, a_1), \ldots, Q_n(s, a_n))$,并使用单调混合──
 
 **3. Self-play.**Aynı ajanın iki kopyası birbirine karşı savaşmaktadır. Karşılıklı politika *就是*我过去某瞬间中的政策──AlphaGo / AlphaZero / MuZero──OpenAI Five── en uygun sıfır toplam oyunları; eğitim sinyali ise对称的──
 
 **4. League play.**kendi oyunları genel toplam / rakip ortamların genişlemesi: bir grup geçmiş ve mevcut politikaları, ligden birtakım rakipleri, ve onlara yönelik eğitimleri;
 
-**Communication.**允许 agents 相互发送学会的信息 `m_i` Kooperatif ortamlarda 中有效──Foerster et al. (2016) ⇒ Farklı ajanlar arası iletişimin sonuna kadar eğitim edilebileceğini göstermektedir── bugün LLM'nin çok ajanlı sistemlerine dayalı olan ""16 aşama"" aslında doğal dil iletişiminde kullanılmıştır──
+**Communication.**允许 agents 相互发送学会的信息 $m_i$ Kooperatif ortamlarda 中有效──Foerster et al. (2016) ⇒ Farklı ajanlar arası iletişimin sonuna kadar eğitim edilebileceğini göstermektedir── bugün LLM'nin çok ajanlı sistemlerine dayalı olan ""16 aşama"" aslında doğal dil iletişiminde kullanılmıştır──
 
 
 ```figure
@@ -102,11 +102,11 @@ Bu görevde etkili, çünkü ödüller yoğun ve hazırdır. Yakından ilişkili
 
 ### 步骤3: merkezi Q ile parçalanmış değer güncelleme
 
-Birlikte yapılan eylemlere bir Q kullanın:`Q(s, a_1, a_2)` Paylaşılan ödüllerle 更新──执行时通过边缘化来分散化:`π_i(s) = argmax_{a_i} max_{a_{-i}} Q(s, a_1, a_2)`️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️  ️  ️   ️                                                        
+Birlikte yapılan eylemlere bir Q kullanın:$Q(s, a_1, a_2)$ Paylaşılan ödüllerle 更新──执行时通过边缘化来分散化:$\pi_i(s) = \arg\max_{a_i} \max_{a_{-i}} Q(s, a_1, a_2)$️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️  ️  ️   ️                                                        
 
 ### 步骤 4: 简单 kendi oyun
 
-Aynı ajan, iki rol. Eğitim ajanı A.`K`个集,把 A'nın ağırlıkları 复制到 B──对称训练,进展一致──AlphaZero reçetesinin küçültülmüş versiyonu──
+Aynı ajan, iki rol. Eğitim ajanı A.$K$个集,把 A'nın ağırlıkları 复制到 B──对称训练,进展一致──AlphaZero reçetesinin küçültülmüş versiyonu──
 
 ## 常见陷
 
@@ -168,11 +168,11 @@ tags: [rl, multi-agent, marl, self-play]
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Markov game | "Multi-agent MDP" | `(S, A_1, …, A_n, P, R_1, …, R_n)`；每个 agent 都有自己的 reward。 |
+| Markov game | "Multi-agent MDP" | $(S, A_1, \ldots, A_n, P, R_1, \ldots, R_n)$；每个 agent 都有自己的 reward。 |
 | CTDE | "Centralized training, decentralized execution" | Training time 使用 joint critic；每个 agent 的 policy 只使用 local obs。 |
 | IPPO | "Independent PPO" | 每个 agent 单独运行 PPO。简单 baseline；经常被低估。 |
 | MAPPO | "Multi-agent PPO" | 带有以 global state 为条件的 centralized value function 的 PPO。 |
-| QMIX | "Monotonic value decomposition" | `Q_tot = f_monotone(Q_1, …, Q_n)` 允许 decentralized argmax。 |
+| QMIX | "Monotonic value decomposition" | $Q_{\text{tot}} = f_{\text{monotone}}(Q_1, \ldots, Q_n)$ 允许 decentralized argmax。 |
 | COMA | "Counterfactual multi-agent" | Advantage = 我的 Q 减去对我的 action 做 marginalizing 后的 expected Q。 |
 | Self-play | "Agent vs past self" | 单个 agent，两个 roles；zero-sum games 的标准方法。 |
 | League play | "Population training" | 缓存过去的 policies，从 pool 中采样 opponents；处理 strategy cycles。 |
