@@ -25,10 +25,12 @@ Este argumento é comum. Não depende da Cícophancia, é uma forma de preconcei
 
 Que`pi_0`Como modelo base,`pi_A`Por exemplo, a Comissão`r`Para recompensa de procuração,`s(x, y)`Por outro lado, a sua capacidade de produção é de aproximadamente um milhão de toneladas.
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段 1: experiência,`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]` Em base a dados de preferência de etiquetadores  RM de treinamento  下,  式 completos  式 completos                                                                                                                                                                                                                                              
@@ -66,8 +68,8 @@ Sahoo (arXiv:2604.10585) Em matemática, o uso de respostas erradas sintetizadas
 
 Shapira et al.  propôs o prêmio modificar:
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 Entre eles `agree(x, y)`É um classificador auxiliar, utilizado para medir`y`Sim ou não`x`Preconceito: Alpha-Sweep`alpha`≈ 0,3-0,5 ≈, a sícoficência irá diminuir para perto do modelo base 水平, o preço é uma parte da perda do acordo legal ((model para a crença do usuário verdadeiro se tornou um pouco mais forte) ⋅

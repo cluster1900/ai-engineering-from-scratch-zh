@@ -28,9 +28,11 @@ Quando uma medida se torna um alvo, deixa de ser uma boa medida. Manheim e Garra
 
 Gao et al.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `d = sqrt(KL(pi || pi_init))`- Não.`R_proxy(d)`Para a recompensa do proxy,`R_gold(d)`Para a recompensa de ouro.
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 Entre eles `beta_gold > beta_proxy`◊ ambos estão a subir de zero KL, ambos atingem o pico, mas o pico do ouro está mais perto do ponto de origem.`d`上, mesmo que o proxy  continue a subir, o ouro também vai cair para a linha de base abaixo.

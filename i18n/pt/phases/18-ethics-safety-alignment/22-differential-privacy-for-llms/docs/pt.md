@@ -19,8 +19,11 @@ LLMs 会记忆──Carlini et al. 2021 mostram que o modelo de produção de li
 ## 概念
 ### (ε, δ) - privacidade diferencial
 
-Se em relação a qualquer dois apenas diferem entre um conjunto de dados de amostra, bem como qualquer evento S, um algoritmo aleatório M 满足:
-P(M(D) em S) <= e^ε * P(M(D') em S) + δ。
+Se em relação a qualquer dois apenas diferem um conjunto de dados de amostra, bem como qualquer evento $S$, um algoritmo de azar .$M$满足以下条件,则称其具有 $(\varepsilon, \delta)$- Diferença de privacidade:
+
+```math
+P(M(D) \in S) \le e^{\varepsilon} \cdot P(M(D') \in S) + \delta.
+```
 
 Explicação: a distribuição de saída é suficientemente próxima (por ε 参数化), para que qualquer contribuição de um único indivíduo não possa ser concluída com confiança, a menos que a probabilidade de δ ocorra uma exceção.
 
@@ -30,7 +33,7 @@ Abadi et al. 2016。标准流程:
 1. Como um mini-parceito.
 2. 计算 por exemplo gradientes。
 3. Cortar cada gradiente por exemplo para o valor C.
-4. Para os gradientes de corte posterior 求和,并加入 std 为 σ * C de ruído gaussiano。
+4. Para os gradientes de corte posterior 求和,并加入 std 为$\sigma \cdot C$O ruído gaussiano.
 5. Utilize带噪音和来更新参数──
 
 隐私成本由会计师跟踪(Moments 会计师、Rényi DP会计师)  LLM 文献中报告的 ε 值会因威胁模型、数据敏感性和效用目标而大幅变化; 没有普适的安全默认 ε── já foram emitidos exemplos em alguns LLM 训练设置中大致覆盖 ε ≈ 110, mas estes são apenas exemplos, não são recomendados valores默认──较低的 ε 通常需要更多噪音,并可能增加效用损失──
@@ -79,9 +82,9 @@ an-dp-clip-noise
 本课会产出 `outputs/skill-dp-audit.md` Determinar a alegação de DP de um modelo de linguagem, que irá auditar: ((ε, δ) 值、 o uso do contador、 o protocolo de avaliação da MIA, bem como se já avaliou vetores de confiança-exposição。
 
 ## 练习
-1. 运行 `code/main.py`◊扫过 σ ∈ {0.5, 1.0, 2.0},并报告 (ε, δ) - precisão 权衡──识别效用崩的临界点──
+1. 运行 `code/main.py`- Não.$\sigma \in \lbrace 0.5, 1.0, 2.0 \rbrace$,并报告 (ε, δ) - precisão 权衡──识别效用崩的临界点──
 
-2. 实现 Canary 插入和日志-loss test──测量在 σ = 1,0 时,DP-SGD 前后的检测率──
+2. 实现 Canary 插入和 log-loss test──测量在 $\sigma = 1.0$时,DP-SGD 前后的检测率──
 
 3. 阅读Nasr et al. 2025 关于训练数据提取的内容──为什么提取成功不会在中等 ε下崩?
 

@@ -18,20 +18,20 @@
 
 Objectivo do RLHF:
 
-```text
-max_pi E_{x,y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 Há uma melhor solução:
 
-```text
-pi*(y|x) = (1/Z(x)) * pi_ref(y|x) * exp(r(x, y) / beta)
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left(\frac{r(x, y)}{\beta}\right)
 ```
 
 Assim, a recompensa é definida como a política ideal e o comparativo de referência:
 
-```text
-r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
+```math
+r(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 Colocá-lo na probabilidade de preferência Bradley-Terry, depois, na função de partição.`Z(x)`Vai desaparecer, porque depende de ti.`x`O que resta é uma perda que só contém parâmetros de política, não é mais necessário um modelo de recompensa.
@@ -42,11 +42,11 @@ O problema consiste em: este teor de preferência é distribuído e a política 
 
 ### DPO (Rafailov et al., 2023)
 
-```text
-L_DPO = -log sigmoid(
-  beta * log(pi(y_w | x) / pi_ref(y_w | x))
-  - beta * log(pi(y_l | x) / pi_ref(y_l | x))
-)
+```math
+L_{\text{DPO}} = -\log \sigma\!\left(
+  \beta \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
+  - \beta \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}
+\right)
 ```
 
 Pode estar errado:
@@ -59,8 +59,8 @@ Pode estar errado:
 
 Optimização de preferências de identidade Usar probabilidade de preferências                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
-```text
-L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x)) - 1/(2 beta))^2
+```math
+L_{\text{IPO}} = \left( \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} - \frac{1}{2\beta} \right)^2
 ```
 
 margem `1/(2 beta)`限定──preferência de força com diferença implícita-recompensa 成比例── não vai explodir──
@@ -69,8 +69,8 @@ margem `1/(2 beta)`限定──preferência de força com diferença implícita-
 
 A otimização de Kahneman-Tversky  completamente elimina o conjunto de estruturas ⋅ dá-se uma saída de marcação única, bem como um sinal de desejável ou indesejável de 2元, que será mapeado para a utilidade da teoria prospectiva:
 
-```text
-v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
+```math
+v(x, y) = \sigma\!\left(\beta \log \frac{\pi(y \mid x)}{\pi_{\text{ref}}(y \mid x)} - z_{\text{ref}}\right)
 ```
 
 Não há ganhos e perdas usando diferentes peso (aversion loss) ∼ vantagem é: você pode usar dados não emparejados, enquanto esse tipo de dados deve ser muito rico ∼
@@ -79,12 +79,12 @@ Não há ganhos e perdas usando diferentes peso (aversion loss) ∼ vantagem é:
 
 Simples Optimização de Preferências 让训练信号与生成过程对齐―― completamente remover política de referência,并按长度归归化日志-概率:
 
-```text
-L_SimPO = -log sigmoid(
-  (beta / |y_w|) * log pi(y_w | x)
-  - (beta / |y_l|) * log pi(y_l | x)
-  - gamma
-)
+```math
+L_{\text{SimPO}} = -\log \sigma\!\left(
+  \frac{\beta}{|y_w|} \log \pi(y_w \mid x)
+  - \frac{\beta}{|y_l|} \log \pi(y_l \mid x)
+  - \gamma
+\right)
 ```
 
 Margem de utilização `gamma`Para estabilizar o treinamento, a longitude regeneração é transferida para o uso do modo de falha de longitude-bias DPO.`y_w`O processo de construção da empresa tem como objetivo aumentar a capacidade de produção de produtos.
@@ -93,9 +93,11 @@ Margem de utilização `gamma`Para estabilizar o treinamento, a longitude regene
 
 Odds-Ratio Optimização de Preferências em SFT padrão probabilidade de log negativo 上添加一个偏好术语:
 
-```text
-L_ORPO = L_NLL(y_w) + lambda * L_OR
-L_OR = -log sigmoid(log(odds(y_w) / odds(y_l)))
+```math
+\begin{aligned}
+L_{\text{ORPO}} &= L_{\text{NLL}}(y_w) + \lambda L_{\text{OR}} \\
+L_{\text{OR}} &= -\log \sigma\!\left(\log \frac{\text{odds}(y_w)}{\text{odds}(y_l)}\right)
+\end{aligned}
 ```
 
 Não há política de referência, o termo SFT é regularizer.
