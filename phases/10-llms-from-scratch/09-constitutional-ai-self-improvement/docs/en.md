@@ -71,22 +71,22 @@ DeepSeek 在 DeepSeekMath paper (2024) 中引入了 GRPO，并将其作为 DeepS
 
 回忆 PPO 的 objective（来自 Lesson 07）：
 
-```
-L_PPO = E[min(r(theta) * A, clip(r(theta), 1-eps, 1+eps) * A)]
+```math
+L_{\text{PPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A\right)\right]
 ```
 
 其中 `A` 是 advantage，通常用 learned value network `V(s)` 通过 GAE 估计。value network 是第二个 model，大小与 policy 相同。它会使内存翻倍，并引入自己的 training loop。
 
-GRPO 丢弃 value function。对每个 prompt，它采样一组 G 个 responses（通常 G=16 或 64）。计算每个 response 的 reward，然后在组内归一化：
+GRPO 丢弃 value function。对每个 prompt，它采样一组 $G$ 个 responses（通常 $G=16$ 或 64）。计算每个 response 的 reward，然后在组内归一化：
 
-```
-A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
+```math
+A_i = \frac{r_i - \mathop{\mathrm{mean}}(r_1, \ldots, r_G)}{\mathop{\mathrm{std}}(r_1, \ldots, r_G)}
 ```
 
 advantage 是该 response 的 reward 相对于同组其他 response 的 z-score。没有 value function。这个 group 本身就是 baseline。
 
-```
-L_GRPO = E[min(r(theta) * A_group, clip(r(theta), 1-eps, 1+eps) * A_group)] - beta * KL(pi || pi_ref)
+```math
+L_{\text{GRPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A_{\text{group}}, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A_{\text{group}}\right)\right] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 针对 reference model 的 KL penalty 仍然存在，和 PPO 一样。clip ratio 也仍然存在。消失的是独立 critic。
