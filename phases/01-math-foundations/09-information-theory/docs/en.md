@@ -28,10 +28,10 @@ Information Theory 为你提供了推理 uncertainty、compression 和 predictio
 
 当不太可能发生的事情发生时，它携带更多信息。硬币正面朝上？不令人意外。中彩票？非常令人意外。
 
-概率为 p 的事件的信息量是：
+概率为 $p$ 的事件的信息量是：
 
-```
-I(x) = -log(p(x))
+```math
+I(x) = -\log(p(x))
 ```
 
 使用以 2 为底的 log 得到 bits。使用 natural log 得到 nats。同一个思想，不同单位。
@@ -50,98 +50,104 @@ Certain event      1.0            0.0
 
 Entropy 是一个 distribution 中所有可能结果的期望 surprise。
 
-```
-H(P) = -sum( p(x) * log(p(x)) )  for all x
+```math
+H(P) = -\sum_{x} p(x) \log(p(x))
 ```
 
 公平硬币对于 binary variable 具有最大 entropy：1 bit。偏置硬币（99% 正面）具有低 entropy：0.08 bits。你已经知道会发生什么，因此每次抛掷几乎不会告诉你任何信息。
 
-```
-Fair coin:    H = -(0.5 * log2(0.5) + 0.5 * log2(0.5)) = 1.0 bit
-Biased coin:  H = -(0.99 * log2(0.99) + 0.01 * log2(0.01)) = 0.08 bits
+```math
+\begin{aligned}
+\text{公平硬币：} \quad & H = -(0.5 \log_2(0.5) + 0.5 \log_2(0.5)) = 1.0 \text{ bit} \\
+\text{偏置硬币：} \quad & H = -(0.99 \log_2(0.99) + 0.01 \log_2(0.01)) = 0.08 \text{ bits}
+\end{aligned}
 ```
 
 Entropy 衡量一个 distribution 中不可约的 uncertainty。你无法压缩到低于它。
 
 ### Cross-Entropy (你每天使用的 Loss Function)
 
-Cross-entropy 衡量当你使用 distribution Q 来编码实际来自 distribution P 的事件时，平均 surprise 是多少。
+Cross-entropy 衡量当你使用 distribution $Q$ 来编码实际来自 distribution $P$ 的事件时，平均 surprise 是多少。
 
+```math
+H(P, Q) = -\sum_{x} p(x) \log(q(x))
 ```
-H(P, Q) = -sum( p(x) * log(q(x)) )  for all x
-```
 
-P 是 true distribution（labels）。Q 是你的 model 的 predictions。如果 Q 与 P 完全匹配，cross-entropy 等于 entropy。任何不匹配都会让它变大。
+$P$ 是 true distribution（labels）。$Q$ 是你的 model 的 predictions。如果 $Q$ 与 $P$ 完全匹配，cross-entropy 等于 entropy。任何不匹配都会让它变大。
 
-在 classification 中，P 是 one-hot vector（true class 的概率为 1，其他全部为 0）。这会把 cross-entropy 简化为：
+在 classification 中，$P$ 是 one-hot vector（true class 的概率为 1，其他全部为 0）。这会把 cross-entropy 简化为：
 
-```
-H(P, Q) = -log(q(true_class))
+```math
+H(P, Q) = -\log(q(\text{true\_class}))
 ```
 
 这就是 classification 的完整 cross-entropy loss 公式。最大化正确 class 的预测概率。
 
 ### KL Divergence (Distributions 之间的距离)
 
-KL divergence 衡量使用 Q 而不是 P 会带来多少额外 surprise。
+KL divergence 衡量使用 $Q$ 而不是 $P$ 会带来多少额外 surprise。
 
-```
-D_KL(P || Q) = sum( p(x) * log(p(x) / q(x)) )  for all x
-             = H(P, Q) - H(P)
+```math
+\begin{aligned}
+D_{KL}(P \,\|\, Q) &= \sum_{x} p(x) \log(p(x) / q(x)) \\
+&= H(P, Q) - H(P)
+\end{aligned}
 ```
 
 Cross-entropy 是 entropy 加 KL divergence。由于 true distribution 的 entropy 在训练期间是常数，最小化 cross-entropy 等同于最小化 KL divergence。你是在把 model 的 distribution 推向 true distribution。
 
-KL divergence 不是对称的：D_KL(P || Q) != D_KL(Q || P)。它不是真正的 distance metric。
+KL divergence 不是对称的：$D_{KL}(P \Vert Q) \ne D_{KL}(Q \Vert P)$。它不是真正的 distance metric。
 
 ### Mutual Information
 
 Mutual information 衡量知道一个 variable 能告诉你另一个 variable 多少信息。
 
-```
-I(X; Y) = H(X) - H(X|Y)
-        = H(X) + H(Y) - H(X, Y)
+```math
+\begin{aligned}
+I(X; Y) &= H(X) - H(X \mid Y) \\
+&= H(X) + H(Y) - H(X, Y)
+\end{aligned}
 ```
 
-如果 X 和 Y 独立，mutual information 为零。知道其中一个不会告诉你另一个的任何信息。如果它们完全相关，mutual information 等于任一 variable 的 entropy。
+如果 $X$ 和 $Y$ 独立，mutual information 为零。知道其中一个不会告诉你另一个的任何信息。如果它们完全相关，mutual information 等于任一 variable 的 entropy。
 
 在 feature selection 中，feature 与 target 之间的 mutual information 高，意味着该 feature 有用。mutual information 低，意味着它是 noise。
 
 ### Conditional Entropy
 
-H(Y|X) 衡量观察到 X 后，关于 Y 还剩下多少 uncertainty。
+$H(Y \mid X)$ 衡量观察到 $X$ 后，关于 $Y$ 还剩下多少 uncertainty。
 
-```
-H(Y|X) = H(X,Y) - H(X)
+```math
+H(Y \mid X) = H(X,Y) - H(X)
 ```
 
 两个极端：
-- 如果 X 完全决定 Y，那么 H(Y|X) = 0。知道 X 会消除关于 Y 的全部 uncertainty。示例：X = 摄氏温度，Y = 华氏温度。
-- 如果 X 对 Y 没有任何信息，那么 H(Y|X) = H(Y)。知道 X 完全不会降低你的 uncertainty。示例：X = 抛硬币结果，Y = 明天的天气。
+- 如果 $X$ 完全决定 $Y$，那么 $H(Y \mid X) = 0$。知道 $X$ 会消除关于 $Y$ 的全部 uncertainty。示例：$X$ = 摄氏温度，$Y$ = 华氏温度。
+- 如果 $X$ 对 $Y$ 没有任何信息，那么 $H(Y \mid X) = H(Y)$。知道 $X$ 完全不会降低你的 uncertainty。示例：$X$ = 抛硬币结果，$Y$ = 明天的天气。
 
-Conditional entropy 始终非负，并且永远不超过 H(Y)：
+Conditional entropy 始终非负，并且永远不超过 $H(Y)$：
 
+```math
+0 \le H(Y \mid X) \le H(Y)
 ```
-0 <= H(Y|X) <= H(Y)
-```
 
-在 Machine Learning 中，conditional entropy 出现在 decision trees 中。在每次 split 时，algorithm 会选择使 H(Y|X) 最小的 feature X，也就是移除关于 label Y 最多 uncertainty 的 feature。
+在 Machine Learning 中，conditional entropy 出现在 decision trees 中。在每次 split 时，algorithm 会选择使 $H(Y \mid X)$ 最小的 feature $X$，也就是移除关于 label $Y$ 最多 uncertainty 的 feature。
 
 ### Joint Entropy
 
-H(X,Y) 是 X 和 Y 一起的 joint distribution 的 entropy。
+$H(X,Y)$ 是 $X$ 和 $Y$ 一起的 joint distribution 的 entropy。
 
-```
-H(X,Y) = -sum sum p(x,y) * log(p(x,y))   for all x, y
+```math
+H(X,Y) = -\sum_{x} \sum_{y} p(x,y) \log(p(x,y))
 ```
 
 关键性质：
 
-```
-H(X,Y) <= H(X) + H(Y)
+```math
+H(X,Y) \le H(X) + H(Y)
 ```
 
-当 X 和 Y 独立时等号成立。如果它们共享信息，joint entropy 就小于各自 entropy 之和。这个“缺失”的 entropy 正是 mutual information。
+当 $X$ 和 $Y$ 独立时等号成立。如果它们共享信息，joint entropy 就小于各自 entropy 之和。这个“缺失”的 entropy 正是 mutual information。
 
 ```mermaid
 graph TD
@@ -167,50 +173,52 @@ graph TD
 ```
 
 这些关系：
-- H(X,Y) = H(X) + H(Y|X) = H(Y) + H(X|Y)
-- I(X;Y) = H(X) - H(X|Y) = H(Y) - H(Y|X)
-- H(X,Y) = H(X) + H(Y) - I(X;Y)
+- $H(X,Y) = H(X) + H(Y \mid X) = H(Y) + H(X \mid Y)$
+- $I(X;Y) = H(X) - H(X \mid Y) = H(Y) - H(Y \mid X)$
+- $H(X,Y) = H(X) + H(Y) - I(X;Y)$
 
 ### Mutual Information（Deep Dive）
 
-Mutual information I(X;Y) 量化知道一个 variable 会减少关于另一个 variable 的多少 uncertainty。
+Mutual information $I(X;Y)$ 量化知道一个 variable 会减少关于另一个 variable 的多少 uncertainty。
 
-```
-I(X;Y) = H(X) - H(X|Y)
-       = H(Y) - H(Y|X)
-       = H(X) + H(Y) - H(X,Y)
-       = sum sum p(x,y) * log(p(x,y) / (p(x) * p(y)))
+```math
+\begin{aligned}
+I(X;Y) &= H(X) - H(X \mid Y) \\
+&= H(Y) - H(Y \mid X) \\
+&= H(X) + H(Y) - H(X,Y) \\
+&= \sum_{x} \sum_{y} p(x,y) \log\left(\frac{p(x,y)}{p(x) \, p(y)}\right)
+\end{aligned}
 ```
 
 性质：
-- I(X;Y) >= 0 始终成立。观察某个东西永远不会让你损失信息。
-- 当且仅当 X 和 Y 独立时，I(X;Y) = 0。
-- I(X;Y) = I(Y;X)。它是对称的，不同于 KL divergence。
-- I(X;X) = H(X)。一个 variable 与自身共享全部信息。
+- $I(X;Y) \ge 0$ 始终成立。观察某个东西永远不会让你损失信息。
+- 当且仅当 $X$ 和 $Y$ 独立时，$I(X;Y) = 0$。
+- $I(X;Y) = I(Y;X)$。它是对称的，不同于 KL divergence。
+- $I(X;X) = H(X)$。一个 variable 与自身共享全部信息。
 
 **用于 feature selection 的 mutual information。** 在 ML 中，你希望 features 对 target 有信息量。Mutual information 为你提供了一种有原则的方法来排序 features：
 
-1. 对每个 feature X_i，计算 I(X_i; Y)，其中 Y 是 target variable。
+1. 对每个 feature $X_i$，计算 $I(X_i; Y)$，其中 $Y$ 是 target variable。
 2. 按 MI score 排序 features。
-3. 保留前 k 个 features。
+3. 保留前 $k$ 个 features。
 
 这适用于 feature 与 target 之间的任何关系：linear、nonlinear、monotonic 或其他关系。Correlation 只能捕捉 linear relationships。MI 能捕捉所有关系。
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|
-| Pearson correlation | Linear relationships | O(n) | No |
-| Spearman correlation | Monotonic relationships | O(n log n) | No |
-| Mutual information | 任意 statistical dependency | O(n log n) with binning | Yes |
+| Pearson correlation | Linear relationships | $O(n)$ | No |
+| Spearman correlation | Monotonic relationships | $O(n \log n)$ | No |
+| Mutual information | 任意 statistical dependency | $O(n \log n)$ with binning | Yes |
 
 ### Label Smoothing 与 Cross-Entropy
 
 标准 classification 使用 hard targets：[0, 0, 1, 0]。true class 的概率为 1，其他全部为 0。Label smoothing 会用 soft targets 替换它们：
 
-```
-soft_target = (1 - epsilon) * hard_target + epsilon / num_classes
+```math
+\text{soft\_target} = (1 - \epsilon) \cdot \text{hard\_target} + \epsilon / \text{num\_classes}
 ```
 
-当 epsilon = 0.1 且有 4 个 classes 时：
+当 $\epsilon = 0.1$ 且有 4 个 classes 时：
 - Hard target:  [0, 0, 1, 0]
 - Soft target:  [0.025, 0.025, 0.925, 0.025]
 
@@ -224,8 +232,8 @@ soft_target = (1 - epsilon) * hard_target + epsilon / num_classes
 
 使用 label smoothing 的 cross-entropy loss 变为：
 
-```
-L = (1 - epsilon) * CE(hard_target, prediction) + epsilon * H_uniform(prediction)
+```math
+L = (1 - \epsilon) \cdot \text{CE}(\text{hard\_target}, \text{prediction}) + \epsilon \cdot H_{\text{uniform}}(\text{prediction})
 ```
 
 第二项会惩罚远离 uniform 的 predictions，也就是直接对 confidence 进行 regularization。
@@ -236,12 +244,14 @@ L = (1 - epsilon) * CE(hard_target, prediction) + epsilon * H_uniform(prediction
 
 **Information Theory 视角。** Cross-entropy 衡量使用你的 model 的 distribution 而不是真实 distribution 时浪费了多少 bits。最小化它，会让你的 model 成为现实的最高效 encoder。
 
-**Maximum likelihood 视角。** 对于 N 个 true classes 为 y_i 的 training samples：
+**Maximum likelihood 视角。** 对于 $N$ 个 true classes 为 $y_i$ 的 training samples：
 
-```
-Likelihood     = product( q(y_i) )
-Log-likelihood = sum( log(q(y_i)) )
-Negative log-likelihood = -sum( log(q(y_i)) )
+```math
+\begin{aligned}
+\text{似然} &= \prod_i q(y_i) \\
+\text{对数似然} &= \sum_i \log(q(y_i)) \\
+\text{负对数似然} &= -\sum_i \log(q(y_i))
+\end{aligned}
 ```
 
 最后一行就是 cross-entropy loss。最小化 cross-entropy = 最大化 training data 在你的 model 下的 likelihood。
@@ -258,15 +268,17 @@ log base e   -> nats      (machine learning convention)
 log base 10  -> hartleys  (rarely used)
 ```
 
-1 nat = 1/ln(2) bits = 1.4427 bits。PyTorch 和 TensorFlow 默认使用 natural log（nats）。
+1 nat = $1/\ln(2)$ bits = 1.4427 bits。PyTorch 和 TensorFlow 默认使用 natural log（nats）。
 
 ### Perplexity
 
 Perplexity 是 cross-entropy 的指数。它告诉你 model 不确定的、同等可能选择的有效数量。
 
-```
-Perplexity = 2^H(P,Q)   (if using bits)
-Perplexity = e^H(P,Q)   (if using nats)
+```math
+\begin{aligned}
+\text{Perplexity} &= 2^{H(P,Q)} \quad \text{（使用 bits 时）} \\
+\text{Perplexity} &= e^{H(P,Q)} \quad \text{（使用 nats 时）}
+\end{aligned}
 ```
 
 Perplexity 为 50 的 language model，平均来看，就像必须从 50 个可能的 next tokens 中均匀选择一样困惑。越低越好。
@@ -446,19 +458,29 @@ print(f"KL div:     {np_kl_divergence(true, pred):.4f} nats")
 
 2. 某个 model 对 true class 为 1 的 sample 输出 logits [5.0, 2.0, 0.5]。手算 cross-entropy loss，然后用你的 `cross_entropy_loss` function 验证。什么样的 logits 会给出零 loss？
 
-3. 证明 KL divergence 不是对称的。选择两个 distributions P 和 Q，计算 D_KL(P || Q) 和 D_KL(Q || P)。解释它们为什么不同。
+3. 证明 KL divergence 不是对称的。选择两个 distributions $P$ 和 $Q$，计算 $D_{KL}(P \Vert Q)$ 和 $D_{KL}(Q \Vert P)$。解释它们为什么不同。
 
 4. 构建一个 function，为一段 token predictions 序列计算 perplexity。给定一个由 (true_token_index, predicted_logits) pairs 组成的 list，返回该序列的 perplexity。
+
+### 提示
+
+**练习 1。** 用 26 个相等的概率调用 `entropy`，结果必须为 $\log_2 26 \approx 4.70$ bits。真实字母频率并不均匀，因此使用真实频率得到的熵必须更低。
+
+**练习 2。** 对 logits 计算 `softmax`，再对索引 1 处的概率取 $-\ln$，并与 `cross_entropy_loss(1, logits)` 比较；两者都应接近 3.06。只有当 class 1 的 logit 远大于另外两个时，loss 才趋近于 0。
+
+**练习 3。** 使用形状不同的两个小分布，例如 $P = [0.9, 0.1]$ 和 $Q = [0.5, 0.5]$，分别以两种顺序调用 `kl_divergence`。两个值必须不同，因为每个方向对对数比值加权时使用的分布不同。
+
+**练习 4。** 对每一对输入计算 `cross_entropy_loss(true_token_index, predicted_logits)`，取均值后传给 `perplexity`。用 $V$ 个 token 上的均匀 logits 检验：perplexity 必须为 $V$。
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：-log(p) |
+| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：$-\log(p)$ |
 | Entropy | “Randomness” | 一个 distribution 中所有 outcomes 的平均 surprise。衡量不可约 uncertainty。 |
-| Cross-entropy | “The loss function” | 使用 model distribution Q 编码来自 true distribution P 的事件时的平均 surprise。 |
-| KL divergence | “Distance between distributions” | 使用 Q 而不是 P 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
-| Mutual information | “How related are X and Y” | 知道 Y 后，关于 X 的 uncertainty 减少量。为零表示独立。 |
+| Cross-entropy | “The loss function” | 使用 model distribution $Q$ 编码来自 true distribution $P$ 的事件时的平均 surprise。 |
+| KL divergence | “Distance between distributions” | 使用 $Q$ 而不是 $P$ 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
+| Mutual information | “How related are $X$ and $Y$” | 知道 $Y$ 后，关于 $X$ 的 uncertainty 减少量。为零表示独立。 |
 | Softmax | “Turn logits into probabilities” | 取指数并归一化。将任意 real-valued vector 映射为有效 probability distribution。 |
 | Perplexity | “How confused the model is” | Cross-entropy 的指数。model 在每一步从中选择的有效 vocabulary size。 |
 | Bits | “Shannon's unit” | 使用以 2 为底的 log 衡量的信息。一个 bit 解决一次公平抛硬币。 |
