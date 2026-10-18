@@ -80,7 +80,7 @@ def encode_bpe(word, merges):
     return symbols
 ```
 
-n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n n
+朴素实现是$O(n \cdot \lvert \text{merges} \rvert)$ sản xuất thực hiện ((tiktoken、HF Tokenizers) sử dụng tìm kiếm xếp hạng hợp nhất và xếp hàng ưu tiên,运行时间接近线性。
 
 ### 步骤 3: 实践中的 SentencePiece
 

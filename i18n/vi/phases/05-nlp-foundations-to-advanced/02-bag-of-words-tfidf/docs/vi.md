@@ -21,9 +21,11 @@ Mỗi dòng ống dẫn NLP đều phải trả lời cùng một câu hỏi. L�
 
 **TF-IDF**Một từ xuất hiện trong mỗi tài liệu không có lượng thông tin cao, vì vậy hãy giảm trọng lượng của nó. Một từ xuất hiện rất ít trong thư viện ngôn ngữ, nhưng trong các tài liệu đơn lẻ thường xuyên là tín hiệu, vì vậy hãy giảm trọng lượng của nó.
 
-```
-TF-IDF(w, d) = TF(w, d) * IDF(w)
-             = count(w in d) / |d| * log(N / df(w))
+```math
+\begin{aligned}
+\text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
+\end{aligned}
 ```
 
 Trong số đó `TF`là tần số trong tài liệu,`df`là tần số tài liệu ((有多少文档包含该词),`N`Đó là tổng số tài liệu.`log`会让高频常见词的权重保持有界――

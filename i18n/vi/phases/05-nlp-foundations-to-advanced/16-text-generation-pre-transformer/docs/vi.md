@@ -21,8 +21,8 @@ Vấn đề có ý nghĩa thực sự là làm thế nào để xử lý n-gram 
 
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`❖ Đặt `n`(thường là trigram dùng 3,4 gram dùng 4)
 
-```text
-P(w | context) = count(context, w) / count(context)
+```math
+P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\mathop{\mathrm{count}}(\text{context})}
 ```
 
 **零计数问题。**Một nghiên cứu năm 2007 về Brown corpus phát hiện ra, ngay cả trong mô hình 4 gram, có 30% 4 gram không xuất hiện trong tập luyện. Không làm trơn, không thể đánh giá trên bất kỳ văn bản thực nào.
@@ -40,8 +40,8 @@ Kneser-Ney của洞见很深──"San Francisco" là một hình ảnh lớn th
 
 **评估：perplexity。**Trong tập hợp thử nghiệm được tổ chức, mỗi từ trung bình âm tính là chỉ số xác suất log-cho-nếu.
 
-```text
-perplexity = exp(- (1/N) * Σ log P(w_i | context_i))
+```math
+\text{perplexity} = \exp\left(-\frac{1}{N} \sum_i \log P(w_i \mid \text{context}_i)\right)
 ```
 
 

@@ -29,7 +29,7 @@ Bài này sẽ dành cho ba người để xây dựng trực giác, và giải 
 
 Thành tựu năm 2026:
 
-- **Outlines。**将 JSON Schema 或 regex 编译为有限状态机──每个代币都能 O(1) 查询 valid-next-token──基于FSM,所以复制式方案需要平坦化──
+- **Outlines。**将 JSON Schema hoặc regex 编译为有限状态机──每个代币都能 $O(1)$查询 valid-next-token。 dựa trên FSM, vì vậy các quy trình tái tạo  cần phải phẳng lại。
 - **XGrammar / llguidance。**Các công cụ ngữ pháp không liên quan. xử lý quy trình JSON tái tạo.
 - **vLLM guided decoding。**通过概要、XGrammar hoặc lm-format-enforcer 后端内置 `guided_json``guided_regex``guided_choice``guided_grammar`
 - **Instructor。**基于 Pydantic's arbitrary LLM wrapper──验证失败时重试──跨供应商, nhưng sẽ không sửa đổi logits, dựa vào các thử nghiệm lại + các yêu cầu có cấu trúc-output-awareness──
@@ -211,7 +211,7 @@ tags: [nlp, llm, structured-output]
 |------|------------|----------|
 | Constrained decoding | 强制有效输出 | 在每个生成步骤 mask invalid-token logits。 |
 | Logit processor | 执行约束的东西 | 函数：`(logits, state) -> masked_logits`。 |
-| FSM | Finite-state machine | 编译后的 grammar 表示；O(1) valid-next-token 查询。 |
+| FSM | Finite-state machine | 编译后的 grammar 表示；$O(1)$ valid-next-token 查询。 |
 | CFG | Context-free grammar | 能处理 recursion 的 grammar；比 FSM 更慢但表达力更强。 |
 | Schema field order | 它重要吗？ | 重要，first field 会形成承诺；始终把 reasoning 放在 answer 之前。 |
 | Guided decoding | vLLM 对它的称呼 | 同一概念，集成进 inference server。 |

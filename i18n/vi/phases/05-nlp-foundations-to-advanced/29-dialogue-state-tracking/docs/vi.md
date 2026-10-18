@@ -148,7 +148,7 @@ def is_correction(utterance):
 
 ## 陷
 
-- **Full-history regeneration cost。**让 LLM 每一轮都 tái tạo trạng thái,总 Token 成本是 O(n2)。 giới hạn lịch sử hoặc总结较早转──
+- **Full-history regeneration cost。**让 LLM 每一轮都 tái tạo trạng thái,总代币 成本是 $O(n^2)$ giới hạn lịch sử hoặc tổng kết hơn những lần quay sớm 
 - **Schema drift。**Việc sau đó thêm các khe mới sẽ phá hủy dữ liệu đào tạo cũ.
 - **Case sensitivity。**Italy Italy Italy Tại khắp mọi nơi đều bình thường hóa
 - **Implicit inheritance。**Nếu người dùng đã xác định trước đây để 4 người, yêu cầu khác nhau thời gian mới không nên làm sạch người.

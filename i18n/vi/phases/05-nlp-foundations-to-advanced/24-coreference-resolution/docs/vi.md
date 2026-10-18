@@ -34,7 +34,7 @@ Tại sao nó quan trọng vào năm 2026:
 **Architectures.**
 
 1. **Rule-based (Hobbs, 1978).**基于语法树的代词解析度,使用语法规则──很好的基线──在代词上意外地难以超越──
-2. **Mention-pair classifier.**Đối với mỗi đối tượng đề cập, dự đoán xem chúng có phải là trọng tâm hơn không.
+2. **Mention-pair classifier.**Đối với mỗi lần nhắc đến$(m_i, m_j)$, dự đoán liệu chúng có phải là cốt lõi hơn không.
 3. **Mention-ranking.**Đối với mỗi đề cập, 排序候选 tiền nhiệm (include no antecedent) 选择最高分──
 4. **Span-based end-to-end (Lee et al., 2017).**Transformer encoder──枚举所有长度上限内的候选 span──预测提到分点──为每 span 预测前例-概率──贪心聚类──现代默认方案──
 5. **Generative (2024+).**Prompt 一个 LLM:Dọn danh từ trong văn bản này và tiền thân của nó. 在简单案例上效果不错,但在长文档和少见引用 上会吃力。
