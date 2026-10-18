@@ -6,9 +6,11 @@
 
 总预计时间：约 314 小时，按自己的节奏学习。
 
+新增课程的 🚧 表示中文文档和配套实现仍在分批同步；可运行状态须以 [bot-hub #16](https://github.com/cluster1900/bot-hub/issues/16) 的依赖 PR 及检查结果为准，不代表已完成。
+
 **图例：** ✅ 已完成 &nbsp;·&nbsp; 🚧 进行中 &nbsp;·&nbsp; ⬚ 已规划
 
-## Phase 0: 环境配置与工具 — ✅（约 14 小时）
+## Phase 0: 环境配置与工具 — 🚧（约 14 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -24,6 +26,7 @@
 | 10 | Terminal 与 Shell | ✅ | ~45 min |
 | 11 | 面向 AI 的 Linux | ✅ | ~45 min |
 | 12 | Debugging 与 Profiling | ✅ | ~75 min |
+| 13 | 面向 AI 工程的 Python（文档同步中） | 🚧 | ~120 min |
 
 ## Phase 1: 数学基础 — ✅（约 23 小时）
 
@@ -52,7 +55,7 @@
 | 21 | 面向 ML 的图论 | ✅ | ~45 min |
 | 22 | 随机过程 | ✅ | ~45 min |
 
-## Phase 2: ML 基础 — ✅（约 21 小时）
+## Phase 2: ML 基础 — 🚧（约 21 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -74,6 +77,9 @@
 | 16 | Anomaly Detection | ✅ | ~75 min |
 | 17 | 处理不平衡数据 | ✅ | ~75 min |
 | 18 | Feature Selection | ✅ | ~75 min |
+| 19 | ML 系统设计：从问题到部署模型（文档同步中） | 🚧 | ~110 min |
+| 20 | 生产模型监控：数据漂移与概念漂移（文档同步中） | 🚧 | ~110 min |
+| 21 | 特征存储与训练—服务偏差（文档同步中） | 🚧 | ~100 min |
 
 ## Phase 3: Deep Learning 核心 — ✅（约 15 小时）
 
@@ -314,7 +320,7 @@
 | 24 | [Multimodal RAG 与 Cross-Modal Retrieval](phases/12-multimodal-ai/24-multimodal-rag-cross-modal) | ✅ | ~180 min |
 | 25 | [Multimodal Agents 与 Computer-Use (Capstone)](phases/12-multimodal-ai/25-multimodal-agents-computer-use) | ✅ | ~240 min |
 
-## Phase 13: 工具与协议 — ✅（约 45 小时）
+## Phase 13: 工具与协议 — 🚧（约 45 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -358,6 +364,11 @@
 | 38 | [调用约定与栈帧：System V、Windows x64 和 AArch64](phases/13-tools-and-protocols/38-calling-conventions-and-stack-frames/) | ✅ | ~140 min |
 | 39 | [编译器惯用模式：优化如何改写代码，以及如何反向读懂它](phases/13-tools-and-protocols/39-compiler-idioms-and-optimization/) | ✅ | ~150 min |
 | 40 | [链接、加载与剥离符号后的二进制：PLT、GOT、导入、修正与函数识别](phases/13-tools-and-protocols/40-linking-loading-and-stripped-binaries/) | ✅ | ~160 min |
+| 41 | 数据与类型恢复（文档同步中） | 🚧 | ~140 min |
+| 42 | 自有程序的动态分析（文档同步中） | 🚧 | ~130 min |
+| 43 | Python、JVM、.NET 与 WebAssembly 字节码（文档同步中） | 🚧 | ~150 min |
+| 44 | 二进制差异分析与符号执行（文档同步中） | 🚧 | ~150 min |
+| 45 | AI 辅助逆向工程（文档同步中） | 🚧 | ~140 min |
 
 ## Phase 14: Agent Engineering — ✅（约 42 小时）
 
@@ -475,7 +486,7 @@
 | 24 | [Evaluation 与 Coordination Benchmarks](phases/16-multi-agent-and-swarms/24-evaluation-coordination-benchmarks/) | ✅ | ~75 min |
 | 25 | [Case Studies 与 2026 State of the Art](phases/16-multi-agent-and-swarms/25-case-studies-2026-sota/) | ✅ | ~90 min |
 
-## Phase 17: Infrastructure 与 Production — ✅（约 32 小时）
+## Phase 17: Infrastructure 与 Production — 🚧（约 32 小时）
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -507,6 +518,7 @@
 | 26 | Compliance — SOC 2, HIPAA, GDPR, EU AI Act, ISO 42001 | ✅ | ~60 min |
 | 27 | 面向 LLMs 的 FinOps — Unit Economics 与 Multi-Tenant Attribution | ✅ | ~60 min |
 | 28 | Self-Hosted Serving Selection — llama.cpp, Ollama, TGI, vLLM, SGLang | ✅ | ~45 min |
+| 29 | 模型演示界面：从函数到可分享应用（文档同步中） | 🚧 | ~90 min |
 
 ## Phase 18: Ethics, Safety 与 Alignment — ✅（约 31 小时）
 
