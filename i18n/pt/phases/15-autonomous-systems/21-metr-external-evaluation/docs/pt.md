@@ -30,7 +30,7 @@ Esta aula é uma parte sobre metodologia (como calcular o horizonte), uma parte 
 
 1. 收集一个任务套件,覆盖分钟级到小时级的专家完成时间──当前套件:HCAST(180+个任务)、RE-Bench(71个任务)、SWAA──
 2. 让模型运行每个任务;记录成功或失败――
-3. 拟合一条 逻辑曲线:P(sucesso) 是 log(专家完成时间) 的函数──
+3. 拟合一条 curva logística:$P(\text{success})$Sim $\log(\text{专家完成时间})$De função:
 4. O horizonte é o sucesso = 0,5 de especialistas tempo.
 
 A forma logística-ajustada é adequada, pois normalmente existe uma relação entre capacidade e dificuldade de tarefa. 50% é uma opção.
@@ -80,7 +80,7 @@ a5-horizon-fit
 
 ## Use-o
 
-`code/main.py`Baseado em resultados sintetizados, realizou o sucesso da tarefa com logar (expert time) e logística.
+`code/main.py`Baseado em resultados sintéticos, alcançou o sucesso da tarefa e$\log(\text{expert time})$O resultado foi o resultado de uma análise de resultados de uma série de estudos de resultados.
 
 ## Entrega-o
 

@@ -58,7 +58,7 @@ O método de revisão do AlphaEvolve é: utilizar o MLL de um avaliador de dura�
 
 O LLM pode produzir modificações compatíveis, em sentido linguístico, parecendo razoáveis. Ao longo de 2000 páginas de Python, os dados geralmente produzem erros de linguagem.
 
-Em contrapartida, o avaliador irá capturar a ficção do LLM. LLMs irá afirmar com confiança que uma função  em condições extremas é O n log n) , mas na verdade é O n^2;
+Em vez disso, o avaliador irá capturar a ficção do LLM.$O(n \log n)$Mas na verdade é.$O(n^2)$O valor de referência do relógio de parede vai fazer com que o problema seja resolvido.
 
 ### AlphaEvolve em posição central na pilha de fronteira
 
