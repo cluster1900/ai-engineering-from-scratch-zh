@@ -37,7 +37,7 @@
 
 ### 个数字
 
-**Word Error Rate**`(S + D + I) / N`对于读音而言达到人类水平的标准标准值数字:
+**Word Error Rate**$(S + D + I) / N$在其中$S$换成一个$D$删除$I$插入,$N$对于读音而言达到人类水平而言,WER高于20%通常不可用;低于5%,2026年标准基准 数字:
 
 | Model | LibriSpeech test-clean | LibriSpeech test-other | Size |
 |-------|------------------------|------------------------|------|
