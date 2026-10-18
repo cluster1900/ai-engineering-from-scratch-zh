@@ -1,4 +1,6 @@
-# Phase 16: Multi-Agent 与 Swarms
+<a id="phase-16-multi-agent-与-swarms"></a>
+
+# 阶段 16：多智能体与群体智能
 
 > 协调、涌现与集体智能。
 

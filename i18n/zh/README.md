@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="../../LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
-  <a href="../../ROADMAP.md"><img src="https://img.shields.io/badge/lessons-523-3553ff?style=flat-square&labelColor=fafaf5" alt="523 节课"></a>
+  <a href="../../ROADMAP.md"><img src="https://img.shields.io/badge/lessons-532-3553ff?style=flat-square&labelColor=fafaf5" alt="532 节课"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 个 Phase"></a>
   <a href="https://github.com/cluster1900/ai-engineering-from-scratch-zh/stargazers"><img src="https://img.shields.io/github/stars/cluster1900/ai-engineering-from-scratch-zh?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
   <a href="https://ai-learn.agent-buy.com"><img src="https://img.shields.io/badge/web-ai--learn.agent--buy.com-3553ff?style=flat-square&labelColor=fafaf5" alt="网站"></a>
@@ -31,7 +31,7 @@
 > **84% 的学生已经在使用 AI 工具。只有 18% 认为自己已准备好以
 > 专业方式使用它们。** 这套课程正是为了弥合这道差距。
 >
-> 523 lessons. 20 phases. (523 节课。20 个 Phase。约 342 小时。) Python、TypeScript、Rust、Julia。每节课都会产出
+> 532 lessons. 20 phases. (532 节课。20 个 Phase。约 342 小时。) Python、TypeScript、Rust、Julia。每节课都会产出
 > 一个可复用 artifact：prompt、skill、agent、MCP server。免费、开源、MIT。
 >
 > 你不只是学习 AI。你会亲手构建它。端到端。从零开始。
@@ -42,7 +42,7 @@
 
 ## 从这里开始：选择你想构建的内容
 
-在开始之前，你不必通读全部 523 节课。选定一个目标即可。每个链接均可在 GitHub 或官方网站上打开同一套课程，两个版本采用完全一致的教学代码。
+在开始之前，你不必通读全部 532 节课。选定一个目标即可。每个链接均可在 GitHub 或官方网站上打开同一套课程，两个版本采用完全一致的教学代码。
 
 | 你的目标 | 在 GitHub 上学习 | 在网站上学习 |
 |---|---|---|
@@ -117,7 +117,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh
 解释它的 loss curve。你把一个 function 接到 agent 上，却说不清在调用它的 model 内部，
 attention 究竟在做什么。
 
-这套课程是主干。20 个 Phase，523 节课，四门语言：Python、TypeScript、
+这套课程是主干。20 个 Phase，532 节课，四门语言：Python、TypeScript、
 Rust、Julia。一端是 linear algebra，另一端是 autonomous swarms。每个 algorithm
 都会先从原始数学手写构建。Backprop、Tokenizer、Attention、Agent loop。等到
 PyTorch 出场时，你已经知道它在底层做什么。
@@ -295,7 +295,7 @@ python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 </table>
 
 > 用 `python3 scripts/install_skills.py` 一次性安装全部内容。是真工具，不是作业。
-> 完成整套课程后，你会拥有一个包含 523 个 artifacts 的作品集，并且真正理解它们，
+> 完成整套课程后，你会拥有一个包含 532 个 artifacts 的作品集，并且真正理解它们，
 > 因为它们都是你亲手构建的。
 
 ### FIG_002 · 一个完整示例
@@ -724,7 +724,7 @@ the agent went wrong and explain why...
 </details>
 
 <details id="phase-13">
-<summary><b>Phase 13 — 工具与协议</b> &nbsp;<code>31 节课</code>&nbsp; <em>Function calling、MCP 协议、安全与生态。</em></summary>
+<summary><b>Phase 13 — 工具与协议</b> &nbsp;<code>40 节课</code>&nbsp; <em>Function calling、MCP 协议、安全与生态。</em></summary>
 <br/>
 
 | # | 课程 | 类型 | 语言 |
@@ -760,6 +760,15 @@ the agent went wrong and explain why...
 | 29 | [MCP 可靠性、取消与流控](../../phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/) | Build | Python |
 | 30 | [MCP Registry 供应链：准入、漂移与回滚](../../phases/13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/) | Build | Python |
 | 31 | [MCP 一致性工程：版本控制、证据与运维](../../phases/13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/) | Build | Python |
+| 32 | [程序解剖：从零编写 ELF 读取器](../../phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch/) | Build | Python |
+| 33 | [反汇编与控制流：从字节到可验证的图](../../phases/13-tools-and-protocols/33-disassembly-and-control-flow/) | Build | Python |
+| 34 | [提升为伪代码：从零构建 IR、SSA 与结构化](../../phases/13-tools-and-protocols/34-lifting-to-pseudocode/) | Build | Python |
+| 35 | [二进制分析中的证据、置信度与未知项](../../phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns/) | Build | Python |
+| 36 | [重建并证明等价：差分测试、字节比较与证据闭环](../../phases/13-tools-and-protocols/36-rebuild-and-prove-equal/) | Build | Python |
+| 37 | [逆向工程全景：历史、工具家族与反编译器的构建方式](../../phases/13-tools-and-protocols/37-the-reverse-engineering-landscape/) | Build | Python |
+| 38 | [调用约定与栈帧：System V、Windows x64 和 AArch64](../../phases/13-tools-and-protocols/38-calling-conventions-and-stack-frames/) | Build | Python |
+| 39 | [编译器惯用模式：优化如何改写代码，以及如何反向读懂它](../../phases/13-tools-and-protocols/39-compiler-idioms-and-optimization/) | Build | Python |
+| 40 | [链接、加载与剥离符号后的二进制：PLT、GOT、导入、修正与函数识别](../../phases/13-tools-and-protocols/40-linking-loading-and-stripped-binaries/) | Build | Python |
 
 第 06-18 课与第 28-31 课构成专门的 [Model Context Protocol (MCP) 学习路径](../../learning-paths/model-context-protocol.json)。其清单执行顺序为 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 18, 17, 28, 29, 30, 31。
 
@@ -1100,7 +1109,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh
 
 `skills` 会写入安装期间选择的宿主与作用域，例如 `.claude/skills/`、`.cursor/skills/`、`.codex/skills/` 或其他受支持的 skills 目录。请确认所选宿主能检索到该目标路径。
 
-**课程产物（The lesson artifacts）。** The repo ships 396 skills and 99 prompts（本 repo 提供了 396 个 skill 和 99 个 prompt，位于 `phases/**/outputs/`）；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义布局。需要先克隆仓库。支持按标签过滤、dry-run 预览以及按 agent 布局：
+**课程产物（The lesson artifacts）。** The repo ships 405 skills and 99 prompts（本 repo 提供了 405 个 skill 和 99 个 prompt，位于 `phases/**/outputs/`）；你可以通过 `scripts/install_skills.py` 进行离线安装或自定义布局。需要先克隆仓库。支持按标签过滤、dry-run 预览以及按 agent 布局：
 
 ```bash
 python3 scripts/install_skills.py <target>                                 # 所有 skill，默认 --layout skills（嵌套目录）
@@ -1251,7 +1260,7 @@ shape、`docs/en.md` 是否存在 + H1、`code/` 是否非空、`quiz.json` sche
 
 ## 赞助本项目
 
-免费，MIT-licensed，523 节课。感谢所有让这项工作成为可能的赞助者和支持者。[查看所有赞助者与支持者](../../BACKERS.md)。
+免费，MIT-licensed，532 节课。感谢所有让这项工作成为可能的赞助者和支持者。[查看所有赞助者与支持者](../../BACKERS.md)。
 
 想要支持本项目？请查看 [赞助方案选项](../../SPONSORS.md)，包括 [硬件实验室合作伙伴](../../SPONSORS.md#hardware-lab-partner)，或前往 [GitHub Sponsors 赞助](https://github.com/sponsors/rohitg00)。
 
