@@ -1,11 +1,13 @@
-# Discovery contract
+<a id="discovery-contract"></a>
 
-Discovery has three disclosure levels:
+# 发现契约
 
-1. Catalog: read the `name`, `description`, scope, and path required for routing.
-2. Activation: load the selected SKILL.md body under an explicit size budget.
-3. Execution support: load a directly named file such as `references/schema.md` only when needed.
+发现过程分为三个披露层级：
 
-The host owns scope locations, precedence, collision behavior, and budgets. The catalog builder must keep those choices visible in its output.
+1. 目录：读取路由所需的 `name`、`description`、范围和路径。
+2. 激活：在明确的大小预算内加载所选 SKILL.md 正文。
+3. 执行支持：仅在需要时加载直接点名的文件，例如 `references/schema.md`。
 
-A portable one-level reference is a regular file in the skill directory or one immediate subdirectory. Reject absolute paths, `..`, backslashes, symlinks, and deeper chains.
+范围位置、优先级、冲突行为和预算由宿主决定。目录构建器必须在输出中清楚展示这些选择。
+
+可移植的单层引用，是技能目录或其直接子目录中的普通文件。拒绝绝对路径、`..`、反斜杠、符号链接和更深的引用链。
