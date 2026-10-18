@@ -1,6 +1,6 @@
 # Linear Systems
 
-> 求解 Ax = b 是数学中最古老的问题之一，而它至今仍在运行你的 Neural Network。
+> 求解 $Ax = b$ 是数学中最古老的问题之一，而它至今仍在运行你的 Neural Network。
 
 **Type:** Build
 **Language:** Python
@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## 学习目标
-- 使用带 partial pivoting 和 back substitution 的 Gaussian elimination 求解 Ax = b
+- 使用带 partial pivoting 和 back substitution 的 Gaussian elimination 求解 $Ax = b$
 - 使用 LU、QR 和 Cholesky decompositions 分解 Matrix，并解释每种方法适用的场景
 - 推导 least squares 的 normal equations，并将其与 linear regression 和 ridge regression 联系起来
 - 使用 condition number 诊断 ill-conditioned systems，并应用 regularization 使其稳定
@@ -16,7 +16,7 @@
 ## 问题
 每次训练 linear regression 时，你都在求解一个 linear system。每次计算 least-squares fit 时，你都在求解一个 linear system。每次 Neural Network layer 计算 `y = Wx + b` 时，它都在评估 linear system 的一侧。加入 regularization 时，你在修改这个 system。使用 Gaussian processes 时，你在分解一个 Matrix。为 Mahalanobis distance 求 covariance matrix 的 inverse 时，你在求解一个 linear system。
 
-方程 Ax = b 无处不在。A 是已知系数构成的 Matrix。b 是已知输出构成的 Vector。x 是你想找到的未知量 Vector。在线性回归中，A 是你的 data matrix，b 是你的 target vector，x 是 weight vector。整个模型可以归结为：找到 x，使 Ax 尽可能接近 b。
+方程 $Ax = b$ 无处不在。$A$ 是已知系数构成的 Matrix。$b$ 是已知输出构成的 Vector。$x$ 是你想找到的未知量 Vector。在线性回归中，$A$ 是你的 data matrix，$b$ 是你的 target vector，$x$ 是 weight vector。整个模型可以归结为：找到 $x$，使 $Ax$ 尽可能接近 $b$。
 
 本课将从零构建求解这个方程的所有主要方法。你会理解为什么有些方法速度快而另一些方法更稳定，为什么有些方法只适用于 square systems 而另一些能处理 overdetermined systems，以及为什么 Matrix 的 condition number 决定了你的答案是否还有意义。
 
@@ -51,15 +51,15 @@ graph TD
     end
 ```
 
-在 Matrix 形式中，"one solution" 意味着 A is invertible。"No solution" 意味着 system is inconsistent。"Infinite solutions" 意味着 A has a null space。大多数 ML 问题都属于“没有精确解”的类别，因为你的 equations（data points）比 unknowns（parameters）更多。这正是 least squares 发挥作用的地方。
+在 Matrix 形式中，"one solution" 意味着 $A$ is invertible。"No solution" 意味着 system is inconsistent。"Infinite solutions" 意味着 $A$ has a null space。大多数 ML 问题都属于“没有精确解”的类别，因为你的 equations（data points）比 unknowns（parameters）更多。这正是 least squares 发挥作用的地方。
 
 ### column picture vs row picture
 
-有两种方式理解 Ax = b。
+有两种方式理解 $Ax = b$。
 
-**Row picture.** A 的每一行定义一个 equation。每个 equation 是一个 hyperplane。解就是它们全部相交的位置。
+**Row picture.** $A$ 的每一行定义一个 equation。每个 equation 是一个 hyperplane。解就是它们全部相交的位置。
 
-**Column picture.** A 的每一列都是一个 Vector。问题变成：A 的 columns 的什么 linear combination 能产生 b？
+**Column picture.** $A$ 的每一列都是一个 Vector。问题变成：$A$ 的 columns 的什么 linear combination 能产生 $b$？
 
 ```
 A = | 2  1 |    b = | 5 |
@@ -72,11 +72,11 @@ Column picture: 找到 x1, x2，使得：
   2 * [2, 1] + 1 * [1, -1] = [4+1, 2-1] = [5, 1]   check.
 ```
 
-Column picture 更根本。如果 b 位于 A 的 column space 中，system 就有解。如果 b 不在其中，你就找到 column space 中离它最近的点。这个最近点就是 least-squares solution。
+Column picture 更根本。如果 $b$ 位于 $A$ 的 column space 中，system 就有解。如果 $b$ 不在其中，你就找到 column space 中离它最近的点。这个最近点就是 least-squares solution。
 
 ### Gaussian elimination
 
-Gaussian elimination 将 Ax = b 转换为 upper triangular system Ux = c，然后用 back substitution 求解。这是最直接的方法。
+Gaussian elimination 将 $Ax = b$ 转换为 upper triangular system $Ux = c$，然后用 back substitution 求解。这是最直接的方法。
 
 算法：
 
@@ -108,7 +108,7 @@ Back substitute:
   2*x1 + 2 + 2 = 8 --> x1 = 2
 ```
 
-Gaussian elimination 的计算成本为 O(n^3)。对于 1000x1000 system，这大约是十亿次 floating-point operations。它很快，但如果你需要用相同的 A 求解多个 system，还可以做得更好。
+Gaussian elimination 的计算成本为 $O(n^3)$。对于 $1000 \times 1000$ system，这大约是十亿次 floating-point operations。它很快，但如果你需要用相同的 $A$ 求解多个 system，还可以做得更好。
 
 ### Partial pivoting：为什么重要
 
@@ -133,7 +133,7 @@ x1 = (1.001 - 1)/0.001          x1 = (2 - 1)/1 = 1.000（正确）
 
 ### LU decomposition
 
-LU decomposition 将 A 分解为 lower triangular matrix L 和 upper triangular matrix U：A = LU。L Matrix 存储 Gaussian elimination 中的 multipliers。U Matrix 是 elimination 的结果。
+LU decomposition 将 $A$ 分解为 lower triangular matrix $L$ 和 upper triangular matrix $U$：$A = LU$。$L$ Matrix 存储 Gaussian elimination 中的 multipliers。$U$ Matrix 是 elimination 的结果。
 
 ```
 A = L @ U
@@ -143,25 +143,27 @@ A = L @ U
 | 2  3  1 |   | 1  2  1 |   | 0  0  -2 |
 ```
 
-为什么要 factor 而不是直接 eliminate？因为一旦有了 L 和 U，针对任意新的 b 求解 Ax = b 只需要 O(n^2)：
+为什么要 factor 而不是直接 eliminate？因为一旦有了 $L$ 和 $U$，针对任意新的 $b$ 求解 $Ax = b$ 只需要 $O(n^2)$：
 
+```math
+\begin{aligned}
+Ax &= b \\
+LUx &= b \\
+&\text{令 } y = Ux\text{:} \\
+Ly &= b \quad \text{（前代，} O(n^2)\text{）} \\
+Ux &= y \quad \text{（回代，} O(n^2)\text{）}
+\end{aligned}
 ```
-Ax = b
-LUx = b
-令 y = Ux:
-  Ly = b    (forward substitution, O(n^2))
-  Ux = y    (back substitution, O(n^2))
-```
 
-O(n^3) 的成本只在 factorization 时支付一次。之后每次 solve 都是 O(n^2)。如果你需要用相同的 A、不同的 b vectors 求解 1000 个 systems，LU 会让总工作量节省约 1000/3 倍。
+$O(n^3)$ 的成本只在 factorization 时支付一次。之后每次 solve 都是 $O(n^2)$。如果你需要用相同的 $A$、不同的 $b$ vectors 求解 1000 个 systems，LU 会让总工作量节省约 1000/3 倍。
 
-使用 partial pivoting 时，你得到 PA = LU，其中 P 是记录 row swaps 的 permutation matrix。
+使用 partial pivoting 时，你得到 $PA = LU$，其中 $P$ 是记录 row swaps 的 permutation matrix。
 
 ### QR decomposition
 
-QR decomposition 将 A 分解为 orthogonal matrix Q 和 upper triangular matrix R：A = QR。
+QR decomposition 将 $A$ 分解为 orthogonal matrix $Q$ 和 upper triangular matrix $R$：$A = QR$。
 
-Orthogonal matrix 具有 Q^T Q = I 的性质。它的 columns 是 orthonormal vectors。乘以 Q 会保持 lengths 和 angles。
+Orthogonal matrix 具有 $Q^T Q = I$ 的性质。它的 columns 是 orthonormal vectors。乘以 $Q$ 会保持 lengths 和 angles。
 
 ```
 A = Q @ R
@@ -175,7 +177,7 @@ To solve Ax = b:
   Back substitute to get x.
 ```
 
-在求解 least-squares problems 时，QR 比 LU 在 numerical stability 上更好。Gram-Schmidt process 逐列构建 Q：
+在求解 least-squares problems 时，QR 比 LU 在 numerical stability 上更好。Gram-Schmidt process 逐列构建 $Q$：
 
 ```
 Given columns a1, a2, ... of A:
@@ -191,11 +193,11 @@ q3 = q3 / ||q3||
 R[i][j] = qi . aj    for i <= j
 ```
 
-每一步都会移除沿所有先前 q vectors 的 component，只留下新的 orthogonal direction。
+每一步都会移除沿所有先前 $q$ vectors 的 component，只留下新的 orthogonal direction。
 
 ### Cholesky decomposition
 
-当 A 是 symmetric（A = A^T）且 positive definite（所有 eigenvalues 都为正）时，你可以将其分解为 A = L L^T，其中 L 是 lower triangular。这就是 Cholesky decomposition。
+当 $A$ 是 symmetric（$A = A^T$）且 positive definite（所有 eigenvalues 都为正）时，你可以将其分解为 $A = L L^T$，其中 $L$ 是 lower triangular。这就是 Cholesky decomposition。
 
 ```
 A = L @ L^T
@@ -212,13 +214,13 @@ Cholesky 比 LU 快两倍，并且只需要一半的存储空间。它只适用�
 - Covariance matrices 是 symmetric positive semi-definite（通过 regularization 可变为 positive definite）。
 - Gaussian processes 中的 kernel matrix 是 symmetric positive definite。
 - Convex function 在 minimum 处的 Hessian 是 symmetric positive definite。
-- A^T A 总是 symmetric positive semi-definite。
+- $A^T A$ 总是 symmetric positive semi-definite。
 
-在 Gaussian processes 中，你用 Cholesky 分解 kernel matrix K，然后求解 K alpha = y 来得到 predictive mean。Cholesky factor 还会给出 marginal likelihood 的 log-determinant：log det(K) = 2 * sum(log(diag(L)))。
+在 Gaussian processes 中，你用 Cholesky 分解 kernel matrix $K$，然后求解 $K \alpha = y$ 来得到 predictive mean。Cholesky factor 还会给出 marginal likelihood 的 log-determinant：$\log \det(K) = 2 \sum \log(\mathop{\mathrm{diag}}(L))$。
 
 ### Least squares：当 Ax = b 没有精确解时
 
-如果 A 是 m x n 且 m > n（equations 多于 unknowns），system 就是 overdetermined。此时没有精确解。你改为最小化 squared error：
+如果 $A$ 是 $m \times n$ 且 $m > n$（equations 多于 unknowns），system 就是 overdetermined。此时没有精确解。你改为最小化 squared error：
 
 ```
 minimize ||Ax - b||^2
@@ -229,11 +231,11 @@ minimize ||Ax - b||^2
 
 Minimizer 满足 normal equations：
 
-```
+```math
 A^T A x = A^T b
 ```
 
-推导：展开 ||Ax - b||^2 = (Ax - b)^T (Ax - b) = x^T A^T A x - 2 x^T A^T b + b^T b。对 x 求 Gradient，并令其为零：2 A^T A x - 2 A^T b = 0。
+推导：展开 $\lVert Ax - b \rVert^2 = (Ax - b)^T (Ax - b) = x^T A^T A x - 2 x^T A^T b + b^T b$。对 $x$ 求 Gradient，并令其为零：$2 A^T A x - 2 A^T b = 0$。
 
 ```
 Original system (overdetermined, 4 equations, 2 unknowns):
@@ -253,35 +255,40 @@ Solve: x = [1.5, 1.7]
 
 ### Normal equations = linear regression
 
-这种联系是精确的。在 linear regression 中，data matrix X 每一行对应一个 sample，每一列对应一个 feature。target vector y 每个 entry 对应一个 sample。weight vector w 满足：
+这种联系是精确的。在 linear regression 中，data matrix $X$ 每一行对应一个 sample，每一列对应一个 feature。target vector $y$ 每个 entry 对应一个 sample。weight vector $w$ 满足：
 
-```
-X^T X w = X^T y
-w = (X^T X)^(-1) X^T y
+```math
+\begin{aligned}
+X^T X w &= X^T y \\
+w &= (X^T X)^{-1} X^T y
+\end{aligned}
 ```
 
 这是 linear regression 的 closed-form solution。每次调用 `sklearn.linear_model.LinearRegression.fit()` 都会计算这个结果（或通过 QR 或 SVD 计算等价结果）。
 
-向 Matrix 添加 regularization term lambda * I，你就得到 ridge regression：
+向 Matrix 添加 regularization term $\lambda I$，你就得到 ridge regression：
 
-```
-(X^T X + lambda * I) w = X^T y
-w = (X^T X + lambda * I)^(-1) X^T y
+```math
+\begin{aligned}
+(X^T X + \lambda I) w &= X^T y \\
+w &= (X^T X + \lambda I)^{-1} X^T y
+\end{aligned}
 ```
 
-Regularization 会让 Matrix 的 conditioning 更好（更容易准确求 inverse），并通过将 weights 向零收缩来防止 overfitting。当 lambda > 0 时，Matrix X^T X + lambda * I 总是 symmetric positive definite，因此可以用 Cholesky 求解。
+Regularization 会让 Matrix 的 conditioning 更好（更容易准确求 inverse），并通过将 weights 向零收缩来防止 overfitting。当 $\lambda > 0$ 时，Matrix $X^T X + \lambda I$ 总是 symmetric positive definite，因此可以用 Cholesky 求解。
 
 ### Pseudoinverse (Moore-Penrose)
 
-Pseudoinverse A+ 将 matrix inversion 推广到 non-square 和 singular matrices。对于任意 Matrix A：
+Pseudoinverse $A^+$ 将 matrix inversion 推广到 non-square 和 singular matrices。对于任意 Matrix $A$：
 
+```math
+\begin{aligned}
+x &= A^+ b \\[4pt]
+\text{其中 } A^+ &= V \Sigma^+ U^T \quad \text{（通过 SVD 计算）}
+\end{aligned}
 ```
-x = A+ b
 
-where A+ = V Sigma+ U^T    (computed via SVD)
-```
-
-Sigma+ 通过对每个非零 singular value 取 reciprocal 并转置结果构成。如果 A = U Sigma V^T，那么 A+ = V Sigma+ U^T。
+$\Sigma^+$ 通过对每个非零 singular value 取 reciprocal 并转置结果构成。如果 $A = U \Sigma V^T$，那么 $A^+ = V \Sigma^+ U^T$。
 
 ```
 A = U Sigma V^T        (SVD)
@@ -294,21 +301,21 @@ A+ = V Sigma+ U^T
 ```
 
 Pseudoinverse 给出 minimum-norm least-squares solution。如果 system 有：
-- 唯一解：A+ b 给出该解。
-- 无解：A+ b 给出 least-squares solution。
-- 无穷多解：A+ b 给出 ||x|| 最小的那个解。
+- 唯一解：$A^+ b$ 给出该解。
+- 无解：$A^+ b$ 给出 least-squares solution。
+- 无穷多解：$A^+ b$ 给出 $\lVert x \rVert$ 最小的那个解。
 
 NumPy 的 `np.linalg.lstsq` 和 `np.linalg.pinv` 内部都使用 SVD。
 
 ### Condition number
 
-Condition number 衡量 solution 对 input 的微小变化有多敏感。对于 Matrix A，condition number 是：
+Condition number 衡量 solution 对 input 的微小变化有多敏感。对于 Matrix $A$，condition number 是：
 
-```
-kappa(A) = ||A|| * ||A^(-1)|| = sigma_max / sigma_min
+```math
+\kappa(A) = \lVert A \rVert \cdot \lVert A^{-1} \rVert = \frac{\sigma_{\max}}{\sigma_{\min}}
 ```
 
-其中 sigma_max 和 sigma_min 分别是最大和最小 singular values。
+其中 $\sigma_{\max}$ 和 $\sigma_{\min}$ 分别是最大和最小 singular values。
 
 ```
 Well-conditioned (kappa ~ 1):        Ill-conditioned (kappa ~ 10^15):
@@ -320,17 +327,17 @@ x 中的小变化                         x 中的巨大变化
 ```
 
 经验法则：
-- kappa < 100：安全，solution 准确。
-- kappa ~ 10^k：你大约会从 floating-point arithmetic 中损失 k 位精度。
-- kappa ~ 10^16（对于 float64）：solution 没有意义。Matrix 实际上是 singular。
+- $\kappa < 100$：安全，solution 准确。
+- $\kappa \approx 10^k$：你大约会从 floating-point arithmetic 中损失 $k$ 位精度。
+- $\kappa \approx 10^{16}$（对于 float64）：solution 没有意义。Matrix 实际上是 singular。
 
-在 ML 中，ill-conditioning 发生在 features 几乎 collinear 时。Regularization（添加 lambda * I）会将 condition number 从 sigma_max / sigma_min 改善为 (sigma_max + lambda) / (sigma_min + lambda)。
+在 ML 中，ill-conditioning 发生在 features 几乎 collinear 时。Regularization（添加 $\lambda I$）会将 condition number 从 $\sigma_{\max} / \sigma_{\min}$ 改善为 $(\sigma_{\max} + \lambda) / (\sigma_{\min} + \lambda)$。
 
 ### Iterative methods：conjugate gradient
 
 对于非常大的 sparse systems（数百万 unknowns），LU 或 Cholesky 这样的 direct methods 成本过高。Iterative methods 会通过多次迭代改进一个 guess 来近似 solution。
 
-Conjugate gradient (CG) 在 A 是 symmetric positive definite 时求解 Ax = b。它在 exact arithmetic 中最多 n 次迭代找到精确解，但如果 A 的 eigenvalues 聚集，通常会更快收敛。
+Conjugate gradient (CG) 在 $A$ 是 symmetric positive definite 时求解 $Ax = b$。它在 exact arithmetic 中最多 $n$ 次迭代找到精确解，但如果 $A$ 的 eigenvalues 聚集，通常会更快收敛。
 
 ```
 Algorithm sketch:
@@ -359,29 +366,29 @@ Convergence rate 取决于 condition number。Conditioning 更好的 systems 收
 
 | Method | Requirements | Cost | Use case |
 |--------|-------------|------|----------|
-| Gaussian elimination | Square, nonsingular A | O(n^3) | 对 square system 的一次性求解 |
-| LU decomposition | Square, nonsingular A | O(n^3) factor + O(n^2) solve | 使用相同 A 的多次求解 |
-| QR decomposition | Any A (m >= n) | O(mn^2) | Least squares，numerically stable |
-| Cholesky | Symmetric positive definite A | O(n^3/3) | Covariance matrices，Gaussian processes，ridge regression |
-| Normal equations | Overdetermined (m > n) | O(mn^2 + n^3) | Linear regression（小 n） |
-| SVD / pseudoinverse | Any A | O(mn^2) | Rank-deficient systems，minimum-norm solutions |
-| Conjugate gradient | Symmetric positive definite, sparse A | O(n * k * nnz) | Large sparse systems，k = iterations |
+| Gaussian elimination | Square, nonsingular $A$ | $O(n^3)$ | 对 square system 的一次性求解 |
+| LU decomposition | Square, nonsingular $A$ | $O(n^3)$ factor + $O(n^2)$ solve | 使用相同 $A$ 的多次求解 |
+| QR decomposition | Any $A$ ($m \ge n$) | $O(mn^2)$ | Least squares，numerically stable |
+| Cholesky | Symmetric positive definite $A$ | $O(n^3/3)$ | Covariance matrices，Gaussian processes，ridge regression |
+| Normal equations | Overdetermined ($m > n$) | $O(mn^2 + n^3)$ | Linear regression（小 $n$） |
+| SVD / pseudoinverse | Any $A$ | $O(mn^2)$ | Rank-deficient systems，minimum-norm solutions |
+| Conjugate gradient | Symmetric positive definite, sparse $A$ | $O(n \cdot k \cdot \text{nnz})$ | Large sparse systems，$k$ = iterations |
 
 ### Connection to ML
 
 本课中的每种方法都会出现在生产级 ML 中：
 
-**Linear regression.** Closed-form solution 求解 normal equations X^T X w = X^T y。这可以通过 Cholesky（如果 n 很小）、QR（如果 numerical stability 很重要）或 SVD（如果 Matrix 可能 rank-deficient）完成。
+**Linear regression.** Closed-form solution 求解 normal equations $X^T X w = X^T y$。这可以通过 Cholesky（如果 $n$ 很小）、QR（如果 numerical stability 很重要）或 SVD（如果 Matrix 可能 rank-deficient）完成。
 
-**Ridge regression.** 向 X^T X 添加 lambda * I。Regularized system (X^T X + lambda * I) w = X^T y 总是可以通过 Cholesky 求解，因为当 lambda > 0 时，X^T X + lambda * I 是 symmetric positive definite。
+**Ridge regression.** 向 $X^T X$ 添加 $\lambda I$。Regularized system $(X^T X + \lambda I) w = X^T y$ 总是可以通过 Cholesky 求解，因为当 $\lambda > 0$ 时，$X^T X + \lambda I$ 是 symmetric positive definite。
 
-**Gaussian processes.** Predictive mean 需要求解 K alpha = y，其中 K 是 kernel matrix。对 K 做 Cholesky factorization 是标准方法。Log marginal likelihood 使用 log det(K) = 2 sum(log(diag(L)))。
+**Gaussian processes.** Predictive mean 需要求解 $K \alpha = y$，其中 $K$ 是 kernel matrix。对 $K$ 做 Cholesky factorization 是标准方法。Log marginal likelihood 使用 $\log \det(K) = 2 \sum \log(\mathop{\mathrm{diag}}(L))$。
 
 **Neural network initialization.** Orthogonal initialization 使用 QR decomposition 创建 columns 为 orthonormal 的 weight matrices。这可以防止 deep networks 中的 signal collapse。
 
 **Preconditioning.** Large-scale optimizers 使用 incomplete Cholesky 或 incomplete LU 作为 conjugate gradient solvers 的 preconditioners。
 
-**Feature engineering.** X^T X 的 condition number 告诉你 features 是否 collinear。如果 kappa 很大，删除 features 或添加 regularization。
+**Feature engineering.** $X^T X$ 的 condition number 告诉你 features 是否 collinear。如果 $\kappa$ 很大，删除 features 或添加 regularization。
 
 
 ```figure
@@ -539,35 +546,47 @@ print(f"Ridge weights (sklearn): {ridge_sk.coef_}")
 ## 练习
 1. 使用你的 Gaussian elimination、你的 LU solver 和 `np.linalg.solve` 求解 system `[[1,2,3],[4,5,6],[7,8,10]] x = [6, 15, 27]`。验证三者在 floating-point tolerance 内给出相同答案。
 
-2. 生成一个 50x5 random matrix X 和 target y = X @ w_true + noise。分别使用 normal equations、QR（通过 `np.linalg.qr`）、SVD（通过 `np.linalg.svd`）和 `np.linalg.lstsq` 求解 w。比较四个 solutions。测量 X^T X 的 condition number，并解释它如何影响你信任哪种方法。
+2. 生成一个 50x5 random matrix X 和 target y = X @ w_true + noise。分别使用 normal equations、QR（通过 `np.linalg.qr`）、SVD（通过 `np.linalg.svd`）和 `np.linalg.lstsq` 求解 w。比较四个 solutions。测量 $X^T X$ 的 condition number，并解释它如何影响你信任哪种方法。
 
-3. 通过让两列几乎相同来创建一个 nearly singular matrix（例如，column 2 = column 1 + 1e-10 * noise）。计算它的 condition number。分别在有 regularization 和无 regularization 的情况下求解 Ax = b（添加 0.01 * I）。比较 solutions 和 residuals。解释为什么 regularization 有帮助。
+3. 通过让两列几乎相同来创建一个 nearly singular matrix（例如，column 2 = column 1 + 1e-10 * noise）。计算它的 condition number。分别在有 regularization 和无 regularization 的情况下求解 $Ax = b$（添加 $0.01 I$）。比较 solutions 和 residuals。解释为什么 regularization 有帮助。
 
-4. 为一个 100x100 random symmetric positive definite matrix 实现 conjugate gradient algorithm。统计它收敛到 tolerance 1e-8 需要多少次 iterations。与 n iterations 的理论最大值进行比较。
+4. 为一个 100x100 random symmetric positive definite matrix 实现 conjugate gradient algorithm。统计它收敛到 tolerance 1e-8 需要多少次 iterations。与 $n$ iterations 的理论最大值进行比较。
 
 5. 在大小为 10、50、200、500 的 symmetric positive definite matrices 上，对你的 Cholesky solver、你的 LU solver 和 `np.linalg.solve` 计时。绘制结果。验证 Cholesky 大约比 LU 快 2 倍。
+
+### 提示
+
+**练习 1。** 调用 `gaussian_elimination(A, b)`，再调用 `lu_decompose(A)` 并接着调用 `lu_solve(P, L, U, b)`，最后调用 `np.linalg.solve(A, b)`。使用 `np.allclose(A @ x, b)` 检查每个解，并用 `np.allclose` 比较这三个解。
+
+**练习 2。** 对 normal equations 使用 `least_squares_normal`，其余方法使用对应的三个 NumPy 函数。四个解都应接近 `w_true`。比较 `condition_number(X.T @ X)` 和 `condition_number(X)`：前者是后者的平方，因此 normal equations 损失的精度最多。
+
+**练习 3。** 预期 condition number 会超过 $10^{9}$。分别使用 `np.linalg.solve` 和 `ridge_regression(A, b, 0.01)` 求解，再比较各自的 `np.linalg.norm(x)` 和 residual norm。两个 residual 都可能很小，但未经 regularization 的解通常包含很大的分量。
+
+**练习 4。** 使用 `B @ B.T + n * np.eye(n)` 构造 symmetric positive definite matrix，保证每个 eigenvalue 都为正。在你复制的 `conjugate_gradient` 的循环中加入计数器，然后检查最终 residual norm 是否小于 1e-8，迭代次数是否不超过 100。
+
+**练习 5。** 三种 solver 使用相同的 `B @ B.T + n * np.eye(n)` 矩阵，并用 `time.perf_counter` 测量每次求解的耗时，取多次运行中的最佳结果。Cholesky 所需的算术运算量约为 LU 的一半，因此在较大的矩阵尺寸下，这个比例最明显。
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Linear system | "Solve for x" | 一组 linear equations Ax = b。找到 x 意味着找到在 transformation A 下产生 output b 的 input。 |
-| Gaussian elimination | "Row reduce" | 使用 row operations 系统性地将 diagonal 下方的 entries 置零，产生可通过 back substitution 求解的 upper triangular system。O(n^3)。 |
-| Partial pivoting | "Swap rows for stability" | 在 column k 中进行 elimination 前，将该 column 中 absolute value 最大的行交换到 pivot 位置。防止除以很小的数。 |
-| LU decomposition | "Factor into triangles" | 写成 A = LU，其中 L 是 lower triangular（存储 multipliers），U 是 upper triangular（eliminated matrix）。将 O(n^3) 成本摊销到多次求解中。 |
-| QR decomposition | "Orthogonal factorization" | 写成 A = QR，其中 Q 的 columns 是 orthonormal，R 是 upper triangular。对于 least squares，比 LU 更稳定。 |
-| Cholesky decomposition | "Square root of a matrix" | 对 symmetric positive definite A，写成 A = LL^T。成本是 LU 的一半。用于 covariance matrices、kernel matrices 和 ridge regression。 |
-| Least squares | "Best fit when exact is impossible" | 当 system overdetermined（equations 多于 unknowns）时，最小化 squared residuals 的总和 ||Ax - b||^2。 |
-| Normal equations | "The calculus shortcut" | A^T A x = A^T b。将 ||Ax - b||^2 的 Gradient 设为零。这就是 linear regression 的 closed-form solution。 |
-| Pseudoinverse | "Inversion for non-square matrices" | A+ = V Sigma+ U^T via SVD。对于任意 Matrix，无论 square 或 rectangular、singular 与否，给出 minimum-norm least-squares solution。 |
-| Condition number | "How trustworthy is this answer" | kappa = sigma_max / sigma_min。衡量对 input perturbations 的敏感性。大约损失 log10(kappa) 位精度。 |
-| Ridge regression | "Regularized least squares" | 求解 (X^T X + lambda I) w = X^T y。添加 lambda I 改善 conditioning，并将 weights 向零收缩。防止 overfitting。 |
-| Conjugate gradient | "Iterative Ax=b for big matrices" | 用于 symmetric positive definite systems 的 iterative solver。最多 n 步收敛。适合 factorization 成本过高的大型 sparse systems。 |
-| Overdetermined system | "More data than parameters" | 在 m-by-n system 中 m > n。不存在精确解。Least squares 找到最佳近似。这就是每个 regression problem。 |
-| Back substitution | "Solve from the bottom up" | 给定 upper triangular system，先求解最后一个 equation，然后向后 substitute。O(n^2)。 |
-| Forward substitution | "Solve from the top down" | 给定 lower triangular system，先求解第一个 equation，然后向前 substitute。O(n^2)。用于 LU solves 中的 L step。 |
+| Linear system | "Solve for x" | 一组 linear equations $Ax = b$。找到 $x$ 意味着找到在 transformation $A$ 下产生 output $b$ 的 input。 |
+| Gaussian elimination | "Row reduce" | 使用 row operations 系统性地将 diagonal 下方的 entries 置零，产生可通过 back substitution 求解的 upper triangular system。$O(n^3)$。 |
+| Partial pivoting | "Swap rows for stability" | 在 column $k$ 中进行 elimination 前，将该 column 中 absolute value 最大的行交换到 pivot 位置。防止除以很小的数。 |
+| LU decomposition | "Factor into triangles" | 写成 $A = LU$，其中 $L$ 是 lower triangular（存储 multipliers），$U$ 是 upper triangular（eliminated matrix）。将 $O(n^3)$ 成本摊销到多次求解中。 |
+| QR decomposition | "Orthogonal factorization" | 写成 $A = QR$，其中 $Q$ 的 columns 是 orthonormal，$R$ 是 upper triangular。对于 least squares，比 LU 更稳定。 |
+| Cholesky decomposition | "Square root of a matrix" | 对 symmetric positive definite $A$，写成 $A = LL^T$。成本是 LU 的一半。用于 covariance matrices、kernel matrices 和 ridge regression。 |
+| Least squares | "Best fit when exact is impossible" | 当 system overdetermined（equations 多于 unknowns）时，最小化 squared residuals 的总和 $\lVert Ax - b \rVert^2$。 |
+| Normal equations | "The calculus shortcut" | $A^T A x = A^T b$。将 $\lVert Ax - b \rVert^2$ 的 Gradient 设为零。这就是 linear regression 的 closed-form solution。 |
+| Pseudoinverse | "Inversion for non-square matrices" | $A^+ = V \Sigma^+ U^T$ via SVD。对于任意 Matrix，无论 square 或 rectangular、singular 与否，给出 minimum-norm least-squares solution。 |
+| Condition number | "How trustworthy is this answer" | $\kappa = \sigma_{\max} / \sigma_{\min}$。衡量对 input perturbations 的敏感性。大约损失 $\log_{10}(\kappa)$ 位精度。 |
+| Ridge regression | "Regularized least squares" | 求解 $(X^T X + \lambda I) w = X^T y$。添加 $\lambda I$ 改善 conditioning，并将 weights 向零收缩。防止 overfitting。 |
+| Conjugate gradient | "Iterative Ax=b for big matrices" | 用于 symmetric positive definite systems 的 iterative solver。最多 $n$ 步收敛。适合 factorization 成本过高的大型 sparse systems。 |
+| Overdetermined system | "More data than parameters" | 在 $m\text{-by-}n$ system 中 $m > n$。不存在精确解。Least squares 找到最佳近似。这就是每个 regression problem。 |
+| Back substitution | "Solve from the bottom up" | 给定 upper triangular system，先求解最后一个 equation，然后向后 substitute。$O(n^2)$。 |
+| Forward substitution | "Solve from the top down" | 给定 lower triangular system，先求解第一个 equation，然后向前 substitute。$O(n^2)$。用于 LU solves 中的 L step。 |
 
 ## 延伸阅读
 - [MIT 18.06: Linear Algebra](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) (Gilbert Strang) -- 关于 linear systems 和 matrix factorizations 的权威课程
 - [Numerical Linear Algebra](https://people.maths.ox.ac.uk/trefethen/text.html) (Trefethen & Bau) -- 理解 numerical stability、conditioning 以及 algorithms 为什么失败的标准参考
 - [Matrix Computations](https://www.cs.cornell.edu/cv/GolubVanLoan4/golubandvanloan.htm) (Golub & Van Loan) -- 涵盖各类 matrix algorithms 的百科式参考
-- [3Blue1Brown: Inverse Matrices](https://www.3blue1brown.com/lessons/inverse-matrices) -- 对求解 Ax = b 几何意义的可视化直觉
+- [3Blue1Brown: Inverse Matrices](https://www.3blue1brown.com/lessons/inverse-matrices) -- 对求解 $Ax = b$ 几何意义的可视化直觉
