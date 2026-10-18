@@ -47,8 +47,8 @@ flowchart LR
 
 لا تتراجع مباشرة`(x, y)`و لكن لكل نقطة رئيسية`H x W`خريطة الحرارة، في وسط الموقع الحقيقي هناك نقطة غوسية
 
-```
-target[k, y, x] = exp(-((x - cx_k)^2 + (y - cy_k)^2) / (2 sigma^2))
+```math
+\text{target}[k, y, x] = \exp\left(-\frac{(x - \mathit{cx}_k)^2 + (y - \mathit{cy}_k)^2}{2 \sigma^2}\right)
 ```
 
 في الاستنتاج، كل خريطة حرارة argmax هو المكان المفتاح للتنبؤ.

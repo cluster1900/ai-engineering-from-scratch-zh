@@ -74,11 +74,13 @@ At each grid cell, every anchor emits (tx, ty, tw, th, obj, c_1, ..., c_C).
 
 أصلي`tx, ty, tw, th`ليست إحداثيات مربع؛ إنها تحتاج إلى تحويل في رسم قبل التركيب أهداف التراجعة:
 
-```
-centre x  = (sigmoid(tx) + cell_x) * stride
-centre y  = (sigmoid(ty) + cell_y) * stride
-width     = anchor_w * exp(tw)
-height    = anchor_h * exp(th)
+```math
+\begin{aligned}
+\text{中心 } x &= (\sigma(t_x) + \text{cell}_x) \cdot \text{stride} \\
+\text{中心 } y &= (\sigma(t_y) + \text{cell}_y) \cdot \text{stride} \\
+\text{宽度} &= \text{anchor}_w \cdot \exp(t_w) \\
+\text{高度} &= \text{anchor}_h \cdot \exp(t_h)
+\end{aligned}
 ```
 
 `sigmoid`ضع الحد من تحرك المركز داخل الخلية`exp`让宽可以从 ancora自由缩缩而不会发生符号翻转.`stride`ضع إحداثيات الشبكة  انقلب إلى البيكسلات ‬ هذا التشريح ‬ الخطوات منذ v2 ‬ منذ أن جاء في كل إصدار من YOLO ‬ ‫كل شيء هو نفسه‬‬
@@ -87,11 +89,11 @@ height    = anchor_h * exp(th)
 
 الكشف وسط قياس مربعين مقياس عام للشبهة:
 
-```
-IoU(A, B) = area(A intersect B) / area(A union B)
+```math
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
-يُحدد يو = 1 يعبر عن نفس الشيء تماماً؛ يو = 0 يعبر عن عدم التكاثب. التنبؤ و مربع الحقيقة الأرضية يُقرر يو أن التنبؤ ما إذا كان محاسبة إيجابية حقيقية.
+$\mathrm{IoU} = 1$تمثل نفس الشيء تماماً$\mathrm{IoU} = 0$يعبر عن عدم التداخل: التنبؤ و صندوق الحقيقة القاعدية$\mathrm{IoU} \ge 0.5$(。 بين التنبؤات  IoU هو NMS استخدام لتقديم الوزن على أساس ‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
 
 ### القمع غير القصوى
 
@@ -113,11 +115,13 @@ NMS(boxes, scores, iou_threshold):
 
 خسارة يوولو هي ثلاثة خسائر ذات الوزن
 
-```
-L = lambda_coord * L_box(pred, target, where obj=1)
-  + lambda_obj   * L_obj(pred, 1,     where obj=1)
-  + lambda_noobj * L_obj(pred, 0,     where obj=0)
-  + lambda_cls   * L_cls(pred, target, where obj=1)
+```math
+\begin{aligned}
+L = {} & \lambda_{\text{coord}} \cdot L_{\text{box}}(\text{pred}, \text{target}, \text{where obj}=1) \\
++ {} & \lambda_{\text{obj}} \cdot L_{\text{obj}}(\text{pred}, 1, \text{where obj}=1) \\
++ {} & \lambda_{\text{noobj}} \cdot L_{\text{obj}}(\text{pred}, 0, \text{where obj}=0) \\
++ {} & \lambda_{\text{cls}} \cdot L_{\text{cls}}(\text{pred}, \text{target}, \text{where obj}=1)
+\end{aligned}
 ```
 
 只有 خلايا التي تحتوي على جسم 才会贡献 مربع-رجوع و خسائر التصنيف──不含物体的细胞 只贡献对象性损失(教模型保持沉默)──`lambda_noobj`عادةً يكون أقل من 0.5، لأن معظم الخلايا كانت فارغة، وإلا ستؤدي إلى الخسارة الإجمالية.

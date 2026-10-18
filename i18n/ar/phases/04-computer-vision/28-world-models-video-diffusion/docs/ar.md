@@ -57,7 +57,7 @@ Resulting tokens:      (T / P_t) * (H / P_h) * (W / P_w) tokens
 
 التشفير الموضعي هو 3D : على كل `(t, h, w)`坐标使用 دوران أو تعلم إدراجها.
 
-- **Full joint** جميع الرموز الحاضرة إلى جميع الرموز.
+- **Full joint**جميع الرموز تتوفر إلى جميع الرموز$N$رموز$O(N^2)$◊ ل长视频来说 价格过高――
 - **Divided** 交替执行 temporal attention  نفس الموقف الفضائي 跨时间:`(H*W) * T^2`) و الاهتمام الفضائي ((( نفس الوقت`T * (H*W)^2`(■■ TimeSformer و معظم المشاهدين الفيديو يستخدمون هذا النوع من الوسائط
 - **Window** في `(t, h, w)`中使用局部窗户──Video Swin 使用这种方式──
 
@@ -210,7 +210,7 @@ class DividedAttentionBlock(nn.Module):
         return xs
 ```
 
-الاهتمام بالوقت في كل موقف فضائي 内跨时间 attend;; space attention 在每一内跨位置 attend;; باستخدام اثنين O(T^2 + (HW) ^2) 操作,بدل واحد O((THW) ^2) 操作;;
+الاهتمام بالوقت في كل موقع فضائي داخل الاهتمام بالزمان; الاهتمام بالمكان في كل موقع عبر الاهتمام.$O(T^2 + (HW)^2)$操作,替代一个 $O((THW)^2)$操作── هذا هو قلب TimeSformer و كل فيديو حديث DiT──
 
 ### الخطوة 4: 组合一个小视频 DiT
 
@@ -279,7 +279,7 @@ print(f"output {tuple(out.shape)}")
 | World model | “Learned simulator” | 一个在给定 state 和 action 时预测未来 observations 的模型 |
 | Video DiT | “Spacetime transformer” | 使用 3D patchification 和 divided attention 的 Diffusion transformer |
 | Latent action | “Inferred control” | 从帧对中推断出的离散或连续 action latent；用于条件化 next-frame generation |
-| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 O(N^2) 保持可控 |
+| Divided attention | “Time then space” | 每个 block 中的两个 attention 操作：先跨时间，再跨空间，用来让 $O(N^2)$ 保持可控 |
 | Object permanence | “Things stay real” | video models 必须学会的场景属性；在食物、玻璃器皿上的经典失败模式 |
 | FVD | “Fréchet Video Distance” | FID 的视频等价物；主要 visual quality metric |
 | Inverse dynamics model | “Observations to actions” | 给定 `(state, next state)`，输出连接二者的 action；闭合 robotics loop |

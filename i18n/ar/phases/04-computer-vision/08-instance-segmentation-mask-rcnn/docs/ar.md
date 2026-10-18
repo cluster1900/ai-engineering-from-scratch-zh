@@ -83,8 +83,8 @@ RoIAlign:
 
 " ماسك " " آر سي إن " لديها أربع فئات من الخسائر "
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`،`L_rpn_box` موضوعية مقترحات RPN + مربع رجعة

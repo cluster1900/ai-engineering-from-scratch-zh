@@ -84,10 +84,10 @@ flowchart LR
 
 ### شبكة البيكسل العليا من التقاطع
 
-بالنسبة للكتابة المحتوية على فئات C، فإن النموذج الذي يتم إنتاجه هو`(N, C, H, W)`الهدف هو`(N, H, W)`، يحتوي على أرقام تعريف الفئة الكاملة.
+لـ "$C$个类 的语义分类,模型输出是 `(N, C, H, W)`الهدف هو`(N, H, W)`، يحتوي على أرقام تعريف الفئة الكاملة.
 
-```
-Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]] )
+```math
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 بيتورش 中的 `F.cross_entropy`أصل الحياة معالجة هذا الشكل.
@@ -98,17 +98,19 @@ Loss = mean over (n, h, w) of -log( softmax(logits[n, :, h, w])[target[n, h, w]]
 
 خسارة الجرعة من خلال تحسين الموقع المحدد بين القناع الحقيقي والقناع
 
-```
-Dice(p, y) = 2 * sum(p * y) / (sum(p) + sum(y) + epsilon)
-Dice_loss = 1 - Dice
+```math
+\begin{aligned}
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\text{Dice}_{\text{loss}} &= 1 - \text{Dice}
+\end{aligned}
 ```
 
 من بينهم`p`هو خريطة احتمالية sigmoid/softmax من فئة`y`هو قناع الحقيقة القاعدية الثنائية. فقط عندما تتداخل.
 
 实践中, استخدام **combined loss**:
 
-```
-L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
+```math
+L = L_{\text{cross\_entropy}} + \lambda \cdot L_{\text{dice}} \qquad (\lambda \approx 1)
 ```
 
 التشابك المتقاطع في التدريب  ابتداء توفير مستقر دراجيت؛ هذا التدريب  بعد المرحلة التركيز على شكل قناع تطابق حقيقي 上―― هذا المجموعة هي المفهوم الممثل للتصوير الطبي، في أي مجموعة بيانات غير متوازنة من الفئة 上都很难被超越──
@@ -117,7 +119,7 @@ L = L_cross_entropy + lambda * L_dice       (lambda ~ 1)
 
 - **Pixel accuracy** 预测正确的像素 百分比──计算便宜──与分类中的精度一样,在不平衡的数据上会失效──
 - **IoU per class** تقاطع كل قناع فئة على الاتحاد؛ عبر الفئات 求平均 = mIoU。
-- **Dice (F1 on pixels)** 类似 IoU؛`Dice = 2 * IoU / (1 + IoU)`التصوير الطبي أفضل من القيادة
+- **Dice (F1 on pixels)** 类似 IoU؛$\text{Dice} = 2 \cdot \text{IoU} / (1 + \text{IoU})$التصوير الطبي أفضل من القيادة
 - **Boundary F1**  قياس الحدود المتوقعة ومدى قربها من الحدود الأرضية والحقيقة، حتى لو كان هناك تحركات صغيرة سوف يتم معاقبةها.
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              

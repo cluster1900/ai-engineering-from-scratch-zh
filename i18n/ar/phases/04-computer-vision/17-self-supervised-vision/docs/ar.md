@@ -178,7 +178,7 @@ print(f"InfoNCE with identical pairs:  {loss_same:.3f}")
 print(f"InfoNCE with random pairs:     {loss_random:.3f}")
 ```
 
-相同對 应得到较低损失(大批 和低温度下接近 0) ・・・随机对 应得到 log(2N-1) = ~log(31) = ~3.4,针对16 زوجات
+نفس الأزواج  ينبغي أن تحصل على خسارة أقل $\log(2N-1) \approx \log(31) \approx 3.4$، لـ 16 زوج من اللحوم
 
 ### 步骤 4: تقشير في نمط MAE
 

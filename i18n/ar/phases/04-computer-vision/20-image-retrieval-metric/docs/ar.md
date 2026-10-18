@@ -51,8 +51,8 @@ flowchart LR
 
 ### خسارة ثلاثية رسميا
 
-```
-L = max(0, ||f(a) - f(p)||^2 - ||f(a) - f(n)||^2 + margin)
+```math
+L = \max\left(0, \lVert f(a) - f(p) \rVert^2 - \lVert f(a) - f(n) \rVert^2 + \text{margin}\right)
 ```
 
 ضع المُركب`a`拉近 إيجابية `p`, أجعله سلبي`n`,并使用 `margin`确保间隔──三图结构可以泛化到任何相似度排序──
@@ -228,7 +228,7 @@ for step in range(200):
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Metric learning | "Shape the space" | 训练一个 encoder，使其输出空间中的距离反映目标相似度 |
-| Triplet loss | "Pull and push" | L = max(0, d(a, p) - d(a, n) + margin)；经典的 metric-learning Loss |
+| Triplet loss | "Pull and push" | $L = \max(0, d(a, p) - d(a, n) + \text{margin})$；经典的 metric-learning Loss |
 | Semi-hard mining | "Useful negatives" | 比 positive 更远但仍在 margin 内的 negatives；经验上信息量最大 |
 | Proxy-based loss | "Class prototypes" | 每个 class 一个 learned proxy；对 similarity-to-proxies 做 cross-entropy；无需 pair mining |
 | Recall@K | "Top-K hit rate" | top K 中至少有一个正确结果的查询比例 |

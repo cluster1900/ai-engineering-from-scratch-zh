@@ -42,7 +42,7 @@ flowchart LR
 
 ###  هدف
 
-给定一个包含 N 个 (صورة، عنوان) أزواج من المجموعة، بنية مصفوفة شبيهة NxN── تدريب اثنين من المرموزات، جعل المقطعيات (((أزواج مطابقة) مع شبيهة عالية، والخارج المقاطع ((غير مطابقة) مع شبيهة منخفضة──
+إعطاء واحد يتضمن$N$个 (صورة, عنوان) أزواج $N \times N$المصفوفة المماثلة.
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ loss = (loss_i2t + loss_t2i) / 2
 
 SigLIP ((Zhai et al., 2023) باستخدام sigmoid لكل زوج بدل softmax:
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 فقدان لكل زوج تحويل القياسية المستوى المشتركة المطلوبة من CLIP  SigLIP في الحجم الصغير من الحزم  تدريب أفضل، و تتناسب أو تتجاوز CLIP 

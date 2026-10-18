@@ -61,12 +61,13 @@ flowchart LR
 
  في الموقف العالمي `mu`、 لديها تغطية ثلاثية الأبعاد `Sigma`3D Gaussian، سوف تنظر إلى وضع الشاشة`mu'`、 لديها تغطية ثنائية الأبعاد `Sigma'`من غوسيان 2D:
 
-```
-mu' = project(mu)
-Sigma' = J W Sigma W^T J^T          (2 x 2)
-
-W = viewing transform (rotation + translation of camera)
-J = Jacobian of the perspective projection at mu'
+```math
+\begin{aligned}
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
+\Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
+W &= \text{观察变换（相机的旋转与平移）} \\
+J &= \text{透视投影的 Jacobian（雅可比矩阵），计算位置为 } \mu'
+\end{aligned}
 ```
 
 بصمة غوسيان الثانية الأبعاد هي كيسة،`Sigma'`الجهاز المتحكم في الجهاز نفسه. كل بكسل داخل هذا التمثال يتلقى مساهمة غوسيان هذه.`exp(-0.5 * (p - mu')^T Sigma'^-1 (p - mu'))`.
@@ -75,12 +76,13 @@ J = Jacobian of the perspective projection at mu'
 
 بالنسبة لبرمجة واحدة، غاوسيون غاوسيونها سوف يقومون بتحديد التوجه التاخذي 排序((أو等价地، باستخدام عكس التوجه المادية حسب التوجه التاخذي 排序)
 
-```
-C_pixel = sum_i alpha_i * T_i * c_i
-
-T_i = prod_{j < i} (1 - alpha_j)       transmittance up to i
-alpha_i = opacity_i * exp(-0.5 * d^T Sigma'^-1 d)   local contribution
-c_i = eval_SH(SH_i, view_direction)    view-dependent colour
+```math
+\begin{aligned}
+C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
+T_i &= \prod_{j < i} (1 - \alpha_j) && \text{到达此处的透射率，位置为 } i \\
+\alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{局部贡献} \\
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{与视角相关的颜色}
+\end{aligned}
 ```
 
 هذا مع**NeRF 的 volumetric render 是同一个方程**، إلا أن هنا في مجموعة من غوسيانات نادرة واضحة محاسبة ، وليس في عينات كثيفة فوق الأشعة محاسبة.
@@ -97,7 +99,7 @@ c_i = eval_SH(SH_i, view_direction)    view-dependent colour
 - **Split**: عندما يكون غوسيان كبير على نطاق واسع 很高时, سوف تفكيكه إلى غوسيان أصغر .
 - **Prune**: حذف التضليل 低于值的高西ans──它们没有贡献──
 
-التكثيف كل مرة N مرة التكرار 运行一次──场景 عادة ما يكون من حوالي 100k 个初始高西ans(من خلال نقاط SfM初始化) النمو إلى نهاية التدريب 1-5M──
+التثبيت$N$التكرار التالي 运行一次──场景 عادة ما يكون من حوالي 100k 个初始高西人(من نقاط SfM初始化) النمو إلى نهاية التدريب 1-5M──
 
 ### 用一段话 فهم الهارمونيكات الكرة
 
