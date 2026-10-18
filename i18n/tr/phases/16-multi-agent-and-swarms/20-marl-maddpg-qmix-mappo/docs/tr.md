@@ -44,8 +44,8 @@ Neden CTDE kullanıyoruz: Eğitim sırasında, biz herkesin eylemini biliyoruz; 
 
 僅適用於協同組合──Global reward is 之和:
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 Tek kelimelik 保证 `argmax_a Q_tot`Her bir ajanın üzerinden bağımsız seçim yapabilirim.`argmax_{a_i} Q_i`Bu senin ihtiyacın olan şey.**decentralized execution property**❖ Eğitim sırasında, her ajanın karışımı ağından`Q_tot`- Evet.

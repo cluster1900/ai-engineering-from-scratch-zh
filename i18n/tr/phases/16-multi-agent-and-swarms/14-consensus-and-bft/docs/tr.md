@@ -142,7 +142,7 @@ Hangi konsensüs mekanizması yayınlanmadan önce:
 | Core/Edge | “Hierarchical BFT” | WBFT 拆分：小规模 Core 先 consensus，Edge nodes 跟随。限制 latency。 |
 
 ## 延伸阅读
-- [Castro & Liskov — Practical Byzantine Fault Tolerance (OSDI 1999)](https://pmg.csail.mit.edu/papers/osdi99.pdf) 基础
+- [Castro & Liskov — Practical Byzantine Fault Tolerance (OSDI 1999)](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance) 基础
 - [CP-WBFT — Confidence-Probe Weighted BFT](https://arxiv.org/abs/2511.10400) 按信任 投票 ağırlığı yapılması
 - [DecentLLMs — leaderless multi-agent consensus](https://arxiv.org/abs/2507.14928) Geometri-medyen birleştirme
 - [WBFT — Weighted BFT with Hierarchical Structure Clustering](https://arxiv.org/abs/2505.05103) Sınırlı gecikme için Core/Edge bölümü

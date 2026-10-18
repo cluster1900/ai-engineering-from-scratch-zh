@@ -59,8 +59,8 @@ Bu LLM sistemleri için çok önemlidir: görevleri tamamlamak için birçok far
 
 DID'in itibar puanını belirle:
 
-```
-rep(i, t+1) = alpha * rep(i, t) + (1 - alpha) * contribution_quality(i, t)
+```math
+\text{rep}(i, t+1) = \alpha \cdot \text{rep}(i, t) + (1 - \alpha) \cdot \text{contribution\_quality}(i, t)
 ```
 
 Bu da bir çöküş faktörü .`alpha`接近 1―İtiraf:

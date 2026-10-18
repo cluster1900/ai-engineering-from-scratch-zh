@@ -118,7 +118,7 @@ python3 code/main.py
 
 - **Memory 就是数据库。**Bu, bir önceki modelin en iyi bir şekilde kullanıldığı bir sistemdir.
 - **记录 retrieval trace。**Her eylem için, kayıtlar onun en üst düzey anıları için çalışır.
-- **为每个 agent 预算 tokens。**Her bir tick 中 Her bir ajanın geri alınması + yansıması + planı O(k) LLM çağrıları;;
+- **为每个 agent 预算 tokens。**Her bir tikte , her bir ajanın çekimi + refleks + planı$O(k)$LLM çağrıları. N ajanları. T tikleri.
 - **周期性 compact memory。**Özetle- ve kesim 低重要性 条目。Estelik tasarruf politikası ayrıntı değil, tasarım kararıdır。
 - **显式检测空间 / 社会规范违规。**Bu yapı onları öğrenmeyecek.
 
