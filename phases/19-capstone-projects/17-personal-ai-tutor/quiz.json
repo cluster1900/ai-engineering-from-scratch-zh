@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "当学习者直接索要答案时，Socratic tutor policy 会怎么做？",
       "options": [
-        "提出一个引导性问题，搭建支架帮助学习者走向答案",
         "记录请求然后保持沉默",
         "立即给出答案并继续推进",
-        "切换到另一个概念节点"
+        "切换到另一个概念节点",
+        "提出一个引导性问题，搭建支架帮助学习者走向答案"
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": ""
     },
     {
@@ -19,9 +19,9 @@
       "question": "curriculum graph 编码了哪种结构？",
       "options": [
         "一个带有先修边的概念有向图，并关联到 OER 内容",
+        "仅包含最近学习过的节点",
         "对主题进行随机打乱",
-        "一组互不相关概念的扁平列表",
-        "仅包含最近学习过的节点"
+        "一组互不相关概念的扁平列表"
       ],
       "correct": 0,
       "explanation": ""
@@ -31,11 +31,11 @@
       "question": "learner model 在每次交互后会更新什么？",
       "options": [
         "基础 LLM 的权重",
-        "COPPA retention policy",
         "curriculum graph schema",
-        "通过 Bayesian knowledge tracing 或类似变体更新每个概念的掌握概率"
+        "通过 Bayesian knowledge tracing 或类似变体更新每个概念的掌握概率",
+        "COPPA retention policy"
       ],
-      "correct": 3,
+      "correct": 2,
       "explanation": ""
     },
     {
@@ -54,12 +54,12 @@
       "stage": "check",
       "question": "哪项约束会影响 K-12 学习者的 memory retention？",
       "options": [
+        "符合 COPPA 的 retention：在定义的窗口期后自动删除，并支持家长访问",
         "基于模型上下文长度的 retention",
-        "永久 retention 且不删除",
         "仅 GDPR",
-        "符合 COPPA 的 retention：在定义的窗口期后自动删除，并支持家长访问"
+        "永久 retention 且不删除"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     },
     {
@@ -78,12 +78,12 @@
       "stage": "post",
       "question": "该 tutor 向学习者暴露了哪些 Multimodal input path？",
       "options": [
-        "仅文本",
+        "键入文本、通过 LiveKit + Whisper 使用语音，以及通过 dots.ocr 或 PaliGemma 2 处理照片数学题",
         "仅通过自定义 OCR model 上传照片",
         "仅语音，没有文本或照片",
-        "键入文本、通过 LiveKit + Whisper 使用语音，以及通过 dots.ocr 或 PaliGemma 2 处理照片数学题"
+        "仅文本"
       ],
-      "correct": 3,
+      "correct": 0,
       "explanation": ""
     }
   ]

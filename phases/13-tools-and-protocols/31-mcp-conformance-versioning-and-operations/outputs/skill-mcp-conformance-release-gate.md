@@ -7,103 +7,113 @@ lesson: 31
 tags: [mcp, conformance, versioning, transcripts, proxy, operations]
 ---
 
-Given an MCP client, server, gateway, SDK, or transport change, produce a wire-level conformance suite and a release decision with redacted evidence.
+针对 MCP 客户端、服务器、网关、SDK 或传输变更，给出消息级一致性测试套件，以及附脱敏证据的发布决策。
 
-## Required inputs
+<a id="required-inputs"></a>
 
-- Supported modern and legacy protocol versions and the policy for each deployment target.
-- Raw request and response capture points before SDK decoding.
-- Mirrored HTTP headers, JSON-RPC bodies, statuses, content types, and intermediary topology.
-- Advertised client, server, and extension capabilities.
-- SDK names, versions, normalized values, and exceptions.
-- Health thresholds, canary window, minimum sample count, and baseline measurements.
-- Exact rollback version, admission evidence digest, SHA-256 artifact and descriptor pins, Registry status, current health, trusted release signers, and an attestation over the complete rollback payload.
-- Redaction, retention, and evidence access policy.
+## 必需输入
 
-## Procedure
+- 支持的现代与旧版协议版本，以及每个部署目标的策略。
+- SDK 解码前的原始请求和响应采集点。
+- 镜像 HTTP 请求头、JSON-RPC 正文、状态码、内容类型及中间层拓扑。
+- 声明的客户端、服务器和扩展能力。
+- SDK 名称、版本、规范化值和异常。
+- 健康阈值、金丝雀观察窗口、最小样本量和基线测量值。
+- 准确的回滚版本、准入证据摘要、SHA-256 产物与描述符固定摘要、注册表状态、当前健康情况、可信发布签名者，以及覆盖完整回滚载荷的证明。
+- 脱敏、保留期限和证据访问策略。
 
-1. Define explicit protocol eras. Require exact `io.modelcontextprotocol/protocolVersion` and `io.modelcontextprotocol/clientCapabilities` keys in the modern branch. Put initialization-era behavior through `2025-11-25` in a separate legacy adapter.
-2. Choose strict or bounded fallback policy per target. A successful `server/discover` or recognized modern error proves the modern branch. A timeout or empty response proves nothing. Permit a legacy probe only for a configured or allowlisted endpoint, then select legacy only after validating a positive `initialize` result for the pinned legacy revision. Never downgrade after `-32020`, `-32021`, or `-32022`.
-3. Create golden transcripts for accepted requests, valid method-specific results, advertised extension results, selected legacy behavior, and the notification no-response invariant.
-4. Create negative transcripts for malformed envelopes, response version or ID mismatch, result and error exclusivity, malformed errors, incorrect HTTP mapping, missing metadata, header and body mismatch, missing server error response, unsupported version, missing modern `resultType`, malformed method payloads, unknown or unadvertised result types, and forbidden notification responses. Whenever local validation observes `HeaderMismatch`, require and structurally validate the actual HTTP 400 JSON-RPC `-32020` response automatically. A local exception alone never passes that case.
-5. Validate JSON-RPC metadata types first. Match HTTP header names case-insensitively, reject conflicting duplicates, decode the exact Base64 sentinel for unsafe `Mcp-Name` values, then compare `MCP-Protocol-Version`, `Mcp-Method`, and applicable `Mcp-Name` values with the body before checking support for the matched value. Treat leading or trailing whitespace as unsafe and reject it when sent raw, even if it equals the body value.
-6. Accept known modern `complete` and `input_required` results. Accept an extension discriminator only when its capability was advertised. Reject every unknown or unadvertised `resultType`. Then validate the method payload, including complete tool descriptors for `tools/list`, required lifecycle fields for a task result, and a bounded string-values completion object for `completion/complete`.
-7. Preserve raw additive result and `_meta` fields in evidence. Decide explicitly whether each component may ignore them or must forward them.
-8. Run every high-risk transcript through each shipped SDK. Compare raw wire semantics with the normalized return value and report every field synthesized, lifted, stripped, or changed.
-9. Execute the suite directly and through every production intermediary. Capture redacted ingress, origin, and egress evidence. Detect status collapse, JSON-RPC body rewriting, routing header mismatch, buffering, and content negotiation changes.
-10. Apply redaction before serialization, hashing, logging, or upload. Case-fold field and header names and remove separators so camelCase, hyphenated, underscored, and dotted variants share the denylist, then remove credentials such as `Authorization`, `Set-Cookie`, `X-Api-Key`, `accessToken`, `clientSecret`, and `registrationAccessToken` plus method-specific sensitive arguments. Hash the redacted evidence bundle.
-11. Evaluate the candidate against non-empty deterministic transcript, SDK differential, and proxy evidence plus a predeclared health window with a positive minimum sample count. Require valid evidence digests from every source. An omitted boundary is a failed gate, not a passing empty list.
-12. Verify an exact admitted, pinned, active, healthy rollback target before promotion. Validate exact field types and SHA-256 digests, then cryptographically verify its attestation against a trusted release-controller identity. Promote only when conformance, SDK, proxy, health, and rollback-readiness evidence pass. On candidate failure, roll back only to that verified target. Otherwise hold.
+<a id="procedure"></a>
 
-## Required matrix
+## 步骤
 
-For every case, report:
+1. 明确区分协议时代。现代分支要求准确使用 `io.modelcontextprotocol/protocolVersion` 和 `io.modelcontextprotocol/clientCapabilities` 键。将截至 `2025-11-25` 的初始化时代行为放入独立旧版适配器。
+2. 为每个目标选择严格策略或有界回退策略。成功的 `server/discover` 或已识别的现代协议错误可以证明现代分支；超时或空响应不能证明任何事。只对已配置或在允许列表中的端点进行旧版探测；只有验证固定旧版修订版的成功 `initialize` 结果后，才能选择旧版。收到 `-32020`、`-32021` 或 `-32022` 后绝不降级。
+3. 为已接受请求、有效的方法特定结果、已声明扩展结果、选定旧版行为，以及通知无响应不变量建立标准消息记录。
+4. 为以下情况建立反例记录：封装格式错误、响应版本或 ID 不匹配、结果与错误互斥性违规、错误对象格式错误、HTTP 映射错误、元数据缺失、请求头与正文不匹配、服务器错误响应缺失、不支持的版本、现代协议缺少 `resultType`、方法载荷格式错误、未知或未声明的结果类型，以及禁止的通知响应。只要本地验证观测到 `HeaderMismatch`，就必须自动要求并进行结构验证，确认实际返回 HTTP 400 JSON-RPC `-32020`。仅有本地异常绝不能让该案例通过。
+5. 先验证 JSON-RPC 元数据类型。不区分大小写匹配 HTTP 请求头名称，拒绝冲突的重复项，对不安全的 `Mcp-Name` 值精确解码 Base64 哨兵格式；然后将 `MCP-Protocol-Version`、`Mcp-Method` 及适用的 `Mcp-Name` 与正文比较，最后才检查匹配值是否受支持。将首尾空白视为不安全内容；即使与正文一致，原样发送也应被拒绝。
+6. 接受已知的现代 `complete` 和 `input_required` 结果。扩展判别字段仅在其能力已声明时接受。拒绝所有未知或未声明的 `resultType`。随后验证方法载荷，包括 `tools/list` 的完整工具描述符、任务结果必需的生命周期字段，以及 `completion/complete` 中值为字符串且数量有界的补全对象。
+7. 在证据中保留原始新增结果字段和 `_meta` 字段。明确决定每个组件可以忽略哪些字段，或必须转发哪些字段。
+8. 将每条高风险消息记录通过每个交付的 SDK 运行。比较原始消息语义与规范化返回值，报告所有被合成、提升、剥离或更改的字段。
+9. 直接执行测试套件，并通过每个生产中间层执行。采集脱敏后的入口、源站和出口证据。检测状态码折叠、JSON-RPC 正文重写、路由请求头不匹配、缓冲和内容协商变化。
+10. 在序列化、哈希、日志记录或上传前脱敏。对字段和请求头名称统一大小写并移除分隔符，使 camelCase、连字符、下划线和点分形式共享同一拒绝列表；随后移除 `Authorization`、`Set-Cookie`、`X-Api-Key`、`accessToken`、`clientSecret`、`registrationAccessToken` 等凭据及方法特定敏感参数。对脱敏证据包计算哈希。
+11. 基于非空的确定性消息记录、SDK 差异和代理证据，以及预先声明且最小样本量为正的健康窗口来评估候选版本。要求每个来源都有有效证据摘要。遗漏边界代表门禁失败，不能用通过的空列表代替。
+12. 晋级前，验证一个准确的、已准入、已固定、活动且健康的回滚目标。验证准确字段类型和 SHA-256 摘要，然后针对可信发布控制器身份，以密码学方法验证其证明。只有一致性、SDK、代理、健康和回滚就绪证据全部通过，才允许晋级。候选版本失败时，只能回滚到该已验证目标。否则保持暂停。
 
-- stable case name and normative invariant
-- protocol era and selection evidence
-- client, server, SDK, proxy, and build versions
-- expected status, response shape, result type, or error code
-- observed ingress, origin, and egress evidence digests
-- SDK normalization differences
-- pass or fail at each boundary
-- redaction policy version
-- final reason code
+<a id="required-matrix"></a>
 
-At minimum include these cases:
+## 必需矩阵
 
-- golden modern discovery or method call
-- golden known complete result with an additive field
-- golden legacy missing `resultType` in the selected legacy era
-- golden advertised extension result
-- golden valid `completion/complete` result
-- golden notification with no JSON-RPC response
-- negative header and body mismatch
-- negative missing capabilities
-- negative unsupported matched version
-- negative missing modern `resultType`
-- negative unknown or unadvertised `resultType`
-- negative proxy status or body transformation
-- negative SDK semantic field loss
-- negative malformed `completion/complete` result
+为每个案例报告：
 
-## Hard rejects
+- 稳定案例名称和规范性不变量
+- 协议时代及选择证据
+- 客户端、服务器、SDK、代理和构建版本
+- 预期状态码、响应结构、结果类型或错误码
+- 观测到的入口、源站和出口证据摘要
+- SDK 规范化差异
+- 每个边界的通过或失败状态
+- 脱敏策略版本
+- 最终原因码
 
-- Claiming conformance from SDK return values without raw wire evidence.
-- One parser that silently accepts both modern and legacy shapes.
-- Legacy fallback after a recognized modern error.
-- Legacy fallback based only on timeout, silence, connection closure, or an unrecognized response.
-- Passing a negative request case without capturing and validating the server's error response.
-- Making HTTP 400 JSON-RPC `-32020` evidence optional after local `HeaderMismatch` detection.
-- Inferring complete for a missing `resultType` before selecting a legacy era.
-- Treating an unknown discriminator as complete.
-- Rejecting all additive unknown fields without a reserved-field reason.
-- Sending any JSON-RPC response to a notification.
-- Accepting a known `resultType` without validating the method-specific payload.
-- Authorizing mirrored headers without checking equality with the body.
-- Treating HTTP field names as case-sensitive or comparing an encoded `Mcp-Name` without exact sentinel decoding.
-- Accepting a raw `Mcp-Name` with leading or trailing whitespace instead of requiring sentinel encoding.
-- Accepting a completion result without a valid bounded string-values completion object.
-- Treating a proxy-generated 500 as equivalent to an origin protocol error.
-- Writing bearer tokens, cookies, secrets, or sensitive arguments into evidence.
-- Using redaction normalization that lets camelCase or separator variants bypass the canonical credential denylist.
-- Declaring a zero-sample canary healthy.
-- Treating empty transcript, SDK, or proxy evidence as a passing boundary.
-- Treating truthy strings or an unauthenticated rollback dictionary as verified evidence.
-- Rolling back to a version without exact admission, pin, status, and health evidence.
-- Promoting a production candidate before proving a healthy rollback target.
+至少包含以下案例：
 
-## Produce
+- 标准现代发现或方法调用
+- 带新增字段的标准已知完整结果
+- 在选定旧版时代中缺少 `resultType` 的标准旧版结果
+- 标准的已声明扩展结果
+- 标准有效 `completion/complete` 结果
+- 无 JSON-RPC 响应的标准通知
+- 请求头与正文不匹配反例
+- 能力缺失反例
+- 匹配但不支持的版本反例
+- 现代协议缺少 `resultType` 的反例
+- 未知或未声明 `resultType` 的反例
+- 代理变换状态码或正文的反例
+- SDK 丢失语义字段的反例
+- `completion/complete` 结果格式错误的反例
 
-Return these sections:
+<a id="hard-rejects"></a>
 
-1. Era Policy: modern proof, strict targets, bounded fallback triggers, and forbidden downgrade signals.
-2. Transcript Matrix: golden and negative cases with expected wire outcomes.
-3. Result Compatibility: core discriminators, advertised extensions, additive field policy, and legacy inference boundary.
-4. SDK Differential: raw and normalized digests plus lifted, stripped, synthesized, and changed fields.
-5. Proxy Evidence: ingress, origin, and egress results with the exact failing hop.
-6. Redaction Report: policy version, removed field classes, and redacted evidence digest.
-7. Health Window: samples, error rate, latency, saturation, duration, thresholds, and baseline comparison.
-8. Rollback Proof: exact target, admission digest, pins, Registry status, health, signer identity, verified attestation, and route restoration plan.
-9. Decision: `promote`, `hold`, or `rollback`, with stable reason codes and the complete evidence digest.
+## 必须否决
 
-End with the first failing boundary. If all boundaries pass, state the canary completion condition that authorizes full promotion.
+- 没有原始消息证据，仅凭 SDK 返回值声称符合协议。
+- 一个解析器静默接受现代和旧版两种结构。
+- 收到已识别的现代错误后回退到旧版。
+- 仅凭超时、无响应、连接关闭或未识别响应就回退到旧版。
+- 没有采集并验证服务器错误响应，就让请求反例通过。
+- 本地检测到 `HeaderMismatch` 后，将 HTTP 400 JSON-RPC `-32020` 证据设为可选。
+- 尚未选择旧版时代，就将缺失的 `resultType` 推断为 complete。
+- 将未知判别字段视为 complete。
+- 没有保留字段方面的理由，却拒绝所有新增未知字段。
+- 对通知发送任何 JSON-RPC 响应。
+- 接受已知 `resultType`，却不验证方法特定载荷。
+- 未检查与正文一致性，就信任镜像请求头的授权含义。
+- 将 HTTP 字段名视为区分大小写，或未精确解码哨兵格式就比较编码后的 `Mcp-Name`。
+- 接受首尾带空白的原始 `Mcp-Name`，而不要求哨兵编码。
+- 接受不含有效且有界的字符串值补全对象的补全结果。
+- 将代理生成的 500 等同于源站协议错误。
+- 将持有者令牌、Cookie、秘密或敏感参数写入证据。
+- 脱敏规范化允许 camelCase 或分隔符变体绕过规范凭据拒绝列表。
+- 将零样本的金丝雀发布判为健康。
+- 将空的消息记录、SDK 或代理证据视为边界通过。
+- 将真值字符串或未经认证的回滚字典视为已验证证据。
+- 回滚到缺少准确准入、固定摘要、状态和健康证据的版本。
+- 尚未证明回滚目标健康就晋级生产候选版本。
+
+<a id="produce"></a>
+
+## 交付内容
+
+返回以下章节：
+
+1. 时代策略：现代协议证据、严格目标、有界回退触发条件和禁止降级的信号。
+2. 消息记录矩阵：标准案例和反例，以及预期消息结果。
+3. 结果兼容性：核心判别字段、已声明扩展、新增字段策略和旧版推断边界。
+4. SDK 差异：原始与规范化摘要，以及被提升、剥离、合成和更改的字段。
+5. 代理证据：入口、源站和出口结果，准确指出失败跳点。
+6. 脱敏报告：策略版本、移除的字段类别和脱敏证据摘要。
+7. 健康窗口：样本量、错误率、延迟、饱和度、持续时间、阈值和基线比较。
+8. 回滚证明：准确目标、准入摘要、固定摘要、注册表状态、健康情况、签名者身份、已验证证明和路由恢复方案。
+9. 决策：`promote`、`hold` 或 `rollback`，附稳定原因码和完整证据摘要。
+
+最后指出第一个失败边界。如果所有边界都通过，说明允许完全晋级的金丝雀完成条件。

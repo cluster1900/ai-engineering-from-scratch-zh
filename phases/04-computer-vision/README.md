@@ -1,4 +1,6 @@
-# Phase 4: Computer Vision
+<a id="phase-4-computer-vision"></a>
+
+# 阶段 4：计算机视觉
 
 > 从像素到理解 — 图像、视频和 3D。
 

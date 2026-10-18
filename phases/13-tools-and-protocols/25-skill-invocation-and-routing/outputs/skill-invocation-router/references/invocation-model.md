@@ -1,15 +1,17 @@
-# Invocation model
+<a id="invocation-model"></a>
 
-| Channel | Initiator | Selection | Typical use |
+# 调用模型
+
+| 渠道 | 发起者 | 选择方式 | 典型用途 |
 |---|---|---|---|
-| Explicit human | User | Exact discovered name | Deliberate workflow choice |
-| Implicit model or agent | Model or autonomous agent | Description relevance plus host policy | Context-sensitive routing |
-| Programmatic application | Product runtime | Exact configured name and target allowlist | Deterministic product workflow |
-| Skill composition | Another skill or subagent | Exact target, caller identity, and depth policy | Bounded workflow dependency |
-| Programmatic harness | Evaluation runtime | Exact configured name and target allowlist | Deterministic evaluation |
+| 显式人工调用 | 用户 | 发现到的准确名称 | 有意识地选择工作流 |
+| 隐式模型或智能体调用 | 模型或自主智能体 | 描述相关性加宿主策略 | 根据上下文进行路由 |
+| 程序化应用调用 | 产品运行时 | 配置中的准确名称和目标允许列表 | 确定性产品工作流 |
+| 技能组合 | 另一个技能或子智能体 | 准确目标、调用方身份和深度策略 | 有界的工作流依赖 |
+| 程序化运行框架调用 | 评测运行时 | 配置中的准确名称和目标允许列表 | 确定性评测 |
 
-Human and model activation form a 2x2: neither, human only, model only, or both. Application, composition, and harness activation are separate channels with their own target, caller, and depth policies.
+人工与模型激活构成一个 2×2 组合：两者均不可、仅人工、仅模型、两者均可。应用、组合和运行框架激活属于独立渠道，各自具有目标、调用方和深度策略。
 
-For implicit routing, apply actor and host-extension eligibility before relevance ranking. A blocked high-scoring skill is not the winner; remove it from the selection set and evaluate the remaining eligible candidates. Abstain if the eligible set is empty or its best score misses the threshold.
+对于隐式路由，先应用执行者和宿主扩展的资格规则，再按相关性排名。被阻止的高分技能不是胜出者；应将其移出选择集合，再评估剩余合格候选项。如果合格集合为空，或其最高分未达阈值，就不做选择。
 
-Fields such as `user-invocable` or `disable-model-invocation` may be meaningful to a particular host. An adapter may enforce them, but portable documentation must not claim that every runtime recognizes the same fields or values.
+`user-invocable` 或 `disable-model-invocation` 等字段可能对特定宿主有意义。适配器可以执行这些规则，但可移植文档不得声称每种运行时都识别相同的字段或值。
