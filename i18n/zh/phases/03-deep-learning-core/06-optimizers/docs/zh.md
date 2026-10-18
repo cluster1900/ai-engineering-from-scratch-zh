@@ -18,7 +18,7 @@
 
 你已经计算了渐进. 你知道第 4,721 个权重应该减少 0.003 才能减少损失. 但 0.003 的单位是什么?按什么缩小?第 1 步和第 1,000 步应该移动同样的量吗?
 
-基梯次降在每一步对每个参数 应用相同的学习速度:w = w - lr *梯次――这会产生三个问题,让训练神经网络在实践中变得非常痛苦――
+尼拉基梯降低在每个参数的每一步 应用相同的学习速度:$w = w - \text{lr} \cdot \text{gradient}$,这会产生三个问题,让训练神经网络在实践中变得非常痛苦.
 
 第一,振荡――失景 很少像平滑的碗――它更像一条又长又窄的山谷――渐进指向穿越山谷的方向 (方向),而不是沿着山谷的方向 (平方向)――渐进下降会在狭小维度上跳跃回来,而在真正有用的方向上进展很小――你已经看到这种现象:失败先快速下降,然后进入平台期,不是因为模型已经收到了,而是因为它在振荡――
 
@@ -34,8 +34,8 @@
 
 最简单的优化器――在小批量上计算的渐变,并朝相反方向前进一步――
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 stochastic 表示你使用数据的随机集 (迷你批量) 来估计渐进率,而不是使用完整的数据集.
@@ -46,27 +46,31 @@ stochastic 表示你使用数据的随机集 (迷你批量) 来估计渐进率,�
 
 小球滚下山坡的比率被用得太多,但它是准确的――你不仅按进步梯度,而是保持一个速度,用来积累过去的梯度――
 
-```
-m_t = beta * m_{t-1} + gradient
-w = w - lr * m_t
+```math
+\begin{aligned}
+m_t &= \beta \, m_{t-1} + \text{gradient} \\
+w &= w - \text{lr} \cdot m_t
+\end{aligned}
 ```
 
-贝塔通常为0.9) 控制保留多少历史信息──当贝塔 =0.9时,momentum 大致等于最近10个梯度的平均值──1/ (1 - 0.9) = 10)──
+测试通常为0.9控制保留多少历史信息.$\beta = 0.9$时,momentum 大致等于最近10个梯度的平均值$1 / (1 - 0.9) = 10$
 
 为什么这能修复振荡:指向相同方向的梯度会积累――方向反复翻转的梯度会相互抵消――在那条狭窄山谷中,横穿分量每一步都会变号并减弱――沿着分量保持一致并被放大――结果是有用方向平滑加速――
 
-真实数字:在非常差的损失环境上,单独使用SGD可能需要10,000步.带动的SGD(beta=0.9) 在同一问题上通常需要3,000-5,000步.
+真实数字:在非常差的条件下,单独使用SGD可能需要10,000步.带动的SGD($\beta = 0.9$对于相同问题,通常需要3,000-5,000步.
 
 ### 标
 
 第一个真正有效的每参数适应性学习率方法. 由Hinton 在课程中提出.
 
-```
-s_t = beta * s_{t-1} + (1 - beta) * gradient^2
-w = w - lr * gradient / (sqrt(s_t) + epsilon)
+```math
+\begin{aligned}
+s_t &= \beta \, s_{t-1} + (1 - \beta) \cdot \text{gradient}^2 \\
+w &= w - \text{lr} \cdot \frac{\text{gradient}}{\sqrt{s_t} + \epsilon}
+\end{aligned}
 ```
 
-随着二次梯度的运行平均水平――持续拥有较大的梯度的参数将以较大的数量 (更小的有效学习率) 计算――较小的梯度将以较小的数量 (更大的有效学习率) 计算――
+$s_t$跟踪二次梯度的运行平均水平──持续拥有较大的梯度的参数将以较大的数量除除除 (更小的有效学习率)──较小的梯度将以较小的数量除 (更大的有效学习率)──
 
 这解决了所有参数使用相同的学习速度问题――一个已经持续获得大幅更新的体重 很可能接近目标―― 放缓它――一个一直得到很小的更新的体重 可能缺乏训练―― 加快它――
 
@@ -76,41 +80,45 @@ w = w - lr * gradient / (sqrt(s_t) + epsilon)
 
 亚当结合了两种思想. 它为每个参数维护两个指数动平均值:
 
-```
-m_t = beta1 * m_{t-1} + (1 - beta1) * gradient        (first moment: mean)
-v_t = beta2 * v_{t-1} + (1 - beta2) * gradient^2       (second moment: variance)
-```
-
-**Bias correction**是大多数解释会跳过的关键细节──在第1步,m_1 = (1 - beta1) *梯度──当beta1 = 0.9 时,它是0.1 *梯度── 小了十倍──移动平均还没有预热──偏差纠正会进行补偿:
-
-```
-m_hat = m_t / (1 - beta1^t)
-v_hat = v_t / (1 - beta2^t)
+```math
+\begin{aligned}
+m_t &= \beta_1 m_{t-1} + (1 - \beta_1) \cdot \text{gradient} && \text{（一阶矩：均值）} \\
+v_t &= \beta_2 v_{t-1} + (1 - \beta_2) \cdot \text{gradient}^2 && \text{（二阶矩：方差）}
+\end{aligned}
 ```
 
-第1步且beta1 = 0.9 时:m_hat = m_1 / (1 - 0.9) = m_1 / 0.1 = 实际梯度. 第100步时:(1 - 0.9^100) 约等于1.0,因此纠正消失.
+**Bias correction**现在,我们在第一个步骤中,$m_1 = (1 - \beta_1) \cdot \text{gradient}$,当$\beta_1 = 0.9$时,它是$0.1 \cdot \text{gradient}$-- 小了十倍──移动平均还没有预热──偏见纠正 会进行补偿:
+
+```math
+\begin{aligned}
+\hat{m} &= \frac{m_t}{1 - \beta_1^t} \\
+\hat{v} &= \frac{v_t}{1 - \beta_2^t}
+\end{aligned}
+```
+
+第1步$\beta_1 = 0.9$时:$\hat{m} = m_1 / (1 - 0.9) = m_1 / 0.1 =$实际的渐变.第100步时:$(1 - 0.9^{100})$差别等于1.0,因此纠正消失了――对前~10步的偏见纠正很重要,在50步后基本无关紧要――
 
 更新公式:
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon}
 ```
 
-亚当默认值:lr = 0.001,beta1 = 0.9,beta2 = 0.999,epsilon = 1e-8──这些默认值适用于80%的问题──当它们不适用时,先改l──然后改beta2──几乎永远不要改beta1或epsilon──
+默认值:$\text{lr} = 0.001$没有任何$\beta_1 = 0.9$没有任何$\beta_2 = 0.999$没有任何$\epsilon = 10^{-8}$△这些默认值适用于80%的问题.$\beta_2$几乎永远不会改变$\beta_1$或$\epsilon$,我知道.
 
 ### 现在,我们需要一个人来看看.
 
-在瓦尼莉 SGD 中,这等于减肥的位,在亚当中,这种等价关系会失效.
+L2规律化 会向损失 中添加 $\lambda w^2$在尼拉 SGD 中,这等于减肥的每一步减肥.$\lambda w$在亚当中,这种价格关系将失效.
 
 洛希洛夫和哈特的洞见是:当你把L2加到损失中,然后让亚当处理渐进时,适应性学习率也会缩小调整术语――渐进变量大参数得到更少的调整――变量小参数得到更多――这不是你想要的――你想要的不是依赖于渐进统计的统一调整――
 
 通过亚当更新后直接对体重进行减肥来修复这个问题:
 
-```
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon) - lr * lambda * w
+```math
+w = w - \text{lr} \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon} - \text{lr} \cdot \lambda w
 ```
 
-减肥的术语 (lr * lambda * w) 不被亚当的适应因素缩放.
+减肥期 (($\text{lr} \cdot \lambda w$) 不会被亚当的适应因素缩小.
 
 这看起来像一个小细节――不是――亚当W 在几乎所有任务都会比亚当+L2规范化 收到更好的解答――它是 PyTorch 中用于训练变压器,扩散模型和大多数现代建筑的默认优化器――BERT、GPT、LLaMA、稳定扩散―― 都是用亚当W 训练的――
 
@@ -425,11 +433,11 @@ for epoch in range(100):
 
 ## 练习
 
-1. 实现Nesterov动力,其中你在 lookhead 位置 (w - lr * beta * v) 而不是当前位置计算的梯度.
+1. 实现Nesterov的动力,其中你在望位置$w - \text{lr} \cdot \beta v$) 而不是计算当前位置的梯度.
 
 2. 实现学习率升温时间表:在训练前10%的步骤中从0 线性拉普到max_lr,然后到0 时代的宇宙衰退.
 
-3. 在亚当训练期间跟踪每个参数的有效学习率──有效率是 lr * m_hat / (sqrt(v_hat) + eps) ─绘制第 10、50 和200步后有效率的分布──所有参数都以相同的速度更新吗?
+3. 在亚当训练期间, 追踪每个参数的有效学习率.$\text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)$△图表第10、50 和200步后有效率的分布──所有参数都以相同的速度更新吗?
 
 4. 实现梯度剪辑 (按全球标准剪辑) 〔将最大梯度标准设为1.0〕使用较高的学习率〔亚当的lr=0.01) 分别在有剪辑和无剪辑的情况下训练〔统计〕 10个随机种子中,有多少次运行 会发散〔 损失变为 NaN〕。
 
@@ -440,12 +448,12 @@ for epoch in range(100):
 | Term | 人们通常怎么说 | 它实际意味着什么 |
 |------|----------------|----------------------|
 | Learning rate | “Step size” | Gradient update 上的标量乘数；训练中影响最大的单个 hyperparameter |
-| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 lr * gradient 来更新 weights，Gradient 在 mini-batch 上计算 |
+| SGD | “Basic gradient descent” | Stochastic Gradient Descent：通过减去 $\text{lr} \cdot \text{gradient}$ 来更新 weights，Gradient 在 mini-batch 上计算 |
 | Momentum | “Rolling ball analogy” | 过去 Gradients 的 exponential moving average；削弱振荡，并加速一致方向 |
 | RMSProp | “Adaptive learning rate” | 用近期 Gradients 的 running RMS 除以每个 parameter 的 Gradient；均衡 learning rates |
 | Adam | “The default optimizer” | 将 momentum（first moment）和 RMSProp（second moment）结合起来，并对初始 steps 进行 bias correction |
 | AdamW | “Adam done right” | 带 decoupled weight decay 的 Adam；直接对 weights 应用 regularization，而不是通过 Gradient |
-| Bias correction | “Warmup for running averages” | 除以 (1 - beta^t)，用于补偿 Adam 的 moment estimates 的零初始化 |
+| Bias correction | “Warmup for running averages” | 除以 $(1 - \beta^t)$，用于补偿 Adam 的 moment estimates 的零初始化 |
 | Weight decay | “Shrink the weights” | 每一步减去 weight 值的一部分；一种惩罚大 weights 的 regularizer |
 | Learning rate schedule | “Changing lr over time” | 在训练期间调整 learning rate 的函数；warmup + cosine decay 是现代默认方案 |
 | Gradient clipping | “Capping the gradient norm” | 当 Gradient Vector 的 norm 超过阈值时对其进行缩放；防止 exploding gradient updates |

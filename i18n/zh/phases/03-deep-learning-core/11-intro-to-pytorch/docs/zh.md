@@ -140,11 +140,11 @@ class MLP(nn.Module):
 
 | Module | What it does | Parameters |
 |--------|-------------|------------|
-| nn.Linear(in, out) | Wx + b | in*out + out |
+| nn.Linear(in, out) | $Wx + b$ | in*out + out |
 | nn.Conv2d(in_ch, out_ch, k) | 2D convolution | in_ch*out_ch*k*k + out_ch |
 | nn.BatchNorm1d(features) | Normalize activations | 2 * features |
 | nn.Dropout(p) | Random zeroing | 0 |
-| nn.ReLU() | max(0, x) | 0 |
+| nn.ReLU() | $\max(0, x)$ | 0 |
 | nn.GELU() | Gaussian error linear | 0 |
 | nn.Embedding(vocab, dim) | Lookup table | vocab * dim |
 | nn.LayerNorm(dim) | Per-sample normalization | 2 * dim |
@@ -353,7 +353,7 @@ class MNISTModel(nn.Module):
 
 输出层产生10个原始logits(每个数字一个) ――不使用软max`CrossEntropyLoss`现在我们要在内部处理.
 
-参数数:784*256+256+256+256*128+128+128+128*10+10=235,146──以现代标准来看非常小──GPT-2小 有 124M──这个模型几秒就能完成训练──
+参数数:$784 \cdot 256 + 256 + 256 \cdot 128 + 128 + 128 \cdot 10 + 10 = 235{,}146$△以现代标准来看非常小. GPT-2 很小,有 124M.
 
 ### 步骤3: 训练循环
 

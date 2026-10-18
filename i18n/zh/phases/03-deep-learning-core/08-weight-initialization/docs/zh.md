@@ -35,40 +35,40 @@
 
 考虑一个具有风扇_在个输入的单个层:
 
-```
-z = w1*x1 + w2*x2 + ... + w_n*x_n
-```
-
-如果每个权重的分布为 Var(w),并且每个输入 xi 的变化为 Var(x),则输出变化为:
-
-```
-Var(z) = fan_in * Var(w) * Var(x)
+```math
+z = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n
 ```
 
-如果 Var(w) = 1 且 fan_in = 512,则输出变量是输入变量的 512 倍──经过 10 层:512^10 = 1.2e27──你的信号已经爆炸──
+如果每一个体重$w_i$城市的变化$\mathrm{Var}(w)$它们的分布,并且每个输入$x_i$的变化为$\mathrm{Var}(x)$,则输出变量为:
 
-如果 Var(w) = 0.001,则输出变量 每层按 0.001 * 512 = 0.512 缩小──经过 10 层:0.512^10 = 0.00013──你的信号已经消失──
+```math
+\mathrm{Var}(z) = \text{fan}_{\text{in}} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(x)
+```
 
-目标:选择Var(w),使Var(z) =Var(x) ――信号大小在各层之间保持恒定──
+如果$\mathrm{Var}(w) = 1$且$\text{fan}_{\text{in}} = 512$输出差异是输入差异的512倍.$512^{10} = 1.2 \times 10^{27}$你的信号已经爆炸了.
+
+如果$\mathrm{Var}(w) = 0.001$则输出变量 每层按$0.001 \cdot 512 = 0.512$缩小:经过10层$0.512^{10} = 0.00013$你的信号已经消失了.
+
+目标:选择$\mathrm{Var}(w)$让它$\mathrm{Var}(z) = \mathrm{Var}(x)$◎信号大小在各层之间保持恒定.
 
 ### 哈维尔/格洛罗初始化
 
 为了在前进和后退的通过中都保持变异恒定:
 
-```
-Var(w) = 2 / (fan_in + fan_out)
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}
 ```
 
 实践中,重量从以下分布中采样:
 
-```
-w ~ Uniform(-limit, limit)  where limit = sqrt(6 / (fan_in + fan_out))
+```math
+w \sim \text{Uniform}(-\text{limit}, \text{limit}) \quad \text{其中 } \text{limit} = \sqrt{\frac{6}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}
 ```
 
 或:
 
-```
-w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}\right)
 ```
 
 这就是有效的,因为sigmoid 和 tanh 在零附近的近似线性,而正确初始化后的激活正好位于这个区域.
@@ -79,27 +79,27 @@ w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
 
 他等人 (2015) 调整了公式:
 
-```
-Var(w) = 2 / fan_in
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}}}
 ```
 
 从以下分布中采样:
 
-```
-w ~ Normal(0, sqrt(2 / fan_in))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}}}}\right)
 ```
 
-系统将将其半个激活 置零影响.没有它,信号 每层将缩小约0.5倍.
+没有它,信号每层缩小约0.5倍.$0.5^{50} = 8.8 \times 10^{-16}$,起起可以防止这种情况.
 
 ### 变压器启动
 
 GPT-2 引入了另一种模式. 剩余连接将每个子层的输出加到其输入上:
 
-```
-x = x + sublayer(x)
+```math
+x = x + \text{sublayer}(x)
 ```
 
-每次相加都会增加变量. 对N 个残留层而言,变量会按N 成比例增长. GPT-2 会按1/sqrt 缩小残留层的重量.其中N 是层数.
+每次相加都会增加差异.$N$个残余层,变量会按$N$成比例增长──GPT-2 会将残余层的重量按$1/\sqrt{2N}$缩放,其中$N$它们可以保持信号的积累大小稳定.
 
 拉马3 (405B参数,126层) 使用类似方案──如果没有这种缩放,残留流会在126层关注和进射区块中无界增长──
 
@@ -337,20 +337,20 @@ nn.init.zeros_(layer.bias)
 
 当你调用`nn.Linear(512, 256)`时,PyTorch默认使用Kaiming统一初始化. 这就是为什么大多数简单的网络 只是工作了. PyTorch 已经做出了正确的选择.
 
-对于变压器来说,HuggingFace模型通常会在它们中.`_init_weights`方法中处理初始化――GPT-2的实现会按1/sqrt(N) 缩放残余投影――如果你从零开始构建变压器,需要自己添加这个点――
+对于变压器来说,HuggingFace模型通常会在它们中.`_init_weights`方法中处理初始化――GPT-2 的实现会按 $1/\sqrt{N}$缩放剩余投影――如果你从零开始构建变压器,你需要自己添加这个点――
 
 ## 交付它
 本课会产出:
 - `outputs/prompt-init-strategy.md`-- 一个用于诊断体重的初始化问题并推正确策略的提示
 
 ## 练习
-1. 添加LeCun初始化(Var = 1/fan_in,为SELU激活设计) ・运行50层实验,使用LeCun init + tanh,并与Xavier + tanh对比──
+1. 添加 LeCun 启动$\mathrm{Var} = 1/\text{fan}_{\text{in}}$运行50层实验,使用LeCun init + tanh,并与Xavier + tanh对比.
 
-2. 实现GPT-2残余扩展:在加入残余流之前,将每层输出乘以1/sqrt(2*N) ⋅分别运行在有扩展和没有扩展的情况下50层,测量残余大小 增长多快――
+2. 实现GPT-2残余规模化:在加入残余流之前,将每层的输出乘以$1/\sqrt{2N}$◎分别在有规模和无规模的情况下运行50层,测量残余大小 增长得多快──
 
 3. 创建一个"init健康检查"函数,接收网络的层维度和激活类型,然后推正确的初始化,并在当前 init 会导致问题时给出警告.
 
-4. 使用fan_in = 16 与fan_in = 1024 运行实验──Xavier 和 Kaiming 会适应fan_in,但随机 init 不会──展示随着层变大,工作和休之间的差距如何扩大──
+4. 使用 $\text{fan} _{\text{in}} = 16$与$\text{fan} _{\text{in}} = 1024$运行实验──Xavier 和 Kaiming 会适应风扇_in,但随机开始 不会──展示随着层变大,工作和休之间的差距如何扩大──
 
 5. 实现直角初始化(生成一个随机矩阵,计算其SVD,使用直角矩阵U) ・与50层RLU网络中的Kaiming进行比较。
 
@@ -361,10 +361,10 @@ nn.init.zeros_(layer.bias)
 | Symmetry breaking | “让 neurons 变得不同” | 使用 random initialization 确保 neurons 学习不同 features，而不是计算完全相同的函数 |
 | Fan-in | “一个 neuron 的 inputs 数量” | incoming connections 的数量，它决定 input variance 如何在 weighted sum 中累积 |
 | Fan-out | “一个 neuron 的 outputs 数量” | outgoing connections 的数量，与在 Backpropagation 期间维持 Gradient variance 有关 |
-| Xavier/Glorot init | “sigmoid initialization” | Var(w) = 2/(fan_in + fan_out)，旨在通过 sigmoid 和 tanh activations 保持 variance |
-| Kaiming/He init | “ReLU initialization” | Var(w) = 2/fan_in，考虑了 ReLU 会将一半 activations 置零 |
+| Xavier/Glorot init | “sigmoid initialization” | $\mathrm{Var}(w) = 2/(\text{fan} _{\text{in}} + \text{fan} _{\text{out}})$，旨在通过 sigmoid 和 tanh activations 保持 variance |
+| Kaiming/He init | “ReLU initialization” | $\mathrm{Var}(w) = 2/\text{fan}_{\text{in}}$，考虑了 ReLU 会将一半 activations 置零 |
 | Variance propagation | “signals 如何在 layers 中增长或缩小” | 基于 weight scale，逐层分析 activation variance 如何变化的数学分析 |
-| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 1/sqrt(2N) 缩放，以防止 variance 在 N 个 transformer layers 中增长 |
+| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 $1/\sqrt{2N}$ 缩放，以防止 variance 在 $N$ 个 transformer layers 中增长 |
 | Dead network | “什么都训练不了” | 一个因 initialization 不佳而导致所有 Gradients 为 zero 或所有 activations 饱和的 network |
 | Exploding activations | “数值走向 infinity” | 当 weight variance 过高时，activation magnitudes 会在 layers 中指数级增长 |
 

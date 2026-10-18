@@ -30,8 +30,8 @@
 
 最简单的方法. 选择一个数字,每一步都用它.
 
-```
-lr(t) = lr_0
+```math
+\text{lr}(t) = \text{lr}_0
 ```
 
 很少是最优的――它要么对训练末期来说太高 ((在最小的 附近的振荡),要么对训练初步来说太低 ((在小步上浪费计算) ――对小模型和调试来说也可以――对任何需要训练超过一个小时的任务都是糟糕的选择――
@@ -40,11 +40,11 @@ lr(t) = lr_0
 
 根据某个因素,在固定时期,通常是10倍的学习率降低.
 
-```
-lr(t) = lr_0 * gamma^(floor(epoch / step_size))
+```math
+\text{lr}(t) = \text{lr}_0 \cdot \gamma^{\lfloor \text{epoch} / \text{step\_size} \rfloor}
 ```
 
-其中的Gamma=0.1 且 step_size=30 表示:lr 每30个时代 降低10x──ResNet-50 就用这个--lr=0.1,在30、60 和90 时代降低10x──
+其中$\gamma = 0.1$且 step_size = 30 表示:lr 每30个时代 降低10x──ResNet-50 就用这个--lr=0.1,在30、60 和90 时代降低10x──
 
 问题是:最优的衰退 点取决于数据集和架构――转换到另一个问题,就需要调整什么时候降低――转变也很突然――当速度突然变化时,损失可能会升――
 
@@ -52,24 +52,24 @@ lr(t) = lr_0 * gamma^(floor(epoch / step_size))
 
 根据宇宙曲线,从最大学习率平滑衰退到最小值:
 
+```math
+\text{lr}(t) = \text{lr}_{\min} + 0.5 \cdot (\text{lr}_{\max} - \text{lr}_{\min}) \cdot \left(1 + \cos\left(\frac{\pi t}{T}\right)\right)
 ```
-lr(t) = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T))
-```
 
-其中,t 是前一步,T 是总步数.
+其中$t$是当前的步骤,$T$是总步数.
 
-当t=0时,cosine 项为1,所以lr = lr_max──当t=T时,cosine 项为 -1,所以lr = lr_min──衰落 一开始很平缓,中间加速,接近最后时再次变得平缓──
+当 当$t=0$时,可素项为1,所以$\text{lr} = \text{lr} _{\max}$,当$t=T$时,可西因为 -1,所以$\text{lr} = \text{lr} _{\min}$衰 一开始很平缓,中间加速,接近末尾时再次变得平缓.
 
-对于大多数现代训练运行的默认选择.除了lr_max 和lr_min之外,没有需要调整的超参数.
+现在,我们在这个世界上,$\text{lr} _{\max}$和 $\text{lr} _{\min}$没有调整的超参数. 体形状符合经验观察:大多数学习发生在训练中段 - 在这个关键阶段,你希望步骤大小合理.
 
 ### 热点:为什么要从小开始
 
 根据较差的统计量,最初几次的渐进更新. 如果你的学习率在此期间很大,模型会迈出巨大且方向不良的步骤.
 
-暖化可以修复这个问题――首先从一个非常小的学习速度开始,通常是lr_max/warmup_steps,甚至为零),然后在前N步骤中线性上升到lr_max──当你达到完整的学习速度时,亚当的统计已经稳定了──
+首先从一个非常小的学习速度开始,通常是 lr_max / warmup_steps,甚至为零),然后开始$N$步骤中线性上升到$\text{lr}_{\max}$,当你达到完整的学习速度时,亚当的统计已经稳定了.
 
-```
-lr(t) = lr_max * (t / warmup_steps)     for t < warmup_steps
+```math
+\text{lr}(t) = \text{lr}_{\max} \cdot \frac{t}{\text{warmup\_steps}} \quad \text{当 } t < \text{warmup\_steps}
 ```
 
 典型加热:总训练步骤的1-5%──Llama 3 训练了约18万亿代币,并加热了2000个步骤──GPT-3 在375万代币上进行加热──
@@ -399,13 +399,13 @@ scheduler = get_cosine_schedule_with_warmup(
 
 ## 练习
 
-1. 实现指数分解:lr(t) =lr_0 *gamma^t,其中的gamma =0.999──在圆数据集上与共弦缩比较──
+1. 实现指数式衰退:$\text{lr}(t) = \text{lr}_0 \cdot \gamma^t$在其中$\gamma = 0.999$△在圆数据集上与共数缩比较
 
 2. 实现学习率范围测试 (Leslie Smith):训练几百步,同时将LR从1e-7指数增加到1──绘制Loss vs LR──最优最大LR 位于Loss 开始增加之前──
 
 3. 使用加热+炼,但改变加热 长度:总步骤的0%、1%、5%、10%、20%──找到训练最稳定的甜点──
 
-4. 实现带热启动的共性缩 (Cosine annealing) (SGDR):每T步骤将学习速度重置为lr_max,然后再次衰退.
+4. 实现带热启动的圆缩 (SGDR):每$T$步骤将学习速度重置为$\text{lr}_{\max}$之后又衰退了.
 
 5. 构建一个日程外科医生,监控训练 损失,并在损失 稳定时自动从加热转换到阴平;如果损失平原太久,则降低.
 
@@ -415,12 +415,12 @@ scheduler = get_cosine_schedule_with_warmup(
 |------|----------------|----------------------|
 | Learning rate | “model 学得有多快” | 用来乘以 Gradient、决定参数更新大小的标量 |
 | Schedule | “随时间改变 LR” | 将 training step 映射到 learning rate 的 function，旨在优化 convergence |
-| Warmup | “从小 LR 开始” | 在最初 N steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
-| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 lr_max 降低到 lr_min |
+| Warmup | “从小 LR 开始” | 在最初 $N$ steps 中，将 LR 从接近零 linearly ramp 到目标值，以稳定 Optimizer 统计量 |
+| Cosine annealing | “平滑 LR decay” | 在训练过程中，让 LR 按 cosine 曲线从 $\text{lr} _{\max}$ 降低到 $\text{lr} _{\min}$ |
 | Step decay | “在 milestones 降低 LR” | 在固定 epoch intervals，将 LR 乘以一个因子（通常是 0.1） |
 | 1cycle policy | “先上后下” | Leslie Smith 的方法：在单个 cycle 中将 LR 先 ramp up 再 ramp down，以获得更快 convergence |
 | LR range test | “找到最佳 learning rate” | 在短时间训练中逐步增加 LR，以找到 Loss 开始 diverge 的数值 |
-| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 lr_max，并再次 decay（SGDR） |
+| Cosine with warm restarts | “重置并重复” | 周期性地将 LR 重置为 $\text{lr} _{\max}$，并再次 decay（SGDR） |
 | Eta min | “LR 的下限” | schedule 最终 decay 到的最小 learning rate |
 | Peak learning rate | “最大 LR” | 训练过程中达到的最高 LR，通常出现在 warmup 之后 |
 

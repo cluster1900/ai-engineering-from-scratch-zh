@@ -75,8 +75,8 @@ graph LR
 
 现在,激活函数是sigmoid:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\text{sigmoid}(z) = \frac{1}{1 + e^{-z}}
 ```
 
 形将任意数字压缩到 (0, 1) 范围内.较大的正输入会推向1――较大的负输入会推向0――零映射到0.5――这个平曲线让学习成为可能--不同于感知的硬阶跃,形在每个位置都有梯度――
@@ -99,9 +99,11 @@ graph TD
 
 在每层,三个操作会按顺序发生:
 
-```
-z = W * input + b       (linear transformation)
-a = sigmoid(z)           (activation)
+```math
+\begin{aligned}
+z &= W \cdot \text{input} + b \quad \text{（线性变换）} \\
+a &= \text{sigmoid}(z) \quad \text{（激活）}
+\end{aligned}
 ```
 
 一层的输入会成为下层的输入.
@@ -112,13 +114,13 @@ a = sigmoid(z)           (activation)
 
 | Step | Operation | Dimensions | Result Shape |
 |------|-----------|------------|-------------|
-| 输入 | x | -- | (2,) |
-| Hidden 线性部分 | W1 * x + b1 | W1: (3, 2), b1: (3,) | (3,) |
-| Hidden 激活 | sigmoid(z1) | -- | (3,) |
-| 输出线性部分 | W2 * h + b2 | W2: (1, 3), b2: (1,) | (1,) |
-| 输出激活 | sigmoid(z2) | -- | (1,) |
+| 输入 | $x$ | -- | (2,) |
+| Hidden 线性部分 | $W_1 x + b_1$ | $W_1$: (3, 2), $b_1$: (3,) | (3,) |
+| Hidden 激活 | $\text{sigmoid}(z_1)$ | -- | (3,) |
+| 输出线性部分 | $W_2 h + b_2$ | $W_2$: (1, 3), $b_2$: (1,) | (1,) |
+| 输出激活 | $\text{sigmoid}(z_2)$ | -- | (1,) |
 
-规则:第 k 层的权重矩阵 W 的形状是 (神经元_在_层_k,神经元_在_层_k_minus_1) 行对应前层――列对应上层――如果形状对不上,你就有错误――
+规则:第$k$层权重矩阵$W$质量是 (神经元_在_层_k,神经元_在_层_k_minus_1) 走对应前层――列对应上层――如果形对不上,你就有虫子――
 
 ### 全球近似定理
 
@@ -169,7 +171,7 @@ def sigmoid(x):
 
 ### 步骤 2: 层级
 
-所有深度学习中最重要的操作是矩阵乘法――每层,每层注意力头――每次前进传递――下层都是矩阵――一个线性层接收一个输入向量,将其乘以权重矩阵,并加上偏差向量:y = Wx + b――这个单一程占神经网络中90%的计算量――
+所有深度学习中最重要的操作是矩阵乘法――每层,每层注意力,每次前进传递――下层都是矩阵――一个线性层接收一个输入向量,将它乘以权重矩阵,并加上偏差向量:$y = Wx + b$△这个单一的方法占神经网络中90%的计算量.
 
 一层保存一个权重矩阵和一个偏向向量――它的前进方法接收一个输入向量,并返回激活后的输出――
 
@@ -205,7 +207,7 @@ class Layer:
 
 ### 步骤3:网络类
 
-一个网络是层列表. 前进通行将它们链接起来:第一个层输出输入到第一个层+1层.
+一个网络是层次的列表.$k$层的输出输入到第$k+1$层面.
 
 ```python
 class Network:
@@ -347,11 +349,11 @@ print(output)
 | Hidden layer | “中间部分” | 输入和输出之间的任意层，其值不会在数据中被直接观察到 |
 | Multi-layer network | “一个深的 Neural Network” | 按顺序堆叠的神经元层，其中每一层的输出会输入到下一层 |
 | Activation function | “非线性” | 在线性变换之后应用的函数，用来把曲线引入决策边界 |
-| Sigmoid | “S 曲线” | sigma(z) = 1/(1+e^(-z))，将任意实数压缩到 (0,1)，平滑且处处可微 |
-| Weight matrix | “参数” | 一个 shape 为 (current_layer_neurons, previous_layer_neurons) 的 Matrix W，包含可学习的连接强度 |
+| Sigmoid | “S 曲线” | $\sigma(z) = 1/(1+e^{-z})$，将任意实数压缩到 (0,1)，平滑且处处可微 |
+| Weight matrix | “参数” | 一个 shape 为 (current_layer_neurons, previous_layer_neurons) 的 Matrix $W$，包含可学习的连接强度 |
 | Bias vector | “偏移量” | 在 Matrix 乘法之后添加的 Vector，使神经元即使在所有输入为零时也能激活 |
 | Universal approximation | “Neural Network 可以学习任何东西” | 一个拥有足够多神经元的单 hidden layer 可以逼近任意连续函数 -- 但“足够多”可能意味着数十亿 |
-| Linear transformation | “Matrix 乘法步骤” | z = W * x + b，激活前的计算，将输入映射到一个新空间 |
+| Linear transformation | “Matrix 乘法步骤” | $z = W x + b$，激活前的计算，将输入映射到一个新空间 |
 | Decision boundary | “分类器切换的地方” | 输入空间中的一个曲面，网络输出在这里跨过分类阈值 |
 
 ## 延伸阅读

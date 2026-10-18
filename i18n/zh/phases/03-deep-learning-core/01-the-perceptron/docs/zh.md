@@ -23,7 +23,7 @@
 ## 概念
 ### 一个神经元,一个决定
 
-一个感知器接收了 n 个输入,将每个输入乘以一个权重,求和,加上偏差,然后将结果传输到一个激活函数.
+一个感知器接收$n$个输入,将每个输入乘以一个权重,求和,加上偏差,然后将结果传入一个激活函数.
 
 ```mermaid
 graph LR
@@ -35,11 +35,10 @@ graph LR
     step --> out["output (0 or 1)"]
 ```
 
-步骤函数 非常直接:如果加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加加
+非常直接:如果加权重数量加偏差$\ge 0$输出为 1 否则输出为 0
 
-```
-step(z) = 1  if z >= 0
-           0  if z < 0
+```math
+\text{step}(z) = \begin{cases} 1 & \text{当 } z \ge 0 \\ 0 & \text{当 } z < 0 \end{cases}
 ```
 
 这是一个线性分类器. 重量和偏差定义了一条线.
@@ -77,7 +76,7 @@ For each training example (x, y_true):
     bias = bias + learning_rate * error
 ```
 
-如果预测是正确的,错误 = 0,什么都不会改变. 如果预测为 0,但应该是 1,重量会增加. 如果预测为 1,但应该是 0,重量会减少.
+如果预测是正确的,$\text{error} = 0$如果预测为0但应该是1,重量会增加.如果预测为1,但应该是0,重量会减少.学习率控制每次调整的幅度.
 
 ### 关于XOR问题
 
@@ -210,7 +209,7 @@ for inputs, expected in xor_data:
 
 ### 步骤 4:用两个层解决XOR
 
-技巧是:XOR = (x1 OR x2) 并非 (x1 AND x2)
+技巧是:$\text{XOR} = (x_1 \text{ OR } x_2) \text{ AND NOT } (x_1 \text{ AND } x_2)$组合三个感觉器:
 
 ```mermaid
 graph LR
@@ -353,7 +352,7 @@ print([clf.predict([x])[0] for x in X])
 
 ## 练习
 1. 在NAND门中,任何逻辑电路都可以由NAND构建) 上训练一个感知器――验证它的权重和偏见构成一个有效的决策界限――
-2. 修改Perceptron类,使其在每个时代跟踪决策界限(w1*x1 + w2*x2 + b = 0) 』印在 AND门 训练期间这条线如何移动──
+2. 修改Perceptron类,使其在每个时代跟踪决策界限($w_1 x_1 + w_2 x_2 + b = 0$打印在 AND门 训练期间这条线如何移动
 3. 构建一个3输入感知器:只有当3输入中至少2个为1时才输出1(多数投票函数) ――它是线性可分离的吗?为什么?
 
 ## 关键术语
@@ -365,7 +364,7 @@ print([clf.predict([x])[0] for x in X])
 | Activation function | “压缩数值的东西” | 一个在 weighted sum 之后应用的 function：Perceptron 使用 step function，现代 networks 使用 sigmoid/ReLU |
 | Linearly separable | “你能在它们之间画一条线” | 一个 dataset，其中单个 hyperplane 可以完美分离 classes |
 | XOR problem | “Perceptron 做不到的那件事” | single-layer networks 无法学习 non-linearly-separable functions 的证明 |
-| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane w*x + b = 0 |
+| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane $w \cdot x + b = 0$ |
 | Multi-layer perceptron | “一个真正的 Neural Network” | 按 layers 堆叠的 Perceptron，其中每一层的 output 会输入到下一层 |
 
 ## 延伸阅读

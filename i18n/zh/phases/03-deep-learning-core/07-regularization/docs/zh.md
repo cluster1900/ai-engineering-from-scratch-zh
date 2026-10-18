@@ -38,21 +38,23 @@ graph LR
 
 ### 放弃
 
-技术最简单的规律化,但最优雅的解释.
+最简单的规范化技术,但最优雅的解释.$p$随时将每个神经元的输出设为零.
 
+```math
+\text{output} = \text{activation}(z) \cdot \text{mask} \quad \text{其中 }\text{mask}[i] \sim \text{Bernoulli}(1 - p)
 ```
-output = activation(z) * mask    where mask[i] ~ Bernoulli(1 - p)
-```
 
-当p=0.5时,每次前进的通过都将将一半神经元置于零.网络必须学习冗余表示,因为它无法预测哪些神经元可用.
+当 当$p = 0.5$时,每次前进的通过都会把一半神经元置于零.网络必须学习冗余表示,因为它无法预测哪些神经元可用.
 
-集合解释:一个有N个神经元并使用脱落的网络会创建2个可能的子网络 (所有神经元开关或关联组合) ⋅使用脱落的训练近似于同时训练所有2个子网络,每个都在不同的小组上训练――测试时,你使用所有神经元(没有脱落),并将输出按 (1 - p) 缩小,以匹配训练期间的期望值――这等于对2个子网络的预测平均单个模型得到一个巨大的集合――
+组合 解释:一个有$N$个神经元并使用中断的网络会创建 $2^N$个可能的子网络 (所有神经元开关的组合) ⋅使用中断 训练近似于同时训练所有$2^N$个子网络,每个都在不同的小组上训练――测试时,你使用所有神经元(没有脱而出),并将输出按 $(1 - p)$缩放,以匹配训练期间的期望值.$2^N$个子网络的预测平均使用单个模型得到一个巨大的集团.
 
 实践中,缩放会在训练期间应用,而不是测试期间应用:
 
-```
-During training:  output = activation(z) * mask / (1 - p)
-During testing:   output = activation(z)   (no change needed)
+```math
+\begin{aligned}
+\text{训练时：} \quad & \text{output} = \text{activation}(z) \cdot \text{mask} / (1 - p) \\
+\text{测试时：} \quad & \text{output} = \text{activation}(z) \quad \text{（无需改动）}
+\end{aligned}
 ```
 
 试试代码完全不需要知道放弃.
@@ -63,15 +65,15 @@ During testing:   output = activation(z)   (no change needed)
 
 将所有权重的平方大小加入损失:
 
-```
-total_loss = task_loss + (lambda / 2) * sum(w_i^2)
+```math
+\text{total\_loss} = \text{task\_loss} + \frac{\lambda}{2} \sum_i w_i^2
 ```
 
-规范化项的基准是兰布达 * w──这意味着,在每一步中,每个权重都会按其大小比例的幅度缩小到零──大权重受到更强的惩罚──模型被推向没有单个权重占主导的解──
+规范化项的渐进是$\lambda w$,这意味着在每一步中,每个权重都会按其大小比例的幅度缩小到零.
 
 为什么这有助于泛化:过量模型往往有更大的权重,会增加训练数据中的噪音.
 
-控制强度――典型值:
+$\lambda$控制强度――典型值:
 
 - 变压器 上的 AdamW 使用 0.01
 - 美国广播公司 上部 SGD 使用1e-4
@@ -85,16 +87,18 @@ total_loss = task_loss + (lambda / 2) * sum(w_i^2)
 
 对于某一层的一批激活:
 
-```
-mu = (1/B) * sum(x_i)           (batch mean)
-sigma^2 = (1/B) * sum((x_i - mu)^2)   (batch variance)
-x_hat = (x_i - mu) / sqrt(sigma^2 + eps)   (normalize)
-y = gamma * x_hat + beta        (scale and shift)
+```math
+\begin{aligned}
+\mu &= \frac{1}{B} \sum_i x_i && \text{（批次均值）} \\
+\sigma^2 &= \frac{1}{B} \sum_i (x_i - \mu)^2 && \text{（批次方差）} \\
+\hat{x} &= \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}} && \text{（归一化）} \\
+y &= \gamma \hat{x} + \beta && \text{（缩放和平移）}
+\end{aligned}
 ```
 
 没有它们,你会强迫每个层的输出都变成零均值,单位方差,而这不一定是网络想要的.
 
-**Training vs inference split:**训练期间,mu 和 sigma 来自当前的迷你批次.推理期间,你使用训练期间累计的运行平均水平.
+**Training vs inference split:**在训练期间,$\mu$和 $\sigma$从当前的迷你批次推理期间,你使用训练期间累计的运行平均水平势 = 0.1 的指数动态平均值,也就是90% 旧值 +10% 新值)
 
 据原文称,它减少了"内部变化转变" (随着早期层更新,层输入分布发生变化).Santurkar等 (2018) 表明这个解释是错误的.真正原因是:BatchNorm 让损失景观更平滑.
 
@@ -104,14 +108,16 @@ y = gamma * x_hat + beta        (scale and shift)
 
 对于单个样本而言:
 
-```
-mu = (1/D) * sum(x_j)           (feature mean)
-sigma^2 = (1/D) * sum((x_j - mu)^2)   (feature variance)
-x_hat = (x_j - mu) / sqrt(sigma^2 + eps)
-y = gamma * x_hat + beta
+```math
+\begin{aligned}
+\mu &= \frac{1}{D} \sum_j x_j && \text{（特征均值）} \\
+\sigma^2 &= \frac{1}{D} \sum_j (x_j - \mu)^2 && \text{（特征方差）} \\
+\hat{x} &= \frac{x_j - \mu}{\sqrt{\sigma^2 + \epsilon}} \\
+y &= \gamma \hat{x} + \beta
+\end{aligned}
 ```
 
-对于每种样本的独立归一化不依赖批量尺寸. 这就是为什么变压器使用LayerNorm而不是BatchNorm. 序列长度可变,批量尺寸经常很小.
+$D$是特征维度──每样本独立归一化不依赖批量尺寸──这就是为什么变压器使用LayerNorm而不是BatchNorm──序列长度可变,批量尺寸经常很小 (生成期间甚至为 1),并且训练和推理之间的计算完全相同──
 
 变压器中层Norm 会应用在每个自我注意区 和每个进步区 之后(后LN),或应用在它们之前(前LN,训练时更稳定) 。
 
@@ -119,9 +125,11 @@ y = gamma * x_hat + beta
 
 不做平均值减法LayerNorm──由张·森瑞克 (2019) 提出──
 
-```
-rms = sqrt((1/D) * sum(x_j^2))
-y = gamma * x / rms
+```math
+\begin{aligned}
+\text{rms} &= \sqrt{\frac{1}{D} \sum_j x_j^2} \\
+y &= \gamma \cdot \frac{x}{\text{rms}}
+\end{aligned}
 ```
 
 由于这些,没有平均值计算,没有beta参数.观察结果是:在LayerNorm中重新存在的平均值减法) 对模型性能的贡献很小,但有计算成本.
@@ -508,8 +516,8 @@ class TransformerBlock(nn.Module):
 |------|----------------|----------------------|
 | Overfitting | "模型记住了数据" | 当模型的训练表现显著高于测试表现时，表示它学到了噪声而不是信号 |
 | Regularization | "防止 overfitting" | 任何约束模型复杂度以改善泛化的技术：dropout、weight decay、normalization、augmentation |
-| Dropout | "随机删除神经元" | 训练期间以概率 p 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
-| Weight decay | "L2 penalty" | 每一步通过减去 lambda * w 将所有权重向零收缩；通过权重大小惩罚复杂度 |
+| Dropout | "随机删除神经元" | 训练期间以概率 $p$ 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
+| Weight decay | "L2 penalty" | 每一步通过减去 $\lambda w$ 将所有权重向零收缩；通过权重大小惩罚复杂度 |
 | Batch normalization | "按 batch 归一化" | 训练期间使用 batch statistics、推理期间使用 running averages，在 batch 维度上对层输出进行归一化 |
 | Layer normalization | "按样本归一化" | 在每个样本内部跨特征归一化；与 batch 无关，用于 batch size 可变的 Transformer |
 | RMSNorm | "没有均值的 LayerNorm" | Root mean square normalization；从 LayerNorm 中去掉均值减法，以相同 accuracy 获得 10% 加速 |

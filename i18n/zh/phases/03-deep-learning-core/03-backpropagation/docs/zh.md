@@ -23,7 +23,7 @@
 ## 概念
 ### 链条规则,应用到网络上
 
-你在第01阶段,第05课中见过链条规则──快速回顾:如果 y = f(g(x)),那么dy/dx = f'(g(x)) * g'(x)──你沿着链条相乘衍生之──
+你在第01阶段,第05课中见过链条规则.$y = f(g(x))$现在,$\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$你沿着链条相乘衍生子
 
 在神经网络中,链条是从输入到损失的操作序列. 每层应用权重加上偏置,再通过激活.
 
@@ -42,9 +42,9 @@ graph LR
     y["target"] --> loss
 ```
 
-进步传递:值从左向右流动──x 和 w 产生 z1 = w*x──加上 b 得到 z2──Sigmoid 给出激活 a──使用损失函数将 a 与目标 y 比较──
+前进通行:从左向右流动的值.$x$和 $w$产生$z_1 = w x$加上$b$得到了$z_2$△ 给出激活$a$△使用 损失函数将 $a$与目标$y$比较
 
-逆转过度:从右向左流动。从dL/da 开始──输出 如何随激活变化)──乘以da/dz2 ()  ()  ()  ()  () )  ()  ()  ()  ()  ()  ()  ()  ()  ()  () )  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  () )  ()  ()  ()  ()  ()  ()  () )  ()  ()  ()  () )  ()  ()  ()  () )  ()  ()  ()  ()  () )  ()  ()  ()  ()  () ) ()  ()  ()  ()  ()  ()  ()  ()  () ) ()  ()  () ()  ()  ()  ()  () )  ()  ()  ()  ()  ()  () )  ()  () )  ()  () ) ()  ()  ( () ) )  ()  ()  () ) 
+往后过度:从右向左流动.$\partial L/\partial a$开始(损失 如何随着激活变化) 乘以$\partial a/\partial z_2$它们是的.$\partial L/\partial z_2$分成$\partial L/\partial b$(它等于$\partial L/\partial z_2$因为$z_2 = z_1 + b$) 和 $\partial L/\partial z_1$然后$\partial L/\partial w = \partial L/\partial z_1 \cdot x$没有任何$\partial L/\partial x = \partial L/\partial z_1 \cdot w$,我知道.
 
 在后游通行期间,每个节点在图中只有一个任务:接收从上游的梯度,乘以其自己的本地衍生值,然后向下游传递.
 
@@ -81,7 +81,7 @@ graph RL
     L1 -- "dL/dz1 = dL/da1 * sigmoid'(z1)" --> I["Input"]
 ```
 
-在每层,梯度都会乘以西格莫因衍生品──西格莫因衍生品是 * (1 - a),最大值是0.25(当 a = 0.5 时)──深入三层后,梯度 至多已经乘以0.25^3 = 0.0156──深入十层:0.25^10 = 0.000001──
+在每层次,渐变都乘以西格莫因衍生量.$a(1 - a)$现在最大值是0.25$a = 0.5$时) 深入三层后,渐进已经乘以了$0.25^3 = 0.0156$深入十层:$0.25^{10} = 0.000001$,我知道.
 
 ### 渐变物消失
 
@@ -99,32 +99,33 @@ After 10 layers:  gradient * 0.25^10 = 0.000001x original
 
 ### 推导 两层网络的渐变
 
-下面是一个具体的数学例子:网络有输入 x、带 sigmoid 的隐藏层、带 sigmoid 的输出层,以及 MSE Loss──
+下面是一个具体的数学例子:网络有输入$x$带sigmoid的隐藏层,带sigmoid的输出层以及MSE损失.
 
 前行通行:
-```
-z1 = W1 * x + b1
-a1 = sigmoid(z1)
-z2 = W2 * a1 + b2
-a2 = sigmoid(z2)
-L = (a2 - y)^2
+```math
+\begin{aligned}
+z_1 &= W_1 x + b_1 \\
+a_1 &= \text{sigmoid}(z_1) \\
+z_2 &= W_2 a_1 + b_2 \\
+a_2 &= \text{sigmoid}(z_2) \\
+L &= (a_2 - y)^2
+\end{aligned}
 ```
 
 后行通行 (逐步应用链条规则):
-```
-dL/da2 = 2(a2 - y)
-da2/dz2 = a2 * (1 - a2)
-dL/dz2 = dL/da2 * da2/dz2 = 2(a2 - y) * a2 * (1 - a2)
-
-dL/dW2 = dL/dz2 * a1
-dL/db2 = dL/dz2
-
-dL/da1 = dL/dz2 * W2
-da1/dz1 = a1 * (1 - a1)
-dL/dz1 = dL/da1 * da1/dz1
-
-dL/dW1 = dL/dz1 * x
-dL/db1 = dL/dz1
+```math
+\begin{aligned}
+\frac{\partial L}{\partial a_2} &= 2(a_2 - y) \\
+\frac{\partial a_2}{\partial z_2} &= a_2 (1 - a_2) \\
+\frac{\partial L}{\partial z_2} &= \frac{\partial L}{\partial a_2} \cdot \frac{\partial a_2}{\partial z_2} = 2(a_2 - y) \cdot a_2 (1 - a_2) \\[6pt]
+\frac{\partial L}{\partial W_2} &= \frac{\partial L}{\partial z_2} \cdot a_1 \\
+\frac{\partial L}{\partial b_2} &= \frac{\partial L}{\partial z_2} \\[6pt]
+\frac{\partial L}{\partial a_1} &= \frac{\partial L}{\partial z_2} \cdot W_2 \\
+\frac{\partial a_1}{\partial z_1} &= a_1 (1 - a_1) \\
+\frac{\partial L}{\partial z_1} &= \frac{\partial L}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \\[6pt]
+\frac{\partial L}{\partial W_1} &= \frac{\partial L}{\partial z_1} \cdot x \\
+\frac{\partial L}{\partial b_1} &= \frac{\partial L}{\partial z_1}
+\end{aligned}
 ```
 
 每个分数都来自于损失的地方衍生量乘积.
@@ -182,9 +183,9 @@ def __mul__(self, other):
     return out
 ```
 
-对于加:d(a+b)/da = 1,d(a+b)/db = 1──因此两个输入都会直接获得输出的梯度──
+对于增加:$\partial(a+b)/\partial a = 1$没有任何$\partial(a+b)/\partial b = 1$因此,两个输入都会直接获得输出的梯度.
 
-对于乘法:d(a*b)/da = b,d(a*b)/db = a──每个输入都会获得另一个输入的值 乘以输出级别──
+对于乘法:$\partial(ab)/\partial a = b$没有任何$\partial(ab)/\partial b = a$△每一个输入都会获得另一个输入的值乘以输出等级.
 
 `+=`很关键. 一个值可能会被多个操作使用.
 
@@ -206,7 +207,7 @@ def sigmoid(self):
     return out
 ```
 
-引号导数:sigmoid(x) * (1 - sigmoid(x))。我们在前进通行中已经计算了sigmoid(x) = s──复用它──不需要额外工作──
+化衍生品:$\text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))$我们已经在前进通行中计算了$\text{sigmoid}(x) = s$,再用它.
 
 ```python
 def mse_loss(predicted, target):
@@ -214,7 +215,7 @@ def mse_loss(predicted, target):
     return diff * diff
 ```
 
-单个输出的MSE:(预测 - 目标) ^2。我们把减值表达为加上一个取负值──
+单个产出的MSE:$(\text{predicted} - \text{target})^2$我们把减法表达为加上负值.
 
 ### 步骤4: 倒退通行
 
@@ -238,7 +239,7 @@ def backward(self):
         v._backward()
 ```
 
-从 开始的损失 (Gradient = 1.0,因为 dL/dL = 1)──沿着排序后的图反向遍历──每个节点的`_backward`让Gradient推送给他的孩子们.
+从损失开始 度 = 1.0,因为$dL/dL = 1$)──沿着排序后的图反向遍历──每个节点的`_backward`让Gradient推送给他的孩子们.
 
 ### 步骤5: 层和网络
 
@@ -298,7 +299,7 @@ class Network:
             p.grad = 0.0
 ```
 
-一个神经元 接收输入,计算权重总量 +偏差,然后应用 sigmoid──权重初始化按平方 (2/n_inputs) 缩小,用于防止更深的网络中的 sigmoid 和──一个层是神经元的列表──一个网络是层的列表──`parameters()`方法会收集所有可学习的价值,这样我们就可以更新它们.
+一个神经元接收输入,计算权重总量+偏差,然后应用 sigmoid──权重初始化按$\sqrt{2/n_{\text{inputs}}}$缩放,用于防止更深的网络中的sigmoid和――一个层是神经元的列表――一个网络是层的列表――`parameters()`方法会收集所有可学习的价值,这样我们就可以更新它们.
 
 ### 步骤 6: 在 XOR 上训练
 
@@ -433,9 +434,9 @@ with torch.no_grad():
 - `outputs/prompt-gradient-debugger.md`-- 一个可复用提示,用于诊断任何神经网络中的渐进问题
 
 ## 练习
-1. 给值类 添加一个 `__sub__`方法 (a - b = a + (-1 * b))──然后实现一个`__neg__`通过简单表达式 (如 (a - b) ^2) 的手动计算进行比较,验证梯度是否正确的.
+1. 给值类 添加一个 `__sub__`方法$a - b = a + (-1 \cdot b)$,然后实现一个`__neg__`通过与简单表达式$(a - b)^2$测试的分数是不是正确的.
 
-2. 给值添加一个`relu`方法(输出为最大(0,x),衍生在 x > 0 时为 1,否则为 0) ――在隐藏层中使用 rel 替换 sigmoid,并再次在 XOR 上训练――比较收速度――你应该看到训练更快――这是第04课的预告――
+2. 给值添加一个`relu`方法(输出 为 $\max(0, x)$衍生品在$x \gt 0$时为1,否则为0) ⋅在隐藏层中使用 relue 替换sigmoid,并再次在 XOR 上训练――比较收速度――你应该看到训练更快――这是第04课的预告――
 
 3. 在值上实现一个用于整数的权力`__pow__`方法. 用它.`mse_loss`换成真正的`(predicted - target) ** 2`表达式――验证 渐进与原始实现一致――
 
@@ -446,14 +447,14 @@ with torch.no_grad():
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 dL/dw |
+| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 $\partial L/\partial w$ |
 | Computational graph | “Network 结构” | 一个有向无环 graph，其中 node 是 operation，edge 承载 value（forward）和 Gradient（backward） |
-| Chain rule | “把 derivative 相乘” | 如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- Backpropagation 的数学基础 |
+| Chain rule | “把 derivative 相乘” | 如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ -- Backpropagation 的数学基础 |
 | Gradient | “最陡上升方向” | Loss 相对于某个 parameter 的 partial derivative -- 告诉你如何改变该 parameter 来降低 Loss |
 | Vanishing gradient | “深层 network 学不会” | 当 Gradient 通过带有 sigmoid 这类 saturating activation 的 layer 传播时，会指数级缩小 |
 | Forward pass | “运行 network” | 通过顺序应用每一层的 operation，从 input 计算 output，并存储 intermediate value |
 | Backward pass | “计算 Gradient” | 反向遍历 Computational Graph，在每个 node 使用 chain rule 累积 Gradient |
-| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：w_new = w_old - lr * gradient |
+| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：$w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{gradient}$ |
 | Topological sort | “正确顺序” | 一种 graph node 排序方式，使每个 node 都出现在其依赖的所有 node 之后 -- 确保 Gradient 在传播前已完全累积 |
 | Autograd | “自动微分” | 一个在 forward computation 期间构建 Computational Graph，并自动计算 Gradient 的系统 -- PyTorch 的 engine 做的就是这个 |
 
