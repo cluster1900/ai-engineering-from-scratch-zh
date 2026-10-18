@@ -39,15 +39,15 @@ features += weight_a * control_a(depth) + weight_b * control_b(pose)
 
 ### LoRA (Hu et al., 2021)
 
-Modelleri herhangi bir çizgi katman için`W ∈ R^{d×d}`, 结 `W`Aşağı derecede bir delta eklemeyi:
+Modelleri herhangi bir çizgi katman için$W \in \mathbb{R}^{d \times d}$, 结 $W$Aşağı derecede bir delta eklemeyi:
 
+```math
+W' = W + \Delta W, \quad \Delta W = B A, \quad A \in \mathbb{R}^{r \times d}, \quad B \in \mathbb{R}^{d \times r}
 ```
-W' = W + ΔW,  ΔW = B @ A,  A ∈ R^{r×d},  B ∈ R^{d×r}
-```
 
-İçlerinden `r << d`❖ Dikkat için, 4-16 standart yapılandırma; ağırlık için ince ayar için, 64-128 daha sık görülmektedir.`2 · d · r`- Hayır .`d²` için `d=640`SDXL dikkat,`r=16`时每个适配器 只有 20k 参数,而不是 410k,减少了20x──放到整个模型上,一个LoRA通常是20-200MB,而基础是5GB──
+İçlerinden $r \ll d$❖ Dikkat için, 4-16 standart yapılandırma; ağırlık için ince ayar için, 64-128 daha sık görülmektedir.$2 \cdot d \cdot r$- Hayır .$d^2$ için $d=640$SDXL dikkat,$r=16$时每个适配器 只有 20k 参数,而不是 410k,减少了20x──放到整个模型上,一个LoRA通常是20-200MB,而基础是5GB──
 
-Sonuçta, LoRA'yı kısaltmak için:`W' = W + α · B @ A`- Evet.`α = 0.5-1.5`很常见──多种LoRA会加法方式叠加 (özellikle birbirlerini doğrusal olmayan bir şekilde etkilediğine dikkat etmeniz gerekir)
+Sonuçta, LoRA'yı kısaltmak için:$W' = W + \alpha \cdot B A$- Evet.$\alpha = 0.5\text{-}1.5$很常见──多种LoRA会加法方式叠加 (özellikle birbirlerini doğrusal olmayan bir şekilde etkilediğine dikkat etmeniz gerekir)
 
 ### IP-Adapter (Ye et al., 2023)
 
@@ -75,7 +75,7 @@ v4-controlnet-zero
 
 `code/main.py`1-D'de iki mekanizma benzer:
 
-1. **LoRA。**Bir önceden eğitilmiş çizgi katman .`W`结它──训练一个低级的`B @ A`,使 `W + BA`匹配目标 linear layer── gösterim `r = 1`足以完美学习一个级-1 düzeltme──
+1. **LoRA。**Bir önceden eğitilmiş çizgi katman .$W$结它──训练一个低级的$BA$,使 $W + BA$匹配目标 linear layer── gösterim $r = 1$足以完美学习一个级-1 düzeltme──
 
 2. **ControlNet-lite。**Bir dondurulmuş temel  öngörücü, ayrıca bir side ağ ──side ağının side ağ ──side ağının çıkışı                                                                                                                                                                                                                                            
 
@@ -99,11 +99,11 @@ Bu aşamada, çıkış ve temel tamamen aynı.`gate`, felaketli hareketler olmay
 
 ## 常见坑
 
-- **LoRA 过度缩放。** `α = 2`Ya da`α = 3`Bu, daha güçlü bir hack yapmanın bir yolu, ancak aşırı bir şekilde şekillendirilmesi veya zararlı bir çıkış oluşmasıdır.`α ≤ 1.5`- Evet.
+- **LoRA 过度缩放。** $\alpha = 2$Ya da$\alpha = 3$Bu, daha güçlü bir hack yapmanın bir yolu, ancak aşırı bir şekilde şekillendirilmesi veya zararlı bir çıkış oluşmasıdır.$\alpha \le 1.5$- Evet.
 - **ControlNet weight 冲突。**Aynı zamanda 1.0 ağırlıklı Pose ControlNet ve 1.0 ağırlıklı Depth ControlNet genellikle geçerlidir.
 - **LoRA 用在错误的 base 上。**SDXL LoRA, SD 1.5'de sessiz kalıyor. Dikkat boyutları eşleşmiyor.
 - **Textual Inversion 漂移。**Bir kontrol noktasında, diğer kontrol noktasına geçmek için, daha fazla nakliye edilebilir.
-- **LoRA weight-merging 和存储。**LoRA'yı temel model ağırlıklarına yerleştirebilirsin, daha hızlı bir sonuç elde edebilirsin, ancak çalıştırma süresi azalır.`α`Bu iki versiyonu koruyor.
+- **LoRA weight-merging 和存储。**LoRA'yı temel model ağırlıklarına yerleştirebilirsin, daha hızlı bir sonuç elde edebilirsin, ancak çalıştırma süresi azalır.$\alpha$Bu iki versiyonu koruyor.
 
 ## Kullan
 
@@ -126,7 +126,7 @@ Bu aşamada, çıkış ve temel tamamen aynı.`gate`, felaketli hareketler olmay
 
 1. **Easy。**- Evet .`code/main.py`Lora'nın rütbesini.`r`1'den 4'e kadar değişim. LoRA hangi sırada?
 2. **Medium。**İki hedef dönüşümünde iki bağımsız LoRA'yı eğitmek. Onları birlikte yüklemek ve onların artışlarını göstermek. Bu ilişki ne zaman doğayı bozacak?
-3. **Hard。**kullanımı 叠加:SDXL-base + Canny-ControlNet( ağırlık 0.8) + 一个风格 LoRA(α 0.8) + IP-Adapter( ağırlık 0.6) ・・・
+3. **Hard。**Use diffusers 叠加:SDXL-base + Canny-ControlNet( ağırlığı 0.8) + 一个风格 LoRA($\alpha$0.8) + IP-Adapter ((vezi 0.6)。 Yüklü yüklerin ağırlığı ile 变化,测量 FID-vs-immediate-adhesion trade-off。
 
 ## 关键术语
 
@@ -134,9 +134,9 @@ Bu aşamada, çıkış ve temel tamamen aynı.`gate`, felaketli hareketler olmay
 |------|------------|------------------|
 | ControlNet | "Spatial control" | 克隆 encoder + zero-conv skips；读取一张 conditioning image。 |
 | Zero convolution | "Starts as identity" | 初始化为零的 1×1 conv；ControlNet 一开始是 no-op。 |
-| LoRA | "Low-rank adapter" | `W + B @ A`，`r << d`；比 full fine-tune 少 100x 参数。 |
+| LoRA | "Low-rank adapter" | $W + BA$，$r \ll d$；比 full fine-tune 少 100x 参数。 |
 | rank r | "The knob" | LoRA 压缩；典型值为 4-16，重度个性化使用 64+。 |
-| α | "LoRA strength" | LoRA delta 的 runtime scaling。 |
+| $\alpha$ | "LoRA strength" | LoRA delta 的 runtime scaling。 |
 | IP-Adapter | "Reference image" | 通过 CLIP-image tokens 实现的小型 image-conditioning adapter。 |
 | DreamBooth | "Full subject fine-tune" | 在约 ~30 张主体图像上训练完整模型。 |
 | Textual Inversion | "New token" | 只学习一个新的 word embedding；旧方案，大多已被替代。 |
@@ -145,7 +145,7 @@ Bu aşamada, çıkış ve temel tamamen aynı.`gate`, felaketli hareketler olmay
 
 Bir gerçek metin-resim SaaS toplantısı aynı temel kontrol noktasında 上服务数百 LoRA 和十几个 ControlNet──serving 问题很像 LLM çok kiralamacılık(生产文献中在连续批发 和 LoRAX / S-LoRA 下讨论 LLM 场景):
 
-- **Hot-swap LoRAs，不要 merge。**- Ben de .`W' = W + α·B·A`Üstüne birleştirin, her adım sonuca varsın.`α`Ve temel olarak, LoRA'yı R-R deltası olarak VRAM'da 热加载中;diffusers 暴露 `pipe.load_lora_weights()`+ `pipe.set_adapters([...], adapter_weights=[...])`, istek üzerine aktive edilebilir.`2 · d · r · num_layers`ağırlıklar, yani MB 级、亚秒级──
+- **Hot-swap LoRAs，不要 merge。**- Ben de .$W' = W + \alpha \cdot B \cdot A$Üstüne birleştirin, her adım sonuca varsın.$\alpha$Ve temel olarak, LoRA'yı R-R deltası olarak VRAM'da 热加载中;diffusers 暴露 `pipe.load_lora_weights()`+ `pipe.set_adapters([...], adapter_weights=[...])`, istek üzerine aktive edilebilir.`2 · d · r · num_layers`ağırlıklar, yani MB 级、亚秒级──
 - **ControlNet 作为第二条 attention lane。**克隆的编码器与基并行运行──两重都为 1.0 的ControlNet = 每步两次额外前进通过,而不是一次合并通过──批量级头室 会第二次下降──每一个活跃ControlNet 预算约 ~1.5×阶段成本──
 - **Quantized LoRAs 也适用。**Eğer bazı ölçüyorsanız ((Düşünme 07, 8GB'de fluks), LoRA delta da 8-bit veya 4-bit olarak ölçülebilir.
 

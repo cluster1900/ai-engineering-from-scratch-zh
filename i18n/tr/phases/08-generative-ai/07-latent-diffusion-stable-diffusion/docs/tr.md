@@ -21,9 +21,9 @@ Bu sabit difüzyon 配方──SD 1.x / 2.x bir 860M U-Net  işlemini kullanmak 
 
 **两个阶段，分别训练。**
 
-1. **Stage 1 — VAE.**Kodlayıcı`E(x) → z`, dekodör`D(z) → x` hedef basınç oranı: her boşluk轴下采样 8×,再调整频道,使总潜尺寸 约为像素数的1/16──Loss = rekonstruksi (L1 + LPIPS algılama) + KL(权重很小,使 `z`Çok fazla Gaussian'a zorlanmayacağız çünkü bizden hiç bir şey istemeyiz.`z`Yapma kesin örnek)  genellikle de rakip kaybı  antrenman,  dekode  çıkmış resim daha     
+1. **Stage 1 — VAE.**Kodlayıcı$E(x) \to z$, dekodör$D(z) \to x$ hedef basınç oranı: her boşluk轴下采样 8×,再调整频道,使总潜尺寸 约为像素数的1/16──Loss = rekonstruksi (L1 + LPIPS algılama) + KL(权重很小,使 $z$Çok fazla Gaussian'a zorlanmayacağız çünkü bizden hiç bir şey istemeyiz.$z$Yapma kesin örnek)  genellikle de rakip kaybı  antrenman,  dekode  çıkmış resim daha     
 
-2. **Stage 2 — 在 `z` 上做 diffusion。**- Ne ?`z = E(x_real)`- Evet. - Evet. - Evet.`z_t`◊推理时: 采样 通过传播 采样 `z_0`Sonra ...`x = D(z_0)`- Evet.
+2. **Stage 2 — 在 $z$ 上做 diffusion。**- Ne ?$z = E(x_{\text{real}})$- Evet. - Evet. - Evet.$z_t$◊推理时: 采样 通过传播 采样 $z_0$Sonra ...$x = D(z_0)$- Evet.
 
 **文本 conditioning。**Ayrıca iki ekstra bileşeme vardır. Bir 结的文本编码器(SD 1.x 用CLIP-L,SD 2/XL 用CLIP-L+OpenCLIP-G,SD3 和流x 用T5-XXL) `[Q = image features, K = V = text tokens]`Ve onları karıştırmak. Tokenler, metin görüntüleri etkilemenin tek yoludur.
 
@@ -59,21 +59,21 @@ def encode(x):    return x * 0.5          # toy "compression" to smaller scale
 def decode(z):    return z * 2.0
 ```
 
-Öğretim amacıyla, bu linear haritalama yayımı açıklamak için yeterli olabilir.`z`Ün Operasyon, Önemli olmayan orijinal veri alanı
+Öğretim amacıyla, bu linear haritalama yayımı açıklamak için yeterli olabilir.$z$Ün Operasyon, Önemli olmayan orijinal veri alanı
 
 ### 2 adım:`z`- uzay içi yapma yayılması
 
-DDPM'nin 6. Ders ile aynı olduğu net görsel veri`z = E(x)`                                                                                                                                                                                                                                                              `z_0`后,用 `D(z_0)`Çıkarmak.
+DDPM'nin 6. Ders ile aynı olduğu net görsel veri$z = E(x)$                                                                                                                                                                                                                                                              $z_0$后,用 $D(z_0)$Çıkarmak.
 
 ### 步骤 3: sınıflandırıcı dışı rehberlik
 
-訓練期間,10% 的時間丢弃类标签(替换为零代币)`ε_cond`和 `ε_uncond`Sonra:
+訓練期間,10% 的時間丢弃类标签(替换为零代币)$\epsilon_{\text{cond}}$和 $\epsilon_{\text{uncond}}$Sonra:
 
 ```python
 eps_cfg = (1 + w) * eps_cond - w * eps_uncond
 ```
 
-`w = 0`= 无指导(完全多样性),`w = 3`= 默认值,`w = 7+`= 和 / 过化。
+$w = 0$= 无指导(完全多样性),$w = 3$= 默认值,$w = 7+$= 和 / 过化。
 
 ### 步骤 4: 文本 koşullama (概念,不是代码)
 
@@ -91,7 +91,7 @@ Bu sınıf koşullı difüzyon modeli ile sabit difüzyon arasındaki tek gerçe
 - **Text encoder silently wrong。**SD3 需要带 >=128 tokens of T5-XXL,fallback until only CLIP 会有损──始终检查 `use_t5=True`Eğer öyleyse, hemen sadık kalırız.
 - **混用 latent spaces。**SDXL、SD3、Flux hepsi farklı VAE kullanıyor. SDXL latenlerinde LoRA'nın kullanımı mümkün değil.
 - **CFG too high。** `w > 10`Bu nedenle, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan dolayı, bir çok farklılıktan da çok farklılıktan ortaya çıkmıştır.`w = 3-7`- Evet.
-- **Negative prompts leaking。**Boş negatif istek sıfır bir simgeye dönüşecek . Dolandırılmış negatif istek ise sıfır bir simgeye dönüşecek .`ε_uncond`Bu ikisi aynı değil; bazı boru hattları, boş kullanılır.
+- **Negative prompts leaking。**Boş negatif istek sıfır bir simgeye dönüşecek . Dolandırılmış negatif istek ise sıfır bir simgeye dönüşecek .$\epsilon_{\text{uncond}}$Bu ikisi aynı değil; bazı boru hattları, boş kullanılır.
 
 ## Kullan
 
@@ -112,7 +112,7 @@ Bu sınıf koşullı difüzyon modeli ile sabit difüzyon arasındaki tek gerçe
 
 ## 练习
 
-1. **Easy.**Kullanım rehberliği`w ∈ {0, 1, 3, 7, 15}`运行  İşlem`code/main.py`                                                                                                                                                                                                                                                              `w`Sınıf gerçek verilerin ortalama değerinden uzak mı?
+1. **Easy.**Kullanım rehberliği$w \in \lbrace 0, 1, 3, 7, 15 \rbrace$运行  İşlem`code/main.py`                                                                                                                                                                                                                                                              $w$Sınıf gerçek verilerin ortalama değerinden uzak mı?
 2. **Medium.**Oyuncak 線性エンコーダー 換為 tanh-MLPエンコーダー/デコーダー 对,并加入重建損失──在新潜中上再训练拡散──サンプル品質 会变吗?
 3. **Hard.**Kullanın                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `sdxl-base`, CFG=7 ile 30 Euler adımını yürütmek,并计时――然后切换到 `sdxl-turbo`, 4 adım ile 和 CFG=0── aynı konu, farklı kalite, neler olduğunu ve nedenlerini açıklamak.
 
@@ -122,8 +122,8 @@ Bu sınıf koşullı difüzyon modeli ile sabit difüzyon arasındaki tek gerçe
 |------|-----------------|-----------------------|
 | First stage | “The VAE” | 训练好的 encoder/decoder 对；把 512² 压缩到 64²。 |
 | Second stage | “The U-Net” | latent space 上的 diffusion model。 |
-| CFG | “Guidance scale” | `(1+w)·ε_cond - w·ε_uncond`；调节 conditioning strength。 |
-| Null token | “Empty prompt embed” | 用于 `ε_uncond` 的 unconditional embed。 |
+| CFG | “Guidance scale” | $(1+w) \cdot \epsilon_{\text{cond}} - w \cdot \epsilon_{\text{uncond}}$；调节 conditioning strength。 |
+| Null token | “Empty prompt embed” | 用于 $\epsilon_{\text{uncond}}$ 的 unconditional embed。 |
 | Cross-attention | “How text gets in” | 每个 U-Net block 都以 text tokens 作为 K 和 V 进行 attention。 |
 | DiT | “Diffusion Transformer” | 用作用于 latent patches 的 transformer 替换 U-Net；扩展性更好。 |
 | MMDiT | “Multi-modal DiT” | SD3 的架构：带 joint attention 的文本与图像流。 |

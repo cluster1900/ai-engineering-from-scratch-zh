@@ -1,6 +1,6 @@
 # StyleGAN
 
-> Çoğu jeneratör bunu yapar.`z`Aynı zamanda her katına girerken StyleGAN'ı çıkarıp açarken:`z`映射到中间表示 `w`Sonra AdaIN'den her çözünürlük seviyesine* enjekte* yap.`w`Bu değişim gizli alanı açtı ve fotoğrafların gerçek yüzüyle ilgili sorunların çözülmesine neden oldu.
+> Çoğu jeneratör bunu yapar.$z$Aynı zamanda her katına girerken StyleGAN'ı çıkarıp açarken:$z$映射到中间表示 $w$Sonra AdaIN'den her çözünürlük seviyesine* enjekte* yap.$w$Bu değişim gizli alanı açtı ve fotoğrafların gerçek yüzüyle ilgili sorunların çözülmesine neden oldu.
 
 **类型：**Yapım
 **语言：**Python
@@ -9,31 +9,31 @@
 
 ## 问题
 
-DCGAN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `z`映射成一张图像── soru şu:`z` kontrol her şeyi,                                                                                                                                                                                                                                                            `z`Bu dört kişi değişir. Aynı kişiyi, farklı bir duruştan istemezsin. Çünkü bu ifade öyle parçalanmamıştır.
+DCGAN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           $z$映射成一张图像── soru şu:$z$ kontrol her şeyi,                                                                                                                                                                                                                                                            $z$Bu dört kişi değişir. Aynı kişiyi, farklı bir duruştan istemezsin. Çünkü bu ifade öyle parçalanmamıştır.
 
-Karras et al. (2019, NVIDIA) 提出:停止把 `z`直接送入conv katmanları---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------`4×4×512`Tensor 作为网络输入──学习一个8层 MLP,把 `z ∈ Z → w ∈ W`❖ * Adaptive instance normalization* (AdaIN) ile her çözünürlükte `w`Önce her bir konfor özellik haritasını normalleştir, sonra kullan `w`Sıcaklık ve değişim.
+Karras et al. (2019, NVIDIA) 提出:停止把 $z$直接送入conv katmanları---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------`4×4×512`Tensor 作为网络输入──学习一个8层 MLP,把 $z \in Z \to w \in W$❖ * Adaptive instance normalization* (AdaIN) ile her çözünürlükte $w$Önce her bir konfor özellik haritasını normalleştir, sonra kullan $w$Sıcaklık ve değişim.
 
-Sonuç şu:`W` Yüksek seviye stili(gestory、身份)   微粒度 stili(光照、颜色)                                                                                                                                                                                                                                              `w`低分辨率层级的风格,并使用图像B 的 `w`Yüksek çözünürlüklü bir seviye stili olarak, böylece iki resim arasında değişim biçimleri vardır. Bu, editörlük, çapraz alan stilleşmesini ve tüm yazıları çözüyor.
+Sonuç şu:$W$ Yüksek seviye stili(gestory、身份)   微粒度 stili(光照、颜色)                                                                                                                                                                                                                                              $w$低分辨率层级的风格,并使用图像B 的 $w$Yüksek çözünürlüklü bir seviye stili olarak, böylece iki resim arasında değişim biçimleri vardır. Bu, editörlük, çapraz alan stilleşmesini ve tüm yazıları çözüyor.
 
 ## 概念
 
 ![StyleGAN: mapping network + AdaIN + per-layer noise](../assets/stylegan.svg)
 
-**Mapping network。** `f: Z → W`, bir 8 katlı MLP`Z = N(0, I)^512`- Evet.`W`Gaussian olarak zorlanmak değil, aynı zamanda uygun verilerin biçimlerini öğrenmek için.
+**Mapping network。** $f: Z \to W$, bir 8 katlı MLP$Z = \mathcal{N}(0, I)^{512}$- Evet.$W$Gaussian olarak zorlanmak değil, aynı zamanda uygun verilerin biçimlerini öğrenmek için.
 
 **Synthesis network。**Bir öğrenme süreci.`4×4×512`開始── her çözünürlük blok:`upsample → conv → AdaIN(w_i) → noise → conv → AdaIN(w_i) → noise`△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △
 
 **AdaIN。**
 
-```
-AdaIN(x, y) = y_scale · (x - mean(x)) / std(x) + y_bias
+```math
+\mathop{\mathrm{AdaIN}}(x, y) = y_{\text{scale}} \cdot \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x)} + y_{\text{bias}}
 ```
 
-İçlerinden `y_scale`和 `y_bias`- Evet .`w`Bu Style                                                                                                                                                                                                                                                            
+İçlerinden $y_{\text{scale}}$和 $y_{\text{bias}}$- Evet .$w$Bu Style                                                                                                                                                                                                                                                            
 
 **逐层 noise。**Her özellik haritasına ısıtılan tek geçiş yolu Gaussian gürültüsü, ve öğrenilen her geçiş faktörü tarafından küçültülür.
 
-**Truncation trick。**sonuçlar 时,采样 `z`,计算 `w = mapping(z)`Sonra ...`w' = ŵ + ψ·(w - ŵ)`, içinden `ŵ`Evet, birçok örneğin ortalaması.`w`- Evet.`ψ < 1`Çok farklılık var. Neredeyse her StyleGAN demo kullanılıyor.`ψ ≈ 0.7`- Evet.
+**Truncation trick。**sonuçlar 时,采样 $z$,计算 $w = \text{mapping}(z)$Sonra ...$w' = \hat{w} + \psi \cdot (w - \hat{w})$, içinden $\hat{w}$Evet, birçok örneğin ortalaması.$w$- Evet.$\psi < 1$Çok farklılık var. Neredeyse her StyleGAN demo kullanılıyor.$\psi \approx 0.7$- Evet.
 
 ## StyleGAN 1 → 2 → 3
 
@@ -45,7 +45,7 @@ AdaIN(x, y) = y_scale · (x - mean(x)) / std(x) + y_bias
 | StyleGAN-XL | 2022 | Class-conditional, 1024², ImageNet。 |
 | R3GAN | 2024 | 以更强的 reg 重新包装；在 FFHQ-1024 上用少 20 倍的 params 缩小与 diffusion 的差距。 |
 
-2026 yılına kadar, StyleGAN3  hala aşağıdaki durumların belirtilmiş seçeneği: a) Yüksek FPS'in dar alanındaki fotoğraflar gerçek gelişim, b) birkaç çekim alanı uyarlaması, c) dönüşüm tabanlı editör, c) yeni verilerde 100 张图像在新数据集上训练,结映射, c) yeniden inşa gerçek fotoğrafları bul`w`, yeniden edit `w`Açık alanlarda metin-resim için uygun bir araç değil, yayım 才是.
+2026 yılına kadar, StyleGAN3  hala aşağıdaki durumların belirtilmiş seçeneği: a) Yüksek FPS'in dar alanındaki fotoğraflar gerçek gelişim, b) birkaç çekim alanı uyarlaması, c) dönüşüm tabanlı editör, c) yeni verilerde 100 张图像在新数据集上训练,结映射, c) yeniden inşa gerçek fotoğrafları bul$w$, yeniden edit $w$Açık alanlarda metin-resim için uygun bir araç değil, yayım 才是.
 
 
 ```figure
@@ -54,7 +54,7 @@ gx-stylegan-mapping
 
 ## Yapın onu.
 
-`code/main.py`实现一个1-D的玩具版 style-GAN lite:一个映射 MLP,一个合成函数,它接收学到的常量向量,并用从 `w`派生的尺度/bias 进行调制,还有层次噪声──它显示通过 affine-modulation 注入 `w`, ulaşmak veya aşmak `z`拼接进生成器输入方式──
+`code/main.py`实现一个1-D的玩具版 style-GAN lite:一个映射 MLP,一个合成函数,它接收学到的常量向量,并用从 $w$派生的尺度/bias 进行调制,还有层次噪声──它显示通过 affine-modulation 注入 $w$, ulaşmak veya aşmak $z$拼接进生成器输入方式──
 
 ### 步骤 1: haritalama ağı
 
@@ -76,7 +76,7 @@ def adain(x, w_scale, w_bias):
     return [w_scale * xi + w_bias for xi in x_norm]
 ```
 
-Her özellik haritası ve tarafsızlığı , çizgi projeksiyon yoluyla`w`Alıyorum.
+Her özellik haritası ve tarafsızlığı , çizgi projeksiyon yoluyla$w$Alıyorum.
 
 ### 步骤 3: katmanlık gürültü
 
@@ -92,7 +92,7 @@ Her yolun Sigma'sı öğrenilmektedir.
 - **Droplet artifacts。**StyleGAN 1 özellik haritalarında oluşur blok şekilli damla, çünkü AdaIN ≠ 归零了── StyleGAN 2 ağırlık demodülasyonu 通过缩放卷积重量来修复它──
 - **Texture sticking。**StyleGAN 1 ve 2'nin dokuları nesne koordinatları yerine piksel koordinatlarına uyar.
 - **Mode coverage。**Çarpışma`ψ < 0.7`Karanlık gibi görünüyor, ama sadece çok dar bir  şekilli bölge örneğinden; Eğer çeşitlilik gerekiyorsa, kullanın `ψ = 1.0`- Evet.
-- **Inversion 有损。**Gerçek fotoğrafı tersine çevir .`W`Genellikle optimizasyon veya kodlama yoluyla tamamlanır.
+- **Inversion 有损。**Gerçek fotoğrafı tersine çevir .$W$Genellikle optimizasyon veya kodlama yoluyla tamamlanır.
 
 ## Kullan
 
@@ -109,26 +109,26 @@ Her yolun Sigma'sı öğrenilmektedir.
 
 ## - Söyle.
 
-保存 `outputs/skill-stylegan-inversion.md`◊Skill 接收一张真实照片并输出:inversion method (e4e / ReStyle / HyperStyle) 、预期潜伏损失、编辑预算(在出现文物 之前你能在`W`Middle移动多远), ve bilinen geçerli düzenleme yönleri ([[年龄、表情、姿态]]) listesi
+保存 `outputs/skill-stylegan-inversion.md`◊Skill 接收一张真实照片并输出:inversion method (e4e / ReStyle / HyperStyle) 、预期潜伏损失、编辑预算(在出现文物 之前你能在$W$Middle移动多远), ve bilinen geçerli düzenleme yönleri ([[年龄、表情、姿态]]) listesi
 
 ## 练习
 
 1. **简单。**Ayrılıklı kullan`adain_on=True`和 `adain_on=False`运行  İşlem`code/main.py`❖ Sıkıntılı latente olan sabit latente olan perturbasyonla karşılaştırın.
-2. **中等。**实现 mixing regularisation: için bir eğitim parti,计算 `w_a`- Evet.`w_b`, ve sentezin ilk yarısında uygulanmıştır.`w_a`Son yarı aşama`w_b`❖ dekodör 是否学到了 çözülmüş stiller?
-3. **困难。**取一个预训练的StyleGAN3 FFHQ modeli(ffhq-1024.pkl) ⋅通过在带标签样本上训练 SVM,找到控制 smile 的 `w`Yön; raporların daha da ilerleyebileceği bir yer.
+2. **中等。**实现 mixing regularisation: için bir eğitim parti,计算 $w_a$- Evet.$w_b$, ve sentezin ilk yarısında uygulanmıştır.$w_a$Son yarı aşama$w_b$❖ dekodör 是否学到了 çözülmüş stiller?
+3. **困难。**取一个预训练的StyleGAN3 FFHQ modeli(ffhq-1024.pkl) ⋅通过在带标签样本上训练 SVM,找到控制 smile 的 $w$Yön; raporların daha da ilerleyebileceği bir yer.
 
 ## 关键术语
 
 | 术语 | 人们怎么说 | 它实际意味着什么 |
 |------|-----------------|-----------------------|
-| Mapping network | “那个 MLP” | `f: Z → W`，8 层，把 latent geometry 与数据统计解耦。 |
+| Mapping network | “那个 MLP” | $f: Z \to W$，8 层，把 latent geometry 与数据统计解耦。 |
 | W space | “Style space” | Mapping network 的输出；大致 disentangled。 |
-| AdaIN | “Adaptive instance norm” | Normalize feature map，然后由 `w`-projection 做 scale + shift。 |
-| Truncation trick | “Psi” | `w = mean + ψ·(w - mean)`，ψ<1 用多样性换质量。 |
-| Path-length regularization | “PL reg” | 惩罚 `w` 中单位变化导致的图像大幅变化；让 `W` 更平滑。 |
+| AdaIN | “Adaptive instance norm” | Normalize feature map，然后由 $w$-projection 做 scale + shift。 |
+| Truncation trick | “Psi” | $w = \text{mean} + \psi \cdot (w - \text{mean})$，$\psi<1$ 用多样性换质量。 |
+| Path-length regularization | “PL reg” | 惩罚 $w$ 中单位变化导致的图像大幅变化；让 $W$ 更平滑。 |
 | Weight demodulation | “StyleGAN2 的修复” | Normalize conv weights 而不是 activations；消除 droplet artifacts。 |
 | Alias-free | “StyleGAN3 的技巧” | Windowed sinc filters；消除 texture 粘在 pixel grid 上的问题。 |
-| Inversion | “为真实图像找到 w” | Optimize 或 encode `x → w`，使 `G(w) ≈ x`。 |
+| Inversion | “为真实图像找到 w” | Optimize 或 encode $x \to w$，使 $G(w) \approx x$。 |
 
 ## Üretim açıklaması: Neden StyleGAN 2026 yılında hâlâ çevrimiçi olabilir
 

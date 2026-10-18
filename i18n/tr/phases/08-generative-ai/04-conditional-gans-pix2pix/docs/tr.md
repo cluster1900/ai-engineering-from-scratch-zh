@@ -8,33 +8,35 @@
 **Time:** ~75 分钟
 
 ## 问题
-无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空照片*、*把白天场景 映射成夜间*、*给灰度图片 上色*──在所有这些任务中,你会得到一个输入图片`x`, ve bir çeşit semantik karşılıklılık ile çıkmak zorunda `y`Herkes.`x`Tüm bunlar mantıklıdır.`y`❖ Ortalama kare hatası onları düzeltir ❖ Düşmanlık kaybı olmaz çünkü ❖ gerçek gibi görünür ❖ ❖ ❖ ❖ ❖ ❖
+无条件 GAN 会采样任意人脸──做演示 有用,进生产 没用──你想要的是:*把草图 映射成照片*、*把地图 映射成空照片*、*把白天场景 映射成夜间*、*给灰度图片 上色*──在所有这些任务中,你会得到一个输入图片$x$, ve bir çeşit semantik karşılıklılık ile çıkmak zorunda $y$Herkes.$x$Tüm bunlar mantıklıdır.$y$❖ Ortalama kare hatası onları düzeltir ❖ Düşmanlık kaybı olmaz çünkü ❖ gerçek gibi görünür ❖ ❖ ❖ ❖ ❖ ❖
 
-Şartlı GAN (Mirza & Osindero, 2014) Şartlı `c`作为输入加入 `G`和 `D`❖Pix2Pix (Isola et al., 2017) bunun üzerine özel birleştirme yaptı: koşul tam girme görüntü, jeneratör U-Net, ayrımcı * patch tabanlı* sınıflandırıcı (PatchGAN), Kayıp + L1─2026 yılında bile, bu kitle biçimi kısıtlı görüntü-resim alanında üstü hala sıfır eğitimli metin-resim modeli üzerinde başarmıştır, çünkü * eşleşmiş veriler* üzerinde eğitimlidir  Sahip olduğunuz doğru olan sinyaller 
+Şartlı GAN (Mirza & Osindero, 2014) Şartlı $c$作为输入加入 $G$和 $D$❖Pix2Pix (Isola et al., 2017) bunun üzerine özel birleştirme yaptı: koşul tam girme görüntü, jeneratör U-Net, ayrımcı * patch tabanlı* sınıflandırıcı (PatchGAN), Kayıp + L1─2026 yılında bile, bu kitle biçimi kısıtlı görüntü-resim alanında üstü hala sıfır eğitimli metin-resim modeli üzerinde başarmıştır, çünkü * eşleşmiş veriler* üzerinde eğitimlidir  Sahip olduğunuz doğru olan sinyaller 
 
 ## 概念
 ![Pix2Pix: U-Net generator, PatchGAN discriminator](../assets/pix2pix.svg)
 
-**Conditional G.** `G(x, z) → y`Pix2Pix'te,`z`G 内部的落下 (G 内部的落下)  没有输入噪音  孤立 发现显式噪音 会被忽略) 
+**Conditional G.** $G(x, z) \to y$Pix2Pix'te,$z$G 内部的落下 (G 内部的落下)  没有输入噪音  孤立 发现显式噪音 会被忽略) 
 
-**Conditional D.** `D(x, y) → [0, 1]`▽输入是 *pair*(condition, output) ー这是关键差异:D 必须判断 `y`Evet veya değil`x`Birliği, sadece yargılamayı gerektirmez.`y`Görünüşe göre gerçek mi?
+**Conditional D.** $D(x, y) \to [0, 1]$▽输入是 *pair*(condition, output) ー这是关键差异:D 必须判断 $y$Evet veya değil$x$Birliği, sadece yargılamayı gerektirmez.$y$Görünüşe göre gerçek mi?
 
 **U-Net generator.**带有跨瓶跳连接的编码器-decoder──输入和输出共享低级结构的任务至关重要──没有这些跳转,高频细节会消失──
 
-**PatchGAN discriminator.**D Not output single gerçek/sahte puan, ama output one `N×N`Grid, her hücre 判断约70×70 piksel 接收场──然后取平均──这是一个马科夫随机场 假设:真实感是局部的──训练快得多,参数更少,输出更利──
+**PatchGAN discriminator.**D Not output single gerçek/sahte puan, ama output one $N \times N$Grid, her hücre 判断约70×70 piksel 接收场──然后取平均──这是一个马科夫随机场 假设:真实感是局部的──训练快得多,参数更少,输出更利──
 
 **Loss.**
 
-```
-loss_G = -log D(x, G(x)) + λ · ||y - G(x)||_1
-loss_D = -log D(x, y) - log (1 - D(x, G(x)))
+```math
+\begin{aligned}
+\text{loss}_G &= -\log D(x, G(x)) + \lambda \cdot \lVert y - G(x) \rVert_1 \\
+\text{loss}_D &= -\log D(x, y) - \log(1 - D(x, G(x)))
+\end{aligned}
 ```
 
-L1 项稳定训练,并推动 G 接近已知目标──L1  L2 产生更利的边缘 (meydanlar, araçlar değil) ⋅`λ = 100`Evet, Pix2Pix 默认值──
+L1 项稳定训练,并推动 G 接近已知目标──L1  L2 产生更利的边缘 (meydanlar, araçlar değil) ⋅$\lambda = 100$Evet, Pix2Pix 默认值──
 
 ## CycleGAN  çift olmadığınızda
 
-Pix2Pix 需要对 `(x, y)`Data──CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*tükre tutarlılığı* kaybı── iki jeneratör:`G: X → Y`和 `F: Y → X`Onları eğit, yap.`F(G(x)) ≈ x`Ve`G(F(y)) ≈ y` Bu, çiftli örnekler olmadığı durumlarda atları zebralara çevirmenize olanak sağlar.
+Pix2Pix 需要对 $(x, y)$Data──CycleGAN (Zhu et al., 2017) 通过额外的 Loss 放弃这个要求:*tükre tutarlılığı* kaybı── iki jeneratör:$G: X \to Y$和 $F: Y \to X$Onları eğit, yap.$F(G(x)) \approx x$Ve$G(F(y)) \approx y$ Bu, çiftli örnekler olmadığı durumlarda atları zebralara çevirmenize olanak sağlar.
 
 2026 yılında, eşleşmemiş görüntü-resim yayımı ile tamamlandı, CycleGAN yerine, ancak döngü tutarlılığı  düşüncesi neredeyse her bir eşleşmemiş alan uyarlaması 论文中──
 
@@ -44,7 +46,7 @@ gx-patchgan
 ```
 
 ## Yapın onu.
-`code/main.py`1-D verilerinde, küçük bir şartlı GAN koşulunu gerçekleştirmek için.`c`: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : 
+`code/main.py`1-D verilerinde, küçük bir şartlı GAN koşulunu gerçekleştirmek için.$c$: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : 
 
 ### 步骤1: G 和 D' ın girişlerine koşul ekleyecek
 
@@ -81,9 +83,9 @@ for c in [0, 1]:
 
 ## 陷
 - **Condition 被忽略。**G 学会 边缘化,D 从不惩罚,因为条件信号 太弱──修复:更强地条件 D( erken katman,而不只是迟), projeksiyon ayrımcılığını kullanmak (Miyato & Koyama 2018)。
-- **L1 weight 过低。**G 漂移到任意看起来真实输出,而不是忠实的输出──Pix2Pix-style 任务从 λ≈100 开始──
-- **L1 weight 过高。**G  模糊 çıktılar oluşur, çünkü L1  hâlâ L_p normudur.
-- **D 中 ground-truth leakage。**- Ben de .`(x, y)`D giriş olarak, sadece`y`◊否则 D 无法检查一致性──
+- **L1 weight 过低。**G 漂移到任意看起来真实输出,而不是忠实的输出──Pix2Pix tarzı 任务从 $\lambda \approx 100$Başlayın.
+- **L1 weight 过高。**G                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $L_p$Normalde, eğitimden sonra adım adım ilerliyor.
+- **D 中 ground-truth leakage。**- Ben de .$(x, y)$D giriş olarak, sadece$y$◊否则 D 无法检查一致性──
 - **每个 class 的 mode collapse。**Her sınıf bağımsız çöküşe neden olabilir. Sınıf koşullarındaki çeşitlilik kontrollerini yaparlar.
 
 ## Kullan

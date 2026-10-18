@@ -21,7 +21,7 @@ Her ölçüde tüm önceki ölçülere dikkat eder ve kendi ölçüsüne gider.
 
 ### VQ-VAE Çok Ölçekli Tokenizer
 
-VAR   ihtiyacı var **multi-scale discrete Tokenizer**❖ X görüntü için, çözünürlüğü yavaş yavaş artan bir dizi oluşturur.
+VAR   ihtiyacı var **multi-scale discrete Tokenizer**❖ Resim için $x$Bu , çözünürlüğünü yavaş yavaş yükseltecek bir dizi simge oluşturur:
 
 ```
 x -> encoder -> latent f
@@ -31,13 +31,13 @@ f -> tokenize at 2x2: token grid z_2 of shape (2, 2)
 f -> tokenize at (H/p)x(W/p): token grid z_K of shape (H/p, W/p)
 ```
 
-Her bir z_k aynı kod defterini kullanır. Tipik olarak 4096-16384 olarak bilinir.
+Her biri .$z_k$Aynı kod defteri kullanmak için kullanılan yöntemler:$f$- ...
 
-```
-f ≈ upsample(embed(z_1), target_size) + ... + upsample(embed(z_K), target_size)
+```math
+f \approx \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_1), \text{target\_size}) + \cdots + \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_K), \text{target\_size})
 ```
 
-Bu bir **residual VQ**变体──尺度 k 捕获尺度 1..k-1 遗漏的内容──decoder 接收所有尺度 嵌入的和并生成图像──
+Bu bir **residual VQ**变体――尺度 $k$捕获尺度 $1 \ldots k-1$遗漏的内容──Decoder 接收所有尺度嵌入的和,并生成图像──
 
 Çok ölçekli VQ Tokenizer sadece bir kez eğitimlidir, sonra tüm üretilen işlerin tamamlanması için bir süredir.
 
@@ -50,9 +50,9 @@ Giriş sırası yapısı:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Yerleşim Eklemesi Aynı zamanda kodlama ölçü indeksi ve ölçü içindeki uzay konumlarıdır.
+Pozisyon Ekleme Aynı zamanda kodlama ölçüm indeksi ve ölçüm içindeki uzay konumları.$k$Yer$(i, j)$Gösteriler dikkatle ölçülüyor.$1 \ldots k$Tüm işaretler, dikkat ölçümüne.$k$Bu, bir ölçekte tüm konumların birleştirilmesi ve tahmin edilmesi anlamına gelir.
 
-訓練 Loss: 在每个尺度 k,给定所有之前尺度的代币,预测代币 z_k。对离散 VQ代码使用交叉 Entropy Loss──结构与GPT类似,只是在这里序列变成了尺度结构化的序列──
+訓練                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $k$, tüm ön ölçümlü işaretleri, tahmin işaretleri $z_k$△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                                                               
 
 ### Özgür
 
@@ -66,7 +66,7 @@ decode: f = sum of embed-and-upsample scales 1..K
 image = VAE_decoder(f)
 ```
 
-K = 10 个尺度时,生成需要10次 Transformer forward pass──每次通过都并行生成整个尺度,而不是在尺度内逐个代币自归──对于 256x256 图像,这大约是10次通过,而DiT是28-50次──
+- Evet .$K = 10$个尺时,生成需要10次 Transformer forward pass──每次通过都并行生成整个尺度,而不是在尺度内逐个代币自归──对于 256x256 图像,这大约是10次通过,而DiT是28-50次──
 
 ### Neden Next-Scale  Yeni Token ' i yendi ?
 
@@ -127,7 +127,7 @@ Bu bir oyuncak uygulamasıdır. Önemli olan ölçümün yapılandırılmasını
 | Multi-scale VQ tokenizer | "Residual VQ" | 生成 K 个分辨率递增 Token 网格的 VQ-VAE，decoder 会对所有尺度求和 |
 | Scale k | "Pyramid level k" | K 个分辨率层级之一，从 k=1 的 1x1 到 k=K 的 (H/p)x(W/p) |
 | Parallel-within-scale | "One forward per scale" | 尺度 k 的所有 Token 在一次 Transformer pass 中预测，而不是自回归预测 |
-| Causal-across-scales | "Scale-ordered attention" | 尺度 k 的 Token 可以 Attention 到尺度 1..k 的全部内容，但不能 Attention 到尺度 k+1..K |
+| Causal-across-scales | "Scale-ordered attention" | 尺度 $k$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的全部内容，但不能 Attention 到尺度 $k+1 \ldots K$ |
 | Residual VQ | "Additive tokenization" | 每个尺度的 Token 编码较低尺度留下的 residual；decoder 对所有尺度 Embedding 求和 |
 | VAR scaling law | "Image GPT scaling" | FID 随 compute 遵循可预测的 power law，类似语言模型的 perplexity |
 | HART | "Hybrid VAR + text" | Text-conditional VAR 变体，将 MaskGIT-style iterative decoding 与 VAR 的尺度结构结合 |

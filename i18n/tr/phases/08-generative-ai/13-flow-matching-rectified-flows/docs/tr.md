@@ -9,9 +9,9 @@
 
 ## 问题
 
-DDPM'nin ters yönlü süreçleri bir`N(0, I)`DİM, verilerin dağıtımının 1000 adımını 20-50 belirleyici adımlara kısaltır. İdeal olarak daha az adım isteseydin, adımlar daha az olurdu.
+DDPM'nin ters yönlü süreçleri bir$\mathcal{N}(0, I)$DİM, verilerin dağıtımının 1000 adımını 20-50 belirleyici adımlara kısaltır. İdeal olarak daha az adım isteseydin, adımlar daha az olurdu.
 
-Eğer bir model eğitimi yaparsanız, gürültüden veriye giden yol bir düz çizgiyle, o zaman `t=1`- Ne ?`t=0`Bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde,`x_1 ∼ N(0, I)`- Ne ?`x_0 ∼ data`Yönlü vektör alanı `v_θ(x, t)`Zamanı ile uyumlu hale getirip sonuçlandırmak için.
+Eğer bir model eğitimi yaparsanız, gürültüden veriye giden yol bir düz çizgiyle, o zaman $t=1$- Ne ?$t=0$Bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde, bu yönde,$x_1 \sim \mathcal{N}(0, I)$- Ne ?$x_0 \sim \text{data}$Yönlü vektör alanı $v_\theta(x, t)$Zamanı ile uyumlu hale getirip sonuçlandırmak için.
 
 Düzeltilmiş akış (Liu 2022) daha da ileri: reflow prosedürü ile 代地拉直路径, gittikçe daha yakın 线性 ODE üretmek için.
 
@@ -23,41 +23,41 @@ Düzeltilmiş akış (Liu 2022) daha da ileri: reflow prosedürü ile 代地拉�
 
 定义:
 
-```
-x_t = t · x_1 + (1 - t) · x_0,   t ∈ [0, 1]
-```
-
-İçlerinden `x_0 ~ data`- Evet .`x_1 ~ N(0, I)` Bu düz çizginin boyunca zaman yönü bir adetdir:
-
-```
-dx_t / dt = x_1 - x_0
+```math
+x_t = t \cdot x_1 + (1 - t) \cdot x_0, \quad t \in [0, 1]
 ```
 
- define a Neural Vector alanı `v_θ(x_t, t)`,并训练它匹配这个导数:
+İçlerinden $x_0 \sim \text{data}$- Evet .$x_1 \sim \mathcal{N}(0, I)$ Bu düz çizginin boyunca zaman yönü bir adetdir:
 
-```
-L = E_{x_0, x_1, t} || v_θ(x_t, t) - (x_1 - x_0) ||²
+```math
+\frac{dx_t}{dt} = x_1 - x_0
 ```
 
-İşte bu.**conditional flow matching**Loss ((Lipman 2023);; Training does not need simulation:`(x_0, x_1, t)`Geri dönüş yapmadı.
+ define a Neural Vector alanı $v_\theta(x_t, t)$,并训练它匹配这个导数:
+
+```math
+L = \mathbb{E}_{x_0, x_1, t} \left\lVert v_\theta(x_t, t) - (x_1 - x_0) \right\rVert^2
+```
+
+İşte bu.**conditional flow matching**Loss ((Lipman 2023);; Training does not need simulation:$(x_0, x_1, t)$Geri dönüş yapmadı.
 
 ### 采样
 
 时, along time*反向*积分学到的矢量 Alanı:
 
-```
-x_{t-Δt} = x_t - Δt · v_θ(x_t, t)
+```math
+x_{t-\Delta t} = x_t - \Delta t \cdot v_\theta(x_t, t)
 ```
 
-- Evet .`x_1 ~ N(0, I)`Başlayın, Euler'ın adımını kullanın.`t=0`- Evet.
+- Evet .$x_1 \sim \mathcal{N}(0, I)$Başlayın, Euler'ın adımını kullanın.$t=0$- Evet.
 
 ### Düzeltilmiş akış (Liu 2022)
 
-Doğrudan akış çalışabilir, ama öğrenme yolları aslında düz değildir, çünkü birçok `x_0`Aynı birinden görüntülenebilir.`x_1`❖ Düzeltilmiş akışın yeniden akış adımları:
+Doğrudan akış çalışabilir, ama öğrenme yolları aslında düz değildir, çünkü birçok $x_0$Aynı birinden görüntülenebilir.$x_1$❖ Düzeltilmiş akışın yeniden akış adımları:
 
-1. UZ随机配对训练流模型 v_1──
-2. 通過将 v_1 `x_1`积分到其落点 `x_0`, Tıpkı N için`(x_1, x_0)`- Evet.
-3. Bu çiftler arasında düz bir bağlantı var ve bu çiftler arasında daha düz bir bağlantı var.
+1. UZ随机配对训练流模型 $v_1$- Evet.
+2. - Evet .$v_1$- Evet .$x_1$积分到其落点 $x_0$, Tıpkı N için$(x_1, x_0)$- Evet.
+3. Bu örneklerle birlikte eğitim yapın.$v_2$Bu eşleşmeler şimdi ODE eşleşmiş  olduğu için, bunlar arasındaki düz çizgi gerçekten daha düz 
 4. Tekrarlıyorum.
 
 实践中,2次回流 代就能接近线性,从而实现 2-4 adım sonucu──SDXL-Turbo、SD3-Turbo、LCM 都是来自流相对应模型 蒸而来──
@@ -72,7 +72,7 @@ Doğrudan akış çalışabilir, ama öğrenme yolları aslında düz değildir,
 
 ## Akış eşleşimi vs DDPM:精确联系
 
-带 Gaussian-kondisyonlu yolu ın akış eşleşmesi  就是使用*特定噪声 schedule* 的 Diffusion──选择 `x_t = α(t) x_0 + σ(t) x_1`Program, akış eşleşmesi, Stratonovich'in dönüştürdüğü yayılma yeniden başlatılması.`v = α'·x_0 - σ'·x_1` Gaussian yolları için, ikisi de 代数上等价
+带 Gaussian-kondisyonlu yolu ın akış eşleşmesi  就是使用*特定噪声 schedule* 的 Diffusion──选择 $x_t = \alpha(t) x_0 + \sigma(t) x_1$Program, akış eşleşmesi, Stratonovich'in dönüştürdüğü yayılma yeniden başlatılması.$v = \alpha' \cdot x_0 - \sigma' \cdot x_1$ Gaussian yolları için, ikisi de 代数上等价
 
 Akış eşleşimi                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
@@ -83,7 +83,7 @@ normalizing-flow
 
 ## Yapın onu.
 
-`code/main.py`İki peşe Gaussian karışımı 上 1-D akış eşleşmesi gerçekleştirmek── vektör alanı `v_θ(x, t)`Bu, küçük bir MLP, doğrudan hedef eğitimi kullanıyor.
+`code/main.py`İki peşe Gaussian karışımı 上 1-D akış eşleşmesi gerçekleştirmek── vektör alanı $v_\theta(x, t)$Bu, küçük bir MLP, doğrudan hedef eğitimi kullanıyor.
 
 ### 步骤1:Eğitim kaybı
 
@@ -116,10 +116,10 @@ def sample(net, num_steps):
 
 ## Kapatmak kolay
 
-- **Time parameterization。**Akış eşleşimi 使用 `t ∈ [0, 1]`, içinden `t=0`Evet, veriler.`t=1`Evet, bu sesli.`t ∈ [0, T]`, içinden `t=0`Evet, veriler.`t=T`Bu sesli bir yazı.
+- **Time parameterization。**Akış eşleşimi 使用 $t \in [0, 1]$, içinden $t=0$Evet, veriler.$t=1$Evet, bu sesli.$t \in [0, T]$, içinden $t=0$Evet, veriler.$t=T$Bu sesli bir yazı.
 - **Schedule choice。**Düzeltilmiş akışın düz çizgisi  akış eşleşme çizgisi, ama daha iyi bir ölçek kapsamı elde etmek için cosine veya logit-normal t-sampling kullanılabilir.
 - **Reflow cost。**Refluj için, her örnek tam bir sonuca ulaşır. Sadece 1-2 adım sonuca ulaşmak için bir sonuca ulaşmak gerekir.
-- **Classifier-free guidance 仍然适用。**Sadece online 组合中把 ε 换成 v:`v_cfg = (1+w) v_cond - w v_uncond`- Evet.
+- **Classifier-free guidance 仍然适用。**Sadece online birleştirmek gerekiyor.$\epsilon$换成 $v$- ...$v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$- Evet.
 
 ## Kullan
 
@@ -141,20 +141,20 @@ Sadece bir makale 2025-2026 yılları için difüzyon den hızlı, neredeyse her
 ## 练习
 
 1. **Easy。**运行  İşlem`code/main.py`, 1-Hatırlama ile 20-Hatırlama MSE karşılaştırın Gerçek Veri dağıtımının göstergesi
-2. **Medium。**Üniforma'dan.`t`Örnekleme 切换到logit-normal (d) 将采样集中在 t)  model 质量是否提升?
-3. **Hard。**实现一次反流 代:通过积分第一个模型 生成对 (x_0, x_1),在这些对上训练第二个模型,并比较1步样品质──
+2. **Medium。**Üniforma'dan.$t$Örnekleme 切换到logit-normal (d) 将采样集中在 t)  model 质量是否提升?
+3. **Hard。**实现一次回流 代: 通过积分第一个模型 生成对成 $(x_0, x_1)$Bu çiftlerde, ikinci model,并比较 1-step örnek kalitesi
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Flow matching | “Straight-line diffusion” | 训练 `v_θ(x, t)`，使其沿 interpolant 匹配 `x_1 - x_0`。 |
+| Flow matching | “Straight-line diffusion” | 训练 $v_\theta(x, t)$，使其沿 interpolant 匹配 $x_1 - x_0$。 |
 | Rectified flow | “Reflow” | 拉直已学习 flows 的迭代过程。 |
-| Velocity field | “v_θ” | model 的输出，即移动 `x_t` 的方向。 |
-| Straight-line interpolant | “The path” | `x_t = (1-t)·x_0 + t·x_1`；目标导数很简单。 |
+| Velocity field | “v_θ” | model 的输出，即移动 $x_t$ 的方向。 |
+| Straight-line interpolant | “The path” | $x_t = (1-t) \cdot x_0 + t \cdot x_1$；目标导数很简单。 |
 | Euler sampler | “1st order ODE solver” | 最简单的 integrator；当路径较直时效果很好。 |
-| Logit-normal t | “SD3 sampling” | 将 `t` sampling 集中到 gradients 最强的中间值附近。 |
-| Consistency distillation | “1-step sampler” | 训练 student 将任意 `x_t` 直接映射到 `x_0`。 |
-| CFG with velocity | “v-CFG” | `v_cfg = (1+w) v_cond - w v_uncond`；同样技巧，新的变量。 |
+| Logit-normal t | “SD3 sampling” | 将 $t$ sampling 集中到 gradients 最强的中间值附近。 |
+| Consistency distillation | “1-step sampler” | 训练 student 将任意 $x_t$ 直接映射到 $x_0$。 |
+| CFG with velocity | “v-CFG” | $v_{\text{cfg}} = (1+w) v_{\text{cond}} - w v_{\text{uncond}}$；同样技巧，新的变量。 |
 
 ## Üretim Notı:Flux.1-schnell en hızlı biçimdeki akış eşleşmesi
 

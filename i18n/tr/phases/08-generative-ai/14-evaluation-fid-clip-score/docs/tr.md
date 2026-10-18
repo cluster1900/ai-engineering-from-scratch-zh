@@ -26,13 +26,13 @@ Siz de göreceksiniz: IS(başlangıç puanı, temel olarak geri çekilmiştir) �
 Heusel et al. (2017)。步骤:
 
 1. N 张真像和 N 张生成图像提取 Başlangıç-v3 özellikleri (2048-D) ⋅
-2. Gaussian: hesaplama ortalaması`μ_r, μ_g`Ve eş değişkenlik`Σ_r, Σ_g`- Evet.
-3. FID = `||μ_r - μ_g||² + Tr(Σ_r + Σ_g - 2 · (Σ_r · Σ_g)^0.5)`- Evet.
+2. Gaussian: hesaplama ortalaması$\mu_r, \mu_g$Ve eş değişkenlik$\Sigma_r, \Sigma_g$- Evet.
+3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \mathop{\mathrm{Tr}}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$- Evet.
 
 Açıklama: Özellik uzayda iki çok değişken Gaussian  arasındaki Fréchet mesafe。越低 = 分布越相似。
 
 失效模式:
-- **小 N 时有偏。**FID ise özellik dağılımına karşı ortalama kare 計算,小 N 会低估共差, give give false of low FID──始终使用 N ≥ 10,000──
+- **小 N 时有偏。**FID ise özellik dağılımına karşı ortalama kare olarak hesaplanır, küçük N'e düşük değişkenlik değerlendirilir, sahte düşük FID verir.$N \ge 10{,}000$- Evet.
 - **依赖 Inception。**Başlangıç-v3 訓練于 ImageNet──遠離 ImageNet'in alanı(人脸、艺术、文字图像) anlamsız bir FID── kullanmak için belirli alan özellikleri ekstraktör oluşturur──
 - **刷分。**过拟 启动前可在没有视觉质量提升的情况下得到低FID──CMMD见下文) 对抗它──
 

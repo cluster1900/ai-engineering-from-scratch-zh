@@ -1,6 +1,6 @@
 # Otomatik kodlayıcılar ve Variasyonel Otomatik kodlayıcılar (VAE)
 
-> Normal Autoencoder önceden basınç yeniden yapılandırılması. O zaman hatırlayacaktır.`z = μ + σ·ε`2026 yılında kullanılacak her gizli yayılma ve akış eşleşen görüntü modeli için giriş ucunda bir VAE vardır.
+> Normal Autoencoder önceden basınç yeniden yapılandırılması. O zaman hatırlayacaktır.$z = \mu + \sigma \cdot \epsilon$2026 yılında kullanılacak her gizli yayılma ve akış eşleşen görüntü modeli için giriş ucunda bir VAE vardır.
 
 **Type:** Build
 **Languages:** Python
@@ -11,9 +11,9 @@
 
 784 piksellik bir MNIST rakamını 16 rakamlı kod olarak sıkıştırıp yeniden yapılandırın. Normal Otomocikodör MSE'nin yeniden yapılandırılmasında çok iyi performans gösterir. Ancak kod alanı bir 凸不平的混乱だ.
 
-Gerçekten istediğin şey: a) kod alanı, örneğin izotropik Gaussian gibi, örneğin örneğin örneğin örneğin, temiz, düz ve temiz bir dağılımdır.`N(0, I)`,(b) herhangi bir örnek çözmek için makul bir rakam oluşturabilir, c) kodlayıcı ve dekodör hala çok iyi bir şekilde sıkıştırılabilir.
+Gerçekten istediğin şey: a) kod alanı, örneğin izotropik Gaussian gibi, örneğin örneğin örneğin örneğin, temiz, düz ve temiz bir dağılımdır.$\mathcal{N}(0, I)$,(b) herhangi bir örnek çözmek için makul bir rakam oluşturabilir, c) kodlayıcı ve dekodör hala çok iyi bir şekilde sıkıştırılabilir.
 
-Kingma'nın 2013 VAE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       `q(z|x) = N(μ(x), σ(x)²)`Sorunu çözmek için, KL cezasını kullanın.`N(0, I)`Sonra da dekode edersin.`q(z|x)`örnek`z`- Anlamda, kodlayıcıyı kaybettim.`z ~ N(0, I)`KL cezası, kod alanını zorla yapılandırma mekanizmasıdır.
+Kingma'nın 2013 VAE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $q(z \mid x) = \mathcal{N}(\mu(x), \sigma(x)^2)$Sorunu çözmek için, KL cezasını kullanın.$\mathcal{N}(0, I)$Sonra da dekode edersin.$q(z \mid x)$örnek$z$- Anlamda, kodlayıcıyı kaybettim.$z \sim \mathcal{N}(0, I)$KL cezası, kod alanını zorla yapılandırma mekanizmasıdır.
 
 2026 yılında, VAE 很少单独交付  原始画像品質上上它们已经被扩散超越  ,但它们是每个潜散播模型的首选编码器 (SD 1/2/XL/3、Flux、AudioCraft) ∙
 
@@ -21,22 +21,24 @@ Kingma'nın 2013 VAE                                                            
 
 ![Autoencoder vs VAE: the reparameterization trick](../assets/vae.svg)
 
-**Autoencoder.** `z = encoder(x)`- Evet .`x̂ = decoder(z)`, kayıp = `||x - x̂||²`◊Kod alanı 无结构。
+**Autoencoder.** $z = \text{encoder}(x)$- Evet .$\hat{x} = \text{decoder}(z)$, kayıp = $\lVert x - \hat{x} \rVert^2$◊Kod alanı 无结构。
 
-**VAE encoder.**输出 iki vektör:`μ(x)`和 `log σ²(x)`- Definiyorlar.`q(z|x) = N(μ, diag(σ²))`- Evet.
+**VAE encoder.**输出 iki vektör:$\mu(x)$和 $\log \sigma^2(x)$- Definiyorlar.$q(z \mid x) = \mathcal{N}(\mu, \mathop{\mathrm{diag}}(\sigma^2))$- Evet.
 
-**Reparameterization trick.**- Evet .`q(z|x)`Örnek küçük değil.`z = μ + σ·ε`, içinden `ε ~ N(0, I)`Şimdi.`z`Evet .`(μ, σ)`                                                                                                                                                                                                                                                              `μ`和 `σ`- Evet.
+**Reparameterization trick.**- Evet .$q(z \mid x)$Örnek küçük değil.$z = \mu + \sigma \cdot \epsilon$, içinden $\epsilon \sim \mathcal{N}(0, I)$Şimdi.$z$Evet .$(\mu, \sigma)$                                                                                                                                                                                                                                                              `μ`和 $\sigma$- Evet.
 
 **Loss.**Kanıt Alt Bağlantısı (ELBO), iki bölüm:
 
-```
-loss = reconstruction + β · KL[q(z|x) || N(0, I)]
-     = ||x - x̂||²  + β · Σ_i ( σ_i² + μ_i² - log σ_i² - 1 ) / 2
+```math
+\begin{aligned}
+\text{loss} &= \text{重建误差} + \beta \cdot \mathrm{KL}[q(z \mid x) \,\Vert\, \mathcal{N}(0, I)] \\
+&= \lVert x - \hat{x} \rVert^2 + \beta \cdot \sum_i \frac{\sigma_i^2 + \mu_i^2 - \log \sigma_i^2 - 1}{2}
+\end{aligned}
 ```
 
-Yeniden inşaat`x̂`推向 `x`- KL Onu`q(z|x)`推向前──它们相互权衡──小 β (<1) = 更利的样本,代码空间 不那么 Gaussian──大 β (>1) = 更干净的代码空间,更模糊的样本──β-VAE(Higgins 2017) Bu dönemi ünlü kılsın,并开启了解解研究──
+Yeniden inşaat$\hat{x}$推向 $x$- KL Onu$q(z \mid x)$推向前──它们相互权衡──小 $\beta$($<1$) = daha fazla 利 örnekleri, kod alanı 不那么高斯人──大$\beta$($>1$) = 更干净的代码空间,更模糊的样本──β-VAE(Higgins 2017) bu dönemi ünlü kılmak için, ayrıştırma araştırmasını başlattı──
 
-**Sampling.**İndirim: 抽取 `z ~ N(0, I)`,decode üzerinden ileriye geçmek için bir kez ileriye geçmek için  不像拡散 那样需要反复采样──
+**Sampling.**İndirim: 抽取 $z \sim \mathcal{N}(0, I)$,decode üzerinden ileriye geçmek için bir kez ileriye geçmek için  不像拡散 那样需要反复采样──
 
 
 ```figure
@@ -57,7 +59,7 @@ def encode(x, enc):
     return mu, log_sigma2
 ```
 
-Kullanım`log σ²`Hayır.`σ`, bu şekilde ağ çıkışı kısıtlanmaz (((bu yüzden ≈ 0 时梯度会消失)
+Kullanım$\log \sigma^2$Hayır.$\sigma$, bu şekilde ağ çıkışı kısıtlı değil$\sigma \approx 0$时 gradients 会消失) 』
 
 ### Adım 2: yeniden ölçümleme ve çözme
 
@@ -95,9 +97,9 @@ def sample(dec, z_dim, rng):
 
 ## Tuzaklar
 
-- **Posterior collapse.**KL terimi 过于激进地驱动 `q(z|x) → N(0, I)`, neden oluyor`z`- Hayır.`x`Bu, bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir süre sonra bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürece bir sürecececececececece bir sürecececece bir sürececececececececececececececececececececececececececececececece
+- **Posterior collapse.**KL terimi 过于激进地驱动 $q(z \mid x) \to \mathcal{N}(0, I)$, neden oluyor$z$- Hayır.$x$Bu yüzden de bu konuda bir şey yapmamalıyız.$\beta=0$開始, adım adım 1) ̳free bits'e yükselmek veya aktif olmayan boyutlarda KL'den atlamak.
 - **Blurry samples.**Gaussian dekoder olasılığı, MSE yeniden yapılandırması anlamına gelir, L2 ile karşılaştırıldığında Bayes-optimaldır (mean)                                                                                                                                                                                                                                              
-- **β too large, too early.**见后倒──从 β≈0.01 开始并逐步坡──
+- **β too large, too early.**见后倒塌──从 $\beta \approx 0.01$開始并逐步 ramp──
 - **Latent dim too small.**16-D  MNIST için uygundur,256-D  ImageNet için uygundur 2562,2048-D  ImageNet için uygundur 10242。Stable Diffusion'ın VAE'si 512×512×3   64×64×4 
 
 ## Kullan
@@ -119,32 +121,32 @@ gizli yayılma modeli ise bir VAE, ortasında bir yayılma modeli bulunmaktadır
 
 保存 `outputs/skill-vae-trainer.md`- Evet.
 
-Yetenek 接收:dataset profil + laten-dim hedef + aşağı akıntılı kullanımı(rekonstrüksiyon、sampling veya laten-diffusion giriş),并输出:architektür seçimi(sırın/β/VQ/RVQ)、β çizelge、latent dim、decoder olasılığı(Gaussian vs kategorik), ve değerlendirme planı(dim başına MSE、KL tanımlamak、`q(z|x)`和 `N(0, I)`之间的 Fréchet mesafe)
+Yetenek 接收:dataset profil + laten-dim hedef + aşağı akıntılı kullanımı(rekonstrüksiyon、sampling veya laten-diffusion giriş),并输出:architektür seçimi(sırın/β/VQ/RVQ)、β çizelge、latent dim、decoder olasılığı(Gaussian vs kategorik), ve değerlendirme planı(dim başına MSE、KL tanımlamak、$q(z \mid x)$和 $\mathcal{N}(0, I)$之间的 Fréchet mesafe)
 
 ## Egzersizler
 
-1. **Easy.**- Ne ?`code/main.py`Orta `β`改为 `0.01`- Evet.`0.1`- Evet.`1.0`- Evet.`5.0`▽ 记录最终重建 MSE 和 KL── Senin sentetik veriler için, hangi β Pareto en iyisi?
+1. **Easy.**- Ne ?`code/main.py`Orta $\beta$改为 `0.01`- Evet.`0.1`- Evet.`1.0`- Evet.`5.0` Kayıt: MSE ve KL: Son Yenilenme$\beta$Pareto-en iyisi mi?
 2. **Medium.**Bernoulli olasılığı ile (cross-entropy loss) Gaussian decoder olasılığını değiştirmek.
-3. **Hard.**- Ben de .`code/main.py`扩展成一个 mini VQ-VAE:用 K=32 girişleri 的代码簿 中的近邻搜索 替换连续 `z`❖ MSE'nin yeniden inşası ile karşılaştırıldığında,并 rapor kod defteri girişlerinin sayısı kullanılıyor.
+3. **Hard.**- Ben de .`code/main.py`扩展成一个 mini VQ-VAE:用 K=32 girişleri 的代码簿 中的近邻搜索 替换连续 $z$❖ MSE'nin yeniden inşası ile karşılaştırıldığında,并 rapor kod defteri girişlerinin sayısı kullanılıyor.
 
 ## Anahtar Terimler
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Autoencoder | Encode-decode network | `x → z → x̂`，学习 MSE。不是 generative。 |
+| Autoencoder | Encode-decode network | $x \to z \to \hat{x}$，学习 MSE。不是 generative。 |
 | VAE | 带 sampler 的 AE | Encoder 输出一个 distribution，KL penalty 塑造 code space。 |
-| ELBO | Evidence lower bound | `log p(x) ≥ recon - KL[q(z\|x) \|\| p(z)]`；当 `q = p(z\|x)` 时 tight。 |
-| Reparameterization | `z = μ + σ·ε` | 将 stochastic node 重写为 deterministic + pure noise。使 sampling 可参与 backprop。 |
-| Prior | `p(z)` | latent 的目标 distribution，通常是 `N(0, I)`。 |
-| Posterior collapse | “KL term wins” | Encoder 忽略 `x`，输出 prior；decoder 必须 hallucinate。 |
-| β-VAE | 可调 KL weight | `loss = recon + β·KL`。更高 β = 更 disentangled 但更模糊。 |
-| VQ-VAE | Discrete latent | 用 nearest codebook vector 替换 continuous `z`；支持 transformer modelling。 |
+| ELBO | Evidence lower bound | $\log p(x) \ge \text{recon} - \mathrm{KL}[q(z \mid x) \Vert p(z)]$；当 $q = p(z \mid x)$ 时 tight。 |
+| Reparameterization | $z = \mu + \sigma \cdot \epsilon$ | 将 stochastic node 重写为 deterministic + pure noise。使 sampling 可参与 backprop。 |
+| Prior | $p(z)$ | latent 的目标 distribution，通常是 $\mathcal{N}(0, I)$。 |
+| Posterior collapse | “KL term wins” | Encoder 忽略 $x$，输出 prior；decoder 必须 hallucinate。 |
+| β-VAE | 可调 KL weight | $\text{loss} = \text{recon} + \beta \cdot \mathrm{KL}$。更高 $\beta$ = 更 disentangled 但更模糊。 |
+| VQ-VAE | Discrete latent | 用 nearest codebook vector 替换 continuous $z$；支持 transformer modelling。 |
 
 ## 生产提示:VAE yayılma sunucusu 中最热的路径
 
 Stable Diffusion / Flux / SD3 borusunda,VAE Her istek iki kez  bir kez kodlanmak için kullanılır, eğer img2img / boyanmak yapılırsa), bir kez dekode etmek için kullanılır.`128×128×16`gizli örnek 回 `1024×1024×3`❖ İki gerçek sonuç:
 
-- **对 decode 做 slicing 或 tiling。** `diffusers` exposition `pipe.vae.enable_slicing()`和 `pipe.vae.enable_tiling()`❖ Tiling 用少量 縫製器具 换取 `O(tile²)`- Anımsamaya çalışıyorum.`O(H·W)`◊ tüketicilerin GPU'ları için ⇒ 10242+ 至关重要──
+- **对 decode 做 slicing 或 tiling。** `diffusers` exposition `pipe.vae.enable_slicing()`和 `pipe.vae.enable_tiling()`❖ Tiling 用少量 縫製器具 换取 $O(\text{tile}^2)$- Anımsamaya çalışıyorum.$O(H \cdot W)$◊ tüketicilerin GPU'ları için ⇒ 10242+ 至关重要──
 - **bf16 decoder，最终 resize 使用 fp32 numerics。**SD 1.x VAE 以 fp32 发布,并在10242+ 被 cast到fp16 时会 *静默产生 NaNs*──SDXL 提供 `madebyollin/sdxl-vae-fp16-fix` 总是优先使用 fp16-fix variant,或使用 bf16──
 
 ## Daha Fazla Okumak
