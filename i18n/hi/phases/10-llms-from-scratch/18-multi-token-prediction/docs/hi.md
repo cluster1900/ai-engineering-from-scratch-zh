@@ -39,27 +39,29 @@ MTP  ने पूछा प्रश्न यह हैः यदि प्र
 
  प्रशिक्षण समय, के लिए स्थिति के लिए `i`का पूर्वावचन, गहराई से छिपा हुआ राज्य 为:
 
-```
-h_i^(0) = main model backbone at position i
-h_i^(k) = T_k( M_k * concat(RMSNorm(h_i^(k-1)), RMSNorm(E(t_{i+k}))) )   for k >= 1
+```math
+\begin{aligned}
+h_i^{(0)} &= \text{main model backbone at position } i \\
+h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMSNorm}}(h_i^{(k-1)}), \mathop{\mathrm{RMSNorm}}(E(t_{i+k}))\big) \Big) \quad \text{for } k \ge 1
+\end{aligned}
 ```
 
 गहन भविष्यवाणी 为:
 
-```
-logits_{i+k} = Out(h_i^(k-1))   for k = 1..D
+```math
+\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
 ```
 
 गहनता का नुकसान मूल सत्य के प्रति है`t_{i+k}`का क्रॉस-एंट्रोपीः
 
-```
-L_k = CE(logits_{i+k}, t_{i+k})
+```math
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
 ```
 
 跨 गहराई का जोड़ खोना:
 
-```
-L_MTP = (lambda / D) * sum_{k=1..D} L_k
+```math
+L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 ```
 
 `lambda`यह एक छोटा वजन कारक है, डीपसेक-वी3 प्रशिक्षण से पहले 10% उपयोग 0.3, उसके बाद उपयोग 0.1── कुल प्रशिक्षण हानि के लिए `L_main + L_MTP`
@@ -175,7 +177,7 @@ softmax(logits) तुलना में ऑफसेट `k`处 मूल-स�
 
 2. 计算一个密集70B 模型( छिपे हुए 8192,80 层) D=1 MTP मॉड्यूल में 下的参数开销── DeepSeek-V3 报告的 14B 开销进行比较──解释为什么 DeepSeek के数字更高:MTP ट्रांसफार्मर ब्लॉक 继承了相同的MoE 结构,从而增加了每模块 参数──
 
-3. खेल में D=2 को लागू करेंः दूसरा MTP मॉड्यूल जोड़ें, h^(1) को प्राप्त करें और पूर्वानुमान `t_{i+2}`验证 संयुक्त हानि 和参数核算 के साथ डीपसेक पेपर के समीकरण 19-21 匹配──
+3. खेल में D = 2 को लागू करेंः दूसरा MTP मॉड्यूल जोड़ें, प्राप्त करें $h^{(1)}$并预测 `t_{i+2}`验证 संयुक्त हानि 和参数核算 के साथ डीपसेक पेपर के समीकरण 19-21 匹配──
 
 4.                                                                                                                                                                                                                                                               
 
@@ -191,8 +193,8 @@ softmax(logits) तुलना में ऑफसेट `k`处 मूल-स�
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |
 | Shared embedding | “复用主 table” | 同一个 vocabulary embedding table 在所有地方使用；没有重复参数 |
-| Projection matrix M_k | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
-| Joint loss L_MTP | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
+| Projection matrix $M_k$ | “结合 hidden + next-token” | 一个 `h x 2h` linear layer，将前一个 hidden state 和 target-token embedding 折叠为下一深度的输入 |
+| Joint loss $L_{\text{MTP}}$ | “平均额外 losses” | per-depth cross-entropy losses 的算术平均值，并按 `lambda` 缩放 |
 | Acceptance rate at depth 1 | “MTP draft 多常正确” | D=1 MTP module 的 top-1 prediction 等于主模型 top-1 prediction 的比例；DeepSeek-V3 上超过 80% |
 | Lambda weighting | “额外 loss 的重要性” | per-depth 缩放因子；DeepSeek-V3 在训练开始时为 0.3，之后为 0.1 |
 

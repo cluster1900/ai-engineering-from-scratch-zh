@@ -11,7 +11,7 @@
 - DPO प्रशिक्षण को प्राप्त करना, सीधे प्राथमिकता जोड़े पर अप्टिमाइज़ेशन भाषा मॉडल का उपयोग न करें, एकल इनाम मॉडल का उपयोग न करें
 - 推导 DPO हानि समारोह,并解释 यह कैसे नीति के लॉग संभावनाओं के माध्यम से 隐式表示奖励模型
 - प्रशिक्षण स्थिरता, गणना लागत और आवश्यक मॉडल संख्या के कोण से तुलना करें डीपीओ और आरएलएचएफ
-- 调节 बीटा 参数,控制训练后的政策 偏离参考模型的程度
+- 调节 $\beta$参数, नियंत्रण प्रशिक्षण के बाद की नीति  संदर्भ मॉडल से विचलन की डिग्री
 
 ## 问题
 आप पाठ 07 में एक आरएलएचएफ पाइपलाइन का निर्माण करते हैं── तीन चरणों── तीन मॉडल── एसएफटी मॉडल、 इनाम मॉडल, तथा पीपीओ  अनुकूलन नीति मॉडल── केवल इनाम मॉडल की आवश्यकता होती है हजारों व्यक्तिगत वर्ग वरीयता जोड़े तथा एक अलग प्रशिक्षण लूप── पीपीओ 仔细调节 KL गुणांक、शिक्षा दर、क्लिप अनुपात तथा युग संख्या──
@@ -29,51 +29,53 @@
 
 RLHF 优化 इस लक्ष्य:
 
-```
-maximize: E[R(x, y)] - beta * KL(pi || pi_ref)
-```
-
-इनमें R इनाम मॉडल है, pi नीति है, pi_ref संदर्भ मॉडल है, beta KL गुणांक है。
-
-डीपीओ पेपर 证明, इस लक्ष्य के अस्तित्व का खुलासा किया गया है 
-
-```
-pi*(y | x) = pi_ref(y | x) * exp(R(x, y) / beta) / Z(x)
+```math
+\text{maximize:} \quad \mathbb{E}[R(x, y)] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
-इनमें से Z ((x) है पुनः एकीकरण सामान्य संख्याएँ
+उनमें से $R$इनाम मॉडल है,$\pi$नीति है,$\pi_{\text{ref}}$यह संदर्भ मॉडल है,$\beta$यह KL गुणांक है।
 
+डीपीओ पेपर  सबूत, इस लक्ष्य का अस्तित्व बंद है $R$, सबसे अच्छा नीति हैः
+
+```math
+\pi^*(y \mid x) = \pi_{\text{ref}}(y \mid x) \cdot \exp(R(x, y) / \beta) / Z(x)
 ```
-R(x, y) = beta * log(pi*(y | x) / pi_ref(y | x)) + beta * log Z(x)
+
+उनमें से $Z(x)$है पुनः एकीकरण सामान्य संख्याएँ
+
+```math
+R(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 यही है सफलता बिंदु। इनाम पूरी तरह से नीति मॉडल की संभावना और संदर्भ मॉडल की संभावना का उपयोग करके व्यक्त करना है। आपको एक अलग इनाम मॉडल को प्रशिक्षित करने की आवश्यकता नहीं है। इनाम  छिपा हुआ  शामिल है 
 
 ब्रैडली-टेरी प्राथमिकता मॉडल में इसे बदलनाः
 
-```
-P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))
-                  = sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x)))
+```math
+\begin{aligned}
+P(y_w > y_l \mid x) &= \mathop{\mathrm{sigmoid}}(R(x, y_w) - R(x, y_l)) \\
+&= \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
+\end{aligned}
 ```
 
-Z(x) 项会抵消, चूंकि दो प्रतिक्रियाएं एक ही प्रॉम्प्ट x 为条件―― शेष केवल नीति मॉडल तथा संदर्भ मॉडल में पसंदीदा और अस्वीकृत प्रतिक्रियाओं के ऊपर लॉग-संभाव्यताओं का फ़ंक्शन है――
+$Z(x)$                                                                                                                                                                                                                                                              $x$条件――残下的只是政策模型和参考模型 在                                                                                                                                                                                                                                                         
 
 ### डीपीओ का नुकसान
 
-```
-L_DPO = -log(sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x))))
+```math
+L_{\text{DPO}} = -\log \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
 ```
 
 हम हर भाग को तोड़ दियाः
 
-- **y_w**= पसंदीदा (जीत) प्रतिक्रिया
-- **y_l**= अस्वीकार किया गया
-- **x**= शीघ्र
-- **pi**= 当前模型(正在训练)
-- **pi_ref**= संदर्भ मॉडल ((结的 SFT चेक पॉइंट)
-- **beta**=  नियंत्रण 偏离 参照 डिग्री  तापमान 参数(आमतौर पर 0.1 से 0.5)
+- **$y_w$**= पसंदीदा (जीत) प्रतिक्रिया
+- **$y_l$**= अस्वीकार किया गया
+- **$x$**= शीघ्र
+- **$\pi$**= 当前模型(正在训练)
+- **$\pi_{\text{ref}}$**= संदर्भ मॉडल ((结的 SFT चेक पॉइंट)
+- **$\beta$**=  नियंत्रण 偏离 参照 डिग्री  तापमान 参数(आमतौर पर 0.1 से 0.5)
 
-比值 `log pi(y|x) / pi_ref(y|x)`यह लॉग-प्रभाव्यता अनुपात है। जब यह अनुपात सही समय के लिए होता है, तो वर्तमान मॉडल प्रतिक्रिया प्रदान करता है और संदर्भ से अधिक संभावना है।
+比值 `log pi(y|x) / pi_ref(y|x)`यह लॉग-प्रभाव्यता अनुपात है।$y$संदर्भ से अधिक संभावना है। जब यह नकारात्मक होता है, तो वर्तमान मॉडल के लिए अधिक संभावना कम होती है।
 
 डीपीओ हानि मॉडल को बढ़ावा देगा पसंदीदा प्रतिक्रियाओं के लॉग-संभाव्यता अनुपात में वृद्धि, और अस्वीकृत प्रतिक्रियाओं के लॉग-संभाव्यता अनुपात में कमी करेगा।
 
@@ -634,7 +636,7 @@ if __name__ == "__main__":
 | DPO | “没有 RL 的 RLHF” | Direct Preference Optimization：一种 supervised learning algorithm，直接在 preference pairs 上优化语言模型，绕过 reward model 和 PPO |
 | Implicit reward | “reward 在模型里” | reward function 由 policy 与 reference models 之间的 log-probability ratio 决定，不需要单独的 reward model |
 | Beta (DPO) | “temperature” | 控制 policy 可以偏离 reference model 的程度：小 beta 允许大偏离，大 beta 让模型保持接近 |
-| Log-probability ratio | “模型变化了多少” | log pi(y\|x) - log pi_ref(y\|x)：正值表示当前模型分配的概率高于 reference |
+| Log-probability ratio | “模型变化了多少” | $\log \pi(y \mid x) - \log \pi_{\text{ref}}(y \mid x)$：正值表示当前模型分配的概率高于 reference |
 | Reference model | “冻结的 checkpoint” | SFT model 的一个副本，其 weights 永不改变，用作计算概率比的锚点 |
 | KTO | “没有成对数据的 DPO” | Kahneman-Tversky Optimization：使用未配对的“good”或“bad”labels，而不是要求 preference pairs |
 | ORPO | “一步 alignment” | Odds Ratio Preference Optimization：通过向 SFT Loss 添加 preference term，将 SFT 和 alignment 合并到单个 training loop |

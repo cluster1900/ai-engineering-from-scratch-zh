@@ -49,8 +49,8 @@
 
 LayerNorm 会减减平均值、除以 std、缩放并平移──RMSNorm केवल संकुचन को बरकरार रखता हैः
 
-```
-RMSNorm(x) = x / sqrt(mean(x^2) + eps) * gamma
+```math
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 没有均值消除──没有偏见──每个代币少一次 matmul── Zhang and Sennrich (2019) 认为它在机器翻译上可以匹配LayerNorm,同时快 10%──所有现代开放模型都使用它──
@@ -75,8 +75,8 @@ score = q_rotated . k_rotated
 
 जीपीटी-2 का एमएलपी`x -> gelu(xW1 + b1) -> (...)W2 + b2`✿SwiGLU(Shazeer 2020) के साथ बंद उत्पाद 替换 सक्रियण:
 
-```
-SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
+```math
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 两个并行投影,而不是一个, स्विश सक्रियण द्वारा 进行门――实证上, यह प्रत्येक参数 गुंतागुंती上更强――Llama 2 采用它, उसके बाद सभी ने अनुसरण किया――MLP के छिपे आकार को आमतौर पर सेट किया जाता है ताकि कुल参数 संख्या मूल घने MLP से मेल खाएः यदि GPT-2 उपयोग `ff_dim = 4 * hidden`,SwiGLU प्रयोग `ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`
@@ -87,7 +87,7 @@ GPT-2 使用 **Multi-Head Attention (MHA)**: प्रत्येक सिर 
 
 **Multi-Query Attention (MQA, Shazeer 2019)**सभी सिरों के बीच एक K और एक V को साझा करना  KV कैश  संख्या_सिरों के अनुसार  संकुचित करना, एक विशिष्ट मॉडल पर 12x से 32x तक की गिरावट है सटीकता में कठिनाई बेंचमार्क 
 
-**Grouped-Query Attention (GQA, Ainslie et al. 2023)**यह मध्यक्रम है:G 组 Q heads 共享一个K 和一个V──Llama 3 8B GQA का प्रयोग करें, जिसमें 32 个Q heads 和 8 个KV heads(G=8), इसलिए相相比较完整MHA,KV cache 缩小4x──
+**Grouped-Query Attention (GQA, Ainslie et al. 2023)**मध्यवर्ती समाधानः$G$组 Q हेड 共享一个K 和一个V──Llama 3 8B 使用 GQA,包含32 个Q हेड 和8个KV हेड($G=8$), इसलिए पूर्ण MHA से तुलना में, KV कैश 4x छोटा ⋅
 
 **Multi-Head Latent Attention (MLA, DeepSeek 2024)**K और V को कम रैंक वाले साझा लटेंट में संकुचित करना, फिर से सिर पर दबाकर 投影回去── यह KV कैश को और कम करता है, जबकि प्रत्येक सिर की अभिव्यक्ति क्षमता को बरकरार रखता है──DeepSeek-V2 और V3 यह दीर्घ संदर्भ प्रदर्शन को प्राप्त करने पर निर्भर करता है──
 
@@ -151,6 +151,7 @@ graph LR
 | Qwen 2.5 72B | 2024 | 72B | 72B | RMSNorm | SwiGLU | RoPE (YaRN) | GQA (64/8) | no | 128k |
 | DeepSeek V2 236B | 2024 | 236B | 21B | RMSNorm | SwiGLU | RoPE | MLA | yes (160 experts, top-6) | 128k |
 | DeepSeek V3 | 2024 | 671B | 37B | RMSNorm | SwiGLU | RoPE | MLA | yes (256 experts, top-8) | 128k |
+| Spark-X2.5 4B | 2026 | 4.1B | 4.1B | RMSNorm | GeGLU | RoPE + sliding (3:1) | GQA (16/4)，门控输出 | 否 | 1M |
 
 扫描这些列──RMSNorm 是通用──SwiGLU 或其GEGLU 近亲是通用──RoPE 是通用──7B 以上 GQA 是通用,除非被MLA 替代──MoE 是最高端模型的差异点──
 
@@ -173,6 +174,11 @@ Llama 3 8B कॉन्फ़िगरेशनः
 ```
 
 हर एक खंड आपके द्वारा प्राप्त किए गए कार्यों के लिए है।
+नए कॉन्फ़िगरेशन में कुछ फ़ील्ड जोड़े गए हैं जो गणना के तरीके को बदल देंगे, इसलिए गणनाकर्ता इन फ़ील्ड में मौजूद होने पर उन्हें पढ़ता हैः
+
+- `head_dim`: जब यह बराबर नहीं है `hidden_size / num_attention_heads`时, स्पष्ट सेटिंग की आवश्यकता है.`head_dim`256 के लिए, इसलिए इसका क्यू प्रोजेक्शन 3584 x 4096 है, बजाय एक फव्वारे के।
+- `tie_word_embeddings`:LM head 是否复用嵌入矩阵──Llama 3 8B 不共享两者,因此如果只计算一次嵌入,就会漏掉525M参数──
+- `layer_types`和 `sliding_window`: कौन सी परतें पूर्ण संदर्भ में भाग लेते हैं, कौन सी केवल हाल के W 个 टोकन में भाग लेते हैं
 
 - `hidden_size`: सम्मिलित आयाम
 - `intermediate_size`: एमएलपी छिपा आकार(3.5x छिपा -- SwiGLU 数学) 』
@@ -209,6 +215,15 @@ Llama 3 8B में 128k संदर्भ BF16 head_dim = छिपा / num_
 
 8B वजन BF16 में 16 GB है। 128k अनुक्रम के एकल KV कैश वजन से भी बड़ा है। यह GQA, MLA और KV कैश क्वांटिज़ेशन के अध्ययन के मेमोरी दबाव को बढ़ावा देता है।
 
+उपर्युक्त सूत्रों का मानना है कि प्रत्येक स्तर में पूर्ण अनुक्रम का संग्रह किया जाता है।
+
+```text
+kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
+           * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
+```
+
+स्पार्क-एक्स2.5 4B प्रत्येक पूर्ण ध्यान परत 搭配三滑窗 परतों($W = 512$):36 層 में से 9 層 पूर्ण तह 和 27 層 स्लाइडिंग 層 हैं। नीचे, 1M-token संदर्भ में BF16 时, प्रत्येक अनुक्रम 约需 38.7 GB(36 GiB) ⋅ यदि सभी 36 層都缓存完整文脈,则需要 154.6 GB(144 GiB) ⋅ पूर्ण तह 承担了几乎全部开销, इसलिए लंबे संदर्भ मॉडल 时,应首先关注全层与滑层的比例──
+
 ### जब प्रत्येक मॉडल जीतता है
 
 - **单张 80GB GPU，无 MoE**                                                                                                                                                                                                                                                              
@@ -216,6 +231,7 @@ Llama 3 8B में 128k संदर्भ BF16 head_dim = छिपा / num_
 - **最大的 open capability，可接受 MoE 复杂度**:DeepSeek V3、मिश्रित 8x22B── प्रत्येक सक्रिय FLOP की क्षमता 最佳──
 - **Long-context 需求**:Llama 3 ((ROPE स्केलिंग के माध्यम से  128k तक पहुंचें) DeepSeek ((MLA 优势) 👇
 - **Low-latency serving**:Gemma 2 9B(स्लाइडिंग विंडो 降低 दीर्घ संदर्भ गणना)
+- **较小内存预算下的长上下文**:स्पार्क-एक्स2.5 4बी आदि हाइब्रिड स्लाइडिंग-विंडो मॉडल, केवल चौथाई परतें पूर्ण संदर्भ का संचालन करती हैं।
 
 
 ```figure
@@ -234,12 +250,16 @@ config = {
 }
 ```
 
-脚本会逐字段遍历架构,计算嵌入、注意(带 GQA कमी)、MLP(带 SwiGLU विस्तार)、层规范和头的参数──然后它会根据给定背景长度计算 KV缓存,并打印总结──
+脚本会逐字段遍历架构,计算嵌入、注意(带 GQA कमी, और कॉन्फ़िग 设置时使用显式 `head_dim`)、MLP(带SwiGLU या GeGLU विस्तार)、layernorms,以及不与嵌入 共享权重时的LM head 参数── उसके बाद यह एक दिए गए संदर्भ लंबाई के अनुसार KV कैश की गणना करेगा, स्लाइडिंग-विंडो परतों के भंडारण को अपने-अपने विंडो में सीमित करेगा,并打印总结──
+
+ घने मॉडल के लिए, कुल参数 और खुले में मौजूद参数 पूरी तरह से मेल खाते हैंःLlama 3 8B = 8,030,261,248,Gemma 2 9B = 9,241,705,984,Spark-X2.5 4B = 4,112,079,360。Qwen 2.5 72B = 819,200, यह भी अभ्यास 1 की सामग्री है。
 
 实现见 `code/main.py`
 
 ## इसका उपयोग करें
 运行计算器,脚本中捆绑的Llama 3 8B、Mistral 7B、Mixtral 8x7B 和 DeepSeek V3 कॉन्फिग्स──比较参数分解──注意 MoE मॉडल के कुल参数远超密集型,但活参数数数往往更小──注意 DeepSeek V3 के KV कैश 虽然总参数更多,但却小于Llama 3 405B के KV कैश--这是 MLA का प्रभाव──
+
+️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️
 
 फिर अपने स्थानीय मॉडल के कॉन्फ़िग में डाल, सारांश पढ़ें, और यह तय करें कि यह आपके GPU के लिए उपयुक्त है या नहीं।
 
@@ -268,7 +288,7 @@ config = {
 | MoE | “Sparse experts” | Mixture of Experts：每个 block 有 N 个 MLPs，router 为每个 Token 选择 top-k -- 巨大的 total params，较小的 active params |
 | Top-k routing | “每个 Token 选择 k 个 experts” | Router 为每个 expert 计算分数，并激活最高的 k 个 -- 典型 k 从 2（Mixtral）到 8（DeepSeek） |
 | YaRN | “拉伸 RoPE” | Yet another RoPE extension -- 通过插值 rotary angles，在 inference 时将 context 从 8k 扩展到 128k+ |
-| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 W 个 Tokens -- 将 attention cost 限制为每 Token O(W)，用于 Gemma 2 和早期 Mistral |
+| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 $W$ 个 Tokens -- 将 attention cost 限制为每 Token $O(W)$，用于 Gemma 2 和早期 Mistral |
 | Active params | “每个 Token 实际运行的部分” | 对于 MoE models，指每个 Token 会经历 forward pass 的参数量（远小于 total params）-- 决定 per-token FLOPs |
 
 ## 延伸阅读

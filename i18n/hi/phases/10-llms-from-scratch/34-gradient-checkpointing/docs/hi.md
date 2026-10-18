@@ -37,13 +37,13 @@
 - स्मृति:32 个 परत इनपुट(小) के लिए 32 *( प्रति परत सक्रियण मात्रा)
 - 额外计算: प्रत्येक खंड 额外 1 बार आगे, यानि कुल आगे FLOPs 约 33% बढ़े हैं, क्योंकि पीछे की ओर अग्रिम की 2x है, पूर्ण चरण से 1 + 2 = 3 个单位变为 1 + 1 + 2 = 4 个单位) 
 
-यह मूल रूप से Chen et al. 2016 का कार्यक्रम हैः प्रति `sqrt(L)`层放一个检查点,以平衡记忆和计算――对于L=64,就是8个检查点――
+यह मूल रूप से Chen et al. 2016 का कार्यक्रम हैः प्रति `sqrt(L)`层放一个检查点,以平衡记忆和计算.$L=64$,就是 8  चेक पॉइंट्स
 
 ### चुनिंदा चेकपॉइंटिंग (कोर्तिकान्ती 2022)
 
 सभी सक्रियण मूल्य की लागत समान नहीं है। ध्यान softmax 输出是 `B*L*L*heads`,并随序列 लंबाई *二次* 增长──FFN छिपे सक्रियण 是 `B*L*4d`,线性增长──长序列,softmax 占主导──
 
-चयनात्मक चेकपॉइंटिंग, भंडारण लागत कम के सक्रिय मूल्य को बनाए रखने के लिए, केवल महंगे भाग को पुनः गणना करने के लिए, ध्यान दें।
+चयनित चेकपोइंटिंग में भंडारण लागत कम के सक्रिय मूल्य को बनाए रखा जाएगा, केवल महंगे भाग को पुनः गणना किया जाएगा, ध्यान दिया जाएगा।$O(L^2)$स्मृति
 
 मेगाट्रॉन कोर इसे सेलेक्टिव सक्रियण पुनः गणना के लिए लागू करेगा। अधिकांश 2024+ सीमा प्रशिक्षण रन इसका उपयोग कर रहे हैं।
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174)-- मूल रूप से औपचारिक ग्रेडिएंट चेकपोइंटिंग का निबंध
