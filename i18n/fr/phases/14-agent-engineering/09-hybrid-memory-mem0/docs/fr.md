@@ -29,7 +29,7 @@ Mem0 (arXiv:2504.19413, avril 2025) Location:`add(text, user_id, metadata)`时:
 
 1. Une procédure de candidature à l'LLM
 2. Pour chaque fact write into Vector store, utilisez le langage de recherche.
-3. Pour chaque fact write into KV store,以 (user_id, fact_type, entity) comme clé, pour O(1) 查找。
+3. Pour chaque fact write into KV store, en tant que clé, utilisez$O(1)$Je veux le trouver.
 4. Pour chaque facteur, il faut saisir les bornes de la page.
 
 Dans le`search(query, user_id)`时:
