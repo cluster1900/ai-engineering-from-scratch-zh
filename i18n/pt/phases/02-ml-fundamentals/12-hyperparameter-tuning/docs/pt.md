@@ -14,7 +14,7 @@
 - design a hyperparameter tuning 策略, através de adequação de validação cruzada  evitar a validação de conjunto 过拟合
 
 ## 问题
-Seu gradiente de aumento 模型有学习率、数量树、最大深度、minéchantillons per leaf、subsample ratio 和列échantillon ratio──也就是六个超参数──如果每个都有5个合理取值,那么网就有5^6 = 15,625种组合──每次训练需要10秒──全部尝试一遍需要43 小时的计算时间──
+Seu gradiente de aumento 模型 has learning rate 數字 of trees max depth min samples per leaf 副樣比 和列樣比──也就是六個超參數──如果每個都有五個合理取值,那就是網就有$5^6 = 15{,}625$种组合──每次训练需要10秒──全部尝试一遍需要43小时的计算时间──
 
 A pesquisa de grade é o método mais intuitivo, também o mais ruim, mas a maior escala. A pesquisa aleatória com menos quantidade de cálculo pode ser melhor. A otimização baiesa pode ser melhor.
 
@@ -28,7 +28,7 @@ Os parâmetros são os que são aprendidos durante o processo de treinamento (pe
 | Learning rate | 每次更新的步长 | 0.001 到 1.0 |
 | Number of trees/epochs | 训练时长 | 10 到 10,000 |
 | Max depth | 模型复杂度 | 1 到 30 |
-| Regularization (lambda) | 防止过拟合 | 0.0001 到 100 |
+| Regularization ($\lambda$) | 防止过拟合 | 0.0001 到 100 |
 | Batch size | Gradient 估计噪声 | 16 到 512 |
 | Dropout rate | 被丢弃的 neurons 比例 | 0.0 到 0.5 |
 
@@ -122,7 +122,7 @@ A taxa de aprendizagem é quase sempre o mais importante hiperparâmetro.
 | Scheduler | Formula | 何时使用 |
 |-----------|---------|-------------|
 | Step decay | 每 N 个 epochs 乘以 0.1 | 经典 CNN 训练 |
-| Cosine annealing | lr * 0.5 * (1 + cos(pi * t / T)) | 现代默认选择 |
+| Cosine annealing | $\text{lr} \cdot 0.5 \cdot (1 + \cos(\pi t / T))$ | 现代默认选择 |
 | Warmup + decay | 先线性增加，再 cosine decay | Transformers |
 | One-cycle | 在一个 cycle 内先增加再减少 | 快速收敛 |
 | Reduce on plateau | 指标停滞时按因子降低 | 稳妥默认选择 |

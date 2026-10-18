@@ -82,7 +82,7 @@ Se realmente houver anomalias de etiqueta, devemos usá-las para treinar a Class
 
 ### Z-Score 方法
 
-O método mais simples é calcular a média e a desviação padrão de cada característica.
+O método mais simples é calcular a média de cada característica e a desvio padrão.$k$个 desvios padrão 的点──
 
 ```text
 z_score = (x - mean) / std
@@ -148,11 +148,11 @@ flowchart TD
 
 Pontuação Anomaly baseada no comprimento médio de caminho de todas as árvores, não usando o árvore de busca binária aleatória para normalização:
 
-```
-score(x) = 2^(-average_path_length(x) / c(n))
+```math
+\text{分数}(x) = 2^{-\text{average\_path\_length}(x) / c(n)}
 ```
 
-Entre eles `c(n)`É o comprimento esperado de uma amostra. Escorto 接近 1 表示异常──Score 接近 0.5 表示正常──Score 接近 0 表示非常正常(位于密集集深处)。
+Entre eles `c(n)`Sim $n$个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个samples 个sample 个sample 个sample samples sample sample samples sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample sample s
 
 **优点：**没有分布假设──适用于高尺寸──扩展性好(由于每棵树使用子样本,所以相对于样本大小是子线性的)──处理混合特征类型──
 
@@ -168,7 +168,7 @@ Entre eles `c(n)`É o comprimento esperado de uma amostra. Escorto 接近 1 表�
 LOF comparará a densidade local em torno de um determinado ponto com a densidade de seus vizinhos em torno de um ponto, uma região esparsa, mas em regiões densas, o ponto de cerimônia é anômalo.
 
 **工作方式：**
-1. Para cada ponto, encontrar seus quantos vizinhos mais próximos
+1. Para cada ponto, encontra-o.$k$vizinhos mais próximos
 2. 计算 local de acessibilidade densidade (neighborhood has多密)
 3. Comparar a densidade de cada ponto com a densidade de seus vizinhos
 4. Se a densidade de um ponto é menor que a de seus vizinhos, é mais estranho.
@@ -182,7 +182,7 @@ LOF comparará a densidade local em torno de um determinado ponto com a densidad
 
 **优点：**检测 local anomalies ((( em seus vizinhos domínios de pontos anormais, mesmo que não sejam totalmente anormais) ⋅ Aplica-se a aglomerados de diferentes densidades ⋅
 
-**缺点：**Em grandes conjuntos de dados, a implementação é lenta (n^2):
+**缺点：**Em grandes conjuntos de dados, a implementação é lenta.$O(n^2)$O que é que é?$k$Na dimensão muito alta, a maldição da dimensão afetará os cálculos de distância.
 
 ### Em relação
 
@@ -199,7 +199,7 @@ LOF comparará a densidade local em torno de um determinado ponto com a densidad
 
 - **Extreme class imbalance.**Se as anomalias forem 0,1%, o "normal" será preenchido em todos os conteúdos.
 - **AUROC 具有误导性。**Em grave desequilíbrio, mesmo que o modelo em prazos reais, a maioria das anomalias desaparecem, o Auróci também pode parecer errado.
-- **更好的 metrics：**Precision@k(top k 被标记项中的多少是真实异常) 、AUPRC(precision-recall curve 下面积),以及在固定假正率 下的回忆──
+- **更好的 metrics：**Precision@k(top $k$Muitas das anomalias identificadas são reais (AUPRC, curva de recall de precisão, e em taxa fixa de falso positivo, recall de baixa).
 
 ```mermaid
 flowchart LR
@@ -318,7 +318,7 @@ class IsolationForest:
         return scores
 ```
 
-Fator de normalização `c(n)`Está em contendo n 个 elementos de árvore de busca binária Uma vez não bem sucedida de busca de longo caminho esperado. É igual a `2 * H(n-1) - 2*(n-1)/n`, entre os `H`É um número armônico. Esta normalização garante a comparação de pontuações entre diferentes conjuntos de dados.
+Fator de normalização `c(n)`Está em contêin-$n$个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 elements 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个 个`2 * H(n-1) - 2*(n-1)/n`, entre os `H`É um número armônico. Esta normalização garante a comparação de pontuações entre diferentes conjuntos de dados.
 
 ### Demo
 
@@ -434,7 +434,7 @@ Em dois casos, o limite ideal depende da proporção de custos entre falsos posi
 
 2. **Multivariate anomalies.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 
-3. **从零实现 LOF.**Utilize k-vizinhos mais próximos  realçar Local Outlier Factor                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+3. **从零实现 LOF.**Utilize k-vizinhos mais próximos  realçar Local Outlier Factor── em comparação com LocalOutlierFactor do sklearn $k=10$和 $k=50$- Não .$k$Como a escolha afeta o resultado?
 
 4. **Streaming Anomaly Detection.**Modificar o detector de pontuação Z, fazê-lo funcionar em configuração de streaming: com o novo ponto de chegada e a nova média de execução e variação (Welford's online algorithm)
 
@@ -449,10 +449,10 @@ Em dois casos, o limite ideal depende da proporção de custos entre falsos posi
 | Contextual anomaly | "normal 值，错误上下文" | 一个在给定上下文（时间、位置等）下异常、但在另一个上下文中可能 normal 的 observation |
 | Isolation Forest | "用 random splits 找 outliers" | 一种 random trees 的 ensemble，它能用比 normal points 更少的 splits 隔离 anomalies |
 | Local Outlier Factor | "把 density 和 neighbors 比较" | 一种标记 local density 明显低于其 neighbors density 的点的方法 |
-| Z-score | "距离 mean 的 standard deviations 数" | (x - mean) / std，用 standard deviation 为单位衡量某个点距离中心有多远 |
-| IQR | "Interquartile range" | Q3 - Q1，衡量数据中间 50% 的 spread，用于 robust outlier detection |
+| Z-score | "距离 mean 的 standard deviations 数" | $(x - \text{均值}) / \text{标准差}$，用 standard deviation 为单位衡量某个点距离中心有多远 |
+| IQR | "Interquartile range" | $Q3 - Q1$，衡量数据中间 50% 的 spread，用于 robust outlier detection |
 | Contamination | "预期 anomalies 比例" | 一个 hyperparameter，用于告诉 detector 应该将数据中多大比例标记为 anomalous |
-| Precision@k | "top k flags 中有多少是真的" | 只在 k 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
+| Precision@k | "top k flags 中有多少是真的" | 只在 $k$ 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
 | AUPRC | "Precision-recall curve 下的面积" | 一个汇总所有 thresholds 下 precision-recall 表现的 metric，对 imbalanced data 比 AUROC 更好 |
 
 ## 延伸阅读

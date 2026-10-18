@@ -24,10 +24,10 @@ Os métodos de conjunto são feitos assim. Eles são dados tabuleiros, são as t
 
 ### Por que os conjuntos são eficazes
 
-假设你有N 个独立分类器,每个的精度都是p > 0.5──a maioria dos votos é precisa de:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $N$Classificadores independentes, cada um com precisão$p > 0.5$◊a precisão do voto da maioria 为:
 
-```
-P(majority correct) = sum over k > N/2 of C(N,k) * p^k * (1-p)^(N-k)
+```math
+P(\text{多数预测正确}) = \sum_{k > N/2} \binom{N}{k} p^k (1-p)^{N-k}
 ```
 
  Para 21 a precisão a média é de 60% de classificadores, a precisão da maioria dos votos a maioria é de 74%
@@ -132,7 +132,7 @@ O aumento do gradiente aumentará a generalização para a Função de Perda arb
 3. Final prediction: F_T(x)
 ```
 
-Para a perda de erro quadrado, os pseudo-resíduos são os resíduos reais:`r_i = y_i - F_{t-1}(x_i)`❖ Cada árvore                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+Para a perda de erro quadrado, os pseudo-resíduos são os resíduos reais:$r_i = y_i - F_{t-1}(x_i)$❖ Cada árvore                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 Taxa de aprendizagem (R) Controlar a taxa de contribuição de cada árvore. Taxas de aprendizagem menores.
 

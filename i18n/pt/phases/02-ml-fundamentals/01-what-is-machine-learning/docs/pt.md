@@ -176,7 +176,7 @@ flowchart LR
 
 O conjunto de testes é sagrado. Você só pode vê-lo uma vez. Se você continuar a ajustar o modelo de desempenho do teste, você está na prática no conjunto de testes, o número de seu relatório também não tem sentido.
 
-对于小数据集,使用k-fold cross-validation:把数据分成k 份,在k-1 份训练,在剩余1 份验证,轮换进行,并对结果取平均――
+对于小数据集,使用k-fold cross-validation:把数据分成 $k$Parte, em$k-1$O treinamento, durante o restante 1 份上验证, rotatividade, realização, e resultados em média.
 
 ### O super-ajustamento vs. o sub-ajustamento
 
@@ -242,9 +242,9 @@ Sinais de excesso de equipamento:
 | 刚好合适 | Medium | Medium | 良好的 generalization |
 | 过高（用 degree-20 polynomial 拟合 10 个点） | Low | High | Overfitting |
 
-总 error = Bias^2 + Variância + ruído incontrolável
+$\text{总误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声}$
 
-Você não consegue reduzir o ruído irredutível. É o próprio dados.
+Não consegues reduzir o ruído irredutível. É o próprio acaso dos dados.$\text{偏差}^2 + \text{方差}$O melhor de todos.
 
 ### Não há teorema do almoço livre
 

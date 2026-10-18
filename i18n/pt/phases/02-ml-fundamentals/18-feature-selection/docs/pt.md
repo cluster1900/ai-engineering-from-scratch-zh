@@ -59,8 +59,8 @@ O filtro mais simples é: se uma característica não muda entre as amostras, qu
 
  Considere uma característica, entre 1000 amostras, há 999 ▌ são 0,0 ▌a sua variação 接近零 ▌não há modelo ▌que possa usá-la para distinguir categorias ▌em remoção ▌
 
-```
-variance(x) = mean((x - mean(x))^2)
+```math
+\text{方差}(x) = \text{均值}\bigl((x - \text{均值}(x))^2\bigr)
 ```
 
  definir um limite (por exemplo, 0.01) : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : 
@@ -71,17 +71,17 @@ Limitação: uma característica pode ter alta variação, mas ainda é puro ru�
 
 ### Informações mútuas
 
-Informação mútua  Messa saber o valor da característica X pode reduzir em grande medida a incerteza do objetivo Y 
+Informação mútua 衡量知道 característica $X$O valor pode ser reduzido em grande medida em relação ao objectivo.$Y$Não tenho certeza.
 
-```
-I(X; Y) = sum_x sum_y p(x, y) * log(p(x, y) / (p(x) * p(y)))
+```math
+I(X; Y) = \sum_x \sum_y p(x, y) \cdot \log \frac{p(x, y)}{p(x) \cdot p(y)}
 ```
 
-Se X 和 Y 独立,则 p(x, y) = p(x) * p(y), portanto log 项为零,I(X; Y) = 0。X 能告诉你越多关于Y的信息,相互信息就越高。
+Se $X$和 $Y$Independência, então$p(x, y) = p(x) \cdot p(y)$, portanto, log 项为零,$I(X; Y) = 0$- Não.$X$Posso dizer-te mais sobre isso.$Y$Informações mútuas.
 
 Comparado com a correlação, a informação mútua pode capturar relações não-lineares. Uma característica pode ter uma correlação com o alvo é zero, mas a informação mútua é muito alta, pois a relação pode ser quadrática ou periódica.
 
- Para características contínuas, primeiro discretar 成 bins( baseado em estimativas de histograma)。 o número de bins irá afetar a estimativa resultado:bins 太少会丢失信息,bins 太多会增加噪音──常见选择:sqrt(n) bins 或 Sturges' rule(1 + log2(n))。
+ Para características contínuas, primeiro discretar 成 bins baseada em estimativas histogramas──bins número irá afetar a estimativa resultados:bins 太少会丢失信息,bins 太多会增加噪音──常见选择:$\sqrt{n}$- O que é?$1 + \log_2 n$)。
 
 ```mermaid
 flowchart LR
@@ -113,14 +113,14 @@ flowchart TD
 
 A RFE considerará as interações de características, pois o modelo verá ao mesmo tempo todas as características restantes.
 
-成本:You need to train model N - target 次。 para 500 características、target 为 10 situação, é 490 vezes treinamento。 para modelos caros, isso será muito lento。 pode através de cada passo mover vários recursos para acelerar(por exemplo, 10% de cada rodada de transferência de parte inferior)。
+成本: Você precisa de um modelo de treinamento $N - \text{目标}$Para 500 características, o objetivo é 10 e é 490 vezes de treinamento. Para modelos caros, isso é muito lento.
 
 ### L1 (Lasso) Regularização
 
 L1 regularização 会把 weights 的绝对值加入 Loss Function:
 
-```
-loss = prediction_error + alpha * sum(|w_i|)
+```math
+\text{损失} = \text{prediction\_error} + \alpha \cdot \sum \lvert w_i \rvert
 ```
 
 Características de controlo de parâmetros alfa  被剪枝的激进程度──alpha 越高,越多重量 会精确变成零──
@@ -137,12 +137,10 @@ Limite: apenas aplicável a modelos lineares. Não pode captar a importância da
 
 Árvores de decisão  e seus conjuntos  florestas aleatórias  aumento gradiente                                                                                                                                                                                                                                                    
 
-Para os árvores de floresta aleatória:
+Para o que?$T$Árvores de floresta aleatória:
 
-```
-importance(feature_j) = (1/T) * sum over all trees of
-    sum over all nodes splitting on feature_j of
-        (n_samples * impurity_decrease)
+```math
+\text{重要性}(\text{特征}_j) = \frac{1}{T} \sum_{\text{所有树}} \; \sum_{\text{所有基于此特征划分的节点：} \text{特征}_j} (\text{n\_samples} \cdot \text{impurity\_decrease})
 ```
 
 Isso dará uma pontuação de importância normalizada para cada característica. Pode automaticamente lidar com relações não lineares e interações de características.
@@ -517,7 +515,7 @@ A versão de sklearn  aumentou a robustez, por exemplo, mutual_info_classif, usa
 | Filter method | “独立为 features 打分” | 一种 feature selection 方法，不训练 model，而是使用统计度量对 features 排名，并孤立地评估每个 feature |
 | Wrapper method | “用 model 挑 features” | 一种 feature selection 方法，通过训练 model 并使用其 performance 作为 selection criterion 来评估 feature subsets |
 | Embedded method | “model 在训练期间选择 features” | 作为 model fitting 一部分发生的 feature selection，例如 L1 regularization 会把 weights 推向零 |
-| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 X 的知识后，关于 Y 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
+| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 $X$ 的知识后，关于 $Y$ 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
 | Recursive Feature Elimination | “训练、排名、剪枝、重复” | 一种迭代式 wrapper method，会训练 model、移除最不重要的 feature(s)，并重复直到达到 target count |
 | L1 / Lasso regularization | “会消灭 features 的 penalty” | 将 weight 绝对值之和加入 Loss Function，这会把不重要 feature 的 weights 推到精确为零 |
 | Variance threshold | “移除 constant features” | 丢弃在 samples 之间 variance 低于指定 threshold 的 features，过滤掉不携带信息的 features |

@@ -48,10 +48,8 @@ Em cada nó, temos um grupo de amostras. Queremos que sejam divididas, para que 
 
 **Gini impurity**Measurando é: se, de acordo com a distribuição de classes do nó   dado a um rótulo de seleção de amostra         , que é mal classificado probabilidade                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 
-```
-Gini(S) = 1 - sum(p_k^2)
-
-where p_k is the proportion of class k in set S.
+```math
+\text{基尼}(S) = 1 - \sum_k p_k^2 \quad \text{其中 } p_k \text{ 是集合 } S \text{ 中类别 } k \text{ 的占比。}
 ```
 
 对于纯节点(全部属于同一个类),Gini = 0──对于50/50 classes的二进制分区,Gini = 0.5──越低越好──
@@ -64,8 +62,8 @@ Gini = 1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48
 
 **Entropy**衡量 node 中的信息量 (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message node)  (message)  (message)  (message)  (message)  (message)  (message)  (message)  (message)  (message)  (message)  (message) )
 
-```
-Entropy(S) = -sum(p_k * log2(p_k))
+```math
+\text{熵}(S) = -\sum_k p_k \log_2(p_k)
 ```
 
 Para nós puros, entropia = 0── para divisão binária 50/50, entropia = 1,0──越低越好──
@@ -81,20 +79,21 @@ Entropy = -(0.6 * log2(0.6) + 0.4 * log2(0.4))
 
 **Information gain**É a redução da impureza após a divisão (entropia ou Gini).
 
-```
-IG(S, feature, threshold) = Impurity(S) - weighted_avg(Impurity(S_left), Impurity(S_right))
-
-where the weights are the proportions of samples in each child.
+```math
+\begin{aligned}
+& IG(S, \text{特征}, \text{阈值}) = \text{不纯度}(S) - \text{weighted\_avg}(\text{不纯度}(S_{\text{左子节点}}), \text{不纯度}(S_{\text{右子节点}})) \\[4pt]
+& \text{其中，权重是每个子节点的样本占比。}
+\end{aligned}
 ```
 
 Cada nó acima do algoritmo ganancioso: tentar cada característica 和每个可能的门──select make information gain the biggest `(feature, threshold)`- Não.
 
 ### Divisão 如何工作
 
-对于当前节上包含 n 个特征、m 个样本的数据集:
+对于当前节 上包含 $n$个 características$m$个samples 的 datasets:
 
-1. Para cada característica j ((j = 1 até n):
-   - 按 feature j 对样本 排序
+1. Para cada característica$j$($j = 1$Até$n$):
+   - 按特征 $j$Para amostras 排序
    -                                                                                                                                                                                                                                                               
    - 计算每个门 的信息获取
 2.  seleccionar o ganho de informação
@@ -109,7 +108,7 @@ Se não houver condições para parar, a árvore continuará a crescer até que 
 
 **Pre-pruning**"Ao fim de um arbre, a sua forma de crescer é de parar".
 - Profundeza máxima: quando a árvore  atingir a profundidade definida 时停止 split
-- Minima amostra por folha: se um nó de amostra menor que k, então parar
+- Práticas mínimas por folha: se um nó tiver menos$k$, , então parar
 - Informações mínimas: se a melhor divisão para a melhoria da impureza for menor que um limiar, então parar
 - Número máximo de nódulos de folhas: limite de folhas
 
@@ -125,8 +124,8 @@ Pre-tadoura 更简单也更快──Pós-tadoura geralmente pode produzir árvor
 
 **Variance reduction**替代 informação ganho:
 
-```
-VR(S, feature, threshold) = Var(S) - weighted_avg(Var(S_left), Var(S_right))
+```math
+VR(S, \text{特征}, \text{阈值}) = \text{Var}(S) - \text{weighted\_avg}(\text{Var}(S_{\text{左子节点}}), \text{Var}(S_{\text{右子节点}}))
 ```
 
 选择使变化 降低最多的分区――Tree 会把输入空间 划分为多个区域,并预测一个常数 (平均值) 在每个区域中预测一个常数 (平均值) △
@@ -155,7 +154,7 @@ graph TD
 
 **Bagging（bootstrap aggregating）：**Cada árvore está em uma amostra de arranque.
 
-**Feature randomization：**Em cada divisão, apenas considere um subconjunto de características arbitrárias. Para a Classificação, a默认是 sqrt(n_features) ⋅ Para a Regressão, é n_features/3── isso impedirá que todas as árvores estejam no mesmo recurso dominante.
+**Feature randomization：**Durante cada divisão, considere apenas um subconjunto de características de azar.$\sqrt{n_{\text{特征}}}$                                                                                                                                                                                                                                                              $n_{\text{特征}}/3$Isto impede que todas as árvores estejam na mesma característica dominante.
 
 关键洞见: para muitas árvores descorreladas 求平均, pode reduzir a variação em circunstâncias de não aumentar a viés.
 
@@ -165,9 +164,8 @@ Florestas aleatórias 天然提供 características de importância pontuações
 
 **Mean Decrease in Impurity (MDI)：**Para cada característica, todos os árvores em todos os nós que usam essa característica                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 
-```
-importance(feature_j) = sum over all nodes where feature_j is used:
-    (n_samples_at_node / n_total_samples) * impurity_decrease
+```math
+\text{重要性}(\text{特征}_j) = \sum_{\text{使用特征 } j \text{ 划分的节点}} \frac{n_{\text{节点样本数}}}{n_{\text{总样本数}}} \cdot \text{impurity\_decrease}
 ```
 
 Este método é muito rápido, mas pode ser calculado durante o treino, mas tem características de alta cardinalidade e muitas possibilidades de pontos de divisão.
@@ -349,7 +347,7 @@ Na prática, as árvores aumentadas em gradiente (XGBoost, LightGBM, CatBoost) s
 
 1. Em um conjunto de dados 2D que contém 3 classes, a árvore de decisão é dividida em três partes.
 
-2. Para árvores de regressão                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+2. Por árvores de regressão                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      $y = \sin(x) + \text{噪声}$,并拟你的回归树──将树的零碎-恒定预测与真曲线一起绘图──
 
 3. Construção contém 1、5、10、50 和 200 árvores floresta aleatória.
 

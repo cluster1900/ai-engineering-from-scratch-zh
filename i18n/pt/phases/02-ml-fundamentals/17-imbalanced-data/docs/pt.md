@@ -35,25 +35,27 @@ A precisão falhará, porque trata todas as previsões corretas como iguais. A p
 | Actually Positive | 0 (TP) | 10 (FN) |
 | Actually Negative | 0 (FP) | 990 (TN) |
 
-Precuração = (0 + 990) / 1000 = 99,0%
+```math
+\text{准确率} = (0 + 990) / 1000 = 99.0\%
+```
 
 O modelo capturou zero vezes de fraude, zero doenças, zero falhas, mas a precisão mostra 99% e é por isso que a precisão é muito perigosa para os problemas de desequilíbrio.
 
 ### Melhor indicador
 
-**Precision**= TP / (TP + FP) ⋅ Em todos os exemplos marcados como positivos, há realmente positivos?
+**Precision**- Não .$\text{TP} / (\text{TP} + \text{FP})$ Em todos os exemplos marcados como positivos, há realmente positivos?
 
-**Recall**= TP / (TP + FN) ⋅ Em todos os exemplos de verdadeiros positivos, nós capturamos quanto?
+**Recall**- Não .$\text{TP} / (\text{TP} + \text{FN})$Em todos os exemplos de verdadeiros positivos, nós capturamos quanto?
 
-**F1 Score**= 2 * precisão * recall / (precision + recall) ――调和平均数──相比算术平均数,它会更严厉地惩罚精度和回忆 之间极端不平衡──
+**F1 Score**- Não .$2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$◊调和平均数――相比算术平均数, it will be stricter地 castigar precisão 和 recall 极端不平衡──
 
-**F-beta Score**= (1 + beta^2) * precisão * recall / (beta^2 * precisão + recall) ・・・ quando beta > 1 时, recall 更重要。 quando beta < 1 时, precisão 更重要。 F2 在欺诈检测中很常见(漏掉欺诈比误报更糟) ・・・
+**F-beta Score**- Não .$(1 + \beta^2) \cdot \text{精确率} \cdot \text{召回率} / (\beta^2 \cdot \text{精确率} + \text{召回率})$- Não.$\beta > 1$Lembra-te, mais importante.$\beta < 1$时,precision 更重要──F2 在欺诈检测中很常见(漏掉欺诈比误报更糟)
 
 **AUPRC**(Área Sob a Curva de Recuperação de Precisão) ―― semelhante a AUC-ROC, mas em relação ao desbalanço de dados tem mais informação── APRC do classificador de azar para a proporção de classe positiva((( Não como ROC, então é 0,5)── isso faz com que as melhorias sejam mais fáceis de ver──
 
-**Matthews Correlation Coefficient**= (TP * TN - FP * FN) / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))。 O alcance é de -1 a +1── apenas quando o modelo em duas categorias apresenta um bom desempenho quando apenas dá uma alta porcentagem── mesmo que a diferença de tamanho das categorias seja grande, também mantenha o equilíbrio──
+**Matthews Correlation Coefficient**- Não .$(\text{TP} \cdot \text{TN} - \text{FP} \cdot \text{FN}) / \sqrt{(\text{TP}+\text{FP})(\text{TP}+\text{FN})(\text{TN}+\text{FP})(\text{TN}+\text{FN})}$ A gama de -1 a +1  somente quando o modelo se apresenta bem em ambas as categorias, dá uma nota elevada  Mesmo que a diferença de tamanho das categorias seja grande, também se mantém equilibrado 
 
-对于上始终预测负的模型:精度 = 0/0(未定义,通常设为 0),回忆 = 0/10 = 0,F1 = 0,MCC = 0──这些指标正确地识别出该模型无价值──
+Para o modelo acima 始终预测 negativo :$\text{精确率} = 0/0$(未定義, normalmente设为 0),$\text{召回率} = 0/10 = 0$- Não .$\text{F1} = 0$- Não .$\text{MCC} = 0$ Estes indicadores identificam correctamente que o modelo não tem valor
 
 ### Não equilíbrio de dados
 
@@ -79,9 +81,9 @@ flowchart TD
 
 SMOTE irá criar novos modelos de minoria sintética, estes modelos parecem razoáveis, mas não são secundários.
 
-1. Para cada menoridade, encontrem-na em outras minorias.
+1. Para cada minoria$x$, encontrá-lo em outras minorias$k$个近邻
 2. 随机选择一个邻居
-3. Crie um novo padrão na linha entre x e o vizinho
+3. Em$x$E entre os vizinhos, criar um novo padrão
 
 公式:`new_sample = x + random(0, 1) * (neighbor - x)`
 
@@ -137,24 +139,24 @@ flowchart LR
 Em vez de alterar dados, não é como alterar o modelo para o tratamento de erros.
 
 Para um que contém 950 negativos e 50 positivos, as duas divisões são:
-- classe negativa 的权重 = n_samples / (2 * n_negativo) = 1000 / (2 * 950) = 0,526
-- classe positiva 的权重 = n_samples / (2 * n_positive) = 1000 / (2 * 50) = 10,0
+- classe negativa = $n_{\text{样本数}} / (2 \cdot n_{\text{负类}}) = 1000 / (2 \cdot 950) = 0.526$
+- classe positiva = $n_{\text{样本数}} / (2 \cdot n_{\text{正类}}) = 1000 / (2 \cdot 50) = 10.0$
 
 classe positiva  obteve 19 倍权重──误分类 错分类 错分类 错分类 错分类 错分类 错分类 19 负类 模块── modelo é forçado a se preocupar com a classe minoritária──
 
 Em regressão logística, isso modificará a Função de Perda:
 
-```
-weighted_loss = -sum(w_i * [y_i * log(p_i) + (1-y_i) * log(1-p_i)])
+```math
+\text{weighted\_loss} = -\sum \bigl( w_i \cdot [y_i \log(p_i) + (1-y_i) \log(1-p_i)] \bigr)
 ```
 
-Entre eles, a seleção depende da categoria de amostras.
+Entre eles $w_i$取決于样本 $i$É uma das mais importantes.
 
 Pesos de classe em sentido esperado e sobre-amplificação em matemática, mas não criam novos pontos de dados. Isso os faz mais rápidos, evitando o risco de sobre-adaptação de repetidas amostras.
 
 ### Apontação do limiar
 
-Mas, 0,5 é arbitrário. Quando a classe está desequilibrada, o valor máximo geralmente deve ser muito baixo.
+A maioria dos classificadores irá emitir uma probabilidade.$P(\text{正类}) \ge 0.5$, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
 流程:
 1. Treinar um modelo
@@ -172,7 +174,7 @@ flowchart LR
     E --> F[Use in Production]
 ```
 
-Um modelo pode ser classificado como não-fraudado em um negócio de fraude P (fraud) = 0,15♦ em 0,5, ele será classificado como não-fraudado em 0,10♦ em 0,10♦ em que ele será corretamente capturado.
+Um modelo pode ser para uma transação fraudulenta .$P(\text{欺诈}) = 0.15$在值 0.5 下, ele será classificado como não-fraude.在值 0.10 下, ele será corretamente capturado.                                                                                                                                                                                                                                              
 
 ### Aprendizagem sensível aos custos
 
@@ -180,8 +182,8 @@ Forma generalizada de pesos de classe não é a utilização de custos unificado
 
 | | Predict Positive | Predict Negative |
 |--|---|---|
-| Actually Positive | 0 (correct) | C_FN = 100 |
-| Actually Negative | C_FP = 1 | 0 (correct) |
+| Actually Positive | 0 (correct) | $C_{\text{FN}} = 100$ |
+| Actually Negative | $C_{\text{FP}} = 1$ | 0 (correct) |
 
 漏掉一笔欺诈交易 (FN) 漏掉一笔欺诈交易 (FN) 漏掉一笔欺诈交易 (FN) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易 (FP) 漏掉一笔欺诈交易) 漏掉一笔欺诈交易 (FP) 漏掉一次的成本比一次错报 (FP) 漏掉一次) 漏漏漏交易 (FP) 漏漏漏漏交易 (FP) 漏漏漏漏交易) 漏漏漏漏漏交易 (FP) 漏漏漏漏交易) 漏漏漏漏漏交易 (FP) 漏漏漏漏交易 (FN) 漏漏漏漏交易) 漏漏漏漏漏交易 (FN) 漏漏漏漏漏交易) 漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏漏
 

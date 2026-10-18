@@ -91,8 +91,8 @@ Se a propriedade estatística de uma sequência de tempo não mudar com o tempo,
 
 **如何修复：**差分── não construir o valor original, mas construir a variação entre os valores continuados:
 
-```
-diff[t] = value[t] - value[t-1]
+```math
+\text{diff}[t] = \text{值}[t] - \text{值}[t-1]
 ```
 
 Se uma vez a diferença não consegue fazer a sequência ser estabilizada, vamos aplicá-la novamente.
@@ -109,7 +109,7 @@ O primeiro ciclo tem duas tendências. O primeiro ciclo transforma-o em tendênc
 
 ### Desde relacionado
 
-Desde o tempo de medida t de valor e o tempo t-k  passados k 步                                                                                                                                                                                                                                                     
+自相关衡量时间 $t$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $t-k$(pasado $k$步) 的值之间的相关程度──autocorrelação função (ACF) 会绘制每个 lag $k$Esta relação.
 
 **ACF 告诉你：**
 - Se o ACF em lag 5 后降到零, então o valor anterior de 5 步无关紧要――
@@ -142,7 +142,7 @@ Outras características do engenharia:
 
 **多少个 lag？**Use autocorrelação função. Se ACF até lag 10 são significativos, use pelo menos 10 lags. Se existirem períodos de tempo, contém lag 7 ((ou pode incluir 14)  Mais lag irá dar ao modelo mais informações históricas, mas também aumentará o número de características adequadas, aumentando assim o risco de sobreajuste.
 
-**target 对齐陷阱。**Quando se cria um traço atrasado, o objetivo deve ser o valor do tempo t, e todos os traços devem usar o valor do tempo t-1 ou mais cedo. Se você não tiver o menor interesse em considerar o valor do tempo t como um traço incluído, você já possui um prédictor perfeito - e um modelo completamente inútil. Este é o bug mais comum no projeto de traços de sequência de tempo.
+**target 对齐陷阱。**O tempo é o tempo.$t$De valor, e todas as características devem ser usadas.$t-1$Ou mais cedo, se não tiveres tempo.$t$Como um traço contém, você já possui um pré-detetor perfeito - e um modelo completamente inútil. Este é o bug mais comum no projeto de traços de sequência de tempo.
 
 ### Validação de avanço
 
@@ -178,8 +178,8 @@ flowchart TD
 ```
 
 Validação de avanço:
-1. Em截至时间 t 的数据上训练
-2. 预测时间 t+1(或用于多步预测的 t+1 到 t+k)
+1. Até o fim do tempo .$t$O treinamento
+2. 预测时间 $t+1$(ou para uso de vários$t+1$Até$t+k$)
 3. Vai deslizar a janela para a frente
 4. O que é isso?
 
@@ -191,11 +191,11 @@ Cada teste apenas contém todos os dados do treinamento, não há vazamentos fut
 
 ARIMA é um modelo clássico de sequência de tempo.
 
-- **AR (Autoregressive):**Desde o passado valor para fazer previsão.
-- **I (Integrated):**通过差分实现平稳性──I(d) 应用 d 次差分──
-- **MA (Moving Average):**Desde passado 预测误差进行预测──MA(q) Uso recente 个误差──
+- **AR (Autoregressive):**Desde passado valor para fazer previsão.$p$个值──
+- **I (Integrated):**通过差分实现平稳性──I(d) 应用 $d$A diferença é que...
+- **MA (Moving Average):**Desde passado pré测 erro fazer pré测──MA(q) 使用最近 $q$个误差──
 
-ARIMA(p, d, q) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) 组合了三者──你基于ACF/PACF 分析或自动搜索的选择 p、d、q──
+ARIMA(p, d, q) 组合了三者──你基于ACF/PACF 分析或自动搜索(auto-ARIMA) 选择$p$- Não.$d$- Não.$q$- Não.
 
 Não vamos implementar ARIMA a partir de zero - ela precisa de otimização numérica, além do alcance da aula.
 
@@ -217,7 +217,7 @@ Para a maioria dos problemas reais, o atraso de características + aumento de gr
 
 **Recursive (iterated):**预测 Next step, trazer o resultado da previsão como entrada do próximo passo. 简单,但错误会积累 - cada previsão usa uma previsão, portanto, err err err err err err err err err err 错误会复合.
 
-**Direct:**Para cada horizonte  treinar modelos individuais。Modelo-1  previsão t+1,Modelo-5  previsão t+5── não há erros acumulados, mas cada modelo tem menos padrões de treinamento, e não compartilham informações。
+**Direct:**Para cada horizonte                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $t+1$,Model-5 预测 $t+5$Não há erros acumulados, mas cada modelo tem menos amostras de treinamento, e não compartilham informações.
 
 **Multi-output:**訓練一個同時输出所有水平的模型──跨水平 共享信息,但需要支持多输出模型──或自定义 Loss Function──
 
@@ -228,7 +228,7 @@ Para a maioria dos problemas reais, horizonte curto (de 1 a 5 步) desde o recur
 | Mistake | Why it happens | How to fix |
 |---------|---------------|-----------|
 | 随机 train/test split | 来自标准 ML 的习惯 | 使用 walk-forward 或 temporal split |
-| 使用未来特征 | 误把时间 t 的特征包含进去 | 审计每个特征的时间对齐 |
+| 使用未来特征 | 误把时间 $t$ 的特征包含进去 | 审计每个特征的时间对齐 |
 | 对季节性 overfitting | 模型记住了日历模式 | 在 test set 中留出一个完整季节周期 |
 | 忽略尺度变化 | 收入翻倍但模式保持 | 建模百分比变化而非绝对值 |
 | 过多滞后特征 | “更多历史更好” | 使用 ACF 确定相关 lag |
@@ -387,7 +387,7 @@ print(f"Mean score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
 时间序列预测 usar Regressão Indicator, mas带有时间感知的 上下文:
 
-- **MAE (Mean Absolute Error):**                                                                                                                                                                                                                                                              
+- **MAE (Mean Absolute Error):** $\lvert y_{\text{true}} - y_{\text{pred}} \rvert$O valor médio é de 3,2 graus.
 - **RMSE (Root Mean Squared Error):**média erro quadrado de raiz quadrada. Em comparação com MAE, é mais pesado para grande erro que muitos pequenos erros.
 - **MAPE (Mean Absolute Percentage Error):**Não há relação com a medida, mas os valores verdadeiros são não definidos.
 - **Naive baseline comparison:**始终与简单基线比较――季节性天才基线 会预测上一周期的价值(昨天、上周) ・・・ Se o seu modelo não conseguir vencer os ingênuos, você pode explicar que há problemas――
@@ -445,10 +445,10 @@ Se o seu modelo de ML superior fornecer uma linha de base sazonal ingênua, voc�
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Stationarity | “统计量不随时间变化” | 均值、方差和自相关结构随时间保持不变的序列 |
-| Differencing | “连续值相减” | 计算 y[t] - y[t-1] 来移除趋势并实现平稳性 |
+| Differencing | “连续值相减” | 计算 $y[t] - y[t-1]$ 来移除趋势并实现平稳性 |
 | Autocorrelation (ACF) | “一个序列与自身的相关程度” | 时间序列与自身滞后副本之间的相关性，作为 lag 的函数 |
-| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag k 上的自相关 |
-| Lag features | “把过去值作为输入” | 使用 y[t-1]、y[t-2]、...、y[t-k] 作为特征来预测 y[t] |
+| Partial autocorrelation (PACF) | “只有直接相关” | 移除所有更短 lag 的影响后，lag $k$ 上的自相关 |
+| Lag features | “把过去值作为输入” | 使用 $y[t-1], y[t-2], \ldots, y[t-k]$ 作为特征来预测 $y[t]$ |
 | Walk-forward validation | “尊重时间顺序的 cross-validation” | 训练数据在时间上始终先于测试数据的评估方式 |
 | ARIMA | “经典时间序列模型” | AutoRegressive Integrated Moving Average：组合过去值（AR）、差分（I）和过去误差（MA） |
 | Seasonality | “重复的日历模式” | 与日历周期（每日、每周、每年）相关的、规则且可预测的时间序列周期 |

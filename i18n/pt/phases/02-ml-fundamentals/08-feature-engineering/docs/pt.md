@@ -51,7 +51,7 @@ Os números primitivos muito poucos podem ser utilizados diretamente no modelo.
 
 **Binning：**Quando a relação entre a característica e o objetivo é não linear, mas é muito útil em uma fase de classificação (por exemplo, grupo de idade).
 
-**Polynomial features：**创建 x^2、x^3、x1*x2 项──让线性模型能够捕获非线性关系,代价是产生更多特征──
+**Polynomial features：**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $x^2$- Não.$x^3$- Não.$x_1 x_2$ Deixar que o modelo linear seja capaz de capturar relações não lineares, o preço é produzir mais características.
 
 ### Características categorias
 
@@ -69,10 +69,12 @@ Os números primitivos muito poucos podem ser utilizados diretamente no modelo.
 
 **TF-IDF：**Termo Frequência-Inversos Document Frequência── baseada na singularidade entre os termos em documentos sobre o peso do documento── como the
 
-```
-TF(word, doc) = count(word in doc) / total words in doc
-IDF(word) = log(total docs / docs containing word)
-TF-IDF = TF * IDF
+```math
+\begin{aligned}
+\text{TF}(\text{word}, \text{doc}) &= \frac{\text{词在文档中的出现次数}}{\text{文档总词数}} \\
+\text{IDF}(\text{word}) &= \log \frac{\text{文档总数}}{\text{包含该词的文档数}} \\
+\text{TF-IDF} &= \text{TF} \cdot \text{IDF}
+\end{aligned}
 ```
 
 ### 缺失值
@@ -87,7 +89,7 @@ Os dados reais vão ter espaço em branco.
 
 ### Interação de Características
 
-Há uma relação entre os componentes. Há uma relação entre os componentes. Há uma relação entre os componentes.
+Há uma relação entre os componentes.$\text{BMI} = \text{体重} / \text{身高}^2$ Há capacidade de previsão.
 
 ### Seleção de características
 

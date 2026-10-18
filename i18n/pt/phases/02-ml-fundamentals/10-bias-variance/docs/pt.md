@@ -51,23 +51,24 @@ Alta Variação significa que o modelo está em um nível de treinamento em dado
 
 ### A decomposição
 
- Para qualquer ponto x, o erro de previsão de expectativa abaixo da perda quadrada pode ser precisamente dividido em:
+对于任意点 $x$, o erro de previsão de expectativa por perda quadrada pode ser precisamente dividido em:
 
+```math
+\begin{aligned}
+& \text{期望误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声} \\[6pt]
+& \text{其中：} \\
+& \quad \text{偏差}^2 = (\mathbb{E}[\hat{f}(x)] - f(x))^2 \\
+& \quad \text{方差} = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2] \\
+& \quad \text{噪声} = \mathbb{E}[(y - f(x))^2] \quad (\sigma^2)
+\end{aligned}
 ```
-Expected Error = Bias^2 + Variance + Irreducible Noise
 
-where:
-  Bias^2   = (E[f_hat(x)] - f(x))^2
-  Variance = E[(f_hat(x) - E[f_hat(x)])^2]
-  Noise    = E[(y - f(x))^2]             (sigma^2)
-```
+- $f(x)$É verdade
+- $\hat{f}(x)$É modelo prévio
+- $\mathbb{E}[\ldots]$É a expectativa de diferentes grupos de treinamento
+- $y$É o que eu quero dizer.
 
-- `f(x)`É verdade
-- `f_hat(x)`É modelo prévio
-- `E[...]`É a expectativa de diferentes grupos de treinamento
-- `y`É o que eu quero dizer.
-
-No entanto, não há um modelo que possa fazer melhor do que o sigma^2 e sua tarefa é encontrar o equilíbrio entre o viés^2 e a variância.
+No que diz respeito aos dados de ruído, não há um modelo comparável.$\sigma^2$Faz melhor. A tua missão é...$\text{偏差}^2$和 variância 之间找到正确平衡──
 
 ### Complicidade do modelo vs erro
 
@@ -128,9 +129,9 @@ Por que ocorre esta situação? No limiar de interpolação, o modelo apenas tem
 
 | Regime | Parameters vs Samples | Behavior |
 |--------|----------------------|----------|
-| Underparameterized | p << n | 经典 tradeoff 适用 |
-| Interpolation threshold | p ~ n | Variance 达到峰值，测试误差激增 |
-| Overparameterized | p >> n | Implicit regularization 开始起作用，测试误差下降 |
+| Underparameterized | $p \ll n$ | 经典 tradeoff 适用 |
+| Interpolation threshold | $p \sim n$ | Variance 达到峰值，测试误差激增 |
+| Overparameterized | $p \gg n$ | Implicit regularization 开始起作用，测试误差下降 |
 
 Desde o ponto de vista prático: se você usa redes neurais ou grandes conjuntos de árvores, não fique no limiar de interpolação.
 
@@ -177,7 +178,7 @@ Os métodos de montagem são as ferramentas mais práticas para combater a varia
 
 **Bagging (Bootstrap Aggregating)**Os modelos de bootstrap são treinados em diferentes amostras de dados de treinamento, e depois são avaliados em média.
 
-É matematicamente válido porque: se a média N 个独立预测, cada variação de cada previsão é sigma^2, então a variação de valor médio é sigma^2 / N. Estes modelos não são realmente independentes, portanto, a redução é menor que 1/N, mas ainda é bastante observavel.
+É matematicamente eficaz porque se você é média.$N$个独立预测, cada previsão variação $\sigma^2$, então a variação do valor médio é $\sigma^2 / N$ Estes modelos não são realmente independentes (todos eles veem dados semelhantes), portanto, a redução da amplitude é menor que $1/N$Mas ainda é bastante óbvio.
 
 **Boosting**通过顺序构建模型来降低 Bias, cada novo modelo está preocupado com os erros do conjunto atual.
 
@@ -303,10 +304,10 @@ variance = np.mean(predictions.var(axis=0))
 total_error = np.mean(np.mean((predictions - y_true) ** 2, axis=1))
 ```
 
-- `mean_pred`É de amostras de arranque  estimativa de E[f_hat(x)
+- `mean_pred`É de amostras de arranque  estimativa $\mathbb{E}[\hat{f}(x)]$
 - `bias_sq`É o quadrado da diferença entre a previsão média e o valor real
 - `variance`É através de bootstrap amostras de pré-estimados média de deslocamento
-- `total_error`应该近似等于偏差^2 + variação + ruído
+- `total_error`Deveria ser assim.$\text{偏差}^2 + \text{方差} + \text{噪声}$
 
 ### 步骤 4: Curvas de aprendizagem
 
@@ -434,7 +435,7 @@ Para a maioria dos conjuntos de dados tabuleiros, isso leva 10-15 minutos de tem
 
 2. O que é que isso vai fazer com que o grau de variância do polinômio melhor se mova?
 
-3. Para experimentar a regularização L2 (Ridge regression) ⋅ para um polinômio de alto grau fixo (degree 15), será lambda de 0 扫描到100──绘制偏差^2 和变量 随 lambda 变化的函数图──
+3. Para experimentar a regularização L2 (Ridge regression)$\text{偏差}^2$和 variância 随 lambda 变化的函数图──
 
 4. 将真实函数 do polinômio 修改为 `sin(x)`◊ Variação Bias-Descoberta Como mudou?
 

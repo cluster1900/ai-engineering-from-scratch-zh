@@ -81,11 +81,11 @@ flowchart TB
     Fold5 --> R
 ```
 
-1. Dividir os dados em grandes e grandes dobras
-2. Para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada dobra, para cada prova.
-3. Para os resultados de validação K 个 求平均
+1. A partir de agora ,$K$个大小相等的折叠
+2. Para cada dobra, em$K-1$个 plies 上训练, e em restante plies 上验证
+3. Para o$K$个 pontuações de validação 求平均
 
-K=5 ou K=10 é uma escolha padrão. Cada ponto de dados foi usado para validação uma vez.
+$K=5$Ou $K=10$É uma escolha padrão. Cada ponto de dados é usado para validação uma vez.
 
 **Stratified K-fold**Em cada dobra, mantenha a distribuição de classes. Se o seu conjunto de dados for 70% classe A e 30% classe B, então cada dobra permanecerá quase na mesma proporção. Isso é importante para conjuntos de dados desequilibrados, pois, quando dividido, pode colocar todas as amostras minoritárias em uma única dobra.
 
@@ -100,18 +100,18 @@ K=5 ou K=10 é uma escolha padrão. Cada ponto de dados foi usado para validaç�
 
 A partir desta Matriz podemos obter todos os outros indicadores:
 
-- **Accuracy**= (TP + TN) / (TP + TN + FP + FN)。预测正确的比例──当类 不平衡时会产生误导──
-- **Precision**= TP / (TP + FP) ―― Em todos os objetos de previsão positiva, há quantas coisas verdadeiramente positivas?
-- **Recall**(sensibilidade) = TP / (TP + FN) ――Em todos os positivos reais, nós capturamos quanto?
-- **F1 score**= 2 * precisão * recall / (precisão + recall)。precisão 和 recall mean harmonica──当二者都不明显更重要时,用它来平衡两者──
+- **Accuracy**- Não .$(TP + TN) / (TP + TN + FP + FN)$◊ pré-testar proporção correta― quando as classes desequilibradas resultam em erro¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+- **Precision**- Não .$TP / (TP + FP)$◊ Em todos os objetos de previsão positiva, há quantas que são verdadeiramente positivas?
+- **Recall**(sensibilidade) = $TP / (TP + FN)$ Entre todos os positivos reais, quantos capturamos?
+- **F1 score**- Não .$2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$△ precisão 和 recording △ harmonic mean △ quando os dois são não muito significativos, use-o para equilibrar os dois △
 - **AUC-ROC**:Receiver Operating Characteristic curve 下的面积── é em diferentes limiares de classificação 下绘制 true positive rate 与 false positive rate──AUC = 0,5 表示随机猜测,AUC = 1.0 表示完美分离──它与门无关:衡量的是模型将将正面排在负面前面的能力,而不受你选择的裁员影响──
 
 ### Regressão
 
-- **MSE**(Erro quadrado médio) = mean((y_true - y_pred) ^2)。以平方方式惩罚大误差──对异值 敏感──
-- **RMSE**(Erro quadrado da raiz) = sqrt(MSE)。 Com a variável-alvo 单位相同──比 MSE 更容易解释──
-- **MAE**(Mediante Erro Absoluto) = média de erro - e_precedência)
-- **R-squared**= 1 - SS_res / SS_tot, entre os quais SS_res = soma(((y_true - y_pred) ^2), SS_tot = soma((((y_true - y_mean) ^2)。 mostra modelo 解释了多少方差──R^2 = 1.0 表示完美──R^2 = 0.0 表示模型 并不比总是预测平均值更好──如果模型比预测均还差,R^2 可能为负──
+- **MSE**(Erro quadrado médio)$\text{均值}((y_{\text{true}} - y_{\text{pred}})^2)$◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊  ◊ ◊       ◊                                                                                                                                                                           
+- **RMSE**(Erro de raiz média quadrada) = $\sqrt{\text{MSE}}$◊ Com a variável-alvo ∞ igual ∞ Em comparação com a MSE mais fácil de explicar
+- **MAE**(Erro Absoluto Médio)$\text{均值}(\lvert y_{\text{true}} - y_{\text{pred}} \rvert)$◊ linear tratamento de todos os erros.
+- **R-squared**- Não .$1 - SS_{\text{res}} / SS_{\text{tot}}$, entre os $SS_{\text{res}} = \sum (y_{\text{true}} - y_{\text{pred}})^2$- Não .$SS_{\text{tot}} = \sum (y_{\text{true}} - y_{\text{均值}})^2$◊ Expresso modelo  Expliqué quanto é diferente $R^2 = 1.0$Expressão perfeita.$R^2 = 0.0$Indica que o modelo não é melhor do que o valor médio de previsão.$R^2$Talvez por causa negativa.
 
 ### Curvas de aprendizagem
 
@@ -665,10 +665,10 @@ Desde zero implementar as versões mostram claramente a validação cruzada até
 |------|----------------|----------------------|
 | Overfitting | “记住了 training data” | model 捕捉了 training data 中的噪声，在 training 上表现好，但在 unseen data 上表现差 |
 | Cross-validation | “在不同子集上测试” | 系统地轮换用于 validation 的数据部分，并对所有轮换的结果求平均 |
-| Precision | “预测为 positive 的里面有多少是正确的” | TP / (TP + FP)：positive predictions 中实际为 positive 的比例 |
-| Recall | “我们找到了多少真实 positives” | TP / (TP + FN)：actual positives 中被正确识别出来的比例 |
+| Precision | “预测为 positive 的里面有多少是正确的” | $TP / (TP + FP)$：positive predictions 中实际为 positive 的比例 |
+| Recall | “我们找到了多少真实 positives” | $TP / (TP + FN)$：actual positives 中被正确识别出来的比例 |
 | AUC-ROC | “model 区分类别的能力有多好” | 在所有 thresholds 下，true positive rate 与 false positive rate 曲线下的面积，范围从 0.5（随机）到 1.0（完美） |
-| R-squared | “解释了多少方差” | 1 -（squared residuals 之和 / total sum of squares）：model 捕捉到的 target variance 比例 |
+| R-squared | “解释了多少方差” | $1 - (\text{残差平方和} / \text{总平方和})$：model 捕捉到的 target variance 比例 |
 | Data leakage | “model 作弊了” | 在 training 期间使用了 prediction time 不可用的信息，导致 evaluation 过于乐观 |
 | Learning curve | “数据更多时 performance 如何变化” | training 和 validation scores 相对于 training set size 的图，用来揭示 underfitting 或 overfitting |
 | Stratified split | “保持 class ratios 平衡” | split 数据时，让每个 subset 中各 class 的比例与完整 dataset 相同 |
