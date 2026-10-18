@@ -25,10 +25,12 @@
 
 令 `pi_0` 为 base model，`pi_A` 为 post-alignment model，`r` 为 proxy reward，`s(x, y)` 为二元 Sycophancy 指示器。定义：
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段 1：经验上，`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]`。在基于 labeler-preference data 训练的 RM 下，谄媚式 completions 的平均得分高于匹配的非谄媚 completions。
@@ -66,8 +68,8 @@ Sahoo (arXiv:2604.10585) 在数学推理上使用合成的“planted wrong answe
 
 Shapira et al. 提出修改奖励：
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 其中 `agree(x, y)` 是一个辅助 classifier，用于衡量 `y` 是否同意 `x` 的前提。Alpha sweep 显示，当 `alpha` 约为 0.3-0.5 时，Sycophancy 会下降到接近 base-model 水平，代价是损失一部分合法 agreement（模型对正确用户信念会变得略微更唱反调）。

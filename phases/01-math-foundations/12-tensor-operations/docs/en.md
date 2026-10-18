@@ -33,7 +33,7 @@ graph LR
     T3 --> T4["4D Tensor<br/>rank 4<br/>shape: (B,C,H,W)"]
 ```
 
-总元素数 = 所有 sizes 的乘积。shape `(2, 3, 4)` 包含 `2 * 3 * 4 = 24` 个元素。
+总元素数 = 所有 sizes 的乘积。shape `(2, 3, 4)` 包含 $2 \cdot 3 \cdot 4 = 24$ 个元素。
 
 ### Deep Learning 中的 Tensor shapes
 
@@ -229,7 +229,7 @@ batch_B = np.random.randn(4, 5, 2)
 batch_mm = np.einsum("bij,bjk->bik", batch_A, batch_B)
 ```
 
-一个 contraction 的计算成本是所有 index sizes（保留的和求和的）的乘积。对于 B=32、I=128、J=64、K=128 的 `bij,bjk->bik`：`32 * 128 * 64 * 128 = 33,554,432` 次 multiply-adds。
+一个 contraction 的计算成本是所有 index sizes（保留的和求和的）的乘积。对于 $B=32$、$I=128$、$J=64$、$K=128$ 的 `bij,bjk->bik`：$32 \cdot 128 \cdot 64 \cdot 128 = 33{,}554{,}432$ 次 multiply-adds。
 
 ### 步骤 7： Attention mechanism via einsum
 
@@ -313,6 +313,16 @@ PyTorch 增加了 autograd、GPU support 和优化的 BLAS kernels。Shape seman
 3. **Hard -- Build einsum from scratch.** 实现一个基础的 `einsum(subscripts, *tensors)` function，至少支持：dot product（`i,i->`）、matrix multiply（`ij,jk->ik`）、outer product（`i,j->ij`）和 transpose（`ij->ji`）。解析 subscript string，识别 contracted indices，并遍历所有 index combinations。将你的结果与 `np.einsum` 对比。
 
 4. **Hard -- Attention shape tracker.** 编写一个 function，输入 `batch_size`、`seq_len`、`embed_dim` 和 `num_heads`，并打印 Multi-Head Attention 每一步的精确 shape：input、Q/K/V projection、head split、attention scores、softmax weights、weighted sum、head merge、output projection。与 `demo_attention_einsum()` output 进行验证。
+
+### 提示
+
+**练习 1。** 用 `list(range(24))` 构建 tensor，使每个元素显示自己的位置。每次调用 `reshape` 后打印 `flatten().to_list()`，检查结果仍然按顺序从 0 到 23。
+
+**练习 2。** 只有当两个大小相等，或其中一个为 1 时，该维度才能广播，因此先检查此规则，不满足时抛出错误。对于 shape `(3, 1)` 和 `(1, 4)`，检查结果的 `[i][j]` 元素是否等于 `a[i][0] + b[0][j]`，并将完整结果与 NumPy 比较。
+
+**练习 3。** 按 `->` 拆分下标。出现在输入中但不在输出中的字母代表求和索引，因此遍历每个字母的所有取值并累加到输出位置。在小型随机数组上，用 `np.allclose(mine, np.einsum(...))` 测试全部四种情况。
+
+**练习 4。** 从 head size `embed_dim // num_heads` 开始，并断言 `embed_dim % num_heads == 0`。attention scores 的 shape 为 `(batch_size, num_heads, seq_len, seq_len)`，因此将打印结果与此 shape 以及 `demo_attention_einsum()` 打印的 shapes 比较。
 
 ## 关键术语
 | Term | What people say | What it actually means |

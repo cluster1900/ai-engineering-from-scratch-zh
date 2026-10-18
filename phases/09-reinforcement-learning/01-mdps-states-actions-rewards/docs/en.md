@@ -21,20 +21,24 @@ Supervised learning 给你 `(x, y)` pairs，并要求你拟合一个函数。Rei
 
 **五个对象。**
 
-- **States** `S`。Agent 做决策所需的一切。在 GridWorld 中，是格子。在 chess 中，是棋盘。在 LLM 中，是 context window 加上任何 memory。
-- **Actions** `A`。可选行为。上/下/左/右移动。下一步棋。输出一个 Token。
-- **Transitions** `P(s' | s, a)`。给定 state `s` 和 action `a`，next state 的分布。在 chess 中是 deterministic，在 inventory 中是 stochastic，在 LLM decoding 中几乎 deterministic。
-- **Rewards** `R(s, a, s')`。标量信号。赢 = +1，输 = -1。收入减成本。GRPO 中的 log-likelihood ratio 项。
-- **Discount** `γ ∈ [0, 1)`。未来 reward 相对于当前 reward 的权重。`γ = 0.99` 买到约 100 steps 的 horizon；`γ = 0.9` 买到约 10。
+- **States** $S$。Agent 做决策所需的一切。在 GridWorld 中，是格子。在 chess 中，是棋盘。在 LLM 中，是 context window 加上任何 memory。
+- **Actions** $A$。可选行为。上/下/左/右移动。下一步棋。输出一个 Token。
+- **Transitions** $P(s' \mid s, a)$。给定 state $s$ 和 action $a$，next state 的分布。在 chess 中是 deterministic，在 inventory 中是 stochastic，在 LLM decoding 中几乎 deterministic。
+- **Rewards** $R(s, a, s')$。标量信号。赢 = +1，输 = -1。收入减成本。GRPO 中的 log-likelihood ratio 项。
+- **Discount** $\gamma \in [0, 1)$。未来 reward 相对于当前 reward 的权重。$\gamma = 0.99$ 买到约 100 steps 的 horizon；$\gamma = 0.9$ 买到约 10。
 
-**Markov property** `P(s_{t+1} | s_t, a_t) = P(s_{t+1} | s_0, a_0, …, s_t, a_t)`。未来只依赖当前 state。如果不成立，说明 state representation 不完整。这不是方法失败，而是 state 失败。
+**Markov property** $P(s_{t+1} \mid s_t, a_t) = P(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t)$。未来只依赖当前 state。如果不成立，说明 state representation 不完整。这不是方法失败，而是 state 失败。
 
-**Policies 与 returns。** Policy `π(a | s)` 把 states 映射到 action distributions。Return `G_t = r_t + γ r_{t+1} + γ² r_{t+2} + …` 是未来 rewards 的 discounted sum。Value `V^π(s) = E[G_t | s_t = s]` 是在 policy `π` 下从 `s` 开始的 expected return。Q-value `Q^π(s, a) = E[G_t | s_t = s, a_t = a]` 是以特定 action 开始的 expected return。每个 RL algorithm 都会估计这两者之一，然后相应改进 `π`。
+**Policies 与 returns。** Policy $\pi(a \mid s)$ 把 states 映射到 action distributions。Return $G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \ldots$ 是未来 rewards 的 discounted sum。Value $V^\pi(s) = \mathbb{E}[G_t \mid s_t = s]$ 是在 policy $\pi$ 下从 $s$ 开始的 expected return。Q-value $Q^\pi(s, a) = \mathbb{E}[G_t \mid s_t = s, a_t = a]$ 是以特定 action 开始的 expected return。每个 RL algorithm 都会估计这两者之一，然后相应改进 $\pi$。
 
 **Bellman equations。** 本 phase 中所有内容都会用到的 fixed-point equations：
 
-`V^π(s) = Σ_a π(a|s) Σ_{s', r} P(s', r | s, a) [r + γ V^π(s')]`
-`Q^π(s, a) = Σ_{s', r} P(s', r | s, a) [r + γ Σ_{a'} π(a'|s') Q^π(s', a')]`
+```math
+\begin{aligned}
+V^\pi(s) &= \sum_a \pi(a \mid s) \sum_{s', r} P(s', r \mid s, a) [r + \gamma V^\pi(s')] \\
+Q^\pi(s, a) &= \sum_{s', r} P(s', r \mid s, a) [r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s', a')]
+\end{aligned}
+```
 
 它们把 expected return 拆成“这一步的 reward”加上“落点的 discounted value”。递归。本 Phase 9 中的每个 algorithm，要么把这个 equation 迭代到收敛（dynamic programming），要么从中采样（Monte Carlo），要么用一步进行 bootstrap（temporal difference）。
 
@@ -114,16 +118,16 @@ def policy_evaluation(policy, gamma=0.99, tol=1e-6):
 
 ### Step 4：`γ` 是具有物理含义的 hyperparameter
 
-Effective horizon 大约是 `1 / (1 - γ)`。`γ = 0.9` → 10 steps。`γ = 0.99` → 100 steps。`γ = 0.999` → 1000 steps。
+Effective horizon 大约是 $1 / (1 - \gamma)$。$\gamma = 0.9$ → 10 steps。$\gamma = 0.99$ → 100 steps。$\gamma = 0.999$ → 1000 steps。
 
-太低时，agent 会目光短浅。太高时，credit assignment 会变 noisy，因为许多早期 steps 都会共同承担远未来 reward 的责任。LLM RLHF 通常使用 `γ = 1`，因为 episodes 短且有界。Control tasks 使用 `0.95–0.99`。Long-horizon strategy games 使用 `0.999`。
+太低时，agent 会目光短浅。太高时，credit assignment 会变 noisy，因为许多早期 steps 都会共同承担远未来 reward 的责任。LLM RLHF 通常使用 $\gamma = 1$，因为 episodes 短且有界。Control tasks 使用 `0.95–0.99`。Long-horizon strategy games 使用 `0.999`。
 
 ## 陷阱
 
 - **Non-Markovian state.** 如果你需要最近三次 observations 才能决策，那么 “state” 不只是当前 observation。修复：stack frames（DQN 在 Atari 上堆叠 4 帧）或使用 recurrent state（在 observations 上用 LSTM/GRU）。
 - **Sparse rewards.** 只在胜利时给 reward，会让大 state spaces 中的学习几乎不可能。使用 shape rewards（中间信号）或用 imitation bootstrap（Phase 9 · 09）。
 - **Reward hacking.** 优化 proxy reward 经常产生病态行为。OpenAI 的 boat-racing agent 一直原地转圈收集 powerups，而不是完成比赛。始终从目标结果定义 reward，而不是从 proxy 定义。
-- **Discount mis-spec.** 在 infinite-horizon task 上使用 `γ = 1` 会让每个 value 都变成无穷。始终使用 finite horizon 或 `γ < 1` 来限制。
+- **Discount mis-spec.** 在 infinite-horizon task 上使用 $\gamma = 1$ 会让每个 value 都变成无穷。始终使用 finite horizon 或 $\gamma < 1$ 来限制。
 - **Reward scale.** {+100, -100} 与 {+1, -1} 的 rewards 会给出相同 optimal policies，但 Gradient magnitude 会非常不同。接入 PPO/DQN 前，把它 normalize 到近似 `[-1, 1]`。
 
 ## Use It
@@ -168,21 +172,21 @@ tags: [rl, mdp, modeling]
 ## 练习
 
 1. **Easy.** 在 `code/main.py` 中实现 4×4 GridWorld 和 random-policy rollout。运行 10,000 个 episodes。报告 return 的 mean 和 std。与 optimal return（-6）比较。
-2. **Medium.** 对 uniform-random policy，使用 `γ ∈ {0.5, 0.9, 0.99}` 运行 `policy_evaluation`。把每个 `V` 打印为 4×4 grid。解释为什么 terminal 附近的 state values 会随更大的 `γ` 更快增长。
-3. **Hard.** 把 GridWorld 改成 stochastic：每个 action 以概率 `p = 0.1` 滑向相邻方向。重新评估 uniform policy。`V[start]` 会变好还是变差？为什么？
+2. **Medium.** 对 uniform-random policy，使用 $\gamma \in \lbrace 0.5, 0.9, 0.99 \rbrace$ 运行 `policy_evaluation`。把每个 `V` 打印为 4×4 grid。解释为什么 terminal 附近的 state values 会随更大的 $\gamma$ 更快增长。
+3. **Hard.** 把 GridWorld 改成 stochastic：每个 action 以概率 $p = 0.1$ 滑向相邻方向。重新评估 uniform policy。`V[start]` 会变好还是变差？为什么？
 
 ## 关键术语
 
 | Term | 人们的说法 | 实际含义 |
 |------|------------|----------|
-| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 `(S, A, P, R, γ)`。 |
+| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 $(S, A, P, R, \gamma)$。 |
 | State | “Agent 看到的东西” | 在所选 policy class 下，future dynamics 的 sufficient statistic。 |
-| Policy | “Agent 的行为” | Conditional distribution `π(a \| s)` 或 deterministic map `s → a`。 |
-| Return | “Total reward” | 从当前 step 开始的 discounted sum `Σ γ^t r_t`。 |
-| Value | “一个 state 有多好” | 在 `π` 下从 `s` 开始的 expected return。 |
-| Q-value | “一个 action 有多好” | 在 `π` 下从 `s` 开始并以第一个 action `a` 开始的 expected return。 |
+| Policy | “Agent 的行为” | Conditional distribution $\pi(a \mid s)$ 或 deterministic map $s \to a$。 |
+| Return | “Total reward” | 从当前 step 开始的 discounted sum $\sum \gamma^t r_t$。 |
+| Value | “一个 state 有多好” | 在 $\pi$ 下从 $s$ 开始的 expected return。 |
+| Q-value | “一个 action 有多好” | 在 $\pi$ 下从 $s$ 开始并以第一个 action $a$ 开始的 expected return。 |
 | Bellman equation | “Dynamic programming recursion” | 把 value / Q 分解为 one-step reward 加 discounted successor value 的 fixed-point。 |
-| Discount `γ` | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 `~1/(1-γ)`。 |
+| Discount $\gamma$ | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 $\approx 1/(1-\gamma)$。 |
 
 ## 延伸阅读
 

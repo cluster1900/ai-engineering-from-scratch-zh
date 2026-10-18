@@ -69,10 +69,12 @@ retrieval client 拥有这两轮和 merge。caller 传入一个 query，并拿�
 
 tokeniser 是先 `lower`，再按非字母数字字符 split。它没有做 stemming。生产系统会换成一个小型 stemmer。接口保持不变。
 
-```text
-idf(t)      = log((N - df + 0.5) / (df + 0.5) + 1.0)
-tf_norm(t)  = (f * (k1 + 1)) / (f + k1 * (1 - b + b * dl / avgdl))
-score(d, q) = sum over t in q of idf(t) * tf_norm(t)
+```math
+\begin{aligned}
+\text{idf}(t) &= \log\!\left(\frac{N - \text{df} + 0.5}{\text{df} + 0.5} + 1.0\right) \\
+\text{tf\_norm}(t) &= \frac{f \cdot (k_1 + 1)}{f + k_1 \cdot \left(1 - b + b \cdot \text{dl} / \text{avgdl}\right)} \\
+\text{score}(d, q) &= \sum_{t \in q} \text{idf}(t) \cdot \text{tf\_norm}(t)
+\end{aligned}
 ```
 
 ## Citation graph traversal

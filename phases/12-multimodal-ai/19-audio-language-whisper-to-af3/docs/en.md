@@ -33,7 +33,7 @@
 2. 使用 25ms window、10ms hop 做 short-time Fourier transform。
 3. 取 FFT 结果的 magnitude。
 4. 应用 Mel filter banks（通常是 80 个在 0-8000 Hz 上按 log 间隔分布的 filters），映射到感知频率。
-5. 用 log compress（log(1 + x)）处理 dynamic range。
+5. 用 log compress（$\log(1 + x)$）处理 dynamic range。
 
 结果：形状为 (T, 80) 的 2D array，其中 T 是 time frames 数量。对于 100 Hz frame rate 的 30 秒 clip：形状为 (3000, 80)。
 

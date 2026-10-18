@@ -1,6 +1,6 @@
 # Actor-Critic — A2C 和 A3C
 
-> REINFORCE 很 noisy。添加一个学习 `V̂(s)` 的 critic，从 return 中减去它，你就得到一个 expectation 相同但 variance 低得多的 advantage。这就是 actor-critic。A2C 同步运行它；A3C 在线程间运行它。两者都是每个现代 deep-RL method 的 mental model。
+> REINFORCE 很 noisy。添加一个学习 $\hat{V}(s)$ 的 critic，从 return 中减去它，你就得到一个 expectation 相同但 variance 低得多的 advantage。这就是 actor-critic。A2C 同步运行它；A3C 在线程间运行它。两者都是每个现代 deep-RL method 的 mental model。
 
 **Type:** Build
 **Languages:** Python
@@ -9,11 +9,13 @@
 
 ## 问题
 
-Vanilla REINFORCE 能工作，但它的 variance 很糟。Monte Carlo returns `G_t` 在不同 episodes 之间可能有 10 倍幅度的摆动。把这种 noise 乘以 `∇ log π` 再取平均，会产生一个 Gradient estimator，需要成千上万 episodes 才能把 policy 推动到用少得多的 DQN updates 就能达到的距离。
+Vanilla REINFORCE 能工作，但它的 variance 很糟。Monte Carlo returns $G_t$ 在不同 episodes 之间可能有 10 倍幅度的摆动。把这种 noise 乘以 $\nabla \log \pi$ 再取平均，会产生一个 Gradient estimator，需要成千上万 episodes 才能把 policy 推动到用少得多的 DQN updates 就能达到的距离。
 
-variance 来自使用 raw returns。如果你减去一个 baseline `b(s_t)`：任何 state 的 function，包括 learned value，expectation 保持不变，而 variance 会下降。最好的 tractable baseline 是 `V̂(s_t)`。现在乘以 `∇ log π` 的 quantity 就是 *advantage*：
+variance 来自使用 raw returns。如果你减去一个 baseline $b(s_t)$：任何 state 的 function，包括 learned value，expectation 保持不变，而 variance 会下降。最好的 tractable baseline 是 $\hat{V}(s_t)$。现在乘以 $\nabla \log \pi$ 的 quantity 就是 *advantage*：
 
-`A(s, a) = G - V̂(s)`
+```math
+A(s, a) = G - \hat{V}(s)
+```
 
 如果一个 action 产生了高于平均的 return，它就是好的；如果低于平均，就是差的。带 learned critic 的 REINFORCE 就是 *actor-critic*。critic 给 actor 一个低 variance 的 teacher。这就是 2015 年之后的每个 deep-policy method（A2C、A3C、PPO、SAC、IMPALA）。
 
@@ -23,33 +25,39 @@ variance 来自使用 raw returns。如果你减去一个 baseline `b(s_t)`：�
 
 **两个 networks，一个 shared loss：**
 
-- **Actor** `π_θ(a | s)`：policy。sample 它来采取 action。用 policy gradient 训练。
-- **Critic** `V_φ(s)`：估计从 state 出发的 expected return。通过 minimize `(V_φ(s) - target)²` 训练。
+- **Actor** $\pi_\theta(a \mid s)$：policy。sample 它来采取 action。用 policy gradient 训练。
+- **Critic** $V_\phi(s)$：估计从 state 出发的 expected return。通过 minimize $(V_\phi(s) - \text{target})^2$ 训练。
 
 **Advantage。** 两种标准形式：
 
-- *MC advantage:* `A_t = G_t - V_φ(s_t)`。unbiased，variance 更高。
-- *TD advantage:* `A_t = r_{t+1} + γ V_φ(s_{t+1}) - V_φ(s_t)`。biased（使用 `V_φ`），variance 低得多。也叫 *TD residual* `δ_t`。
+- *MC advantage:* $A_t = G_t - V_\phi(s_t)$。unbiased，variance 更高。
+- *TD advantage:* $A_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)$。biased（使用 $V_\phi$），variance 低得多。也叫 *TD residual* $\delta_t$。
 
 **n-step advantage。** 在两者之间插值：
 
-`A_t^{(n)} = r_{t+1} + γ r_{t+2} + … + γ^{n-1} r_{t+n} + γ^n V_φ(s_{t+n}) - V_φ(s_t)`
+```math
+A_t^{(n)} = r_{t+1} + \gamma r_{t+2} + \ldots + \gamma^{n-1} r_{t+n} + \gamma^n V_\phi(s_{t+n}) - V_\phi(s_t)
+```
 
-`n = 1` 是 pure TD。`n = ∞` 是 MC。大多数 implementations 在 Atari 上使用 `n = 5`，在 MuJoCo 的 PPO 上使用 `n = 2048`。
+$n = 1$ 是 pure TD。$n = \infty$ 是 MC。大多数 implementations 在 Atari 上使用 $n = 5$，在 MuJoCo 的 PPO 上使用 $n = 2048$。
 
 **Generalized Advantage Estimation (GAE)。** Schulman et al. (2016) 提出对所有 n-step advantages 做 exponentially weighted average：
 
-`A_t^{GAE} = Σ_{l=0}^{∞} (γλ)^l δ_{t+l}`
+```math
+A_t^{\text{GAE}} = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}
+```
 
-其中 `λ ∈ [0, 1]`。`λ = 0` 是 TD（low variance, high bias）。`λ = 1` 是 MC（high variance, unbiased）。`λ = 0.95` 是 2026 年默认值：持续调节，直到 bias/variance dial 到达你想要的位置。
+其中 $\lambda \in [0, 1]$。$\lambda = 0$ 是 TD（low variance, high bias）。$\lambda = 1$ 是 MC（high variance, unbiased）。$\lambda = 0.95$ 是 2026 年默认值：持续调节，直到 bias/variance dial 到达你想要的位置。
 
-**A2C：synchronous advantage actor-critic。** 在 `N` 个 parallel environments 上收集 `T` steps。为每个 step 计算 advantages。在 combined batch 上更新 actor 和 critic。重复。这是 A3C 更简单、更 scalable 的 sibling。
+**A2C：synchronous advantage actor-critic。** 在 $N$ 个 parallel environments 上收集 $T$ steps。为每个 step 计算 advantages。在 combined batch 上更新 actor 和 critic。重复。这是 A3C 更简单、更 scalable 的 sibling。
 
-**A3C：asynchronous advantage actor-critic。** Mnih et al. (2016)。启动 `N` 个 worker threads，每个 thread 运行一个 env。每个 worker 在自己的 rollout 上本地计算 gradients，然后 asynchronously 应用到 shared parameter server。不需要 replay buffer：workers 通过运行不同 trajectories 来 decorrelate。A3C 证明了你可以在 CPUs 上 scale training。到 2026 年，GPU-based A2C（batched parallel envs）占主导，因为 GPUs 需要 large batches。
+**A3C：asynchronous advantage actor-critic。** Mnih et al. (2016)。启动 $N$ 个 worker threads，每个 thread 运行一个 env。每个 worker 在自己的 rollout 上本地计算 gradients，然后 asynchronously 应用到 shared parameter server。不需要 replay buffer：workers 通过运行不同 trajectories 来 decorrelate。A3C 证明了你可以在 CPUs 上 scale training。到 2026 年，GPU-based A2C（batched parallel envs）占主导，因为 GPUs 需要 large batches。
 
 **Combined loss。**
 
-`L(θ, φ) = -E[ A_t · log π_θ(a_t | s_t) ]  +  c_v · E[(V_φ(s_t) - G_t)²]  -  c_e · E[H(π_θ(·|s_t))]`
+```math
+L(\theta, \phi) = -\mathbb{E}[ A_t \cdot \log \pi_\theta(a_t \mid s_t) ] + c_v \cdot \mathbb{E}[(V_\phi(s_t) - G_t)^2] - c_e \cdot \mathbb{E}[H(\pi_\theta(\cdot \mid s_t))]
+```
 
 三项：policy-gradient loss、value regression、entropy bonus。`c_v ~ 0.5`、`c_e ~ 0.01` 是 canonical starting points。
 
@@ -62,7 +70,7 @@ actor-critic
 
 ### Step 1: a critic
 
-Linear critic `V_φ(s) = w · features(s)` 使用 MSE 更新：
+Linear critic $V_\phi(s) = w \cdot \text{features}(s)$ 使用 MSE 更新：
 
 ```python
 def critic_update(w, x, target, lr):
@@ -77,7 +85,7 @@ def critic_update(w, x, target, lr):
 
 ### Step 2: n-step advantage
 
-给定长度为 `T` 的 rollout 和 bootstrapped final `V(s_T)`：
+给定长度为 $T$ 的 rollout 和 bootstrapped final $V(s_T)$：
 
 ```python
 def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
@@ -92,7 +100,7 @@ def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
     return advantages, returns
 ```
 
-`returns` 是 critic target。`advantages` 是乘以 `∇ log π` 的内容。
+`returns` 是 critic target。`advantages` 是乘以 $\nabla \log \pi$ 的内容。
 
 ### Step 3: combined update
 
@@ -115,8 +123,8 @@ On-policy，每次 update 一个 rollout，actor 和 critic 使用分开的 lear
 
 ### Step 4: parallelization (A3C vs A2C)
 
-- **A3C：** 启动 `N` 个 threads。每个 thread 运行自己的 env 和自己的 forward pass。周期性地把 Gradient updates 推送到 shared master。master 上不加 locks：races 没关系，它们只是增加 noise。
-- **A2C：** 在单个 process 中运行 `N` 个 env instances，把 observations stack 成 `[N, obs_dim]` batch，执行 batched forward pass、batched backward pass。GPU utilization 更高，deterministic，更容易推理。2026 年的默认选择。
+- **A3C：** 启动 $N$ 个 threads。每个 thread 运行自己的 env 和自己的 forward pass。周期性地把 Gradient updates 推送到 shared master。master 上不加 locks：races 没关系，它们只是增加 noise。
+- **A2C：** 在单个 process 中运行 $N$ 个 env instances，把 observations stack 成 `[N, obs_dim]` batch，执行 batched forward pass、batched backward pass。GPU utilization 更高，deterministic，更容易推理。2026 年的默认选择。
 
 我们的 toy code 为了清晰保持 single-threaded；改写成 batched A2C 只需要三行 numpy。
 
@@ -126,7 +134,7 @@ On-policy，每次 update 一个 rollout，actor 和 critic 使用分开的 lear
 - **Advantage normalization。** 在每个 batch 内把 advantages normalize 到 zero-mean/unit-std。几乎零成本，却能大幅稳定训练。
 - **Shared trunk。** 对 image inputs，为 actor 和 critic 使用 shared feature extractor。分开的 heads。shared features 可以同时从两个 losses 中受益。
 - **On-policy contract。** A2C 对数据精确复用一次 update。更多次会让 Gradient biased（importance-sampling correction 正是 PPO 添加的东西）。
-- **Entropy collapse。** 没有 `c_e > 0` 时，policy 会在几百次 updates 内变得近似 deterministic 并停止探索。
+- **Entropy collapse。** 没有 $c_e > 0$ 时，policy 会在几百次 updates 内变得近似 deterministic 并停止探索。
 - **Reward scale。** Advantage magnitudes 依赖 reward scale。Normalize rewards（例如除以 running-std），以便在不同 tasks 之间保持一致的 Gradient magnitudes。
 
 ## Use It
@@ -171,22 +179,22 @@ tags: [rl, actor-critic, gae]
 
 ## Exercises
 
-1. **Easy。** 在 4×4 GridWorld 上使用 MC advantage（`G_t - V(s_t)`）训练 actor-critic。与 Lesson 06 中 REINFORCE-with-running-mean-baseline 的 sample efficiency 对比。
-2. **Medium。** 切换到 TD-residual advantage（`r + γ V(s') - V(s)`）。测量 advantage batches 的 variance。它下降了多少？
-3. **Hard。** 实现 GAE(λ)。扫描 `λ ∈ {0, 0.5, 0.9, 0.95, 1.0}`。绘制 final return vs sample efficiency。这个 task 的 bias/variance sweet spot 在哪里？
+1. **Easy。** 在 4×4 GridWorld 上使用 MC advantage$(G_t - V(s_t))$训练 actor-critic。与 Lesson 06 中 REINFORCE-with-running-mean-baseline 的 sample efficiency 对比。
+2. **Medium。** 切换到 TD-residual advantage$(r + \gamma V(s') - V(s))$。测量 advantage batches 的 variance。它下降了多少？
+3. **Hard。** 实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$。绘制 final return vs sample efficiency。这个 task 的 bias/variance sweet spot 在哪里？
 
 ## Key Terms
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Actor | “Policy net” | `π_θ(a\|s)`，由 policy gradient 更新。 |
-| Critic | “Value net” | `V_φ(s)`，通过对 returns / TD targets 做 MSE regression 更新。 |
-| Advantage | “比平均好多少” | `A(s, a) = Q(s, a) - V(s)` 或它的 estimators。`∇ log π` 的 multiplier。 |
-| TD residual | “δ” | `δ_t = r + γ V(s') - V(s)`；one-step advantage estimate。 |
-| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 `λ` parameterized。 |
+| Actor | “Policy net” | $\pi_\theta(a \mid s)$，由 policy gradient 更新。 |
+| Critic | “Value net” | $V_\phi(s)$，通过对 returns / TD targets 做 MSE regression 更新。 |
+| Advantage | “比平均好多少” | $A(s, a) = Q(s, a) - V(s)$ 或它的 estimators。$\nabla \log \pi$ 的 multiplier。 |
+| TD residual | “δ” | $\delta_t = r + \gamma V(s') - V(s)$；one-step advantage estimate。 |
+| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 $\lambda$ parameterized。 |
 | A2C | “Synchronous actor-critic” | 跨 envs batching；每个 rollout 做一次 Gradient step。 |
 | A3C | “Async actor-critic” | Worker threads 把 gradients 推送到 shared param server。Original paper；2026 年较少见。 |
-| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 `γ^n V(s_{t+n})` 来闭合求和。 |
+| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 $\gamma^n V(s_{t+n})$ 来闭合求和。 |
 
 ## Further Reading
 

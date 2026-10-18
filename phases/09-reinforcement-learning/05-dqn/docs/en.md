@@ -11,7 +11,7 @@
 
 Tabular Q-learning 需要为每个 (state, action) 对单独保存一个 Q-value。一个 chess board 大约有 10⁴³ 个 states。一帧 Atari 画面是 210×160×3 = 100,800 个 features。Tabular RL 在几千个 states 时就会失效，更不用说数十亿个 states。
 
-事后看，修复方式很明显：用 Neural Network `Q(s, a; θ)` 替换 Q-table。但这种“事后显然”花了几十年才走到这里。朴素的 function approximation 搭配 Q-learning 会在 “deadly triad” 下发散：function approximation + bootstrapping + off-policy learning。Mnih et al. (2013, 2015) 找出了三个能稳定学习过程的工程技巧：
+事后看，修复方式很明显：用 Neural Network $Q(s, a; \theta)$ 替换 Q-table。但这种“事后显然”花了几十年才走到这里。朴素的 function approximation 搭配 Q-learning 会在 “deadly triad” 下发散：function approximation + bootstrapping + off-policy learning。Mnih et al. (2013, 2015) 找出了三个能稳定学习过程的工程技巧：
 
 1. **Experience replay** 让 transitions 去相关。
 2. **Target network** 冻结 bootstrap target。
@@ -25,25 +25,29 @@ Atari 上的 DQN 是第一次用单一架构和单一 hyperparameter 集合，�
 
 **目标。** DQN 在 Neural Q-function 上最小化 one-step TD loss：
 
-`L(θ) = E_{(s,a,r,s')~D} [ (r + γ max_{a'} Q(s', a'; θ^-) - Q(s, a; θ))² ]`
+```math
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim D}[ (r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta))^2 ]
+```
 
-`θ` = online network，每一步通过 Gradient Descent 更新。`θ^-` = target network，周期性地从 `θ` 复制（约每 10,000 步一次）。`D` = past transitions 的 replay buffer。
+$\theta$ = online network，每一步通过 Gradient Descent 更新。$\theta^-$ = target network，周期性地从 $\theta$ 复制（约每 10,000 步一次）。$D$ = past transitions 的 replay buffer。
 
 **三个技巧，按重要性排序：**
 
 **Experience replay。** 一个包含 `~10⁶` transitions 的 ring buffer。每个训练步骤都会均匀随机采样一个 minibatch。这会打破时间相关性（连续 frames 几乎完全相同），让 network 能从罕见的 rewarding transitions 中反复学习，并让连续 Gradient 更新去相关。没有它，使用 Neural Net 的 on-policy TD 在 Atari 上会发散。
 
-**Target network。** 在 Bellman 方程两侧都使用同一个 network `Q(·; θ)`，会让 target 在每次更新时都移动，也就是“追着自己的尾巴跑”。修复方式是：保留第二个 network `Q(·; θ^-)`，其 weights 冻结。每隔 `C` 步，复制 `θ → θ^-`。这会让 regression target 在数千个 Gradient steps 内保持稳定。Soft updates `θ^- ← τ θ + (1-τ) θ^-`（用于 DDPG, SAC）是更平滑的变体。
+**Target network。** 在 Bellman 方程两侧都使用同一个 network $Q(\cdot; \theta)$，会让 target 在每次更新时都移动，也就是“追着自己的尾巴跑”。修复方式是：保留第二个 network $Q(\cdot; \theta^-)$，其 weights 冻结。每隔 $C$ 步，复制 $\theta \to \theta^-$。这会让 regression target 在数千个 Gradient steps 内保持稳定。Soft updates $\theta^- \leftarrow \tau \theta + (1-\tau) \theta^-$（用于 DDPG, SAC）是更平滑的变体。
 
-**Reward clipping。** Atari 的 reward 幅度从 1 到 1000+ 不等。裁剪到 `{-1, 0, +1}` 可以阻止某个单一游戏主导 Gradient。当 reward magnitude 重要时这是错误的；但对 Atari 来说可以，因为只有符号重要。
+**Reward clipping。** Atari 的 reward 幅度从 1 到 1000+ 不等。裁剪到 $\lbrace-1, 0, +1 \rbrace$ 可以阻止某个单一游戏主导 Gradient。当 reward magnitude 重要时这是错误的；但对 Atari 来说可以，因为只有符号重要。
 
 **Double DQN。** Hasselt (2016) 修复了 maximization bias：使用 online net 来*选择* action，使用 target net 来*评估*它。
 
-`target = r + γ Q(s', argmax_{a'} Q(s', a'; θ); θ^-)`
+```math
+\text{target} = r + \gamma Q(s', \arg\max_{a'} Q(s', a'; \theta); \theta^-)
+```
 
 这是一个 drop-in replacement，效果稳定更好。默认使用它。
 
-**其他改进（Rainbow, 2017）：** prioritized replay（更多采样 high-TD-error transitions）、dueling architecture（分离 `V(s)` 和 advantage heads）、noisy networks（learned exploration）、n-step returns、distributional Q (C51/QR-DQN)、multi-step bootstrapping。每一项都会带来几个百分点的提升；收益大致可叠加。
+**其他改进（Rainbow, 2017）：** prioritized replay（更多采样 high-TD-error transitions）、dueling architecture（分离 $V(s)$ 和 advantage heads）、noisy networks（learned exploration）、n-step returns、distributional Q (C51/QR-DQN)、multi-step bootstrapping。每一项都会带来几个百分点的提升；收益大致可叠加。
 
 
 ```figure
@@ -105,11 +109,11 @@ def train_step(online, target, batch, gamma, lr):
     apply_sgd(online, grads, lr / len(batch))
 ```
 
-它的形状就是 Lesson 04 中的 Q-learning，只有两点区别：(a) 我们通过可微的 `Q(·; θ)` 做 Backpropagation，而不是索引 table；(b) target 使用 `Q(·; θ^-)`。
+它的形状就是 Lesson 04 中的 Q-learning，只有两点区别：(a) 我们通过可微的 $Q(\cdot; \theta)$ 做 Backpropagation，而不是索引 table；(b) target 使用 $Q(\cdot; \theta^-)$。
 
 ### 步骤 4：外层 loop
 
-对每个 episode，基于 `Q(·; θ)` 执行 ε-greedy，把 transitions 放入 buffer，采样 minibatch，执行一次 Gradient step，并周期性同步 `θ^- ← θ`。模式如下：
+对每个 episode，基于 $Q(\cdot; \theta)$ 执行 ε-greedy，把 transitions 放入 buffer，采样 minibatch，执行一次 Gradient step，并周期性同步 $\theta^- \leftarrow \theta$。模式如下：
 
 ```python
 for episode in range(N):
@@ -182,7 +186,7 @@ tags: [rl, dqn, deep-rl]
 
 1. **Easy。** 运行 `code/main.py`。绘制 per-episode return curve。running mean 超过 -10 需要多少个 episodes？
 2. **Medium。** 禁用 target network（在 Bellman target 两侧都使用 online net）。测量训练不稳定性：return 会震荡还是发散？
-3. **Hard。** 添加 Double DQN：使用 online net 选择 `argmax a'`，使用 target net 评估。比较 noisy-reward GridWorld 上训练 1,000 个 episodes 后，使用与不使用 Double DQN 时 `Q(s_0, best_a)` 相对真实 `V*(s_0)` 的 bias。
+3. **Hard。** 添加 Double DQN：使用 online net 选择 `argmax a'`，使用 target net 评估。比较 noisy-reward GridWorld 上训练 1,000 个 episodes 后，使用与不使用 Double DQN 时 `Q(s_0, best_a)` 相对真实 $V^{\ast}(s_0)$ 的 bias。
 
 ## 关键术语
 | Term | 人们怎么说 | 它实际是什么意思 |

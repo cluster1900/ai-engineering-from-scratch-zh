@@ -35,25 +35,27 @@ accuracy 会失败，因为它把所有正确预测都同等对待。正确标�
 | Actually Positive | 0 (TP) | 10 (FN) |
 | Actually Negative | 0 (FP) | 990 (TN) |
 
-Accuracy = (0 + 990) / 1000 = 99.0%
+```math
+\text{准确率} = (0 + 990) / 1000 = 99.0\%
+```
 
 模型抓住了零次欺诈。零个疾病。零个缺陷。但 accuracy 显示 99%。这就是为什么 accuracy 对不平衡问题很危险。
 
 ### 更好的指标
 
-**Precision** = TP / (TP + FP)。在所有被标记为 positive 的样本中，真正是 positive 的有多少？高 precision 意味着误报少。
+**Precision** = $\text{TP} / (\text{TP} + \text{FP})$。在所有被标记为 positive 的样本中，真正是 positive 的有多少？高 precision 意味着误报少。
 
-**Recall** = TP / (TP + FN)。在所有真实 positive 的样本中，我们抓住了多少？高 recall 意味着漏掉的 positive 少。
+**Recall** = $\text{TP} / (\text{TP} + \text{FN})$。在所有真实 positive 的样本中，我们抓住了多少？高 recall 意味着漏掉的 positive 少。
 
-**F1 Score** = 2 * precision * recall / (precision + recall)。调和平均数。相比算术平均数，它会更严厉地惩罚 precision 和 recall 之间的极端不平衡。
+**F1 Score** = $2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$。调和平均数。相比算术平均数，它会更严厉地惩罚 precision 和 recall 之间的极端不平衡。
 
-**F-beta Score** = (1 + beta^2) * precision * recall / (beta^2 * precision + recall)。当 beta > 1 时，recall 更重要。当 beta < 1 时，precision 更重要。F2 在欺诈检测中很常见（漏掉欺诈比误报更糟）。
+**F-beta Score** = $(1 + \beta^2) \cdot \text{精确率} \cdot \text{召回率} / (\beta^2 \cdot \text{精确率} + \text{召回率})$。当 $\beta > 1$ 时，recall 更重要。当 $\beta < 1$ 时，precision 更重要。F2 在欺诈检测中很常见（漏掉欺诈比误报更糟）。
 
 **AUPRC**（Area Under Precision-Recall Curve）。类似 AUC-ROC，但对不平衡数据更有信息量。随机 classifier 的 AUPRC 等于 positive class 的比例（不像 ROC 那样是 0.5）。这让改进更容易被看见。
 
-**Matthews Correlation Coefficient** = (TP * TN - FP * FN) / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))。范围从 -1 到 +1。只有当模型在两个类别上都表现良好时才会给出高分。即使类别规模差异很大，也保持平衡。
+**Matthews Correlation Coefficient** = $(\text{TP} \cdot \text{TN} - \text{FP} \cdot \text{FN}) / \sqrt{(\text{TP}+\text{FP})(\text{TP}+\text{FN})(\text{TN}+\text{FP})(\text{TN}+\text{FN})}$。范围从 -1 到 +1。只有当模型在两个类别上都表现良好时才会给出高分。即使类别规模差异很大，也保持平衡。
 
-对于上面“始终预测 negative”的模型：precision = 0/0（未定义，通常设为 0），recall = 0/10 = 0，F1 = 0，MCC = 0。这些指标正确地识别出该模型毫无价值。
+对于上面“始终预测 negative”的模型：$\text{精确率} = 0/0$（未定义，通常设为 0），$\text{召回率} = 0/10 = 0$，$\text{F1} = 0$，$\text{MCC} = 0$。这些指标正确地识别出该模型毫无价值。
 
 ### 不平衡数据 Pipeline
 
@@ -79,9 +81,9 @@ flowchart TD
 
 SMOTE 会创建新的 synthetic minority 样本，这些样本看起来合理，但不是副本。算法如下：
 
-1. 对每个 minority 样本 x，在其他 minority 样本中找到它的 k 个最近邻
+1. 对每个 minority 样本 $x$，在其他 minority 样本中找到它的 $k$ 个最近邻
 2. 随机选择一个邻居
-3. 在 x 和该邻居之间的线段上创建一个新样本
+3. 在 $x$ 和该邻居之间的线段上创建一个新样本
 
 公式：`new_sample = x + random(0, 1) * (neighbor - x)`
 
@@ -137,24 +139,24 @@ flowchart LR
 与其改变数据，不如改变模型对错误的处理方式。给 minority class 的误分类分配更高权重。
 
 对于一个包含 950 个 negative 和 50 个 positive 样本的二元问题：
-- negative class 的权重 = n_samples / (2 * n_negative) = 1000 / (2 * 950) = 0.526
-- positive class 的权重 = n_samples / (2 * n_positive) = 1000 / (2 * 50) = 10.0
+- negative class 的权重 = $n_{\text{样本数}} / (2 \cdot n_{\text{负类}}) = 1000 / (2 \cdot 950) = 0.526$
+- positive class 的权重 = $n_{\text{样本数}} / (2 \cdot n_{\text{正类}}) = 1000 / (2 \cdot 50) = 10.0$
 
 positive class 获得了 19 倍权重。误分类一个 positive 样本的代价，相当于误分类 19 个 negative 样本。模型被迫关注 minority class。
 
 在 logistic regression 中，这会修改 Loss Function：
 
-```
-weighted_loss = -sum(w_i * [y_i * log(p_i) + (1-y_i) * log(1-p_i)])
+```math
+\text{weighted\_loss} = -\sum \bigl( w_i \cdot [y_i \log(p_i) + (1-y_i) \log(1-p_i)] \bigr)
 ```
 
-其中 w_i 取决于样本 i 的类别。
+其中 $w_i$ 取决于样本 $i$ 的类别。
 
 Class weights 在期望意义上与 oversampling 在数学上等价，但不创建新的数据点。这让它们更快，并避免重复样本带来的过拟合风险。
 
 ### Threshold Tuning
 
-大多数 classifier 会输出一个概率。默认阈值是 0.5：如果 P(positive) >= 0.5，就预测为 positive。但 0.5 是任意的。当类别不平衡时，最优阈值通常要低得多。
+大多数 classifier 会输出一个概率。默认阈值是 0.5：如果 $P(\text{正类}) \ge 0.5$，就预测为 positive。但 0.5 是任意的。当类别不平衡时，最优阈值通常要低得多。
 
 流程：
 1. 训练一个模型
@@ -172,7 +174,7 @@ flowchart LR
     E --> F[Use in Production]
 ```
 
-一个模型可能对一笔欺诈交易输出 P(fraud) = 0.15。在阈值 0.5 下，它会被分类为非欺诈。在阈值 0.10 下，它会被正确抓住。概率校准的重要性低于排序：只要欺诈样本获得的概率高于非欺诈样本，就存在一个阈值可以将它们分开。
+一个模型可能对一笔欺诈交易输出 $P(\text{欺诈}) = 0.15$。在阈值 0.5 下，它会被分类为非欺诈。在阈值 0.10 下，它会被正确抓住。概率校准的重要性低于排序：只要欺诈样本获得的概率高于非欺诈样本，就存在一个阈值可以将它们分开。
 
 ### Cost-Sensitive Learning
 
@@ -180,8 +182,8 @@ Class weights 的泛化形式。不是使用统一成本，而是分配特定的
 
 | | Predict Positive | Predict Negative |
 |--|---|---|
-| Actually Positive | 0 (correct) | C_FN = 100 |
-| Actually Negative | C_FP = 1 | 0 (correct) |
+| Actually Positive | 0 (correct) | $C_{\text{FN}} = 100$ |
+| Actually Negative | $C_{\text{FP}} = 1$ | 0 (correct) |
 
 漏掉一笔欺诈交易（FN）的成本比一次误报（FP）高 100 倍。模型优化的是总成本，而不是总错误数。
 

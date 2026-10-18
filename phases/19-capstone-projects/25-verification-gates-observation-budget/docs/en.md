@@ -83,7 +83,7 @@ token counter 有意采用很粗糙的 `len(text) // 4` heuristic。本课重点
 
 ## 为什么 chain 顺序重要
 
-一次 deny 比一次 allow 更便宜。`WhitelistGate` 运行 O(1) hash lookup。`RegexGate` 运行 O(pattern * argv)。`RecencyGate` 读取 message store 的一个小 slice。`BudgetGate` 读取整个 ledger。你需要按成本升序排列它们，这样被 deny 的 call 就能在执行昂贵工作前 short-circuit。
+一次 deny 比一次 allow 更便宜。`WhitelistGate` 运行 $O(1)$ hash lookup。`RegexGate` 运行 $O(\text{pattern} \cdot \text{argv})$。`RecencyGate` 读取 message store 的一个小 slice。`BudgetGate` 读取整个 ledger。你需要按成本升序排列它们，这样被 deny 的 call 就能在执行昂贵工作前 short-circuit。
 
 你还要按 blast radius 排序。Whitelist 是最强的主张：这个 tool 不在 contract 中。regex gate 其次：这个 argument 不在 contract 中。Recency 在后面：harness 仍然关心，但 call 在结构上是合法的。Budget 放在最后，因为按照定义，它只会在其他所有检查都通过后触发。
 

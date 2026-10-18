@@ -45,7 +45,7 @@ graph LR
 
 ### Rotation
 
-角度为 theta 的 2D rotation 会保持距离和角度不变。它让每个点沿圆弧移动。
+角度为 $\theta$ 的 2D rotation 会保持距离和角度不变。它让每个点沿圆弧移动。
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 在 3D 中，你会围绕某个轴旋转。每个轴都有自己的 rotation matrix：
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### Scaling
@@ -123,8 +117,8 @@ graph LR
 ```
 
 Shear matrices：
-- `Shx = [[1, k], [0, 1]]` 将 x 平移 k * y
-- `Shy = [[1, 0], [k, 1]]` 将 y 平移 k * x
+- `Shx = [[1, k], [0, 1]]` 将 $x$ 平移 $k \cdot y$
+- `Shy = [[1, 0], [k, 1]]` 将 $y$ 平移 $k \cdot x$
 
 ### Reflection
 
@@ -196,7 +190,7 @@ Eigenvector [1, -1] with eigenvalue 1:
 
 ### Eigendecomposition
 
-如果一个 matrix 有 n 个线性无关的 eigenvectors，它就可以被分解：
+如果一个 matrix 有 $n$ 个线性无关的 eigenvectors，它就可以被分解：
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### 为什么 eigenvalues 重要
 
-**PCA。** Covariance matrix 的 eigenvectors 就是 principal components。Eigenvalues 会告诉你每个 component 捕获了多少 variance。按 eigenvalue 排序，保留前 k 个，你就得到了 dimensionality reduction。
+**PCA。** Covariance matrix 的 eigenvectors 就是 principal components。Eigenvalues 会告诉你每个 component 捕获了多少 variance。按 eigenvalue 排序，保留前 $k$ 个，你就得到了 dimensionality reduction。
 
 **稳定性。** 在 recurrent networks 和 dynamical systems 中，magnitude > 1 的 eigenvalues 会导致输出爆炸。Magnitude < 1 会导致输出消失。这就是用一句话表述的 vanishing/exploding gradient problem。
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤 3：从零计算 eigenvalues（2x2）
 
-对于一个 2x2 matrix `[[a, b], [c, d]]`，eigenvalues 由 characteristic equation 求解：`lambda^2 - (a+d)*lambda + (ad - bc) = 0`。
+对于一个 2x2 matrix `[[a, b], [c, d]]`，eigenvalues 由 characteristic equation 求解：$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$。
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 
 3. 创建三个变换的 composition（rotate 30 degrees，按 [1.5, 0.8] scale，使用 kx=0.3 shear），并将其应用到按圆形排列的 8 个点上。打印变换前后的坐标。计算 composed matrix 的 determinant，并验证它等于各个 determinant 的乘积。
 
+### 提示
+
+**练习 1。** 用 `mat_vec_mul` 将 `rotation_2d`、`scaling_2d` 和 `shearing_2d` 应用到每个顶点。对于旋转，计算变换前后的 4 条边长和 2 条对角线长度；它们都必须保持不变。
+
+**练习 2。** 写出特征方程 $\lambda^2 - (\text{trace})\lambda + \det = 0$ 并求解。检查两个结果之和等于迹（7）、乘积等于行列式（10），再与 `eigenvalues_2x2` 和 `np.linalg.eigvals` 比较。
+
+**练习 3。** 构建三个矩阵，用 `shearing_2d(0.3, 0)` 构建剪切矩阵，按应用顺序用 `mat_mul` 相乘，再将结果作用于 8 个点 $(\cos\theta, \sin\theta)$。旋转矩阵的行列式为 1，剪切矩阵的行列式也为 1，因此组合矩阵的 `det_2x2` 必须等于 $1.5 \times 0.8 = 1.2$。
+
 ## 关键术语
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 

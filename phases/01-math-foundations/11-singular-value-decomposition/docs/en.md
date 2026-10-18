@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## 学习目标
-- 通过 power iteration 实现 SVD，并解释 U、Sigma 和 V^T 的几何含义
+- 通过 power iteration 实现 SVD，并解释 $U$、$\Sigma$ 和 $V^T$ 的几何含义
 - 应用 truncated SVD 进行图像压缩，并衡量压缩率与重建误差之间的关系
 - 通过 SVD 计算 Moore-Penrose pseudoinverse，以求解超定 least-squares 系统
 - 将 SVD 与 PCA、推荐系统（latent factors）以及 NLP 中的 Latent Semantic Analysis 联系起来
@@ -23,17 +23,14 @@ SVD 适用于任何 Matrix。任意形状。任意 rank。没有条件限制。�
 
 每个 Matrix，无论形状如何，都会按顺序执行三个操作：旋转、缩放、旋转。SVD 将这种分解显式表示出来。
 
-```
-A = U * Sigma * V^T
-
-      m x n     m x m    m x n    n x n
-     (任意)    (旋转)   (缩放)   (旋转)
+```math
+\underset{\substack{m \times n \\ \text{（任意形状）}}}{A} = \underset{\substack{m \times m \\ \text{（旋转）}}}{U} \cdot \underset{\substack{m \times n \\ \text{（缩放）}}}{\Sigma} \cdot \underset{\substack{n \times n \\ \text{（旋转）}}}{V^T}
 ```
 
-给定任意 Matrix A，SVD 将其分解为：
-- V^T 旋转输入空间（n 维）中的 Vector
-- Sigma 沿每个轴进行缩放（拉伸或压缩）
-- U 将结果旋转到输出空间（m 维）
+给定任意 Matrix $A$，SVD 将其分解为：
+- $V^T$ 旋转输入空间（$n$ 维）中的 Vector
+- $\Sigma$ 沿每个轴进行缩放（拉伸或压缩）
+- $U$ 将结果旋转到输出空间（$m$ 维）
 
 ```mermaid
 graph LR
@@ -41,35 +38,35 @@ graph LR
     B -->|"U\n(旋转)"| C["输出空间 (m-dim)\n旋转到输出\n方向"]
 ```
 
-可以这样理解。你把一个 Matrix 交给 SVD。它会告诉你：“这个 Matrix 会先用 V^T 旋转输入球体，然后用 Sigma 将其拉伸成椭球，最后用 U 旋转这个椭球。”奇异值就是这个椭球各个轴的长度。
+可以这样理解。你把一个 Matrix 交给 SVD。它会告诉你：“这个 Matrix 会先用 $V^T$ 旋转输入球体，然后用 $\Sigma$ 将其拉伸成椭球，最后用 $U$ 旋转这个椭球。”奇异值就是这个椭球各个轴的长度。
 
 ### The full decomposition
 
-对于形状为 m x n 的 Matrix A：
+对于形状为 $m \times n$ 的 Matrix $A$：
 
+```math
+\begin{aligned}
+& A = U \cdot \Sigma \cdot V^T \\[6pt]
+& \text{其中：} \\
+& \quad U \text{ 为 } m \times m, \text{，正交 } (U^T U = I) \\
+& \quad \Sigma \text{ 为 } m \times n, \text{，对角矩阵（对角线为奇异值）} \\
+& \quad V \text{ 为 } n \times n, \text{，正交 } (V^T V = I) \\[6pt]
+& \text{奇异值 } \sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0 \\
+& \text{其中 } r = \mathop{\mathrm{rank}}(A)
+\end{aligned}
 ```
-A = U * Sigma * V^T
 
-其中：
-  U     是 m x m，正交 (U^T U = I)
-  Sigma 是 m x n，对角（奇异值位于对角线上）
-  V     是 n x n，正交 (V^T V = I)
-
-奇异值 sigma_1 >= sigma_2 >= ... >= sigma_r > 0
-其中 r = rank(A)
-```
-
-U 的列称为左奇异Vector。V 的列称为右奇异Vector。Sigma 的对角元素称为奇异值。它们总是非负的，并且按照惯例以降序排列。
+$U$ 的列称为左奇异Vector。$V$ 的列称为右奇异Vector。$\Sigma$ 的对角元素称为奇异值。它们总是非负的，并且按照惯例以降序排列。
 
 ### Left singular vectors、singular values、right singular vectors
 
 SVD 的每个组成部分都有不同的几何含义。
 
-**Right singular vectors（V 的列）：** 它们为输入空间（R^n）构成一组 orthonormal basis。它们是输入空间中的方向，Matrix 会把这些方向映射到输出空间中的正交方向。可以把它们看作 domain 的自然坐标系。
+**Right singular vectors（$V$ 的列）：** 它们为输入空间（$\mathbb{R}^n$）构成一组 orthonormal basis。它们是输入空间中的方向，Matrix 会把这些方向映射到输出空间中的正交方向。可以把它们看作 domain 的自然坐标系。
 
-**Singular values（Sigma 的对角线）：** 它们是缩放因子。第 i 个奇异值告诉你，Matrix 沿第 i 个右奇异Vector 方向会把 Vector 拉伸多少。奇异值为零意味着 Matrix 会把该方向完全压扁。
+**Singular values（$\Sigma$ 的对角线）：** 它们是缩放因子。第 i 个奇异值告诉你，Matrix 沿第 i 个右奇异Vector 方向会把 Vector 拉伸多少。奇异值为零意味着 Matrix 会把该方向完全压扁。
 
-**Left singular vectors（U 的列）：** 它们为输出空间（R^m）构成一组 orthonormal basis。第 i 个左奇异Vector 是第 i 个右奇异Vector 经过缩放后在输出空间中落到的方向。
+**Left singular vectors（$U$ 的列）：** 它们为输出空间（$\mathbb{R}^m$）构成一组 orthonormal basis。第 i 个左奇异Vector 是第 i 个右奇异Vector 经过缩放后在输出空间中落到的方向。
 
 它们之间的关系：
 
@@ -95,20 +92,20 @@ A = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T + ... + sigma_r * u_r * v_r^T
 
 这种形式是 low-rank approximation 的基础。每一项都添加一层结构。第一项捕获最重要的单一模式。第二项捕获次重要的模式。依此类推。截断这个求和可以在任意给定 rank 下得到最佳近似。
 
-```
-Rank-1 approx:    A_1 = sigma_1 * u_1 * v_1^T
-                  (捕获主导模式)
-
-Rank-2 approx:    A_2 = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T
-                  (捕获两个最重要的模式)
-
-Rank-k approx:    A_k = top k 项之和
-                  (根据 Eckart-Young theorem，这是最优的)
+```math
+\begin{aligned}
+\text{秩 1 近似：} \quad & A_1 = \sigma_1 u_1 v_1^T \\
+& \text{（捕捉主导模式）} \\[6pt]
+\text{秩 2 近似：} \quad & A_2 = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T \\
+& \text{（捕捉最重要的两个模式）} \\[6pt]
+\text{秩 }k\text{ 近似：} \quad & A_k = \text{前 } k \text{ 项之和} \\
+& \text{（由 Eckart-Young 定理可知最优）}
+\end{aligned}
 ```
 
 ### Relationship to eigendecomposition
 
-SVD 和 eigendecomposition 有很深的联系。A 的奇异值和奇异Vector 直接来自 A^T A 和 A A^T 的 eigenvalues 与 eigenvectors。
+SVD 和 eigendecomposition 有很深的联系。$A$ 的奇异值和奇异Vector 直接来自 $A^T A$ 和 $A A^T$ 的 eigenvalues 与 eigenvectors。
 
 ```
 A^T A = V * Sigma^T * U^T * U * Sigma * V^T
@@ -132,41 +129,41 @@ A A^T = U * Sigma * V^T * V * Sigma^T * U^T
 
 这个联系告诉你三件事：
 1. 奇异值总是实数且非负（它们是 positive semi-definite Matrix 的 eigenvalues 的平方根）。
-2. 你可以通过对 A^T A 做 eigendecomposition 来计算 SVD，但这会平方 condition number 并损失数值精度。专用 SVD 算法会避免这一点。
-3. 当 A 是方阵且为 symmetric positive semi-definite 时，SVD 和 eigendecomposition 是同一件事。
+2. 你可以通过对 $A^T A$ 做 eigendecomposition 来计算 SVD，但这会平方 condition number 并损失数值精度。专用 SVD 算法会避免这一点。
+3. 当 $A$ 是方阵且为 symmetric positive semi-definite 时，SVD 和 eigendecomposition 是同一件事。
 
 ### Truncated SVD：low-rank approximation
 
-Eckart-Young-Mirsky theorem 表明，A 的最佳 rank-k 近似（在 Frobenius norm 和 spectral norm 下）可以通过只保留 top k 个奇异值及其对应 Vector 得到：
+Eckart-Young-Mirsky theorem 表明，$A$ 的最佳 $\text{rank-}k$ 近似（在 Frobenius norm 和 spectral norm 下）可以通过只保留 top $k$ 个奇异值及其对应 Vector 得到：
 
+```math
+\begin{aligned}
+& A_k = U_k \cdot \Sigma_k \cdot V_k^T \\[6pt]
+& \text{其中：} \\
+& \quad U_k \text{ 为 } m \times k \quad \text{（前 } k \text{ 列，来自 } U\text{）} \\
+& \quad \Sigma_k \text{ 为 } k \times k \quad \text{（左上角 } k \times k \text{ 子块，来自 } \Sigma\text{）} \\
+& \quad V_k \text{ 为 } n \times k \quad \text{（前 } k \text{ 列，来自 } V\text{）} \\[6pt]
+& \text{近似误差} = \sigma_{k+1} \quad \text{（谱范数下）} \\
+& \text{近似误差} = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_r^2} \quad \text{（Frobenius 范数下）}
+\end{aligned}
 ```
-A_k = U_k * Sigma_k * V_k^T
 
-其中：
-  U_k     是 m x k  (U 的前 k 列)
-  Sigma_k 是 k x k  (Sigma 的左上 k x k 块)
-  V_k     是 n x k  (V 的前 k 列)
-
-近似误差 = sigma_{k+1}  (在 spectral norm 下)
-         = sqrt(sigma_{k+1}^2 + ... + sigma_r^2)  (在 Frobenius norm 下)
-```
-
-这不仅仅是“一个好的”近似。它是可证明的最佳 rank k 近似。没有其他 rank-k Matrix 能更接近 A。
+这不仅仅是“一个好的”近似。它是可证明的最佳 rank $k$ 近似。没有其他 $\text{rank-}k$ Matrix 能更接近 $A$。
 
 | Component | Relative magnitude | Kept in rank-3 approx? |
 |-----------|-------------------|------------------------|
-| sigma_1 | 最大 | 是 |
-| sigma_2 | 大 | 是 |
-| sigma_3 | 中等偏大 | 是 |
-| sigma_4 | 中等 | 否（误差） |
-| sigma_5 | 中等偏小 | 否（误差） |
-| sigma_6 | 小 | 否（误差） |
-| sigma_7 | 很小 | 否（误差） |
-| sigma_8 | 极小 | 否（误差） |
+| $\sigma_1$ | 最大 | 是 |
+| $\sigma_2$ | 大 | 是 |
+| $\sigma_3$ | 中等偏大 | 是 |
+| $\sigma_4$ | 中等 | 否（误差） |
+| $\sigma_5$ | 中等偏小 | 否（误差） |
+| $\sigma_6$ | 小 | 否（误差） |
+| $\sigma_7$ | 很小 | 否（误差） |
+| $\sigma_8$ | 极小 | 否（误差） |
 
-保留 top 3：A_3 捕获三个最大的奇异值。误差 = 剩余值（sigma_4 到 sigma_8）。
+保留 top 3：$A_3$ 捕获三个最大的奇异值。误差 = 剩余值（$\sigma_4$ 到 $\sigma_8$）。
 
-如果奇异值衰减很快，一个很小的 k 就能捕获 Matrix 的大部分信息。如果衰减很慢，这个 Matrix 就没有 low-rank 结构。
+如果奇异值衰减很快，一个很小的 $k$ 就能捕获 Matrix 的大部分信息。如果衰减很慢，这个 Matrix 就没有 low-rank 结构。
 
 ### 使用 SVD 进行图像压缩
 
@@ -208,9 +205,9 @@ Netflix Prize 让这一点广为人知。你有一个用户-电影评分 Matrix�
 核心想法：这个评分 Matrix 具有 low rank。用户的品味并不是完全独立的。有少数几个 latent factors（动作 vs. 剧情、旧 vs. 新、理性 vs. 感官）能够解释大多数偏好。
 
 对（填充后的）评分 Matrix 做 SVD，会将其分解为：
-- U：latent factor space 中的用户 profile
-- Sigma：每个 latent factor 的重要性
-- V^T：latent factor space 中的电影 profile
+- $U$：latent factor space 中的用户 profile
+- $\Sigma$：每个 latent factor 的重要性
+- $V^T$：latent factor space 中的电影 profile
 
 用户对某部电影的预测评分，就是该用户 profile 与电影 profile 的 dot product（由奇异值加权）。low-rank approximation 会填补缺失条目。
 
@@ -250,23 +247,23 @@ LSA 是最早成功从原始文本中捕获语义相似性的方法之一。它�
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 接近零 | 可忽略 |
-| sigma_5 | 接近零 | 可忽略 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 接近零 | 可忽略 |
+| $\sigma_5$ | 接近零 | 可忽略 |
 
 **有噪声信号的奇异值（噪声会加到所有分量上）：**
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 小 | 噪声 |
-| sigma_5 | 小 | 噪声 |
-| sigma_6 | 小 | 噪声 |
-| sigma_7 | 小 | 噪声 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 小 | 噪声 |
+| $\sigma_5$ | 小 | 噪声 |
+| $\sigma_6$ | 小 | 噪声 |
+| $\sigma_7$ | 小 | 噪声 |
 
 ```mermaid
 graph TD
@@ -280,7 +277,7 @@ graph TD
 
 ### Pseudoinverse via SVD
 
-Moore-Penrose pseudoinverse A+ 将 Matrix inversion 推广到非方阵和奇异 Matrix。SVD 让它的计算变得非常简单。
+Moore-Penrose pseudoinverse $A^+$ 将 Matrix inversion 推广到非方阵和奇异 Matrix。SVD 让它的计算变得非常简单。
 
 ```
 如果 A = U * Sigma * V^T，那么：
@@ -296,7 +293,7 @@ A+ = V * Sigma+ * U^T
 对于 Sigma (m x n)：  Sigma+ 是 (n x m)
 ```
 
-pseudoinverse 可以求解 least-squares 问题。如果 Ax = b 没有精确解（超定系统），那么 x = A+ b 就是 least-squares 解（最小化 ||Ax - b||）。
+pseudoinverse 可以求解 least-squares 问题。如果 $Ax = b$ 没有精确解（超定系统），那么 $x = A^+ b$ 就是 least-squares 解（最小化 $\lVert Ax - b \rVert$）。
 
 ```
 超定系统（方程数多于未知数）：
@@ -314,7 +311,7 @@ pseudoinverse 可以求解 least-squares 问题。如果 Ax = b 没有精确解�
 
 ### Numerical stability 优势
 
-计算 A^T A 的 eigendecomposition 会平方奇异值（A^T A 的 eigenvalues 是 sigma_i^2）。这会平方 condition number，从而放大数值误差。
+计算 $A^T A$ 的 eigendecomposition 会平方奇异值（$A^T A$ 的 eigenvalues 是 $\sigma_i^2$）。这会平方 condition number，从而放大数值误差。
 
 ```
 示例：
@@ -329,7 +326,7 @@ pseudoinverse 可以求解 least-squares 问题。如果 Ax = b 没有精确解�
                    （额外损失 6 位精度）
 ```
 
-现代 SVD 算法（Golub-Kahan bidiagonalization）直接在 A 上工作，从不构造 A^T A。这就是为什么你应该始终优先使用 `np.linalg.svd(A)`，而不是 `np.linalg.eig(A.T @ A)`。
+现代 SVD 算法（Golub-Kahan bidiagonalization）直接在 $A$ 上工作，从不构造 $A^T A$。这就是为什么你应该始终优先使用 `np.linalg.svd(A)`，而不是 `np.linalg.eig(A.T @ A)`。
 
 ### Connection to PCA
 
@@ -365,7 +362,7 @@ svd-rank-reconstruction
 ## 构建它
 ### 步骤 1： SVD from scratch using power iteration
 
-思路：要找到最大的奇异值及其 Vector，可以对 A^T A（或 A A^T）使用 power iteration。然后对 Matrix 做 deflation，并重复寻找下一个奇异值。
+思路：要找到最大的奇异值及其 Vector，可以对 $A^T A$（或 $A A^T$）使用 power iteration。然后对 Matrix 做 deflation，并重复寻找下一个奇异值。
 
 ```python
 import numpy as np
@@ -507,7 +504,7 @@ julia svd.jl
 - `outputs/skill-svd.md` - 一个用于理解何时以及如何在真实项目中应用 SVD 的 skill
 
 ## 练习
-1. 从零实现完整 SVD，不使用 power iteration。改为计算 A^T A 的 eigendecomposition 来得到 V 和奇异值，然后计算 U = A V Sigma^{-1}。将数值精度与你的 power iteration 版本以及 NumPy 进行比较。
+1. 从零实现完整 SVD，不使用 power iteration。改为计算 $A^T A$ 的 eigendecomposition 来得到 $V$ 和奇异值，然后计算 $U = A V \Sigma^{-1}$。将数值精度与你的 power iteration 版本以及 NumPy 进行比较。
 
 2. 加载一张真实灰度图像（或将一张图像转换为灰度）。在 ranks 1、5、10、25、50、100 下压缩它。对每个 rank，计算压缩率和相对误差。找出图像在视觉上变得可接受的 rank。
 
@@ -515,22 +512,34 @@ julia svd.jl
 
 4. 创建一个 100x50 的 document-term Matrix，包含 3 个合成主题。每个主题有 5 个关联词项。添加噪声。应用 SVD，并验证 top 3 个奇异值明显大于其余奇异值。将文档投影到 3D latent space，并检查来自相同主题的文档是否聚集在一起。
 
-5. 生成一个干净的 low-rank Matrix（rank 3，大小 50x40），并在不同水平下添加 Gaussian noise（sigma = 0.1、0.5、1.0、2.0）。对每个噪声水平，通过从 k=1 到 40 扫描并测量相对于干净 Matrix 的重建误差，找到最优截断 rank。绘制最优 k 如何随噪声水平变化。
+5. 生成一个干净的 low-rank Matrix（rank 3，大小 50x40），并在不同水平下添加 Gaussian noise（$\sigma$ = 0.1、0.5、1.0、2.0）。对每个噪声水平，通过从 $k$=1 到 40 扫描并测量相对于干净 Matrix 的重建误差，找到最优截断 rank。绘制最优 $k$ 如何随噪声水平变化。
+
+### 提示
+
+**练习 1。** 计算 $A^T A$，用 `np.linalg.eigh` 得到其特征值和特征向量，并按特征值降序排列。奇异值是特征值的平方根；检查 $U \Sigma V^T$ 能重构 $A$，并将误差与 `svd_from_scratch` 和 `np.linalg.svd` 比较。
+
+**练习 2。** 对每个 rank 调用 `truncated_svd`，用 `reconstruct` 重构图像，用 `compression_ratio(m, n, k)` 计算大小。相对误差必须随 rank 增长而下降；第一个看不出明显块状失真的 rank 就是答案。
+
+**练习 3。** 标记缺失单元格，用行均值填充，再用 `truncated_svd` 和 `reconstruct` 重构 rank 3 近似。随后衡量结果：统计超出评分范围的预测数量，并打印已知单元格中的最大变化。rank 3 近似并不保证这两个性质，因此如果需要合法评分，应把预测裁剪到评分范围内。
+
+**练习 4。** 为每个主题分配 5 个词项组成的块，使该主题文档在这些词项上有较高计数，再加入少量噪声。打印奇异值：前 3 个必须远大于第 4 个。随后按主题给 3D 坐标着色，检查每个主题是否形成一个组。
+
+**练习 5。** 将一个 50x3 随机矩阵与一个 3x40 随机矩阵相乘，得到干净矩阵，再针对每个 $\sigma$ 加入噪声。对每个 $k$，比较 rank $k$ 重构与干净矩阵；预期低噪声时最优 $k$ 接近 3，高噪声时更小。
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| SVD | “Factor 任意 Matrix” | 将 A 分解为 U Sigma V^T，其中 U 和 V 是正交的，Sigma 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
-| Singular value | “这个 component 有多重要” | Sigma 的第 i 个对角元素。衡量 Matrix 沿第 i 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
-| Left singular vector | “输出方向” | U 的一列。第 i 个右奇异Vector 经过 sigma_i 缩放后映射到的输出空间方向。 |
-| Right singular vector | “输入方向” | V 的一列。输入空间中的一个方向，Matrix 会将其映射到第 i 个左奇异Vector（经过 sigma_i 缩放后）。 |
-| Truncated SVD | “Low-rank approximation” | 只保留 top k 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 rank-k 近似（Eckart-Young theorem）。 |
+| SVD | “Factor 任意 Matrix” | 将 $A$ 分解为 $U \Sigma V^T$，其中 $U$ 和 $V$ 是正交的，$\Sigma$ 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
+| Singular value | “这个 component 有多重要” | $\Sigma$ 的第 $i$ 个对角元素。衡量 Matrix 沿第 $i$ 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
+| Left singular vector | “输出方向” | $U$ 的一列。第 $i$ 个右奇异Vector 经过 $\sigma_i$ 缩放后映射到的输出空间方向。 |
+| Right singular vector | “输入方向” | $V$ 的一列。输入空间中的一个方向，Matrix 会将其映射到第 $i$ 个左奇异Vector（经过 $\sigma_i$ 缩放后）。 |
+| Truncated SVD | “Low-rank approximation” | 只保留 top $k$ 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 $\text{rank-}k$ 近似（Eckart-Young theorem）。 |
 | Rank | “真实维度” | 非零奇异值的数量。告诉你 Matrix 实际使用了多少个独立方向。 |
-| Pseudoinverse | “广义逆” | V Sigma+ U^T。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
-| Condition number | “对误差有多敏感” | sigma_max / sigma_min。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
+| Pseudoinverse | “广义逆” | $V \Sigma^+ U^T$。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
+| Condition number | “对误差有多敏感” | $\sigma_{\max} / \sigma_{\min}$。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
 | Latent factor | “隐藏变量” | SVD 发现的 low-rank space 中的一个维度。在推荐中，latent factor 可能对应类型偏好。在 NLP 中，它可能对应一个主题。 |
 | Frobenius norm | “Matrix 的总大小” | 所有元素平方和的平方根。等于所有奇异值平方和的平方根。用于衡量近似误差。 |
-| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank k，truncated SVD 会在所有可能的 rank-k Matrix 中最小化近似误差。 |
+| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank $k$，truncated SVD 会在所有可能的 $\text{rank-}k$ Matrix 中最小化近似误差。 |
 | Power iteration | “找到最大的 eigenvector” | 反复用 Matrix 乘以一个随机 Vector 并归一化。会收敛到具有最大 eigenvalue 的 eigenvector。它是许多 SVD 算法的构建模块。 |
 
 ## 延伸阅读
