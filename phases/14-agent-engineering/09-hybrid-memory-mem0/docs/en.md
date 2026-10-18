@@ -29,7 +29,7 @@ Mem0 (arXiv:2504.19413, April 2025) 在 `add(text, user_id, metadata)` 时：
 
 1. 从文本中提取候选事实（一个 LLM 驱动的步骤）。
 2. 将每个事实写入 Vector store（Embedding），用于语义搜索。
-3. 将每个事实写入 KV store，以 (user_id, fact_type, entity) 为 key，用于 O(1) 查找。
+3. 将每个事实写入 KV store，以 (user_id, fact_type, entity) 为 key，用于 $O(1)$ 查找。
 4. 将每个事实作为 typed edges 写入 Graph store (Mem0g)，用于关系查询。
 
 在 `search(query, user_id)` 时：
