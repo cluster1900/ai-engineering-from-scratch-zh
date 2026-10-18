@@ -118,7 +118,7 @@ python3 code/main.py
 
 - **Memory 就是数据库。**Trong quy mô, bạn chọn thực tế lưu trữ (Vektor DB, Postgres)
 - **记录 retrieval trace。**Đối với mỗi hành động, ghi lại động lực của nó trí nhớ top-k. Đó là khả năng debug của bạn.
-- **为每个 agent 预算 tokens。**Mỗi tick 中 mỗi đại lý của thu hồi + phản ánh + kế hoạch là O(k) LLM gọi;;N đại lý × T ticks × gọi-per-tick 可能压预算。
+- **为每个 agent 预算 tokens。**Mỗi tick 中 mỗi đại lý của lấy + phản xạ + kế hoạch là $O(k)$LLM gọi. N đại lý × T ticks × gọi-per-tick có thể áp lực ngân sách của bạn.
 - **周期性 compact memory。**Kết luận-và-đặt 低重要性 条目。 Chính sách giữ lại là quyết định thiết kế, không phải细节。
 - **显式检测空间 / 社会规范违规。**Các kiến trúc sẽ học được chúng.
 

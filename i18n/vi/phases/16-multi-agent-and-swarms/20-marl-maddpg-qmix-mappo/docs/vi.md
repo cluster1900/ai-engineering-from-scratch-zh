@@ -44,8 +44,8 @@ Tại sao sử dụng CTDE: khi tập luyện, chúng tôi biết hành động 
 
 Chỉ phù hợp với hợp tác. Phí thưởng toàn cầu là chức năng đơn giản của giá trị Q của mỗi đại lý.
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 Sự đơn thuần bảo đảm`argmax_a Q_tot`Có thể thông qua mỗi đại lý  độc lập chọn `argmax_{a_i} Q_i`Để tính toán. Đó là điều mà anh cần.**decentralized execution property** Trình luyện, kết hợp mạng lưới từ mỗi đại lý của Q 生成 `Q_tot`
