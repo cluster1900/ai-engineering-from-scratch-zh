@@ -90,14 +90,14 @@ Comparar os gradientes analíticos (de backprop) com os gradientes numéricos (d
 
 参数 `w`de gradiente numérico:
 
-```
-grad_numerical = (loss(w + eps) - loss(w - eps)) / (2 * eps)
+```math
+\text{grad\_numerical} = \frac{\text{loss}(w + \text{eps}) - \text{loss}(w - \text{eps})}{2 \cdot \text{eps}}
 ```
 
 Uma致性指标 (diferença relativa):
 
-```
-rel_diff = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{rel\_diff} = \frac{\lvert \text{grad\_analytical} - \text{grad\_numerical} \rvert}{\max(\lvert \text{grad\_analytical} \rvert, \lvert \text{grad\_numerical} \rvert, 10^{-8})}
 ```
 
 Se `rel_diff < 1e-5`- Não, não.`rel_diff > 1e-3`Há quase um bug.

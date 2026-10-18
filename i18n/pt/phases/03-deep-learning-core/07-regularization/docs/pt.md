@@ -38,21 +38,23 @@ graph LR
 
 ### Desistência
 
-A mais simples regularização é técnica, mas há uma explicação mais elegante. Durante o treino, a probabilidade de que a saída de cada neurônio seja de zero é definida.
+A mais simples regularização é técnica, mas há uma explicação mais elegante.$p$As vezes, cada neurônio tem uma saída de zero.
 
+```math
+\text{output} = \text{activation}(z) \cdot \text{mask} \quad \text{其中 }\text{mask}[i] \sim \text{Bernoulli}(1 - p)
 ```
-output = activation(z) * mask    where mask[i] ~ Bernoulli(1 - p)
-```
 
-Quando p = 0,5 , cada passagem avançada coloca metade dos neurônios em zero. A rede deve aprender o redundante, pois não pode prever quais neurônios podem ser usados. Isso impede a co-adaptação, ou seja, que os neurônios dependam da existência de outros neurônios específicos.
+- Não .$p = 0.5$Quando, cada passo avançado, a cidade coloca metade dos neurônios em zero. A rede deve aprender a expressar redundância, pois não pode prever quais neurônios são disponíveis. Isso impede a co-adaptação, ou seja, a existência de neurônios dependentes de outros neurônios específicos.
 
-Ensemble  explicação: uma rede com N 个神经元并使用脱落的网络会创建2^N 个可能的子网络 (conjuntura de todas as neurais) ⋅ use dropout 训练近似于同时训练所有2^N 个子网络,每个都在不同的小组上训练──测试时,你使用所有神经元(无脱落),并将输出按 (1 - p)缩缩,缩缩,以匹配训练期间的期望值──这等于对2^N 个子网络的预测平均单个模型得到一个巨大的集合──
+Ensemble 解释: um $N$个神经元并使用中断的网络会创建                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $2^N$个可能的子网络 ()                                                                                                                                                                                                                                                           $2^N$个子网络, cada um em diferentes mini-batches 上训练――测试时,你使用所有神经元(无落),并将输出按 $(1 - p)$), em comparação com o valor esperado durante o treino.$2^N$个子网络的预测取平均使用单个模型得到一个巨大的集团──
 
 实践中,缩放会在训练期间应用,而不是测试期间应用(reversed dropout):
 
-```
-During training:  output = activation(z) * mask / (1 - p)
-During testing:   output = activation(z)   (no change needed)
+```math
+\begin{aligned}
+\text{训练时：} \quad & \text{output} = \text{activation}(z) \cdot \text{mask} / (1 - p) \\
+\text{测试时：} \quad & \text{output} = \text{activation}(z) \quad \text{（无需改动）}
+\end{aligned}
 ```
 
 É melhor, porque o código de teste não precisa de ser abandonado.
@@ -63,15 +65,15 @@ During testing:   output = activation(z)   (no change needed)
 
 Terá o direito de propriedade de peso quadrado
 
-```
-total_loss = task_loss + (lambda / 2) * sum(w_i^2)
+```math
+\text{total\_loss} = \text{task\_loss} + \frac{\lambda}{2} \sum_i w_i^2
 ```
 
-O gradiente de regularização é lambda * w。 o que significa que em cada passo, cada peso será reduzido em proporção à sua grandeza em proporção a zero。 o peso grande é punido mais fortemente。 o modelo é impulsionado sem um único peso dominante.
+Regularização do Gradiente é$\lambda w$ Isto significa que em cada passo, cada peso será reduzido a zero em proporção à sua proporção de peso em grandeza.
 
 Por que isso ajuda a generalizar: o modelo de sobre-excesso de peso geralmente tem um peso maior, aumentando o ruído dos dados de treinamento.
 
-O hiperparâmetro lambda 控制强度──valor típico:
+$\lambda$hiperparâmetro 控制强度──valor típico:
 
 - Transformador 上的 AdamW Utilizar 0.01
 - As emissoras de televisão de alta SGD utilizam 1e-4
@@ -85,16 +87,18 @@ Antes de transmitir a saída de cada camada para a camada seguinte, primeiro a r
 
 对于某一层一批激活:
 
-```
-mu = (1/B) * sum(x_i)           (batch mean)
-sigma^2 = (1/B) * sum((x_i - mu)^2)   (batch variance)
-x_hat = (x_i - mu) / sqrt(sigma^2 + eps)   (normalize)
-y = gamma * x_hat + beta        (scale and shift)
+```math
+\begin{aligned}
+\mu &= \frac{1}{B} \sum_i x_i && \text{（批次均值）} \\
+\sigma^2 &= \frac{1}{B} \sum_i (x_i - \mu)^2 && \text{（批次方差）} \\
+\hat{x} &= \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}} && \text{（归一化）} \\
+y &= \gamma \hat{x} + \beta && \text{（缩放和平移）}
+\end{aligned}
 ```
 
 Gamma e beta são parâmetros que podem ser aprendidos, permitindo que a rede, em melhores condições, possa revogar essa normalização. Sem eles, você forçará todas as saídas de cada camada a se tornarem em valores mínimos, e isso não é necessariamente o que a rede quer.
 
-**Training vs inference split:**Durante o treino, mu 和 sigma proveniente do mini-batch anterior. Durante o treino, você usa média acumulada de corrida durante o treino.
+**Training vs inference split:**Durante o treino,$\mu$和 $\sigma$Desde o atual mini-batch, durante o período de treinamento, você usa as médias de execução acumuladas durante o treinamento, o momento = média móvel exponencial de 0,1 , ou seja, 90% old value + 10% novo valor)
 
 BatchNorm 为什么有效仍有争议──原论文声称它减少了"internal covariate shift" (conforme os primeiros níveis de atualização, a distribuição de entrada de níveis varia)──Santurkar et al. (2018) 表明这个解释是错的──真正原因是:BatchNorm 让损失景观更平滑──Gradientes 更具预测性,Lipschitz constants 更小,Optimizer security可以采取更大的步长──这就是为什么BatchNorm 允许你使用更高的学习率 并更快收──
 
@@ -104,14 +108,16 @@ BatchNorm tem uma limitação fundamental: depende das estatísticas de loteamen
 
 Em dimensão de características, em vez de em dimensão de lote.
 
-```
-mu = (1/D) * sum(x_j)           (feature mean)
-sigma^2 = (1/D) * sum((x_j - mu)^2)   (feature variance)
-x_hat = (x_j - mu) / sqrt(sigma^2 + eps)
-y = gamma * x_hat + beta
+```math
+\begin{aligned}
+\mu &= \frac{1}{D} \sum_j x_j && \text{（特征均值）} \\
+\sigma^2 &= \frac{1}{D} \sum_j (x_j - \mu)^2 && \text{（特征方差）} \\
+\hat{x} &= \frac{x_j - \mu}{\sqrt{\sigma^2 + \epsilon}} \\
+y &= \gamma \hat{x} + \beta
+\end{aligned}
 ```
 
-D é a dimensão da série. Cada modelo é independente de tamanho do lote. É por isso que o transformador usa LayerNorm e não o BatchNorm.
+$D$É característico de dimensão. Cada amostra é independente de tamanho do lote. É por isso que o transformador usa LayerNorm e não BatchNorm.
 
 LayerNorm 会应用在每个自我注意区 和每个 feed-forward block 之后(Post-LN),或应用在它们之前(Pre-LN,训练时更稳定) 
 
@@ -119,9 +125,11 @@ LayerNorm 会应用在每个自我注意区 和每个 feed-forward block 之后(
 
 Não fazer valor médio de redução legal LayerNorm── por Zhang & Sennrich (2019)  proposta──
 
-```
-rms = sqrt((1/D) * sum(x_j^2))
-y = gamma * x / rms
+```math
+\begin{aligned}
+\text{rms} &= \sqrt{\frac{1}{D} \sum_j x_j^2} \\
+y &= \gamma \cdot \frac{x}{\text{rms}}
+\end{aligned}
 ```
 
 Quanto a estes, não há valor médio calculado, não há beta parâmetros. O resultado observado é:
@@ -508,8 +516,8 @@ LayerNorm, em vez de BatchNorm.
 |------|----------------|----------------------|
 | Overfitting | "模型记住了数据" | 当模型的训练表现显著高于测试表现时，表示它学到了噪声而不是信号 |
 | Regularization | "防止 overfitting" | 任何约束模型复杂度以改善泛化的技术：dropout、weight decay、normalization、augmentation |
-| Dropout | "随机删除神经元" | 训练期间以概率 p 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
-| Weight decay | "L2 penalty" | 每一步通过减去 lambda * w 将所有权重向零收缩；通过权重大小惩罚复杂度 |
+| Dropout | "随机删除神经元" | 训练期间以概率 $p$ 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
+| Weight decay | "L2 penalty" | 每一步通过减去 $\lambda w$ 将所有权重向零收缩；通过权重大小惩罚复杂度 |
 | Batch normalization | "按 batch 归一化" | 训练期间使用 batch statistics、推理期间使用 running averages，在 batch 维度上对层输出进行归一化 |
 | Layer normalization | "按样本归一化" | 在每个样本内部跨特征归一化；与 batch 无关，用于 batch size 可变的 Transformer |
 | RMSNorm | "没有均值的 LayerNorm" | Root mean square normalization；从 LayerNorm 中去掉均值减法，以相同 accuracy 获得 10% 加速 |

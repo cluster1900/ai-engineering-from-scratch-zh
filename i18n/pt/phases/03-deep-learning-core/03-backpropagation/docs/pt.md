@@ -23,7 +23,7 @@ A propagação de volta resolveu este problema. Uma vez o Forward Pass, uma vez 
 ## 概念
 ### Regra da cadeia, aplicada à rede
 
-Você está na fase 01, lição 05 中见过链条规则──快速回顾: se y = f(g(x)), então dy/dx = f'(g(x)) * g'(x)── Você está em linha de cadeia de
+Você está na fase 01, lição 05 no ensino.$y = f(g(x))$- Então ?$\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$你沿链条相乘衍生
 
 Na rede neural, a cadeia de dados é a sequência de operações que vai da entrada à perda. Cada camada de aplicação tem o peso de carga, adicionado a desvio, reaproveitamento e ativação. A função de perda comparará a saída final com o objetivo. A propagação de dados retorna a esta cadeia para rastrear, calcular a contribuição de cada operação para o erro.
 
@@ -42,9 +42,9 @@ graph LR
     y["target"] --> loss
 ```
 
-Forward Pass:valor de esquerda para direita流动──x 和 w 产生 z1 = w*x──加上 b 得到 z2──Sigmoid 给出激活 a──使用 Loss Function 将 a 与 target y 比较──
+Passagem de Forward: valor de esquerda para direita$x$和 $w$ produzir $z_1 = w x$- Não.$b$- Não .$z_2$ Sigmoide                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $a$△ Use Função de Perda 将 $a$Com o objectivo$y$Comparar.
 
-Passado para trás: Gradiente de direita para esquerda 流动。 de dL/da 开始(Loss 如何随激活 改变)。乘以 da/dz2(sigmoid derivative)。 obtém dL/dz2。拆分成 dL/db( é igual a dL/dz2, pois z2 = z1 + b) 和 dL/dz1。
+Passagem para trás: Gradiente de direita para esquerda.$\partial L/\partial a$Perda com a ativação (a)$\partial a/\partial z_2$(Derivada sigmoide)$\partial L/\partial z_2$- Desmontar.$\partial L/\partial b$(É igual a $\partial L/\partial z_2$Porque ...$z_2 = z_1 + b$) e $\partial L/\partial z_1$Então...$\partial L/\partial w = \partial L/\partial z_1 \cdot x$- Não .$\partial L/\partial x = \partial L/\partial z_1 \cdot w$- Não.
 
 Cada nó no gráfico durante o Passagem Atrás  há apenas uma tarefa: receber o gradiente do ascensor, multiplicar-se em sua própria derivada local, e depois para o descensor de transmissão 
 
@@ -81,7 +81,7 @@ graph RL
     L1 -- "dL/dz1 = dL/da1 * sigmoid'(z1)" --> I["Input"]
 ```
 
-Em cada nível, o gradiente já é multiplicado por derivada sigmoide. O derivado sigmoide é um * (1 - a), o valor máximo é 0,25 ((quando a = 0,5 时) ").
+Em cada camada, o gradiente é multiplicado por derivada sigmoide.$a(1 - a)$, o máximo é 0,25$a = 0.5$时) ・ profundamente em três níveis, Gradiente até já multiplicado $0.25^3 = 0.0156$❖ Profundos 10 níveis:$0.25^{10} = 0.000001$- Não.
 
 ### Os gradientes desaparecem
 
@@ -99,32 +99,33 @@ After 10 layers:  gradient * 0.25^10 = 0.000001x original
 
 ### 推导 Gradiente de Rede de 2 camadas
 
-Abaixo está um exemplo matemático específico: rede com entrada x 带 sigmoid de camada oculta 带 sigmoid de camada de saída, bem como MSE Loss ⋅
+A seguir, um exemplo matemático específico: rede com entrada.$x$、带 sigmoid 、带 sigmoid 、 saída de camada, bem como MSE Loss
 
 Passagem de Forward:
-```
-z1 = W1 * x + b1
-a1 = sigmoid(z1)
-z2 = W2 * a1 + b2
-a2 = sigmoid(z2)
-L = (a2 - y)^2
+```math
+\begin{aligned}
+z_1 &= W_1 x + b_1 \\
+a_1 &= \text{sigmoid}(z_1) \\
+z_2 &= W_2 a_1 + b_2 \\
+a_2 &= \text{sigmoid}(z_2) \\
+L &= (a_2 - y)^2
+\end{aligned}
 ```
 
 Passagem para trás (逐步应用 chain rule):
-```
-dL/da2 = 2(a2 - y)
-da2/dz2 = a2 * (1 - a2)
-dL/dz2 = dL/da2 * da2/dz2 = 2(a2 - y) * a2 * (1 - a2)
-
-dL/dW2 = dL/dz2 * a1
-dL/db2 = dL/dz2
-
-dL/da1 = dL/dz2 * W2
-da1/dz1 = a1 * (1 - a1)
-dL/dz1 = dL/da1 * da1/dz1
-
-dL/dW1 = dL/dz1 * x
-dL/db1 = dL/dz1
+```math
+\begin{aligned}
+\frac{\partial L}{\partial a_2} &= 2(a_2 - y) \\
+\frac{\partial a_2}{\partial z_2} &= a_2 (1 - a_2) \\
+\frac{\partial L}{\partial z_2} &= \frac{\partial L}{\partial a_2} \cdot \frac{\partial a_2}{\partial z_2} = 2(a_2 - y) \cdot a_2 (1 - a_2) \\[6pt]
+\frac{\partial L}{\partial W_2} &= \frac{\partial L}{\partial z_2} \cdot a_1 \\
+\frac{\partial L}{\partial b_2} &= \frac{\partial L}{\partial z_2} \\[6pt]
+\frac{\partial L}{\partial a_1} &= \frac{\partial L}{\partial z_2} \cdot W_2 \\
+\frac{\partial a_1}{\partial z_1} &= a_1 (1 - a_1) \\
+\frac{\partial L}{\partial z_1} &= \frac{\partial L}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \\[6pt]
+\frac{\partial L}{\partial W_1} &= \frac{\partial L}{\partial z_1} \cdot x \\
+\frac{\partial L}{\partial b_1} &= \frac{\partial L}{\partial z_1}
+\end{aligned}
 ```
 
 Cada gradiente é uma derivação local da perda, que é seguida de volta e volta.
@@ -182,9 +183,9 @@ def __mul__(self, other):
     return out
 ```
 
- Para adição: d  a + b) / da = 1, d  a + b) / db = 1── portanto, duas entradas vão obter diretamente a saída 
+ Para adição:$\partial(a+b)/\partial a = 1$- Não .$\partial(a+b)/\partial b = 1$ Por isso, duas entradas podem obter diretamente a saída Gradiente
 
-对于乘法:d(a*b)/da = b,d(a*b)/db = a── cada entrada 城市获得另一个输入的值 乘以输出级别──
+ Para a multiplicação:$\partial(ab)/\partial a = b$- Não .$\partial(ab)/\partial b = a$ Cada entrada obtém o valor de outra entrada multiplicado pelo gradiente de saída
 
 `+=`很关键──一个值可能会被多个操作使用──它的渐进是来自所有路径的渐进 之和──
 
@@ -206,7 +207,7 @@ def sigmoid(self):
     return out
 ```
 
-Derivada sigmoide:sigmoide(x) * (1 - sigmoide(x))。
+Derivada sigmoide:$\text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))$Já tínhamos calculado no Forward Pass.$\text{sigmoid}(x) = s$Não precisa de trabalho extra.
 
 ```python
 def mse_loss(predicted, target):
@@ -214,7 +215,7 @@ def mse_loss(predicted, target):
     return diff * diff
 ```
 
-单个输出的 MSE:(previsto - meta) ^2──我们把减法表达为加上一个取负的值──
+单个产出的 MSE:$(\text{predicted} - \text{target})^2$ Nós subtraímos a expressão para adicionar um valor negativo
 
 ### 步骤 4: Passagem para trás
 
@@ -238,7 +239,7 @@ def backward(self):
         v._backward()
 ```
 
-Desde Loss 开始(Gradiente = 1.0, pois dL/dL = 1)── em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida, em seguida,`_backward`Vou mandar o Gradient aos seus filhos.
+从 Loss 开始(Gradiente = 1,0,因为 $dL/dL = 1$)── ao longo do gráfico de sequência posterior, reverso para toda a direção─── de cada nó `_backward`Vou mandar o Gradient aos seus filhos.
 
 ### 步骤 5: camada e rede
 
@@ -298,7 +299,7 @@ class Network:
             p.grad = 0.0
 ```
 
-Um Neurônio recebe entrada, calcula a soma ponderada + viés, então aplica sigmoide──权重初始化按平方(2/n_inputs) 缩放, para prevenir a saturação sigmoide mais profunda da rede── uma camada é a lista dos Neurônios── uma rede é a lista dos camados──`parameters()`Método irá recolher todos os valores que podemos aprender, para que possamos atualizar-los.
+Um Neurônio recebe entrada, calcula a soma ponderada + viés, e depois aplica sigmoide.$\sqrt{2/n_{\text{inputs}}}$缩放, para prevenir a saturação sigmoide em redes mais profundas.`parameters()`Método irá recolher todos os valores que podemos aprender, para que possamos atualizar-los.
 
 ### Passo 6: Treinar em XOR
 
@@ -433,9 +434,9 @@ with torch.no_grad():
 - `outputs/prompt-gradient-debugger.md`-- Um prompt repetivel, para diagnosticar qualquer Gradiente  problema                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
 ## 练习
-1. 给 Value class 添加一个 `__sub__`método ((a - b = a + (-1 * b))。`__neg__`método── através de uma comparação com a simples expressão (a - b) ^2) do cálculo manual, verificando se o gradiente é verdadeiro──
+1. 给 Value class 添加一个 `__sub__`método$a - b = a + (-1 \cdot b)$)― Então, realize um `__neg__`método── através de expressões simples, tais como:$(a - b)^2$) de cálculo manual para fazer comparação, verificando se o gradiente é ou não correto.
 
-2. 给值 添加一个 `relu`método(output 为 max(0, x),derivado em x > 0 时为 1,否则为 0) ・・・ em camada oculta em relu 替换 sigmoid,并再次在 XOR 上训练──比较收速度──你应该会看到训练更快――这是第04课的预告──
+2. 给值 添加一个 `relu`método(output 为 $\max(0, x)$, derivado em$x \gt 0$时为 1,否则为 0) ・ em camada oculta, use relu 替换 sigmoid,并再次在XOR 上训练――比较收速度――你应该会看到训练更快――这是第04课的预告――
 
 3. Em Value 上 realçar um usado poderes inteiros de `__pow__`Método... Usá-lo.`mse_loss` substituir para real `(predicted - target) ** 2`Expressão: △ △ Gradiente com o original realização
 
@@ -446,14 +447,14 @@ with torch.no_grad():
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 dL/dw |
+| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 $\partial L/\partial w$ |
 | Computational graph | “Network 结构” | 一个有向无环 graph，其中 node 是 operation，edge 承载 value（forward）和 Gradient（backward） |
-| Chain rule | “把 derivative 相乘” | 如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- Backpropagation 的数学基础 |
+| Chain rule | “把 derivative 相乘” | 如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ -- Backpropagation 的数学基础 |
 | Gradient | “最陡上升方向” | Loss 相对于某个 parameter 的 partial derivative -- 告诉你如何改变该 parameter 来降低 Loss |
 | Vanishing gradient | “深层 network 学不会” | 当 Gradient 通过带有 sigmoid 这类 saturating activation 的 layer 传播时，会指数级缩小 |
 | Forward pass | “运行 network” | 通过顺序应用每一层的 operation，从 input 计算 output，并存储 intermediate value |
 | Backward pass | “计算 Gradient” | 反向遍历 Computational Graph，在每个 node 使用 chain rule 累积 Gradient |
-| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：w_new = w_old - lr * gradient |
+| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：$w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{gradient}$ |
 | Topological sort | “正确顺序” | 一种 graph node 排序方式，使每个 node 都出现在其依赖的所有 node 之后 -- 确保 Gradient 在传播前已完全累积 |
 | Autograd | “自动微分” | 一个在 forward computation 期间构建 Computational Graph，并自动计算 Gradient 的系统 -- PyTorch 的 engine 做的就是这个 |
 

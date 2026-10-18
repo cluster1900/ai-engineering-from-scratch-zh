@@ -23,7 +23,7 @@ Compreender Perceptron, significa entender o código aprendizagem até que ponto
 ## 概念
 ### Um neurônio, uma decisão.
 
-Um Perceptron recebe n 个 inputs, multiplicará cada entrada por um peso, procura, adiciona viés, e então transfere o resultado para uma função de ativação.
+Um Perceptron 接收 $n$个 inputs, vai cada entrada 乘以一个重量,求和,加偏,然后把结果传入一个激活函数.
 
 ```mermaid
 graph LR
@@ -35,11 +35,10 @@ graph LR
     step --> out["output (0 or 1)"]
 ```
 
-Função de passo 非常直接: Se a soma ponderada加 bias >= 0, então a saída 为 1──否则, saída 为 0──
+Função de passo 非常直接: se suma ponderada加 bias $\ge 0$, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
-```
-step(z) = 1  if z >= 0
-           0  if z < 0
+```math
+\text{step}(z) = \begin{cases} 1 & \text{当 } z \ge 0 \\ 0 & \text{当 } z < 0 \end{cases}
 ```
 
 Este é um classificador linear. Pesos e preconceitos definem uma linha.
@@ -77,7 +76,7 @@ For each training example (x, y_true):
     bias = bias + learning_rate * error
 ```
 
-Se a previsão for correta, erro = 0, nada mudará. Se ela for de 0, mas deve ser 1, pesos aumentam. Se ela for de 1, mas deve ser 0, pesos diminuem.
+Se a previsão for verdadeira,$\text{error} = 0$, nada vai mudar. Se ele previu 0 mas deveria ser 1, o peso aumentaria. Se ele previu 1 mas deveria ser 0, o peso diminuiria.
 
 ### O problema do XOR
 
@@ -210,7 +209,7 @@ Não converge para sempre. É uma única Perceptron que não consegue aprender a
 
 ### 步骤 4: Usar duas camadas  resolver XOR
 
-技巧是:XOR = (x1 OR x2) E NÃO (x1 E x2)
+- É o que é ?$\text{XOR} = (x_1 \text{ OR } x_2) \text{ AND NOT } (x_1 \text{ AND } x_2)$◊ 组合三个 Perceptron:
 
 ```mermaid
 graph LR
@@ -353,7 +352,7 @@ Só pode desenhar uma linha reta. Coloca-as juntas e podes desenhar qualquer for
 
 ## 练习
 1. Em NAND gate, qualquer circuito lógico pode ser construído por NAND.
-2. Modificar a classe Perceptron, fazê-lo em cada época Seguir o limite de decisão ((w1*x1 + w2*x2 + b = 0) ⋅ Imprimir em AND gate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+2. Modificar a classe Perceptron, fazer-lhe em cada época acompanhar a decisão de limite$w_1 x_1 + w_2 x_2 + b = 0$(→ Impressão em AND gate  durante o treinamento 
 3. Construir um Perceptron de 3 entradas: só quando 3 entradas entre pelo menos 2 个为 1 时才输出 1(função de voto da maioria) ⋅ é linearmente separable de?
 
 ## 关键术语
@@ -365,7 +364,7 @@ Só pode desenhar uma linha reta. Coloca-as juntas e podes desenhar qualquer for
 | Activation function | “压缩数值的东西” | 一个在 weighted sum 之后应用的 function：Perceptron 使用 step function，现代 networks 使用 sigmoid/ReLU |
 | Linearly separable | “你能在它们之间画一条线” | 一个 dataset，其中单个 hyperplane 可以完美分离 classes |
 | XOR problem | “Perceptron 做不到的那件事” | single-layer networks 无法学习 non-linearly-separable functions 的证明 |
-| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane w*x + b = 0 |
+| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane $w \cdot x + b = 0$ |
 | Multi-layer perceptron | “一个真正的 Neural Network” | 按 layers 堆叠的 Perceptron，其中每一层的 output 会输入到下一层 |
 
 ## 延伸阅读
