@@ -132,6 +132,14 @@ with urllib.request.urlopen(req) as resp:
 2. 尝试 raw HTTP  संस्करण,并将响应格式与SDK 版本进行比较
 3. 故意使用错误的API कुंजी,并阅读错误消息
 
+### 提示
+
+**练习 1。**एंथ्रोपिक कंसोल में Create Key, पाठ विवरण के अनुसार इसे डाल `ANTHROPIC_API_KEY`, फिर运行 `code/first_api_call.py`脚本印印模型回复且没有报错,即表示调用成功
+
+**练习 2。** `code/first_api_call.py`मध्य में दो फ़ंक्शन हैं केवल मुद्रित पाठ और टोकन संख्या।`call_with_sdk()`中添加 `print(response)`, में `call_raw_http()`中添加 `print(result)`, पुनः运行脚本查看两份完整响应──比较字段名称:原始 JSON 中的 `content``usage`和 `stop_reason`字段,会被SDK 转换为对象属性──
+
+**练习 3。**बस एक अंत में होगा `ANTHROPIC_API_KEY`虚假值 के लिए सेट करें, फिर से चलाने के लिए स्क्रिप्ट── आउटपुट में HTTP  स्टेटस कोड और त्रुटि प्रकार को ढूंढें;认证失败会返回 401  स्टेटस कोड──
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

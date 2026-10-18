@@ -366,6 +366,16 @@ docker logs -f <container_id>
 3. `flask`添加到Dockerfile,rebuild, और बंदरगाह 5000 上运行一个简单API सर्वर──使用 `-p 5000:5000`नक्शा 端口
 4. उपयोग `docker images`测量图像大小──试把基image 从 `devel`切换到 `runtime`,并比较大小
 
+### 提示
+
+**练习 1。**उपयोग में कक्षा में `docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dockerfile .`命令构建,再通过 `docker run --rm ai-dev`मेक पर, पाठ विवरण के अनुसार,`--gpus all`◊ कंटेनर को छापना होगा `2.6.0`开头的版本号――
+
+**练习 2。**`code/`文件中运行 `docker compose up -d`, पुनः उपयोग `docker compose exec ai-dev bash``ai-dev`服务中打开 shell──在其中运行 `curl http://qdrant:6333/collections`; JSON पर वापस करें, सेवा नाम能在编译网络内解析.
+
+**练习 3。**में Dockerफ़ाइल में जोड़ा `RUN pip install flask`, पुनर्निर्माण,并用 `host="0.0.0.0"` सर्वर को प्रारंभ करें, क्योंकि कंटेनर के अंदर केवल स्थानीय होस्ट के सर्वर को कंटेनर के बाहर से एक्सेस नहीं किया जा सकता है `http://localhost:5000`, कन्फर्मिंग डेपोर्ट映射有效──
+
+**练习 4。**运行 `docker images ai-dev`, रिकॉर्ड आकार 列──将 `FROM`行中 `devel`改为 `runtime`, नए टैग का उपयोग करके निर्माण, दो दर्पणों की तुलना पुनः करें; रनटाइम दर्पणों में संकलक और शीर्षक फ़ाइलें नहीं हैं
+
 ## 关键术语
 
 | Term | What people say | What it actually means |
