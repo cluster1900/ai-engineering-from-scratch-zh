@@ -82,8 +82,8 @@ def predict_mft(tokens, word_best, default_tag):
 
 对序列的 joint probability 建模：
 
-```
-P(tags, words) = prod P(tag_i | tag_{i-1}) * P(word_i | tag_i)
+```math
+P(\text{tags}, \text{words}) = \prod_i P(\text{tag}_i \mid \text{tag}_{i-1}) \cdot P(\text{word}_i \mid \text{tag}_i)
 ```
 
 两张表：transition probabilities（给定 previous tag 的 tag）和 emission probabilities（给定 tag 的 word）。用带 Laplace smoothing 的 counts 来估计二者。用 Viterbi 解码（在 tag lattice 上做 dynamic programming）。

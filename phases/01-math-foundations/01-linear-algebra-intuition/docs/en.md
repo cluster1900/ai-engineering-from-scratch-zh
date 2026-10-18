@@ -32,7 +32,7 @@ Vector 只是一个数字列表。但这些数字有含义 -- 它们是空间中
 |---|---|-------|
 | 3 | 2 | 这个 Vector 从原点 (0,0) 指向平面上的 (3, 2) |
 
-这个 Vector 的 magnitude 为 sqrt(3^2 + 2^2) = sqrt(13)，方向向上且向右。
+这个 Vector 的 magnitude 为 $\sqrt{3^2 + 2^2} = \sqrt{13}$，方向向上且向右。
 
 在 AI 中，Vector 表示一切：
 - 一个词 → 一个包含 768 个数字的 Vector（它在 embedding 空间中的“含义”）
@@ -71,19 +71,20 @@ graph LR
 
 两个 Vector 的 dot product 会告诉你它们有多相似。
 
-```
-a · b = a₁×b₁ + a₂×b₂ + ... + aₙ×bₙ
-
-方向相同：      a · b > 0  （相似）
-相互垂直：      a · b = 0  （无关）
-方向相反：      a · b < 0  （不相似）
+```math
+\begin{aligned}
+a \cdot b &= a_1 \times b_1 + a_2 \times b_2 + \cdots + a_n \times b_n \\[4pt]
+\text{方向相同：} \quad a \cdot b &> 0 \quad \text{（相似）} \\
+\text{相互垂直：} \quad a \cdot b &= 0 \quad \text{（无关）} \\
+\text{方向相反：} \quad a \cdot b &< 0 \quad \text{（不相似）}
+\end{aligned}
 ```
 
 这正是搜索引擎、推荐系统和 RAG 的工作方式 -- 找到 dot product 较高的 Vectors。
 
 ### Linear Independence
 
-如果集合中没有任何一个 Vector 可以写成其他 Vector 的组合，那么这些 Vectors 就是 linearly independent 的。如果 v1、v2、v3 independent，它们会 span 一个 3D 空间。如果其中一个是其他 Vector 的组合，它们就只 span 一个平面。
+如果集合中没有任何一个 Vector 可以写成其他 Vector 的组合，那么这些 Vectors 就是 linearly independent 的。如果 $v_1, v_2, v_3$ independent，它们会 span 一个 3D 空间。如果其中一个是其他 Vector 的组合，它们就只 span 一个平面。
 
 它对 AI 的重要性：你的 feature matrix 应该有 linearly independent columns。如果两个 features 完全相关（linearly dependent），model 就无法区分它们各自的影响。这会在 Regression 中造成 multicollinearity -- weight matrix 会变得不稳定，input 的微小变化会导致 output 大幅摆动。
 
@@ -95,7 +96,7 @@ v2 = [0, 1, 0]
 v3 = [2, 1, 0]   # v3 = 2*v1 + v2
 ```
 
-v1 和 v2 是 independent 的 -- 二者都不是另一个的标量倍数或组合。但 v3 = 2*v1 + v2，所以 {v1, v2, v3} 是一个 dependent set。这三个 Vectors 全都位于 xy-plane。无论你如何组合它们，都无法到达 [0, 0, 1]。你有三个 Vectors，但只有两个自由维度。
+$v_1$ 和 $v_2$ 是 independent 的 -- 二者都不是另一个的标量倍数或组合。但 $v_3 = 2 v_1 + v_2$，所以 $\lbrace v_1, v_2, v_3 \rbrace$ 是一个 dependent set。这三个 Vectors 全都位于 xy-plane。无论你如何组合它们，都无法到达 [0, 0, 1]。你有三个 Vectors，但只有两个自由维度。
 
 在 dataset 中：如果 feature_3 = 2*feature_1 + feature_2，加入 feature_3 不会给 model 带来任何新信息。更糟的是，它会让 normal equations 变成 singular -- weights 没有唯一解。
 
@@ -105,15 +106,15 @@ Basis 是一组最小的 linearly independent Vectors，它们 span 整个空间
 
 3D 空间的 standard basis 是 {[1,0,0], [0,1,0], [0,0,1]}。但 3D 中任意三个 independent Vectors 都能构成有效 basis。选择 basis 就是在选择坐标系。
 
-Matrix 的 rank = linearly independent columns 的数量 = linearly independent rows 的数量。如果 rank < min(rows, cols)，这个 Matrix 就是 rank-deficient。这意味着：
+Matrix 的 rank = linearly independent columns 的数量 = linearly independent rows 的数量。如果 $\text{rank} < \min(\text{rows}, \text{cols})$，这个 Matrix 就是 rank-deficient。这意味着：
 - 该系统有无穷多个解（或没有解）
 - transformation 中丢失了信息
 - Matrix 不能被 inverted
 
 | 情况 | Rank | 对 ML 的含义 |
 |-----------|------|---------------------|
-| Full rank (rank = min(m, n)) | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
-| Rank deficient (rank < min(m, n)) | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
+| Full rank $(\text{rank} = \min(m, n))$ | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
+| Rank deficient $(\text{rank} < \min(m, n))$ | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
 | Rank 1 | 1 | 每一列都是某个 Vector 的缩放副本。所有数据都位于一条线上。 |
 | Near rank-deficient（较小的 singular values） | 数值上较低 | Matrix ill-conditioned。极小的 input noise 会造成很大的 output changes。使用 SVD truncation 或 ridge regression。 |
 
@@ -121,11 +122,11 @@ Matrix 的 rank = linearly independent columns 的数量 = linearly independent 
 
 将 Vector **a** 投影到 Vector **b** 上，会得到 **a** 在 **b** 方向上的分量：
 
-```
-proj_b(a) = (a dot b / b dot b) * b
+```math
+\mathop{\mathrm{proj}}_b(a) = \frac{a \cdot b}{b \cdot b} \, b
 ```
 
-residual (a - proj_b(a)) 与 b 垂直。这种 orthogonal decomposition 是 least-squares fitting 的基础。
+residual $(a - \mathop{\mathrm{proj}}_b(a))$ 与 $b$ 垂直。这种 orthogonal decomposition 是 least-squares fitting 的基础。
 
 Projection 在 ML 中无处不在：
 - Linear Regression 最小化 observations 到 column space 的距离 -- 解本身就是一个 projection
@@ -143,9 +144,9 @@ graph LR
     end
 ```
 
-**示例：** a = [3, 4], b = [1, 0]
+**示例：** $a = [3, 4]$, $b = [1, 0]$
 
-proj_b(a) = (3*1 + 4*0) / (1*1 + 0*0) * [1, 0] = 3 * [1, 0] = [3, 0]
+$\mathop{\mathrm{proj}}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0) \cdot [1, 0] = 3 \cdot [1, 0] = [3, 0]$
 
 这个 projection 去掉了 y 分量。这就是最简单形式的 dimensionality reduction -- 丢弃你不关心的方向。
 
@@ -448,6 +449,20 @@ LoRA 值得特别说明。它通过将 weight updates 分解为 low-rank matrice
 4. 验证 Gram-Schmidt output 确实是 orthonormal 的：检查每一对的 dot product 都为 0，并且每个 Vector 的 magnitude 都为 1
 5. 创建一个 rank 为 2 的 3x3 Matrix。使用 `rank()` method 验证。然后解释这些 columns span 的几何对象是什么。
 6. 将 Vector [1, 2, 3] 投影到 [1, 1, 1] 上。结果在几何上表示什么？
+
+### 提示
+
+**练习 1。** 从 `cosine_similarity` 开始，将结果限制在 -1 到 1 之间，再取反余弦，并将弧度转换为角度。检查 `Vector([1, 0])` 和 `Vector([0, 1])` 的结果为 90，向量与自身的结果为 0。
+
+**练习 2。** 将两个缩放因子放在 2x2 matrix 的对角线上，其余两个位置填 0。输入 [1, 1] 的结果必须是 [2, 3]。
+
+**练习 3。** 计算 5 个向量中每一对的余弦相似度（共 10 对），保留最大值。先用向量与自身检验循环，此时结果必须为 1。
+
+**练习 4。** 对三个线性无关向量调用 `gram_schmidt`，再对每一对计算 `dot`，对每个向量计算 `magnitude`。使用例如 `1e-9` 的容差比较，因为浮点数不会给出精确的零。
+
+**练习 5。** 将第三行或第三列设为前两者之和，使一个方向重复。`rank()` 必须返回 2，此时各列张成一个经过原点的平面。
+
+**练习 6。** 计算缩放系数 $\frac{a \cdot b}{b \cdot b}$ 并乘以 $b$，或调用 `project_onto`。检查余量（$a$ 减去投影）与 [1, 1, 1] 的点积为 0。
 
 ## 关键术语
 

@@ -37,7 +37,7 @@
 
 ### WER：一个数字
 
-**Word Error Rate** = `(S + D + I) / N`，其中 S=替换，D=删除，I=插入，N=参考文本词数。它对应词级 Levenshtein edit distance。越低越好。WER 高于 20% 通常不可用；低于 5% 对朗读语音而言达到人类水平。2026 年标准 benchmark 数字：
+**Word Error Rate** = $(S + D + I) / N$，其中 $S$=替换，$D$=删除，$I$=插入，$N$=参考文本词数。它对应词级 Levenshtein edit distance。越低越好。WER 高于 20% 通常不可用；低于 5% 对朗读语音而言达到人类水平。2026 年标准 benchmark 数字：
 
 | Model | LibriSpeech test-clean | LibriSpeech test-other | Size |
 |-------|------------------------|------------------------|------|

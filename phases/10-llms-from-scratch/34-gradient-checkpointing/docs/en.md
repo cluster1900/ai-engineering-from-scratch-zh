@@ -37,13 +37,13 @@ forward pass 会在 autograd graph 中自动保存这些内容。每个 `tensor.
 - Memory：32 个 layer-inputs（小）对比 32 *（每层 activation volume）（巨大）。
 - 额外 compute：每个 segment 额外 1 次 forward，也就是总 forward FLOPs 约增加 33%（因为 backward 是 forward 的 2x，完整 step 从 1 + 2 = 3 个单位变为 1 + 1 + 2 = 4 个单位）。
 
-这是最初 Chen et al. 2016 的方案：每 `sqrt(L)` 层放一个 checkpoint，以平衡 memory 和 compute。对于 L=64，就是 8 个 checkpoints。
+这是最初 Chen et al. 2016 的方案：每 `sqrt(L)` 层放一个 checkpoint，以平衡 memory 和 compute。对于 $L=64$，就是 8 个 checkpoints。
 
 ### Selective Checkpointing (Korthikanti 2022)
 
 并非所有激活值的成本都一样。attention softmax 输出是 `B*L*L*heads`，并随 sequence length *二次* 增长。FFN hidden activation 是 `B*L*4d`，线性增长。对于长序列，softmax 占主导。
 
-Selective checkpointing 会保留存储成本低的激活值（linear projections、residuals），只重新计算昂贵的部分（attention）。你用很少的 FLOPs 重新计算，却节省了 O(L^2) memory。
+Selective checkpointing 会保留存储成本低的激活值（linear projections、residuals），只重新计算昂贵的部分（attention）。你用很少的 FLOPs 重新计算，却节省了 $O(L^2)$ memory。
 
 Megatron-Core 将其实现为 “selective” activation recomputation。大多数 2024+ frontier training runs 都在使用它。
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174) -- 最初形式化 gradient checkpointing 的论文

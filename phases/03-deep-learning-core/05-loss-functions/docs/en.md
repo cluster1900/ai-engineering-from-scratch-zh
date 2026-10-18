@@ -30,8 +30,8 @@ Loss Function 是模型实际优化的唯一对象。不是 accuracy。不是 F1
 
 Regression 的默认选择。计算预测值和目标值之间差异的平方，并在所有样本上取平均。
 
-```
-MSE = (1/n) * sum((y_pred - y_true)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{pred}} - y_{\text{true}})^2
 ```
 
 为什么平方很重要：它会以二次方式惩罚大误差。误差为 2 的代价是误差为 1 的 4 倍。误差为 10 的代价是 100 倍。这使得 MSE 对离群点敏感 -- 一个极端错误的预测会主导 Loss。
@@ -40,8 +40,8 @@ MSE = (1/n) * sum((y_pred - y_true)^2)
 
 MSE 相对于预测值的 Gradient 是：
 
-```
-dMSE/dy_pred = (2/n) * (y_pred - y_true)
+```math
+\frac{\partial \text{MSE}}{\partial y_{\text{pred}}} = \frac{2}{n} (y_{\text{pred}} - y_{\text{true}})
 ```
 
 它与误差线性相关。更大的误差得到更大的 Gradient。这对 Regression 是特性（大误差需要大修正），对 Classification 是问题（你希望对自信但错误的答案进行指数级惩罚，而不是线性惩罚）。
@@ -52,31 +52,31 @@ Classification 的 Loss Function。它源于信息论 -- 衡量预测概率分�
 
 **Binary Cross-Entropy (BCE):**
 
-```
-BCE = -(y * log(p) + (1 - y) * log(1 - p))
+```math
+\text{BCE} = -\left(y \log(p) + (1 - y) \log(1 - p)\right)
 ```
 
-其中 y 是真实标签（0 或 1），p 是预测概率。
+其中 $y$ 是真实标签（0 或 1），$p$ 是预测概率。
 
-为什么 -log(p) 有效：当真实标签是 1 且你预测 p = 0.99 时，Loss 是 -log(0.99) = 0.01。当你预测 p = 0.01 时，Loss 是 -log(0.01) = 4.6。这个 460 倍的差异就是 cross-entropy 有效的原因。它会严厉惩罚自信但错误的预测，同时几乎不惩罚自信且正确的预测。
+为什么 $-\log(p)$ 有效：当真实标签是 1 且你预测 $p = 0.99$ 时，Loss 是 $-\log(0.99) = 0.01$。当你预测 $p = 0.01$ 时，Loss 是 $-\log(0.01) = 4.6$。这个 460 倍的差异就是 cross-entropy 有效的原因。它会严厉惩罚自信但错误的预测，同时几乎不惩罚自信且正确的预测。
 
 Gradient 讲述的是同一个故事：
 
-```
-dBCE/dp = -(y/p) + (1-y)/(1-p)
+```math
+\frac{\partial \text{BCE}}{\partial p} = -\frac{y}{p} + \frac{1-y}{1-p}
 ```
 
-当 y = 1 且 p 接近零时，Gradient 是 -1/p，会趋向负无穷。模型会得到一个巨大的信号来修正错误。当 p 接近 1 时，Gradient 很小。已经正确了，不需要修正。
+当 $y = 1$ 且 $p$ 接近零时，Gradient 是 $-1/p$，会趋向负无穷。模型会得到一个巨大的信号来修正错误。当 $p$ 接近 1 时，Gradient 很小。已经正确了，不需要修正。
 
 **Categorical Cross-Entropy:**
 
 用于 one-hot 编码目标的 multi-class classification。
 
-```
-CCE = -sum(y_i * log(p_i))
+```math
+\text{CCE} = -\sum_i y_i \log(p_i)
 ```
 
-只有真实类别会贡献 Loss（因为其他所有 y_i 都是零）。如果有 10 个类别，正确类别得到的概率是 0.1（随机猜测），Loss 是 -log(0.1) = 2.3。如果正确类别得到的概率是 0.9，Loss 是 -log(0.9) = 0.105。模型会学习把概率质量集中到正确答案上。
+只有真实类别会贡献 Loss（因为其他所有 $y_i$ 都是零）。如果有 10 个类别，正确类别得到的概率是 0.1（随机猜测），Loss 是 $-\log(0.1) = 2.3$。如果正确类别得到的概率是 0.9，Loss 是 $-\log(0.9) = 0.105$。模型会学习把概率质量集中到正确答案上。
 
 ### 为什么 MSE 不适合 Classification
 
@@ -96,19 +96,19 @@ graph TD
     C3 -->|"CE Gradient<br/>在错误答案附近<br/>爆炸"| Fast["修正快速"]
 ```
 
-当预测接近 0 或 1 时，MSE Gradient 会变平（由于 sigmoid 饱和）。Cross-entropy Gradient 会补偿这一点 -- -log 抵消了 sigmoid 的平坦区域，在最需要的位置给出强 Gradient。
+当预测接近 0 或 1 时，MSE Gradient 会变平（由于 sigmoid 饱和）。Cross-entropy Gradient 会补偿这一点 -- $-\log$ 抵消了 sigmoid 的平坦区域，在最需要的位置给出强 Gradient。
 
 ### Label Smoothing
 
 标准 one-hot 标签会说“这是 100% class 3，其他所有类别都是 0%。”这是一个很强的断言。Label smoothing 会软化它：
 
-```
-smooth_label = (1 - alpha) * one_hot + alpha / num_classes
+```math
+\text{smooth\_label} = (1 - \alpha) \cdot \text{one\_hot} + \frac{\alpha}{\text{num\_classes}}
 ```
 
-当 alpha = 0.1 且有 10 个类别时：目标不再是 [0, 0, 1, 0, ...]，而是 [0.01, 0.01, 0.91, 0.01, ...]。模型的目标是 0.91，而不是 1.0。
+当 $\alpha = 0.1$ 且有 10 个类别时：目标不再是 [0, 0, 1, 0, ...]，而是 [0.01, 0.01, 0.91, 0.01, ...]。模型的目标是 0.91，而不是 1.0。
 
-为什么这有效：一个试图通过 softmax 输出精确 1.0 的模型，需要把 logits 推向无穷。这会导致过度自信，损害泛化能力，并让模型对分布偏移变得脆弱。Label smoothing 会把目标限制在 0.9（当 alpha=0.1 时），让 logits 保持在合理范围内。GPT 和大多数现代模型都会使用 label smoothing 或其等价形式。
+为什么这有效：一个试图通过 softmax 输出精确 1.0 的模型，需要把 logits 推向无穷。这会导致过度自信，损害泛化能力，并让模型对分布偏移变得脆弱。Label smoothing 会把目标限制在 0.9（当 $\alpha = 0.1$ 时），让 logits 保持在合理范围内。GPT 和大多数现代模型都会使用 label smoothing 或其等价形式。
 
 ### Contrastive Loss
 
@@ -118,20 +118,20 @@ smooth_label = (1 - alpha) * one_hot + alpha / num_classes
 
 取一张图像。创建它的两个增强视图（crop、rotate、color jitter）。它们是“positive pair” -- 它们应该有相似的 Embeddings。batch 中的每张其他图像都会形成一个“negative pair” -- 它们应该有不同的 Embeddings。
 
-```
-L = -log(exp(sim(z_i, z_j) / tau) / sum(exp(sim(z_i, z_k) / tau)))
+```math
+L = -\log \frac{\exp(\text{sim}(z_i, z_j) / \tau)}{\sum_k \exp(\text{sim}(z_i, z_k) / \tau)}
 ```
 
-其中 sim() 是 cosine similarity，z_i 和 z_j 是 positive pair，求和覆盖所有 negatives，tau (temperature) 控制分布的尖锐程度。更低的 temperature = 更难的 negatives = 更激进的分离。
+其中 $\text{sim}()$ 是 cosine similarity，$z_i$ 和 $z_j$ 是 positive pair，求和覆盖所有 negatives，$\tau$ (temperature) 控制分布的尖锐程度。更低的 temperature = 更难的 negatives = 更激进的分离。
 
-真实数字：batch size 256 意味着每个 positive pair 有 255 个 negatives。Temperature tau = 0.07（SimCLR 默认值）。这个 Loss 看起来像是对相似度做 softmax -- 它希望 positive pair 的相似度在全部 256 个选项中最高。
+真实数字：batch size 256 意味着每个 positive pair 有 255 个 negatives。Temperature $\tau = 0.07$（SimCLR 默认值）。这个 Loss 看起来像是对相似度做 softmax -- 它希望 positive pair 的相似度在全部 256 个选项中最高。
 
 **Triplet Loss:**
 
 接收三个输入：anchor、positive（同一类别）、negative（不同类别）。
 
-```
-L = max(0, d(anchor, positive) - d(anchor, negative) + margin)
+```math
+L = \max\left(0, d(\text{anchor}, \text{positive}) - d(\text{anchor}, \text{negative}) + \text{margin}\right)
 ```
 
 margin（通常为 0.2-1.0）强制 positive 和 negative 距离之间存在最小间隔。如果 negative 已经足够远，Loss 就是零 -- 没有 Gradient，没有更新。这让训练更高效，但需要谨慎的 triplet mining（选择接近 anchor 的 hard negatives）。
@@ -140,14 +140,14 @@ margin（通常为 0.2-1.0）强制 positive 和 negative 距离之间存在最�
 
 用于不平衡数据集。标准 cross-entropy 会同等对待所有正确分类的样本。Focal loss 会降低 easy examples 的权重：
 
-```
-FL = -alpha * (1 - p_t)^gamma * log(p_t)
+```math
+\text{FL} = -\alpha (1 - p_t)^\gamma \log(p_t)
 ```
 
-其中 p_t 是真实类别的预测概率，gamma 控制聚焦程度。当 gamma = 0 时，这就是标准 cross-entropy。当 gamma = 2（默认值）时：
+其中 $p_t$ 是真实类别的预测概率，$\gamma$ 控制聚焦程度。当 $\gamma = 0$ 时，这就是标准 cross-entropy。当 $\gamma = 2$（默认值）时：
 
-- Easy example (p_t = 0.9): weight = (0.1)^2 = 0.01。基本被忽略。
-- Hard example (p_t = 0.1): weight = (0.9)^2 = 0.81。完整的 Gradient 信号。
+- Easy example ($p_t = 0.9$): weight $= (0.1)^2 = 0.01$。基本被忽略。
+- Hard example ($p_t = 0.1$): weight $= (0.9)^2 = 0.81$。完整的 Gradient 信号。
 
 Focal loss 由 Lin et al. 提出，用于 object detection，其中 99% 的候选区域都是 background（easy negatives）。没有 focal loss 时，模型会淹没在 easy background examples 中，永远学不会检测物体。有了它，模型会把容量集中在真正重要的困难、模糊样本上。
 
@@ -214,7 +214,7 @@ def mse_gradient(predictions, targets):
 
 ### 步骤 2：Binary Cross-Entropy
 
-log(0) 问题是真实存在的。如果模型对一个 positive example 精确预测 0，log(0) = 负无穷。裁剪可以防止这一点。
+log(0) 问题是真实存在的。如果模型对一个 positive example 精确预测 0，$\log(0) = -\infty$。裁剪可以防止这一点。
 
 ```python
 import math
@@ -426,15 +426,15 @@ ce_smooth = F.cross_entropy(logits, labels, label_smoothing=0.1)
 
 ## 练习
 
-1. 实现 Huber loss（smooth L1 loss），它对小误差使用 MSE，对大误差使用 MAE。训练一个 Regression Neural Network 来预测 y = sin(x)，并在 5% 训练目标被加入随机噪声（离群点）的情况下比较 MSE 与 Huber。比较最终测试误差。
+1. 实现 Huber loss（smooth L1 loss），它对小误差使用 MSE，对大误差使用 MAE。训练一个 Regression Neural Network 来预测 $y = \sin(x)$，并在 5% 训练目标被加入随机噪声（离群点）的情况下比较 MSE 与 Huber。比较最终测试误差。
 
-2. 将 focal loss 添加到 binary classification 训练循环中。创建一个不平衡数据集（90% class 0，10% class 1）。比较标准 BCE 与 focal loss (gamma=2) 在 200 个 epochs 后对少数类的 recall。
+2. 将 focal loss 添加到 binary classification 训练循环中。创建一个不平衡数据集（90% class 0，10% class 1）。比较标准 BCE 与 focal loss ($\gamma = 2$) 在 200 个 epochs 后对少数类的 recall。
 
 3. 实现带 semi-hard negative mining 的 triplet loss。为 5 个类别生成 2D Embedding 数据。对每个 anchor，找到仍然比 positive 更远的 hardest negative（semi-hard）。将收敛情况与随机 triplet 选择进行比较。
 
 4. 运行 MSE vs cross-entropy 对比，但在训练期间跟踪每一层的 Gradient magnitude。绘制每个 epoch 的平均 Gradient norm。验证在模型最不确定的早期 epochs 中，cross-entropy 会产生更大的 Gradient。
 
-5. 实现 KL divergence loss，并验证当真实分布是 one-hot 时，最小化 KL(true || predicted) 会给出与 cross-entropy 相同的 Gradient。然后尝试 soft targets（如 knowledge distillation），其中“真实”分布来自 teacher model 的 softmax 输出。
+5. 实现 KL divergence loss，并验证当真实分布是 one-hot 时，最小化 $\mathrm{KL}(\text{true} \Vert \text{predicted})$ 会给出与 cross-entropy 相同的 Gradient。然后尝试 soft targets（如 knowledge distillation），其中“真实”分布来自 teacher model 的 softmax 输出。
 
 ## 关键术语
 
@@ -442,12 +442,12 @@ ce_smooth = F.cross_entropy(logits, labels, label_smoothing=0.1)
 |------|----------------|----------------------|
 | Loss function | “模型错得有多离谱” | 一个可微函数，将预测和目标映射到 Optimizer 要最小化的标量 |
 | MSE | “平均平方误差” | 预测和目标之间平方差的均值；以二次方式惩罚大误差 |
-| Cross-entropy | “Classification 的 Loss” | 使用 -log(p) 衡量预测概率分布和真实分布之间的差异 |
-| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：-(y*log(p) + (1-y)*log(1-p)) |
+| Cross-entropy | “Classification 的 Loss” | 使用 $-\log(p)$ 衡量预测概率分布和真实分布之间的差异 |
+| Binary cross-entropy | “BCE” | 两个类别的 cross-entropy：$-(y \log(p) + (1-y) \log(1-p))$ |
 | Label smoothing | “软化目标” | 用软值（例如 0.1/0.9）替换硬 0/1 目标，以防止过度自信并提升泛化能力 |
 | Contrastive loss | “拉近，推远” | 一种通过让相似对在 Embedding 空间中更近、非相似对更远来学习表示的 Loss |
 | InfoNCE | “CLIP/SimCLR Loss” | 对相似度分数进行 normalized temperature-scaled cross-entropy；将 contrastive learning 视为 Classification |
-| Focal loss | “不平衡数据修复方案” | 用 (1-p_t)^gamma 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
+| Focal loss | “不平衡数据修复方案” | 用 $(1-p_t)^\gamma$ 加权的 cross-entropy，用于降低 easy examples 的权重并聚焦 hard examples |
 | Triplet loss | “Anchor-positive-negative” | 在 Embedding 空间中，使 anchor 比 negative 至少按一个 margin 更接近 positive |
 | Temperature | “尖锐度旋钮” | 作用在 logits/相似度上的标量除数，用于控制结果分布的峰值程度；越低越尖锐 |
 

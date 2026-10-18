@@ -74,11 +74,13 @@ At each grid cell, every anchor emits (tx, ty, tw, th, obj, c_1, ..., c_C).
 
 原始的 `tx, ty, tw, th` 不是 box coordinates；它们是需要在绘制前转换的 Regression targets：
 
-```
-centre x  = (sigmoid(tx) + cell_x) * stride
-centre y  = (sigmoid(ty) + cell_y) * stride
-width     = anchor_w * exp(tw)
-height    = anchor_h * exp(th)
+```math
+\begin{aligned}
+\text{中心 } x &= (\sigma(t_x) + \text{cell}_x) \cdot \text{stride} \\
+\text{中心 } y &= (\sigma(t_y) + \text{cell}_y) \cdot \text{stride} \\
+\text{宽度} &= \text{anchor}_w \cdot \exp(t_w) \\
+\text{高度} &= \text{anchor}_h \cdot \exp(t_h)
+\end{aligned}
 ```
 
 `sigmoid` 把中心偏移限制在 cell 内。`exp` 让 width 可以从 anchor 自由缩放而不会发生符号翻转。`stride` 把 grid coordinates 缩放回 pixels。这个 decode 步骤自 v2 以来在每个 YOLO 版本中都是一样的。
@@ -87,11 +89,11 @@ height    = anchor_h * exp(th)
 
 Detection 中衡量两个 box 相似度的通用 metric：
 
-```
-IoU(A, B) = area(A intersect B) / area(A union B)
+```math
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
-IoU = 1 表示完全相同；IoU = 0 表示没有重叠。prediction 和 ground-truth box 之间的 IoU 决定某个 prediction 是否算作 true positive（通常 IoU >= 0.5）。两个 predictions 之间的 IoU 是 NMS 用来去重的依据。
+$\mathrm{IoU} = 1$ 表示完全相同；$\mathrm{IoU} = 0$ 表示没有重叠。prediction 和 ground-truth box 之间的 IoU 决定某个 prediction 是否算作 true positive（通常 $\mathrm{IoU} \ge 0.5$）。两个 predictions 之间的 IoU 是 NMS 用来去重的依据。
 
 ### Non-maximum suppression
 
@@ -113,11 +115,13 @@ NMS(boxes, scores, iou_threshold):
 
 YOLO loss 是三个带权重的 losses 相加：
 
-```
-L = lambda_coord * L_box(pred, target, where obj=1)
-  + lambda_obj   * L_obj(pred, 1,     where obj=1)
-  + lambda_noobj * L_obj(pred, 0,     where obj=0)
-  + lambda_cls   * L_cls(pred, target, where obj=1)
+```math
+\begin{aligned}
+L = {} & \lambda_{\text{coord}} \cdot L_{\text{box}}(\text{pred}, \text{target}, \text{where obj}=1) \\
++ {} & \lambda_{\text{obj}} \cdot L_{\text{obj}}(\text{pred}, 1, \text{where obj}=1) \\
++ {} & \lambda_{\text{noobj}} \cdot L_{\text{obj}}(\text{pred}, 0, \text{where obj}=0) \\
++ {} & \lambda_{\text{cls}} \cdot L_{\text{cls}}(\text{pred}, \text{target}, \text{where obj}=1)
+\end{aligned}
 ```
 
 只有包含 object 的 cells 才会贡献 box-regression 和 classification losses。不含 object 的 cells 只贡献 objectness loss（教模型保持沉默）。`lambda_noobj` 通常较小（约 0.5），因为绝大多数 cells 都是空的，否则会主导总 loss。

@@ -83,8 +83,8 @@ RoIAlign 能在 COCO 上免费提升 3-4 个点的 mask AP。现在每个重视 
 
 Mask R-CNN 有四类 losses 相加：
 
-```
-L = L_rpn_cls + L_rpn_box + L_box_cls + L_box_reg + L_mask
+```math
+L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
 ```
 
 - `L_rpn_cls`, `L_rpn_box` — RPN proposals 的 objectness + box Regression。

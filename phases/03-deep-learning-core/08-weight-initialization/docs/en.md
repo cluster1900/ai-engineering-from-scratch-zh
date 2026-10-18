@@ -35,40 +35,40 @@ Weight initialization 是 Deep Learning 中最被低估的决策。Architecture 
 
 考虑一个具有 fan_in 个 inputs 的单个 layer：
 
-```
-z = w1*x1 + w2*x2 + ... + w_n*x_n
-```
-
-如果每个 weight wi 都来自 variance 为 Var(w) 的 distribution，并且每个 input xi 的 variance 为 Var(x)，则 output variance 为：
-
-```
-Var(z) = fan_in * Var(w) * Var(x)
+```math
+z = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n
 ```
 
-如果 Var(w) = 1 且 fan_in = 512，则 output variance 是 input variance 的 512 倍。经过 10 层：512^10 = 1.2e27。你的 signal 已经爆炸。
+如果每个 weight $w_i$ 都来自 variance 为 $\mathrm{Var}(w)$ 的 distribution，并且每个 input $x_i$ 的 variance 为 $\mathrm{Var}(x)$，则 output variance 为：
 
-如果 Var(w) = 0.001，则 output variance 每层按 0.001 * 512 = 0.512 缩小。经过 10 层：0.512^10 = 0.00013。你的 signal 已经消失。
+```math
+\mathrm{Var}(z) = \text{fan}_{\text{in}} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(x)
+```
 
-目标：选择 Var(w)，使得 Var(z) = Var(x)。Signal magnitude 在各层之间保持恒定。
+如果 $\mathrm{Var}(w) = 1$ 且 $\text{fan}_{\text{in}} = 512$，则 output variance 是 input variance 的 512 倍。经过 10 层：$512^{10} = 1.2 \times 10^{27}$。你的 signal 已经爆炸。
+
+如果 $\mathrm{Var}(w) = 0.001$，则 output variance 每层按 $0.001 \cdot 512 = 0.512$ 缩小。经过 10 层：$0.512^{10} = 0.00013$。你的 signal 已经消失。
+
+目标：选择 $\mathrm{Var}(w)$，使得 $\mathrm{Var}(z) = \mathrm{Var}(x)$。Signal magnitude 在各层之间保持恒定。
 
 ### Xavier/Glorot Initialization
 
 Glorot and Bengio (2010) 推导了适用于 sigmoid 和 tanh activations 的解。为了在 forward 和 backward pass 中都保持 variance 恒定：
 
-```
-Var(w) = 2 / (fan_in + fan_out)
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}
 ```
 
 实践中，weights 从以下 distribution 中采样：
 
-```
-w ~ Uniform(-limit, limit)  where limit = sqrt(6 / (fan_in + fan_out))
+```math
+w \sim \text{Uniform}(-\text{limit}, \text{limit}) \quad \text{其中 } \text{limit} = \sqrt{\frac{6}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}
 ```
 
 或：
 
-```
-w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}\right)
 ```
 
 这之所以有效，是因为 sigmoid 和 tanh 在 zero 附近近似线性，而正确初始化后的 activations 正好位于这个区域。Variance 能够在几十层中保持稳定。
@@ -79,27 +79,27 @@ ReLU 会杀死一半 outputs（所有 negative 都变成 zero）。有效 fan_in
 
 He et al. (2015) 调整了公式：
 
-```
-Var(w) = 2 / fan_in
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}}}
 ```
 
 Weights 从以下 distribution 中采样：
 
-```
-w ~ Normal(0, sqrt(2 / fan_in))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}}}}\right)
 ```
 
-系数 2 用来补偿 ReLU 将一半 activations 置零的影响。没有它，signal 每层会缩小约 0.5 倍。50 层后：0.5^50 = 8.8e-16。Kaiming init 可以防止这种情况。
+系数 2 用来补偿 ReLU 将一半 activations 置零的影响。没有它，signal 每层会缩小约 0.5 倍。50 层后：$0.5^{50} = 8.8 \times 10^{-16}$。Kaiming init 可以防止这种情况。
 
 ### Transformer Initialization
 
 GPT-2 引入了另一种模式。Residual connections 会把每个 sub-layer 的 output 加到它的 input 上：
 
-```
-x = x + sublayer(x)
+```math
+x = x + \text{sublayer}(x)
 ```
 
-每次相加都会增加 variance。对于 N 个 residual layers，variance 会按 N 成比例增长。GPT-2 会将 residual layers 的 weights 按 1/sqrt(2N) 缩放，其中 N 是层数。这能保持累积 signal magnitude 稳定。
+每次相加都会增加 variance。对于 $N$ 个 residual layers，variance 会按 $N$ 成比例增长。GPT-2 会将 residual layers 的 weights 按 $1/\sqrt{2N}$ 缩放，其中 $N$ 是层数。这能保持累积 signal magnitude 稳定。
 
 Llama 3（405B parameters，126 layers）使用了类似方案。如果没有这种缩放，residual stream 会在 126 层 Attention 和 feedforward blocks 中无界增长。
 
@@ -337,20 +337,20 @@ nn.init.zeros_(layer.bias)
 
 当你调用 `nn.Linear(512, 256)` 时，PyTorch 默认使用 Kaiming uniform initialization。这就是为什么大多数简单 networks “just work” -- PyTorch 已经做出了正确选择。但当你构建 custom architectures，或者深入到超过 20 层时，你需要理解正在发生什么，并且可能需要覆盖默认设置。
 
-对于 transformers，HuggingFace models 通常会在它们的 `_init_weights` 方法中处理 initialization。GPT-2 的实现会按 1/sqrt(N) 缩放 residual projections。如果你从零开始构建 transformer，需要自己添加这一点。
+对于 transformers，HuggingFace models 通常会在它们的 `_init_weights` 方法中处理 initialization。GPT-2 的实现会按 $1/\sqrt{N}$ 缩放 residual projections。如果你从零开始构建 transformer，需要自己添加这一点。
 
 ## 交付它
 本课会产出：
 - `outputs/prompt-init-strategy.md` -- 一个用于诊断 weight initialization 问题并推荐正确策略的 prompt
 
 ## 练习
-1. 添加 LeCun initialization（Var = 1/fan_in，为 SELU activation 设计）。运行 50-layer experiment，使用 LeCun init + tanh，并与 Xavier + tanh 对比。
+1. 添加 LeCun initialization（$\mathrm{Var} = 1/\text{fan}_{\text{in}}$，为 SELU activation 设计）。运行 50-layer experiment，使用 LeCun init + tanh，并与 Xavier + tanh 对比。
 
-2. 实现 GPT-2 residual scaling：在加入 residual stream 之前，将每一层的 output 乘以 1/sqrt(2*N)。分别在有 scaling 和无 scaling 的情况下运行 50 层，测量 residual magnitude 增长得有多快。
+2. 实现 GPT-2 residual scaling：在加入 residual stream 之前，将每一层的 output 乘以 $1/\sqrt{2N}$。分别在有 scaling 和无 scaling 的情况下运行 50 层，测量 residual magnitude 增长得有多快。
 
 3. 创建一个 "init health check" 函数，接收 network 的 layer dimensions 和 activation type，然后推荐正确的 initialization，并在当前 init 会导致问题时给出警告。
 
-4. 使用 fan_in = 16 与 fan_in = 1024 运行实验。Xavier 和 Kaiming 会适配 fan_in，但 random init 不会。展示随着 layer 变大，“works”和“breaks”之间的差距如何扩大。
+4. 使用 $\text{fan} _{\text{in}} = 16$ 与 $\text{fan} _{\text{in}} = 1024$ 运行实验。Xavier 和 Kaiming 会适配 fan_in，但 random init 不会。展示随着 layer 变大，“works”和“breaks”之间的差距如何扩大。
 
 5. 实现 orthogonal initialization（生成一个 random matrix，计算其 SVD，使用 orthogonal matrix U）。与 50 层 ReLU networks 中的 Kaiming 进行比较。
 
@@ -361,10 +361,10 @@ nn.init.zeros_(layer.bias)
 | Symmetry breaking | “让 neurons 变得不同” | 使用 random initialization 确保 neurons 学习不同 features，而不是计算完全相同的函数 |
 | Fan-in | “一个 neuron 的 inputs 数量” | incoming connections 的数量，它决定 input variance 如何在 weighted sum 中累积 |
 | Fan-out | “一个 neuron 的 outputs 数量” | outgoing connections 的数量，与在 Backpropagation 期间维持 Gradient variance 有关 |
-| Xavier/Glorot init | “sigmoid initialization” | Var(w) = 2/(fan_in + fan_out)，旨在通过 sigmoid 和 tanh activations 保持 variance |
-| Kaiming/He init | “ReLU initialization” | Var(w) = 2/fan_in，考虑了 ReLU 会将一半 activations 置零 |
+| Xavier/Glorot init | “sigmoid initialization” | $\mathrm{Var}(w) = 2/(\text{fan} _{\text{in}} + \text{fan} _{\text{out}})$，旨在通过 sigmoid 和 tanh activations 保持 variance |
+| Kaiming/He init | “ReLU initialization” | $\mathrm{Var}(w) = 2/\text{fan}_{\text{in}}$，考虑了 ReLU 会将一半 activations 置零 |
 | Variance propagation | “signals 如何在 layers 中增长或缩小” | 基于 weight scale，逐层分析 activation variance 如何变化的数学分析 |
-| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 1/sqrt(2N) 缩放，以防止 variance 在 N 个 transformer layers 中增长 |
+| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 $1/\sqrt{2N}$ 缩放，以防止 variance 在 $N$ 个 transformer layers 中增长 |
 | Dead network | “什么都训练不了” | 一个因 initialization 不佳而导致所有 Gradients 为 zero 或所有 activations 饱和的 network |
 | Exploding activations | “数值走向 infinity” | 当 weight variance 过高时，activation magnitudes 会在 layers 中指数级增长 |
 

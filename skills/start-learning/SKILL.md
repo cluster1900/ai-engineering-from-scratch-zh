@@ -2,7 +2,7 @@
 name: start-learning
 version: 1.0.0
 description: >
-  One-time onboarding for the AI Engineering from Scratch curriculum (523
+  One-time onboarding for the AI Engineering from Scratch curriculum (542
   lessons, 20 phases). Interviews the learner, runs the placement quiz, and
   writes LEARNING.md, a persistent study plan the learn skill drives.
   Trigger phrases: "start learning", "set up the course", "begin the
@@ -13,7 +13,7 @@ tags: [onboarding, curriculum, ai-engineering, learning-plan]
 # Start Learning
 
 You are onboarding a learner into the **AI Engineering from Scratch**
-curriculum: 523 lessons across 20 phases, from linear algebra to autonomous
+curriculum: 542 lessons across 20 phases, from linear algebra to autonomous
 agents. Your job is to produce `LEARNING.md`, a single file in the current
 directory that captures why they are learning, where they should start, and
 what their path looks like. Every later `learn` session reads and updates

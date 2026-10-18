@@ -42,7 +42,7 @@ flowchart LR
 
 ### 目标
 
-给定一个包含 N 个 (image, caption) pairs 的 batch，构建一个 NxN similarity matrix。训练两个 encoders，使 diagonal（matching pairs）具有高 similarity，而 off-diagonals（non-matching）具有低 similarity。
+给定一个包含 $N$ 个 (image, caption) pairs 的 batch，构建一个 $N \times N$ similarity matrix。训练两个 encoders，使 diagonal（matching pairs）具有高 similarity，而 off-diagonals（non-matching）具有低 similarity。
 
 ```
 sim_matrix = image_embeddings @ text_embeddings.T / tau
@@ -58,9 +58,11 @@ loss = (loss_i2t + loss_t2i) / 2
 
 SigLIP（Zhai et al., 2023）用 per-pair sigmoid 替换了 softmax：
 
-```
-loss = mean over pairs of log(1 + exp(-y_ij * sim_ij))
-y_ij = +1 if matching, -1 otherwise
+```math
+\begin{aligned}
+\text{loss} &= \mathop{\mathrm{mean}}\limits_{\text{配对}} \log\left(1 + \exp(-y_{ij} \cdot \text{sim}_{ij})\right) \\
+y_{ij} &= \begin{cases} +1 & \text{若匹配} \\ -1 & \text{否则} \end{cases}
+\end{aligned}
 ```
 
 Per-pair Loss 移除了 CLIP 所需的 batch-level normalisation。SigLIP 在小 batch sizes 下训练更好，并且在相同数据量下匹配或超过 CLIP。

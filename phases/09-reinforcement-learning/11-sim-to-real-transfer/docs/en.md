@@ -31,7 +31,7 @@
 
 **Domain Adaptation。** 在 sim 中训练，再用少量 real data fine-tune。两种形式：
 
-- **Real2Sim2Real：** 使用 real rollouts 学习一个 residual simulator `f(s, a, z) - f_sim(s, a)`，再在修正后的 sim 中训练。不需要太多 real data 就能缩小差距。
+- **Real2Sim2Real：** 使用 real rollouts 学习一个 residual simulator $f(s, a, z) - f_{\text{sim}}(s, a)$，再在修正后的 sim 中训练。不需要太多 real data 就能缩小差距。
 - **Observation adaptation：** 训练一个 policy，通过 learned feature extractor（例如 GAN pixel-to-pixel）将 real obs → sim-like obs。controller 仍停留在 sim 中。
 
 **Privileged learning / teacher-student。** Miki et al. 2022（ANYmal quadruped）。在 simulation 中训练一个可以访问 privileged information（ground truth friction、terrain height、IMU drift）的 *teacher*。再 distill 一个只看到 real-sensor observations 的 *student*。student 学会从历史中推断 privileged features，并在 physical parameters 变化下保持 robust。
@@ -129,7 +129,7 @@ tags: [rl, sim2real, robotics, domain-randomization]
 
 ## 练习
 
-1. **Easy。** 在 fixed-slip GridWorld（slip=0.0）上训练一个 Q-learning agent。在 slip ∈ {0.0, 0.1, 0.3, 0.5} 上评估。绘制 return vs slip。
+1. **Easy。** 在 fixed-slip GridWorld（slip=0.0）上训练一个 Q-learning agent。在 $\text{slip} \in \lbrace 0.0, 0.1, 0.3, 0.5 \rbrace$ 上评估。绘制 return vs slip。
 2. **Medium。** 训练一个 DR Q-learning agent，采样 `slip ~ Uniform[0, 0.3]`。评估同一组 sweep。在 slip=0.5（out-of-distribution）时，DR 带来了多少收益？
 3. **Hard。** 实现一个 curriculum：从 slip=0.0 开始，每当 policy 达到 optimal 的 90% 时，扩大 DR range。测量达到 slip=0.3 zero-shot 所需的总 environment steps，并与 fixed DR baseline 对比。
 

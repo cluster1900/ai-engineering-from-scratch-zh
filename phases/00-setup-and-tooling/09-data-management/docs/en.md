@@ -239,6 +239,16 @@ python code/data_utils.py
 3. 将一个 dataset 转换为 Parquet，并将 file size 与 CSV 对比
 4. 使用固定 seed 创建 70/15/15 train/val/test split，并验证 sizes
 
+### 提示
+
+**练习 1。** 调用 `code/data_utils.py` 中的 `load_and_inspect("glue", "mrpc")`，或直接调用 `load_dataset("glue", "mrpc")`，打印 `ds["train"][:5]`。每个样本都必须包含 `sentence1`、`sentence2` 和 `label` 字段。
+
+**练习 2。** 像 `stream_dataset` 一样用 `streaming=True` 加载数据集，在循环中读取样本，当 `time.time()` 超过开始时间加 10 秒时停止。打印样本数，并运行两次，因为第一次包含连接启动开销。
+
+**练习 3。** 像 `convert_format` 一样，用 `to_csv` 和 `to_parquet` 保存同一个数据集，再用 `ls -lh` 或 `os.path.getsize` 比较文件大小。用 `load_from_parquet` 重新加载 Parquet 文件，检查行数是否保持不变。
+
+**练习 4。** 固定 `seed`，使用两次 `train_test_split`：先分出 30%，再将这 30% 对半分。三个子集的长度之和必须等于原始长度；使用相同 seed 再运行一次时，每个子集的第一行也必须相同。
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|

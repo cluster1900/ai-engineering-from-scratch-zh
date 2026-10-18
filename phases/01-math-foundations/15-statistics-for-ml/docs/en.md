@@ -41,7 +41,7 @@ Mode:   出现最频繁的值
         对 categorical data 有用。对 continuous data，通常信息量很低。
 ```
 
-mean 是平衡点。median 是中点标记。当二者偏离时，你的分布就是 skewed。收入分布通常 mean >> median（由亿万富翁造成的 right skew）。训练期间的 Loss 分布通常 mean << median（由简单样本造成的 left skew）。
+mean 是平衡点。median 是中点标记。当二者偏离时，你的分布就是 skewed。收入分布通常 $\text{mean} \gg \text{median}$（由亿万富翁造成的 right skew）。训练期间的 Loss 分布通常 $\text{mean} \ll \text{median}$（由简单样本造成的 left skew）。
 
 **Measures of spread** 回答“数据有多分散？”
 
@@ -72,14 +72,16 @@ IQR:        Q3 - Q1 (interquartile range)
 
 在 ML 中，你会关注 percentiles，用于 inference latency、prediction confidence distributions，以及理解 error distributions。一个平均 error 很低但 P99 error 很糟的模型，对 safety-critical applications 可能毫无用处。
 
-**Sample vs population statistics.** 从 sample 计算 variance 时，用 (n-1) 而不是 n 作为除数。这是 Bessel's correction。它补偿了 sample mean 不是真实 population mean 这一事实。如果分母是 n，你会系统性低估真实 variance。如果分母是 (n-1)，估计就是 unbiased。
+**Sample vs population statistics.** 从 sample 计算 variance 时，用 $(n-1)$ 而不是 $n$ 作为除数。这是 Bessel's correction。它补偿了 sample mean 不是真实 population mean 这一事实。如果分母是 $n$，你会系统性低估真实 variance。如果分母是 $(n-1)$，估计就是 unbiased。
 
-```
-Population variance: sigma^2 = (1/N) * sum((x_i - mu)^2)
-Sample variance:     s^2     = (1/(n-1)) * sum((x_i - x_bar)^2)
+```math
+\begin{aligned}
+\text{总体方差：} \quad \sigma^2 &= \frac{1}{N} \sum (x_i - \mu)^2 \\
+\text{样本方差：} \quad s^2 &= \frac{1}{n-1} \sum (x_i - \bar{x})^2
+\end{aligned}
 ```
 
-实践中：如果 n 很大（数千个样本），差异可以忽略。如果 n 很小（几十个样本），它就很重要。
+实践中：如果 $n$ 很大（数千个样本），差异可以忽略。如果 $n$ 很小（几十个样本），它就很重要。
 
 ### Correlation: 变量如何一起变化
 
@@ -97,7 +99,7 @@ r =  0:  无线性关系（但可能存在非线性关系！）
 Range: [-1, 1]
 ```
 
-Pearson 假设关系是线性的，并且两个变量都大致服从 normal distribution。它对 outliers 敏感。一个极端点就能把 r 从 0.1 拉到 0.9。
+Pearson 假设关系是线性的，并且两个变量都大致服从 normal distribution。它对 outliers 敏感。一个极端点就能把 $r$ 从 0.1 拉到 0.9。
 
 **Spearman rank correlation** 衡量单调关联：
 
@@ -136,7 +138,7 @@ Cov(X, Y) < 0:  当 X 增加时，Y 倾向于减少
 Cov(X, Y) = 0:  无线性共同变化
 ```
 
-对于 d 个 features，covariance matrix C 是一个 d x d Matrix，其中 C[i][j] = Cov(feature_i, feature_j)。对角线项 C[i][i] 是每个 feature 的 variances。
+对于 $d$ 个 features，covariance matrix $C$ 是一个 $d \times d$ Matrix，其中 $C[i][j] = \mathop{\mathrm{Cov}}(\text{feature}_i, \text{feature}_j)$。对角线项 $C[i][i]$ 是每个 feature 的 variances。
 
 ```
 C = | Var(x1)      Cov(x1,x2)  Cov(x1,x3) |
@@ -152,7 +154,7 @@ Properties:
 
 **与 PCA 的联系。** PCA 对 covariance matrix 做 eigendecomposition。eigenvectors 是 principal components（最大方差方向）。eigenvalues 告诉你每个 component 捕捉了多少 variance。这正是 Lesson 10 覆盖的内容，但现在你能看到为什么 covariance matrix 是适合分解的对象：它编码了数据中所有成对的线性关系。
 
-**与 correlation 的联系。** correlation matrix 是标准化变量的 covariance matrix（每个变量都除以自己的 standard deviation）。Correlation 会归一化 covariance，使所有值落在 [-1, 1]。
+**与 correlation 的联系。** correlation matrix 是标准化变量的 covariance matrix（每个变量都除以自己的 standard deviation）。Correlation 会归一化 covariance，使所有值落在 $[-1, 1]$。
 
 ### Hypothesis Testing
 
@@ -202,10 +204,11 @@ t-test 比较 means。有几种形式。
 
 **One-sample t-test:** population mean 是否不同于某个假设值？
 
-```
-t = (x_bar - mu_0) / (s / sqrt(n))
-
-degrees of freedom = n - 1
+```math
+\begin{aligned}
+t &= \frac{\bar{x} - \mu_0}{s / \sqrt{n}} \\[4pt]
+\text{自由度} &= n - 1
+\end{aligned}
 ```
 
 **Two-sample t-test (independent):** 两组 group means 是否不同？
@@ -294,19 +297,20 @@ Practically significant? 0.03% 的提升不值得
 
 **Effect size** 量化差异有多大，并且独立于 sample size：
 
-```
-Cohen's d = (mean_1 - mean_2) / pooled_std
-
-d = 0.2:  small effect
-d = 0.5:  medium effect
-d = 0.8:  large effect
+```math
+\begin{aligned}
+\text{Cohen's } d &= \frac{\text{mean}_1 - \text{mean}_2}{\text{pooled\_std}} \\[4pt]
+d &= 0.2: \quad \text{小效应} \\
+d &= 0.5: \quad \text{中等效应} \\
+d &= 0.8: \quad \text{大效应}
+\end{aligned}
 ```
 
 始终同时报告 p-value 和 effect size。p-value 告诉你差异是否真实。effect size 告诉你差异是否重要。
 
 ### Multiple Comparison Problem
 
-当你检验很多 hypotheses 时，其中一些会因为偶然变得“significant”。如果你在 alpha = 0.05 下检验 20 件事，即使没有任何真实效应，也预期会出现 1 个 false positive。
+当你检验很多 hypotheses 时，其中一些会因为偶然变得“significant”。如果你在 $\alpha = 0.05$ 下检验 20 件事，即使没有任何真实效应，也预期会出现 1 个 false positive。
 
 ```
 P(at least one false positive) = 1 - (1 - alpha)^m
@@ -317,7 +321,7 @@ P(false positive) = 1 - 0.95^20 = 0.64
 你有 64% 的概率至少得到一个 false positive。
 ```
 
-**Bonferroni correction:** 将 alpha 除以 tests 数量。
+**Bonferroni correction:** 将 $\alpha$ 除以 tests 数量。
 
 ```
 Adjusted alpha = alpha / m = 0.05 / 20 = 0.0025
@@ -414,11 +418,11 @@ Kruskal-Wallis:     比较多个 groups（替代 ANOVA）
 - 更高 statistical power（更擅长检测真实差异）
 ```
 
-在 ML 实验中，你通常只有很小的 n（5 或 10 个 cross-validation folds），因此像 Wilcoxon signed-rank 这样的 non-parametric tests 往往比 t-tests 更合适。
+在 ML 实验中，你通常只有很小的 $n$（5 或 10 个 cross-validation folds），因此像 Wilcoxon signed-rank 这样的 non-parametric tests 往往比 t-tests 更合适。
 
 ### Central Limit Theorem：实际影响
 
-CLT 表明，随着 n 增大，sample means 的分布会趋近 normal distribution，无论底层 population distribution 是什么。
+CLT 表明，随着 $n$ 增大，sample means 的分布会趋近 normal distribution，无论底层 population distribution 是什么。
 
 ```
 If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
@@ -470,7 +474,7 @@ If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
 
 9. **在数据不独立时假设 independence。** 来自同一患者的 medical images、来自同一文档的多个 sentences。组内 observations 是相关的。
 
-10. **P-hacking。** 不断尝试不同 tests、subsets 或 exclusion criteria，直到得到 p < 0.05。结果只是搜索过程的 artifact。
+10. **P-hacking。** 不断尝试不同 tests、subsets 或 exclusion criteria，直到得到 $p < 0.05$。结果只是搜索过程的 artifact。
 
 ## Building It
 
@@ -486,7 +490,7 @@ f3-bootstrap-resample
 3. **Hypothesis tests**（one-sample t-test、two-sample t-test、chi-squared test）
 4. **Bootstrap confidence intervals**（适用于任意 statistic，不需要假设）
 5. **A/B test simulator**（生成数据、测试、检查 Type I 和 Type II errors）
-6. **Statistical vs practical significance demo**（展示大 n 如何让一切都变得“significant”）
+6. **Statistical vs practical significance demo**（展示大 $n$ 如何让一切都变得“significant”）
 
 全部从零实现，只使用 `math` 和 `random`。不使用 numpy，不使用 scipy。
 
@@ -498,7 +502,7 @@ f3-bootstrap-resample
 | Standard deviation | variance 的平方根。以原始单位衡量 spread。 |
 | Percentile | 给定百分比的数据低于该值。 |
 | IQR | Interquartile range。Q3 减 Q1。中间 50% 的 spread。 |
-| Pearson correlation | 衡量两个变量之间的线性关联。Range [-1, 1]。 |
+| Pearson correlation | 衡量两个变量之间的线性关联。Range $[-1, 1]$。 |
 | Spearman correlation | 使用 ranks 衡量单调关联。 |
 | Covariance matrix | 所有 features 两两 covariances 组成的 Matrix。 |
 | Null hypothesis | 默认假设，即无效应或无差异。 |

@@ -9,9 +9,9 @@
 
 ## 问题
 
-Generative model 做一件事：给定从某个未知分布 `p_data(x)` 抽取的训练样本，输出看起来像来自同一分布的新样本。人脸、句子、MIDI 文件、蛋白质结构——如果你眯着眼看，它们都是同一个问题。
+Generative model 做一件事：给定从某个未知分布 $p_{\text{data}}(x)$ 抽取的训练样本，输出看起来像来自同一分布的新样本。人脸、句子、MIDI 文件、蛋白质结构——如果你眯着眼看，它们都是同一个问题。
 
-难点在于，`p_data` 存在于一个拥有数百万维度的空间中（一个 512x512 RGB 图像大约有 786k 维），样本位于该空间内部一条很薄的 manifold 上，而你可能只有 10M 个样本。暴力求解 density 是没有希望的。每个 generative model 都是在把一个难题换成另一个稍微不那么难的问题。
+难点在于，$p_{\text{data}}$ 存在于一个拥有数百万维度的空间中（一个 512x512 RGB 图像大约有 786k 维），样本位于该空间内部一条很薄的 manifold 上，而你可能只有 10M 个样本。暴力求解 density 是没有希望的。每个 generative model 都是在把一个难题换成另一个稍微不那么难的问题。
 
 过去十二年里有五个家族存活了下来。理解每个家族所做的取舍，会告诉你为什么它在某些任务上胜出，又为什么会在另一些任务上崩塌。
 
@@ -19,13 +19,13 @@ Generative model 做一件事：给定从某个未知分布 `p_data(x)` 抽取�
 
 ![Generative models 的五个家族 — 按它们建模的对象分类](../assets/taxonomy.svg)
 
-**1. Explicit density, tractable。** 将 `log p(x)` 写成一个你真的能计算的求和。Autoregressive models (PixelCNN, WaveNet, GPT) 将 `p(x) = ∏ p(x_i | x_<i)` 因式分解。Normalizing flows (RealNVP, Glow) 将 `p(x)` 构造成一个简单 base 分布的可逆变换。优点：精确 likelihood，干净的训练 Loss。缺点：autoregressive 推理是顺序的（长序列会慢），flows 需要可逆架构（架构限制很强）。
+**1. Explicit density, tractable。** 将 $\log p(x)$ 写成一个你真的能计算的求和。Autoregressive models (PixelCNN, WaveNet, GPT) 将 $p(x) = \prod_i p(x_i \mid x_{<i})$ 因式分解。Normalizing flows (RealNVP, Glow) 将 $p(x)$ 构造成一个简单 base 分布的可逆变换。优点：精确 likelihood，干净的训练 Loss。缺点：autoregressive 推理是顺序的（长序列会慢），flows 需要可逆架构（架构限制很强）。
 
-**2. Explicit density, approximate。** 从下方界定 `log p(x)`（ELBO）并优化这个 bound。VAEs (Kingma 2013) 使用带 variational posterior 的 encoder-decoder。Diffusion models (DDPM, Ho 2020) 训练一个 denoiser，它隐式优化加权 ELBO。Diffusion 是 2026 年图像、视频和 3D 的主导 backbone。
+**2. Explicit density, approximate。** 从下方界定 $\log p(x)$（ELBO）并优化这个 bound。VAEs (Kingma 2013) 使用带 variational posterior 的 encoder-decoder。Diffusion models (DDPM, Ho 2020) 训练一个 denoiser，它隐式优化加权 ELBO。Diffusion 是 2026 年图像、视频和 3D 的主导 backbone。
 
-**3. Implicit density。** 完全跳过 density；学习一个生成样本的 generator `G(z)`，以及一个判断真假的 discriminator `D(x)`。GANs (Goodfellow 2014)。推理很快（一次 forward pass），但训练过程出了名地不稳定。即使在 2026 年，StyleGAN 1/2/3 在固定领域的 photorealism（人脸、卧室）上仍然是 state of the art。
+**3. Implicit density。** 完全跳过 density；学习一个生成样本的 generator $G(z)$，以及一个判断真假的 discriminator $D(x)$。GANs (Goodfellow 2014)。推理很快（一次 forward pass），但训练过程出了名地不稳定。即使在 2026 年，StyleGAN 1/2/3 在固定领域的 photorealism（人脸、卧室）上仍然是 state of the art。
 
-**4. Score-based / continuous-time。** 直接学习 log-density 的 Gradient `∇_x log p(x)`（score）。Song & Ermon (2019) 表明 score matching 将 diffusion 推广为一个 SDE。Flow matching (Lipman 2023) 是 2024-2026 年的热点：无需模拟的训练、更直的路径、比 DDPM 快 4-10 倍的采样。Stable Diffusion 3、Flux、AudioCraft 2 都使用 flow matching。
+**4. Score-based / continuous-time。** 直接学习 log-density 的 Gradient $\nabla_x \log p(x)$（score）。Song & Ermon (2019) 表明 score matching 将 diffusion 推广为一个 SDE。Flow matching (Lipman 2023) 是 2024-2026 年的热点：无需模拟的训练、更直的路径、比 DDPM 快 4-10 倍的采样。Stable Diffusion 3、Flux、AudioCraft 2 都使用 flow matching。
 
 **5. 基于 Token 的离散 codes 上的 autoregressive。** 使用 VQ-VAE 或 residual quantizer 将高维数据压缩成一段较短的离散 tokens 序列，然后使用 Transformer 对 token sequence 建模。Parti、MuseNet、AudioLM、VALL-E、Sora 的 patch tokenizer 都使用这种方式。这是类别 1 加上一个 learned tokenizer。
 
@@ -53,7 +53,7 @@ Generative model 做一件事：给定从某个未知分布 `p_data(x)` 抽取�
 当一篇新的 generative model 论文出现时，在阅读方法部分之前，先回答这五个问题。
 
 1. **建模的是什么？** Pixels、latents、离散 tokens、3D Gaussians、meshes、waveforms？
-2. **Density 是 explicit 还是 implicit？** 他们是否写出了 `log p(x)`？
+2. **Density 是 explicit 还是 implicit？** 他们是否写出了 $\log p(x)$？
 3. **Sampling：one-shot 还是 iterative？** Iterative 意味着推理更慢；one-shot 通常意味着 adversarial 或 distilled。
 4. **Conditioning：unconditional、class、text、image、pose？** 这决定了 Loss 和架构脚手架。
 5. **Evaluation：FID、CLIP score、IS、human preference、task accuracy？** 每个都有已知 failure modes（见 Lesson 14）。
@@ -91,7 +91,7 @@ implicit (nearest-sample gen): 20 new samples printed, no p(x)
 | Text-to-video | Diffusion Transformer + flow matching | Sora, Veo 2, Kling。 |
 | Speech + music | Token-based AR (AudioLM, VALL-E, MusicGen) 或 flow matching (AudioCraft 2) | 离散 tokens 扩展成本低。 |
 | 3D scenes | Gaussian Splatting fit, diffusion prior | 3D-GS 用于重建，diffusion 用于 novel-view。 |
-| Density estimation（不采样） | Flows | 唯一拥有精确 `log p(x)` 的家族。 |
+| Density estimation（不采样） | Flows | 唯一拥有精确 $\log p(x)$ 的家族。 |
 | Simulation / physics | Flow matching, score SDE | 直线路径，平滑 Vector fields。 |
 
 ## 交付它
@@ -110,11 +110,11 @@ implicit (nearest-sample gen): 20 new samples printed, no p(x)
 
 | 术语 | 人们怎么说 | 它实际是什么意思 |
 |------|-----------------|-----------------------|
-| Generative model | “它会生成新东西” | 学习 `p_data(x)` 的 sampler，可选地暴露 `log p(x)`。 |
-| Explicit density | “你可以计算它” | 模型提供 closed-form 或 tractable 的 `log p(x)`。 |
-| Implicit density | “GAN-style” | 只有 sampler——无法计算给定点的 `p(x)`。 |
-| ELBO | “Evidence lower bound” | `log p(x)` 的一个 tractable 下界；VAEs 和 diffusion 会优化它。 |
-| Score | “log-density 的 Gradient” | `∇_x log p(x)`；diffusion 和 SDE models 学习这个 field。 |
+| Generative model | “它会生成新东西” | 学习 $p_{\text{data}}(x)$ 的 sampler，可选地暴露 $\log p(x)$。 |
+| Explicit density | “你可以计算它” | 模型提供 closed-form 或 tractable 的 $\log p(x)$。 |
+| Implicit density | “GAN-style” | 只有 sampler——无法计算给定点的 $p(x)$。 |
+| ELBO | “Evidence lower bound” | $\log p(x)$ 的一个 tractable 下界；VAEs 和 diffusion 会优化它。 |
+| Score | “log-density 的 Gradient” | $\nabla_x \log p(x)$；diffusion 和 SDE models 学习这个 field。 |
 | Manifold hypothesis | “数据存在于一个表面上” | 高维数据集中在低维 manifold 上；这就是 dimensionality reduction 有效的原因。 |
 | Autoregressive | “预测下一个片段” | 将 joint 因式分解为 conditionals 的乘积。 |
 | Latent | “压缩 code” | 一种低维表示，decoder 可以从中重建输入。 |
