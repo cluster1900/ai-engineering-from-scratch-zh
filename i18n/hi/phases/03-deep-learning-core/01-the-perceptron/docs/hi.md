@@ -23,7 +23,7 @@ Perceptron को समझने का मतलब है कोड में
 ## 概念
 ### एक न्यूरॉन, एक निर्णय
 
-एक पर्सेप्ट्रॉन  n  इनपुट प्राप्त करेगा, प्रत्येक इनपुट  को एक भार, मांग और जोड़कर पूर्वाग्रह में गुणा करेगा, फिर परिणाम को एक सक्रियण फ़ंक्शन में प्रसारित करेगा
+एक पर्सेप्ट्रॉन 接收 $n$个 इनपुट, प्रत्येक इनपुट 乘以 एक वजन,求和,加偏, फिर परिणाम एक सक्रियण फ़ंक्शन में प्रसारित करेगा
 
 ```mermaid
 graph LR
@@ -35,11 +35,10 @@ graph LR
     step --> out["output (0 or 1)"]
 ```
 
-चरण फ़ंक्शन 非常直接: यदि भारित योग 加 पूर्वाग्रह >= 0, तो आउटपुट 为 1──否则, आउटपुट 为 0──
+चरण समारोह 非常直接: यदि भारित राशि加 पूर्वाग्रह $\ge 0$, यदि आउटपुट 为 1──否则, आउटपुट 为 0──
 
-```
-step(z) = 1  if z >= 0
-           0  if z < 0
+```math
+\text{step}(z) = \begin{cases} 1 & \text{当 } z \ge 0 \\ 0 & \text{当 } z < 0 \end{cases}
 ```
 
 यह एक रैखिक वर्गीकरणकर्ता है। वजन और पूर्वाग्रह एक लाइन को परिभाषित करते हैं।
@@ -77,7 +76,7 @@ For each training example (x, y_true):
     bias = bias + learning_rate * error
 ```
 
-यदि भविष्यवाणी सही है, तो त्रुटि = 0, कुछ भी नहीं बदलेगा। यदि यह भविष्यवाणी 0 है, लेकिन यह 1, वजन बढ़ेगा। यदि यह 1 है, लेकिन यह 0, वजन घटेगा।
+यदि भविष्यवाणी सही है,$\text{error} = 0$,कुछ भी नहीं बदलेगा। यदि यह 0 का अनुमान लगाता है, लेकिन यह 1 होना चाहिए, तो वजन बढ़ेगा। यदि यह 1 का अनुमान लगाता है, तो यह 0 होना चाहिए, तो वजन घटेगा।
 
 ### एक्सओआर समस्या
 
@@ -210,7 +209,7 @@ for inputs, expected in xor_data:
 
 ### 步骤 4: दो परतों के साथ  हल XOR
 
-技巧是:XOR = (x1 OR x2) और NOT (x1 AND x2)
+技巧是:$\text{XOR} = (x_1 \text{ OR } x_2) \text{ AND NOT } (x_1 \text{ AND } x_2)$◊组合三个 Perceptron:
 
 ```mermaid
 graph LR
@@ -353,7 +352,7 @@ print([clf.predict([x])[0] for x in X])
 
 ## अभ्यास
 1. NAND गेट में, किसी भी तर्क सर्किट को NAND द्वारा बनाया जा सकता है।
-2. 修改Perceptron class,使其在每时代跟踪决策界面(w1*x1 + w2*x2 + b = 0) 』印印在 AND gate 训练期间这条线如何移动──
+2. 修改 Perceptron वर्ग, इसे प्रत्येक युग में निर्णय सीमा के साथ बनाए रखने के लिए$w_1 x_1 + w_2 x_2 + b = 0$)―印在 AND gate 训练期间这条线如何移动──
 3. 构建一个3输入感知器:只有当3输入中至少2个为1时才输出1(बहुतमत फ़ंक्शन) 
 
 ## 关键术语
@@ -365,7 +364,7 @@ print([clf.predict([x])[0] for x in X])
 | Activation function | “压缩数值的东西” | 一个在 weighted sum 之后应用的 function：Perceptron 使用 step function，现代 networks 使用 sigmoid/ReLU |
 | Linearly separable | “你能在它们之间画一条线” | 一个 dataset，其中单个 hyperplane 可以完美分离 classes |
 | XOR problem | “Perceptron 做不到的那件事” | single-layer networks 无法学习 non-linearly-separable functions 的证明 |
-| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane w*x + b = 0 |
+| Decision boundary | “classifier 发生切换的位置” | 将 input space 分成两个 classes 的 hyperplane $w \cdot x + b = 0$ |
 | Multi-layer perceptron | “一个真正的 Neural Network” | 按 layers 堆叠的 Perceptron，其中每一层的 output 会输入到下一层 |
 
 ## 延伸阅读

@@ -35,40 +35,40 @@
 
 考虑一个具有风扇_in 个输入的单个层:
 
-```
-z = w1*x1 + w2*x2 + ... + w_n*x_n
-```
-
-यदि प्रत्येक भार वियू भिन्नता के लिए Var(w) का वितरण से आते हैं, और प्रत्येक इनपुट xi के भिन्नता के लिए Var(x), तो आउटपुट भिन्नता के लिएः
-
-```
-Var(z) = fan_in * Var(w) * Var(x)
+```math
+z = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n
 ```
 
-यदि Var(w) = 1 且 fan_in = 512, तो आउटपुट भिन्नता यानि इनपुट भिन्नता का 512 倍──经过 10 层:512^10 = 1.2e27── आपका सिग्नल 已爆炸──
+यदि प्रत्येक वजन $w_i$वेरिएंट से आया$\mathrm{Var}(w)$$x_i$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\mathrm{Var}(x)$,则 आउटपुट वेरिएंसी 为:
 
-यदि Var(w) = 0.001, तो आउटपुट वैरिएंस प्रत्येक स्तर पर 0.001 * 512 = 0.512 缩小──经过 10 层:0.512^10 = 0.00013── आपका संकेत 已消失──
+```math
+\mathrm{Var}(z) = \text{fan}_{\text{in}} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(x)
+```
 
-目標:选择 Var(w), जिससे Var(z) = Var(x) ・・・सग्नल आयाम 在各层之间保持恒定──
+यदि $\mathrm{Var}(w) = 1$且 $\text{fan}_{\text{in}} = 512$, तो आउटपुट वैरिएंस इनपुट वैरिएंस का 512 倍──经过 10 层:$512^{10} = 1.2 \times 10^{27}$आपका संकेत धमाका है
+
+यदि $\mathrm{Var}(w) = 0.001$, तो आउटपुट भिन्नता प्रत्येक स्तर पर $0.001 \cdot 512 = 0.512$缩小──经过10层:$0.512^{10} = 0.00013$आपका संकेत  गायब हो गया
+
+目标: चयन $\mathrm{Var}(w)$, इसे बनाने के लिए$\mathrm{Var}(z) = \mathrm{Var}(x)$सग्नल की मात्रा विभिन्न स्तरों के बीच स्थिर रहे
 
 ### ज़ावियर/ग्लोरोट आरंभिकरण
 
 Glorot and Bengio (2010) 推导了适用于 सिग्मोइड 和 टैन सक्रियण 的解──为了在前方和后方通过 中都保持变异 恒定:
 
-```
-Var(w) = 2 / (fan_in + fan_out)
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}
 ```
 
 实践中, वजन निम्नानुसार वितरण 中采样:
 
-```
-w ~ Uniform(-limit, limit)  where limit = sqrt(6 / (fan_in + fan_out))
+```math
+w \sim \text{Uniform}(-\text{limit}, \text{limit}) \quad \text{其中 } \text{limit} = \sqrt{\frac{6}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}
 ```
 
 या:
 
-```
-w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}\right)
 ```
 
 यह इसलिए प्रभावी है, क्योंकि सिग्मोइड और टैन शून्य के निकट निकटता में है, जबकि सही प्रारंभिककरण के बाद सक्रियण इस क्षेत्र में ठीक है।
@@ -79,27 +79,27 @@ ReLU 会杀杀一半输出(所有负都变成零) ・有效风扇_in 减半,因�
 
 He et al. (2015) 调整了公式:
 
-```
-Var(w) = 2 / fan_in
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}}}
 ```
 
 निम्नानुसार वितरण से वजन
 
-```
-w ~ Normal(0, sqrt(2 / fan_in))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}}}}\right)
 ```
 
-2. उपयोग करने के लिए रिफंड करने के लिए RLU आधा सक्रियण 置零 प्रभाव                                                                                                                                                                                                                                                     
+संख्या 2 का उपयोग करने के लिए रिफंड करने के लिए RLU आधा सक्रियण 置零 प्रभाव होगा।$0.5^{50} = 8.8 \times 10^{-16}$कैमिंग इन इन इस स्थिति को रोकने में मदद कर सकता है
 
 ### ट्रांसफार्मर आरंभिकरण
 
 जीपीटी-2 ने एक और मोड शुरू किया। शेष कनेक्शन प्रत्येक उप-परत के आउटपुट को इसके इनपुट तक बढ़ाएगाः
 
-```
-x = x + sublayer(x)
+```math
+x = x + \text{sublayer}(x)
 ```
 
-प्रत्येक चरण में वृद्धि होगी भिन्नता── N अवशिष्ट परतों के लिए, भिन्नता N के अनुसार होगी 成 अनुपात वृद्धि── GPT-2 会将残留层的重量 按1/sqrt(2N) 缩小, जिनमें से N 层数── यह संचित संकेत परिमाण 稳定── बनाए रख सकता है।
+प्रत्येक कदम में भिन्नता बढ़ेगी।$N$个 अवशिष्ट परतें, भिन्नता 会按 $N$成比例增长──GPT-2 会将残留层的重量按 $1/\sqrt{2N}$缩放, उनमें से $N$यह संचित संकेत परिमाण को स्थिर रख सकता है।
 
 लामा 3 ((405B पैरामीटर,126 परतें) ने इसी तरह के कार्यक्रमों का उपयोग किया। यदि ऐसा संकुचन नहीं होता है, तो शेष प्रवाह में 126 परतों में होगा ध्यान तथा फ़ीड फॉरवर्ड ब्लॉक में वृद्धि होगी।
 
@@ -337,20 +337,20 @@ nn.init.zeros_(layer.bias)
 
 जब आप调用 `nn.Linear(512, 256)`时,PyTorch 默认使用Kaiming वर्दी आरंभीकरण── यही कारण है कि अधिकांश सरल नेटवर्क बस काम--PyTorch 已经做了正确选择── लेकिन जब आप कस्टम आर्किटेक्चर बनाते हैं, या 20 से अधिक परतों में गहराई से प्रवेश करते हैं, तो आपको यह समझने की आवश्यकता होती है कि क्या हो रहा है, और संभवतः एक कवर करने की आवश्यकता होती है默认 सेटिंग──
 
- ट्रांसफार्मर के लिए, हगिंगफेस मॉडल आमतौर पर उनके बीच होते हैं `_init_weights`方法中处理初期化──GPT-2 का实现会按1/sqrt(N) 缩放残余投影── यदि आप शून्य से ट्रांसफार्मर का निर्माण शुरू करते हैं, तो आपको स्वयं इसे जोड़ना होगा──
+ ट्रांसफार्मर के लिए, हगिंगफेस मॉडल आमतौर पर उनके बीच होते हैं `_init_weights`方法中处理 प्रारंभकरण──GPT-2 के कार्यान्वयन$1/\sqrt{N}$缩放残余投影── यदि आप शून्य से ट्रांसफार्मर का निर्माण शुरू करते हैं, तो आपको स्वयं इस बिंदु को जोड़ना होगा──
 
 ## 交付 यह
 本课会产出:
 - `outputs/prompt-init-strategy.md`-- एक प्रयोग करने के लिए निदान वजन आरंभिकरण  समस्या并推正确策略的提示
 
 ## अभ्यास
-1. 添加 LeCun आरंभीकरण(Var = 1/fan_in,为 SELU सक्रियण 设计) ・运行50-परत प्रयोग, LeCun init + tanh का उपयोग करें,并与Xavier + tanh对比──
+1. 添加 LeCun आरंभिकरण$\mathrm{Var} = 1/\text{fan}_{\text{in}}$, के लिए SELU सक्रियण 设计) ・运行50 परत प्रयोग, उपयोग LeCun init + tanh,并与Xavier + tanh对比──
 
-2.  जीपीटी-2 अवशिष्ट स्केलिंग को प्राप्त करना: अवशिष्ट धारा में शामिल होने से पहले, प्रत्येक स्तर का उत्पादन  से गुणा करके 1/sqrt 2*N)  से अलग 50 स्तरों पर चलाया जाएगा, जिसमें स्केलिंग और बिना स्केलिंग के स्थिति में, अवशिष्ट परिमाण का मापन  तेजी से वृद्धि 
+2.  जीपीटी-2 अवशिष्ट स्केलिंग को प्राप्त करना:  अवशिष्ट धारा में शामिल होने से पहले, प्रत्येक स्तर का उत्पादन  गुणा $1/\sqrt{2N}$分别在有规模和无规模的情况下运行50层,测量残留大小 增多多快
 
 3.  एक "init स्वास्थ्य जांच"  फ़ंक्शन बनाएं, प्राप्त नेटवर्क के परत आयामों और सक्रियण प्रकार, फिर सही आरंभिकरण का सुझाव दें, और वर्तमान में init में समस्या का कारण बनेंगे चेतावनी दें
 
-4. प्रयोग फैन_इन = 16 与 फैन_इन = 1024 运行实验──Xavier 和 Kaiming 会适配 फैन_इन, लेकिन यादृच्छिक init 不会── प्रदर्शन लेयर के साथ 变大,工作和断 के बीच अंतर कैसे बढ़े──
+4. उपयोग $\text{fan} _{\text{in}} = 16$$\text{fan} _{\text{in}} = 1024$运行实验──Xavier 和 Kaiming 会适配风扇_in,但随机 init 不会──展示 变大,工作和断之间的差距如何扩大──
 
 5. 实现 ऑर्थोगनल आरंभिकरण(एक यादृच्छिक मैट्रिक्स उत्पन्न करें, गणना इसकी SVD, ऑर्थोगनल मैट्रिक्स U) ⋅ का उपयोग करें 50 परतों के ReLU नेटवर्क के साथ काइमिंग 进行比较──
 
@@ -361,10 +361,10 @@ nn.init.zeros_(layer.bias)
 | Symmetry breaking | “让 neurons 变得不同” | 使用 random initialization 确保 neurons 学习不同 features，而不是计算完全相同的函数 |
 | Fan-in | “一个 neuron 的 inputs 数量” | incoming connections 的数量，它决定 input variance 如何在 weighted sum 中累积 |
 | Fan-out | “一个 neuron 的 outputs 数量” | outgoing connections 的数量，与在 Backpropagation 期间维持 Gradient variance 有关 |
-| Xavier/Glorot init | “sigmoid initialization” | Var(w) = 2/(fan_in + fan_out)，旨在通过 sigmoid 和 tanh activations 保持 variance |
-| Kaiming/He init | “ReLU initialization” | Var(w) = 2/fan_in，考虑了 ReLU 会将一半 activations 置零 |
+| Xavier/Glorot init | “sigmoid initialization” | $\mathrm{Var}(w) = 2/(\text{fan} _{\text{in}} + \text{fan} _{\text{out}})$，旨在通过 sigmoid 和 tanh activations 保持 variance |
+| Kaiming/He init | “ReLU initialization” | $\mathrm{Var}(w) = 2/\text{fan}_{\text{in}}$，考虑了 ReLU 会将一半 activations 置零 |
 | Variance propagation | “signals 如何在 layers 中增长或缩小” | 基于 weight scale，逐层分析 activation variance 如何变化的数学分析 |
-| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 1/sqrt(2N) 缩放，以防止 variance 在 N 个 transformer layers 中增长 |
+| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 $1/\sqrt{2N}$ 缩放，以防止 variance 在 $N$ 个 transformer layers 中增长 |
 | Dead network | “什么都训练不了” | 一个因 initialization 不佳而导致所有 Gradients 为 zero 或所有 activations 饱和的 network |
 | Exploding activations | “数值走向 infinity” | 当 weight variance 过高时，activation magnitudes 会在 layers 中指数级增长 |
 
