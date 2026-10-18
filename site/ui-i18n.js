@@ -220,7 +220,7 @@
   "Not affiliated with, endorsed by, sponsored by, or authorized by Anthropic, the Agentic AI Foundation, or the Linux Foundation. This curriculum does not issue credentials or guarantee a passing result.": "本课程与 Anthropic、Agentic AI Foundation 或 Linux Foundation 无附属、认可、赞助或授权关系。本课程不颁发官方证书，亦不保证通过考试。",
   "The course, compiled. EPUB and PDF built from the same lessons and attached to every GitHub release. The site stays the living edition. Every chapter links back here for the animated figures, quizzes, and code.": "课程编译版：每个 GitHub Release 均会自动基于最新课程生成配套的 EPUB 与 PDF 电子书。网站保持为持续更新的动态版本，每章均附带回链，方便随时查看动态交互图表、测验与代码。",
   "The entire curriculum is on GitHub. Clone it, fork it, learn at your own pace. No paywall, no signup. Every lesson has runnable code in Python, TypeScript, Rust, or Julia, depending on what fits the concept best.": "整套课程完全开源在 GitHub 上。克隆、分叉、按自己的节奏随时学习。无需注册，更无付费墙。每节课都提供 Python、TypeScript、Rust 或 Julia 的可运行代码，精选用最契合该算法原理的语言实现。",
-  "Curriculum · 20 phases · 523 lessons": "课程体系 · 20 个阶段 · 523 节课",
+  "Curriculum · 20 phases · 532 lessons": "课程体系 · 20 个阶段 · 532 节课",
   "Colophon": "关于本站与构建",
   "open source · MIT": "开源 · MIT 协议",
   "© 2026 · open source · free forever": "© 2026 · 开源 · 永远免费",
