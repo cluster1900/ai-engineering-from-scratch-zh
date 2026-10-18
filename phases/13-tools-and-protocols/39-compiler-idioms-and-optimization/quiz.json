@@ -4,87 +4,87 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A function compiled at -O2 contains imulq $0x24924925, %rax, %rax; shrq $0x20, %rax; subl %eax, %edi; shrl %edi; addl %edi, %eax; shrl $0x2, %eax. What does it compute?",
+      "question": "一个以 -O2 编译的函数包含 imulq $0x24924925, %rax, %rax; shrq $0x20, %rax; subl %eax, %edi; shrl %edi; addl %edi, %eax; shrl $0x2, %eax。它在计算什么？",
       "options": [
-        "x % 7",
-        "x * 613566757 followed by a checksum",
         "x / 613566757",
-        "x / 7 for unsigned x: the multiplier is the low 32 bits of ceil(2^35 / 7), which is 33 bits wide, so the compiler adds the fix-up sequence"
-      ],
-      "correct": 3,
-      "explanation": "ceil(2^35 / 7) = 0x124924925 does not fit 32 bits. The compiler multiplies by the low 32 bits, then adds back the dividend through the subtract, shift, add, shift sequence, which is the add form of the Granlund-Montgomery method."
-    },
-    {
-      "stage": "check",
-      "question": "The recognizer reads magic 0x66666667 and total shift 34 in a signed division. How does it prove the divisor is 10 and not 5?",
-      "options": [
-        "It computes 2^34 / 0x66666667, tries 10 and 11, and accepts 10 because magic_numbers(10, signed) returns exactly 0x66666667 with shift 34; the same multiplier with shift 33 would mean 5",
-        "It cannot: 0x66666667 is ambiguous",
-        "It runs the function on a sample input",
-        "It looks the constant up in a table of known magic numbers"
-      ],
-      "correct": 0,
-      "explanation": "The divisor is a function of the multiplier and the total shift together. divisor_from_magic recomputes the smallest valid shift for each candidate and accepts the one whose constants match."
-    },
-    {
-      "stage": "check",
-      "question": "table_switch at -O2 is cmpl $6, %edi; ja; leaq (%rip), %rcx with R_X86_64_PC32 .rodata+0x24; movl (%rcx,%rax,4), %eax; retq. Where are the case values and how many are there?",
-      "options": [
-        "Seven 32-bit words at .rodata+0x28: the addend plus 4 for the RIP-relative field, read directly from the object",
-        "In the immediate operands of the compare chain",
-        "In the relocation entries of .rela.rodata",
-        "Five code blocks after the jump"
-      ],
-      "correct": 0,
-      "explanation": "This is LLVM's lookup table lowering. The table holds values. Its bytes are final in the object, so the table needs no relocation. The bounds check gives 6 + 1 entries."
-    },
-    {
-      "stage": "check",
-      "question": "At -O0 the fixture div10u compiles to divl %ecx while digest, in the same object, divides by 10 with imulq $0x66666667. Which observation explains the difference?",
-      "options": [
-        "divl is faster at -O0",
-        "With -mllvm -fast-isel=false every -O0 division becomes the magic multiply, so the hardware divide is FastISel's choice and the multiply is SelectionDAG's; digest's block holds a switch that FastISel hands to SelectionDAG",
-        "The two functions were compiled by different compilers",
-        "digest uses unsigned arithmetic"
+        "无符号 x 的 x / 7：乘数是 ceil(2^35 / 7) 的低 32 位，该值需要 33 位才能表示，因此编译器添加了修正指令序列",
+        "x % 7",
+        "先计算 x * 613566757，再计算校验和"
       ],
       "correct": 1,
-      "explanation": "The fixture idioms-x86_64-nofastisel-O0 shows the multiply in every division once the fast selector is disabled. The idiom comes from the instruction selector. No optimization pass is needed for it."
+      "explanation": "ceil(2^35 / 7) = 0x124924925 无法用 32 位表示。编译器先乘以其低 32 位，再通过减法、移位、加法、移位这一序列将被除数补回，这就是 Granlund-Montgomery 方法的加法形式。"
     },
     {
-      "stage": "post",
-      "question": "The digest switch is a lookup table at -O1 and a jump table at -O2 on x86-64. What does the recognizer report for the -O1 table that the source does not contain literally?",
+      "stage": "check",
+      "question": "识别器在一段有符号除法中读到了魔数 0x66666667 和总移位量 34。它如何证明除数是 10 而不是 5？",
       "options": [
-        "Five code addresses",
-        "Entries 1, 2, 4, 8, 8 exactly as written",
-        "A default value of -1",
-        "Entries 16, 32, 64, 128, 128: the later multiplication by 16 was folded into the table, and the recognizer records the factor"
+        "在已知魔数表中查找这个常量",
+        "无法证明：0x66666667 存在歧义",
+        "使用一个示例输入运行该函数",
+        "先计算 2^34 / 0x66666667，再尝试 10 和 11；由于 magic_numbers(10, signed) 返回的恰好是 0x66666667 和移位量 34，因此接受 10。同一个乘数若搭配移位量 33，则表示除以 5"
       ],
       "correct": 3,
-      "explanation": "The compiler moved band * 16 into the table values. The recognizer compares the table with the source case values up to a constant factor and reports foldedFactor 16."
+      "explanation": "除数由乘数和总移位量共同决定。divisor_from_magic 会为每个候选除数重新计算最小的有效移位量，并接受常量完全匹配的那个候选。"
     },
     {
-      "stage": "post",
-      "question": "sum_n at -O2 contains andl $0x7ffffff8, cmpl $7 with ja, two paddd accumulators, addq $0x20, and a second loop with addl (%rdi,%rdx,4). What is the correct reading?",
+      "stage": "check",
+      "question": "在 -O2 下，table_switch 的指令序列是 cmpl $6, %edi; ja; leaq (%rip), %rcx，其中 leaq 带有 R_X86_64_PC32 .rodata+0x24 重定位，随后是 movl (%rcx,%rax,4), %eax; retq。各 case 对应的值位于哪里，一共有多少个？",
       "options": [
-        "Two unrelated loops in the source",
-        "A memset",
-        "One source loop: a vectorized body that handles 8 ints per iteration with two 4-lane accumulators, a trip count rounded down to a multiple of 8, and a scalar remainder loop for the rest",
-        "An unrolled loop with 32 copies"
+        "位于跳转之后的五个代码块中",
+        "位于 .rela.rodata 的重定位条目中",
+        ".rodata+0x28 处的七个 32 位字：重定位加数加上 RIP 相对寻址字段所需的 4 字节，可直接从目标文件读取",
+        "位于比较指令链的立即数操作数中"
       ],
       "correct": 2,
-      "explanation": "The mask rounds the trip count down to a multiple of 8, the guard skips the vector body below 8 elements, the two accumulators are the interleave factor, and the remainder loop finishes the last 0 to 7 elements."
+      "explanation": "这是 LLVM 将 switch 降低为查找表的结果。表中存放的是值。这些字节在目标文件中已经确定，因此表本身无需重定位。边界检查表明共有 6 + 1 个条目。"
+    },
+    {
+      "stage": "check",
+      "question": "在 -O0 下，测试样例 div10u 被编译为 divl %ecx，而同一目标文件中的 digest 却用 imulq $0x66666667 实现除以 10。哪项观察能解释这种差异？",
+      "options": [
+        "digest 使用无符号算术",
+        "两个函数由不同的编译器编译",
+        "启用 -mllvm -fast-isel=false 后，-O0 下的每处除法都变成魔数乘法，因此硬件除法是 FastISel 的选择，乘法则是 SelectionDAG 的选择；digest 的基本块中有一个 switch，FastISel 会将它交给 SelectionDAG 处理",
+        "在 -O0 下，divl 更快"
+      ],
+      "correct": 2,
+      "explanation": "测试样例 idioms-x86_64-nofastisel-O0 表明，禁用快速指令选择器后，每处除法都使用乘法实现。这种惯用模式来自指令选择器，并不需要任何优化 pass。"
     },
     {
       "stage": "post",
-      "question": "angr 10.0.3 prints div10u as a0 / 10 and div10s as v1 = a0 * 1717986919; return ((long long)(v1) >> 0x22) + (v1 >> 63);. Ghidra 12.1.4 prints grade as param_1 / 10 - 6. What does this tell you about decompiler output?",
+      "question": "在 x86-64 上，digest 的 switch 在 -O1 下是查找表，在 -O2 下是跳转表。对于 -O1 的表，识别器报告了什么源代码中并未直接写出的内容？",
       "options": [
-        "angr is wrong about div10s",
-        "Idiom folding is a per-rule choice in each decompiler, so the same source construct can appear folded in one tool and as raw arithmetic in another, and the recognizer's derivation is what settles it",
-        "Signed division cannot be folded",
-        "Ghidra guessed"
+        "默认值 -1",
+        "与源代码完全一致的条目 1、2、4、8、8",
+        "五个代码地址",
+        "条目 16、32、64、128、128：后续乘以 16 的运算被折叠进了表中，识别器记录了这一因子"
       ],
-      "correct": 1,
-      "explanation": "Ghidra's RuleDivOpt converts the multiply and shift form into INT_SDIV. angr folded the unsigned form and left the signed form as arithmetic. Both outputs are correct; only one is readable, and the magic-number derivation proves which source expression they mean."
+      "correct": 3,
+      "explanation": "编译器将 band * 16 移入了表值。识别器将表值与源代码中的 case 值进行比较，检查它们是否仅相差一个常数因子，并报告 foldedFactor 为 16。"
+    },
+    {
+      "stage": "post",
+      "question": "在 -O2 下，sum_n 包含 andl $0x7ffffff8、搭配 ja 的 cmpl $7、两个 paddd 累加器、addq $0x20，以及另一个包含 addl (%rdi,%rdx,4) 的循环。应如何正确理解？",
+      "options": [
+        "源代码中只有一个循环：向量化主体用两个各有 4 个通道的累加器，每次迭代处理 8 个 int；处理数量向下取整为 8 的倍数，剩余元素由标量余数循环处理",
+        "这是一个 memset",
+        "这是展开了 32 份循环体的循环",
+        "源代码中有两个互不相关的循环"
+      ],
+      "correct": 0,
+      "explanation": "掩码将待处理元素数向下取整为 8 的倍数，前置条件检查会在元素不足 8 个时跳过向量化主体，两个累加器体现了循环的交错因子，余数循环则处理最后的 0 至 7 个元素。"
+    },
+    {
+      "stage": "post",
+      "question": "angr 10.0.3 将 div10u 输出为 a0 / 10，将 div10s 输出为 v1 = a0 * 1717986919; return ((long long)(v1) >> 0x22) + (v1 >> 63);。Ghidra 12.1.4 将 grade 输出为 param_1 / 10 - 6。这说明反编译器输出有什么特点？",
+      "options": [
+        "各反编译器是否折叠某种惯用模式取决于各自的规则，因此同一个源代码结构在一个工具中可能被还原成简洁表达式，在另一个工具中却保留为底层算术运算；识别器的推导才是判定依据",
+        "angr 对 div10s 的反编译是错误的",
+        "Ghidra 只是猜测",
+        "有符号除法无法折叠"
+      ],
+      "correct": 0,
+      "explanation": "Ghidra 的 RuleDivOpt 将乘法加移位的形式转换为 INT_SDIV。angr 折叠了无符号形式，却将有符号形式保留为算术运算。两种输出都正确，但只有折叠后的形式更易读；魔数推导可以证明它们对应的是哪个源代码表达式。"
     }
   ]
 }
