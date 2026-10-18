@@ -44,8 +44,8 @@ Por que usar CTDE: quando treinamos, nós sabemos a ação de todos; usamos esta
 
  Aplica-se apenas para cooperativa Global reward 之和:
 
-```
-Q_tot(tau, a) = f(Q_1(tau_1, a_1), ..., Q_n(tau_n, a_n)),   df/dQ_i >= 0
+```math
+Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
 ```
 
 Monotonia 保证 `argmax_a Q_tot`Pode ser feito por cada agente.`argmax_{a_i} Q_i`Para calcular... é exactamente o que precisas.**decentralized execution property** Treinamento, mistura de rede de cada agente`Q_tot`- Não.

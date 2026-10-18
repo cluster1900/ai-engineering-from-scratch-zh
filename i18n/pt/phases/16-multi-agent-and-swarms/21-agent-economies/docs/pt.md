@@ -59,8 +59,8 @@ Isto é importante para os sistemas de LLM: pode transferir as tarefas de conclu
 
 绑定 DID's reputation score 从已确认贡献中累积──一个简单更新规则:
 
-```
-rep(i, t+1) = alpha * rep(i, t) + (1 - alpha) * contribution_quality(i, t)
+```math
+\text{rep}(i, t+1) = \alpha \cdot \text{rep}(i, t) + (1 - \alpha) \cdot \text{contribution\_quality}(i, t)
 ```
 
 Entre eles , o fator de decomposição .`alpha`接近 1― Reputation:
