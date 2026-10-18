@@ -32,10 +32,10 @@ CLIP tiene dos torres:
 
 Las dos torres han normalizado la salida hasta la longitud de la unidad.`cos(f(x), g(y)) = f(x)^T g(y)`¿Qué es eso?
 
-对于一个包含N 个(图片,标题) pares de lote, construir forma 为 `(N, N)`de la similitud Matrix `S`¿Qué es esto ?
+ para una contiene $N$个(imagen, captítulo) pares de lote, construcción de forma 为 `(N, N)`de la similitud Matrix `S`¿Qué es esto ?
 
-```
-S[i, j] = cos(f(x_i), g(y_j)) / tau
+```math
+S[i, j] = \cos(f(x_i), g(y_j)) / \tau
 ```
 
 Entre ellos `tau`Es la temperatura de aprendizaje obtenida.
@@ -54,7 +54,7 @@ loss = (loss_i2t + loss_t2i) / 2
 
 ### Temperatura
 
-`tau`Control de la nitidez de la suavidad. La nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitidez de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de la nitida de
+`tau`Controlando la nitidez de la suavidad máxima.$\tau$→ distribución aguda, con minería negativa dura 效果──高 $\tau$→ suave, todas las muestras ciudades contribución。CLIP 学习 $\log(1/\tau)$,并 realizar recorte para evitar el colapso.$\tau$,并改用学习偏见──
 
 ### ¿Por qué sigmoid 扩展性更好(SigLIP)
 
@@ -62,8 +62,8 @@ Softmax  necesita toda la similitud Matrix  mantener el mismo ritmo  En el entre
 
 SigLIP Used sigmoid por elemento  sustituir softmax: para cada par `(i, j)`,perdida es una clasificación binaria, juzgar ¿es pareja de coincidencia?
 
-```
-L = -1/N sum over (i, j) [ y_ij log sigmoid(S[i,j]) + (1-y_ij) log sigmoid(-S[i,j]) ]
+```math
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 Si es que`i == j`, entonces`y_ij = 1`, si no es por 0―, cada par de pérdidas es independiente―, no necesita todo reunido―, cada GPU  calcula su propio bloque local y se busca y se busca―, SigLIP 2 puede expandirse a bajo costo hasta el lote 32k-512k, mientras que CLIP tendrá que aumentar la comunicación en proporción―,
@@ -127,7 +127,7 @@ multimodal-fusion
 
 3. Por los gatos vs perros  Construir un clasificador de tiro cero―intentar dos plantillas de respuesta:`a photo of a {class}`Y `a picture of a {class}`◊ en 100 张 de pruebas de imágenes                                                                                                                                                                                                                                                          
 
-4. 計算 512-GPU、batch 32k 运行时,softmax InfoNCE y sigmoid en pareja de costos de comunicación──哪个按 O(N) escala,哪个按 O(N^2) escala?引用SigLIP Section 4──
+4. 计算 512-GPU、batch 32k 运行时,softmax InfoNCE y sigmoid en pareja de costos de comunicación──哪个按 $O(N)$Escala, ¿cuál es el tamaño?$O(N^2)$¿Qué es la escala?
 
 5. 阅读OpenCLIP escalar-leyes de papel(arXiv:2212.07143,Cherti et al.)。 Bases en la gráfica Reproduct ellos sobre la escala de datos de la conclusión: en tamaño fijo del modelo 下,ImageNet de la precisión de tiro cero y el tamaño de datos de entrenamiento ¿qué es la relación de registro-lineal entre el tamaño de los datos?
 

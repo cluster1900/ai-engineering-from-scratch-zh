@@ -27,18 +27,18 @@ Flamingo 从结的 Chinchilla 70B LLM 开始──全部 70B weights 保持不�
 
 ### Re-muestreo del receptor
 
-对于快速中的每张图像,ViT 会生成 N 个补丁代币――感知器复制器有 K 个固定的可学习的隐藏(Flamingo 使用 K=64)──每个复制器块有两个步骤:
+Para la imagen de cada momento, se generará un video.$N$个 parches tokens──Re-sampler de perceptor tiene $K$个固定的 aprendizaje latente(Flamingo 使用 $K=64$Cada bloque de muestra tiene dos pasos:
 
-1. La atención cruzada: K 个 latences asisten hasta N 个 parches tokens ((Q de latences, K / V de parches) ⋅
+1. La atención cruzada:$K$Los latentes asisten hasta$N$个 parches tokens ((Q de los parches latente, K/V de los parches)
 2. Latentes 内部的 Autoatención + FFN。
 
-Después de pasar por 6 bloques de muestra, la salida es K=64 个 dim 1024 de tokens visuales, independientemente de ViT 生成多少补丁;; 224x224 图像(196补丁) y 480x480 图像(900补丁)
+Después de pasar por 6 bloques de muestras, la salida es$K=64$个 dim 1024 de tokens visuales, independientemente de ViT 生成多少补丁──224x224 图像(196补丁) y 480x480 图像(900补丁)都会输出为64 样本代币──
 
-对于视频,resampler 会按时间应用: cada uno de los parches se produce en 64 个 latences, mientras que la codificación posicional temporal 让模型区分 t=0 和 t=N── el video completo se convierte en T * 64 个视觉代币──
+Para el video, el muestreo se aplicará según el tiempo: cada uno de los parches se producen 64 latentes, mientras que la codificación posicional temporal hace que el modelo se diferencie.$t=0$Y $t=N$完整视频 变成 $T \cdot 64$个 fichas visuales.
 
 ### La atención cruzada
 
-En el final de LLM de cada M 层之间(Flamingo utiliza M=4) insertado en un nuevo bloque de atención cruzada cerrado:
+En el final de LLM de cada$M$层之间(Flamingo 使用 $M=4$) se inserta en un nuevo bloque de atención cruzada cerrado:
 
 ```
 x_after_llm_block = llm_block(x_before)
@@ -142,7 +142,7 @@ cross-attention-fusion
 | OBELICS | "Interleaved web corpus" | 包含 141M 个网页的开放数据集，图像和文本按阅读顺序排列 |
 | Chinchilla | "70B frozen base" | Flamingo 的冻结文本 LLM，来自 DeepMind 的 Chinchilla paper |
 | Gate schedule | "How alpha moves" | 训练期间 cross-attention gate 打开的速率 |
-| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 M=4 |
+| Cross-attn frequency | "Every M layers" | 插入 gated cross-attention block 的频率；Flamingo 使用 $M=4$ |
 | OpenFlamingo | "Open reproduction" | MosaicML/LAION 的 3-9B 开放 checkpoint；architecture 与 Flamingo 相同 |
 
 ## 延伸阅读

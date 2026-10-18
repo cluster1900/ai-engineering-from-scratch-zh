@@ -66,11 +66,11 @@ Envasado  capacidad proviene de la predicción enmascarada  entrenamiento, casi 
 
 Cada paso desmascarar Más Menores Tokens de la agenda 会塑造质量──Show-o 推 cosine:
 
-```
-mask_ratio(t) = cos(pi * t / (2 * T))   # t = 0..T
+```math
+\text{mask\_ratio}(t) = \cos\left(\frac{\pi t}{2T}\right) \qquad t = 0, \ldots, T
 ```
 
-第 0 步, todos los Tokens fueron enmascarados(ratio 1.0)。第 T 步, no hay Tokens fueron enmascarados。Cosine se concentrará en las relaciones entre las zonas, donde se prevé la mayor cantidad de información。Los horarios lineales también son disponibles, pero más rápidamente entran en la meseta。
+第 0 步, todos los Tokens fueron enmascarados(ratio 1.0) $T$步, no hay tokens mascarados. Cosine se concentrará en las relaciones de la zona media, donde se prevé la mayor cantidad de información.
 
 ### El programa de trabajo
 
@@ -112,7 +112,7 @@ masked-diffusion-unmask
 
 3. Calendario cosino vs calendario lineal: seguimiento T=8 时 cada paso número de Tokens desmascarados―¿cuál es el mejor equilibrio?
 
-4. Una imagen de 512x512 es 1024 Tokens. En la vocab K=16384 时, modelo输出 1024 * log2(16384) = 14,336 bits (aproximadamente 1,75 KiB) de datos.
+4. Una imagen de 512x512 es 1024 Tokens.$K=16384$时, modelo de salida $1024 \cdot \log_2(16384) = 14{,}336$bits(aproximadamente 1,75 KiB) de datos.
 
 5. 阅读 LlamaGen(arXiv:2406.06525) ―― ¿Qué diferencia hay entre el modelo de imagen autoregresista con condiciones de clase de LlamaGen y el enfoque enmascarado de Show-o?
 

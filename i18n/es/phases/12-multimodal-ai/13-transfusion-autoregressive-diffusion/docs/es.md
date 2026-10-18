@@ -59,9 +59,9 @@ En el entrenamiento y la meditación se realiza para la máscara triangular de b
 Perdida de difusión es la forma estándar: darle parche de imagen加噪声,让模型预测噪声(或等价地预测 clean patch) ――Versión de la transfusión Uso de parche de flujo:预测 de ruido a campo de velocidad de limpieza。
 
 Durante el entrenamiento:
-1. Para cada parche de imagen x0, así como un paso de tiempo de forma automática t.
-2. 采样噪声 ε,计算 xt = (1-t) * x0 + t * ε(flujo de coincidencia de la línea de inserción)
-3. Transformer 预测 v_theta(xt, t); pérdida = MSE(v_theta(xt, t), ε - x0)。
+1. Para cada parche de imagen$x_0$, como un paso a paso en el tiempo $t$¿Qué es eso?
+2. 采样噪音                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $\epsilon$, calcular $x_t = (1-t) \cdot x_0 + t \cdot \epsilon$(cambio de flujo de la línea de entrada)
+3. transformador 预测 $v_\theta(x_t, t)$El artículo 1$\text{loss} = \mathop{\mathrm{MSE}}(v_\theta(x_t, t), \epsilon - x_0)$¿Qué es eso?
 4. Una pérdida de NTP en el mismo secuencia de texto.
 
 推理时, generar el proceso es:

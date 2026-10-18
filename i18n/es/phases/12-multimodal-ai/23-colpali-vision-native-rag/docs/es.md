@@ -36,28 +36,28 @@ ColPali 的修复方式:跳过 OCR,直接对页面图像做Embedding。使用Col
 
 ColBERT(Khattab & Zaharia, arXiv:2004.12832) es un método de recuperación de texto. No se trata de un vector para cada documento, sino de un vector para cada token.
 
-- Los tokens de consulta  obtengan sus propios embeddings  N_q Vectores)
-- Los tokens de documentos  obtengan embebidos(N_d vectores, normalmente se almacenan en caché)
-- Score = para los tokens de consulta 求和, cada token de consulta 取所有文件 token 中 cosine similarity 的最大值:Σ_i max_j cos(q_i, d_j) 』
+- Las fichas de consulta  obtener sus propias incorporaciones($N_q$Vectores)
+- Tokens de documentos  obtener Embeddings($N_d$Vectores, normalmente se almacenan en caché)
+- Score = para los tokens de consulta 求和, cada token de consulta 取 todos los tokens de documento 中 cosine similarity 的最大值:$\sum_i \max_j \cos(q_i, d_j)$¿Qué es eso?
 
 Esta es la operación MaxSim. Cada token de consulta se seleccionará el token de documento más adecuado. El resultado final es la suma de estos valores.
 
-优点:recall 强,能处理术语级语义――缺点: cada documento 需要 N_d vectores, almacenamiento 昂贵――
+优点:recall 强,能处理 term-level semantics──缺点: cada documento 需要 $N_d$Vectores, almacenamiento 昂贵.
 
 ### ColPali
 
 ColPali(Faysse et al., arXiv:2407.01449) va a aplicar el patrón ColBERT a las imágenes
 
-- Cada página de PaliGemma(ViT + lenguaje)编码为补丁嵌入:每页 N_p Vectors。
-- Cada consulta de usuario (text) está codificada para los embeddings de los tokens de consulta: N_q Vectores。
-- Score = Σ_i max_j cos(q_i, p_j), también se trata de encuesta-tokens de texto y páginas-imagen-parches 上做 MaxSim。
+- Cada página de PaliGemma(ViT + lenguaje)编码为补丁嵌入:每页 $N_p$Vectores.
+- Cada consulta de usuario (txt) está codificada para los embeddings de los tokens de consulta:$N_q$Vectores.
+- Punto = $\sum_i \max_j \cos(q_i, p_j)$, es decir, en las búsquedas de texto-tokens y páginas-imagen-parches arriba hacer MaxSim.
 - 通过 total de puntos de recuperación de las páginas de arriba-k.
 
 En el tiempo de ingestión de documentos: utilizar PaliGemma para hacer embebedidos en cada página, almacenar todos los embebedidos de parches. En el tiempo de consulta: hacer embebedidos en tokens de consulta, enmarcar en todos los embebedidos de páginas almacenados.
 
 优点: 在视觉丰富文档上,端到端比文本RAG高 20-40%──每补丁向量 捕获局部布局和内容──
 
-缺点: cada página N_p parches × 4 bytes flotantes × D-dim Vectores = almacenamiento 增长很快──可通过 PQ / OPQ cuantización 缓解──
+缺点: cada página $N_p$parches × floats de 4 bytes × $D$-dim Vectores = almacenamiento 增长很快──可通过 PQ / OPQ cuantización 缓解──
 
 ### ColQwen2 y ColSmol
 
@@ -129,7 +129,7 @@ mm-maxsim
 
 1. Un informe anual de 200 páginas, 729 parches por página,128-dimensiones emb, 4 bytes flotantes── calcular almacenamiento en bruto y almacenamiento comprimido en PQ★8x★
 
-2. MaxSim es Σ_i max_j cos(q_i, p_j) ・・・ Ese intento y captura ¿qué similitudes simples de medios captura información?
+2. MaxSim es$\sum_i \max_j \cos(q_i, p_j)$¿Qué son las similitudes de los medios simples que se pueden captar?
 
 3. ColPali va a indicar páginas para conjuntos de parches. Si se cambia a nivel de palabra, ¿qué cambios ocurrirán? ¿Qué compensaciones?
 
@@ -144,7 +144,7 @@ mm-maxsim
 | Late interaction | "ColBERT-style" | 使用 per-token 或 per-patch embeddings + MaxSim 做 retrieval，而不是 single doc Vector |
 | MaxSim | "Max-over-patches" | 对每个 query token，选择 similarity 最高的 document token；跨 query 求和 |
 | Bi-encoder | "Single-vector" | 每个 document 一个 Vector；更快，但会丢失粒度 |
-| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 N_p Vectors；storage cost 增长，但 recall 提升 |
+| Multi-vector | "Many-vectors-per-doc" | 每个 document / page 存储 $N_p$ Vectors；storage cost 增长，但 recall 提升 |
 | Patch embedding | "Page feature" | 来自 VLM encoder 的每个 image patch 的一个 Vector，按页 cached |
 | ViDoRe | "Vision doc bench" | ColPali 用于 visual document retrieval 的 benchmark suite |
 | PQ quantization | "Product quantization" | 在缩小 storage 约 8x 的同时保持 Vector similarity 的压缩方法 |

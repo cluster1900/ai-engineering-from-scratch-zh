@@ -38,10 +38,10 @@ Este tipo de separación es importante. El pensador debe ser lo suficientemente 
 
 两者并行运行:
 
-1. Pensador 发发出文本 Token t_i。
-2. Hablante 消费 t_i( 通过流),并发出语音 Token s_i、s_{i+1}、...、s_{i+k}。
+1. Pensador 发出文本 Token $t_i$¿Qué es eso?
+2. Hablante 消费 $t_i$(a través de transmisión),并发出语音 Token $s_i, s_{i+1}, \ldots, s_{i+k}$¿Qué es eso?
 3. Decodificador de voz en Token de voz hasta el momento de consumirlos,并发发发音频样本──
-4. Cuando el pensador llegó a la letra Token t_{i+3} 时, el hablante 已为 t___..t_{i+2} streaming 了音频。
+4. Cuando el pensador llega a la señal de texto$t_{i+3}$时,Talker 已经为 $t_0, \ldots, t_{i+2}$En streaming, el video es de la radio.
 
 ### TMRoPE  时间对齐的 Multimodal 位置
 
