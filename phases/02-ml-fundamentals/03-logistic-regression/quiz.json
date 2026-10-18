@@ -17,12 +17,12 @@
     "stage": "pre",
     "question": "为什么 logistic regression 虽然用于 Classification，却被称为 “regression”？",
     "options": [
+      "它像 linear regression 一样最小化 mean squared error",
       "它预测连续值，然后再四舍五入",
-      "这个名称来自它使用的 logistic（sigmoid）函数，而不是来自 regression analysis",
       "它最初是为 regression 设计的，后来才被改造",
-      "它像 linear regression 一样最小化 mean squared error"
+      "这个名称来自它使用的 logistic（sigmoid）函数，而不是来自 regression analysis"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "这个名称来自 logistic 函数（sigmoid）。尽管名字如此，logistic regression 是一种 Classification algorithm，会输出 class probabilities。"
   },
   {
@@ -30,10 +30,10 @@
     "stage": "post",
     "question": "为什么 logistic regression 使用 binary cross-entropy，而不是 MSE？",
     "options": [
-      "Cross-entropy 计算更快",
+      "Cross-entropy 只在 dataset balanced 时有效",
       "带 sigmoid 的 MSE 会产生带有 local minima 的非凸 cost surface，而 cross-entropy 是凸的",
       "MSE 只能用于 linear models",
-      "Cross-entropy 只在 dataset balanced 时有效"
+      "Cross-entropy 计算更快"
     ],
     "correct": 1,
     "explanation": "MSE 与 sigmoid activation 结合时，会产生包含许多 local minima 的非凸 cost surface。带 sigmoid 的 binary cross-entropy 是凸的，因此保证只有一个 global minimum。"
@@ -56,12 +56,12 @@
     "stage": "post",
     "question": "在 4 个 classes 的 softmax regression 中，关于输出概率哪一项是正确的？",
     "options": [
-      "每个 class 都得到一个 0 到 1 之间的独立概率",
-      "四个输出概率之和为 1，概率最高的 class 是预测结果",
       "只有 top-2 classes 会获得非零概率",
-      "输出是 raw scores，不是概率"
+      "输出是 raw scores，不是概率",
+      "每个 class 都得到一个 0 到 1 之间的独立概率",
+      "四个输出概率之和为 1，概率最高的 class 是预测结果"
     ],
-    "correct": 1,
+    "correct": 3,
     "explanation": "Softmax 会将一个 raw scores 的 Vector 转换为总和为 1 的概率。预测 class 是概率最高的那个。"
   }
 ]
