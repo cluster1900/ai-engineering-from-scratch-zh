@@ -38,9 +38,9 @@ Dimension    Avg distance ratio (max/min between random points)
 1000         ~1.02
 ```
 
-**体积集中在角落。**d 维 इकाई हाइपरक्यूब में 2  个角── 100 维 में, लगभग सभी वस्तुएं कोने में हैं, केंद्र से दूर── डेटा बिंदुएं किनारे तक फैलेंगी, जबकि आपके मॉडल आंतरिक क्षेत्र में डेटा की कमी होगी──
+**体积集中在角落。** $d$维 इकाई हाइपर क्यूब है$2^d$个角── 100 维中, लगभग सभी आकारों में, दूर केंद्र में स्थित हैं।
 
-**你需要指数级更多的数据。**एक ही स्थान में समान नमूना घनत्व बनाए रखने के लिए, 2D से 20D तक का अर्थ है कि आपको 10^18 गुना डेटा की आवश्यकता है।
+**你需要指数级更多的数据。**एक ही स्थान में एक ही नमूना घनत्व बनाए रखने के लिए, 2D से 20D मतलब आप की जरूरत है$10^{18}$倍的数据――आपके पास हमेशा पर्याप्त डेटा नहीं होगा―― घटने के आयाम डेटा घनत्व को वापस संसाधित करने की सीमा में लाएंगे――
 
 ### पीसीएः महत्वपूर्ण दिशाएं खोजें
 
@@ -88,7 +88,7 @@ PC4          0.89          0.089              0.925
 
 1. **Threshold.**90-95% के भिन्नता को समझाने के लिए पर्याप्त घटक बनाए रखें।
 2. **Elbow method.**चित्रण प्रत्येक घटक के स्पष्ट भिन्नता── खोज स्पष्ट तेजी से नीचे बिंदु──
-3. **Downstream performance.**पीसीए को पूर्व प्रसंस्करण के रूप में उपयोग करना।
+3. **Downstream performance.**पीसीए को पूर्व प्रसंस्करण हेतु प्रयोग करना$k$,并测量模型 की सटीकता──最佳 $k$进入平台期的位置──
 
 ### t-SNE: पड़ोसों को संरक्षित करें
 
@@ -101,7 +101,7 @@ t-SNE की महत्वपूर्ण विशेषताएंः
 - स्टोकास्टिक── भिन्न परिचालन भिन्न लेआउट उत्पन्न करेगा──
 - भ्रम 参数控制考虑多少邻居 (परिभाषित सीमाः 5-50)
 - 输出中集群  के बीच की दूरी कोई मायने नहीं रखती है  केवल समूहों का ही कोई मायने रखती है 
-- बड़े डेटासेट में 上很慢──默认是O(n^2)──
+- बड़े डेटासेट में ऊपर बहुत धीमा है$O(n^2)$
 
 ### UMAP: तेजी से, बेहतर वैश्विक संरचना
 
@@ -135,27 +135,27 @@ UMAP में उच्च स्तर के अंतरिक्ष मे�
 कर्नेल पीसीए में कर्नेल फ़ंक्शन द्वारा प्रेरित उच्च-विशिष्टता अंतरिक्ष में लागू पीसीए, स्पष्ट रूप से इस अंतरिक्ष में स्थितियों की गणना नहीं करता है।
 
 算法:
-1. 计算 कर्नेल मैट्रिक्स K, जिसमें K_ij = k(x_i, x_j)
+1. 计算 कर्नेल मैट्रिक्स $K$, उनमें से $K_{ij} = k(x_i, x_j)$
 2. सुविधाओं अंतरिक्ष में मध्य केंद्र कर्नेल मैट्रिक्स
 3. केन्द्रित कर्नेल मैट्रिक्स के लिए अपने स्वयं के संरचना
-4. 顶部 eigenvectors(按1/sqrt(eigenvalue) 缩放)就是 प्रोजेक्शन
+4. 顶部 स्ववेक्टर$1/\sqrt{\text{eigenvalue}}$缩放) = अनुमान
 
 常见 कर्नेल फ़ंक्शन:
 
 | Kernel | Formula | Good for |
 |--------|---------|----------|
-| RBF (Gaussian) | exp(-gamma * \|\|x - y\|\|^2) | 大多数 nonlinear data、smooth manifolds |
-| Polynomial | (x . y + c)^d | Polynomial relationships |
-| Sigmoid | tanh(alpha * x . y + c) | Neural network-like mappings |
+| RBF (Gaussian) | $\exp(-\gamma \lVert x - y \rVert^2)$ | 大多数 nonlinear data、smooth manifolds |
+| Polynomial | $(x \cdot y + c)^d$ | Polynomial relationships |
+| Sigmoid | $\tanh(\alpha x \cdot y + c)$ | Neural network-like mappings |
 
 何時使用内核 PCA而不是标准 PCA:
 
 | Criterion | Standard PCA | Kernel PCA |
 |-----------|-------------|------------|
 | Data structure | Linear subspace | Nonlinear manifold |
-| Speed | O(min(n^2 d, d^2 n)) | O(n^2 d + n^3) |
+| Speed | $O(\min(n^2 d, d^2 n))$ | $O(n^2 d + n^3)$ |
 | Interpretability | Components are linear combinations of features | Components lack direct feature interpretation |
-| Scalability | Works on millions of samples | Kernel matrix is n x n, memory-limited |
+| Scalability | Works on millions of samples | Kernel matrix is $n \times n$, memory-limited |
 | Reconstruction | Direct inverse transform | Requires pre-image approximation |
 
 经典例:2D के मध्य के एकाग्र वृत्तों में दो वृत्त बिंदु, एक वृत्त दूसरे वृत्त के अंदर है। मानक PCA दोनों को एक ही रेखा पर प्रक्षेपित करेगा, यह वर्गीकरण के लिए  उपयोग नहीं करेगा। RBF कर्नेल के कर्नेल PCA को आंतरिक और बाहरी वृत्त को अलग-अलग क्षेत्रों में मैपिंग करेगा, जिससे वे रैखिक रूप से अलग हो सकें।
@@ -165,22 +165,24 @@ UMAP में उच्च स्तर के अंतरिक्ष मे�
 आप 784 आयामों को 50 आयामों तक संपीड़ित किया है. आप क्या खो दिया है?
 
 测量 पुनर्निर्माण त्रुटिः
-1. k 维:X_reduced = X @ W_k
-2. 重建:X_hat = X_reduced @ W_k^T
-3. 计算 MSE:mean((X - X_hat) ^2)
+1. डेटा को इरेक्शन करने के लिए$k$维:$X_{\text{reduced}} = X W_k$
+2. 重建:$\hat{X} = X_{\text{reduced}} W_k^T$
+3. 计算 एमएसई:$\text{mean}((X - \hat{X})^2)$
 
 ् ापसीए के लिए, पुनर्निर्माण त्रुटि और स्पष्ट भिन्नता के लिए स्पष्ट संबंध हैः
 
-```
-Reconstruction error = sum of eigenvalues NOT included
-Total variance = sum of ALL eigenvalues
-Fraction lost = (sum of dropped eigenvalues) / (sum of all eigenvalues)
+```math
+\begin{aligned}
+\text{重建误差} &= \text{未保留的特征值之和} \\
+\text{总方差} &= \text{全部特征值之和} \\
+\text{损失比例} &= \frac{\text{丢弃的特征值之和}}{\text{全部特征值之和}}
+\end{aligned}
 ```
 
 प्रत्येक घटक का स्पष्ट भिन्नता अनुपात हैः
 
-```
-explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
+```math
+\text{explained\_ratio}_k = \frac{\text{eigenvalue}_k}{\sum \text{所有特征值}}
 ```
 
 घटकों के लिए संचयी व्याख्या भिन्नता संख्या का चित्रण, प्राप्त होगा "उल्लू" वक्र──अनुकूल घटकों संख्या में स्थित हैः
@@ -188,7 +190,7 @@ explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
 - संचयी भिन्नता  आपके सीमा पार की स्थिति(आमतौर पर 0.90 या 0.95)
 - डाउनस्ट्रीम कार्य प्रदर्शन 进入平台期的位置
 
-पुनर्निर्माण त्रुटि को केवल चयन करने के लिए नहीं बल्कि विसंगतियों की पहचान के लिए भी इस्तेमाल किया जा सकता हैः उच्च नमूना अपवाद हैं, वे उप-स्थान के अनुरूप नहीं हैं जो सीखने में हैं। यह उत्पादन प्रणालियों में पीसीए पर आधारित विसंगतियों की पहचान के लिए आधार है।
+पुनर्निर्माण त्रुटि $k$ आप इसे विसंगतियों की पहचान के लिए उपयोग कर सकते हैंःपुनर्निर्मित त्रुटि उच्च नमूना अपवाद हैं, वे सीखने के उप-स्थान के अनुरूप नहीं हैं यह उत्पादन प्रणालियों में पीसीए पर आधारित विसंगतियों की पहचान का आधार है
 
 
 ```figure
@@ -354,6 +356,14 @@ for k in [10, 30, 50, 100, 200]:
 
 3.  एक 50  विशेषताएं हैं  लेकिन केवल 5  सूचनात्मक विशेषताएं के डेटा सेट का उपयोग करें `sklearn.datasets.make_classification`生成) ・应用 PCA,并检查解释了变量曲线 是否正确识别出数据实际上是五维的──
 
+### 提示
+
+**练习 1。**阅读 `PCA`类中 `inverse_transform`, और प्रत्येक मुख्य घटक की संख्या के लिए अलग से एक मॉडल के अनुरूप है।`reconstruction_error`; मुख्य घटक की संख्या में वृद्धि होने पर, त्रुटि घटनी चाहिए।
+
+**练习 2。**एक ही डेटा संग्रह पर फिट बैठता है`sklearn.manifold.TSNE`तीन बार, केवल बदल `perplexity`, और एक ही रख `random_state` कम उलझन केवल कम पड़ोसियों को देखता है, इसलिए छोटे और घने समूहों का गठन होता है; अधिक उलझन अधिक पड़ोसियों को देखता है, इसलिए बड़े और अधिक चिकनी समूहों का गठन होता है
+
+**练习 3。**调用 `make_classification(n_features=50, n_informative=5, n_redundant=45)`,拟合 `PCA`,并印累计解释方差──冗余特征是有效特征的线性组合, इसलिए 5 मुख्य घटक में वक्र लगभग 1.0──然后尝试 `n_redundant=0`: शेष 45 विशेषताएँ स्वतंत्र शोर हैं, वक्रता समतल नहीं होती है।
+
 ## प्रमुख शर्तें
 
 | Term | What people say | What it actually means |
@@ -361,8 +371,8 @@ for k in [10, 30, 50, 100, 200]:
 | Curse of dimensionality | "Too many features" | 随着维度增长，距离、体积和数据密度都会表现得反直觉。Models 需要指数级更多的数据来补偿。 |
 | PCA | "Reduce dimensions" | 旋转你的坐标系，使各轴与 maximum variance 的方向对齐，然后丢弃 low-variance axes。 |
 | Principal component | "An important direction" | Covariance matrix 的一个 eigenvector。Feature space 中数据变化最大的方向。 |
-| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 k 个 ratios 求和，就能看到 k 个 components 保留了多少信息。 |
-| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry (i,j) 衡量 feature i 和 feature j 如何共同变化。Diagonal entries 是各自的 variances。 |
+| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 $k$ 个 ratios 求和，就能看到 $k$ 个 components 保留了多少信息。 |
+| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry $(i,j)$ 衡量 feature $i$ 和 feature $j$ 如何共同变化。Diagonal entries 是各自的 variances。 |
 | t-SNE | "That cluster plot" | 一种 nonlinear 方法，通过保留 pairwise neighborhood probabilities 将高维数据映射到 2D。适合可视化，不适合 preprocessing。 |
 | UMAP | "Faster t-SNE" | 一种基于 topological data analysis 的 nonlinear 方法。既保留 local structure，也保留部分 global structure。比 t-SNE 更容易扩展。 |
 | Perplexity | "A t-SNE knob" | 控制每个点考虑的有效邻居数量。低 perplexity 聚焦非常 local 的结构。高 perplexity 捕获更宽泛的模式。 |

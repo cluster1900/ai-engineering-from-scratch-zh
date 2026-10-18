@@ -8,7 +8,7 @@
 **Time:** ~90 分钟
 
 ## 学习目标
-- शून्य से DFT को प्राप्त करने के लिए,并使用O(N log N) का Cooley-Tukey FFT 验证它
+-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $O(N \log N)$का कोली-टुकई एफएफटी 验证它
 - आवृत्ति गुणांक को समझनाः संकेत से मध्य提取 परिमाण, चरण तथा शक्ति स्पेक्ट्रम
 -  अनुप्रयोग संभल प्रमेय, FFT गुणन के माध्यम से  निष्पादन संभल
 - फोरेयर आवृत्ति विघटन और ट्रांसफार्मर स्थिति एन्कोडिंग और सीएनएन संवर्धन परतों को जोड़ने के लिए  संपर्क करें
@@ -25,67 +25,64 @@
 ## 概念
 ### डीएफटी परिभाषा
 
-给定 N 个样本 x[0], x[1], ..., x[N-1],Discrete Fourier Transform 会生成 N 个 आवृत्ति गुणांक X[0], X[1], ..., X[N-1]:
+给定 $N$个 नमूना $x[0], x[1], \ldots, x[N-1]$,विशिष्ट फ़ौरियर परिवर्तन 会生成 $N$个 आवृत्ति गुणांक $X[0], X[1], \ldots, X[N-1]$:
 
-```
-X[k] = sum_{n=0}^{N-1} x[n] * e^(-2*pi*i*k*n/N)
-
-for k = 0, 1, ..., N-1
+```math
+X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-प्रत्येक X[k] शहर एक जटिल संख्या है। इसकी मात्रा है। X[k] भी प्रवृत्तियों के परिमाण का प्रतिनिधित्व करता है।
+प्रत्येक $X[k]$शहर एक जटिल संख्या है।$\lvert X[k] \rvert$आवृत्ति प्रदर्शित करें $k$इसकी गति-- इसकी अवस्था।$\angle X[k]$इस आवृत्ति का चरण ऑफसेट प्रदर्शित करें
 
-关键洞见:`e^(-2*pi*i*k*n/N)`                                                                                                                                                                                                                                                              
+关键洞见:$e^{-2\pi i k n/N}$एक आवृत्ति है$k$旋转的phasor──DFT 计算是信号与 $N$个等间隔频率中每一个的相关性──如果信号在频率中$k$ऊपर ऊर्जा शामिल है, संबंध बहुत बड़ा है।
 
 ### प्रत्येक अंक का अर्थ
 
-**X[0]: DC component。**यह सभी नमूनों का योग है, औसत 成 अनुपात के साथ। यह संकेत का निरंतर प्रतिनिधित्व करता है।
+**$X[0]$: DC component。**यह सभी नमूनों का योग है, औसत 成 अनुपात के साथ। यह संकेत का निरंतर प्रतिनिधित्व करता है।
 
+```math
+X[0] = \sum_{n=0}^{N-1} x[n] \, e^0 = \text{全部 samples 之和}
 ```
-X[0] = sum_{n=0}^{N-1} x[n] * e^0 = sum of all samples
-```
 
-**X[k] for 1 <= k <= N/2: positive frequencies。**X[k] प्रत्येक N 个 नमूने 中 k 个 चक्र का आवृत्ति──k 越大, आवृत्ति 越高(ओस्किलेशन 越快)。
+**$X[k]$ for $1 \le k \le N/2$: positive frequencies。** $X[k]$प्रदर्शित करें$N$个样本 中 $k$个 चक्रों की आवृत्ति──$k$越大, आवृत्ति 越高(ओस्किलेशन 越快)
 
-**X[N/2]: Nyquist frequency。**यह N 个 नमूना 能表示的最高频率 है। इस आवृत्ति से अधिक, उपनाम दिखाई देगा, यानी उच्च आवृत्तियों 伪装 कम आवृत्तियों 
+**$X[N/2]$: Nyquist frequency。**यह है$N$个样本 能表示的最高频率── इस आवृत्ति से अधिक, उपनाम दिखाई देगा, यानि उच्च आवृत्तियों 伪装成低频率──
 
-**X[k] for N/2 < k < N: negative frequencies。**对于真值信号,X[N-k] = conj(X[k])。 नकारात्मक आवृत्तियां ही सकारात्मक हैं 镜像──这就是为什么有用信息位于前 N/2 + 1 个系数中──
+**$X[k]$ for $N/2 < k < N$: negative frequencies。** वास्तविक मूल्य वाले संकेतों के लिए,$X[N-k] = \overline{X[k]}$ नकारात्मक आवृत्तियाँ सकारात्मक आवृत्तियों की प्रतिबिंब हैं यही कारण है कि उपयोगी जानकारी पहले स्थित है$N/2 + 1$个 गुणांक 中──
 
 ### उल्टा डीएफटी
 
 रिवर्स डीएफटी से आवृत्ति गुणांक से पुनर्गठन मूल संकेतः
 
-```
-x[n] = (1/N) * sum_{k=0}^{N-1} X[k] * e^(2*pi*i*k*n/N)
-
-for n = 0, 1, ..., N-1
+```math
+x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X[k] \, e^{2\pi i k n/N} \qquad \text{其中 } n = 0, 1, \ldots, N-1
 ```
 
-यह आगे के डीएफटी से केवल एक अंतर हैः एक्सपेंेंट के बीच का प्रतीक सही है, नकारात्मक नहीं है), और इसमें 1/N सामान्यीकरण कारक है।
+यह आगे DFT के साथ एकमात्र अंतर हैः एक्सपेंन्टेन्ट के बीच के प्रतीक के लिए सही है, और एक है $1/N$सामान्यीकरण कारक
 
 उल्टा डीएफटी एक सही पुनर्निर्माण है। कोई भी जानकारी नहीं खोई जाएगी। आप समय डोमेन से आवृत्ति डोमेन तक जा सकते हैं, फिर से लौट सकते हैं, बिना किसी त्रुटि के। डीएफटी एक आधार परिवर्तन है, यानी अलग-अलग समन्वय प्रणाली के साथ एक ही जानकारी को पुनः व्यक्त कर सकते हैं।
 
 ### FFT: इसे तेज करना
 
-यदि ऊपर परिभाषित DFT है O(N^2): N 个 आउटपुट गुणांक के बीच के प्रत्येक के लिए, N 个 इनपुट नमूने के लिए 求和──当 N = 1 मिलियन 时, यह 10^12 बार संचालन है──
+जैसा कि ऊपर परिभाषित किया गया है DFT है $O(N^2)$:对 $N$个 आउटपुट गुणांक मध्य के प्रत्येक, सभी के लिए $N$个 इनपुट नमूने 求和──当 $N$= 1 मिलियन 时, यही है $10^{12}$अगला कार्य
 
-फास्ट फ़ूरियर ट्रांसफ़ॉर्म (एफएफटी) O  N log N 计算同样结果──当 N = 1 मिलियन 时, यह लगभग 20000000 बार संचालन है, एक बिलियन बार के बजाय।
+फास्ट फ़ूरियर ट्रांसफ़ॉर्म (एफएफटी) 会以$O(N \log N)$計算同样结果──当 $N$= 1 मिलियन 时, यह लगभग 2 मिलियन ऑपरेशन है, एक मिलियन बार नहीं।
 
 Cooley-Tukey एल्गोरिथ्म ((( सबसे आम见的 FFT) का उपयोग विभाजित और जीतने के लिएः
 
 1.  सिग्नल  को सम अनुक्रमित एवं विषम अनुक्रमित नमूनों में विभाजित करेगा
 2. 递归计算每一半的DFT──
-3. प्रयोग "द्विविध कारक" e^(-2*pi*i*k/N) 合并两个半尺寸 DFTs──
+3. प्रयोग "जुड़वां कारक" $e^{-2\pi i k/N}$合并两个 अर्ध आकार के डीएफटी
 
+```math
+\begin{aligned}
+X[k] &= E[k] + e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\
+X[k + N/2] &= E[k] - e^{-2\pi i k/N} \, O[k] && \text{其中 } k = 0, \ldots, N/2 - 1 \\[6pt]
+\text{其中 } E &= \text{偶数索引 samples 的 DFT} \\
+O &= \text{奇数索引 samples 的 DFT}
+\end{aligned}
 ```
-X[k] = E[k] + e^(-2*pi*i*k/N) * O[k]          for k = 0, ..., N/2 - 1
-X[k + N/2] = E[k] - e^(-2*pi*i*k/N) * O[k]    for k = 0, ..., N/2 - 1
 
-where E = DFT of even-indexed samples
-      O = DFT of odd-indexed samples
-```
-
-इस प्रकार की सममितता का अर्थ होता है प्रत्येक परत का परिणत करना O (N) कार्य, तथा log2 (N) 层――总计:O (N) log N)──
+इस प्रकार की समरूपता का अर्थ है प्रतिवर्ती के प्रत्येक स्तर को निष्पादित करना$O(N)$काम, और वहाँ है$\log_2(N)$層──總计:$O(N \log N)$
 
 ```mermaid
 graph TD
@@ -107,23 +104,27 @@ FFT  सिग्नल लंबाई की आवश्यकता है 2
 
 ### स्पेक्ट्रम विश्लेषण
 
-**power spectrum** X [k] है, जो कि प्रत्येक आवृत्ति गुणांक के वर्ग आयाम है  यह प्रत्येक आवृत्ति पर ऊर्जा का कितना है 
+**power spectrum**$\lvert X[k] \rvert^2$, यानि प्रत्येक आवृत्ति गुणांक का वर्ग परिमाण है। यह प्रत्येक आवृत्ति पर ऊर्जा का कितना है दिखाता है।
 
-**phase spectrum**यह प्रत्येक आवृत्ति का चरण ऑफसेट है। अधिकांश विश्लेषण कार्यों के लिए, आप पावर स्पेक्ट्रम की चिंता करते हैं, और चरणों को अनदेखा करते हैं।
+**phase spectrum**$\angle X[k]$, यानि प्रत्येक आवृत्ति के चरण का ऑफसेट। अधिकांश विश्लेषण कार्यों के लिए, आप पावर स्पेक्ट्रम की चिंता करते हैं, चरणों को अनदेखा करते हैं।
 
-```
-Power at frequency k:  P[k] = |X[k]|^2 = X[k].real^2 + X[k].imag^2
-Phase at frequency k:  phi[k] = atan2(X[k].imag, X[k].real)
+```math
+\begin{aligned}
+\text{频率 } k \text{ 处的 Power：} \quad P[k] &= |X[k]|^2 = \mathop{\mathrm{Re}}(X[k])^2 + \mathop{\mathrm{Im}}(X[k])^2 \\
+\text{频率 } k \text{ 处的 Phase：} \quad \phi[k] &= \mathop{\mathrm{atan2}}(\mathop{\mathrm{Im}}(X[k]), \mathop{\mathrm{Re}}(X[k]))
+\end{aligned}
 ```
 
 ### आवृत्ति संकल्प
 
-डीएफटी का आवृत्ति संकल्प ऩमों पर निर्भर करता है 数量 N 和 नमूनाकरण दर fs。
+DFT की आवृत्ति संकल्प  नमूना पर निर्भर करता है संख्या $N$और नमूनाकरण दर $f_s$
 
-```
-Frequency of bin k:      f_k = k * fs / N
-Frequency resolution:    delta_f = fs / N
-Maximum frequency:       f_max = fs / 2  (Nyquist)
+```math
+\begin{aligned}
+\text{bin } k \text{ 对应的频率：} \quad & f_k = k \cdot f_s / N \\
+\text{频率分辨率：} \quad & \Delta f = f_s / N \\
+\text{最高频率：} \quad & f_{\max} = f_s / 2 \quad \text{(Nyquist)}
+\end{aligned}
 ```
 
 दो बहुत ही निकट आवृत्तियों को अलग करने के लिए, आपको अधिक नमूनों की आवश्यकता है। उच्च आवृत्तियों को पकड़ने के लिए, आपको अधिक नमूनों की आवश्यकता है।
@@ -134,20 +135,21 @@ Maximum frequency:       f_max = fs / 2  (Nyquist)
 
 **time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。**
 
-```
-x * h = IFFT(FFT(x) . FFT(h))
-
-where * is convolution and . is element-wise multiplication
+```math
+\begin{aligned}
+& x * h = \text{IFFT}(\text{FFT}(x) \cdot \text{FFT}(h)) \\[4pt]
+& \text{其中 } * \text{ 表示 convolution，} \cdot \text{ 表示 element-wise multiplication}
+\end{aligned}
 ```
 
 यह महत्वपूर्ण क्यों हैः
 
-- 两个长度为 N 和 M के संकेत 直接卷曲 需要 O(N*M) संचालन。
-- 基于 FFT 的卷曲 需要 O(N log N):परिवर्तन 两者、乘、परिवर्तन वापस──
+- 两个长度为 $N$和 $M$直接 घुमाव  आवश्यकता $O(NM)$संचालन
+-  FFT के आधार पर संरेखण  आवश्यकता $O(N \log N)$:transform 两者、 गुणन、परिवर्तन वापस。
 - ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ् ्
 - यह वास्तव में बड़े रिसेप्टिव क्षेत्रों के संवर्धित परतों में होता है।
 
-ध्यानःDFT  गणना है परिपत्र घुमावदार (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल) )  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (द) )  (द)  ()  () () () () () () () () () () () () () () () () () () () () () () () () () ( () () () () () ( () () () ( () () ( () () () () () ( () ( () () () () ( ( () () () () ( () () () () () ( ( () () () ( () () ( () () () () ( () () () () (
+ध्यानःDFT  गणना है परिपत्र घुमावदार (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (सग्नल)  (द)  ()  ()  ()  ()$N + M - 1$
 
 ```mermaid
 graph LR
@@ -167,7 +169,7 @@ graph LR
 
 ### खिड़की
 
-डीएफटी 假设信号是周期的,也就是把N 个样本 视为无限重复信号的一个周期──如果信号的起点和终点不是相同的值,就会在边界产生间断性,并表现为虚假的高频内容──这称为光谱泄漏──
+DFT 假设信号是周期的,也就是把 $N$个样本 视为一个无限重复信号的周期──如果信号的起点和终点不是同一个值,就会在边界产生不连续性,并表现为虚假的高频内容──这称为光谱泄漏──
 
 विंडोरिंग बैठक में गणना डीएफटी पूर्व होगा संकेत 两端 taper到零, इस प्रकार रिसाव को कम करना 
 
@@ -180,9 +182,11 @@ graph LR
 | Hamming | Modified cosine | 中等 | 更低 (-42 dB) | Audio processing、speech analysis |
 | Blackman | Triple cosine | 宽 | 非常低 (-58 dB) | 当 side lobe suppression 至关重要时 |
 
-```
-Hann window:    w[n] = 0.5 * (1 - cos(2*pi*n / (N-1)))
-Hamming window: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
+```math
+\begin{aligned}
+\text{Hann window：} \quad & w[n] = 0.5 \left(1 - \cos\frac{2\pi n}{N-1}\right) \\
+\text{Hamming window：} \quad & w[n] = 0.54 - 0.46 \cos\frac{2\pi n}{N-1}
+\end{aligned}
 ```
 
 DFT  से पहले, विंडो संकेत के साथ तत्व-बुद्धिमान गुणा करने के लिए लागू विंडोः`X = DFT(x * w)`
@@ -191,13 +195,13 @@ DFT  से पहले, विंडो संकेत के साथ त�
 
 | Property | Time Domain | Frequency Domain |
 |----------|-------------|-----------------|
-| Linearity | a*x + b*y | a*X + b*Y |
-| Time shift | x[n - k] | X[f] * e^(-2*pi*i*f*k/N) |
-| Frequency shift | x[n] * e^(2*pi*i*f0*n/N) | X[f - f0] |
-| Convolution | x * h | X * H (pointwise) |
-| Multiplication | x * h (pointwise) | X * H (circular convolution, scaled by 1/N) |
-| Parseval's theorem | sum \|x[n]\|^2 | (1/N) * sum \|X[k]\|^2 |
-| Conjugate symmetry (real input) | x[n] real | X[k] = conj(X[N-k]) |
+| Linearity | $ax + by$ | $aX + bY$ |
+| Time shift | $x[n - k]$ | $X[f] e^{-2\pi i f k/N}$ |
+| Frequency shift | $x[n] e^{2\pi i f_0 n/N}$ | $X[f - f_0]$ |
+| Convolution | $x * h$ | $X \cdot H$ (pointwise) |
+| Multiplication | $x \cdot h$ (pointwise) | $X * H$ (circular convolution, scaled by $1/N$) |
+| Parseval's theorem | $\sum \lvert x[n] \rvert^2$ | $\frac{1}{N} \sum \lvert X[k] \rvert^2$ |
+| Conjugate symmetry (real input) | $x[n]$ real | $X[k] = \overline{X[N-k]}$ |
 
 पार्सेवल का प्रमेय बताता है कि दो क्षेत्रों में कुल ऊर्जा एक ही है।
 
@@ -205,18 +209,20 @@ DFT  से पहले, विंडो संकेत के साथ त�
 
 原始 ट्रांसफार्मर प्रयोग सिनोसाइडल स्थिति कोडिंगः
 
-```
-PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
-PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```math
+\begin{aligned}
+PE(pos, 2i) &= \sin\left(pos / 10000^{2i/d_{\text{model}}}\right) \\
+PE(pos, 2i+1) &= \cos\left(pos / 10000^{2i/d_{\text{model}}}\right)
+\end{aligned}
 ```
 
-प्रत्येक आयाम (2i, 2i+1) में विभिन्न आवृत्ति टरकावटों के साथ होते हैं। आवृत्तियों से उच्च (आयाम 0,1) से निम्न (आखिर) आयामों तक) ज्यामितीय अंतर के अनुसार 排列── यह प्रत्येक स्थिति को सभी आवृत्ति बैंडों में ऊपर एक अद्वितीय पैटर्न होता है, फ़ूरियर गुणांक की तरह  कैसे एक संकेत को अद्वितीय रूप से पहचानें──
+प्रत्येक आयाम के लिए $(2i, 2i+1)$排列── यह प्रत्येक स्थिति सभी आवृत्ति बैंड में ऊपर एक अद्वितीय पैटर्न है, फ़ूरियर गुणांक की तरह 如何唯一识别一个信号──
 
 यह प्रदान करता है कीट गुणः
 
 - **Uniqueness:** किसी भी दो स्थानों में एक ही एन्कोडिंग नहीं होगी
-- **Bounded values:**पाप और कारण 始终在 [-1, 1] 内。
-- **Relative position:**स्थिति p+k का एन्कोडिंग स्थिति p 处 एन्कोडिंग के लिए रैखिक फ़ंक्शन को दर्शाया जा सकता है。 मॉडल सापेक्ष स्थितियों पर ध्यान केंद्रित करना सीख सकता है。
+- **Bounded values:**पाप और कारण 始终在 $[-1, 1]$अंदर
+- **Relative position:**स्थिति $p+k$ के एन्कोडिंग स्थिति के लिए प्रदर्शित किया जा सकता $p$处编码的线性函数──模型可以学习关注相对位置──
 
 ### सीएनएन से संबंध
 
@@ -228,7 +234,7 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
 3. आवृत्ति डोमेन में गुणा
 4. परिणामों के लिए IFFT निष्पादन
 
-标准 CNN 实现直接 convolution का उपयोग करना((छोटे 3x3 कर्नल के लिए 更快) 👇 लेकिन बड़े कर्नल या वैश्विक convolution के लिए, FFT पर आधारित विधि काफी अधिक तेजी से होगी। कुछ वास्तुकलाएं (जैसे FNet) पूरी तरह से FFT के साथ  ध्यान दें, O  N log N) और न कि O  N ^ 2) जटिलता में 
+标准 CNN 实现 प्रत्यक्ष संभलण का उपयोग करना(लघु 3x3 कर्नेल के लिए 更快)  लेकिन बड़े कर्नेल या वैश्विक संभलण के लिए, FFT पर आधारित विधि काफी अधिक तेजी से  कुछ वास्तुकलाएँ (जैसे FNet) पूरी तरह से FFT  पर ध्यान केंद्रित करती हैं,$O(N \log N)$और $O(N^2)$जटिलता निम्न प्रतिस्पर्धी सटीकता प्राप्त करना
 
 ### स्पेक्ट्रोग्राम तथा अल्पकालिक फ़ूरियर ट्रांसफॉर्म
 
@@ -251,7 +257,7 @@ STFT procedure:
 
 ### उपनाम
 
-यदि संकेत 包含高于fs/2 (Nyquist आवृत्ति) की आवृत्तियों, तो दर fs नमूनाकरण होगा उपनाम प्रतियां उत्पन्न करें।
+यदि संकेत 包含高于 $f_s/2$(न्यूक्विस्ट आवृत्ति) की आवृत्तियों, $f_s$नमूनाकरण में एक 100 हर्ट्ज नमूनाकरण का 90 हर्ट्ज संकेत 10 हर्ट्ज संकेत के समान दिखता है।
 
 ```
 Example:
@@ -270,7 +276,7 @@ Example:
 
 एक सामान्य गलतफहमी यह हैः FFT में पहले संकेत पर शून्य-पैडिंग करें, आवृत्ति संकल्प को बढ़ाएँ। यह नहीं होगा। शून्य-पैडिंग केवल मौजूदा आवृत्ति डिब्बों के बीच मूल्य को घुसाता है, जिससे स्पेक्ट्रम अधिक सपाट दिखता है। लेकिन यह मूल नमूनों में मौजूद आवृत्ति विवरणों को प्रकट नहीं कर सकता है।
 
-वास्तविक आवृत्ति संकल्प केवल अवलोकन समय T = N / fs पर निर्भर करता है। दो आवृत्तियों के अंतर को अलग करने के लिए, आपको कम से कम T = 1 / delta_f सेकंड के डेटा की आवश्यकता है।
+वास्तविक आवृत्ति संकल्प केवल अवलोकन समय पर निर्भर करता है$T = N / f_s$                                                                                                                                                                                                                                                              $\Delta f$के दो आवृत्तियों, आप कम से कम जरूरत है $T = 1 / \Delta f$秒的数据── चाहे कितना भी शून्य-पैडिंग किया जाए, तो यह मौलिक सीमा नहीं बदल सकती──
 
 
 ```figure
@@ -280,7 +286,7 @@ fourier-synthesis
 ##  इसे निर्माण
 ### 步骤 1: शून्य से डीएफटी
 
-O  N ^2) DFT  सीधे परिभाषा से आया है
+$O(N^2)$डीएफटी प्रत्यक्ष रूप से परिभाषा से आता है।
 
 ```python
 import math
@@ -304,7 +310,7 @@ def dft(x):
 
 ### 步骤 2: उल्टा डीएफटी
 
-结构 समान, exponent 为正,并除以 N──
+ संरचना समान,उपयोगकर्ता ≠ सही,并除以 $N$
 
 ```python
 def idft(X):
@@ -420,32 +426,44 @@ spectrogram = np.abs(Zxx) ** 2
 ## अभ्यास
 1. **Pure tone identification。** एक संकेत बनाएं, जिसमें एक अज्ञात आवृत्ति (~1 से 50 हर्ट्ज के बीच) की एक सिंगल सिनेस वेव हो, 128 हर्ट्ज से नमूना 1 सेकंड में उपयोग करें।
 
-2. **FFT vs DFT verification。**生成一个长度为64的随机信号――同时计算 DFT(O(N^2)) 和 FFT──验证所有系数在 1e-10 以内匹配──在长度为 256、512、1024和 2048 的信号上分计时两个函数──绘制 DFT时间与 FFT时间的比例──
+2. **FFT vs DFT verification。**生成一个长度为 64 的随机信号――同时计算 DFT($O(N^2){}$) तथा FFT── सत्यापन सभी गुणांक में 1e-10 के अंतर्गत मेल-जोल── 256、512、1024 तथा 2048 के संकेतों की लंबाई में दो कार्यों को ऊपर से अलग करना── DFT समय और FFT समय के अनुपात को चित्रित करना──
 
 3. **Convolution theorem proof by example。**创建信号 x = [1, 2, 3, 4, 0, 0, 0, 0] 和 फ़िल्टर h = [1, 1, 1, 0, 0, 0, 0, 0]──直接计算它们的圆形卷积 (圆卷积) 然后通过FFT 计算(转变、乘变、逆转变) 验证结果匹配──现在通过适当的零执行线形卷积──
 
 4. **Windowing effects。** एक संकेत बनाएं, यह 10 Hz है और 12 Hz है  बहुत करीब) दो सिनेस वेव्स के                                                                                                                                                                                                                                                  
 
-5. **Positional encoding analysis。**के लिए d_model = 128 和 max_pos = 512 生成 sinusidal positional encodings── प्रति एक जोड़ी स्थिति (p1, p2), गणना उन्हें कोडिंग के डॉट उत्पाद──说明 डॉट उत्पाद केवल पर निर्भर करता है p1 - p2 पर निर्भर करता है, न कि पूर्ण स्थितियों── दूरी के साथ  बढ़ता है, डॉट उत्पाद क्या होगा?
+5. **Positional encoding analysis。**为 d_model = 128 和 max_pos = 512 生成 सिनोसाइडल स्थिति कोडिंग──对每一对位置 $(p_1, p_2)$, गणना उन्हें कोडिंग का डॉट उत्पाद---उल्लेखित डॉट उत्पाद केवल निर्भर करता है$\lvert p_1 - p_2 \rvert$, पूर्ण स्थानों पर निर्भर नहीं करते हैं. दूरी के साथ बढ़ते हैं, उत्पाद बिंदु क्या होगा?
+
+### 提示
+
+**练习 1。**एक सेकंड में नमूना 128 बार, बिन $k$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $k$Hz, इसलिए पूर्णांक आवृत्ति के लिए, 1 से 63 तक के बिन के बीच अधिकतम मूल्य का सूचकांक है इस आवृत्ति।`generate_signal`和 `magnitude_spectrum`️ शोर में शामिल होने के बाद, जांच करें कि क्या शिखर मूल्य एक ही कंटेनर में है, जबकि अन्य कंटेनरों का मूल्य कुछ हद तक बढ़ गया है
+
+**练习 2。**उपयोग 2 की 次长度, क्योंकि `fft`                                                                                                                                                                                                                                                              `max(abs(a - b))` समय की खपत के अनुसार$N / \log_2 N$增长──
+
+**练习 3。**परिपत्र घुमाव के लिए, हाथ गणना$n$= 0 、1 、2 时的$y[n] = \sum_k h[k] x[(n-k) \bmod 8]$,并比较 `convolve_direct`和 `convolve_fft`                                                                                                                                                                                                                                                              
+
+**练习 4。**उपयोग `hann_window``hamming_window``apply_window`和 `power_spectrum`, तथाकथित 9 से 13 हर्ट्ज के बीच कुछ अलग-अलग शिखरों को 10 हर्ट्ज और 12 हर्ट्ज के बीच 1 सेकंड के भीतर पूरे चक्र को पूरा करना ठीक है, इसलिए बिना खिड़की के शायद सबसे अच्छा लग रहा है।
+
+**练习 5。**उपयोग `positional_encoding(pos, 128)`計算 प्रत्येक एन्कोडिंग──比较位置 (0, 10) का डॉट उत्पाद 和位置 (100, 110) का डॉट उत्पाद: दोनों के अंतर को लगभग 1e-10 以内 में होना चाहिए── फिर एक को तय करना $p_1$, चित्रण उत्पाद 随 $\lvert p_1 - p_2 \rvert$变化的曲线──
 
 ## 关键术语
 | Term | What it means |
 |------|---------------|
-| DFT (Discrete Fourier Transform) | 将 N 个 time-domain samples 转换为 N 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
-| FFT (Fast Fourier Transform) | 用于计算 DFT 的 O(N log N) algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
-| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 1/N scaling |
-| Frequency bin | DFT output 中的每个 index k 表示 frequency k*fs/N Hz。"bin" 是离散的 frequency slot |
-| DC component | X[0]，zero-frequency coefficient。与 signal mean 成比例 |
-| Nyquist frequency | fs/2，在 sampling rate fs 下可表示的最大 frequency。高于它的 frequencies 会 alias |
-| Power spectrum | \|X[k]\|^2，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
-| Phase spectrum | angle(X[k])，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
+| DFT (Discrete Fourier Transform) | 将 $N$ 个 time-domain samples 转换为 $N$ 个 frequency-domain coefficients。每个 coefficient 都是与该 frequency 上 complex sinusoid 的 correlation |
+| FFT (Fast Fourier Transform) | 用于计算 DFT 的 $O(N \log N)$ algorithm。Cooley-Tukey algorithm 递归拆分 even/odd indices |
+| Inverse DFT | 从 frequency coefficients 重建 time-domain signal。公式与 DFT 相同，但 exponent sign 相反，并带有 $1/N$ scaling |
+| Frequency bin | DFT output 中的每个 index $k$ 表示 frequency $k f_s/N$ Hz。"bin" 是离散的 frequency slot |
+| DC component | $X[0]$，zero-frequency coefficient。与 signal mean 成比例 |
+| Nyquist frequency | $f_s/2$，在 sampling rate $f_s$ 下可表示的最大 frequency。高于它的 frequencies 会 alias |
+| Power spectrum | $\lvert X[k] \rvert^2$，每个 frequency coefficient 的 squared magnitude。显示 energy 在 frequencies 上的分布 |
+| Phase spectrum | $\angle X[k]$，每个 frequency component 的 phase offset。在 analysis 中通常会忽略 |
 | Spectral leakage | 将 non-periodic signal 当作 periodic 处理导致的虚假 frequency content。可通过 windowing 减少 |
 | Window function | 在 DFT 前应用的 tapering function（Hann、Hamming、Blackman），用于减少 spectral leakage |
-| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential e^(-2*pi*i*k/N) |
+| Twiddle factor | FFT butterfly computation 中用于合并 sub-DFTs 的 complex exponential $e^{-2\pi i k/N}$ |
 | Convolution theorem | time domain 中的 convolution 等于 frequency domain 中的 pointwise multiplication。它是 signal processing 和 CNNs 的基础 |
 | Circular convolution | signal 会 wrap around 的 convolution。这是 DFT 自然计算的内容 |
 | Linear convolution | 没有 wraparound 的标准 convolution。通过在 DFT 前 zero-padding 实现 |
-| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。sum \|x[n]\|^2 = (1/N) sum \|X[k]\|^2 |
+| Parseval's theorem | 总 energy 在 Fourier transform 中保持不变。$\sum \lvert x[n] \rvert^2 = \frac{1}{N} \sum \lvert X[k] \rvert^2$ |
 | Aliasing | 当 sampling rate 不足时，高于 Nyquist 的 frequencies 表现为较低 frequencies |
 
 ## 延伸阅读

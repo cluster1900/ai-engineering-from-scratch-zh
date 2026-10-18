@@ -40,11 +40,10 @@ w = [1, 0, -2]    -- 一个 3D Vector
 
 ### मैट्रिक्सः数字网格
 
-मैट्रिक्स एक 2D 网格──由行和列组成──一个 m x n मैट्रिक्स 有 m 行和 n 列──
+मैट्रिक्स एक 2D 网格──由行和列组成──一个 $m \times n$मैट्रिक्स है$m$行和 $n$列──
 
-```
-A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
-    | 4  5  6 |
+```math
+A = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \quad \text{2x3 Matrix（2 行，3 列）}
 ```
 
 न्यूरल नेटवर्क में, वजन मैट्रिक्स इनपुट वेक्टरों को आउटपुट वेक्टरों में परिवर्तित करेंगे── एक में 784 इनपुट और 128 आउटपुट का परत है[12]
@@ -80,16 +79,14 @@ A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
 
 तत्व-बुद्धिमान: समान स्थान相乘── दो मैट्रिक्स 必須具有相同形──
 
-```
-| 1  2 |   | 5  6 |   | 5  12 |
-| 3  4 | * | 7  8 | = | 21 32 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} * \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 5 & 12 \\ 21 & 32 \end{bmatrix}
 ```
 
 मैट्रिक्स गुणनः पंक्तियों तथा स्तंभों के अंक उत्पाद--- आंतरिक आयामों को मेल खाना चाहिए---
 
-```
-| 1  2 |   | 5  6 |   | 1*5+2*7  1*6+2*8 |   | 19  22 |
-| 3  4 | @ | 7  8 | = | 3*5+4*7  3*6+4*8 | = | 43  50 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} @ \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\ 3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8 \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
 ```
 
 अलग-अलग कामकाज, अलग-अलग परिणाम, अलग-अलग नियम।
@@ -319,13 +316,21 @@ NumPy 会 स्वचालित रूप से 1D पूर्वाग्�
 
 3. **构建一个 two-layer network。**केवल अपने मैट्रिक्स वर्ग का उपयोग करके(不使用NumPy), एक दो परत न्यूरल नेटवर्क बनाएंः इनपुट (3) -> छिपा (4) -> आउटपुट (2)──初始化 यादृच्छिक वजन,运行一次前进通过,并验证所有形状都正确──
 
+### 提示
+
+**练习 1。**तीनों रक्खों की गणना`A @ A.inverse_2x2()`, प्रत्येक तत्व को इकाई रक्छाँ से तुलना करने पर, त्रुटि होना चाहिए `1e-9`以内── के लिए行列式为 0 के矩阵, उदाहरण के लिए [[1, 2], [2, 4],`inverse_2x2` 会抛出 `ValueError`, यह अपेक्षित परिणाम है.
+
+**练习 2。**计算 3x3 代数余子式矩阵,将其转置得到伴随矩阵,再将每个元素除以 `determinant()` जाँच `A @ A_inv` प्राप्त करें इकाई रक्छा, और प्रत्येक तत्व के साथ `np.linalg.inv(A)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `1e-9`
+
+**练习 3。**相乘前先写出每矩阵的形状:与 `demo_neural_network_layer`जैसे,`W1`4x3 के लिए,`W2`2x4──3x1 के इनपुट को 4x1 के छिपे हुए वेटमेंट और 2x1 के आउटपुट को प्राप्त करना होगा
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Vector | “一支箭头” | 有序数字列表。在 AI 中：高维空间中的一个点。 |
 | Matrix | “一张数字表” | 一种 linear transformation。它把 vectors 从一个空间映射到另一个空间。 |
 | Matrix multiply | “就是把数字相乘” | 第一个 Matrix 的每一行与第二个 Matrix 的每一列之间的 dot products。顺序很重要。 |
-| Transpose | “翻转它” | 交换 rows 和 columns。把一个 m x n Matrix 变成 n x m。在 Backpropagation 中很关键。 |
+| Transpose | “翻转它” | 交换 rows 和 columns。把一个 $m \times n$ Matrix 变成 $n \times m$。在 Backpropagation 中很关键。 |
 | Determinant | “来自 Matrix 的某个数字” | 衡量 Matrix 对面积（2D）或体积（3D）的缩放程度。零表示这个 transformation 压扁了一个维度。 |
 | Inverse | “撤销这个 Matrix” | 反转该 transformation 的 Matrix。只有 determinant 不为零时才存在。 |
 | Identity matrix | “无聊的 Matrix” | Matrix 中等价于乘以 1 的对象。用于 residual connections（ResNets）。 |

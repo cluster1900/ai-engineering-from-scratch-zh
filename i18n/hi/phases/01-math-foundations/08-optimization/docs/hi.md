@@ -35,8 +35,8 @@ minimize L(w) where:
 
 ️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️
 
-```
-w = w - lr * gradient
+```math
+w = w - \text{lr} \cdot \text{gradient}
 ```
 
 यह पूरी तरह से एक है।
@@ -91,9 +91,11 @@ graph LR
 
 वैनिला ग्रेडिएंट की गिरावट केवल वर्तमान ग्रेडिएंट को देखते हुए ही होती है। यदि ग्रेडिएंट की गति घटती है तो यह बहुत धीमी गति से प्रगति करता है।
 
-```
-v = beta * v + gradient
-w = w - lr * v
+```math
+\begin{aligned}
+v &= \beta \cdot v + \text{gradient} \\
+w &= w - \text{lr} \cdot v
+\end{aligned}
 ```
 
 类比是: एक पहाड़ के नीचे घूमने वाली गेंद― यह प्रत्येक छोटे से कोम्पन पर रुकने और फिर से शुरू नहीं होती― यह एक संगत दिशा में गति जमा करती है, और कंपन को दबा देती है―
@@ -121,17 +123,17 @@ graph TD
 
 एडम ((अनुकूली क्षण अनुमान) प्रत्येक वजन के लिए होगा दो चीजें के साथः
 
-1. प्रथम क्षण ((m):ग्रेडिएंट्स का चल रहा औसत (((समान गति)
-2. दूसरा क्षण ((v):वर्ग ग्रेडिएंट का चल रहा औसत ((ग्रेडिएंट ग्रेडिएंट)
+1. पहले पल में$m$):ग्रेडिएंट्स का चल रहा औसत ((समान गति)
+2. दूसरा क्षण$v$):वर्ग ग्रेडिएंट का चल रहा औसत
 
-```
-m = beta1 * m + (1 - beta1) * gradient
-v = beta2 * v + (1 - beta2) * gradient^2
-
-m_hat = m / (1 - beta1^t)    bias correction
-v_hat = v / (1 - beta2^t)    bias correction
-
-w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
+```math
+\begin{aligned}
+m &= \beta_1 \cdot m + (1 - \beta_1) \cdot \text{gradient} \\
+v &= \beta_2 \cdot v + (1 - \beta_2) \cdot \text{gradient}^2 \\[4pt]
+\hat{m} &= m / (1 - \beta_1^t) \quad \text{偏差校正} \\
+\hat{v} &= v / (1 - \beta_2^t) \quad \text{偏差校正} \\[4pt]
+w &= w - \text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)
+\end{aligned}
 ```
 
 `sqrt(v_hat)`️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️
@@ -146,14 +148,14 @@ w = w - lr * m_hat / (sqrt(v_hat) + epsilon)
 
 | Schedule | Formula | Use case |
 |----------|---------|----------|
-| Step decay | lr = lr * factor every N epochs | 简单，手动控制 |
-| Exponential decay | lr = lr_0 * decay^t | 平滑降低 |
-| Cosine annealing | lr = lr_min + 0.5 * (lr_max - lr_min) * (1 + cos(pi * t / T)) | Transformers，现代训练 |
+| Step decay | $\text{lr} = \text{lr} \cdot \text{factor}$，每 $N$ 个 epochs 更新 | 简单，手动控制 |
+| Exponential decay | $\text{lr} = \text{lr}_0 \cdot \text{decay}^t$ | 平滑降低 |
+| Cosine annealing | $\text{lr} = \text{lr} _{\min} + 0.5 \cdot (\text{lr} _{\max} - \text{lr} _{\min}) \cdot (1 + \cos(\pi t / T))$ | Transformers，现代训练 |
 | Warmup + decay | 线性上升，然后 decay | 大模型，防止早期不稳定 |
 
 ### कंवेक्स बनाम गैर-कंवेक्स
 
-घुमावदार फ़ंक्शन 只有一个最小──渐进的下降──总能找到它──像 `f(x) = x^2`इस प्रकार की चतुर्भुज संकुचित है।
+घुमावदार फ़ंक्शन 只有一个最小──渐进的下降──总能找到它──像 $f(x) = x^2$इस प्रकार की चतुर्भुज संकुचित है।
 
 तंत्रिका नेटवर्क हानि कार्य गैर-कंकुष्ठ हैं। उनमें कई स्थानीय न्यूनतम हैं।
 
@@ -202,8 +204,8 @@ gradient-descent
 
 रोसेनब्रोक फ़ंक्शन क्लासिक अनुकूलन बेंचमार्क है। इसका न्यूनतम 位于 (1, 1), स्थित है, एक संकीर्ण 曲 के एक घाटी में, आसानी से पाया जा सकता है, लेकिन इसके आगे बढ़ने के लिए बहुत मुश्किल है।
 
-```
-f(x, y) = (1 - x)^2 + 100 * (y - x^2)^2
+```math
+f(x, y) = (1 - x)^2 + 100 \cdot (y - x^2)^2
 ```
 
 ```python
@@ -345,9 +347,19 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(adam, T_max=100)
 
 2. **Momentum comparison.**Rosenbrock फ़ंक्शन में ऊपर गतिमान मानों का उपयोग करें [0.0, 0.5, 0.9, 0.99] 运行带动态的 SGD──跟踪每一步的损失──哪个动态值 收最快?哪个会超越?
 
-3. **Saddle point escape.**定义函数 `f(x, y) = x^2 - y^2`(मूल बिंदु पर एक सaddle point है) ∼ से (0.01, 0.01) 开始── तुलना करें वैनिला GD、带动态 的 SGD 和亚当的行为── कौन सा सaddle point से भाग सकता है?
+3. **Saddle point escape.**定义函数 $f(x, y) = x^2 - y^2$(मूल बिंदु पर एक सaddle point है) ∼ से (0.01, 0.01) 开始── तुलना करें वैनिला GD、带动态 的 SGD 和亚当的行为── कौन सा सaddle point से भाग सकता है?
 
 4. **Implement learning rate decay.**√ ग्रेडिएंटडिसेन्ट वर्ग 添加 eksponential decay अनुसूची:`lr = lr_0 * 0.999^step` तुलना करें रोसेनब्रोक फ़ंक्शन ऊपर उपयोग क्षय के साथ उपयोग नहीं क्षय के प्राप्ति  प्रदर्शन
+
+### 提示
+
+**练习 1。** प्रत्येक निर्माण के लिए `GradientDescent(lr=...)`, के साथ`rosenbrock`和 `rosenbrock_gradient`एक से एक के लिए संदेश`optimize` जब यह फैलता है, तो नुकसान बढ़ता है या बदल जाता है `nan`; न्यूनतम मूल्य $(1, 1)$, हानि 0 है
+
+**练习 2。**प्रत्येक निर्माण के लिए`SGDMomentum(momentum=m)`, रिकॉर्ड हर कदम के बाद के नुकसान`find_convergence_step`तुलना गति, और हानि के माध्यम से दोहराई वृद्धि लक्ष्य से अधिक स्थिति को पहचानने के लिए
+
+**练习 3。**写出梯度 $(2x, -2y)$, तीन अनुकूलन उपकरण सभी (0.01, 0.01)  प्रारंभ करें संचालित करना── प्रति 100 चरणों में एक बार मुद्रित करें $y$:使 $\lvert y \rvert$变大优化器就是逃点的优化器
+
+**练习 4。**`GradientDescent`中保存 `lr_0`और `step`内计算 `lr = lr_0 * 0.999 ** step`◊ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒  ⇒ ⇒   ⇒ ⇒     ⇒    ⇒      ⇒       ⇒                                                                                                                                                                                                                                                                                 `lr_0`降到约 $0.37 \times \text{lr}_0$
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -358,7 +370,7 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(adam, T_max=100)
 | SGD | “Random sampling” | Stochastic gradient descent。用随机子集而不是完整 dataset 计算 Gradient。实践中几乎总是指 mini-batch SGD。 |
 | Mini-batch | “A chunk of data” | 用于估计 Gradient 的一小部分训练数据（32-256 个样本）。平衡速度与 Gradient 准确性。 |
 | Adam | “The default optimizer” | Adaptive Moment Estimation。跟踪每个 weight 的 Gradients 和 squared gradients 的 running averages，从而为每个 weight 提供自己的 learning rate。 |
-| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 (1 - beta^t) 进行补偿。 |
+| Bias correction | “Fix the cold start” | Adam 的 first 和 second moments 初始化为零。Bias correction 在早期步骤中通过除以 $(1 - \beta^t)$ 进行补偿。 |
 | Learning rate schedule | “Change lr over time” | 在训练过程中调整 learning rate 的函数。早期大步，后期小步。 |
 | Convex function | “One valley” | 任意 local minimum 都是 global minimum 的函数。Gradient descent 总能找到它。Neural Network losses 不是 convex。 |
 | Saddle point | “Flat but not a minimum” | Gradient 为零，但在某些方向上是 minimum、在另一些方向上是 maximum 的点。高维空间中很常见。 |

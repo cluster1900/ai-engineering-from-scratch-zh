@@ -30,24 +30,24 @@
 
 आप पहले से ही पाठ 06 में जानते हैं कि सशर्त संभावना हैः
 
-```
-P(A|B) = P(A and B) / P(B)
+```math
+P(A \mid B) = \frac{P(A \text{ and } B)}{P(B)}
 ```
 
 称地:
 
+```math
+P(B \mid A) = \frac{P(A \text{ and } B)}{P(A)}
 ```
-P(B|A) = P(A and B) / P(A)
-```
 
- दो अभिव्यक्ति साझा एक ही अणु:P(A और B)。令它们相等并重新整理:
+ दो अभिव्यक्ति साझा एक ही अणुः$P(A \text{ and } B)$令它们相等并重新整理:
 
-```
-P(A and B) = P(A|B) * P(B) = P(B|A) * P(A)
-
-Therefore:
-
-P(A|B) = P(B|A) * P(A) / P(B)
+```math
+\begin{aligned}
+P(A \text{ and } B) &= P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A) \\[4pt]
+&\text{因此：} \\[4pt]
+P(A \mid B) &= \frac{P(B \mid A) \cdot P(A)}{P(B)}
+\end{aligned}
 ```
 
 यही बेयज़ का सिद्धांत है।
@@ -56,35 +56,35 @@ P(A|B) = P(B|A) * P(A) / P(B)
 
 | Part | Name | What it means |
 |------|------|---------------|
-| P(A\|B) | Posterior | 看到 evidence B 之后，你对 A 的更新后 belief |
-| P(B\|A) | Likelihood | 如果 A 为真，evidence B 出现的概率有多大 |
-| P(A) | Prior | 在看到任何 evidence 之前，你对 A 的 belief |
-| P(B) | Evidence | 在所有可能性下看到 B 的总概率 |
+| $P(A \mid B)$ | Posterior | 看到 evidence $B$ 之后，你对 $A$ 的更新后 belief |
+| $P(B \mid A)$ | Likelihood | 如果 $A$ 为真，evidence $B$ 出现的概率有多大 |
+| $P(A)$ | Prior | 在看到任何 evidence 之前，你对 $A$ 的 belief |
+| $P(B)$ | Evidence | 在所有可能性下看到 $B$ 的总概率 |
 
-साक्ष्य 项 P(B) 起到归一化因子的作用── आप कुल संभावना नियम के साथ इसे विकसित कर सकते हैंः
+साक्ष्य 项 $P(B)$起到归化因子的作用── आप इसे कुल संभावना नियम के साथ विकसित कर सकते हैंः
 
-```
-P(B) = P(B|A) * P(A) + P(B|not A) * P(not A)
+```math
+P(B) = P(B \mid A) \cdot P(A) + P(B \mid \text{not } A) \cdot P(\text{not } A)
 ```
 
 ### 医学检测 उदाहरण
 
 एक बीमारी प्रति 10,000 लोगों में से 1 व्यक्ति को प्रभावित करती है। जांच की सटीकता दर 99% है।
 
-```
-P(sick)          = 0.0001     (prior: disease is rare)
-P(positive|sick) = 0.99       (likelihood: test catches it)
-P(positive|healthy) = 0.01    (false positive rate)
-
-P(positive) = P(positive|sick) * P(sick) + P(positive|healthy) * P(healthy)
-            = 0.99 * 0.0001 + 0.01 * 0.9999
-            = 0.000099 + 0.009999
-            = 0.010098
-
-P(sick|positive) = P(positive|sick) * P(sick) / P(positive)
-                 = 0.99 * 0.0001 / 0.010098
-                 = 0.0098
-                 = 0.98%
+```math
+\begin{aligned}
+P(\text{sick}) &= 0.0001 \quad \text{（先验：疾病罕见）} \\
+P(\text{positive} \mid \text{sick}) &= 0.99 \quad \text{（似然：检测能检出疾病）} \\
+P(\text{positive} \mid \text{healthy}) &= 0.01 \quad \text{（假阳性率）} \\[6pt]
+P(\text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) + P(\text{positive} \mid \text{healthy}) \cdot P(\text{healthy}) \\
+&= 0.99 \cdot 0.0001 + 0.01 \cdot 0.9999 \\
+&= 0.000099 + 0.009999 \\
+&= 0.010098 \\[6pt]
+P(\text{sick} \mid \text{positive}) &= P(\text{positive} \mid \text{sick}) \cdot P(\text{sick}) / P(\text{positive}) \\
+&= 0.99 \cdot 0.0001 / 0.010098 \\
+&= 0.0098 \\
+&= 0.98\%
+\end{aligned}
 ```
 
 % तक नहीं पहले प्रधानता  जब किसी प्रकार की स्थिति बहुत दुर्लभ होती है, तो भी सटीक परीक्षण से झूठी सकारात्मकता भी उत्पन्न होती है यही कारण है कि डॉक्टरों को पुष्टि परीक्षण करने की आवश्यकता होती है
@@ -93,18 +93,18 @@ P(sick|positive) = P(positive|sick) * P(sick) / P(positive)
 
 आपको एक ईमेल मिला जिसमें "लॉटरी" शब्द शामिल था। क्या यह स्पैम है?
 
-```
-P(spam)                = 0.3      (30% of email is spam)
-P("lottery"|spam)      = 0.05     (5% of spam emails contain "lottery")
-P("lottery"|not spam)  = 0.001    (0.1% of legitimate emails contain "lottery")
-
-P("lottery") = 0.05 * 0.3 + 0.001 * 0.7
-             = 0.015 + 0.0007
-             = 0.0157
-
-P(spam|"lottery") = 0.05 * 0.3 / 0.0157
-                  = 0.955
-                  = 95.5%
+```math
+\begin{aligned}
+P(\text{spam}) &= 0.3 \quad \text{（30\% 的邮件是垃圾邮件）} \\
+P(\text{"lottery"} \mid \text{spam}) &= 0.05 \quad \text{（5\% 的垃圾邮件包含 "lottery"）} \\
+P(\text{"lottery"} \mid \text{not spam}) &= 0.001 \quad \text{（0.1\% 的正常邮件包含 "lottery"）} \\[6pt]
+P(\text{"lottery"}) &= 0.05 \cdot 0.3 + 0.001 \cdot 0.7 \\
+&= 0.015 + 0.0007 \\
+&= 0.0157 \\[6pt]
+P(\text{spam} \mid \text{"lottery"}) &= 0.05 \cdot 0.3 / 0.0157 \\
+&= 0.955 \\
+&= 95.5\%
+\end{aligned}
 ```
 
 एक शब्द में संभावना 30% से बढ़कर 95.5% तक हो जाती है।
@@ -113,58 +113,56 @@ P(spam|"lottery") = 0.05 * 0.3 / 0.0157
 
 बेयज़ ने एक वर्ग की स्थिति में एक दूसरे से स्वतंत्र होने के लिए सभी विशेषताओं को मानकर इस विचार को कई विशेषताओं में विस्तारित कियाः
 
-```
-P(class | feature_1, feature_2, ..., feature_n)
-  = P(class) * P(feature_1|class) * P(feature_2|class) * ... * P(feature_n|class)
-    / P(feature_1, feature_2, ..., feature_n)
+```math
+P(\text{class} \mid \text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n) = \frac{P(\text{class}) \cdot P(\text{feature}_1 \mid \text{class}) \cdot P(\text{feature}_2 \mid \text{class}) \cdots P(\text{feature}_n \mid \text{class})}{P(\text{feature}_1, \text{feature}_2, \ldots, \text{feature}_n)}
 ```
 
 "नई" का हिस्सा स्वतंत्रता परिकल्पना है। ग्रंथों में, शब्दों का उद्भव स्वतंत्र नहीं है। "नई" और "यॉर्क" संबंधित हैं। लेकिन इस परिकल्पना का अभ्यास में प्रभाव आश्चर्यजनक रूप से अच्छा है, क्योंकि वर्गीकरण उपकरण को केवल कक्षाओं के लिए क्रमबद्ध करने की आवश्यकता होती है, न कि एक अच्छी संभावना उत्पन्न करने की आवश्यकता होती है।
 
 चूंकि分母 सभी वर्गों के लिए समान हैं, आप इसे छोड़ सकते हैं, केवल तुलना करें अणुओंः
 
-```
-score(class) = P(class) * product of P(feature_i | class)
+```math
+\text{score}(\text{class}) = P(\text{class}) \cdot \prod_i P(\text{feature}_i \mid \text{class})
 ```
 
 选择最高的分数――
 
 ### अधिकतम संभावना अनुमान (MLE)
 
-如何从训练数据中获取P  विशेषताएं
+ प्रशिक्षण से डेटा कैसे प्राप्त करें $P(\text{feature} \mid \text{class})$?
 
-```
-P("free"|spam) = (number of spam emails containing "free") / (total spam emails)
+```math
+P(\text{"free"} \mid \text{spam}) = \frac{\text{包含 "free" 的垃圾邮件数}}{\text{垃圾邮件总数}}
 ```
 
 यही MLE हैः चयन करें कि अवलोकन डेटा सबसे संभावित रूप से उत्पन्न होने वाले पैरामीटर मूल्य है। आप अधिकतम संभावना फ़ंक्शन में हैं; विखंडन गणना के लिए, यह सापेक्ष आवृत्ति में सरल होगा।
 
 问题: यदि किसी शब्द को प्रशिक्षण के दौरान कभी स्पैम में नहीं देखा गया हो, तो MLE उसे शून्य संभावनाएँ देगा।
 
-```
-P(word|class) = (count(word, class) + 1) / (total_words_in_class + vocabulary_size)
+```math
+P(\text{word} \mid \text{class}) = \frac{\text{count}(\text{word}, \text{class}) + 1}{\text{total\_words\_in\_class} + \text{vocabulary\_size}}
 ```
 
  प्रत्येक गणना को 1 जोड़ें, सुनिश्चित करें कि कोई भी संभावना शून्य नहीं होगी
 
 ### अधिकतम एक बाद में (MAP)
 
-MLE 问的是: कौन से पैरामीटर अधिकतम P(के कौन से डेटा पैरामीटर हैं?
+MLE 问的是: कौन से पैरामीटर अधिकतम $P(\text{data} \mid \text{parameters})$?
 
-MAP 问是: कौन से पैरामीटर अधिकतम P  पैरामीटर डेटा में)?
+मैप  प्रश्न है: कौन से पैरामीटर अधिकतम $P(\text{parameters} \mid \text{data})$?
 
 बेयज़ के सिद्धांत के अनुसारः
 
-```
-P(parameters|data) proportional to P(data|parameters) * P(parameters)
+```math
+P(\text{parameters} \mid \text{data}) \propto P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})
 ```
 
 MAP में पैरामीटरों को स्वयं से एक पूर्ववर्ती जोड़ें। यदि आप मानते हैं कि पैरामीटर  छोटे होना चाहिए, तो इसे दंडात्मक उच्च मूल्य के पूर्ववर्ती के लिए कोडित करें। यह एमएल में एल 2 नियमितता के साथ पूरी तरह से समान है। रिज रेग्रेसशन में "रिज" दंड मूल रूप से ऊपरी गौशियन पूर्ववर्ती के भारों में है।
 
 | Estimation | Optimizes | ML equivalent |
 |------------|-----------|---------------|
-| MLE | P(data\|params) | 未 regularize 的训练 |
-| MAP | P(data\|params) * P(params) | L2 / L1 regularization |
+| MLE | $P(\text{data} \mid \text{params})$ | 未 regularize 的训练 |
+| MAP | $P(\text{data} \mid \text{params}) \cdot P(\text{params})$ | L2 / L1 regularization |
 
 ### बेशियन बनाम फ्रिक्वेन्टिस्ट:实践差异
 
@@ -189,7 +187,7 @@ MAP में पैरामीटरों को स्वयं से ए�
 
 **Priors 就是 regularization。**भार ऊपर का गौसीयन पूर्ववर्ती L2 नियमितकरण है。Laplace पूर्ववर्ती L1。 प्रत्येक बार जोड़ने नियमितकरण 项 के दौरान, आप सभी पर परमिट मानों की अपेक्षा पर एक बेईसीन कथन बना रहे हैं。
 
-**Posteriors 就是不确定性。**单个预测概率不能告诉你模型对该估计有多信心――बैशियन पद्धति会给你一个分布:我认为P(स्पैम)  0.8 से 0.95 之间──
+**Posteriors 就是不确定性。**单个预测概率不能告诉你模型对该估计有多信心. 我认为, बेईशियन पद्धति आपको एक वितरण देगी.$P(\text{spam})$0.8 से 0.95 के बीच में।
 
 **Bayes updates 就是 online learning。**आज का बाद वाला कल का पूर्ववर्ती बन जाएगा। जब आपका मॉडल नए डेटा को देखेगा, तो यह शून्य से पुनः प्रशिक्षण के बजाय अपने विश्वासों को नवीनीकृत करेगा।
 
@@ -343,26 +341,28 @@ for msg, pred in zip(test_messages, predictions):
 
 | Likelihood | Conjugate Prior | Posterior | Example |
 |-----------|----------------|-----------|---------|
-| Bernoulli | Beta(a, b) | Beta(a + successes, b + failures) | Coin flip bias estimation |
-| Normal (known variance) | Normal(mu_0, sigma_0) | Normal(weighted mean, smaller variance) | Sensor calibration |
-| Poisson | Gamma(a, b) | Gamma(a + sum of counts, b + n) | Modeling arrival rates |
-| Multinomial | Dirichlet(alpha) | Dirichlet(alpha + counts) | Topic modeling, language models |
+| Bernoulli | $\text{Beta}(a, b)$ | $\text{Beta}(a + \text{successes}, b + \text{failures})$ | Coin flip bias estimation |
+| Normal (known variance) | $\text{Normal}(\mu_0, \sigma_0)$ | Normal(weighted mean, smaller variance) | Sensor calibration |
+| Poisson | $\text{Gamma}(a, b)$ | $\text{Gamma}(a + \text{sum of counts}, b + n)$ | Modeling arrival rates |
+| Multinomial | $\text{Dirichlet}(\alpha)$ | $\text{Dirichlet}(\alpha + \text{counts})$ | Topic modeling, language models |
 
 यह क्यों महत्वपूर्ण हैः कोई संयुग्मित पूर्ववर्ती नहीं है, तो आपको मोन्टे कार्लो नमूना या भिन्नता निष्कर्ष की आवश्यकता है, निकट भविष्य से।
 
-बीटा वितरण अभ्यास में सबसे आम संयोग पूर्व है。बीटा, बी) एक निश्चित संभावना पैरामीटर के प्रति आपकी विश्वास को दर्शाता है。 औसत मूल्य है a/(a+b)。a+b 越大, वितरण 越集中(越自信)。
+बीटा वितरण प्रथा में सबसे आम है।$\text{Beta}(a, b)$किसी निश्चित संभावना पैरामीटर के प्रति आपके विश्वास का प्रदर्शन करना।$a/(a+b)$$a+b$越大, वितरण 越集中(越自信)
 
 बीटा पूर्व की विशेष परिस्थितियांः
-- बीटा(1, 1) = समान──आप पैरामीटर के प्रति कोई राय नहीं──
-- बीटा ((10, 10) =                                                                                                                                                                                                                                                            
-- Beta(1, 10) = ओर 0 偏斜──你相信参数 很小──
+- $\text{Beta}(1, 1)$= समान──आप पैरामीटर पर कोई राय नहीं रखते──
+- $\text{Beta}(10, 10)$=  0.5  के निकट शिखर पर पहुँचें
+- $\text{Beta}(1, 10)$= तिर 0 偏斜──你相信参数 很小──
 
 更新规则极其简单:
 
-```
-Prior:     Beta(a, b)
-Data:      s successes, f failures
-Posterior: Beta(a + s, b + f)
+```math
+\begin{aligned}
+\text{先验：} \quad & \text{Beta}(a, b) \\
+\text{数据：} \quad & s \text{ 次成功}, f \text{ 次失败} \\
+\text{后验：} \quad & \text{Beta}(a + s, b + f)
+\end{aligned}
 ```
 
 没有积分――没有样本――只有加法――
@@ -374,19 +374,19 @@ Posterior: Beta(a + s, b + f)
 具体例: अनुमानित करें कि एक सिक्का निष्पक्ष है या नहीं।
 
 **Day 1：还没有数据。**
-Beta 1, 1) 开始一个制服前你没有意见
+से $\text{Beta}(1, 1)$开始一个制服前――你没有意见――
 - पूर्व औसतः0.5
 - पूर्व में [0, 1] ऊपर है समतल
 
 **Day 2：观察到 7 次正面，3 次反面。**
-पछाड़ = बीटा(1 + 7, 1 + 3) = बीटा(8, 4)
-- बाद का औसतः8/12 = 0.667
+$\text{Posterior} = \text{Beta}(1 + 7, 1 + 3) = \text{Beta}(8, 4)$
+- बाद का औसतः$8/12 = 0.667$
 - साक्ष्य 硬币 की सही दिशा में प्रवृत्ति दिखाते हैं
 
 **Day 3：又观察到 5 次正面，5 次反面。**
 उपयोग कल के बाद के रूप में आज के पूर्व के रूप में
-पछाड़ = बीटा ((8 + 5, 4 + 5) = बीटा ((13, 9)
-- बाद का औसत:13/22 = 0.591
+$\text{Posterior} = \text{Beta}(8 + 5, 4 + 5) = \text{Beta}(13, 9)$
+- बाद का औसतः$13/22 = 0.591$
 - नए संतुलन डेटा ने अनुमानित मूल्य को 0.5 के करीब वापस ले लिया
 
 ```mermaid
@@ -396,7 +396,7 @@ graph LR
     C -->|"5H, 5T"| D["Posterior 2<br/>Beta(13,9)<br/>mean = 0.59"]
 ```
 
-观测顺序不重要――Beta(1,1) एक次性用全部12次正面和8次反面更新,也会得到Beta(13, 9)结果相同──序列更新和批次更新 在数学上等价──但序列更新 允许你在每一步做决定,而不必存储原始数据──
+观测顺序 महत्वपूर्ण नहीं है$\text{Beta}(1,1)$एक बार सेक्स के साथ सभी 12 बार सही और 8 बार विपरीत चेहरे अद्यतन, भी मिल जाएगा $\text{Beta}(13, 9)$ परिणाम समान है── क्रमबद्ध अद्यतन तथा बैच अद्यतन  गणितीय मूल्य पर  पर क्रमबद्ध अद्यतन  आपको प्रत्येक चरण में निर्णय लेने की अनुमति देता है, मूल डेटा को संग्रहीत करने की आवश्यकता नहीं है
 
 यह उत्पादन स्तर के एमएल सिस्टम में ऑनलाइन सीखने का आधार है। डाकू के लिए थॉम्पसन नमूनाकरण, वृद्धि की सिफारिश प्रणाली और स्ट्रीमिंग विसंगतियों के डिटेक्टर इस तरह के मॉडल का उपयोग करते हैं।
 
@@ -408,14 +408,14 @@ graph LR
 
 बेसियन ए/बी परीक्षणः
 
-1. **Prior。**两个变体都从Beta(1, 1) 开始──没有先进偏好──
+1. **Prior。** दो प्रकार $\text{Beta}(1, 1)$开始── कोई पूर्व प्राथमिकता नहीं──
 2. **Data。**वेरिएंट एः 1000 बार प्रदर्शनी में 50 बार点击── वेरिएंट बीः 1000 बार प्रदर्शनी में 65 बार点击──
 3. **Posteriors。**
-   - एःबीटा ((1 + 50, 1 + 950) = बीटा ((51, 951) ・・・ औसत = 0.051
-   - बीःबीटा ((1 + 65, 1 + 935) = बीटा ((66, 936) ――मीड = 0.066
-4. **Decision。**计算 P(B > A)B का वास्तविक रूपांतरण दर A से अधिक है
+   - एः$\text{Beta}(1 + 50, 1 + 950) = \text{Beta}(51, 951)$◊ औसत = 0.051
+   - बीः$\text{Beta}(1 + 65, 1 + 935) = \text{Beta}(66, 936)$◊ औसत = 0.066
+4. **Decision。**计算 $P(B > A)$B का वास्तविक रूपांतरण दर A से अधिक है B का वास्तविक रूपांतरण दर A से अधिक है 
 
-解析地计算 P(B > A) 很困难――但蒙特卡罗 让它变得非常简单:
+解析地计算 $P(B > A)$ बहुत मुश्किल लेकिन मोंटे कार्लो  इसे बहुत सरल बना दोः
 
 ```
 1. Draw 100,000 samples from Beta(51, 951)  -> samples_A
@@ -423,7 +423,7 @@ graph LR
 3. P(B > A) = fraction of samples where B > A
 ```
 
-यदि P(B > A) > 0.95, तो हम संस्करण B को जारी करेंगे। यदि यह 0.05 और 0.95 के बीच है, तो हम डेटा एकत्र करना जारी रखेंगे।
+यदि $P(B > A) > 0.95$, हम संस्करण B जारी करते हैं. यदि यह 0.05 और 0.95 के बीच है, तो हम डेटा एकत्र करना जारी रखते हैं.$P(B > A) < 0.05$, हम संस्करण ए को जारी करेंगे.
 
 तुलनात्मक ए/बी परीक्षण के फायदेः
 - आप एक प्रत्यक्ष संभावना प्राप्त करेंगे बयानः B एक 97% संभावना बेहतर है 
@@ -433,33 +433,43 @@ graph LR
 
 | Aspect | Frequentist A/B | Bayesian A/B |
 |--------|----------------|--------------|
-| Output | p-value | P(B > A) |
+| Output | p-value | $P(B > A)$ |
 | Interpretation | “如果 A=B，这些数据有多令人意外？” | “B 比 A 更好的可能性有多大？” |
 | Early stopping | 会抬高 false positives | 任意时点都是安全的（前提是 prior 选择合理且 model specification 正确） |
 | Prior knowledge | 不使用 | 编码为 Beta prior |
-| Decision rule | p < 0.05 | P(B > A) > threshold |
+| Decision rule | $p < 0.05$ | $P(B > A) > \text{threshold}$ |
 
 ## अभ्यास
-1. **Multiple tests。**एक रोगी दो स्वतंत्र परीक्षणों में सकारात्मक रहा है। दो परीक्षणों में 99% सटीकता है। रोग की प्रकोप दर प्रति 10,000 लोगों में से 1 है।
+1. **Multiple tests。**एक व्यक्ति दो स्वतंत्र परीक्षणों में सकारात्मक रहा है। दो परीक्षणों में 99% सटीकता है।$P(\text{sick})$प्रथम परीक्षा प्राप्त करने के पश्चात् द्वितीय परीक्षा प्राप्त करने के पूर्ववर्ती के रूप में
 
 2. **Smoothing impact。**प्रयोग 0.01、0.1、1.0 और 10.0 के समतल मान 运行 स्पैम वर्गीकरणकर्ता── शीर्ष शब्द संभावनाएँ 会如何变化?当平滑=0 且某个词只出现 中时会发生什么?
 
-3. **Add features。**扩展 NaiveBayes वर्ग, इसे शब्द गिनती के अलावा 之外, भी उपयोग संदेश लंबाई(शॉर्ट/लंबा) के रूप में सुविधा── From training डाटा中 अनुमान P((शॉर्टस्पैम) 和 P(शॉर्टसम),并把它合并到预测 स्कोर 中──
+3. **Add features。**扩展 NaiveBayes वर्ग, इसे शब्द गिनती के अलावा 之外, भी उपयोग संदेश लंबाई(लघु/लंबे) के रूप में सुविधा के रूप में$P(\text{short} \mid \text{spam})$和 $P(\text{short} \mid \text{ham})$, और इसे पूर्वानुमान स्कोर में मिला दिया
 
-4. **MAP by hand。**给定观测数据(10 बार सिक्के फ्लिप करते समय 7 बार सिर होते हैं), Beta (2,2) का उपयोग करते हुए पूर्व 计算偏差 के MAP अनुमानों को देखें।
+4. **MAP by hand。**给定观测数据(10 बार सिक्के फेंकने के बीच 7 बार सिर है), उपयोग $\text{Beta}(2,2)$पूर्व 计算偏差 का MAP अनुमान── इसे MLE अनुमान के साथ रखना$7/10$) तुलना करें।
+
+### 提示
+
+**练习 1。**调用一次 `bayes`पहली बार परीक्षण के बाद के परीक्षण की संभावना प्राप्त करें, फिर इसे एक बार पहले परीक्षण के रूप में प्रयोग करें`sequential_bayes(prior, likelihood, false_positive_rate, 2)`应给出相同的结果,接近0.5
+
+**练习 2。**प्रत्येक मूल्य के लिए एक बनाओ `NaiveBayes(smoothing=s)`, एक ही डेटा प्रशिक्षण के साथ,并分别打印 `top_words`◊smoothing ⋅ 0 ⋅ समय, अपशिष्ट मेलों में प्रकट होने वाले शब्दों की संभावना 0 है, इसलिए इसकी संख्या के लिए कोई परिभाषा नहीं है।
+
+**练习 3。**统计垃圾邮件和正常邮件中各有多少条短消息,分别除了各类消息总数,并`predict`मध्य में इस अनुपात के प्रति संख्याओं में शामिल अंक संख्याएँ हैं। प्रत्येक श्रेणी की दो संभावनाओं का परीक्षण करेंः 1 और 1।
+
+**练习 4。**उपयोग $\text{Beta}(\alpha, \beta)$पूर्व प्रयोग में, मानचित्र  अनुमानित$\frac{h + \alpha - 1}{n + \alpha + \beta - 2}$代入 $h = 7$$n = 10$; परिणाम MLE  0.7) और पूर्व प्रयोग संख्या  0.5) के बीच होना चाहिए।
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Prior | “我的初始猜测” | 观测 evidence 之前的 P(hypothesis)。在 ML 中：regularization 项。 |
-| Likelihood | “数据拟合得有多好” | P(evidence\|hypothesis)。在特定 hypothesis 下，观测数据出现的概率有多大。 |
-| Posterior | “我更新后的 belief” | P(hypothesis\|evidence)。Prior 乘以 likelihood，然后归一化。 |
-| Evidence | “归一化常数” | 所有 hypotheses 下的 P(data)。确保 posterior 求和为 1。 |
+| Prior | “我的初始猜测” | 观测 evidence 之前的 $P(\text{hypothesis})$。在 ML 中：regularization 项。 |
+| Likelihood | “数据拟合得有多好” | $P(\text{evidence} \mid \text{hypothesis})$。在特定 hypothesis 下，观测数据出现的概率有多大。 |
+| Posterior | “我更新后的 belief” | $P(\text{hypothesis} \mid \text{evidence})$。Prior 乘以 likelihood，然后归一化。 |
+| Evidence | “归一化常数” | 所有 hypotheses 下的 $P(\text{data})$。确保 posterior 求和为 1。 |
 | Naive Bayes | “那个简单的文本分类器” | 一个假设 features 在给定 class 时相互独立的分类器。尽管该假设不成立，效果仍然很好。 |
 | Laplace smoothing | “Add-one smoothing” | 给每个 feature 增加一个小计数，以防止未见数据产生零概率。 |
-| MLE | “直接用频率” | 选择最大化 P(data\|parameters) 的 parameters。没有 prior。在小数据上可能 overfit。 |
-| MAP | “带 prior 的 MLE” | 选择最大化 P(data\|parameters) * P(parameters) 的 parameters。等价于 regularized MLE。 |
-| Log-probability | “在 log space 中工作” | 使用 log(P) 而不是 P，避免许多小数相乘时发生 floating-point underflow。 |
+| MLE | “直接用频率” | 选择最大化 $P(\text{data} \mid \text{parameters})$ 的 parameters。没有 prior。在小数据上可能 overfit。 |
+| MAP | “带 prior 的 MLE” | 选择最大化 $P(\text{data} \mid \text{parameters}) \cdot P(\text{parameters})$ 的 parameters。等价于 regularized MLE。 |
+| Log-probability | “在 log space 中工作” | 使用 $\log(P)$ 而不是 $P$，避免许多小数相乘时发生 floating-point underflow。 |
 | False positive | “错误警报” | 检测结果为阳性，但真实状态为阴性。它会推动 base rate fallacy。 |
 
 ## 延伸阅读

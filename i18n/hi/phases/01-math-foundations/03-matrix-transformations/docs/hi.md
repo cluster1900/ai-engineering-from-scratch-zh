@@ -45,7 +45,7 @@ graph LR
 
 ### घूर्णन
 
- कोण के लिए थैटा का 2D घूर्णन होगा दूरी और कोण में परिवर्तन नहीं करेगा── यह प्रत्येक बिंदु को गोल आर्क के साथ स्थानांतरित करेगा──
+ कोण के लिए $\theta$2D घूर्णन दूरी और कोण को बनाए रखेगा। यह प्रत्येक बिंदु को गोल आर्क के साथ आगे बढ़ने देता है।
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 3D में, आप एक अक्ष के चारों ओर घूमेंगे। प्रत्येक अक्ष में अपना घूर्णन मैट्रिक्स होता हैः
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### स्केलिंग
@@ -123,8 +117,8 @@ graph LR
 ```
 
 स्कार्फ मैट्रिक्सः
-- `Shx = [[1, k], [0, 1]]` x 平移 k * y
-- `Shy = [[1, 0], [k, 1]]`将 y 平移 k * x
+- `Shx = [[1, k], [0, 1]]`$x$平移 $k \cdot y$
+- `Shy = [[1, 0], [k, 1]]`$y$平移 $k \cdot x$
 
 ### चिंतन
 
@@ -196,7 +190,7 @@ Eigenvector [1, -1] with eigenvalue 1:
 
 ### स्वयं संरचना
 
-यदि एक मैट्रिक्स में n 个线性无关的自向量 हैं, तो इसे विघटित किया जा सकता हैः
+यदि एक मैट्रिक्स है $n$个线性无关的自向量, इसे विघटित किया जा सकता हैः
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### क्यों स्वमूल्य महत्वपूर्ण है
 
-**PCA。**स्व-वेक्टरों को मुख्य घटक हैं। स्व-मूल्य आपको बताएगा कि प्रत्येक घटक को कितना भिन्नता प्राप्त हुई है।
+**PCA。**सह-अवचल मैट्रिक्स के स्व-वेक्टर मुख्य घटक हैं। स्व-मूल्य आपको बताएगा कि प्रत्येक घटक ने कितना भिन्नता पकड़ी है।$k$个, तुम आयामों में कमी प्राप्त कर लिया है.
 
 **稳定性。**पुनरावर्ती नेटवर्क और गतिशील प्रणालियों में, परिमाण > 1 के स्वमानों से आउटपुट विस्फोट होगा। परिमाण < 1 से आउटपुट गायब हो जाएगा।
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤 3: शून्य से गणना स्वयं मूल्य ((2x2)
 
-एक 2x2 मैट्रिक्स के लिए `[[a, b], [c, d]]`,स्वमानें विशेषता समीकरण से 求解:`lambda^2 - (a+d)*lambda + (ad - bc) = 0`
+एक 2x2 मैट्रिक्स के लिए `[[a, b], [c, d]]`,स्वमानें विशेषता समीकरण से 求解:$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 
 3. 创建三个变换的组合(旋转30度,按 [1.5, 0.8] पैमाने,使用 kx=0.3 shear),并将其应用到按圆形排列的8个点上――印变换前后的坐标――计算组成矩阵的定数,并验证它等于各定数的乘积――
 
+### 提示
+
+**练习 1。**उपयोग `mat_vec_mul``rotation_2d``scaling_2d`和 `shearing_2d` प्रत्येक शीर्ष बिंदु पर लागू करें
+
+**练习 2。**写出特征方程 $\lambda^2 - (\text{trace})\lambda + \det = 0$और खोजें समाधान। जांचें दो परिणामों का और समान है`eigenvalues_2x2`和 `np.linalg.eigvals`तुलना करें
+
+**练习 3。**构建三个矩阵,用 `shearing_2d(0.3, 0)`संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना संरचना`mat_mul`                                                                                                                                                                                                                                                              $(\cos\theta, \sin\theta)$ घुमावदार रचकों का रैंक 1 है, काटने वाले रचकों का रैंक 1 है, इसलिए रचकों का संयोजन `det_2x2`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $1.5 \times 0.8 = 1.2$
+
 ## 关键术语
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 

@@ -24,7 +24,7 @@
 
 ### घटनाएँ √नमूना स्थान और संभावना
 
-नमूना स्थान S सभी संभावित परिणामों का संग्रह है। घटना नमूना स्थान का एक उपखंड है।
+नमूना स्थान $S$सभी संभव परिणामों का संग्रह। घटना नमूना स्थान का एक अंश है। घटनाओं को 0 से 1 के बीच में प्रदर्शित करने की संभावना है।
 
 ```
 Coin flip:
@@ -37,15 +37,15 @@ Single die roll:
 ```
 
 तीनों सूत्रों ने समग्र अनुमान प्रणाली को परिभाषित किया हैः
-1. किसी भी घटना के लिए A,P(A) >= 0
-2. P(S) = 1( हमेशा कुछ होता है)
-3. जब A 和 B 不能同时发生时,P(A या B) = P(A) + P(B)
+1. किसी भी घटना के लिए$A$,$P(A) \ge 0$
+2. $P(S) = 1$(सदा कुछ होता है)
+3. $A$和 $B$जब यह एक साथ नहीं हो सकता है,$P(A \text{ or } B) = P(A) + P(B)$
 
 其他所有内容(बेय का प्रमेय, अपेक्षाएँ, वितरण) इस तीनों नियमों से प्रवृत्त हो सकते हैं
 
 ### सशर्त संभावना और स्वतंत्रता
 
-P  A  B) B  के पहले से हुए हालात के तहत A  के होने की संभावना को दर्शाता है
+$P(A \mid B)$ में प्रदर्शित$B$जिसका हुआ है उसके अंतर्गत $A$发生 होने की संभावना 
 
 ```
 P(A|B) = P(A and B) / P(B)
@@ -58,9 +58,11 @@ Example: deck of cards
 
 जब एक घटना को दूसरे घटना के बारे में कोई जानकारी नहीं है, तो ये दोनों घटनाएँ स्वतंत्र हैंः
 
-```
-Independent:   P(A|B) = P(A)
-Equivalent to: P(A and B) = P(A) * P(B)
+```math
+\begin{aligned}
+\text{相互独立：} \quad & P(A \mid B) = P(A) \\
+\text{等价于：} \quad & P(A \text{ and } B) = P(A) \cdot P(B)
+\end{aligned}
 ```
 
 抛硬币是独立的──不放回抽牌则不是──
@@ -98,27 +100,33 @@ integral from -inf to +inf of f(x) dx = 1
 
 **Bernoulli：**एक बार प्रयोग, दो परिणामों हेतु प्रयोग किया जाता है।
 
-```
-P(X = 1) = p
-P(X = 0) = 1 - p
-Mean = p,  Variance = p(1-p)
+```math
+\begin{aligned}
+P(X = 1) &= p \\
+P(X = 0) &= 1 - p \\
+\text{均值} = p, &\quad \text{方差} = p(1-p)
+\end{aligned}
 ```
 
-**Categorical：**एक बार प्रयोग, k 个 परिणामों──用于建模 बहु-वर्ग वर्गीकरण(softmax 输出)──
+**Categorical：**एक बार प्रयोग,$k$个 परिणाम──用于建模 बहु-वर्ग वर्गीकरण(softmax 输出)──
 
-```
-P(X = i) = p_i,  where sum of p_i = 1
-Example: P(cat) = 0.7,  P(dog) = 0.2,  P(bird) = 0.1
+```math
+\begin{aligned}
+& P(X = i) = p_i, \quad \text{其中 } \textstyle\sum_i p_i = 1 \\
+& \text{示例：} P(\text{cat}) = 0.7, \quad P(\text{dog}) = 0.2, \quad P(\text{bird}) = 0.1
+\end{aligned}
 ```
 
 **Uniform：**सभी परिणाम 等概率── उपयोग में आने वाले समय में प्रारंभ करना──
 
-```
-Discrete: P(X = k) = 1/n for k in {1, ..., n}
-Continuous: f(x) = 1/(b-a) for x in [a, b]
+```math
+\begin{aligned}
+\text{离散：} \quad & P(X = k) = 1/n \text{ for } k \in \lbrace 1, \ldots, n \rbrace \\
+\text{连续：} \quad & f(x) = 1/(b-a) \text{ for } x \in [a, b]
+\end{aligned}
 ```
 
-**Normal（Gaussian）：**钟形曲线──由 mean(mu) और भिन्नता(sigma^2)参数化──
+**Normal（Gaussian）：**钟形曲线──由 मतलब$\mu$) तथा भिन्नता$\sigma^2$) पैरामीटरकरण
 
 ```
 f(x) = (1 / sqrt(2*pi*sigma^2)) * exp(-(x - mu)^2 / (2*sigma^2))
@@ -131,45 +139,51 @@ Standard normal: mu = 0, sigma = 1
 
 **Poisson：**固定区间内罕见事件的计数── निर्माण में उपयोग की जाने वाली घटनाओं की घटना दर──
 
-```
-P(X = k) = (lambda^k * e^(-lambda)) / k!
-Mean = lambda,  Variance = lambda
+```math
+\begin{aligned}
+P(X = k) &= \frac{\lambda^k e^{-\lambda}}{k!} \\
+\text{均值} = \lambda, &\quad \text{方差} = \lambda
+\end{aligned}
 ```
 
 ### अपेक्षित मूल्य और भिन्नता
 
 अपेक्षित मूल्य परिणाम का अतिरिक्त मूल्य औसत है।
 
-```
-Discrete:   E[X] = sum of x_i * P(X = x_i)
-Continuous: E[X] = integral of x * f(x) dx
+```math
+\begin{aligned}
+\text{离散：} \quad & \mathbb{E}[X] = \sum_i x_i \, P(X = x_i) \\
+\text{连续：} \quad & \mathbb{E}[X] = \int x \, f(x) \, dx
+\end{aligned}
 ```
 
 भिन्नता  औसत के आसपास के विखंडन की डिग्री को मापने हेतु
 
-```
-Var(X) = E[(X - E[X])^2] = E[X^2] - (E[X])^2
-Standard deviation = sqrt(Var(X))
+```math
+\begin{aligned}
+\mathrm{Var}(X) &= \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 \\
+\text{标准差} &= \sqrt{\mathrm{Var}(X)}
+\end{aligned}
 ```
 
 एमएल में, अपेक्षित मूल्य हानि फ़ंक्शन के रूप में प्रकट होता है।
 
 ### संयुक्त और मार्जिनल वितरण
 
-संयुक्त वितरण P(X,Y) सम समय दो यादृच्छिक चरों का वर्णन करें
+संयुक्त वितरण $P(X, Y)$साथ ही दो यादृच्छिक चरों का वर्णन करें।
 
-संयुक्त PMF 示例(X = मौसम,Y = छाता):
+संयुक्त पीएमएफ प्रदर्शन$X$= मौसम,$Y$= छाता):
 
-| | Y=0（不带伞） | Y=1（带伞） | Marginal P(X) |
+| | $Y=0$（不带伞） | $Y=1$（带伞） | Marginal $P(X)$ |
 |---|---|---|---|
-| X=0（晴天） | 0.40 | 0.10 | P(X=0) = 0.50 |
-| X=1（下雨） | 0.05 | 0.45 | P(X=1) = 0.50 |
-| **Marginal P(Y)** | P(Y=0) = 0.45 | P(Y=1) = 0.55 | 1.00 |
+| $X=0$（晴天） | 0.40 | 0.10 | $P(X=0) = 0.50$ |
+| $X=1$（下雨） | 0.05 | 0.45 | $P(X=1) = 0.50$ |
+| **Marginal $P(Y)$** | $P(Y=0) = 0.45$ | $P(Y=1) = 0.55$ | 1.00 |
 
 मार्जिनल वितरण एक और चर को खोज और समाप्त करेगाः
 
-```
-P(X = x) = sum over all y of P(X = x, Y = y)
+```math
+P(X = x) = \sum_{y} P(X = x, Y = y)
 ```
 
 उपरोक्त सूची में क्रमबद्ध और क्रमबद्ध हैं।
@@ -196,23 +210,27 @@ This works for ANY starting distribution.
 
 मूल संभावनाएँ संख्यात्मक प्रश्न उत्पन्न करती हैं।
 
-```
-P(sentence) = P(word1) * P(word2) * ... * P(word_n)
-            = 0.01 * 0.003 * 0.02 * ...
-            -> 0.0 (underflow after ~30 terms)
+```math
+\begin{aligned}
+P(\text{sentence}) &= P(\text{word}_1) \cdot P(\text{word}_2) \cdot \ldots \cdot P(\text{word}_n) \\
+&= 0.01 \cdot 0.003 \cdot 0.02 \cdot \ldots \\
+&\to 0.0 \quad \text{（在约 } \sim 30 \text{ 项后下溢）}
+\end{aligned}
 ```
 
 लॉग संभावनाएं इस समस्या को हल कर सकती हैं
 
-```
-log P(sentence) = log P(word1) + log P(word2) + ... + log P(word_n)
-                = -4.6 + -5.8 + -3.9 + ...
-                -> finite number (no underflow)
+```math
+\begin{aligned}
+\log P(\text{sentence}) &= \log P(\text{word}_1) + \log P(\text{word}_2) + \ldots + \log P(\text{word}_n) \\
+&= -4.6 + -5.8 + -3.9 + \ldots \\
+&\to \text{有限数值（不会下溢）}
+\end{aligned}
 ```
 
 规则:
-- log(a * b) = log(a) + log(b)
-- लॉग संभावना 总是 <= 0(因为 0 < P <= 1)
+- $\log(a \cdot b) = \log(a) + \log(b)$
+- लॉग संभावना 总是 $\le 0$(कारण $0 < P \le 1$)
 - 越负 = 越不可能
 - क्रॉस-एंट्रोपी हानि सही वर्ग की नकारात्मक लॉग संभावना है
 
@@ -431,24 +449,34 @@ print(f"Log-softmax: {log_probs}")
 
 4.  एक फ़ंक्शन लिखें, लॉग संभावनाओं का एक समूह प्राप्त करें, सबसे संभव क्रम को वापस करें, कुल लॉग संभावना, और समान मूल्य की मूल संभावनाएँ।  50 个词的句子 के साथ परीक्षण करें, जिनमें से प्रत्येक शब्द की संभावनाएं 0.01 हैं।
 
+### 提示
+
+**练习 1。** से औसत वितरण`u`, वापसी $-\ln(1 - u) / \lambda$◊ जांचें कि नमूना औसत मूल्य निकट है या नहीं$1/\lambda$, सीधे-सीधे से प्रत्येक क्षेत्र के अनुरूप है या नहीं$\lambda e^{-\lambda x}$
+
+**练习 2。** एक 6x6 रूपण भरा, प्रत्येक रूपण एक संभावना है, सभी रूपण के लिए और के लिए 1, फिर बुलाओ `joint_to_marginals` उपयोग `check_independence`केवल प्रत्येक भाग दो किनारों की संभावनाओं के गुणांक के बराबर होता है, दो भाग एक दूसरे से स्वतंत्र होते हैं।
+
+**练习 3。**लॉजिट  अनुप्रयोग `softmax`, पुनः सूचकांक 3 ̊s की संभावना $-\ln$◊ परिणाम 0.421 के करीब होना चाहिए,`nn.CrossEntropyLoss`समान समूह के लिए दिए गए परिणामों के अनुरूप है।
+
+**练习 4。**संख्यात्मक संभावनाओं को जोड़ने के लिए, मूल संभावनाओं को गुणा न करें। 50 शब्दों की संभावनाएं 0.01 के होते हैं, कुल संख्यात्मक संभावनाएं होनी चाहिए।$50 \ln(0.01) \approx -230.26$,原始概率为 $10^{-100}$
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Sample space | “所有可能性” | 实验中每个可能 outcome 构成的集合 S |
+| Sample space | “所有可能性” | 实验中每个可能 outcome 构成的集合 $S$ |
 | PMF | “概率函数” | 给出每个离散 outcome 精确概率的函数，所有概率之和为 1 |
 | PDF | “概率曲线” | 用于连续变量的 density function。对某个区间积分即可得到概率 |
-| Conditional probability | “给定某事的概率” | P(A\|B) = P(A and B) / P(B)。Bayesian thinking 和 Bayes' theorem 的基础 |
-| Independence | “它们互不影响” | P(A and B) = P(A) * P(B)。知道一个 event 对另一个没有任何信息增益 |
+| Conditional probability | “给定某事的概率” | $P(A \mid B) = P(A \text{ and } B) / P(B)$。Bayesian thinking 和 Bayes' theorem 的基础 |
+| Independence | “它们互不影响” | $P(A \text{ and } B) = P(A) \cdot P(B)$。知道一个 event 对另一个没有任何信息增益 |
 | Expected value | “平均值” | 所有 outcomes 的概率加权和。Loss function 就是一个 expected value |
 | Variance | “分散程度” | 相对 mean 的 squared deviation 的期望。High variance = 噪声大、不稳定的估计 |
-| Normal distribution | “钟形曲线” | f(x) = (1/sqrt(2*pi*sigma^2)) * exp(-(x-mu)^2/(2*sigma^2))。由于 CLT 而无处不在 |
+| Normal distribution | “钟形曲线” | $f(x) = (1/\sqrt{2\pi\sigma^2}) \cdot \exp(-(x-\mu)^2/(2\sigma^2))$。由于 CLT 而无处不在 |
 | Central Limit Theorem | “平均值会变成 normal” | 无论来源如何，许多 independent samples 的 mean 都会收敛到 normal distribution |
-| Joint distribution | “两个变量放在一起” | P(X, Y) 描述 X 和 Y outcomes 每一种组合的概率 |
-| Marginal distribution | “把另一个变量求和消去” | P(X) = sum_y P(X, Y)。从 joint 中恢复单个变量的 distribution |
-| Log probability | “概率的 log” | log P(x)。把乘积变成求和，避免长序列中的数值下溢 |
-| Softmax | “把分数变成概率” | softmax(z_i) = exp(z_i) / sum(exp(z_j))。将实值 logits 映射为有效的 probability distribution |
-| Cross-entropy | “Loss function” | -sum(p_true * log(p_predicted))。衡量两个 distributions 有多不同。越低越好 |
+| Joint distribution | “两个变量放在一起” | $P(X, Y)$ 描述 $X$ 和 $Y$ outcomes 每一种组合的概率 |
+| Marginal distribution | “把另一个变量求和消去” | $P(X) = \sum_y P(X, Y)$。从 joint 中恢复单个变量的 distribution |
+| Log probability | “概率的 log” | $\log P(x)$。把乘积变成求和，避免长序列中的数值下溢 |
+| Softmax | “把分数变成概率” | $\text{softmax}(z_i) = \exp(z_i) / \sum_j \exp(z_j)$。将实值 logits 映射为有效的 probability distribution |
+| Cross-entropy | “Loss function” | $-\sum p_{\text{true}} \cdot \log(p_{\text{predicted}})$。衡量两个 distributions 有多不同。越低越好 |
 | Logits | “模型原始输出” | softmax 之前的未归一化分数。命名来自 logistic function |
 | Sampling | “抽取随机值” | 按照 probability distribution 生成值。模型生成输出的方式 |
 
