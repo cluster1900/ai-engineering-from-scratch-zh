@@ -23,7 +23,7 @@
 ## 概念
 ### قاعدة السلسلة، تطبيق إلى شبكة
 
-你在阶段01 中见过链条规则──快速回顾: إذا y = f(g(x) ، ثم dy/dx = f'(g(x)) * g'(x)──你沿着链条相乘衍生物──
+أنت في المرحلة 01, الدروس 05 في قاعدة السلسلة.$y = f(g(x))$، إذاً$\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$أنت على طول سلسلة المشتقات
 
 في شبكة العصبية، 链条 هي من المدخل إلى سلسلة العمليات الخسارة. في كل مستوى من التطبيقات، يتم تعيين الوزن، ووضع الوقوف، وإعادة تمرير التفعيل.
 
@@ -42,9 +42,9 @@ graph LR
     y["target"] --> loss
 ```
 
-المضي قدما: القيمة من اليسار إلى اليمين流动──x 和 w 产生 z1 = w*x──加上 b 得到 z2──Sigmoid 给出激活 a──使用 Loss Function 将 a 与 target y 比较──
+المضي قدما: القيمة من اليسار إلى اليمين$x$和 $w$ تكوين $z_1 = w x$‬ ‫إضافة$b$-حصل على$z_2$ الإستثمارات الإلكترونية$a$استخدام وظيفة الخسارة 将 $a$مع الهدف$y$مقارنة
 
-ردّ الخلفي: درجة من اليمين إلى اليسار 流动。从 dL/da 开始(Loss 如何随激活 改变)。乘以 da/dz2(مدفوعة sigmoid)。 الحصول على dL/dz2。拆分成 dL/db((إنه يساوي dL/dz2, لأن z2 = z1 + b) وم dL/dz1。 ثم dL/dw = dL/dz1 * x,dL/dx = dL/dz1 * w。
+التراجع: درجة من اليمين إلى اليسار$\partial L/\partial a$开始(خسارة 如何随激活 改变)$\partial a/\partial z_2$(مشتق سيغمايد)$\partial L/\partial z_2$‬ ‫تفكك$\partial L/\partial b$(إنه يُساوي $\partial L/\partial z_2$، لأن$z_2 = z_1 + b$) و $\partial L/\partial z_1$بعد ذلك$\partial L/\partial w = \partial L/\partial z_1 \cdot x$،$\partial L/\partial x = \partial L/\partial z_1 \cdot w$.
 
 في الرسم البياني في كل عقدة في خلال مرور الظهر  فقط مهمة واحدة: استلام من الجدارة من الجوار العلوي، ضربها مشتق محلي الخاص بها، ثم إلى الجوار السفلي.
 
@@ -81,7 +81,7 @@ graph RL
     L1 -- "dL/dz1 = dL/da1 * sigmoid'(z1)" --> I["Input"]
 ```
 
-في كل طبقة، Gradent مدينة ضربة مشتقة sigmoid.
+في كل طبقة، الجدول يُعدّل بمشتقات سيغمويد$a(1 - a)$, أقصى قيمة هو 0.25$a = 0.5$بعد ثلاثة مستويات، الدرجة قد ضربت$0.25^3 = 0.0156$❖ عميقة:$0.25^{10} = 0.000001$.
 
 ### الدرجات المختفية
 
@@ -99,32 +99,33 @@ After 10 layers:  gradient * 0.25^10 = 0.000001x original
 
 ### 推导 شبكة طبقاتين
 
-فيما يلي مثال رياضي محدد: شبكة لديها مدخل x 带 sigmoid الطبقة الخفية 带 sigmoid الطبقة الخروج، وكذلك خسارة MSE 
+و في الأسفل مثال رياضي محدد: شبكة مع إدخال$x$الطبقة الخفية من سيقمويد سيقمويد الطبقة الخارجة من سيقمويد، فضلا عن خسارة MSE
 
 التسلل الأمامي:
-```
-z1 = W1 * x + b1
-a1 = sigmoid(z1)
-z2 = W2 * a1 + b2
-a2 = sigmoid(z2)
-L = (a2 - y)^2
+```math
+\begin{aligned}
+z_1 &= W_1 x + b_1 \\
+a_1 &= \text{sigmoid}(z_1) \\
+z_2 &= W_2 a_1 + b_2 \\
+a_2 &= \text{sigmoid}(z_2) \\
+L &= (a_2 - y)^2
+\end{aligned}
 ```
 
 التراجع (بالإنجليزية: Backward Pass)
-```
-dL/da2 = 2(a2 - y)
-da2/dz2 = a2 * (1 - a2)
-dL/dz2 = dL/da2 * da2/dz2 = 2(a2 - y) * a2 * (1 - a2)
-
-dL/dW2 = dL/dz2 * a1
-dL/db2 = dL/dz2
-
-dL/da1 = dL/dz2 * W2
-da1/dz1 = a1 * (1 - a1)
-dL/dz1 = dL/da1 * da1/dz1
-
-dL/dW1 = dL/dz1 * x
-dL/db1 = dL/dz1
+```math
+\begin{aligned}
+\frac{\partial L}{\partial a_2} &= 2(a_2 - y) \\
+\frac{\partial a_2}{\partial z_2} &= a_2 (1 - a_2) \\
+\frac{\partial L}{\partial z_2} &= \frac{\partial L}{\partial a_2} \cdot \frac{\partial a_2}{\partial z_2} = 2(a_2 - y) \cdot a_2 (1 - a_2) \\[6pt]
+\frac{\partial L}{\partial W_2} &= \frac{\partial L}{\partial z_2} \cdot a_1 \\
+\frac{\partial L}{\partial b_2} &= \frac{\partial L}{\partial z_2} \\[6pt]
+\frac{\partial L}{\partial a_1} &= \frac{\partial L}{\partial z_2} \cdot W_2 \\
+\frac{\partial a_1}{\partial z_1} &= a_1 (1 - a_1) \\
+\frac{\partial L}{\partial z_1} &= \frac{\partial L}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \\[6pt]
+\frac{\partial L}{\partial W_1} &= \frac{\partial L}{\partial z_1} \cdot x \\
+\frac{\partial L}{\partial b_1} &= \frac{\partial L}{\partial z_1}
+\end{aligned}
 ```
 
 كل درجة هي المشتقات المحلية التي يتم تعقبها من الخسارة إلى الوراء
@@ -182,9 +183,9 @@ def __mul__(self, other):
     return out
 ```
 
- لضافة: d  a+b) /da = 1,d  a+b) /db = 1‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
+لإضافة:$\partial(a+b)/\partial a = 1$،$\partial(a+b)/\partial b = 1$ لذلك اثنين من المدخلات سوف تحصل مباشرة على الناتج من درجة‬
 
-对于乘法:d(a*b)/da = b,d(a*b)/db = a。 كل مدخل مدينة تحصل على قيمة مدخل أخرى 乘以 output gradient。
+ بالنسبة للضرب:$\partial(ab)/\partial a = b$،$\partial(ab)/\partial b = a$كل مدخل يحصل على قيمة مدخل آخر ضرباً من درجة الخروج
 
 `+=`很关键──一个值可能会被多个操作使用──它的渐进是来自所有路径的渐进之和──
 
@@ -206,7 +207,7 @@ def sigmoid(self):
     return out
 ```
 
-مشتق سيغمويد: sigmoid(x) * (1 - sigmoid(x))。 نحن في Forward Pass 中已计算了 sigmoid(x) = s。复用它──不需要额外工作──
+مشتق سيغمويد:$\text{sigmoid}(x) \cdot (1 - \text{sigmoid}(x))$نحن في المخططات الأمامية قد حسب$\text{sigmoid}(x) = s$ استعملها لا تحتاج إلى عمل إضافي
 
 ```python
 def mse_loss(predicted, target):
@@ -214,7 +215,7 @@ def mse_loss(predicted, target):
     return diff * diff
 ```
 
-单个输出的 MSE:(预测 -目标)^2──我们把减法表达为加上一个取负的值──
+单个产量 的 MSE:$(\text{predicted} - \text{target})^2$                                                                                                                                                                                                                                                              
 
 ### الخطوة الرابعة: التراجع
 
@@ -238,7 +239,7 @@ def backward(self):
         v._backward()
 ```
 
-من الخسارة 开始(Gradient = 1.0, لأن dL/dL = 1)── على طول الرسم البياني بعد التنظيم 反向遍历── كل عقدة `_backward`سأقوم بإرسال (غريدينت) لأطفالها
+ الخسارة 开始(درجة = 1.0 ، لأن $dL/dL = 1$)― على طول الرسم البياني التالي للترتيب العكسي`_backward`سأقوم بإرسال (غريدينت) لأطفالها
 
 ### 步骤 5: الطبقة والشبكة
 
@@ -298,7 +299,7 @@ class Network:
             p.grad = 0.0
 ```
 
-واحد العصبية قبل المدخل، حساب المجموع الموزن + التحيز، ثم تطبيق sigmoid──权重初始化按平方(2/n_inputs) 缩放، لتحديد زيادة الاكتفاء في شبكة sigmoid── طبقة هي قائمة العصبية── شبكة هي قائمة الطبقة──`parameters()`الطريقة سوف تجمع كل القيمة التي يمكن تعلمها، حتى نتمكن من تحديثها.
+واحد العصبية المستقبل المدخل، حساب المبلغ الموزن + التحيز، ثم تطبيق sigmoid‬$\sqrt{2/n_{\text{inputs}}}$缩放,用于防止更深网络中的sigmoid saturation──一层是神经元的列表──一网络是层的列表──`parameters()`الطريقة سوف تجمع كل القيمة التي يمكن تعلمها، حتى نتمكن من تحديثها.
 
 ### الخطوة 6: في XOR 上 التدريب
 
@@ -433,9 +434,9 @@ with torch.no_grad():
 - `outputs/prompt-gradient-debugger.md`-- إشارة مستمرة تستخدم لتشخيص أي مشكلة في شبكة عصبية
 
 ## التدريب
-1. عطي فئة القيمة اضافة واحد `__sub__`طريقة ((أ - ب = a + (-1 * ب)))).`__neg__`طريقة: (ب) من خلال تقييم مع عملية التعبير البسيطة (ب) من (أ - ب)^2) ، والتي تثبت أن الدرجة صحيحة:
+1. عطي فئة القيمة اضافة واحد `__sub__`الطريقة$a - b = a + (-1 \cdot b)$.‬ ثم تنفيذ واحد`__neg__`طريقة:                                                                                                                                                                                                                                                              $(a - b)^2$) من الحسابات المتحركة للمقارنة، والتحقق من درجة الدرجة هو صحيح أو لا.
 
-2. أعط قيمة إضافة واحدة`relu`طريقة ((المخرجة 为最大(0, x),المتأصل في x > 0 时为 1,否则为 0) ・・・ في الطبقة الخفية باستخدام relu 替换 sigmoid,并再次在 XOR 上训练──比较收速度──你应该会看到训练更快--这是第04课的预告──
+2. أعط قيمة إضافة واحدة`relu`طريقة ((المخرج 为 $\max(0, x)$, المشتق في$x \gt 0$时为1,否则为0) ―― في الطبقة الخفية باستخدام relu 替换 sigmoid,并再次在 XOR 上训练──比较收速度──你应该看到训练更快――这是第04课的预告──
 
 3. في القيمة على تحقيق قوى كاملة المستخدمة`__pow__`طريقة... استخدمها`mse_loss`بدل حقيقي `(predicted - target) ** 2`تعبير:                                                                                                                                                                                                                                                              
 
@@ -446,14 +447,14 @@ with torch.no_grad():
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 dL/dw |
+| Backpropagation | “Network 学会了” | 一种算法，通过沿 Computational Graph 反向应用 chain rule，为每个权重计算 $\partial L/\partial w$ |
 | Computational graph | “Network 结构” | 一个有向无环 graph，其中 node 是 operation，edge 承载 value（forward）和 Gradient（backward） |
-| Chain rule | “把 derivative 相乘” | 如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x) -- Backpropagation 的数学基础 |
+| Chain rule | “把 derivative 相乘” | 如果 $y = f(g(x))$，那么 $\frac{dy}{dx} = f'(g(x)) \cdot g'(x)$ -- Backpropagation 的数学基础 |
 | Gradient | “最陡上升方向” | Loss 相对于某个 parameter 的 partial derivative -- 告诉你如何改变该 parameter 来降低 Loss |
 | Vanishing gradient | “深层 network 学不会” | 当 Gradient 通过带有 sigmoid 这类 saturating activation 的 layer 传播时，会指数级缩小 |
 | Forward pass | “运行 network” | 通过顺序应用每一层的 operation，从 input 计算 output，并存储 intermediate value |
 | Backward pass | “计算 Gradient” | 反向遍历 Computational Graph，在每个 node 使用 chain rule 累积 Gradient |
-| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：w_new = w_old - lr * gradient |
+| Learning rate | “学习速度” | 一个控制权重更新步长的 scalar：$w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{gradient}$ |
 | Topological sort | “正确顺序” | 一种 graph node 排序方式，使每个 node 都出现在其依赖的所有 node 之后 -- 确保 Gradient 在传播前已完全累积 |
 | Autograd | “自动微分” | 一个在 forward computation 期间构建 Computational Graph，并自动计算 Gradient 的系统 -- PyTorch 的 engine 做的就是这个 |
 

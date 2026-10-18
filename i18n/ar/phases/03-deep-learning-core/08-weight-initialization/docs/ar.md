@@ -35,40 +35,40 @@
 
 考虑一个具有风扇_in 个输入的单层:
 
-```
-z = w1*x1 + w2*x2 + ... + w_n*x_n
-```
-
-إذا كل وزن ويعود إلى التنازل عن التباين من Var(w) ، وكل مدخل xi من التباين من Var(x) ، فإن التباين من الخروج من:
-
-```
-Var(z) = fan_in * Var(w) * Var(x)
+```math
+z = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n
 ```
 
-إذا Var(w) = 1 且 fan_in = 512, فإن المتغيرات الخارجة هي المتغيرات المدخلة 512 倍── عبر 10 层:512^10 = 1.2e27── إشارتك 已爆炸──
+إذا كل وزن$w_i$كل شيء مختلف$\mathrm{Var}(w)$التوزيع، وكل مدخل$x_i$التباين$\mathrm{Var}(x)$, إذا تغير الخروج 为:
 
-إذا Var(w) = 0.001,则 خيار الخروج كل طبقة على 0.001 * 512 = 0.512 缩小──经过 10 层:0.512^10 = 0.00013──你的信号 已消失──
+```math
+\mathrm{Var}(z) = \text{fan}_{\text{in}} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(x)
+```
 
-目標:选择 Var(w) ، يجعل Var(z) = Var(x) ・・・ حجم الإشارة في كل مستوى يبقى ثابتة
+إذا$\mathrm{Var}(w) = 1$و$\text{fan}_{\text{in}} = 512$, إذا تغير الخروج هو تغير المدخل 512 倍── عبر 10 طبقات:$512^{10} = 1.2 \times 10^{27}$إشارتكِ انفجرت
+
+إذا$\mathrm{Var}(w) = 0.001$, إذا خيار الخروج كل مستوى$0.001 \cdot 512 = 0.512$缩小──经过10层:$0.512^{10} = 0.00013$إشارتك قد اختفت
+
+目标:选择 $\mathrm{Var}(w)$, جعل ذلك$\mathrm{Var}(z) = \mathrm{Var}(x)$✿ حجم الإشارة في كل مستوى يبقى ثابتة
 
 ### إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعداداتات إعدادات إعداداتاتات إعدادات إعداداتاتات إعدادات إعداداتاتات إعدادات إعداداتات إعدادات إعدادات إعدادات إعدادات إعداداتات إعدادات إعداداتات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إعدادات إ إ إعدادات إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إ إطار إطار إ إ إ إ إ
 
 Glorot and Bengio (2010) 推导了适用于 sigmoid 和 tanh تفعيلات 的解──为了在前和后的通过 中都保持变化 恒定:
 
-```
-Var(w) = 2 / (fan_in + fan_out)
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}
 ```
 
 实践中,وزن من التوزيع التالي 中采样:
 
-```
-w ~ Uniform(-limit, limit)  where limit = sqrt(6 / (fan_in + fan_out))
+```math
+w \sim \text{Uniform}(-\text{limit}, \text{limit}) \quad \text{其中 } \text{limit} = \sqrt{\frac{6}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}
 ```
 
 أو:
 
-```
-w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}} + \text{fan}_{\text{out}}}}\right)
 ```
 
 هذا هو السبب في أنه فعال، لأن sigmoid 和 tanh في صفر  قريبة من التشغيل، والتحركات بعد التشغيل الصحيحة تماما في هذه المنطقة.
@@ -79,27 +79,27 @@ w ~ Normal(0, sqrt(2 / (fan_in + fan_out)))
 
 He et al. (2015) 调整了公式:
 
-```
-Var(w) = 2 / fan_in
+```math
+\mathrm{Var}(w) = \frac{2}{\text{fan}_{\text{in}}}
 ```
 
 الوزن من التوزيع التالي 中采样:
 
-```
-w ~ Normal(0, sqrt(2 / fan_in))
+```math
+w \sim \text{Normal}\left(0, \sqrt{\frac{2}{\text{fan}_{\text{in}}}}\right)
 ```
 
-في 2 استخدام لتعويض ReLU سوف نصف التفعيلات 置零 تأثير 没有它,إشارة كل طبقة سوف تقلص حوالي 0.5 倍──50 层后:0.5^50 = 8.8e-16──Kaiming init يمكن منع هذه الحالة──
+في رقم 2 لاستخدامها لتعويض ReLU سوف نصف التفعيلات 置零 تأثيرها.$0.5^{50} = 8.8 \times 10^{-16}$القيام بتأثيرات إيقافية يمكن أن يمنع هذا الحالة‬
 
 ### إطلاق المحول
 
 أدى GPT-2 إلى وضع آخر. ستقوم الاتصالات المتبقية بتحويل كل طبقة فرعية إلى مدخلاتها:
 
-```
-x = x + sublayer(x)
+```math
+x = x + \text{sublayer}(x)
 ```
 
-كل مرة يزيد فيها التباين. بالنسبة لـ N طبقات بقايا، سيتم الارتقاء بـ N 成 النسبة.
+كلما زادت الاختلافات$N$طبقات بقية، التغيرات$N$成比例增长──GPT-2 会将残留层的重量按 $1/\sqrt{2N}$缩放, بينهم $N$هو عدد المستويات. هذا يمكن أن يبقي حجم الإشارة المتراكم ثابتة.
 
 إضافة إلى ذلك، فإن التخفيضات لا تتجاوز المعدلات المعدنية، فهي تصل إلى المعدلات المعدنية.
 
@@ -337,20 +337,20 @@ nn.init.zeros_(layer.bias)
 
 عندما ت调用`nn.Linear(512, 256)`时,PyTorch 默认使用Kaiming Uniform Initialisation──这就是为什么大多数简单网络 只是工作--PyTorch 已经做出正确选择──但当你构建定制架构时,或者深入到超过20层时,你需要了解正在发生的事情,并且可能需要覆盖默认设置──
 
-بالنسبة للمتحولات، عادة ما تكون نماذج "هوجينغ فيس" في هذه الأماكن`_init_weights`方法中處理初始化── GPT-2 的实现会按1/sqrt(N) 缩放残余投影── إذا كنت تبدأ من الصفر في بناء المحول، تحتاج إلى إضافة نفسك لهذا النقطة──
+بالنسبة للمتحولات، عادة ما تكون نماذج "هوجينغ فيس" في هذه الأماكن`_init_weights`方法中处理初始化──GPT-2 的实现会按 $1/\sqrt{N}$缩放残余投射── إذا كنت تبدأ ببناء محول، تحتاج إلى نفسك إضافة هذا النقطة──
 
 ## 交付 it
 本课会产出:
 - `outputs/prompt-init-strategy.md`-- إعداد المشكلة ووضعها في الموقع
 
 ## التدريب
-1. 添加 LeCun inicialization(Var = 1/fan_in,为 SELU activation 设计) ・运行 تجربة 50 طبقة, باستخدام LeCun init + tanh,并与Xavier + tanh对比──
+1. 添加 ليكون التبديل$\mathrm{Var} = 1/\text{fan}_{\text{in}}$, لتنشيط SELU 设计) ・运行 تجربة 50 طبقة, باستخدام LeCun init + tanh,并与Xavier + tanh对比──
 
-2. 实现 GPT-2 بقايا التوسيع: قبل انضمام إلى التيار بقايا  قبل أن يتم تنفيذ 50 طبقة في حالة وجود تراكم و عدم وجود تراكم ، قياس حجم بقايا  زيادة 
+2. 实现 GPT-2 residual scaling: قبل ان يشارك في التيار المتبقية  قبل ان يُضاعف انتاج كل طبقة $1/\sqrt{2N}$ التقسيم في حالة وجود وتحقيق النطاق وبدون نطاق، 50 مستوى، قياس حجم الناتج المتبقية  تزداد بسرعة 
 
 3. إنشاء وظيفة "تحقق صحة البيانات"  وظيفة، استلام شبكة الأبعاد الطبقة و نوع تفعيل، ثم تقديم التبديل الصحيح، و في الحال init سوف يؤدي إلى مشكلة عند إعطاء تحذير.
 
-4. استخدام fan_in = 16 مع fan_in = 1024 运行实验──Xavier 和 Kaiming 会适配 fan_in,但随机 init 不会──展示随着层变大,工作和休之间的差距如何扩大──
+4. استخدام $\text{fan} _{\text{in}} = 16$مع$\text{fan} _{\text{in}} = 1024$运行实验──Xavier 和 Kaiming 会适配 fan_in,但随机 init 不会──展示随着层变大,工作和休之间的差距如何扩大──
 
 5. 实现 orthogonal initialization(إنتاج ماتريكس عشوائية، حسابها SVD، باستخدام ماتريكس orthogonal U) ―― مع 50 طبقة شبكات ReLU 中的 Kaiming 进行比较。
 
@@ -361,10 +361,10 @@ nn.init.zeros_(layer.bias)
 | Symmetry breaking | “让 neurons 变得不同” | 使用 random initialization 确保 neurons 学习不同 features，而不是计算完全相同的函数 |
 | Fan-in | “一个 neuron 的 inputs 数量” | incoming connections 的数量，它决定 input variance 如何在 weighted sum 中累积 |
 | Fan-out | “一个 neuron 的 outputs 数量” | outgoing connections 的数量，与在 Backpropagation 期间维持 Gradient variance 有关 |
-| Xavier/Glorot init | “sigmoid initialization” | Var(w) = 2/(fan_in + fan_out)，旨在通过 sigmoid 和 tanh activations 保持 variance |
-| Kaiming/He init | “ReLU initialization” | Var(w) = 2/fan_in，考虑了 ReLU 会将一半 activations 置零 |
+| Xavier/Glorot init | “sigmoid initialization” | $\mathrm{Var}(w) = 2/(\text{fan} _{\text{in}} + \text{fan} _{\text{out}})$，旨在通过 sigmoid 和 tanh activations 保持 variance |
+| Kaiming/He init | “ReLU initialization” | $\mathrm{Var}(w) = 2/\text{fan}_{\text{in}}$，考虑了 ReLU 会将一半 activations 置零 |
 | Variance propagation | “signals 如何在 layers 中增长或缩小” | 基于 weight scale，逐层分析 activation variance 如何变化的数学分析 |
-| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 1/sqrt(2N) 缩放，以防止 variance 在 N 个 transformer layers 中增长 |
+| Residual scaling | “GPT-2 的 init trick” | 将 residual connection weights 按 $1/\sqrt{2N}$ 缩放，以防止 variance 在 $N$ 个 transformer layers 中增长 |
 | Dead network | “什么都训练不了” | 一个因 initialization 不佳而导致所有 Gradients 为 zero 或所有 activations 饱和的 network |
 | Exploding activations | “数值走向 infinity” | 当 weight variance 过高时，activation magnitudes 会在 layers 中指数级增长 |
 
