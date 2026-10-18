@@ -30,19 +30,19 @@ while True:
 
 **AlphaZero (2017)。**Silver et al. 给定一个规则已知的游戏(chess、shogi、Go):
 
-- Mạng lưới giá trị chính sách:一个塔 `f_θ(s) → (p, v)``p`Là một chuyển động hợp pháp trên trên.`v`                                                                                                                                                                                                                                                              
-- Monte Carlo Tree Search (MCTS): trong mỗi bước,展开可能后续状态的树──使用 `(p, v)`作为前 + bootstrap──用 UCB (PUCT) 选择节点:`a* = argmax Q(s, a) + c · p(a|s) · √N(s) / (1 + N(s, a))`
-- Đánh thủ: Hãy để nhân viên chống lại nhân viên đối mặt với trận đấu.`t`步, MCTS phân phối chuyến thăm `π_t`成为政策 训练目标──
-- Lối mất:`L = (v - z)² - π · log p + c · ||θ||²``z`là kết quả trò chơi ((+1 / 0 / -1)。
+- Mạng lưới giá trị chính sách:一个塔 $f_\theta(s) \to (p, v)$$p$Là một chuyển động hợp pháp trên trên.$v$                                                                                                                                                                                                                                                              
+- Monte Carlo Tree Search (MCTS): trong mỗi bước,展开可能后续状态的树──使用 $(p, v)$作为前 + bootstrap──用 UCB (PUCT) 选择节点:$a^{\ast} = \arg\max_a Q(s, a) + c \cdot p(a \mid s) \cdot \sqrt{N(s)} / (1 + N(s, a))$
+- Đánh thủ: Hãy để nhân viên chống lại nhân viên đối mặt với trận đấu.$t$步, MCTS phân phối chuyến thăm $\pi_t$成为政策 训练目标──
+- Lối mất:$L = (v - z)^2 - \pi \cdot \log p + c \cdot \lVert \theta \rVert^2$$z$là kết quả trò chơi ((+1 / 0 / -1)。
 
 零人类知识――零手工 heuristic―― một bộ phận đơn lẻ, sau khi tự chơi hàng triệu trò chơi của riêng mình  nắm bắt cờ vua、shogi 和 Go。
 
 **MuZero (2019)。**Schrittwieser et al. 移除了规则已知的要求──
 
-- Không sử dụng môi trường cố định, mà học một mô hình động lực tiềm ẩn`(h, g, f)`- Có thể là:
-  - `h(s)`:将 quan sát 编码为 tiềm ẩn.
-  - `g(s_latent, a)`:预测下一个潜伏状态 + phần thưởng。
-  - `f(s_latent)`:预测 chính sách trước + giá trị。
+- Không sử dụng môi trường cố định, mà học một mô hình động lực tiềm ẩn$(h, g, f)$- Có thể là:
+  - $h(s)$:将 quan sát 编码为 tiềm ẩn.
+  - $g(s_{\text{latent}}, a)$:预测下一个潜伏状态 + phần thưởng。
+  - $f(s_{\text{latent}})$:预测 chính sách trước + giá trị。
 - MCTS trong *đường học tiềm ẩn* 中运行── cùng tìm kiếm, cùng vòng tập luyện──
 - 适用于 Go、chess、shogi *以及* Atari  一个算法,不需要规则知识──
 
@@ -54,11 +54,11 @@ while True:
 
 - 游戏: trả lời vấn đề toán học / lập trình / lý luận.
 - Chính sách:LLM。Cách hành:Token。State:prompt + response-so far。
-- Không có lời chỉ trích.`G`个 hoàn thành. 计算每个完成的奖励. 使用.**group-relative advantage** `A_i = (r_i - mean_r) / std_r`作为 REINFORCE 风格更新的信号──
+- Không có lời chỉ trích$V_\phi$(¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬$G$个 hoàn thành. 计算每个完成的奖励. 使用.**group-relative advantage** $A_i = (r_i - \text{mean}_r) / \text{std}_r$作为 REINFORCE 风格更新的信号──
 - Đối với chính sách tham chiếu cộng với hình phạt KL 以防漂移(类似 RLHF)
 - 完整 Loss:
 
-  `L_GRPO(θ) = -E_{q, {o_i}} [ (1/G) Σ_i A_i · log π_θ(o_i | q) ] + β · KL(π_θ || π_ref)`
+  $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
 Không mô hình phần thưởng, không chỉ trích, không có MCTS── cơ sở tương quan nhóm 替代了三者── trên điểm chuẩn luận, sử dụng ít hơn tính toán  đạt hoặc vượt quá PPO-RLHF 质量──
 
@@ -145,7 +145,7 @@ Với RLHF tương tự chẩn đoán: đến trung bình KL ∞ entropy chính 
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO 继承风险 của RLHF: Nếu xác minh viên 错误或可被利用,LLM sẽ tìm thấy khai thác.
-- **Group size 太小。**Nhóm cơ sở của nhóm`1/√G`缩放――低于 `G = 4`时, tín hiệu lợi thế 会 rất ồn ào; tiêu chuẩn lựa chọn là `G = 8`Đến`64`
+- **Group size 太小。**Nhóm cơ sở của nhóm$1/\sqrt{G}$缩放――低于 $G = 4$时, tín hiệu lợi thế 会 rất ồn ào; tiêu chuẩn lựa chọn là $G = 8$Đến 64...
 - **Length bias。**Không giống như độ dài của LLM hoàn thành có khả năng đăng ký khác nhau.
 - **纯 self-play 循环。**AlphaZero 风格训练可能在一般数量游戏中卡进统治循环──可通过多样化对手池
 - **Search-policy mismatch。**AlphaZero trenng chính sách 去模仿搜索结果──如果政策网太小,无法表示搜索的分布,训练会停滞──
@@ -196,7 +196,7 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 ## 练习
 
-1. **Easy。**Trong `code/main.py`中实现 GRPO bandit──在 2 个提示 × 每个 4 个答案 标签 上训练──使用 `G=8`Trong < 1000 lần cập nhật trong收──
+1. **Easy。**Trong `code/main.py`中实现 GRPO bandit──在 2 个提示 × 每个 4 个答案 标签 上训练──使用 $G=8$Trong < 1000 lần cập nhật trong收──
 2. **Medium。**接入 PPO(clip) và vanilla REINFORCE──在同一个强盗上比较样本效率和奖励差与GRPO的差──
 3. **Hard。**扩展到长度为 2 的推理链:agent 发发两个代币,verifier 对代币对发两个代币 给奖励──测量 GRPO 如何处理两步序列 上的信用分配──(提示:按 *full sequence* 计算组优势,并传播到两个代币位置──)
 
@@ -204,11 +204,11 @@ tags: [rl, alphazero, muzero, grpo, self-play]
 
 | Term | 人们常说 | 实际含义 |
 |------|-----------------|-----------------------|
-| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned `(p, v)` prior 的 UCB1/PUCT selection。 |
+| MCTS | “带 learned net 的 tree search” | Monte Carlo Tree Search；使用 learned $(p, v)$ prior 的 UCB1/PUCT selection。 |
 | AlphaZero | “Self-play + MCTS” | Policy-value net 被训练来匹配 MCTS visits 和 game outcome。 |
 | MuZero | “Learned-model AlphaZero” | 相同循环，但通过 learned dynamics 在 latent space 中进行。 |
 | GRPO | “Critic-free PPO” | Group Relative Policy Optimization；带 group-mean baseline + KL 的 REINFORCE。 |
-| PUCT | “AlphaZero 的 UCB” | `Q + c · p · √N / (1 + N_a)` —— 平衡 value estimate 与 prior。 |
+| PUCT | “AlphaZero 的 UCB” | $Q + c \cdot p \cdot \sqrt{N} / (1 + N_a)$ —— 平衡 value estimate 与 prior。 |
 | Self-play | “Agent vs past self” | Zero-sum 的标准做法；提供对称训练信号。 |
 | League play | “Population-based self-play” | 将 past + current + exploiters 采样为 opponents。 |
 | Verifier reward | “Verifiable RL” | Reward 来自 deterministic checker（tests pass、answer matches）。 |

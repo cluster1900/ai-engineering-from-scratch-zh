@@ -11,9 +11,9 @@
 
 Q-learning 和 DQN parameterize 的是 * value* function──你通过 `argmax Q`选择行动――这对离散行动 和离散状态 没有问题――但当行动是持续时就会失效(对10维扭矩 怎么做`argmax`?), hoặc khi bạn muốn chính sách stochastic 时也会失效`argmax`按构造就是决定性)
 
-Các gradient chính sách 改为 tham số hóa * chính sách*。`π_θ(a | s)`là một mạng Neural, xuất hành động trên phân phối. Từ mẫu để thực hiện hành động.`θ`Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm`argmax`Không có sự tái phát của Bellman. Chỉ có đối với.`J(θ) = E_{π_θ}[G]`Làm việc tăng độ...
+Các gradient chính sách 改为 tham số hóa * chính sách*。$\pi_\theta(a \mid s)$là một mạng Neural, xuất hành động trên phân phối. Từ mẫu để thực hiện hành động.$\theta$Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm`argmax`Không có sự tái phát của Bellman. Chỉ có đối với.$J(\theta) = \mathbb E_{\pi_\theta}[G]$Làm việc tăng độ...
 
-Định lý REINFORCE (Williams 1992)  nói cho bạn Gradient này là tính toán:`∇J(θ) = E_π[ G · ∇_θ log π_θ(a | s) ]`◊运行一个节目――计算回来――把每一步的`∇ log π_θ(a | s)`乘以回归──取平均──做 Gradient-ascent──完成──
+Định lý REINFORCE (Williams 1992)  nói cho bạn Gradient này là tính toán:$\nabla J(\theta) = \mathbb E_\pi[ G \cdot \nabla_\theta \log \pi_\theta(a \mid s) ]$◊运行一个节目――计算回来――把每一步的$\nabla \log \pi_\theta(a \mid s)$乘以回归──取平均──做 Gradient-ascent──完成──
 
 Mỗi thuật toán LLM-RL năm 2026:PPO、DPO、GRPO, là sự tinh chỉnh của REINFORCE, là điều kiện tiên quyết cho giai đoạn 10 · 07 (phục triển RLHF) và giai đoạn 10 · 08 (DPO).
 
@@ -21,36 +21,44 @@ Mỗi thuật toán LLM-RL năm 2026:PPO、DPO、GRPO, là sự tinh chỉnh c�
 
 ![Policy gradient: softmax policy, log-π gradient, return-weighted update](../assets/policy-gradient.svg)
 
-**Policy gradient theorem。**Đối với bất cứ ai`θ`Chính sách của các tham số`π_θ`- Có thể là:
+**Policy gradient theorem。**Đối với bất cứ ai$\theta$Chính sách của các tham số$\pi_\theta$- Có thể là:
 
-`∇J(θ) = E_{τ ~ π_θ}[ Σ_{t=0}^{T} G_t · ∇_θ log π_θ(a_t | s_t) ]`
+```math
+\nabla J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}[ \sum_{t=0}^{T} G_t \cdot \nabla_\theta \log \pi_\theta(a_t \mid s_t) ]
+```
 
-Trong số đó `G_t = Σ_{k=t}^{T} γ^{k-t} r_{k+1}`Ừm từ bước `t`开始的折扣回报──期望是从`π_θ`mẫu của hoàn chỉnh quỹ đạo `τ`Những gì đã đạt được.
+Trong số đó $G_t = \sum_{k=t}^{T} \gamma^{k-t} r_{k+1}$Ừm từ bước $t$开始的折扣回报──期望是从$\pi_\theta$mẫu của hoàn chỉnh quỹ đạo $\tau$Những gì đã đạt được.
 
-**证明很短。**Trong kỳ vọng 下对 `J(θ) = Σ_τ P(τ; θ) G(τ)`求导──使用 `∇P(τ; θ) = P(τ; θ) ∇ log P(τ; θ)`(truc dẫn xuất log) ‖ phân giải ‖`log P(τ; θ) = Σ log π_θ(a_t | s_t) + environment terms that do not depend on θ`△ các thuật ngữ môi trường 消失──两行代数就得到定理──
+**证明很短。**Trong kỳ vọng 下对 $J(\theta) = \sum_\tau P(\tau; \theta) G(\tau)$求导──使用 $\nabla P(\tau; \theta) = P(\tau; \theta) \nabla \log P(\tau; \theta)$(truc dẫn xuất log) ‖ phân giải ‖$\log P(\tau; \theta) = \sum \log \pi_\theta(a_t \mid s_t) + \text{environment terms that do not depend on } \theta$△ các thuật ngữ môi trường 消失──两行代数就得到定理──
 
-**Variance reduction 技巧。**Sự khác biệt của Vanilla REINFORCE rất cao:`∇ log π`là tiếng ồn, số lượng của chúng rất tiếng ồn.
+**Variance reduction 技巧。**Sự khác biệt của Vanilla REINFORCE rất cao:$\nabla \log \pi$là tiếng ồn, số lượng của chúng rất tiếng ồn.
 
-1. **Baseline subtraction。**Không phụ thuộc vào bất cứ điều gì`a_t``b(s_t)`,把 `G_t`替换成 `G_t - b(s_t)`Nó là một sự độc lập, vì`E[b(s_t) · ∇ log π(a_t | s_t)] = 0`❖ điển hình: bởi nhà phê bình 学到的`b(s_t) = V̂(s_t)`→ diễn viên-chính trị viên (đọc 07):
-2. **Reward-to-go。**- Đưa đi.`Σ_t G_t · ∇ log π_θ(a_t | s_t)`替换成 `Σ_t G_t^{from t} · ∇ log π_θ(a_t | s_t)`❖ Đối với một hành động nhất định, chỉ có lợi nhuận trong tương lai 相关, phần thưởng trong quá khứ chỉ sẽ đóng góp tiếng ồn không trung bình ❖
+1. **Baseline subtraction。**Không phụ thuộc vào bất cứ điều gì$a_t$$b(s_t)$,把 $G_t$替换成 $G_t - b(s_t)$Nó là một sự độc lập, vì$\mathbb{E}[b(s_t) \cdot \nabla \log \pi(a_t \mid s_t)] = 0$❖ điển hình: bởi nhà phê bình 学到的$b(s_t) = \hat{V}(s_t)$→ diễn viên-chính trị viên (đọc 07):
+2. **Reward-to-go。**- Đưa đi.$\sum_t G_t \cdot \nabla \log \pi_\theta(a_t \mid s_t)$替换成 $\sum_t G_t^{\text{from } t} \cdot \nabla \log \pi_\theta(a_t \mid s_t)$❖ Đối với một hành động nhất định, chỉ có lợi nhuận trong tương lai 相关, phần thưởng trong quá khứ chỉ sẽ đóng góp tiếng ồn không trung bình ❖
 
 组合起来 lấy:
 
-`∇J ≈ (1/N) Σ_{i=1}^{N} Σ_{t=0}^{T_i} [ G_t^{(i)} - V̂(s_t^{(i)}) ] · ∇_θ log π_θ(a_t^{(i)} | s_t^{(i)})`
+```math
+\nabla J \approx (1/N) \sum_{i=1}^{N} \sum_{t=0}^{T_i} [ G_t^{(i)} - \hat{V}(s_t^{(i)}) ] \cdot \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)})
+```
 
 Đó là nguồn gốc của sự tăng cường, cũng là tổ tiên trực tiếp của A2C (Dạy học 07) và PPO (Dạy học 08).
 
 **Softmax policy parameterization。**Đối với các hành động riêng biệt, tiêu chuẩn lựa chọn là:
 
-`π_θ(a | s) = exp(f_θ(s, a)) / Σ_{a'} exp(f_θ(s, a'))`
+```math
+\pi_\theta(a \mid s) = \exp(f_\theta(s, a)) / \sum_{a'} \exp(f_\theta(s, a'))
+```
 
-Trong số đó `f_θ`Có một hình thức sạch của một Gradient:
+Trong số đó $f_\theta$Có một hình thức sạch của một Gradient:
 
-`∇_θ log π_θ(a | s) = ∇_θ f_θ(s, a) - Σ_{a'} π_θ(a' | s) ∇_θ f_θ(s, a')`
+```math
+\nabla_\theta \log \pi_\theta(a \mid s) = \nabla_\theta f_\theta(s, a) - \sum_{a'} \pi_\theta(a' \mid s) \nabla_\theta f_\theta(s, a')
+```
 
 也就是已采取行动的分数 减去其在政策下预期值.
 
-**用于 continuous actions 的 Gaussian policy。** `π_θ(a | s) = N(μ_θ(s), σ_θ(s))``∇ log N(a; μ, σ)`Có hình thức đóng cửa. Đó là tất cả những gì SAC cần trong giai đoạn 9 · 07.
+**用于 continuous actions 的 Gaussian policy。** $\pi_\theta(a \mid s) = N(\mu_\theta(s), \sigma_\theta(s))$$\nabla \log N(a; \mu, \sigma)$Có hình thức đóng cửa. Đó là tất cả những gì SAC cần trong giai đoạn 9 · 07.
 
 
 ```figure
@@ -120,19 +128,19 @@ def reinforce_step(theta, trajectory, gamma, lr, baseline=0.0):
                 theta[i][j] += lr * advantage * grad_log_pi_a[i] * s[j]
 ```
 
-Tốc độ`∇ log π(a|s) = e_a - π(·|s)`(`a`(đối với các phương pháp phân tích, các phương pháp phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, và phân tích, và phân tích, phân tích, và phân tích, và phân tích, và phân tích, và phân tích.
+Tốc độ$\nabla \log \pi(a \mid s) = e_a - \pi(\cdot \mid s)$($a$(đối với các phương pháp phân tích, các phương pháp phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, phân tích, và phân tích, và phân tích, phân tích, và phân tích, và phân tích, và phân tích, và phân tích.
 
 ### Bước 5: đường cơ sở
 
-Đối với các tập gần đây `G`取 running mean, đã đủ để 4×4 GridWorld  chạy lên; khoảng cần 500 tập 收──把 cơ bản 升级为学 `V̂(s)`, được nhận được các nhà phê bình diễn viên.
+Đối với các tập gần đây $G$取 running mean, đã đủ để 4×4 GridWorld  chạy lên; khoảng cần 500 tập 收──把 cơ bản 升级为学 $\hat{V}(s)$, được nhận được các nhà phê bình diễn viên.
 
 ## Những bẫy
 
-- **Exploding gradients。**Lợi nhuận có thể rất lớn.`∇ log π`之前,始终在批内把 `G`bình thường hóa đến `~N(0, 1)`
-- **Entropy collapse。**Chính sách 过早收到近似决定性的行动,停止探索,然后卡住──修复方式:向目标 添加 entropy bonus `β · H(π(·|s))`
+- **Exploding gradients。**Lợi nhuận có thể rất lớn.$\nabla \log \pi$之前,始终在批内把 $G$bình thường hóa đến `~N(0, 1)`
+- **Entropy collapse。**Chính sách 过早收到近似决定性的行动,停止探索,然后卡住──修复方式:向目标 添加 entropy bonus $\beta \cdot H(\pi(\cdot \mid s))$
 - **High variance。**Vanilla REINFORCE 需要成千上万集──kritical baseline──Lớp 07)
 - **Sample inefficiency。**Trên chính sách có nghĩa là mỗi điều chuyển đổi trong một lần cập nhật đã được bỏ rơi.
-- **Non-stationary gradients。**100 tập  trước cùng một Gradient sử dụng là cũ `π`Đó là lý do tại sao các phương pháp chính sách mỗi lần triển khai được cập nhật.
+- **Non-stationary gradients。**100 tập  trước cùng một Gradient sử dụng là cũ $\pi$Đó là lý do tại sao các phương pháp chính sách mỗi lần triển khai được cập nhật.
 - **Credit assignment。**Không có phần thưởng để đi 时,过去奖励 会贡献噪声──始终使用奖励去──
 
 ## Sử dụng nó
@@ -179,20 +187,20 @@ tags: [rl, policy-gradient, reinforce]
 
 1. **Easy。**Trong 4×4 GridWorld 上 sử dụng chính sách mềmmax tuyến tính 实现 REINFORCE──不使用基线,训练1000 个节目──绘制学习曲线;测量变异(回报的 std)──
 2. **Medium。**添加运行平均基线――再次训练――把样品效率 和差与 vanila run đối với基线 让收所需步骤 降低了多少?
-3. **Hard。**添加 tiền thưởng entropy `β · H(π)`❖扫描`β ∈ {0, 0.01, 0.1, 1.0}`❖ vẽ lại kết quả và entropy chính sách ❖ nhiệm vụ này ở đâu?
+3. **Hard。**添加 tiền thưởng entropy $\beta \cdot H(\pi)$❖扫描$\beta \in \lbrace 0, 0.01, 0.1, 1.0 \rbrace$❖ vẽ lại kết quả và entropy chính sách ❖ nhiệm vụ này ở đâu?
 
 ## Các điều khoản chính
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Policy gradient | “直接训练 policy” | `∇J(θ) = E[G · ∇ log π_θ(a\|s)]`；由 log-derivative trick 推导而来。 |
+| Policy gradient | “直接训练 policy” | $\nabla J(\theta) = \mathbb{E}[G \cdot \nabla \log \pi_\theta(a \mid s)]$；由 log-derivative trick 推导而来。 |
 | REINFORCE | “最初的 PG algorithm” | Williams (1992)；Monte Carlo returns 乘以 log-policy Gradient。 |
-| Log-derivative trick | “Score function estimator” | `∇P(τ;θ) = P(τ;θ) · ∇ log P(τ;θ)`；让 expectations 的 gradients 变得 tractable。 |
-| Baseline | “Variance reduction” | 从 `G` 中减去的任意 `b(s)`；是 unbiased 的，因为 `E[b · ∇ log π] = 0`。 |
-| Reward-to-go | “只计算未来 returns” | 使用 `G_t^{from t}` 而不是完整的 `G_0`；正确且 variance 更低。 |
-| Entropy bonus | “鼓励探索” | `+β · H(π(·\|s))` 项防止 policy collapse。 |
+| Log-derivative trick | “Score function estimator” | $\nabla P(\tau;\theta) = P(\tau;\theta) \cdot \nabla \log P(\tau;\theta)$；让 expectations 的 gradients 变得 tractable。 |
+| Baseline | “Variance reduction” | 从 $G$ 中减去的任意 $b(s)$；是 unbiased 的，因为 $\mathbb{E}[b \cdot \nabla \log \pi] = 0$。 |
+| Reward-to-go | “只计算未来 returns” | 使用 $G_t^{\text{from } t}$ 而不是完整的 $G_0$；正确且 variance 更低。 |
+| Entropy bonus | “鼓励探索” | $+\beta \cdot H(\pi(\cdot \mid s))$ 项防止 policy collapse。 |
 | On-policy | “用你刚看到的数据训练” | Gradient expectation 是相对于当前 policy 的，不能直接复用旧数据。 |
-| Advantage | “比平均好多少” | `A(s, a) = G(s, a) - V(s)`；带 baseline 的 REINFORCE 所乘的带符号 quantity。 |
+| Advantage | “比平均好多少” | $A(s, a) = G(s, a) - V(s)$；带 baseline 的 REINFORCE 所乘的带符号 quantity。 |
 
 ## Đọc thêm
 

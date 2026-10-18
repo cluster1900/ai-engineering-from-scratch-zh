@@ -21,20 +21,24 @@ Trước khi hình thành, bạn không thể học được từ dòng này. T�
 
 **五个对象。**
 
-- **States** `S`Trong GridWorld, là một người chơi. Trong cờ vua, là một người chơi. Trong LLM, là một cửa sổ bối cảnh, và bất kỳ bộ nhớ nào.
-- **Actions** `A`△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
-- **Transitions** `P(s' | s, a)` Đưa ra một trạng thái`s`và hành động `a`, next state of distribution── trong cờ vua là xác định, trong hàng tồn kho là stochastic, trong giải mã LLM gần như xác định──
-- **Rewards** `R(s, a, s')` 标量信号──赢 = +1,输 = -1──收入减成本──GRPO 中的日志概率比例 项──
-- **Discount** `γ ∈ [0, 1)`: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :`γ = 0.99`买到约100 bước của chân trời;`γ = 0.9`买到约10:
+- **States** $S$Trong GridWorld, là một người chơi. Trong cờ vua, là một người chơi. Trong LLM, là một cửa sổ bối cảnh, và bất kỳ bộ nhớ nào.
+- **Actions** $A$△可选行为──上/下/左/右移动──下一步棋──输出一个代币──
+- **Transitions** $P(s' \mid s, a)$ Đưa ra một trạng thái$s$và hành động $a$, next state of distribution── trong cờ vua là xác định, trong hàng tồn kho là stochastic, trong giải mã LLM gần như xác định──
+- **Rewards** $R(s, a, s')$ 标量信号──赢 = +1,输 = -1──收入减成本──GRPO 中的日志概率比例 项──
+- **Discount** $\gamma \in [0, 1)$: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :$\gamma = 0.99$买到约100 bước của chân trời;$\gamma = 0.9$买到约10:
 
-**Markov property** `P(s_{t+1} | s_t, a_t) = P(s_{t+1} | s_0, a_0, …, s_t, a_t)`: tương lai chỉ phụ thuộc vào trạng thái hiện tại. Nếu không tồn tại, thì đại diện của nhà nước không hoàn hảo.
+**Markov property** $P(s_{t+1} \mid s_t, a_t) = P(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t)$: tương lai chỉ phụ thuộc vào trạng thái hiện tại. Nếu không tồn tại, thì đại diện của nhà nước không hoàn hảo.
 
-**Policies 与 returns。**Chính sách `π(a | s)`把 trạng thái 映射到动作分布──Return `G_t = r_t + γ r_{t+1} + γ² r_{t+2} + …`Đó là số tiền giảm giá của phần thưởng trong tương lai.`V^π(s) = E[G_t | s_t = s]`Đó là chính sách.`π`Từ dưới`s`开始的预期回报──Q-值 `Q^π(s, a) = E[G_t | s_t = s, a_t = a]`là trong một hành động cụ thể  bắt đầu được dự kiến lợi nhuận  Mỗi thuật toán RL sẽ ước tính một trong hai, sau đó tương ứng được cải tiến `π`
+**Policies 与 returns。**Chính sách $\pi(a \mid s)$把 trạng thái 映射到动作分布──Return $G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \ldots$Đó là số tiền giảm giá của phần thưởng trong tương lai.$V^\pi(s) = \mathbb{E}[G_t \mid s_t = s]$Đó là chính sách.$\pi$Từ dưới$s$开始的预期回报──Q-值 $Q^\pi(s, a) = \mathbb{E}[G_t \mid s_t = s, a_t = a]$là trong một hành động cụ thể  bắt đầu được dự kiến lợi nhuận  Mỗi thuật toán RL sẽ ước tính một trong hai, sau đó tương ứng được cải tiến $\pi$
 
 **Bellman equations。**Trong giai đoạn này tất cả nội dung sẽ được sử dụng cho các phương trình điểm cố định:
 
-`V^π(s) = Σ_a π(a|s) Σ_{s', r} P(s', r | s, a) [r + γ V^π(s')]`
-`Q^π(s, a) = Σ_{s', r} P(s', r | s, a) [r + γ Σ_{a'} π(a'|s') Q^π(s', a')]`
+```math
+\begin{aligned}
+V^\pi(s) &= \sum_a \pi(a \mid s) \sum_{s', r} P(s', r \mid s, a) [r + \gamma V^\pi(s')] \\
+Q^\pi(s, a) &= \sum_{s', r} P(s', r \mid s, a) [r + \gamma \sum_{a'} \pi(a' \mid s') Q^\pi(s', a')]
+\end{aligned}
+```
 
 Chúng đưa ra lợi nhuận dự kiến 拆成                                                                                                                                                                                                                                                          
 
@@ -114,16 +118,16 @@ def policy_evaluation(policy, gamma=0.99, tol=1e-6):
 
 ### Bước 4:`γ`là một siêu tham số có ý nghĩa vật lý
 
-Khía cảnh hiệu quả là khoảng`1 / (1 - γ)``γ = 0.9`→ 10 bước.`γ = 0.99`→ 100 bước.`γ = 0.999`→ 1000 bước.
+Khía cảnh hiệu quả là khoảng$1 / (1 - \gamma)$$\gamma = 0.9$→ 10 bước.$\gamma = 0.99$→ 100 bước.$\gamma = 0.999$→ 1000 bước.
 
-太低时,agent 会目光短浅──太高时,credit assignment 会变噪, vì nhiều bước đầu tiên thành phố sẽ cùng nhau chịu trách nhiệm về phần thưởng trong tương lai.`γ = 1`,因为 các tập 短且有界──Control tasks 使用 `0.95–0.99`❖ Các trò chơi chiến lược tầm xa 使用 `0.999`
+太低时,agent 会目光短浅──太高时,credit assignment 会变噪, vì nhiều bước đầu tiên thành phố sẽ cùng nhau chịu trách nhiệm về phần thưởng trong tương lai.$\gamma = 1$,因为 các tập 短且有界──Control tasks 使用 `0.95–0.99`❖ Các trò chơi chiến lược tầm xa 使用 `0.999`
 
 ## 陷
 
 - **Non-Markovian state.**Nếu bạn cần gần đây3 lần quan sát 才能决策, thì state 不只是当前 quan sát──修复:stack frames(DQN 在 Atari 上堆叠 4 ) hoặc sử dụng trạng thái lặp lại(在 quan sát 上用 LSTM/GRU)。
 - **Sparse rewards.**Chỉ khi thắng, sẽ làm cho học tập trong không gian nhà nước lớn gần như không thể.
 - **Reward hacking.**优化代理奖励 经常产生病态行为――OpenAI's boat-racing agent 一直原地转圈收集 powerups, thay vì hoàn thành cuộc thi――始终从目标结果定义奖励,而不是从代理定义――
-- **Discount mis-spec.**Trong nhiệm vụ chân trời vô hạn 上使用 `γ = 1`Để mọi giá trị đều trở nên vô hạn.`γ < 1`Để giới hạn.
+- **Discount mis-spec.**Trong nhiệm vụ chân trời vô hạn 上使用 $\gamma = 1$Để mọi giá trị đều trở nên vô hạn.$\gamma < 1$Để giới hạn.
 - **Reward scale.**{+100, -100} với {+1, -1} sẽ cung cấp chính sách tối ưu tương tự, nhưng độ lớn của Gradient 会 rất khác nhau.`[-1, 1]`
 
 ## Sử dụng nó
@@ -168,21 +172,21 @@ tags: [rl, mdp, modeling]
 ## 练习
 
 1. **Easy.**Trong `code/main.py`Trung thực hiện 4×4 GridWorld 和 ngẫu nhiên chính sách triển khai──运行 10,000 个集── báo cáo trả về trung bình 和 std──与最佳回报(-6)
-2. **Medium.**đối với chính sách ngẫu nhiên đồng nhất, sử dụng`γ ∈ {0.5, 0.9, 0.99}`运行 `policy_evaluation`  `V`打印为4×4 grid──解释为什么终端 附近状态值会随着变大`γ`Hơn nữa, tăng trưởng nhanh hơn.
-3. **Hard.**Để biến GridWorld thành stochastic: mỗi hành động theo tỷ lệ`p = 0.1`滑向相邻方向── tái đánh giá chính sách thống nhất──`V[start]`Sẽ tốt hơn hay xấu hơn?
+2. **Medium.**đối với chính sách ngẫu nhiên đồng nhất, sử dụng$\gamma \in \lbrace 0.5, 0.9, 0.99 \rbrace$运行 `policy_evaluation`  `V`打印为4×4 grid──解释为什么终端 附近状态值会随着变大$\gamma$Hơn nữa, tăng trưởng nhanh hơn.
+3. **Hard.**Để biến GridWorld thành stochastic: mỗi hành động theo tỷ lệ$p = 0.1$滑向相邻方向── tái đánh giá chính sách thống nhất──`V[start]`Sẽ tốt hơn hay xấu hơn?
 
 ## 关键术语
 
 | Term | 人们的说法 | 实际含义 |
 |------|------------|----------|
-| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 `(S, A, P, R, γ)`。 |
+| MDP | “Reinforcement Learning setup” | 满足 Markov property 的元组 $(S, A, P, R, \gamma)$。 |
 | State | “Agent 看到的东西” | 在所选 policy class 下，future dynamics 的 sufficient statistic。 |
-| Policy | “Agent 的行为” | Conditional distribution `π(a \| s)` 或 deterministic map `s → a`。 |
-| Return | “Total reward” | 从当前 step 开始的 discounted sum `Σ γ^t r_t`。 |
-| Value | “一个 state 有多好” | 在 `π` 下从 `s` 开始的 expected return。 |
-| Q-value | “一个 action 有多好” | 在 `π` 下从 `s` 开始并以第一个 action `a` 开始的 expected return。 |
+| Policy | “Agent 的行为” | Conditional distribution $\pi(a \mid s)$ 或 deterministic map $s \to a$。 |
+| Return | “Total reward” | 从当前 step 开始的 discounted sum $\sum \gamma^t r_t$。 |
+| Value | “一个 state 有多好” | 在 $\pi$ 下从 $s$ 开始的 expected return。 |
+| Q-value | “一个 action 有多好” | 在 $\pi$ 下从 $s$ 开始并以第一个 action $a$ 开始的 expected return。 |
 | Bellman equation | “Dynamic programming recursion” | 把 value / Q 分解为 one-step reward 加 discounted successor value 的 fixed-point。 |
-| Discount `γ` | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 `~1/(1-γ)`。 |
+| Discount $\gamma$ | “未来 vs 现在” | 远未来 reward 的 geometric weight；effective horizon 为 $\approx 1/(1-\gamma)$。 |
 
 ## 延伸阅读
 

@@ -9,11 +9,11 @@
 
 ## 问题
 
-A2C(Dạy học 07) là về chính sách của:Gradient `E_{π_θ}[A · ∇ log π_θ]`需要从*当前* `π_θ`采样数据──做一次更新后,`π_θ`Nó đã thay đổi; dữ liệu bạn vừa sử dụng bây giờ đã bị cấm chính sách.
+A2C(Dạy học 07) là về chính sách của:Gradient $\mathbb E_{\pi_\theta}[A \cdot \nabla \log \pi_\theta]$需要从*当前* $\pi_\theta$采样数据──做一次更新后,$\pi_\theta$Nó đã thay đổi; dữ liệu bạn vừa sử dụng bây giờ đã bị cấm chính sách.
 
 Việc triển khai rất tốn kém. Trên Atari, trên 8 个 envs × 128 bước, một lần triển khai = 1024 chuyển tiếp, cũng như 10 giây trong thời gian môi trường.
 
-Truyện Chính sách Khu vực Tin cậy Optimization (TRPO, Schulman 2015) là chương trình sửa đổi đầu tiên:约束每次更新,使旧政策和新政策 之间的 KL divergence 保持在`δ`Theo lý thuyết, đây là một giải pháp rất sạch, nhưng mỗi lần cập nhật đều cần một giải pháp kết hợp-đường độ. Năm 2026 đã không ai chạy TRPO.
+Truyện Chính sách Khu vực Tin cậy Optimization (TRPO, Schulman 2015) là chương trình sửa đổi đầu tiên:约束每次更新,使旧政策和新政策 之间的 KL divergence 保持在$\delta$Theo lý thuyết, đây là một giải pháp rất sạch, nhưng mỗi lần cập nhật đều cần một giải pháp kết hợp-đường độ. Năm 2026 đã không ai chạy TRPO.
 
 PPO(Schulman et al. 2017) sử dụng một mục tiêu cắt giảm đơn giản  thay thế khu vực tin tưởng cứng 约束──只多一行代码── mỗi lần triển khai 十个时代──不需要结合梯梯──理论保证足够好──九年后, nó vẫn là từ MuJoCo đến RLHF 默认政策-gradient 算法──
 
@@ -23,43 +23,49 @@ PPO(Schulman et al. 2017) sử dụng một mục tiêu cắt giảm đơn giả
 
 **Importance ratio。**
 
-`r_t(θ) = π_θ(a_t | s_t) / π_{θ_old}(a_t | s_t)`
+```math
+r_t(\theta) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}
+```
 
-Đây là tỷ lệ xác suất giữa chính sách mới và chính sách thu thập dữ liệu.`r_t = 1`Không thay đổi.`r_t = 2`表示新政策 选择 `a_t`Có thể là hai lần so với chính sách cũ.
+Đây là tỷ lệ xác suất giữa chính sách mới và chính sách thu thập dữ liệu.$r_t = 1$Không thay đổi.$r_t = 2$表示新政策 选择 $a_t$Có thể là hai lần so với chính sách cũ.
 
 **Clipped surrogate。**
 
-`L^{CLIP}(θ) = E_t [ min( r_t(θ) A_t, clip(r_t(θ), 1-ε, 1+ε) A_t ) ]`
+```math
+L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \mathop{\mathrm{clip}}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
+```
 
 Hai mục:
 
-- Nếu lợi thế `A_t > 0`, và tỷ lệ 试图 tăng lên hơn `1 + ε`, clip sẽ làm cho mức độ áp suất bình thường  Đừng làm cho một hành động tốt  đưa ra cao hơn so với tỷ lệ cũ `+ε`- Đúng rồi.
-- Nếu lợi thế `A_t < 0`, và tỷ lệ 试图 tăng lên hơn `1 - ε`(có nghĩa là giảm giảm so với cắt giảm, chúng ta sẽ làm cho một hành động xấu hơn có thể xảy ra), clip sẽ hạn chế Gradient  Đừng đưa một hành động xấu  đẩy xuống dưới `-ε`
+- Nếu lợi thế $A_t > 0$, và tỷ lệ 试图 tăng lên hơn $1 + \epsilon$, clip sẽ làm cho mức độ áp suất bình thường  Đừng làm cho một hành động tốt  đưa ra cao hơn so với tỷ lệ cũ $+\epsilon$- Đúng rồi.
+- Nếu lợi thế $A_t < 0$, và tỷ lệ 试图 tăng lên hơn $1 - \epsilon$(có nghĩa là giảm giảm so với cắt giảm, chúng ta sẽ làm cho một hành động xấu hơn có thể xảy ra), clip sẽ hạn chế Gradient  Đừng đưa một hành động xấu  đẩy xuống dưới $-\epsilon$
 
 `min`xử lý hướng khác: Nếu tỷ lệ đã di chuyển về hướng hữu ích, bạn vẫn nhận được Gradient không ở một bên bất lợi cho bạn cắt)
 
-典型值是 `ε = 0.2`                                                                                                                                                                                                                                                              `r_t`Function: một hàm tuyến tính theo từng mảnh, ở một bên tốt có phần trên bình bằng, ở một bên xấu có phần dưới bình bằng.
+典型值是 $\epsilon = 0.2$                                                                                                                                                                                                                                                              $r_t$Function: một hàm tuyến tính theo từng mảnh, ở một bên tốt có phần trên bình bằng, ở một bên xấu có phần dưới bình bằng.
 
 **完整的 PPO loss。**
 
-`L(θ, φ) = L^{CLIP}(θ) - c_v · (V_φ(s_t) - V_t^{target})² + c_e · H(π_θ(·|s_t))`
+```math
+L(\theta, \phi) = L^{\text{CLIP}}(\theta) - c_v \cdot (V_\phi(s_t) - V_t^{\text{target}})^2 + c_e \cdot H(\pi_\theta(\cdot \mid s_t))
+```
 
-Hình cấu trúc diễn viên-chính trị tương tự với A2C.`c_v = 0.5``c_e = 0.01``ε = 0.2`
+Hình cấu trúc diễn viên-chính trị tương tự với A2C.$c_v = 0.5$$c_e = 0.01$$\epsilon = 0.2$
 
 **训练循环。**
 
-1. 跨 `N`个平行环境, mỗi运行 `T`bước, thu thập `N × T`个 chuyển tiếp.
+1. 跨 $N$个平行环境, mỗi运行 $T$bước, thu thập $N \times T$个 chuyển tiếp.
 2. 计算优势 (GAE),并把它们结为常量──
-3. - Đưa đi.`π_{θ_old}`结为当前 `π_θ`Một bức ảnh.
-4. Đối với`K`个 epochs, đối với mỗi `(s, a, A, V_target, log π_old(a|s))`của minibatch:
-   - 计算 `r_t(θ) = exp(log π_θ(a|s) - log π_old(a|s))`
-   -  ứng dụng `L^{CLIP}`+ mất giá trị + entropy。
+3. - Đưa đi.$\pi_{\theta_{\text{old}}}$结为当前 $\pi_\theta$Một bức ảnh.
+4. Đối với$K$个 epochs, đối với mỗi `(s, a, A, V_target, log π_old(a|s))`của minibatch:
+   - 计算 $r_t(\theta) = \exp(\log \pi_\theta(a \mid s) - \log \pi_{\text{old}}(a \mid s))$
+   -  ứng dụng $L^{\text{CLIP}}$+ mất giá trị + entropy。
    - Bước dần.
 5. Quên việc triển khai. Trở lại bước 1.
 
-`K = 10`Và 64 của các bộ phận nhỏ là một nhóm các siêu tham số tiêu chuẩn.
+$K = 10$Và 64 của các bộ phận nhỏ là một nhóm các siêu tham số tiêu chuẩn.
 
-**KL-penalty 变体。**Bản nghiên cứu ban đầu đề xuất một giải pháp thay thế, sử dụng hình phạt KL thích nghi:`L = L^{PG} - β · KL(π_θ || π_old)`, trong số đó `β`Theo quan sát KL 调整──Clipping 版本 trở thành chủ yếu; KL 变体保留下来在RLHF中;;
+**KL-penalty 变体。**Bản nghiên cứu ban đầu đề xuất một giải pháp thay thế, sử dụng hình phạt KL thích nghi:$L = L^{\text{PG}} - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$, trong số đó $\beta$Theo quan sát KL 调整──Clipping 版本 trở thành chủ yếu; KL 变体保留下来在RLHF中;;
 
 
 ```figure
@@ -125,19 +131,19 @@ for _ in range(K_EPOCHS):
 
 Mỗi lần cập nhật cần phải quan sát ba điều:
 
-- **Mean KL** `E[log π_old - log π_θ]` nên giữ `[0, 0.02]`Nếu quá`0.1`,降低 `K_EPOCHS`Hoặc`LR`
-- **Clip fraction** tỷ lệ 落在 `[1-ε, 1+ε]` ngoài mẫu ví dụ:`~0.1-0.3`Nếu là `~0`, clip 从未触发 → 提高 `LR`Hoặc`K_EPOCHS`Nếu là `~0.5+`, anh đang quá phù hợp với việc triển khai này →  giảm chúng.
-- **Explained variance** `1 - Var(V_target - V_pred) / Var(V_target)`❖Critical 质量指标──随着批判学习, nên tăng lên 1 ⋅
+- **Mean KL** $\mathbb{E}[\log \pi_{\text{old}} - \log \pi_\theta]$ nên giữ `[0, 0.02]`Nếu quá`0.1`,降低 `K_EPOCHS`Hoặc`LR`
+- **Clip fraction** tỷ lệ 落在 $[1-\epsilon, 1+\epsilon]$ ngoài mẫu ví dụ:`~0.1-0.3`Nếu là `~0`, clip 从未触发 → 提高 `LR`Hoặc`K_EPOCHS`Nếu là `~0.5+`, anh đang quá phù hợp với việc triển khai này →  giảm chúng.
+- **Explained variance** $1 - \text{Var}(V_{\text{target}} - V_{\text{pred}}) / \text{Var}(V_{\text{target}})$❖Critical 质量指标──随着批判学习, nên tăng lên 1 ⋅
 
 ## 陷
 
-- **Clip coefficient 调错。** `ε = 0.2`Đó là một tiêu chuẩn thực tế.`0.1`会让更新过于保守;`0.3+`会引入不稳定――
-- **Epochs 太多。** `K > 20`经常会让训练不稳定, vì chính sách 漂离 `π_old`太远―― hạn chế thời đại, đặc biệt đối với các mạng lớn.
+- **Clip coefficient 调错。** $\epsilon = 0.2$Đó là một tiêu chuẩn thực tế.`0.1`会让更新过于保守;`0.3+`会引入不稳定――
+- **Epochs 太多。** $K > 20$经常会让训练不稳定, vì chính sách 漂离 $\pi_{\text{old}}$太远―― hạn chế thời đại, đặc biệt đối với các mạng lớn.
 - **没有 reward normalization。**Ưu điểm của phần thưởng 会侵蚀 clip range──在计算优势 前先正常化奖励(running std)──
 - **忘记 advantage normalization。**Tự bình thường hóa trung bình / đơn vị trên mỗi lô là một thực hành tiêu chuẩn.
 - **Learning rate 没有衰减。**PPO受益于线性 LR 衰减到零── liên tục LR 往往更差──
 - **Importance ratio 数学错误。**为了数量稳定,始终使用 `exp(log_new - log_old)`, thay vì `new / old`
-- **Gradient sign 错误。**Maximum hóa thay thế = * tối thiểu hóa* `-L^{CLIP}`▽符号翻转是最常见的PPO bug──
+- **Gradient sign 错误。**Maximum hóa thay thế = * tối thiểu hóa* $-L^{\text{CLIP}}$▽符号翻转是最常见的PPO bug──
 
 ## Sử dụng nó
 
@@ -181,18 +187,18 @@ tags: [rl, ppo, policy-gradient]
 
 ## 练习
 
-1. **简单。**Trong 4×4 GridWorld 上运行 PPO, sử dụng `ε=0.2, K=4`Trong trường hợp các bước phù hợp, hiệu quả của mẫu đối với A2C (một thời đại) mỗi lần triển khai
-2. **中等。**Tháo `K ∈ {1, 4, 10, 30}` Chụp các bước trở lại vs env,并 theo dõi mỗi lần cập nhật trung bình KL── trên nhiệm vụ này,`K`KL sẽ nổ vào bao giờ?
-3. **困难。**用适应 KL phạt 替换 cắt thay thế(如果 `KL > 2·target`- Tôi không biết.`β`翻倍; nếu `KL < target/2`- Tôi không biết.`β`减半) ・Tương đương với lợi nhuận cuối cùng, ổn định và không clip.
+1. **简单。**Trong 4×4 GridWorld 上运行 PPO, sử dụng $\epsilon=0.2, K=4$Trong trường hợp các bước phù hợp, hiệu quả của mẫu đối với A2C (một thời đại) mỗi lần triển khai
+2. **中等。**Tháo $K \in \lbrace 1, 4, 10, 30 \rbrace$ Chụp các bước trở lại vs env,并 theo dõi mỗi lần cập nhật trung bình KL── trên nhiệm vụ này,$K$KL sẽ nổ vào bao giờ?
+3. **困难。**用适应 KL phạt 替换 cắt thay thế(如果 $\mathrm{KL} > 2 \cdot \text{target}$- Tôi không biết.$\beta$翻倍; nếu $\mathrm{KL} < \text{target}/2$- Tôi không biết.$\beta$减半) ・Tương đương với lợi nhuận cuối cùng, ổn định và không clip.
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------|----------|
-| Importance ratio | "r_t(θ)" | `π_θ(a\|s) / π_old(a\|s)`；相对于采集数据的 policy 的偏离程度。 |
-| Clipped surrogate | "PPO's main trick" | `min(r·A, clip(r, 1-ε, 1+ε)·A)`；在有益侧超过 clip 后 Gradient 变平。 |
+| Importance ratio | "r_t(θ)" | $\pi_\theta(a \mid s) / \pi_{\text{old}}(a \mid s)$；相对于采集数据的 policy 的偏离程度。 |
+| Clipped surrogate | "PPO's main trick" | $\min(r \cdot A, \mathop{\mathrm{clip}}(r, 1-\epsilon, 1+\epsilon) \cdot A)$；在有益侧超过 clip 后 Gradient 变平。 |
 | Trust region | "TRPO / PPO intent" | 限制每次更新的 KL，以保证 monotone improvement。 |
-| KL penalty | "Soft trust region" | 替代 PPO：`L - β · KL(π_θ \|\| π_old)`。Adaptive `β`。 |
+| KL penalty | "Soft trust region" | 替代 PPO：$L - \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{old}})$。Adaptive $\beta$。 |
 | Clip fraction | "How often clipping triggers" | Diagnostic —— 应该是 0.1-0.3；超出范围表示调参错误。 |
 | Multi-epoch training | "Data reuse" | 每次 rollout 上跑 K 个 epochs；用 variance cost 换 sample efficiency。 |
 | On-policy-ish | "Mostly on-policy" | PPO 名义上是 on-policy，但 K>1 个 epochs 会安全地使用 slightly-off-policy data。 |

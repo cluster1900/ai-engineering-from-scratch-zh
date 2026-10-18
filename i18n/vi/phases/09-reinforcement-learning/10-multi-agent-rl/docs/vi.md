@@ -21,31 +21,31 @@ Các ứng dụng trong năm 2026 bao gồm: robot swarms, giao thông định t
 
 ![Four MARL regimes: indep, centralized critic, self-play, league](../assets/marl.svg)
 
-**Formalism: Markov Game.**MDP 的泛化: tiểu bang`S`、 hành động chung `a = (a_1, …, a_n)`、trang chuyển `P(s' | s, a)`, cũng như phần thưởng của mỗi đại lý `R_i(s, a, s')` Mỗi đại lý `i`Trong chính sách của riêng mình `π_i`Nên tối đa hóa lợi nhuận của mình. Nếu phần thưởng là hoàn toàn giống nhau, thì nó là**fully cooperative**Nếu là số không, nó là**adversarial**Nếu trộn, thì là**general-sum**
+**Formalism: Markov Game.**MDP 的泛化: tiểu bang$S$、 hành động chung $a = (a_1, \ldots, a_n)$、trang chuyển $P(s' \mid s, a)$, cũng như phần thưởng của mỗi đại lý $R_i(s, a, s')$ Mỗi đại lý $i$Trong chính sách của riêng mình $\pi_i$Nên tối đa hóa lợi nhuận của mình. Nếu phần thưởng là hoàn toàn giống nhau, thì nó là**fully cooperative**Nếu là số không, nó là**adversarial**Nếu trộn, thì là**general-sum**
 
 **核心挑战：**
 
-- **Non-stationarity.**Từ đại lý `i`Trong một góc nhìn,`P(s' | s, a_i)`取决于`π_{-i}`Nhưng nó đang thay đổi.
+- **Non-stationarity.**Từ đại lý $i$Trong một góc nhìn,$P(s' \mid s, a_i)$取决于$\pi_{-i}$Nhưng nó đang thay đổi.
 - **Credit assignment.**Trong phần thưởng chia sẻ, là đại lý nào đã dẫn đến nó?
 - **Exploration coordination.**Các đại lý phải tìm kiếm các chiến lược bổ sung lẫn nhau, chứ không phải tìm kiếm lại cùng một quốc gia.
-- **Scalability.**Không gian hành động chung 会随 `n`Chỉ số tăng trưởng:
+- **Scalability.**Không gian hành động chung 会随 $n$Chỉ số tăng trưởng:
 - **Partial observability.**Mỗi nhân viên chỉ có thể nhìn thấy quan sát của mình; tình trạng toàn cầu là ẩn.
 
 **四种主导范式：**
 
 **1. Independent Q-learning / independent PPO (IQL, IPPO).**Mỗi đại lý học hỏi chính sách của mình, đưa các đại lý khác như một phần của môi trường.
 
-**2. Centralized training, decentralized execution (CTDE).**Mọi đại lý đều có chính sách riêng của họ.`π_i`, nó được quan sát tại địa phương .`o_i`Đối với điều kiện triển khai, đó là tiêu chuẩn của việc thực hiện phi tập trung.`Q(s, a_1, …, a_n)`以完整的全球状态和联合行动为条件. Ví dụ:
+**2. Centralized training, decentralized execution (CTDE).**Mọi đại lý đều có chính sách riêng của họ.$\pi_i$, nó được quan sát tại địa phương .$o_i$Đối với điều kiện triển khai, đó là tiêu chuẩn của việc thực hiện phi tập trung.$Q(s, a_1, \ldots, a_n)$以完整的全球状态和联合行动为条件. Ví dụ:
 - **MADDPG**(Lowe et al. 2017): 带有每个代理 一个集中批评的 DDPG──
-- **COMA**(Foerster et al. 2017): cơ sở phản thực tế 问 Nếu tôi đã thực hiện hành động `a'`, phần thưởng của tôi sẽ là bao nhiêu?
+- **COMA**(Foerster et al. 2017): cơ sở phản thực tế 问 Nếu tôi đã thực hiện hành động $a'$, phần thưởng của tôi sẽ là bao nhiêu?
 - **MAPPO**- **IPPO**với nhà phê bình chung (Yu et al. 2022): 带有集中价值函数的 PPO──2026年合作社 MARL 中的主导方法──
-- **QMIX**(Rashid et al. 2018): phân hủy giá trị`Q_tot(s, a) = f(Q_1(s, a_1), …, Q_n(s, a_n))`,并 sử dụng trộn đơn giản.
+- **QMIX**(Rashid et al. 2018): phân hủy giá trị$Q_{\text{tot}}(s, a) = f(Q_1(s, a_1), \ldots, Q_n(s, a_n))$,并 sử dụng trộn đơn giản.
 
 **3. Self-play.**Cùng một đại lý hai bản sao của nhau đối đầu chiến đấu. Chính sách đối đầu. Chính sách trong một bức ảnh. Chính sách AlphaGo / AlphaZero / MuZero.
 
 **4. League play.**tự chơi hướng tới môi trường chung/ngược đối: giữ một nhóm các chính sách quá khứ và hiện tại, từ đối thủ trong giải đấu,并 nhắm vào chúng để đào tạo.
 
-**Communication.**允许 các đại lý  gửi tin nhắn học hỏi cho nhau `m_i`Trong các thiết lập hợp tác, Foerster et al. (2016) cho thấy, giao tiếp giữa các đại lý có thể phân biệt được có thể được đào tạo từ đầu đến cuối.
+**Communication.**允许 các đại lý  gửi tin nhắn học hỏi cho nhau $m_i$Trong các thiết lập hợp tác, Foerster et al. (2016) cho thấy, giao tiếp giữa các đại lý có thể phân biệt được có thể được đào tạo từ đầu đến cuối.
 
 
 ```figure
@@ -102,11 +102,11 @@ Nó hiệu quả trong nhiệm vụ này, vì phần thưởng 密集 và đối
 
 ### 步骤 3: tập trung Q với phân hủy-đáng giá cập nhật
 
-Đối với các hành động chung sử dụng một Q:`Q(s, a_1, a_2)` Sử dụng phần thưởng chia sẻ 更新──执行时通过边缘化 来分散化:`π_i(s) = argmax_{a_i} max_{a_{-i}} Q(s, a_1, a_2)`Nó sử dụng không gian hành động chung của chỉ số cấp để thay đổi một quan điểm toàn cầu đúng đắn.
+Đối với các hành động chung sử dụng một Q:$Q(s, a_1, a_2)$ Sử dụng phần thưởng chia sẻ 更新──执行时通过边缘化 来分散化:$\pi_i(s) = \arg\max_{a_i} \max_{a_{-i}} Q(s, a_1, a_2)$Nó sử dụng không gian hành động chung của chỉ số cấp để thay đổi một quan điểm toàn cầu đúng đắn.
 
 ### 步骤 4: 简单 tự chơi
 
-Cùng với một đại lý, hai vai trò. Đại lý huấn luyện A đối với đại lý B.`K`个集,把 A's weights 复制到 B。对称训练,进展一致── AlphaZero recipe 的缩写版──
+Cùng với một đại lý, hai vai trò. Đại lý huấn luyện A đối với đại lý B.$K$个集,把 A's weights 复制到 B。对称训练,进展一致── AlphaZero recipe 的缩写版──
 
 ## 常见陷
 
@@ -168,11 +168,11 @@ tags: [rl, multi-agent, marl, self-play]
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Markov game | "Multi-agent MDP" | `(S, A_1, …, A_n, P, R_1, …, R_n)`；每个 agent 都有自己的 reward。 |
+| Markov game | "Multi-agent MDP" | $(S, A_1, \ldots, A_n, P, R_1, \ldots, R_n)$；每个 agent 都有自己的 reward。 |
 | CTDE | "Centralized training, decentralized execution" | Training time 使用 joint critic；每个 agent 的 policy 只使用 local obs。 |
 | IPPO | "Independent PPO" | 每个 agent 单独运行 PPO。简单 baseline；经常被低估。 |
 | MAPPO | "Multi-agent PPO" | 带有以 global state 为条件的 centralized value function 的 PPO。 |
-| QMIX | "Monotonic value decomposition" | `Q_tot = f_monotone(Q_1, …, Q_n)` 允许 decentralized argmax。 |
+| QMIX | "Monotonic value decomposition" | $Q_{\text{tot}} = f_{\text{monotone}}(Q_1, \ldots, Q_n)$ 允许 decentralized argmax。 |
 | COMA | "Counterfactual multi-agent" | Advantage = 我的 Q 减去对我的 action 做 marginalizing 后的 expected Q。 |
 | Self-play | "Agent vs past self" | 单个 agent，两个 roles；zero-sum games 的标准方法。 |
 | League play | "Population training" | 缓存过去的 policies，从 pool 中采样 opponents；处理 strategy cycles。 |

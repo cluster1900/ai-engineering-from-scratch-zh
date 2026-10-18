@@ -1,6 +1,6 @@
 # Đạo diễn-Tác giả  A2C và A3C
 
-> Đăng cường  rất ồn ào.`V̂(s)`Từ khi phê phán, từ khi trả lại trong giảm nó, bạn nhận được một kỳ vọng tương tự nhưng sự khác biệt  lợi thế thấp hơn nhiều. Đây là người diễn viên- phê phán.
+> Đăng cường  rất ồn ào.$\hat{V}(s)$Từ khi phê phán, từ khi trả lại trong giảm nó, bạn nhận được một kỳ vọng tương tự nhưng sự khác biệt  lợi thế thấp hơn nhiều. Đây là người diễn viên- phê phán.
 
 **Type:** Build
 **Languages:** Python
@@ -9,11 +9,13 @@
 
 ## 问题
 
-Vanilla REINFORCE 能工作, nhưng sự khác biệt của nó 很糟糕. Monte Carlo trở lại.`G_t`Trong các tập khác nhau có thể có sự dao động gấp 10 lần.`∇ log π`Một lần nữa, sẽ tạo ra một ước tính Gradient, cần hàng ngàn tập để thúc đẩy chính sách với nhiều cập nhật DQN ít hơn để đạt được khoảng cách.
+Vanilla REINFORCE 能工作, nhưng sự khác biệt của nó 很糟糕. Monte Carlo trở lại.$G_t$Trong các tập khác nhau có thể có sự dao động gấp 10 lần.$\nabla \log \pi$Một lần nữa, sẽ tạo ra một ước tính Gradient, cần hàng ngàn tập để thúc đẩy chính sách với nhiều cập nhật DQN ít hơn để đạt được khoảng cách.
 
-sự khác biệt từ việc sử dụng lợi nhuận thô. Nếu bạn giảm một đường cơ sở.`b(s_t)`: bất kỳ chức năng của trạng thái, bao gồm giá trị học, kỳ vọng 保持不变,而变化 会下降──最好的可处理的基线是`V̂(s_t)`     `∇ log π`Số lượng là:
+sự khác biệt từ việc sử dụng lợi nhuận thô. Nếu bạn giảm một đường cơ sở.$b(s_t)$: bất kỳ chức năng của trạng thái, bao gồm giá trị học, kỳ vọng 保持不变,而变化 会下降──最好的可处理的基线是$\hat{V}(s_t)$     $\nabla \log \pi$Số lượng là:
 
-`A(s, a) = G - V̂(s)`
+```math
+A(s, a) = G - \hat{V}(s)
+```
 
 Nếu một hành động  tạo ra lợi nhuận cao hơn trung bình, nó là tốt; nếu thấp hơn trung bình, là差的;;带学会批评的 REINFORCE就是 *演员批评*;;批评给演员一个低差异的老师;;这是2015年后的每一个深度政策方法;;A2C、A3C、PPO、SAC、IMPALA);;
 
@@ -23,33 +25,39 @@ Nếu một hành động  tạo ra lợi nhuận cao hơn trung bình, nó là 
 
 **两个 networks，一个 shared loss：**
 
-- **Actor** `π_θ(a | s)`: chính sách. mẫu. Nó để hành động.
-- **Critic** `V_φ(s)`: ước tính về lợi nhuận dự kiến từ nhà nước xuất phát.`(V_φ(s) - target)²`训练――
+- **Actor** $\pi_\theta(a \mid s)$: chính sách. mẫu. Nó để hành động.
+- **Critic** $V_\phi(s)$: ước tính về lợi nhuận dự kiến từ nhà nước xuất phát.$(V_\phi(s) - \text{target})^2$训练――
 
 **Advantage。**两种标准形式:
 
-- *Lợi thế MC:* `A_t = G_t - V_φ(s_t)`Không thiên vị, sự khác biệt, cao hơn.
-- *Lợi thế TD:* `A_t = r_{t+1} + γ V_φ(s_{t+1}) - V_φ(s_t)`△ phân biệt đối xử`V_φ`),variance 低得多──也叫 *TD residual* `δ_t`
+- *Lợi thế MC:* $A_t = G_t - V_\phi(s_t)$Không thiên vị, sự khác biệt, cao hơn.
+- *Lợi thế TD:* $A_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)$△ phân biệt đối xử$V_\phi$),variance 低得多──也叫 *TD residual* $\delta_t$
 
 **n-step advantage。**Trong hai giá trị:
 
-`A_t^{(n)} = r_{t+1} + γ r_{t+2} + … + γ^{n-1} r_{t+n} + γ^n V_φ(s_{t+n}) - V_φ(s_t)`
+```math
+A_t^{(n)} = r_{t+1} + \gamma r_{t+2} + \ldots + \gamma^{n-1} r_{t+n} + \gamma^n V_\phi(s_{t+n}) - V_\phi(s_t)
+```
 
-`n = 1`Đó là TD tinh khiết.`n = ∞`Đó là MC. Hầu hết các ứng dụng được sử dụng trên Atari.`n = 5`, trong MuJoCo' s PPO 上 sử dụng `n = 2048`
+$n = 1$Đó là TD tinh khiết.$n = \infty$Đó là MC. Hầu hết các ứng dụng được sử dụng trên Atari.$n = 5$, trong MuJoCo' s PPO 上 sử dụng $n = 2048$
 
 **Generalized Advantage Estimation (GAE)。**Schulman et al. (2016)  đề xuất đối với tất cả các lợi thế n- bước làm trung bình cân bằng theo tỷ lệ:
 
-`A_t^{GAE} = Σ_{l=0}^{∞} (γλ)^l δ_{t+l}`
+```math
+A_t^{\text{GAE}} = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}
+```
 
-Trong số đó `λ ∈ [0, 1]``λ = 0`是 TD(sự biến đổi thấp, thiên vị cao)。`λ = 1`是 MC(sự khác biệt cao, không thiên vị)`λ = 0.95`là 2026 năm mặc định: tiếp tục điều chỉnh, cho đến khi định vị / biến số dial đến vị trí bạn muốn.
+Trong số đó $\lambda \in [0, 1]$$\lambda = 0$是 TD(sự biến đổi thấp, thiên vị cao)。$\lambda = 1$是 MC(sự khác biệt cao, không thiên vị)$\lambda = 0.95$là 2026 năm mặc định: tiếp tục điều chỉnh, cho đến khi định vị / biến số dial đến vị trí bạn muốn.
 
-**A2C：synchronous advantage actor-critic。**Trong `N`个 môi trường song song 上收集 `T`bước──为每一步 计算优点──在组合批上更新演员 和评论──重复──这是 A3C 更简单、更可扩展的兄弟姐妹──
+**A2C：synchronous advantage actor-critic。**Trong $N$个 môi trường song song 上收集 $T$bước──为每一步 计算优点──在组合批上更新演员 和评论──重复──这是 A3C 更简单、更可扩展的兄弟姐妹──
 
-**A3C：asynchronous advantage actor-critic。**Mnih et al. (2016)。 khởi động `N`个 worker threads, mỗi thread 运行一个 env──每个 worker 在自己的推出上本地计算梯度,然后异步应用到共享参数服务器──不需要重播缓冲:workers 通过运行不同轨迹来去解调──A3C 证明你可以在CPU上规模培训──到2026年,GPU-based A2C(batched parallel envs) chiếm chủ quyền,因为 GPUs 需要大批量──
+**A3C：asynchronous advantage actor-critic。**Mnih et al. (2016)。 khởi động $N$个 worker threads, mỗi thread 运行一个 env──每个 worker 在自己的推出上本地计算梯度,然后异步应用到共享参数服务器──不需要重播缓冲:workers 通过运行不同轨迹来去解调──A3C 证明你可以在CPU上规模培训──到2026年,GPU-based A2C(batched parallel envs) chiếm chủ quyền,因为 GPUs 需要大批量──
 
 **Combined loss。**
 
-`L(θ, φ) = -E[ A_t · log π_θ(a_t | s_t) ]  +  c_v · E[(V_φ(s_t) - G_t)²]  -  c_e · E[H(π_θ(·|s_t))]`
+```math
+L(\theta, \phi) = -\mathbb{E}[ A_t \cdot \log \pi_\theta(a_t \mid s_t) ] + c_v \cdot \mathbb{E}[(V_\phi(s_t) - G_t)^2] - c_e \cdot \mathbb{E}[H(\pi_\theta(\cdot \mid s_t))]
+```
 
 三项:người mất chính sách-đường độ, sự lùi giá trị, thưởng entropy.`c_v ~ 0.5``c_e ~ 0.01`Đó là những điểm khởi đầu của các giáo lý.
 
@@ -62,7 +70,7 @@ actor-critic
 
 ### Bước 1: một nhà phê bình
 
-Nhận xét tuyến tính`V_φ(s) = w · features(s)`Sử dụng MSE 更新:
+Nhận xét tuyến tính$V_\phi(s) = w \cdot \text{features}(s)$Sử dụng MSE 更新:
 
 ```python
 def critic_update(w, x, target, lr):
@@ -77,7 +85,7 @@ Trong bảng xếp hạng, các nhà phê bình 会在几百个节目内收─�
 
 ### Bước 2: lợi thế n- bước
 
-给定长度为 `T`Việc triển khai và khởi động cuối cùng `V(s_T)`- Có thể là:
+给定长度为 $T$Việc triển khai và khởi động cuối cùng $V(s_T)$- Có thể là:
 
 ```python
 def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
@@ -92,7 +100,7 @@ def compute_advantages(rewards, values, gamma=0.99, lam=0.95, last_value=0.0):
     return advantages, returns
 ```
 
-`returns`Đó là mục tiêu quan trọng.`advantages`là乘以`∇ log π`Nội dung của nó.
+`returns`Đó là mục tiêu quan trọng.`advantages`là乘以$\nabla \log \pi$Nội dung của nó.
 
 ### Bước 3: cập nhật kết hợp
 
@@ -115,8 +123,8 @@ Chính sách, mỗi lần cập nhật, một sự ra mắt, diễn viên và nh
 
 ### Bước 4: Phối tương đồng (A3C vs A2C)
 
-- **A3C：** khởi động `N`个线程── mỗi线程 运行自己的env 和自己的前进通行──周期性地把 Gradient updates 推送到共享主──master 上不加锁:races 没关系,它们只是增加噪声──
-- **A2C：**Trong một quá trình trong hoạt động`N`个 env trường hợp,把 quan sát xếp chồng 成 `[N, obs_dim]`batch,执行 batched forward pass、batched backward pass──GPU sử dụng 更高,deterministic,更容易推理──2026 年的默认选择──
+- **A3C：** khởi động $N$个线程── mỗi线程 运行自己的env 和自己的前进通行──周期性地把 Gradient updates 推送到共享主──master 上不加锁:races 没关系,它们只是增加噪声──
+- **A2C：**Trong một quá trình trong hoạt động$N$个 env trường hợp,把 quan sát xếp chồng 成 `[N, obs_dim]`batch,执行 batched forward pass、batched backward pass──GPU sử dụng 更高,deterministic,更容易推理──2026 年的默认选择──
 
 Mã đồ chơi của chúng tôi để giữ rõ ràng một sợi; biến thành A2C đúc chỉ cần ba dòng numpy.
 
@@ -126,7 +134,7 @@ Mã đồ chơi của chúng tôi để giữ rõ ràng một sợi; biến thà
 - **Advantage normalization。**Trong mỗi lô, các lợi thế trong đó bình thường hóa đến mức trung bình không/đơn vị không có chi phí, nhưng có thể tập luyện ổn định đáng kể.
 - **Shared trunk。**Đối với các đầu vào hình ảnh, đối với diễn viên và nhà phê bình sử dụng bộ trích dẫn tính năng chia sẻ.
 - **On-policy contract。**A2C cho dữ liệu chính xác lặp lại một lần cập nhật.
-- **Entropy collapse。**Không có gì`c_e > 0`Khi, chính sách sẽ được cập nhật hàng trăm lần trong trở nên gần như quyết định và ngừng khám phá.
+- **Entropy collapse。**Không có gì$c_e > 0$Khi, chính sách sẽ được cập nhật hàng trăm lần trong trở nên gần như quyết định và ngừng khám phá.
 - **Reward scale。**Tăng cường lợi thế phụ thuộc vào quy mô phần thưởng.
 
 ## Sử dụng nó
@@ -171,22 +179,22 @@ tags: [rl, actor-critic, gae]
 
 ## Các bài tập
 
-1. **Easy。**Trong 4×4 GridWorld 上 sử dụng MC lợi thế(`G_t - V(s_t)`(Train actor-critic──与 Lesson 06 中 REINFORCE-with-running-median-baseline)
-2. **Medium。**切换到 TD-hữu ích dư thừa`r + γ V(s') - V(s)`(■) đo lường lợi thế của các lô.
-3. **Hard。**实现 GAE(λ)。扫描 `λ ∈ {0, 0.5, 0.9, 0.95, 1.0}`◊ vẽ kết quả hoàn lại so với hiệu quả mẫu.
+1. **Easy。**Trong 4×4 GridWorld 上 sử dụng MC lợi thế$(G_t - V(s_t))$训练 diễn viên-chính trị.
+2. **Medium。**切换 thành lợi thế dư TD$(r + \gamma V(s') - V(s))$◊ đo lường lợi thế của các lô.
+3. **Hard。**实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$◊ vẽ kết quả hoàn lại so với hiệu quả mẫu.
 
 ## Các điều khoản chính
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Actor | “Policy net” | `π_θ(a\|s)`，由 policy gradient 更新。 |
-| Critic | “Value net” | `V_φ(s)`，通过对 returns / TD targets 做 MSE regression 更新。 |
-| Advantage | “比平均好多少” | `A(s, a) = Q(s, a) - V(s)` 或它的 estimators。`∇ log π` 的 multiplier。 |
-| TD residual | “δ” | `δ_t = r + γ V(s') - V(s)`；one-step advantage estimate。 |
-| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 `λ` parameterized。 |
+| Actor | “Policy net” | $\pi_\theta(a \mid s)$，由 policy gradient 更新。 |
+| Critic | “Value net” | $V_\phi(s)$，通过对 returns / TD targets 做 MSE regression 更新。 |
+| Advantage | “比平均好多少” | $A(s, a) = Q(s, a) - V(s)$ 或它的 estimators。$\nabla \log \pi$ 的 multiplier。 |
+| TD residual | “δ” | $\delta_t = r + \gamma V(s') - V(s)$；one-step advantage estimate。 |
+| GAE | “插值旋钮” | n-step advantages 的 exponentially weighted sum，由 $\lambda$ parameterized。 |
 | A2C | “Synchronous actor-critic” | 跨 envs batching；每个 rollout 做一次 Gradient step。 |
 | A3C | “Async actor-critic” | Worker threads 把 gradients 推送到 shared param server。Original paper；2026 年较少见。 |
-| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 `γ^n V(s_{t+n})` 来闭合求和。 |
+| Bootstrap | “在 horizon 使用 V” | 截断 rollout，添加 $\gamma^n V(s_{t+n})$ 来闭合求和。 |
 
 ## Đọc thêm
 

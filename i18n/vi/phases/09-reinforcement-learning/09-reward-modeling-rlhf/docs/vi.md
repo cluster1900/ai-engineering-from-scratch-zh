@@ -21,31 +21,31 @@ RLHF(Christiano et al. 2017; Ouyang et al. 2022) đưa các sở thích 转换 t
 
 ![Three-stage RLHF: SFT, RM training on pairwise prefs, PPO with KL penalty](../assets/rlhf.svg)
 
-**Stage 1：Supervised Fine-Tuning（SFT）。**Từ mô hình cơ bản được đào tạo trước 开始──在目标行为的人类编写演示 上细调(làm theo hướng dẫn phản ứng、 hữu ích câu trả lời等)`π_SFT`mô hình, nó * hướng đến hành vi tốt*, nhưng vẫn có không gian hành động không giới hạn.
+**Stage 1：Supervised Fine-Tuning（SFT）。**Từ mô hình cơ bản được đào tạo trước 开始──在目标行为的人类编写演示 上细调(làm theo hướng dẫn phản ứng、 hữu ích câu trả lời等)$\pi_{\text{SFT}}$mô hình, nó * hướng đến hành vi tốt*, nhưng vẫn có không gian hành động không giới hạn.
 
 **Stage 2：Reward Model training。**
 
-- 收集对提示 `x`của các cặp phản ứng `(y_+, y_-)`,由人类标注为y_+ 优于 y_-。
-- Mô hình phần thưởng tập luyện`R_φ(x, y)`, cho nó đi .`y_+`分配更高分数──
+- 收集对提示 $x$của các cặp phản ứng $(y_+, y_-)$,由人类标注为y_+ 优于 y_-。
+- Mô hình phần thưởng tập luyện$R_\phi(x, y)$, cho nó đi .$y_+$分配更高分数──
 - Lối mất:**Bradley-Terry pairwise logistic**- Có thể là:
 
-  `L(φ) = -E[ log σ(R_φ(x, y_+) - R_φ(x, y_-)) ]`
+  $L(\phi) = -\mathbb{E}[ \log \sigma(R_\phi(x, y_+) - R_\phi(x, y_-)) ]$
 
-  σ 是 sigmoid──reward 的差值隐含偏好 的 log-odds──BT kể từ năm 1952 ((Bradley-Terry) kể từ đó luôn là phương pháp tiêu chuẩn, cũng là chủ yếu trong RLHF hiện đại──
+  $\sigma$Đó là một cách thức khác biệt của phần thưởng.
 
-- `R_φ`Thông thường bắt đầu từ mô hình SFT, và trên cùng thêm một đầu scalar.
+- $R_\phi$Thông thường bắt đầu từ mô hình SFT, và trên cùng thêm một đầu scalar.
 
 **Stage 3：带 KL penalty、针对 RM 的 PPO。**
 
-- Từ `π_SFT`Chính sách đào tạo bắt đầu`π_θ`                                                                                                                                                                                                                                                              `π_ref = π_SFT`
-- Phản ứng `y`Kết thúc của phần thưởng:
+- Từ $\pi_{\text{SFT}}$Chính sách đào tạo bắt đầu$\pi_\theta$                                                                                                                                                                                                                                                              $\pi_{\text{ref}} = \pi_{\text{SFT}}$
+- Phản ứng $y$Kết thúc của phần thưởng:
 
-  `r_total(x, y) = R_φ(x, y) - β · KL(π_θ(·|x) || π_ref(·|x))`
+  $r_{\text{total}}(x, y) = R_\phi(x, y) - \beta \cdot \mathrm{KL}(\pi_\theta(\cdot \mid x) \Vert \pi_{\text{ref}}(\cdot \mid x))$
 
-  KL phạt 防止 `π_θ`任意漂离 `π_SFT` Nó là một *regularizer*, không phải là vùng tin tưởng cứng性。`β`Thường là `0.01`- Tôi không biết.`0.05`
+  KL phạt 防止 $\pi_\theta$任意漂离 $\pi_{\text{SFT}}$ Nó là một *regularizer*, không phải là vùng tin tưởng cứng性。$\beta$Thông thường là 0.01-0.05。
 - Sử dụng phần thưởng này 运行 PPO(Dạy 08)。Â Lợi ích trong quỹ đạo cấp token 上计算, nhưng RM chỉ cho câu trả lời hoàn chỉnh 打分。
 
-**为什么需要 KL？**Không có nó, Cục Công an sẽ rất vui khi tìm ra chiến lược tấn công phần thưởng.`π_θ`保持在 RM 训练过的多元 附近──它 là đơn vị quay quan trọng nhất trong RLHF──
+**为什么需要 KL？**Không có nó, Cục Công an sẽ rất vui khi tìm ra chiến lược tấn công phần thưởng.$\pi_\theta$保持在 RM 训练过的多元 附近──它 là đơn vị quay quan trọng nhất trong RLHF──
 
 **2026 状态：**
 
@@ -98,7 +98,7 @@ Sau vài trăm lần cập nhật,`w`Tôi sẽ cho các mã thông báo từ t�
 
 ### Bước 3: Chính sách giống như PPO trên RM 之
 
-Chính sách đồ chơi của chúng tôi sẽ tạo ra một token từ từ vựng. Chúng tôi sử dụng RM để cung cấp cho token này.`log π_θ(token | prompt)`, thêm KL-to-reference phạt,并应用 cắt giảm PPO thay thế.
+Chính sách đồ chơi của chúng tôi sẽ tạo ra một token từ từ vựng. Chúng tôi sử dụng RM để cung cấp cho token này.$\log \pi_\theta(\text{token} \mid \text{prompt})$, thêm KL-to-reference phạt,并应用 cắt giảm PPO thay thế.
 
 ```python
 def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Bước 4: Monitor KL
 
-Mỗi lần cập nhật theo dõi nghĩa là`KL(π_θ || π_ref)`Nếu nó trượt qua`~5-10`, chính sách 已漂离 `π_SFT`很远  thấp hơn `β`Có phải sự tấn công phần thưởng đang tăng lên hay bắt đầu không?
+Mỗi lần cập nhật theo dõi nghĩa là$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Nếu nó trượt qua`~5-10`, chính sách 已漂离 $\pi_{\text{SFT}}$很远  thấp hơn $\beta$Có phải sự tấn công phần thưởng đang tăng lên hay bắt đầu không?
 
 ### Bước 5: Sử dụng công thức sản xuất của TRL
 
@@ -164,7 +164,7 @@ Thư viện sẽ thay cho em làm ba việc.`adap_kl_ctrl=True`实现 adaptive-�
 
 ## 陷
 
-- **Over-optimization / reward hacking。**RM không hoàn hảo;`π_θ`Sẽ tìm thấy điểm số cao nhưng chất lượng khác nhau hoàn thành đối thủ.`β`、拓宽 RM dữ liệu đào tạo
+- **Over-optimization / reward hacking。**RM không hoàn hảo;$\pi_\theta$Sẽ tìm thấy điểm số cao nhưng chất lượng khác nhau hoàn thành đối thủ.$\beta$、拓宽 RM dữ liệu đào tạo
 - **Length hacking。**Trong các câu trả lời hữu ích 上训练的RMs 往往隐式奖励 长度──Politics 学会填充答案──补救:người trả lời bình thường hóa chiều dài,或使用RLAIF của RMs nhận thức chiều dài──
 - **RM 太小。**RM ít nhất cần và chính sách như vậy lớn.
 - **KL tuning。**B. quá thấp → drift 和 thưởng hackềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnềnền
@@ -214,7 +214,7 @@ tags: [rl, rlhf, alignment, llm]
 ## 练习
 
 1. **简单。**Trong `code/main.py`Trung sử dụng 500 cặp ưu tiên tổng hợp  luyện tập mô hình thưởng Bradley-Terry ⋅ trong 100 cặp ⋅ trong việc đo lường chính xác cặp ⋅ nên vượt quá 90% ⋅
-2. **中等。**Sử dụng `β ∈ {0.0, 0.1, 1.0}`运行 đồ chơi PPO-RLHF vòng. đối với mỗi giá trị, vẽ điểm số RM so với KL-to-reference trên cập nhật.
+2. **中等。**Sử dụng $\beta \in \lbrace 0.0, 0.1, 1.0 \rbrace$运行 đồ chơi PPO-RLHF vòng. đối với mỗi giá trị, vẽ điểm số RM so với KL-to-reference trên cập nhật.
 3. **困难。**Trong cùng một số dữ liệu ưu tiên trên thực hiện DPO (closed-form preference-probability loss),并与RLHF-PPO pipeline 在使用的计算和达到最终RM score 上对比──
 
 ## 关键术语
@@ -223,8 +223,8 @@ tags: [rl, rlhf, alignment, llm]
 |------|----------|----------|
 | RLHF | "Alignment RL" | 三阶段 SFT + RM + PPO pipeline（Christiano 2017, Ouyang 2022）。 |
 | Reward Model (RM) | "The scoring net" | 通过 Bradley-Terry 拟合 pairwise preferences 学到的 scalar function。 |
-| Bradley-Terry | "Pairwise logistic loss" | `P(y_+ ≻ y_-) = σ(R(y_+) - R(y_-))`；标准 RM objective。 |
-| KL penalty | "Stay near the reference" | reward 中的 `β · KL(π_θ \|\| π_ref)`；anti-reward-hacking regularizer。 |
+| Bradley-Terry | "Pairwise logistic loss" | $P(y_+ \succ y_-) = \sigma(R(y_+) - R(y_-))$；标准 RM objective。 |
+| KL penalty | "Stay near the reference" | reward 中的 $\beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$；anti-reward-hacking regularizer。 |
 | Reward hacking | "Goodhart's law" | Policy 利用 RM 缺陷；症状：reward 上升，human eval 持平。 |
 | RLAIF | "AI-labeled preferences" | 标签来自另一个 LM 而非人类的 RLHF。 |
 | PRM | "Process Reward Model" | 给 partial reasoning steps 打分；用于 reasoning pipelines。 |

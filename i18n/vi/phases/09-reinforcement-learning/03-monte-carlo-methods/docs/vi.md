@@ -9,7 +9,7 @@
 
 ## 问题
 
-Quá trình lập trình năng động  rất tốt, nhưng nó giả định bạn có thể đối với mỗi trạng thái và hành động  truy vấn `P(s' | s, a)`△ trên thế giới thực hầu như không có gì làm việc như vậy ◦ Robot 无法解析地计算施施加合扭矩 后摄像头像素的分布──定价算法 无法对待每种可能客户反应 积分──LLM 无法枚举某个代币 后所有可能延续──
+Quá trình lập trình năng động  rất tốt, nhưng nó giả định bạn có thể đối với mỗi trạng thái và hành động  truy vấn $P(s' \mid s, a)$△ trên thế giới thực hầu như không có gì làm việc như vậy ◦ Robot 无法解析地计算施施加合扭矩 后摄像头像素的分布──定价算法 无法对待每种可能客户反应 积分──LLM 无法枚举某个代币 后所有可能延续──
 
 Bạn cần một phương pháp chỉ phụ thuộc vào môi trường trong *chọn mẫu* của phương pháp.`s_0, a_0, r_1, s_1, a_1, r_2, …, s_T` Sử dụng nó để ước tính giá trị.
 
@@ -19,30 +19,32 @@ Sự chuyển đổi từ DP đến MC rất quan trọng trong tư tưởng: ch
 
 ![Monte Carlo: rollout, compute returns, average; first-visit vs every-visit](../assets/monte-carlo.svg)
 
-**核心思想，一行表达：** `V^π(s) = E_π[G_t | s_t = s] ≈ (1/N) Σ_i G^{(i)}(s)`, trong số đó `G^{(i)}(s)`Đó là chính sách.`π`下访问 `s`之后观察到的回报──
+**核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, trong số đó $G^{(i)}(s)$Đó là chính sách.$\pi$下访问 $s$之后观察到的回报──
 
-**First-visit vs every-visit MC。**Định một trạng thái nhiều lần truy cập`s`Trong một tập, lần đầu tiên MC chỉ thống kê lần đầu tiên thăm sau khi trở lại; mỗi lần truy cập MC 统计所有访问──二者在极限下都是无偏见──第一次访问更容易分析(iid样本)──每次访问 每个集使用更多数据,在实践中通常收更快──
+**First-visit vs every-visit MC。**Định một trạng thái nhiều lần truy cập$s$Trong một tập, lần đầu tiên MC chỉ thống kê lần đầu tiên thăm sau khi trở lại; mỗi lần truy cập MC 统计所有访问──二者在极限下都是无偏见──第一次访问更容易分析(iid样本)──每次访问 每个集使用更多数据,在实践中通常收更快──
 
 **Incremental mean。**Không lưu trữ tất cả các lợi nhuận, mà là cập nhật trung bình chạy:
 
-`V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]`
+```math
+V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
+```
 
-重新整理:`V_new = V_old + α · (target - V_old)`, trong số đó `α = 1/n` `1/n`换 thành không đổi kích thước bước `α ∈ (0, 1)`, bạn sẽ có một máy tính ước tính MC không tĩnh, nó sẽ theo dõi`π`Sự thay đổi. Đây là động tác từ MC  nhảy đến TD, nhảy lại đến tất cả các khóa của mỗi thuật toán RL hiện đại.
+重新整理:$V_{\text{new}} = V_{\text{old}} + \alpha \cdot (\text{target} - V_{\text{old}})$, trong số đó $\alpha = 1/n$ $1/n$换 thành không đổi kích thước bước $\alpha \in (0, 1)$, bạn sẽ có một máy tính ước tính MC không tĩnh, nó sẽ theo dõi$\pi$Sự thay đổi. Đây là động tác từ MC  nhảy đến TD, nhảy lại đến tất cả các khóa của mỗi thuật toán RL hiện đại.
 
-**Exploration 现在成了问题。**DP 通过枚举触及每个州──MC chỉ xem chính sách 会访问各州──如果`π`là xác định, không gian trạng thái 中整片区域永远不会 được lấy mẫu, ước tính giá trị của chúng sẽ mãi mãi dừng lại ở zero.
+**Exploration 现在成了问题。**DP 通过枚举触及每个州──MC chỉ xem chính sách 会访问各州──如果$\pi$là xác định, không gian trạng thái 中整片区域永远不会 được lấy mẫu, ước tính giá trị của chúng sẽ mãi mãi dừng lại ở zero.
 
 1. **Exploring starts。**Từ随机 (s, a) cặp 开始每个集──保证覆盖;实践中不现实(你不能把机器人 重置到任意状态)──
-2. **ε-greedy。**Compared to current Q  thực hiện hành động tham lam, nhưng có khả năng `ε`选择随机行动―― tất cả các cặp hành động trạng thái đều được lấy mẫu.
-3. **Off-policy MC。**Trong chính sách hành vi `μ`下收集数据, thông qua việc lấy mẫu tầm quan trọng học chính sách mục tiêu `π`❖ Sự biến thể cao, nhưng đây là đường dẫn của các phương pháp buffer-play như DQN ❖
+2. **ε-greedy。**Compared to current Q  thực hiện hành động tham lam, nhưng có khả năng $\epsilon$选择随机行动―― tất cả các cặp hành động trạng thái đều được lấy mẫu.
+3. **Off-policy MC。**Trong chính sách hành vi $\mu$下收集数据, thông qua việc lấy mẫu tầm quan trọng học chính sách mục tiêu $\pi$❖ Sự biến thể cao, nhưng đây là đường dẫn của các phương pháp buffer-play như DQN ❖
 
 **Monte Carlo Control。**Đánh giá → cải thiện → đánh giá,就像 chính sách lặp lại như vậy, nhưng đánh giá là dựa trên mẫu:
 
-1. 运行 `π`, có một tập.
-2. Theo các báo cáo được quan sát`Q(s, a)`
-3. 让 `π`So với `Q`变成 ε-cười tham lam.
+1. 运行 $\pi$, có một tập.
+2. Theo các báo cáo được quan sát$Q(s, a)$
+3. 让 $\pi$So với $Q$变成 ε-cười tham lam.
 4. Đổi lại
 
-Trong điều kiện ấm áp, mỗi cặp được truy cập vô hạn,`α`满足 Robbins-Monro), sẽ có tỷ lệ 1 收到 `Q*`和 `π*`
+Trong điều kiện ấm áp, mỗi cặp được truy cập vô hạn,$\alpha$满足 Robbins-Monro), sẽ có tỷ lệ 1 收到 $Q^{\ast}$和 $\pi^{\ast}$
 
 ## 动手构建
 
@@ -76,7 +78,7 @@ def returns_from(trajectory, gamma):
     return list(reversed(returns))
 ```
 
-Một lần qua,`O(T)`❖ chống lại tái phát`G_t = r_{t+1} + γ G_{t+1}`避免了重复求和──
+Một lần qua,$O(T)$❖ chống lại tái phát$G_t = r_{t+1} + \gamma G_{t+1}$避免了重复求和──
 
 ### Bước 3: đánh giá MC lần đầu tiên
 
@@ -126,15 +128,15 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 
 ### Bước 5: So với tiêu chuẩn vàng DP
 
-当 episodes → ∞ 时,你对 `V^π`Ước tính của MC  nên tương đương với kết quả DP trong Bài học 02                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `~0.1`Trong phạm vi của mình.
+当 episodes → ∞ 时,你对 $V^\pi$Ước tính của MC  nên tương đương với kết quả DP trong Bài học 02                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `~0.1`Trong phạm vi của mình.
 
 ## 常见陷
 
 - **Infinite episodes。**MC  yêu cầu các tập  phải * chấm dứt*... Nếu chính sách của bạn có thể luôn lặp, xin hãy đặt `max_steps`Ưu điểm,并把达到 Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ưu điểm Ư
-- **Variance。**MC sử dụng hoàn toàn trả lại. Trong các tập dài, sự khác biệt rất lớn, cuối cùng một lần để trả lại sẽ được chuyển đổi bằng cùng một lượng.`V(s_0)` Các phương pháp TD (Dạy học 04) thông qua bootstrapping 降低这一点
+- **Variance。**MC sử dụng hoàn toàn trả lại. Trong các tập dài, sự khác biệt rất lớn, cuối cùng một lần để trả lại sẽ được chuyển đổi bằng cùng một lượng.$V(s_0)$ Các phương pháp TD (Dạy học 04) thông qua bootstrapping 降低这一点
 - **State coverage。**Trong một Q mới 上做贪 MC, nếu có mối quan hệ, chỉ sẽ liên tục cố gắng một hành động.
-- **Non-stationary policies。**Nếu `π`发生变化 (如 MC control 中那样), cũ trả về từ các chính sách khác nhau.
-- **Off-policy importance sampling。**权重 `π(a|s)/μ(a|s)`会沿轨迹 连乘──Variance 会随地平线 爆炸──用每决权 IS 截断,或切换到 TD──
+- **Non-stationary policies。**Nếu $\pi$发生变化 (如 MC control 中那样), cũ trả về từ các chính sách khác nhau.
+- **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$会沿轨迹 连乘──Variance 会随地平线 爆炸──用每决权 IS 截断,或切换到 TD──
 
 
 ```figure
@@ -151,10 +153,10 @@ Phương pháp Monte Carlo trong 2026 năm:
 | Logged policy 的 offline evaluation | 对 stored trajectories 的 discounted returns 求平均。 |
 | Monte Carlo Tree Search（AlphaZero） | 从 tree leaves 发起的 MC rollouts 指导 selection。 |
 | LLM RL evaluation | 为给定 policy 计算 sampled completions 的 average reward。 |
-| PPO 中的 baseline estimation | Advantage target `A_t = G_t - V(s_t)` 使用 MC `G_t`。 |
+| PPO 中的 baseline estimation | Advantage target $A_t = G_t - V(s_t)$ 使用 MC $G_t$。 |
 | RL 教学 | 最简单且真正有效的 algorithm；去掉 bootstrapping 就能看到核心。 |
 
-现代 deep-RL algorithms ((PPO、SAC) sẽ thông qua `n`- bước trả lại hoặc GAE, trong MC hoàn toàn trả lại) và TD hoàn toàn trả lại một bước khởi động) giữa插值──两个端点都是同类估计的实例──
+现代 deep-RL algorithms ((PPO、SAC) sẽ thông qua $n$- bước trả lại hoặc GAE, trong MC hoàn toàn trả lại) và TD hoàn toàn trả lại một bước khởi động) giữa插值──两个端点都是同类估计的实例──
 
 ## 交付 nó
 
@@ -183,20 +185,20 @@ tags: [rl, monte-carlo, evaluation]
 
 ## 练习
 
-1. **Easy.**实现 4×4 GridWorld 上 đồng bộ ngẫu nhiên chính sách của lần đầu tiên thăm MC đánh giá ➡️运行 10,000 tập ➡️`V(0,0)`随节目数 变化的曲线与 DP 答案对照绘制──
-2. **Medium.**用 `ε ∈ {0.01, 0.1, 0.3}`实现 ε-greedy MC control──比较20,000 tập 后的平均回报──曲线看起来是什么样?
-3. **Hard.**Sử dụng quan trọng lấy mẫu 实现 *off-policy* MC: trong chính sách đồng bộ-quay `μ`下 thu thập dữ liệu, ước tính chính sách tối ưu xác định`π`của `V^π`◊ So sánh đơn giản IS、per-decision IS 和 cân nặng IS──cuối đa số là tối thiểu?
+1. **Easy.**实现 4×4 GridWorld 上 đồng bộ ngẫu nhiên chính sách của lần đầu tiên thăm MC đánh giá ➡️运行 10,000 tập ➡️$V(0,0)$随节目数 变化的曲线与 DP 答案对照绘制──
+2. **Medium.**用 $\epsilon \in \lbrace 0.01, 0.1, 0.3 \rbrace$实现 ε-greedy MC control──比较20,000 tập 后的平均回报──曲线看起来是什么样?
+3. **Hard.**Sử dụng quan trọng lấy mẫu 实现 *off-policy* MC: trong chính sách đồng bộ-quay $\mu$下 thu thập dữ liệu, ước tính chính sách tối ưu xác định$\pi$của $V^\pi$◊ So sánh đơn giản IS、per-decision IS 和 cân nặng IS──cuối đa số là tối thiểu?
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
-| Return `G_t` | “Future reward” | 从 step `t` 到 episode 结束的 discounted rewards 总和：`Σ_{k≥0} γ^k r_{t+k+1}`。 |
+| Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
 | Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
-| ε-greedy | “Exploration noise” | 以概率 `1-ε` 选择 greedy action；以概率 `ε` 选择 random action。 |
-| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 `π(a\|s)/μ(a\|s)` 乘积对 returns 重新加权，从 `μ` 数据估计 `V^π`。 |
+| ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
+| Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |
 | Off-policy | “Learn from someone else's data” | Target policy ≠ behavior policy。Importance-sampled MC、Q-learning、DQN。 |
 

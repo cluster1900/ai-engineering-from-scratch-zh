@@ -11,7 +11,7 @@
 
 Tablar Q-learning 需要为每一个 (状态, hành động) đối với单独保存一个 Q-值──一个棋牌 大约有1043 个状态──一 Atari 画面是210×160×3 = 100,800 个功能──Tablar RL 在几千个州 时就会失效,更不用说数十亿个状态──
 
-Điều sau đó, cách sửa chữa rất rõ ràng: sử dụng mạng thần kinh.`Q(s, a; θ)`替换 Q-table──但这种事后显然花了几十年才走到这里──朴素的函数近似与 Q-learning会在致命三三 下发散:函数近似 + bootstrapping + learning off-policy──Mnih et al. (2013, 2015) 找出三个能稳定学习过程的工程技巧:
+Điều sau đó, cách sửa chữa rất rõ ràng: sử dụng mạng thần kinh.$Q(s, a; \theta)$替换 Q-table──但这种事后显然花了几十年才走到这里──朴素的函数近似与 Q-learning会在致命三三 下发散:函数近似 + bootstrapping + learning off-policy──Mnih et al. (2013, 2015) 找出三个能稳定学习过程的工程技巧:
 
 1. **Experience replay**让 chuyển đổi 去相关。
 2. **Target network**结 mục tiêu bootstrap
@@ -25,25 +25,29 @@ DQN trên Atari là lần đầu tiên sử dụng đơn cấu trúc và đơn s
 
 **目标。**DQN trong Neural Q-function 上 tối thiểu hóa mất TD một bước:
 
-`L(θ) = E_{(s,a,r,s')~D} [ (r + γ max_{a'} Q(s', a'; θ^-) - Q(s, a; θ))² ]`
+```math
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim D}[ (r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta))^2 ]
+```
 
-`θ`= mạng trực tuyến, từng bước thông qua Gradient Descent 更新──`θ^-`= mạng mục tiêu, từ `θ`复制(约每10,000步一次)`D`= Buffer lặp lại của quá khứ chuyển đổi.
+$\theta$= mạng trực tuyến, từng bước thông qua Gradient Descent 更新──$\theta^-$= mạng mục tiêu, từ $\theta$复制(约每10,000步一次)$D$= Buffer lặp lại của quá khứ chuyển đổi.
 
 **三个技巧，按重要性排序：**
 
 **Experience replay。**Một chứa`~10⁶`Buffer vòng chuyển đổi. Mỗi bước tập đều sẽ bình thường theo từng bước, theo từng bộ. Điều này sẽ phá vỡ thời gian liên quan.
 
-**Target network。**Trong Bellman 方程 cả hai bên đều sử dụng cùng một mạng lưới `Q(·; θ)`, sẽ để mục tiêu trong mỗi lần cập nhật di chuyển, đó là theo đuổi chạy尾巴 của mình.`Q(·; θ^-)`, trọng lượng của nó 结──每隔 `C`步,复制 `θ → θ^-`❖ Điều này sẽ giúp mục tiêu hồi phục trong hàng ngàn bước tiến trong giữ ổn định──Tạm dịch mềm `θ^- ← τ θ + (1-τ) θ^-`(được sử dụng cho DDPG, SAC) là biến thể dễ dàng hơn.
+**Target network。**Trong Bellman 方程 cả hai bên đều sử dụng cùng một mạng lưới $Q(\cdot; \theta)$, sẽ để mục tiêu trong mỗi lần cập nhật di chuyển, đó là theo đuổi chạy尾巴 của mình.$Q(\cdot; \theta^-)$, trọng lượng của nó 结──每隔 $C$步,复制 $\theta \to \theta^-$❖ Điều này sẽ giúp mục tiêu hồi phục trong hàng ngàn bước tiến trong giữ ổn định──Tạm dịch mềm $\theta^- \leftarrow \tau \theta + (1-\tau) \theta^-$(được sử dụng cho DDPG, SAC) là biến thể dễ dàng hơn.
 
-**Reward clipping。**Tỷ lệ phần thưởng của Atari từ 1 đến 1000+ 不等.`{-1, 0, +1}`Có thể ngăn chặn một trò chơi duy nhất, chỉ có một số điểm.
+**Reward clipping。**Tỷ lệ phần thưởng của Atari từ 1 đến 1000+ 不等.$\lbrace-1, 0, +1 \rbrace$Có thể ngăn chặn một trò chơi duy nhất, chỉ có một số điểm.
 
 **Double DQN。**Hasselt (2016) 修复了最大化偏见: sử dụng mạng trực tuyến 来*选择* hành động, sử dụng mạng mục tiêu 来* đánh giá* nó。
 
-`target = r + γ Q(s', argmax_{a'} Q(s', a'; θ); θ^-)`
+```math
+\text{target} = r + \gamma Q(s', \arg\max_{a'} Q(s', a'; \theta); \theta^-)
+```
 
 Đây là một thay thế, hiệu quả ổn định tốt hơn.
 
-**其他改进（Rainbow, 2017）：**Đánh giá các lỗi (TD)`V(s)`Và lợi thế đầu) ̳thông mạng tiếng ồn ̳đọc khám phá) ̳n-phases return ̳distribution Q (C51/QR-DQN) ̳multi-step bootstrapping── mỗi phần sẽ mang lại vài trăm điểm nâng cao;收益大致可叠加──
+**其他改进（Rainbow, 2017）：**Đánh giá các lỗi (TD)$V(s)$Và lợi thế đầu) ̳thông mạng tiếng ồn ̳đọc khám phá) ̳n-phases return ̳distribution Q (C51/QR-DQN) ̳multi-step bootstrapping── mỗi phần sẽ mang lại vài trăm điểm nâng cao;收益大致可叠加──
 
 
 ```figure
@@ -105,11 +109,11 @@ def train_step(online, target, batch, gamma, lr):
     apply_sgd(online, grads, lr / len(batch))
 ```
 
-hình dạng của nó là bài học 04 trong bài học Q-learning, chỉ có hai điểm khác nhau:`Q(·; θ)`Làm Backpropagation, thay vì bảng chỉ dẫn;`Q(·; θ^-)`
+hình dạng của nó là bài học 04 trong bài học Q-learning, chỉ có hai điểm khác nhau:$Q(\cdot; \theta)$Làm Backpropagation, thay vì bảng chỉ dẫn;$Q(\cdot; \theta^-)$
 
 ### 步骤 4: vòng ngoài tầng
 
-Đối với mỗi tập, dựa trên`Q(·; θ)`执行 ε-greedy,把 transitions 放 vào buffer,采样 minibatch,执行一次 Gradient step,并周期性同步 `θ^- ← θ`❖ Mô hình như sau:
+Đối với mỗi tập, dựa trên$Q(\cdot; \theta)$执行 ε-greedy,把 transitions 放 vào buffer,采样 minibatch,执行一次 Gradient step,并周期性同步 $\theta^- \leftarrow \theta$❖ Mô hình như sau:
 
 ```python
 for episode in range(N):
@@ -182,7 +186,7 @@ tags: [rl, dqn, deep-rl]
 
 1. **Easy。**运行 `code/main.py`◊ vẽ đường cong trả lại mỗi tập.
 2. **Medium。**禁用目标网络(在贝尔曼目标 两侧都使用网) 测量训练不稳定性:回报 会震荡还是发散?
-3. **Hard。**添加 Double DQN: sử dụng mạng trực tuyến 选择 `argmax a'`, sử dụng target net  đánh giá ⋅ So sánh GridWorld 上训练 1,000 个集 后, sử dụng và không sử dụng Double DQN 时`Q(s_0, best_a)`相对真相 `V*(s_0)`của sự thiên vị.
+3. **Hard。**添加 Double DQN: sử dụng mạng trực tuyến 选择 `argmax a'`, sử dụng target net  đánh giá ⋅ So sánh GridWorld 上训练 1,000 个集 后, sử dụng và không sử dụng Double DQN 时`Q(s_0, best_a)`相对真相 $V^{\ast}(s_0)$của sự thiên vị.
 
 ## 关键术语
 | Term | 人们怎么说 | 它实际是什么意思 |

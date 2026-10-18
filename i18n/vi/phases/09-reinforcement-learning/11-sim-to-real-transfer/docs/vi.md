@@ -31,7 +31,7 @@ Bạn cần một đối với *sim-to-real phân phối chuyển đổi* 具有
 
 **Domain Adaptation。**Trong sim training, sử dụng lại ít dữ liệu thực tế tinh tế.
 
-- **Real2Sim2Real：**Sử dụng các bản triển khai thực tế học một mô phỏng dư thừa `f(s, a, z) - f_sim(s, a)`, tái sửa đổi trong sim training sau đó. Không cần quá nhiều dữ liệu thực để có thể giảm khoảng cách.
+- **Real2Sim2Real：**Sử dụng các bản triển khai thực tế học một mô phỏng dư thừa $f(s, a, z) - f_{\text{sim}}(s, a)$, tái sửa đổi trong sim training sau đó. Không cần quá nhiều dữ liệu thực để có thể giảm khoảng cách.
 - **Observation adaptation：**训练一个政策, thông qua các tính năng học tập trích xuất (ví dụ: GAN pixel-to-pixel) sẽ thực sự obs → sim giống như obs;; điều khiển vẫn còn ở trong sim;;
 
 **Privileged learning / teacher-student。**Miki et al. 2022(ANimal quadruped) ・・・ trong mô phỏng 中训练一个可以访问特权信息(地面真理摩擦、地面高度、IMU drift) 的 *老师*。再蒸留 一个只看到真实传感器观测的 *学生*。学生 学会从历史中推断特权特,并在物理参数变化下保持强──
@@ -129,7 +129,7 @@ tags: [rl, sim2real, robotics, domain-randomization]
 
 ## 练习
 
-1. **Easy。**Trong GridWorld cố định trượt ((slip=0.0) trên đào tạo một đại lý học Q──在 trượt ∈ {0.0, 0.1, 0.3, 0.5} 上评估──绘制 return vs slip──
+1. **Easy。**Trong GridWorld cố định trượt ((slip=0.0) 上训练一个Q-learning agent──在 $\text{slip} \in \lbrace 0.0, 0.1, 0.3, 0.5 \rbrace$上评估── vẽ trở lại vs slip──
 2. **Medium。**训练一个 DR Q-làm việc học đại lý,采样 `slip ~ Uniform[0, 0.3]` đánh giá cùng nhóm lau bỏ  trong trượt=0.5 ((trên phân phối) khi, DR 带来 được lợi nhuận bao nhiêu?
 3. **Hard。**Thực hiện một chương trình giảng dạy: từ slip=0.0  bắt đầu, mỗi khi chính sách đạt 90% tối ưu, mở rộng phạm vi DR── đo đạt slip=0.3 bước môi trường không-bút cần thiết,并 so với chuẩn gốc DR cố định đối với──
 
