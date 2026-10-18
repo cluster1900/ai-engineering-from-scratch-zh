@@ -30,22 +30,24 @@ Hoffmann et al. (2022)  entrenaron a un grupo llamado la familia de modelos pequ
 
 De Chinchilla, la pérdida sigue:
 
-```
-L(N, D) = A / N^α + B / D^β + E
+```math
+L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 ```
 
-- `N`= 参数(非 Embedding)
-- `D`= 训练 Token。
-- `α ≈ 0.34`¿ Qué ?`β ≈ 0.28`(Gran número de palabras)
-- `E ≈ 1.69`, no se puede perder.
-- `A ≈ 406`¿ Qué ?`B ≈ 411`¿Qué es eso?
+- $N$= 参数(非 Embedding)
+- $D$= 训练 Token。
+- $\alpha \approx 0.34$¿ Qué ?$\beta \approx 0.28$(Gran número de palabras)
+- $E \approx 1.69$, no se puede perder.
+- $A \approx 406$¿ Qué ?$B \approx 411$¿Qué es eso?
 
-Con la expansión, dos conjuntos se ponderan mutuamente ⋅ en cálculo fijo ⋅ C = 6ND) ⋅`N`求导并求解:
+Con la expansión, dos ejemplos se ponderan mutuamente ⋅ en el cálculo fijo$C = 6ND$) abajo para$N$求导并求解:
 
-```
-N_opt ≈ 0.6 × (C/6)^0.5
-D_opt ≈ 0.6 × (C/6)^0.5
-D_opt / N_opt ≈ 20
+```math
+\begin{aligned}
+N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+D_{\text{opt}} / N_{\text{opt}} &\approx 20
+\end{aligned}
 ```
 
 Optimo para el cálculo: cada parametro 20 tokens.
@@ -91,7 +93,7 @@ scaling-laws
 
 ## Construirlo
 
-¿ Qué ?`code/main.py` Hemos logrado la Equipación de pérdida de Chinchilla, y en varios cálculos  presupuesto bajo búsqueda de solución de cálculo-óptima `(N, D)`¿Qué es eso?
+¿ Qué ?`code/main.py` Hemos logrado la Equipación de pérdida de Chinchilla, y en varios cálculos  presupuesto bajo búsqueda de solución de cálculo-óptima $(N, D)$¿Qué es eso?
 
 ### Paso 1: pérdida de chinchilla
 
@@ -100,11 +102,11 @@ def chinchilla_loss(N, D, A=406.4, B=410.7, alpha=0.34, beta=0.28, E=1.69):
     return A / N ** alpha + B / D ** beta + E
 ```
 
-En fijo`C = 6ND`¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡`L` dibujo `(N, D)`Encuentra el valor mínimo.
+En fijo$C = 6ND$¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡$L$ dibujo $(N, D)$Encuentra el valor mínimo.
 
 ### Paso 2: 计算最优边界
 
- para el `1e17`¿ Qué ?`1e25`Computación de FLOPs  presupuesto, encontrar en el`6ND = C`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `(N, D)` Procentaje de pruebas`D/N ≈ 20`¿Qué es eso?
+ para el `1e17`¿ Qué ?`1e25`Computación de FLOPs  presupuesto, encontrar en el$6ND = C$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $(N, D)$ Procentaje de pruebas$D/N \approx 20$¿Qué es eso?
 
 ### Paso 3: Costo de formación excesiva
 
@@ -134,9 +136,9 @@ Usted no es muy posible entrenar a sí mismo frontera 模型...... pero las leye
 
 ##  ejercicios
 
-1. **Easy.**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py`△ Impresión de la computación  presupuesto `1e20`¿Qué es esto?`1e22`¿Qué es esto?`1e24`La mejor de las Chinchilla .`(N, D)` Comparar con el modelo real
-2. **Medium.**实现 Hoffmann Loss-as-function-of-computación 曲线──为 computación-optimal frontier 绘制 Loss vs `log10(C)` Identificar la ley                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `>10^28`Los FLOP 才能让交叉热再降低 0.1──
-3. **Hard.**En el mismo conjunto de datos, entrenar 5 modelos pequeños, para que se adapten a su propia ley de escalación.`α`Y `E`¿Cómo coincide su índice con los resultados publicados?
+1. **Easy.**运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py`△ Impresión de la computación  presupuesto `1e20`¿Qué es esto?`1e22`¿Qué es esto?`1e24`La mejor de las Chinchilla .$(N, D)$ Comparar con el modelo real
+2. **Medium.**实现 Hoffmann Loss-as-function-of-computación 曲线──为 computación-optimal frontier 绘制 Loss vs `log10(C)` Identificar la ley                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $>10^{28}$Los FLOP 才能让交叉热再降低 0.1──
+3. **Hard.**En el mismo conjunto de datos, entrenar 5 modelos pequeños, para que se adapten a su propia ley de escalación.$\alpha$Y $E$¿Cómo coincide su índice con los resultados publicados?
 
 ## 关键术语: "El hombre es un hombre"
 
@@ -147,7 +149,7 @@ Usted no es muy posible entrenar a sí mismo frontera 模型...... pero las leye
 | Compute (C) | “花费的 FLOPs” | 对标准 Transformer 来说，约为 `6 × N × D`。 |
 | Chinchilla-optimal | “D/N ≈ 20” | 最小化 pretraining 每 FLOP Loss 的比例。 |
 | Over-training | “超过 Chinchilla” | 花费额外训练 FLOPs 来节省推理 FLOPs；D/N >> 20。 |
-| Irreducible loss | “底部” | Scaling Law 中的 `E` 项；数据本身的熵。 |
+| Irreducible loss | “底部” | Scaling Law 中的 $E$ 项；数据本身的熵。 |
 | Emergent capability | “规模上的突然跳变” | 通常是评分器伪影；连续 Loss 是平滑的。 |
 | Effective compute | “训练效率倍增器” | 更好的数据 / Optimizer / 架构会倍增每个 FLOP 的作用距离。 |
 

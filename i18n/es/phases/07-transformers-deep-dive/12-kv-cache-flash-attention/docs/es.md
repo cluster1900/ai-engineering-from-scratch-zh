@@ -9,13 +9,13 @@
 
 ##  problemas
 
-Un simple decodificador de auto-regreso`N`个 tokens 需要做 `O(N²)`工作: cada paso se recalcula la atención en la totalidad de la anterioridad. Para una respuesta de un token 4K, esto significa 16M veces la atención de la operación, la mayoría de las cuales son redundantes.
+Un simple decodificador de auto-regreso$N$个 tokens 需要做 $O(N^2)$工作: cada paso se recalcula la atención en la totalidad de la anterioridad. Para una respuesta de un token 4K, esto significa 16M veces la atención de la operación, la mayoría de las cuales son redundantes.
 
 Además, la atención en sí misma también se moverá una gran cantidad de datos. La atención estándar se materializa en una matriz de puntaje N×N, N×d de salida de softmax, N×d de salida final, en el número de veces que se lee en HBM. Para N≥2K, la atención se convierte primero en una memoria limitada, en lugar de una FLOP.
 
 Dao et al. propusieron dos optimizaciones, que han llevado el proceso de adelanto de la lenta a la rápida:
 
-1. **KV cache。**存储每个前代币的 K 和 V向量──每个新代币的注意 都是一个查询对缓存键的计算──推理从每个代步的 `O(N²)`降到 `O(N)`¿Qué es eso?
+1. **KV cache。**存储每个前代币的 K 和 V向量──每个新代币的注意 都是一个查询对缓存键的计算──推理从每个代步的 $O(N^2)$降到 $O(N)$¿Qué es eso?
 2. **Flash Attention。**Para la atención  calcular hacer barandillas, hacer que la matriz N×N completa  nunca entrará en HBM── todos los softmax + matmul están completados en SRAM── en A100 arriba velocidad del reloj de pared es de 24×; en apoyo de FP8 H100 arriba es de 510×──
 
 Para 2026, ambos ya están en uso en general. Cada una de las fases de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de producción de la serie de modelos de la serie de modelos de producción de la serie de modelos de la serie de modelos de producción de la serie de modelos de la serie de la serie de modelos de la serie de la serie de modelos de la serie de la serie de modelos de la serie de la serie de modelos de la serie de la serie de la serie de la serie de modelos de la serie de la serie de la serie de la serie de la serie de modelos de la serie de la serie de la serie de la serie de la serie de la serie de la serie de la serie de la serie de la serie de la serie de la serie de la serie de la serie.
@@ -78,7 +78,7 @@ for each block of Q (tile size ~128 × 128):
     write O_tile to HBM
 ```
 
-Cada mosaico sólo necesita una vez HBM 往返 总内存占用从 `O(N²)`降到 `O(N)`❖ Pasado hacia atrás 会从前进的 pas 中重新计算部分值, en lugar de mantenerlos todos en su existencia 
+Cada mosaico sólo necesita una vez HBM 往返 总内存占用从 $O(N^2)$降到 $O(N)$❖ Pasado hacia atrás 会从前进的 pas 中重新计算部分值, en lugar de mantenerlos todos en su existencia 
 
 **数值技巧。**Correr softmax en los azulejos  entre mantenimiento `(max, sum)`, por lo tanto, la integración final es precisa. Esto no es similar.
 
@@ -127,8 +127,8 @@ flash-attention-memory
 
 ¿ Qué ?`code/main.py`❖ Nosotros realizamos:
 
-1. Un simple.`O(N²)`decodificador incremental.
-2. Una de ellas .`O(N)`Descriptor almacenado en caché KV
+1. Un simple.$O(N^2)$decodificador incremental.
+2. Una de ellas .$O(N)$Descriptor almacenado en caché KV
 3. Un simulador del algoritmo de ejecución máxima de atención flash de softmax de azulejos.
 
 ### Paso 1: Cache de KV
@@ -175,7 +175,7 @@ def tiled_softmax_dot(q, K, V, tile=4):
 
 ### Paso 3: En la generación de 100 tokens 上比较 naiv vs. decodificación caché
 
-统计注意 操作数──Návio:`O(N²)`= 5050♦ En caché:`O(N)`= 100―代码会打印二者―
+统计注意 操作数──Návio:$O(N^2)$= 5050♦ En caché:$O(N)$= 100―代码会打印二者―
 
 ## Usalo
 

@@ -29,25 +29,25 @@ El método de modificación es de alguna manera introducir la posición en los e
 
 预先计算一个形 为 `(max_len, d_model)`Matrix fija `PE`¿Qué es esto ?
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 Entonces en atención  antes de ejecutar `X' = X + PE[:N]`◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ◊ cada dimensión ∞`max_len`后会失败: Cuando el modelo sólo vio posiciones 02047 时, nada le dice qué pasará en posición 2048 
 
 ### RoPE
 
-旋转 Q 和 K vectores(no son embeddings)`(2i, 2i+1)`¿Qué es esto ?
+旋转 Q 和 K vectores(no son embeddings)$(2i, 2i+1)$¿Qué es esto ?
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-Para la posición`pos_k`Las claves  aplicación del mismo rotación―producto punto `q'_m · k'_n`Me convertiría en dependiente.`(m - n)`La función es:**attention score 只依赖 relative distance**, aunque el giro es por posiciones absolutas   漂亮的技巧
+Para la posición`pos_k`Las claves  aplicación del mismo rotación―producto punto $q'_m \cdot k'_n$Me convertiría en dependiente.$(m - n)$La función es:**attention score 只依赖 relative distance**, aunque el giro es por posiciones absolutas   漂亮的技巧
 
 扩展 RoPE: se puede acortar `base`(NTK-consciente、YaRN、LongRoPE), para extrapolar en un contexto de no reentrenamiento hasta un contexto más largo―Llama 3 es el método utilizado para extenderse desde el contexto de 8K hasta 128K―
 
@@ -55,11 +55,11 @@ Para la posición`pos_k`Las claves  aplicación del mismo rotación―producto p
 
 跳过嵌入 技巧──直接给注意分加偏见:
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-Entre ellos `m_h`Es una pendiente específica de la cabeza, por ejemplo.`1 / 2^(8·h/H)`Los tokens de proximidad se incrementan; los tokens de proximidad se ven penalizados.
+Entre ellos $m_h$Es una pendiente específica de la cabeza, por ejemplo.$1 / 2^{8h/H}$Los tokens de proximidad se incrementan; los tokens de proximidad se ven penalizados.
 
 ### 2026 año que elegir qué
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键: en posición `m`de Q y posición `n`Los K  aplican la misma función ∙ su producto de puntos ∙                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `cos((m-n)·θ_i)`Porque子──Attención 免费学到 relativa posición──
+关键: en posición $m$de Q y posición $n$Los K  aplican la misma función ∙ su producto de puntos ∙                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $\cos((m-n) \cdot \theta_i)$Porque子──Attención 免费学到 relativa posición──
 
 ### Paso 3: Pistas de ALiBi y sesgo
 
@@ -169,7 +169,7 @@ model = AutoModel.from_pretrained("meta-llama/Llama-3.2-3B")
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |

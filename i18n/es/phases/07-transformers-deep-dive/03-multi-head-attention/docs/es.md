@@ -11,7 +11,7 @@
 
 单个自我注意头 会计算一个注意矩阵―― esta matriz 捕捉一种关系, normalmente es la que puede minimizar la pérdida en el actual entrenamiento de señales―― si en tus datos hay un acuerdo entre sujeto y verbo, co-referencia, discurso a largo plazo y chunking sintáctico, todos ellos se encuentran juntos, un solo cabeza los coloca en una distribución de máxima suave, perdiendo la mitad de la señal―
 
-El documento Vaswani de 2017 dio un modo de revisión:并行运行多个注意功能, cada uno tiene sus propias proyecciones Q、K、V, luego se saca con un puntapié en el suelo.`d_model / n_heads`La capacidad de expresión aumenta.
+El documento Vaswani de 2017 dio un modo de revisión:并行运行多个注意功能, cada uno tiene sus propias proyecciones Q、K、V, luego se saca con un puntapié en el suelo.$d_{\text{model}} / n_{\text{heads}}$La capacidad de expresión aumenta.
 
 La atención multi-cabeza es la configuración de todos los transformadores en 2026 y el único debate está en el uso de cuántas cabezas, así como las claves y valores de si se comparten las proyecciones.
 
@@ -19,7 +19,7 @@ La atención multi-cabeza es la configuración de todos los transformadores en 2
 
 ![Multi-head attention splits, attends, concatenates](../assets/multi-head-attention.svg)
 
-**Split。**取形为 `(N, d_model)`de la `X`△分别 proyección hasta forma`(N, d_model)`De la forma de la que se hace.`(N, n_heads, d_head)`, entre ellos `d_head = d_model / n_heads`❖ Transponer por`(n_heads, N, d_head)`¿Qué es eso?
+**Split。**取形为 `(N, d_model)`de la `X`△分别 proyección hasta forma`(N, d_model)`De la forma de la que se hace.`(N, n_heads, d_head)`, entre ellos $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$❖ Transponer por`(n_heads, N, d_head)`¿Qué es eso?
 
 **并行 Attend。**En cada cabeza en la escala de la atención de producto punto.`(N, d_head)` Estos cabezas funcionan en diferentes espacios de la incorporación, y no se comunican entre sí durante el tiempo de la computación de la atención
 
@@ -36,7 +36,7 @@ La atención multi-cabeza es la configuración de todos los transformadores en 2
 | Grouped-query (GQA) | N | G (e.g. N/8) | Llama 2 70B, Llama 3+, Qwen 2+, Mistral |
 | Multi-head latent (MLA) | N | compressed to low-rank | DeepSeek-V2, V3 |
 
-GQA es un programa moderno, ya que puede cumplir.`N/G`La cantidad de veces que se reduce la memoria de caché KV, al mismo tiempo que se mantiene casi completa. MLA más adelante, se reduce K/V en el espacio latente, y luego en el proyecto de cálculo, se consume FLOPs, pero se ahorra más memoria.
+GQA es un programa moderno, ya que puede cumplir.$N/G$La cantidad de veces que se reduce la memoria de caché KV, al mismo tiempo que se mantiene casi completa. MLA más adelante, se reduce K/V en el espacio latente, y luego en el proyecto de cálculo, se consume FLOPs, pero se ahorra más memoria.
 
 
 ```figure
@@ -130,7 +130,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 | Large (~1B) | 2048 | 16 | 128 |
 | Frontier (~70B) | 8192 | 64 | 128 |
 
-`d_head`几乎总是落在64或128. 它是一个头能看到多少内容的单位──低于32.头就会开始和扩展因素`sqrt(d_head)`Más de 256, perderás los beneficios de muchos pequeños especialistas.
+`d_head`几乎总是落在64或128. 它是一个头能看到多少内容的单位──低于32.头就会开始和扩展因素$\sqrt{d_{\text{head}}}$Más de 256, perderás los beneficios de muchos pequeños especialistas.
 
 ##  entregarlo
 
@@ -146,7 +146,7 @@ out = scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
 
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
-| Head | “一个单独的 attention circuit” | 一个维度为 `d_head = d_model / n_heads` 的 Q/K/V projection，拥有自己的 attention matrix。 |
+| Head | “一个单独的 attention circuit” | 一个维度为 $d_{\text{head}} = d_{\text{model}} / n_{\text{heads}}$ 的 Q/K/V projection，拥有自己的 attention matrix。 |
 | d_head | “Head dimension” | Per-head hidden width；在 production 中几乎总是 64 或 128。 |
 | Split / combine | “Reshape tricks” | Attention 前后的 `(N, d_model) ↔ (n_heads, N, d_head)` reshape+transpose。 |
 | W_o | “Output projection” | Concatenating heads 之后应用的 `(d_model, d_model)` matrix；heads 在这里混合。 |

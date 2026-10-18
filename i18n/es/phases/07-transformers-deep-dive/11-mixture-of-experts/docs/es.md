@@ -11,7 +11,7 @@
 
 Cuando se expande un modelo denso, cada token tiene que pagar el costo de cálculo completo. Para 2024, la frontera ya ha chocado con la pared de cálculo: para ser significativamente más inteligente, necesitas más FLOPs en cada token.
 
-Mixta de Expertos rompieron esta relación.`E`个独立专家 + 一个为每个代币 选择 `k`个 expertos de router──总参数 = `E × FFN_size`△ cantidad activa de cada Token = `k × FFN_size` Configuración típica para 2026:`E=256`¿ Qué ?`k=8` Almacenamiento`E`扩展,计算随 `k`扩展──
+Mixta de Expertos rompieron esta relación.$E$个独立专家 + 一个为每个代币 选择 $k$个 expertos de router──总参数 = $E \times \text{FFN size}$△ cantidad activa de cada Token = $k \times \text{FFN size}$ Configuración típica para 2026:$E=256$¿ Qué ?$k=8$ Almacenamiento$E$扩展,计算随 $k$扩展──
 
 La frontera de 2026 año  casi todo es MoE:DeepSeek-V3(671B total / 37B activo) 、Mixtral 8×22B、Qwen2.5-MoE、Llama 4、Kimi K2、gpt-oss── en el tablero de clasificación independiente de Análisis Artificial.
 
@@ -46,7 +46,7 @@ Cada experto es un FFN independiente (normalmente SwiGLU) ―router es una sola 
 Si el router deja que el 90% de los tokens pasen por el experto 3, otros expertos morirán de hambre. Ya han intentado tres formas de reparar:
 
 1. **Auxiliary load-balancing loss**(Switch Transformer、Mixtral) ―― Añadir un con experto de la tasa de uso de diferencia en la tasa de castigo.
-2. **Expert capacity + token dropping**(Epiquio temprano) ⋅ Cada experto ⋅`C × N/E`个 Token;溢出的 Token 跳过该层──会损害质量──
+2. **Expert capacity + token dropping**(Epiquio temprano) ⋅ Cada experto ⋅$C \times N/E$个 Token;溢出的 Token 跳过该层──会损害质量──
 3. **Auxiliary-loss-free balancing**(DeepSeek-V3)── Añadir un sesgo por experto que se puede aprender, para desplazar la opción de los routers.
 
 Proceso de DeepSeek-V3: Después de cada paso de entrenamiento, cada experto debe revisar si su uso es alto o bajo de su objetivo.`±γ`微调偏选择时使用 `scores + bias` Probabilidades expertas de puertas utilizadas  todavía utilizan original`scores` This will routing with expression 解──
@@ -59,7 +59,7 @@ DeepSeek-V2/V3 también se dividen los expertos en *compartidos* y *routed*─�
 
 经典 MoE(GShard、Switch): Cada experto 和完整FFN 一样宽──`E`较小(8-64),`k`较小(1-2)。
 
-现代 grano fino MoE (DeepSeek-V3、Qwen-MoE): cada experto 更狭(1/8 de tamaño FFN)`E`很大(256+),`k`Más grande ((8+) ◊ la cantidad de componentes es igual, pero la cantidad de componentes se expande más rápido.`C(256, 8) = 400 trillion`种可能的每 Token 专家 ──质量提升,延迟 保持不变──
+现代 grano fino MoE (DeepSeek-V3、Qwen-MoE): cada experto 更狭(1/8 de tamaño FFN)$E$很大(256+),$k$Más grande ((8+) ◊ la cantidad de componentes es igual, pero la cantidad de componentes se expande más rápido.$\binom{256}{8} \approx 400$Mil millones de millones de dólares en tokens, por ejemplo, para el año pasado.
 
 ### 成本图片
 
@@ -160,7 +160,7 @@ Inferencias de producción de 2026 años: vLLM 原生支持MoE enrutamiento。SG
 | Auxiliary-loss-free | “DeepSeek-V3 的技巧” | 只在 router 的 selection 上通过 per-expert bias 实现 balance；没有额外 Gradient。 |
 | Shared expert | “Always on” | 每个 Token 都会经过的额外 expert；捕获通用知识。 |
 | Expert parallelism | “按 expert 分片” | 将不同 experts 分配到不同 GPUs；通过网络 route tokens。 |
-| Sparsity | “active params < total params” | 比率 `k × expert_size / (E × expert_size)`；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
+| Sparsity | “active params < total params” | 比率 $k \times \text{expert size} / (E \times \text{expert size})$；DeepSeek-V3 为 37/671 ≈ 5.5%。 |
 
 ## 延伸阅读
 

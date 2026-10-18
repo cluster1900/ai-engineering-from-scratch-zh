@@ -15,7 +15,7 @@ Para realizar un entrenamiento de extremo a extremo en toda la secuencia, es nec
 
 La máscara causal es lo que se hace.`-inf`√ Matriz de los tres primeros esquemas de la matriz, en su forma de "softmax" antes de "add to attention scores" (a partir de "softmax"), después de "softmax" estas posiciones se convierten en 0 (a partir de "softmax"), cada posición sólo puede asistir a su propia posición y a su posición anterior (a partir de "sólo") √.
 
-GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   son transformadores causales solo para decodificadores, el ciclo central es el mismo.
+GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2025), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi   son transformadores causales solo para decodificadores, el ciclo central es el mismo.
 
 ## 概念
 
@@ -23,16 +23,53 @@ GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Ll
 
 ### máscara
 
-给定长度为 `N`de secuencia, construir una `N × N`matriz:
+给定长度为 $N$de secuencia, construir una $N \times N$matriz:
 
-```
-M[i, j] = 0       if j <= i
-M[i, j] = -inf    if j > i
+```math
+M_{ij} = \begin{cases} 0 & \text{若 } j \le i \\ -\infty & \text{若 } j > i \end{cases}
 ```
 
-En la máxima, antes de que se haga.`M`Además de los puntajes de atención originales.`exp(-inf) = 0`, por lo que el peso de la contribución de la posición de la máscara es de cero. Cada línea de la matriz de atención es sólo una distribución de probabilidades de la posición anterior.
+En la máxima, antes de que se haga.`M`Además de los puntajes de atención originales.$\exp(-\infty) = 0$, por lo que el peso de la contribución de la posición de la máscara es de cero. Cada línea de la matriz de atención es sólo una distribución de probabilidades de la posición anterior.
 
 实现成本: una vez `torch.tril()`调用──计算时间:纳秒级── sobre el impacto de todo el ámbito:一切──
+
+### ¿De dónde viene?
+
+La máscara se suele hablar de un complemento añadido a la atención. A su vez, la sugerencia es que la atención es la tercera mejoría de la media anterior, mientras que el triángulo simplemente transforma el ciclo de la media en una matriz.
+
+**阶段 1：前缀平均。**Última secuencia de resúmenes:$i$变为位置 $0 \ldots i$El valor medio de la escritura es el ciclo.`out[i] = X[:i+1].mean(0)`◊ El mismo cálculo también se puede realizar con una matriz multiplicada ◊ tomar un elemento en la matriz inferior de 1 , cada línea dividida por el número de elementos de la misma línea, refaz multiplicada:
+
+```python
+import numpy as np
+
+A = np.tril(np.ones((n, n)))
+A = A / A.sum(axis=1, keepdims=True)
+out = A @ X
+```
+
+$A$De la primera$i$¿ Qué pasa ?$[1/(i+1), \ldots, 1/(i+1), 0, \ldots, 0]$◊ El cero de la línea de frente es la causalidad.
+
+**阶段 2：学习权重。**均平均把过去每 token都视为同等重要──用学到的分数矩阵 `S` sustituir a los 1  En este momento cada línea deja de ser natural y se suma a 1, por lo que se utiliza la suavidad máxima para la integración de cada línea, en lugar de la separación en el número  La suavidad máxima no emitirá un cero preciso, lo que dañará la causalidad, a menos que se establezca la proporción de la posición futura `-inf`, porque `exp(-inf) = 0`¿Qué es esto ?
+
+```python
+def softmax(x, axis):
+    e = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return e / e.sum(axis=axis, keepdims=True)
+
+S = S + np.triu(np.full((n, n), -np.inf), k=1)
+A = softmax(S, axis=1)
+out = A @ X
+```
+
+La misma trama, la misma línea, la misma matriz, así que sólo se necesita una matmul.`-inf`La máscara no es un nuevo mecanismo, sólo se transfiere el elemento zero de la etapa 1 en el dominio de entrada de softmax.
+
+**阶段 3：依赖内容的权重。**En la fase 2,`S`En el entrenamiento después de fijar: independientemente del contenido de los tokens, la posición 7 a la posición 3 tiene siempre el mismo peso.`S = Q @ K.T / sqrt(d_k)`△ otras partes completamente invariable──mascaras,máximas,máximas,masculinas, sigue siendo el mismo proceso―
+
+Tres fases, una constante: abajo tres esquinas de la línea de la matriz multiplicada por la secuencia.
+
+```figure
+mask-derivation
+```
 
 ### No se ha entrenado, no se ha hecho ninguna recomendación.
 
@@ -82,10 +119,6 @@ causal-mask
 ```
 
 
-```figure
-mask-derivation
-```
-
 ## Construirlo
 
 ### Paso 1: Máscara causal
@@ -134,7 +167,7 @@ print(tok.decode(out[0]))
 
 En el fondo,`generate()`运行前传,取出最后位置 logits,sample 下一个代币,追加它,然后重复──每个生产级LLM inference stack(vLLM, TensorRT-LLM, llama.cpp, Ollama, MLX)都用重度优化实现同一个循环 批批前填连续批发、KV缓存页面、猜测解码──
 
-**GPT vs BERT，各用一句话：**GPT 预测 `P(x_t | x_{<t})`│BERT 预测 │`P(x_masked | x_unmasked)`◊ pérdida decide si el modelo puede generarse
+**GPT vs BERT，各用一句话：**GPT 预测 $P(x_t \mid x_{<t})$│BERT 预测 │$P(x_{\text{masked}} \mid x_{\text{unmasked}})$◊ pérdida decide si el modelo puede generarse
 
 ##  entregarlo
 
@@ -154,8 +187,8 @@ En el fondo,`generate()`运行前传,取出最后位置 logits,sample 下一个�
 | Next-token prediction | “loss” | 模型在每个位置上的分布与真实下一个 token 之间的 cross-entropy。 |
 | Autoregressive | “一次生成一个” | 将输出反馈为输入；并行性只存在于训练阶段，不存在于生成阶段。 |
 | Logits | “pre-softmax scores” | softmax 之前 LM head 的原始输出；sampling 就发生在这些值上。 |
-| Temperature | “创造力旋钮” | 将 logits 除以 T；T→0 = greedy，T→∞ = uniform。 |
-| Top-p | “Nucleus sampling” | 将分布截断为累计和 ≥p 的最小集合；从剩余部分 sample。 |
+| Temperature | “创造力旋钮” | 将 logits 除以 $T$；$T \to 0$ = greedy，$T \to \infty$ = uniform。 |
+| Top-p | “Nucleus sampling” | 将分布截断为累计和 $\ge p$ 的最小集合；从剩余部分 sample。 |
 | Min-p | “比 top-p 更好” | 保留满足 `p ≥ min_p × max_p` 的 tokens；会根据分布尖锐程度调整 cutoff。 |
 | Speculative decoding | “draft + verify” | 便宜模型提出 N 个 tokens；大模型并行验证。 |
 | Teacher forcing | “训练技巧” | 训练时输入真实的前一个 token，而不是模型的预测。每个 seq2seq LM 的标准做法。 |
