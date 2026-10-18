@@ -15,7 +15,7 @@ language model 回答一个问题：给定前 `t-1` 个 tokens，token `t` 上�
 
 causal mask 做的就是这件事。它是一个由 `-inf` 值组成的上三角 matrix，在 softmax 之前加到 attention scores 上。softmax 之后，这些位置会变成 0。每个位置只能 attend 到自身和更早的位置。因为你把它一次性应用到整个 sequence 上，所以一次 forward pass 就能得到 N 个并行的 next-token predictions。
 
-GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2024), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi —— 它们都是 decoder-only causal transformers，核心循环相同。只是规模更大、数据更好、RLHF 更好。
+GPT-1 (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), GPT-5 (2025), Claude, Llama, Qwen, Mistral, DeepSeek, Kimi —— 它们都是 decoder-only causal transformers，核心循环相同。只是规模更大、数据更好、RLHF 更好。
 
 ## 概念
 
@@ -61,7 +61,7 @@ A = softmax(S, axis=1)
 out = A @ X
 ```
 
-同一个三角形，同一个行随机矩阵（每行表示和为 1 的非负概率权重），同样只需一次 matmul。`-inf` mask 并不是新机制，只是把阶段 1 的零元素转换到了 softmax 的输入域。
+同一个三角形，同一个行随机矩阵，同样只需一次 matmul。`-inf` mask 并不是新机制，只是把阶段 1 的零元素转换到了 softmax 的输入域。
 
 **阶段 3：依赖内容的权重。** 在阶段 2 中，`S` 在训练后固定：无论 tokens 的内容是什么，位置 7 对位置 3 的权重始终相同。让分数取决于 tokens 本身：`S = Q @ K.T / sqrt(d_k)`。其他部分完全不变。Mask、softmax、matmul，仍是同样的流程。
 
@@ -118,10 +118,6 @@ mask-derivation
 causal-mask
 ```
 
-
-```figure
-mask-derivation
-```
 
 ## 构建它
 
