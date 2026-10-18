@@ -11,7 +11,7 @@
 - 实现 DPO التدريب، مباشرة في أزواج الاختيارات 上优化语言模型، دون استخدام نموذج مكافأة منفصل
 - 推导 DPO خسارة وظيفة،并解释 كيفية تمريرها من خلال سياسة من السجل من احتمالات 隐式表示奖励模型
 - من زاوية التدريب الاستقرار، وتكلفة الحساب والكثير من النماذج المطلوبة مقارنة DPO مع RLHF
-- 调节 بيتا 参数,控制训练后的政策 偏离参考模型的程度
+- 调节 $\beta$参数,控制训练后的政策 偏离参考模型程度
 
 ## 问题
 أنت في الدروس 07 بناء خط أنابيب RLHF. ♫ ثلاث مراحل ♫ ثلاثة نماذج. ♫ نموذج SFT. ♫ نموذج مكافأة. ♫ وذلك باستخدام نموذج سياسة تحسين PPO. ♫ نموذج مكافأة فقط يحتاج إلى آلاف الأزواج من الفردات و حلقة تدريبية منفصلة. ♫PPO. ♫ يحتاج إلى تحديد معدل KL. ♫ معدل التعلم. ♫ نسبة المقاطع. ♫ عدد العصور. ♫
@@ -29,51 +29,53 @@ DPO سوف يسهل RLHF إلى خطوة تعلم مرئية 步骤――模型�
 
 RLHF 优化 هذا الهدف:
 
-```
-maximize: E[R(x, y)] - beta * KL(pi || pi_ref)
-```
-
-ومن بينها R هو نموذج الجائزة، pi هو السياسة، pi_ref هو نموذج المرجع، beta هو معدل KL。
-
-ورقة DPO  اثبات، هذا الهدف وجود مغلقة أفضل حل.
-
-```
-pi*(y | x) = pi_ref(y | x) * exp(R(x, y) / beta) / Z(x)
+```math
+\text{maximize:} \quad \mathbb{E}[R(x, y)] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
-من بينها Z(x) هو إعادة التكوين العادي.
+من بينهم$R$نموذج مكافأة$\pi$السياسة$\pi_{\text{ref}}$نموذج مرجع$\beta$هو معدل KL..
 
+ورقة DPO  اثبات، هذا الهدف وجود مغلقة أفضل حل.$R$أفضل سياسة هي:
+
+```math
+\pi^*(y \mid x) = \pi_{\text{ref}}(y \mid x) \cdot \exp(R(x, y) / \beta) / Z(x)
 ```
-R(x, y) = beta * log(pi*(y | x) / pi_ref(y | x)) + beta * log Z(x)
+
+من بينهم$Z(x)$هو إعادة تكوين العدد العادي.
+
+```math
+R(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 هذا هو نقطة فصيلة. المكافأة تظهر بشكل كامل باستخدام نموذج السياسة والاحتمالات نموذج المرجح.
 
 استبدالها في نموذج تفضيل برادلي تيري:
 
-```
-P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))
-                  = sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x)))
+```math
+\begin{aligned}
+P(y_w > y_l \mid x) &= \mathop{\mathrm{sigmoid}}(R(x, y_w) - R(x, y_l)) \\
+&= \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
+\end{aligned}
 ```
 
-Z(x) 项会抵消, لأن الردان هما في نفس اللمسة x 为条件――剩下的只是 النموذج السياسي و النموذج المرجعي في الردان المفضل والرفض أعلى من وظيفة الاحتمالات السجلية――
+$Z(x)$سوف يُغيب، لأن الإجابة الثانية هي نفس الإرشاد$x$فى حالة::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ### خسارة الـ DPO
 
-```
-L_DPO = -log(sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x))))
+```math
+L_{\text{DPO}} = -\log \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
 ```
 
 نحن نُفكّر كل جزء:
 
-- **y_w**= الرد المفضل
-- **y_l**= رد
-- **x**= سريع
-- **pi**= 当前模型(正在训练)
-- **pi_ref**= نموذج مرجع ((结 من نقطة تفتيش SFT)
-- **beta**= 控制偏离 度温 参数(عادة ما تكون 0.1 إلى 0.5)
+- **$y_w$**= الرد المفضل
+- **$y_l$**= رد
+- **$x$**= سريع
+- **$\pi$**= 当前模型(正在训练)
+- **$\pi_{\text{ref}}$**= نموذج مرجع ((结 من نقطة تفتيش SFT)
+- **$\beta$**= 控制偏离 度温 参数(عادة ما تكون 0.1 إلى 0.5)
 
-比值 `log pi(y|x) / pi_ref(y|x)`هو نسبة الاحتمالات السجلية. عندما يكون هذا النسبة صحيحاً، فإن احتمالية إعطاء النموذج الحالي للرد على y أعلى من الإشارة.
+比值 `log pi(y|x) / pi_ref(y|x)`هو نسبة احتمالية التسجيل. عندما يكون هذا النسبة صحيحاً، فإن النموذج الحالي يعطي رد فعل.$y$احتمالية أعلى من المرجعية. عندما تكون سلبية، فإن احتمالية ما يقدمها النموذج الحالي أقل.
 
 DPO Loss سوف يحفز النموذج لزيادة نسبة احتمالية السجل للردود المفضلة،并 يقلل نسبة احتمالية السجل للردود المرفوضة.
 
@@ -634,7 +636,7 @@ if __name__ == "__main__":
 | DPO | “没有 RL 的 RLHF” | Direct Preference Optimization：一种 supervised learning algorithm，直接在 preference pairs 上优化语言模型，绕过 reward model 和 PPO |
 | Implicit reward | “reward 在模型里” | reward function 由 policy 与 reference models 之间的 log-probability ratio 决定，不需要单独的 reward model |
 | Beta (DPO) | “temperature” | 控制 policy 可以偏离 reference model 的程度：小 beta 允许大偏离，大 beta 让模型保持接近 |
-| Log-probability ratio | “模型变化了多少” | log pi(y\|x) - log pi_ref(y\|x)：正值表示当前模型分配的概率高于 reference |
+| Log-probability ratio | “模型变化了多少” | $\log \pi(y \mid x) - \log \pi_{\text{ref}}(y \mid x)$：正值表示当前模型分配的概率高于 reference |
 | Reference model | “冻结的 checkpoint” | SFT model 的一个副本，其 weights 永不改变，用作计算概率比的锚点 |
 | KTO | “没有成对数据的 DPO” | Kahneman-Tversky Optimization：使用未配对的“good”或“bad”labels，而不是要求 preference pairs |
 | ORPO | “一步 alignment” | Odds Ratio Preference Optimization：通过向 SFT Loss 添加 preference term，将 SFT 和 alignment 合并到单个 training loop |

@@ -77,8 +77,8 @@ graph TD
 
 وظيفة الخسارة استخدام تفضيلات زوجية نموذج برادلي-تيري:
 
-```
-loss = -log(sigmoid(reward(preferred) - reward(rejected)))
+```math
+\text{loss} = -\log\big(\mathop{\mathrm{sigmoid}}(\text{reward}(\text{preferred}) - \text{reward}(\text{rejected}))\big)
 ```
 
 هذه هي الصيغة الرئيسية`sigmoid(reward(A) - reward(B))`عطاء الإجابة A 相比 الإجابة B 更受偏好的概率── هذا الخسارة ستعزز نموذج المكافأة 给偏好的答案 分配更高分数──
@@ -93,8 +93,8 @@ PPO هو نوع من تعزيز التعلم 算法。 في RLHF،بيئة هي 
 
 目标:
 
-```
-maximize: E[R(prompt, response)] - beta * KL(policy || reference)
+```math
+\text{maximize:} \quad \mathbb{E}[R(\text{prompt}, \text{response})] - \beta \cdot \mathrm{KL}(\text{policy} \,\|\, \text{reference})
 ```
 
 الأول: دفع النموذج إلى إنتاج مكافأة عالية.
@@ -107,7 +107,7 @@ maximize: E[R(prompt, response)] - beta * KL(policy || reference)
 
 تعليقات ك.ل. تعبر عن: يمكنك تحسينها، ولكن لا يمكن أن تصبح نموذجًا مختلفًا تمامًا.
 
-**InstructGPT numbers:**تدريب PPO استخدام lr=1.5e-5、KL معدل بيتا=0.02、256K حلقات(زوجات الاستجابة السريعة) ، وكل مجموعة القيام 4  دورات PPO。 أنبوب RLHF بأكمله في مجموعة GPU 上需要几天时间。
+**InstructGPT numbers:**تدريب PPO استخدام lr=1.5e-5、KL معدل $\beta=0.02$、256K حلقات ((أزواج الاستجابة السريعة) ، وكل مجموعة تقوم بـ 4 أوقات PPO。 أنبوب RLHF بأكمله في مجموعة GPU 上需要几天时间。
 
 ```mermaid
 graph LR
@@ -130,12 +130,14 @@ graph LR
 
 ### هدف منظمة التعاون البشري 详解
 
-استخدام PPO قطع هدف بديل لمنع التحديثات الكبيرة‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
+استخدام PPO                                                                                                                                                                                                                                                              $[1 - \epsilon, 1 + \epsilon]$ حد، من بينهم $\epsilon$عادةً 0.2
 
-```
-ratio = pi_new(action | state) / pi_old(action | state)
-clipped_ratio = clip(ratio, 1 - epsilon, 1 + epsilon)
-loss = -min(ratio * advantage, clipped_ratio * advantage)
+```math
+\begin{aligned}
+\text{ratio} &= \pi_{\text{new}}(\text{action} \mid \text{state}) / \pi_{\text{old}}(\text{action} \mid \text{state}) \\
+\text{clipped\_ratio} &= \mathop{\mathrm{clip}}(\text{ratio}, 1 - \epsilon, 1 + \epsilon) \\
+\text{loss} &= -\min(\text{ratio} \cdot \text{advantage}, \text{clipped\_ratio} \cdot \text{advantage})
+\end{aligned}
 ```
 
 وظيفة الميزة  التقديرات الردود الحالية مقارنة مع الجودة المتوقعة أقل بكثير 
@@ -600,19 +602,19 @@ if __name__ == "__main__":
 
 3. 模拟奖励黑客──创建一个给长响应高分的奖励模型(奖励 = len(回应) / 100)──使用这个有缺陷的奖励模型 运行PPO,观察政策模型 生成越来越长、越来越重复的输出──然后添加 0.1 KL 罚款,并显示它会防止这种退化行为──
 
-4. 实现多 उद्देश مكافأة── تدريب نموذجين من المكافآت: واحد للاستفادة، والآخر للاختصار──将它们组合为 R = 0.7 * R_helpful + 0.3 * R_concise──展示组合目标会产生既有帮助又简洁的响应,避免单一的帮助奖励 带来的词语陷──
+4. 实现 బహుم متعددة الأهداف── تدريب نماذج مكافأة: واحدة للمساعدة والآخر للموجة──将它们组合为 $R = 0.7 \cdot R_{\text{helpful}} + 0.3 \cdot R_{\text{concise}}$ عرض مجموعة أهداف سوف تنتج كل من مفيدة و أيضاً مخففة الردود، لتجنب مكافأة مفيدة واحدة
 
-5. تقارن معدل KL مختلفة──分别 باستخدام beta=0.001(过低,reward hacking)、beta=0.02(标准) و beta=0.5(过高,无法学习) لتنفيذ PPO── رسم كل نوع من تعديل المكافأة 和 KL curve──beta=0.02
+5. تقارن معدل KL المختلفة.$\beta=0.001$(تويز، إختراق المكافآت)$\beta=0.02$(标准) و $\beta=0.5$(过高,无法学习)运行 PPO── رسم كل نوع من إعدادات منحنى الجائزة 和 KL منحنى──$\beta=0.02$يُظهر أنّ النشاطات المُتَقَدِّمَة تُعَزّز، ويكون هناك حدّ للعمل.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | RLHF | “Training with human feedback” | Reinforcement Learning from Human Feedback：一个三阶段 pipeline（SFT、reward model、PPO），使用人类偏好信号优化 language model 输出 |
 | Reward model | “A model that scores responses” | 一个带 scalar output head 的 Transformer，使用 Bradley-Terry loss 在 pairwise human preferences 上训练 |
-| Bradley-Terry | “The comparison model” | 一种概率模型，其中 P(A > B) = sigmoid(score(A) - score(B))，可将 pairwise preferences 转换为一致的 scoring function |
+| Bradley-Terry | “The comparison model” | 一种概率模型，其中 $P(A > B) = \mathop{\mathrm{sigmoid}}(\text{score}(A) - \text{score}(B))$，可将 pairwise preferences 转换为一致的 scoring function |
 | PPO | “The RL algorithm” | Proximal Policy Optimization：更新 policy 以最大化 reward，同时裁剪更新幅度以防止不稳定 |
 | KL divergence | “How different two distributions are” | 衡量 policy model 的 Token distribution 与 reference model 之间差异的指标，用作 penalty 来防止 reward hacking |
-| KL penalty | “The leash on the model” | 从 reward signal 中减去的 Beta * KL(policy \|\| reference)，防止 policy 偏离 SFT checkpoint 太远 |
+| KL penalty | “The leash on the model” | 从 reward signal 中减去的 $\beta \cdot \mathrm{KL}(\text{policy} \Vert \text{reference})$，防止 policy 偏离 SFT checkpoint 太远 |
 | Reward hacking | “Gaming the reward” | policy 通过利用 reward model 的弱点找到退化的高 reward 输出，而不是真正改进 |
 | Preference pair | “Which is better, A or B?” | 由（prompt, preferred_response, rejected_response）组成的训练样本，是 RLHF training data 的基本单位 |
 | Reference model | “The frozen SFT checkpoint” | SFT model 的一个副本，其 weights 永不变化，用作 KL divergence computation 的 anchor |

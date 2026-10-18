@@ -49,8 +49,8 @@
 
 LayerNorm 会减去平均值、除以 std、缩放并平移──RMSNorm فقط الاحتفاظ بال缩放:
 
-```
-RMSNorm(x) = x / sqrt(mean(x^2) + eps) * gamma
+```math
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 没有均值消除──没有偏见──每个代币少一次 matmul── Zhang and Sennrich (2019) 认为它在机器翻译上可以匹配LayerNorm,同时快 10%──所有现代开放模型都使用它──
@@ -75,8 +75,8 @@ score = q_rotated . k_rotated
 
 GPT-2 من MLP هو`x -> gelu(xW1 + b1) -> (...)W2 + b2`〔SwiGLU(Shazeer 2020) مع منتج مغلق بدل تفعيل:
 
-```
-SwiGLU(x) = (xW1) * sigmoid(xW1) * xV
+```math
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 两个并行投射, بدلا من واحد, من قبل تنشيط سويش 进行 gate.实证上,它在每参数困难上更强. Llama 2 采用它,随后大家都跟进.`ff_dim = 4 * hidden`,SwiGLU استخدام `ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`.
@@ -87,7 +87,7 @@ GPT-2 使用 **Multi-Head Attention (MHA)**كل رأس لديه مشهد Q 、K 
 
 **Multi-Query Attention (MQA, Shazeer 2019)**بين جميع الرؤوس  مشاركة K و V ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ 
 
-**Grouped-Query Attention (GQA, Ainslie et al. 2023)**هو النظام الوسطى: G 组 Q heads 共享一个 K 和一个 V。Llama 3 8B 使用 GQA,包含 32 个 Q heads 和 8 个 KV heads(G=8), لذلك相比较完整 MHA,KV cache 缩小 4x。
+**Grouped-Query Attention (GQA, Ainslie et al. 2023)**هو الحل الوسطى:$G$组 Q رؤوس 共享一个K 和一个V──Llama 3 8B 使用 GQA,包含 32 个Q رؤوس 和 8 个KV رؤوس($G=8$), لذلك相比 كامل MHA,KV cache 缩小4x──
 
 **Multi-Head Latent Attention (MLA, DeepSeek 2024)**في المجموعة المشتركة منخفضة الدرجة، إعادة الضغط الرأس 投影回去── يزيد من تقليل الاحتفاظ بالخزنة KV، مع الحفاظ على قدرة كل رأس على التعبير──DeepSeek-V2 و V3 يعتمد على تحقيق أداء السياق الطويل──
 
@@ -151,6 +151,7 @@ graph LR
 | Qwen 2.5 72B | 2024 | 72B | 72B | RMSNorm | SwiGLU | RoPE (YaRN) | GQA (64/8) | no | 128k |
 | DeepSeek V2 236B | 2024 | 236B | 21B | RMSNorm | SwiGLU | RoPE | MLA | yes (160 experts, top-6) | 128k |
 | DeepSeek V3 | 2024 | 671B | 37B | RMSNorm | SwiGLU | RoPE | MLA | yes (256 experts, top-8) | 128k |
+| Spark-X2.5 4B | 2026 | 4.1B | 4.1B | RMSNorm | GeGLU | RoPE + sliding (3:1) | GQA (16/4)，门控输出 | 否 | 1M |
 
 扫描这些列──RMSNorm 是通用──SwiGLU أو GeGLU 近亲是通用──RoPE 是通用──7B 以上 GQA 是通用,除非被MLA 替代──MoE 是最高端模型的差异点──
 
@@ -173,6 +174,11 @@ graph LR
 ```
 
 كلّ جزء يتوافق مع ما تمكنت منه
+إعدادات جديدة تضيف بعض الفصول التي ستغير طريقة الحساب، لذلك سوف يقوم الكمبيوتر بالقراءة في هذه الفصول:
+
+- `head_dim`: عندما لا يُساوي `hidden_size / num_attention_heads`时, بحاجة إلى إعداد واضح.`head_dim`256، لذلك فإن إطار Q هو 3584 × 4096، وليس مربع.
+- `tie_word_embeddings`:LM رأس نعم أو لا يستخدم المصفوفة التضمينات.
+- `layer_types`和 `sliding_window`: أي طبقات تلتزم بالسياق الكامل، والتي تلتزم فقط إلى أقرب W 个 رموز.
 
 - `hidden_size`: أبعاد الإضافة
 - `intermediate_size`: MLP حجم مخفي ((3.5x مخفي -- SwiGLU 数学) 』
@@ -209,6 +215,15 @@ kv_cache = 2 * num_layers * num_kv_heads * head_dim * max_seq_len * bytes_per_el
 
 الوزن 8B في BF16 هو 16 GB. الوزن KV واحد من تسلسل 128k أكبر من الوزن. هذا هو دفع GQA.
 
+المفترضات المذكورة أعلاه كل طبقة تم تخزين تسلسل كامل.
+
+```text
+kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
+           * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
+```
+
+"إكس 2.5 4 بي" كل طبقة كاملة من الاهتمام "تتضمن ثلاثة طبقات من النافذة المنزلقة"$W = 512$):36 層中有 9 層 كامل 和 27 層 ተንزلق. في سياق 1M-توقيت أسفل، باستخدام BF16 时، كل تسلسل 约需 38.7 GB(36 GiB) ⋅ إذا كانت جميع 36 層都缓存完整的背景,则需要 154.6 GB(144 GiB) ⋅ الطبقات الكاملة 承担了几乎全部开销, لذلك، انظر لنموذج السياق الطويل 时,应首先关注 full proportion with the 滑板层.
+
 ### عندما يفوز كل نموذج
 
 - **单张 80GB GPU，无 MoE**لاما 3 8 ب、مسترا 7 ب、جما 2 9 ب。 سهل الخدمة، أدوات واسعة ‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
@@ -216,6 +231,7 @@ kv_cache = 2 * num_layers * num_kv_heads * head_dim * max_seq_len * bytes_per_el
 - **最大的 open capability，可接受 MoE 复杂度**: DeepSeek V3、Mixtral 8x22B── كل قدرة فعالة FLOP 最佳──
 - **Long-context 需求**: لاما 3 ((موجب مقياس روبي  وصول إلى 128k)
 - **Low-latency serving**:Gemma 2 9B(فوترة الزحف 降低 حساب السياق الطويل)
+- **较小内存预算下的长上下文**:Spark-X2.5 4B وغيرها من نماذج الهجينة المزلقة- النافذة، فقط أربعة طبقات واحدة  تحمل كامل السياق 开销
 
 
 ```figure
@@ -234,12 +250,16 @@ config = {
 }
 ```
 
-脚本会逐字段遍历架构,计算嵌入、注意(带 GQA 、MLP(带 SwiGLU توسيع)  层规范 和头的参数量──然后它会按给定的背景长度 计算 KV缓存,并打印总结──
+脚本会逐字段遍历架构,计算嵌入、注意(带 GQA تخفيض, ووضع 设置时使用显式 `head_dim`)、MLP(带SwiGLU أو GeGLU توسيع)、طبقات الطبقة، فضلا عن عدم تضمين مشاركة حقوق الوزن 参数量.
+
+بالنسبة للنماذج الكثيفة، فإن مجموع العناصر والعناصر المفتوحة يتوافق تماما: لاما 3 8B = 8,030,261,248, Gemma 2 9B = 9,241,705,984, Spark-X2.5 4B = 4,112,079,360。Qwen 2.5 72B 相差 819,200، وهذا هو أيضا محتوى التدريب 1.
 
 实现见 `code/main.py`.
 
 ## استخدمها
 运行计算器, باستخدام脚本捆绑的Llama 3 8B、Mistral 7B、Mixtral 8x7B 和 DeepSeek V3 التكوينات。 مقارنة الجوانب التفصيل。 انتبه إلى مجموع الجوانب في نماذج MoE بعيدة عن كثافة نماذج، ولكن عدد المعلمات النشطة 往往更小。 انتبه إلى cache KV في DeepSeek V3 虽然总参数更多,但小于Llama 3 405B 的 KV cache -- هذا هو تأثير MLA。
+
+ مقارنة Gemma 2 9B 和 Spark-X2.5 4B.‬ بالنسبة لهما الاثنين، فإن الكتاب يطبق الاحتفاظ بالخزينة KV في الواقع، وكذلك لو كانت جميع الطبقات هي الاهتمام الكامل ‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
 
 ثم أدخل إعداد أي نموذج محلي، وقرأ الموجة، وقرأ ما إذا كان يناسب GPU الخاص بك.
 
@@ -268,7 +288,7 @@ config = {
 | MoE | “Sparse experts” | Mixture of Experts：每个 block 有 N 个 MLPs，router 为每个 Token 选择 top-k -- 巨大的 total params，较小的 active params |
 | Top-k routing | “每个 Token 选择 k 个 experts” | Router 为每个 expert 计算分数，并激活最高的 k 个 -- 典型 k 从 2（Mixtral）到 8（DeepSeek） |
 | YaRN | “拉伸 RoPE” | Yet another RoPE extension -- 通过插值 rotary angles，在 inference 时将 context 从 8k 扩展到 128k+ |
-| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 W 个 Tokens -- 将 attention cost 限制为每 Token O(W)，用于 Gemma 2 和早期 Mistral |
+| Sliding-window attention | “不要 attend to everything” | 每个 Token 只 attend 到最近 $W$ 个 Tokens -- 将 attention cost 限制为每 Token $O(W)$，用于 Gemma 2 和早期 Mistral |
 | Active params | “每个 Token 实际运行的部分” | 对于 MoE models，指每个 Token 会经历 forward pass 的参数量（远小于 total params）-- 决定 per-token FLOPs |
 
 ## 延伸阅读

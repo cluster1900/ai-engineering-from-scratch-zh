@@ -71,22 +71,22 @@ DeepSeek في ورقة DeepSeekMath (2024) قدمت GRPO ، و سوف تكون �
 
 ذكرى أهداف PPO ((من الدروس 07):
 
-```
-L_PPO = E[min(r(theta) * A, clip(r(theta), 1-eps, 1+eps) * A)]
+```math
+L_{\text{PPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A\right)\right]
 ```
 
 من بينهم`A`نعم، فائدة، عادة باستخدام شبكة القيمة المتعلمة `V(s)`通過 GAE 估计──شبكة القيمة هي النموذج الثاني،大小与政策 相同──它会使内存翻倍,并引入自己的培训循环──
 
-غروبو ترك وظيفة القيمة. على كل طلب، فإنها تقتبس مجموعة من الردود.
+غروبو ترك وظيفة القيمة ∙ مقابل كل طلب، انها تأخذ نموذج $G$个 ردود فعل $G=16$أو 64): تُحسب مكافأة كل رد، ثم تُعدّل في المجموعة:
 
-```
-A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
+```math
+A_i = \frac{r_i - \mathop{\mathrm{mean}}(r_1, \ldots, r_G)}{\mathop{\mathrm{std}}(r_1, \ldots, r_G)}
 ```
 
 الميزة هي مكافأة هذا الإجابة مقارنة مع نفس المجموعة الأخرى الإجابة من نقطة ز-نسبة.
 
-```
-L_GRPO = E[min(r(theta) * A_group, clip(r(theta), 1-eps, 1+eps) * A_group)] - beta * KL(pi || pi_ref)
+```math
+L_{\text{GRPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A_{\text{group}}, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A_{\text{group}}\right)\right] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 针对参考模型的 KL罚款 仍然存在,和PPO 一样──剪辑比也仍然存在──消失的是独立评论──
