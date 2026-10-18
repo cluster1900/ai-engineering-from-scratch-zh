@@ -27,8 +27,8 @@ Naive Bayes 能处理这种情况。它做了一个数学上错误的假设（�
 
 Bayes' theorem 会反转条件概率：
 
-```
-P(class | features) = P(features | class) * P(class) / P(features)
+```math
+P(\text{类别} \mid \text{特征}) = \frac{P(\text{特征} \mid \text{类别}) \cdot P(\text{类别})}{P(\text{特征})}
 ```
 
 我们想要 `P(class | features)`，也就是给定文档中的词后，该文档属于某个类别的概率。我们可以从以下几项计算它：
@@ -40,15 +40,15 @@ P(class | features) = P(features | class) * P(class) / P(features)
 
 ### Naive Independence Assumption
 
-精确计算 `P(features | class)` 需要估计所有特征联合出现的 joint probability。对于包含 10,000 个词的 vocabulary，你需要估计 2^10,000 种可能组合上的分布。不可能。
+精确计算 `P(features | class)` 需要估计所有特征联合出现的 joint probability。对于包含 10,000 个词的 vocabulary，你需要估计 $2^{10{,}000}$ 种可能组合上的分布。不可能。
 
 naive assumption 是：给定类别后，每个特征都是 conditionally independent 的。
 
-```
-P(w1, w2, ..., wn | class) = P(w1 | class) * P(w2 | class) * ... * P(wn | class)
+```math
+P(w_1, w_2, \ldots, w_n \mid \text{类别}) = P(w_1 \mid \text{类别}) \cdot P(w_2 \mid \text{类别}) \cdots P(w_n \mid \text{类别})
 ```
 
-你不再估计一个不可能的 joint distribution，而是估计 n 个简单的逐特征分布。每个分布只需要一个计数。
+你不再估计一个不可能的 joint distribution，而是估计 $n$ 个简单的逐特征分布。每个分布只需要一个计数。
 
 这个假设显然是错的。任何文档中的 "machine" 和 "learning" 都不是独立的。但 classifier 不需要正确的概率估计。它需要正确的排序，也就是哪个类别的概率最高。independence assumption 会引入系统性误差，但这些误差会以类似方式影响所有类别，所以排序仍然保持正确。
 
@@ -56,7 +56,7 @@ P(w1, w2, ..., wn | class) = P(w1 | class) * P(w2 | class) * ... * P(wn | class)
 
 三个原因：
 
-1. **排序优先于校准。** Classification 只需要排名最高的类别正确。即使 P(spam) = 0.99999，而真实概率是 0.7，classifier 仍然会正确选择 spam。我们不需要正确的概率。我们需要正确的胜出类别。
+1. **排序优先于校准。** Classification 只需要排名最高的类别正确。即使 $P(\text{垃圾邮件}) = 0.99999$，而真实概率是 0.7，classifier 仍然会正确选择 spam。我们不需要正确的概率。我们需要正确的胜出类别。
 
 2. **高 bias，低 variance。** independence assumption 是一个强 prior。它强力约束模型，从而防止 overfitting。在训练数据有限时，一个略微错误但稳定的模型，会胜过一个理论上正确但极不稳定的模型。这就是 bias-variance tradeoff 在发挥作用。
 
@@ -73,31 +73,33 @@ P(w1, w2, ..., wn | class) = P(w1 | class) * P(w2 | class) * ... * P(wn | class)
 - Not-spam 邮件提到 "free" 5 次、"money" 10 次、"meeting" 100 次（总计 115 个词）
 - 40% 的邮件是 spam，60% 是 not-spam
 
-使用 Laplace smoothing（alpha=1）：
+使用 Laplace smoothing（$\alpha=1$）：
 
-```
-P(free | spam)    = (80 + 1) / (150 + 3) = 81/153 = 0.529
-P(money | spam)   = (60 + 1) / (150 + 3) = 61/153 = 0.399
-P(meeting | spam) = (10 + 1) / (150 + 3) = 11/153 = 0.072
-
-P(free | not-spam)    = (5 + 1) / (115 + 3) = 6/118 = 0.051
-P(money | not-spam)   = (10 + 1) / (115 + 3) = 11/118 = 0.093
-P(meeting | not-spam) = (100 + 1) / (115 + 3) = 101/118 = 0.856
+```math
+\begin{aligned}
+P(\text{free} \mid \text{垃圾邮件}) &= (80 + 1) / (150 + 3) = 81/153 = 0.529 \\
+P(\text{money} \mid \text{垃圾邮件}) &= (60 + 1) / (150 + 3) = 61/153 = 0.399 \\
+P(\text{meeting} \mid \text{垃圾邮件}) &= (10 + 1) / (150 + 3) = 11/153 = 0.072 \\[6pt]
+P(\text{free} \mid \text{非垃圾邮件}) &= (5 + 1) / (115 + 3) = 6/118 = 0.051 \\
+P(\text{money} \mid \text{非垃圾邮件}) &= (10 + 1) / (115 + 3) = 11/118 = 0.093 \\
+P(\text{meeting} \mid \text{非垃圾邮件}) &= (100 + 1) / (115 + 3) = 101/118 = 0.856
+\end{aligned}
 ```
 
 新邮件包含："free"（2 次）、"money"（1 次）、"meeting"（0 次）。
 
+```math
+\begin{aligned}
+\log P(\text{垃圾邮件} \mid \text{邮件}) &= \log(0.4) + 2 \log(0.529) + 1 \log(0.399) + 0 \log(0.072) \\
+&= -0.916 + 2(-0.637) + (-0.919) + 0 \\
+&= -3.109 \\[6pt]
+\log P(\text{非垃圾邮件} \mid \text{邮件}) &= \log(0.6) + 2 \log(0.051) + 1 \log(0.093) + 0 \log(0.856) \\
+&= -0.511 + 2(-2.976) + (-2.375) + 0 \\
+&= -8.838
+\end{aligned}
 ```
-log P(spam | email) = log(0.4) + 2*log(0.529) + 1*log(0.399) + 0*log(0.072)
-                    = -0.916 + 2*(-0.637) + (-0.919) + 0
-                    = -3.109
 
-log P(not-spam | email) = log(0.6) + 2*log(0.051) + 1*log(0.093) + 0*log(0.856)
-                        = -0.511 + 2*(-2.976) + (-2.375) + 0
-                        = -8.838
-```
-
-Spam 以很大优势胜出。"free" 出现两次是支持 spam 的强 evidence。注意，"meeting" 未出现时，对两个 log sum 的贡献都是零（0 * log(P)）——在 Multinomial NB 中，缺失词没有影响。显式建模词缺失的是 Bernoulli NB。
+Spam 以很大优势胜出。"free" 出现两次是支持 spam 的强 evidence。注意，"meeting" 未出现时，对两个 log sum 的贡献都是零（$0 \cdot \log P$）——在 Multinomial NB 中，缺失词没有影响。显式建模词缺失的是 Bernoulli NB。
 
 ### Three Variants
 
@@ -107,8 +109,8 @@ Naive Bayes 有三种形式。每一种都用不同方式建模 `P(feature | cla
 
 将每个特征建模为计数。最适合特征为词频或 TF-IDF 值的文本数据。
 
-```
-P(word_i | class) = (count of word_i in class + alpha) / (total words in class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数：} \text{词}_i \text{ 在类别中} + \alpha}{\text{类别内词总数} + \alpha \cdot \text{vocab\_size}}
 ```
 
 `alpha` 是 Laplace smoothing（下文解释）。这个变体是文本 classification 的主力。
@@ -117,8 +119,8 @@ P(word_i | class) = (count of word_i in class + alpha) / (total words in class +
 
 将每个特征建模为正态分布。最适合连续特征。
 
-```
-P(x_i | class) = (1 / sqrt(2 * pi * var)) * exp(-(x_i - mean)^2 / (2 * var))
+```math
+P(x_i \mid \text{类别}) = \frac{1}{\sqrt{2 \pi \cdot \text{方差}}} \cdot \exp\left(-\frac{(x_i - \text{均值})^2}{2 \cdot \text{方差}}\right)
 ```
 
 每个类别都会为每个特征拥有自己的均值和方差。当特征在每个类别内部确实服从钟形曲线时，这种方法效果很好。
@@ -127,8 +129,8 @@ P(x_i | class) = (1 / sqrt(2 * pi * var)) * exp(-(x_i - mean)^2 / (2 * var))
 
 将每个特征建模为二值变量（出现或未出现）。最适合短文本或二值特征 Vector。
 
-```
-P(word_i | class) = (docs in class containing word_i + alpha) / (total docs in class + 2 * alpha)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{类别内包含该词的文档数：} \text{词}_i + \alpha}{\text{类别内文档总数} + 2 \alpha}
 ```
 
 不同于 Multinomial，Bernoulli 会显式惩罚某个词的缺失。如果 "free" 通常出现在 spam 中，但这封邮件里没有，Bernoulli 会把它计为反对 spam 的 evidence。
@@ -149,11 +151,11 @@ P(word_i | class) = (docs in class containing word_i + alpha) / (total docs in c
 
 Laplace smoothing 会给每个特征计数加上一个小计数 `alpha`（通常为 1）：
 
-```
-P(word_i | class) = (count(word_i, class) + alpha) / (total_words_in_class + alpha * vocab_size)
+```math
+P(\text{词}_i \mid \text{类别}) = \frac{\text{计数}(\text{词}_i, \text{类别}) + \alpha}{\text{total\_words\_in\_class} + \alpha \cdot \text{vocab\_size}}
 ```
 
-当 alpha=1 时，每个词至少都有一个很小的概率。测试邮件中出现 "discombobulate" 不再会让 spam 概率归零。smoothing 有一个 Bayesian 解释：它等价于在词分布上放置一个均匀 Dirichlet prior。
+当 $\alpha=1$ 时，每个词至少都有一个很小的概率。测试邮件中出现 "discombobulate" 不再会让 spam 概率归零。smoothing 有一个 Bayesian 解释：它等价于在词分布上放置一个均匀 Dirichlet prior。
 
 更高的 alpha 意味着更强的 smoothing（分布更均匀）。更低的 alpha 意味着模型更信任数据。Alpha 是需要调优的 hyperparameter。
 
@@ -172,8 +174,8 @@ alpha 的影响：
 
 解决方案：在 log space 中工作。不要相乘概率，而是相加它们的对数：
 
-```
-log P(class | x1, x2, ..., xn) = log P(class) + sum_i log P(xi | class)
+```math
+\log P(\text{类别} \mid x_1, x_2, \ldots, x_n) = \log P(\text{类别}) + \sum_i \log P(x_i \mid \text{类别})
 ```
 
 这会把预测变成 dot product：
@@ -191,7 +193,7 @@ Matrix multiplication。这就是 Naive Bayes 预测如此之快的原因——�
 
 | Aspect | Naive Bayes | Logistic Regression |
 |--------|------------|-------------------|
-| Type | Generative（建模 P(X\|Y)） | Discriminative（建模 P(Y\|X)） |
+| Type | Generative（建模 $P(X \mid Y){}$） | Discriminative（建模 $P(Y \mid X){}$） |
 | Training | 统计频率 | 优化 Loss Function |
 | Small data | 更好（强 prior 有帮助） | 更差（不足以估计权重） |
 | Large data | 更差（错误假设会拖累） | 更好（更灵活的边界） |
@@ -218,8 +220,8 @@ flowchart LR
 
 实践中，我们在 log space 中工作，以避免 floating-point underflow。我们不再相乘许多小概率，而是相加它们的对数：
 
-```
-log P(class | features) = log P(class) + sum_i log P(feature_i | class)
+```math
+\log P(\text{类别} \mid \text{特征}) = \log P(\text{类别}) + \sum_i \log P(\text{特征}_i \mid \text{类别})
 ```
 
 
@@ -236,7 +238,7 @@ naive-bayes
 
 1. **fit(X, y)**：对每个类别，统计每个特征的频率。加入 Laplace smoothing。计算 log probabilities。存储 class priors（类别频率的 log）。
 
-2. **predict_log_proba(X)**：对每个样本，计算所有类别的 log P(class) + sum of log P(feature_i | class)。这是一次 Matrix multiplication：X @ log_probs.T + log_priors。
+2. **predict_log_proba(X)**：对每个样本，计算所有类别的 $\log P(\text{类别})$ + sum of $\log P(\text{特征}_i \mid \text{类别})$。这是一次 Matrix multiplication：X @ log_probs.T + log_priors。
 
 3. **predict(X)**：返回 log probability 最高的类别。
 
@@ -309,9 +311,9 @@ synthetic data 的工作方式如下：我们创建 200 个“词”（特征列
 
 ### Prediction Speed
 
-Naive Bayes 预测是一次 Matrix multiplication。对于 n 个样本、d 个特征、k 个类别：
-- MultinomialNB：一次 Matrix multiply (n x d) @ (d x k) = O(n * d * k)
-- GaussianNB：n * k 次 Gaussian PDF 求值，每次覆盖 d 个特征 = O(n * d * k)
+Naive Bayes 预测是一次 Matrix multiplication。对于 $n$ 个样本、$d$ 个特征、$k$ 个类别：
+- MultinomialNB：一次 Matrix multiply $(n \times d) \mathbin{@} (d \times k) = O(n \cdot d \cdot k)$
+- GaussianNB：$n \cdot k$ 次 Gaussian PDF 求值，每次覆盖 $d$ 个特征 = $O(n \cdot d \cdot k)$
 
 两者在每个维度上都是线性的。将其与 KNN（需要计算到所有训练点的距离）或带 RBF kernel 的 SVM（需要对所有 support vectors 做 kernel evaluation）相比，NB 在预测时快几个数量级。
 
@@ -383,7 +385,7 @@ CountVectorizer 中的 `binary=True` 标志会将所有计数转换为 0/1。没
 
 ### Calibrating NB Probabilities
 
-NB 概率校准很差。当 NB 说 P(spam) = 0.95 时，真实概率可能是 0.7。如果你需要可靠的概率估计（例如，用于设置阈值或与其他模型组合），请使用 sklearn 的 CalibratedClassifierCV：
+NB 概率校准很差。当 NB 说 $P(\text{垃圾邮件}) = 0.95$ 时，真实概率可能是 0.7。如果你需要可靠的概率估计（例如，用于设置阈值或与其他模型组合），请使用 sklearn 的 CalibratedClassifierCV：
 
 ```python
 from sklearn.calibration import CalibratedClassifierCV
@@ -401,7 +403,7 @@ proba = calibrated_nb.predict_proba(X_test)
 
 2. **零方差特征。** GaussianNB 会除以方差。如果某个类别的某个特征方差为零（所有值都相同），概率计算会出问题。代码会给所有方差加上一个很小的 smoothing 项（1e-9）来防止这种情况。
 
-3. **类别不平衡。** 如果 99% 的邮件是 not-spam，prior P(not-spam) = 0.99 会非常强，以至于压过 likelihood evidence。你可以手动设置 class priors，或使用 sklearn 中的 class_prior 参数。
+3. **类别不平衡。** 如果 99% 的邮件是 not-spam，prior $P(\text{非垃圾邮件}) = 0.99$ 会非常强，以至于压过 likelihood evidence。你可以手动设置 class priors，或使用 sklearn 中的 class_prior 参数。
 
 4. **特征缩放。** MultinomialNB 不需要 scaling（它处理计数）。GaussianNB 也不需要 scaling（它估计逐特征统计量）。这是它相对于 logistic regression 和 SVM 的优势，后两者对特征尺度敏感。
 
@@ -425,7 +427,7 @@ proba = calibrated_nb.predict_proba(X_test)
 ## 练习
 1. **Smoothing experiment。** 在文本数据上使用 alpha 值 0.01、0.1、1.0、10.0 和 100.0 训练 MultinomialNB。绘制 accuracy vs alpha。性能在哪里达到峰值？为什么非常高的 alpha 会伤害性能？
 
-2. **Feature independence test。** 取一个真实文本数据集。选择两个显然相关的词（"machine" 和 "learning"）。计算 P(word1 | class) * P(word2 | class)，并与 P(word1 AND word2 | class) 比较。independence assumption 错得有多严重？它会影响 classification accuracy 吗？
+2. **Feature independence test。** 取一个真实文本数据集。选择两个显然相关的词（"machine" 和 "learning"）。计算 $P(\text{词}_1 \mid \text{类别}) \cdot P(\text{词}_2 \mid \text{类别})$，并与 $P(\text{词}_1 \text{ 且 } \text{词}_2 \mid \text{类别})$ 比较。independence assumption 错得有多严重？它会影响 classification accuracy 吗？
 
 3. **Bernoulli implementation。** 扩展代码，添加一个 BernoulliNB class。将 bag-of-words 转换为二值（present/absent），并在文本数据上与 MultinomialNB 比较 accuracy。什么时候 Bernoulli 会赢？
 
@@ -437,14 +439,14 @@ proba = calibrated_nb.predict_proba(X_test)
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Naive Bayes | “简单的概率 classifier” | 一个使用 Bayes' theorem，并假设给定类别后特征 conditionally independent 的 classifier |
-| Conditional independence | “特征彼此不影响” | P(A, B \| C) = P(A \| C) * P(B \| C)——一旦知道 C，知道 B 不会告诉你关于 A 的任何新信息 |
+| Conditional independence | “特征彼此不影响” | $P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)$——一旦知道 $C$，知道 $B$ 不会告诉你关于 $A$ 的任何新信息 |
 | Laplace smoothing | “Add-one smoothing” | 给每个特征添加一个小计数，防止零概率主导预测 |
-| Prior | “看到数据之前你相信什么” | P(class)——观察任何特征之前，每个类别的概率 |
-| Likelihood | “数据拟合得有多好” | P(features \| class)——如果类别已知，观察到这些特征的概率 |
-| Posterior | “看到数据之后你相信什么” | P(class \| features)——观察到特征后，类别的更新概率 |
-| Generative model | “建模数据如何生成” | 学习 P(X \| Y) 和 P(Y)，然后使用 Bayes' theorem 得到 P(Y \| X) 的模型 |
-| Discriminative model | “建模 decision boundary” | 不建模 X 如何生成，而是直接学习 P(Y \| X) 的模型 |
-| Log probability | “避免 underflow” | 使用 log P 而不是 P，防止许多小数相乘后在浮点数中变成零 |
+| Prior | “看到数据之前你相信什么” | $P(\text{类别})$——观察任何特征之前，每个类别的概率 |
+| Likelihood | “数据拟合得有多好” | $P(\text{特征} \mid \text{类别})$——如果类别已知，观察到这些特征的概率 |
+| Posterior | “看到数据之后你相信什么” | $P(\text{类别} \mid \text{特征})$——观察到特征后，类别的更新概率 |
+| Generative model | “建模数据如何生成” | 学习 $P(X \mid Y)$ 和 $P(Y)$，然后使用 Bayes' theorem 得到 $P(Y \mid X)$ 的模型 |
+| Discriminative model | “建模 decision boundary” | 不建模 $X$ 如何生成，而是直接学习 $P(Y \mid X)$ 的模型 |
+| Log probability | “避免 underflow” | 使用 $\log P$ 而不是 $P$，防止许多小数相乘后在浮点数中变成零 |
 
 ## 延伸阅读
 - [scikit-learn Naive Bayes docs](https://scikit-learn.org/stable/modules/naive_bayes.html) —— 三种变体及其数学细节
