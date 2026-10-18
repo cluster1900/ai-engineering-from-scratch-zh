@@ -28,29 +28,31 @@ Zincir Kuralı  matematiğin temelini vermek. Otomatik farklılık  algoritma ve
 
 ### Zincir Kuralı
 
-Eğer `y = f(g(x))`- Öyleyse .`y`                `x`Çekilme sayısı:
+Eğer $y = f(g(x))$- Öyleyse .$y$                $x$Çekilme sayısı:
 
-```
-dy/dx = dy/dg * dg/dx = f'(g(x)) * g'(x)
+```math
+\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx} = f'(g(x)) \cdot g'(x)
 ```
 
 沿着链条将导数相乘―― her bir bölüm kendi yerel导数¬larına katkıda bulunur.
 
-Örnek:`y = sin(x^2)`
+Örnek:$y = \sin(x^2)$
 
-```
-g(x) = x^2       g'(x) = 2x
-f(g) = sin(g)     f'(g) = cos(g)
-
-dy/dx = cos(x^2) * 2x
+```math
+\begin{aligned}
+g(x) &= x^2 \qquad & g'(x) &= 2x \\
+f(g) &= \sin(g) \qquad & f'(g) &= \cos(g) \\[4pt]
+\frac{dy}{dx} &= \cos(x^2) \cdot 2x
+\end{aligned}
 ```
 
 Daha derin bir komplo için, zincir devam eder:
 
-```
-y = f(g(h(x)))
-
-dy/dx = f'(g(h(x))) * g'(h(x)) * h'(x)
+```math
+\begin{aligned}
+y &= f(g(h(x))) \\[4pt]
+\frac{dy}{dx} &= f'(g(h(x))) \cdot g'(h(x)) \cdot h'(x)
+\end{aligned}
 ```
 
 Nöral ağın her katmanı bu zincirdeki bir kısım.
@@ -88,7 +90,7 @@ Arka Geçit, Çatışa yayılan çıkıştan girişe kadar dereceli olacaktır.
 
 Grafın içinde zincir kuralını uygulamanın iki yolu vardır.
 
-**Forward mode**Giriştan başlayarak, öne doğru sayı hesaplanır.`dx/dx = 1`,并通过每个操作传播――适合输入少、输出多场景――
+**Forward mode**Giriştan başlayarak, öne doğru sayı hesaplanır.$dx/dx = 1$,并通过每个操作传播――适合输入少、输出多场景――
 
 ```
 Forward mode: seed dx/dx = 1, propagate forward
@@ -98,7 +100,7 @@ Forward mode: seed dx/dx = 1, propagate forward
   y = sin(a)  (dy/dx = cos(a) * da/dx = cos(4) * 4 = -2.615)
 ```
 
-**Reverse mode**Çıkıştan çıkıştan sonra, dereceli olarak geriye doğru geriye doğru hesaplanır.`dy/dy = 1`, ve her işlemden sonra ters yönlü bir sırada yayılmaktadır.
+**Reverse mode**Çıkıştan çıkıştan sonra, dereceli olarak geriye doğru geriye doğru hesaplanır.$dy/dy = 1$, ve her işlemden sonra ters yönlü bir sırada yayılmaktadır.
 
 ```
 Reverse mode: seed dy/dy = 1, propagate backward
@@ -112,12 +114,12 @@ Neural Network'da milyonlarca giriş var. Ağırlık ve bir çıkış kaybı. Ge
 
 | Mode | Seed | Direction | Best when |
 |------|------|-----------|-----------|
-| Forward | `dx_i/dx_i = 1` | 输入到输出 | 输入少、输出多 |
-| Reverse | `dy/dy = 1` | 输出到输入 | 输入多、输出少（neural nets） |
+| Forward | $dx_i/dx_i = 1$ | 输入到输出 | 输入少、输出多 |
+| Reverse | $dy/dy = 1$ | 输出到输入 | 输入多、输出少（neural nets） |
 
 ### Önceki Modu Çift Sayılar
 
-Önceki mod çift sayı kullanılabilir 优雅地实现──双数的形式是`a + b*epsilon`, içinden `epsilon^2 = 0`- Evet.
+Önceki mod çift sayı kullanılabilir 优雅地实现──双数的形式是$a + b\epsilon$, içinden $\epsilon^2 = 0$- Evet.
 
 ```
 Dual number: (value, derivative)
@@ -237,7 +239,7 @@ Her işlem bir kapanış oluşturur, nasıl hesaplanacağını bilir.`out.grad`)
             v._backward()
 ```
 
-Topolojik tür                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+Topolojik tür                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           $dy/dy = 1$)。
 
 ### Adım 4: Tam motor daha fazla işlem gerektirir
 
@@ -301,11 +303,11 @@ Topolojik tür
 | Operation | Backward rule | Used in |
 |-----------|--------------|---------|
 | `__sub__` | 复用 add + neg | Loss 计算（pred - target） |
-| `__pow__` | n * x^(n-1) | Polynomial activations、MSE（error^2） |
+| `__pow__` | $n \cdot x^{n-1}$ | Polynomial activations、MSE（$\text{error}^2$） |
 | `__truediv__` | 复用 mul + pow(-1) | Normalization、learning rate scaling |
-| `exp` | exp(x) * upstream | Softmax、log-likelihood |
-| `log` | (1/x) * upstream | Cross-entropy loss、log probabilities |
-| `tanh` | (1 - tanh^2) * upstream | 经典 activation function |
+| `exp` | $\exp(x) \cdot \text{upstream}$ | Softmax、log-likelihood |
+| `log` | $(1/x) \cdot \text{upstream}$ | Cross-entropy loss、log probabilities |
+| `tanh` | $(1 - \tanh^2) \cdot \text{upstream}$ | 经典 activation function |
 
 巧妙之处在:`__sub__`和 `__truediv__`Bu işlemler otomatik olarak doğru bir derece elde eder, çünkü zincir kuralları alt katınca eklenen/çoktan/sıkı bir şekilde birleştirilmiştir.
 
@@ -490,13 +492,23 @@ Bu yapılandırılan değer sınıfı, 3 aşamada Nöral Ağ ı eğitim döngüs
 
 ## 练习
 
-1. Kılavuz sınıfı 添加 `__pow__`Böylece hesaplayabilirsin .`x ** n`❖ Testing in `x=2`时,`d/dx(x^3)`Ben de öyleyim .`12.0`- Evet.
+1. Kılavuz sınıfı 添加 `__pow__`Böylece hesaplayabilirsin .`x ** n`❖ Testing in $x=2$时,$\frac{d}{dx}(x^3)$Ben de öyleyim .`12.0`- Evet.
 
-2. 添加 `tanh`作为激活函数──验证 `tanh'(0) = 1`Ve`tanh'(2) = 0.0707`(Yaklaşık değer)
+2. 添加 `tanh`作为激活函数──验证 $\tanh'(0) = 1$Ve$\tanh'(2) = 0.0707$(Yaklaşık değer)
 
 3. Tek bir nöron için hesaplama grafikini oluştur:`y = relu(w1*x1 + w2*x2 + b)`△ hesapla tüm beş dereceyi,并与 PyTorch 验证──
 
 4. Çift sayılar kullanın  ileriye doğru otomatik olarak kullanın  Create one `Dual`sınıf,并验证 it gives the same number with reverse-mode engine.
+
+### 提示
+
+**练习 1。** `Value`- Evet .`__pow__`Okuyun.`_backward`, onaylayacak$n x^{n-1}$乘到传入的梯度上──运行 `x = Value(2.0)`- Evet.`y = x ** 3`- Evet.`y.backward()`- ...`x.grad`12.0'a kadar.
+
+**练习 2。**- Evet .`_backward`中使用 $\tanh'(x) = 1 - \tanh(x)^2$❖ Kendi kendini gerçekleştirdiğin sınırlı farkı test et:$\frac{\tanh(x + h) - \tanh(x - h)}{2h}$- Evet .$x = 0$和 $x = 2$处必须与与吻合──
+
+**练习 3。**Kullan .`Value`Konstrüksiyon`w1*x1 + w2*x2 + b`, uygulamak`relu`, yeniden kullanmak`backward`与 PyTorch比较前,先手工核对:若 `relu`Bu doğru.`w1`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `x1`Eğer negatifse, 5 derece 0'dur.
+
+**练习 4。**Herkese`Dual`Orta kaydetme değeri ve değer, çarpma kullanımı çarpma kuralları $(a, a')(b, b') = (ab, a'b + ab')$ Giriş için ilk yönlendirme sayısı 1 olarak belirlenir.`x.grad`Ben de.
 
 ## 关键术语
 
@@ -507,13 +519,13 @@ Bu yapılandırılan değer sınıfı, 3 aşamada Nöral Ağ ı eğitim döngüs
 | Forward mode | “向前推导数” | 将导数从输入传播到输出的 autodiff。每个输入变量需要一次 pass。 |
 | Reverse mode | “Backpropagation” | 将 Gradient 从输出传播到输入的 autodiff。每个输出变量需要一次 pass。 |
 | Autograd | “自动 Gradient” | 一个系统：记录对值执行的操作、构建 graph，并通过 Chain Rule 计算精确 Gradient |
-| Dual numbers | “值加导数” | 形式为 a + b*epsilon（epsilon^2 = 0）的数字，可以在算术运算中携带导数信息 |
+| Dual numbers | “值加导数” | 形式为 $a + b\epsilon$（$\epsilon^2 = 0$）的数字，可以在算术运算中携带导数信息 |
 | Topological sort | “依赖顺序” | 对 graph 节点排序，使每个节点都位于其所有依赖之后。正确传播 Gradient 所必需。 |
 | Gradient accumulation | “相加，不要替换” | 当一个值流入多个操作时，它的 Gradient 是所有传入 Gradient 贡献的总和 |
 | Dynamic graph | “Define by run” | 每次 forward pass 都重新构建的 computation graph，允许模型内部使用 Python 控制流（PyTorch 风格） |
 | Gradient checking | “数值验证” | 将 autodiff Gradient 与数值 finite-difference Gradient 对比，以验证正确性。调试时必不可少。 |
 | MLP | “Multi-layer perceptron” | 一个包含一层或多层隐藏 neuron 的 Neural Network。每个 neuron 计算加权和加 bias，然后应用 activation function。 |
-| Neuron | “加权和 + activation” | 基本单元：output = activation(w1*x1 + w2*x2 + ... + b)。weights 和 bias 是可学习参数。 |
+| Neuron | “加权和 + activation” | 基本单元：$\text{output} = \text{activation}(w_1 x_1 + w_2 x_2 + \cdots + b)$。weights 和 bias 是可学习参数。 |
 
 ## 延伸阅读
 

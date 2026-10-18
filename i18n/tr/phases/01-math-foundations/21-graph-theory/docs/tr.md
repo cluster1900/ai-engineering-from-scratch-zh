@@ -31,9 +31,9 @@ Sana dört şey lazım:
 ## 概念
 ### Grafikler: Kısımlar ve Kenarlar
 
-Bir grafik G = (V, E) tarafından zirveler (nodlar) V 和 kenarları E 组成──每条 edge 连接两个节点──
+Bir grafik .$G = (V, E)$Yörüngeler (nodlar) $V$ 和 kenarları $E$组成──每条 edge 连接两个节点──
 
-**Directed vs undirected。**Özetlenmeyen grafikte, kenar (u, v) u 连接到 v,并且 v 也连接到 u── Özetlenmeyen grafikte, kenar (u, v) u 指向 v,但反向不一定成立──
+**Directed vs undirected。**Yönlendirilmemiş grafikte, kenar $(u, v)$Göster$u$Bağlantı$v$Ve$v$Ayrıca bağlantı .$u$△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                                                                                       $(u, v)$Göster$u$Yönlendirme$v$Ama tersine, kesinlikle geçerli değil.
 
 **Weighted vs unweighted。**Ağırlaştırılmamış grafikte, kenarlar var mı var mı yok mı var mı var mı yok. Ağırlaştırılmış grafikte, her kenarın bir sayısal değeri var.
 
@@ -46,14 +46,13 @@ Bir grafik G = (V, E) tarafından zirveler (nodlar) V 和 kenarları E 组成─
 
 ### Yakınlık Matrisi
 
-A'nın bitişiklik matrisi, n 个 düğüm içeren bir grafik için:
+bitişiklik matrisi $A$∞ ∞ ∞ ∞ ∞ ∞$n$个节点 的图:
 
-```
-A[i][j] = 1    if there is an edge from node i to node j
-A[i][j] = 0    otherwise
+```math
+A[i][j] = \begin{cases} 1 & \text{若存在从节点 } i \text{ 到节点 } j \text{ 的 edge} \\ 0 & \text{否则} \end{cases}
 ```
 
-对于未定向图,A 是对称:A[i][j] = A[j][i]。对于权重图,A[i][j] =边 (i, j) 的重量──
+ yönlendirilmemiş grafikler için,$A$Simetrik:$A[i][j] = A[j][i]$❖ Ağırlaştırılmış grafikler için,$A[i][j]$= kenar $(i, j)$Ağırlık.
 
 **示例：一个 triangle：**
 
@@ -66,20 +65,22 @@ A = [[0, 1, 1],
      [1, 1, 0]]
 ```
 
-bitişiklik matrisi her GNN'in girişidir.
+bitişiklik matrisi = her GNN'in girişleri$A$Yukarıdaki Matrix işlemleri, yukarıdaki grafik işlemlerine karşı.
 
 ### Derece
 
 Örgütlerin derecesi, kenarlarına bağlanmıştır.
 
-D = diyagonal derece matrisi:
+dereceleri matrisi $D$- Diyagonal:
 
-```
-D[i][i] = degree of node i
-D[i][j] = 0    for i != j
+```math
+\begin{aligned}
+D[i][i] &= \text{节点 } i \text{ 的 degree} \\
+D[i][j] &= 0 \quad \text{其中 } i \ne j
+\end{aligned}
 ```
 
-对于三角形示例:D = diag(2,2,2),因为每个节点都连接到另外两个节点──
+Üçgen örneği için:$D = \mathop{\mathrm{diag}}(2, 2, 2)$Çünkü her düğüm diğer iki düğüme bağlanmıştır.
 
 Derece 告诉你节点的重要性──High degree = hub node──a network's degree distribution 揭示了它的结构──Social networks 遵循 power laws(少量 hubs,许多 leaf nodes)──Random graphs 具有Poisson-distributed degrees──
 
@@ -129,19 +130,17 @@ DFS kullanılabilir:
 
 ### Grafik Laplakyan
 
-L = D - A──spektral grafik teorisi 中最重要的矩阵──
+$L = D - A$◊ Spektral grafi teorisi 中最重要的矩阵──
 
 Üçgen için:
 
-```
-D = [[2, 0, 0],    A = [[0, 1, 1],    L = [[2, -1, -1],
-     [0, 2, 0],         [1, 0, 1],         [-1, 2, -1],
-     [0, 0, 2]]         [1, 1, 0]]         [-1, -1,  2]]
+```math
+D = \begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix} \qquad A = \begin{bmatrix} 0 & 1 & 1 \\ 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \qquad L = \begin{bmatrix} 2 & -1 & -1 \\ -1 & 2 & -1 \\ -1 & -1 & 2 \end{bmatrix}
 ```
 
 Laplakya 具有非常重要的性质:
 
-1. **L 是 positive semi-definite。**Tüm öz değerleri = 0
+1. **$L$ 是 positive semi-definite。**Tüm öz değerleri$\ge 0$- Evet.
 
 2. **zero eigenvalues 的数量等于 connected components 的数量。**Bir bağlantılı grafik 恰好 has zero eigenvalue── bir has has 3 ′s disconnected components of graph has three zero eigenvalue──
 
@@ -171,12 +170,12 @@ graph TD
 Yakınlık matrisi ve Laplakçi'nin öz değerleri herhangi bir geçiş yapmadan yapısal özellikleri ortaya çıkarabilir.
 
 **Spectral clustering**Şöyle çalışmaktadır:
-1. 计算 Laplak L
-2. 找到 L's k 个最小 eigenvectors(跳过第一个; Bağlı grafikler için, bu tamamı 1)
+1. 计算 Laplak $L$
+2. 找到 $L$$k$个最小 eigenvectors(跳过第一个; Bağlı grafikler için, it is全 1)
 3. Bu öz vektörleri her düğümün yeni bir sitatörü olarak kullanın
-4. Bu yolculukların k-mahası
+4. Bu otellerde yürüyüş yapın.$k$-Böyle demek.
 
-Neden bu geçerli?L'nin öz vektörleri grafı kodladı   滑                                                                                                                                                                                                                                                   
+Neden işe yarıyor?$L$Bu nedenle, bu değerler, kendi vektörlerinin farklı değerleri elde eder. Bu değerler, kendi vektörlerin farklı değerlerini elde eder.
 
 **Random walk connection。**Normalleştirilmiş Laplaksian 收得有多快) 取决于光谱差──
 
@@ -184,25 +183,25 @@ Neden bu geçerli?L'nin öz vektörleri grafı kodladı   滑
 
 Bu Graph Neural Networks'in temel işlevi. Her düğüm komşularından mesaj toplayıp onları toplayıp kendi durumunu yeniliyor.
 
-```
-h_v^(k+1) = UPDATE(h_v^(k), AGGREGATE({h_u^(k) : u in neighbors(v)}))
+```math
+h_v^{(k+1)} = \text{UPDATE}\left(h_v^{(k)}, \text{AGGREGATE}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
 En basit biçimde,Aggregate = ortalama,UPDATE = doğrusal dönüşüm + etkinleştirme:
 
-```
-h_v^(k+1) = sigma(W * mean({h_u^(k) : u in neighbors(v)}))
-```
-
-Bu aslında başka bir tür matris çarpımı olarak taklit edilmektedir. H tüm düğüm özelliklerinin matrisidirse, A bitişiklik matrisidir:
-
-```
-H^(k+1) = sigma(A_norm * H^(k) * W)
+```math
+h_v^{(k+1)} = \sigma\left(W \cdot \text{mean}\left(\{h_u^{(k)} : u \in \text{neighbors}(v)\}\right)\right)
 ```
 
-Bunlardan A_norm = normalleştirilmiş bitişiklik matrisi (((
+Bu aslında başka bir tür matris çarpımı şeklinde saptırılmış bir şey.$H$Tüm düğüm özelliklerinin matrisi,$A$                                                                                                                                                                                                                                                              
 
-Bir mesaj geçiyor 让每个节点 看到它的近邻――两轮让它看到邻居的邻居――K 轮让每个节点 获得来自其K-hop邻居的信息――
+```math
+H^{(k+1)} = \sigma\left(A_{\text{norm}} H^{(k)} W\right)
+```
+
+İçlerinden $A_{\text{norm}}$Normalleşmiş bitişiklik matrisi (((
+
+Bir mesaj geçiyor 让每个节点 看到它的近邻――两轮让它看到邻居的邻居――$K$Her düğümün ondan alınmasını sağlayın.$K$-hop mahallesi hakkında bilgi...
 
 ```mermaid
 graph LR
@@ -323,7 +322,7 @@ def dfs(graph, start):
     return order
 ```
 
-BFS 使用 deque(iki uçlı kuyruk) O(1) popleft。DFS 使用 list 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 O(V + E)。
+BFS 使用 deque(iki uçlı sırada) 实现$O(1)$popleft。DFS Kullanım listesini 作为堆──两者都会恰好访问每个节点 一次,时间复杂度为 $O(V + E)$- Evet.
 
 ### 步骤 3: Bağlı bileşenler 和 Laplacian öz değerleri
 
@@ -366,7 +365,7 @@ def spectral_clustering(graph, k=2):
     return labels
 ```
 
-K=2,Fiedler vektörünün 符号会将图分成两集── k>2,你会在前 k 个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个个
+- Evet .$k=2$,Fiedler vektörünün göstergesi grafik iki kümelere ayrılır.$k>2$Sen de orada olacaksın .$k$个 eigenvectors(排除 trivial all-one eigenvector) 上运行 $k$- Yani...
 
 ### 步骤 5: Mesaj geçiş
 
@@ -457,13 +456,13 @@ Fiedler vektörü 承担了主要工作──正值条目位于一个集群,负�
 | Connected components | Preprocessing, handling disconnected graphs |
 | PageRank | Node importance ranking, attention initialization |
 
-GNN'ler 值得特别说明──GCN(Kipf & Welling, 2017) içindeki grafik kıvrım işleminde kullanılarak kendi kendini döngülerin bitişiklik matrisini ekledi, A_hat = A + I:
+GNN'ler 值得特别说明──GCN(Kipf & Welling, 2017) içinde grafik kıvrım işlemleri kullanılarak kendi kendini döngülerinin bitişiklik matrisini ekledi,$\hat{A} = A + I$- ...
 
-```text
-H^(l+1) = sigma(D_hat^(-1/2) * A_hat * D_hat^(-1/2) * H^(l) * W^(l))
+```math
+H^{(l+1)} = \sigma\left(\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2} H^{(l)} W^{(l)}\right)
 ```
 
-Bunlardan A_hat = A + I(adjacency加 self-loops),D_hat is A_hat'ın derece matrisi。self-loops 确保每个节在聚合期间包含自身特征──这正是带有对称正常化的信息传递──D_hat^(-1/2) *A_hat * D_hat^(-1/2) 是正常化邻接矩阵──Laplacian 出现在这里,是因为这种正常化与L_sym = I - D^(-1/2) *A * D^(-1/2) 相关──理解Laplacian,就意味着理解GCNs为为什么有效──
+İçlerinden $\hat{A} = A + I$(kısıtlılık加自环),$\hat{D}$Evet .$\hat{A}$Grade matrisi, self-loops, her düğümün aggregasyon sırasında öz özellikleri içerdiğini sağlamak.$\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2}$Laplacian burada ortaya çıkıyor, çünkü bu normalleşme ile $L_{\text{sym}} = I - D^{-1/2} A D^{-1/2}$相关──理解 Laplacian,就意味着理解GCNs为何有效── anlaması gerekir.
 
 ## 练习
 1. **从零实现 PageRank。**Birlikte puanlar 开始──每一步:score(v) = (1-d) /n + d * sum(score(u) /out_degree(u)), u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ u ∈ ∈            ∈                                                                                                                                                                                                                
@@ -476,14 +475,26 @@ Bunlardan A_hat = A + I(adjacency加 self-loops),D_hat is A_hat'ın derece matri
 
 5. **分析一个真实世界 graph。**kullan Karate Club grafiği(34 düğüm, 78 kenar) ・・・ hesaplama derecesi dağılım、Laplacian öz değerleri 和 spektral kümeler。
 
+### 提示
+
+**练习 1。**Uygulamada verilen formüllerin kullanılması. Dışarı çıkış kenarları olmayan noktaların sayılarının ortalaması tüm noktalara ayırılmalıdır.`pagerank(graph)`Ben de.
+
+**练习 2。**Kullanım`add_edge`İki klük oluştur, bir kenar kullan, onları bağla, sonra da kullan.`spectral_clustering(graph, k=2)`◊ Check each clique is whether they each get the same label── adım adım grup kenarlarını ekle 时,打印 `laplacian()`İkinci küçük özdeğer; iki grup daha yakından bağlandıkça, değer artış olacaktır.
+
+**练习 3。**Kullanım`heapq`维护优先队,总是扩展已知距离最小节点──将每条边的重量都设为1,检查 Dijkstra 得到的每距离是否等于`bfs(graph, start)`Orta Bölüm BFS Dönemleri
+
+**练习 4。**Benlik matrisi kullan `features`, her satır bir nokta işaretleyip iki kez uygula.`message_passing`Bu zaman, bölüm.$v$Yürüyüşlerde bulunan sıfır dışı girişler , hangi noktaların mesajını göstermektedir .$v$将这个集合与宽度第一搜索中距离不超过2的节点集合比较──
+
+**练习 5。** `networkx.karate_club_graph()`提供 edge list,以及节点属性 `club`İçindeki temel gerçeklik. Bu kenarları bir tek olarak kopyalayacağım.`Graph`Orta, 34 节点 ve 78 条 edgesinin olup olmadığını kontrol et.`spectral_clustering`Etiketleri ve etiketleri`club`Yapabilir.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Graph | “Nodes and edges” | 一种数学结构 G=(V,E)，用于编码 pairwise relationships |
-| Adjacency matrix | “The connection table” | 一个 n x n matrix，其中如果 nodes i 和 j 相连，则 A[i][j] = 1 |
+| Graph | “Nodes and edges” | 一种数学结构 $G=(V,E)$，用于编码 pairwise relationships |
+| Adjacency matrix | “The connection table” | 一个 $n \times n$ matrix，其中如果 nodes $i$ 和 $j$ 相连，则 $A[i][j] = 1$ |
 | Degree | “一个 node 有多 connected” | 接触某个 node 的 edges 数量 |
-| Laplacian | “D minus A” | L = D - A，其 eigenvalues 会揭示 graph structure 的 matrix |
-| Fiedler value | “The algebraic connectivity” | L 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
+| Laplacian | “D minus A” | $L = D - A$，其 eigenvalues 会揭示 graph structure 的 matrix |
+| Fiedler value | “The algebraic connectivity” | $L$ 的最小 non-zero eigenvalue，用于衡量 graph 连接得有多好 |
 | BFS | “Level-by-level search” | 在深入之前先访问所有 neighbors 的 traversal，可找到 shortest paths |
 | DFS | “Go deep first” | 在回溯之前沿一条 path 走到末端的 traversal |
 | Message passing | “Nodes talk to neighbors” | 每个 node 从其 neighbors 聚合信息，这是 GNNs 的核心 |

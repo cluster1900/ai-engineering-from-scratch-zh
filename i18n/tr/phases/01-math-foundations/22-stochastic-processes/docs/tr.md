@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Öğrenme hedefi
-- 模拟 1D 和 2D rastgele yürüyüşler,并验证位移的平方(n) 缩放规律
+- 模拟 1D ve 2D rastgele yürüyüşler,并验证位移的 $\sqrt{n}$缩放规律
 - 构建 Markov chain 模拟器,并通过自己的组合 计算其静止分布
 - Metropolis-Hastings MCMC ve Langevin dinamiklerini hedef dağılım biçiminden kullanmak
 - Önceden yayılma sürecini Brownian hareketi ile bağlayın, ters süreci nasıl oluşturulur açıklayın
@@ -35,9 +35,9 @@ Hepsi dört temel düşünce üzerine kurulmuştur:
 
 Yerden 0 開始── her adım,抛一枚公平硬币──正面:向右移动(+1)──反面:向左移动(-1)──
 
-经过 n 步后,你的位置是 n 个随机 +/-1 值的总和──期望位置是 0( bu yürüyüş tarafsız 的) ・・・
+Geçmiş .$n$- Yerin ne?$n$个随机 $\pm 1$值的总和──期望位置是0(这个走路是无偏的)──但距离原点的期望距离按 $\sqrt{n}$增长──
 
-Bu yürüyüş adil, iki yönde de hareket yoktur. Ama zaman geçtikçe, başlangıç noktasından giderek daha uzaklara gider.
+Bu yolculuk adil, iki yönde de hareket yok ama zaman geçtikçe, başlangıç noktasından giderek uzaklaşıyor.$n$步后的标准偏差是 $\sqrt{n}$- Evet.
 
 ```
 Step 0:  Position = 0
@@ -48,33 +48,33 @@ Step 100: Expected distance from origin ~ 10 (sqrt(100))
 Step 10000: Expected distance from origin ~ 100 (sqrt(10000))
 ```
 
-**在 2D 中**, yürüyüşe eşişi gibi olasılık yukarı, aşağı, sola veya sağ hareket eder.
+**在 2D 中**, yürüyüşe eşiği gibi olasılıkla yukarı, aşağı, sola veya sağa hareket etmektedir.$\sqrt{n}$缩放规律──路径会描绘出类似的骨折的模式──
 
-**为什么是 sqrt(n)？**Her adım da bir diğerine benzer bir olasılık vardır +1 veya -1──n 步后, konum S_n = X_1 + X_2 + ... + X_n, bunların her biri X_i +/-1── her adım da bir diğerinden bağımsızdır, bu yüzden Var(S_n) = n──Standard sapma = sqrt(n)──S_n / sqrt(n) 收到标准正常分布──
+**为什么是 $\sqrt{n}$？**Her adımın bir adım gibi olasılığı +1 veya -1 olacaktır.$n$步后,位置 $S_n = X_1 + X_2 + \cdots + X_n$, her biri .$X_i$Şehir .$\pm 1$❖ Her adımın varyansiyası 1 ve her adım birbirinden bağımsızdır.$\mathop{\mathrm{Var}}(S_n) = n$❖ Standart sapma = $\sqrt{n}$❖ Merkez sınır teoremine göre,$S_n / \sqrt{n}$收到 standart normal dağılım
 
-Bu tür şıklıklı √ n) 缩放放置 ML 中随处可见──SGD 噪音按1/sqrt(batch_size) 缩放──Embedding 维度按 sqrt(d) 缩放──平方根是独立随机加和的标志──
+Bu tür .$\sqrt{n}$缩放在 ML 中随处可见──SGD 噪音按1/sqrt(batch_size) 缩放──Embedding 维度按 $\sqrt{d}$缩放──平方根 is an independent with addition and symbol──
 
-**与 Brownian motion 的联系。**取一个步骤尺为1/sqrt(n) 、每单位时间 n 步的随机走行──当 n 趋近无穷时,这个走行会收到布朗运动 B(t)  一个连续时间过程,其中 B(t) 服从平均值为 0、变量为 t 的正常分布──
+**与 Brownian motion 的联系。**Bir adım boyutu al$1/\sqrt{n}$、 her saat$n$步's random walk──当 $n$Bu yürüyüş, Brownian hareketini alacak.$B(t)$ Bir sürekli zaman süreci, bunlardan $B(t)$服从平均值为 0 变量 为$t$Normal dağılım.
 
 Brownian hareket, difüzyonun matematiksel temelidir. Bu, parçacıkların akışında hareketleri, fiyatların hareketlerini ve ayrıca, önemli bir şekilde, difüzyon modellerinde gürültü sürecini çizer.
 
-**Gambler's ruin。**Bir rastgele yürüyüşcü k                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+**Gambler's ruin。**Bir rastgele yürüyüşcü konumdan.$k$開始,在 0 和 $N$处有吸收障壁──到达 $N$0'a ulaşma olasılığı nedir?$P(\text{到达 } N) = k/N$                                                                                                                                                                                                                                                              
 
 ### Markov Zincirleri
 
 Markov zinciri, sabit olasılıklara göre devletler arasında dönüşümlü bir sistemdir.
 
-```
-P(X_{t+1} = j | X_t = i, X_{t-1} = ...) = P(X_{t+1} = j | X_t = i)
-```
-
-Bu Markov özelliği. Yani tüm dinamikleri bir geçiş matrisi P ile tanımlayabilirsiniz.
-
-```
-P[i][j] = probability of going from state i to state j
+```math
+P(X_{t+1} = j \mid X_t = i, X_{t-1} = \ldots) = P(X_{t+1} = j \mid X_t = i)
 ```
 
-P'nin her bir dilekçe ve 1 için...
+Bu Markov özelliği. Yani bir geçiş matrisi ile yapabilirsin.$P$Tüm dinamikleri anlat:
+
+```math
+P[i][j] = \text{从状态 } i \text{ 转移到状态 } j \text{ 的概率}
+```
+
+$P$Her seferinde bir yere gitmen gerekiyor.
 
 **示例 —— Weather：**
 
@@ -86,7 +86,7 @@ P = [[0.7, 0.1, 0.2],    (if sunny: 70% sunny, 10% rainy, 20% cloudy)
      [0.4, 0.2, 0.4]]    (if cloudy: 40% sunny, 20% rainy, 40% cloudy)
 ```
 
-Herhangi bir durumdan 开始── çok kez geçişlerden sonra, durumların dağılımları sabit dağılım pi'ye ulaşır, bunların arasında pi * P = pi── bu P'nin öz değeri 为 1'nin sol öz vektörü olarak bulunur.
+Herhangi bir devletten 开始── geçişlerden sonra, devletlerin dağılımları sabit dağılımlara ulaşır.$\pi$, içinden $\pi P = \pi$Bu da bu.$P$∞'in öz değeri ∞'in sol öz vektörü ∞
 
  长期来看, whatever starts state is what,  长期来看,  长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期来看, 长期的时间的时间的53%是阳阳的.
 
@@ -105,8 +105,8 @@ graph LR
 
 **计算 stationary distribution。**İki yöntem var:
 
-1. **Power method**Bu da bir çok kez daha yayılmaya devam eder.
-2. **Eigenvalue method**: P'nin öz değeri için 1'nin sol öz vektörü bulun.
+1. **Power method**:                                                                                                                                                                                                                                                               $P$Yeterince tekrarladıktan sonra, bu da geçer.
+2. **Eigenvalue method**:找到 $P$∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞$P^T$∞'in öz değeri ∞'in öz vektörü ∞
 
 两种方法都要求链 满足收条件――
 
@@ -116,63 +116,63 @@ graph LR
 
 ML'de karşılaştığınız büyük zincirler bu iki şartı karşılıyor.
 
-**Absorbing states。**Eğer bir eyalete girerseniz asla ayrılmayacaksınız. Bu eyalet, emekleyici bir durumdur. Markov zincirlerini emekleyici bir süreçtir.
+**Absorbing states。**Bir devletin içine girersen asla ayrılmayacaksın.$P[i][i] = 1$), bu durum 〜 absorbing 〜 absorbing 〜 Markov zincirleri 〜 absorbing 〜 terminal states  〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
 
-**Mixing time。**需要多少步,chain 才会接近stationary distribution?形式化地说,就是总变距与静止的距离降至某值以下的所需步数――快速混合 = 需要步数少──P'nin spektral gap(1 减去第二大自值) 控制混合时间──gap 越大, mixing 越快──
+**Mixing time。**需要多少步,chain 才会接近stationary distribution?形式化地说,就是总变距离与静止的距离降至某个值以下的步数――快速混合 = 需要的步数少――$P$                                                                                                                                                                                                                                                              
 
 ### İletişim Dil Modelleri
 
 Dil modeli 中的代币生成 近似是一个马科夫过程──给定当前文本,模型输出下一个代币 上的分布──温度 控制敏度:
 
-```
-P(token_i) = exp(logit_i / temperature) / sum(exp(logit_j / temperature))
+```math
+P(\text{token}_i) = \frac{\exp(\text{logit}_i / \text{temperature})}{\sum_j \exp(\text{logit}_j / \text{temperature})}
 ```
 
 - Sıcaklık = 1.0: standart dağılım
 - Sıcaklık < 1.0:更尖(更确定)
 - Sıcaklık > 1.0:更平坦(更随机)
-- Temperatür -> 0:argmax(açık)
+-               $\to 0$:argmax(cinsel açgözlülük)
 
-Top-k örnekleme 截断至概率最高的 k 个代币――Top-p(nukleus) örnekleme 截断至累积概率 超过 p 的最小代币 集合──两者都会修改马科夫过渡概率──
+Top-k örnekleme  kesin olarak en yüksek olasılıkla $k$个 token──Top-p(nukleus) örnekleme 截断到累积概率 超过 $p$集合──两者都会修改马科夫 geçiş olasılığı──
 
 ### Brownian Hareketi
 
-Randeom walk ∞ sürekli zaman sınırı∞ konum Bt) ∞
-1. B(0) = 0
-2. B(t) - B(s) 服从平均值为 0、变量 为 t - s'ın normal dağılımını
+Random walk'ın sürekli zaman sınırı── konum $B(t)$Üç nitelik vardır:
+1. $B(0) = 0$
+2. $B(t) - B(s)$服从平均值为 0 变量 为$t - s$Normal dağılım$t > s$)
 3. 相互独立 不重叠区间上的 相互独立的增长
 
 Brownian hareketi sürekli, ama kısıtlı değildir. Her ölçüde hareket eder.
 
 Bu şekilde Brownian hareketine benzer bir şekilde hareket edebilirsiniz.
 
-```
-B(t + dt) = B(t) + sqrt(dt) * z,    where z ~ N(0, 1)
+```math
+B(t + dt) = B(t) + \sqrt{dt} \, z, \quad \text{其中 } z \sim \mathcal{N}(0, 1)
 ```
 
-sqrt(dt) 缩放 çok önemlidir.
+$\sqrt{dt}$缩放 çok önemlidir. Bu, rastgele yürüyüşler için kullanılan merkezi sınır teoreminden kaynaklanır.
 
 ### Langevin Dinamikleri
 
-Gradient Descent 寻找函数的最小值──Langevin dinamikleri 寻找与 exp(-U(x)/T) 成正比的概率分布,其中 U = enerji işlevi, T = sıcaklık──
+Gradient Descent 寻找函数的最小值──Langevin dinamikleri 寻找与 $\exp(-U(x)/T)$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $U$Enerji fonksiyonu,$T$- Evet, sıcaklık.
 
-```
-x_{t+1} = x_t - dt * gradient(U(x_t)) + sqrt(2 * T * dt) * z_t
+```math
+x_{t+1} = x_t - dt \, \nabla U(x_t) + \sqrt{2 T \, dt} \, z_t
 ```
 
 Partikel üzerinde iki etki vardır:
-1. **Gradient force**(-dt * gradient(U)): aşağı enerjiye doğru ilerlemek
-2. **Random force**(sqrt(2*T*dt) * z):推向随机方向(kızılmak)
+1. **Gradient force**($-dt \cdot \nabla U$): 推向低能量(类似 Gradient Descent)
+2. **Random force**($\sqrt{2T dt} \cdot z$):推向随机方向 (kızıltı)
 
-Bu, Temperatür T = 0 时, bu sadece Gradient Düşüşü. Yüksek sıcaklık. Aşağı, neredeyse rastgele yürüyüş.
+         $T = 0$时,这就是纯渐进下降――高温下,它几乎是随机走行――在合适的温度下,粒子会探索能源景观,并在低能区域中停留更久――
 
 **与 diffusion models 的联系。**Diffusion modelinin ileri süreci:
 
-```
-x_t = sqrt(alpha_t) * x_{t-1} + sqrt(1 - alpha_t) * noise
+```math
+x_t = \sqrt{\alpha_t} \, x_{t-1} + \sqrt{1 - \alpha_t} \cdot \text{noise}
 ```
 
-Bu, bir Markov zinciri ile veriyi yavaş yavaş bir şekilde karıştırmak için yeterli adımlar atılmış.
+Bu bir Markov zinciri, bilgiyi sesle karıştırmak için yeterli adımlar atmak.$x_T$Tam Gaussian gürültüsü.
 
  Şoktan veriye geri dönmek  Aynı zamanda bir Markov zinciri de vardır, ancak geçiş olasılığı Nöral Ağ tarafından öğrenilmiştir.
 
@@ -192,27 +192,27 @@ graph LR
 
 ### MCMC: Markov Chain Monte Carlo
 
-Bazen bir değer elde edebilirsiniz (bir sabit değerini farklılaştırmak için izin verilir) ama doğrudan bir dağılım elde edemezsiniz (x)
+Bazen bir değerden bir değer elde etmeniz gerekir.$p(x)$Bayesian pozeriörler klasik örneklerdir.
 
-**Metropolis-Hastings**构造一个静止分布 为 p(x) 的马科夫链:
+**Metropolis-Hastings**构建一个静止分布 为 $p(x)$Markov zinciri:
 
-1. Bir yerden x                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-2. Teklif dağıtımından 提议一个新位置 x'
-3. 計算 kabul oranı:a(x') * Q(x
-4. 以概率 min(1, a) 接受 x'──否则留在 x──
+1. Bir yerden.$x$Başlayın
+2. Teklif dağıtımından$Q(x' \mid x)$提议一个新位置 $x'$
+3. 计算 kabul oranı:$a = p(x') Q(x \mid x') / (p(x) Q(x' \mid x))$
+4.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $\min(1, a)$ Kabul et$x'$否则留在 $x$- Evet.
 5. Tekrarlıyorum.
 
-Eğer Q is symmetric of (((((x'x de) = Q(x, x'x') = N(x, sigma^2)), oranı 可简化为 a = p(x') / p(x) ――你只需要概率的比例 正常化常数 会相互抵消──
+Eğer $Q$Simetrik bir şekilde.$Q(x' \mid x) = Q(x \mid x') = \mathcal{N}(x, \sigma^2){}$), oranı kolaylaştırılır$a = p(x') / p(x)$                                                                                                                                                                                                                                                              
 
-Bu zincir, 温和条件下保证收到 px) .
+Sıcaklık şartlarında, bu zincir garanti alınacak.$p(x)$ ama eğer önerme 太小(random walk) veya 太大(高拒绝),收可能很慢──调节 önerme 太小(random walk) veya 太大(高拒绝),收可能很慢──调节 önerme 太小(random walk) veya 太大(高拒绝),收可能很慢──调节 önerme 太小的艺术── MCMC 的艺术──
 
-**为什么它有效。**Kabul oranı  Detaylı dengenin sağlanması: x'de yer alan ve x'ye taşınma olasılığı, x'de yer alan ve x'ye taşınma olasılığı eyleme  Detaylı dengenin anlamı p(x) bu zincirin sabit dağılımıdır── bu nedenle yeterince adımlar atıldı 
+**为什么它有效。**Kabul oranı  Detaylı dengeni sağlamak:$x$- Hayır , git .$x'$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $x'$- Hayır , git .$x$概率― Detaylı dengeler$p(x)$Bu zincirin sabit dağılımıdır. Bu nedenle yeterli adımlar atıldı.$p(x)$- Evet.
 
 **实践注意事项：**
-- **Burn-in**: bırakılmamış ön N 个 örnekleri。 zincir 需要时间从起点到静止分布──
-- **Thinning**: her k 个样本保持一个, autocorrelation azaltmak için
+- **Burn-in**: 丢弃前 $N$个样本――链 需要时间从起点到到静止分布――
+- **Thinning**: her bölümü$k$个样本保留一个, autocorrelationı azaltmak için.
 - **Multiple chains**Çeşitli zincirler farklı noktalardan yürütülür. Eğer onlar aynı dağılımlara ulaşırsa, bu da kanıtlanmıştır.
-- **Acceptance rate**Gaussian önerileri için en iyi kabul oranı yaklaşık %23'dir.
+- **Acceptance rate**: için$d$维 Gaussian önerileri, en iyi kabul oranı 大约是 23% (Roberts & Rosenthal, 2001) Too high means chain 几乎不移──Too low means it almost totally reject──
 
 ### AI'de Stochastic Prosesler
 
@@ -257,7 +257,7 @@ def random_walk_2d(n_steps, seed=None):
     return x, y
 ```
 
-1D yürüyüş  depolama toplu toplamı── her adım +1 veya -1── geçtikten sonra, konum ise toplam ve──varians 随 n 线性增长, bu nedenle standart sapma 按平方(n) 增长──
+1D yürüyüş  depolama toplu toplamı── her adım +1 veya -1── geçiyor $n$步后,位置就是总和──variance 随 随 $n$线性增长, bu nedenle standart sapma 按 $\sqrt{n}$增长──
 
 ### 步骤 2: Markov zinciri
 
@@ -291,7 +291,7 @@ class MarkovChain:
         return np.abs(stationary)
 ```
 
-sabit dağılım P'nin öz değeri olarak 1'nin sol öz vektörünü hesaplamakla P^T'nin öz vektörlerini bulmaya çalışırız.
+sabit dağıtım $P$1'in sol öz vektörü.$P^T$Bu yüzden, bu da bir şey değil.
 
 ### 步骤 3: Langevin dinamikleri
 
@@ -307,7 +307,7 @@ def langevin_dynamics(grad_U, x0, dt, temperature, n_steps, seed=None):
     return np.array(trajectory)
 ```
 
-Gradient x  aşağı enerjiye doğru ilerleyecektir, gürültü  bu yüzden bu bölge durgunlaşmasını önleyecektir.
+Gradient General$x$推向低能──噪音 防止它陷入局部停滞──在平衡时,样本分布与$\exp(-U(x)/\text{temperature})$- Tamam.
 
 ### 4 adım: Metropolis-Hastings
 
@@ -359,7 +359,7 @@ for _ in range(100):
 print(f"Stationary distribution: {np.round(distribution, 4)}")
 ```
 
-İlk dağılımını tekrar tekrar P'ye katlayıp yeterince iterasyon geçirdiğinde, nerede başladığınızı düşünmeden sabit dağılım elde eder.
+İlk dağıtımı tekrar tekrar artır $P$△ yeterince iterasyon geçtikten sonra, nerede başladığınızdan bağımsız olarak sabit dağılım elde eder.
 
 ### Gerçek çerçeve ile bağlantı
 
@@ -404,14 +404,14 @@ Spektral Gap  tell you chain  forget its initial state speed──gap 0.2 ∼ 5 
 
 Diffusion modelleri 值得特别关注──DDPM(Ho et al., 2020) bir ileri Markov zinciri tanımladı:
 
-```
-q(x_t | x_{t-1}) = N(x_t; sqrt(1-beta_t) * x_{t-1}, beta_t * I)
+```math
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1-\beta_t} \, x_{t-1}, \beta_t I\right)
 ```
 
-Beta_t, bir gürültü programıdır. T 步后,x_T 近似为 N(0, I) ◊ bir nöron ağının 参数化 tarafından ters bir süreç:
+İçlerinden $\beta_t$Bu bir gürültü programı.$T$步后,$x_T$Yakınlık$\mathcal{N}(0, I)$◊Düşüştürücü süreç bir uyarı sesi tarafından ◊Nüron Ağ ◊parametrasyon:
 
-```
-p_theta(x_{t-1} | x_t) = N(x_{t-1}; mu_theta(x_t, t), sigma_t^2 * I)
+```math
+p_\theta(x_{t-1} \mid x_t) = \mathcal{N}\left(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I\right)
 ```
 
 Yürütme, öğrenilen her adımın Markov zincirinin bir parçasıdır. Markov zincirlerini anlamak, nasıl ve neden veri üretilebileceğini anlamak anlamına gelir.
@@ -421,24 +421,36 @@ SGLD(Stochastic Gradient Langevin Dynamics) Mini-batch Gradient Descent ile Lang
 穿穿这些联系的关键洞见是:stochastic processes are not merely theoretical tools──它们是现代人工智能系统内部的计算机制──当你调节LLM的温度时,你调节一个马科夫链──当你训练扩散模型时,你学习反转一个类似布朗运动的过程──当你运行贝叶斯推理时,你构建一个接收到后的链──
 
 ## 练习
-1. **模拟 1000 条 10000 步的 random walks。**図図最終位置の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──验证 図の分布──10000) = 100′ Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian── Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian. Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Gaussian Ga
+1. **模拟 1000 条 10000 步的 random walks。**図図の最終位置の分布──验证 平均 0 標準偏差 $\sqrt{10000} = 100$Gaussian'ın.
 
 2. **使用 Markov chain 构建 text generator。**Bir küçük korpus üzerinde eğitim: her kelime için, bir sonraki kelime için geçişleri oluşturmak için.
 
 3. **使用 Metropolis-Hastings 实现 simulated annealing。**Yüksek sıcaklıktan 开始 (resten her şeyi kabul eder), sonra yavaş yavaş降温 (sadece iyileşmeyi kabul eder) ⋅ kullanarak birçok yerel minimum olan işlevi en az değerleri bulur.
 
-4. **比较不同 temperatures 下的 Langevin dynamics。**İkili kuyunun potansiyelinden U(x) = (x^2 - 1)^2 中采样──低温 时,样本 聚集在一个井中──高温 时,它们分布在两个井中──找到链 在井中──之间的混合的关键温度──
+4. **比较不同 temperatures 下的 Langevin dynamics。**İki tane kuyu potansiyeli .$U(x) = (x^2 - 1)^2$时,样本 集在一个井中――高温 时,它们分布在两个井中――找到链 在井间混合的关键温度――
 
 5. **实现 forward diffusion process。**Bir 1 boyutlu sinyalden (örneğin sinüs dalgası) başlamak için, 100 adım içinde yavaş yavaş gürültü eklemek için bir çizelge kullanın.
+
+### 提示
+
+**练习 1。**1000 farklı tohum için 调用 `random_walk_1d(10000, seed=i)`,并保留每次的最终位置──检查的意思是接近0吗;標準偏差是接近100;以及最终位置是否有约68% 落在-100至100之间──
+
+**练习 2。**统计, her satırın bölünmesi ile satırın toplamı arasında, her satırın ve 1 olarak bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrarla bir tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar tekrar`MarkovChain(transition_matrix, state_names)`,并调用 `simulate`◊ Check output içindeki her bir komşu kelimenin de korpus içinde olup olmadığını
+
+**练习 3。**E$\exp(-\Delta / T)$Bu, daha düşük bir noktayı kabul etmenin ve her adımı atmanın ardından gerçekleşecek.$T$乘以一个因子,例如 0.99──在已知最小的函数上测试,并与细网格搜索的结果核对──
+
+**练习 4。**Gradient $4x(x^2 - 1)$, ona vereceğim .`langevin_dynamics(grad_U, x0, dt, temperature, n_steps)`- Evet.$x = 0$处的障壁高度为1,因此在0.05~1 间的不同温度下,统计$x$符号 değişiminin sayısını bul, bu sayının hızla yükselen sıcaklıktan başlayarak oluştuğunu bul.
+
+**练习 5。**调用 `diffusion_forward(signal, 100)`,并将所有 $(1 - \beta_t)$Bir adım daha atın.$\bar{\alpha}$ $\bar{\alpha}$                                                                                                                                                                                                                                                              `beta_end`▽先使用真实的噪音 测试 denoiser:此时 $(x_t - \sqrt{1 - \bar{\alpha}_t} \epsilon)/\sqrt{\bar{\alpha}_t}$必須精确還原原始信号──
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Random walk | “抛硬币式移动” | 一个 position 在每一步按随机 increments 改变的过程 |
 | Markov property | “无记忆性” | future 只依赖当前 state，而不依赖 history |
-| Transition matrix | “概率表” | P[i][j] = 从 state i 移动到 state j 的概率 |
-| Stationary distribution | “长期平均” | 满足 pi*P = pi 的分布 pi —— chain 的 equilibrium |
-| Brownian motion | “随机抖动” | random walk 的 continuous-time limit，B(t) ~ N(0, t) |
+| Transition matrix | “概率表” | $P[i][j]$ = 从 state $i$ 移动到 state $j$ 的概率 |
+| Stationary distribution | “长期平均” | 满足 $\pi P = \pi$ 的分布 $\pi$ —— chain 的 equilibrium |
+| Brownian motion | “随机抖动” | random walk 的 continuous-time limit，$B(t) \sim \mathcal{N}(0, t)$ |
 | Langevin dynamics | “带噪声的 Gradient Descent” | 结合 deterministic Gradient 与 random perturbation 的 update rule |
 | MCMC | “向目标行走” | 构造一个 stationary distribution 为你想要的分布的 Markov chain |
 | Metropolis-Hastings | “提议并接受/拒绝” | 使用 acceptance ratios 来确保收敛的 MCMC algorithm |

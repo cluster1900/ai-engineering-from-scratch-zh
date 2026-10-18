@@ -39,7 +39,7 @@ Her jeneratif AI sistemi bir örnekleme sistemi olacaktır. Örnekleme stratejis
 
 ### Eşsiz Rastgele Örnekleme
 
-Her örnekleme yöntemi buradan başlar. Birbirli rastgele sayı jeneratörü, herhangi bir eşit çocuk bölgesi arasında benzer olasılıklara sahip olan [0, 1) arasında bir sayı değerini oluşturuyor.
+Her örnekleme yöntemi buradan başladı.$[0, 1)$Arada bir sayı değerleri oluşur, herhangi bir eşitlik bölgesi arasında eşit olasılıkla bulunur.
 
 ```
 U ~ Uniform(0, 1)
@@ -51,7 +51,7 @@ Properties:
   Var(U) = 1/12
 ```
 
-N 个 öğenin ayrıntılı toplamı içinde birer örnekleme yaparak U üretmek ve tekrar katı yaparak U üretmek için
+- Ne ?$n$个 item 的离散集合中均样本抽取,生成 $U$Geri dönmedi .$\lfloor n U \rfloor$❖ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒ ⇒  ⇒ ⇒    ⇒  ⇒   ⇒     ⇒     ⇒     ⇒            ⇒                                                                                                                                                                                                                                                                $[a, b]$Orta örnekleme,计算 $a + (b - a) U$- Evet.
 
 关键洞察: 恰好包含单单统一随机数 恰好包含从任意分布中生成一个样本的随机性――技巧在找到正确的转变――
 
@@ -69,7 +69,7 @@ Properties:
   F maps the real line to [0, 1]
 ```
 
-Ters CDF 会把概率映射回数值──如果 U ~ Uniform(0, 1),那么 X = F_inverse(U) 服从目标分布──
+Ters CDF 会把概率映射回数值──如果$U \sim \text{Uniform}(0, 1)$- Öyleyse .$X = F^{-1}(U)$服从目标分布──
 
 ```
 Algorithm:
@@ -95,9 +95,9 @@ Since (1 - U) and U have the same distribution:
   x = -ln(u) / lambda
 ```
 
-Eğer bir kısım olarak F_inverse 时 yazmak mümkünse, bu yöntemin etkisi mükemmel olacaktır. Normal dağılım için, kapalı biçimdeki ters CDF yoktur, bu nedenle biz diğer yöntemleri kullanırız.
+Kapalı bir formda yazabilirsin.$F^{-1}$时, bu yöntemin etkisi mükemmel. Normal dağılım için, kapalı biçimdeki ters CDF yoktur, bu nedenle başka yöntemler kullanıyoruz.
 
-**离散版本：** Diskret dağılımlar için, CDF'yi kumületif toplam olarak oluşturun, U üretin, sonra kumületif toplamı bulur  U'nun ilk indeksi aşın.`sample_categorical`Yapım biçimi:
+**离散版本：** Diskret dağılımlar için, CDF'yi kumülatîf toplam olarak oluşturun, üretin $U$Sonra toplam toplamı buluruz.$U$Bu da ders 06'da.`sample_categorical`Yapım biçimi:
 
 ### Reddetme Örnekleme
 
@@ -117,15 +117,15 @@ Algorithm:
 Acceptance rate = 1/M
 ```
 
-Bağlı M 越紧, kabul oranı 越高──在低维(1-3) 中, reddedilen örnekleme 效果很好──在高维中, kabul oranı 会指数级下降,因为提案量的大多数都会被拒绝──这是拒绝样本的诅咒的维度──
+Bağlı$M$越紧, kabul oranı 越高──在低维(1-3) 中, reddedilme örneklemesi 效果好──在高维中, kabul oranı 会指数级下降,因为提案量的大多数都会被拒绝──这是拒绝样本采集的诅咒的维度──
 
-**示例：从 truncated normal 中 sampling。**Çekilmiş aralığında üst üniform önerisi kullanmak. M zarfı, bu bölgede normal PDF'in en büyük değeri.
+**示例：从 truncated normal 中 sampling。**Ünlü bir teklif kullanın.$M$Bu bölgede normal PDF'in en büyük değeri ise:
 
-**示例：从 semicircle 中 sampling。**Sınırlama tamdörtgeninde bir teker teker öneride bulunur. Eğer nokta yarım döngü içinde düşerse kabul edilir.
+**示例：从 semicircle 中 sampling。**Çelişkili dikdörtgenin içinde teker teker önerisi. Eğer nokta yarım döngü içinde düşerse kabul edilir. İşte Monte Carlo hesaplama.$\pi$                                                                                                                                                                                                                                                              $\pi/4$- Evet.
 
 ### Önemlilik Örnekleme
 
-Bazen hedef dağılım p(x) örneklerine ihtiyacınız yok.
+Bazen hedef dağılımın gerekliliğini görmüyorsun .$p(x)$Örnekler. Tahmin etmelisin.$p(x)$Aşağıdaki beklentiler ve başka bir dağılım var.$q(x)$Örnekler
 
 ```
 Goal: estimate E_p[f(x)] = integral of f(x) * p(x) dx
@@ -140,12 +140,12 @@ Estimator:
   E_p[f(x)] ~ (1/N) * sum(f(x_i) * w(x_i))    where x_i ~ q(x)
 ```
 
-Bu, güçlendirme öğreniminde çok önemli. PPO'da, eski politikalar üzerinde çalışarak, yeni politikaları iyileştirmeyi umuyor.
+Bu güçlendirme öğreniminde çok önemli. PPO'da (Prosimal Policy Optimization) eski politikalar içinde.$\pi_{\text{old}}$Aşağıdaki yolculukları toplayalım, ama yeni politikaları iyileştirmeyi umuyoruz.$\pi_{\text{new}}$❖ Önemlilik ağırlığı ▽$\pi_{\text{new}}(a \mid s) / \pi_{\text{old}}(a \mid s)$Bu ağırlıkları, yeni politikaları önlemek için eski politikalardan uzaklaşmak için.
 
-Önemlilik örnekleme tahmincisi arasındaki fark q ile p arasındaki benzerlik derecesine bağlıdır. Eğer q ile p çok farklıysa, az sayıda örnek büyük ağırlıklar elde eder ve değerlendirmeyi yönlendirir.
+Önemlilik örnekleme tahmincisi                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      $q$ile$p$- Benzerlik seviyesi.$q$ile$p$非常不同,少数サンプル会得巨大的重量并主导估计──自正常化重要性抽样会除以重量的总和,以减轻这个问题:
 
-```
-E_p[f(x)] ~ sum(w_i * f(x_i)) / sum(w_i)
+```math
+\mathbb{E}_p[f(x)] \approx \frac{\sum_i w_i \, f(x_i)}{\sum_i w_i}
 ```
 
 ### Monte Carlo Tahmini
@@ -183,7 +183,7 @@ Variance of the estimator = Var(f(X)) / N
 
 ### Markov Chain Monte Carlo (MCMC):Metropolis-Hastings
 
-MCMC, Markov zincirini oluşturur ve sabit dağılımını hedef dağıtım p(x)。 geçtikten sonra, zincir içindeki örnekler p(x) örneklerinden oluşur.
+MCMC  Markov zinciri oluşturur, sabit dağılımını hedef dağılım yapar $p(x)$Yeterince adımlar atıldıktan sonra zincirdeki örnekler neredeyse hepsi de...$p(x)$Örnekler
 
 ```
 Target: p(x)  (known up to a normalizing constant)
@@ -202,13 +202,13 @@ Metropolis-Hastings algorithm:
   4. Return remaining samples
 ```
 
- (q) = (q) = (x) = (x) = (x) = (q) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = (x) = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+Simetrik öneriler için$q(x' \mid x) = q(x \mid x')$), oranı                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $p(x')/p(x)$Bu, Metropolis algoritmasının başlangıcı.
 
-**为什么有效。**Kabul kuralı Detaylı dengenizi garanti eder: x'de bulunurken x'ye kadar hareket etme olasılığı, x'de bulunurken x'ye kadar hareket etme olasılığı eyleme getirir. Detaylı dengenin anlamı p(x) bu zincirin sabit dağılımıdır.
+**为什么有效。**Kabul kuralı: Detaylı dengenizi koruyun .$x$- Hayır , git .$x'$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $x'$- Hayır , git .$x$概率― Detaylı dengeler$p(x)$Bu zincirin sabit dağılımıdır.
 
 **实践注意事项：**
 - Yanma: zincirde  dengeye ulaşmak  önce erken örnekler bırakılmak
-- İnceleme: kendi kendine ilişkiyi azaltmak için, örneği bir kenara bırakın.
+- İnceleme:$k$个样本保留一个, autocorrelation azaltmak için
 - Teklif ölçeği: 太小会让链 移动缓慢(yüksek kabul, yavaş araştırmalar); 太大会让大多数 proposals被拒绝(low acceptance, stuck in place)
 - 高维中 Gaussian önerisinin en iyi kabul oranı yaklaşık 0.234
 
@@ -227,7 +227,7 @@ Algorithm:
     Sample x_d^{t+1} ~ p(x_d | x_1^{t+1}, x_2^{t+1}, ..., x_{d-1}^{t+1})
 ```
 
-Gibbs örneği, her koşullu dağılımdan örnek alabilmenizi gerektirir.
+Gibbs örneklemesi her koşullu dağıtımdan elde edilebilmenizi gerektirir .$p(x_i \mid x_{-i})$Orta örnekleme. Birçok model için çok doğrudan.
 - Bayesian ağlar:graf yapısından koşullar
 - Gaussian karışımları: şartlar is Gaussian
 - İzleme modelleri: Her spin'in koşullu sadece komşusuna bağlı
@@ -238,7 +238,7 @@ Kabul oranı 总是 1 ((her önerme kabul edildi), çünkü kesin şartlı örne
 
 ### Temperatür örneği (LLM'ler için)
 
-Dil modelleri Sözlük için Çekilme İçin Her Token 输出 logits z_1, ..., z_V──Softmax 会将它们转换成概率──Temperature 会在软max 前重新缩放 logits:
+Dil modelleri 会为 sözlük içinde Her bir işaret 输出 logits $z_1, \ldots, z_V$✿Softmax 会将它们转换为概率──温度 会在软max 前重新缩放 ✿
 
 ```
 p_i = exp(z_i / T) / sum(exp(z_j / T))
@@ -250,20 +250,20 @@ T < 1.0: sharpens the distribution (more confident, less diverse)
 T > 1.0: flattens the distribution (less confident, more diverse)
 ```
 
-**为什么有效。**Eğer z_1 = 2 ve z_2 = 1, eğer T = 0.5 olursa, sonra z_1/T = 4 ve z_2/T = 2, fark büyüktür.
+**为什么有效。**Kullan .$T < 1$Logitler dışında logitler arasındaki farklar artacaktır.$z_1 = 2$Ve$z_2 = 1$, $T = 0.5$Sonra da.$z_1/T = 4$和 $z_2/T = 2$, farkı büyükleştirmek için                                                                                                                                                                                                                                                            
 
 **实践中：**
-- T = 0.0: açgözlü çözme, en uygun faktör tip S&A
-- T = 0.3-0.7: Kodu oluşturmaya uygun yarattığı küçük bir şey
-- T = 0.7-1.0:平衡,适合一般对话
-- T = 1.0-1.5:Yaratıcı yazma, beyin fırtınası
-- T > 1.5: Önemli olmayan bir şekilde kullanılır.
+- $T = 0.0$: açgözlü çözme, en uygun faktör tip S&A
+- $T = 0.3\text{-}0.7$:略有创造性, kod üretimine uygun
+- $T = 0.7\text{-}1.0$:平衡,适合一般对话
+- $T = 1.0\text{-}1.5$:Yaratıcı yazma, beyin fırtınası
+- $T > 1.5$Sürekli olarak, genellikle çok az kullanışlı.
 
 Temperatür hangi simgeyi değiştirir, değişebilir.
 
 ### Top-k Örnekleme
 
-Top-k örnekleme, aday topluluğunu en yüksek olasılıkla k 个 Token'e sınırlayacak, sonra yeniden birleştirilmiş ve bu sınırlı topluluktan örnekleme yapılmıştır.
+Top-k örnekleme , adayların toplamını en yüksek olasılıkla sınırlayacaktır .$k$个 Token, sonra yeniden归归一化,并从该受限集合中采样.
 
 ```
 Algorithm:
@@ -278,11 +278,11 @@ k = V:  no filtering (standard sampling)
 k = 40: typical setting, removes long tail of unlikely tokens
 ```
 
-Top-k 会防止模型选择极低概率的Token (Token) 拼写错误、无意义内容), 这些Token (Token) 存在于词汇分布的长尾中. Sual şu: k 都是固定的如何, k 都是固定的.
+Top-k 会防止模型选择极低概率的 Token (töküntüden düşük olasılıkla seçilen)$k$%95 oranı var.$k = 40$仍会允许 39 个替代项──当模型不确定时(概率分散在 1000 个代币上),$k = 40$Bu doğru seçimdir.
 
 ### Üst-p (Nucleus) Örnekleme
 
-Top-p örnekleme 会动态调整候选选集合大小──, sabit miktarda Token tutmak değil, p'nin en küçük Token 集合'ından daha fazla toplam olasılık korumak.
+Top-p örnekleme 会动态调整候选集合大小──;$p$集合の最小トークン
 
 ```
 Algorithm:
@@ -332,13 +332,13 @@ Reparameterized sampling:
   Gradients flow through mu and sigma.
 ```
 
-Bu nedenle geçerli, çünkü N(mu, sigma^2) ile mu + sigma * N(0, 1)  aynı dağılımlıdır.
+Bu yüzden geçerli, çünkü.$\mathcal{N}(\mu, \sigma^2)$ile$\mu + \sigma \cdot \mathcal{N}(0, 1)$具有相同分布──关键洞察是: 把随机性移动到一个无参数源$\epsilon$), sonra örnek göstermek için parametre küçük dönüşüm.
 
 **在 VAE training loop 中：**
-1. Her giriş için kodlayıcı 输出 mu 和 log(sigma^2)
-2. Örnek epsilon ~ N(0, 1)
-3. 计算 z = mu + sigma * epsilon
-4. Z'yi yeniden oluşturma girişini çöz
+1. Her giriş için kodlayıcı    $\mu$和 $\log(\sigma^2)$
+2. Örnek$\epsilon \sim \mathcal{N}(0, 1)$
+3. 计算 $z = \mu + \sigma \epsilon$
+4. Çözümleme$z$E yeniden inşa giriş
 5. 穿越步骤 4、3、2、1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 
  Reparameterizasyon hilesi olmadan, VAE'ler standart geri yayılma eğitimi kullanamazlar.
@@ -410,7 +410,7 @@ For piecewise-constant functions, stratified sampling is exact.
 
 ### Diffüzyon Modelleri ile Bağlantı
 
-Diffusion modelleri  örnekleme süreci ile 生成图像──Forward process 会在 T 步中向图像添加高斯的噪音,直到它变成纯噪音──反流过程 学习指责,逐步恢复原始图像──
+Diffusion modelleri öntemli örnekleme süreci  生成图像──Forward process 会在 $T$步中向图像添加高斯噪音,直到它变成纯噪音──反转过程 学习指责,逐步恢复原始图像──
 
 ```
 Forward process (known):
@@ -428,7 +428,7 @@ Reverse process (learned):
 
 Bu ders yöntemine bağlanın:
 - Her denetleme adımı, reparametreleme hilesini kullanır.
-- Gürültü programı {alpha_t}  kontrol bir sıcaklık kaydırma
+- Gürültü programı$\lbrace \alpha_t \rbrace$kontrol bir sıcaklık kaydırma
 - Eğitim Monte Carlo tahmininden yakın ELBO (gösteriler alt sınır)
 - Diffusion modelleri arasında ata örneklemesi bir Markov zinciriydi.
 
@@ -454,7 +454,7 @@ def sample_exponential_inverse_cdf(lam):
     return -math.log(u) / lam
 ```
 
-生成 10,000 个指数样本并验证均值为1/lambda──
+生成 10,000  eksponensial örnek,并验证平均值为 $1/\lambda$- Evet.
 
 ### 步骤 2: Reddedilme örneği
 
@@ -481,7 +481,7 @@ def importance_sampling_estimate(f, target_pdf, proposal_pdf, proposal_sample, n
     return total / n
 ```
 
-Używa jednolite önerisi   szacuje normal rozporı 下的 E[X^2]。
+Üniformal öneriler kullanın  Normal dağılım tahminleri$\mathbb{E}[X^2]$❖ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △$\mu^2 + \sigma^2$) karşılaştırmak
 
 ### 步骤 4: Monte Carlo tahmin pi
 
@@ -637,36 +637,48 @@ Büyük MCMC için özel bir kitle kullanın:
 Bu yöntemleri sıfırdan inşa ettin. Şimdi bu kitaplık çağrılarını ne yapıldığını biliyorsun.
 
 ## 练习
-1. Çabuk dağıtım için CDF örneklemesini gerçekleştirmek──CDF F(x) = 0.5 + arctan(x) / pi── 10.000 个 örnek üretmek,并把 histogram与真实 PDF 画在一起──注意重尾(远离中心的极端值)──
+1. Çabuk dağıtım için ters CDF örneklemesini gerçekleştirmek.$F(x) = 0.5 + \arctan(x)/\pi$❖ 10.000 个样本生成,并把 histogram与真实 PDF 画在一起──注意重尾──远离中心的极端值──
 
 2. Uygulamada bir örnekleme yapıldı. Ünlü bir örnekleme yapıldı.
 
-3. Monte Carlo kullanın, 1.000、10,000 和 100,000 个样本 估算 sin(x) 0'dan pi'ye kadar 积分──比较各级的误差──验证误差按 O(1/sqrt(N)) 缩放──
+3. Monte Carlo'da 1000, 10.000 ve 100.000 örnek kullanın.$\sin(x)$0'dan 'e kadar$\pi$Bu nedenle, bu durumun bir diğer yönü de görülüyor.$O(1/\sqrt{N})$- Evet.
 
-4. Metropolis-Hastings, bir 2 boyutlu dağılımdan örnekleme, içinde p(x, y) esp(-(x^2 * y^2 + x^2 + y^2 - 8*x - 8*y) / 2);; örnekleri çizmek 和 zincir yörüngesi──尝试不同的 proposition standard deviations──
+4. Metropolis-Hastings'in 2 boyutlu bir dağıtımdan örnekleme yapılması.$p(x, y)$$\exp(-(x^2 y^2 + x^2 + y^2 - 8x - 8y) / 2)$❖ örnekleri çizmek 和 zincir yolculuğu──尝试 different proposal standard deviations──
 
 5. 构建一个完整的文本生成演示:给定一个包含10个词及 logits的词汇,使用 (a) açgözlülük、(b) sıcaklık=0.7、(c) üst-k=3、((d) üst-p=0.9 生成长度为 20 Token 的序列──比较 5 次运行中输出的多样性──
+
+### 提示
+
+**练习 1。**- Evet .$u = F(x)$Çıkış .$x$- Al .$x = \tan(\pi(u - 0.5))$◊ Kontrol numunelerinin ortalama oranı 0, ve yaklaşık % 6'luk bir numuneler karşılandı $\lvert x \rvert > 10$,其理论概率为$1 - (2/\pi)\arctan(10)$- Evet.
+
+**练习 2。**Beta(2, 5) ′s yoğunluğu$30x(1-x)^4$                                                                                                                                                                                                                                                              $x = 1/5$处求出最大值,并将该值作为 `rejection_sample`$M$◊ teorik kabul oranı$1/M$Bu, kabul edilen öneriler ile karşılaştırıldığında gerçekleşir.
+
+**练习 3。**精确值为 2──对每个 $n$调用 `monte_carlo_integral(math.sin, 0, math.pi, n)`,并使用多种随机种子重复每次实验──当$n$增大 10倍时,平均差应减小约 $\sqrt{10} \approx 3.2$- Evet.
+
+**练习 4。** write out target density's对数, yani $-(x^2 y^2 + x^2 + y^2 - 8x - 8y)/2$, ve bana aktar .`metropolis_hastings_2d`◊ her öneride standart farkı karşı karşılama oranı: standart farkı neredeyse her adımı kabul eder, ancak hareket yavaş; standart farkı neredeyse her adımı reddeder.
+
+**练习 5。**Açgözlü kodlama, her adımda en logik bir yol seçmek için kullanılır.`temperature_sample`- Evet.`top_k_sample`和 `top_p_sample`❖ Açgözlülük, tüm 5 çalışmada aynı diziyi oluşturmak zorundadır, bu nedenle, her yöntemin üretildiği farklı dizi sayısını ölçmek için çeşitliliği ölçmek için istatistik yapılır.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Sampling | “抽取随机值” | 按照 probability distribution 生成数值。所有 generative AI 背后的机制 |
-| Uniform distribution | “所有值同等可能” | [a, b] 中每个值都有相同 probability density 1/(b-a)。所有 sampling methods 的起点 |
-| Inverse CDF | “概率变换” | F_inverse(U) 会把 uniform sample 转换成来自任意已知 CDF 分布的 sample。精确且高效 |
+| Uniform distribution | “所有值同等可能” | $[a, b]$ 中每个值都有相同 probability density $1/(b-a)$。所有 sampling methods 的起点 |
+| Inverse CDF | “概率变换” | $F^{-1}(U)$ 会把 uniform sample 转换成来自任意已知 CDF 分布的 sample。精确且高效 |
 | Rejection sampling | “提出并接受/拒绝” | 从简单 proposal 中生成，按 target/proposal ratio 成比例的概率接受。精确但浪费 samples |
-| Importance sampling | “重新加权 samples” | 使用来自 q(x) 的 samples，通过用 p(x)/q(x) 加权每个 sample，估计 p(x) 下的期望。RL 中 PPO 的核心 |
-| Monte Carlo | “平均 random samples” | 将积分近似为 sample averages。误差 O(1/sqrt(N))，与维度无关 |
+| Importance sampling | “重新加权 samples” | 使用来自 $q(x)$ 的 samples，通过用 $p(x)/q(x)$ 加权每个 sample，估计 $p(x)$ 下的期望。RL 中 PPO 的核心 |
+| Monte Carlo | “平均 random samples” | 将积分近似为 sample averages。误差 $O(1/\sqrt{N})$，与维度无关 |
 | MCMC | “会收敛的 random walk” | 构造一个 Markov chain，使其 stationary distribution 是目标分布。Metropolis-Hastings 是基础算法 |
 | Metropolis-Hastings | “接受上坡，有时接受下坡” | 提出 moves，基于 density ratio 接受。Detailed balance 确保收敛到目标分布 |
 | Gibbs sampling | “一次一个 variable” | 在固定其他 variables 的情况下，从每个 variable 的 conditional distribution 中更新。Acceptance rate 为 100% |
-| Temperature | “置信度旋钮” | 在 softmax 前用 T 除以 logits。T<1 使分布更尖锐（更自信），T>1 使分布更平坦（更多样） |
-| Top-k sampling | “保留最好的 k 个” | 除概率最高的 k 个 Token 外全部置零，重新归一化，然后 sampling。候选集合大小固定 |
-| Nucleus sampling (top-p) | “保留可能性高的那些” | 保留累计概率超过 p 的最小 Token 集合。候选集合大小自适应 |
-| Reparameterization trick | “把随机性移到外部” | 写成 z = mu + sigma * epsilon，其中 epsilon ~ N(0,1)。让 sampling 可微。VAE training 的关键 |
+| Temperature | “置信度旋钮” | 在 softmax 前用 $T$ 除以 logits。$T<1$ 使分布更尖锐（更自信），$T>1$ 使分布更平坦（更多样） |
+| Top-k sampling | “保留最好的 $k$ 个” | 除概率最高的 $k$ 个 Token 外全部置零，重新归一化，然后 sampling。候选集合大小固定 |
+| Nucleus sampling (top-p) | “保留可能性高的那些” | 保留累计概率超过 $p$ 的最小 Token 集合。候选集合大小自适应 |
+| Reparameterization trick | “把随机性移到外部” | 写成 $z = \mu + \sigma \epsilon$，其中 $\epsilon \sim \mathcal{N}(0,1)$。让 sampling 可微。VAE training 的关键 |
 | Gumbel-Softmax | “软 categorical sampling” | 使用 Gumbel noise + 带 temperature 的 softmax，对 categorical sampling 做可微近似 |
 | Stratified sampling | “强制覆盖” | 把 sample space 分成 strata，并从每个 stratum 中 sampling。方差总是低于 naive Monte Carlo |
 | Burn-in | “预热期” | 在 chain 达到其 stationary distribution 之前丢弃的初始 MCMC samples |
-| Detailed balance | “可逆性条件” | p(x) * T(x->y) = p(y) * T(y->x)。这是 p 成为 Markov chain stationary distribution 的充分条件 |
+| Detailed balance | “可逆性条件” | $p(x) T(x \to y) = p(y) T(y \to x)$。这是 $p$ 成为 Markov chain stationary distribution 的充分条件 |
 | Diffusion sampling | “迭代 denoising” | 从 noise 开始，并应用学到的 denoising steps 来生成数据。每一步都是 conditional sampling operation |
 
 ## 延伸阅读

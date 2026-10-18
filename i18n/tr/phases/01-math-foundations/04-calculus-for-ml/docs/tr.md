@@ -9,7 +9,7 @@
 
 ## Öğrenme hedefi
 
-- 計算常见 ML 函数(x^2、sigmoid、cross-entropy) nın sayı değerli yönlendirmesi ve çözünür yönlendirmesi
+- 计算常见 ML 函数($x^2$、sigmoid、cross-entropy) değerli ve çözünür değerli
 - 0'dan Gradient Descent'i gerçekleştirmek, 1D ve 2D'de en az düşüş fonksiyonu
 - 推导线性回归 模型的渐进,并通过手动更新权重来训练它
 - 解释 Hessian Matrix、Taylor serisi 近似,以及它们与优化方法的联系
@@ -24,59 +24,58 @@ Bir milyon ağırlık içeren nöral ağınız var. Her ağırlık bir dönüm n
 
 ### - Nedir bu?
 
-导数量量量变化率──对函数 y = f(x),导数 f'(x) 会告诉你: Eğer x 微小地推一点,y 会变化多少?
+导数量衡变化率──对函数 $y = f(x)$,导数 $f'(x)$Sana söyleyeyim: Eğer sen$x$Küçük bir adım ilerle.$y$Ne kadar değişecek?
 
 Görevsel olarak, yönlü sayı bir noktada çizginin eğilimi olarak görülür.
 
-**f(x) = x^2：**
+**$f(x) = x^2$：**
 
-| x | f(x) | f'(x)（斜率） |
+| $x$ | $f(x)$ | $f'(x)$（斜率） |
 |---|------|---------------|
 | 0 | 0    | 0（平坦，在底部） |
 | 1 | 1    | 2 |
 | 2 | 4    | 4（该点处切线的斜率） |
 | 3 | 9    | 6 |
 
-X = 2'de, eğrilik oranı 4'dir. Eğer x'yi sağ tarafa hareket ettirseniz, büyük ihtimalle bu hareket miktarını 4 kat artırır.
+- Evet .$x=2$时, eğri oranı 4... eğer $x$Sağya doğru hareket etmek çok küçük bir nokta,$y$Bu hareketlilik miktarını yaklaşık 4 katına çıkarmak istiyorum.$x=0$时,斜率 is 0...
 
 形式化定義:
 
-```
-f'(x) = lim   f(x + h) - f(x)
-        h->0  -----------------
-                     h
+```math
+f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}
 ```
 
-Kodda, sınırdan geçersin, doğrudan çok küçük bir h. kullanırsın.
+Kodda, sınırları geçersin, doğrudan çok küçük bir tane kullanırsın.$h$Bu sayı değerinin bir kısmıdır.
 
 ### 偏导数: once only see a variable
 
 Gerçek fonksiyonun birçok girişleri vardır. Nöral Ağın Kaybesi, binlerce ağırlığa bağlıdır.
 
-```
-f(x, y) = x^2 + 3xy + y^2
-
-df/dx = 2x + 3y     (treat y as a constant)
-df/dy = 3x + 2y     (treat x as a constant)
+```math
+\begin{aligned}
+f(x, y) &= x^2 + 3xy + y^2 \\[4pt]
+\frac{\partial f}{\partial x} &= 2x + 3y \quad \text{（将 } y \text{ 视为常量）} \\
+\frac{\partial f}{\partial y} &= 3x + 2y \quad \text{（将 } x \text{ 视为常量）}
+\end{aligned}
 ```
 
 Her yönlendirme cevap: Eğer sadece bu ağırlığı azaltırsam, Kayıp nasıl değişir?
 
 ### Gradient: tüm yön yönlü sayıların oluşturduğu vektör
 
-Gradient, her yönlendirme sayısını bir vektöre toplayacak.
+Gradient, her yönlendirme sayısını bir vektöre toplar.$f(x, y, z)$,Gradient:
 
-```
-grad f = [ df/dx, df/dy, df/dz ]
+```math
+\nabla f = \left[ \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right]
 ```
 
 Gradient gösterir en yüksek yönde. Bir işlevi en aza indirmek için, karşı yönde hareket etmektedir.
 
-**f(x,y) = x^2 + y^2 的等高线图：**
+**$f(x,y) = x^2 + y^2$ 的等高线图：**
 
 Bu işlevi bir bowl şeklinde eğri bir şekil oluşturur, eğ高線=同心圆.
 
-| 点 | grad f | -grad f（下降方向） |
+| 点 | $\nabla f$ | $-\nabla f$（下降方向） |
 |-------|--------|----------------------------|
 | (1, 1) | [2, 2]（指向上坡，远离最小值） | [-2, -2]（指向下坡，朝向最小值） |
 | (0, 0) | [0, 0]（平坦，在最小值处） | [0, 0] |
@@ -85,7 +84,7 @@ Bu işlevi bir bowl şeklinde eğri bir şekil oluşturur, eğ高線=同心圆.
 
 ### Optimizasyon ile bağlantı
 
-訓練 ニューラルネットワーク 就是优化──你有一个损失函数 L(w1, w2, ..., wn),它衡量模型有多错──你想最小化它──
+訓練 Neural Network 就是优化──你有一个损失功能 $L(w_1, w_2, \ldots, w_n)$Bu bir model ölçüsü.
 
 ```
 Gradient descent update rule:
@@ -102,7 +101,7 @@ For every weight:
 
 **Loss landscape（1D 切片）：**
 
-Kayıp Fonksiyonu L(w)  Vücut ağırlığının değişimiyle birlikte bir                                                                                                                                                                                                                                                    
+Kayıp Fonksiyonu $L(w)$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $w$Değişiklikler bir tepesi olan bir dalın eğri oluşur.
 
 | 特征 | 描述 |
 |---------|-------------|
@@ -116,9 +115,9 @@ Gradient Descent 会 ırmak oranının aşağı yukarı giderek gerçekleşir. Y
 
 Bilgisayarın iki yolu vardır.
 
-解析方式:手动应用微积分规则──对于 f(x) = x^2,导数是 f'(x) = 2x──精确,快速──
+解析方式:手动应用微积分规则──对 $f(x) = x^2$,导数是 $f'(x) = 2x$❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖ ❖
 
-sayı değer biçimi: kullanımı tanımlama yapılır yaklaşımlı olarak.
+sayı değer biçimi: kullanımı tanımlama için yaklaşımlılık.$h$计算 $f(x+h)$和 $f(x-h)$Sonra da farkı çıkar.
 
 ```
 Numerical (central difference):
@@ -148,7 +147,7 @@ f(x) = ln(x)   f'(x) = 1/x     Cross-entropy loss
 f(x) = 1/(1+e^-x)  f'(x) = f(x)(1-f(x))   Sigmoid activation
 ```
 
-对于 f(x) = x^2:
+- Evet .$f(x) = x^2$- ...
 
 ```
 f(x) = x^2    f'(x) = 2x
@@ -161,7 +160,7 @@ f(x) = x^2    f'(x) = 2x
    2    4       4      slope tilts right (increasing)
 ```
 
-对于 f(w) = wx + b,且 x=3、b=1:
+- Evet .$f(w) = wx + b$, ve $x=3$- Evet.$b=1$- ...
 
 ```
 f(w) = 3w + 1    f'(w) = 3
@@ -189,17 +188,16 @@ Nöral Ağı:bir satır işlevi: giriş -> doğrusal -> etkinleştirme -> doğru
 
 Gradient 告诉你斜率──Hessian 告诉你曲率──
 
-Hessian'ın (i, j) 项 is:
+Hessian ise ikinci aşamalı bir dizi oluşum matrisi.$f(x_1, x_2, \ldots, x_n)$Hessian'ın$(i, j)$项是:
 
-```
-H[i][j] = d^2f / (dx_i * dx_j)
+```math
+H_{ij} = \frac{\partial^2 f}{\partial x_i \, \partial x_j}
 ```
 
-对于二变量函数 f ((x, y):
+对于二变量函数 $f(x, y)$- ...
 
-```
-H = | d^2f/dx^2    d^2f/dxdy |
-    | d^2f/dydx    d^2f/dy^2 |
+```math
+H = \begin{bmatrix} \dfrac{\partial^2 f}{\partial x^2} & \dfrac{\partial^2 f}{\partial x \, \partial y} \\[8pt] \dfrac{\partial^2 f}{\partial y \, \partial x} & \dfrac{\partial^2 f}{\partial y^2} \end{bmatrix}
 ```
 
 **Hessian 在临界点（Gradient = 0 的地方）告诉你什么：**
@@ -210,7 +208,7 @@ H = | d^2f/dx^2    d^2f/dxdy |
 | 负定（所有 eigenvalues < 0） | Local maximum | 向下开口的碗 |
 | 不定（eigenvalues 正负混合） | Saddle point | 马鞍形 |
 
-**示例：**f(x, y) = x^2 - y^2(1 otlak 函数)
+**示例：** $f(x, y) = x^2 - y^2$(Bir oturağı 函数)
 
 ```
 df/dx = 2x       df/dy = -2y
@@ -223,7 +221,7 @@ Eigenvalues: 2 and -2 (one positive, one negative)
 --> Saddle point at (0, 0)
 ```
 
-与 f(x, y) = x^2 + y^2(一个碗形函数)比较:
+ile$f(x, y) = x^2 + y^2$(一个碗形函数) (BİZİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİN
 
 ```
 H = | 2  0 |
@@ -237,22 +235,24 @@ Eigenvalues: 2 and 2 (both positive)
 
 Newton'un yöntemini kullanmak için Hessian'dan daha iyi bir optimizasyon adımını kullanın.
 
-```
-Newton's update:    w_new = w_old - H^(-1) * gradient
-Gradient descent:   w_new = w_old - lr * gradient
+```math
+\begin{aligned}
+\text{牛顿法更新：} \quad & w_{\text{new}} = w_{\text{old}} - H^{-1} \cdot \text{梯度} \\
+\text{梯度下降：} \quad & w_{\text{new}} = w_{\text{old}} - \text{lr} \cdot \text{梯度}
+\end{aligned}
 ```
 
 Newton'un yöntemi 收更快, çünkü Hessian 会 yeniden küçültülmüş  Gradient:方向的步子更小,平坦方向的步子更大──
 
-Sorun şu: N ′parametre olan sinir ağları için Hessian N x N ′dır. Bir milyon ′parametre olan model, 1 milyar element içeren bir matris gerektirir. Bu yüzden yaklaşım yöntemini kullanıyoruz.
+Sorun şu:$N$个参数的神经网络,Hessian $N \times N$❖ Bir milyon parametre olan bir model, 1 milyar element içeren bir matris gerektirir. Bu yüzden yaklaşım yöntemini kullanıyoruz.
 
 | 方法 | 使用什么 | 成本 | 收敛 |
 |--------|-------------|------|-------------|
-| Gradient Descent | 只使用一阶导数 | 每步 O(N) | 慢（线性） |
-| Newton's method | 完整 Hessian | 每步 O(N^3) | 快（二次） |
-| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 O(N) | 中等（超线性） |
-| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 O(N) | 中等 |
-| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 O(N^2) | 快 |
+| Gradient Descent | 只使用一阶导数 | 每步 $O(N)$ | 慢（线性） |
+| Newton's method | 完整 Hessian | 每步 $O(N^3)$ | 快（二次） |
+| L-BFGS | 从 Gradient 历史近似 Hessian | 每步 $O(N)$ | 中等（超线性） |
+| Adam | 每参数自适应 rate（对角 Hessian 近似） | 每步 $O(N)$ | 中等 |
+| Natural gradient | Fisher information matrix（统计 Hessian） | 每步 $O(N^2)$ | 快 |
 
 實踐中,Adam is Deep Learning'ın öntanımlı Optimizer── it tracks each parameter Gradient'in run average and square difference, to low cost approximate second-stage information──
 
@@ -260,17 +260,17 @@ Sorun şu: N ′parametre olan sinir ağları için Hessian N x N ′dır. Bir m
 
  herhangi bir düzleme işlevi, yerel olarak bir çok yönlü yaklaşım olarak kullanılabilir:
 
-```
-f(x + h) = f(x) + f'(x)*h + (1/2)*f''(x)*h^2 + (1/6)*f'''(x)*h^3 + ...
+```math
+f(x + h) = f(x) + f'(x)\,h + \frac{1}{2} f''(x)\,h^2 + \frac{1}{6} f'''(x)\,h^3 + \cdots
 ```
 
-包含的项越多,近似越好, ancak sadece x 附近成立──
+包含的项越多,近似越好,但只在点 $x$Yakın bir yerde.
 
 **为什么 Taylor series 对 ML 重要：**
 
-- **一阶 Taylor = Gradient Descent。**Eğer f (x + h) ~ f (x) + f' (x) * h) kullanırsanız, bu modelin en azını seçerseniz, h = -lr * f' (x) ⋅
+- **一阶 Taylor = Gradient Descent。**Çıkışlı$f(x + h) \approx f(x) + f'(x) h$Bu yüzden, bu çizgi modelini en aza indirmek için, bu çizgi modelini seçmek için.$h = -\text{lr} \cdot f'(x)$- Evet.
 
-- **二阶 Taylor = Newton's method。**kullan f(x + h) ~ f(x) + f'(x) *h + (1/2)*f'(x) *h^2 时,You get a second model──最小化 it will get h = -f'(x) /f'(x),也就是牛顿的步──
+- **二阶 Taylor = Newton's method。**Kullanım$f(x + h) \approx f(x) + f'(x) h + \frac{1}{2} f''(x) h^2$Bir ikinci model elde edersin.$h = -f'(x)/f''(x)$Newton'un adımıdır.
 
 - **Loss Function 设计。**MSE ve çapraz entropi düzeltilmiştir, bu da Taylor genişlemeleri iyi performans göstermektedir. Bu tesadüf değil.
 
@@ -291,27 +291,27 @@ Higher orders          Finer structure     Rarely used in ML
 
 ML'de çok az kişi manuel hesaplama yapıyor, ama bu kavram var.
 
-**概率。**对于具有密度 p(x) 的连续随机变量:
+**概率。**                                   $p(x)$Bu değişim:
+```math
+P(a < X < b) = \int_a^b p(x) \, dx
 ```
-P(a < X < b) = integral from a to b of p(x) dx
-```
-概率 yoğunluğu eğri a ve b arasındaki yüzey, bu bölgede düşen 概率
+概率 yoğunluk eğri $a$和 $b$间面积,就是落在该区间内的概率──
 
 **期望值。**概率加权的平均结果:
-```
-E[f(X)] = integral of f(x) * p(x) dx
+```math
+\mathbb{E}[f(X)] = \int f(x) \, p(x) \, dx
 ```
 Veriler dağıtımında beklenen kayıp bir积分―― eğitim, deneyiminin en azına yaklaşmasıdır.
 
 **KL divergence。** İki farklı dağılım ölçmek:
-```
-KL(p || q) = integral of p(x) * log(p(x) / q(x)) dx
+```math
+\mathrm{KL}(p \,\|\, q) = \int p(x) \log \frac{p(x)}{q(x)} \, dx
 ```
 VAE'ler, bilgi destilasyonu ve Bayesian sonuçları kullanıyor.
 
 **归一化常数。**Bayesian sonucu 中:
-```
-p(w | data) = p(data | w) * p(w) / integral of p(data | w) * p(w) dw
+```math
+p(w \mid \text{data}) = \frac{p(\text{data} \mid w) \, p(w)}{\int p(\text{data} \mid w) \, p(w) \, dw}
 ```
 分母, tüm olası parametreler değerinin积分idir. Genellikle işlenmez, bu yüzden MCMC ve varyasyonsal çıkarım gibi yaklaşım yöntemlerini kullanıyoruz.
 
@@ -353,16 +353,16 @@ Backpropagation'ın tüm içeriği şudur: Output'tan Input'a kadar sistematik o
 
 Bir işlevin vektörü 映射 ettiği zaman, onun yönlendirmesi bir Matrix ve Jacobian'da her giriş ile ilgili her çıkışın tüm yönlendirmelerin bulunması vardır.
 
-对于 f: R^n -> R^m,Jacobian J 是一个 m x n Matrix:
+- Evet .$f: \mathbb{R}^n \to \mathbb{R}^m$- Yacobian.$J$Evet, bir tane.$m \times n$Matrix:
 
-| | x1 | x2 | ... | xn |
+| | $x_1$ | $x_2$ | ... | $x_n$ |
 |---|---|---|---|---|
-| f1 | df1/dx1 | df1/dx2 | ... | df1/dxn |
-| f2 | df2/dx1 | df2/dx2 | ... | df2/dxn |
+| $f_1$ | $\partial f_1/\partial x_1$ | $\partial f_1/\partial x_2$ | ... | $\partial f_1/\partial x_n$ |
+| $f_2$ | $\partial f_2/\partial x_1$ | $\partial f_2/\partial x_2$ | ... | $\partial f_2/\partial x_n$ |
 | ... | ... | ... | ... | ... |
-| fm | dfm/dx1 | dfm/dx2 | ... | dfm/dxn |
+| $f_m$ | $\partial f_m/\partial x_1$ | $\partial f_m/\partial x_2$ | ... | $\partial f_m/\partial x_n$ |
 
-Siz Neural Network için Jacobian hesaplamayacaksınız. PyTorch bunu işleyecek. Ama varlığını bilmenize yardımcı olacak. Geri yayılma içindeki şeklini anlamanıza yardımcı olacaktır. Eğer bir katman R^n'i R^m'e yerleştirirse, onun Jacobian m x n olacaktır.
+Neural Network için yapmıyorsun. Jacobian. Python. Torch. Bu işlemleri yapar. Ama varlığını bilmen, geri yayılma ortamının şeklini anlamama yardımcı olur.$\mathbb{R}^n$映射到 $\mathbb{R}^m$- Yacobiyen .$m \times n$❖ Gradient 会通过这个矩阵的转置向后流动──
 
 ### Bu neden sinir ağı için çok önemli ?
 
@@ -446,7 +446,7 @@ for step in range(20):
     print(f"step {step:2d}  x={x:8.4f}  f(x)={x**2:10.6f}")
 ```
 
-X=5'den başlayarak, her adım x=0'ye daha yakın olacak.
+- Evet .$x=5$Başlayın, her adım daha yaklaşıyor.$x=0$(minimum değer)
 
 ### 步骤 4: 2D 函数 üzerinde Gradient Descent gerçekleştir
 
@@ -532,7 +532,7 @@ for h in [0.1, 0.5, 1.0, 2.0]:
     print(f"h={h:.1f}  sin(h)={true_val:.4f}  order1={t1:.4f}  order2={t2:.4f}")
 ```
 
-Bu yaklaşım çok küçük h için çok iyi, ama daha büyük h için başarısız olur. Bu yüzden daha küçük öğrenme oranlarında dereceli düşüş en iyi sonuç: her adımın tüm hipotezi linear yaklaşım doğru olacaktır.
+- Evet .$x_0=0$Yakınlık,$\sin(x) \approx x$(一阶泰勒) 〜对很小的$h$Bu çok iyi görünüyor ama daha büyük bir şekilde.$h$Bu yüzden, daha küçük öğrenme oranlarında Gradient Descent'in en iyi etkisi: her adımın doğru olduğunu varsaymak.
 
 ### Adım 8: Bu neden sinir ağı için çok önemli ?
 
@@ -601,9 +601,17 @@ Siz sadece Gradient Descent'i oluşturmuşsunuz. PyTorch otomatik olarak Gradien
 
 ## 练习
 
-1. İki kez kullanılıyor.`numerical_derivative`Nasıl gerçekleştirilir ?`numerical_second_derivative(f, x)` Test x^3 x=2'de ikinci aşama yönlendirme sayısı 12 
-2. kullan Gradient Descent 找到 f(x, y) = (x - 3) ^ 2 + (y + 1) ^ 2'nin en az değeri── (0, 0) 开始──答案应收到 (3, -1)──
-3. Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçici Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Geçi Ge
+1. İki kez kullanılıyor.`numerical_derivative`Nasıl gerçekleştirilir ?`numerical_second_derivative(f, x)`❖ Test$x^3$- Evet .$x=2$处的二阶导数是12──
+2. 使用 Gradient Descent 找到 $f(x, y) = (x - 3)^2 + (y + 1)^2$En az değer.$(0, 0)$Başlamak.$(3, -1)$- Evet.
+3. Geçici Düşüş Çemberinde İlişki:维护一个会累积过去$f(x) = x^4 - 3x^2$Üst karşılaştırma olarak hiç bir hızın olmadığı bir hızın oluşması.
+
+### 提示
+
+**练习 1。**定义一个返回 `numerical_derivative(f, x)`Bu da bir yardımcı fonksiyon.`numerical_derivative` Eğer sonuç gürültü daha büyükse, iki kez daha büyük bir adım kullanılır, örneğin `h=1e-4`Bu da ...$x=2$处的结果应接近12:
+
+**练习 2。**写出梯度 $(2(x - 3), 2(y + 1))$, veya kullanmak `numerical_gradient`, $(0, 0)$開始调用 `gradient_descent_nd`❖ Her 10 adımda bir tane tane çizgi basın;$(3, -1)$Hareket, kayıp 0'ya yakın düşmelidir.
+
+**练习 3。**保存速度 `v`,按 `v = momentum * v - lr * grad`Yenile, yeniden geleceğim.`v`- Evet .`x`上──statistik iki yöntemi bir dereceyi 0'ya yakın hale getirmek için her iki yönteme de kaç adım gerekmektedir; en az değer bulunmaktadır.$x = \pm\sqrt{1.5} \approx \pm 1.225$- Evet.
 
 ## 关键术语
 
@@ -614,12 +622,12 @@ Siz sadece Gradient Descent'i oluşturmuşsunuz. PyTorch otomatik olarak Gradien
 | Gradient | “最陡上升方向” | 由所有偏导数组成的 Vector。指向让函数增长最快的方向。 |
 | Gradient Descent | “往下坡走” | 从参数中减去 Gradient（乘以 learning rate），从而降低 Loss。Neural Network 训练的核心。 |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 有多大的标量。太大：发散。太小：收敛缓慢。 |
-| Chain rule | “把导数相乘” | 对复合函数求导的规则：df/dx = df/dg * dg/dx。Backpropagation 的数学基础。 |
+| Chain rule | “把导数相乘” | 对复合函数求导的规则：$\frac{df}{dx} = \frac{df}{dg} \cdot \frac{dg}{dx}$。Backpropagation 的数学基础。 |
 | Jacobian | “导数 Matrix” | 当一个函数把 Vector 映射到 Vector 时，Jacobian 是所有输出相对于输入的偏导数组成的 Matrix。 |
 | Numerical derivative | “有限差分” | 通过在两个相邻点上评估函数并计算它们之间的斜率来近似导数。 |
 | Backpropagation | “Reverse-mode autodiff” | 使用链式法则，从输出到输入逐层计算 Gradient。Neural Network 就是这样学习的。 |
 | Hessian | “二阶导数 Matrix” | 所有二阶偏导数组成的 Matrix。描述函数的曲率。在临界点处 Hessian 正定意味着 local minimum。 |
-| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：f(x+h) ~ f(x) + f'(x)h + (1/2)f''(x)h^2 + ... 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
+| Taylor series | “多项式近似” | 使用函数的导数在某一点附近近似函数：$f(x+h) \approx f(x) + f'(x)h + \frac{1}{2}f''(x)h^2 + \cdots$ 它是理解 Gradient Descent 和 Newton's method 为什么有效的基础。 |
 | Integral | “曲线下面积” | 某个量在一个范围内的累积。在 ML 中，积分定义概率、期望值和 KL divergence。 |
 
 ## 延伸阅读

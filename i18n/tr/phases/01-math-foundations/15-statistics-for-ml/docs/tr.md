@@ -41,7 +41,7 @@ Mode:   出现最频繁的值
         对 categorical data 有用。对 continuous data，通常信息量很低。
 ```
 
-ortalama = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+ortalama = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =$\text{mean} \gg \text{median}$(Billionluların sağ tarafı)$\text{mean} \ll \text{median}$(Yöntemli bir örneğe göre sol eğilimi)
 
 **Measures of spread**                                                                                                                                                                                                                                                              
 
@@ -72,14 +72,16 @@ IQR:        Q3 - Q1 (interquartile range)
 
 ML'de, yüzdelilere odaklanır, sonuçlandırma gecikme ‒ tahmin güven dağılımları, yanı sıra hata dağılımlarını anlarsınız. Ortalama hata  çok düşük ama P99 hata  çok kötü bir model, güvenlik kritik uygulamalarda işe yaramaz olabilir.
 
-**Sample vs population statistics.**Örnekten 计算变量 时,用 (n-1) yerine n 作为除数──这是贝塞尔'ın düzeltmesi──它补偿了样本的意思 不是真实人口的意思 这一事实──如果分母是n,你会系统性低估真实变量──如果分母是 (n-1),估算就是无偏的──
+**Sample vs population statistics.**Örnekten 计算变量 时,用 $(n-1)$Hayır.$n$Bu Bessel'in düzeltmesi. Bu örnek anlamını telafi etti. Bu gerçek nüfus anlamı değil.$n$, sistematik olarak gerçek değişimi değerlendirmek için.$(n-1)$Tahminim tarafsızlık.
 
-```
-Population variance: sigma^2 = (1/N) * sum((x_i - mu)^2)
-Sample variance:     s^2     = (1/(n-1)) * sum((x_i - x_bar)^2)
+```math
+\begin{aligned}
+\text{总体方差：} \quad \sigma^2 &= \frac{1}{N} \sum (x_i - \mu)^2 \\
+\text{样本方差：} \quad s^2 &= \frac{1}{n-1} \sum (x_i - \bar{x})^2
+\end{aligned}
 ```
 
-实践中: n 很大了 (n 很大了) 千个样本),差异可以忽略──如果 n 很小了 (n 很小了) 几十个样本),就很重要──
+实践中: eğer $n$                                                                                                                                                                                                                                                              $n$Çok küçük bir örnek, çok önemli.
 
 ### İlişki: 变量 nasıl birlikte değişir
 
@@ -97,7 +99,7 @@ r =  0:  无线性关系（但可能存在非线性关系！）
 Range: [-1, 1]
 ```
 
-Pearson ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı
+Pearson 假设关系是线性的,并且两个变量都大致服从正常分布──它对异值敏感──一个极端点就能把$r$0.1'den 0.9'e kadar.
 
 **Spearman rank correlation**衡量单调关联:
 
@@ -136,7 +138,7 @@ Cov(X, Y) < 0:  当 X 增加时，Y 倾向于减少
 Cov(X, Y) = 0:  无线性共同变化
 ```
 
-对于 d 个特征,covariance matrix C 是一个 d x d Matrix,其中 C[i][j] = Cov(feature_i, feature_j)。对角线项 C[i][i] 是每个 feature 的变异──
+- Evet .$d$个 özellikleri, kovariansa matrisi $C$Evet, bir tane.$d \times d$Matrix, bunlardan biri.$C[i][j] = \mathop{\mathrm{Cov}}(\text{feature}_i, \text{feature}_j)$◊ karşı karşıya $C[i][i]$Her bir özelliğin farklılıkları vardır.
 
 ```
 C = | Var(x1)      Cov(x1,x2)  Cov(x1,x3) |
@@ -152,7 +154,7 @@ Properties:
 
 **与 PCA 的联系。**PCA, bir kovarians matrisi için kendi bileşimi yapın. Eigenvectors, temel bileşenlerdir. Eigenvalues size her bileşenin ne kadar farklılık yakaladığını söyler. Bu, 10. dersin kapsamlı içeriği, ama şimdi neden bir kovarians matrisi çözülebilir bir nesne için uygun olduğunu görebilirsiniz.
 
-**与 correlation 的联系。**Korrelasyon matrisi, standart değişkenlerin kovariansa matrisidir. Her değişken kendi standart sapmalarıyla ayrılır. Korrelasyon, tüm değerleri [-1, 1]de yerleştirir.
+**与 correlation 的联系。**Korrelasyon matrisi, standart değişkenlerin koparansa matrisidir.$[-1, 1]$- Evet.
 
 ### Hipotez Testleri
 
@@ -202,10 +204,11 @@ t-test 比较 means──有几种形式──
 
 **One-sample t-test:**Nüfusun ortalaması bir varsayım değerinden farklı mıdır?
 
-```
-t = (x_bar - mu_0) / (s / sqrt(n))
-
-degrees of freedom = n - 1
+```math
+\begin{aligned}
+t &= \frac{\bar{x} - \mu_0}{s / \sqrt{n}} \\[4pt]
+\text{自由度} &= n - 1
+\end{aligned}
 ```
 
 **Two-sample t-test (independent):**两组 grup farklı mı demek oluyor?
@@ -294,19 +297,20 @@ Practically significant? 0.03% 的提升不值得
 
 **Effect size**量化差多有多大,且独立于样本大小:
 
-```
-Cohen's d = (mean_1 - mean_2) / pooled_std
-
-d = 0.2:  small effect
-d = 0.5:  medium effect
-d = 0.8:  large effect
+```math
+\begin{aligned}
+\text{Cohen's } d &= \frac{\text{mean}_1 - \text{mean}_2}{\text{pooled\_std}} \\[4pt]
+d &= 0.2: \quad \text{小效应} \\
+d &= 0.5: \quad \text{中等效应} \\
+d &= 0.8: \quad \text{大效应}
+\end{aligned}
 ```
 
 始终同时报告 p-value 和 effect size──p-value 告诉你差异是否真实──effect size 告诉你差异是否重要──
 
 ### Çeşitli Benzetme Sorunu
 
-Eğer bir çok hipotez denerseniz, bunların bazıları tesadüfen önemli olur. Eğer alfa = 0.05'de 20 şeyi denerseniz, gerçek bir etkisi olmasa bile, 1 yanlış pozitif ortaya çıkmasını beklersiniz.
+Bir sürü hipotez denediğinde, bunlardan bazıları tesadüf yüzünden önemli olur.$\alpha = 0.05$20 olayda gerçek bir etkisi olmasa bile, 1 yanlış pozitif ortaya çıkması bekleniyor.
 
 ```
 P(at least one false positive) = 1 - (1 - alpha)^m
@@ -317,7 +321,7 @@ P(false positive) = 1 - 0.95^20 = 0.64
 你有 64% 的概率至少得到一个 false positive。
 ```
 
-**Bonferroni correction:**Alfa'yı test etmek için bir miktar kullanın.
+**Bonferroni correction:**- Ben de .$\alpha$Testler dışında sayı...
 
 ```
 Adjusted alpha = alpha / m = 0.05 / 20 = 0.0025
@@ -414,11 +418,11 @@ Kruskal-Wallis:     比较多个 groups（替代 ANOVA）
 - 更高 statistical power（更擅长检测真实差异）
 ```
 
-ML deneylerinde, genellikle çok küçük n'lar vardır (beşte 5 veya 10 çapraz onay katlama), bu nedenle Wilcoxon'un imzaladığı sıralama gibi bu tip parametrik olmayan testler t-testlerden daha uygun olacaktır.
+ML deneylerinde, genellikle çok küçük bir şey yaparsın.$n$(5 veya 10 çapraz onay katlama), bu nedenle Wilcoxon'un imzalamalı sıralaması gibi bu tür parametrik olmayan testler t-testlerden daha uygun olacaktır.
 
 ### Merkez Sınır Teoremi: Gerçek Etkisi
 
-CLT göstermektedir ki, n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+CLT 表明, $n$增大,样本 平均分布 趋近正常分布,无论底层人口分布 是什么──
 
 ```
 If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
@@ -470,7 +474,7 @@ If X_1, X_2, ..., X_n are iid with mean mu and variance sigma^2:
 
 9. **在数据不独立时假设 independence。**Aynı hastanın tıbbi görüntülerinden, aynı dosyanın birçok cümlesinden, grup içindeki gözlemler, ilgililerdir.
 
-10. **P-hacking。**Arama sürecinin sadece bir eseri olan p < 0.05 elde edene kadar farklı testleri, alt setleri veya dışlama kriterlerini denemekten vazgeçmez.
+10. **P-hacking。**Farklı testleri, alt setleri veya dışlama kriterlerini elde edene kadar denemekten vazgeçmeyin.$p < 0.05$Sonuç sadece arama sürecinin bir eseri.
 
 ## Yapım
 
@@ -486,7 +490,7 @@ Siz bunu gerçekleştireceksiniz:
 3. **Hypothesis tests**(bir örnek t-test,2 örnek t-test,5 çikre test)
 4. **Bootstrap confidence intervals**(Önemli istatistik için uygundur,假设 gerekmiyor)
 5. **A/B test simulator**(generate data、测试、检查 Type I ve Type II hataları)
-6. **Statistical vs practical significance demo**(Bütünü nasıl önemli hale getirdiklerini göster)
+6. **Statistical vs practical significance demo**(seçim gösterme $n$Nasıl her şeyi önemli hale getireceksin?
 
 Hepsi sadece kullanmak için.`math`和 `random`❖不使用 numpy,不使用 scipy。
 
@@ -498,7 +502,7 @@ Hepsi sadece kullanmak için.`math`和 `random`❖不使用 numpy,不使用 scip
 | Standard deviation | variance 的平方根。以原始单位衡量 spread。 |
 | Percentile | 给定百分比的数据低于该值。 |
 | IQR | Interquartile range。Q3 减 Q1。中间 50% 的 spread。 |
-| Pearson correlation | 衡量两个变量之间的线性关联。Range [-1, 1]。 |
+| Pearson correlation | 衡量两个变量之间的线性关联。Range $[-1, 1]$。 |
 | Spearman correlation | 使用 ranks 衡量单调关联。 |
 | Covariance matrix | 所有 features 两两 covariances 组成的 Matrix。 |
 | Null hypothesis | 默认假设，即无效应或无差异。 |

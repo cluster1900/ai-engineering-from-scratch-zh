@@ -33,7 +33,7 @@ graph LR
     T3 --> T4["4D Tensor<br/>rank 4<br/>shape: (B,C,H,W)"]
 ```
 
-总元素数 = 所有尺寸的乘积──形 `(2, 3, 4)`包含 `2 * 3 * 4 = 24`个元素──
+总元素数 = 所有尺寸的乘积──形 `(2, 3, 4)`包含 $2 \cdot 3 \cdot 4 = 24$个元素──
 
 ### Derin Öğrenme Merkezi'ndeki Tensor şekilleri
 
@@ -229,7 +229,7 @@ batch_B = np.random.randn(4, 5, 2)
 batch_mm = np.einsum("bij,bjk->bik", batch_A, batch_B)
 ```
 
-Bir kısıtlama hesaplama maliyeti tüm indeks boyutlarının çarpımasıdır.`bij,bjk->bik`- ...`32 * 128 * 64 * 128 = 33,554,432`İkinci katkı.
+Bir kısıtlama hesaplama maliyeti tüm indeks boyutlarının çarpı ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ $B=32$- Evet.$I=128$- Evet.$J=64$- Evet.$K=128$`bij,bjk->bik`- ...$32 \cdot 128 \cdot 64 \cdot 128 = 33{,}554{,}432$İkinci katkı.
 
 ### 步骤 7: Birim yoluyla dikkat mekanizması
 
@@ -313,6 +313,16 @@ Bu ders iki tekrarlanabilir ipucu ile oluşur:
 3. **Hard -- Build einsum from scratch.**Bir temel oluşturmak için.`einsum(subscripts, *tensors)`işlevi, en azından support:dot ürün`i,i->`)、matrix çarpı`ij,jk->ik`)、 dış ürün`i,j->ij`) ve geçiş yaptırmak`ij->ji`)。 altyazma dizileri çöz, sözleşme endekslerini tanım,并遍历所有指数组合──将你的结果与 `np.einsum`- Karşılaştırmak için.
 
 4. **Hard -- Attention shape tracker.**编写一个函数,输入 `batch_size`- Evet.`seq_len`- Evet.`embed_dim`和 `num_heads`,并印印多头注意 每一步的精确形:输入、Q/K/V projeksiyon、头分、注意分、软max weights、重量 sum、头合、输出投影──与`demo_attention_einsum()`çıkış  denetleme yapılmaktadır.
+
+### 提示
+
+**练习 1。**Kullan .`list(range(24))` Tensor oluştur, her elementin yerini göstermesini sağla.`reshape`后打印 `flatten().to_list()`, kontrol sonuçları 0 ila 23 arasında sırayla devam ediyor.
+
+**练习 2。**Sadece iki büyük bölümde veya birinde 1 saat için bu boyut yayılabilir, bu nedenle önce bu kuralları kontrol edin, tatmin olmazsa hata atın.`(3, 1)`和 `(1, 4)`, kontrol sonuçları `[i][j]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `a[i][0] + b[0][j]`,并将完整结果与NumPy比较──
+
+**练习 3。**按 `->`拆分下标── 出口中出現的字母代表求和索引,因此遍历每个字母的所有取值并累加到出口位置── 在小型随机数组上,使用`np.allclose(mine, np.einsum(...))`测试全部四种情况──
+
+**练习 4。**Baş boyutundan`embed_dim // num_heads`Başlayın,并断言`embed_dim % num_heads == 0`◊ dikkat puanlarının şekli 为 `(batch_size, num_heads, seq_len, seq_len)`Bu nedenle, sonuçlar bu şekle ve `demo_attention_einsum()`打印的形状比较──
 
 ## 关键术语
 | Term | What people say | What it actually means |

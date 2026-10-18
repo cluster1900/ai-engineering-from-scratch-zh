@@ -28,14 +28,14 @@ Bu ders, her ana mesafe işleviyi sıfırdan inşa ederek, hangi işlevi ne zama
 
 ### Normalar:测量 vektörü
 
-范数 ölçüsü bir vektörün 大小── iki vektör arasındaki her mesafe işlevi, farklı değerlerin 范数 olarak yazılabilir: d, b) = a - b a ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ 
+范数 ölçüsü bir vektörün 大小── iki vektör arasındaki her mesafe işlevi, farklı değerlerin 范数 olarak yazılabilir:$d(a, b) = \lVert a - b \rVert$                                                                                                                                                                                                                                                              
 
 ### L1 Norm ((Manhattan uzaklığı)
 
 L1 normı tüm bölümlerin mutlak değerini gerektirir ve
 
-```
-||x||_1 = |x_1| + |x_2| + ... + |x_n|
+```math
+\lVert x \rVert_1 = |x_1| + |x_2| + \cdots + |x_n|
 ```
 
 Manhattan mesafe olarak adlandırılır, çünkü şehir ağının ortasında yürüyüş mesafesi ölçer, orada sadece bir çizgi asın boyunca hareket edebilirsin, köşeler karşısında yürüyemezsin.
@@ -54,7 +54,7 @@ On a grid, you walk 3 blocks east and 4 blocks north.
 - Eğer bu kadar yüksek bir oranın olmasını istiyorsan daha iyi bir zaman elde edeceksin.
 - Özellikle seçme sorunu (L1 düzenlenme, nadirliği teşvik eder)
 
-L1 düzenlenmesi ile bağlantı: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Cezası: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ceza: L1 Ce
+L1 düzenlenmesi ile bağlantı:$\lVert w \rVert_1$, ağırlığı mutlak değerinin ve ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı ı
 
 Loss Fungsiları ile bağlantı: Ortalama Kesin Hata (MAE) = tahmin değeri ve hedef değeri arasındaki L1 mesafesinin ortalama değeri.
 
@@ -62,11 +62,11 @@ Loss Fungsiları ile bağlantı: Ortalama Kesin Hata (MAE) = tahmin değeri ve h
 
 L2 normı, düz çizgi mesafedir.
 
-```
-||x||_2 = sqrt(x_1^2 + x_2^2 + ... + x_n^2)
+```math
+\lVert x \rVert_2 = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2}
 ```
 
-Bu, geometri dersinde öğrendiğin mesafe.
+Bu, jeometri dersinde öğrendiğin mesafedir.$n$维中勾股定理──
 
 ```
 Point A = (1, 1)
@@ -83,24 +83,26 @@ The straight line, cutting diagonally through the grid.
 - 物理距離(空间数据、传感器读数)
 - 像素级的图像相似度 (tıpkı resim gibi)
 
-L2 düzenlenmesi ile bağlantı: L2 Ridge: Bu işlevi 2^2'ye dahil olurken daha büyük bir ağırlık cezalandırır. L1'den farklı olarak, ağırlığı sıfıra doğru atmaz.
+L2 düzenlenmesi ile bağlantı:$\lVert w \rVert_2^2$L1 ile farklı olarak, ağırlığı sıfıra doğru atmaz. O oranla mülkiyetini sıfıra geri geri çevirecektir. L2 cezası yuvarlak bir kısıtlama bölgesini oluşturacaktır.
 
 Hasar İşlevleri ile bağlantı: Orta Çekirde Hata ((MSE) L2 mesafeler 平方的平均值──平方会比小误差更重地惩罚大误差──
 
-```
-MAE (L1 loss):  |y - y_hat|         Linear penalty. Robust to outliers.
-MSE (L2 loss):  (y - y_hat)^2       Quadratic penalty. Sensitive to outliers.
+```math
+\begin{aligned}
+\text{MAE（L1 loss）：} \quad & |y - \hat{y}| && \text{线性惩罚。对离群值稳健。} \\
+\text{MSE（L2 loss）：} \quad & (y - \hat{y})^2 && \text{二次惩罚。对离群值敏感。}
+\end{aligned}
 ```
 
 ### Lp Normaları:通用族
 
 L1 ve L2 Lp normunun özel durumları:
 
-```
-||x||_p = (|x_1|^p + |x_2|^p + ... + |x_n|^p)^(1/p)
+```math
+\lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-Farklı p   değerleri farklı şekillerde birlik topları  ((çıkış noktasından 1'in tüm noktalarının toplamı) oluşur:
+Farklı $p$值会产生不同形的单位球(原点为1 的所有点的集合)
 
 ```
 p=1:    Diamond shape      (corners on axes)
@@ -111,19 +113,20 @@ p=inf:  Square/hypercube   (flat sides along axes)
 
 ### L- sonsuzluk Norm ((Chebyshev mesafe)
 
-Sıcaklıktan sonra, Lp normunun en büyük mutlak oranına ulaşması mümkün.
+- Evet .$p$趋近无穷大时,Lp norm 收到最大绝对分量──
 
-```
-||x||_inf = max(|x_1|, |x_2|, ..., |x_n|)
+```math
+\lVert x \rVert_\infty = \max(|x_1|, |x_2|, \ldots, |x_n|)
 ```
 
 İki nokta arasındaki mesafe, birbirinden en büyük farkı belirleyen boyutlara göre belirlenir.
 
-```
-Point A = (1, 1)
-Point B = (4, 5)
-
-L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
+```math
+\begin{aligned}
+\text{点 } A &= (1, 1) \\
+\text{点 } B &= (4, 5) \\[6pt]
+L_\infty \text{ 距离} &= \max(|4-1|, |5-1|) = \max(3, 4) = 4
+\end{aligned}
 ```
 
 何時使用 L-infinity:
@@ -135,19 +138,20 @@ L-inf distance = max(|4-1|, |5-1|) = max(3, 4) = 4
 
 Cosine benzerliği  iki vektör arasındaki açıyı ölçmek, büyüklüğünü göz ardı etmek
 
-```
-cos_sim(a, b) = (a . b) / (||a||_2 * ||b||_2)
+```math
+\text{cos\_sim}(a, b) = \frac{a \cdot b}{\lVert a \rVert_2 \, \lVert b \rVert_2}
 ```
 
 Onun aralığı -1 ((direction相反) ile +1 ((direction same) ⋅垂直 vektörlerin kozine benzerliği 为 0。
 
 Kosine mesafeyi değiştirir:kosine_distance = 1 -kosine_semblance──范围是 0(方向相同) to 2(方向相反)──
 
-```
-a = (1, 0)    b = (1, 1)
-
-cos_sim = (1*1 + 0*1) / (1 * sqrt(2)) = 1/sqrt(2) = 0.707
-cos_dist = 1 - 0.707 = 0.293
+```math
+\begin{aligned}
+& a = (1, 0) \qquad b = (1, 1) \\[6pt]
+& \text{cos\_sim} = \frac{1 \cdot 1 + 0 \cdot 1}{1 \cdot \sqrt{2}} = \frac{1}{\sqrt{2}} = 0.707 \\
+& \text{cos\_dist} = 1 - 0.707 = 0.293
+\end{aligned}
 ```
 
 Neden kozine NLP ve yerleşimlerde baskın yönü: metinde, dosya uzunluğu benzerliği etmemelisin.
@@ -162,16 +166,17 @@ Neden kozine NLP ve yerleşimlerde baskın yönü: metinde, dosya uzunluğu benz
 
 两个向的点产量是:
 
-```
-a . b = a_1*b_1 + a_2*b_2 + ... + a_n*b_n
-      = ||a|| * ||b|| * cos(angle)
+```math
+\begin{aligned}
+a \cdot b &= a_1 b_1 + a_2 b_2 + \cdots + a_n b_n \\
+&= \lVert a \rVert \, \lVert b \rVert \cos(\text{角度})
+\end{aligned}
 ```
 
 Kosine benzerliği iki büyüklükte birleştirilmesinden sonra nokta ürünüdür.
 
-```
-If ||a|| = 1 and ||b|| = 1:
-    a . b = cos(angle between a and b)
+```math
+\text{如果 } \lVert a \rVert = 1 \text{ 与 } \lVert b \rVert = 1: \quad a \cdot b = \cos(\text{夹角，介于 } a \text{ 与 } b)
 ```
 
 它们的不同情况:dot product 包含大小信息──大小更大的矢量 会得到更高的点 product 分数──在一些检索系统中, eğer 热门物品排名更高, bu nokta önemlidir──大小会作为隐式质量或重要性信号──
@@ -197,13 +202,13 @@ Euclidean mesafe tüm boyutlara eşit davranır. Ama özellikleriniz ilişkili v
 
 Mahalanobis mesafesinin veri değişikliğini göz önünde bulundurur 结构。
 
-```
-d_M(x, y) = sqrt((x - y)^T * S^(-1) * (x - y))
+```math
+d_M(x, y) = \sqrt{(x - y)^T S^{-1} (x - y)}
 ```
 
-S'in arasında veri değişkenlik matrisi vardır.
+İçlerinden $S$- Verilerin kovariansa matrisi
 
-直观理解:Mahalanobis mesafe önce verilere ilişkin birleştirme yapar, sonra değişim sonrası uzayda L2 mesafe hesaplanır. S bir kimlik matrisi ise,Mahalanobis mesafeyi evklid mesafe olarak geri çevirir.
+直观理解:Mahalanobis mesafe önce verilere ilişkin birleştirme yapılır, sonra değişim sonrası uzayda L2 mesafe hesaplanır.$S$Bu, bir evredeki bir evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evredeki evred
 
 ```
 Example: height and weight are correlated.
@@ -225,8 +230,8 @@ because it accounts for the height-weight correlation.
 
 Jackard benzerliği  Ölçmek iki topluluk arasındaki ağırlıklılık derecesi
 
-```
-J(A, B) = |A intersect B| / |A union B|
+```math
+J(A, B) = \frac{|A \cap B|}{|A \cup B|}
 ```
 
 Onun kapsamı 0( hiçbir ağırlık) 1( toplam aynı) ・・・Jaccard mesafe = 1 - Jaccard benzerliği。
@@ -263,7 +268,7 @@ sittin -> sitting (insert g)
 Edit distance = 3
 ```
 
-kullanıyor. Bu metrikte, bir metrik doldurulur.
+Use动态规划计算──填充一个矩阵,其中条目 $(i, j)$Evet A'nın önüne$i$个字符与字符串 B 的前 $j$个字符之间 edit distance──
 
 ```
         ""  s  i  t  t  i  n  g
@@ -286,20 +291,20 @@ kullanıyor. Bu metrikte, bir metrik doldurulur.
 
 KL farklılığı  bir olasılık dağılımının diğer olasılık dağılımının farklılığını ölçmek. Bu konunun içeriği Ders 09'da anlatılmıştı, ancak bu tartışmaya dahil, çünkü insanlar genellikle onu  mesafe  olarak kullanırlar, ancak mesafe değildir.
 
-```
-D_KL(P || Q) = sum(p(x) * log(p(x) / q(x)))
+```math
+D_{KL}(P \,\|\, Q) = \sum_x p(x) \log\frac{p(x)}{q(x)}
 ```
 
 KL farklılığı, birbiriyle karşılaştırılmıyor.
 
-```
-D_KL(P || Q) != D_KL(Q || P)
+```math
+D_{KL}(P \,\|\, Q) \ne D_{KL}(Q \,\|\, P)
 ```
 
 Bu, mesafe ölçüsünün temel gerekliliklerini karşılamıyor demektir.
 
-Önceki KL(D_KL(P  Q)) is anlam aramak:Q 试图覆盖 P'ın tüm modlarını¬¬
-Reverse KL(D_KL(Q   P)) ismode-seeking:Q 专注于P 的单个模式──
+KL'yi ileriye doğru$D_{KL}(P \Vert Q)$)  anlam aramak :$Q$试图覆盖 $P$Tüm modlar.
+KL'yi tersine çevir$D_{KL}(Q \Vert P)$)  mode-seeking:$Q$专注于$P$Tek bir modun var.
 
 Bu yerlerde KL'nin farklılığını göreceksiniz:
 - VAE(ELBO'nun KL 项会把潜伏分布 推向前)
@@ -311,14 +316,14 @@ Bu yerlerde KL'nin farklılığını göreceksiniz:
 
 Wasserstein mesafe  ölçüm bir olasılık dağılımını diğer olasılık dağılımına dönüştürmek için gerekli en az  iş ── bu şekilde anlayabilirsiniz: Eğer bir dağılım toprağın bir yığını ise, diğer bir crater ise, ne kadar toprağı hareket ettirmek gerekir  moving how far?
 
-```
-W(P, Q) = inf over all transport plans gamma of E[d(x, y)]
+```math
+W(P, Q) = \inf_{\gamma} \mathbb{E}[d(x, y)] \quad \text{（遍历所有运输方案 } \gamma\text{）}
 ```
 
 1D dağılım için, toplam dağılım işlevi mutlak farkın积分 olarak basitleştirilir:
 
-```
-W_1(P, Q) = integral |CDF_P(x) - CDF_Q(x)| dx
+```math
+W_1(P, Q) = \int |\text{CDF}_P(x) - \text{CDF}_Q(x)| \, dx
 ```
 
 Neden Wasserstein  önemli:
@@ -353,7 +358,7 @@ Wasserstein gives a meaningful gradient. KL does not.
 | 集合重叠（标签、类别） | Jaccard | 数据天然是集合值，而不是 Vector 型 |
 | 字符串匹配 | Edit distance | 操作映射到人类编辑直觉 |
 | Outlier detection | Mahalanobis | 考虑特征相关性和尺度 |
-| 比较分布 | KL divergence | 衡量使用 Q 而不是 P 时丢失的信息 |
+| 比较分布 | KL divergence | 衡量使用 $Q$ 而不是 $P$ 时丢失的信息 |
 | GAN training | Wasserstein | 即使分布不重叠也能提供 Gradients |
 | Embeddings（vector DB） | Cosine or dot product | Embeddings 被训练为在方向中编码含义 |
 | 推荐 | Dot product | 大小可以编码流行度或置信度 |
@@ -404,7 +409,7 @@ L1 neden nadir oluşur ve L2 neden olmaz: 2D  Vücut ağırlığı alanındaki k
 
 Her mesafe işlevi en yakın komşu arama içerir.
 
-En yakın komşu arama n 个点、d 个维度 的数据集 içerir, her sorunun karmaşıklığı O  n * d)                                                                                                                                                                                                                                              
+En yakın komşu arama içinde$n$- Evet.$d$个维度的数据集, her sorunun karmaşıklığı $O(n \cdot d)$Büyük veri kümeleri için çok yavaş.
 
 Yaklaşık En Yakın Komşular (ANN) algoritması, büyük bir hızla yükseltmek için az miktarda doğru oranı kullanıyor:
 
@@ -470,7 +475,7 @@ print(f"Similarities: {similarities[top_k]}")
 
 ## 练习
 
-1. 計算 (1, 2, 3) 和 (4, 0, 6)   arasındaki L1、L2 和 L- sonsuzluk mesafeleri。验证任意一对点,总有L-inf <= L2 <= L1。证明为什么这个顺序一定成立──
+1. 計算 (1, 2, 3) 和 (4, 0, 6)   arasındaki L1、L2 和 L- sonsuzluk mesafeleri。验证对任意一对点,总有 $L_\infty \le L_2 \le L_1$Bu sırayı neden bulduğunu kanıtlamak.
 
 2. 创建两个向量,使宇宙相似性 很高(> 0.9),但 L2距离 很大(> 10) ・・・从几何角度解释发生了什么――然后创建两个向量,使宇宙相似性 很低(< 0.3),但 L2距离 很小(< 0.5) ・・・
 
@@ -480,6 +485,18 @@ print(f"Similarities: {similarities[top_k]}")
 
 5. Yaklaşık bir şekilde Jaccard benzerliği 实现 MinHash──生成 100 个随机集合,计算所有对的精确 Jaccard,并使用 50、100、200 个 hash 函数 的 MinHash 近似进行比较──绘制近似误差──
 
+### 提示
+
+**练习 1。**差向量为 (-3, 2, -3), bu nedenle kullanılır `l1_norm`- Evet.`l2_norm`和 `linf_norm`計算该向量的三种范数──证明时,将最大的 $\lvert d_i \rvert$Karakter ve oranla, karakter ve oranla mutlak değer ile karakter oranı yeniden karşılaştırmak.
+
+**练习 2。**Cosine benzerliği  uzunluğu ihmal eder, bu nedenle önce iki yönde neredeyse aynı vektör alır, ve birinden diğerinden uzun kalır.`cosine_similarity`和 `l2_distance`检验两个条件――
+
+**练习 3。**Ayrılıklı kullan`l1_distance`- Evet.`l2_distance`- Evet.`cosine_distance`和 `mahalanobis_distance`Bir kere kullanın.`find_nearest_neighbor(query, dataset, distance_fn)`- Evet.`demo_different_neighbors` farklı ölçüler farklı sonuçlar vererek gösterir, bu yüzden önce okuyun, dört farklı cevaplar olana kadar tekrar düzenleyin.
+
+**练习 4。** her dağılımın toplamı yazın, iki grup toplamı ve farkının mutlak değerine bir katı daha kullanın.`wasserstein_1d(p, q)`检查两次计算结果,再使用概率质量必须移动的距离解释较大的结果──
+
+**练习 5。**Her hash işlevi için, bir topluluğun MinHash  adı elementlerinin en az hash değeri; iki topluluk aynı en az değerli hash işlevi tarafından oluşan oranı elde eder, onların Jaccard benzerliği tahmin edilebilir.`jaccard_similarity`Bıqqara;$k$个哈希函数, 误差应大致按 $1/\sqrt{k}$Aşağıya düştü.
+
 ## 关键术语
 
 | Term | What people say | What it actually means |
@@ -487,15 +504,15 @@ print(f"Similarities: {similarities[top_k]}")
 | Norm | “Vector 的大小” | 一个把 Vector 映射到非负标量的函数，满足三角不等式、绝对齐次性，并且只有零 Vector 的值为零 |
 | L1 norm | “Manhattan distance” | 分量绝对值之和。在优化中产生稀疏性。对 outliers 稳健 |
 | L2 norm | “Euclidean distance” | 平方分量之和的平方根。Euclidean space 中的直线距离 |
-| Lp norm | “Generalized norm” | 分量绝对值 p 次方之和的 p 次根。L1 和 L2 是特殊情况 |
-| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 p 趋近无穷大时 Lp 的极限 |
+| Lp norm | “Generalized norm” | 分量绝对值 $p$ 次方之和的 $p$ 次根。L1 和 L2 是特殊情况 |
+| L-infinity norm | “Max norm” 或 “Chebyshev distance” | 最大绝对分量值。当 $p$ 趋近无穷大时 Lp 的极限 |
 | Cosine similarity | “Vectors 之间的角度” | 按两个大小归一化的 dot product。范围从 -1 到 +1。忽略 Vector 长度 |
 | Cosine distance | “1 minus cosine similarity” | 将 cosine similarity 转换为距离。范围从 0 到 2 |
 | Dot product | “Unnormalized cosine” | 按分量相乘后求和。等于 cosine similarity 乘以两个大小 |
 | Mahalanobis distance | “Correlation-aware distance” | 在使用数据 covariance matrix 进行 whitened（去相关和归一化）后的空间中的 L2 distance |
 | Jaccard similarity | “Set overlap” | 交集大小除以并集大小。用于集合，而不是 Vectors |
 | Edit distance | “Levenshtein distance” | 将一个字符串转换为另一个字符串所需的最少插入、删除和替换次数 |
-| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 Q 编码 P 时产生的额外 bits |
+| KL divergence | “Distance between distributions” | 不是真正的距离（不对称）。衡量使用 $Q$ 编码 $P$ 时产生的额外 bits |
 | Wasserstein distance | “Earth mover's distance” | 将质量从一个分布运输到另一个分布所需的最小 work。真正的 metric |
 | Approximate nearest neighbor | “ANN search” | 比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
 | HNSW | “The vector DB algorithm” | Hierarchical Navigable Small World graph。用于快速 approximate nearest neighbor search 的多层图 |

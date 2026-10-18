@@ -32,7 +32,7 @@ Vektör sadece bir sayı listesi. Ama bu sayıların anlamı vardır.
 |---|---|-------|
 | 3 | 2 | 这个 Vector 从原点 (0,0) 指向平面上的 (3, 2) |
 
-Bu vektörün büyüklüğü 为平方(3^2 + 2^2) =平方(13), yön yukarı ve sağ yönde。
+Vector'un büyüklüğü ne ?$\sqrt{3^2 + 2^2} = \sqrt{13}$, yukarı ve sağ yönde.
 
 Vector, AI'de her şeyi gösteriyor:
 - Bir kelime → bir kelime içerir 768 个数字的矢量 (vidaylık 空间中的含义)
@@ -71,19 +71,20 @@ AI'de Matrix modelini şöyle anlatıyor:
 
 İki vektörün nokta ürünü, birbirlerine çok benzer olduğunu söyler.
 
-```
-a · b = a₁×b₁ + a₂×b₂ + ... + aₙ×bₙ
-
-方向相同：      a · b > 0  （相似）
-相互垂直：      a · b = 0  （无关）
-方向相反：      a · b < 0  （不相似）
+```math
+\begin{aligned}
+a \cdot b &= a_1 \times b_1 + a_2 \times b_2 + \cdots + a_n \times b_n \\[4pt]
+\text{方向相同：} \quad a \cdot b &> 0 \quad \text{（相似）} \\
+\text{相互垂直：} \quad a \cdot b &= 0 \quad \text{（无关）} \\
+\text{方向相反：} \quad a \cdot b &< 0 \quad \text{（不相似）}
+\end{aligned}
 ```
 
 İşte bu arama motorları, önerme sistemleri ve RAG'ın çalışma biçimi - nokta ürünü daha yüksek vektörleri bulmak.
 
 ### Düzsel Bağımsızlık
 
-Eğer bir toplamda başka vektörlerin bir araya gelmesi olarak yazılabilecek herhangi bir vektör yoksa, bu vektörler doğrusal olarak bağımsızdır. Eğer v1、v2、v3 bağımsız ise, 3 boyutlu bir alan kapsar.
+Eğer bir toplamda herhangi bir vektör yoksa diğer vektörlerin bir araya gelmesi için yazılabilir, bu vektörler doğrusal olarak bağımsızdır.$v_1, v_2, v_3$Bağımsız olarak, 3 boyutlu bir uzay kapsamına girerler. Eğer bunlardan biri diğer vektörlerin bir parçası ise, sadece bir düzlem kapsamına girerler.
 
 Bu, AI'nin önemi için önemlidir: Özellik matrisiniz  lineer olarak bağımsız sütunlar olmalıdır. Eğer iki özellik  tamamen ilişkili ise, model kendi etkisini ayırt edemez. Bu, Regresyon'da çok yönlü birliğe neden olur. Ağırlık matrisinin dengesizliği, girişlerin küçük değişiklikleri büyük bir kayıpla sonuçlanacaktır.
 
@@ -95,7 +96,7 @@ v2 = [0, 1, 0]
 v3 = [2, 1, 0]   # v3 = 2*v1 + v2
 ```
 
-v1 ve v2 bağımsızdır. İki tarafı da diğerlerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin birinin bir diğerinin bir diğerinin birinin bir diğerinin birinin bir diğerinin birinin birinin bir diğerinin birinin birinin bir diğerinin birinin birinin bir diğerinin birinin birinin birinin birinin bir diğerinin birinin birinin bir diğerinin birinin birinin birinin birinin birinin bir diğerinin birinin birinin birinin birinin birinin birinin bir diğerinin birinin birinin birinin birinin birinin bir diğerinin birinin birinin birinin birinin birinin bir diğerinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin ve diğerinin ve diğerinin ve diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de diğerinin de sadece sadece iki ve diğerinin de sadece iki ve sadece iki ve sadece iki ve sadece iki özgürlükleri vardır.
+$v_1$和 $v_2$Bu bağımsız -- ikisi de diğerlerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin bir diğerinin birinin bir diğerinin bir diğerinin birinin birinin bir diğerinin birinin birinin bir diğerinin bir diğerinin birinin birinin bir diğerinin birinin birinin birinin birinin birinin bir diğerinin birinin birinin birinin bir diğerinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin olduğunu göstermek ve birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin birinin bir$v_3 = 2 v_1 + v_2$- Evet.$\lbrace v_1, v_2, v_3 \rbrace$Bu üç vektörün hepsi xy düzleminde yer almaktadır. Onları nasıl bir araya getirirseniz bir araya gelemezsiniz.
 
 Veriler kümesinde: Eğer feature_3 = 2*feature_1 + feature_2, join feature_3 model için herhangi bir yeni bilgi getirmez. Daha da kötüsü, normal denklemlerin tek başına dönüşmesini sağlar.
 
@@ -105,15 +106,15 @@ Temel, en küçük bir dizi çizgi bağımsız vektördür, bunlar tüm uzayı k
 
 3D 空间'ın standart temeli ise {1,0,0], [0,1,0], [0,0,1]}── ama 3D'deki herhangi üç bağımsız vektör, geçerli bir temel oluşturur.
 
-Matrix'in rütbesi = doğrusal bağımsız sütunların sayısı = doğrusal bağımsız satırların sayısı── eğer rütbesi < min(satırlar, kollar) ise, bu Matrix = rütbesi eksik── bu da şöyle anlama gelir:
+Matrix'in rütbesi = doğrusal bağımsız sütunların sayısı = doğrusal bağımsız satırların sayısı──$\text{rank} < \min(\text{rows}, \text{cols})$Bu Matrix, sıra eksikliği.
 - Sistemin son derece çok çözümü var.
 - dönüşüm İçinde kaybolmuş bilgi
 - Matrix 不能被逆转
 
 | 情况 | Rank | 对 ML 的含义 |
 |-----------|------|---------------------|
-| Full rank (rank = min(m, n)) | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
-| Rank deficient (rank < min(m, n)) | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
+| Full rank $(\text{rank} = \min(m, n))$ | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
+| Rank deficient $(\text{rank} < \min(m, n))$ | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
 | Rank 1 | 1 | 每一列都是某个 Vector 的缩放副本。所有数据都位于一条线上。 |
 | Near rank-deficient（较小的 singular values） | 数值上较低 | Matrix ill-conditioned。极小的 input noise 会造成很大的 output changes。使用 SVD truncation 或 ridge regression。 |
 
@@ -121,11 +122,11 @@ Matrix'in rütbesi = doğrusal bağımsız sütunların sayısı = doğrusal ba�
 
 Vector**a**投影到 Vector **b**Üst, alacağım.**a**- Evet .**b**方向上的分量:
 
-```
-proj_b(a) = (a dot b / b dot b) * b
+```math
+\mathop{\mathrm{proj}}_b(a) = \frac{a \cdot b}{b \cdot b} \, b
 ```
 
-Geri kalan (a - proj_b(a)) b 垂直── bu ortogonal parçalanma en az kareye uygunluğun temelidir.
+kalıntı $(a - \mathop{\mathrm{proj}}_b(a))$ile$b$垂直── bu ortogonal parçalanma en az karelik yerleşiminin temelidir──
 
 Projection 在 ML 中无处不在:
 - Düzsel Geri Dönüşüm , sütun alanına en küçük gözlemler -- 解本身就是一个投影
@@ -143,9 +144,9 @@ graph LR
     end
 ```
 
-**示例：**A = [3, 4], b = [1, 0]
+**示例：** $a = [3, 4]$- Evet .$b = [1, 0]$
 
-proj_b(a) = (3*1 + 4*0) / (1*1 + 0*0) * [1, 0] = 3 * [1, 0] = [3, 0]
+$\mathop{\mathrm{proj}}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0) \cdot [1, 0] = 3 \cdot [1, 0] = [3, 0]$
 
 Bu projeksiyon y bölümü ortadan kaldırdı. Bu en basit biçimdeki boyutsuzluk azaltımı.
 
@@ -448,6 +449,20 @@ LoRA 特別説明に値する。 特別説明します。 通過する 重量更
 4. 验证 Gram-Schmidt çıkışı 确实是正规的:检查每对的点产品都为 0,并且每个向量的大小都为 1
 5. 创建一个级为 2 的 3x3 Matrix──使用 `rank()`Bu sütunların uzantısı hangi nesnelerdir?
 6. Vector [1, 2, 3] 投投到 [1, 1, 1] 上──結果在几何上表示什么?
+
+### 提示
+
+**练习 1。**- Evet .`cosine_similarity`開始,  result limit between -1 to 1 之间,  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re re  re re  re re re re  re re re re re  re re re re re re  re re re re re re  re re re re re re  re re re  re re  re  re re re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re  re`Vector([1, 0])`和 `Vector([0, 1])`Sonuç 90'a, akım ve kendi sonucu 0'a ulaştı.
+
+**练习 2。**İki kısaltma faktörünü 2x2 matrisin karşı köşesinde yerleştirmek, kalan iki konum 0♦ giriş [1, 1] sonuçları olmalıdır [2, 3]♦
+
+**练习 3。**計算 5 个向量中每对对的余弦相似度 (共 10 对), maksimum değer korunmaktadır.
+
+**练习 4。**Üç hattı için bir bağlantı yok.`gram_schmidt`, yeniden hesaplama için`dot`, için her ≈ `magnitude`。 kullanmak örneğin `1e-9`Bu sayı, sıfırın tam olarak sıfır vermediği için, sıfırın farklılığı karşılaştırılır.
+
+**练习 5。**Üçüncü satır veya üçüncü satır, bir yönü tekrarlamak için ön iki yönü birleştirir.`rank()`2. bu sırada her bir çizgiyi bir düzene dönüştürmek zorundadır.
+
+**练习 6。**计算缩放系数 $\frac{a \cdot b}{b \cdot b}$Ve katılamıyorum.$b$, veya调用 `project_onto`△ Kontrol üyelik$a$减去投影) ile [1, 1, 1]
 
 ## 关键术语
 

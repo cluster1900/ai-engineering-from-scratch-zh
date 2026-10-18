@@ -45,7 +45,7 @@ graph LR
 
 ### Dönüşüm
 
-角为 theta'nın 2D dönüşü mesafe ve açı değişmez.
+角为 $\theta$2 boyutlu dönümün mesafe ve açı değişmez.
 
 ```mermaid
 graph LR
@@ -66,18 +66,12 @@ graph LR
 
 3D'de, bir aksiyete dönersin. Her aksiyondaki dönüm matrisi vardır.
 
-```
-Rz(theta) = | cos  -sin  0 |     Rotate around z-axis
-            | sin   cos  0 |     (x-y plane spins, z stays)
-            |  0     0   1 |
-
-Rx(theta) = | 1   0     0    |   Rotate around x-axis
-            | 0  cos  -sin   |   (y-z plane spins, x stays)
-            | 0  sin   cos   |
-
-Ry(theta) = |  cos  0  sin |     Rotate around y-axis
-            |   0   1   0  |     (x-z plane spins, y stays)
-            | -sin  0  cos |
+```math
+\begin{aligned}
+R_z(\theta) &= \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad \text{绕 z 轴旋转（x-y 平面转动，z 不变）} \\[6pt]
+R_x(\theta) &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad \text{绕 x 轴旋转（y-z 平面转动，x 不变）} \\[6pt]
+R_y(\theta) &= \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix} \quad \text{绕 y 轴旋转（x-z 平面转动，y 不变）}
+\end{aligned}
 ```
 
 ### Ölçekleme
@@ -123,8 +117,8 @@ graph LR
 ```
 
 Çekim matrisleri:
-- `Shx = [[1, k], [0, 1]]`Neler olacak ?
-- `Shy = [[1, 0], [k, 1]]`Y düz hareket k * x
+- `Shx = [[1, k], [0, 1]]`- Ben de .$x$平移 $k \cdot y$
+- `Shy = [[1, 0], [k, 1]]`- Ben de .$y$平移 $k \cdot x$
 
 ### Düşünce
 
@@ -196,7 +190,7 @@ Bu matris 会沿 [1, 1] 方向把空间拉伸 3x,并保持 [1, -1] 不变──�
 
 ### Kendi bileşimi
 
-Eğer bir matrisin n 个线性 无关的自向量 varsa, parçalanabilir:
+Eğer bir matris varsa$n$个线性无关的自向量, çözülebilir:
 
 ```
 A = V @ D @ V^(-1)
@@ -210,7 +204,7 @@ This says: rotate into eigenvector coordinates, scale along each axis, rotate ba
 
 ### Neden kendi değerleri  önemli
 
-**PCA。**Covariance matrisinin öz vektörleri esas bileşenlerdir. Eigenvalue'ler size her bileşenin ne kadar farklılık elde ettiğini söyler.
+**PCA。**Covariance matrisinin öz vektörleri esas bileşenlerdir. Eigenvalue'ler size her bileşenin ne kadar değişimi yakaladığını söyleyecektir.$k$- Siz boyutsuzluk azalımı elde ettiniz.
 
 **稳定性。**Tekrarlanan ağlarda ve dinamik sistemlerde, büyüklük > 1'in öz değerleri çıkış patlamasına yol açar.
 
@@ -310,7 +304,7 @@ print(f"Same? {result1 == result2}")
 
 ### 步骤 3: 零计算 öz değerlerinden ((2x2)
 
-2x2 matris için.`[[a, b], [c, d]]`,eigenvalues by characteristic equation 求解:`lambda^2 - (a+d)*lambda + (ad - bc) = 0`- Evet.
+2x2 matris için.`[[a, b], [c, d]]`,eigenvalues by characteristic equation 求解:$\lambda^2 - (a+d)\lambda + (ad - bc) = 0$- Evet.
 
 ```python
 def eigenvalues_2x2(matrix):
@@ -444,6 +438,14 @@ Bu ders PCA için (2) ve Nöral Ağlar için 权重分析建立几何基础─�
 
 3. 创建三个变换的组成(旋转30度,按 [1.5, 0.8] ölçeği,使用 kx=0.3 shear),并将其应用到按圆形排列的8个点上――印变换前后的坐标――计算 组成矩阵的决定者,并验证它等于各决定者的乘积――
 
+### 提示
+
+**练习 1。**Kullan .`mat_vec_mul`- Ben de .`rotation_2d`- Evet.`scaling_2d`和 `shearing_2d`√ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √
+
+**练习 2。**写出特征方程 $\lambda^2 - (\text{trace})\lambda + \det = 0$Ve çözüm arayın. İki sonuç kontrol edin.`eigenvalues_2x2`和 `np.linalg.eigvals`Ben de.
+
+**练习 3。**Üç tane tane yapı, kullan.`shearing_2d(0.3, 0)`Yapım biçimleri, uygulama sırasıyla kullanılır.`mat_mul`Bir daha 8 puan için bir sonuç elde edeceğiz.$(\cos\theta, \sin\theta)$△ Rotasyon matçının dilimleri 1'dir, kesik matçın dilimleri de 1'dir, bu nedenle birleştirilen matçların dilimleri `det_2x2`必須  $1.5 \times 0.8 = 1.2$- Evet.
+
 ## 关键术语
 
 | Term | 人们通常怎么说 | 它实际意味着什么 |
@@ -455,9 +457,9 @@ Bu ders PCA için (2) ve Nöral Ağlar için 权重分析建立几何基础─�
 | Composition | “做两件事” | 通过相乘 transformation matrices 来串联操作。顺序很重要：B @ A 表示先应用 A，再应用 B。 |
 | Eigenvector | “特殊方向” | 一个只会被 matrix 缩放、绝不会被旋转的方向。它是该变换的指纹。 |
 | Eigenvalue | “拉伸了多少” | Matrix 缩放其 eigenvector 的标量因子。可以是负数（翻转），也可以是复数（rotation）。 |
-| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 V @ D @ V^(-1)，把它分离为基本缩放方向和幅度。 |
+| Eigendecomposition | “把 matrix 拆开” | 将一个 matrix 写成 $V D V^{-1}$，把它分离为基本缩放方向和幅度。 |
 | Determinant | “来自 matrix 的一个数字” | 该变换缩放面积（2D）或体积（3D）的因子。零表示该变换不可逆。 |
-| Characteristic equation | “eigenvalues 从哪里来” | det(A - lambda * I) = 0。它的根就是 eigenvalues。 |
+| Characteristic equation | “eigenvalues 从哪里来” | $\det(A - \lambda I) = 0$。它的根就是 eigenvalues。 |
 
 ## 延伸阅读
 

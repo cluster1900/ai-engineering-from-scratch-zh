@@ -40,11 +40,10 @@ w = [1, 0, -2]    -- 一个 3D Vector
 
 ### Matrix: dijital net格
 
-Matris bir 2 boyutlu 网格──由行和列组成──一个 m x n Matrix 有 m 行和 n 列──
+Matrix ≠ 2D 网格──由列 和列 组成──一个 $m \times n$Matrix var .$m$行和 $n$- Evet.
 
-```
-A = | 1  2  3 |     -- 2x3 Matrix（2 行，3 列）
-    | 4  5  6 |
+```math
+A = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \quad \text{2x3 Matrix（2 行，3 列）}
 ```
 
 Nöral ağlarda ağırlık matrisleri girme vektörlerini çıkış vektörlerine dönüştürür.
@@ -80,16 +79,14 @@ Bu farkı sık sık yeni öğrencilere kazık yaptırır.
 
 Element-wise: identical location相乘──2 Matrix 必須 相同形──
 
-```
-| 1  2 |   | 5  6 |   | 5  12 |
-| 3  4 | * | 7  8 | = | 21 32 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} * \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 5 & 12 \\ 21 & 32 \end{bmatrix}
 ```
 
 Matrix çarpımı:satırlar ve sütunların nokta ürünleri--- iç boyutlar uyumlu olmalıdır---
 
-```
-| 1  2 |   | 5  6 |   | 1*5+2*7  1*6+2*8 |   | 19  22 |
-| 3  4 | @ | 7  8 | = | 3*5+4*7  3*6+4*8 | = | 43  50 |
+```math
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} @ \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\ 3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8 \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
 ```
 
 Farklı çalışmalar, farklı sonuçlar, farklı kurallar.
@@ -319,13 +316,21 @@ Bu yapılandırılan Matrix sınıfı, 3. aşamada, 10. derste mini sinir ağı 
 
 3. **构建一个 two-layer network。**Sadece Matrix sınıfını kullanmak için NumPy kullanmayın), iki katlı sinir ağı oluşturun: giriş (3) -> gizli (4) -> çıkış (2)──初始化随机重量,运行一次前进通过,并验证所有形都正确──
 
+### 提示
+
+**练习 1。**Üç rectangü hesaplama`A @ A.inverse_2x2()`, her elementin birim metronuna karşılaştırılması, hatalar yapılması gerekir.`1e-9`以内── için 0'lu bir sıra, örneğin [[1, 2], [2, 4]],`inverse_2x2`Çıkarım .`ValueError`Bu beklenen sonuç.
+
+**练习 2。**計算 3x3 代数余子式矩阵, 代数余子式矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子矩阵, 代数余子子矩阵, 代数余子子子子子 代数余子矩阵, 代数余子子子 代数余子子 代数 代数余子子子子子 代数 代数 代数 代数 代数`determinant()`❖ Kontrol`A @ A_inv`Birlik birliği elde et, ve her element ile`np.linalg.inv(A)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `1e-9`- Evet.
+
+**练习 3。**√ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √`demo_neural_network_layer`Aynı şekilde,`W1`4x3 için.`W2`2x4──3x1 girişlerinin 4x1 gizli vektör ve 2x1 çıkışlarının elde edilmesi gerekir.
+
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | Vector | “一支箭头” | 有序数字列表。在 AI 中：高维空间中的一个点。 |
 | Matrix | “一张数字表” | 一种 linear transformation。它把 vectors 从一个空间映射到另一个空间。 |
 | Matrix multiply | “就是把数字相乘” | 第一个 Matrix 的每一行与第二个 Matrix 的每一列之间的 dot products。顺序很重要。 |
-| Transpose | “翻转它” | 交换 rows 和 columns。把一个 m x n Matrix 变成 n x m。在 Backpropagation 中很关键。 |
+| Transpose | “翻转它” | 交换 rows 和 columns。把一个 $m \times n$ Matrix 变成 $n \times m$。在 Backpropagation 中很关键。 |
 | Determinant | “来自 Matrix 的某个数字” | 衡量 Matrix 对面积（2D）或体积（3D）的缩放程度。零表示这个 transformation 压扁了一个维度。 |
 | Inverse | “撤销这个 Matrix” | 反转该 transformation 的 Matrix。只有 determinant 不为零时才存在。 |
 | Identity matrix | “无聊的 Matrix” | Matrix 中等价于乘以 1 的对象。用于 residual connections（ResNets）。 |

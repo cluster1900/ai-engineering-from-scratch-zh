@@ -96,7 +96,7 @@ Relative error: 19.2%
 
 Bu, bir kere eksik bir oranla %19 oranında bir yanıltıcı oluştuğundan kaynaklanır.
 
-- kullanmak için büyük ortalama değerli veriler hesaplama:当 E[x] 很大时计算 `E[x^2] - E[x]^2`
+- Büyük ortalama değerli veriler hesaplama:当$\mathbb{E}[x]$Çok büyük bir hesaplama .$\mathbb{E}[x^2] - \mathbb{E}[x]^2$
 - İki oranın neredeyse aynı olan log- olasılıkları
 - 使用过小 epsilon  hesaplama son fark gradientleri
 
@@ -141,20 +141,22 @@ Doğrudan hesaplama`log(sum(exp(x_i)))`Bu çok tehlikeli bir şey.`x_i`Çok büy
 
 Bu numara: önce en büyük değerini azaltmak için bir katı değer aramak.
 
-```
-log(sum(exp(x_i))) = max(x) + log(sum(exp(x_i - max(x))))
+```math
+\log\left(\sum_i \exp(x_i)\right) = \max(x) + \log\left(\sum_i \exp(x_i - \max(x))\right)
 ```
 
 Neden işe yarıyor: Kısaltma`max(x)`后,最大的指数是 `exp(0) = 1`△ Yükseliş gerçekleşmez. △ İsteği ve içindeki en az bir element 1'dir, bu yüzden toplam ve en az 1'dir.`log(1) = 0`                                                                                                                                                                                                                                                              `-inf`- Evet.
 
 证明:
 
-```
-log(sum(exp(x_i)))
-= log(sum(exp(x_i - c + c)))                    (add and subtract c)
-= log(sum(exp(x_i - c) * exp(c)))               (exp(a+b) = exp(a)*exp(b))
-= log(exp(c) * sum(exp(x_i - c)))               (factor out exp(c))
-= c + log(sum(exp(x_i - c)))                    (log(a*b) = log(a) + log(b))
+```math
+\begin{aligned}
+& \log\left(\sum_i \exp(x_i)\right) \\
+&= \log\left(\sum_i \exp(x_i - c + c)\right) && \text{（加上并减去 } c\text{）} \\
+&= \log\left(\sum_i \exp(x_i - c) \cdot \exp(c)\right) && (\exp(a+b) = \exp(a) \cdot \exp(b)) \\
+&= \log\left(\exp(c) \cdot \sum_i \exp(x_i - c)\right) && \text{（提取公因子 } \exp(c)\text{）} \\
+&= c + \log\left(\sum_i \exp(x_i - c)\right) && (\log(a \cdot b) = \log(a) + \log(b))
+\end{aligned}
 ```
 
 Yapmak`c = max(x)`Üst akış ortadan kaldırıldı.
@@ -170,8 +172,8 @@ Bu numara ML'de her yerde görülüyor:
 
 Softmax logitleri 转换为概率:
 
-```
-softmax(x_i) = exp(x_i) / sum(exp(x_j))
+```math
+\mathop{\mathrm{softmax}}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
 ```
 
 Bu numara olmazsa, bu numaralar aşırıya kaçacak.
@@ -242,18 +244,18 @@ Analizsel gradientler (Backepropagation'dan) olabilir.
 
 Merkezi fark 公式:
 
-```
-df/dx ~= (f(x + h) - f(x - h)) / (2h)
+```math
+\frac{df}{dx} \approx \frac{f(x + h) - f(x - h)}{2h}
 ```
 
-Bu O'n'un doğrulaması, ileriye doğru farkı.`(f(x+h) - f(x)) / h`,后者只有 O (h) ⋅
+Bu .$O(h^2)$精度, ileriye doğru farkı $(f(x+h) - f(x)) / h$Sonraki sadece$O(h)$- Evet.
 
-选择 h:太大则近似不准确──太小则 felaketli iptal 会毁掉结果──`h = 1e-5`- Ne ?`1e-7`Çok sık görüyorum.
+选择  Seçim$h$Çok büyük bir yaklaşım. Çok küçük bir felaket.`h = 1e-5`- Ne ?`1e-7`Çok sık görüyorum.
 
 检查方式: hesaplama analitik ve sayısal gradientler arasındaki göreceli farkı。
 
-```
-relative_error = |grad_analytical - grad_numerical| / max(|grad_analytical|, |grad_numerical|, 1e-8)
+```math
+\text{relative\_error} = \frac{\lvert \text{grad}_{\text{analytical}} - \text{grad}_{\text{numerical}} \rvert}{\max(\lvert \text{grad}_{\text{analytical}} \rvert, \lvert \text{grad}_{\text{numerical}} \rvert, 10^{-8})}
 ```
 
 经验规则:
@@ -289,7 +291,7 @@ Yeni bir katman veya Kayıp Fonksiyonu gerçekleştirdiğimizde, gradientleri ko
 5. Net effect: same update, but no underflow
 ```
 
-Dinamik kayıp ölçekleme 会自動调整尺度因子──从一个大值(65536)开始──如果梯度过溢 成 `inf`Eğer N'stepler aşırıya kaçmazsa, onu iki katına çıkar.
+Dinamik kayıp ölçekleme 会自動调整尺度因子──从一个大值(65536)开始──如果梯度过溢 成 `inf`- Evet, evet.$N$步没有过水,就加倍――
 
 ### Bfloat16 vs. Float16: Neden Bfloat16
 
@@ -350,8 +352,8 @@ Layer 50: values in [0, inf]
 
 Normalleşme, her aşamada yeniden yaşama ve yeniden kısaltma etkinleştirmelerinde bulunur:
 
-```
-LayerNorm(x) = (x - mean(x)) / (std(x) + epsilon) * gamma + beta
+```math
+\mathop{\mathrm{LayerNorm}}(x) = \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x) + \epsilon} \cdot \gamma + \beta
 ```
 
 `epsilon`(genellikle 1e-5) tüm etkinliklerde aynı anda öğrenilen parametrelerin ortadan kaldırılmasını önler.`gamma`和 `beta`Ağın ihtiyaç duyduğu herhangi bir ölçekte yeniden kurulabilmesini sağla.
@@ -569,7 +571,7 @@ Bu kararlar 3. aşamada eğitim döngüsünü oluştururken ve 4. aşamada dikka
 
 ## 练习
 
-1. **Catastrophic cancellation。**Flet32 中的天真公式 使用`E[x^2] - E[x]^2`計算 [1000000.0, 1000001.0, 1000002.0] 方差──然后使用威尔福德的在线算法 计算──将误差与真实方差(0.6667) 比較──
+1. **Catastrophic cancellation。**Flet32 中的天真公式 使用$\mathbb{E}[x^2] - \mathbb{E}[x]^2$計算 [1000000.0, 1000001.0, 1000002.0] 方差──然后使用威尔福德的在线算法 计算──将误差与真实方差(0.6667) 比較──
 
 2. **Precision hunt。**Python'da en az doğru float32 değerini bul .`x`- Evet .`1.0 + x == 1.0`Bu makine epsilon.`numpy.finfo(numpy.float32).eps`- Evet.
 
@@ -579,17 +581,29 @@ Bu kararlar 3. aşamada eğitim döngüsünü oluştururken ve 4. aşamada dikka
 
 5. **Loss scaling experiment。**模拟 float16 训练:创建范围在 [1e-9, 1e-3] 内的随机梯度,转换为 float16,并测量有多少比例变成零――然后应用损失规模(乘以 1024),转换为 float16,再规模回,并再次测量零比例――
 
+### 提示
+
+**练习 1。** 在平方之前使用`np.float32`转换 these三个值,然后调用 `variance_naive`和 `welford_variance`◊ float32 $10^{12}$Yakın sayı aralığı 1'den çok büyüktür, bu nedenle beklenen basit sonuç 0.6667'den çok uzak, Welford'un sonucu ise bu değere yakın.
+
+**练习 2。**- Evet .`x = np.float32(1.0)`Başlayın, yeter ki`np.float32(1.0) + x != np.float32(1.0)`Her değerin float32 türünü tutmasına izin ver, sonuncu değer de talep ve sonuç değerini değiştirir.`numpy.finfo(numpy.float32).eps`Benz, sonrakiler için$2^{-23}$- Evet.
+
+**练习 3。**Önceden tahmin her cevap için.$n$个相等的值                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $c$Sonuç olarak .$c + \ln n$                                                                                                                                                                                                                                                              $-1000 + \ln n$... ve ...`logsumexp_naive`Geri dön .`-inf`Çünkü her bir gösterge 0'dan aşağıda.
+
+**练习 4。**- Evet .$y = Wx + b$ve kaybı $L$- Evet .$W$                                                                                                                                                                                                                                                              $x$Bu da bir artış.$W$Çeviri:`numerical_gradient`, iki sonuç verecek .`check_gradient`- Evet.
+
+**练习 5。**Kullan .`10 ** np.random.uniform(-9, -3, n)`Sıfır ölçümlerde örnek değerleri büyüklükte, kullanılmamak`np.float16`转换──Float16 无法保留小于约 $6 \times 10^{-8}$Bu nedenle, tahmin edilen küçülme öncesinin yaklaşık dörtte biri değerinin sıfıra dönüşmesi, 1024'den sonra neredeyse hiçbir değerin sıfıra dönüşmesi görülür.
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | IEEE 754 | “float 标准” | 定义 binary floating point formats、rounding rules 和 special values（inf、nan）的国际标准。每个现代 CPU 和 GPU 都实现了它。 |
-| Machine epsilon | “精度极限” | 在给定 float format 中，使 1.0 + e != 1.0 成立的最小值 e。对于 float32，它约为 1.19e-7。 |
+| Machine epsilon | “精度极限” | 在给定 float format 中，使 $1.0 + e \ne 1.0$ 成立的最小值 $e$。对于 float32，它约为 1.19e-7。 |
 | Catastrophic cancellation | “减法导致的精度损失” | 相减两个几乎相等的 floating point 数时，有效数字相互抵消，rounding noise 主导结果。 |
 | Overflow | “数字太大” | 结果超过最大可表示值并变成 inf。exp(89) 会使 float32 overflow。 |
 | Underflow | “数字太小” | 结果比最小可表示正数还接近零，并变成 0.0。exp(-104) 会使 float32 underflow。 |
-| Log-sum-exp trick | “先减去最大值” | 通过提出 exp(max(x)) 来计算 log(sum(exp(x)))，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
-| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 max(logits)。结果在数值上相同，且不可能 overflow。 |
+| Log-sum-exp trick | “先减去最大值” | 通过提出 $\exp(\max(x))$ 来计算 $\log(\sum \exp(x))$，以防止 overflow 和 underflow。用于 softmax、cross-entropy 和 log-probability math。 |
+| Stable softmax | “不会爆炸的 softmax” | 在 exponentiating 之前减去 $\max(\text{logits})$。结果在数值上相同，且不可能 overflow。 |
 | Gradient checking | “校验你的 Backpropagation” | 将 Backpropagation 得到的 analytical gradients 与 finite differences 得到的 numerical gradients 比较，以捕获实现 bug。 |
 | Mixed precision | “Float16 forward，float32 backward” | 对 speed-critical operations 使用低精度 floats，对 numerically sensitive operations 使用高精度 floats。典型提速为 2-3x。 |
 | Loss scaling | “防止 Gradient underflow” | 在 Backpropagation 前将 Loss 乘以一个大常数，使 gradients 保持在 float16 可表示范围内，然后在 weight updates 前除以同一个常数。 |
@@ -597,7 +611,7 @@ Bu kararlar 3. aşamada eğitim döngüsünü oluştururken ve 4. aşamada dikka
 | Gradient clipping | “限制 Gradient norm” | 缩放 Gradient Vector，使其 norm 不超过阈值。防止 exploding gradients 毁掉 weights。 |
 | NaN | “Not a Number” | 来自未定义操作（0/0、inf-inf、sqrt(-1)）的特殊 float value。会传播到所有后续 arithmetic。 |
 | Inf | “Infinity” | 来自 overflow 或除以零的特殊 float value。可以组合产生 NaN（inf - inf、inf * 0）。 |
-| Numerical gradient | “暴力求导” | 通过计算 f(x+h) 和 f(x-h)，再除以 2h 来近似 derivative。很慢，但用于校验时可靠。 |
+| Numerical gradient | “暴力求导” | 通过计算 $f(x+h)$ 和 $f(x-h)$，再除以 $2h$ 来近似 derivative。很慢，但用于校验时可靠。 |
 
 ## 延伸阅读
 

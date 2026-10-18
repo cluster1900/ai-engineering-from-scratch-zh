@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## Öğrenme hedefi
-- 通过功率代代实现 SVD,并解释 U、Sigma 和 V^T 的几何含义
+- 通过功率反复实现 SVD,并解释 $U$- Evet.$\Sigma$和 $V^T$                                                                                                                                                                                                                                                              
 -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 - SVD üzerinden Moore-Penrose sahte karşıtlığı hesaplamak, en az kareyi çözmek için
 - SVD'yi PCA'yla 推系统 (latent faktörler) ve NLP'deki latent semantik analiz ile bağlayın
@@ -23,17 +23,14 @@ SVD herhangi bir Matris için uygundur. İstediği şekil, istediği sıra, iste
 
 Her matris, şekli ne olursa olsun, üç işlemleri sırayla gerçekleştirecektir: dönmek, kısaltmak, dönmek.
 
-```
-A = U * Sigma * V^T
-
-      m x n     m x m    m x n    n x n
-     (任意)    (旋转)   (缩放)   (旋转)
+```math
+\underset{\substack{m \times n \\ \text{（任意形状）}}}{A} = \underset{\substack{m \times m \\ \text{（旋转）}}}{U} \cdot \underset{\substack{m \times n \\ \text{（缩放）}}}{\Sigma} \cdot \underset{\substack{n \times n \\ \text{（旋转）}}}{V^T}
 ```
 
-给定任意 Matrix A,SVD'yi aşağıdaki bölüme ayırır:
-- V^T 旋转输入空间(n 维) içindeki vektör
-- Sigma  boyunca her bir akselde kısaltma (la伸或压缩)
-- Sonuçlar dışarı çıkış alanına döner.
+给定任意 matrix $A$,SVD'nin aşağıdaki kısımlara ayrılması:
+- $V^T$旋转输入空间($n$维) içindeki vektör
+- $\Sigma$                                                                                                                                                                                                                                                              
+- $U$Sonuçlar dışarı çıkış alanına döner.$m$维)
 
 ```mermaid
 graph LR
@@ -41,35 +38,35 @@ graph LR
     B -->|"U\n(旋转)"| C["输出空间 (m-dim)\n旋转到输出\n方向"]
 ```
 
-Bu şekilde anlayabilirsiniz. SVD'ye bir Matrix'i veriyorsunuz. Size şöyle anlatır: Bu Matrix önce V^T ile bir top içine döner, sonra Sigma ile bir top haline çıkarır, son olarak bu top için U'yla döner.
+Bunu anlayabiliriz. Bir Matrix'i SVD'ye verirseniz, size söyler:$V^T$旋转输入球体, sonra kullan $\Sigma$Toplara uzanır, son kullanım.$U$Bu topun uzunluğu bu topun her bir aksanının uzunluğudur.
 
 ### Tam bir parçalanma
 
-对于形为 m x n 的 Matrix A:
+对于形为 $m \times n$Matrix'in$A$- ...
 
+```math
+\begin{aligned}
+& A = U \cdot \Sigma \cdot V^T \\[6pt]
+& \text{其中：} \\
+& \quad U \text{ 为 } m \times m, \text{，正交 } (U^T U = I) \\
+& \quad \Sigma \text{ 为 } m \times n, \text{，对角矩阵（对角线为奇异值）} \\
+& \quad V \text{ 为 } n \times n, \text{，正交 } (V^T V = I) \\[6pt]
+& \text{奇异值 } \sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0 \\
+& \text{其中 } r = \mathop{\mathrm{rank}}(A)
+\end{aligned}
 ```
-A = U * Sigma * V^T
 
-其中：
-  U     是 m x m，正交 (U^T U = I)
-  Sigma 是 m x n，对角（奇异值位于对角线上）
-  V     是 n x n，正交 (V^T V = I)
-
-奇异值 sigma_1 >= sigma_2 >= ... >= sigma_r > 0
-其中 r = rank(A)
-```
-
-U'nun sıraları sol tuhaf vektör olarak adlandırılır. V'nin sıraları sağ tuhaf vektör olarak adlandırılır. Sigma'nın karşı yönlü elementleri tuhaf değerler olarak adlandırılır.
+$U$Çizgi Çizgi Vektör olarak adlandırılır.$V$Çizgi vektör olarak adlandırılır.$\Sigma$Bu elementlerin karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı
 
 ### Sol tekerlek vektörleri, tekerlek değerleri, sağ tekerlek vektörleri
 
 SVD'nin her bir parçası farklı anlamlara sahiptir.
 
-**Right singular vectors（V 的列）：**它们为输入空间 (R^n) 构成一组ortho-normal basis――它们是输入空间中的方向,矩阵将这些方向映射到输出空间中的正交方向――它们可以看作域的自然坐标系――
+**Right singular vectors（$V$ 的列）：**Onlar için yerin içine girmek$\mathbb{R}^n$) bir grup ortonomal temel oluşturur. Bunlar giriş uzayındaki yönlerdir. Matriks bu yönleri çıkış alanındaki doğru yönlere yerleştirir.
 
-**Singular values（Sigma 的对角线）：**它们是缩放因子──第一个 奇异值告诉你,Matrix 沿第一个 右 奇异Vector 方向将向向拉伸多少──奇异值为零
+**Singular values（$\Sigma$ 的对角线）：**它们是缩放因子──第一个 奇异值告诉你,Matrix 沿第一个 右 奇异Vector 方向将向向拉伸多少──奇异值为零
 
-**Left singular vectors（U 的列）：**它们为输出空间(R^m) oluşturur bir grup ortonomik tabanlı¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+**Left singular vectors（$U$ 的列）：**Onlar için dışarı çıkış alanı$\mathbb{R}^m$) bir grup ortonomik temel oluşturur.
 
 Arasındaki ilişki:
 
@@ -95,20 +92,20 @@ A = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T + ... + sigma_r * u_r * v_r^T
 
 Bu biçim düşük sıra yaklaşımının temelidir. Her bir yapı bir kat katlanır. Birinci, en önemli tek bir biçimi ele alır.
 
-```
-Rank-1 approx:    A_1 = sigma_1 * u_1 * v_1^T
-                  (捕获主导模式)
-
-Rank-2 approx:    A_2 = sigma_1 * u_1 * v_1^T + sigma_2 * u_2 * v_2^T
-                  (捕获两个最重要的模式)
-
-Rank-k approx:    A_k = top k 项之和
-                  (根据 Eckart-Young theorem，这是最优的)
+```math
+\begin{aligned}
+\text{秩 1 近似：} \quad & A_1 = \sigma_1 u_1 v_1^T \\
+& \text{（捕捉主导模式）} \\[6pt]
+\text{秩 2 近似：} \quad & A_2 = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T \\
+& \text{（捕捉最重要的两个模式）} \\[6pt]
+\text{秩 }k\text{ 近似：} \quad & A_k = \text{前 } k \text{ 项之和} \\
+& \text{（由 Eckart-Young 定理可知最优）}
+\end{aligned}
 ```
 
 ### Kendi bileşimi ile ilişki
 
-SVD ve özde kompozisyonunun derin bir bağlantısı vardır. A'nın garip değerleri ve garip vektörleri doğrudan A^T A ve A^T'nin öz değerleriyle öz vektörlerle bağlantılıdır.
+SVD ve kendi bileşimi çok derin bir bağlantı vardır.$A$Çekil değer ve çekil vektör doğrudan geliyor.$A^T A$和 $A A^T$Kendi değerleri ve kendi vektörleri
 
 ```
 A^T A = V * Sigma^T * U^T * U * Sigma * V^T
@@ -132,41 +129,41 @@ A A^T = U * Sigma * V^T * V * Sigma^T * U^T
 
 Bu bağlantı size üç şey anlatıyor:
 1. 奇异值总是实数且非负 (bu, pozitif yarım belirlenmiş matrisin öz değerlerinin kare köküdür) 
-2. A^T A'ya göre kendi bileşimi yaparak SVD'yi hesaplayabilirsiniz, ancak bu karelerinin sayısal değeri kesinliği de kaybedilecektir.
-3. Bir ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A = ∈ A
+2. Sen de geçebilirsin.$A^T A$SVD'yi hesaplamak için kendi bileşimi yapın, ancak bu karelerinin şartlı sayı sayısı ve sayısal doğruluk kaybı olacaktır.
+3. - Evet .$A$Eğer simetrik pozitif yarı belirlenmiş ise, SVD ve kendi bileşimi aynı şeydir.
 
 ### Kısalmış SVD: düşük seviye yakınlaması
 
-Eckart-Young-Mirsky teoremi  gösterir, A'nın en iyi sıra-k yakın benzerliği (((Frobenius norm ve spektral norm altında) sadece üst k 个奇异值 ve ona karşı vektör 得到通过:
+Eckart-Young-Mirsky teoremi gösterir,$A$En iyi$\text{rank-}k$Yakınlıkta, Frobenius normuna ve spektral normuna göre, sadece üstü üzerinde kalmak için geçerli.$k$个奇异值 ve对应 vektörü 得到:
 
+```math
+\begin{aligned}
+& A_k = U_k \cdot \Sigma_k \cdot V_k^T \\[6pt]
+& \text{其中：} \\
+& \quad U_k \text{ 为 } m \times k \quad \text{（前 } k \text{ 列，来自 } U\text{）} \\
+& \quad \Sigma_k \text{ 为 } k \times k \quad \text{（左上角 } k \times k \text{ 子块，来自 } \Sigma\text{）} \\
+& \quad V_k \text{ 为 } n \times k \quad \text{（前 } k \text{ 列，来自 } V\text{）} \\[6pt]
+& \text{近似误差} = \sigma_{k+1} \quad \text{（谱范数下）} \\
+& \text{近似误差} = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_r^2} \quad \text{（Frobenius 范数下）}
+\end{aligned}
 ```
-A_k = U_k * Sigma_k * V_k^T
 
-其中：
-  U_k     是 m x k  (U 的前 k 列)
-  Sigma_k 是 k x k  (Sigma 的左上 k x k 块)
-  V_k     是 n x k  (V 的前 k 列)
-
-近似误差 = sigma_{k+1}  (在 spectral norm 下)
-         = sqrt(sigma_{k+1}^2 + ... + sigma_r^2)  (在 Frobenius norm 下)
-```
-
-Bu sadece  iyi  yakınlık değil. Bu  yakınlıkların en iyi rütbesidir.
+Bu sadece iyi bir yaklaşım değil. Bu kanıtlanabilir en iyi sıralama.$k$Yakınlık yok.$\text{rank-}k$Matrix daha yakındır.$A$- Evet.
 
 | Component | Relative magnitude | Kept in rank-3 approx? |
 |-----------|-------------------|------------------------|
-| sigma_1 | 最大 | 是 |
-| sigma_2 | 大 | 是 |
-| sigma_3 | 中等偏大 | 是 |
-| sigma_4 | 中等 | 否（误差） |
-| sigma_5 | 中等偏小 | 否（误差） |
-| sigma_6 | 小 | 否（误差） |
-| sigma_7 | 很小 | 否（误差） |
-| sigma_8 | 极小 | 否（误差） |
+| $\sigma_1$ | 最大 | 是 |
+| $\sigma_2$ | 大 | 是 |
+| $\sigma_3$ | 中等偏大 | 是 |
+| $\sigma_4$ | 中等 | 否（误差） |
+| $\sigma_5$ | 中等偏小 | 否（误差） |
+| $\sigma_6$ | 小 | 否（误差） |
+| $\sigma_7$ | 很小 | 否（误差） |
+| $\sigma_8$ | 极小 | 否（误差） |
 
-保留 top 3:A_3 捕获三个最大的奇异值──误差 = 余值(sigma_4 到 sigma_8)。
+Top 3'ü tut.$A_3$捕获三个最大的奇异值──误差 = 剩余值($\sigma_4$- Ne ?$\sigma_8$)。
 
-Eğer bu değerlerin eksikliği çok hızlı olursa, çok küçük bir k, Matrix'in büyük kısmını ele alabilir.
+Eğer garip bir değer hızla azalırsa, çok küçük bir değer.$k$Eğer bu matrisin yavaş yavaş azalması olursa, bu matrisin düşük bir yapısı yoktur.
 
 ### SVD kullanılarak görüntü sıkıştırma
 
@@ -208,9 +205,9 @@ Netflix Ödülü 让这一点广为人知──你有一个用户电影评分矩
 核心思想:这个评分 矩阵 具有低级别──用户的品味不是完全独立──有少数隐藏因素──动作对剧情、旧对新、理性对感官) 可以解释大多数偏好──
 
 Matrix SVD'yi yaparken, aşağıdaki bölüme ayrılır:
-- U:latent factor space 中的用户个人资料
-- Sigma: Her gizli faktörün önemi
-- V^T:latent faktor alanı 中的电影资料
+- $U$:latent factor space 中的用户个人资料
+- $\Sigma$: Her gizli faktörün önemi
+- $V^T$:latent factor space 中的电影个体 中的电影个体
 
 Kullanıcı bir film için bir kullanıcı profilinin bir film profilinin bir nokta ürünü ile bir kullanıcı profilinin bir kısmı olarak değerlendirilmiştir.
 
@@ -250,23 +247,23 @@ Gürültülü veriler genellikle sinyalleri en yüksek garip değerlere odaklark
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 接近零 | 可忽略 |
-| sigma_5 | 接近零 | 可忽略 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 接近零 | 可忽略 |
+| $\sigma_5$ | 接近零 | 可忽略 |
 
 **有噪声信号的奇异值（噪声会加到所有分量上）：**
 
 | Component | Magnitude | Type |
 |-----------|-----------|------|
-| sigma_1 | 非常大 | 信号 |
-| sigma_2 | 大 | 信号 |
-| sigma_3 | 中等 | 信号 |
-| sigma_4 | 小 | 噪声 |
-| sigma_5 | 小 | 噪声 |
-| sigma_6 | 小 | 噪声 |
-| sigma_7 | 小 | 噪声 |
+| $\sigma_1$ | 非常大 | 信号 |
+| $\sigma_2$ | 大 | 信号 |
+| $\sigma_3$ | 中等 | 信号 |
+| $\sigma_4$ | 小 | 噪声 |
+| $\sigma_5$ | 小 | 噪声 |
+| $\sigma_6$ | 小 | 噪声 |
+| $\sigma_7$ | 小 | 噪声 |
 
 ```mermaid
 graph TD
@@ -280,7 +277,7 @@ Bu, sinyal işleme, bilimsel ölçüm ve veri temizliği için kullanılır. Her
 
 ### SVD yoluyla sahte tersleşme
 
-Moore-Penrose pseudoinverse A+ Matrix inversiyonunu 非方阵和奇异 Matrix olarak 推广します。SVD 計算ı çok basit hale getirir。
+Moore-Penrose sahte tersine$A^+$Matrix inversiyonunu                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
 ```
 如果 A = U * Sigma * V^T，那么：
@@ -296,7 +293,7 @@ A+ = V * Sigma+ * U^T
 对于 Sigma (m x n)：  Sigma+ 是 (n x m)
 ```
 
-Pseudoinverse en az kareyi isteyebilirsiniz 问题── eğer Ax = b 没有精确解(超定系统),then x = A + b 就是最小的平方 解(最小化的Ax - b 时时时) ‖
+Pseudoinverse en az kare çözülmesi için sorulabilir 问题──如果$Ax = b$没有精确解(超定系统), o zaman $x = A^+ b$İşte en az kare 解(minimize $\lVert Ax - b \rVert$)。
 
 ```
 超定系统（方程数多于未知数）：
@@ -314,7 +311,7 @@ Pseudoinverse en az kareyi isteyebilirsiniz 问题── eğer Ax = b 没有精�
 
 ### Sayısal istikrar 优势
 
-計算 A^T A'nın özde kompozisyon 会平方奇异值(A^T A'nın öz değerleri sigma_i^2)。
+计算 $A^T A$Kendi bileşimi 会平方奇异值($A^T A$Kendi değerleri $\sigma_i^2$)― Bu, karelerinin sayısal değer hatalarını arttırır.
 
 ```
 示例：
@@ -329,7 +326,7 @@ Pseudoinverse en az kareyi isteyebilirsiniz 问题── eğer Ax = b 没有精�
                    （额外损失 6 位精度）
 ```
 
-现代 SVD 算法(Golub-Kahan iki teşhis) doğrudan A 上工作,从不构建 A^T A──`np.linalg.svd(A)`- Hayır .`np.linalg.eig(A.T @ A)`- Evet.
+现代 SVD 算法(Golub-Kahan ikili teşhis) doğrudan $A$上工作,从不构造 $A^T A$Bu yüzden her zaman öncelik vermen gerekir.`np.linalg.svd(A)`- Hayır .`np.linalg.eig(A.T @ A)`- Evet.
 
 ### PCA'ya bağlantı
 
@@ -365,7 +362,7 @@ svd-rank-reconstruction
 ## Yapın onu.
 ### 步骤 1: Güç İterasyonu kullanarak sıfırdan SVD
 
-Düşünce: en büyük garip değer ve vektörünü bulmak için A^T A( veya A^T) güç iterasyonunu kullanabiliriz.
+Düşünce: En büyük garip değer ve vektörünü bulmak için,$A^T A$(Yada $A A^T$) güç iterasyonu kullanmak. Sonra Matrix deflasyon yapmak,并重复寻找下一个奇异值──
 
 ```python
 import numpy as np
@@ -507,7 +504,7 @@ Bu ders:
 - `outputs/skill-svd.md`- SVD'yi gerçek projelerde nasıl uygulayacağımızı anlamaya yönelik bir beceri
 
 ## 练习
-1. Tam bir SVD'yi gerçekleştirmek için güç iterasyonunu kullanmayın.
+1. Değişik bir SVD uygulaması, güç iterasyonunu kullanmıyor.$A^T A$Kendi bileşimi elde etmek için $V$Ve sonra hesaplayın.$U = A V \Sigma^{-1}$△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ 
 
 2. Üzerine bir görüntü yükle. Ya da bir görüntüyi griyeğe dönüştür.
 
@@ -515,22 +512,34 @@ Bu ders:
 
 4.  100x50'lik bir belge-term Matrix oluşturun, 3 合成 temayı içerir. Her temada 5 关联词项──添加噪声──应用 SVD,并验证 top 3 个奇异值明显大于其余奇异值──文档投影到3D潜伏空间,并检查来自同一主题的文档是否聚集在一起──
 
-5. 生成一个干净的低级矩阵 (rango 3,大小 50x40),并不同水平下添加高斯噪音 (sigma = 0,1、0.5、1.0、2.0) ◦ Her bir gürültü seviyesine, k=1'den 40'e kadar tarama yaparak ve temiz matrisin yeniden yapılandırma hatalarına göre ölçerek, en iyi kesim seviyesini bulur.
+5. 生成一个干净的低级矩阵(ranking 3,大小 50x40), ve farklı seviyelerde aşağı Gaussian gürültü ekle$\sigma$= 0.1、0.5、1.0、2.0) 〜 her gürültü seviyesine, geçişi$k$=1-40 扫描并测量对干净矩阵的重建错误,找到最优截断排列──绘画最优$k$ nasıl ses seviyesi değişir?
+
+### 提示
+
+**练习 1。**计算 $A^T A$, `np.linalg.eigh` get its characteristic value and characteristic vector,并按特征值降序列──奇异值是特征值的平方根;检查 $U \Sigma V^T$能重构 $A$,并将差与 `svd_from_scratch`和 `np.linalg.svd`Ben de.
+
+**练习 2。**Her bir rütbeye göre`truncated_svd`, `reconstruct`Şekil çekimleri, kullan `compression_ratio(m, n, k)`計算大小── göreceli hatalar                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
+**练习 3。**标记缺失单元格, 填充,再使用 `truncated_svd`和 `reconstruct`重构级 3 近似──随后测量结果:统计超出评分范围的预测数,并印已知单元格中最大变化──级 3 近似不保证这两性质,因此如果需要合法评分,应把预测剪切到评分范围──
+
+**练习 4。**Her bir konu için 5 kelime bileşeninin bölümü dağıtılır, bu kelime üzerinde daha yüksek bir sayı bulunan, tekrar az miktarda gürültü eklenir.
+
+**练习 5。**Bir 50x3 ırkın ve bir 3x40 ırkın çarpı olarak, net bir ırkın elde edin, her birine yeniden yönlendirin.$\sigma$加入噪声──对每个 $k$, oranı karşılaştır$k$Ağırlık ve temizlik; düşük gürültü beklenir$k$Yaklaşık üç, yüksek ses daha küçük.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| SVD | “Factor 任意 Matrix” | 将 A 分解为 U Sigma V^T，其中 U 和 V 是正交的，Sigma 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
-| Singular value | “这个 component 有多重要” | Sigma 的第 i 个对角元素。衡量 Matrix 沿第 i 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
-| Left singular vector | “输出方向” | U 的一列。第 i 个右奇异Vector 经过 sigma_i 缩放后映射到的输出空间方向。 |
-| Right singular vector | “输入方向” | V 的一列。输入空间中的一个方向，Matrix 会将其映射到第 i 个左奇异Vector（经过 sigma_i 缩放后）。 |
-| Truncated SVD | “Low-rank approximation” | 只保留 top k 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 rank-k 近似（Eckart-Young theorem）。 |
+| SVD | “Factor 任意 Matrix” | 将 $A$ 分解为 $U \Sigma V^T$，其中 $U$ 和 $V$ 是正交的，$\Sigma$ 是具有非负元素的对角 Matrix。适用于任意形状的任意 Matrix。 |
+| Singular value | “这个 component 有多重要” | $\Sigma$ 的第 $i$ 个对角元素。衡量 Matrix 沿第 $i$ 个 principal direction 拉伸的程度。总是非负，并按降序排列。 |
+| Left singular vector | “输出方向” | $U$ 的一列。第 $i$ 个右奇异Vector 经过 $\sigma_i$ 缩放后映射到的输出空间方向。 |
+| Right singular vector | “输入方向” | $V$ 的一列。输入空间中的一个方向，Matrix 会将其映射到第 $i$ 个左奇异Vector（经过 $\sigma_i$ 缩放后）。 |
+| Truncated SVD | “Low-rank approximation” | 只保留 top $k$ 个奇异值及其 Vector。生成原始 Matrix 的可证明最佳 $\text{rank-}k$ 近似（Eckart-Young theorem）。 |
 | Rank | “真实维度” | 非零奇异值的数量。告诉你 Matrix 实际使用了多少个独立方向。 |
-| Pseudoinverse | “广义逆” | V Sigma+ U^T。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
-| Condition number | “对误差有多敏感” | sigma_max / sigma_min。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
+| Pseudoinverse | “广义逆” | $V \Sigma^+ U^T$。对非零奇异值取倒数，零保持为零。为非方阵或奇异 Matrix 求解 least-squares 问题。 |
+| Condition number | “对误差有多敏感” | $\sigma_{\max} / \sigma_{\min}$。大的 condition number 意味着很小的输入变化会造成很大的输出变化。SVD 直接揭示这一点。 |
 | Latent factor | “隐藏变量” | SVD 发现的 low-rank space 中的一个维度。在推荐中，latent factor 可能对应类型偏好。在 NLP 中，它可能对应一个主题。 |
 | Frobenius norm | “Matrix 的总大小” | 所有元素平方和的平方根。等于所有奇异值平方和的平方根。用于衡量近似误差。 |
-| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank k，truncated SVD 会在所有可能的 rank-k Matrix 中最小化近似误差。 |
+| Eckart-Young theorem | “SVD 给出最佳压缩” | 对任意目标 rank $k$，truncated SVD 会在所有可能的 $\text{rank-}k$ Matrix 中最小化近似误差。 |
 | Power iteration | “找到最大的 eigenvector” | 反复用 Matrix 乘以一个随机 Vector 并归一化。会收敛到具有最大 eigenvalue 的 eigenvector。它是许多 SVD 算法的构建模块。 |
 
 ## 延伸阅读

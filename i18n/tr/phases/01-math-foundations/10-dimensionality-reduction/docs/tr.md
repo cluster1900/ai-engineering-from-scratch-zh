@@ -38,9 +38,9 @@ Dimension    Avg distance ratio (max/min between random points)
 1000         ~1.02
 ```
 
-**体积集中在角落。**D 维 birim hiperkubu 2 个角. 100 维中, neredeyse tüm 积积都在角落里,远离中心.
+**体积集中在角落。** $d$维 birim hiper küp var $2^d$个角──100 维中, neredeyse tüm 体积都在角落里,远离中心──Data points will spread to the edge, while your models in the internal region will lack data──
 
-**你需要指数级更多的数据。**Bir uzayda aynı örnek yoğunluğunu korumak için, 2D'den 20D'ye kadar 10^18 kat fazla veriye ihtiyacınız var demektir.
+**你需要指数级更多的数据。**Bir uzayda aynı örnek yoğunluğunu korumak için, 2D'den 20D'ye kadar, ihtiyacın olduğu anlamına gelir.$10^{18}$倍的数据――永远不会有足够的数据―― 减量将数据密度带回可处理范围――
 
 ### PCA: önemli yönleri bul
 
@@ -88,7 +88,7 @@ Toplam açıklanan varyasyon 0.95'e ulaştığında, bu bileşenlerin %95'i ald�
 
 1. **Threshold.**90-95%'lik farklılığı açıklamak için yeterli miktarda bileşen tutmak.
 2. **Elbow method.**図に各要素の説明された変異を図にします── 図に各要素の説明された変異を図にします── 図に各要素の説明された変異を図にします── 図に各要素の説明された変異を図にします── 図に各要素の説明された変異を図にします── 図に各要素の説明された変異を図にします── 図に各要素の説明された変異を図に描く── 図に各要素の説明された変異を図に描く── 図に示す 図に示す 図に示す 図に示す 図に示す 図に示す 図に示す 図を図に示す 図に示す 図に示す 図に示す 図に示す 図に示す 図を図に示す 図に示す 図に示す 図に示す 図に示す 図に示す 図を図に示す 図に示す 図に示す 図に示す 図に示す 図に示す 図を図に示する
-3. **Downstream performance.**PCA'yı önceden işleme yapımı için kullanmak.
+3. **Downstream performance.**PCA'yı önceden işleme için kullanmak.$k$,并测量 modelinin doğruluğu──最佳 $k$进入平台期的位置──
 
 ### t-SNE: mahalleleri korumak
 
@@ -101,7 +101,7 @@ t-SNE'nin anahtar özellikleri:
 - Stochastic¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
 - Kafası karışıklık 参数控制考虑多少邻居 (tipiği: 5-50)
 - 输出中 clusters  arasındaki mesafe anlamsızdır. Sadece clusters özde anlamlıdır.
-- Büyük veri kümelerinde ise çok yavaş.
+- Büyük veri kümelerinde çok yavaş.$O(n^2)$- Evet.
 
 ### UMAP: Daha hızlı ve daha iyi küresel yapı
 
@@ -135,27 +135,27 @@ UMAP, yüksek boyutlu bir uzayda ağırlıklı bir grafik oluşturur, sonra dü�
 Kernel PCA, kernel fonksiyonu tarafından  yönlendirilmiş yüksek seviye özellik alanında PCA'yı uyguluyor, açıkça bu alanın koordinatlarını hesaplamıyor.
 
 算法:
-1. 计算 çekirdek matrisi K, K_ij = k(x_i, x_j)
+1. 计算 çekirdek matrisi $K$, içinden $K_{ij} = k(x_i, x_j)$
 2. Özellik alanında Orta çekirdek matrisi
 3. Kendini merkezi çekirdek matrisine yaparak
-4. 顶部 eigenvectors(按1/sqrt(eigenvalue) 缩放)就是投影
+4. 顶部 öz vektörleri$1/\sqrt{\text{eigenvalue}}$缩放) = projeler
 
 常见 çekirdek fonksiyonları:
 
 | Kernel | Formula | Good for |
 |--------|---------|----------|
-| RBF (Gaussian) | exp(-gamma * \|\|x - y\|\|^2) | 大多数 nonlinear data、smooth manifolds |
-| Polynomial | (x . y + c)^d | Polynomial relationships |
-| Sigmoid | tanh(alpha * x . y + c) | Neural network-like mappings |
+| RBF (Gaussian) | $\exp(-\gamma \lVert x - y \rVert^2)$ | 大多数 nonlinear data、smooth manifolds |
+| Polynomial | $(x \cdot y + c)^d$ | Polynomial relationships |
+| Sigmoid | $\tanh(\alpha x \cdot y + c)$ | Neural network-like mappings |
 
 Normal PCA değil, çekirdek PCA kullanıyor:
 
 | Criterion | Standard PCA | Kernel PCA |
 |-----------|-------------|------------|
 | Data structure | Linear subspace | Nonlinear manifold |
-| Speed | O(min(n^2 d, d^2 n)) | O(n^2 d + n^3) |
+| Speed | $O(\min(n^2 d, d^2 n))$ | $O(n^2 d + n^3)$ |
 | Interpretability | Components are linear combinations of features | Components lack direct feature interpretation |
-| Scalability | Works on millions of samples | Kernel matrix is n x n, memory-limited |
+| Scalability | Works on millions of samples | Kernel matrix is $n \times n$, memory-limited |
 | Reconstruction | Direct inverse transform | Requires pre-image approximation |
 
 Klasik örnek: 2D'deki konsentrik döngüler: bir döngü diğer döngünün içinde iki döngü vardır. Standart PCA, iki döngüyü aynı çizgiye doğru yansıtır. Bu sınıflandırmaya gerek yoktur.
@@ -165,22 +165,24 @@ Klasik örnek: 2D'deki konsentrik döngüler: bir döngü diğer döngünün iç
 784'i 50'e kadar daraltmışsın. Ne kaybettin?
 
 测量 yeniden yapılandırma hatası:
-1. K 维: X_reduced = X @ W_k
-2. 重建: X_hat = X_reduced @ W_k^T
-3. 计算 MSE:mean((X - X_hat) ^2)
+1. Verileri görüntüleyeceğim .$k$维:$X_{\text{reduced}} = X W_k$
+2. Şımarık:$\hat{X} = X_{\text{reduced}} W_k^T$
+3. 计算 MSE:$\text{mean}((X - \hat{X})^2)$
 
 PCA için, yeniden yapılama hatası açıklanan değişim ile açık bir ilişki vardır:
 
-```
-Reconstruction error = sum of eigenvalues NOT included
-Total variance = sum of ALL eigenvalues
-Fraction lost = (sum of dropped eigenvalues) / (sum of all eigenvalues)
+```math
+\begin{aligned}
+\text{重建误差} &= \text{未保留的特征值之和} \\
+\text{总方差} &= \text{全部特征值之和} \\
+\text{损失比例} &= \frac{\text{丢弃的特征值之和}}{\text{全部特征值之和}}
+\end{aligned}
 ```
 
 Her bileşenin açıklanan varyansa oranı:
 
-```
-explained_ratio_k = eigenvalue_k / sum(all eigenvalues)
+```math
+\text{explained\_ratio}_k = \frac{\text{eigenvalue}_k}{\sum \text{所有特征值}}
 ```
 
 Toplam açıklanmış varyasyonu, bileşenlerin sayısal çizimleri, "koluk" eğri elde edilir.
@@ -188,7 +190,7 @@ Toplam açıklanmış varyasyonu, bileşenlerin sayısal çizimleri, "koluk" eğ
 - Toplam değişkenlik  跨越你的门的位置(通常是0.90或0.95)
 - Aşağıdaki görev performansı 进入平台期的位置
 
-Yeniden inşaat hatası sadece seçmek için kullanılmaz. Onu anomali tespit için kullanabilirsiniz: Yeniden inşaat hatası Yüksek örnekler dış seviyedir, öğrenilen alt alanlara uymayanlardır.
+Yeniden yapılandırma hatası sadece seçmek için kullanılır$k$ Anomalyayı tespit etmek için kullanabilirsiniz: yeniden yapılandırma hatası. Yüksek örnekler dış seviyedir, öğrenilen alt alanlara uymayanlar.
 
 
 ```figure
@@ -354,6 +356,14 @@ Bu ders:
 
 3. 50 özellikli bir veri kümesi var ama sadece 5 bilgi özellikli bir veri kümesi kullanılır.`sklearn.datasets.make_classification`生成) ・ PCA uygulaması,并检查 açıklayan varyansa eğri
 
+### 提示
+
+**练习 1。**Okuyucu`PCA`类中 `inverse_transform`, ve her ana bileşen sayısına ayrı ayrı bir model uygulanır.`reconstruction_error`; Ana bileşen sayısı arttıkça hata oranı azalmalıdır.
+
+**练习 2。**Aynı veri kümesine göre.`sklearn.manifold.TSNE`Üç kez, sadece değişim.`perplexity`, aynı kalır .`random_state`❖ Daha düşük sıkıntılılık sadece az sayıda komşuya bakarak daha küçük ve yoğun gruplar oluşturuyor; daha yüksek sıkıntılılık daha fazla komşuya bakarak daha büyük ve daha düz gruplar oluşturuyor.
+
+**练习 3。**调用 `make_classification(n_features=50, n_informative=5, n_redundant=45)`,拟合 `PCA`,并印累计解释方差──冗余特征是有效特征的线性组合,因此曲线在5主要成分处就接近1.0──然后尝试 `n_redundant=0`: Geri kalan 45 özellik bağımsız gürültüdür, eğri düz olmayacaktır.
+
 ## Anahtar Terimler
 
 | Term | What people say | What it actually means |
@@ -361,8 +371,8 @@ Bu ders:
 | Curse of dimensionality | "Too many features" | 随着维度增长，距离、体积和数据密度都会表现得反直觉。Models 需要指数级更多的数据来补偿。 |
 | PCA | "Reduce dimensions" | 旋转你的坐标系，使各轴与 maximum variance 的方向对齐，然后丢弃 low-variance axes。 |
 | Principal component | "An important direction" | Covariance matrix 的一个 eigenvector。Feature space 中数据变化最大的方向。 |
-| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 k 个 ratios 求和，就能看到 k 个 components 保留了多少信息。 |
-| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry (i,j) 衡量 feature i 和 feature j 如何共同变化。Diagonal entries 是各自的 variances。 |
+| Explained variance ratio | "How much info this component has" | 一个 principal component 捕获的 total variance 比例。对前 $k$ 个 ratios 求和，就能看到 $k$ 个 components 保留了多少信息。 |
+| Covariance matrix | "How features correlate" | 一个 symmetric matrix，其中 entry $(i,j)$ 衡量 feature $i$ 和 feature $j$ 如何共同变化。Diagonal entries 是各自的 variances。 |
 | t-SNE | "That cluster plot" | 一种 nonlinear 方法，通过保留 pairwise neighborhood probabilities 将高维数据映射到 2D。适合可视化，不适合 preprocessing。 |
 | UMAP | "Faster t-SNE" | 一种基于 topological data analysis 的 nonlinear 方法。既保留 local structure，也保留部分 global structure。比 t-SNE 更容易扩展。 |
 | Perplexity | "A t-SNE knob" | 控制每个点考虑的有效邻居数量。低 perplexity 聚焦非常 local 的结构。高 perplexity 捕获更宽泛的模式。 |

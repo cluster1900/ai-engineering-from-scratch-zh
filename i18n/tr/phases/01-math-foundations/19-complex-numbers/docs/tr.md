@@ -42,40 +42,42 @@ where:
 
 **加法。**Gerçek bir şey, gerçek bir şey.
 
+```math
+\begin{aligned}
+(a + bi) + (c + di) &= (a + c) + (b + d)i \\[4pt]
+\text{示例：} (3 + 2i) + (1 + 4i) &= 4 + 6i
+\end{aligned}
 ```
-(a + bi) + (c + di) = (a + c) + (b + d)i
 
-Example: (3 + 2i) + (1 + 4i) = 4 + 6i
-```
+**乘法。**Uygulama kuralları,并记住 $i^2 = -1$- Evet.
 
-**乘法。**Uygulama kuralını kullan,并记住 i^2 = -1──
-
-```
-(a + bi)(c + di) = ac + adi + bci + bdi^2
-                 = ac + adi + bci - bd
-                 = (ac - bd) + (ad + bc)i
-
-Example: (3 + 2i)(1 + 4i) = 3 + 12i + 2i + 8i^2
-                            = 3 + 14i - 8
-                            = -5 + 14i
+```math
+\begin{aligned}
+(a + bi)(c + di) &= ac + adi + bci + bdi^2 \\
+&= ac + adi + bci - bd \\
+&= (ac - bd) + (ad + bc)i \\[8pt]
+\text{示例：} (3 + 2i)(1 + 4i) &= 3 + 12i + 2i + 8i^2 \\
+&= 3 + 14i - 8 \\
+&= -5 + 14i
+\end{aligned}
 ```
 
 **共轭。**翻转虚部的符号──
 
-```
-conjugate of (a + bi) = a - bi
+```math
+(a + bi)\text{ 的共轭} = a - bi
 ```
 
 Bir katı ve onun ortaklığındaki katı toplamı gerçek sayıdır:
 
-```
+```math
 (a + bi)(a - bi) = a^2 + b^2
 ```
 
 **除法。**分子 ve分母 aynı zamanda 分母'nin toplamını çarpıyor.
 
-```
-(a + bi) / (c + di) = (a + bi)(c - di) / (c^2 + d^2)
+```math
+\frac{a + bi}{c + di} = \frac{(a + bi)(c - di)}{c^2 + d^2}
 ```
 
 Bu da bir parçacıkın boş kısmını yok eder ve temiz bir sayı elde eder.
@@ -96,23 +98,24 @@ z = 0 + 4i  corresponds to the point (0, 4) on the imaginary axis
 
 Eklentide herhangi bir nokta, onu başlangıç noktasına kadar olan mesafeyi ve gerçek aksanın açısını tanımlamak için kullanılabilir.
 
+```math
+\begin{aligned}
+z &= r (\cos\theta + i \sin\theta) \\[4pt]
+\text{其中：} r &= |z| = \sqrt{a^2 + b^2} \quad \text{（magnitude，即模）} \\
+\theta &= \mathop{\mathrm{atan2}}(b, a) \quad \text{（phase，即辐角）}
+\end{aligned}
 ```
-z = r * (cos(theta) + i*sin(theta))
 
-where:
-  r = |z| = sqrt(a^2 + b^2)     (magnitude, or modulus)
-  theta = atan2(b, a)             (phase, or argument)
-```
-
-Doğal şekil (a + bi) adaptatügefa,极坐标形式, r, theta) adaptatügefa,
+Doğal şekil$(a + bi)$适合加法──极坐标形式 $(r, \theta)$适合乘法。
 
 **极坐标形式下的乘法。**模长相乘, açı açı
 
-```
-z1 = r1 * e^(i*theta1)
-z2 = r2 * e^(i*theta2)
-
-z1 * z2 = (r1 * r2) * e^(i*(theta1 + theta2))
+```math
+\begin{aligned}
+z_1 &= r_1 e^{i\theta_1} \\
+z_2 &= r_2 e^{i\theta_2} \\[4pt]
+z_1 z_2 &= (r_1 r_2) \, e^{i(\theta_1 + \theta_2)}
+\end{aligned}
 ```
 
 Bu yüzden bir çarpı bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak bir çarpı olarak çarpı olarak bir çarpı olarak çarpı olarak çarpı olarak çarpı olarak çarpı olarak çarpı olarak çarpı bir çarpı olarak çarpı olarak çarpı bir çarpı olarak çarpı olarak çarpı çarpı olarak çarpı olarak çarpı olarak çarpı çarpı olarak çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarpı çarp
@@ -121,38 +124,38 @@ Bu yüzden bir çarpı bir çarpı olarak bir çarpı olarak bir çarpı olarak 
 
 复指数 ile 三角函数 arasındaki köprü:
 
-```
-e^(i*theta) = cos(theta) + i*sin(theta)
-```
-
-Bu, dersinin en önemli formülü.
-
-```
-e^(i*pi) = cos(pi) + i*sin(pi) = -1 + 0i = -1
-
-Therefore: e^(i*pi) + 1 = 0
+```math
+e^{i\theta} = \cos\theta + i \sin\theta
 ```
 
-五个基本常数 ((e, i, pi, 1, 0) bir eşittir bağlantılı olarak
+Bu, dersinin en önemli formülü.$\theta = \pi$时:
+
+```math
+\begin{aligned}
+e^{i\pi} &= \cos\pi + i \sin\pi = -1 + 0i = -1 \\[4pt]
+\text{因此：} e^{i\pi} + 1 &= 0
+\end{aligned}
+```
+
+五个基本常数 (Basey sıkı sayı)$e$- Evet .$i$- Evet .$\pi$, 1, 0) bir arada bir şekilde bağlanmıştır.
 
 ### Neden Euler'ın ML için formülü  çok önemli
 
-Euler'in formülü gösterir,`e^(i*theta)`Bu, bir dönümün tamamını oluşturur. Bu, bir dönümün tamamını oluşturur. Bu dönümün tamamını oluşturur.
+Euler'in formülü gösterir,$e^{i\theta}$- Ben de öyle .$\theta$变化描绘单位圆──当 $\theta = 0$Sen de varsın.$(1, 0)$- Evet.$\theta = \pi/2$Sen de varsın.$(0, 1)$- Evet.$\theta = \pi$Sen de varsın.$(-1, 0)$- Evet.$\theta = 3\pi/2$Sen de varsın.$(0, -1)$                                                                                                                                                                                                                                                              $\theta = 2\pi$- Evet.
 
 Bu, tekrar gösterge dönüştürülür anlamına gelir.
 
 ### 2D Dönüşüm ile bağlantı
 
-将复数 (x + yi) 乘以 e^(i*theta),会把点 (x, y) 周围原点旋转 theta 角──
+- Ne ?$(x + yi)$- Yukarı .$e^{i\theta}$- Evet , ben de .$(x, y)$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\theta$- Evet.
 
-```
-Rotation via complex multiplication:
-  (x + yi) * (cos(theta) + i*sin(theta))
-  = (x*cos(theta) - y*sin(theta)) + (x*sin(theta) + y*cos(theta))i
-
-Rotation via matrix multiplication:
-  [cos(theta)  -sin(theta)] [x]   [x*cos(theta) - y*sin(theta)]
-  [sin(theta)   cos(theta)] [y] = [x*sin(theta) + y*cos(theta)]
+```math
+\begin{aligned}
+&\text{通过复数乘法旋转：} \\
+&\quad (x + yi)(\cos\theta + i \sin\theta) = (x \cos\theta - y \sin\theta) + (x \sin\theta + y \cos\theta)i \\[8pt]
+&\text{通过矩阵乘法旋转：} \\
+&\quad \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} x \cos\theta - y \sin\theta \\ x \sin\theta + y \cos\theta \end{bmatrix}
+\end{aligned}
 ```
 
 它们产生完全相同的结果──复数乘法就是 2D 旋转──旋转矩阵 只是用矩阵记法写出的复数乘法──
@@ -170,55 +173,56 @@ graph TD
 
 ### Fasar ve dönüş sinyalleri
 
-复指数 e^(i*omega*t) 角 frekansı omega 绕单位圆旋转的点──随着t 增加,这个点将描绘出圆──
+复指数 $e^{i\omega t}$- Evet.$\omega$Birlik dönüm noktası.$t$增加,这个点会描绘出圆.
 
-Bu dönüm noktasının gerçek kısmı cosmososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososososos
+Bu dönüş noktasının gerçek kısmı$\cos(\omega t)$- Evet.$\sin(\omega t)$△正弦信号就是旋转复数投下的影子──
 
-```
-e^(i*omega*t) = cos(omega*t) + i*sin(omega*t)
-
-Real part:      cos(omega*t)    -- a cosine wave
-Imaginary part: sin(omega*t)    -- a sine wave
+```math
+\begin{aligned}
+e^{i\omega t} &= \cos(\omega t) + i \sin(\omega t) \\[4pt]
+\text{实部：} & \cos(\omega t) \quad \text{，即 cosine wave} \\
+\text{虚部：} & \sin(\omega t) \quad \text{，即 sine wave}
+\end{aligned}
 ```
 
 Bu, fazörün ifade etmesidir. Sen bir yükselişin asansör dalgasını takip etmeyi bırakıyorsun, tersine, bir düzlemle döndürülen okları takip ediyorsun.
 
 ### Birlik
 
-N'den sonra birim kökü birim döngüsünün üzerinde ve birbirinden ayrı dağılımın N' noktasıdır:
+$N$Birim kökü birim döngü üzerinde ve diğerleri arasında dağılmaktadır.$N$个点:
 
+```math
+w_k = e^{2\pi i k/N} \quad \text{其中 } k = 0, 1, 2, \ldots, N-1
 ```
-w_k = e^(2*pi*i*k/N)    for k = 0, 1, 2, ..., N-1
-```
 
-N = 4 时,根是:1, i, -1, -i(四个罗盘方向)
-N = 8'de, dört yön alırsın, dört yön katılır.
+- Evet .$N = 4$时,根是:$1, i, -1, -i$(四个罗盘方向)
+- Evet .$N = 8$4 yönlü bir takımla birlikte 4 yönlü bir takımla birlikte.
 
-单位根 is the basis of the Discrete Fourier Transform. DFT sinyalleri bu N 个等间隔频率 üzerindeki 分量 olarak parçalacaktır.
+单位根 is the basis of the Discrete Fourier Transform.$N$个等间隔频率 üzerindeki 分量──
 
 ### DFT ile bağlantı
 
-信号 x[0], x[1], ..., x[N-1]'in Diskret Fourier Transformı ise:
+ sinyal$x[0], x[1], \ldots, x[N-1]$Bu da bir Fourier dönüşümü.
 
-```
-X[k] = sum_{n=0}^{N-1} x[n] * e^(-2*pi*i*k*n/N)
+```math
+X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N}
 ```
 
-Her X[k] sinyalin, k 个单位根 ile ilişkisini ölçmek, t.e. k 个频率 k 处 bir kopya正弦波 ile ilişkisini ölçmek için ölçülür.
+Her biri .$X[k]$衡量信号与第 $k$个单位根的相关程度,也就是与频率 $k$处一个复正弦波的相关程度──DFT将信号分解为 $N$个旋转phasor,并告诉你每一个振幅和相位──
 
 ### Neden yalancı değilim?
 
-eğlence Bu kelime tarihsel tesadüflerdir. Descartes i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+imaginar Bu kelime tarihsel tesadüflerdir.$i$并不比负数更虚──负数 yanıtı:  3'den çıkarmak 5'e nasıl ulaşır?  虚数单位 yanıtı:  什么数平方后得到 -1?
 
-Daha yararlı bir anlayış: i i i 90 derecelik bir dönüm makinesi. Bir kere bir gerçek sayıyı çarpıp i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i
+Daha yararlı bir anlayış:$i$90 derecelik bir dönüş makinesi.$i$Bir kere, 90 derece döndün.$i$Bir kere$i^2$), yine 90 derece döndün, şimdi de negatif aksel yönüne doğru.$i^2 = -1$                                                                                                                                                                                                                                                              
 
 Bu nedenle karmaşıklık, mühendislikte hiçbir yerde bulunmaz. Çevrelenen herhangi bir şey  elektromanyetik dalga, kuantum hali, sinyal titreşim, konum kodlaması  hepsi doğal olarak karmaşıklık tanımına uygun olur.
 
 ### 复指数 vs 三角函数
 
-Euler'in formülünden önce mühendis sinyalleri A*cos olarak yazdı.
+Euler'ın formülünden önce mühendis sinyal yazmış.$A \cos(\omega t + \phi)$ 振幅 $A$、 frekans $\omega$、相位 $\phi$Bu mümkün ama işlemin acı çekmesine neden olur.
 
-2. Sıkıntılı bir şekilde, bir yönlü bir yönlü bir yönlü bir yönlü bir yönlü bir yönlü bir yönlü yönlü bir yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü yönlü
+Bir sinyal yazılabilir.$A e^{i(\omega t + \phi)}$△相加两个信号只是相加两个复数──相乘(调制) △相加两个信号只是模长相乘、角度相加──相位偏移变成角加法──频率偏移变成乘乘相──
 
 Tüm sinyal işleme alanı, matematik daha temiz olduğundan, sayısal kayıtlara yöneldi.
 
@@ -226,9 +230,11 @@ Tüm sinyal işleme alanı, matematik daha temiz olduğundan, sayısal kayıtlar
 
 **正弦位置编码**(原始 Transformer 论文):
 
-```
-PE(pos, 2i) = sin(pos / 10000^(2i/d))
-PE(pos, 2i+1) = cos(pos / 10000^(2i/d))
+```math
+\begin{aligned}
+PE(pos, 2i) &= \sin\left(pos / 10000^{2i/d}\right) \\
+PE(pos, 2i+1) &= \cos\left(pos / 10000^{2i/d}\right)
+\end{aligned}
 ```
 
 Sin ve cos, ortaya çıkmaya karşı, bunlar farklı sıklıklı olarak tekrar indeksinin gerçek ve虚部lerdir. Her sıklık farklı bir  çözünürlük ── düşük frekans değişimi yavaş ── yüksek frekans değişimi hızlı ── ayrıntılı konum ── hepsi birlikte her konum için benzersiz frekans çizgilerini sağlarlar.
@@ -237,13 +243,13 @@ Sin ve cos, ortaya çıkmaya karşı, bunlar farklı sıklıklı olarak tekrar i
 
 | Operation | Algebraic Form | Geometric Meaning |
 |-----------|---------------|-------------------|
-| 加法 | (a+c) + (b+d)i | 平面中的 Vector 加法 |
-| 乘法 | (ac-bd) + (ad+bc)i | 旋转并缩放 |
-| 共轭 | a - bi | 关于实轴反射 |
-| 模长 | sqrt(a^2 + b^2) | 到原点的距离 |
-| 相位 | atan2(b, a) | 相对正实轴的角度 |
+| 加法 | $(a+c) + (b+d)i$ | 平面中的 Vector 加法 |
+| 乘法 | $(ac-bd) + (ad+bc)i$ | 旋转并缩放 |
+| 共轭 | $a - bi$ | 关于实轴反射 |
+| 模长 | $\sqrt{a^2 + b^2}$ | 到原点的距离 |
+| 相位 | $\mathop{\mathrm{atan2}}(b, a)$ | 相对正实轴的角度 |
 | 除法 | multiply by conjugate | 反向旋转并重新缩放 |
-| 幂 | r^n * e^(i*n*theta) | 旋转 n 次，按 r^n 缩放 |
+| 幂 | $r^n e^{in\theta}$ | 旋转 $n$ 次，按 $r^n$ 缩放 |
 
 ```mermaid
 graph LR
@@ -323,7 +329,7 @@ def euler(theta):
 
 ### 3 adım: dönüş
 
-将点 (x, y) 旋转 the theta 角, sadece bir kez tekrar tekrar tekrar yapılması gerekir:
+- Ben de .$(x, y)$Dönüşüm$\theta$角, sadece bir kere tekrar tekrar yapma:
 
 ```python
 point = Complex(3, 4)
@@ -347,11 +353,11 @@ def dft(signal):
     return result
 ```
 
-Bu O(N^2)'nin DFT¬idir. Her çıkış X[k] 都是信号样本乘以单位根后的总和──
+Bu .$O(N^2)$DFT'nin her çıkışı$X[k]$Tüm sinyal örnekleri birim kökünün arkasındaki toplamı çarpıyor.
 
 ### 步骤 5: Ters DFT
 
-Ters DFT, frekans spektrinden orijinal sinyalleri yeniden oluşturur. DFT'ye göre, tek değişim: N olarak ayrılmış, dönüşüm göstergesindeki simgelerdir.
+Ters DFT, frekans spektrinden orijinal sinyalleri yeniden oluşturur. DFT'ye göre, tek değişim:$N$- Evet.
 
 ```python
 def idft(spectrum):
@@ -377,7 +383,7 @@ def roots_of_unity(N):
 
 验证 iki nitelik:
 - Her kökün şekli 1'dir.
-- Ürünler birbirlerine karşı karşı ödemeler yaparlar.
+- Tüm$N$个根的和为零 (onlar birbirlerine karşı karşı karşıya)
 
 Bu özellikler DFT'yi tersine yapar.
 
@@ -418,29 +424,41 @@ freqs = np.fft.fftfreq(128, d=1/128)
 运行  İşlem`code/complex_numbers.py`Yaratmak`outputs/skill-complex-arithmetic.md`- Evet.
 
 ## 练习
-1. **手算复数运算。**計算 (2 + 3i) * (4 - i),并用代码验证──然后计算 (5 + 2i) / (1 - 3i)──把两个结果都画在复平面上,并检查乘法是否旋转并缩放第一数──
+1. **手算复数运算。**计算 $(2 + 3i)(4 - i)$,并用代码验证──然后计算 $(5 + 2i) / (1 - 3i)$                                                                                                                                                                                                                                                              
 
-2. **旋转序列。**Ardından, her adımın bir satırını yazdırıp, onları bir düz 12 边形に描くことを確認します.
+2. **旋转序列。**Çekil .$(1, 0)$Başlamak için devam et.$e^{i\pi/6}$12 kez. 12 kez.$(1, 0)$❖ Her adımın çizgisini yazdırıp, onları doğru 12 boyutlu bir şekil olarak çizdiğini onayla.
 
-3. **已知信号的 DFT。**创建一个信号,它在32个点上采样 sin(2*pi*3*t) 与 0.5*sin(2*pi*7*t) 之和──运行你的DFT──验证幅度频谱在频率 3 和 7 处有峰值,并且频率 7 处的峰值高度是频率 3 处的一半──
+3. **已知信号的 DFT。**Bir sinyal oluştur, 32 noktada olur.$\sin(2\pi \cdot 3t)$ile$0.5 \sin(2\pi \cdot 7t)$之和──运行你的DFT──验证幅度频谱在频率 3 和 7 处有峰值,并且频率 7 处的峰值高度是频率 3 处的一半──
 
-4. **单位根可视化。**計算 8 次单位根──验证它们的和为零──验证任意根乘以本原根 e^(2*pi*i/8) 都会得到下根──
+4. **单位根可视化。**計算 8 次单位根──验证它们的和为零──验证任意根乘以本原根$e^{2\pi i/8}$Bir sonraki kök alacağım.
 
 5. **旋转 Matrix 等价性。**10 随机角度 ve 10 随机点,验证复数乘法 verilen sonuçlar 2x2 旋转矩阵 进行矩阵向 乘法 的结果相同――印最大数值差──
+
+### 提示
+
+**练习 1。**Kullanım$i^2 = -1$展开乘积;做除法时,将分子和分母同时乘以合并 $1 + 3i$。 kullan `Complex(2, 3) * Complex(4, -1)`检查乘积:其 `magnitude()`İki büyüklükten bir çarpı eşit olmalı.`phase()`İki aşama eşit olmalıdır.
+
+**练习 2。**Kullanım`euler(math.pi / 6)` Konstrüksiyon her adımın dönmesi,                                                                                                                                                                                                                                                         
+
+**练习 3。**Kullanım$t = n/32$构建时间点,并调用 `dft`Sadece kutulara bak 0 ila 15, çünkü üst yarısı bir görüntü.$A$Sinüs dalgası, ben.$k$- Büyüklüğü$AN/2$Bu nedenle, beklenmedik bir şekilde 3'ün 16,7'ün 8'ü olacak.
+
+**练习 4。**调用 `roots_of_unity(8)`Ve tüm köklerin birleştirilmesi: toplam ve büyüklüğü 0'ya yaklaşmalıdır.`euler(2 * math.pi / 8)`- Evet.
+
+**练习 5。**Dönüş matrisi ise [[cos t, -sin t], [sin t, cos t]]──对每个角 和点,计算 `euler(t) * Complex(x, y)`Ve en büyük mutlak farkı yeniden kaydetmek için.$10^{-15}$- Evet.
 
 ## 关键术语
 | Term | What it means |
 |------|---------------|
-| 复数 | 形如 a + bi 的数，其中 a 是实部，b 是虚部，并且 i^2 = -1 |
-| 虚数单位 | 数 i，定义为 i^2 = -1。它在哲学意义上并不“虚”——它是一个旋转算子 |
+| 复数 | 形如 $a + bi$ 的数，其中 $a$ 是实部，$b$ 是虚部，并且 $i^2 = -1$ |
+| 虚数单位 | 数 $i$，定义为 $i^2 = -1$。它在哲学意义上并不“虚”——它是一个旋转算子 |
 | 复平面 | x 轴为实轴、y 轴为虚轴的 2D 平面。也称为 Argand plane |
-| 模长（模） | 到原点的距离：sqrt(a^2 + b^2)。写作 \|z\| |
-| 相位（辐角） | 相对正实轴的角度：atan2(b, a)。写作 arg(z) |
-| 共轭 | 关于实轴的镜像：a + bi 的共轭是 a - bi |
-| 极坐标形式 | 将 z 表示为 r * e^(i*theta)，而不是 a + bi。让乘法变得容易 |
-| Euler's formula | e^(i*theta) = cos(theta) + i*sin(theta)。连接指数函数与三角函数 |
-| Phasor | 表示正弦信号的旋转复数 e^(i*omega*t) |
-| 单位根 | k = 0 到 N-1 时的 N 个复数 e^(2*pi*i*k/N)。单位圆上等间隔的 N 个点 |
+| 模长（模） | 到原点的距离：$\sqrt{a^2 + b^2}$。写作 $\lvert z \rvert$ |
+| 相位（辐角） | 相对正实轴的角度：$\mathop{\mathrm{atan2}}(b, a)$。写作 $\arg(z)$ |
+| 共轭 | 关于实轴的镜像：$a + bi$ 的共轭是 $a - bi$ |
+| 极坐标形式 | 将 $z$ 表示为 $r e^{i\theta}$，而不是 $a + bi$。让乘法变得容易 |
+| Euler's formula | $e^{i\theta} = \cos\theta + i \sin\theta$。连接指数函数与三角函数 |
+| Phasor | 表示正弦信号的旋转复数 $e^{i\omega t}$ |
+| 单位根 | $k = 0$ 到 $N-1$ 时的 $N$ 个复数 $e^{2\pi i k/N}$。单位圆上等间隔的 $N$ 个点 |
 | DFT | Discrete Fourier Transform。使用单位根将信号分解为复正弦分量 |
 | RoPE | Rotary Position Embedding。使用复数乘法在 Transformer Attention 中编码相对位置 |
 
@@ -448,6 +466,6 @@ freqs = np.fft.fftfreq(128, d=1/128)
 - [Visual Introduction to Euler's Formula](https://betterexplained.com/articles/intuitive-understanding-of-eulers-formula/)-Küçük gazetecilik kullanmadan bir bilimsel anlayış oluşturmak
 - [Su et al.: RoFormer (2021)](https://arxiv.org/abs/2104.09864)-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 - [Vaswani et al.: Attention Is All You Need (2017)](https://arxiv.org/abs/1706.03762)-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-- [3Blue1Brown: Euler's formula with introductory group theory](https://www.youtube.com/watch?v=mvmuCPvRoWQ)- e^(i*pi) = -1'in görülebilir açıklaması
+- [3Blue1Brown: Euler's formula with introductory group theory](https://www.youtube.com/watch?v=mvmuCPvRoWQ)- Neden ?$e^{i\pi} = -1$Görülebilir açıklama
 - [Needham: Visual Complex Analysis](https://global.oup.com/academic/product/visual-complex-analysis-9780198534464)-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 - [Strang: Introduction to Linear Algebra, Ch. 10](https://math.mit.edu/~gs/linearalgebra/)- 线性代数和特征值语境中的复数

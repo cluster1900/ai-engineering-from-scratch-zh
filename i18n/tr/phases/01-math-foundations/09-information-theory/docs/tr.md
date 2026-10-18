@@ -28,10 +28,10 @@ Bu ders her formülü sıfırdan kurar, nereden geldiğini ve neden işe yarayac
 
 O zaman daha fazla bilgi getirir.
 
-概率为 p 的事件的信息量是:
+概率为$p$Bu olayın haber sayısı:
 
-```
-I(x) = -log(p(x))
+```math
+I(x) = -\log(p(x))
 ```
 
 2 olarak kullanılır. Bir parça elde edilir. Doğal bir log kullanılır. Aynı fikir, farklı birimler elde edilir.
@@ -50,98 +50,104 @@ Bir olayın gerçekleşeceğini çoktan biliyordun.
 
 Entropi, tüm olası sonuçların beklenmedik bir dağıtımdır.
 
-```
-H(P) = -sum( p(x) * log(p(x)) )  for all x
+```math
+H(P) = -\sum_{x} p(x) \log(p(x))
 ```
 
 公平硬币对二元变量 具有最大エントロピー:1位──偏置硬币(99% 正面) 具有低エントロピー:0.08位──你已经知道会发生什么,因此每次抛几乎不会告诉你任何信息──
 
-```
-Fair coin:    H = -(0.5 * log2(0.5) + 0.5 * log2(0.5)) = 1.0 bit
-Biased coin:  H = -(0.99 * log2(0.99) + 0.01 * log2(0.01)) = 0.08 bits
+```math
+\begin{aligned}
+\text{公平硬币：} \quad & H = -(0.5 \log_2(0.5) + 0.5 \log_2(0.5)) = 1.0 \text{ bit} \\
+\text{偏置硬币：} \quad & H = -(0.99 \log_2(0.99) + 0.01 \log_2(0.01)) = 0.08 \text{ bits}
+\end{aligned}
 ```
 
 Entropi bir dağılım ölçer. İçinde belirsizlikler vardır.
 
 ### Çarpışıklık (你每日使用的损失函数)
 
-Çelişkili entropi  Ölçüm Distribüsiyonu kullanırken Q 来编码实际来自分布 P 的事件时,平均惊喜是多少──
+Çaplak entropi  Ölçmek当你使用分布 $Q$Bu kod aslında dağıtımdan geliyor.$P$Bu olayda, ortalama sürpriz ise çok fazla.
 
+```math
+H(P, Q) = -\sum_{x} p(x) \log(q(x))
 ```
-H(P, Q) = -sum( p(x) * log(q(x)) )  for all x
-```
 
-P doğru dağılımdır. Q modelinizin tahminidir. Eğer Q ile P tamamen uyumluysa, çapraz entropi entropiyaya benzer.
+$P$Evet, gerçek bir dağıtım.$Q$Bu senin modelinin tahminleri.$Q$ile$P$Tamamen uyumlu, çapraz entropi, entropi gibi.
 
-Sınıflandırmada, P bir sıcak vektördür. Gerçek sınıfın olasılıkları 1'dir. Diğer tümleri 0'dur.
+Sınıflandırma sırasında,$P$Bu da bir sıfır vektörün gerçek sınıfı olasılığı 1'dir, diğerleri 0'dur.
 
-```
-H(P, Q) = -log(q(true_class))
+```math
+H(P, Q) = -\log(q(\text{true\_class}))
 ```
 
 İşte sınıflandırmanın tam çapraz entropi kaybı formülü.
 
 ### KL Dönüşüm (Distributions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
-KL farklılığı, P yerine Q kullanımı ölçmek için çok fazla sürpriz getirecektir.
+KL farklılık 衡量使用 $Q$Hayır.$P$Bu da bir sürpriz olacak.
 
-```
-D_KL(P || Q) = sum( p(x) * log(p(x) / q(x)) )  for all x
-             = H(P, Q) - H(P)
+```math
+\begin{aligned}
+D_{KL}(P \,\|\, Q) &= \sum_{x} p(x) \log(p(x) / q(x)) \\
+&= H(P, Q) - H(P)
+\end{aligned}
 ```
 
 Çarpışık entropi, entropi, KL farklılığıdır. Çünkü gerçek dağılım entropi, antrenman sırasında normaldir, en azlaştırılmış çapraz entropi, KL farklılığı ile aynıdır.
 
-KL farklılığı 不是对称的:D_KL(P  Q) != D_KL(Q  P) ─ bu gerçek mesafe metrik değil
+KL farklılığı ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇$D_{KL}(P \Vert Q) \ne D_{KL}(Q \Vert P)$Gerçek mesafe ölçüsü değil.
 
 ### Karşılıklı Bilgi
 
 Karşılıklı bilgi  Ölçmek bilmek bir değişken 能告诉你另一个变量 多少信息──
 
-```
-I(X; Y) = H(X) - H(X|Y)
-        = H(X) + H(Y) - H(X, Y)
+```math
+\begin{aligned}
+I(X; Y) &= H(X) - H(X \mid Y) \\
+&= H(X) + H(Y) - H(X, Y)
+\end{aligned}
 ```
 
-Eğer X ve Y  bağımsız ise, karşılıklı bilgi ise sıfır. Biliyorsun, bir tanesi diğerinden herhangi bir bilgiyi anlatmaz. Eğer tamamen ilişkili ise, karşılıklı bilgi bir değişkenin entropiye benzer.
+Eğer $X$和 $Y$独立,相互情報 为零――知道其中一个不会告诉你其他的任何信息――如果它们完全相关,相互信息等于任一变量的エントロピー――
 
 Özellik seçimi sırasında, Özellik ile Hedef arasındaki karşılıklı bilgi Yüksek, bu özellik için kullanılabilir anlamına gelir.
 
 ### Şartlı Entropi
 
-H(Y X)  Ölçmek X 后, Y hakkında daha fazla belirsizlik kaldı
+$H(Y \mid X)$衡量观察到  Ölçmek$X$后, hakkında $Y$Daha çok belirsizlik kalıyor.
 
-```
-H(Y|X) = H(X,Y) - H(X)
+```math
+H(Y \mid X) = H(X,Y) - H(X)
 ```
 
 İki uç:
-- Eğer X 完全决定 Y,then H(YX ) = 0──知道 X 会消除关于 Y 的全部不确定性──例:X = 摄氏温度,Y = 华氏温度──
-- Eğer X ile Y  hiçbir bilgi yoksa, H    Y                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+- Eğer $X$完全决定  tamamen karar$Y$- Öyleyse .$H(Y \mid X) = 0$Biliyorum.$X$Bu konuda bir şey yok .$Y$Tüm belirsizlikler:$X$= 摄氏 sıcaklık,$Y$= 华氏温度──
+- Eğer $X$- Evet .$Y$- Bilgi yok.$H(Y \mid X) = H(Y)$Biliyorum.$X$完全不会降低你的不确定性──例:$X$= 抛硬币结果,$Y$= Yarınki hava.
 
-Şartlı entropi 始终非负,并且永远不超过 H(Y):
+Şartlı entropi 始终非负,并且永远不超过 $H(Y)$- ...
 
+```math
+0 \le H(Y \mid X) \le H(Y)
 ```
-0 <= H(Y|X) <= H(Y)
-```
 
-Makine Öğrenimi'nde, koşullu entropi ortaya çıkıyor karar ağaçları'nda. Her bölünmede, algoritma H(YYYX'i seçer. En küçük özelliği X, yani etiket Y'yi en fazla belirsizlik özelliğini kaldırmak.
+Makine öğrenimi ortamında koşullu entropi ortaya çıkıyor karar ağaçları ortamında.$H(Y \mid X)$En küçük özellik .$X$Etiketten çıkarmak için .$Y$En fazla belirsizlik özellikleri:
 
 ### Ortak Entropi
 
-H(X,Y) X 和 Y ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇
+$H(X,Y)$Evet .$X$和 $Y$Birlikte dağılımın entropi.
 
-```
-H(X,Y) = -sum sum p(x,y) * log(p(x,y))   for all x, y
+```math
+H(X,Y) = -\sum_{x} \sum_{y} p(x,y) \log(p(x,y))
 ```
 
 关键性质:
 
-```
-H(X,Y) <= H(X) + H(Y)
+```math
+H(X,Y) \le H(X) + H(Y)
 ```
 
-X ve Y 独立时等号成立时―― eğer bunlar bilgi paylaşırsa, ortak entropi kendi entropilerinden daha küçük olur 之和──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+- Evet .$X$和 $Y$独立时等号成立──如果它们共享信息,共同 Entropia 就小于各自的 Entropia 之和──这个缺失的 Entropia 正是相互信息──
 
 ```mermaid
 graph TD
@@ -167,50 +173,52 @@ graph TD
 ```
 
 Bu ilişkiler:
-- H(X,Y) = H(X) + H(Y
-- H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H (H) - H) - H (H) - H (H) - H) - H (H) - H) - H (H) - H) - H (H) - H) - H) - H (H) - H) - H) - H (H) - H) - H) - H) - H) - H (H) - H) - H) - H) - H) - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H - H -
-- H(X,Y) = H(X) + H(Y) - I(X;Y)
+- $H(X,Y) = H(X) + H(Y \mid X) = H(Y) + H(X \mid Y)$
+- $I(X;Y) = H(X) - H(X \mid Y) = H(Y) - H(Y \mid X)$
+- $H(X,Y) = H(X) + H(Y) - I(X;Y)$
 
 ### Karşılıklı Bilgi ((Dep Dive)
 
-Karşılıklı bilgi I(X;Y) 量化知道一个变量会减少关于另一个变量多少不确定性──
+Karşılıklı bilgi$I(X;Y)$量化知道一个变量会减少关于另一个变量的多少不确定性――
 
-```
-I(X;Y) = H(X) - H(X|Y)
-       = H(Y) - H(Y|X)
-       = H(X) + H(Y) - H(X,Y)
-       = sum sum p(x,y) * log(p(x,y) / (p(x) * p(y)))
+```math
+\begin{aligned}
+I(X;Y) &= H(X) - H(X \mid Y) \\
+&= H(Y) - H(Y \mid X) \\
+&= H(X) + H(Y) - H(X,Y) \\
+&= \sum_{x} \sum_{y} p(x,y) \log\left(\frac{p(x,y)}{p(x) \, p(y)}\right)
+\end{aligned}
 ```
 
 Seks:
-- Bir şeyi izlemek asla bilgi kaybına neden olmaz.
-- Eğer sadece X ve Y bağımsızsa, I(X;Y) = 0。
-- I(X;Y) = I(Y;X)。
-- I(X;X) = H(X)。 bir değişken ile kendi kendini paylaşın tüm bilgi。
+- $I(X;Y) \ge 0$Bir şeyi gözlemlemek asla bilgi kaybına yol açmaz.
+- Sadece ve sadece$X$和 $Y$独立时,$I(X;Y) = 0$- Evet.
+- $I(X;Y) = I(Y;X)$ It is a relative, KL farklılığından farklı.
+- $I(X;X) = H(X)$ Bir değişken, tüm bilgileri kendi kendine paylaşmakla
 
 **用于 feature selection 的 mutual information。**ML'de, hedef için istediğiniz özellikler var bilgi miktarı.
 
-1. Her bir özelliğe X_i, hesap I(X_i; Y), Y'nin hedefi değişkenidir.
+1. Her bir özelliğe .$X_i$,计算 $I(X_i; Y)$, içinden $Y$- Hedef değişkenidir.
 2. 按MI puanı 排序 özellikleri。
-3. Kalkın.
+3. Önceki yazı$k$个 özellikleri。
 
 Bu özellik ile hedefin arasındaki herhangi bir ilişki için geçerlidir: doğrusal, hatalı olmayan, monoton veya diğer ilişkiler.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|
-| Pearson correlation | Linear relationships | O(n) | No |
-| Spearman correlation | Monotonic relationships | O(n log n) | No |
-| Mutual information | 任意 statistical dependency | O(n log n) with binning | Yes |
+| Pearson correlation | Linear relationships | $O(n)$ | No |
+| Spearman correlation | Monotonic relationships | $O(n \log n)$ | No |
+| Mutual information | 任意 statistical dependency | $O(n \log n)$ with binning | Yes |
 
 ### Etiket Düzeltme ve Çaplak Entropi
 
 标准分類 使用硬目标:[0, 0, 1, 0]──true class 的概率为 1,其他全部为 0──Label smoothing 会用软目标 替换它们:
 
-```
-soft_target = (1 - epsilon) * hard_target + epsilon / num_classes
+```math
+\text{soft\_target} = (1 - \epsilon) \cdot \text{hard\_target} + \epsilon / \text{num\_classes}
 ```
 
-当 epsilon = 0.1 且有 4 个类 时:
+- Evet .$\epsilon = 0.1$4 sınıf var:
 - Zor hedef: [0, 0, 1, 0]
 - Yumuşak hedef: [0.025, 0.025, 0.925, 0.025]
 
@@ -224,8 +232,8 @@ Neden bu işe yarıyor?
 
 Etiket düzeltme 变为:
 
-```
-L = (1 - epsilon) * CE(hard_target, prediction) + epsilon * H_uniform(prediction)
+```math
+L = (1 - \epsilon) \cdot \text{CE}(\text{hard\_target}, \text{prediction}) + \epsilon \cdot H_{\text{uniform}}(\text{prediction})
 ```
 
 İkinci olarak, bir yörüngeden uzak tahminleri cezalandırır, yani güvenle doğrudan düzenlenir.
@@ -236,12 +244,14 @@ L = (1 - epsilon) * CE(hard_target, prediction) + epsilon * H_uniform(prediction
 
 **Information Theory 视角。**Çarpıcı entropi, modelinizin gerçek dağıtım yerine dağıtımını ölçerken kaç bit harcadığını azaltır.
 
-**Maximum likelihood 视角。**对于 N 个 true classes 为 y_i 的 eğitim örnekleri:
+**Maximum likelihood 视角。**- Evet .$N$个 gerçek sınıfı $y_i$Eğitim örnekleri:
 
-```
-Likelihood     = product( q(y_i) )
-Log-likelihood = sum( log(q(y_i)) )
-Negative log-likelihood = -sum( log(q(y_i)) )
+```math
+\begin{aligned}
+\text{似然} &= \prod_i q(y_i) \\
+\text{对数似然} &= \sum_i \log(q(y_i)) \\
+\text{负对数似然} &= -\sum_i \log(q(y_i))
+\end{aligned}
 ```
 
 Son bir çizgi ise çapraz entropi kaybı, en az çapraz entropi = en fazla eğitim verisi, senin modelin aşağı olasılığı.
@@ -258,15 +268,17 @@ log base e   -> nats      (machine learning convention)
 log base 10  -> hartleys  (rarely used)
 ```
 
-1 nat = 1/ln(2) bit = 1.4427 bit。PyTorch 和 TensorFlow 默认使用自然ログ(nats)。
+1 nat = $1/\ln(2)$Bit = 1.4427 bit──PyTorch 和 TensorFlow 默认使用自然ログ(nats)──
 
 ### Kafası karışık
 
 Kafası karışıklık, çapraz entropi göstergesidir. Size modelin belirsiz olduğunu söyler.
 
-```
-Perplexity = 2^H(P,Q)   (if using bits)
-Perplexity = e^H(P,Q)   (if using nats)
+```math
+\begin{aligned}
+\text{Perplexity} &= 2^{H(P,Q)} \quad \text{（使用 bits 时）} \\
+\text{Perplexity} &= e^{H(P,Q)} \quad \text{（使用 nats 时）}
+\end{aligned}
 ```
 
 50'nin dil modelinin karmaşıklığı, ortalama olarak, sanki 50'den sonraki olası jetonlardan ortalama seçim gibi karışıklık içinde.
@@ -446,19 +458,29 @@ Sen de sıfırdan inşa ettin.`torch.nn.CrossEntropyLoss()`内部 done things─
 
 2. 某模型对真级为 1 样本输出 logits [5.0, 2.0, 0.5]──手算交叉热损失,然后用你的 `cross_entropy_loss`Bu işlevler, nasıl bir kayıp yaratacak?
 
-3. 证明 KL divergence 不是对称的──选择两个分布 P 和 Q,计算 D_KL(P    Q) 和 D_K                                                                                                                                                                                                                                             
+3. 证明 KL divergence 不是对称的──选择两个分布 $P$和 $Q$,计算 $D_{KL}(P \Vert Q)$和 $D_{KL}(Q \Vert P)$Neden farklı olduğunu açıkla.
 
 4. 构建一个函数,为一段符号预测 序列计算困难――给定一个由 (true_token_index, predicted_logits) çiftleri 组成的列表,返回该序列的困难──
+
+### 提示
+
+**练习 1。**26 ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊    ̊ ̊                                                                                                                                                            `entropy`Sonuçlar için .$\log_2 26 \approx 4.70$Bit¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+
+**练习 2。**Logiye hesaplama`softmax`, yeniden indeks 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $-\ln$,并与 `cross_entropy_loss(1, logits)`Benzet; ikisi de 3.06'a yaklaşmalıdır. Sadece 1 sınıfın logiti diğer iki sınıfın logitinden çok daha büyük olduğunda, kaybı 0'a yaklaşmalıdır.
+
+**练习 3。**İki farklı biçimli dağılım kullanın.$P = [0.9, 0.1]$和 $Q = [0.5, 0.5]$, iki sırada kullanılır.`kl_divergence`◊ iki değer farklı olmalıdır, çünkü her yönde sayısal değer artıvalü kullanımındaki dağılım farklıdır.
+
+**练习 4。**Giriş hesaplama`cross_entropy_loss(true_token_index, predicted_logits)`, 取平均值后传给 `perplexity`- Kullanıyorum.$V$个标志 上的均 logits 检验:perplexity 必须为 $V$- Evet.
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
-| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：-log(p) |
+| Information content | “Surprise” | 编码一个事件所需的 bits（或 nats）数量：$-\log(p)$ |
 | Entropy | “Randomness” | 一个 distribution 中所有 outcomes 的平均 surprise。衡量不可约 uncertainty。 |
-| Cross-entropy | “The loss function” | 使用 model distribution Q 编码来自 true distribution P 的事件时的平均 surprise。 |
-| KL divergence | “Distance between distributions” | 使用 Q 而不是 P 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
-| Mutual information | “How related are X and Y” | 知道 Y 后，关于 X 的 uncertainty 减少量。为零表示独立。 |
+| Cross-entropy | “The loss function” | 使用 model distribution $Q$ 编码来自 true distribution $P$ 的事件时的平均 surprise。 |
+| KL divergence | “Distance between distributions” | 使用 $Q$ 而不是 $P$ 所浪费的额外 bits。等于 cross-entropy 减 entropy。不是对称的。 |
+| Mutual information | “How related are $X$ and $Y$” | 知道 $Y$ 后，关于 $X$ 的 uncertainty 减少量。为零表示独立。 |
 | Softmax | “Turn logits into probabilities” | 取指数并归一化。将任意 real-valued vector 映射为有效 probability distribution。 |
 | Perplexity | “How confused the model is” | Cross-entropy 的指数。model 在每一步从中选择的有效 vocabulary size。 |
 | Bits | “Shannon's unit” | 使用以 2 为底的 log 衡量的信息。一个 bit 解决一次公平抛硬币。 |

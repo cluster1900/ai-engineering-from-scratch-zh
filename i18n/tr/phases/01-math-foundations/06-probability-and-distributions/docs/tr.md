@@ -24,7 +24,7 @@ Model yapılan her tahmin bir olasılık dağılımıdır. Her Kayıp fonksiyonu
 
 ### Olaylar √ Örnek Alanları ve olasılıklar
 
-Örnek alanı S tüm olası sonuçların toplamıdır.
+örnek alanı $S$Evet, tüm olası sonuçların toplamı, olaylar örnek alanının bir parçasıdır.
 
 ```
 Coin flip:
@@ -37,15 +37,15 @@ Single die roll:
 ```
 
 Üç genel kurum, genel oran sistemini tanımlıyor:
-1. A,P(A) >= 0
-2. P(S) = 1(her zaman bir şey olacak)
-3. Bu durumun gerçekleşmesi için, P(A veya B) = P(A) + P(B)
+1. Herhangi bir olay için .$A$- Evet .$P(A) \ge 0$
+2. $P(S) = 1$(Her zaman bir şey olacak)
+3. - Evet .$A$和 $B$Aynı anda gerçekleşemez.$P(A \text{ or } B) = P(A) + P(B)$
 
 Bayes teoresi, beklentileri, dağıtımları bu üç kuraldan çıkarılabilir.
 
 ### Şartlı Muhtemelenlik ve Bağımsızlık
 
-B 已发生的条件下 A 已发生的概率 (B 已发生的条件下 A 已发生的概率) B 已发生的条件下 A 已发生的概率 (B 已发生的条件下 A 已发生的概率) B 已发生的条件下 A 已发生的概率 (B 已发生的概率) B 已发生的概率 (B 已发生的概率) B 已发生的概率 (B 已发生的概率) B 已发生的概率
+$P(A \mid B)$Gösterme $B$已发生的条件下 $A$发生的概率――
 
 ```
 P(A|B) = P(A and B) / P(B)
@@ -58,9 +58,11 @@ Example: deck of cards
 
 Bir olayın diğer olayla ilgili herhangi bir bilgi artmasıyla ilgili olarak, bu iki olay bağımsızdır:
 
-```
-Independent:   P(A|B) = P(A)
-Equivalent to: P(A and B) = P(A) * P(B)
+```math
+\begin{aligned}
+\text{相互独立：} \quad & P(A \mid B) = P(A) \\
+\text{等价于：} \quad & P(A \text{ and } B) = P(A) \cdot P(B)
+\end{aligned}
 ```
 
 抛硬币是独立的──不放回抽牌则不是──
@@ -98,27 +100,33 @@ Bu fark ML'de çok önemlidir.
 
 **Bernoulli：**Bir deney, iki sonuç.
 
-```
-P(X = 1) = p
-P(X = 0) = 1 - p
-Mean = p,  Variance = p(1-p)
+```math
+\begin{aligned}
+P(X = 1) &= p \\
+P(X = 0) &= 1 - p \\
+\text{均值} = p, &\quad \text{方差} = p(1-p)
+\end{aligned}
 ```
 
-**Categorical：**Bir deney, k 个 sonuçlar。 kullanılmak için yapılandırılmış çok sınıf sınıflandırma(softmax 输出)。
+**Categorical：**Bir deney,$k$个 sonuçlar。用于建模多类分类化(softmax 输出)。
 
-```
-P(X = i) = p_i,  where sum of p_i = 1
-Example: P(cat) = 0.7,  P(dog) = 0.2,  P(bird) = 0.1
+```math
+\begin{aligned}
+& P(X = i) = p_i, \quad \text{其中 } \textstyle\sum_i p_i = 1 \\
+& \text{示例：} P(\text{cat}) = 0.7, \quad P(\text{dog}) = 0.2, \quad P(\text{bird}) = 0.1
+\end{aligned}
 ```
 
 **Uniform：**Tüm sonuçlar 等概率── kullanılır随机初始化──
 
-```
-Discrete: P(X = k) = 1/n for k in {1, ..., n}
-Continuous: f(x) = 1/(b-a) for x in [a, b]
+```math
+\begin{aligned}
+\text{离散：} \quad & P(X = k) = 1/n \text{ for } k \in \lbrace 1, \ldots, n \rbrace \\
+\text{连续：} \quad & f(x) = 1/(b-a) \text{ for } x \in [a, b]
+\end{aligned}
 ```
 
-**Normal（Gaussian）：**钟形曲线──由 mean(mu) 和 variance(sigma^2)参数化──
+**Normal（Gaussian）：**钟形曲线──由 means($\mu$) ve farklılık$\sigma^2$) parametreleştirme
 
 ```
 f(x) = (1 / sqrt(2*pi*sigma^2)) * exp(-(x - mu)^2 / (2*sigma^2))
@@ -131,45 +139,51 @@ Standard normal: mu = 0, sigma = 1
 
 **Poisson：**固定区间内罕见事件の計り── inşaat için kullanılan olayların gerçekleşme oranı──
 
-```
-P(X = k) = (lambda^k * e^(-lambda)) / k!
-Mean = lambda,  Variance = lambda
+```math
+\begin{aligned}
+P(X = k) &= \frac{\lambda^k e^{-\lambda}}{k!} \\
+\text{均值} = \lambda, &\quad \text{方差} = \lambda
+\end{aligned}
 ```
 
 ### Beklenen Değer ve Değişiklik
 
 Beklenen değer, sonuçların artış oranıdır.
 
-```
-Discrete:   E[X] = sum of x_i * P(X = x_i)
-Continuous: E[X] = integral of x * f(x) dx
+```math
+\begin{aligned}
+\text{离散：} \quad & \mathbb{E}[X] = \sum_i x_i \, P(X = x_i) \\
+\text{连续：} \quad & \mathbb{E}[X] = \int x \, f(x) \, dx
+\end{aligned}
 ```
 
 Varians  ortalama etrafında ölçmek                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
-```
-Var(X) = E[(X - E[X])^2] = E[X^2] - (E[X])^2
-Standard deviation = sqrt(Var(X))
+```math
+\begin{aligned}
+\mathrm{Var}(X) &= \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 \\
+\text{标准差} &= \sqrt{\mathrm{Var}(X)}
+\end{aligned}
 ```
 
 ML'de, beklenen değer Kayıp fonksiyonu şeklinde ortaya çıkar.
 
 ### Ortak ve Marjinal dağıtımlar
 
-Ortak dağılım P(X, Y) Aynı zamanda iki rastgele değişken tanımlamak
+ortak dağıtım $P(X, Y)$Aynı zamanda iki rastgele değişken anlatın.
 
-Ortak PMF göstergesi ((X = hava durumu,Y = şemsiye):
+Ortak PMF göstergesi$X$= hava durumu,$Y$= şemsiye):
 
-| | Y=0（不带伞） | Y=1（带伞） | Marginal P(X) |
+| | $Y=0$（不带伞） | $Y=1$（带伞） | Marginal $P(X)$ |
 |---|---|---|---|
-| X=0（晴天） | 0.40 | 0.10 | P(X=0) = 0.50 |
-| X=1（下雨） | 0.05 | 0.45 | P(X=1) = 0.50 |
-| **Marginal P(Y)** | P(Y=0) = 0.45 | P(Y=1) = 0.55 | 1.00 |
+| $X=0$（晴天） | 0.40 | 0.10 | $P(X=0) = 0.50$ |
+| $X=1$（下雨） | 0.05 | 0.45 | $P(X=1) = 0.50$ |
+| **Marginal $P(Y)$** | $P(Y=0) = 0.45$ | $P(Y=1) = 0.55$ | 1.00 |
 
 Sınırsal dağılım başka bir değişim arıyor ve yok ediyor:
 
-```
-P(X = x) = sum over all y of P(X = x, Y = y)
+```math
+P(X = x) = \sum_{y} P(X = x, Y = y)
 ```
 
 Yukarıdaki listeler ve listeler sınırlıdır.
@@ -196,23 +210,27 @@ This works for ANY starting distribution.
 
 İlk olasılık sayısal değer sorunu doğuracaktır. Çok küçük olasılıklar hızla sıfırdan sıfırına katlanacak.
 
-```
-P(sentence) = P(word1) * P(word2) * ... * P(word_n)
-            = 0.01 * 0.003 * 0.02 * ...
-            -> 0.0 (underflow after ~30 terms)
+```math
+\begin{aligned}
+P(\text{sentence}) &= P(\text{word}_1) \cdot P(\text{word}_2) \cdot \ldots \cdot P(\text{word}_n) \\
+&= 0.01 \cdot 0.003 \cdot 0.02 \cdot \ldots \\
+&\to 0.0 \quad \text{（在约 } \sim 30 \text{ 项后下溢）}
+\end{aligned}
 ```
 
 Log olasılıkları bu sorunu çözebilir.
 
-```
-log P(sentence) = log P(word1) + log P(word2) + ... + log P(word_n)
-                = -4.6 + -5.8 + -3.9 + ...
-                -> finite number (no underflow)
+```math
+\begin{aligned}
+\log P(\text{sentence}) &= \log P(\text{word}_1) + \log P(\text{word}_2) + \ldots + \log P(\text{word}_n) \\
+&= -4.6 + -5.8 + -3.9 + \ldots \\
+&\to \text{有限数值（不会下溢）}
+\end{aligned}
 ```
 
 规则:
-- log(a * b) = log(a) + log(b)
-- log olasılığı 总是 <= 0(因为 0 < P <= 1)
+- $\log(a \cdot b) = \log(a) + \log(b)$
+- log olasılığı 总是 $\le 0$(Çünkü)$0 < P \le 1$)
 - 越负 = 越不可能
 - Çarpıcı entropik kaybı = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -431,24 +449,34 @@ Bu içeriği tamamen oluşturdun. Şimdi bilirsin kitaplık ne yapıyor.
 
 4. Bir işlevi yazın, bir dizi log olasılığını alın, en olası sıralara geri dönün, toplam log olasılığı, aynı zamanda fiyatın orijinal olasılığı.
 
+### 提示
+
+**练习 1。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `u`, geri dön .$-\ln(1 - u) / \lambda$◊ Kontrol sample average value yakın mı$1/\lambda$, doğrudan her bölgeye uygun olup olmadığını$\lambda e^{-\lambda x}$- Evet.
+
+**练习 2。**6x6 şeklini doldurun, her birim bir olasılık, tüm şekillerin 1'e kadar, sonra da kullanın.`joint_to_marginals`。 kullan `check_independence`Sadece her bir şey iki kenar olasılıklarının çarpımasıyla eşit olur, iki kenar birbirinden bağımsızdır.
+
+**练习 3。**Logit  uygulaması `softmax`, yeniden indeks 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $-\ln$◊ sonuç 0.421'e yakın olmalıdır.`nn.CrossEntropyLoss`Aynı grup logitler ve hedef  verilen sonuçlar uyumlu olarak.
+
+**练习 4。**Sayı olasılığını artırmak için, orijinal olasılığı çarpma.$50 \ln(0.01) \approx -230.26$,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $10^{-100}$- Evet.
+
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Sample space | “所有可能性” | 实验中每个可能 outcome 构成的集合 S |
+| Sample space | “所有可能性” | 实验中每个可能 outcome 构成的集合 $S$ |
 | PMF | “概率函数” | 给出每个离散 outcome 精确概率的函数，所有概率之和为 1 |
 | PDF | “概率曲线” | 用于连续变量的 density function。对某个区间积分即可得到概率 |
-| Conditional probability | “给定某事的概率” | P(A\|B) = P(A and B) / P(B)。Bayesian thinking 和 Bayes' theorem 的基础 |
-| Independence | “它们互不影响” | P(A and B) = P(A) * P(B)。知道一个 event 对另一个没有任何信息增益 |
+| Conditional probability | “给定某事的概率” | $P(A \mid B) = P(A \text{ and } B) / P(B)$。Bayesian thinking 和 Bayes' theorem 的基础 |
+| Independence | “它们互不影响” | $P(A \text{ and } B) = P(A) \cdot P(B)$。知道一个 event 对另一个没有任何信息增益 |
 | Expected value | “平均值” | 所有 outcomes 的概率加权和。Loss function 就是一个 expected value |
 | Variance | “分散程度” | 相对 mean 的 squared deviation 的期望。High variance = 噪声大、不稳定的估计 |
-| Normal distribution | “钟形曲线” | f(x) = (1/sqrt(2*pi*sigma^2)) * exp(-(x-mu)^2/(2*sigma^2))。由于 CLT 而无处不在 |
+| Normal distribution | “钟形曲线” | $f(x) = (1/\sqrt{2\pi\sigma^2}) \cdot \exp(-(x-\mu)^2/(2\sigma^2))$。由于 CLT 而无处不在 |
 | Central Limit Theorem | “平均值会变成 normal” | 无论来源如何，许多 independent samples 的 mean 都会收敛到 normal distribution |
-| Joint distribution | “两个变量放在一起” | P(X, Y) 描述 X 和 Y outcomes 每一种组合的概率 |
-| Marginal distribution | “把另一个变量求和消去” | P(X) = sum_y P(X, Y)。从 joint 中恢复单个变量的 distribution |
-| Log probability | “概率的 log” | log P(x)。把乘积变成求和，避免长序列中的数值下溢 |
-| Softmax | “把分数变成概率” | softmax(z_i) = exp(z_i) / sum(exp(z_j))。将实值 logits 映射为有效的 probability distribution |
-| Cross-entropy | “Loss function” | -sum(p_true * log(p_predicted))。衡量两个 distributions 有多不同。越低越好 |
+| Joint distribution | “两个变量放在一起” | $P(X, Y)$ 描述 $X$ 和 $Y$ outcomes 每一种组合的概率 |
+| Marginal distribution | “把另一个变量求和消去” | $P(X) = \sum_y P(X, Y)$。从 joint 中恢复单个变量的 distribution |
+| Log probability | “概率的 log” | $\log P(x)$。把乘积变成求和，避免长序列中的数值下溢 |
+| Softmax | “把分数变成概率” | $\text{softmax}(z_i) = \exp(z_i) / \sum_j \exp(z_j)$。将实值 logits 映射为有效的 probability distribution |
+| Cross-entropy | “Loss function” | $-\sum p_{\text{true}} \cdot \log(p_{\text{predicted}})$。衡量两个 distributions 有多不同。越低越好 |
 | Logits | “模型原始输出” | softmax 之前的未归一化分数。命名来自 logistic function |
 | Sampling | “抽取随机值” | 按照 probability distribution 生成值。模型生成输出的方式 |
 
