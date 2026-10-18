@@ -28,9 +28,11 @@
 
 给出了一个功能形式.`d = sqrt(KL(pi || pi_init))`令`R_proxy(d)`为了代理的报酬,`R_gold(d)`为了平均金钱奖励:
 
-```
-R_proxy(d) = alpha * d - beta_proxy * d^2
-R_gold(d)  = alpha * d - beta_gold  * d^2
+```math
+\begin{aligned}
+R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
+R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+\end{aligned}
 ```
 
 其中`beta_gold > beta_proxy`两者都从零 KL 上升,两者都达到峰值,但黄金峰更接近原点.`d`上,即使代理 继续上升,黄金也会跌到基线以下──代理黄金差距在BON样本采集中──PPO 和SFT-to-best 上都呈现相同的签名──

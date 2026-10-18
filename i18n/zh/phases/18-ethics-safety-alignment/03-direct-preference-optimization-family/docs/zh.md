@@ -18,20 +18,20 @@
 
 利计划目标:
 
-```text
-max_pi E_{x,y~pi} [ r(x, y) ] - beta * KL(pi || pi_ref)
+```math
+\max_{\pi} \; \mathbb{E}_{x, y \sim \pi} \big[ r(x, y) \big] - \beta \, \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 有一个已知最优解:
 
-```text
-pi*(y|x) = (1/Z(x)) * pi_ref(y|x) * exp(r(x, y) / beta)
+```math
+\pi^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{\text{ref}}(y \mid x) \exp\!\left(\frac{r(x, y)}{\beta}\right)
 ```
 
 因此,最佳政策和参考的比值隐式定义了奖励:
 
-```text
-r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
+```math
+r(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 把它代入布拉德利-特利偏好概率后,分区函数`Z(x)`会抵消,因为它只依赖`x`剩下的只是一个仅包含政策参数的损失,不再需要奖励模式.
@@ -42,11 +42,11 @@ r(x, y) = beta * log(pi*(y|x) / pi_ref(y|x)) + beta * log Z(x)
 
 ### 果 (Rafailov等, 2023)
 
-```text
-L_DPO = -log sigmoid(
-  beta * log(pi(y_w | x) / pi_ref(y_w | x))
-  - beta * log(pi(y_l | x) / pi_ref(y_l | x))
-)
+```math
+L_{\text{DPO}} = -\log \sigma\!\left(
+  \beta \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
+  - \beta \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}
+\right)
 ```
 
 可能出错的地方:
@@ -59,8 +59,8 @@ L_DPO = -log sigmoid(
 
 身份偏好优化 用偏好概率 上的身份映射 替换日志-标志性――损失 变成有限的目标 上的平方错误:
 
-```text
-L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x)) - 1/(2 beta))^2
+```math
+L_{\text{IPO}} = \left( \log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} - \frac{1}{2\beta} \right)^2
 ```
 
 边缘被`1/(2 beta)`限制――偏好强度与隐含奖励差距 成比例――不会爆掉――
@@ -69,8 +69,8 @@ L_IPO = (log(pi(y_w | x) / pi_ref(y_w | x)) - log(pi(y_l | x) / pi_ref(y_l | x))
 
 卡内曼-特弗斯基优化 完全消除对式结构――给定一个单独标记的输出,以及一个二元的 望或 不望信号,它将映射到前景理论的实用性:
 
-```text
-v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
+```math
+v(x, y) = \sigma\!\left(\beta \log \frac{\pi(y \mid x)}{\pi_{\text{ref}}(y \mid x)} - z_{\text{ref}}\right)
 ```
 
 没有对收益和损失的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同权重的不同
@@ -79,12 +79,12 @@ v(x, y) = sigma(beta * log(pi(y|x) / pi_ref(y|x)) - z_ref)
 
 让训练信号与生成过程对齐――完全移除参考政策,并按长度归纳到日志概率:
 
-```text
-L_SimPO = -log sigmoid(
-  (beta / |y_w|) * log pi(y_w | x)
-  - (beta / |y_l|) * log pi(y_l | x)
-  - gamma
-)
+```math
+L_{\text{SimPO}} = -\log \sigma\!\left(
+  \frac{\beta}{|y_w|} \log \pi(y_w \mid x)
+  - \frac{\beta}{|y_l|} \log \pi(y_l \mid x)
+  - \gamma
+\right)
 ```
 
 使用率`gamma`为了稳定训练――长度归结移除利用DPO长度偏差失败模式的激励`y_w`由于这些问题,我们可以在建筑中发现更大的日志问题差距.
@@ -93,9 +93,11 @@ L_SimPO = -log sigmoid(
 
 在标准 SFT 负账概率上添加一个优先术语:
 
-```text
-L_ORPO = L_NLL(y_w) + lambda * L_OR
-L_OR = -log sigmoid(log(odds(y_w) / odds(y_l)))
+```math
+\begin{aligned}
+L_{\text{ORPO}} &= L_{\text{NLL}}(y_w) + \lambda L_{\text{OR}} \\
+L_{\text{OR}} &= -\log \sigma\!\left(\log \frac{\text{odds}(y_w)}{\text{odds}(y_l)}\right)
+\end{aligned}
 ```
 
 没有参考政策,SFT术语就是调节剂. 从基模型到配线模型,只需要单阶段的训练.

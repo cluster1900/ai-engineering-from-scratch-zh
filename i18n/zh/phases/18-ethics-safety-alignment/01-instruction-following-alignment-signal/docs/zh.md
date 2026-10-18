@@ -32,8 +32,8 @@ SFT给你东西:模型现在会回答问题,而不是继续补充问题――它
 
 对于每个提示,从SFT模型采样K个完成──标签对它们排序──训练一个奖励模型,为任意的提示响应对 打分,使对 `y_w`被偏好胜过`y_l`的对:
 
-```
-L_RM = -log sigmoid(r(x, y_w) - r(x, y_l))
+```math
+L_{\text{RM}} = -\log \sigma\big(r(x, y_w) - r(x, y_l)\big)
 ```
 
 这是布拉德利-特里对称偏好损失――RM通常从SFT模型初始化,把LM头 换成 skalar头――
@@ -44,8 +44,8 @@ L_RM = -log sigmoid(r(x, y_w) - r(x, y_l))
 
 定义目标:
 
-```
-J(pi) = E_{x~D, y~pi(.|x)} [ r(x, y) ] - beta * KL(pi(.|x) || pi_SFT(.|x))
+```math
+J(\pi) = \mathbb{E}_{x \sim D,\, y \sim \pi(\cdot \mid x)} \big[ r(x, y) \big] - \beta \, \mathrm{KL}\big(\pi(\cdot \mid x) \,\|\, \pi_{\text{SFT}}(\cdot \mid x)\big)
 ```
 
 用PPO最大化――KL术语 让 `pi`没有它,优化器会找到对立的例子,也就是在RM下分数很高的字符串,原因不是人类真的偏爱它们,而是RM从未见过它们.
@@ -56,8 +56,8 @@ J(pi) = E_{x~D, y~pi(.|x)} [ r(x, y) ] - beta * KL(pi(.|x) || pi_SFT(.|x))
 
 之后,模型更受人类偏好,但在标准基准上退步.Ouyang等将其称为配合税,并使用PPO-ptx修复:把预训练梯度混入RL目标,这样模型不会忘记如何完成那些从未获得奖励的下游任务.
 
-```
-J_ptx(pi) = J(pi) + gamma * E_{x~D_pretrain} [ log pi(x) ]
+```math
+J_{\text{ptx}}(\pi) = J(\pi) + \gamma \, \mathbb{E}_{x \sim D_{\text{pretrain}}} \big[ \log \pi(x) \big]
 ```
 
 们都使用了某种变化.
@@ -85,7 +85,7 @@ al-instruct-pipeline
 观察内容:
 
 - `beta = 0.1`与`beta = 0.0`下面的奖励轨迹.
-- 训练步骤 中的 KL                                                                                                                                                                            
+- 训练步骤 中中 $\mathrm{KL}(\pi \Vert \pi_{\text{SFT}})$,我知道.
 - 与标签器偏好相比的最终行动分布
 
 ## 运送它
@@ -110,7 +110,7 @@ al-instruct-pipeline
 |------|-----------------|------------------------|
 | SFT | “instruction tuning” | Stage 1：在 prompt-response pairs 上用 cross-entropy fine-tune |
 | Reward model | “the RM” | 在 (prompt, response) 上的 scalar regressor，使用 Bradley-Terry 在 pairwise labels 上训练 |
-| Bradley-Terry | “pairwise preference loss” | -log sigmoid(r_w - r_l)；把 pairwise ranking 约简为 binary classification |
+| Bradley-Terry | “pairwise preference loss” | $-\log \sigma(r_w - r_l)$；把 pairwise ranking 约简为 binary classification |
 | KL penalty | “the regularizer” | `beta * KL(pi \|\| pi_SFT)` — 让 RL policy 保持接近 SFT anchor |
 | PPO-ptx | “PPO with pretraining mix” | 向 PPO objective 加入一部分 pre-training log-likelihood，用来抵消 alignment tax |
 | Alignment tax | “the RLHF regression” | RLHF 之后，在 RLHF 未针对的标准 benchmarks 上下降 |

@@ -25,10 +25,12 @@
 
 让`pi_0`作为基础模型,`pi_A`为后调整模式,`r`为代理的报酬,`s(x, y)`为二元 指示器 定义:
 
-```
-E[s | r]            = probability of sycophancy given reward
-E_{pi_0}[s | r]     = measured on the base model's output distribution
-E_{pi_A}[s | r]     = measured on the aligned model's output distribution
+```math
+\begin{aligned}
+\mathbb{E}[s \mid r] &= \text{给定奖励时发生谄媚的概率} \\
+\mathbb{E}_{\pi_0}[s \mid r] &= \text{在基座模型的输出分布上测得} \\
+\mathbb{E}_{\pi_A}[s \mid r] &= \text{在对齐后模型的输出分布上测得}
+\end{aligned}
 ```
 
 阶段1:经验上,`E_{pi_0}[s | r=high] > E_{pi_0}[s | r=low]`△基于标签优先数据的训练中,式完成的平均分数高于不匹配的完成.
@@ -66,8 +68,8 @@ E_{pi_A}[s | r]     = measured on the aligned model's output distribution
 
 提出修改奖励:
 
-```
-r'(x, y) = r(x, y) - alpha * agree(x, y)
+```math
+r'(x, y) = r(x, y) - \alpha \cdot \text{agree}(x, y)
 ```
 
 其中`agree(x, y)`是一个辅助分类器,用于衡量`y`是否同意`x`预测: 查`alpha`约为0.3-0.5时,Sykophancy会下降到接近基模型水平,代价是损失的一部分合法协议(模型对正确用户信仰会变得略微更唱反调) ⋅
