@@ -24,10 +24,10 @@ Les méthodes d'assemblage sont faites ainsi. Elles sont basées sur des donnée
 
 ### Pourquoi les ensembles sont efficaces
 
-假设你有N 个独立分类器,每个的精度都是p > 0.5──la majorité du vote est exacte 为:
+- Tu as une idée ?$N$个独立分类器, chaque précision est $p > 0.5$◊ la précision du vote majoritaire 为:
 
-```
-P(majority correct) = sum over k > N/2 of C(N,k) * p^k * (1-p)^(N-k)
+```math
+P(\text{多数预测正确}) = \sum_{k > N/2} \binom{N}{k} p^k (1-p)^{N-k}
 ```
 
 Pour les 21 catégories, la précision moyenne est de 60%, la majorité des voix est d'environ 74%. Si les 101 catégories sont présentes, elles augmentent à 84%.
@@ -132,7 +132,7 @@ Le boosting du gradient augmentera la fonction de perte de puissance à l'échel
 3. Final prediction: F_T(x)
 ```
 
-Pour les pertes d'erreur carrée, les pseudo-résidus sont les résidus réels:`r_i = y_i - F_{t-1}(x_i)`◊ Chaque arbre est en fait un ensemble de fausses couleurs.
+Pour les pertes d'erreur carrée, les pseudo-résidus sont les résidus réels:$r_i = y_i - F_{t-1}(x_i)$◊ Chaque arbre est en fait un ensemble de fausses couleurs.
 
 Le taux d'apprentissage (%) est réduit. Le taux d'apprentissage (%) est réduit.
 

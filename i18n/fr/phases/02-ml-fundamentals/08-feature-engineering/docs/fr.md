@@ -51,7 +51,7 @@ Les nombres primitifs sont très peu utilisés directement dans le modèle.
 
 **Binning：**La relation entre la fonction et le but est non-lineaire mais elle est très utile lors de la fractionnement (par exemple, le groupe d'âge).
 
-**Polynomial features：** Créer x^2、x^3、x1*x2 项── faire en sorte que le modèle de ligne puisse capturer des relations non-lineaires, le prix est de produire plus de fonctionnalités──
+**Polynomial features：** Création $x^2$- Je suis là.$x^3$- Je suis là.$x_1 x_2$ Faire en sorte que le modèle de la ligne puisse capturer les relations non-lineaires, le prix est de produire plus de fonctionnalités.
 
 ### Caractéristiques de la catégorie
 
@@ -69,10 +69,12 @@ Le modèle a besoin de chiffres.
 
 **TF-IDF：**La fréquence inverse du document est la fréquence de la fréquence.
 
-```
-TF(word, doc) = count(word in doc) / total words in doc
-IDF(word) = log(total docs / docs containing word)
-TF-IDF = TF * IDF
+```math
+\begin{aligned}
+\text{TF}(\text{word}, \text{doc}) &= \frac{\text{词在文档中的出现次数}}{\text{文档总词数}} \\
+\text{IDF}(\text{word}) &= \log \frac{\text{文档总数}}{\text{包含该词的文档数}} \\
+\text{TF-IDF} &= \text{TF} \cdot \text{IDF}
+\end{aligned}
 ```
 
 ### 缺失值
@@ -87,7 +89,7 @@ Les données réelles seront vides.
 
 ### Interaction des caractéristiques
 
-Il existe parfois des relations entre les compositions. Il existe des relations entre les compositions. Il existe des relations entre les compositions.
+Il y a parfois des relations entre les composés.$\text{BMI} = \text{体重} / \text{身高}^2$ 有预测力──Interactions de fonctionnalités 会放大 Feature 空间, donc il faut utiliser le domaine de connaissances pour choisir correctement le composé──
 
 ### Sélection de fonctionnalités
 

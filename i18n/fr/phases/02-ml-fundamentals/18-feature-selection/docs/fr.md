@@ -59,8 +59,8 @@ Si une fonctionnalité entre les échantillons  presque pas de changement, il ne
 
  considérez une caractéristique, parmi les 1000 échantillons, il y en a 999 qui sont 0,0― sa variance 接近零― pas de modèle 能用它来区分类别―移除它―
 
-```
-variance(x) = mean((x - mean(x))^2)
+```math
+\text{方差}(x) = \text{均值}\bigl((x - \text{均值}(x))^2\bigr)
 ```
 
 设置一个门️ (exemple 0.01)  丢弃每个变量 低于这个门的特征──                                                                                                                                                                                                                                                
@@ -71,17 +71,17 @@ Utilisation: comme étape de pré-traitement précédant d'autres méthodes, il 
 
 ### Informations mutuelles
 
-L'information mutuelle  mesure la valeur de la fonction X peut réduire en grande partie l'incertitude de la fonction Y visée 
+Informations mutuelles 衡量知道 caractéristique $X$La valeur peut être réduite de manière significative par rapport à l'objectif.$Y$Il y a une certaine incertitude.
 
-```
-I(X; Y) = sum_x sum_y p(x, y) * log(p(x, y) / (p(x) * p(y)))
+```math
+I(X; Y) = \sum_x \sum_y p(x, y) \cdot \log \frac{p(x, y)}{p(x) \cdot p(y)}
 ```
 
-Si X 和 Y 独立, alors p(x, y) = p(x) * p(y), alors log 项为零,I(X; Y) = 0。X 能告诉你越多关于Y的信息,相互信息就越高。
+Si $X$et $Y$独立,则 $p(x, y) = p(x) \cdot p(y)$, par conséquent, le log 项为零,$I(X; Y) = 0$Il y a une autre.$X$Je peux te dire plus sur$Y$Les informations, les informations mutuelles,
 
 Par rapport à la corrélation, les informations mutuelles peuvent être captées par des relations non-lineaires. Une caractéristique peut être correlative à la cible, mais les informations mutuelles sont très élevées, car les relations peuvent être quadratiques ou périodiques.
 
-Pour les caractéristiques continues, on doit d'abord discerner les contenus des contenus.
+Pour les caractéristiques continues, on doit d'abord discerner les contenus des contenus.$\sqrt{n}$Les poubelles ou la règle de Sturges$1 + \log_2 n$)。
 
 ```mermaid
 flowchart LR
@@ -113,14 +113,14 @@ flowchart TD
 
 RFE considérera les interactions de fonctionnalités, car le modèle verra simultanément toutes les fonctionnalités restantes. Le retrait d'une fonctionnalité modifiera l'importance des autres fonctionnalités.
 
-Pour les 500 fonctionnalités, le but est de 10 et c'est 490 fois de formation. Pour les modèles coûteux, c'est très lent.
+成本: tu as besoin de modèle de formation $N - \text{目标}$Pour les 500 fonctionnalités, le but est de 10 fois, c'est de 490 fois de formation. Pour les modèles coûteux, c'est très lent.
 
 ### L1 (Lasso) Régularisation
 
 L1 régularisation 会把 weights 的绝对值加入 Loss Function:
 
-```
-loss = prediction_error + alpha * sum(|w_i|)
+```math
+\text{损失} = \text{prediction\_error} + \alpha \cdot \sum \lvert w_i \rvert
 ```
 
 Les caractéristiques de contrôle des paramètres alpha sont modifiées.
@@ -137,12 +137,10 @@ Limitation: uniquement applicable aux modèles linéaires.
 
 Les arbres de décision et leurs ensembles (forêts aléatoires, augmentation du degré) vont naturellement réduire les impuretés, chaque section réduira les impuretés, la classification utilise Gini ou entropie, la régression utilise la variance, produisent des réductions plus importantes des impuretés, plus important.
 
-Pour les arbres de la forêt:
+Pour qui ?$T$Les arbres de la forêt:
 
-```
-importance(feature_j) = (1/T) * sum over all trees of
-    sum over all nodes splitting on feature_j of
-        (n_samples * impurity_decrease)
+```math
+\text{重要性}(\text{特征}_j) = \frac{1}{T} \sum_{\text{所有树}} \; \sum_{\text{所有基于此特征划分的节点：} \text{特征}_j} (\text{n\_samples} \cdot \text{impurity\_decrease})
 ```
 
 Il fournit un score d'importance normalisé pour chaque fonctionnalité. Il peut traiter automatiquement les relations non-lineaires et les interactions de fonctionnalités.
@@ -517,7 +515,7 @@ Le programme de formation
 | Filter method | “独立为 features 打分” | 一种 feature selection 方法，不训练 model，而是使用统计度量对 features 排名，并孤立地评估每个 feature |
 | Wrapper method | “用 model 挑 features” | 一种 feature selection 方法，通过训练 model 并使用其 performance 作为 selection criterion 来评估 feature subsets |
 | Embedded method | “model 在训练期间选择 features” | 作为 model fitting 一部分发生的 feature selection，例如 L1 regularization 会把 weights 推向零 |
-| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 X 的知识后，关于 Y 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
+| Mutual information | “一个变量能告诉你关于另一个变量的多少信息” | 给定 $X$ 的知识后，关于 $Y$ 的不确定性减少量的度量，能够捕捉线性和非线性 dependencies |
 | Recursive Feature Elimination | “训练、排名、剪枝、重复” | 一种迭代式 wrapper method，会训练 model、移除最不重要的 feature(s)，并重复直到达到 target count |
 | L1 / Lasso regularization | “会消灭 features 的 penalty” | 将 weight 绝对值之和加入 Loss Function，这会把不重要 feature 的 weights 推到精确为零 |
 | Variance threshold | “移除 constant features” | 丢弃在 samples 之间 variance 低于指定 threshold 的 features，过滤掉不携带信息的 features |

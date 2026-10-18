@@ -14,7 +14,7 @@
 -  concevoir un type d'hyperparamètre de réglage  stratégie, par la validation croisée adaptée  éviter de s'adapter à un ensemble de validation 
 
 ##  problématique
-Votre gradient augmentant 模型 a le taux d'apprentissage, le nombre d'arbres, la profondeur maximale, les échantillons min par feuille, le ratio de sous-échantillons et le ratio d'échantillons de colonnes, c'est-à-dire six hyperparametres. Si chacun a 5 valeurs raisonnables, alors la grille a 5^6 = 15,625 espèces de composés.
+Votre gradient augmentant 模型 a le taux d'apprentissage 數字树木、最大深度、minéchantillons par feuille、subéchantillon ratio 和 colonne sample ratio──也就是六个超参数──如果每个都有五个合理取值,那么网就有$5^6 = 15{,}625$Chaque entraînement prend 10 secondes. Toutes les tentatives de reprise nécessitent 43 heures de temps de calcul.
 
 La recherche au réseau est la méthode la plus intuitive, mais aussi la plus mauvaise. La recherche au hasard avec moins de calcul peut être mieux réalisée. L'optimisation bayésienne, en apprenant à partir de l'évaluation passée, améliore également les résultats.
 
@@ -28,7 +28,7 @@ Les paramètres sont des paramètres que l'on apprend dans le processus d'entra�
 | Learning rate | 每次更新的步长 | 0.001 到 1.0 |
 | Number of trees/epochs | 训练时长 | 10 到 10,000 |
 | Max depth | 模型复杂度 | 1 到 30 |
-| Regularization (lambda) | 防止过拟合 | 0.0001 到 100 |
+| Regularization ($\lambda$) | 防止过拟合 | 0.0001 到 100 |
 | Batch size | Gradient 估计噪声 | 16 到 512 |
 | Dropout rate | 被丢弃的 neurons 比例 | 0.0 到 0.5 |
 
@@ -122,7 +122,7 @@ Le taux d'apprentissage est presque toujours l'hyperparamètre le plus important
 | Scheduler | Formula | 何时使用 |
 |-----------|---------|-------------|
 | Step decay | 每 N 个 epochs 乘以 0.1 | 经典 CNN 训练 |
-| Cosine annealing | lr * 0.5 * (1 + cos(pi * t / T)) | 现代默认选择 |
+| Cosine annealing | $\text{lr} \cdot 0.5 \cdot (1 + \cos(\pi t / T))$ | 现代默认选择 |
 | Warmup + decay | 先线性增加，再 cosine decay | Transformers |
 | One-cycle | 在一个 cycle 内先增加再减少 | 快速收敛 |
 | Reduce on plateau | 指标停滞时按因子降低 | 稳妥默认选择 |

@@ -48,10 +48,8 @@ Dans chaque nœud, nous avons un groupe d'échantillons. Nous voulons les sépar
 
 **Gini impurity**Évaluer est: si selon la distribution de classe de ce nœud  donne une étiquette piste d'échantillon de choix, il est mal classé probabilité 
 
-```
-Gini(S) = 1 - sum(p_k^2)
-
-where p_k is the proportion of class k in set S.
+```math
+\text{基尼}(S) = 1 - \sum_k p_k^2 \quad \text{其中 } p_k \text{ 是集合 } S \text{ 中类别 } k \text{ 的占比。}
 ```
 
 Pour les nœuds purs, tous appartiennent à la même classe, Gini = 0. Pour les classes 50/50, Gini = 0,5...
@@ -64,8 +62,8 @@ Gini = 1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48
 
 **Entropy**衡量节 中的信息量(混乱程度) ――Phase 1 Leçon 09 已覆盖──
 
-```
-Entropy(S) = -sum(p_k * log2(p_k))
+```math
+\text{熵}(S) = -\sum_k p_k \log_2(p_k)
 ```
 
 Pour le nœud pur, entropie = 0♦ Pour la fraction binaire 50/50, entropie = 1,0♦
@@ -81,20 +79,21 @@ Entropy = -(0.6 * log2(0.6) + 0.4 * log2(0.4))
 
 **Information gain**est la réduction de l'impureté après la division de l'entropie ou de la Gini).
 
-```
-IG(S, feature, threshold) = Impurity(S) - weighted_avg(Impurity(S_left), Impurity(S_right))
-
-where the weights are the proportions of samples in each child.
+```math
+\begin{aligned}
+& IG(S, \text{特征}, \text{阈值}) = \text{不纯度}(S) - \text{weighted\_avg}(\text{不纯度}(S_{\text{左子节点}}), \text{不纯度}(S_{\text{右子节点}})) \\[4pt]
+& \text{其中，权重是每个子节点的样本占比。}
+\end{aligned}
 ```
 
 L'algorithme de chaque nœud: essayer chaque fonction et chaque seuil possible.`(feature, threshold)`Le groupe de travail
 
 ### Répartition 如何工作
 
-Pour le nœud actuel 上 contient n 个 caractéristiques m 个 échantillons de l'ensemble de données:
+对于当前节上包含 $n$个 caractéristiques$m$个échantillons de données:
 
-1. Pour chaque fonction j ((j = 1 à n):
-   - 按 feature j pour les échantillons 排序
+1. Pour chaque caractéristique$j$(le secteur de l'énergie)$j = 1$À la$n$):
+   -  selon la caractéristique $j$Pour les échantillons 排序
    - L'essai de chaque point de milieu entre les différentes valeurs
    - 计算每个门 的信息获取
 2. 选择 information gain La meilleure fonctionnalité et le seuil
@@ -109,7 +108,7 @@ Si aucune condition ne s'arrête, l'arbre continuera à croître jusqu'à ce que
 
 **Pre-pruning**J'ai arrêté de voir le fruit de l'arbre.
 - Profondeur maximale: lorsque l' arbre atteint une profondeur déterminée, il cesse de se diviser.
-- Primes minimales par feuille: si les prémices d'un nœud sont inférieures à k, alors arrête
+- Primes minimales par feuille: si des échantillons de nœuds sont inférieurs à$k$, alors arrêtez
 - Obtention d'informations minimale: si la meilleure division des impuretés est inférieure à un certain seuil, alors cessez
 - Nœuds de feuilles maximaux: limite le nombre total de feuilles
 
@@ -125,8 +124,8 @@ Pour la régression, la prédiction de la feuille est la moyenne des valeurs cib
 
 **Variance reduction**替代 information gain:
 
-```
-VR(S, feature, threshold) = Var(S) - weighted_avg(Var(S_left), Var(S_right))
+```math
+VR(S, \text{特征}, \text{阈值}) = \text{Var}(S) - \text{weighted\_avg}(\text{Var}(S_{\text{左子节点}}), \text{Var}(S_{\text{右子节点}}))
 ```
 
 选择使变化 降低最多的分化――Tree 会把输入空间 划分为多个区域,并预测一个常数 (平均值) 在每个区域中预测一个常数 (平均值) ――
@@ -155,7 +154,7 @@ Les arbres sont très variés.
 
 **Bagging（bootstrap aggregating）：**Chaque arbre est situé dans un échantillon de bande-annonce.
 
-**Feature randomization：**Pour chaque division, il suffit de considérer un sous-ensemble de caractéristiques aléatoires. Pour la classification, le mot de passe est sqrt(n_façons)
+**Feature randomization：**Lors de chaque division, ne considérez qu'un sous-ensemble de caractéristiques aléatoires.$\sqrt{n_{\text{特征}}}$Pour la régression,$n_{\text{特征}}/3$Cela empêchera tous les arbres de se diviser en une seule et même caractéristique dominante.
 
 关键洞见: Pour de nombreux arbres décorérés 求平均, peut être réduite en cas de biais non accru ⋅ chaque arbre individuel peut se manifester en général, mais ensemble ⋅ très fort ⋅
 
@@ -165,9 +164,8 @@ Les forêts aléatoires 天然提供 caractéristiques de la notation d'importan
 
 **Mean Decrease in Impurity (MDI)：**Pour chaque caractéristique, tous les arbres utilisant cette caractéristique de tous les nœuds  apportent une réduction de l'impureté 总量── dans les fractions plus tôt apportent des caractéristiques de réduction de l'impureté plus importante──
 
-```
-importance(feature_j) = sum over all nodes where feature_j is used:
-    (n_samples_at_node / n_total_samples) * impurity_decrease
+```math
+\text{重要性}(\text{特征}_j) = \sum_{\text{使用特征 } j \text{ 划分的节点}} \frac{n_{\text{节点样本数}}}{n_{\text{总样本数}}} \cdot \text{impurity\_decrease}
 ```
 
 Cette méthode est très rapide (à la fois calculable et facile à utiliser), mais elle a des caractéristiques de grande cardinalité et de nombreux points de fraction possibles.
@@ -349,7 +347,7 @@ En pratique, les arbres augmentés par degré (XGBoost, LightGBM, CatBoost) sont
 
 1. Dans un ensemble de données 2D contenant 3 classes, il est possible de traiter un seul arbre de décision.
 
-2. Pour les arbres de régression  réaliser la réduction de la variance de division ∙∙为 200 个点生成 y = sin(x) + noise,并拟合你的回归树──将树的分别-constante预测与真实曲线一起绘图──
+2. Pour les arbres de régression  réaliser la réduction de la variance de division ∙$y = \sin(x) + \text{噪声}$,并拟合你的回归树──将树的分数-constante预测与真曲线一起绘图──
 
 3. La construction comprend 1、5、10、50 和 200 arbres de forêt aléatoire.
 

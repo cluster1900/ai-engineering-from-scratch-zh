@@ -18,7 +18,7 @@
 
 Vous pensez que selon le nombre de tumeurs, il est maligne ou bénigne. Vous essayez d'utiliser une régression linéaire. Il en sortira 0.3 ‒ 1.7 ‒ 0.5 ‒ 0.5 ‒ 0.7 ‒ très maligne ‒ 0.5 ‒ très bénigne ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ‒ 
 
-La régression logistique résolve ce problème. Elle utilise le même composé de lignes (wx + b), puis, par la fonction sigmoïde, elle se concentre sur (0, 1) 范围内.
+La régression logistique a résolu ce problème. Elle utilise le même composé de lignes ($wx + b$), puis par la fonction sigmoïde, va réduire l'emplacement numérique à (0, 1) 范围内;;
 
 C'est l'un des algorithmes les plus largement utilisés en pratique. Bien qu'il existe une régression, la régression logistique est un algorithme de classification, et non un algorithme de régression.
 
@@ -44,22 +44,22 @@ Classification  nécessite une fonction pour satisfaire les conditions suivantes
 
 La fonction sigmoïde est exactement la même:
 
-```
-sigmoid(z) = 1 / (1 + e^(-z))
+```math
+\sigma(z) = \frac{1}{1 + e^{-z}}
 ```
 
 Sexualité:
-- Quand z est un grand nombre, c'est un peu plus proche de 1.
-- Quand z est un grand nombre négatif,sigmoid(z)  approchant 0
-- Quand z = 0 时,sigmoid(z) = 0,5
+- - Je suis là .$z$C'est une bonne partie du temps.$\sigma(z)$ près de 1
+- - Je suis là .$z$C'est un gros problème.$\sigma(z)$ près de 0
+- - Je suis là .$z = 0$时,$\sigma(z) = 0.5$
 - 输出始终位于 entre 0 et 1 
 - La fonction est simple et facile à utiliser
 
-Il est dérivé de la formule suivante:sigmoid'(z) = sigmoid(z) * (1 - sigmoid(z))
+Il a une forme de dérivé:$\sigma'(z) = \sigma(z) (1 - \sigma(z))$                                                                                                                                                                                                                                                              
 
 ### Régrésion logistique = modèle linéaire + sigmoïde
 
-模型先计算 z = wx + b(= avec régression linéaire 相同), puis appliquer sigmoïde:
+模型先计算 $z = wx + b$(par rapport à la régression linéaire), puis appliquer le sigmoïde:
 
 ```mermaid
 flowchart LR
@@ -70,21 +70,21 @@ flowchart LR
     D -->|No| N[Predict 0]
 ```
 
-输出 p est expliqué comme P(y=1 ∈ x), c'est-à-dire que l'entrée appartient à la classe 1 ∈ X. La limite de décision se trouve à l'emplacement de wx + b = 0, alors que le sigmoïde 输出恰好为0.5 ∈ X.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $p$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $P(y=1 \mid x)$, qui appartient à la classe 1 de probabilité.$wx + b = 0$La position du sigmoïde est donc de 0,5°.
 
 ### Perte de l'entropie croisée binaire
 
 Il existe de nombreux minimums locaux. Il faut utiliser la double entropie croisée (log loss):
 
-```
-Loss = -(1/n) * sum(y * log(p) + (1-y) * log(1-p))
+```math
+\text{损失} = -\frac{1}{n} \sum \left( y \log(p) + (1-y) \log(1-p) \right)
 ```
 
 Pourquoi est-ce que ça marche ?
-- Lorsque y = 1 et p 接近 1 时:log(1) = 0, donc la perte 接近 0(正确,低成本)
-- Lorsque y = 1 et p 接近 0 时:log(0) 接近负无穷, donc la perte 很大(错误,高成本)
-- Lorsque y = 0 et p 接近 0 时:log(1) = 0, donc la perte 接近 0(正确,低成本)
-- Lorsque y = 0 et p 接近 1 时:log(0) 接近负无穷, donc la perte 很大(错误,高成本)
+- - Je suis là .$y=1$且 $p$接近 1 时:$\log(1) = 0$, donc la perte est proche de 0(正确, faible coûts)
+- - Je suis là .$y=1$且 $p$接近 0 时:$\log(0)$接近负无穷, donc la perte 很大(错误,高成本)
+- - Je suis là .$y=0$且 $p$接近 0 时:$\log(1) = 0$, donc la perte est proche de 0(正确, faible coûts)
+- - Je suis là .$y=0$且 $p$接近 1 时:$\log(0)$接近负无穷, donc la perte 很大(错误,高成本)
 
 Pour la régression logistique, cette fonction de perte est concave, ce qui garantit qu'il n'y a qu'un minimum mondial.
 
@@ -92,12 +92,14 @@ Pour la régression logistique, cette fonction de perte est concave, ce qui gara
 
 sigmoïde 搭配 en entropie croisée binaire 时,Gradient 具有简洁形式:
 
-```
-dL/dw = (1/n) * sum((p - y) * x)
-dL/db = (1/n) * sum(p - y)
+```math
+\begin{aligned}
+\frac{\partial L}{\partial w} &= \frac{1}{n} \sum (p - y) \, x \\
+\frac{\partial L}{\partial b} &= \frac{1}{n} \sum (p - y)
+\end{aligned}
 ```
 
-Le gradient de régression linéaire est complètement le même. La différence se trouve dans le p = sigmoïde (wx + b), plutôt que dans le p = wx + b. Le sigmoïde est introduit en non linéaire, mais le gradient est un nouveau règlement.
+Ils ont l'air de la même chose que la régression linéaire.$p = \sigma(wx + b)$, au lieu de $p = wx + b$ la sigmoïde  introduit non-lineaire, mais la réglementation continue de se modifier 
 
 ```mermaid
 flowchart TD
@@ -114,29 +116,29 @@ flowchart TD
 
 Pour les deux caractéristiques, la limite de décision est de satisfaire les conditions suivantes:
 
-```
-w1*x1 + w2*x2 + b = 0
+```math
+w_1 x_1 + w_2 x_2 + b = 0
 ```
 
 Un côté de point est classé pour 1, l'autre côté de point est classé pour 0――régrésion logique 总是产生线性决定界面――如果需要曲的界限,要么添加多项的特征,要么使用非线性模型――
 
 ### Utilisation Softmax  effectuer une classification multi-classe
 
-Régression logistique binaire  traitement de deux classes。 Pour les classes k 个, utilisez la fonction softmax:
+Régression logistique binaire  traitement de deux classes ⋅ pour $k$个 classes, utiliser la fonction softmax:
 
-```
-softmax(z_i) = e^(z_i) / sum(e^(z_j) for all j)
+```math
+\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
 ```
 
-Chaque classe a son propre vecteur de poids. Le modèle pour chaque classe compte un score z_i, puis le softmax va transformer les scores en probabilité totale et pour 1 . La classe de prédiction est la classe la plus probable.
+Chaque classe a son propre vecteur de poids.$z_i$, puis softmax va transformer les scores en probabilité totale et pour 1 . La classe de prévision est la classe la plus probable .
 
 La fonction de perte 变为 entropie croisée catégorique:
 
-```
-Loss = -(1/n) * sum(sum(y_k * log(p_k)))
+```math
+\text{损失} = -\frac{1}{n} \sum \sum_k y_k \log(p_k)
 ```
 
-Parmi eux y_k pour la vraie classe 为 1, pour toutes les autres classes 为 0(une codage chaude)
+Parmi eux $y_k$Pour la vraie classe = 1, pour toutes les autres classes = 0 ((une seule codage chaude))
 
 ### Les mesures d'évaluation
 
@@ -150,18 +152,18 @@ Dans le seul ordre d'exactitude insuffisant, un modèle de 95% négatif 5% posit
 | Actually Negative | False Positive (FP) | True Negative (TN) |
 
 **Precision**: parmi tous les exemples de prévisions positives, combien sont réellement positives ?
-```
-Precision = TP / (TP + FP)
+```math
+\text{精确率} = \frac{TP}{TP + FP}
 ```
 
 **Recall**(Sensibilité): Parmi tous les exemples positifs, combien avons-nous pris ?
-```
-Recall = TP / (TP + FN)
+```math
+\text{召回率} = \frac{TP}{TP + FN}
 ```
 
 **F1 Score**: précision 和 rappel de la moyenne harmonieuse──équilibre deux mesures──
-```
-F1 = 2 * (Precision * Recall) / (Precision + Recall)
+```math
+F_1 = 2 \cdot \frac{\text{精确率} \cdot \text{召回率}}{\text{精确率} + \text{召回率}}
 ```
 
  priorité:
@@ -505,7 +507,7 @@ Le cours est ouvert à:
 
 ## 练习
 
-1. 生成一个不是线性分离的数据集 (例如两个同心圆) ――训练物流回归并观察它的失败――然后添加多项式特征(x1^2、x2^2、x1*x2)并再次训练――展示精度 得到提升──
+1. 生成一个不是线性分离的数据集 (例如两个同心圆) ⋅ entraîne la régression logistique 并观察它的失败──然后添加多项式特性($x_1^2, x_2^2, x_1 x_2$)并再训练――展示 精度 得到提升――
 2. Pour le modèle softmax de 3 classes  réaliser une matrice de confusion multi-classe ⋅ calcul par classe de précision 和 rappel ⋅ Quelle classe la plus difficile à classer ?
 3. De la conception de la courbe ROC à partir de zéro, les valeurs de 100 seuils entre 0 et 1 sont calculées selon le taux positif vrai et le taux faux positif.
 
@@ -514,14 +516,14 @@ Le cours est ouvert à:
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
 | Logistic regression | “用于 Classification 的 Regression” | 一个 linear model 后接 sigmoid function，用于输出 class probabilities |
-| Sigmoid function | “S-curve” | function 1/(1+e^(-z))，将任意实数映射到 (0, 1) 范围 |
-| Binary cross-entropy | “Log loss” | Loss Function -[y*log(p) + (1-y)*log(1-p)]，会严厉惩罚自信但错误的预测 |
+| Sigmoid function | “S-curve” | function $1/(1+e^{-z})$，将任意实数映射到 (0, 1) 范围 |
+| Binary cross-entropy | “Log loss” | Loss Function $-[y \log(p) + (1-y) \log(1-p)]$，会严厉惩罚自信但错误的预测 |
 | Decision boundary | “分界线” | 模型输出概率等于 0.5 的 surface，用于分隔 predicted classes |
 | Softmax | “Multi-class sigmoid” | 将 scores 的 Vector 转换为总和为 1 的概率的 function |
-| Precision | “选中的有多少是相关的” | TP / (TP + FP)，positive predictions 中实际为 positive 的比例 |
-| Recall | “相关的有多少被选中” | TP / (TP + FN)，actual positives 中被模型正确识别的比例 |
-| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：2*P*R / (P+R) |
+| Precision | “选中的有多少是相关的” | $TP / (TP + FP)$，positive predictions 中实际为 positive 的比例 |
+| Recall | “相关的有多少被选中” | $TP / (TP + FN)$，actual positives 中被模型正确识别的比例 |
+| F1 score | “平衡 Accuracy” | precision 和 recall 的 harmonic mean：$2PR / (P+R)$ |
 | Confusion matrix | “错误分解” | 展示每个 class pair 的 TP、TN、FP、FN 计数的表格 |
 | Threshold | “cutoff” | 超过该 probability value 时模型预测 class 1（默认 0.5，可调） |
-| One-hot encoding | “类别的二进制列” | 将 class k 表示为一个 Vector：除位置 k 为 1 外，其余位置均为 0 |
-| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 k 个 classes 的扩展，使用 one-hot encoded labels |
+| One-hot encoding | “类别的二进制列” | 将 class $k$ 表示为一个 Vector：除位置 $k$ 为 1 外，其余位置均为 0 |
+| Categorical cross-entropy | “Multi-class log loss” | binary cross-entropy 到 $k$ 个 classes 的扩展，使用 one-hot encoded labels |

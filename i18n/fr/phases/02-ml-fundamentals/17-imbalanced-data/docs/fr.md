@@ -35,25 +35,27 @@ La précision échouera, car elle traite toutes les prédictions correctes de la
 | Actually Positive | 0 (TP) | 10 (FN) |
 | Actually Negative | 0 (FP) | 990 (TN) |
 
-La précision est de 0 + 990) / 1000 = 99,0%
+```math
+\text{准确率} = (0 + 990) / 1000 = 99.0\%
+```
 
 Le modèle a capturé le 0 fois la fraude, la 0 maladie, la 0 défaut, mais l'exactitude montre 99% de l'exactitude.
 
 ### Un meilleur indicateur
 
-**Precision**= TP / (TP + FP) ⋅ parmi tous les échantillons marqués comme positifs, il y a vraiment beaucoup de positifs ?
+**Precision**- Je suis là.$\text{TP} / (\text{TP} + \text{FP})$ Dans tous les échantillons marqués comme positifs, il y a vraiment beaucoup de positifs ?
 
-**Recall**= TP / (TP + FN) ⋅ Dans tous les exemples de vrais positifs, nous avons saisi combien ?
+**Recall**- Je suis là.$\text{TP} / (\text{TP} + \text{FN})$Dans tous les exemples de vrais positifs, nous avons pris combien ?
 
-**F1 Score**= 2 * précision * rappel / (precision + rappel) ――调和平均数──相比算术平均数, il sera plus sévère地惩罚 précision 和 rappel 之间极端不平衡──
+**F1 Score**- Je suis là.$2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$◊调和平均数―― par rapport au calcul moyen, il sera plus sévère à punir la précision et le rappel 极端不平衡──
 
-**F-beta Score**= (1 + bêta^2) * précision * rappel / (bêta^2 * précision + rappel)。 lorsque bêta > 1 时, rappel 更重要。当 bêta < 1 时, précision 更重要。 F2 在欺诈检测中很常见(漏掉欺诈比误报更糟)。
+**F-beta Score**- Je suis là.$(1 + \beta^2) \cdot \text{精确率} \cdot \text{召回率} / (\beta^2 \cdot \text{精确率} + \text{召回率})$Je suis là.$\beta > 1$Je me souviens plus important.$\beta < 1$时, précision, 更重要. F2 在欺诈检测中很常见.
 
 **AUPRC**(Area Under Precision-Retall Curve)── similaire à AUC-ROC, mais à l'égard des données déséquilibrées, la proportion de la classe positive du classifiant AUPRC est comparable à celle de la classe positive.
 
-**Matthews Correlation Coefficient**= (TP * TN - FP * FN) / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))。 la gamme va de -1 à +1── seulement lorsque le modèle sur deux catégories se démarque bien, il donne un bon résultat.
+**Matthews Correlation Coefficient**- Je suis là.$(\text{TP} \cdot \text{TN} - \text{FP} \cdot \text{FN}) / \sqrt{(\text{TP}+\text{FP})(\text{TP}+\text{FN})(\text{TN}+\text{FP})(\text{TN}+\text{FN})}$ La gamme de -1 à +1  est élevée seulement lorsque le modèle se démarque bien dans les deux catégories  Même si la différence de taille des catégories est grande, il est également possible de maintenir l'équilibre 
 
-Pour le modèle: précision = 0/0(non défini, habituellement en 0), rappel = 0/10 = 0,F1 = 0,MCC = 0── ces indicateurs permettent de bien identifier ce modèle sans valeur──
+Pour le modèle de l'étape précédente:$\text{精确率} = 0/0$(未定義, habituellement设为 0),$\text{召回率} = 0/10 = 0$- Je suis désolé .$\text{F1} = 0$- Je suis désolé .$\text{MCC} = 0$ Ces indicateurs permettent de bien identifier le modèle sans valeur
 
 ### Inéquilibre des données
 
@@ -79,9 +81,9 @@ Le modèle est en suréchantillonnage et reproduit le modèle minoritaire exista
 
 SMOTE va créer de nouveaux modèles de minorité synthétique, ces modèles semblent raisonnables, mais pas de sous-modèles.
 
-1. Pour chaque échantillon minoritaire, on trouve son voisin le plus proche parmi les autres échantillons minoritaires.
+1. Pour chaque minorité $x$Je l'ai trouvé dans d'autres modèles minoritaires.$k$个近邻
 2. Choisissez un voisin
-3. Créer un nouveau modèle sur la ligne entre x et le voisin
+3. Dans le$x$Créer un nouveau modèle sur les lignes entre les voisins
 
 公式:`new_sample = x + random(0, 1) * (neighbor - x)`
 
@@ -137,24 +139,24 @@ flowchart LR
 Au lieu de modifier les données, il est préférable de modifier le modèle de traitement de l'erreur.
 
 Pour un modèle contenant 950 questions négatives et 50 questions positives:
-- classe négative 的权重 = n_samples / (2 * n_negative) = 1000 / (2 * 950) = 0,526
-- classe positive 的权重 = n_samples / (2 * n_positive) = 1000 / (2 * 50) = 10,0
+- classe négative = $n_{\text{样本数}} / (2 \cdot n_{\text{负类}}) = 1000 / (2 \cdot 950) = 0.526$
+- classe positive = $n_{\text{样本数}} / (2 \cdot n_{\text{正类}}) = 1000 / (2 \cdot 50) = 10.0$
 
 classe positive  obtient 19 倍权重──误分类 错分类 错分类 错分类 错分类 错分类 19 负类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错分类 错 错分类 错 错分类 错 错 错 分类 错分类 错 错 错 错 错 负类 错 错 负类 错 错 错 负类 错 错 错 错 负 错 负 类 错 错 错 错 负 错 负 类 错 错 错 错 错 负 负 负 类 错 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负 负
 
 Dans la régression logistique, cela modifie la fonction Perte:
 
-```
-weighted_loss = -sum(w_i * [y_i * log(p_i) + (1-y_i) * log(1-p_i)])
+```math
+\text{weighted\_loss} = -\sum \bigl( w_i \cdot [y_i \log(p_i) + (1-y_i) \log(1-p_i)] \bigr)
 ```
 
-Parmi eux, il y a des échantillons qui dépendent de la catégorie.
+Parmi eux $w_i$取决于样本 $i$Les classes de la classe
 
 Les poids de classe sont en termes d'expectative et de suréchantillonnage en termes d'équivalence mathématique, mais ne créent pas de nouveaux points de données. Cela les rend plus rapides et évite le risque de suradaptation de l'échantillon de répétition.
 
 ### Réglage du seuil
 
-La majorité des classifiateurs va produire une probabilité. La valeur de prédiction est de 0,5. Si P (positif) >= 0,5, la prédiction est positive.
+La majorité des classifiateurs va produire une probabilité.$P(\text{正类}) \ge 0.5$, la prédiction est positive, mais 0.5 est arbitraire, la valeur optimale est généralement beaucoup plus faible.
 
 Le processus:
 1. 训练一个模型
@@ -172,7 +174,7 @@ flowchart LR
     E --> F[Use in Production]
 ```
 
-Un modèle peut être classé comme non-frauduceur pour une transaction frauduleuse P (fraud) = 0,15♦ en valeur de 0,5°, il sera classé comme non-frauduceur. En valeur de 0,10°, il sera correctement saisi.
+Un modèle pourrait être une transaction frauduleuse .$P(\text{欺诈}) = 0.15$在值 0.5 下, elle sera classée comme non-frauduceuse在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle sera correctement saisie在值 0.10 下, elle est correctement saisie值 0.10 下, elle est correctement saisie值 0.10 值 0.10   
 
 ### Un apprentissage peu coûteux
 
@@ -180,8 +182,8 @@ Les poids de classe ne sont pas une forme de coût unifié, mais une distributio
 
 | | Predict Positive | Predict Negative |
 |--|---|---|
-| Actually Positive | 0 (correct) | C_FN = 100 |
-| Actually Negative | C_FP = 1 | 0 (correct) |
+| Actually Positive | 0 (correct) | $C_{\text{FN}} = 100$ |
+| Actually Negative | $C_{\text{FP}} = 1$ | 0 (correct) |
 
 Le coût de la fraude par défaut est supérieur à celui d'une erreur par défaut.
 

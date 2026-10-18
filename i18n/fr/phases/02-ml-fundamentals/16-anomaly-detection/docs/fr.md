@@ -82,7 +82,7 @@ pratique, le meilleur système se combine entre les deux: détection non supervi
 
 ### Z-Score 方法
 
-La méthode la plus simple est de calculer la moyenne et l'écart standard de chaque caractéristique.
+La méthode la plus simple est de calculer la moyenne de chaque caractéristique et l'écart standard.$k$个 déviations standards 的点──
 
 ```text
 z_score = (x - mean) / std
@@ -148,11 +148,11 @@ flowchart TD
 
 Score anormal basé sur la longueur moyenne du chemin de tous les arbres, et la longueur de chemin de recherche binaire aléatoire de l'arbre  pour effectuer la normalisation:
 
-```
-score(x) = 2^(-average_path_length(x) / c(n))
+```math
+\text{分数}(x) = 2^{-\text{average\_path\_length}(x) / c(n)}
 ```
 
-Parmi eux `c(n)`est n 个 échantillons de longueur de cheminement attendue──Score 接近 1 表示异常──Score 接近 0.5 表示正常──Score 接近 0 表示非常正常(位于密集集集深处)。
+Parmi eux `c(n)`Oui $n$个样本的预期路径长度──Score 接近 1 表示异常──Score 接近 0.5 表示正常──Score 接近 0 表示非常正常(位于密集集集深处)。
 
 **优点：**没有分布假设──适用于高尺寸──扩展性好(由于每棵树使用子样本,所以相对于样本大小是子线性)──处理混合特征类型──
 
@@ -168,7 +168,7 @@ Parmi eux `c(n)`est n 个 échantillons de longueur de cheminement attendue─�
 LOF compare la densité locale entourant un certain point à celle de ses voisins, une densité qui se situe dans une région rare, mais qui est entourée de régions denses, ce point est anormal.
 
 **工作方式：**
-1. Pour chaque point, trouver ses voisins les plus proches
+1. Pour chaque point, trouvez-le.$k$voisins les plus proches
 2. 计算 local densité de disponibilité (neighborhood has多密)
 3. Comparer la densité de chaque point avec celle de ses voisins
 4. Si la densité d'un point est inférieure à celle de ses voisins, il est plus éloigné.
@@ -182,7 +182,7 @@ LOF compare la densité locale entourant un certain point à celle de ses voisin
 
 **优点：**检测 local anomalies  dans son voisinage de zones inhabituelles, même si elles ne sont pas inhabituelles dans le monde entier  Approprié pour les groupes de densités différentes
 
-**缺点：**Dans les grandes données, la mise en œuvre est lente.
+**缺点：**Dans les grandes collections de données, la mise en œuvre est lente.$O(n^2)$Pour le$k$Dans les dimensions très élevées, la malédiction de la dimensionnalité affectera les calculs de distance.
 
 ### Par rapport à
 
@@ -199,7 +199,7 @@ LOF compare la densité locale entourant un certain point à celle de ses voisin
 
 - **Extreme class imbalance.**Si les anomalies représentent 0,1%, le contenu de la prédiction est "normal" et obtient une précision de 99,9%.
 - **AUROC 具有误导性。**Dans un déséquilibre grave, même dans les seuils réels, l'AUROC peut aussi paraître mal.
-- **更好的 metrics：**Précision@k(top k 被标记项中的多少是真异常) 、AUPRC(précision-recall curve 下面积), ainsi que dans le taux de faux positifs fixe 下的回忆──
+- **更好的 metrics：**Précision@k(top $k$Il y a des anomalies réelles dans les éléments marqués (AUPRC, courbe de rappel de précision, surface), ainsi que dans le taux de rappel de faux positifs,
 
 ```mermaid
 flowchart LR
@@ -318,7 +318,7 @@ class IsolationForest:
         return scores
 ```
 
-Facteur de normalisation `c(n)`est contenu dans n 个元素的二进制搜索树 中一次失败搜索的预期路径长度──它等于`2 * H(n-1) - 2*(n-1)/n`, parmi lesquels `H`C'est un nombre harmonieux. Cette normalisation permet de comparer les scores entre différents ensembles de données.
+Facteur de normalisation `c(n)`est en contenu$n$个 elements 个元素 的二进制搜索树 中一次失败搜索 的预期路径长度──它等于 `2 * H(n-1) - 2*(n-1)/n`, parmi lesquels `H`C'est un nombre harmonieux. Cette normalisation permet de comparer les scores entre différents ensembles de données.
 
 ### Démo
 
@@ -434,7 +434,7 @@ Dans les deux cas, le seuil optimal dépend du rapport de coûts entre faux posi
 
 2. **Multivariate anomalies.** Créer des données 2D, dont chacune des caractéristiques 单独看都像正常, mais le rassemblement est anormal (par exemple, loin des points de diagonale du cluster principal)  présenter chaque caractéristique du Z-score va rater ces points, mais Isolation Forest 能捕捉它们──
 
-3. **从零实现 LOF.**Utiliser les voisins les plus proches  réaliser Local Outlier Factor                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+3. **从零实现 LOF.**Utiliser les voisins les plus proches  réaliser Local Outlier Factor   utiliser$k=10$et $k=50$- Je suis désolé .$k$Comment le choix affecte-t-il le résultat ?
 
 4. **Streaming Anomaly Detection.**Modifier le détecteur de Z-score, le rendre en streaming en mode travail: avec le nouveau point d'arrivée, la moyenne de fonctionnement et la variance sont modifiées.
 
@@ -449,10 +449,10 @@ Dans les deux cas, le seuil optimal dépend du rapport de coûts entre faux posi
 | Contextual anomaly | "normal 值，错误上下文" | 一个在给定上下文（时间、位置等）下异常、但在另一个上下文中可能 normal 的 observation |
 | Isolation Forest | "用 random splits 找 outliers" | 一种 random trees 的 ensemble，它能用比 normal points 更少的 splits 隔离 anomalies |
 | Local Outlier Factor | "把 density 和 neighbors 比较" | 一种标记 local density 明显低于其 neighbors density 的点的方法 |
-| Z-score | "距离 mean 的 standard deviations 数" | (x - mean) / std，用 standard deviation 为单位衡量某个点距离中心有多远 |
-| IQR | "Interquartile range" | Q3 - Q1，衡量数据中间 50% 的 spread，用于 robust outlier detection |
+| Z-score | "距离 mean 的 standard deviations 数" | $(x - \text{均值}) / \text{标准差}$，用 standard deviation 为单位衡量某个点距离中心有多远 |
+| IQR | "Interquartile range" | $Q3 - Q1$，衡量数据中间 50% 的 spread，用于 robust outlier detection |
 | Contamination | "预期 anomalies 比例" | 一个 hyperparameter，用于告诉 detector 应该将数据中多大比例标记为 anomalous |
-| Precision@k | "top k flags 中有多少是真的" | 只在 k 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
+| Precision@k | "top k flags 中有多少是真的" | 只在 $k$ 个最可疑点上计算的 precision，适用于 imbalanced Anomaly Detection |
 | AUPRC | "Precision-recall curve 下的面积" | 一个汇总所有 thresholds 下 precision-recall 表现的 metric，对 imbalanced data 比 AUROC 更好 |
 
 ## 延伸阅读

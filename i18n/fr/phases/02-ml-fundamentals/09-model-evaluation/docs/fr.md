@@ -81,11 +81,11 @@ flowchart TB
     Fold5 --> R
 ```
 
-1. Divisez les données en K 个大小相等的折叠
-2. Pour chaque pli, dans K-1 个 plies 上练, et le reste plies 上验证
-3. Pour les scores de validation K 个 求平均
+1. Les données seront détachées$K$个大小相等 de plis
+2. Pour chaque pli, dans$K-1$个 plies 上训练, et le reste plié 上验证
+3. Pour le$K$个 résultats de validation 求平均
 
-K=5 ou K=10 est une sélection standard. Chaque point de données a été utilisé pour la validation une fois.
+$K=5$Ou $K=10$C'est un standard de sélection. Chaque point de données est utilisé pour la validation une fois.
 
 **Stratified K-fold**Dans chaque pli, conservez la distribution de classe. Si votre ensemble de données est de 70% de classe A et de 30% de classe B, alors chaque pli conserverait le même ratio.
 
@@ -100,18 +100,18 @@ K=5 ou K=10 est une sélection standard. Chaque point de données a été utilis
 
 On peut obtenir tous les autres indicateurs de cette Matrice:
 
-- **Accuracy**= (TP + TN) / (TP + TN + FP + FN)。 pré测正确的比例──当类 不平衡时会产生误导──
-- **Precision**= TP / (TP + FP) ―― parmi tous les objets prévus positifs, y a-t-il vraiment beaucoup de positifs ?
-- **Recall**(sensitivité) = TP / (TP + FN) ―― parmi tous les vrais positifs, nous avons saisi combien?
-- **F1 score**= 2 * précision * rappel / (precision + rappel)。 précision 和 rappel mean harmonic。当二者都不明显更重要时,用它来平衡两者──
+- **Accuracy**- Je suis là.$(TP + TN) / (TP + TN + FP + FN)$◊ prédiction de la proportion correcte.
+- **Precision**- Je suis là.$TP / (TP + FP)$◊ Dans tous les cas de prévision positive, combien sont réellement positifs ? ◊ faux positifs ¢ haute utilisation (par exemple, filtre à spam, marquer le message réel comme spam) ◊
+- **Recall**(sensibilité) = $TP / (TP + FN)$◊ Parmi tous les vrais positifs, nous avons saisi combien ?
+- **F1 score**- Je suis là.$2 \cdot \text{精确率} \cdot \text{召回率} / (\text{精确率} + \text{召回率})$△ précision et rappel du sens harmonieux── lorsque les deux sont plus importants, utilisez-les pour équilibrer les deux──
 - **AUC-ROC**:Receiver Operating Characteristic curve 下的面积── elle est située dans différents seuils de classification. Elle est située dans différents seuils de classification. Elle est située dans les deux sens. Elle est située dans le tableau de la courbe de la valeur de la valeur positive. Elle est située dans le tableau de la valeur positive. Elle est située dans le tableau de la valeur positive.
 
 ### Regression indice
 
-- **MSE**(Erreur carré moyenne) = moyenne (y_true - y_pred) ^2)
-- **RMSE**(Erreur carrée de la racine) = sqrt(MSE)。 avec la variable cible 单位相同──比 MSE 更容易解释──
-- **MAE**(Méthode d'erreur absolue) = moyenne de l'erreur - y_predition)
-- **R-squared**= 1 - SS_res / SS_tot, dont SS_res = somme(((y_true - y_pred) ^2), SS_tot = somme((((y_true - y_mean) ^2)。 représente le modèle 解释了多少方差──R^2 = 1.0 表示完美──R^2 = 0.0 表示模型 并不比总是预测平均值更好──如果模型比预测均还差,R^2 可能为负──
+- **MSE**(Erreur moyenne carré)$\text{均值}((y_{\text{true}} - y_{\text{pred}})^2)$◊ en termes de mesure de la grande différence ◊ en termes de sensibilité aux excédents ◊
+- **RMSE**(Erreur de la racine moyenne carrée) = $\sqrt{\text{MSE}}$◊ Avec la variable cible ∞ identique ∞ par rapport à MSE ∞ plus facile à expliquer ∞
+- **MAE**(Erreur absolue moyenne)$\text{均值}(\lvert y_{\text{true}} - y_{\text{pred}} \rvert)$◊ L'économie de marché est plus stable que les échanges monétaires.
+- **R-squared**- Je suis là.$1 - SS_{\text{res}} / SS_{\text{tot}}$, parmi lesquels $SS_{\text{res}} = \sum (y_{\text{true}} - y_{\text{pred}})^2$- Je suis désolé .$SS_{\text{tot}} = \sum (y_{\text{true}} - y_{\text{均值}})^2$◊ Expliquer le modèle ◊ Expliquer le nombre de différences$R^2 = 1.0$Je veux dire parfait.$R^2 = 0.0$Indiquer que le modèle n'est pas meilleur que la moyenne de prévision.$R^2$Peut-être pour le négatif.
 
 ### Curves d'apprentissage
 
@@ -665,10 +665,10 @@ Le cours est ouvert à:
 |------|----------------|----------------------|
 | Overfitting | “记住了 training data” | model 捕捉了 training data 中的噪声，在 training 上表现好，但在 unseen data 上表现差 |
 | Cross-validation | “在不同子集上测试” | 系统地轮换用于 validation 的数据部分，并对所有轮换的结果求平均 |
-| Precision | “预测为 positive 的里面有多少是正确的” | TP / (TP + FP)：positive predictions 中实际为 positive 的比例 |
-| Recall | “我们找到了多少真实 positives” | TP / (TP + FN)：actual positives 中被正确识别出来的比例 |
+| Precision | “预测为 positive 的里面有多少是正确的” | $TP / (TP + FP)$：positive predictions 中实际为 positive 的比例 |
+| Recall | “我们找到了多少真实 positives” | $TP / (TP + FN)$：actual positives 中被正确识别出来的比例 |
 | AUC-ROC | “model 区分类别的能力有多好” | 在所有 thresholds 下，true positive rate 与 false positive rate 曲线下的面积，范围从 0.5（随机）到 1.0（完美） |
-| R-squared | “解释了多少方差” | 1 -（squared residuals 之和 / total sum of squares）：model 捕捉到的 target variance 比例 |
+| R-squared | “解释了多少方差” | $1 - (\text{残差平方和} / \text{总平方和})$：model 捕捉到的 target variance 比例 |
 | Data leakage | “model 作弊了” | 在 training 期间使用了 prediction time 不可用的信息，导致 evaluation 过于乐观 |
 | Learning curve | “数据更多时 performance 如何变化” | training 和 validation scores 相对于 training set size 的图，用来揭示 underfitting 或 overfitting |
 | Stratified split | “保持 class ratios 平衡” | split 数据时，让每个 subset 中各 class 的比例与完整 dataset 相同 |

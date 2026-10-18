@@ -26,36 +26,36 @@ Ceci n'est pas seulement applicable à de simples problèmes. La régression lin
 
 ### Modèle
 
-Régrésion linéaire  présupposer qu'il existe une relation linéaire entre l'entrée (x) et la sortie (y):
+Regression linéaire 假设 entrée ($x$) par rapport à la production ($y$)  entre les deux sexes:
 
-```
+```math
 y = wx + b
 ```
 
-- `w`(poids/inclinaison): lorsque x augmenté 1 时, y 改变多少
-- `b`(bias/intercept): lorsque x = 0 时,y 的值
+- `w`(poids/inclinaison):当 $x$增加 1 时,$y$ changer combien
+- `b`(vices/interceptions):当 $x = 0$时,$y$Value de la
 
 Pour de nombreuses entrées (features), il s'étend à:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
-Ou écrire en forme vectorielle:`y = w^T * x + b`
+Ou écrire en forme vectorielle:$y = w^T x + b$
 
-目標: trouver la valeur de w 和 b, faire prévoir de y dans tous les exemples de formation 上尽可能接近真实 y。
+目标: trouver $w$et $b$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $y$Dans tous les exemples de formation , le plus possible , c' est de se rapprocher de la réalité .$y$Il y a une autre.
 
 ### Fonction de coût (erreur moyenne carré)
 
 如何衡量尽可能接近? Vous avez besoin d'un seul chiffre pour indiquer la prédiction d'avoir plusieurs erreurs.
 
-```
-MSE = (1/n) * sum((y_predicted - y_actual)^2)
+```math
+\text{MSE} = \frac{1}{n} \sum (y_{\text{预测值}} - y_{\text{实际值}})^2
 ```
 
 Pourquoi faut-il squadrée? Il y a deux raisons. Premièrement, il punit les gros défauts plus que les petits défauts.
 
-La fonction de coût va former une courbe. Pour un seul poids w 和 bias b, le MSE 曲面 ressemble à un bol.
+La fonction de coût formera une forme de coupe pour un seul poids.$w$和 préjugé $b$Le fond du bol est la plus petite position du MSE.
 
 ### Descent graduel
 
@@ -74,18 +74,22 @@ flowchart TD
 
 Les gradés vous diront deux choses: chaque paramètre devrait se déplacer dans quelle direction, et combien.
 
-Pour les émissions de l'émission de l'année:
+Pour le$\hat{y} = wx + b$Les émissions de gaz:
 
-```
-dMSE/dw = (2/n) * sum((y_hat - y) * x)
-dMSE/db = (2/n) * sum(y_hat - y)
+```math
+\begin{aligned}
+\frac{\partial \text{MSE}}{\partial w} &= \frac{2}{n} \sum (\hat{y} - y) \, x \\
+\frac{\partial \text{MSE}}{\partial b} &= \frac{2}{n} \sum (\hat{y} - y)
+\end{aligned}
 ```
 
 更新规则:
 
-```
-w = w - learning_rate * dMSE/dw
-b = b - learning_rate * dMSE/db
+```math
+\begin{aligned}
+w &= w - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial w} \\
+b &= b - \text{learning\_rate} \cdot \frac{\partial \text{MSE}}{\partial b}
+\end{aligned}
 ```
 
 Rate d'apprentissage 控制步长──太大:会越过最小值并发散──太小:training 会耗时很久──典型起始值: 0.01、0.001 或 0.0001──
@@ -94,18 +98,18 @@ Rate d'apprentissage 控制步长──太大:会越过最小值并发散──�
 
 Special pour la régression linéaire, une formule directe peut donner les poids optimaux dans les cas sans aucun génération:
 
-```
-w = (X^T * X)^(-1) * X^T * y
+```math
+w = (X^T X)^{-1} X^T y
 ```
 
-Il est très adapté à un petit ensemble de données. Pour un grand ensemble de données, il est recommandé de faire une descente graduelle, car l'inversion de la matrice est une complexion numérique.
+Il a traversé la Matrice, un pas en avant.$w$Pour les grands ensembles de données (environ plusieurs millions de lignes ou plusieurs milliers de caractéristiques), il est préférable de recommander la descente de la gradience, car l'inversion de la matrice est une caractéristique de la complexité numérique.$O(n^3)$Il y a une autre.
 
 ### Régrésion linéaire multiple
 
 Pour de nombreuses caractéristiques, le modèle est transformé en:
 
-```
-y = w1*x1 + w2*x2 + ... + wn*xn + b
+```math
+y = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b
 ```
 
 Toutes les méthodes de travail sont les mêmes: MSE est une fonction de coût, la descente de gradient, la même période de mise à jour de tous les poids. La seule différence est que vous êtes adapté à un hyperplane, et non à une ligne.
@@ -116,36 +120,38 @@ L'échelle des caractéristiques est très importante ici. Si une caractéristiq
 
 Si la relation n'est pas linéaire, vous pouvez toujours créer des caractéristiques polynomielles en utilisant la régression linéaire:
 
-```
-y = w1*x + w2*x^2 + w3*x^3 + b
+```math
+y = w_1 x + w_2 x^2 + w_3 x^3 + b
 ```
 
-Ceci est toujours une régression linéaire, car le modèle des poids (w1, w2, w3) est linéaire.
+Ceci est encore une régression linéaire, parce que le modèle est à l'égard des poids ($w_1, w_2, w_3$Tu l'as juste utilisé.$x$Les caractéristiques non linéaires de la
 
 Les polynômes de plus haut niveau peuvent s'adapter à des courbes plus complexes, mais aussi à des risques de sur-adaptation.
 
 ### R-quadrés
 
-MSE  vous dit que vous avez beaucoup d'écran, mais ce chiffre dépend de la taille de y. R-quadré (R^2)  fournit un indicateur de mesure non dépendant de la taille:
+MSE vous dit que vous avez beaucoup de choix, mais ce chiffre dépend de$y$La taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de la taille de$R^2$)  fournir un indicateur de mesure non dépendant de la mesure:
 
-```
-R^2 = 1 - (sum of squared residuals) / (sum of squared deviations from mean)
-    = 1 - SS_res / SS_tot
+```math
+\begin{aligned}
+R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} \\
+&= 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}
+\end{aligned}
 ```
 
-- R^2 = 1,0:完美预测
-- R^2 = 0,0: modèle pas mieux que chaque fois
-- R^2 < 0,0:modèle 比预测 moyenne 更差
+- $R^2 = 1.0$:完美预测
+- $R^2 = 0.0$Le modèle n'est pas meilleur que chaque fois.
+- $R^2 < 0.0$:modèle 比预测 moyenne 更差
 
 ### Régularisation 预览 (régrésion de la côte)
 
 Lorsque vous avez beaucoup de caractéristiques, le modèle peut être distribué par des poids plus importants pour surcharger.
 
-```
-Cost = MSE + lambda * sum(w_i^2)
+```math
+\text{代价} = \text{MSE} + \lambda \sum w_i^2
 ```
 
-惩罚项会抑制较大的重量──hyperparameter lambda 控制权衡: lambda 越高,重量 越小,规范化 越强──后课程会深入讲解这一点──现在只需要知道它存在,以及为什么它有帮助──
+惩罚项会抑制 les poids plus importants.$\lambda$控制权衡:$\lambda$越高,重量 越小,régularisation 越强── les cours suivants vont approfondir ce point── maintenant il suffit de savoir qu'il existe, ainsi que pourquoi il est utile──
 
 ## Construction
 
@@ -521,24 +527,24 @@ Le cours est ouvert à:
 ## 练习
 
 1. 实现 batch gradient descent, stochastic gradient descent (SGD) et mini-batch gradient descent, dans le même ensemble de données, comparer la vitesse de réception à la même vitesse.
-2. De la fonction cube (y = ax^3 + bx^2 + cx + d + bruit) 生成数据──拟合度 1、3 和 10 的多項式──比较训练 R^2 和测试 R^2──到哪个度时过匹配 变得明显?
-3. 实现 Lasso regression(L1 régulation: pénalité * alpha sum *(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+2. à partir de la fonction cube ($y = ax^3 + bx^2 + cx + d + \text{噪声}$) 生成数据──拟合度1、3 和 10 de polynomies──comparer la formation $R^2$et test $R^2$Dans quelle mesure le surcoût est-il devenu évident ?
+3. 实现 Lasso régression  L1 régularisation:$\text{惩罚项} = \alpha \sum \lvert w_i \rvert$• Dans les différents aspects de la formation, quels sont les poids qui seront réduits à zéro, et quelles sont les différences avec Ridge?
 
 ## 关键术语
 
 | Term | 人们常说 | 实际含义 |
 |------|----------------|----------------------|
-| Linear regression | “在数据中画一条线” | 找到 weight w 和 bias b，使 wx+b 与真实 y 值之间的平方差之和最小 |
+| Linear regression | “在数据中画一条线” | 找到 weight $w$ 和 bias $b$，使 $wx+b$ 与真实 $y$ 值之间的平方差之和最小 |
 | Cost function | “model 有多差” | 一个将 model parameters 映射为单一数字的函数，用于衡量 prediction error，并由 optimization 最小化 |
-| Mean squared error | “平方误差的平均值” | (1/n) * (predicted - actual)^2 的求和，对大误差施加不成比例的惩罚 |
+| Mean squared error | “平方误差的平均值” | $\frac{1}{n} \sum (\text{预测值} - \text{实际值})^2$，对大误差施加不成比例的惩罚 |
 | Gradient descent | “往下坡走” | 使用偏导数，沿着降低 cost function 的方向迭代调整 parameters |
 | Learning rate | “步长” | 控制每一步 Gradient Descent 中 parameters 改变量的标量 |
-| Normal equation | “直接求解” | 闭式解 w = (X^T X)^-1 X^T y，无需迭代即可得到最优 weights |
-| R-squared | “拟合有多好” | model 所解释的 y 方差比例，范围从负无穷到 1.0 |
+| Normal equation | “直接求解” | 闭式解 $w = (X^T X)^{-1} X^T y$，无需迭代即可得到最优 weights |
+| R-squared | “拟合有多好” | model 所解释的 $y$ 方差比例，范围从负无穷到 1.0 |
 | Feature scaling | “让 features 可比较” | 将 features 转换到相近范围（例如 zero mean、unit variance），使 Gradient Descent 更快收敛 |
 | Regularization | “惩罚复杂度” | 向 cost function 添加一个会缩小 weights 的项，以防止 overfitting |
-| Ridge regression | “L2 regularization” | 向 MSE 添加 lambda * sum(w_i^2) 惩罚项的 linear regression |
-| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features (x, x^2, x^3, ...) 做 linear regression，对 weights 仍然是线性的 |
+| Ridge regression | “L2 regularization” | 向 MSE 添加 $\lambda \sum w_i^2$ 惩罚项的 linear regression |
+| Polynomial regression | “用线性数学拟合曲线” | 对 polynomial features ($x, x^2, x^3, \ldots$) 做 linear regression，对 weights 仍然是线性的 |
 | Overfitting | “记住 training data” | 使用过于复杂的 model，以至于拟合了 training data 中的噪声，并在新数据上失效 |
 
 ## 延伸阅读

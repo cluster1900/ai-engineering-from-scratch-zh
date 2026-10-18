@@ -51,23 +51,24 @@ La haute variance signifie que le modèle est dans le bruit des données de form
 
 ### La décomposition
 
-Pour un point x, l'attente de prévision de l'erreur sous perte carrée peut être décomposée en:
+Pour un point$x$, l'attente de prévision de l'erreur sous perte carrée peut être décomposée en:
 
+```math
+\begin{aligned}
+& \text{期望误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声} \\[6pt]
+& \text{其中：} \\
+& \quad \text{偏差}^2 = (\mathbb{E}[\hat{f}(x)] - f(x))^2 \\
+& \quad \text{方差} = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2] \\
+& \quad \text{噪声} = \mathbb{E}[(y - f(x))^2] \quad (\sigma^2)
+\end{aligned}
 ```
-Expected Error = Bias^2 + Variance + Irreducible Noise
 
-where:
-  Bias^2   = (E[f_hat(x)] - f(x))^2
-  Variance = E[(f_hat(x) - E[f_hat(x)])^2]
-  Noise    = E[(y - f(x))^2]             (sigma^2)
-```
+- $f(x)$est une vraie fonction
+- $\hat{f}(x)$est un modèle pré测
+- $\mathbb{E}[\ldots]$Il s'agit de l'expectative de formation différente.
+- $y$est la marque de l'observation
 
-- `f(x)`est une vraie fonction
-- `f_hat(x)`est un modèle pré测
-- `E[...]`Il s'agit de l'expectative de formation différente.
-- `y`est la marque de l'observation
-
-Le bruit est incontournable. Dans les données de bruit, aucun modèle ne peut faire mieux que sigma^2.
+Le bruit est incontournable.$\sigma^2$Fais mieux. Ton devoir est de...$\text{偏差}^2$Et la variance entre les deux est de trouver un équilibre.
 
 ### Complicité du modèle par rapport à l'erreur
 
@@ -128,9 +129,9 @@ Pourquoi cette situation se produit-elle? Au seuil d'interpolation, le modèle e
 
 | Regime | Parameters vs Samples | Behavior |
 |--------|----------------------|----------|
-| Underparameterized | p << n | 经典 tradeoff 适用 |
-| Interpolation threshold | p ~ n | Variance 达到峰值，测试误差激增 |
-| Overparameterized | p >> n | Implicit regularization 开始起作用，测试误差下降 |
+| Underparameterized | $p \ll n$ | 经典 tradeoff 适用 |
+| Interpolation threshold | $p \sim n$ | Variance 达到峰值，测试误差激增 |
+| Overparameterized | $p \gg n$ | Implicit regularization 开始起作用，测试误差下降 |
 
 Dans la pratique, si vous utilisez des réseaux neuraux ou des ensembles d'arbres de grande taille, ne vous arrêtez pas sur le seuil d'interpolation.
 
@@ -177,7 +178,7 @@ Les méthodes d'assemblage sont les outils les plus pratiques pour lutter contre
 
 **Bagging (Bootstrap Aggregating)**Les différents échantillons de démarrage de données sont formés par des modèles différents, puis les prévisions sont effectuées en moyenne.
 
-Il est efficace en mathématiques parce que si la moyenne N 个独立预测, chaque prédiction de la variance sont sigma^2, alors la variance de la valeur moyenne est sigma^2 / N. Ces modèles ne sont pas vraiment indépendants, ils voient tous des données similaires, donc la diminution de la magnitude est inférieure à 1/N, mais reste assez observable.
+C'est mathématiquement efficace parce que si vous êtes moyen$N$个独立预测, chaque prédiction de variance sont $\sigma^2$, alors la variance de la valeur moyenne est $\sigma^2 / N$ Ces modèles ne sont pas vraiment indépendants (ils voient tous des données similaires), donc la réduction de la fréquence est inférieure à$1/N$Mais c'est encore assez beau.
 
 **Boosting**通过顺序构建模型来降低Bias, chacun des nouveaux modèles est centré sur les erreurs du ensemble actuel.  Gradient boosting 和 AdaBoost sont les principaux exemples.
 
@@ -303,10 +304,10 @@ variance = np.mean(predictions.var(axis=0))
 total_error = np.mean(np.mean((predictions - y_true) ** 2, axis=1))
 ```
 
-- `mean_pred`est de l'échantillon de démarrage  estimation de E[f_hat(x)
+- `mean_pred` estimation de l' échantillon de démarrage $\mathbb{E}[\hat{f}(x)]$
 - `bias_sq`est le carré de la différence entre la moyenne prédiction et la valeur réelle
 - `variance`Prévision moyenne de la dispersion
-- `total_error` devrait approximation égale à biais^2 + variance + bruit
+- `total_error`Il devrait être proche de l' égal.$\text{偏差}^2 + \text{方差} + \text{噪声}$
 
 ### 步骤 4: Curves d'apprentissage
 
@@ -434,7 +435,7 @@ Le programme de formation`outputs/prompt-model-diagnostics.md`
 
 2. La taille du groupe d'entraînement va augmenter de 30 à 300. Comment cela affectera-t-il la composante de variance?
 
-3. Pour un polynôme de degré élevé fixe, le lambda va passer de 0 à 100, le biais de dessin à 2 et la variance avec le lambda.
+3. Pour le polynôme de degré élevé fixe, le degré 15 sera de 0 à 100$\text{偏差}^2$和 variance avec la variation de la lambda
 
 4. 将真实函数 du polynôme 修改为 `sin(x)`◊ La variance de partialité, la différence de différence, la différence de différence, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux et la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux, la différence de différence entre les deux et la différence entre les deux, la différence de différence entre les deux, est encore plus claire et la différente.
 

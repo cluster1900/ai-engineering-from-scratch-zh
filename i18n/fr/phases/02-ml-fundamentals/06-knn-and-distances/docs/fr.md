@@ -53,12 +53,12 @@ K est le seul hyperparamètre. Il contrôle le biais-variance trade-off:
 
 | K | 行为 |
 |---|----------|
-| K = 1 | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
+| $K = 1$ | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
 | Small K (3-5) | 对局部结构敏感。可以捕捉复杂边界 |
 | Large K | 边界更平滑。对噪声更稳健。可能 underfit |
-| K = N | 对每个点都预测多数类。最大 bias |
+| $K = N$ | 对每个点都预测多数类。最大 bias |
 
-Le point de départ commun est l'utilisation de données contenant N 个点 K = sqrt(N)。二分类时使用奇数 K,以避免平票。
+Le point de départ est pour contenir$N$个点的数据集使用 $K = \sqrt{N}$◊ 2° classe utilisant le nombre K pour éviter les écarts.
 
 ```mermaid
 graph LR
@@ -80,32 +80,33 @@ La distance définit ce qu'on appelle la proximité.
 
 **L2 (Euclidean)**Il est à la recherche de la solution.
 
-```
-d(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+d(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 L'utilisation de L2 et KNN est toujours nécessaire à la normalisation des caractéristiques.
 
 **L1 (Manhattan)**Pour l'absence de différence, il est plus capable de résister aux valeurs étrangères que L2, car il ne résiste pas à la différence de valeur par carré.
 
-```
-d(a, b) = sum(|a_i - b_i|)
+```math
+d(a, b) = \sum_i \lvert a_i - b_i \rvert
 ```
 
 **Cosine distance**∆ Mesurer les angles entre vecteurs ∆, ∆ ignorer ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆. ∆
 
-```
-d(a, b) = 1 - (a . b) / (||a|| * ||b||)
+```math
+d(a, b) = 1 - \frac{a \cdot b}{\lVert a \rVert \, \lVert b \rVert}
 ```
 
-**Minkowski**Utilisation des paramètres P 泛化 L1 和 L2。
+**Minkowski**Utilisation $p$泛化 L1 和 L2──
 
-```
-d(a, b) = (sum(|a_i - b_i|^p))^(1/p)
-
-p=1: Manhattan
-p=2: Euclidean
-p->inf: Chebyshev (max absolute difference)
+```math
+\begin{aligned}
+& d(a, b) = \left( \sum_i \lvert a_i - b_i \rvert^p \right)^{1/p} \\[6pt]
+& p=1\text{：曼哈顿距离} \\
+& p=2\text{：欧氏距离} \\
+& p \to \infty\text{：切比雪夫距离（最大绝对差）}
+\end{aligned}
 ```
 
 Quelle est la mesure utilisée selon les données:
@@ -124,14 +125,15 @@ La norme KNN donne le même poids à tous les voisins K, mais une distance de 0,
 
 **Distance-weighted KNN**按距离的倒数为每个邻居加权:
 
+```math
+\begin{aligned}
+& \text{权重}_i = \frac{1}{\text{距离}_i + \epsilon} \\[6pt]
+& \text{分类：加权投票} \\
+& \text{回归：加权平均} = \frac{\sum_i w_i y_i}{\sum_i w_i}
+\end{aligned}
 ```
-weight_i = 1 / (distance_i + epsilon)
 
-For classification: weighted vote
-For regression:     weighted average = sum(w_i * y_i) / sum(w_i)
-```
-
-Lorsque les points de recherche et les points d'entraînement sont parfaitement alignés, l'epsilon peut empêcher la décomposition à zéro.
+Lorsque le point d'interrogation correspond parfaitement au point d'entraînement,$\epsilon$Il peut être évité de se décomposer à zéro.
 
 Le KNN pondéré n'est pas très sensible au choix de K, car les voisins éloignés contribuent très peu.
 
@@ -159,7 +161,7 @@ When all distances are nearly equal, "nearest" is meaningless.
 
 ### KD-arbres: rapide voisin le plus proche 搜索
 
-La force brute KNN calculera la distance entre chaque point d'entraînement et chaque point de recherche.
+La force brute KNN calculera la distance entre chaque point d'entraînement et chaque point de requête.$O(n \cdot d)$Pour les grands ensembles de données, c'est trop lent.
 
 KD-tree 会沿征轴递归划分空间―― dans chaque couche, il est effectué selon un certain nombre de dimensions.
 
@@ -175,7 +177,7 @@ graph TD
 
 Pour trouver le voisin le plus proche, il faut d'abord parcourir le arbre jusqu'à contenir la feuille du point de recherche, puis revenir en arrière, et ne les vérifier que dans le quartier le plus proche.
 
-平均查询时间:低维时为 O(log n) ・・・ mais les KD-arbres 在高维(d > 20) vont être redéterminés en O(n), parce que les branches de retracération peuvent être exclues de plus en plus peu。
+平均查询时间:低维时为 $O(\log n)$Mais les KD-arbres sont en hauteur.$d > 20$) seraient échangées$O(n)$Les détachements de retracement sont de plus en plus rares.
 
 ### Les arbres à billes: 更适合中等维度
 
@@ -194,8 +196,8 @@ KNN est un apprenant paresseux: pendant la formation, tout est réalisé en pré
 
 | 方面 | Lazy (KNN) | Eager (SVM, neural net) |
 |--------|------------|------------------------|
-| 训练时间 | O(1)，只存储数据 | O(n * epochs) |
-| 预测时间 | 每次查询 O(n * d) | O(d) 或 O(parameters) |
+| 训练时间 | $O(1)$，只存储数据 | $O(n \cdot \text{训练轮数})$ |
+| 预测时间 | 每次查询 $O(n \cdot d)$ | $O(d)$ 或 $O(\text{参数量})$ |
 | 预测时内存 | 存储整个训练集 | 只存储模型参数 |
 | 适应新数据 | 立即添加点 | 重新训练模型 |
 | 决策边界 | 隐式，在运行时计算 | 显式，训练后固定 |
@@ -210,12 +212,12 @@ L'apprentissage paresseux 适合以下场景:
 
 La régression de la KNN n'est pas un vote majoritaire, mais une moyenne de la valeur cible des voisins de K 个.
 
-```
-prediction = (1/K) * sum(y_i for i in K nearest neighbors)
-
-Or with distance weighting:
-prediction = sum(w_i * y_i) / sum(w_i)
-where w_i = 1 / distance_i
+```math
+\begin{aligned}
+& \text{预测值} = \frac{1}{K} \sum_{i \in K \text{ 个最近邻}} y_i \\[6pt]
+& \text{或使用距离加权：} \\
+& \text{预测值} = \frac{\sum_i w_i y_i}{\sum_i w_i} \quad \text{其中 } w_i = \frac{1}{\text{距离}_i + \epsilon}
+\end{aligned}
 ```
 
 La régression KNN 产生分段常数预测(使用加权时为分段平滑) ・・・ elle ne peut être exclue de la portée des données de formation。 Si l'objectif de formation est entièrement compris entre 0 et 100, la KNN 永远不会预测 200。
@@ -340,7 +342,7 @@ distances, indices = index.search(query_vectors, k=5)
 ```
 
 ## 练习
-1. Dans un ensemble de données 2D comprenant 3 catégories, la classification KNN est réalisée.
+1. Dans un ensemble de données 2D contenant 3 catégories, la classification KNN est réalisée.$K=1$- Je suis là.$K=5$- Je suis là.$K=15$et $K=N$Les changements de la prise de décision de la sur-adaptation à la sous-adaptation de l'observation
 
 2. Dans les dimensions 2、5、10、50、100 和 500, on génère 1000 points aléatoires. Pour chaque dimension, on calcule la distance la plus élevée parallèle à la distance la plus faible parallèle.
 
@@ -348,7 +350,7 @@ distances, indices = index.search(query_vectors, k=5)
 
 4. ¢ réaliser KD-arbre, et en 2D、10D et 50D, séparément pour 1k、10k et 100k points de données de mesure de la période de requête et la force brute.
 
-5. Pour y = sin(x) + bruit construire un régresseur KNN pondéré― le comparer avec un KNN non pondéré de K=3、10、30―, montrant une prédiction plus équitable, en particulier dans le K 较大时―.
+5. Pour$y = \sin(x) + \text{噪声}$Construire un régresseur KNN pondéré.$K=3, 10, 30$Les prévisions de KNN non pondérées sont plus précises, en particulier lorsque les prévisions sont plus élevées.
 
 ## 关键术语
 | 术语 | 它实际意味着什么 |
@@ -357,14 +359,14 @@ distances, indices = index.search(query_vectors, k=5)
 | Lazy learning | 训练时不进行计算。所有工作都发生在预测时。KNN 是典型例子 |
 | Eager learning | 训练时进行大量计算以构建紧凑模型。大多数 ML 算法都是 eager |
 | Curse of dimensionality | 在高维中，距离会收敛，neighborhoods 会扩展到覆盖空间的大部分，使 KNN 失效 |
-| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 O(log n) |
+| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 $O(\log n)$ |
 | Ball tree | 嵌套超球体构成的树。在中等维度（最高约 ~50）中比 KD-trees 表现更好 |
 | Weighted KNN | neighbors 按距离倒数加权。更近的 neighbors 对预测影响更大 |
 | Feature scaling | 将特征归一化到可比较范围。KNN 等基于距离的方法需要它 |
 | Majority vote | 通过统计 K 个 neighbors 中哪个类别最常见来进行 Classification |
-| Brute force search | 计算到每个训练点的距离。每次查询 O(n*d)。精确但在大 n 时很慢 |
+| Brute force search | 计算到每个训练点的距离。每次查询 $O(n \cdot d)$。精确但在大 $n$ 时很慢 |
 | Approximate nearest neighbor | 能比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
-| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。K=1 KNN 会产生 Voronoi 边界 |
+| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。$K=1$ KNN 会产生 Voronoi 边界 |
 
 ## 延伸阅读
 - [Cover & Hart: Nearest Neighbor Pattern Classification (1967)](https://ieeexplore.ieee.org/document/1053964)- 奠基性的 KNN 论文, prouvant son taux d'erreur jusqu'à deux fois le taux optimal de Bayes

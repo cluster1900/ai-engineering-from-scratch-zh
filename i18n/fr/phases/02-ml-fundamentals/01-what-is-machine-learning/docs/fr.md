@@ -176,7 +176,7 @@ flowchart LR
 
 Si vous continuez à régler le modèle de performance des tests, vous êtes en fait en train de vous entraîner, votre chiffre de rapport n'a pas d'importance.
 
-Pour les petits ensembles de données, utilisez la validation croisée k-fold: faites la division des données en k ̇, entraînez-vous sur k-1 ̇, vérifiez-les sur le reste de 1 ̇, faites un roulement, et faites la moyenne des résultats.
+Pour les petits ensembles de données, utilisez la validation croisée k-fold:把数据分成$k$- Je suis en train de faire une partie.$k-1$份上训练,在剩余1份上验证,轮换进行,并对结果取平均──
 
 ### Sur-adaptation contre sous-adaptation
 
@@ -242,9 +242,9 @@ C'est le cadre mathématique derrière le sur-classement et le sous-classement.
 | 刚好合适 | Medium | Medium | 良好的 generalization |
 | 过高（用 degree-20 polynomial 拟合 10 个点） | Low | High | Overfitting |
 
-总 error = Bias^2 + Variance + bruit incontournable
+$\text{总误差} = \text{偏差}^2 + \text{方差} + \text{不可约噪声}$
 
-Vous ne pouvez pas réduire le bruit irréductible, c'est le cas de données elles-mêmes. Vous devez trouver le meilleur point.
+Tu ne peux pas réduire le bruit irréductible.$\text{偏差}^2 + \text{方差}$Le plus petit des meilleurs points.
 
 ### Il n'y a pas de théorème du déjeuner gratuit
 
