@@ -29,25 +29,25 @@ Scaled dot-product attention 对顺序不敏感。attention matrix `softmax(Q K^
 
 预先计算一个 shape 为 `(max_len, d_model)` 的固定 Matrix `PE`：
 
-```
-PE[pos, 2i]   = sin(pos / 10000^(2i / d_model))
-PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
+```math
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(pos / 10000^{2i / d_{\text{model}}}\right) \\
+PE_{(pos, 2i+1)} &= \cos\left(pos / 10000^{2i / d_{\text{model}}}\right)
+\end{aligned}
 ```
 
 然后在 attention 之前执行 `X' = X + PE[:N]`。每个 dimension 都是不同 frequency 的 sinusoid。模型学习从 phase pattern 中读取 position。超过 `max_len` 后会失败：当模型只见过 positions 0–2047 时，没有任何东西告诉它 position 2048 会发生什么。
 
 ### RoPE
 
-旋转 Q 和 K vectors（不是 embeddings）。对一对 dimensions `(2i, 2i+1)`：
+旋转 Q 和 K vectors（不是 embeddings）。对一对 dimensions $(2i, 2i+1)$：
 
-```
-[q'_2i    ]   [ cos(pos·θ_i)  -sin(pos·θ_i) ] [q_2i   ]
-[q'_2i+1  ] = [ sin(pos·θ_i)   cos(pos·θ_i) ] [q_2i+1 ]
-
-θ_i = base^(-2i / d_head),  base = 10000 by default
+```math
+\begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix} = \begin{bmatrix} \cos(pos \cdot \theta_i) & -\sin(pos \cdot \theta_i) \\ \sin(pos \cdot \theta_i) & \cos(pos \cdot \theta_i) \end{bmatrix} \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
+\qquad \theta_i = \text{base}^{-2i / d_{\text{head}}}, \quad \text{base} = 10000 \text{（默认值）}
 ```
 
-对 position 为 `pos_k` 的 keys 应用相同旋转。dot product `q'_m · k'_n` 会变成只依赖 `(m - n)` 的函数。也就是说：**attention score 只依赖 relative distance**，尽管旋转是由 absolute positions 索引的。漂亮的技巧。
+对 position 为 `pos_k` 的 keys 应用相同旋转。dot product $q'_m \cdot k'_n$ 会变成只依赖 $(m - n)$ 的函数。也就是说：**attention score 只依赖 relative distance**，尽管旋转是由 absolute positions 索引的。漂亮的技巧。
 
 扩展 RoPE：可以缩放 `base`（NTK-aware、YaRN、LongRoPE），以便在不重新训练的情况下 extrapolate 到更长 context。Llama 3 就是用这种方式从 8K 扩展到 128K context。
 
@@ -55,11 +55,11 @@ PE[pos, 2i+1] = cos(pos / 10000^(2i / d_model))
 
 跳过 embedding 技巧。直接给 attention scores 加 bias：
 
-```
-attn_score[i, j] = (q_i · k_j) / √d  -  m_h · |i - j|
+```math
+\text{attn\_score}[i, j] = \frac{q_i \cdot k_j}{\sqrt{d}} - m_h \cdot |i - j|
 ```
 
-其中 `m_h` 是 head-specific slope（例如 `1 / 2^(8·h/H)`）。近处 tokens 得到 boost；远处 tokens 受到 penalty。没有训练时成本。论文显示，长度 extrapolation 优于 sinusoidal，并在原始训练长度上与 RoPE 持平。
+其中 $m_h$ 是 head-specific slope（例如 $1 / 2^{8h/H}$）。近处 tokens 得到 boost；远处 tokens 受到 penalty。没有训练时成本。论文显示，长度 extrapolation 优于 sinusoidal，并在原始训练长度上与 RoPE 持平。
 
 ### 2026 年该选什么
 
@@ -114,7 +114,7 @@ def apply_rope(x, pos, base=10000):
     return out
 ```
 
-关键：对 position `m` 的 Q 和 position `n` 的 K 应用同一个函数。它们的 dot product 会在每个 coordinate pair 上获得一个 `cos((m-n)·θ_i)` 因子。Attention 免费学到 relative position。
+关键：对 position $m$ 的 Q 和 position $n$ 的 K 应用同一个函数。它们的 dot product 会在每个 coordinate pair 上获得一个 $\cos((m-n) \cdot \theta_i)$ 因子。Attention 免费学到 relative position。
 
 ### Step 3: ALiBi slopes 和 bias
 
@@ -169,7 +169,7 @@ model = AutoModel.from_pretrained("meta-llama/Llama-3.2-3B")
 | Positional encoding | “告诉 attention 顺序” | 添加到 embeddings 或 attention 中、用于编码 position 的任意 signal。 |
 | Sinusoidal | “最初那个” | 以 geometric frequencies 加到 embeddings 上的 `sin/cos`；不能 extrapolate。 |
 | RoPE | “Rotary embeddings” | 按 position-dependent angle 旋转 Q、K；dot product 编码 relative distance。 |
-| ALiBi | “Linear bias trick” | 将 `-m·\|i-j\|` 加到 attention scores；不需要 embedding，extrapolation 很强。 |
+| ALiBi | “Linear bias trick” | 将 $-m \cdot \lvert i-j \rvert$ 加到 attention scores；不需要 embedding，extrapolation 很强。 |
 | base | “RoPE 的旋钮” | RoPE 中的 frequency scaler；增大它可在 inference 时扩展 context。 |
 | NTK-aware | “一种 RoPE scaling trick” | 重新缩放 `base`，让 context 扩展时 high-frequency dims 不会被挤压。 |
 | YaRN | “高级那个” | 保留 attention entropy 的 per-dimension interpolation+extrapolation。 |
