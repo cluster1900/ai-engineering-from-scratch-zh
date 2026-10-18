@@ -29,7 +29,7 @@ Mem0 (arXiv:2504.19413, Abril 2025)`add(text, user_id, metadata)`时:
 
 1. A partir do texto "Integração de candidatos" (http://www.integração.com/index.php?title=LLL_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M_M
 2. 将每个事实写入 Vector store (embutida em vector), para uso de语义搜索──
-3. Para o uso de um sistema de verificação, o sistema de verificação deve ser executado em um sistema de verificação.
+3. Para o uso de dados, cada um dos dados deve ser escrito em um local de KV, para ser utilizado como chave.$O(1)$- Procura-me.
 4. Para cada fato como bordas digitais 写入 Graph store (Mem0g), para consulta de relacionamento
 
 Em`search(query, user_id)`时:

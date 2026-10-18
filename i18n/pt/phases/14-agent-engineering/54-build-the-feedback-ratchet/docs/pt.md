@@ -13,6 +13,7 @@
 - A partir de agora, o sistema de segurança será aplicado em todos os sistemas de segurança.
 - O risco de recaída deve ser classificado de forma prioritária, de acordo com a gravidade e a frequência de recaída.
 - Para cada sistema de controlo, fixarem-se as condições de retirada (Condição de aposentadoria)
+- 沟通交付决策, fornecer provas, avaliar e determinar os decisores responsáveis.
 
 ## A própria infraestrutura
 
@@ -95,6 +96,84 @@ python3 -m unittest discover code/tests -v
 
 尝试添加一个运行时超时信号,验证它将被正确路由至运行时控制层,而不是泛化混入通用需求待机列表.
 
+## 实践实验: responsável pela tomada de decisões após o fracasso
+
+Do seu caminho de aprendizagem profissional para projetos de trabalho correspondentes, escolha um fluxo de trabalho.[职业交付模板](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/54-build-the-feedback-ratchet/outputs/career-delivery-evidence.md)- Não.
+
+Python  experimentação gerar exemplos de ações de execução. Não observa usuário                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
+### 1. Está bem o que aconteceu.
+
+记录用户、任务、当前工作流,以及你希望改善的结果──链接到经过同意的观察记录、已脱敏的支持记录,或可复制的任务轨迹──区分你直接观察的事实、他人报告情况,以及你的推断──
+
+ encontrar uma falha: falha de supostação  resultados inusáveis  custos inesperados, ou atrasos de comunicação  explicar quais provas mudaram a sua compreensão  falha precisa de resposta e decisão, em vez de ser envasada em uma história de sucesso
+
+Se não puder contactar o usuário, faça com o companheiro uma simulação de marcas claras, ou basear-se em uma simulação de cenários claros.
+
+### 2. Em limites de poder
+
+列出未知项目,选择成本最低,可逆,且有望解决影响最重大未知项目行动――说明哪些事可以由你决定,哪些选择受到既有约束,哪些操作需要先获得授权才能执行――
+
+Por exemplo, enquanto espera a permissão para usar dados do cliente, você pode preparar o download offline já desacelerado. A progressão ativa significa concluir o trabalho de autorização, e a decisão será bloqueada, dizendo claramente; não vai expandir seus direitos de acesso ou aprovação.
+
+### 3. Comparar o esquema e a responsabilidade de decisão
+
+Por não precisar de saber os detalhes da implementação, escrever um breve resumo de decisão.
+
+- Problemas de utilizador, bem como provas de mudança do plano;
+- Pelo menos duas variedades de programas; quando razoavelmente viáveis, incluir programas de mão de obra de menor custo ou de desenvolvimento não necessário;
+- 質量、交互設計、工作量、運行成本和风险的权衡;
+- As suas recomendações, as suas incertezas e as suas decisões necessárias;
+-  Responsabilidade de decisão  Os interessados afectados, bem como a data de necessidade de tomar decisões
+
+Por favor, acompanhe um representante de uma das partes interessadas afetadas, questione um dos seus pontos de vista.
+
+### 4.  conduzir experiências de fronteira definida
+
+Dependendo da necessidade de resposta, escolher o tipo original, o ponto de ensaio ou a fase de produção de trabalho. Antes dos resultados da coleta, definir o público, os dados, a autorização, o tempo de execução, o programa de reestruturação, bem como as condições de continuar, ajustar ou parar.
+
+Desde o início do usuário até a conclusão da tarefa, explore todo o processo de comunicação.
+
+O modelo de resposta é mais rápido, pode fazer a tarefa completa ser lenta, ou fazer com que os resultados sejam mais difíceis de obter confiança.
+
+### 5. Comparar resultados com economia
+
+Usando os mesmos indicadores definidos, tarefas gerais, métodos de coleta e comparáveis, a janela de observação, a linha de base e os resultados posteriores, os resultados serão colocados ao lado do valor numérico.
+
+Incluir um resultado do usuário  um índice de qualidade ou segurança , bem como o total de trabalho de auditoria artificial
+
+ estimar o custo de cada tarefa realizada com sucesso, incluir o modelo de admissão, reexame, serviço de apoio e auditoria artificial, explicar a hipótese de preço único da força humana, distinguir o valor da utilização real e o valor da estimativa, comparar o custo com o programa de substituição artificial ou a hipótese de valor por trás do projeto,
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [LLM FinOps 课程](https://aiengineeringfromscratch.com/lesson?path=phases/17-infrastructure-and-production/27-finops-llms), mais adiante a aprendizagem de custos de atribuição à economia unitária.
+
+### 6. 完成闭环
+
+De acordo com os padrões de pre-declaração, recomenda continuar, ajustar ou parar. Se as evidências ainda não estiverem definidas, apontando a ausência de observações, bem como os seguintes testes definidos de fronteira, o registro da resposta do tomador de decisão responsável pela decisão; se ainda não tiver sido tomada uma decisão, é reservado para um estado de espera.
+
+ escolher um melhoramento no próprio processo de entrega: um quadro de tarefas mais claro, um usuário mais antigo, um melhor sistema de avaliação, um agente menor, uma unidade de comunicação ou um caso de avaliação mais específico, o responsável e o período de revisão são designados.
+
+复审时,决定保留、修改还是退役改进的记录选择的证据── Se uma nova lista aumenta a sua capacidade de trabalho, mas não impede o fracasso do objetivo, não deve ser permanentemente mantida──
+
+## 交付物
+
+- Não .[career-delivery-evidence.md](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/14-agent-engineering/54-build-the-feedback-ratchet/outputs/career-delivery-evidence.md) Copiar o seu próprio projeto, e usar o link de prova para preencher.  Deixar o modelo no armazém manter-se reutilizar.  Copiar o seu próprio projeto, e usar o link de prova para preencher.  Deixar o modelo no armazém manter-se reutilizar.  Copiar o seu próprio projeto, e incluir o seu conjunto de trabalhos no seu conjunto de trabalhos de trabalho.  Copiar o seu próprio projeto, e incluir o seu conjunto de trabalhos no seu armazém.  Copiar o seu próprio projeto, e incluir o seu conjunto de trabalhos no seu armazém.  Copiar o seu próprio projeto, e incluir o seu conjunto de trabalhos no seu armazém.  Copiar o seu conjunto de trabalhos e fazer o seu conjunto de trabalhos.  Copiar o seu conjunto de trabalhos e fazer o seu conjunto de trabalho.
+
+## 验证
+
+Com o companheiro, use os seguintes padrões de recepção artificial.**met**(ha sido satisfeito)**needs work**(necessita de melhoria) ou **not observed**(enquanto não observado),并提供证据链接或具体缺失的观测──填好了字段,并不能证明判断合理──
+
+| 检查项 | 满足标准的证据 |
+|---|---|
+| 工作流有事实依据 | 可追溯的观测支持问题定义；他人报告、推断和模拟均有标记。 |
+| 遵守授权边界 | 下一项可逆工作明确，任何受限操作都等待真正的决策责任人授权。 |
+| 权衡沟通清晰 | 记录可信的替代方案、利益相关方的异议、建议，以及明确的决策请求。 |
+| 交互经过测试 | 走查覆盖成功、失败、恢复，以及人工审核工作量。 |
+| 结果经过比较 | 基线与后续度量的定义一致；样本、护栏指标、成本和比较局限清晰可见。 |
+| 对挫折承担责任 | 证据改变了继续、调整或停止的决策，并导向一项有明确责任人的后续行动。 |
+| 流程得到改进 | 一项工作流改进具备责任人、复审日期，以及基于证据的保留、修改或退役决定。 |
+
+Mesmo que cada passo em frente seja aprovado, o comportamento do usuário real não observado continua a ser um faltar de evidências.
+
 ## 课后练习
 
 1. A partir de agora, o sistema de correção de dados será aplicado em todos os dispositivos de correção de dados.
@@ -111,4 +190,4 @@ python3 -m unittest discover code/tests -v
 
 ## 交付物沉
 
-- Não .`outputs/feedback-backlog.json` é o produto de avaliação e entrega  é o produto de conclusão e entrega  é o produto de conclusão do processo de aprendizagem, também abre o próximo ponto de entrada do quadro de produção prevista 
+- Não .`outputs/feedback-backlog.json`Como exemplo de caminho,并保留你完成的职业交付证据,记录自己的决策──两者共同为产品判断力与交付──产品判断和交付──学习路径结尾,并为下一个预期产出框架提供依据──
