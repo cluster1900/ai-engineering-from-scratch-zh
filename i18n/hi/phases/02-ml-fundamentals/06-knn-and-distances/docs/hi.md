@@ -53,12 +53,12 @@ K एकमात्र हाइपरपरमैटर है। यह प�
 
 | K | 行为 |
 |---|----------|
-| K = 1 | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
+| $K = 1$ | 决策边界跟随每一个点。训练误差为零。高方差。Overfits |
 | Small K (3-5) | 对局部结构敏感。可以捕捉复杂边界 |
 | Large K | 边界更平滑。对噪声更稳健。可能 underfit |
-| K = N | 对每个点都预测多数类。最大 bias |
+| $K = N$ | 对每个点都预测多数类。最大 bias |
 
-常见起点是对包含 N 个点的数据集使用 K = sqrt(N)。二分类时使用奇数 K,以避免平票──
+常见起点是对包含 $N$个点的数据集使用 $K = \sqrt{N}$二分类                                                                                                                                                                                                                                                             
 
 ```mermaid
 graph LR
@@ -80,32 +80,33 @@ graph LR
 
 **L2 (Euclidean)**                                                                                                                                                                                                                                                              
 
-```
-d(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+d(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 विशेषताओं के लिए संवेदनशील। L2 और KNN का उपयोग करना।
 
 **L1 (Manhattan)**L2 से अधिक अपवादों का प्रतिरोध कर सकता है, क्योंकि यह अंतर के वर्ग मूल्य के प्रति नहीं होगा।
 
-```
-d(a, b) = sum(|a_i - b_i|)
+```math
+d(a, b) = \sum_i \lvert a_i - b_i \rvert
 ```
 
 **Cosine distance**衡量 भेक्टर 之间角,忽略大小──文本和嵌入数据至关重要──
 
-```
-d(a, b) = 1 - (a . b) / (||a|| * ||b||)
+```math
+d(a, b) = 1 - \frac{a \cdot b}{\lVert a \rVert \, \lVert b \rVert}
 ```
 
-**Minkowski**प्रयोग पैरामीटर p 泛化 L1 和 L2──
+**Minkowski**उपयोग参数 $p$泛化 L1 和 L2──
 
-```
-d(a, b) = (sum(|a_i - b_i|^p))^(1/p)
-
-p=1: Manhattan
-p=2: Euclidean
-p->inf: Chebyshev (max absolute difference)
+```math
+\begin{aligned}
+& d(a, b) = \left( \sum_i \lvert a_i - b_i \rvert^p \right)^{1/p} \\[6pt]
+& p=1\text{：曼哈顿距离} \\
+& p=2\text{：欧氏距离} \\
+& p \to \infty\text{：切比雪夫距离（最大绝对差）}
+\end{aligned}
 ```
 
 उपयोग किस प्रकार के माप पर निर्भर करता हैः
@@ -124,14 +125,15 @@ p->inf: Chebyshev (max absolute difference)
 
 **Distance-weighted KNN**फ़रम के अनुसार प्रति पड़ोसी के लिए 倒数加权:
 
+```math
+\begin{aligned}
+& \text{权重}_i = \frac{1}{\text{距离}_i + \epsilon} \\[6pt]
+& \text{分类：加权投票} \\
+& \text{回归：加权平均} = \frac{\sum_i w_i y_i}{\sum_i w_i}
+\end{aligned}
 ```
-weight_i = 1 / (distance_i + epsilon)
 
-For classification: weighted vote
-For regression:     weighted average = sum(w_i * y_i) / sum(w_i)
-```
-
-जब जांच बिंदु प्रशिक्षण बिंदु के साथ पूरी तरह से मेल खाती है, तो एपिसिजन शून्य से अलग होने से बचा सकता है।
+जब पूछताछ बिंदु प्रशिक्षण बिंदु के साथ पूरी तरह से मेल खाता है,$\epsilon$इसे शून्य से हटाया जा सकता है।
 
 भारित KNN K के चयन के प्रति संवेदनशील नहीं है, क्योंकि दूर के पड़ोसियों का योगदान कितना भी हो, वे बहुत छोटे हैं।
 
@@ -159,7 +161,7 @@ When all distances are nearly equal, "nearest" is meaningless.
 
 ### KD-tree:快速 निकटतम पड़ोसी 搜索
 
-क्रूर-बल केएनएन प्रत्येक प्रशिक्षण बिंदु की दूरी तक प्रश्न बिंदु की गणना करेगा। प्रत्येक प्रश्न की जटिलता O (n * d) है।
+क्रूर बल केएनएन प्रत्येक प्रशिक्षण बिंदु से दूरी तक प्रश्न बिंदु की गणना करेगा। प्रत्येक प्रश्न की जटिलता यह है कि$O(n \cdot d)$ बड़े डेटा संग्रह के लिए, यह बहुत धीमा है
 
 केडी-tree 会沿征轴递归划分空间── प्रत्येक परत में, यह एक आयाम के अनुसार मध्यबिज के अनुसार काटने के लिए किया जाता है──
 
@@ -175,7 +177,7 @@ graph TD
 
  निकटतम पड़ोसी को खोजने के लिए, पहले पेड़ में से एक में खोज बिंदुओं के साथ एक पत्ती को देखें, फिर वापस जाएं, और केवल निकटतम क्षेत्र में अधिक निकटतम बिंदुओं को शामिल करने के लिए उन्हें देखें।
 
-平均查询时间:低维时为O(लॉग n) ・・・ लेकिन KD-tree 在高维(d > 20) will退化为O(n), चूंकि वापस溯能排除的分支越来越少──
+平均查询时间:低维时为 $O(\log n)$──लेकिन KD-वृक्षों में उच्च वृद्धि$d > 20$)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $O(n)$, क्योंकि पीछे हटने योग्य शाखाएं कम होती जा रही हैं।
 
 ### गेंद के पेड़: 更适合中等维度
 
@@ -194,8 +196,8 @@ KNN आलसी छात्र हैः प्रशिक्षण समय
 
 | 方面 | Lazy (KNN) | Eager (SVM, neural net) |
 |--------|------------|------------------------|
-| 训练时间 | O(1)，只存储数据 | O(n * epochs) |
-| 预测时间 | 每次查询 O(n * d) | O(d) 或 O(parameters) |
+| 训练时间 | $O(1)$，只存储数据 | $O(n \cdot \text{训练轮数})$ |
+| 预测时间 | 每次查询 $O(n \cdot d)$ | $O(d)$ 或 $O(\text{参数量})$ |
 | 预测时内存 | 存储整个训练集 | 只存储模型参数 |
 | 适应新数据 | 立即添加点 | 重新训练模型 |
 | 决策边界 | 隐式，在运行时计算 | 显式，训练后固定 |
@@ -210,12 +212,12 @@ KNN आलसी छात्र हैः प्रशिक्षण समय
 
 केएनएन रिग्रेशन ने बहुमत मत नहीं दिया बल्कि केएन के पड़ोसियों के लिए लक्ष्य मूल्य प्राप्त किया।
 
-```
-prediction = (1/K) * sum(y_i for i in K nearest neighbors)
-
-Or with distance weighting:
-prediction = sum(w_i * y_i) / sum(w_i)
-where w_i = 1 / distance_i
+```math
+\begin{aligned}
+& \text{预测值} = \frac{1}{K} \sum_{i \in K \text{ 个最近邻}} y_i \\[6pt]
+& \text{或使用距离加权：} \\
+& \text{预测值} = \frac{\sum_i w_i y_i}{\sum_i w_i} \quad \text{其中 } w_i = \frac{1}{\text{距离}_i + \epsilon}
+\end{aligned}
 ```
 
 KNN रिग्रेशन 产生分段常数预测(使用加权时为分段平滑) ⋅ यह प्रशिक्षण डेटा के दायरे से बाहर नहीं किया जा सकता है ⋅ यदि प्रशिक्षण लक्ष्य 0 से 100 के बीच है, तो KNN 永远不会预测 200 ⋅
@@ -340,7 +342,7 @@ distances, indices = index.search(query_vectors, k=5)
 ```
 
 ## अभ्यास
-1. 3 श्रेणियों वाले 2D डेटासेट पर KNN वर्गीकरण को प्राप्त करना। K=1、K=5、K=15 तथा K=N के निर्णय सीमा को चित्रित करना।
+1. 3 वर्गों वाले 2D डेटा संग्रह पर KNN वर्गीकरण को प्राप्त करना।$K=1$$K=5$$K=15$和 $K=N$                                                                                                                                                                                                                                                              
 
 2. 2、5、10、50、100 和 500 维中生成 1000 个随机点── प्रत्येक आयाम के लिए, अधिकतम जोड़ी दूरी और न्यूनतम जोड़ी दूरी के अनुपात का गणना करें── आकार के साथ परिवर्तन के साथ इस अनुपात का चित्रण करें, ताकि दृश्यमान आयाम आपदाओं को प्रदर्शित किया जा सके──
 
@@ -348,7 +350,7 @@ distances, indices = index.search(query_vectors, k=5)
 
 4.  KD-tree को लागू करें, और 2D、10D और 50D में, 1k、10k और 100k बिंदुओं के डेटासेट को अलग-अलग मापें।
 
-5. 为 y = sin(x) + शोर 构建一个重量KNregressor──将它与K=3、10、30 के unweighted KNN比较──展示加权会产生更平滑的预测,特别是K 较大时──
+5. $y = \sin(x) + \text{噪声}$ एक भारित KNN रेग्रेसर  बनायें$K=3, 10, 30$के लिए अधिक वजन के साथ, यह अधिक स्पष्ट रूप से अनुमानित है।
 
 ## 关键术语
 | 术语 | 它实际意味着什么 |
@@ -357,14 +359,14 @@ distances, indices = index.search(query_vectors, k=5)
 | Lazy learning | 训练时不进行计算。所有工作都发生在预测时。KNN 是典型例子 |
 | Eager learning | 训练时进行大量计算以构建紧凑模型。大多数 ML 算法都是 eager |
 | Curse of dimensionality | 在高维中，距离会收敛，neighborhoods 会扩展到覆盖空间的大部分，使 KNN 失效 |
-| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 O(log n) |
+| KD-tree | 沿特征轴递归划分空间的二叉树。在低维中查询为 $O(\log n)$ |
 | Ball tree | 嵌套超球体构成的树。在中等维度（最高约 ~50）中比 KD-trees 表现更好 |
 | Weighted KNN | neighbors 按距离倒数加权。更近的 neighbors 对预测影响更大 |
 | Feature scaling | 将特征归一化到可比较范围。KNN 等基于距离的方法需要它 |
 | Majority vote | 通过统计 K 个 neighbors 中哪个类别最常见来进行 Classification |
-| Brute force search | 计算到每个训练点的距离。每次查询 O(n*d)。精确但在大 n 时很慢 |
+| Brute force search | 计算到每个训练点的距离。每次查询 $O(n \cdot d)$。精确但在大 $n$ 时很慢 |
 | Approximate nearest neighbor | 能比精确搜索快得多地找到近似最近点的算法（HNSW、LSH、IVF） |
-| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。K=1 KNN 会产生 Voronoi 边界 |
+| Voronoi diagram | 一种空间划分，其中每个区域包含所有比任何其他训练点都更接近某个训练点的点。$K=1$ KNN 会产生 Voronoi 边界 |
 
 ## 延伸阅读
 - [Cover & Hart: Nearest Neighbor Pattern Classification (1967)](https://ieeexplore.ieee.org/document/1053964)- 奠基性的 KNN 论文, साबित करने के लिए इसकी त्रुटि दर के लिए अधिकतम बेय के लिए दो गुना

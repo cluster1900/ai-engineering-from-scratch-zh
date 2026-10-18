@@ -25,15 +25,15 @@
 ## 概念
 ### अधिकतम间隔 वर्गीकरण
 
-给定 给定 y_i में {-1, +1} 和 feature vectors x_i के रैखिक रूप से अलग करने योग्य डेटा, हम एक हाइपरप्लेन w^T x + b = 0 को खोजने की उम्मीद करते हैं 来分离类别。
+给定标签 $y_i \in \lbrace -1, +1 \rbrace$和 विशेषता वेक्टर $x_i$के रैखिक रूप से अलग डेटा, हम एक हाइपरप्लेन खोजने की उम्मीद $w^T x + b = 0$अलग-अलग वर्गों से।
 
-हाइपरप्लेन से दूरीः
+ 点 $x_i$हाइपरप्लेन की दूरी हैः
 
+```math
+\text{距离} = \frac{\lvert w^T x_i + b \rvert}{\lVert w \rVert}
 ```
-distance = |w^T x_i + b| / ||w||
-```
 
-对于正确分类的点:y_i * (w^T x_i + b) > 0── मार्जिन हाइपरप्लेन से लेकर किसी भी ओर निकटतम बिंदु की दूरी के दो गुना है──
+对于正确分类的点:$y_i (w^T x_i + b) > 0$ मार्जिन हाइपरप्लेन से लेकर निकटतम बिंदु तक की दूरी के दो गुना है
 
 ```mermaid
 graph LR
@@ -48,19 +48,23 @@ graph LR
 
 अनुकूलन समस्याः
 
-```
-maximize    2 / ||w||     (margin width)
-subject to  y_i * (w^T x_i + b) >= 1  for all i
-```
-
-等地(कम से कम कीमतें और अधिक से अधिक समय में अनुकूलित करने के लिए आसान):
-
-```
-minimize    (1/2) ||w||^2
-subject to  y_i * (w^T x_i + b) >= 1  for all i
+```math
+\begin{aligned}
+\text{最大化} \quad & \frac{2}{\lVert w \rVert} \quad \text{（间隔宽度）} \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-यह एक संकुचित चतुर्भुज कार्यक्रम है। इसका एकमात्र वैश्विक समाधान है। यह सही है कि यह मार्जिन सीमाओं के ऊपर स्थित है। इसमें y_i * (w^T x_i + b) = 1) समर्थन वेक्टर हैं। ये एकमात्र निर्णय सीमा के बिंदु हैं।
+等价地(कम से कम करना $\lVert w \rVert^2$अधिक आसानी से अनुकूलित करने के लिए):
+
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 \quad \text{对于所有 } i
+\end{aligned}
+```
+
+यह एक संकुचित चतुर्भुज कार्यक्रम है। इसमें एकमात्र वैश्विक समाधान है। यह सीमाओं के सीमाओं में स्थित है।$y_i (w^T x_i + b) = 1$) है समर्थन वेक्टरों। वे एकमात्र निर्णय सीमा का निर्धारण बिंदु हैं। किसी भी गैर-समर्थन वेक्टर बिंदु को स्थानांतरित या हटा दें, सीमा नहीं बदलेगी।
 
 ### समर्थन वेक्टर:关键的少数点
 
@@ -82,30 +86,32 @@ graph TD
 
 वास्तविक डेटा बहुत कम ही पूरी तरह से अलग किया जा सकता है। कुछ बिंदु सीमा के गलत पक्ष में या सीमा के अंदर स्थित हो सकते हैं।
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i)
-subject to  y_i * (w^T x_i + b) >= 1 - xi_i
-            xi_i >= 0  for all i
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i \xi_i \\
+\text{约束为} \quad & y_i (w^T x_i + b) \ge 1 - \xi_i \\
+& \xi_i \ge 0 \quad \text{对于所有 } i
+\end{aligned}
 ```
 
-slack variable xi_i 衡量点 i 违反差距 的程度──C 控制 इस तरह के व्यापार-बंद:
+ढीला चर $\xi_i$衡量点 $i$违反差距的程度──$C$ नियंत्रण इस व्यापार-बदला:
 
-| C value | Behavior |
+| $C$ value | Behavior |
 |---------|----------|
-| Large C | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
-| Small C | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
+| Large $C$ | 对 violations 施加重罚。margin 窄，misclassifications 更少。Overfits |
+| Small $C$ | 允许更多 violations。margin 宽，misclassifications 更多。Underfits |
 
-C है नियमन शक्ति 的倒数── बड़ी C = 更少 नियमन── छोटी C = 更多 नियमन──
+$C$                                                                                                                                                                                                                                                              $C$= 更少规范化──छोटा $C$= 更多 नियमितता──
 
 ### झिल्ली हानि:SVM का हानि कार्य
 
 सॉफ्ट मार्जिन SVM को अनलिमिटेड अनुकूलन के लिए पुनः लिखा जा सकता हैः
 
-```
-minimize    (1/2) ||w||^2 + C * sum(max(0, 1 - y_i * (w^T x_i + b)))
+```math
+\text{最小化} \quad \frac{1}{2} \lVert w \rVert^2 + C \sum_i \max(0, 1 - y_i (w^T x_i + b))
 ```
 
-项 max(0, 1 - y_i * f(x_i)) यानि hinge loss──当点被正确分类且位于边缘 之外时,它为零──当点位于边缘 内部或被错误分类时,它是线性的──
+项 $\max(0, 1 - y_i f(x_i))$ जब बिंदु सही है और सीमा के बाहर स्थित है तो यह शून्य है  जब बिंदु सीमा के अंदर स्थित है या गलत वर्गीकृत है तो यह रैखिक है 
 
 ```
 单个点的 Hinge loss：
@@ -127,9 +133,11 @@ loss
 
 लॉजिस्टिक हानि (लॉजिस्टिक रिग्रेशन)
 
-```
-Hinge:     max(0, 1 - y*f(x))          在 margin 处 hard cutoff
-Logistic:  log(1 + exp(-y*f(x)))        平滑，永远不会精确为零
+```math
+\begin{aligned}
+\text{Hinge：} \quad & \max(0, 1 - y f(x)) && \text{在间隔处硬截断} \\
+\text{Logistic：} \quad & \log(1 + \exp(-y f(x))) && \text{平滑，永不精确为零}
+\end{aligned}
 ```
 
 हिंग हानि  दुर्लभ समाधान उत्पन्न करना  केवल समर्थन वेक्टर हैं 有非零贡献) ・ लॉजिक हानि सभी डेटा बिंदुओं का उपयोग करना  यह एसवीएम को भविष्यवाणी समय में अधिक स्मृति-कुशल बनाता है
@@ -138,36 +146,40 @@ Logistic:  log(1 + exp(-y*f(x)))        平滑，永远不会精确为零
 
 आप लिंकेज हानि के साथ L2 नियमितता ऊपर की ग्रेडिएंट अवतरण का उपयोग कर सकते हैं रैखिक SVM को प्रशिक्षित करने के लिए, बिना किसी आवश्यकता के लिए पूछने के लिए बाध्य QP:
 
+```math
+\begin{aligned}
+& L(w, b) = \frac{\lambda}{2} \lVert w \rVert^2 + \frac{1}{n} \sum_i \max(0, 1 - y_i (w^T x_i + b)) \\[6pt]
+& \text{关于 } w \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial w} = \lambda w - y_i x_i \\[6pt]
+& \text{关于 } b \text{ 的梯度：} \\
+& \quad \text{若 } y_i (w^T x_i + b) \ge 1\text{:} \quad \frac{\partial L}{\partial b} = 0 \\
+& \quad \text{若 } y_i (w^T x_i + b) < 1\text{:} \quad \frac{\partial L}{\partial b} = -y_i
+\end{aligned}
 ```
-L(w, b) = (lambda/2) * ||w||^2 + (1/n) * sum(max(0, 1 - y_i * (w^T x_i + b)))
 
-关于 w 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/dw = lambda * w
-  If y_i * (w^T x_i + b) < 1:   dL/dw = lambda * w - y_i * x_i
-
-关于 b 的 Gradient：
-  If y_i * (w^T x_i + b) >= 1:  dL/db = 0
-  If y_i * (w^T x_i + b) < 1:   dL/db = -y_i
-```
-
-इसे प्राथमिक सूत्र कहा जाता है। प्रत्येक युग का समय O (n * d) के लिए होता है, जिसमें n नमूने की संख्या है, d (विशेषताओं की संख्या है) ।
+इसे आदिम सूत्र कहा जाता है।$O(n \cdot d)$, उनमें से $n$ा नमूना की संख्या,$d$यह बहुत ही तेजी से है।
 
 ### दोहरे सूत्र और कर्नेल ट्रिक
 
 SVM समस्या का लैग्रेंजियन ड्यूल (Fase 1 Lesson 18,KKT conditions) से आया है):
 
-```
-maximize    sum(alpha_i) - (1/2) * sum_ij(alpha_i * alpha_j * y_i * y_j * (x_i . x_j))
-subject to  0 <= alpha_i <= C
-            sum(alpha_i * y_i) = 0
+```math
+\begin{aligned}
+\text{最大化} \quad & \sum_i \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) \\
+\text{约束为} \quad & 0 \le \alpha_i \le C \\
+& \sum_i \alpha_i y_i = 0
+\end{aligned}
 ```
 
-यह महत्वपूर्ण है कि कुंजी के साथ प्रत्येक बिंदु उत्पाद को प्रतिस्थापित करें, एसवीएम गैर-रैखिक सीमाओं को सीख सकता है, और स्पष्ट रूप से गणना परिवर्तन की आवश्यकता नहीं है।
+दोहरी केवल डेटा बिंदुओं के बीच डॉट उत्पादों से संबंधित है$x_i \cdot x_j$ यह एक महत्वपूर्ण बिंदु है  उपयोग कर कर करण फ़ंक्शन $K(x_i, x_j)$ प्रत्येक बिंदु उत्पाद को प्रतिस्थापित करने के लिए, SVM नॉन-लाइनर सीमाओं को सीख सकता है, बिना स्पष्ट रूप से गणना परिवर्तन की आवश्यकता के।
 
-```
-Linear kernel:      K(x, z) = x . z
-Polynomial kernel:  K(x, z) = (x . z + c)^d
-RBF (Gaussian):     K(x, z) = exp(-gamma * ||x - z||^2)
+```math
+\begin{aligned}
+\text{线性核：} \quad & K(x, z) = x \cdot z \\
+\text{多项式核：} \quad & K(x, z) = (x \cdot z + c)^d \\
+\text{RBF（高斯核）：} \quad & K(x, z) = \exp(-\gamma \lVert x - z \rVert^2)
+\end{aligned}
 ```
 
 आरबीएफ कर्नेल डेटा को अंतहीन आयामी अंतरिक्ष में मैगरेट करेगा। इनपुट अंतरिक्ष में निकटतम बिंदु, इसके कर्नेल मान 1 के करीब है।
@@ -183,20 +195,22 @@ graph LR
     A -->|"Kernel trick<br>K(x,z) = phi(x).phi(z)"| B
 ```
 
-कर्नेल ट्रिक में उच्चतम अंतरिक्ष में प्रवेश न करने के मामले में, गणना उच्चतम अंतरिक्ष में बिंदु उत्पाद में।
+कर्नेल ट्रिक में उच्चतम अंतरिक्ष में प्रवेश न करने के मामले में, गणना उच्चतम अंतरिक्ष में डॉट उत्पाद हेतु।$D$维中 डिग्री $d$के बहुपद कर्नेल, स्पष्ट सुविधाओं अंतरिक्ष$O(D^d)$लेकिन 维──但$K(x, z)$मैं हूँ$O(D)$时间内计算――
 
 ### प्रतिगमन के लिए एसवीएम (एसवीआर)
 
-समर्थन वेक्टर प्रतिगमन एक इप्सिलन ट्यूब के लिए एक चौड़ाई के लिए उपयुक्त डेटा के आसपास होगा।
+समर्थन वेक्टर प्रतिगमन डेटा के आसपास होगा एक चौड़ाई के लिए उपयुक्त$\epsilon$ ट्यूब  ट्यूब  अंदर के बिंदुओं में शून्य हानि है  ट्यूब  बाहर के बिंदुओं में                                                                                                                                                                                                                                                 
 
-```
-minimize    (1/2) ||w||^2 + C * sum(xi_i + xi_i*)
-subject to  y_i - (w^T x_i + b) <= epsilon + xi_i
-            (w^T x_i + b) - y_i <= epsilon + xi_i*
-            xi_i, xi_i* >= 0
+```math
+\begin{aligned}
+\text{最小化} \quad & \frac{1}{2} \lVert w \rVert^2 + C \sum_i (\xi_i + \xi_i^*) \\
+\text{约束为} \quad & y_i - (w^T x_i + b) \le \epsilon + \xi_i \\
+& (w^T x_i + b) - y_i \le \epsilon + \xi_i^* \\
+& \xi_i, \xi_i^* \ge 0
+\end{aligned}
 ```
 
-epsilon पैरामीटर 控制管宽──tube 越宽 = समर्थन वेक्टर 越少 = फिट 更平滑──tube 越窄 = समर्थन वेक्टर 越多 = फिट 更紧──
+$\epsilon$पैरामीटर 控制管宽──tube 越宽 = समर्थन वेक्टर 越少 = फिट 更平滑──tube 越窄 = समर्थन वेक्टर 越多 = फिट 更紧──
 
 ### क्यों एसवीएम 输给了深度学习 (Deep Learning) और वे कब और क्यों जीते हैं?
 
@@ -205,7 +219,7 @@ epsilon पैरामीटर 控制管宽──tube 越宽 = समर्थ
 | Factor | SVMs | Deep learning |
 |--------|------|---------------|
 | Feature engineering | 需要它 | 学习 features |
-| Scalability | kernel 为 O(n^2) 到 O(n^3) | 使用 SGD 时每个 epoch 为 O(n) |
+| Scalability | kernel 为 $O(n^2)$ 到 $O(n^3)$ | 使用 SGD 时每个 epoch 为 $O(n)$ |
 | Image/text/audio | 需要 handcrafted features | 从 raw data 学习 |
 | Large datasets (>100k) | 慢 | 扩展良好 |
 | GPU acceleration | 收益有限 | 巨大加速 |
@@ -320,9 +334,9 @@ print(f"Accuracy: {clf.score(X_test, y_test):.4f}")
 print(f"Support vectors: {clf['svm'].n_support_}")
 ```
 
-重要: प्रशिक्षण SVM 之前始终要规模你的特征──SVMs feature magnitudes 敏感, क्योंकि मार्जिन  निर्भर करता है कि क्या होता है, जबकि स्केल के बिना विशेषताएं 扭曲几何结构──
+重要: प्रशिक्षण SVM 之前始终要规模你的特征──SVMs विशेषता परिमाण 敏感, क्योंकि मार्जिन 取决于 $\lVert w \rVert$, और अपूर्ण सुविधाएँ 会扭曲几何结构──
 
-对于大数据集,使用 `LinearSVC`(प्राथमिक सूत्र, प्रत्येक युग 为 O  n)) बजाय `SVC`(दोहरी सूत्र,O(n^2) तक O(n^3)):
+对于大数据集,使用 `LinearSVC`(प्राथमिक सूत्र, प्रत्येक युग 为 $O(n)$) के बजाय `SVC`(दोहरी सूत्र,$O(n^2)$तक $O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC
@@ -336,29 +350,29 @@ clf = Pipeline([
 ## अभ्यास
 1. 生成一 2D रैखिक रूप से पृथक् डेटासेट──训练你的线性SVM,并识别支持向量──验证支持向量是最接近决策界的点──
 
-2. एक शोर डेटासेट में 上将 C 0.001 से 1000 变化──为每 C मूल्य 绘制决策界限──观察从宽边缘(不适合) 到狭边缘(过) 的过渡──
+2. एक शोर डेटा सेट में ऊपर $C$0.001 से 1000 तक परिवर्तन।$C$मूल्य चित्रण निर्णय सीमा──观察 from broad margin(underfitting) to narrow margin(overfitting) के पारगमन──
 
 3. 创建一个类界限 为圆形(非线性) 的数据集──展示线性SVM 会失败──计算RBF内核矩阵,并展示类别在内核诱导功能空间中变得分离性──
 
 4. एक ही डेटासेट में ऊपर की तुलना में लचीलापन हानि के साथ तार्किक हानि। एक रैखिक एसवीएम और तार्किक regression को प्रशिक्षित करें।
 
-5. 实现 SVR(इप्सिलन-असंवेदनशील हानि) ――将它拟合到 y = sin(x) + noise──绘制预测 周围的इप्सिलन ट्यूब,并突出显示支持向量(tube 外的点)。
+5.  SVR को प्राप्त करना इप्सिलन-असंवेदनशील हानि) $y = \sin(x) + \text{噪声}$◊ अनुमानों को चित्रित करना 周围的epsilon tube,并突出显示支持向量(tube 外的点)
 
 ## 关键术语
 | Term | What it actually means |
 |------|----------------------|
 | Support vectors | 最接近 decision boundary 的 training points。唯一决定 hyperplane 的点 |
 | Margin | decision boundary 与最近 support vectors 之间的距离。SVMs 会最大化它 |
-| Hinge loss | max(0, 1 - y*f(x))。正确分类且位于 margin 外时为零。否则为 linear penalty |
-| C parameter | margin width 与 classification errors 之间的 trade-off。Large C = narrow margin，small C = wide margin |
+| Hinge loss | $\max(0, 1 - y f(x))$。正确分类且位于 margin 外时为零。否则为 linear penalty |
+| C parameter | margin width 与 classification errors 之间的 trade-off。Large $C$ = narrow margin，small $C$ = wide margin |
 | Soft margin | 通过 slack variables 允许 margin violations 的 SVM formulation。处理 non-separable data |
 | Kernel trick | 在不显式映射到高维 feature space 的情况下，计算该空间中的 dot products |
-| Linear kernel | K(x, z) = x . z。等价于标准 dot product。用于 linearly separable data |
-| RBF kernel | K(x, z) = exp(-gamma * \|\|x-z\|\|^2)。映射到 infinite dimensions。学习任意 smooth boundary |
-| Polynomial kernel | K(x, z) = (x . z + c)^d。映射到 polynomial combinations 的 feature space |
+| Linear kernel | $K(x, z) = x \cdot z$。等价于标准 dot product。用于 linearly separable data |
+| RBF kernel | $K(x, z) = \exp(-\gamma \Vert x-z \Vert^2)$。映射到 infinite dimensions。学习任意 smooth boundary |
+| Polynomial kernel | $K(x, z) = (x \cdot z + c)^d$。映射到 polynomial combinations 的 feature space |
 | Dual formulation | SVM problem 的重写形式，只依赖数据点之间的 dot products。支持 kernels |
 | SVR | Support Vector Regression。围绕数据拟合 epsilon-tube。tube 内的点具有 zero loss |
-| Slack variables | xi_i：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
+| Slack variables | $\xi_i$：衡量一个点违反 margin 的程度。正确分类且位于 margin 外的点为零 |
 | Maximum margin | 选择能够最大化到每个类别最近点距离的 hyperplane 的原则 |
 
 ## 延伸阅读
