@@ -864,7 +864,7 @@ if __name__ == "__main__":
 #     return None
 ```
 
-在生产环境中,使用矢量索引 (Redis Vector Search、Pinecone 或 pgvector) 替代线性扫描──线性扫描适用于 <1,000条条目入口──超过这个规模后,使用 ANN (近邻) 进行 O(log n) 搜索──
+在生产环境中,使用矢量索引 (Redis Vector Search、Pinecone 或 pgvector) 替代线性扫描――线性扫描适用于 <1,000条条目.$O(\log n)$找个地方
 
 ## 交付它
 

@@ -10,7 +10,7 @@
 
 ## 学习目标
 - 通过将低排调适配器矩阵(A 和 B) 注入预训练模型的注意力层来实现LoRA
-- 计算 LoRA 相比全细调的参数节省:排名 r、d_模型 维度时,训练是 2*r*d 个参数,而不是 d^2
+- 计算LoRA 相比全细调的参数节省:排名$r$,我知道.$d_{\text{model}}$维度时,训练是$2 \cdot r \cdot d$个参数,而不是$d^2$
 - 使用QLoRA(4位量化基 + LoRA适配器) 细调一个模型,使其适应消费级GPU内存
 - 将LoRA重量合并回基模型 用于部署,并比较带适配器与不带适配器的推断速度
 
@@ -34,21 +34,21 @@
 
 数学如下――一个标准线性层计算:
 
-```
+```math
 y = Wx
 ```
 
-其中W是一个d_out xd_in矩阵.对于4096x4096的注意力投影,这就是16777,216个参数.
+其中$W$是一个$d_{\text{out}} \times d_{\text{in}}$对于4096x4096的注意力投影,这就是16777216个参数.
 
-洛拉结 W,并添加一个低排分解:
+洛拉 结$W$并添加一个低排序分解:
 
-```
+```math
 y = Wx + BAx
 ```
 
-其中B 是 (d_out x r),A 是 (r x d_in) ――排名r 远小于d--通常是8、16或32、
+其中$B$是 $(d_{\text{out}} \times r)$没有任何$A$是 $(r \times d_{\text{in}})$位$r$远小于$d$它们通常是8、16或32、
 
-对于4096x4096层上层的 r=16:
+对于4096x4096层上层$r=16$其他:
 - 原始参数:4096 x 4096 = 16,777,216
 - 参数:(4096 x 16) + (16 x 4096) = 65,536 + 65,536 = 131,072
 - 减少比例:131,072 / 16,777,216 = 0.78%
@@ -73,18 +73,18 @@ graph LR
 
 ### 规模因素:阿尔法
 
-洛拉引入了扩展因子阿尔法,用于控制低排行更新对输出的影响程度:
+引入一个扩展因素$\alpha$控制低排行更新对产量的影响程度:
 
-```
-y = Wx + (alpha / r) * BAx
+```math
+y = Wx + \frac{\alpha}{r} \cdot BAx
 ```
 
-当alpha = r 时,规模是1x──当alpha = 2r常见默认值) 当,规模是2x──这个超参数独立于基础学习率 控制LoRA路径的学习率──
+当 当$\alpha = r$时,规模是1x.$\alpha = 2r$时,规模是2x──这个超参数 独立于基础学习率 控制LoRA路径的学习率──
 
 实践建议:
--  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  () )  () )
-- 提供1x扩展,保守但稳定
-- 更高的阿尔法意味着每一步都会增加更新,可能会加快收费,也可能导致不稳定
+- $\alpha = 2 \cdot \text{rank}$是常见社区约定(原始论文在大多数实验中使用 $\alpha = \text{rank}$)
+- $\alpha = \text{rank}$提供1x扩展,保守但稳定
+- 更高的$\alpha$意思是每一步都会有更大的更新,可能会加快收费,也可能导致不稳定
 
 ### 适用Lora的地点
 
@@ -101,7 +101,7 @@ y = Wx + (alpha / r) * BAx
 
 ### 排名选择
 
-排名 控制适应的表现能力:
+排名$r$控制适应能力表现能力:
 
 | Rank | Trainable Params (per layer) | Best For |
 |------|---------------------------|----------|
@@ -112,7 +112,7 @@ y = Wx + (alpha / r) * BAx
 | 64 | 524,288 | 大多数任务收益递减 |
 | 128 | 1,048,576 | 很少值得使用 |
 
-胡等人表示,对于简单任务,r=4 已经能够捕获大部分适应性.r=8 和 r=16 是实践中最常见的选择.
+表明,对于简单任务,$r=4$已能捕获大部分适应性.$r=8$和 $r=16$是实践中最常见的选择.$r=64$很少改善质量,并开始失去洛拉的记忆力优势.
 
 ### 定量:4位量化+LORA
 
@@ -145,7 +145,7 @@ y = Wx + (alpha / r) * BAx
 | QLoRA r=16 (NF4) | 47.5 | 6.61 | 13.4 |
 | QLoRA r=64 (NF4) | 48.1 | 6.70 | 14.2 |
 
-在 r=16时,在大多数基准上与完全调整相差不到1%──QLoRA在 r=16时又损失零点几百分点──QLoRA在 r=64时基本匹配于完全调整,同时使用90%的内存──
+洛拉在$r=16$时,在大多数基准上与完全细调相差不多1%──QLoRA 在$r=16$时又失去了零点几百分点.$r=64$时基本匹配完整的调整,同时使用90%的内存.
 
 ### 实际成本
 
@@ -180,7 +180,7 @@ y = Wx + (alpha / r) * BAx
 
 1. **保持分离**为了不同任务切换适配器,这是使用一个基础模型的方法.
 
-2. **永久合并**计算 W' = W + (alpha/r) * BA,并把结果保存为一个新的完整模型――与原始模型相结合模型 大小相同――没有推断的上海费――没有适配器需要管理――
+2. **永久合并**计算$W' = W + (\alpha/r) \cdot BA$并把结果保存为一个新的完整模型――与原始模型相结合的模型 大小相同――没有推断的费用――没有适配器需要管理――
 
 如果服务多个任务,则将其部署单个专用模型.
 
@@ -524,11 +524,11 @@ model.save_pretrained("./lora-adapter")
 | LoRA | "Efficient fine-tuning" | Low-Rank Adaptation：冻结 base weights，训练两个小 matrices A 和 B，其乘积近似完整 weight update |
 | QLoRA | "Fine-tune on a laptop" | Quantized LoRA：以 4-bit NF4 加载 base model，在其上用 fp16 训练 LoRA adapters，从而让 7B fine-tuning 能在 6GB VRAM 中完成 |
 | Rank (r) | "How much the model can learn" | A 和 B matrices 的内部维度；控制表达能力与参数量之间的权衡 |
-| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；alpha/r 会缩放 adaptation 对 final output 的贡献 |
+| Alpha | "LoRA learning rate" | 应用于 LoRA output 的 scaling factor；$\alpha/r$ 会缩放 adaptation 对 final output 的贡献 |
 | NF4 | "4-bit quantization" | Normal Float 4：一种 4-bit data type，其 quantization levels 位于 normal distribution quantiles 上，对 Neural Network weights 最优 |
 | Adapter | "The small trained part" | 作为单独文件保存的 LoRA A 和 B matrices（10-100MB），可以加载到 base model 的任意副本之上 |
 | Target modules | "Which layers to LoRA" | 注入 LoRA adapters 的特定 linear layers（q_proj、v_proj 等） |
-| Merging | "Bake it in" | 计算 W + (alpha/r) * BA 并替换原始 weight，从而消除 inference 时的 adapter overhead |
+| Merging | "Bake it in" | 计算 $W + (\alpha/r) \cdot BA$ 并替换原始 weight，从而消除 inference 时的 adapter overhead |
 | Paged optimizers | "Don't OOM during training" | 当 GPU memory 耗尽时，将 optimizer states（Adam momentum、variance）offload 到 CPU |
 | Catastrophic forgetting | "Fine-tuning broke everything else" | 更新所有 weights 导致 model 丢失先前学到的能力 |
 

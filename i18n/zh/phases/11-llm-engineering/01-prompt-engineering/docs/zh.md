@@ -1017,4 +1017,4 @@ if __name__ == "__main__":
 - [Shin et al., 2023 -- "Prompt Engineering a Prompt Engineer"](https://arxiv.org/abs/2311.05661)使用LLM自动优化提示,是超级提示的基础
 - [LMSYS Chatbot Arena](https://chat.lmsys.org/)LLMs的实时盲测比较平台,你可以跨模型测试同一个提示,并投票选择更好的答案
 - [DAIR.AI Prompt Engineering Guide](https://www.promptingguide.ai/)详细的快速技术目录,包含示例; 零射,少射,CoT,ReAct,自律性; 是从业者使用的更广泛的理解 快速工程 表面的参考资料.
-- [Anthropic prompt library](https://docs.anthropic.com/en/prompt-library)按使用情况策划的已知好提示;展示了可在生产中交付的结构性模式.
+- [Claude 提示词编写最佳实践](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)人类的提示词结构指南,附有具体的例子,取代了前面的提示图书馆.

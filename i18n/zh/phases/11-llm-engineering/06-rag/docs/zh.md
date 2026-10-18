@@ -91,20 +91,20 @@ graph LR
 
 **Cosine similarity**两个向量 之间角的余弦值──范围从 -1 相反) 到 1 完全相同)  忽略大小,只关注方向──这是RAG的默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**它们的数量更高. 它们的数量更大.
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**距离越小 = 越相似――对大小差异敏感――
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 随着大小的归结,能优雅处理不同长度的文档. 当有人说"向量搜索"时,几乎总是指"随量相似之处".

@@ -97,20 +97,20 @@ MTEB(Massive Text Embedding Benchmark) v2 覆盖100多个任务,包括搜索,分
 
 **Cosine similarity**两个向量 之间角的余弦值──范围从 -1 相反) 到 1 方向相同) ⋅忽略大小 如果一个 10 词句和一个 500 词文档指向相同方向,它们可以得到 1.0 ⋅这是90%的默认选择──
 
-```
-cosine_sim(a, b) = dot(a, b) / (||a|| * ||b||)
+```math
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**:两个向量的原始内积──当向量已归结 (单位长度) 时,它与宇宙相似等价──计算更快──OpenAI的嵌入式已归结,因此点产量和宇宙会给出相同排序──
 
-```
-dot(a, b) = sum(a_i * b_i)
+```math
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **Euclidean (L2) distance**矢量 空间中的直线距离――越小 = 越相似――对大小差异敏感――当空间中的绝对位置重要,而不是仅仅是方向重要时使用――
 
-```
-L2(a, b) = sqrt(sum((a_i - b_i)^2))
+```math
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 何时使用哪一种:
@@ -131,7 +131,7 @@ L2(a, b) = sqrt(sum((a_i - b_i)^2))
 2. 顶层是稀疏的 建立长距离连接
 3. 底层是密集的 在邻近的向量之间建立细粒度连接
 4. 搜索从顶层开始,贪心下降并逐渐细化
-5. 以 O  时间返回近似的顶级结果,而不是 O 
+5. 以 $O(\log n)$时间回归近似的顶级结果,而不是$O(n)$
 
 在1000万向量时,暴力搜索需要几秒钟.
 
@@ -484,7 +484,7 @@ embeddings = model.encode(["semantic search query", "another document"])
 | Embedding | “文本到数字” | 一种 dense Vector，其中几何接近性编码语义相似性 |
 | Word2Vec | “最早的经典 Embedding” | 2013 年通过预测上下文词学习 word vectors 的模型；证明 Vector arithmetic 可以编码含义 |
 | Cosine similarity | “两个 Vectors 有多相似” | Vectors 夹角的余弦值；1 = 方向相同，0 = 正交，-1 = 相反 |
-| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 O(log n) 的 approximate nearest neighbor search |
+| HNSW | “快速 Vector search” | Hierarchical Navigable Small World graph——一种多层结构，可实现 $O(\log n)$ 的 approximate nearest neighbor search |
 | Bi-encoder | “分开 Embedding，快速比较” | 将 query 和 document 独立编码为 Vectors；支持预计算和快速 retrieval |
 | Cross-encoder | “慢但准确的 reranker” | 让 query-document pair 联合通过完整模型处理；准确率更高，但无法预计算 |
 | Matryoshka embeddings | “可截断的 Vectors” | 经过训练的 Embeddings，使前 N 个维度捕捉最重要的信息，从而支持可变大小存储 |
