@@ -38,21 +38,23 @@ graph LR
 
 ### Dropout
 
-最简单的 regularization 技术，却有最优雅的解释。训练期间，以概率 p 随机将每个神经元的输出设为零。
+最简单的 regularization 技术，却有最优雅的解释。训练期间，以概率 $p$ 随机将每个神经元的输出设为零。
 
+```math
+\text{output} = \text{activation}(z) \cdot \text{mask} \quad \text{其中 }\text{mask}[i] \sim \text{Bernoulli}(1 - p)
 ```
-output = activation(z) * mask    where mask[i] ~ Bernoulli(1 - p)
-```
 
-当 p = 0.5 时，每次 forward pass 都会把一半神经元置零。网络必须学习冗余表示，因为它无法预测哪些神经元可用。这会防止 co-adaptation，也就是神经元学会依赖特定其他神经元的存在。
+当 $p = 0.5$ 时，每次 forward pass 都会把一半神经元置零。网络必须学习冗余表示，因为它无法预测哪些神经元可用。这会防止 co-adaptation，也就是神经元学会依赖特定其他神经元的存在。
 
-Ensemble 解释：一个有 N 个神经元并使用 dropout 的网络会创建 2^N 个可能的 subnetworks（所有神经元开或关的组合）。使用 dropout 训练近似于同时训练所有 2^N 个 subnetworks，每个都在不同的 mini-batches 上训练。测试时，你使用所有神经元（无 dropout），并将输出按 (1 - p) 缩放，以匹配训练期间的期望值。这等价于对 2^N 个 subnetworks 的预测取平均——用单个模型得到一个巨大的 ensemble。
+Ensemble 解释：一个有 $N$ 个神经元并使用 dropout 的网络会创建 $2^N$ 个可能的 subnetworks（所有神经元开或关的组合）。使用 dropout 训练近似于同时训练所有 $2^N$ 个 subnetworks，每个都在不同的 mini-batches 上训练。测试时，你使用所有神经元（无 dropout），并将输出按 $(1 - p)$ 缩放，以匹配训练期间的期望值。这等价于对 $2^N$ 个 subnetworks 的预测取平均——用单个模型得到一个巨大的 ensemble。
 
 实践中，缩放会在训练期间应用，而不是测试期间应用（inverted dropout）：
 
-```
-During training:  output = activation(z) * mask / (1 - p)
-During testing:   output = activation(z)   (no change needed)
+```math
+\begin{aligned}
+\text{训练时：} \quad & \text{output} = \text{activation}(z) \cdot \text{mask} / (1 - p) \\
+\text{测试时：} \quad & \text{output} = \text{activation}(z) \quad \text{（无需改动）}
+\end{aligned}
 ```
 
 这样更干净，因为测试代码完全不需要知道 dropout。
@@ -63,15 +65,15 @@ During testing:   output = activation(z)   (no change needed)
 
 将所有权重的平方大小加入 Loss：
 
-```
-total_loss = task_loss + (lambda / 2) * sum(w_i^2)
+```math
+\text{total\_loss} = \text{task\_loss} + \frac{\lambda}{2} \sum_i w_i^2
 ```
 
-regularization 项的 Gradient 是 lambda * w。这意味着每一步中，每个权重都会按与其大小成比例的幅度向零收缩。大权重受到更强惩罚。模型被推向没有单个权重占主导的解。
+regularization 项的 Gradient 是 $\lambda w$。这意味着每一步中，每个权重都会按与其大小成比例的幅度向零收缩。大权重受到更强惩罚。模型被推向没有单个权重占主导的解。
 
 为什么这有助于泛化：overfit 模型往往有较大的权重，会放大训练数据中的噪声。Weight decay 让权重保持较小，从而限制模型的有效容量，并迫使它依赖稳健、可泛化的特征，而不是记住的偶然细节。
 
-lambda hyperparameter 控制强度。典型值：
+$\lambda$ hyperparameter 控制强度。典型值：
 
 - Transformer 上的 AdamW 使用 0.01
 - CNNs 上的 SGD 使用 1e-4
@@ -85,16 +87,18 @@ lambda hyperparameter 控制强度。典型值：
 
 对于某一层的一批 activations：
 
-```
-mu = (1/B) * sum(x_i)           (batch mean)
-sigma^2 = (1/B) * sum((x_i - mu)^2)   (batch variance)
-x_hat = (x_i - mu) / sqrt(sigma^2 + eps)   (normalize)
-y = gamma * x_hat + beta        (scale and shift)
+```math
+\begin{aligned}
+\mu &= \frac{1}{B} \sum_i x_i && \text{（批次均值）} \\
+\sigma^2 &= \frac{1}{B} \sum_i (x_i - \mu)^2 && \text{（批次方差）} \\
+\hat{x} &= \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}} && \text{（归一化）} \\
+y &= \gamma \hat{x} + \beta && \text{（缩放和平移）}
+\end{aligned}
 ```
 
 Gamma 和 beta 是可学习参数，让网络在最优情况下可以撤销这种 normalization。没有它们，你会强迫每一层的输出都变成零均值、单位方差，而这不一定是网络想要的。
 
-**Training vs inference split:** 训练期间，mu 和 sigma 来自当前 mini-batch。推理期间，你使用训练期间累计的 running averages（momentum = 0.1 的 exponential moving average，也就是 90% 旧值 + 10% 新值）。
+**Training vs inference split:** 训练期间，$\mu$ 和 $\sigma$ 来自当前 mini-batch。推理期间，你使用训练期间累计的 running averages（momentum = 0.1 的 exponential moving average，也就是 90% 旧值 + 10% 新值）。
 
 BatchNorm 为什么有效仍有争议。原论文声称它减少了 "internal covariate shift"（随着早期层更新，层输入分布发生变化）。Santurkar et al. (2018) 表明这个解释是错的。真正原因是：BatchNorm 让 Loss landscape 更平滑。Gradients 更具预测性，Lipschitz constants 更小，Optimizer 可以安全地采取更大的步长。这就是为什么 BatchNorm 允许你使用更高的 learning rates 并更快收敛。
 
@@ -104,14 +108,16 @@ BatchNorm 有一个根本限制：它依赖 batch statistics。当 batch size �
 
 在特征维度上归一化，而不是在 batch 维度上归一化。对于单个样本：
 
-```
-mu = (1/D) * sum(x_j)           (feature mean)
-sigma^2 = (1/D) * sum((x_j - mu)^2)   (feature variance)
-x_hat = (x_j - mu) / sqrt(sigma^2 + eps)
-y = gamma * x_hat + beta
+```math
+\begin{aligned}
+\mu &= \frac{1}{D} \sum_j x_j && \text{（特征均值）} \\
+\sigma^2 &= \frac{1}{D} \sum_j (x_j - \mu)^2 && \text{（特征方差）} \\
+\hat{x} &= \frac{x_j - \mu}{\sqrt{\sigma^2 + \epsilon}} \\
+y &= \gamma \hat{x} + \beta
+\end{aligned}
 ```
 
-D 是特征维度。每个样本独立归一化——不依赖 batch size。这就是为什么 Transformer 使用 LayerNorm 而不是 BatchNorm。序列长度可变，batch sizes 经常很小（生成期间甚至为 1），并且训练和推理之间的计算完全相同。
+$D$ 是特征维度。每个样本独立归一化——不依赖 batch size。这就是为什么 Transformer 使用 LayerNorm 而不是 BatchNorm。序列长度可变，batch sizes 经常很小（生成期间甚至为 1），并且训练和推理之间的计算完全相同。
 
 Transformer 中的 LayerNorm 会应用在每个 self-attention block 和每个 feed-forward block 之后（Post-LN），或应用在它们之前（Pre-LN，训练时更稳定）。
 
@@ -119,9 +125,11 @@ Transformer 中的 LayerNorm 会应用在每个 self-attention block 和每个 f
 
 不做均值减法的 LayerNorm。由 Zhang & Sennrich (2019) 提出。
 
-```
-rms = sqrt((1/D) * sum(x_j^2))
-y = gamma * x / rms
+```math
+\begin{aligned}
+\text{rms} &= \sqrt{\frac{1}{D} \sum_j x_j^2} \\
+y &= \gamma \cdot \frac{x}{\text{rms}}
+\end{aligned}
 ```
 
 就这些。没有均值计算，没有 beta 参数。观察结果是：LayerNorm 中的重新居中（均值减法）对模型性能贡献很小，却有计算成本。去掉它可以在大约减少 10% overhead 的情况下得到相同 accuracy。
@@ -508,8 +516,8 @@ LayerNorm，而不是 BatchNorm。Dropout p=0.1，而不是 p=0.5。这些是 Tr
 |------|----------------|----------------------|
 | Overfitting | "模型记住了数据" | 当模型的训练表现显著高于测试表现时，表示它学到了噪声而不是信号 |
 | Regularization | "防止 overfitting" | 任何约束模型复杂度以改善泛化的技术：dropout、weight decay、normalization、augmentation |
-| Dropout | "随机删除神经元" | 训练期间以概率 p 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
-| Weight decay | "L2 penalty" | 每一步通过减去 lambda * w 将所有权重向零收缩；通过权重大小惩罚复杂度 |
+| Dropout | "随机删除神经元" | 训练期间以概率 $p$ 将随机神经元置零，迫使模型学习冗余表示；等价于训练一个 ensemble |
+| Weight decay | "L2 penalty" | 每一步通过减去 $\lambda w$ 将所有权重向零收缩；通过权重大小惩罚复杂度 |
 | Batch normalization | "按 batch 归一化" | 训练期间使用 batch statistics、推理期间使用 running averages，在 batch 维度上对层输出进行归一化 |
 | Layer normalization | "按样本归一化" | 在每个样本内部跨特征归一化；与 batch 无关，用于 batch size 可变的 Transformer |
 | RMSNorm | "没有均值的 LayerNorm" | Root mean square normalization；从 LayerNorm 中去掉均值减法，以相同 accuracy 获得 10% 加速 |
