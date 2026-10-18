@@ -8,8 +8,8 @@
       "options": [
         "因为 BM25 需要 graph 来构建它的 index",
         "因为 lexical hits 会漏掉使用不同词汇的 foundational papers，而 graph hits 会漏掉与 seed 没有 citation 关系的 papers",
-        "因为 mock APIs 要求这样做",
-        "因为否则 parser 会失败"
+        "因为否则 parser 会失败",
+        "因为 mock APIs 要求这样做"
       ],
       "correct": 1,
       "explanation": "每一轮都会捕获另一轮遗漏的内容。Lexical 覆盖共享词汇；graph 覆盖 ancestor 和 descendant papers，而不依赖词汇。"
@@ -18,12 +18,12 @@
       "stage": "pre",
       "question": "为什么 citation graph traversal 被限制在两跳？",
       "options": [
+        "因为 corpus 只存储两层 citations",
         "因为超过两跳后，结果集往往会偏离主题，并压垮下游 ranking",
-        "因为 Python recursion limit 禁止三跳",
         "因为 BM25 只会给两跳之外的内容打分",
-        "因为 corpus 只存储两层 citations"
+        "因为 Python recursion limit 禁止三跳"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "两跳是实际可用的上限。三跳会让 connected graph 上的结果集膨胀，并且很少返回更多切题的 papers。"
     },
     {
@@ -31,35 +31,35 @@
       "question": "对于出现在每个 document 中的 term，idf 会计算为什么值？",
       "options": [
         "一个很大的正值",
+        "未定义；BM25 implementation 会跳过它",
         "接近零的值",
-        "负无穷",
-        "未定义；BM25 implementation 会跳过它"
+        "负无穷"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "当 df 等于 N 时，log 内部的分子和分母接近，而 +1 让该 term 保持非负但很小。普遍常见 terms 的贡献接近零。"
     },
     {
       "stage": "check",
       "question": "merge step 使用哪些 keys 对两轮的 hits 去重？",
       "options": [
-        "Title text",
         "Stable paper id",
         "Year 和 first author",
+        "Title text",
         "BM25 score bucket"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "Paper id 是稳定 handle。Title 和 author 会跨版本重复，仅靠 year 有歧义。"
     },
     {
       "stage": "check",
       "question": "对于距离 seed set 两跳的 paper，graph_score 会返回什么？",
       "options": [
-        "零",
-        "默认为 0.3",
         "默认为 1.0",
-        "BM25 score 除以十"
+        "零",
+        "BM25 score 除以十",
+        "默认为 0.3"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "默认 graph score schedule 是零跳为 1.0，一跳为 0.6，两跳为 0.3，超过两跳为零。"
     },
     {
