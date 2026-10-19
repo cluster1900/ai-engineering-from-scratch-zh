@@ -53,8 +53,8 @@ Trong số đó `(p - q)+`biểu hiện phân biệt điểm của chính phần
 
 Nếu tỷ lệ chấp nhận của mô hình dự thảo của Token là `α`,则每次目标前进通过 生成的期望代币 数为:
 
-```
-E[tokens] = (1 - α^{K+1}) / (1 - α)        # K = draft length, α in [0, 1]
+```math
+\mathbb{E}[\text{tokens}] = \frac{1 - \alpha^{K+1}}{1 - \alpha} \qquad K = \text{draft length}, \ \alpha \in [0, 1]
 ```
 
 Khi đó`α = 0.8, K = 4`- Có thể là:`(1 - 0.8^5)/(1 - 0.8) = 3.36`个 Token Mỗi lần đi trước. Một lần mục tiêu đi trước.`cost_q * K + cost_p`(K 个 dự thảo bước thêm một lần xác minh mục tiêu)`cost_p >> cost_q * K`, tỷ lệ tăng tốc của thông qua là `3.36× / 1 = 3.36×`
@@ -176,7 +176,7 @@ def speculative_step(p_target, q_draft, K, temperature=1.0):
 
 1. 实现精确拒绝 规则并进行实证验证──通过 `speculative_decode`和 đơn giản mục tiêu lấy mẫu 分别运行 10K mẫu; tính toán hai phân phối đầu ra 间 TV khoảng cách──应小于0.01──
 
-2. 计算 tốc độ 公式。给定固定 `α`和 `K`, vẽ mỗi lần mục tiêu-đến trước của kỳ vọng Địa chỉ số.
+2. 计算 tốc độ 公式。给定固定 `α`和 `K`, vẽ mỗi lần mục tiêu phía trước của kỳ vọng Địa chỉ số.$\alpha \in \lbrace 0.5, 0.7, 0.9 \rbrace$时的最优 $K$
 
 3. 训练一个小草稿──取一个124M GPT-2目标, và 100M token 上用 KL loss distill一个30M GPT-2草稿──测量 held-out text 上的`α`❖ dự đoán: 0.6-0.7♦
 

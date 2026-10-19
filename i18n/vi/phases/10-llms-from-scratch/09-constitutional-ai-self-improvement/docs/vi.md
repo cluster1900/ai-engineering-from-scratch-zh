@@ -71,22 +71,22 @@ DeepSeek trong bài báo DeepSeekMath (2024) giới thiệu GRPO, và sẽ coi n
 
 Gặp lại mục tiêu của PPO (PPO) từ Bài học 07):
 
-```
-L_PPO = E[min(r(theta) * A, clip(r(theta), 1-eps, 1+eps) * A)]
+```math
+L_{\text{PPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A\right)\right]
 ```
 
 Trong số đó `A` lợi thế, thường sử dụng mạng giá trị học`V(s)`Thông qua GAE 估计, mạng giá trị là mô hình thứ hai, tương tự như chính sách. Nó sẽ làm tăng gấp đôi bộ nhớ, và đưa vào vòng đào tạo của riêng mình.
 
-GRPO  bỏ qua hàm giá trị. Đối với mỗi yêu cầu, nó lấy một nhóm các phản ứng G (thường là G = 16 hoặc 64).
+GRPO  bỏ qua hàm giá trị ⋅ đối với mỗi prompt, nó lấy mẫu $G$个 phản ứng( thường $G=16$Hoặc 64):  tính toán phần thưởng của mỗi phản ứng, sau đó trong nhóm được phân tích:
 
-```
-A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
+```math
+A_i = \frac{r_i - \mathop{\mathrm{mean}}(r_1, \ldots, r_G)}{\mathop{\mathrm{std}}(r_1, \ldots, r_G)}
 ```
 
 lợi thế là phần thưởng của câu trả lời này so với điểm z của các câu trả lời khác của cùng nhóm. Không có hàm giá trị.
 
-```
-L_GRPO = E[min(r(theta) * A_group, clip(r(theta), 1-eps, 1+eps) * A_group)] - beta * KL(pi || pi_ref)
+```math
+L_{\text{GRPO}} = \mathbb{E}\left[\min\left(r(\theta) \cdot A_{\text{group}}, \mathop{\mathrm{clip}}(r(\theta), 1-\epsilon, 1+\epsilon) \cdot A_{\text{group}}\right)\right] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
 针对参考模型的 KL hình phạt 仍然存在,和 PPO 一样──clip ratio 也仍然存在──消失的是独立评论──

@@ -11,7 +11,7 @@
 - Thực hiện đào tạo DPO, trực tiếp trên các cặp ưu tiên 上优化语言模型, không sử dụng mô hình phần thưởng độc lập
 - 推导 DPO Loss Function,并 giải thích nó thông qua chính sách của log xác suất 隐式表示奖励模型
 - Từ góc độ đào tạo ổn định, chi phí tính toán và số lượng mô hình cần thiết so sánh DPO với RLHF
-- 调节 beta 参数, kiểm soát các hoạt động sau khi tập luyện chính sách 偏离参考模型的程度
+- 调节 $\beta$Các yếu tố, kiểm soát các hoạt động sau khi đào tạo chính sách  độ lệch từ mô hình tham chiếu
 
 ## 问题
 Bạn xây dựng một đường ống RLHF trong Bài học 07 ⋅ ba giai đoạn ⋅ ba mô hình ⋅ mô hình SFT ⋅ phần thưởng, cũng như mô hình chính sách tối ưu hóa PPO ⋅ mô hình phần thưởng ⋅ chỉ cần hàng ngàn cặp ưu tiên cá nhân và một vòng đào tạo riêng biệt ⋅ PPO ⋅ cần仔细调节 hệ số KL ⋅ tỷ lệ học tập ⋅ tỷ lệ clip và thời đại số lượng ⋅
@@ -29,51 +29,53 @@ DPO sẽ đơn giản hóa RLHF thành một bước học tập giám sát 步�
 
 RLHF 优化这个目标:
 
-```
-maximize: E[R(x, y)] - beta * KL(pi || pi_ref)
-```
-
-Trong đó, R là mô hình phần thưởng, pi là chính sách, pi_ref là mô hình tham chiếu, beta là hệ số KL。
-
-Báo cáo DPO  chứng minh, mục tiêu này là kết thúc tốt nhất. Đối với bất kỳ chức năng thưởng R, chính sách tốt nhất là:
-
-```
-pi*(y | x) = pi_ref(y | x) * exp(R(x, y) / beta) / Z(x)
+```math
+\text{maximize:} \quad \mathbb{E}[R(x, y)] - \beta \cdot \mathrm{KL}(\pi \,\|\, \pi_{\text{ref}})
 ```
 
-Trong đó, Z(x) là một số thường được phân loại lại:
+Trong số đó $R$là mô hình phần thưởng,$\pi$Chính sách,$\pi_{\text{ref}}$là mô hình tham chiếu,$\beta$là hệ số KL.
 
+Bức thư DPO chứng minh, mục tiêu này tồn tại trong các kết quả tốt nhất.$R$Chính sách tốt nhất là:
+
+```math
+\pi^*(y \mid x) = \pi_{\text{ref}}(y \mid x) \cdot \exp(R(x, y) / \beta) / Z(x)
 ```
-R(x, y) = beta * log(pi*(y | x) / pi_ref(y | x)) + beta * log Z(x)
+
+Trong số đó $Z(x)$là một số thường được phân loại lại:
+
+```math
+R(x, y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)
 ```
 
 Đây là điểm đột phá. Phần thưởng được thể hiện hoàn toàn bằng cách sử dụng mô hình chính sách xác suất và mô hình tham chiếu xác suất. Bạn không cần phải đào tạo mô hình phần thưởng riêng biệt.
 
 Thay vào mô hình ưu tiên Bradley-Terry:
 
-```
-P(y_w > y_l | x) = sigmoid(R(x, y_w) - R(x, y_l))
-                  = sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x)))
+```math
+\begin{aligned}
+P(y_w > y_l \mid x) &= \mathop{\mathrm{sigmoid}}(R(x, y_w) - R(x, y_l)) \\
+&= \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
+\end{aligned}
 ```
 
-Z(x) 项会抵消, vì hai phản ứng đều có cùng một prompt x 为条件―― còn lại chỉ là mô hình chính sách và mô hình tham chiếu trong các phản ứng ưa thích và từ chối trên các hàm log-chỉ có thể 
+$Z(x)$ng sẽ bị tiêu diệt, vì hai phản ứng đều có cùng một prompt $x$Vì điều kiện. Còn lại dưới chỉ là mô hình chính sách và mô hình tham chiếu trong các hàm log-chỉ có thể của các phản ứng ưa thích và từ chối.
 
 ### Sự mất mát của DPO
 
-```
-L_DPO = -log(sigmoid(beta * (log pi(y_w|x)/pi_ref(y_w|x) - log pi(y_l|x)/pi_ref(y_l|x))))
+```math
+L_{\text{DPO}} = -\log \mathop{\mathrm{sigmoid}}\left(\beta \left(\log \frac{\pi(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \log \frac{\pi(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right)
 ```
 
 Chúng tôi giải quyết từng phần:
 
-- **y_w**= ưa thích (được) trả lời
-- **y_l**= phản ứng bị từ chối
-- **x**= nhanh chóng
-- **pi**= 当前模型(正在训练)
-- **pi_ref**= mô hình tham chiếu (số kiểm soát SFT)
-- **beta**= 控制偏离 度度温度 参数(thường là 0,1 đến 0,5)
+- **$y_w$**= ưa thích (được) trả lời
+- **$y_l$**= phản ứng bị từ chối
+- **$x$**= nhanh chóng
+- **$\pi$**= 当前模型(正在训练)
+- **$\pi_{\text{ref}}$**= mô hình tham chiếu (số kiểm soát SFT)
+- **$\beta$**= 控制偏离 度度温度 参数(thường là 0,1 đến 0,5)
 
-比 giá trị`log pi(y|x) / pi_ref(y|x)`là tỷ lệ xác suất log-quả thuận. Khi tỷ lệ này là đúng thời gian, tỷ lệ xác suất của mô hình hiện tại cho phép phản ứng y cao hơn so với tham chiếu.
+比 giá trị`log pi(y|x) / pi_ref(y|x)`là tỷ lệ xác suất log. Khi tỷ lệ này là đúng thời gian, mô hình hiện tại cho phép phản ứng.$y$√ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √ √
 
 DPO Loss sẽ thúc đẩy mô hình nâng cao tỷ lệ xác suất log của các phản ứng ưa thích,并 giảm tỷ lệ xác suất log của các phản ứng bị từ chối.
 
@@ -634,7 +636,7 @@ if __name__ == "__main__":
 | DPO | “没有 RL 的 RLHF” | Direct Preference Optimization：一种 supervised learning algorithm，直接在 preference pairs 上优化语言模型，绕过 reward model 和 PPO |
 | Implicit reward | “reward 在模型里” | reward function 由 policy 与 reference models 之间的 log-probability ratio 决定，不需要单独的 reward model |
 | Beta (DPO) | “temperature” | 控制 policy 可以偏离 reference model 的程度：小 beta 允许大偏离，大 beta 让模型保持接近 |
-| Log-probability ratio | “模型变化了多少” | log pi(y\|x) - log pi_ref(y\|x)：正值表示当前模型分配的概率高于 reference |
+| Log-probability ratio | “模型变化了多少” | $\log \pi(y \mid x) - \log \pi_{\text{ref}}(y \mid x)$：正值表示当前模型分配的概率高于 reference |
 | Reference model | “冻结的 checkpoint” | SFT model 的一个副本，其 weights 永不改变，用作计算概率比的锚点 |
 | KTO | “没有成对数据的 DPO” | Kahneman-Tversky Optimization：使用未配对的“good”或“bad”labels，而不是要求 preference pairs |
 | ORPO | “一步 alignment” | Odds Ratio Preference Optimization：通过向 SFT Loss 添加 preference term，将 SFT 和 alignment 合并到单个 training loop |

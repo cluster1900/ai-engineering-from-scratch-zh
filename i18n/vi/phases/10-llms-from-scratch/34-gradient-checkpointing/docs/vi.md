@@ -37,13 +37,13 @@ Example: 32 tầng biến đổi 拆 thành 32 个段, mỗi phân đoạn 1 层
 - Tưởng thức:32 个 lớp đầu vào ((小) đối với 32 *( mỗi khối lượng kích hoạt)
 - 额外计算: mỗi phân đoạn 额外 1 lần tiến,也就是总向FLOPs 约增加33%(因为向后是向前的2x,完整步骤从1 + 2 = 3个单位变为1 + 1 + 2 = 4个单位) 
 
-Đây là chương trình đầu tiên của Chen et al. 2016: mỗi `sqrt(L)`Layer đặt một điểm kiểm soát, để cân bằng bộ nhớ và tính toán. Đối với L=64, là 8 điểm kiểm soát.
+Đây là chương trình đầu tiên của Chen et al. 2016: mỗi `sqrt(L)`Layer đặt một điểm kiểm soát, để cân bằng bộ nhớ và tính toán.$L=64$, là 8 điểm kiểm soát.
 
 ### Địa chỉ chọn lọc (Korthikanti 2022)
 
 Không phải tất cả các giá trị kích hoạt đều như vậy.`B*L*L*heads`,并随序列长度 *二次* 增长──FFN kích hoạt ẩn là `B*L*4d`, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
 
-Việc kiểm soát chọn lọc sẽ giữ lại giá trị hoạt động của dự trữ thấp (được tính toán theo quy mô tuyến tính), chỉ tính lại phần đắt tiền (đánh chú ý)  Bạn sử dụng rất ít FLOPs để tính toán lại, nhưng tiết kiệm được bộ nhớ (L^2) 
+Việc kiểm soát chọn lọc sẽ giữ giá trị hoạt động giá lưu trữ thấp, dự đoán tuyến tính, dư lượng, chỉ tính lại phần đắt tiền, chú ý.$O(L^2)$trí nhớ.
 
 Megatron-Core sẽ thực hiện nó cho việc tính toán lại kích hoạt chọn lọc. Hầu hết các cuộc đào tạo biên giới 2024+ đều sử dụng nó.
 
@@ -293,8 +293,8 @@ def should_recompute(layer_type, activation_bytes, recompute_flops_ratio):
 | Block checkpointing | “Coarse-grained” | Checkpoint 整个 transformer blocks；粒度最大 |
 | FLOP overhead | “compute 税” | 每 step 额外 FLOPs = (recompute FLOPs) / (fwd + bwd FLOPs)；朴素方案 33%，selective 方案 5% |
 | Activation offload | “传到 CPU” | 在 forward->backward 之间把 activations 移到 CPU RAM；是 recompute 的替代方案 |
-| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 sqrt(L) 层 |
-| Attention-softmax volume | “O(L^2) 问题” | L^2 * heads * batch 个浮点数；在长 context 下主导 activation memory |
+| sqrt-L rule | “经典最优解” | 对于 uniform-cost layers，最优 checkpoint spacing 是 $\sqrt{L}$ 层 |
+| Attention-softmax volume | “O(L^2) 问题” | $L^2 \cdot \text{heads} \cdot \text{batch}$ 个浮点数；在长 context 下主导 activation memory |
 
 ## 延伸阅读
 - [Chen et al., 2016 -- "Training Deep Nets with Sublinear Memory Cost"](https://arxiv.org/abs/1604.06174)-- ban đầu được hình thức hóa các điểm kiểm soát gradient

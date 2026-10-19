@@ -161,11 +161,13 @@ Mặt nạ chú ý 必须正确设置──同一个包装序列 中,Document A 
 
 ### Luật quy mô Chinchilla
 
-Đối với ngân sách tính toán cố định C(以 FLOPs 衡量), mô hình tốt nhất là:
+ Đối với ngân sách tính toán cố định $C$(以 FLOPs 衡量), 优模型大小 $N$和 bộ dữ liệu$D$遵循:
 
-```
-N_opt ~ C^0.5
-D_opt ~ C^0.5
+```math
+\begin{aligned}
+N_{\text{opt}} &\sim C^{0.5} \\
+D_{\text{opt}} &\sim C^{0.5}
+\end{aligned}
 ```
 
 Trong thực tế, điều này có nghĩa là bạn nên lớn tương đương tỷ lệ mở rộng mô hình lớn và tập dữ liệu lớn. Một mô hình có nhiều số lượng hơn 10x, cần khoảng 10x mã thông báo để đạt được cùng một Loss.
@@ -433,7 +435,7 @@ HuggingFace pipeline ở tầng dưới sử dụng Rust tokenizers, và 4 个�
 |------|----------------|----------------------|
 | Common Crawl | “互联网” | 一个每月抓取 web 的非营利组织：约 250TB 原始数据，是大多数 LLM 训练数据的起点 |
 | MinHash | “某种 hashing trick” | 一种使用固定大小 signature 来估计集合间 Jaccard similarity 的技术：支持大规模 near-duplicate detection |
-| LSH | “Locality-Sensitive Hashing” | 一种把相似项分到同一 bucket 的方法：将 pairwise comparisons 从 O(n^2) 降到接近线性 |
+| LSH | “Locality-Sensitive Hashing” | 一种把相似项分到同一 bucket 的方法：将 pairwise comparisons 从 $O(n^2)$ 降到接近线性 |
 | Sequence packing | “拼接文档” | 用正确的 attention masks 把多个文档放入固定长度序列：消除 padding 浪费 |
 | Chinchilla scaling | “在更多数据上训练” | 对于固定计算预算，最优性能要求模型大小和训练 Token 数大致等比例扩展 |
 | Fertility | “Tokens per word” | 每个词平均对应的 Token 数：GPT-4 中英文约为 1.3，非拉丁文字系统更高 |

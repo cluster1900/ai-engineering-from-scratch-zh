@@ -28,8 +28,8 @@ DIFF V1 có ba vấn đề, khiến nó không thể vào đường ống dẫn 
 
 对于查询 `q`和 chìa khóa `K = [k_1, ..., k_N]`,Cảnh sát 权重是:
 
-```
-w_i = exp(q . k_i / sqrt(d)) / sum_j exp(q . k_j / sqrt(d))
+```math
+w_i = \frac{\exp(q \cdot k_i / \sqrt{d})}{\sum_j \exp(q \cdot k_j / \sqrt{d})}
 ```
 
 Không có gì cả.`w_i`Sẽ là không. Nếu.`k_i`Với`q`完全无关, điểm số `q . k_i`Nó sẽ xoay quanh 0波动, khác nhau.`||q||^2 / d`△ Gần thông qua bình thường hóa softmax 后, mỗi Token 仍将向加权和贡献 `O(1/N)`△无关 Token 的总贡献是 `O((N-1)/N) = O(1)`Đây không phải là một số nhỏ.
@@ -38,17 +38,19 @@ Không có gì cả.`w_i`Sẽ là không. Nếu.`k_i`Với`q`完全无关, đi�
 
 ### Sự khác biệt 思路
 
-Để phân chia các dự đoán của mỗi đầu của Q và K thành hai phần: Q = (Q_1, Q_2), K = (K_1, K_2)。 tính toán hai bản đồ chú ý:
+Để phân chia các dự đoán Q và K của mỗi đầu thành hai phần:$Q = (Q_1, Q_2)$- Tôi không biết.$K = (K_1, K_2)$计算两个注意地图:
 
-```
-A_1 = softmax(Q_1 K_1^T / sqrt(d))
-A_2 = softmax(Q_2 K_2^T / sqrt(d))
+```math
+\begin{aligned}
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d})
+\end{aligned}
 ```
 
 输出:
 
-```
-DiffAttn = (A_1 - lambda * A_2) V
+```math
+\mathop{\mathrm{DiffAttn}} = (A_1 - \lambda \cdot A_2) V
 ```
 
 相减会抵消两个地图 共享的任何噪音分布―― Nếu hai地图在127,000 无关代币上有近似均重权 (确实如此) 随机初始化时),这些部分会抵消彼此――信号少数真正相关代币上的尖峰权重只有在两个地图中出现相同幅度时才会抵消,而模型训练后不会保持这种状态――
@@ -63,7 +65,7 @@ Có thể hình dung nó như hai máy đánh âm có tiếng ồn trong cùng m
 
 V1 giữ các tham số tương tự như Transformer cơ bản. Để làm cho mỗi đầu có hai truy vấn, nó sẽ làm giảm kích thước đầu một nửa. Điều này đã làm giảm khả năng biểu hiện của đầu, đau hơn nữa, cũng làm cho mỗi đầu có giá trị cache giảm một nửa.
 
-V2 sẽ truy vấn đầu số lượng tăng gấp đôi,并 giữ đầu KV 不变( Từ dự án lên 借用参数) ――Cái chiều 保持与基线相同──相减后,额外维度将被投影回去,以匹配基线变压器的O_W投影──三件事同时发生:
+V2 sẽ truy vấn đầu số lượng tăng gấp đôi,并 giữ KV đầu không thay đổi( từ dự án lên 借用参数) ――Cái chiều  giữ với đường cơ sở tương đương.$O_W$Dự án:
 
 1. Tốc độ giải mã với đường cơ bản 持平(KV cache chỉ tải một lần)
 2. FlashAttention 可原样运行(không cần lõi tùy chỉnh)。
@@ -140,8 +142,8 @@ Lưu ý: đầu ra trọng lượng có thể được chuyển đổi sang tiê
 给定一个配置 ((隐藏=4096,头=32,头=128),打印:
 
 - Đổi biến cơ bản: Q、K、V Vỳ tự lớn`hidden * hidden`, MLP vì 4 * ẩn
-- DIFF V1:Q、K khác nhau`hidden * hidden`, V lớn vì`hidden * hidden`(不变), đầu mờ trong bên trong giảm nửa.`lambda`参数(O( đầu * d_head))
-- DIFF V2:Q`2 * hidden * hidden`, K, lớn hơn`hidden * hidden`, V lớn vì`hidden * hidden`◊ thêm dimension sẽ ở O_W 前投投回去──增加相同 `lambda`参数。
+- DIFF V1:Q、K khác nhau`hidden * hidden`, V lớn vì`hidden * hidden`(不变), đầu mờ trong bên trong giảm nửa.`lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$
+- DIFF V2:Q`2 * hidden * hidden`, K, lớn hơn`hidden * hidden`, V lớn vì`hidden * hidden`                                                                                                                                                                                                                                                              $O_W$前投影回去──增加相同的 `lambda`参数。
 
 Toy 会测量 V2 的额外参数成本(大约每个注意区 额外 `hidden * hidden`),并打印出来──
 
@@ -183,8 +185,8 @@ Bạn sẽ không chọn cảnh của nó:
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
-| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 lambda 缩放），然后乘以 V |
-| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 O(1/N) 权重，在 long contexts 中会累加到 O(1) |
+| Differential attention | “两个 softmax 相减” | 将 Q、K 拆成两半，计算两个 softmax maps，从第一个中减去第二个（由 $\lambda$ 缩放），然后乘以 V |
+| Noise floor | “softmax 的非零尾部” | Softmax 放在每个无关 Token 上的 $O(1/N)$ 权重，在 long contexts 中会累加到 $O(1)$ |
 | lambda | “相减的缩放系数” | 每个 head 的可学习标量，参数化为 `exp(lq1.lk1) - exp(lq2.lk2) + lambda_init`；可以为负 |
 | DIFF V1 | “ICLR 2025 版本” | 原始 Differential Transformer；将 head dim 减半以保持参数量，需要 custom kernel，decode 更慢 |
 | DIFF V2 | “2026 年 1 月修复版” | 在保持 KV heads 的同时将 Q heads 加倍；decode speed 与 baseline 持平，并兼容 FlashAttention |

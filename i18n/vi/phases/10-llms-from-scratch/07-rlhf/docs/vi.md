@@ -77,8 +77,8 @@ Mô hình phần thưởng là được biến thành mô hình ngôn ngữ củ
 
 Loss Function Sử dụng các ưu tiên cặp của mô hình Bradley-Terry:
 
-```
-loss = -log(sigmoid(reward(preferred) - reward(rejected)))
+```math
+\text{loss} = -\log\big(\mathop{\mathrm{sigmoid}}(\text{reward}(\text{preferred}) - \text{reward}(\text{rejected}))\big)
 ```
 
 Đó là một công thức quan trọng.`sigmoid(reward(A) - reward(B))`给出答案 A 相比答案 B 更受偏好的概率──这个损失会推动奖励模式 给偏好的答案 分配更高分数──
@@ -93,8 +93,8 @@ PPO là một loại thuật toán học tập tăng cường. Trong RLHF, môi 
 
 目标:
 
-```
-maximize: E[R(prompt, response)] - beta * KL(policy || reference)
+```math
+\text{maximize:} \quad \mathbb{E}[R(\text{prompt}, \text{response})] - \beta \cdot \mathrm{KL}(\text{policy} \,\|\, \text{reference})
 ```
 
 Đầu tiên thúc đẩy mô hình tạo ra phần thưởng cao.
@@ -107,7 +107,7 @@ Tại sao cần phạt KL? Không có nó, mô hình sẽ tìm thấy giải ph�
 
 KL hình phạt biểu hiện: bạn có thể cải thiện, nhưng không thể trở thành một mô hình hoàn toàn khác nhau.
 
-**InstructGPT numbers:**Việc đào tạo PPO sử dụng lr=1.5e-5、KL tỷ lệ beta=0.02、256K tập phim(cặp phản ứng nhanh), và mỗi lô làm 4 thời kỳ PPO。 toàn bộ đường ống RLHF trong cluster GPU 上需要几天时间。
+**InstructGPT numbers:**Việc đào tạo PPO sử dụng lr=1.5e-5、KL$\beta=0.02$、256K tập phim(cặp phản ứng nhanh), và mỗi lô làm 4 thời kỳ PPO。 toàn bộ đường ống RLHF trong cluster GPU 上 cần vài ngày thời gian。
 
 ```mermaid
 graph LR
@@ -130,12 +130,14 @@ graph LR
 
 ### Mục tiêu của PPO 详解
 
-PPO sử dụng mục tiêu thay thế bị cắt giảm để ngăn chặn quá nhiều cập nhật.
+PPO sử dụng mục tiêu thay thế bị cắt giảm để ngăn chặn quá nhiều cập nhật.$[1 - \epsilon, 1 + \epsilon]$ phạm vi, trong đó $\epsilon$Thường là 0,2...
 
-```
-ratio = pi_new(action | state) / pi_old(action | state)
-clipped_ratio = clip(ratio, 1 - epsilon, 1 + epsilon)
-loss = -min(ratio * advantage, clipped_ratio * advantage)
+```math
+\begin{aligned}
+\text{ratio} &= \pi_{\text{new}}(\text{action} \mid \text{state}) / \pi_{\text{old}}(\text{action} \mid \text{state}) \\
+\text{clipped\_ratio} &= \mathop{\mathrm{clip}}(\text{ratio}, 1 - \epsilon, 1 + \epsilon) \\
+\text{loss} &= -\min(\text{ratio} \cdot \text{advantage}, \text{clipped\_ratio} \cdot \text{advantage})
+\end{aligned}
 ```
 
 Chức năng lợi thế  ước tính hiện tại phản ứng so với dự kiến chất lượng rất ít. Trong RLHF:
@@ -600,19 +602,19 @@ if __name__ == "__main__":
 
 3. 模拟奖励黑客──创建一个给长响应高分的奖励模型(奖励 = len(响应) / 100)──使用这个缺陷的奖励模型 运行PPO,观察政策模型 生成越来越长、越来越重复的输出──然后添加 0.1 的 KL phạt,并显示它 sẽ ngăn chặn hành vi退化──
 
-4. 实现多目的奖励──训练两个奖励模式: một用于帮助,另一个用于简洁――将它们组合为R = 0.7 * R_helpful + 0.3 * R_concise──展示组合目标会产生既有用又简洁的响应,避免单一帮助奖励 带来的词语陷──
+4. 实现 multi-objective reward──训练两个奖励模式: một cho sự hữu ích, một cho sự ngắn gọn──将它们组合为 $R = 0.7 \cdot R_{\text{helpful}} + 0.3 \cdot R_{\text{concise}}$ hiển thị tập hợp mục tiêu sẽ tạo ra cả những phản ứng hữu ích và ngắn gọn, tránh một phần thưởng hữu ích 带来的 bẫy động từ.
 
-5. Hãy so sánh các hệ số KL khác nhau.
+5. So sánh các hệ số KL khác nhau.$\beta=0.001$(Từ thấp, đánh cắp phần thưởng)$\beta=0.02$(标准) và$\beta=0.5$(过高,无法学习)运行 PPO──绘制每种设置的奖励曲线 和 KL曲线──$\beta=0.02$运行应表现出稳定的奖励提升,并且 KL có界──
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|----------------|----------------------|
 | RLHF | “Training with human feedback” | Reinforcement Learning from Human Feedback：一个三阶段 pipeline（SFT、reward model、PPO），使用人类偏好信号优化 language model 输出 |
 | Reward model | “A model that scores responses” | 一个带 scalar output head 的 Transformer，使用 Bradley-Terry loss 在 pairwise human preferences 上训练 |
-| Bradley-Terry | “The comparison model” | 一种概率模型，其中 P(A > B) = sigmoid(score(A) - score(B))，可将 pairwise preferences 转换为一致的 scoring function |
+| Bradley-Terry | “The comparison model” | 一种概率模型，其中 $P(A > B) = \mathop{\mathrm{sigmoid}}(\text{score}(A) - \text{score}(B))$，可将 pairwise preferences 转换为一致的 scoring function |
 | PPO | “The RL algorithm” | Proximal Policy Optimization：更新 policy 以最大化 reward，同时裁剪更新幅度以防止不稳定 |
 | KL divergence | “How different two distributions are” | 衡量 policy model 的 Token distribution 与 reference model 之间差异的指标，用作 penalty 来防止 reward hacking |
-| KL penalty | “The leash on the model” | 从 reward signal 中减去的 Beta * KL(policy \|\| reference)，防止 policy 偏离 SFT checkpoint 太远 |
+| KL penalty | “The leash on the model” | 从 reward signal 中减去的 $\beta \cdot \mathrm{KL}(\text{policy} \Vert \text{reference})$，防止 policy 偏离 SFT checkpoint 太远 |
 | Reward hacking | “Gaming the reward” | policy 通过利用 reward model 的弱点找到退化的高 reward 输出，而不是真正改进 |
 | Preference pair | “Which is better, A or B?” | 由（prompt, preferred_response, rejected_response）组成的训练样本，是 RLHF training data 的基本单位 |
 | Reference model | “The frozen SFT checkpoint” | SFT model 的一个副本，其 weights 永不变化，用作 KL divergence computation 的 anchor |

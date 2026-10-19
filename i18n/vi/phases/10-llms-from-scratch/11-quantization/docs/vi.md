@@ -39,11 +39,11 @@ INT8:  [1 sign] [7 value]                   = 8  bits (uniform steps)
 INT4:  [1 sign] [3 value]                   = 4  bits (16 levels total)
 ```
 
-**FP32** 23 个 mantissa bit 给你大约 7 位进制精度──范围: từ khoảng 1,2 x 10^-38 đến 3.4 x 10^38──过去训练 几乎只使用FP32──现在它仍然用于积累(matrix乘法期间运行求和)──
+**FP32**là độ chính xác đầy đủ. 23 bộ mantissa.$1.2 \times 10^{-38}$Đến$3.4 \times 10^{38}$ Trong quá khứ, nó đã được sử dụng hầu như chỉ với FP32  Hiện nay nó vẫn được sử dụng để tích lũy
 
 **FP16**Để giảm một nửa các bit, 10 bit mantissa cung cấp độ chính xác khoảng 3,3 bit, giảm một phần nhỏ đến 5 bit, phạm vi giảm đáng kể.
 
-**BF16**(Brain Float 16) giữ cho hàm lượng 8 bit của FP32 giảm xuống 7 bit, nhưng hãy làm cho mantissa giảm xuống 7 bit. phạm vi và FP32 tương tự, độ chính xác so với FP16 thấp hơn. Google đặc biệt thiết kế nó cho Deep Learning.
+**BF16**(Brain Float 16) giữ cho FP32 là một hàm số 8 bit, nhưng hãy làm cho nó giảm xuống còn 7 bit.$10^{-20}$Một trọng lượng 0.07342 trong BF16 tròn đến 0.0734, cũng đủ gần. Mỗi cuộc tập luyện hiện đại đều sử dụng BF16 hoặc BF16/FP32 混合──
 
 **FP8**Có hai hình thức: E4M3 (4, hàm số 3, hàm số 3) được sử dụng để suy luận: 期间的重量和激活. E5M2 (5, hàm số 2) được sử dụng cho gradients trong thời gian đào tạo.
 

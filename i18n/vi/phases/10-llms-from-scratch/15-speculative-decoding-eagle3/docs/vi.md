@@ -33,8 +33,8 @@ Làm cho`p(t)`biểu hiện trong một định nghĩa trước 下草案 đối
 
 Làm cho`α`Đối với mỗi dự thảo Token Ước tính chấp nhận tỷ lệ.`c = cost(draft) / cost(verifier)`Đối với chi phí:
 
-```
-E[accepted] = (1 - α^(N+1)) / (1 - α)
+```math
+\mathbb{E}[\text{accepted}] = \frac{1 - \alpha^{N+1}}{1 - \alpha}
 ```
 
 Mỗi nhận token của kỳ vọng tổng thời gian tường là `(N * c + 1) / E[accepted]` `N`Để làm nó nhỏ hơn, bạn có thể nhận được điểm tốt nhất.`α = 0.8, c = 0.05`: 最优 `N`Khoảng 57, tăng tốc là 3,2 x.`α = 0.95, c = 0.02`: 最优 `N`Khoảng 810... tăng tốc gần 5x...

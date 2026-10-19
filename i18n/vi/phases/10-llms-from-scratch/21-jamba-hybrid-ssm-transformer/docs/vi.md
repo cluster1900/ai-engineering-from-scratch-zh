@@ -27,12 +27,14 @@ Bài học này sẽ đọc được 3 bài viết này, và hình thành lựa 
 
 Mô hình không gian nhà nước  thông qua trạng thái cố định`h`处理序列 `x_1, ..., x_N`- Có thể là:
 
-```
-h_t = A h_{t-1} + B x_t
-y_t = C h_t
+```math
+\begin{aligned}
+h_t &= A h_{t-1} + B x_t \\
+y_t &= C h_t
+\end{aligned}
 ```
 
-Mỗi bước, trạng thái qua đường dây động lực học`A`演化,接收输入 `B x_t`,并输出 `C h_t``A, B, C`Tất cả chúng ta có thể học.`y_t`Chỉ cần `h_{t-1}`和 `x_t`, không cần bất cứ điều gì sớm hơn `x`内存是常量推理是每个符号 O(1)
+Mỗi bước, trạng thái qua đường dây động lực học`A`演化,接收输入 `B x_t`,并输出 `C h_t``A, B, C`Tất cả chúng ta có thể học.`y_t`Chỉ cần `h_{t-1}`和 `x_t`, không cần bất cứ điều gì sớm hơn `x`内存 là một lượng thường.$O(1)$
 
 建模质量 关键 là `A`Trong quá trình tập luyện, có thể được sử dụng một matrix cấu trúc cao, có thể được sử dụng như một sự biến chuyển dài cao hiệu quả.`A, B, C`替换为依赖数据的形式 (也就是 选择性) 部分 (Mamba-2(2024) tiếp tục đơn giản hóa cấu trúc.
 
