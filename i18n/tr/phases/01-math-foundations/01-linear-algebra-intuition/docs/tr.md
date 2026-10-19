@@ -477,3 +477,17 @@ LoRA 特別説明に値する。 特別説明します。 通過する 重量更
 | Projection | “影子” | 一个 Vector 在另一个 Vector 方向上的分量 |
 | Basis | “坐标轴” | 一组最小的 independent Vectors，它们 span 该空间 |
 | Orthonormal | “垂直的单位 Vectors” | 彼此互相垂直且各自长度为 1 的 Vectors |
+
+## Küçük bir kız
+
+| 公式 | 含义 |
+|---------|---------|
+| $a \cdot b = \sum_i a_i b_i$ | 点积。它衡量对齐程度，是注意力分数和余弦相似度的核心 |
+| $\cos\theta = \frac{a \cdot b}{\lvert a\rvert \lvert b\rvert}$ | 向量之间的夹角。1 表示同向，0 表示正交 |
+| $\lvert a\rvert = \sqrt{a \cdot a}$ | 向量的大小（长度） |
+| $y = Ax, y_i = \sum_j A_{ij} x_j$ | 矩阵与向量的乘积。神经网络层会对每个输入执行这一运算 |
+| $\text{proj}_b a = \frac{a \cdot b}{b \cdot b} b$ | $a$ 在 $b$ 上的投影，即 $a$ 沿 $b$ 方向的部分 |
+| $b^\perp = a - \text{proj}_b a$ | $a$ 中垂直于 $b$ 的分量，用于 Gram-Schmidt 正交化 |
+| $\text{rank}(A) \leq \min(m,n)$ | 秩，即线性无关列的数量。它决定 $Ax = b$ 是否有解 |
+| $\Delta W = BA$，$B$ 为 4096×16，$A$ 为 16×4096 | 低秩更新。LoRA 用两个秩为 16 的因子（131K 个参数）替代一次 4096×4096 的更新（16M 个参数） |
+| 标准正交基：$\lvert v_i\rvert = 1, v_i \cdot v_j = 0$ | 稳定、可逆的变换，例如白化和 QR 分解 |
