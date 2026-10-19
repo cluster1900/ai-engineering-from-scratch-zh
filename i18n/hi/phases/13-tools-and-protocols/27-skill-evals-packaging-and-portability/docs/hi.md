@@ -137,10 +137,12 @@ skill-eval-layers
 
 对于二元调用判定:
 
-```text
-precision = true_positives / (true_positives + false_positives)
-recall = true_positives / (true_positives + false_negatives)
-f1 = 2 * precision * recall / (precision + recall)
+```math
+\begin{aligned}
+\text{precision} &= \frac{\text{true\_positives}}{\text{true\_positives} + \text{false\_positives}} \\[4pt]
+\text{recall} &= \frac{\text{true\_positives}}{\text{true\_positives} + \text{false\_negatives}} \\[4pt]
+\text{f1} &= \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}
+\end{aligned}
 ```
 
 वहीं, मूल लेखांकन और अनुपात में 10 में से 10 और 100 में से 100 100% हैं, लेकिन दिए गए विश्वास प्रमाण स्पष्ट रूप से भिन्न हैं।
