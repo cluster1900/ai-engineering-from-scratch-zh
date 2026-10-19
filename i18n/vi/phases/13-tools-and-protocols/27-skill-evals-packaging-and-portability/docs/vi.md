@@ -137,10 +137,12 @@ Trước khi mô tả phản hồi, hãy xây dựng tập hợp thí nghiệm c
 
 对于二元调用判定:
 
-```text
-precision = true_positives / (true_positives + false_positives)
-recall = true_positives / (true_positives + false_negatives)
-f1 = 2 * precision * recall / (precision + recall)
+```math
+\begin{aligned}
+\text{precision} &= \frac{\text{true\_positives}}{\text{true\_positives} + \text{false\_positives}} \\[4pt]
+\text{recall} &= \frac{\text{true\_positives}}{\text{true\_positives} + \text{false\_negatives}} \\[4pt]
+\text{f1} &= \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}
+\end{aligned}
 ```
 
 Đồng thời, tỷ lệ đầu tiên và tỷ lệ: 10 trong 10 và 100 trong 100 là 100%, nhưng chứng cứ tin tưởng được cung cấp là rất khác nhau.
