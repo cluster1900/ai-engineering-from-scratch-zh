@@ -4,10 +4,16 @@
   "framework": null,
   "installCommand": "echo skip",
   "routes": [
+    { "src": "/blogs(?:\\.html)?/", "status": 308, "headers": { "Location": "/blogs" } },
+    { "src": "/blogs(?:\\.html)?", "methods": ["GET", "HEAD"], "dest": "/api/blogs" },
+    { "src": "/(blog|guides)/([a-z0-9][a-z0-9-]*)/?", "methods": ["GET", "HEAD"], "dest": "/api/writing?path=/$1/$2/" },
     { "src": "/lesson\\.html", "methods": ["GET", "HEAD"], "dest": "/api/lesson?legacy=1" },
     { "src": "/certification\\.html", "methods": ["GET", "HEAD"], "dest": "/api/certification?legacy=1" },
     { "src": "/", "methods": ["GET", "HEAD"], "has": [{ "type": "header", "key": "accept", "value": "(?i).*text/markdown.*" }], "dest": "/api/markdown?path=/" }
   ],
+  "functions": {
+    "api/blogs.js": { "maxDuration": 10, "includeFiles": "site/blogs.html" }
+  },
   "rewrites": [
     { "source": "/lesson", "destination": "/api/lesson" },
     { "source": "/certification", "destination": "/api/certification" },

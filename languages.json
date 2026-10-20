@@ -19,7 +19,8 @@
       "code": "zh-TW",
       "name": "Traditional Chinese",
       "native": "繁體中文",
-      "nllb": "zho_Hant"
+      "nllb": "zho_Hant",
+      "site": true
     },
     {
       "code": "hi",
