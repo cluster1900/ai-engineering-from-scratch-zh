@@ -190,13 +190,16 @@ Maskenin içindeki beyaz resim yeniden üretilme alanıdır.
 ### 步骤 5: LoRA yükleme
 
 ```python
-pipe.load_lora_weights("sayakpaul/sd-lora-ghibli")
+pipe.load_lora_weights(
+    "artificialguybr/studioghibli-redmond-1-5v-studio-ghibli-lora-for-liberteredmond-sd-1-5",
+    weight_name="StudioGhibliRedmond-15V-LiberteRedmond-StdGBRedmAF-StudioGhibli.safetensors",
+)
 pipe.fuse_lora(lora_scale=0.8)
 
-image = pipe(prompt="a village square in ghibli style").images[0]
+image = pipe(prompt="a village square, StdGBRedmAF, Studio Ghibli").images[0]
 ```
 
-`lora_scale`Kontrol Güçü;0.0 = 无效,1.0 = 完整效果──`fuse_lora`Adaptörün hızını artırmak için ağırlıklara kadar yüklenecek ama değişimi engelleyecek.`pipe.unfuse_lora()`- Evet.
+model kartı 中的触发短语(`StdGBRedmAF, Studio Ghibli`Bu şekilde başlayacak.`lora_scale`Kontrol Güçü;0.0 = 无效,1.0 = 完整效果──`fuse_lora`Adaptörün hızını artırmak için ağırlıklara kadar yüklenecek ama değişimi engelleyecek.`pipe.unfuse_lora()`- Evet.
 
 ### 步骤 6: LoRA eğitim (sketch)
 
