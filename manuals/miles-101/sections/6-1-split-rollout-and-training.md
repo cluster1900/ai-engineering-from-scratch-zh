@@ -1,56 +1,56 @@
-# Split rollout and training across GPUs
+# 把 rollout 和训练拆分到不同的 GPU
 
-> On many GPUs, rollout and training can run on separate devices, and a transfer method moves the weights between them.
+> 在多块 GPU 上，rollout 和训练可以在不同的设备上运行，由一种传输方法在它们之间搬运权重。
 
-On one GPU, the trainer and the engine take turns, and the weight update is a copy inside the GPU. On many GPUs you have a choice. Keep both sides on the same GPUs and take turns, or give each side its own GPUs and send the weights across.
+在一块 GPU 上，训练器和引擎轮流运行，权重更新是 GPU 内部的一次复制。在多块 GPU 上你有选择：让两边留在同一批 GPU 上轮流运行，或者给每一边各自的 GPU，并把权重发送过去。
 
-When you finish this section, you can choose a placement and a weight transfer method for a run on many GPUs.
+读完本节后，你能为多 GPU 的运行选择一种布局和一种权重传输方法。
 
-We cannot measure this on our single GB10. This page comes from the Miles source and documentation.
+我们无法在单块 GB10 上测量这些。本页内容来自 Miles 的源码和文档。
 
-## Choose a placement
+## 选择布局 {#s-split-rollout-and-training-choose-a-placement}
 
-| Placement | Flag | GPUs used | Each side waits for the other |
+| 布局 | 参数 | 使用的 GPU | 每一边是否等待另一边 |
 |---|---|---|---|
-| Colocated | `--colocate` | the larger of the trainer GPUs and the rollout GPUs | yes, every step |
-| Split | no `--colocate` | the trainer GPUs plus the rollout GPUs | yes, unless you run async training |
+| 共置 | `--colocate` | 训练器 GPU 和 rollout GPU 中较多的那一方 | 是，每一步都等 |
+| 拆分 | 不加 `--colocate` | 训练器 GPU 加上 rollout GPU | 是，除非你运行异步训练 |
 
-Set the sizes with these flags:
+用这些参数设置大小：
 
-- `--actor-num-nodes` and `--actor-num-gpus-per-node` set the trainer GPUs.
-- `--rollout-num-gpus` sets the rollout GPUs in a split layout.
-- `--rollout-num-gpus-per-engine` sets how many GPUs each rollout engine uses.
+- `--actor-num-nodes` 和 `--actor-num-gpus-per-node` 设置训练器 GPU。
+- `--rollout-num-gpus` 设置拆分布局中的 rollout GPU。
+- `--rollout-num-gpus-per-engine` 设置每个 rollout 引擎使用多少块 GPU。
 
-Start colocated. Split only when the rollout phase takes most of the step and you have the GPUs to give it. A split layout leaves trainer GPUs idle during rollout unless you also run async training, as in [section 4.1](#s-run-rollout-and-training-at-once).
+从共置开始。只有当 rollout 阶段占了一步的大部分时间，并且你有 GPU 可以分给它时，才拆分。拆分布局会让训练器 GPU 在 rollout 期间空闲，除非你同时运行异步训练，如[第 4.1 节](#s-run-rollout-and-training-at-once)所述。
 
-## Choose how the weights move
+## 选择权重的搬运方式 {#s-split-rollout-and-training-choose-how-the-weights-move}
 
-In a split layout, the weights leave the trainer GPUs after every update. `--update-weight-transfer-mode` picks the method:
+在拆分布局中，每次更新之后权重都会离开训练器 GPU。`--update-weight-transfer-mode` 选择传输方法：
 
-| Method | What it does | Needs |
+| 方法 | 做什么 | 需要 |
 |---|---|---|
-| `broadcast`, the default | sends each tensor over NCCL, one by one | nothing extra |
-| `broadcast_packed` | packs each bucket into one send | the Megatron trainer and a split layout |
-| `p2p` | moves the weights over RDMA with Mooncake | Mooncake and an RDMA network |
-| `disk-delta` | writes only the changed bytes to a shared folder, and each engine loads them | `--update-weight-disk-dir` |
+| `broadcast`，默认 | 通过 NCCL 逐个发送每个张量 | 不需要额外条件 |
+| `broadcast_packed` | 把每个桶打包成一次发送 | Megatron 训练器和拆分布局 |
+| `p2p` | 用 Mooncake 通过 RDMA 搬运权重 | Mooncake 和 RDMA 网络 |
+| `disk-delta` | 只把变化的字节写到共享文件夹，由每个引擎加载 | `--update-weight-disk-dir` |
 
-Under `--colocate`, Miles uses a copy inside the GPU instead, and the transfer mode does not apply.
+在 `--colocate` 下，Miles 改用 GPU 内部的复制，传输模式不适用。
 
-## Choose the trainer
+## 选择训练器 {#s-split-rollout-and-training-choose-the-trainer}
 
-This manual uses the FSDP trainer, because it loads a Hugging Face model folder as it is. Miles has two other trainers, and `--train-backend` picks one:
+本手册使用 FSDP 训练器，因为它能原样加载 Hugging Face 模型文件夹。Miles 还有另外两种训练器，由 `--train-backend` 选择：
 
-| Trainer | Model input | Model parallel | LoRA |
+| 训练器 | 模型输入 | 模型并行 | LoRA |
 |---|---|---|---|
-| `megatron`, the default | a Megatron `torch_dist` checkpoint, converted once from the Hugging Face folder | tensor, pipeline, context, and expert parallel | yes |
-| `fsdp` | the Hugging Face folder | no. It shards the weights and the optimizer state over data-parallel GPUs, and each GPU still runs whole layers | no |
-| `torchtitan` | the Hugging Face folder, for the models that torchtitan implements | tensor, pipeline, context, and expert parallel | no |
+| `megatron`，默认 | Megatron `torch_dist` 检查点，从 Hugging Face 文件夹转换一次得到 | 张量、流水线、上下文和专家并行 | 是 |
+| `fsdp` | Hugging Face 文件夹 | 否。它把权重和优化器状态分片到数据并行的 GPU 上，每块 GPU 仍运行完整的层 | 否 |
+| `torchtitan` | Hugging Face 文件夹，限于 torchtitan 实现了的模型 | 张量、流水线、上下文和专家并行 | 否 |
 
-Some features in this manual work only on Megatron: fully async training with `--colocate`, train fault tolerance, MTP training, and the step-0 checks of `--ci-test`. The Miles documentation recommends Megatron for large models and for jobs on many nodes.
+本手册中的一些功能只在 Megatron 上有效：带 `--colocate` 的完全异步训练、训练容错、MTP 训练，以及 `--ci-test` 的第 0 步检查。Miles 文档推荐在大模型和多节点任务上使用 Megatron。
 
-**torch_dist:** the checkpoint format of Megatron. It does not depend on the parallel layout, so you can change the layout later without a new conversion.
+**torch_dist：** Megatron 的检查点格式。它不依赖并行布局，所以你之后可以改变布局而无需重新转换。
 
-Convert a model once before the first Megatron run. The architecture flags come from the model file of Miles for that model, here `qwen3-4B`:
+在第一次 Megatron 运行之前，把模型转换一次。架构参数来自 Miles 中该模型的模型文件，这里是 `qwen3-4B`：
 
 ```bash
 cd /root/miles
@@ -58,30 +58,30 @@ MODEL_ARGS=$(python3 miles/utils/external_utils/model_args_utils.py qwen3-4B)
 PYTHONPATH=/root/Megatron-LM python3 tools/convert_hf_to_torch_dist.py $MODEL_ARGS --hf-checkpoint /root/lab/models/Qwen3-4B --save /root/lab/models/Qwen3-4B_torch_dist
 ```
 
-Run these lines inside the container, with the lab folder mounted as in [section 1.1](#s-run-grpo-on-one-gpu). Our launcher builds an FSDP run only. For Megatron, start from a launcher of Miles for your model, in the `scripts` folder of the Miles source. We have not run the Megatron or the torchtitan trainer on our GB10. We ran only the conversion to `torch_dist` for Qwen3-0.6B, and it wrote the checkpoint folder.
+在容器内运行这些命令，并像[第 1.1 节](#s-run-grpo-on-one-gpu)那样挂载实验文件夹。我们的启动器只构建 FSDP 运行。对于 Megatron，请从 Miles 源码 `scripts` 文件夹中适合你模型的启动器开始。我们没有在 GB10 上运行 Megatron 或 torchtitan 训练器。我们只为 Qwen3-0.6B 运行了到 `torch_dist` 的转换，它写出了检查点文件夹。
 
-## Start a run on more than one node
+## 在多个节点上启动运行 {#s-split-rollout-and-training-start-a-run-on-more-than-one-node}
 
-Every node must be in one Ray cluster before Miles submits the job. The launchers of Miles do it in one of two ways:
+在 Miles 提交任务之前，每个节点都必须处在同一个 Ray 集群中。Miles 的启动器用以下两种方式之一做到这一点：
 
-- One command for each node role. A `worker` command joins the cluster of the head node and waits. A `train` command starts the head node, waits for all GPUs, and submits the job.
-- One command on the head node, which connects to the other hosts over ssh and adds them to the cluster.
+- 每种节点角色一条命令。`worker` 命令加入头节点的集群并等待。`train` 命令启动头节点，等待所有 GPU 就绪，然后提交任务。
+- 在头节点上运行一条命令，它通过 ssh 连接其他主机并把它们加入集群。
 
-To use a Ray cluster that you started yourself, set `MILES_SCRIPT_EXTERNAL_RAY=1`. The launcher then skips its own `ray start` and only submits the job. Set `MASTER_ADDR` to the address of the head node on every node, so that Ray and the trainer use the right network interface. Then set the trainer size with `--actor-num-nodes` and `--actor-num-gpus-per-node`.
+要使用你自己启动的 Ray 集群，请设置 `MILES_SCRIPT_EXTERNAL_RAY=1`。启动器随后会跳过自己的 `ray start`，只提交任务。在每个节点上把 `MASTER_ADDR` 设为头节点的地址，让 Ray 和训练器使用正确的网络接口。然后用 `--actor-num-nodes` 和 `--actor-num-gpus-per-node` 设置训练器的大小。
 
-[Section 6.3](#s-survive-failures) lists a known problem of some launchers with a Ray cluster of your own. We have not run Miles on more than one node.
+[第 6.3 节](#s-survive-failures)列出了某些启动器在使用你自己的 Ray 集群时的一个已知问题。我们没有在多个节点上运行过 Miles。
 
-## What to measure after the split
+## 拆分之后要测量什么 {#s-split-rollout-and-training-what-to-measure-after-the-split}
 
-- `perf/update_weights_time` against `perf/step_time`. On many machines the transfer is no longer a copy inside one GPU.
-- The idle time on each side, from `perf/train_wait_time` and the rollout timers.
-- The gap between the trainer and the engine, as in [section 5.2](#s-check-the-first-step), after the first update with the new method.
+- `perf/update_weights_time` 与 `perf/step_time` 的对比。在多台机器上，传输不再是单块 GPU 内部的复制。
+- 每一边的空闲时间，来自 `perf/train_wait_time` 和 rollout 计时器。
+- 使用新方法完成第一次更新后，训练器和引擎之间的差距，如[第 5.2 节](#s-check-the-first-step)所述。
 
 ```takeaways
-- Start colocated, and split only when rollout takes most of the step.
-- Keep broadcast until the weight transfer is a large share of the step.
-- Measure the update time and the idle time on both sides after a split.
-- Pick the trainer before you size the run, because only Megatron has model parallel and LoRA.
+- 从共置开始，只有当 rollout 占了一步的大部分时间时才拆分。
+- 保持 broadcast，直到权重传输占了一步中的很大一部分。
+- 拆分之后，测量更新时间和两边的空闲时间。
+- 在确定运行规模之前先选好训练器，因为只有 Megatron 支持模型并行和 LoRA。
 ```
 
 Sources: Miles main 08752a12 files docs/user-guide/training-backend.md, docs/user-guide/launch-script.md, miles/utils/external_utils/command_utils/ray_backend/backend.py, miles/utils/lora/arguments.py, tools/convert_hf_to_torch_dist.py, scripts/models/qwen3-4B.py, miles/ray/placement_group.py, miles/utils/arguments.py, miles/backends/training_utils/weight_update/protocol.py, miles/backends/training_utils/weight_update/protocols/broadcast.py, miles/backends/training_utils/weight_update/protocols/delta.py, miles/backends/training_utils/metrics/perf.py, docs/advanced/disaggregated-rollout.md, docs/advanced/p2p-weight-transfer.md; capture/gpu/out-gb10/live-check-summary.txt (live check, 2026-10-23).
