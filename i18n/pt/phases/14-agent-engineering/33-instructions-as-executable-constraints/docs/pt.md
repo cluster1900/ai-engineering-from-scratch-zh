@@ -62,7 +62,7 @@ Cada regra tem um tipo, uma categoria, uma descrição e um.`check`字段,指向
 
 修复方式不是写一个更短的文件,而是写一个分层的文件――router根必须小到每一个会议都能读完,并且只保存指针――内容深度放在主题文件里,只有当任务触及应对主题时才加载――给代理一个地图,而不是全本百科全书,让它自己走到需要的页面――
 
-```text
+```
 AGENTS.md                  # router，少于 50 行：这个 repo 是什么、去哪里看、5 条硬规则
 docs/
   agent-rules.md           # 完整规则集（本课）

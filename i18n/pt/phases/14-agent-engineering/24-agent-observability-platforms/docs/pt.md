@@ -1,6 +1,6 @@
 # Agente 可观测性: Langfuse, Phoenix, Opik
 
-> Três agentes de código aberto 可观测性平台主导了 2026 年──Langfuse (MIT)  Mês 6M+ instalações, rastreamento + gestão de prompt + evals + replay de sessão──Arize Phoenix (Elastic 2.0)  Deep入的代理 专用 evals、RAG 相关性、OpenInference auto-instrumentation──Comet Opik (Apache 2.0)  Automatização de prompt 优化、guardrails、LLM-judge 幻觉检测──
+> O programa de avaliação de dados da empresa é o que vai ser feito para o desenvolvimento de um sistema de avaliação de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados
 
 **类型：**- aprendizagem
 **语言：**Python (stdlib)
@@ -9,7 +9,7 @@
 
 ## Objectivo de aprendizagem
 
-- Expõe três principais plataformas de código aberto de Agente e licença.
+- O que é o código aberto da OSI?
 - 区分每个平台最擅长的方面:Langfuse (seções de mgmt + rápidas) Fenix (RAG + auto-instrumentamento) Opik (optimização + guardrails) 
 - Explicação de porquê: até 2026, 89% dos relatórios organizacionais já estão implantados em Agente de Observação.
 - 实现一个带有LLM-judge 评估的 stdlib trace-to-dashboard pipeline──

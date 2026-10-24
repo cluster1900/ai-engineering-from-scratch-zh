@@ -92,7 +92,7 @@ Quatro modos podem transformar o mínimo da aula em monorepo multi-agente, algo 
 
 **将大型 artifacts 与 state 分离。**Não coloque CSVs, transcrições ou arquivos gerados em`agent_state.json` vai artifício 保存为单独文件(或上传到物体存储),state 中只保留路径──Checkpoints 保持小而快;artifacts 独立增长──
 
-**Event sourcing 用于 audit，snapshots 用于 resume。**Cada mutação é adicionada ao registro de eventos.`state.events.jsonl`); instantâneo regular até `state.json`◊ Resume 读取 snapshot, em seguida, reproduzir snapshot timestamp 后所有事件── Isso consumirá mais discos, mas permite que você tome decisões de agente de repetição por letra, isso é importante para a execução de longos horizontes 至关重要──Postgres 内部用于WAL também é uma formação mesma──
+**Event sourcing 用于 audit，snapshots 用于 resume。**Cada mutação é adicionada ao registro de eventos.`state.events.jsonl`); instantâneo regular até `state.json`◊ Resume 读取快照,然后播放快照时刻 之后的所有事件──这会消耗更多磁盘,但允许你逐字播放代理决策,这对调试长远运行至关重要──Postgres em seu WAL de armazenamento 实践了同样日志加检查点思路,只是层级比应用事件低得多──
 
 **Schema migrations，否则拒绝加载。** `schema_version`Quando o gerente carrega uma versão desconhecida do arquivo, ele recusa a leitura.`tools/migrate_state.py`Em cada arranque, o que acontece?
 

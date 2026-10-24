@@ -109,7 +109,7 @@ python3 code/main.py
 | Society of Minds | “Du et al. debate paper” | ICML 2024 multi-agent debate method |
 
 ## 延伸阅读
-- [Du et al., Society of Minds (arXiv:2305.14325)](https://arxiv.org/abs/2305.14325) 经典 debate multi-agente
+- [Du et al., Improving Factuality and Reasoning in Language Models through Multiagent Debate (arXiv:2305.14325)](https://arxiv.org/abs/2305.14325) 经典 debate multi-agente
 - [Sparse Communication Topology (arXiv:2406.11776)](https://arxiv.org/abs/2406.11776) topologia escassa 结果
 - [Anthropic, Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) Orquestra-trabalhadores  como um debate 变体
 - [Madaan et al., Self-Refine (arXiv:2303.17651)](https://arxiv.org/abs/2303.17651) Autocrítica de um único modelo para o tratamento

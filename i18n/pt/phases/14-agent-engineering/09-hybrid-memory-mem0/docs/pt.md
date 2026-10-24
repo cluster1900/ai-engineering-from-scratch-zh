@@ -14,7 +14,7 @@
 - Usando o seu tempo, conseguimos um tipo de memória de brinquedo.`add()`- Não, não.`search()`融合結果──
 
 ## 问题
-Para uma categoria de três tipos de consultas, um único armazém geralmente é o seguinte:
+Cada tipo de armazenamento só se adapta a uma das três categorias de consultas:
 
 - **语义相似性**                                                                                                                                                                                                                                                              
 - **事实查找**   用户的电话号码是什么? KV 胜出; Vêctor 浪费资源,Graph 过于复杂──

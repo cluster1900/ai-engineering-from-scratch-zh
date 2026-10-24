@@ -34,6 +34,8 @@ Dois atores não podem partilhar memória.
 
 ### AutoGen v0.4 中的三个API层
 
+AutoGen v0.4 Colocar sua interface dividida em três camadas:
+
 1. **Core.**Estrutura de atores de nível inferior.`AgentRuntime`- Não.`Agent`- Não.`Message`- Não.`Topic`❖ Troca de mensagens sincronizada, orientada por eventos―
 2. **AgentChat.**面向任务的高层 API (API de alto nível) `AssistantAgent`- Não.`UserProxyAgent`- Não.`RoundRobinGroupChat`- Não.`SelectorGroupChat`- Não.
 3. **Extensions.**集成:OpenAI、Antropic、Azure、tools、memória。
