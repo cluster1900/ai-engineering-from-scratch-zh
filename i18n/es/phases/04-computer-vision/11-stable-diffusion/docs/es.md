@@ -190,13 +190,16 @@ Las imágenes blancas en la máscara son la región que debe regenerarse. Las im
 ### 步骤 5: Carga de carga de carga
 
 ```python
-pipe.load_lora_weights("sayakpaul/sd-lora-ghibli")
+pipe.load_lora_weights(
+    "artificialguybr/studioghibli-redmond-1-5v-studio-ghibli-lora-for-liberteredmond-sd-1-5",
+    weight_name="StudioGhibliRedmond-15V-LiberteRedmond-StdGBRedmAF-StudioGhibli.safetensors",
+)
 pipe.fuse_lora(lora_scale=0.8)
 
-image = pipe(prompt="a village square in ghibli style").images[0]
+image = pipe(prompt="a village square, StdGBRedmAF, Studio Ghibli").images[0]
 ```
 
-`lora_scale`控制强度;0.0 = 无效,1.0 = 完整效果──`fuse_lora`El adaptador se pondrá en marcha para aumentar la velocidad, pero se bloqueará el cambio.`pipe.unfuse_lora()`¿Qué es eso?
+tarjeta modelo 中的触发短语(`StdGBRedmAF, Studio Ghibli`) se abre este estilo.`lora_scale`控制强度;0.0 = 无效,1.0 = 完整效果──`fuse_lora`El adaptador se pondrá en marcha para aumentar la velocidad, pero se bloqueará el cambio.`pipe.unfuse_lora()`¿Qué es eso?
 
 ### 步骤 6: Formación de la LRA (bozo)
 
