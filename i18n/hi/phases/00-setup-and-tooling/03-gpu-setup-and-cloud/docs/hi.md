@@ -52,7 +52,13 @@ s0-gpu-dispatch
 nvidia-smi
 ```
 
-                                                                                                                                                                                                                                                              
+Linux पर, डिफ़ॉल्ट व्हील पर स्वतः CUDA है। विंडोज पर, pytorch.org के चयनकर्ता से CUDA की स्थापना आदेश को प्रतिलिपि बनाने के लिए अनुरोध करें।
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+फिर PyTorch की जाँच करें क्या GPU देख सकते हैंः
 
 ```python
 import torch
