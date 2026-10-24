@@ -30,7 +30,7 @@
 
 结构:
 
-- **Critical Capability Levels (CCLs)**网络技术:跨五个领域的能力值:网络,生物,ML研发,CBRN,自主化
+- **Critical Capability Levels (CCLs)**值:滥用 (CBRN、网络、有害操纵) 、ML研发,以及一个探索性的错误排列轨道──自治不是独立领域;它被纳入了ML研发和网络──
 - **Tracked Capability Levels**:2026 年 4 月加入额外粒度――具体例:ML研发自主化级别 1 = 以对人类+人工智能工具有竞争力成本,完全自动化人工智能研发管道――
 - **Deceptive alignment monitoring**明确承诺对仪器推理滥用进行自动监测.
 
@@ -95,7 +95,7 @@ a5-tracked-vs-research
 | Tracked Category | “Mandatory mitigation” | 触发 Capabilities + Safeguards Reports；SAG review |
 | Research Category | “Monitored only” | 被追踪但没有自动缓解措施；包括 Long-range Autonomy |
 | Frontier Safety Framework | “DeepMind 的 scaling policy” | FSF v3（2025 年 9 月）+ Tracked Capability Levels（2026 年 4 月） |
-| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（Cyber、Bio、ML R&D、CBRN） |
+| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（CBRN、Cyber、Harmful Manipulation、ML R&D） |
 | ML R&D autonomy level 1 | “R&D automation” | 以有竞争力的成本完全自动化 AI R&D pipeline |
 | Sandbagging | “Strategic underperformance” | 模型在 evals 中表现不佳；位于 OpenAI Research Categories |
 | Instrumental reasoning | “Means-ends reasoning” | 关于如何实现目标的推理；DeepMind monitoring 的目标 |
