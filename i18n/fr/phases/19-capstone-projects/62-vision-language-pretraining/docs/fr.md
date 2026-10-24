@@ -54,7 +54,7 @@ L'écran de l'écran est un écran de l'écran de l'écran de l'écran de l'écr
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`, parmi lesquels `lm_weight`Il s'agit d'un modèle de multiples tâches utilisé par les modèles de type CoCa、BLIP et SigLIP, avec des poids différents.
+`total = contrastive + lm_weight * lm`, parmi lesquels `lm_weight`Il s'agit d'un ensemble de multiples tâches utilisées par CoCa et BLIP, avec un poids différent. SigLIP ne conserve que des contrastes, et ne remplace pas la perte de paire sigmoïde par la douceur.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|

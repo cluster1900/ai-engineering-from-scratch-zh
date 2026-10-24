@@ -98,7 +98,7 @@ Mode de production:
 
 ## 发货
 
-Utilisez la ligne de ligne de 77-81 cours en français. La ligne de 77 cours en français est entièrement simplifiée en DDP. La section 78 de la série réduit la diffusion.
+Utilisation de la ligne de ligne de 77-81 课中队列网格原语──第 77 课把所有减少 接入 DDP──第 78 课把减少_scatter 接入 ZeRO──第 79 课用点对点发送和回复(而不是集体) 传递管道激活──第 81 课把这四者组合成端到端演示──
 
 ## 练习
 
