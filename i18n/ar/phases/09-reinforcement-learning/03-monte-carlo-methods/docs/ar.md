@@ -21,7 +21,7 @@
 
 **核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$، من بينهم$G^{(i)}(s)$في السياسة$\pi$下访问 $s$بعد مشاهدة العائدات
 
-**First-visit vs every-visit MC。**عطينا حالة زيارة أكثر$s$في الحلقة الأولى، يُرجع الموسيقي فقط في الحلقة الأولى، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي في الحلقة الثانية، وكل مرة يُرجع فيها الموسيقي.
+**First-visit vs every-visit MC。**عطينا حالة زيارة أكثر$s$في الحلقة الأولى، يُحصى الموسيقي العائدي المُسجل في المرحلة الأولى فقط العودة بعد الزيارة الأولى؛ كل زيارة الموسيقي المُسجلة 统计所有访问。 في المرحلة الأولى الموسيقي العائدي المُسجل غير متحيز。 في الحلقة المُحددة، يمكن أن يكون كل زيارة للموسيقي متحيزاً بعد الحلقة، لأن متوسط العائدات لكل حلقة 个数是随机的,而这个个数可能与回归相关, ولكن مع ارتفاع عدد الزيارات إلى عدم وجود حد، فإن الثانيين سوف يتلقون.$V^\pi(s)$❖ الزيارة الأولى 更容易分析( عينات الأيدي) ・ كل زيارة كل حلقة استخدام المزيد من البيانات، في الممارسة العادية الحصول 更快──
 
 **Incremental mean。**لا تخزين جميع العائدات، بل تحديث المتوسط الجاري:
 
@@ -196,7 +196,7 @@ tags: [rl, monte-carlo, evaluation]
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
 | Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
-| Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
+| Every-visit MC | “Use all visits” | 每次访问都会贡献；有限样本下略有 biased，极限下 consistent，且 sample-efficient 更高。 |
 | ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
 | Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |
