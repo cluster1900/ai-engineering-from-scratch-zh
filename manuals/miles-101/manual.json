@@ -119,9 +119,9 @@
     },
     {
       "number": 2,
-      "title": "Size it",
-      "thesis": "Training and rollout share one GPU, so the model you can train is the model whose two copies fit together.",
-      "summary": "Model size, offload choices, Ray on unified memory, and the cost of a weight update.",
+      "title": "规划规模",
+      "thesis": "训练和 rollout 共用一块 GPU，所以你能训练的模型，是两份副本能同时放下的那个模型。",
+      "summary": "模型大小、卸载选择、统一内存上的 Ray，以及权重更新的开销。",
       "accent": "violet",
       "sections": [
         {
