@@ -61,7 +61,7 @@ flowchart LR
 
 उत्पादन में, आप उपयोग कर सकते हैं सुझाव मॉडल होगा वास्तविक LLM के लिए बदलना
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

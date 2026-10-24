@@ -49,6 +49,10 @@ flowchart LR
 
 हर कार्य को संचालित करेगा`k`अगला, पास@k है`1 - (1 - p)^k`, जिसमें p है अनुभव पास दर;harness भी रिपोर्ट कच्चे गिनती, सुविधाजनक आप भेदभाव का पता लगाते हैं।
 
+```figure
+pass-at-k
+```
+
 ## वास्तुकला
 
 ```mermaid
@@ -100,7 +104,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 डेमो 以 JSON 打印 EvalReport,包括pass@1、pass@5、मीडियन लेटेंसी 和逐任务 टूटना。exit code 为零──tests 覆盖 सत्यापनकर्ता फ़ंक्शन、pass@k math、fixture loading,以及 harness 针对捆绑参考候选人的 end-to-end 行为──
-
-```figure
-pass-at-k
-```
