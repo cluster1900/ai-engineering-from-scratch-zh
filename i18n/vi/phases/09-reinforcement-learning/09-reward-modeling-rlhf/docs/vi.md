@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Bước 4: Monitor KL
 
-Mỗi lần cập nhật theo dõi nghĩa là$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Nếu nó trượt qua`~5-10`, chính sách 已漂离 $\pi_{\text{SFT}}$很远  thấp hơn $\beta$Có phải sự tấn công phần thưởng đang tăng lên hay bắt đầu không?
+Mỗi lần cập nhật theo dõi nghĩa là$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Nếu nó trượt qua`~5-10`(以 nats 计的每回复 KL, theo mã hiệu 求和, tức là TRL 记录的单位), chính sách 已漂离 $\pi_{\text{SFT}}$很远: phải 么$\beta$太低(调高它把政策拉回来), 還是奖励黑客 正在开始──这是真正的RLHF最重要的诊断──
 
 ### Bước 5: Sử dụng công thức sản xuất của TRL
 

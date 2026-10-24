@@ -1,6 +1,6 @@
 # 面向游戏的RL  AlphaZero、MuZero với LLM Lý luận 时代
 
-> 1992:TD-Gammon dùng TD tinh khiết trong backgammon 中击败人类冠军──2016:AlphaGo 击败 Lee Sedol──2017:AlphaZero từ零开始统治棋牌、shogi 和 Go──2024:DeepSeek-R1 证明了同一套配方在推理上也有效,只是使用GRPO 替代PPO──游戏是推动本阶段的每次突破的基准──
+> 1992:TD-Gammon dùng TD tinh khiết trong backgammon 中击败人类冠军──2016:AlphaGo 击败 Lee Sedol──2017:AlphaZero từ零开始统治棋牌、shogi 和 Go──2025:DeepSeek-R1 证明了同一套配方在推理上也有效,只是使用GRPO 替代PPO──游戏是推动本阶段每次突破的基准──
 
 **类型：**Xây dựng
 **语言：**Python
@@ -60,7 +60,7 @@ while True:
 
   $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
-Không mô hình phần thưởng, không chỉ trích, không có MCTS── cơ sở tương quan nhóm 替代了三者── trên điểm chuẩn luận, sử dụng ít hơn tính toán  đạt hoặc vượt quá PPO-RLHF 质量──
+Không học được mô hình phần thưởng, không có phê bình, không có MCTS── bởi các quy tắc dựa trên xác minh  cung cấp phần thưởng, nhóm liên quan cơ sở  thay thế phê bình, tìm kiếm 步骤则被删除── trên điểm chuẩn lý luận, sử dụng ít hơn của tính toán  đạt hoặc vượt quá PPO-RLHF 质量──
 
 **完整的 R1 配方。**DeepSeek-R1 ((DeepSeek 2025) là một trong hai mô hình trong bài luận:
 
@@ -87,7 +87,7 @@ f3-selfplay-ladder
 
 ## 构建
 
-`code/main.py`Trung 代码 đã được thực hiện **微型 GRPO**Một nhóm nhóm các tên cướp có thuật toán giống như LLM trên; chỉ có chính sách và môi trường hơn đơn giản. Nó nói rõ *kết quả* và *lợi thế tương đối với nhóm*, đó là điểm sáng tạo năm 2025:
+`code/main.py`Trung 代码 đã được thực hiện **微型 GRPO**Một nhóm các nhóm khác nhau của các nhóm khác nhau của các nhóm khác nhau.
 
 ### 步骤 1: Một môi trường kiểm chứng nhỏ
 
@@ -145,7 +145,7 @@ Với RLHF tương tự chẩn đoán: đến trung bình KL ∞ entropy chính 
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO 继承风险 của RLHF: Nếu xác minh viên 错误或可被利用,LLM sẽ tìm thấy khai thác.
-- **Group size 太小。**Nhóm cơ sở của nhóm$1/\sqrt{G}$缩放――低于 $G = 4$时, tín hiệu lợi thế 会 rất ồn ào; tiêu chuẩn lựa chọn là $G = 8$Đến 64...
+- **Group size 太小。**Nhóm trung bình cơ sở của sự khác biệt$1/G$缩放(其 lỗi tiêu chuẩn 按 $1/\sqrt{G}$❖ thấp hơn $G = 4$时, tín hiệu lợi thế 会 rất ồn ào; tiêu chuẩn lựa chọn là $G = 8$Đến 64...
 - **Length bias。**Không giống như độ dài của LLM hoàn thành có khả năng đăng ký khác nhau.
 - **纯 self-play 循环。**AlphaZero 风格训练可能在一般数量游戏中卡进统治循环──可通过多样化对手池
 - **Search-policy mismatch。**AlphaZero trenng chính sách 去模仿搜索结果──如果政策网太小,无法表示搜索的分布,训练会停滞──

@@ -38,7 +38,7 @@ L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \matho
 Hai mục:
 
 - Nếu lợi thế $A_t > 0$, và tỷ lệ 试图 tăng lên hơn $1 + \epsilon$, clip sẽ làm cho mức độ áp suất bình thường  Đừng làm cho một hành động tốt  đưa ra cao hơn so với tỷ lệ cũ $+\epsilon$- Đúng rồi.
-- Nếu lợi thế $A_t < 0$, và tỷ lệ 试图 tăng lên hơn $1 - \epsilon$(có nghĩa là giảm giảm so với cắt giảm, chúng ta sẽ làm cho một hành động xấu hơn có thể xảy ra), clip sẽ hạn chế Gradient  Đừng đưa một hành động xấu  đẩy xuống dưới $-\epsilon$
+- Nếu lợi thế $A_t < 0$, và tỷ lệ 试图降到 $1 - \epsilon$Sau đây là nghĩa là chúng ta sẽ làm cho một hành động xấu hơn so với chính sách cũ, tỷ lệ có thể xảy ra thấp hơn nhiều, clip sẽ làm cho nó giảm dần.$-\epsilon$- Đúng rồi.
 
 `min`xử lý hướng khác: Nếu tỷ lệ đã di chuyển về hướng hữu ích, bạn vẫn nhận được Gradient không ở một bên bất lợi cho bạn cắt)
 

@@ -73,7 +73,7 @@ class ReplayBuffer:
         return rng.sample(self.buf, batch)
 ```
 
-Atari sử dụng khoảng 50.000 dung lượng; đồ chơi của chúng tôi sử dụng 5.000 là đủ.
+Atari sử dụng ~106 dung lượng, tương tự như DQN ban đầu. Nó đang bắt đầu học trước khi thu thập 50.000 chuyển đổi.
 
 ### 步骤 2: một mạng Q rất nhỏ (MLP)
 
