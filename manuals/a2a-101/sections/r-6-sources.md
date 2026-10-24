@@ -86,13 +86,13 @@
 | D35 | **role 的拼写。** §2.2 为 user 和 agent。proto 和 §5.5 为 `ROLE_USER`、`ROLE_AGENT`。 | 枚举名称 | [3.1](#s-message) | 无动静 |
 | D36 | **另一个客户端的任务。** §3.3.2 称之为授权错误，并禁止透露它存在。 | `TaskNotFoundError` | [6.1](#s-security-schemes-and-in-task-authorization) | 无动静 |
 | D37 | **0.3 的状态名称。** §3.4.3 为 `input-required`。proto 为 `TASK_STATE_INPUT_REQUIRED`。 | proto 的名称 | [3.4](#s-task-and-task-state) | 未合并的 [PR #2155](https://github.com/a2aproject/A2A/pull/2155) |
-| D38 | **取消的状态转换。** 迁移指南：在 1.0 中已澄清。spec：没有转换表。 | 状态转换属于实现行为 | [3.4](#s-task-and-task-state) | 未关闭的 [issue #1992](https://github.com/a2aproject/A2A/issues/1992) |
+| D38 | **取消的状态转换。** 迁移指南：在 1.0 中已澄清。规范：没有转换表。 | 状态转换属于实现行为 | [3.4](#s-task-and-task-state) | 未关闭的 [issue #1992](https://github.com/a2aproject/A2A/issues/1992) |
 | D39 | **示例中的版本。** §9.2、§11.2 和 §14.2.1 发送 `A2A-Version: 0.3`。 | 发送 `1.0` | [5.4](#s-version-and-extension-headers) | 无动静 |
 | D40 | **旧的扩展 card 标志。** 附录 A.2.2 为 `supportsExtendedAgentCard`。迁移指南和 SDK 为 `supportsAuthenticatedExtendedCard`。 | `capabilities` 中的 `extendedAgentCard` | [2.3](#s-extended-cards-and-signatures)、[7.4](#s-from-0-3-to-1-0) | 无动静 |
 
 ## 登记表之后发现的差异 {#s-ref-sources-discrepancies-found-after-the-register}
 
-为本版所做的研究又发现了二十处文档页面、附录或示例与 proto 或 spec 不一致的地方。它们都不改变手册遵循的内容。最后一列说明 main 上是否仍有该文本，核查于 2026-10-06。
+为本版所做的研究又发现了二十处文档页面、附录或示例与 proto 或规范不一致的地方。它们都不改变手册遵循的内容。最后一列说明 main 上是否仍有该文本，核查于 2026-10-06。
 
 | ID | 来源的说法 | 手册遵循 | 讨论于 | 在 main 上 |
 |---|---|---|---|---|
@@ -111,7 +111,7 @@
 | N13 | **tenant 字段编号。** `ListTaskPushNotificationConfigsRequest.tenant` 是字段 4。其他每个请求都是字段 1。 | 没有冲突。只在 gRPC 中可见。 | 仅 R.6 | 未改变 |
 | N14 | **任何 part 上的 filename。** 迁移指南：每个 part 上都有 `filename`。proto 注释：用于文件。 | proto 允许它出现在任何 part 上。用于文件。 | [3.2](#s-part) | 未改变 |
 | N15 | **附录 A 中的创建请求。** 该表把 `CreateTaskPushNotificationConfigRequest` 列为当前类型。它是 0.3 的类型。 | proto，同 D5 | [4.6](#s-push-notification-configs) | 未改变 |
-| N16 | **操作别名。** 迁移指南：过渡期间有别名。proto 和方法集都没有定义。SDK 兼容层定义了。 | spec。指明是 SDK 层。 | 仅 R.6 | 未改变 |
+| N16 | **操作别名。** 迁移指南：过渡期间有别名。proto 和方法集都没有定义。SDK 兼容层定义了。 | 规范。指明是 SDK 层。 | 仅 R.6 | 未改变 |
 | N17 | **翻转的默认值。** 迁移指南把 `returnImmediately` 列为新增。0.3 的 `blocking` 默认为 false，即不等待。1.0 的 `returnImmediately` 默认为 false，即等待。 | §3.2.2 和 proto | [4.1](#s-send-message) | 未改变 |
 | N18 | **扩展指南中的 card 示例。** 顶层的 `url`，这是 0.3 的结构。 | `supportedInterfaces` | 仅 R.6 | 已修复 |
 | N19 | **gRPC 专用包装。** §10.5.1 称 `TaskPushNotificationConfig` 为 gRPC 资源类型。proto 在每种绑定中都使用它。 | proto | 仅 R.6 | 未改变 |
