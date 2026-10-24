@@ -14,7 +14,7 @@
 - Explicar a inequivalência entre os novos e os especialistas, bem como o seu impacto na construção de casos de segurança.
 
 ## 问题
-Lição 17 é metodologia de medição. Lição 30 é o estado de medição de 2026 e o cenário ocorre entre 2024 e o final de 2025: cada área atravessa o quadro de 2024 sem o valor previsto.
+Lição 17 é metodologia de medição. Lição 30 é o estado de medição de 2026 e o cenário ocorre entre 2024 e o final de 2025: três das quatro áreas atravessaram os quadros de 2024 sem o valor previsto.
 
 ## 概念
 ### Narrativa de elevação bio/química
@@ -44,6 +44,8 @@ Antropic 2025  11 月 報告: Related with China 国家行为体使用克劳德�
 - A codificação agencial é a origem do ataque automatizado. A assistência cibernética da IA é limitada a um nível de código.
 - 4-6 个人类步骤是瓶; o aumento da capacidade futura reduzirá esse número.
 - 防御性双重用途:OpenAI's 可靠访问 试点向经过审查的安全组织(成熟的事件响应 公司、政府) fornecer capacidade de defesa para acesso.
+
+O lado defensivo deste trabalho, começa a ler o código já escrito permitido para análise. A rota de engenharia reversível da Fase 13 irá ensinar este ponto no processo que você construiu, e apenas com análise estática:[Lesson 13.32](../../../13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md)Leitor ELF do centro,[Lesson 13.33](../../../13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md)Centro de Reforma[Lesson 13.34](../../../13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md)中提升到伪代码, bem como [Lesson 13.35](../../../13-tools-and-protocols/35-evidence-confidence-and-unknowns/docs/en.md)A Comissão Europeia, em nome da Comissão Europeia, foi a responsável pela elaboração de um relatório sobre a aplicação do direito comunitário.[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)A máquina mostra uma linha de fluxo completa em uma função. O agente que faz esse trabalho também precisa de um mesmo banco de dados, pois uma vez que parece muito claro, a contra-composição ainda pode ser baseada em suposições.
 
 ### Nuclear
 

@@ -67,7 +67,7 @@ A confiabilidade da suíte de avaliação é agora uma quantidade adjacente às 
 
 ### Está na fase 18 .
 
-Lição 7  mostra através de implante  realização persistente decepção。 Lição 8  mostra decepção provocada de não implante。 Lição 9  Alineação Falsa) fechar este triângulo: não há implante, nem conflito de objetivos no contexto ∞
+Lição 7  demonstra a persistente decepção através do implante  realização. Lição 8  demonstra a decepção provocada por não implante. Lição 9  Alinhamento Falcão) fechar este triângulo: já não implante, nem red team escrever em um conflito de objetivos imediato.
 
 
 ```figure

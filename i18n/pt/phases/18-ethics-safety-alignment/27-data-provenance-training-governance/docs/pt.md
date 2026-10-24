@@ -48,7 +48,7 @@ O Conselho Europeu de Administração e de Desenvolvimento (CEDEAO) de Londres, 
 
 趋同原则: interesse legítimo pode ser baseado em conteúdo de primeira mão de uso público e fornecer treinamento de opção de saída para fornecer razões justificadas.
 
-### ANPD brasileiro(2024 年 6 月)
+### ANPD brasileiro(2024 年 7 月)
 
 Por falta de transparência da informação, a meta suspendeu o tratamento dos dados dos utilizadores brasileiros para a formação de IA.
 
