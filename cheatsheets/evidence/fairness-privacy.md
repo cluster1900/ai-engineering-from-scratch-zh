@@ -22,17 +22,17 @@ Abbreviations: P18 = phases/18-ethics-safety-alignment. L20 = P18/20-bias-repres
 - Equalized odds: L21/d:26
 - Conditional use accuracy equality: L21/d:27
 - Individual fairness Lipschitz: L21/d:33
-- (ε, δ)-DP: L22/d:25-29
+- (ε, δ)-DP: L22/d:22-26
 - WEAT s(w, X, Y): L20/c:8, 50-53
 - WEAT effect mean_a(s) - mean_b(s): L20/c:9, 54-56
 
 ## DP-SGD 流程 (flow, 6 steps)
-1. Sample a mini-batch: L22/d:36
-2. Per-example gradients: L22/d:37
-3. Clip to threshold C: L22/d:38
-4. Sum and add Gaussian noise with std σ·C: L22/d:39
-5. Update parameters with the noisy sum: L22/d:40
-6. Accountant, Moments Accountant or Rényi DP accountant: L22/d:42
+1. Sample a mini-batch: L22/d:33
+2. Per-example gradients: L22/d:34
+3. Clip to threshold C: L22/d:35
+4. Sum and add Gaussian noise with std σ·C: L22/d:36
+5. Update parameters with the noisy sum: L22/d:37
+6. Accountant, Moments Accountant or Rényi DP accountant: L22/d:39
 
 ## 在哪里度量偏差 (architecture, 5 nodes, 4 edges)
 - Embedding-based, WEAT on pre-RLHF embeddings, measures the representation: L20/d:32
@@ -75,7 +75,7 @@ Abbreviations: P18 = phases/18-ethics-safety-alignment. L20 = P18/20-bias-repres
 - epochs 10, 500 train rows: L22/c:81, 83
 - lr 0.05: L22/c:88
 - sigma 0.0 is standard SGD, infinite epsilon: L22/c:87, 94
-- epsilon in [1, 10]: L22/c:96, illustrative not recommended defaults: L22/d:42
+- epsilon in [1, 10]: L22/c:96, illustrative not recommended defaults: L22/d:39
 - train steps: int = 200, lr: float = 0.1: L21/c:37
 
 ## 故障排查 (troubleshooting, 6)
@@ -83,8 +83,8 @@ Abbreviations: P18 = phases/18-ethics-safety-alignment. L20 = P18/20-bias-repres
 - Representationally unbiased but allocationally biased, measure both: L20/d:28
 - Single-axis misses (gender, race) bias: L20/d:38
 - DP reweighting costs EO and CUAE under unequal base rates, policy decision: L21/c:127-132
-- Canaries under-report, "most extractable" data matters: L22/d:52-55
-- Confidence scores leak, do not expose or truncate/quantize: L22/d:68-70
+- Canaries under-report, "most extractable" data matters: L22/d:49-52
+- Confidence scores leak, do not expose or truncate/quantize: L22/d:65-67
 
 ## 调用玩具代码 (task-table, 8)
 - weat_score(identity_a, identity_b, ...): L20/c:48
@@ -97,8 +97,8 @@ Abbreviations: P18 = phases/18-ethics-safety-alignment. L20 = P18/20-bias-repres
 - analytical_epsilon(sigma, steps, delta=1e-5): L22/c:69
 
 ## 问答 (qa, 5)
-- Group criteria impossible under unequal base rates, Chouldechova / KMR 2017: L21/d:29, 97
-- Backtracking counterfactuals reason from actual features: L21/d:51, 96
-- MIA vs extraction measure different things: L22/d:55
-- LoRA + DP-SGD guarantees apply to the adapter, base fixed: L22/d:46
+- Group criteria impossible under unequal base rates, Chouldechova / KMR 2017: L21/d:29, 98
+- Backtracking counterfactuals reason from actual features: L21/d:51, 97
+- MIA vs extraction measure different things: L22/d:52
+- LoRA + DP-SGD guarantees apply to the adapter, base fixed: L22/d:43
 - WinoIdentity uncertainty changes downstream allocation: L20/d:40

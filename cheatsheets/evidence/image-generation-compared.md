@@ -12,7 +12,7 @@ Abbreviations: G = phases/04-computer-vision/09-image-generation-gans, D = phase
 - VAR K = 10 scales, 10 passes vs DiT 28-50 at 256x256: V/d:69
 
 ## 训练目标并列对比 (defaults, 6 rows)
-- D outputs P(real), BCE on real and fake: G/d:32, 39, G/c:51-52
+- D outputs P(real), BCE on real and fake: G/d:32, 39, G/c:60-61
 - G wants D(G(z)) high, non-saturating: G/d:49, 60, 64
 - DDPM epsilon_theta(x_t, t), MSE: D/d:82-83, 316
 - Rectified flow target epsilon - x0, MSE: R/d:235, 238
@@ -23,7 +23,7 @@ Abbreviations: G = phases/04-computer-vision/09-image-generation-gans, D = phase
 - GAN latency <10 ms, style transfer, Pix2Pix, CycleGAN: G/d:279
 - SD 1.5 for community fine-tunes: S/d:232, LoRA distribution: S/d:93
 - DiT + rectified flow state of the art, FLUX.1-schnell default: R/d:21, 115
-- LCM-LoRA under 1s: S/d:233, 1-4 steps: F/d:129
+- LCM-LoRA under 1s: S/d:233; 1-4 steps: F/d:129
 - Flow matching for audio, video, science: F/d:131-133
 - VAR class-conditional ImageNet, fewer passes, scaling: V/d:80, 89
 
@@ -40,9 +40,9 @@ Abbreviations: G = phases/04-computer-vision/09-image-generation-gans, D = phase
 
 ## 代码中的任务 (task-table, 7 rows)
 - build_sn_discriminator(): G/d:259, 271
-- linear_beta_schedule(T=1000): D/c:9
-- sample_ddpm(model, schedule, shape, ...): D/c:83
-- sample_ddim(..., steps=50, ..., eta=0.0): D/c:103
+- linear_beta_schedule(T=1000): D/c:18
+- sample_ddpm(model, schedule, shape, ...): D/c:92
+- sample_ddim(..., steps=50, ..., eta=0.0): D/c:112
 - rectified_flow_train_step(model, x0, optimizer, device): R/c:88
 - rectified_flow_sample(model, shape, steps=20, ...): R/c:105
 - tokenize_multiscale(img, codebooks): V/c:106, 210
@@ -57,9 +57,9 @@ Abbreviations: G = phases/04-computer-vision/09-image-generation-gans, D = phase
 - SD 3.5 Large guidance_scale=3.5, num_inference_steps=28: R/d:316, 319
 
 ## DDPM 与 rectified flow 对比 (annotated-code, 13 lines)
-- torch.randint(0, T, (bs,), device=device): D/c:71
-- q_sample: D/c:73
-- F.mse_loss(pred, noise): D/c:74-75
+- torch.randint(0, T, (bs,), device=device): D/c:80
+- q_sample: D/c:82
+- F.mse_loss(pred, noise): D/c:84
 - torch.rand(n, device=device): R/c:92
 - x_t straight-line interpolation: R/c:94
 - target_v = epsilon - x0, velocity from data to noise: R/c:95, R/d:245
@@ -67,9 +67,9 @@ Abbreviations: G = phases/04-computer-vision/09-image-generation-gans, D = phase
 - Euler loop dt = 1.0 / steps, x = x - dt * v, t = t - dt, steps=20: R/c:105-113
 
 ## 一次 GAN 训练步 (annotated-code, 13 lines)
-- D step with G(z).detach(): G/c:48-54, no gradient into G: G/d:199
-- G step with ones_like targets: G/c:56-60, non-saturating: G/d:60
-- Adam lr=2e-4, betas=(0.5, 0.999), DCGAN default: G/c:98, G/d:236
+- D step with G(z).detach(): G/c:57-63, no gradient into G: G/d:199
+- G step with ones_like targets: G/c:65-69, non-saturating: G/d:60
+- Adam lr=2e-4, betas=(0.5, 0.999), DCGAN default: G/c:107, G/d:236
 
 ## 关键公式 (concepts, 6 bullets)
 - GAN minimax: G/d:46
