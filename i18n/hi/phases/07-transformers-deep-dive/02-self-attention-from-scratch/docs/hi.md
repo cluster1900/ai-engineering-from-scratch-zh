@@ -169,6 +169,10 @@ softmax-attention-scaling
 
 ##  इसे निर्माण
 
+```figure
+iso-machine {"machine":"self-attention"}
+```
+
 ### 步骤 1: शून्य से सॉफ्टमैक्स को प्राप्त करना
 
 Softmax 会将原始logits 转换为概率──数值稳定性 हेतु, पहले अधिकतम मूल्य घटाएँ──
