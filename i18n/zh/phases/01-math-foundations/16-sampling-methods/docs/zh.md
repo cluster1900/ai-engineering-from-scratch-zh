@@ -114,7 +114,8 @@ Algorithm:
   3. If u < p(x) / (M * q(x)), accept x
   4. Otherwise, reject and go to step 1
 
-Acceptance rate = 1/M
+Acceptance rate = Z/M, where Z is the integral of p(x)
+                (Z = 1, so the rate is 1/M, when p is normalized)
 ```
 
 绑定$M$越紧,接受率越高,在低维度 (−1) 中,拒绝采样结果很好. 在高维度,接受率会下降,因为大部分的提案量都会被拒绝.
