@@ -26,32 +26,32 @@
 
 ### كيو كاش رياضيات
 
-كل طبقة مُشفّر كل رمز كل رأس
+كل طبقة مُشفّر كل رمز كل رؤوس كيو
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
-بالنسبة لموديل 7B، 32 طبقة 32 رأس
+对于一个7B 模型,32层、32头全部用于K 和V) 、d_head=128、fp16:
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 对于Llama 3 70B ((80 层、d_head=128、使用 8 个KV heads 的 GQA):
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-هذا هو السبب في أن 10 جيجا غيترا لاما 3 70 ب في سياق 128 كيه تحت، فقط حجم المجموعة 1 من الكشيف كيه في غاية سوف تشكل 40 جيجا غيترا A100 معظم الحفاظ على الأوراق.
+هذا 10 جيبي في 32K، إلى 128K سوف ينمو إلى 40 جيبي، فقط حجم المجموعة 1 KV التخزين سوف تشكل كامل 40 جيبي A100.
 
-**GQA 是 KV-cache 的关键收益。**استخدام 64 رأس من MHA 会需要 32 GB──MLA أيضا يمكن أن يضغط أكثر──
+**GQA 是 KV-cache 的关键收益。**استخدام 64 رؤوس كيف من MHA جلسة أكبر 8x، في 32K  حوالي 80 GiB──MLA يمكن أن يضغط أكثر──
 
 ### الانتباه الوهائي  التبليط 技巧
 

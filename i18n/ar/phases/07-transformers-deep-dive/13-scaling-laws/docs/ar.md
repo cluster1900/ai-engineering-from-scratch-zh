@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$لا يمكن أن تخسر
 - $A \approx 406$،$B \approx 411$.
 
-مع التوسع، يزن المجموعتين بعضها البعض.$C = 6ND$)$N$求导并求解:
+مع التوسع، يزن المجموعتين بعضها البعض.$C = 6ND$)$N$求导并求解──使用上述 $\alpha$和 $\beta$،$N$مؤشر حوالي 0.45،$D$مؤشر التنمية هو حوالي 0.55, لذلك فإن النسبة المثلى الدقيق سوف تتحرك ببطء مع الميزانية.`code/main.py`通過 البحث عن الشبكة 找到它──.$C = 6ND$中令 $D = 20N$, تجربة قانون
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```
