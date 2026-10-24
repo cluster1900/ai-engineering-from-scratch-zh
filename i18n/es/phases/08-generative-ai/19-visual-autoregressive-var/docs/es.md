@@ -50,7 +50,7 @@ Estructura de la secuencia de entrada:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Posición de inserción, con la misma frecuencia de codificación de la medida de la indicación y la posición espacial dentro de la medida.$k$、 ubicación $(i, j)$El signo puede ser la atención a la medida.$1 \ldots k$Todos los Tokens, también puede Atención a la medida $k$En el caso de los símbolos de la escala, el valor de la posición se calcula en el punto de vista de la escala.
+Posición de inserción con el tiempo de codificación de la medida de la indicación y la posición espacial dentro de la medida.$k$、 ubicación $(i, j)$El signo puede ser la atención a la medida.$1 \ldots k$Todos los Tokens, incluyendo la medida$k$En la medida no hay orden, ni causalidad intraescala, por lo que todas las posiciones en una medida se hacen predicciones.
 
  entrenamiento Perdida: en cada medida $k$, dado todo el Token de la medida anterior, Predicción Token $z_k$ Los códigos de VQ se dividen en diferentes tipos de secuencias, pero la secuencia se ha convertido en una secuencia estructurada de tamaño.
 

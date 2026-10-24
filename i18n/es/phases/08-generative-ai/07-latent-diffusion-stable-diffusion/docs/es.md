@@ -50,7 +50,7 @@ noise-schedule
 
 ## Construirlo
 
-`code/main.py`Colocar un juguete 1-D VAE(encoder de identidad + decodificador, solo para la demostración; verdadero VAE 会是 conv net) superado en la DDPM de la Lección 06 , y a través de una guía sin clasificador 加入类条件化── muestra la misma pérdida de difusión 无论运行在原始 1-D 值上,还是运行在加密值上都有效,这就是关键洞见──
+`code/main.py`Colocar un juguete 1-D VAE(fijo multiplicado 0.5 codificador, así como como como un descifrador de exact inversion, sólo para la demostración; verdadero VAE 会是 conv net) superada en la DDPM de la Lección 06 , y a través de la guía sin clasificador 加入类条件── muestra la misma pérdida de difusión 无论运行在原始 1-D 值上,还是运行在加码值上都有效──这就是关键洞见──
 
 ### 步骤 1: codificador/decodificador
 
@@ -133,7 +133,7 @@ Producción de 2026 años:
 
 参考流集是经典的我有一张消费级GPU,能交付吗?配方──技巧就是把生产推理文献列出的同一个三旋配方应用到扩散 DiT:
 
-1. **Staggered loading。**Flux tiene tres no necesita simultáneamente en la red de VRAM:T5-XXL codificador de texto ((fp32 下约 10 GB) 、CLIP-L(小) 、12B MMDiT, así como VAE。 primero codificar rápido,* borrar* codificadores, carga DiT, denoise,* borrar* DiT, carga VAE, decodificar。 consumo grado 8GB GPUs 一次只能容纳一个阶段。
+1. **Staggered loading。**Flux tiene cuatro no necesita simultáneamente en la red de VRAM:T5-XXL codificador de texto ((fp32 下约 10 GB) ∙CLIP-L(小) ∙12B MMDiT, así como VAE──先 codificar prompt,*delete* codificadores,加载 DiT,denoise,*delete* DiT,加载 VAE,decode──消费级 8GB GPUs 一次只能容纳一个阶段──
 2. **通过 bitsandbytes 做 4-bit quantization。**En T5 codificador y DiT 上都使用 `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)` la memoria se redujo 8 veces, según los puntos de referencia de Aritra, la calidad del texto a la imagen se redujo casi de forma inalcanzable.
 3. **CPU offload。** `pipe.enable_model_cpu_offload()`Se puede pasar por cada paso hacia adelante en el proceso de entrada automático entre los módulos de intercambio entre CPU y GPU.
 
