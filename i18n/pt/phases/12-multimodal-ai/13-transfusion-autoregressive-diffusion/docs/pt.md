@@ -48,7 +48,7 @@ Mascarinha:
 M[i, j] = 1 if:
   (i is text and j is text and j <= i)   # causal for text
   OR (i is image and j is image and same_image_block(i, j))   # bidirectional within image
-  OR (i is text and j is image and j < i_image_end)   # text attends to previous images
+  OR (i is text and j is image and j < i)   # text attends to images that closed before it
   OR (i is image and j is text and j < i_image_start)   # image attends to preceding text
 ```
 
@@ -94,7 +94,7 @@ Diferença de função:
 
 Janus-Pro (Lessão 12.15) através de solução para entender e criar um codificador de visão para melhorar a ideia de Transfusão: um usando SigLIP, outro usando VQ, ao mesmo tempo compartilhando o corpo do transformador.
 
-Em 2026 pode produzir imagens em VLMs de produção, como Gemini 3 Pro, GPT-5, Claude Opus 4.7, quase certamente usou uma espécie de geração posterior desta família.
+O modelo de produção de fontes fechadas de imagens originais de saída pode ter usado uma espécie de geração posterior desta família, mas sua estrutura não é pública, portanto, qualquer tal afirmação pode ser vista apenas como um pressuposto.
 
 
 ```figure
@@ -108,7 +108,7 @@ cfg-guidance-scale
 - A imagem é 4x4
 - Uma projeção linear de direitos de partilha 充当变压器 替代;文本上使用NTP loss,噪音补丁上使用MSE loss。
 - O treinamento é um ciclo de troca de duas perdas, mas a máscara da atenção é evidente.
-- 生成在一次前进传中产生文本标题 和 4x4 图片──
+- Uma máscara  demonstração, impressão de texto、imagem、texto  sequência de padrão de atenção triangular em blocos。 não se executa geração: real sampleler 会逐 Token 解码文本,再经过多步步对图像补丁 去噪,练习中会计算这一点。
 
 Este transformador é de classe de brinquedo.
 

@@ -39,7 +39,7 @@ Este Tokenizer é um autoencoder de variação quantizada por vetores.
 
 訓練:VAE reconstrução perda + perda de compromisso + perda de livro de códigos。 índices de livro de códigos 构成图像的离散字母──
 
-Para Chameleon para dizer:一张图像变成32*32 = 1024 个代币, 来源大小为8192 的词表──与文本代币( 来源 LLM 的 BPE 词表,例如 32000)拼接──最终词表:40192──Transformer 看到的是一个序列、一个损失──
+Para o Camelão: um único Tokenizer do Camelão tem 65.536 artigos, este número já contém 8192 código de imagem e um segmento de imagem, tais como um Token especial.
 
 ### 共享词表
 

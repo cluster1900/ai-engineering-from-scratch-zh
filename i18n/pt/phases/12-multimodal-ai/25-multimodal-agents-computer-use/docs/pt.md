@@ -125,7 +125,7 @@ mm-agent-loop
 ## Use-o
 `code/main.py`É um andaime de pedra:
 
-- Esquema de ação de JSON  definição(10 个 ações) 』
+- Ação esquema de JSON  definição(10 个行动: 上列出的九个,加上 crop + zoom 工具 `screenshot_region`)。
 - Como um estado de navegador falso.
 - O esqueleto do agente de ciclo:receber estado, emitir ação, aplicar, ciclo.
 - 10 mini-banchmark de tarefas ((paginas sintéticas), para medir a taxa de sucesso de ponta a ponta。
@@ -135,7 +135,7 @@ mm-agent-loop
 本教 生成 `outputs/skill-multimodal-agent-designer.md` determinar um produto de uso informático (domain, conjunto de ações, meta de avaliação), conceber um ciclo completo de agentes, estratégia de memória, modo de fixação e pontuação de referência esperada.
 
 ## 练习
-1. Utilização `screenshot_region`ferramenta ((crop + zoom) ampliar esquema de acção── quais tarefas serão beneficiadas?
+1. O esquema do código foi incluído em nove ações principais .`screenshot_region`ferramenta ((crop + zoom) ◊ quais tarefas serão beneficiadas?
 
 2. 阅读 AgentVista(arXiv:2602.23166)。 descrever a categoria de tarefas mais difíceis, bem como por que os modelos de fronteira  ainda fracassam。
 

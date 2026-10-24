@@ -10,7 +10,7 @@
 ## Objectivo de aprendizagem
 - Explicação de difusão discreta mascarada: uma forma de fazer mascaras Tokens 再让 Transformer 恢复它们的时间表──
 - Desde velocidade e qualidade comparado e decodificação de imagem ((Show-o, MaskGIT) com decodificação de imagem autoregressiva ((Chameleon, Emu3))).
-- Exposição em um ponto de controle.
+- Exposição Show-o em um ponto de controle 中处理的四类任务:文本生成、VQA、T2I、图像涂料──
 - 选择一种掩盖时间表 ((cosine、linear、truncated),并推理它对样品质量的影响──
 
 ## 问题

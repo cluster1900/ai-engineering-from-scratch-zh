@@ -1,6 +1,6 @@
 # Desde CLIP até BLIP-2  Q-Former  como ponte de modalidade
 
-> CLIP para imagens e texto, mas não pode gerar legendação, responder a problemas ou realizar diálogos. BLIP-2 (Salesforce, 2023) resolveu esse problema com um pequeno treinamento de ponteiros: 32 个学习可用桥接: 32 个学习可用桥接: 32 个学习可用桥接: 32 个学习可用桥接: 32 个学习可用桥接: 32 个学习可用桥接: 32 个学习可用桥接: 32 个学习可用桥接: 32 个学习可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 32 个可用桥接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个
+> CLIP para imagens e texto, mas não pode gerar legendação, responder a problemas ou realizar um diálogo. BLIP-2 (Salesforce, 2023) resolveu este problema com um pequeno treinamento de ponteiros: 32 个学习可供接连接: 32 个学习可供接连接: 32 个学习可供接连接: 32 个学习可供接连接: 32 个学习可供接连接: 32 个学习可供接连接: 32 个学习可供接连接: 32 个学习可供接连接: 32 个可供接连接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供学习可供接: 32 个可供接: 32 个可供学习可供接: 32 个可供学习可供接: 32 个可供学习可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个可供接: 32 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个接: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个: 个
 
 **Type:** Build
 **Languages:** Python (stdlib, cross-attention + learnable-query demo)
@@ -112,7 +112,7 @@ Todas as matemáticas usam Python puro (~) e vector (~) usando loops aninhados (
 
 4. 阅读 BLIP-2 paper(arXiv:2301.12597) Seção 3.2, compreender Q-Former 如何初始化──解释为什么从BERT-base初始化(而不是随机初始化) 会加速收──
 
-5. Para um vídeo de 10 minutos, em 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame) ―― qual um pode colocar em 128k-Token LLM context window?
+5. Para um vídeo de 10 minutos, em 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame) ⋅在即时文本还没占用任何空间之前,每种桥接能把多少放进 128k-Token LLM context window?
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -126,7 +126,7 @@ Todas as matemáticas usam Python puro (~) e vector (~) usando loops aninhados (
 | Two-stage pretraining | "Representation then generative" | Stage 1 单独训练 Q-Former（ITC/ITM/ITG）；Stage 2 接入 frozen LLM，并且只训练 projection + Q-Former |
 | Frozen backbone | "Do not finetune" | vision encoder 和 LLM weights 固定；只训练 bridge |
 | Projection head | "Linear to LLM dim" | 将 Q-Former 输出映射到 LLM Embedding dimension 的最终 linear layer |
-| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention，由 Flamingo 在每一层使用，而不是作为单个 bridge |
+| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention；Flamingo 对每张图像运行一次，生成固定数量的 latents，再在每个 LLM 层通过 gated cross-attention 读取它们 |
 
 ## 延伸阅读
 - [Li et al. — BLIP-2 (arXiv:2301.12597)](https://arxiv.org/abs/2301.12597) 核心文件──

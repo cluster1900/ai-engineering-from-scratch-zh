@@ -1,6 +1,6 @@
 # 任意分辨率 Vision: Patch-n'-Pack 和 NaFlex
 
-> A resposta do VLM foi 9:19.5 ⋅2024 ⋅ Resumir todo o conteúdo em forma quadrada fixa ⋅ Perderam o OCR ⋅ Documentos de compreensão e alta resolução de cenário para resolver sinais realmente úteis ⋅NaViT ⋅Google,2023) mostrou que pode usar o bloqueio de diagonal mascarar parches de resolução variável ⋅Pack em um único lote de transformador ⋅ M-RoPE do Qwen2-VL ⋅2024) eliminou completamente a tabela de posição ⋅LaVA ⋅ NeXT ⋅Resolução de imagem de alta resolução da base + sub-imagens ⋅SigL 2 NaFlex ⋅2025)
+> A resposta do VLM foi 9:19.5―2024  Redimensionar todo o conteúdo em forma quadrada fixa  Perderam o OCR  Documental compreensão e alta resolução de cenário para resolver sinais realmente úteis―NaViT(Google,2023) mostrou que pode usar o bloqueio de diagonal mascarar parches de resolução variável Pack em um único lote de transformador Qwen2-VL M-RoPE 2024) completamente eliminou a tabela de posição absoluta  Qualquer classe de LaVA-NeXT Res Resolução de imagem alta em base de imagens SigLIP 2 NaF 2025) agora aberta PATCHs de VLM em formato de bloco são utilizados para fazer um único ponto de verificação 
 
 **Type:** Build
 **Languages:** Python (stdlib, patch packer + block-diagonal mask)

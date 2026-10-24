@@ -18,7 +18,7 @@ BLIP-2 vai fazer 32 tokens visuais 输入结 LLM 输入层结 LLM 每一个提�
 
 A resposta do Flamingo é: não alterar completamente o fluxo de entrada do LLM. Em blocos existentes de LLM, entre as camadas de atenção cruzada são inseridas camadas de atenção cruzada. Tokens de texto continuam a ser como sempre.
 
-Flamingo 回答的第二个问题是:如何处理每个提示中可变数量的图像(0、1 或多张)?Perceptor resampler  一个小型跨注意力模块,接收任意数量的补丁,并生成固定数量的视觉潜伏代币──无论提示中有多少张图像,LLM跨注意力层 看到的形状都相同──
+Flamingo  respondeu a segunda questão é: como lidar com cada prompt com a quantidade de imagens variáveis em cada um deles?  Um pequeno módulo de atenção cruzada, recebe um número arbitrário de patches, e gera um número fixo de tokens latentes visuais para cada imagem.
 
 ## 概念
 ### O LLM congelado
@@ -56,7 +56,7 @@ x_before_next_block = gated
 
 ### Usando a atenção cruzada mascarada de entradas entrelaçadas
 
-Em um exemplo de "<imagem A> subtítulo A <imagem B> subtítulo B <imagem C> ?" , cada token de texto  deve apenas ver os números de imagens anteriores `t`O token de texto só atende à imagem de índice `i < i_t`Of imagem resampler tokens, entre eles `i_t`É a posição`t`之前最近的图像──只看最近的前置图像或看到所有的前置图像都是有效选择; Flamingo 选择了前者──
+Em um exemplo de "<imagem A> subtítulo A <imagem B> subtítulo B <imagem C> ?" , cada token de texto  deve apenas ver os números de imagens anteriores `t`O símbolo de texto só atender à imagem `i_t`Of resampler tokens, entre eles `i_t`É a posição`t` só ver imagens anteriores  ou ver todas as imagens anteriores  são valida opção; Flamingo  选择前者──
 
 ### Aprendizagem em poucos tiros no contexto
 
@@ -73,7 +73,7 @@ Flamingo rápido parece:
 Flamingo utiliza três grupos de treinamento:
 
 1. MultiModal MassiveWeb (M3W):43.3 milhões contém páginas de imagens e textos, reconstruído.
-2. Pares de imagem-texto (ALIGN + LTIP): 44 milhões de
+2. Imagem-Texto pares: ALIGN(18 bilhões de dólares)
 3. Video-Text Pairs (VTP): 27 milhões de clips de vídeo curtos.
 
 OBÉLICAS(2023) é um sistema de aprendizagem de linguagem em geral.
@@ -99,7 +99,7 @@ Otter(2023) baseado em OpenFlamingo, e MIMIC-IT(((a Numero de instruções multi
 | Frozen LLM | Yes | Yes |
 | Few-shot in-context | 弱 | 强 — 论文的核心 |
 | Interleaved inputs | 无原生支持 | Yes，设计目标 |
-| Training data | 130M pairs | 1.3B pairs + 43M interleaved pages |
+| Training data | 130M pairs | ~2.1B pairs + 27M video clips + 43M interleaved pages |
 | Parameter count | 188M trained | ~10B trained (cross-attn layers) |
 | Compute | 8 个 A100 上数天 | 数千个 TPUv4 上数周 |
 

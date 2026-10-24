@@ -9,7 +9,7 @@
 
 ## Objectivo de aprendizagem
 - 計算不同 FPS 和 pooling 下长视频的总视觉标记 数量──
-- 解释三条扩展路径:brute context(Gemini 1.5) 、ring attention(LWM) 、compressão de tokens(LongVILA / Video-XL) ✿
+- 解释四条扩展路径:brute context(Gemini 1.5) ‧ring attention(LWM) ‧token compression(LongVILA / Video-XL) ‧agente de recuperação(VideoAgent) ‧
 - Em Precisação e Tarde Comparar VLMs de vídeo em contexto bruto com VLMs de recuperação de vídeo em agente (VideoAgent)
 - Por 30 minutos de vídeo desenhar uma agulha em um monte de feno 测试,并测量特定分钟处的召回率──
 
@@ -33,7 +33,7 @@ Gemini 1.5 Pro  lançamento  suporte  1M Token; Gemini 1.5 Ultra  atingir 10M; G
 
 Atendimento de anel Colocar a longa sequência distribuída em vários dispositivos, formando um anel, cada dispositivo tem um pedaço. Atendimento da sequência completa através do anel.
 
-LWM(Liu et al., 2024) com este método treinou um contexto de 1M-Token 模型── treinar a quantidade de cálculo com o contexto 线性扩展, em vez de quadrado de expansão, porque o custo quadrado da atenção é distribuído para os dispositivos do meio do anel──
+LWM(Liu et al., 2024) com este método treinou um contexto de 1M-Token 模型── cada dispositivo de memória com o que ela possui  expandir, de modo que o aumento de dispositivos pode fazer o contexto                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 LongVILA(arXiv:2408.10188)把该模式适配到VLMs──1400 视频,每 192 个 Token = 268k contexto,并使用 8-way paralelismo de atenção ao anel 训练──
 
@@ -113,7 +113,7 @@ mm-video-token-budget
 
 3. Em 1 小时视频上比较原文文 Qwen2.5-VL-72B(80k context) com VideoAgent(Claude 3.5 + retrieval) ・・・ qual é o melhor jogo em convocação? qual é o melhor jogo em atraso?
 
-4. O custo de memória da atenção ao anel aumenta com a sequência de extensão linear, também com a expansão linear do número de dispositivos.
+4. Atenção ao anel A memória de cada dispositivo aumenta com a sequência de tamanho, além do número de dispositivos, enquanto a atenção                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 
 5. 阅读双子座 1.5 第5节关于针子在草堆的内容──论文关于1M和10M Token 边界处的召回有什么发现?
 

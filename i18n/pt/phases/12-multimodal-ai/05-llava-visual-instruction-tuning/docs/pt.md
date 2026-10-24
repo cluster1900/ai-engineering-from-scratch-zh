@@ -1,6 +1,6 @@
 # LLaVA com a sintonia de instruções visuais
 
-> LLaVA(4 de abril de 2023) é a mais replicada arquitetura multimodal da Terra. Ele substituiu o Q-Former do BLIP-2 com MLP de 2 camadas, com uma simples concatenação de tokens. Substituiu a atenção cruzada fechada do Flamingo e fez 158 mil instruções visuais para treinar. Estes dados foram gerados por GPT-4 a partir de capções de textos puros.
+> LLaVA(4 de abril de 2023) é a mais replicada arquitetura multimodal da Terra. Ele substituiu o Q-Former do BLIP-2 com MLP de 2 camadas, com uma simples concatenação de tokens. Substituiu a atenção cruzada fechada do Flamingo e fez 158 mil instruções visuais para treinar. Estes dados foram produzidos pelo GPT-4 a partir de capções de texto puro.
 
 **类型：**Construção
 **语言：**Python(stdlib、projector + constructor de instruções-template)
@@ -32,10 +32,10 @@ Resultado: um em 8 张 A100 上运行一天、在MMMU 上击败 Flamingo、并�
 
 ### Arquitetura
 
-LLaVA-1.5 em 13B:
+LLaVA-1.5 em 7B:
 - Encoder de visão: CLIP ViT-L/14 @ 336(fase 1 结,fase 2 可选解)
 - Projector: MLP de 2 camadas de ativação de GELU,`1024 → 4096 → 4096`- Não.
-- LLM: Vicina-13B (mais tarde é Llama-3.1-8B)
+- LLM:Vicuna-7B v1.5(13B 变体使用Vicuna-13B;后来的叉 改用Llama-3.1-8B) ⋅
 
 图像 + 文本 prompt 的 pass para frente:
 
@@ -83,7 +83,8 @@ O processo inteiro não foi diretamente contato com imagens  apenas contato com 
 LLaVA-1.5(2023 年 10 月)加入:
 - • "Acompanhar os dados académicos" (VQA、OKVQA、RefCOCO)
 - Melhor sistema rápido.
-- 2048 → 32k contexto
+- Utilize 2 camadas MLP projector  substituir inicialmente única camada linear, usando 336px de CLIP ViT-L/14(576 个 Token) substituir 224px(256 个 Token)。 treinamento sequência ainda é de 2048 个 Token。
+- 论文中的网格分分 HD 变体, mais tarde publicado pela LLaVA-NeXT 以 AnyRes形式──
 
 LLaVA-NEXT(2024 年 1 月)加入:
 - AnyRes:把高分辨率图像切成2x2或1x3 网格的336x336 crops,再加一个全球低分辨率小图片──每种 crop 变成576 个标签;每张图像总计约2880 个视觉标签──OCR和图表 任务大幅提升──
@@ -99,7 +100,7 @@ Lição 12.08 会深入讲 OneVision──简短版:同一个投影机,但用一
 | | Q-Former（BLIP-2） | MLP（LLaVA） |
 |---|---|---|
 | 每张图像的 visual Token | 32 | 576（base）或 2880（AnyRes） |
-| 可训练参数 | 188M + LM | 40M + LM |
+| 可训练参数 | 188M + LM | ~22M（7B）+ LM |
 | Stage 1 loss | ITC+ITM+ITG | 仅 LM |
 | LLM drop-in | 需要重新训练 | 最小重新训练即可替换 |
 | Multi-image | 别扭 | 自然（concat） |

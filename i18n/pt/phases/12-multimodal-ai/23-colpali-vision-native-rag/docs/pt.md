@@ -95,10 +95,10 @@ Não há OCR. Figuras, gráficos, fontes, layout.
 
 Uma parte de relatório financeiro de 50 páginas, por página 729 parches, 128 embutidos:
 
-- ColPali:50 * 729 * 128 * 4 bytes = ~18 MB bruto,PQ 后 ~4 MB。
+- ColPali:50 * 729 * 128 * 4 bytes = ~18 MB bruto, 8x PQ 后 ~ 2,3 MB。
 - Text-RAG:50 pedaços * 768-dim * 4 bytes = ~150 kB。
 
-ColPali Cada documento é armazenado em cerca de 30x. Em cenários de escala, a OPQ / PQ pode ser reduzida para cerca de 5-10x, geralmente aceitável.
+ColPali armazenamento original de cada documento ≈ 120x. Em cenários de escalagem, 8x de OPQ / PQ pode ser reduzido a cerca de 15x, geralmente aceitável.
 
 ### Text-RAG  ainda胜出的场景
 
