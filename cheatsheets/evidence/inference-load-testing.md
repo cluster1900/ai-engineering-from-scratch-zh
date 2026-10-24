@@ -6,7 +6,7 @@ Abbreviations: P17 = phases/17-infrastructure-and-production, L08 = P17/08-infer
 - 500 users held, 200 fell, identical prompts and prefix caching: L22/d:17-19. Fix flags: L22/d:3, 34
 - GIL trap, tokenization backlog, LLM-Locust or compiled harness: L22/d:26-28
 - GenAI-Perf TPOT 6 ms vs LLMPerf 11 ms: L22/d:98. Exclude vs include TTFT: L08/d:75-76, 80
-- high throughput at low goodput: L08/d:3, 52. Gate on goodput: L08/d:108
+- high throughput at low goodput: L08/d:3, 52. Gate on goodput: L08/d:110
 - mean TPOT 9 ms, P99 65 ms, report triple: L08/d:58-60
 - TPOT spike to 50 ms without chunked prefill: L08/d:34
 - synchronized exponential waits, --jitter=true seeded spreading: RS/README.md:35. Shared budget: RS3:13

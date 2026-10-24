@@ -91,6 +91,8 @@ roofline
 ## 使用它
 `code/main.py` 实现了一个 toy radix-tree KV cache，以及一个带有两种策略的 scheduler：FCFS 和 cache-aware。它会让同一个 workload 分别通过两者运行，报告 prefix-cache hit rate 和 throughput delta。然后运行一个“scrambled ordering” workload，展示 6.4x 如何崩塌。
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096) 机器展示了 radix cache 在一次真实 L4 运行上的表现。四个组各自有一个 4,096-token 的 system prompt。一个组的第一个请求会计算它的 prompt。只要该 prompt 还留在 cache 中，这个组后续的请求就只需计算 128-token 的问题。关掉 radix cache，可以看到首 token 时间的中位数从 479 ms 变成 14,706 ms。
+
 ## 交付它
 本课会生成 `outputs/skill-radix-scheduler-advisor.md`。给定一个 workload description（prompt-template shape、retrieval pattern、concurrent tenants 数量），它会生成一份 prompt-ordering prescription，以及是否采用 SGLang 的 go/no-go 判断。
 

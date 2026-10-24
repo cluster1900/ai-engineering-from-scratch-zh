@@ -50,7 +50,7 @@ Abbreviations: A19 = phases/15-autonomous-systems/19-anthropic-rsp, A20 = .../20
 - CAIS non-profit, CAISI within NIST, check nist.gov: A22/d:14, 51, 54
 
 ## 各领域的两用图景 (comparison, 4 rows)
-- 2024 states: E30/c:15, 22, 29, 36, E30/d:63-66
+- 2024 states: E30/c:15, 22, 29, 36, E30/d:65-68
 - 2025 states: E30/c:16, 23, 37, E30/d:3 (up to 90%)
 - inflection: E30/c:17, 24, 31, 38
 - bottleneck remaining: E30/c:18, 25, 32, 39
@@ -97,7 +97,7 @@ Abbreviations: A19 = phases/15-autonomous-systems/19-anthropic-rsp, A20 = .../20
 - gaming pushes the observed horizon from ground truth, gaming audit: A21/c:141-144
 - horizon undefined when slope w ~0: A21/c:71-79. suite spanning minute to hour scale: A21/d:31
 - WMDP is a proxy, add novice-elicitation layer: E17/d:59, 64, 81
-- novice-only defenses insufficient, elicitation-hardening, unlearning, control protocols: E30/d:57
+- novice-only defenses insufficient, elicitation-hardening, unlearning, control protocols: E30/d:59
 
 ## 问答 (5)
 - RSP is not a regulation, nothing forces Anthropic: A19/d:60

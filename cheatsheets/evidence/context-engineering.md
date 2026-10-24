@@ -92,7 +92,7 @@ Abbreviations: L05 = phases/11-llm-engineering/05-context-engineering, L07 = pha
 - Lost in the middle, first and last, repeat at end: L05/d:61, 67-70
 - Tools fill window, prune by intent: L05/d:94, 110
 - Memory rot, consolidate and invalidate: L07/d:70, L08/d:20, 60
-- Memory poisoning, retrieved text re-ingested: L07/d:71, 112-113
+- Memory poisoning, retrieved text re-ingested: L07/d:71, 131-132
 - Citation loss, store session ID and turn ID: L07/d:72
 - Block bloat, summarize before the write: L08/d:70
 - Scopes mixed, one scope per write: L09/d:80

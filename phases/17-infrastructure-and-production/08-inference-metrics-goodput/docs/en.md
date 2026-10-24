@@ -105,6 +105,8 @@ throughput-latency
 ## 使用它
 `code/main.py` 是一个玩具版 goodput calculator。生成 synthetic latency distribution，应用 SLO，并计算 goodput。还会展示同一 trace 上 GenAI-Perf 与 LLMPerf 的 TPOT 差异。
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1) 机器展示了在 NVIDIA L4 上每个输出 token 的时间从何而来。一次 decode step 要读取 16.41 GB 的权重，在 300 GB/s 下至少需要 54.7 ms，而实测这一步耗时 60.16 ms。
+
 ## 交付它
 本课会生成 `outputs/skill-slo-goodput-gate.md`。给定一个 workload 和 SLO，它会生成一份可用于 CI/CD 的 benchmark recipe，用 goodput 而不是 throughput 来 gate deploys。
 
