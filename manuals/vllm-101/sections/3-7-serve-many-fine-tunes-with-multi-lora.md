@@ -1,12 +1,12 @@
-# Serve many fine-tunes with multi-LoRA
+# 用 multi-LoRA 服务多个微调模型
 
-> One base model can serve many LoRA adapters, and the adapter count and rank set the cost.
+> 一个基础模型可以服务多个 LoRA adapter，adapter 的数量和 rank 决定了代价。
 
-You have many fine-tunes of one base model. When you finish this section, you can serve LoRA adapters per request from one base model.
+你有同一个基础模型的多个微调版本。读完本节后，你能从一个基础模型出发，按请求服务不同的 LoRA adapter。
 
-## Start the server with LoRA on
+## 开启 LoRA 启动服务器 {#s-serve-many-fine-tunes-with-multi-lora-start-the-server-with-lora-on}
 
-A LoRA adapter is a small set of extra weights on top of a base model. The server keeps one copy of the base model and applies the adapter that each request names. Requests for different adapters can run in the same batch.
+LoRA adapter 是叠加在基础模型之上的一小组额外权重。服务器保留一份基础模型，并为每个请求应用它所指定的 adapter。针对不同 adapter 的请求可以在同一个 batch 中运行。
 
 ```bash
 vllm serve Qwen/Qwen3-8B \
@@ -15,47 +15,47 @@ vllm serve Qwen/Qwen3-8B \
   --max-loras 4 --max-lora-rank 64
 ```
 
-Each path is a folder in the PEFT format that most training libraries write. It holds `adapter_config.json` and the weights in `adapter_model.safetensors`. vLLM also reads `adapter_model.bin`. A path can also be a Hugging Face repository name.
+每个路径是一个 PEFT 格式的文件夹，大多数训练库都写出这种格式。它包含 `adapter_config.json` 和 `adapter_model.safetensors` 中的权重。vLLM 也能读取 `adapter_model.bin`。路径也可以是一个 Hugging Face 仓库名。
 
-A request picks an adapter by its name in the `model` field:
+请求通过 `model` 字段中的名字选择 adapter：
 
 ```bash
 curl http://localhost:8000/v1/chat/completions -H "Content-Type: application/json" \
   -d '{"model": "support", "messages": [{"role": "user", "content": "Reset my password"}]}'
 ```
 
-`/v1/models` lists the base model and each adapter.
+`/v1/models` 会列出基础模型和每个 adapter。
 
-We ran this setup on the shared second GPU of our L4 node on 2026-10-23. We used `Qwen/Qwen3-0.6B` and two public adapters of rank 8 and rank 64. `/v1/models` listed the base model, `support`, and `legal`, and a chat request to each adapter returned HTTP 200.
+2026-10-23 我们在 L4 节点上共享的第二块 GPU 上运行了这套配置。我们使用了 `Qwen/Qwen3-0.6B` 和两个公开的 adapter，rank 分别为 8 和 64。`/v1/models` 列出了基础模型、`support` 和 `legal`，对每个 adapter 的聊天请求都返回了 HTTP 200。
 
-## Size the three limits
+## 确定三个限制的大小 {#s-serve-many-fine-tunes-with-multi-lora-size-the-three-limits}
 
-| Flag | Default | What it limits |
+| 参数 | 默认值 | 它限制什么 |
 |---|---|---|
-| `--max-loras` | 1 | adapters that can run in one batch on the GPU |
-| `--max-lora-rank` | 16 | the largest adapter rank the server accepts |
-| `--max-cpu-loras` | not set | adapters kept in CPU memory, ready to load |
+| `--max-loras` | 1 | 在 GPU 上一个 batch 中可以运行的 adapter 数 |
+| `--max-lora-rank` | 16 | 服务器接受的最大 adapter rank |
+| `--max-cpu-loras` | 未设置 | 保存在 CPU 内存中、随时可加载的 adapter 数 |
 
-The default of one adapter for each batch is low for a server with many adapters. Requests for a second adapter wait until the first adapter's batch is done. Raise `--max-loras` to the number of adapters that are busy at the same time.
+每个 batch 默认只允许一个 adapter，对于有很多 adapter 的服务器来说太低了。针对第二个 adapter 的请求要等第一个 adapter 的 batch 完成。把 `--max-loras` 提高到同时繁忙的 adapter 数量。
 
-Set `--max-lora-rank` to the largest rank of your adapters, not higher. The vLLM documentation advises against a large default such as 256, because the server reserves memory for the largest rank.
+把 `--max-lora-rank` 设成你的 adapter 中最大的 rank，不要更高。vLLM 文档不建议使用像 256 这样大的默认值，因为服务器会按最大的 rank 预留显存。
 
-## Load adapters while the server runs
+## 在服务器运行时加载 adapter {#s-serve-many-fine-tunes-with-multi-lora-load-adapters-while-the-server-runs}
 
-To add an adapter without a restart, start the server with `VLLM_ALLOW_RUNTIME_LORA_UPDATING=True`. Then post to `/v1/load_lora_adapter` with the name and the path, and to `/v1/unload_lora_adapter` to remove it. Turn this on only when you trust every caller of the server, because the route loads files from a path that the caller gives.
+要在不重启的情况下添加 adapter，用 `VLLM_ALLOW_RUNTIME_LORA_UPDATING=True` 启动服务器。然后带着名字和路径 POST 到 `/v1/load_lora_adapter`，要移除时 POST 到 `/v1/unload_lora_adapter`。只有在你信任服务器的每个调用方时才开启它，因为这个路由会从调用方给出的路径加载文件。
 
-## Know what LoRA changes elsewhere
+## 了解 LoRA 在其他地方带来的变化 {#s-serve-many-fine-tunes-with-multi-lora-know-what-lora-changes-elsewhere}
 
-- **Prefix cache.** The adapter is part of each block key. Two adapters never share cached blocks, even for the same prompt.
-- **CUDA graphs.** vLLM captures separate graphs for batches with an adapter. More adapters and more graph sizes add startup time and memory.
-- **Names.** Since 0.31, an adapter cannot have the name of a served model.
+- **Prefix cache。** adapter 是每个 block key 的一部分。两个 adapter 从不共享缓存的 block，即使 prompt 相同。
+- **CUDA graph。** vLLM 为带 adapter 的 batch 捕获单独的 graph。更多的 adapter 和更多的 graph 尺寸会增加启动时间和显存。
+- **名字。** 从 0.31 起，adapter 不能与被服务的模型同名。
 
-Not measured on our hardware. We have not measured the cost of the adapter count or the rank on the L4 or the GB10.
+未在我们的硬件上测量。我们没有在 L4 或 GB10 上测量 adapter 数量或 rank 带来的代价。
 
 ```takeaways
-- One base model serves many adapters, and a request picks one by name.
-- Raise --max-loras to the number of busy adapters, and set the rank limit to your largest rank.
-- Two adapters never share prefix-cache blocks.
+- 一个基础模型服务多个 adapter，请求按名字选择其中之一。
+- 把 --max-loras 提高到繁忙 adapter 的数量，并把 rank 上限设为你最大的 rank。
+- 两个 adapter 从不共享 prefix cache 的 block。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/config/lora.py, vllm/lora/lora_model.py, vllm/lora/peft_helper.py, vllm/lora/utils.py, vllm/v1/core/kv_cache_utils.py), vLLM documentation at v0.31.0 (docs/features/lora.md), the release notes for v0.31.0, capture/gpu/out-l4/livecheck-2026-10-23.txt.

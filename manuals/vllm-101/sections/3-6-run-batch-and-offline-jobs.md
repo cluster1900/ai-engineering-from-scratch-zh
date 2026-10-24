@@ -1,14 +1,14 @@
-# Run batch and offline jobs
+# 运行批处理和离线任务
 
-> When nobody waits for the first token, push concurrency up until throughput stops growing.
+> 当没人等第一个 token 时，就把并发往上提，直到吞吐量不再增长。
 
-You must process a large set of prompts overnight. When you finish this section, you can get the most tokens per second when latency does not matter.
+你必须在一夜之间处理一大批 prompt。读完本节后，你能在不在乎延迟时拿到最多的每秒 token 数。
 
-**Our result:** on our L4 with Qwen3-8B, output stopped growing at 32 users, near 274 tokens per second.
+**我们的结果：** 在我们的 L4 上用 Qwen3-8B 时，输出在 32 个用户时停止增长，接近每秒 274 个 token。
 
-## Pick the offline class or the server
+## 选择离线类还是服务器 {#s-run-batch-and-offline-jobs-pick-the-offline-class-or-the-server}
 
-For a fixed list of prompts, the offline `LLM` class runs the engine in your Python process. It has no HTTP layer and no client to tune:
+对一份固定的 prompt 列表，离线的 `LLM` 类在你的 Python 进程中运行引擎。它没有 HTTP 层，也没有需要调优的客户端：
 
 ```python
 from vllm import LLM, SamplingParams
@@ -21,45 +21,45 @@ for out in outputs:
     print(out.outputs[0].text)
 ```
 
-Pass the whole list in one call. The engine schedules all the prompts itself and keeps the batch full.
+在一次调用中传入整个列表。引擎会自己调度所有 prompt，并让 batch 保持满载。
 
-For a file of OpenAI requests, use the batch command:
+对于一个 OpenAI 请求文件，使用批处理命令：
 
 ```bash
 vllm run-batch -i requests.jsonl -o results.jsonl --model Qwen/Qwen3-8B
 ```
 
-Use the server when other programs must send the work, or when the job shares the GPU with live traffic.
+当其他程序必须发送这些工作，或者任务要与线上流量共用 GPU 时，使用服务器。
 
-## Find where throughput stops growing
+## 找到吞吐量停止增长的点 {#s-run-batch-and-offline-jobs-find-where-throughput-stops-growing}
 
-When nobody waits for a first token, only the total output matters. Raise the concurrency until the output stops growing.
+当没人等第一个 token 时，只有总输出才重要。提高并发，直到输出不再增长。
 
-We ran `Qwen/Qwen3-8B` with 512-token prompts on our L4, in [the full-clock session](#l4-sessions) on 2026-10-17. The output grew from 13.5 tok/s with one user to 273.9 tok/s with 32 users. At 64 users it fell to 241.4 tok/s, because the pool was full and the GPU throttled. In a separate run on 2026-10-18, a fixed rate of 4 requests each second gave 286.6 tok/s, at 1,245 against 1,275 MHz. So on this card, the most output came at about 32 users at once. More users only made each request wait longer.
+2026-10-17，我们在自己的 L4 上、在[满频会话](#l4-sessions)中用 512 token 的 prompt 运行了 `Qwen/Qwen3-8B`。输出从单用户的 13.5 tok/s 增长到三十二个用户的 273.9 tok/s。到 64 个用户时降到 241.4 tok/s，因为池满了，GPU 也降频了。在 2026-10-18 的另一次运行中，每秒 4 个请求的固定速率给出了 286.6 tok/s，时钟为 1,245 MHz 对比 1,275 MHz。所以在这块卡上，同时约 32 个用户时输出最多。更多用户只会让每个请求等得更久。
 
-The ceiling on your setup depends on the model, the prompt and answer lengths, and the pool. Run [the sweep](#s-benchmark-your-server-in-15-minutes) with your own lengths to find it.
+你的配置上的上限取决于模型、prompt 和回答的长度，以及池的大小。用你自己的长度跑一遍[扫描](#s-benchmark-your-server-in-15-minutes)来找到它。
 
-## Raise the limits for a batch job
+## 为批处理任务放宽限制 {#s-run-batch-and-offline-jobs-raise-the-limits-for-a-batch-job}
 
-Two limits cap the batch. Their defaults depend on the GPU memory and on how you run vLLM:
+有两个限制约束着 batch。它们的默认值取决于 GPU 显存以及你运行 vLLM 的方式：
 
-- `--max-num-seqs` caps the requests that run at once.
-- `--max-num-batched-tokens` caps the tokens in one step. The offline `LLM` class has a larger default than the server. The vLLM documentation suggests a value above 8,192 for throughput, most of all for small models on large GPUs.
+- `--max-num-seqs` 限制同时运行的请求数。
+- `--max-num-batched-tokens` 限制一步中的 token 数。离线的 `LLM` 类的默认值比服务器更大。vLLM 文档建议为了吞吐量把它设到 8,192 以上，尤其是在大 GPU 上跑小模型时。
 
-[The token budget page](#s-keep-long-prompts-from-stalling-short-ones) gives the default of each limit for your GPU.
+[token 预算页](#s-keep-long-prompts-from-stalling-short-ones)给出了你的 GPU 上每个限制的默认值。
 
-A larger token budget lets long prompts finish their prefill in fewer steps. Running streams get less of each step, which a batch job does not care about.
+更大的 token 预算让长 prompt 用更少的步完成 prefill。正在运行的流在每一步中分到的更少，而批处理任务并不在乎这一点。
 
-We measured the budget on our DGX Spark, where 16,384 gave longer gaps between tokens at a low rate. [The long prompts page](#s-keep-long-prompts-from-stalling-short-ones) has the numbers. We did not measure it for a batch job.
+我们在 DGX Spark 上测量过这个预算，在低速率下 16,384 让 token 间隔变长。[长 prompt 页](#s-keep-long-prompts-from-stalling-short-ones)给出了数字。我们没有针对批处理任务测量它。
 
-## Check the run
+## 检查运行情况 {#s-run-batch-and-offline-jobs-check-the-run}
 
-Watch `vllm:num_requests_running` and `vllm:kv_cache_usage_perc`. If the cache usage stays near 1 and requests wait, the pool limits the batch. Add memory with an FP8 KV cache or a shorter maximum length. If the running count sits at the `--max-num-seqs` limit with free cache, raise the limit.
+观察 `vllm:num_requests_running` 和 `vllm:kv_cache_usage_perc`。如果 cache 使用率一直接近 1 且请求在等待，说明池限制了 batch。用 FP8 KV cache 或更短的最大长度增加显存。如果运行中的请求数停在 `--max-num-seqs` 上限且 cache 还有空闲，就提高这个上限。
 
 ```takeaways
-- Use the offline LLM class for a fixed list, and pass the whole list in one call.
-- Raise concurrency until the output stops growing. On our L4 that was about 32 users.
-- Raise the token budget for a batch job, because a slow first token costs nothing there.
+- 对固定列表使用离线 LLM 类，并在一次调用中传入整个列表。
+- 提高并发直到输出不再增长。在我们的 L4 上大约是 32 个用户。
+- 为批处理任务提高 token 预算，因为在那里第一个 token 慢一点没有任何代价。
 ```
 
 Sources: capture/gpu/summary/l4.json (load.vllm, rate.vllm), vLLM documentation at v0.31.0 (docs/configuration/optimization.md), the vLLM source at v0.31.0 (vllm/entrypoints/llm.py, vllm/entrypoints/cli/).

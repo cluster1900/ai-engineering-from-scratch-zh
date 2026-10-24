@@ -157,9 +157,9 @@
     },
     {
       "number": 3,
-      "title": "Tune for Your Traffic",
-      "thesis": "Each kind of traffic needs a different one or two flags, and most defaults are already right.",
-      "summary": "Recipes for chat, RAG and agents, long documents, long sessions, JSON, batch jobs, multi-LoRA, reproducible outputs, RL rollouts, and reasoning models.",
+      "title": "按流量调优",
+      "thesis": "每种流量需要调整的是不同的一两个参数，而大多数默认值已经是对的。",
+      "summary": "针对聊天、RAG 与 agent、长文档、长会话、JSON、批处理任务、multi-LoRA、可复现输出、RL rollout 和推理模型的配置方案。",
       "accent": "amber",
       "sections": [
         {

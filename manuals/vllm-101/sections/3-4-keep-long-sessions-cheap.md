@@ -1,57 +1,57 @@
-# Keep long sessions cheap
+# 让长会话保持低成本
 
-> Old turns cost nothing while they stay in the cache, and offload keeps them when the GPU pool is full.
+> 旧的对话轮次只要还在 cache 里就不花任何代价，而 offload 能在 GPU 池满时保住它们。
 
-A long conversation slows down as it grows. When you finish this section, you can keep earlier turns cached without a full prefill.
+长对话会随着增长而变慢。读完本节后，你能让之前的轮次保持缓存，而不必做一次完整的 prefill。
 
-## Why a long session slows down
+## 长会话为什么会变慢 {#s-keep-long-sessions-cheap-why-a-long-session-slows-down}
 
-Each turn of a chat sends the whole conversation again. Without a cache, the server computes every earlier turn on every request, so the first token takes longer with each turn.
+聊天的每一轮都会把整个对话重新发送一遍。没有 cache 时，服务器在每个请求上都要计算之前的每一轮，所以第一个 token 随着轮次增加而越来越慢。
 
-The prefix cache removes that cost while the earlier turns stay in the cache. Turn 10 starts with the same tokens as turn 9, so the blocks of turn 9 are a hit. Only the new user message and the answer need compute.
+只要之前的轮次还留在 cache 里，prefix cache 就能消除这部分成本。第 10 轮以与第 9 轮相同的 token 开头，所以第 9 轮的 block 会命中。只有新的用户消息和回答需要计算。
 
-The cache keeps a block only until a running request needs the memory. On a busy server, the blocks of a user who paused for a minute can be gone when that user sends the next turn. The whole conversation is then computed again.
+cache 只会保留一个 block，直到某个运行中的请求需要这块显存。在繁忙的服务器上，一个停顿了一分钟的用户发送下一轮时，他的 block 可能已经没了。这时整个对话要重新计算。
 
-## Keep the prompt stable across turns
+## 让 prompt 在各轮之间保持稳定 {#s-keep-long-sessions-cheap-keep-the-prompt-stable-across-turns}
 
-The hit needs the same tokens in the same order:
+命中需要相同的 token、相同的顺序：
 
-- Send earlier turns exactly as before. Do not trim, summarize, or reformat them between turns.
-- Keep the system prompt and the tool list the same for the whole session.
-- If you must shorten a conversation, cut whole turns from the middle, not from the start. A change at the start makes every later block miss.
+- 按原样发送之前的轮次。不要在轮次之间裁剪、总结或重新格式化它们。
+- 在整个会话中保持 system prompt 和 tool 列表不变。
+- 如果必须缩短对话，从中间删掉整轮，而不是从开头删。开头的改动会让之后的每个 block 都未命中。
 
-## Offload blocks to host memory
+## 把 block offload 到主机内存 {#s-keep-long-sessions-cheap-offload-blocks-to-host-memory}
 
-When the GPU pool is too small to keep idle sessions, vLLM can copy blocks to CPU memory before it drops them. A later request reloads them from CPU memory, which is faster than a full prefill of a long context.
+当 GPU 池太小、放不下空闲的会话时，vLLM 可以在丢弃 block 之前把它们复制到 CPU 内存。之后的请求从 CPU 内存重新加载它们，这比对长上下文做一次完整的 prefill 更快。
 
-The native offload needs one flag, the CPU memory to use in GiB:
+原生 offload 只需要一个参数，即要使用的 CPU 内存大小（单位 GiB）：
 
 ```bash
 vllm serve Qwen/Qwen3-8B --kv-offloading-size 32
 ```
 
-`--kv-offloading-backend` picks the implementation. `native` is the default and uses the code in vLLM. `lmcache` uses the LMCache library, and it needs a separate LMCache server process. The offload trades CPU memory and PCIe transfer time for compute.
+`--kv-offloading-backend` 选择实现。`native` 是默认值，使用 vLLM 内部的代码。`lmcache` 使用 LMCache 库，并且需要一个单独的 LMCache 服务器进程。offload 用 CPU 内存和 PCIe 传输时间来换取计算。
 
-Not measured on our hardware. We have not timed a reload from CPU memory against a prefill on the L4 or the GB10.
+未在我们的硬件上测量。我们没有在 L4 或 GB10 上对比过从 CPU 内存重新加载与做一次 prefill 的时间。
 
-## Use a shared cache across servers
+## 在多台服务器之间使用共享 cache {#s-keep-long-sessions-cheap-use-a-shared-cache-across-servers}
 
-With several servers behind a router, a user's next turn can go to a server that never saw the earlier turns. Two fixes exist. A router that sends a session to the same server keeps the hit on that server. A shared KV store, through a KV connector such as LMCache or Mooncake, lets any server load the blocks. [The KV connector page](#s-how-kv-connectors-move-the-cache) explains the second.
+当路由器后面有多台服务器时，用户的下一轮可能被发到一台从没见过之前轮次的服务器。有两种解决办法。把一个会话总是发到同一台服务器的路由器，能让命中保留在那台服务器上。通过 LMCache 或 Mooncake 这样的 KV connector 使用共享 KV 存储，可以让任何服务器加载这些 block。[KV connector 页](#s-how-kv-connectors-move-the-cache)解释了第二种。
 
-## Check the session cache
+## 检查会话 cache {#s-keep-long-sessions-cheap-check-the-session-cache}
 
-Send turn 1 of a conversation, then turn 2 with turn 1 at its start. Read the prefix cache counters before and after turn 2:
+发送一个对话的第 1 轮，然后发送开头带着第 1 轮的第 2 轮。在第 2 轮前后读取 prefix cache 计数器：
 
 ```bash
 curl -s localhost:8000/metrics | grep -E "^vllm:(external_)?prefix_cache_(queries|hits)_total"
 ```
 
-During turn 2, `vllm:prefix_cache_hits_total` rises by about the length of turn 1, rounded down to full 16-token blocks. We checked this on an L4 with Qwen3-0.6B. Turn 1 had 2,182 prompt tokens. In turn 2 the counter rose by 2,176, which is 136 full blocks. With offload on, the startup log names the connector, `OffloadingConnector` for the native backend. A block that came back from CPU memory counts in the `vllm:external_prefix_cache_hits_total` counter.
+在第 2 轮期间，`vllm:prefix_cache_hits_total` 大约增加第 1 轮的长度，向下取整到完整的 16-token block。我们在一块 L4 上用 Qwen3-0.6B 检查过这一点。第 1 轮有 2,182 个 prompt token。在第 2 轮中，计数器增加了 2,176，也就是 136 个完整的 block。开启 offload 时，启动日志会写出 connector 的名字，原生后端是 `OffloadingConnector`。从 CPU 内存取回的 block 计入 `vllm:external_prefix_cache_hits_total` 计数器。
 
 ```takeaways
-- The prefix cache makes earlier turns free while their blocks stay in the pool.
-- Send earlier turns unchanged, and never change the start of the conversation.
-- Offload blocks to CPU memory when idle sessions do not fit the GPU pool.
+- 只要之前轮次的 block 还在池里，prefix cache 就让它们不花任何代价。
+- 原样发送之前的轮次，绝不要改动对话的开头。
+- 当空闲会话放不进 GPU 池时，把 block offload 到 CPU 内存。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/config/cache.py, vllm/config/vllm.py, vllm/v1/kv_offload/base.py, vllm/v1/kv_offload/config.py, vllm/v1/kv_offload/factory.py, vllm/v1/metrics/loggers.py, vllm/distributed/kv_transfer/kv_connector/factory.py), vLLM documentation at v0.31.0 (docs/features/kv_offloading_usage.md, docs/design/prefix_caching.md), capture/gpu/out-l4/livecheck-2026-10-22.txt.

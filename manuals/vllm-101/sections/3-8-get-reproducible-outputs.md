@@ -1,47 +1,47 @@
-# Get reproducible outputs
+# 获得可复现的输出
 
-> A seed alone does not give the same output in a busy batch, and batch invariance costs speed.
+> 在繁忙的 batch 中，光靠 seed 得不到相同的输出，而 batch invariance 要付出速度的代价。
 
-You run evals and the scores change between runs. When you finish this section, you can get the same output for the same request.
+你在跑评测，分数在不同运行之间会变。读完本节后，你能让同一个请求得到相同的输出。
 
-## Know why outputs change
+## 了解输出为什么会变 {#s-get-reproducible-outputs-know-why-outputs-change}
 
-The vLLM documentation says that vLLM does not promise the same output by default, for the sake of speed. Three things change the result of one request:
+vLLM 文档说明，出于速度考虑，vLLM 默认不保证相同的输出。有三件事会改变一个请求的结果：
 
-- **The batch.** The kernels split their sums by the batch size. The same request adds its numbers in a different order in a batch of 3 than in a batch of 30. Floating-point sums depend on the order. A small difference in one logit can change a sampled token, and every later token then differs.
-- **The schedule.** In the default multiprocess server, the timing of requests decides which batch each one joins.
-- **The prefix cache.** A request that reuses cached blocks computes its prompt in a different way than a request with no cache hit. In our runs on 0.31.0, a warm cache changed the greedy output of 11 of 32 prompts. The 2026 paper "Same Request, Different Answer" found the same effect on vLLM 0.11.
-- **The dtype.** BF16 and FP16 round each number differently, so the same model in the two dtypes writes different text.
+- **batch。** kernel 按 batch 大小切分求和。同一个请求在 3 个请求的 batch 和 30 个请求的 batch 中，累加数字的顺序不同。浮点求和依赖顺序。一个 logit 上的微小差异就可能改变一个采样出的 token，之后的每个 token 都会随之不同。
+- **调度。** 在默认的多进程服务器中，请求到达的时机决定了每个请求加入哪个 batch。
+- **prefix cache。** 复用缓存 block 的请求，计算其 prompt 的方式与没有命中 cache 的请求不同。在我们基于 0.31.0 的运行中，热 cache 改变了 32 个 prompt 中 11 个的 greedy 输出。2026 年的论文 "Same Request, Different Answer" 在 vLLM 0.11 上发现了同样的效应。
+- **dtype。** BF16 和 FP16 对每个数的舍入方式不同，所以同一个模型在这两种 dtype 下写出的文本不同。
 
-The seed defaults to 0 in the current engine, and you cannot unset it. Speculative decoding needs every worker to sample the same tokens. So a seed is always there, and it is not enough by itself.
+在当前引擎中，seed 默认为 0，而且你无法取消它。Speculative decoding 需要每个 worker 采样出相同的 token。所以 seed 总是存在，但单靠它是不够的。
 
-## Pick the fix for your case
+## 为你的场景选择修复方法 {#s-get-reproducible-outputs-pick-the-fix-for-your-case}
 
-| Case | Fix | Cost |
+| 场景 | 修复方法 | 代价 |
 |---|---|---|
-| Offline evals with the `LLM` class | set `VLLM_ENABLE_V1_MULTIPROCESSING=0`, use the same seed, and send the same prompts in the same order | the engine runs in your process, so the schedule repeats |
-| A server with live traffic | turn on the batch-invariant mode, as the next section shows | slower kernels for every request |
-| Greedy evals that must match exactly | combine greedy sampling with one of the two fixes above | as above |
+| 用 `LLM` 类做离线评测 | 设置 `VLLM_ENABLE_V1_MULTIPROCESSING=0`，使用相同的 seed，并以相同的顺序发送相同的 prompt | 引擎在你的进程中运行，所以调度会重复 |
+| 有线上流量的服务器 | 开启 batch-invariant 模式，如下一节所示 | 每个请求的 kernel 都更慢 |
+| 必须完全一致的 greedy 评测 | 把 greedy 采样与上面两种修复之一结合 | 同上 |
 
-Every fix also needs the same hardware, the same vLLM version, and the same settings. A new release or a new GPU changes the kernels, and the outputs change with them.
+每种修复还都需要相同的硬件、相同的 vLLM 版本和相同的设置。新版本或新 GPU 会改变 kernel，输出也会随之改变。
 
-## Turn on the batch-invariant mode
+## 开启 batch-invariant 模式 {#s-get-reproducible-outputs-turn-on-the-batch-invariant-mode}
 
-Set one environment variable when you start the server:
+启动服务器时设置一个环境变量：
 
 ```bash
 VLLM_BATCH_INVARIANT=1 vllm serve Qwen/Qwen3-8B 2>&1 | tee server.log
 ```
 
-The mode needs an NVIDIA GPU with compute capability 8.0 or higher, which includes the L4 and the GB10. The vLLM documentation lists Qwen3-8B among the models it tested in this mode. The mode turns off some speed features that change the order of the sums, such as custom all-reduce with tensor parallelism.
+这个模式需要计算能力 8.0 或更高的 NVIDIA GPU，L4 和 GB10 都包括在内。vLLM 文档把 Qwen3-8B 列为在该模式下测试过的模型之一。这个模式会关闭一些会改变求和顺序的加速特性，例如张量并行下的 custom all-reduce。
 
-We ran one probe with the small Qwen3-0.6B on an L4. With the mode on, a greedy prompt gave the same text alone and inside a batch of 32 requests. With the mode off, the two texts differed. One prompt on one small model proves little for yours, so run the test at the end of this page on your own model.
+我们在一块 L4 上用小模型 Qwen3-0.6B 做了一次探测。开启该模式时，一个 greedy prompt 单独运行和在 32 个请求的 batch 中运行给出了相同的文本。关闭该模式时，两段文本不同。一个小模型上的一个 prompt 对你的模型说明不了什么，所以请在你自己的模型上运行本页末尾的测试。
 
-## See what changed the output in our runs
+## 看看在我们的运行中是什么改变了输出 {#s-get-reproducible-outputs-see-what-changed-the-output-in-our-runs}
 
-We sent ShareGPT questions after one shared system prompt of about 170 tokens, greedy, with 128 output tokens and thinking off. We compared each output with the output of a second run, token by token. This was on the second GPU of our L4 node on 2026-10-22 and 2026-10-23, with `Qwen/Qwen3-0.6B`. That GPU is shared with its owner and had no clock lock.
+我们在一段约 170 token 的共享 system prompt 之后发送 ShareGPT 的问题，使用 greedy，输出 128 个 token，关闭思考。我们把每个输出与第二次运行的输出逐 token 比较。这是 2026-10-22 和 2026-10-23 在我们 L4 节点的第二块 GPU 上用 `Qwen/Qwen3-0.6B` 进行的。那块 GPU 与其所有者共用，没有锁定时钟。
 
-A clock changes the speed of a run. It does not change the greedy tokens. Each count is still one session on one GPU.
+时钟会改变运行的速度，但不会改变 greedy 的 token。每个计数仍然只是一块 GPU 上的一次会话。
 
 ```listing
 title: outputs that differ at one user, out of 32
@@ -56,30 +56,30 @@ fresh against warm cache       21 of 32 (45) 11 of 32 (57)
 cache on against cache off     25 of 32 (26) 21 of 32 (48)
 ```
 
-- **One user, the same cache state.** A repeat after a cache reset, or a repeat with the cache off, gave the same text for all 32 prompts.
-- **One user, a warm cache.** The same prompts against a warm cache changed 11 of 32 outputs. The cache on against the cache off changed 21 of 32.
-- **Many users.** At 64 users sent at once, two runs with the cache off differed in 50 of 64 outputs. The batch alone changed most outputs, so the cache effect could not be separated at that load.
-- **The dtype.** We sent 64 questions at one user with the cache off. BF16 against FP16 changed 48 of 64 outputs for Qwen3-0.6B and 56 of 64 for Qwen3-1.7B. The first different token came at a median position of 51 and 56. A repeat in the same dtype changed none.
+- **一个用户，相同的 cache 状态。** 重置 cache 后重复运行，或关闭 cache 重复运行，32 个 prompt 都给出了相同的文本。
+- **一个用户，热 cache。** 相同的 prompt 在热 cache 下改变了 32 个输出中的 11 个。开启 cache 对比关闭 cache 改变了 32 个中的 21 个。
+- **多个用户。** 同时发送 64 个用户时，两次关闭 cache 的运行在 64 个输出中有 50 个不同。仅 batch 本身就改变了大多数输出，所以在这个负载下无法分离出 cache 的影响。
+- **dtype。** 我们在一个用户、关闭 cache 的情况下发送了 64 个问题。BF16 对比 FP16，Qwen3-0.6B 改变了 64 个输出中的 48 个，Qwen3-1.7B 改变了 64 个中的 56 个。第一个不同 token 的位置中位数分别是 51 和 56。相同 dtype 下的重复运行一个也没有改变。
 
-So at one user, a cache reset is enough to repeat a greedy output exactly. Under load, a reset was not enough in our runs. For a live server, the batch-invariant mode is the fix this page covers, and we did not test it at that load. Our counts come from small models and one GPU, so test your own model.
+所以在一个用户时，重置 cache 就足以精确地重复一个 greedy 输出。在有负载时，我们的运行中重置并不够。对于线上服务器，batch-invariant 模式是本页介绍的修复方法，而我们没有在那个负载下测试它。我们的计数来自小模型和一块 GPU，所以请测试你自己的模型。
 
-## Know what the batch-invariant mode does not cover
+## 了解 batch-invariant 模式覆盖不到什么 {#s-get-reproducible-outputs-know-what-the-batch-invariant-mode-does-not-cover}
 
-At 0.31.0 the mode is in beta. Work by other teams shows three limits. We did not measure them ourselves:
+在 0.31.0 中，这个模式处于 beta 阶段。其他团队的工作显示了三个局限。我们自己没有测量它们：
 
-- **The speed cost.** In the post "Defeating Nondeterminism in LLM Inference" of September 2025, Thinking Machines Lab ran 1,000 Qwen3-8B requests on vLLM. They took 26 s by default and 55 s with batch-invariant kernels, and 42 s with a better attention kernel. The 2026 CoRun paper reports that batch-invariant kernels more than double the latency and cut throughput by up to 74 percent.
-- **Other changes in execution.** The 2026 paper "Vosti: Specifying, Implementing, and Verifying Deterministic LLM Inference" tested changes such as prompt chunking and KV cache reuse. The batch-invariant mode of vLLM gave different logits under some of them.
-- **Some model paths.** At 0.31.0, a model that picks its own attention backend skips the check for the mode, so its output can still depend on the batch. Release 0.32.0 checks the backend of every attention layer. A fix for MoE models with data, tensor, and expert parallelism under torch.compile is not in 0.32.0.
+- **速度代价。** 在 2025 年 9 月的文章 "Defeating Nondeterminism in LLM Inference" 中，Thinking Machines Lab 在 vLLM 上运行了 1,000 个 Qwen3-8B 请求。默认情况下用时 26 s，使用 batch-invariant kernel 时用时 55 s，换用更好的 attention kernel 后为 42 s。2026 年的 CoRun 论文报告称，batch-invariant kernel 让延迟增加一倍以上，吞吐量最多下降 74%。
+- **执行中的其他变化。** 2026 年的论文 "Vosti: Specifying, Implementing, and Verifying Deterministic LLM Inference" 测试了 prompt 分块和 KV cache 复用等变化。vLLM 的 batch-invariant 模式在其中一些变化下给出了不同的 logit。
+- **某些模型路径。** 在 0.31.0 中，自己选择 attention 后端的模型会跳过对该模式的检查，所以它的输出仍可能依赖 batch。0.32.0 版本会检查每个 attention 层的后端。针对在 torch.compile 下使用数据、张量和专家并行的 MoE 模型的修复不在 0.32.0 中。
 
-So test the exact setup that you serve: the model, the parallel layout, the prefix cache setting, and the token budget.
+所以要测试你实际服务的配置：模型、并行布局、prefix cache 设置和 token 预算。
 
-## Check the result
+## 检查结果 {#s-get-reproducible-outputs-check-the-result}
 
-Run the same eval twice and compare the outputs token by token, not only the score. Between the two runs, reset the prefix cache or restart the server, as [the benchmark page](#s-benchmark-your-server-in-15-minutes) shows. If the outputs differ, send one failing prompt alone twice. If the two answers match when alone, the batch causes the difference.
+把同一个评测运行两次，逐 token 比较输出，而不只是比较分数。在两次运行之间，重置 prefix cache 或重启服务器，如[基准测试页](#s-benchmark-your-server-in-15-minutes)所示。如果输出不同，把一个出问题的 prompt 单独发送两次。如果单独发送时两个回答一致，差异就是 batch 造成的。
 
-## Know the speed cost on our L4
+## 了解在我们 L4 上的速度代价 {#s-get-reproducible-outputs-know-the-speed-cost-on-our-l4}
 
-We measured the cost on our L4 on 2026-10-23, with the clock locked at 900 MHz. The runs went in the order default, batch-invariant, default again, with two seeds each and a cache reset before each run.
+2026-10-23 我们在 L4 上测量了这个代价，时钟锁定在 900 MHz。运行顺序是默认、batch-invariant、再默认，每次两个 seed，每次运行前重置 cache。
 
 ```listing
 title: the batch-invariant mode against the default, Qwen3-0.6B on vLLM 0.31.0
@@ -95,14 +95,14 @@ users   median TPOT default / batch-invariant   output tok/s default / batch-inv
 …
 ```
 
-On `Qwen/Qwen3-8B` at 8 users, the time per token was 1.4 times longer and the output tok/s 27 percent lower. At 32 users they were 1.3 times longer and 23 percent lower. The 1-user runs of the 8B model ran below the lock, so we leave them out. The relative cost fell as more users shared each step, and it was larger on the small model. Measure it on your model before you turn the mode on for a live server.
+在 `Qwen/Qwen3-8B` 上，8 个用户时每 token 时间长了 1.4 倍，输出 tok/s 低了 27%。32 个用户时分别长了 1.3 倍、低了 23%。8B 模型的 1 用户运行跑在锁定频率以下，所以我们没有列出。随着更多用户共享每一步，相对代价下降，而在小模型上代价更大。在为线上服务器开启该模式之前，先在你的模型上测量它。
 
 ```takeaways
-- A seed is not enough, because the batch changes the order of the sums.
-- Offline, run the engine in one process with the same seed and order.
-- Online, the batch-invariant mode is the main fix, but it costs speed and misses some paths.
-- Reset the prefix cache between two runs that you compare.
-- Keep the dtype the same between two runs that you compare.
+- seed 不够，因为 batch 会改变求和的顺序。
+- 离线时，在一个进程中用相同的 seed 和顺序运行引擎。
+- 在线时，batch-invariant 模式是主要的修复方法，但它有速度代价，并且覆盖不到某些路径。
+- 在要比较的两次运行之间重置 prefix cache。
+- 在要比较的两次运行之间保持 dtype 相同。
 ```
 
 Sources: vLLM documentation at v0.31.0 (docs/usage/reproducibility.md, docs/features/batch_invariance.md), the vLLM source at v0.31.0 (vllm/envs.py), Same Request, Different Answer: Quantization Amplifies Cache-Induced Divergence in LLM Serving (arXiv 2609.04748, 2026), Defeating Nondeterminism in LLM Inference by Horace He and Thinking Machines Lab (2025-09-10), CoRun: Padding is Simple and Efficient for Deterministic LLM Inference (arXiv 2608.14376, 2026), Vosti: Specifying, Implementing, and Verifying Deterministic LLM Inference (arXiv 2609.38981, 2026), the release notes for v0.32.0 (attention backend check for the batch-invariant mode), vLLM pull request 61118 (inductor batch-invariant mode, merged on 2026-10-17 and not in v0.32.0), capture/gpu/out-l4/livecheck-2026-10-22.txt, capture/gpu/out-l4/greedy-output-cache-batch-dtype.txt, capture/gpu/out-l4/batch-invariant-cost.txt.
