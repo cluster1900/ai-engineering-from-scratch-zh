@@ -85,9 +85,9 @@ def modern_request(request_id, method, params, version, capabilities):
 - `-32021` MissingRequiredClientCapability（缺少必要的 Client 能力）
 - `-32022` UnsupportedProtocolVersion（不支持的协议版本）
 
-即便对端已被列入 Legacy 白名单，已识别的现代错误也证明其为现代 Server。一旦 Server 表现出理解现代错误词汇的能力，发送 `initialize` 就构成了危险的版本降级攻击。
+即便对端已被列入 Legacy 白名单，已识别的现代错误也证明其为现代 Server。一旦 Server 表现出理解现代错误词汇的能力，再发送 `initialize` 就构成了降级。
 
-绝不能把 `-32601`（方法未找到）作为进入 Legacy 的充分证据。它仅代表该对端有资格发起一次有受限时长的 Legacy 探测。
+绝不能把 `-32601`（方法未找到）作为进入 Legacy 的充分证据。它仅代表该对端有资格发起一次有受限时长的 Legacy 探测。超时、连接关闭或空响应同样适用这一规则。
 
 ### 白名单代表运维意图，而非协议证据
 
@@ -146,11 +146,11 @@ Server 应返回确定性排序。Client 也应在合并前排序，使本地注
 路由是纯粹的映射查找：
 
 ```text
-规范工具名
-  -> 对端名称 + 本地工具名
-  -> 生成全新的 JSON-RPC 请求 ID
-  -> 现代请求元数据 或 显式 Legacy 结构
-  -> 匹配响应 ID 并返回
+canonical tool name
+  -> peer name + local tool name
+  -> new JSON-RPC request id
+  -> modern request metadata or explicit legacy shape
+  -> matching response id
 ```
 
 当所属传输不可用时不要发送调用。先重连或重启传输，再重新执行服务发现与 `tools/list`。在传输断开时丢失的现代在途请求，若该操作的安全策略允许，可以使用新的 JSON-RPC ID 重试。
@@ -186,14 +186,14 @@ python3 -m unittest discover tests -v
 - 现代请求逐次重复元数据；
 - 遇到 `-32022` 时重试现代发现，绝不退化为握手；
 - 已识别的现代错误绝不发生降级（即使对端在白名单中）；
-- 超时、断开与未知错误、空响应在无白名单时绝不触发 `initialize`；
+- 超时、连接关闭、空响应与未识别的错误在无白名单时绝不触发 `initialize`；
 - 白名单对端仅在收到合规正向的 `initialize` 响应后才确立为 Legacy；
 - 畸形或不受支持的 Legacy 结果使对端保持不可用；
 - 选定的时代被稳定缓存在对端传输生命周期中。
 
 ## 交付物
 
-本课交付 `outputs/skill-mcp-client-harness.md`。它能为现代请求盖戳、stdio 时代协商、确定性命名空间合并、安全路由以及安全关闭的 Legacy 兼容分支提供规范脚手架。
+本课交付 `outputs/skill-mcp-client-harness.md`。它能为现代请求盖戳、stdio 时代协商、确定性命名空间合并、路由以及失败即关闭（fail-closed）的 Legacy 兼容分支提供规范脚手架。
 
 ## 练习与思考
 

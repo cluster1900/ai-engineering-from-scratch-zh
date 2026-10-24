@@ -32,9 +32,9 @@ MCP 折叠了这一庞大的 N×M 集成矩阵。Server 暴露出标准的 JSON-
 
 1. **Tools（工具）**：可调用的动作。每个工具包含名称、描述、JSON Schema 输入约束及执行函数。
 2. **Resources（资源）**：具名且按 URI 寻址的内容，供 Client 读取。
-3. **Prompts（提示模板）**：可复用的结构化模板，供 Host 展现给用户快捷触发。
+3. **Prompts（提示模板）**：可复用的结构化模板，供 Host 展现给用户。
 
-Host 指 AI 宿主应用程序（例如 Claude Desktop）。Host 内的 MCP Client 专职与特定的 Server 通信。传输层负责在两者之间搬运 JSON-RPC 报文。
+Host 指 AI 应用程序。Host 内的一个 MCP Client 与一个 Server 通信。传输层负责在两者之间搬运 JSON-RPC 报文。
 
 ### 无状态请求取代传统握手
 
@@ -60,7 +60,7 @@ MCP 2026-07-28 彻底移除了 `initialize` 和 `notifications/initialized`，�
 
 协议版本与 Client 能力为强制必填项，Client 身份为推荐项。缺失 `_meta`、缺少必填字段或字段类型错误均属于参数畸形，返回 Invalid Params 错误码（`-32602`）。若版本字符串合法但 Server 无法支持，返回 `UnsupportedProtocolVersionError`（`-32022`）。Server 可以在完全没有历史协商记录的前提下独立处理任何有效请求。
 
-无状态绝不意味着应用不能保持业务状态。它仅意味着状态不再隐蔽在底层 MCP 连接或 `Mcp-Session-Id` 之中。如果工作流需要跨调用连续性，由 Server 生成不透明的状态句柄（Opaque Handle），Client 在后续调用中将其作为普通的 Tool 参数传入。
+无状态绝不意味着应用不能保持业务状态。它仅意味着状态不再隐蔽在底层 MCP 连接或 `Mcp-Session-Id` 之中。如果工作流需要跨调用连续性，由 Server 生成不透明的状态句柄（Opaque Handle），Client 在后续调用中将其作为普通的 Tool 参数传入。每个请求上仍必须检查授权。
 
 ### 服务发现与版本协商
 
@@ -90,9 +90,9 @@ MCP 2026-07-28 彻底移除了 `initialize` 和 `notifications/initialized`，�
 }
 ```
 
-Client 也可以直接调用业务方法并处理版本错误，但调用 discover 能使能力展示与版本协商更加显式透明。遇到不受支持版本时返回 `-32022`，其附加数据包含 Server 支持的 `supported` 版本数组以及被拒绝的 `requested` 版本。
+Client 也可以直接调用业务方法并处理版本错误，但调用 discover 能使能力展示与版本协商更加显式透明。不受支持的版本返回 `UnsupportedProtocolVersionError`，错误码 `-32022`。其 data 包含 `supported`（Server 支持的修订版数组）与 `requested`（被拒绝的修订版）。
 
-在 stdio 模式下，双时代（dual-era）Client 使用 `server/discover` 发起探测。发现成功或收到如 `-32022` 等已被识别的现代错误，均证明对方为现代 Server；唯有非现代错误或超时才允许回退到 2025-11-25 的旧版 `initialize` 握手。Legacy 行为仅作为兼容补偿，绝不是现代默认。
+在 stdio 模式下，双时代（dual-era）Client 使用 `server/discover` 发起探测。发现成功或收到 `UnsupportedProtocolVersionError` 等已被识别的现代错误，均证明对方为现代 Server；唯有非现代错误或超时才允许回退到 2025-11-25 的旧版 `initialize` 握手。Legacy 行为仅作为兼容补偿，绝不是现代默认。
 
 ### 显式的结果结构
 
@@ -105,7 +105,7 @@ Client 必须将缺少 `resultType` 的旧版响应当作 complete 处理。
 
 Server 应在每个结果的 `_meta` 中包含 `io.modelcontextprotocol/serverInfo`。该身份由 Server 自行声明，仅用于展示、日志与调试，不能作为安全决策依据。
 
-列表和读取操作的结果还附带 `ttlMs`（毫秒生存时间）和 `cacheScope`（缓存范围）。确定性的 `tools/list` 排序加上新鲜度提示，使 Client 能够安全缓存服务发现结果，大幅提升模型 Prompt Cache 的稳定性。`cacheScope: public` 允许跨上下文共享缓存，`private` 则严格限制在发起请求的私有上下文内。
+列表和读取操作的结果还附带 `ttlMs`（毫秒生存时间）和 `cacheScope`（缓存范围）。确定性的 `tools/list` 排序加上新鲜度提示，使 Client 能够安全缓存服务发现结果，并提升模型 Prompt Cache 的稳定性。`cacheScope: public` 允许跨上下文共享缓存，`private` 则严格限制在发起请求的私有上下文内。
 
 ### 线缆格式与传输层
 
@@ -223,16 +223,16 @@ python3 -m unittest discover tests -v
 
 ## 交付物
 
-本课交付 `outputs/skill-mcp-server-designer.md`。它能将特定业务领域转化为符合现代无状态 MCP 规范的架构方案，涵盖发现契约、逐请求元数据、确定性缓存列表、显式状态句柄、传输头校验、授权及审批策略。
+本课交付 `outputs/skill-mcp-server-designer.md`。它能将一个业务领域转化为无状态 MCP 设计方案。其验收门槛要求：发现结果、逐请求元数据、确定性缓存列表、显式状态句柄、传输头校验、授权及审批策略。
 
 ## 继续深入 MCP 生产级体系
 
-本课为你建立了统一的协议心智。在 Phase 13 中，以下四节核心进阶课将覆盖更为严密的生产边界：
+本课为你建立协议模型。Phase 13 将四个生产边界拆成各自独立的“构建并验证”课程：
 
-1. [MCP Tool Contracts 与内容](../../../13-tools-and-protocols/28-mcp-tool-contracts-and-content/docs/en.md)：涵盖严格的输入 Schema、结构化内容、路由元数据、不透明分页、补全授权以及协议与业务错误的区分。
+1. [MCP Tool Contracts 与内容](../../../13-tools-and-protocols/28-mcp-tool-contracts-and-content/docs/en.md)：涵盖封闭的输入 Schema、结构化内容、路由元数据、不透明分页、补全授权以及协议与业务错误的区分。
 2. [MCP 可靠性、取消与流控](../../../13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/docs/en.md)：涵盖请求取消、持久任务取消、截止期限、幂等性、背压、代理缓冲及重连机制。
-3. [MCP Registry 供应链、准入、漂移与回滚](../../../13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/docs/en.md)：涵盖命名空间证明、产物可信来源、不可变锁定、实时漂移、准入凭证与回滚策略。
-4. [MCP 一致性工程](../../../13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md)：涵盖黄金标准与反向测试用例、严格版本时代、SDK 差异对比、代理网络证据、脱敏、健康门禁以及发布回滚。
+3. [MCP Registry 供应链、准入、漂移与回滚](../../../13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/docs/en.md)：涵盖命名空间证明、产物可信来源、不可变锁定、实时漂移、Registry 状态、准入证据与回滚策略。
+4. [MCP 一致性工程](../../../13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md)：涵盖黄金与反例线上报文记录（golden and negative wire transcripts）、严格版本时代、SDK 差异对比、代理网络证据、脱敏、健康门禁以及发布回滚。
 
 当 Server 将跨越团队或信任边界时，请按顺序学习它们。它们共同把你从“方法能用”带到“契约在整个部署过程中保持安全且可诊断”。
 
@@ -246,17 +246,17 @@ python3 -m unittest discover tests -v
 
 ## 核心专业术语
 
-| 术语 | 规范定义 |
-|------|---------|
-| MCP | 用于向 AI Host 暴露服务发现、工具、资源、提示模板与扩展的 JSON-RPC 协议 |
-| Host | 拥有大模型与用户交互界面、挂载一个或多个 MCP Client 的 AI 应用程序 |
-| Client | 代表 Host 与单个具体 Server 执行 MCP 通信的连接器组件 |
-| 无状态 MCP (Stateless MCP) | 每个请求携带版本与能力元数据，不存在与底层物理连接绑定的协议状态 |
-| `server/discover` | 强制实现的 Server 方法，用于公布支持版本、能力集与身份标识 |
-| `resultType` | 区分成功结果状态的鉴别字段（如 `complete` 或 `input_required`） |
-| 显式状态句柄 (State handle) | 由 Server 签发、作为普通业务参数传递的应用层唯一标识符 |
-| Streamable HTTP | 单一 POST 端点架构，返回常规 JSON 或请求作用域的 SSE 响应 |
-| MRTR (多轮请求模式) | 嵌入在响应结果中的输入请求，完成后由客户端重新发起原始操作重试 |
+| 术语 | 通俗说法 | 实际含义 |
+|------|-----------------|------------------------|
+| MCP | “LLM 的工具协议” | 用于服务发现、工具、资源、提示模板与扩展的 JSON-RPC 协议 |
+| Host | “AI 应用” | 拥有大模型与用户交互界面、挂载一个或多个 MCP Client 的 AI 应用程序 |
+| Client | “连接器” | 代表 Host 与单个具体 Server 执行 MCP 通信的连接器组件 |
+| 无状态 MCP (Stateless MCP) | “没有 Session” | 每个请求携带版本与能力元数据，不存在与底层物理连接绑定的协议状态 |
+| `server/discover` | “能力探测” | 强制实现的 Server 方法，用于公布支持版本、能力集与身份标识 |
+| `resultType` | “结果状态” | 把结果标记为 `complete` 或 `input_required` |
+| 显式状态句柄 (State handle) | “工作流 ID” | 由 Server 签发、作为普通业务参数传递的应用层唯一标识符 |
+| Streamable HTTP | “远程传输” | 单一 POST 端点架构，返回常规 JSON 或请求作用域的 SSE 响应 |
+| MRTR (多轮请求模式) | “请求输入再重试” | 嵌入在响应结果中的输入请求，完成后由客户端重新发起原始操作重试 |
 
 ## 延伸阅读
 

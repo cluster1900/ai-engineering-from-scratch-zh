@@ -65,13 +65,13 @@ Accept: application/json, text/event-stream
 - `Mcp-Session-Id` 直接被忽略，绝不生成，绝不回显。
 - `Last-Event-ID` 直接被忽略，因为现代流不支持断点重放续传。
 
-如果请求作用域的 SSE 流在收到最终响应前中断，Client 视该次在途请求已丢失。在确认安全后，Client 可以使用全新的 JSON-RPC ID 发起新的独立请求。
+如果请求作用域的 SSE 流在收到最终响应前中断，Client 视该次在途请求已丢失。在确认安全后，Client 可以使用全新的 JSON-RPC ID 发起新的独立请求，但绝不能尝试恢复该流。
 
 ### 源站校验（Origin Validation）
 
 Server 在收到传入连接时校验 `Origin` 请求头以防范 DNS 重绑定攻击（DNS Rebinding）。若该头存在且不在允许白名单内，返回 `403 Forbidden`。非浏览器 Client 可以省略 `Origin`，官方传输规范对此予以允许。
 
-本地开发 Server 应绑定到 `127.0.0.1` 而不是 `0.0.0.0`。网络服务必须在每个请求上执行认证与授权；Origin 校验绝不能替代身份认证。
+本地开发 Server 应绑定到 `127.0.0.1` 而不是所有网络接口。网络服务必须在每个请求上执行认证与授权；Origin 校验绝不能替代身份认证。
 
 在完成规范化配置后使用精确的源站匹配。诸如 `origin.startswith("https://trusted.example")` 的前缀检查并不安全，因为它可能接受攻击者控制的后缀。
 
@@ -93,7 +93,7 @@ Mcp-Name: notes_search
 - `Mcp-Name` 对应 `params.name`（或 `resources/read` 时的 `params.uri`）。
 - 请求头的值区分大小写，尽管请求头名称不区分大小写。
 
-对于包含非 ASCII 或特殊字符的 `Mcp-Name`，使用标准的 Base64 哨兵格式：
+对于包含非 ASCII 或特殊字符的 `Mcp-Name`，使用精确的 UTF-8 Base64 哨兵格式：
 
 ```text
 =?base64?{Base64EncodedValue}?=
@@ -111,10 +111,10 @@ Server 可以为耗时较长的单个请求采用 SSE：
 
 ```text
 POST tools/call id=41
-  <- notifications/progress (针对 id=41)
-  <- notifications/progress (针对 id=41)
-  <- JSON-RPC response (id=41)
-流关闭
+  <- notifications/progress related to id=41
+  <- notifications/progress related to id=41
+  <- JSON-RPC response id=41
+stream closes
 ```
 
 Server 绝不能在这个流中主动向 Client 发起独立的 JSON-RPC 请求。Sampling、Elicitation 与 Roots 交互使用多轮往返请求（Multi Round-Trip Request）结果。关闭响应流即代表取消该请求。
@@ -123,7 +123,7 @@ Server 绝不能在这个流中主动向 Client 发起独立的 JSON-RPC 请求�
 
 ### 长周期变更推送：`subscriptions/listen`
 
-变更通知必须通过 Client 主动发起的专用 POST 请求开启：
+变更通知必须通过 Client 主动发起的请求开启，而不是独立的 GET：
 
 ```json
 {
@@ -155,7 +155,7 @@ POST 响应是一个长连接 SSE 流。其首条协议消息为 `notifications/
 
 移除协议 Session 绝不意味着禁止有状态的工作流。Server 可以生成一个不透明的状态句柄（State Handle）并在正常的 Tool 结果中返回它。Client 在后续调用中将该句柄作为显式参数传入。
 
-将句柄与认证主体绑定，赋予不可猜测的随机性与有效过期时间，并在每次使用时严密授权。这样状态就清晰地呈现于应用层，而不是隐蔽在网络传输层的会话亲和性中。
+将句柄与认证主体绑定，赋予不可猜测的随机性与有效过期时间，并在每次使用时严密授权。这样状态就清晰地呈现于应用层，而不是隐蔽在传输层亲和性中。
 
 由隐藏的副本状态引发的故障是机械式的：
 
@@ -184,7 +184,7 @@ tp-transport-handshake
 
 ## 动手实践
 
-`code/main.py` 仅使用 Python 标准库实现了一个小巧、合规的现代 Streamable HTTP Server。它校验 Origin 与镜像请求头，忽略已移除的 Session 请求头，为普通调用返回 JSON，并演示一个有限的 `subscriptions/listen` SSE 流。
+`code/main.py` 仅使用 Python 标准库实现了一个有限（finite）的现代 Streamable HTTP Server。它校验 Origin 与镜像请求头，忽略已移除的 Session 请求头，为普通调用返回 JSON，并演示一个有限的 `subscriptions/listen` SSE 流。
 
 ```bash
 cd code
@@ -225,7 +225,7 @@ python3 -m unittest discover tests -v
 | `subscriptions/listen` | 客户端主动开启的长周期 POST 请求，用于接收选择订阅的变更通知 |
 | 请求头不匹配 (Header mismatch) | 当镜像请求头与请求体内容不一致时，返回 HTTP 400 与 -32020 报错 |
 | 源站校验 (Origin validation) | 针对传入网络连接的 DNS 重绑定防御机制，不能替代身份认证 |
-| 显式状态句柄 (Explicit state handle) | 作为普通业务参数传递的应用层 Token，代替底层隐藏的传输连接状态 |
+| 显式状态句柄 (Explicit state handle) | 作为普通业务参数传递的应用层 Token，代替隐藏的 Session 状态 |
 | Legacy 桥接层 (Legacy bridge) | 专门隔离保留的旧版本行为，仅用于向后兼容历史客户端 |
 
 ## 延伸阅读

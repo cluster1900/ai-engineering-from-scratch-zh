@@ -33,16 +33,16 @@
 
 企业内部平台需要一套只读数据工具和少量具备状态变更能力的写操作工具。开发者必须能够发现该 Server、了解如何连接、检查其实时运行能力，并且只能调用其被明确授权访问的操作。
 
-真正困难的从来不是写一个 Python 函数，而是如何让以下六套真相源保持高度一致、绝不漂移：
+真正困难的从来不是注册一个函数，而是如何让以下六套真相源保持高度一致、绝不漂移：
 
 1. `server.json` 声明了 Server 在何处安装或通过什么网络端点访问；
 2. `server/discover` 声明了当前运行的实时进程实际支持的能力；
 3. 每个请求明确指明了其采用的协议版本与 Client 能力声明；
 4. 授权系统将调用方与合法的签发者、资源指示器（Resource Indicator）和 Scope 绑定；
-5. 策略引擎独立决策该特定操作与传入参数是否准予执行；
+5. 策略引擎独立决策该特定操作是否准予执行；
 6. 审计日志忠实记录越过边界的每次交互，且绝不泄露敏感载荷或凭据密钥。
 
-任何一个环节发生漂移，平台就可能展示无法连通的孤儿 Server、错误路由不兼容的 Client、误用为其他资源签发的 Token，或在未获批准的情况下执行高危破坏性操作。
+任何一个环节发生漂移，平台就可能展示无法连通的孤儿 Server、错误路由不兼容的 Client、误用为其他资源签发的 Token，或在未经预期评审的情况下暴露破坏性操作。
 
 ## 两层发现机制（The Two Discovery Layers）
 
@@ -124,11 +124,11 @@ MCP `2026-07-28` 彻底移除了协议 Session 与 `initialize` / `notifications
 
 ### 可缓存的服务发现
 
-`tools/list` 必须保证确定性排序，其结果包含：
+对于相同的有效工具集，`tools/list` 必须是确定性的。其结果包含：
 
 - `ttlMs`：面向 Client 的新鲜度缓存提示；
 - `cacheScope`：`public`（公共共享）或 `private`（上下文私有）；
-- 严格稳定的工具排序，使相同列表能够极大复用模型端的 Prompt Cache；
+- 严格稳定的工具排序，使相同列表能够复用模型端的 Prompt Cache；
 - `resultType: "complete"` 与 Server 身份元数据。
 
 针对特定用户的权限控制，通常应输出 `cacheScope: "private"`，绝不能将用户专属的工具可见性缓存在公共共享缓存中。
@@ -137,28 +137,28 @@ MCP `2026-07-28` 彻底移除了协议 Session 与 `initialize` / `notifications
 
 面向网络的 Server 暴露单一的 POST 端点。每个 JSON-RPC 请求或通知均为独立的 POST。
 
-针对请求，Server 返回单个 JSON 响应或针对该次请求开启的请求作用域 SSE 流。长周期的变更通知通过 `subscriptions/listen` 建立长连接流。
+针对请求，Server 返回单个 JSON 响应或针对该次请求开启的请求作用域 SSE 流。长周期的变更通知通过 `subscriptions/listen` 建立长连接流，承载选择订阅的变更通知。当前传输中不存在独立的 GET 流、Session DELETE、Session 请求头或 `Last-Event-ID` 重放。
 
-请求必须镜像指定 HTTP 请求头：
+每个请求包含：
 
 - `MCP-Protocol-Version`：与请求体元数据一致；
 - `Mcp-Method`：与 JSON-RPC 方法名一致；
-- `Mcp-Name`：在调用 `tools/call` 等方法时镜像工具名；
+- `Mcp-Name`：用于 `tools/call`、`resources/read` 与 `prompts/get`；
 - `Accept: application/json, text/event-stream`。
 
-头部与请求体不一致时立即返回 `-32020` 错误码。校验 `Origin` 防御 DNS 重绑定，并将请求作用域 SSE 流的被动断开视为请求取消。
+使用规定的 `-32020` 错误拒绝不一致的镜像请求头。校验 `Origin`，将本地开发 Server 绑定到回环地址，认证远程 Client，并将已关闭的请求作用域 SSE 响应视为取消。
 
 ```mermaid
 flowchart LR
   R[Registry API] --> J[server.json]
-  J --> C[MCP Client]
+  J --> C[MCP client]
   C --> D[server/discover]
   C --> L[tools/list]
-  C --> G[认证与策略网关]
-  G --> RO[只读 MCP Replicas]
-  G --> RW[状态变更 MCP Replicas]
-  RO --> A[审计收集器]
-  RW --> H[审批凭据记录]
+  C --> G[Authorization and policy gateway]
+  G --> RO[Read-only MCP replicas]
+  G --> RW[State-changing MCP replicas]
+  RO --> A[Audit sink]
+  RW --> H[Approval record]
   RW --> A
 ```
 
@@ -187,7 +187,7 @@ cf-mcp-gate
 
 状态变更调用需要一份结构化的人工审批凭证（Approval Record），与操作者、工具名、规范化参数哈希值（Digest）、目标环境、过期时间及单次/多次使用策略深度绑定。单独的一条聊天消息绝不能充当审批凭证。
 
-Python 模型会对排序键的规范化 JSON 计算哈希，并将该 Digest 与 Token Subject、工具名、Server URL 和过期时间签名绑定。篡改哪怕一个参数字段，该审批记录也会在 Handler 运行之前重放失败。审批记录是独立的证据凭证，而不是直接往 Access Token 里乱塞的 Scope。
+Python 模型会对排序键的规范化 JSON 计算哈希，并将该 Digest 与 Token Subject、工具名、Server URL 和过期时间绑定。篡改哪怕一个参数字段，该审批记录也会在 Handler 运行之前重放失败。审批记录是独立的证据凭证，而不是添加到 Access Token 中的 Scope。
 
 当能实质性缩小影响半径时，把高风险工具放在可单独评审的独立表面上。只有当凭据、策略、部署身份与审计控制同样相互隔离时，这种拆分才有意义。
 
@@ -338,13 +338,13 @@ Authorization: Bearer REDACTED
 
 | 术语 | 行业俗称 | 规范真实定义 |
 |---|---|---|
-| 无状态 MCP (Stateless MCP) | “到处都没有状态” | 协议层不存在 Session；跨调用状态属于显式传递且由业务服务端持久化管理 |
-| `server.json` | “工具清单清单” | Registry 静态元数据，用于定义发布命名、代码打包、配置项与传输端点 |
-| `server/discover` | “传统握手” | 强制实现的常规业务 RPC，用于获取实时支持的版本与能力，而非建立会话 |
+| 无状态 MCP (Stateless MCP) | “到处都没有状态” | 协议层不存在 Session；跨调用状态是显式的，并由 Server 管理 |
+| `server.json` | “工具清单” | Registry 静态元数据，用于定义发布命名、代码打包、配置项与传输端点 |
+| `server/discover` | “传统握手” | 强制实现的常规 RPC，用于获取实时版本与能力，而非 Session 初始化器 |
 | 缓存作用域 (Cache scope) | “能不能缓存？” | 标识可缓存结果是否可以被跨上下文公共复用（`public`）或仅限当前上下文（`private`） |
 | 策略决策 (Policy decision) | “Token 允许就能调” | 针对调用者主体、工具、操作目标、参数载荷及外部上下文的细粒度二次判定 |
-| 审批凭证 (Approval record) | “人工在群里点了同意” | 绑定至具体操作者、确切参数哈希与过期时间的强防篡改凭据证据 |
-| 显式句柄 (Explicit handle) | “Session ID” | 业务层具名状态的普通应用标识符，绝非底层传输连接会话 |
+| 审批凭证 (Approval record) | “有人点了同意” | 在过期策略下绑定到一个操作者与一项重大操作的证据 |
+| 显式句柄 (Explicit handle) | “Session ID” | 用于命名由 Server 管理之状态的普通应用数据，而非协议连接状态 |
 
 ## 延伸阅读
 
