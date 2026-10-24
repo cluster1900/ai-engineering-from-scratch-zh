@@ -48,6 +48,10 @@
 - **TTS priming。**即便像Kokoro这样的快速TTS,第一次请求也有100200 ms的加热.缓存模型,并在第一次真实转向前用木偶运行.
 - **Echo cancellation。**没有AEC,TTS输出会重新进入mic,并触发ASR识别机器人自己的声音――WebRTC AEC3是开源默认的――
 
+```figure
+nyquist-aliasing
+```
+
 ## 动手构建
 
 ### 步骤1:环保
@@ -117,10 +121,6 @@ class Dialog:
 
 这取决于无同步I/O 和可取消的TTS流媒体──WebRTC 中在音频轨道上调用同行连接.
 
-
-```figure
-nyquist-aliasing
-```
 
 ## 使用它
 

@@ -32,7 +32,7 @@
 
 **Prompt format。**微笑是一个由解码器提示 中的特殊代币 控制的多任务模型:
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
