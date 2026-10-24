@@ -13,16 +13,16 @@ Abbreviations: A = phases/14-agent-engineering/06-tool-use-and-function-calling,
 ## 工具 schema (annotated-code, 8 lines)
 - "type": "function", "function", "name": "get_weather": F/d:62-64
 - description "Get current weather for a city.": F/d:65. Description is a prompt for tool selection: F/d:85
-- "parameters", "type": "object": F/d:66-67. Anthropic uses input_schema: F/d:649, A/d:54
+- "parameters", "type": "object": F/d:66-67. Anthropic uses input_schema: F/d:658, A/d:54
 - properties city string, units enum celsius/fahrenheit: F/d:68-77
 - "required": ["city"]: F/d:79. Missing field gives an error observation: A/d:62
 
 ## 各家提供商对比 (comparison, 5 rows)
 - tools / tools / function_declarations: F/d:93-95
 - tool_calls[].function / content[].type="tool_use" / functionCall: F/d:93-95
-- function.parameters / input_schema: A/d:54, F/d:649. Google JSON Schema: F/d:98
+- function.parameters / input_schema: A/d:54, F/d:658. Google JSON Schema: F/d:98
 - tool_choice="required" / tool_choice={"type":"any"} / function_calling_config: F/d:93-95
-- {"role": "tool", "tool_call_id": ...}: F/d:601. "tool_result" in a user message: F/d:644, 649
+- {"role": "tool", "tool_call_id": ...}: F/d:610. "tool_result" in a user message: F/d:653, 658
 
 ## 代码中的任务 (task-table, 8)
 - reg.register(ToolDef(...)): A/c:113, 160
@@ -86,8 +86,8 @@ Abbreviations: A = phases/14-agent-engineering/06-tool-use-and-function-calling,
 - Allowlist functions, expose only what the user needs: F/d:139
 - Validate types, ranges, formats: F/d:141
 - Sanitize results, API keys, PII, internal errors: F/d:143
-- run_code uses ast.parse, blocks imports and dunder access: F/fc:105-118, F/d:303
-- Untrusted code in a separate process or container: F/d:303
+- run_code uses ast.parse, blocks imports and dunder access: F/fc:105-118, F/d:312
+- Untrusted code in a separate process or container: F/d:312
 
 ## 问答 (qa, 5)
 - Model never executes, your code does: F/d:54

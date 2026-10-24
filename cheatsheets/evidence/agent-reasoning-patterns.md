@@ -62,9 +62,9 @@ Abbreviations: L01 = phases/14-agent-engineering/01-the-agent-loop, L02 = phases
 
 ## CoT 升级流水线 (annotated-code)
 - few_shot_cot_solve line: COT/ap:337. temperature 0.0: COT/ap:187
-- self_consistency_solve with n_samples=5: COT/ap:339-341. temperature 0.7: COT/ap:197. Majority vote: COT/d:565
-- confidence >= 0.8 check: COT/ap:343. 4 of 5 samples: COT/d:457
-- tree_of_thought_solve breadth=3, depth=2: COT/ap:352-354. Escalate: COT/d:457
+- self_consistency_solve with n_samples=5: COT/ap:339-341. temperature 0.7: COT/ap:197. Majority vote: COT/d:563
+- confidence >= 0.8 check: COT/ap:343. 4 of 5 samples: COT/d:455
+- tree_of_thought_solve breadth=3, depth=2: COT/ap:352-354. Escalate: COT/d:455
 
 ## Prompt 推理阶梯（GPT-5，GSM8K） (comparison)
 - Zero-Shot CoT row: COT/d:315
