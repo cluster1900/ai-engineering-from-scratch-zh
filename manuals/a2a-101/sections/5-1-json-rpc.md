@@ -8,7 +8,7 @@ planner 在发送任何 diff 之前先问 `code-reviewer` 一个问题："What l
 
 ## 信封 {#s-json-rpc-the-envelope}
 
-**协议绑定：** 十一个操作在一种传输上采用的形式，包括名称、路由、信封、请求头和错误形状。标准绑定有三种：JSON-RPC {{spec §9}}、gRPC {{spec §10}} 和 HTTP+JSON {{spec §11}}，card 在 `protocolBinding` 中给出每一种 {{proto AgentInterface}}。核心概念指南仍然说每个请求和响应都以 JSON-RPC 2.0 作为负载格式 {{docs key-concepts}}。那描述的只是三种绑定中的一种（[冲突 D27](#s-ref-sources)）。
+**协议绑定：** 十一个操作在一种传输上采用的形式，包括名称、路由、信封、头和错误形状。标准绑定有三种：JSON-RPC {{spec §9}}、gRPC {{spec §10}} 和 HTTP+JSON {{spec §11}}，card 在 `protocolBinding` 中给出每一种 {{proto AgentInterface}}。核心概念指南仍然说每个请求和响应都以 JSON-RPC 2.0 作为负载格式 {{docs key-concepts}}。那描述的只是三种绑定中的一种（[冲突 D27](#s-ref-sources)）。
 
 JSON-RPC 请求是一个有四个成员的 JSON 对象 {{spec §9.3}}。`jsonrpc` 始终是 `2.0`，客户端选择 `id`，`method` 存放操作名，`params` 存放请求消息。方法名采用 PascalCase，与 gRPC 的名称一样 {{spec §9.1}}，所以 `method` 存放 `SendMessage` 或 `GetTask`，即 `A2AService` 的 rpc 名称 {{proto A2AService}}。§9.3 中的模板仍然显示 0.3 的风格 `"method": "category/action"` {{spec §9.3}}，所以要从 §9.1 或[按绑定列出的操作](#s-ref-operations-by-binding)复制名称（[冲突 D14](#s-ref-sources)）。kit 对旧名称 `message/send` 回答 `-32601`，`11-errors.http` 的第 3 次交换展示了这一点。
 
