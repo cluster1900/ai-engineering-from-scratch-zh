@@ -40,6 +40,10 @@ Tekrar tekrar $\max_s \lvert V_{\text{new}}(s) - V(s) \rvert < \epsilon$❖ ❖ 
 
 **为什么 $\gamma < 1$ 很重要。**Bellman operatörü, "Sup-Norma"nın altında.$\gamma$-Küçükleşme:$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$◊Kontaksiyon tek sabit noktayı ifade eder 和几何收──$\gamma < 1$, sen zaten güvence kaybetti, sınırlı ufuk veya emekleme terminal durumu gerekir.
 
+```figure
+value-iteration-gamma
+```
+
 ## 动手构建
 
 ### Adım 1: GridWorld MDP modeli oluştur
@@ -140,10 +144,6 @@ Aynı sabit nokta, daha az kod sayısı.
 - **Policy ties。**Eğer iki eylem aynı Q değeri varsa,`argmax`Bu, politikayı sabitleştirmek için bir düzenleme yapılması için kullanılır.
 - **State-space explosion。**DP her seferinde süpürürür.$O(\lvert S \rvert \cdot \lvert A \rvert)$◊ en fazla 107 eyalette kullanılabilir. ◊ bu ölçekten fazla, fonksiyon yaklaşımına ihtiyacınız var.
 
-
-```figure
-value-iteration-gamma
-```
 
 ## Kullan
 

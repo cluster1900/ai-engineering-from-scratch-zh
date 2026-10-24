@@ -179,7 +179,7 @@ tags: [rl, actor-critic, gae]
 
 ## Egzersizler
 
-1. **Easy。**4×4 GridWorld'de MC avantajı kullan$(G_t - V(s_t))$訓練演員批評──与 06 中 Ders REINFORCE-with-running-mean-baseline'nin örnek verimliliği karşılaştırma─
+1. **Easy。**4×4 GridWorld'de MC avantajı kullan $(G_t - V(s_t))$訓練演員批評──与 06 中 Ders REINFORCE-with-running-mean-baseline'nin örnek verimliliği karşılaştırma─
 2. **Medium。**切换到 TD-residual avantajı$(r + \gamma V(s') - V(s))$◊ ölçüm avantajı seri varyasyonı― ne kadar düştü?
 3. **Hard。**实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$◊ Son dönüşü vs örnek verimliliği çizmek ◊ bu görev ◊ bu görevin önyargısı / değişkenlik tatlı noktası nerede?
 

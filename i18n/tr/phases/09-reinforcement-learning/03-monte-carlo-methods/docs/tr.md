@@ -46,6 +46,10 @@ V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
 
 Her çiftin sınırsız ziyaretleri vardır.$\alpha$Robbins-Monro ' yu karşılamak için , 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  $Q^{\ast}$和 $\pi^{\ast}$- Evet.
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### Adım 1: Çıkarım → (s, a, r) 列表
@@ -138,10 +142,6 @@ Bu arada, sen de...$V^\pi$MC'nin tahminleri  devrait avec DP sonuçları Lection
 - **Non-stationary policies。**Eğer $\pi$发生变化(如 MC kontrol 中那样), eski gelenler farklı politikalardan.
 - **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$连乘──Variance 会随地平线 爆炸──用 per-decision weighted IS 截断,或切换到 TD──
 
-
-```figure
-epsilon-greedy
-```
 
 ## Kullan
 
