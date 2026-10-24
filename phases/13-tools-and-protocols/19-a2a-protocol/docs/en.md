@@ -153,6 +153,16 @@ A2A-Version: 1.0
 
 核心设计哲学：被调用 Agent 的内部状态是高度不透明的。调用方只能看到 Task 状态与输出 Artifacts；被调者的思维链（Chain-of-Thought）、内部 Tool 调用、子 Agent 派发过程对外界一律不可见。这与 MCP 的 Tool 调用必须完全透明暴露有着根本区别。
 
+设计理由：A2A 让相互竞争的公司也能协作，而无需暴露各自的内部实现。A2A 可以是“调用这个客服 Agent”，而调用方并不会因此得知那个 Agent 是如何实现这项服务的。
+
+### 时间线
+
+- **2025-04-09.** Google 发布 A2A。
+- **2025-06-23.** 捐赠给 Linux Foundation。
+- **2025-08.** 吸收 IBM 的 ACP。
+- **2025-09.** AP2 扩展（Agent Payments）发布。
+- **2026-04.** v1.0 发布，获得 150 多家组织支持。
+
 ### 与 MCP 的关系对比
 
 | 维度 | MCP | A2A |
@@ -186,6 +196,17 @@ a2a-task-lifecycle
 
 本课交付 `outputs/skill-a2a-agent-spec.md`。针对希望被外部调用的新 Agent，它能生成标准 Agent Card JSON、Skills 声明规范及端点接入设计。
 
+## 练习
+
+1. 运行 `code/main.py`。追踪完整的 Task 生命周期，包括被调用 Agent 请求澄清时的 `TASK_STATE_INPUT_REQUIRED` 暂停。
+
+2. 添加一个签名的 Agent Card。在 `signatures` 中放入一条 `alg` 设为 `HS256` 的 JWS 条目，对去掉 `signatures` 字段后的 Card 规范化 JSON 签名。编写一个验证器，并确认它在被篡改的 Card 上验证失败。
+
+3. 用 `SendStreamingMessage` 实现任务流式传输：writer Agent 依次发出 `task`、三个 `artifactUpdate` 分块，以及一个带 `TASK_STATE_COMPLETED` 的 `statusUpdate`，然后关闭流。调用方累积这些分块。
+
+4. 设计一个封装 MCP Server 的 A2A Agent。把每个 MCP Tool 映射为一个 A2A Skill。记下其中的取舍：失去了哪些不透明性？
+
+5. 阅读 A2A v1.0 的发布公告，找出截至 2026 年 4 月还没有任何框架实现的那一个特性。（提示：它与多跳任务委托有关。）
 ## 核心专业术语
 
 | 术语 | 规范定义 |
@@ -197,6 +218,8 @@ a2a-task-lifecycle
 | Message | 承载交互内容的实体，内含纯内容字段标识的 Parts 数组 |
 | Part | 仅包含 `text`、`raw`、`url` 或 `data` 之一的独立内容切片 |
 | Artifact | 任务完成时产出的具名、带类型输出成果 |
+| AP2 | Agent Payments Protocol，构建在 A2A 之上的支付扩展；Card 签名属于 A2A 核心（`signatures`） |
+| Opacity | 黑盒协作：被调用 Agent 的内部实现对调用方隐藏 |
 | `TASK_STATE_INPUT_REQUIRED` | 当任务执行遇阻需要调用方提供补充输入时的挂起状态 |
 
 ## 延伸阅读
@@ -204,3 +227,6 @@ a2a-task-lifecycle
 - [a2a-protocol.org](https://a2a-protocol.org/latest/) — A2A 规范主站
 - [a2aproject/A2A GitHub](https://github.com/a2aproject/A2A) — 参考实现与 SDK
 - [A2A v1.0.1 release](https://github.com/a2aproject/A2A/tree/v1.0.1) — 本课遵循的规范与 Protobuf 契约
+- [Linux Foundation — A2A launch press release](https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents) — 2025 年 6 月的治理权移交
+- [Google Cloud — A2A protocol upgrade](https://cloud.google.com/blog/products/ai-machine-learning/agent2agent-protocol-is-getting-an-upgrade) — 路线图与合作伙伴进展
+- [Google Dev — A2A 1.0 milestone](https://discuss.google.dev/t/the-a2a-1-0-milestone-ensuring-and-testing-backward-compatibility/352258) — v1.0 发布说明与向后兼容指导

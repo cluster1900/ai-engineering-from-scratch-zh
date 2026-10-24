@@ -56,7 +56,7 @@ Abbreviations: L06 = phases/13-tools-and-protocols/06-mcp-fundamentals, L07 = ph
 - notifications/cancelled, no response: L29/docs/en.md:42-57
 
 ## 关键概念 (concepts, 8)
-- stateless core: L06/docs/en.md:22, 188
+- stateless core: L06/docs/en.md:22, 192
 - metadata required/recommended: L06/docs/en.md:77
 - complete result: L06/docs/en.md:83
 - cacheable result: L06/docs/en.md:104

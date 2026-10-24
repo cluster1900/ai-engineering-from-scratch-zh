@@ -13,8 +13,8 @@ Abbreviations: L19 = phases/13-tools-and-protocols/19-a2a-protocol, F02 = phases
 - Status: C03/d:569
 
 ## 何时选用 (concepts, 7)
-- MCP to invoke a specific tool: L19/d:167
-- A2A to delegate a whole task: L19/d:167
+- MCP to invoke a specific tool: L19/d:177
+- A2A to delegate a whole task: L19/d:177
 - A2A + ACP trajectory patterns for audit trails: C03/d:1482-1483
 - ANP + A2A when outside your org with no shared infrastructure: C03/d:1484-1488
 - A2A + message broker with shared infrastructure: C03/d:1486-1487
