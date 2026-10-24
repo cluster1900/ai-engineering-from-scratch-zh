@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## 使用它
 `code/main.py` 会针对一系列模型大小，计算六种格式的 memory footprint（weights + KV + activations）和相对 throughput。展示 KV cache 何时占主导、weight compression 何时划算，以及 FP8 何时是安全选择。
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64) 机器展示了 FP8 在 NVIDIA L4 上的效果。权重从 15.28 GB 降到 8.81 GB，KV pool 从 24,094 个 token 增长到 142,369 个 token，64 个用户时实测输出从每秒 250.85 个 token 提升到 735.91 个 token。
+
 ## 交付它
 本课会产出 `outputs/skill-quantization-picker.md`。给定 hardware、model size、workload type 和 quality tolerance，它会选择一种格式，并生成 calibration/validation plan。
 

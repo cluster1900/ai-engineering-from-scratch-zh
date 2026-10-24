@@ -102,6 +102,25 @@ trace 展示 agent 写入三个 facts，将 main context 填到 cap（触发 evi
 
 按 operational shape（self-hosted、managed、framework-integrated）选择，而不是按 core pattern 选择；core pattern 就是 MemGPT。
 
+### 智能体记忆的形态
+
+分页解决的是容量问题，它并不决定要存什么。生产系统中反复出现四种记忆类型，每一种回答一个不同的问题：
+
+- **Working memory** — 现在什么最重要？in-context 层：当前任务、最近几轮对话、固定的 core sections。也就是 prompt 本身。
+- **Episodic memory** — 发生过什么？过去的对话轮次和 trajectories，连同 session 和 turn 引用一起存储，可按需回放。
+- **Semantic memory** — 什么是真的？关于用户、领域和世界的 facts，随着变化被更新和去重。
+- **Procedural memory** — 这件事该怎么做？学到的 routines、偏好和规则，它们引导的是未来的行为，而不是回忆。
+
+开源实现各自选择了不同的切入点：
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ## 交付它
 `outputs/skill-virtual-memory.md` 是一个可复用 skill，可以为任意 target runtime 生成正确的 two-tier memory scaffold（main + archival + tool surface），并接好 eviction policy 和 citation fields。
 
@@ -129,3 +148,7 @@ trace 展示 agent 写入三个 facts，将 main context 填到 cap（触发 evi
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks) — three-tier evolution
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) — 将 context 视为预算
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413) — 构建在该模式之上的 hybrid production memory
+- [Zep (getzep/zep)](https://github.com/getzep/zep) — 分类表中的 temporal knowledge-graph memory
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) — Lesson 09 hybrid store 背后的 extraction pipeline
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem) — 在后台提取 facts 和行为规则
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory) — 将 session 捕获并整合为有类型、可搜索的记录

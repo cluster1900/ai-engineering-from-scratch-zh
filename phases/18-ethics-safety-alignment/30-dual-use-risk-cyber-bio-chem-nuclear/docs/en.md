@@ -45,6 +45,8 @@ Anthropic 2025 年 11 月报告：与中国有关联的国家行为体使用 Cla
 - 4-6 个人类步骤是瓶颈；未来能力提升会减少这个数量。
 - 防御性双重用途：OpenAI 的 “trusted access” 试点向经过审查的安全组织（成熟的 incident-response 公司、政府）提供用于防御的能力访问。如果该试点扩展，访问不对称性会有利于防御方。
 
+这项工作的防御一侧，始于阅读你被允许分析的已编译代码。Phase 13 的逆向工程路线会在你自己构建的程序上教授这一点，且只用静态分析：[Lesson 13.32](../../../13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md) 中的 ELF reader，[Lesson 13.33](../../../13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md) 中的反汇编，[Lesson 13.34](../../../13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md) 中提升到伪代码，以及 [Lesson 13.35](../../../13-tools-and-protocols/35-evidence-confidence-and-unknowns/docs/en.md) 中把观察到的事实与推断出的事实分开的证据台账。[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler) 机器在一个函数上展示了完整的流水线。做这项工作的 agent 也需要同样的台账，因为一次看起来很有把握的反编译，仍可能建立在猜测之上。
+
 ### Nuclear
 
 在公开文档中，这是四个 CBRN 领域里分析最少的一个。威胁模型不同：fissile-material 获取主导了难度，而不是信息。AI 在信息层上的 uplift 在实践中给新手带来的提升有限。没有 2024-2025 年主要实验室报告识别出 nuclear-specific 阈值跨越。

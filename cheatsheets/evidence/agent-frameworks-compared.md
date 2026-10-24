@@ -12,11 +12,11 @@ Abbreviations: L17 = phases/11-llm-engineering/17-agent-framework-tradeoffs, A14
 - Worst fit: L17/d:26-29 (fourth column)
 
 ## Agent SDK 与运行时对比 (comparison)
-- Primitives: A16/d:22-26, A17/d:23, A14/d:37-39, A18/d:33
-- Delegation: `transfer_to_<agent_name>` A16/d:23, subagents own context A17/d:34, inbox A14/d:43, workflows A18/d:33
+- Primitives: A16/d:22-26, A17/d:23, A14/d:39-41, A18/d:33
+- Delegation: `transfer_to_<agent_name>` A16/d:23, subagents own context A17/d:34, inbox A14/d:45, workflows A18/d:33
 - State: Session SQLite, Redis, custom A16/d:59, append/load/delete cascade A17/d:42-45, private state A14/d:29, composite storage A18/d:35
-- Tracing: on by default A16/d:55, W3C trace context A17/d:65, span per message A14/d:57, Mastra Studio A18/d:38
-- Use for: OpenAI-first A16/d:89, Claude-first A17/d:100, fault isolation and concurrency A14/d:45-46, TypeScript Next.js Vercel A18/d:52
+- Tracing: on by default A16/d:55, W3C trace context A17/d:65, span per message A14/d:59, Mastra Studio A18/d:38
+- Use for: OpenAI-first A16/d:89, Claude-first A17/d:100, fault isolation and concurrency A14/d:47-48, TypeScript Next.js Vercel A18/d:52
 
 ## 何时用哪个 (concepts)
 - LangGraph typed state, approvals, resume, `Send` fanout: L17/d:96, 100
@@ -98,5 +98,5 @@ Abbreviations: L17 = phases/11-llm-engineering/17-agent-framework-tradeoffs, A14
 
 ## 问答 (qa)
 - Handoff is a tool, model sees `transfer_to_billing_agent`: A16/d:30-34
-- `send(agent_b, msg)` queues and returns, runtime catches failure: A14/d:43, 45
+- `send(agent_b, msg)` queues and returns, runtime catches failure: A14/d:45, 47
 - Model route cannot override, raises ValueError: PA/solution/adk_adapter.py:53-54

@@ -44,7 +44,7 @@ Lesson directories are shortened to their number:, and so on.
 7. wall_clock_seconds, total_tokens, worker_count: 05/C:104-110
 
 ## 交接循环（Swarm 风格） (annotated-code, 14 lines)
-- all lines: 11/C:113-126. scripted_router stands in for an LLM: 11/C:86-88. Stateless: 11/D:45
+- all lines: 11/C:113-126. scripted_router stands in for an LLM: 11/C:86-88. Stateless: 11/D:47
 
 ## 置信度加权投票 (annotated-code, 12 lines)
 - all lines: 14/C:36-47 (return type annotation left out of the def line). canonical clusters answers: 14/C:20-22. retry or escalate below threshold: 14/D:68, 77
@@ -55,7 +55,7 @@ Lesson directories are shortened to their number:, and so on.
 - Supervisor, wrong for sequential tasks: 05/D:69
 - Hierarchical, only leaves work: 06/D:118
 - Group chat selector: 10/D:86-89
-- Handoff tool returns agent: 11/D:125
+- Handoff tool returns agent: 11/D:127
 - Blackboard wins with many agents, long runs: 13/D:47
 - Single agent under 20 tool calls and 100k tokens: 01/D:220
 
@@ -72,7 +72,7 @@ Lesson directories are shortened to their number:, and so on.
 ## 故障排查 (8)
 - hot speaker, speaker balance: 10/D:82
 - context bloat, projections: 10/D:81
-- handoff loop: 11/D:129. max_steps cap: 04/C:100-102
+- handoff loop: 11/D:131. max_steps cap: 04/C:100-102
 - memory poisoning, provenance, append only, verifier: 13/D:69-71
 - monoculture, mix models: 14/D:37; 15/D:78
 - decomposition drift, canary question: 06/D:120, 123

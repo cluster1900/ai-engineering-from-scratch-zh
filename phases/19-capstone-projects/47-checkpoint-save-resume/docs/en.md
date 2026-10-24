@@ -101,6 +101,8 @@ cc-atomic-checkpoint
 
 `save_checkpoint` 将 model、Optimizer、scheduler、train state 和 RNG 打包到一个 dict 中。`load_checkpoint` 反向恢复它，并返回一个 `TrainState`。schema field 是 upgrade hook：未来格式变化会递增 version string，而 loader 会进行 dispatch。
 
+`load_checkpoint` 调用 `torch.load(..., weights_only=True)`。`.pt` 文件是一个 pickle，用 `weights_only=False` 反序列化一个不可信的文件，会执行文件中指定的任何代码。weights-only loader 只接受 tensors 和基本容器，拒绝其他一切，这就是 Step 1 把 RNG state 保存在普通 list 中的原因。完整性检查抛出 `ValueError` 而不是使用 `assert`，因为 `python -O` 会去掉 asserts。请使用 torch 2.6 或更新版本：在该版本之前，`weights_only=True` 存在一个已知的绕过漏洞（CVE-2025-32434），所以本课依赖的保证只从 2.6 起才成立。
+
 ### Step 4: sharded variant
 
 `save_sharded_checkpoint` 以 round-robin 方式把 parameter keys 分配到 N 个 shards 中，用各自的 atomic save 写入每个 shard，写入一个包含 Optimizer、scheduler 和 train state 的 meta file，并写入包含 shard sha256 的 JSON index。`load_sharded_checkpoint` 会在 merge 前验证每个 shard。
@@ -121,8 +123,9 @@ python3 code/main.py
 
 生产训练栈会把 checkpointing 作为 trainer 的一部分交付。形状相同：model + Optimizer + scheduler + counters + RNG，以 atomic 方式写入，并按 step 命名，便于找到最新文件。Sharded layouts 通过 parallel reads 支持 large model loading；`index.json` 正是让这件事成立的部分。
 
-要强制执行三种模式：
+要强制执行四种模式：
 
+- **用 `weights_only=True` 加载。** 从共享盘或下载得到的 checkpoint 是不可信输入。weights-only loader 能防止恶意文件在执行 resume 的机器上运行代码。
 - **Schema 是 payload 中的一个 string。** Migrations 根据它分支。没有它，你就无法在不破坏旧运行的情况下演进格式。
 - **对每个 shard 计算 Sha256。** 静默截断的 download 是最糟糕的 bug；loader 要么快速失败，要么晚些失败。
 - **让 checkpoint cadence 保持诚实。** 每 N steps 保存一次，并且每隔若干 wallclock-minute 保存一次，取更短者。否则，crash 发生在一个很长 step 上时，会浪费整整一个窗口的工作。

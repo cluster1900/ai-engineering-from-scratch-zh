@@ -21,6 +21,8 @@ Swarm 走向相反方向：使用模型已经具备的 tool-calling 能力。Han
 
 **Handoff。** Agent 可以调用的一个 tool，它返回一个新的 Agent object。Swarm runtime 检测到 Agent 返回值，并在下一轮切换 active agent。
 
+这就是全部的抽象。
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent

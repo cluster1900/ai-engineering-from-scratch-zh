@@ -34,6 +34,8 @@ AutoGen v0.4 的答案是：actor model。每个 agent 都是一个拥有私有 
 
 ### AutoGen v0.4 中的三个 API 层
 
+AutoGen v0.4 把它的接口拆分为三层：
+
 1. **Core.** 底层 actor framework。`AgentRuntime`、`Agent`、`Message`、`Topic`。Async message exchange，event-driven。
 2. **AgentChat.** 面向任务的高层 API（替代 v0.2 的 ConversableAgent）。`AssistantAgent`、`UserProxyAgent`、`RoundRobinGroupChat`、`SelectorGroupChat`。
 3. **Extensions.** 集成：OpenAI、Anthropic、Azure、tools、memory。
