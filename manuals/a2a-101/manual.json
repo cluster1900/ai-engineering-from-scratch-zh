@@ -1,8 +1,8 @@
 {
   "id": "a2a-101",
   "title": "A2A 101",
-  "subtitle": "The Agent2Agent protocol, from its purpose to each request and response",
-  "summary": "How one agent gives work to another agent that it cannot see inside. Each request, response, and stream event in this manual comes from a recorded run.",
+  "subtitle": "Agent2Agent 协议，从它的用途讲到每个请求和响应",
+  "summary": "一个 agent 如何把工作交给另一个它看不到内部的 agent。本手册中的每个请求、响应和流事件都来自一次录制的运行。",
   "audience": "You are an engineer who has built an agent that calls tools or a model API. You know HTTP and JSON. You have not read the A2A specification.",
   "edition": "2026.10",
   "status": "ready",
@@ -121,7 +121,7 @@
   "front": "front.md",
   "plate": {
     "figure": "plate-planner-run",
-    "title": "One planner, three remote agents",
+    "title": "一个 planner，三个远程 agent",
     "caption": "The planner reads three cards and delegates three tasks: one completes at once, one after a question, and one after an operator approves. Lanes run top to bottom in the order of the planner log, and ids are shortened to 8 characters."
   },
   "parts": [

@@ -1,8 +1,8 @@
 {
   "id": "vllm-101",
   "title": "vLLM 101",
-  "subtitle": "Serve, size, tune, and debug open models with vLLM, with measured answers for each decision",
-  "summary": "How to install vLLM, fit a model on your GPU, tune it for your traffic, and fix it from a symptom. Measured on an NVIDIA L4 and a DGX Spark with vLLM 0.31.0.",
+  "subtitle": "用 vLLM 部署、规划规模、调优和调试开放模型，每个决定都有实测的答案",
+  "summary": "如何安装 vLLM，让模型装进你的 GPU，按你的流量调优，并根据症状修复它。测量环境为 NVIDIA L4 和 DGX Spark，使用 vLLM 0.31.0。",
   "audience": "You have called a model through an API and now you want to serve an open model yourself. You know what a token and a GPU are. You want to know which settings matter before you pay for them.",
   "edition": "2026.10",
   "status": "ready",
@@ -93,7 +93,7 @@
   "front": "front.md",
   "plate": {
     "figure": "plate-vllm-request",
-    "title": "One block pool on one L4",
+    "title": "一块 L4 上的一个 block 池",
     "caption": "The Scheduler fills one step under a 2,048-token budget. The block table maps each request to blocks that are not all next to each other. On our L4 the pool held 1,506 blocks of 16 tokens. From capture/gpu/summary/l4.json and capture/gpu/out-l4/server-h2h-prefix-vllm.log."
   },
   "parts": [
