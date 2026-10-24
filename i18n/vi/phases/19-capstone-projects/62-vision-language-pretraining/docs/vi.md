@@ -54,7 +54,7 @@ flowchart TB
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`, trong số đó `lm_weight`Đây là một hệ thống đa nhiệm được sử dụng bởi các mô hình kiểu CoCa, BLIP và SigLIP, với trọng lượng khác nhau.
+`total = contrastive + lm_weight * lm`, trong số đó `lm_weight`Đây là một hệ thống đa nhiệm sử dụng CoCa và BLIP, có trọng lượng khác nhau. SigLIP chỉ giữ lại các mô tương phản, và không sử dụng lỗ cặp sigmoid thay thế cho softmax.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|
