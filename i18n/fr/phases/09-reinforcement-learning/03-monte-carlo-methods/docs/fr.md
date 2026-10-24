@@ -46,6 +46,10 @@ Je suis en train de vous dire:$V_{\text{new}} = V_{\text{old}} + \alpha \cdot (\
 
 Dans des conditions de température, chaque paire est visité sans limite.$\alpha$Résultat de la réception de l' émission de la série.$Q^{\ast}$et $\pi^{\ast}$Il y a une autre.
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### Étape 1: déploiement → (s, a, r) 列表
@@ -138,10 +142,6 @@ Quand les épisodes → ∞ 时, tu es contre $V^\pi$En pratique, la mise en ser
 - **Non-stationary policies。**Si $\pi$发生变化(如 MC control 中那样), l'ancien retour provient d'une politique différente.
 - **Off-policy importance sampling。**权重  référencement$\pi(a \mid s)/\mu(a \mid s)$Réalisation de la trajectoire 连乘──Variance 会随地视野 爆炸──用 per-decision pondéré IS 截断,或切换到 TD──
 
-
-```figure
-epsilon-greedy
-```
 
 ## Utilisez-le
 

@@ -40,6 +40,10 @@ Je vais vous dire:$\max_s \lvert V_{\text{new}}(s) - V(s) \rvert < \epsilon$◊ 
 
 **为什么 $\gamma < 1$ 很重要。**L' opérateur Bellman est en sup-norme .$\gamma$- contraction:$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$◊ Contraction signifie le seul point fixe 和几何收──$\gamma < 1$Vous avez perdu la garantie, vous avez besoin d'un horizon fini ou d'un état terminal absorbant.
 
+```figure
+value-iteration-gamma
+```
+
 ## 动手构建
 
 ### Étape 1: 构建 GridWorld modèle MDP
@@ -140,10 +144,6 @@ Le même point fixe, moins de code.
 - **Policy ties。**Si deux actions ont la même valeur Q,`argmax`Peut être chaque fois que l'itération utilise une manière différente de briser la situation, ce qui conduit à une stabilité de la politique  检查振荡── utiliser une rupture de la relation stable  固定序列中的第一个动作)
 - **State-space explosion。**DP chaque fois que vous fouillez$O(\lvert S \rvert \cdot \lvert A \rvert)$◊ le plus utilisé dans environ 107 États ◊ au-delà de cette taille, vous avez besoin d'une approximation de fonction ◊Phase 9 · 05 et sur)
 
-
-```figure
-value-iteration-gamma
-```
 
 ## Utilisez-le
 
