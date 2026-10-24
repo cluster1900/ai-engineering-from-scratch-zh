@@ -51,7 +51,7 @@ Le murmure est entraîné à utiliser les données du maître de la voix.
 
 BEATs(Chen 等,2022) est un Transformer auto-supervisé entraîné dans AudioSet.
 
-AF-Whisper(Audio Flamingo 3's hybride):将 Whisper + BEATs fonctionnalités concat 作为音频输入──Whisper 携带语言信号, BEATs 携带声学信号──
+AF-Whisper(Audio Flamingo 3's encoder): Il est sorti du codeur Whisper-large-v3, et continue à se former en même temps que le codeur avec des signaux linguistiques et des signaux sonores.
 
 ### Le Q-former audio
 
@@ -67,7 +67,7 @@ Qwen-Audio(Chu 等,2023):架构类似,训练数据集更丰富, visant le dialog
 
 LTU  Écoutez, pensez, comprenez(Gong 等,2023): données de raisonnement explicite, spécialisées dans la chaîne de pensée de la télévision.
 
-Audio Flamingo 3(Goel 等,2025年7月):当前 open SOTA──8B LLM backbone(Qwen2 7B)、Whisper-big encoder concat BEATs、64-query Q-former, dans 100 000+ paires d'instructions audio-textes 上练──MMAU 0.72, dans certaines sous-tasques 上匹配 propriétaire frontière──
+Audio Flamingo 3(Goel 等,2025年7月): 当前 open SOTA──7B LLM backbone(Qwen2.5-7B)、 Basé sur Whisper-large-v3 构建的AF-Whisper 音频编码器、接入 LLM 的小型适配器层,在100万+音频文本指导对上训练──MMAU 0.72,在部分子任务上匹配专属边界──
 
 AF3 a également introduit la chaîne de pensée à la demande de son son: modèle peut être utilisé dans le résumé final.
 

@@ -11,7 +11,7 @@
 - Pour les développeurs de l'écriture, il est nécessaire de définir les différentes formes de communication.
 - 逐组件计算一次对话交互的时间-to-first-audio-byte (TTFAB) budget──
 - 描述 TMRoPE 在 Thinker 内部跨视觉、音频和文本的时间对齐位置编码──
-- Il y a aussi le double de la moitié du double.
+- Il est également possible de décrire les deux modes de dialogue du double-duplex et du double-duplex complet.
 
 ##  problématique
 Un assistant de parole en temps réel doit rapidement accomplir beaucoup de choses:
@@ -82,7 +82,7 @@ Pour le streaming typique:
 - Décode résiduel-VQ: 30ms.
 - Décode de forme d'onde: 50-80 ms.
 
-总 TTFAB:7B 上 320-510ms,70B 上 600-900ms。 La qualité de la frontière signifie généralement 70B+; c'est la source de la différence de retard frontalier。
+总 TTFAB:7B 上 320-490ms,70B 上 600-900ms。 La qualité de la frontière signifie généralement 70B+; c'est la source de la différence de retard frontalier。
 
 ### Mathématiques du taux de jetons
 
