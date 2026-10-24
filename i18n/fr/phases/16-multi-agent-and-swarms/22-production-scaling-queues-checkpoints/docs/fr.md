@@ -47,9 +47,9 @@ Pour le faire fonctionner, il faut satisfaire:
 
 LangGraph dans chaque super-étape 后写检查点;Temporal在每个活动 后写;Restate 使用事件来源期刊──三者实现的是同一个模式──
 
-### Temps de fonctionnement de LangGraph
+### Chaque étape d'un point de contrôle
 
-Chaque agent a un.`thread_id`;l'état est typé dict; chaque super-étape est dirigée vers la table des points de contrôle 写入一行。恢复时,runtime 继续,而不是从头开始──agents 可以`interrupt()`Pour attendre l'entrée artificielle; temps de fonctionnement:
+LangGraph est un exemple: chaque agent a un seul.`thread_id`;l'état est typé dict; chaque super-étape est dirigée vers la table des points de contrôle 写入一行。恢复时,runtime 继续,而不是从头开始──agents 可以`interrupt()`Pour attendre l'entrée artificielle; temps de fonctionnement:
 
 C'est une conception de production de référence pour le mois d'avril 2026.
 

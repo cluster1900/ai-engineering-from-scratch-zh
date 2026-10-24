@@ -112,7 +112,7 @@ C'est une réponse à des incidents de type SRE appliquée aux systèmes d'agent
 
 ### L'audit en mode défaillance
 
-Les meilleures pratiques pour 2026 sont de réaliser une vérification en mode défaillance par an (ou par majorité):
+Les meilleures pratiques pour l'année 2026 sont de réaliser une vérification en mode défaillance par trimestre (et par majorité):
 
 1. **Trace sample。**收集约1000 条 vrais traces d'exécution
 2. **Categorize。**Pour chaque trace de défaillance, carte à MAST + catégories de pensée de groupe

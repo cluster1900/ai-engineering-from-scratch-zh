@@ -1,6 +1,6 @@
 # La FIPA-ACL et les actes de discours
 
-> Avant le MCP, avant l'A2A, il y avait la FIPA-ACL. En 2000, la Fondation pour les agents physiques intelligents de l'IEEE a approuvé un langage de communication d'agent, qui comprenait vingt langues performatives, deux langues de contenu, ainsi qu'un ensemble de protocoles d'interaction: contrat net, abonnement/avis, demande-quand. Il est donc sorti de l'industrie, parce que l'ontologie est devenue trop lourde, mais les systèmes multi-agents propulsés par le LLM sont en train de réappliquer l'idée, il n'y a plus de sémantique formelle: contrats JSON, prenez des performances, le langage naturel, remplacer les ontologies.
+> Avant le MCP, avant l'A2A, il y avait la FIPA-ACL. En 2000, la Fondation pour les agents physiques intelligents (FIPA, devenu le Comité standard de la Société informatique IEEE en 2005) a approuvé un langage de communication d'agent, qui comprend vingt langues de performance, deux langues de contenu, ainsi qu'un ensemble de protocoles d'interaction: contract net, subscription/notification, demande-quand.
 
 **Type:** 学习
 **Languages:** Python (stdlib)
@@ -193,7 +193,7 @@ Avant de mettre en production tout nouveau protocole, enregistrez ces cinq quest
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | Speech act | “一种会做事的 utterance” | Austin/Searle：把 utterances 视为 actions。ACL 的理论源头。 |
-| FIPA | “那个老 XML 东西” | IEEE Foundation for Intelligent Physical Agents。2000 年标准化了 ACL。 |
+| FIPA | “那个老 XML 东西” | Foundation for Intelligent Physical Agents。2000 年标准化了 ACL；2005 年成为 IEEE Computer Society 的标准委员会。 |
 | ACL | “Agent Communication Language” | FIPA 的 envelope format：performative + content + metadata。 |
 | Performative | “那个动词” | 一条 message 的 intent class：`inform`、`request`、`propose`、`cfp` 等。 |
 | KQML | “FIPA 的前身” | Knowledge Query and Manipulation Language（1993）。更简单，范围更窄。 |

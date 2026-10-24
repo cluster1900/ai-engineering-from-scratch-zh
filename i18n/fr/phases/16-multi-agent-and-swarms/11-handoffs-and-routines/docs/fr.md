@@ -21,6 +21,8 @@ Swarm 走向相反方向: utiliser le modèle déjà possédé de l'outil-appela
 
 **Handoff。**L'agent peut être modifié par un outil, il retourne à un nouvel objet d'agent.
 
+C'est tout le résumé.
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent
