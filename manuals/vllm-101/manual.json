@@ -24,43 +24,43 @@
   "palette": [
     {
       "hue": "blue",
-      "meaning": "the vLLM server: the API server process and the engine core"
+      "meaning": "vLLM 服务器：API server 进程和 engine core"
     },
     {
       "hue": "violet",
-      "meaning": "the model and its forward pass: kernels, attention backends, CUDA graphs"
+      "meaning": "模型及其前向计算：kernel、attention backend、CUDA graph"
     },
     {
       "hue": "green",
-      "meaning": "the KV cache: blocks, the block pool, cached prefixes"
+      "meaning": "KV cache：block、block 池、缓存的前缀"
     },
     {
       "hue": "plum",
-      "meaning": "model compute: prefill and decode steps"
+      "meaning": "模型计算：prefill 和 decode 步"
     },
     {
       "hue": "olive",
-      "meaning": "the client and the network: HTTP, the OpenAI API, the benchmark client"
+      "meaning": "客户端和网络：HTTP、OpenAI API、benchmark 客户端"
     },
     {
       "hue": "indigo",
-      "meaning": "streams and messages between processes, and streamed tokens"
+      "meaning": "进程之间的流和消息，以及流式输出的 token"
     },
     {
       "hue": "amber",
-      "meaning": "lifecycle: request states and scheduler steps"
+      "meaning": "生命周期：请求状态和 scheduler 步"
     },
     {
       "hue": "teal",
-      "meaning": "durable state: weights on disk, host memory, offloaded KV"
+      "meaning": "持久状态：磁盘上的权重、主机内存、卸载的 KV"
     },
     {
       "hue": "rose",
-      "meaning": "failure: out of memory, preemption, aborts, crashes"
+      "meaning": "故障：显存不足、抢占、中止、崩溃"
     },
     {
       "hue": "grey",
-      "meaning": "outside vLLM: the operating system, other programs, the GPU driver"
+      "meaning": "vLLM 之外：操作系统、其他程序、GPU 驱动"
     }
   ],
   "sources": [
@@ -94,7 +94,7 @@
   "plate": {
     "figure": "plate-vllm-request",
     "title": "一块 L4 上的一个 block 池",
-    "caption": "The Scheduler fills one step under a 2,048-token budget. The block table maps each request to blocks that are not all next to each other. On our L4 the pool held 1,506 blocks of 16 tokens. From capture/gpu/summary/l4.json and capture/gpu/out-l4/server-h2h-prefix-vllm.log."
+    "caption": "Scheduler 在 2,048 token 的预算内填满一步。block table 把每个请求映射到一些并不全都相邻的 block。在我们的 L4 上，池中有 1,506 个 16 token 的 block。来自 capture/gpu/summary/l4.json 和 capture/gpu/out-l4/server-h2h-prefix-vllm.log。"
   },
   "parts": [
     {

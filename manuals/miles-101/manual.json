@@ -6,7 +6,7 @@
   "plate": {
     "figure": "plate-miles-loop",
     "title": "一块 GB10 上的一个 GRPO 步",
-    "caption": "The SGLang engine and the FSDP trainer take turns on the Blackwell GPU. The one that waits stays parked in the same 128 GB pool. Medians of 48 steps on one GB10, from a run made before we added the heat guard."
+    "caption": "SGLang 引擎和 FSDP 训练器在 Blackwell GPU 上轮流运行。等待的一方停放在同一个 128 GB 的池中。数据是一块 GB10 上 48 步的中位数，来自加上 heat guard 之前的一次运行。"
   },
   "audience": "You can serve a model and you know what a reward is. You want to train a model with reinforcement learning, and you want to know which settings matter before you rent a cluster.",
   "edition": "2026.10",
@@ -29,23 +29,23 @@
   "palette": [
     {
       "hue": "blue",
-      "meaning": "the trainer: the FSDP actor, its weights, and its optimizer"
+      "meaning": "训练器：FSDP actor、它的权重和优化器"
     },
     {
       "hue": "violet",
-      "meaning": "the rollout engine: the SGLang server that generates samples"
+      "meaning": "rollout 引擎：生成样本的 SGLang 服务器"
     },
     {
       "hue": "green",
-      "meaning": "data and rewards: prompts, samples, groups, and scores"
+      "meaning": "数据和奖励：prompt、样本、组和分数"
     },
     {
       "hue": "amber",
-      "meaning": "lifecycle: steps, phases, and weight versions"
+      "meaning": "生命周期：步、阶段和权重版本"
     },
     {
       "hue": "teal",
-      "meaning": "durable state: checkpoints, logs, and the summary files"
+      "meaning": "持久状态：checkpoint、日志和摘要文件"
     },
     {
       "hue": "rose",

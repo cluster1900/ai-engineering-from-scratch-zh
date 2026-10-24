@@ -24,15 +24,15 @@
   "palette": [
     {
       "hue": "violet",
-      "meaning": "the client agent and what it sends"
+      "meaning": "客户端 agent 及其发送的内容"
     },
     {
       "hue": "blue",
-      "meaning": "remote agents, their cards, and the messages they send back"
+      "meaning": "远程 agent、它们的 card，以及它们发回的消息"
     },
     {
       "hue": "green",
-      "meaning": "parts and artifacts: the content a task produces"
+      "meaning": "part 和 artifact：任务产生的内容"
     },
     {
       "hue": "amber",
@@ -40,19 +40,19 @@
     },
     {
       "hue": "teal",
-      "meaning": "the server's stored task records"
+      "meaning": "服务器存储的任务记录"
     },
     {
       "hue": "indigo",
-      "meaning": "streams, subscriptions, and push notifications"
+      "meaning": "流、订阅和推送通知"
     },
     {
       "hue": "plum",
-      "meaning": "the model or logic inside an agent, which A2A never shows"
+      "meaning": "agent 内部的模型或逻辑，A2A 从不暴露它"
     },
     {
       "hue": "olive",
-      "meaning": "tools and systems an agent calls on its own: CI, Git, MCP servers"
+      "meaning": "agent 自行调用的工具和系统：CI、Git、MCP 服务器"
     },
     {
       "hue": "rose",
@@ -60,7 +60,7 @@
     },
     {
       "hue": "grey",
-      "meaning": "the operator, the host, and anything outside the protocol"
+      "meaning": "操作员、主机，以及协议之外的一切"
     }
   ],
   "sources": [
@@ -122,13 +122,13 @@
   "plate": {
     "figure": "plate-planner-run",
     "title": "一个 planner，三个远程 agent",
-    "caption": "The planner reads three cards and delegates three tasks: one completes at once, one after a question, and one after an operator approves. Lanes run top to bottom in the order of the planner log, and ids are shortened to 8 characters."
+    "caption": "planner 读取三张 card 并委派三个任务：一个立即完成，一个在提问之后完成，一个在操作员批准之后完成。各泳道按 planner 日志的顺序从上到下排列，id 缩短为 8 个字符。"
   },
   "parts": [
     {
       "number": 1,
-      "title": "The Protocol on One Page",
-      "thesis": "A2A standardizes how one agent finds another agent, gives it work, and follows that work, and it leaves the agent itself out of scope.",
+      "title": "一页讲清协议",
+      "thesis": "A2A 规定了一个 agent 如何找到另一个 agent、把工作交给它并跟进这项工作，而 agent 本身不在它的范围之内。",
       "accent": "blue",
       "sections": [
         {
@@ -144,7 +144,7 @@
     {
       "number": 2,
       "title": "AgentCard",
-      "thesis": "Before a client sends a message, the AgentCard tells it what the agent offers, where to reach it, and what it requires.",
+      "thesis": "在客户端发送消息之前，AgentCard 会告诉它这个 agent 提供什么、在哪里可以访问它，以及它有哪些要求。",
       "accent": "violet",
       "sections": [
         {
@@ -164,7 +164,7 @@
     {
       "number": 3,
       "title": "Data Model",
-      "thesis": "Every A2A exchange is built from five objects: Message, Part, Artifact, Task, and the contextId that groups tasks.",
+      "thesis": "每次 A2A 交互都由五个对象构成：Message、Part、Artifact、Task，以及把任务分组的 contextId。",
       "accent": "green",
       "sections": [
         {
@@ -192,7 +192,7 @@
     {
       "number": 4,
       "title": "Operations",
-      "thesis": "Eleven operations create, read, cancel, and follow tasks, and each one has rules that a client must know before it calls.",
+      "thesis": "十一个操作用于创建、读取、取消和跟进任务，每个操作都有客户端在调用前必须了解的规则。",
       "accent": "amber",
       "sections": [
         {
@@ -224,7 +224,7 @@
     {
       "number": 5,
       "title": "Bindings",
-      "thesis": "The same operations travel over JSON-RPC, HTTP+JSON, and gRPC, with two headers and one error model shared by all three.",
+      "thesis": "同样的操作通过 JSON-RPC、HTTP+JSON 和 gRPC 传输，三者共用两个 header 和一个错误模型。",
       "accent": "indigo",
       "sections": [
         {
@@ -251,8 +251,8 @@
     },
     {
       "number": 6,
-      "title": "Security and Extensions",
-      "thesis": "The card declares how to authenticate and which extensions apply, and the specification lists what each side must check.",
+      "title": "安全与扩展",
+      "thesis": "card 声明如何认证以及适用哪些扩展，规范列出了每一方必须检查的内容。",
       "accent": "plum",
       "sections": [
         {
@@ -272,7 +272,7 @@
     {
       "number": 7,
       "title": "Implementing A2A",
-      "thesis": "A client and a server follow the rules of the earlier parts, and the official test kit checks the server against them.",
+      "thesis": "客户端和服务器遵循前面各部分的规则，官方测试套件据此检查服务器。",
       "accent": "teal",
       "sections": [
         {
@@ -297,8 +297,8 @@
   "reference": {
     "title": "Reference",
     "accent": "grey",
-    "thesis": "Lookup tables for every name in the manual.",
-    "summary": "Operations by binding, objects and fields, task states, errors, a glossary, the sources, and the index of figures.",
+    "thesis": "手册中每个名称的查阅表。",
+    "summary": "按绑定列出的操作、对象与字段、任务状态、错误、术语表、来源，以及图索引。",
     "sections": [
       {
         "id": "R.1",
