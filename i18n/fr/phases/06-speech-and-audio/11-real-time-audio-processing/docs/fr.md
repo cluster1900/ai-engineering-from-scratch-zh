@@ -48,6 +48,10 @@ Moshi (Kyutai, 2024)  atteint 200 ms en double intégral──GPT-4o en temps r�
 - **TTS priming。**Même si c'est le cas de Kokoro, la première demande a aussi un modèle de réchauffement de 100200 ms, et la première vraie tournée avant avec un tour de poupée 预热──
 - **Echo cancellation。**没有AEC,TTS output 会重新进入micro,并触发ASR 识别bot 自己的声音──WebRTC AEC3 est le code source par défaut──
 
+```figure
+nyquist-aliasing
+```
+
 ## 动手构建
 
 ### 步骤 1: tampon à anneaux
@@ -117,10 +121,6 @@ class Dialog:
 
 Ceci dépend de l'interconnexion TTS en continu et de la diffusion TTS en continu.
 
-
-```figure
-nyquist-aliasing
-```
 
 ## Utilisez-le
 

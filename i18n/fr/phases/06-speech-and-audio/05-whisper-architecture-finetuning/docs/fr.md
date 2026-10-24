@@ -32,7 +32,7 @@ Les grands v3 ont des paramètres 1.55B.
 
 **Prompt format。**Whisper est une demande de décodeur.
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
