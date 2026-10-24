@@ -62,7 +62,7 @@ caption: Five of the symptoms from our runs. The entries below also cover a run 
 - **检查：** 启动期间或第一个批次时，引擎日志行中出现 CUDA 内存不足错误，并且没有 `Ray OutOfMemoryError`。比例太低并不总会让引擎停止。请读 `KV Cache is allocated` 行中的 `#tokens`。在我们 0.02 的检查中，引擎启动时只有 3,082 个 token，第一次 rollout 用了 386 s，而 0.25 时是 61 s。
 - **修复：** 第一种情况降低比例，第二种情况提高比例，每次调整 0.05 或 0.1。Miles 文档要求在 `--colocate` 下使用 0.8 或更低。我们的运行使用 0.4。[SGLang 101 第 3.2 节](https://aiengineeringfromscratch.com/manual-sglang-101.html#s-mem-fraction-static-and-startup-sizing)解释了引擎如何划分它的内存。
 
-## 带小数的奖励函数让本应不动的组发生了变化 {#s-troubleshoot-by-symptom-a-reward-function-with-fractions-moves-a-group-that-should-stay-still}
+## 带小数的奖励函数让本应不动的组发生了变化 {#s-troubleshoot-by-symptom-a-reward-function-with-fractions-moves-a-group-that-should-stay-}
 
 - **原因：** 跟踪器中的一份报告显示，一个 16 个回答、每个都得 0.3 分的组，因为 float32 舍入得到了很小的非零优势。0 和 1 的二值奖励不会遇到这个问题。
 - **检查：** 某个组中每个回答的奖励都相同，但优势不为 0。
