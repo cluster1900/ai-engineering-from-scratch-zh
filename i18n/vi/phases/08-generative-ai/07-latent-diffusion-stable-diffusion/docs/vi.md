@@ -50,7 +50,7 @@ noise-schedule
 
 ##  xây dựng nó
 
-`code/main.py`Đặt một đồ chơi 1-D VAE(tài mã dạng + mã hóa, chỉ dùng để trình bày; thực sự VAE 会是 conv net) nằm trên DDPM của Bài học 06 ,并 thông qua hướng dẫn không có phân loại 加入类条件.
+`code/main.py`Đặt một đồ chơi 1-D VAE( cố định nhân 0,5 mã hóa, cũng như như như sự đảo ngược chính xác của decoder, chỉ để trình bày; thực sự VAE 会是 conv net) lắp đặt trên DDPM của Bài học 06 ,并 thông qua hướng dẫn không có phân loại 加入类条件.
 
 ### 步骤 1: mã hóa/bản giải mã
 
@@ -133,7 +133,7 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 
 参考流体集成是经典的我有一个消费级GPU,能交付吗?配方──技巧就是把生产推理文献列出的同一个三旋配方应用到扩散 DiT:
 
-1. **Staggered loading。**Flux có ba không cần thiết đồng thời tồn tại trong mạng trong VRAM:T5-XXL mã hóa văn bản ((fp32 下约 10 GB) 、CLIP-L(小)、12B MMDiT, cũng như VAE。先 mã hóa prompt,*delete* encoders, tải DiT,denoise,*delete* DiT, tải VAE,decode。消费级 8GB GPUs 一次只能容纳一个阶段。
+1. **Staggered loading。**Flux có bốn không cần thiết đồng thời tồn tại trong mạng trong VRAM:T5-XXL mã hóa văn bản ((fp32 下约 10 GB) 、CLIP-L(小) 、12B MMDiT, cũng như VAE。先 mã hóa prompt,*delete* encoders, tải DiT,denoise,*delete* DiT, tải VAE,decode。消费级 8GB GPUs 一次只能容纳一个阶段。
 2. **通过 bitsandbytes 做 4-bit quantization。**Trong T5 mã hóa và DiT 上都使用 `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)`内存 giảm 8x, theo các tiêu chuẩn của Aritra (đồng sách ghi chép có liên kết), chất lượng văn bản-đối với hình ảnh giảm gần như không thể nhận thấy.
 3. **CPU offload。** `pipe.enable_model_cpu_offload()`会在每次前进时自动交换模块之间 CPU和 GPU.
 

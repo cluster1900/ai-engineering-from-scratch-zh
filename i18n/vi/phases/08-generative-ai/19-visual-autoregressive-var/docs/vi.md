@@ -50,7 +50,7 @@ Cấu trúc chuỗi đầu vào:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Định vị Đáp nhập đồng thời mã hóa chỉ số và vị trí không gian trong thước.$k$、 vị trí $(i, j)$Đồ ký có thể chú ý đến kích thước $1 \ldots k$Tất cả các biểu tượng, cũng có thể chú ý đến kích thước $k$本身在所使用内尺度 顺序中更早出现的Token(VAR sử dụng sự chú ý định vị trí cố định, không có tính nguyên nhân trong quy mô, tức là một thước đo trong tất cả các vị trí并行预测)
+Đặt vị trí Đêm vị trí cùng thời gian mã kích thước chỉ số và vị trí không gian trong kích thước.$k$、 vị trí $(i, j)$Đồ ký có thể chú ý đến kích thước $1 \ldots k$Tất cả các token, bao gồm cả尺度$k$Trong mỗi vị trí của bản thân, không có thứ tự trong thước, cũng không có sự liên quan về nguyên nhân trong quy mô, do đó, tất cả các vị trí trong một thước đều được dự đoán.
 
 训练 Loss: trong mỗi thước $k$, cho tất cả các giao dịch trước, dự đoán giao dịch $z_k$△ đối với các mã VQ phân tán Sử dụng Loss entropy chéo ⋅ cấu trúc tương tự như GPT, chỉ là sequence trong đó  đã trở thành một chuỗi cấu trúc quy mô ⋅
 

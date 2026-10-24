@@ -100,7 +100,7 @@ def sample(dec, z_dim, rng):
 - **Posterior collapse.**KL thuật ngữ 过于激进地驱动 $q(z \mid x) \to \mathcal{N}(0, I)$, dẫn đến$z$Không mang về $x$◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎ ◎$\beta=0$开始,逐步升到1) ‧free bits, hoặc nhảy lên KL ‧ ở các chiều không hoạt động.
 - **Blurry samples.**Thiết lập khả năng Gaussian có nghĩa là tái tạo MSE, nó đối với L2 là Bayes-optimal (trên nghĩa)  một nhóm chữ số hợp lý của nghĩa là một số模糊.
 - **β too large, too early.**见后台崩──从 $\beta \approx 0.01$开始并逐步走进.
-- **Latent dim too small.**16-D  áp dụng cho MNIST,256-D  áp dụng cho ImageNet 2562,2048-D  áp dụng cho ImageNet 10242。 VAE của Stable Diffusion sẽ 512×512×3  áp suất thành 64×64×4;; diện tích không gian trên 32x downsample factor, kênh trên 32x)。
+- **Latent dim too small.**16-D  áp dụng cho MNIST,256-D  áp dụng cho ImageNet 2562,2048-D  áp dụng cho ImageNet 10242。 VAE của Stable Diffusion sẽ 512×512×3    Compressed thành 64×64×4( mỗi bên 8x downsample, không gian diện tích lên 64x; kênh từ 3  biến thành 4, do đó tổng giá trị số lượng giảm khoảng 48x)。
 
 ## Sử dụng nó
 
