@@ -81,7 +81,7 @@ ce-otel-drift
 
 8. **Alerting chain.**Exportateur Prometheus 读取 eval score aggregates 和 latency percentiles;Alertmanager va mettre en garde 路由到Slack, va mettre en garde contre les violations critiques 路由到PagerDuty。
 
-9. **Regression probe.**Enregistrer un bug: est évalué chatbot avec 1% de chances de commencer à divulguer de faux SSN.
+9. **Regression probe.**Enregistrer un bug: est évalué chatbot avec 1% de probabilité de commencer à divulguer faux SSN.
 
 ## Utilisez-le
 ```
@@ -100,7 +100,7 @@ $ curl -X POST https://my-otel-collector/v1/traces -d @trace.json
 |:-:|---|---|
 | 25 | Trace-schema coverage | 生成 canonical GenAI spans 的 SDK families 数量（目标：6+） |
 | 20 | Eval correctness | DeepEval / RAGAS scores 对比 hand-labeled set |
-| 20 | Dashboard UX | 注入 regression 的 MTTR（目标低于 5 分钟） |
+| 20 | Dashboard UX | 注入 regression 的 MTTD（目标低于 5 分钟） |
 | 20 | Cost / scale | 持续以 1k spans/sec ingest 且无 backlog |
 | 15 | Alerting + drift detection | Prometheus/Alertmanager chain 端到端演练 |
 | **100** | | |

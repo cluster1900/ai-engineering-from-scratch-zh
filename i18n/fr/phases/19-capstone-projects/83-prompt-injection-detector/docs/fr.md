@@ -68,7 +68,7 @@ Le testeur génère un rapport JSON, qui contient chaque catégorie de précisio
 
 1. 添加上下文走私规则系列(藏在工具结果 JSON 中的指令) ⋅ Mesurer le taux de réaction des suggestions de réaction des améliorations et des coûts d'erreur de déclaration──
 2. 计算每条规则的贡献: Pour chaque règle, calculer si elle est supprimée, combien de réalités seront perdues.
-3. Ajouter un`confidence_threshold`旋── le faire passer de 0 à 1 et tracer le taux de réaction exact de chaque catégorie──
+3. - Je suis là.`confidence_threshold`旋── le faire passer de 0 à 1 et tracer le taux de réaction exact de chaque catégorie──
 
 ## 关键术语
 

@@ -101,6 +101,8 @@ cc-atomic-checkpoint
 
 `save_checkpoint`Pour le modèle, l'optimisateur, le planificateur, l'état du train, et le RNG,`load_checkpoint`Revenir à la vie, et revenir à la vie.`TrainState`◊ champ de schéma est le crochet de mise à niveau: futurformate变化会递增版本 string, tandis que le chargement 会进行发送──
 
+`load_checkpoint`调用 `torch.load(..., weights_only=True)`Il y a une autre.`.pt`Le papier est un pickle, us`weights_only=False`Contrôle un fichier incroyable, exécutera tout code défini dans le fichier.`ValueError`Au lieu d'utiliser`assert`Je suis désolé .`python -O`Pour les autres, il est nécessaire de mettre en place une nouvelle version.`weights_only=True`Il existe une faille connue en matière de contournement du CVE-2025-32434), de sorte que la garantie de base de ce cours n'est établie que à partir de 2,6 .
+
 ### Étape 4: variante en morceaux
 
 `save_sharded_checkpoint`À l'aide de la méthode de round-robin, les touches de paramètre sont réparties en N 个 shards, en utilisant leur propre save atomic 写入每个 shard,写入一个包含优化器,计划器和火车状态的地图文件,并写入包含 shard sha256的JSON索引.`load_sharded_checkpoint`Il va se fusionner.
@@ -121,8 +123,9 @@ Les démos et les documents fragmentés sont tous des conclusions maximales.`out
 
 生产训练会把检查点 作为教练的一部分交付──形状相同:model + Optimizer + Scheduler + Counter + RNG,以原子方式写入,并按步名,便于找到最新文件──Sharded layouts 通过并行阅读 支持大型模型加载;`index.json`C'est une partie de la réussite.
 
-Il faut exécuter trois modes:
+Il faut exécuter de force quatre modes:
 
+- **用 `weights_only=True` 加载。**Le point de contrôle obtenu par le distributeur ou le téléchargement est un point de contrôle indéfectible.
 - **Schema 是 payload 中的一个 string。**Les migrations sont basées sur la même structure. Sans elle, vous ne pouvez pas évoluer dans des conditions qui ne détruisent pas les anciennes opérations.
 - **对每个 shard 计算 Sha256。**Le téléchargement est le pire bug; le téléchargement doit être rapide ou tard.
 - **让 checkpoint cadence 保持诚实。**Chaque étape est sauvegardée une fois, et chaque minute de plusieurs heures de travail est sauvegardée une fois, et les autres sont réduites à un certain nombre de minutes.

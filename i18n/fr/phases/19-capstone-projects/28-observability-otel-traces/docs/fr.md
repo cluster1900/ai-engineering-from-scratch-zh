@@ -47,6 +47,10 @@ Exportateur 写 JSONL──每行一个 JSON对象──这是下游工具 可�
 
 Les métriques et les traces ne sont pas là. Chaque appel à l'outil met en avant un compteur:`tools_called_total{tool="read_file"}`◊histogramme 记录观察到的延迟:`tool_latency_ms{tool="read_file"}`◊ Les deux sont classés sous le format d'exposition de texte Prometheus, c'est le facteur de référence des métriques basées sur la traction.
 
+```figure
+trace-spans
+```
+
 ## Architecture
 
 ```mermaid
@@ -73,15 +77,15 @@ Le registre des métriques est deux dictes.`{(name, frozen_labels): int}`Les his
 6. 发发发期并更新的指标 `wrap_tool_call(name)`décorateur
 7. Démo: synthèse une fois entière invocation agent (outil spans 外层包 gen_ai.chat spans),写入 traces.jsonl,打印 Prometheus exposition,并以零 退出。
 
-L'id de la durée et l'id de la trace sont des chaînes hexagonale de 16 octets, par `os.urandom`生成── ceci est conforme au contexte de trace W3C de OTel──exportateur 永不抛出; les erreurs IO 会被浮现, mais le harness 会继续运行──
+le trace id est de 16 octets  valeur (32 个 hex 字符), le span id est de 8 octets 值 (16 个 hex 字符), tout est pris en compte`uuid4`Hex. Ceci est conforme à la taille du W3C Trace Context utilisé par OTel.
 
-Histogrammes avec un groupe de bouteilles fixes (Otel pour la latence de milliers de secondes): 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf)
+Histogramme a un groupe de boucles de latence de milliers de secondes fixes: 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf。 c'est une version éliminée du SDK OTel 默认边界的精简版,默认边界还包括 0、75、750 和 7500。
 
 ## Pourquoi écrire à la main, plutôt que d'utiliser l'open-metry-sdk
 
-Le SDK OTel Python est une vraie dépendance. Il a également des milliers de lignes de code, de plusieurs processus d'exportateur OTLP, ainsi que des coûts de fonctionnement de la partie budgétaire de la classe.
+Le SDK OTel Python est une vraie dépendance. Il a également des milliers de lignes de code, un réseau de déploiement de l'exportateur OTLP, ainsi que des coûts de fonctionnement de la partie budgétaire de la classe.
 
-Les conventions sont stables. Le format de fil émis par le cours sera encore résolu jusqu'en 2030, car OTel ne détruira pas les noms d'attributs de la génération; ils ajouteront seulement de nouveaux noms.
+Les conventions de GenAI sont toujours marquées par le développement, et ont déjà changé le nom de l'attribut:`gen_ai.usage.prompt_tokens`Il est devenu`gen_ai.usage.input_tokens` Fixer les conventions sémantiques que vous émettez  version, et améliorer le SDK 时检查它──
 
 ## Comment ça se compose avec le reste de la piste A ?
 
@@ -96,7 +100,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 Démo de réunion dans ce cours de travail dir en émettant un `traces.jsonl`(最后清理), puis imprimer trois échantillons de spans, reprendre des compteurs et des histogrammes de l'exposition Prometheus;; tests 验证 spans 可回行序列化、canonical GenAI attributs 存在、counter 正确递增, et l'exposition de l'histogramme 包含 les comptes de seau attendus。
-
-```figure
-trace-spans
-```

@@ -49,6 +49,10 @@ La troisième est:`shell_exit_zero` Harness 运行一个 shell command (en pa
 
 Harness va chaque tâche fonctionner `k`Il y a une autre chose.`1 - (1 - p)^k`, dont p est le taux de réussite de l'expérience;harness également rapport des nombres bruts, facilité pour vous de trouver la variance;;la latence est le mur-horloge de chaque échantillon;;Cost est l'agent
 
+```figure
+pass-at-k
+```
+
 ## Architecture
 
 ```mermaid
@@ -100,7 +104,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 Démo et JSON 打印 EvalReport, comprenant pass@1、pass@5、média latence 和逐任务 breakdown。exit code 为零──tests 覆盖验证器功能、pass@k math、fixture loading, ainsi que l'utilisation 针对捆绑参考候选人的端到端 行为──
-
-```figure
-pass-at-k
-```

@@ -109,7 +109,7 @@ Le tube est composé de DDP + ZeRO, qui est un système de traitement de la stru
 
 ## 练习
 
-1. par le degré de fractionnement étendu à ZeRO-2: chaque rang ne stocke que le degré de fractionnement, par le biais de la fractionnement à l'arrière-plan sera réalisé à l'extérieur de la fractionnement.
+1.                                                                                                                                                                                                                                                               
 2. Ajouter un analyseur de mémoire, utilisé pour imprimer la situation de l'utilisation réelle des caractères fp32 et la situation de la prédiction de la formule 
 3. 测量普通 DDP avec ZeRO-1 à chaque étape de la connexion, et le décomposer en avant direction 后 direction 通信。
 4. Dans ZeRO-1, il faut réaliser une réduction de la taille: il faut passer par la réduction de la totalité du nombre de factions par quartier de l'ensemble des factions de calcul L2.

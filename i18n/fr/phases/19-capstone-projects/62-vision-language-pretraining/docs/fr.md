@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 1. Remplacer l'InfoNCE en sigmoïde de style SigLIP pour les pertes et comparer la réception à la base de données de référence.
 
-2. Addition de la phase de l'exploitation négative: chaque lot choisit le plus difficile des lots précédents à la fois non-contrôleur et ajoutera la partie.
+2. 添加硬负挖掘步骤: par lots, choisir parmi les lots précédents les plus difficiles non-contrôlés contre les plus difficiles et les ajouter à la formation et vérifier si les pertes par rapport aux pertes ont diminué plus rapidement.
 
 3. Dans le même emplacement, ajouter des images-textes correspondant du second système de configuration (true/fals: ces correspondants?)
 

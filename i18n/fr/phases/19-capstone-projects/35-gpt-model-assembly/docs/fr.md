@@ -90,7 +90,7 @@ Je vais le faire.
 python3 code/main.py
 ```
 
-输出:paramètre de compte avec 124M 参考值的对照、随机随机 生成的代码 id, ainsi que lors du liage 打开时 LM head 和 Token Embedding 共享存储的确认信息──
+输出:paramètre de compte avec 124M 参考值对照、 de fixé prompt 生成的代码 id, ainsi que lors de la liaison 打开时 LM head 和 Token Embedding 共同存储的确认信息──
 
 Pour faire la démo, je vais mettre en place une petite configuration.`d_model=64`- Je suis là.`num_layers=2`),并 inline 打印生成的代码序列──124M config 会被构建,但只执行参数计和一次前进传──
 

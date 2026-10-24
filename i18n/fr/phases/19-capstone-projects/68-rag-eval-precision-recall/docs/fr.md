@@ -74,7 +74,9 @@ Ce cours, en utilisant une détermination simulée pour réaliser la fidélité,
 
 ### 答案相关性
 
-La réponse à une question fidèle mais détournée est plus élevée dans la fidélité, moins élevée dans la relation. Une question courte, coupée, négligée dans la relation est plus élevée, mais moins élevée dans la fidélité. Les normes de mise en œuvre utilisent également le M pour juger:
+La réponse à une question fidèle mais distincte a-t-elle un score plus élevé sur la fidélité, un score plus faible sur la relation ? une réponse à une question courte, une réponse à une question plus courte, ignorée, une réponse à une question plus basse sur la relation, mais une réponse à une question plus basse sur la fidélité ?
+
+标准实现还使用LLM作为判断:采取(问题,答案)并询问答案是否解决了问题──本课实现了代代码重叠判断──
 
 ## d'une valeur de 1 kg
 

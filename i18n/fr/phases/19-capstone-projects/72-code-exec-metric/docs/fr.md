@@ -80,7 +80,7 @@ Le processus peut être inondé standard output, consommer tout le temps nécess
 
 Pass-at-k est un instrument d'estimation sans préjugé utilisé par les humains et les amis pour déterminer chaque tâche.`n`独立样本和其中的 `c`- Je suis là.`n`De la taille`k`Le modèle contient au moins une solution de probabilité:
 
-```text
+```
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 

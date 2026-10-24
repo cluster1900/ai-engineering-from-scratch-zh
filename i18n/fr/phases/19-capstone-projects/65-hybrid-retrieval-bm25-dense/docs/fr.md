@@ -58,8 +58,9 @@ Nous avons réalisé deux choses qui peuvent être ajustées.`k`常数── un 
 
 ### Pourquoi la fusion est meilleure que la fraction plus le pouvoir de saisie
 
-BM25 est un nombre non limité et dépendant de la base de langage.`alpha * bm25 + (1 - alpha) * cosine`Il faut que chaque base de mots soit alpha-adjustée, et chaque réindexation sera interrompue. Les deux niveaux sont comparables dans différents modes. Depuis 2010, les lignes de base RRF publiées sur chaque circuit public TREC ont remporté des points de classement. Cela correspond à ce que vous avez entendu dans les documents Vespa et Weaviate concernant RankFusion et RRF.
+BM25 est un nombre non limité et dépendant de la base de langage.`alpha * bm25 + (1 - alpha) * cosine`Il faut que chaque base de mots soit alpha-régulée, et chaque réindexation sera interrompue.
 
+C'est la même conclusion que celle que vous avez entendue dans les documents de Vespa et Weaviate concernant RankFusion et RRF. Ils ont tiré la même conclusion: à moins que vous n'ayez des preuves très puissantes pour ajouter de la valeur, conservez la base de classement.
 
 ```figure
 rrf-fusion

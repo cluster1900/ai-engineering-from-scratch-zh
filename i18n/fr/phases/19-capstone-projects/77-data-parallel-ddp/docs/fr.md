@@ -107,8 +107,8 @@ Le niveau d'exposition de chaque élément est réduit en réduisant le scatter,
 
 1. Ajouter un petit baril de gradience configurable, et mesurer sur un modèle plus profond avec chaque paramètre un allreduce de l'accélération ratio.
 2. Il va`no_sync()`实现为上下文管理器,并验证梯度累积与K个微批次的单进程基线相相相匹配.
-3. ajouter`find_unused_parameters`模式, dont le premier s'échappe parfois à l'un des niveaux MLP; sans ce signe, le fonctionnement tombe dans la traînée 局。
-4. va être remplacé par`torch.distributed.barrier()`- seulement le même, la différence entre le même sur la base de l'allréduction et le même sur la base de la barrière.
+3. 添加`find_unused_parameters`模式, dont le premier s'échappe parfois à l'un des niveaux MLP; sans ce signe, le fonctionnement tombe dans la traînée 局。
+4. Pour le remplacer`torch.distributed.barrier()`- seulement le même, la différence entre le même sur la base de l'allréduction et le même sur la base de la barrière.
 5. La taille de la masse est de 1⁄16⁄256 degrés, et la distribution est réalisée dans le cadre de la période de croissance.
 
 ## 关键术语

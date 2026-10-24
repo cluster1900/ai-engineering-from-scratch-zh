@@ -102,7 +102,7 @@ Utilisation de la ligne de ligne de 77-81 课中队列网格原语──第 77 �
 
 ## 练习
 
-1. Ajouter un arbre tout réduire les variétés, et selon les informations, faire des changements entre les cercles et les arbres.
+1. 添加tree allreduce变体,并根据消息大小在环和树之间切换──测量交叉──
 2. 添加 `recv_timeout_ms`, afin que le classement en panne apparaisse à l'erreur de date de clôture, plutôt que de rester suspendu à jamais.
 3. Je vais vous dire quatre choses.`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
 4. 添加带宽检测挂, afin de pouvoir enregistrer chaque élément du compteur jusqu'à JSONL。

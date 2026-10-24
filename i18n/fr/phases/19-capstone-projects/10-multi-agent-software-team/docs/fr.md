@@ -116,7 +116,7 @@ $ team run --issue https://github.com/acme/widget/issues/842
 ## 练习
 1. En route vers la différence, il y a un bug visible.`return None`)。 taux de fausse approbation de l'examenneur de la mesure―调优 examen rapide, jusqu'à ce que la fausse approbation soit inférieure à 5%―
 
-2. 减少到两个编码器 (architecte +编码器 + réviseur + testeur,编码器 顺序运行两个子任务) ⋅ comparer avec un mur-horloge 和 un taux de réussite⋅
+2. 减少到两个编码器 (architecte + 两个编码器 + réviseur + tester, chaque coder 顺序运行两个子任务) ⋅ comparer avec un mur-horloge 和 un taux de réussite。
 
 3. Utiliser la contrainte de compositeur unique 替换 merge coordinator ️ sous-tâches 触及不相交的文件集) ️ Charge de planification de l'architecte de mesure ️
 

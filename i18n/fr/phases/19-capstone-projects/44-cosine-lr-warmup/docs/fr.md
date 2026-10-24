@@ -109,7 +109,7 @@ Dans le projet réel,`outputs/skill-cosine-warmup.md`Décrire quel est le calend
 
 1. 添加时间表的逆方根变化, et dans 200 étapes de jeu de formation de course 上对比──哪条曲线 产生更低的最终损失?
 2. 添加 `--restart`Le drapeau, dans`total_steps / 2`Pour le réchauffement, pour le rebours, pour le jeu, pour le remaniement, pour le remaniement.
-3. 添加一个单位测试验证时间表是连续:对于 `[0, total_steps]`Chaque étape est différente.`|lr(step+1) - lr(step)|``lr_max / warmup_steps`Je suis un homme.
+3. 添加一个单位测试 验证时间表是连续:在 `warmup_steps > 0`Pour le moment,`[0, total_steps]`Chaque étape est différente.`|lr(step+1) - lr(step)|`Réchauffement de l'eau`lr_max / warmup_steps`Avec le plus cousine`pi * (lr_max - lr_min) / (2 * (total_steps - warmup_steps))`两者中较大者的约束──较短的阴段可能比升温 斜坡更,所以仅使用升温 斜率不是安全的上界──
 4. Va faire un calendrier`torch.optim.lr_scheduler.LambdaLR`, le rendant capable de travailler avec le code cadre 组合──本课使用简单步函数;包装 改变了什么?
 5. 添加 `--plot-png`Le drapeau, par le biais `matplotlib`写出真实图片──为本课的文本图片 和 PNG 哪个更适合合作为CI runs 的默认做出辩护──
 

@@ -61,7 +61,7 @@ Le générateur de l'électricité est le dernier et le plus facile à détério
 
 En production, vous pouvez utiliser le modèle de suggestion qui sera simulé pour remplacer par un vrai LLM:
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

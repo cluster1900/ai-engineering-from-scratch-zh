@@ -142,7 +142,7 @@ python3 -m unittest code/test_main.py
 
 4. Avec R@K un à calculer la moyenne de la répartition (MRR) ⋅ MRR est très sensible à la position de l'objet qui est en haut de la partie K; R@K est très sensible à la situation de l'objet qui est en avant de la partie K ⋅
 
-5. Pendant l'entraînement, cinq points de contrôle ont été effectués pour évaluer le fonctionnement du modèle.
+5. Six points de contrôle au cours de l'entraînement pour évaluer le fonctionnement du modèle (étape 0、10、20、30、40、50) et tracer la courbe d'apprentissage.
 
 ## 关键术语
 

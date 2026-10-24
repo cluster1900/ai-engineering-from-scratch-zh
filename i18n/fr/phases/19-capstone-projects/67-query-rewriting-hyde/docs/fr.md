@@ -45,7 +45,7 @@ flowchart LR
 
 HyDE utilise LLM 编写的假设文档向量替换用户的查询向量──提示很短:
 
-```text
+```
 You are a domain expert. Write a one-paragraph passage that answers the question
 below. Use the same vocabulary and phrasing the documentation in this domain would
 use. Do not refuse. Do not say you do not know.
@@ -63,7 +63,7 @@ En production, vous limiterez le document de la hypothèse à deux à trois phra
 
 N 个释义──最简单的提示:
 
-```text
+```
 Rewrite the following question in {N} different ways. Each rewrite must preserve
 the original intent. Number them 1 to {N}. Do not add explanations.
 ```
@@ -76,7 +76,7 @@ Lorsque le phrasé de l'utilisateur est l'une des nombreuses façons de poser de
 
 单检索不能满足多方面的问题――分解要求 LLM 将问题拆成子问题,系统再检索每个子问题――提示:
 
-```text
+```
 The following question may require information from multiple distinct topics.
 Decompose it into a list of sub-questions. Each sub-question must be answerable
 independently. If the question is already atomic, return it unchanged.
@@ -153,7 +153,7 @@ Le 69e cours mettra le réécritor à l'étape du 65e cours avant le réécritor
 2. 添加第四种策略:step-back prompting(向LLM 问问更一般问题,检索该问题,然后再缩小范围)
 3. 通过添加问题是原子的头来训练分解器识别原子查询――测量前后的过分率――
 4. Avec le modèle réel, il est possible de modifier le modèle de la formation en LLM.
-5. Pour chaque réécriture ajouter la confiance à la partition.
+5. Pour chaque réécriture, le nombre de réécrits ajoutés sera réduit à une valeur inférieure.
 
 ## 关键术语
 

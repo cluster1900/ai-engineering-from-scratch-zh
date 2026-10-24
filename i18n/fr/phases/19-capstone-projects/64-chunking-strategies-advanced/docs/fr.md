@@ -137,7 +137,7 @@ Le système RAG utilise ici le dispositif de sélection des blocs comme premier 
 1. 添加第六种策略: utiliser `tiktoken`Il est préférable de comparer la fenêtre de jeton au lieu de la fenêtre de chiffrement avec la fenêtre fixe sur le même fixture.
 2. Pour les autres, il est important de mettre 30% des blocs de code dans le fichier de texte.
 3. Les investissements de détermination seront remplacés par des investissements de détermination provenant d'un fournisseur réel de projet.
-4. Pour chaque bloc 添加一个`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
+4. Pour chaque bloc, ajouter un`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
 
 ## 关键术语
 
