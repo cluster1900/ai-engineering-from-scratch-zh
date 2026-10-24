@@ -173,9 +173,9 @@
     },
     {
       "number": 4,
-      "title": "Speed and stability",
-      "thesis": "Every speed or stability feature has a cost, and each page says when the cost is worth it.",
-      "summary": "Async, partial rollout, FP8 rollout, replay, determinism, and true on-policy.",
+      "title": "速度与稳定性",
+      "thesis": "每个速度或稳定性功能都有代价，每一页都会说明什么时候值得付出这个代价。",
+      "summary": "异步、partial rollout、FP8 rollout、重放、确定性和 true on-policy。",
       "accent": "plum",
       "sections": [
         {

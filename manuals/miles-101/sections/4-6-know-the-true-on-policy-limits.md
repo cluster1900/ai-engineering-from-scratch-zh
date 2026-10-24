@@ -1,25 +1,25 @@
-# Check if your GPU can run true on-policy mode
+# 检查你的 GPU 能否运行 true on-policy 模式
 
-> True on-policy mode makes the trainer and the engine match bit for bit, but only for the models and GPUs its contract covers.
+> true on-policy 模式让训练器和引擎逐位一致，但只适用于它的契约覆盖的模型和 GPU。
 
-True on-policy mode promises a gap of exactly 0 between the trainer and the engine. On our GB10 it did not start, and the run did not tell us so.
+true on-policy 模式承诺训练器与引擎之间的差距恰好为 0。在我们的 GB10 上，它没能启动，而运行也没有告诉我们这一点。
 
-When you finish this section, you can check your GPU and model before you plan a true on-policy run.
+读完本节后，你能在规划 true on-policy 运行之前检查你的 GPU 和模型。
 
-## Check the contract before you start
+## 开始之前先检查契约 {#s-know-the-true-on-policy-limits-check-the-contract-before-you-start}
 
-The Miles versions we checked have one true on-policy contract. It covers dense Qwen3 models: Qwen3-0.6B and three Qwen3-4B variants. Both sides must run FlashAttention 3: the engine as its attention backend, and the trainer as its attention implementation.
+我们检查过的 Miles 版本只有一个 true on-policy 契约。它覆盖稠密的 Qwen3 模型：Qwen3-0.6B 和三个 Qwen3-4B 变体。两边都必须运行 FlashAttention 3：引擎把它作为 attention backend，训练器把它作为 attention 实现。
 
-FlashAttention 3 is built for Hopper GPUs. The engine check accepts compute capability 8.0 to 9.0 and refuses newer GPUs. So check two things before you plan the run:
+FlashAttention 3 是为 Hopper GPU 构建的。引擎的检查接受计算能力 8.0 到 9.0，拒绝更新的 GPU。所以在规划运行之前检查两件事：
 
-1. Your GPU is a Hopper GPU, such as an H100 or an H200.
-2. Your model is in the contract.
+1. 你的 GPU 是 Hopper GPU，例如 H100 或 H200。
+2. 你的模型在契约之内。
 
-If either answer is no, true on-policy mode cannot start.
+只要有一个答案是否定的，true on-policy 模式就无法启动。
 
-## What happens on another GPU
+## 在其他 GPU 上会发生什么 {#s-know-the-true-on-policy-limits-what-happens-on-another-gpu}
 
-Our GB10 is a Blackwell GPU with compute capability 12.1. The engine stopped during startup:
+我们的 GB10 是计算能力 12.1 的 Blackwell GPU。引擎在启动时停了下来：
 
 ```listing
 title: FlashAttention 3 refuses the GB10
@@ -31,24 +31,24 @@ note: The first engine lines of the true on-policy run.
 AssertionError: FlashAttention v3 Backend requires SM>=80 and SM<=90. Please use `--attention-backend flashinfer`.
 ```
 
-The trainer kept going and sent requests to the dead engine for an hour. [Section 1.2](#s-add-a-watchdog) shows that part, and the watchdog that stops it.
+训练器继续运行，并在一小时内不断向已经挂掉的引擎发送请求。[第 1.2 节](#s-add-a-watchdog)展示了这部分，以及能停掉它的 watchdog。
 
-The error suggests FlashInfer. Do not take that advice for true on-policy mode, because the contract names FlashAttention 3 on both sides. With FlashInfer you get a normal run, not a bit-exact one.
+错误信息建议使用 FlashInfer。在 true on-policy 模式下不要采纳这个建议，因为契约规定两边都用 FlashAttention 3。用 FlashInfer 得到的是一次普通运行，而不是逐位精确的运行。
 
-## What to use instead
+## 改用什么 {#s-know-the-true-on-policy-limits-what-to-use-instead}
 
-Outside the contract, watch the gap and lower it where you can:
+在契约之外，关注差距，并在能降低的地方降低它：
 
-- [Section 4.4](#s-lower-the-logprob-gap) lowers the part that comes from top-p and top-k sampling.
-- [Section 4.5](#s-use-deterministic-inference) makes the engine repeat itself, which helps you repeat an experiment.
-- [Section 5.2](#s-check-the-first-step) checks that the gap at step 0 is in a healthy range.
+- [第 4.4 节](#s-lower-the-logprob-gap)降低了来自 top-p 和 top-k 采样的那部分。
+- [第 4.5 节](#s-use-deterministic-inference)让引擎能重复自己，这有助于你重复实验。
+- [第 5.2 节](#s-check-the-first-step)检查第 0 步的差距是否在健康范围内。
 
-On our GB10, every step of every finished Qwen3-0.6B run without top-p or top-k gave a gap between 0.0136 and 0.0164. That is the range to compare against on this setup.
+在我们的 GB10 上，所有不用 top-p 或 top-k 且跑完的 Qwen3-0.6B 运行，每一步的差距都在 0.0136 到 0.0164 之间。在这个配置上，这就是要对照的范围。
 
 ```takeaways
-- Before you plan true on-policy mode, check the GPU generation and the model list.
-- Add a watchdog, because a failed engine start does not stop the run.
-- Outside the contract, watch the gap and lower the sampler part of it.
+- 规划 true on-policy 模式之前，检查 GPU 代际和模型列表。
+- 加上 watchdog，因为引擎启动失败并不会让运行停下。
+- 在契约之外，关注差距，并降低其中来自采样器的部分。
 ```
 
 Sources: capture/gpu/out-gb10/engine-died-503.log; capture/gpu/summary/miles-gb10-lab.json (logprob_abs_diff per run); Miles true on-policy contract and model profiles at main 08752a12.

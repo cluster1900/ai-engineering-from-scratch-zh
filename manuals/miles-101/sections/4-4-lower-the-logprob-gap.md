@@ -1,20 +1,20 @@
-# Lower the log probability gap with top-p and top-k
+# 用 top-p 和 top-k 降低 log 概率差距
 
-> When you sample with top-p or top-k, Miles replays the sampled token set in the trainer, and the gap between the two sides gets smaller.
+> 当你用 top-p 或 top-k 采样时，Miles 会在训练器中重放被采样的 token 集合，两边之间的差距就会变小。
 
-The engine samples each token from a cut-down set of the vocabulary when you use top-p or top-k. The trainer scores the same token over the full vocabulary. So the two sides give different probabilities for reasons that have nothing to do with the kernels.
+使用 top-p 或 top-k 时，引擎从词表中裁剪后的一个集合里采样每个 token。训练器则在完整词表上给同一个 token 打分。所以两边给出的概率不同，而原因与 kernel 无关。
 
-When you finish this section, you can turn on sampling replay and check that it lowers the gap.
+读完本节后，你能打开采样重放，并检查它是否降低了差距。
 
-**Our result:** top-p and top-k replay lowered the median gap from 0.0153 to 0.0135, 11.5 percent, on one seed.
+**我们的结果：** 在一个种子上，top-p 和 top-k 重放把中位差距从 0.0153 降到 0.0135，降低了 11.5%。
 
-## Why the engine number is higher
+## 为什么引擎的数值更高 {#s-lower-the-logprob-gap-why-the-engine-number-is-higher}
 
-Top-p keeps the smallest set of tokens whose probabilities add up to at least the top-p value. The engine then scales the kept probabilities so that they add up to 1 again. Take two sides that compute the same scores before the cut. For a kept token, the engine log probability is then higher than the full-vocabulary score by minus the log of the kept mass. If the kept tokens hold 0.9 of the mass, the difference is about 0.105. Top-k cuts the set in the same way, and the kernel gap comes on top of this.
+top-p 保留概率之和至少达到 top-p 值的最小 token 集合。然后引擎重新缩放保留下来的概率，让它们的和再次为 1。假设两边在裁剪之前算出的分数相同。那么对于一个被保留的 token，引擎的 log 概率比完整词表上的分数高出负的保留质量的 log。如果保留的 token 占了 0.9 的质量，差值约为 0.105。top-k 以同样的方式裁剪集合，而 kernel 带来的差距还要叠加在这之上。
 
-That difference is not noise. It is different for each token, and it always pushes the ratio between the trainer and the engine the same way. A 2026 issue report for another RL library describes this bias in its importance-sampling ratio. Sampling replay removes it, because the trainer then scores over the same kept set.
+这个差值不是噪声。它对每个 token 都不同，而且总是把训练器与引擎之间的比值往同一个方向推。2026 年另一个 RL 库的一份 issue 报告描述了它的重要性采样比值中的这种偏差。采样重放能消除它，因为这样训练器就在同一个保留集合上打分。
 
-We checked the formula on an L4 GPU on 2026-10-23, outside Miles. We used `Qwen/Qwen3-0.6B` in BF16, 16 prompts of 48 tokens, temperature 1, and top-p 0.9. A float32 Transformers pass over the full vocabulary gave the reference. The GPU was shared and had no clock lock, which does not change these values.
+2026-10-23，我们在 Miles 之外，用一块 L4 GPU 检查了这个公式。我们用了 BF16 的 `Qwen/Qwen3-0.6B`、16 个 48 token 的 prompt、温度 1 和 top-p 0.9。参考值来自一次在完整词表上的 float32 Transformers 前向。这块 GPU 是共享的，没有锁频，这不会改变这些数值。
 
 ```listing
 title: returned logprob minus the full-vocabulary reference
@@ -28,27 +28,27 @@ vLLM --logprobs-mode processed_logprobs          +0.0527
 SGLang return_logprob, ORIGINAL_LOGPROB=0        0.0000                             0.0066
 ```
 
-- vLLM can return the value after top-p, with `--logprobs-mode processed_logprobs`. That value was higher than the reference by minus the log of the kept mass, with a residual of 8e-9. This is the formula above.
-- At top-p 0.9 the median shift was about 0.053, and the kept mass was below 0.99 for most sampled tokens.
-- SGLang 0.5.22 returned the value from before top-p. The setting of `SGLANG_RETURN_ORIGINAL_LOGPROB` did not change it at temperature 1. Our Miles image runs a development build of the same version, and we did not repeat the check on it.
+- vLLM 可以用 `--logprobs-mode processed_logprobs` 返回 top-p 之后的值。这个值比参考值高出负的保留质量的 log，残差为 8e-9。这就是上面的公式。
+- 在 top-p 0.9 时，中位偏移约为 0.053，而且大多数被采样 token 的保留质量都低于 0.99。
+- SGLang 0.5.22 返回的是 top-p 之前的值。在温度 1 时，`SGLANG_RETURN_ORIGINAL_LOGPROB` 的设置不会改变它。我们的 Miles 镜像运行的是同一版本的开发构建，我们没有在它上面重复这项检查。
 
-So the size of this gap depends on which value the engine returns. Check it on your engine version before you read the gap.
+所以这个差距有多大，取决于引擎返回的是哪个值。读差距之前，先在你的引擎版本上检查这一点。
 
-## Turn it on
+## 打开它 {#s-lower-the-logprob-gap-turn-it-on}
 
-Add the sampler settings to the run of [section 1.1](#s-run-grpo-on-one-gpu) with `MILES_EXTRA_ARGS`:
+用 `MILES_EXTRA_ARGS` 给[第 1.1 节](#s-run-grpo-on-one-gpu)的运行加上采样器设置：
 
 ```bash
 -e MILES_EXTRA_ARGS="--rollout-top-p 0.95 --rollout-top-k 64"
 ```
 
-Miles turns on sampling replay by itself when `--rollout-top-p` is below 1 or `--rollout-top-k` is above 0. The engine then returns the set of tokens that each step could sample from. The trainer scores each token over that set only.
+当 `--rollout-top-p` 小于 1 或 `--rollout-top-k` 大于 0 时，Miles 会自动打开采样重放。这时引擎会返回每一步可供采样的 token 集合。训练器只在这个集合上给每个 token 打分。
 
-Set a positive top-k whenever you set a top-p below 1, because Miles requires both for replay. Miles refuses to start when replay is on together with a KL loss or on-policy distillation. It also refuses replay with `--recompute-logprobs-via-prefill`.
+只要设置了小于 1 的 top-p，就同时设置一个正的 top-k，因为 Miles 的重放要求两者都有。重放与 KL loss 或 on-policy 蒸馏同时开启时，Miles 会拒绝启动。它也拒绝在使用 `--recompute-logprobs-via-prefill` 时重放。
 
-## Check the gap
+## 检查差距 {#s-lower-the-logprob-gap-check-the-gap}
 
-Read `train/train_rollout_logprob_abs_diff` in each step. It is the mean absolute difference between the log probabilities of the trainer and of the engine.
+每一步都读 `train/train_rollout_logprob_abs_diff`。它是训练器与引擎的 log 概率之间的平均绝对差。
 
 ```listing
 title: the engine settings of the two runs
@@ -61,14 +61,14 @@ e6a-base               flashinfer         False                           flashi
 e11-topp-topk          flashinfer         False                           flashinfer        0.95             64
 ```
 
-| Run, 12 steps, seed 1 | Median gap | Lowest and highest step | Median reward |
+| 运行，12 步，种子 1 | 中位差距 | 最低和最高的步 | 中位奖励 |
 |---|---|---|---|
-| No top-p or top-k | 0.0153 | 0.0150 to 0.0159 | 0.66 |
-| Top-p 0.95, top-k 64 | 0.0135 | 0.0128 to 0.0141 | 0.68 |
+| 不用 top-p 或 top-k | 0.0153 | 0.0150 到 0.0159 | 0.66 |
+| top-p 0.95，top-k 64 | 0.0135 | 0.0128 到 0.0141 | 0.68 |
 
-**We measured** a gap 11.5 percent lower with replay. No step of the replay run reached the lowest step of the run without it. The reward stayed in the same range.
+**我们测得** 使用重放时差距低 11.5%。重放运行没有任何一步达到不用重放时最低的那一步。奖励保持在同一范围内。
 
-This is one seed of 12 steps on Qwen3-0.6B. The step ranges did not overlap, so we report the direction. Run a second seed before you report the size for your own model.
+这只是 Qwen3-0.6B 上一个种子的 12 步。两者的步范围不重叠，所以我们报告的是方向。在为你自己的模型报告幅度之前，先跑第二个种子。
 
 ```figure
 id: fig-4-4
@@ -78,14 +78,14 @@ claim: With top-p and top-k replay, the gap was lower at every one of the 12 ste
 caption: The logprob gap per step for two 12-step runs with seed 1.
 ```
 
-## What replay does not fix
+## 重放解决不了什么 {#s-lower-the-logprob-gap-what-replay-does-not-fix}
 
-Replay removes the part of the gap that comes from the sampler. The rest most likely comes from the kernels, because the engine and the trainer add the same numbers in a different order. [Section 4.5](#s-use-deterministic-inference) shows that deterministic inference does not remove that part. [Section 8.3](#s-why-true-on-policy-is-a-contract) explains what does.
+重放消除了差距中来自采样器的那部分。其余部分很可能来自 kernel，因为引擎和训练器以不同的顺序把同样的数相加。[第 4.5 节](#s-use-deterministic-inference)表明确定性推理消除不了这部分。[第 8.3 节](#s-why-true-on-policy-is-a-contract)解释了什么能消除它。
 
 ```takeaways
-- Set top-p and top-k together, and Miles replays the sampled set in the trainer.
-- Compare train/train_rollout_logprob_abs_diff before and after, over the same steps and seed.
-- Expect replay to lower the gap, not to close it.
+- 同时设置 top-p 和 top-k，Miles 就会在训练器中重放被采样的集合。
+- 在相同的步和种子上，比较前后的 train/train_rollout_logprob_abs_diff。
+- 预期重放会降低差距，但不会消除它。
 ```
 
 Sources: capture/gpu/summary/miles-gb10-lab.json (runs.e6a-base, runs.e11-topp-topk); capture/gpu/out-gb10/engine-settings.txt; capture/gpu/out-l4/logprobs-top-p.txt; Miles sampling-support replay documentation and arguments at main 08752a12; TRL issue 6789.

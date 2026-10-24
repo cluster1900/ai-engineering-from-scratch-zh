@@ -1,24 +1,24 @@
-# Know what deterministic inference fixes
+# 了解确定性推理能修好什么
 
-> Deterministic inference makes the engine repeat itself, and it does not make the engine agree with the trainer.
+> 确定性推理让引擎能重复自己的结果，但不会让引擎与训练器一致。
 
-We turned on deterministic inference to close the gap between the trainer and the engine. The gap did not move. What changed was that two runs with the same seed now gave the same rollout at step 0.
+我们打开确定性推理，想消除训练器与引擎之间的差距。差距纹丝不动。变化的是，同一种子的两次运行现在在第 0 步给出了相同的 rollout。
 
-When you finish this section, you can decide when deterministic inference is worth its cost.
+读完本节后，你能判断什么时候确定性推理值得它的代价。
 
-**Our result:** with and without deterministic inference, the median gap stayed between 0.0151 and 0.0153. Two deterministic runs repeated the rollout of step 0 exactly.
+**我们的结果：** 无论是否使用确定性推理，中位差距都保持在 0.0151 到 0.0153 之间。两次确定性运行精确地重复了第 0 步的 rollout。
 
-## Turn it on
+## 打开它 {#s-use-deterministic-inference-turn-it-on}
 
-Add the engine flag and an attention backend that supports it to the run of [section 1.1](#s-run-grpo-on-one-gpu), both through `MILES_EXTRA_ARGS`:
+通过 `MILES_EXTRA_ARGS`，给[第 1.1 节](#s-run-grpo-on-one-gpu)的运行加上引擎参数和一个支持它的 attention backend：
 
 ```bash
 -e MILES_EXTRA_ARGS="--sglang-enable-deterministic-inference --sglang-attention-backend triton"
 ```
 
-The launcher also reads `MILES_SGLANG_ATTENTION`, but only in true on-policy mode with `MILES_TRUE_ON_POLICY=1`. In a normal run, that variable changes nothing.
+启动脚本也会读取 `MILES_SGLANG_ATTENTION`，但只在 `MILES_TRUE_ON_POLICY=1` 的 true on-policy 模式下。在普通运行中，这个变量不起任何作用。
 
-On our GB10, both `triton` and `flashinfer` started with the flag. The engine also switches its sampler, and the log says so:
+在我们的 GB10 上，`triton` 和 `flashinfer` 加上这个参数都能启动。引擎还会切换它的采样器，日志里也会写明：
 
 ```listing
 title: the engine changes its sampler for deterministic mode
@@ -30,28 +30,28 @@ note: One line from the Triton run and one from the FlashInfer run.
 [2026-10-21 14:55:18] Sampling backend is set to pytorch for deterministic inference.
 ```
 
-## The gap stays the same
+## 差距保持不变 {#s-use-deterministic-inference-the-gap-stays-the-same}
 
-We ran four 12-step runs with seed 1 on Qwen3-0.6B:
+我们在 Qwen3-0.6B 上用种子 1 跑了四次 12 步的运行：
 
-| Run | Median gap | Gap at step 0 |
+| 运行 | 中位差距 | 第 0 步的差距 |
 |---|---|---|
-| Default engine | 0.01526 | 0.015271 |
-| Deterministic, Triton | 0.01518 | 0.015404 |
-| Deterministic, FlashInfer | 0.01520 | 0.015320 |
-| Deterministic, Triton, second run | 0.01515 | 0.015404 |
+| 默认引擎 | 0.01526 | 0.015271 |
+| 确定性，Triton | 0.01518 | 0.015404 |
+| 确定性，FlashInfer | 0.01520 | 0.015320 |
+| 确定性，Triton，第二次运行 | 0.01515 | 0.015404 |
 
-**We measured** the same gap with and without deterministic inference. The four medians are within 0.0002 of each other.
+**我们测得** 有无确定性推理时差距相同。四个中位数彼此相差不超过 0.0002。
 
-This points to the kernels as the cause: the two sides compute with different kernels. Deterministic inference makes the engine give the same result for the same input, whatever the batch around it. It does not make the engine compute like the trainer.
+这说明原因在 kernel：两边用不同的 kernel 计算。确定性推理让引擎对相同的输入给出相同的结果，不管周围的 batch 是什么。它不会让引擎像训练器那样计算。
 
-## The first step repeats
+## 第一步可以重复 {#s-use-deterministic-inference-the-first-step-repeats}
 
-The two Triton runs gave the same gap at step 0, to six decimal places: 0.015404. From step 1 they drifted apart.
+两次 Triton 运行在第 0 步给出了相同的差距，精确到小数点后六位：0.015404。从第 1 步开始，它们就分开了。
 
-The engine repeated itself, and the trainer most likely did not. These runs did not set the trainer's deterministic mode, so the weights after the first update can differ between the runs. We have not tested that with the trainer flags on.
+引擎重复了自己，而训练器很可能没有。这些运行没有设置训练器的确定性模式，所以第一次更新后的权重在两次运行之间可能不同。我们没有在打开训练器参数的情况下测试这一点。
 
-So use deterministic inference when you need to repeat an experiment, for example to test a reward function on the same samples. Do not use it to lower the gap.
+所以当你需要重复一个实验时，例如在相同的样本上测试奖励函数，就用确定性推理。不要用它来降低差距。
 
 ```figure
 id: fig-4-5
@@ -61,16 +61,16 @@ claim: The two deterministic Triton runs gave the same gap at step 0, and all fo
 caption: The logprob gap per step for four 12-step runs with seed 1.
 ```
 
-## The cost
+## 代价 {#s-use-deterministic-inference-the-cost}
 
-Deterministic kernels are slower. Four steps had no heat-guard pause in all four runs: steps 0, 1, 4, and 10. On those four steps, the median rollout took 56.5 s with the default engine. The 59.1 s of [section 5.3](#s-repeat-a-run) is the same default run over its 6 clean steps. It took 79.1 to 82.0 s in the three deterministic runs, with answers of about the same length.
+确定性 kernel 更慢。有四步在全部四次运行中都没有碰上温度保护暂停：第 0、1、4 和 10 步。在这四步上，默认引擎的 rollout 中位数是 56.5 s。[第 5.3 节](#s-repeat-a-run)的 59.1 s 是同一次默认运行在它 6 个干净步上的结果。在三次确定性运行中，rollout 用了 79.1 到 82.0 s，回答长度大致相同。
 
-That is 40 to 45 percent more rollout time, from one run of each setting on a GPU under heat pauses. Treat it as an unconfirmed result. Measure the cost on your own GPU before you leave the flag on for a long run.
+也就是多出 40% 到 45% 的 rollout 时间，这来自每种设置各一次、在有温度暂停的 GPU 上的运行。请把它看作未确认的结果。在长时间运行中一直开着这个参数之前，先在你自己的 GPU 上测量代价。
 
 ```takeaways
-- Use deterministic inference to repeat an experiment.
-- Do not use deterministic inference to close the gap with the trainer.
-- Measure the rollout cost on your GPU before a long run.
+- 用确定性推理来重复实验。
+- 不要用确定性推理来消除与训练器之间的差距。
+- 长时间运行之前，先在你的 GPU 上测量 rollout 的代价。
 ```
 
 Sources: capture/gpu/miles_grpo.py; capture/gpu/summary/miles-gb10-lab.json (runs.e6a-base, runs.e6b-det-triton, runs.e6c-det-flashinfer, runs.e6d-det-triton-repeat, median_unpaused); capture/gpu/out-gb10/deterministic-sampler.log; capture/gpu/out-gb10/engine-settings.txt; capture/gpu/out-gb10/unpaused-timing.txt.
