@@ -27,7 +27,7 @@ uv pip install -e .
 
 这十个失败中有一个属于 kit。它的 `Handler.rest` 在 `tasks/{id}/pushNotificationConfigs` 下没有提供任何路由，尽管 card 在两种 JSON 绑定上都声明了 `pushNotifications`。每种声明的绑定都必须提供同样的操作 {{spec §5.1}}。kit 现在提供了这四个路由，六条 HTTP+JSON 推送记录都通过了。每条要求在 JSON-RPC 一侧仍然失败，因为 TCK 在那里发送的是 `task_id` 而不是 `taskId`。
 
-两个 `SHOULD` 失败是因为 card 缺少 `Cache-Control` 和 `ETag` 请求头 {{spec §8.6}}。其余的失败属于 TCK 本身，或者属于它的示例输入。
+两个 `SHOULD` 失败是因为 card 缺少 `Cache-Control` 和 `ETag` 响应头 {{spec §8.6}}。其余的失败属于 TCK 本身，或者属于它的示例输入。
 
 ```listing
 title: six push requirements after the kit fix
