@@ -62,7 +62,7 @@ Her kuralın bir kuralı var, bir sınıf, bir tanım ve bir de bir.`check`字�
 
 修复方式不是写一个更短的文件,而是写一个分层的文件――根路由器必须小到每次都能读完,并且只保存指针――深度内容放在主题文件里,只有当任务触及应主题时代理才加载――给代理一个地图,而不是整本百科全书,让它自己走到所需的页面――
 
-```text
+```
 AGENTS.md                  # router，少于 50 行：这个 repo 是什么、去哪里看、5 条硬规则
 docs/
   agent-rules.md           # 完整规则集（本课）

@@ -102,6 +102,25 @@ Bugün her üretim bellek sistemi MemGPT'nin bir parçası:
 
 选择, instead of according to core pattern 选择;core pattern 就是 MemGPT。
 
+### 智能体记忆的形态 智能体记忆的形态 智能体记忆的形态
+
+Çözüm, kapasite sorunu, neyi hayatta kalmaya karar vermemektedir.
+
+- **Working memory** 现在什么最重要?context 层:当前任务、最近几轮对话、固定的核心部分──也就是即时本身──
+- **Episodic memory** བྱུང་བྱུང་བྱུང་? geçmiş sohbet döngüsü ve yolları, 连同セッション 和 turn 引用一起存储,可按需回放──
+- **Semantic memory** 什么是真的?  什么是真的?  什么是真的?  什么是真的?  什么是真的?  什么是真的?  什么是真的?  什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的?
+- **Procedural memory**Öğrenilen rutinler, tercihler ve kurallar, hatırlamalar değil, gelecekteki davranışları yönlendirir.
+
+开源实现各自选择了不同的切入点:
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ## - Söyle.
 `outputs/skill-virtual-memory.md`Bu, herhangi bir hedef çalıştırma süresi için kullanılabilir.
 
@@ -129,3 +148,7 @@ Bugün her üretim bellek sistemi MemGPT'nin bir parçası:
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks) Üç katlı evrim
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)Bütçeye bakılırsa bağlamı
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413) 构建在该模式之上混合生产内存
+- [Zep (getzep/zep)](https://github.com/getzep/zep) 分类表中的 zamanlı bilgi-graf hafızası
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) Ders 09 hibrit depo 背后的采集管道
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem)                                                                                                                                                                                                                                                              
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory) Sessiyonları  Yakalamak ve arama yapılabilir kayıtlar olarak birleştirmek

@@ -14,7 +14,7 @@
 - Bir oyuncak seviyesinde üç depolama anı gerçekleştirmek için kullanın.`add()`写入全部三个储存,`search()`融合 sonuçları
 
 ## 问题
-Üç sorunun bir sınıfı için, tek bir depolamalama genel olarak hatalı olarak:
+Her depo sadece üç sorgudan birine uyar:
 
 - **语义相似性**                                                                                                                                                                                                                                                              
 - **事实查找**   user's telephone number is what? KV 胜出; Vektor 浪费资源,Graph 过于复杂──

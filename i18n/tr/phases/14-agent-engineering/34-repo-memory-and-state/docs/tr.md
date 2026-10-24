@@ -92,7 +92,7 @@ Dört farklı modül bu dersleri en azına dönüştürür.
 
 **将大型 artifacts 与 state 分离。**CSV'leri, uzun metinleri veya oluşturulan dosyaları saklama .`agent_state.json`△将文物 保存为单独文件(或上传到物体存储),state 中只保留路径──检查点 保持小而快;文物 独立增长──
 
-**Event sourcing 用于 audit，snapshots 用于 resume。**Her mutasyon olay loguna eklenir.`state.events.jsonl`); düzenli olarak anlık fotoğraf`state.json`❖ Resume 读取快照,然后播放快照时刻印 之后的所有事件──这会消耗更多磁盘,但允许你逐字播放代理决策,这对调试长视线运行至关重要──Postgres 内部用于WAL的也是一样的形状──
+**Event sourcing 用于 audit，snapshots 用于 resume。**Her mutasyon olay loguna eklenir.`state.events.jsonl`); düzenli olarak anlık fotoğraf`state.json`▽ Resume 读取快照,然后播放快照时刻印 之后的所有事件──这会耗耗更多磁盘,但允许你逐字播放代理决策,这对调试长视线运行至关重要──Postgres depo seviyesinde WAL'ı kullanarak 实践了同样日志加检查点思路,只是层级比应用事件低得多──
 
 **Schema migrations，否则拒绝加载。** `schema_version`tam sayı ise anlaşma. Yöneticisi, bilinmeyen sürüm dosyalarını yüklerken, onu okumayı reddeder.`tools/migrate_state.py`Her başlangıçta 时等运行──
 

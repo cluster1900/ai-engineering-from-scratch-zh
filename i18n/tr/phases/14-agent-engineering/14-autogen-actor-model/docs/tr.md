@@ -34,6 +34,8 @@ Bir aktör 拥有:
 
 ### AutoGen v0.4 中的三个API层
 
+AutoGen v0.4'e göre, bağlantısını üç katı olarak ayırın:
+
 1. **Core.**Alt seviyedeki aktörler çerçevesinde.`AgentRuntime`- Evet.`Agent`- Evet.`Message`- Evet.`Topic`❖ Eşzamanlı mesaj değişimi,evet yönlendirilir。
 2. **AgentChat.**面向任务的高层API (altı seviye API) `AssistantAgent`- Evet.`UserProxyAgent`- Evet.`RoundRobinGroupChat`- Evet.`SelectorGroupChat`- Evet.
 3. **Extensions.**集成:OpenAI、Anthropic、Azure、tools、memory。

@@ -1,6 +1,6 @@
 # Ajan 可观测性: Langfuse, Phoenix, Opik
 
-> Üç açıktır Çeviri Ajan 可观测性平台主导了 2026 年──Langfuse (MIT)  Her ay 6M+ kurulum, izleme + istintap yönetimi + değerlendirmeler + oturum tekrarlaması──Arize Phoenix (Elastic 2.0)  深入的 Ajan 专用 evals、RAG 相关性、OpenInference auto-instrumentation──Comet Opik (Apache 2.0) 自动化 prompt 优化、guardrails、LLM-judge 幻觉检测──
+> Üç kendi kendine kontrol edilebilir ajan 可观测性平台主导了 2026年──Langfuse (MIT)  Her ay 6M+ kurulum, izleme + istintap yönetimi + değerlendirmeler + oturum tekrarlaması──Arize Phoenix (Elastic 2.0)  深入的 ajan 专专用 evals、RAG 相关性、OpenInference auto-instrumentation──Comet Opik (Apache 2.0) 自动化提示 优化guardrails、LLM-judge 幻觉检测──
 
 **类型：**Öğrenme
 **语言：**Python (stdlib)
@@ -9,7 +9,7 @@
 
 ## Öğrenme hedefi
 
-- Üç tane açık kaynaklı ajanı ve lisansını açıklayın.
+- Üç üst düzey kendi kendine kontrol edilebilir ajanı ve lisansını belirtiyor.
 - 区分每个平台最擅长的方面:Langfuse (hızlı mgmt + seanslar) Phoenix (RAG + otomatik aletleştirme) Opik (optimize + koruma rayları) 
 - 2026 yılına kadar, %89'u raporlar için bir ajanı göndermişlerdir.
 - 实现一个带有LLM-juj 评估的 stdlib 追踪到仪表管道──
