@@ -77,7 +77,9 @@ function proseIssues(span, add) {
   const limit = LIMITS[span.kind];
   if (span.kind === 'claim' && !/\.$/.test(raw.trim())) add(span.where, rule, 'a figure claim is one sentence that ends with a period');
   if ((span.kind === 'claim' || span.kind === 'thesis') && parts.length !== 1) add(span.where, rule, `a ${span.kind} must be one sentence`);
-  for (const sentence of parts) {
+  // Chinese prose: a full-width 。！？ ends a sentence for the length and tell checks.
+  const counted = parts.flatMap(part => part.split(/(?<=[。！？])/).map(piece => piece.trim()).filter(Boolean));
+  for (const sentence of counted) {
     const count = wordCount(sentence);
     if (limit && count > limit) add(span.where, rule, `${count} words (limit ${limit}): "${sentence.slice(0, 90)}"`);
     for (const [pattern, name] of TELLS) if (pattern.test(sentence)) add(span.where, 'tell', `${name}: "${sentence.slice(0, 90)}"`);
@@ -290,6 +292,15 @@ function auditManual(manual, add) {
     for (const match of String(span.text).replace(/`[^`]*`/g, '').matchAll(/[“"]([^”"]{24,}?)[”"]\s*\{\{[^}]+\}\}/g)) add(span.where, 'quote', `write the source in our own words, and put literal output in code font: "${match[1].slice(0, 80)}"`);
   }
   for (const doc of manual.documents) {
+    for (const block of doc.blocks) {
+      if (doc.kind === 'front' || block.type !== 'heading' || !block.id) continue;
+      const where = `${doc.label}:${block.line}`;
+      const prefix = `${doc.anchor}-`;
+      const slug = block.id.startsWith(prefix) ? block.id.slice(prefix.length) : null;
+      // build-manuals.js slugify() trims dashes and then cuts to 64 characters, so a cut slug may end in "-".
+      const valid = slug !== null && /^[a-z0-9][a-z0-9-]*$/.test(slug) && !slug.includes('--') && slug.length <= 64 && (slug.length === 64 || !slug.endsWith('-'));
+      if (!valid) add(where, 'heading-id', `heading id {#${block.id}} must be "${prefix}" plus the upstream heading slug cut to 64 characters`);
+    }
     if (!doc.thesis) add(doc.label, 'thesis', 'a one-sentence thesis blockquote is required under the title');
     const paragraphs = doc.blocks.filter(block => block.type === 'paragraph');
     if (doc.kind === 'section' && !paragraphs.slice(0, 2).some(block => manuals.OUTCOME_PHRASES.some(phrase => block.text.includes(phrase)))) add(doc.label, 'outcome', `the first two paragraphs must contain "${manuals.OUTCOME_PHRASE} ..."`);
