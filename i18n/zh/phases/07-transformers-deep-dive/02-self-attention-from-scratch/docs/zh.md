@@ -169,6 +169,10 @@ softmax-attention-scaling
 
 ## 构建它
 
+```figure
+iso-machine {"machine":"self-attention"}
+```
+
 ### 步骤1:从零实现软max
 
 软max 会将原始的记录转换为概率.

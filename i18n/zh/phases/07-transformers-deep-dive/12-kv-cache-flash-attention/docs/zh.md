@@ -53,6 +53,12 @@ per 32K context = 10 GiB
 
 **GQA 是 KV-cache 的关键收益。**采用64个KV头的MHA会大8倍,在32K时约为80Gb.
 
+拖动维度参数,观察缓存尺寸如何变化――把序列长度或批量尺寸推高,你会看到它快速超过单张GPU容量――
+
+```figure
+kv-cache-sizer
+```
+
 ### 闪光注意  技巧
 
 标准注意:
@@ -113,17 +119,16 @@ for each block of Q (tile size ~128 × 128):
 基于 16 代币区块的 KV 缓存 分布;页面表将逻辑位置映射到物理区块. 它可以在并行采样之间共享 KV 射搜索,并行采样) 为了快速缓存 热切换前,并对内存做碎片整理.相比简单的连续分配,吞吐量提升 4×.
 
 
-拖动维度参数,观察缓存尺寸如何变化――把序列长度或批量尺寸推高,你会看到它快速超过单张GPU容量――
-
-```figure
-kv-cache-sizer
-```
 
 ```figure
 flash-attention-memory
 ```
 
 ## 构建它
+
+```figure
+iso-machine {"machine":"kv-cache"}
+```
 
 见`code/main.py`我们实现了:
 
