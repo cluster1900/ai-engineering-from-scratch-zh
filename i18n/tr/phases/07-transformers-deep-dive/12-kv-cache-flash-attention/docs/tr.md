@@ -53,6 +53,12 @@ Bu 10 GiB 32K'de 128K'ye kadar büyüyecek ve 40 GiB'ye kadar büyüyecek.
 
 **GQA 是 KV-cache 的关键收益。**64 KV başlığı kullanılarak MHA'nın 8 katı, 32K'da 80 GiB'ye kadar basınç artırabilir.
 
+拖动维度参数, observe cache size 如何变化──把序列长度或批量大小 推高, you'll see it moreover fast over the capacity of a single张 GPU──
+
+```figure
+kv-cache-sizer
+```
+
 ### Akşam dikkat  kapaklama 技巧
 
 标准 dikkat:
@@ -113,17 +119,16 @@ Sürekli serilişim ((最早在 Orca 中发布,如今用于vLLM、TensorRT-LLM�
 vLLM'nin çekirdek satış noktası。KV kasesi 16 token blokları ile bölünür; sayfa tablosu logik konumlarını fiziksel bloklara haritalarlar。 KV'de paylaşılabilir ve                                                                                                                                                                                                                                      
 
 
-拖动维度参数, observe cache size 如何变化──把序列长度或批量大小 推高, you'll see it moreover fast over the capacity of a single张 GPU──
-
-```figure
-kv-cache-sizer
-```
 
 ```figure
 flash-attention-memory
 ```
 
 ## Yapın onu.
+
+```figure
+iso-machine {"machine":"kv-cache"}
+```
 
 Görüyorum .`code/main.py`❖ Biz gerçekleştirmek:
 

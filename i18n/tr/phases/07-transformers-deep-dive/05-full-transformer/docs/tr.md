@@ -26,6 +26,12 @@ Bu ders bu yapı hakkında konuşuyor. Sonraki dersler özel olarak başlatılac
 5. **Layer normalization.** `LayerNorm`Ya da`RMSNorm`(现代) ―― sabit kalan akım。
 6. **Cross-attention (decoder only).**Dekoderden gelen sorular, anahtarlar ve kodlayıcı çıkışından gelen değerler
 
+observer a vector 如何流过单个块:Atention 在位置之间混合信息,residual 把信号继续向前携带,FFN 变化,而规则 让残流 保持稳定──
+
+```figure
+transformer-block
+```
+
 ### Kodlayıcı blok(BERT、T5 kodlayıcı 使用)
 
 ```
@@ -74,12 +80,6 @@ Bir kişi için.`d_model = d`且 FFN genişleme 为 `r`Çatış:
 
 - Evet .`d = 4096, r = 2.6, layers = 32`(大致对应 Llama 3 8B)`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (67M + 131M) ≈ 32 · 198M ≈ 6.3B`个块 内参数,再加上约1B'nin gömülmeleri和输出头(128K sözcük × 4096,未绑定) ・・・这接近已发布的8B──真实模型使用GQA(更小的K和V预测) 和更宽的FFN(`r = 3.5`), ∆ıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı
 
-
-observer a vector 如何流过单个块:Atention 在位置之间混合信息,residual 把信号继续向前携带,FFN 变化,而规则 让残流 保持稳定──
-
-```figure
-transformer-block
-```
 
 ## Yapın onu.
 ### 步骤 1: yapı taşları
