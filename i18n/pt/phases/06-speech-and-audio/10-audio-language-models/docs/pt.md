@@ -130,17 +130,18 @@ class AudioProjector(nn.Module):
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-分別報告每个类别(discurso / som / música / multi-áudio) ――聚合数字会掩盖模型在哪里失败──
+`audio_path`Indicações de dados`data.zip`(cerca de 47 GB), o seu número não pode ser comparado com o de MMAU-Pro, mas é apenas um teste de sanidade, e não um teste de referência, por isso o seu número não pode ser comparado com o de MMAU-Pro.`model_output`列, depois运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro)Em meio`evaluate_mmau_pro_comprehensive.py`❖ 分别 relatório cada `category`(discurso, som, música, múltiplos e suas restantes categorias)
 
 ## Use-o
 
