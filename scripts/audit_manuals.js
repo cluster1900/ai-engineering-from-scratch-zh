@@ -77,7 +77,9 @@ function proseIssues(span, add) {
   const limit = LIMITS[span.kind];
   if (span.kind === 'claim' && !/\.$/.test(raw.trim())) add(span.where, rule, 'a figure claim is one sentence that ends with a period');
   if ((span.kind === 'claim' || span.kind === 'thesis') && parts.length !== 1) add(span.where, rule, `a ${span.kind} must be one sentence`);
-  for (const sentence of parts) {
+  // Chinese prose: a full-width 。！？ ends a sentence for the length and tell checks.
+  const counted = parts.flatMap(part => part.split(/(?<=[。！？])/).map(piece => piece.trim()).filter(Boolean));
+  for (const sentence of counted) {
     const count = wordCount(sentence);
     if (limit && count > limit) add(span.where, rule, `${count} words (limit ${limit}): "${sentence.slice(0, 90)}"`);
     for (const [pattern, name] of TELLS) if (pattern.test(sentence)) add(span.where, 'tell', `${name}: "${sentence.slice(0, 90)}"`);
