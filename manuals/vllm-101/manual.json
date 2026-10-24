@@ -256,9 +256,9 @@
     },
     {
       "number": 6,
-      "title": "Scale Out",
-      "thesis": "Add GPUs only after one GPU is tuned, and pick the layout from the shape of the work.",
-      "summary": "Tensor, pipeline, and data parallelism, expert parallelism, prefill and decode on separate servers, Kubernetes, and other accelerators.",
+      "title": "横向扩展",
+      "thesis": "先把一块 GPU 调好再增加 GPU，并根据工作负载的形态选择布局。",
+      "summary": "Tensor、pipeline 和 data parallelism，expert parallelism，在不同服务器上运行 prefill 和 decode，Kubernetes，以及其他加速器。",
       "accent": "indigo",
       "sections": [
         {
