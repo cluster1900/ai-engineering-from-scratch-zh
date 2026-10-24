@@ -102,6 +102,25 @@ python3 code/main.py
 
 根据运营形态(自主托管,管理,框架集成)选择,而不是根据核心模式 选择;核心模式就是 MemGPT。
 
+### 智能体记忆的形态
+
+حل المشكلة هو القدرة، فإنه لا يقرر ما يجب أن يبقى. في نظام الإنتاج ظهر مراراً وتكراراً أربعة أنواع من النماذج، كل منها يجيب على سؤال مختلف:
+
+- **Working memory** 现在什么最重要?in context 层:当前任务、最近几轮对话、固定的核心部分──也就是即时本身──
+- **Episodic memory** 发生了什么? الماضي الحوارات والمسارات،连同会议 和 转引用一起存储,可按需回放──
+- **Semantic memory** 什么是真的? حول الحقائق المستخدمة 领域和世界, مع التغييرات يتم تحديثها وإعادة إعادة تعديلها.
+- **Procedural memory** كيف يجب أن نفعل هذا؟ تعلم الروتينات والتحفيزات والقواعد، التي تشير إلى السلوك في المستقبل، وليس الذاكرة.
+
+开源实现 تم اختيار نقاط دخول مختلفة:
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ## 交付 it
 `outputs/skill-virtual-memory.md`هو مهارة قابلة للاستعادة، يمكن استخدامها لأي وقت تشغيل هدف 生成正确的二层内存架(主 + أرشيف + أداة سطح) ،并接好排斥政策 和引用字段──
 
@@ -129,3 +148,7 @@ python3 code/main.py
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks) تطور ثلاثي المستويات
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) وضع السياق  نظرة على الميزانية
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413)  بناء ذاكرة الإنتاج الهجينة على هذا النموذج
+- [Zep (getzep/zep)](https://github.com/getzep/zep) 分类表中的 علم زمني-سطور الذاكرة
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) الدروس 09 متجر الهجين 背后的 استخراج خط الأنابيب
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem) في الخلفية تحديد الحقائق و قواعد السلوك
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory) إعادة ضبط الجلسة وتدمجها إلى نوع من السجلات التي يمكن البحث عنها

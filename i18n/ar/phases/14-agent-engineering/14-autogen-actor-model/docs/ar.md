@@ -34,6 +34,8 @@
 
 ### AutoGen v0.4 中的三个API层
 
+أوتوجين v0.4 وضعها واجهة التقاط إلى ثلاثة طبقات:
+
 1. **Core.**إطار ممثلين من المستوى السفلي`AgentRuntime`.`Agent`.`Message`.`Topic`◊ تبادل رسائل غير متزامن، محرك على الحدث
 2. **AgentChat.**面向任务的高层API(بدل v0.2 من ConversableAgent)`AssistantAgent`.`UserProxyAgent`.`RoundRobinGroupChat`.`SelectorGroupChat`.
 3. **Extensions.**集成:OpenAI、Anthropic、Azure、tools、memory‬
