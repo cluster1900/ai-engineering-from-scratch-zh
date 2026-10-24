@@ -53,6 +53,12 @@ Este 10 GiB en 32K, hasta 128K aumentará a 40 GiB, sólo el tamaño de lote 1 d
 
 **GQA 是 KV-cache 的关键收益。**Utiliza 64 cabezas de KV de MHA, 8x más grande, en 32K de tiempo aproximadamente 80 GiB.
 
+拖动维度参数, observar el tamaño del caché 如何变化──把 secuencia longitud o tamaño de lote 推高, verás que es más rápido que la capacidad de un solo GPU──
+
+```figure
+kv-cache-sizer
+```
+
 ### Atención flash  azulejos 技巧
 
 标准 atención:
@@ -113,17 +119,16 @@ Batchings continuos ([[{{url={{url={{url={{url={{url={{url={{url={{url={{url={{u
 VLLM de punto de venta central. KV cache de 16 tokens de bloques de distribución. tabla de página se distribuirá la posición lógica de la distribución de bloques físicos. Puede ser compartido entre los mismos.
 
 
-拖动维度参数, observar el tamaño del caché 如何变化──把 secuencia longitud o tamaño de lote 推高, verás que es más rápido que la capacidad de un solo GPU──
-
-```figure
-kv-cache-sizer
-```
 
 ```figure
 flash-attention-memory
 ```
 
 ## Construirlo
+
+```figure
+iso-machine {"machine":"kv-cache"}
+```
 
 ¿ Qué ?`code/main.py`❖ Nosotros realizamos:
 

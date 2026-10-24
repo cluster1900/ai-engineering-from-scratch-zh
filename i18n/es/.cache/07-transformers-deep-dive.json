@@ -1,18 +1,18 @@
 {
   "phases/07-transformers-deep-dive/01-why-transformers/docs/en.md": "4909524c97f53bcfb6129ad8b44d7fe9179a0cceba7c2888b58590c6ef442eeb",
-  "phases/07-transformers-deep-dive/02-self-attention-from-scratch/docs/en.md": "4b70a0139a515d0af5476caebe1a5d8e87df06f1b99b1e6a68f0aad93da16c4b",
+  "phases/07-transformers-deep-dive/02-self-attention-from-scratch/docs/en.md": "9aa7d2f72ddecf7df7a3993cb1b6db9d788aea81b9d1b3f4b88bb56b6adc9573",
   "phases/07-transformers-deep-dive/03-multi-head-attention/docs/en.md": "9a75ee95fe6bdd5c36cd9a3b199088f56d098713d2d5a3cd78ef5e34b475ac71",
   "phases/07-transformers-deep-dive/04-positional-encoding/docs/en.md": "13d36e946abb0b8b8ebea6cdde8c724536fa94dd367787372a54437dc872a88c",
-  "phases/07-transformers-deep-dive/05-full-transformer/docs/en.md": "326be636736fcf081a451cf4ab27553d1206e3ee89a569547eee3bc269b70642",
+  "phases/07-transformers-deep-dive/05-full-transformer/docs/en.md": "443cd60198cd33975a33584625a292466cfe823ba1abb298cc5e1b295236995a",
   "phases/07-transformers-deep-dive/06-bert-masked-language-modeling/docs/en.md": "378e589cfe7e45b0ea2f9cc8c121b58f2f53cc28040b0bb3de1a4d8af5aa931e",
   "phases/07-transformers-deep-dive/07-gpt-causal-language-modeling/docs/en.md": "39683967ced7942fe522bc23d03906c2a7cdb374b4610c82ca55b28172880ff8",
   "phases/07-transformers-deep-dive/08-t5-bart-encoder-decoder/docs/en.md": "5bc5bd183d2d77f5fe059c9d761d8274ce62497ea9305571f016d88cd5be6a97",
   "phases/07-transformers-deep-dive/09-vision-transformers/docs/en.md": "74e9f297e760431c7d800fbbb2f79dd4f2c8c38c9f226a8018ab38fcc6bdb0d3",
   "phases/07-transformers-deep-dive/10-audio-transformers-whisper/docs/en.md": "1d9e57304611f020aa71cb58fcf4a3b1431181bc7ea55b88bcfcaa271d15f7cc",
   "phases/07-transformers-deep-dive/11-mixture-of-experts/docs/en.md": "7d8d4096a605de7815b7153217d4156f69172bb46305e40fb6bc74bb2a9a110a",
-  "phases/07-transformers-deep-dive/12-kv-cache-flash-attention/docs/en.md": "30d720c69c4d3fe851baf7f663caac052b1ada64009d897581cbdaecb096aac0",
+  "phases/07-transformers-deep-dive/12-kv-cache-flash-attention/docs/en.md": "3bcfdca9fa18deecefda3af80633d5c2540a9a7c7f80a442427758ad8f1c8901",
   "phases/07-transformers-deep-dive/13-scaling-laws/docs/en.md": "4190f9b063c764982676a4b167337d3df13fd1d640c2e80d4d9f3adb0f82ade1",
   "phases/07-transformers-deep-dive/14-build-a-transformer-capstone/docs/en.md": "188cacad7a94cb1abf86058b03c981739b971913070f34f6d7fd8ef110ef25cf",
   "phases/07-transformers-deep-dive/15-attention-variants/docs/en.md": "19bf6571c7b6a38affb5f707c8db86e0c36ee861df78025908df9483767ed1f3",
-  "phases/07-transformers-deep-dive/16-speculative-decoding/docs/en.md": "eb63176573d13c70402df418a0f35f241baf0e8330fe0e2a8838d840a67b9796"
+  "phases/07-transformers-deep-dive/16-speculative-decoding/docs/en.md": "7b106949fe5ab6901e2f864ff09ba15e119dbaff914c75f328bb8a9137345a81"
 }

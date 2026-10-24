@@ -26,6 +26,12 @@ Este curso habla de esta estructura.
 5. **Layer normalization.** `LayerNorm`O `RMSNorm`(现代) ・ Estabilizar el flujo residual―
 6. **Cross-attention (decoder only).**Las consultas de un decodificador, claves y valores de la salida del codificador.
 
+ observar un vector  cómo fluye a través de un solo bloque: Atención en la mezcla de información entre la posición, residual, Colocar la señal hacia adelante, FFN hacer cambios, mientras que la norma  dejar el flujo residual  mantener estabilizado.
+
+```figure
+transformer-block
+```
+
 ### Bloqueo de codificación(BERT、T5 codificador 使用)
 
 ```
@@ -74,12 +80,6 @@ RMSNorm se ha ido perdiendo la media-centradación de LayerNorm (<1 subtracción
 
 Cuando`d = 4096, r = 2.6, layers = 32`(大致对应 Llama 3 8B)`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (67M + 131M) ≈ 32 · 198M ≈ 6.3B`个块 内参数,再加上约1B的嵌入和输出头(128K vocab × 4096,未绑) ・・・这接近已发布的8B──真实模型使用GQA(更小的K和V预测) 和更宽的FFN(`r = 3.5`), trasladó los parámetros de la atención a FFN, pero el total sigue cerca de 8B―
 
-
- observar un vector  cómo fluye a través de un solo bloque: Atención en la mezcla de información entre la posición, residual, Colocar la señal hacia adelante, FFN hacer cambios, mientras que la norma  dejar el flujo residual  mantener estabilizado.
-
-```figure
-transformer-block
-```
 
 ## Construirlo
 ### 步骤 1: bloques de construcción
