@@ -25,9 +25,9 @@
 
 关键成分是视觉标记器──Emu3 训练一个定制的IBQ类标记器(反瓶定量器,SBER-MoVQGAN家族),每个标记做8×8分辨率降低──一张512×512图像会变成64×64=4096代币,代码书大小为32768──
 
-这比Chameleon 在 K=8192 时每张512x512的1024个代币更大,但每个代币更便宜(更小的代码书查找更简单的代码) 关键标志:重建PSNR为30.5dB,能与稳定扩散的32dB连续潜伏空间竞争──
+这比马里昂在K=8192 时每张512x512的1024个代币更大,两个维度都更大:代码数是4倍,代码簿也是4倍.
 
-对于视频:3D VQ Tokenizer 将编码为一个整数. 编码为一个整数. 一个4s片,8 FPS,有32个框架. 在 256x256、4x空间与4x时间缩小下,Token 数量为 (256/4) * (256/4) * (32/4) = 64 * 64 * 8 = 32,768个代币.
+对于视频:3D VQ Tokenizer 将一个空间时间补丁编码为一个整数――4个框 x 8x8像素) 编码为一个整数――一个4s片,8 FPS,有32个框;在 256x256、8x空间与4x时间缩减下,Token 数量为 (256/8) * (256/8) * (32/4) = 32 * 32 * 8 = 8,192个代币――
 
 标签质量就是上限. 标签的贡献部分在于,我们训练了一个非常好的标签.
 
@@ -65,14 +65,14 @@
 来自Emu3论文:
 
 - 图像生成:在MJHQ-30K FID(5.4 vs 5.6) 、GenEval总体(0.54 vs 0.55,统计上打平) 和深度Eval的复合上达到相当水平或更好,超过SDXL。
-- 图像感知:在VQAv2(75.1vs72.4) 上超过LLaVA-1.6,在MMMU上大致持平──
+- 图像感知:在VQAv2(75.1vs81.8) 和MMMU(31.6vs35.1) 上落后于LLaVA-1.6,但在SEED-Bench、OCRBench 和 ChartQA 上超过它──
 - 视频生成:4秒录像质量在FVD上与 Sora时代公开标识型号具有竞争力――
 
 这些数字并不总是胜利,Emu3会在这里多一分,那里少一分,但下一个代码预测是你需要的.
 
 ### 计算成本
 
-3 使用7B参数模型,在约3亿多模代币上训练――GPU小时 大致相当于Llama-2-7B预训练(A100级上2k-4kGPU年) ――稳定扩散3 这样的扩散模型 训练预算类似,但需要独立的文本编码器和更复杂的管道――
+作为参考,Llama-2-7B预训练使用了约184k A100 GPU-小时,约21 GPU-年――稳定分散3 这样的分散模型 训练预算类似,但需要独立的文本编码器和更复杂的管道――
 
 推理时,Emu3 每张图像比SDXL慢:4096图像代币,以30个单秒计算,大约每张512x512图像2分钟,而SDXL为2-5秒.
 
@@ -101,11 +101,11 @@ l5-emu3-next-token
 ## 练习
 1. 图像产生4096个代币. 计算1024x1024和2048x2048的等价数量.
 
-2. 阅读Emu3 第3.3节关于视频代币器的内容.
+2. 阅读Emu3 第3.3节关于视频代币器的内容. 描述3DVQ补丁形状,以及为什么它跨越4个框架 x8x8像素,而不是单个框架.
 
 3. 视觉效果有什么变化?追踪 `code/main.py`中文数学过程
 
-4. 计算Emu3-7B 在300B代币下列训练FLOPs,并与稳定分散3比较.
+4. 假设训练300B代币,计算Emu3(8B) 的训练FLOPs,并与稳定分散3比较.
 
 5. 由于FID的Emu3上升于SDXL,但VQAv2上不如专业VLMs――解释为什么统一损失方法在不同基准上与专家相比会表现出不同的优势――
 
@@ -114,7 +114,7 @@ l5-emu3-next-token
 |------|-----------------|------------------------|
 | Next-token prediction | "NTP" | 标准 autoregressive loss：给定 token[0..i] 预测 token[i+1]；tokenized 后适用于每种 modality |
 | IBQ tokenizer | "Inverse bottleneck quantizer" | 一类 VQ-VAE，codebooks 更大（32768+），重建效果优于 Chameleon 的 Tokenizer |
-| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖一个 4x4x4 pixel cube |
+| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖 4 frames x 8x8 pixels |
 | Classifier-free guidance | "CFG" | 用 weight gamma 混合 conditional 和 unconditional logits；在推理时提升图像质量 |
 | Unified vocabulary | "Shared tokens" | Text + image + video 都来自同一个 integer space；模型预测接下来出现的任何 modality |
 | MJHQ-30K | "Image gen benchmark" | 含 30k prompts 的 Midjourney-quality benchmark；Emu3 在这里报告 FID |

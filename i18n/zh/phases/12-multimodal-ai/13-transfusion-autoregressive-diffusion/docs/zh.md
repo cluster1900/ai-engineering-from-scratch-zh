@@ -48,7 +48,7 @@
 M[i, j] = 1 if:
   (i is text and j is text and j <= i)   # causal for text
   OR (i is image and j is image and same_image_block(i, j))   # bidirectional within image
-  OR (i is text and j is image and j < i_image_end)   # text attends to previous images
+  OR (i is text and j is image and j < i)   # text attends to images that closed before it
   OR (i is image and j is text and j < i_image_start)   # image attends to preceding text
 ```
 
@@ -94,7 +94,7 @@ M[i, j] = 1 if:
 
 通过解用于理解和生成视觉编码器来改进转化的想法:一个使用SigLIP,另一个使用VQ,同时共享变压器体──Show-o(课 12.14) 把扩散转换为分离扩散罩预测──统一生成家族在转化后迅速分叉──
 
-2026年能够输出图像的生产级VLM,例如双子座3 Pro、GPT-5、Claude Opus 4.7的图像生成路径,几乎肯定使用了这个家族的后代.
+原生输出图像的闭源生产模型可能使用了这个家族的后代,但它们的架构没有公开,因此任何这种说法都只能被视为猜测.
 
 
 ```figure
@@ -108,7 +108,7 @@ cfg-guidance-scale
 - 图像是4x4 字节网格.
 - 一对共享权重的线性投影 充当变压器 替代;文本上使用NTP损失,噪音补丁上使用MSE损失――
 - 训练循环交换使用两个损失,注意力面具是显而易见的.
-- 生成在一次前进传输中产生文本标题和4x4图像.
+- 一个面具 演示,打印文字、图像、文字 序列的块三角形注意力模式──不运行生成:真实样本 会逐个标记 解码文本,再经过多步骤对图像补丁 去噪音,练习中会计算这一点──
 
 这种变压器是玩具级的. 双损失管道,注意力面具,构建和推理循环才是真正的产品.
 
