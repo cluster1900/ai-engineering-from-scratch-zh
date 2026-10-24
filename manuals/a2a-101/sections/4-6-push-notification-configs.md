@@ -8,7 +8,7 @@ When you finish this section, you can register a webhook, authenticate what arri
 
 ## The configuration object
 
-**TaskPushNotificationConfig:** the object that tells an agent where to post updates for one task and how to authenticate them {{proto TaskPushNotificationConfig}}. Only `url` is REQUIRED. The optional `token` is "A token unique for this task or session" {{proto TaskPushNotificationConfig}}, and the optional `authentication` holds a `scheme` such as `Bearer` and its `credentials` {{proto AuthenticationInfo}}. The server assigns the config's `id`. The prose calls this object `PushNotificationConfig`, a type the proto does not define, so use the proto name {{spec §4.3.1}} ([conflict D4](#s-ref-sources)).
+**TaskPushNotificationConfig:** the object that tells an agent where to post updates for one task and how to authenticate them {{proto TaskPushNotificationConfig}}. Only `url` is REQUIRED. The optional `token` is unique to the task or the session {{proto TaskPushNotificationConfig}}, and the optional `authentication` holds a `scheme` such as `Bearer` and its `credentials` {{proto AuthenticationInfo}}. The server assigns the config's `id`. The prose calls this object `PushNotificationConfig`, a type the proto does not define, so use the proto name {{spec §4.3.1}} ([conflict D4](#s-ref-sources)).
 
 ```listing
 title: a webhook registered inside SendMessage
@@ -71,7 +71,7 @@ X-A2A-Notification-Token: planner-run-0006
       "timestamp": "2026-10-06T09:00:05.000Z"
 ```
 
-"The agent MUST include authentication credentials in the request headers as specified in the `PushNotificationConfig.authentication` field" {{spec §4.3.3}}. The specification gives the `token` no transport, and the kit sends it in `X-A2A-Notification-Token`, the reference SDK's header {{sdk src/a2a/server/tasks/base_push_notification_sender.py}}.
+The agent must put the credentials from `PushNotificationConfig.authentication` in the request headers {{spec §4.3.3}}. The specification gives the `token` no transport, and the kit sends it in `X-A2A-Notification-Token`, the reference SDK's header {{sdk src/a2a/server/tasks/base_push_notification_sender.py}}.
 
 The specification's request format uses `application/a2a+json` {{spec §4.3.3}}, and the reference SDK posts `application/json` {{sdk src/a2a/server/tasks/base_push_notification_sender.py}}, as the kit README lists. The SDKs also differ on the token header and the timeout, and none retries:
 
@@ -92,18 +92,18 @@ Every sender in the table posts one `StreamResponse` per event. So accept both c
 label: delivery
 source: spec §4.3.3
 ---
-"Agents MUST attempt delivery at least once for each configured webhook"
+An agent must try to deliver to each configured webhook at least once.
 ```
 
-At least once means a notification can arrive twice, so the receiver has duties too: "Clients MUST respond with HTTP 2xx status codes to acknowledge successful receipt", "Clients SHOULD process notifications idempotently, as duplicate deliveries may occur", and "Clients MUST validate the task ID matches an expected task" {{spec §4.3.3}}.
+At least once means a notification can arrive twice, so the receiver has duties too. It must answer with an HTTP 2xx status to confirm receipt. It should process notifications idempotently, because duplicates can arrive. It must check that the task id matches a task it expects {{spec §4.3.3}}.
 
 A status update is safe to apply twice, keyed by `taskId` and `timestamp`. An `artifactUpdate` with `append: true` is not, and the specification defines no delivery id. So treat each notification as a signal and read the task with `GetTask`, as the project's guide suggests {{docs streaming-and-async}}.
 
-Retries are optional: "Agents MAY implement retry logic with exponential backoff for failed deliveries" {{spec §4.3.3}}. No SDK in the table retries, so a receiver that was down reads the task with `GetTask` when it comes back.
+Retries are optional: an agent is allowed to retry a failed delivery with exponential backoff {{spec §4.3.3}}. No SDK in the table retries, so a receiver that was down reads the task with `GetTask` when it comes back.
 
 ## Managing configurations
 
-Four operations manage the stored configs of a task: create, get, list, and delete {{proto A2AService}}. The capture lists, reads, and deletes its config after the run, as [figure](#fig-push-webhook) shows. A config "MUST persist until task completion or explicit deletion" {{spec §3.1.7}}, and a delete "MUST be idempotent" {{spec §3.1.10}}.
+Four operations manage the stored configs of a task: create, get, list, and delete {{proto A2AService}}. The capture lists, reads, and deletes its config after the run, as [figure](#fig-push-webhook) shows. A config must stay until the task completes or until a client deletes it {{spec §3.1.7}}, and a delete must be idempotent {{spec §3.1.10}}.
 
 Get and list return the stored `credentials` unchanged, in the kit and the reference SDK {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}, so whoever can call them can read the webhook secret. All four operations need `pushNotifications` on the card, or they return `PushNotificationNotSupportedError` {{spec §3.3.4}}.
 

@@ -8,9 +8,9 @@ When you finish this section, you can tell the four endings apart, call `CancelT
 
 ## Terminal states
 
-**Terminal state:** one of the four states that end a task: `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, and `TASK_STATE_REJECTED`. The proto marks each one with "This is a terminal state" {{proto TaskState}}.
+**Terminal state:** one of the four states that end a task: `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, and `TASK_STATE_REJECTED`. The proto marks each one as terminal {{proto TaskState}}.
 
-A terminal task never changes again: "Once a task reaches a terminal state (completed, canceled, rejected, or failed), it cannot restart" {{docs life-of-a-task}}. [Figure](#fig-task-endings) sets the four endings side by side.
+A terminal task never changes again: once it is completed, canceled, rejected, or failed, it cannot restart {{docs life-of-a-task}}. [Figure](#fig-task-endings) sets the four endings side by side.
 
 ```figure
 id: fig-task-endings
@@ -46,19 +46,19 @@ note: Cut to the state, the status message, and the start of the summary.json da
                 "failed": 1,
 ```
 
-Completed "Indicates that a task has finished successfully" {{proto TaskState}}, and the job was to run the suite. Whether the code is good is a result, and results travel in artifacts {{spec §3.7}}. The kit's planner reads the `failed` count in `summary.json` before a deploy.
+Completed means that a task finished successfully {{proto TaskState}}, and the job was to run the suite. Whether the code is good is a result, and results travel in artifacts {{spec §3.7}}. The kit's planner reads the `failed` count in `summary.json` before a deploy.
 
-Commit `deadbee` does not exist, so task `8ae21dcb` ended in `TASK_STATE_FAILED`, which "Indicates that a task has finished with an error" {{proto TaskState}}. The same request fails the same way, so fix the input and start a new task. If the agent crashes, the reference SDK stores the task as failed, yet a blocking send gets an error {{sdk src/a2a/server/agent_execution/active_task.py}}. Treat that error as an unknown outcome.
+Commit `deadbee` does not exist, so task `8ae21dcb` ended in `TASK_STATE_FAILED`, which means that the task finished with an error {{proto TaskState}}. The same request fails the same way, so fix the input and start a new task. If the agent crashes, the reference SDK stores the task as failed, yet a blocking send gets an error {{sdk src/a2a/server/agent_execution/active_task.py}}. Treat that error as an unknown outcome.
 
-The planner asked `deployer` for a production deploy. Task `23cf3710` went straight to `TASK_STATE_REJECTED`, which "Indicates that the agent has decided to not perform the task" {{proto TaskState}}. A loop that stops only on completed, failed, and canceled polls a rejected task forever. The same request gets the same refusal, so follow the status message: "Production deploys are outside this agent's policy. Use the release train."
+The planner asked `deployer` for a production deploy. Task `23cf3710` went straight to `TASK_STATE_REJECTED`, which means that the agent decided not to do the task {{proto TaskState}}. A loop that stops only on completed, failed, and canceled polls a rejected task forever. The same request gets the same refusal, so follow the status message: "Production deploys are outside this agent's policy. Use the release train."
 
 ## CancelTask
 
 **CancelTask:** the operation that asks the server to stop a task, given its `id` {{proto CancelTaskRequest}}. Task `f22ed7af` was running the full suite when the planner called it. The reply was the task in `TASK_STATE_CANCELED`, with the two log chunks it had already written.
 
-A cancel is a request: "The server will attempt to cancel the task, but success is not guaranteed" {{spec §3.1.5}}. The specification does not say which unfinished states a server must cancel, and the reference SDK cancels any task that is not terminal {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}.
+A cancel is a request: the server tries to cancel the task, but success is not guaranteed {{spec §3.1.5}}. The specification does not say which unfinished states a server must cancel, and the reference SDK cancels any task that is not terminal {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}.
 
-A second `CancelTask` gets `TaskNotCancelableError`, `-32002`, from the kit and the reference SDK {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}, as §3.1.5 lists for a task "already completed, failed, or canceled" {{spec §3.1.5}}. Section 3.3.1 disagrees: "Cancel Task operations are idempotent - multiple cancellation requests have the same effect" {{spec §3.3.1}}, and a repeat on a purged task "MAY return TaskNotFoundError" {{spec §3.3.1}}.
+A second `CancelTask` gets `TaskNotCancelableError`, `-32002`, from the kit and the reference SDK {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}, as §3.1.5 lists for a finished task {{spec §3.1.5}}. Section 3.3.1 disagrees: it calls Cancel Task idempotent, so several cancel requests have the same effect {{spec §3.3.1}}. A repeat on a deleted task is allowed to return `TaskNotFoundError` {{spec §3.3.1}}.
 
 So after a cancel that errors, call `GetTask`. Canceled means an earlier cancel worked, another terminal state means the task ended first, and running means the server cannot stop it {{spec §3.1.5}}.
 

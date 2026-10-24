@@ -8,7 +8,7 @@ Neither task has failed. When you finish this section, you can recognize an inte
 
 ## Two states that wait
 
-**Interrupted state:** a state in which the agent has stopped work and needs something before it can continue. The proto marks exactly two states this way, `TASK_STATE_INPUT_REQUIRED` and `TASK_STATE_AUTH_REQUIRED`, each with the words "This is an interrupted state." {{proto TaskState}}
+**Interrupted state:** a state in which the agent has stopped work and needs something before it can continue. The proto marks exactly two states this way, `TASK_STATE_INPUT_REQUIRED` and `TASK_STATE_AUTH_REQUIRED`, and the proto marks each of them as interrupted {{proto TaskState}}.
 
 An interrupted task keeps its id, history, and artifacts, and its status message says what the agent needs. A blocking `SendMessage` returns as soon as the task reaches either state {{spec §3.2.2}}. `TASK_STATE_INPUT_REQUIRED` needs an answer, sent as a new message on the same task. `TASK_STATE_AUTH_REQUIRED` needs a credential or an approval, sent outside A2A, and the task can resume without a client message.
 
@@ -41,7 +41,7 @@ note: The envelope above the task, the ids inside the status message, and the hi
       …
 ```
 
-The answer is an ordinary `SendMessage` that names the task: "The client continues the interaction by sending a new message with the same taskId and contextId" {{spec §3.4.3}}. The planner answers `main` with both ids. The second reply returns the same task in `TASK_STATE_COMPLETED`, with the `review.json` artifact. [Figure](#fig-input-required) follows the whole exchange.
+The answer is an ordinary `SendMessage` that names the task: the client continues with a new message that has the same `taskId` and `contextId` {{spec §3.4.3}}. The planner answers `main` with both ids. The second reply returns the same task in `TASK_STATE_COMPLETED`, with the `review.json` artifact. [Figure](#fig-input-required) follows the whole exchange.
 
 ```figure
 id: fig-input-required
@@ -53,13 +53,13 @@ caption: Read top to bottom. Steps 1 to 3 are the first `SendMessage` and its re
 
 ## Authorization that arrives outside A2A
 
-An agent that needs permission partway through a task, such as "An agent requiring human approval before a destructive action is taken" {{spec §7.6}}, "MUST transition the TaskState to TASK_STATE_AUTH_REQUIRED" {{spec §7.6.1}}. The credential takes another road:
+An agent can need permission partway through a task, for example human approval before a destructive action {{spec §7.6}}. Such an agent must move the task to `TASK_STATE_AUTH_REQUIRED` {{spec §7.6.1}}. The credential takes another road:
 
 ```rule
 label: where the credential travels
 source: spec §7.6.1
 ---
-"Agents MUST arrange to receive credentials via an out-of-band means, unless an in-band mechanism has been negotiated out-of-band or via an extension."
+An agent must get credentials through a channel outside A2A. The exception is an in-band mechanism that the two sides agreed on outside A2A or through an extension.
 ```
 
 The deployer's third stream frame names the place where an operator approves:
@@ -89,7 +89,7 @@ note: The JSON-RPC envelope and the ids inside the status message are cut.
           }
 ```
 
-The approval never enters the protocol. In the kit an operator sends `POST /approve/<task id>` to the deployer, as [the kit README](manuals/a2a-101/capture/README.md) lists. No client message follows: "The agent MAY immediately continue Task processing after receiving the credential, without a requirement that clients send a follow-up message." {{spec §7.6.1}}
+The approval never enters the protocol. In the kit an operator sends `POST /approve/<task id>` to the deployer, as [the kit README](manuals/a2a-101/capture/README.md) lists. No client message follows. After the agent receives the credential, it is allowed to continue the task at once. The client does not have to send another message {{spec §7.6.1}}.
 
 A client that is itself an agent can pass the request upstream by moving its own task to `TASK_STATE_AUTH_REQUIRED` {{spec §7.6.2}}. [Security schemes and in-task authorization](#s-security-schemes-and-in-task-authorization) covers what such a chain does to credentials.
 
@@ -103,7 +103,9 @@ caption: Read top to bottom. Steps 2 to 4 and 7 to 9 are the six frames of one s
 
 ## When the stream closes
 
-In this capture the stream stays open through the wait. Closing is a MUST only at terminal states {{spec §3.1.2}}, and the HTTP+JSON binding closes at "a terminal or interrupted state" {{spec §11.7}}. An agent that waits for a credential outside A2A "SHOULD maintain any active response streams with the client after setting the TaskState to TASK_STATE_AUTH_REQUIRED" {{spec §7.6.1}}. The specification does not settle this ([conflict D3](#s-ref-sources)). Upstream, [PR #2270](https://github.com/a2aproject/A2A/pull/2270) on branch `dev-1.1`, approved on 2026-09-29 and unreleased, makes both interrupted states non-terminal and says entering one "does not necessitate closing a streaming response". On `main`, §11.7 and the streaming guide still say "terminal or interrupted".
+In this capture the stream stays open through the wait. Closing is a MUST only at terminal states {{spec §3.1.2}}, and the HTTP+JSON binding closes at a terminal state or at an interrupted state {{spec §11.7}}. An agent that waits for a credential outside A2A should keep its open response streams after it moves the task to `TASK_STATE_AUTH_REQUIRED` {{spec §7.6.1}}. The specification does not settle this ([conflict D3](#s-ref-sources)).
+
+Upstream, [PR #2270](https://github.com/a2aproject/A2A/pull/2270) on branch `dev-1.1`, approved on 2026-09-29 and unreleased, makes both interrupted states non-terminal. It says that entering one does not require closing a stream. On `main`, §11.7 and the streaming guide still close at both kinds of state.
 
 The kit closes at `TASK_STATE_INPUT_REQUIRED` and stays open through `TASK_STATE_AUTH_REQUIRED`, as the kit README lists. The SDKs split the same way:
 
@@ -120,7 +122,7 @@ A closed stream ends your watching, never the task. Call `GetTask`, and if the t
 
 ## Keep watching while someone else acts
 
-Without an open stream, "the client risks missing Task updates" {{spec §7.6.2}}, so subscribe with `SubscribeToTask`, register a webhook, or poll with `GetTask`.
+Without an open stream, the client can miss task updates {{spec §7.6.2}}, so subscribe with `SubscribeToTask`, register a webhook, or poll with `GetTask`.
 
 The kit's planner subscribes. Its blocking `SendMessage` returns task `a31361b3` in `TASK_STATE_AUTH_REQUIRED`, and it calls `SubscribeToTask` at once, in exchanges 7 and 8 of `19-planner.http`. It alerts the operator only after the first frame arrives, because the specification defines no replay of earlier events.
 

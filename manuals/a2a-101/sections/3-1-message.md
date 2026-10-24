@@ -8,7 +8,7 @@ When you finish this section, you can build a valid message and set its ids to c
 
 ## messageId, role, and parts
 
-**Message:** "one unit of communication between client and server" {{proto Message}}. It has eight fields, and only `messageId`, `role`, and `parts` are REQUIRED {{proto Message}}. The `parts` list "MUST contain at least one element" {{spec §5.7}}, and [Part](#s-part) explains what a part holds.
+**Message:** one unit of communication between the client and the server {{proto Message}}. It has eight fields, and only `messageId`, `role`, and `parts` are REQUIRED {{proto Message}}. The `parts` list must contain at least one element {{spec §5.7}}, and [Part](#s-part) explains what a part holds.
 
 [Figure](#fig-message-fields) sets three messages of that review side by side and names who sets each field.
 
@@ -17,12 +17,12 @@ id: fig-message-fields
 kind: structure
 title: who sets each field of a message
 claim: A message carries an id its sender mints, while its `contextId` and `taskId` come from the server and the client echoes them to continue.
-caption: Columns are three messages from capture/out/06-input-required.http, in the order they were sent. The right column names who sets each field. Ids shortened to 8 characters.
+caption: Columns are three messages from the input-required capture, in the order they were sent. The right column names who sets each field. Ids shortened to 8 characters.
 ```
 
-The sender creates `messageId`: "This is created by the message creator" {{proto Message}}. The kit refuses a message without one, as [Errors](#s-errors) shows. Spec samples in §11.2 and §6.3 leave `messageId` out {{spec §11.2}} {{spec §6.3}}, so never copy a sample as it stands ([conflict D23](#s-ref-sources)).
+The sender of the message creates `messageId` {{proto Message}}. The kit refuses a message without one, as [Errors](#s-errors) shows. Spec samples in §11.2 and §6.3 leave `messageId` out {{spec §11.2}} {{spec §6.3}}, so never copy a sample as it stands ([conflict D23](#s-ref-sources)).
 
-**Role:** the direction a message travels. The value `ROLE_USER` marks a message "from the client to the server" {{proto Role}}, and `ROLE_AGENT` marks one from the server to the client {{proto Role}}. The planner is an agent, yet its messages to `code-reviewer` carry `ROLE_USER`, because it is the client there.
+**Role:** the direction a message travels. The value `ROLE_USER` marks a message from the client to the server {{proto Role}}, and `ROLE_AGENT` marks one from the server to the client {{proto Role}}. The planner is an agent, yet its messages to `code-reviewer` carry `ROLE_USER`, because it is the client there.
 
 The glossary in §2.2 still writes the roles as "user" and "agent" {{spec §2.2}} {{spec §5.5}} ([conflict D35](#s-ref-sources)). The spec names no error for a client that sends `ROLE_AGENT`, and the kit answers `-32602`, as [the kit README](manuals/a2a-101/capture/README.md) lists.
 
@@ -73,15 +73,15 @@ note: The message of exchange 2, complete.
 
 Three rules govern those two ids:
 
-- **A client `taskId` must name a live task.** "When a client includes a `taskId` in a Message, it MUST reference an existing task" {{spec §3.4.2}}. An unknown id gets `TaskNotFoundError`, and [CancelTask and terminal states](#s-cancel-task-and-terminal-states) covers a finished task.
-- **The two ids must agree.** "Agents MUST reject messages containing mismatching `contextId` and `taskId`" {{spec §3.4.3}}. The spec names no error for this, and both the kit and the reference SDK answer `-32602` {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}.
-- **The context follows the task.** "Agents MUST infer `contextId` from the task if only `taskId` is provided" {{spec §3.4.3}}. The kit does, and the table below says what each SDK does.
+- **A client `taskId` must name a live task.** A `taskId` that a client puts in a message must refer to a task that exists {{spec §3.4.2}}. An unknown id gets `TaskNotFoundError`, and [CancelTask and terminal states](#s-cancel-task-and-terminal-states) covers a finished task.
+- **The two ids must agree.** An agent must reject a message whose `contextId` and `taskId` do not match {{spec §3.4.3}}. The spec names no error for this, and both the kit and the reference SDK answer `-32602` {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}.
+- **The context follows the task.** When a message has only a `taskId`, the agent must take the `contextId` from that task {{spec §3.4.3}}. The kit does, and the table below says what each SDK does.
 
 A message with a `contextId` and no `taskId` starts a new task in that conversation, as [contextId](#s-context-id) shows.
 
 ## What the SDKs do with the ids
 
-"Send Message operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages" {{spec §3.3.1}}. So a retry of a send that timed out can reuse the same `messageId`. No SDK rejects a repeated id, and without a `taskId` each one creates another task for it.
+Send Message operations are allowed to be idempotent, and an agent can use the `messageId` to find duplicate messages {{spec §3.3.1}}. So a retry of a send that timed out can reuse the same `messageId`. No SDK rejects a repeated id, and without a `taskId` each one creates another task for it.
 
 | SDK | Message with only `taskId` | Same `messageId` sent twice to one task |
 |---|---|---|
@@ -98,8 +98,8 @@ Five SDKs infer the context for the agent and store the message as sent, and the
 
 No message in the kit's captures sets these three:
 
-- **`referenceTaskIds`** lists "task IDs that this message references for additional context" {{proto Message}}.
-- **`extensions`** lists "The URIs of extensions that are present or contributed to this Message" {{proto Message}}, and [extensions](#s-extensions) covers them.
+- **`referenceTaskIds`** lists the ids of tasks that the message points to for more context {{proto Message}}.
+- **`extensions`** lists the URIs of the extensions that are present in the message or that added to it {{proto Message}}, and [extensions](#s-extensions) covers them.
 - **`metadata`** is a free-form JSON object {{proto Message}}.
 
 **Status message:** the one `message` a `TaskStatus` can hold, the agent's words inside a task {{proto TaskStatus}}. The reviewer's question was a status message, and the findings themselves arrive in the `review.json` artifact, as [what A2A standardizes](#s-what-a2a-standardizes) explains.

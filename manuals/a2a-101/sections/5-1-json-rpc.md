@@ -8,9 +8,9 @@ When you finish this section, you can write any A2A call as a JSON-RPC request a
 
 ## The envelope
 
-**Protocol binding:** the form the eleven operations take on one transport, with its names, routes, envelopes, headers, and error shapes. Three are standard: JSON-RPC {{spec §9}}, gRPC {{spec §10}}, and HTTP+JSON {{spec §11}}, and a card names each one in `protocolBinding` {{proto AgentInterface}}. The Core Concepts guide still says "JSON-RPC 2.0 is used as the payload format for all requests and responses" {{docs key-concepts}}, which describes one binding of three ([conflict D27](#s-ref-sources)).
+**Protocol binding:** the form the eleven operations take on one transport, with its names, routes, envelopes, headers, and error shapes. Three are standard: JSON-RPC {{spec §9}}, gRPC {{spec §10}}, and HTTP+JSON {{spec §11}}, and a card names each one in `protocolBinding` {{proto AgentInterface}}. The Core Concepts guide still says that every request and response uses JSON-RPC 2.0 as its payload format {{docs key-concepts}}. That describes one binding of three ([conflict D27](#s-ref-sources)).
 
-A JSON-RPC request is one JSON object with four members {{spec §9.3}}. `jsonrpc` is always `2.0`, the client chooses `id`, `method` holds the operation name, and `params` holds the request message. The names are "PascalCase method names matching gRPC conventions" {{spec §9.1}}, so `method` holds `SendMessage` or `GetTask`, the rpc names of `A2AService` {{proto A2AService}}. The template in §9.3 still shows the 0.3 style, `"method": "category/action"` {{spec §9.3}}, so copy the names from §9.1 or from [operations by binding](#s-ref-operations-by-binding) ([conflict D14](#s-ref-sources)). The kit answers the old name `message/send` with `-32601`, as exchange 3 of `11-errors.http` shows.
+A JSON-RPC request is one JSON object with four members {{spec §9.3}}. `jsonrpc` is always `2.0`, the client chooses `id`, `method` holds the operation name, and `params` holds the request message. The method names are in PascalCase, like the gRPC names {{spec §9.1}}, so `method` holds `SendMessage` or `GetTask`, the rpc names of `A2AService` {{proto A2AService}}. The template in §9.3 still shows the 0.3 style, `"method": "category/action"` {{spec §9.3}}, so copy the names from §9.1 or from [operations by binding](#s-ref-operations-by-binding) ([conflict D14](#s-ref-sources)). The kit answers the old name `message/send` with `-32601`, as exchange 3 of `11-errors.http` shows.
 
 The reply repeats the request's `id` and holds the response message in `result` {{spec §9.4.1}}. For `SendMessage` that message is a `SendMessageResponse` with one `task` or one `message` {{proto SendMessageResponse}}:
 
@@ -48,9 +48,9 @@ Content-Type: application/json
 
 ## One URL, one content type
 
-Every call is a POST to the URL of the chosen interface, because the binding is "JSON-RPC 2.0 over HTTP(S)" {{spec §9.1}}. The path carries no operation name, and the kit serves all eleven operations at `/a2a/jsonrpc`. Both the request and the reply use `application/json` {{spec §9.1}}, where HTTP+JSON uses its own type, as [HTTP+JSON](#s-http-json) explains.
+Every call is a POST to the URL of the chosen interface, because the binding is JSON-RPC 2.0 over HTTP or HTTPS {{spec §9.1}}. The path carries no operation name, and the kit serves all eleven operations at `/a2a/jsonrpc`. Both the request and the reply use `application/json` {{spec §9.1}}, where HTTP+JSON uses its own type, as [HTTP+JSON](#s-http-json) explains.
 
-The headers beside the body are the two service parameters, `A2A-Version` and `A2A-Extensions`, which "MUST be transmitted using standard HTTP request headers" in this binding {{spec §9.2}}. [A2A-Version and A2A-Extensions](#s-version-and-extension-headers) gives their rules and what each SDK does without them.
+The headers beside the body are the two service parameters, `A2A-Version` and `A2A-Extensions`, which must travel as standard HTTP request headers in this binding {{spec §9.2}}. [A2A-Version and A2A-Extensions](#s-version-and-extension-headers) gives their rules and what each SDK does without them.
 
 ## Streams as SSE frames
 

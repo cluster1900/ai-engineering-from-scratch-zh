@@ -8,9 +8,9 @@ When you finish this section, you can fetch an extended card, and sign and verif
 
 ## GetExtendedAgentCard
 
-**Extended card:** the fuller card an agent returns to an authenticated caller through `GetExtendedAgentCard`, with "additional details or skills not present in the public card" {{spec §3.1.11}}.
+**Extended card:** the fuller card an agent returns to an authenticated caller through `GetExtendedAgentCard`, with more details or skills than the public card has {{spec §3.1.11}}.
 
-The call needs credentials: "The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields." {{spec §3.1.11}} That rule still names `security`, which 1.0 replaced with `securityRequirements` {{proto AgentCard}} ([conflict D6](#s-ref-sources)). [PR #2046](https://github.com/a2aproject/A2A/pull/2046) fixed the §8.5 sample on main, and the §3.1.11 prose still says `security`.
+The call needs credentials. The client must authenticate the request with one of the schemes that the public card declares in `AgentCard.securitySchemes` and `AgentCard.security` {{spec §3.1.11}}. That rule still names `security`, which 1.0 replaced with `securityRequirements` {{proto AgentCard}} ([conflict D6](#s-ref-sources)). [PR #2046](https://github.com/a2aproject/A2A/pull/2046) fixed the §8.5 sample on main, and the §3.1.11 prose still says `security`.
 
 Appendix A.2.2 calls the 0.3 flag `supportsExtendedAgentCard`, and the migration guide says `supportsAuthenticatedExtendedCard` {{spec §A.2.2}} {{docs whats-new-v1}} ([conflict D40](#s-ref-sources)). It gives the new flag field 5, and the proto uses 4 {{spec §1.4}} {{proto AgentCapabilities}} ([conflict D7](#s-ref-sources)).
 
@@ -21,7 +21,7 @@ id: fig-extended-card
 kind: sequence
 title: earning the extended card
 claim: The same `GetExtendedAgentCard` call fails with HTTP 401 before any A2A method runs, then returns a card with a second skill once a token is attached.
-caption: Time runs down. Steps 1 and 2 come from capture/out/01-agent-cards.http. Steps 3 and 4 are exchange 1 of capture/out/18-extended-card.http, and steps 6 and 7 are exchange 2. The token comes from the platform team, outside A2A.
+caption: Time runs down. Steps 1 and 2 come from the captured agent cards. Steps 3 and 4 are exchange 1 of the extended-card capture, and steps 6 and 7 are exchange 2. The token comes from the platform team, outside A2A.
 ```
 
 ```listing
@@ -47,7 +47,7 @@ HTTP/1.1 200 OK
       }
 ```
 
-A client SHOULD replace its cached public card with the extended one "for the duration of their authenticated session or until the card's version changes" {{spec §3.1.11}}. Such cards "SHOULD NOT include sensitive information that could be exploited if leaked" {{spec §13.3}}. A declared flag with no card behind it answers `ExtendedAgentCardNotConfiguredError`, `-32007` {{spec §3.3.4}} {{spec §5.4}}.
+A client should use the extended card in place of its cached public card. That holds for the rest of the authenticated session, or until the `version` of the card changes {{spec §3.1.11}}. Such a card should not hold sensitive information that an attacker could use after a leak {{spec §13.3}}. A declared flag with no card behind it answers `ExtendedAgentCardNotConfiguredError`, `-32007` {{spec §3.3.4}} {{spec §5.4}}.
 
 The official SDKs leave the credential check to the host, and the table says who receives the card when the host adds nothing.
 
@@ -66,9 +66,9 @@ The official SDKs leave the credential check to the host, and the table says who
 
 Each entry holds a base64url `protected` header and `signature` {{proto AgentCardSignature}}, and a verifier rebuilds the signed bytes from the received card under three rules {{spec §8.4.1}}:
 
-1. **Field presence.** "Fields marked with `REQUIRED` MUST always be present, even if the field value matches the default." {{spec §8.4.1}} A field with the `optional` keyword stays whenever it was set, and any other field at its default value is dropped.
+1. **Field presence.** A field marked `REQUIRED` must always be present, even when its value is the default {{spec §8.4.1}}. A field with the `optional` keyword stays whenever it was set, and any other field at its default value is dropped.
 2. **RFC 8785.** The JSON Canonicalization Scheme sorts object keys, fixes one form for each value, and removes whitespace {{spec §8.4.1}}.
-3. **No signatures.** "The `signatures` field itself MUST be excluded from the content being signed to avoid circular dependencies." {{spec §8.4.1}}
+3. **No signatures.** The `signatures` field must be left out of the signed content, because a signature cannot cover itself {{spec §8.4.1}}.
 
 The protected header holds `alg`, `typ`, and `kid` {{spec §8.4.2}}, and the line for `typ` says SHOULD under a MUST heading ([conflict D20](#s-ref-sources)). An optional `jku` points to a JSON Web Key Set with the public key {{spec §8.4.2}}.
 
@@ -105,19 +105,19 @@ The kit signs with `HS256`, as [the kit README](manuals/a2a-101/capture/README.m
 
 Verification has six MUST steps {{spec §8.4.3}}. They take a signature, fetch the public key by `kid` and `jku` or from a trusted store, and check it against the rebuilt payload.
 
-Apply rule 1 when you rebuild, although the signing and verifying steps both say "Remove properties with default values" {{spec §8.4.2}} {{spec §8.4.3}} ([conflict D21](#s-ref-sources), open as [issue #2249](https://github.com/a2aproject/A2A/issues/2249)).
+Apply rule 1 when you rebuild. The signing and verifying steps both say to remove properties that have default values {{spec §8.4.2}} {{spec §8.4.3}} ([conflict D21](#s-ref-sources), open as [issue #2249](https://github.com/a2aproject/A2A/issues/2249)).
 
-The kit's check passes on the published card and fails on a copy whose description names production (`capture/run.py`), because the canonical bytes change. [Figure](#fig-card-signature) shows both checks.
+The kit's check passes on the published card and fails on a copy whose description names production, because the canonical bytes change. [Figure](#fig-card-signature) shows both checks.
 
 ```figure
 id: fig-card-signature
 kind: flow
 title: signing and verifying the deployer card
 claim: The signature covers the RFC 8785 bytes of the card without `signatures`, so an edit to the description changes those bytes and verification fails.
-caption: Read the top half left to right and down, then the bottom half left to right. Steps 5 and 6 are the last two lines of capture/out/17-signed-card.txt. Values are shortened to 8 characters.
+caption: Read the top half left to right and down, then the bottom half left to right. Steps 5 and 6 are the last two lines of the signed-card capture. Values are shortened to 8 characters.
 ```
 
-"Clients SHOULD verify at least one signature before trusting an Agent Card" {{spec §8.4.3}}, and never with an expired or revoked key. Give your verifier an explicit list of allowed algorithms, as the reference SDK does, to prevent algorithm confusion attacks {{sdk src/a2a/utils/signing.py}}. [Security requirements](#s-security-requirements) covers card spoofing.
+A client should verify at least one signature before it trusts an Agent Card {{spec §8.4.3}}, and never with an expired or revoked key. Give your verifier an explicit list of allowed algorithms, as the reference SDK does, to prevent algorithm confusion attacks {{sdk src/a2a/utils/signing.py}}. [Security requirements](#s-security-requirements) covers card spoofing.
 
 ```takeaways
 - Send a declared credential with `GetExtendedAgentCard`, and put an authentication check in front of it on your server.

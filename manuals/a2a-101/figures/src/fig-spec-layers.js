@@ -60,7 +60,7 @@ module.exports = figure('fig-spec-layers', {
   f.box({ x: 414, y: 358, w: 118, h: 64, hue: 'indigo', title: 'broadcast', sub: ['Agent.broadcast', 'SSE and webhooks'], titleSize: 12, pad: 8 });
 
   f.beat(7);
-  f.box({ x: 84, y: 442, w: 150, h: 50, hue: 'plum', title: 'run_tests()', sub: 'capture/agents.py', titleSize: 12, pad: 8 });
+  f.box({ x: 84, y: 442, w: 150, h: 50, hue: 'plum', title: 'run_tests()', sub: 'agents.py', titleSize: 12, pad: 8 });
   f.box({ x: 242, y: 442, w: 120, h: 50, hue: 'plum', dash: 'dashed', title: 'model', sub: 'not in the kit', titleSize: 12, pad: 8 });
   f.box({ x: 370, y: 442, w: 162, h: 50, hue: 'olive', dash: 'dashed', title: 'Git, container', sub: 'not in the kit', titleSize: 12, pad: 8 });
 });

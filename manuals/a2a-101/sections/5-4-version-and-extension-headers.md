@@ -8,13 +8,13 @@ When you finish this section, you can set both headers in any binding and predic
 
 ## Service parameters
 
-**Service parameter:** "A key-value map for passing horizontally applicable context or parameters with case-insensitive string keys and case-sensitive string values." {{spec §3.2.6}} The specification defines two, `A2A-Version` and `A2A-Extensions`, and reserves the prefix `a2a-` for its own {{spec §3.2.6}}. Each binding says how they travel: as HTTP request headers in JSON-RPC and HTTP+JSON {{spec §9.2}} {{spec §11.2}}, and as metadata keys in gRPC {{spec §10.2}}. A custom binding "MUST document how service parameters are transmitted" {{spec §12.3}}.
+**Service parameter:** an entry in a key-value map that carries context or parameters that apply to every operation. The keys are case-insensitive strings, and the values are case-sensitive strings {{spec §3.2.6}}. The specification defines two, `A2A-Version` and `A2A-Extensions`, and reserves the prefix `a2a-` for its own {{spec §3.2.6}}. Each binding says how they travel: as HTTP request headers in JSON-RPC and HTTP+JSON {{spec §9.2}} {{spec §11.2}}, and as metadata keys in gRPC {{spec §10.2}}. A custom binding must document how it carries service parameters {{spec §12.3}}.
 
-The IANA templates for both headers cite "Section 3.2.5 of the A2A Protocol Specification" {{spec §14.2.1}} {{spec §14.2.2}}, which is the metadata section, where the parameters are §3.2.6 ([conflict D17](#s-ref-sources)). [Issue #2305](https://github.com/a2aproject/A2A/issues/2305) tracks it, still open.
+The IANA templates for both headers cite section 3.2.5 of the specification {{spec §14.2.1}} {{spec §14.2.2}}. That is the metadata section, where the parameters are §3.2.6 ([conflict D17](#s-ref-sources)). [Issue #2305](https://github.com/a2aproject/A2A/issues/2305) tracks it, still open.
 
 ## A2A-Version
 
-A version is `Major.Minor`, such as `1.0`, and "Patch version numbers SHOULD NOT be used in requests, responses and Agent Cards" {{spec §3.6}}. "Clients MUST send the `A2A-Version` header with each request" {{spec §3.6.1}}, and a 1.0 client sends `1.0`. A server has two duties: process the request with the semantics of that version, and return `VersionNotSupportedError` when the interface does not support it {{spec §3.6.2}}. The empty case has a fixed meaning: "Agents MUST interpret empty value as 0.3 version" {{spec §3.6.2}}. So a client that forgets the header gets 0.3 semantics from an agent that still serves 0.3, and this error from one that does not:
+A version is `Major.Minor`, such as `1.0`, and requests, responses, and Agent Cards should not carry a patch number {{spec §3.6}}. A client must send the `A2A-Version` header with every request {{spec §3.6.1}}, and a 1.0 client sends `1.0`. A server has two duties: process the request with the semantics of that version, and return `VersionNotSupportedError` when the interface does not support it {{spec §3.6.2}}. The empty case has a fixed meaning: an agent must read an empty value as version 0.3 {{spec §3.6.2}}. So a client that forgets the header gets 0.3 semantics from an agent that still serves 0.3, and this error from one that does not:
 
 ```listing
 title: no A2A-Version header, read as 0.3 and refused
@@ -40,9 +40,9 @@ Content-Type: application/json
           "supported": "1.0"
 ```
 
-`VersionNotSupportedError` is `-32009` in JSON-RPC, `400` in HTTP+JSON, and `FAILED_PRECONDITION` in gRPC, with the reason `VERSION_NOT_SUPPORTED` {{spec §5.4}}, as [errors](#s-errors) lists. The version to send comes from the card: each `supportedInterfaces` entry declares its own `protocolVersion`, and "Agents CAN expose multiple interfaces for the same transport with different versions" {{spec §3.6.2}}, as [AgentCard fields](#s-agentcard-fields) shows.
+`VersionNotSupportedError` is `-32009` in JSON-RPC, `400` in HTTP+JSON, and `FAILED_PRECONDITION` in gRPC, with the reason `VERSION_NOT_SUPPORTED` {{spec §5.4}}, as [errors](#s-errors) lists. The version to send comes from the card: each `supportedInterfaces` entry declares its own `protocolVersion`. An agent can expose several interfaces on the same transport with different versions {{spec §3.6.2}}, as [AgentCard fields](#s-agentcard-fields) shows.
 
-Three samples in the specification send `A2A-Version: 0.3` {{spec §9.2}} {{spec §11.2}} {{spec §14.2.1}}, and the gRPC sample in §10.2 sends the same value as metadata {{spec §10.2}}. Never copy a sample's value into a 1.0 client ([conflict D39](#s-ref-sources)). §3.6.1 also says "Clients MAY provide the `A2A-Version` as a request parameter instead of a header" {{spec §3.6.1}}, while both JSON bindings require the header ([conflict D31](#s-ref-sources)). The reference SDK reads only the header {{sdk src/a2a/utils/version_validator.py}}, and the kit reads both, so send the header.
+Three samples in the specification send `A2A-Version: 0.3` {{spec §9.2}} {{spec §11.2}} {{spec §14.2.1}}, and the gRPC sample in §10.2 sends the same value as metadata {{spec §10.2}}. Never copy a sample's value into a 1.0 client ([conflict D39](#s-ref-sources)). §3.6.1 also allows a client to send `A2A-Version` as a request parameter instead of a header {{spec §3.6.1}}. Yet both JSON bindings require the header ([conflict D31](#s-ref-sources)). The reference SDK reads only the header {{sdk src/a2a/utils/version_validator.py}}, and the kit reads both, so send the header.
 
 ## What each SDK does without the header
 
@@ -60,7 +60,7 @@ Every client in the list sends `1.0` on each call, and the Python and JS clients
 
 ## A2A-Extensions
 
-`A2A-Extensions` is a "Comma-separated list of extension URIs that the client wants to use for the request" {{spec §3.2.6}}, one header field in both JSON bindings {{spec §9.2}} {{spec §11.2}} and one metadata entry in gRPC {{spec §10.2}}. §4.6.1 also allows "JSON-RPC request parameters" as the mechanism {{spec §4.6.1}}, while §9.2 requires the header, so send the header ([conflict D30](#s-ref-sources)). The reference SDK's `with_a2a_extensions` helper joins the URIs with commas on the client {{sdk src/a2a/client/service_parameters.py}}, and its server reads them into the call context {{sdk src/a2a/server/routes/common.py}}. What the server does with them, the payload keyed by URI, and `ExtensionSupportRequiredError` are in [extensions](#s-extensions).
+`A2A-Extensions` is a comma-separated list of the extension URIs that the client wants for the request {{spec §3.2.6}}. It is one header field in both JSON bindings {{spec §9.2}} {{spec §11.2}} and one metadata entry in gRPC {{spec §10.2}}. §4.6.1 also allows JSON-RPC request parameters as the mechanism {{spec §4.6.1}}, while §9.2 requires the header, so send the header ([conflict D30](#s-ref-sources)). The reference SDK's `with_a2a_extensions` helper joins the URIs with commas on the client {{sdk src/a2a/client/service_parameters.py}}, and its server reads them into the call context {{sdk src/a2a/server/routes/common.py}}. What the server does with them, the payload keyed by URI, and `ExtensionSupportRequiredError` are in [extensions](#s-extensions).
 
 ```takeaways
 - Send `A2A-Version: 1.0` as a header or metadata on every request, with no patch number.

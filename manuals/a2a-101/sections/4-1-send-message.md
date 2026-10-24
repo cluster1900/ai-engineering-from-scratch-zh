@@ -21,12 +21,12 @@ A send blocks unless `returnImmediately` is `true`:
 label: the blocking default
 source: spec §3.2.2
 ---
-"The operation MUST wait until the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`) or an interrupted state (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`) before returning."
+The operation must wait to return until the task reaches a terminal state or an interrupted state. The terminal states are `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, and `TASK_STATE_REJECTED`. The interrupted states are `TASK_STATE_INPUT_REQUIRED` and `TASK_STATE_AUTH_REQUIRED`.
 ```
 
 In `03-blocking-task.http`, one `SendMessage` with no `configuration` gets task `3d8f7801` in `TASK_STATE_COMPLETED`, with every artifact {{spec §3.2.2}}. The client never sees `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING`. The specification sets no time limit, and a client that times out never learns the task id {{spec §3.4.2}}.
 
-One sentence of the specification says the opposite ([conflict D2](#s-ref-sources)): "The operation MUST return immediately with either task information or response message" {{spec §3.1.1}}. The proto makes `false` the default {{proto SendMessageConfiguration}}, and the proto is normative {{spec §1.4}}. The kit and the reference SDK block {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}.
+One sentence of the specification says the opposite ([conflict D2](#s-ref-sources)): the operation must return at once with either task information or a response message {{spec §3.1.1}}. The proto makes `false` the default {{proto SendMessageConfiguration}}, and the proto is normative {{spec §1.4}}. The kit and the reference SDK block {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}.
 
 The SDKs disagree on whether `historyLength` in the configuration trims the returned task:
 
@@ -41,9 +41,9 @@ The SDKs disagree on whether `historyLength` in the configuration trims the retu
 
 ## Message or Task
 
-`SendMessage` returns a `SendMessageResponse` whose payload is a `oneof` of two members, `task` and `message` {{proto SendMessageResponse}}. The agent decides, and the specification gives it no rule: "The agent MAY create a new `Task` to process the provided message asynchronously or MAY return a direct `Message` response for simple interactions." {{spec §3.1.1}}
+`SendMessage` returns a `SendMessageResponse` whose payload is a `oneof` of two members, `task` and `message` {{proto SendMessageResponse}}. The agent decides, and the specification gives it no rule. The agent is allowed to create a new `Task` and process the message asynchronously. It is also allowed to return a direct `Message` for a simple exchange {{spec §3.1.1}}.
 
-In the kit, `test-runner` and `deployer` create a task for every message. `code-reviewer` answers with a message when the request has no `text/x-diff` part and its text ends with a question mark ([capture/agents.py](manuals/a2a-101/capture/agents.py)). Once a task exists, the choice is over: "Once a task is created, the agent will only return `Task` objects in response to messages sent" {{docs life-of-a-task}}.
+In the kit, `test-runner` and `deployer` create a task for every message. `code-reviewer` answers with a message when the request has no `text/x-diff` part and its text ends with a question mark ([the kit's agent code](manuals/a2a-101/capture/agents.py)). Once a task exists, the choice is over: from then on, the agent returns only `Task` objects in response to messages {{docs life-of-a-task}}.
 
 A message is the whole answer, with no id to poll, cancel, or subscribe to. It carries a `contextId` {{proto Message}}, so keep it for a follow-up. A task is a handle on work that can outlive the call. [Figure](#fig-message-or-task) puts the two answers from `code-reviewer` side by side. `SendStreamingMessage` makes the same choice in its first event, as [SendStreamingMessage and SubscribeToTask](#s-streaming-and-subscribe-to-task) shows.
 
@@ -52,12 +52,12 @@ id: fig-message-or-task
 kind: decision
 title: one method, two result shapes
 claim: The same `SendMessage` to `code-reviewer` returns a message for a question and a task for a diff, and only the task gives the client something to follow.
-caption: Read top down. The agent's own logic picks the shape, here the review_quick rule in capture/agents.py. Left, the reply in capture/out/02-message-reply.http. Right, the task in capture/out/06-input-required.http. Ids are shortened to 8 characters.
+caption: Read top down. The agent's own logic picks the shape, here the review_quick rule of the kit's agent code. Left, the captured message reply. Right, the captured input-required task. Ids are shortened to 8 characters.
 ```
 
 ## Returning at once and polling with GetTask
 
-**returnImmediately:** a boolean in `SendMessageConfiguration` that asks the server to answer as soon as the task exists: "The operation MUST return immediately after creating the task, even if processing is still in progress" {{spec §3.2.2}}. The flag has no effect on a direct `Message` reply, on streaming operations, or on push notification configs {{spec §3.2.2}}.
+**returnImmediately:** a boolean in `SendMessageConfiguration` that asks the server to answer as soon as the task exists. The operation must return right after it creates the task, even while the work goes on {{spec §3.2.2}}. The flag has no effect on a direct `Message` reply, on streaming operations, or on push notification configs {{spec §3.2.2}}.
 
 **Polling:** reading a task with `GetTask` until its state tells you to stop. In `04-polling.http` the kit sends with `returnImmediately`, then polls task `d0c28826` twice with `historyLength` 0:
 

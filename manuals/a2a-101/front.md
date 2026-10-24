@@ -20,19 +20,19 @@ After the last part, you can:
 
 ## How it was made
 
-The manual pins tag `v1.0.1` of the A2A repository, commit `3303592`. In requests and cards, that release is protocol version `1.0`, because "Patch version numbers SHOULD NOT be used in requests, responses and Agent Cards" {{spec §3.6}}. The facts were also checked against the main branch at commit `679ab3a` of 2026-10-05, where v1.0.1 was still the latest release.
+The manual pins tag `v1.0.1` of the A2A repository, commit `3303592`. In requests and cards, that release is protocol version `1.0`, because requests, responses, and Agent Cards should not carry a patch version number {{spec §3.6}}. The facts were also checked against the main branch at commit `679ab3a` of 2026-10-05, where v1.0.1 was still the latest release.
 
 Facts come from five sources, ranked by authority. When two of them disagree, the higher one wins and the text says so.
 
-| Rank | Source | What the manual takes from it | Cited as |
+| Rank | Source | What the manual takes from it | Source key |
 |---|---|---|---|
 | 1 | `specification/a2a.proto` at v1.0.1 | every object, field, enum value, and method | `proto` and a message or enum name |
-| 2 | `docs/specification.md` at v1.0.1 | every behavior rule, quoted word for word | `spec` and a section number |
+| 2 | `docs/specification.md` at v1.0.1 | every behavior rule, stated in our own words | `spec` and a section number |
 | 3 | the project's documentation pages at v1.0.1 | the project's own framing, flagged where a page is out of date | `docs` and a page name |
 | 4 | the reference SDK, a2a-python 1.2.2 | what a production implementation does where the specification is silent | `sdk` and a source file |
 | 5 | the capture kit in `capture/` | every request, response, and stream frame the manual shows | the capture file name |
 
-The proto, the specification, and the documentation pages are vendored unchanged under `research/sources/`.
+The proto, the specification, and the documentation pages are vendored unchanged [in the repository](manuals/a2a-101/research/sources).
 
 The specification disagrees with itself or the proto on [the HTTP verb for `SubscribeToTask`](#s-json-rpc) ([conflict D1](#s-ref-sources)) and on [whether a send waits](#s-send-message) ([conflict D2](#s-ref-sources)). It also disagrees on [when a stream closes](#s-input-required-and-auth-required) ([conflict D3](#s-ref-sources)) and on [the name of the card's security field](#s-security-schemes-and-in-task-authorization) ([conflict D6](#s-ref-sources)). [The sources reference](#s-ref-sources) lists all forty conflicts with the section that discusses each.
 
@@ -46,13 +46,13 @@ The capture kit runs three remote agents and a recording client on your machine,
 | `code-reviewer` | 41242 | reviews a diff against a base branch | direct message replies, `TASK_STATE_INPUT_REQUIRED`, rejected content types, no push support |
 | `deployer` | 41243 | deploys a build to staging after an operator approves | bearer authentication, `TASK_STATE_AUTH_REQUIRED` with approval outside A2A, rejection, extended and signed cards |
 
-[A client](#s-a-client) walks through the real planner, `capture/planner.py`.
+[A client](#s-a-client) walks through [the real planner](manuals/a2a-101/capture/planner.py).
 
 Seeded ids and a fixed clock make two runs byte-identical. [The kit README](manuals/a2a-101/capture/README.md) lists where the kit differs from the reference SDK.
 
 ## Conventions
 
-Citations name a place: {{spec §3.7}} a section of the specification, {{proto TaskState}} a message or enum in the proto, {{docs life-of-a-task}} a documentation page, and {{sdk src/a2a/server/tasks/task_manager.py}} a file in the SDK.
+Each section records its sources in the manual source, where the audit checks every quote and number. The sections do not show them. The sources reference lists them.
 
 A listing copies lines from a capture file unchanged, and a `…` marks a cut that the note explains.
 

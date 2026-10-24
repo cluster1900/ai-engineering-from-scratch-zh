@@ -8,11 +8,11 @@ When you finish this section, you can read any agent card field by field and say
 
 ## The card and its REQUIRED fields
 
-**Agent card:** "A JSON metadata document published by an A2A Server, describing its identity, capabilities, skills, service endpoint, and authentication requirements." {{spec §2.2}} Every server publishes one: "A2A Servers MUST make an Agent Card available." {{spec §8.1}}
+**Agent card:** a JSON metadata document that an A2A server publishes. It describes the identity, capabilities, skills, service endpoint, and authentication requirements of the server {{spec §2.2}}. Every A2A server must make an Agent Card available {{spec §8.1}}.
 
-The proto message `AgentCard` has 14 fields, and eight of them are REQUIRED: `name`, `description`, `supportedInterfaces`, `version`, `capabilities`, `defaultInputModes`, `defaultOutputModes`, and `skills` {{proto AgentCard}}. A REQUIRED field "MUST be present and set in valid messages" {{spec §5.7}}.
+The proto message `AgentCard` has 14 fields, and eight of them are REQUIRED: `name`, `description`, `supportedInterfaces`, `version`, `capabilities`, `defaultInputModes`, `defaultOutputModes`, and `skills` {{proto AgentCard}}. A REQUIRED field must be present and set in every valid message {{spec §5.7}}.
 
-Four of those fields are lists, and "Arrays marked as required MUST contain at least one element" {{spec §5.7}}. The signing example in §8.4.1 keeps an empty `skills` list all the same {{spec §8.4.1}} ([conflict D19](#s-ref-sources), open as [issue #2122](https://github.com/a2aproject/A2A/issues/2122)), and real cards follow §5.7.
+Four of those fields are lists, and a required list must contain at least one element {{spec §5.7}}. The signing example in §8.4.1 keeps an empty `skills` list all the same {{spec §8.4.1}} ([conflict D19](#s-ref-sources), open as [issue #2122](https://github.com/a2aproject/A2A/issues/2122)), and real cards follow §5.7.
 
 [Figure](#fig-agent-card-fields) sorts the whole `test-runner` card into four groups: who it is, where to reach it, what it demands, and what it offers. Of the identity fields, `version` is the agent's own release, and [extended cards and signatures](#s-extended-cards-and-signatures) covers `signatures`.
 
@@ -50,13 +50,13 @@ note: The skills array of the first card in the file, complete.
   ]
 ```
 
-No field of `SendMessageRequest` or `Message` names a skill {{proto SendMessageRequest}}, and the proto calls the list "largely a descriptive concept" {{proto AgentCard}}.
+No field of `SendMessageRequest` or `Message` names a skill {{proto SendMessageRequest}}, and the proto treats the list as mostly descriptive {{proto AgentCard}}.
 
 **Mode:** a media type that names content an agent accepts or produces, such as `text/plain` {{proto AgentCard}}. The REQUIRED lists `defaultInputModes` and `defaultOutputModes` apply across all skills, and a skill overrides them with its own `inputModes` and `outputModes`. The `code-reviewer` card narrows the input of its `review-diff` skill to `text/x-diff` and `text/plain`.
 
 ## Where to reach it: supportedInterfaces
 
-**Interface:** one entry in `supportedInterfaces`, a URL with the binding and the protocol version spoken there. Its fields `url`, `protocolBinding`, and `protocolVersion` are REQUIRED, and `tenant` is optional {{proto AgentInterface}}. The order matters: "Ordered list of supported interfaces. The first entry is preferred." {{proto AgentCard}}
+**Interface:** one entry in `supportedInterfaces`, a URL with the binding and the protocol version spoken there. Its fields `url`, `protocolBinding`, and `protocolVersion` are REQUIRED, and `tenant` is optional {{proto AgentInterface}}. The order matters: the list is ordered, and the first entry is the preferred one {{proto AgentCard}}.
 
 ```listing
 title: the two interfaces of test-runner, JSON-RPC first
@@ -80,7 +80,7 @@ note: The supportedInterfaces array of the first card in the file, complete.
 
 The proto names three standard bindings: `JSONRPC`, `GRPC`, and `HTTP+JSON` {{proto AgentInterface}}. The field `protocolVersion` is the A2A version spoken at that URL, as `Major.Minor` {{spec §3.6}}, and [the version and extension headers](#s-version-and-extension-headers) cover the matching `A2A-Version` header.
 
-Each URL "Must be a valid absolute HTTPS URL in production" {{proto AgentInterface}}, and the kit uses `http://localhost` on one machine. The spec does not say which form a `GRPC` entry takes, and the reference SDK's sample writes a plain host and port {{sdk samples/hello_world_agent.py}} ([conflict D34](#s-ref-sources)).
+In production, each URL must be a valid absolute HTTPS URL {{proto AgentInterface}}, and the kit uses `http://localhost` on one machine. The spec does not say which form a `GRPC` entry takes, and the reference SDK's sample writes a plain host and port {{sdk samples/hello_world_agent.py}} ([conflict D34](#s-ref-sources)).
 
 ## What it demands: capabilities and security
 

@@ -51,7 +51,7 @@ The §8.5 sample card still says `security` where the proto says `securityRequir
 
 ## How credentials travel
 
-The client obtains the credential outside A2A and sends it "in protocol-appropriate headers or metadata for every A2A request" {{spec §7.3}}. That header carries a secret, and "Production deployments MUST use encrypted communication (HTTPS for HTTP-based bindings, TLS for gRPC)" {{spec §7.1}}. The specification recommends TLS 1.3 or later {{spec §7.1}}, and the enterprise guide TLS 1.2 or later {{docs enterprise-ready}} ([conflict D18](#s-ref-sources)).
+The client gets the credential outside A2A and sends it in the headers or metadata of the transport on every A2A request {{spec §7.3}}. That header carries a secret, so a production deployment must encrypt its traffic: HTTPS for the HTTP bindings, and TLS for gRPC {{spec §7.1}}. The specification recommends TLS 1.3 or later {{spec §7.1}}, and the enterprise guide TLS 1.2 or later {{docs enterprise-ready}} ([conflict D18](#s-ref-sources)).
 
 Without it, `deployer` answers HTTP 401 with a `WWW-Authenticate` challenge before any A2A method runs, as [extended cards and signatures](#s-extended-cards-and-signatures) shows.
 
@@ -59,14 +59,14 @@ Without it, `deployer` answers HTTP 401 with a `WWW-Authenticate` challenge befo
 label: every request, checked against the card
 source: spec §7.4
 ---
-"MUST authenticate every incoming request based on the provided credentials and its declared authentication requirements."
+The server must authenticate every incoming request with the credentials that it receives and the authentication requirements that it declares.
 ```
 
 ## Authorization scope: a task you cannot see does not exist
 
-"Authorization logic is implementation-specific" {{spec §7.5}}. The specification fixes how a refusal looks: "Servers MUST NOT reveal the existence of resources the client is not authorized to access" {{spec §3.3.2}}. So another caller's task gets the same `TaskNotFoundError` as a task that never existed. The same section lists "Attempting to access a task created by another user" {{spec §3.3.2}} as a case for an authorization error, which would confirm that the task exists ([conflict D36](#s-ref-sources)). Answer with the not-found error.
+Each implementation decides its own authorization logic {{spec §7.5}}. The specification fixes how a refusal looks: a server must not reveal that a resource exists when the client has no access to it {{spec §3.3.2}}. So another caller's task gets the same `TaskNotFoundError` as a task that never existed. The same section lists one case for an authorization error: access to a task that another user created {{spec §3.3.2}}. That error would confirm that the task exists ([conflict D36](#s-ref-sources)). Answer with the not-found error.
 
-The check runs first: "Authorization checks MUST occur before any database queries or operations that could leak information" {{spec §13.1}}. `ListTasks` must scope its results to the caller even when the request has no filter {{spec §13.1}}. The SDKs differ on who the owner is:
+The check runs first: authorization checks must happen before any database query or operation that could leak information {{spec §13.1}}. `ListTasks` must scope its results to the caller even when the request has no filter {{spec §13.1}}. The SDKs differ on who the owner is:
 
 | Implementation | Owner scope | Another caller's task |
 |---|---|---|
@@ -84,9 +84,9 @@ Without an authentication middleware that fills in the user, every task is visib
 
 **In-task authorization:** an agent's request for permission partway through a task, through `TASK_STATE_AUTH_REQUIRED` {{spec §7.6}}, which [interrupted states](#s-input-required-and-auth-required) follows frame by frame. The kit's `POST /approve/<task id>` checks no credentials, so anyone who learns the task id can approve. A real approval channel authenticates the operator and records who approved.
 
-A client that is itself an agent can pass the request up a chain of tasks in `TASK_STATE_AUTH_REQUIRED` {{spec §7.6.2}}. An in-band credential then passes through every agent in the chain {{spec §7.6.3}}, so bind it to the agent that asked, "such that only this agent is able to use the credentials" {{spec §7.6.3}}.
+A client that is itself an agent can pass the request up a chain of tasks in `TASK_STATE_AUTH_REQUIRED` {{spec §7.6.2}}. An in-band credential then passes through every agent in the chain {{spec §7.6.3}}. So bind it to the agent that asked, and only that agent can use it {{spec §7.6.3}}.
 
-[PR #2081](https://github.com/a2aproject/A2A/pull/2081) added §7.6.4 to main on 2026-07-30, after v1.0.1, and no release carries it yet. It says: "Agents MUST NOT treat the TASK_STATE_AUTH_REQUIRED state transition, by itself, as authorization for any particular operation." {{spec-main §7.6.4}} A credential obtained there does not authorize later messages unless the implementation, the issuer, or an extension says so {{spec-main §7.6.4}}. The kit keys each approval by task id, so one approval resumes one deploy, and its bearer check runs on every later request.
+[PR #2081](https://github.com/a2aproject/A2A/pull/2081) added §7.6.4 to main on 2026-07-30, after v1.0.1, and no release carries it yet. It says that an agent must not treat the move to `TASK_STATE_AUTH_REQUIRED` on its own as permission for any operation {{spec-main §7.6.4}}. A credential obtained there does not authorize later messages unless the implementation, the issuer, or an extension says so {{spec-main §7.6.4}}. The kit keys each approval by task id, so one approval resumes one deploy, and its bearer check runs on every later request.
 
 ```takeaways
 - Send the credential that `securityRequirements` names in an HTTP header on every request.
