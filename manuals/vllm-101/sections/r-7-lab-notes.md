@@ -10,11 +10,11 @@
 - **客户端。** 每次运行都使用 SGLang 0.5.22 的基准测试客户端。vLLM 运行使用 `--backend vllm`，它把每个请求发送到 `/v1/completions`。客户端会先发送一个预热请求，并且除非你传入 `--disable-ignore-eos`，否则它会要求服务器忽略 end-of-sequence token。它的 random 数据集会把真实的聊天文本截断或重复到要求的长度。[基准测试页](#s-benchmark-your-server-in-15-minutes)给出了完整命令。
 - **波次。** 波次负载以 16 个用户发送 64 个 prompt。长度比例设定 prompt 和输出长度能变化多少。比例为 1.0 时，每个请求都有 512 个 prompt token 和 128 个输出 token。比例为 0 时，每个长度都从 1 个 token 到该大小之间随机抽取。
 - **种子。** 截至 2026-10-21 的运行使用种子 1、2 和 3。2026-10-22 的大多数运行使用种子 1 和 2，表格给出了种子数。表格给出中位数，有些列还给出最低值和最高值。
-- **服务器设置。** 扫描工具用 `VLLM_USE_FLASHINFER_SAMPLER=0` 启动每个 vLLM 服务器，因为 FlashInfer sampler 在我们的 L4 上构建失败。它还设置 `--seed 0`，并依次设置 `--max-model-len`、`--num-gpu-blocks-override` 和 `--gpu-memory-utilization`：L4 用 `8192 1506 0.9`，GB10 用 `8192 14685 0.75`，共享的 L4 GPU 用 `2048 183 0.83` 或 `2304 183 0.83`，小池运行用 `4096 410`（只设前两项）。
+- **服务器设置。** 扫描工具用 `VLLM_USE_FLASHINFER_SAMPLER=0` 启动每个 vLLM 服务器，因为 FlashInfer sampler 在我们的 L4 上构建失败。它还设置 `--seed 0`、`--max-model-len`、`--num-gpu-blocks-override` 和 `--gpu-memory-utilization`。L4 用 8,192 token、1,506 个 block 和 0.9。GB10 用 8,192 token、14,685 个 block 和 0.75。共享 L4 GPU 用 2,048 或 2,304 token、183 个 block 和 0.83。小池运行用 4,096 token 和 410 个 block。
 - **舍入。** 表格和各节使用同一条规则。它们对 summary 文件中的小数值做舍入，逢半进位，所以 1,012.5 显示为 1,013。
-- **池。** 在 L4 上，vLLM 用 `--num-gpu-blocks-override 1506` 运行，池为 24,096 token，SGLang 为 24,094。在 GB10 上则是 14,685 个 block，池为 234,960；SGLang 的池在 load、waves 和 mixed 中分别为 233,303、234,958 和 251,910。
+- **池。** 在 L4 上，vLLM 用 `--num-gpu-blocks-override 1506` 运行，池为 24,096 token，SGLang 为 24,094。在 GB10 上，vLLM 用 14,685 个 block 运行，池为 234,960 token。GB10 上 SGLang 的池在 load、waves 和 mixed 中分别为 233,303 token、234,958 token 和 251,910 token。
 - **时钟。** 一个采样器每秒记录一次 SM 时钟和温度。扫描工具可以在运行前等待 GPU 冷却。当中位时钟低于时钟下限（我们为每次扫描设定的最低时钟）时，它还可以重复这次运行。时钟列显示每个点的结果。2026-10-22，大多数运行用 `nvidia-smi -lgc` 把 SM 时钟锁定在 900 MHz。锁定设定的是最高时钟，但温度高的 GPU 仍会降到它以下。各节只在时钟相近时比较两个点，并在某个点低于锁定频率或处于降频时段时加以说明。
-- **日期。** 2026-10-17：L4 load 中的 `vllm` 和 `sglang`，以及开启 cache 的 prefix 运行的开始（它持续到次日）。2026-10-18：rate 和 waves 运行。2026-10-21：load 中的 `vllm-b`、`vllm-async`、`vllm-eager` 和 `vllm-seqs-16`，不开 cache 的那次 prefix 运行，以及这些表格中的每次 GB10 运行。标注 2026-10-22 的三张表格，其中每次运行都在当天。共享 GPU 上的运行池只有 2,928，所以只测试了 1 个和 4 个用户。
+- **日期。** L4 load 中的 `vllm` 和 `sglang` 运行在 2026-10-17，`vllm-b`、`vllm-async`、`vllm-eager` 和 `vllm-seqs-16` 的 load 运行在 2026-10-21。L4 的 rate 和 waves 运行在 2026-10-18。开启 cache 的 L4 prefix 运行从 2026-10-17 持续到 2026-10-18，不开 prefix cache 的那次 L4 运行在 2026-10-21。这些表格中的每次 GB10 运行都在 2026-10-21。标注 2026-10-22 的三张 L4 表格中，每次运行都在当天。共享 GPU 上的运行中，L4 节点的池只有 2,928 token，所以只测试了 1 个和 4 个用户。
 
 - **不同用户数之间的 cache。** 2026-10-23 之前的 load 表格每种配置只用一个服务器，并且在不同用户数之间没有重置 prefix cache。每个种子在每个用户数下发送相同的开头 prompt。在 32 个用户以下，这些表格读出的首 token 时间过快，我们 L4 上的 vLLM 快了 3.6 到 5.3 倍。2026-10-23 的重跑在每次运行前重置 cache，[基准测试页](#s-benchmark-your-server-in-15-minutes)对两者做了比较。
 - **2026-10-23 的运行。** 当天的 L4 运行使用第一块 GPU，时钟锁定在 900 MHz。每次运行有两个种子，并先重置 cache。这块卡很热，所以很多运行低于锁定频率。每个证据文件都给出其各行的中位时钟，各节只比较 900 MHz 下的行。
@@ -95,7 +95,7 @@
 | 16 | `vllm` | 205.8 (204.8 至 208.4) | 94,322 ms | 185.2 ms | 1,448 (1,448 至 1,483) ms | 450 MHz |
 | 16 | `sglang` | 218.2 (215.6 至 229.0) | 97,542 ms | 115.2 ms | 137 (120 至 163) ms | 600 MHz |
 
-### L4，waves：16 个用户发送 64 个 prompt，按长度比例（1.0 表示长度相同） {#s-ref-lab-notes-l4-waves-64-prompts-at-16-users-by-length-ratio-1-0-means-equal-lengths}
+### L4，waves：16 个用户发送 64 个 prompt，按长度比例（1.0 表示长度相同） {#s-ref-lab-notes-l4-waves-64-prompts-at-16-users-by-length-ratio-1-0-means-equal-}
 
 | 比例 | 配置 | 输出 tok/s（最小至最大） | 中位 TTFT | 中位 TPOT | P99 ITL（最小至最大） | 中位 SM 时钟 |
 |---|---|---|---|---|---|---|
@@ -141,7 +141,7 @@
 | 32 | `vllm-O3` | 189.9 (188.5 至 191.2) | 4,086 ms | 143.9 ms | 1,602 (1,417 至 1,787) ms | 536 MHz | 2 |
 | 32 | `vllm-kv-fp8-triton` | 192.0 (183.3 至 200.7) | 4,267 ms | 138.0 ms | 1,672 (1,603 至 1,741) ms | 480 MHz | 2 |
 
-### L4，时钟锁定在 900 MHz：512 个 prompt token 和 128 个输出 token，2026-10-22 {#s-ref-lab-notes-l4-clock-locked-at-900-mhz-512-prompt-and-128-output-tokens-2026-10-22}
+### L4，时钟锁定在 900 MHz：512 个 prompt token 和 128 个输出 token，2026-10-22 {#s-ref-lab-notes-l4-clock-locked-at-900-mhz-512-prompt-and-128-output-tokens-2026}
 
 锁定设定的是最高时钟。温度高的 GPU 仍会降到它以下，`vllm-lock-b` 和 `vllm-lock-small-pool` 的 1 用户运行就是如此。
 
@@ -160,7 +160,7 @@
 | 32 | `vllm-lock-eagle3-k5` | 289.5 (280.4 至 298.5) | 1,071 ms | 83.7 ms | 915 (836 至 995) ms | 885 MHz | 2 |
 | 32 | `vllm-lock-small-pool` | 80.4 (79.8 至 81.1) | 31,568 ms | 120.6 ms | 768 (765 至 771) ms | 248 MHz | 2 |
 
-### L4，池为 2,928 token 的共享 GPU：512 个 prompt token 和 128 个输出 token，2026-10-22 {#s-ref-lab-notes-l4-shared-gpu-with-a-pool-of-2-928-tokens-512-prompt-and-128-output-tokens-2026-10-22}
+### L4，池为 2,928 token 的共享 GPU：512 个 prompt token 和 128 个输出 token，2026-10-22 {#s-ref-lab-notes-l4-shared-gpu-with-a-pool-of-2-928-tokens-512-prompt-and-128-out}
 
 | 用户数 | 配置 | 输出 tok/s（最小至最大） | 中位 TTFT | 中位 TPOT | P99 ITL（最小至最大） | 中位 SM 时钟 | 种子数 |
 |---|---|---|---|---|---|---|---|
@@ -204,7 +204,7 @@
 | 64 | `vllm-async` | 235.9 (233.2 至 240.2) | 961 ms | 249.1 ms | 527 (524 至 529) ms | 2,398 MHz |
 | 64 | `sglang` | 245.1 (239.4 至 247.7) | 573 ms | 246.0 ms | 271 (268 至 273) ms | 2,411 MHz |
 
-### GB10，mixed：1,024 到 4,096 token 的 prompt，64 到 256 个输出 token，按速率 {#s-ref-lab-notes-gb10-mixed-prompts-of-1-024-to-4-096-tokens-64-to-256-output-tokens-by-rate}
+### GB10，mixed：1,024 到 4,096 token 的 prompt，64 到 256 个输出 token，按速率 {#s-ref-lab-notes-gb10-mixed-prompts-of-1-024-to-4-096-tokens-64-to-256-output-tok}
 
 | 速率 | 配置 | 输出 tok/s（最小至最大） | 中位 TTFT | 中位 TPOT | P99 ITL（最小至最大） | 中位 SM 时钟 |
 |---|---|---|---|---|---|---|
