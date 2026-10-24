@@ -1,50 +1,50 @@
-# Metrics
+# 指标
 
-> The metrics this manual reads, with their range on our setup.
+> 本手册读取的指标，以及它们在我们设置上的范围。
 
-The ranges come from our lab runs: Qwen3-0.6B on GSM8K on one GB10, 32 prompts with 8 answers each, a limit of 1,024 tokens. They hold for that setup. Build your own ranges from two or three seeds of yours.
+这些范围来自我们的实验运行：在一块 GB10 上用 GSM8K 训练 Qwen3-0.6B，32 个提示、每个 8 个回答，上限 1,024 个 token。它们只适用于这个设置。请用你自己的两到三个种子建立你自己的范围。
 
-## Rollout
+## Rollout {#s-ref-metrics-rollout}
 
-| Metric | Meaning | Our range |
+| 指标 | 含义 | 我们的范围 |
 |---|---|---|
-| `rollout/raw_reward` | the mean reward of the step | 0.53 to 0.87 per step over 48 steps |
-| `rollout/response_lengths` | the mean answer length in tokens | 396 to 787 |
-| `rollout/truncated` | the share of answers that hit the length limit | 0.02 to 0.43 |
+| `rollout/raw_reward` | 这一步的平均奖励 | 48 步中每步 0.53 至 0.87 |
+| `rollout/response_lengths` | 以 token 计的平均回答长度 | 396 至 787 |
+| `rollout/truncated` | 达到长度上限的回答所占的比例 | 0.02 至 0.43 |
 
-## Training
+## 训练 {#s-ref-metrics-training}
 
-| Metric | Meaning | Our range |
+| 指标 | 含义 | 我们的范围 |
 |---|---|---|
-| `train/train_rollout_logprob_abs_diff` | the mean absolute gap between the trainer and engine log probabilities, per token | 0.0136 to 0.0164 with plain sampling |
-| `train/train_rollout_kl` | the KL between the engine and trainer distributions at the sampled tokens | 0.00063 to 0.00076 |
-| `train/grad_norm` | the gradient norm | 0.35 to 4.95 |
-| `train/pg_clipfrac` | the share of tokens where the update hit the clip limit | 0 at every step |
-| `train/ppo_kl` | the KL between the old and the new trainer probabilities | 0 at step 0 in a healthy run |
-| `train/entropy_loss` | the entropy term of the loss | 0 in our runs |
+| `train/train_rollout_logprob_abs_diff` | 训练器与引擎对数概率之间每个 token 的平均绝对差距 | 普通采样下 0.0136 至 0.0164 |
+| `train/train_rollout_kl` | 在采样 token 上引擎分布与训练器分布之间的 KL | 0.00063 至 0.00076 |
+| `train/grad_norm` | 梯度范数 | 0.35 至 4.95 |
+| `train/pg_clipfrac` | 更新触及裁剪上限的 token 所占的比例 | 每一步都为 0 |
+| `train/ppo_kl` | 训练器新旧概率之间的 KL | 健康运行中第 0 步为 0 |
+| `train/entropy_loss` | 损失中的熵项 | 我们的运行中为 0 |
 
-## Time
+## 时间 {#s-ref-metrics-time}
 
-| Metric | Meaning | Our value |
+| 指标 | 含义 | 我们的取值 |
 |---|---|---|
-| `perf/step_time` | the full step | 152.6 s median of 48 steps, in a run made before the heat guard |
-| `perf/rollout_time` | the rollout phase | 47.5 s median of 48 steps, in a run made before the heat guard |
-| `perf/log_probs_time` | the trainer scoring of the samples | 23.4 s median of 48 steps, in a run made before the heat guard |
-| `perf/train_time` | the training phase, with the scoring | 100.3 s median of 48 steps, in a run made before the heat guard |
-| `perf/update_weights_time` | the copy of new weights into the engine | 0.63 to 0.65 s for Qwen3-0.6B |
-| `perf/sleep_time` | the trainer moving its state to host memory after training | 0.76 s median over 48 steps for Qwen3-0.6B, and 1.9 to 3.7 s in the first two steps of the same 48-step run |
-| `perf/wake_up_time` | the trainer moving its state back before the log probabilities | 0.87 s median over 48 steps for Qwen3-0.6B |
-| `perf/train_wait_time` | the time the trainer waits for samples | logged in every step |
+| `perf/step_time` | 完整的一步 | 48 步的中位数 152.6 s，来自温度保护之前的一次运行 |
+| `perf/rollout_time` | rollout 阶段 | 48 步的中位数 47.5 s，来自温度保护之前的一次运行 |
+| `perf/log_probs_time` | 训练器为样本打分 | 48 步的中位数 23.4 s，来自温度保护之前的一次运行 |
+| `perf/train_time` | 训练阶段，包括打分 | 48 步的中位数 100.3 s，来自温度保护之前的一次运行 |
+| `perf/update_weights_time` | 把新权重复制进引擎 | Qwen3-0.6B 为 0.63 至 0.65 s |
+| `perf/sleep_time` | 训练后训练器把状态移到主机内存 | Qwen3-0.6B 在 48 步中的中位数为 0.76 s，同一次 48 步运行的前两步为 1.9 至 3.7 s |
+| `perf/wake_up_time` | 计算对数概率之前训练器把状态移回来 | Qwen3-0.6B 在 48 步中的中位数为 0.87 s |
+| `perf/train_wait_time` | 训练器等待样本的时间 | 每一步都有记录 |
 
-Time values hold only for steps that no heat-guard pause touched. [The lab notes](#s-ref-lab-notes) give the rule.
+时间数值只适用于没有被温度保护暂停影响的步。[实验笔记](#s-ref-lab-notes)给出了这条规则。
 
-## Evaluation and async
+## 评估和异步 {#s-ref-metrics-evaluation-and-async}
 
-| Metric | Meaning |
+| 指标 | 含义 |
 |---|---|
-| `eval/lag_steps` | how many steps late an eval on a dedicated fleet finished |
-| the weight version statistics in the rollout metrics | how old the samples of an async run are |
+| `eval/lag_steps` | 专用集群上的评估晚了多少步完成 |
+| rollout 指标中的权重版本统计 | 异步运行的样本有多旧 |
 
-We did not run evaluation or async training, so this table has no ranges.
+我们没有运行评估或异步训练，所以这张表没有范围。
 
 Sources: capture/gpu/summary/miles-gb10-lab.json (runs.plain-48, runs.plain-48-s2, runs.plain-48-s3, runs.e4-0.6b); capture/gpu/out-gb10/thermostat.log; Miles loss, metric, and evaluation code at main 08752a12.
