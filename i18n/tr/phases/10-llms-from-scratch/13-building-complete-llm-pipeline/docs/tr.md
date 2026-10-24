@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## Öğrenme hedefi
-- 将前十一课(tokenizer、data、pre-training、scaling、SFT、RLHF、DPO、CAI、eval、quantization、inference)
+- İki sınıf tokenizer, veri, önceden eğitim, ölçekleme, SFT, RLHF, DPO, CAI, değerlendirme, kuantitasyon, akıl yürütme)
 -  define varlık sözleşmesi: her aşamada ne tüketilir, ne üretilir ve bir sonraki aşamada nasıl verified input
 - Construct a orchestrator, to track experiments ∼ artefacts  perform hash,并 evalu thresholds based decide whether to pass the release gate
 - Design rollback planı: hangi eserlerin yeniden kullanımı düşük, hangi maliyet yüksek ve bir bozukluk kontrol noktası ne bedeli getirecek

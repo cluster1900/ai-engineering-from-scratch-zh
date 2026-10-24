@@ -55,7 +55,7 @@ Bu makale adı, Hogwild! SGD(Recht et al., 2011), bir asinkron güncelleme optim
 
 ### RoPE  bunu yapabilmeye çalış
 
-Rotary Position Embeddings(RoPE, Su et al. 2021) Q 和 K vektörleri arasında dönüşüm 编码 pozisyon bilgileri── çünkü pozisyonlar rotasyonlardır, sabitlenmiş taksitler değil, bu yüzden jetonların pozisyonu hareket edebilir, KV önbelleği girişini yeniden hesaplamama gerek yok── işçi olarak`i`写入 ortak cache 的位置 `p`Bu pozisyonun diğer çalışanları doğrudan önbelleğe alınan girişleri kullanır.
+Rotary Position Embeddings(RoPE, Su et al. 2021) Q ve K vektörleri arasındaki dönüm yoluyla 编码 pozisyon bilgileri。 çünkü dönüm sonrası sorgu ve dönüm sonrası anahtar arasındaki dikkat puanı sadece onların nispeten uzaklığına bağlıdır, böylece tüm blok önbelleğe girilen girişler yeni bir ofset'e taşınabilir ve yeniden hesaplanmak zorunda değildir: her önbelleğe giren anahtar yerine tekrar döndürülmek için dönüm sorgu.`i_q`Bu işçi görüşüyle ilgili soruları sormak için`i_k`- Blok, sorguya göre.`i_q - i_k`旋转── işte bu şekilde her işçi kendi sırasıyla paylaşılan saklama bloklarını görür. Bu teknikler sürekli blokların tüm düzleminde uygulanır.
 
 Öğrenilmiş pozisyon veya mutlak pozisyon modelinde, Hogwild! her eşzamanlı yazıda 时都需要缓存无效化──RoPE 让缓存 保持稳定──
 

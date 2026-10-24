@@ -74,10 +74,10 @@ Mamba katmanları 本身具有位置感知能力(通過递推) ・原始 Mamba t
 
 对于 Jamba-1 形状(32 层:28 Mamba + 4 Dikkat, gizli 4096,32 dikkat başları):
 
-- KV cache( sadece Dikkat katmanları): в 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 8.4 GB` Sadece 4  dikkat katmanı  KV cache katkıda bulunmak 
+- KV cache( sadece Dikkat katmanları): в 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 16 GB`❖ Sadece 4 Dikkat katmanı KV kasesi katkı sağlar. Jamba'nın yayınladığı bu katmanlar arasında 8 KV başının GQA'sı kullanılır.
 - SSM durumu: her token öncü 为 `28 * hidden * state_size`, ama bu bir kat kat sabit büyüklük, dizi uzunluğu genişleme değil.`28 * 4096 * 16 * 2 = 3.7 MB`- Evet.
 
-Aynı gizli 32 kat 32 başlı MHA'nın saf Transformer ile karşılaştırıldığında: 256k BF16`2 * 32 * 32 * 128 * 256k * 2 = 128 GB`KV cache  8x azaltılmıştı── hatta çoğu 2024 model kullanımı GQA 8) temel seviyeye göre`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`),Jamba'nın 1:7 hibridinde 16 GB'nin altında hala küçük 2x¬
+Aynı gizli 32 kat 32 başlı MHA'nın saf Transformer ile karşılaştırıldığında: 256k BF16`2 * 32 * 32 * 128 * 256k * 2 = 128 GB`KV cache  8x azaltılmıştı── hatta çoğu 2024 model kullanımı GQA 8) temel seviyeye göre`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`),32 个 KV başlarının 1:7 hibridı 16 GB 下仍然小2x──已发布的Jamba 为4 GB,小8x──
 
 İşte AI21'in söylediği gibi 单张 80GB GPU 上的 256k konteks ──full-MHA pure Transformer'ın KV cache 放不下; hatta GQA temel hattı da neredeyse ağırlık ve aktivasyon 留空间 vermiyor; Jamba 可以──
 

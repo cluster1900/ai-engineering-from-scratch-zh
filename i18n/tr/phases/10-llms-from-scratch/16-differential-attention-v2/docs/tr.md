@@ -16,7 +16,7 @@
 
 ## 问题
 
-标准 softmax Dikkat bir matematiksel özellik vardır, büyük ölçüde değişir ve mühendislik sorunları haline gelir.`q`Dikkatli olun.`softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值每个不匹配的代币都会得到一些正质的质量──这个残余质量就是噪音,并且会随着背景长度扩大──在128k 个代币下,即使每个不匹配的代币也只获得0.001%的概率,127.999 代币 合并也会贡献约12%的总量──模型必须学会绕开一个随着背景 增长的噪音下限──
+标准 softmax Dikkat bir matematiksel özellik vardır, büyük ölçüde değişir ve mühendislik sorunları haline gelir.`q`Dikkatli olun.`softmax(qK^T / sqrt(d))`❖ Softmax 永远无法产生精确的零值:每个不匹配的代币都会得到一些正质的质量──这个残余质量就是噪音,并且会随着背景长度扩大── 在128k 个代币下,即使每个不匹配的代币只获得0.0001%的概率,127,999 代币 合并也会贡献约13%的总量──模型必须学会绕开一个随着背景 增长的噪音下限──
 
 Bu durum, dikkat başı 干扰:long-context RAG'de 幻觉引用、100k-Token 检索任务中失败中失败,以及针内haystack benchmark 在32k 后出现的细微精度下降.
 

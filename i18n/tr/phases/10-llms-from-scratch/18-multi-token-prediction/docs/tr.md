@@ -28,7 +28,7 @@ Bu ders, bir tek MTP modülü oluşturma ve D- derinlik kaybından başlayarak g
 
 ### sıradan MTP 配方
 
-DeepSeek-V3 Üst model üzerinde eklenir`D`个 MTP modülleri。 her modül `k`(Ondan `k = 1..D`)预测深度 `k`Bu da bir işaret.`i`时预测                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `t_{i+k}`- Evet.
+DeepSeek-V3 Üst model üzerinde eklenir`D`个 MTP modülleri──主模型预测 `t_{i+1}`❖ Her modül`k`(Ondan `k = 1..D`)预测再往后 `k`步的标志 `t_{i+k+1}`, önde gelen konum belirlenmiş .`i`- Evet.
 
 Modül`k`包含:
 
@@ -49,13 +49,13 @@ h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMS
 Derinlik tahminı 为:
 
 ```math
-\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
+\text{logits}_{i+k+1} = \mathop{\mathrm{Out}}(h_i^{(k)}) \quad \text{for } k = 1, \ldots, D
 ```
 
-Derinlik kaybı , temel gerçeğe göre .`t_{i+k}`Çelişkili entropi:
+Derinlik kaybı , temel gerçeğe göre .`t_{i+k+1}`Çelişkili entropi:
 
 ```math
-L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k+1}, t_{i+k+1})
 ```
 
 跨 depth                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
@@ -70,9 +70,9 @@ L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 
 Gloeckle'nin ilk paralel MTP'leri, her biri doğrudan uygulanır.`h_i^(0)`                                                                                                                                                                                                                                                              `t_{i+k}`Normal bir şekilde antrenman yapabilirsin ama bu tahminler birbirine bağlı değil.`head_1`Çıkışlı yardım`head_2`Bu kafalar, birer başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı başlı
 
-DeepSeek-V3'ün sıralı tasarımından`h_i^(k-1)`Ek olarak gerçek bir sonraki simge yerleştirme `E(t_{i+k})`Yapımcılık`h_i^(k)`Bu, önceden tahmin etmek için nedenlik zinciri korudu.`t_{i+k+1}`, derinlik`k+1`Modül görülecektir.`t_{i+k}`处的内容── This is in structure with the self-backed decoder 消费 itself output method, therefore MTP modules can be directly as speculative-decoding drafters ▸
+DeepSeek-V3'ün sıralı tasarımından`h_i^(k-1)`Ek olarak gerçek bir sonraki simge yerleştirme `E(t_{i+k})`Yapımcılık`h_i^(k)`Bu, önceden tahmin etmek için nedenlik zinciri korudu.`t_{i+k+1}`, derinlik`k`Modül görülecektir.`t_{i+k}`处的内容── This is in structure with the self-backed decoder 消费 itself output method, therefore MTP modules can be directly as speculative-decoding drafters ▸
 
-推理时:将 `h_i^(k-1)`Yönlendirilmiş`t_{i+k}`输入 modülü `k+1`- Evet .`t_{i+k+1}`Bu EAGLE tarzı taslak, sadece iyi bir eğitimli MTP modülü kullanmak için bir taslak ağı olarak. DeepSeek-V3 ilk MTP modülünün kabul oranını %80'den fazla rapor ediyor ve yaklaşık 1.8× hız kazanıyor.
+推理时:将 `h_i^(k-1)`Yönlendirilmiş`t_{i+k}`输入 modülü `k`- Evet .`t_{i+k+1}`Bu EAGLE tarzı taslak, sadece iyi bir eğitimli MTP modülü kullanmak için bir taslak ağı olarak. DeepSeek-V3 ilk MTP modülünün kabul oranını %80'den fazla rapor ediyor ve yaklaşık 1.8× hız kazanıyor.
 
 ### 参数核算
 
@@ -142,7 +142,7 @@ Kendi dikkatini artı MLP── Oyuncaklar içinde, tek katlı bir çizgi dikkat
 
 ### 步骤 5: Derinlik kaybı
 
-Softmax (Logits)`k`处 temel gerçeklik simgesi `lambda / D`缩放因子跨深度 聚合──
+Softmax (Logits)`k+1`处 temel gerçeklik simgesi `lambda / D`缩放因子跨深度 聚合──
 
 ### 步骤 6: parametre değerlendirme
 
@@ -177,18 +177,18 @@ Yeni bir tren sürümünde MTP kullanma sahnesi:
 
 2. 計算一個密集 70B 模型 ((隱藏 8192,80 層) 在 D=1 MTP 模組下的参数开销── DeepSeek-V3 報告的 14B 开销與进行比较──解释为什么 DeepSeek'in 數字更高:MTP 變壓器積木 继承了相同的 MoE 结构,从而增加了每模組 参数──
 
-3. Oyuncak içinde gerçekleştirilen D=2: ekle ikinci MTP modülü, almak $h^{(1)}$Not:`t_{i+2}`❖ Testing joint loss 和 parametre核算与DeepSeek kağıdı △ 19-21 匹配──
+3. Oyuncak içinde gerçekleştirilen D=2: ekle ikinci MTP modülü, almak $h^{(1)}$Not:`t_{i+3}`❖ Testing joint loss 和 parametre核算与DeepSeek kağıdı △ 19-21 匹配──
 
 4. Bu oyuncak paralel MTP olarak değiştirilmiştir: Hedefi gizli durumda 之上 D 个输出头,每个预测不同的抵消――测量在同一个合成信号上,每个深度的损失与序列的版本相比如何――对于 k > 1,sequential 版本应产生更低的深度的损失,因为它在中间预测为条件――
 
-5. İyi bir eğitim MTP modülü kullanmak EAGLE tarzı taslak:`t_{i+k}` Bu taslakları üst sıralamalarda ölçerek, başlıca model tahminlerinin kabul oranına göre ölçerek, %50'e ulaşırsanız, MTP-as-draft deneyimi niteliğini yeniden ortaya çıkarır.
+5. İyi bir eğitim MTP modülü kullanmak EAGLE tarzı taslak:`t_{i+k+1}` Bu taslakları üst sıralamalarda ölçerek, başlıca model tahminlerinin kabul oranına göre ölçerek, %50'e ulaşırsanız, MTP-as-draft deneyimi niteliğini yeniden ortaya çıkarır.
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | MTP module | “额外 loss block” | 一个小型 transformer block 加 projection，用来预测主模型前方 `k` 个位置的 Token |
-| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k}` |
+| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k+1}`（主模型为 depth 0，预测 `t_{i+1}`） |
 | Parallel MTP | “Gloeckle-style” | 位于同一个 backbone hidden state 之上的 D 个独立 heads，没有条件链 |
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |

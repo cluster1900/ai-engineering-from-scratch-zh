@@ -46,7 +46,7 @@ Her soruya karşı NSA, KV cache'i üç farklı video kullanıyor.
 
 Seçim adımları (top-k blokları) 离散的──离散操作会破坏渐流──此前的稀疏注意工作要么跳过选择的 Backpropagation (seçimi) 限制训练),要么使用连续放松,而这些方法在推论中无法提供真正稀疏性──
 
-NSA bu noktayı çeviriyor: sıkıştırılmış dal Dikkat, tüm dizinin küçük kaba miktarına etkilidir Dikkat, üst-k işlem sadece sıkıştırılmış dalın en yüksek dikkate değerlerini tekrar kullanır Dikkat, hangi küçük parça bloklarını yüklemesi gerektiğini seçer.`top_k`Operasyon ön yönlü hesaplama grafikinde üstü no-op, sadece hangi bloklar kontrol edilir.
+NSA bu noktayı çeviriyor: sıkıştırılmış dal Dikkat aslında tüm dizinin küçük kaba derecesine etkilidir Dikkat.Top-k işlem sadece sıkıştırılmış dal içindeki en yüksek Dikkat puanlarını tekrar kullanır. Dikkat puanları, hangi küçük dereceler bloklarını yüklemesi gerektiği seçilir.`top_k`选择本身不接收 Gradient: it only controls which blocks will be loaded from内存中.
 
 Bu nedenle NSA'nın önceden eğitim için sonuna kadar kullanılabilmesinin nedeni budur.
 
