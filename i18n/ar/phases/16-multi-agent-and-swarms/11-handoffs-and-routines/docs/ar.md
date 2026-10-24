@@ -21,6 +21,8 @@
 
 **Handoff。**يمكن استخدام الوكيل أداة، فإنه يعود إلى كائن الوكيل الجديد.
 
+هذا كل المخرجات
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent
