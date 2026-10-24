@@ -46,6 +46,10 @@ Cuentas de nuevo:$V_{\text{new}} = V_{\text{old}} + \alpha \cdot (\text{target} 
 
 En condiciones de temperatura, cada pareja recibe visitas ilimitadas.$\alpha$满足 Robbins-Monro), se reunirá con una probabilidad de 1 收到 $Q^{\ast}$Y $\pi^{\ast}$¿Qué es eso?
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建 动手构建
 
 ### Paso 1: despliegue → (s, a, r) 列表
@@ -138,10 +142,6 @@ Cuando los episodios → ∞ 时, tu对 $V^\pi$El resultado de la lección 02 de
 - **Non-stationary policies。**Si es que$\pi$发生变化(如 MC control 中那样), viejo retorno de diferentes políticas.
 - **Off-policy importance sampling。**权重         $\pi(a \mid s)/\mu(a \mid s)$Se puede utilizar la opción de "Corte de IS" ponderada por decisión, o de "Cambio a TD").
 
-
-```figure
-epsilon-greedy
-```
 
 ## Usalo
 

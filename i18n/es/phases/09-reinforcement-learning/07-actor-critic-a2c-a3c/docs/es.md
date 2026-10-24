@@ -179,7 +179,7 @@ tags: [rl, actor-critic, gae]
 
 ## Los ejercicios
 
-1. **Easy。**En 4×4 GridWorld 上 utilizar ventaja MC$(G_t - V(s_t))$訓練 actor-critic──与 06 中 Lesson 06 中 REINFORCE-with-running-median-baseline
+1. **Easy。**En 4×4 GridWorld 上 utilizar ventaja MC $(G_t - V(s_t))$訓練 actor-critic──与 06 中 Lesson 06 中 REINFORCE-with-running-median-baseline
 2. **Medium。**切换到 TD-residual advantage$(r + \gamma V(s') - V(s))$¿Cuánto ha disminuido la variación de los lotes de ventajas de medición?
 3. **Hard。**实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$◊ dibujar el retorno final vs la eficiencia de la muestra― esta tarea de sesgo/varianza punto dulce ¿Dónde está?
 
