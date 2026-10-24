@@ -76,5 +76,8 @@ site/lesson-seo.json
 site/projects-data.js
 site/project-content/
 site/manual-*.html
+site/manual/
+site/sitemap-manuals.xml
+site/manuals-data.js
 site/manuals.html
 
