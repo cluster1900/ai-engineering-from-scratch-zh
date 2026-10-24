@@ -90,7 +90,7 @@ cc-gpt-assembly
 python3 code/main.py
 ```
 
-输出：parameter count 与 124M 参考值的对照、从随机 prompt 生成的 token ids，以及在 tying 打开时 LM head 和 Token Embedding 共享 storage 的确认信息。
+输出：parameter count 与 124M 参考值的对照、从固定 prompt 生成的 token ids，以及在 tying 打开时 LM head 和 Token Embedding 共享 storage 的确认信息。
 
 为了让 demo 保持快速，脚本还会端到端运行一个 tiny config（`d_model=64`、`num_layers=2`），并 inline 打印生成的 token 序列。124M config 会被构建，但只执行 parameter count 和一次 forward pass。
 

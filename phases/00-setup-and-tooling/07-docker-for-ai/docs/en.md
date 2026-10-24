@@ -140,7 +140,7 @@ nvidia/cuda:12.4.1-runtime-ubuntu22.04
   Use for: 运行 pre-built code
   Size: ~1.5 GB
 
-pytorch/pytorch:2.3.1-cuda12.4-cudnn9-runtime
+pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
   基于 CUDA 预装 PyTorch。
   Use for: 跳过 PyTorch install step
   Size: ~6 GB
@@ -156,29 +156,37 @@ python:3.12-slim
 这是 `code/Dockerfile` 中的 Dockerfile。逐段看一下：
 
 ```dockerfile
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+FROM --platform=linux/amd64 nvidia/cuda:12.4.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.12 \
-    python3.12-venv \
-    python3.12-dev \
-    python3-pip \
+    software-properties-common \
     git \
     curl \
     build-essential \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y --no-install-recommends \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1
 
+RUN curl -sSL https://raw.githubusercontent.com/pypa/get-pip/3b73145063be545b649ad9ca83ea8da5fc915a4f/public/get-pip.py -o /tmp/get-pip.py \
+    && echo "a341e1a43e38001c551a1508a73ff23636a11970b61d901d9a1cad2a18f57055  /tmp/get-pip.py" | sha256sum -c - \
+    && python /tmp/get-pip.py \
+    && rm /tmp/get-pip.py \
+    && update-alternatives --install /usr/bin/pip pip /usr/local/bin/pip3.12 1
+
 RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
 RUN python -m pip install --no-cache-dir \
-    torch==2.3.1 \
-    torchvision==0.18.1 \
-    torchaudio==2.3.1 \
+    torch==2.6.0+cu124 \
+    torchvision==0.21.0+cu124 \
+    torchaudio==2.6.0+cu124 \
     --index-url https://download.pytorch.org/whl/cu124
 
 RUN python -m pip install --no-cache-dir \
@@ -208,6 +216,8 @@ docker build -t ai-dev -f phases/00-setup-and-tooling/07-docker-for-ai/code/Dock
 ```
 
 第一次会花一些时间（下载 CUDA base image + PyTorch）。后续 builds 会使用 cached layers。
+
+**macOS / Apple Silicon（M1/M2/M3/M4）：** `FROM` 行上的 `--platform=linux/amd64` 正是这次 build 能在 Mac 上成功的原因。CUDA base image 也提供 arm64 变体，Docker Desktop 在 Apple Silicon 上会自动选择它，但 PyTorch 只为 x86_64 发布 `cu124` wheels，因此 `pip install torch==2.6.0+cu124` 这一层会失败，报错 `No matching distribution found for torch==2.6.0+cu124`。固定 platform 会拉取 x86_64 image 并在模拟下运行：build 更慢，container 也没有 GPU（Mac 上本来就没有 CUDA）。在 Mac 上，请从下面的 `docker run` 命令中去掉 `--gpus all`。要在 Apple Silicon 上做 GPU 工作，请用 Lesson 01 中的 MPS build 原生运行课程，把这个 image 留给带 NVIDIA GPU 的 x86_64 Linux 主机。
 
 运行它：
 
