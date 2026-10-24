@@ -71,7 +71,7 @@ Les modèles de bout en bout ont besoin de plus de données et de calcul, mais o
 
 ### Partage de la mise en page
 
-对于结构文件,运行布局检测器(LayoutLMv3, DocLayNet),为每个地区 标注标签:Titre, paragraphe, figure, tableau, note de bas de page。Lire l'ordre 于是变成按布局顺序 遍历地区 并拼接──
+对于结构文档,运行布局模型(LayoutLMv3,或在DocLayNet数据集上训练的探测器),为每个地区 标注标签:Titre, paragraphe, figure, tableau, note de bas de page。Lire l'ordre 于是变成按布局顺序 遍历地区 并拼接──
 
 对于表格,使用 **Key-Value extraction**Les modèles de données sont:
 
@@ -161,18 +161,23 @@ La hauteur de l'entrée fixe de la CNN max-pools 会把高度 pressée à 1);; l
 
 ### 步骤 3: RCR synthétique
 
-生成白底黑字的数字字符串, utilisé pour le test de fumée de bout en bout
+Les chaînes de caractères noirs sont utilisées pour tester la fumée de bout en bout. Chaque caractère devient une barre de six racines, en le décrivant dans un index du vocabulaire.`a`et `x`La perte est en train de s'arrêter.
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ Réel ensemble de données OCR 会添加字体、噪音、旋转、模糊 和色
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-Dans cette simple données synthétiques, la perte devrait être de 200 étapes à partir de ~3 à ~0.2
+Dans ces données simples, la perte devrait être de 400 étapes, de deux chiffres à environ 0,3.`code/main.py`Dans son ensemble de chaînes, il fait le même cycle, puis décode trois chaînes de test.
 
 ## Utilisez-le
 

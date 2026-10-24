@@ -57,7 +57,7 @@ Pourquoi les cartes thermiques sont-elles plus efficaces que la régression dire
 
 ### Localisation sous-pixel
 
-Argmax  donne un nombre intégral                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      `(dx, dy) = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1], ...)`La direction
+Argmax  donne un nombre intégral                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      `dx = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1])`Mettre le maximum de déplacement vers un voisin plus élevé,`dy`C'est tout à fait la même chose.
 
 ### Les champs d'affinité de partie (PAF)
 

@@ -92,7 +92,7 @@ Z &= d
 \end{aligned}
 ```
 
-Intrinsèques provenant des métadonnées EXIF, des modèles de calibration, ou des estimateurs intrinsèques monoculaires ((Perspective Fields, UniDepth) .
+Intrinsèques provenant des métadonnées EXIF, des modèles de calibration, ou des estimateurs intrinsèques monoculaires ((Perspective Fields, UniDepth) ).
 
 ### Évaluation
 

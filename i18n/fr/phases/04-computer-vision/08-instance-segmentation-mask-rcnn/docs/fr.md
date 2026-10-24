@@ -81,7 +81,7 @@ Mettez le masque 28x28 en plus de l'échantillon à la proposition de la taille 
 
 ### Les pertes
 
-Le masque R-CNN a quatre types de pertes en plus:
+Le masque R-CNN a cinq types de pertes en plus:
 
 ```math
 L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
@@ -257,7 +257,7 @@ def train_step(model, images, targets, optimizer):
     return {k: v.item() for k, v in loss_dict.items()}
 ```
 
-`targets`La liste doit contenir chaque image de la commande, dont`boxes`- Je suis là.`labels`et `masks`(en tant que `(num_instances, H, W)`Les tenseurs binaires) ―― modèle en formation 时返回四个损失的句,在 eval 时返回预测列表,由 `model.training`Décision
+`targets`La liste doit contenir chaque image de la commande, dont`boxes`- Je suis là.`labels`et `masks`(en tant que `(num_instances, H, W)`Les tenseurs binaires) ―― modèle en formation 时返回五个损失的句子, en évaluation 时返回预测 列表, qui est`model.training`Décision
 
 `pycocotools`Vous avez besoin de deux chiffres pour juger si le boîtier est en tête de boîte ou en tête de masque.
 

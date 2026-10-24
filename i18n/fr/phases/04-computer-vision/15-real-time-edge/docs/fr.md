@@ -1,6 +1,6 @@
 # Vue en temps réel  边缘部署
 
-> L'inférence de bord est de permettre à un modèle de 90 degrés de précision de fonctionner à 30 fps sur un appareil de 2 Go de RAM.
+> L'inférence de bord est de donner une précision de 90% à un modèle qui fonctionne à 30 fps sur un appareil de 2 Go de RAM.
 
 **Type:** Learn + Build
 **Languages:** Python
@@ -38,7 +38,7 @@ flowchart LR
     style PWR fill:#dbeafe,stroke:#2563eb
 ```
 
-- **Latency**:p50、p95、p99¬                                                                                                                                                                                                                                                          
+- **Latency**Les résultats de la recherche ont été analysés en fonction des données de l'analyse de données.
 - **Peak memory**La valeur maximale de l'appareil a déjà été observée, et non la moyenne à l'état stable.
 - **Power / energy**Les milliers de journées de déduction sur les appareils électriques de la batterie sont généralement utilisées avec l'utilisation de la CPU/GPU * temps 近似。
 

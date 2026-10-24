@@ -228,7 +228,7 @@ En production, vous devez prendre des décisions:
 
 - **Model family**SD 1.5 utilise des techniques de pointe et des exigences strictes de licence.
 - **Scheduler**:20-30 étapes Utilisation de DPM-Solver++ 2M Karras; lorsque la latence est inférieure à 1s 时使用 LCM-LoRA。
-- **Precision**Réponse:`float16`,A100 及 mettre à jour les appareils`bfloat16`,VRAM 紧张时使用 `int8`(par le biais de `bitsandbytes`Ou `compel`)。
+- **Precision**Réponse:`float16`,A100 及 mettre à jour les appareils`bfloat16`,VRAM 紧张时使用 `int8`(par le biais de `bitsandbytes`)。
 - **Conditioning**: ordinar文本可用; si vous avez besoin de plus de contrôle, rejoignez le ControlNet dans le pipeline de base.
 
 pour la production en série,`AUTO1111`- Je suis là .`ComfyUI`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `diffusers`+ `accelerate`, ou utiliser avec la compilation TensorRT `optimum-nvidia`Il y a une autre.

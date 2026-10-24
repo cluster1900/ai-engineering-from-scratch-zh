@@ -126,7 +126,7 @@ La croisée entropie dans la formation  début fournir un gradient stable; Dice 
 
 ### Résolution d'entrée 权衡
 
-L'encodeur U-Net va réduire la résolution de la vidéo à 4 fois, donc l'entrée doit être intégrée à 16 images. Les images médicales sont généralement 512x512 ou 1024x1024.`H * W * C_max`缩放, dans les canaux 1024x1024 且瓶喉为 1024 时,forward pass 已经会使用数GB VRAM──
+Le codeur U-Net va réduire la résolution de la vidéo à 4 fois, donc seulement l'entrée peut être prise en 16 fois, les connexions peuvent être supprimées.`H * W * C_max`缩放, dans les canaux 1024x1024 且瓶喉为 1024 时,forward pass 已经会使用数GB VRAM──
 
 ∆ Deux critères de dépannage:
 1. Tire la prise de charge  处理带 de 256x256 carreaux, puis couture。

@@ -204,8 +204,10 @@ def encode(box_xyxy, cell_x, cell_y, stride, anchor_wh):
     cy = 0.5 * (y1 + y2)
     w = x2 - x1
     h = y2 - y1
-    tx = cx / stride - cell_x
-    ty = cy / stride - cell_y
+    off_x = np.clip(cx / stride - cell_x, 1e-6, 1 - 1e-6)
+    off_y = np.clip(cy / stride - cell_y, 1e-6, 1 - 1e-6)
+    tx = np.log(off_x / (1 - off_x))
+    ty = np.log(off_y / (1 - off_y))
     tw = np.log(w / anchor_wh[0] + 1e-8)
     th = np.log(h / anchor_wh[1] + 1e-8)
     return np.array([tx, ty, tw, th])
@@ -224,7 +226,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 ```
 
-测试:encode une boîte Reencode Tu devrais pouvoir obtenir très proche de la valeur initiale du résultat`tx`Il n'y a pas de réaction inverse de la sigmoïde dans la plage post-sigmoïde, donc il y a de légères différences.
+测试:encode Un centre strictement situé dans la cellule 内部 box, recodez, vous devriez pouvoir obtenir la boîte originale dans la zone d'erreur de point de vue.`encode`Pour compenser le centre, il faut savoir:`decode`- Je suis là .`sigmoid`Le centre de la cellule est le plus mobile.`1e-6`Une cellule.`assign_targets`存储同样 logits, donc la tête dans `decode`La formation dans l'espace est une exigence.
 
 ### Étape 4: Une tête YOLO minimale
 
@@ -274,8 +276,10 @@ def assign_targets(boxes_xyxy, classes, anchors, stride, grid_size, num_classes)
         best = int(np.argmax(ious))
         aw, ah = anchors[best]
 
-        target[gy, gx, best, 0] = cx / stride - gx
-        target[gy, gx, best, 1] = cy / stride - gy
+        off_x = np.clip(cx / stride - gx, 1e-6, 1 - 1e-6)
+        off_y = np.clip(cy / stride - gy, 1e-6, 1 - 1e-6)
+        target[gy, gx, best, 0] = np.log(off_x / (1 - off_x))
+        target[gy, gx, best, 1] = np.log(off_y / (1 - off_y))
         target[gy, gx, best, 2] = np.log(bw / aw + 1e-8)
         target[gy, gx, best, 3] = np.log(bh / ah + 1e-8)
         target[gy, gx, best, 4] = 1.0
@@ -320,7 +324,7 @@ def yolo_loss(pred, target, has_obj, lambda_coord=5.0, lambda_obj=1.0, lambda_no
                    "obj_neg": loss_obj_neg.item(), "cls": loss_cls.item()}
 ```
 
-5 hyper-paramètres, chaque tutoriel YOLO, soit le code dur, soit le balayage.`lambda_coord=5, lambda_noobj=0.5`Il est également utilisé dans les produits de la société de l'information.
+Quatre poids de perte, chaque tutoriel YOLO, soit un code dur, soit un balayage.`lambda_coord=5, lambda_noobj=0.5`Il est également utilisé dans les produits de la société de l'information.
 
 ### 步骤 7: L'écoulement de l'inference
 

@@ -69,7 +69,7 @@ Je vous en donne une .`M x N`Matrice de coûts (traces x détections), chercher 
 
 ### SAM 2 suivi basé sur la mémoire
 
-SAM 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            **memory bank**Pour traiter le vidéo, il est donné un prompt sur une certaine image, puis il va encoder l'instance dans la mémoire.
+SAM 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            **memory bank**Pour traiter le vidéo, il est donné un prompt sur une certaine vidéo, puis il va encoder l'instance dans la mémoire.
 
 没有 Kalman filter,也没有匈牙利任务──Association 隐含在记忆-注意中──
 

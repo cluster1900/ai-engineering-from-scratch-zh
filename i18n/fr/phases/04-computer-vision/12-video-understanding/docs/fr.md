@@ -67,7 +67,7 @@ I3D 技巧: Prenez un modèle 2D ImageNet prétrainé, allez chaque noyau 2D 沿
 - L'inflation I3D  offre un apprentissage de transfert gratuit.
 
 缺点:
-- Les FLOP de plusieurs modèles T/8 à l'égard du noyau temporel sont 3 fois complétées.
+- Les FLOP sont environ 3 fois plus grands que les réseaux 2D qui fonctionnent, car chaque noyau 3x3 est devenu 3x3x3
 - Les noyaux temporels 很小;长程 motion 需要 pyramide ou double flux 方法。
 
 适用场景:motion est la reconnaissance de l'action du signal (Quelque chose-Quelque chose V2 、 contient une grande quantité de classes de kinétique lourdes en mouvement) 
