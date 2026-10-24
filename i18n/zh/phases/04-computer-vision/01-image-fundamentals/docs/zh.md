@@ -209,7 +209,6 @@ conv-output-size
 
 ```python
 import numpy as np
-from PIL import Image
 
 def synthetic_rgb(h=128, w=192, seed=0):
     rng = np.random.default_rng(seed)
@@ -221,8 +220,6 @@ def synthetic_rgb(h=128, w=192, seed=0):
     return np.clip(rgb, 0, 255).astype(np.uint8)
 
 arr = synthetic_rgb()
-# 或从 disk 加载：
-# arr = np.asarray(Image.open("your_image.jpg").convert("RGB"))
 
 print(f"type:   {type(arr).__name__}")
 print(f"dtype:  {arr.dtype}")
@@ -271,15 +268,16 @@ def rgb_to_hsv(rgb):
 
     h = np.zeros_like(cmax)
     mask = delta > 0
-    rmax = mask & (cmax == r)
-    gmax = mask & (cmax == g)
-    bmax = mask & (cmax == b)
+    argmax = np.argmax(rgb_f, axis=-1)
+    rmax = mask & (argmax == 0)
+    gmax = mask & (argmax == 1)
+    bmax = mask & (argmax == 2)
     h[rmax] = ((g[rmax] - b[rmax]) / delta[rmax]) % 6
     h[gmax] = ((b[gmax] - r[gmax]) / delta[gmax]) + 2
     h[bmax] = ((r[bmax] - g[bmax]) / delta[bmax]) + 4
     h = h * 60.0
 
-    s = np.where(cmax > 0, delta / cmax, 0)
+    s = np.divide(delta, cmax, out=np.zeros_like(delta), where=cmax > 0)
     v = cmax
     return np.stack([h, s, v], axis=-1)
 
@@ -322,7 +320,7 @@ print(f"preprocessed std  per channel:  {x.std(axis=(1, 2)).round(3)}")
 
 roundtrip = deprocess_imagenet(x)
 max_diff = np.abs(roundtrip.astype(int) - arr.astype(int)).max()
-print(f"roundtrip max pixel diff: {max_diff}    # 应该是 0 或 1")
+print(f"roundtrip max pixel diff: {max_diff}    # should be 0 or 1")
 ```
 
 每道平均值应接近0,std 接近1──这个预处理/减处理对正是每个火视图`transforms.Normalize`让我们做一些事情.
@@ -332,18 +330,45 @@ print(f"roundtrip max pixel diff: {max_diff}    # 应该是 0 或 1")
 在高档上比较最近的,千亿和立方,这样的差异会更明显.
 
 ```python
-target = (arr.shape[0] * 3, arr.shape[1] * 3)
+def resize_coordinates(source_length, target_length):
+    if target_length == 1:
+        return np.zeros(1, dtype=np.float32)
+    return np.linspace(0, source_length - 1, target_length, dtype=np.float32)
 
-nearest = np.asarray(Image.fromarray(arr).resize(target[::-1], Image.NEAREST))
-bilinear = np.asarray(Image.fromarray(arr).resize(target[::-1], Image.BILINEAR))
-bicubic = np.asarray(Image.fromarray(arr).resize(target[::-1], Image.BICUBIC))
+def nearest_resize(image, target_height, target_width):
+    y = np.rint(resize_coordinates(image.shape[0], target_height)).astype(int)
+    x = np.rint(resize_coordinates(image.shape[1], target_width)).astype(int)
+    return image[y[:, None], x[None, :]]
+
+def bilinear_resize(image, target_height, target_width):
+    y = resize_coordinates(image.shape[0], target_height)
+    x = resize_coordinates(image.shape[1], target_width)
+    y0 = np.floor(y).astype(int)
+    x0 = np.floor(x).astype(int)
+    y1 = np.minimum(y0 + 1, image.shape[0] - 1)
+    x1 = np.minimum(x0 + 1, image.shape[1] - 1)
+    wy = (y - y0)[:, None, None]
+    wx = (x - x0)[None, :, None]
+
+    source = image.astype(np.float32)
+    top = source[y0[:, None], x0[None, :]] * (1 - wx)
+    top += source[y0[:, None], x1[None, :]] * wx
+    bottom = source[y1[:, None], x0[None, :]] * (1 - wx)
+    bottom += source[y1[:, None], x1[None, :]] * wx
+    result = top * (1 - wy) + bottom * wy
+    return np.clip(np.rint(result), 0, 255).astype(image.dtype)
+
+target_height = arr.shape[0] * 3
+target_width = arr.shape[1] * 3
+nearest = nearest_resize(arr, target_height, target_width)
+bilinear = bilinear_resize(arr, target_height, target_width)
 
 def local_roughness(x):
     gy = np.diff(x.astype(float), axis=0)
     gx = np.diff(x.astype(float), axis=1)
     return float(np.abs(gy).mean() + np.abs(gx).mean())
 
-for name, out in [("nearest", nearest), ("bilinear", bilinear), ("bicubic", bicubic)]:
+for name, out in [("nearest", nearest), ("bilinear", bilinear)]:
     print(f"{name:>8}  shape={out.shape}  roughness={local_roughness(out):6.2f}")
 ```
 
@@ -351,34 +376,42 @@ for name, out in [("nearest", nearest), ("bilinear", bilinear), ("bicubic", bicu
 
 ## 使用它
 
-`torchvision.transforms`现在,我们将把上面的内容包装成一个可编译的管道.`preprocess_imagenet`做的事情,并额外加入变大和作物.
+皮托尔奇会在批量化、感知设备的电压上执行同样的操作──下面的代码先缩小较短的侧面,再取中心剪切,按道做标准化,最终生成预训练模型所期望的NCHW电压──
 
 ```python
 import torch
-from torchvision import transforms
-from PIL import Image
+import torch.nn.functional as F
 
-img = Image.fromarray(synthetic_rgb(256, 256))
+image_hwc = torch.from_numpy(synthetic_rgb(256, 320))
+batch = image_hwc.permute(2, 0, 1).unsqueeze(0).float() / 255.0
 
-pipeline = transforms.Compose([
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+height, width = batch.shape[-2:]
+scale = 256 / min(height, width)
+resized_height = round(height * scale)
+resized_width = round(width * scale)
+batch = F.interpolate(
+    batch,
+    size=(resized_height, resized_width),
+    mode="bilinear",
+    align_corners=False,
+    antialias=True,
+)
 
-x = pipeline(img)
-print(f"tensor type:  {type(x).__name__}")
-print(f"tensor dtype: {x.dtype}")
-print(f"tensor shape: {tuple(x.shape)}      # (C, H, W)")
-print(f"per-channel mean: {x.mean(dim=(1, 2)).tolist()}")
-print(f"per-channel std:  {x.std(dim=(1, 2)).tolist()}")
+top = (resized_height - 224) // 2
+left = (resized_width - 224) // 2
+batch = batch[:, :, top:top + 224, left:left + 224]
 
-batch = x.unsqueeze(0)
-print(f"\nbatched shape: {tuple(batch.shape)}   # (N, C, H, W) — ready for a model")
+mean = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
+std = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
+batch = (batch - mean) / std
+
+print(f"tensor dtype: {batch.dtype}")
+print(f"batched shape: {tuple(batch.shape)}")
+print(f"per-channel mean: {batch.mean(dim=(0, 2, 3)).tolist()}")
+print(f"per-channel std:  {batch.std(dim=(0, 2, 3)).tolist()}")
 ```
 
-四步,顺序必须这样:`Resize(256)`缩小到256个.`CenterCrop(224)`从中间取一个224x224补丁;`ToTensor()`除了255次转换HWC为CHW;`Normalize`减去图像网意味着并除以 std──颠倒这个顺序会改变到达模型的内容──
+四个步骤,顺序必须这样:把字节转换为浮动,把HWC转换为NCHW,把较短的侧面缩小到256,取224x224的中心剪切,然后减去ImageNet的意思并除了它的标准差距.
 
 ## 交付它
 

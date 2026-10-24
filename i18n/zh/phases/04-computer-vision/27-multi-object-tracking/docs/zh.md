@@ -111,8 +111,8 @@ import numpy as np
 
 def bbox_iou(a, b):
     """
-    a, b: [x1, y1, x2, y2] 的 (N, 4) arrays。
-    返回 (N_a, N_b) IoU matrix。
+    a, b: (N, 4) arrays of [x1, y1, x2, y2].
+    Returns (N_a, N_b) IoU matrix.
     """
     ax1, ay1, ax2, ay2 = a[:, 0], a[:, 1], a[:, 2], a[:, 3]
     bx1, by1, bx2, by2 = b[:, 0], b[:, 1], b[:, 2], b[:, 3]
@@ -220,7 +220,7 @@ def count_id_switches(tracks_per_frame, gt_per_frame):
     """
     tracks_per_frame:  list of list of (track_id, bbox)
     gt_per_frame:      list of list of (gt_id, bbox)
-    返回 ID switches 的数量。
+    Returns number of ID switches.
     """
     prev_assignment = {}
     switches = 0

@@ -190,13 +190,16 @@ out = inpaint(
 ### 步骤 5: 载荷量
 
 ```python
-pipe.load_lora_weights("sayakpaul/sd-lora-ghibli")
+pipe.load_lora_weights(
+    "artificialguybr/studioghibli-redmond-1-5v-studio-ghibli-lora-for-liberteredmond-sd-1-5",
+    weight_name="StudioGhibliRedmond-15V-LiberteRedmond-StdGBRedmAF-StudioGhibli.safetensors",
+)
 pipe.fuse_lora(lora_scale=0.8)
 
-image = pipe(prompt="a village square in ghibli style").images[0]
+image = pipe(prompt="a village square, StdGBRedmAF, Studio Ghibli").images[0]
 ```
 
-`lora_scale`控制强度;0.0 = 无效,1.0 = 完整效果.`fuse_lora`接收器将在原地到重中以提高速度,但会阻止切换.`pipe.unfuse_lora()`,我知道.
+模型卡 中的触发短语(`StdGBRedmAF, Studio Ghibli`现在,我们开始了.`lora_scale`控制强度;0.0 = 无效,1.0 = 完整效果.`fuse_lora`接收器将在原地到重中以提高速度,但会阻止切换.`pipe.unfuse_lora()`,我知道.
 
 ### 步骤 6: LoRA培训 (草图)
 
