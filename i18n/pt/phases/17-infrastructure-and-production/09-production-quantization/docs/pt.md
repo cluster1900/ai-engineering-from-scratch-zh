@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## Use-o
 `code/main.py`Apresentação do cache KV 何時占主导、重量圧縮、計画、以及 FP8 何時是安全选择──
 
+O [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64)A máquina mostrou os efeitos do FP8 na NVIDIA L4 ⋅ O peso do FP8 foi reduzido de 15,28 GB para 8,81 GB, o pool de KV passou de 24,094 tokens para 142,369 tokens, 64 usuários experimentaram a saída de 250,85 tokens por segundo para 735,91 tokens ⋅
+
 ## Entrega-o
 本课会产出 `outputs/skill-quantization-picker.md` Dado o tamanho do hardware, modelo, tipo de carga de trabalho e tolerância à qualidade, ele escolhe um formato e gera um plano de calibração/validação.
 

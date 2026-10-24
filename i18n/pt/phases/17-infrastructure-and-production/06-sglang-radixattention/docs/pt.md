@@ -91,6 +91,8 @@ roofline
 ## Use-o
 `code/main.py` implementar um cache KV de brinquedo radix-tree, bem como um com duas estratégias de cronograma:FCFS e cache-consciente.
 
+O [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096)A máquina mostrou o cache do radix em uma única verdadeira operação L4 ⋅ apresentação. Quatro grupos cada um tem um prompt de sistema de 4,096 tokens. O primeiro pedido de um grupo calcula o seu prompt.
+
 ## Entrega-o
 本课会生成 `outputs/skill-radix-scheduler-advisor.md` fornecer uma descrição da carga de trabalho (formato de modelo de solicitação, padrão de recuperação, número de inquilinos concorrentes), que gerará uma receita de solicitação de solicitação, bem como uma decisão sobre se é necessário adotar o SGLang.
 

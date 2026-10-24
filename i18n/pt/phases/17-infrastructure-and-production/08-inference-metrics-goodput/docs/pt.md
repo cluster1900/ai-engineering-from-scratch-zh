@@ -105,6 +105,8 @@ throughput-latency
 ## Use-o
 `code/main.py`É uma edição de jogos de calculadora de goodput.
 
+O [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1)A máquina mostrou o tempo de cada token de saída no NVIDIA L4 de onde e onde. Uma etapa de decodificação para ler o peso de 16,41 GB, em 300 GB/s, requer pelo menos 54,7 ms, enquanto o teste realmente consome 60,16 ms.
+
 ## Entrega-o
 本课会生成 `outputs/skill-slo-goodput-gate.md` Dado uma carga de trabalho e SLO, ele gerará uma receita de referência para CI/CD, com goodput e não throughput para gate deploys 
 
