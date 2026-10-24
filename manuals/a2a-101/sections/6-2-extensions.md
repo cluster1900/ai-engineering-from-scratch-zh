@@ -72,7 +72,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 }
 ```
 
-指南增加了第三步：响应应带有 `A2A-Extensions` 请求头，列出服务器为该请求激活的每个扩展 {{docs extensions}}。规范没有这样的规则，各 SDK 也不同。a2a-js 服务器在全部三种绑定上回显该请求头 {{sdk-js src/server/express/json_rpc_handler.ts at v1.3.0}}。a2a-go 和 a2a-java 服务器只以 gRPC 响应 metadata 的形式回显它 {{sdk-go a2agrpc/v1/handler.go at v2.6.0}} {{sdk-java reference/grpc/src/main/java/org/a2aproject/sdk/server/grpc/quarkus/A2AExtensionsInterceptor.java at v1.4.0.Final}}。a2a-python、a2a-dotnet 和 a2a-rs 服务器从不写入它 {{sdk src/a2a/extensions/common.py}} {{sdk-dotnet src/A2A/Models/AgentExtension.cs at v1.0.0-preview2}} {{sdk-rust a2a/src/lib.rs at a2a-server-lf-v0.5.1}}。[图](#fig-extension-activation)展示了这次交换。
+指南增加了第三步：响应应带有 `A2A-Extensions` 响应头，列出服务器为该请求激活的每个扩展 {{docs extensions}}。规范没有这样的规则，各 SDK 也不同。a2a-js 服务器在全部三种绑定上回显该头 {{sdk-js src/server/express/json_rpc_handler.ts at v1.3.0}}。a2a-go 和 a2a-java 服务器只以 gRPC 响应 metadata 的形式回显它 {{sdk-go a2agrpc/v1/handler.go at v2.6.0}} {{sdk-java reference/grpc/src/main/java/org/a2aproject/sdk/server/grpc/quarkus/A2AExtensionsInterceptor.java at v1.4.0.Final}}。a2a-python、a2a-dotnet 和 a2a-rs 服务器从不写入它 {{sdk src/a2a/extensions/common.py}} {{sdk-dotnet src/A2A/Models/AgentExtension.cs at v1.0.0-preview2}} {{sdk-rust a2a/src/lib.rs at a2a-server-lf-v0.5.1}}。[图](#fig-extension-activation)展示了这次交换。
 
 ```figure
 id: fig-extension-activation
