@@ -1,47 +1,47 @@
-# How KV connectors move the cache
+# KV connector 如何搬运 cache
 
-> This page explains the connector interface and the transfer layers.
+> 本页解释 connector 接口和传输层。
 
-Some setups need the KV cache of a request in a place other than the GPU that computed it. When you finish this section, you can name the jobs a KV connector does, and say what disaggregated prefill buys and what it does not.
+有些部署需要把请求的 KV cache 放到计算它的 GPU 以外的地方。读完本节后，你能说出 KV connector 承担的工作，以及 disaggregated prefill 能带来什么、不能带来什么。
 
-## Why move the cache
+## 为什么要搬运 cache {#s-how-kv-connectors-move-the-cache-why-move-the-cache}
 
-Three setups need it:
+有三种部署需要它：
 
-- **Disaggregated prefill.** One server computes the prompt, and another server generates the answer. The KV cache must move from the first to the second.
-- **Offloading.** Blocks that do not fit on the GPU go to CPU memory or to storage. They come back when a later request needs the same prefix.
-- **A shared cache.** Several servers read prefixes from one store, so a prefix computed once serves all of them.
+- **Disaggregated prefill。** 一个服务器计算 prompt，另一个服务器生成回答。KV cache 必须从第一个搬到第二个。
+- **卸载。** GPU 上放不下的 block 被移到 CPU 内存或存储中。之后有请求需要相同的前缀时，它们再被搬回来。
+- **共享 cache。** 几个服务器从同一个存储读取前缀，这样计算过一次的前缀能服务所有服务器。
 
-## One interface, many transports
+## 一个接口，多种传输方式 {#s-how-kv-connectors-move-the-cache-one-interface-many-transports}
 
-vLLM puts these jobs behind one interface, the KV connector. The scheduler asks the connector which blocks of a request it can load from outside. It then counts those tokens as computed, the same as a prefix-cache hit. The worker asks the connector to load or save the blocks around each forward pass.
+vLLM 把这些工作放在同一个接口后面，即 KV connector。scheduler 询问 connector 一个请求的哪些 block 可以从外部加载。然后它把这些 token 算作已计算，和 prefix cache 命中一样。worker 在每次前向计算前后请 connector 加载或保存 block。
 
-At 0.31.0, the repository has connectors for several transports:
+在 0.31.0 中，仓库里有面向几种传输方式的 connector：
 
-| Connector | What it moves the cache with |
+| Connector | 用什么搬运 cache |
 |---|---|
-| NIXL | the NVIDIA transfer library, over RDMA or the network |
-| Mooncake | the Mooncake transfer engine |
-| LMCache | the LMCache library, for CPU, disk, and shared stores |
-| Offloading | the native offload to CPU memory |
-| MultiConnector | two or more connectors together |
+| NIXL | NVIDIA 传输库，通过 RDMA 或网络 |
+| Mooncake | Mooncake 传输引擎 |
+| LMCache | LMCache 库，用于 CPU、磁盘和共享存储 |
+| Offloading | 原生卸载到 CPU 内存 |
+| MultiConnector | 两个或更多 connector 组合使用 |
 
-Set the connector with `--kv-transfer-config`, which gives the connector name, the role of the server, and the options of the transport. The role says whether the server produces the cache, consumes it, or does both.
+用 `--kv-transfer-config` 设置 connector，它给出 connector 名称、服务器的角色和传输方式的选项。角色说明服务器是产出 cache、消费 cache，还是两者都做。
 
-## What disaggregation buys
+## disaggregation 能带来什么 {#s-how-kv-connectors-move-the-cache-what-disaggregation-buys}
 
-The vLLM documentation says that disaggregated prefill does not raise throughput. It gives two other reasons to use it. You can tune the first token and the stream on separate servers. You can also keep long prompts from stalling the stream of other users, which controls the tail of the inter-token latency.
+vLLM 文档说，disaggregated prefill 不会提高吞吐。它给出了使用它的另外两个理由。你可以在不同的服务器上分别调优首 token 和流式输出。你还可以防止长 prompt 拖慢其他用户的流式输出，从而控制 token 间延迟的尾部。
 
-The price is a transfer for every request, and more machines to run. If a load fails, the default policy is to fail the request. A recompute policy exists as an option.
+代价是每个请求都要传输一次，还要运行更多机器。如果加载失败，默认策略是让请求失败。还有一个可选的重新计算策略。
 
-## Where it goes
+## 接下来的方向 {#s-how-kv-connectors-move-the-cache-where-it-goes}
 
-The connector interface is one of the most active parts of the code. In October 2026, the open work had three parts. One was KV offloading that does not depend on the tensor-parallel size. Another was a compression layer for the transferred blocks. The last was a fix for blocks released during a remote read. Pin the version when you build on a connector, and read its open issues first.
+connector 接口是代码中最活跃的部分之一。2026 年 10 月，进行中的工作有三部分。一是不依赖 tensor-parallel 大小的 KV 卸载。二是为传输的 block 增加压缩层。最后是修复远程读取期间 block 被释放的问题。基于某个 connector 开发时要锁定版本，并先阅读它的未关闭 issue。
 
 ```takeaways
-- A KV connector lets vLLM load and save cache blocks outside the GPU that computed them.
-- Disaggregated prefill controls the first token and the stream separately, and it does not raise throughput.
-- Pin the version and read the open issues before you build on a connector.
+- KV connector 让 vLLM 能在计算 cache block 的 GPU 之外加载和保存它们。
+- Disaggregated prefill 分别控制首 token 和流式输出，并不提高吞吐。
+- 基于某个 connector 开发之前，先锁定版本并阅读未关闭的 issue。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/distributed/kv_transfer/, vllm/config/kv_transfer.py), vLLM documentation at v0.31.0 (docs/features/disagg_prefill.md, docs/features/nixl_connector_usage.md), vLLM issues 61886, 59538, and 61229.

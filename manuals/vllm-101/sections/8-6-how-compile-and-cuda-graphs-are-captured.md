@@ -1,53 +1,53 @@
-# How compile and CUDA graphs are captured
+# 编译和 CUDA graph 是如何捕获的
 
-> This page explains torch.compile, piecewise and full graphs, and the capture sizes.
+> 本页解释 torch.compile、piecewise 与 full graph，以及捕获大小。
 
-vLLM spends the last part of every start on compiling and capturing. When you finish this section, you can say what each optimization level turns on, and why a full CUDA graph cannot cover every batch.
+vLLM 每次启动的最后一段时间都花在编译和捕获上。读完本节后，你能说出每个优化级别开启了什么，以及为什么 full CUDA graph 无法覆盖每个 batch。
 
-## Two separate tools
+## 两个独立的工具 {#s-how-compile-and-cuda-graphs-are-captured-two-separate-tools}
 
-**torch.compile** traces the model's Python code into a graph and generates fused kernels. Fusion joins small operations, such as a norm and a quantize step, into one kernel. The compiled code goes to a cache under `~/.cache/vllm/torch_compile_cache`. A second start with the same settings skips most of the work. The server finishes all compiles before it serves the first request.
+**torch.compile** 把模型的 Python 代码 trace 成一个 graph，并生成融合 kernel。融合会把小操作（例如 norm 和量化步骤）合并成一个 kernel。编译好的代码进入 `~/.cache/vllm/torch_compile_cache` 下的 cache。用相同设置第二次启动时会跳过大部分工作。服务器在处理第一个请求之前完成所有编译。
 
-**A CUDA graph** records a sequence of kernel launches with fixed shapes and replays it with one CPU call. A decode step for a small batch is hundreds of short kernels, and a graph removes the CPU cost of launching each one.
+**CUDA graph** 记录一串形状固定的 kernel 启动，并用一次 CPU 调用回放它。小 batch 的一个 decode step 有几百个很短的 kernel，graph 消除了逐个启动它们的 CPU 开销。
 
-## The graph modes
+## graph 模式 {#s-how-compile-and-cuda-graphs-are-captured-the-graph-modes}
 
-A graph needs fixed shapes, and attention does not always have them. A batch can mix prompts of different lengths. vLLM handles this with modes:
+graph 需要固定的形状，而 attention 并不总是满足。一个 batch 可能混合了不同长度的 prompt。vLLM 用模式来处理这一点：
 
-| Mode | What it records |
+| 模式 | 记录什么 |
 |---|---|
-| `NONE` | nothing |
-| `PIECEWISE` | everything except attention, in pieces around each attention call |
-| `FULL_DECODE_ONLY` | the whole step, only for batches of single-token decodes |
-| `FULL_AND_PIECEWISE` | the whole step where the attention backend allows it, and pieces otherwise |
+| `NONE` | 什么都不记录 |
+| `PIECEWISE` | 除 attention 以外的所有部分，围绕每次 attention 调用分段记录 |
+| `FULL_DECODE_ONLY` | 整个 step，但只针对全是单 token decode 的 batch |
+| `FULL_AND_PIECEWISE` | attention backend 允许时记录整个 step，否则分段记录 |
 
-The default is `FULL_AND_PIECEWISE`. At run time, a dispatcher picks a mode for each batch from its token count, its request count, and whether it is uniform. If the attention backend cannot replay a full graph for a batch, the dispatcher uses the piecewise one.
+默认是 `FULL_AND_PIECEWISE`。运行时，一个 dispatcher 根据每个 batch 的 token 数、请求数以及是否均匀来选择模式。如果 attention backend 无法为某个 batch 回放 full graph，dispatcher 就使用 piecewise graph。
 
-On the L4 and the GB10, FlashAttention 2 supports full graphs only for uniform batches, such as pure decode steps. A mixed batch with a new prompt runs piecewise.
+在 L4 和 GB10 上，FlashAttention 2 只对均匀的 batch（例如纯 decode step）支持 full graph。带新 prompt 的混合 batch 以 piecewise 方式运行。
 
-## The optimization levels
+## 优化级别 {#s-how-compile-and-cuda-graphs-are-captured-the-optimization-levels}
 
-`-O0` to `-O3` set compile and graphs together:
+`-O0` 到 `-O3` 一起设置编译和 graph：
 
-| Level | Compile | Graphs | Fusions |
+| 级别 | 编译 | Graph | 融合 |
 |---|---|---|---|
-| `-O0` | off | off | off |
-| `-O1` | on | piecewise | norm and activation quantize |
-| `-O2`, the default | on | full and piecewise | more, such as all-reduce with norm |
-| `-O3` | the same as `-O2` at 0.31.0 | | |
+| `-O0` | 关 | 关 | 关 |
+| `-O1` | 开 | piecewise | norm 和激活量化 |
+| `-O2`，默认 | 开 | full 和 piecewise | 更多，例如 all-reduce 与 norm 融合 |
+| `-O3` | 在 0.31.0 中与 `-O2` 相同 | | |
 
-A flag that you set yourself wins over the level. `--enforce-eager` turns off compile and graphs in one switch. Since 0.31.0 it also turns off the kernel warmup at startup, which `-O0` keeps.
+你自己设置的参数优先于级别。`--enforce-eager` 一个开关就关闭编译和 graph。从 0.31.0 起，它还会关闭启动时的 kernel 预热，而 `-O0` 会保留预热。
 
-## Capture sizes
+## 捕获大小 {#s-how-compile-and-cuda-graphs-are-captured-capture-sizes}
 
-vLLM captures graphs for a list of batch sizes. A batch larger than the largest size runs without a full graph. `--max-cudagraph-capture-size` sets the largest size, and `--cudagraph-capture-sizes` sets the list. More sizes cost startup time and GPU memory, which comes out of the KV pool.
+vLLM 为一组 batch 大小捕获 graph。比最大值还大的 batch 不使用 full graph 运行。`--max-cudagraph-capture-size` 设置最大值，`--cudagraph-capture-sizes` 设置列表。大小越多，启动时间和 GPU 内存的开销就越大，而这部分内存要从 KV 池里扣除。
 
-`vllm bench startup` measures the start with a cold and a warm compile cache, so you can see what each choice costs.
+`vllm bench startup` 分别在冷的和热的编译 cache 下测量启动，让你看到每种选择的代价。
 
 ```takeaways
-- torch.compile fuses kernels, and CUDA graphs remove launch cost. They are separate tools.
-- The default mode records full graphs where the attention backend allows it, and pieces elsewhere.
-- -O2 is the default, -O3 equals -O2 at 0.31.0, and --enforce-eager also skips the warmup.
+- torch.compile 融合 kernel，CUDA graph 消除启动开销。它们是两个独立的工具。
+- 默认模式在 attention backend 允许的地方记录 full graph，其他地方分段记录。
+- -O2 是默认值，在 0.31.0 中 -O3 等同于 -O2，而 --enforce-eager 还会跳过预热。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/config/compilation.py, vllm/config/model.py, vllm/v1/attention/backends/flash_attn.py, vllm/benchmarks/startup.py), vLLM documentation at v0.31.0 (docs/design/optimization_levels.md, docs/design/torch_compile.md, docs/design/cuda_graphs.md), the release notes for v0.31.0.

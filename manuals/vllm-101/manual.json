@@ -302,9 +302,9 @@
     },
     {
       "number": 8,
-      "title": "How vLLM Works",
-      "thesis": "The internals explain the defaults, and you can read this part when a default surprises you.",
-      "summary": "Processes, the scheduler, the KV block pool, attention backends, the model runner, compile and graphs, speculation, KV connectors, and history.",
+      "title": "vLLM 如何工作",
+      "thesis": "内部机制解释了默认值，当某个默认值让你意外时，可以读这一部分。",
+      "summary": "进程、scheduler、KV block 池、attention backend、model runner、编译与 graph、投机解码、KV connector，以及历史。",
       "accent": "plum",
       "sections": [
         {

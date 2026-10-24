@@ -1,16 +1,16 @@
-# How speculative decoding checks drafts
+# 投机解码如何检查草稿
 
-> This page explains draft proposal, verification, and acceptance.
+> 本页解释草稿的提议、验证和接受。
 
-Speculative decoding promises more tokens for each step without a change to the output. When you finish this section, you can explain how vLLM keeps that promise, and why the gain shrinks as the batch grows.
+投机解码承诺每个 step 产出更多 token，同时不改变输出。读完本节后，你能解释 vLLM 如何兑现这个承诺，以及为什么 batch 越大收益越小。
 
-## Guess, then check
+## 先猜，再检查 {#s-how-speculative-decoding-checks-drafts-guess-then-check}
 
-A decode step on a small batch reads all the weights to produce one token for each request. Most of the GPU sits idle while it waits for memory. Speculative decoding uses that idle time.
+小 batch 上的一个 decode step 要读取全部权重，才能为每个请求产出一个 token。GPU 的大部分时间都闲置着等待内存。投机解码利用的就是这段闲置时间。
 
-A cheap proposer guesses the next few tokens. The target model then runs once over the guesses and computes its own distribution at every position. A rejection sampler walks the guesses in order. It keeps each guess that the target model's distribution supports, and at the first rejection it samples a correct token from the target and stops. One step therefore gives at least one token and at most the number of guesses plus one.
+一个廉价的提议器猜出接下来的几个 token。然后目标模型对这些猜测运行一次，在每个位置计算它自己的分布。拒绝采样器按顺序检查这些猜测。它保留目标模型分布支持的每个猜测，在第一次拒绝时从目标模型采样一个正确的 token 并停止。因此一个 step 至少产出一个 token，最多产出猜测数加一个。
 
-The check is what keeps the output the same. With greedy sampling, a guess stays only if it equals the target's top token. With random sampling, the rejection rule keeps the output distribution equal to the target's distribution.
+正是这个检查保证了输出不变。使用 greedy 采样时，只有等于目标模型 top token 的猜测才会保留。使用随机采样时，拒绝规则保证输出分布等于目标模型的分布。
 
 ```figure
 id: fig-8-7
@@ -20,34 +20,34 @@ claim: One target pass keeps the drafts up to the first rejection and adds one t
 caption: The top half shows the rule by position. The bottom half is a real Qwen3-8B request on our L4, served by SGLang with EAGLE3, the same rule vLLM uses. Green tokens came from verify passes. From manuals/sglang-101/capture/gpu/out-l4/eagle3-generate.txt.
 ```
 
-## The proposers
+## 提议器 {#s-how-speculative-decoding-checks-drafts-the-proposers}
 
-vLLM 0.31.0 has several kinds of proposer, set with `--speculative-config`:
+vLLM 0.31.0 有几种提议器，用 `--speculative-config` 设置：
 
-| Method | Where the guesses come from |
+| 方法 | 猜测从哪里来 |
 |---|---|
-| `ngram` | earlier text in the same prompt that matches the last few tokens |
-| `suffix` | a suffix tree over earlier prompts and answers |
-| `eagle`, `eagle3` | a small draft head that reads the target model's hidden states |
-| `*_mtp` | extra prediction heads that come with some models, such as DeepSeek |
-| `draft_model` | a separate small model |
+| `ngram` | 同一个 prompt 中与最后几个 token 匹配的前文 |
+| `suffix` | 基于之前的 prompt 和回答构建的后缀树 |
+| `eagle`, `eagle3` | 一个读取目标模型 hidden state 的小型 draft head |
+| `*_mtp` | 某些模型（例如 DeepSeek）自带的额外预测 head |
+| `draft_model` | 一个独立的小模型 |
 
-N-gram and suffix methods cost almost nothing, and they help when the answer copies the prompt, as in code edits. A draft head like EAGLE3 needs a trained head for your model, and it helps on open text. For `Qwen/Qwen3-8B`, a public EAGLE3 head exists with one layer and a draft vocabulary of 32,000 tokens.
+N-gram 和 suffix 方法几乎没有开销，在回答照抄 prompt 时有帮助，比如代码编辑。EAGLE3 这样的 draft head 需要为你的模型训练的 head，在开放文本上有帮助。对于 `Qwen/Qwen3-8B`，有一个公开的 EAGLE3 head，只有一层，draft 词表有 32,000 个 token。
 
-## Why the gain falls with load
+## 为什么负载越高收益越低 {#s-how-speculative-decoding-checks-drafts-why-the-gain-falls-with-load}
 
-The idle time that speculation uses exists only while the step reads more memory than it computes. As the batch grows, the step does more compute for each byte, and the idle time goes away. The checks of rejected guesses then cost real compute. The vLLM documentation rates the gain of EAGLE as high at a low request rate and lower at a high one.
+投机解码利用的闲置时间，只在 step 读取内存多于计算时才存在。随着 batch 增大，step 对每个字节做的计算更多，闲置时间就消失了。这时检查被拒绝的猜测要消耗真实的算力。vLLM 文档对 EAGLE 收益的评价是：请求速率低时高，请求速率高时较低。
 
-The dynamic mode follows from this. It sets the number of guesses from the batch size and stops guessing for large batches. At 0.31.0, its online example runs on the older model runner.
+动态模式正是由此而来。它根据 batch 大小设定猜测数，并在 batch 很大时停止猜测。在 0.31.0 中，它的在线示例运行在较旧的 model runner 上。
 
-## What to watch
+## 要关注什么 {#s-how-speculative-decoding-checks-drafts-what-to-watch}
 
-The engine exports the proposed and the accepted tokens. The acceptance rate and the mean number of tokens for each step tell you whether the proposer guesses well on your text. A high acceptance rate with no gain in the time per token means the batch is already compute-bound.
+引擎导出提议的 token 数和被接受的 token 数。接受率和每个 step 的平均 token 数能告诉你提议器在你的文本上猜得好不好。接受率高、每个 token 的时间却没有改善，说明 batch 已经受限于计算。
 
 ```takeaways
-- A proposer guesses tokens, and one pass of the target model keeps or rejects them.
-- The rejection rule keeps the output distribution equal to the target's distribution.
-- The gain comes from idle GPU time, so it falls as the batch grows.
+- 提议器猜测 token，目标模型运行一次来保留或拒绝它们。
+- 拒绝规则保证输出分布等于目标模型的分布。
+- 收益来自 GPU 的闲置时间，所以随 batch 增大而下降。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/config/speculative.py, vllm/v1/spec_decode/, vllm/v1/sample/rejection_sampler.py), vLLM documentation at v0.31.0 (docs/features/speculative_decoding/), the model config of Tengyunw/qwen3_8b_eagle3.

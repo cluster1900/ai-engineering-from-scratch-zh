@@ -1,30 +1,30 @@
-# Why vLLM runs three kinds of process
+# 为什么 vLLM 运行三种进程
 
-> This page explains the API server, the engine core, and the workers, and why they are separate processes.
+> 本页解释 API 服务器、engine core 和 worker，以及它们为什么是独立的进程。
 
-`vllm serve` with one GPU starts three processes, and the count grows with every GPU you add. When you finish this section, you can name each process, say what it owns, and predict the process count for a parallel setup.
+用一块 GPU 运行 `vllm serve` 会启动三个进程，每增加一块 GPU，进程数就会增长。读完本节后，你能说出每个进程的名字和它负责的内容，并预测一个并行部署的进程数。
 
-## Three jobs that compete for one CPU
+## 争抢同一个 CPU 的三项工作 {#s-why-vllm-runs-three-kinds-of-process-three-jobs-that-compete-for-one-cpu}
 
-A serving engine does three kinds of work. It speaks HTTP and turns text into tokens and back. It decides which requests run in the next step. It runs the model on the GPU.
+推理引擎要做三类工作。它处理 HTTP，并在文本和 token 之间来回转换。它决定下一个 step 运行哪些请求。它在 GPU 上运行模型。
 
-In one Python process, these jobs take turns on one interpreter lock. While the server tokenizes a long prompt, the scheduler waits, and the GPU waits for the scheduler. On a fast GPU, a decode step takes only milliseconds. A few milliseconds of Python work between steps then leaves the GPU idle for a large share of the time.
+在一个 Python 进程里，这些工作要轮流使用同一个解释器锁。服务器在对长 prompt 做 tokenize 时，scheduler 在等待，GPU 又在等 scheduler。在快速的 GPU 上，一个 decode step 只需要几毫秒。于是 step 之间几毫秒的 Python 工作，就会让 GPU 在很大一部分时间里闲置。
 
-vLLM gives each job its own process:
+vLLM 给每项工作分配自己的进程：
 
-| Process | What it owns | How many |
+| 进程 | 负责什么 | 数量 |
 |---|---|---|
-| API server | HTTP, the OpenAI routes, tokenization, multimodal input, and the stream back to the client | one by default, or one for each data-parallel rank |
-| Engine core | the scheduler, the KV cache manager, and the loop that sends work to the workers | one for each data-parallel rank |
-| GPU worker | the weights and the forward pass on one GPU | one for each GPU, so tensor size times pipeline size for each engine core |
+| API 服务器 | HTTP、OpenAI 路由、tokenize、多模态输入，以及发回客户端的流 | 默认一个，或每个 data-parallel rank 一个 |
+| Engine core | scheduler、KV cache 管理器，以及把工作发给 worker 的循环 | 每个 data-parallel rank 一个 |
+| GPU worker | 一块 GPU 上的权重和前向计算 | 每块 GPU 一个，所以每个 engine core 有 tensor 大小乘以 pipeline 大小个 |
 
-The API server and the engine core exchange messages over ZeroMQ sockets. The engine core and its workers share memory queues. A data-parallel setup adds one more process, a coordinator that keeps the ranks in step.
+API 服务器和 engine core 通过 ZeroMQ socket 交换消息。engine core 和它的 worker 共享内存队列。data-parallel 部署还会多一个进程，即让各个 rank 保持同步的 coordinator。
 
-## Count the processes
+## 数一数进程 {#s-why-vllm-runs-three-kinds-of-process-count-the-processes}
 
-The vLLM design documents give a formula for the count. Add the API servers, the data-parallel engine cores, and the GPU workers, plus one coordinator for data parallelism. A server with `-tp 4` runs one API server, one engine core, and four workers, so six processes.
+vLLM 设计文档给出了进程数的公式。把 API 服务器、data-parallel engine core 和 GPU worker 加起来，data parallelism 再加一个 coordinator。用 `-tp 4` 启动的服务器运行一个 API 服务器、一个 engine core 和四个 worker，共六个进程。
 
-This matters when something goes wrong. A crash in a worker shows up in the engine core log. A slow tokenizer shows up as a long time to first token while the GPU is idle. When you read a log, first find which process wrote the line.
+出问题时这一点很重要。worker 里的崩溃会出现在 engine core 的日志里。tokenizer 慢会表现为首 token 时间很长、而 GPU 闲置。读日志时，先找出是哪个进程写的这一行。
 
 ```figure
 id: fig-8-1
@@ -34,16 +34,16 @@ claim: A server with tensor parallel size 4 runs six processes: one API server, 
 caption: Read from the top down. Each worker owns one GPU. From the vLLM design documents at v0.31.0.
 ```
 
-## Why not threads
+## 为什么不用线程 {#s-why-vllm-runs-three-kinds-of-process-why-not-threads}
 
-Threads in one Python process share the interpreter lock, so they would not remove the wait. Separate processes also let vLLM restart or replace one part. The repository also has an experimental front end written in Rust. It replaces the Python API server and talks to the same engine core over the same sockets.
+同一个 Python 进程里的线程共享解释器锁，所以消除不了等待。独立进程还让 vLLM 可以重启或替换其中一部分。仓库里还有一个用 Rust 写的实验性前端。它替代 Python API 服务器，通过同样的 socket 与同一个 engine core 通信。
 
-Separate processes have a cost: each request and each output is copied across a process boundary. The copy is small next to a model step, so the design accepts it. An environment variable, `VLLM_ENABLE_V1_MULTIPROCESSING=0`, runs the engine core in the API server process instead. The reproducibility guide uses it for offline runs, because one process makes the order of scheduling repeatable.
+独立进程有代价：每个请求和每个输出都要跨进程边界复制一次。和一个模型 step 相比，这次复制很小，所以这个设计接受了它。环境变量 `VLLM_ENABLE_V1_MULTIPROCESSING=0` 会改为在 API 服务器进程里运行 engine core。可复现指南在离线运行时使用它，因为单个进程能让调度顺序可重复。
 
 ```takeaways
-- The API server, the engine core, and the workers each run in their own process.
-- Count processes as API servers plus engine cores plus GPU workers, plus a coordinator for data parallelism.
-- Find the process that wrote a log line before you read the line.
+- API 服务器、engine core 和 worker 各自运行在自己的进程里。
+- 进程数等于 API 服务器加 engine core 加 GPU worker，data parallelism 再加一个 coordinator。
+- 读一行日志之前，先找出是哪个进程写的。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/v1/engine/core.py, vllm/v1/engine/core_client.py, vllm/v1/executor/multiproc_executor.py, vllm/envs.py, rust/README.md), vLLM documentation at v0.31.0 (docs/design/arch_overview.md, docs/usage/reproducibility.md).
