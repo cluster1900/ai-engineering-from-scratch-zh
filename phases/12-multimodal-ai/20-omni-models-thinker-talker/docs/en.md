@@ -11,7 +11,7 @@
 - 将推理 pipeline 拆分为 Thinker（文本推理）和 Talker（语音合成），并解释为什么并行 streaming 能工作。
 - 逐组件计算一次对话交互的 time-to-first-audio-byte（TTFAB）预算。
 - 描述 TMRoPE 在 Thinker 内部跨视觉、音频和文本的时间对齐位置编码。
-- 说出三种实时对话模式：half-duplex、turn-taking、full-duplex。
+- 说出两种实时对话模式 half-duplex 与 full-duplex，并解释 VAD turn-taking 如何驱动 half-duplex 的交接。
 
 ## 问题
 一个实时语音助手必须快速完成很多事：
@@ -82,7 +82,7 @@ Qwen2.5-Omni 默认支持 half-duplex，通过静音阈值进行 turn-taking。F
 - Residual-VQ decode：30ms。
 - 语音 waveform decode：50-80ms。
 
-总 TTFAB：7B 上 320-510ms，70B 上 600-900ms。Frontier 质量通常意味着 70B+；这就是 frontier 延迟差距的来源。
+总 TTFAB：7B 上 320-490ms，70B 上 600-900ms。Frontier 质量通常意味着 70B+；这就是 frontier 延迟差距的来源。
 
 ### Token-rate math
 

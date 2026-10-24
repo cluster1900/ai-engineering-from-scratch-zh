@@ -130,17 +130,18 @@ class AudioProjector(nn.Module):
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-分别报告每个类别（speech / sound / music / multi-audio）。聚合数字会掩盖模型在哪里失败。
+`audio_path` 指向数据集仓库中的 `data.zip`（约 47 GB），评分前需要先下载并解压。这个 exact-match 循环只是 sanity check，不是 benchmark 的官方评分器，因此它的数字不能与已发布的 MMAU-Pro 结果比较。官方评估器用 embedding 相似度（NV-Embed-v2）匹配多选答案，用 LLM judge 给开放式答案打分，并用 regex 规则检查指令遵循类答案：把预测写入 `model_output` 列，然后运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro) 中的 `evaluate_mmau_pro_comprehensive.py`。分别报告每个 `category`（speech、sound、music、multi 及其余类别）。聚合数字会掩盖模型在哪里失败。
 
 ## 使用它
 

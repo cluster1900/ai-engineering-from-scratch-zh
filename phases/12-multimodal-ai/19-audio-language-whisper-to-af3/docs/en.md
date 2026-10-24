@@ -51,7 +51,7 @@ Whisper 训练于以语音为主的数据。它在音乐和环境音频上较弱
 
 BEATs（Chen 等，2022）是一个在 AudioSet 上训练的 self-supervised Transformer。在相同参数量下，它比 Whisper 更好地捕捉音乐和环境声音。
 
-AF-Whisper（Audio Flamingo 3 的 hybrid）：将 Whisper + BEATs features concat 作为音频输入。Whisper 携带语言信号，BEATs 携带声学信号。
+AF-Whisper（Audio Flamingo 3 的 encoder）：从 Whisper-large-v3 encoder 出发，在语音、声音和音乐上继续联合训练，使一个 encoder 同时携带语言信号和声学信号。SALMONN 等更早的系统通过 concat Whisper 与 BEATs features 获得同样的覆盖。
 
 ### Audio Q-former
 
@@ -67,7 +67,7 @@ Qwen-Audio（Chu 等，2023）：架构类似，训练数据集更丰富，针�
 
 LTU — Listen, Think, Understand（Gong 等，2023）：显式 reasoning data，专注于音频 clip 上的 chain-of-thought。规模更小但更聚焦。
 
-Audio Flamingo 3（Goel 等，2025 年 7 月）：当前 open SOTA。8B LLM backbone（Qwen2 7B）、Whisper-large encoder concat BEATs、64-query Q-former，在 100 万+ audio-text instruction pairs 上训练。MMAU 0.72，在部分 sub-tasks 上匹配 proprietary frontier。
+Audio Flamingo 3（Goel 等，2025 年 7 月）：当前 open SOTA。7B LLM backbone（Qwen2.5-7B）、基于 Whisper-large-v3 构建的 AF-Whisper 音频 encoder、接入 LLM 的小型 adaptor 层，在 100 万+ audio-text instruction pairs 上训练。MMAU 0.72，在部分 sub-tasks 上匹配 proprietary frontier。
 
 AF3 还引入了音频的 on-demand chain-of-thought：模型可以在最终答案前可选地输出 thinking tokens（“let me identify the instruments first: ...”）。启用 thinking 后，复杂推理任务的准确率提升 3-5 个点。
 
