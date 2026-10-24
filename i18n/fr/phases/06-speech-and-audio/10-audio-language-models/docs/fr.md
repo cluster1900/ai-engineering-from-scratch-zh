@@ -130,17 +130,18 @@ C'est ainsi que le projecteur est généralement en 1 à 3 couches linéaires.
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-Résumé: Le groupe de travail de la société de l'information et de l'information a été créé en décembre 2009.
+`audio_path`Indirect dans le stockage de données`data.zip`Ce cycle de correspondance exacte n'est qu'un contrôle de la santé mentale, pas un évaluateur officiel de référence, de sorte que ses chiffres ne peuvent pas être comparés à ceux de MMAU-Pro publiés.`model_output`列, puis运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro)Le centre`evaluate_mmau_pro_comprehensive.py` Répondre à chaque rapport`category`(speech, sound, music, multi et autres catégories)
 
 ## Utilisez-le
 
