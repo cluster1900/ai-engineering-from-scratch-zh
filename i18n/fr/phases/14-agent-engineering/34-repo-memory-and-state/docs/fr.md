@@ -92,7 +92,7 @@ Les quatre modes peuvent transformer le minimum de ce cours en un monorepo multi
 
 **将大型 artifacts 与 state 分离。**Ne pas mettre les CSV, les transcriptions ou les fichiers générés dans le stockage`agent_state.json` Le matériel est conservé pour un seul dossier, ou il est transmis à un autre objet, l'état est conservé uniquement par voie de contrôle.
 
-**Event sourcing 用于 audit，snapshots 用于 resume。**Chaque mutation est ajoutée au journal des événements.`state.events.jsonl`); une prise de vue régulière de la situation`state.json`◊ Resume 读取 snapshot, puis reproduire snapshot timestamp 后的所有事件── This will consume more disk, but allows you per word replay agent decisions, this is about调试 long-horizon runs 至关重要──Postgres 内部用于WAL的也是一样的形状──
+**Event sourcing 用于 audit，snapshots 用于 resume。**Chaque mutation est ajoutée au journal des événements.`state.events.jsonl`); une prise de vue régulière de la situation`state.json`◊ Resume 读取快照, puis reproduire l'instant-shot timestamp 后的所有事件── ceci consommer plus de disques, mais vous permet de prendre des décisions par agent de lecture par mots, ce qui permet de modifier les fonctions à long terme 至关重要──Postgres dans le niveau de stockage utilise son WAL 实践了同样日志加检查点思路,只是层级比应用事件低得多──
 
 **Schema migrations，否则拒绝加载。** `schema_version`L'intégralité est un accord. Lorsque le gestionnaire charge une version inconnue du fichier, il refuse de lire.`tools/migrate_state.py`Dans chaque démarrage, il y a des opérations.
 

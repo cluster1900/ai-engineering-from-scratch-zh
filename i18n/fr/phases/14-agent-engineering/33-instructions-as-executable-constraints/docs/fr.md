@@ -62,7 +62,7 @@ Les règles de mise en œuvre de la loi sont les règles de mise en œuvre de la
 
 Le mode de réparation n'est pas d'écrire un fichier plus court, mais d'écrire un fichier de couche séparée. Le routeur de base doit être petit jusqu'à chaque session, il peut lire et ne conserver que des pointers.
 
-```text
+```
 AGENTS.md                  # router，少于 50 行：这个 repo 是什么、去哪里看、5 条硬规则
 docs/
   agent-rules.md           # 完整规则集（本课）

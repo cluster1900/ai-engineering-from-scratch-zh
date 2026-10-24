@@ -102,6 +102,25 @@ Aujourd'hui, chaque système de production de mémoire est une variante de MemGP
 
 选择, plutôt que selon le modèle de base 选择;core pattern 就是 MemGPT。
 
+### 智能体记忆的形态
+
+La résolution de la question de la capacité n'est pas déterminée.
+
+- **Working memory** 现在什么最重要?in-context 层:当前任务、最近几轮对话、固定的核心部分──也就是即时本身──
+- **Episodic memory** 发生了什么? pas de dialogue de la session et des trajectories, connecté avec la session et tourné 引用一起存储,可按需回放──
+- **Semantic memory** 什么是真的?  什么是真的?  什么是真的?  什么是真的?  什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的?
+- **Procedural memory** Comment faire ? Apprendre les routines, préférences et règles, elles guident les comportements futurs, et non les souvenirs.
+
+开源实现: chacun a choisi différents points de participation:
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ## Je le livre.
 `outputs/skill-virtual-memory.md`C'est une compétence réutilisable, qui peut être utilisée pour un temps de fonctionnement de but.
 
@@ -129,3 +148,7 @@ Aujourd'hui, chaque système de production de mémoire est une variante de MemGP
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks) Évolution à trois niveaux
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) Contextualiser voir budget
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413) construire la mémoire de production hybride sur ce modèle
+- [Zep (getzep/zep)](https://github.com/getzep/zep) La mémoire du graphe de connaissance temporelle dans la classe de classe
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) Leçon 09 magasin hybride 背后的提取管道
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem) Dans le contexte de la réaction et des règles de conduite
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory) Capture et intégration de session en enregistrement de type recherchable

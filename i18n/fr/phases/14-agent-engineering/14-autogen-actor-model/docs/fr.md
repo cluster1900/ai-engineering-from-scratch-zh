@@ -34,6 +34,8 @@ Deux acteurs ne partagent pas leur mémoire. Ils ne peuvent envoyer que des mess
 
 ### AutoGen v0.4 Environ trois niveaux d'API
 
+AutoGen v0.4 en divise les interfaces en trois couches:
+
 1. **Core.**Le cadre des acteurs de base.`AgentRuntime`- Je suis là.`Agent`- Je suis là.`Message`- Je suis là.`Topic`◊ Échange de messages non synchronisés, basé sur des événements ◊
 2. **AgentChat.**面向任务的高层API(替代 v0.2 的可谈话机)`AssistantAgent`- Je suis là.`UserProxyAgent`- Je suis là.`RoundRobinGroupChat`- Je suis là.`SelectorGroupChat`Il y a une autre.
 3. **Extensions.**集成:OpenAI、Anthropic、Azure、tools、memory。

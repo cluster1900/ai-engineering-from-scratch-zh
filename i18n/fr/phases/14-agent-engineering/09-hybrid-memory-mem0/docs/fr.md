@@ -14,7 +14,7 @@
 - Avec un peu de temps, je peux réaliser un jeu de trois mémoires de stockage, parmi lesquelles`add()`写入全部三个存储,`search()`Le résultat de la fusion
 
 ##  problématique
-Pour une catégorie de trois types de requêtes, un seul stockage a été émis:
+Chaque type de stockage ne convient qu'à une des trois catégories de requêtes:
 
 - **语义相似性**                                                                                                                                                                                                                                                              
 - **事实查找**    用户的电话号码是什么? KV 胜出; Vecteur 浪费资源,Graph 过复杂──
