@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$, no se puede perder.
 - $A \approx 406$¿ Qué ?$B \approx 411$¿Qué es eso?
 
-Con la expansión, dos ejemplos se ponderan mutuamente ⋅ en el cálculo fijo$C = 6ND$) abajo para$N$求导并求解:
+Con la expansión, dos ejemplos se ponderan mutuamente ⋅ en el cálculo fijo$C = 6ND$) abajo para$N$求导并求解──使用上述的 $\alpha$Y $\beta$¿ Qué ?$N$El índice es de aproximadamente 0,45,$D$El índice de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de la tasa de cambio de la tasa de cambio de la tasa de cambio de la tasa de la tasa de cambio de la tasa de cambio de la tasa de la tasa de cambio de la tasa de la tasa de cambio de la tasa de cambio de la tasa de la tasa de cambio de la tasa de cambio de la tasa de la tasa de cambio de la tasa de la tasa de cambio de la tasa de la tasa de cambio de la tasa de la tasa de la tasa de cambio de la tasa de la tasa de tasa de cambio de la tasa de tasa de la tasa de cambio de la tasa de la tasa de tasa de tasa de tasa de baja de la tasa de baja de la tasa de la tasa de baja de la tasa de baja de la tasa de baja de la tasa de baja de la tasa de baja de la tasa de baja de la tasa de la tasa de baja de la tasa de baja de la tasa de baja de la tasa de baja de baja de la tasa de la tasa de baja de la tasa de baja de baja de la tasa de baja de baja de la tasa de baja de la tasa de baja de baja de la tasa de baja de la tasa de baja de baja de la tasa de baja de baja de la tasa de baja de baja de baja de baja de la tasa de baja de baja de`code/main.py`                                                                                                                                                                                                                                                              $C = 6ND$Central orden $D = 20N$, experiência法则为:
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```
