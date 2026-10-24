@@ -28,14 +28,14 @@ MCP `2026-07-28` 规范通过使**每个请求自描述**彻底解决了这一�
 ### 现代请求分发循环（Dispatch Loop）
 
 ```text
-读取一行 JSON-RPC 文本
-解析外层 Envelope
-若为通知（Notification），则不予响应
-针对当前请求校验 params._meta
-根据 method 执行路由分发
-使用 resultType 与 serverInfo 封装成功结果
-写回一行 JSON-RPC 响应文本
-立即遗忘当前请求作用域的元数据
+read one JSON-RPC line
+parse the envelope
+if it is a notification, do not respond
+validate params._meta for this request
+route by method
+wrap success with resultType and serverInfo
+write one JSON-RPC response line
+forget request-scoped metadata
 ```
 
 在 stdio 模式下，有三条关键规则：
@@ -116,7 +116,7 @@ Host 应利用它们来进行交互确认和 UI 呈现，但 Server 必须在业
 
 对于用户专属的私有笔记数据，应使用 `cacheScope: "private"`。共享缓存绝不能跨授权上下文复用私有响应。
 
-现代数据变更推送不再使用 `resources/subscribe`。Client 通过发起 `subscriptions/listen` 并声明 `resourceSubscriptions` 或列表变更事件来接收长连接推送。
+现代数据变更推送不再使用 `resources/subscribe`。Client 通过发起 `subscriptions/listen` 并声明 `resourceSubscriptions` 或列表变更事件来接收长连接推送。第 10 课将构建这一流程。
 
 ### Prompts（提示模板）
 
@@ -141,7 +141,13 @@ def complete(payload):
 
 现代 Server 可以发送与 Client 请求直接相关的通知，或者在 Client 打开的 `subscriptions/listen` 流中推送通知。但 Server **绝不能**主动发起独立的 JSON-RPC 请求。
 
-当 Handler 需要 Sampling、Elicitation 或 Roots 输入时，它返回一个 `input_required` 结果。Client 在满足所请求的输入后，使用全新的请求 ID 重新发起原始方法调用。
+当 Handler 需要 Sampling、Elicitation 或 Roots 输入时，它返回一个 `input_required` 结果。Client 在满足所请求的输入后，使用全新的请求 ID 重新发起原始方法调用。第 11 课将详细讲解这种多轮往返请求（Multi Round-Trip Request）模式。
+
+### 显式的 Legacy 兼容
+
+双时代（dual-era）Server 也可以在一个明确隔离的 Legacy 分支上实现 `2025-11-25` 握手。当请求中存在现代规范要求的 `_meta` 字段时，它选择现代行为；当收到 `initialize` 时，则走 Legacy 行为。
+
+不要让 `2026-07-28` 请求经过 Legacy 握手路径，也不要把现代的 `resultType` 字段塞进 Legacy 的初始化结果中。本课代码刻意只实现现代规范，以便让这些不变量保持清晰可见。
 
 ```figure
 t3-dispatch-loop
@@ -172,8 +178,8 @@ npx tsx main.ts --demo
 ## 练习与思考
 
 1. 从某个请求中移除 capabilities 字段，证明 Server 绝不会复用先前请求中声明的旧能力。
-2. 颠倒 `TOOLS`、`PROMPTS` 及笔记数据的录入顺序，确认所有列表查询结果依然维持稳定的字母序。
-3. 新增一个破坏性的 `notes_delete` 工具，并在执行器内部加入鉴权检查，验证 `destructiveHint` 仅作前端交互提示。
+2. 颠倒 `TOOLS`、`PROMPTS` 及笔记数据的录入顺序，确认所有列表查询结果依然保持稳定。
+3. 新增一个破坏性的 `notes_delete` 工具，并在执行器内部加入鉴权检查，并让 `destructiveHint` 仅作为 UX 提示。
 4. 补充 `resources/templates/list` 接口，要求附带 `ttlMs`、`cacheScope` 以及确定性排序。
 5. 为 `2025-11-25` 编写一个完全隔离的 Legacy 适配器，并通过测试证明现代请求绝不会误入 Legacy 处理路径。
 
@@ -184,9 +190,9 @@ npx tsx main.ts --demo
 | 无状态 Server (Stateless server) | 仅从每个请求自身的元数据处理调用，无任何协议 Session 内存记忆 |
 | `server/discover` | 强制实现的现代方法，用于向调用方公布支持的版本与功能集 |
 | 完整结果 (Complete result) | 携带 `resultType: "complete"` 的成功现代结果 |
-| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或只读结果 |
+| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或资源读取结果 |
 | 确定性列表 (Deterministic list) | 逻辑相同的注册表必须输出完全一致、可复现的条目顺序 |
-| Server 身份 (Server identity) | 在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
+| Server 身份 (Server identity) | 推荐在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
 | Tool 业务错误 (Tool error) | Tool 调用正常被解析执行，但业务逻辑失败，返回包含 `isError: true` 的 content |
 | 协议错误 (Protocol error) | 非法的 JSON-RPC 格式或无效的 MCP 请求参数，直接通过顶层 `error` 报错返回 |
 

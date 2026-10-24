@@ -65,13 +65,15 @@ Accept: application/json, text/event-stream
 - `Mcp-Session-Id` 直接被忽略，绝不生成，绝不回显。
 - `Last-Event-ID` 直接被忽略，因为现代流不支持断点重放续传。
 
-如果请求作用域的 SSE 流在收到最终响应前中断，Client 视该次在途请求已丢失。在确认安全后，Client 可以使用全新的 JSON-RPC ID 发起新的独立请求。
+如果请求作用域的 SSE 流在收到最终响应前中断，Client 视该次在途请求已丢失。在确认安全后，Client 可以使用全新的 JSON-RPC ID 发起新的独立请求，但绝不能尝试恢复该流。
 
 ### 源站校验（Origin Validation）
 
 Server 在收到传入连接时校验 `Origin` 请求头以防范 DNS 重绑定攻击（DNS Rebinding）。若该头存在且不在允许白名单内，返回 `403 Forbidden`。非浏览器 Client 可以省略 `Origin`，官方传输规范对此予以允许。
 
-本地开发 Server 应绑定到 `127.0.0.1` 而不是 `0.0.0.0`。网络服务必须在每个请求上执行认证与授权；Origin 校验绝不能替代身份认证。
+本地开发 Server 应绑定到 `127.0.0.1` 而不是所有网络接口。网络服务必须在每个请求上执行认证与授权；Origin 校验绝不能替代身份认证。
+
+在完成规范化配置后使用精确的源站匹配。诸如 `origin.startswith("https://trusted.example")` 的前缀检查并不安全，因为它可能接受攻击者控制的后缀。
 
 ### 必填的 HTTP 元数据请求头
 
@@ -85,19 +87,23 @@ Mcp-Name: notes_search
 
 规则要求：
 
-- `MCP-Protocol-Version` 必须与 `params._meta.io.modelcontextprotocol/protocolVersion` 完全一致。
-- `Mcp-Method` 必须与 JSON-RPC 的 `method` 完全一致。
+- `MCP-Protocol-Version` 为必填项，且必须与 `params._meta.io.modelcontextprotocol/protocolVersion` 完全一致。
+- `Mcp-Method` 为必填项，且必须与 JSON-RPC 的 `method` 完全一致。
 - `Mcp-Name` 在 `tools/call`、`resources/read` 和 `prompts/get` 时强制必填。
 - `Mcp-Name` 对应 `params.name`（或 `resources/read` 时的 `params.uri`）。
-- 请求头的值区分大小写。
+- 请求头的值区分大小写，尽管请求头名称不区分大小写。
 
-对于包含非 ASCII 或特殊字符的 `Mcp-Name`，使用标准的 Base64 哨兵格式：
+对于包含非 ASCII 或特殊字符的 `Mcp-Name`，使用精确的 UTF-8 Base64 哨兵格式：
 
 ```text
 =?base64?{Base64EncodedValue}?=
 ```
 
-任何缺失、畸形或与请求体不一致的镜像头，立即返回 HTTP `400` 与错误码 `-32020`。若头体版本一致但 Server 不支持该版本，返回 HTTP `400` 与错误码 `-32022`。
+Server 在与请求体比较之前先解码该值。
+
+任何缺失、畸形或与请求体不一致的镜像头，立即返回 HTTP `400` 与错误码 `-32020`。若头体版本一致但 Server 不支持该版本，返回 HTTP `400` 与错误码 `-32022`，并附带精确的错误数据，例如 `{"supported":["2026-07-28"],"requested":"2027-01-01"}`。
+
+未知的现代方法返回 HTTP `404` 与 JSON-RPC `-32601`。JSON-RPC 响应体很重要，因为双时代 Client 依靠它区分现代错误与 Legacy 端点未命中。
 
 ### 请求作用域的短周期 SSE
 
@@ -105,17 +111,19 @@ Server 可以为耗时较长的单个请求采用 SSE：
 
 ```text
 POST tools/call id=41
-  <- notifications/progress (针对 id=41)
-  <- notifications/progress (针对 id=41)
-  <- JSON-RPC response (id=41)
-流关闭
+  <- notifications/progress related to id=41
+  <- notifications/progress related to id=41
+  <- JSON-RPC response id=41
+stream closes
 ```
 
-Server 绝不能在这个流中主动向 Client 发起独立的 JSON-RPC 请求。关闭响应流即代表取消该请求。
+Server 绝不能在这个流中主动向 Client 发起独立的 JSON-RPC 请求。Sampling、Elicitation 与 Roots 交互使用多轮往返请求（Multi Round-Trip Request）结果。关闭响应流即代表取消该请求。
+
+不要为重放添加 SSE 事件 ID。`Last-Event-ID` 恢复机制不属于现代修订版。
 
 ### 长周期变更推送：`subscriptions/listen`
 
-变更通知必须通过 Client 主动发起的专用 POST 请求开启：
+变更通知必须通过 Client 主动发起的请求开启，而不是独立的 GET：
 
 ```json
 {
@@ -139,13 +147,36 @@ Server 绝不能在这个流中主动向 Client 发起独立的 JSON-RPC 请求�
 }
 ```
 
-POST 响应是一个长连接 SSE 流。其首条协议消息为 `notifications/subscriptions/acknowledged`。该确认通知、后续的每一次变更通知以及最终结果，均在 `_meta` 中携带 `io.modelcontextprotocol/subscriptionId`，且值等于该监听请求的 ID。流断开后，Client 发起新的 `subscriptions/listen` 并重新拉取可能已变更的数据。
+POST 响应是一个长连接 SSE 流。其首条协议消息为 `notifications/subscriptions/acknowledged`。该确认通知、后续的每一次变更通知以及最终结果，均在 `_meta` 中携带 `io.modelcontextprotocol/subscriptionId`，且值等于该监听请求的 ID。Server 可以发送 SSE 注释作为保活信号。流断开后，Client 发起新的 `subscriptions/listen` 并重新拉取可能已变更的数据。
+
+`resources/subscribe` 与 `resources/unsubscribe` 属于 Legacy 时代，不要在现代连接上使用它们。
 
 ### 显式的应用层状态
 
 移除协议 Session 绝不意味着禁止有状态的工作流。Server 可以生成一个不透明的状态句柄（State Handle）并在正常的 Tool 结果中返回它。Client 在后续调用中将该句柄作为显式参数传入。
 
-将句柄与认证主体绑定，赋予不可猜测的随机性与有效过期时间，并在每次使用时严密授权。这样状态就清晰地呈现于应用层，而不是隐蔽在网络传输层的会话亲和性中。
+将句柄与认证主体绑定，赋予不可猜测的随机性与有效过期时间，并在每次使用时严密授权。这样状态就清晰地呈现于应用层，而不是隐蔽在传输层亲和性中。
+
+由隐藏的副本状态引发的故障是机械式的：
+
+1. 请求 A 到达副本 1，在该进程内存中创建了一份草稿。
+2. 响应没有返回草稿句柄，因为实现假定连接本身就能标识草稿。
+3. 请求 B 是一次全新的 POST，到达了副本 2。
+4. 副本 2 拥有合法的协议元数据，却无法命名或加载该草稿，于是工作流失败或读取了错误的本地对象。
+5. 粘性路由（Sticky routing）看似修复了症状，直到一次重启、发布、重新调度或故障转移把下一个请求移走。
+
+正确的边界包含两部分：协议上下文保留在每个请求中；持久的应用状态存放在共享存储中，以 Server 生成并返回给 Client 的句柄为键。下一次调用提供该句柄，任意副本都能加载同一条记录，授权则把记录绑定到已认证的主体与租户。副本内存可以缓存记录，但不能是保证正确性所需的唯一副本。
+
+按生命周期选择状态机制：请求内局部变量只服务单次调用；短暂的 MRTR 续接可以使用带完整性保护的 `requestState`；草稿或持久任务需要显式句柄，再加上共享持久化、过期、并发控制与幂等性。这些对象都不是 MCP 协议 Session。
+
+### HTTP 双时代兼容
+
+同时支持现代与 Legacy Server 的 Client 首先尝试现代 POST。如果收到 HTTP `400`、`404` 或 `405`，它会检查响应体：
+
+- 已识别的现代 JSON-RPC 错误证明 Server 是现代的。修正请求或改用对方公布的版本重试，不要降级。
+- 空响应体或无法识别的响应可能意味着这是 Legacy HTTP+SSE Server。只有此时才尝试旧的 GET 端点，并期待其 Legacy `endpoint` 事件。
+
+迁移期间，Server 可以同时支持两个时代：把携带现代元数据的请求路由到现代纯 POST 实现，同时为旧 Client 保留独立的 Legacy 端点。绝不要把 Legacy 的 GET、DELETE、Session ID 或重放行为描述为 `2026-07-28` 的一部分。
 
 ```figure
 tp-transport-handshake
@@ -153,7 +184,7 @@ tp-transport-handshake
 
 ## 动手实践
 
-`code/main.py` 仅使用 Python 标准库实现了一个小巧、合规的现代 Streamable HTTP Server：
+`code/main.py` 仅使用 Python 标准库实现了一个有限（finite）的现代 Streamable HTTP Server。它校验 Origin 与镜像请求头，忽略已移除的 Session 请求头，为普通调用返回 JSON，并演示一个有限的 `subscriptions/listen` SSE 流。
 
 ```bash
 cd code
@@ -167,14 +198,22 @@ python3 -m unittest discover tests -v
 - 服务发现在没有 Session ID 的情况下顺利完成；
 - 传入的 `Mcp-Session-Id` 与 `Last-Event-ID` 被静默忽略；
 - 头部与请求体不一致时返回 `-32020`；
-- 版本不支持时返回 `-32022` 及其支持版本列表；
+- 版本不支持时返回 `-32022` 及精确的 `supported` 与 `requested` 数据；
 - 接收到的无 ID 通知返回 HTTP `202` 空响应体；
 - GET 和 DELETE 请求直接返回 HTTP `405`；
-- `subscriptions/listen` 建立长连接并在通知中携带对应的 subscription ID。
+- `subscriptions/listen` 是一个 POST 响应流，其确认通知、变更通知与最终结果都携带对应的 subscription ID。
 
 ## 交付物
 
 本课交付 `outputs/skill-mcp-transport-migrator.md`。它提供规范指引以移除过时的协议 Session、补充头部校验、用 `subscriptions/listen` 替代裸 GET 流，并使 Legacy 适配层保持清晰独立。
+
+## 练习与思考
+
+1. 从一个 POST 中移除 `Mcp-Method`，确认返回 HTTP `400` 与错误 `-32020`。
+2. 发送请求头与请求体一致的版本 `2027-01-01`，确认返回 HTTP `400`、错误 `-32022` 以及精确数据 `{"supported":["2026-07-28"],"requested":"2027-01-01"}`。
+3. 为一个非 ASCII 资源 URI 发送 Base64 哨兵格式的 `Mcp-Name`，确认解码后的值与 `params.uri` 进行比较。
+4. 在有限 listen 流返回最终响应前将其中断，用新的 JSON-RPC ID 重新发起并重新拉取工具。
+5. 为 ping 工具添加显式工作流句柄，将其绑定到授权主体，而不依赖连接亲和性。
 
 ## 核心专业术语
 
@@ -186,7 +225,7 @@ python3 -m unittest discover tests -v
 | `subscriptions/listen` | 客户端主动开启的长周期 POST 请求，用于接收选择订阅的变更通知 |
 | 请求头不匹配 (Header mismatch) | 当镜像请求头与请求体内容不一致时，返回 HTTP 400 与 -32020 报错 |
 | 源站校验 (Origin validation) | 针对传入网络连接的 DNS 重绑定防御机制，不能替代身份认证 |
-| 显式状态句柄 (Explicit state handle) | 作为普通业务参数传递的应用层 Token，代替底层隐藏的传输连接状态 |
+| 显式状态句柄 (Explicit state handle) | 作为普通业务参数传递的应用层 Token，代替隐藏的 Session 状态 |
 | Legacy 桥接层 (Legacy bridge) | 专门隔离保留的旧版本行为，仅用于向后兼容历史客户端 |
 
 ## 延伸阅读
@@ -195,3 +234,4 @@ python3 -m unittest discover tests -v
 - [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
 - [MCP Streamable HTTP](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
 - [MCP Subscriptions](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions)
+- [MCP 2026-07-28 Changelog](https://modelcontextprotocol.io/specification/2026-07-28/changelog)
