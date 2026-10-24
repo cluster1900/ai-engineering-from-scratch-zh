@@ -3,14 +3,14 @@
 Abbreviations: L21 = phases/12-multimodal-ai/21-embodied-vlas-openvla-pi0-groot, L25 = phases/12-multimodal-ai/25-multimodal-agents-computer-use, A21 = phases/14-agent-engineering/21-computer-use-agents, B11 = phases/15-autonomous-systems/11-browser-agents, BA = projects/browser-agent, DC = projects/desktop-control. d = docs/en.md, c = code/main.py.
 
 ## 关键术语 (concepts)
-- VLA, image + instruction to action commands: L21/d:142
-- 256 bins per dim, each a vocab ID: L21/d:32, 143
-- FAST, DCT + quantize, 30 steps to ~10 tokens: L21/d:53-55, 144
-- Flow-matching head, 50-step sequence via rectified flow: L21/d:61, 146
-- System 1 / System 2: L21/d:73-74, 147
-- GUI grounding (x, y): L25/d:157
-- Hybrid agent, screenshot + tree: L25/d:74, 160
-- Read/write boundary: B11/d:58, 100
+- VLA, image + instruction to action commands: L21/d:143
+- 256 bins per dim, each a vocab ID: L21/d:32, 144
+- FAST, DCT + quantize, 30 steps to ~10 tokens: L21/d:53-55, 145
+- Flow-matching head, 50-step sequence via rectified flow: L21/d:61, 147
+- System 1 / System 2: L21/d:73-74, 148
+- GUI grounding (x, y): L25/d:151
+- Hybrid agent, screenshot + tree: L25/d:71, 154
+- Read/write boundary: B11/d:58, 101
 
 ## VLA 动作格式 (comparison)
 - Pattern row (PaLM-X + discrete bin, Llama 7B + discrete bin, flow-matching head, dual-system humanoid): L21/c:99-104
@@ -28,12 +28,12 @@ Abbreviations: L21 = phases/12-multimodal-ai/21-embodied-vlas-openvla-pi0-groot,
 - continuous_flow_count = 1, single head output: L21/c:71, 75
 
 ## 多模态 agent 循环 (flow)
-1. Screenshot of the browser: L25/d:23
-2. Parse screenshot + URL + goal into a plan: L25/d:24
-3. One structured action per step, JSON: L25/d:25, 30, 66
+1. Screenshot of the browser: L25/d:21
+2. Parse screenshot + URL + goal into a plan: L25/d:22
+3. One structured action per step, JSON: L25/d:23, 28, 63
 4. Per-step safety service rejects unsafe actions: A21/d:43
 5. apply_action(state, action): L25/c:66, 92
-6. Observe next screenshot, repeat until done: L25/d:27-28, L25/c:24
+6. Observe next screenshot, repeat until done: L25/d:25-26, L25/c:24
 
 ## GUI 动作 schema (task-table)
 - click: L25/c:15
@@ -42,7 +42,7 @@ Abbreviations: L21 = phases/12-multimodal-ai/21-embodied-vlas-openvla-pi0-groot,
 - drag: L25/c:18
 - select: L25/c:19
 - navigate: L25/c:21
-- screenshot_region: L25/c:23, crop + zoom L25/d:143
+- screenshot_region: L25/c:23, crop + zoom L25/d:138
 - done: L25/c:24
 
 ## 浏览器 agent 凭据 (architecture, 6 nodes, 6 edges)
@@ -96,16 +96,16 @@ Abbreviations: L21 = phases/12-multimodal-ai/21-embodied-vlas-openvla-pi0-groot,
 - OSWorld 38.1%, WebArena 58.1%, WebVoyager 87%: A21/d:35
 - Browser-only 13 actions, ~70% Online-Mind2Web: A21/d:40-41
 - ~11.3% false negatives, 258-task Hard subset: B11/d:28
-- AgentVista frontier 27-40%, open 10-20%: L25/d:98
+- AgentVista frontier 27-40%, open 10-20%: L25/d:95
 
 ## 问答 (qa)
 - Robot-only fails on out-of-distribution: L21/d:96
-- Only direct user instructions count as permission: A21/d:56, 124
+- Only direct user instructions count as permission: A21/d:56, 125
 - Defenses raise the cost, do not close the class: B11/d:52
 
 ## 安全提示 (tips)
 - Joint, velocity, workspace limits outside the VLA: L21/d:102-107
-- Per-step safety classifier before every action: A21/d:60, 123
-- Human-in-the-loop for login, purchase, delete: A21/d:62, 75, 127
+- Per-step safety classifier before every action: A21/d:60, 124
+- Human-in-the-loop for login, purchase, delete: A21/d:62, 75, 128
 - Tool allowlist per task: B11/d:59
 - Scoped credentials only: B11/d:60

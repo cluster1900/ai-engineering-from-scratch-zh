@@ -11,12 +11,12 @@ Abbreviations: N = phases/16-multi-agent-and-swarms/16-negotiation-bargaining, G
 6. reject-proposal to losers, losers bid on other tasks: N/c:136-138, N/d:89
 
 ## 谈判机制 (concepts, 6)
-- OG-Narrator deterministic offer, LLM narrates: N/d:14, 157
+- OG-Narrator deterministic offer, LLM narrates: N/d:14, 158
 - Rubinstein, Zeuthen, tit-for-tat: N/d:43
 - Let the LLM narrate rule: N/d:101
 - Structured proposal, validate against a schema: N/d:103
-- CoT concealment: N/d:62-65, 160
-- Persona ~20% payoff: N/d:54, 161
+- CoT concealment: N/d:62-65, 161
+- Persona ~20% payoff: N/d:54, 162
 
 ## 代码中的议价 (annotated-code, 8 lines)
 - BargainState(buyer_max=..., seller_min=...): N/c:69
@@ -30,10 +30,10 @@ Abbreviations: N = phases/16-multi-agent-and-swarms/16-negotiation-bargaining, G
 
 ## 生成式 agent 循环 (architecture, 6 nodes, 6 edges)
 - Observation of an invitation: G/c:93, G/d:49
-- Memory stream append-only log: G/d:20, 136
+- Memory stream append-only log: G/d:20, 137
 - Retrieval top-k by combined score: G/d:28, 71
 - Reflection back into the stream: G/d:30, G/c:51
-- Plan day, hour, action: G/d:32, 141
+- Plan day, hour, action: G/d:32, 142
 - Act, move to HobbsCafe: G/c:58-62
 
 ## 记忆检索 (annotated-code, 8 lines)
@@ -65,10 +65,10 @@ Abbreviations: N = phases/16-multi-agent-and-swarms/16-negotiation-bargaining, G
 - weighted_choice(agents, rep.weights(agents), rng): E/c:177
 
 ## 运行演示 (command-table, 4)
-- 16-16 naive ~65-75%, OG-Narrator ~85-95%: N/d:122, 125
-- 16-17 3 of 5 converge: G/d:105, 108
-- 16-18 ~5% vs ~35% duplication: T/d:122, 125
-- 16-21 10-20% quality gain: E/d:112, 115
+- 16-16 naive ~65-75%, OG-Narrator ~85-95%: N/d:123, 126
+- 16-17 3 of 5 converge: G/d:106, 109
+- 16-18 ~5% vs ~35% duplication: T/d:123, 126
+- 16-21 10-20% quality gain: E/d:110, 113
 
 ## 课程代码中的默认值 (defaults, 8)
 - max_rounds 5: N/c:20
@@ -85,30 +85,30 @@ Abbreviations: N = phases/16-multi-agent-and-swarms/16-negotiation-bargaining, G
 - ~180k negotiations, concealment wins: N/d:62
 - ~40% inequitable: N/d:56
 - 25 agents, 24 without knowledge: G/d:3, 46
-- N=3 6 permutations, N=10 3.6M: E/d:52
-- Sample 100-1000 orderings: E/d:127
+- N=3 6 permutations, N=10 3.6M: E/d:50
+- Sample 100-1000 orderings: E/d:123
 
 ## 失败模式 (troubleshooting, 8)
-- Offers outside ZOPA, deterministic generation: N/d:28, 136
-- Reservation price leaked, separate scratchpad: N/d:64, 69, 135
-- Spatial norm errors, detect explicitly: G/d:61, 122
+- Offers outside ZOPA, deterministic generation: N/d:28, 137
+- Reservation price leaked, separate scratchpad: N/d:64, 69, 136
+- Spatial norm errors, detect explicitly: G/d:61, 123
 - Memory overflow, summarize-and-prune: G/d:62
 - Reflection hallucination, source memory ids: G/d:63
-- Coordination illusion, control and p < 0.05: T/d:50-54, 135-136
+- Coordination illusion, control and p < 0.05: T/d:50-54, 136-137
 - Long-horizon belief mixups, explicit or external ToM store: T/d:82, 86, 88
-- Sybil attack, DIDs and cost-to-forge: E/d:81
+- Sybil attack, DIDs and cost-to-forge: E/d:79
 
 ## 问答 (qa, 5)
 - Larger models, similar strategic error: N/d:30
 - Contract Net scales past 100 workers: N/d:91
 - Each ablation hurts believability: G/d:36-42
-- Second-price truthful under monotone aggregation: E/d:56
-- Open networks, verifiable outputs, long-horizon: E/d:87-89
+- Second-price truthful under monotone aggregation: E/d:54
+- Open networks, verifiable outputs, long-horizon: E/d:85-87
 
 ## 上线检查清单 (tips, 6)
-- 3-5 rounds, mediator on deadlock: N/d:138
-- Reject out-of-ZOPA offers: N/d:137
+- 3-5 rounds, mediator on deadlock: N/d:139
+- Reject out-of-ZOPA offers: N/d:138
 - Memory append-only, corrections new entries: G/d:69
-- Log the top-k memories: G/d:119
-- Reputation, not tokens: E/d:125
-- Verify before you reward: E/d:126
+- Log the top-k memories: G/d:120
+- Reputation, not tokens: E/d:121
+- Verify before you reward: E/d:122

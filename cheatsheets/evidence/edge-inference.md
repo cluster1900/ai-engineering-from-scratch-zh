@@ -3,7 +3,7 @@
 Abbreviations: E12 = phases/17-infrastructure-and-production/12-edge-inference. CV15 = phases/04-computer-vision/15-real-time-edge. Q11 = phases/10-llms-from-scratch/11-quantization.
 
 ## 四种边缘目标对比 (comparison)
-- Peak 38 TOPS ANE, 45 TOPS Hexagon, WebGPU no install, Jetson family: E12/docs/en.md:33, 39-40, 51, 58-60
+- Peak 38 TOPS ANE, 45 TOPS Hexagon, WebGPU no install, Jetson family: E12/docs/en.md:33, 40, 51, 58-60
 - Memory unified no copy, separate domain, browser penalty ~25%, Nano memory-bound: E12/docs/en.md:33, 40, E12/code/main.py:29, E12/docs/en.md:70
 - Access Core ML or MPS, QNN SDK and AI Hub, WebGPU compute shaders, vLLM and TensorRT Edge-LLM: E12/docs/en.md:34, 41, 51, 59, 61
 - Formats INT4 + FP16, QNN INT8/INT4, Q4 MLC q4f16_1, Q4 GGUF / TRT-LLM INT4 / NVFP4: E12/docs/en.md:67-71
@@ -84,7 +84,7 @@ Abbreviations: E12 = phases/17-infrastructure-and-production/12-edge-inference. 
 - QAT fake quantization, better INT4/INT2: Q11/docs/en.md:143
 
 ## 问答 (qa)
-- Memory-bound decode: E12/docs/en.md:3, 62 (E12/code/main.py:62)
+- Memory-bound decode: E12/docs/en.md:3, E12/code/main.py:62
 - WebLLM 70-80% of native: E12/docs/en.md:52
 - FLOPs for search, latency for deployment: CV15/docs/en.md:59
 - PTQ 95% benefit 5% effort: CV15/docs/en.md:71
