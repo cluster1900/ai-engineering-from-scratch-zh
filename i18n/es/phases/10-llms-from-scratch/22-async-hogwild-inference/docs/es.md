@@ -55,7 +55,7 @@ Este artículo se ha tomado el nombre de Hogwild! SGD(Recht et al., 2011), un op
 
 ### RoPE  haz que esto sea posible
 
-Embebedos de posición rotaria(RoPE, Su et al. 2021) a través de la rotación de Q y K vectores 编码 posición información──因为 posiciones son rotaciones, en lugar de compensaciones de fijación, por lo que la posición del token puede moverse, sin necesidad de volver a calcular KV entrada caché──当 worker`i`写入 compartido caché de posición `p`时,读取该职位的其他员工可以直接使用缓存输入不需要重转
+Embedings de posición rotaria(RoPE, Su et al. 2021) a través de la rotación de los vectores Q y K  codificar información de posición.`i_q`La pregunta, así como en este trabajador`i_k`de bloque, en cuestión de distancia`i_q - i_k`旋转── ése es el modo en que cada trabajador ve los bloques de caché compartidos en su orden. Este método se aplica a la distribución total de bloques continuos.
 
 En el modelo de posición aprendida o absoluta, Hogwild! ¡Me gustaría escribir en cada vez simultánea 时都需要缓存无效化──RoPE 让缓存 保持稳定──
 

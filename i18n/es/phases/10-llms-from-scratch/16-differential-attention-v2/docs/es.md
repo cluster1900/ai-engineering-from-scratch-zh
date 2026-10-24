@@ -16,7 +16,7 @@
 
 ##  problemas
 
-标准 softmax Atención tiene una naturaleza matemática, en la escala cambia en grandes tiempos se convertirá en problemas de ingeniería.`q`,Attención 权重是 `softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值 每个不匹配的代币都会得到一些正质量──这个残余质量就是噪音,并且会随着背景长度扩大── 在128k 个代币下, incluso cada uno de los代币只能获得0.001% de probabilidad,127,999 代币 结合也将贡献约12%的总量──模型必须学会绕开一个随着背景 增长噪音下限──
+标准 softmax Atención tiene una naturaleza matemática, en la escala cambia en grandes tiempos se convertirá en problemas de ingeniería.`q`,Attención 权重是 `softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值: cada token no coincidente obtendrá alguna calidad correcta  Este residual de calidad es ruido, y se ampliará con la longitud del contexto  En 128k 个 token , incluso cada token no coincidente sólo obtendrá una probabilidad de 0.0001%  127,999 个 token  juntos también contribuirá a aproximadamente 13% del total  el modelo debe aprender a abrirse en un contexto  crecimiento bajo el ruido 
 
 En la práctica, esto se ha mostrado para la atención cabeza 干扰:long-context RAG 幻觉引用、100k-Token 检索任务中的失败中失败,以及 aguja en haystack benchmark 在超过32k 后出现的细微精度下降──Differential Transformer 论文(arXiv:2410.05258, ICLR 2025) midió esta diferencia:DIFF Transformers Comparado con las líneas de base de la misma talla  lograron una menor perplejidad、 una mayor precisión en el contexto largo, así como menos alucinaciones──
 

@@ -46,7 +46,7 @@ Tres分支的输出通过学习的位置门组合:
 
 Selección 步骤(top-k bloques) es desprenderse de la misma manera. Las operaciones de desprenderse destruyen el flujo gradiente.
 
-NSA ha pasado por alto este punto: la atención de la rama comprimida En realidad, se trata de un factor que afecta a toda la secuencia de la gran cantidad de datos comprimidos Atención. La operación de la parte superior es simplemente repetir los puntos de la rama comprimida.`top_k`操作在前向计算图上是无运, sólo controla los bloques que se cargan en el memoria.
+NSA ha pasado por alto este punto: la atención de la rama comprimida En realidad, se trata de un efecto en toda la secuencia de la pequeña y gruesa gran cantidad de atención Atención. La operación de la parte superior es simplemente repetir las puntuaciones de atención de la rama comprimida, para elegir qué pequeñas cantidades de bloqueo se deben cargar.`top_k`El índice 选择本身不接收 Gradient: sólo controla qué bloques se cargan en el archivo.
 
 Esta es la razón por la cual la NSA puede utilizarse de extremo a extremo en el pre-entrenamiento.
 

@@ -11,7 +11,7 @@
 
 训练变压器 会为每一层保存后退 中需要求导的每op的输入: Atención 输入、Q/K/V proyecciones、softmax 输出、FFN 输入、norm 输出,以及 residual stream──对隐藏的尺寸为`d`、 longitud de la secuencia 为 `L`、partida por `B`De una capa, esto es aproximadamente cada capa.`12 * B * L * d`个浮点数── es el número de puntos
 
- para `d=8192, L=8192, B=1`, esto en BF16 下是800 MB/层── un modelo de 64 capas tiene un valor de activación de 51 GB, esto no se multiplica en tamaño de microbatch, ni tampoco se añade intermedios de atención-softmax( por cabeza`L^2`), no hay más que una copia parcial paralela a tensores.
+ para `d=8192, L=8192, B=1`, aproximadamente 805M 个值, en BF16 下是1.6 GB/层── un modelo de 64 capas de valor de activación de aproximadamente 103 GB, esto no se multiplicó en tamaño de microbatch, tampoco se añadió atención-softmax intermediarios( por cabeza `L^2`), no hay más que una copia parcial paralela a tensores.
 
 Este es un sistema de control de niveles de BF16 con un estado de optimización de 80 GB, pero el valor de activación puede superar los límites.
 

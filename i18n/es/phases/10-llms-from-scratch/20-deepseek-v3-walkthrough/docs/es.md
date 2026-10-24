@@ -106,18 +106,18 @@ mtp_module: 1               (1 MTP module at depth 1)
 完整计算在 `code/main.py`En el fondo, el resultado es:
 
 - Incluir:`vocab * hidden = 129280 * 7168 = ~0.93B`¿Qué es eso?
-- Antes de 3 bloques densos:带 MLA 的注意(per bloque 约144M) + denso MLP(per bloque 约260M) + normas。总计约1.2B。
-- 58 bloques de MoE:带 MLA 的注意(约144M) + 256 专家(每约30M) + 1 专家共享(30M) + norma──按包含所有专家 计算,每块 总计约7.95B──58 专家 总计 461B──
-- Modulo MTP:14B:
+- Pre 3 个 denso bloques:带 MLA 的注意(按计算器的简化计计数每块约84M) + denso SwiGLU MLP(每块 `3 * 7168 * 18432 = ~396M`• + normas ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙ ∙   ∙ ∙ ∙   ∙ ∙      ∙                ∙                                                                                                                                                                                                                                                                                 
+- 58 bloques de MoE:带 MLA 的注意(约84M) + 256 专家的路由(每个 `3 * 7168 * 2048 = ~44M`) + 1 个共享专家(约44M) + router + normas──按包含所有专家 计算,每块约11.4B──58 个MoE块 总计约661B──
+- MTP módulo: módulo publicado 为14B── calculador utiliza alrededor de 0.8B de denso 替代──
 
-总计:core architecture 约 476B + 14B MTP; y publicado 671B 数字还会单独计入额外结构参数(bias tensors、expert-specific components、shared expert scaling等) ⋅ Nosotros en el calculador vemos que los números que se replantean en el cálculo con el valor publicado difieren entre el 3-5% en el interior, la diferencia proviene de la sección 2 apéndice del informe de DeepSeek 
+总计: calculador obtiene aproximadamente 664B, mientras que el número publicado del modelo principal es de 671B. El punto de control de la cara de Hugging es de 685B, ya que se ha incorporado al módulo MTP de 14B en 671B. El 1% restante de la diferencia proviene de la simplificación: calculador saltó el RoPE 维度, la cabeza de salida no vinculada y algunos pequeños tensores.
 
 Cada vez en adelante de los parámetros activos:
 
-- Atención: cada capa 144M * 61 = 8.8B
-- MLP activo:前 3 层密集(3 * 260M = 780M),58 个 MoE layers 中每层激活 8 个路由 + 1 个共享 +路由上费――每层活 MLP 约 260M──总计:3 * 260M + 58 * 260M = ~15.9B──
-- Incluir normas: 1.2B。
-- 总活跃: aproximadamente 26B core + 14B MTP(entrenamiento en uso, pero la idea no siempre es de ejecución)≈ 37B。
+- Atención: cada capa 84M * 61 = ~ 5.1B(todas las capas 都会触发)
+- MLP activo:前 3 层 dense`3 * 396M = ~1.2B`),58 个 MoE capas 中每层激活 8 个路由 + 1 个共享专家(每层 `9 * 44M = ~396M`, en total 23B) ⋅ en total 24B⋅
+- Incluir normas: aproximadamente 0,9B。
+- 总活跃: calculador obtendrá alrededor de 30B, y se ha publicado un número de 37B. La diferencia principal en la atención: MLA completo con RoPE 维度以及 mayor de consulta y cabezas clave, que simplificación de la cuenta más grande.
 
 ### 671B / 37B Por ejemplo
 

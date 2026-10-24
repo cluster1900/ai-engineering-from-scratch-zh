@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## El objetivo del aprendizaje
-- Se trata de un proyecto de investigación que se desarrolla en el ámbito de la tecnología y de la tecnología.
+- Se trata de un sistema de datos que permite a los usuarios de datos de forma más rápida y más rápida que el sistema de datos de datos de forma más rápida y más rápida.
 - definición de los contratos de artefactos entre cada etapa: cada etapa consume lo que produce, y la siguiente etapa cómo verificar la entrada
 - Construir un orquestrador, para seguir experiencias  realizar hashes de artefactos, y basarse en los umbrales de evaluación decidir si se aprueba la puerta de publicación
 - Diseñar un plan de retroceso: qué artefactos volver a construir cuestan menos, cuáles cuestan más y qué un punto de control dañado traerá un costo.
