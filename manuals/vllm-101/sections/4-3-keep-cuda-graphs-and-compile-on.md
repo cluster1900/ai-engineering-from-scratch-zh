@@ -1,26 +1,26 @@
-# Keep CUDA graphs and compile on
+# 保持 CUDA graphs 和 compile 开启
 
-> The default compile level is the right one for most servers, and eager mode costs a few percent of decode speed.
+> 对大多数服务器来说，默认的 compile 级别就是对的，而 eager 模式会损失几个百分点的 decode 速度。
 
-Startup takes minutes and you want it faster. When you finish this section, you can decide what each compile level and eager mode cost.
+启动要花好几分钟，你想让它更快。读完本节后，你能判断每个 compile 级别和 eager 模式的代价。
 
-**Our result:** on our L4, eager mode cost about 2 percent of the time per token in a cooled run. In a throttled run, `-O0` cost about 2 percent for one user, and `-O3` matched the default.
+**我们的结果：** 在我们的 L4 上，冷却后的运行中 eager 模式让每 token 时间增加了约 2%。在降频的运行中，`-O0` 让一个用户时慢了约 2%，`-O3` 与默认值持平。
 
-## Know the switches
+## 了解这些开关 {#s-keep-cuda-graphs-and-compile-on-know-the-switches}
 
-vLLM sets compile and CUDA graphs with one level, from `-O0` to `-O3`. The default is `-O2`. [The compile page](#s-how-compile-and-cuda-graphs-are-captured) explains what each part does.
+vLLM 用一个级别同时设定 compile 和 CUDA graphs，从 `-O0` 到 `-O3`。默认是 `-O2`。[compile 页](#s-how-compile-and-cuda-graphs-are-captured)解释了每个部分的作用。
 
-| Setting | Compile | CUDA graphs | Use it for |
+| 设置 | Compile | CUDA graphs | 用途 |
 |---|---|---|---|
-| `-O2`, the default | on | full and piecewise | production |
-| `-O3` | the same as `-O2` in 0.31.0 | | nothing extra yet |
-| `-O1` | on, with fewer fusions | piecewise only | a faster start that keeps compile and graphs on, not measured by us |
-| `-O0` | off | off | a fast start when you test a change |
-| `--enforce-eager` | off | off | debugging a kernel, because it also skips the kernel warmup |
+| `-O2`，默认 | 开 | full 和 piecewise | 生产环境 |
+| `-O3` | 在 0.31.0 中与 `-O2` 相同 | | 暂时没有额外作用 |
+| `-O1` | 开，融合更少 | 只有 piecewise | 更快启动，同时保留 compile 和 graphs，我们没有测量 |
+| `-O0` | 关 | 关 | 测试改动时快速启动 |
+| `--enforce-eager` | 关 | 关 | 调试 kernel，因为它还会跳过 kernel 预热 |
 
-## Read what the start costs
+## 读懂启动的代价 {#s-keep-cuda-graphs-and-compile-on-read-what-the-start-costs}
 
-The startup log gives the time of each part. On our DGX Spark, with `Qwen3-30B-A3B`, the two graph captures and the compile took about 96 seconds of a start of about eight minutes:
+启动日志给出了每个部分的时间。在我们的 DGX Spark 上用 `Qwen3-30B-A3B` 时，两次 graph 捕获和 compile 在约八分钟的启动中占了约 96 秒：
 
 ```listing
 title: graph capture and compile time at startup
@@ -33,11 +33,11 @@ note: The first two lines are the two capture passes. The last line gives the wh
 (EngineCore pid=143) INFO 10-21 11:00:53 [core.py:373] init engine (profile, create kv cache, warmup model) took 127.54 s (compilation: 18.67 s)
 ```
 
-On that start, loading the weights took about 330 seconds, much more than the compile. A later start can read the compile cache, so the compile share gets smaller.
+在那次启动中，加载权重花了约 330 秒，远多于 compile。之后的启动可以读取 compile 缓存，所以 compile 的占比会变小。
 
-## See what our runs show
+## 看我们的运行结果 {#s-keep-cuda-graphs-and-compile-on-see-what-our-runs-show}
 
-**We measured** eager mode against the default on the L4 with `Qwen/Qwen3-8B` on 2026-10-21, in [the full-clock session](#l4-sessions). Both runs used the same pool, seven concurrencies, and three seeds, with the GPU cooled before each run.
+**我们测得** 2026-10-21 在 L4 的[满频会话](#l4-sessions)中，用 `Qwen/Qwen3-8B` 比较了 eager 模式和默认设置。两次运行用的是同样的池、七种并发和三个种子，每次运行前都让 GPU 冷却。
 
 ```figure
 id: fig-4-3
@@ -47,34 +47,34 @@ claim: On our L4, eager mode was 1.2 to 2.3 percent slower per token at every co
 caption: Bands span the lowest and highest of three runs. The two lines sit close because an 8B decode step waits on memory, not on kernel launches. From capture/gpu/summary/l4.json.
 ```
 
-| Users, L4 full-clock session | Median TPOT, default / eager | Median SM clock, default / eager |
+| 用户数，L4 满频会话 | 中位 TPOT，默认 / eager | 中位 SM 时钟，默认 / eager |
 |---|---|---|
 | 1 | 60.36 / 61.07 ms | 1,275 / 1,290 MHz |
 | 8 | 65.75 / 66.98 ms | 1,485 / 1,515 MHz |
 | 32 | 101.79 / 103.11 ms | 1,275 / 1,313 MHz |
 | 64 | 129.15 / 131.42 ms | 1,005 / 1,020 MHz |
 
-The seed ranges did not overlap from 1 to 32 users, so the gap is real, and it is small. On our DGX Spark, eager mode cost 2 to 6 percent of the time per token.
+在 1 到 32 个用户时，种子范围不重叠，所以这个差距是真实的，而且很小。在我们的 DGX Spark 上，eager 模式让每 token 时间增加了 2% 到 6%。
 
-We then ran the compile levels on 2026-10-22, in [the throttled session](#l4-sessions), at 1 and 32 users. The default had three seeds and the other two levels had two. The GPU was throttled for all three: the median clock was 210 MHz at one user and 450 to 548 MHz at 32 users.
+2026-10-22，我们又在[降频会话](#l4-sessions)中，以 1 个和 32 个用户测试了各 compile 级别。默认值跑了三个种子，另外两个级别各跑了两个。三者运行时 GPU 都在降频：一个用户时中位时钟是 210 MHz，32 个用户时是 450 到 548 MHz。
 
-| Users, L4 throttled session | Median TPOT, default / `-O0` / `-O3` |
+| 用户数，L4 降频会话 | 中位 TPOT，默认 / `-O0` / `-O3` |
 |---|---|
 | 1 | 104.14 / 106.48 / 104.15 ms |
 | 32 | 142.67 / 142.04 / 143.85 ms |
 
-At one user, `-O0` was 2.2 percent slower, and the seed ranges did not overlap. At 32 users, the three levels overlapped. `-O3` matched the default, as the code says it should at this version. Because of the low clock, read these as a comparison inside one session, not as speeds you will see.
+在一个用户时，`-O0` 慢了 2.2%，种子范围不重叠。在 32 个用户时，三个级别重叠。`-O3` 与默认值持平，正如这个版本的代码所预期的那样。因为时钟很低，请把这些看作同一会话内的比较，而不是你会看到的速度。
 
-## Decide
+## 做出决定 {#s-keep-cuda-graphs-and-compile-on-decide}
 
-Keep the default for production. The graphs and the compile cost about one and a half minutes on our DGX Spark start, and the cache makes later starts faster.
+生产环境保留默认值。在我们的 DGX Spark 启动中，graphs 和 compile 花了约一分半钟，而缓存会让之后的启动更快。
 
-When you test a change and restart often, use `-O0`. It skips the compile and the graph capture, and it cost us about 2 percent of decode speed. Use `--enforce-eager` only to debug a kernel, because it also skips the warmup, so the first requests after a start are slow.
+当你在测试改动、需要频繁重启时，用 `-O0`。它跳过 compile 和 graph 捕获，在我们这里损失了约 2% 的 decode 速度。只在调试 kernel 时用 `--enforce-eager`，因为它还会跳过预热，所以启动后的头几个请求会很慢。
 
 ```takeaways
-- Leave the default compile level on for production.
-- Use -O0, not eager mode, when you only want a faster start.
-- Expect -O3 to equal the default in vLLM 0.31.0.
+- 生产环境保留默认的 compile 级别。
+- 只想更快启动时，用 -O0，而不是 eager 模式。
+- 在 vLLM 0.31.0 中，-O3 与默认值相同。
 ```
 
 Sources: capture/gpu/summary/l4.json (load.vllm-b, load.vllm-eager, load.vllm-fast-b, load.vllm-O0, load.vllm-O3), capture/gpu/summary/gb10.json (load.vllm, load.vllm-eager), capture/gpu/out-gb10/server-load-vllm.log, vLLM documentation at v0.31.0 (docs/design/optimization_levels.md), the vLLM source at v0.31.0 (vllm/config/model.py).
