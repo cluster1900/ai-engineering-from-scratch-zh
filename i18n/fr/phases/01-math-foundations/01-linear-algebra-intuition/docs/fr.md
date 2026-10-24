@@ -161,7 +161,7 @@ Pour chaque vecteur, la longueur est de 1, et pour chaque vecteur, les points so
 4. Pour les vecteurs restants 重复该过程
 
 ```
-Input:  v1, v2, v3, ...（linearly independent）
+Input:  v1, v2, v3, ... (linearly independent)
 
 u1 = v1 / |v1|
 
@@ -171,7 +171,7 @@ u2 = w2 / |w2|
 w3 = v3 - (v3 dot u1) * u1 - (v3 dot u2) * u2
 u3 = w3 / |w3|
 
-Output: u1, u2, u3, ...（orthonormal basis）
+Output: u1, u2, u3, ... (orthonormal basis)
 ```
 
 C'est la décomposition interne du Q. Q est une base orthonnormale, R capture des coefficients de projection.

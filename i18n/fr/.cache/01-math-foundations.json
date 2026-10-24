@@ -1,5 +1,5 @@
 {
-  "phases/01-math-foundations/01-linear-algebra-intuition/docs/en.md": "761ed19fd52d1ec7a7aeb0ed91c12f72e79434382cf7b5737fb014b8c88fd301",
+  "phases/01-math-foundations/01-linear-algebra-intuition/docs/en.md": "198649983b19897dad5022b51293c30b25054a24ac5d87ce7125248d7b140df4",
   "phases/01-math-foundations/02-vectors-matrices-operations/docs/en.md": "8152c621a81c82434b5ddfd286939fb317a3ff4e64df33367c0364d6eb3af5a4",
   "phases/01-math-foundations/03-matrix-transformations/docs/en.md": "4022c42e518ba38048c56bcb3e7650acae6b3072f22a5d129038dfb12f7d4e09",
   "phases/01-math-foundations/04-calculus-for-ml/docs/en.md": "89766ebce1b96624f5744f22539504826f7482bf5af354cc4c1129a67d3f813d",
@@ -18,7 +18,7 @@
   "phases/01-math-foundations/17-linear-systems/docs/en.md": "1b52ffa3bfd3e1f7cd01bb692a0983535c991fc82399f0e5df953bf3b7016462",
   "phases/01-math-foundations/18-convex-optimization/docs/en.md": "71bbf68de512847294a8adf8d686a084c07786fedf7f0fae52b5a7210524e9e2",
   "phases/01-math-foundations/19-complex-numbers/docs/en.md": "d829ac0158d346a039e5cea4beaa7d8d3c33abbe45007f6f58c248d31c99c956",
-  "phases/01-math-foundations/20-fourier-transform/docs/en.md": "6855b59ec1ae6e2a08eb053ae9371e05729a8be3274bf1d99e269fad103ef361",
+  "phases/01-math-foundations/20-fourier-transform/docs/en.md": "708ba3c3ba2239b08990028706121e8738098a0735c886cef9b1b0adf8545f21",
   "phases/01-math-foundations/21-graph-theory/docs/en.md": "c5d4c249ae9118688ba648613c503c2cda105957f37551d1107f52cb392bad19",
   "phases/01-math-foundations/22-stochastic-processes/docs/en.md": "3a830dd1c41970f6ffd9b729eac3fb023e8156585946321daaae1f3bc22c869a"
 }
