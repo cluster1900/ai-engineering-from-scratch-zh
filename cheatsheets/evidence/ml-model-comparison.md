@@ -22,7 +22,7 @@ Abbreviations: P2 = phases/02-ml-fundamentals. LR = P2/02-linear-regression, LG 
 ## 何时使用各模型 (tips)
 - linear regression baseline: LR/d:23
 - logistic regression yes-or-no with probabilities, linear boundary: LG/d:3, 21, 123
-- random forest, almost no hyperparameter tuning, trees default for flat tables: DT/d:188, 340
+- random forest, almost no hyperparameter tuning, trees default for flat tables: DT/d:188, 436
 - SVM small data, TF-IDF sparse: SV/d:228-229
 - KNN when data changes often, zero training time: KN/d:206-208
 - TF-IDF + MultinomialNB, fewer than 10,000 samples: NB/d:368
@@ -69,7 +69,7 @@ Abbreviations: P2 = phases/02-ml-fundamentals. LR = P2/02-linear-regression, LG 
 - max_depth=None, min_samples_split=2, criterion="gini": DTc:76-77
 - pure leaves without stopping: DT/d:107
 - Gini vs entropy nearly identical: DTc:574, 636
-- n_trees=100, max_features="sqrt": DTc:226-227, n_estimators=100: DT/d:334
+- n_trees=100, max_features="sqrt": DTc:226-227, n_estimators=100: DT/d:430
 - regression n_features/3: DT/d:157
 - k=5: KNc:50, sqrt(N) and odd K: KN/d:61
 - rbf_kernel gamma=0.5, polynomial_kernel degree=3: SVc:29, 33

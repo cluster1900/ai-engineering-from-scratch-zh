@@ -6,7 +6,7 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 ## 拟合模型 (task-table, 8)
 - Ridge(alpha=1.0): 02/D:514
 - LogisticRegression(class_weight="balanced"): 17/D:481, 493
-- RandomForestClassifier(n_estimators=100, random_state=42): 04/D:334
+- RandomForestClassifier(n_estimators=100, random_state=42): 04/D:430
 - SVC(kernel="rbf", C=1.0, gamma="scale"): 05/D:330
 - LinearSVC(C=1.0, max_iter=10000) for large datasets: 05/D:339-346
 - KNeighborsClassifier(n_neighbors=5, metric="euclidean"): 06/D:326
@@ -26,7 +26,7 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 - Normal equation, O(n^3) in features: 02/D:101-105
 - Ridge cost: 02/D:150-152
 - Log loss, p = sigma(wx + b): 03/D:79-81, 102
-- Gini, 0 = pure: 04/D:51-53, 363
+- Gini, 0 = pure: 04/D:51-53, 459
 - Soft margin hinge form: 05/D:110-112
 - RBF kernel: 05/D:177-182
 - Bias, variance, noise split: 10/D:56-58
@@ -66,7 +66,7 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 - threshold 0.5, lower for imbalance: 17/D:159
 - K = 5 or 10: 09/D:88
 - sqrt(n_features), n_features / 3: 11/D:70
-- 100 trees: 04/D:334 (n_estimators=100)
+- 100 trees: 04/D:430 (n_estimators=100)
 - learning_rate 0.1, typical 0.01 to 0.3: 11/D:266, 137
 - max_depth 3: 11/D:266
 - Naive Bayes alpha 1.0 Laplace: 14/D:168
