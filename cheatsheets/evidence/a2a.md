@@ -1,6 +1,6 @@
-# 证据：cheatsheets/a2a.md
+# Evidence: cheatsheets/a2a.md
 
-缩写：A = manuals/a2a-101/sections，C = manuals/a2a-101/capture/out。
+Abbreviations: A = manuals/a2a-101/sections, C = manuals/a2a-101/capture/out.
 
 ## 协议架构（architecture，6 个节点）
 - planner，读取 cards 的 client： A/1-1-what-a2a-standardizes.md:9

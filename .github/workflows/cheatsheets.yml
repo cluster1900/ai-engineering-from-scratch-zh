@@ -1,0 +1,50 @@
+name: Cheat sheets
+
+# zh port of upstream .github/workflows/cheatsheets.yml (check job only).
+# The PDF job and the English quality rubric are not ported.
+on:
+  pull_request:
+    paths:
+      - 'cheatsheets/**'
+      - 'phases/**'
+      - 'manuals/**'
+      - 'projects/**'
+      - 'site/cheatsheet-evidence.js'
+      - 'scripts/audit_cheatsheets.js'
+      - 'scripts/test_audit_cheatsheets.js'
+      - '.github/workflows/cheatsheets.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'cheatsheets/**'
+      - 'phases/**'
+      - 'manuals/**'
+      - 'projects/**'
+      - 'site/cheatsheet-evidence.js'
+      - 'scripts/audit_cheatsheets.js'
+      - 'scripts/test_audit_cheatsheets.js'
+      - '.github/workflows/cheatsheets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cheatsheets-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Auditor self-test (a broken fact, evidence ref and link must fail)
+        run: node --test scripts/test_audit_cheatsheets.js
+      - name: Front matter, block shape, facts in from files, evidence path:line, fences and links
+        run: node scripts/audit_cheatsheets.js
