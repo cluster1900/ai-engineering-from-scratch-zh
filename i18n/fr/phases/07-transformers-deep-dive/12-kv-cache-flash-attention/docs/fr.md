@@ -26,32 +26,32 @@ D'ici 2026, les deux sont déjà conçus. Chaque classe de production propose un
 
 ### Mathématiques de cache KV
 
-Chaque couche de décodeur, chaque jeton, chaque tête:
+Chaque couche de décodeur, chaque jeton, toutes les têtes KV:
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
-Pour un modèle 7B, 32 couches 32 têtes d'un modèle:
+Pour un modèle 7B, 32 couches ≈ 32 têtes ≈ toutes utilisées pour K 和 V) ≈ d_head=128 ≈ fp16:
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 Pour les Llama 3 70B ((80 层、d_head=128、 utiliser 8 个 KV heads of GQA):
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-C'est pourquoi, dans le contexte de 128K, le cache KV de la taille de la série 1 occuperait une grande partie du stockage de 40 Go de l'A100.
+Ce 10 GiB en 32K, jusqu'à 128K augmentera à 40 GiB, seulement la taille de lot 1 de KV cache occupera une totalité de 40 GB A100.
 
-**GQA 是 KV-cache 的关键收益。**Utilisation de 64 têtes de MHA 会需要32 GB──MLA encore pouvoir se compresser davantage──
+**GQA 是 KV-cache 的关键收益。**Utilisation de 64 têtes KV de MHA 8x plus, en 32K environ 80 GiB.
 
 ### Attention à la lumière
 

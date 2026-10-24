@@ -72,7 +72,7 @@ Pour une`d_model = d`且 FFN expansion 为 `r`Le bloc:
 - FFN (SwiGLU): `3 · d · (r · d)`- Je suis là.`3rd²`
 - Normes: 可忽略
 
-- Je suis là .`d = 4096, r = 2.6, layers = 32`(大致对应 Llama 3 8B)`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (16 + 32) M = ~1.5B parameters per layer × 32 ≈ 7B`(rejoint les emblèmes et la tête)
+- Je suis là .`d = 4096, r = 2.6, layers = 32`(大致对应 Llama 3 8B)`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (67M + 131M) ≈ 32 · 198M ≈ 6.3B`个块 内参数,再加上约1B的嵌入和输出头(128K vocab × 4096,未绑定) ・・・这接近已发布的8B──真实模型使用GQA(更小的K和V投影) 和更宽的FFN(`r = 3.5`), les paramètres sont déplacés de l'attention à la FFN, mais le total est toujours proche de 8B.
 
 
 observer un vecteur  comment il traverse un seul bloc: Attention entre position mélangé information, résiduel  把信号 continue vers l'avant, FFN faire changer, alors que la norme 让残流 保持稳定──

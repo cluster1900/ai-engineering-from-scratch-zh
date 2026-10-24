@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$Il y a une perte de valeur.
 - $A \approx 406$- Je suis là .$B \approx 411$Il y a une autre.
 
-随着扩张, deux项会彼此权衡──在固定计算$C = 6ND$) à la$N$求导并求解:
+随着扩张, deux项会彼此权衡──在固定计算$C = 6ND$) à la$N$求导并求解──使用上述 $\alpha$et $\beta$- Je suis désolé .$N$Le taux est d'environ 0,45,$D$L'indice est d'environ 0,55, de sorte que le taux optimal exact se déplace lentement avec le budget;`code/main.py`通过网格搜索 找到它──论文前两种拟合方法直接测量最优点, obtenu que les deux indices sont d'environ 0,5──, ce qui donne une règle d'expérience de la proportion fixe──.$C = 6ND$Nom de l' éditeur$D = 20N$, expérience en matière de droit
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```
