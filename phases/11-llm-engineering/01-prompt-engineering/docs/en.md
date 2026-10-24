@@ -317,7 +317,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["role", "experience", "style", "priority", "task"],
         "temperature": 0.7,
-        "description": "在模型训练数据中激活特定专家分布",
+        "description": "Activates a specific expert distribution in the model's training data",
     },
     "few_shot": {
         "name": "Few-Shot Pattern",
@@ -328,7 +328,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["examples", "input"],
         "temperature": 0.0,
-        "description": "提供具体示例来锚定输出格式和风格",
+        "description": "Provides concrete examples to anchor the output format and style",
     },
     "chain_of_thought": {
         "name": "Chain-of-Thought Pattern",
@@ -344,7 +344,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["problem"],
         "temperature": 0.3,
-        "description": "强制在给出最终答案前显式展示推理步骤",
+        "description": "Forces explicit reasoning steps before the final answer",
     },
     "template_fill": {
         "name": "Template Fill Pattern",
@@ -356,7 +356,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["text", "template_structure"],
         "temperature": 0.0,
-        "description": "用命名字段把输出约束到特定结构",
+        "description": "Constrains output to a specific structure with named fields",
     },
     "critique": {
         "name": "Critique Pattern",
@@ -369,7 +369,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["task"],
         "temperature": 0.5,
-        "description": "通过最终输出前的显式 critique 实现自我改进",
+        "description": "Self-refinement through explicit critique before final output",
     },
     "guardrail": {
         "name": "Guardrail Pattern",
@@ -384,7 +384,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["role", "domain", "additional_rules", "question"],
         "temperature": 0.3,
-        "description": "用明确边界把模型约束到特定领域",
+        "description": "Constrains the model to a specific domain with explicit boundaries",
     },
     "meta_prompt": {
         "name": "Meta-Prompt Pattern",
@@ -400,7 +400,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["objective", "metric", "model"],
         "temperature": 0.7,
-        "description": "使用 LLM 为其他任务生成优化后的 prompts",
+        "description": "Uses the LLM to generate optimized prompts for other tasks",
     },
     "decomposition": {
         "name": "Decomposition Pattern",
@@ -414,7 +414,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["problem"],
         "temperature": 0.3,
-        "description": "把复杂问题拆成可管理的部分",
+        "description": "Breaks complex problems into manageable pieces",
     },
     "audience_adapt": {
         "name": "Audience Adaptation Pattern",
@@ -428,7 +428,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["concept", "audience", "length", "include", "exclude"],
         "temperature": 0.5,
-        "description": "根据目标受众调整解释复杂度",
+        "description": "Adapts explanation complexity to the target audience",
     },
     "boundary": {
         "name": "Boundary Pattern",
@@ -442,7 +442,7 @@ PROMPT_PATTERNS = {
         ),
         "variables": ["scope", "refusal_message", "user_input"],
         "temperature": 0.0,
-        "description": "为模型会回应和不会回应的内容设置硬边界",
+        "description": "Hard boundary on what the model will and will not respond to",
     },
 }
 ```
@@ -514,15 +514,15 @@ MODEL_CONFIGS = {
     },
     "claude-3.5-sonnet": {
         "provider": "anthropic",
-        "model": "claude-3-5-sonnet-20241022",
+        "model": "claude-sonnet-5",
         "max_tokens": 2048,
-        "context_window": 200_000,
+        "context_window": 1_000_000,
     },
     "gemini-1.5-pro": {
         "provider": "google",
-        "model": "gemini-1.5-pro",
+        "model": "gemini-2.5-pro",
         "max_tokens": 2048,
-        "context_window": 2_000_000,
+        "context_window": 1_000_000,
     },
 }
 
@@ -933,20 +933,20 @@ assistant prefill（`"{"`）会强制 Claude 在没有任何开场白的情况�
 ### Google：带 Safety Settings 的 Gemini
 
 ```python
-# import google.generativeai as genai
+# from google import genai
+# from google.genai import types
 #
-# genai.configure(api_key="your-key")
+# client = genai.Client()
 #
-# model = genai.GenerativeModel(
-#     "gemini-1.5-pro",
-#     system_instruction="You are a technical analyst. Be precise and cite sources.",
-#     generation_config=genai.GenerationConfig(
+# response = client.models.generate_content(
+#     model="gemini-3.8-flash",
+#     contents="Compare PostgreSQL and MySQL for write-heavy workloads.",
+#     config=types.GenerateContentConfig(
+#         system_instruction="You are a technical analyst. Be precise and cite sources.",
 #         temperature=0.3,
 #         max_output_tokens=2048,
 #     ),
 # )
-#
-# response = model.generate_content("Compare PostgreSQL and MySQL for write-heavy workloads.")
 # print(response.text)
 ```
 
