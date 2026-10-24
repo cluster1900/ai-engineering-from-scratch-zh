@@ -9,7 +9,7 @@
 
 ## Öğrenme hedefi
 - 計算不同 FPS 和聚合下长视频的总视觉标记 数量──
-- 解释三条扩展路径:brute context(Gemini 1.5) 、ring attention(LWM) 、token compression(LongVILA / Video-XL) 。
+- 解释四条扩展路径:brute context(Gemini 1.5) 、ring attention(LWM) 、token compression(LongVILA / Video-XL) 、agentic retrieval(VideoAgent) 。
 - Doğruluk oranı ve gecikme oranı, çürük bağlam video VLM'leri ve ajantik geri alım video VLM'leri ile karşılaştırın.
 - 30 dakika video tasarım bir iğne-bir-hay asası 测试,并测量特定分钟处的召回率──
 
@@ -18,7 +18,7 @@ Qwen2.5-VL  ölçümlü bir patch, 384 orijinal yaşam çözünürlüğünde, te
 
 Bir bölüm 2 saat film 1 FPS ile 583k Token.
 
-Çıkışlar:
+Çevreye çıkmış dört genişleme yolu:
 
 ## 概念
 ### Yolu 1: kaba bağlam ((Gemini 1.5, Claude Opus)
@@ -33,7 +33,7 @@ Gemini 1.5 Pro  yayınlama sırasında destek 1M Token; Gemini 1.5 Ultra  10M ul
 
 Çember dikkatini uzatmak Uzun diziyi bir çok cihazeye dağıtmak, bir ring oluşturmak, her cihaze bir parça vardır.
 
-LWM(Liu et al., 2024) bu şekilde 1M-Token bağlamı 模型── eğitim hesaplama miktarı bağlamı 线性扩展, yerine kare genişleme, çünkü dikkatin kare maliyeti halka içindeki cihazlara dağılmış olarak △
+LWM(Liu et al., 2024) bu şekilde 1M-Token bağlamı  modelı eğitilmiştir. Her cihazın内存ı sahip olduğu parçaya göre  genişlemiştir, böylece artan cihazlar bağlamı uzatır.
 
 LongVILA(arXiv:2408.10188)把该模式适配到VLMs──1400 视频,每 192 个代币 = 268k bağlamı,并使用8 yön paralelism 戒指注意训练──
 
@@ -113,7 +113,7 @@ mm-video-token-budget
 
 3. VideoAgent ile karşılaştırın. Hangisi çağrılmaya başlıyor? Hangisi geç kalıyor?
 
-4. Çember dikkatinin kayda maliyeti, sırada uzunluk linear genişleme, ayrıca cihaz sayısı linear genişleme ile birlikte. Neden, ve eğer yüzük dönüşümünü kaybederse 阶段 will fail wherein── açıklamak.
+4. Ring dikkat her cihazın kaydı sıradan uzunluktan sonra cihaz sayısına genişletilmişken dikkat  toplam hesaplama miktarı hala kare derece olarak yer alır.
 
 5. Gemini 1.5 Bölüm 5 İğne-bir-hay asası içeriği hakkında. 1M ve 10M Token  sınırları arasındaki çağrıda ne buldu?
 

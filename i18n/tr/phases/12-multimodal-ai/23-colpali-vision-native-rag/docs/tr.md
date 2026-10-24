@@ -95,10 +95,10 @@ Tüm yollar OCR yok. Şekiller, tablolar, yazı tipi, düzenleri...
 
 Bir 50 sayfalık mali rapor, her sayfa 729 patch,128 boyutlu yerleşim:
 
-- ColPali:50 * 729 * 128 * 4 byte = ~18 MB çiğ,PQ 后 ~4 MB。
+- ColPali:50 * 729 * 128 * 4 byte = ~ 18 MB çiğ,8x PQ 后 ~ 2.3 MB。
 - Metin-RAG:50 parça * 768-dim * 4 byte = ~150 kB。
 
-ColPali Her belge depolama ≈30x ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈ ≈  ≈ ≈ ≈ ≈          ≈ ≈     ≈      ≈                                   
+ColPali Her belgenin orijinal depolama oranı 120x'dir. Ölçeklendirme durumunda 8x'in OPQ/PQ'sı genellikle kabul edilebilir olarak 15x'e düşebilir.
 
 ### Text-RAG 仍然胜出的场景
 

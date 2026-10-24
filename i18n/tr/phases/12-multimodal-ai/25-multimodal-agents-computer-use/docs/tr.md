@@ -125,7 +125,7 @@ mm-agent-loop
 ## Kullan
 `code/main.py`- Taşlı bir heykel.
 
-- Eylem şeması  JSON tanımlama  10 个 eylem)。
+- Eylem şeması  JSON tanımlama (10 个行动: 上列出的九个,加上 crop + zoom 工具 `screenshot_region`)。
 - 作为 dict 的模拟浏览器状态──
 - Ajan kemiri:devleti al, hareket gönder, uygula, kemir.
 - 10 görevli mini-benchmark (sentetik sayfalar), sonundan sonuna kadar başarıyı ölçmek için kullanılır.
@@ -135,7 +135,7 @@ mm-agent-loop
 本 ders 生成 `outputs/skill-multimodal-agent-designer.md` Bilgisayar kullanım ürününü belirlemek, tam bir ajan döngüsünü tasarlamak, bellek stratejisi, yerleştirme modunu ve beklenen referans puanını oluşturmak.
 
 ## 练习
-1. Kullanım`screenshot_region`araç ((crop + zoom) genişletme eylem şeması── hangi görevler fayda sağlayacak?
+1. Koddaki şema dokuz çekirdek eylemden başka bir şekilde katıldı .`screenshot_region`araç ((Crop + Zoom) ◊ Hangi görevler yararlanacak?
 
 2. 阅读 AgentVista(arXiv:2602.23166)── Description of the hardest task category, as well as why frontier models still fail―
 

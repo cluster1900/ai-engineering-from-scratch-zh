@@ -18,7 +18,7 @@ BLIP-2 32 görsel token ekleyecek LLM giriş katmanı 结 ︎ Her bir istek bir 
 
 Flamingo'nun cevabı: LLM'nin giriş akışını tamamen değiştirme. mevcut LLM blokları arasında ekstra çapraz dikkat katmanları yerleştirilmelidir.
 
-Flamingo 回答的第二个问题是:如何处理每个提示中可变数量的图像(0、1 或多张)?Perceiver resampler  一个小型跨注意模块,任意数量的补丁接收,并生成固定数量的视觉潜伏令牌──无论提示中有多少张图像,LLM跨注意层 看到的形状都相同──
+Flamingo  cevaplanan ikinci soru: Her istek arasında değişken miktarda görüntü nasıl işlenir?  0、1 veya多张?Anlamlayıcı resampler  Küçük çapraz dikkat modülü, istedikleri sayısız yama alır, ve her görüntü için sabit miktarda görsel gizli işaretler üretir.
 
 ## 概念
 ### Dondurulmuş LLM
@@ -56,7 +56,7 @@ Bu Flamingo'nun en önemli tasarım seçeneği: görsel koşullandırma, katı �
 
 ### Bağlı girişlerin maskeli çapraz dikkatini kullanıyor .
 
-"<image A> caption A <image B> caption B <image C> ?" gibi bir istekte, her metin simgesi sadece önceki görüntülerin sırasındaki görüntüleri görmelidir.`t`Tekst işaretini sadece resim göstergesine katın `i < i_t`Fotoğraf resampler tokenleri, bunlardan `i_t`Yerinde`t`之前最近的图像──只看最近的前置图像或看到所有的前置图像都是有效选择; Flamingo 选择了前者──
+"<image A> caption A <image B> caption B <image C> ?" gibi bir istekte, her metin simgesi sadece önceki görüntülerin sırasındaki görüntüleri görmelidir.`t`Tekst simgesi sadece görüntüye katılın `i_t`Resampler tokenleri, bunlardan `i_t`Yerinde`t`之前最近的图像;其他所有图像的代币都被掩盖掉──只看到最近的前置图像或看到所有的前置图像都是有效选择; Flamingo 选择了前者──
 
 ### Konekst içi az çekimli öğrenme
 
@@ -73,7 +73,7 @@ Model see补全模式并输出 "bird" (bird) (or image3) 显示的任何内容) 
 Flamingo Üç tane eğitim kullanıyor:
 
 1. MultiModal MassiveWeb (M3W) 43 milyon sayfa içerir.
-2. Resim-Messim Çiftleri (ALIGN + LTIP):44 milyar对──
+2. Resim-Messim Çiftleri: ALIGN(18 milyar对)加 LTIP(3.12 milyar对),合计约21 milyar对。
 3. Video-Text Çiftleri (VTP): 27 milyon kısa video klipi
 
 OBELICS(2023) is交错网页语料的开放复现,Idefics、Idefics2 和大多数开放的Flamingo-like模型都在其中训练──
@@ -99,7 +99,7 @@ Otter(2023) OpenFlamingo'ya dayalı ve MIMIC-IT'de bir dizi multimodal talimat �
 | Frozen LLM | Yes | Yes |
 | Few-shot in-context | 弱 | 强 — 论文的核心 |
 | Interleaved inputs | 无原生支持 | Yes，设计目标 |
-| Training data | 130M pairs | 1.3B pairs + 43M interleaved pages |
+| Training data | 130M pairs | ~2.1B pairs + 27M video clips + 43M interleaved pages |
 | Parameter count | 188M trained | ~10B trained (cross-attn layers) |
 | Compute | 8 个 A100 上数天 | 数千个 TPUv4 上数周 |
 

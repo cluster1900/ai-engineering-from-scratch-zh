@@ -74,7 +74,7 @@ LayoutLMv3 OCR'e dayalı bir dosya anlayışı 峰── bu, bir teklifte ve bir
 
 ### Doküman (2023)
 
-DocLLM(Wang et al., arXiv:2401.00908) LayoutLM'in üretilen kardeşidir.
+DocLLM(Wang et al., arXiv:2401.00908,2023 yıl 12 月 31 日 gönderildi, bu nedenle ID 带有 2024 yıl 1 月的前) LayoutLM'in üretilen kardeşidir.
 
 ### 3. dönem  VLM-devli(2024+)
 
@@ -83,7 +83,7 @@ DocLLM(Wang et al., arXiv:2401.00908) LayoutLM'in üretilen kardeşidir.
 - LLaVA-NeXT 336-tile AnyRes  küçük dosyalara uygundur.
 - Qwen2.5VL dinamik çözünürlük 原生処理 2048+ piksel
 - Claude Opus 4.7 支持 2576px 文档。
-- PaliGemma 2(2025 yıl 4 月) özel olarak文档 + 手写訓練。
+- PaliGemma 2(2024 yıl 12 月) özel olarak文档 + 手写訓練。
 
 VLM-devli ile OCR-pipeline arasındaki fark hızla azalıyor. 2026 yılına kadar, VLM-devli aşağıdaki yönlerden üstün çıkıyor:
 

@@ -25,9 +25,9 @@ Yayınlanınca çok tartışmalı oldu. İki yıl sonra, açık kaynaklı birle�
 
 关键成分是视觉Tokenizer──Emu3 训练一个定制IBQ-类Tokenizer(Inverse Bottleneck Quantizer,SBER-MoVQGAN ailesi),每个代币做8×8分辨率-减小──一张512x512 图像会变成64x64 = 4096代币,代码簿大小为32768──
 
-Bu, Kameleon'da K=8192 时时的512x512'in 1024 tokeni daha büyük, ancak her Token daha ucuz(Çocu kod defteri aramaları, daha basit kodek)  Anahtar gösterge: PSNR'yi yeniden inşa etmek için 30.5 dB, Stable Diffusion ile 32 dB sürekli gizli alanı 竞争──
+Bu, Kameleon'un K=8192 时的1024 代币, daha büyük, iki boyut daha büyük: Token numarası 4 倍, kod defteri de 4 倍.
 
-对于视频:3D VQ Tokenizer bir uzay-zaman yama olacak(4x4x4 piksel) kodlama için bir bütün sayı için.
+对于视频:3D VQ Tokenizer bir uzay-zaman yamacını düzenleyecektir(4 çerçeve x 8x8 piksel) kodlama bir bütün sayı için.
 
 Tokenizer 質量就是上限──Emu3'ün katkısı bir kısmı çok iyi bir Tokenizer eğitimi aldığımızda.
 
@@ -65,14 +65,14 @@ Task-specific heads yok. Sadece farklı prompt şablonları.
 Emu3 kağıdından ((2024年 9月):
 
 - 图像生成:在 MJHQ-30K FID(5.4 vs 5.6)、GenEval genel olarak(0.54 vs 0.55,统计上打平)
-- 图像感知: 在 VQAv2(75.1 vs 72.4) 上超过LLaVA-1.6, 在 MMMU 上大致持平──
+- 图像感知:在 VQAv2(75.1 vs 81.8) ve MMMU(31.6 vs 35.1) 上落后于 LLaVA-1.6,但在 SEED-Bench、OCRBench 和 ChartQA 上超过它──
 - 视频生成:4-second-clip 质量在 FVD 上与 Sora-era Public benchmarked models 具备竞争力──
 
 Bu rakamlar her zaman kazanmak değil, burada çok fazla bir dakika, orada az bir dakika, ama bir sonraki belirti tahmin etmek için ihtiyacınız olan tek şey bu.
 
 ### Hesaplama maliyeti
 
-Emu3 7B-parametr modeli kullanır, yaklaşık 300 milyar Multimodal token 上 тренинг。GPU saatleri 大致相当 Llama-2-7B öncesi eğitim(A100 sınıfı silikon 上 2k-4k GPU-years)。Stable Diffusion 3 Bu şekilde Diffusion modeller 訓練予算 benzer, ama bağımsız metin kodlayıcıları ve daha karmaşık borular gerekir。
+Emu3 bir 8B-parametr modelitir. 论文没有公布 GPU-hour 总数;参照,Llama-2-7B önceden eğitimi yaklaşık 184k A100 GPU-hours, yaklaşık 21 GPU-year kullanmıştır.
 
 推理时,Emu3 张图像比 SDXL 慢:4096 image tokens,以 30 tok/s 计算,大约每张 512x512 图像 2 分钟,而 SDXL 为 2-5 秒──Spekülatör çözme 和 KV-cache optimization 会缩小差距,但无法消除差距──Autoregressive image gen 计算量很大;这是目前的固定取舍──
 
@@ -101,11 +101,11 @@ CFG 实现与Emu3 配方一致,即指导重量 混合条件和无条件逻辑─
 ## 练习
 1. Emu3 in 8x8 Reduction 下, her张 512x512 图像产生 4096 tokens──计算 1024x1024 和 2048x2048 的等价数──推理延迟会发生什么?
 
-2. Emu3 Bölümü 3.3 İçinde Video Tokenizer'in içeriği hakkında. 3D VQ yama şeklini ve neden 8x8x1 değil 4x4x4 olduğunu açıklıyor.
+2. Emu3 Bölümü 3.3 İçinde Video Tokenizer'in içeriği hakkında. 3D VQ yama şeklini ve neden tek bir çerçeve yerine 4 çerçeve x 8x8 piksel üzerinden geçerini anlatıyor.
 
 3. Sınıflandırıcısız rehberlik ağırlığı 5.0 vs 3.0: Görsel etki ne değişikliği var? Takip `code/main.py`Orta matematik süreci:
 
-4. 計算 Emu3-7B 在 300B jetonları 下的训练 FLOPs,并与稳定扩散3比较──哪个训练成本更高?
+4. 假设训练 300B tokens,计算 Emu3(8B) 的训练 FLOPs,并与稳定扩散3比较──哪个训练成本更高?
 
 5. Emu3 FID'de SDXL'den üstündür, ancak VQAv2'de uzmanlaşmış VLM'lerde değil.
 
@@ -114,7 +114,7 @@ CFG 实现与Emu3 配方一致,即指导重量 混合条件和无条件逻辑─
 |------|-----------------|------------------------|
 | Next-token prediction | "NTP" | 标准 autoregressive loss：给定 token[0..i] 预测 token[i+1]；tokenized 后适用于每种 modality |
 | IBQ tokenizer | "Inverse bottleneck quantizer" | 一类 VQ-VAE，codebooks 更大（32768+），重建效果优于 Chameleon 的 Tokenizer |
-| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖一个 4x4x4 pixel cube |
+| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖 4 frames x 8x8 pixels |
 | Classifier-free guidance | "CFG" | 用 weight gamma 混合 conditional 和 unconditional logits；在推理时提升图像质量 |
 | Unified vocabulary | "Shared tokens" | Text + image + video 都来自同一个 integer space；模型预测接下来出现的任何 modality |
 | MJHQ-30K | "Image gen benchmark" | 含 30k prompts 的 Midjourney-quality benchmark；Emu3 在这里报告 FID |

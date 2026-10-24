@@ -39,7 +39,7 @@ Bu Tokenizer bir vektörlü kuantitasyonlu variasyonel otokoder.
 
 訓練:VAE yeniden yapılandırma kaybı + bağlılık kaybı + kod defteri kaybı。Kod defteri endeksleri 构成图像的离散字母──
 
-Şemâleon için: 張圖像变成32*32 = 1024 个 Token, 来源大小为8192 的词表──与文本 Token( 来源 LLM 的 BPE 词表,例如 32000)拼接──最终词表:40192──Transformer 看到的是一个序列、一个损失──
+Şemeleon için: 張圖像變成 32*32 = 1024 符號,來自大小為 8192 的词表──把這些圖像 ID 放进与文本 BPE Token 相同的 ID 空间──Şemeleon'un tek bir Tokenizerinde 65,536 条目 bulunmaktadır, bu sayı 8192 圖像代碼,以及图像分隔符等特殊 Token──Transformer 看到一序列、一損失──
 
 ### 共享词表
 

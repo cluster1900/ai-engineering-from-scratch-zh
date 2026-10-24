@@ -1,6 +1,6 @@
 # Video-Dil Modelleri:Vakt Tokenleri ve Yerleştirme
 
-> Video 不是一叠照片──一 5 秒片 有因果序、动作动词和事件时序,这些是图像模型 无法表示的──Video-LLaMA(Zhang et al., Haziran 2023) ilk açıktı video-LLM yayınladı. VideoChat 和 Video-LLaVA 扩展了这个模式──到2025年,Qwen2.5-VL 的TMROPE 缩小了与边界专有模型的差距──每个系统都以不同的方式解决时间代码:Q-former per clip、concat-pool per frame、TMRoPE per token──本课将这些模式解读,构建统一对动态框架样本,并进行时间代码测量任务上评估──
+> Video 不是一叠照片──一 5 秒片 有因果序、动作动词和事件时序,这些是图像模型 无法表示的──Video-LLaMA(Zhang et al., Haziran 2023) ilk açıktı video-LLM yayınladı. VideoChat 和 Video-LLaVA 扩展了这个模式──到2025年,Qwen2.5-VL'nin zamanlı olarak uyumlu M-RoPE 缩小了与边境专有模型的差距──每个系统都以不同的方式解决时间代码:Q-former per clip、concat-pool per clip、时间-aligned M-RoPE per token──本课将解读这些模式,构建反-dynamic frame样品器,并评估时间框架上的任务──
 
 **Type:** Build
 **Languages:** Python (stdlib, frame sampler + temporal-grounding evaluator)
@@ -10,7 +10,7 @@
 ## Öğrenme hedefi
 - 解释为什么时间定位编码 会独立于视觉编码器 改变视频VLM性能──
 - Birbirine göre ̋dinamik-FPS ve olay yönlendirilmiş çerçeve örneklemesi  ̋token-per-second ile yerleştirme doğruluğu ̶ arasında bir fark vardır.
-- 描述 Q-former-per-clip(Video-LLaMA)、pooled-per-frame(Video-LLaVA) y M-RoPE-per-token(Qwen2.5-VL) tasarım。
+- 描述 Q-former-per-clip(Video-LLaMA)、pooled-per-frame(Video-LLaVA) ve zaman uyumlu M-RoPE per token(Qwen2.5-VL) tasarım。
 - VideoMME,TempCompass,EgoSchema,Video-MMMU,
 
 ## 问题
@@ -24,7 +24,7 @@ Bir dakika 30 FPS video 1800 çerçeve var. Her çerçeveye göre 196 görsel je
 
 Her türlü değişikliği vardır. Örnekleme zamanlı ayrıntıları kaybeder.
 
-Zamanlı konum kodlaması ise başka bir boyut:模型如何知道框架 5 发生在框架 6 之前?选项包括简单的1D temporal RoPE(Video-LLaMA)、学习的 temporal embeddings(Video-LLaVA) 和TMRoPE(Qwen2.5-VL,完整3D)。
+Zamanlı konum kodlaması 另一个维度:模型如何知道框架 5 发生在框架 6 之前?选项包括简单的1D temporal RoPE(Video-LLaMA) ✓学习的 temporal embeddings(Video-LLaVA) 和时间一致 M-RoPE(Qwen2.5-VL,完整3D) 
 
 ## 概念
 ### Video-LLaMA: Her klip bir Q-former + ses dalı
@@ -43,17 +43,17 @@ VideoChat Video-LLaMA'nın düşüncelerini korudu, ama sesleri kaldırdı ve ba
 
 İkincisi, uzun videoları işlemek mümkün değil.
 
-### Qwen2.5-VL ve TMRoPE
+### Qwen2.5 VL ve zaman uyumlu M-RoPE
 
-Qwen2.5-VL TMRoPE'yi, yani Zaman-Modality Rotary Position Embedding'i başlattı. Her patch token bir (t, h, w) konum taşıyor, bunlardan t gerçek zaman damgasıdır.
+Qwen2.5-VL 沿用 Qwen2-VL 的 M-RoPE (Multimodal Rotary Position Embedding),并把它的时间轴与绝对时间对齐──每个补丁符号 携带一个 (t, h, w) 位置,其中 t 跟随实际时间印章 (t, h, w) 位置, t 跟随实际时间印章 (t, h, w) 位置, t 跟随实际时间印章 (t, h, h, w) 图标 (t, h, h, h, h, h) 图标 (t, h, h, h, h, h, h, h, h) 图标 (t, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h, h,
 
 Basit zamanlı yerleştirme ile önemli fark:
 
 - 绝对时间, not index. 模型 is seen at 4.2 seconds.  not at frame 15 ──
 - Her bir görüntü simgesi kendi zaman damlasına göre hareket eder.
-- 兼容 dinamik FPS── Eğer burada 2 FPS 采样、 orada 4 FPS 采样, TMRoPE bu farklılıkları tam olarak çözebilir.
+- 兼容 dinamik FPS── Eğer burada 2 FPS 采样、 orada 4 FPS 采样, zaman uyumlu M-RoPE bu farklılıkları olabilmektedir.
 
-TMRoPE 支持猫在第几秒跳起?                                                                                                                                                                                                                                                        
+Zaman Dönemi M-RoPE 支持猫在第几秒跳起?
 
 ### Çerçeve örnekleme stratejileri
 
@@ -67,7 +67,7 @@ Anahtar çerçeve + bağlam: Çekim sınırlarında + 若干 bitişik çerçevel
 
 ### Çerçeve başına birleştirme
 
-1 FPS ve her çerçeve 576 token 时, bir 5 分钟 klip 172.800 token ⋅ Qwen2.5-VL-72B 128k bağlamı zorla işlenebilir, ancak maliyet yüksek ⋅
+1 FPS ve her çerçeve 576 token olduğunda, bir 5 dakika klip 172.800 token olacaktır. Bu, Qwen2.5-VL-72B'nin 128k bağlamından çok daha fazla olacaktır. Bu nedenle önce rate oranını düşürmek veya her  Token birleştirme işlemine karşı yapılmalıdır.
 
 3x3 milyarlı havuz her çerçeve 64 tokene düşecek -> 5 dakika 19.200 tokene...
 
@@ -96,7 +96,7 @@ Token tabanlı aşağı akıntılı kullanım için 最准确──Qwen2.5-VL'ni
 
 2026 Video VLM'lerin En İyi Uygulamaları:
 
-- Kodlayıcı:带 M-RoPE veya TMRoPE'nin SigLIP 2(Qwen2.5-VL)。
+- Kodlayıcı:SigLIP 2 veya原生分辨率 ViT,LLM 中使用時間調整 M-RoPE(Qwen2.5-VL) 』
 - Çerçeve örneklemesi: dinamik FPS (Hızlı kullanımı 1-4), maksimum çerçeve kapalı
 - Çerçevelik birleştirme:3x3 milyarlı
 - Çıktı:包含 time + event 字段的结构化 JSON。
@@ -112,7 +112,7 @@ video-temporal-patches
 
 - Üniform 和 dinamik-FPS çerçeve örneklemesi
 - Bir oyuncak zamansal yerleştirme değerlendiricisi: verilen zaman T 处 "yerçeklik" olayı 和 model çıkışı, toleransi içinde değerlendirme doğruluğu
-- Video-LLaMA(16 çerçeve,Q-eski) 、Video-LLaVA(8 çerçeve,MLP) 、Qwen2.5-VL(dinamik FPS + TMRoPE) arasında karşılaştırma
+- Video-LLaMA(16 çerçeve,Q-eski)、Video-LLaVA(8 çerçeve,MLP)、Qwen2.5-VL(dinamik FPS + zaman uyumlu M-RoPE) arasında karşılaştırma
 
 ## - Söyle.
 本课会产 出 `outputs/skill-video-vlm-frame-planner.md` video görevini belirlerken, görüntüleme, eylem tanıma, zamanlı yerleşim, özetleme yapılır.
@@ -120,7 +120,7 @@ video-temporal-patches
 ## 练习
 1. Bir 3 dakikalık yemek demosu için, üniforma seçin ve dinamik FPS kullanın.
 
-2. TMRoPE  spesifik olarak ne ekledi, basit zamanlı yerleştirme masası yapmamak için?
+2. Zaman Aligned M-RoPE 具体增加了什么,简单时间嵌入表做不到的吗?
 
 3. 写一个 VLM 可学习输出时间定位 JSON schema──包含错误案──
 
@@ -132,7 +132,7 @@ video-temporal-patches
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
 | Temporal grounding | "Time-localized answers" | VLM 会为事件发生时间输出具体 timestamp range |
-| TMRoPE | "Time-Multimodal RoPE" | 带绝对 timestamps 的 3D rotary position，由 Qwen2.5-VL 使用 |
+| Time-aligned M-RoPE | "TMRoPE" | 时间轴跟随绝对 timestamps 的 3D rotary position；Qwen2.5-VL 用于视频，Qwen2.5-Omni 把其音频与视频形式命名为 TMRoPE |
 | Dynamic FPS | "Motion-aware sampling" | 在 high-motion segments 采样更多 frames，在 static segments 采样更少 |
 | Frame pooling | "Spatial compress per frame" | 在进入 LLM 前用 bilinear interpolation 减少每个 frame 的 patches |
 | Video Q-former | "Clip compressor" | 将 N frames 映射到 K learned queries 的 cross-attention bottleneck |

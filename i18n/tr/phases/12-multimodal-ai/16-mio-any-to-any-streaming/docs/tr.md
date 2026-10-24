@@ -19,7 +19,7 @@ Birleştirilmiş Multimodal model
 工程挑战:
 
 - Her modalite bir Tokenizer olmalı, yeniden inşa etmek için yeterince hasarsız bir şekilde sıkıştırılmalı ve Transformer'ın tüketimi hızıyla Token üretilmelidir.
-- 单一词库 必须为文本(32k+) 图像(16k+) 语音(4k+) 音乐(8k+) 分享空间──最低也需要四万多条目──
+- 单一词库 必须为文本(32k+) 图像(8k+) 语音(4k+) 音乐(8k+) 分享空间──最低也需要五万多条目──
 - 训练数据必须覆盖每种输出输出对 (text→image、image→speech、speech→image等),或者模型必须能够组合──
 - İndirme 必須足足足足快地 输出 Token,以满足对话延迟 ((<500ms time-to-first-audio-byte) ⋅
 
@@ -29,21 +29,21 @@ Birleştirilmiş Multimodal model
 MIO'nun Tokenizer Stak:
 
 - Metin: standart BPE, sesli ~32000。
-- Resim:SEED-Tokenizer (2023)  带离散代码簿 的量化 VAE,4096 条目,每张图像 32x32 个代码.
-- Konuşma:SprechTokenizer residual-VQ (2023)  16kHz dalga biçimi 编码为 8 层级代码书;第一层是粗粒度内容,后续层加入 prosody 和扬声器身份──
-- Müzik: benzer gibi kalıntılı-VQ(Meta'nın MusicGen / Encodec ailesi),4-8 个代码簿──
+- Image:SEED-Tokenizer (2023), bir ayrılık görüntü tokenizer, kod defteri var 8192 条目,每张图像输出 32 个 Token。
+- Konuşma:SpeechTokenizer residual-VQ (2023), 16kHz dalga biçimi 编码为 8 层级代码书;第一层是粗粒度内容,后续层加入 prosody 和扬声器身份──MIO 保留内容层和前三个timbre 层,每个层 1024 个代码,因此共 4096 个语音 ID──
+- Müzik: benzer bir kalıntı-VQ(Meta'nın MusicGen / Encodec ailesi),4-8 个代码簿──MIO 本身没有音乐 Tokenizer( dördüncü modalitesi ise video,以的形式经过图像 Tokenizer);本课的玩具 加入音乐,为了展示新的modality 如何占用一段 ID 范围──
 
 Her modalite tam sayıda Token üretir. Bu Tokenler ortak sözlükler arasında birbirinden üst üste olmayan kimlik aralıkları elde eder:
 
 ```
 text:   0..31999
-image:  32000..36095  (4096 image tokens)
-speech: 36096..40191  (4096 speech base tokens, plus residual layers)
-music:  40192..48383  (8192 music tokens)
-sep:    48384..48390  (<image>, <speech>, <music>, </...>, etc.)
+image:  32000..40191  (8192 image tokens)
+speech: 40192..44287  (4 codebooks x 1024 speech tokens)
+music:  44288..52479  (8192 music tokens, the toy's extension)
+sep:    52480..52485  (<image>, <speech>, <music>, </...>)
 ```
 
-总计:约48k词汇――输入嵌入和输出投影 覆盖全部条目――
+总计:约52k词汇――输入嵌入和输出投影 覆盖全部条目――
 
 ### Akışlı dekode
 
@@ -54,7 +54,7 @@ Akış 模式:
 1. Kullanıcı için makron konuşma; gerçek zamanlı ses Tokenizer Her 50 ms  konuşma gönderme Token。
 2. MIO 在 Token 到达时消费它们(快速预填 + 增进前)
 3. Çıktı Token 随生成流式输出; paralel konuşma dekodörü 以约50-150ms 延迟将其转换为音频样本──
-4. Zaman-birinci ses-bayt:MIO kağıdı Ortalama 300-500 ms, GPT-4o'nun yakınında 250 ms
+4. Time-to-first-audio-byte:MIO kağıdı 没有报告延迟数字──按下文的预算,这个设计最好约300ms,对比 GPT-4o 的约250ms──
 
 Mini-Omni ((arXiv:2408.16725) 、GLM-4-Voice(arXiv:2412.02612) y Moshi(arXiv:2410.00037) birbirine ek akış konuşma-LLM tasarımlarıdır.
 
@@ -97,7 +97,7 @@ Bir konuşma ürünü için, her bileşenin gecikmesi önemlidir:
 - İlk çıkış simgesi: ~50ms
 - Paralel kalan-VQ + konuşma dekodörü: ~ 100-150 ms。
 
-总时间到第一音频字节:最低约 ~300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──根据公开基准,MIO/AnyGPT 位于400-600ms 范围──
+总时间到第一音频字节:最低约 ~300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──MIO 和 AnyGPT 都没有公布实测数字,因此请把这个预算作为估算,而不是基准──
 
 ### Neden herhangi bir  hala zor
 
@@ -129,7 +129,7 @@ any-to-any-stream
 
 2. SpeechTokenizer residual-VQ kullanmak 8 kod defteri, paralel dekode residual seviyelerinin neden gerekli olduğunu, ayrıca neyi getiren gecikme tasarrufu olduğunu açıklıyor.
 
-3. Sözcükleriniz 32k metin + 4k görüntü + 4k konuşma 👍 8k müzik ve yaklaşık 10 ayırıcı 👍 gizli dim 4096 时,Embedding Matrix'in parametreler maliyeti ne kadar?
+3. Sözcükleriniz 32k metin + 8k görüntü + 4k konuşma vardır. 8k müzik ve yaklaşık 10 ayırıcıyı ekleyin.
 
 4. Görsel düşünce zinciri, bir görüntü oluşturur. Hangi tür sorunlar yararlanır?
 
@@ -140,7 +140,7 @@ any-to-any-stream
 |------|-----------------|------------------------|
 | Any-to-any | "Multimodal in/out" | 一个单一模型，能够在任意方向接受并发出 text、image、speech 和 music |
 | Residual-VQ | "Speech tokenizer stack" | Multi-codebook Tokenization，每一层都添加信息；base layer 是内容，后续层是 prosody |
-| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 4096-entry codebook |
+| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 8192-entry codebook，每张图像 32 个 Token |
 | Chain-of-visual-thought | "Visual scratchpad" | 模型在最终答案前生成一张中间图像作为 reasoning step |
 | Time-to-first-audio-byte | "TTFAB" | 从用户语音到第一个 audio output 的延迟；<500ms 才有对话感 |
 | Four-stage curriculum | "Training recipe" | Alignment -> interleaved -> speech-enhanced -> SFT，按此顺序 |

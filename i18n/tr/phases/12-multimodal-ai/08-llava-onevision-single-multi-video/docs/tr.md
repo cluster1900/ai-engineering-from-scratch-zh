@@ -1,6 +1,6 @@
 # LLaVA-OneVision: Bir modeldeki tek görüntü, birden fazla görüntü ve video
 
-> LLaVA-OneVision'da (L.L.A.V.A. ve diğerleri, 2024 yılının Ağustos ayında) açılan VLM Dünya'nın birbirinden ayrı bir dizi modeli var: tek görüntüde kullanılan LLaVA-1.5, Mantis ve VILA gibi çoklu görüntü modelleri, ayrıca Video-LLaVA ve Video-LLaMA gibi video modelleri. Her biri kendi referansını kazanırken diğer sahnelerde başarısız olur. L.L.A.V.A.V.Pogent, tek bir ders planı, tek bir modelin aynı anda bu üç sahneyi yönlendirebileceğini, ayrıca yeni görev transfer etmesini sağlayabileceğini belirten tek bir ders planı, tek bir resim becerisini videoya, tek bir resim fikrine, tek bir resim fikrine, bir resim fikrine, bir resim fikrine taşıyabilir.
+> LLaVA-OneVision'da (L.L.A.V.A. ve diğerleri, 2024 yılının Ağustos ayında) açılan VLM Dünya'nın birbirinden ayrı bir dizi modeli var: tek görüntüde kullanılan LLaVA-1.5, Mantis ve VILA gibi çoklu görüntü modelleri, ayrıca Video-LLaVA ve Video-LLaMA gibi video modelleri. Her biri kendi referansını kazanırken diğer sahnelerde başarısız olur. L.L.A.V.A.V.Pogent, tek bir ders planı, tek bir modelin aynı anda bu üç sahneyi yönlendirebileceğini, ayrıca yeni görev transfer etmesini sağlayabileceğini belirten tek bir ders planı, tek bir görüntü becerisini videoya, tek bir görüntü düşüncesine, tek bir görüntü düşüncesine taşıyor (çoklu uzman model ve sonuçları karşısında) Bu formül basit ve şaşırtıcı görünüyor: Bir görüntü farklı sahneler arasında dengelenen bir video programının bütçesi, bir grafik, bir grafik, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir tablo, bir
 
 **Type:** Build
 **Languages:** Python (stdlib, token budget solver + curriculum planner)
@@ -8,7 +8,7 @@
 **Time:** ~180 minutes
 
 ## Öğrenme hedefi
-- Design a in single image、 multiple image and video input arasında sabit bir görüntü belirtiyi tutmak  bütçe
+- Design a balance between single image、 multiple image and video input  Vision Token  Budget 
 - 排列一训练课程,使技能从单图像迁移到视频,同时避免灾难性忘记──
 -  Neden aynı parametre ölçeğinde, eğer kurikulum doğru yapılırsa, tek bir model uzman modelden üstün gelir 
 - LLaVA-OneVision  raporının üç yeni yeteneği: çoklu kamera akıl yürütme, işaretleme uyarı, iPhone ekran görüntüsü ajanı,
@@ -29,13 +29,13 @@ OnVision'a kadar, bir sahneyi eğitmek, diğer sahneyi göz ardı etmek için bi
 ## 概念
 ### OneVision Token 预算
 
-LLaVA-OneVision  seçin bir birleştirilmiş görsel simge  bütçe, her örnek yaklaşık 3000-4000 simge, ve farklı sahneye göre dağıt:
+LLaVA-OneVision kesin bir simge sayısını belirlememiştir. Her numunenin en büyük görsel simge sayısını dengeleyerek, üç farklı durum simgesini aynı alanda, yaklaşık 6.000 ila 9.000 simge arasında, farklı durumlar halinde dağıtır:
 
-- 单图像:AnyRes-9(3x3 bez + küçük resim), her bez 384, içerir 729 个 yama, 激进的使用 2x2 bilinear pooling → Her bez 182 个标记──总计:9 * 182 + 182 = 1820 个标记──或 AnyRes-4, her bez 729 个标记 = 2916 + 729──
-- Çoğu resim: her resim kullanımı ortalama çözünürlük(384, hiç kaplama),729 Token, hiç birleştirme。 bütçe 6 张图像 → 4374 个 Token。
-- 视频:32 ,384 分辨率,激进的 3x3 bilinear pool → 每 81 个代币──总计:32 * 81 = 2592 个代币──
+- 单图像:AnyRes-Max-9( maksimum 9 个 tile 加一个基视图), her 384x384 view 经 SigLIP SO400M 得到 729 个 token──最多:729 * (1 + 9) = 7290 个 token──
+- 多图像:每张图像使用 384,不,729 个标志,不──最多 12 张图像 → 8748 个标志──
+- 视频:最多 32 ,384 分辨率, 2x2 bilinear birleştirme kullanmak → 每 196 个代币──总计:32 * 196 = 6272 个代币──
 
-Bu dağıtım, toplam token sayısını kalıcı olarak tutmayacaktır. LLM'nin hiçbir zaman bir araya gelme bağlamının bir seri görmeyecektir.
+Bu dağılım, en büyük toplam sayıyı aynı bölgeye düşürür, bu nedenle hiçbir durum bağlamı veya derecesi yönlendirilemez.`code/main.py`规划器, aynı dengeyi göstermek için daha küçük bir oyuncak bütçesi 4096 kullanıyor.
 
 ### Üç aşama eğitim programı
 
@@ -106,13 +106,13 @@ OneVision'ın ince ayarlarını planlamak veya VLM'nin her talep maliyetini kont
 
 4. 论文报告的视频基准每样只用8 训练――¿Bu, önerme zamanı 30 saniyelik video olarak genişletilmiş olabilir mi?
 
-5. 24x24 patch yapmak bilinear birleştirme 12x12 kadar, her boyutta 4x azaltma olacaktır.
+5. 24x24 patch yapmak binaylı birleştirme 12x12'e kadar, her boyutta 2x azaltma, bu nedenle Token sayısı 1/4'e kadar azaltılır.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
-| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持恒定 |
-| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，通常为 3000-4000 |
+| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持均衡 |
+| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，在 LLaVA-OneVision 中最多约 6k 到 9k |
 | Curriculum | “训练顺序” | 为了 emergent transfer 而选择的阶段排序（单图像 → 多图像 → 视频） |
 | Bilinear pooling | “Token 缩减” | 对 patch grid（2D）应用 bilinear interpolation，以在保留局部性的同时减少 Token 数量 |
 | Emergent skill | “没训练过，但仍然能用” | 由于 curriculum composition，在没有匹配训练数据的情况下于推理时出现的能力 |

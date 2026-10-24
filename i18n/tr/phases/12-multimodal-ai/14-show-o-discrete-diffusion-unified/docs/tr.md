@@ -10,7 +10,7 @@
 ## Öğrenme hedefi
 - 解释 masked discrete diffusion:一种先均 mask Tokens、再让 Transformer 恢复它们的时间表──
 -                                                                                                                                                                                                                                                               
-- Gösterme-o bir kontrol noktasında işleme üç sınıfı görev: T2I, VQA, resim boyaması
+- Gösterme-o bir kontrol noktasında işleme dört sınıfı görev: metin üretimi, VQA, T2I, resim boyaması,
 - 选择一种掩盖时间表 ((kosine、线性、 troncated),并推理它对样品质的影响──
 
 ## 问题

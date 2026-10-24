@@ -1,6 +1,6 @@
 # CLIP'den BLIP-2'e kadar  Q-Former  Modality Bridge olarak
 
-> CLIP, resim ve metin için, ama başlık oluşturamıyor, soru yanıt veya sohbet yaptırıyor. BLIP-2 (Salesforce, 2023) bu sorunu küçük bir eğitimli köprü ile çözdü. 32 个学习可用桥接用解决了这个问题:32 个学习可用桥接用解决了这个问题.
+> CLIP, resim ve metin için, ama başlık oluşturamıyor, soru yanıt veya sohbet yaptırıyor. BLIP-2 (Salesforce, 2023) bu sorunu küçük bir eğitimli köprü ile çözdü. 32 个学习可用桥接用解决了这个问题:32 个学习可用桥接用了这个小型可用桥接的微型向量.
 
 **Type:** Build
 **Languages:** Python (stdlib, cross-attention + learnable-query demo)
@@ -112,7 +112,7 @@ Tüm matematikler saf Python ile yapılır. Vector ile yapılır.
 
 4. 阅读 BLIP-2 paper(arXiv:2301.12597) Bölüm 3.2, Q-Former'ın nasıl başlatıldığını öğrenmek, BERT tabanından neden başlatıldığını açıklamak, herhangi bir şekilde değil, hızlandırılmasını sağlamak.
 
-5. Bir 10 dakika video için, 1 FPS 采样到 60 ,计算每 Token 成本:(Q-Former → 32 token/frame) vs (MLP projekörü → 576 token/frame) ―― hangi bir tane 128k-Token LLM bağlam penceresine koyabilir?
+5. Bir 10 dakika video için, 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 token/frame) vs (MLP projektor → 576 token/frame)
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -126,7 +126,7 @@ Tüm matematikler saf Python ile yapılır. Vector ile yapılır.
 | Two-stage pretraining | "Representation then generative" | Stage 1 单独训练 Q-Former（ITC/ITM/ITG）；Stage 2 接入 frozen LLM，并且只训练 projection + Q-Former |
 | Frozen backbone | "Do not finetune" | vision encoder 和 LLM weights 固定；只训练 bridge |
 | Projection head | "Linear to LLM dim" | 将 Q-Former 输出映射到 LLM Embedding dimension 的最终 linear layer |
-| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention，由 Flamingo 在每一层使用，而不是作为单个 bridge |
+| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention；Flamingo 对每张图像运行一次，生成固定数量的 latents，再在每个 LLM 层通过 gated cross-attention 读取它们 |
 
 ## 延伸阅读
 - [Li et al. — BLIP-2 (arXiv:2301.12597)](https://arxiv.org/abs/2301.12597) 核心 paper。

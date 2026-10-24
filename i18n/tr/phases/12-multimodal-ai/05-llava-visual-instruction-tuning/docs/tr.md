@@ -1,6 +1,6 @@
 # LLaVA ve Görsel Eğitim Düzenlemesi
 
-> LLaVA(2023 yıl 4 月) dünyanın en çok kopyalanmış çok yönlü yapılandırmasıdır. BLIP-2'nin Q-Former'ini 2 katlı MLP ile değiştirdi, basit bir Token bağlaması ile Flamingo'nun kapalı çapraz dikkatini değiştirdi ve 158k 条 görsel talimatlı eğitim dönüşü yaptı. Bu veriler GPT-4 tarafından saf metin başlıklarından üretildi. VLM'yi 2023 ile 2026 yılları arasında inşa eden herhangi bir uygulayıcı, herhangi bir LLaVA 变体ü oluşturdu. LLaVA-1.5  herhangi bir çözünürlükte katıldı. LLaVA-NeXT  çözünürlüğünü yükseltti. LVA-One Vision bir tarifle 统一化了图片多图片.
+> LLaVA(2023 yıl 4 月) dünyanın en çok kopyalanan çokkabı yapısıdır. 2 katlı MLP ile BLIP-2'nin Q-Former'ini değiştirdi, sade bir Token bağlaması ile Flamingo'nun kapalı çapraz dikkatini değiştirdi ve 158k 条 görsel talimatlı bir eğitim dönüşü yaptı. Bu veriler GPT-4 tarafından saf metin başlıklarından üretildi. 2023 ile 2026 yılları arasında VLM'yi inşa eden herhangi bir uygulayıcı, herhangi bir LLaVA 变体  LLaVA-1.5  LLaVA-1.5  MLP projeksiyonu  336 piksel kodlayıcı  LaVA-NeXT  Yüksek çözünürlükte aktarım için ResRes tilleme ekledi.
 
 **类型：**Yapım
 **语言：**Python(stdlib、projector + talimat şablon yapıcı)
@@ -32,10 +32,10 @@ Sonuç: Bir 8 张 A100 上运行一天、 MMMU 上击败 Flamingo、并发布社
 
 ### Yapılandırma
 
-13B'de LLaVA-1.5:
+LLaVA-1.5 7B'de:
 - Görüş kodlayıcı:CLIP ViT-L/14 @ 336(sınıf 1 结,sınıf 2 可选解)
 - Projector:带 GELU aktivasyonu'nun 2 katlı MLP,`1024 → 4096 → 4096`- Evet.
-- LLM:Vicuna-13B (Lamma-3.1-8B)
+- LLM:Vicuna-7B v1.5(13B 变体使用Vicuna-13B;后来的叉 改用Llama-3.1-8B) ⋅
 
 图像 + 文本 prompt 的 ileri geçiş:
 
@@ -83,7 +83,8 @@ Tüm süreç doğrudan görüntü ile temas etmiyor. Sadece metinle temas etmiyo
 LLaVA-1.5(2023 年 10 月)加入:
 - Akademik görev verilerini (VQA、OKVQA、RefCOCO)
 - Daha iyi bir sistem süresi.
-- 2048 → 32k bağlamı¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+- 2 katmanlı MLP projekörü ile 336px'lık CLIP ViT-L/14'i kullanın.
+- 论文中的网分 HD 变体, sonra LLaVA-NeXT 以 AnyRes biçiminde yayınlandı.
 
 LLaVA-NeXT(2024 yıl 1 月)加入:
 - AnyRes: Get yüksek çözünürlüklü görüntü 2x2 veya 1x3 网格 336x336 ürünlere, yeniden küresel düşük çözünürlüklü küçük bir resim ekle. Her ürün 576 Token haline gelir.
@@ -99,7 +100,7 @@ Ders 12.08 会深入讲 OneVision──简短版: Aynı bir projektorla, ama bir
 | | Q-Former（BLIP-2） | MLP（LLaVA） |
 |---|---|---|
 | 每张图像的 visual Token | 32 | 576（base）或 2880（AnyRes） |
-| 可训练参数 | 188M + LM | 40M + LM |
+| 可训练参数 | 188M + LM | ~22M（7B）+ LM |
 | Stage 1 loss | ITC+ITM+ITG | 仅 LM |
 | LLM drop-in | 需要重新训练 | 最小重新训练即可替换 |
 | Multi-image | 别扭 | 自然（concat） |

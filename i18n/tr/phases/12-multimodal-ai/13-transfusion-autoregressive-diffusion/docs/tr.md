@@ -48,7 +48,7 @@ maske:
 M[i, j] = 1 if:
   (i is text and j is text and j <= i)   # causal for text
   OR (i is image and j is image and same_image_block(i, j))   # bidirectional within image
-  OR (i is text and j is image and j < i_image_end)   # text attends to previous images
+  OR (i is text and j is image and j < i)   # text attends to images that closed before it
   OR (i is image and j is text and j < i_image_start)   # image attends to preceding text
 ```
 
@@ -94,7 +94,7 @@ MMDiT'in anahtar farkları:
 
 Janus-Pro(Lection 12.15) tarafından çözülür  Anlamak ve üretilen görme kodlayıcıyı geliştirmek için Transfusion'ın fikrini geliştirmek için: biri SigLIP kullanır, diğeri VQ kullanır, aynı zamanda transformatör vücudu paylaşır.
 
-2026 yılında Gemini 3 Pro, GPT-5 gibi üretim sınıfı VLM'lerin görüntü üretimi yolu, Claude Opus 4.7 gibi görüntü üretimi yolu, neredeyse kesinlikle bu ailenin bir sonraki nesli kullanmıştır.
+İlk olarak, orijinal çıkış görüntülerinin kapalı kaynak üretimi modeli bu ailenin sonraki nesillerinden de kullanılmış olabilir, ancak yapıları açık değildir, bu nedenle bu tür herhangi bir ifade sadece tahmin olarak görülebilir.
 
 
 ```figure
@@ -108,7 +108,7 @@ cfg-guidance-scale
 - Resim 4×4'dir.
 - Birlikte paylaşılan ağırlıklı lineer projeksyonlar 充当变压器 替代;文本上使用NTP kaybı, gürültülü yamalar 上使用MSE kaybı。
 - İki kayıpla karşılaştırıldığında, dikkat maskası çok açık.
-- Bir kez ileri geçiş içinde oluşan bir metin başlığı ve 4x4  görüntü
+- Bir maske  gösterim, metin, resim, metin  dizi blok üçgenli dikkat örneği çap edilmek.
 
 Bu transformatör oyuncak sınıfı. İki kayıp tesisatcılık, dikkat maskası, inşaat ve düşünce döngüsü gerçek ürünler.
 
