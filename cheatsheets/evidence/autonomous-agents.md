@@ -32,7 +32,7 @@ Abbreviations: L01 = phases/15-autonomous-systems/01-long-horizon-agents, L10 = 
 4. precondition, aborted-precondition: L16/C:94-97, L16/D:39
 5. persist intent before side effect: L16/C:102-120, L16/D:83
 6. verify by re-read, rollback: L16/C:122-128, L16/D:43-50
-7. terminal status returns stored result: L16/C:80-92
+7. terminal status returns stored result: L16/C:81-92
 
 ## 持久化 activity (annotated-code, 14 lines)
 - L12/C:51-66 (print lines 57 and 63 left out)
@@ -72,7 +72,7 @@ Abbreviations: L01 = phases/15-autonomous-systems/01-long-horizon-agents, L10 = 
 
 ## 故障排查 (8)
 - naive while True loop re-runs everything: L12/D:14-15
-- replay divergence, register side effect: L12/D:108, 91
+- replay divergence, register side effect: L12/D:109, 92
 - double execute without idempotency key: L15/D:35
 - overdraft without precondition: L16/D:34-39
 - committed without side effect, verify: L16/C:107-115, L16/D:43-50
@@ -81,16 +81,16 @@ Abbreviations: L01 = phases/15-autonomous-systems/01-long-horizon-agents, L10 = 
 - detector in agent reach: L14/D:81
 
 ## 术语表 (7)
-- HITL: L15/D:1, L13/D:98
+- HITL: L15/D:1, L13/D:99
 - METR horizon 50% reliability: L01/D:16
-- Denial of Wallet: L13/D:12, 91
-- thread_id: L12/D:106
+- Denial of Wallet: L13/D:12, 92
+- thread_id: L12/D:107
 - Lease: L16/D:30
 - Blast radius: L15/D:100
-- SAGA: L16/D:57, 118
+- SAGA: L16/D:57, 119
 
 ## 问答 (5)
-- 99% per step fails half on 70 steps: L01/D:72
+- 99% per step fails half on 70 steps: L01/D:73
 - stack of caps: L13/D:37
 - persist every transition: L16/D:26
 - when durable execution is wrong: L12/D:63-64

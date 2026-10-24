@@ -13,12 +13,12 @@ P18 = phases/18-ethics-safety-alignment, P19 = phases/19-capstone-projects. C15 
 - edges pass, stream, complete, early stop: C87/docs/en.md:26-29, 46
 
 ## Flow: PAIR 攻击循环
-1. A reads goal G and history: P18/12-red-teaming-pair-automated-attacks/docs/en.md:33
-2. A emits p_k: P18/12-red-teaming-pair-automated-attacks/docs/en.md:34
-3. T returns r_k: P18/12-red-teaming-pair-automated-attacks/docs/en.md:35
-4. J scores (p_k, r_k): P18/12-red-teaming-pair-automated-attacks/docs/en.md:36
-5. score at or above threshold halts: P18/12-red-teaming-pair-automated-attacks/docs/en.md:37
-6. append and repeat up to budget K: P18/12-red-teaming-pair-automated-attacks/docs/en.md:30, 38
+1. A reads goal G and history: P18/12-red-teaming-pair-automated-attacks/docs/en.md:30
+2. A emits p_k: P18/12-red-teaming-pair-automated-attacks/docs/en.md:31
+3. T returns r_k: P18/12-red-teaming-pair-automated-attacks/docs/en.md:32
+4. J scores (p_k, r_k): P18/12-red-teaming-pair-automated-attacks/docs/en.md:33
+5. score at or above threshold halts: P18/12-red-teaming-pair-automated-attacks/docs/en.md:34
+6. append and repeat up to budget K: P18/12-red-teaming-pair-automated-attacks/docs/en.md:27, 35
 
 ## Command table: 越狱分类 (6 rows)
 - role-play: C82/docs/en.md:24
@@ -29,7 +29,7 @@ P18 = phases/18-ethics-safety-alignment, P19 = phases/19-capstone-projects. C15 
 - prefix-injection: C82/docs/en.md:29
 
 ## Task table: 代码中的任务
-- python3 main.py: C82/docs/en.md:67 (same command in C83 to C87 Use It sections)
+- python3 main.py: C82/docs/en.md:68 (same command in C83 to C87 Use It sections)
 - detector rule dict: C83/code/rules.py:14
 - self.detector.analyze(prompt): C87/code/safety_gate.py:118
 - codecs.encode rot_13: C83/code/main.py:113
@@ -44,24 +44,24 @@ P18 = phases/18-ethics-safety-alignment, P19 = phases/19-capstone-projects. C15 
 - comment "then warn on low, else allow": C87/code/safety_gate.py:180-182
 
 ## Concepts: 指标
-- precision: C83/docs/en.md:79
-- recall: C83/docs/en.md:80
+- precision: C83/docs/en.md:80
+- recall: C83/docs/en.md:81
 - F1: C83/code/main.py:65
-- under-refusal: C84/docs/en.md:69
-- over-refusal: C84/docs/en.md:70
+- under-refusal: C84/docs/en.md:70
+- over-refusal: C84/docs/en.md:71
 - accuracy: C84/docs/en.md:35
 - ECE bins of tenths, weighted by bin size: C84/docs/en.md:37
-- ASR with budget and judge: P18/12-red-teaming-pair-automated-attacks/docs/en.md:100
+- ASR with budget and judge: P18/12-red-teaming-pair-automated-attacks/docs/en.md:94
 
 ## Concepts: 对齐失效模式
-- Goodhart: P18/02-reward-hacking-goodhart/docs/en.md:102
-- over-optimization: P18/02-reward-hacking-goodhart/docs/en.md:105
-- sycophancy: P18/04-sycophancy-rlhf-amplification/docs/en.md:116
-- trigger persistence: P18/07-sleeper-agents-persistent-deception/docs/en.md:95
-- alignment faking compliance gap: P18/09-alignment-faking/docs/en.md:99
-- Constitutional AI: P18/05-constitutional-ai-rlaif/docs/en.md:102
-- AI control trusted editing: P18/10-ai-control-subversion/docs/en.md:108-111
-- PGR: P18/11-scalable-oversight-weak-to-strong/docs/en.md:102
+- Goodhart: P18/02-reward-hacking-goodhart/docs/en.md:103
+- over-optimization: P18/02-reward-hacking-goodhart/docs/en.md:106
+- sycophancy: P18/04-sycophancy-rlhf-amplification/docs/en.md:110
+- trigger persistence: P18/07-sleeper-agents-persistent-deception/docs/en.md:89
+- alignment faking compliance gap: P18/09-alignment-faking/docs/en.md:93
+- Constitutional AI: P18/05-constitutional-ai-rlaif/docs/en.md:96
+- AI control trusted editing: P18/10-ai-control-subversion/docs/en.md:109-112
+- PGR: P18/11-scalable-oversight-weak-to-strong/docs/en.md:103
 
 ## 默认值与数字
 - block_confidence 0.85: C87/code/safety_gate.py:110, 161
@@ -70,8 +70,8 @@ P18 = phases/18-ethics-safety-alignment, P19 = phases/19-capstone-projects. C15 
 - n_bins 10: C84/code/main.py:89
 - leakage threshold 0.55: C85/code/classifiers.py:179; trigram overlap C85/docs/en.md:16, 47
 - max_words 800: C86/code/rules.yml:68
-- PAIR budget K 20: P18/12-red-teaming-pair-automated-attacks/docs/en.md:30
-- MSJ 256 shots: P18/13-many-shot-jailbreaking/docs/en.md:41
+- PAIR budget K 20: P18/12-red-teaming-pair-automated-attacks/docs/en.md:27
+- MSJ 256 shots: P18/13-many-shot-jailbreaking/docs/en.md:38
 
 ## 故障排查
 - regex misses paraphrase, families, normalize, measure: C83/docs/en.md:12, 16, 28
@@ -79,31 +79,31 @@ P18 = phases/18-ethics-safety-alignment, P19 = phases/19-capstone-projects. C15 
 - near zero ASR, adaptive attacks: P18/15-indirect-prompt-injection/docs/en.md:43-45
 - refuses chemistry homework, measure over-refusal: C84/docs/en.md:12
 - prefix injection survives post-hoc check: C87/docs/en.md:14
-- ASR budgets not comparable, name the judge: P18/12-red-teaming-pair-automated-attacks/docs/en.md:60, 100
-- 256 shots, classifier over full context: P18/13-many-shot-jailbreaking/docs/en.md:41, 55
-- input only moderation, layered: P18/29-moderation-systems-openai-perspective-llamaguard/docs/en.md:63, 67
+- ASR budgets not comparable, name the judge: P18/12-red-teaming-pair-automated-attacks/docs/en.md:57, 94
+- 256 shots, classifier over full context: P18/13-many-shot-jailbreaking/docs/en.md:38, 52
+- input only moderation, layered: P18/29-moderation-systems-openai-perspective-llamaguard/docs/en.md:60, 64
 
 ## 缩写 (glossary)
-- PAIR: P18/12-red-teaming-pair-automated-attacks/docs/en.md:98
-- GCG: P18/12-red-teaming-pair-automated-attacks/docs/en.md:99
-- TAP: P18/12-red-teaming-pair-automated-attacks/docs/en.md:104
-- MSJ: P18/13-many-shot-jailbreaking/docs/en.md:97
-- ArtPrompt: P18/14-ascii-art-visual-jailbreaks/docs/en.md:85
-- IPI: P18/15-indirect-prompt-injection/docs/en.md:87
-- IFC: P18/15-indirect-prompt-injection/docs/en.md:90
-- ECE: C84/docs/en.md:37, 71
+- PAIR: P18/12-red-teaming-pair-automated-attacks/docs/en.md:92
+- GCG: P18/12-red-teaming-pair-automated-attacks/docs/en.md:93
+- TAP: P18/12-red-teaming-pair-automated-attacks/docs/en.md:98
+- MSJ: P18/13-many-shot-jailbreaking/docs/en.md:91
+- ArtPrompt: P18/14-ascii-art-visual-jailbreaks/docs/en.md:86
+- IPI: P18/15-indirect-prompt-injection/docs/en.md:88
+- IFC: P18/15-indirect-prompt-injection/docs/en.md:91
+- ECE: C84/docs/en.md:37, 72
 
 ## 问答
 - taxonomy turns attacks into histogram and coverage chart: C82/docs/en.md:14
 - output classification, one-shot bypass: C85/docs/en.md:14
 - maximum severity, block wins, redact + warn is redact: C85/docs/en.md:43
-- PAIR black box, in-context feedback: P18/12-red-teaming-pair-automated-attacks/docs/en.md:44
-- MSJ same mechanism as ICL: P18/13-many-shot-jailbreaking/docs/en.md:47-49
+- PAIR black box, in-context feedback: P18/12-red-teaming-pair-automated-attacks/docs/en.md:41
+- MSJ same mechanism as ICL: P18/13-many-shot-jailbreaking/docs/en.md:44-46
 
 ## 提示
-- taxonomy id with every finding: C82/docs/en.md:71
+- taxonomy id with every finding: C82/docs/en.md:72
 - normalize first, keep raw prompt: C83/docs/en.md:24
 - constitution in YAML, version control, separate review: C86/docs/en.md:14
 - guard classifier on both sides: P18/16-red-team-tooling-garak-llamaguard-pyrit/docs/en.md:56
 - single turn probes nightly, multi-turn campaigns before release: P18/16-red-team-tooling-garak-llamaguard-pyrit/docs/en.md:52, 56
-- CVSS 4.0 per jailbreak: C15/docs/en.md:96
+- CVSS 4.0 per jailbreak: C15/docs/en.md:97

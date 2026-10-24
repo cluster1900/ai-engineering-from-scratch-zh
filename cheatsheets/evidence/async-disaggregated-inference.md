@@ -6,31 +6,31 @@ Abbreviations: H = phases/10-llms-from-scratch/22-async-hogwild-inference, M = p
 - Prefill compute-bound: D/docs/en.md:29
 - Decode memory-bandwidth-bound, reads full weights: D/docs/en.md:31
 - Hogwild! N workers, one shared cache: H/docs/en.md:27, 35
-- Emergent coordination without fine-tuning: H/docs/en.md:50, 183
+- Emergent coordination without fine-tuning: H/docs/en.md:50, 184
 - RoPE rotations keep shared cache valid: H/docs/en.md:58, 60
 - Disaggregation pools, KV transfer: D/docs/en.md:23
-- Cache-aware routing on prefix-hash match: M/docs/en.md:31, 114
+- Cache-aware routing on prefix-hash match: M/docs/en.md:28, 108
 - KV offloading to CPU DRAM then disk: L/docs/en.md:3
 
 ## 四种方法对比 (comparison)
-- What it does row: H/docs/en.md:27 (Hogwild!), D/docs/en.md:23 (disaggregation), M/docs/en.md:31 (routing), L/docs/en.md:112 (LMCache)
-- Wins when row: H/docs/en.md:84, D/docs/en.md:105, M/docs/en.md:45, L/docs/en.md:59
-- Loses when row: H/docs/en.md:90, D/docs/en.md:86, M/docs/en.md:54, L/docs/en.md:71
-- Number row: H/docs/en.md:78 (1.8x), D/docs/en.md:102 (~6x), M/docs/en.md:85 (80 ms vs 800 ms), L/docs/en.md:57 (3-5% overhead)
-- Status row: H/docs/en.md:97 (research April 2026), D/docs/en.md:56 (Dynamo 1.0 GA), D/docs/en.md:67 (llm-d 0.5), M/docs/en.md:33 (vLLM Router), M/docs/en.md:35 (llm-d router), L/docs/en.md:43 (0.11.0 async)
+- What it does row: H/docs/en.md:27 (Hogwild!), D/docs/en.md:23 (disaggregation), M/docs/en.md:28 (routing), L/docs/en.md:106 (LMCache)
+- Wins when row: H/docs/en.md:84, D/docs/en.md:105, M/docs/en.md:42, L/docs/en.md:56
+- Loses when row: H/docs/en.md:90, D/docs/en.md:86, M/docs/en.md:51, L/docs/en.md:68
+- Number row: H/docs/en.md:78 (1.8x), D/docs/en.md:102 (~6x), M/docs/en.md:82 (80 ms vs 800 ms), L/docs/en.md:54 (3-5% overhead)
+- Status row: H/docs/en.md:97 (research April 2026), D/docs/en.md:56 (Dynamo 1.0 GA), D/docs/en.md:67 (llm-d 0.5), M/docs/en.md:30 (vLLM Router), M/docs/en.md:32 (llm-d router), L/docs/en.md:40 (0.11.0 async)
 
 ## 分离式服务栈 (architecture)
 - Client node, request in and tokens out: D/docs/en.md:39, 49
-- Router node, cache-aware and consumes KV events: L/docs/en.md:31, M/docs/en.md:33
+- Router node, cache-aware and consumes KV events: L/docs/en.md:28, M/docs/en.md:30
 - Prefill pool node, compute-heavy, gets prompt only: D/docs/en.md:42, 45
 - Decode pool node, memory-heavy, receives KV over NIXL: D/docs/en.md:44-45
-- LMCache node on CPU DRAM + Ceph/S3: L/docs/en.md:49. Unused KV lands in it: L/docs/en.md:76
+- LMCache node on CPU DRAM + Ceph/S3: L/docs/en.md:46. Unused KV lands in it: L/docs/en.md:73
 
 ## 一次 Hogwild! 步骤 (flow)
 - 1 shared prompt: H/docs/en.md:41
-- 2 read the cache: H/docs/en.md:35, 132
-- 3 pick a different sub-goal: H/docs/en.md:41, 133; H/code/main.py:61-63
-- 4 write one token: H/docs/en.md:35, 134
+- 2 read the cache: H/docs/en.md:35, 133
+- 3 pick a different sub-goal: H/docs/en.md:41, 134; H/code/main.py:61-63
+- 4 write one token: H/docs/en.md:35, 135
 - 5 order by write arrival, no per-worker index: H/docs/en.md:37
 - 6 other workers see it immediately: H/docs/en.md:27
 
@@ -60,33 +60,33 @@ Abbreviations: H = phases/10-llms-from-scratch/22-async-hogwild-inference, M = p
 - KV_BLOCK_TOKENS 16: L/code/main.py:21
 
 ## 故障排查 (troubleshooting)
-- 8% hit rate, round-robin ALB: M/docs/en.md:19. Fix cache-aware router: M/docs/en.md:31
-- Replica refuses to start, missing tokenizer and quantization config: M/docs/en.md:23. Three-file manifest: M/docs/en.md:71-75
+- 8% hit rate, round-robin ALB: M/docs/en.md:17. Fix cache-aware router: M/docs/en.md:28
+- Replica refuses to start, missing tokenizer and quantization config: M/docs/en.md:21. Three-file manifest: M/docs/en.md:68-72
 - Short prompts, transfer tax: D/docs/en.md:52, 85
-- Same 2K prompt re-prefilled at 100% HBM: L/docs/en.md:19. Fix: L/docs/en.md:23, 47, 66
-- 440 ms round-trip, keep regional: M/docs/en.md:54
-- Residency: M/docs/en.md:81
-- Speedup below 1 without coordination, non-reasoning models: H/docs/en.md:146, 92
-- Under 1.3x revert: H/docs/en.md:156
+- Same 2K prompt re-prefilled at 100% HBM: L/docs/en.md:17. Fix: L/docs/en.md:21, 44, 63
+- 440 ms round-trip, keep regional: M/docs/en.md:51
+- Residency: M/docs/en.md:78
+- Speedup below 1 without coordination, non-reasoning models: H/docs/en.md:147, 92
+- Under 1.3x revert: H/docs/en.md:157
 
 ## 何时选用 (tips)
 - Dynamo for a managed stack-above orchestrator: D/docs/en.md:69
 - llm-d for Kubernetes-native primitives: D/docs/en.md:69
-- Native CPU offload when one engine has HBM pressure: L/docs/en.md:51
-- LMCache when many engines share prefixes: L/docs/en.md:51
+- Native CPU offload when one engine has HBM pressure: L/docs/en.md:48
+- LMCache when many engines share prefixes: L/docs/en.md:48
 - Hogwild! on one node only, cross-node latency disaster: H/docs/en.md:93
-- Push Hogwild! to N=4 only if two workers give over 1.5x: H/docs/en.md:157
+- Push Hogwild! to N=4 only if two workers give over 1.5x: H/docs/en.md:158
 
 ## 问答 (qa)
 - 20-80 ms for 4K-prompt KV on 70B FP8: D/docs/en.md:52, 106
-- 3x spec decode and 1.8x Hogwild! give 5.4x: H/docs/en.md:159
-- prefill_time + network_latency, 440 ms round-trip: M/docs/en.md:54
-- 32% DR failures from missing tokenizer/quant configs: M/docs/en.md:64-67, 87
+- 3x spec decode and 1.8x Hogwild! give 5.4x: H/docs/en.md:160
+- prefill_time + network_latency, 440 ms round-trip: M/docs/en.md:51
+- 32% DR failures from missing tokenizer/quant configs: M/docs/en.md:61-64, 84
 - 20-40% of GPU time wasted: D/docs/en.md:21
 
 ## 术语表 (glossary)
-- NIXL RDMA/InfiniBand or TCP fallback: D/docs/en.md:52, 133
-- RTT 75 ms US-EU, 220 ms US-APAC: M/docs/en.md:121
-- p parallelizable fraction: H/docs/en.md:185
-- c coordination overhead per worker: H/docs/en.md:184
-- UCCL llm-d 0.5 networking layer: D/docs/en.md:139
+- NIXL RDMA/InfiniBand or TCP fallback: D/docs/en.md:52, 134
+- RTT 75 ms US-EU, 220 ms US-APAC: M/docs/en.md:115
+- p parallelizable fraction: H/docs/en.md:186
+- c coordination overhead per worker: H/docs/en.md:185
+- UCCL llm-d 0.5 networking layer: D/docs/en.md:140

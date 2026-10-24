@@ -90,5 +90,5 @@ Abbreviations: A = phases/07-transformers-deep-dive/15-attention-variants, K = p
 - Attention sink, rows sum to 1, position 0: A/d:202
 - NSA, learned block sparsity, skip zero blocks at kernel level: A/d:200
 - DSA, Deepseek Sparse Attention, successor: N/d:139, 184
-- HBM ~3 TB/s on H100: K/d:66, 217
+- HBM ~3 TB/s on H100: K/d:66, 221
 - SRAM per-SM, ~30 TB/s: K/d:66, 218

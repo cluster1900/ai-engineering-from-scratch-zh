@@ -8,7 +8,7 @@ Abbreviations: L15 = phases/18-ethics-safety-alignment/15-indirect-prompt-inject
 - Near-zero ASR defenses broken to >90% by adaptive attacks, evaluate with adaptive attacks: L15/d:43-45
 - Exfiltration via CSP-approved domain, control three boundaries independently: L25/d:31, 41-46
 - All guardrails at the end, model already touched the world: L27/d:64. PVE on every tool call: L27/d:55
-- Overtrust of retrieved memory: L27/d:66. Memory-write guardrail refuses directive-shaped writes: L27/c:102-106, L27/d:102
+- Overtrust of retrieved memory: L27/d:66. Memory-write guardrail refuses directive-shaped writes: L27/c:102-106, L27/d:103
 - Single regex misses "disregard the prior", measure precision and recall: L83/d:12-14
 - load_taxonomy raises FileNotFoundError, "run lesson 82 main.py first": L83/c:162-166
 
@@ -50,10 +50,10 @@ Abbreviations: L15 = phases/18-ethics-safety-alignment/15-indirect-prompt-inject
 - Arbitrary tool use: L27/d:36
 
 ## 运行实验 (command-table, 7 rows)
-- 18.15 python3 code/main.py, naive, filter, IFC agents: L15/d:65, 73
-- 18.25 python3 code/main.py, trace with scope separation: L25/d:77, 85
-- 14.27 python3 code/main.py, per-call validator verdicts: L27/d:82-86
-- 19.83 python3 main.py, metrics and outputs/detector_report.json: L83/d:60
+- 18.15 python3 code/main.py, naive, filter, IFC agents: L15/d:66, 74
+- 18.25 python3 code/main.py, trace with scope separation: L25/d:78, 86
+- 14.27 python3 code/main.py, per-call validator verdicts: L27/d:83-87
+- 19.83 python3 main.py, metrics and outputs/detector_report.json: L83/d:61
 - --init learner workspace: FW/README.md:14
 - --stage 1 --path grades a stage: FW/README.md:15
 - --all --solution --strict checks the reference: FW/README.md:41, 45
@@ -69,7 +69,7 @@ Abbreviations: L15 = phases/18-ethics-safety-alignment/15-indirect-prompt-inject
 
 ## 分层注入检测器 (annotated-code, 8 lines)
 - Rule dict ignore-previous, instruction-override, 0.85, substring: L83/code/rules.py:8
-- Detector() compiles regex rules once: L83/c:123-135, 234, L83/d:52
+- Detector() compiles regex rules once: L83/c:123-135, 234, L83/d:53
 - detector.analyze on raw and normalized text: L83/c:137-139
 - v.category is the highest scoring category with its max score: L83/c:156-159, L83/d:20
 - normalize: zero-width, homoglyph, base64, hex, leet, rot13: L83/c:68-76
@@ -98,7 +98,7 @@ Abbreviations: L15 = phases/18-ethics-safety-alignment/15-indirect-prompt-inject
 
 ## 问题 (qa, 7 bullets)
 - User-input filters miss IPI, payload in retrieved content: L15/d:33
-- Benign instruction "please print Yes" defeats keyword filters: L15/d:3, 92
+- Benign instruction "please print Yes" defeats keyword filters: L15/d:3, 93
 - Three boundaries must be prevented independently: L25/d:46
 - Instruction-following alone is not enforcement: L27/d:65
 - Role comes from the trusted application, not the model: FW/solution/cli.rs:53, FW/stages/01-validate-an-unambiguous-call-envelope/docs/en.md:32

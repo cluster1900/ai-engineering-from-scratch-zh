@@ -16,15 +16,15 @@ Abbreviations: P15 = phases/15-autonomous-systems, P19 = phases/19-capstone-proj
 - Evaluator: correctness + benchmark L03/d:67. SWE-bench or Polyglot L04/d:23, 34. peer review (weak) L05/d:62. humans review results L06/d:49
 - Result: 48-mul 4x4 matmul L03/d:67. SWE-bench 20% to 50% L03/d:70, L04/d:14. ICLR 2025 workshop paper L05/d:16. AARs outperformed humans on weak-to-strong L06/d:25
 - Known failure: bounded by evaluator rigor L05/d:60. reward hacking L05/d:61. 42% experiment failures L05/d:25, 40. prescribed workflows degrade performance L06/d:35
-- Main control: held-out evaluator L03/d:55. evaluator firewall L04/d:106. Docker isolation and manual review L05/d:54. forum outside every sandbox L06/d:23
+- Main control: held-out evaluator L03/d:55. evaluator firewall L04/d:107. Docker isolation and manual review L05/d:54. forum outside every sandbox L06/d:23
 
 ## 运行课程模拟器 (command-table, 8)
 - L03 runs Run A then Run B: L03/c:188-203
 - --no-holdout skips Run A, train-only evaluator: L03/c:177-179, 188, 200
-- --reward-hack-allowed: L04/c:142, L04/d:77
-- --experiment-failure 0.20 --novelty-mislabel 0.10 override the baseline: L05/d:86, L05/c:155-158, 168-175
+- --reward-hack-allowed: L04/c:142, L04/d:78
+- --experiment-failure 0.20 --novelty-mislabel 0.10 override the baseline: L05/d:87, L05/c:155-158, 168-175
 - L06 fixed vs free and tamper demo: L06/c:153-157
-- --threshold 2.0 for C - A: L07/d:78, L07/c:88-89
+- --threshold 2.0 for C - A: L07/d:79, L07/c:88-89
 - --seed defaults 42 and 11: L05/c:17, 159. L07/c:17, 90
 - python main.py, budget $30: C05/c:9, 114, 182
 
@@ -32,11 +32,11 @@ Abbreviations: P15 = phases/15-autonomous-systems, P19 = phases/19-capstone-proj
 - 48 scalar multiplications, Strassen 1969 bound 49: L03/d:3, 16
 - Borg heuristic ~0.7% of cluster compute: L03/d:3
 - SWE-bench 20.0% to 50.0%, Polyglot 14.2% to 30.7%: L04/d:14
-- 2,294 Python test-fixing tasks from real GitHub issues: L04/d:34, 102
+- 2,294 Python test-fixing tasks from real GitHub issues: L04/d:34, 103
 - 42% of experiments failed from coding errors: L05/d:40
 - alignment faking 12% basic, up to 78% after retraining attempts: L07/d:3, 30
-- $30 hard budget per paper, $28.40 spent: C05/d:70, 110
-- 5 judges, mean < 4.0/5 returns to writer, hard stop after 3 rewrites: C05/d:90
+- $30 hard budget per paper, $28.40 spent: C05/d:66, 105
+- 5 judges, mean < 4.0/5 returns to writer, hard stop after 3 rewrites: C05/d:86
 
 ## 代码中的公式 (concepts, 6)
 - M(t) = C(t) - A(t), grows when r_c > r_a: L07/d:42
@@ -47,16 +47,16 @@ Abbreviations: P15 = phases/15-autonomous-systems, P19 = phases/19-capstone-proj
 - min(1.0, base + agent.hack_bonus) when hack allowed: L04/c:79-83
 
 ## 毕业项目研究智能体 (architecture, 9 nodes, 8 edges)
-- Seed idea + domain: C05/d:28
-- Literature search, 50 papers, FAISS cache: C05/d:31, 80
-- plan-execute-verify tree: C05/d:34
-- per-node sandbox, no network egress: C05/d:37-41
-- score nodes by novelty, quality, budget: C05/d:46
-- best branch to LaTeX writer: C05/d:49
-- compile + vision critique of PDF: C05/d:52, 144
-- reviewer ensemble, 5 LLM judges: C05/d:55
-- paper.pdf + review.md + trace.json: C05/d:58
-- mean 4.0 gate: C05/d:90
+- Seed idea + domain: C05/d:25
+- Literature search, 50 papers, FAISS cache: C05/d:28, 76
+- plan-execute-verify tree: C05/d:31
+- per-node sandbox, no network egress: C05/d:34-38
+- score nodes by novelty, quality, budget: C05/d:43
+- best branch to LaTeX writer: C05/d:46
+- compile + vision critique of PDF: C05/d:49, 136
+- reviewer ensemble, 5 LLM judges: C05/d:52
+- paper.pdf + review.md + trace.json: C05/d:55
+- mean 4.0 gate: C05/d:86
 
 ## 最佳优先树搜索 (annotated-code, 8 lines)
 - budget_weight = min(1.0, remaining_budget / 10.0): C05/c:37
@@ -69,10 +69,10 @@ Abbreviations: P15 = phases/15-autonomous-systems, P19 = phases/19-capstone-proj
 - best = max(done, key=lambda n: n.quality), walk back to root: C05/c:173-177
 
 ## 沙箱与运行（毕业项目） (annotated-code, 5 lines)
-- docker run --network=none --memory=8g --cpus=2 --pids-limit=256 --read-only: C05/d:84
-- no network egress, resource caps: C05/d:23, 37-39
-- ai-scientist run --seed ... --budget 30: C05/d:99
-- $30 per paper: C05/d:70
+- docker run --network=none --memory=8g --cpus=2 --pids-limit=256 --read-only: C05/d:80
+- no network egress, resource caps: C05/d:21, 34-36
+- ai-scientist run --seed ... --budget 30: C05/d:94
+- $30 per paper: C05/d:66
 
 ## 防篡改论坛（L06） (annotated-code, 5 lines)
 - rec.prev_hash = self.head(): L06/c:38
@@ -81,28 +81,28 @@ Abbreviations: P15 = phases/15-autonomous-systems, P19 = phases/19-capstone-proj
 - bad = tampered.verify(), returns indexes of tampered records: L06/c:44-45, 140
 
 ## 故障排查 (8)
-- train-only evaluator overfits, held-out inputs generated at evaluation time: L03/d:55, 86, L03/c:200, 209
+- train-only evaluator overfits, held-out inputs generated at evaluation time: L03/d:55, 87, L03/c:200, 209
 - reported above true, evaluator outside agent reach: L04/c:155-160, L04/d:51
 - hallucination markers removed, separate check agent cannot edit: L04/d:49, 51
 - polish masks weakness, evaluation must reach claims, human review gate: L05/d:42, 44, L05/c:198
 - established concepts flagged as novel, manual review of every submission: L05/d:41, 54
-- agents edit own logs, append-only out-of-sandbox forum: L06/d:23, 29, 89
+- agents edit own logs, append-only out-of-sandbox forum: L06/d:23, 29, 90
 - verify() flags, chain breaks at first edited record, out-of-sandbox backup: L06/c:140-144
-- gap crosses threshold, PAUSE flag, pause-on-gap: L07/c:61, 136-137, L07/d:74
+- gap crosses threshold, PAUSE flag, pause-on-gap: L07/c:61, 136-137, L07/d:75
 
 ## 术语表 (8)
-- MAP-elites: L03/d:109
-- Island model: L03/d:110
-- DGM: L04/d:100
-- AAR: L06/d:87
+- MAP-elites: L03/d:110
+- Island model: L03/d:111
+- DGM: L04/d:101
+- AAR: L06/d:88
 - RSI: L07/d:92
-- VLM critique: L05/d:99, 101
-- Evaluator firewall: L04/d:106
-- Reward hacking: L03/d:112
+- VLM critique: L05/d:100, 102
+- Evaluator firewall: L04/d:107
+- Reward hacking: L03/d:113
 
 ## 问答 (5)
 - evaluator fast, deterministic, hard to game: L03/d:36
 - nobody completed a proof for a non-trivial agent, empirical score: L04/d:12, 14, 57
-- free higher upside, fixed lower variance, free harder to audit: L06/c:156, L06/d:92
+- free higher upside, fixed lower variance, free harder to audit: L06/c:156, L06/d:93
 - Scenario C, higher alignment mean does not save you with surges: L07/c:135-136
 - AARs propose, humans commit: L06/d:51
