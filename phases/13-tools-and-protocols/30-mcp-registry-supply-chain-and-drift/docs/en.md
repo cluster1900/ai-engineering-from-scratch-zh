@@ -201,9 +201,9 @@ python3 code/main.py
 
 ```text
 Registry sync -> artifact verifier -> live discovery -> admission controller -> route table
-                                                |                 |
-                                                v                 v
-                                           evidence store    admission ledger
+                                               |                 |
+                                               v                 v
+                                          evidence store    admission ledger
 ```
 
 为上述各项任务分配互相隔离的最小权限身份：Registry 同步任务只需要元数据的只读权限；工件校验任务需要访问软件包的拉取权限；路由调和控制器则需要激活获批指纹的权限。没有任何一个组件需要掌握全部凭据。
