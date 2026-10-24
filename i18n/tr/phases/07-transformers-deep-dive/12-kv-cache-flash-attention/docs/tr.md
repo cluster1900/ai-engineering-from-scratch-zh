@@ -26,32 +26,32 @@ Dao et al.
 
 ### KV önbelleği matematik
 
-Her dekoder katmanı, her token, her baş:
+Her dekoder katmanı, her token, tüm KV başlıkları...
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
-Bir 7B modeli için 32 kat 32 baş = 128 fp16:
+对于一个7B 模型,32层、32头(全部用于K 和 V) 、d_head=128、fp16:
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 Llama 3 70B için 80 层、d_head=128、 8 KV başlarının GQA kullanmak:
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-Bu 10 GB'lık bir Llama 3 70B'nin 128K bağlamında, sadece 1 seri büyüklüğündeki KV kasesi 40 GB A100'in büyük kısmını oluşturacaktır.
+Bu 10 GiB 32K'de 128K'ye kadar büyüyecek ve 40 GiB'ye kadar büyüyecek.
 
-**GQA 是 KV-cache 的关键收益。**64 baş kullanmak için 32 GB gerekir.
+**GQA 是 KV-cache 的关键收益。**64 KV başlığı kullanılarak MHA'nın 8 katı, 32K'da 80 GiB'ye kadar basınç artırabilir.
 
 ### Akşam dikkat  kapaklama 技巧
 

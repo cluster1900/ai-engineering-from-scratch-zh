@@ -1,6 +1,6 @@
 # Dikkat 变体  Çıkanış Pencere, Sparse, Farklı
 
-> Tam Dikkat bir yuvarlaktir. Her bir token her bir token'ı görebilir, ve kayda bunun için bir ücret ödenir.
+> Tam Dikkat bir yuvarlaktır. Her bir token her bir token'ı görebilir, ve kayda değerleri ödenir.
 
 **Type:** Build
 **Languages:** Python

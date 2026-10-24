@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$- Kayıplar.
 - $A \approx 406$- Evet .$B \approx 411$- Evet.
 
-随着扩张,两个项会彼此权衡──在固定计算中($C = 6ND$) aşağı $N$求导并求解:
+随着扩张,两个项会彼此权衡──在固定计算中($C = 6ND$) aşağı $N$求导并求解──使用上述的 $\alpha$和 $\beta$- Evet .$N$Bu sayı yaklaşık 0.45.$D$Bu oran yaklaşık 0.55, bu nedenle en iyi oranlar bütçeyi yavaş yavaş hareket ettirir.`code/main.py` Grid arama yoluyla  find it  论文'ın ilk iki uyumlu yöntemi doğrudan en iyi ölçüm, iki gösterge de yaklaşık 0.5                                                                                                                                                                                                                                            $C = 6ND$Çıkış$D = 20N$,experiencia法则为:
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```
