@@ -46,7 +46,7 @@ Native Sparse Attention(Yuan et al., DeepSeek + PKU + UW, ACL 2025 best paper, a
 
 选择步骤 ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  ()  () )  () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () (
 
-NSA đã lật ngược điểm này: tập trung phân khúc nén Bản thân nó là tác động đến toàn bộ chuỗi có thể nhỏ gọn phân khúc chú ý.`top_k`操作在前向计算图 上是无运, nó chỉ kiểm soát những khối nào sẽ được tải từ内存.
+NSA đã lật ngược điểm này: tập trung phân tử nén Bản thân nó là tác dụng vào toàn bộ chuỗi có thể nhỏ gọn phân tử chú ý.`top_k`của index  chọn bản thân không nhận Gradient: nó chỉ kiểm soát những khối nào sẽ được tải từ trong bộ nhớ.
 
 Đó là lý do NSA có thể sử dụng từ đầu đến cuối để đào tạo trước.
 

@@ -11,7 +11,7 @@
 
 训练变压器 会为每层保存后退 中需要求导的每op的输入:注意输入、Q/K/V投影、软max 输出、FFN 输入、规范 输出,以及残存流──对于隐藏的尺寸为`d`、 chiều dài chuỗi 为 `L`、đối với ∙`B`Một tầng, đó là khoảng mỗi tầng.`12 * B * L * d`个浮点数.
 
- Đối với `d=8192, L=8192, B=1`, trong BF16 下 là 800 MB / layer. Một mô hình 64 lớp có giá trị kích hoạt là 51 GB, nó cũng không nhân bằng kích thước microbatch, cũng không thêm trung gian chú ý-softmax (đối với mỗi đầu)`L^2`), còn không có kế hoạch vào các bản sao phụ song thoáng.
+ Đối với `d=8192, L=8192, B=1`, khoảng 805M 个值, ở BF16 下 là 1.6 GB / layer。 Một mô hình 64 lớp có giá trị kích hoạt khoảng 103 GB, nó chưa nhân bằng kích thước microbatch, cũng không thêm trung gian độ nhẹ-thể thức`L^2`), còn không có kế hoạch vào các bản sao phụ song thoáng.
 
 Đây là một phần mềm:BF16 trọng lượng cộng với trạng thái tối ưu hóa có thể được đặt vào 80GB, nhưng giá trị kích hoạt sẽ khiến bạn vượt ra ngoài giới hạn.
 

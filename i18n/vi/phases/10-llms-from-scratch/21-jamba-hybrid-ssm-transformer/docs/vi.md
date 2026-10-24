@@ -74,10 +74,10 @@ Mamba layer 本身具有位置感知能力(通过递推) ―― nguyên thủy M
 
 对于 Jamba-1 形状(32层:28 Mamba + 4 Sự chú ý, ẩn 4096,32 đầu chú ý):
 
-- KV cache( chỉ chú ý các lớp): trong 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 8.4 GB`Chỉ có 4 lớp chú ý  đóng góp KV cache 👍
+- KV cache( chỉ chú ý các lớp): trong 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 16 GB`Chỉ có 4 lớp chú ý  đóng góp kho lưu trữ KV。 đã được phát hành Jamba trong các lớp này sử dụng 8 đầu KV của GQA, làm cho nó giảm xuống còn 4 GB, tức là số trong giấy Jamba。
 - SSM trạng thái: mỗi token tiền tố 为 `28 * hidden * state_size`, nhưng đây là từng tầng cố định, không theo chuỗi dài mở rộng.`28 * 4096 * 16 * 2 = 3.7 MB`
 
-Tương tự như 32 tầng 32 đầu đầy MHA của biến thể tinh khiết 相比: trong 256k BF16 下为`2 * 32 * 32 * 128 * 256k * 2 = 128 GB` KV cache  giảm 8x── ngay cả đối với hầu hết các 2024 模型使用的 GQA(8) cơ sở(`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`),Jamba's 1:7 hybrid ở 16 GB dưới vẫn nhỏ 2x.
+Tương tự như 32 tầng 32 đầu đầy MHA của biến thể tinh khiết 相比: trong 256k BF16 下为`2 * 32 * 32 * 128 * 256k * 2 = 128 GB` KV cache  giảm 8x── ngay cả đối với hầu hết các 2024 模型使用的 GQA(8) cơ sở(`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`),32 个 KV đầu của 1:7 hybrid trong 16 GB 下仍然小2x──已发布的Jamba为4 GB,小8x──
 
 Đó là những gì AI21 nói về  đơn张 80GB GPU trên 256k ngữ cảnh──full-MHA pure Transformer's KV cache 放不下; ngay cả khi GQA cơ sở cũng hầu như không cung cấp trọng lượng và kích hoạt 留空间; còn Jamba 可以──
 

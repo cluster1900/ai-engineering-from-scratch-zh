@@ -28,7 +28,7 @@ DeepSeek-V3 (Mỹ) sẽ thiết kế MTP 重新为序列模块, trong mỗi đ�
 
 ### MTP theo trình độ 配方
 
-DeepSeek-V3 trên mô hình chính`D`个 MTP mô-đun。 mỗi mô-đun `k`(từ đó `k = 1..D`)预测 độ sâu `k`Địa chỉ, cũng là trong định vị.`i`时预测 `t_{i+k}`
+DeepSeek-V3 trên mô hình chính`D`个 MTP mô-đun。 主模型预测 `t_{i+1}` Mỗi mô-đun `k`(từ đó `k = 1..D`)预测再往后 `k`步的标志 `t_{i+k+1}`, giả định là được xác định cho đến vị trí .`i`Đúng là "đúng"
 
 Module `k`包含:
 
@@ -49,13 +49,13 @@ h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMS
 dự đoán sâu 为:
 
 ```math
-\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
+\text{logits}_{i+k+1} = \mathop{\mathrm{Out}}(h_i^{(k)}) \quad \text{for } k = 1, \ldots, D
 ```
 
-Sự mất mát sâu sắc là đối với sự thật cơ bản.`t_{i+k}`của sự thâm nhập chéo:
+Sự mất mát sâu sắc là đối với sự thật cơ bản.`t_{i+k+1}`của sự thâm nhập chéo:
 
 ```math
-L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k+1}, t_{i+k+1})
 ```
 
 跨 độ sâu của mất khớp:
@@ -70,9 +70,9 @@ L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 
 Gloeckle ban đầu của song song MTP có D  đầu đầu ra, mỗi ứng dụng trực tiếp đến `h_i^(0)`Mỗi đầu đều ở trong cùng một trạng thái ẩn của xương sống.`t_{i+k}`n có thể tập luyện bình thường, nhưng những dự đoán này không được điều kiện lẫn nhau.`head_1`    `head_2`, những cái đầu này là những cái đầu của các con.
 
-DeepSeek-V3  thiết kế theo trình tự từ `h_i^(k-1)`加上 thực tế next-token nhúng `E(t_{i+k})` xây dựng `h_i^(k)`Điều này giữ lại chuỗi nguyên nhân: để dự đoán`t_{i+k+1}`, độ sâu `k+1`của mô-đun sẽ thấy`t_{i+k}`处的内容──这在结构上与自归解码器 消费自输出方式相同,因此MTP mô-đun có thể trực tiếp được sử dụng như các bản thảo giải mã phỏng đoán──
+DeepSeek-V3  thiết kế theo trình tự từ `h_i^(k-1)`加上 thực tế next-token nhúng `E(t_{i+k})` xây dựng `h_i^(k)`Điều này giữ lại chuỗi nguyên nhân: để dự đoán`t_{i+k+1}`, độ sâu `k`của mô-đun sẽ thấy`t_{i+k}`处的内容──这在结构上与自归解码器 消费自输出方式相同,因此MTP mô-đun có thể trực tiếp được sử dụng như các bản thảo giải mã phỏng đoán──
 
-推理时:将 `h_i^(k-1)`和草拟出 `t_{i+k}`输入 mô-đun `k+1`, nhận được đối với`t_{i+k+1}`Đây chính là bản thảo kiểu EAGLE, chỉ sử dụng mô-đun MTP được đào tạo tốt như một mạng lưới dự thảo. DeepSeek-V3 báo cáo tỷ lệ chấp nhận của mô-đun MTP đầu tiên vượt quá 80%, và đạt được khoảng 1.8x tăng tốc.
+推理时:将 `h_i^(k-1)`和草拟出 `t_{i+k}`输入 mô-đun `k`, nhận được đối với`t_{i+k+1}`Đây chính là bản thảo kiểu EAGLE, chỉ sử dụng mô-đun MTP được đào tạo tốt như một mạng lưới dự thảo. DeepSeek-V3 báo cáo tỷ lệ chấp nhận của mô-đun MTP đầu tiên vượt quá 80%, và đạt được khoảng 1.8x tăng tốc.
 
 ### 参数核算
 
@@ -142,7 +142,7 @@ Sự chú ý tự trị 加 MLP──在玩具中,一个单层线性注意区 �
 
 ### 步骤 5:Lạc sâu
 
-softmax(logits) 相对 bù đắp`k`处 thực tại token của cross-entropy。使用 `lambda / D`缩放因子跨深度 聚合──
+softmax(logits) 相对 bù đắp`k+1`处 thực tại token của cross-entropy。使用 `lambda / D`缩放因子跨深度 聚合──
 
 ### 步骤 6: Các số tính toán
 
@@ -177,18 +177,18 @@ Không phù hợp sử dụng:
 
 2. 计算一个密度70B 模型(隐藏 8192,80 层) 在D=1 MTP模块 下的参数开销――与 DeepSeek-V3 报告的 14B 开销进行比较――解释为什么 DeepSeek 的数字更高:MTP变压器块 继承了相同的MoE 结构,从而扩大了每个模块的参数――
 
-3. Trong trò chơi thực hiện D=2: thêm mô-đun MTP thứ hai, tiếp nhận $h^{(1)}$并预测 `t_{i+2}` Báo cáo về lỗ liên kết và tính toán số với các phương trình của DeepSeek giấy 19-21 匹配。
+3. Trong trò chơi thực hiện D=2: thêm mô-đun MTP thứ hai, tiếp nhận $h^{(1)}$并预测 `t_{i+3}` Báo cáo về lỗ liên kết và tính toán số với các phương trình của DeepSeek giấy 19-21 匹配。
 
 4. 将玩具换为平行MTP(Gloeckle-style): Trong trạng thái ẩn chính 之上添加D 个输出头,每个预测不同的抵消――测量在同一个合成信号上,每个深度的损失与序列版本相比如何――对于 k > 1,序列版本应产生更低的深度-k损失,因为它在中间预测为条件――
 
-5. Để đào tạo tốt mô-đun MTP sử dụng như EAGLE kiểu dự thảo:`t_{i+k}` Trong chuỗi được tổ chức trên, đo các mã dự thảo này tương đối với tỷ lệ chấp nhận của mô hình chính dự đoán  Nếu bạn đạt 50% + trên trò chơi, bạn đã có thể nhận được tính chất kinh nghiệm của MTP như dự thảo 
+5. Để đào tạo tốt mô-đun MTP sử dụng như EAGLE kiểu dự thảo:`t_{i+k+1}` Trong chuỗi được tổ chức trên, đo các mã dự thảo này tương đối với tỷ lệ chấp nhận của mô hình chính dự đoán  Nếu bạn đạt 50% + trên trò chơi, bạn đã có thể nhận được tính chất kinh nghiệm của MTP như dự thảo 
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | MTP module | “额外 loss block” | 一个小型 transformer block 加 projection，用来预测主模型前方 `k` 个位置的 Token |
-| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k}` |
+| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k+1}`（主模型为 depth 0，预测 `t_{i+1}`） |
 | Parallel MTP | “Gloeckle-style” | 位于同一个 backbone hidden state 之上的 D 个独立 heads，没有条件链 |
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |

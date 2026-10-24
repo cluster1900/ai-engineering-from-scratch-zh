@@ -16,7 +16,7 @@
 
 ## 问题
 
-标准 softmax Sự chú ý có một tính chất toán học, trong quy mô thay đổi lớn sẽ trở thành các rắc rối kỹ thuật.`q`, chú ý 权重是 `softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值 每个不匹配的代币都会得到一些正质量──这个残余质量就是噪音,并且会随着背景长度扩大── 在128k 个代币下,即使每个不匹配的代币只获得0.001%的概率,127,999 个代币 合并也会贡献约12%的总量──模型必须学会绕开一个随着背景 增长的噪音下限度──
+标准 softmax Sự chú ý có một tính chất toán học, trong quy mô thay đổi lớn sẽ trở thành các rắc rối kỹ thuật.`q`, chú ý 权重是 `softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值: mỗi token không phù hợp sẽ có một số chất lượng chính xác.  Các token không phù hợp sẽ có một số chất lượng chính xác.
 
 Trong thực tế, biểu hiện này là để chú ý đầu 干扰:long-context RAG trong 幻觉引用、100k-Token 检索任务中的 lost-in-the-middle 失败, cũng như kim ngạch-in-haystack benchmark trong hơn 32k 后出现细微精度下降.
 

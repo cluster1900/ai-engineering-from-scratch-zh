@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## Học mục tiêu
-- 将前十一课(tokenizer、data、pre-training、scaling、SFT、RLHF、DPO、CAI、eval、quantization、inference) 组合成一个可复现的管道规范
+- 将前十二课(两课 Tokenizer、数据、预训、规模、SFT、RLHF、DPO、CAI、eval、量化、推理) 组合成一个可复现的管道规范
 - 定义 các giai đoạn giữa hợp đồng tạo vật: mỗi giai đoạn tiêu thụ gì, sản xuất gì, và giai đoạn tiếp theo làm thế nào để xác nhận nhập khẩu
 - Xây dựng một trình diễn viên, để theo dõi các thí nghiệm, đối với các hiện vật, thực hiện hash, và dựa trên ngưỡng đánh giá quyết định liệu thông qua cổng phát hành
 -  thiết kế kế kế lật ngược: những đồ tạo vật nào có giá thấp để vận hành lại, những gì có giá cao, cũng như một điểm kiểm soát bị hư hỏng sẽ mang lại chi phí gì

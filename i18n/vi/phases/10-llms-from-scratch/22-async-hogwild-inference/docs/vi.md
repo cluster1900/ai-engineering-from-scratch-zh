@@ -55,7 +55,7 @@ Tên của bài viết này đã lấy từ Hogwild! SGD(Recht et al., 2011), m�
 
 ### RoPE  làm cho điều này trở nên khả thi
 
-Rotary Position Embeddings(RoPE, Su et al. 2021) thông qua quay giữa các vector Q và K 编码 thông tin vị trí.`i`写入 chia sẻ cache của vị trí `p`时,读取该职位的其他员工可以直接使用缓存输入不需要重转
+Rotary Position Embeddings(RoPE, Su et al. 2021) thông qua quay giữa các vector Q và K 编码 thông tin vị trí. Bởi vì điểm chú ý giữa truy vấn sau quay và khóa sau quay chỉ phụ thuộc vào khoảng cách tương đối của chúng, vì vậy toàn bộ khối các mục được lưu trữ có thể di chuyển đến vị trí mới và không cần phải tính lại: truy vấn quay, thay vì quay lại mỗi khóa lưu trữ.`i_q`của câu hỏi, cũng như trong quan điểm của công nhân bắt đầu từ`i_k`Các khối, yêu cầu theo khoảng cách`i_q - i_k`旋转── đây là cách mà mỗi người lao động theo thứ tự của mình nhìn thấy các khối cache chia sẻ── kỹ thuật này áp dụng cho sự chuyển động toàn bộ khối liên tục── chuyển các token đơn lẻ đến các vị trí khác nhau sẽ thay đổi sự xoay chuyển của chúng, vẫn cần phải tính lại──
 
 Trong mô hình learning-position hoặc absolute-position, Hogwild! 会在每次同时写时都需要缓存无效──RoPE 让缓存 保持稳定──
 

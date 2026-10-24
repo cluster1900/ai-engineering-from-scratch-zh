@@ -106,18 +106,18 @@ mtp_module: 1               (1 MTP module at depth 1)
 完整计算在 `code/main.py`中──核心结论:
 
 - Đêm:`vocab * hidden = 129280 * 7168 = ~0.93B`
-- 前 3 个 khối dày đặc:带 MLA 的注意( mỗi khối 约 144M) + khối dày đặc MLP( mỗi khối 约 260M) + tiêu chuẩn。 tổng计约 1.2B。
-- 58 khối ME:带 MLA 关注(约144M) + 256 专家(每约30M) + 1 专家共享(30M) + chuẩn mực;;按包含所有专家 计算,每块 总计约7.95B──58 专家 总计 461B──
-- MTP Module:14B:
+- 前 3 个密集块:带 MLA 的注意(按计算器的简化计数每块约84M) +密集SwiGLU MLP(每块 `3 * 7168 * 18432 = ~396M`(B) + các tiêu chuẩn.
+- 58 khối MoE:带 MLA  Attention(约84M) + 256 专家路由(每个 `3 * 7168 * 2048 = ~44M`+ 1 chuyên gia chia sẻ(约44M) + router + tiêu chuẩn──按包含所有专家 计算,每块约11.4B──58 个 MoE 块 总计约661B──
+- MTP module: đã được phát hành module 为 14B;; máy tính sử dụng khoảng 0.8B của density thay thế;;
 
-Tổng số: kiến trúc cốt lõi 约 476B + 14B MTP; và đã được phát hành 671B 数字还会单独计入额外结构参数(bias tensors、专家特定组件、共享专家规模等) ⋅ Chúng tôi trong máy tính tính có sự khác biệt giữa số và giá trị đã được phát hành trong khoảng 3-5% trong, sự khác biệt từ báo cáo DeepSeek  Phần 2 phụ lục trong ghi chép phân tích hạt nhân核算──
+Tổng số: máy tính nhận được khoảng 664B, trong khi số lượng đã được phát hành của mô hình chính là 671B. Điểm kiểm tra Hugging Face là 685B, vì nó đã gia nhập module MTP của 14B trên 671B. Khoảng 1% khác biệt từ đơn giản hóa: máy tính nhảy qua RoPE 维度, không được gắn đầu đầu ra và một số tensor nhỏ.
 
 Mỗi lần tiến lên của hoạt động:
 
-- Lưu ý: mỗi lớp 144M * 61 = 8.8B
-- MLP hoạt động:前 3 层密集(3 * 260M = 780M),58 个 MoE layer 中每层激活 8 个路由 + 1 个共享 +路由上海费――每层活跃 MLP 约 260M──总计:3 * 260M + 58 * 260M = ~15.9B──
-- Đáp nhập + chuẩn mực:1.2B。
-- 总活跃: khoảng 26B core + 14B MTP(trenage时使用,但推理时不总是运行)≈ 37B。
+- Lưu ý: mỗi lớp 84M * 61 = ~5.1B(tất cả các lớp 都会触发)
+- MLP hoạt động:前 3 层 dense`3 * 396M = ~1.2B`),58 个 MoE layer 中 mỗi layer kích hoạt 8 个 routed + 1 个 shared expert( mỗi layer `9 * 44M = ~396M`, tổng số 23B) ⋅ tổng số 24B⋅
+- Đáp nhập + chuẩn: khoảng 0,9B。
+- Tổng hoạt động: máy tính có khoảng 30B, và số đã được phát hành là 37B. Sự khác biệt chủ yếu là sự chú ý: MLA hoàn chỉnh với RoPE  chiều kích cũng như truy vấn rộng hơn và các đầu khóa, so với đơn giản hóa số lượng lớn hơn.
 
 ### 671B / 37B Ví dụ
 
