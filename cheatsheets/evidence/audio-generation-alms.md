@@ -80,7 +80,7 @@ Abbreviations: L09 = phases/06-speech-and-audio/09-music-generation, L10 = phase
 - mushy words, commercial API or fine-tune: L09/d:142
 - hallucinations on silence, Whisper encoder, VAD-gate: L10/d:160
 - past 10 minutes speaker attribution breaks, diarize first: L10/d:159
-- multi-audio random-chance level, 25%: L10/d:66, 158
+- multi-audio random-chance level, 25%: L10/d:66, 159
 - RVQ error accumulation, temperature 0 on higher layers: G11/d:89
 - artifacts at boundaries, careful overlap-add: G11/d:91
 
@@ -88,7 +88,7 @@ Abbreviations: L09 = phases/06-speech-and-audio/09-music-generation, L10 = phase
 - AutoProcessor.from_pretrained("Qwen/Qwen2.5-Omni-7B"): L10/d:95
 - model.generate(**inputs, max_new_tokens=200): L10/d:107
 - load_dataset("gamma-lab-umd/MMAU-Pro", split="test"): L10/d:133
-- evaluate_mmau_pro_comprehensive.py: L10/d:143
+- evaluate_mmau_pro_comprehensive.py: L10/d:144
 - window_frames(wave, 16000, 25, 10): M19/c:77
 - ttfab(cfg): M20/c:26
 - generate(counts, style, start, length, rng, temperature=1.0): G11/c:45

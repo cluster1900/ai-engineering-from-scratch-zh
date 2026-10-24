@@ -8,7 +8,7 @@ Abbreviations: P06 = phases/06-speech-and-audio. L04 = P06/04-speech-recognition
 - wer(ref, hyp): L04/c:50
 - chunk_schedule(600.0, chunk_s=30.0, stride_s=5.0), 10-min clip: L05/c:34, 86-87
 - TurnDetector(silence_hangover_ms=500, min_speech_ms=250): L14/c:39-40
-- LoraConfig(r=16, lora_alpha=32, target_modules=["q_proj", "v_proj"]): L05/d:116-117
+- LoraConfig(r=16, lora_alpha=32, target_modules=["q_proj", "v_proj"]): L05/d:117-118
 
 ## Whisper 内部结构 (architecture, 7 nodes, 6 edges)
 - Audio 16 kHz, clip/pad to 30 s: W07/d:28
@@ -21,24 +21,24 @@ Abbreviations: P06 = phases/06-speech-and-audio. L04 = P06/04-speech-recognition
 - prompt as decoder prefix: W07/d:44, 56
 
 ## 用 Whisper 转写 (annotated-code, 10 lines)
-- import whisper, load_model("large-v3-turbo"): L05/d:82-83
-- model.transcribe with language, task, temperature, condition_on_previous_text: L05/d:84-90
-- language="en" against LID drift: L04/d:154
+- import whisper, load_model("large-v3-turbo"): L05/d:83-84
+- model.transcribe with language, task, temperature, condition_on_previous_text: L05/d:85-91
+- language="en" against LID drift: L04/d:155
 - translate task gives English: L05/d:40
-- temperature=0.0 overrides the fallback chain: L05/d:96
-- prevents runaway repetition: L05/d:89
-- result["text"], result["segments"], seg start/end/text: L05/d:91-93
+- temperature=0.0 overrides the fallback chain: L05/d:97
+- prevents runaway repetition: L05/d:90
+- result["text"], result["segments"], seg start/end/text: L05/d:92-94
 
 ## 更快的运行时与 VAD (annotated-code, 7 lines)
-- from faster_whisper import WhisperModel, compute_type="int8_float16": W07/d:147-148
-- 4× faster: W07/d:187
-- model.transcribe("meeting.wav", vad_filter=True): W07/d:149
-- silero_vad import, load_silero_vad(): L14/d:74-76
-- get_speech_timestamps(... sampling_rate=16000, threshold=0.5, min_speech_duration_ms=250, min_silence_duration_ms=500, speech_pad_ms=300): L14/d:78-84
+- from faster_whisper import WhisperModel, compute_type="int8_float16": W07/d:148-149
+- 4× faster: W07/d:188
+- model.transcribe("meeting.wav", vad_filter=True): W07/d:150
+- silero_vad import, load_silero_vad(): L14/d:75-77
+- get_speech_timestamps(... sampling_rate=16000, threshold=0.5, min_speech_duration_ms=250, min_silence_duration_ms=500, speech_pad_ms=300): L14/d:79-85
 
 ## ASR 建模方式 (concepts, 7)
 - CTC per-frame tokens plus blank, no internal LM, non-autoregressive fast: L04/d:16, 26-28
-- greedy collapse repeats, drop blanks, a a _ _ a b b _ c to a a b c: L04/d:72
+- greedy collapse repeats, drop blanks, a a _ _ a b b _ c to a a b c: L04/d:73
 - RNN-T predictor + joiner, streamable, internal LM: L04/d:30-32
 - attention enc-dec best offline, cannot stream without engineering: L04/d:36
 - WER (S + D + I) / N, above 20% unusable, below 5% human parity: L04/d:40
@@ -46,11 +46,11 @@ Abbreviations: P06 = phases/06-speech-and-audio. L04 = P06/04-speech-recognition
 - prompt tokens startoftranscript, en, transcribe/translate, notimestamps: L05/d:36-41
 
 ## 默认值 (defaults, 7)
-- temperature 0.0, fallback chain: L05/d:96
-- condition_on_previous_text False, cascading hallucination: L05/d:96
-- no_speech_threshold 0.6 silence detection: L05/d:96
+- temperature 0.0, fallback chain: L05/d:97
+- condition_on_previous_text False, cascading hallucination: L05/d:97
+- no_speech_threshold 0.6 silence detection: L05/d:97
 - Silero threshold 0.5 default, 0.3 sensitive: L14/d:34
-- min speech 250 ms, coughs or chair noise: L14/d:35, 81
+- min speech 250 ms, coughs or chair noise: L14/d:35, 82
 - silence hangover 500-800 ms, too short interrupts, too long sluggish: L14/d:36
 - pre-roll 300-500 ms, prevents "hey" being clipped: L14/d:37
 
@@ -79,12 +79,12 @@ Abbreviations: P06 = phases/06-speech-and-audio. L04 = P06/04-speech-recognition
 - --review-file edited transcript.json: S/pipeline.py:73-77
 
 ## 故障排查 (troubleshooting, 8)
-- "Thanks for watching!" on silence, VAD-gate: L04/d:152, L05/d:158
-- LID drift to Japanese or Welsh, force language="en": L04/d:154
-- condition_on_previous_text cascade, set False: L05/d:159
-- short clip padded to 30 s, pad=False or VAD-gate: L05/d:160
-- librosa mels, whisper.audio.log_mel_spectrogram: L05/d:161
-- too-short hangover interrupts, 500-800 ms, semantic endpointing: L14/d:143, 146
+- "Thanks for watching!" on silence, VAD-gate: L04/d:153, L05/d:159
+- LID drift to Japanese or Welsh, force language="en": L04/d:155
+- condition_on_previous_text cascade, set False: L05/d:160
+- short clip padded to 30 s, pad=False or VAD-gate: L05/d:161
+- librosa mels, whisper.audio.log_mel_spectrogram: L05/d:162
+- too-short hangover interrupts, 500-800 ms, semantic endpointing: L14/d:144, 147
 - "16-bit mono PCM required": S/pcm.py:20, convert with ffmpeg: PJ/README.md:29-32
 - "Remote endpoints require HTTPS", HTTP only for loopback: S/provider.py:54-55, PJ/README.md:27
 
