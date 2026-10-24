@@ -60,30 +60,46 @@ test('an evidence line past the end of the file fails', () => {
   assert.match(r.out, /is outside/);
 });
 
-test('an evidence range that ends on a blank line fails', () => {
-  const dir = tree();
+// Stretch one full-path .md ref so that its range starts or ends on a blank line
+// of the cited file, and expect the audit to name that sheet and that end.
+function blankRangeCase(dir, which) {
   const evDir = path.join(dir, 'cheatsheets', 'evidence');
-  const pending = fs.readFileSync(path.join(dir, 'site', 'cheatsheet-evidence.js'), 'utf8');
-  // Find a sheet that is not on the pending list and cites a full repo path, then
-  // stretch that ref to end on a blank line of the cited file.
   for (const name of fs.readdirSync(evDir).sort()) {
-    if (pending.includes(`'${name.replace(/\.md$/, '')}',`)) continue;
     const file = path.join(evDir, name);
     const text = fs.readFileSync(file, 'utf8');
     const match = text.match(/((?:phases|manuals)\/[A-Za-z0-9_.\-/]+\.md):(\d+)(?![\d-])/);
     if (!match) continue;
     const lines = fs.readFileSync(path.join(dir, match[1]), 'utf8').split('\n');
-    const start = Number(match[2]);
-    const blank = lines.findIndex((line, i) => i >= start && !line.trim()) + 1;
-    if (blank <= start) continue;
-    fs.writeFileSync(file, text.replace(match[0], `${match[1]}:${start}-${blank}`));
+    const at = Number(match[2]);
+    if (!lines[at - 1].trim()) continue;
+    let range;
+    if (which === 'ends') {
+      const blank = lines.findIndex((line, i) => i >= at && !line.trim()) + 1;
+      if (blank <= at) continue;
+      range = `${at}-${blank}`;
+    } else {
+      let blank = 0;
+      for (let i = at - 1; i >= 1; i--) if (!lines[i - 1].trim()) { blank = i; break; }
+      if (!blank) continue;
+      range = `${blank}-${at}`;
+    }
+    fs.writeFileSync(file, text.replace(match[0], `${match[1]}:${range}`));
+    return { name, range };
+  }
+  assert.fail('no evidence file cites a full .md path with a blank line nearby');
+}
+
+for (const which of ['ends', 'starts']) {
+  test(`an evidence range that ${which} on a blank line fails`, () => {
+    const dir = tree();
+    const before = run(dir);
+    assert.strictEqual(before.code, 0, before.out);
+    const { name, range } = blankRangeCase(dir, which);
     const r = run(dir);
     assert.strictEqual(r.code, 1, r.out);
-    assert.match(r.out, new RegExp(`${name}: .*ends on a blank line`));
-    return;
-  }
-  assert.fail('no sheet outside the pending list cites a full .md path');
-});
+    assert.match(r.out, new RegExp(`${name}: .*:${range} ${which} on a blank line`));
+  });
+}
 
 test('a translated evidence title fails', () => {
   const dir = tree();
