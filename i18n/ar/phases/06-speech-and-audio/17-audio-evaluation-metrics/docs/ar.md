@@ -45,7 +45,7 @@
 
 **SECS (Speaker Encoder Cosine Similarity)。**تستخدم لتقليد الصوت.
 
-**WER-on-ASR-round-trip。**في TTS 输出上运行 فيسر,并相对于输入文本计算 WER──用于捕捉可理解度回归──2026 SOTA:&lt;2% CER──
+**WER-on-ASR-round-trip。**في TTS 输出上运行 فيسر,并相对于输入文本计算 WER──用于捕捉可理解度回退──2026 SOTA: English test sets 上 &lt; 2% WER(مجموعات اختبار الماندرين 改为报告 CER)。
 
 **TTFA (time-to-first-audio)。**端到端延迟── كوكورو-82M: ~100 ms; F5-TTS: ~1 ثانية──
 
@@ -79,7 +79,7 @@
 
 **CLAP Score。**استخدام CLAP Embedding 的文本-音频对齐分数──&gt; 0.3 = 合理对齐──
 
-**Listening panel MOS。**بالنسبة للموسيقى المستهلكة، لا يزال الحكم النهائي.
+**Listening panel MOS。**بالنسبة إلى مستوى الاستهلاك للموسيقى لا يزال الحكم النهائي.
 
 ### مقياس اللغة الصوتية
 

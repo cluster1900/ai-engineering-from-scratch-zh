@@ -36,9 +36,9 @@
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` علامة اللغة؛ إضطراب الترجمة مقابل النسخة 行为──
-- `<|transcribe|>`أو`<|translate|>` من إدخال لغة إرادي 翻译为英语输出,或逐字转写。
-- `<|notimestamps|>` 跳过 word-level timestamps (((更快) 💚
+- `<|en|>`: اللغة علامة؛指明音频中所言的语言──省略时 Whisper 会先检测语言──
+- `<|transcribe|>`أو`<|translate|>`: task tag;以源语言转写语音,或将其翻译为 英文──
+- `<|notimestamps|>`:跳过 word-level timestamps ((更快) 』
 
 بسرعة 让一个模型能够完成很多任务──把 `<|en|>`改成 `<|fr|>`، سوف تُرجّع إلى الفرنسية
 
