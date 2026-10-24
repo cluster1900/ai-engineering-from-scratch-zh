@@ -9,9 +9,19 @@ const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
+// Every temp tree is a full copy of the sheets and lessons (about 11k files), so
+// remove each one after its test, and any left over when the file ends.
+const TREES = new Set();
+function cleanTrees() {
+  for (const dir of TREES) fs.rmSync(dir, { recursive: true, force: true });
+  TREES.clear();
+}
+test.afterEach(cleanTrees);
+test.after(cleanTrees);
 
 function tree() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cs-'));
+  TREES.add(dir);
   for (const part of ['cheatsheets', 'manuals', 'phases', 'projects', 'site/cheatsheet-evidence.js', 'scripts/audit_cheatsheets.js']) {
     if (fs.existsSync(path.join(ROOT, part))) fs.cpSync(path.join(ROOT, part), path.join(dir, part), { recursive: true });
   }
