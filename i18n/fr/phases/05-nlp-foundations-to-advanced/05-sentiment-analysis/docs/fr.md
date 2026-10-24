@@ -201,7 +201,7 @@ pipe.fit(X_train, y_train)
 print(pipe.score(X_test, y_test))
 ```
 
-Attention à trois choses.`stop_words=None`Je vais garder le mot négatif.`ngram_range=(1, 2)`J'ai fait une petite partie de la série.`not_good`成为一个特征──`sublinear_tf=True`Ces trois signes, souvent, sont les mêmes que les SST-2 sur la ligne de référence de 75% et la ligne de référence de 85%.
+Attention à trois choses.`stop_words=None`Je vais garder le mot négatif.`ngram_range=(1, 2)`J'ai fait une petite partie de la série.`not good`成为一个特征(skikit-learn 用空格连接两个词)`sublinear_tf=True`Ces trois signes, souvent, sont les mêmes que les SST-2 sur la ligne de référence de 75% et la ligne de référence de 85%.
 
 ### 什么时候该使用变压器
 

@@ -68,21 +68,21 @@ PATTERNS = [
 
 Regardez !`code/main.py`Le modèle d'écoute est toujours présent dans les pipelines spécifiques à un domaine, car il est modifiable.
 
-### 步骤 2: Une classification de la surveillance
+### 步骤 2: Une surveillance de la relation
 
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tok = AutoTokenizer.from_pretrained("Babelscape/rebel-large")
-model = AutoModelForSequenceClassification.from_pretrained("Babelscape/rebel-large")
+model = AutoModelForSeq2SeqLM.from_pretrained("Babelscape/rebel-large")
 
 text = "Tim Cook was born in Alabama. He later became CEO of Apple."
 encoded = tok(text, return_tensors="pt", truncation=True)
 output = model.generate(**encoded, max_length=200)
-triples = tok.batch_decode(output, skip_special_tokens=False)
+decoded = tok.batch_decode(output, skip_special_tokens=False)
 ```
 
-REBEL est un extracteur de relation de séquence:输入 text,输出 triples, et déjà utilisé les ids de propriété de Wikidata. Il est dans les données de supervision à distance.
+REBEL est un extracteur de relation de séquence basé sur BART: il génère des triples, plutôt que des paires d'entités faire des分类──`<triplet>`- Je suis là.`<subj>`et `<obj>`标记, donc besoin de suivre ces标记切分(如模型卡的解析器 所做) `(subject, relation, object)`Il est dans les données de surveillance à distance, à la fine pointe.
 
 ### 步骤 3: extraction de l'ancrage avec une MLL
 

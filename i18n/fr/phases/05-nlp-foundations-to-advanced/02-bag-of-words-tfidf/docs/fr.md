@@ -124,7 +124,7 @@ def tfidf(bow_matrix):
 >>> tfidf(bow)
 ```
 
-Il y a trois mots, cinq expressions.`the`- Je suis là.`cat`- Je suis là.`sat`- Je suis là.`dog`- Je suis là.`ran`)。`the`Il est présent dans tous les trois archives, donc son IDF est bas.`dog`Il n'apparaît qu'une seule fois, donc ses IDF 高──这些矢量是稀疏的──大多数条目都很小),判别性词会凸显──
+Il y a trois mots, cinq expressions.`the`- Je suis là.`cat`- Je suis là.`sat`- Je suis là.`dog`- Je suis là.`ran`)。`the`Il est présent dans tous les trois archives, donc son IDF est bas.`dog`Il n'apparaît qu'une seule fois, donc dans le vocabulaire réel de ses milliers de mots, ces vecteurs sont rares.
 
 ### 步骤 5: L2- normaliser les lignes
 

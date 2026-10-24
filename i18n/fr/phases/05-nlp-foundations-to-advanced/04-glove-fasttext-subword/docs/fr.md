@@ -25,7 +25,7 @@ Cette classe va expliquer ces trois-là, puis expliquer quand choisir lequel.
 
 **FastText。**Un mot est son caractère n-grammes, plus le mot lui-même est son ensemble.`where`变成 `<wh, whe, her, ere, re>, <where>`◊词 Vector is these composing Vector 总和──按 Word2Vec的方式训练──好处:未见过的词(`whereupon`) peut être composé de n-grammes connus.
 
-**BPE (Byte-Pair Encoding)。**Le vocabulaire de chaque paire de mots est un autre type de mot.`k`Résultat: obtenir un contenu`k + 256`个 Token 的词汇库,其中高频序列(`ing`- Je suis là.`tion`- Je suis là.`the`) est un seul jeton, rares mots seront démoli en morceaux mûrs.
+**BPE (Byte-Pair Encoding)。**Le vocabulaire de chaque paire de mots est un autre type de mot.`k`Résultat: obtenu par le symbole de base`k`次合并组成的词汇(从字节 开始时为 `k + 256`个 Token), parmi lesquels高频序列(`ing`- Je suis là.`tion`- Je suis là.`the`) est un seul jeton, rares mots seront démoli en morceaux mûrs.
 
 
 ```figure
