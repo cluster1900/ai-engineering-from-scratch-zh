@@ -125,7 +125,7 @@ mm-agent-loop
 ## Usalo
 `code/main.py`Es un andamio de piedra angular:
 
-- Esquema de acción de JSON 定义(10 个 acciones)。
+- Esquema de acción de JSON  definición(10 个 acciones: 上列出的九个,加上 crop + zoom 工具 `screenshot_region`)。
 - Como dictado de estado de navegador simulado.
 - El esqueleto de la bucle de agente:recibe estado, emite acción, aplica, bucle.
 - 10-task mini-benchmark (páginas sintéticas), para medir la tasa de éxito de extremo a extremo.
@@ -135,7 +135,7 @@ mm-agent-loop
 本课 生成 `outputs/skill-multimodal-agent-designer.md` determinar un producto de uso informático (dominio, conjunto de acciones, objetivo de evaluación), diseñar un ciclo completo de agentes, estrategia de memoria, modo de enraizamiento y puntuación de referencia esperada.
 
 ##  ejercicios
-1. Uso `screenshot_region`herramienta ((cultura + zoom) ampliar el esquema de acción―¿Qué tareas se beneficiarán?
+1. El esquema del código se ha incorporado a las nueve acciones centrales .`screenshot_region`¿Qué tareas se beneficiarán?
 
 2. 阅读 AgentVista(arXiv:2602.23166)。 describe la categoría de tareas más difíciles, así como por qué los modelos fronterizos  siguen fracasando―
 

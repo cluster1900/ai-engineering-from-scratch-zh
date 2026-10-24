@@ -19,7 +19,7 @@ Un modelo multimodal unificado  fácil de afirmar, pero muy difícil de escalar 
 工程挑战:
 
 - Cada modalidad debe tener un Tokenizer, comprimirlo para que se acerque lo suficiente a los sin pérdidas para reconstruir, y generar Token a la velocidad de consumo del Transformer.
-- 单一词汇 必须为文本(32k+) 图像(16k+) 语音(4k+) 音乐(8k+) distribución espacio──最低也需要四万多条目──
+- 单一词汇 必须为文本(32k+) 图像(8k+) 语音(4k+) 音乐(8k+) distribución espacio──最低也需要五万多条目──
 - 训练数据必须覆盖每种输出输入对 (text→image、image→speech、speech→image等),或者模型必须能够组合──
 - Inferencia 必须足足足快地流 输出 Token,以满足对话延迟 ((<500ms tiempo-a-primero-bio-audio) ]]
 
@@ -29,21 +29,21 @@ Un modelo multimodal unificado  fácil de afirmar, pero muy difícil de escalar 
 MIO de la pila de Tokenizer:
 
 - Texto: estándar BPE, vocab ~32000。
-- Imagen:SEED-Tokenizer (2023)  带离散代码簿 的量化VAE,4096 条目,每张图像 32x32 个代码.
-- Discurso:Discurso Tokenizer residual-VQ (2023)  将 16kHz waveform 编码为 8 层级代码书;第一层是粗粒度内容,后续层加入 prosody 和扬声器身份──
-- Música: similar similar a residual-VQ(Meta de la familia MusicGen / Encodec),4-8 个 código libros。
+- Imagen:SEED-Tokenizer (2023), un tokenizador de imagen separado, código de código tiene 8192 条目, cada张图像输出 32 个代币──
+- Discurso:SpeechTokenizer residual-VQ (2023), será de 16 kHz forma de onda 编码为 8 层级代码书; primer nivel es grueso粒度内容,后续层加入 prosody 和扬声器身份──MIO 保留内容层和前三个 timbre 层,每层 1024 个代码,因此共 4096 个语音ID──
+- Música: similar a residual-VQ(Meta de MusicGen / familia Encodec),4-8 个代码书──MIO 本身没有音乐 Tokenizer(Su cuarta modalidad es el vídeo, en forma de Tokenizer de imagen);本课的玩具 加入音乐, es para mostrar la nueva modalidad 如何占用一段 ID 范围──
 
 Cada modalidad produce un número total de tokens. Estos tokens obtienen rangos de identidades no superpuestos entre sí en el vocabulario compartido:
 
 ```
 text:   0..31999
-image:  32000..36095  (4096 image tokens)
-speech: 36096..40191  (4096 speech base tokens, plus residual layers)
-music:  40192..48383  (8192 music tokens)
-sep:    48384..48390  (<image>, <speech>, <music>, </...>, etc.)
+image:  32000..40191  (8192 image tokens)
+speech: 40192..44287  (4 codebooks x 1024 speech tokens)
+music:  44288..52479  (8192 music tokens, the toy's extension)
+sep:    52480..52485  (<image>, <speech>, <music>, </...>)
 ```
 
-总计: aproximadamente 48k vocabulario──input Embedding 和 output projection 覆盖全部条目──
+总计: aproximadamente 52k vocabulario──input Embedding 和 output projection 覆盖全部条目──
 
 ### Descódigo de transmisión
 
@@ -54,7 +54,7 @@ En streaming 模式:
 1. Usuario en tiempo real Tokenizer audio cada 50 ms  Emite voz Token
 2. MIO en Token hasta el momento de consumirlos
 3. Token de salida 随生成流式输出; decodificador de voz paralelo 以约50-150ms 延迟将其转换为音频样本──
-4. Tiempo a primer byte de audio:MIO papel Medio de 300-500ms, cerca de 250ms de GPT-4o
+4. Tiempo a primer byte de audio: MIO papel 没有报告延迟数字──按下文的预算, este diseño es mejor de unos 300ms, frente a unos 250ms de GPT-4o──
 
 Mini-Omni (arXiv:2408.16725) ✓ GLM-4-Voice (arXiv:2412.02612) y Moshi (arXiv:2410.00037) son diseños de transmisión de voz-LLM complementarios.
 
@@ -97,7 +97,7 @@ Para un producto de diálogo, el retraso de cada componente es importante:
 - La primera salida Token: ~ 50ms
 - Descóder de voz paralelo residual-VQ +: ~ 100-150 ms。
 
-总时间-to-first-audio-byte:最低约 ~300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──根据公开基准,MIO/AnyGPT 位于400-600ms 范围──
+总时间到第一音频字节:最低约 ~300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──MIO 和 AnyGPT 都没有公布实测数字, por lo tanto, por favor, considere este presupuesto como una estimación, y no como un punto de referencia──
 
 ### ¿Por qué cualquier-a-alguno  todavía difícil
 
@@ -129,7 +129,7 @@ any-to-any-stream
 
 2. SpeechTokenizer residual-VQ utiliza 8 libros de código, explica por qué los niveles de residuos paralelas de decodificación son necesarios, así como lo que trae el retraso de la conservación.
 
-3. Tu vocabulario tiene 32k de texto + 4k de imagen + 4k de habla. Añade 8k de música y aproximadamente 10 separadores.
+3. Tu vocabulario tiene 32k de texto + 8k de imagen + 4k de habla. Añade música 8k y aproximadamente 10 separadores.
 
 4. ¿Qué tipo de problemas se beneficiarán? ¿Qué tipo de problemas se verán perjudicados?
 
@@ -140,7 +140,7 @@ any-to-any-stream
 |------|-----------------|------------------------|
 | Any-to-any | "Multimodal in/out" | 一个单一模型，能够在任意方向接受并发出 text、image、speech 和 music |
 | Residual-VQ | "Speech tokenizer stack" | Multi-codebook Tokenization，每一层都添加信息；base layer 是内容，后续层是 prosody |
-| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 4096-entry codebook |
+| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 8192-entry codebook，每张图像 32 个 Token |
 | Chain-of-visual-thought | "Visual scratchpad" | 模型在最终答案前生成一张中间图像作为 reasoning step |
 | Time-to-first-audio-byte | "TTFAB" | 从用户语音到第一个 audio output 的延迟；<500ms 才有对话感 |
 | Four-stage curriculum | "Training recipe" | Alignment -> interleaved -> speech-enhanced -> SFT，按此顺序 |

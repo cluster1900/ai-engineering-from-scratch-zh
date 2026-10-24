@@ -1,6 +1,6 @@
 # LLaVA-OneVision: una sola imagen en un modelo, varias imágenes y videos
 
-> En LLaVA-OneVision, Li et al., agosto de 2024, se inauguró el VLM World has a una gama de modelos separados entre sí: para modelos de imágenes únicas LLaVA-1.5, como Mantis y VILA, así como modelos de imágenes múltiples, como Video-LLaVA y Video-LLaMA. Cada uno ganó su propio punto de referencia, pero fracasó en otros escenarios.
+> En LLaVA-OneVision, Li et al., agosto de 2024, se inauguró VLM World has a una gama de modelos separados entre sí: para modelos de imágenes únicas LLaVA-1.5, como Mantis y VILA, así como modelos de video como Video-LLaVA y Video-LLaMA. Cada uno ganó su propio punto de referencia, pero fracasó en otros escenarios.
 
 **Type:** Build
 **Languages:** Python (stdlib, token budget solver + curriculum planner)
@@ -8,7 +8,7 @@
 **Time:** ~180 minutes
 
 ## El objetivo del aprendizaje
--  diseñar una en un solo retrato 多图像和视频输入之间保持恒定视觉代币 预算。
+- Diseñar una imagen equilibrada entre una sola imagen, varias imágenes y entradas de vídeo.
 - 排列一个训练课程, hacer que las habilidades de un solo retrato se transfieran al video, al mismo tiempo que evitan el olvido catastrófico.
 - Explica por qué, bajo la misma escala de parámetros, si el plan de estudios se hace correctamente, un modelo único ganará al modelo especialista.
 - Explicar las tres capacidades emergentes de LLaVA-OneVision  informes: razonamiento multi-camera Promulgación de marcas Agent de capturas de pantalla del iPhone
@@ -29,13 +29,13 @@ En OneVision  previo, la respuesta está en que entrenar una escena, ignorar otr
 ## 概念
 ### Token de OneVision  presupuesto
 
-LLaVA-OneVision  seleccionó un conjunto de tokens de visión  presupuesto, cada muestra de aproximadamente 3000-4000 tokens, y distribuido según las diferentes situaciones:
+LLaVA-OneVision no fija un número de tokens definido. Equilibra el número de tokens de visión más grande de cada muestra, haciendo que tres escenarios caigan en el mismo rango, aproximadamente 6.000 a 9.000 Tokens, y distribuidos según diferentes escenarios:
 
-- 单图像:AnyRes-9(3x3 azulejos + miniatura), cada azulejo es 384, contiene 729 parches, uso de un pooling bilinear de 2x2 activado → Cada azulejo 182 个 Token。总计:9 * 182 + 182 = 1820 个 Token。或 AnyRes-4, cada azulejo 729 个 Token = 2916 + 729。
-- Más imágenes: por cada imagen uso en la resolución media (en inglés)
-- 视频:32 ,384 分辨率,使用激进的 3x3 bilinear pool → 每 81 个代币──总计:32 * 81 = 2592 个代币──
+- 单图像:AnyRes-Max-9(máximo 9 个 ?? 个加一个基视图), cada 384x384 vista 经 SigLIP SO400M 得到 729 个 ?? 个 ?? 个 ?? 个: 729 * (1 + 9) = 7290 个 ?? 个 ?? 个:
+- Más imágenes: cada imagen utiliza 384, no teje, 729 Token, no agrupar.
+- 视频: maximum 32 ,384 分辨率, usando conjuntos bilineares 2x2 → Cada  196 个代币──总计:32 * 196 = 6272 个代币──
 
-Esta distribución hace que el total de tokens número de grandes cantidades se mantenga constante. LLM nunca verá el lote de contexto de la explosión.
+Esta distribución permite que el mayor número total se encuentre en la misma zona, por lo que no hay ningún escenario que domine el contexto o la escala.`code/main.py`规划器 utiliza un presupuesto de juguete más pequeño 4096, para mostrar la misma lógica de equilibrio.
 
 ### Tres fases del currículo
 
@@ -106,13 +106,13 @@ Usalo para planificar la perfección de OneVision o hacer un control de cordura 
 
 4. ¿Puede esto ampliarse a 30 segundos de video de tiempo de cálculo? ¿La primera pregunta que surge es el presupuesto de token o el tiempo de cálculo?
 
-5. Para realizar el pooling, utilizar Python para lograr el pooling, y comprobar el promedio de cada bloque de 2x2 con el bilinear output match.
+5. Para realizar el pooling, utilizaremos Python para lograr el pooling, y comprobaremos el promedio de cada bloque de 2x2 con el bilinear.
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
-| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持恒定 |
-| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，通常为 3000-4000 |
+| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持均衡 |
+| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，在 LLaVA-OneVision 中最多约 6k 到 9k |
 | Curriculum | “训练顺序” | 为了 emergent transfer 而选择的阶段排序（单图像 → 多图像 → 视频） |
 | Bilinear pooling | “Token 缩减” | 对 patch grid（2D）应用 bilinear interpolation，以在保留局部性的同时减少 Token 数量 |
 | Emergent skill | “没训练过，但仍然能用” | 由于 curriculum composition，在没有匹配训练数据的情况下于推理时出现的能力 |

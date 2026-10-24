@@ -10,7 +10,7 @@
 ## El objetivo del aprendizaje
 - 解释 mascarado Discrete Diffusion:一种先均 mask Tokens、再让 Transformer 恢复它们的时间表──
 - Desde velocidad y calidad en comparación con la descodificación de imágenes (Show-o, MaskGIT) con la descodificación de imágenes autoregresivas (Chameleon, Emu3):
-- Exposición de Show-o en un puesto de control en el centro de tratamiento de tres clases de tareas: T2I, VQA, pintura de imágenes.
+- Explicar Show-o en un punto de control en el centro de la gestión de cuatro clases de tareas:
 - 选择一种掩盖时间表 ((kosine、线性、 troncated),并推理它对样品质量的影响──
 
 ##  problemas

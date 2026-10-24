@@ -18,7 +18,7 @@ BLIP-2 va a introducir 32 tokens visuales 结 LLM entrada de capa. Cada instante
 
 La respuesta de Flamingo es: no cambie completamente el flujo de entrada de LLM. En los bloques de LLM existentes, se insertan capas de atención cruzada entre sí. Tokens de texto siguen siendo como siempre. Autoatención causal. Cada bloques de LLM, los tokens de texto también pasarán por una nueva capa cerrada a las características de la imagen.
 
-Flamingo 回答的第二个问题是: cómo procesar cada instante en el que se puede cambiar el número de imágenes ((0、1 或多张)?
+Flamingo respondió que la segunda pregunta es: ¿cómo manejar cada instante de la cantidad de imágenes en el que se puede cambiar? ¿Cómo procesar cada instante de la cantidad de imágenes en el que se puede cambiar? ¿Cómo procesar cada instante de la cantidad de imágenes en el instante de la respuesta? ¿Cómo procesar cada instante de la cantidad de imágenes en el instante de la respuesta? ¿Cómo procesar cada instante de la respuesta? ¿Cómo procesar cada instante de la cantidad de imágenes en el instante de la respuesta? ¿Cómo procesar cada instante de la respuesta? ¿Cómo procesar cada instante de la respuesta? ¿Cómo procesar cada instante de la respuesta? ¿Cómo procesar cada instante de la cantidad de imágenes en el instante de la respuesta? ¿Cómo procesar el instante de la respuesta? ¿Cómo procesar el instante de la respuesta? ¿Cómo procesar el instante de la respuesta? ¿Cómo procesar el instante de la respuesta? ¿Cómo procesar el instante de la respuesta? ¿Cómo procesar el instante de la respuesta? ¿Cómo procesar el instante de la respuesta? ¿Cómo procesar el instante de la respuesta?
 
 ## 概念
 ### El LLM congelado
@@ -56,7 +56,7 @@ Este es el diseño más importante de Flamingo: el acondicionamiento visual es a
 
 ### Con la atención cruzada enmascarada de entradas entrelazadas
 
-En el ejemplo de "<imagen A> subtítulo A <imagen B> subtítulo B <imagen C> ?" en el siguiente, cada token de texto  debería sólo ver en la secuencia que se encuentra en la imagen anterior.`t`El símbolo de texto sólo atender a la indicación de imágenes `i < i_t`Las imágenes de los tokens de muestra, entre ellos `i_t`Es la posición`t`之前最近的图像──只看最近的前置图像或看到所有的前置图像都是有效选择; Flamingo 选择了前者──
+En el ejemplo de "<imagen A> subtítulo A <imagen B> subtítulo B <imagen C> ?" en el siguiente, cada token de texto  debería sólo ver en la secuencia que se encuentra en la imagen anterior.`t`El símbolo de texto sólo atender a la imagen `i_t`Los tokens de resampler, entre ellos `i_t`Es la posición`t` sólo ver las imágenes anteriores o ver todas las imágenes anteriores son válidas; Flamingo 选择前者──
 
 ### Aprendizaje en pocos disparos en contexto
 
@@ -73,7 +73,7 @@ El mensaje de Flamingo parece:
 Flamingo utiliza tres grupos de entrenamiento:
 
 1. MultiModal MassiveWeb (M3W):43.3 millones de páginas web que contienen imágenes y textos en formato de texto, reconstruido.
-2. Parejas de imagen y texto (ALIGN + LTIP): 44 mil millones de dólares
+2. Imagen-Texto pares: ALIGN(18 mil millones de dólares) + LTIP(3.12 mil millones de dólares),合计约21 mil millones de dólares.
 3. Video-Text Pairs (VTP): 27 millones de clips de video cortos
 
 Obélicos (obélicos) 2023: son los modelos abiertos de los idiomas, idiomas, idiomas y la mayoría de los modelos abiertos de los idiomas flamingos.
@@ -99,7 +99,7 @@ Otter(2023) basado en OpenFlamingo, y MIMIC-IT(((1 instrucciones multimodal 数�
 | Frozen LLM | Yes | Yes |
 | Few-shot in-context | 弱 | 强 — 论文的核心 |
 | Interleaved inputs | 无原生支持 | Yes，设计目标 |
-| Training data | 130M pairs | 1.3B pairs + 43M interleaved pages |
+| Training data | 130M pairs | ~2.1B pairs + 27M video clips + 43M interleaved pages |
 | Parameter count | 188M trained | ~10B trained (cross-attn layers) |
 | Compute | 8 个 A100 上数天 | 数千个 TPUv4 上数周 |
 

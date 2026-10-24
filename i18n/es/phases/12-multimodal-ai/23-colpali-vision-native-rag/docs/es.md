@@ -95,10 +95,10 @@ Todo el mundo no tiene OCR.
 
 Un informe financiero de 50 páginas, por página 729 parches, 128 dimensiones:
 
-- ColPali:50 * 729 * 128 * 4 bytes = ~18 MB crudo,PQ 后 ~4 MB。
+- ColPali:50 * 729 * 128 * 4 bytes = ~ 18 MB crudo,8x PQ 后 ~ 2.3 MB。
 - Text-RAG:50 trozos * 768-dim * 4 bytes = ~150 kB。
 
-ColPali Cada archivo de un documento es de aproximadamente 30 veces. En una situación de escala, la OPQ / PQ puede reducirse a aproximadamente 5-10 veces, normalmente aceptable.
+ColPali almacenamiento original de cada documento ≈ 120x ≈ 8x de OPQ / PQ ≈ 15x ≈ en escenarios de escalación, normalmente aceptable ≈
 
 ### Text-RAG 仍然胜出的场景
 

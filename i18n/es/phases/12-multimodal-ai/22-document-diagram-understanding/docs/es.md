@@ -74,7 +74,7 @@ LayoutLMv3 es basado en el entendimiento de documentos OCR 峰── es muy fuer
 
 ### DocLLM (2023)
 
-DocLLM(Wang et al., arXiv:2401.00908) es el hermano generado de LayoutLM.
+DocLLM(Wang et al., arXiv:2401.00908,2023 年 12 月 31 日提交,因此 ID 带有 2024 年 1 月的前) es el hermano generado de LayoutLM.
 
 ### Era 3  VLM nativo(2024+)
 
@@ -83,7 +83,7 @@ Las VLM de 2024  ya son lo suficientemente buenas como para reemplazar completam
 - LLaVA-NeXT 336-tile AnyRes  Aplicable para pequeños archivos
 - Qwen2.5VL de resolución dinámica
 - Claude Opus 4.7 支持 2576px 文档。
-- PaliGemma 2(2025 年 4 月) especializada en el ámbito del documentario + 手写训练──
+- PaliGemma 2(2024 年 12 月) especializada en el ámbito del documentario + 手写训练──
 
 La diferencia entre el VLM-nativo y el OCR-pipeline se reducirá rápidamente.
 

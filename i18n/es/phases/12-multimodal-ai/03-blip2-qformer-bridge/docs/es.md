@@ -1,6 +1,6 @@
 # Desde CLIP hasta BLIP-2  Q-Former  como puente de modalidad
 
-> CLIP para imágenes y texto, pero no puede generar captura, responder a problemas o mantener conversaciones. BLIP-2 (Salesforce, 2023) resolvió este problema con un pequeño puente de entrenamiento (32 个学习可见的桥接) Vektor 通过跨度关注 关注结结 ViT的功能,然后直接插入结冰 LLM的输入流──188M 参数的桥接将一个11B LLM 连接到 ViT-g/14──到2026年,每个基于适配器的VLM  MiniGPT-4──Instruir 近亲的LLaVA都是它的后代──本课阅读Q-Former的架构,解释其两阶段玩具训练,并输建一个 版本,把代码视觉解解入到结冰文中──
+> CLIP para imágenes y texto, pero no puede generar captura, responder a problemas o mantener conversaciones. BLIP-2 (Salesforce, 2023) resolvió este problema con un pequeño trenable bridge. 32 个学习可的查询 Vector 通过跨度关注 关注 结结 ViT的功能,然后直接插入结 ViT的输入流. 188M 参数的桥接将 ViT-g/14 连接到最大11B Flan-T5-XXL) 结结 ViT-g/14 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 结 
 
 **Type:** Build
 **Languages:** Python (stdlib, cross-attention + learnable-query demo)
@@ -112,7 +112,7 @@ Todas las matemáticas usan Python puro (~) para Vector (~) para usar bucles ani
 
 4. 阅读 BLIP-2 paper(arXiv:2301.12597) Sección 3.2, conocer Q-Former 如何初始化──explicar por qué desde la base BERT初始化(而不是随机初始化) se acelerará la recepción──
 
-5. Por un video de 10 minutos, en 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame) ―― ¿cuál de ellos puede colocarse en la ventana de contexto de LLM de 128k-Token?
+5. Para un video de 10 minutos, en 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame) ⋅在即时文本还没占用任何空间之前,每种桥接能把多少放进 128k-Token LLM context window?
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |
@@ -126,7 +126,7 @@ Todas las matemáticas usan Python puro (~) para Vector (~) para usar bucles ani
 | Two-stage pretraining | "Representation then generative" | Stage 1 单独训练 Q-Former（ITC/ITM/ITG）；Stage 2 接入 frozen LLM，并且只训练 projection + Q-Former |
 | Frozen backbone | "Do not finetune" | vision encoder 和 LLM weights 固定；只训练 bridge |
 | Projection head | "Linear to LLM dim" | 将 Q-Former 输出映射到 LLM Embedding dimension 的最终 linear layer |
-| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention，由 Flamingo 在每一层使用，而不是作为单个 bridge |
+| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention；Flamingo 对每张图像运行一次，生成固定数量的 latents，再在每个 LLM 层通过 gated cross-attention 读取它们 |
 
 ## 延伸阅读
 - [Li et al. — BLIP-2 (arXiv:2301.12597)](https://arxiv.org/abs/2301.12597)  papel central

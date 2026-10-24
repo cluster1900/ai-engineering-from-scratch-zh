@@ -9,7 +9,7 @@
 
 ## El objetivo del aprendizaje
 - 计算不同 FPS 和聚合下长视频的总视觉标记 数量──
-- 解释三条扩展路径:marca bruta de contexto  Gemini 1.5)                                                                                                                                                                                                                                                     
+- 解释四条扩展路径:marca bruta de contexto(Gemini 1.5) ‧ring attention(LWM) ‧token compression(LongVILA / Video-XL) ‧agente de recuperación(VideoAgent) ‧
 - En la Precise rate y delay up comparar VLMs de video en contexto crudo con VLMs de video de recuperación de agentes (VideoAgent)
 - Por 30 minutos de video diseñar una aguja en un haystack 测试,并测量特定分钟处的召回率──
 
@@ -33,7 +33,7 @@ Gemini 1.5 Pro  lanzado  apoyo al 1M Token; Gemini 1.5 Ultra  alcanza 10M; Gemin
 
 En el caso de los anillos, cada uno de ellos tiene un solo pieza.
 
-LWM(Liu et al., 2024) con este método entrenó un contexto de 1M-Token 模型── entrenar la cantidad de cálculo con el contexto 线性扩展, en lugar de la ampliación cuadrada, ya que el costo cuadrado de la atención se distribuye a los dispositivos en el anillo.
+LWM(Liu et al., 2024) con este método entrenó un contexto de 1M-Token 模型── cada dispositivo de memoria con el pedazo que posee  expandirse, por lo que el aumento de los dispositivos puede hacer que el contexto                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 
 LongVILA(arXiv:2408.10188)把该模式适配到VLMs──1400 视频,每 192 个代币 = 268k contexto,并使用8 direcciones de paralelismo de la atención de anillo 训练──
 
@@ -113,7 +113,7 @@ mm-video-token-budget
 
 3. En 1 小时视频上比较 bruto-context Qwen2.5-VL-72B(80k context) con VideoAgent(Claude 3.5 + retrieval) ―― ¿Cuál es el resultado final?
 
-4. El costo de memoria de la atención de anillo se expande con la longitud lineal de la secuencia, también con la cantidad de dispositivos se expande lineal. Explica por qué, así como si se pierde la rotación de anillo.
+4. La memoria de cada dispositivo se expande según la longitud de la secuencia, y la atención                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
 5. 阅读双子座 1.5 第5节关于针子的内容──论文对1M y 10M Token 边界处的召回有什么发现?
 

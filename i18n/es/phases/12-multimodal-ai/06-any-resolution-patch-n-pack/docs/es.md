@@ -1,6 +1,6 @@
 # 任意分辨率 Visión: parche-n'-Pack y NaFlex
 
-> La respuesta de VLM es que el tamaño de todo el contenido en el VLM es un tamaño cuadrado fijo, pero no se ha logrado resolver el escenario de alta resolución. Google muestra que se pueden usar enmascaramientos de bloque y diagonal para realizar parches de resolución variable en un solo lote de transformadores.
+> La respuesta de VLM es que el tamaño de todo el contenido en el VLM es de 9.9.5 años. La respuesta de VLM es de 9.9.5 años. El resultado de este análisis fue de que el tamaño de todo el contenido en el VLM fue de 9.5 años. El resultado de este análisis fue de que el VLM de 2024 eliminó el tamaño de todo el contenido en el VLM de VLM. El resultado de este análisis fue de que el VLM de 2024 eliminó el tamaño de todo el contenido en el VLM de VLM. El resultado de este análisis fue de que el VLM de 2024 eliminó el tamaño de todo el contenido en el VLM de VLM. El resultado de este análisis fue de que el VLM de 2024 eliminó el tamaño de todo el contenido en el VLM de VLM. El resultado de este análisis fue de que el VLM de 2024 eliminó el tamaño de todo el contenido en el VLM de VLM.
 
 **Type:** Build
 **Languages:** Python (stdlib, patch packer + block-diagonal mask)
@@ -52,7 +52,7 @@ AnyRes de LLaVA-NeXT es un programa de sustitución de la imagen.
 
 对于一张 672x672 图像, use 2x2 grid加缩影:4 * 576 + 576 = 2880 个视觉代币――昂贵但有效LLM 同时看局部细节和全局上下文――
 
-Cuando tu codificador está congelado y sólo apoya una resolución,AnyRes es la primera ruta de selección. Esto hará que la imagen de los Token number explode.
+Cuando tu codificador está congelado y sólo apoya una resolución,AnyRes es la primera ruta de selección. Esto hará que la imagen de un token explode.
 
 ### El valor de la carga de carga de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la industria de la Unión
 

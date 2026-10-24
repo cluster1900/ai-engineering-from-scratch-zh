@@ -1,6 +1,6 @@
 # LLaVA con el ajuste de instrucciones visuales
 
-> LLaVA(4 de enero de 2023) es la arquitectura multimodal más copiada de la Tierra. Se sustituye por un MLP de 2 capas a la Q-Former de BLIP-2, con una simple concatenation de tokens, sustituye la atención cruzada cerrada de Flamingo y se convierte en una instrucción visual de 158 mil instrucciones. Estos datos fueron elaborados por GPT-4 a partir de capciones de texto puro.
+> LLaVA(4 de enero de 2023) es la arquitectura multimodal más copiada de la Tierra. Se sustituye por MLP de 2 capas a la Q-Former de BLIP-2, con una simple concatenation de Token, sustituye la atención cruzada cerrada de Flamingo y se realiza una formación visual de 158 mil instrucciones, estos datos fueron elaborados por GPT-4 a partir de capciones de texto puro.
 
 **类型：**Construcción
 **语言：**Python(stdlib、proyector + constructor de instrucciones-tiplos)
@@ -32,10 +32,10 @@ Resultado: una en 8 张 A100 上运行一天、 en MMMU 上击败 Flamingo、并
 
 ### 架构
 
-LLaVA-1.5 en 13B:
+LLaVA-1.5 en 7B:
 - Encoder de visión: CLIP ViT-L/14 @ 336(fase 1 结,fase 2 可选解)
 - Proyector: MLP de 2 capas de activación de GELU,`1024 → 4096 → 4096`¿Qué es eso?
-- LLM: Vicina-13B (más tarde fue Llama-3.1-8B)
+- LLM:Vicuna-7B v1.5(13B 变体使用Vicuna-13B; posterior fork 改用Llama-3.1-8B)
 
 图像 + 文本 de paso adelante de la respuesta:
 
@@ -83,7 +83,8 @@ Todo el proceso no se dirigió directamente a la imagen  sólo se dirigió al te
 LaVA-1.5(2023 年 10 月)加入:
 - La información de la tarea académica se puede utilizar para la formación de la formación.
 - Mejor sistema rápido.
-- 2048 → 32k contexto
+- Utiliza el proyector MLP de 2 capas  sustituir la primera capa lineal, utiliza 336px de CLIP ViT-L/14 (576 个 Token) sustituir 224px (256 个 Token) ;; entrenamiento de la serie sigue siendo 2048 个 Token。
+- 论文中的网格分分 HD 变体, posteriormente publicado por LLaVA-NeXT 以 AnyRes形式──
 
 LLaVA-NEXT(2024 年 1 月)
 - AnyRes:把高分辨率图像切成2x2或1x3 网格的336x336 crops,再加一个全球低分辨率小图片──每种 crop 变成576 代币;每张图像总计约2880 代币──OCR和图表 任务大幅提升──
@@ -99,7 +100,7 @@ Lección 12.08 会深入讲 OneVision──简短版: Con el mismo proyector, pe
 | | Q-Former（BLIP-2） | MLP（LLaVA） |
 |---|---|---|
 | 每张图像的 visual Token | 32 | 576（base）或 2880（AnyRes） |
-| 可训练参数 | 188M + LM | 40M + LM |
+| 可训练参数 | 188M + LM | ~22M（7B）+ LM |
 | Stage 1 loss | ITC+ITM+ITG | 仅 LM |
 | LLM drop-in | 需要重新训练 | 最小重新训练即可替换 |
 | Multi-image | 别扭 | 自然（concat） |
