@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Passo 4: monitor KL
 
-Cada atualização segue o significado$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Se ele se arrasta`~5-10`, política  já se deslocou $\pi_{\text{SFT}}$Muito longe mais baixo$\beta$Está a aumentar ou a recompensa está a começar. É o diagnóstico mais importante do RLHF.
+Cada atualização segue o significado$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Se ele se arrasta`~5-10`(Em termos de notação por resposta KL, em tokens 求和, ou seja, unidades de registro TRL), política 已漂离 $\pi_{\text{SFT}}$- Não , não .$\beta$Too low调高它把政策 拉回来), 要么奖励黑客 正在开始──这是真实RLHF最重要的诊断──
 
 ### Passo 5: Utilize TRL
 

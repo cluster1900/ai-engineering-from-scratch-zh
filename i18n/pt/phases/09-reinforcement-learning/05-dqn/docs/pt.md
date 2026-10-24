@@ -73,7 +73,7 @@ class ReplayBuffer:
         return rng.sample(self.buf, batch)
 ```
 
-A Atari usa cerca de 50.000 unidades, o nosso ambiente de brinquedos usa 5.000 unidades.
+Atari usa cerca de ~106 de capacidade, igual ao DQN original.
 
 ### 步骤 2: uma pequena rede Q (MLP)
 

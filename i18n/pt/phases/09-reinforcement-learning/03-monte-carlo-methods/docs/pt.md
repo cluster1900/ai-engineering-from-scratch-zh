@@ -21,7 +21,7 @@ A mudança do DP para o MC é importante em termos de raciocínio: nós passamos
 
 **核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, entre os $G^{(i)}(s)$É política.$\pi$下访问 $s$后观察到的回报──
 
-**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $s$O primeiro MC só tem a primeira visita após o retorno; cada visita MC 统计所有访问──二者在极限下都是无偏见── Primeiro MC é mais fácil de analisar.
+**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $s$De episódios, primeira visita MC apenas dados retornos após a primeira visita;cada visita MC 统计所有访问。Prime visit MC é imparcial。Toda visita MC em episódios limitados 后可能有偏见,因为它对每一集的平均回归 个数是随机的,且该个数可能与回归相关,但随着访问次数趋势无穷,二者都会收到$V^\pi(s)$❖ Primeira visita 更容易分析(iid samples) ・Toda visita Cada episódio Use更多数据, em prática normalmente recebe 更快──
 
 **Incremental mean。**Não armazenar todos os retornos, mas atualizar a média corrente:
 
@@ -196,7 +196,7 @@ tags: [rl, monte-carlo, evaluation]
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
 | Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
-| Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
+| Every-visit MC | “Use all visits” | 每次访问都会贡献；有限样本下略有 biased，极限下 consistent，且 sample-efficient 更高。 |
 | ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
 | Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |
