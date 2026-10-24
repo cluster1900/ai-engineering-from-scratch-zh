@@ -26,32 +26,32 @@
 
 ### 预存计算
 
-每个解码层,每一个代币,每一个头:
+每个解码层,每个代币,所有KV头,
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
-对于一个7B模型,32层,32个头,d_head=128fp16:
+对于一个7B模型,32层、32个头,全部用于K和V) 、d_head=128、fp16:
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 对于Llama 3 70B ((80层、d_head=128、使用8个KV头的GQA):
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-这就是为什么在128K背景下,只有批量1的KV缓存将占据40GBA100的大部分显现存储.
+在32K时,将增长到128K,只有批量1的KV缓存将占据40GBA100的整体.
 
-**GQA 是 KV-cache 的关键收益。**使用64个头的MHA 会需要32GB──MLA还能进一步缩小──
+**GQA 是 KV-cache 的关键收益。**采用64个KV头的MHA会大8倍,在32K时约为80Gb.
 
 ### 闪光注意  技巧
 

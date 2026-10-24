@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$没有什么可惜的损失.
 - $A \approx 406$现在$B \approx 411$,我知道.
 
-随着扩展,两个项会相互权衡.$C = 6ND$下对$N$求导并求解:
+随着扩展,两个项会相互权衡.$C = 6ND$下对$N$求导并求解.$\alpha$和 $\beta$没有任何$N$平均水平为0.45,$D$平均水平为0.55,因此精确的最佳比例随着预算缓慢流动;`code/main.py`通过网格搜索找到它. 论文前两种配合方法直接测量最优点,得到两个指数都是约为0.5.$C = 6ND$中令 $D = 20N$经验法则为:
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```
