@@ -4418,7 +4418,7 @@
               if (codeLang === 'math') {
                 out += LessonMath.mathBlock(raw);
               } else if (codeLang === 'figure') {
-                out += '<div class="lesson-figure" data-figure="' + escapeHtml(raw.trim()) + '"></div>';
+                out += '<div class="lesson-figure" data-figure="' + escapeAttr(raw.trim()) + '"></div>';
               } else if (codeLang === 'mermaid') {
                 mermaidBlocks++;
                 out += '<div class="mermaid-container">';

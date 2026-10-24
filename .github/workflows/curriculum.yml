@@ -123,7 +123,7 @@ jobs:
       - name: skill artifact bundles render as one lesson output
         run: node --test site/test_build_artifacts.js
       - name: lesson math renders outside code and money stays text
-        run: node --test site/test_lesson_math.js
+        run: node --test site/test_lesson_math.js site/test_lesson_figure_attr.js
       - name: returning visitors receive updated site assets
         run: node --test site/test_asset_cache.js
       - name: command copying preserves keyboard focus
