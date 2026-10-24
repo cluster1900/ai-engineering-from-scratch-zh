@@ -100,7 +100,7 @@ def sample(dec, z_dim, rng):
 - **Posterior collapse.**KL termo 过于激进地驱动 $q(z \mid x) \to \mathcal{N}(0, I)$, que conduz$z$Não tenho nada a ver com isso.$x$É um problema de saúde.$\beta=0$Começa, gradualmente sobe para 1) 、bites livres, ou em dimensões inativas, salta KL ⋅
 - **Blurry samples.**A probabilidade de decodificador gaussiano significa reconstrução de MSE, ela é para L2 Bayes-optimal (média)  一组合理数字的意思是一个模糊数字──修复:discrete decoder (VQ-VAE、NVAE), ou apenas usar VAE como encodificador, e em latentes acima acumulação de difusão (Stable Diffusion就是這樣做) 
 - **β too large, too early.**Veja o colapso posterior.$\beta \approx 0.01$Começa a andar de um passo para o outro.
-- **Latent dim too small.**16-D  Aplica-se para MNIST,256-D  Aplica-se para ImageNet 2562,2048-D  Aplica-se para ImageNet 10242。 VAE de Diffusão Estavel vai ser 512×512×3  Compressão para 64×64×4;; área espacial acima 32x fator de amostra descendente, canais acima 32x)。
+- **Latent dim too small.**16-D  Aplica-se para MNIST,256-D  Aplica-se para ImageNet 2562,2048-D  Aplica-se para ImageNet 10242。 VAE de Diffusão Estavel vai 512×512×3  Compressão para 64×64×4( por lado 8x downsample, área espacial para cima 64x; canais de 3                          4, portanto, o total de valor reduzido cerca de 48x)。
 
 ## Usá-lo
 

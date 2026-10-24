@@ -50,7 +50,7 @@ noise-schedule
 
 ## Construí-lo
 
-`code/main.py`Colocar um brinquedo 1-D VAE(encoder de identidade + decodificador, apenas para demonstração; real VAE 会是 conv net) colocado na lição 06 de DDPM 之上,并通过类型免费指导 加入类条件化──它显示同一个扩散损失 无论运行在原始 1-D值上,还是运行在编码的值上都有效,这就是关键洞见──
+`code/main.py`Colocar um brinquedo 1-D VAE(fixed multiplicity 0.5 encoder, bem como como como um desencoder de precisão inversa, apenas para demonstração; real VAE 会是 conv net) sobreposto na DDPM da Lição 06 , e através de orientação sem classificador 加入类条件── ele mostra a mesma perda de difusão 无论运行在原始 1-D 值上,还是运行在加码值上都有效──这是关键洞见──
 
 ### 步骤 1: codificador/decodificador
 
@@ -133,7 +133,7 @@ Produção de 2026:
 
 Referência Flux 集成是经典的我有一张消费级GPU,能交付吗?配方──技巧就是把生产推理文献列出的同一个三旋配方应用到扩散 DiT:
 
-1. **Staggered loading。**Flux 有三个不需要同时存在在VRAM 中的网络:T5-XXL text encoder(fp32 下约 10 GB)、CLIP-L(小)、12B MMDiT, bem como VAE。先编码快速,*删除*编码器,加载DiT,denoise,*删除*DiT,加载VAE,decode──消费级 8GB GPUs 一次只能容纳一个阶段──
+1. **Staggered loading。**Flux 有四个不需要同时存在在VRAM 中的网络:T5-XXL text encoder(fp32 下约 10 GB)、CLIP-L(小)、12B MMDiT, bem como VAE──先编码快速,*删除*编码器,加载DiT,denoise,*删除*DiT,加载VAE,decode──消费级 8GB GPUs 一次只能容纳一个阶段──
 2. **通过 bitsandbytes 做 4-bit quantization。**Em T5 encoder 和 DiT 上都使用 `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)` O volume de memória reduzido 8x, de acordo com os padrões de Aritra ([[Notebook]]), a qualidade do texto para a imagem diminuiu quase imperceptível.
 3. **CPU offload。** `pipe.enable_model_cpu_offload()`Acompanha-se automaticamente os módulos de troca entre CPU e GPU por cada passo a frente.
 

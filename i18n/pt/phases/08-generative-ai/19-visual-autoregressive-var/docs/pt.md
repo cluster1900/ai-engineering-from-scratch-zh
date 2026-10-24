@@ -50,7 +50,7 @@ Estrutura de sequência de entrada:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Posição de inserção, simultaneamente codificação de medida de índice e medida em espaço.$k$Localização$(i, j)$O sinal pode ser atento à medida.$1 \ldots k$Todos os Tokens, também pode atenção à medida $k$Os dados são dados por um grupo de dados que são utilizados para determinar a posição de um objeto.
+Posição de inserção, em simultâneo, codificação de índice e medida em espaço.$k$Localização$(i, j)$O sinal pode ser atento à medida.$1 \ldots k$Todos os Tokens, incluindo a medida$k$Não há ordem, nem causalidade intra-escala, portanto, todas as posições de uma medida são previsíveis.
 
  Treinamento Perda: em cada medida $k$, dando-nos todos os Tokens de medida, Prediction Token $z_k$ Em relação aos códigos de VQ de separação, a estrutura é semelhante à GPT, mas a sequência se transformou em sequência estruturada de dimensão.
 
