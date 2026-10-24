@@ -153,6 +153,10 @@ Khi bạn có nhiều tính năng, mô hình có thể thông qua phân phối t
 
 惩罚项会抑制 trọng lượng lớn hơn.$\lambda$控制权衡:$\lambda$越高,重量 越小,规范化 越强―― next class will delve deep into this point―― bây giờ chỉ cần biết nó tồn tại, cũng như vì sao nó có ích――
 
+```figure
+linear-regression-fit
+```
+
 ## 构建
 
 ### Bước 1: Tạo dữ liệu ví dụ
@@ -466,10 +470,6 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
-
-```figure
-linear-regression-fit
-```
 
 ## Sử dụng nó
 
