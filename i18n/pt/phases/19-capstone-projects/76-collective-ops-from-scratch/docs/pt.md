@@ -98,7 +98,7 @@ Modelo de produção:
 
 ## 发货
 
-Use第77-81 课中的队列网格原语──第77课电线全部简化为DDP──第78 课将减少_scatter 连接到ZERO──第79 课将广播连接到管道激活中──第81 课将所有四内容组成端到端演示──
+Use第 77-81 课中的队列网格原语──第 77 课把所有减少 接入 DDP──第 78 课把减少_scatter 接入 ZeRO──第 79 课用点对点发送和回复(em vez de coletivos) transmite a ativação do pipeline──第 81 课把这四者组合成端到端演示──
 
 ## 练习
 

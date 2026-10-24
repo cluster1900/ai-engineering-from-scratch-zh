@@ -54,7 +54,7 @@ O sistema de código de código de código de código de código de código de c
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`, entre os `lm_weight`É um padrão de carga comum de 1.0): estes dois padrões de perda são compartilhados em um codificador e um projeto; apenas um de descifrador recebe um LM de perda de gradiente.
+`total = contrastive + lm_weight * lm`, entre os `lm_weight`É uma forma de combinação de múltiplas tarefas, com diferentes pesos. SigLIP apenas retém contrastes, e não utiliza a perda de pares sigmoides em substituição à suavidade.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|
