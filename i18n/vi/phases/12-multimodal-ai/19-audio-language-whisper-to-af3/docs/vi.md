@@ -51,7 +51,7 @@ Whisper được đào tạo dựa trên dữ liệu của chủ thể âm thanh
 
 BEATs(Chen 等,2022) là một Transformer tự giám sát được đào tạo trên AudioSet.
 
-AF-Whisper(Audio Flamingo 3 的混合):将 Whisper + BEATs tính năng concat 作为音频输入──Whisper 携带语言信号,BEATs 携带声学信号──
+AF-Whisper(Audio Flamingo 3's encoder): Từ Whisper-large-v3 encoder xuất phát, trên语音、声音和音乐 tiếp tục tập luyện chung, làm cho một encoder đồng thời mang theo ngôn ngữ tín hiệu và tín hiệu âm thanh。SALMONN 等早期的系统通过 concat Whisper与BEATs功能获得同样的覆盖。
 
 ### Audio Q-former
 
@@ -67,7 +67,7 @@ Qwen-Audio(Chu 等,2023):架构类似,训练数据集更丰富, nhắm vào các
 
 LTU  Listen, Think, Understand(Gong 等,2023): dữ liệu lý luận rõ ràng, tập trung vào đoạn phim âm thanh 上的链思维――规模更小但更聚焦――
 
-Audio Flamingo 3(Goel 等,2025 年 7 月):当前 open SOTA──8B LLM backbone(Qwen2 7B)、Whisper-big encoder concat BEATs、64-query Q-former, trong 1000000+ cặp hướng dẫn văn bản âm thanh 上练──MMAU 0.72, trong một số phụ trách 上匹配 độc quyền biên giới──
+Audio Flamingo 3(Goel 等,2025 年 7 月): 当前开放 SOTA──7B LLM xương sống(Qwen2.5-7B)、基于Whisper-large-v3 构建的AF-Whisper 音频编码器、接入LLM的小型适配层,在100万+音频文字指令对上训练──MMAU 0.72,在部分子任务上匹配专属边界──
 
 AF3 cũng giới thiệu chuỗi suy nghĩ theo yêu cầu của âm thanh: mô hình có thể xuất ra các mã thông báo suy nghĩ trong phần cuối cùng của câu trả lời trước:
 

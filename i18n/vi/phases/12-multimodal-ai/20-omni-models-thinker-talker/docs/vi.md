@@ -11,7 +11,7 @@
 - 将推理管线 拆分为Thinker (文本推理) 和 Talker (语音合成),并解释为什么并行流动 (能工作).
 - 逐组件计算一次对话交互的时间到第一音频字节 (TTFAB) 预算──
 - Mô tả TMRoPE trong Thinker 内部跨视觉、音频和文本的时间对齐位置编码──
-- Nói ra 3 kiểu nói chuyện thực tế: nửa kép, quay lại, hoàn toàn kép.
+- Nói出两种实时对话模式半双和全双,并解释 VAD chuyển đổi 如何驱动半双的交互──
 
 ## 问题
 Một trợ lý tiếng nói thực tế phải nhanh chóng hoàn thành rất nhiều việc:
@@ -82,7 +82,7 @@ Qwen2.5 Omni 默认支持半duplex, thông qua静音值 thực hiện chuyển �
 - Résidual-VQ decode: 30ms.
 - 语音 dạng sóng decode:50-80ms。
 
-Tổng TTFAB:7B 上 320-510ms,70B 上 600-900ms。 Border 质量 thường có nghĩa là 70B+; đây là nguồn gốc của biên giới 延迟差距。
+Tổng TTFAB:7B 上 320-490ms,70B 上 600-900ms。 Border 质量 thường có nghĩa là 70B+; đây là nguồn gốc của biên giới 延迟差距。
 
 ### Phương pháp toán tỷ lệ token
 
