@@ -1,6 +1,6 @@
 # Từ CLIP đến BLIP-2  Q-Former  như cầu Modality
 
-> CLIP đối với hình ảnh và văn bản, nhưng không thể tạo bản ghi chú, trả lời câu hỏi hoặc tiến hành cuộc trò chuyện. BLIP-2 (Salesforce, 2023) sử dụng một cây cầu có thể đào tạo nhỏ để giải quyết vấn đề này. 32 个学习可查询 Vector 通过横向关注 结结 ViT的功能,然后直接插入结冰LLM的输入流. 188M 参数的桥接将一个11B LLM 连接到 ViT-g/14──直到2026年,每个基于适配器的VLM  MiniGPT-4──Instruct LIPIP、LLaVA 的近亲 都是它的后代. 本课阅读Q-Former的结构,解释它的两个阶段玩具训练,并输建一个版本,把Token 视觉解码器进入结冰文中.
+> CLIP đối với hình ảnh và văn bản, nhưng không thể tạo bản ghi chú, trả lời câu hỏi hoặc tiến hành cuộc trò chuyện. BLIP-2 (Salesforce, 2023) sử dụng một cây cầu có thể đào tạo nhỏ để giải quyết vấn đề này: 32 个学习可调测量 Vector 通过横向关注 结结 ViT的功能,然后直接插入结 ViT的输入流. 188M 参数的桥接将 ViT-g/14 连接到最大11B(Flan-T5-XXL) 结结结 LLM──直到2026年,每个基于适配器的VLM  MiniGPT-4、InstructBLIPL•LaVA 亲近的 都是其后代. 本课阅读Q-Former的结构,解释并构建一个两个阶段的训练,构建一个玩具,构建一个视觉版本 输入结结的文中.
 
 **Type:** Build
 **Languages:** Python (stdlib, cross-attention + learnable-query demo)
@@ -112,7 +112,7 @@ Tất cả các toán học đều sử dụng Python tinh khiết (xác đối 
 
 4. 阅读 BLIP-2 bài báo(arXiv:2301.12597) Phần 3.2, hiểu Q-Former 如何初始化──解释为什么从BERT-base初始化(而不是随机初始化) 会加速收──
 
-5. Đối với một 10 分钟视频,以 1 FPS 采样到 60 ,计算每 Token 成本:(Q-Former → 32 token/frame) vs (MLP projector → 576 token/frame) ――哪一个能放进 128k-Token LLM context window?
+5. Đối với một video 10 分钟, với 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 token/frame) vs (MLP projector → 576 token/frame) ⋅ 在 prompt 文本还没占用任何空间之前,每种桥接能把多少放进 128k-Token LLM context window?
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -126,7 +126,7 @@ Tất cả các toán học đều sử dụng Python tinh khiết (xác đối 
 | Two-stage pretraining | "Representation then generative" | Stage 1 单独训练 Q-Former（ITC/ITM/ITG）；Stage 2 接入 frozen LLM，并且只训练 projection + Q-Former |
 | Frozen backbone | "Do not finetune" | vision encoder 和 LLM weights 固定；只训练 bridge |
 | Projection head | "Linear to LLM dim" | 将 Q-Former 输出映射到 LLM Embedding dimension 的最终 linear layer |
-| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention，由 Flamingo 在每一层使用，而不是作为单个 bridge |
+| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention；Flamingo 对每张图像运行一次，生成固定数量的 latents，再在每个 LLM 层通过 gated cross-attention 读取它们 |
 
 ## 延伸阅读
 - [Li et al. — BLIP-2 (arXiv:2301.12597)](https://arxiv.org/abs/2301.12597) 核心文件──

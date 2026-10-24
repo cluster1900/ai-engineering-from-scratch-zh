@@ -8,7 +8,7 @@
 **Time:** ~180 minutes
 
 ## Học mục tiêu
--  thiết kế một trong một hình ảnh, nhiều hình ảnh và video nhập lưu giữ một hình ảnh cố định Địa chỉ  ngân sách
+-  thiết kế một giao diện hình ảnh 预算 
 - 排列一个训练课程,使技能从单图像迁移到视频,同时避免灾难性忘记――
 - 解释 tại sao trong cùng một quy mô tham số, nếu chương trình giảng dạy được thực hiện đúng, một mô hình sẽ thắng các mô hình chuyên gia.
 - Nói ra LLaVA-OneVision  báo cáo của ba khả năng mới nổi: lý luận nhiều máy ảnh, gợi ý thiết lập dấu hiệu, đại lý chụp màn hình iPhone.
@@ -29,13 +29,13 @@ Trong OneVision  trước, câu trả lời là  đào tạo một cảnh, bỏ 
 ## 概念
 ### OneVision Token 预算
 
-LLaVA-OneVision  chọn một đồng nhất thị giác token  ngân sách, mỗi mẫu khoảng 3000-4000 token, và phân phối theo tình huống khác nhau:
+LLaVA-OneVision không xác định số lượng mã thông báo xác định. Nó cân bằng số mã thông báo lớn nhất của mỗi mẫu, để ba cảnh nằm trong cùng một phạm vi, khoảng 6.000 đến 9.000 mã thông báo, và phân phối theo các cảnh khác nhau:
 
-- 单图像:AnyRes-9(3x3 tile + thumbnail), mỗi tile 为 384,包含 729 个补丁,使用激进的 2x2 bilinear pooling → Mỗi tile 182 个代币──总计:9 * 182 + 182 = 1820 个代币──或 AnyRes-4, mỗi tile 729 个代币 = 2916 + 729──
-- 多图像: 每张图像使用中等分辨率(384,不),729 个代币,不聚焦──预算为 6 张图像 → 4374 个代币──
-- 视频:32 ,384 分辨率, sử dụng激进的 3x3 bilinear pool → 每 81 个代币──总计:32 * 81 = 2592 个代币──
+- 单图像:AnyRes-Max-9(最多 9 个加一个基视图), mỗi 384x384 view 经 SigLIP SO400M 得到 729 个标.
+- 多图像: 每张图像使用 384,不, 729 个代币,不聚焦──最多 12 张图像 → 8748 个代币──
+- 视频:最多 32 ,384 分辨率, sử dụng 2x2 bilinear pooling → 每 196 个 token。总计:32 * 196 = 6272 个 token。
 
-Việc phân phối này làm cho tổng số token giữ vững. LLM sẽ không bao giờ thấy các lô của bối cảnh phát nổ.
+Sự phân phối này cho phép tổng số lớn nhất nằm trong cùng một khu vực, do đó không có một trường hợp nào có thể thống trị bối cảnh hoặc độ.`code/main.py`规划器 sử dụng một ngân sách đồ chơi nhỏ hơn 4096, để thể hiện cùng một logic cân bằng.
 
 ### Chương trình giảng dạy 三阶段
 
@@ -106,13 +106,13 @@ Sử dụng nó để lên kế hoạch cho việc chỉnh sửa OneVision, ho�
 
 4. 论文报告的视频基准每样只用8训练――这能泛化为推理时的30秒视频吗?
 
-5. Để thực hiện việc chia sẻ hàng tỷ x24 sẽ được thực hiện đến 12x12, trong mỗi chiều kích sẽ có sự giảm 4x.
+5. Để làm được việc chia sẻ hàng tỷ x 12 x 12, trong mỗi chiều kích là giảm 2x, do đó số lượng token giảm xuống 1/4 ⋅ sử dụng stdlib Python để thực hiện chia sẻ,并验证 mỗi khối 2x2 có giá trị trung bình với tỷ số giao dịch.
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
-| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持恒定 |
-| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，通常为 3000-4000 |
+| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持均衡 |
+| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，在 LLaVA-OneVision 中最多约 6k 到 9k |
 | Curriculum | “训练顺序” | 为了 emergent transfer 而选择的阶段排序（单图像 → 多图像 → 视频） |
 | Bilinear pooling | “Token 缩减” | 对 patch grid（2D）应用 bilinear interpolation，以在保留局部性的同时减少 Token 数量 |
 | Emergent skill | “没训练过，但仍然能用” | 由于 curriculum composition，在没有匹配训练数据的情况下于推理时出现的能力 |

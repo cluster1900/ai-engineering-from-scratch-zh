@@ -74,7 +74,7 @@ LayoutLMv3 là dựa trên hiểu biết tài liệu OCR 峰── nó rất m�
 
 ### DocLLM (2023)
 
-DocLLM(Wang et al., arXiv:2401.00908) là người em sinh của LayoutLM. Nó dựa trên các mã bố trí tạo ra các câu trả lời dạng tự do.
+DocLLM(Wang et al., arXiv:2401.00908,2023 年 12 月 31 日提交,因此 ID 带有 2024 年 1 月的前) là người em sinh của LayoutLM. Nó dựa trên các mã bố trí 条件 tạo ra các câu trả lời dạng tự do.
 
 ### Thời đại 3  VLM-tự do(2024+)
 
@@ -83,7 +83,7 @@ VLM năm 2024 đã đủ tốt, có thể hoàn toàn thay thế đường ống
 - LLaVA-NeXT 336-tile AnyRes  thích hợp cho các tài liệu nhỏ.
 - Qwen2.5VL độ phân giải động nguyên sinh xử lý 2048+ pixel.
 - Claude Opus 4.7 支持 2576px 文档。
-- PaliGemma 2(2025 年 4 月) Khusus dành cho文档 + 手写训练。
+- PaliGemma 2(2024 年 12 月) Khusus dành cho文档 + 手写训练。
 
 Sự khác biệt giữa VLM-native và OCR-pipeline  nhanh chóng giảm đi. Đến năm 2026, VLM-native 在以下方面胜出:
 

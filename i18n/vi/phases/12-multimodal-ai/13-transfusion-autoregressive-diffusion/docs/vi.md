@@ -48,7 +48,7 @@ mặt nạ:
 M[i, j] = 1 if:
   (i is text and j is text and j <= i)   # causal for text
   OR (i is image and j is image and same_image_block(i, j))   # bidirectional within image
-  OR (i is text and j is image and j < i_image_end)   # text attends to previous images
+  OR (i is text and j is image and j < i)   # text attends to images that closed before it
   OR (i is image and j is text and j < i_image_start)   # image attends to preceding text
 ```
 
@@ -94,7 +94,7 @@ MMDiT's Key Difference:
 
 Janus-Pro (Lớp 12.15) thông qua giải thích để hiểu và tạo ra bộ mã hóa thị giác để cải thiện ý tưởng của Transfusion: một sử dụng SigLIP, một khác sử dụng VQ, đồng thời chia sẻ cơ thể biến đổi.
 
-Năm 2026 có thể sản xuất các hình ảnh của các loại VLM sản xuất, chẳng hạn như Gemini 3 Pro, GPT-5, Claude Opus 4.7 đường dẫn sản xuất hình ảnh, gần như chắc chắn đã sử dụng một số thế hệ sau của gia đình này.
+Mô hình sản xuất nguồn đóng của các hình ảnh đầu ra có thể đã sử dụng một số thế hệ sau của gia đình này, nhưng cấu trúc của chúng không được công khai, vì vậy bất kỳ lời nói nào như vậy chỉ có thể được xem như một phỏng đoán.
 
 
 ```figure
@@ -108,7 +108,7 @@ cfg-guidance-scale
 - 图像是4x4 字节网格──
 - Một đối với chia sẻ quyền trọng lượng của các dự đoán tuyến tính 充当变压器 替代;文本上使用NTP mất, 噪音补丁上使用MSE mất──
 - Trẻ em làm việc với nhau, nhưng mặt nạ tập trung là rõ ràng.
-- 生成在一次前进传中产生文本标题 和 4x4 图像──
+- Một mặt nạ 演示, in text、image、text 序列的块三角注意模式──不运行生成: thực tế mẫu 会逐 Token 解码文本,再经过多步对图像补丁 去噪音,练习中会计算这一点──
 
 Bộ biến đổi này là một loại đồ chơi.
 

@@ -125,7 +125,7 @@ mm-agent-loop
 ## Sử dụng nó
 `code/main.py`Đường đá cột:
 
-- Action schema của JSON 定义(10 个 hành động)。
+- Action schema của JSON 定义(10 个 actions: 上列出的九个,加上 crop + zoom 工具 `screenshot_region`(■)
 - 作为 dict 的模拟浏览器状态──
 - Cơ thể vòng tròn đại lý: nhận trạng thái, phát hành hành động, áp dụng, vòng.
 - 10-task mini-benchmark (trên bản tổng hợp), được sử dụng để đo lường tỷ lệ thành công từ đầu đến cuối.
@@ -135,7 +135,7 @@ mm-agent-loop
 本 bài học 生成 `outputs/skill-multimodal-agent-designer.md` Định định một sản phẩm sử dụng máy tính (domain, action set, evaluation target), thiết kế vòng tròn đầy đủ của các đại lý, chiến lược nhớ, chế độ đặt nền và điểm chuẩn dự kiến.
 
 ## 练习
-1. Sử dụng `screenshot_region`công cụ ((crop + zoom) mở rộng kế hoạch hành động.
+1. Các chương trình trong mã hóa được thêm vào trong 9 hành động cốt lõi`screenshot_region`công cụ ((crop + zoom) ◊ Những nhiệm vụ nào sẽ được hưởng lợi?
 
 2. 阅读 AgentVista(arXiv:2602.23166)  mô tả các loại nhiệm vụ khó khăn nhất, cũng như tại sao các mô hình biên giới vẫn thất bại
 

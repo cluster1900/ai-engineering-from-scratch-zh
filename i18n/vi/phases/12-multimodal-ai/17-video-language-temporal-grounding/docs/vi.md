@@ -1,6 +1,6 @@
 # Mô hình ngôn ngữ video: Các token thời gian và việc đặt đất
 
-> Video không là một bức ảnh trên một đoạn phim 5 giây có kết quả liên tục, động tác động từ và sự kiện thời gian, những mô hình hình ảnh không thể thể hiện được. Video-LLaMA, Zhang và các đồng nghiệp, tháng 6 năm 2023) đã phát hành video mở đầu tiên có nền tảng trực quan-nghính thức. VideoChat và Video-LLaVA đã mở rộng mô hình này. Đến năm 2025, TMRoPE của Qwen2.5-VL đã giảm đi sự khác biệt với các mô hình độc quyền biên giới. Mỗi hệ thống đều giải quyết các biểu tượng thời gian theo cách khác nhau:Q-former mỗi clip,concat-pool mỗi khung,TMRoPE mỗi khung.
+> Video không là một bức ảnh trên một đoạn phim 5 giây có kết quả 序列、动作动词和事件时序,这些是图像模型 无法表示的.Video-LLaMA(Zhang et al., June 2023) đã phát hành video mở đầu tiên có nền tảng trực tuyến-thính giác LLM.VideoChat 和 Video-LLaVA  mở rộng mô hình này. Đến năm 2025, M-RoPE đồng thời của Qwen2.5 - VL đã giảm thiểu khoảng cách với các mô hình độc quyền biên giới.
 
 **Type:** Build
 **Languages:** Python (stdlib, frame sampler + temporal-grounding evaluator)
@@ -10,7 +10,7 @@
 ## Học mục tiêu
 - 解释 tại sao mã hóa vị trí thời gian 会独立于视觉编码器 改变视频VLM hiệu suất。
 - So sánh đồng nhất, động lực-FPS và các sự kiện-động cơ khung mẫu trong token-per-second với độ chính xác đất 取舍──
-- 描述 Q-ex-per-clip(Video-LLaMA)、pooled-per-frame(Video-LLaVA) và M-RoPE-per-token(Qwen2.5-VL) thiết kế。
+- 描述 Q-ex-per-clip(Video-LLaMA)、pooled-per-frame(Video-LLaVA) và thời gian-định hướng M-RoPE mỗi token(Qwen2.5-VL) thiết kế。
 - Nói ra bốn tiêu chuẩn video: VideoMME, TempCompass, EgoSchema, Video-MMMU,
 
 ## 问题
@@ -24,7 +24,7 @@ Có 3 phương pháp nén:
 
 Mỗi loại lấy khác nhau. Các mẫu phụ sẽ mất chi tiết thời gian.
 
-Mã hóa vị trí thời gian là một chiều khác:模型如何知道框架 5 发生在框架 6 之前?选项包括简单的1D temporal RoPE(Video-LLaMA) 、学习的 temporal embeddings(Video-LLaVA) 和TMRoPE(Qwen2.5-VL,完整3D) 👇
+Mã hóa vị trí thời gian là một chiều khác:模型如何知道框架 5 发生在框架 6 之前?选项包括简单的1D temporal RoPE(Video-LLaMA) ✓ được học tập thời gian nhúng cắm (Video-LLaVA) và thời gian liên kết M-RoPE(Qwen2.5-VL, hoàn chỉnh 3D) ✓
 
 ## 概念
 ### Video-LLaMA: mỗi clip một Q-former + chi nhánh âm thanh
@@ -43,17 +43,17 @@ VideoChat đã giữ lại ý tưởng của Video-LLaMA, nhưng bỏ âm thanh 
 
 Hai trong số đó không thể xử lý video dài.
 
-### Qwen2.5-VL và TMRoPE
+### Qwen2.5-VL và M-RoPE phù hợp với thời gian
 
-Qwen2.5-VL  đã đưa ra TMRoPE, tức Temporal-Modality Rotary Position Embedding. Mỗi mã đệm 携带一个 (t, h, w) 位置, trong đó t là dấu thời gian thực tế.
+Qwen2.5-VL 沿用 Qwen2-VL 的 M-RoPE(Multimodal Rotary Position Embedding),并把它的时间轴与绝对时间对齐──每个补丁代币 携带一个 (t, h, w) 位置, trong đó t 跟随实际时间标(不是框架索引)──Qwen2.5-Omni(第 12.20 课) Sau đó把同一思路的音频和视频版本命名为TMRoPE,即 Time-aligned Multimodal RoPE──
 
 Sự khác biệt quan trọng giữa việc nhúng vào thời gian đơn giản:
 
 - 绝对时间,而不是索引. Mô hình nhìn thấy là trong 4.2 giây, không phải trong khung 15 giây.
 - Mỗi token quay, chứ không phải mỗi clip. Mỗi token hình ảnh đều theo dấu thời gian của riêng mình.
-- 兼容 động lực FPS── nếu ở đây với 2 FPS 采样、 ở đó với 4 FPS 采样, TMRoPE có thể xử lý nguyên sinh không đồng đều间隔──
+- 兼容 động lực FPS── nếu ở đây với 2 FPS 采样、 ở đó với 4 FPS 采样, thời gian-định hướng M-RoPE có thể xử lý nguyên thủy loại không đồng đều间隔──
 
-TMRoPE 支持猫在第几秒跳起? 这类查询──模型可以输出在 4.2秒──视频-LLaMA chỉ có thể nói早在剪辑──
+M-RoPE 支持猫在第几秒跳起? 这类查询──模型可以输出 4.2 giây──Video-LLaMA chỉ có thể nói sớm trong clip──
 
 ### Các chiến lược lấy mẫu khung
 
@@ -67,7 +67,7 @@ Keyframe + context: trong giới hạn chụp + 若干 khung lân cận 采样�
 
 ### Tỷ lệ hợp nhất mỗi khung
 
-Trong 1 FPS 且每框架 576 token 时, một clip 5 分钟 là 172.800 token──Qwen2.5-VL-72B's 128k context có thể xử lý rất khó, nhưng chi phí cao──
+Trong 1 FPS và 576 token mỗi khung, một clip 5 phút là 172.800 token. Điều này sẽ vượt qua bối cảnh 128k của Qwen2.5-VL-72B, vì vậy trước tiên phải giảm tỷ lệ hoặc đối với mỗi token tập hợp.
 
 3x3 pool hàng tỉ sẽ giảm mỗi khung xuống còn 64 token -> 5 phút là 19.200 token... đối với hầu hết các nhiệm vụ là điểm ngọt ngào...
 
@@ -96,7 +96,7 @@ Các định dạng đầu ra JSON của Qwen2.5VL có thể được giải quy
 
 Video 2026 năm VLMs thực hành tốt nhất:
 
-- Mã mã:带 M-RoPE hoặc TMRoPE của SigLIP 2(Qwen2.5-VL)。
+- Mã mã:SigLIP 2 hoặc nguyên sinh phân giải ViT,LLM 中使用时间调整 M-RoPE(Qwen2.5-VL) 』
 - Phân mẫu khung:FPS động lực (FPS) theo chuyển động sử dụng 1-4),带 max-frame cap。
 - Phép hợp mỗi khung:3x3 hàng tỉ chiều.
 - Output:包含 time + event 字段的结构化 JSON。
@@ -112,7 +112,7 @@ video-temporal-patches
 
 - Đồng nhất và động lực-FPS khung mẫu.
 - Một game thời gian-grounding đánh giá: given given time T 处的"các thực" sự kiện 和 mô hình đầu ra, trong dung nạp trong đánh giá chính xác.
-- Video-LLaMA(16 khung hình,Q-ex)、Video-LLaVA(8 khung hình,MLP)、Qwen2.5-VL(dynamic FPS + TMRoPE)
+- Video-LLaMA(16 khung hình,Q-ex)、Video-LLaVA(8 khung hình,MLP)、Qwen2.5-VL(FPS động + M-RoPE phù hợp thời gian)
 
 ## 交付 nó
 本课会产出 `outputs/skill-video-vlm-frame-planner.md` Đặt một nhiệm vụ video ((monitoring、action recognition、temporal grounding、summary), nó sẽ chọn mẫu khung hình、pooling factor、output format 和 dự kiến độ chính xác ⋅
@@ -120,7 +120,7 @@ video-temporal-patches
 ## 练习
 1. Đối với một 3 phút nấu ăn demo, chọn đồng phục cũng là năng động FPS.
 
-2. TMRoPE  cụ thể tăng thêm gì, là đơn giản thời gian nhúng bảng làm không được?
+2. M-RoPE phù hợp thời gian  cụ thể tăng thêm gì, là đơn giản thời gian xếp vào bảng làm không đến?
 
 3. 写一个VLM 可学习输出 时代接地 JSON schema──包含错误案例──
 
@@ -132,7 +132,7 @@ video-temporal-patches
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
 | Temporal grounding | "Time-localized answers" | VLM 会为事件发生时间输出具体 timestamp range |
-| TMRoPE | "Time-Multimodal RoPE" | 带绝对 timestamps 的 3D rotary position，由 Qwen2.5-VL 使用 |
+| Time-aligned M-RoPE | "TMRoPE" | 时间轴跟随绝对 timestamps 的 3D rotary position；Qwen2.5-VL 用于视频，Qwen2.5-Omni 把其音频与视频形式命名为 TMRoPE |
 | Dynamic FPS | "Motion-aware sampling" | 在 high-motion segments 采样更多 frames，在 static segments 采样更少 |
 | Frame pooling | "Spatial compress per frame" | 在进入 LLM 前用 bilinear interpolation 减少每个 frame 的 patches |
 | Video Q-former | "Clip compressor" | 将 N frames 映射到 K learned queries 的 cross-attention bottleneck |

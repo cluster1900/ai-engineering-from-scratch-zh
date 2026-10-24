@@ -18,7 +18,7 @@ BLIP-2 sẽ đưa 32 mã thông báo trực quan vào lớp đầu vào của LL
 
 Phản ứng của Flamingo là: hoàn toàn không thay đổi dòng nhập của LLM. Trong các khối LLM hiện có, các lớp liên quan khác nhau được đưa vào các lớp. Các mã thông báo văn bản vẫn như thường xuyên được truyền thông.
 
-Flamingo  trả lời câu hỏi thứ hai là: làm thế nào để xử lý mỗi prompt trong số lượng hình ảnh có thể biến đổi ((0、1 hoặc多张)?
+Flamingo trả lời câu hỏi thứ hai là: làm thế nào để xử lý mỗi prompt trong số lượng hình ảnh có thể biến đổi ((0、1 hoặc多张)?
 
 ## 概念
 ### LLM đóng băng
@@ -56,7 +56,7 @@ x_before_next_block = gated
 
 ### Sử dụng sự chú ý ngã mặt của các đầu vào được giao tiếp
 
-Trong một lời nhắc giống như "<image A> caption A <image B> caption B <image C> ?" , mỗi mã văn bản chỉ nên nhìn thấy các hình ảnh nằm trong các chuỗi trước đó.`t`Các mã thông báo văn bản chỉ cần tham gia vào chỉ mục hình ảnh `i < i_t`của hình ảnh resampler token, trong đó `i_t``t`之前最近的图像──只看最近的前置图像或看到所有的前置图像都是有效选择; Flamingo 选择前者──
+Trong một lời nhắc giống như "<image A> caption A <image B> caption B <image C> ?" , mỗi mã văn bản chỉ nên nhìn thấy các hình ảnh nằm trong các chuỗi trước đó.`t`Các mã thông báo văn bản chỉ tham gia vào hình ảnh `i_t`của resampler token, trong đó `i_t``t`之前最近图像; tất cả các token của các hình ảnh khác đều bị che 掉── chỉ nhìn thấy hình ảnh  hoặc  nhìn thấy tất cả hình ảnh  đều là lựa chọn hiệu quả; Flamingo 选择前者──
 
 ### Học tập trong bối cảnh ít ảnh
 
@@ -73,7 +73,7 @@ Flamingo prompt trông giống như:
 Flamingo sử dụng ba tập huấn:
 
 1. MultiModal MassiveWeb (M3W):4300.000 chứa các trang web của các hình ảnh và văn bản, tái tạo.
-2. Các cặp hình ảnh-môn văn (ALIGN + LTIP):44 tỷ đối tượng
+2. Hình ảnh-Lịch bản cặp: ALIGN(18 tỷ đối)加 LTIP(3.12 tỷ đối),合计约21 tỷ đối──
 3. Video-Text Pairs (VTP): 27 triệu clip video ngắn
 
 OBELICS(2023) là một phần của các mô hình giống Flamingo được đào tạo trên nó.
@@ -99,7 +99,7 @@ Otter(2023) dựa trên OpenFlamingo, và MIMIC-IT((((một hướng dẫn đa p
 | Frozen LLM | Yes | Yes |
 | Few-shot in-context | 弱 | 强 — 论文的核心 |
 | Interleaved inputs | 无原生支持 | Yes，设计目标 |
-| Training data | 130M pairs | 1.3B pairs + 43M interleaved pages |
+| Training data | 130M pairs | ~2.1B pairs + 27M video clips + 43M interleaved pages |
 | Parameter count | 188M trained | ~10B trained (cross-attn layers) |
 | Compute | 8 个 A100 上数天 | 数千个 TPUv4 上数周 |
 

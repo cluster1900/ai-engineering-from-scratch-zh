@@ -19,7 +19,7 @@ Một mô hình đa phương tiện thống nhất  dễ tuyên bố, nhưng r�
 工程挑战:
 
 - Mỗi loại hình đều phải có Tokenizer, nén phải đủ gần không bị tổn thất để tái xây dựng, và tạo ra Token với tốc độ chuyển đổi 能消耗.
-- 单一词汇 必须为文本(32k+) 图像(16k+) 语音(4k+) 音乐(8k+) phân phối không gian──最低也需要四万多条目──
+- 单一词汇 必须为文本(32k+) 图像(8k+) 语音(4k+) 音乐(8k+) phân phối không gian──最低也需要五万多条目──
 - 训练数据 phải bao gồm mỗi cặp đầu vào-phản xuất (text→image、image→speech、speech→image等), hoặc mô hình phải có thể được hợp nhất.
 - Inference 必须足足足足快地流 输出 Token,以满足对话延迟 ((<500ms time-to-first-audio-byte) ]]
 
@@ -29,21 +29,21 @@ Một mô hình đa phương tiện thống nhất  dễ tuyên bố, nhưng r�
 MIO của Tokenizer đống:
 
 - Văn bản: chuẩn BPE, âm thanh ~32000。
-- Hình ảnh:SEED-Tokenizer (2023)  带离散代码簿 的量化VAE,4096 条目,每张图像 32x32 个代码.
-- Khả năng phát biểu:SpeechTokenizer residual-VQ (2023)  sẽ định dạng sóng 16kHz 编码为 8 个层次代码书; tầng nhất là nội dung粗粒度,后续层加入 prosody 和扬声器身份──
-- Âm nhạc: tương tự như còn lại-VQ(Meta của MusicGen / Encodec gia đình),4-8 个 codebook──
+- Hình ảnh:SEED-Tokenizer (2023), một loại hình ảnh tách biệt Tokenizer, sổ mã có 8192 条目, mỗi张图像输出 32 条 Token。
+- Khả năng phát biểu:SpeechTokenizer residual-VQ (2023), sẽ 16kHz dạng sóng 编码为 8 个层级代码书; tầng nhất là nội dung粗粒度,后层加入 prosody 和扬声器身份──MIO 保留内容层和前三个 timbre 层,每个层 1024 个代码,因此共 4096 个语音ID──
+- Âm nhạc: tương tự như còn lại-VQ(Meta của MusicGen / Encodec gia đình),4-8 个代码书──MIO 本身没有音乐 Tokenizer(lối thứ tư của nó là video,以的形式经过图像 Tokenizer);本课的玩具 加入音乐,为了展示新的方式 如何占用一段 ID 范围──
 
 Mỗi phương thức đều tạo ra một số lượng lớn các Token. Những Token này được nhận được các phạm vi ID không chồng lên trong từ vựng chung:
 
 ```
 text:   0..31999
-image:  32000..36095  (4096 image tokens)
-speech: 36096..40191  (4096 speech base tokens, plus residual layers)
-music:  40192..48383  (8192 music tokens)
-sep:    48384..48390  (<image>, <speech>, <music>, </...>, etc.)
+image:  32000..40191  (8192 image tokens)
+speech: 40192..44287  (4 codebooks x 1024 speech tokens)
+music:  44288..52479  (8192 music tokens, the toy's extension)
+sep:    52480..52485  (<image>, <speech>, <music>, </...>)
 ```
 
-总计: khoảng 48k từ vựng.
+总计: khoảng 52k từ vựng.
 
 ### Đánh mã phát sóng
 
@@ -54,7 +54,7 @@ Streaming 模式:
 1. Người dùng dùng dùng: 麦克风说话; Real-time audio Tokenizer 每50ms 发发言 Token。
 2. MIO 在 Token 到达时消费它们(quan prefill + tăng lên tiến bộ)
 3. Output Token 随生成流式输出; đồng bộ phát âm decoder 以约 50-150ms 延迟将其转换为音频样本。
-4. Thời gian đến đầu tiên-audio-byte:MIO giấy Trung khoảng 300-500ms, gần GPT-4o của khoảng 250ms。
+4. Thời gian đến đầu tiên: MIO giấy 没有报告延迟数字──按下文的预算, thiết kế này tốt nhất là khoảng 300ms, so với GPT-4o khoảng 250ms──
 
 Mini-Omni(arXiv:2408.16725)、GLM-4-Voice(arXiv:2412.02612) và Moshi(arXiv:2410.00037) là các thiết kế phát thanh-LLM trực tuyến tương ứng. Trong đó, Moshi trên GPU đơn đã thực hiện 160ms đi lại-lại.
 
@@ -97,7 +97,7 @@ MIO gần nhất là một biểu tượng hoàn toàn của bất cứ ai.
 - Đầu tiên đầu ra Tốc hiệu: ~ 50ms
 - Hỗ trợ giải mã giọng nói: ~ 100-150ms.
 
-Tổng thời gian từ đầu tiên đến đầu tiên: tối thiểu khoảng ~300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──根据公开基准,MIO/AnyGPT 位于400-600ms 范围──
+Tổng thời gian từ đầu tiên đến đầu tiên: tối thiểu khoảng ~ 300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──MIO 和 AnyGPT 都没有公布实测数字, vì vậy hãy xem ngân sách này như ước tính, chứ không phải là chuẩn mực──
 
 ### Tại sao bất cứ ai vẫn gặp khó khăn
 
@@ -129,7 +129,7 @@ any-to-any-stream
 
 2. SpeechTokenizer residual-VQ sử dụng 8 codebook.
 
-3. Từ vựng của bạn có 32k văn bản + 4k hình ảnh + 4k nói chuyện.                                                                                                                                                                                                                                                     
+3. Từ vựng của bạn có 32k văn bản + 8k hình ảnh + 4k nói chuyện.
 
 4. Dòng tư tưởng trực quan sẽ phát ra hình ảnh trung gian. Những loại vấn đề nào sẽ được hưởng lợi? Những loại nào sẽ bị tổn thương thêm?
 
@@ -140,7 +140,7 @@ any-to-any-stream
 |------|-----------------|------------------------|
 | Any-to-any | "Multimodal in/out" | 一个单一模型，能够在任意方向接受并发出 text、image、speech 和 music |
 | Residual-VQ | "Speech tokenizer stack" | Multi-codebook Tokenization，每一层都添加信息；base layer 是内容，后续层是 prosody |
-| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 4096-entry codebook |
+| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 8192-entry codebook，每张图像 32 个 Token |
 | Chain-of-visual-thought | "Visual scratchpad" | 模型在最终答案前生成一张中间图像作为 reasoning step |
 | Time-to-first-audio-byte | "TTFAB" | 从用户语音到第一个 audio output 的延迟；<500ms 才有对话感 |
 | Four-stage curriculum | "Training recipe" | Alignment -> interleaved -> speech-enhanced -> SFT，按此顺序 |

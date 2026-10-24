@@ -39,7 +39,7 @@ Chameleon  từ chối giả định này: hình ảnh chỉ từ chia sẻ từ
 
 训练:VAE tái tạo mất + cam kết mất + codebook mất──Codebook chỉ số 构成图像的离散字母──
 
-Đối với Chameleon 来说: 一张图像变成32*32 = 1024 个标志, 来自大小为8192 的词表──与文本 标志( 来自 LLM 的 BPE 词表,例如 32000)拼接──最终词表:40192──Transformer 看到的是一个序列、一个损失──
+Đối với Chameleon: một张图像变成32*32 = 1024 代币, từ大小为8192的词表――把这些图像 ID 放进与文本 BPE Token 相同的 ID 空间── Chameleon có 65,536 条目, số này đã chứa 8192 代码图像以及图像分隔符等特殊代币――Transformer 看到一个序列一个损失――
 
 ### 共享词表
 

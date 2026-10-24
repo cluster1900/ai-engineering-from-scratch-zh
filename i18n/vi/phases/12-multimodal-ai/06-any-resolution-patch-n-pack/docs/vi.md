@@ -1,6 +1,6 @@
 # 任意分辨率 Vision: Patch-n'-Pack 和 NaFlex
 
-> Trình thực không phải hình vuông 224x224 ⋅ Nhận thức là 9:16, hình ảnh là 16:9, chụp y tế có thể là 4096x4096, đoạn cắt điện thoại là 9:19.5⋅ Phản ứng của VLM trước năm 2024 ⋅ thay đổi kích thước tất cả nội dung thành hình vuông cố định ⋅ mất để OCR ⋅ hiểu tài liệu và phân tích khung cảnh độ phân giải thực sự có thể thực hiện tín hiệu. NaViT ⋅ Google,2023) cho thấy có thể sử dụng khối hình đệm sẽ có thể thay đổi độ phân giải các bản vá trong một lô biến số đơn ⋅ M-RoPE của Qwen2-VL ⋅2024) hoàn toàn loại bỏ bảng xếp hạng vị trí ⋅ LVA sẽ có thể làm cho hình ảnh độ phân giải cao của NextRes Resolution của các bản vá thành cơ sở + phụ hình ⋅ SigL 2 NaFlex ⋅ 2025) hiện đang mở các khía cạnh của VLM, được sử dụng để thực hiện bất kỳ kết quả kiểm tra kết nối nào.
+> Trình ảnh thực sự không phải là hình vuông 224x224──trận dụng là 1:3, hình ảnh là 16:9, chụp y tế có thể là 4096x4096, đoạn cắt điện thoại là 9:19.5──2024 trước VLM 答案 để thay đổi kích thước của tất cả nội dung thành hình vuông cố định mất để OCR、 tài liệu hiểu và giải quyết các cảnh độ phân giải có thể thực sự sử dụng tín hiệu──NaViT(Google,2023) cho thấy có thể sử dụng khối hình đệm sẽ có thể thay đổi độ phân giải các bản vá trong một lô biến áp đơn lẻ──Qwen2-VL của M-RoPE(2024) hoàn toàn loại bỏ bảng xếp hạng vị trí tuyệt đối──Lav-NeXT của LVA sẽ có độ phân giải cao hình ảnh chia thành cơ sở + phụ hình ảnh──SigLIP 2 NaF 2025) hiện đang mở các khía cạnh của VLM, được sử dụng để thực hiện tỷ lệ kiểm tra đơn lẻ.
 
 **Type:** Build
 **Languages:** Python (stdlib, patch packer + block-diagonal mask)
@@ -52,7 +52,7 @@ AnyRes của LLaVA-NeXT là một ứng dụng thay thế thực tế.
 
 Đối với một张 672x672 图像, sử dụng lưới 2x2 cộng với hình ảnh nhỏ: 4 * 576 + 576 = 2880 个 thị giác Token。 đắt tiền nhưng hiệu quảLLM Đồng thời xem phần phần và toàn phần trên phần dưới。
 
-Khi mã hóa của bạn được đóng băng và chỉ hỗ trợ một loại phân giải,AnyRes là đường đầu tiên. Nó sẽ làm cho hình ảnh lớn của Token số nổ.
+Khi mã hóa của bạn được đóng băng và chỉ hỗ trợ một loại độ phân giải,AnyRes là đường đầu tiên. Nó sẽ làm cho hình ảnh lớn của Token số nổ.
 
 ### M-RoPE (Qwen2-VL)
 

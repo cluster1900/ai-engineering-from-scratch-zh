@@ -1,6 +1,6 @@
 # LLaVA với điều chỉnh hướng dẫn thị giác
 
-> LLaVA(4 tháng 4 năm 2023) là cấu trúc đa mô hình được sao chép nhiều nhất trên Trái đất. Nó sử dụng MLP 2 tầng thay thế BLIP-2 của Q-Former, bằng kết nối token đơn giản thay thế sự chú ý chéo cổng của Flamingo, và chuyển sang 158k 条 hướng dẫn hình ảnh để tập luyện, dữ liệu này được tạo ra bởi GPT-4 từ các bản tóm tắt trong văn bản thuần túy.
+> LLaVA(4 tháng 4 năm 2023) là cấu trúc đa mô hình được sao chép nhiều nhất trên Trái đất. Nó sử dụng 2 tầng MLP thay thế BLIP-2 của Q-Former, sử dụng kết nối token đơn giản thay thế Flamingo của sự chú ý chéo cổng, và chuyển hướng hướng hướng dẫn trực quan lên đào tạo, dữ liệu này được tạo ra bởi GPT-4 từ các bản tóm tắt trong văn bản thuần túy.
 
 **类型：**构建
 **语言：**Python(stdlib、projector + trình tạo mẫu hướng dẫn)
@@ -32,10 +32,10 @@ Kết quả: một trong 8 张 A100 上运行一天、在MMMU 上击败 Flamingo
 
 ### 架构
 
-LLaVA-1.5 ở 13B:
+LLaVA-1.5 ở 7B:
 - Mã mã thị giác: CLIP ViT-L/14 @ 336(giai đoạn 1 结,giai đoạn 2 可选解) 』
 - Động cơ chiếu:带 GELU kích hoạt của 2 lớp MLP,`1024 → 4096 → 4096`
-- LLM: Vicky-13B (sau đó là Llama-3.1-8B)
+- LLM:Vicuna-7B v1.5(13B 变体使用 Vicuna-13B;后来的叉 改用 Llama-3.1-8B)
 
 图像 + 文本 prompt 的 chuyển tiếp:
 
@@ -83,7 +83,8 @@ Tất cả quá trình không liên lạc trực tiếp với hình ảnh chỉ 
 LLaVA-1.5(2023 年 10 月)加入:
 - Để phân tích dữ liệu nhiệm vụ học tập (VQA、OKVQA、RefCOCO)
 - Hệ thống tốt hơn nhanh hơn.
-- 2048 → 32k context。
+- Sử dụng máy chiếu MLP 2 tầng thay thế từng lớp tuyến tính ban đầu, sử dụng 336px của CLIP ViT-L/14(576 个 Token) thay thế 224px(256 个 Token)。 training序列 vẫn là 2048 个 Token。
+- 论文中的格分 HD 变体, sau đó được phát hành bởi LLaVA-NeXT 以 AnyRes形式──
 
 LLaVA-NeXT(2024 年 1 月)加入:
 - AnyRes:把高分辨率图像切成2x2或1x3 网格的336x336 crop,再加一个全球低分辨率图片.
@@ -99,7 +100,7 @@ Bài học 12.08 会深入讲 OneVision──简短版: cùng một máy chiếu
 | | Q-Former（BLIP-2） | MLP（LLaVA） |
 |---|---|---|
 | 每张图像的 visual Token | 32 | 576（base）或 2880（AnyRes） |
-| 可训练参数 | 188M + LM | 40M + LM |
+| 可训练参数 | 188M + LM | ~22M（7B）+ LM |
 | Stage 1 loss | ITC+ITM+ITG | 仅 LM |
 | LLM drop-in | 需要重新训练 | 最小重新训练即可替换 |
 | Multi-image | 别扭 | 自然（concat） |

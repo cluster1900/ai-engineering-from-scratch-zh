@@ -9,7 +9,7 @@
 
 ## Học mục tiêu
 - 计算不同 FPS 和聚合 下长视频的总视觉标记 数量──
-- 解释三条扩展路径:những bối cảnh xô (((Gemini 1.5) 、những vòng chú ý(LWM) 、đánh nén mã thông báo(LongVILA / Video-XL) ✿
+- 解释四条扩展路径:đáng ngữ xô(Gemini 1.5) ‧ring attention(LWM) ‧token compression(LongVILA / Video-XL) ‧agentic retrieval(VideoAgent) ‧
 - Trong准确率和延迟上比较 nguyên liệu ngữ cảnh video VLMs với các video thu hồi đại lý VLMs(VideoAgent)
 - Để 30 phút video thiết kế một kim cáp trong một đống cỏ 测试,并测量特定分钟处的召回率──
 
@@ -18,7 +18,7 @@ Các bản vá kích thước Qwen2.5VL ở độ phân giải nguyên thủy 38
 
 Một phần 2 phim trong 1 FPS là 583k Token──超出多数 2026 年开放模型能力; cần Gemini 2.5 Pro, hoặc hơn激进地聚合──
 
-出现了三条扩展路径──
+xuất hiện bốn条扩展路径:
 
 ## 概念
 ### Đường 1: bối cảnh thô sơ (Gemini 1.5, Claude Opus)
@@ -33,7 +33,7 @@ Gemini 1.5 Pro 发布时支持 1M Token;Gemini 1.5 Ultra  đạt 10M;2026 năm G
 
 Phân tích sự chú ý của vòng Đưa chuỗi dài phân tán trên nhiều thiết bị, hình thành một vòng, mỗi thiết bị có một phần.
 
-LWM(Liu et al., 2024) sử dụng cách này đào tạo một mô hình 1M-Token ngữ cảnh 模型── đào tạo tính toán lượng theo ngữ cảnh 线性扩展, thay vì mở rộng vuông, vì chi phí vuông của sự chú ý được phân chia vào các thiết bị trong vòng.
+LWM(Liu et al., 2024) sử dụng cách này đào tạo một mô hình 1M-Token ngữ cảnh 模型──内存 của mỗi thiết bị theo từng phần  mở rộng, do đó tăng thiết bị có thể làm cho ngữ cảnh 延长大致线性── Total computation of attention is still the square of context;ring 把 this part of work distributed to each device,并让 key/value's transmission and computation overlap──
 
 LongVILA(arXiv:2408.10188)把该模式适配到VLMs──1400 视频,每 192 个 Token = 268k context,并使用8way parallelism của vòng chú ý 训练──
 
@@ -113,7 +113,7 @@ mm-video-token-budget
 
 3. Trong 1 小时视频上比较 粗文文 Qwen2.5-VL-72B(80k文) với VideoAgent(Claude 3.5 + lấy lại) ―― 哪个在召回上胜出?哪个在延迟上胜出?
 
-4. Chi phí lưu trữ của sự chú ý vòng theo trình tự mở rộng chiều dài tuyến tính, cũng như số lượng thiết bị mở rộng tuyến tính.
+4. Chú ý nhớ của từng thiết bị theo chiều dài của chuỗi trừ số thiết bị mở rộng, và chú ý  tổng số lượng tính toán vẫn là bậc vuông.
 
 5. 阅读 Gemini 1.5 第 5 节 Về nội dung của kim cương trong một đống cỏ.
 

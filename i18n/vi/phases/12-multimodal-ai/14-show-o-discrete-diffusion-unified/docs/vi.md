@@ -10,7 +10,7 @@
 ## Học mục tiêu
 - 解释 ải luân phân biệt nén:一种先均 mask Tokens、再让 Transformer 恢复它们的时间表──
 - Từ tốc độ và chất lượng trên so sánh并行 hình ảnh giải mã (Show-o, MaskGIT) với tự động giải mã hình ảnh (Chameleon, Emu3):
-- Nói ra Show-o ở một điểm kiểm soát Trung xử lý ba loại nhiệm vụ: T2I、VQA、phức ảnh inpainting。
+- Nói ra Show-o ở một điểm kiểm soát Trung xử lý bốn loại nhiệm vụ: văn bản tạo, VQA, T2I, hình ảnh vẽ.
 - 选择一种掩盖 lịch trình ((coine、linear、truncated),并推理它对样品质量的影响──
 
 ## 问题
