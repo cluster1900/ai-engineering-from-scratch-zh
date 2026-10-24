@@ -19,6 +19,26 @@ Le vrai problème est de savoir comment traiter les n-grammes non vus. Le modèl
 
 ![N-gram model: count, smooth, generate](../assets/ngram.svg)
 
+### 预测 jeu
+
+Avant l'apparition de ces mécanismes, une expérience a défini ce qu'est un modèle de langage.
+
+Ces suppositions ne sont pas des détails sans importance. Elles sont un sans-perte de recodé du texte: remettre la séquence de suppositions à un autre devin qui est tout à fait identique, il peut récupérer chaque lettre, car à chaque position il sait exactement quelles suppositions sont en avant.
+
+Shannon a fait cette expérience en 1951, et les chiffres obtenus dominent encore ce domaine.`log2(27) ≈ 4.75`Les spéculateurs humains ont des centaines de caractères sur la page ci-dessous, qui se situent entre 0,6 et 1,3 bits par lettre. En anglais, environ les trois quarts sont des méthodes de déplacement obligatoires.
+
+Chaque modèle de langue est un joueur mécanique du jeu, chaque chiffre de l'évaluation est un chiffre de jeu:
+
+- **Cross-entropy loss**Le modèle est le nombre de bits de chaque symbole moyen nécessaire.
+- **Perplexity**Oui `2^bits`(ou `e^nats`): Le modèle de devinettes est encore confronté à des facteurs de division. La perplexité de la devinette moyenne sur 27 symboles est 27; la perplexité du joueur de 1 bit par lettre est de 2 ⋅
+- **Context length 就是玩家的记忆。**Le modèle de trigramme avec deux jetons de mémoire joue le jeu. Le transformateur avec 100K jetons joue le même jeu. Les règles ne changent jamais.
+
+Il faut remarquer un changement de unité: ce jeu par chaque lettre en bits`log2`) compte, tandis que le n-gramme suivant formula selon chaque mot de symbole 以 nats(naturelle pour le nombre) compte.`e^H`C' est comme si on était en train de faire des trucs .`2^H`, ces deux points de vue sont la même mesure faite avec différentes unités.
+
+```figure
+prediction-game
+```
+
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`❖ Fixée `n`(habituellement trigramme avec 3,4 grammes avec 4)
 
 ```math
@@ -49,10 +69,6 @@ Kneser-Ney's洞见很深──"San Francisco" is常见 bigram──Unigram "Fran
 ngram-backoff
 ```
 
-
-```figure
-prediction-game
-```
 
 ## - Je le construis.
 
@@ -229,8 +245,10 @@ lesson: 16
 | Backoff | 回退到更短 context | 如果 trigram 计数为零，就使用 bigram。Katz backoff 将其形式化。 |
 | Kneser-Ney | n-gram 的最佳 smoothing | Absolute discounting + 低阶模型的 continuation probability。 |
 | Continuation probability | KN 专用 | `P(w)` 按 `w` 出现的 context 数量加权，而不是按原始计数加权。 |
+| Entropy of text | 每个符号的信息量 | 在给定 context 的条件下，编码下一个符号平均需要的 bits。Shannon 在 1951 年对印刷英语（最多 100 个字母的 context）的估计：0.6-1.3 bits/letter，这是在任何模型出现之前测得的。 |
 
 ## 延伸阅读
+- [Shannon (1951). Prediction and Entropy of Printed English](https://www.princeton.edu/~wbialek/rome/refs/shannon_51.pdf)  Définit chaque modèle de langue qui est encore en cours d'optimisation de l'expérience de devinettes 
 - [Jurafsky and Martin — Speech and Language Processing, Chapter 3 (2026 draft)](https://web.stanford.edu/~jurafsky/slp3/3.pdf) n-gramme de LM 和 lissage de traitement classique
 - [Chen and Goodman (1998). An Empirical Study of Smoothing Techniques for Language Modeling](https://dash.harvard.edu/handle/1/25104739) 确立 Kneser-Ney 作为最佳 n-gramme plus lisse 的论文──
 - [Kneser and Ney (1995). Improved Backing-off for M-gram Language Modeling](https://ieeexplore.ieee.org/document/479394) 原始 KN 论文。
