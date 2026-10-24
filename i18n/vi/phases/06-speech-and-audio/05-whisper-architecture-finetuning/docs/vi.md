@@ -32,7 +32,7 @@ Large-v3 có param 1.55B──Turbo sử dụng 4 lớp decoder( từ 32 tầng 
 
 **Prompt format。**Whisper là một lệnh từ trình giải mã Trung ̓s đặc biệt mã thông báo 控制的多任务模型:
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 

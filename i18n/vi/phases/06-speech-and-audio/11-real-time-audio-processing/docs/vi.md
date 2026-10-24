@@ -48,6 +48,10 @@ Moshi (Kyutai, 2024) đạt 200 ms toàn bộ képlex──GPT-4o-time thực (2
 - **TTS priming。**Ngay cả như Kokoro như vậy, lần đầu tiên yêu cầu cũng có 100200 ms nóng lên──缓存 mô hình, và lần đầu tiên thực sự quay 前用 dummy run 预热──
 - **Echo cancellation。**Không có AEC, TTS output 会 tái nhập trong mic,并触发 ASR 识别 bot 自己的声音──WebRTC AEC3 là mặc định nguồn mở──
 
+```figure
+nyquist-aliasing
+```
+
 ## 动手构建
 
 ### 步骤 1: vòng đệm
@@ -117,10 +121,6 @@ class Dialog:
 
 Đây là một phần của các công nghệ truyền hình và truyền hình.
 
-
-```figure
-nyquist-aliasing
-```
 
 ## Sử dụng nó
 
