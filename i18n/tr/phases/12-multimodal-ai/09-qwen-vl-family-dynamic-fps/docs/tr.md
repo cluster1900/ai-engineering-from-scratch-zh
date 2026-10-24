@@ -50,7 +50,7 @@ Qwen2-VL orijinal yaşam biçim çözünürlük ViT kodlayıcı ile sabit çöz�
 
 Qwen2.5VL'nin büyük dönüşümü videolardır.
 
-- 绝对时间 Token──不使用位置索引(frame 0, 1, 2...),而使用实际时间──"0:04'te kedi atlar". 模型会看到与框架代币 交错的`<time>0.04</time>`Tokenler
+- 位置 ID'ler arasında mutlak zaman──not using 索引(frame 0, 1, 2...),M-RoPE'nin zaman ayırı gerçek zamanın ardından gider, bu nedenle iki  ID arasındaki fark, iki  ID arasındaki farkın farkı için bir saniye sayısına göre değişir.
 - Dinamik FPS── yavaş hızlı malzemeler 1 FPS ışılagı, hareket sahnesleri 4+ FPS ışılagı── kullanıcı veya eğitimci cihazı tarafından seçiliyor; M-RoPE 会适配──
 - ViT 中的窗户注意──空间注意── 窗户内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局部内局内内局内内局内内局内局内内局内内局内内局内内局内内内局内内局内内内局内内内局内内内内内局内内内内内局内内内内内内内内内局内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内内
 - 显式 JSON 输出格式──使用工具-call 数据训练:"{\"coll\": \"click\", \"coords\": [380, 220]}"──开箱即代理-ready──
@@ -89,7 +89,7 @@ Avantaj: Bir konum kodlaması, metin, resim ve video işleme için kullanılabil
 1. Yapabileceğiniz en büyük FPS'i hesaplayın:`fps_max = B / (T * tokens_per_frame)`- Evet.
 2. - Evet .`{1, 2, 4, 8}`中选择满足 `fps <= fps_max`Hedef FPS:
 3. Eğer hareket güçlüse, daha düşük FPS seçin.
-4. 按选定FPS 均采样; entre插入 `<time>t</time>`Tokenler
+4.  Seçilen FPS 均采样;  秒为单位时间设置其M-RoPE 时间 ID──
 
 Qwen2.5VL 会隐式训练这种逻辑;推理时用户通过 `fps`参数控制── 60 saniyelik hareket dizisi, 4 FPS ⋅ 81 token 計算, 19440 token ile eşittir, 32k bağlamında 中可管理──
 
@@ -141,7 +141,7 @@ mm-mrope-axes
 |------|-----------------|------------------------|
 | M-RoPE | "Multimodal RoPE" | hidden dim 中带 temporal、height 和 width bands 的 3D rotary position embedding |
 | Dynamic FPS | "Smart sampling" | 根据运动、时长和 Token 预算为每个视频选择的帧采样率 |
-| Absolute time token | "Timestamp token" | 在序列中交错插入的 `<time>t</time>`，让模型看到实际秒数而不是帧索引 |
+| Absolute time encoding | "Time-aligned M-RoPE" | 根据每帧时间戳设置时间 position IDs，让模型看到实际秒数而不是帧索引，且无需额外 tokens |
 | Window attention | "Local attention" | 为提速而限制在小窗口内的 spatial self-attention；周期性加入 global attention |
 | Structured agent output | "JSON mode" | 通过训练数据监督教 VLM 输出可解析 JSON，其中包含 coords 和 tool names |
 | min_pixels / max_pixels | "Resolution bounds" | Qwen2.5-VL 的每请求控制项，用来约束总像素数，从而约束 Token 数 |

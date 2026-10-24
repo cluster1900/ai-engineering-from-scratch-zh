@@ -88,7 +88,7 @@ Zamanlı yerleştirme 的输出格式:
 
 - Özgür metin:"Kedi 4 saniyelik noktayı atlar". 易于解析但不精确──
 - Yapılandırılmış JSON:`{"event": "jump", "start": 4.1, "end": 4.3}`❖ Qwen2.5VL 会訓練この形式──
-- Token tabanlı: speciale `<time>4.1</time>`Tokens 与答案交错──Qwen2.5-VL'nin iç biçimi──
+- Token tabanlı: speciale `<time>4.1</time>`Tokens 与答案交错──部分视频模型使用这种方式;Qwen2.5-VL 则把时间编码在M-RoPE pozisyon kimliklerinde,并以文字或JSON 回答──
 
 Token tabanlı aşağı akıntılı kullanım için 最准确──Qwen2.5-VL'nin JSON çıkış biçimi doğrudan çözülebilir──
 
