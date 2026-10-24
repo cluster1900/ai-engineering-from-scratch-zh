@@ -72,9 +72,11 @@ git merge experiment/new-optimizer
 
 ### Étape 4: Utilisez ce cours
 
+Vous ne pouvez pas pousser directement à la répartition du programme en personne, seulement le maintien a des droits d'écriture.`origin`Dirigé vers votre propre copine:
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code
@@ -95,7 +97,7 @@ Pour ce cours, vous avez besoin de ces commandes:
 Pour les cours, il n'y a pas besoin de base, de sélection ou de sous-modules.
 
 ## 练习
-1. Clonner ce référentiel, créer un nommé`my-progress`Une branche, créer un fichier, l'engager, pousser
+1. C'est une fourchette, un référencement, un clone de votre fourchette, créons un nommé.`my-progress`Une branche, créer un fichier, l'engager, pousser
 2. Créer une`.gitignore`, éliminer les dossiers des points de contrôle`.pt`- Je suis là.`.pth`- Je suis là.`.safetensors`)
 3. - Je veux le faire .`git log --oneline`查看这个 repo's commit history,并阅读教训是如何被添加的
 

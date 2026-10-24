@@ -46,7 +46,7 @@ pip install datasets huggingface_hub
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("imdb")
+dataset = load_dataset("stanfordnlp/imdb")
 print(dataset)
 print(dataset["train"][0])
 ```
@@ -58,7 +58,7 @@ Ceci sera téléchargé sur IMDB 电影评论数据集.`~/.cache/huggingface/dat
 Certains ensembles de données sont trop grands pour être intégrés dans un disque.
 
 ```python
-dataset = load_dataset("wikimedia/wikipedia", "20220301.en", split="train", streaming=True)
+dataset = load_dataset("wikimedia/wikipedia", "20231101.en", split="train", streaming=True)
 
 for i, example in enumerate(dataset):
     print(example["title"])
@@ -73,7 +73,7 @@ Le streaming vous donnera un .`IterableDataset` Vous serez dans les rangées 
 `datasets`bibliothèque basse utilise Apache Arrow. Vous pouvez le convertir en d'autres formats en fonction des besoins du pipeline.
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 dataset.to_csv("imdb_train.csv")
 dataset.to_json("imdb_train.json")
@@ -102,7 +102,7 @@ Chaque projet de formation doit être divisé en trois parties:
 Certains ensembles de données sont déjà divisés.
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 split = dataset.train_test_split(test_size=0.2, seed=42)
 train_val = split["train"].train_test_split(test_size=0.125, seed=42)

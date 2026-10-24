@@ -14,7 +14,7 @@
 - Comprendre les quatre niveaux de stack: systèmes, paquets, temps d'exécution, bibliothèques d'IA
 
 ##  problématique
-Vous allez utiliser Python, TypeScript, Rust et Julia pour apprendre 200+ sections d'ingénierie AI. Si votre environnement est défectueux, chaque section de la classe deviendra un outil de lutte, et non un outil d'apprentissage.
+Vous allez utiliser Python, TypeScript, Rust et Julia pour apprendre 500+ sections d'ingénierie AI. Si votre environnement est défectueux, chaque section de la classe deviendra un outil de lutte, et non un outil d'apprentissage.
 
 La plupart des gens sautent la configuration de l'environnement. Ensuite, ils passent quelques heures à déboguer les erreurs d'importation, les conflits de version et l'absence de pilotes CUDA.
 
@@ -46,7 +46,7 @@ xcode-select --install
 brew install git curl wget
 
 # Ubuntu/Debian
-sudo apt update && sudo apt install -y build-essential git curl wget
+sudo apt update && sudo apt install -y build-essential git curl wget unzip
 
 # Windows (use WSL2)
 wsl --install -d Ubuntu-24.04
@@ -93,6 +93,16 @@ npm install -g pnpm
 node -e "console.log('Node', process.version)"
 ```
 
+Fnm Installation du processus`unzip`, la défaillance des temps`Not installing fnm due to missing dependencies.`退出: dans Linux, il doit débrancher un zip 归档, dans macOS 通过 Homebrew安装──macOS自带 `unzip`Ubuntu、Debian 和 WSL2 会通过步骤 1 的 apt 命令安装它(si vous avez sauté cette étape, fonctionne `sudo apt install -y unzip`)。
+
+**macOS / Apple Silicon（M1/M2/M3/M4）：**Si l' installation est nécessaire`Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)`Arrêtez, expliquez votre terminal fonctionne à Rosetta 2`arch`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `i386`), alors que Homebrew est un constructeur de l'arm64 original.`fnm install 22`开始重新运行:
+
+```bash
+arch -arm64 brew install fnm
+echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### 步骤 4: Rust
 
 Il s'agit d'une approche de la formation et de la formation.
@@ -116,33 +126,67 @@ julia -e 'println("Julia ", VERSION)'
 
 ### 步骤 6:GPU 设置( si vous avez)
 
+**NVIDIA（Linux / Windows）：**
+
 ```bash
-# NVIDIA
 nvidia-smi
 
 # Install PyTorch with CUDA
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 ```
 
+**macOS / Apple Silicon（M1/M2/M3/M4）：**C'est une situation prévue, pas un problème.**不要**- Je suis là .`--index-url .../cuXXX`(ces roues ne sont applicables qu'à Linux/Windows, installerie failuse)
+
+```bash
+uv pip install torch torchvision torchaudio
+```
+
+验证( s'applique à toute plateforme):
+
 ```python
 import torch
-print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA available: {torch.cuda.is_available()}")           # False on macOS — expected
+print(f"MPS available:  {torch.backends.mps.is_available()}")   # True on Apple Silicon
 if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
 没有 GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云GPU──
 
-### 步骤 7: Vérifiez tout
+### Étape 7: Vérifiez la route que vous voulez commencer
 
-运行验证脚本:
+Chaque commande de cette classe est tirée du répertoire de stockage, c'est-à-dire contenue.`README.md`et `phases/`Il est donc possible de voir une conclusion claire, et non une mise en garde.
+
+开始完整的入门序列:
 
 ```bash
-python phases/00-setup-and-tooling/01-dev-environment/code/verify.py
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner
+```
+
+Ou bien, regardez le chemin que vous voulez parcourir.
+
+```bash
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route ml-foundations
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route llm-engineering
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agents
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route mcp
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agent-skills
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route certification
+```
+
+Si vous voulez faire en sorte que le même pré-examen et le suivi des cours utilisés pour les outils et dépendances, en plus `--show-later` la carence de l'outil de suivi ne peut jamais empêcher la route choisie
+
+Chaque inspection indispensable échouée fournit un chemin ou une erreur d'importation vérifiée, ainsi qu'une ordonnance de réparation définitive. Les compétences et la certification des agents 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路线 路 路线 路线 路 路线 路 路线 路 路线 路 路线 路 路线 路 路线 路 路线 路 路线 路 路线 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 路 
+
+Lors de l'entrée, l'inspection effectuée imprime les premiers ordres de cours:
+
+```text
+Ready to start Beginner course.
+Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
 ## Utilisez-le
-Votre environnement est maintenant prêt à être utilisé pour chaque partie du cours.
+Votre environnement peut déjà commencer à vous inspectant. Les cours suivants, tels que les outils, doivent être réinstallés, ne laissez pas toute une série de techniques vous bloquer.
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
