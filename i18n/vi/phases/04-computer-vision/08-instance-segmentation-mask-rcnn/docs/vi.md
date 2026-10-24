@@ -81,7 +81,7 @@ Trong mỗi vị trí trên bản đồ tính năng, đặt K 个 个 个 个 �
 
 ### Khối thối
 
-R-CNN có 4 loại lỗ hơn:
+R-CNN có 5 loại lỗ
 
 ```math
 L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
@@ -257,7 +257,7 @@ def train_step(model, images, targets, optimizer):
     return {k: v.item() for k, v in loss_dict.items()}
 ```
 
-`targets`Danh sách phải chứa mỗi hình ảnh đối với các lệnh, trong đó có`boxes``labels`和 `masks`(Như `(num_instances, H, W)`mô hình trong đào tạo 时返回四个损失的句子, trong eval 时返回预测 列表,由 `model.training`quyết định.
+`targets`Danh sách phải chứa mỗi hình ảnh đối với các lệnh, trong đó có`boxes``labels`和 `masks`(Như `(num_instances, H, W)`mô hình trong đào tạo 返回五个损失的句子, trong eval 返回预测列表,由 `model.training`quyết định.
 
 `pycocotools`Người đánh giá sẽ cùng lúc dùng hộp và mặt nạ 生成 mAP@IoU=0.5:0.95; bạn cần hai con số, để quyết định chai là đầu hộp hay là đầu mặt nạ.
 

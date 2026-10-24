@@ -69,7 +69,7 @@ Mỗi bộ theo dõi cổ điển đều có bước dự đoán chuyển độn
 
 ### SAM 2 theo dõi dựa trên bộ nhớ
 
-SAM 2  thông qua bảo trì các tính năng không gian-thời gian mỗi trường hợp **memory bank**Để xử lý video. Đưa ra một cái gì đó trên một cái gì đó. Sau đó, nó sẽ mã hóa ví dụ đó vào bộ nhớ. Trong phần tiếp theo, bộ nhớ sẽ gặp gỡ các tính năng mới.
+SAM 2  thông qua bảo trì các tính năng không gian-thời gian mỗi trường hợp **memory bank**Để xử lý video. Đưa ra một cái gì đó trên một cái gì đó. Sau đó, nó sẽ mã hóa ví dụ đó vào bộ nhớ. Trong phần tiếp theo, bộ nhớ sẽ được kết hợp với các tính năng mới.
 
 Không có bộ lọc Kalman, cũng không có bài tập tiếng Hungary.
 

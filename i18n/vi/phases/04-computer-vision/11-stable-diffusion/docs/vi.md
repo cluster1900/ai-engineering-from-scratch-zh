@@ -228,7 +228,7 @@ Trong quá trình sản xuất, bạn thực sự cần phải làm một quyế
 
 - **Model family**SD 1.5 dùng cho mã nguồn mở  cộng đồng fine-tune,SDXL dùng cho độ trung thành cao hơn,SD3 / FLUX dùng cho hiện đại và yêu cầu giấy phép nghiêm ngặt.
 - **Scheduler**:20-30 bước sử dụng DPM-Solver++ 2M Karras; khi độ trễ 低于 1s 时 sử dụng LCM-LoRA。
-- **Precision**0480/4090 上使用 `float16`,A100 及更新设备上使用 `bfloat16`,VRAM 紧张时使用 `int8`(cứ qua `bitsandbytes`Hoặc`compel`(■)
+- **Precision**0480/4090 上使用 `float16`,A100 及更新设备上使用 `bfloat16`,VRAM 紧张时使用 `int8`(cứ qua `bitsandbytes`(■)
 - **Conditioning**:普通文本可用; Nếu cần kiểm soát mạnh hơn, trên đường ống cơ sở 之上加入ControlNet(canny、depth、pose)
 
 Đối với lượng sản xuất,`AUTO1111`- `ComfyUI`是社区工具; đối với sản xuất API, sử dụng `diffusers`+ `accelerate`, hoặc sử dụng với TensorRT biên soạn của `optimum-nvidia`

@@ -126,7 +126,7 @@ Cross-entropy trong đào tạo 早期提供稳定的 Gradient;Dice 将培训 �
 
 ### Định nghĩa đầu vào 权衡
 
-Các mã hóa của U-Net sẽ giảm độ phân giải 4 lần, vì vậy đầu vào phải được 16 整除── hình ảnh y tế thường là 512x512 hoặc 1024x1024── tự động lái xe là 2048x1024── chi phí bộ nhớ của U-Net 随`H * W * C_max`缩放, trong 1024x1024 且瓶 kênh 为 1024 时,forward pass 已经会使用数 GB VRAM。
+Các mã hóa của U-Net sẽ giảm độ phân giải 4 lần, vì vậy chỉ có đầu vào được 16 lần, bỏ qua các kết nối 才能精确对齐──其他尺寸需要填充,或依赖于块中的尺寸(步骤2)──Tình ảnh y tế thường là 512x512 hoặc 1024x1024──Tầm tự lái là 2048x1024──U-Net tính năng lưu trữ chi phí 随`H * W * C_max`缩放, trong 1024x1024 且瓶 kênh 为 1024 时,forward pass 已经会使用数 GB VRAM。
 
 两个标准解决方案:
 1. Đặt tay vào  处理带 chồng chéo 256x256 tấm, sau đó đan.

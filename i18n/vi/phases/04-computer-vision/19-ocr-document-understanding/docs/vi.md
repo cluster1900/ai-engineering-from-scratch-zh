@@ -71,7 +71,7 @@ Các mô hình kết thúc đến kết thúc  cần nhiều dữ liệu và tí
 
 ### Phân tích bố cục
 
-对于结构文件,运行布局检测器(LayoutLMv3, DocLayNet),为每个地区 标注标签:Titel, đoạn, Hình, Bảng, Footnote。
+Đối với tài liệu có cấu trúc, vận hành mô hình bố cục (LayoutLMv3, hoặc trên bộ dữ liệu DocLayNet 上训练的探测器), cho mỗi khu vực 标签 nhãn:Titel, đoạn, Hình, Bảng, ghi chú chân bàn。
 
 对于表格,使用 **Key-Value extraction**mô hình(面向视觉丰富文档的唐纳,面向平面扫描的布局LMv3)──它们接收图像+检测文字+位置,并预测 cấu trúc các cặp giá trị khóa-quýền──
 
@@ -161,18 +161,23 @@ class TinyCRNN(nn.Module):
 
 ### 步骤 3: OCR tổng hợp
 
-生成白底黑字的数字字符串, được sử dụng để kiểm tra khói từ đầu đến cuối
+生成白底黑字符串, được sử dụng để kiểm tra khói từ đầu đến cuối. Mỗi ký tự trở thành một hàng sáu根 thanh, được tạo ra bằng cách viết ra trong danh mục trong từ vựng.`a`和 `x`, mất sẽ bị trì hoãn.
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ Real OCR dữ liệu sẽ thêm font, tiếng ồn, quay, mờ và màu sắc.
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-Trong dữ liệu tổng hợp đơn giản này, mất mát nên xảy ra trong 200 bước từ ~3 giảm xuống ~0.2
+Trong dữ liệu tổng hợp đơn giản này, mất mát nên xảy ra trong 400 bước từ 2 số xuống còn khoảng 0,3.`code/main.py`Trong bộ chuỗi của riêng bạn 上运行 cùng một vòng lặp, sau đó giải mã 三个测试 string。
 
 ## Sử dụng nó
 

@@ -57,7 +57,7 @@ Tại sao các heatmap hơn sự lùi trực tiếp là tốt hơn: cấu trúc 
 
 ### Định vị vị của các subpixel
 
-Argmax  đưa ra số trọn trọn ⋅ Để đạt được độ chính xác của các pixel, bạn có thể đối với argmax  và các vùng lân cận phù hợp với các hình thái, hoặc sử dụng các phương pháp bù đắp thường xuyên `(dx, dy) = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1], ...)`方向:
+Argmax  đưa ra số trọn trọn. Để đạt được độ chính xác của các pixel, bạn có thể sử dụng các hình thức phù hợp với argmax và các vùng lân cận, hoặc như mã,`dx = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1])`Đưa argmax về hướng cao hơn của hàng xóm chuyển hướng,`dy`Cũng vậy.
 
 ### Các lĩnh vực liên quan phần (PAF)
 

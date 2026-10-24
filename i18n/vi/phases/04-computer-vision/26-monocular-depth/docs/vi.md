@@ -92,7 +92,7 @@ Z &= d
 \end{aligned}
 ```
 
-Intrinsics từ EXIF metadata、calibration pattern, hoặc estimator intrinsics monocular ((Perspective Fields、UniDepth) ⋅ không có intrinsics ⋅, bạn vẫn có thể thông qua giả định 60-70 ° FOV 和中等分辨率 chính điểm từ 染 điểm đám mây, điều này phù hợp với hình ảnh hóa, nhưng không phù hợp với đo ⋅
+Bản chất từ EXIF metadata、chương trình chuẩn hóa, hoặc mô hình định giá bản chất đơn quy mô ((Perspective Fields、UniDepth) ⋅ không có bản chất ⋅, bạn vẫn có thể giả định 60-70 ° FOV、 điểm chính ⋅ nằm ở trung tâm hình ảnh để 染 điểm đám mây。 điều này phù hợp với hình ảnh hóa, nhưng không phù hợp với phép đo。
 
 ### Đánh giá
 

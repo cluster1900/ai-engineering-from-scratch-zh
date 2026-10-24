@@ -67,7 +67,7 @@ I3D 技巧: lấy một mô hình 2D ImageNet được đào tạo trước, s�
 - Tăng lạm phát I3D  cung cấp học tập chuyển tiếp miễn phí.
 
 缺点:
-- 比对应的2D模型多 T/8的FLOPs (Từ 3 đến 3 lần)
+- FLOP là 3 lần so với mạng 2D chạy từng ngày, vì mỗi hạt nhân 3x3 đều trở thành 3x3x3
 - Các hạt nhân thời gian 很小;长程 chuyển động 需要金字塔或双流方法──
 
 适用场景:motion 是信号的行动识别 ()  something-something V2 包含大量的运动重类的动力学) 

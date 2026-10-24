@@ -1,6 +1,6 @@
 # Khán giả thời gian thực  边缘部署
 
-> Kết luận cạnh là để cho một mô hình 90 độ chính xác trên thiết bị chỉ có 2 GB RAM chạy với 30 fps.
+> Kết luận cạnh là để cho một mô hình 90% độ chính xác trên thiết bị chỉ có 2 GB RAM chạy với 30 fps.
 
 **Type:** Learn + Build
 **Languages:** Python
@@ -38,7 +38,7 @@ flowchart LR
     style PWR fill:#dbeafe,stroke:#2563eb
 ```
 
-- **Latency**:p50、p95、p99── chỉ xem p50 平均值会掩盖对实时系统 很重要的尾部行为──
+- **Latency**:p50、p95、p99── chỉ báo p50(hoặc giá trị trung bình) sẽ che giấu cho hệ thống thời gian thực  rất quan trọng尾部行为──
 - **Peak memory**Các thiết bị đã từng thấy giá trị tối đa, chứ không phải là trung bình ổn định.
 - **Power / energy**Các máy tính điện tử có thể được sử dụng trong các hệ thống điện tử.
 

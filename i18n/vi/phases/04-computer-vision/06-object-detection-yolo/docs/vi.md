@@ -204,8 +204,10 @@ def encode(box_xyxy, cell_x, cell_y, stride, anchor_wh):
     cy = 0.5 * (y1 + y2)
     w = x2 - x1
     h = y2 - y1
-    tx = cx / stride - cell_x
-    ty = cy / stride - cell_y
+    off_x = np.clip(cx / stride - cell_x, 1e-6, 1 - 1e-6)
+    off_y = np.clip(cy / stride - cell_y, 1e-6, 1 - 1e-6)
+    tx = np.log(off_x / (1 - off_x))
+    ty = np.log(off_y / (1 - off_y))
     tw = np.log(w / anchor_wh[0] + 1e-8)
     th = np.log(h / anchor_wh[1] + 1e-8)
     return np.array([tx, ty, tw, th])
@@ -224,7 +226,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 ```
 
-测试: mã hóa một hộp  Redescode  bạn nên có thể nhận được rất gần với giá trị gốc của kết quả`tx`Không ở phạm vi hậu sigmoid trung bình, ngược sigmoid không hoàn toàn có thể đảo ngược, do đó sẽ có sự khác biệt nhẹ)
+测试:encode 一个中心严格位于细胞内部的盒子,再解码,你应该能在浮点误差范围内得到原始盒子──`encode`Để trung tâm củafset 存为 logit,即 `decode`Trung `sigmoid`Ứng dụng bảo mật có giới hạn; trung tâm đúng là ở bên cạnh tế bào  chuyển động nhiều nhất`1e-6`个 cell― 下面的 `assign_targets`存储 tương tự logits, do đó đầu trong `decode`Ước gì trong không gian
 
 ### Bước 4: Một cái đầu YOLO nhỏ nhất
 
@@ -274,8 +276,10 @@ def assign_targets(boxes_xyxy, classes, anchors, stride, grid_size, num_classes)
         best = int(np.argmax(ious))
         aw, ah = anchors[best]
 
-        target[gy, gx, best, 0] = cx / stride - gx
-        target[gy, gx, best, 1] = cy / stride - gy
+        off_x = np.clip(cx / stride - gx, 1e-6, 1 - 1e-6)
+        off_y = np.clip(cy / stride - gy, 1e-6, 1 - 1e-6)
+        target[gy, gx, best, 0] = np.log(off_x / (1 - off_x))
+        target[gy, gx, best, 1] = np.log(off_y / (1 - off_y))
         target[gy, gx, best, 2] = np.log(bw / aw + 1e-8)
         target[gy, gx, best, 3] = np.log(bh / ah + 1e-8)
         target[gy, gx, best, 4] = 1.0
@@ -320,7 +324,7 @@ def yolo_loss(pred, target, has_obj, lambda_coord=5.0, lambda_obj=1.0, lambda_no
                    "obj_neg": loss_obj_neg.item(), "cls": loss_cls.item()}
 ```
 
-5 siêu tham số, mỗi tutorial YOLO phải mã cứng, phải quét, tỉ lệ rất quan trọng:`lambda_coord=5, lambda_noobj=0.5`Đối với giấy YOLOv1 nguyên thủy, và cho đến nay vẫn là giá trị được xác định hợp lý.
+Bốn trọng lượng mất, mỗi tutorial YOLO phải mã cứng, phải quét, tỷ lệ rất quan trọng:`lambda_coord=5, lambda_noobj=0.5`Đối với giấy YOLOv1 nguyên thủy, và cho đến nay vẫn là giá trị được xác định hợp lý.
 
 ### 步骤 7: Đường ống dẫn dẫn
 
