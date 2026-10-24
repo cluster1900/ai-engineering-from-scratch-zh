@@ -227,9 +227,9 @@
     },
     {
       "number": 6,
-      "title": "Scale out",
-      "thesis": "Miles is built for many GPUs, and this part says which choices you make there and which we could not measure on one GPU.",
-      "summary": "Placement, evaluation, failures, and images.",
+      "title": "横向扩展",
+      "thesis": "Miles 是为多块 GPU 构建的，本部分说明你在那里要做哪些选择，以及哪些我们无法在一块 GPU 上测量。",
+      "summary": "布局、评估、故障和镜像。",
       "accent": "indigo",
       "sections": [
         {
