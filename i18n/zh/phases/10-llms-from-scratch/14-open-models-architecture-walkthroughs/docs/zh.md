@@ -217,7 +217,7 @@ kv_cache = 2 * num_layers * num_kv_heads * head_dim * max_seq_len * bytes_per_el
 
 上述公式假设每层都缓存完整的序列――滑动窗口层始终只需要最近的W 个代币,因此对于混合型模型,需要逐层求和:
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```
