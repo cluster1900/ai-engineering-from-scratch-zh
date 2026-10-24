@@ -4,8 +4,8 @@ Abbreviations: P07 = phases/07-transformers-deep-dive. L05 = P07/05-full-transfo
 
 ## 三大家族并排对比 (comparison)
 - Stack: encoder-only BERT, decoder-only GPT, encoder-decoder T5: L05/d:13, L05/d:136-138
-- Attention: encoder bidirectional no masking: L05/d:38, L06/d:149. Causal mask: L07/d:16. T5 bidirectional encoder, causal decoder: L08/d:154
-- Cross-attention: Q from decoder, K/V from encoder; omitted in GPT: L05/d:27, L05/d:46, L08/d:155
+- Attention: encoder bidirectional no masking: L05/d:44, L06/d:149. Causal mask: L07/d:16. T5 bidirectional encoder, causal decoder: L08/d:154
+- Cross-attention: Q from decoder, K/V from encoder; omitted in GPT: L05/d:27, L05/d:52, L08/d:155
 - Objective: MLM 15%: L06/d:28, L06/d:148. Shift-by-one: L07/d:80-87. Span corruption and denoising: L08/d:23-24
 - Predicts: GPT $P(x_t \mid x_{<t})$, BERT $P(x_{masked} \mid x_{unmasked})$: L07/d:170. T5 outputs spans, BART full sequence: L08/d:56, L08/d:75
 - Generates: BERT no: L06/d:132. GPT token by token: L07/d:78. Encoder-decoder generates from encoder output: L08/d:19, L08/d:79
@@ -14,12 +14,12 @@ Abbreviations: P07 = phases/07-transformers-deep-dive. L05 = P07/05-full-transfo
 
 ## 模块连接方式 (architecture, 8 nodes, 7 edges)
 - Source tokens, embed + position: L05/d:22, L05/d:102-103
-- Encoder block LN, MHA(self), LN, FFN: L05/d:32
+- Encoder block LN, MHA(self), LN, FFN: L05/d:38
 - Encoder output (N_src, d_model), runs once: L08/d:42, L08/d:52
 - Target tokens, shift by one: L08/d:19, L08/d:44
-- Masked self-attention, sublayer 1: L05/d:43, L08/d:45
-- Cross-attention, sublayer 2: L05/d:46, L08/d:46
-- FFN, sublayer 3: L05/d:43, L08/d:47
+- Masked self-attention, sublayer 1: L05/d:49, L08/d:45
+- Cross-attention, sublayer 2: L05/d:52, L08/d:46
+- FFN, sublayer 3: L05/d:49, L08/d:47
 - K, V from encoder into cross-attention: L05/d:27
 - Next-token logits, final LN before output projection: L08/d:49, L05/d:99
 
@@ -28,7 +28,7 @@ Abbreviations: P07 = phases/07-transformers-deep-dive. L05 = P07/05-full-transfo
 2. Pre-norm self-attention + residual, pre-norm FFN + residual: L05/c:187-195
 3. Encoder runs once, cache it: L08/d:52
 4. Masked self-attention, position i sees only positions <= i: L05/c:200-201, L07/d:186
-5. Cross-attention is the only place encoder info enters: L05/d:46, L08/d:155
+5. Cross-attention is the only place encoder info enters: L05/d:52, L08/d:155
 6. Final LN before the output projection: L05/d:99
 7. 6-token source, 5-token target, shape (5, vocab): L05/d:117, L05/c:218-219
 
@@ -73,12 +73,12 @@ Abbreviations: P07 = phases/07-transformers-deep-dive. L05 = P07/05-full-transfo
 - Speculative decoding draft proposes N, big model verifies: L07/d:102, L07/d:193
 
 ## 模块：2017 对比 2026 (comparison, 6)
-- Normalization LayerNorm to RMSNorm: L05/d:58. Post-norm to pre-norm default: L05/d:50
-- FFN activation ReLU to SwiGLU: L05/d:59
-- FFN expansion 4x to 2.6x, three matrices: L05/d:60
-- Position sinusoidal absolute to RoPE: L05/d:61
-- Attention full MHA to GQA (or MLA): L05/d:62
-- Bias terms yes to no: L05/d:63
+- Normalization LayerNorm to RMSNorm: L05/d:64. Post-norm to pre-norm default: L05/d:56
+- FFN activation ReLU to SwiGLU: L05/d:65
+- FFN expansion 4x to 2.6x, three matrices: L05/d:66
+- Position sinusoidal absolute to RoPE: L05/d:67
+- Attention full MHA to GQA (or MLA): L05/d:68
+- Bias terms yes to no: L05/d:69
 
 ## 代码中的默认值 (defaults, 8)
 - mask_prob 0.15: L06/c:18
@@ -104,13 +104,13 @@ Abbreviations: P07 = phases/07-transformers-deep-dive. L05 = P07/05-full-transfo
 - Without the causal mask the model cheats by looking at the answer: L07/d:14-16
 - Softmax never outputs an exact zero, future scores go in as -inf: L07/d:52
 - Gradients vanish past ~6 layers without residual x + sublayer(x): L05/d:25
-- Post-norm activations explode after 12 layers, pre-norm stays bounded: L05/d:147, L05/d:50
+- Post-norm activations explode after 12 layers, pre-norm stays bounded: L05/d:147, L05/d:56
 - Round-trip check catches off-by-one bugs in span bookkeeping: L08/d:118
 - Caching the encoder output is a free speedup for long inputs: L08/d:52
 
 ## 问答 (qa, 5)
 - Bidirectional encoder uses right context, GPT cannot: L06/d:35, L06/d:149
 - N parallel predictions in one pass, serial inference: L07/d:16, L07/d:76-78
-- MHA 4 · d², SwiGLU FFN about 3rd²: L05/d:71-72
+- MHA 4 · d², SwiGLU FFN about 3rd²: L05/d:77-78
 - T5 decodes only spans, BART full sequence so higher compute: L08/d:56, L08/d:75
 - Embedding models are fine-tuned BERT with contrastive loss: L06/d:128

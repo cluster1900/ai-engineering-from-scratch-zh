@@ -153,6 +153,10 @@ R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} 
 
 惩罚项会抑制较大的 weights。hyperparameter $\lambda$ 控制权衡：$\lambda$ 越高，weights 越小，regularization 越强。后续课程会深入讲解这一点。现在只需要知道它存在，以及它为什么有帮助。
 
+```figure
+linear-regression-fit
+```
+
 ## 构建
 
 ### 步骤 1：生成示例数据
@@ -466,10 +470,6 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
-
-```figure
-linear-regression-fit
-```
 
 ## 使用它
 
