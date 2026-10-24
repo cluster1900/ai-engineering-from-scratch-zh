@@ -92,7 +92,7 @@ Z &= d
 \end{aligned}
 ```
 
-Intrinsics 来自 EXIF metadata、calibration pattern，或 monocular intrinsics estimator（Perspective Fields、UniDepth）。没有 intrinsics 时，你仍然可以通过假设 60-70° FOV 和中等分辨率 principal points 来渲染 point cloud，这适合 visualisation，但不适合 measurement。
+Intrinsics 来自 EXIF metadata、calibration pattern，或 monocular intrinsics estimator（Perspective Fields、UniDepth）。没有 intrinsics 时，你仍然可以假设 60-70° FOV、principal point 位于图像中心来渲染 point cloud。这适合 visualisation，但不适合 measurement。
 
 ### Evaluation
 

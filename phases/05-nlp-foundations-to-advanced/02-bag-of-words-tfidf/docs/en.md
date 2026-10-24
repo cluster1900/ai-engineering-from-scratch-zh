@@ -124,7 +124,7 @@ def tfidf(bow_matrix):
 >>> tfidf(bow)
 ```
 
-三个文档，五个词表词（`the`、`cat`、`sat`、`dog`、`ran`）。`the` 出现在全部三个文档中，所以它的 IDF 低。`dog` 只出现一次，所以它的 IDF 高。这些 Vector 是稀疏的（大多数条目都很小），判别性词会凸显出来。
+三个文档，五个词表词（`the`、`cat`、`sat`、`dog`、`ran`）。`the` 出现在全部三个文档中，所以它的 IDF 低。`dog` 只出现一次，所以它的 IDF 高。在拥有数千词的真实 vocabulary 中，这些 Vector 是稀疏的（大多数条目为零）。即使在这个玩具例子里，判别性词也会凸显出来。
 
 ### 步骤 5： L2-normalize rows
 

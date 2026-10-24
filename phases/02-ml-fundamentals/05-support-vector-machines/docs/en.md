@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 重要：训练 SVM 之前始终要 scale 你的 features。SVMs 对 feature magnitudes 敏感，因为 margin 取决于 $\lVert w \rVert$，而未 scale 的 features 会扭曲几何结构。
 
-对于大数据集，使用 `LinearSVC`（primal formulation，每个 epoch 为 $O(n)$）而不是 `SVC`（dual formulation，$O(n^2)$ 到 $O(n^3){}$）：
+对于大数据集，使用 `LinearSVC`（primal formulation，每个 epoch 为 $O(n \cdot d)$，对 $n$ 线性）而不是 `SVC`（dual formulation，$O(n^2)$ 到 $O(n^3){}$）：
 
 ```python
 from sklearn.svm import LinearSVC

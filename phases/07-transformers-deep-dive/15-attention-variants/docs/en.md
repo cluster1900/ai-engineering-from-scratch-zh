@@ -1,6 +1,6 @@
 # Attention 变体 — Sliding Window, Sparse, Differential
 
-> Full Attention 是一个圆。每个 Token 都能看到每个 Token，而内存为此付出代价。四种变体改变这个圆的形状，并收回一半成本。
+> Full Attention 是一个圆。每个 Token 都能看到每个 Token，而内存为此付出代价。三种变体改变这个圆的形状，并收回一半成本。
 
 **Type:** Build
 **Languages:** Python

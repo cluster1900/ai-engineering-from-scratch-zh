@@ -11,7 +11,7 @@
 
 训练 transformer 会为每一层保存 backward 中需要求导的每个 op 的输入：attention 输入、Q/K/V projections、softmax 输出、FFN 输入、norm 输出，以及 residual stream。对于 hidden size 为 `d`、sequence length 为 `L`、batch 为 `B` 的一层，这大约是每层 `12 * B * L * d` 个浮点数。
 
-对于 `d=8192, L=8192, B=1`，这在 BF16 下是 800 MB/层。一个 64-layer model 的激活值就是 51 GB，这还没有乘以 microbatch size，也还没有加上 attention-softmax intermediates（每个 head 为 `L^2`），更没有计入 tensor-parallel partial copies。
+对于 `d=8192, L=8192, B=1`，约为 805M 个值，在 BF16 下是 1.6 GB/层。一个 64-layer model 的激活值约为 103 GB，这还没有乘以 microbatch size，也还没有加上 attention-softmax intermediates（每个 head 为 `L^2`），更没有计入 tensor-parallel partial copies。
 
 这是双边账单：BF16 weights 加上 optimizer state 可能能放进 80GB，但激活值会让你超出限制。Gradient checkpointing（也叫 activation recomputation）是标准修复方案。丢弃大多数激活值；在 backward 期间重新执行 forward 来取回它们。代价：额外 FLOPs。收益：memory 按 checkpoint segments 与总 layers 的比例下降。
 

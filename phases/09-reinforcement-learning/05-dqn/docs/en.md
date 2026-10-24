@@ -73,7 +73,7 @@ class ReplayBuffer:
         return rng.sample(self.buf, batch)
 ```
 
-Atari 约使用 50,000 的容量；我们的 toy env 用 5,000 就足够。
+Atari 约使用 ~10⁶ 的容量，与原始 DQN 相同（它在开始学习前先收集 50,000 个 transitions）；我们的 toy env 用 5,000 就足够。
 
 ### 步骤 2：一个很小的 Q-network（手写 MLP）
 

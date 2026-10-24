@@ -72,7 +72,7 @@ RMSNorm 去掉了 LayerNorm 的 mean-centering（少一次 subtraction），节�
 - FFN (SwiGLU): `3 · d · (r · d)` ≈ `3rd²`
 - Norms: 可忽略
 
-当 `d = 4096, r = 2.6, layers = 32`（大致对应 Llama 3 8B）时，总量为：`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (16 + 32) M = ~1.5B parameters per layer × 32 ≈ 7B`（再加上 embeddings 和 head）。与已发布的计数相符。
+当 `d = 4096, r = 2.6, layers = 32`（大致对应 Llama 3 8B）时，总量为：`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (67M + 131M) ≈ 32 · 198M ≈ 6.3B` 个 blocks 内参数，再加上约 1B 的 embeddings 和 output head（128K vocab × 4096，未 tied）。这接近已发布的 8B。真实模型使用 GQA（更小的 K 和 V projections）和更宽的 FFN（`r = 3.5`），把参数从 attention 移到 FFN，但总量仍接近 8B。
 
 
 观察一个 Vector 如何流过单个 block：Attention 在位置之间混合信息，residual 把信号继续向前携带，FFN 做变换，而 norm 让 residual stream 保持稳定。

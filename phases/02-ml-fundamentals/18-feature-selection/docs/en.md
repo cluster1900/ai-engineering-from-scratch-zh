@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## 学习目标
-- 从零实现 filter methods（variance threshold、mutual information、chi-squared）和 wrapper methods（RFE、forward selection）
+- 从零实现 filter methods（variance threshold、mutual information）、wrapper method（RFE）和 embedded methods（L1、tree importance），然后在练习中加入 forward selection
 - 解释为什么 mutual information 能捕捉 correlation 会漏掉的非线性 feature-target 关系
 - 比较 L1 regularization（embedded selection）与 RFE（wrapper selection），并评估它们的计算权衡
 - 构建一个结合多种方法的 feature selection pipeline，并展示它在 held-out data 上改善 generalization 的效果

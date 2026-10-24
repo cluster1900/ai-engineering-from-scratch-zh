@@ -57,7 +57,7 @@ Top-down（HRNet, ViTPose）是准确率领先方案；bottom-up（OpenPose, Hig
 
 ### Sub-pixel localisation
 
-Argmax 给出整数坐标。为了获得 sub-pixel precision，可以对 argmax 及其邻域拟合 parabola，或者使用常见的 offset `(dx, dy) = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1], ...)` 方向。
+Argmax 给出整数坐标。为了获得 sub-pixel precision，可以对 argmax 及其邻域拟合 parabola，或者像代码那样，用 `dx = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1])` 把 argmax 向较高的邻居偏移，`dy` 同理。
 
 ### Part Affinity Fields (PAFs)
 

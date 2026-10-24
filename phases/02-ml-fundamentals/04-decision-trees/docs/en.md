@@ -104,7 +104,7 @@ Entropy = -(0.6 * log2(0.6) + 0.4 * log2(0.4))
 
 ### 停止条件
 
-如果没有停止条件，tree 会一直生长，直到每个 leaf 都是 pure（每个 leaf 一个 sample）。这会完美记住 training data，并且泛化极差。
+如果没有停止条件，tree 会一直生长，直到每个 leaf 都是 pure，或再也没有 split 能分开其中的 samples，往往一直分到每个 leaf 只有一个 sample。这会完美记住 training data，并且泛化极差。
 
 **Pre-pruning** 会在 tree 完全长成之前停止：
 - Maximum depth：当 tree 达到设定 depth 时停止 splitting

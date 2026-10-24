@@ -202,7 +202,7 @@ I(X;Y) &= H(X) - H(X \mid Y) \\
 2. 按 MI score 排序 features。
 3. 保留前 $k$ 个 features。
 
-这适用于 feature 与 target 之间的任何关系：linear、nonlinear、monotonic 或其他关系。Correlation 只能捕捉 linear relationships。MI 能捕捉所有关系。
+这适用于 feature 与 target 之间的任何关系：linear、nonlinear、monotonic 或其他关系。Pearson correlation 只能捕捉 linear relationships。MI 能捕捉任何依赖关系，但在有限数据下，其估计需要足够的 samples 和合理的 binning。
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|

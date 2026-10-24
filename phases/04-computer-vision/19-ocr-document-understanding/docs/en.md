@@ -71,7 +71,7 @@ End-to-end models 需要更多数据和 compute，但跳过了 multi-stage pipel
 
 ### Layout parsing
 
-对于 structured documents，运行 layout detector（LayoutLMv3, DocLayNet），为每个 region 标注 label：Title, Paragraph, Figure, Table, Footnote。Reading order 于是变成“按 layout order 遍历 regions 并拼接”。
+对于 structured documents，运行 layout model（LayoutLMv3，或在 DocLayNet dataset 上训练的 detector），为每个 region 标注 label：Title, Paragraph, Figure, Table, Footnote。Reading order 于是变成“按 layout order 遍历 regions 并拼接”。
 
 对于 forms，使用 **Key-Value extraction** models（面向 visually-rich documents 的 Donut，面向 plain scans 的 LayoutLMv3）。它们接收 image + detected text + positions，并预测 structured key-value pairs。
 
@@ -161,18 +161,23 @@ class TinyCRNN(nn.Module):
 
 ### 步骤 3： Synthetic OCR
 
-生成白底黑字的 digit strings，用于 end-to-end smoke test。
+生成白底黑字的 strings，用于 end-to-end smoke test。每个字符变成一列六根 bar，以二进制拼出它在 vocabulary 中的 index。图像必须携带字符的身份：如果每个字符都是同样的空白方框，model 就无法区分 `a` 和 `x`，loss 会停滞。
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ print(f"images: {imgs.shape}   targets: {targets.shape}   lengths: {lengths.toli
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-在这个简单 synthetic data 上，loss 应该会在 200 steps 内从 ~3 降到 ~0.2。
+在这个简单 synthetic data 上，loss 应该会在 400 steps 内从两位数降到约 0.3。`code/main.py` 在自己的 string set 上运行同样的循环，然后 decode 三个测试 strings。
 
 ## 使用它
 

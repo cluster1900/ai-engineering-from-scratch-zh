@@ -102,7 +102,7 @@ L1 和 L2 是 Lp norm 的特殊情况：
 \lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-不同的 $p$ 值会产生不同形状的“unit balls”（距离原点为 1 的所有点的集合）：
+不同的 $p$ 值会产生不同形状的“unit balls”（距离原点至多为 1 的所有点的集合；下面画出的是它们的边界）：
 
 ```
 p=1:    Diamond shape      (corners on axes)

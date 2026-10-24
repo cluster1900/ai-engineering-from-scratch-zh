@@ -81,7 +81,7 @@ RoIAlign 能在 COCO 上免费提升 3-4 个点的 mask AP。现在每个重视 
 
 ### Losses
 
-Mask R-CNN 有四类 losses 相加：
+Mask R-CNN 有五类 losses 相加：
 
 ```math
 L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
@@ -257,7 +257,7 @@ def train_step(model, images, targets, optimizer):
     return {k: v.item() for k, v in loss_dict.items()}
 ```
 
-`targets` 列表必须包含每张图像对应的 dict，其中有 `boxes`、`labels` 和 `masks`（作为 `(num_instances, H, W)` binary tensors）。模型在 training 时返回四个 losses 的 dict，在 eval 时返回 predictions 列表，这由 `model.training` 决定。
+`targets` 列表必须包含每张图像对应的 dict，其中有 `boxes`、`labels` 和 `masks`（作为 `(num_instances, H, W)` binary tensors）。模型在 training 时返回五个 losses 的 dict，在 eval 时返回 predictions 列表，这由 `model.training` 决定。
 
 `pycocotools` evaluator 会同时为 boxes 和 masks 生成 mAP@IoU=0.5:0.95；你需要两个数字，才能判断瓶颈是在 box head 还是 mask head。
 

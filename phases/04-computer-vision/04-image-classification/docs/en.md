@@ -100,7 +100,7 @@ Cutmix:
 
 ### Label smoothing
 
-mixup 的近亲。不要用 `[0, 0, 1, 0, 0]` 作为训练目标，而是用 `[eps/C, eps/C, 1-eps, eps/C, eps/C]`，其中 `eps` 是像 0.1 这样的小值。它阻止 model 产生任意尖锐的 logits，并且几乎零成本地改善 calibration。自 PyTorch 1.10 起，已内置于 `nn.CrossEntropyLoss(label_smoothing=0.1)`。
+mixup 的近亲。不要用 `[0, 0, 1, 0, 0]` 作为训练目标，而是用 `[eps/C, eps/C, 1-eps+eps/C, eps/C, eps/C]`，其中 `eps` 是像 0.1 这样的小值（即 one-hot target 与 uniform distribution 混合，因此总和仍为 1）。它阻止 model 产生任意尖锐的 logits，并且几乎零成本地改善 calibration。自 PyTorch 1.10 起，已内置于 `nn.CrossEntropyLoss(label_smoothing=0.1)`。
 
 ### Accuracy 之外的 evaluation
 
@@ -416,7 +416,7 @@ val_ds   = CIFAR10(root="./data", train=False, download=True, transform=eval_tf)
 | DataLoader | “The batcher” | 用 shuffling、batching 和（可选）multi-worker loading 包装 dataset；一半 training bugs 都会被怪到它头上 |
 | Augmentation | “Random transforms” | training time 的任何 pixel-level transform，只要它保留 label；教会 CNN 它原生不具备的 invariances |
 | Mixup / Cutmix | “Mix two images” | 同时混合 inputs 和 labels，让 classifier 学习平滑插值，而不是硬边界 |
-| Label smoothing | “Softer targets” | 用 (1-eps, eps/(C-1), ...) 替换 one-hot；改善 calibration，并略微提升 accuracy |
+| Label smoothing | “Softer targets” | 用 (1-eps+eps/C, eps/C, ...) 替换 one-hot；改善 calibration，并略微提升 accuracy |
 | Top-k accuracy | “Top-5” | 正确 class 位于 k 个最高 probability predictions 之中；用于包含真实歧义 classes 的 datasets |
 | Confusion matrix | “Where errors live” | C x C table，其中 entry (i, j) 统计 true class i 被预测为 j 的 images 数量；diagonal 是正确项，off-diagonal 告诉你该修什么 |
 

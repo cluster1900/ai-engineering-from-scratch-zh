@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$，不可约 Loss 上限。
 - $A \approx 406$, $B \approx 411$。
 
-随着扩展，两个项会彼此权衡。在固定 compute（$C = 6ND$）下对 $N$ 求导并求解：
+随着扩展，两个项会彼此权衡。在固定 compute（$C = 6ND$）下对 $N$ 求导并求解。使用上面的 $\alpha$ 和 $\beta$，$N$ 的指数约为 0.45，$D$ 的指数约为 0.55，因此精确的最优比例会随预算缓慢漂移；`code/main.py` 通过 grid search 找到它。论文的前两种拟合方法直接测量最优点，得出两个指数都约为 0.5。这就给出了固定比例的经验法则。在 $C = 6ND$ 中令 $D = 20N$，经验法则为：
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```

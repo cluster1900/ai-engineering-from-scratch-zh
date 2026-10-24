@@ -118,7 +118,7 @@ graph LR
 
 **Absorbing states。** 如果一旦进入某个 state 就永远不会离开（$P[i][i] = 1$），这个 state 就是 absorbing 的。Absorbing Markov chains 可用于建模带有 terminal states 的过程 —— 一个结束的游戏、一个 churn 的客户、一个命中 end-of-text token 的 token sequence。
 
-**Mixing time。** 需要多少步，chain 才会“接近”stationary distribution？形式化地说，就是 total variation distance 与 stationarity 的距离降到某个阈值以下所需的步数。Fast mixing = 需要的步数少。$P$ 的 spectral gap（1 减去第二大 eigenvalue）控制 mixing time。gap 越大，mixing 越快。
+**Mixing time。** 需要多少步，chain 才会“接近”stationary distribution？形式化地说，就是 total variation distance 与 stationarity 的距离降到某个阈值以下所需的步数。Fast mixing = 需要的步数少。对于 reversible chain，$P$ 的 spectral gap（1 减去除 eigenvalue 1 之外最大的 eigenvalue 模）控制 mixing time。gap 越大，mixing 越快。
 
 ### 与 Language Models 的联系
 

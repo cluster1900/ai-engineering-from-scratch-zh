@@ -50,7 +50,7 @@ noise-schedule
 
 ## 构建它
 
-`code/main.py` 把一个玩具 1-D “VAE”（identity encoder + decoder，仅用于演示；真正的 VAE 会是 conv net）叠在 Lesson 06 的 DDPM 之上，并通过 classifier-free guidance 加入 class conditioning。它展示了同一个 diffusion loss 无论运行在原始 1-D 值上，还是运行在 encoded values 上都有效，这就是关键洞见。
+`code/main.py` 把一个玩具 1-D “VAE”（固定的乘 0.5 encoder，以及作为 decoder 的精确逆变换，仅用于演示；真正的 VAE 会是 conv net）叠在 Lesson 06 的 DDPM 之上，并通过 classifier-free guidance 加入 class conditioning。它展示了同一个 diffusion loss 无论运行在原始 1-D 值上，还是运行在 encoded values 上都有效。这就是关键洞见。
 
 ### 步骤 1： encoder/decoder
 
@@ -133,7 +133,7 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 
 参考 Flux 集成是经典的“我有一张消费级 GPU，能交付吗？”配方。技巧就是把生产推理文献列出的同一个三旋钮配方应用到 diffusion DiT：
 
-1. **Staggered loading。** Flux 有三个不需要同时存在于 VRAM 中的网络：T5-XXL text encoder（fp32 下约 10 GB）、CLIP-L（小）、12B MMDiT，以及 VAE。先 encode prompt，*delete* encoders，加载 DiT，denoise，*delete* DiT，加载 VAE，decode。消费级 8GB GPUs 一次只能容纳一个 stage。
+1. **Staggered loading。** Flux 有四个不需要同时存在于 VRAM 中的网络：T5-XXL text encoder（fp32 下约 10 GB）、CLIP-L（小）、12B MMDiT，以及 VAE。先 encode prompt，*delete* encoders，加载 DiT，denoise，*delete* DiT，加载 VAE，decode。消费级 8GB GPUs 一次只能容纳一个 stage。
 2. **通过 bitsandbytes 做 4-bit quantization。** 在 T5 encoder 和 DiT 上都使用 `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)`。内存减少 8×，根据 Aritra 的 benchmarks（notebook 中有链接），text-to-image 的质量下降几乎不可察觉。
 3. **CPU offload。** `pipe.enable_model_cpu_offload()` 会在每次 forward pass 前进时自动在 CPU 和 GPU 之间交换 modules。增加 10-20% latency，但能让 pipeline 跑起来。
 

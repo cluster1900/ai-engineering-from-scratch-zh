@@ -98,7 +98,7 @@ python train.py > output.log 2> errors.log
 python train.py > train_full.log 2>&1
 ```
 
-你需要掌握的三个 redirects：
+你需要掌握的四个 redirects 和 pipe：
 
 | 符号 | 作用 |
 |--------|-------------|

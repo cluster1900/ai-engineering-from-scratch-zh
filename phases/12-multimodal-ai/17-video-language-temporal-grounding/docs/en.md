@@ -88,7 +88,7 @@ Temporal grounding 的输出格式：
 
 - Free text："The cat jumps around the 4-second mark." 易于解析但不精确。
 - Structured JSON：`{"event": "jump", "start": 4.1, "end": 4.3}`。Qwen2.5-VL 会训练这种形式。
-- Token-based：特殊 `<time>4.1</time>` tokens 与答案交错。Qwen2.5-VL 的内部格式。
+- Token-based：特殊 `<time>4.1</time>` tokens 与答案交错。部分视频模型使用这种方式；Qwen2.5-VL 则把时间编码在 M-RoPE position IDs 中，并以 text 或 JSON 回答。
 
 Token-based 对 downstream use 最准确。Qwen2.5-VL 的 JSON output format 可以直接解析。
 

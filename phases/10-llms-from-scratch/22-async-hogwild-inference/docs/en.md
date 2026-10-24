@@ -55,7 +55,7 @@ Hogwild! paper（Rodionov et al., 2025）报告了如下观察：
 
 ### RoPE 让这变得可行
 
-Rotary Position Embeddings（RoPE, Su et al. 2021）通过 Q 和 K vectors 中的 rotation 编码 position information。因为 positions 是 rotations，而不是固化的 offsets，所以 token 的 position 可以移动，而不需要重新计算 KV cache entry。当 worker `i` 写入 shared cache 的 position `p` 时，读取该 position 的其他 workers 可以直接使用 cached entry——不需要 re-rotation。
+Rotary Position Embeddings（RoPE, Su et al. 2021）通过 Q 和 K vectors 中的 rotation 编码 position information。因为旋转后的 query 与旋转后的 key 之间的 attention score 只取决于它们的相对距离，所以整块 cached entries 可以移动到新的 offset 而无需重新计算：旋转 query，而不是重新旋转每个 cached key。Hogwild! Inference 对每个 cache block 只做一次：对于位置 `i_q` 的 query，以及在该 worker 视角中起始于 `i_k` 的 block，query 按相对距离 `i_q - i_k` 旋转。这就是每个 worker 按自己的顺序看到 shared cache blocks 的方式。该技巧适用于连续 block 的整体平移。把单个 tokens 移动到不同位置会改变它们的 rotation，仍然需要重新计算。
 
 在 learned-position 或 absolute-position model 中，Hogwild! 会在每次 concurrent write 时都需要 cache invalidation。RoPE 让 cache 保持稳定。
 

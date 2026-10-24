@@ -204,8 +204,10 @@ def encode(box_xyxy, cell_x, cell_y, stride, anchor_wh):
     cy = 0.5 * (y1 + y2)
     w = x2 - x1
     h = y2 - y1
-    tx = cx / stride - cell_x
-    ty = cy / stride - cell_y
+    off_x = np.clip(cx / stride - cell_x, 1e-6, 1 - 1e-6)
+    off_y = np.clip(cy / stride - cell_y, 1e-6, 1 - 1e-6)
+    tx = np.log(off_x / (1 - off_x))
+    ty = np.log(off_y / (1 - off_y))
     tw = np.log(w / anchor_wh[0] + 1e-8)
     th = np.log(h / anchor_wh[1] + 1e-8)
     return np.array([tx, ty, tw, th])
@@ -224,7 +226,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 ```
 
-测试：encode 一个 box 再 decode——你应该能得到非常接近原始值的结果（当 `tx` 不在 post-sigmoid range 中时，sigmoid inverse 并非完全可逆，因此会有轻微差异）。
+测试：encode 一个中心严格位于 cell 内部的 box，再 decode，你应该能在浮点误差范围内得到原始 box。`encode` 把中心 offset 存为 logit，即 `decode` 中 `sigmoid` 的逆。clip 保证 logit 有限；中心恰好在 cell 边缘时最多移动 `1e-6` 个 cell。下面的 `assign_targets` 存储同样的 logits，因此 head 在 `decode` 所期望的空间中训练。
 
 ### 步骤 4： 一个最小 YOLO head
 
@@ -274,8 +276,10 @@ def assign_targets(boxes_xyxy, classes, anchors, stride, grid_size, num_classes)
         best = int(np.argmax(ious))
         aw, ah = anchors[best]
 
-        target[gy, gx, best, 0] = cx / stride - gx
-        target[gy, gx, best, 1] = cy / stride - gy
+        off_x = np.clip(cx / stride - gx, 1e-6, 1 - 1e-6)
+        off_y = np.clip(cy / stride - gy, 1e-6, 1 - 1e-6)
+        target[gy, gx, best, 0] = np.log(off_x / (1 - off_x))
+        target[gy, gx, best, 1] = np.log(off_y / (1 - off_y))
         target[gy, gx, best, 2] = np.log(bw / aw + 1e-8)
         target[gy, gx, best, 3] = np.log(bh / ah + 1e-8)
         target[gy, gx, best, 4] = 1.0
@@ -320,7 +324,7 @@ def yolo_loss(pred, target, has_obj, lambda_coord=5.0, lambda_obj=1.0, lambda_no
                    "obj_neg": loss_obj_neg.item(), "cls": loss_cls.item()}
 ```
 
-五个 hyper-parameters，每个 YOLO tutorial 要么 hardcode，要么 sweep。比例很重要：`lambda_coord=5, lambda_noobj=0.5` 对应原始 YOLOv1 paper，并且至今仍是合理默认值。
+四个 loss weights，每个 YOLO tutorial 要么 hardcode，要么 sweep。比例很重要：`lambda_coord=5, lambda_noobj=0.5` 对应原始 YOLOv1 paper，并且至今仍是合理默认值。
 
 ### 步骤 7: Inference pipeline
 

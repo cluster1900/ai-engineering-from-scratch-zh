@@ -86,7 +86,7 @@ flowchart LR
 - 当 $y=0$ 且 $p$ 接近 0 时：$\log(1) = 0$，因此 loss 接近 0（正确，低成本）
 - 当 $y=0$ 且 $p$ 接近 1 时：$\log(0)$ 接近负无穷，因此 loss 很大（错误，高成本）
 
-对于 logistic regression，这个 Loss Function 是凸的，因此保证只有一个 global minimum。
+对于 logistic regression，这个 Loss Function 是凸的，因此每个 local minimum 都是 global minimum，Gradient descent 不会卡在糟糕的极小值中。在完全可分的数据上，随着权重增大 Loss 会一直下降，因此不存在有限的 minimum；L2 regularization 可以解决这个问题，并使 minimum 唯一。
 
 ### Logistic Regression 的 Gradient Descent
 

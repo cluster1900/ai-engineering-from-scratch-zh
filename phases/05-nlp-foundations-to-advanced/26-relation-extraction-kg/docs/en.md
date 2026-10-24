@@ -68,21 +68,21 @@ PATTERNS = [
 
 查看 `code/main.py` 中完整的 toy extractor。Hearst patterns 仍然会出现在 domain-specific pipelines 中，因为它们可调试。
 
-### 步骤 2: 有监督关系 Classification
+### 步骤 2: 有监督 seq2seq 关系抽取
 
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tok = AutoTokenizer.from_pretrained("Babelscape/rebel-large")
-model = AutoModelForSequenceClassification.from_pretrained("Babelscape/rebel-large")
+model = AutoModelForSeq2SeqLM.from_pretrained("Babelscape/rebel-large")
 
 text = "Tim Cook was born in Alabama. He later became CEO of Apple."
 encoded = tok(text, return_tensors="pt", truncation=True)
 output = model.generate(**encoded, max_length=200)
-triples = tok.batch_decode(output, skip_special_tokens=False)
+decoded = tok.batch_decode(output, skip_special_tokens=False)
 ```
 
-REBEL 是一个 seq2seq relation extractor：输入 text，输出 triples，并且已经使用 Wikidata property ids。它在 distant-supervision data 上 fine-tuned。标准 open-weights baseline。
+REBEL 是一个基于 BART 的 seq2seq relation extractor：它生成 triples，而不是对 entity pairs 做分类。输入 text，输出 triples，relation 名称取自 Wikidata properties。解码出的字符串仍带有 REBEL 的 `<triplet>`、`<subj>` 和 `<obj>` 标记，因此需要按这些标记切分（如 model card 的 parser 所做）以得到 `(subject, relation, object)` 记录。它在 distant-supervision data 上 fine-tuned。标准 open-weights baseline。
 
 ### 步骤 3： 带 anchoring 的 LLM-prompted extraction
 

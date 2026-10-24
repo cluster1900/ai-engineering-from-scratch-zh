@@ -50,7 +50,7 @@ Qwen2-VL 用原生动态分辨率 ViT encoder 替换了固定分辨率 + Q-Forme
 
 Qwen2.5-VL 的重大转变是视频。Dynamic FPS 不只是“需要时采样更多帧”。论文形式化了：
 
-- 绝对时间 Token。不使用位置索引（frame 0, 1, 2...），而使用实际时间戳。"At 0:04, the cat jumps." 模型会看到与 frame tokens 交错的 `<time>0.04</time>` tokens。
+- 位置 IDs 中的绝对时间。不使用帧索引（frame 0, 1, 2...），M-RoPE 的时间轴跟随实际时间戳，因此两帧 IDs 之间的差值对应它们之间相隔的秒数。"At 0:04, the cat jumps." 没有额外的 text tokens 承载时间，因此这种编码不会增加序列长度。
 - Dynamic FPS。慢速素材以 1 FPS 采样，动作场景以 4+ FPS 采样。由用户或训练器选择；M-RoPE 会适配。
 - ViT 中的 Window Attention。Spatial attention 采用 windowed（block 内局部）以提升吞吐；每隔几层加入 global attention。
 - 显式 JSON 输出格式。使用 tool-call 数据训练："{\"tool\": \"click\", \"coords\": [380, 220]}"。开箱即 agent-ready。
@@ -89,7 +89,7 @@ Text tokens 使用 `t = text_index, h = 0, w = 0`（或一种归一化选择）�
 1. 计算你能承担的最大 FPS：`fps_max = B / (T * tokens_per_frame)`。
 2. 从 `{1, 2, 4, 8}` 中选择满足 `fps <= fps_max` 的目标 FPS。
 3. 如果运动强（optical-flow heuristic 或明确用户请求），选择更高 FPS。如果运动弱，选择更低 FPS。
-4. 按选定 FPS 均匀采样；在帧之间插入 `<time>t</time>` tokens。
+4. 按选定 FPS 均匀采样；根据每帧以秒为单位的时间戳设置其 M-RoPE 时间 ID。
 
 Qwen2.5-VL 会隐式训练这种逻辑；推理时用户通过 `fps` 参数控制。一个 60 秒动作序列，以 4 FPS、每帧 81 tokens 计算，等于 19440 tokens，在 32k context 中可管理。
 
@@ -141,7 +141,7 @@ mm-mrope-axes
 |------|-----------------|------------------------|
 | M-RoPE | "Multimodal RoPE" | hidden dim 中带 temporal、height 和 width bands 的 3D rotary position embedding |
 | Dynamic FPS | "Smart sampling" | 根据运动、时长和 Token 预算为每个视频选择的帧采样率 |
-| Absolute time token | "Timestamp token" | 在序列中交错插入的 `<time>t</time>`，让模型看到实际秒数而不是帧索引 |
+| Absolute time encoding | "Time-aligned M-RoPE" | 根据每帧时间戳设置时间 position IDs，让模型看到实际秒数而不是帧索引，且无需额外 tokens |
 | Window attention | "Local attention" | 为提速而限制在小窗口内的 spatial self-attention；周期性加入 global attention |
 | Structured agent output | "JSON mode" | 通过训练数据监督教 VLM 输出可解析 JSON，其中包含 coords 和 tool names |
 | min_pixels / max_pixels | "Resolution bounds" | Qwen2.5-VL 的每请求控制项，用来约束总像素数，从而约束 Token 数 |

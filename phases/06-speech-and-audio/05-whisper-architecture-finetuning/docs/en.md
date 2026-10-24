@@ -36,9 +36,9 @@ Large-v3 有 1.55B params。Turbo 使用 4-layer decoder（从 32 层减少）�
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` — language tag；强制 translation-vs-transcription 行为。
-- `<|transcribe|>` 或 `<|translate|>` — 从任意语言 input 翻译为 English output，或逐字转写。
-- `<|notimestamps|>` — 跳过 word-level timestamps（更快）。
+- `<|en|>`：language tag；指明音频中所说的语言。省略时 Whisper 会先检测语言。
+- `<|transcribe|>` 或 `<|translate|>`：task tag；以源语言转写语音，或将其翻译为 English 文本。
+- `<|notimestamps|>`：跳过 word-level timestamps（更快）。
 
 Prompt 让一个模型能够完成很多 tasks。把 `<|en|>` 改成 `<|fr|>`，它就会转写 French。
 

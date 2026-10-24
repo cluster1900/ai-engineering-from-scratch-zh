@@ -28,7 +28,7 @@ DeepSeek-V3（2024 年 12 月）将 MTP 重新设计为 sequential modules，在
 
 ### sequential MTP 配方
 
-DeepSeek-V3 在主模型之上添加 `D` 个 MTP modules。每个 module `k`（其中 `k = 1..D`）预测深度 `k` 的 Token，也就是在给定直到位置 `i` 的 prefix 时预测 `t_{i+k}`。
+DeepSeek-V3 在主模型之上添加 `D` 个 MTP modules。主模型预测 `t_{i+1}`。每个 module `k`（其中 `k = 1..D`）预测再往后 `k` 步的 Token `t_{i+k+1}`，前提是给定直到位置 `i` 的 prefix。
 
 Module `k` 包含：
 
@@ -49,13 +49,13 @@ h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMS
 per-depth prediction 为：
 
 ```math
-\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
+\text{logits}_{i+k+1} = \mathop{\mathrm{Out}}(h_i^{(k)}) \quad \text{for } k = 1, \ldots, D
 ```
 
-per-depth loss 是相对于 ground-truth `t_{i+k}` 的 cross-entropy：
+per-depth loss 是相对于 ground-truth `t_{i+k+1}` 的 cross-entropy：
 
 ```math
-L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k+1}, t_{i+k+1})
 ```
 
 跨 depth 的 joint loss：
@@ -70,9 +70,9 @@ L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 
 Gloeckle 最初的 parallel MTP 有 D 个 output heads，每个都直接应用到 `h_i^(0)`。每个 head 都从同一个 backbone hidden state 预测 `t_{i+k}`。这样可以正常训练，但这些预测并不相互条件化。你不能用 `head_1` 的输出来帮助 `head_2`，这些 heads 是并行触发的。
 
-DeepSeek-V3 的 sequential 设计从 `h_i^(k-1)` 加上实际 next-token embedding `E(t_{i+k})` 构建 `h_i^(k)`。这保留了 causal chain：为了预测 `t_{i+k+1}`，深度 `k+1` 的 module 会看到 `t_{i+k}` 处的内容。这在结构上与自回归 decoder 消费自身输出的方式相同，因此 MTP modules 可以直接作为 speculative-decoding drafters 使用。
+DeepSeek-V3 的 sequential 设计从 `h_i^(k-1)` 加上实际 next-token embedding `E(t_{i+k})` 构建 `h_i^(k)`。这保留了 causal chain：为了预测 `t_{i+k+1}`，深度 `k` 的 module 会看到 `t_{i+k}` 处的内容。这在结构上与自回归 decoder 消费自身输出的方式相同，因此 MTP modules 可以直接作为 speculative-decoding drafters 使用。
 
-推理时：将 `h_i^(k-1)` 和草拟出的 `t_{i+k}` 输入 module `k+1`，得到对 `t_{i+k+1}` 的预测。重复即可。这正是 EAGLE-style draft，只是使用训练好的 MTP module 作为 draft network。DeepSeek-V3 报告第一个 MTP module 的接受率超过 80%，并获得约 1.8× 加速。
+推理时：将 `h_i^(k-1)` 和草拟出的 `t_{i+k}` 输入 module `k`，得到对 `t_{i+k+1}` 的预测。重复即可。这正是 EAGLE-style draft，只是使用训练好的 MTP module 作为 draft network。DeepSeek-V3 报告第一个 MTP module 的接受率超过 80%，并获得约 1.8× 加速。
 
 ### 参数核算
 
@@ -142,7 +142,7 @@ Self-attention 加 MLP。在 toy 中，一个单层 linear attention block 和�
 
 ### 步骤 5：per-depth loss
 
-softmax(logits) 相对于 offset `k` 处 ground-truth Token 的 cross-entropy。使用 `lambda / D` 缩放因子跨 depth 聚合。
+softmax(logits) 相对于 offset `k+1` 处 ground-truth Token 的 cross-entropy。使用 `lambda / D` 缩放因子跨 depth 聚合。
 
 ### 步骤 6：参数核算
 
@@ -177,18 +177,18 @@ MTP 已集成到 DeepSeek-V3（2024 年 12 月）和 DeepSeek-R1 系列中。推
 
 2. 计算一个 dense 70B 模型（hidden 8192，80 层）在 D=1 MTP module 下的参数开销。与 DeepSeek-V3 报告的 14B 开销进行比较。解释为什么 DeepSeek 的数字更高：MTP transformer block 继承了相同的 MoE 结构，从而放大了 per-module 参数量。
 
-3. 在 toy 中实现 D=2：添加第二个 MTP module，接收 $h^{(1)}$ 并预测 `t_{i+2}`。验证 joint loss 和参数核算与 DeepSeek paper 的 equations 19-21 匹配。
+3. 在 toy 中实现 D=2：添加第二个 MTP module，接收 $h^{(1)}$ 并预测 `t_{i+3}`。验证 joint loss 和参数核算与 DeepSeek paper 的 equations 19-21 匹配。
 
 4. 将 toy 切换为 parallel MTP（Gloeckle-style）：在主 hidden state 之上添加 D 个 output heads，每个预测不同 offset。测量在同一个 synthetic signal 上，每个 depth 的 loss 与 sequential 版本相比如何。对于 k > 1，sequential 版本应产生更低的 depth-k loss，因为它以中间预测为条件。
 
-5. 将训练好的 MTP module 用作 EAGLE-style draft：推理时调用 module k 来提出 `t_{i+k}`。在 held-out sequence 上，测量这些 draft Token 相对于主模型预测的接受率。如果你在 toy 上达到 50%+，就复现了 MTP-as-draft 的经验性质。
+5. 将训练好的 MTP module 用作 EAGLE-style draft：推理时调用 module k 来提出 `t_{i+k+1}`。在 held-out sequence 上，测量这些 draft Token 相对于主模型预测的接受率。如果你在 toy 上达到 50%+，就复现了 MTP-as-draft 的经验性质。
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | MTP module | “额外 loss block” | 一个小型 transformer block 加 projection，用来预测主模型前方 `k` 个位置的 Token |
-| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k}` |
+| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k+1}`（主模型为 depth 0，预测 `t_{i+1}`） |
 | Parallel MTP | “Gloeckle-style” | 位于同一个 backbone hidden state 之上的 D 个独立 heads，没有条件链 |
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |

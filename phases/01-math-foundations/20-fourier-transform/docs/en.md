@@ -31,7 +31,7 @@ Fourier transform 会把数据从 time domain 转换到 frequency domain。它�
 X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-每个 $X[k]$ 都是 complex number。它的 magnitude $\lvert X[k] \rvert$ 表示 frequency $k$ 的 amplitude。它的 phase $\angle X[k]$ 表示该 frequency 的 phase offset。
+每个 $X[k]$ 都是 complex number。它的 magnitude $\lvert X[k] \rvert$ 与 frequency $k$ 的 amplitude 成正比。未归一化时，amplitude 为 $A$ 且恰好落在 bin $k$ 上的实正弦波给出 $\lvert X[k] \rvert = AN/2$，因此要除以 $N/2$ 才能读出 amplitude。它的 phase $\angle X[k]$ 表示该 frequency 的 phase offset。
 
 关键洞见：$e^{-2\pi i k n/N}$ 是一个以 frequency $k$ 旋转的 phasor。DFT 计算的是 signal 与 $N$ 个等间隔 frequencies 中每一个的 correlation。如果 signal 在 frequency $k$ 上包含 energy，correlation 就很大。否则，它接近零。
 
@@ -100,7 +100,7 @@ graph TD
     end
 ```
 
-FFT 要求 signal length 是 2 的幂。在实践中，signals 通常会 zero-pad 到下一个 2 的幂。
+这里实现的 radix-2 FFT 在 signal length 为 2 的幂时最快。只要某个子问题长度为奇数，就会退回到普通的 `dft`，因此为了速度，signals 通常会 zero-pad 到下一个 2 的幂。`numpy.fft` 等库中的 FFT 使用 mixed-radix 算法可处理任意长度，但在长度只含小素因子时最快。
 
 ### Spectral analysis
 

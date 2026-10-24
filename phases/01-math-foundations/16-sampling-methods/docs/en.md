@@ -114,7 +114,8 @@ Algorithm:
   3. If u < p(x) / (M * q(x)), accept x
   4. Otherwise, reject and go to step 1
 
-Acceptance rate = 1/M
+Acceptance rate = Z/M, where Z is the integral of p(x)
+                (Z = 1, so the rate is 1/M, when p is normalized)
 ```
 
 Bound $M$ 越紧，acceptance rate 越高。在低维（1-3）中，rejection sampling 效果很好。在高维中，acceptance rate 会指数级下降，因为 proposal volume 的大部分都会被拒绝。这就是 rejection sampling 的 curse of dimensionality。
