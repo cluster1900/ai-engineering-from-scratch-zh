@@ -118,7 +118,7 @@ graph LR
 
 **Absorbing states。**अगर एक बार किसी राज्य में प्रवेश किया तो कभी नहीं छोड़ेंगे$P[i][i] = 1$), यह अवस्था  absorbing  absorbing  absorbing Markov chains  can be used to build with terminal states  एक समाप्ति का खेल  एक churn का ग्राहक  एक भाग्य में पाठ के अंत टोकन के टोकन अनुक्रम 
 
-**Mixing time。**需要多少步,chain 才会接近stationary distribution?形式化地说,就是 कुल भिन्नता दूरी और स्थिरीकरण की दूरी किसी 值 से नीचे की आवश्यकता चरण संख्या में कम हो जाती है।$P$                                                                                                                                                                                                                                                              
+**Mixing time。**需要多少步,chain 才会接近stationary distribution?形式化地说,就是 कुल भिन्नता दूरी और स्थिरीकरण की दूरी किसी 值 से नीचे की आवश्यकता के चरणों की संख्या में कम हो जाती है।$P$                                                                                                                                                                                                                                                              
 
 ### भाषा मॉडल के साथ संपर्क
 

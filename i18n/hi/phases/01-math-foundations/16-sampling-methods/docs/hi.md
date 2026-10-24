@@ -114,7 +114,8 @@ Algorithm:
   3. If u < p(x) / (M * q(x)), accept x
   4. Otherwise, reject and go to step 1
 
-Acceptance rate = 1/M
+Acceptance rate = Z/M, where Z is the integral of p(x)
+                (Z = 1, so the rate is 1/M, when p is normalized)
 ```
 
 बंधा हुआ$M$越紧, स्वीकृति दर 越高──在低维(1-3) 中, अस्वीकृति नमूनाकरण 效果很好──在高维中, स्वीकृति दर 会指数级下降,因为 प्रस्ताव मात्रा का अधिकांश हिस्सा都会被拒绝──这是拒绝样本采集的尺寸诅咒──
