@@ -1,16 +1,16 @@
-# SendStreamingMessage and SubscribeToTask
+# SendStreamingMessage 与 SubscribeToTask
 
-> A stream is a live view of one task, so a dropped connection costs you the frames sent while you were away and never the task itself.
+> 流是一个任务的实时视图，所以连接断开让你失去的是你离开期间发送的帧，绝不是任务本身。
 
-The planner asks `test-runner` to run the full suite of `payments-api` at commit `9f3c2e1` and watches the log arrive on a stream. Four frames in, the client closes the connection. The suite keeps running, and the planner still wants the rest of the log.
+planner 请 `test-runner` 在 commit `9f3c2e1` 上运行 `payments-api` 的完整测试套件，并在流上观看日志到达。收到四帧后，客户端关闭了连接。测试套件继续运行，planner 仍然想要日志的其余部分。
 
-When you finish this section, you can open a stream with either operation, tell when it has ended, and resume it after a drop.
+读完本节后，你能用这两个操作中的任一个打开流，判断它何时结束，并在断开后恢复它。
 
-## What a stream carries
+## 流承载什么 {#s-streaming-and-subscribe-to-task-what-a-stream-carries}
 
-**Stream:** an HTTP response of type `text/event-stream` whose body is a series of Server-Sent Events {{spec §9.4.2}} {{spec §11.7}}. Every event carries one `StreamResponse`, which holds exactly one of `task`, `message`, `statusUpdate`, or `artifactUpdate` {{proto StreamResponse}}.
+**流：** 一个类型为 `text/event-stream` 的 HTTP 响应，其正文是一系列 Server-Sent Events {{spec §9.4.2}} {{spec §11.7}}。每个事件带有一个 `StreamResponse`，其中恰好包含 `task`、`message`、`statusUpdate` 或 `artifactUpdate` 之一 {{proto StreamResponse}}。
 
-Two operations open a stream: `SendStreamingMessage` sends a message and watches the work it starts, and `SubscribeToTask` watches a task that already exists {{spec §3.5.1}}.
+有两个操作会打开流：`SendStreamingMessage` 发送一条消息并观看它启动的工作，`SubscribeToTask` 观看一个已经存在的任务 {{spec §3.5.1}}。
 
 ```listing
 title: the first stream, closed by the client after four frames
@@ -32,13 +32,13 @@ data: {"jsonrpc": "2.0", "id": 1, "result": {"artifactUpdate": {… "append": tr
 # the client closes the connection after 4 events
 ```
 
-The streaming guide calls each payload a JSON-RPC 2.0 Response object, usually a `SendStreamingMessageResponse` {{docs streaming-and-async}}, a type the proto does not define {{proto A2AService}} ([conflict D33](#s-ref-sources)). The migration guide names the update members `taskStatusUpdate` and `taskArtifactUpdate` {{docs whats-new-v1}}, where the proto and these frames say `statusUpdate` and `artifactUpdate` ([conflict D9](#s-ref-sources)). Match on the proto names.
+流式传输指南把每个负载称为一个 JSON-RPC 2.0 Response 对象，通常是 `SendStreamingMessageResponse` {{docs streaming-and-async}}，而 proto 并未定义这个类型 {{proto A2AService}}（[冲突 D33](#s-ref-sources)）。迁移指南把更新成员命名为 `taskStatusUpdate` 和 `taskArtifactUpdate` {{docs whats-new-v1}}，而 proto 和这些帧写的是 `statusUpdate` 和 `artifactUpdate`（[冲突 D9](#s-ref-sources)）。按 proto 的名称匹配。
 
-The specification defines no `event:` types, `id:` lines, `retry:` value, or keep-alive {{spec §11.7}}. The reference SDK sends keep-alive comments and marks a late error with `event: error` {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}, so skip comments and check each payload for `error`.
+规范没有定义 `event:` 类型、`id:` 行、`retry:` 值或保活机制 {{spec §11.7}}。参考 SDK 会发送保活注释，并用 `event: error` 标记迟到的错误 {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}，所以要跳过注释，并检查每个负载中是否有 `error`。
 
-## Order and the close
+## 顺序与关闭 {#s-streaming-and-subscribe-to-task-order-and-the-close}
 
-Every implementation must deliver events in the order it created them {{spec §3.5.2}}, and it must send each event to every open stream of the task {{spec §3.5.2}}. None of those streams owns the task:
+每个实现都必须按创建事件的顺序交付事件 {{spec §3.5.2}}，并且必须把每个事件发送给该任务的每个打开的流 {{spec §3.5.2}}。这些流中没有一个拥有该任务：
 
 ```rule
 label: the stream is not the task
@@ -47,11 +47,11 @@ source: spec §3.5.2
 The lifecycle of a task does not depend on the lifecycle of any one stream.
 ```
 
-Version 1.0 has no end marker, because it removed the boolean `final` from `TaskStatusUpdateEvent` {{docs whats-new-v1}}. A task stream must close when the task reaches a terminal state {{spec §3.1.2}}, and so does a `SubscribeToTask` stream {{spec §3.1.6}}. After a `message` frame the stream closes at once {{spec §3.1.2}}.
+1.0 版没有结束标记，因为它从 `TaskStatusUpdateEvent` 中移除了布尔值 `final` {{docs whats-new-v1}}。任务流必须在任务到达终止状态时关闭 {{spec §3.1.2}}，`SubscribeToTask` 流也是如此 {{spec §3.1.6}}。在一个 `message` 帧之后，流立即关闭 {{spec §3.1.2}}。
 
-At interrupted states, §11.7 and the streaming guide close the stream, while §7.6.1 asks agents to keep it open for `TASK_STATE_AUTH_REQUIRED` {{spec §11.7}} {{docs streaming-and-async}} {{spec §7.6.1}} ([conflict D3](#s-ref-sources)). [Interrupted states](#s-input-required-and-auth-required) lists where each SDK closes, so a close by itself means only that reading has ended.
+在中断状态时，§11.7 和流式传输指南会关闭流，而 §7.6.1 要求 agent 在 `TASK_STATE_AUTH_REQUIRED` 时保持流打开 {{spec §11.7}} {{docs streaming-and-async}} {{spec §7.6.1}}（[冲突 D3](#s-ref-sources)）。[中断状态](#s-input-required-and-auth-required)一节列出了每个 SDK 在哪里关闭，所以关闭本身只意味着读取已经结束。
 
-## A dropped connection and SubscribeToTask
+## 连接断开与 SubscribeToTask {#s-streaming-and-subscribe-to-task-a-dropped-connection-and-subscribetotask}
 
 ```figure
 id: fig-stream-resubscribe
@@ -61,9 +61,9 @@ claim: A dropped stream loses the frames sent while it was closed, and Subscribe
 caption: Read top to bottom. Steps 1 to 5 are the first stream, and only the writes nobody saw are drawn to the task store. Frame numbers count per stream. From capture/out/14-resubscribe.http, ids shortened to 8 characters.
 ```
 
-After frame 4 the agent appends chunks 03 and 04 to `test-log.txt`, and no open connection carries their `artifactUpdate` events, as [figure](#fig-stream-resubscribe) shows. The events are gone, and the stored task holds both chunks.
+在第 4 帧之后，agent 把分块 03 和 04 追加到 `test-log.txt`，没有打开的连接承载它们的 `artifactUpdate` 事件，如[图](#fig-stream-resubscribe)所示。这些事件丢失了，而存储的任务持有这两个分块。
 
-**SubscribeToTask:** the operation that opens a new stream on an existing task, given its `id` {{proto SubscribeToTaskRequest}}. Its first frame is a snapshot: the first event of the stream must be a `Task` object {{spec §3.1.6}}.
+**SubscribeToTask：** 给定任务的 `id`，在现有任务上打开新流的操作 {{proto SubscribeToTaskRequest}}。它的第一帧是一个快照：流的第一个事件必须是一个 `Task` 对象 {{spec §3.1.6}}。
 
 ```listing
 title: the first frame after SubscribeToTask, a full Task snapshot
@@ -92,32 +92,32 @@ note: The status message and the history are cut, and so are parts 02 and 03 of 
               "text": "tests/test_suite_04.py ........\n"
 ```
 
-Frames 2 to 5 append chunks 05 to 08, and frame 6 carries `TASK_STATE_COMPLETED` with `96 passed`. Nothing is replayed, and the specification defines no cursor. So replace your partial `test-log.txt` with the snapshot's artifact, then append the frames that follow.
+第 2 到第 5 帧追加分块 05 到 08，第 6 帧带有 `TASK_STATE_COMPLETED` 和 `96 passed`。没有任何东西被重放，规范也没有定义游标。所以要用快照中的 artifact 替换你不完整的 `test-log.txt`，然后追加之后的帧。
 
-The snapshot holds only the current `status`, so a client that reconnects can miss some status updates {{spec §3.7}}, and results belong in artifacts.
+快照只包含当前的 `status`，所以重新连接的客户端可能错过一些状态更新 {{spec §3.7}}，结果应该放在 artifact 中。
 
-A second `SubscribeToTask` after the task completes fails with `UnsupportedOperationError`, `-32004`, as plain JSON with no stream {{spec §3.1.6}} {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}. So stop reconnecting and read the final task with `GetTask`, as [GetTask and ListTasks](#s-get-task-and-list-tasks) shows.
+任务完成后再次调用 `SubscribeToTask` 会以 `UnsupportedOperationError`（`-32004`）失败，返回的是普通 JSON，没有流 {{spec §3.1.6}} {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}。所以要停止重新连接，并用 `GetTask` 读取最终的任务，[GetTask 与 ListTasks](#s-get-task-and-list-tasks) 一节展示了这一点。
 
-## The subscribe verb over HTTP+JSON
+## HTTP+JSON 上的 subscribe 动词 {#s-streaming-and-subscribe-to-task-the-subscribe-verb-over-http-json}
 
-The HTTP+JSON route is `/tasks/{id}:subscribe`, and the specification names two verbs for it. The proto binds it to `GET` {{proto A2AService}}, and the method table and the URL list show `POST` {{spec §5.3}} {{spec §11.3.2}} ([conflict D1](#s-ref-sources)). On 2026-09-29 the project's steering committee chose `GET` in [PR #2068](https://github.com/a2aproject/A2A/pull/2068), which matches the proto. That change is unreleased on branch `dev-1.1`, and [PR #1891](https://github.com/a2aproject/A2A/pull/1891) for `POST` stays open on main. The SDKs split three ways:
+HTTP+JSON 路由是 `/tasks/{id}:subscribe`，规范为它给出了两个动词。proto 把它绑定到 `GET` {{proto A2AService}}，而方法表和 URL 列表显示的是 `POST` {{spec §5.3}} {{spec §11.3.2}}（[冲突 D1](#s-ref-sources)）。2026-09-29，项目的指导委员会在 [PR #2068](https://github.com/a2aproject/A2A/pull/2068) 中选择了 `GET`，与 proto 一致。这一变更在 `dev-1.1` 分支上尚未发布，支持 `POST` 的 [PR #1891](https://github.com/a2aproject/A2A/pull/1891) 在 main 上仍然开着。各 SDK 分成三派：
 
-| SDK | Server accepts | Client sends |
+| SDK | 服务器接受 | 客户端发送 |
 |---|---|---|
-| a2a-python 1.2.2 {{sdk src/a2a/server/routes/rest_routes.py}} | `GET` and `POST` | `POST` |
-| a2a-go {{sdk-go a2asrv/rest.go at v2.6.0}} | `GET` and `POST` | `POST` |
+| a2a-python 1.2.2 {{sdk src/a2a/server/routes/rest_routes.py}} | `GET` 和 `POST` | `POST` |
+| a2a-go {{sdk-go a2asrv/rest.go at v2.6.0}} | `GET` 和 `POST` | `POST` |
 | a2a-java {{sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java at v1.4.0.Final}} | `POST` | `POST` |
-| a2a-js {{sdk-js src/server/express/rest_handler.ts at v1.3.0}} | `GET` and `POST` | `POST` |
+| a2a-js {{sdk-js src/server/express/rest_handler.ts at v1.3.0}} | `GET` 和 `POST` | `POST` |
 | a2a-dotnet {{sdk-dotnet src/A2A.AspNetCore/A2AEndpointRouteBuilderExtensions.cs at v1.0.0-preview2}} | `POST` | `POST` |
-| a2a-rs {{sdk-rust a2a-server/src/rest.rs at a2a-server-lf-v0.5.1}} | `GET` and `POST` | `GET` |
+| a2a-rs {{sdk-rust a2a-server/src/rest.rs at a2a-server-lf-v0.5.1}} | `GET` 和 `POST` | `GET` |
 
-A `POST` reaches all six servers, and a `GET` reaches four, so send `POST` as five of the six clients do. A server should accept both.
+`POST` 能到达全部六个服务器，`GET` 只能到达四个，所以像六个客户端中的五个那样发送 `POST`。服务器应两者都接受。
 
 ```takeaways
-- Treat a task as finished only when the last frame holds a terminal state, never on the close alone.
-- After a drop, call `SubscribeToTask` and rebuild your copy from its first frame, the `Task` snapshot.
-- When `SubscribeToTask` returns `-32004`, stop reconnecting and read the result with `GetTask`.
-- Send `POST` to `/tasks/{id}:subscribe`, because two SDK servers route no `GET`.
+- 只有当最后一帧带有终止状态时，才把任务视为已结束，绝不只凭关闭判断。
+- 断开后，调用 `SubscribeToTask`，并根据它的第一帧（`Task` 快照）重建你的副本。
+- 当 `SubscribeToTask` 返回 `-32004` 时，停止重新连接，并用 `GetTask` 读取结果。
+- 向 `/tasks/{id}:subscribe` 发送 `POST`，因为有两个 SDK 服务器不路由 `GET`。
 ```
 
 Sources: spec §3.1.2, §3.1.6, §3.5.1, §3.5.2, §3.7, §5.3, §7.6.1, §9.4.2, §11.3.2, §11.7 (research/sources/specification.md); proto StreamResponse, SubscribeToTaskRequest, A2AService (research/sources/a2a.proto); docs whats-new-v1, streaming-and-async (research/sources/docs.md); a2aproject/A2A PR #2068 and PR #1891, checked 2026-10-06; sdk src/a2a/server/routes/jsonrpc_dispatcher.py, src/a2a/server/routes/rest_routes.py, src/a2a/client/transports/rest.py (a2a-python 1.2.2); sdk-go a2asrv/rest.go, a2aclient/rest.go (a2a-go v2.6.0); sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java, client/transport/rest/src/main/java/org/a2aproject/sdk/client/transport/rest/RestTransport.java (a2a-java v1.4.0.Final); sdk-js src/server/express/rest_handler.ts, src/client/transports/rest_transport.ts (a2a-js v1.3.0); sdk-dotnet src/A2A.AspNetCore/A2AEndpointRouteBuilderExtensions.cs, src/A2A/Client/A2AHttpJsonClient.cs (a2a-dotnet v1.0.0-preview2); sdk-rust a2a-server/src/rest.rs, a2a-client/src/rest.rs (a2a-rs a2a-server-lf-v0.5.1); capture/out/14-resubscribe.http, 14-resubscribe.events.json
