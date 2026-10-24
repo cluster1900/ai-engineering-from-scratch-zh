@@ -306,8 +306,8 @@
     }
   ],
   "reference": {
-    "title": "Reference",
-    "thesis": "The flags, metrics, lab notes, and sources this manual uses, in one place.",
+    "title": "参考",
+    "thesis": "本手册使用的参数、指标、实验笔记和来源，集中在一处。",
     "accent": "grey",
     "sections": [
       {

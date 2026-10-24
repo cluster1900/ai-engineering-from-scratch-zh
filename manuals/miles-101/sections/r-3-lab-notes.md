@@ -1,92 +1,92 @@
-# Lab notes
+# 实验笔记
 
-> The machine, the image, the seeds, and the thermal rule behind every measured number in this manual.
+> 本手册中每个测量数字背后的机器、镜像、种子和温度规则。
 
-This page is reference. It lists how each number in the manual was made, so you can repeat the run or judge the result.
+本页是参考资料。它列出手册中每个数字是如何得到的，让你能重复运行或判断结果。
 
-## Machine and image
+## 机器和镜像 {#s-ref-lab-notes-machine-and-image}
 
-| Item | Value |
+| 项目 | 值 |
 |---|---|
-| Machine | NVIDIA DGX Spark, one GB10 GPU, 128 GB of unified memory |
-| Memory that Ray reported | 121.69 GB |
-| Image | `radixark/miles@sha256:c64fa344e3a86715f03c0a1b6a422c474e0035355591a2f6da87bf52a74c52da`, arm64 |
-| Miles in the image | main `08752a1283`, 2026-10-15 |
-| SGLang in the image | `0.5.22.dev46+g7b6993a` |
-| Model | `Qwen/Qwen3-0.6B`, unless the run name gives another size |
-| Data | GSM8K prompts with a binary math reward |
+| 机器 | NVIDIA DGX Spark，一块 GB10 GPU，128 GB 统一内存 |
+| Ray 报告的内存 | 121.69 GB |
+| 镜像 | `radixark/miles@sha256:c64fa344e3a86715f03c0a1b6a422c474e0035355591a2f6da87bf52a74c52da`，arm64 |
+| 镜像中的 Miles | main `08752a1283`，2026-10-15 |
+| 镜像中的 SGLang | `0.5.22.dev46+g7b6993a` |
+| 模型 | `Qwen/Qwen3-0.6B`，除非运行名称给出了其他规模 |
+| 数据 | GSM8K 提示，配合二值数学奖励 |
 
-## Default run settings
+## 默认运行设置 {#s-ref-lab-notes-default-run-settings}
 
-Every run used these settings unless its name says otherwise:
+除非运行名称另有说明，每次运行都使用这些设置：
 
-| Setting | Value |
+| 设置 | 值 |
 |---|---|
-| Prompts per step | 32 (`--rollout-batch-size`) |
-| Answers per prompt | 8 (`--n-samples-per-prompt`) |
-| Samples per optimizer step | 256 (`--global-batch-size`) |
-| Answer limit | 1,024 tokens |
-| Temperature | 1 |
-| Learning rate | 1e-6, constant |
-| Trainer | FSDP on one GPU, colocated with the engine |
-| Engine memory fraction | 0.4 |
-| Weight update bucket | 536870912 bytes, 512 MiB |
+| 每步的提示数 | 32（`--rollout-batch-size`） |
+| 每个提示的回答数 | 8（`--n-samples-per-prompt`） |
+| 每个优化器步的样本数 | 256（`--global-batch-size`） |
+| 回答上限 | 1,024 个 token |
+| 温度 | 1 |
+| 学习率 | 1e-6，恒定 |
+| 训练器 | 一块 GPU 上的 FSDP，与引擎共置 |
+| 引擎内存比例 | 0.4 |
+| 权重更新桶 | 536870912 字节，512 MiB |
 
-## Runs
+## 运行 {#s-ref-lab-notes-runs}
 
-| Run | Steps | Seed | What changed |
+| 运行 | 步数 | 种子 | 改了什么 |
 |---|---|---|---|
-| plain | 12 | default | none, before the heat guard |
-| plain-48 | 48 | default | none, before the heat guard |
-| plain-48-s2, plain-48-s3 | 48 | 2, 3 | none |
-| e6a-base | 12 | 1 | none |
-| e6b, e6c, e6d | 12 | 1 | deterministic inference on Triton, FlashInfer, and Triton again |
-| e11-topp-topk | 12 | 1 | top-p 0.95 and top-k 64 |
-| e3b, e3c, e3d | 12 | 1 | offload only the KV cache, keep the engine loaded at memory fraction 0.25, keep the trainer loaded |
-| e4-0.6b, e4-1.7b | 4 | 1 | answers cut at 256 tokens, model size |
-| e2-n4, e2-n16 | 24 | 1 | 4 and 16 answers per prompt |
-| e3e, e3f | 12 | 1 | a same-day pair at memory fraction 0.25, default offload and the engine kept loaded |
-| e2b-dapo-filter | 12 | 1 | the DAPO zero-variance filter, with batches of 48 prompts |
+| plain | 12 | 默认 | 无，温度保护之前 |
+| plain-48 | 48 | 默认 | 无，温度保护之前 |
+| plain-48-s2, plain-48-s3 | 48 | 2, 3 | 无 |
+| e6a-base | 12 | 1 | 无 |
+| e6b, e6c, e6d | 12 | 1 | 确定性推理，分别用 Triton、FlashInfer，以及再用一次 Triton |
+| e11-topp-topk | 12 | 1 | top-p 0.95 和 top-k 64 |
+| e3b, e3c, e3d | 12 | 1 | 只卸载 KV cache；在内存比例 0.25 下保持引擎加载；保持训练器加载 |
+| e4-0.6b, e4-1.7b | 4 | 1 | 回答在 256 个 token 处截断，模型规模 |
+| e2-n4, e2-n16 | 24 | 1 | 每个提示 4 个和 16 个回答 |
+| e3e, e3f | 12 | 1 | 同一天的一对运行，内存比例 0.25，默认卸载与保持引擎加载 |
+| e2b-dapo-filter | 12 | 1 | DAPO 零方差过滤器，每批 48 个提示 |
 
-Four runs failed and are left out of every table: two true on-policy runs that stopped at start, and two Qwen3-4B runs that Ray stopped. Our run queue gave each run a time limit, and stopped the container when the limit came. The e2-n16 and e2b-dapo-filter runs had finished all their steps and were shutting down at that time. The summary marks them as partial.
+有四次运行失败，没有列入任何表格：两次在启动时停止的真正同策略运行，以及两次被 Ray 停止的 Qwen3-4B 运行。我们的运行队列为每次运行设置了时间限制，到时就停止容器。e2-n16 和 e2b-dapo-filter 运行在那时已经完成了所有步，正在关闭。汇总把它们标记为部分完成。
 
-## The heat guard
+## 温度保护 {#s-ref-lab-notes-the-heat-guard}
 
-The GB10 runs hot under sustained load, so a script pauses the Miles container when the GPU reaches 84 C. It resumes the container when the GPU is at 74 C or below after at least 45 seconds, or after 120 seconds at most. On its first day the limits were 80 C and 68 C, and they changed to 84 C and 74 C that morning. When the guard stops, it resumes a paused container first, so no run stays paused.
+GB10 在持续负载下会发热，所以有一个脚本在 GPU 达到 84 C 时暂停 Miles 容器。当 GPU 在至少 45 秒后降到 74 C 或以下时，或者最多 120 秒后，它会恢复容器。第一天的阈值是 80 C 和 68 C，当天上午改为 84 C 和 74 C。保护脚本停止时，会先恢复已暂停的容器，所以没有运行会一直停在暂停状态。
 
-The pause log holds 1,005 pauses, each with its resume, up to 2026-10-22.
+截至 2026-10-22，暂停日志记录了 1,005 次暂停，每次都有对应的恢复。
 
-## The timing rule
+## 计时规则 {#s-ref-lab-notes-the-timing-rule}
 
-A pause adds wall-clock time to the phase it falls in. So every time in this manual comes from steps that no pause touched, with one exception. The DAPO filter run of section 3.2 had no clean step, so its rollout times take the pause time out of each step instead:
+暂停会给它所在的阶段增加挂钟时间。所以本手册中的每个时间都来自没有被暂停影响的步，只有一个例外。第 3.2 节的 DAPO 过滤器运行没有干净的步，所以它的 rollout 时间改为从每一步中扣除暂停时间：
 
-- **Rollout times:** the rollout window ends at the timestamp of the rollout metrics line and lasts `perf/rollout_time`. A step counts when that window overlaps no pause.
-- **Whole-step times:** the window ends at the timestamp of the trainer metrics line and lasts `perf/step_time`. A step counts when that window overlaps no pause.
+- **rollout 时间：** rollout 窗口结束于 rollout 指标行的时间戳，持续 `perf/rollout_time`。当这个窗口不与任何暂停重叠时，这一步才计入。
+- **整步时间：** 窗口结束于训练器指标行的时间戳，持续 `perf/step_time`。当这个窗口不与任何暂停重叠时，这一步才计入。
 
-The summary file stores both medians, all steps and clean steps, with the number of clean steps next to each. Under the heat guard, few whole steps escape a pause. So whole-step times in this manual come from `plain` and `plain-48`. Both ran before we added the heat guard, so no pause could touch them. `plain-48` ended at 00:11 on 2026-10-18, and the guard logged its first pause at 10:57 that day.
+汇总文件同时存储两种中位数，即所有步的和干净步的，并在每个旁边注明干净步的数量。在温度保护下，很少有整步能避开暂停。所以本手册中的整步时间来自 `plain` 和 `plain-48`。两者都运行于我们加上温度保护之前，所以不可能有暂停影响它们。`plain-48` 于 2026-10-18 00:11 结束，而保护脚本当天 10:57 才记录了第一次暂停。
 
-## Check the stored outputs
+## 检查存储的输出 {#s-ref-lab-notes-check-the-stored-outputs}
 
-The capture kit checks the stored outputs without a GPU. It replays the watchdog rule on the stored error times of the 16-answer run. It also marks the pauses again from the pause log, and it computes every median again from the stored steps. The raw run logs stay on the GB10. With those logs, the kit can also build the summary again and compare it with the stored one.
+采集工具包无需 GPU 就能检查存储的输出。它在 16 个回答的运行所存储的错误时间上重放看门狗规则。它还根据暂停日志重新标记暂停，并根据存储的步重新计算每个中位数。原始运行日志保留在 GB10 上。有了这些日志，工具包还能重新构建汇总，并与存储的汇总进行比较。
 
-## Compare the same steps
+## 比较相同的步 {#s-ref-lab-notes-compare-the-same-steps}
 
-A median over clean steps can still mislead. The default setting gave a 47.5 s rollout in `plain-48` and 59.1 s in the 6 clean steps of `e6a-base`. On the same 6 step numbers, `plain-48` took 60.9 s. The rollout time follows the answer length, so compare times on the same step numbers.
+基于干净步的中位数仍可能产生误导。默认设置在 `plain-48` 中给出了 47.5 s 的 rollout，在 `e6a-base` 的 6 个干净步中给出了 59.1 s。在相同的 6 个步号上，`plain-48` 用了 60.9 s。rollout 时间随回答长度变化，所以请在相同的步号上比较时间。
 
-## Results from one run
+## 来自单次运行的结果 {#s-ref-lab-notes-results-from-one-run}
 
-These numbers rest on one run, and each page that uses them says so:
+这些数字只基于一次运行，使用它们的每一页都会注明：
 
-- The rollout time with the engine kept loaded, in section 2.2. A same-day pair gave 1 to 3 percent on one seed.
-- The cost of deterministic inference, in section 4.5.
-- The group sizes of 4 and 16 answers, in section 3.1.
-- The reward and the rollout cost of the DAPO filter, in section 3.2. Its rollout times take the pause time out, because no step was clean.
+- 第 2.2 节中保持引擎加载时的 rollout 时间。同一天的一对运行在一个种子上给出了 1% 至 3%。
+- 第 4.5 节中确定性推理的代价。
+- 第 3.1 节中 4 个和 16 个回答的组大小。
+- 第 3.2 节中 DAPO 过滤器的奖励和 rollout 代价。它的 rollout 时间扣除了暂停时间，因为没有一步是干净的。
 
 
-## Why the first offload pair does not hold
+## 为什么第一对卸载运行不成立 {#s-ref-lab-notes-why-the-first-offload-pair-does-not-hold}
 
-Our first pair compared `e6a-base` with `e3c`. It showed a clean rollout median of 59.1 s for the default and 52.0 s with the engine kept loaded, a gain of 12 percent. The two runs also used different engine memory fractions, 0.4 and 0.25, and their clean steps were different steps.
+我们的第一对运行比较了 `e6a-base` 和 `e3c`。它显示默认设置的干净 rollout 中位数为 59.1 s，保持引擎加载时为 52.0 s，提升了 12%。这两次运行还使用了不同的引擎内存比例，分别为 0.4 和 0.25，而且它们的干净步是不同的步。
 
-Step 10 was clean in both runs. The engine kept loaded took 46.7 s with answers of 599 tokens. The default took 56.3 s with answers of 695 tokens. The rollout time follows the answer length, so the shorter answers explain most of that gap. The same-day pair `e3e` and `e3f` then changed only the offload setting, and gave 1 to 3 percent.
+第 10 步在两次运行中都是干净的。保持引擎加载时用了 46.7 s，回答长度为 599 个 token。默认设置用了 56.3 s，回答长度为 695 个 token。rollout 时间随回答长度变化，所以较短的回答解释了这个差距的大部分。随后同一天的一对运行 `e3e` 和 `e3f` 只改变了卸载设置，给出了 1% 至 3%。
 
 Sources: capture/gpu/heat-guard.sh; capture/run.py; capture/gpu/watchdog_replay.py; capture/gpu/out-gb10/image-identity.txt; capture/gpu/miles_grpo.py; capture/gpu/summarize_miles.py; capture/gpu/summary/miles-gb10-lab.json; capture/gpu/out-gb10/thermostat.log; capture/gpu/out-gb10/unpaused-timing.txt; capture/gpu/out-gb10/ray-oom-4b.log.
