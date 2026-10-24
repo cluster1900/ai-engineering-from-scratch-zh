@@ -91,6 +91,8 @@ roofline
 ## استخدمها
 `code/main.py`实现 a لعبة radix-tree KV cache، فضلا عن المخطط ذو اثنين من الاستراتيجيات:FCFS و cache-aware.
 
+- نعم[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096)أظهرت الجهاز محفظة الراجيكس في ظل عملية عمل L4 الحقيقية. أربعة مجموعات لكل منها عرض نظام 4,096 رمز.
+
 ## 交付 it
 本课会生成 `outputs/skill-radix-scheduler-advisor.md` اعطى وصف لحملة العمل  شكل نموذج العرض السريع  نمط الاسترداد  عدد المستأجرين المتسابقين) ، فإنه سوف يخلق وصفة طلب السريع ، وكذلك ما إذا كان استخدام SGLang للذهاب / لا الذهاب ‬
 

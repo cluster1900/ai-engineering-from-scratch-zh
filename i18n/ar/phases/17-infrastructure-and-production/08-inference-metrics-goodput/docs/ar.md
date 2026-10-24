@@ -105,6 +105,8 @@ throughput-latency
 ## استخدمها
 `code/main.py`هو إصدار لعبة حسابات الجودة.
 
+- نعم[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1)أظهرت الآلة وقت كل رمز إصدار في NVIDIA L4 من أين إلى أين.
+
 ## 交付 it
 本课会生成 `outputs/skill-slo-goodput-gate.md` إعطاء تحديد حمولة عمل و SLO، فإنه سوف تولد وصفة مقياسية قابلة للاستخدام CI / CD، باستخدام الناتج الجيد وليس الناتج من الانتشارات البوابة
 
