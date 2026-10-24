@@ -439,22 +439,20 @@ def tree_of_thought_solve(question, client, model, breadth=3, depth=3):
 
 ```python
 def solve_with_escalation(question, examples, client, model):
-    system, user = build_cot_prompt(question, examples)
-    single_response = call_llm(client, model, system, user, temperature=0.0)
-    single_answer = extract_answer(single_response)
+    single_answer, _ = few_shot_cot_solve(question, examples, client, model)
 
     sc_answer, confidence, _, _ = self_consistency_solve(
         question, examples, client, model, n_samples=5
     )
 
-    if confidence >= 0.8:
+    if confidence >= 0.8 and single_answer == sc_answer:
         return sc_answer, "self_consistency", confidence
 
     tot_answer, _ = tree_of_thought_solve(question, client, model)
     return tot_answer, "tree_of_thought", None
 ```
 
-升级逻辑:先尝试便宜方案(单次CoT) ――如果自律性信心低于0.8(5个样本中低于4个一致),则升级到ToT──这样能平衡成本和准确率大多数问题便宜地解决,难题得到更多计算──
+升级逻辑:先尝试便宜方案(单次CoT) ――单条确定性路径没有投票占比,所以质量检查是一致性:温度0的答案必须与采样路径的多数答案相同――如果不同,或者自相一致性信心 低于0.8 ((5个样本中不到4个一致),则升级到ToT――这样能平衡成本和准确率大多数问题便宜地解决,难以获得更多计算――
 
 ## 使用它
 
