@@ -19,6 +19,28 @@ Chatbot đã trải qua bốn vòng lặp mô hình, mỗi vòng lặp là do th
 
 ![Chatbot evolution: rule-based → retrieval → neural → agent](../assets/chatbot.svg)
 
+### 脚本化的半世纪, 1950-2001
+
+Một mô hình thứ nhất không phải là kéo dài 5 năm, mà là 5 thập kỷ. Việc hiểu được mối quan hệ của nó là rất quan trọng, bởi vì mỗi hệ thống trong đó là một máy tính: phù hợp nhập, xuất một bài viết trước được viết, cập nhật một điểm trạng thái.
+
+**1950.**Turing đã mở ra vấn đề này, đưa ra một thay thế có thể vận hành: Nếu người hỏi không thể phân biệt giữa máy tính và con người qua điện truyền, vấn đề này đã mất ý nghĩa.
+
+**1956.**Một cuộc thảo luận mùa hè của Dartmouth đã đưa ra từ "thông minh nhân tạo", dựa trên giả định rằng, mỗi đặc điểm của trí thông minh trên nguyên tắc có thể được mô tả chính xác, cho đến khi có thể tạo ra một máy móc để mô phỏng nó.
+
+**1966.**ELIZA 上线了你在步骤 1构建的反思技巧: quy tắc phân hủy Từ nhập trong提取片段, tái tập hợp quy tắc Đặt chúng dưới dạng vấn đề xuất hiện lại.
+
+**1972.**PARRY được xây dựng bởi Stanford, để mô phỏng sự thiên vị, nó bổ sung cho một phần của ELIZA thiếu sót: trạng thái nội bộ. Nó biểu hiện sự sợ hãi, tức giận và sự không tin tưởng của các biến số trong mỗi vòng sẽ được cập nhật, và quyết định kích hoạt phần văn tiếp theo, vì vậy các đầu vào tương tự sẽ tạo ra các phản hồi khác nhau dựa trên cuộc đối thoại trước đó. Trong một thử nghiệm ghi chép cuộc đối thoại mù quáng, các bác sĩ tâm thần phân biệt PARRY với tỷ lệ chính xác của bệnh nhân thực sự và phỏng đoán ngẫu nhiên.
+
+**1995.**ALICE sử dụng AIML (một mô hình mô tả mô hình đối với XML 方言) mở rộng phương pháp ELIZA.
+
+**2001.**SmarterChild đưa bộ này đến 3.000.000 người dùng điện thoại tức thời, và gia nhập các truy vấn cuối cùng: 天气,股票,电影场次,拼接进模板里.
+
+Trong 50 năm, một cơ chế, số lượng quy tắc đang tăng lên. Sự kết thúc của mô hình này không phải là vì ai đó đã giả vờ nó, mà là vì chi phí bảo trì của máy viết tay tăng lên theo chiều dài, và kỳ vọng của người dùng tăng lên theo những gì họ thấy trước đây.
+
+```figure
+chatbot-lineage
+```
+
 **Rule-based（ELIZA、AIML、DialogFlow）。**Các mô hình viết tay sẽ phù hợp với người dùng nhập và tạo lại. Các bộ phân loại ý định sẽ yêu cầu đường dẫn đến quy trình định trước. Máy sạc sạc sạc thu thập thông tin cần thiết.
 
 **Retrieval-based。**FAQ 风格的系统──Encode 每一组(utterance, response)──运行时,encode 用户消息并检索 最近的已存回复──可以把它理解为Zendesk 经典的类似文章功能──比规则更能处理语句──没有生成,因此没有幻觉──
@@ -28,11 +50,6 @@ Chatbot đã trải qua bốn vòng lặp mô hình, mỗi vòng lặp là do th
 **LLM agents。**Một mô hình ngôn ngữ được đóng gói trong một vòng lặp, được sử dụng để lập kế hoạch,调用 công cụ,并验证结果── nó không có trong một chatbot dài prompt── nó là một vòng lặp đại lý: kế hoạch → call tool → quan sát kết quả → quyết định bước tiếp theo── Lấy lại-làm thế giới đầu tiên(RAG) để nó tránh ảo giác── Tool call 让它 thực sự có thể thực hiện hoạt động── đây là cấu trúc năm 2026──
 
 Đây là bốn mô hình không phải là một thứ tự thay thế. Một chatbot cấp sản xuất năm 2026 sẽ trải qua tất cả bốn con đường: dựa trên quy tắc, sử dụng để xác minh và hành động hủy diệt, tìm kiếm, sử dụng để FAQ, phát triển thần kinh, sử dụng để biểu hiện tự nhiên, đại lý LLM, sử dụng để tìm kiếm mở trong mờ.
-
-
-```figure
-chatbot-lineage
-```
 
 ##  xây dựng nó
 
@@ -225,6 +242,7 @@ tags: [nlp, agents, chatbot]
 3. **Hard。**Sử dụng ba công cụ (đánh giá 50 trường hợp thử nghiệm của các nỗ lực tiêm nhanh) để thực hiện vòng tròn đại lý trên.
 
 ## 关键术语
+
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Intent | 用户想要什么 | Categorical label（book_flight, reset_password）。路由到 handler。 |
@@ -236,7 +254,9 @@ tags: [nlp, agents, chatbot]
 
 ## 延伸阅读
 
+- [Turing (1950). Computing Machinery and Intelligence](https://academic.oup.com/mind/article/LIX/236/433/986238) 让对话成为这个领域的基准论文──
 - [Weizenbaum (1966). ELIZA — A Computer Program For the Study of Natural Language Communication](https://web.stanford.edu/class/cs124/p36-weizenabaum.pdf) 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文── 论文
+- [Colby, Weber, Hilf (1971). Artificial Paranoia](https://doi.org/10.1016/0004-3702(71)90002-6)                                                                                                                                                                                                                                                              
 - [Thoppilan et al. (2022). LaMDA: Language Models for Dialog Applications](https://arxiv.org/abs/2201.08239) Google 较晚期的神经聊天机论文,正好在 LLM đại lý 接管之前
 - [Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)  命名 agent loop pattern 的论文。
 - [Anthropic's guide on building effective agents](https://www.anthropic.com/research/building-effective-agents) Chỉ thị sản xuất năm 2024 , đến năm 2026 vẫn còn tồn tại.
