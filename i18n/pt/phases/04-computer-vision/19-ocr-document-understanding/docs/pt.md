@@ -71,7 +71,7 @@ Modelos de ponta a ponta precisam de mais dados e computação, mas superaram a 
 
 ### Partilha de layout
 
-对于结构文件,运行布局检测器(LayoutLMv3, DocLayNet),为每个地区 标注标签标签:Título, parágrafo, Figura, Tabela, Nota de rodapé。
+对于结构文档,运行布局模型(LayoutLMv3,或在DocLayNet dataset 上训练的探测器),为每个地区 标注标签:Título, parágrafo, Figura, Tabela, Footnote。Legenda 于是变成按布局顺序 遍历地区 并拼接──
 
 对于表格,使用 **Key-Value extraction**modelos(Fação dos documentos visuais ricos, face face face plain scans of LayoutLMv3)。 eles recebem imagem + texto detectado + posições,并预测 pares de valores-chave estruturados。
 
@@ -161,18 +161,23 @@ Input de altitude fixaCNN max-pools 会把高度压到 1)──宽度是CTC的�
 
 ### 步骤 3: OCR sintético
 
-生成白底黑字的数字字符串, para uso em teste de fumo de ponta a ponta.
+As cordas de letras negras, usadas para testes de fumaça de ponta a ponta. Cada letra se transforma em uma barra de seis rochas, com um índice de escrita de forma conjunta no vocabulário.`a`和 `x`- Não, não.
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ O verdadeiro conjunto de dados OCR vai adicionar fontes, ruído, rotação, borb
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-Neste simples dados sintéticos, a perda deve acontecer em 200 passos, de ~3  para ~0.2 ⋅
+Neste simples dados sintéticos, a perda deve ser de 400 passos, de dois dígitos para cerca de 0,3.`code/main.py`Em seu próprio conjunto de cordas 上运行同样循环, então decodificar três test strings。
 
 ## Use-o
 

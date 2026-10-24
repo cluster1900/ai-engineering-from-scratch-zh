@@ -100,7 +100,7 @@ Cutmix:
 
 ### Limeamento de rótulos
 
-Não mexa com os meus amigos.`[0, 0, 1, 0, 0]`Como objetivo de treinamento, mas usá-lo.`[eps/C, eps/C, 1-eps, eps/C, eps/C]`, entre os `eps`É como 0.1 este tipo de pequeno valor. Impede o modelo de produzir qualquer logite de ponta, e quase a zero custo para melhorar a calibração. Desde PyTorch 1.10 起, já está em`nn.CrossEntropyLoss(label_smoothing=0.1)`- Não.
+Não mexa com os meus amigos.`[0, 0, 1, 0, 0]`Como objetivo de treinamento, mas usá-lo.`[eps/C, eps/C, 1-eps+eps/C, eps/C, eps/C]`, entre os `eps`É como 0.1 este tipo de pequeno valor ((ou seja, um alvo de calor com distribuição uniforme 混合, portanto, o total e ainda é 1) ・ impede o modelo  produzir logits arbitrários de ponta, e quase a zero custo melhorar a calibração ・ desde PyTorch 1.10 起, já está em`nn.CrossEntropyLoss(label_smoothing=0.1)`- Não.
 
 ### Avaliação fora da precisão
 
@@ -416,7 +416,7 @@ Há dois pontos a notar:**dataset-specific**No entanto, eles são calculados no 
 | DataLoader | “The batcher” | 用 shuffling、batching 和（可选）multi-worker loading 包装 dataset；一半 training bugs 都会被怪到它头上 |
 | Augmentation | “Random transforms” | training time 的任何 pixel-level transform，只要它保留 label；教会 CNN 它原生不具备的 invariances |
 | Mixup / Cutmix | “Mix two images” | 同时混合 inputs 和 labels，让 classifier 学习平滑插值，而不是硬边界 |
-| Label smoothing | “Softer targets” | 用 (1-eps, eps/(C-1), ...) 替换 one-hot；改善 calibration，并略微提升 accuracy |
+| Label smoothing | “Softer targets” | 用 (1-eps+eps/C, eps/C, ...) 替换 one-hot；改善 calibration，并略微提升 accuracy |
 | Top-k accuracy | “Top-5” | 正确 class 位于 k 个最高 probability predictions 之中；用于包含真实歧义 classes 的 datasets |
 | Confusion matrix | “Where errors live” | C x C table，其中 entry (i, j) 统计 true class i 被预测为 j 的 images 数量；diagonal 是正确项，off-diagonal 告诉你该修什么 |
 

@@ -126,7 +126,7 @@ A entropia cruzada no treinamento   inicial fornecer um gradiente estável; Dice
 
 ### Resolução de entrada 权衡
 
-O codificador da U-Net vai reduzir a resolução em 4 vezes, por isso a entrada deve ser feita em 16 partes. Imagens médicas geralmente são 512x512 ou 1024x1024.`H * W * C_max`缩放,在1024x1024 且瓶为1024 时,前途通过 已经会使用数GB VRAM──
+O codificador da U-Net vai reduzir a resolução em 4 vezes, então apenas a entrada pode ser feita em 16 horas, para que as conexões sejam precisas.`H * W * C_max`缩放,在1024x1024 且瓶为1024 时,前途通过 已经会使用数GB VRAM──
 
 Duas soluções de trabalho:
 1. Tire a entrada de 256x256 telhas de sobreposição, e depois costure-las.

@@ -57,7 +57,7 @@ Por que os mapas de calor são melhores do que a regressão direta?
 
 ### Localização de subpixels
 
-Argmax  dá um número inteiro                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      `(dx, dy) = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1], ...)`Direcção:
+Argmax  dá um conjunto de números. Para obter a precisão de sub-pixels, pode ser usado para parabolas para argmax e seus vizinhos, ou como código,`dx = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1])`Mover o máximo de arg para um vizinho mais elevado,`dy`Sim, sim.
 
 ### Campo de afinidade parcial (PAFs)
 

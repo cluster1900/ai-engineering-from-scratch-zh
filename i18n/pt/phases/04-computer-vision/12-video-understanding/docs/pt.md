@@ -67,7 +67,7 @@ I3D 技巧: Pegue um modelo pré-treinado 2D ImageNet, vai cada núcleo 2D 沿�
 - Inflação I3D  fornecer transferência de aprendizagem gratuita
 
 缺点:
-- Por exemplo, a teoria de que o núcleo temporal é um núcleo temporal é um núcleo temporal.
+- FLOPs são cerca de 3 vezes mais do que a rede 2D que funciona, porque cada núcleo 3x3 se transformou em 3x3x3
 - Os núcleos temporais 很小;长程 motion 需要 pyramid 或双流方法──
 
 适用场景:motion is signal's action recognition (o movimento é o reconhecimento de ação de sinais)

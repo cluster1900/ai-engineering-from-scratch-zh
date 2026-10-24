@@ -81,7 +81,7 @@ Colocar uma amostra de máscara de 28x28 para a proposta.
 
 ### Perdas
 
-Mascaras R-CNN tem quatro tipos de perdas.
+Mascar R-CNN tem cinco tipos de perdas.
 
 ```math
 L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
@@ -257,7 +257,7 @@ def train_step(model, images, targets, optimizer):
     return {k: v.item() for k, v in loss_dict.items()}
 ```
 
-`targets`A lista deve conter cada imagem que corresponde a um ditado, entre os quais:`boxes`- Não.`labels`和 `masks`(como `(num_instances, H, W)`tensores binários) ⋅ modelo em treinamento ⋅ retornar quatro perdas ⋅ dit, ⋅ eval ⋅ retornar previsões ⋅ lista, ⋅`model.training`Decidir.
+`targets`A lista deve conter cada imagem que corresponde a um ditado, entre os quais:`boxes`- Não.`labels`和 `masks`(como `(num_instances, H, W)`tensores binários) ⋅ modelo em treinamento ⋅ retornar cinco perdas ⋅ dit, ⋅ eval ⋅ retornar previsões ⋅ lista, ⋅`model.training`Decidir.
 
 `pycocotools`O avaliador irá fazer uma análise de dois números para determinar se a caixa é a cabeça da máscara ou a cabeça da máscara.
 

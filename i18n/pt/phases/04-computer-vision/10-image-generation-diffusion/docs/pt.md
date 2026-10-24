@@ -261,7 +261,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     x = torch.randn(shape, device=device)
     alphas_cumprod = schedule["alphas_cumprod"].to(device)
 
-    ts = torch.linspace(T - 1, 0, steps + 1).long()
+    ts = torch.linspace(T - 1, -1, steps + 1).round().long()
     for i in range(steps):
         t = ts[i]
         t_prev = ts[i + 1]
@@ -277,7 +277,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     return x
 ```
 
-`eta=0`É totalmente definida: o mesmo ruído:`eta=1`Vai voltar a DDPM.
+programação  finalizar `t_prev = -1`, portanto , o último passo é usar`a_prev = 1.0`, retornar não contendo restante ruído de干净 `x0_pred`- Não.`eta=0`É totalmente definido. O mesmo ruído.`steps=T`) ,`eta=1`Vai voltar a DDPM.
 
 ## Use-o
 
