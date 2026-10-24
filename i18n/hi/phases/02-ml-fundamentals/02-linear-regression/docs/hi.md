@@ -153,6 +153,10 @@ R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} 
 
 惩罚项会抑制较大的重量──हायपरमीटर $\lambda$控制权衡:$\lambda$越高,重量 越小,规范化 越强── अगले पाठ्यक्रम में इस मुद्दे पर गहराई से चर्चा होगी── अब केवल यह जानने की जरूरत है कि यह अस्तित्व में है, और यह क्यों उपयोगी है──
 
+```figure
+linear-regression-fit
+```
+
 ## 构建
 
 ### 步骤 1: नमूना डेटा उत्पन्न करें
@@ -466,10 +470,6 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
-
-```figure
-linear-regression-fit
-```
 
 ## इसका उपयोग करें
 
