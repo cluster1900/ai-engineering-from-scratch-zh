@@ -51,7 +51,7 @@ Sıfırlama, sesli olarak kullanılır.
 
 BEATs(Chen 等,2022) bir AudioSet üzerinde eğitimli bir kendi kendine denetim Transformer.
 
-AF-Whisper(Audio Flamingo 3'ün hibrid):将 Whisper + BEATs özellikleri concat 作为音频输入──Whisper 携带语言信号,BEATs 携带声学信号──
+AF-Whisper(Audio Flamingo 3'ün kodleyicisi): Whisper-large-v3 kodleyicisinden ortaya çıkmak,语音、声音和音乐 üzerinde birleşik eğitim yapmaya devam etmek, bir kodleyicinin aynı zamanda dil sinyalleri ve ses sinyallerini taşımasını sağlamak.
 
 ### Sesli Q-former
 
@@ -67,7 +67,7 @@ Qwen-Audio(Chu 等,2023):架构类似,训练数据集更丰富,针对多轮对�
 
 LTU  Dinle, Düşün, Anla ((Gong 等,2023): açıkça mantık verileri, konukseverlik ses sesli klip 上的链-of-thought──规模更小但更聚焦──
 
-Audio Flamingo 3(Goel 等,2025 yıl 7 月):当前 open SOTA──8B LLM backbone(Qwen2 7B)、Whisper-big encoder concat BEATs、64-query Q-former,在100万+ sesli metin talimat çiftlerinde 上练──MMAU 0.72,在部分子任务上匹配专属边界──
+Audio Flamingo 3(Goel 等,2025 yıl 7 月): 当前 open SOTA──7B LLM backbone(Qwen2.5-7B)、基于Whisper-large-v3 构建的AF-Whisper 音频编码器、接入LLM's小型适配器层,在100万+ ses metin talimat çiftlerinde 上练──MMAU 0.72,在部分子任务上匹配专有边界──
 
 AF3 ayrıca son cevapta düşünce belirtilerini çıkarabilecek bir düşünce zinciri de içeriyor:
 

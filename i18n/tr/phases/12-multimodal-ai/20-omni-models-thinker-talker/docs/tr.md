@@ -11,7 +11,7 @@
 - Bu nedenle, bu yayınlar için bir dizi yayın yayın yapılması gerekmektedir.
 - 逐组件计算一次对话交互的时间-to-first-audio-byte (TTFAB) bütçe
 - TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın TMRoPE'yi tanımlayın
-- Üç farklı konuşma modüsü: yarı çiftlik, dönüş, tam çiftlik.
+- İki farklı konuşma biçimi anlatın, nasıl yarı çiftlikçi bir iletişim kurmak için VAD dönüşü nasıl açıklayın.
 
 ## 问题
 Gerçek zamanlı bir ses asistanı çok şey hızlı bir şekilde tamamlamalıdır.
@@ -82,7 +82,7 @@ Qwen2.5 Omni 默认支持半duplex,通过静音值进行转变──Full-duplex 
 - Geri kalan-VQ çözümü:30 ms.
 - 语音 dalga biçimi dekode:50-80ms。
 
-总 TTFAB:7B 上 320-510ms,70B 上 600-900ms。Sınır 质量通常意味着70B+; İşte sınır 延迟差的来源──
+总 TTFAB:7B 上 320-490ms,70B 上 600-900ms。Sınır 质量通常意味着70B+; İşte sınır 延迟差的来源──
 
 ### Token oranı matematiği
 
