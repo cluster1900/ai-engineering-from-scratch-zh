@@ -91,6 +91,8 @@ roofline
 ## Usalo
 `code/main.py` Implementar una caché KV de árbol radix de juguete, así como un cronista con dos estrategias:FCFS y caché-consciente.  Permitirá que la misma carga de trabajo se dividan a través de ambos.  Report prefijo-cache hit rate y delta de rendimiento.  Luego ejecutará una ordenada con problemas  carga de trabajo, mostrando 6.4x  cómo se derrumbe.
 
+El [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096)La máquina mostró la caché de radix en una versión real de L4 . Cuatro grupos cada uno tiene un prompt de sistema de 4,096 tokens. La primera solicitud de un grupo calcula su prompt.
+
 ##  entregarlo
 本课会生成                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `outputs/skill-radix-scheduler-advisor.md` dar una descripción de la carga de trabajo  la forma de la plantilla de solicitud  el patrón de recuperación  la cantidad de inquilinos concurrentes  generar una receta de pedido de solicitud de solicitud, así como el uso de la opción de no-entrada de SGLang 
 

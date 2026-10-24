@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## Usalo
 `code/main.py`Se trata de una serie de modelos de tamaño, calcular seis tipos de forma de huella de memoria (peso + KV + activaciones) y de rendimiento relativo.
 
+El [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64)机器展示了FP8在NVIDIA L4 上的效果──权重从15.28 GB 降至8.81 GB,KV pool从24.094 代币 增长至142.369 代币,64 用户时实测输出从每秒250.85 代币 升级至735.91 代币──
+
 ##  entregarlo
 本课会产出                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `outputs/skill-quantization-picker.md` Dado el hardware, el tamaño del modelo, el tipo de carga de trabajo y la tolerancia de calidad, elige un formato y genera un plan de calibración/validación.
 
