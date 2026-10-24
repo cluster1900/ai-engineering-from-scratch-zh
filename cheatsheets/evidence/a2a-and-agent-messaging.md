@@ -15,11 +15,11 @@ Abbreviations: L19 = phases/13-tools-and-protocols/19-a2a-protocol, F02 = phases
 ## 何时选用 (concepts, 7)
 - MCP to invoke a specific tool: L19/d:167
 - A2A to delegate a whole task: L19/d:167
-- A2A + ACP trajectory patterns for audit trails: C03/d:1460-1461
-- ANP + A2A when outside your org with no shared infrastructure: C03/d:1462-1466
-- A2A + message broker with shared infrastructure: C03/d:1464-1465
+- A2A + ACP trajectory patterns for audit trails: C03/d:1482-1483
+- ANP + A2A when outside your org with no shared infrastructure: C03/d:1484-1488
+- A2A + message broker with shared infrastructure: C03/d:1486-1487
 - Direct RPC for latency-sensitive micro-calls, lifecycle is async: A12/d:119
-- No protocol when agents do not talk: C03/d:1458-1459
+- No protocol when agents do not talk: C03/d:1480-1481
 
 ## 通过 HTTP+JSON 调用 A2A (architecture, 5 nodes, 4 edges)
 - Client sends A2A-Version: 1.0: A12/d:92, A12/c:174
@@ -79,16 +79,16 @@ Abbreviations: L19 = phases/13-tools-and-protocols/19-a2a-protocol, F02 = phases
 - -32601 Method not found, PascalCase names: L19/c:121-122, L19/d:126
 - HTTP 400 VERSION_NOT_SUPPORTED: A12/c:128-132
 - HTTP 404 TASK_NOT_FOUND: A12/c:143-146
-- updates after terminal state dropped, check terminal state: C03/d:1432
-- schema drift, version skills and output schemas: C03/d:1430
+- updates after terminal state dropped, check terminal state: C03/d:1454
+- schema drift, version skills and output schemas: C03/d:1452
 - semantic drift, JSON Schema on content, typed artifacts: F02/d:126-131
-- 50 agents query GET /agents, cache Agent Cards with TTL: C03/d:1438
+- 50 agents query GET /agents, cache Agent Cards with TTL: C03/d:1460
 
 ## 缩写 (glossary, 8)
-- A2A Agent2Agent: L19/d:3, C03/d:1498
-- ACP with TrajectoryMetadata: C03/d:1499
-- ANP did:wba, HPKE E2EE: C03/d:1500
-- DID W3C identity on own domain: C03/d:1502
+- A2A Agent2Agent: L19/d:3, C03/d:1520
+- ACP with TrajectoryMetadata: C03/d:1521
+- ANP did:wba, HPKE E2EE: C03/d:1522
+- DID W3C identity on own domain: C03/d:1524
 - NLIP Ecma Natural Language Interaction Protocol: A12/d:129
 - FIPA standardized ACL in 2000: F02/d:196
 - ACL performative + content + metadata: F02/d:197
@@ -99,5 +99,5 @@ Abbreviations: L19 = phases/13-tools-and-protocols/19-a2a-protocol, F02 = phases
 - deduplicate on messageId: A12/d:170
 - JWS in signatures over RFC 8785 canonical JSON without signatures: L19/d:71
 - ACP tool_name, tool_input, tool_output metadata: C03/d:375-389
-- fail closed with principle of least trust: C03/d:1434
+- fail closed with principle of least trust: C03/d:1456
 - Contract Net, Subscribe/Notify, Request-When worth porting: F02/d:116-120
