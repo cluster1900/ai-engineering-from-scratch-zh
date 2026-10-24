@@ -1,51 +1,51 @@
-# Train with the DAPO filter
+# 用 DAPO 过滤器训练
 
-> The DAPO filter drops groups where every answer scored the same, so each step trains only on groups that teach something.
+> DAPO 过滤器丢掉每个回答得分都相同的组，这样每一步只在能教会模型东西的组上训练。
 
-In a plain GRPO step, about half of our groups had every answer right or every answer wrong. Those groups give no learning signal. The filter drops them and asks the engine for more prompts until the step has enough groups that do.
+在一个普通的 GRPO 步里，我们大约一半的组要么全部答对，要么全部答错。这些组不提供学习信号。过滤器丢掉它们，并向引擎要更多 prompt，直到这一步有足够多有信号的组。
 
-When you finish this section, you can turn on the zero-variance filter and check how many groups it drops. You can also measure what the extra prompts cost.
+读完本节后，你能打开零方差过滤器并检查它丢掉了多少组。你还能测出额外 prompt 的代价。
 
-**Our result:** the filter dropped 16 to 48 groups in each step, and most of them had every answer right. The rollout took 1.5 to 2.8 times as long. In 12 steps on one seed, the reward counted before the filter read higher than the run without it. We read that as a bias of the metric, not as learning.
+**我们的结果：** 过滤器每步丢掉 16 到 48 组，其中大多数是全部答对的组。rollout 的耗时变成原来的 1.5 到 2.8 倍。在一个种子的 12 步里，过滤前统计的奖励比不加过滤器的运行更高。我们把这看作指标的偏差，而不是学习的结果。
 
-## Turn it on
+## 打开过滤器 {#s-train-with-the-dapo-filter-turn-it-on}
 
-Add two flags to the run of [section 1.1](#s-run-grpo-on-one-gpu) with `MILES_EXTRA_ARGS`:
+用 `MILES_EXTRA_ARGS` 给[第 1.1 节](#s-run-grpo-on-one-gpu)的运行加上两个参数：
 
 ```bash
 -e MILES_EXTRA_ARGS="--dynamic-sampling-filter-path miles.rollout.filter_hub.common_filters.apply_reward_nonzero_std_filter --over-sampling-batch-size 48"
 ```
 
-Our lab runs used an older path for the same filter, which Miles marks as deprecated. At the version we ran, the older path calls the filter shown here, so the results are the same.
+我们的实验运行用的是同一个过滤器的旧路径，Miles 已把它标为弃用。在我们运行的版本里，旧路径调用的就是这里给出的过滤器，所以结果相同。
 
-**Over-sampling batch:** the number of prompts that the rollout sends to the engine at a time. It must be at least `--rollout-batch-size`.
+**Over-sampling batch：** rollout 每次发给引擎的 prompt 数。它必须不小于 `--rollout-batch-size`。
 
-The rollout sends 48 prompts. As each group finishes, the filter keeps it or drops it. When the kept and the waiting groups cannot reach 32, the rollout sends 48 more prompts. When 32 groups are kept, it stops the rest of the requests. The answers of the stopped requests are not used.
+rollout 发出 48 个 prompt。每当一组完成，过滤器就决定保留或丢掉它。当已保留的组加上还在等待的组凑不够 32 组时，rollout 再发 48 个 prompt。保留满 32 组后，它停掉其余请求。被停掉的请求的回答不会被使用。
 
-## Count the dropped groups
+## 统计被丢掉的组 {#s-train-with-the-dapo-filter-count-the-dropped-groups}
 
-The rollout writes three numbers for the filter in its `perf N` line:
+rollout 在它的 `perf N` 行里为过滤器写出三个数：
 
-| Log name | What it counts |
+| 日志名 | 统计的内容 |
 |---|---|
-| `rollout/dynamic_filter/drop_zero_std_0` | dropped groups where every answer was wrong |
-| `rollout/dynamic_filter/drop_zero_std_1` | dropped groups where every answer was right |
-| `rollout/raw_reward_unfiltered` | the mean reward of every finished answer, before the filter |
+| `rollout/dynamic_filter/drop_zero_std_0` | 被丢掉的、每个回答都错的组 |
+| `rollout/dynamic_filter/drop_zero_std_1` | 被丢掉的、每个回答都对的组 |
+| `rollout/raw_reward_unfiltered` | 过滤之前，所有已完成回答的平均奖励 |
 
-Without the filter, the same groups stay in the batch. Read `rollout/zero_std/count_0` and `rollout/zero_std/count_1` to see how many there are.
+没有过滤器时，这些组会留在 batch 里。读 `rollout/zero_std/count_0` 和 `rollout/zero_std/count_1` 就能看到有多少。
 
-**We measured** these counts over 12 steps with seed 1, with and without the filter:
+**我们测得** 在种子 1 的 12 步里，有无过滤器时的这些计数如下：
 
-| Run | Groups with one reward for every answer | Of those, every answer right |
+| 运行 | 每个回答奖励都相同的组 | 其中每个回答都对的 |
 |---|---|---|
-| no filter, trained on | 191 of 384 | 142 |
-| DAPO filter, dropped | 399, next to 384 kept | 306 |
+| 无过滤器，参与训练 | 384 组中的 191 组 | 142 |
+| DAPO 过滤器，被丢掉 | 399 组，另有 384 组被保留 | 306 |
 
-Without the filter, half of the groups that the trainer used taught nothing. With the filter, the step dropped 16 to 48 groups, with a median of 36. Most dropped groups were easy prompts that the model already answered right every time.
+没有过滤器时，训练器用到的组有一半什么也没教。有过滤器时，每步丢掉 16 到 48 组，中位数是 36。被丢掉的组大多是简单的 prompt，模型每次都已经答对。
 
-## Measure the over-sampling cost
+## 测量过采样的代价 {#s-train-with-the-dapo-filter-measure-the-over-sampling-cost}
 
-Every rollout of the filter run overlapped a heat-guard pause, so this run has no clean step. To compare the rollout times, we took the pause time out of each rollout. The run without the filter is our 12-step run with seed 1. With the pause time taken out, it gave a median of 58.0 s, close to the 59.1 s of its 6 clean steps.
+过滤器运行的每次 rollout 都碰上了一次温度保护暂停，所以这次运行没有干净步。为了比较 rollout 时间，我们从每次 rollout 中扣掉了暂停时间。不加过滤器的运行是我们种子 1 的 12 步运行。扣掉暂停时间后，它的中位数是 58.0 s，接近它 6 个干净步的 59.1 s。
 
 ```figure
 id: fig-3-2
@@ -55,13 +55,13 @@ claim: A step that dropped 16 groups or fewer needed one batch of 48 prompts, an
 caption: Rollout seconds per step with the pause time taken out, 12 steps with seed 1.
 ```
 
-Three steps dropped 16 groups or fewer, so one batch of 48 prompts was enough. Their rollouts took a median of 88.7 s, 1.5 times the 58.0 s without the filter. The other nine steps needed a second batch and took a median of 164.4 s, 2.8 times as long.
+有三步丢掉的组不超过 16 个，所以一批 48 个 prompt 就够了。它们的 rollout 中位数是 88.7 s，是无过滤器时 58.0 s 的 1.5 倍。其余九步需要第二批，中位数是 164.4 s，是原来的 2.8 倍。
 
-One batch of 48 prompts is 1.5 times the work of 32 prompts, which matches the first ratio. A second batch adds more, and the step must wait for the slowest groups that it keeps. The sum of the 12 step times was 113 minutes with the filter and 60 minutes without it, with the heat pauses in both.
+一批 48 个 prompt 的工作量是 32 个 prompt 的 1.5 倍，这与第一个倍数吻合。第二批会增加更多工作，而且这一步必须等它保留的最慢的组。12 步的总耗时，有过滤器时是 113 分钟，没有时是 60 分钟，两者都包含温度暂停。
 
-## Compare the reward
+## 比较奖励 {#s-train-with-the-dapo-filter-compare-the-reward}
 
-The filter changes what `rollout/raw_reward` means, because the dropped groups are not in it. To compare the two runs, read `rollout/raw_reward_unfiltered` for the filter run.
+过滤器改变了 `rollout/raw_reward` 的含义，因为被丢掉的组不在其中。要比较两次运行，对过滤器运行请读 `rollout/raw_reward_unfiltered`。
 
 ```figure
 id: fig-3-2b
@@ -71,21 +71,21 @@ claim: Over 12 steps on one seed, the reward counted before the filter was highe
 caption: Mean reward per step over every finished answer, 12 steps with seed 1.
 ```
 
-The mean over 12 steps was 0.686 with the filter and 0.657 without it. Our five baseline runs gave 12-step means of 0.638 to 0.660, so 0.686 is above all of them. The mean of the first four steps was also higher, 0.672 against 0.625, before the filter could have changed the model much.
+12 步的平均值，有过滤器时是 0.686，没有时是 0.657。我们五次基线运行的 12 步平均值是 0.638 到 0.660，所以 0.686 高于所有基线。前四步的平均值也更高，0.672 对 0.625，而那时过滤器还不太可能明显改变模型。
 
-We think the reason is in what the number counts. The reward before the filter counts only the groups that finished before the rollout stopped. The stopped requests are the slowest, with the longest answers. An answer cut at the length limit usually scores 0, as [section 4.2](#s-handle-long-responses) shows. So this number can lean high, and we read the higher mean as that bias, not as a learning effect.
+我们认为原因在于这个数统计了什么。过滤前的奖励只统计在 rollout 停止前完成的组。被停掉的请求是最慢的，回答也最长。在长度上限处被截断的回答通常得 0 分，[第 4.2 节](#s-handle-long-responses)展示了这一点。所以这个数可能偏高，我们把更高的平均值看作这种偏差，而不是学习效果。
 
-This is one seed of 12 steps. The filter run finished all 12 steps. Then the time limit of our run queue stopped the container while it shut down. To see a reward effect, run more steps and a second seed, and compare against the spread of your baseline seeds.
+这只是一个种子的 12 步。过滤器运行跑完了全部 12 步。之后我们运行队列的时间限制在容器关闭时把它停掉了。要看出奖励上的效果，就多跑一些步和第二个种子，并和你基线种子之间的差距比较。
 
-## Decide
+## 做出决定 {#s-train-with-the-dapo-filter-decide}
 
-Use the filter when many groups score the same for every answer, and when you can pay for a longer rollout. Set the over-sampling batch from your drop rate. With half of the groups dropped, a batch of 48 prompts for 32 kept groups was too small for most of our steps.
+当很多组的每个回答得分都相同，而且你能承受更长的 rollout 时，就用这个过滤器。按你的丢弃率设置过采样 batch。一半的组被丢掉时，用 48 个 prompt 去凑 32 个保留组，对我们大多数步来说都太少了。
 
 ```takeaways
-- Turn on the filter when many groups score the same for every answer.
-- Count the dropped groups in every step, and split them into all right and all wrong.
-- Expect each extra batch of prompts to add to the rollout time.
-- Compare the reward before the filter, and run a second seed before you report a gain.
+- 当很多组的每个回答得分都相同时，打开过滤器。
+- 每一步都统计被丢掉的组，并把它们分成全对和全错。
+- 每多一批 prompt，rollout 时间都会增加。
+- 比较过滤前的奖励，并在报告提升之前跑第二个种子。
 ```
 
 Sources: Miles filter hub, common_filters and dynamic_sampling_filters, at main 08752a12; capture/gpu/summary/miles-gb10-lab.json (runs.e2b-dapo-filter, runs.e6a-base, runs.plain, runs.plain-48, runs.plain-48-s2, runs.plain-48-s3); capture/gpu/summarize_miles.py; Miles rollout loop and filter metrics at main 08752a12.

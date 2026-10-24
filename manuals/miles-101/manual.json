@@ -144,9 +144,9 @@
     },
     {
       "number": 3,
-      "title": "Recipes",
-      "thesis": "Each recipe gives the flags to set, the flags to leave alone, and the metric that proves the run works.",
-      "summary": "Math, DAPO, agents, MoE, and custom rewards.",
+      "title": "配方",
+      "thesis": "每个配方都给出要设置的参数、不要动的参数，以及证明运行有效的指标。",
+      "summary": "数学、DAPO、agent、MoE 和自定义奖励。",
       "accent": "green",
       "sections": [
         {
