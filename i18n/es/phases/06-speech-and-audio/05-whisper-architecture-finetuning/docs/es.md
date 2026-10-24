@@ -32,7 +32,7 @@ Gran v3 tiene parámetros 1.55B──Turbo utiliza un decodificador de 4 capas(d
 
 **Prompt format。**Whisper es un descifrador de instrucciones de entre los tokens especiales  control de multitarea modelo:
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 

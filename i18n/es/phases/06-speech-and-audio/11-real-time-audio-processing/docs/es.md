@@ -48,6 +48,10 @@ Moshi (Kyutai, 2024)  alcanza 200 ms de doble completo──GPT-4o en tiempo rea
 - **TTS priming。**Incluso como Kokoro, así como el TTS rápido, la primera solicitud también tiene un calentamiento de 100200 ms.
 - **Echo cancellation。**没有 AEC, TTS salida 会重新进入 mic,并触发 ASR 识别bot 自己的声音──WebRTC AEC3 es el código abierto por defecto──
 
+```figure
+nyquist-aliasing
+```
+
 ## 动手构建 动手构建
 
 ### 步骤 1: amortiguador de anillos
@@ -117,10 +121,6 @@ class Dialog:
 
 Esto depende de la sincronización de I/O y se puede eliminar de la transmisión de TTS.
 
-
-```figure
-nyquist-aliasing
-```
 
 ## Usalo
 
