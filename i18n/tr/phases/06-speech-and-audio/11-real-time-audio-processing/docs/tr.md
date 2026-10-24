@@ -48,6 +48,10 @@ Moshi (Kyutai, 2024)  200 ms tam çiftlemeyi ulaştı GPT-4o-real-time (2024) �
 - **TTS priming。**Hatta Kokoro gibi hızlı TTS, ilk istek de 100200 ms ısınma vardır.
 - **Echo cancellation。**没有AEC,TTS output 会重新进入mic,并触发 ASR 识别bot 自己的声音──WebRTC AEC3 açık kaynaklı varsayılan──
 
+```figure
+nyquist-aliasing
+```
+
 ## 动手构建
 
 ### 步骤 1: Yüzük tamponu
@@ -117,10 +121,6 @@ class Dialog:
 
 Bu asynk I/O ve TTS akışı kaldırılabilir.
 
-
-```figure
-nyquist-aliasing
-```
 
 ## Kullan
 

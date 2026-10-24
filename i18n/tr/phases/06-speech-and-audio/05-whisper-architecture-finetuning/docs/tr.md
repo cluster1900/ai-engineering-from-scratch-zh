@@ -32,7 +32,7 @@ Büyük-v3 1.55B parametreleri vardır. Turbo 4 katlı dekodör kullanmakla 32 k
 
 **Prompt format。**Whisper bir dekodör istekleri arasından özel simgeler  kontrolünün çok görevli modeli:
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
