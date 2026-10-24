@@ -6,7 +6,7 @@ Abbreviations: P0 = phases/00-setup-and-tooling. D3 = P0/03-gpu-setup-and-cloud/
 - Local NVIDIA GPU, $0, CUDA + cuDNN, regular use, large datasets: D3:25-28
 - Google Colab free tier, $0, Runtime > Change runtime type > T4 GPU: D3:30-33, 76
 - Cloud GPU (Lambda, RunPod, Vast.ai), $0.20-2.00/hr, SSH + install, serious training: D3:35-38
-- Phases 1-3 run fine on CPU: D3:17, 88
+- Phases 1-3 run fine on CPU: D3:17, 94
 - fp16 rule of thumb 2 bytes per parameter, keep a margin: D3:133, 141
 
 ## 检查 GPU (annotated-code, 8 lines)

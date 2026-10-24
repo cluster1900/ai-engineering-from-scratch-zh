@@ -27,7 +27,7 @@ Abbreviations: G = phases/01-math-foundations/21-graph-theory, EL = phases/05-nl
 - np.linalg.eigh(L): G/d:428
 - eigenvalues[1] Fiedler value: G/d:431
 - fiedler, group_a, group_b: G/d:436-438
-- nx.karate_club_graph(): G/d:396, 34 nodes and 78 edges: G/d:479
+- nx.karate_club_graph(): G/d:396; 34 nodes and 78 edges: G/d:479
 - nx.number_connected_components(G): G/d:403
 - nx.pagerank(G): G/d:405
 
