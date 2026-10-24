@@ -81,7 +81,7 @@ RoIAlign:
 
 ### 损失
 
-面具R-CNN有四类损失相加:
+面具R-CNN有五类损失相加:
 
 ```math
 L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
@@ -257,7 +257,7 @@ def train_step(model, images, targets, optimizer):
     return {k: v.item() for k, v in loss_dict.items()}
 ```
 
-`targets`列表必须包含每张图像对应的句子,其中有`boxes`,我知道.`labels`和 `masks`(作为`(num_instances, H, W)`模型在训练中返回四个损失的指令,在评估中返回预测列表,由`model.training`决定
+`targets`列表必须包含每张图像对应的句子,其中有`boxes`,我知道.`labels`和 `masks`(作为`(num_instances, H, W)`模型在训练中返回五个损失的指令,在评估中返回预测列表,由`model.training`决定
 
 `pycocotools`评估员会同时为盒子和面具 生成mAP@IoU=0.5:0.95;你需要两个数字,才能判断瓶是盒子头还是面具头.
 

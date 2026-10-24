@@ -228,7 +228,7 @@ for step, batch in enumerate(dataloader):
 
 - **Model family** SD 1.5 用于开源社区细节调音,SDXL 用于更高忠诚度,SD3 / FLUX 用于最先进的和严格许可要求.
 - **Scheduler**:20-30步骤 使用DPM-Solver++ 2M Karras;当延迟低于1s时使用LCM-LoRA──
-- **Precision**时间:`float16`更新设备上使用`bfloat16`VRAM 紧张时使用 `int8`(通过)`bitsandbytes`或`compel`
+- **Precision**时间:`float16`更新设备上使用`bfloat16`VRAM 紧张时使用 `int8`(通过)`bitsandbytes`
 - **Conditioning**基本管道上加入控制网 (可用);如果需要更强的控制,
 
 对于批量产量,`AUTO1111`现在,`ComfyUI`是社区工具;对于生产API,使用 `diffusers`其他`accelerate`通过使用TensorRT编译的`optimum-nvidia`,我知道.
