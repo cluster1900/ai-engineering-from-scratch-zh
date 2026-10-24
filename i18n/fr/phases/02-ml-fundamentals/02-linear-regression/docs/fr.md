@@ -153,6 +153,10 @@ Lorsque vous avez beaucoup de caractéristiques, le modèle peut être distribu�
 
 惩罚项会抑制 les poids plus importants.$\lambda$控制权衡:$\lambda$越高,重量 越小,régularisation 越强── les cours suivants vont approfondir ce point── maintenant il suffit de savoir qu'il existe, ainsi que pourquoi il est utile──
 
+```figure
+linear-regression-fit
+```
+
 ## Construction
 
 ### étape 1: générer des données d'exemple
@@ -466,10 +470,6 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
-
-```figure
-linear-regression-fit
-```
 
 ## Utilisez-le
 
