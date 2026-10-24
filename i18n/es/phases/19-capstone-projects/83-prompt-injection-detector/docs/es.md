@@ -68,7 +68,7 @@ Para algunos fijos (especialmente para los que parecen buenos), el detector es d
 
 1. 添加上下文走私规则系列 ((藏在工具结果 JSON 中的指令) ⋅ medir el costo de mejora y error de información de los reclamos de buenas sugerencias
 2. 计算每条规则的贡献: Para cada regla, calcular si se elimina esa regla perderá cuánta verdadera positividad.
-3. Añadir uno`confidence_threshold`旋── hacer que sea de 0 扫到1 y trazar la tasa de llamadas exacta de cada clase──
+3. Añade uno`confidence_threshold`旋── hacer que sea de 0 扫到1 y trazar la tasa de llamadas exacta de cada clase──
 
 ## 关键术语: "El hombre es un hombre"
 

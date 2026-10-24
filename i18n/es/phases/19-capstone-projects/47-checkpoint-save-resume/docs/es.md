@@ -101,6 +101,8 @@ cc-atomic-checkpoint
 
 `save_checkpoint`¿Qué tipo de modelo es el modelo? ¿Qué tipo de modelo?`load_checkpoint`En cambio, regresa a la misma.`TrainState`◊ campo de esquema es gancho de actualización: futurformatschanger会递增版本字符串, mientras que el cargador 会进行发送──
 
+`load_checkpoint`调用                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `torch.load(..., weights_only=True)`¿Qué es eso?`.pt`文件是一个,用 `weights_only=False`Contrarregla un archivo de incrédulo, ejecutará cualquier código determinado en el archivo. Solo aceptará los tensores y el recipiente básico, rechazará todo lo demás.`ValueError`En vez de usar`assert`, porque `python -O`¿Cómo se puede hacer esto?`weights_only=True`Se ha creado una brecha conocida en el medio de la CVE-2025-32434), por lo que la garantía de esta clase depende de sólo desde 2.6 .
+
 ### Paso 4: variante en fragmentos
 
 `save_sharded_checkpoint`Es decir, en forma de round-robin, distribuir las claves de parámetro en N 个 shards, con su propio archivo atómico, escribir en cada shard, escribir en un meta archivo que contiene el optimizador, cronista y estado del tren, y escribir en el índice JSON de Sha256 de shard.`load_sharded_checkpoint`Me voy a fusionar.
@@ -121,8 +123,9 @@ python3 code/main.py
 
 El proceso de control de los puntos de control se realiza en forma uniforme: modelo + optimizador + programador + contadores + RNG, en forma atómica, y se denomina de forma gradual, facilitándose la búsqueda de los últimos documentos.`index.json`Es parte de hacer que esto se haga realidad.
 
-Para obligar a ejecutar tres modalidades:
+Para obligar a ejecutar cuatro modelos:
 
+- **用 `weights_only=True` 加载。**El punto de control obtenido de la bolsa compartida o descargada es un inexplicable.
 - **Schema 是 payload 中的一个 string。**Migraciones de acuerdo con su división. Sin ella, no puedes desarrollarte en condiciones que no destruyan el viejo funcionamiento.
 - **对每个 shard 计算 Sha256。**静默截断的下载是最糟糕的 bug; cargador 么快速失败,要么晚些失败──
 - **让 checkpoint cadence 保持诚实。**Cada paso salvar una vez, y cada varios minutos salvar una vez, tomar más corto. Si no, el accidente ocurre en un largo paso.

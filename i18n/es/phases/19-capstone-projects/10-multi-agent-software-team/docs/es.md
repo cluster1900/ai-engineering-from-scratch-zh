@@ -116,7 +116,7 @@ $ team run --issue https://github.com/acme/widget/issues/842
 ##  ejercicios
 1. En el camino de la operación hacia la diferencia se introduce un error evidente`return None`)。 tasa de mala aprobación del revisor de la medida―调优 de la revisión de la solicitud, hasta que la mala aprobación 低于5%―
 
-2. 减少到两个编码器 (códero) 建筑师 +编码器 +审查员 +测试员,编码器 顺序运行两个子任务) ⋅ comparar con el reloj de pared 和 通过率──
+2. 减少到两个编码器 (arquitecto + 两个编码器 + revisor + tester, cada uno de ellos 顺序运行两个子任务) △比较墙钟 和通过率──
 
 3. Utiliza restricción de escritora única  sustituir el coordinador de fusión  subtareas 触及不相交的 ficheros)  carga de planificación del arquitecto de la medición 
 

@@ -142,7 +142,7 @@ python3 -m unittest code/test_main.py
 
 4. R@K una de las primeras clasificaciones de la media de la caída (MRR) ⋅ MRR es muy sensible a la posición de los proyectos que están en la cima de K ⋅ fuera de K ⋅ R@K es muy sensible a si están en la parte delantera de K ⋅
 
-5. Durante el entrenamiento, los cinco puntos de control evaluaron el funcionamiento del modelo, y trazaron una curva de aprendizaje.
+5. Durante el entrenamiento, seis puntos de control evaluaron el funcionamiento del modelo, y trazaron una curva de aprendizaje.
 
 ## 关键术语: "El hombre es un hombre"
 

@@ -102,7 +102,7 @@ Se trata de un programa de investigación que se desarrolla en el ámbito de la 
 
 ##  ejercicios
 
-1. Añadir árbol todo reduce los cambios, y según la información, el tamaño de los círculos y los árboles se cambia.
+1. Añade árbol todo reduce los cambios, y según el mensaje, el tamaño de los círculos y los árboles se cambia.
 2. 添加                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `recv_timeout_ms`, para que el ranking en paro se produzca un error de fecha límite, en lugar de colgar para siempre.
 3. ¿Qué es eso?`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
 4. Añadir la banda ancha de la prueba de la conexión, para que cada línea de la contagemera se registre en JSONL.

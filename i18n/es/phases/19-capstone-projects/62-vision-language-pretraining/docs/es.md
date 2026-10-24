@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 1. La información de la NCE se sustituye por sigmoides de estilo SigLIP para pérdidas y se compara con la receptividad en la base de datos de la NCE.
 
-2. Añadir pasos de extracción de la carga: cada lote, seleccionar de los anteriores los más difíciles de no contrarrestar a la carga que se añadirá.
+2. 添加硬负挖掘步骤: por lote, de la primera lote, seleccionar los más difíciles de no contrarrestar a la que se agregará.
 
 3. En conjunto, los datos de los datos de la configuración de los bloques de imágenes se pueden ver en el archivo de la configuración de los bloques de imágenes.
 

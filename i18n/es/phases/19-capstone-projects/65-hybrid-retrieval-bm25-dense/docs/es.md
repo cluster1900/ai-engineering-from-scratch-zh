@@ -58,8 +58,9 @@ Entre nuestras realizaciones hay dos que se pueden ajustar.`k`常数── un pe
 
 ### ¿Por qué la fusión es mejor que la fracción más el valor de inserción?
 
-BM25 no está limitado y depende de la base de palabras. La similitud de los yústros está limitada entre -1 y 1 .`alpha * bm25 + (1 - alpha) * cosine`需要每语料库 alpha 调整,并且每次重新索引时都会中断. Based on the merger of grades,否则──两个 grados tienen comparabilidad en diferentes modos. Desde 2010, las líneas de base RRF publicadas han superado el porcentaje de inserción en cada canal público de TREC.
+BM25 no está limitado y depende de la base de palabras. La similitud de los yústros está limitada entre -1 y 1 .`alpha * bm25 + (1 - alpha) * cosine`需要每语料库 alpha 调整,并且每次重新索引都会中断.                                                                                                                                                                                                                                                    
 
+Esto es lo mismo que lo que se oye en los documentos de Vespa y Weaviate sobre RankFusion y RRF. Ellos llegaron a la misma conclusión: a menos que tengas pruebas muy fuertes para insertar el valor, o bien mantenerse basado en la clasificación.
 
 ```figure
 rrf-fusion

@@ -80,7 +80,7 @@ El proceso puede estar inundado de datos, consumir todo el almacenamiento de dat
 
 El paso-a-k es un calculador humano y amigo de uso imparcial.`n`独立样本和其中的 `c`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `n`De la gran tamaño por`k`El modelo contiene al menos una probabilidad de que la solución sea aprobada:
 
-```text
+```
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 

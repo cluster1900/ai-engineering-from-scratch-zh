@@ -90,7 +90,7 @@ cc-gpt-assembly
 python3 code/main.py
 ```
 
-输出:parámetro de conteo con 124M 参考值的对照、随机随机 生成的代币ID, así como la confirmación de la información de almacenamiento compartido de LM Head 和 Token Embedding en el momento de la vinculación 打开时.
+输出:parámetro de conteo con 124M 参考值的对照、 desde el instante fijo 生成的代币 ids, así como la confirmación de la memoria compartida de embedimiento de los tokens y de la cabeza de LM en el momento de la vinculación 打开时 和 Token Embedding──
 
 Para hacer que la demostración se mantenga rápida, el guión también se ejecutará de un pequeño configurador.`d_model=64`¿Qué es esto?`num_layers=2`),并 inline 打印生成的代币序列──124M configuración 会被构建, pero sólo ejecutar el conteo de parámetros 和一次前传──
 

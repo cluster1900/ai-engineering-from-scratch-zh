@@ -61,7 +61,7 @@ Cuando cada firma está estable, el conjunto es muy simple.`Pipeline`类包含�
 
 En la producción, se puede utilizar la tip模板 que se simula sustituir por un verdadero LLM 调用:
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

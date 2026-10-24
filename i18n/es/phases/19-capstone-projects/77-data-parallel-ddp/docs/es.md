@@ -107,8 +107,8 @@ Se trata de un sistema de reducción de los valores de los valores de los valore
 
 1. Añadir un gran cubo de gradiente configurable, y medir en un modelo más profundo con cada parámetro una velocidad de reducción total.
 2. ¿ Qué ?`no_sync()`实现为上下文管理器,并验证梯度累积与K个微批次的单进程基线相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相
-3. Añadir`find_unused_parameters`模式, en el que el anterior a veces salta una de las capas MLP; si no hay este signo, el operativo se encuentra en la trampa 局。
-4. se sustituirá por`torch.distributed.barrier()`-solo con el mismo, la sensación de una diferencia entre el mismo basado en todo reducción y el mismo basado en barreras.
+3. 添加`find_unused_parameters`模式, en el que el anterior a veces salta una de las capas MLP; si no hay este signo, el operativo se encuentra en la trampa 局。
+4. Se cambiará por`torch.distributed.barrier()`-solo con el mismo, la sensación de una diferencia entre el mismo basado en todo reducción y el mismo basado en barreras.
 5. 量批量大小为 1、16、256 的梯度同步开销作为步长时间的一部分,并解释缩比例──
 
 ## 关键术语: "El hombre es un hombre"

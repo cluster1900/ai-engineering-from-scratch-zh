@@ -137,7 +137,7 @@ En el curso de la sección 69 del programa F 端到端 RAG 系统 utiliza este t
 1. 添加第六种策略: usar `tiktoken`En lugar de la ventana de símbolo de la cuenta de caracteres, se debe comparar con la ventana fija en el mismo fijo.
 2. Inserir el 30% de los bloques de código en el fijo de散文 中──重新运行该表── explicar por qué todas las estrategias, excepto la Markdown estructural, han perdido su memoria──
 3. Se sustituirá la determinación de los emplazamientos por la determinación de los proveedores reales de proyectos.
-4. para cada bloque añadir uno`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
+4. Para cada pieza añade una`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
 
 ## 关键术语: "El hombre es un hombre"
 

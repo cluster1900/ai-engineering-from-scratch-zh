@@ -47,6 +47,10 @@ exportador escribir JSONL。 para cada línea de un objeto JSON。 es un herrami
 
 Metricas y rastros no están presentes. Cada llamada de herramienta se hace en un contador:`tools_called_total{tool="read_file"}`◊histograma 记录观察到的延迟:`tool_latency_ms{tool="read_file"}`◊ los dos tipos de datos se clasifican en formato de exposición de texto Prometheus, esto es el estándar de hecho de las métricas basadas en la atracción.
 
+```figure
+trace-spans
+```
+
 ## Arquitectura
 
 ```mermaid
@@ -73,15 +77,15 @@ El registro de métricas es dos dicts.`{(name, frozen_labels): int}` Histogra
 6. 发发发期并更新的 métricas `wrap_tool_call(name)`decoratora.
 7. Demo: sintetizada una vez completa invocación de agente (extra-level-包 gen_ai.chat span),写入 traces.jsonl,打印 Prometheus exposición,并以零 退出。
 
-span id 和 trace id es una cadena hex de 16 bytes, por `os.urandom`生成── esto se ajusta al contexto de rastreo de OTel en el W3C──exportador 永不抛出; errores IO 会被浮现, pero el arnés 会继续运行──
+trace id es de 16 bytes 值(32 个 hex 字符), span id es de 8 bytes 值(16 个 hex 字符),都截取自随机的 `uuid4`hex。 esto se ajusta a la OTel utiliza W3C Trace Context size。 exportador 永不抛出; errores IO 会被浮现, pero el arnés 会继续运行。
 
-Histograma tiene un grupo de cubo fijo(OTel para el valor predeterminado de latencia de milisegundos: 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf)  Muestras de la lista 保存; exposición 会按需计算每个桶的数量──
+Histograma tiene un grupo fijo de milímetros de latencia de cuboes: 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf。 es la versión más corta de OTel SDK 默认边界的精简版,默认边界也包括 0、75、750 和 7500。 Muestras de la lista 保存;exposition 会按需计算每个桶的数量──
 
 ## ¿Por qué escribir a mano, en lugar de usar opentelemetry-sdk
 
-OTel Python SDK es una verdadera dependencia. También tiene miles de líneas de código, varios procesos de OTLP exportador, así como se inundará de un porción del presupuesto de la clase de costo de ejecución.
+OTel Python SDK es una verdadera dependencia. También tiene miles de líneas de código, una base de exportación de OTLP, así como un costo de tiempo de ejecución del presupuesto de clases.
 
-Las convenciones son estables. El formato de cable emitido por este curso seguirá siendo resuelto hasta el año 2030, ya que OTel no destruye los nombres de atributos de GenAI; sólo añadirán nuevos nombres.
+Las convenciones de GenAI en el espec. todavía se marcan por el desarrollo, y antes se modificó el atributo 名称:`gen_ai.usage.prompt_tokens`Se convirtió .`gen_ai.usage.input_tokens` fijar las convenciones semánticas que emite  versión, y actualizar SDK 时检查它──
 
 ## ¿Cómo se combina con el resto de la pista A?
 
@@ -96,7 +100,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 Demo reunión en el trabajo de esta clase en el medio de lanzar un `traces.jsonl`(最后清理), luego imprimir tres períodos de muestra, volver a imprimir contadores y histogramas de exposición Prometheus;; pruebas 验证 períodos de viaje de ida y vuelta 序列化、canonical GenAI atributos 存在、counter 正确递增, y la exposición del histograma 包含预期桶 counts。
-
-```figure
-trace-spans
-```

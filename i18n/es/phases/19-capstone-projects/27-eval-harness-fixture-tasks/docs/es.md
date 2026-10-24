@@ -49,6 +49,10 @@ La segunda es:`regex_match`
 
 Harness va a ejecutar cada tarea`k`Siguiente: Pas@k `1 - (1 - p)^k`, entre ellos p es la tasa de pasa de experiencia;harness también reportar recuentos crudos, facilita la detección de variaciones;.Latencia es el reloj de pared de cada muestra;.Costo es el contenido del informe automático del agente.
 
+```figure
+pass-at-k
+```
+
 ## Arquitectura
 
 ```mermaid
@@ -100,7 +104,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 demo 以 JSON 打印 EvalReport, incluye pass@1、pass@5、media latencia 和逐任务 breakdown──exit code 为零──tests 覆盖 verifier functions、pass@k math、fixture loading,以及 harness 针对捆绑参考候选人的端到端 行为──
-
-```figure
-pass-at-k
-```

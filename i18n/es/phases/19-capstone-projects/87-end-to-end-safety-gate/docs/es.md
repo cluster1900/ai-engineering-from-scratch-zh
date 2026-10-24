@@ -70,7 +70,7 @@ La demostración se ejecuta con todas las 50 categorías fijas y 10 consejos de 
 
 1. Añade el quinto punto de control:`policy-check`, antes de la pre-producción de acuerdo con el sistema original de instrucciones de funcionamiento.
 2. Utilizando el agregado de puntos de poder para sustituir el agregador de determinación: cada señal contribuye a 0-1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-3. Añadir cambios de flujo de cambios, entre los cuales durante el proceso de generación; verificar si el efecto de la demora se mantiene dentro del presupuesto de 50 milisegundos.
+3. Añadir cambios de flujo de cambios, entre ellos durante el proceso de generación; verificar si el efecto de la demora se mantiene dentro del presupuesto de 50 milímetros.
 
 ## 关键术语: "El hombre es un hombre"
 
