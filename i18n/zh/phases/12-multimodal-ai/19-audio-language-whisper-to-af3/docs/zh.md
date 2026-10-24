@@ -51,7 +51,7 @@
 
 在相同的参数下,它比语更好地捕捉音乐和环境声音.
 
-作为音频输入──Whisper 携带语言信号,BEATs 携带声学信号──将 Whisper + BEATs功能
+AF-Whisper(Audio Flamingo 3 的编码器):从Whisper-large-v3编码器中发出,在语音、声音和音乐上继续联合训练,使一个编码器同时携带语言信号和声学信号──SALMONN等早期的系统通过 concat 语和BEAT功能获得同样的覆盖──
 
 ### 音频Q-former
 
@@ -67,7 +67,7 @@
 
 听,思考,理解 (Gong等,2023):显式推理数据,专注于音频片 上的思想链――规模更小但更聚焦――
 
-音频 Flamingo 3(Goel 等,2025年7月):当前开放 SOTA──8B LLM脊柱(Qwen2 7B)、语大码码器 concat BEATs、64-query Q-former,在100万+音频文本指令对上训练──MMAU 0.72,在部分子任务上匹配专有边境──
+基于Whisper-large-v3 构建的AF-Whisper 音频编码器,接入LLM的小型适配器层,在100万+音频文本指导对上训练.
 
 首先让我确定工具: ...) ⋅启动思考 之后,复杂推理任务的准确率提升3-5个点.
 
