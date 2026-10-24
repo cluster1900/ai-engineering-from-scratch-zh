@@ -32,9 +32,9 @@ Mais il y a une limite clé: MCP est responsable de la standardisation du protoc
 
 1. **Tools（工具）**: 可调用动作──每个工具包含名称、描述、JSON Schema 输入约束及执行函数──
 2. **Resources（资源）**: ayant nom et selon le contenu de l'URI 寻址, pour le Client 读取。
-3. **Prompts（提示模板）**: Modèles structurés à utiliser à nouveau, pour Host 展现给用户快捷触发──
+3. **Prompts（提示模板）**: Modèles structurés à utiliser à l'hôte 展现给用户──
 
-Host 指 AI 宿主应用程序 (exemple Claude Desktop) ――MCP Client dans Host 专职与特定服务器 通信──传输层负责在两者之间搬运 JSON-RPC 报文──
+L'hôte indique l'IA  application. Un client MCP à l'intérieur de l'hôte et un serveur 通信.
 
 ### 无状态请求取代传统握手
 
@@ -60,7 +60,7 @@ MCP 2026-07-28 a été complètement démoli`initialize`et `notifications/initia
 
 协议版本与客户 能力为强制必填项,客户身为推项──缺失 `_meta`、缺少必填字段或字段类型错误均属于参数形, retourner Params invalide 错误码(`-32602`)。 Si la version est légale mais le serveur ne peut pas le prendre en charge, retourne `UnsupportedProtocolVersionError`(le secteur de l'énergie)`-32022`Le serveur peut traiter indépendamment toute requête valide sans enregistrement historique.
 
-无状态绝对不意味着应用无法保持业务状态――它只意味着状态不再隐藏在底层MCP 连接或 连接`Mcp-Session-Id` Si le flux de travail doit être transféré à la continuité, le serveur produit une position de contrôle opaque, le client en utilisant la suite le fera en tant qu'outil ordinaire 参数传入。
+无状态绝对不意味着应用无法保持业务状态――它只意味着状态不再隐藏在底层MCP 连接或 连接`Mcp-Session-Id` Si le flux de travail doit être transféré à travers la continuité de la régularité, le serveur produit une position non transparente, le client doit toujours vérifier l'autorisation de chaque requête.
 
 ### 服务发现与版本协商
 
@@ -90,9 +90,9 @@ Tous les serveurs modernes doivent être réalisés`server/discover`△ Its retu
 }
 ```
 
-Le client peut également utiliser directement la méthode d'entreprise et traiter les erreurs de version, mais la recherche peut rendre la capacité de démonstration et de négociation de version plus transparente.`-32022`, ses données supplémentaires contiennent le serveur  supporté `supported`版本数组以及 ceux qui ont été rejetés `requested`版本。
+Le client peut également utiliser directement la méthode d'entreprise et traiter les erreurs de version, mais la recherche peut rendre la capacité de démonstration et de négociation de version plus transparente.`UnsupportedProtocolVersionError`, une erreur .`-32022` Ses données incluent `supported`(Serveur 支持的修订版数组) avec `requested`(rejectée de modification)
 
-Dans le studio 模式下,双时代(double ère) Client utilisation `server/discover`发起探测──découvrir le succès ou recevoir`-32022`Étant donné que les erreurs modernes sont déjà identifiées, elles sont prouvées par le serveur moderne; seulement des erreurs non modernes ou des erreurs surchargées sont autorisées à revenir à l'ancienne version de 2025-11-25.`initialize`Le fait de ne pas avoir de héritage ne peut être accepté que comme complice.
+Dans le studio 模式下,双时代(double ère) Client utilisation `server/discover`发起探测──découvrir le succès ou recevoir `UnsupportedProtocolVersionError`Étant donné que les erreurs modernes sont déjà identifiées, elles sont prouvées par le serveur moderne; seulement des erreurs non modernes ou des erreurs surchargées sont autorisées à revenir à l'ancienne version de 2025-11-25.`initialize`Le fait de ne pas avoir de héritage ne peut être accepté que comme complice.
 
 ### 显式的结果结构
 
@@ -103,7 +103,9 @@ Dans le studio 模式下,双时代(double ère) Client utilisation `server/disco
 
 Le client doit être en manque .`resultType`La version ancienne devrait être faite complète.
 
-列表和读取操作的结果还附带 `ttlMs`(Milli seconde de survie) et `cacheScope`(缓存范围) ∼ détermination `tools/list`排序加上新鲜度提示, en permettant au Client 能够安全缓存服务发现结果, considérablement améliorer la stabilité du modèle de prompt cache.`cacheScope: public`允许跨上下文共享缓存,`private`La loi de l'Union européenne sur les droits de propriété privée et de sécurité civile
+Le serveur doit être en fonction de chaque résultat.`_meta`  `io.modelcontextprotocol/serverInfo` Cette identité est décrite par le serveur, uniquement pour la démonstration, le journal et le test, et ne peut être utilisée comme base de décision de sécurité.
+
+列表和读取操作的结果还附带 `ttlMs`(Milli seconde de survie) et `cacheScope`(缓存范围) ∼ détermination `tools/list`排序加上新鲜度提示, en permettant au Client 能够安全缓存服务发现结果,并提升模型 Prompt Cache 稳定性──`cacheScope: public`允许跨上下文共享缓存,`private`La loi de l'Union européenne sur les droits de propriété privée et de sécurité civile
 
 ### 线缆格式与传输层
 
@@ -113,19 +115,25 @@ MCP dans le studio ou HTTP en streaming 上运行 JSON-RPC 2.0:
 - 响应(Réponses): contenant des`id`et `result`Ou `error`Il y a une autre.
 - 通知(Notification):无 `id`, n'a pas besoin de réponse.
 
-现代 Streamable HTTP 暴露单个只接受 POST的端点──每个 JSON-RPC 消息对应一次独立的 POST──请求 POST 接收单个 JSON对象,或接收以最终响应结尾的请求作用域 SSE 流──被接受的通知 POST 返回无响应体的 HTTP 202──
+现代 Streamable HTTP 暴露单个只接受 POST的端点──每个 JSON-RPC 消息应应应一次独立的 POST──请求 POST 接收单个 JSON对象,或接收以最终响应结尾的请求作用域 SSE 流──被接受通知 POST 返回无响应体的 HTTP 202──本核心修订版未定义任何通过 Streamable HTTP 客户端发送到服务器的通知──
 
 2026-07-28 规范中**不存在**独立的 MCP GET 订阅流、DELETE 注销端点、`Mcp-Session-Id`Ou à la base`Last-Event-ID`Le changement de cycle de l'émission de téléchargement`subscriptions/listen`POST S'il vous plaît, son réponse pour maintenir une longue connexion SSE 流開──
+
+### 无需 Server 发起请求的客户端 输入
+
+旧修订版允许服务器 通过流发送 `sampling/createMessage`- Je suis là.`roots/list`Ou `elicitation/create`之类的请求──当前协议改用多轮往返请求(MRTR)──符合条件的工具 调用、资源读取或快速 获取会回归 `resultType: input_required`,并至少携带 `inputRequests`Ou `requestState`之一──Client 收集所需输入, utiliser le nouveau JSON-RPC ID 和对应的 `inputResponses`重试原始方法; si fourni `requestState`, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,`inputRequests`, Reprouver le temps de la province `inputResponses`Il y a une autre.
+
+Roots、Sampling et Logging  encore utilisable mais abandonné, nouvelle réalisation ne devrait pas les adopter  Roots ou échantillonnage existants `inputRequests`En passant, il n'est absolument pas nécessaire d'utiliser un serveur indépendant au client JSON-RPC.
 
 ```figure
 mcp-nxm-collapse
 ```
 
-## 动手实践
+## 动手构建
 
 ### 步骤 1: enregistrer le serveur 表面
 
-Dans le`code/main.py`En particulier, en Python 标准库实现服务注册与报文解析:
+Bien que la demande de contrat ait changé, le mode d'enregistrement est toujours simple:
 
 ```python
 server = MCPServer("demo-server")
@@ -134,17 +142,19 @@ server = MCPServer("demo-server")
     "add",
     "Add two integers.",
     {
-      "type": "object",
-      "properties": {
-        "a": {"type": "integer"},
-        "b": {"type": "integer"}
-      },
-      "required": ["a", "b"]
+        "type": "object",
+        "properties": {
+            "a": {"type": "integer"},
+            "b": {"type": "integer"}
+        },
+        "required": ["a", "b"]
     }
 )
 def add(a: int, b: int) -> dict:
     return {"sum": a + b}
 ```
+
+`code/main.py`Le développement complet de l'interface a également enregistré un outil et un prompt. Il utilise intentionnellement uniquement la base de données standard, pour que vous puissiez voir chaque structure de la mise en œuvre, plutôt que de donner les détails du protocole au SDK.
 
 ### 步骤 2: Pour chaque demande de données supplémentaires
 
@@ -167,9 +177,17 @@ def request(method, params=None):
     }
 ```
 
-### 步骤 3: HTTP 镜像头映射
+Ne mettez pas ces données dans les objets connectés. Le serveur va les tester sur chaque requête.
 
-远程调用通过HTTP POST 发起时,需要镜像指定头部:
+### 步骤 3: ((可选) d'abord retrouver la liste
+
+调用 `server/discover`, choisir une version prise en charge, puis l'utiliser `tools/list`Si vous savez déjà la version ne peut pas être traitée.`-32022`, directement调用 `tools/list`Il est légal.
+
+演示按名称顺序返回工具列表,并附带 `ttlMs`- Je suis là.`cacheScope`- Je suis là.`resultType`Avec le serveur en tant qu'outil, il est possible de récupérer les résultats complets mais non stockés, car sa sortie peut dépendre de l'état actuel.
+
+### 步骤 4: Mettre la même requête dans HTTP
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `tools/call`POST  portant l'image JSON-RPC
 
 ```http
 POST /mcp HTTP/1.1
@@ -180,43 +198,65 @@ Mcp-Method: tools/call
 Mcp-Name: add
 ```
 
-Lorsque la requête n'est pas conforme à la requête, retournez immédiatement HTTP 400 avec le code d'erreur `-32020`Il y a une autre.
+`MCP-Protocol-Version`La requête doit être accompagnée`_meta`La version moyenne est de:`Mcp-Method`Dans chaque JSON-RPC, les requêtes sont obligatoires et doivent être remplies.`method`Une seule.`Mcp-Name`                           `tools/call`- Je suis là.`resources/read`Avec `prompts/get`时必填,且必须与工具名、资源 URI或提示名一致. 时必填请求头或不一致时,返回 HTTP 400与 `HeaderMismatch`错误码 `-32020`Il y a une autre.
 
-运行测试命令:
+### Étape 5: mettre en œuvre la sécurité en dehors de l'état de l'accord
+
+- Dans chaque HTTP, demandez à l'accueil de votre auditoire.
+- 本地 Server  lié à l'hôte local, et diffusé en HTTP`Origin`Il y a une autre.
+- - Je veux le faire .`destructiveHint: true`标记会修改状态的工具,并要求主持人 审批──
+- 显式传递目录与文件范围, plutôt que de dépendre des racines abandonnées
+- Les ressources et les outils de production sont considérés comme incroyables.
+- Le programme de formation est basé sur la formation des chercheurs en médecine.
+
+## 动手实践
+
+Dans le catalogue des cours:
 
 ```bash
-cd phases/11-llm-engineering/14-model-context-protocol
 python3 code/main.py
 cd code
 python3 -m unittest discover tests -v
 ```
 
+Première ligne de rapport sur l'exportation`2026-07-28`Je l' ai trouvé .`demo-server`Puis regardez.`MCPClient.request`Il est reconstitué pour chaque utilisation.`_meta`◊ Déplacer des données d'une demande, observer Le serveur  refuser ◊
+
 ## 交付物
 
-本课交付 `outputs/skill-mcp-server-designer.md`Il peut transformer un domaine d'activité spécifique en un programme d'architecture conforme aux normes modernes de MCP sans état, comprenant des stratégies de découverte de conventions, de demande par demande, de liste de stockage de données, de contrôle de l'état, de transmission et d'approbation.
+本课交付 `outputs/skill-mcp-server-designer.md` Il peut transformer un domaine d'activité en un MCP sans état 方案── Its acceptance  Requisites: découverte des résultats ‧ demande par demande DATA ‧ liste de cache de détermination ‧ claire statuts ‧ transmission des tests ‧ autorisation et approbation 
 
 ## continuer à s'infiltrer dans le système de production de PCM
 
-Ce cours vous a permis d'établir un esprit de protocole unifié.
+Cette formation vous aidera à établir un modèle de protocole. La phase 13 divisera les quatre frontières de production en différents programmes indépendants:
 
-1. [MCP Tool Contracts 与内容](../../../13-tools-and-protocols/28-mcp-tool-contracts-and-content/docs/en.md): couvrent des schémas d'entrée stricts, des contenus structurés, des routes de données, des droits de partage des pages ainsi que la distinction entre les accords et les erreurs d'entreprise
-2. [MCP 可靠性、取消与流控](../../../13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/docs/en.md): couvrant les demandes d'annulation, les tâches de longue durée, les délais de mise en service, les conditions de travail, les contraintes et les mécanismes de reprise de service.
-3. [MCP Registry 供应链、准入、漂移与回滚](../../../13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/docs/en.md)Il s'agit d'une série de documents de référence, qui sont disponibles dans les pays tiers.
-4. [MCP 一致性工程](../../../13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md)Les résultats de la recherche ont été publiés en décembre 2009 et ont été publiés en décembre 2014.
+1. [MCP Tool Contracts 与内容](../../../13-tools-and-protocols/28-mcp-tool-contracts-and-content/docs/en.md): couvre le schéma d'entrée clos, le contenu structurel, les données de la route, l'insécurité des pages, la complémentation des autorisations et la distinction entre les accords et les erreurs d'entreprise.
+2. [MCP 可靠性、取消与流控](../../../13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/docs/en.md): couvrant les demandes d'annulation, les demandes de mise à jour, les délais de mise à jour, les conditions de mise à jour, les conditions de mise en service, les conditions de mise en service et les conditions de mise en service.
+3. [MCP Registry 供应链、准入、漂移与回滚](../../../13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/docs/en.md)Les données de référence sont les données de référence de l'entreprise.
+4. [MCP 一致性工程](../../../13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md)Les données de l'éditeur sont fournies par le service de télévision de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de l'État de
+
+Lorsque le serveur va traverser une équipe ou une frontière de confiance, s'il vous plaît les apprendre en ordre. Ils vous accompagnent de la méthode à utiliser jusqu'à la convention pour rester sûrs et diagnosticables tout au long du processus de déploiement.
+
+##  exercice et réflexion
+
+1. - Je suis là.`subtract`工具, confirmer `tools/list`仍按字母序排列──
+2. 移除 protocol-version 键,验证返回 Params en cours de validité`-32602`)¬ puis envoyé en format correct mais non supporté version `2025-11-25`, vérifier retour `-32022`, confirmer `requested`Révélation de cette modification, et de`supported`中选择版本──
+3. Pour créer des opérations ajoutées par le serveur`draftId`,并 requérant une mise à jour de l'opération, le considérer comme un paramètre de transmission.
+4. 让一个需要用户确认的工具返回 `input_required`◊ utiliser une nouvelle ID ∞`inputResponses`条目和原样 `requestState`重试原始调用, plutôt que de créer un serveur à client de JSON-RPC requête.
+5. design a bi-temps studio Client 草图:把结果或已识别的现代错误视为现代对端, uniquement en cas d'erreur indétectable ou de surtemps seulement permet de revenir en arrière `initialize`Il y a une autre.
 
 ## 核心专业术语
 
-| 术语 | 规范定义 |
-|------|---------|
-| MCP | 用于向 AI Host 暴露服务发现、工具、资源、提示模板与扩展的 JSON-RPC 协议 |
-| Host | 拥有大模型与用户交互界面、挂载一个或多个 MCP Client 的 AI 应用程序 |
-| Client | 代表 Host 与单个具体 Server 执行 MCP 通信的连接器组件 |
-| 无状态 MCP (Stateless MCP) | 每个请求携带版本与能力元数据，不存在与底层物理连接绑定的协议状态 |
-| `server/discover` | 强制实现的 Server 方法，用于公布支持版本、能力集与身份标识 |
-| `resultType` | 区分成功结果状态的鉴别字段（如 `complete` 或 `input_required`） |
-| 显式状态句柄 (State handle) | 由 Server 签发、作为普通业务参数传递的应用层唯一标识符 |
-| Streamable HTTP | 单一 POST 端点架构，返回常规 JSON 或请求作用域的 SSE 响应 |
-| MRTR (多轮请求模式) | 嵌入在响应结果中的输入请求，完成后由客户端重新发起原始操作重试 |
+| 术语 | 通俗说法 | 实际含义 |
+|------|-----------------|------------------------|
+| MCP | “LLM 的工具协议” | 用于服务发现、工具、资源、提示模板与扩展的 JSON-RPC 协议 |
+| Host | “AI 应用” | 拥有大模型与用户交互界面、挂载一个或多个 MCP Client 的 AI 应用程序 |
+| Client | “连接器” | 代表 Host 与单个具体 Server 执行 MCP 通信的连接器组件 |
+| 无状态 MCP (Stateless MCP) | “没有 Session” | 每个请求携带版本与能力元数据，不存在与底层物理连接绑定的协议状态 |
+| `server/discover` | “能力探测” | 强制实现的 Server 方法，用于公布支持版本、能力集与身份标识 |
+| `resultType` | “结果状态” | 把结果标记为 `complete` 或 `input_required` |
+| 显式状态句柄 (State handle) | “工作流 ID” | 由 Server 签发、作为普通业务参数传递的应用层唯一标识符 |
+| Streamable HTTP | “远程传输” | 单一 POST 端点架构，返回常规 JSON 或请求作用域的 SSE 响应 |
+| MRTR (多轮请求模式) | “请求输入再重试” | 嵌入在响应结果中的输入请求，完成后由客户端重新发起原始操作重试 |
 
 ## 延伸阅读
 
@@ -224,3 +264,4 @@ Ce cours vous a permis d'établir un esprit de protocole unifié.
 - [MCP 服务发现规范](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP Streamable HTTP 传输规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
 - [MCP 多轮请求模式 (MRTR)](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr)
+- [MCP 已弃用特性](https://modelcontextprotocol.io/specification/2026-07-28/deprecated)
