@@ -292,7 +292,7 @@ function auditManual(manual, add) {
   for (const doc of manual.documents) {
     if (!doc.thesis) add(doc.label, 'thesis', 'a one-sentence thesis blockquote is required under the title');
     const paragraphs = doc.blocks.filter(block => block.type === 'paragraph');
-    if (doc.kind === 'section' && !paragraphs.slice(0, 2).some(block => block.text.includes(manuals.OUTCOME_PHRASE))) add(doc.label, 'outcome', `the first two paragraphs must contain "${manuals.OUTCOME_PHRASE} ..."`);
+    if (doc.kind === 'section' && !paragraphs.slice(0, 2).some(block => manuals.OUTCOME_PHRASES.some(phrase => block.text.includes(phrase)))) add(doc.label, 'outcome', `the first two paragraphs must contain "${manuals.OUTCOME_PHRASE} ..."`);
     const takeaways = doc.blocks.filter(block => block.type === 'takeaways').length;
     stats.takeaways += takeaways;
     if (doc.kind === 'section' && takeaways !== 1) add(doc.label, 'takeaways', `sections need exactly one takeaways block (found ${takeaways})`);

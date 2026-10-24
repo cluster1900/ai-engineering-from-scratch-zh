@@ -25,6 +25,8 @@ const SCHEMA = JSON.parse(fs.readFileSync(path.join(MANUALS, 'manual.schema.json
 const FONT_LINK = 'https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 const TAKEAWAYS_LABEL = 'What to do with this';
 const OUTCOME_PHRASE = 'When you finish this section, you can';
+// zh translations open with the same promise in Chinese.
+const OUTCOME_PHRASES = [OUTCOME_PHRASE, '读完本节后，你能'];
 const escapeHtml = figkit.escapeHtml;
 
 function ensure(condition, message) { if (!condition) throw new Error(message); }
@@ -1152,6 +1154,7 @@ if (require.main === module) {
 module.exports = {
   KINDS,
   OUTCOME_PHRASE,
+  OUTCOME_PHRASES,
   SCHEMA,
   LISTING_LANGS,
   evidenceUrl,
