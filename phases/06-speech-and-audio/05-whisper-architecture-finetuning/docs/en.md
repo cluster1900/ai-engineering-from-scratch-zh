@@ -32,7 +32,7 @@ Large-v3 有 1.55B params。Turbo 使用 4-layer decoder（从 32 层减少）�
 
 **Prompt format。** Whisper 是一个由 decoder prompt 中的 special tokens 控制的 multitask model：
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 

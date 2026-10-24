@@ -217,7 +217,7 @@ Llama 3 8B 在 128k context、BF16、head_dim = hidden / num_heads = 128 时：
 
 上述公式假设每一层都缓存完整 sequence。Sliding-window layer 始终只需要最近的 W 个 tokens，因此对于 hybrid models，需要逐层求和：
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```

@@ -108,7 +108,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
     logits_ref = policy_logits(ref, prompt)
     probs_ref = softmax(logits_ref)
     reward = dot(w, bag([token])) - beta * kl(probs, probs_ref)
-    # 在 theta 上做 ppo-style update，把 reward 当作 return
+    # ppo-style update on theta, treating reward as the return
     ...
 ```
 
@@ -121,7 +121,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 理解 toy pipeline 后，下面是同一循环作为真实 library user 的写法。Hugging Face 的 [TRL](https://huggingface.co/docs/trl) 是 reference implementation —— Stage 2 用 `RewardTrainer`，Stage 3 用 `PPOTrainer`（内置 KL-to-reference）。
 
 ```python
-# Stage 2：来自 pairwise preferences 的 reward model
+# Stage 2: reward model from pairwise preferences
 from trl import RewardTrainer, RewardConfig
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
@@ -141,7 +141,7 @@ trainer.train()
 ```
 
 ```python
-# Stage 3：针对 RM 的 PPO，并对 SFT reference 加 KL penalty
+# Stage 3: PPO against the RM with KL penalty to the SFT reference
 from trl import PPOTrainer, PPOConfig, AutoModelForCausalLMWithValueHead
 
 policy = AutoModelForCausalLMWithValueHead.from_pretrained("./sft-checkpoint")
@@ -157,7 +157,7 @@ for batch in dataloader:
     responses = ppo.generate(batch["query_ids"], max_new_tokens=128)
     rewards   = rm(torch.cat([batch["query_ids"], responses], dim=-1)).logits[:, 0]
     stats     = ppo.step(batch["query_ids"], responses, rewards)
-    # stats 包含：mean_kl、clip_frac、value_loss — 三个 PPO diagnostics
+    # stats includes: mean_kl, clip_frac, value_loss — the three PPO diagnostics
 ```
 
 Library 会替你做三件事。`adap_kl_ctrl=True` 实现 adaptive-β schedule：如果 observed KL 超过 `target_kl`，β 翻倍；如果低于一半，β 减半。Reference model 按约定是冻结的 —— 你不能意外地和 `policy` 共享 parameters。Value head 与 policy 位于同一个 backbone 上（`AutoModelForCausalLMWithValueHead` 附加一个 scalar MLP head），这就是为什么 TRL 会分别报告 `policy/kl` 和 `value/loss`。

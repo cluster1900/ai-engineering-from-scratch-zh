@@ -88,7 +88,7 @@ response = review(code_a)
 response.usage
 # InputTokensUsage(
 #     input_tokens=120,
-#     cache_creation_input_tokens=15023,   # 按 1.25x 付费
+#     cache_creation_input_tokens=15023,   # paid at 1.25x
 #     cache_read_input_tokens=0,
 #     output_tokens=340,
 # )
@@ -96,7 +96,7 @@ response.usage
 response_b = review(code_b)
 response_b.usage
 # cache_creation_input_tokens=0
-# cache_read_input_tokens=15023           # 按 0.1x 付费
+# cache_read_input_tokens=15023           # paid at 0.1x
 ```
 
 在 CI 中检查这两个字段——如果 `cache_read_input_tokens` 在多次请求中始终为零，说明你的 cache keys 正在漂移。
@@ -122,11 +122,11 @@ client = OpenAI()
 resp = client.chat.completions.create(
     model="gpt-5",
     messages=[
-        {"role": "system", "content": SYSTEM_PROMPT},   # 长且稳定
+        {"role": "system", "content": SYSTEM_PROMPT},   # long and stable
         {"role": "user", "content": user_msg},
     ],
 )
-resp.usage.prompt_tokens_details.cached_tokens  # 获得折扣的部分
+resp.usage.prompt_tokens_details.cached_tokens  # the discounted portion
 ```
 
 同样适用对 cache 友好的布局规则。有两件事会破坏 OpenAI 的 cache，但不会破坏 Anthropic 的：更改 `user` 字段（它被用作 cache key 组成部分），以及重排 tools。
@@ -142,7 +142,7 @@ from google.genai import types
 client = genai.Client()
 
 cache = client.caches.create(
-    model="gemini-3-pro",
+    model="gemini-3.8-flash",
     config=types.CreateCachedContentConfig(
         display_name="rubric-v3",
         system_instruction=RUBRIC,
@@ -152,7 +152,7 @@ cache = client.caches.create(
 )
 
 resp = client.models.generate_content(
-    model="gemini-3-pro",
+    model="gemini-3.8-flash",
     contents=["Review this code:\n" + code],
     config=types.GenerateContentConfig(cached_content=cache.name),
 )
