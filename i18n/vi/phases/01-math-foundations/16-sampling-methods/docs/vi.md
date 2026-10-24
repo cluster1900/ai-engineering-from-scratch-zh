@@ -114,7 +114,8 @@ Algorithm:
   3. If u < p(x) / (M * q(x)), accept x
   4. Otherwise, reject and go to step 1
 
-Acceptance rate = 1/M
+Acceptance rate = Z/M, where Z is the integral of p(x)
+                (Z = 1, so the rate is 1/M, when p is normalized)
 ```
 
 Bị buộc $M$Trong các trường hợp, tỷ lệ chấp nhận 越紧, tỷ lệ chấp nhận 越高――在低维(1-3) 中, việc lấy mẫu từ chối 效果 rất tốt.

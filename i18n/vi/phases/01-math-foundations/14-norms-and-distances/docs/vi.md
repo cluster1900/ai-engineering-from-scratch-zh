@@ -102,7 +102,7 @@ L1 và L2 là đặc điểm của Lp chuẩn:
 \lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-Không giống nhau.$p$值会产生不同形状的单位球(距离原点为 1 的所有点的集合):
+Không giống nhau.$p$值 sẽ tạo ra các hình dạng khác nhau của các quả bóng đơn vị ( khoảng cách từ điểm gốc đến 1 là tập hợp của tất cả các điểm; hình dưới đây là ranh giới của chúng):
 
 ```
 p=1:    Diamond shape      (corners on axes)

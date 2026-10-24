@@ -118,7 +118,7 @@ Hầu hết các chuỗi mà bạn gặp trong ML đều đáp ứng cả hai đ
 
 **Absorbing states。**Nếu một khi vào một bang, sẽ không bao giờ rời khỏi đó.$P[i][i] = 1$), trạng thái này là hấp thụ của. Absorbing Markov chuỗi có thể được sử dụng để xây dựng với các trạng thái cuối cùng của quá trình.
 
-**Mixing time。**需要多少步,chain 才会接近stationary distribution?形式化地说,就是总变距离与静止的距离降至某个值以下的步数.$P$của khoảng cách quang phổ(1 减去第二大 eigenvalue) kiểm soát thời gian trộn── khoảng cách 越大, trộn 越快──
+**Mixing time。**需要多少步,chain 才会接近stationary distribution?形式化地说,就是总变距离与静止的距离降至某值以下的步数.$P$                                                                                                                                                                                                                                                              
 
 ### Liên hệ với Các mô hình ngôn ngữ
 

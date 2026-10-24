@@ -31,7 +31,7 @@ Chuyển đổi Fourier sẽ chuyển dữ liệu từ miền thời gian  chuy�
 X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-Mỗi người$X[k]$Thành phố là một con số phức tạp.$\lvert X[k] \rvert$biểu hiện tần suất $k$ng độ rộng.$\angle X[k]$Tự động hóa của tần số
+Mỗi người$X[k]$Thành phố là một con số phức tạp.$\lvert X[k] \rvert$Với tần suất$k$∆αααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααααα$A$Và đúng là rơi vào đống.$k$Ưu tiên của các âm nhạc$\lvert X[k] \rvert = AN/2$, vì vậy nên loại trừ$N/2$才能读出 amplitude.$\angle X[k]$Tự động hóa của tần số
 
 关键洞见:$e^{-2\pi i k n/N}$là một trong số tần số $k$Phasor quay DFT  tính là tín hiệu và $N$个等间隔频率 中每个的相关性――如果信号在频率中$k$Ưu chứa năng lượng, tương quan rất lớn. Nếu không, nó gần như là không.
 
@@ -100,7 +100,7 @@ graph TD
     end
 ```
 
-FFT  yêu cầu chiều dài tín hiệu là 2 của ── Trong thực tế, tín hiệu thường sẽ không có pad đến 2 của ──
+Trong đó, xích cực 2 FFT trong chiều dài tín hiệu là 2 của  thời gian nhanh nhất.`dft`Vì vậy, để tăng tốc, tín hiệu thường sẽ không có pad đến 2 của tiếp theo.`numpy.fft`Trong các bộ FFT sử dụng các thuật toán gốc hỗn hợp có thể xử lý bất kỳ chiều dài nào, nhưng chỉ chứa các yếu tố nhỏ trong chiều dài.
 
 ### Phân tích quang phổ
 

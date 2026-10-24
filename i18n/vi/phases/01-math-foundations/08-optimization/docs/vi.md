@@ -43,7 +43,7 @@ w = w - \text{lr} \cdot \text{gradient}
 
 ```mermaid
 graph TD
-    A["* Starting point (high loss)"] --> B["Moving downhill along gradient"]
+    A["* Starting point (high loss)"] --> B["Moving downhill, against the gradient"]
     B --> C["Approaching minimum"]
     C --> D["o Minimum (low loss)"]
 ```
@@ -155,7 +155,7 @@ Tốc độ học tập cố định là một cách giảm đi. Trong quá trì
 
 ### Phép trục trặc đối với không trục trặc
 
-Hàm hình ngọc chỉ có một tối thiểu.$f(x) = x^2$Như vậy hình vuông là ngọc.
+Phụng tích hình dạng  không có tối thiểu địa phương xấu: mỗi tối thiểu địa phương đều là tối thiểu toàn cầu. Đối với tối thiểu có hàm tích hình dạng trơn tru, tỷ lệ học tập  đủ nhỏ.$f(x) = x^2$Như vậy hình vuông là ngọc, và tối thiểu của nó là duy nhất.
 
 Các chức năng mất mạng thần kinh là không ngón. Chúng có nhiều điểm tối thiểu địa phương.
 

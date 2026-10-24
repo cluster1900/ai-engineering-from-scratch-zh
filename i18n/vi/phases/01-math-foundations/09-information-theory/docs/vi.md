@@ -202,7 +202,7 @@ I(X;Y) &= H(X) - H(X \mid Y) \\
 2. 按MI điểm 排序 tính năng。
 3. 保留前 $k$个 đặc điểm.
 
-Đây là một ứng dụng cho bất kỳ mối quan hệ nào giữa tính năng và mục tiêu: tuyến tính, không tuyến tính, đơn giản hoặc các mối quan hệ khác.
+Điều này áp dụng cho bất kỳ mối quan hệ nào giữa tính năng và mục tiêu: tuyến tính, không tuyến tính, đơn giản hoặc các mối quan hệ khác.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|

@@ -18,7 +18,7 @@
 
 Bài học 08 dạy bạn Gradient Descent,momentum 和 Adam。 Những Optimizer này có thể di chuyển ở bất kỳ bề mặt trên và xuống── nhưng chúng không đảm bảo── Gradient Descent ở một cảnh quan không hình dạng lên có thể rơi vào giá trị tối thiểu địa phương tồi tệ,卡 ở điểm lăn, hoặc mãi mãi振荡── bạn vẫn sử dụng nó, bởi vì mạng thần kinh là không hình dạng, và không có giải pháp thay thế──
 
-Nhưng nhiều vấn đề trong ML là凸的── tuyến tính hồi quy, hậu môn hồi quy, SVMs, LASSO, hồi quy quy. Đối với những vấn đề này, có những công cụ mạnh hơn:带有数学保证的优化──凸的问题 chỉ có một đáy.
+Nhưng nhiều vấn đề trong ML là凸的── tuyến tính hồi quy, hậu quả hồi quy, SVMs, LASSO, hồi quy quy. Đối với những vấn đề này, có các công cụ mạnh hơn:带有数学保证的优化──凸问题没有虚假的谷底: mỗi vị trí tối thiểu là giá trị tối thiểu toàn diện── đối với hàm ngập lỏng có giá trị tối thiểu,步长合适的 Gradient Descent 会收收到它──不需要重新启动──不需要学习率调度──不需要祈祷──
 
 Nhận thức về sự凸显 có ba điểm giá trị. Thứ nhất, nó cho bạn biết vấn đề khi nào là đơn giản, khi nào là khó khăn. Thứ hai, nó cung cấp các công cụ nhanh hơn cho vấn đề凸显, chẳng hạn như phương pháp Newton. Thứ ba, nó giải thích khái niệm xuất hiện lặp đi lặp lại trong ML: quy định hóa như một sự ràng buộc, sự hai chiều giữa các SVM, và tại sao Deep Learning vẫn có thể làm việc trong chất lượng tốt của mọi thứ mà phản ánh sự凸显.
 
@@ -91,13 +91,13 @@ Các quy định cơ bản của việc làm tốt:
 
 **对于凸函数，每个局部最小值都是全局最小值。**
 
-Điều này có nghĩa là sự xuống cấp sẽ không bị mắc kẹt. Bất kỳ đường nào theo chiều dưới đều đi đến cùng một câu trả lời.
+Điều này có nghĩa là Thấp độ không bị mắc kẹt trong giá trị tối thiểu địa phương tồi tệ. Mỗi giá trị tối thiểu mà nó có thể đạt được đều có cùng một tổn thất. Đối với hàm trộn cong trơn của giá trị tối thiểu tồn tại, bước dài phù hợp của Thấp độ đảm bảo nhận được giá trị tối ưu nhất.
 
 ```mermaid
 graph LR
     subgraph "Convex: ONE answer"
         direction TB
-        C1["Loss surface has a single valley"] --> C2["Gradient descent ALWAYS finds the global minimum"]
+        C1["Loss surface has no false valleys"] --> C2["Gradient descent with a suitable step converges to the global minimum"]
     end
     subgraph "Non-convex: MANY traps"
         direction TB
