@@ -53,6 +53,10 @@ BPE 是一种贪心压缩 algorithm，后来被重新用于 tokenization。这�
 
 从单个字符开始。统计训练语料中每个相邻 pair。把出现频率最高的 pair merge 成一个新的 Token。重复这个过程，直到达到目标 vocabulary size。
 
+```figure
+tokenizer-bpe
+```
+
 下面是在一个很小的 corpus 上运行的 BPE，其中包含 "lower"、"lowest" 和 "newest"：
 
 ```
@@ -195,10 +199,6 @@ graph LR
 
 这就是 Llama 3 将 vocabulary 从 32K 扩大到 128K 的原因。分配给非英文文字系统的 Tokens 越多，各语言之间的压缩就越公平。
 
-
-```figure
-tokenizer-bpe
-```
 
 ```figure
 tokenizer-tradeoff

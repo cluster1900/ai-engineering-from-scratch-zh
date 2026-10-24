@@ -46,6 +46,10 @@ V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
 
 在温和条件下（每个 pair 被无限次访问，$\alpha$ 满足 Robbins-Monro），会以概率 1 收敛到 $Q^{\ast}$ 和 $\pi^{\ast}$。
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### Step 1: rollout → (s, a, r) 列表
@@ -138,10 +142,6 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 - **Non-stationary policies。** 如果 $\pi$ 发生变化（如 MC control 中那样），旧 returns 来自不同的 policy。Constant-α MC 可以处理这一点；sample-average MC 不行。
 - **Off-policy importance sampling。** 权重 $\pi(a \mid s)/\mu(a \mid s)$ 会沿 trajectory 连乘。Variance 会随 horizon 爆炸。用 per-decision weighted IS 截断，或切换到 TD。
 
-
-```figure
-epsilon-greedy
-```
 
 ## 使用它
 

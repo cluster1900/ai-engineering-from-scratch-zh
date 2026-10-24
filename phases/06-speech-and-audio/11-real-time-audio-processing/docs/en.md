@@ -48,6 +48,10 @@ Moshi (Kyutai, 2024) 达到 200 ms full-duplex。GPT-4o-realtime (2024) 约为 ~
 - **TTS priming。** 即便像 Kokoro 这样的快速 TTS，第一次请求也有 100–200 ms warm-up。缓存 model，并在第一次真实 turn 前用 dummy run 预热。
 - **Echo cancellation。** 没有 AEC，TTS output 会重新进入 mic，并触发 ASR 识别 bot 自己的声音。WebRTC AEC3 是 open-source default。
 
+```figure
+nyquist-aliasing
+```
+
 ## 动手构建
 
 ### 步骤 1：ring buffer
@@ -117,10 +121,6 @@ class Dialog:
 
 这依赖 async I/O 和可取消的 TTS streaming。WebRTC 中在 audio track 上调用 peerconnection.stop() 是规范做法。
 
-
-```figure
-nyquist-aliasing
-```
 
 ## 使用它
 

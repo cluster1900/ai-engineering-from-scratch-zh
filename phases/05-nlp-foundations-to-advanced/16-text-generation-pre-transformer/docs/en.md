@@ -19,6 +19,10 @@
 
 ![N-gram model: count, smooth, generate](../assets/ngram.svg)
 
+```figure
+prediction-game
+```
+
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`。固定 `n`（通常 trigram 用 3，4-gram 用 4）。根据计数计算：
 
 ```math
@@ -49,10 +53,6 @@ Kneser-Ney 的洞见很深。"San Francisco" 是常见 bigram。Unigram "Francis
 ngram-backoff
 ```
 
-
-```figure
-prediction-game
-```
 
 ## 构建它
 

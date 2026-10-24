@@ -26,6 +26,12 @@
 5. **Layer normalization.** `LayerNorm` 或 `RMSNorm`（现代）。稳定 residual stream。
 6. **Cross-attention (decoder only).** Queries 来自 decoder，keys 和 values 来自 encoder output。
 
+观察一个 Vector 如何流过单个 block：Attention 在位置之间混合信息，residual 把信号继续向前携带，FFN 做变换，而 norm 让 residual stream 保持稳定。
+
+```figure
+transformer-block
+```
+
 ### Encoder block（BERT、T5 encoder 使用）
 
 ```
@@ -74,12 +80,6 @@ RMSNorm 去掉了 LayerNorm 的 mean-centering（少一次 subtraction），节�
 
 当 `d = 4096, r = 2.6, layers = 32`（大致对应 Llama 3 8B）时，总量为：`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (67M + 131M) ≈ 32 · 198M ≈ 6.3B` 个 blocks 内参数，再加上约 1B 的 embeddings 和 output head（128K vocab × 4096，未 tied）。这接近已发布的 8B。真实模型使用 GQA（更小的 K 和 V projections）和更宽的 FFN（`r = 3.5`），把参数从 attention 移到 FFN，但总量仍接近 8B。
 
-
-观察一个 Vector 如何流过单个 block：Attention 在位置之间混合信息，residual 把信号继续向前携带，FFN 做变换，而 norm 让 residual stream 保持稳定。
-
-```figure
-transformer-block
-```
 
 ## 构建它
 ### 步骤 1： building blocks

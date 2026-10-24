@@ -99,7 +99,7 @@ Abbreviations: P10 = phases/10-llms-from-scratch/10-evaluation, P11 = phases/11-
 
 ## 问答 (qa, 5)
 - 200 cases for decisions, 500+ for close systems: P11/d:165
-- pass@k hides once-in-twenty: L27/d:86-88
+- pass@k hides once-in-twenty: L27/d:90-92
 - paired bootstrap interval excludes zero: L74/d:101
 - Spearman rho 0.7: P05E/d:51
 - reasoning-effective 25-50% of advertised: P05L/d:47

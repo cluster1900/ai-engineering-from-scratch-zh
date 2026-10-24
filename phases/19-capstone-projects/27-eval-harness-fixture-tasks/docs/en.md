@@ -49,6 +49,10 @@ flowchart LR
 
 harness 将每个任务运行 `k` 次。Pass@k 是 `1 - (1 - p)^k`，其中 p 是经验 pass rate；harness 也报告 raw counts，方便你发现 variance。Latency 是每个 sample 的 wall-clock。Cost 是 agent 自行报告的任何内容（token count、USD，或两者）；harness 会跨 samples 求和，并呈现逐任务和聚合数字。
 
+```figure
+pass-at-k
+```
+
 ## Architecture
 
 ```mermaid
@@ -100,7 +104,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 demo 以 JSON 打印 EvalReport，包括 pass@1、pass@5、mean latency 和逐任务 breakdown。exit code 为 zero。tests 覆盖 verifier functions、pass@k math、fixture loading，以及 harness 针对捆绑 reference candidate 的 end-to-end 行为。
-
-```figure
-pass-at-k
-```

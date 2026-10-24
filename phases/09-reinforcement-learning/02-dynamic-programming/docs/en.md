@@ -40,6 +40,10 @@ V(s) \leftarrow \max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]
 
 **为什么 $\gamma < 1$ 很重要。** Bellman operator 在 sup-norm 下是一个 $\gamma$-contraction：$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$。Contraction 意味着唯一 fixed point 和几何收敛。去掉 $\gamma < 1$，你就失去了保证，需要 finite horizon 或 absorbing terminal state。
 
+```figure
+value-iteration-gamma
+```
+
 ## 动手构建
 
 ### Step 1: 构建 GridWorld MDP model
@@ -140,10 +144,6 @@ def value_iteration(gamma=0.99, tol=1e-6):
 - **Policy ties。** 如果两个 actions 有相同的 Q-value，`argmax` 可能每次 iteration 用不同方式打破平局，导致 “policy stable” 检查振荡。使用稳定的 tie-break（固定顺序中的第一个 action）。
 - **State-space explosion。** DP 每次 sweep 是 $O(\lvert S \rvert \cdot \lvert A \rvert)$。最多可用于约 10⁷ 个 states。超过这个规模，你需要 function approximation（Phase 9 · 05 onwards）。
 
-
-```figure
-value-iteration-gamma
-```
 
 ## 使用它
 

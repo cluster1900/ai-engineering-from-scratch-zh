@@ -62,7 +62,7 @@ flowchart LR
 
 修复方式不是写一个更短的文件，而是写一个分层的文件。根 router 要小到每个 session 都能读完，并且只保存指针。深度内容放在 topic files 里，只有当任务触及对应主题时 agent 才加载。给 agent 一张地图，而不是整本百科全书，让它自己走到需要的页面。
 
-```text
+```
 AGENTS.md                  # router，少于 50 行：这个 repo 是什么、去哪里看、5 条硬规则
 docs/
   agent-rules.md           # 完整规则集（本课）
