@@ -52,7 +52,13 @@ s0-gpu-dispatch
 nvidia-smi
 ```
 
-تنصيب بـ " بيتورش "
+على لينكس، عجلة默认 已自带 CUDA── على ويندوز، يرجى من اختيار pytorch.org 中复制 CUDA安装命令──
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+ثم تحقق من إذا كان PyTorch يمكن أن ترى GPU:
 
 ```python
 import torch

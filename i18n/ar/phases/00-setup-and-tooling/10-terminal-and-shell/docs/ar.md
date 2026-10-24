@@ -98,7 +98,7 @@ python train.py > output.log 2> errors.log
 python train.py > train_full.log 2>&1
 ```
 
-تحتاجين إلى معرفة ثلاثة إعادة توجيهات:
+تحتاجين إلى إعادة توجيهات أربعة:
 
 | 符号 | 作用 |
 |--------|-------------|
