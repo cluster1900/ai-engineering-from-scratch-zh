@@ -206,9 +206,9 @@
     },
     {
       "number": 4,
-      "title": "Speed Features",
-      "thesis": "A speed feature pays only for some traffic, so decide from a measurement on your own load.",
-      "summary": "Speculative decoding, CUDA graphs and compile levels, async scheduling, and the attention backend.",
+      "title": "加速功能",
+      "thesis": "每个加速功能只对部分流量有收益，所以要根据你自己负载上的测量来决定。",
+      "summary": "投机解码、CUDA graphs 与 compile 级别、异步调度，以及 attention backend。",
       "accent": "violet",
       "sections": [
         {
