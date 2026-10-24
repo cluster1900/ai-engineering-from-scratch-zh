@@ -112,7 +112,7 @@ STRATUS(NeurIPS 2025) relatou que, quando você é implantado no seguinte papel,
 
 ### A auditoria de modo de falha
 
-A melhor prática para 2026 é realizar uma auditoria de modo falha anualmente (ou em grande escala):
+A melhor prática para 2026 é realizar uma auditoria de modo falha por trimestre (e por grande número de lançamentos):
 
 1. **Trace sample。**收集约1000 条 verdadeiros vestígios de execução。
 2. **Categorize。**Para cada traço de fracasso, mapeado para categorias de MAST + Groupthink.

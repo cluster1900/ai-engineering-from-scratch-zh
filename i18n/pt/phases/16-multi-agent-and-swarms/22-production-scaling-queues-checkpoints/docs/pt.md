@@ -47,9 +47,9 @@ Para que funcione, é preciso satisfazer:
 
 LangGraph em cada super-passo 后写检查点;Temporal在每个活动 后写;Restate 使用事件源日志──三者实现是同一个模式──
 
-### Tempo de execução de LangGraph
+### Cada passo de um ponto de controle de tempo de execução
 
-Cada agente tem um .`thread_id`;estado é digitado dit; cada super-passo está em direção a uma tabela de pontos de controlo 写入一行。恢复时,runtime 从最后一个检查点 继续,而不是从头开始──Agentes podem `interrupt()`Para esperar a entrada artificial; tempo de execução 会持久化并释放工人── Quando a entrada chegar, qualquer trabalhador pode recuperar──
+O tempo de execução do LangGraph é o exemplo: cada agente tem um .`thread_id`;estado é digitado dit; cada super-passo está em direção a uma tabela de pontos de controlo 写入一行。恢复时,runtime 从最后一个检查点 继续,而不是从头开始──Agentes podem `interrupt()`Para esperar a entrada artificial; tempo de execução 会持久化并释放工人── Quando a entrada chegar, qualquer trabalhador pode recuperar──
 
 É um projecto de produção de referência para abril de 2026.
 
