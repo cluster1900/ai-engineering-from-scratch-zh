@@ -72,9 +72,11 @@ git merge experiment/new-optimizer
 
 ### 步骤 4: 使用这个课程
 
+你不能直接直接直接推到课程备案,只有维护者有写权.`origin`指向你自己的副本:
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code
@@ -95,7 +97,7 @@ git push origin my-progress
 课程不需要重建基础,选或子模块.
 
 ## 练习
-1. 克隆这个 repo,创建一个名为`my-progress`建立一个文件,提交它,推它
+1. 这个 repo,克隆你的,创建一个名字`my-progress`建立一个文件,提交它,推它
 2. 创建一个`.gitignore`排除模型检查站文件`.pt`,我知道.`.pth`,我知道.`.safetensors`)
 3. 用`git log --oneline`查看这个 repo 的提交历史,并阅读教训是如何添加的
 

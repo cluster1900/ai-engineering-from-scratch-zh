@@ -14,7 +14,7 @@
 - 了解四层堆:系统,包,运行时间,人工智能图书馆
 
 ## 问题
-你将使用Python,TypeScript,Rust 和 Julia学习200+节的AI工程课程. 如果你的环境坏了,每节都会变成工具作斗争,而不是学习.
+你将使用Python,TypeScript,Rust 和 Julia学习500+节的AI工程课程. 如果你的环境坏了,每节都会变成工具作斗争,而不是学习.
 
 很多人会跳过环境设置. 然后他们花了几个小时去调试进口错误,版本冲突和缺失的CUDA驱动程序.
 
@@ -46,7 +46,7 @@ xcode-select --install
 brew install git curl wget
 
 # Ubuntu/Debian
-sudo apt update && sudo apt install -y build-essential git curl wget
+sudo apt update && sudo apt install -y build-essential git curl wget unzip
 
 # Windows (use WSL2)
 wsl --install -d Ubuntu-24.04
@@ -93,6 +93,16 @@ npm install -g pnpm
 node -e "console.log('Node', process.version)"
 ```
 
+首先检查`unzip`缺少时时`Not installing fnm due to missing dependencies.`退出:在Linux上它需要解压一个Zip 归档,在macOS上则通过家庭安装――macOS自带`unzip`现在,我们需要一个程序,一个程序,一个程序,一个程序.`sudo apt install -y unzip`
+
+**macOS / Apple Silicon（M1/M2/M3/M4）：**如果安装程序因`Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)`停止,说明你的终端运行在罗塞塔2下面`arch`输出`i386`),而家是原生的 arm64 构建.强制以 arm64 安装fnm,把它连接到你的,然后从`fnm install 22`开始重新运行上述命令:
+
+```bash
+arch -arm64 brew install fnm
+echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### 步骤 4: 蚀
 
 基于性能关键的课程 (Inference,系统)
@@ -116,33 +126,67 @@ julia -e 'println("Julia ", VERSION)'
 
 ### 步骤 6:GPU 设置(如果你有)
 
+**NVIDIA（Linux / Windows）：**
+
 ```bash
-# NVIDIA
 nvidia-smi
 
 # Install PyTorch with CUDA
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 ```
 
+**macOS / Apple Silicon（M1/M2/M3/M4）：**没有任何问题,这是预期情况,不是故障.**不要**传入`--index-url .../cuXXX`(这些轮子只适用于Linux/Windows,安装会失败) ――安装普通构建即可,它包含果的MPS(金属)GPU后端:
+
+```bash
+uv pip install torch torchvision torchaudio
+```
+
+验证(适用于任何平台):
+
 ```python
 import torch
-print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA available: {torch.cuda.is_available()}")           # False on macOS — expected
+print(f"MPS available:  {torch.backends.mps.is_available()}")   # True on Apple Silicon
 if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
 没有GPU?没有问题――大多数课程可在CPU上运行――对于训练重的课程,使用Google Colab或云GPU――
 
-### 步骤7: 检查一切
+### 步骤7:验证你要开始的路线
 
-运行验证脚本:
+现在,我们在这个课程中每一个命令都从仓库根目录运行,也就是包含.`README.md`和 `phases/`预检查只开始检查所选路线需要的内容. 它默认跳过后续才使用的工具,
+
+开始完整的入门序列:
 
 ```bash
-python phases/00-setup-and-tooling/01-dev-environment/code/verify.py
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner
+```
+
+或许你只要查看你想走的路线:
+
+```bash
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route ml-foundations
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route llm-engineering
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agents
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route mcp
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agent-skills
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route certification
+```
+
+如果想让同一预检也检查后续课程使用可选工具和依赖,加上`--show-later`缺少后续工具绝不会阻选路.
+
+每次失败的必需检查都会给出检查的路径或导入错误,以及一个确切的修复命令. 经理技能和认证路线也会显示需要手动完成的宿主检查,因为Python脚本无法证明AI宿主已经发现了某种技能,也无法证明你选择的技能作用域可写.
+
+在入门预检通过时,将印出第一项可运行课程的确切命令:
+
+```text
+Ready to start Beginner course.
+Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
 ## 使用它
-您的环境现在已经准备好用于本课程的每节课程.
+你的环境已经开始检查了你过的路线. 后续工具等课程需要重新安装,不必让整个技术套件阻碍你的第一课程. 下面是整个课程中所用的内容:
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
