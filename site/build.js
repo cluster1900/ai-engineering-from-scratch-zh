@@ -2538,6 +2538,7 @@ module.exports = {
   canonicalLessonUrl,
   certificationStats,
   githubSourceUrl,
+  sourceRepository,
   lessonDocumentSeo,
   parseReadme,
   parseRoadmap,

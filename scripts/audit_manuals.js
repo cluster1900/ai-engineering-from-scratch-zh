@@ -66,7 +66,7 @@ function lexiconHits(text) {
 
 function proseIssues(span, add) {
   const raw = String(span.text);
-  const stripped = raw.replace(/`[^`]*`/g, '').replace(/\{\{[^}]*\}\}/g, '').replace(/[“"][^”"]*[”"]/g, '');
+  const stripped = raw.replace(/`[^`]*`/g, '').replace(/\]\([^)]*\)/g, ']').replace(/\{\{[^}]*\}\}/g, '').replace(/[“"][^”"]*[”"]/g, '');
   if (/[—–]/.test(stripped)) add(span.where, 'dash', 'em or en dash in prose: use a colon, comma, or period');
   if (stripped.includes(';')) add(span.where, 'semicolon', 'semicolon in prose: split the sentence');
   if (/\bmay\b/i.test(stripped)) add(span.where, 'may', '"may" as a verb: use "can" or state the condition');
@@ -272,22 +272,10 @@ function lintFigure(file, id, add) {
   }
 }
 
-function normalizeQuote(text) {
-  return String(text).replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*`]/g, '').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/\s+/g, ' ').trim();
-}
-
 function auditManual(manual, add) {
-  const corpus = new Map();
-  const corpusFor = key => {
-    if (!corpus.has(key)) corpus.set(key, normalizeQuote(fs.readFileSync(manual.quoteSources[key], 'utf8')));
-    return corpus.get(key);
-  };
-  const checkQuote = (quote, cite, where) => {
+  const checkKey = (cite, where) => {
     const key = String(cite).trim().split(/\s+/)[0];
-    if (!(key in manual.quoteSources)) { add(where, 'quote-key', `quoted text cites "${key}", which manual.json quoteSources does not declare`); return; }
-    if (manual.quoteSources[key] === null) return;
-    const text = normalizeQuote(quote.replace(/^["“]|["”]$/g, ''));
-    if (!corpusFor(key).includes(text)) add(where, 'quote', `quote not found verbatim in ${key}: "${text.slice(0, 80)}"`);
+    if (!(key in manual.quoteSources)) add(where, 'quote-key', `a source marker cites "${key}", which manual.json quoteSources does not declare`);
   };
   const sources = new Map();
   const sourceFor = file => {
@@ -298,7 +286,8 @@ function auditManual(manual, add) {
   for (const span of manuals.proseSpans(manual)) {
     proseIssues(span, add);
     if (span.kind === 'sentence' || span.kind === 'step') stats.words += plain(span.text).split(' ').filter(Boolean).length;
-    for (const match of String(span.text).matchAll(/[“"]([^”"]{24,}?)[”"]\s*\{\{([^}]+)\}\}/g)) checkQuote(match[1], match[2], span.where);
+    for (const match of String(span.text).replace(/`[^`]*`/g, '').matchAll(/\{\{([^}]+)\}\}/g)) checkKey(match[1], span.where);
+    for (const match of String(span.text).replace(/`[^`]*`/g, '').matchAll(/[“"]([^”"]{24,}?)[”"]\s*\{\{[^}]+\}\}/g)) add(span.where, 'quote', `write the source in our own words, and put literal output in code font: "${match[1].slice(0, 80)}"`);
   }
   for (const doc of manual.documents) {
     if (!doc.thesis) add(doc.label, 'thesis', 'a one-sentence thesis blockquote is required under the title');
@@ -313,7 +302,11 @@ function auditManual(manual, add) {
       const where = `${doc.label}:${block.line}`;
       if (block.type === 'paragraph' && sentences(plain(block.text)).length > 6) add(where, 'long-paragraph', 'more than six sentences: split the paragraph by topic');
       if (block.type === 'code' && manuals.LISTING_LANGS.has(block.lang)) add(where, 'listing-fence', `a ${block.lang} block must be a listing with a capture source`);
-      if (block.type === 'rule') checkQuote(block.quote, block.source, where);
+      if (block.type === 'rule') {
+        checkKey(block.source, where);
+        for (const match of String(block.quote).replace(/`[^`]*`/g, '').matchAll(/\{\{([^}]+)\}\}/g)) checkKey(match[1], where);
+        if (/^[“"]/.test(block.quote.trim())) add(where, 'quote', 'a rule states the source in our own words, not as a quote');
+      }
       if (block.type === 'listing') {
         stats.listings += 1;
         const source = sourceFor(block.sourceFile);
@@ -347,7 +340,7 @@ function auditManual(manual, add) {
 function checkCapture(manual, add) {
   if (!manual.capture) return;
   const [command, ...args] = manual.capture.check;
-  const result = spawnSync(command, args, { cwd: manual.dir, encoding: 'utf8', timeout: 300000 });
+  const result = spawnSync(command, args, { cwd: manual.dir, encoding: 'utf8', timeout: (manual.capture.timeoutSeconds || 300) * 1000 });
   if (result.status !== 0) {
     const tail = `${result.stdout || ''}${result.stderr || ''}`.trim().split('\n').slice(-6).join(' | ');
     add(rel(manual.dir), 'capture-drift', `capture check failed (${result.error ? result.error.message : `exit ${result.status}`}): ${tail}`);

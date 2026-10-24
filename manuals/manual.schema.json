@@ -54,12 +54,12 @@
         "properties": { "name": { "type": "string" }, "path": { "type": "string" }, "usedFor": { "type": "string" } }
       }
     },
-    "quoteSources": { "type": "object", "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" }, "additionalProperties": { "type": ["string", "null"] }, "description": "Citation key to a vendored source file. null declares a key whose quotes cannot be checked." },
+    "quoteSources": { "type": "object", "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" }, "additionalProperties": { "type": ["string", "null"] }, "description": "Source key to a vendored source file. null declares a key with no vendored file. Every source marker and every rule must use a declared key." },
     "capture": {
       "type": "object",
       "required": ["run", "check"],
       "additionalProperties": false,
-      "properties": { "run": { "$ref": "#/$defs/argv" }, "check": { "$ref": "#/$defs/argv" } }
+      "properties": { "run": { "$ref": "#/$defs/argv" }, "check": { "$ref": "#/$defs/argv" }, "timeoutSeconds": { "type": "integer", "minimum": 1, "description": "How long the audit lets capture.check run. Default 300." } }
     },
     "front": { "$ref": "#/$defs/doc" },
     "plate": {

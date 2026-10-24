@@ -36,9 +36,9 @@ A card names this binding with `protocolBinding` set to `GRPC` {{proto AgentInte
 
 ## Metadata, errors, and streams
 
-The two service parameters "MUST be transmitted using gRPC metadata (headers)" {{spec §10.2}}. gRPC lowercases metadata keys, so the keys are `a2a-version` and `a2a-extensions`, and servers "SHOULD validate required service parameters (e.g., `A2A-Version`) from metadata" {{spec §10.2}}. The §10.2 sample sends `a2a-version` with the old example value `0.3` {{spec §10.2}}, so send `1.0` from a 1.0 client, as [A2A-Version and A2A-Extensions](#s-version-and-extension-headers) explains.
+The two service parameters must travel as gRPC metadata {{spec §10.2}}. gRPC lowercases metadata keys, so the keys are `a2a-version` and `a2a-extensions`. A server should validate required service parameters, such as `A2A-Version`, from the metadata {{spec §10.2}}. The §10.2 sample sends `a2a-version` with the old example value `0.3` {{spec §10.2}}, so send `1.0` from a 1.0 client, as [A2A-Version and A2A-Extensions](#s-version-and-extension-headers) explains.
 
-An error is a `google.rpc.Status` with `status.code`, `status.message`, and `status.details` {{spec §10.6}}. For an A2A error the details "MUST include a `google.rpc.ErrorInfo` message" {{spec §10.6}}. Its `reason` is the error name in upper snake case without `Error`, such as `TASK_NOT_FOUND`, and its `domain` is `a2a-protocol.org` {{spec §10.6}}. The table in [errors](#s-errors) gives the status of each error, and `FAILED_PRECONDITION` covers six of the nine, so read the reason.
+An error is a `google.rpc.Status` with `status.code`, `status.message`, and `status.details` {{spec §10.6}}. For an A2A error, the details must include a `google.rpc.ErrorInfo` message {{spec §10.6}}. Its `reason` is the error name in upper snake case without `Error`, such as `TASK_NOT_FOUND`, and its `domain` is `a2a-protocol.org` {{spec §10.6}}. The table in [errors](#s-errors) gives the status of each error, and `FAILED_PRECONDITION` covers six of the nine, so read the reason.
 
 A stream is a server-streaming rpc, and each message is one `StreamResponse` with one of `task`, `message`, `status_update`, or `artifact_update` {{spec §10.7}} {{proto StreamResponse}}. The stream ends when the rpc completes with its status, and the Go server returns `OK` when its event sequence ends {{sdk-go a2agrpc/v1/handler.go at v2.6.0}}. [Figure](#fig-grpc-call) follows one streaming call from the request to that end.
 
@@ -63,7 +63,7 @@ caption: Read top to bottom. The client sends one SendMessageRequest with a2a-ve
 
 The servers differ on the version check: the Python, Go, and Rust gRPC servers never read `a2a-version`, as the table in [A2A-Version and A2A-Extensions](#s-version-and-extension-headers) shows.
 
-One custom binding exists in the project today, SLIMRPC: Protocol Buffers RPC over SLIM instead of HTTP/2. A card names it `https://a2a-protocol.org/bindings/experimental-slimrpc/v1`, and [its repository](https://github.com/a2aproject/experimental-cpb-slimrpc) marks it experimental. A custom binding "SHOULD be identified by a URI" {{spec §5.8}}, and the project's guide gives the rules for one {{docs custom-protocol-bindings}}.
+One custom binding exists in the project today, SLIMRPC: Protocol Buffers RPC over SLIM instead of HTTP/2. A card names it `https://a2a-protocol.org/bindings/experimental-slimrpc/v1`, and [its repository](https://github.com/a2aproject/experimental-cpb-slimrpc) marks it experimental. A custom binding should have a URI as its identifier {{spec §5.8}}, and the project's guide gives the rules for one {{docs custom-protocol-bindings}}.
 
 ```takeaways
 - Generate the stub from `specification/a2a.proto`, package `lf.a2a.v1`, and keep its rpc names.

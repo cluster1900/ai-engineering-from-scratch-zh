@@ -4,7 +4,7 @@
 
 Bold rows name proto messages, the normative source for data objects, and the rows under each are its fields {{spec §1.4}}. Fields carry their lowerCamelCase JSON names {{spec §5.5}}, although the §5.5 example converts `push_notification_config`, a field the proto names `task_push_notification_config` ([conflict D22](#s-ref-sources-the-conflict-register)).
 
-*Yes* in the Req. column marks a `REQUIRED` field, which "MUST be present and set in valid messages" {{spec §5.7}}. A required array holds one element or more, yet an empty `tasks` list is legitimate ([conflict D19](#s-ref-sources-the-conflict-register)). A type that starts with `optional` uses the proto keyword that records whether the field was set.
+*Yes* in the Req. column marks a `REQUIRED` field, which must be present and set in every valid message {{spec §5.7}}. A required array holds one element or more, yet an empty `tasks` list is legitimate ([conflict D19](#s-ref-sources-the-conflict-register)). A type that starts with `optional` uses the proto keyword that records whether the field was set.
 
 The tables leave out some optional fields. `Task`, `Message`, `Part`, `Artifact`, and both stream events carry a `metadata` object, and `Message` and `Artifact` carry `extensions`, a list of URIs. A part can name a `filename`, an artifact a `description`, a skill its `examples`, and a card a `documentationUrl` and an `iconUrl`. Every request message, from `SendMessageRequest` to `GetExtendedAgentCardRequest`, carries an optional `tenant` string that must match the chosen interface's `tenant` when that is set {{proto SendMessageRequest}}. [Operations by binding](#s-ref-operations-by-binding) lists the request and response messages.
 

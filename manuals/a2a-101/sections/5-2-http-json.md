@@ -39,17 +39,17 @@ Content-Type: application/a2a+json
 
 ## Query parameters and content types
 
-`GET` and `DELETE` carry no body, so their request fields travel "as path parameters or query parameters" {{spec §11.5}}, in camelCase. `GetTask` puts the task `id` in the path and `historyLength` in the query. `ListTasks` takes `contextId`, `status`, `pageSize`, `pageToken`, `historyLength`, `statusTimestampAfter`, and `includeArtifacts` {{proto ListTasksRequest}} {{spec §11.5}}. A nested object cannot go in a query string, so that request must be a `POST` {{spec §11.5}}. [Figure](#fig-two-json-bindings) sets both operations beside their JSON-RPC form.
+`GET` and `DELETE` carry no body, so their request fields travel as path parameters or query parameters {{spec §11.5}}, in camelCase. `GetTask` puts the task `id` in the path and `historyLength` in the query. `ListTasks` takes `contextId`, `status`, `pageSize`, `pageToken`, `historyLength`, `statusTimestampAfter`, and `includeArtifacts` {{proto ListTasksRequest}} {{spec §11.5}}. A nested object cannot go in a query string, so that request must be a `POST` {{spec §11.5}}. [Figure](#fig-two-json-bindings) sets both operations beside their JSON-RPC form.
 
 ```figure
 id: fig-two-json-bindings
 kind: comparison
 title: SendMessage and GetTask in two JSON bindings
 claim: JSON-RPC posts every operation to one URL and names it in the body, HTTP+JSON names it with a verb and a path, and gRPC calls an rpc.
-caption: Each row is one operation, headed by its rpc line from a2a.proto. Bold marks where each binding names the operation, and italic type names stand for the message that fills that place. Left, capture/out/03-blocking-task.http and 04-polling.http. Right, capture/out/16-rest-binding.http. Ids shortened to 8 characters.
+caption: Each row is one operation, headed by its rpc line from a2a.proto. Bold marks where each binding names the operation, and italic type names stand for the message that fills that place. Left, the blocking-task and polling captures. Right, the HTTP+JSON capture. Ids shortened to 8 characters.
 ```
 
-"application/a2a+json **SHOULD** be used for requests and responses" {{spec §11.1}}, and the kit sends it on every body. The reference SDK sends its errors as `application/json` {{sdk src/a2a/utils/error_handlers.py}}, and the Java and Go servers send every body that way {{sdk-java transport/rest/src/main/java/org/a2aproject/sdk/transport/rest/handler/RestHandler.java at v1.4.0.Final}} {{sdk-go a2asrv/rest.go at v2.6.0}}. So send `application/a2a+json`, and accept both types when you read.
+Requests and responses should use `application/a2a+json` {{spec §11.1}}, and the kit sends it on every body. The reference SDK sends its errors as `application/json` {{sdk src/a2a/utils/error_handlers.py}}, and the Java and Go servers send every body that way {{sdk-java transport/rest/src/main/java/org/a2aproject/sdk/transport/rest/handler/RestHandler.java at v1.4.0.Final}} {{sdk-go a2asrv/rest.go at v2.6.0}}. So send `application/a2a+json`, and accept both types when you read.
 
 ## Streams and errors
 
@@ -59,11 +59,11 @@ An error uses the HTTP status code and the JSON form of `google.rpc.Status` in a
 
 ## The tenant field
 
-**Tenant:** an optional string on an interface, "An opaque string used for routing requests to a specific agent" {{proto AgentInterface}} or to one tenant when several agents share one endpoint. The same `tenant` field sits on all ten request messages, from `SendMessageRequest` to `GetExtendedAgentCardRequest` {{proto SendMessageRequest}} {{proto GetExtendedAgentCardRequest}}. A client copies the card's value into every request, and must "omit the field if `tenant` is not set in that entry" {{spec §8.3.2}}. The protocol gives the value no format, and no kit card sets one.
+**Tenant:** an optional opaque string on an interface that routes requests to one agent {{proto AgentInterface}}, or to one tenant when several agents share one endpoint. The same `tenant` field sits on all ten request messages, from `SendMessageRequest` to `GetExtendedAgentCardRequest` {{proto SendMessageRequest}} {{proto GetExtendedAgentCardRequest}}. A client copies the card's value into every request, and must leave the field out when the entry sets no `tenant` {{spec §8.3.2}}. The protocol gives the value no format, and no kit card sets one.
 
-Here the value can also travel in the path. Every rpc has a second `google.api.http` form with a `/{tenant}` prefix, such as `post: "/{tenant}/message:send"` {{proto A2AService}}. Only the proto lists these routes, and §5.3, §11.3, and §11.5 show the plain ones {{spec §11.3}}. In JSON-RPC the value is `params.tenant`, and in gRPC it is the message field. The migration guide calls this "Native tenant scoping in gRPC requests" {{docs whats-new-v1}}, which understates it.
+Here the value can also travel in the path. Every rpc has a second `google.api.http` form with a `/{tenant}` prefix, such as `post: "/{tenant}/message:send"` {{proto A2AService}}. Only the proto lists these routes, and §5.3, §11.3, and §11.5 show the plain ones {{spec §11.3}}. In JSON-RPC the value is `params.tenant`, and in gRPC it is the message field. The migration guide describes this as tenant scoping built into gRPC requests {{docs whats-new-v1}}, which understates it.
 
-The project's guide names three routing keys for several agents on one host: a URL prefix, the credential, and the `tenant` field {{docs multi-tenancy}}. "The three approaches are not mutually exclusive." {{docs multi-tenancy}}
+The project's guide names three routing keys for several agents on one host: a URL prefix, the credential, and the `tenant` field {{docs multi-tenancy}}. A deployment can use more than one of them {{docs multi-tenancy}}.
 
 The reference SDK's client wraps the transport in a `TenantTransportDecorator` when the chosen interface sets a tenant {{sdk src/a2a/client/client_factory.py}} {{sdk src/a2a/client/transports/tenant_decorator.py}}. Its HTTP+JSON transport puts the value in the path prefix {{sdk src/a2a/client/transports/rest.py}}. Its server mounts every route again under `/{tenant}`, copies the value into the call context, and never compares it with the card {{sdk src/a2a/server/routes/rest_routes.py}} {{sdk src/a2a/server/routes/rest_dispatcher.py}}. The agent reads `RequestContext.tenant` and decides what it means {{sdk src/a2a/server/agent_execution/context.py}}.
 

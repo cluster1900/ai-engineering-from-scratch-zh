@@ -32,22 +32,22 @@ data: {"jsonrpc": "2.0", "id": 1, "result": {"artifactUpdate": {… "append": tr
 # the client closes the connection after 4 events
 ```
 
-The streaming guide calls each payload "a JSON-RPC 2.0 Response object, typically a `SendStreamingMessageResponse`" {{docs streaming-and-async}}, a type the proto does not define {{proto A2AService}} ([conflict D33](#s-ref-sources)). The migration guide names the update members `taskStatusUpdate` and `taskArtifactUpdate` {{docs whats-new-v1}}, where the proto and these frames say `statusUpdate` and `artifactUpdate` ([conflict D9](#s-ref-sources)). Match on the proto names.
+The streaming guide calls each payload a JSON-RPC 2.0 Response object, usually a `SendStreamingMessageResponse` {{docs streaming-and-async}}, a type the proto does not define {{proto A2AService}} ([conflict D33](#s-ref-sources)). The migration guide names the update members `taskStatusUpdate` and `taskArtifactUpdate` {{docs whats-new-v1}}, where the proto and these frames say `statusUpdate` and `artifactUpdate` ([conflict D9](#s-ref-sources)). Match on the proto names.
 
 The specification defines no `event:` types, `id:` lines, `retry:` value, or keep-alive {{spec §11.7}}. The reference SDK sends keep-alive comments and marks a late error with `event: error` {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}, so skip comments and check each payload for `error`.
 
 ## Order and the close
 
-"All implementations MUST deliver events in the order they were generated" {{spec §3.5.2}}, and "Events MUST be broadcast to all active streams for that task" {{spec §3.5.2}}. None of those streams owns the task:
+Every implementation must deliver events in the order it created them {{spec §3.5.2}}, and it must send each event to every open stream of the task {{spec §3.5.2}}. None of those streams owns the task:
 
 ```rule
 label: the stream is not the task
 source: spec §3.5.2
 ---
-"The task lifecycle is independent of any individual stream's lifecycle"
+The lifecycle of a task does not depend on the lifecycle of any one stream.
 ```
 
-Version 1.0 has no end marker: "`final` boolean field removed from TaskStatusUpdateEvent" {{docs whats-new-v1}}. A task stream "MUST close when the task reaches a terminal state" {{spec §3.1.2}}, and so does a `SubscribeToTask` stream {{spec §3.1.6}}. After a `message` frame the stream closes at once {{spec §3.1.2}}.
+Version 1.0 has no end marker, because it removed the boolean `final` from `TaskStatusUpdateEvent` {{docs whats-new-v1}}. A task stream must close when the task reaches a terminal state {{spec §3.1.2}}, and so does a `SubscribeToTask` stream {{spec §3.1.6}}. After a `message` frame the stream closes at once {{spec §3.1.2}}.
 
 At interrupted states, §11.7 and the streaming guide close the stream, while §7.6.1 asks agents to keep it open for `TASK_STATE_AUTH_REQUIRED` {{spec §11.7}} {{docs streaming-and-async}} {{spec §7.6.1}} ([conflict D3](#s-ref-sources)). [Interrupted states](#s-input-required-and-auth-required) lists where each SDK closes, so a close by itself means only that reading has ended.
 
@@ -63,7 +63,7 @@ caption: Read top to bottom. Steps 1 to 5 are the first stream, and only the wri
 
 After frame 4 the agent appends chunks 03 and 04 to `test-log.txt`, and no open connection carries their `artifactUpdate` events, as [figure](#fig-stream-resubscribe) shows. The events are gone, and the stored task holds both chunks.
 
-**SubscribeToTask:** the operation that opens a new stream on an existing task, given its `id` {{proto SubscribeToTaskRequest}}. Its first frame is a snapshot: "The operation MUST return a `Task` object as the first event in the stream" {{spec §3.1.6}}.
+**SubscribeToTask:** the operation that opens a new stream on an existing task, given its `id` {{proto SubscribeToTaskRequest}}. Its first frame is a snapshot: the first event of the stream must be a `Task` object {{spec §3.1.6}}.
 
 ```listing
 title: the first frame after SubscribeToTask, a full Task snapshot
@@ -94,7 +94,7 @@ note: The status message and the history are cut, and so are parts 02 and 03 of 
 
 Frames 2 to 5 append chunks 05 to 08, and frame 6 carries `TASK_STATE_COMPLETED` with `96 passed`. Nothing is replayed, and the specification defines no cursor. So replace your partial `test-log.txt` with the snapshot's artifact, then append the frames that follow.
 
-The snapshot holds only the current `status`, so a reconnecting client "MAY not receive all status update messages" {{spec §3.7}}, and results belong in artifacts.
+The snapshot holds only the current `status`, so a client that reconnects can miss some status updates {{spec §3.7}}, and results belong in artifacts.
 
 A second `SubscribeToTask` after the task completes fails with `UnsupportedOperationError`, `-32004`, as plain JSON with no stream {{spec §3.1.6}} {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}. So stop reconnecting and read the final task with `GetTask`, as [GetTask and ListTasks](#s-get-task-and-list-tasks) shows.
 

@@ -11,10 +11,10 @@ When you finish this section, you can locate an agent's card, pick the interface
 The spec names three ways to reach a card, and it standardizes the details of only one {{spec §8.2}}:
 
 - **Well-known URI.** The client fetches `https://{server_domain}/.well-known/agent-card.json` from a host it already knows {{spec §8.2}}. The project recommends this route for public agents {{docs agent-discovery}}.
-- **Registry or catalog.** The client queries "curated catalogs of agents" {{spec §8.2}}, and "The current A2A specification does not prescribe a standard API for curated registries." {{docs agent-discovery}}
-- **Direct configuration.** The client starts from "Pre-configured Agent Card URLs or content" {{spec §8.2}}, kept in code, a configuration file, or an environment variable {{docs agent-discovery}}.
+- **Registry or catalog.** The client queries a curated catalog of agents {{spec §8.2}}, and the current specification sets no standard API for such a registry {{docs agent-discovery}}.
+- **Direct configuration.** The client starts from Agent Card URLs or card content that it already has {{spec §8.2}}, kept in code, a configuration file, or an environment variable {{docs agent-discovery}}.
 
-The planner's ports come from direct configuration in `capture/run.py`, and each card from the well-known path.
+The planner's ports come from direct configuration in [the kit's run script](manuals/a2a-101/capture/run.py), and each card from the well-known path.
 
 ```listing
 title: discovery is one GET on the well-known path
@@ -45,7 +45,7 @@ id: fig-finding-an-agent
 kind: flow
 title: from a host to a checked call
 claim: Three routes lead to one card, and a client takes the first interface it speaks and checks a capability flag before each optional operation.
-caption: Read top to bottom. The planner finds the code-reviewer card through configuration and the well-known path, takes interface 0, and reads two flags. The failed call is exchange 6 of capture/out/11-errors.http.
+caption: Read top to bottom. The planner finds the code-reviewer card through configuration and the well-known path, takes interface 0, and reads two flags. The failed call is exchange 6 of the error capture.
 ```
 
 ## Choosing from supportedInterfaces
@@ -56,12 +56,12 @@ The spec gives the client four rules for `supportedInterfaces`, all of them MUST
 label: the first rule of interface selection
 source: spec §8.3.2
 ---
-"Parse `supportedInterfaces` if present, and select the first supported transport"
+Read `supportedInterfaces` when the card has it, and select the first transport that you support.
 ```
 
 Supported means a binding and a version that the client implements. A JSON-RPC 1.0 client skips a `GRPC` entry and a `JSONRPC` entry at `0.3`, since one card can list a binding at several versions {{spec §3.6.2}}.
 
-The other three rules ask the client to prefer earlier entries, to use the URL of the chosen entry, and to "Set the `tenant` field in every request message to exactly the value declared in the selected `AgentInterface` entry" {{spec §8.3.2}}. No kit card sets a tenant.
+The other three rules ask the client to prefer earlier entries and to use the URL of the chosen entry. The client also sets the `tenant` field of every request message to the exact value of that `AgentInterface` entry {{spec §8.3.2}}. No kit card sets a tenant.
 
 ## Checking capabilities before a call
 
@@ -69,7 +69,7 @@ The other three rules ask the client to prefer earlier entries, to use the URL o
 label: read the card before an optional call
 source: spec §3.3.4
 ---
-"Clients SHOULD validate capability support by examining the Agent Card before attempting operations that require optional capabilities."
+A client should read the Agent Card to confirm that a capability is supported before it calls an operation that needs an optional capability.
 ```
 
 On the server side the rule is a MUST: a call that the card rules out fails with a fixed error {{spec §3.3.4}}. The table gives each error with its JSON-RPC code {{spec §5.4}}.
@@ -80,7 +80,7 @@ On the server side the rule is a MUST: a call that the card rules out fails with
 | `pushNotifications` | `CreateTaskPushNotificationConfig`, `GetTaskPushNotificationConfig`, `ListTaskPushNotificationConfigs`, `DeleteTaskPushNotificationConfig` | `PushNotificationNotSupportedError`, `-32003` |
 | `extendedAgentCard` | `GetExtendedAgentCard` | `UnsupportedOperationError`, `-32004` |
 
-Section 3 says its operations "define the fundamental capabilities that all A2A implementations must support" {{spec §3}}, yet an agent declines streaming, push, or the extended card by leaving its flag out. The flags decide ([conflict D26](#s-ref-sources)).
+Section 3 says that every A2A implementation must support its operations {{spec §3}}. Yet an agent declines streaming, push, or the extended card by leaving its flag out. The flags decide ([conflict D26](#s-ref-sources)).
 
 The `code-reviewer` card has no `pushNotifications` flag, and the kit's error scenario registers a webhook with it anyway:
 
@@ -108,11 +108,11 @@ HTTP/1.1 200 OK
 
 The task id does not exist, yet the error names the missing capability, so the call cost a round trip the card had answered.
 
-Skills, modes, and security fields say whether the agent fits the job and what it needs. The planner maps `run-tests` to `test-runner` and attaches a bearer token to every `deployer` call (`capture/planner.py`). [Part](#s-part) and [security schemes](#s-security-schemes-and-in-task-authorization) read those fields.
+Skills, modes, and security fields say whether the agent fits the job and what it needs. The planner maps `run-tests` to `test-runner` and attaches a bearer token to every `deployer` call ([the planner code](manuals/a2a-101/capture/planner.py)). [Part](#s-part) and [security schemes](#s-security-schemes-and-in-task-authorization) read those fields.
 
 ## Caching the card
 
-A card changes rarely, so the spec asks both sides to use ordinary HTTP caching {{spec §8.6}}. A server "SHOULD include a `Cache-Control` response header with a `max-age` directive" {{spec §8.6.1}}, plus an `ETag` derived from the card's `version` or a hash of its content. A client honors those headers and revalidates an expired card with `If-None-Match` or `If-Modified-Since` {{spec §8.6.2}}.
+A card changes rarely, so the spec asks both sides to use ordinary HTTP caching {{spec §8.6}}. A server should send a `Cache-Control` response header with a `max-age` directive {{spec §8.6.1}}. It also sends an `ETag` derived from the card's `version` or a hash of its content. A client honors those headers and revalidates an expired card with `If-None-Match` or `If-Modified-Since` {{spec §8.6.2}}.
 
 The kit sends no `Cache-Control` or `ETag` header, as [the kit README](manuals/a2a-101/capture/README.md) lists. An extended card replaces the cached public card for an authenticated session, as [extended cards and signatures](#s-extended-cards-and-signatures) explains.
 

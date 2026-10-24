@@ -11,7 +11,7 @@ id: fig-task-not-found
 kind: comparison
 title: TaskNotFoundError in two JSON bindings
 claim: The same TaskNotFoundError arrives as HTTP 200 with code -32001 in JSON-RPC and as HTTP 404 in HTTP+JSON, carrying the same ErrorInfo.
-caption: Left, GetTask over JSON-RPC from capture/out/11-errors.http. Right, the same lookup over HTTP+JSON from capture/out/16-rest-binding.http. The box at the bottom is the detail both replies carry. Ids shortened to 8 characters.
+caption: Left, GetTask over JSON-RPC from the error capture. Right, the same lookup over HTTP+JSON from the HTTP+JSON capture. The box at the bottom is the detail both replies carry. Ids shortened to 8 characters.
 ```
 
 ## The detail that names the error
@@ -24,7 +24,7 @@ Every error carries a code, a message, and optional `details`, each detail namin
 label: the detail that names the error
 source: spec §11.6
 ---
-"implementations **MUST** include a `google.rpc.ErrorInfo` object in the `details` array for A2A-specific errors"
+For an A2A error, an implementation must put a `google.rpc.ErrorInfo` object in the `details` array.
 ```
 
 Its `reason` is the error's name in upper snake case without the `Error` suffix, such as `TASK_NOT_FOUND`, and its `domain` is `a2a-protocol.org` {{spec §11.6}}. The gRPC binding carries the same MUST {{spec §10.6}}, and JSON-RPC only a SHOULD {{spec §9.5}}. The `metadata` is free-form: the kit fills it, and the reference SDK leaves it empty, as the kit README lists.

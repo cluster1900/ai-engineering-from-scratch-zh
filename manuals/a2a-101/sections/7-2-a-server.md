@@ -2,7 +2,7 @@
 
 > A server is a card, one handler per binding, three checks before any work, an executor, an owner-scoped task store, and one event queue that feeds streams and webhooks.
 
-The three agents in the kit come from one file, `capture/a2a_ref.py`, 675 lines of the Python standard library. Each agent serves a card, answers both JSON bindings, runs its own logic in a thread, and keeps its tasks in a dictionary. When you finish this section, you can name each part a server must build, and find it in `a2a_ref.py` and in the reference SDK.
+The three agents in the kit come from [one file](manuals/a2a-101/capture/a2a_ref.py) of 675 lines, written with the Python standard library only. Each agent serves a card, answers both JSON bindings, runs its own logic in a thread, and keeps its tasks in a dictionary. When you finish this section, you can name each part a server must build, and find it in that file and in the reference SDK.
 
 [Figure](#fig-server-parts) follows one `SendStreamingMessage` through those parts, from the HTTP request to the stream frames and the webhook POST.
 
@@ -11,7 +11,7 @@ id: fig-server-parts
 kind: structure
 title: the parts of a server, in the order a request meets them
 claim: A request passes authentication, the version check, and the capability check before Agent.send stores a task, and every event then leaves through one broadcast.
-caption: Read the left column top to bottom. Each box is a method in capture/a2a_ref.py. Rose boxes on the right are the errors each check returns, with their JSON-RPC codes from capture/out/11-errors.http. From capture/a2a_ref.py.
+caption: Read the left column top to bottom. Each box is a method of the kit's server. Rose boxes on the right are the errors each check returns, with their JSON-RPC codes from the error capture. From capture/a2a_ref.py.
 ```
 
 ## The card and one handler per binding
@@ -60,7 +60,7 @@ note: The head of the jsonrpc method and its error branch. The other nine method
 
 Authentication runs first. The kit's `authenticate` answers HTTP 401 with a `WWW-Authenticate` challenge before any method, on the deployer only. The SDK checks no credential itself: `ServerCallContext.user` comes from the web framework's middleware {{sdk src/a2a/server/routes/common.py}}. [Security schemes](#s-security-schemes-and-in-task-authorization) says what to check.
 
-The version check runs second. `check_version` accepts exactly `1.0` and raises `VersionNotSupportedError` for anything else, because "Agents MUST interpret empty value as 0.3 version." {{spec §3.6.2}}. The SDK's `validate_version` decorator wraps every JSON-RPC and REST dispatcher method and compares the major version {{sdk src/a2a/utils/version_validator.py}}. It does not wrap the gRPC servicer. [The version header](#s-version-and-extension-headers) gives the rules and each SDK's behavior.
+The version check runs second. `check_version` accepts exactly `1.0` and raises `VersionNotSupportedError` for anything else, because an agent must read an empty value as version 0.3 {{spec §3.6.2}}. The SDK's `validate_version` decorator wraps every JSON-RPC and REST dispatcher method and compares the major version {{sdk src/a2a/utils/version_validator.py}}. It does not wrap the gRPC servicer. [The version header](#s-version-and-extension-headers) gives the rules and each SDK's behavior.
 
 The capability check runs third. Before a stream or a push operation, the kit reads `card["capabilities"]` and raises `UnsupportedOperationError` or `PushNotificationNotSupportedError` {{spec §3.3.4}}. The SDK does the same with a `validate` decorator on `on_message_send_stream` and on the push methods {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}.
 
@@ -78,7 +78,7 @@ claim: The planner sees only each agent's card and endpoint, while each agent ca
 caption: Read top to bottom. Above the dashed line is what the planner sees over A2A. Below it is what each agent runs on its own, which the kit simulates in Python. From capture/agents.py and capture/out/01-agent-cards.http.
 ```
 
-**Task store:** the record of every task, read by `GetTask`, `ListTasks`, and each follow-up message. The kit's `Agent.tasks` is one dictionary with no owner, and the deployer's bearer token is its only guard. The SDK's `TaskStore` has `save`, `get`, `list`, and `delete`, each given the `ServerCallContext` {{sdk src/a2a/server/tasks/task_store.py}}. `InMemoryTaskStore` keys tasks by owner, and the default `OwnerResolver` returns `context.user.user_name` {{sdk src/a2a/server/owner_resolver.py}} {{sdk src/a2a/server/tasks/inmemory_task_store.py}}. Another caller's task is then `TaskNotFoundError`, but every caller without a user name shares one scope. "Servers MUST implement authorization checks on every A2A Protocol Operations request" {{spec §13.1}}, so the integrator adds the middleware, as [security schemes](#s-security-schemes-and-in-task-authorization) shows for each SDK.
+**Task store:** the record of every task, read by `GetTask`, `ListTasks`, and each follow-up message. The kit's `Agent.tasks` is one dictionary with no owner, and the deployer's bearer token is its only guard. The SDK's `TaskStore` has `save`, `get`, `list`, and `delete`, each given the `ServerCallContext` {{sdk src/a2a/server/tasks/task_store.py}}. `InMemoryTaskStore` keys tasks by owner, and the default `OwnerResolver` returns `context.user.user_name` {{sdk src/a2a/server/owner_resolver.py}} {{sdk src/a2a/server/tasks/inmemory_task_store.py}}. Another caller's task is then `TaskNotFoundError`, but every caller without a user name shares one scope. A server must check authorization on every A2A operation request {{spec §13.1}}, so the integrator adds the middleware, as [security schemes](#s-security-schemes-and-in-task-authorization) shows for each SDK.
 
 ## One event queue for streams and webhooks
 

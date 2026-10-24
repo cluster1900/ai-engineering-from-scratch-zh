@@ -44,7 +44,7 @@ PUSH-GET-002 MUST grpc=SKIPPED,http_json=PASS,jsonrpc=PASS PASS
 PUSH-LIST-001 MUST grpc=SKIPPED,http_json=PASS,jsonrpc=FAIL FAIL
 ```
 
-`research/tck-run.md` classifies every row of the run.
+[Our record of the run](manuals/a2a-101/research/tck-run.md) classifies every row.
 
 ## Where the TCK departs from v1.0.1
 

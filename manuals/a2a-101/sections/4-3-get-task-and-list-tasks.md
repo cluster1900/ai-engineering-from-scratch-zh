@@ -16,9 +16,9 @@ An id you are not allowed to see gets `TaskNotFoundError` {{spec §3.1.3}}, so a
 
 **History:** the messages a task has kept, apart from the current status message. The `historyLength` parameter sets how many a response carries, with the same meaning in every operation {{spec §3.2.4}}:
 
-- Unset: "No limit imposed; server returns its default amount of history (implementation-defined, may be all history)" {{spec §3.2.4}}.
-- A number above zero: "Return at most this many recent messages from the task's history" {{spec §3.2.4}}.
-- Zero: "No history should be returned; the history field SHOULD be omitted" {{spec §3.2.4}}.
+- Unset: no limit. The server returns its default amount of history, which the implementation decides and which can be all of it {{spec §3.2.4}}.
+- A number above zero: at most that many recent messages from the history of the task {{spec §3.2.4}}.
+- Zero: no history, and the `history` field should be left out {{spec §3.2.4}}.
 
 With `historyLength` 1, the kit returns only the newest message of the review task:
 
@@ -50,7 +50,7 @@ note: The JSON-RPC envelopes, the reply's ids, status, and artifacts, and the id
 
 That message is not the newest thing the agent said. The final status message, "2 findings", stays in `status.message`. In the kit and the reference SDK, a status message joins `history` only when a newer one replaces it {{sdk src/a2a/server/tasks/task_manager.py}}. Read `history` and `status.message` together.
 
-The server can also "apply a lower limit" {{proto GetTaskRequest}}, and "not all Messages are guaranteed to be persisted in the Task history" {{spec §3.7}}. The unset case is implementation-defined, and the SDKs also read 0 and a negative value in different ways:
+The server can also apply a lower limit {{proto GetTaskRequest}}, and the history does not have to keep every message {{spec §3.7}}. The unset case is implementation-defined, and the SDKs also read 0 and a negative value in different ways:
 
 | SDK | `historyLength` unset | 0 | below 0 |
 |---|---|---|---|
@@ -63,12 +63,12 @@ The server can also "apply a lower limit" {{proto GetTaskRequest}}, and "not all
 
 ## ListTasks returns pages, newest first
 
-`ListTasks` filters by `contextId`, `status`, and `statusTimestampAfter`, and shapes the page with `pageSize`, `pageToken`, `historyLength`, and `includeArtifacts` {{proto ListTasksRequest}}. It returns "only tasks visible to the authenticated client" {{spec §3.1.4}}, under four rules:
+`ListTasks` filters by `contextId`, `status`, and `statusTimestampAfter`, and shapes the page with `pageSize`, `pageToken`, `historyLength`, and `includeArtifacts` {{proto ListTasksRequest}}. It returns only the tasks that the authenticated client can see {{spec §3.1.4}}, under four rules:
 
-- Size: "If unspecified, at most 50 tasks will be returned" {{proto ListTasksRequest}}, and the maximum is 100.
-- Order: "Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first)." {{spec §3.1.4}}
-- Token: "The nextPageToken field MUST always be present in the response" {{spec §3.1.4}}. On the last page it holds the empty string.
-- Artifacts: "When includeArtifacts is false (the default), the artifacts field MUST be omitted entirely" {{spec §3.1.4}}.
+- Size: without `pageSize`, a page holds at most 50 tasks {{proto ListTasksRequest}}, and the maximum is 100.
+- Order: tasks must come sorted by their status timestamp, newest update first {{spec §3.1.4}}.
+- Token: the response must always contain `nextPageToken` {{spec §3.1.4}}. On the last page it holds the empty string.
+- Artifacts: when `includeArtifacts` is false, which is the default, the `artifacts` field must be left out completely {{spec §3.1.4}}.
 
 The kit asks `test-runner`, which holds five tasks, for `pageSize` 2 and `historyLength` 0:
 
@@ -125,7 +125,7 @@ The third request sends no `historyLength` and gets the full history, as the ref
 
 Pass back exactly the token you were given. The migration guide calls these fields `cursor`, `limit`, and `nextCursor`, names the proto does not define ([conflict D12](#s-ref-sources)).
 
-The bound of `statusTimestampAfter` is inclusive: "Only tasks with a status timestamp time greater than or equal to this value will be returned" {{proto ListTasksRequest}}. To fetch only what changed, send the newest status timestamp you have seen, and skip the boundary task you already hold.
+The bound of `statusTimestampAfter` is inclusive: the result holds only tasks whose status timestamp is at or after this value {{proto ListTasksRequest}}. To fetch only what changed, send the newest status timestamp you have seen, and skip the boundary task you already hold.
 
 ```takeaways
 - Call `GetTask` after a stream ends, a webhook arrives, or your process restarts.

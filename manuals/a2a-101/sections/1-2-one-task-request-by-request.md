@@ -4,14 +4,14 @@
 
 Your planner wants the unit tests of `payments-api` run at commit `9f3c2e1`, and it wants to watch the log grow while they run. It already holds the card of `test-runner`, whose capabilities include `"streaming": true`, so it sends the request with `SendStreamingMessage`.
 
-This section follows that run frame by frame, from `capture/out/05-streaming.http`, and [figure](#fig-one-streamed-task) shows it. When you finish this section, you can read any task stream and say what each frame changed in the stored task.
+This section follows that run frame by frame, from [the streaming capture](manuals/a2a-101/capture/out/05-streaming.http), and [figure](#fig-one-streamed-task) shows it. When you finish this section, you can read any task stream and say what each frame changed in the stored task.
 
 ```figure
 id: fig-one-streamed-task
 kind: sequence
 title: one streamed task from the card read to the close
 claim: A streamed task opens with the task itself, reports its work as status and artifact frames, and ends when the server closes the stream after the terminal status.
-caption: Read top to bottom. Unnumbered rows come before the stream, and each numbered row is one data frame, numbered as in capture/out/05-streaming.http. Timestamps on the right come from the kit clock, and the task id is shortened to 8 characters.
+caption: Read top to bottom. Unnumbered rows come before the stream, and each numbered row is one data frame, numbered as in the streaming capture. Timestamps on the right come from the kit clock, and the task id is shortened to 8 characters.
 ```
 
 ## Before the first frame
@@ -47,7 +47,7 @@ The client minted the `messageId` itself, and it sent no `taskId` and no `contex
 
 ## Frame 1: the task appears
 
-A task stream has a fixed opening: "the stream MUST begin with the Task object" {{spec §3.1.2}}. This one is already in `TASK_STATE_SUBMITTED`:
+A task stream has a fixed opening: the stream must begin with the `Task` object {{spec §3.1.2}}. This one is already in `TASK_STATE_SUBMITTED`:
 
 ```listing
 title: frame 1, the new task
@@ -92,11 +92,11 @@ A `lastChunk` closes one artifact and nothing more: frame 8 carries its own whil
 
 Frame 9 is the last `statusUpdate`. It moves the task to `TASK_STATE_COMPLETED` at `09:00:02.250Z`, with the status message "1 failed, 11 passed". The task completed although a test failed, because the failure is part of the result.
 
-Then the server closes the connection, and no frame announces it, because version 1.0 removed the `final` flag {{docs whats-new-v1}}. The rule is "The stream MUST close when the task reaches a terminal state" {{spec §3.1.2}}. At an interrupted state, the specification contradicts itself about whether a stream closes ([conflict D3](#s-ref-sources)). [Interrupted states](#s-input-required-and-auth-required) sets out when a stream closes, and its [figure](#fig-auth-required) follows a stream that stays open.
+Then the server closes the connection, and no frame announces it, because version 1.0 removed the `final` flag {{docs whats-new-v1}}. The rule is that the stream must close when the task reaches a terminal state {{spec §3.1.2}}. At an interrupted state, the specification contradicts itself about whether a stream closes ([conflict D3](#s-ref-sources)). [Interrupted states](#s-input-required-and-auth-required) sets out when a stream closes, and its [figure](#fig-auth-required) follows a stream that stays open.
 
 ## The task after the stream
 
-After the close, the task remains in the store, and a client reads it back with `GetTask`, the operation meant "for fetching the final state of a task after being notified via a push notification or after a stream has ended" {{spec §3.1.3}}. [GetTask and ListTasks](#s-get-task-and-list-tasks) covers what it returns.
+After the close, the task remains in the store, and a client reads it back with `GetTask`. That operation reads the final state of a task after a push notification or after a stream has ended {{spec §3.1.3}}. [GetTask and ListTasks](#s-get-task-and-list-tasks) covers what it returns.
 
 ```takeaways
 - Take the task id and the context id from the first frame, and match every later frame to them.

@@ -12,28 +12,28 @@
 | Protocol version | `1.0` in every request and card. Facts verified 2026-10-06. |
 | Main branch | Commit `679ab3a` of 2026-10-05, read for changes after the tag, and quoted only for rules the tag lacks |
 | Reference SDK | `a2a-sdk` 1.2.2, tag `v1.2.2` of [github.com/a2aproject/a2a-python](https://github.com/a2aproject/a2a-python), commit `2f9e44af243df5c7c7a3da361c8d095324bcd5e3`, Apache License 2.0 |
-| Capture kit | `manuals/a2a-101/capture/`, standard library only, described in [the kit README](manuals/a2a-101/capture/README.md) |
+| Capture kit | [the kit folder](manuals/a2a-101/capture), standard library only, described in [the kit README](manuals/a2a-101/capture/README.md) |
 
 The changelog dates the release 2026-05-26, and the spec banner still names 1.0.0 as the latest release ([conflict D16](#s-ref-sources-the-conflict-register)). The manual cites the reference SDK as `sdk` and a path under `src/a2a/`, and never quotes it.
 
 ## Vendored files
 
-The files in `research/sources/` are copied from the tag under the Apache License 2.0 in [LICENSE](manuals/a2a-101/research/sources/LICENSE). The audit checks every quote of 24 characters or more against them.
+[The vendored files](manuals/a2a-101/research/sources) are copied from the tag under the Apache License 2.0 in [LICENSE](manuals/a2a-101/research/sources/LICENSE). The audit checks that every source marker uses a source key that the manual declares.
 
-| File | Upstream | Cited as |
+| File | Upstream | Source key |
 |---|---|---|
 | a2a.proto | `specification/a2a.proto`, 811 lines, normative | `proto` and a message or enum name |
 | specification.md | `docs/specification.md`, 3610 lines | `spec` and a section number |
 | specification-main.md | `docs/specification.md` on main at `679ab3a`, 3618 lines, unreleased | `spec-main` and a section number, only for rules added after the tag |
 | docs.md | Fourteen project pages in 3019 lines, not normative. This edition adds `multi-tenancy`, `custom-protocol-bindings`, and `extension-and-binding-governance`. | `docs` and a page name |
 
-Section 1.4 of the spec gives the proto path as `spec/a2a.proto`, which is wrong ([conflict D15](#s-ref-sources-the-conflict-register)). Two briefs index these files by line: `research/brief-spec.md`, with 40 findings and the register below, and `research/brief-docs.md`, which flags stale pages.
+Section 1.4 of the spec gives the proto path as `spec/a2a.proto`, which is wrong ([conflict D15](#s-ref-sources-the-conflict-register)). Two briefs index these files by line: [the spec brief](manuals/a2a-101/research/brief-spec.md), with 40 findings and the register below, and [the docs brief](manuals/a2a-101/research/brief-docs.md), which flags stale pages.
 
 ## The SDKs and the test kit
 
 Body sections compare six official SDKs and the official test kit, each read at one tag. The manual cites the reference SDK as `sdk`, and the others as `sdk-go`, `sdk-java`, `sdk-js`, `sdk-dotnet`, and `sdk-rust`, with a file path and the tag. It paraphrases them and never quotes them.
 
-| Repository | Cited as | Tag | Commit | Date |
+| Repository | Source key | Tag | Commit | Date |
 |---|---|---|---|---|
 | [a2a-python](https://github.com/a2aproject/a2a-python) | `sdk` | `v1.2.2` | `2f9e44a` | 2026-10-05 |
 | [a2a-go](https://github.com/a2aproject/a2a-go) | `sdk-go` | `v2.6.0` | `ebf17c5` | 2026-09-25 |
@@ -45,7 +45,7 @@ Body sections compare six official SDKs and the official test kit, each read at 
 
 ## The conflict register
 
-This table condenses section 12.2 of `research/brief-spec.md`, and D36 to D40 were found while writing the manual. The last column says what the A2A repository did about each one after the tag, checked on 2026-10-06. Fixed on main means merged and unreleased. Partly fixed means that a residual remains on main.
+This table condenses section 12.2 of [the spec brief](manuals/a2a-101/research/brief-spec.md), and D36 to D40 were found while writing the manual. The last column says what the A2A repository did about each one after the tag, checked on 2026-10-06. Fixed on main means merged and unreleased. Partly fixed means that a residual remains on main.
 
 | ID | The sources say | The manual follows | Discussed in | Upstream |
 |---|---|---|---|---|

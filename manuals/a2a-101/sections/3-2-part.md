@@ -8,14 +8,14 @@ When you finish this section, you can build all four kinds of part and predict w
 
 ## One container, four contents
 
-**Part:** "The smallest unit of content within a Message or Artifact" {{spec §2.2}}. In the proto, `Part` declares its content as a `oneof` with four members {{proto Part}}:
+**Part:** the smallest unit of content in a message or an artifact {{spec §2.2}}. In the proto, `Part` declares its content as a `oneof` with four members {{proto Part}}:
 
 - `text` holds a string.
-- `raw` holds the bytes of a file. "In JSON serialization, this is encoded as a base64 string." {{proto Part}}
-- `url` holds "A `url` pointing to the file's content" {{proto Part}}.
-- `data` holds "Arbitrary structured `data` as a JSON value (object, array, string, number, boolean, or null)" {{proto Part}}.
+- `raw` holds the bytes of a file. In JSON, the bytes are a base64 string {{proto Part}}.
+- `url` holds a URL that points to the content of the file {{proto Part}}.
+- `data` holds any structured value as JSON: an object, an array, a string, a number, a boolean, or null {{proto Part}}.
 
-Beside the content sit three optional fields, `mediaType`, `filename`, and `metadata`, and `mediaType` "is available for all part types" {{proto Part}}. The kit's review request sends two kinds in one message:
+Beside the content sit three optional fields, `mediaType`, `filename`, and `metadata`, and `mediaType` works for every kind of part {{proto Part}}. The kit's review request sends two kinds in one message:
 
 ```listing
 title: one message, two kinds of part
@@ -39,11 +39,11 @@ Base64 costs size: the 175-byte diff of `payments/refunds.py` becomes 236 charac
 
 ## No kind, no nesting
 
-In version 0.3, a part named its type in a `kind` field and wrapped a file in a nested `file` object. Version 1.0 removed both, and "The `kind` field is no longer part of the protocol and should not be emitted" {{spec §A.2.1}}.
+In version 0.3, a part named its type in a `kind` field and wrapped a file in a nested `file` object. Version 1.0 removed both. The `kind` field is no longer part of the protocol, and a sender should not write it {{spec §A.2.1}}.
 
 A file part is flat: `raw` or `url` sits next to `filename` and `mediaType`. The specification's own file-part sample has that shape but is not valid JSON {{spec §6.7}} ([conflict D24](#s-ref-sources)). Copy part shapes from the proto, never from the samples.
 
-Read a part by testing which content member is present, and never send two of them. The reference SDK refuses a part with two members as invalid parameters, `-32602`, before any agent code runs {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}. It ignores a stray `kind`, as the specification asks: "Implementations SHOULD ignore unrecognized fields in messages" {{spec §5.7}}.
+Read a part by testing which content member is present, and never send two of them. The reference SDK refuses a part with two members as invalid parameters, `-32602`, before any agent code runs {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}. It ignores a stray `kind`, as the specification asks: an implementation should ignore fields that it does not recognize {{spec §5.7}}.
 
 ```figure
 id: fig-four-parts
@@ -65,11 +65,11 @@ Media types are declared in four places, and a skill's modes override the card's
 | `acceptedOutputModes` | `configuration` of a send | the client | not sent anywhere in the kit |
 | `mediaType` | each part | whoever sends the part | `text/x-diff` on `refunds.diff` |
 
-The client's one field is `acceptedOutputModes`, and the rule on the agent is a SHOULD: "Agents SHOULD use this to tailor their output" {{proto SendMessageConfiguration}}. The SDK's request handler never reads the field {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}, so check the `mediaType` of every part you receive.
+The client's one field is `acceptedOutputModes`, and the rule on the agent is a SHOULD. The agent should use the field to shape its output {{proto SendMessageConfiguration}}. The SDK's request handler never reads the field {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}, so check the `mediaType` of every part you receive.
 
 ## When the media type does not fit
 
-**ContentTypeNotSupportedError:** "A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked" {{spec §3.3.2}}. Its JSON-RPC code is `-32005` {{spec §5.4}}, and [errors](#s-errors) gives its other forms.
+**ContentTypeNotSupportedError:** the agent or the called skill does not support a media type that the message parts give or that an artifact implies {{spec §3.3.2}}. Its JSON-RPC code is `-32005` {{spec §5.4}}, and [errors](#s-errors) gives its other forms.
 
 In the kit, the planner sends `code-reviewer` a screenshot as a `url` part labelled `image/png`, and the agent refuses before it creates a task:
 
@@ -101,7 +101,7 @@ note: Exchange 5, cut to the part that was sent and the error that came back ins
 
 Servers check differently, because the specification gives an unlabelled part no default type. The SDK checks only when the server turns the check on, and then it skips every part with no `mediaType` {{sdk src/a2a/utils/input_mode_validator.py}}. The kit gives such a part a default type and checks it against the card's `defaultInputModes`, as [the kit README](manuals/a2a-101/capture/README.md) lists. The same unlabelled part can pass one server and fail the other.
 
-The security rules ask agents to "reject unexpected media types" {{spec §13.4}}, and a `url` part must be checked against server-side request forgery {{spec §14.1.1}}, as [security requirements](#s-security-requirements) explains.
+The security rules ask agents to reject media types that they do not expect {{spec §13.4}}. A `url` part must be checked against server-side request forgery {{spec §14.1.1}}, as [security requirements](#s-security-requirements) explains.
 
 ```takeaways
 - Read a part by the content member it holds, and never send two members or a `kind` field.
