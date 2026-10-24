@@ -114,7 +114,8 @@ Algorithm:
   3. If u < p(x) / (M * q(x)), accept x
   4. Otherwise, reject and go to step 1
 
-Acceptance rate = 1/M
+Acceptance rate = Z/M, where Z is the integral of p(x)
+                (Z = 1, so the rate is 1/M, when p is normalized)
 ```
 
 Bağlı$M$越紧, kabul oranı 越高──在低维(1-3) 中, reddedilme örneklemesi 效果好──在高维中, kabul oranı 会指数级下降,因为提案量的大多数都会被拒绝──这是拒绝样本采集的诅咒的维度──

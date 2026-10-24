@@ -18,7 +18,7 @@
 
 Ders 08 Öğretmen Seni Gradient Descent, Momentum, Adam ve Adam olarak. Bu optimizerler herhangi bir yüzeyde aşağıya doğru hareket edebilir. Ama garanti yok.
 
-Ancak ML'deki birçok sorun凸的──線形回归、物流回归、SVMs、LASSO、ridge regression── bu sorunlar için daha güçlü araçlar vardır:带有数学保证的优化──凸问题只有一个谷底──任何向下走的算法都会达到全局最小值──不需要重新启动──不需要学习率调度──不需要祈祷──
+Ancak ML'deki birçok sorun凸的──Linear regression、logistic regression、SVMs、LASSO、ridge regression── bu sorunlar için daha güçlü araçlar vardır:带有数学保证的优化──凸问题没有虚假的谷底:每个局部最小值都是全局最小值── mevcut en az değerin düzgün sarılı işlevi için,步长合适的 Gradient Descent 会收到它──不需要重新启动──不需要学习率调度──不需要祈祷──
 
 Kömünteti anlamak üç nokta değerine sahiptir. Birincisi, sorunun ne zaman basit olduğunu, ne zaman zor olduğunu anlatır. İkincisi, Kömünt probleminin Newton'un yöntemine benzer daha hızlı araçlar sunmasını sağlar. Üçüncüsü, ML'de tekrar tekrar ortaya çıkan kavramı açıklar: düzenleme  olarak bağlanma  SVM'ler arasındaki dualılık, ve neden derin öğrenme, Kömünteti'nin karşısında sağladığı her şeyin iyi niteliği üzerinde hala çalışabilir.
 
@@ -91,13 +91,13 @@ f(tx + (1-t)y) \le t f(x) + (1-t) f(y)
 
 **对于凸函数，每个局部最小值都是全局最小值。**
 
-Bu, Gradient Descent'in sıkışmayacağı anlamına gelir. Aşağıdaki yolların hepsi aynı cevaplara doğru gider.
+Bu, Gradient Descent'in kötü yerel en düşük değerler arasında sıkışmayacağı anlamına gelir.
 
 ```mermaid
 graph LR
     subgraph "Convex: ONE answer"
         direction TB
-        C1["Loss surface has a single valley"] --> C2["Gradient descent ALWAYS finds the global minimum"]
+        C1["Loss surface has no false valleys"] --> C2["Gradient descent with a suitable step converges to the global minimum"]
     end
     subgraph "Non-convex: MANY traps"
         direction TB

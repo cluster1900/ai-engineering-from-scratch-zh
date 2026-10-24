@@ -190,14 +190,14 @@ Yukarıdaki listeler ve listeler sınırlıdır.
 
 ### Normal dağıtım neden ortaya çıktı ?
 
-Merkez Sınır Teoremi: Birçok bağımsız rastgele değişkenlerin 
+Merkez Sınır Teoremi: Aynı dağılımdan gelen birçok bağımsız rastgele değişkenin ortalama değeri, merkezileştirilmiş ve uygulanmıştır.$\sqrt{n}$缩后, 缩后的分布接近正常分布,原始分布是什么形,只要其变化有限──中心化并缩后的和同样成立──
 
 ```
 Roll 1 die:  uniform distribution (flat)
 Average of 2 dice:  triangular (peaked)
 Average of 30 dice: nearly perfect bell curve
 
-This works for ANY starting distribution.
+这适用于任何 variance 有限的起始 distribution。
 ```
 
 İşte bu yüzden:
@@ -471,7 +471,7 @@ Bu içeriği tamamen oluşturdun. Şimdi bilirsin kitaplık ne yapıyor.
 | Expected value | “平均值” | 所有 outcomes 的概率加权和。Loss function 就是一个 expected value |
 | Variance | “分散程度” | 相对 mean 的 squared deviation 的期望。High variance = 噪声大、不稳定的估计 |
 | Normal distribution | “钟形曲线” | $f(x) = (1/\sqrt{2\pi\sigma^2}) \cdot \exp(-(x-\mu)^2/(2\sigma^2))$。由于 CLT 而无处不在 |
-| Central Limit Theorem | “平均值会变成 normal” | 无论来源如何，许多 independent samples 的 mean 都会收敛到 normal distribution |
+| Central Limit Theorem | “平均值会变成 normal” | 对任何 variance 有限的来源，许多 independent samples 的 mean 经中心化和缩放后都会收敛到 normal distribution |
 | Joint distribution | “两个变量放在一起” | $P(X, Y)$ 描述 $X$ 和 $Y$ outcomes 每一种组合的概率 |
 | Marginal distribution | “把另一个变量求和消去” | $P(X) = \sum_y P(X, Y)$。从 joint 中恢复单个变量的 distribution |
 | Log probability | “概率的 log” | $\log P(x)$。把乘积变成求和，避免长序列中的数值下溢 |

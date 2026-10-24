@@ -31,7 +31,7 @@ Bu ML için  çok önemlidir, çünkü frekans alanı düşüncesi 隨處可见�
 X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-Her biri .$X[k]$Bu karmaşık bir sayı. Büyüklüğü.$\lvert X[k] \rvert$Sıklığı göster $k$Amplitude. Fazı.$\angle X[k]$Bu frekansın fazını ödemeni gösterir.
+Her biri .$X[k]$Bu karmaşık bir sayı. Büyüklüğü.$\lvert X[k] \rvert$       $k$Amplitude 成正比──未归化时,amplitude 为 $A$Ve ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de ben de$k$Üstün gerçek sinir dalgaları .$\lvert X[k] \rvert = AN/2$Bu yüzden de bunu yapmalıyız.$N/2$才能读出 amplitude── onun aşamasını $\angle X[k]$Bu frekansın fazını ödemeni gösterir.
 
 关键洞见:$e^{-2\pi i k n/N}$- Bir tane frekanslı.$k$旋转的phasor──DFT 计算的是信号与 $N$个等间隔频 中每个的相关性──如果信号在频率中$k$Ünlü enerji içerir, ilişki çok büyük.
 
@@ -100,7 +100,7 @@ graph TD
     end
 ```
 
-FFT  sinyal uzunluğu isteniyor 2 ── pratikte, sinyaller genellikle sıfır-padı bir sonraki 2 ──
+Bu şekilde gerçekleştirilen radiks-2 FFT sinyal uzunluğu 2'nin en hızlı zamanıdır. Bir sorunun uzunluğu garip bir sayı olursa, normal hale geri döner.`dft`Bu yüzden hız için sinyaller genellikle son 2'nin ︎'üne kadar sıfır patlamalar.`numpy.fft`等库中的 FFT Mixed-radix algoritması kullanılarak herhangi bir uzunluğu işleyebilir, ancak uzunlukta sadece küçük elementleri içerir.
 
 ### Spektral analiz
 

@@ -202,7 +202,7 @@ Seks:
 2. 按MI puanı 排序 özellikleri。
 3. Önceki yazı$k$个 özellikleri。
 
-Bu özellik ile hedefin arasındaki herhangi bir ilişki için geçerlidir: doğrusal, hatalı olmayan, monoton veya diğer ilişkiler.
+Bu özellik ile hedefin arasındaki herhangi bir ilişki için geçerlidir: doğrusal, doğrusal, monoton veya diğer ilişkiler. Kişisel ilişki sadece doğrusal ilişkileri yakalayabilir.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|

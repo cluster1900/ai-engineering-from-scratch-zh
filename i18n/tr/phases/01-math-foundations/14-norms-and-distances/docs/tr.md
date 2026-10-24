@@ -102,7 +102,7 @@ L1 ve L2 Lp normunun özel durumları:
 \lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-Farklı $p$值会产生不同形的单位球(原点为1 的所有点的集合)
+Farklı $p$值会产生不同形的单位球 (() 距离原点至多为1 的所有点的集合; aşağıdaki resim onların sınırlarını gösterir):
 
 ```
 p=1:    Diamond shape      (corners on axes)

@@ -43,7 +43,7 @@ w = w - \text{lr} \cdot \text{gradient}
 
 ```mermaid
 graph TD
-    A["* Starting point (high loss)"] --> B["Moving downhill along gradient"]
+    A["* Starting point (high loss)"] --> B["Moving downhill, against the gradient"]
     B --> C["Approaching minimum"]
     C --> D["o Minimum (low loss)"]
 ```
@@ -155,7 +155,7 @@ w &= w - \text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)
 
 ### Konves vs. konves olmayan
 
-Sıkı bir fonksiyon                                                                                                                                                                                                                                                            $f(x) = x^2$Bu tür kare bir konvekstir.
+Kovaş fonksiyon  kötü yerel minimum yok: her yerel minimum küresel minimum ⇒ varlık minimumı için düzgün kovaş fonksiyon, öğrenme oranı 足够小的渐进下降 会收到它──像$f(x) = x^2$Bu tür kareyi, en az tek bir şekilde, konveks olarak görüyoruz.
 
 Nöral Ağ Kayıp fonksiyonları konveks değildir.
 
