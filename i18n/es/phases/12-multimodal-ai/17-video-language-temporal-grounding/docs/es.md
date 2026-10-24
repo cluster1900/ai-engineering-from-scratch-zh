@@ -88,7 +88,7 @@ El tiempo de tierra de la salida de forma:
 
 - Texto libre:"El gato salta alrededor de la marca de 4 segundos".
 - JSON estructurado:`{"event": "jump", "start": 4.1, "end": 4.3}`❖ Qwen2.5VL 会训练这种形式──
-- Basado en tokens: especial `<time>4.1</time>`Los tokens se encuentran en el formato interno de Qwen2.5-VL.
+- Basado en tokens: especial `<time>4.1</time>`Los tokens se usan de esta manera; Qwen2.5-VL 则把时间编码在 M-RoPE posición IDs,并以文字或 JSON 回答──
 
 El formato de salida JSON de Qwen2.5VL puede ser resuelto directamente.
 

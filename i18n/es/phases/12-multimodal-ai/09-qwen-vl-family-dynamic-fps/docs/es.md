@@ -50,7 +50,7 @@ Qwen2-VL Usado original de resolución ViT codificador  sustituido por resoluci�
 
 El cambio principal de Qwen2.5VL es el video.
 
-- 绝对时间 Token──不使用位置索引(frame 0, 1, 2...),而使用实际时间──"A las 0:04, el gato salta". 模型会看到与框架代币 交错的 交错的`<time>0.04</time>`Los tokens
+- 位置 IDs 中的绝对时间──不使用索引(frame 0, 1, 2...),M-RoPE's time axis follows actual time, por lo que el diferencial entre los dos IDs se mantiene en el número de segundos de diferencia entre ellos.
 - FPS dinámico, material de velocidad lenta, en el caso de 1 FPS, escenario de movimiento, en el caso de 4+ FPS, seleccionado por el usuario o el entrenador; M-RoPE 会适配──
 - Atención Espacial  Adopción de ventanas (bloqueo interno) para aumentar la descomposición; Cada隔几层加入全球关注──
 - 显式 JSON 输出格式──使用工具-call 数据训练:"{\"herramienta\": \"clic\", \"coords\": [380, 220]}"──开箱即代理-ready──
@@ -89,7 +89,7 @@ Una posición codificada es el procesamiento de textos, imágenes y vídeos, sin
 1. 计算你能承担的最大FPS:`fps_max = B / (T * tokens_per_frame)`¿Qué es eso?
 2. Desde`{1, 2, 4, 8}`中选择满足   Cómo hacer`fps <= fps_max`El objetivo de la FPS:
 3. Si el movimiento es fuerte, se puede elegir un FPS más bajo.
-4. 按选定FPS 均采样; entre entre插入 `<time>t</time>`Los tokens
+4. 按选定FPS 均采样; según el tiempo de cada 以秒为单位设置其M-RoPE 时间 ID──
 
 Qwen2.5VL 会隐式训练这种逻辑;推理时用户通过 `fps`参数控制── una secuencia de movimiento de 60 segundos, con 4 FPS、 por cada  81 tokens 计算, igual a 19440 tokens, en un contexto de 32k 中可管理──
 
@@ -141,7 +141,7 @@ Lo ejecutamos y luego en un video de 5 minutos, cambiamos el FPS fijo en FPS din
 |------|-----------------|------------------------|
 | M-RoPE | "Multimodal RoPE" | hidden dim 中带 temporal、height 和 width bands 的 3D rotary position embedding |
 | Dynamic FPS | "Smart sampling" | 根据运动、时长和 Token 预算为每个视频选择的帧采样率 |
-| Absolute time token | "Timestamp token" | 在序列中交错插入的 `<time>t</time>`，让模型看到实际秒数而不是帧索引 |
+| Absolute time encoding | "Time-aligned M-RoPE" | 根据每帧时间戳设置时间 position IDs，让模型看到实际秒数而不是帧索引，且无需额外 tokens |
 | Window attention | "Local attention" | 为提速而限制在小窗口内的 spatial self-attention；周期性加入 global attention |
 | Structured agent output | "JSON mode" | 通过训练数据监督教 VLM 输出可解析 JSON，其中包含 coords 和 tool names |
 | min_pixels / max_pixels | "Resolution bounds" | Qwen2.5-VL 的每请求控制项，用来约束总像素数，从而约束 Token 数 |
