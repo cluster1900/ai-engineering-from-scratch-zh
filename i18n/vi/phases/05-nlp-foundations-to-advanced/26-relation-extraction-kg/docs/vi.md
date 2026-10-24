@@ -68,21 +68,21 @@ PATTERNS = [
 
 查看 `code/main.py`Trong bộ máy thu thập đồ chơi hoàn chỉnh. Các mô hình nghe vẫn xuất hiện trong các đường ống cụ thể về lĩnh vực, vì chúng có thể được điều chỉnh.
 
-### 步骤 2: Có quan sát quan hệ
+### 步骤 2: Có giám sát theo dõi
 
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tok = AutoTokenizer.from_pretrained("Babelscape/rebel-large")
-model = AutoModelForSequenceClassification.from_pretrained("Babelscape/rebel-large")
+model = AutoModelForSeq2SeqLM.from_pretrained("Babelscape/rebel-large")
 
 text = "Tim Cook was born in Alabama. He later became CEO of Apple."
 encoded = tok(text, return_tensors="pt", truncation=True)
 output = model.generate(**encoded, max_length=200)
-triples = tok.batch_decode(output, skip_special_tokens=False)
+decoded = tok.batch_decode(output, skip_special_tokens=False)
 ```
 
-REBEL là một bộ thu thập liên quan theo dõi:输入 văn bản,输出 triples,并且已经使用Wikidata property ids──它在远程监督数据上精细调──标准开权基线──
+REBEL là một bộ trích dẫn mối quan hệ theo dõi dựa trên BART: nó tạo ra ba, thay vì đối với các cặp thực thể làm phân loại.`<triplet>``<subj>`和 `<obj>`标记, do đó cần phải theo các dấu hiệu này chia sẻ như mô hình thẻ của bộ phân tích để làm) để có được `(subject, relation, object)`Nó trên dữ liệu giám sát từ xa trên được điều chỉnh tốt.
 
 ### Bước 3: Phân xuất bằng LLM của việc neo
 

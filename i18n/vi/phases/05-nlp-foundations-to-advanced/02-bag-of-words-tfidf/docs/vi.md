@@ -124,7 +124,7 @@ def tfidf(bow_matrix):
 >>> tfidf(bow)
 ```
 
-三文档,五个词表词(`the``cat``sat``dog``ran`(■)`the`Hiện tại trong tất cả 3 tài liệu, vì vậy IDF của nó thấp.`dog`Chỉ xuất hiện một lần, vì vậy IDF cao. Những vector này là hiếm.
+三文档,五个词表词(`the``cat``sat``dog``ran`(■)`the`Hiện tại trong tất cả 3 tài liệu, vì vậy IDF của nó thấp.`dog`Chỉ xuất hiện một lần, vì vậy IDF của nó cao. Trong khoá từ thực của hàng ngàn từ, những phương tiện này là hiếm.
 
 ### 步骤 5: L2- bình thường hóa hàng
 

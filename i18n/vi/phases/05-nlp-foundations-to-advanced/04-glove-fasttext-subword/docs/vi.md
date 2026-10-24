@@ -25,7 +25,7 @@ Bài này sẽ giải thích sau này, sau đó giải thích khi nào nên ch�
 
 **FastText。**Một từ là ký tự n-gram của nó cộng với từ tự nó tổng cộng.`where`变成 `<wh, whe, her, ere, re>, <where>`▽词 矢量 是这些组成 矢量 的总和──按 Word2Vec的方式训练──好处:未见过的词(`whereupon`) có thể được kết hợp với n-gram đã biết.
 
-**BPE (Byte-Pair Encoding)。**Từ单个字符 (单个字节) 开始──统计 corpus 中每个相邻对──把最高频的对合并成新代币──重复`k`Kết quả: nhận được một bao gồm`k + 256`个 Token 的 từ vựng, trong đó高频序列(`ing``tion``the`(Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, every sentence can be tokenized into some kind of form) (Thanks to the word, every sentence can be tokenized into some kind of form)
+**BPE (Byte-Pair Encoding)。**Từ单个字符 (单个字节) 开始──统计 corpus 中每个相邻对──把最高频的对合并成新代币──重复`k`Kết quả: được thêm bởi các biểu tượng cơ bản`k`次合并组成的词汇(从字节 开始时为 `k + 256`个 Token), trong đó高频序列(`ing``tion``the`(Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, each sentence can be tokenized into some kind of form) (Thanks to the symbols of the word, every sentence can be tokenized into some kind of form) (Thanks to the word, every sentence can be tokenized into some kind of form)
 
 
 ```figure

@@ -59,14 +59,14 @@ coref-links
 ```python
 import spacy
 nlp = spacy.load("en_coreference_web_trf")   # experimental model
-doc = nlp("Apple announced new products. The company said they would ship soon.")
+doc = nlp("Apple announced new products. The company said it would ship them soon.")
 for cluster in doc._.coref_clusters:
     print(cluster, "->", [m.text for m in cluster])
 ```
 
 Trong tài liệu dài hơn, bạn sẽ nhận được kết quả tương tự:
-- Nhóm 1: [Apple, Công ty, họ]
-- Nhóm 2: [Sản phẩm mới]
+- Nhóm 1: [Apple, Công ty, nó]
+- Nhóm 2: [Sản phẩm mới, chúng]
 
 ### 步骤 2: giải quyết ngụ ngôn dựa trên quy tắc (đọc)
 
