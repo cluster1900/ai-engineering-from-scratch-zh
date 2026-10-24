@@ -220,6 +220,10 @@ flowchart TD
     Task -->|"Regression"| Linear["使用 Linear（无 activation）"]
 ```
 
+```figure
+softmax-temperature
+```
+
 ## 动手构建 动手构建
 
 ### 步骤 1: Realizar todas las funciones de activación  y sus derivados
@@ -461,10 +465,6 @@ for name, losses in results.items():
     print(f"  {name:10s}: start={losses[0]:.4f} -> end={losses[-1]:.4f} (improvement: {(1 - losses[-1]/losses[0])*100:.1f}%)")
 ```
 
-
-```figure
-softmax-temperature
-```
 
 ## Usalo
 
