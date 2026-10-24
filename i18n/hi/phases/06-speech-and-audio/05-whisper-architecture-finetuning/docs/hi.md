@@ -32,7 +32,7 @@
 
 **Prompt format。**विस्पर एक है द्वारा डिकोडर संकेत मध्य के विशेष टोकन  नियंत्रण के मल्टीटास्क मॉडलः
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
