@@ -454,7 +454,7 @@ def solve_with_escalation(question, examples, client, model):
     return tot_answer, "tree_of_thought", None
 ```
 
-升级逻辑：先尝试便宜方案（单次 CoT）。如果 self-consistency confidence 低于 0.8（5 个样本中少于 4 个一致），则升级到 ToT。这样能平衡成本和准确率——大多数问题便宜地解决，难题获得更多计算。
+升级逻辑：先尝试便宜方案（单次 CoT）。单条确定性路径没有投票占比，所以它的质量检查是一致性：temperature 0 的答案必须与采样路径的多数答案相同。如果不同，或者 self-consistency confidence 低于 0.8（5 个样本中少于 4 个一致），则升级到 ToT。这样能平衡成本和准确率——大多数问题便宜地解决，难题获得更多计算。
 
 ## 使用它
 

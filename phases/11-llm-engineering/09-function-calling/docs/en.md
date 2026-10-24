@@ -300,6 +300,8 @@ def run_code(code, language="python"):
         return {"error": True, "message": f"{type(e).__name__}: {e}"}
 ```
 
+子串黑名单把代码当作文本来读，所以凡是字符串匹配没有逐字拼出来的东西都会漏掉。把代码解析成语法树再遍历它，guard 就能按结构而不是按拼写来拒绝 `import` 语句、dunder 属性访问（即通往真实解释器的 `__class__` 和 `__globals__` 链）以及不安全的 builtin 名称。即便如此，也要把它当作教学用的过滤器，而不是真正的安全边界。任何进程内的 guard 都与它所运行的代码共享同一个解释器，执意的调用者仍然能找到可达的对象。生产系统会在独立的进程或容器中运行不受信任的代码（降权的 subprocess、gVisor、Firecracker 或托管的代码运行服务），这样一旦逃逸，攻击者落进的是一个用完即弃的沙箱，而不是你的服务。
+
 ### 步骤 3： Register All Tools
 
 ```python
