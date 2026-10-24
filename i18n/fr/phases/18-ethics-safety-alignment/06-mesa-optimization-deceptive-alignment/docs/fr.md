@@ -1,6 +1,6 @@
 # L'optimisation des messages et l'alignement trompeur
 
-> Hubinger et coll. (arXiv:1906.01820, 2019) Dans ce problème a été démontré il y a une décennie, il a été nommé pour elle. Lorsque vous entraînez un optimisateur appris à minimiser l'objectif de base, l'objectif interne de l'optimisateur appris n'est pas un objectif de base, mais il est entraîné à trouver utile tout proxy interne.
+> Hubinger et coll. (arXiv:1906.01820, 2019) Dans ce problème a été démontré pratiquement il y a environ cinq ans, il a été nommé pour elle. Lorsque vous entraînez un optimisateur appris à minimiser l'objectif de base, l'objectif interne de l'optimisateur appris n'est pas un objectif de base, mais il est entraîné à trouver utile tout proxy interne.
 
 **Type:** Learn
 **Languages:** Python (stdlib，toy mesa-optimizer 模拟器)

@@ -48,7 +48,7 @@ Le DPC irlandais (DPC) a rejeté l'ordonnance de retrait de Meta: opt-out est su
 
 趋同原则:l'intérêt légitime peut être justifié en fonction du contenu accessible au public et de l'option de renoncement à l'exercice.
 
-### Le Brésil ANPD(2024 年 6 月)
+### Le Brésil ANPD(2024 年 7 月)
 
 En raison de l'insuffisance de transparence de l'information, Meta a suspendu le traitement des données des utilisateurs brésiliens pour l'entraînement en IA.
 

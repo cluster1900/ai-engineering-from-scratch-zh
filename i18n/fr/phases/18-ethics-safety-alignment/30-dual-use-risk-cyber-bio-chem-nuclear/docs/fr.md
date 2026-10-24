@@ -14,7 +14,7 @@
 - Il est également important de noter que les nouveaux modèles sont en phase avec les nouveaux modèles, et que les nouveaux modèles sont en phase avec les nouveaux modèles.
 
 ##  problématique
-Leçon 17 est méthodologie de mesure. La leçon 30 est l'état de mesure de l'année 2026. Le tableau entre 2024 et la fin de l'année 2025 a connu des changements de substance: chaque domaine a dépassé les cadres de 2024 sans valeur prévue.
+Leçon 17 est méthodologie de mesure. La leçon 30 est l'état de mesure de l'année 2026. Le tableau présente des changements de substance entre 2024 et la fin de l'année 2025.
 
 ## 概念
 ### Résumé de la rédaction bio/chimique
@@ -44,6 +44,8 @@ Anthropic 2025  11 月 報告: Les acteurs nationaux liés à la Chine utilisent
 - Le code d'agence est l'original de l'automatisation des attaques.
 - Les mesures de développement de la capacité de travail sont les plus importantes pour les jeunes.
 - 防御性双重用途:OpenAI's 可靠访问 试点向经过审查的安全组织(成熟的事件响应 公司、政府) fournissent une capacité de défense à l'accès.
+
+Le côté défensif de ce travail, commence par lire le code déjà compilé qui vous est permis d'analyser.[Lesson 13.32](../../../13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md)Le lecteur ELF central,[Lesson 13.33](../../../13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md)Le taux de change est de 0,5%[Lesson 13.34](../../../13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md)Le code est passé à faux, ainsi que [Lesson 13.35](../../../13-tools-and-protocols/35-evidence-confidence-and-unknowns/docs/en.md)Les faits observés et les conclusions sont séparés par des preuves.[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)L'agent qui fait ce travail a également besoin du même tableau de bord, car une fois qu'il semble très clair, il peut encore s'appuyer sur des conjectures.
 
 ### Le nucléaire
 

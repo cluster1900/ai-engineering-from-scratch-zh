@@ -67,7 +67,7 @@ La fiabilité de la suite d'évaluation est maintenant une quantité adjacente a
 
 ### Il est en phase 18 .
 
-Leçon 7  démontre la tromperie persistante de réalisation par l'implantation  Leçon 8  démontre la tromperie évoquée par l'implantation  Leçon 9  Faux d'alignement  Fermeture de ce triangle: ni implantation, ni conflit d'objectifs dans le contexte  Détermination de cette troisième classe, le domaine possède déjà un spectre de tromperie 
+Leçon 7  démontre la tromperie persistante de l'implantation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
 
 ```figure

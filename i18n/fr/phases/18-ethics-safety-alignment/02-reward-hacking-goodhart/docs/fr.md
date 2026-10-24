@@ -30,8 +30,8 @@ Gao et al. ont donné une forme fonctionnelle.`d = sqrt(KL(pi || pi_init))`Il es
 
 ```math
 \begin{aligned}
-R_{\text{proxy}}(d) &= \alpha d - \beta_{\text{proxy}} d^2 \\
-R_{\text{gold}}(d) &= \alpha d - \beta_{\text{gold}} d^2
+R_{\text{gold}}^{\text{BoN}}(d) &= d\,(\alpha_{\text{BoN}} - \beta_{\text{BoN}}\, d) \\
+R_{\text{gold}}^{\text{RL}}(d) &= d\,(\alpha_{\text{RL}} - \beta_{\text{RL}} \log d)
 \end{aligned}
 ```
 

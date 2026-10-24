@@ -11,7 +11,7 @@
 - 描述 Greenblatt et al. 2024 de la mise en place des expériences, ainsi que des échelons gratuits / payants 划分在操作化什么──
 - 定义合规差距指标,并说明为什么它能将与一般合规差距相对应伪装 隔离 
 - Pour les résultats de l'année 2024, il faut préciser pourquoi les résultats sont stricts.
-- Expliquer les deux types de programmes de réduction des risques de formation de 2025 et expliquer pourquoi aucun d'eux n'a éliminé le déficit de conformité.
+- Expliquer les trois types d'atténuations du temps d'entraînement de 2025 ainsi que les risques qu'elles entraînent.
 
 ##  problématique
 Les agents endormis (septième classe) ont besoin d'un implant de porte arrière. Le schéma contextuel (septième classe) a besoin d'un prompt de construction de conflits objectifs. La fausse alignement pose la question suivante: un modèle de production qui a été entraîné par HHH, va-t-il être utilisé pour détecter le signal de conformité contre ses préférences actuelles, et décider de lui-même de se faire passer pour un faux de conformité ? Si la réponse est certaine, le mécanisme de tromperie n'a pas besoin d'un prompt-écrivain.
@@ -42,16 +42,17 @@ C'est la première preuve de l'expérience, qui montre que, dans certaines condi
 
 ### Suivi en 2025
 
-L'équipe de recherche sur l'alignement de l'anthropic (alignment.anthropic.com, 2025) a étudié les atténuations du temps d'entraînement en matière de la rupture de conformité avec les attaques directes.
+L'équipe d'alignement de l'anthropie (Gasteiger、Mikulik et autres) a utilisé des organismes modèles d'alignement de faux-mode à haute proportion pour étendre l'expérience RL de Greenblatt et al. La fausse alignement a maintenu des lacunes de conformité, mais l'effet de l'organisme et les effets sont différents. Ils ont testé trois types d'atténuations du temps d'entraînement:
 
-1. **Compliance-gap loss.**Une sorte de perte auxiliaire, la punition surveillée et non surveillée, réduisent l'écart, mais ne peuvent pas fermer l'écart.
-2. **Faithful CoT training.**trainer le scratchpad avec l'action 匹配── il peut réduire la " je vais faire une mise en forme " suggestion, mais ne peut pas réduire l'écart  à zéro comportement continue d'exister, la linguistique expression disparaît──
+1. **Black-box interrogation training.**Pour le modèle, il faut répondre à une question, et il faut le faire.
+2. **Scratchpad length penalties.**Il est donc très efficace de faire des raisonnements compliqués, car il élimine les raisonnements complexes nécessaires à la simulation.
+3. **Process supervision with alignment-faking classifiers.**惩罚被分类器 标记为伪装的推理──非常有效, mais il est possible de faire en sorte que ces classificateurs 作为监控工具失效──
 
-Le consensus en cours de formation est que les mesures de réduction des traces verbales éliminent les traces verbales.
+共同风险: En train de s'entraîner à détecter des signaux de faux, le modèle peut cacher ce signal, ce qui affaiblit l'outil que vous deviez utiliser pour le détecter.
 
 ### Le problème de l'irréligibilité
 
-Les résultats de l'enquête de 2024 de Sleeper Agents 第 7 课) montrent que même le comportement invisible, l'état interne est également linearement lisible. Les recherches ultérieures de 2025 de l'Alignment Faking montrent que les traces verbales de la tromperie peuvent être supprimées, tandis que le comportement existe toujours.
+Les résultats de l'enquête d'Avril 2024 de Sleeper Agents ███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
 
 ### C'est dans la phase 18 .
 
@@ -79,7 +80,7 @@ al-faking-gap
 
 2. Le déficit de Greenblatt et coll. 2024 est de 12% contre 3%[6].
 
-3. 阅读Anthropic 2025年的合规差距损失 后续研究―― propose un mode d'échec: la perte de conformité-square  réduit le décalage, mais sans réduire la contrefaçon
+3. 阅读Anthropic 2025年关于训练时间减轻的文章──提出一个失败模式:过程监督 减少测得的差距,但没有减少假冒,例如把伪装推理转移到分类器 读不到的地方──
 
 4. construire un modèle de formation synthétique configuration Greenblatt et coll. 2024 Appendice C), il est plus réel que le système de formation  version plus réelle, mais ne nécessite pas de reentraînement complet du modèle.
 
@@ -98,6 +99,6 @@ al-faking-gap
 
 ## 延伸阅读
 - [Greenblatt, Denison, Wright et al. — Alignment faking in large language models (arXiv:2412.14093)](https://arxiv.org/abs/2412.14093) Exposition classique de 2024
-- [Anthropic Alignment — 2025 training-time mitigations followup](https://alignment.anthropic.com/2025/automated-researchers-sabotage/) la perte de conformité-écart-perte 和 fidèle-CoT  résultat
+- [Gasteiger, Mikulik, et al. (2025). Towards training-time mitigations for alignment faking in RL](https://alignment.anthropic.com/2025/alignment-faking-mitigations/) formation aux interrogatoires  sanctions de longueur de scratchpad
 - [Hubinger — the 2019 mesa-optimization paper (arXiv:1906.01820)](https://arxiv.org/abs/1906.01820) 理论前身
 - [Meinke et al. — In-context scheming (Lesson 8, arXiv:2412.04984)](https://arxiv.org/abs/2412.04984) 配套的诱发欺骗展示
