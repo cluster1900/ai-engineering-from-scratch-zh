@@ -39,7 +39,7 @@ O seu diretório de casa é`~`Ou `/home/your-username`Quase tudo acontece aqui.
 
 ## Comandos necessários
 
-Os seguintes 15 comandos cobrem a sua caixa de GPU remoto, 95% da operação.
+Os seguintes 13 comandos cobrem a maior parte das operações na caixa de GPU remota:
 
 ###  Mudança de posição
 

@@ -52,7 +52,13 @@ s0-gpu-dispatch
 nvidia-smi
 ```
 
-Instalação com a CUDA de PyTorch:
+Instalação com CUDA de PyTorch. Em Linux, a roda padrão já tem CUDA. Em Windows, por favor, entre em contato com o selector de pytorch.org para copiar a ordem de instalação CUDA.
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+Então, verifique se o PyTorch consegue ver a GPU:
 
 ```python
 import torch

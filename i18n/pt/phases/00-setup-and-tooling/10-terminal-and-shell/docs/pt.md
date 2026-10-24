@@ -98,7 +98,7 @@ python train.py > output.log 2> errors.log
 python train.py > train_full.log 2>&1
 ```
 
-Você precisa de dominar os três redirecionamentos:
+Você precisa de dominar quatro redireções e um tubo:
 
 | 符号 | 作用 |
 |--------|-------------|
