@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Print the zh line content for every docs/*.md evidence reference, and flag
 // references whose bullet shares no identifier/number/backtick token with the
-// cited lines (candidates for manual review).
+// cited lines. The flag is a lexical HEURISTIC, not an error: Chinese bullets
+// and lines often share no Latin word or number even when the ref is correct,
+// so '??' only marks a candidate for manual review.
 // Usage: node scripts/verify_evidence_lines.js <sheet>...
 'use strict';
 const fs = require('fs');
@@ -51,6 +53,6 @@ for (const name of SHEETS) {
     }
   });
   total += n; flagged += f;
-  console.log(`# ${name}: ${n} docs refs, ${f} without shared token\n`);
+  console.log(`# ${name}: ${n} docs refs, ${f} without shared token (heuristic, review manually)\n`);
 }
-console.log(`TOTAL ${total} docs refs, ${flagged} without shared token`);
+console.log(`TOTAL ${total} docs refs, ${flagged} without shared token (heuristic: '??' is a review candidate, not a broken ref)`);
