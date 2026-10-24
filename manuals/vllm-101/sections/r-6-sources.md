@@ -1,23 +1,23 @@
-# Sources
+# 来源
 
-> This page ranks the sources of the manual by authority.
+> 本页按权威程度给本手册的来源排序。
 
-Use this page to judge how much weight a statement in the manual carries.
+用本页判断手册中某个说法有多大分量。
 
-When two sources disagree, the higher one wins, and the page says so.
+两个来源不一致时，以排名更高的为准，页面也会说明这一点。
 
-| Rank | Source | What the manual takes from it |
+| 排名 | 来源 | 手册从中取用什么 |
 |---|---|---|
-| 1 | the vLLM source at release 0.31.0 | every default, every flag name, and every mechanism in Part 8 |
-| 2 | our own runs on an NVIDIA L4 and a DGX Spark | every number marked as measured |
-| 3 | vLLM issues and pull requests | known failures and the history of each feature |
-| 4 | the vLLM release notes | what each release added, changed, or removed |
-| 5 | the vLLM documentation at release 0.31.0 | documented behavior, checked against the source |
-| 6 | papers | the original design of PagedAttention and speculative decoding |
-| 7 | blog posts and talks by the vLLM team and others | context and history, never a default or a number |
+| 1 | 0.31.0 版本的 vLLM 源码 | 每个默认值、每个参数名，以及第 8 部分的每个机制 |
+| 2 | 我们在 NVIDIA L4 和 DGX Spark 上的运行 | 每个标为实测的数字 |
+| 3 | vLLM 的 issue 和 pull request | 已知故障和每个功能的历史 |
+| 4 | vLLM 的发布说明 | 每个版本新增、改变或移除了什么 |
+| 5 | 0.31.0 版本的 vLLM 文档 | 文档记载的行为，并对照源码核实 |
+| 6 | 论文 | PagedAttention 和投机解码的原始设计 |
+| 7 | vLLM 团队及其他人的博客文章和演讲 | 背景和历史，从不作为默认值或数字的依据 |
 
-## What we did not use
+## 我们没有使用的来源 {#s-ref-sources-what-we-did-not-use}
 
-We did not use benchmark numbers from vendors or from other teams as evidence for a decision. Where the manual reports a result from another team, it names the team once and says that the number is theirs.
+我们没有把厂商或其他团队的基准测试数字当作决策的证据。手册报告其他团队的结果时，会点名一次该团队，并说明这个数字是他们的。
 
 Sources: this manual.
