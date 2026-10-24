@@ -48,7 +48,7 @@ Abbreviations: P = phases/01-math-foundations. L01 = P/01-linear-algebra-intuiti
 - cholesky_solve(L, b), forward then back substitution: L17/c:79-90
 - w_ols = least_squares_normal(X, y), normal equations: L17/d:487-490, 525
 - w_ridge = ridge_regression(X, y, lam=1.0), lam * np.eye(n): L17/d:494, 532
-- conjugate_gradient(A, b) returns x and k + 1, at most n iterations: L17/c:114-137, L17/d:340
+- conjugate_gradient(A, b) returns x and k + 1, at most n iterations: L17/c:114-136, L17/d:340
 - condition_number(A) returns S[0] / S[-1], inf when S[-1] < 1e-15: L17/c:107-111
 
 ## 变换矩阵 (command-table, 8 rows)

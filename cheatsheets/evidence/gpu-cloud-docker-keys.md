@@ -4,19 +4,19 @@ Abbreviations: P0 = phases/00-setup-and-tooling. D3 = P0/03-gpu-setup-and-cloud/
 
 ## 在哪里运行 (defaults, 5)
 - Local NVIDIA GPU, $0, CUDA + cuDNN, regular use, large datasets: D3:25-28
-- Google Colab free tier, $0, Runtime > Change runtime type > T4 GPU: D3:30-33, 70
+- Google Colab free tier, $0, Runtime > Change runtime type > T4 GPU: D3:30-33, 76
 - Cloud GPU (Lambda, RunPod, Vast.ai), $0.20-2.00/hr, SSH + install, serious training: D3:35-38
-- Phases 1-3 run fine on CPU: D3:17, 88
-- fp16 rule of thumb 2 bytes per parameter, keep a margin: D3:128, 135
+- Phases 1-3 run fine on CPU: D3:17, 94
+- fp16 rule of thumb 2 bytes per parameter, keep a margin: D3:133, 141
 
 ## 检查 GPU (annotated-code, 8 lines)
-- torch.cuda.is_available(): D3:60, C:3
-- torch.version.cuda: D3:61, C:10
-- torch.cuda.get_device_name(0): D3:63, C:11
-- get_device_properties(0), total_memory / 1e9: C:13-13, 31
-- params_fp16 = vram_gb * 1e9 / 2: C:32
-- device line: D3:91
-- torch.cuda.synchronize() around the GPU timing: D3:115-118, C:24-26
+- torch.cuda.is_available(): D3:66, C:13
+- torch.version.cuda: D3:67, C:20
+- torch.cuda.get_device_name(0): D3:69, C:21
+- get_device_properties(0), total_memory / 1e9: C:23-24, 49
+- params_fp16 = vram_gb * 1e9 / 2: C:50
+- device line: D3:97
+- torch.cuda.synchronize() around the GPU timing: D3:121-124, C:40-44
 
 ## 存储并使用 API 密钥 (flow, 5 steps)
 1. export ANTHROPIC_API_KEY, never put keys in code: D4:42-45
@@ -92,8 +92,8 @@ Abbreviations: P0 = phases/00-setup-and-tooling. D3 = P0/03-gpu-setup-and-cloud/
 - Server bound to localhost not reachable, host="0.0.0.0", -p 5000:5000: D7:376, 385
 
 ## 技巧 (tips, 5)
-- First GPU run includes start-up cost: D3:131
-- Run !nvidia-smi in Colab first: D3:133
+- First GPU run includes start-up cost: D3:137
+- Run !nvidia-smi in Colab first: D3:77
 - Set up keys when the lesson requires it: D4:132
 - Raw HTTP helps when debugging: D4:121
 - Add packages to the Dockerfile and rebuild, cached layers: D7:365, 394

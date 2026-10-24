@@ -99,7 +99,7 @@ Abbreviation: P01 = phases/01-math-foundations. All paths are docs/en.md unless 
 - Cross-entropy maximizes likelihood: P01/09-information-theory/docs/en.md:257
 - bfloat16 range, 65,504: P01/13-numerical-stability/docs/en.md:303, 307
 - SVD vs eig(A.T @ A), squared condition number: P01/11-singular-value-decomposition/docs/en.md:314, 329
-- Reparameterization trick: P01/16-sampling-methods/docs/en.md:326-332
+- Reparameterization trick: P01/16-sampling-methods/docs/en.md:326-333
 
 ## 提示
 - (m x n) @ (n x p) = (m x p): P01/02-vectors-matrices-operations/docs/en.md:53

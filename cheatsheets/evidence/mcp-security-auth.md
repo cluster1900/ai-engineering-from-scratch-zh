@@ -5,7 +5,7 @@ Abbreviations: P = phases/13-tools-and-protocols. L15 = P/15-mcp-security-tool-p
 ## Token 拒绝 (troubleshooting, 8)
 - 401 malformed when jwt_decode fails: L18/c:486-489
 - 401 iss not allowed, allowed_issuers, authorization_servers allow-list: L18/c:494-495, L18/d:316
-- 401 unknown kid after one refetch, fix the refresh job: L18/c:500-509, L18/d:310
+- 401 unknown kid after one refetch, fix the refresh job: L18/c:501-509, L18/d:310
 - 401 bad signature, never accept unverifiable signature: L18/c:512-513, L18/d:275
 - 401 audience mismatch, request with resource: L18/c:514-515, L18/d:176, L16/d:157
 - 401 expired: L18/c:516-517, L16/d:176
@@ -54,8 +54,8 @@ Abbreviations: P = phases/13-tools-and-protocols. L15 = P/15-mcp-security-tool-p
 - Validator allowed_tools and sensitive_tools: PI/c:49-51, 114-117
 - ToolCall search with intent research: PI/c:125-126
 - Content with user_message source is skipped by the scan: PI/c:62-64, 128
-- validator.assess checks allowlist, args, retrieved content: PI/c:53-72, 129
-- executor.run after approval: PI/c:78-82, 131-132
+- validator.assess checks allowlist, args, retrieved content: PI/c:53-71, 129
+- executor.run after approval: PI/c:78-82, 131
 - looks_like_directive returns marker or None: PI/c:31-38
 - memory_write_guard(MemoryWrite(...)) refuses directive-shaped writes: PI/c:98-106, 162-166
 

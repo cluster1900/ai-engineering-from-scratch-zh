@@ -5,7 +5,7 @@ Abbreviations: P = phases/13-tools-and-protocols. L17 = P/17-mcp-gateways-and-re
 ## 网关请求路径 (architecture, 8 nodes)
 - Client sends bearer and _meta over POST: L17/d:62-69, 109-120
 - validate_wire, header and body equality, -32020 before backend lookup: L17/c:160, L17/d:73
-- RBAC and TokenBucket per principal: L17/c:39-42, 231-245, 383-394
+- RBAC and TokenBucket per principal: L17/c:39-42, 231-244, 383-394
 - descriptor pin with descriptor_digest: L17/c:126-128, 290-294, 397-404
 - Registry record is publication metadata only: L17/d:156-175
 - admission state with verified publisher, joined to record: L17/d:177-190, L17/c:131-157
@@ -24,7 +24,7 @@ Abbreviations: P = phases/13-tools-and-protocols. L17 = P/17-mcp-gateways-and-re
 - gateway.handle("bearer-alice", body, headers): L17/c:463
 - validate_wire(body, headers): L17/c:160
 - descriptor_digest(tool): L17/c:126
-- TokenBucket().consume(): L17/c:231-245, 386-387
+- TokenBucket().consume(): L17/c:231-244, 386-387
 - registry_record_is_admissible: L17/c:131
 - gateway_call(token, tool_name, args, ...): L23/c:224
 
