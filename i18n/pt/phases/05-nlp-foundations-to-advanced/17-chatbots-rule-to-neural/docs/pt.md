@@ -19,6 +19,28 @@ A estrutura do chatbot passou por quatro ciclos de paradigmas, cada um deles dev
 
 ![Chatbot evolution: rule-based → retrieval → neural → agent](../assets/chatbot.svg)
 
+### 脚本化的半世紀, 1950-2001
+
+O primeiro paradigma continuante não é de cinco anos, mas de cinco décadas  É importante entender a sua relação, pois cada um deles é a mesma máquina: adaptação de entrada, saída de uma boa resposta, atualização de um estado  Durante cinco décadas, continua a dar a esta máquina regras, mas sempre não recebe uma situação geral  É mesmo este cenário, só há um segundo a quarto paradigma
+
+**1950.**Turing, que se revoltou sobre a questão de se as máquinas podem pensar, propôs uma alternativa operacional: se o interrogatório não consegue distinguir entre as máquinas e os seres humanos, essa questão filosófica perdeu significado.
+
+**1956.**O primeiro seminário de verão de Dartmouth propôs a palavra inteligência artificial, baseado em que cada característica da inteligência pode ser descrita com precisão, de modo a que possa ser construída uma máquina para simula-la.
+
+**1966.**ELIZA 上線了你在步骤 1 中构建的反思技巧:decomposition rules From input中提取片段,reassembly rules Put them into question form reappear again.
+
+**1972.**PARRY foi construído por Stanford, para simular o preconceito, ele complementa o bloco que falta à ELIZA: estado interno. Representava o medo, a raiva e a desconfiança de variação numérica em cada rodada, atualizada, e decidiu a próxima iniciação do script, para que a mesma entrada produzisse respostas diferentes de acordo com o diálogo anterior. Em um teste de registro de diálogo de uma vez cego, um psiquiatra distinguiu PARRY da precisão do paciente real e da conjectura aleatória. É o antepassado direto do condicionamento de personalidade: um sistema de três flows de números realizados.
+
+**1995.**A ALICE usa AIML (um modelo de descrição para XML) para expandir o método da ELIZA. Aproximadamente 40.000 pessoas escreveram o seu livro.
+
+**2001.**SmarterChild colocou este método na frente de 3.000.000 de usuários de comunicação instantânea, e juntou-se a uma consulta de última hora:
+
+ 50 anos, um mecanismo, o número de regras está aumentando continuamente. O fim deste paradigma não é porque alguém o tenha falsificado, mas porque o custo de manutenção da máquina de escrita manual cresce com a cobertura linear, enquanto as expectativas dos usuários crescem com o que eles veem na semana passada.
+
+```figure
+chatbot-lineage
+```
+
 **Rule-based（ELIZA、AIML、DialogFlow）。**Os padrões de escrita do manual 匹配用户输入并生成回复──Intent classifiers将请求路由到预定义流程──Slot-filling state machines 收集必需信息──Performance very excellent──在它设计的狭窄范围内表现非常出色──一旦超出范围就立刻失败──仍然会在安全关键领域──银行身份验证、航空预订) 上线,因为这些场景不能容忍幻觉──
 
 **Retrieval-based。**FAQ 风格的系统──Encode 每一组(utterance, response)──运行时,encode 用户消息并获取 最近的已存回复── pode ser entendido como artigos 功能──比规则更能处理抛词──没有生成,因此没有幻觉──
@@ -28,11 +50,6 @@ A estrutura do chatbot passou por quatro ciclos de paradigmas, cada um deles dev
 **LLM agents。**Um modelo de linguagem é empacotado em um ciclo, usado para planejar, utilizar ferramentas, e verificar resultados. Não é um chatbot de longa data. É um agente: plano → ferramenta de chamada → observar o resultado → decidir o próximo passo. Retorno-primeiro a terra.
 
 Este paradigma não é uma substituição por ordem. Um chatbot de classe de produção de 2026 irá passar por todos os quatro caminhos: baseado em regras, usado para identificação e ações destrutivas, recuperação, usado para FAQ, geração neural, usado para expressão natural, agente LLM, usado para uma consulta aberta e confusa.
-
-
-```figure
-chatbot-lineage
-```
 
 ## Construí-lo
 
@@ -225,6 +242,7 @@ tags: [nlp, agents, chatbot]
 3. **Hard。**Use três ferramentas (search,read,user,data,send-email) para implementar o loop de agente acima. Use 50 个测试场景运行评估的包含即时注射尝试. Use 50 个测试场景运行评估. Use 50 个测试场景运行评估. Use 50 个测试场景运行评估. Use 50 个测试场景运行评估. Use three tools.
 
 ## 关键术语
+
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Intent | 用户想要什么 | Categorical label（book_flight, reset_password）。路由到 handler。 |
@@ -236,7 +254,9 @@ tags: [nlp, agents, chatbot]
 
 ## 延伸阅读
 
+- [Turing (1950). Computing Machinery and Intelligence](https://academic.oup.com/mind/article/LIX/236/433/986238) 让对话成为这个领域的基准论文──
 - [Weizenbaum (1966). ELIZA — A Computer Program For the Study of Natural Language Communication](https://web.stanford.edu/class/cs124/p36-weizenabaum.pdf) Origins de regras baseadas chatbot 论文。
+- [Colby, Weber, Hilf (1971). Artificial Paranoia](https://doi.org/10.1016/0004-3702(71)90002-6)  PARRY's Emotional Variation Architecture, primeiro chatbot com estado.
 - [Thoppilan et al. (2022). LaMDA: Language Models for Dialog Applications](https://arxiv.org/abs/2201.08239) Google 较晚期的神经聊天机论文,正好在 LLM agentes 接管之前──
 - [Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)  命名 agent loop pattern 的论文──
 - [Anthropic's guide on building effective agents](https://www.anthropic.com/research/building-effective-agents) A orientação de produção de 2024 anos, até 2026 anos ainda em vigor.
