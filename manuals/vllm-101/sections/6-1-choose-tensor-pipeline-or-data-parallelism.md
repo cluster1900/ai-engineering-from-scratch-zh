@@ -1,22 +1,22 @@
-# Choose tensor, pipeline, or data parallelism
+# 选择 tensor、pipeline 或 data parallelism
 
-> Tensor parallelism splits a model that does not fit, and data parallelism copies a model that does.
+> Tensor parallelism 拆分放不下的模型，data parallelism 复制放得下的模型。
 
-One GPU is not enough. When you finish this section, you can pick the parallel layout from a short decision tree.
+一块 GPU 不够用了。读完本节后，你能用一棵简短的决策树选出并行布局。
 
-## Answer three questions
+## 回答三个问题 {#s-choose-tensor-pipeline-or-data-parallelism-answer-three-questions}
 
-| Question | If yes | If no |
+| 问题 | 如果是 | 如果否 |
 |---|---|---|
-| Does the model fit on one GPU, with room for the KV cache you need? | Use data parallelism: one full copy for each GPU, `--data-parallel-size N`. The output grows with the copy count. | Split the model across GPUs. The next question decides where. |
-| Does the split model fit inside one machine? | Keep the split inside the machine. The next question picks the layout. | Add pipeline parallelism across machines, as the list below the table says. |
-| Do the GPUs have NVLink, and does the GPU count divide the model evenly? | Use tensor parallelism, `--tensor-parallel-size N`. | Use pipeline parallelism inside the machine, `--pipeline-parallel-size N`. |
+| 模型能放进一块 GPU，并留出你需要的 KV cache 空间吗？ | 用 data parallelism：每块 GPU 一份完整副本，`--data-parallel-size N`。输出随副本数增长。 | 把模型拆到多块 GPU 上。下一个问题决定拆在哪里。 |
+| 拆分后的模型能放进一台机器吗？ | 把拆分留在机器内部。下一个问题决定布局。 | 跨机器加上 pipeline parallelism，做法见表格下方的列表。 |
+| GPU 之间有 NVLink，并且 GPU 数量能均匀拆分模型吗？ | 用 tensor parallelism，`--tensor-parallel-size N`。 | 在机器内部用 pipeline parallelism，`--pipeline-parallel-size N`。 |
 
-When the model needs more than one machine:
+当模型需要不止一台机器时：
 
-- Set `--pipeline-parallel-size` to the number of machines, and `--tensor-parallel-size` to the GPUs in each machine.
-- The tensor-parallel size must divide the attention-head count of the model.
-- If the GPUs in each machine do not divide it, use `--tensor-parallel-size 1` and set the pipeline size to the total GPU count.
+- 把 `--pipeline-parallel-size` 设为机器数，把 `--tensor-parallel-size` 设为每台机器的 GPU 数。
+- tensor-parallel 大小必须能整除模型的 attention head 数。
+- 如果每台机器的 GPU 数不能整除它，就用 `--tensor-parallel-size 1`，并把 pipeline 大小设为 GPU 总数。
 
 ```figure
 id: fig-6-1
@@ -26,28 +26,28 @@ claim: Three questions pick the layout, and inside one machine the link between 
 caption: Start at the top and follow the answer. From the vLLM documentation at v0.31.0.
 ```
 
-## Know what each layout costs
+## 了解每种布局的代价 {#s-choose-tensor-pipeline-or-data-parallelism-know-what-each-layout-costs}
 
-| Layout | What it splits | Communication | Best for |
+| 布局 | 拆分什么 | 通信 | 最适合 |
 |---|---|---|---|
-| Tensor | each layer across GPUs | after every layer, so it needs a fast link such as NVLink | a model too big for one GPU, inside one machine |
-| Pipeline | the layers into stages on different GPUs | once for each stage boundary | a model too big for one machine, or GPUs in one machine without NVLink |
-| Data | nothing, each GPU holds a full copy | none between copies | more output from a model that fits |
-| Expert | the experts of a mixture-of-experts model | before and after the expert layers | large MoE models, covered on [the MoE page](#s-serve-moe-models-with-expert-parallelism) |
+| Tensor | 把每一层拆到多块 GPU 上 | 每一层之后都要通信，所以需要 NVLink 这样的快速互联 | 一块 GPU 放不下、但在一台机器内的模型 |
+| Pipeline | 把各层分成多个 stage，放在不同 GPU 上 | 每个 stage 边界通信一次 | 一台机器放不下的模型，或机器内 GPU 没有 NVLink |
+| Data | 不拆分，每块 GPU 持有完整副本 | 副本之间不通信 | 让放得下的模型产出更多输出 |
+| Expert | mixture-of-experts 模型的各个 expert | 在 expert 层之前和之后 | 大型 MoE 模型，见 [MoE 页](#s-serve-moe-models-with-expert-parallelism) |
 
-Tensor parallelism also splits the weights and the KV cache, so each GPU has more room for the cache. When the weights fill most of one GPU, two GPUs can hold several times the KV pool of one.
+Tensor parallelism 也会拆分权重和 KV cache，所以每块 GPU 给 cache 留的空间更多。当权重占满一块 GPU 的大部分时，两块 GPU 能容纳的 KV 池可以是一块的好几倍。
 
-## Check the link between GPUs
+## 检查 GPU 之间的互联 {#s-choose-tensor-pipeline-or-data-parallelism-check-the-link-between-gpus}
 
-Tensor parallelism sends data after every layer. On GPUs joined only by PCIe, such as two L4s in one host, that traffic can cost more than the split saves. The vLLM documentation suggests pipeline parallelism on such a machine, because it sends data only at stage boundaries. Pipeline parallelism also accepts a GPU count that does not divide the model evenly. Measure the layouts against each other on such a machine before you pick.
+Tensor parallelism 每一层之后都要发送数据。在只通过 PCIe 相连的 GPU 上，例如同一台主机里的两块 L4，这些流量的开销可能超过拆分带来的收益。vLLM 文档建议在这种机器上用 pipeline parallelism，因为它只在 stage 边界发送数据。Pipeline parallelism 也接受不能均匀拆分模型的 GPU 数量。在这种机器上，先把几种布局互相对比测量，再做选择。
 
-Not measured on our hardware. We have not run vLLM on two L4s with tensor parallelism or data parallelism.
+这一点没有在我们的硬件上测量。我们没有在两块 L4 上用 tensor parallelism 或 data parallelism 运行过 vLLM。
 
-## Start a second machine
+## 启动第二台机器 {#s-choose-tensor-pipeline-or-data-parallelism-start-a-second-machine}
 
-vLLM runs one server across machines with Ray, the default for more than one machine, or with its own multiprocess launcher. We did not run either. The steps below come from the vLLM 0.31.0 documentation, for two machines with 8 GPUs each.
+vLLM 可以用 Ray（多机时的默认方式）或它自己的多进程启动器，让一个服务器跨多台机器运行。这两种我们都没有运行过。下面的步骤来自 vLLM 0.31.0 文档，针对两台各有 8 块 GPU 的机器。
 
-First, check that the GPUs can talk to each other. The vLLM troubleshooting guide has a short test script that runs NCCL and Gloo all-reduce calls. Save it as `test.py` on each machine. Run it on both machines at once, with `NODE_RANK=0` on the first machine and `NODE_RANK=1` on the second:
+首先，检查 GPU 之间能否通信。vLLM 的故障排查指南里有一个简短的测试脚本，会运行 NCCL 和 Gloo 的 all-reduce 调用。在每台机器上把它保存为 `test.py`。在两台机器上同时运行它，第一台用 `NODE_RANK=0`，第二台用 `NODE_RANK=1`：
 
 ```bash
 NCCL_DEBUG=TRACE torchrun --nnodes 2 --nproc-per-node 8 \
@@ -55,27 +55,27 @@ NCCL_DEBUG=TRACE torchrun --nnodes 2 --nproc-per-node 8 \
   --node-rank $NODE_RANK test.py
 ```
 
- When the network and the drivers work, each process prints four success lines, the first of them `PyTorch NCCL is successful!`. The guide text names a different line, so trust the lines that the script prints.
+ 当网络和驱动都正常时，每个进程会打印四行成功信息，第一行是 `PyTorch NCCL is successful!`。指南正文写的是另一行，所以以脚本实际打印的为准。
 
-**With Ray.** The vLLM repository has a `run_cluster.sh` script that starts the vLLM image and a Ray node on each machine. Give each machine its own `VLLM_HOST_IP`, on a private network. On the first machine, run:
+**使用 Ray。** vLLM 仓库里有一个 `run_cluster.sh` 脚本，会在每台机器上启动 vLLM 镜像和一个 Ray 节点。给每台机器一个私有网络上的独立 `VLLM_HOST_IP`。在第一台机器上运行：
 
 ```bash
 bash run_cluster.sh vllm/vllm-openai:v0.31.0 <head-ip> --head ~/.cache/huggingface -e VLLM_HOST_IP=<head-ip>
 ```
 
-On the second machine, run:
+在第二台机器上运行：
 
 ```bash
 bash run_cluster.sh vllm/vllm-openai:v0.31.0 <head-ip> --worker ~/.cache/huggingface -e VLLM_HOST_IP=<worker-ip>
 ```
 
-Keep both shells open, because closing one stops the cluster. Then, inside a container, check that Ray sees every node and GPU:
+两个 shell 都要保持打开，因为关闭其中一个就会停掉集群。然后在容器内检查 Ray 能看到每个节点和 GPU：
 
 ```bash
 ray status
 ```
 
-Start the server on one machine only. It uses the GPUs of every machine:
+只在一台机器上启动服务器。它会使用所有机器的 GPU：
 
 ```bash
 vllm serve Qwen/Qwen3-30B-A3B-Instruct-2507 \
@@ -83,23 +83,23 @@ vllm serve Qwen/Qwen3-30B-A3B-Instruct-2507 \
   --distributed-executor-backend ray
 ```
 
-**Without Ray.** Run `vllm serve` on both machines with the same model and sizes. Add `--nnodes 2 --node-rank 0 --master-addr <head-ip>` on the first machine. Add `--nnodes 2 --node-rank 1 --master-addr <head-ip> --headless` on the second machine, which then runs workers and no API server.
+**不使用 Ray。** 在两台机器上用相同的模型和大小运行 `vllm serve`。第一台机器加上 `--nnodes 2 --node-rank 0 --master-addr <head-ip>`。第二台机器加上 `--nnodes 2 --node-rank 1 --master-addr <head-ip> --headless`，它只运行 worker，不运行 API 服务器。
 
-The traffic between the machines is not encrypted, and it can run code on the other side. Keep it on a private network that untrusted machines cannot reach.
+机器之间的流量没有加密，而且能在对方机器上执行代码。把它限制在不受信任的机器无法访问的私有网络里。
 
-## Count the processes
+## 数一数进程 {#s-choose-tensor-pipeline-or-data-parallelism-count-the-processes}
 
-With data parallelism, vLLM starts one engine core for each copy, and one coordinator that keeps them in step. With tensor parallelism, it starts one worker for each GPU under one engine core. [The process page](#s-why-vllm-runs-three-kinds-of-process) gives the count.
+使用 data parallelism 时，vLLM 为每份副本启动一个 engine core，再加一个让它们保持同步的 coordinator。使用 tensor parallelism 时，它在一个 engine core 下为每块 GPU 启动一个 worker。[进程页](#s-why-vllm-runs-three-kinds-of-process)给出了具体数量。
 
-## Use context parallelism for very long prompts
+## 对超长 prompt 使用 context parallelism {#s-choose-tensor-pipeline-or-data-parallelism-use-context-parallelism-for-very-long-prompts}
 
-For prompts of hundreds of thousands of tokens, vLLM can split one sequence across GPUs with prefill and decode context parallelism. Use it only when one long request is the problem, not when many short ones are.
+对于几十万 token 的 prompt，vLLM 可以用 prefill 和 decode 的 context parallelism 把一个序列拆到多块 GPU 上。只在问题出在单个长请求时使用它，而不是很多短请求时。
 
 ```takeaways
-- Use data parallelism when the model fits, and tensor parallelism when it does not.
-- Add pipeline parallelism to go past one machine, and run the NCCL test first.
-- Inside one machine, use pipeline parallelism when the GPUs lack NVLink.
-- On GPUs without a fast link, measure tensor parallelism against data parallelism.
+- 模型放得下时用 data parallelism，放不下时用 tensor parallelism。
+- 要超出一台机器，就加上 pipeline parallelism，并先跑 NCCL 测试。
+- 在一台机器内部，GPU 没有 NVLink 时用 pipeline parallelism。
+- 在没有快速互联的 GPU 上，把 tensor parallelism 和 data parallelism 对比测量。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/config/parallel.py, vllm/engine/arg_utils.py, examples/ray_serving/run_cluster.sh), vLLM documentation at v0.31.0 (docs/serving/parallelism_scaling.md, docs/usage/troubleshooting.md, docs/serving/distributed_troubleshooting.md, docs/serving/data_parallel_deployment.md, docs/serving/context_parallel_deployment.md).

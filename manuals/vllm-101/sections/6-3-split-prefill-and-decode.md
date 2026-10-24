@@ -1,32 +1,32 @@
-# Split prefill and decode
+# 拆分 prefill 和 decode
 
-> Separate prefill and decode servers pay only when long prompts hurt the stream of other users.
+> 只有当长 prompt 拖累了其他用户的流式输出时，分开的 prefill 和 decode 服务器才划算。
 
-Long prompts slow the stream for every user. When you finish this section, you can decide when disaggregated serving pays.
+长 prompt 会拖慢每个用户的流式输出。读完本节后，你能判断 disaggregated serving 什么时候划算。
 
-## Know the problem it solves
+## 了解它解决的问题 {#s-split-prefill-and-decode-know-the-problem-it-solves}
 
-On one server, a long prompt shares each step with the running streams. While it computes, every stream waits a little longer for its next token. With many long prompts, the worst token gaps grow for everyone.
+在一台服务器上，长 prompt 会和正在运行的流共享每个 step。在它计算期间，每个流等待下一个 token 的时间都会长一点。长 prompt 一多，所有人的最差 token 间隔都会变大。
 
-Disaggregated serving runs two kinds of server. A prefill server computes the prompt and builds its KV cache. A decode server receives that cache and generates the answer. Long prompts then never share a step with a stream.
+Disaggregated serving 运行两种服务器。prefill 服务器计算 prompt 并构建它的 KV cache。decode 服务器接收这份 cache 并生成回答。这样长 prompt 就永远不会和流共享 step。
 
-## Know what it does not solve
+## 了解它解决不了的问题 {#s-split-prefill-and-decode-know-what-it-does-not-solve}
 
-The vLLM documentation says that disaggregated prefill does not raise throughput. It gives you control over the first token and the stream as two separate numbers, and it controls the tail of the inter-token latency. It costs a transfer of the KV cache for every request, and more servers to run.
+vLLM 文档说，disaggregated prefill 不会提高吞吐。它让你把首 token 和流式输出作为两个独立的数字来控制，并能控制 token 间延迟的尾部。代价是每个请求都要传输一次 KV cache，还要运行更多服务器。
 
-Even for the tail, the gain is a condition, not a default. The paper "Revisiting Disaggregated Large Language Model Serving for Performance and Energy Implications" compared split servers with servers that run both stages. It found that the gain is not guaranteed and depends on the request load and on the path that moves the KV cache. We did not measure this ourselves.
+即使对尾部，收益也是有条件的，而不是默认就有。论文 "Revisiting Disaggregated Large Language Model Serving for Performance and Energy Implications" 比较了拆分的服务器和同时运行两个阶段的服务器。它发现收益并无保证，取决于请求负载和搬运 KV cache 的路径。我们自己没有测量过这一点。
 
-Pick it when the 99th percentile of the inter-token latency matters and long prompts cause it. Do not pick it to serve more users on the same GPUs. Before you keep it, compare it with the same GPUs run as plain servers, at your real load.
+当 token 间延迟的第 99 百分位很重要、并且是长 prompt 造成的时，选它。不要为了在同样的 GPU 上服务更多用户而选它。在保留它之前，在真实负载下把它和同样 GPU 上的普通服务器做比较。
 
-## Set it up
+## 部署它 {#s-split-prefill-and-decode-set-it-up}
 
-Each server gets a KV connector and a role in `--kv-transfer-config`. The NIXL connector is the common choice. It needs the NIXL library, which the vLLM wheel does not install. Install it in the same environment as vLLM first. The vLLM requirements at 0.31.0 pin version 1.4.1:
+每个服务器在 `--kv-transfer-config` 中得到一个 KV connector 和一个角色。NIXL connector 是常见的选择。它需要 NIXL 库，而 vLLM wheel 不会安装它。先在 vLLM 所在的同一环境里安装它。0.31.0 的 vLLM requirements 锁定的版本是 1.4.1：
 
 ```bash
 uv pip install nixl==1.4.1
 ```
 
-The prefill server produces the cache, and the decode server consumes it. On one host with two GPUs, give each server its own GPU, its own port, and its own NIXL side channel port:
+prefill 服务器产出 cache，decode 服务器消费它。在一台有两块 GPU 的主机上，给每个服务器分配自己的 GPU、自己的端口和自己的 NIXL side channel 端口：
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 VLLM_NIXL_SIDE_CHANNEL_PORT=5600 \
@@ -40,13 +40,13 @@ vllm serve Qwen/Qwen3-8B --port 8200 \
   --kv-transfer-config '{"kv_connector": "NixlConnector", "kv_role": "kv_consumer"}'
 ```
 
-Each server writes `Creating v1 connector with name: NixlConnector` and `Initializing NIXL wrapper` in its startup log. If the log shows `NIXL is not available`, the library is missing from the environment.
+每个服务器都会在启动日志中写出 `Creating v1 connector with name: NixlConnector` 和 `Initializing NIXL wrapper`。如果日志显示 `NIXL is not available`，说明环境里缺少这个库。
 
-Then put a router in front. For each request, the router sends the request to the prefill server first and reads the KV transfer parameters from its response. It then sends the request to the decode server with those parameters, so that the decode server can load the cache. The vLLM repository has example scripts and a proxy for this setup. Its own CI tests it on pairs of L4 GPUs.
+然后在前面放一个 router。对每个请求，router 先把它发给 prefill 服务器，并从响应中读取 KV 传输参数。然后它带着这些参数把请求发给 decode 服务器，让 decode 服务器能加载 cache。vLLM 仓库里有用于这种部署的示例脚本和一个 proxy。它自己的 CI 在成对的 L4 GPU 上测试这种部署。
 
-If a cache transfer fails, the default policy fails the request. The `kv_load_failure_policy` field set to `recompute` computes the prompt again on the decode server instead.
+如果 cache 传输失败，默认策略会让请求失败。把 `kv_load_failure_policy` 字段设为 `recompute`，则会改为在 decode 服务器上重新计算 prompt。
 
-Not measured on our hardware. We have not run disaggregated serving with vLLM on two L4s.
+这一点没有在我们的硬件上测量。我们没有在两块 L4 上用 vLLM 运行过 disaggregated serving。
 
 ```figure
 id: fig-6-3
@@ -56,15 +56,15 @@ claim: A prefill server computes the prompt, and a KV connector copies its cache
 caption: Teal arrows move the KV cache. The dotted arrow is the token stream. From the vLLM documentation at v0.31.0.
 ```
 
-## Size the two sides
+## 确定两边的规模 {#s-split-prefill-and-decode-size-the-two-sides}
 
-The ratio of prefill to decode servers depends on your prompt and answer lengths. Long prompts with short answers need more prefill capacity. Short prompts with long answers need more decode capacity. Measure the first token and the stream on each side, and move one server at a time.
+prefill 服务器和 decode 服务器的比例取决于你的 prompt 和回答长度。长 prompt 配短回答需要更多 prefill 容量。短 prompt 配长回答需要更多 decode 容量。在每一边测量首 token 和流式输出，并且一次只调动一台服务器。
 
 ```takeaways
-- Split prefill and decode to protect the stream from long prompts, not to raise throughput.
-- Each server needs a KV connector and a role, and a router sends each request to both.
-- Set the failure policy, because the default fails the request.
-- Compare it with plain servers on the same GPUs, at your real load, before you keep it.
+- 拆分 prefill 和 decode 是为了保护流式输出不受长 prompt 影响，而不是为了提高吞吐。
+- 每个服务器都需要一个 KV connector 和一个角色，由 router 把每个请求发给两边。
+- 设置失败策略，因为默认会让请求失败。
+- 在保留它之前，在真实负载下把它和同样 GPU 上的普通服务器做比较。
 ```
 
 Sources: vLLM documentation at v0.31.0 (docs/features/disagg_prefill.md, docs/features/nixl_connector_usage.md), the vLLM source at v0.31.0 (vllm/config/kv_transfer.py, vllm/distributed/kv_transfer/), the vLLM CI configuration at v0.31.0 (.buildkite), Revisiting Disaggregated Large Language Model Serving for Performance and Energy Implications (arXiv 2601.08833), requirements/kv_connectors.txt at v0.31.0, the vLLM source at v0.31.0 (vllm/distributed/kv_transfer/kv_connector/factory.py, vllm/distributed/kv_transfer/kv_connector/v1/nixl/base_worker.py).
