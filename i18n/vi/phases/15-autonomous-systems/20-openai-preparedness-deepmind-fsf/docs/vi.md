@@ -30,7 +30,7 @@ Các phân loại nghiên cứu sẽ không tự động tạo ra các biện ph
 
 结构:
 
-- **Critical Capability Levels (CCLs)**:跨五个领域的能力值:Thiết học, Sinh học, ML R&D CBRN, Tự trị
+- **Critical Capability Levels (CCLs)**:分为三组的能力值: lạm dụng (CBRN、Cyber、Harmful Manipulation) 、ML R&D, cũng như một sự không phù hợp về các hướng đi.
 - **Tracked Capability Levels**:2026 年 4 月加入额外粒度──具体例:ML R&D tự trị cấp 1 = 以 đối với con người + AI công cụ có chi phí cạnh tranh, hoàn toàn tự động hóa AI R&D ống ống bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor bor
 - **Deceptive alignment monitoring**:明确 cam kết thực hiện giám sát tự động đối với việc sử dụng biện pháp lý luận bằng công cụ.
 
@@ -95,7 +95,7 @@ a5-tracked-vs-research
 | Tracked Category | “Mandatory mitigation” | 触发 Capabilities + Safeguards Reports；SAG review |
 | Research Category | “Monitored only” | 被追踪但没有自动缓解措施；包括 Long-range Autonomy |
 | Frontier Safety Framework | “DeepMind 的 scaling policy” | FSF v3（2025 年 9 月）+ Tracked Capability Levels（2026 年 4 月） |
-| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（Cyber、Bio、ML R&D、CBRN） |
+| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（CBRN、Cyber、Harmful Manipulation、ML R&D） |
 | ML R&D autonomy level 1 | “R&D automation” | 以有竞争力的成本完全自动化 AI R&D pipeline |
 | Sandbagging | “Strategic underperformance” | 模型在 evals 中表现不佳；位于 OpenAI Research Categories |
 | Instrumental reasoning | “Means-ends reasoning” | 关于如何实现目标的推理；DeepMind monitoring 的目标 |

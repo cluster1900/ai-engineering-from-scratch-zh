@@ -19,7 +19,7 @@ Nội dung thực hành là: Các khung rủi ro bốn loại của CAIS là cá
 
 ### CAIS  Trung tâm An toàn AI
 
-- 创立时间:2022年,位于旧金山,由丹亨德里克斯及同事创立(这个名字指的是早期合作者,而不是当前共同创始人;当前领导层请参见CAIS 网站)
+- 创立时间:2022年,位于旧金山,由丹亨德里克斯和奥利弗张创立──Hendrycks 担任执行和研究总监; 担任总经理──
 - 状态:501(c)(3) tổ chức phi lợi nhuận
 - Kết quả quan trọng của năm 2023: Tuyên bố về nguy cơ tuyệt chủng, được ký kết chung bởi hàng trăm nhà nghiên cứu và CEO. Tuyên bố viết: Giảm nguy cơ AI dẫn đến tuyệt chủng, nên trở thành ưu tiên toàn cầu cùng với các bệnh dịch và chiến tranh hạt nhân, như các nguy cơ xã hội khác.
 - Kết quả năm 2026: được sử dụng cho mô hình biên giới  đánh giá bảng điều khiển AI  Chỉ số lao động từ xa   cùng phát hành với AI quy mô                                                                                                                                                                                                                                            

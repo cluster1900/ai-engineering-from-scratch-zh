@@ -8,7 +8,7 @@
   "phases/15-autonomous-systems/07-recursive-self-improvement/docs/en.md": "ae11ab07c23cb3f7e783e2f239e0398b8cf0ff787d904efaa32e89537a36b331",
   "phases/15-autonomous-systems/08-bounded-self-improvement/docs/en.md": "8ee743e91840bf2b3ae80438dbb3b5a21cf7d8959b13f02fab0a33a3cfe94c98",
   "phases/15-autonomous-systems/09-coding-agent-landscape/docs/en.md": "f726e57eb4bc725e768bb41ce0778a3d7cf156c61ac3c0815fcf6ad214a3ccc5",
-  "phases/15-autonomous-systems/10-claude-code-permission-modes/docs/en.md": "1cdc69bf17350e573e3004243508e4bf576568c31823ce5875774179bf659170",
+  "phases/15-autonomous-systems/10-claude-code-permission-modes/docs/en.md": "2ea81e00b43272881c79ae8508d9dcd234796869ace2a80c8b406f2a47bdf780",
   "phases/15-autonomous-systems/11-browser-agents/docs/en.md": "72573a9b0d546b1938e241fc2d98576458f92a89eaadc946262494f9fce88f5c",
   "phases/15-autonomous-systems/12-durable-execution/docs/en.md": "7339d4cdd551b174836e589e20dbe76950aa0f743c7d89cd3523bf889e8a7041",
   "phases/15-autonomous-systems/13-cost-governors/docs/en.md": "9c660f6318be9e7e69ac09f272b3b0c2789f7f290974399f3f66cd7be6953c5d",
@@ -18,7 +18,7 @@
   "phases/15-autonomous-systems/17-constitutional-ai/docs/en.md": "2f5016b6a8614233ac63f2574392dae2c8fabc95ce8a0b0e711d53f838d0ceac",
   "phases/15-autonomous-systems/18-llama-guard/docs/en.md": "d93a11da4724f702b905e3da5c9cadff2d3b0f00fcc3117e0cf7e6754fca5df3",
   "phases/15-autonomous-systems/19-anthropic-rsp/docs/en.md": "88d3f980d0e6a38e919cf333bad97d62486e4a594e72994789ea0c42939e233f",
-  "phases/15-autonomous-systems/20-openai-preparedness-deepmind-fsf/docs/en.md": "525155fcdd0673e5933c53256c49fb1716c6caaa3f540b18293e515c8913a62c",
+  "phases/15-autonomous-systems/20-openai-preparedness-deepmind-fsf/docs/en.md": "367d4981e89b146a651463dfcf65f98f78aa1cad9c56a0f945ba06095776cacf",
   "phases/15-autonomous-systems/21-metr-external-evaluation/docs/en.md": "573cb7248e243a2a9de3039524e77d9a84d00e42b11d40a37f1c8beb76f78ec2",
-  "phases/15-autonomous-systems/22-cais-caisi-societal-risk/docs/en.md": "4e4fd94b53944d6eb2e2bfcbbda98b6476b98b7a5e2f3ac978b63726a36e8d0b"
+  "phases/15-autonomous-systems/22-cais-caisi-societal-risk/docs/en.md": "b93918ce38ffdafe7875a9a7ab48fff29a6f50a5c2e0045f7c0ab3cf4f9e15ef"
 }
