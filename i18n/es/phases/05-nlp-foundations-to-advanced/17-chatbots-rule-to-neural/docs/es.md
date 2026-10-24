@@ -19,6 +19,28 @@ La arquitectura chatbot ha experimentado cuatro ciclos de paradigmas, cada uno d
 
 ![Chatbot evolution: rule-based → retrieval → neural → agent](../assets/chatbot.svg)
 
+### 脚本化的半世纪 (1950-2001)
+
+El primer paradigma continuante no es de cinco años, sino de cinco décadas es importante entender su relación, porque cada uno de ellos es el mismo sistema: emparejar entradas, sacar una respuesta bien escrita, actualizar un estado.
+
+**1950.**Turing, en su discurso sobre la cuestión de si las máquinas pueden pensar, propuso una alternativa operable: si el interrogador no puede distinguir entre las máquinas y los hombres, este problema de filosofía pierde su significado.
+
+**1956.**El seminario de verano de Dartmouth propuso la palabra inteligencia artificial, según la cual cada característica de la inteligencia puede describirse con precisión hasta que se pueda construir una máquina para simularla. La propuesta se ha reservado dos meses para lograr un progreso sustancial.
+
+**1966.**ELIZA 上線了你在步骤 1中构建的反思技巧:reglas de descomposición de la entrada en la entrada extracción de fragmentos, reglas de reensamblaje Colocarlas en forma de problema reaparecer. En total, unos 200 patrones, estado cero, comprensión cero, usuario disponible o inclinado hacia ello.
+
+**1972.**PARRY fue construido por Stanford, para simular el prejuicio, y complementa el bloque que falta a ELIZA: estado interno. Representa la variación numérica de miedo, ira y desconfianza en cada ronda se actualiza y decide el siguiente guión, para que la misma entrada se produzca de manera diferente en función de la conversación anterior. En un ensayo de registro de diálogo de una vez ciega, el psiquiatra distingue PARRY de la precisión de un paciente real con la conjetura aleatoria. Es el antepasado directo del condicionamiento de la persona: un sistema de tres puntos de subida de los números se realiza.
+
+**1995.**ALICE utiliza AIML (un modelo de descripción de patrones para la XML) amplió el método de ELIZA. Aproximadamente 40.000 个手写类别, ganó tres veces el Premio Loebner.
+
+**2001.**SmarterChild coloca este método en el uso de 30 millones de usuarios de comunicaciones instantáneas, y se suma a las preguntas de retraso: 天气,股票,电影场次,拼接进模板里.
+
+En los últimos 50 años, un mecanismo, el número de reglas, ha ido en aumento. El final de este paradigma no es porque alguien lo haya falsificado, sino porque el costo de mantenimiento de la máquina de escritura manual ha ido creciendo con la cobertura de la línea, mientras que las expectativas de los usuarios han ido creciendo con lo que ven en su día anterior.
+
+```figure
+chatbot-lineage
+```
+
 **Rule-based（ELIZA、AIML、DialogFlow）。**Los modelos de escritura de mano de obra 匹配用户输入并生成回复──Intent classifiers将请求路由到预定义流程──Slot-filling state machines 收集必需信息──En el estrecho rango que fue diseñado, el rendimiento fue excelente──once beyond the range就立刻失败── sigue siendo en el área clave de seguridad ([[banque de identificación]], 航空预订) 上线, porque estos escenarios no pueden tolerar alucinaciones──
 
 **Retrieval-based。**FAQ 风格的系统──Encode 每一组(utterance, response)──运行时,encode 用户消息并检索 最接近的已存回复──可以把它理解为Zendesk 经典的类似文章功能──比规则更能处理抛词──没有生成,因此没有幻觉──
@@ -28,11 +50,6 @@ La arquitectura chatbot ha experimentado cuatro ciclos de paradigmas, cada uno d
 **LLM agents。**Un modelo de lenguaje está envasado en un ciclo, utilizado para planificar, utilizar herramientas, y probar resultados. No es un chatbot de chatbot de largo plazo. Es un bucle de agente:plan → herramienta de llamada → observar el resultado → decidir el siguiente paso.
 
 Este tipo de paradigma no es una sustitución de orden. Un chatbot de producción de 2026 pasará por cuatro rutas: basado en reglas, utilizado para la verificación de identidad y acciones destructivas, recuperación, utilizado para las preguntas frecuentes, generación neuronal, utilizado para la expresión natural, agente LLM, utilizado para la búsqueda abierta de la confusión.
-
-
-```figure
-chatbot-lineage
-```
 
 ## Construirlo
 
@@ -225,6 +242,7 @@ tags: [nlp, agents, chatbot]
 3. **Hard。**Utilice tres herramientas (search,read,user,data,send-email) para implementar el ciclo de agentes de arriba. Utilice 50 evaluaciones de casos de prueba de inyección rápida.
 
 ## 关键术语: "El hombre es un hombre"
+
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Intent | 用户想要什么 | Categorical label（book_flight, reset_password）。路由到 handler。 |
@@ -236,7 +254,9 @@ tags: [nlp, agents, chatbot]
 
 ## 延伸阅读
 
+- [Turing (1950). Computing Machinery and Intelligence](https://academic.oup.com/mind/article/LIX/236/433/986238) 让对话成为这个领域的基准论文──
 - [Weizenbaum (1966). ELIZA — A Computer Program For the Study of Natural Language Communication](https://web.stanford.edu/class/cs124/p36-weizenabaum.pdf) Originario de las reglas basadas en chatbot 论文。
+- [Colby, Weber, Hilf (1971). Artificial Paranoia](https://doi.org/10.1016/0004-3702(71)90002-6)  PARRY's Emotional Variable Architecture, el primer chatbot con estado.
 - [Thoppilan et al. (2022). LaMDA: Language Models for Dialog Applications](https://arxiv.org/abs/2201.08239) Google 较晚期的神经聊天机论文, 正好在 LLM agentes 接管之前──
 - [Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)  命名 agent loop pattern 的论文──
 - [Anthropic's guide on building effective agents](https://www.anthropic.com/research/building-effective-agents) Directrices de producción de 2024 años, hasta 2026 años todavía vigentes¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
