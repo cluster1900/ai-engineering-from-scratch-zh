@@ -46,7 +46,7 @@ Esta prática é o caching rápido. Antropic lançou o caching em agosto de 2024
 
 ### - equilíbrio
 
-Antropic 25% 写入溢价 significa, um bloco em cache pelo menos deve ser lido duas vezes, para conseguir um netto省钱──1 次写入 + 1 次读取, média por pedido custo de 0,675x(节省 32%);1 次写入 + 10 次读取, média de 0,205x(节省 80%)──
+Antropic 25% 写入溢价(5分钟 TTL) é capaz de voltar ao livro na primeira leitura, porque o cache lê-se com 0.1x──1 vezes 写入 + 1 次读取, média por pedido custo é 0.675x──32%; 1 次写入 + 10 次读取, média é 0.205x──80%)──1 小时 TTL 写入收费为 2x, portanto, este bloco 占占据需要两次读取才能优──经验法:缓存任何你预计在 TTL 内复至少3次内容; this in任一 TTL 下都能越过 break-even──
 
 
 ```figure
