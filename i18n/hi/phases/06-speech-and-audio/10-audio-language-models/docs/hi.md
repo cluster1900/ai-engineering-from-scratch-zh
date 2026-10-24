@@ -130,17 +130,18 @@ class AudioProjector(nn.Module):
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-分别报告每个类别(भाषण / ध्वनि / संगीत / बहु-ऑडियो) ――聚合数字会掩盖模型在哪里失败──
+`audio_path`指向数据集仓库中的 `data.zip`(लगभग 47 GB),评分前需要先下载并解压── यह सटीक-मिलान चक्र केवल मानसिकता जांच है, बेंचमार्क का आधिकारिक मूल्यांकनकर्ता नहीं है, इसलिए इसकी संख्या जारी किए गए MMAU-Pro परिणामों के साथ तुलना नहीं कर सकती──官方评估器器嵌入式相似度(NV-Embed-v2) मेल खाता है बहुविकल्पीय उत्तर, LLM न्यायाधीश के साथ 给开放式答案打分,并使用regex 规则检查指令遵循类答案:预测写入`model_output`列, फिर运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro)मध्य `evaluate_mmau_pro_comprehensive.py`分别 रिपोर्ट प्रत्येक `category`(भाषण, ध्वनि, संगीत, बहु, और इसके अवशिष्ट वर्ग)
 
 ## इसका उपयोग करें
 
