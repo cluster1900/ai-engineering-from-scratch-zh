@@ -1,59 +1,59 @@
 # vLLM 101
 
-vLLM 0.31.0, from your first server to a deployment you can size, tune, and debug, with a measured answer for each decision. The documentation tells you what each flag does. This manual tells you which flags matter for your GPU and your traffic, and what happened when we changed them. The web edition is at [aiengineeringfromscratch.com/manual-vllm-101.html](https://aiengineeringfromscratch.com/manual-vllm-101.html), and each release of the course attaches the PDF as `aiefs-manual-vllm-101.pdf`.
+本手册讲解 vLLM 0.31.0，从你的第一个服务器讲到一个你能规划规模、调优和调试的部署，每个决定都有实测的答案。文档告诉你每个 flag 做什么。本手册告诉你哪些 flag 对你的 GPU 和流量重要，以及我们改动它们后发生了什么。网页版在 [aiengineeringfromscratch.com/manual-vllm-101.html](https://aiengineeringfromscratch.com/manual-vllm-101.html)，课程的每个 release 都会附上 PDF `aiefs-manual-vllm-101.pdf`。
 
-## What is in it
+## 内容
 
-- 44 sections in 8 parts, then eight reference sections. Parts 1 to 7 follow the order of your work. You start a server, size it, tune it for your traffic, and add speed features. Then you measure it, scale it out, and operate and debug it. Part 8 explains how vLLM works inside, for when a default surprises you.
-- Each page answers one question and ends with a check that proves the change worked.
-- Each measured number names its machine, its date, its clock, and its seed count. Pages that we could not measure say so.
-- A cover plate and 26 figures drawn with the figure kit, with charts plotted from the GPU runs.
-- A reference part with the flag table, the metrics, and an index of the GitHub issues the manual cites. It also has the version pins, a glossary, the sources, and the lab notes with the full tables.
+- 8 个部分共 44 节，之后是八个参考节。第 1 到 7 部分按你的工作顺序排列。你先启动服务器，规划规模，按流量调优，再加上提速功能。然后你测量它，横向扩展它，运维和调试它。第 8 部分讲解 vLLM 的内部原理，供某个默认值让你意外时查阅。
+- 每页回答一个问题，并以一个证明改动有效的检查结尾。
+- 每个实测数字都注明机器、日期、时钟和种子数。我们无法测量的页面会说明这一点。
+- 一张封面图和 26 张用 figure kit 绘制的图，其中的图表根据 GPU 运行绘制。
+- 一个参考部分，包含 flag 表、指标，以及手册引用的 GitHub issue 索引。它还有版本锁定、术语表、来源，以及带完整表格的实验记录。
 
-## Files
+## 文件
 
-| Path | Holds |
+| 路径 | 内容 |
 |---|---|
-| `manual.json` | the manifest: the pin, the parts, the palette, the sources, the cover plate |
-| `front.md`, `sections/` | the text, one file per section |
-| `figures/src/` | the figure sources, built to `figures/*.svg` |
-| `capture/gpu/summary/` | the summaries of the GPU sweeps that the tables and charts read: `l4.json`, `l4-gpu1.json`, `gb10.json` |
-| `capture/gpu/out-l4/`, `capture/gpu/out-gb10/` | the server logs and the live checks that the listings are cut from |
-| `capture/gpu/incidents/` | the logs of the failures that the troubleshooting pages show |
+| `manual.json` | 清单：版本锁定、各部分、配色、来源、封面图 |
+| `front.md`, `sections/` | 正文，每节一个文件 |
+| `figures/src/` | 图的源文件，构建为 `figures/*.svg` |
+| `capture/gpu/summary/` | 表格和图表读取的 GPU 扫描摘要：`l4.json`、`l4-gpu1.json`、`gb10.json` |
+| `capture/gpu/out-l4/`, `capture/gpu/out-gb10/` | 代码清单所截取的服务器日志和实时检查 |
+| `capture/gpu/incidents/` | 故障排查页面展示的故障日志 |
 
-## The pin
+## 版本锁定
 
-| Item | Value |
+| 项目 | 值 |
 |---|---|
-| vLLM | 0.31.0, commit `db9527a46873454610df6dbedf79a36d6bf1a7f6`, released 2026-10-05 |
-| PyTorch that the CUDA wheel requires | 2.13.0 |
-| Verified | 2026-10-22 |
+| vLLM | 0.31.0，commit `db9527a46873454610df6dbedf79a36d6bf1a7f6`，发布于 2026-10-05 |
+| CUDA wheel 要求的 PyTorch | 2.13.0 |
+| 核实日期 | 2026-10-22 |
 
-## The recording hosts
+## 录制主机
 
-| Item | NVIDIA L4 | DGX Spark |
+| 项目 | NVIDIA L4 | DGX Spark |
 |---|---|---|
-| GPU | NVIDIA L4, compute capability 8.9, 24 GB | NVIDIA GB10, compute capability 12.1, 128 GB of unified memory |
-| CPU architecture | x86_64 | aarch64 |
-| Driver | 615.71.09 | 580.159.03 |
-| How vLLM ran | the pip wheel in a virtual environment | the image `vllm/vllm-openai:v0.31.0` |
-| Model | `Qwen/Qwen3-8B`, its FP8 checkpoint, and the EAGLE3 draft `Tengyunw/qwen3_8b_eagle3` | `Qwen/Qwen3-30B-A3B-Instruct-2507` |
+| GPU | NVIDIA L4，compute capability 8.9，24 GB | NVIDIA GB10，compute capability 12.1，128 GB 统一内存 |
+| CPU 架构 | x86_64 | aarch64 |
+| 驱动 | 615.71.09 | 580.159.03 |
+| vLLM 的运行方式 | 虚拟环境中的 pip wheel | 镜像 `vllm/vllm-openai:v0.31.0` |
+| 模型 | `Qwen/Qwen3-8B`、它的 FP8 checkpoint，以及 EAGLE3 draft `Tengyunw/qwen3_8b_eagle3` | `Qwen/Qwen3-30B-A3B-Instruct-2507` |
 
-The L4 clock changed with its temperature and with other work on the node, so the front matter splits the L4 runs into four sessions. Compare two L4 numbers only inside one session.
+L4 的时钟随温度和节点上的其他任务变化，因此前言把 L4 运行分成四个时段。只在同一个时段内比较两个 L4 数字。
 
-## How to read it
+## 如何阅读
 
-Start with the front matter, "How to read this manual". It gives five commands that start a server, then the order of the parts and the four L4 sessions. Read Part 1 once and completely. After that, go to the page that answers your question. Use [the lab notes](https://aiengineeringfromscratch.com/manual-vllm-101.html#s-ref-lab-notes) to check a number or to repeat a run.
+从前言“如何阅读本手册”开始。它给出启动服务器的五条命令，然后是各部分的顺序和四个 L4 时段。完整地读一遍第 1 部分。之后，直接去回答你问题的那一页。用[实验记录](https://aiengineeringfromscratch.com/manual-vllm-101.html#s-ref-lab-notes)核对数字或重复运行。
 
-## Run the sweeps again
+## 重新运行扫描
 
-The GPU runs come from the sweep tool of SGLang 101, `manuals/sglang-101/capture/gpu/sweep.py`. It has a profile for each machine and a vLLM configuration for each table. It needs an NVIDIA GPU, vLLM 0.31.0, and the SGLang 0.5.22 benchmark client. [The lab notes](https://aiengineeringfromscratch.com/manual-vllm-101.html#s-ref-lab-notes) give the seeds, the server settings, the pool sizes, and the clock rule. [The benchmark page](https://aiengineeringfromscratch.com/manual-vllm-101.html#s-benchmark-your-server-in-15-minutes) prints the full client command.
+GPU 运行来自 SGLang 101 的扫描工具 `manuals/sglang-101/capture/gpu/sweep.py`。它为每台机器提供一个 profile，为每张表提供一个 vLLM 配置。它需要一块 NVIDIA GPU、vLLM 0.31.0 和 SGLang 0.5.22 的 benchmark 客户端。[实验记录](https://aiengineeringfromscratch.com/manual-vllm-101.html#s-ref-lab-notes)给出种子、服务器设置、池大小和时钟规则。[benchmark 页面](https://aiengineeringfromscratch.com/manual-vllm-101.html#s-benchmark-your-server-in-15-minutes)打印完整的客户端命令。
 
-This manual has no offline capture check. The stored logs and summaries in `capture/gpu/` are the record, and the audit checks every listing against them.
+本手册没有离线 capture 检查。`capture/gpu/` 中存储的日志和摘要就是记录，audit 会对照它们检查每个代码清单。
 
-## Build and check
+## 构建与检查
 
-From the repository root:
+在仓库根目录下运行：
 
 ```bash
 node manuals/_shared/figkit.js build manuals/vllm-101
@@ -61,4 +61,4 @@ node site/build-manuals.js
 node scripts/audit_manuals.js --manual vllm-101
 ```
 
-The audit must report `TOTAL 0`. See [manuals/AUTHORING.md](../AUTHORING.md) for the contract.
+audit 必须报告 `TOTAL 0`。契约见 [manuals/AUTHORING.md](../AUTHORING.md)。
