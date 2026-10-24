@@ -52,7 +52,13 @@ s0-gpu-dispatch
 nvidia-smi
 ```
 
-Montage avec la torche de la CUDA:
+Installez avec CUDA de PyTorch. Sur Linux, la roue par défaut est déjà avec CUDA. Sur Windows, veuillez consulter le sélecteur de pytorch.org pour copier l'ordre d'installation CUDA.
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+Puis vérifiez si PyTorch peut voir la GPU:
 
 ```python
 import torch

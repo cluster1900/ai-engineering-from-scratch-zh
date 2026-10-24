@@ -39,7 +39,7 @@ Votre répertoire de domicile est`~`Ou `/home/your-username`La plupart des opér
 
 ## Les commandes
 
-Voici 15 commandes qui couvrent votre boîte de GPU à distance.
+Voici 13 commandes qui couvrent la plupart des opérations de votre boîte de GPU à distance.
 
 ###  Mobilité
 
