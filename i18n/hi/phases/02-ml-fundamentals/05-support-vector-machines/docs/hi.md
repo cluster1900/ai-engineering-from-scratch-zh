@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 重要: प्रशिक्षण SVM 之前始终要规模你的特征──SVMs विशेषता परिमाण 敏感, क्योंकि मार्जिन 取决于 $\lVert w \rVert$, और अपूर्ण सुविधाएँ 会扭曲几何结构──
 
-对于大数据集,使用 `LinearSVC`(प्राथमिक सूत्र, प्रत्येक युग 为 $O(n)$) के बजाय `SVC`(दोहरी सूत्र,$O(n^2)$तक $O(n^3){}$):
+对于大数据集,使用 `LinearSVC`(प्राथमिक सूत्र, प्रत्येक युग 为 $O(n \cdot d)$, के लिए $n$线性) ऐसा नहीं`SVC`(दोहरी सूत्र,$O(n^2)$तक $O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC
