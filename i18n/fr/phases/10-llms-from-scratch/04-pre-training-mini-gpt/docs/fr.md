@@ -218,11 +218,11 @@ Le taux d'apprentissage est plus important que vous ne le pensez. Le GPT-2 est l
 La projection de sortie ((logits head) avec la matrice d'embedding de jetons 共享权重── Ceci est appelé liage de poids
 
 
-```figure
-sampling-decoder
-```
-
 ## - Je le construis.
+
+```figure
+iso-machine {"machine":"mini-gpt"}
+```
 ### 步骤 1: Embedding Layer
 
 Les emplacements de jetons seront 50 257 个可能 Token de chaque enregistreur dans un vecteur 768 维──Position emplacements 添加关于每个 Token 在序列中位置的信息──两者相加──
@@ -464,6 +464,10 @@ def generate(model, prompt_tokens, max_new_tokens=100, temperature=0.8):
 Température  contrôle随机性──Temperature 1.0 使用原始分布──Temperature 0.5 会让分布更尖(更确定模型更经常选择顶级选择)──Temperature 1.5 会让分布更平坦(更随机低概率代币 获得更大的机会)──Temperature 0.0 est un décoding avide(总是选择最高概率代币)──
 
 `tokens[-seq_len:]`Cette fenêtre est nécessaire, car le modèle a la longueur de contexte maximale ((GPT-2 = 1024) ⋅ une fois qu'il est dépassé, il faut perdre le plus ancien Token ⋅ c'est la fenêtre de contexte ⋅ tout le monde en discussion ⋅ ⋅
+
+```figure
+sampling-decoder
+```
 
 ## Utilisez-le
 ### 完整训练与生成 Demo

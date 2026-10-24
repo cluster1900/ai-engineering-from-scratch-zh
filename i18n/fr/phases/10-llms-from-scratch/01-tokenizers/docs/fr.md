@@ -53,6 +53,10 @@ BPE est un algorithme de compression de l'esprit, utilisé plus tard pour la tok
 
 De simples caractères à partir de la formation statistique de chaque paire de mots à proximité de la langue, la paire la plus fréquente est fusionnée en un nouveau Token.
 
+```figure
+tokenizer-bpe
+```
+
 Le BPE qui fonctionne en haut est un très petit corpus, qui contient "inférieur""",inférieur" et "nouveau":
 
 ```
@@ -195,10 +199,6 @@ Les Tokenizers basés principalement sur l'anglais sont très cruels pour les au
 
 C'est la raison pour laquelle Llama 3 va augmenter le vocabulaire de 32K à 128K.
 
-
-```figure
-tokenizer-bpe
-```
 
 ```figure
 tokenizer-tradeoff

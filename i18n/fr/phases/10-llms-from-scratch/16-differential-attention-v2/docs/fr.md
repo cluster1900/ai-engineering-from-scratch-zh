@@ -142,7 +142,7 @@ Construire une séquence de synthèse de 1024 séquences  Le signal Token
 给定一个配置 ((hidden=4096, heads=32, d_head=128),打印:
 
 - Transformateur de base: Q、K、V`hidden * hidden`, MLP pour 4 * caché
-- DIFF V1: Q、K de taille à taille`hidden * hidden`Je suis un petit garçon.`hidden * hidden`(不变), tête faible en intérieur diminution à moitié, augmentation par tête `lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$Il y a une autre.
+- DIFF V1: Q、K de taille à taille`hidden * hidden`Je suis un petit garçon.`hidden * hidden`(不变), tête faible en intérieur diminution à moitié, augmentation par tête `lambda`参数 $(O(\text{heads} \cdot d_{\text{head}}))$Il y a une autre.
 - DIFF V2: Q`2 * hidden * hidden`Je suis un petit garçon.`hidden * hidden`Je suis un petit garçon.`hidden * hidden`◊ Extrême dimension sera dans $O_W$Il y a aussi des projets de développement.`lambda`- Je suis un homme.
 
 Jouet 会测量 V2 额外参数成本(大约每个注意区 额外 `hidden * hidden`),并打印出来──

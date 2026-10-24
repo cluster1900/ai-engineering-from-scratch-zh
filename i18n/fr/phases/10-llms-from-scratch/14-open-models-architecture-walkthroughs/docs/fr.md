@@ -217,7 +217,7 @@ Les poids 8B dans le BF16 sont de 16 Go. Le seul cache KV de 128K de séquence e
 
 Les formules ci-dessus supposent que chaque couche de cache contient une séquence complète.
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```

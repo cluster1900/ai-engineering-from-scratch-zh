@@ -696,7 +696,7 @@ Utilisation de la carte:
 from vllm import LLM, SamplingParams
 
 llm = LLM(
-    model="meta-llama/Llama-3-70B-Instruct",
+    model="meta-llama/Meta-Llama-3-70B-Instruct",
     tensor_parallel_size=4,
     enable_prefix_caching=True,
     max_model_len=8192,
@@ -718,7 +718,7 @@ def classify(s, text):
     s += sgl.user(f"Classify this text: {text}")
     s += sgl.assistant(sgl.gen("result", regex=r'\{"label": "(positive|negative|neutral)"\}'))
 
-runtime = sgl.Runtime(model_path="meta-llama/Llama-3-70B-Instruct", tp_size=4)
+runtime = sgl.Runtime(model_path="meta-llama/Meta-Llama-3-70B-Instruct", tp_size=4)
 sgl.set_default_backend(runtime)
 
 results = classify.run_batch([
