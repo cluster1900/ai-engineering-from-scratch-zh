@@ -61,7 +61,7 @@ flowchart LR
 
 في الإنتاج، يمكنك استخدام نموذج النص سوف تمثل استبدال لتحقيقي LLM 调用:
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

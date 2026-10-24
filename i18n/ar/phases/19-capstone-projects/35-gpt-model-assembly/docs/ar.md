@@ -90,7 +90,7 @@ cc-gpt-assembly
 python3 code/main.py
 ```
 
-输出: العد الإعدادي مع 124M 参考值的对照、从随机提示 生成的代币 ids,以及在绑定时打开时 LM head 和 Token Embedding共享存储的确认信息──
+输出: العد الإعدادي مع 124M 参考值的对照、从固定 prompt 生成的代币 ids,以及在绑定中打开时 LM head 和 Token Embedding共享存储的确认信息──
 
 لكي تجعل الظهور سريعًا ، يجب أن تقوم بتشغيل إعداد صغير`d_model=64`.`num_layers=2`),并 inline 打印生成的代币序列──124M التكوين 会被构建,但只执行参数计和一次前传──
 

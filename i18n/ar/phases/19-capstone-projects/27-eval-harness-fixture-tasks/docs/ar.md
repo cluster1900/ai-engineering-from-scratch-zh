@@ -49,6 +49,10 @@ flowchart LR
 
 ستقوم كل مهمة بالعمل`k`次──Pass@k 是 `1 - (1 - p)^k`، من بينها p هو معدل مرور التجربة ؛الارتفاع أيضا تقرير العد الخام ، سهلة لك اكتشاف التباين ؛التأخير هو كل ساعة حائطة من العينة ؛التكلفة هو وكيل
 
+```figure
+pass-at-k
+```
+
 ## الهندسة المعمارية
 
 ```mermaid
@@ -100,7 +104,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 Demo 以 JSON 打印 EvalReport, بما في ذلك pass@1、pass@5、 متوسط التأخير 和逐任务 breakdown── خروج رمز 为 صفر── اختبارات 覆盖验证器函数、pass@k math、fixture loading,以及 harness 针对捆绑参考候选人的端到端 行为──
-
-```figure
-pass-at-k
-```
