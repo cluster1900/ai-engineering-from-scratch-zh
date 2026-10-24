@@ -38,7 +38,7 @@ L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \matho
 ∆ Dos elementos:
 
 - Si la ventaja $A_t > 0$, y la proporción 试图 crecer hasta superar $1 + \epsilon$, clip se va a poner Gradiente                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     $+\epsilon$Más allá de esto.
-- Si la ventaja $A_t < 0$, y la proporción 试图 crecer hasta superar $1 - \epsilon$(Significa una reducción en comparación con un recorte, vamos a hacer que una mala acción más posible ocurra),Clip se limitará Gradiente  No hay que poner una mala acción $-\epsilon$¿Qué es eso?
+- Si la ventaja $A_t < 0$, y la proporción 试图降到 $1 - \epsilon$Esto significa que vamos a hacer una mala acción que la política anterior, la probabilidad de que sea mucho menor, clip se clasificará Gradiente: no hay que hacer una mala acción  de la misma manera que la probabilidad anterior $-\epsilon$Más allá de esto.
 
 `min`处理另一个方向: si la relación 已朝*有益*方向移动, tú todavía obtienes Gradient (no estarás en un lado desfavorable) 
 

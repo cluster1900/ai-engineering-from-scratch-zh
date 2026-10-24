@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Paso 4: monitoreo KL
 
-Cada actualización de seguimiento significa$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Si se ha subido`~5-10`, política  ya está lejos $\pi_{\text{SFT}}$很远  más bajo $\beta$¿Está aumentando o está comenzando el hacking de recompensas?
+Cada actualización de seguimiento significa$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Si se ha subido`~5-10`(en nats 计 计 per-response KL, según los tokens 求和, es decir, unidades de registro de TRL), política 已漂离 $\pi_{\text{SFT}}$¿ Qué quieres ?$\beta$太低(调高它把政策 拉回来), ¿ya que el hackeo de recompensas está en marcha?
 
 ### Paso 5: utilizar la receta de producción de TRL
 

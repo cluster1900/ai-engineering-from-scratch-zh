@@ -21,7 +21,7 @@ La transición de DP a MC es importante en la filosofía: nos desplazamos de *mo
 
 **核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, entre ellos $G^{(i)}(s)$Es en política.$\pi$Siguiente visita$s$后观察到的回报──
 
-**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $s$En el caso de los primeros visitantes, el MC sólo tiene una primera visita después de la vuelta; cada visita MC 统计所有访问──二者在极限下都是无偏见──第一访问更容易分析(iid样本)──每次访问 每次访问 使用更多数据,在实践中通常收更快──
+**First-visit vs every-visit MC。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $s$Cada visita al MC es imparcial. Cada visita al MC en episodios limitados puede ser parcial, ya que el rendimiento promedio de cada episodio es arbitrario, y este número puede estar relacionado con los retornos, pero a medida que el número de visitas se vuelve infinito, los segundos recibirán.$V^\pi(s)$❖ Primera visita 更容易分析(iid samples) ・ Cada visita Cada episodio Use more data, en la práctica normalmente recibe 更快──
 
 **Incremental mean。**No se almacena todo, sino que se actualiza el promedio de ejecución:
 
@@ -196,7 +196,7 @@ tags: [rl, monte-carlo, evaluation]
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
 | Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
-| Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
+| Every-visit MC | “Use all visits” | 每次访问都会贡献；有限样本下略有 biased，极限下 consistent，且 sample-efficient 更高。 |
 | ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
 | Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |

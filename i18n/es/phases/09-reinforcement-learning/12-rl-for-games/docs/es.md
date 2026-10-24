@@ -1,6 +1,6 @@
 # 面向游戏的 RL  AlphaZero、MuZero y LLM Razonamiento 时代
 
-> 1992:TD-Gammon utiliza puramente TD en backgammon en el que derrotó a la humanidad.2016:AlphaGo Vita Lee Sedol.2017:AlphaZero desde cero comienza a gobernar el ajedrez, shogi y Go.2024:DeepSeek-R1 Prove el mismo juego en el razonamiento 上也有效, simplemente con GRPO 替代 PPO── juego es impulsar esta etapa cada vez más de la ruptura de referencia──
+> 1992:TD-Gammon utiliza puramente TD en backgammon en el que derrotó a la humanidad.2016:AlphaGo Vita Lee Sedol.2017:AlphaZero desde cero comienza a gobernar el ajedrez, shogi y Go.2025:DeepSeek-R1 Prove el mismo juego en el razonamiento 上也有效, simplemente con GRPO 替代 PPO── juego es impulsar esta etapa cada vez más de la ruptura de referencia──
 
 **类型：**Construir
 **语言：**Python
@@ -60,7 +60,7 @@ while True:
 
   $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
-没有奖励模型,没有批评,没有MCTS──grupos-relativos baseline 替换了三者──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF质量──
+没有学习得到的奖励模型,没有批评,没有MCTS──由规则为基础的验证器 提供奖励,组相关基线 替代批评,搜索 步骤则被删除──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF质量──
 
 **完整的 R1 配方。**DeepSeek-R1 ((DeepSeek 2025) es un artículo en el que se incluyen dos modelos:
 
@@ -87,7 +87,7 @@ f3-selfplay-ladder
 
 ## Construcción
 
-`code/main.py`El código medio se ha realizado.**微型 GRPO** Un grupo de bandidos de la muestra. El algoritmo es el mismo que el LLM; sólo la política y el medio ambiente.
+`code/main.py`El código medio se ha realizado.**微型 GRPO**El algoritmo de la LLM es el mismo que el de la LLM; sólo la política y el medio ambiente es más simple.
 
 ### Paso 1: Un entorno de verificación de microtipo
 
@@ -145,7 +145,7 @@ Con RLHF similares diagnósticos: hasta el referente de la media KL、entropía 
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO  ha heredado el riesgo de RLHF: si el verificador  err err errore o puede ser utilizado, LLM encontrará exploit― 鲁棒 verificador 多种试例、正式证据) es muy importante―
-- **Group size 太小。**Diferencias de grupo en línea de referencia$1/\sqrt{G}$缩放――低于 $G = 4$时, señal de ventaja 会很噪音; 标准选择是$G = 8$Hasta 64...
+- **Group size 太小。**Diferencias de referencia de la media de grupo$1/G$缩放(其 error estándar 按 $1/\sqrt{G}$)―bajo en $G = 4$时, señal de ventaja 会很噪音; 标准选择是$G = 8$Hasta 64...
 - **Length bias。**Diferente de la duración de LLM  tiene diferentes probabilidades de registro ⋅ según el número de tokens, o el uso de un registro de nivel de secuencia, o el corte hasta la longitud máxima ⋅
 - **纯 self-play 循环。**AlphaZero 风格训练可能在一般数量游戏中卡进统治循环──可通过多样化对手池联赛比赛,课 10)缓解──
 - **Search-policy mismatch。**AlphaZero trenamiento política 去模仿搜索结果──如果政策网太小,不能表示搜索的分布,训练会停滞──
