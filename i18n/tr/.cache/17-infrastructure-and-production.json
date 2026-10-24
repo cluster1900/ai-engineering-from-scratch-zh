@@ -4,10 +4,10 @@
   "phases/17-infrastructure-and-production/03-gpu-autoscaling-kubernetes/docs/en.md": "c29e825067475d389a19f5187a228576dc132402b2f0c1c4bdee0ca9a27087e3",
   "phases/17-infrastructure-and-production/04-vllm-serving-internals/docs/en.md": "7668485e38acf6de5e2f07439eb3bc549ab9f8a9f5f85042d8555e6aab76920f",
   "phases/17-infrastructure-and-production/05-eagle3-speculative-decoding/docs/en.md": "064ac61d9144f1890c058ebaff68a0bddc17f68477e020b28278adab4405c9f6",
-  "phases/17-infrastructure-and-production/06-sglang-radixattention/docs/en.md": "7ba282a2e3b653162d4f3f28006379ae8a43e49b18a9fb2c30e7b407a17dda78",
+  "phases/17-infrastructure-and-production/06-sglang-radixattention/docs/en.md": "2e8d10eb4dae20ee27b80d6ea3ee8ba8abe1444fdce9c048ad48ba2822ceabb9",
   "phases/17-infrastructure-and-production/07-tensorrt-llm-blackwell/docs/en.md": "6abd709d021b9e1a90c64d5c389f77a6073f5c2c2f3ad6ed975bc8cf1653f00a",
-  "phases/17-infrastructure-and-production/08-inference-metrics-goodput/docs/en.md": "4777e79e9c7712bb53869d2367837d8de2a2fd811a848ecfec27c4e109a57a45",
-  "phases/17-infrastructure-and-production/09-production-quantization/docs/en.md": "14b09f6ec2f1b27129960de9d0b64f28fb0a2fbc250e83b747bb46c7126f400e",
+  "phases/17-infrastructure-and-production/08-inference-metrics-goodput/docs/en.md": "9f6bc46c95d4cb44b1e9e1a0f2fddecef8946f333e2b520436c1d87125fd4eb7",
+  "phases/17-infrastructure-and-production/09-production-quantization/docs/en.md": "79c7160e4055d7c7f7d1137376ae012e086a2829ccf0d7b8352bdbca1f7131a3",
   "phases/17-infrastructure-and-production/10-cold-start-mitigation/docs/en.md": "52684880d15bfc3944e0ce8c8d3ccba1f3cb4302260f51e56abe821735f24234",
   "phases/17-infrastructure-and-production/11-multi-region-kv-locality/docs/en.md": "8c220febbae70a6fdbff8f2ea56aaf63314b7df8b5871bf1e2c745c044a632a1",
   "phases/17-infrastructure-and-production/12-edge-inference/docs/en.md": "84f1e6c9ef2ab6be3d2388a0c5ce8f48242e63acec8a6b3c228256149b2714a4",
@@ -27,5 +27,5 @@
   "phases/17-infrastructure-and-production/26-compliance-frameworks/docs/en.md": "e0fbd2b907dffc2b031ad5ce1b0a35316917425262f52b9b093b6272c9257a89",
   "phases/17-infrastructure-and-production/27-finops-llms/docs/en.md": "a1a1706cb6f81cacaceb1abbe654db17c35f802a08fc5811acfd03d1ac9759d4",
   "phases/17-infrastructure-and-production/28-self-hosted-serving-selection/docs/en.md": "e7f9e6fac84d11d0352364b3d498fc34c449c139195f8297a861361f8d1fa39c",
-  "phases/17-infrastructure-and-production/29-model-demo-interfaces/docs/en.md": "5f37b9bbd81966da6d3c38761966fd611bff1e897fbe66b3bc1fbfc25b63e968"
+  "phases/17-infrastructure-and-production/29-model-demo-interfaces/docs/en.md": "924c1ed639bcfd93f0dded29412c3094521f855df1c0b68a14bd60842f837f38"
 }

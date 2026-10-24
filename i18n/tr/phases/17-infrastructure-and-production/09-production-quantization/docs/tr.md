@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## Kullan
 `code/main.py`Bu, bir dizi model boyutları, hesaplama altı biçimindeki bellek ayak izi (vezler + KV + aktivasyonlar) ve nispeten geçiş için kullanılır.
 
+- Evet .[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64)机器展示了FP8在NVIDIA L4 上的效果──权重从15.28 GB 降至8.81 GB,KV pool从24.094 代币 增长至142.369 代币,64 用户时实测输出 每秒250.85 代币 升至735.91 代币──
+
 ## - Söyle.
 本课会产 出 `outputs/skill-quantization-picker.md`❖ Hardver ❖ model boyutu ❖ iş yükü tipi ❖ kalite toleransı ❖ şekil seçilir ve kalibrasyon/valyatifasyon planı üretir.
 

@@ -91,6 +91,8 @@ roofline
 ## Kullan
 `code/main.py` bir oyuncak radix-tree KV cache, ve bir de iki stratejiye sahip bir programcı gerçekleştirmek:FCFS ve cache-aware.
 
+- Evet .[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096)机器显示了Radix cache在一次真实L4 运行上的表现――四组各自有一个4,096 代币的系统提示――一组的第一请求将计算它的提示――只要该提示仍然存在缓存中,这个组后续的请求就只需要计算128-代币的问题――关闭Radix cache,可以看到首代币 时间的中位数从479 ms 变为 14,706 ms――
+
 ## - Söyle.
 本课会生成 `outputs/skill-radix-scheduler-advisor.md` Verilmiş bir iş yükü açıklaması ((SGlang'ın gitme/hiç gitme 判断inin kullanılması ve kullanılması)
 

@@ -105,6 +105,8 @@ throughput-latency
 ## Kullan
 `code/main.py`Bu, bir oyuncu sürümü iyilik hesaplayıcıı, sentetik gecikme dağılımını üretir, SLO uygulamasını,并计算 goodputı, aynı izleri gösterir.
 
+- Evet .[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1)机器显示NVIDIA L4 üzerinde her bir çıkış jetonunun zamanını nasıl gösterdi.
+
 ## - Söyle.
 本课会生成 `outputs/skill-slo-goodput-gate.md`❖ Bir iş yükü ve SLO'yu belirleyerek, CI/CD'nin kullanılabilir bir referans tarifi üretir.
 
