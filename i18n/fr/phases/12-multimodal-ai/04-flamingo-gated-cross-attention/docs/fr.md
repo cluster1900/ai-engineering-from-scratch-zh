@@ -18,7 +18,7 @@ BLIP-2 va faire 32 jetons visuels 输入结 LLM's input layer。 chaque prompt �
 
 Flamingo répond à cette question: ne modifiez pas complètement le flux d'entrée de LLM. Dans les blocs existants de LLM, il y a des couches de l'attention croisée supplémentaires entre les couches. Les jetons de texte sont toujours comme d'habitude dans le processus de LLM.
 
-Flamingo répond à la deuxième question: comment traiter chaque prompt avec un nombre d'images variable ?Le rééchantillon de percepteur  Un petit module d'attention croisée, qui reçoit un nombre arbitratif de patchs, et génère un nombre fixe de jetons visuels latents.
+Flamingo répond à la deuxième question: comment traiter chaque prompt avec un nombre d'images variables ? Un petit module de réception de l'attention croisée, qui reçoit un nombre arbitratif de patchs, et génère un nombre fixe de jetons latents visuels pour chaque image.
 
 ## 概念
 ### Le LLM congelé
@@ -56,7 +56,7 @@ C'est le choix de conception le plus important de Flamingo: le conditionnement v
 
 ### Utilisé pour la mise en scène masquée des entrées interdites
 
-Dans le même ordre que "<image A> caption A <image B> caption B <image C> ?" , chaque jeton de texte  devrait seulement voir les images de la séquence précédente ∙`t`Les jetons de texte suivent seulement l'index d'image `i < i_t`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `i_t`est position `t`之前最近的图像──只看最近的前置图像或看到所有的前置图像都是有效选择; Flamingo 选择前者──
+Dans le même ordre que "<image A> caption A <image B> caption B <image C> ?" , chaque jeton de texte  devrait seulement voir les images de la séquence précédente ∙`t`Les symboles de texte ne sont que des images.`i_t`Les jetons de repérage, parmi lesquels `i_t`est position `t`Voir seulement les images précédentes  ou voir toutes les images précédentes  sont des sélections valides; Flamingo 选择前者──
 
 ### Apprendre en quelques coups dans le contexte
 
@@ -73,7 +73,7 @@ Le rappel flamingo ressemble à:
 Flamingo utilise trois données:
 
 1. MultiModal MassiveWeb (M3W):43 millions de pages contiennent des images et du texte, reconstruit en suivant le même ordre:
-2. Par exemple, les paires d'images et de texte (ALIGN + LTIP) sont de 44 milliards de mots.
+2. Par exemple, le nombre de personnes concernées est de 3,12 milliards.
 3. Partage de vidéos-texte (VTP): 27 millions de clips vidéo courts.
 
 OBÉLICS (en 2023) sont des modèles de communication ouverts, des idées, des idées et de la plupart des modèles ouverts, comme les flamingos, qui sont tous formés.
@@ -99,7 +99,7 @@ Otter(2023) basé sur OpenFlamingo, et MIMIC-IT(((((un Numéro de données) sur 
 | Frozen LLM | Yes | Yes |
 | Few-shot in-context | 弱 | 强 — 论文的核心 |
 | Interleaved inputs | 无原生支持 | Yes，设计目标 |
-| Training data | 130M pairs | 1.3B pairs + 43M interleaved pages |
+| Training data | 130M pairs | ~2.1B pairs + 27M video clips + 43M interleaved pages |
 | Parameter count | 188M trained | ~10B trained (cross-attn layers) |
 | Compute | 8 个 A100 上数天 | 数千个 TPUv4 上数周 |
 

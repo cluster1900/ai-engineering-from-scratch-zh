@@ -1,6 +1,6 @@
 # De CLIP à BLIP-2  Q-Former  comme pont de modalité
 
-> CLIP pour les images et le texte, mais ne peut pas générer de sous-titre, répondre aux questions ou de faire des conversations. BLIP-2 (Salesforce, 2023) a résolu ce problème avec un petit trainage de pontes:32 个学习查询 Vecteur 通过横向关注结结结 ViT的特点,然后直接插入结结 LLM的输入流──188M 参数的桥接将一个11B LLM 连接到 ViT-g/14──到2026年,每个基于适配器的VLM  MiniGPT-4、Instruction 近亲的LLaVA都是它的后代──本课阅读Q-Former的架构,解释其两阶段玩具训练,并输建一个 版本,把Token 视觉 decoder 进入结结结文中──
+> CLIP pour les images et le texte, mais ne peut pas générer de sous-titre, répondre aux questions ou de faire des conversations. BLIP-2 (Salesforce, 2023) a résolu ce problème avec un petit trainage de pontes:32 个学习查询 Vecteur 通过跨重视 关注结结 ViT的特点,然后直接插入结 ViT的输入流──188M 参数的桥接将 ViT-g/14 连接到最大11B(Flan-T5-XXL) 结结结LLLL的LLM──直到2026年, chaque VLM  MiniGPT-4 基于适配器的InstructBLIPL•LaVA 的近亲是它的后代──本课阅读Q-Former的架构,解释并其两个阶段的训练,构建一个玩具,构建一个视觉版本 输入结结文字中──
 
 **Type:** Build
 **Languages:** Python (stdlib, cross-attention + learnable-query demo)
@@ -112,7 +112,7 @@ Toutes les mathématiques utilisent Python purement (à partir de vecteurs avec 
 
 4. 阅读 BLIP-2 paper(arXiv:2301.12597) Section 3.2, comprendre comment Q-Former 初始化── expliquer pourquoi de la base BERT初始化(au lieu de l'initialisation au hasard)
 
-5. Pour une vidéo de 10 minutes, à 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame)──
+5. Pour une vidéo de 10 minutes, à 1 FPS 采样到60 ,计算每 Token 成本:(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame) ⋅在即文本还没占用任何空间之前,每种桥接能把多少放进 128k-Token LLM context window?
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -126,7 +126,7 @@ Toutes les mathématiques utilisent Python purement (à partir de vecteurs avec 
 | Two-stage pretraining | "Representation then generative" | Stage 1 单独训练 Q-Former（ITC/ITM/ITG）；Stage 2 接入 frozen LLM，并且只训练 projection + Q-Former |
 | Frozen backbone | "Do not finetune" | vision encoder 和 LLM weights 固定；只训练 bridge |
 | Projection head | "Linear to LLM dim" | 将 Q-Former 输出映射到 LLM Embedding dimension 的最终 linear layer |
-| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention，由 Flamingo 在每一层使用，而不是作为单个 bridge |
+| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention；Flamingo 对每张图像运行一次，生成固定数量的 latents，再在每个 LLM 层通过 gated cross-attention 读取它们 |
 
 ## 延伸阅读
 - [Li et al. — BLIP-2 (arXiv:2301.12597)](https://arxiv.org/abs/2301.12597)  papier central

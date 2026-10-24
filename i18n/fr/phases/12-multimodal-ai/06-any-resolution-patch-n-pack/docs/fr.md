@@ -1,6 +1,6 @@
 # 任意分辨率 Vision: patch-n'-Pack 和 NaFlex
 
-> La réponse de VLM est de redimensionner tout le contenu en forme carrée fixe  perdu pour permettre à OCR DATA de compréhension du document et de résolution élevée de scène de résoudre des signaux réellement utiles NaViT Google,2023) a montré que le masking par bloc-diagonal va changer les patchs de résolution  emballer dans un seul lot de transformateur  M-RoPE de Qwen2-VL 2024) a complètement supprimé la table de position  LaVA va changer la résolution de l'image de résolution élevée de la base  SigL 2 NaFlex 2025) maintenant ouvert par le VLM en en ligne, l'ensemble des patchs de contrôle est utilisé pour atteindre un seul point de contrôle 
+> La réponse de VLM est de redimensionner tout le contenu en forme carrée fixe  a perdu la compréhension OCR DATA et de haute résolution de la scène de résolution de signal réel. NaViT(Google,2023) a montré un masking à diagonale de blocage va changer de résolution des patchs Package dans un seul lot de transformateur  M-RoPE du Qwen2-VL 2024) a complètement supprimé la table de position absolue  Les classes de LVA-NeXT  Resolution d'image à haute résolution va être coupée en base + sous-images  SigLIP 2 NaF 2025) maintenant ouvert par un aspect de VLM en encoder est utilisé pour réaliser un seul point de contrôle 
 
 **Type:** Build
 **Languages:** Python (stdlib, patch packer + block-diagonal mask)
@@ -52,7 +52,7 @@ L'AnyRes de LLaVA-NeXT est un programme de remplacement de l'image.
 
 Pour une image, utilisez une grille 2x2 avec une miniature: 4 * 576 + 576 = 2880 Token visuels.
 
-Lorsque votre codeur est gelé et ne prend en charge qu'une résolution, AnyRes est la première option. Il permet de créer une image de jeton numérique explosion.
+Quand votre encodeur est gelé et ne prend en charge qu'une résolution,AnyRes est la première option. Il fait exploser le nombre de jetons de l'image.
 
 ### Le produit est le produit de l'équipement de la production de l'équipement.
 

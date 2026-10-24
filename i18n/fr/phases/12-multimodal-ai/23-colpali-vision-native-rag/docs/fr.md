@@ -95,10 +95,10 @@ Il n'y a pas de code de détection.
 
 Un rapport financier de 50 pages, par page 729 patches, 128 dimensions:
 
-- ColPali:50 * 729 * 128 * 4 octets = ~18 MB brut,PQ 后 ~4 MB。
+- ColPali:50 * 729 * 128 * 4 octets = ~ 18 MB brut, 8x PQ 后 ~ 2,3 MB。
 - Text-RAG:50 morceaux * 768-dim * 4 octets = ~150 kB。
 
-ColPali: En cas de taille, le stockage de chaque document peut être réduit à environ 5 à 10 fois, généralement acceptable.
+ColPali: Le stockage initial de chaque document est d'environ 120 fois. Dans un scénario de taille, 8 fois le POQ/PQ peut être réduit à environ 15 fois, généralement acceptable.
 
 ### Text-RAG 仍然胜出的场景
 

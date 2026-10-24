@@ -9,7 +9,7 @@
 
 ## Objectif de l'apprentissage
 - 计算不同 FPS 和聚合下长视频的总视觉标记数量──
-- 解释三条扩展路径:brute context(Gemini 1.5) 、 attention à l'attention(LWM) 、compression des jetons(LongVILA / Video-XL) ✿
+- 解释四条扩展路径:brute context(Gemini 1.5) ‧ring attention(LWM) ‧token compression(LongVILA / Video-XL) ‧agents retrait(VideoAgent) ‧
 - Dans le cadre de la mise en œuvre de la stratégie de recherche, les VLM sont utilisés pour la recherche de données.
 - Pour 30 minutes vidéo, concevez une aiguille dans un tas de foin 测试,并测量特定分钟处的召回率──
 
@@ -18,7 +18,7 @@ Le patch de taille de Qwen2.5VL est de 384 Tokens. Il est utilisé pour 3x3 comb
 
 Une partie de 2 heures de film sur 1 FPS est 583k Token。supra-out majority 2026 年开放模型能力; nécessite Gemini 2.5 Pro, ou encore plus activement pour le pooling。
 
-Il y a eu trois élargissements de la route.
+Il y a eu quatre élargissements de la route:
 
 ## 概念
 ### Voie 1: contexte brut (Gemini 1.5, Claude Opus)
@@ -33,7 +33,7 @@ Gemini 1.5 Pro  lancé  support 1M Token; Gemini 1.5 Ultra  atteindre 10M; Gemin
 
 Rings attention Placez une longue séquence distribuée sur plusieurs appareils, formant un seul ring, chaque appareil possède une pièce.
 
-LWM(Liu et coll., 2024) a utilisé cette méthode pour former un contexte 1M-Token 模型── entraîner le calcul de la quantité avec le contexte 线性扩展, plutôt que la quadratisation, car le coût carré de l'attention est réparti sur les appareils du milieu de l'anneau──
+LWM(Liu et coll., 2024) a utilisé cette méthode pour former un contexte 1M-Token 模型── chaque appareil de l'inventaire avec la pièce qu'il détient  élargir, de sorte que l'augmentation de l'appareil peut permettre le contexte                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
 LongVILA(arXiv:2408.10188)把该模式适配到VLMs──1400 视频,每 192 个代币 = 268k context,并使用8 directions de parallélisme de l'attention à l'anneau 训练──
 
@@ -113,7 +113,7 @@ mm-video-token-budget
 
 3. Dans un premier temps, le film est en cours de production.
 
-4. Le coût de la mémoire de l'attention sur les anneaux est augmenté en fonction de la longueur de la ligne, ainsi que du nombre d'appareils.
+4. Retour sur la durée de chaque périphérique en fonction de la longueur de la séquence, en plus de l'expansion du nombre d'appareils, tandis que l'attention 总计算量仍然是平方级.
 
 5. Qu'est-ce que vous avez trouvé dans le recouvrement des jetons 1M et 10M ?
 

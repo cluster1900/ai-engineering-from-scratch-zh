@@ -1,6 +1,6 @@
 # LLaVA et l'écoute des instructions visuelles
 
-> LLaVA(4 mois de 2023) est la plus grande architecture multimodale à avoir été reproduite sur Terre. Elle a remplacé le Q-Former de BLIP-2 par une MLP à 2 couches, avec une simple concatenation de jetons. Elle a remplacé l'attention croisée fermée de Flamingo et a effectué des exercices d'instruction visuelle à 158 000 pages. Ces données ont été produites par GPT-4 à partir de titres de texte pur.
+> LLaVA(4 mois de 2023) est la plus grande architecture multimodale à avoir été rédigée sur Terre. Elle a remplacé le Q-Former de BLIP-2 par une MLP à 2 couches, avec une simple concaténation de jetons. Elle a remplacé l'attention croisée fermée de Flamingo et a effectué des exercices visuels à 158 000 pages, ces données ont été créées par GPT-4 à partir de titres de texte pur.
 
 **类型：**Construction
 **语言：**Python(stdlib、projecteur + constructeur de modèles d'instructions)
@@ -32,10 +32,10 @@ Résultat: un VLM sur 8 张 A100 上运行一天、在MMMU 上击败 Flamingo、
 
 ### 架构
 
-LLaVA-1.5 à 13B:
+LLaVA-1.5 à 7B:
 - Le codeur de vision: CLIP ViT-L/14 @ 336(étape 1 结,étape 2 可选解)
 - Projecteur: 2 couches de MLP avec activation GELU,`1024 → 4096 → 4096`Il y a une autre.
-- LLM: Vicky-13B (plus tard est Llama-3.1-8B)
+- LLM:Vicuna-7B v1.5(13B 变体使用Vicuna-13B;
 
 图像 + 文本 prompt de passe avant:
 
@@ -83,7 +83,8 @@ Le processus n'a pas été directement contacté avec l'image  seulement contact
 LLaVA-1.5(2023 年 10 月)
 - Les données de la tâche académique seront ajoutées à la mise en forme des instructions.
 - Un meilleur système rapide.
-- 2048 → 32k contexte
+- Utilisez un projecteur MLP à 2 couches pour remplacer la première couche linéaire, avec un CLIP de 336px ViT-L/14(576 个 Token) au lieu de 224px(256 个 Token)。
+- 论文中的格分HD 变体, publié plus tard par LLaVA-NeXT 以 AnyRes形式──
 
 LLaVA-NEXT(2024 年 1 月)
 - AnyRes: mettre des images haute résolution coupées en 2x2 ou 1x3 网格 de 336x336 cultures, ajouter une miniature globale à faible résolution.
@@ -99,7 +100,7 @@ Leçon 12.08 会深入讲 OneVision──简短版: Avec un même projecteur, ma
 | | Q-Former（BLIP-2） | MLP（LLaVA） |
 |---|---|---|
 | 每张图像的 visual Token | 32 | 576（base）或 2880（AnyRes） |
-| 可训练参数 | 188M + LM | 40M + LM |
+| 可训练参数 | 188M + LM | ~22M（7B）+ LM |
 | Stage 1 loss | ITC+ITM+ITG | 仅 LM |
 | LLM drop-in | 需要重新训练 | 最小重新训练即可替换 |
 | Multi-image | 别扭 | 自然（concat） |

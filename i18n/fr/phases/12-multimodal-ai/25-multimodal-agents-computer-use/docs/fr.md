@@ -125,7 +125,7 @@ mm-agent-loop
 ## Utilisez-le
 `code/main.py`Il s'agit d'un échafaudage en pierre de taille:
 
-- Schéma d'action de JSON 定义(10 个 actions)。
+- Schéma d'action de JSON  définition(10 actions: 9 ci-dessus, plus crop + zoom 工具 `screenshot_region`)。
 - 作为 dict de mock browser state──
 - Le schéma de l'agent:recevoir l'état, émettre l'action, appliquer l'état,
 - Les pages synthétiques sont utilisées pour mesurer le taux de réussite de bout en bout.
@@ -135,7 +135,7 @@ mm-agent-loop
 本 lesson 生成 `outputs/skill-multimodal-agent-designer.md` déterminer un produit d'utilisation informatique (domaine, jeu d'action, objectif d'évaluation), concevoir un boucle complet d'agent, stratégie de mémoire, mode de mise en place et score de référence attendu
 
 ## 练习
-1. Utilisation `screenshot_region`outil ((crop + zoom) étendre le schéma d'action―quelles tâches seront bénéfiques?
+1. Le schéma du code est ajouté à l' action de 9 cœurs`screenshot_region`outil ((crop + zoom) ◊ Quelles tâches seront bénéfiques ?
 
 2. 阅读 AgentVista(arXiv:2602.23166)。 description de la catégorie de tâches la plus difficile, ainsi que pourquoi les modèles frontaliers still fail­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­
 

@@ -25,9 +25,9 @@ Il est devenu un chemin de recherche standard; les modèles de production de niv
 
 关键成分是视觉Tokenizer──Emu3 训练一个定制IBQ-classTokenizer(Inverse Bottleneck Quantizer,SBER-MoVQGAN family), chaque jeton faire 8x8 résolution-réduction──一张 512x512 图像会变成64x64 = 4096 jetons,size codebook 为 32768──
 
-Ceci par rapport à Chameleon en K=8192 时每张 512x512 1024 jetons plus gros, mais chaque jeton plus abordable(Plus petits codebook recherches, plus simple codec)  Indicateur clé: reconstruire PSNR pour 30,5 dB, et peut avec 32 dB d'espace latent continu de Diffusion stable 竞争──
+Ceci par rapport au Chameleon en K=8192 时每张 512x512 1024 jetons Plus grand, deux dimensions sont plus grandes: Le nombre de jetons est 4 fois, le codebook est également 4 fois. La capacité de décharge est changée pour la reconstruction de la qualité.
 
-Pour le vidéo: 3D VQ Tokenizer va être un patch spatiotemporal ((4x4x4 pixels) codé pour un nombre entier.
+Pour le vidéo: 3D VQ Tokenizer va être un patch spatiotemporal ((4 images x 8 x 8 pixels) codé pour un nombre entier― un clip 4s,8 FPS, il y a 32 images; dans 256×256、8x spatial et 4x de réduction temporelle, le nombre de jetons est (256/8) * (256/8) * (32/4) = 32 * 32 * 8 = 8,192 jetons―
 
 Le Tokenizer est le plus grand et le plus grand.
 
@@ -65,14 +65,14 @@ Note de tête spécifique à la tâche  seulement différents modèles de prompt
 Il est également possible de faire des recherches sur les différents types de produits.
 
 - 图像生成: dans le MJHQ-30K FID(5.4 vs 5.6)、GenEval globalement(0.54 vs 0.55,统计上打平) et composé de Deep-Eval 上 atteindre un niveau équivalent ou meilleur, dépassant SDXL。
-- 图像感知: dans VQAv2(75.1 vs 72.4) supérieur à LLaVA-1.6, dans MMMU
+- 图像感知: dans VQAv2(75.1 vs 81.8) et MMMU(31.6 vs 35.1) 上落后于 LLaVA-1.6,但在SEED-Bench、OCRBench 和 ChartQA 上超过它──
 - 视频生成:4-seconde de clip 质量在 FVD 上与 Sora-era Public benchmarked models 具备竞争力──
 
 Ces chiffres ne sont pas toujours gagnants, les ému3 seront ici plus, là moins, mais la prédiction du prochain jeton est tout ce dont vous avez besoin.
 
 ### Coût de calcul
 
-Emu3 utilise le modèle 7B-paramètre, dans environ 300 milliards de jetons multimodaux 上 тренинг。GPU-hours 大致相当于Llama-2-7B pré-entraînement(A100-class silicium 上 2k-4k GPU-years)。Stable Diffusion 3 这样 Diffusion models 训练预算类似,但需要独立的文码和更复杂的管道──
+Emu3 est un modèle à paramètre 8B. Le nombre total d'heures de GPU n'a pas été publié. En référence, la préparation à la Llama-2-7B a utilisé environ 184 000 heures de GPU A100, environ 21 années de GPU.
 
 推理时,Emu3 每张图像比SDXL 慢:4096 image tokens,以 30 tok/s 计算,大约每张 512x512 图像 2 分钟,而SDXL 为 2-5 秒── Spéculative décoding 和 KV-cache optimisation 会缩小差距,但无法消除差距──Autoregressive image gen 计算量很大;这是目前的固定取舍──
 
@@ -101,11 +101,11 @@ La mise en œuvre du CFG est conforme à la coïncidence de l'Emu3, c'est-à-dir
 ## 练习
 1. Emu3 en 8x8 réduction, par page 512x512 image produisant 4096 jetons ⋅ calculer 1024x1024 et 2048x2048 de la même valeur ⋅ estimation de retard
 
-2. 阅读Emu3 Section 3.3 中关于视频代码器的内容──描述3D VQ patch shape,以及为什么它是4x4x4而不是8x8x1──
+2. 阅读Emu3 Section 3.3 中关于视频代币器的内容──描述3D VQ patch shape,以及为什么它跨越4frame x 8x8 pixels,而不是单个frame──
 
 3. Poids de guidage sans classifiateur 5.0 contre 3.0: quels sont les effets visuels ?`code/main.py`Le processus mathématique intermédiaire
 
-4.  calculé Emu3-7B en 300B jetons 下的训练 FLOPs,并与稳定扩散3比较──哪个训练成本更高?
+4. 假设训练 300B tokens,计算 Emu3(8B) 的训练 FLOPs,并与稳分布3比较──哪个训练成本更高?
 
 5. Les ému3 dans le FID sont supérieurs à ceux de SDXL, mais dans le VQAv2 ne sont pas aussi efficaces que dans les VLM spécialisés.
 
@@ -114,7 +114,7 @@ La mise en œuvre du CFG est conforme à la coïncidence de l'Emu3, c'est-à-dir
 |------|-----------------|------------------------|
 | Next-token prediction | "NTP" | 标准 autoregressive loss：给定 token[0..i] 预测 token[i+1]；tokenized 后适用于每种 modality |
 | IBQ tokenizer | "Inverse bottleneck quantizer" | 一类 VQ-VAE，codebooks 更大（32768+），重建效果优于 Chameleon 的 Tokenizer |
-| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖一个 4x4x4 pixel cube |
+| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖 4 frames x 8x8 pixels |
 | Classifier-free guidance | "CFG" | 用 weight gamma 混合 conditional 和 unconditional logits；在推理时提升图像质量 |
 | Unified vocabulary | "Shared tokens" | Text + image + video 都来自同一个 integer space；模型预测接下来出现的任何 modality |
 | MJHQ-30K | "Image gen benchmark" | 含 30k prompts 的 Midjourney-quality benchmark；Emu3 在这里报告 FID |

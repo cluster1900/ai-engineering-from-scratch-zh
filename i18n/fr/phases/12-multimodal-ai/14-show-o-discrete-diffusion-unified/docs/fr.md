@@ -10,7 +10,7 @@
 ## Objectif de l'apprentissage
 - Expliquer la diffusion discrète masquée: un type de jetons de masque pré-médiatiques, refaire le transformateur, rétablir leur calendrier.
 - From speed and quality on comparer并行image decoding(Show-o, MaskGIT) avec le décoding d'image autorégressif(Chameleon, Emu3)。
-- Disons que le show-o est traité dans un point de contrôle.
+- Exposer Show-o dans un point de contrôle en train de traiter quatre types de tâches: génération de texte, VQA, T2I, peinture d'images,
 - 选择一种 schéma de masquage ((cosine、linear、truncated),并推理它对样品质的影响──
 
 ##  problématique

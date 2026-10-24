@@ -8,7 +8,7 @@
 **Time:** ~180 minutes
 
 ## Objectif de l'apprentissage
-- Design a maintenir un étalon visuel constant entre les entrées de plusieurs images et vidéos  Budget。
+-  Concevoir un équilibre entre les entrées de plusieurs images et vidéos  Budget 
 - 排列一训练课程, faire des compétences de l'image unique à la vidéo, tout en évitant l'oubli catastrophique.
 - Expliquez pourquoi, dans la même dimension, si le programme est bien fait, un modèle unique vaincra le modèle spécialiste.
 - Il s'agit d'une série de fonctionnalités qui ont été développées par l'entreprise pour la première fois en 2008.
@@ -29,13 +29,13 @@ En OneVision  précédent, la réponse est  entraîner un scénario, ignorer les
 ## 概念
 ### OneVision Token  budgèt
 
-LLaVA-OneVision  choisit un ensemble de jetons visuels  budget, chaque échantillon environ 3000-4000 jetons, et distribué selon les différentes scènes:
+LLaVA-OneVision ne fixe pas un nombre de jetons précis. Il équilibre le nombre de jetons visuels maximaux de chaque échantillon, permettant à trois scénarios de se situer dans la même gamme, environ 6 000 à 9 000 jetons, et distribué selon les scénarios:
 
-- 单图像:AnyRes-9(3x3 carreaux + miniature), chaque carreaux pour 384, contient 729 patch, utilisant un pooling bilinéaire 2x2 activé → Chaque carreaux 182 个 Token。总计:9 * 182 + 182 = 1820 个 Token。或 AnyRes-4, chaque carreaux 729 个 Token = 2916 + 729。
-- Pour les images, il est nécessaire de faire une mise en page complète.
-- 视频:32 ,384 分辨率, utiliser激进的3x3 bilinéaire de la piscine → 每 81 个代币──总数:32 * 81 = 2592 个代币──
+- 单图像:AnyRes-Max-9( le plus grand nombre de 9 carreaux plus une vue de base), chaque vue 384x384 经 SigLIP SO400M 得到 729 个 टोकन──最多:729 * (1 + 9) = 7290 个 टोकन──
+- Pour chaque image, il y a 384 images utilisées, 729 Token, non regroupés.
+- 视频: maximum 32 ,384 分辨率, utilisation de la mise en commun bilinéaire 2x2 → 每 196 个代币──总计:32 * 196 = 6272 个代币──
 
-Cette distribution permet de maintenir le nombre de jetons en série. LLM ne verra jamais le lot de contextes de conflit.
+Cette distribution permet de réduire le nombre total de cas dans la même zone, de sorte qu'aucune situation ne peut être dominée par le contexte ou la gradience.`code/main.py`Le programmeur utilise un budget de jouets plus petit 4096, pour montrer la même logique équilibrée.
 
 ### 3e étape du programme
 
@@ -106,13 +106,13 @@ Utilisez-le pour planifier une mise à jour de OneVision ou pour vérifier le co
 
 4. Le rapport de l'article de référence vidéo chaque échantillon ne nécessite que 8 exercices. Cela peut-il se transformer en un vidéo de 30 secondes de temps de réflexion ?
 
-5. Pour le partage de 24x24, il faut faire un pooling bilinéaire jusqu'à 12x12, en réduisant 4x chaque dimension.
+5. Pour le partage de 24x24, il faut faire un pooling bilinéaire jusqu'à 12x12, en 2x la réduction de chaque dimension, donc le nombre de jetons est réduit à 1/4[6].
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
-| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持恒定 |
-| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，通常为 3000-4000 |
+| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持均衡 |
+| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，在 LLaVA-OneVision 中最多约 6k 到 9k |
 | Curriculum | “训练顺序” | 为了 emergent transfer 而选择的阶段排序（单图像 → 多图像 → 视频） |
 | Bilinear pooling | “Token 缩减” | 对 patch grid（2D）应用 bilinear interpolation，以在保留局部性的同时减少 Token 数量 |
 | Emergent skill | “没训练过，但仍然能用” | 由于 curriculum composition，在没有匹配训练数据的情况下于推理时出现的能力 |

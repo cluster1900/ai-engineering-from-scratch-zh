@@ -48,7 +48,7 @@ masque:
 M[i, j] = 1 if:
   (i is text and j is text and j <= i)   # causal for text
   OR (i is image and j is image and same_image_block(i, j))   # bidirectional within image
-  OR (i is text and j is image and j < i_image_end)   # text attends to previous images
+  OR (i is text and j is image and j < i)   # text attends to images that closed before it
   OR (i is image and j is text and j < i_image_start)   # image attends to preceding text
 ```
 
@@ -94,7 +94,7 @@ Différences clés de MMDiT:
 
 Janus-Pro (leçon 12.15) à travers la solution utilisée pour comprendre et générer un encodeur de vision pour améliorer l'idée de transfusion: l'un utilise SigLIP, l'autre utilise VQ, en même temps que le corps de transformateur.
 
-En 2026, les VLM de production de classe image, tels que les Gemini 3 Pro, GPT-5 et Claude Opus 4.7, peuvent produire des images de manière à ce que la génération suivante de cette famille soit presque certainement utilisée.
+Le modèle de production de sources fermées d'images originales de sortie a peut-être utilisé une sorte de génération ultérieure de cette famille, mais leur structure n'est pas publique, de sorte que tout ce genre de propos ne peut être considéré que comme une hypothèse.
 
 
 ```figure
@@ -108,7 +108,7 @@ cfg-guidance-scale
 - L'image est 4x4
 - Une projection linéaire de la charge de transformateur est remplacée par des projections de perte de NTP, des correctifs bruyants, des projections de perte de MSE.
 - L'utilisation de deux perte, masque d'attention est évidente.
-- Il est écrit en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en avant en
+- Un masque  présentation, imprimé texte、image、text 序列 de bloc-triangle de l'attention modèle。不运行生成: vrais échantillons 会逐 Token 解码文本,再经过多步骤对图像补丁 去噪音,练习中会计算这一点。
 
 Ce transformateur est un jouet de classe.
 
