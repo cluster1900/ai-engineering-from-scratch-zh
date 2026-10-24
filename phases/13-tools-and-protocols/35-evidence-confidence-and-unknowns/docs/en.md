@@ -426,6 +426,29 @@ ledger.verify_unknown_chain(unknown_id)
 
 成功标准：报告的每句话都引用证据包中的标识符，且那项 `unknown` 断言已消除。
 
+## 评分实验
+
+五道关于本课 fixtures 的题目。用你构建的代码找出每个答案，然后写入 `code/lab_answers.json`。数字写成数字，或写成 `"0x40"` 这样的十六进制字符串；列表写成 JSON 列表。
+
+1. `t1`：compute_evidence_id 为 rea-evidence-grade.json 给出的 evidence id。
+2. `t2`：grade 记录中 limitations 的数量。
+3. `t3`：grade 记录的 relationship_coverage 状态。
+4. `t4`：grade 记录的 confidence 和 authority，写成由两个字符串组成的列表。
+5. `t5`：grade 记录中 subject 的 SHA-256。
+
+检查你的答案：
+
+```bash
+cd phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns
+python3 code/lab.py
+```
+
+检查器在已提交的 fixtures 上用 `code/main.py` 计算每个期望值。它为每道题输出 `PASS`、`FAIL` 或 `TODO` 以及总分，只有五道题全部通过时才以 0 退出。`python3 code/lab.py my-answers.json` 可检查另一个文件。`code/tests/test_lab.py` 证明检查器接受正确答案并拒绝错误答案。
+
+### 看它运行
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off) 机器维护一本证据账本，分为四个托盘：observed、derived、inferred 和 unknown。这个链接在关闭符号表的情况下打开运行，因此函数名和函数结尾归入 unknown，起始位置归入 inferred。
+
 ## 本课产物
 
 本课产出 `outputs/skill-evidence-ledger.md`。它指导智能体将每项发现写为带置信类别、权威来源、限制和链接的记录，说明如何用修订版本维护未知项，以及何时将断言判为 `pass`、`fail`、`unknown` 或 `unsupported`。

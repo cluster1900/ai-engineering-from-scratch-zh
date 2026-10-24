@@ -218,11 +218,11 @@ learning rate schedule 比你想象的更重要。GPT-2 在前 2,000 steps 中�
 output projection（logits head）与 Token Embedding Matrix 共享权重。这叫 weight tying——它减少了 38M 参数，并提升性能，因为它迫使模型对 input 和 output 使用同一个 representation space。
 
 
-```figure
-sampling-decoder
-```
-
 ## 构建它
+
+```figure
+iso-machine {"machine":"mini-gpt"}
+```
 ### 步骤 1： Embedding Layer
 
 Token embeddings 将 50,257 个可能 Token 中的每一个映射到一个 768 维 Vector。Position embeddings 添加关于每个 Token 在 sequence 中位置的信息。两者相加。
@@ -464,6 +464,10 @@ def generate(model, prompt_tokens, max_new_tokens=100, temperature=0.8):
 Temperature 控制随机性。Temperature 1.0 使用原始分布。Temperature 0.5 会让分布更尖锐（更确定——模型更经常选择 top choices）。Temperature 1.5 会让分布更平坦（更随机——低概率 Token 获得更大的机会）。Temperature 0.0 是 greedy decoding（总是选择最高概率 Token）。
 
 `tokens[-seq_len:]` 这个 window 是必要的，因为模型有最大 context length（GPT-2 为 1024）。一旦超过它，就必须丢掉最旧的 Token。这就是所有人都在谈论的 “context window”。
+
+```figure
+sampling-decoder
+```
 
 ## 使用它
 ### 完整训练与生成 Demo

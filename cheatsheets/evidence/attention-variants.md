@@ -39,13 +39,13 @@ Abbreviations: A = phases/07-transformers-deep-dive/15-attention-variants, K = p
 - Combination out_cmp, out_sel, out_win: N/d:40, N/c:111-113
 
 ## Flash Attention 分块循环 (flow, 7 steps)
-1. load Q tile ~128 × 128 into SRAM: K/d:71-72
-2. load K_tile, V_tile into SRAM: K/d:73-74
-3. S_tile = Q_tile @ K_tile^T: K/d:75
-4. running (max, sum) across tiles: K/d:76, 83
+1. load Q tile ~128 × 128 into SRAM: K/d:77-78
+2. load K_tile, V_tile into SRAM: K/d:79-80
+3. S_tile = Q_tile @ K_tile^T: K/d:81
+4. running (max, sum) across tiles: K/d:82, 89
 5. rescale by exp_old and add the new block: K/c:50-54
-6. write O_tile to HBM, one HBM trip per tile: K/d:78, 81
-7. bit-identical, O(N^2) to O(N) memory: K/d:81, 83
+6. write O_tile to HBM, one HBM trip per tile: K/d:84, 87
+7. bit-identical, O(N^2) to O(N) memory: K/d:87, 89
 
 ## 代码中的任务 (task-table, 8)
 - swa_mask(n, window): A/c:21
@@ -90,5 +90,5 @@ Abbreviations: A = phases/07-transformers-deep-dive/15-attention-variants, K = p
 - Attention sink, rows sum to 1, position 0: A/d:202
 - NSA, learned block sparsity, skip zero blocks at kernel level: A/d:200
 - DSA, Deepseek Sparse Attention, successor: N/d:139, 184
-- HBM ~3 TB/s on H100: K/d:66, 221
-- SRAM per-SM, ~30 TB/s: K/d:66, 218
+- HBM ~3 TB/s on H100: K/d:72, 226
+- SRAM per-SM, ~30 TB/s: K/d:72, 223

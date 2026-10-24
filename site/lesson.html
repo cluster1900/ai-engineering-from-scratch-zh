@@ -2814,7 +2814,7 @@
   <script src="cmdpalette.js?v=20260821a" defer></script>
   <script src="lesson-math.js?v=20261024a"></script>
   <script src="lesson-figures.js?v=843871fd2942"></script>
-  <script src="figure-manifest.js?v=adf187f6c7e2"></script>
+  <script src="figure-manifest.js?v=ef6fcf488bf1"></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -4418,7 +4418,7 @@
               if (codeLang === 'math') {
                 out += LessonMath.mathBlock(raw);
               } else if (codeLang === 'figure') {
-                out += '<div class="lesson-figure" data-figure="' + escapeHtml(raw.trim()) + '"></div>';
+                out += '<div class="lesson-figure" data-figure="' + escapeAttr(raw.trim()) + '"></div>';
               } else if (codeLang === 'mermaid') {
                 mermaidBlocks++;
                 out += '<div class="mermaid-container">';

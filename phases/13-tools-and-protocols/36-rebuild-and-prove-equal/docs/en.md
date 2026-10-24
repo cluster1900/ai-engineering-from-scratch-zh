@@ -389,6 +389,29 @@ python3 code/main.py --live
 
 成功标准：证明记录列出四个函数，每项断言都携带证据标识符，且任一标签字符串不同时 `grade_label` 会失败。
 
+## 评分实验
+
+五道关于本课 fixtures 的题目。用你构建的代码找出每个答案，然后写入 `code/lab_answers.json`。数字写成数字，或写成 `"0x40"` 这样的十六进制字符串；列表写成 JSON 列表。
+
+1. `t1`：x86_64 上的 percent_change_model(3, 105)。
+2. `t2`：x86_64 上的 percent_change_model(0, 5)。
+3. `t3`：grade_model(100)。
+4. `t4`：input_grid() 中的单元格数量。
+5. `t5`：x86_64 模型发生 trap 的网格单元数量。
+
+检查你的答案：
+
+```bash
+cd phases/13-tools-and-protocols/36-rebuild-and-prove-equal
+python3 code/lab.py
+```
+
+检查器在已提交的 fixtures 上用 `code/main.py` 计算每个期望值。它为每道题输出 `PASS`、`FAIL` 或 `TODO` 以及总分，只有五道题全部通过时才以 0 退出。`python3 code/lab.py my-answers.json` 可检查另一个文件。`code/tests/test_lab.py` 证明检查器接受正确答案并拒绝错误答案。
+
+### 看它运行
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler) 机器最终输出伪代码，并把它归档为 inferred：页面并不证明它。本课就是把这一主张变成经过检查的主张的那一步。
+
 ## 输出技能
 
 本课产出 `outputs/skill-rebuild-and-prove-equal.md`。用它将函数证据和候选重建转化为双路径证明及证明记录。该技能要求先读清单再读伪代码、输入网格覆盖每类风险、屏蔽重定位并检查常量，以及采用保守失败原则汇总结果。
