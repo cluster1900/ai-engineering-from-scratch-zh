@@ -351,34 +351,42 @@ Nearest 的 roughness 分数最高，因为它保留硬边缘。Bilinear 最平�
 
 ## 使用它
 
-`torchvision.transforms` 会把上面的所有内容打包成一个 composable pipeline。下面的代码精确复现 `preprocess_imagenet` 做的事情，并额外加入 resize 和 crop。
+PyTorch 会在批量化、感知设备的 Tensor 上执行同样的操作。下面的代码先缩放 shorter side，再取中心裁剪，按 channel 做标准化，最终生成 pretrained model 所期望的 NCHW Tensor。
 
 ```python
 import torch
-from torchvision import transforms
-from PIL import Image
+import torch.nn.functional as F
 
-img = Image.fromarray(synthetic_rgb(256, 256))
+image_hwc = torch.from_numpy(synthetic_rgb(256, 320))
+batch = image_hwc.permute(2, 0, 1).unsqueeze(0).float() / 255.0
 
-pipeline = transforms.Compose([
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+height, width = batch.shape[-2:]
+scale = 256 / min(height, width)
+resized_height = round(height * scale)
+resized_width = round(width * scale)
+batch = F.interpolate(
+    batch,
+    size=(resized_height, resized_width),
+    mode="bilinear",
+    align_corners=False,
+    antialias=True,
+)
 
-x = pipeline(img)
-print(f"tensor type:  {type(x).__name__}")
-print(f"tensor dtype: {x.dtype}")
-print(f"tensor shape: {tuple(x.shape)}      # (C, H, W)")
-print(f"per-channel mean: {x.mean(dim=(1, 2)).tolist()}")
-print(f"per-channel std:  {x.std(dim=(1, 2)).tolist()}")
+top = (resized_height - 224) // 2
+left = (resized_width - 224) // 2
+batch = batch[:, :, top:top + 224, left:left + 224]
 
-batch = x.unsqueeze(0)
-print(f"\nbatched shape: {tuple(batch.shape)}   # (N, C, H, W) — ready for a model")
+mean = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
+std = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
+batch = (batch - mean) / std
+
+print(f"tensor dtype: {batch.dtype}")
+print(f"batched shape: {tuple(batch.shape)}")
+print(f"per-channel mean: {batch.mean(dim=(0, 2, 3)).tolist()}")
+print(f"per-channel std:  {batch.std(dim=(0, 2, 3)).tolist()}")
 ```
 
-四个步骤，顺序必须如此：`Resize(256)` 把 shorter side 缩放到 256；`CenterCrop(224)` 从中间取一个 224x224 patch；`ToTensor()` 除以 255 并把 HWC 换成 CHW；`Normalize` 减去 ImageNet mean 并除以 std。颠倒这个顺序会悄悄改变到达模型的内容。
+四个步骤，顺序必须如此：把字节转换成 float 并把 HWC 换成 NCHW，把 shorter side 缩放到 256，取 224x224 的中心裁剪，然后减去 ImageNet mean 并除以它的标准差。颠倒这个顺序会悄悄改变到达模型的内容。
 
 ## 交付它
 

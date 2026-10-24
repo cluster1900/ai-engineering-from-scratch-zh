@@ -45,9 +45,9 @@ Abbreviations: P04 = phases/04-computer-vision. L02 = P04/02-convolutions-from-s
 - receptive_field(layers): L02/c:67
 - conv2d_im2col(x, w, b, padding=1): L02/c:57, L02/d:310
 - apply_kernel(x[0], KERNELS["sobel_x"]): L02/c:114
-- mixup_batch(x, y, num_classes, alpha=0.2): L04/c:74
+- mixup_batch(x, y, num_classes, alpha=0.2): L04/c:83
 - soft_cross_entropy(logits, soft_targets): L04/c:85
-- make_feature_extractor(num_classes=10): L05/c:38
+- make_feature_extractor(num_classes=10): L05/c:47
 - freeze_bn_stats(model): L05/c:73
 
 ## 一个训练 epoch (flow, 8 steps)
@@ -63,7 +63,7 @@ Abbreviations: P04 = phases/04-computer-vision. L02 = P04/02-convolutions-from-s
 ## 用分层学习率微调 (annotated-code, 11 lines)
 - resnet18(weights=ResNet18_Weights.IMAGENET1K_V1): L05/d:179, L05/c:47
 - model.fc = nn.Linear(model.fc.in_features, 10): L05/d:180
-- discriminative_param_groups(model, base_lr=1e-3, decay=0.3): L05/d:161, L05/c:54
+- discriminative_param_groups(model, base_lr=1e-3, decay=0.3): L05/d:161, L05/c:63
 - SGD(groups, momentum=0.9, weight_decay=1e-4, nesterov=True): L05/d:218, L05/c:87
 - CosineAnnealingLR(optimizer, T_max=epochs): L05/d:219
 - model.train() then freeze_bn_stats(model) if freeze_bn: L05/d:205, 221-224, L05/c:94

@@ -39,7 +39,7 @@ Abbreviations: L05 = phases/11-llm-engineering/05-context-engineering, L07 = pha
 - allocate retrieved_context max_tokens=3000: L05/c:284
 - allocate conversation_history max_tokens=5000: L05/c:288
 - allocate user_query max_tokens=500: L05/c:290. Query last: L05/d:68
-- print(budget.report()) with tokens and percent per component: L05/c:52-66, 313
+- print(budget.report()) with tokens and percent per component: L05/c:52-65, 313
 
 ## 记忆工具接口 (command-table, 8)
 - core_memory_append(section, text): L07/d:52, L07/c:91
