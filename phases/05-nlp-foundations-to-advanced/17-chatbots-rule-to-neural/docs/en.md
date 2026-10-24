@@ -51,7 +51,6 @@ chatbot-lineage
 
 这四种 paradigm 并不是顺序替代关系。一个 2026 年生产级 chatbot 会经过全部四种路径：rule-based 用于身份验证和 destructive actions，retrieval 用于 FAQ，neural generation 用于自然表达，LLM agent 用于模糊的开放式查询。
 
-
 ## 构建它
 
 ### 步骤 1：rule-based pattern matching
@@ -243,6 +242,7 @@ tags: [nlp, agents, chatbot]
 3. **Hard。** 用三个 tools（search、read-user-data、send-email）实现上面的 agent loop。用包含 prompt injection attempts 的 50 个测试场景运行 evaluation。报告 off-task rate、failed task rate，以及任何 injection success。
 
 ## 关键术语
+
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Intent | 用户想要什么 | Categorical label（book_flight, reset_password）。路由到 handler。 |
