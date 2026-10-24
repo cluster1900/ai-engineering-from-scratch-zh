@@ -32,7 +32,7 @@
 
 **Prompt format。**الهمس هو عرض من قبل المقرر وسط رموز خاصة  التحكم نموذج multitask:
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
