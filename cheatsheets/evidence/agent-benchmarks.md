@@ -18,22 +18,22 @@ Abbreviations: L19 = phases/14-agent-engineering/19-benchmarks-swebench-gaia, L2
 - Lesson: cognitive planning ~3% M24/d:30, measure before claiming M24/d:38, over-engineered M24/d:46, Verified no longer evidence M24/d:63
 
 ## 何时用哪个 (tips)
-- SWE-bench Verified for code agents, report Verified: L19/d:102
+- SWE-bench Verified for code agents, report Verified: L19/d:103
 - SWE-bench Pro reality check, current gating test: M24/d:54, 63
-- GAIA private leaderboard split: L19/d:103
-- AgentBench multi-environment, 8 environments: L19/d:62, 104
-- WebArena Verified self-hosted continuous evaluation: L20/d:87
-- OSWorld in a VM fleet: L20/d:88
+- GAIA private leaderboard split: L19/d:104
+- AgentBench multi-environment, 8 environments: L19/d:62, 105
+- WebArena Verified self-hosted continuous evaluation: L20/d:88
+- OSWorld in a VM fleet: L20/d:89
 - MARBLE compare topologies apples-to-apples: M24/d:32
 - AgentArch justify each layer: M24/d:52
-- Gold trajectories for top 20 tasks: L20/d:90
+- Gold trajectories for top 20 tasks: L20/d:91
 
 ## SWE-bench 把关：run_task (flow)
 1. copy state_before, pre counts: L19/c:35-37
 2. apply patch to a copy: L19/c:39
 3. post counts: L19/c:41-42
-4. ftp_post equals all FAIL_TO_PASS: L19/c:46, L19/d:125
-5. ptp_broke is 0: L19/c:45-46, L19/d:126
+4. ftp_post equals all FAIL_TO_PASS: L19/c:46, L19/d:126
+5. ptp_broke is 0: L19/c:45-46, L19/d:127
 6. resolved: L19/c:46
 7. resolution rate: L19/c:113
 
@@ -48,7 +48,7 @@ Abbreviations: L19 = phases/14-agent-engineering/19-benchmarks-swebench-gaia, L2
 - Edges: S/main.go:27-72
 
 ## 运行课程与项目 (command-table)
-- python3 code/main.py: L19/d:95, L20/d:80, M24/d:106
+- python3 code/main.py: L19/d:96, L20/d:81, M24/d:106
 - project_test.py --init: HB/README.md:15, St1:40
 - --stage 1 --path --strict: HB/README.md:16, St1:41
 - --all --solution --strict: HB/README.md:17
