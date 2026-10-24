@@ -26,32 +26,32 @@ Até 2026, ambos já são de uso geral. Cada nível de produção de sugestões.
 
 ### Matemática do cache KV
 
-Cada camada de decodificação, cada token, cada cabeça:
+Cada camada de decodificação, cada token, todas as cabeças de KV.
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
-Para um modelo 7B, 32 camadas 32 cabeças d_head=128 fp16:
+Para um modelo de 7B, 32 camadas 、32 cabeças 、 todas usadas para K 和 V) 、d_head=128、fp16:
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 对于Llama 3 70B(80 层、d_head=128、使用 8 个KV heads 的 GQA):
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-É por isso que, no contexto de 128K, apenas o cache KV do tamanho do lote 1 ocuparia a maior parte do espaço de 40 GB A100.
+Este 10 GiB em 32K, até 128K irá crescer para 40 GiB, apenas o cache KV do tamanho do lote 1 ocupará todo o volume de 40 GB A100.
 
-**GQA 是 KV-cache 的关键收益。**Utilizando 64 cabeças, a MHA vai precisar de 32 GB.
+**GQA 是 KV-cache 的关键收益。**Utilizando 64 cabeças de KV, a MHA aumentou 8x, em 32K, para cerca de 80 GiB.
 
 ### Atenção flash  azulejos 技巧
 

@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$Não há perda.
 - $A \approx 406$- Não .$B \approx 411$- Não.
 
-Com a expansão, dois conjuntos se pesam entre si.$C = 6ND$) abaixo para $N$求导并求解:
+Com a expansão, dois conjuntos se pesam entre si.$C = 6ND$) abaixo para $N$求导并求解──使用上述的 $\alpha$和 $\beta$- Não .$N$O índice é de 0,45,$D$O índice é de cerca de 0,55, por isso a melhor proporção precisa vai deslocar-se lentamente com o orçamento;`code/main.py` através da busca em rede  encontrar                                                                                                                                                                                                                                                          $C = 6ND$Central $D = 20N$, experiência legal:
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```
