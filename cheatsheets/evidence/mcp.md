@@ -2,8 +2,11 @@
 
 Abbreviations: L06 = phases/13-tools-and-protocols/06-mcp-fundamentals, L07 = phases/13-tools-and-protocols/07-building-an-mcp-server, L08 = phases/13-tools-and-protocols/08-building-an-mcp-client, L09 = phases/13-tools-and-protocols/09-mcp-transports, L12 = phases/13-tools-and-protocols/12-mcp-roots-and-elicitation, L16 = phases/13-tools-and-protocols/16-mcp-security-oauth-2-1, L29 = phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control.
 
+## Front matter
+- subtitle 2026-07-28, stdio and Streamable HTTP: L06/docs/en.md:22, L09/docs/en.md:28-42
+
 ## 任务 (task-table, 8)
-- python3 main.py serves stdio (no flag): L07/code/main.py:401-406
+- python3 main.py serves stdio (no flag): L07/code/main.py:401-405
 - python3 main.py --demo: L07/docs/en.md:162, L07/code/main.py:403
 - python3 main.py --serve: L09/code/main.py:568-572
 - python3 main.py --probe: L09/docs/en.md:191
@@ -89,7 +92,7 @@ Abbreviations: L06 = phases/13-tools-and-protocols/06-mcp-fundamentals, L07 = ph
 - PKCE: L16/docs/en.md:290
 - CIMD: L16/docs/en.md:287
 - DCR: L16/docs/en.md:288
-- RFC 9728: L16/docs/en.md:49-60, 286
+- RFC 9728: L16/docs/en.md:49-59, 286
 
 ## 问答 (qa, 5)
 - tool error vs protocol error: L07/docs/en.md:102

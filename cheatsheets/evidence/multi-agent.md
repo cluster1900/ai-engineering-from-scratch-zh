@@ -12,7 +12,7 @@ Lesson directories are shortened to their number:, and so on.
 - Agent reviewer, stateless: 04/C:78; 04/D:52
 - handoff edges: 04/C:59, 65; 04/D:20
 - SharedState message pool, append: 04/C:23-30; 04/D:22
-- Blackboard topic pub/sub, publish: 13/D:47; 13/C:68-104
+- Blackboard topic pub/sub, publish: 13/D:47; 13/C:68-103
 - Verifier read only, reads pool: 13/D:71, 93-102
 
 ## 协调智能体 (task-table, 8)

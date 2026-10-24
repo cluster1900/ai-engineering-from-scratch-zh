@@ -47,9 +47,9 @@ worker crashes mid-step
 
 LangGraph 在每个 super-step 后写 checkpoint；Temporal 在每个 activity 后写；Restate 使用 event-sourced journals。三者实现的是同一个模式。
 
-### LangGraph 的 runtime
+### 每步一个 checkpoint 的 runtime
 
-每个 agent 都有一个 `thread_id`；state 是 typed dict；每个 super-step 都向 checkpoints table 写入一行。恢复时，runtime 从最后一个 checkpoint 继续，而不是从头开始。Agents 可以 `interrupt()` 来等待人工输入；runtime 会持久化并释放 worker。当输入到达时，任意 worker 都可以恢复。
+LangGraph 的 runtime 就是这里的实例：每个 agent 都有一个 `thread_id`；state 是 typed dict；每个 super-step 都向 checkpoints table 写入一行。恢复时，runtime 从最后一个 checkpoint 继续，而不是从头开始。Agents 可以 `interrupt()` 来等待人工输入；runtime 会持久化并释放 worker。当输入到达时，任意 worker 都可以恢复。
 
 这是 2026 年 4 月的参考生产设计。
 
