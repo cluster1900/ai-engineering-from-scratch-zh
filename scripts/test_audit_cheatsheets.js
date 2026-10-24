@@ -75,3 +75,13 @@ test('a broken relative link and an unclosed fence fail', () => {
   assert.match(r.out, /does not resolve/);
   assert.match(r.out, /never closed/);
 });
+
+test('an evidence heading that does not name its block fails', () => {
+  const dir = tree();
+  const file = path.join(dir, 'cheatsheets', 'evidence', firstSheet(dir));
+  const text = fs.readFileSync(file, 'utf8');
+  fs.writeFileSync(file, text.replace(/^## .*$/m, '## 无关的标题'));
+  const r = run(dir);
+  assert.strictEqual(r.code, 1);
+  assert.match(r.out, /no section heading contains the block title/);
+});

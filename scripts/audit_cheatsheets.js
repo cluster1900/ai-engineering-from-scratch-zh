@@ -417,6 +417,10 @@ function main(argv) {
     const evText = fs.readFileSync(evFull, 'utf8');
     problems.push(...fenceProblems(evText, evFile));
     refs += evidenceCheck.parseEvidence(evText).sections.reduce((sum, s) => sum + s.refs.length, 0);
+    // zh: upstream falls back to an ASCII-only title key, which is empty for a
+    // Chinese title and would match any section. Require the literal title.
+    const evTitles = evidenceCheck.parseEvidence(evText).sections.map(s => s.title);
+    for (const block of topic.blocks) if (!evTitles.some(t => t.includes(block.title))) problems.push(`${evFile}: no section heading contains the block title "${block.title}"`);
     if (!topic.errors.length) for (const p of evidenceCheck.evidenceProblems(evText, { id: topic.id, sources: topic.sources }, topic.blocks, REPO_ROOT, lineCache)) problems.push(`${evFile}: ${p}`);
   }
   const evDir = path.join(REPO_ROOT, evidenceCheck.EVIDENCE_DIR);
