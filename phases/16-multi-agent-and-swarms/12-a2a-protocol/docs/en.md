@@ -101,7 +101,34 @@ A2A 原生支持三种主流安全模式：
 - **mTLS**：双向 TLS 认证，组织间强证明身份（`mtlsSecurityScheme`）。
 - **API Key**：位于请求头、URL 查询参数或 Cookie 中的密钥（`apiKeySecurityScheme`）。
 
-认证规则在 Agent Card 中公布：`securitySchemes` 命名方案，`securityRequirements` 规定调用方必须满足的要求。
+认证规则在 Agent Card 中公布：`securitySchemes` 命名方案，`securityRequirements` 规定调用方必须满足的要求。客户端据此发现并遵循。
+
+### 截至 2026 年 4 月，150+ 家组织
+
+企业采用推动了 A2A 的规模。最突出的一点：A2A 成为企业智能体系统跨越信任边界的方式。Google Cloud 在 Vertex AI Agent Builder 中提供了 A2A 支持；Microsoft Agent Framework 支持它；大多数主流框架（LangGraph、CrewAI、AutoGen）都提供 A2A 适配器。
+
+### A2A 的优势场景
+
+- **跨组织调用。** A 公司的智能体调用 B 公司的智能体。没有 A2A，每一对都要单独约定契约。
+- **异构框架。** LangGraph 智能体调用 CrewAI 智能体，再调用自定义 Python 智能体。A2A 把它们统一起来。
+- **带类型的产物。** 视频结果、结构化 JSON、音频，都是一等公民。
+- **长时间运行的任务。** 不透明生命周期加轮询，让持续数小时的任务也很好处理。
+
+### A2A 的不足之处
+
+- **对延迟敏感的微调用。** A2A 的生命周期是异步的。亚毫秒级的智能体间调用不适合；请使用直接 RPC。
+- **紧耦合的进程内智能体。** 如果两个智能体运行在同一个 Python 进程中，A2A 的 HTTP 往返就是大材小用。
+- **小团队。** 规范的开销是真实存在的；只在内部使用的智能体可能不需要这种正式程度。
+
+### A2A 与 ACP、ANP、NLIP
+
+2024–2026 年出现了几个相关规范：
+
+- **ACP**（IBM/Linux Foundation）：A2A 的前身，范围更窄。
+- **ANP**（Agent Network Protocol）：侧重对等发现，去中心化优先。
+- **NLIP**（Ecma Natural Language Interaction Protocol，2025 年 12 月标准化）：自然语言内容类型。
+
+截至 2026 年 4 月，A2A 是采用最广的对等协议。比较见 arXiv:2505.02279（Liu 等，"A Survey of Agent Interoperability Protocols"）。
 
 ```figure
 sw-agent-card-discovery
@@ -135,6 +162,24 @@ python3 code/main.py
 
 本课交付 `outputs/skill-a2a-integrator.md`。用于规划设计完整的 A2A 集成方案：Agent Card 内容、Task 校验契约、鉴权选型以及流式与轮询策略。
 
+## 发布它
+
+清单：
+
+- **固定规范版本。** A2A 仍在演进；每个 `supportedInterfaces` 条目都声明自己的 `protocolVersion`，客户端发送 `A2A-Version: 1.0`。
+- **幂等的任务创建。** 重复提交（网络重试）应只产生一个任务。按客户端的 `messageId` 去重。
+- **产物 schema。** 声明智能体返回哪些结构；调用方应进行校验。
+- **限流与鉴权。** A2A 面向公网；应用标准的 Web 安全措施。
+- **失败任务的死信队列。** 定期检查其中的模式，找出反复出现的失败类型。
+
+## 练习
+
+1. 运行 `code/main.py`。确认客户端发现了服务端并收到正确的产物。
+2. 为服务端添加第二个技能（例如 "summarize"）。更新 Agent Card。编写一个按任务类型选择技能的客户端。1.0 的请求没有技能字段，所以服务端根据消息的 parts 路由。
+3. 实现 `POST /message:stream`：用 Server-Sent Events 应答（先发一个 `task`，再发 `statusUpdate` 事件），在终止状态时关闭流。客户端需要做哪些不同的处理？
+4. 阅读 A2A 规范（https://a2a-protocol.org/latest/specification/）。找出规范要求、而这个演示没有实现的三件事。
+5. 比较 A2A（Agent Card 发现）与 MCP（服务端通过 `listTools` 列出能力）。自描述的智能体与能力探测之间有什么取舍？
+
 ## 核心专业术语
 
 | 术语 | 规范定义 |
@@ -146,9 +191,12 @@ python3 code/main.py
 | 不透明生命周期 (Opaque lifecycle) | 内部解决过程对调用方隐藏，仅对外暴露状态流转与产物 |
 | 服务发现 (Discovery) | 通过发起 `GET /.well-known/agent-card.json` 获取名片并了解支持能力 |
 | MCP 对比 A2A | MCP 属于垂直的 Agent 与工具交互，A2A 属于水平的 Agent 间对等协作 |
+| ACP / ANP / NLIP | 相邻的协议规范；2026 年采用最广的是 A2A |
 
 ## 延伸阅读
 
 - [A2A 规范主站](https://a2a-protocol.org/latest/specification/) — 官方权威规范
 - [A2A v1.0.1 源码发布](https://github.com/a2aproject/A2A/tree/v1.0.1) — 本课遵循的代码契约与规范定义
-- [Google Developers Blog — A2A 发布说明](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) — 官方设计背景
+- [Google Developers Blog — A2A 发布说明](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) — 2025 年 4 月的发布文章
+- [A2A GitHub 仓库](https://github.com/a2aproject/A2A) — 参考实现与 SDK
+- [Liu 等 — A Survey of Agent Interoperability Protocols](https://arxiv.org/html/2505.02279v1) — MCP、ACP、A2A、ANP 的比较

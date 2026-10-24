@@ -12,12 +12,13 @@ Abbreviations: L19 = phases/13-tools-and-protocols/19-a2a-protocol, F02 = phases
 - Unique feature: C03/d:567
 - Status: C03/d:569
 
-## 何时选用 (concepts, 6)
+## 何时选用 (concepts, 7)
 - MCP to invoke a specific tool: L19/d:167
 - A2A to delegate a whole task: L19/d:167
 - A2A + ACP trajectory patterns for audit trails: C03/d:1460-1461
 - ANP + A2A when outside your org with no shared infrastructure: C03/d:1462-1466
 - A2A + message broker with shared infrastructure: C03/d:1464-1465
+- Direct RPC for latency-sensitive micro-calls, lifecycle is async: A12/d:119
 - No protocol when agents do not talk: C03/d:1458-1459
 
 ## 通过 HTTP+JSON 调用 A2A (architecture, 5 nodes, 4 edges)
@@ -37,14 +38,14 @@ Abbreviations: L19 = phases/13-tools-and-protocols/19-a2a-protocol, F02 = phases
 7. follow-up creates new task in same contextId: C03/d:209
 
 ## 线上的 A2A 任务 (task-table, 8)
-- GET /.well-known/agent-card.json: A12/d:23, 147
+- GET /.well-known/agent-card.json: A12/d:23, 192
 - "method": "SendMessage": L19/d:141
 - POST /message:send with configuration.returnImmediately: A12/d:92
 - GetTask or GET /tasks/{id}: L19/d:85, 128
 - SendStreamingMessage or POST /message:stream: L19/d:85, A12/d:94
 - SubscribeToTask or /tasks/{id}:subscribe: L19/d:85, A12/d:94
 - CancelTask, ListTasks: L19/d:126
-- python3 code/main.py: A12/d:129
+- python3 code/main.py: A12/d:156
 
 ## Agent Card 与 Message 的结构 (annotated-code, 12 lines)
 - name, version, supportedInterfaces url/protocolBinding/protocolVersion: L19/d:37-46
@@ -88,13 +89,14 @@ Abbreviations: L19 = phases/13-tools-and-protocols/19-a2a-protocol, F02 = phases
 - ACP with TrajectoryMetadata: C03/d:1499
 - ANP did:wba, HPKE E2EE: C03/d:1500
 - DID W3C identity on own domain: C03/d:1502
-- NLIP natural-language content, LLM-native, drops schema: F02/d:143
+- NLIP Ecma Natural Language Interaction Protocol: A12/d:129
 - FIPA standardized ACL in 2000: F02/d:196
 - ACL performative + content + metadata: F02/d:197
 - KQML 1993, FIPA's predecessor: F02/d:199
 
-## 问答 (qa, 5)
+## 问答 (qa, 6)
 - caller sees task state and artifacts, internals opaque: L19/d:154
+- deduplicate on messageId: A12/d:170
 - JWS in signatures over RFC 8785 canonical JSON without signatures: L19/d:71
 - ACP tool_name, tool_input, tool_output metadata: C03/d:375-389
 - fail closed with principle of least trust: C03/d:1434

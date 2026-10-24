@@ -33,6 +33,7 @@ from: phases/16-multi-agent-and-swarms/03-communication-protocols/docs/en.md, ph
 - **A2A + ACP 模式**：合规需要审计轨迹。
 - **ANP + A2A**：agent 在你的组织之外，且不共享基础设施。
 - **A2A + 消息代理**：外部 agent 共享同一套基础设施。
+- **直接 RPC**：对延迟敏感的微调用。A2A 的生命周期是异步的。
 - **不用协议**：agent 之间不需要通信。
 
 ## 通过 HTTP+JSON 调用 A2A
@@ -147,7 +148,7 @@ from: phases/16-multi-agent-and-swarms/03-communication-protocols/docs/en.md, ph
 - **ACP**：Agent Communication Protocol。带 TrajectoryMetadata 的 REST run。
 - **ANP**：Agent Network Protocol。`did:wba` 身份与 HPKE E2EE。
 - **DID**：Decentralized Identifier（去中心化标识符）。位于 agent 自有域名上的 W3C 身份。
-- **NLIP**：以自然语言作为内容（natural-language content），LLM 原生，舍弃 schema。
+- **NLIP**：Ecma Natural Language Interaction Protocol（自然语言交互协议）。自然语言内容类型。
 - **FIPA**：Foundation for Intelligent Physical Agents。2000 年标准化了 ACL。
 - **ACL**：Agent Communication Language。施事行为（performative）加内容加元数据。
 - **KQML**：Knowledge Query and Manipulation Language（1993）。FIPA 的前身。
@@ -157,6 +158,7 @@ type: qa
 from: phases/13-tools-and-protocols/19-a2a-protocol/docs/en.md, phases/16-multi-agent-and-swarms/12-a2a-protocol/docs/en.md, phases/16-multi-agent-and-swarms/03-communication-protocols/docs/en.md, phases/16-multi-agent-and-swarms/02-fipa-acl-heritage/docs/en.md
 
 - **调用方在 A2A 中能看到什么？** 任务状态和 artifact。被调用 agent 的内部保持不透明。
+- **重试时如何避免产生重复任务？** 按客户端的 `messageId` 去重。
 - **Agent Card 如何签名？** 在 `signatures` 中放一个 JWS，签名对象是去掉 `signatures` 后的 RFC 8785 规范化 JSON。
 - **ACP 增加了什么？** 每个 part 都可以携带 `tool_name`、`tool_input` 和 `tool_output` 元数据。
 - **DID 获取失败，放行还是拒绝？** 按最小信任原则，失败即拒绝（fail closed）。
