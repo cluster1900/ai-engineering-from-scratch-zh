@@ -10,6 +10,59 @@ const END = '(?![\\d:/A-Za-z_-]|\\.[\\dA-Za-z])';
 const REF = new RegExp(`([A-Za-z0-9_][A-Za-z0-9_.\\-/]*):(\\d+(?:-\\d+)?(?:,\\s*\\d+(?:-\\d+)?${END})*)${END}`, 'g');
 const LIST_KEYS = /(?:^|[\s:])[A-Za-z][A-Za-z0-9_]*(?:\s*,\s*[A-Za-z][A-Za-z0-9_]*)+\s*=/;
 const RANGE_KEYS = /[A-Za-z0-9]\.\.[A-Za-z0-9]|\s\.\.\s/;
+// Sheets whose evidence still has range ends on blank lines; their fixes are in
+// open PRs #70-#74. A sheet listed here only skips the blank-end check. Remove an
+// id once its fix is on main, so the check covers that sheet too.
+const BLANK_END_PENDING = new Set([
+  'a2a',
+  'agent-benchmarks',
+  'agent-frameworks-compared',
+  'agent-harness',
+  'agent-planning',
+  'agent-reasoning-patterns',
+  'agent-skills',
+  'agent-state-graphs',
+  'agent-tool-use-skills',
+  'agent-workbench-ops',
+  'ai-safety',
+  'ai-security-incidents',
+  'alignment-training',
+  'asr-whisper',
+  'async-disaggregated-inference',
+  'attention-variants',
+  'audio-features',
+  'audio-generation-alms',
+  'autonomous-agents',
+  'autonomous-research',
+  'bert-gpt-t5',
+  'calculus-optimization',
+  'classical-ml',
+  'cnn-architectures',
+  'computer-vision',
+  'constitutional-classifiers',
+  'context-engineering',
+  'data-quality-workbenches',
+  'deep-learning-training',
+  'detection-segmentation',
+  'diffusion-models',
+  'distributed-training',
+  'edge-inference',
+  'embeddings-vector-search',
+  'embodied-computer-use',
+  'emergent-agent-societies',
+  'eval-driven-agents',
+  'fairness-privacy',
+  'gans',
+  'gpu-cloud-docker-keys',
+  'graphs-knowledge-graphs',
+  'image-generation-compared',
+  'linear-algebra',
+  'marl-sim-to-real',
+  'math-for-ml',
+  'mcp-gateways-operations',
+  'mcp-security-auth',
+  'mcp-tasks-elicitation-apps',
+]);
 const FILE_LIKE = /\.(?:md|py|ts|tsx|js|mjs|rs|go|jl|sh|txt|log|json|jsonl|yaml|yml|toml|csv|http|ipynb)$/;
 
 function abbreviations(header) {
@@ -39,9 +92,23 @@ function expand(token, keys, seen = new Set()) {
   }).join('/');
 }
 
-function lineCount(file, cache) {
-  if (!cache.has(file)) cache.set(file, fs.readFileSync(file, 'utf8').replace(/\n$/, '').split('\n').length);
+function fileLines(file, cache) {
+  if (!cache.has(file)) cache.set(file, fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n').replace(/\n$/, '').split('\n'));
   return cache.get(file);
+}
+
+function lineCount(file, cache) {
+  return fileLines(file, cache).length;
+}
+
+function blankEnd(ref, root, cache) {
+  const lines = fileLines(path.join(root, ref.file), cache);
+  for (const [start, end = start] of ref.spans) {
+    for (const [which, at] of [['starts', start], ['ends', end]]) {
+      if (!lines[at - 1].trim()) return `${ref.token}:${start}${end === start ? '' : `-${end}`} ${which} on a blank line (${ref.file}:${at})`;
+    }
+  }
+  return '';
 }
 
 function parseEvidence(text) {
@@ -106,9 +173,14 @@ function evidenceProblems(text, entry, blocks, root, cache = new Map()) {
       const problem = refProblem(ref, entry, root, cache);
       ref.ok = !problem;
       if (problem) problems.push(`evidence line ${ref.line}: ${problem}`);
-      else previous.set(ref.line, ref.file);
+      else {
+        previous.set(ref.line, ref.file);
+        const blank = blankEnd(ref, root, cache);
+        if (blank && !BLANK_END_PENDING.has(entry.id)) problems.push(`evidence line ${ref.line}: ${blank}. Point both ends of the range at the cited text`);
+      }
     }
   }
+
   for (const block of blocks) {
     const section = parsed.sections.find(item => item.title.includes(block.title)) || parsed.sections.find(item => titleKey(item.title).includes(titleKey(block.title)));
     if (!section) problems.push(`the evidence file has no section for the block "${block.title}"`);
