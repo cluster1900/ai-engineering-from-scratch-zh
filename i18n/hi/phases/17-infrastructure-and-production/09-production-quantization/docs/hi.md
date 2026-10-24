@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## इसका उपयोग करें
 `code/main.py`एक श्रृंखला के लिए मॉडल आकार, गणना छह प्रकार के आकार के स्मृति पदचिह्न (पालन + KV + सक्रियण) और सापेक्ष पारगमन।
 
+[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64)机器 ने NVIDIA L4 पर FP8 के प्रभावों को प्रदर्शित किया। वजन 15.28 GB से घटकर 8.81 GB, केवी पूल 24,094 टोकन से बढ़कर 142,369 टोकन हो गया, 64 उपयोगकर्ता समय वास्तविक परीक्षण आउटपुट प्रति सेकंड 250.85 टोकन से बढ़कर 735.91 टोकन हो गया।
+
 ## 交付 यह
 本课会产出 `outputs/skill-quantization-picker.md`                                                                                                                                                                                                                                                              
 
