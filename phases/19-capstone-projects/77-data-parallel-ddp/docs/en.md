@@ -107,8 +107,8 @@ python3 code/main.py
 
 1. 添加可配置大小的梯度桶，并在更深的模型上测量与每个参数一个 allreduce 的加速比。
 2. 将 `no_sync()` 实现为上下文管理器，并验证梯度累积与 K 个微批次上的单进程基线相匹配。
-3.添加`find_unused_parameters`模式，其中前向有时会跳过其中一个MLP层；如果没有该标志，运行将陷入僵局。
-4.将gloo替换为`torch.distributed.barrier()`-only同步，感受一下基于allreduce 的同步和基于barrier的同步的区别。
+3. 添加`find_unused_parameters`模式，其中前向有时会跳过其中一个MLP层；如果没有该标志，运行将陷入僵局。
+4. 将gloo替换为`torch.distributed.barrier()`-only同步，感受一下基于allreduce 的同步和基于barrier的同步的区别。
 5. 测量批量大小为 1、16、256 的梯度同步开销作为步长时间的一部分，并解释缩放比例。
 
 ## 关键术语

@@ -102,7 +102,7 @@ python3 code/main.py
 
 ## 练习
 
-1.添加tree allreduce变体，并根据消息大小在环和树之间切换。测量交叉。
+1. 添加tree allreduce变体，并根据消息大小在环和树之间切换。测量交叉。
 2. 添加 `recv_timeout_ms`，以便停滞的排名会出现截止日期错误，而不是永远挂起。
 3. 将四个原语的 `multiprocessing.Queue` 替换为 TCP 套接字。相同的测试，真线。
 4. 添加带宽检测挂钩，以便将每列字节计数器记录到 JSONL。

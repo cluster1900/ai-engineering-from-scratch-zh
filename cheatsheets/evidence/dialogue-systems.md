@@ -8,7 +8,7 @@ Abbreviations: P05 = phases/05-nlp-foundations-to-advanced. CB = P05/17-chatbots
 - Structured flow, confirmation for destructive actions: CB/d:171, 208, 236
 - FAQ retrieval with threshold=0.6: CB/d:173-175
 - FAQ returns None below threshold, escalate: CB/d:112-117
-- LLM agent loop with RAG and tool calls: CB/d:46, 177, 195
+- LLM agent loop with RAG and tool calls: CB/d:50, 177, 195
 - Tools are callable functions: CB/d:162
 - Reply: CB/d:158, 175
 
@@ -53,10 +53,10 @@ Abbreviations: P05 = phases/05-nlp-foundations-to-advanced. CB = P05/17-chatbots
 6. user_query last, max_tokens=500, generation reserve: CE/c:290, 20, CE/d:68
 
 ## 范式与 DST 术语 (concepts, 8 bullets)
-- Rule-based patterns, intents, slot filling, fails outside scope: CB/d:40
-- Retrieval-based nearest stored response, no hallucination: CB/d:42
-- Neural seq2seq generic outputs, factual drift: CB/d:44
-- LLM agent plan, call tool, observe, decide: CB/d:46
+- Rule-based patterns, intents, slot filling, fails outside scope: CB/d:44
+- Retrieval-based nearest stored response, no hallucination: CB/d:46
+- Neural seq2seq generic outputs, factual drift: CB/d:48
+- LLM agent plan, call tool, observe, decide: CB/d:50
 - Slot named parameter (cuisine, date): DST/d:206, CB/d:249
 - Classification DST yes/no per (slot, candidate_value), closed vocab: DST/d:32
 - Generation DST free text, open vocab, modern default: DST/d:33

@@ -37,6 +37,10 @@ Chatbot 架构经历了四种 paradigm 的循环，每一种都是因为上一�
 
 五十年，一种机制，规则数量不断上升。这个 paradigm 的终结并不是因为有人证伪了它，而是因为手写 state machine 的维护成本随覆盖面线性增长，而用户的期望却随着他们上周看到的东西不断增长。
 
+```figure
+chatbot-lineage
+```
+
 **Rule-based（ELIZA、AIML、DialogFlow）。** 手工编写的 patterns 匹配用户输入并生成回复。Intent classifiers 将请求路由到预定义流程。Slot-filling state machines 收集必需信息。在它被设计好的狭窄范围内表现非常出色。一旦超出范围就立刻失败。仍然会在安全关键领域（银行身份验证、航空预订）上线，因为这些场景不能容忍 hallucination。
 
 **Retrieval-based。** FAQ 风格的系统。Encode 每一组（utterance, response）。运行时，encode 用户消息并 retrieve 最接近的已存回复。可以把它理解成 Zendesk 经典的“similar articles”功能。比规则更能处理 paraphrases。没有 generation，因此没有 hallucination。
@@ -47,10 +51,6 @@ Chatbot 架构经历了四种 paradigm 的循环，每一种都是因为上一�
 
 这四种 paradigm 并不是顺序替代关系。一个 2026 年生产级 chatbot 会经过全部四种路径：rule-based 用于身份验证和 destructive actions，retrieval 用于 FAQ，neural generation 用于自然表达，LLM agent 用于模糊的开放式查询。
 
-
-```figure
-chatbot-lineage
-```
 
 ## 构建它
 
