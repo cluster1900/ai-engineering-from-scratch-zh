@@ -59,14 +59,14 @@ coref-links
 ```python
 import spacy
 nlp = spacy.load("en_coreference_web_trf")   # experimental model
-doc = nlp("Apple announced new products. The company said they would ship soon.")
+doc = nlp("Apple announced new products. The company said it would ship them soon.")
 for cluster in doc._.coref_clusters:
     print(cluster, "->", [m.text for m in cluster])
 ```
 
 En el documento más largo arriba, obtendrás resultados similares:
-- Cluster 1: [Apple, la compañía, ellos]
-- Grupo 2: [productos nuevos]
+- Cluster 1: [Apple, la compañía, el]
+- Grupo 2: [productos nuevos, ellos]
 
 ### 步骤 2: resolver del pronombre basado en reglas (enseñar)
 

@@ -124,7 +124,7 @@ def tfidf(bow_matrix):
 >>> tfidf(bow)
 ```
 
-Tres documentos, cinco palabras`the`¿Qué es esto?`cat`¿Qué es esto?`sat`¿Qué es esto?`dog`¿Qué es esto?`ran`)。`the`Aparece en todos los archivos, así que su IDF es baja.`dog`Sólo aparece una vez, por lo que su IDF 高── Estos vectores son raros.
+Tres documentos, cinco palabras`the`¿Qué es esto?`cat`¿Qué es esto?`sat`¿Qué es esto?`dog`¿Qué es esto?`ran`)。`the`Aparece en todos los archivos, así que su IDF es baja.`dog`Sólo aparece una vez, así que su IDF 高── en el verdadero vocabulario de miles de palabras, estos vectores son raros.
 
 ### 步骤 5: Normaliza las filas L2
 

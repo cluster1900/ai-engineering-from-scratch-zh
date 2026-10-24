@@ -68,21 +68,21 @@ PATTERNS = [
 
 ¿ Qué pasa ?`code/main.py`En el extrador de juguetes completo, los patrones de audición todavía aparecen en las líneas de conducción específicas de dominio, ya que pueden ser modificados.
 
-### Paso 2: Código de control
+### Paso 2: Hay un control de la relación
 
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tok = AutoTokenizer.from_pretrained("Babelscape/rebel-large")
-model = AutoModelForSequenceClassification.from_pretrained("Babelscape/rebel-large")
+model = AutoModelForSeq2SeqLM.from_pretrained("Babelscape/rebel-large")
 
 text = "Tim Cook was born in Alabama. He later became CEO of Apple."
 encoded = tok(text, return_tensors="pt", truncation=True)
 output = model.generate(**encoded, max_length=200)
-triples = tok.batch_decode(output, skip_special_tokens=False)
+decoded = tok.batch_decode(output, skip_special_tokens=False)
 ```
 
-REBEL es un extractor de relaciones de secuencias:输入文本,输出三倍,并且已经使用维基数据属性IDs──它在远程监督数据上精细调──标准开权基线──
+REBEL es un extractor de relaciones secuenciales basado en BART: genera triples, en lugar de hacerse en pares de entidades.`<triplet>`¿Qué es esto?`<subj>`Y `<obj>`标记, por lo tanto, necesita hacerse con estos marcadores `(subject, relation, object)`记录──它在远程监督数据上精细调──标准开权基线──
 
 ### Paso 3: Extracción de LLM con anclaje
 

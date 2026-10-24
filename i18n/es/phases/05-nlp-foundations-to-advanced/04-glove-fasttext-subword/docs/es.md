@@ -25,7 +25,7 @@ Esta clase explicará a continuación a estos tres, y luego explicará cuándo e
 
 **FastText。**Un palabra es su carácter n-gramos, además de la palabra en sí misma.`where`变成 `<wh, whe, her, ere, re>, <where>`▽词 Vector 是这些组成的词 Vector 的总和──按 Word2Vec的方式训练──好处:未见过的词(`whereupon`) puede ser producido por n-gramos ya conocidos 组合出来──
 
-**BPE (Byte-Pair Encoding)。**Desde el vocabulario de un solo byte (或字符) 开始──统计 corpus 中每个相邻对──把最高频的对合并成新代币──重复`k`Siguiente: Resultado: obtener una contiene`k + 256`个 Token 的词汇库,其中高频序列(`ing`¿Qué es esto?`tion`¿Qué es esto?`the`) es un solo token, rara palabra será desmontada en fragmentos maduros. Cada frase puede ser tokenizada en algún tipo de forma.
+**BPE (Byte-Pair Encoding)。**Desde el vocabulario de un solo byte (或字符) 开始──统计 corpus 中每个相邻对──把最高频的对合并成新代币──重复`k`Resultado: obtenido por el símbolo base`k`次合并组成的词汇库(从字节 开始时为 `k + 256`个 Token), entre ellos高频序列(`ing`¿Qué es esto?`tion`¿Qué es esto?`the`) es un solo token, rara palabra será desmontada en fragmentos maduros. Cada frase puede ser tokenizada en algún tipo de forma.
 
 
 ```figure

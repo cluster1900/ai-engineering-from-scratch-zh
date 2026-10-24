@@ -201,7 +201,7 @@ pipe.fit(X_train, y_train)
 print(pipe.score(X_test, y_test))
 ```
 
-Atención a tres cosas.`stop_words=None`会保留否定词──`ngram_range=(1, 2)`¡Me voy a juntar a los grandes!`not_good`成为一个特征――`sublinear_tf=True`Las tres señales, de su vez, son las de la base de precisión del SST-2 de 75% y la de 85% de precisión de la base de la diferencia.
+Atención a tres cosas.`stop_words=None`会保留否定词──`ngram_range=(1, 2)`¡Me voy a juntar a los grandes!`not good`成为一个特征(skit-learn 用空格连接两个词)。`sublinear_tf=True`Las tres señales, de su vez, son las de la base de precisión del SST-2 de 75% y la de 85% de precisión de la base de la diferencia.
 
 ### ¿Cuándo debería usar el transformador?
 
