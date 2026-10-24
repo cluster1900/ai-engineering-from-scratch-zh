@@ -19,7 +19,7 @@
 工程挑战：
 
 - 每种 modality 都必须有 Tokenizer，压缩要足够接近无损以便重建，并以 Transformer 能消费的速率产生 Token。
-- 单一 vocabulary 必须为文本（32k+）、图像（16k+）、语音（4k+）、音乐（8k+）分配空间。最低也需要四万多个条目。
+- 单一 vocabulary 必须为文本（32k+）、图像（8k+）、语音（4k+）、音乐（8k+）分配空间。最低也需要五万多个条目。
 - 训练数据必须覆盖每一种 input-output pair（text→image、image→speech、speech→image 等），或者模型必须能够组合。
 - Inference 必须足够快地 streaming 输出 Token，以满足对话延迟（<500ms time-to-first-audio-byte）。
 
@@ -29,21 +29,21 @@
 MIO 的 Tokenizer stack：
 
 - Text：标准 BPE，vocab ~32000。
-- Image：SEED-Tokenizer (2023) —— 带离散 codebook 的 quantized VAE，4096 个条目，每张图像 32x32 个 Token。
-- Speech：SpeechTokenizer residual-VQ (2023) —— 将 16kHz waveform 编码为 8 个 hierarchical codebooks；第一层是粗粒度内容，后续层加入 prosody 和 speaker identity。
-- Music：类似的 residual-VQ（Meta 的 MusicGen / Encodec family），4-8 个 codebooks。
+- Image：SEED-Tokenizer (2023)，一种离散 image Tokenizer，codebook 有 8192 个条目，每张图像输出 32 个 Token。
+- Speech：SpeechTokenizer residual-VQ (2023)，将 16kHz waveform 编码为 8 个 hierarchical codebooks；第一层是粗粒度内容，后续层加入 prosody 和 speaker identity。MIO 保留内容层和前三个 timbre 层，每层 1024 个 code，因此共 4096 个 speech ID。
+- Music：类似的 residual-VQ（Meta 的 MusicGen / Encodec family），4-8 个 codebooks。MIO 本身没有音乐 Tokenizer（它的第四种 modality 是视频，以帧的形式经过 image Tokenizer）；本课的 toy 加入音乐，是为了展示新的 modality 如何占用一段 ID 范围。
 
 每种 modality 都产生整数 Token。这些 Token 在共享 vocabulary 中获得互不重叠的 ID ranges：
 
 ```
 text:   0..31999
-image:  32000..36095  (4096 image tokens)
-speech: 36096..40191  (4096 speech base tokens, plus residual layers)
-music:  40192..48383  (8192 music tokens)
-sep:    48384..48390  (<image>, <speech>, <music>, </...>, etc.)
+image:  32000..40191  (8192 image tokens)
+speech: 40192..44287  (4 codebooks x 1024 speech tokens)
+music:  44288..52479  (8192 music tokens, the toy's extension)
+sep:    52480..52485  (<image>, <speech>, <music>, </...>)
 ```
 
-总计：约 48k vocabulary。input Embedding 和 output projection 覆盖全部条目。
+总计：约 52k vocabulary。input Embedding 和 output projection 覆盖全部条目。
 
 ### Streaming decode
 
@@ -54,7 +54,7 @@ Streaming 模式：
 1. 用户对着麦克风说话；real-time audio Tokenizer 每 50ms 发出 speech Token。
 2. MIO 在 Token 到达时消费它们（prompt prefill + incremental forward）。
 3. Output Token 随生成流式输出；parallel speech decoder 以约 50-150ms 延迟将其转换为 audio samples。
-4. Time-to-first-audio-byte：MIO paper 中约 300-500ms，接近 GPT-4o 的约 250ms。
+4. Time-to-first-audio-byte：MIO paper 没有报告延迟数字。按下文的预算，这个设计最好约 300ms，对比 GPT-4o 的约 250ms。
 
 Mini-Omni（arXiv:2408.16725）、GLM-4-Voice（arXiv:2412.02612）和 Moshi（arXiv:2410.00037）是互补的 streaming speech-LLM designs。其中 Moshi 在单 GPU 上实现了 160ms round-trip。
 
@@ -97,7 +97,7 @@ MIO 最接近 pure-token any-to-any。AnyGPT 是它的概念前身。
 - 第一个 output Token：~50ms。
 - Parallel residual-VQ + speech decoder：~100-150ms。
 
-总 time-to-first-audio-byte：最低约 ~300ms。GPT-4o 声称 ~250ms。Moshi 声称 160ms。根据公开 benchmarks，MIO/AnyGPT 位于 400-600ms 范围。
+总 time-to-first-audio-byte：最低约 ~300ms。GPT-4o 声称 ~250ms。Moshi 声称 160ms。MIO 和 AnyGPT 都没有公布实测数字，因此请把这份预算当作估算，而不是 benchmark。
 
 ### 为什么 any-to-any 仍然困难
 
@@ -129,7 +129,7 @@ any-to-any-stream
 
 2. SpeechTokenizer residual-VQ 使用 8 个 codebooks。说明为什么 parallel-decoding residual levels 是必要的（相对于 sequential），以及它带来什么延迟节省。
 
-3. 你的 vocabulary 有 32k text + 4k image + 4k speech。加入 8k music 和约 10 个 separators。在 hidden dim 4096 时，Embedding Matrix 的参数成本是多少？
+3. 你的 vocabulary 有 32k text + 8k image + 4k speech。加入 8k music 和约 10 个 separators。在 hidden dim 4096 时，Embedding Matrix 的参数成本是多少？
 
 4. Chain-of-visual-thought 会发出中间图像。哪些类型的问题会受益？哪些类型会被额外 Token 伤害？
 
@@ -140,7 +140,7 @@ any-to-any-stream
 |------|-----------------|------------------------|
 | Any-to-any | "Multimodal in/out" | 一个单一模型，能够在任意方向接受并发出 text、image、speech 和 music |
 | Residual-VQ | "Speech tokenizer stack" | Multi-codebook Tokenization，每一层都添加信息；base layer 是内容，后续层是 prosody |
-| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 4096-entry codebook |
+| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 8192-entry codebook，每张图像 32 个 Token |
 | Chain-of-visual-thought | "Visual scratchpad" | 模型在最终答案前生成一张中间图像作为 reasoning step |
 | Time-to-first-audio-byte | "TTFAB" | 从用户语音到第一个 audio output 的延迟；<500ms 才有对话感 |
 | Four-stage curriculum | "Training recipe" | Alignment -> interleaved -> speech-enhanced -> SFT，按此顺序 |

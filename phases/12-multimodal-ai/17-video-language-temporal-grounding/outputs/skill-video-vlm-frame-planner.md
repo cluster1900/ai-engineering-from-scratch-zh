@@ -13,7 +13,7 @@ tags: [video-vlm, temporal-grounding, tmrope, dynamic-fps, benchmarks]
 
 1. 帧采样器选择。稳定内容用 uniform，混合运动用 dynamic-FPS，动作密集用 event-driven，电影化内容用 keyframe+context。
 2. 逐帧 pooling。高细节用 2x2，默认用 3x3；对于内容密度不如覆盖范围重要的 agent workflows，用 4x4 或 6x6。
-3. 时间编码。Qwen2.5-VL-family 用 TMRoPE；较小模型用 learned temporal embedding；single-clip 任务不使用编码。
+3. 时间编码。Qwen2.5-VL-family 用 time-aligned M-RoPE（Qwen2.5-Omni 中称为 TMRoPE）；较小模型用 learned temporal embedding；single-clip 任务不使用编码。
 4. 输出格式。grounding 用包含 `{event, start, end, confidence}` 的 JSON；摘要用自由文本；混合流程用 token-delimited。
 5. Benchmark 计划。通用用 VideoMME，grounding 用 TempCompass，长时程用 EgoSchema。指定预期准确率层级。
 6. Context / 延迟预算。Total tokens = duration * fps * tokens_per_frame。如果超过 context 的 40%，给出警告。

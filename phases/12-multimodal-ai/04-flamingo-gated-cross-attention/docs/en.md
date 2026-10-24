@@ -18,7 +18,7 @@ BLIP-2 将 32 个 visual tokens 输入冻结 LLM 的 input layer。每个 prompt
 
 Flamingo 的答案是：完全不要改变 LLM 的输入 stream。在现有 LLM blocks 之间插入额外的 cross-attention layers。Text tokens 仍然像往常一样流经 LLM 的 causal Self-Attention。每隔几个 LLM blocks，text tokens 也会通过一个新的 gated layer 对 image features 做 cross-attend。gate（初始化为零）意味着在 step zero 新 layers 是 no-ops — 模型行为与 pretrained LLM 完全相同。随着训练推进，gate 打开，视觉信息开始流动。
 
-Flamingo 回答的第二个问题是：如何处理每个 prompt 中可变数量的图像（0、1 或多张）？Perceiver resampler — 一个小型 cross-attention module，接收任意数量的 patches，并生成固定数量的 visual latent tokens。无论 prompt 中有多少张图像，LLM cross-attention layer 看到的 shape 都相同。
+Flamingo 回答的第二个问题是：如何处理每个 prompt 中可变数量的图像（0、1 或多张）？Perceiver resampler — 一个小型 cross-attention module，接收任意数量的 patches，并为每张图像生成固定数量的 visual latent tokens。总数会随图像数量增长，但每个 text token 只读取一张图像的 latents，所以无论 prompt 中有多少张图像，单个 text token 在 cross-attention 中看到的 shape 都相同。
 
 ## 概念
 ### The frozen LLM
@@ -56,7 +56,7 @@ x_before_next_block = gated
 
 ### 用于 interleaved inputs 的 masked cross-attention
 
-在类似 "<image A> caption A <image B> caption B <image C> ?" 的 prompt 中，每个 text token 应该只看到序列中位于它之前的图像。cross-attention mask 强制执行：位置 `t` 的 text token 只 attend 到图像索引 `i < i_t` 的 image resampler tokens，其中 `i_t` 是位置 `t` 之前最近的图像。“只看到最近的前置图像”或“看到所有前置图像”都是有效选择；Flamingo 选择了前者。
+在类似 "<image A> caption A <image B> caption B <image C> ?" 的 prompt 中，每个 text token 应该只看到序列中位于它之前的图像。cross-attention mask 强制执行：位置 `t` 的 text token 只 attend 到图像 `i_t` 的 resampler tokens，其中 `i_t` 是位置 `t` 之前最近的图像；其他所有图像的 tokens 都被 mask 掉。“只看到最近的前置图像”或“看到所有前置图像”都是有效选择；Flamingo 选择了前者。
 
 ### In-context few-shot learning
 
@@ -73,7 +73,7 @@ Flamingo prompt 看起来像：
 Flamingo 使用三个数据集训练：
 
 1. MultiModal MassiveWeb (M3W)：4300 万个包含交错图像和文本的网页，重建阅读顺序。
-2. Image-Text Pairs (ALIGN + LTIP)：44 亿对。
+2. Image-Text Pairs：ALIGN（18 亿对）加 LTIP（3.12 亿对），合计约 21 亿对。
 3. Video-Text Pairs (VTP)：2700 万个短 video clips。
 
 OBELICS（2023）是交错网页语料的开放复现，Idefics、Idefics2 和大多数开放的“Flamingo-like”模型都在其上训练。
@@ -99,7 +99,7 @@ Otter（2023）基于 OpenFlamingo，并在 MIMIC-IT（一个 Multimodal instruc
 | Frozen LLM | Yes | Yes |
 | Few-shot in-context | 弱 | 强 — 论文的核心 |
 | Interleaved inputs | 无原生支持 | Yes，设计目标 |
-| Training data | 130M pairs | 1.3B pairs + 43M interleaved pages |
+| Training data | 130M pairs | ~2.1B pairs + 27M video clips + 43M interleaved pages |
 | Parameter count | 188M trained | ~10B trained (cross-attn layers) |
 | Compute | 8 个 A100 上数天 | 数千个 TPUv4 上数周 |
 

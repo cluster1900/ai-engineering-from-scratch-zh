@@ -25,9 +25,9 @@ Emu3 正面挑战了这个论点。它的主张是：更好的 visual Tokenizer 
 
 关键成分是 visual Tokenizer。Emu3 训练了一个 custom IBQ-class Tokenizer（Inverse Bottleneck Quantizer，SBER-MoVQGAN family），每个 Token 做 8x8 resolution-reduction。一张 512x512 图像会变成 64x64 = 4096 tokens，codebook size 为 32768。
 
-这比 Chameleon 在 K=8192 时每张 512x512 的 1024 tokens 更大，但每个 Token 更便宜（更小的 codebook lookups、更简单的 codec）。关键指标：重建 PSNR 为 30.5 dB，能与 Stable Diffusion 的 32 dB continuous latent space 竞争。
+这比 Chameleon 在 K=8192 时每张 512x512 的 1024 tokens 更大，两个维度都更大：Token 数是 4 倍，codebook 也是 4 倍。多出的容量换来了重建质量。关键指标：重建 PSNR 为 30.5 dB，能与 Stable Diffusion 的 32 dB continuous latent space 竞争。
 
-对于视频：3D VQ Tokenizer 将一个 spatiotemporal patch（4x4x4 pixels）编码为一个整数。一个 4s clip，8 FPS，有 32 frames；在 256x256、4x spatial 与 4x temporal reduction 下，Token 数量为 (256/4) * (256/4) * (32/4) = 64 * 64 * 8 = 32,768 tokens。
+对于视频：3D VQ Tokenizer 将一个 spatiotemporal patch（4 frames x 8x8 pixels）编码为一个整数。一个 4s clip，8 FPS，有 32 frames；在 256x256、8x spatial 与 4x temporal reduction 下，Token 数量为 (256/8) * (256/8) * (32/4) = 32 * 32 * 8 = 8,192 tokens。
 
 Tokenizer 质量就是上限。Emu3 的贡献部分在于“我们训练了一个非常好的 Tokenizer”。
 
@@ -65,14 +65,14 @@ Emu3 以三个功能上不同的 API 发布，但底层是一套 weights：
 来自 Emu3 paper（2024 年 9 月）：
 
 - 图像生成：在 MJHQ-30K FID（5.4 vs 5.6）、GenEval overall（0.54 vs 0.55，统计上打平）和 Deep-Eval 的 composite 上达到相当水平或更好，超过 SDXL。
-- 图像感知：在 VQAv2（75.1 vs 72.4）上超过 LLaVA-1.6，在 MMMU 上大致持平。
+- 图像感知：在 VQAv2（75.1 vs 81.8）和 MMMU（31.6 vs 35.1）上落后于 LLaVA-1.6，但在 SEED-Bench、OCRBench 和 ChartQA 上超过它。
 - 视频生成：4-second-clip 质量在 FVD 上与 Sora-era 公开 benchmarked models 具备竞争力。
 
 这些数字并不总是获胜，Emu3 会在这里多一分、那里少一分，但“next-token prediction is all you need”这个主张在不同 modalities 上是站得住脚的。
 
 ### Compute cost
 
-Emu3 使用 7B-parameter model，在约 300 billion Multimodal tokens 上训练。GPU-hours 大致相当于 Llama-2-7B pretraining（A100-class silicon 上 2k-4k GPU-years）。Stable Diffusion 3 这样的 Diffusion models 训练预算类似，但需要独立的 text encoders 和更复杂的 pipelines。
+Emu3 是一个 8B-parameter model。论文没有公布 GPU-hour 总数；作为参照，Llama-2-7B pretraining 用了约 184k A100 GPU-hours，约 21 GPU-years。Stable Diffusion 3 这样的 Diffusion models 训练预算类似，但需要独立的 text encoders 和更复杂的 pipelines。
 
 推理时，Emu3 每张图像比 SDXL 慢：4096 image tokens，以 30 tok/s 计算，大约每张 512x512 图像 2 分钟，而 SDXL 为 2-5 秒。Speculative decoding 和 KV-cache optimization 会缩小差距，但无法消除差距。Autoregressive image gen 计算量很大；这是目前的固定取舍。
 
@@ -101,11 +101,11 @@ CFG 实现与 Emu3 的配方一致，即用 guidance weight 混合 conditional �
 ## 练习
 1. Emu3 在 8x8 reduction 下，每张 512x512 图像产生 4096 tokens。计算 1024x1024 和 2048x2048 的等价数量。推理延迟会发生什么？
 
-2. 阅读 Emu3 Section 3.3 中关于 video tokenizer 的内容。描述 3D VQ patch shape，以及为什么它是 4x4x4 而不是 8x8x1。
+2. 阅读 Emu3 Section 3.3 中关于 video tokenizer 的内容。描述 3D VQ patch shape，以及为什么它跨越 4 frames x 8x8 pixels，而不是单个 frame。
 
 3. Classifier-free guidance weight 5.0 vs 3.0：视觉效果有什么变化？追踪 `code/main.py` 中的数学过程。
 
-4. 计算 Emu3-7B 在 300B tokens 下的训练 FLOPs，并与 Stable Diffusion 3 比较。哪个训练成本更高？
+4. 假设训练 300B tokens，计算 Emu3（8B）的训练 FLOPs，并与 Stable Diffusion 3 比较。哪个训练成本更高？
 
 5. Emu3 在 FID 上超过 SDXL，但在 VQAv2 上不如 specialized VLMs。解释为什么 unified-loss 方法在不同 benchmarks 上相对于 specialists 会表现出不同优势。
 
@@ -114,7 +114,7 @@ CFG 实现与 Emu3 的配方一致，即用 guidance weight 混合 conditional �
 |------|-----------------|------------------------|
 | Next-token prediction | "NTP" | 标准 autoregressive loss：给定 token[0..i] 预测 token[i+1]；tokenized 后适用于每种 modality |
 | IBQ tokenizer | "Inverse bottleneck quantizer" | 一类 VQ-VAE，codebooks 更大（32768+），重建效果优于 Chameleon 的 Tokenizer |
-| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖一个 4x4x4 pixel cube |
+| 3D VQ | "Spatiotemporal quantizer" | 由（time、row、col）索引的 codebook；一个 Token 覆盖 4 frames x 8x8 pixels |
 | Classifier-free guidance | "CFG" | 用 weight gamma 混合 conditional 和 unconditional logits；在推理时提升图像质量 |
 | Unified vocabulary | "Shared tokens" | Text + image + video 都来自同一个 integer space；模型预测接下来出现的任何 modality |
 | MJHQ-30K | "Image gen benchmark" | 含 30k prompts 的 Midjourney-quality benchmark；Emu3 在这里报告 FID |

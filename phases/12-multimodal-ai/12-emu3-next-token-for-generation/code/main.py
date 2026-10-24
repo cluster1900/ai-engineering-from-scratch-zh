@@ -40,9 +40,9 @@ def token_table() -> None:
         TokCost("image 512x512",  512, 8),
         TokCost("image 1024x1024", 1024, 8),
         TokCost("image 2048x2048", 2048, 8),
-        TokCost("video 4s @8fps 256x256", 256, 4, 4.0, 8, 4),
-        TokCost("video 10s @8fps 256x256", 256, 4, 10.0, 8, 4),
-        TokCost("video 4s @8fps 512x512", 512, 4, 4.0, 8, 4),
+        TokCost("video 4s @8fps 256x256", 256, 8, 4.0, 8, 4),
+        TokCost("video 10s @8fps 256x256", 256, 8, 10.0, 8, 4),
+        TokCost("video 4s @8fps 512x512", 512, 8, 4.0, 8, 4),
     ]
     print(f"{'config':<32}{'tokens':>12}{'seconds @30tps':>18}")
     for c in configs:

@@ -48,7 +48,7 @@ mask：
 M[i, j] = 1 if:
   (i is text and j is text and j <= i)   # causal for text
   OR (i is image and j is image and same_image_block(i, j))   # bidirectional within image
-  OR (i is text and j is image and j < i_image_end)   # text attends to previous images
+  OR (i is text and j is image and j < i)   # text attends to images that closed before it
   OR (i is image and j is text and j < i_image_start)   # image attends to preceding text
 ```
 
@@ -94,7 +94,7 @@ MMDiT 的关键差异：
 
 Janus-Pro（Lesson 12.15）通过解耦用于理解与生成的 vision encoder 来改进 Transfusion 的想法：一个使用 SigLIP，另一个使用 VQ，同时共享 transformer body。Show-o（Lesson 12.14）把 diffusion 换成 discrete-diffusion（masked prediction）。统一生成家族在 Transfusion 之后迅速分叉。
 
-2026 年能输出图像的生产级 VLMs，例如 Gemini 3 Pro、GPT-5、Claude Opus 4.7 的图像生成路径，几乎肯定使用了这个家族的某种后代。细节是专有的。
+原生输出图像的闭源生产模型可能使用了这个家族的某种后代，但它们的架构没有公开，因此任何此类说法都只能视为猜测。
 
 
 ```figure
@@ -108,7 +108,7 @@ cfg-guidance-scale
 - 图像是 4x4 字节网格。
 - 一对共享权重的 linear projections 充当 transformer 替身；文本上使用 NTP loss，noisy patches 上使用 MSE loss。
 - 训练循环交替使用两个 loss，attention mask 是显式的。
-- 生成在一次 forward pass 中产生文本 caption 和 4x4 图像。
+- 一个 mask 演示，打印 text、image、text 序列的 block-triangular attention pattern。不运行生成：真实的 sampler 会逐 Token 解码文本，再经过多步对图像 patches 去噪，练习中会计算这一点。
 
 这个 transformer 是玩具级的。双 loss plumbing、attention mask 构造和推理循环才是真正的产物。
 

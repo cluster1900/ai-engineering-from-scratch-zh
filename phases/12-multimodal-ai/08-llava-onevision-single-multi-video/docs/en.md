@@ -1,6 +1,6 @@
 # LLaVA-OneVision：一个模型中的单图像、多图像与视频
 
-> 在 LLaVA-OneVision（Li et al., 2024 年 8 月）之前，开放 VLM 世界有着彼此分离的谱系：用于单图像的 LLaVA-1.5，像 Mantis 和 VILA 这样的多图像模型，以及像 Video-LLaVA 和 Video-LLaMA 这样的视频模型。每一种都赢得了自己的 benchmark，却在其他场景上失败。LLaVA-OneVision 主张，一个单一 curriculum 可以训练一个模型同时主导这三种场景，并且 emergent task-transfer 效应（单图像技能迁移到视频，多图像推理迁移到单图像）胜过多个专家模型之和。这个配方看起来简单得有些迷惑性：一个在不同场景中保持恒定的视觉 Token 预算，加上一个明确的 curriculum，从单图像推进到 OneVision（多图像）再到视频。本课会解读这个预算、curriculum，以及 emergent behaviors。
+> 在 LLaVA-OneVision（Li et al., 2024 年 8 月）之前，开放 VLM 世界有着彼此分离的谱系：用于单图像的 LLaVA-1.5，像 Mantis 和 VILA 这样的多图像模型，以及像 Video-LLaVA 和 Video-LLaMA 这样的视频模型。每一种都赢得了自己的 benchmark，却在其他场景上失败。LLaVA-OneVision 主张，一个单一 curriculum 可以训练一个模型同时主导这三种场景，并且 emergent task-transfer 效应（单图像技能迁移到视频，多图像推理迁移到单图像）胜过多个专家模型之和。这个配方看起来简单得有些迷惑性：一个在不同场景之间保持均衡的视觉 Token 预算，加上一个明确的 curriculum，从单图像推进到 OneVision（多图像）再到视频。本课会解读这个预算、curriculum，以及 emergent behaviors。
 
 **Type:** Build
 **Languages:** Python (stdlib, token budget solver + curriculum planner)
@@ -8,7 +8,7 @@
 **Time:** ~180 minutes
 
 ## 学习目标
-- 设计一个在单图像、多图像和视频输入之间保持恒定的视觉 Token 预算。
+- 设计一个在单图像、多图像和视频输入之间保持均衡的视觉 Token 预算。
 - 排列一个训练 curriculum，使技能从单图像迁移到视频，同时避免 catastrophic forgetting。
 - 解释为什么在相同参数规模下，如果 curriculum 做得正确，单一模型会胜过专家模型。
 - 说出 LLaVA-OneVision 报告的三种 emergent capabilities：multi-camera reasoning、set-of-mark prompting、iPhone-screenshot agent。
@@ -29,13 +29,13 @@
 ## 概念
 ### OneVision Token 预算
 
-LLaVA-OneVision 选择了一个统一的视觉 Token 预算，每个样本约 3000-4000 个 Token，并按场景不同分配：
+LLaVA-OneVision 并不固定一个确切的 Token 数。它平衡每个样本的最大视觉 Token 数，让三种场景落在同一范围内，大约 6,000 到 9,000 个 Token，并按场景不同分配：
 
-- 单图像：AnyRes-9（3x3 tiles + thumbnail），每个 tile 为 384，包含 729 个 patch，使用激进的 2x2 bilinear pooling → 每个 tile 182 个 Token。总计：9 * 182 + 182 = 1820 个 Token。或 AnyRes-4，每个 tile 729 个 Token = 2916 + 729。
-- 多图像：每张图像使用中等分辨率（384，不 tiling），729 个 Token，不 pooling。预算为 6 张图像 → 4374 个 Token。
-- 视频：32 帧，384 分辨率，使用激进的 3x3 bilinear pool → 每帧 81 个 Token。总计：32 * 81 = 2592 个 Token。
+- 单图像：AnyRes-Max-9（最多 9 个 tile 加一个 base view），每个 384x384 view 经 SigLIP SO400M 得到 729 个 Token。最多：729 * (1 + 9) = 7290 个 Token。
+- 多图像：每张图像使用 384，不 tiling，729 个 Token，不 pooling。最多 12 张图像 → 8748 个 Token。
+- 视频：最多 32 帧，384 分辨率，使用 2x2 bilinear pooling → 每帧 196 个 Token。总计：32 * 196 = 6272 个 Token。
 
-这种分配让总 Token 数大致保持恒定。LLM 永远不会看到会撑爆 context 的 batch。Encoder 在不同场景中产生不同的几何结构，但 LLM 消耗的是同一套预算。
+这种分配让最大总数落在同一区间，因此没有哪种场景会主导 context 或梯度。Encoder 在不同场景中产生不同的几何结构，但 LLM 消耗的预算相近。下文的 `code/main.py` 规划器使用一个更小的玩具预算 4096，来展示同样的均衡逻辑。
 
 ### 三阶段 curriculum
 
@@ -106,13 +106,13 @@ l5-onevision-budget
 
 4. 论文报告的视频 benchmark 每个样本只用 8 帧训练。这能泛化到推理时的 30 秒视频吗？最先出问题的是 Token 预算，还是时间推理？
 
-5. 将 24x24 patch 做 bilinear pooling 到 12x12，在每个维度上是 4x reduction。用 stdlib Python 实现 pooling，并验证每个 2x2 block 的均值与 bilinear 输出匹配。
+5. 将 24x24 patch 做 bilinear pooling 到 12x12，在每个维度上是 2x reduction，因此 Token 数减少到 1/4。用 stdlib Python 实现 pooling，并验证每个 2x2 block 的均值与 bilinear 输出匹配。
 
 ## 关键术语
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
-| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持恒定 |
-| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，通常为 3000-4000 |
+| OneVision scenario | “单图像、多图像，或视频” | 统一 VLM 处理的三种输入 shape 之一；预算在三者之间保持均衡 |
+| Token budget | “每个样本多少 Token” | LLM 在每个训练/推理样本中看到的视觉 Token 总数，在 LLaVA-OneVision 中最多约 6k 到 9k |
 | Curriculum | “训练顺序” | 为了 emergent transfer 而选择的阶段排序（单图像 → 多图像 → 视频） |
 | Bilinear pooling | “Token 缩减” | 对 patch grid（2D）应用 bilinear interpolation，以在保留局部性的同时减少 Token 数量 |
 | Emergent skill | “没训练过，但仍然能用” | 由于 curriculum composition，在没有匹配训练数据的情况下于推理时出现的能力 |
