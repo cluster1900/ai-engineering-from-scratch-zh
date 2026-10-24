@@ -50,7 +50,7 @@ Kết quả:Qwen2-VL-7B trong nhiều đa mô hình 基准上追平 GPT-4o, và 
 
 Sự thay đổi lớn của Qwen2.5VL là video.
 
-- 绝对时间 Token──不使用位置索引(frame 0, 1, 2...),而使用实际时间──"À 0:04, mèo nhảy. " 模型会看到与框架代币 交错的`<time>0.04</time>`Đồ chỉ số
+- 位置 IDs 中的绝对时间──不使用索引(frame 0, 1, 2...),M-RoPE's time axis跟随实际时间, do đó, sự khác biệt giữa hai IDs đối với số giây cách nhau giữa chúng.
 - FPS động, vật liệu chậm tốc độ theo kiểu 1 FPS, động tác theo kiểu 4+ FPS.
 - ViT 中的窗户注意──空间注意──采用窗户内局部) 提升吞吐;每隔几层加入全球注意──
 - 显式 JSON 输出格式──使用工具-call 数据训练:"{\"工具\": \"click\", \"coords\": [380, 220]}"──开箱即代理-ready──
@@ -89,7 +89,7 @@ Mã thông báo văn bản 使用 `t = text_index, h = 0, w = 0`(或一种归一
 1. 计算你能承担最大FPS:`fps_max = B / (T * tokens_per_frame)`
 2. Từ `{1, 2, 4, 8}`中选择满足 `fps <= fps_max`Mục tiêu FPS:
 3. Nếu运动强(optical-flow heuristic 或明确用户请求), chọn更高 FPS──如果运动弱, chọn更低 FPS──
-4. 按选定FPS 均采样;`<time>t</time>`Đồ chỉ số
+4. 按选定FPS 均采样;根据每以秒为单位时间设置其M-RoPE 时间 ID──
 
 Qwen2.5VL 会隐式训练这种逻辑;推理时用户通过 `fps`Một chuỗi động tác 60 giây, với 4 FPS, mỗi 81 token tính toán, tương đương với 19440 token, trong bối cảnh 32k 中可管理。
 
@@ -141,7 +141,7 @@ mm-mrope-axes
 |------|-----------------|------------------------|
 | M-RoPE | "Multimodal RoPE" | hidden dim 中带 temporal、height 和 width bands 的 3D rotary position embedding |
 | Dynamic FPS | "Smart sampling" | 根据运动、时长和 Token 预算为每个视频选择的帧采样率 |
-| Absolute time token | "Timestamp token" | 在序列中交错插入的 `<time>t</time>`，让模型看到实际秒数而不是帧索引 |
+| Absolute time encoding | "Time-aligned M-RoPE" | 根据每帧时间戳设置时间 position IDs，让模型看到实际秒数而不是帧索引，且无需额外 tokens |
 | Window attention | "Local attention" | 为提速而限制在小窗口内的 spatial self-attention；周期性加入 global attention |
 | Structured agent output | "JSON mode" | 通过训练数据监督教 VLM 输出可解析 JSON，其中包含 coords 和 tool names |
 | min_pixels / max_pixels | "Resolution bounds" | Qwen2.5-VL 的每请求控制项，用来约束总像素数，从而约束 Token 数 |

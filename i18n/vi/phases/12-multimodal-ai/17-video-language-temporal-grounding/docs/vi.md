@@ -88,7 +88,7 @@ Temporal grounding 的输出格式:
 
 - Free text:"Căn mèo nhảy quanh dấu hiệu 4 giây. " 易于解析但不精确。
 - JSON được cấu trúc:`{"event": "jump", "start": 4.1, "end": 4.3}`❖ Quần2.5VL 会训练这种形式──
-- - Đơn vị: đặc biệt`<time>4.1</time>`Các mã thông báo với câu trả lời交错──Qwen2.5-VL của nội bộ hình dạng──
+- - Đơn vị: đặc biệt`<time>4.1</time>`Các mã thông báo với câu trả lời交错──部分视频模型使用这种方式;Qwen2.5-VL 则把时间编码在M-RoPE位置ID中,并以文字或JSON 回答──
 
 Các định dạng đầu ra JSON của Qwen2.5VL có thể được giải quyết trực tiếp.
 
