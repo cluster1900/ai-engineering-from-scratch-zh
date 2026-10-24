@@ -185,7 +185,7 @@ for token in doc:
     print(token.text, token.lemma_, token.pos_)
 ```
 
-```text
+```
 The      the     DET
 cats     cat     NOUN
 were     be      AUX

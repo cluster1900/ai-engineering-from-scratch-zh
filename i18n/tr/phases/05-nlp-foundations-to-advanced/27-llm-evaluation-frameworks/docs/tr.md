@@ -67,13 +67,13 @@ nli = pipeline("text-classification",
                model="MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli",
                top_k=None)
 
-# `llm` 是任意 callable：prompt str -> generated str。
-# 示例：llm = lambda p: client.messages.create(model="claude-haiku-4-5", ...).content[0].text
+# `llm` is any callable: prompt str -> generated str.
+# Example: llm = lambda p: client.messages.create(model="claude-haiku-4-5", ...).content[0].text
 LLM = Callable[[str], str]
 
 
 def atomic_claims(answer: str, llm: LLM) -> list[str]:
-    prompt = f"""把这个答案拆成简单的事实 claims（每行一个）：
+    prompt = f"""Break this answer into simple factual claims (one per line):
 {answer}
 """
     return llm(prompt).splitlines()
@@ -100,11 +100,11 @@ Bu soruların cevaplarını atom iddialarına ayırmak için kullanın.
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-# encoder：任意实现 .encode(texts, normalize_embeddings=True) -> ndarray 的 model
-# 例如：encoder = SentenceTransformer("BAAI/bge-small-en-v1.5")
+# encoder: any model implementing .encode(texts, normalize_embeddings=True) -> ndarray
+# e.g., encoder = SentenceTransformer("BAAI/bge-small-en-v1.5")
 
 def answer_relevance(question: str, answer: str, encoder, llm: LLM, n: int = 3) -> float:
-    prompt = f"写出 {n} 个这个答案可以回答的问题：\n{answer}"
+    prompt = f"Write {n} questions this answer could be the answer to:\n{answer}"
     generated = [line for line in llm(prompt).splitlines() if line.strip()][:n]
     if not generated:
         return 0.0
@@ -124,13 +124,13 @@ from deepeval.test_case import LLMTestCaseParams, LLMTestCase
 
 metric = GEval(
     name="Correctness",
-    criteria="答案应当事实准确，并匹配 expected output。",
+    criteria="The answer should be factually accurate and match the expected output.",
     evaluation_steps=[
-        "阅读 expected output。",
-        "阅读 actual output。",
-        "列出 actual output 中的事实 claims。",
-        "对每个 claim，标记它是否被 expected output 支持。",
-        "返回 score = 被支持的比例。",
+        "Read the expected output.",
+        "Read the actual output.",
+        "List factual claims in the actual output.",
+        "For each claim, mark supported or unsupported by the expected output.",
+        "Return score = fraction supported.",
     ],
     evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
 )

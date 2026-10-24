@@ -19,6 +19,26 @@ Gerçek anlamlı bir soru, görülmemiş n-gramları nasıl ele alacağıdır. �
 
 ![N-gram model: count, smooth, generate](../assets/ngram.svg)
 
+### 预测 oyun
+
+Bu mekanizmalar ortaya çıkmadan önce, bir deney, bir cümlenin bir sonraki harfini tanımladı. Bir cümlenin bir sonraki harfini gizledi.
+
+Bu tahminler detaylı değildir. Bunlar metin için zararsız bir şekilde yeniden kodlanmaktadır: sayı sıralarını tamamıyla aynı tahminciye teslim ederek, her harfi yeniden oluşturur, çünkü her pozisyonda hangi tahminleri ön plana koyduğunu kesinlikle bilir.
+
+Shannon 1951'de bu deneyi yaptı. Bu alanda halen elde edilen sayıların baskısı var.`log2(27) ≈ 4.75`Bitler── 100 karakterli bir karakter vardır aşağıdaki insan tahmincisi her karakter için 0.6 ile 1.3 bit arasında düşmektedir── İngilizce yaklaşık dörtte üç zorla yürümekle oluşur── model öğrenilmesi gereken bir yapıdır, herhangi bir model öğrenmeden önce ölçülmüştür──
+
+Sonraki her dil modeli bu oyunun makinelerinin oyuncusu, bu dersdeki her değerlendirme sayıları bu oyunun bir parçasıdır:
+
+- **Cross-entropy loss**Bu modelin her simgesinin ortalama ihtiyaçları vardır. LM'yi eğitmek, sözde anlamda tahmin oyunundaki puanları en aza indirmek demektir.
+- **Perplexity**Evet .`2^bits`(Yada `e^nats`): Model tahmin sonrası hâlâ karşı karşıya 分支因子── 27 符号上平均猜测的困惑是 27;
+- **Context length 就是玩家的记忆。**Trigram 模型带有两个代币的记忆玩游戏──Transformer 带有100K代币 玩同一个游戏──规则从未改变;变好是玩家──
+
+需要注意一个单位切换: 这个游戏按每个字母以位`log2`) 计分,而下面的 n-gram 公式按每个词符号以 nats(自然对数) 计分──由于 nats 计的困难`e^H`Bir parça gibi.`2^H`Bu iki bakış açısı farklı birimlerle yapılan aynı ölçümdür.
+
+```figure
+prediction-game
+```
+
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`❖ Düzeltme`n`(genellikle 3,4 gram kullanılır 4)
 
 ```math
@@ -49,10 +69,6 @@ Kneser-Ney'in洞见很深──"San Francisco" is常见 bigram──"San Francis
 ngram-backoff
 ```
 
-
-```figure
-prediction-game
-```
 
 ## Yapın onu.
 
@@ -229,8 +245,10 @@ lesson: 16
 | Backoff | 回退到更短 context | 如果 trigram 计数为零，就使用 bigram。Katz backoff 将其形式化。 |
 | Kneser-Ney | n-gram 的最佳 smoothing | Absolute discounting + 低阶模型的 continuation probability。 |
 | Continuation probability | KN 专用 | `P(w)` 按 `w` 出现的 context 数量加权，而不是按原始计数加权。 |
+| Entropy of text | 每个符号的信息量 | 在给定 context 的条件下，编码下一个符号平均需要的 bits。Shannon 在 1951 年对印刷英语（最多 100 个字母的 context）的估计：0.6-1.3 bits/letter，这是在任何模型出现之前测得的。 |
 
 ## 延伸阅读
+- [Shannon (1951). Prediction and Entropy of Printed English](https://www.princeton.edu/~wbialek/rome/refs/shannon_51.pdf)                                                                                                                                                                                                                                                              
 - [Jurafsky and Martin — Speech and Language Processing, Chapter 3 (2026 draft)](https://web.stanford.edu/~jurafsky/slp3/3.pdf) n-gram LM 和 smoothing 的经典处理──
 - [Chen and Goodman (1998). An Empirical Study of Smoothing Techniques for Language Modeling](https://dash.harvard.edu/handle/1/25104739) 确立 Kneser-Ney 作为最佳 n-gram smoother 的论文──
 - [Kneser and Ney (1995). Improved Backing-off for M-gram Language Modeling](https://ieeexplore.ieee.org/document/479394) 原始 KN 论文。

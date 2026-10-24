@@ -19,6 +19,28 @@ Chatbot yapısı, her biri, önceki bir başarısızlıktan dolayı ortaya çık
 
 ![Chatbot evolution: rule-based → retrieval → neural → agent](../assets/chatbot.svg)
 
+### 脚本化的半世紀,1950-2001
+
+İlk paradigma ise 5 yıl değil, 5 yıl süren bir paradigmadır. Bu sistemin bağlantısını bilmek önemlidir. Çünkü her bir sistem aynı bir makine: uyumlu giriş, çıkış, yeni bir kural.
+
+**1950.**Turing,  机器能思考吗? sorusunu açarak, bir kullanılabilir alternatif önerdi: Eğer sorgulayıcı, elektronik bir şekilde 机器与人 arasındaki farkı ayırt edemezse, bu felsefe sorusu anlamını yitirir.
+
+**1956.**Dartmouth'un bir yazlık seminerinde, "Yapay zeka" kelimesini önerdi. Bu kelime, zekiye ait her bir özelliğin ilke olarak tanımlanabileceği ve bir makineyi oluşturup onu taklit edebileceği için iki aylık bir süreyi ön plana koydu.
+
+**1966.**ELIZA 上線了你在步骤 1 中构建的反思技巧:decomposition rules From input中提取片段,reassembly rules Put them into question form reappear again.
+
+**1972.**PARRY, Stanford tarafından oluşturulmuş, bir kez körleşmiş bir sohbet kayıt testi sırasında, psikiyatrist gerçek hastaların doğrulamasından gerçek hastaların doğrulamasından ve rastgele tahminlerinden farklı olarak PARRY'yi tamamladı: İç durum.
+
+**1995.**ALICE AIML ile ELIZA'nın yöntemini genişletti. Yaklaşık 40.000 kişi tarafından yazıldı.
+
+**2001.**SmarterChild bu yöntemi 3 milyon anlık iletişim kullanıcıya ulaştırdı ve son sorguları ekledi: 天气、股票、电影场次,拼接进模板里。起眼看,它就是穿着2001年外衣的工具叫:解析意,调用服务,把结果染进回复──
+
+50 yıl boyunca, bir mekanizma, kural sayısı sürekli arttı. Bu paradigmanın sonucu, kimsenin onu saptaması değil, el yazma devlet makinesi bakım masraflarının kapsamlı olarak büyümesi ve kullanıcıların beklentileri, gördükleri şeylerle birlikte sürekli büyüdüğü için olmuştur.
+
+```figure
+chatbot-lineage
+```
+
 **Rule-based（ELIZA、AIML、DialogFlow）。**Handwerk yazma kalıpları 匹配用户输入并生成回复──Intent classifiers will request route through to predefined flow──slot-filling state machines 收集必需信息──在它设计的狭窄范围内表现非常出色──一旦超出范围就立刻失败──仍然会在安全关键领域──银行身份验证、航空预订) 上线,因为这些场景不能容忍幻觉──
 
 **Retrieval-based。**FAQ 风格的系统──Encode 每一组(utterance, response)──运行时,encode 用户消息并获取 最近的已存回复── Zendesk 经典的类似文章功能──比规则更能处理抛词──没有生成,因此没有幻觉──
@@ -28,11 +50,6 @@ Chatbot yapısı, her biri, önceki bir başarısızlıktan dolayı ortaya çık
 **LLM agents。**Bir dil modeli, bir döngü içinde paketlenir, planlama, arama araçları,并验证结果──它不是带着长快的聊天机──它是一个代理循环:plan → call tool → observe result → decide next step──恢复-first grounding(RAG) 让它避免幻觉──工具调用──让它真正能够执行操作──这是2026年的架构──
 
 Bu dört paradigma sırayla değişmez. 2026 yılında üretilen bir chatbot, dört yolla geçecek: kural tabanlı, kimlik doğrulama ve yıkıcı eylemler için kullanılır, geri kazanma, sorular sormak, sinir jenerasyonu, doğal ifade, LLM ajanı, açık sorgular için kullanılır.
-
-
-```figure
-chatbot-lineage
-```
 
 ## Yapın onu.
 
@@ -225,6 +242,7 @@ tags: [nlp, agents, chatbot]
 3. **Hard。**Üç araç kullanmakla (search,read,user,data,send-email) üstteki ajan döngüsünü gerçekleştirmek için kullanmakla.
 
 ## 关键术语
+
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Intent | 用户想要什么 | Categorical label（book_flight, reset_password）。路由到 handler。 |
@@ -236,7 +254,9 @@ tags: [nlp, agents, chatbot]
 
 ## 延伸阅读
 
+- [Turing (1950). Computing Machinery and Intelligence](https://academic.oup.com/mind/article/LIX/236/433/986238) 让对话成为这个领域的基准论文──
 - [Weizenbaum (1966). ELIZA — A Computer Program For the Study of Natural Language Communication](https://web.stanford.edu/class/cs124/p36-weizenabaum.pdf) 原始的规则基的聊天机论文──
+- [Colby, Weber, Hilf (1971). Artificial Paranoia](https://doi.org/10.1016/0004-3702(71)90002-6)  PARRY'nin duygu değişimi yapı, ilk devletli sohbetçi.
 - [Thoppilan et al. (2022). LaMDA: Language Models for Dialog Applications](https://arxiv.org/abs/2201.08239) Google 较晚期的神经聊天机论文,正好在LLM ajanları 接管之前──
 - [Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)  命名 agent loop pattern 的论文。
 - [Anthropic's guide on building effective agents](https://www.anthropic.com/research/building-effective-agents)2024 yılındaki üretim yönlendirmesi, 2026 yılına kadar hâlâ geçerlidir.
