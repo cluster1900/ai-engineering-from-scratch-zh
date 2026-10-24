@@ -19,7 +19,7 @@ Le cadre de gestion des risques de catastrophe de l'État de Californie est le p
 
 ### CAIS  Centre de sécurité de l'IA
 
-- 创立时间:2022年, San Francisco, par Dan Hendrycks 及同事创立(Zhang
+- 创立时间:2022年, San Francisco, par Dan Hendrycks 和 Oliver Zhang 创立──Hendrycks 担任执行总监和研究总监; Zhang 担任总经理──
 - 状态:501 ((c) ((3) non-profit organisations
 - Résultats importants de l'année 2023: Déclaration sur le risque d'extinction, signée conjointement par des centaines de chercheurs et de PDG. Déclaration écrit:  Réduire le risque d'extinction de l'IA, devrait être une priorité mondiale avec les pandémies et les guerres nucléaires, etc.
 - Résultats de l'année 2026: pour le modèle frontalier  évaluation du tableau de bord de l'IA  Index du travail à distance  Joint publication) Œuvre de stratégie de super-intelligence  Bulletin d'information de l'AI Frontiers 
