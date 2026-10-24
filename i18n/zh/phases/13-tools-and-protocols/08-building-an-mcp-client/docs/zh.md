@@ -85,9 +85,9 @@ def modern_request(request_id, method, params, version, capabilities):
 - `-32021`缺少需要 客户能力
 - `-32022`没有支持协议版本)
 
-即便对端已被列入"遗产白名单",已识别的现代错误也证明为现代服务器――一旦服务器表现出理解现代错误词汇的能力,发送 `initialize`造成危险的降级攻击.
+即便对端已被列入"遗产白名单",已识别的现代错误也证明为现代服务器――一旦服务器表现出理解现代错误词汇的能力,再发送`initialize`现在,我们已经开始了.
 
-绝不能把`-32601`作为进入遗产的充分证据,它只代表该对象有资格发起一次有限时间的遗产探测.
+绝不能把`-32601`作为进入遗产的充分证据,它只代表该端有资格发起一次有限时间的遗产探测.
 
 ### 白名单代表运维意图,而不是协议证据
 
@@ -99,7 +99,7 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 
 必须将此选项绑定到明确配置的命令或端点.`allow_legacy=True`报道失败后,绝不会收到`initialize`,我知道.
 
-白名单仅授予发射探测权. 客户在传输层强制截止时间内发送单个.`initialize`请,然后严格要求满足以下条件:
+白名单只授予发射探测权. 它不决定端末时代.`initialize`请,然后严格要求满足以下条件:
 
 - 收到与请求相匹配的JSON-RPC`2.0`响应
 - 仅包含`result`字段,且无 `error`其他
@@ -107,7 +107,29 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 - 包含对象类型`capabilities`字段;
 - 包含非空字符串`name`与`version`的`serverInfo`象征
 
-任何超时,断开,报错,形状结果,ID 错乱或未经支持的版本均直接失败.只有结构完全合规的正向结果才能将端标记为遗产时代.
+任何超时,断开,报错,形结果,ID 错乱或不支持的版本均直接失败.只有结构完全合规的正向结果才能将端标记为遗产时代.`legacy_probe_timeout_ms`传给传输适配器;真实工作室或HTTP适配器必须实际执行这一截止时间,而不是仅仅记录它.
+
+为了传输到终端缓存的选择时代,不要在每次调用前重新探测.
+
+### 遗产是一个兼容分支
+
+一旦受限探测返回有效正向遗产证据, 客户端将严格按照该修订版的定义使用选定的遗产版本:
+
+1. 校验响应信封与关联ID──
+2. 校验协商出的修订版属于已配置的遗产集合.
+3. 记录经过的校验能力与服务器身份.
+4. 仅仅在全部检查通过后发送`notifications/initialized`,我知道.
+5. 在该传输生命周期内使用遗产请求结构――
+
+这个分支仅仅存在于已知端端互联,它不是新服务器或新请求的默认设计.如果传输重启或端点发生变化,
+
+### 工具发现与缓存
+
+对于每一个活跃对端调用`tools/list`现代结果包含`resultType`,我知道.`ttlMs`与`cacheScope`在正确授权下文中遵守这一新鲜提示; 订阅列表变更发生后,在过期或收到后重新拉取.
+
+对于遗产服务器 缺失`resultType`客户必须将其视为`"complete"`应应带现代缓存字段.
+
+服务器应返回确定性排序――客户端也应在合并前排序,使本地注册表顺序不依赖进程启动时序――
 
 ### 命名空间无冲突合并
 
@@ -117,17 +139,33 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 2. **冲突时拒绝（Reject on collision）**没有重复工具,并抛出清晰的配置报错.
 3. **静默覆盖（Silent overwrite）**其他:**坚决杜绝**它会隐模型真正调用的目标服务器
 
+同时保存规范名与本地名.模型看到的是规范名;发出`tools/call`使用所属服务器 声明的本地名──
+
 ### 调用路由机制
 
 路由是纯粹的映射查找:
 
 ```text
-规范工具名
-  -> 对端名称 + 本地工具名
-  -> 生成全新的 JSON-RPC 请求 ID
-  -> 现代请求元数据 或 显式 Legacy 结构
-  -> 匹配响应 ID 并返回
+canonical tool name
+  -> peer name + local tool name
+  -> new JSON-RPC request id
+  -> modern request metadata or explicit legacy shape
+  -> matching response id
 ```
+
+当所属传输不可用时不要发送调用.`tools/list`△在传输中断时丢失的现代中途请求,如果操作的安全策略允许,可以使用新的JSON-RPC ID重试――
+
+### 通知与订阅
+
+现代的列表与资源变化仅通过客户端 开放 `subscriptions/listen`流到达. 客户 发送通知过器,等待.`notifications/subscriptions/acknowledged`没有使用通知元数据中的听 请求身份证关联事件──
+
+断开后发起新听 请并重新拉取相关列表或资源──现代流不使用 `Last-Event-ID`恢复
+
+### 存在服务器发起的请求
+
+现代服务器 不会为样本取消或根向客户端发起独立的JSON-RPC请求.`input_required`客户在满足其中嵌入的输入请求后重试原始请求.
+
+满足输入期间不要阻端的响应读取器.
 
 ```figure
 tp-client-merge
@@ -135,7 +173,7 @@ tp-client-merge
 
 ## 动手实践
 
-`code/main.py`通过内存对端函数清晰显示整个协议决策树. 它连接到两个现代对端和一个显然的白单标记的遗产对端,并通过它们的工具:
+`code/main.py`通过内存对端函数清晰显示整个协议决策树――它连接到两个现代对端和一个显而易见的白名单标记的遗产对端,并通过它们的工具――传输可调用对象会获得超时预算,使兼容分支无法隐藏无限的探测――
 
 ```bash
 cd code
@@ -147,14 +185,23 @@ python3 -m unittest discover tests -v
 
 - 现代请求逐次重复元数据;
 - 遇到`-32022`时重试现代发现,绝不退化为握手;
-- 已识别的现代错误绝不会发生降级;
-- 超时,断开与未知错误在无白名单上绝不触发`initialize`其他
+- 已识别的现代错误绝不会发生降级 (即使在白名单中);
+- 超时、连接关闭、空响应与未识别的错误在无白名单中绝对没有触发`initialize`其他
 - 单单对端仅在收到合规正向的`initialize`响应后才确立为遗产;
+- 形或不支持的遗产结果使得端子保持不可用;
 - 选择时代被稳定存在于端传输生命周期中.
 
 ## 交付物品
 
-本课交付 `outputs/skill-mcp-client-harness.md`△它可以用于现代要求盖、studio 时代协商、确定性命名空间合并、安全路由以及安全关闭的遗产 兼容分支提供规范脚手架。
+本课交付 `outputs/skill-mcp-client-harness.md`△它可以为现代请求盖、studio 时代协商、确定性命名空间合并、路由以及失败即关闭 (失败) 的遗产 兼容分支提供规范脚手架。
+
+## 练习与思考
+
+1. 让一个模拟服务器 返回 `-32022`且没有双方支持的版本,确认客户直接失败而发送`initialize`,我知道.
+2. 将一个模拟的遗产服务器加入白名单,让它受限`initialize`探测超时,证明该对端保持`unknown`且不可用.
+3. 为两个授权上下文添加`cacheScope: "private"`确认客户端绝不会将一个上下文的缓存结果共享给另一个.
+4. 让失败的报道包含两个对端名称.
+5. 添加一个有限的`subscriptions/listen`模拟器;流丢失时使用新的请求ID 重新听并重新拉取工具──
 
 ## 核心专业术语
 
@@ -168,6 +215,8 @@ python3 -m unittest discover tests -v
 | 正向 Legacy 证据 (Positive legacy evidence) | 针对受支持旧版协议返回的有效、ID 匹配的 `initialize` 结果 |
 | 合并命名空间 (Merged namespace) | 跨所有活跃对端规范化后的工具全局名称集合 |
 | 冲突策略 (Collision policy) | 处理重名工具的加前缀或报错拒绝规则 |
+| 时代缓存 (Era cache) | 为单个传输对端保存的已选现代或 Legacy 行为 |
+| 传输恢复 (Transport recovery) | 重启或重连、重新发现、重新列出，并以新 ID 安全重试 |
 
 ## 延伸阅读
 
@@ -175,3 +224,4 @@ python3 -m unittest discover tests -v
 - [MCP Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
 - [MCP Versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
+- [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)

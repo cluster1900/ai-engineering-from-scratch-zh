@@ -426,6 +426,29 @@ ledger.verify_unknown_chain(unknown_id)
 
 成功标准:报告的每句话都引用证据包中的标识符,且那项`unknown`断言已消除.
 
+## 评分实验
+
+五个关于本课件的题目. 用你构建的代码找到每个答案,然后写入.`code/lab_answers.json`△数字写成数字,或写成`"0x40"`这样十六进制字符串;列表写成JSON列表.
+
+1. `t1`计算证据 作为实际证据的类型.
+2. `t2`记录中限制的数量.
+3. `t3`记录的关系_覆盖 状态――
+4. `t4`记录的信心和权威,由两个字符组成的列表.
+5. `t5`类型: 记录中科目 的 SHA-256。
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns
+python3 code/lab.py
+```
+
+检查器在已提交的固定上使用 `code/main.py`计算每个期望值.`PASS`,我知道.`FAIL`或`TODO`只有五个问题全部通过,才以0退出.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### 看它运行
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off)机器维护一本证据账本,分为四个托盘:观察,衍生,推导和未知――这个链接在关闭符号表的情况下开运行,因此函数名称和函数结尾归入未知,起始位置归入归入推断――
+
 ## 本课产物
 
 本课产出发 `outputs/skill-evidence-ledger.md` 智能体将每项发现都写成信任类别,权力来源,限制和链接记录,说明如何使用修改版本维护未知项目,以及何时将判断断言`pass`,我知道.`fail`,我知道.`unknown`或`unsupported`,我知道.

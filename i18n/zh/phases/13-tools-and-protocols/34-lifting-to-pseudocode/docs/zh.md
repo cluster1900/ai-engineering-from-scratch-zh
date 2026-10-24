@@ -533,6 +533,29 @@ for score in (-25, 0, 59, 60, 100, 115):
 
 成功标准是:`-O0`下一个`grade`与`-O1`下一个`grade`在整个网格上输出相同,恢复结果包含一个`switch`没有`goto`,我知道.
 
+## 评分实验
+
+五个关于本课件的题目. 用你构建的代码找到每个答案,然后写入.`code/lab_answers.json`△数字写成数字,或写成`"0x40"`这样十六进制字符串;列表写成JSON列表.
+
+1. `t1`调用约定在 -O1 下给百分比_变化的参数数数.
+2. `t2`:-O1 的总数的 SSA 形式中 phi 函数的个数──
+3. `t3`对于 0x66666667 换 34 求出除数
+4. `t4`:-O1 的百分比_变化 伪代码的最后一句语句,写成一行文本──
+5. `t5`:-O1 的总数 中 param_1 恢复出的C类型。
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/34-lifting-to-pseudocode
+python3 code/lab.py
+```
+
+检查器在已提交的固定上使用 `code/main.py`计算每个期望值.`PASS`,我知道.`FAIL`或`TODO`只有五个问题全部通过,才以0退出.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### 看它运行
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?opt=O0)机器把本课作为它的升级压力机,类型钉,结构化器和打印机来运行,并使用`code/main.py`输出IR、SSA和伪代码──这个链接打开`-O0`目标文件:三个槽变成局部变量,具为如果/其他合上两个爪.
+
 ## 交付产物
 
 本课产出发 `outputs/skill-lifting-to-pseudocode.md`△使用它升级一个函数,为每行提供推,并填写与反编译器文本的差异表.

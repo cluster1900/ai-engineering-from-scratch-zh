@@ -87,7 +87,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract
 将`SKILL_ROOT`设置为安装器所报告的绝对路径.`SKILL.md`课程源码目录,也不是当前工作区:
 
 ```bash
-# 将占位符替换为安装器打印出的绝对路径
+# Replace the placeholder with the destination printed by the installer.
 SKILL_ROOT="$(cd "/absolute/path/to/skill-contract-reviewer" && pwd -P)"
 test -f "$SKILL_ROOT/SKILL.md"
 printf 'SKILL_ROOT=%s\n' "$SKILL_ROOT"

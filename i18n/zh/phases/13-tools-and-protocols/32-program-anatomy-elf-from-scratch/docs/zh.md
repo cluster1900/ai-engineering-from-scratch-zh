@@ -380,6 +380,29 @@ macho.function_bytes("_percent_change")[:4].hex()
 
 成功标准:导入列表,段映射和每个函数范围均与采集工具的输出和测试期间不运行工具.
 
+## 评分实验
+
+五个关于本课件的题目. 用你构建的代码找到每个答案,然后写入.`code/lab_answers.json`△数字写成数字,或写成`"0x40"`这样十六进制字符串;列表写成JSON列表.
+
+1. `t1`现在,我们已经开始了.
+2. `t2`百分比变化的小幅.
+3. `t3`文件偏移,写成十六进制.
+4. `t4`列表中的重定位类型名,排序后写成列表
+5. `t5`列表中.rodata+0x14 处的五个Int值,写成列表
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch
+python3 code/lab.py
+```
+
+检查器在已提交的固定上使用 `code/main.py`计算每个期望值.`PASS`,我知道.`FAIL`或`TODO`只有五个问题全部通过,才以0退出.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### 看它运行
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)机器把本课作为它的前两个工位来运行.`percent_change`目标文件的头部,柜子开放`.text`并读取这个符号. 关闭符号,可以看到符号表提供的事实.
+
 ## 本课产物
 
 本课产出发 `outputs/skill-program-anatomy-elf-from-scratch.md`△可用于Claude、Cursor、Codex、OpenClaw、Hermes或任何读取SKILL.md的智能体.
