@@ -88,7 +88,7 @@ response = review(code_a)
 response.usage
 # InputTokensUsage(
 #     input_tokens=120,
-#     cache_creation_input_tokens=15023,   # 按 1.25x 付费
+#     cache_creation_input_tokens=15023,   # paid at 1.25x
 #     cache_read_input_tokens=0,
 #     output_tokens=340,
 # )
@@ -96,7 +96,7 @@ response.usage
 response_b = review(code_b)
 response_b.usage
 # cache_creation_input_tokens=0
-# cache_read_input_tokens=15023           # 按 0.1x 付费
+# cache_read_input_tokens=15023           # paid at 0.1x
 ```
 
 En el CI, revise estos dos segmentos si`cache_read_input_tokens`En varias veces de la solicitud siempre para cero, indique que sus llaves de caché están en movimiento.
@@ -122,11 +122,11 @@ client = OpenAI()
 resp = client.chat.completions.create(
     model="gpt-5",
     messages=[
-        {"role": "system", "content": SYSTEM_PROMPT},   # 长且稳定
+        {"role": "system", "content": SYSTEM_PROMPT},   # long and stable
         {"role": "user", "content": user_msg},
     ],
 )
-resp.usage.prompt_tokens_details.cached_tokens  # 获得折扣的部分
+resp.usage.prompt_tokens_details.cached_tokens  # the discounted portion
 ```
 
 También se aplica a la caché de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la aplicación de la`user`字段(se utiliza como clave de caché 组成部分), así como herramientas de re-排──
@@ -142,7 +142,7 @@ from google.genai import types
 client = genai.Client()
 
 cache = client.caches.create(
-    model="gemini-3-pro",
+    model="gemini-3.8-flash",
     config=types.CreateCachedContentConfig(
         display_name="rubric-v3",
         system_instruction=RUBRIC,
@@ -152,7 +152,7 @@ cache = client.caches.create(
 )
 
 resp = client.models.generate_content(
-    model="gemini-3-pro",
+    model="gemini-3.8-flash",
     contents=["Review this code:\n" + code],
     config=types.GenerateContentConfig(cached_content=cache.name),
 )
