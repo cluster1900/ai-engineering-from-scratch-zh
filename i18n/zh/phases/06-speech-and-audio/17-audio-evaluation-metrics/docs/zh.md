@@ -45,7 +45,7 @@
 
 **SECS (Speaker Encoder Cosine Similarity)。**用于语音克隆. 参考音频与克隆输出之间的ECAPA嵌入 cosine.
 
-**WER-on-ASR-round-trip。**在 TTS 输出上运行 语,并对输入文本计算 WER──用于捕捉可理解度回归──2026 SOTA:&lt;2% CER──
+**WER-on-ASR-round-trip。**在 TTS 输出上运行 语,并相对于输入文本计算 WER──用于捕捉可理解度回退──2026 SOTA:英语测试组 上 &lt;2% WER(曼德林测试组 改为报告 CER) ⋅
 
 **TTFA (time-to-first-audio)。**端到端延迟──科科罗-82M:~100 ms;F5-TTS:~1秒──
 
@@ -79,7 +79,7 @@
 
 **CLAP Score。**使用CLAP嵌入的文本-音频对齐分数──&gt; 0.3 = 合理对齐──
 
-**Listening panel MOS。**对于消费级音乐来说,仍是最终的判断.
+**Listening panel MOS。**对于消费级音乐来说仍然是最终的判断.Suno v5 在Suno 自己的成绩对偏好基准上得到ELO 1293――这是厂商数字;TTS Arena 排名是语音,而不是音乐――
 
 ### 音频语言基准指标
 
