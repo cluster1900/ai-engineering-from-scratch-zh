@@ -10,7 +10,7 @@ Abbreviations: G = phases/01-math-foundations/21-graph-theory, EL = phases/05-nl
 - Fiedler value, bottleneck: G/d:147
 - message passing matrix form, rows sum to 1: G/d:198-202
 - GCN with self-loops A + I: G/d:459-465
-- PageRank formula, d=0.85: G/d:469
+- PageRank formula, d=0.85: G/d:471
 
 ## 代码中的图任务 (task-table)
 - Graph(n_nodes, directed=False): Gc:5-6
@@ -25,10 +25,10 @@ Abbreviations: G = phases/01-math-foundations/21-graph-theory, EL = phases/05-nl
 ## 用 numpy 做谱划分 (annotated-code)
 - D = np.diag(A.sum(axis=1)), L = D - A: G/d:425-426
 - np.linalg.eigh(L): G/d:428
-- eigenvalues[1] Fiedler value: G/d:430
-- fiedler, group_a, group_b: G/d:433-435
-- nx.karate_club_graph(): G/d:393, 31 nodes and 78 edges: G/d:476
-- nx.number_connected_components(G): G/d:400
+- eigenvalues[1] Fiedler value: G/d:431
+- fiedler, group_a, group_b: G/d:436-438
+- nx.karate_club_graph(): G/d:396, 34 nodes and 78 edges: G/d:479
+- nx.number_connected_components(G): G/d:403
 - nx.pagerank(G): G/d:405
 
 ## 从文本到知识图谱 (flow)

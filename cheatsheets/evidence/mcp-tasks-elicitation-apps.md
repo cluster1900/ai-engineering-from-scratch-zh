@@ -3,13 +3,13 @@
 Abbreviations: P = phases/13-tools-and-protocols. L12 = P/12-mcp-roots-and-elicitation, L13 = P/13-mcp-async-tasks, L14 = P/14-mcp-apps, L29 = P/29-mcp-reliability-cancellation-and-flow-control. d = docs/en.md, c = code/main.py.
 
 ## MRTR elicitation 往返 (flow, 7 steps)
-1. tools/call id 1 with elicitation form capability in _meta: L12/d:136-144, L12/c:117-126, 473-486
+1. tools/call id 1 with elicitation form capability in _meta: L12/d:136-144, L12/c:117-125, 473-486
 2. resultType input_required with inputRequests.delete_choice: L12/d:69-99, L12/c:294-298
 3. requestState signs principal, method, argumentsDigest, candidateIds, nonce, expiresAt: L12/d:208-215, L12/c:285-293
 4. host renders form, user accepts, declines or dismisses: L12/d:102
 5. retry with fresh id 2, inputResponses and requestState: L12/d:102-130, L12/c:494-503
 6. verify state, re-authorize workspace, re-check containment: L12/d:132
-7. claim nonce once, delete, resultType complete: L12/d:219, L12/c:92-115, 428-437, L12/d:239
+7. claim nonce once, delete, resultType complete: L12/d:219, L12/c:92-114, 428-437, L12/d:239
 
 ## 无状态核心上的 Task 生命周期 (architecture, 8 nodes)
 - Client declares io.modelcontextprotocol/tasks extension: L13/d:63-80

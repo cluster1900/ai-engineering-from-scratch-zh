@@ -55,7 +55,7 @@ Abbreviations: MA = phases/09-reinforcement-learning/10-multi-agent-rl, S2R = ph
 ## 四个 VLA 并列对比 (comparison, 5 rows)
 - Action format: RT-2 256 bins VLA/d:32, OpenVLA 256 bins VLA/d:45, pi0 flow-matching expert VLA/d:59, GR00T System 1 action head VLA/d:74
 - Backbone: PaLM-X VLA/d:34, 7B Llama + DINOv2 + SigLIP VLA/d:45, small action transformer VLA/d:61, large VLM + small action head VLA/d:73-74
-- Speed: 3-5 Hz VLA/d:41, 4-5 Hz on an A100 VLA/d:49, ~5 denoising steps, 50 Hz VLA/d:63, 50-100 Hz and ~1 Hz VLA/d:73-74
+- Speed: 3-5 Hz VLA/d:41; 4-5 Hz on an A100 VLA/d:49, ~5 denoising steps, 50 Hz VLA/d:63; 50-100 Hz and ~1 Hz VLA/d:73-74
 - Detail: 10 tokens per step VLA/d:32, LoRA fine-tuning VLA/d:47, 50-step sequence VLA/d:61, >30 DOF VLA/d:71
 - Data: ~1:1 VLA/d:94, Open X-Embodiment VLA/d:47, VLA/d:88, ~0.5:1 VLA/d:94, similar VLA/d:94, Omniverse sim-to-real VLA/d:78
 
