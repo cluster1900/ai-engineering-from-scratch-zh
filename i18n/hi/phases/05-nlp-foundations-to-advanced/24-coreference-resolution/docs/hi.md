@@ -59,14 +59,14 @@ coref-links
 ```python
 import spacy
 nlp = spacy.load("en_coreference_web_trf")   # experimental model
-doc = nlp("Apple announced new products. The company said they would ship soon.")
+doc = nlp("Apple announced new products. The company said it would ship them soon.")
 for cluster in doc._.coref_clusters:
     print(cluster, "->", [m.text for m in cluster])
 ```
 
 एक लंबे दस्तावेज में, आप एक समान परिणाम प्राप्त होगाः
-- क्लस्टर 1: [Apple, कंपनी, वे]
-- समूह 2: [नए उत्पाद]
+- क्लस्टर 1: [Apple, कंपनी, यह]
+- समूह 2: [नए उत्पाद, वे]
 
 ### 步骤 2: नियम आधारित उच्चारण समाधान (शिक्षण)
 
