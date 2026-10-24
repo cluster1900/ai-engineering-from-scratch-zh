@@ -118,7 +118,7 @@ La mayoría de las cadenas que encuentras en ML cumplen con estas dos condicione
 
 **Absorbing states。**Si una vez entras en un estado, nunca te irás.$P[i][i] = 1$), este estado es absorber de la. Absorción de cadenas de Markov se puede utilizar para construir con estados terminales.
 
-**Mixing time。**¿Cuántos pasos necesita, cadena 才会 aproximarse a la distribución estacionaria?$P$La diferencia entre el tiempo de mezcla y el tiempo de mezcla es de un tamaño muy alto.
+**Mixing time。**¿Cuántos pasos se necesitan para la distribución estacionaria? ¿Cuántos pasos se necesitan para la distribución estacionaria?$P$模) control de tiempo de mezclación。 gap 越大, mixing 越快──
 
 ### Enlace con Modelos de idiomas
 

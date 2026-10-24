@@ -102,7 +102,7 @@ L1 y L2 son las situaciones especiales de la norma Lp:
 \lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-Diferente .$p$值会产生不同形状的单位球(la distancia del punto de origen es de 1 de todos los puntos del conjunto):
+Diferente .$p$值会产生不同形状的单位球(la distancia del punto de origen hasta más de 1 es el conjunto de todos los puntos; abajo se muestra la frontera de ellos):
 
 ```
 p=1:    Diamond shape      (corners on axes)

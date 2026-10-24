@@ -43,7 +43,7 @@ w = w - \text{lr} \cdot \text{gradient}
 
 ```mermaid
 graph TD
-    A["* Starting point (high loss)"] --> B["Moving downhill along gradient"]
+    A["* Starting point (high loss)"] --> B["Moving downhill, against the gradient"]
     B --> C["Approaching minimum"]
     C --> D["o Minimum (low loss)"]
 ```
@@ -155,7 +155,7 @@ Además de`sqrt(v_hat)`Es un punto de vista clave. Los pesos de los Gradientes g
 
 ### Conveja vs no conveja
 
-Función convexa 只有一个最小──渐进下降 总能找到它──像 $f(x) = x^2$Este tipo de cuadrático es convexo.
+Función convexa  no hay mínimos locales malos: cada mínimo local es un mínimo global ⋅ para la existencia de un mínimo de función convexa suave, la tasa de aprendizaje 足够小的渐进降落 会收到它──像 ⋅$f(x) = x^2$Este tipo de cuadrático es convexo, y su mínimo único.
 
 Las funciones de pérdida de red neuronal son no convexas.
 

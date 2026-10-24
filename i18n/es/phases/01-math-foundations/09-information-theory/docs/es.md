@@ -202,7 +202,7 @@ Sexualidad:
 2. 按 MI puntuación 排序 características。
 3.  保留前                  $k$个 rasgos。
 
-Esta se aplica a cualquier relación entre la característica y el objetivo: lineal, no lineal, monótono o cualquier otra relación. Correlación sólo puede captar relaciones lineales.
+Esto se aplica a cualquier relación entre la característica y el objetivo: lineal, no lineal, monótono u otras relaciones. La correlación de persona sólo puede capturar relaciones lineares.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|

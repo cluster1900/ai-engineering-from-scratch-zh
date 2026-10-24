@@ -31,7 +31,7 @@ Esto es importante para el ML, porque el pensamiento de dominio de frecuencia �
 X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-Cada uno .$X[k]$Es un número complejo. Su magnitud.$\lvert X[k] \rvert$Indicar la frecuencia $k$La amplitud... su fase.$\angle X[k]$Indicar la desviación de la fase de la frecuencia.
+Cada uno .$X[k]$Es un número complejo. Su magnitud.$\lvert X[k] \rvert$Con frecuencia$k$La amplitud de la amplitud es la misma.$A$Y de hecho está en el banco.$k$La verdadera verdad se me ha dado.$\lvert X[k] \rvert = AN/2$, por lo tanto, debe ser eliminado$N/2$才能读出 amplitud──su fase $\angle X[k]$Indicar la desviación de la fase de la frecuencia.
 
 ¿Qué es esto?$e^{-2\pi i k n/N}$Es una frecuencia.$k$旋转的phasor──DFT 计算是信号与 $N$个等间隔频率 中每一个的相关性.$k$La correlación es muy grande.
 
@@ -100,7 +100,7 @@ graph TD
     end
 ```
 
-FFT  requerir longitud de señal es de 2 ── En la práctica, las señales normalmente se cero-pad hasta el siguiente de 2 ──
+El radix-2 FFT que se realiza en este caso es el más rápido en el tiempo de la longitud de la señal.`dft`Por lo tanto, para la velocidad, las señales suelen ser cero-pad hasta el siguiente 2 de ──`numpy.fft`Las FFT en la biblioteca utilizan algoritmos de radicales mixtas que pueden procesar cualquier longitud, pero en longitud sólo contienen factores de menor tamaño.
 
 ### Análisis espectral
 

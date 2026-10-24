@@ -18,7 +18,7 @@
 
 Lección 08 Te enseñó Descenso Gradiente, Momento y Adán. Estos optimizadores pueden moverse en cualquier superficie hacia abajo. Pero no están garantizados. Descenso Gradiente en un paisaje no confuso.
 
-Pero muchos problemas en el ML son de la conmoción. La regresión lineal, la regresión lógica, los SVMs, los LASSO, la regresión de la conmoción. Para estos problemas, hay herramientas más fuertes: con una garantía matemática de optimización. La conmoción es un problema de un solo fondo. Cualquier algoritmo que vaya hacia abajo alcanzará el valor mínimo de la totalidad.
+Pero muchos problemas en el ML son de la convexa. Para la función de la convexa lisa de la convexa mínima existente, el descenso gradual se encuentra en el proceso. No se necesita reiniciar. No se necesita la modulación de la tasa de aprendizaje.
 
 Comprender la conmoción tiene tres puntos de valor. Primero, le dice a usted cuál es el problema cuando es simple, cuál es el problema cuando es difícil. Segundo, le ofrece herramientas más rápidas, como el método de Newton. Tercero, explica el concepto de regularización que aparece de nuevo en el ML: la dualidad de los SVMs, y por qué el aprendizaje profundo sigue funcionando en todo lo que ofrece la buena naturaleza de la conmoción.
 
@@ -91,13 +91,13 @@ La definición central de la optimización:
 
 **对于凸函数，每个局部最小值都是全局最小值。**
 
-Esto significa que el Descenso Gradiente no se quedará atrapado. Cualquier camino hacia abajo se dirigirá a la misma respuesta.
+Esto significa que el Descenso Gradiente no se quedará atrapado en el peor de los mínimos valores locales. Cada mínimo que puede alcanzar tiene la misma pérdida.
 
 ```mermaid
 graph LR
     subgraph "Convex: ONE answer"
         direction TB
-        C1["Loss surface has a single valley"] --> C2["Gradient descent ALWAYS finds the global minimum"]
+        C1["Loss surface has no false valleys"] --> C2["Gradient descent with a suitable step converges to the global minimum"]
     end
     subgraph "Non-convex: MANY traps"
         direction TB
