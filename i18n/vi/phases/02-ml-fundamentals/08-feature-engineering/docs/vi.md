@@ -82,7 +82,7 @@ Số nguyên thủy rất ít có thể được sử dụng trực tiếp cho m
 Thực tế dữ liệu sẽ có lỗ hổng.
 
 - **Drop rows：**Chỉ khi thiếu dữ liệu ít và sử dụng theo thời gian
-- **Mean/median imputation：**简单,并保持分布形状(median đối với các ngoại lệ 更稳健)
+- **Mean/median imputation：**简单,能保持功能的中心(中值对异值更稳健), nhưng sẽ giảm thiểu sự khác biệt của nó, và đưa tất cả các giá trị lấp đầy lên cùng một đỉnh, do đó hình dạng phân bố sẽ thay đổi
 - **Mode imputation：**Sử dụng các tính năng phân loại
 - **Indicator column：**Trong việc tính toán  trước khi thêm một thứ hai was_this_missing── sự thiếu hụt dữ liệu thực tế này tự nó có thể có lượng thông tin
 - **Forward/backward fill：**Sử dụng dữ liệu chuỗi thời gian

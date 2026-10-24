@@ -86,7 +86,7 @@ Tại sao nó hiệu quả:
 - Khi đó$y=0$且 $p$接近 0 时:$\log(1) = 0$, vì vậy mất mát  gần 0(正确,低成本)
 - Khi đó$y=0$且 $p$接近 1 时:$\log(0)$接近负无穷, do đó mất mát 很大(错误,高成本)
 
-Đối với sự lùi hậu cần, chức năng mất mát này là cao, do đó đảm bảo chỉ có một mức tối thiểu toàn cầu.
+Đối với sự lùi hậu cần, chức năng mất mát này là cao, vì vậy mỗi mức tối thiểu địa phương đều là mức tối thiểu toàn cầu, sự giảm dần không nằm trong mức tối thiểu tồi tệ. Trong dữ liệu hoàn toàn có thể phân tích, theo trọng lượng tăng lớn, mất mát sẽ luôn giảm, vì vậy không có mức tối thiểu hạn chế; L2 quy định có thể giải quyết vấn đề này, và làm cho mức tối thiểu duy nhất.
 
 ### Sự giảm dần về hậu cần
 

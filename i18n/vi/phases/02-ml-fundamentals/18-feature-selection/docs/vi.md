@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Học mục tiêu
-- Từ zero thực hiện các phương pháp lọc (RFE, chọn lựa phía trước)
+- Từ zero thực hiện các phương pháp lọc (~ ngưỡng biến đổi, thông tin lẫn nhau) ∼ phương pháp bao bì (~ RFE) và các phương pháp nhúng (~ L1 ∼ tree importance), sau đó trong bài tập, bạn hãy tham gia vào việc chọn trước.
 - 解释 tại sao thông tin chung 能捕捉相关会漏掉的非线性特征-目标关系
 - So sánh L1 quy định (đánh chọn tích hợp) với RFE (đánh chọn bao bì),并评估它们的计算权衡
 - Xây dựng một đường ống lựa chọn tính năng kết hợp nhiều phương pháp, và hiển thị nó trong dữ liệu được giữ trên cải thiện hiệu quả của tổng quát

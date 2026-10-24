@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 重要: training SVM 之前始终要规模你的特征──SVMs đối với tính năng magnitudes 敏感,因为 边界 取决于 $\lVert w \rVert$, và các tính năng không có quy mô sẽ bị biến dạng về cấu trúc.
 
-对于大数据集,使用 `LinearSVC`(pháp nguyên, mỗi thời đại 为 $O(n)$) thay vì `SVC`(sự tạo ra đôi,$O(n^2)$Đến$O(n^3){}$):
+对于大数据集,使用 `LinearSVC`(pháp nguyên, mỗi thời đại 为 $O(n \cdot d)$, đối với$n$线性) thay vì `SVC`(sự tạo ra đôi,$O(n^2)$Đến$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC

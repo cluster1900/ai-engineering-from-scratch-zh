@@ -418,7 +418,7 @@ Nếu mô hình ML cao cấp của bạn đưa ra cơ sở ngây thơ theo mùa,
 
 1. **从绘图开始。**Trước khi xây dựng bất kỳ mô hình nào, hãy vẽ chuỗi gốc trước tiên. Tìm kiếm xu hướng, mùa, ngoại hình, phá vỡ cấu trúc.
 
-2. **先差分，再建模。**Nếu chuỗi có xu hướng rõ ràng, trước khi tạo ra các đặc điểm chậm lại, hãy làm phân biệt. Các mô hình dựa trên cây có thể xử lý xu hướng, nhưng mô hình tuyến tính không thể, và phân biệt thường không có bất lợi.
+2. **先差分，再建模。**Nếu chuỗi có xu hướng rõ ràng, trước khi tạo ra các đặc điểm chậm trễ, hãy tạo phân biệt. Các mô hình dựa trên cây có thể xử lý xu hướng, nhưng không có mô hình tuyến tính của các xu hướng rõ ràng.
 
 3. **至少留出一个完整季节周期。**Nếu có một tuần mùa, thiết lập thử nghiệm ít nhất cần một tuần hoàn toàn. Nếu là một tuần mùa, ít nhất cần một tháng hoàn toàn. Nếu không bạn không thể đánh giá mô hình có bắt được mô hình mùa không.
 

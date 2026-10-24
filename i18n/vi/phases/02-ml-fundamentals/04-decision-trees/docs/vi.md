@@ -104,7 +104,7 @@ Cách này không đảm bảo được toàn bộ cây tốt nhất. Tìm kiế
 
 ### 停止条件
 
-Nếu không ngừng điều kiện, cây sẽ tiếp tục phát triển, cho đến khi mỗi lá đều sạch, mỗi lá một mẫu)
+Nếu không có điều kiện dừng lại, cây sẽ tiếp tục phát triển cho đến khi mỗi lá đều sạch, hoặc không còn phân chia các mẫu trong đó, thường luôn phân chia cho mỗi lá chỉ có một mẫu.
 
 **Pre-pruning**会在树上 完全长成之前停止:
 - Độ sâu tối đa:当 tree  đạt được độ sâu được thiết lập 时停止分裂
