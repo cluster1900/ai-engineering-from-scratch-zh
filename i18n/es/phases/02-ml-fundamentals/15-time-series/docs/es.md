@@ -418,7 +418,7 @@ Si tu modelo de ML superior da una base de base estacional ingenua, tienes un er
 
 1. **从绘图开始。**Antes de cualquier construcción, primero dibuje la secuencia original. Busca tendencias, estaciones, rupturas estructurales, cambios repentinos en el comportamiento.
 
-2. **先差分，再建模。**Si la secuencia tiene una tendencia evidente, antes de crear las características de atraso, se hace una diferenciación. Los modelos basados en árboles pueden manejar la tendencia, pero los modelos lineales no pueden, y la diferenciación generalmente no tiene problemas.
+2. **先差分，再建模。**Si la secuencia tiene una tendencia evidente, antes de crear las características de atraso, se hace la diferenciación. Los modelos basados en árboles pueden tratar la tendencia, pero sin modelos lineales de tendencias evidentes.
 
 3. **至少留出一个完整季节周期。**Si hay una semana de temporada, el ensayo se establece al menos necesita una semana completa. Si es de temporada de meses, al menos necesita un mes completo.
 

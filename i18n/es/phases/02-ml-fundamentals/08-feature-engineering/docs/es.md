@@ -82,7 +82,7 @@ Los números primitivos muy pocos pueden ser utilizados directamente en el model
 Los datos reales tendrán huecos.
 
 - **Drop rows：** Sólo cuando falta datos y poco y con frecuencia
-- **Mean/median imputation：**简单,并保持分布形形(mediana hacia los extremos 更稳健)
+- **Mean/median imputation：**简单,能保持特点的中心(mediana a los valores fuera de línea 更稳健), pero reducirá su varianza, y colocará todos los valores de relleno acumulados en la misma cima, por lo que la forma de distribución cambiará
 - **Mode imputation：**Utilizando características categoricas
 - **Indicator column：**En imputando  antes añadir una segunda serie was_this_missing── la falta de datos en sí mismo puede tener información
 - **Forward/backward fill：**Utilizando datos de la secuencia de tiempo

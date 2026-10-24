@@ -86,7 +86,7 @@ En la regresión logística, el uso de MSE se produce en una superficie de coste
 - Cuando$y=0$且 $p$接近 0 时:$\log(1) = 0$, por lo tanto pérdida  casi 0(正确, bajo costo)
 - Cuando$y=0$且 $p$接近 1 时:$\log(0)$接近负无穷, por lo tanto pérdida 很大(错误,高成本)
 
- Para la regresión logística, esta función de pérdida es de forma simbólica, por lo que garantiza sólo un mínimo global
+ Para la regresión logística, esta función de pérdida es de forma simbólica, por lo que cada mínimo local es un mínimo global, el descenso gradual no se encuentra en un mínimo de mal valor.  En datos completamente cótables, con el aumento de peso, la pérdida disminuye, por lo que no existe un mínimo limitado.
 
 ### Descenso gradual de la regresión logística
 

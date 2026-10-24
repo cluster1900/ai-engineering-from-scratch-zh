@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 importante: entrenar SVM  Antes de siempre es necesario escalar tus características ⋅SVMs son sensibles a las magnitudes de las características                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $\lVert w \rVert$, y las características de la escala no se torcerán en la estructura geográfica.
 
-对于大数据集,使用 `LinearSVC`(Fórmulación primaria, cada época 为 $O(n)$) en lugar de `SVC`(dupla formulación,$O(n^2)$¿ Qué ?$O(n^3){}$):
+对于大数据集,使用 `LinearSVC`(Fórmulación primaria, cada época 为 $O(n \cdot d)$, para$n$线性) en lugar de `SVC`(dupla formulación,$O(n^2)$¿ Qué ?$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC

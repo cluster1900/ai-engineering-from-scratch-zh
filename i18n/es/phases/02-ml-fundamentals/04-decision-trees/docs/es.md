@@ -104,7 +104,7 @@ Este tipo de método no garantiza obtener el mejor árbol de la totalidad. Busca
 
 ### 停止条件 停止 condiciones 停止 condiciones 停止 condiciones 停止 condiciones 停止 condiciones 停止 condiciones 停止 condiciones 停止 condiciones 停止 停止 条件
 
-Si no hay condiciones para que el árbol siga creciendo, hasta que cada hoja sea pura, cada hoja una muestra. Esto recordará perfectamente los datos de entrenamiento y se generalizará.
+Si no hay condiciones de parada, el árbol seguirá creciendo hasta que cada hoja sea pura, o no se dividirá las muestras, y sólo se dividirá una muestra en cada hoja.
 
 **Pre-pruning**Me encontré en el árbol.
 - Profundidad máxima: Cuando el árbol  alcanza la profundidad fijada 时停止 split
