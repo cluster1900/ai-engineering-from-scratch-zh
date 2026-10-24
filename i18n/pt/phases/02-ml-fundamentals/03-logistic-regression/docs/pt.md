@@ -86,7 +86,7 @@ Por que é eficaz:
 - - Não .$y=0$且 $p$接近 0 时:$\log(1) = 0$, portanto, perda  aproximada de 0(正确, baixo custo)
 - - Não .$y=0$且 $p$接近 1 时:$\log(0)$接近负无穷, portanto perda 很大(错误,高成本)
 
-Para a regressão logística, esta função de perda é de forma simbólica, portanto, só garante um mínimo global.
+Para a regressão logística, esta função de perda é de forma simbólica, portanto, cada mínimo local é um mínimo global, descida gradual não está em um mínimo de valor ruim. Em dados totalmente descontáveis, com o peso aumentando, a perda vai diminuindo, portanto, não há um mínimo limitado.
 
 ### A Regressão Logística Desce Gradualmente
 

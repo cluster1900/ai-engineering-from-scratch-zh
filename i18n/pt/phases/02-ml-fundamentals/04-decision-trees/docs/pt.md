@@ -104,7 +104,7 @@ Esta espécie de método ganancioso não garante obter a melhor árvore da regi�
 
 ### 停止条件
 
-Se não houver condições para parar, a árvore continuará a crescer até que cada folha seja pura, cada folha uma amostra.
+Se não houver condições de parada, a árvore continuará a crescer até que cada folha seja pura, ou não se dividam as amostras, e normalmente apenas uma única mostra.
 
 **Pre-pruning**"Ao fim de um arbre, a sua forma de crescer é de parar".
 - Profundeza máxima: quando a árvore  atingir a profundidade definida 时停止 split

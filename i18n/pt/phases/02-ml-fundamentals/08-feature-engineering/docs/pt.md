@@ -82,7 +82,7 @@ Os números primitivos muito poucos podem ser utilizados diretamente no modelo.
 Os dados reais vão ter espaço em branco.
 
 - **Drop rows：** Apenas quando falta dados e pouco e com o tempo de uso
-- **Mean/median imputation：**简单,并保持分布形形(mediana para os outliers 更稳健)
+- **Mean/median imputation：**简单,能保持 feature 的中心(median versus outliers 更稳健), mas reduzirá sua variância, e colocará todos os preenchimentos acumulados na mesma ponta, de modo que a forma distribuída mudará
 - **Mode imputation：**Utilizando características categóricas
 - **Indicator column：**Em imputando                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 - **Forward/backward fill：**Usado para dados de sequência de tempo

@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Objectivo de aprendizagem
-- Desde zero implementar métodos de filtro (três anos de diferença, informação mútua, quadrado) e métodos de embalagem (realização de RFE, selecção de futuro)
+- Desde zero implementar métodos de filtro (~ um limiar de variação, informação mútua) ∼ método de envolvente (~ um método de envelope) ∼ RFE (~ um método de envelope) ∼ L1 ∼ importância de árvore) ∼
 -  Explicar por que a informação mútua                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 - Comparar a regularização L1 (seleção integrada) com a seleção de embalagens (RFE) (seleção de embalagens),并评估它们的计算权衡
 - Construir um pipeline de seleção de recursos de vários métodos combinados, e demonstrar o efeito da generalização em dados mantidos

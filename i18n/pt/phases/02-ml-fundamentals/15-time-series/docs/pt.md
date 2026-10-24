@@ -418,7 +418,7 @@ Se o seu modelo de ML superior fornecer uma linha de base sazonal ingênua, voc�
 
 1. **从绘图开始。**Antes de qualquer construção, primeiro desenhe a sequência original. Procure tendências, estações, outliers, rupturas estruturais.
 
-2. **先差分，再建模。**Se a sequência tiver tendências evidentes, antes de criar características atrasadas, fazemos diferenças. Os modelos baseados em árvores podem lidar com as tendências, mas os modelos lineares não podem, e as diferenças geralmente não têm problemas.
+2. **先差分，再建模。**Se a sequência tiver tendências evidentes, antes de criar características de atraso, faz diferença. Os modelos baseados em árvores podem lidar com as tendências, mas sem um modelo linear de tendências evidentes não pode.
 
 3. **至少留出一个完整季节周期。**Se houver uma semana de estação, o teste é feito pelo menos durante uma semana completa. Se for uma semana de estação, pelo menos durante uma semana completa.
 

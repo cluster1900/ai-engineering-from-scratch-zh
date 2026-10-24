@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 importante: treinar SVM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      $\lVert w \rVert$, e características não escaladas 会扭曲几何结构──
 
-对于大数据集,使用 `LinearSVC`(Fomulação primária, cada época 为 $O(n)$) em vez de `SVC`(formulação dupla,$O(n^2)$Até$O(n^3){}$):
+对于大数据集,使用 `LinearSVC`(Fomulação primária, cada época 为 $O(n \cdot d)$, para$n$线性) em vez de `SVC`(formulação dupla,$O(n^2)$Até$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC
