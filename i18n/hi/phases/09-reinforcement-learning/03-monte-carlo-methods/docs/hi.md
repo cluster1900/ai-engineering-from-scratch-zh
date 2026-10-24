@@ -46,6 +46,10 @@ V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
 
 तापमान और परिस्थितियों में प्रत्येक जोड़ी असीमित बार दौरा किया गया,$\alpha$满足罗宾斯-मोंरो), होगा के रूप में संभावना 1 收到 $Q^{\ast}$和 $\pi^{\ast}$
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### चरण 1: रोलआउट → (s, a, r) 列表
@@ -138,10 +142,6 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 - **Non-stationary policies。**यदि $\pi$发生变化(如 MC नियंत्रण 中那样), पुराने रिटर्न विभिन्न नीतियों से आते हैं── konstante-α MC इस बिंदु को संभाल सकता है; नमूना-औसत MC 不行──
 - **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$连乘──Variance 会随地平线 爆炸──用 प्रति निर्णय भारित IS 截断,或切换到 TD──
 
-
-```figure
-epsilon-greedy
-```
 
 ## इसका उपयोग करें
 

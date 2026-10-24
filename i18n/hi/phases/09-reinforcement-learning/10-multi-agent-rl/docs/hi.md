@@ -65,7 +65,7 @@ class CoopGridWorld:
         self.goal = (5, 5)
 
     def reset(self):
-        return ((0, 0), (5, 0))  # 两个 agents
+        return ((0, 0), (5, 0))  # two agents
 
     def step(self, state, actions):
         a1, a2 = state
