@@ -1,38 +1,38 @@
-# Train math reasoning on GSM8K
+# 在 GSM8K 上训练数学推理
 
-> GSM8K with a binary reward is the smallest recipe that shows GRPO learning, and its group size decides how much each step teaches.
+> 用二元奖励训练 GSM8K，是能看出 GRPO 在学习的最小配方，而组大小决定了每一步能学到多少。
 
-When you finish this section, you can train a small model on GSM8K and choose how many answers to sample for each prompt.
+读完本节后，你能在 GSM8K 上训练一个小模型，并选出每个 prompt 要采样多少个回答。
 
-**Our result:** in 24 steps, 4, 8, and 16 answers for each prompt gave reward gains inside one range. More answers made each rollout longer.
+**我们的结果：** 在 24 步内，每个 prompt 4 个、8 个和 16 个回答带来的奖励提升都落在同一个范围内。回答越多，每次 rollout 越长。
 
-## Run the recipe
+## 运行配方 {#s-train-math-on-gsm8k-run-the-recipe}
 
-The launcher from [section 1.1](#s-run-grpo-on-one-gpu) is this recipe. These flags shape each step:
+[第 1.1 节](#s-run-grpo-on-one-gpu)里的启动脚本就是这个配方。下面这些参数决定每一步的形状：
 
 ```bash
 --rollout-batch-size 32 --n-samples-per-prompt 8 --global-batch-size 256 --rm-type math
 ```
 
-**Group:** the answers that the engine writes for one prompt. GRPO compares each answer with the other answers in its group, so a group where every answer gets the same reward teaches nothing.
+**组：** 引擎为同一个 prompt 写出的那些回答。GRPO 把每个回答和同组的其他回答比较，所以如果一组里每个回答拿到的奖励都一样，这一组就什么也教不了。
 
-Keep `--global-batch-size` equal to the prompts times the answers, here 32 times 8. Then each rollout gives exactly one optimizer step.
+让 `--global-batch-size` 等于 prompt 数乘以回答数，这里是 32 乘 8。这样每次 rollout 恰好对应一个优化器步。
 
-## Choose the group size
+## 选择组大小 {#s-train-math-on-gsm8k-choose-the-group-size}
 
-We changed only `--n-samples-per-prompt` and set `--global-batch-size` to match. For 4 answers, the run of [section 1.1](#s-run-grpo-on-one-gpu) gets this line:
+我们只改了 `--n-samples-per-prompt`，并让 `--global-batch-size` 与之匹配。对于 4 个回答，[第 1.1 节](#s-run-grpo-on-one-gpu)的运行加上这一行：
 
 ```bash
 -e MILES_NUM_ROLLOUT=24 -e MILES_EXTRA_ARGS="--n-samples-per-prompt 4 --global-batch-size 128"
 ```
 
- The table compares the first 24 steps of each run. The gain is the mean reward of steps 16 to 23 minus the mean of steps 0 to 7.
+ 下表比较了每次运行的前 24 步。提升是第 16 到 23 步的平均奖励减去第 0 到 7 步的平均奖励。
 
-| Answers per prompt | Runs | Reward gain | Answer length, first 8 to last 8 steps | Rollout time per step |
+| 每个 prompt 的回答数 | 运行次数 | 奖励提升 | 回答长度，前 8 步到后 8 步 | 每步 rollout 时间 |
 |---|---|---|---|---|
-| 4 | 1 seed | +0.053 | 735 to 673 tokens | 32.5 s on 14 clean steps |
-| 8 | 3 seeds | +0.038 to +0.098 | 712 to 734, then 580 to 637 | 59.1 s on the same 14 steps, 48-step run with the default seed |
-| 16 | 1 seed | +0.097 | 728 to 591 tokens | 188.2 s, no clean step |
+| 4 | 1 个种子 | +0.053 | 735 到 673 token | 14 个干净步上 32.5 s |
+| 8 | 3 个种子 | +0.038 到 +0.098 | 712 到 734，然后 580 到 637 | 同样 14 步上 59.1 s，默认种子的 48 步运行 |
+| 16 | 1 个种子 | +0.097 | 728 到 591 token | 188.2 s，没有干净步 |
 
 ```figure
 id: fig-3-1
@@ -42,24 +42,24 @@ claim: The reward gain with 4 and with 16 answers per prompt fell inside the ran
 caption: Reward gain over the first 24 steps for each run. The three green bars are the same recipe with three seeds.
 ```
 
-**We measured** no clear effect of the group size on the reward in 24 steps. The 16-answer run gained +0.097, and one of the three 8-answer seeds gained +0.098. The seed spread at 8 answers, 0.038 to 0.098, covers all the runs.
+**我们测得** 在 24 步内，组大小对奖励没有明显影响。16 个回答的运行提升了 +0.097，而 8 个回答的三个种子之一提升了 +0.098。8 个回答时种子之间的差距是 0.038 到 0.098，覆盖了所有运行。
 
-The cost is clear. More answers mean more tokens to write in each step. The 4-answer rollout took 32.5 s on its 14 clean steps. Our 48-step run with 8 answers and the default seed ran on another day, before we added the heat guard, so no pause touched it. On the same 14 step numbers it took 59.1 s.
+代价则很明确。回答越多，每一步要写的 token 就越多。4 个回答的 rollout 在它的 14 个干净步上用了 32.5 s。我们用 8 个回答、默认种子的 48 步运行是在另一天跑的，那时还没加温度保护，所以没有任何暂停影响它。在同样的 14 个步号上，它用了 59.1 s。
 
-Every step of the 16-answer run overlapped a heat pause, so it has no clean time. Its median of 188.2 s includes the pauses.
+16 个回答的运行每一步都碰上了一次温度暂停，所以它没有干净的时间。它 188.2 s 的中位数包含了这些暂停。
 
-The 16-answer run also logged 22,357 `503 Service Unavailable` lines, in bursts of up to 60 s. The client retried each request, and the run went on. With 512 open requests, the router probably found no free engine for a short time. We did not confirm that cause. [Section 1.2](#s-add-a-watchdog) replays these bursts through the watchdog.
+16 个回答的运行还记录了 22,357 行 `503 Service Unavailable`，成批出现，每批最长 60 s。客户端重试了每个请求，运行也继续了下去。有 512 个未完成请求时，router 很可能短时间内找不到空闲的引擎。我们没有确认这个原因。[第 1.2 节](#s-add-a-watchdog)用 watchdog 重放了这些突发。
 
-Read this result with its limits. The runs with 4 and 16 answers have one seed each. The 16-answer run finished all 24 steps. Then the time limit of our run queue stopped the container while it shut down, as [the lab notes](#s-ref-lab-notes) explain.
+解读这个结果时要注意它的局限。4 个和 16 个回答的运行各只有一个种子。16 个回答的运行跑完了全部 24 步。之后我们运行队列的时间限制在容器关闭时把它停掉了，[实验笔记](#s-ref-lab-notes)里有说明。
 
-## What we did not run
+## 我们没有跑的部分 {#s-train-math-on-gsm8k-what-we-did-not-run}
 
-We did not run the rollout batch size sweep with 16 and 64 prompts for each step. We stopped it to keep the lab inside its time limit.
+我们没有跑每步 16 个和 64 个 prompt 的 rollout batch size 扫描。为了让实验不超出时间限制，我们停掉了它。
 
 ```takeaways
-- Start with 32 prompts and 8 answers for each prompt.
-- Keep the global batch size equal to the prompts times the answers.
-- Change the group size only with a second seed, because one run sits inside the seed spread.
+- 从 32 个 prompt、每个 prompt 8 个回答开始。
+- 让全局 batch size 等于 prompt 数乘以回答数。
+- 只有在跑了第二个种子时才改组大小，因为单次运行落在种子差距之内。
 ```
 
 Sources: capture/gpu/miles_grpo.py; capture/gpu/out-gb10/503-bursts.txt; capture/gpu/summary/miles-gb10-lab.json (runs.e2-n4, runs.e2-n16, runs.plain-48, runs.plain-48-s2, runs.plain-48-s3, partial).
