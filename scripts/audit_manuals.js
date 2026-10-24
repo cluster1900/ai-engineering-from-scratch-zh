@@ -279,6 +279,8 @@ function auditManual(manual, add) {
     const key = String(cite).trim().split(/\s+/)[0];
     if (!(key in manual.quoteSources)) add(where, 'quote-key', `a source marker cites "${key}", which manual.json quoteSources does not declare`);
   };
+  // Explicit {#id}s in upstream front.md files (checked against upstream 3f9715c62).
+  const UPSTREAM_FRONT_IDS = { 'vllm-101': ['l4-sessions'] };
   const sources = new Map();
   const sourceFor = file => {
     if (!sources.has(file)) sources.set(file, fs.readFileSync(file, 'utf8'));
@@ -293,8 +295,10 @@ function auditManual(manual, add) {
   }
   for (const doc of manual.documents) {
     for (const block of doc.blocks) {
-      if (doc.kind === 'front' || block.type !== 'heading' || !block.id) continue;
+      if (block.type !== 'heading' || !block.id) continue;
       const where = `${doc.label}:${block.line}`;
+      // front.md keeps only the custom ids that upstream writes into its source; every other front heading follows the slug rule.
+      if (doc.kind === 'front' && (UPSTREAM_FRONT_IDS[manual.id] || []).includes(block.id)) continue;
       const prefix = `${doc.anchor}-`;
       const slug = block.id.startsWith(prefix) ? block.id.slice(prefix.length) : null;
       // build-manuals.js slugify() trims dashes and then cuts to 64 characters, so a cut slug may end in "-".
