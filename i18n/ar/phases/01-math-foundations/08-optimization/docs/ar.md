@@ -43,7 +43,7 @@ w = w - \text{lr} \cdot \text{gradient}
 
 ```mermaid
 graph TD
-    A["* Starting point (high loss)"] --> B["Moving downhill along gradient"]
+    A["* Starting point (high loss)"] --> B["Moving downhill, against the gradient"]
     B --> C["Approaching minimum"]
     C --> D["o Minimum (low loss)"]
 ```
@@ -155,7 +155,7 @@ w &= w - \text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)
 
 ### الملتوية مقابل غير الملتوية
 
-وظيفة مخروطة 只有حد أدنى  التنزل التدريجي 总能找到它‬ ‬$f(x) = x^2$مثل هذا التربيعي هو متواصل
+وظيفة متواصلة  ليس هناك أدنى الحد الأدنى المحلي السيئ: كل أدنى محلي هو أدنى الحد العالمي  بالنسبة لحد الأدنى من وظيفة متواصلة سلسة، معدل التعلم $f(x) = x^2$مثل هذا التربيعي هو متواصل، ولهذا الحد الأدنى 唯一.
 
 وظائف فقدان الشبكة العصبية غير متواصلة.
 
