@@ -115,7 +115,7 @@ grep -oE '"[^"]*(k|v)_scale"' ~/.cache/huggingface/hub/models--Qwen--Qwen3-8B/sn
 
 最后，在上生产之前，用你自己的 prompt 分别在开启和关闭 FP8 时运行，并比较答案。
 
-## 了解 0.31.0 之后的变化 {#s-fit-more-users-with-an-fp8-kv-cache-know-what-changed-after-0310}
+## 了解 0.31.0 之后的变化 {#s-fit-more-users-with-an-fp8-kv-cache-know-what-changed-after-0-31-0}
 
 0.32.0 版本在 SM 8.x 和 SM 12.x GPU（包括 L4 和 GB10）上增加了 NVFP4 KV cache。它每 token 存储的字节比 FP8 更少。我们没有测试它。
 
