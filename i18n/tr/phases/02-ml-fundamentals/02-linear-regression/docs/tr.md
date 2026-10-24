@@ -153,6 +153,10 @@ Eğer çok fazla özellikiniz varsa, model daha büyük ağırlıkları dağıta
 
 罰项会抑制较大的重量──hiperparameter $\lambda$Kontrol kontrolü:$\lambda$越高,重量 越小, düzenleme 越强── sonraki dersler bu konuyu daha derinlemesine ele alacak── şimdi sadece varlığını ve neden yardımcı olduğunu bilmemiz gerekiyor──
 
+```figure
+linear-regression-fit
+```
+
 ## Yapım
 
 ### 步骤 1: örnek verileri oluşturmak
@@ -466,10 +470,6 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
-
-```figure
-linear-regression-fit
-```
 
 ## Kullan
 
