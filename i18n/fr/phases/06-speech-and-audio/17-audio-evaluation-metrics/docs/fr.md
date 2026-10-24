@@ -45,7 +45,7 @@ Chaque tâche audio a plusieurs indicateurs, chacun mesure une dimension différ
 
 **SECS (Speaker Encoder Cosine Similarity)。**Utilisé pour le clonage de la voix, le code ECAPA entre le clonage de la voix et le clonage de la voix, le code ECAPA entre le clonage de la voix et le clonage de la voix, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine, le cosine,
 
-**WER-on-ASR-round-trip。**Dans le TTS 输出上运行 Whisper,并对输入文本计算 WER──用于捕捉可理解度回归──2026 SOTA:&lt;2% CER──
+**WER-on-ASR-round-trip。**Dans le TTS 输出上运行 Whisper,并相对于输入文本计算 WER──用于捕捉可理解度回退──2026 SOTA:English test sets 上 &lt;2% WER(Mandarin test sets 改为报告 CER)。
 
 **TTFA (time-to-first-audio)。**端到端延迟──Kokoro-82M: ~100 ms; F5-TTS: ~1 s──
 
@@ -79,7 +79,7 @@ Multi-étiquette: tous les catégories **mAP (mean Average Precision)**◊AudioS
 
 **CLAP Score。**Utilisation de CLAP Embedding 的文本-音频对齐分数──&gt; 0.3 = 合理对齐──
 
-**Listening panel MOS。**Pour le niveau de consommation de musique, il reste un jugement final.
+**Listening panel MOS。**Pour le niveau de consommation de musique, il reste encore un jugement final. Suno v5 dans Suno  propre résultat par rapport à la référence de préférence de l'ELO 1293 .
 
 ### Indice de référence pour le langage audio
 

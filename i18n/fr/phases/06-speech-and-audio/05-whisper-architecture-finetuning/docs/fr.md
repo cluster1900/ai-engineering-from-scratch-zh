@@ -36,9 +36,9 @@ Les grands v3 ont des paramètres 1.55B.
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` étiquette de langue; comportement de traduction contre transcription obligatoire ⋅
-- `<|transcribe|>`Ou `<|translate|>` From arbitrary language input 翻译为英语输出,或逐字转写。
-- `<|notimestamps|>` 跳过 word-level timestamps 更快)
+- `<|en|>`:langue tag;指明音频中所言的语言──省略时 Whisper 会先检测语言──
+- `<|transcribe|>`Ou `<|translate|>`:task tag;以源语言转写语音,或将其翻译为 英文──
+- `<|notimestamps|>`J'ai été élu à la première place.
 
 Rapidement, un modèle peut accomplir de nombreuses tâches.`<|en|>`改成 `<|fr|>`Ça va être traduit en français.
 
