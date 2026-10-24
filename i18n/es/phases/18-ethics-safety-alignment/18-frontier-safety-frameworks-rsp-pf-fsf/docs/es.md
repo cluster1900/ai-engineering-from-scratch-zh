@@ -72,7 +72,7 @@ v2.0(2025 年 2 月) aumentó la Alineación Deceptiva 部分,并为 ML R&D CCLs
 - "Niveles críticos de capacidad".
 - OpenAI "Trescos de alta capacidad".
 
-没有行业标准术语──结构上一致:三层边界能力,并配有公开评估标准──三者都包含竞争对手调整条款(自2025年起)──
+没有行业标准术语──结构上一致:三个框架都定义分层能力门,并配有公开评估标准──三者都包含竞争对手调整条款──自2025年起)──
 
 ### Casos de seguridad
 

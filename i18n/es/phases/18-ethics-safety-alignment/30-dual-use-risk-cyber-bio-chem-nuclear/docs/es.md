@@ -14,7 +14,7 @@
 - Explicar la desigualdad entre los nuevos modelos y los expertos, así como su impacto en la construcción de casos de seguridad.
 
 ##  problemas
-Lección 17 es metodología de medición. Lección 30 es el estado de medición del año 2026. El panorama ocurre entre el año 2024 y el final del año 2025 con cambios de materialidad: cada área transcurre el marco del año 2024 sin tener un valor previo.
+Lección 17 es metodología de medición. La lección 30 es el estado de medición del año 2026. El panorama se produce en el período comprendido entre el año 2024 y el final del año 2025: tres de los cuatro campos transcurren en el marco del año 2024  valores no previstos.
 
 ## 概念
 ### La narrativa de elevación bio/químico
@@ -44,6 +44,8 @@ Antropic 2025  11 月 report: Los agentes de los estados relacionados con China 
 - El código de agentes es el lenguaje original de la automatización de ataques.
 - 4-6 个人类步骤是瓶; el aumento de la capacidad futura reducirá esta cantidad.
 - 防御性双重用途:OpenAI's 可靠访问 试点向经过审查的安全组织(成熟的事件响应 公司、政府) proporcionar capacidad de defensa 访问 如果该试点扩展,访问不对称性会有利于防御
+
+La defensa de este trabajo, comenzó a leer el código compilado que se permite analizar. La ruta de ingeniería inversa de la Fase 13 enseñará este punto en el programa que usted construye, y sólo con análisis estático:[Lesson 13.32](../../../13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md)El lector ELF central,[Lesson 13.33](../../../13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md)El gobierno de la República de China[Lesson 13.34](../../../13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md)En el caso de la empresa, el número de clientes es de aproximadamente un millón.[Lesson 13.35](../../../13-tools-and-protocols/35-evidence-confidence-and-unknowns/docs/en.md)En el medio de la observación de hechos y las conclusiones de hechos de la evidencia de la separación de hechos.[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)La máquina muestra una línea de flujo completa en una función. El agente que hace este trabajo también necesita el mismo guión, ya que una vez que parece muy claro, la contracomposición todavía puede basarse en la conjetura.
 
 ### El sistema nuclear
 

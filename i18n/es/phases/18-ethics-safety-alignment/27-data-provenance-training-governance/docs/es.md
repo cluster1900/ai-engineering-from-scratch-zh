@@ -48,7 +48,7 @@ El DPC irlandés(21 de mayo de 2025: después de la opinión del EDPB,Meta utili
 
 Principio: el interés legítimo puede ser proporcionado por motivos justificados y no por consentimiento, en base a un contenido de primera mano disponible al público y que no se opte a la exclusión.
 
-### ANPD brasileña(2024 年 6 月)
+### ANPD brasileña(2024 年 7 月)
 
 Debido a la falta de transparencia de la información, Meta suspendía el procesamiento de datos de usuarios brasileños para el entrenamiento de IA.
 

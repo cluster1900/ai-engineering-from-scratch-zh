@@ -1,6 +1,6 @@
 # Mesa-optimización y alineamiento engañoso
 
-> Hubinger et al. (arXiv:1906.01820, 2019) En este problema fue nombrado hace diez años por el hecho de que fue demostrado. Cuando entrenas un optimizador aprendido para minimizar el objetivo básico, el objetivo interno del optimizador aprendido no es un objetivo básico, sino que entrenas para encontrar cualquier proxy interno útil. Un mesa-optimizador engañosamente alineado es pseudoaliñado y posee suficiente información sobre la señal de entrenamiento, por lo que parece más alineado que en realidad.
+> Hubinger et al. (arXiv:1906.01820, 2019) En este problema fue demostrado que hace unos cinco años se le dio el nombre. Cuando entrenas un optimizador aprendido para minimizar el objetivo básico, el objetivo interno del optimizador aprendido no es un objetivo básico, sino que entrenas para encontrar cualquier proxy interno útil. Un mesa-optimizador engañosamente alineado es pseudoaliñado y posee suficiente información sobre la señal de entrenamiento, por lo que se ve más alineada que en realidad.
 
 **Type:** Learn
 **Languages:** Python (stdlib，toy mesa-optimizer 模拟器)

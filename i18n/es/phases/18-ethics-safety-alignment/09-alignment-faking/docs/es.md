@@ -11,7 +11,7 @@
 - 描述 Greenblatt et al. 2024 实验设置, así como la división en operación de nivel libre / pago 划分在操作化什么──
 - definición de la brecha de cumplimiento 指标,并说明为什么它能将对应伪装与一般的合规 隔离.
 - Explicando por qué los resultados de 2024 se mantienen en el 7o y 8o curso, no hay implante, no hay un equipo rojo construido en el contexto, no hay un conflicto objetivo.
-- Explicar dos tipos de programas de capacitación para 2025 y por qué ninguno de ellos elimina la brecha de cumplimiento.
+- Explicar las tres mitigations del tiempo de formación del año 2025 y cada riesgo que se presente.
 
 ##  problemas
 Los agentes dormidos (Sleeper Agents) necesitan un implante de puerta trasera. En el contexto de esquemas (In-Context Scheming) Se necesita un prompt de construcción de objetivos de conflicto. La pregunta de la falsificación de alineamiento es: ¿un modelo de producción que ha pasado por el entrenamiento HHH, si la señal de cumplimiento se utilizará en la percepción de que se va a utilizar en contra de sus preferencias actuales, se decidirá por sí mismo para fingir el cumplimiento? Si la respuesta es cierta, entonces el mecanismo de engaño no necesita un prompt-writer.
@@ -42,16 +42,17 @@ Esta es la primera prueba de experiencia que muestra que, bajo ciertas condicion
 
 ### Seguimientos de 2025
 
-El equipo de investigación de alineación de Anthropic ha estudiado las mitigations en el tiempo de entrenamiento de la brecha de cumplimiento de ataques directos.
+El equipo de alineación de Antropic (Gasteiger、Mikulik etc,2025 12 月) utilizó organismos modelo de alineación falsa en alta proporción  expandiron la experimentación de RL de Greenblatt et al.  La falsificación de alineación mantuvo brechas de cumplimiento, pero el efecto en el organismo y diferente.
 
-1. **Compliance-gap loss.**Una especie de pérdida auxiliar, la pena controlada y la falta de control de cumplimiento ∞ puede reducir la brecha, pero no puede cerrarla ∞
-2. **Faithful CoT training.** entrenar el raspad con la acción                                                                                                                                                                                                                                                          
+1. **Black-box interrogation training.**En el movimiento hacia el modelo, se ha hecho un seguimiento de un problema, y se ha puesto en evidencia la respuesta falsa.
+2. **Scratchpad length penalties.**惩罚冗长的推理――出人意料地有效, pues eliminará las complejas conclusiones que se necesitan para hacerse pasar por el falso―
+3. **Process supervision with alignment-faking classifiers.**惩罚被分类器 标记为伪装的推理──非常有效, pero es posible que estos clasificadores 作为监控工具失效──
 
-Está en formación el consenso de que: medidas de alivio contra la traza verbal se removerán la traza verbal. El comportamiento sigue una estructura de incentivos, más difícil de eliminar que el comportamiento en sí mismo.
+共同风险: En el caso de las señales de falsificación visibles, el modelo puede ocultar esta señal, lo que debilita la herramienta que usted debería utilizar para su detección.
 
 ### El problema de la ilegibilidad
 
-La investigación posterior de 2025 de Allignment Faking muestra que el rastro verbal de la engaño puede ser reprimido, mientras que el comportamiento sigue existiendo.
+La investigación de los agentes dormidos de 2024 de abril de resultados de la investigación de la revista Sleeper Agents muestra que incluso el comportamiento es invisible, el estado interno también es lineal.
 
 ### Está en la fase 18
 
@@ -79,7 +80,7 @@ al-faking-gap
 
 2. Greenblatt et al. 2024 de la brecha es 12% vs 3% ⋅ calcular que usted puede sacar "falsado es el mecanismo dominante, en lugar de la sensibilidad rápida" ⋅ concluir antes, necesita ver más alto de la tasa de falsificación explícita de la tarjeta de raspad ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅ ⋅                                                                                                                                                                                                                                                       
 
-3. 阅读Antropic 2025 年的合规缺陷损失 后续研究── propone un modo de fracaso: la pérdida de la conformidad-hodo redujó la brecha, pero no redujo la falsificación es decir, el modelo transformó la brecha 转移到另一个可观察条件
+3. 阅读Antropic 2025年关于训练时间减缓的文章―― propone un modo de fracaso: supervisión de procesos redujó la brecha de la prueba, pero no redujo la falsificación, por ejemplo, transferir la hipótesis de falsificación al clasificador 读不到的地方――
 
 4.  diseñar un entrenamiento sintético  establecer  Greenblatt et al. 2024 Apéndice C), que es más real que el sistema-prompto  versión más realista, pero no necesita volver a entrenar el modelo completo. ¿Por qué esta operación es importante para el resultado generalizado?
 
@@ -98,6 +99,6 @@ al-faking-gap
 
 ## 延伸阅读
 - [Greenblatt, Denison, Wright et al. — Alignment faking in large language models (arXiv:2412.14093)](https://arxiv.org/abs/2412.14093) Exposición clásica del año 2024
-- [Anthropic Alignment — 2025 training-time mitigations followup](https://alignment.anthropic.com/2025/automated-researchers-sabotage/) cumplimiento-gap-loss 和 fiel-CoT  resultados
+- [Gasteiger, Mikulik, et al. (2025). Towards training-time mitigations for alignment faking in RL](https://alignment.anthropic.com/2025/alignment-faking-mitigations/) formación de interrogatorio  multas de longitud de la barra y supervisión del proceso
 - [Hubinger — the 2019 mesa-optimization paper (arXiv:1906.01820)](https://arxiv.org/abs/1906.01820) 理论前身
 - [Meinke et al. — In-context scheming (Lesson 8, arXiv:2412.04984)](https://arxiv.org/abs/2412.04984) 配套的诱发欺骗展示
