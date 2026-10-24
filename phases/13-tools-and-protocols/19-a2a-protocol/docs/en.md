@@ -207,20 +207,21 @@ a2a-task-lifecycle
 4. 设计一个封装 MCP Server 的 A2A Agent。把每个 MCP Tool 映射为一个 A2A Skill。记下其中的取舍：失去了哪些不透明性？
 
 5. 阅读 A2A v1.0 的发布公告，找出截至 2026 年 4 月还没有任何框架实现的那一个特性。（提示：它与多跳任务委托有关。）
+
 ## 核心专业术语
 
-| 术语 | 规范定义 |
-|------|---------|
-| A2A | Agent-to-Agent 协议，用于异构不透明智能体间跨系统对等协作 |
-| Agent Card | 暴露于 `/.well-known/agent-card.json` 的名片，公布能力、接口与鉴权 |
-| Skill | Agent 所支持的命名功能单元（类似于 MCP 中的 Tool） |
-| Task | 具备独立生命周期和产物输出的异步任务委托单元 |
-| Message | 承载交互内容的实体，内含纯内容字段标识的 Parts 数组 |
-| Part | 仅包含 `text`、`raw`、`url` 或 `data` 之一的独立内容切片 |
-| Artifact | 任务完成时产出的具名、带类型输出成果 |
-| AP2 | Agent Payments Protocol，构建在 A2A 之上的支付扩展；Card 签名属于 A2A 核心（`signatures`） |
-| Opacity | 黑盒协作：被调用 Agent 的内部实现对调用方隐藏 |
-| `TASK_STATE_INPUT_REQUIRED` | 当任务执行遇阻需要调用方提供补充输入时的挂起状态 |
+| 术语 | 人们怎么说 | 实际含义 |
+|------|----------------|------------------------|
+| A2A | “Agent-to-Agent 协议” | 用于不透明 Agent 协作的开放协议 |
+| Agent Card | “`/.well-known/agent-card.json`” | 公开发布的元数据，描述 Agent 的 Skills 和 `supportedInterfaces` |
+| Skill | “一个可调用单元” | Agent 支持的具名操作（类似于 MCP 中的 Tool） |
+| Task | “委托单元” | 具有生命周期和最终 Artifact 的工作项 |
+| Message | “Task 输入” | 承载 Parts（`text`、`raw`、`url`、`data`） |
+| Part | “带类型的分块” | `text` / `raw` / `url` / `data` 中恰好一个，外加可选的 `mediaType`；没有 `kind` 字段 |
+| Artifact | “Task 输出” | 完成时返回的具名、带类型输出 |
+| AP2 | “Agent Payments Protocol” | 构建在 A2A 之上的支付扩展；Card 签名属于 A2A 核心（`signatures`） |
+| Opacity | “黑盒协作” | 被调用 Agent 的内部实现对调用方隐藏 |
+| `TASK_STATE_INPUT_REQUIRED` | “Task 暂停” | Agent 需要更多信息时的中断状态 |
 
 ## 延伸阅读
 

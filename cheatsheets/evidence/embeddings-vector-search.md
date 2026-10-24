@@ -6,7 +6,7 @@ Abbreviations: E = phases/11-llm-engineering/04-embeddings, D = phases/05-nlp-fo
 - docs "Documents, split into chunks": E/docs/en.md:162
 - enc "Bi-encoder, text to vector": E/docs/en.md:183
 - norm "L2 normalize, unit length": IR/docs/en.md:113, D/docs/en.md:79
-- idx "Vector index, HNSW or flat": E/docs/en.md:128, HY/docs/en.md:112
+- idx "Vector index, HNSW or flat": E/docs/en.md:128, HY/docs/en.md:113
 - q "Query, same model, query prefix": E/docs/en.md:183, D/docs/en.md:142
 - topk "Top 100, ANN search": E/docs/en.md:187, 191-192
 - rerank "Cross-encoder, scores pairs": E/docs/en.md:185, 193
