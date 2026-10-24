@@ -52,7 +52,13 @@ s0-gpu-dispatch
 nvidia-smi
 ```
 
-Instalado con CUDA de PyTorch:
+En Linux, la rueda de usuario está automáticamente conectada a CUDA. En Windows, por favor, consulte el selector de pytorch.org para copiar el comando de instalación de CUDA.
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+Luego, compruebe si PyTorch puede ver la GPU:
 
 ```python
 import torch

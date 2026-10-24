@@ -98,7 +98,7 @@ python train.py > output.log 2> errors.log
 python train.py > train_full.log 2>&1
 ```
 
-Necesitas tres redirecciones:
+Necesitas manejar los cuatro redirecciones y las tuberías:
 
 | 符号 | 作用 |
 |--------|-------------|
