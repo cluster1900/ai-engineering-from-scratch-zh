@@ -261,7 +261,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     x = torch.randn(shape, device=device)
     alphas_cumprod = schedule["alphas_cumprod"].to(device)
 
-    ts = torch.linspace(T - 1, 0, steps + 1).long()
+    ts = torch.linspace(T - 1, -1, steps + 1).round().long()
     for i in range(steps):
         t = ts[i]
         t_prev = ts[i + 1]
@@ -277,7 +277,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     return x
 ```
 
-`eta=0`هو تماما مؤكدة (( نفس الضجيج 输入总会产生 نفس المخرج)`eta=1`سأستعيد الـ (دي بي أم)
+الموعد  انتهى فى `t_prev = -1`، لذلك آخر خطوة استخدام`a_prev = 1.0`, عودة لا تحتوي على بقية الضوضاء`x0_pred`.`eta=0`هو تماما مؤكدة  نفس الضجيج 输入总会产生 نفس输出)。 في الجدول الزمني  زيارة كل خطوة زمنية `steps=T`)`eta=1`سأستعيد الـ (دي بي أم)
 
 ## استخدمها
 

@@ -228,7 +228,7 @@ for step, batch in enumerate(dataloader):
 
 - **Model family**:SD 1.5 تستخدم في المصدر المفتوح  مجتمع المزج ،SDXL تستخدم في أعلى ولاء ،SD3 / FLUX تستخدم في حالة الفن 和 صارمة الطلبات الترخيصية.
 - **Scheduler**:20-30 خطوات استخدام DPM-Solver++ 2M Karras؛ عندما التأخير 低于 1s 时使用 LCM-LoRA。
-- **Precision**0480/4090 上 استخدام `float16`,A100 及更新设备上使用 `bfloat16`,VRAM 紧张时使用 `int8`(مرافقة `bitsandbytes`أو`compel`(‬)
+- **Precision**0480/4090 上 استخدام `float16`,A100 及更新设备上使用 `bfloat16`,VRAM 紧张时使用 `int8`(مرافقة `bitsandbytes`(‬)
 - **Conditioning**:普通文本可用; إذا كان هناك حاجة إلى المزيد من التحكم، في خط الأنابيب الأساسي 之上加入ControlNet(canny、depth、pose)
 
 لإنتاج الكمية`AUTO1111`- لا ، لا`ComfyUI`هو أدوات مجتمعية ؛ لإنتاج API, استخدام `diffusers`+ `accelerate`, أو استخدام مع TensorRT تجميع `optimum-nvidia`.

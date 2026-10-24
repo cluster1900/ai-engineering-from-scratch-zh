@@ -71,7 +71,7 @@ CTC هو سبب تأثير CRN في عام 2015 ، ومازال يمتد على 
 
 ### تحليل التخطيط
 
-对于结构文档,运行布局检测器(LayoutLMv3, DocLayNet),为每个地区 标注标签: عنوان, الفقرة, الرسم, الجدول, الملاحظة القدم。
+对于结构文档,运行布局模型(LayoutLMv3,或在 DocLayNet数据集上训练的探测器),为每个地区 标签标签:标题,段,图,表,脚注。
 
 对于表格,使用 **Key-Value extraction**نموذجات (((面向视觉丰富文档的甜圈,面向平坦扫描的布局LMv3) ――它们接收图像 +检测文本 + 位置,并预测结构的关键-值对子──
 
@@ -161,18 +161,23 @@ class TinyCRNN(nn.Module):
 
 ### الخطوة الثالثة: OCR الاصطناعي
 
-生成白底黑字的数字字符串,用于端到端烟雾测试──
+生成白底黑字符串,用于端到端烟测试── كل字符 يصبح صف ستة جذور, باستخدام إصدار ثاني للفصيلة. الصورة يجب أن تحمل هوية الخط: إذا كان كل حرف هو نفس مربع فارغ, النموذج لا يمكن التمييز.`a`和 `x`، الخسارة ستبقى
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ print(f"images: {imgs.shape}   targets: {targets.shape}   lengths: {lengths.toli
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-في هذه البيانات الصناعية البسيطة، الخسارة يجب أن تكون في 200 خطوة من ~ 3  ينخفض إلى ~ 0.2 ‬
+في هذه البيانات الصناعية البسيطة، الخسارة يجب أن تكون في 400 خطوة من خلال الارتفاع من رقم اثنين إلى حوالي 0.3`code/main.py`في مجموعة السلاسل الخاصة بك 上运行 نفس الدورة، ثم فك تشفير ثلاث ثلاث سلاسل اختبار
 
 ## استخدمها
 

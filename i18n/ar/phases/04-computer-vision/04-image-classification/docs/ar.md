@@ -100,7 +100,7 @@ Cutmix:
 
 ### تسليح اللوحات
 
-لا تستخدم`[0, 0, 1, 0, 0]`كهدف تدريب، بل استخدام`[eps/C, eps/C, 1-eps, eps/C, eps/C]`، من بينهم`eps`هو مثل 0.1 مثل هذا القيمة الصغيرة. انها تمنع النموذج من تكوين أي من اللوجيتات المتقدمة، و تقريباً بدون تكلفة تحسين التصفية. منذ 1.10 بيتورش، تم إدخالها في.`nn.CrossEntropyLoss(label_smoothing=0.1)`.
+لا تستخدم`[0, 0, 1, 0, 0]`كهدف تدريب، بل استخدام`[eps/C, eps/C, 1-eps+eps/C, eps/C, eps/C]`، من بينهم`eps`هو مثل 0.1 مثل هذا القيمة الصغيرة ((أي الهدف الحار واحد مع التوزيع الموحد 混合, لذلك مجموع و لا يزال 1)。 انها تمنع النموذج 产生 أي من المناسبات المتقدمة, و تقريبا صفر تكلفة تحسين التصفية。 منذ PyTorch 1.10 起,已内置于 `nn.CrossEntropyLoss(label_smoothing=0.1)`.
 
 ### التقييم خارج دقة
 
@@ -416,7 +416,7 @@ val_ds   = CIFAR10(root="./data", train=False, download=True, transform=eval_tf)
 | DataLoader | “The batcher” | 用 shuffling、batching 和（可选）multi-worker loading 包装 dataset；一半 training bugs 都会被怪到它头上 |
 | Augmentation | “Random transforms” | training time 的任何 pixel-level transform，只要它保留 label；教会 CNN 它原生不具备的 invariances |
 | Mixup / Cutmix | “Mix two images” | 同时混合 inputs 和 labels，让 classifier 学习平滑插值，而不是硬边界 |
-| Label smoothing | “Softer targets” | 用 (1-eps, eps/(C-1), ...) 替换 one-hot；改善 calibration，并略微提升 accuracy |
+| Label smoothing | “Softer targets” | 用 (1-eps+eps/C, eps/C, ...) 替换 one-hot；改善 calibration，并略微提升 accuracy |
 | Top-k accuracy | “Top-5” | 正确 class 位于 k 个最高 probability predictions 之中；用于包含真实歧义 classes 的 datasets |
 | Confusion matrix | “Where errors live” | C x C table，其中 entry (i, j) 统计 true class i 被预测为 j 的 images 数量；diagonal 是正确项，off-diagonal 告诉你该修什么 |
 
