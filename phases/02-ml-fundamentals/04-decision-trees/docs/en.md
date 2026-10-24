@@ -244,7 +244,7 @@ def information_gain(parent_labels, left_labels, right_labels, criterion="gini")
 
 ### 步骤 3：构建 DecisionTree class
 
-Recursive splitting、prediction 和 feature importance tracking。
+Recursive splitting、prediction 和 feature importance tracking。 `_build` 是这棵树的核心：当节点已纯净或触及预剪枝限制时停止；否则选取最佳切分，并递归进入左右两个子节点。
 
 ```python
 class DecisionTree:
