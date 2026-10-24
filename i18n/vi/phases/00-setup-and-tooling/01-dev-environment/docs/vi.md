@@ -14,7 +14,7 @@
 - Nghĩ 4 tầng: hệ thống, gói, thời gian chạy, thư viện AI
 
 ## 问题
-Bạn sẽ học 200+ bài học về kỹ thuật AI bằng Python, TypeScript, Rust và Julia. Nếu môi trường của bạn bị hỏng, mỗi bài học sẽ trở thành một công cụ để đấu tranh, thay vì học.
+Bạn sẽ học được 500+ bài học về kỹ thuật AI bằng Python, TypeScript, Rust và Julia. Nếu môi trường của bạn bị hỏng, mỗi bài học sẽ trở thành một công cụ để đấu tranh, thay vì học.
 
 Nhiều người sẽ bỏ qua cài đặt môi trường. Sau đó họ dành vài giờ để gỡ lỗi nhập khẩu, xung đột phiên bản và thiếu tài xế CUDA. Chúng tôi phải làm điều này một lần và đúng.
 
@@ -46,7 +46,7 @@ xcode-select --install
 brew install git curl wget
 
 # Ubuntu/Debian
-sudo apt update && sudo apt install -y build-essential git curl wget
+sudo apt update && sudo apt install -y build-essential git curl wget unzip
 
 # Windows (use WSL2)
 wsl --install -d Ubuntu-24.04
@@ -93,6 +93,16 @@ npm install -g pnpm
 node -e "console.log('Node', process.version)"
 ```
 
+Fnm 安装程序会先检查 `unzip`, thiếu thời gian`Not installing fnm due to missing dependencies.`退出: trên Linux 上它 cần phải giải quyết một zip 归档, trên macOS 上则通过 Homebrew 安装──macOS 自带 `unzip`Ubuntu、Debian 和 WSL2 会通过步骤 1 的 apt 命令安装它(Nếu bạn nhảy qua bước đó,运行`sudo apt install -y unzip`(■)
+
+**macOS / Apple Silicon（M1/M2/M3/M4）：**Nếu cài đặt quy trình`Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)`停止,说明终端运行在Rosetta 2 下(`arch`输出 `i386`), trong khi Homebrew là nguồn gốc của arm64  xây dựng.`fnm install 22` bắt đầu tái vận hành lệnh trên:
+
+```bash
+arch -arm64 brew install fnm
+echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### 步骤 4: Rust
 
 Sử dụng cho các hệ thống quan trọng về hiệu suất (các môn học)
@@ -116,33 +126,67 @@ julia -e 'println("Julia ", VERSION)'
 
 ### 步骤 6:GPU 设置( nếu có)
 
+**NVIDIA（Linux / Windows）：**
+
 ```bash
-# NVIDIA
 nvidia-smi
 
 # Install PyTorch with CUDA
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 ```
 
+**macOS / Apple Silicon（M1/M2/M3/M4）：**Mac 上 không có CUDA  Đây là tình huống dự kiến, không phải là故障.**不要**传入 `--index-url .../cuXXX`(Những bánh xe này chỉ áp dụng cho Linux/Windows, cài đặt sẽ thất bại)
+
+```bash
+uv pip install torch torchvision torchaudio
+```
+
+验证( áp dụng cho bất kỳ nền tảng nào):
+
 ```python
 import torch
-print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA available: {torch.cuda.is_available()}")           # False on macOS — expected
+print(f"MPS available:  {torch.backends.mps.is_available()}")   # True on Apple Silicon
 if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
 没有 GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云 GPU──
 
-### Bước 7: Kiểm tra mọi thứ
+### Bước 7: Thử nghiệm con đường bạn bắt đầu
 
-运行验证脚本:
+Mỗi lệnh trong bài học này đều được chạy từ thư mục kho, nghĩa là chứa`README.md`和 `phases/`Đăng ký: Precheck chỉ kiểm tra bắt đầu các nội dung cần thiết của tuyến đường được chọn. Nó tự động nhảy qua các công cụ sau đó, vì vậy học viên mới thấy là một kết luận rõ ràng, chứ không phải là một cảnh báo lớn.
+
+开始完整的入门序列:
 
 ```bash
-python phases/00-setup-and-tooling/01-dev-environment/code/verify.py
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner
+```
+
+Hoặc chỉ cần kiểm tra đường đi của bạn:
+
+```bash
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route ml-foundations
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route llm-engineering
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agents
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route mcp
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agent-skills
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route certification
+```
+
+Nếu muốn cho các công cụ và phụ thuộc cho các khóa học trước và sau kiểm tra được sử dụng, cộng với `--show-later`                                                                                                                                                                                                                                                              
+
+Mỗi kiểm tra cần thiết thất bại sẽ cung cấp đường dẫn hoặc sai lầm nhập khẩu được kiểm tra, cũng như một lệnh sửa chữa chính xác.
+
+Khi nhập học, sẽ in một lệnh chính xác về chương trình học:
+
+```text
+Ready to start Beginner course.
+Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
 ## Sử dụng nó
-Môi trường của bạn hiện đã sẵn sàng để sử dụng mỗi phần của chương trình này. Dưới đây là nội dung sẽ được sử dụng ở mọi nơi:
+Môi trường của bạn đã có thể bắt đầu kiểm tra các tuyến đường bạn đã kiểm tra. Các khóa học cần phải cài đặt lại, không cần phải để toàn bộ bộ công nghệ cản trở bài học đầu tiên của bạn. Dưới đây là nội dung sẽ được sử dụng trong toàn bộ khóa học:
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|

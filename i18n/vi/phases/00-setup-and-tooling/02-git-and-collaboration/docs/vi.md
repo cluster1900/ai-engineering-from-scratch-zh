@@ -72,9 +72,11 @@ git merge experiment/new-optimizer
 
 ### 步骤 4: Sử dụng khóa học này repo
 
+Bạn không thể trực tiếp đẩy đến các khóa học repo trực tiếp, chỉ có người bảo trì có quyền viết.`origin`Chỉ cho bản thân mình:
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code
@@ -95,7 +97,7 @@ git push origin my-progress
 就这些──本课程不需要重点,桃选或子模块──
 
 ## 练习
-1. Trần hóa repo này, tạo ra một cái tên `my-progress`của chi nhánh, tạo ra một tập tin, tham gia nó, đẩy nó
+1. Cánh này, sao chép cái cánh của cậu, tạo ra cái tên này`my-progress`của chi nhánh, tạo ra một tập tin, tham gia nó, đẩy nó
 2.  tạo ra một `.gitignore`, loại bỏ các tập tin kiểm soát mô hình`.pt``.pth``.safetensors`(văn)
 3. 用 `git log --oneline`Xem lịch sử tham gia của repo này, và đọc bài học là làm thế nào được thêm vào
 

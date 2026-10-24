@@ -46,7 +46,7 @@ pip install datasets huggingface_hub
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("imdb")
+dataset = load_dataset("stanfordnlp/imdb")
 print(dataset)
 print(dataset["train"][0])
 ```
@@ -58,7 +58,7 @@ print(dataset["train"][0])
 Một số bộ dữ liệu quá lớn, không thể hoàn toàn đưa vào đĩa.
 
 ```python
-dataset = load_dataset("wikimedia/wikipedia", "20220301.en", split="train", streaming=True)
+dataset = load_dataset("wikimedia/wikipedia", "20231101.en", split="train", streaming=True)
 
 for i, example in enumerate(dataset):
     print(example["title"])
@@ -73,7 +73,7 @@ Streaming sẽ cho anh một `IterableDataset` Bạn sẽ ở hàng đến khi x
 `datasets`library 底层 sử dụng Apache Arrow. Bạn có thể chuyển đổi cho các định dạng khác theo nhu cầu của đường ống.
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 dataset.to_csv("imdb_train.csv")
 dataset.to_json("imdb_train.json")
@@ -102,7 +102,7 @@ Mỗi dự án ML  đều cần ba phần:
 Một số bộ dữ liệu đã được chia trước. Không có thời gian, bản thân chia:
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 split = dataset.train_test_split(test_size=0.2, seed=42)
 train_val = split["train"].train_test_split(test_size=0.125, seed=42)
