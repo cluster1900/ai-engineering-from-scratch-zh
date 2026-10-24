@@ -130,17 +130,18 @@ Así es. El proyector suele ser de 1-3 capas lineales. En ASR para la formación
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-Se trata de un proyecto de investigación que se desarrolla en el ámbito de la salud y la salud.
+`audio_path`Indicando el conjunto de datos en el almacén`data.zip`Este ciclo de coincidencia exacta es sólo un control de cordura, no un evaluador oficial de referencia, por lo que sus números no pueden compararse con los resultados publicados de MMAU-Pro.`model_output`列, luego运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro)En el centro`evaluate_mmau_pro_comprehensive.py`❖ Se dividen en cada uno`category`(habla, sonido, música, múltiples y sus demás clases)
 
 ## Usalo
 
