@@ -64,9 +64,9 @@ Abbreviations: P0 = phases/00-setup-and-tooling. D3 = P0/03-gpu-setup-and-cloud/
 - python:3.12-slim, ~150 MB, CPU only: D7:148-151
 
 ## 构建并运行开发镜像 (annotated-code, 6 lines)
-- docker build -t ai-dev -f .../Dockerfile .: D7:207
-- docker run --rm -it --gpus all, -v $(pwd):/workspace, -v ~/models:/models, -p 8888:8888, jupyter command: D7:226-230
-- models survive rebuilds: D7:235, 256
+- docker build -t ai-dev -f .../Dockerfile .: D7:215
+- docker run --rm -it --gpus all, -v $(pwd):/workspace, -v ~/models:/models, -p 8888:8888, jupyter command: D7:234-238
+- models survive rebuilds: D7:243, 264
 - Dockerfile EXPOSE 8888: DF:49
 
 ## Compose 栈 (architecture, 4 nodes, 3 edges)
@@ -74,26 +74,26 @@ Abbreviations: P0 = phases/00-setup-and-tooling. D3 = P0/03-gpu-setup-and-cloud/
 - ai-dev with Jupyter on 8888 and nvidia GPU reservation: DC:2-21
 - qdrant image qdrant/qdrant:v1.12.5: DC:23-24
 - qdrant_data volume at /qdrant/storage: DC:28-32
-- http://qdrant:6333 by service name: D7:306
+- http://qdrant:6333 by service name: D7:314
 
 ## Docker 任务 (task-table, 7)
-- docker compose up -d: D7:303
-- docker compose down -v deletes the qdrant volume: D7:323-326
-- docker compose exec ai-dev bash: D7:375
-- docker images: D7:336
-- docker system prune -a: D7:339
-- docker exec -it <container_id> nvidia-smi: D7:342
-- docker logs -f <container_id>: D7:348
+- docker compose up -d: D7:311
+- docker compose down -v deletes the qdrant volume: D7:331-334
+- docker compose exec ai-dev bash: D7:383
+- docker images: D7:344
+- docker system prune -a: D7:347
+- docker exec -it <container_id> nvidia-smi: D7:350
+- docker logs -f <container_id>: D7:356
 
 ## Docker 修复 (troubleshooting, 4)
-- No matching distribution for torch==2.6.0+cu124 on a Mac, --platform=linux/amd64: D7:212, DF:1
-- No GPU: drop --gpus all and the NVIDIA deploy block: D7:212, 362
-- 14 GB model downloads vanish without volume mounts: D7:235, 242
-- Server bound to localhost not reachable, host="0.0.0.0", -p 5000:5000: D7:368, 377
+- No matching distribution for torch==2.6.0+cu124 on a Mac, --platform=linux/amd64: D7:220, DF:1
+- No GPU: drop --gpus all and the NVIDIA deploy block: D7:220, 370
+- 14 GB model downloads vanish without volume mounts: D7:243, 250
+- Server bound to localhost not reachable, host="0.0.0.0", -p 5000:5000: D7:376, 385
 
 ## 技巧 (tips, 5)
 - First GPU run includes start-up cost: D3:131
 - Run !nvidia-smi in Colab first: D3:133
 - Set up keys when the lesson requires it: D4:132
 - Raw HTTP helps when debugging: D4:121
-- Add packages to the Dockerfile and rebuild, cached layers: D7:357, 386
+- Add packages to the Dockerfile and rebuild, cached layers: D7:365, 394

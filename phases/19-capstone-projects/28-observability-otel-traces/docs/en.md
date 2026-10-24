@@ -47,6 +47,10 @@ exporter 写 JSONL。每行一个 JSON object。这是下游 tooling 可以 stre
 
 Metrics 与 traces 并列存在。每次 tool call 都会递增一个 counter：`tools_called_total{tool="read_file"}`。histogram 记录观察到的 latency：`tool_latency_ms{tool="read_file"}`。两者都会序列化为 Prometheus text exposition format，这是 pull-based metrics 的事实标准。
 
+```figure
+trace-spans
+```
+
 ## Architecture
 
 ```mermaid
@@ -96,7 +100,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 demo 会在本课的 working dir 中发出一个 `traces.jsonl`（最后清理），然后打印三个 spans 的 sample，再打印 counters 和 histograms 的 Prometheus exposition。tests 验证 spans 可 round-trip 序列化、canonical GenAI attributes 存在、counters 正确递增，并且 histogram exposition 包含 expected bucket counts。
-
-```figure
-trace-spans
-```

@@ -46,7 +46,7 @@ Abbreviations: A = phases/13-tools-and-protocols/20-opentelemetry-genai, B = pha
 - python code/main.py: A/c:11
 - OTEL_CAPTURE_CONTENT=1 python code/main.py adds content events: A/c:8-9, 86-88, 173
 - python3 code/main.py prints span tree and external store: B/d:86-90
-- python3 -m pytest code/tests/ -v, round trip and bucket counts: F/d:95, 98
+- python3 -m pytest code/tests/ -v, round trip and bucket counts: F/d:99, 102
 - npm start seeds 1200 synthetic spans: E/code/ts/README.md:26
 - npm run serve on PORT: E/code/ts/README.md:27
 
