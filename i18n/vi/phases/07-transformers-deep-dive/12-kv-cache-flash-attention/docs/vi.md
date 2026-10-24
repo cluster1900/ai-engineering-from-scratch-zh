@@ -26,32 +26,32 @@ Dao et al.  đề xuất hai ưu đãi, đưa ra các suy nghĩ về phía trư�
 
 ### KV cache toán học
 
-Mỗi lớp giải mã, mỗi token, mỗi đầu:
+Mỗi lớp giải mã, mỗi token, tất cả các đầu KV:
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
-Đối với một mô hình 7B, 32 tầng, 32 đầu, d_head=128 fp16:
+Đối với một mô hình 7B, 32 tầng, 32 đầu, tất cả được sử dụng cho K và V:
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 Đối với Llama 3 70B ((80 层、d_head=128、使用 8 个 KV heads 的 GQA):
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-Đó là lý do tại sao Llama 3 70B trong bối cảnh 128K, chỉ có bộ nhớ cache KV kích thước 1 sẽ chiếm một phần lớn lưu trữ 40 GB A100.
+Trong 32K, 128K sẽ tăng lên 40 GiB, chỉ có kích thước lô 1 KV cache sẽ chiếm toàn bộ 40 GB A100.
 
-**GQA 是 KV-cache 的关键收益。**Sử dụng 64 đầu MHA 会 cần 32 GB. MLA còn có thể nén hơn nữa.
+**GQA 是 KV-cache 的关键收益。**Sử dụng 64 đầu KV của MHA sẽ lớn hơn 8x, trong 32K khoảng 80 GiB.
 
 ### Flash Attention  tay tay 技巧
 

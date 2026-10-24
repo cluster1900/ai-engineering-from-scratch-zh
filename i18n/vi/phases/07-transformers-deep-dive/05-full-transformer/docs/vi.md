@@ -72,7 +72,7 @@ RMSNorm đã bỏ ra trung tâm trung bình của LayerNorm (không thể trừ 
 - FFN (SwiGLU): `3 · d · (r · d)`≈ ≈`3rd²`
 - Các tiêu chuẩn: 可忽略
 
-Khi đó`d = 4096, r = 2.6, layers = 32`(大致对应 Llama 3 8B)时,总量为:`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (16 + 32) M = ~1.5B parameters per layer × 32 ≈ 7B`(Tại thêm các nhúng và đầu) ◊ với các tính toán đã được phát hành相符
+Khi đó`d = 4096, r = 2.6, layers = 32`(大致对应 Llama 3 8B)时,总量为:`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (67M + 131M) ≈ 32 · 198M ≈ 6.3B`个块 内参数,再加上约1B的嵌入和输出头(128K từ ngữ × 4096,未绑定) ・・・这接近已发布的8B──真实模型使用GQA(更小的K和V投影) 和更宽的FFN(`r = 3.5`), chuyển các tham số từ sự chú ý đến FFN, nhưng tổng số vẫn gần 8B。
 
 
 观察一个向量 如何流过单个块:Atention 在位置之间混合信息,残留 把信号继续向前携带,FFN做变变,而规则 让残留流保持稳定――

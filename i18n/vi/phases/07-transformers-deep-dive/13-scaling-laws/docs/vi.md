@@ -40,12 +40,12 @@ L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
 - $E \approx 1.69$, không thể mất đi giới hạn trên.
 - $A \approx 406$- $B \approx 411$
 
-随着扩展, hai项会彼此权衡──在固定计算$C = 6ND$) xuống đối với $N$求导并求解:
+随着扩展, hai项会彼此权衡──在固定计算$C = 6ND$) xuống đối với $N$求导并求解──使用上述的 $\alpha$和 $\beta$- Tôi không biết.$N$Chỉ số là khoảng 0,45,$D$Chỉ số là khoảng 0,55, do đó tỷ lệ tối ưu nhất chính xác sẽ di chuyển chậm theo ngân sách;`code/main.py`Thông qua tìm kiếm lưới  tìm nó. Các phương pháp phù hợp trước đây của bài luận đo lường thuận lợi nhất trực tiếp, có được hai chỉ số đều khoảng 0,5 .$C = 6ND$Trung令 $D = 20N$, kinh nghiệm法则为:
 
 ```math
 \begin{aligned}
-N_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
-D_{\text{opt}} &\approx 0.6 \times (C/6)^{0.5} \\
+N_{\text{opt}} &\approx 0.22 \times (C/6)^{0.5} \\
+D_{\text{opt}} &\approx 4.5 \times (C/6)^{0.5} \\
 D_{\text{opt}} / N_{\text{opt}} &\approx 20
 \end{aligned}
 ```
