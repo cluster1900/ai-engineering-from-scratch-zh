@@ -1,54 +1,54 @@
-# Why an RL framework owns an inference engine
+# 为什么 RL 框架要掌控一个推理引擎
 
-> RL needs fast generation and exact probabilities from the same weights, and an engine under the trainer's control gives both.
+> RL 需要用同一套权重既快速生成又给出精确的概率，而一个受训练器控制的引擎能同时提供两者。
 
-Reinforcement learning on a language model spends most of its time generating text. A training library can generate, but slowly: one sequence at a time, with no shared cache. An inference engine generates fast, but it was built to serve users, not to agree with a trainer.
+在语言模型上做强化学习，大部分时间都花在生成文本上。训练库可以生成，但很慢：一次一个序列，没有共享缓存。推理引擎生成得很快，但它是为服务用户而构建的，而不是为了与训练器保持一致。
 
-When you finish this section, you can explain why Miles runs its own inference engine, and name the five ways the two sides can disagree.
+读完本节后，你能解释为什么 Miles 运行自己的推理引擎，并说出两边可能不一致的五种方式。
 
-Miles puts an SGLang engine under the trainer's control. This page explains why, and what that control has to cover. The Inside Miles guide walks one step from start to end, so this page stays with the reasons.
+Miles 把一个 SGLang 引擎置于训练器的控制之下。本页解释原因，以及这种控制必须覆盖哪些方面。Inside Miles 指南从头到尾走完了一步，所以本页只讲原因。
 
-## What RL asks of the engine
+## RL 对引擎的要求 {#s-why-rl-owns-an-engine-what-rl-asks-of-the-engine}
 
-A GRPO step generates many answers for each prompt. Our runs generated 8 answers for each of 32 prompts, 256 answers per step. Three things make that fast:
+一个 GRPO 步会为每个提示生成许多回答。我们的运行为 32 个提示各生成 8 个回答，每步 256 个回答。有三点让这件事变快：
 
-- **Batching.** The engine runs hundreds of sequences in one pass.
-- **A shared prompt cache.** The 8 answers of one prompt share the same prompt, so the engine can compute it once and reuse it.
-- **Short answers end early.** A finished answer leaves the batch, and its memory goes to the next one.
+- **批处理。** 引擎在一次处理中运行数百个序列。
+- **共享的提示缓存。** 同一个提示的 8 个回答共享相同的提示，所以引擎可以只计算一次并复用它。
+- **短回答提前结束。** 一个完成的回答会离开批次，它的内存交给下一个回答。
 
-A training library is not built for these. So an RL framework that cares about speed needs a real engine.
+训练库并不是为这些而构建的。所以一个在意速度的 RL 框架需要一个真正的引擎。
 
-## What the engine must do for RL
+## 引擎必须为 RL 做什么 {#s-why-rl-owns-an-engine-what-the-engine-must-do-for-rl}
 
-A serving engine never changes its weights while it runs. An RL engine must:
+服务引擎在运行时从不改变它的权重。RL 引擎则必须：
 
-- Take new weights after every training step, in seconds.
-- Give its memory back while the trainer runs on the same GPU, and take it back after.
-- Pause or stop the requests that are still running when the weights change.
-- Return the log probability of every token it sampled.
+- 在每个训练步之后，在几秒内接收新的权重。
+- 在训练器于同一块 GPU 上运行时交还它的内存，之后再拿回来。
+- 在权重变化时，暂停或停止仍在运行的请求。
+- 返回它采样的每个 token 的对数概率。
 
-Each of these needs a hook into the engine. That is why Miles runs a patched SGLang build, and why the SGLang inside the image is not a stock release.
+每一项都需要一个接入引擎的钩子。这就是为什么 Miles 运行一个打过补丁的 SGLang 构建，也是为什么镜像中的 SGLang 不是原版发布。
 
-## Five ways the two sides disagree
+## 两边不一致的五种方式 {#s-why-rl-owns-an-engine-five-ways-the-two-sides-disagree}
 
-GRPO assumes that the trainer and the engine agree on the probability of each sampled token. They can disagree in five ways:
+GRPO 假设训练器和引擎对每个采样 token 的概率意见一致。它们可能以五种方式不一致：
 
-| Source | What happens | What Miles offers |
+| 来源 | 发生了什么 | Miles 提供什么 |
 |---|---|---|
-| Tokens | text turns into tokens in a different way on each side, often between agent turns | the session server, which passes tokens and not text |
-| Routing | a MoE router picks different experts on each side | routing replay |
-| Sampling | with top-p or top-k, the engine samples from a cut-down set of tokens, and the trainer scores over the full vocabulary | sampling replay |
-| Numbers | different kernels add in a different order, or one side uses lower precision | importance-sampling corrections, true on-policy mode |
-| Staleness | a sample came from older weights than the trainer now holds | limits on sample age, and corrections |
+| token | 文本在两边以不同方式转换成 token，常发生在 agent 的轮次之间 | 会话服务器，它传递 token 而不是文本 |
+| 路由 | MoE 路由器在两边选择了不同的专家 | 路由重放 |
+| 采样 | 使用 top-p 或 top-k 时，引擎从裁减后的 token 集合中采样，而训练器在完整词表上打分 | 采样重放 |
+| 数值 | 不同的 kernel 以不同顺序做加法，或者一边使用更低的精度 | 重要性采样校正，真正同策略模式 |
+| 陈旧 | 样本来自比训练器当前持有的更旧的权重 | 样本年龄限制，以及校正 |
 
-Most of our runs on one GB10 had only the numbers source. One run sampled with top-p and top-k, so it also had the sampling source. In our Qwen3-0.6B runs, the gap stayed at 0.013 to 0.016 per token. [Section 8.2](#s-the-correction-methods) matches each correction to its source.
+我们在单块 GB10 上的大多数运行只有数值这一种来源。有一次运行用 top-p 和 top-k 采样，所以它还有采样来源。在我们的 Qwen3-0.6B 运行中，差距保持在每个 token 0.013 至 0.016。[第 8.2 节](#s-the-correction-methods)把每种校正与它的来源对应起来。
 
-Our view: most of what makes an RL framework hard is not the loss function. It is keeping these five sources small and measured while the engine runs at full speed.
+我们的看法：让 RL 框架变难的大部分原因不在损失函数。难的是在引擎全速运行时，让这五种来源保持很小并且可测量。
 
 ```takeaways
-- RL needs a real inference engine for speed, and the engine needs RL hooks for weights, memory, and probabilities.
-- The trainer and the engine disagree through tokens, routing, sampling, numbers, and staleness.
-- Measure the gap first, then pick the correction that matches its source.
+- RL 需要一个真正的推理引擎来获得速度，而引擎需要面向权重、内存和概率的 RL 钩子。
+- 训练器和引擎会通过 token、路由、采样、数值和陈旧这几方面产生不一致。
+- 先测量差距，再选择与其来源匹配的校正。
 ```
 
 Sources: Miles architecture documentation, inference controller, and session server at main 08752a12; capture/gpu/summary/miles-gb10-lab.json; capture/gpu/miles_grpo.py.

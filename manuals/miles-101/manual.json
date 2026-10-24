@@ -269,9 +269,9 @@
     },
     {
       "number": 8,
-      "title": "How Miles works",
-      "thesis": "This optional part explains why Miles is built the way it is, for readers who want the reasons behind the settings.",
-      "summary": "Mismatch, correction methods, memory, plugins, routing, and history.",
+      "title": "Miles 如何工作",
+      "thesis": "这个可选部分解释 Miles 为什么这样构建，面向想了解设置背后原因的读者。",
+      "summary": "不一致、校正方法、内存、插件、路由和历史。",
       "accent": "teal",
       "sections": [
         {
