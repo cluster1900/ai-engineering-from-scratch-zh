@@ -46,6 +46,10 @@ V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
 
 في ظروف حرارة و ظروف الحرارة كل زوج تم زيارته مرة أخرى$\alpha$(تلبية (روبينز-مونرو) ، سوف تصل إلى$Q^{\ast}$和 $\pi^{\ast}$.
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### الخطوة الأولى: التنفيذ → (s, a, r) 列表
@@ -138,10 +142,6 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 - **Non-stationary policies。**إذا$\pi$تغيرات تحدث مثل التحكم في MC، العودة القديمة من سياسات مختلفة.
 - **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$会沿轨迹 连乘──Variance 会随地视界 爆炸──用每决权重 IS 截断,或切换到 TD──
 
-
-```figure
-epsilon-greedy
-```
 
 ## استخدمها
 

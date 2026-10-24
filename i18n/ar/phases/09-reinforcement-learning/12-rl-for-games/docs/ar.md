@@ -127,7 +127,7 @@ def grpo_step(theta, p_idx, G=8, beta=0.01, lr=0.1, rng=None):
         grad = onehot(a) - probs
         for i in range(len(probs)):
             theta[p_idx][i] += lr * A * grad[i]
-    # KL penalty：把 theta 拉向 reference
+    # KL penalty: pull theta toward reference
     for i in range(len(probs)):
         theta[p_idx][i] -= beta * (theta[p_idx][i] - reference[p_idx][i])
 ```

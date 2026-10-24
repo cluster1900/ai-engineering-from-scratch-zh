@@ -179,7 +179,7 @@ tags: [rl, actor-critic, gae]
 
 ## التمارين
 
-1. **Easy。**في 4×4 GridWorld 上 استخدام ميزة MC$(G_t - V(s_t))$訓練演員-نقد.──与 درسي 06 中 REINFORCE-with-running-median-baseline
+1. **Easy。**في 4×4 GridWorld 上 استخدام ميزة MC $(G_t - V(s_t))$訓練演員-نقد.──与 درسي 06 中 REINFORCE-with-running-median-baseline
 2. **Medium。**切换到 TD-بقية الميزة$(r + \gamma V(s') - V(s))$◊ قياس الفائدة البطاقات تغيرها.
 3. **Hard。**实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$◊ رسم العائد النهائي مقابل كفاءة العينة.
 

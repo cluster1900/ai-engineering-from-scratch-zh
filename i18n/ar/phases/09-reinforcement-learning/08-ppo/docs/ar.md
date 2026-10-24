@@ -110,7 +110,7 @@ for _ in range(K_EPOCHS):
                 ratio * adv,
                 clamp(ratio, 1 - EPS, 1 + EPS) * adv,
             )
-            # backprop -surrogate, 添加 value loss, 减去 entropy
+            # backprop -surrogate, add value loss, subtract entropy
             grad_logpi = onehot(rec["a"]) - probs
             if (adv > 0 and ratio >= 1 + EPS) or (adv < 0 and ratio <= 1 - EPS):
                 pg_grad = 0.0  # clipped
