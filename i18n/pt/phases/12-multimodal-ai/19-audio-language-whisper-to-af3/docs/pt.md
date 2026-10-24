@@ -51,7 +51,7 @@ O sussurro é treinado em dados de voz-proprietário.
 
 BEATs(Chen 等,2022) é um Transformador auto-supervisionado treinado em AudioSet.
 
-AF-Whisper(Audio Flamingo 3 的混合):将 Whisper + BEATs características concat 作为音频输入──Whisper 携带语言信号,BEATs 携带声学信号──
+AF-Whisper(Audio Flamingo 3's encoder): A partir do encoder Whisper-large-v3, surge, em语音、声音和音乐继续联合训练, fazendo um encoder 同时携带语言信号和声学信号──SALMONN等更早的系统通过 concat Whisper和BEATs características 获得同样的覆盖──
 
 ### Audio Q-former
 
@@ -67,7 +67,7 @@ Qwen-Audio(Chu 等,2023):架构类似,训练数据集更丰富,针对多轮对�
 
 LTU  Ouça, Pense, Entenda ((Gong 等,2023): dados de raciocínio expresso, focado em clips de rádio  上的思想链――规模更小但更聚焦──
 
-Audio Flamingo 3(Goel 等,2025 年 7 月):当前 open SOTA──8B LLM backbone(Qwen2 7B)、Whisper-big encoder concat BEATs、64-query Q-former, em 1000000+ pares de instrução de áudio-texto 上练──MMAU 0.72,在部分子任务 上匹配专属边界──
+Audio Flamingo 3(Goel 等,2025 年 7 月): 当前开放 SOTA──7B LLM backbone(Qwen2.5-7B)、基于Whisper-large-v3 构建的AF-Whisper 音频编码器、接入LLM的小型适配层,在100万+音频文字教学对上训练──MMAU 0.72,在部分子任务上匹配专属边界──
 
 AF3 também introduziu a cadeia de pensamento on demand do rádio: modelo pode ser usado para produzir tokens de pensamento no final da resposta. Deixe-me identificar os instrumentos primeiro: ...)
 

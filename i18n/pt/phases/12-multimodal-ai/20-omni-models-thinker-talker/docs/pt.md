@@ -11,7 +11,7 @@
 - 将推理管线 拆分为 Thinker (文本推理) 和 Talker (语音合成),并解释为什么并行流动 (能工作)
 - 逐组件计算一次对话交互的时间到第一音频字节 (TTFAB) orçamento
 - 描述 TMRoPE 在 Thinker 内部跨视觉、音频和文本的时间对齐位置编码──
-- Há três tipos de diálogo: meio duplex, virar-se, duplicar-se.
+- Explicar o modo de diálogo de meio duplex e do duplex completo, e explicar o modo de direção do meio duplex.
 
 ## 问题
 Um assistente de voz real tem de fazer muitas coisas rapidamente.
@@ -82,7 +82,7 @@ Qwen2.5 Omni 默认支持半duplex,通过静音值进行转换──Full-duplex 
 - Residual-VQ decodificação: 30ms.
 - 语音 decodificação de forma de onda: 50-80ms。
 
-总 TTFAB:7B 上 320-510ms,70B 上 600-900ms。 Fronteira 质量通常意味着70B+;这是边界 延迟差距的来源──
+总 TTFAB:7B 上 320-490ms,70B 上 600-900ms。 Fronteira 质量通常意味着70B+;这是边界 延迟差距的来源──
 
 ### Matemática de taxa de tokens
 
