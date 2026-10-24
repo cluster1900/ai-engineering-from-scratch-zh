@@ -46,7 +46,7 @@ Bu sırayı çiğnemeden kullanıcı mesajını sistem prompt'ına yerleştirir 
 
 ### 計算
 
-Antropik'in %25 写入溢价 anlamı, bir önbelleğe en az iki kez okunması gerekir, böylece net省钱──1 次写入 + 1 次读取, ortalama her başvuru maliyeti 0.675x(节省 32%);1 次写入 + 10 次读取, ortalama 0.205x(节省 80%)── deneyim kuralları:缓存任何你预计在 TTL内至少复用3次内容──
+Antropik'in %25'i yazma ödemesi (((5 dakika TTL) ilk kez okuduğumda, kayda okuduktan sonra, yazma sayısı 0.1x♦ 1 kez yazma + 1 kez okuduğundan, ortalama her bir talep maliyeti 0.675x♦ 32% tasarruf etti); 1 kez yazma + 10 kez okuduğundan, ortalama 0.205x♦ 80%) % tasarruf etti.
 
 
 ```figure

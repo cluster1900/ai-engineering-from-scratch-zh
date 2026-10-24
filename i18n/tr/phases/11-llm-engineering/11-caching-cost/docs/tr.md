@@ -21,7 +21,7 @@ RAG chatbot'u inşa ettin. Çok güzel çalışıyor. Kullanıcılar çok hoşla
 
 Sonra da bir tane geldi.
 
-GPT-5 Her milyon giriş tokeni $5，每百万 output $15―Claude Opus 4.7 giriş $15 / output $75―Gemini 3 Pro giriş$1.25 / output $5―GPT-5-mini $0.25/$2。 下面价格仅作示例;始终检查提供商 当前的价格页面──
+GPT-5 Her milyon giriş tokeni $1.25，每百万 output $10―Claude Opus 4.7 giriş $5 / output $25―Gemini 3.1 Pro giriş$2 / output $12(sükûretler 200K'den fazla token değil)$0.25/$2― Aşağıdaki matematikte kullanılan GPT-4o $2.50/$10── fiyat sadece örnek olarak;始终检查提供当前的价格页──
 
 Aşağıda, yeni kurulan şirketlerin matematikleri:
 

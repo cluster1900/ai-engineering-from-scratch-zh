@@ -9,11 +9,11 @@
   "phases/11-llm-engineering/08-fine-tuning-lora/docs/en.md": "a26f892f57adda6226f95a7e90dc62897ea72bf0d1936ee0e61b032bedfed2d3",
   "phases/11-llm-engineering/09-function-calling/docs/en.md": "172053a6e7872a715c3864d197f728db6d6427623f5281b07533b2917441cd08",
   "phases/11-llm-engineering/10-evaluation/docs/en.md": "705635391e7562a2f37dbd8a5fe64bd0a7decdddcae5a8f5c5e3e2ad3df9239d",
-  "phases/11-llm-engineering/11-caching-cost/docs/en.md": "c9b308807bcd9c6f9db2171c1ceb4cb6ae82d7301f58dad89a25f3212e201d15",
+  "phases/11-llm-engineering/11-caching-cost/docs/en.md": "2bce05ceb3f5037c218e8119187147b05391d7ba2febaebbba14f50587b72c08",
   "phases/11-llm-engineering/12-guardrails/docs/en.md": "f26e17e89d405b494c314deeeb1cf31ccfdf0fc6845ed42ed027b257f6660d34",
-  "phases/11-llm-engineering/13-production-app/docs/en.md": "113e605d7ae8921c3a1bb6c6682abe8b5cdbfe87a2b5514e400bf0d480be5408",
+  "phases/11-llm-engineering/13-production-app/docs/en.md": "f3dafc793ad42a33ee62cee1c12624d3aa99c511f4d3560a5abf8deb475f105b",
   "phases/11-llm-engineering/14-model-context-protocol/docs/en.md": "029a7186939b0df6d786b2c706ad0a6e3eaefe068b3f8de5ac7ed9e008009e63",
-  "phases/11-llm-engineering/15-prompt-caching/docs/en.md": "02e9a9dbc97c80d17ac730be58f43ae0f6d6e67bf70bfdf2514f7af12f84c167",
+  "phases/11-llm-engineering/15-prompt-caching/docs/en.md": "5d2cb2d5be36ac5a7f1897b96c56a82e646a13eb5c4b6eb52514a40b75689196",
   "phases/11-llm-engineering/16-langgraph-state-machines/docs/en.md": "256240504f2e083d6b5fadc7bbbd7d6eff8244092b3bdb2e63b72f6858d2d233",
   "phases/11-llm-engineering/17-agent-framework-tradeoffs/docs/en.md": "7594ae68b639f7ed1875fa8496a1ae3ee96eed0da3ff148e90fda26821af43b6"
 }
