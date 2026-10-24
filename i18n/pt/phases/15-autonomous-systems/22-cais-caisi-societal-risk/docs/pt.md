@@ -19,7 +19,7 @@ O quadro de risco de quatro classes do CAIS é citado na literatura como o mais 
 
 ### CAIS  Centro de Segurança da IA
 
-- 创立时间:2022年, em San Francisco, fundada por Dan Hendrycks 及同事.
+- 创立时间:2022年, sediada em San Francisco, por Dan Hendrycks 和 Oliver Zhang 创立──Hendrycks 担任执行总监和研究总监; Zhang 担任总经理──
 - Estado: 501 ((c) ((3) não-operativa
 - Resultados importantes de 2023: Declaração sobre o risco de extinção, assinada em conjunto por centenas de pesquisadores e CEOs. Declaração: "Reduzir o risco de extinção da IA deve ser uma prioridade global junto com outras riscos de escala social, como pandemias e guerras nucleares".
 - Resultados de 2026: para o modelo de fronteira  Avaliação do Painel de Painel de IA  Índice de Trabalho Remoto   Joint publication)  Superintelligence Strategy Paper  AI Frontiers newsletter 

