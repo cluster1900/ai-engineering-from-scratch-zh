@@ -19,6 +19,26 @@
 
 ![N-gram model: count, smooth, generate](../assets/ngram.svg)
 
+### 预测游戏
+
+قبل ظهور هذه الآليات، كان هناك تجربة حددت ما هو نموذج اللغة.
+
+هذه التخمينات ليست تفاصيل لا تخصها. إنها إعادة تشكيل لا ضرر لها من النص: إعطاء سلسلة التخمينات إلى أحد الآخرين متشابهين تماما، فهو قادر على إعادة إصدار كل حرف، لأنه في كل موقع يعرف بالضبط أي تخمينات تقع في المقدمة.
+
+شنون قام بهذه التجربة في عام 1951، والرقم الذي حصل عليه لا يزال يسيطر على هذا المجال.`log2(27) ≈ 4.75`بيتس. هناك 100 حرف على النص التالي. يقع المُخمن البشري بين 0.6 إلى 1.3 بيتس.
+
+كل نموذج لغوي بعد ذلك هو لاعب الآلات في هذه اللعبة، كل رقم تقييم في هذه الدورة هو جزء من اللعبة:
+
+- **Cross-entropy loss**هو نموذج كل رمز متوسط الحاجة إلى بضعة أجزاء. تدريب LM، حرفيا يعني هو في الحد الأدنى من ذلك في لعبة التخمين.
+- **Perplexity**نعم`2^bits`(أو `e^nats`): بعد النموذج تخمين لا يزال يواجه الاختلافات. في 27 رمز، متوسط الخطورة في تخمين هو 27، وعملية الخوف لللاعب في 1 بيت لكل حرف هي 2.
+- **Context length 就是玩家的记忆。**تكرام 模型 تحمل اثنين من الرموز 游戏玩游戏.Transformer 带 100K رموز 玩同一个游戏. القواعد لم تتغير أبداً.
+
+يجب أن نلاحظ واحد واحد تغيير: هذه اللعبة على كل حرف في الأجزاء`log2`) حسابات، و ة أسفل n-gram 公式 حسب كل كلمة رمز 以 nats( الطبيعي على عدد) حسابات.`e^H`مثل بثات`2^H`، هذه النظرتين هي نفس القياس الذي تم القيام به باستخدام وحدات مختلفة.
+
+```figure
+prediction-game
+```
+
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})` ثابتة`n`(عادةً تكرار باستخدام 3,4 جرام باستخدام 4)
 
 ```math
@@ -49,10 +69,6 @@ P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\ma
 ngram-backoff
 ```
 
-
-```figure
-prediction-game
-```
 
 ## بناءها
 
@@ -229,8 +245,10 @@ lesson: 16
 | Backoff | 回退到更短 context | 如果 trigram 计数为零，就使用 bigram。Katz backoff 将其形式化。 |
 | Kneser-Ney | n-gram 的最佳 smoothing | Absolute discounting + 低阶模型的 continuation probability。 |
 | Continuation probability | KN 专用 | `P(w)` 按 `w` 出现的 context 数量加权，而不是按原始计数加权。 |
+| Entropy of text | 每个符号的信息量 | 在给定 context 的条件下，编码下一个符号平均需要的 bits。Shannon 在 1951 年对印刷英语（最多 100 个字母的 context）的估计：0.6-1.3 bits/letter，这是在任何模型出现之前测得的。 |
 
 ## 延伸阅读
+- [Shannon (1951). Prediction and Entropy of Printed English](https://www.princeton.edu/~wbialek/rome/refs/shannon_51.pdf)  تحدد كل نموذج لغوي حتى الآن لا يزال في محاولة لتحسين تجربة التخمينات.
 - [Jurafsky and Martin — Speech and Language Processing, Chapter 3 (2026 draft)](https://web.stanford.edu/~jurafsky/slp3/3.pdf) n-gram LM 和 سلمة
 - [Chen and Goodman (1998). An Empirical Study of Smoothing Techniques for Language Modeling](https://dash.harvard.edu/handle/1/25104739) 确立 كنيسر-ني 作为最佳 n-gram smoother 的论文──
 - [Kneser and Ney (1995). Improved Backing-off for M-gram Language Modeling](https://ieeexplore.ieee.org/document/479394) 原始 KN 论文。
