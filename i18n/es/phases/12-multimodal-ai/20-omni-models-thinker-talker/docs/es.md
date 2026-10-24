@@ -11,7 +11,7 @@
 - Se dividirá en pensador y hablador, y explicará por qué se ha ido haciendo streaming.
 - 逐组件计算一次对话交互的时间到第一音频字节 (TTFAB) presupuesto──
 - 描述 TMRoPE 在 Thinker 内部跨视觉、音频和文本的时间对齐位置编码──
-- En el caso de los niños, el tiempo de trabajo es de aproximadamente un año.
+- Explicar cómo se puede mover la comunicación de medio dúplex y doble completo.
 
 ##  problemas
 Un asistente de voz en tiempo real debe hacer muchas cosas rápidamente:
@@ -82,7 +82,7 @@ Qwen2.5 Omni 默认支持半duplex, 通过静音值进行转换──Full-duplex
 - Descodificación residual-VQ: 30 ms.
 - 语音 forma de onda decodificación: 50-80ms。
 
-总 TTFAB:7B 上 320-510ms,70B 上 600-900ms。 Frontier 质量通常意味着70B+;这就是边界 延迟差距的来源──
+总 TTFAB:7B 上 320-490ms,70B 上 600-900ms。 Frontier 质量通常意味着70B+;这是边界 延迟差距的来源──
 
 ### Matemáticas de la tasa de tokens
 
