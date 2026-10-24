@@ -72,9 +72,11 @@ git merge experiment/new-optimizer
 
 ### Paso 4: Utiliza este programa de recuperación
 
+No puedes presionar directamente al programa de repos en persona, sólo el mantenedor tiene derechos de escritura.`origin`Dirigir a tu propia copia:
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code
@@ -95,7 +97,7 @@ Para este curso, sólo necesitas estos comandos:
 En este curso no se necesita una base de base o submodules.
 
 ##  ejercicios
-1. Clone este repo, crea un nombre`my-progress`de la sucursal, crear un archivo, comprometerlo, empujarlo
+1. Fork este repo, clone tu horquilla, crea un nombre`my-progress`de la sucursal, crear un archivo, comprometerlo, empujarlo
 2. Crear uno .`.gitignore`, eliminación de archivos de los puntos de control de modelo`.pt`¿Qué es esto?`.pth`¿Qué es esto?`.safetensors`(en inglés)
 3. ¿ Qué ?`git log --oneline`查看这个 repo de historial de compromisos,并阅读教训是如何被添加的
 
