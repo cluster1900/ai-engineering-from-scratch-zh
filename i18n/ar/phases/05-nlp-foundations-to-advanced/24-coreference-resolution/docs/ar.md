@@ -59,14 +59,14 @@ coref-links
 ```python
 import spacy
 nlp = spacy.load("en_coreference_web_trf")   # experimental model
-doc = nlp("Apple announced new products. The company said they would ship soon.")
+doc = nlp("Apple announced new products. The company said it would ship them soon.")
 for cluster in doc._.coref_clusters:
     print(cluster, "->", [m.text for m in cluster])
 ```
 
 في الوثيقة الموسعة، ستحصل على نتائج مشابهة:
-- المجموعة الأولى: [Apple، الشركة، هم]
-- المجموعة الثانية: [المنتجات الجديدة]
+- الكluster 1: [Apple، الشركة، هو]
+- المجموعة الثانية: [المنتجات الجديدة، هي]
 
 ### 步骤 2: حل اللفظ القائم على القواعد (التدريس)
 

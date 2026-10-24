@@ -71,18 +71,18 @@ PATTERNS = [
 ### الخطوة الثانية:
 
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tok = AutoTokenizer.from_pretrained("Babelscape/rebel-large")
-model = AutoModelForSequenceClassification.from_pretrained("Babelscape/rebel-large")
+model = AutoModelForSeq2SeqLM.from_pretrained("Babelscape/rebel-large")
 
 text = "Tim Cook was born in Alabama. He later became CEO of Apple."
 encoded = tok(text, return_tensors="pt", truncation=True)
 output = model.generate(**encoded, max_length=200)
-triples = tok.batch_decode(output, skip_special_tokens=False)
+decoded = tok.batch_decode(output, skip_special_tokens=False)
 ```
 
-REBEL هو إستخراج علاقة متتالية:输入文本,输出 triples,并且已经使用维基数据属性 ids──它在远程监督数据上精细调──标准开权基线──
+REBEL هو مستخرج علاقة تسلسل على أساس BART: فإنه ينتج ثلاثية، بدلا من أن تكون على أزواج الكيانات صنع分类──输入文本,输出三倍,relation 名称取自维基达特征──解码出的字符串仍然带有 REBEL 的`<triplet>`.`<subj>`和 `<obj>`标记, لذلك تحتاج إلى تحديد هذه العلامات `(subject, relation, object)`记录──它在远程监督数据上精细调──标准开放权重基线──
 
 ### الخطوة 3: استخراج المهارات المُساعدة في الـ LLM
 
