@@ -1,16 +1,16 @@
-# Task, TaskStatus, and TaskState
+# Task、TaskStatus 和 TaskState
 
-> A `Task` carries one `TaskStatus`, whose `state` is one of nine `TaskState` values, and the specification names those values without a table of the transitions between them.
+> 一个 `Task` 带有一个 `TaskStatus`，其 `state` 是九个 `TaskState` 值之一，而规范给出了这些值的名称，却没有给出它们之间的转换表。
 
-Your planner holds three tasks at once: the tests on `test-runner`, the review on `code-reviewer`, and the deploy on `deployer`. Each is a `Task` with a `status`, and the planner's next action turns on `status.state`: wait, act, or stop.
+你的 planner 同时持有三个任务：`test-runner` 上的测试、`code-reviewer` 上的审查和 `deployer` 上的部署。每个都是一个带有 `status` 的 `Task`，planner 的下一步动作取决于 `status.state`：等待、行动或停止。
 
-When you finish this section, you can read every field of a `Task`, classify every `TaskState` value, and say which transitions the specification defines.
+读完本节后，你能读懂 `Task` 的每个字段，对每个 `TaskState` 值进行分类，并说出规范定义了哪些转换。
 
-## Task
+## Task {#s-task-and-task-state-task}
 
-**Task:** the basic unit of work in A2A, with a unique id {{spec §2.2}}. The proto gives `Task` six fields and marks `id` and `status` REQUIRED {{proto Task}}. The server creates the `id` {{proto Task}}, and a client cannot supply one {{spec §3.4.2}}.
+**Task：** A2A 中的基本工作单元，具有唯一的 id {{spec §2.2}}。proto 给 `Task` 六个字段，并把 `id` 和 `status` 标为 REQUIRED {{proto Task}}。服务器创建 `id` {{proto Task}}，客户端不能提供它 {{spec §3.4.2}}。
 
-The optional fields are `contextId`, `artifacts`, `history`, and `metadata` {{proto Task}}. [contextId](#s-context-id), [Artifact and chunks](#s-artifact-and-chunks), and [GetTask and ListTasks](#s-get-task-and-list-tasks) cover the first three in turn. [Figure](#fig-task-object-model) lays out task `3d8f7801` from the blocking run.
+可选字段是 `contextId`、`artifacts`、`history` 和 `metadata` {{proto Task}}。[contextId](#s-context-id)、[Artifact 与分块](#s-artifact-and-chunks)和 [GetTask 与 ListTasks](#s-get-task-and-list-tasks) 三节依次讲解前三个。[图](#fig-task-object-model)展示了阻塞运行中的任务 `3d8f7801`。
 
 ```figure
 id: fig-task-object-model
@@ -20,50 +20,50 @@ claim: A task carries its own id, its context, one current status, its artifacts
 caption: Read the task table from the top, in the order the blocking run filled it. The boxes on the right expand its last two rows, and the chips below show the four kinds of part. Values come from the blocking-task capture, ids shortened to 8 characters. The raw and url examples come from the input-required and error captures.
 ```
 
-## TaskStatus
+## TaskStatus {#s-task-and-task-state-taskstatus}
 
-**TaskStatus:** the current status of a task, with `state` REQUIRED and `message` and `timestamp` optional {{proto TaskStatus}}. The message belongs to the status {{proto TaskStatus}}, and the timestamp is the ISO 8601 time when the status was recorded {{proto TaskStatus}}.
+**TaskStatus：** 任务的当前状态，其中 `state` 是 REQUIRED，`message` 和 `timestamp` 是可选的 {{proto TaskStatus}}。message 属于这个状态 {{proto TaskStatus}}，timestamp 是记录该状态时的 ISO 8601 时间 {{proto TaskStatus}}。
 
-A task has one status at a time, and the previous status message can move into `history`, as `06-input-required.http` shows.
+一个任务同一时间只有一个状态，之前的状态消息可以移入 `history`，`06-input-required.http` 展示了这一点。
 
-## TaskState
+## TaskState {#s-task-and-task-state-taskstate}
 
-The enum `TaskState` has nine values, numbered 0 to 8 {{proto TaskState}}. In JSON, a state travels as its name {{spec §5.5}}.
+枚举 `TaskState` 有九个值，编号为 0 到 8 {{proto TaskState}}。在 JSON 中，状态以它的名称传输 {{spec §5.5}}。
 
-**Terminal state:** a state that ends the task for good. The proto marks four values as terminal {{proto TaskState}}.
+**终止状态：** 让任务永久结束的状态。proto 把四个值标为终止状态 {{proto TaskState}}。
 
-**Interrupted state:** a state in which the task waits for something from outside the agent. The proto marks two values as interrupted {{proto TaskState}}.
+**中断状态：** 任务在其中等待来自 agent 外部的某样东西的状态。proto 把两个值标为中断状态 {{proto TaskState}}。
 
-**Active state:** this manual's name for `TASK_STATE_SUBMITTED` and `TASK_STATE_WORKING`, which the proto puts in neither group.
+**活动状态：** 本手册对 `TASK_STATE_SUBMITTED` 和 `TASK_STATE_WORKING` 的称呼，proto 没有把它们归入任何一组。
 
-| Value | Number | Class | In the kit |
+| 值 | 编号 | 类别 | 在 kit 中 |
 |---|---|---|---|
-| `TASK_STATE_UNSPECIFIED` | 0 | none | never sent |
-| `TASK_STATE_SUBMITTED` | 1 | active | every new task, `04-polling.http` |
-| `TASK_STATE_WORKING` | 2 | active | the suite runs, `05-streaming.http` |
-| `TASK_STATE_COMPLETED` | 3 | terminal | the tests end, `03-blocking-task.http` |
-| `TASK_STATE_FAILED` | 4 | terminal | commit `deadbee`, `09-failed.http` |
-| `TASK_STATE_CANCELED` | 5 | terminal | after `CancelTask`, `10-cancel.http` |
-| `TASK_STATE_INPUT_REQUIRED` | 6 | interrupted | the base branch question, `06-input-required.http` |
-| `TASK_STATE_REJECTED` | 7 | terminal | a production deploy, `08-rejected.http` |
-| `TASK_STATE_AUTH_REQUIRED` | 8 | interrupted | waiting for an operator, `07-auth-required.http` |
+| `TASK_STATE_UNSPECIFIED` | 0 | 无 | 从未发送 |
+| `TASK_STATE_SUBMITTED` | 1 | 活动 | 每个新任务，`04-polling.http` |
+| `TASK_STATE_WORKING` | 2 | 活动 | 测试套件运行中，`05-streaming.http` |
+| `TASK_STATE_COMPLETED` | 3 | 终止 | 测试结束，`03-blocking-task.http` |
+| `TASK_STATE_FAILED` | 4 | 终止 | commit `deadbee`，`09-failed.http` |
+| `TASK_STATE_CANCELED` | 5 | 终止 | `CancelTask` 之后，`10-cancel.http` |
+| `TASK_STATE_INPUT_REQUIRED` | 6 | 中断 | 关于基准分支的问题，`06-input-required.http` |
+| `TASK_STATE_REJECTED` | 7 | 终止 | 一次生产环境部署，`08-rejected.http` |
+| `TASK_STATE_AUTH_REQUIRED` | 8 | 中断 | 等待操作员，`07-auth-required.http` |
 
-`TASK_STATE_UNSPECIFIED` is the proto3 zero value, for a task whose state is unknown {{proto TaskState}}. The kit never sends it, so treat it and any unknown name as an error.
+`TASK_STATE_UNSPECIFIED` 是 proto3 的零值，用于状态未知的任务 {{proto TaskState}}。kit 从不发送它，所以把它和任何未知的名称都当作错误。
 
-A client needs both named sets, because a blocking `SendMessage` returns at a terminal or an interrupted state {{spec §3.2.2}}, as [SendMessage](#s-send-message) shows.
+客户端两组名称都需要，因为阻塞的 `SendMessage` 会在终止状态或中断状态时返回 {{spec §3.2.2}}，[SendMessage](#s-send-message) 一节展示了这一点。
 
-## The transitions the specification allows
+## 规范允许的转换 {#s-task-and-task-state-the-transitions-the-specification-allows}
 
-The specification says that tasks move through a defined lifecycle {{spec §2.2}}, yet neither its prose nor the proto has a transition table. What it says about transitions fits in four rules:
+规范说任务会经历一个定义好的生命周期 {{spec §2.2}}，但无论是它的正文还是 proto 都没有转换表。它关于转换的说法可以归纳为四条规则：
 
-- Input: an agent can ask for more input during the work by moving a task to the `input-required` state {{spec §3.4.3}}. That is the 0.3 name of `TASK_STATE_INPUT_REQUIRED` ([conflict D37](#s-ref-sources)).
-- Authorization: an agent "MUST transition the TaskState to `TASK_STATE_AUTH_REQUIRED`" to ask for it, and can resume without a client message {{spec §7.6.1}}.
-- Rejection: an agent can reject a task when it creates it or later {{proto TaskState}}.
-- Finality: a terminal task refuses messages {{spec §3.1.1}}, cancellation {{spec §3.1.5}}, and subscription {{spec §3.1.6}}.
+- 输入：agent 可以在工作期间把任务移到 `input-required` 状态，以请求更多输入 {{spec §3.4.3}}。那是 `TASK_STATE_INPUT_REQUIRED` 在 0.3 版中的名称（[冲突 D37](#s-ref-sources)）。
+- 授权：agent 要请求授权，"MUST transition the TaskState to `TASK_STATE_AUTH_REQUIRED`"，并且可以在没有客户端消息的情况下恢复 {{spec §7.6.1}}。
+- 拒绝：agent 可以在创建任务时或之后拒绝它 {{proto TaskState}}。
+- 终结：终止的任务拒绝消息 {{spec §3.1.1}}、取消 {{spec §3.1.5}} 和订阅 {{spec §3.1.6}}。
 
-The migration guide says that 1.0 made the state transitions for cancellation clearer {{docs whats-new-v1}}, and the specification lists none ([conflict D38](#s-ref-sources)). The extensions guide lists extensions that add new states or transitions {{docs extensions}}. It also says that extensions should use the existing enum values {{docs extensions}} ([conflict D29](#s-ref-sources)). Expect only the nine values.
+迁移指南说 1.0 让取消的状态转换更清楚了 {{docs whats-new-v1}}，而规范一个都没有列出（[冲突 D38](#s-ref-sources)）。扩展指南列出了添加新状态或新转换的扩展 {{docs extensions}}。它又说扩展应使用现有的枚举值 {{docs extensions}}（[冲突 D29](#s-ref-sources)）。只预期这九个值。
 
-With no table in the protocol, an agent's transitions are whatever its code emits. [Figure](#fig-task-states) collects every transition the kit's agents make.
+协议中没有转换表，所以一个 agent 的转换就是它的代码发出的任何转换。[图](#fig-task-states)汇集了 kit 的 agent 做出的每个转换。
 
 ```figure
 id: fig-task-states
@@ -73,15 +73,15 @@ claim: The kit's captures show nine transitions between task states, and none of
 caption: Boxes are TaskState values with the TASK_STATE_ prefix dropped. Dashed arrows are the transitions the kit's agents make, in capture order, labelled with the capture that shows each one. Read them as one implementation's behavior, never as the protocol's rules. Blocking captures return only the final state, so their earlier transitions come from the history they return and from the kit's agent code.
 ```
 
-The deployer leaves `TASK_STATE_AUTH_REQUIRED` with no message from the client, as the specification allows {{spec §7.6.1}}, and rejects straight from `TASK_STATE_SUBMITTED`. The reference SDK enforces no table either {{sdk src/a2a/server/agent_execution/active_task.py}}, so accept any transition out of a state that is not terminal.
+deployer 在没有客户端消息的情况下离开 `TASK_STATE_AUTH_REQUIRED`，这是规范允许的 {{spec §7.6.1}}，并直接从 `TASK_STATE_SUBMITTED` 拒绝。参考 SDK 也不强制任何转换表 {{sdk src/a2a/server/agent_execution/active_task.py}}，所以要接受从非终止状态出发的任何转换。
 
-A terminal task refuses a message on its `taskId` and `SubscribeToTask` with `UnsupportedOperationError`, and `CancelTask` with `TaskNotCancelableError` {{spec §3.1.1}} {{spec §3.1.5}} {{spec §3.1.6}}. [CancelTask and terminal states](#s-cancel-task-and-terminal-states) covers the four endings, and [the state table](#s-ref-task-states) lists the client's next step for each value.
+终止的任务会以 `UnsupportedOperationError` 拒绝针对其 `taskId` 的消息和 `SubscribeToTask`，以 `TaskNotCancelableError` 拒绝 `CancelTask` {{spec §3.1.1}} {{spec §3.1.5}} {{spec §3.1.6}}。[CancelTask 与终止状态](#s-cancel-task-and-terminal-states)一节讲解这四种结局，[状态表](#s-ref-task-states)列出了客户端针对每个值的下一步。
 
 ```takeaways
-- Hard-code the two sets: terminal is `COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`, and interrupted is `INPUT_REQUIRED`, `AUTH_REQUIRED`, each with the `TASK_STATE_` prefix.
-- Compare states by name, and treat `TASK_STATE_UNSPECIFIED` or an unknown name as an error.
-- Accept any transition out of a state that is not terminal, including a rejection straight after creation.
-- Check the state before you message, cancel, or subscribe, because all three fail on a terminal task.
+- 把两组写死：终止状态是 `COMPLETED`、`FAILED`、`CANCELED`、`REJECTED`，中断状态是 `INPUT_REQUIRED`、`AUTH_REQUIRED`，每个都带 `TASK_STATE_` 前缀。
+- 按名称比较状态，把 `TASK_STATE_UNSPECIFIED` 或未知的名称当作错误。
+- 接受从非终止状态出发的任何转换，包括创建后立即拒绝。
+- 在发消息、取消或订阅之前先检查状态，因为这三者在终止的任务上都会失败。
 ```
 
 Sources: spec §2.2, §3.1.1, §3.1.5, §3.1.6, §3.2.2, §3.4.2, §3.4.3, §5.5, §7.6.1 (research/sources/specification.md); proto Task, TaskStatus, TaskState (research/sources/a2a.proto); docs docs/topics/extensions.md and docs/whats-new-v1.md at v1.0.1; sdk src/a2a/server/agent_execution/active_task.py at a2a-python 1.2.2; capture/out/03-blocking-task.http, 04-polling.http, 05-streaming.http, 06-input-required.http, 07-auth-required.http, 08-rejected.http, 09-failed.http, 10-cancel.http, 11-errors.http; capture/agents.py

@@ -1,34 +1,34 @@
 # contextId
 
-> A `contextId` groups many tasks into one conversation, a `taskId` groups many messages into one job, and only the server creates a task id.
+> `contextId` 把许多任务归入一次对话，`taskId` 把许多消息归入一项工作，而只有服务器会创建任务 id。
 
-`code-reviewer` stops halfway through a review and asks your planner which base branch to use. The answer must reach that same review. Later the diff changes, and the planner wants a second review that remembers the first. Two ids carry this: the task id for the job and the context id for the conversation.
+`code-reviewer` 在审查到一半时停下来，问你的 planner 该用哪个基准分支。答案必须送回同一次审查。之后 diff 变了，planner 想要第二次审查，并让它记得第一次。这由两个 id 承载：表示这项工作的任务 id，以及表示这次对话的 context id。
 
-When you finish this section, you can continue a task, start a follow-up in the same context, and know who creates each id.
+读完本节后，你能继续一个任务，在同一个 context 中开始后续任务，并知道每个 id 由谁创建。
 
-## Two ids, two scopes
+## 两个 id，两种范围 {#s-context-id-two-ids-two-scopes}
 
-**Context:** an optional identifier that groups related tasks and messages {{spec §2.2}}. Tasks and messages with the same `contextId` should count as one conversational session {{spec §3.4.1}}.
+**Context：** 一个可选的标识符，把相关的任务和消息归为一组 {{spec §2.2}}。具有相同 `contextId` 的任务和消息应被视为同一个对话会话 {{spec §3.4.1}}。
 
-**Task id:** the id of one stateful job. The server generates the task id when it creates a new task in response to a message {{spec §3.4.2}}. [Message](#s-message) gives the rules for sending one back.
+**任务 id：** 一项有状态工作的 id。服务器在响应消息创建新任务时生成任务 id {{spec §3.4.2}}。[Message](#s-message) 一节给出了回传它的规则。
 
-The server usually creates the context too. An agent is allowed to generate a new `contextId` for a message that has none {{spec §3.4.1}}, and the response must carry it {{spec §3.4.1}}. In the kit, every first message carries no ids, and every answer, even the direct reply in `02-message-reply.http`, brings back a new context.
+context 通常也由服务器创建。agent 可以为不带 `contextId` 的消息生成一个新的 `contextId` {{spec §3.4.1}}，响应必须带上它 {{spec §3.4.1}}。在 kit 中，每条第一次发送的消息都不带 id，而每个回答，即使是 `02-message-reply.http` 中的直接回复，都会带回一个新的 context。
 
-A client should treat a `contextId` from the server as an opaque identifier {{spec §3.4.1}}. Behind the id, the agent can keep internal state, conversation history, or LLM context across many interactions {{spec §3.4.1}}.
+客户端应把来自服务器的 `contextId` 视为不透明的标识符 {{spec §3.4.1}}。在这个 id 背后，agent 可以在多次交互之间保存内部状态、对话历史或 LLM 上下文 {{spec §3.4.1}}。
 
-Propose your own context id only when you understand how the server will process it {{spec §3.4.1}}. A server that cannot take it must reject the request with an error, and it must not generate a new `contextId` for the response {{spec §3.4.1}}. The concept guide describes the context id as an identifier that the server generates {{docs key-concepts}}, which leaves no room for a proposal ([conflict D28](#s-ref-sources)). The specification wins, so expect either answer.
+只有在你了解服务器会如何处理时，才提议你自己的 context id {{spec §3.4.1}}。无法接受它的服务器必须以错误拒绝请求，并且不得为响应生成新的 `contextId` {{spec §3.4.1}}。概念指南把 context id 描述为由服务器生成的标识符 {{docs key-concepts}}，这没有给提议留下余地（[冲突 D28](#s-ref-sources)）。以规范为准，所以两种回应都要预料到。
 
-## Continuing a task
+## 继续一个任务 {#s-context-id-continuing-a-task}
 
-When a task waits for you, answer on that same task and send both of its ids, as [Message](#s-message) explains. [Interrupted states](#s-input-required-and-auth-required) follows the review's answer.
+当任务在等你时，就在同一个任务上回答，并发送它的两个 id，正如 [Message](#s-message) 一节所解释的。[中断状态](#s-input-required-and-auth-required)一节跟踪了审查的回答。
 
-Only a task that is not terminal takes more messages {{spec §3.3.3}}. A message to a finished task fails with `UnsupportedOperationError`, as [CancelTask and terminal states](#s-cancel-task-and-terminal-states) shows.
+只有非终止的任务才接收更多消息 {{spec §3.3.3}}。发给已结束任务的消息会以 `UnsupportedOperationError` 失败，[CancelTask 与终止状态](#s-cancel-task-and-terminal-states)一节展示了这一点。
 
-## A follow-up is a new task
+## 后续是一个新任务 {#s-context-id-a-follow-up-is-a-new-task}
 
-Once the review completes, a second round cannot reopen it. A refinement must start a new task in the same `contextId` {{docs life-of-a-task}}. The specification gives the client two fields for that. A client is allowed to send a `contextId` without a `taskId` to start a new task in an existing context {{spec §3.4.3}}. A client should use the `referenceTaskIds` field of the message to point to related tasks {{spec §3.4.3}}.
+审查完成后，第二轮不能重新打开它。改进必须在同一个 `contextId` 中开始一个新任务 {{docs life-of-a-task}}。规范为此给了客户端两个字段。客户端可以发送不带 `taskId` 的 `contextId`，在现有 context 中开始一个新任务 {{spec §3.4.3}}。客户端应使用消息的 `referenceTaskIds` 字段指向相关的任务 {{spec §3.4.3}}。
 
-The captures stop before such a follow-up. The kit's server would accept one: given a `contextId` and no `taskId`, its `send` creates a new task in that context. [The kit's server code](manuals/a2a-101/capture/a2a_ref.py) shows this. [Figure](#fig-context-and-tasks) draws the captured review beside the follow-up a client would send next.
+捕获在这样的后续之前就停止了。kit 的服务器会接受它：给定 `contextId` 而没有 `taskId` 时，它的 `send` 会在该 context 中创建一个新任务。[kit 的服务器代码](manuals/a2a-101/capture/a2a_ref.py)展示了这一点。[图](#fig-context-and-tasks)把捕获的审查与客户端接下来会发送的后续并排画出。
 
 ```figure
 id: fig-context-and-tasks
@@ -38,19 +38,19 @@ claim: The review task holds both exchanges of the conversation, and a follow-up
 caption: Read top down: the context, its tasks, and each task's history in order. The dashed task and its message show what a client sends next, because the captures stop before it. Ids shortened to 8 characters. From capture/out/06-input-required.http and capture/out/13-history.http.
 ```
 
-Nothing limits a context to one task at a time: agents can create a separate, parallel task for each follow-up message {{docs life-of-a-task}}.
+没有什么限制一个 context 同一时间只能有一个任务：agent 可以为每条后续消息创建一个单独的并行任务 {{docs life-of-a-task}}。
 
-## What the agent keeps
+## agent 保留什么 {#s-context-id-what-the-agent-keeps}
 
-The review task keeps its four messages in `history`, and [GetTask and ListTasks](#s-get-task-and-list-tasks) shows how to read them. Do not treat that history as a full transcript, because the agent decides which messages it keeps in the task history {{spec §3.7}}. In particular, messages from before the task was created can be missing from the history {{spec §3.7}}.
+审查任务在 `history` 中保留了它的四条消息，[GetTask 与 ListTasks](#s-get-task-and-list-tasks) 一节展示了如何读取它们。不要把这份历史当作完整的记录，因为 agent 决定在任务历史中保留哪些消息 {{spec §3.7}}。特别是，任务创建之前的消息可能不在历史中 {{spec §3.7}}。
 
-Contexts do not live forever either. An agent is allowed to expire or clean up contexts, and it should document any such policy {{spec §3.4.1}}. Check the agent's documentation before you rely on an old context id.
+context 也不会永远存在。agent 可以让 context 过期或清理它们，并应记录任何此类策略 {{spec §3.4.1}}。在依赖一个旧的 context id 之前，先查看 agent 的文档。
 
 ```takeaways
-- Send no ids on a first message, then store the `taskId` and `contextId` the server returns.
-- Continue a task that is not terminal with both of its ids in every message.
-- After a terminal state, send the follow-up with the same `contextId`, no `taskId`, and the old task in `referenceTaskIds`.
-- Treat context ids as opaque identifiers that an agent can expire.
+- 第一条消息不带任何 id，然后保存服务器返回的 `taskId` 和 `contextId`。
+- 继续非终止的任务时，在每条消息中带上它的两个 id。
+- 到达终止状态后，发送后续时使用同一个 `contextId`，不带 `taskId`，并把旧任务放进 `referenceTaskIds`。
+- 把 context id 视为 agent 可能让其过期的不透明标识符。
 ```
 
 Sources: spec §2.2, §3.3.3, §3.4.1, §3.4.2, §3.4.3, §3.7 (research/sources/specification.md); proto Task (research/sources/a2a.proto); docs docs/topics/key-concepts.md and docs/topics/life-of-a-task.md at v1.0.1; capture/out/02-message-reply.http, 06-input-required.http, 10-cancel.http, 13-history.http; capture/a2a_ref.py
