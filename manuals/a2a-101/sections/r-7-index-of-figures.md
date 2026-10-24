@@ -1,8 +1,8 @@
-# Index of figures
+# 图表索引
 
-> Every figure in the manual, by the claim it makes.
+> 手册中的每张图，按它提出的论断列出。
 
-Each number links to its figure, and the claim is the bold sentence that opens the caption.
+每个编号链接到对应的图，论断是图注开头的粗体句子。
 
 ```figure-index
 ```
