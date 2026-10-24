@@ -46,7 +46,7 @@ Trois branches de sortie par le biais de la porte de position apprise 组合:
 
 sélection 步骤(top-k blocs) est dispersée. Les opérations dispersées perturberont le flux de gradient.
 
-La NSA a détourné ce point: Attention de branche comprimée En effet, elle joue un rôle dans l'ensemble du séquence de la petite grosseur Attention, la plus haute opération est simplement de réutiliser la branche comprimée au plus haut point Attention, pour choisir les points de concentration nécessaires à la charge de blocs de petite grosseur.`top_k`L'opération est en avant vers le graphique de calcul. Il ne fonctionne que sur les blocs qui seront chargés dans la mémoire.
+La NSA a contourné ce point: Attention à branches compressées En réalité, elle agit sur toute la séquence de la petite grosseur Attention, la plus haute opération est simplement de recourir à la branche compressée, la plus haute attention, pour choisir les points de blocage de la petite grosseur. Gradient, à travers la branche compressée, sa propre sortie atteint les points de branches compressées, plutôt que le bloc.`top_k`Le code de l'index 选择本身不接收 Gradient: il ne contrôle que les blocs qui seront chargés dans le stockage.
 
 C'est pourquoi la NSA peut être utilisée de bout en bout pour la pré-formation. Le modèle va apprendre à parcourir trois branches de l'information, à générer un modèle rare et à accélérer la livraison réelle des engagements.
 

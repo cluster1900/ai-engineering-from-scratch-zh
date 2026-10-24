@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## Objectif de l'apprentissage
-- Pour les autres, il est nécessaire de mettre en place des systèmes de gestion de données et de gestion de données.
+- Le système de calcul de la quantité de données est un système de calcul de la quantité de données.
 - définir les contrats d'artisanat entre les différentes étapes: chaque étape consomme quoi, produit quoi, ainsi que la phase suivante comment vérifier l'entrée
 - construire un orchestrateur, pour suivre les expériences pour les objets  effectuer le hachage, et sur la base des seuils d'évaluation décider si le gate est adopté
 - Design rollback plan: quels objets recharger coût faible, quels coût élevé, ainsi qu'un point de contrôle détérioré

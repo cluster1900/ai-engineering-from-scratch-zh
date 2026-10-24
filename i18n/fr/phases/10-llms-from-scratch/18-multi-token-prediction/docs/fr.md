@@ -28,7 +28,7 @@ Le cours est basé sur la conception de modules MTP et la perte de profondeur D.
 
 ### MTP séquentielle 配方
 
-DeepSeek-V3 est ajouté sur le modèle principal`D`个 MTP modules── chaque module `k`(dont `k = 1..D`) pré测 profondité `k`Le signe, c'est que je suis dans une position déterminée.`i`时预测                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `t_{i+k}`Il y a une autre.
+DeepSeek-V3 est ajouté sur le modèle principal`D`个 MTP modules── 主模型预测 `t_{i+1}` Chaque module`k`(dont `k = 1..D`) pré测再往后 `k`步的标志 `t_{i+k+1}`- Je suis sûr que c'est vrai.`i`Le préfixe de la lettre.
 
 Module `k`包含:
 
@@ -49,13 +49,13 @@ h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMS
 Prévision par profondeur 为:
 
 ```math
-\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
+\text{logits}_{i+k+1} = \mathop{\mathrm{Out}}(h_i^{(k)}) \quad \text{for } k = 1, \ldots, D
 ```
 
-La perte de profondeur est par rapport à la vérité fondamentale.`t_{i+k}`La transpiration de l'entropie:
+La perte de profondeur est par rapport à la vérité fondamentale.`t_{i+k+1}`La transpiration de l'entropie:
 
 ```math
-L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k+1}, t_{i+k+1})
 ```
 
 Perte articulaire à travers la profondeur:
@@ -70,9 +70,9 @@ L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 
 Gloeckle a d'abord un MTP parallèle avec des têtes de sortie, chacun directement appliqué à`h_i^(0)`Chaque tête est dans le même état caché.`t_{i+k}`Tu peux t'entraîner normalement, mais ces prédictions ne sont pas mutuellement conditionnées.`head_1`De l'aide à sortir `head_2`Ces têtes sont des éclats de touches.
 
-Le design de DeepSeek-V3 est suivant:`h_i^(k-1)`Plus réellement intégration de jetons suivants `E(t_{i+k})` Construction `h_i^(k)`Ceci a conservé la chaîne de causalité:`t_{i+k+1}`, profondeur `k+1`Le module va voir`t_{i+k}`处的内容── This is in structure on the same way as self-backed decoder 消费 itself output, therefore MTP modules can be directly as speculative-decoding drafters 
+Le design de DeepSeek-V3 est suivant:`h_i^(k-1)`Plus réellement intégration de jetons suivants `E(t_{i+k})` Construction `h_i^(k)`Ceci a conservé la chaîne de causalité:`t_{i+k+1}`, profondeur `k`Le module va voir`t_{i+k}`处的内容── This is in structure on the same way as self-backed decoder 消费 itself output, therefore MTP modules can be directly as speculative-decoding drafters 
 
-推理时:将 `h_i^(k-1)`Et les projets`t_{i+k}`输入 module `k+1`Je suis en train de faire ça .`t_{i+k+1}`C'est un projet de style EAGLE, il suffit d'utiliser un bon module MTP comme un projet de réseau. DeepSeek-V3 rapporte que le taux d'acceptation du premier module MTP est supérieur à 80%, et obtient environ 1,8× 加速──
+推理时:将 `h_i^(k-1)`Et les projets`t_{i+k}`输入 module `k`Je suis en train de faire ça .`t_{i+k+1}`C'est un projet de style EAGLE, il suffit d'utiliser un bon module MTP comme un projet de réseau. DeepSeek-V3 rapporte que le taux d'acceptation du premier module MTP est supérieur à 80%, et obtient environ 1,8× 加速──
 
 ### 参数核算
 
@@ -142,7 +142,7 @@ Autotanténonciation 加 MLP──在玩具中, un bloc d'attention linéaire à
 
 ### 步骤 5:perte par profondeur
 
-La valeur de l'offre est de 0,5%`k`处 fondamentale-vérité Token   cross-entropie`lambda / D`缩放因子跨深度 聚合──
+La valeur de l'offre est de 0,5%`k+1`处 fondamentale-vérité Token   cross-entropie`lambda / D`缩放因子跨深度 聚合──
 
 ### 步骤 6: calcul des paramètres
 
@@ -177,18 +177,18 @@ Scène de non-utilisation:
 
 2. 計算一個密集70B 模型 ((hidden 8192,80 層) 在D=1 MTP module 下的参数开销──与DeepSeek-V3 报告的14B 开销进行比较──解释为什么DeepSeek's numbers were higher:MTP transformator block 继承了相同的MoE 结构,从而增加了每模块的参数──
 
-3. Dans le jeu réaliser D=2: Ajouter un deuxième module MTP, recevoir $h^{(1)}$Il n' y a pas de prédiction`t_{i+2}` L'essai de perte commune et le calcul des paramètres avec les équations de DeepSeek papier 19-21 匹配。
+3. Dans le jeu réaliser D=2: Ajouter un deuxième module MTP, recevoir $h^{(1)}$Il n' y a pas de prédiction`t_{i+3}` L'essai de perte commune et le calcul des paramètres avec les équations de DeepSeek papier 19-21 匹配。
 
 4. Pour la version séquentielle, la version séquentielle doit produire une perte de profondeur plus faible, car elle est prévue en milieu de la prédiction.
 
-5. Pour former un bon module MTP, utiliser un projet de style EAGLE:`t_{i+k}` Dans la séquence de détention, mesurer ces jetons de projet par rapport au taux d'acceptation du modèle principal  Si vous atteignez 50%+ dans le jeu, vous avez déjà réussi à obtenir l'expérience de MTP-as-draft 
+5. Pour former un bon module MTP, utiliser un projet de style EAGLE:`t_{i+k+1}` Dans la séquence de détention, mesurer ces jetons de projet par rapport au taux d'acceptation du modèle principal  Si vous atteignez 50%+ dans le jeu, vous avez déjà réussi à obtenir l'expérience de MTP-as-draft 
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | MTP module | “额外 loss block” | 一个小型 transformer block 加 projection，用来预测主模型前方 `k` 个位置的 Token |
-| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k}` |
+| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k+1}`（主模型为 depth 0，预测 `t_{i+1}`） |
 | Parallel MTP | “Gloeckle-style” | 位于同一个 backbone hidden state 之上的 D 个独立 heads，没有条件链 |
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |

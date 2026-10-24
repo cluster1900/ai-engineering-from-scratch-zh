@@ -74,10 +74,10 @@ Les couches de Mamba 本身具有位置感知能力(通過递推) ・ les premie
 
 Pour Jamba-1 形状(32 层:28 Mamba + 4 Attention, cachée 4096,32 têtes d'attention):
 
-- KV cache( seulement couches d'attention): dans 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 8.4 GB`                                                                                                                                                                                                                                                              
+- KV cache( seulement couches d'attention): dans 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 16 GB` Seules 4 couches d'attention contribuent au cache KV― Jamba publié utilise 8 couches de tête KV dans ces couches, ce qui la réduit à 4 GB, soit le nombre de Jamba dans le papier―
 - État du MSS: chaque préfixe de jeton 为 `28 * hidden * state_size`, mais c'est un niveau fixe de taille, pas avec la longueur de la séquence.`28 * 4096 * 16 * 2 = 3.7 MB`Il y a une autre.
 
-Avec le même transformateur de 32 couches de 32 têtes pleines de MHA`2 * 32 * 32 * 128 * 256k * 2 = 128 GB` la mise en cache de KV  réduit de 8x── même par rapport à la plupart des GQA utilisés en 2024 模型(8) baseline(`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`Le hybride de Jamba est de 1:7 et il est encore de 16 Go.
+Avec le même transformateur de 32 couches de 32 têtes pleines de MHA`2 * 32 * 32 * 128 * 256k * 2 = 128 GB` la mise en cache de KV  réduit de 8x── même par rapport à la plupart des GQA utilisés en 2024 模型(8) baseline(`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`),32 个 KV heads 的 1:7 hybrid 在 16 GB 下仍然小2x──已发布的Jamba 为 4 GB,小8x──
 
 C'est ce qu'AI21 dit de la seule mise en cache de la GPU de 80 Go de 256k dans le contexte du transformateur pur à plein MHA. Même la ligne de base de la GQA n'offre presque aucun poids et aucune activation.
 

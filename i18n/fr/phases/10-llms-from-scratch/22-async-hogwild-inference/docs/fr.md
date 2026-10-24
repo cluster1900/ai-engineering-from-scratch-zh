@@ -55,7 +55,7 @@ Le nom de ce document a été emprunté à Hogwild! SGD(Recht et al., 2011), un 
 
 ### Rope  Fais que ça soit possible
 
-Embeddings de position rotative ((RoPE, Su et al. 2021) par la rotation de Q 和 K vecteurs 编码 position information──因为 positions sont des rotations, et non des compensations de fixation, donc la position du jeton peut être déplacée, sans avoir besoin de recalculer KV cache entrée── être un travailleur `i`写入 position du cache partagé `p`时,读取该职位的其他员工可以直接使用缓存输入不需要重转
+Enregistres de position rotation(RoPE, Su et al. 2021) par la rotation entre les vecteurs Q et K 编码 position information。 Parce que la note d'attention entre la requête après la rotation et la clé après la rotation dépend seulement de leur distance relative, donc tout le bloc des entrées en cache peut être déplacé vers un nouveau décalage et sans avoir à recalculer: la requête de rotation, au lieu de re-rotation de chaque clé en cache。Hogwild! Inference pour chaque bloc de cache seulement une fois: pour la position`i_q`La question, ainsi que dans le travail 视角中起始于 `i_k`Le bloc, la requête en fonction de la distance`i_q - i_k`旋转── c'est la façon dont chaque travailleur voit les blocs de cache partagés selon son propre ordre── cette technique s'applique à l'ensemble du bloc de continuité── mettre des jetons individuels 移动到不同位置会改变它们的旋转, encore besoin de recalculer──
 
 Dans le modèle de position apprise ou de position absolue, Hogwild !
 

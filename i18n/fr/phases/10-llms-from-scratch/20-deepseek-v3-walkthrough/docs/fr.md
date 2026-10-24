@@ -106,18 +106,18 @@ mtp_module: 1               (1 MTP module at depth 1)
 完整计算在 `code/main.py`Le résultat final:
 
 - Embedding:`vocab * hidden = 129280 * 7168 = ~0.93B`Il y a une autre.
-- Précédent 3 个 denses blocs:带 MLA 的注意(per bloc 约144M) + denses MLP(per bloc 约260M) + normes。总计约1.2B。
-- 58 blocs de MoE: avec attention des MLA (environ 144M) + 256 experts (environ 30M) + 1 expert partagé (environ 30M) + norme (environ 30M) ⋅ selon tous les experts ⋅ calcul, par bloc ⋅ total 7.95B⋅ 58 blocs de MoE ⋅ total 461B⋅
-- Module MTP:14B:
+- Précédent 3 blocs denses:带 MLA 的注意(按计算器的简化计计数每块约84M) + dense SwiGLU MLP(每块 `3 * 7168 * 18432 = ~396M`• + normes ∙ Total de 1,4B ∙
+- 58 blocs de MoE: avec 84 millions d' experts + 256 experts roués`3 * 7168 * 2048 = ~44M`) + 1 个共享专家(约44M) + router + normes──按包含所有专家 计算,每块约11.4B──58 个 MoE blocks 总计约661B──
+- MTP module: déjà publié module pour 14B;; calculateur utilise environ 0,8B de densité en remplacement;;
 
-总计:core architecture 约476B + 14B MTP; et publié 671B 数字还会单独计入额外结构参数(bias tensors、expert-specific components、shared expert scaling等) ⋅ Nous avons dans le calculateur une différence de 3 à 5% entre les chiffres répertoriés et les valeurs publiées, différence provenant de DeepSeek 报告 Section 2 appendice 中记录的细粒度核算──
+总计: le calculateur obtient environ 664B, tandis que le numéro de référence du modèle principal est 671B. Le point de contrôle de la face de Hugging est 685B, car il a rejoint le module MTP de 14B sur le 671B. Le reste de 1% provient de la simplification: le calculateur a sauté à travers la tête de sortie RoPE 维度、未绑定以及 quelques petits tensors.
 
 Parmi les éléments actifs de chaque événement:
 
-- Attention: chaque couche 144M * 61 = 8,8B
-- MLP actif:前 3 層密集(3 * 260M = 780M),58 个 MoE strati 中每层激活 8 个路由 + 1 个共享 +路由上费――每层active MLP 约 260M──总计:3 * 260M + 58 * 260M = ~15.9B──
-- Intégration + normes: 1.2B。
-- 总活跃: environ 26B de base + 14B MTP(entraînement en utilisant, mais la mise en œuvre n'est pas toujours possible)≈ 37B。
+- Attention: chaque couche 84M * 61 = ~5,1B(toutes les couches 都会触发)
+- L'activité de la PMA: 3 niveaux denses`3 * 396M = ~1.2B`),58 个 MoE stratification 中每层激活 8 个路由 + 1 个共享专家(每层 `9 * 44M = ~396M`, en tout 23B) ⋅ en tout 24B⋅
+- Intégration + normes: environ 0,9B。
+- 总活跃: calculateur obtenu environ 30B, et le chiffre publié est de 37B. La différence est principalement observée: MLA complet avec RoPE dimension ainsi que plus large requête et tête de clé, plus grand que le nombre simplifié.
 
 ### 671B / 37B par exemple
 

@@ -16,7 +16,7 @@
 
 ##  problématique
 
-Attention, il y a une nature mathématique, à grande échelle, il devient un problème d'ingénierie.`q`Attention, le poids est`softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值每个不匹配的代币都会得到一些正质量──这个残余质量就是噪音,并且会随着背景长度扩大── 在128k 个代币下,即使每个不匹配的代币只获得0.001%的概率,127,999 代币合并也会贡献约12%的总量──模型必须学会绕开一个随着背景 增长的噪音下限──
+Attention, il y a une nature mathématique, à grande échelle, il devient un problème d'ingénierie.`q`Attention, le poids est`softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值: chaque jeton non correspondant obtiendra une certaine qualité positive  Ce reste de la qualité est le bruit, et va évoluer avec la longueur du contexte 扩大♦ Dans 128k 个 token ⇒, même chaque jeton non correspondant obtiendra seulement une probabilité de 0,0001%  127,999 个 token  合并也将贡献约13% du total  Le modèle doit apprendre à contourner un contexte 增长噪音 ⇒
 
 En effet, cette performance s'est produite pour Attention head 干扰:long-context RAG 幻觉引用、100k-Token 检索任务中的 lost-in-the-middle 失败, ainsi que l'aiguille-in-haystack benchmark dans les plus de 32k 后出现细微精度下降──Differential Transformer 论文 ((arXiv:2410.05258, ICLR 2025) ont mesuré cette différence:DIFF Transformers par rapport aux lignes de base de la même taille  obtenu une plus faible perplexité、 une plus grande précision dans le long du contexte, ainsi que moins d'hallucinations──
 
