@@ -88,7 +88,7 @@ A terra temporária de saída
 
 - Texto livre:"O gato salta ao redor da marca de 4 segundos". 易于解析但不精确──
 - JSON estruturado:`{"event": "jump", "start": 4.1, "end": 4.3}`❖ Qwen2.5VL 会訓練这种形式──
-- Baseado em tokens: especial `<time>4.1</time>`Tokens 与答案交错──Qwen2.5-VL's interior formato──
+- Baseado em tokens: especial `<time>4.1</time>`Tokens 与答案交错──部分视频模型使用这种方式;Qwen2.5-VL 则把时间编码在M-RoPE posição IDs,并以文字或JSON 回答──
 
 Para uso em downstream, o formato de saída JSON de Qwen2.5VL pode ser resolvido diretamente.
 

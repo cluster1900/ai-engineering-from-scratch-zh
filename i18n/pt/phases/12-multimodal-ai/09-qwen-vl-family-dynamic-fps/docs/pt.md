@@ -50,7 +50,7 @@ Resultado:Qwen2-VL-7B em vários Multimodal 基准上追平 GPT-4o, e DocVQA 上
 
 Qwen2.5VL de grande transformação é o vídeo.
 
-- 绝对时间 Token──不使用位置索引(frame 0, 1, 2...),而使用实际时间──"À 0:04, o gato salta". 模型会看到与框架代币 交错的 交错的`<time>0.04</time>`- Os tokens.
+- 位置 IDs 中的绝对时间──不使用索引(frame 0, 1, 2...),M-RoPE 时间轴跟随实际时间,因此差值对应它们之间的隔隔的秒数──"Ao 0:04, o gato salta". 没有额外的文字代币 承载时间,因此这种编码不会增加序列长度──
 - FPS dinâmico, material de velocidade lenta, em 1 FPS, cenário de movimento, em 4+ FPS, em
 - Atenção Espacial  Adotar janelas (block 内局部) para aumentar a pronóstico; Cada隔几层加入全球关注──
 - 显式 JSON 输出格式──使用工具-call 数据训练:"{\"tool\": \"clique\", \"coords\": [380, 220]}"──开箱即代理-ready──
@@ -89,7 +89,7 @@ Benefício: um código de localização é um código de localização que pode 
 1. 计算你能承担最大FPS:`fps_max = B / (T * tokens_per_frame)`- Não.
 2. De`{1, 2, 4, 8}`中选择满足 `fps <= fps_max`O objetivo é o FPS.
 3. Se movimento forte, seção de fluxo óptico ou claro, escolha FPS mais alto.
-4. 按选定FPS 均采样;在之间插入 `<time>t</time>`- Os tokens.
+4. 按选定FPS 均采样; 根据每以秒为单位时间设置其M-RoPE 时间 ID──
 
 Qwen2.5VL 会隐式训练这种逻辑;推理时用户通过 `fps`参数控制── uma sequência de 60 segundos de movimento, com 4 FPS、 por 81 tokens 计算, igual a 19440 tokens, em contexto de 32k 中可管理──
 
@@ -141,7 +141,7 @@ Operá-lo, depois em um vídeo de 5 minutos, coloca o FPS fixo em FPS dinâmico,
 |------|-----------------|------------------------|
 | M-RoPE | "Multimodal RoPE" | hidden dim 中带 temporal、height 和 width bands 的 3D rotary position embedding |
 | Dynamic FPS | "Smart sampling" | 根据运动、时长和 Token 预算为每个视频选择的帧采样率 |
-| Absolute time token | "Timestamp token" | 在序列中交错插入的 `<time>t</time>`，让模型看到实际秒数而不是帧索引 |
+| Absolute time encoding | "Time-aligned M-RoPE" | 根据每帧时间戳设置时间 position IDs，让模型看到实际秒数而不是帧索引，且无需额外 tokens |
 | Window attention | "Local attention" | 为提速而限制在小窗口内的 spatial self-attention；周期性加入 global attention |
 | Structured agent output | "JSON mode" | 通过训练数据监督教 VLM 输出可解析 JSON，其中包含 coords 和 tool names |
 | min_pixels / max_pixels | "Resolution bounds" | Qwen2.5-VL 的每请求控制项，用来约束总像素数，从而约束 Token 数 |
