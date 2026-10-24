@@ -21,7 +21,7 @@ Vous avez construit un chatbot RAG. Il fonctionne très bien.
 
 Puis le compte est arrivé.
 
-GPT-5 pour chaque million de jetons d' entrée $5，每百万 output $15―Claude Opus 4.7 entrée $15 / output $75―Gemini 3 Pro$1.25 / output $5―GPT-5-mini$0.25/$2― prix ci-dessous est seulement un exemple;
+GPT-5 pour chaque million de jetons d' entrée $1.25，每百万 output $10―Claude Opus 4.7 entrée $5 / output $25―Gemini 3.1 Pro$2 / output $12(prompts pas plus de 200 000 jetons)$0.25/$2― la GPT-4o est utilisée dans les mathématiques$2.50/$10── prix seulement comme exemple; toujours en cours de vérification fournisseur 当前的价格页面──
 
 Voici les mathématiques de la première entreprise:
 

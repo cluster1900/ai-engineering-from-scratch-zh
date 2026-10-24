@@ -225,8 +225,8 @@ Sur la page précédente, évaluez vos coûts mensuels. Cette feuille de calcul 
 | Queries per user per day | 5 | Product analytics |
 | Avg input tokens per query | 1,500 | 实测（system + context + user） |
 | Avg output tokens per query | 400 | 实测 |
-| Input price per 1M tokens | $5.00 | OpenAI GPT-5 pricing |
-| Output price per 1M tokens | $15.00 | OpenAI GPT-5 pricing |
+| Input price per 1M tokens | $2.50 | OpenAI GPT-4o pricing |
+| Output price per 1M tokens | $10.00 | OpenAI GPT-4o pricing |
 | Cache hit rate | 35% | 来自 cache metrics 的实测 |
 | Effective daily queries | 32,500 | 50,000 * (1 - 0.35) |
 
