@@ -18,7 +18,12 @@ function expand(token, keys, seen = new Set()) {
 }
 const toks = s => new Set((s.match(/`[^`]+`|[A-Za-z_][A-Za-z0-9_.]{2,}|\d+(?:\.\d+)?/g) || []).map(t => t.replace(/`/g, '').toLowerCase()));
 let total = 0, flagged = 0;
-for (const name of process.argv.slice(2)) {
+const SHEETS = process.argv.slice(2);
+if (SHEETS.length === 0) {
+  console.error('Usage: node scripts/verify_evidence_lines.js <sheet>...\n  e.g. node scripts/verify_evidence_lines.js math-for-ml lora-fine-tuning');
+  process.exit(2);
+}
+for (const name of SHEETS) {
   const file = path.join(ROOT, 'cheatsheets/evidence', name + '.md');
   const text = fs.readFileSync(file, 'utf8');
   const keys = ev.parseEvidence(text).keys;
