@@ -1,20 +1,20 @@
-# Artifact and chunks
+# Artifact 与分块
 
-> A task returns its results as artifacts, and a long artifact arrives as chunks that you join by `artifactId` until `lastChunk` marks the end.
+> 任务以 artifact 的形式返回结果，长 artifact 以分块的形式到达，你按 `artifactId` 拼接它们，直到 `lastChunk` 标出结尾。
 
-`test-runner` writes a log while the suite runs. Your planner wants to show that log as it grows, and to keep the verdict once the run ends. On a stream, the log arrives as five chunks of one artifact named `test-log.txt`. A second artifact, `summary.json`, arrives in one piece and holds the counts the planner acts on.
+`test-runner` 在测试套件运行时写日志。你的 planner 想在日志增长时显示它，并在运行结束后保留结论。在流上，日志以一个名为 `test-log.txt` 的 artifact 的五个分块到达。第二个 artifact `summary.json` 一次性到达，其中是 planner 据以行动的计数。
 
-When you finish this section, you can rebuild a chunked artifact, name what the specification leaves open, and know which copy to trust.
+读完本节后，你能重建一个分块的 artifact，说出规范没有规定的部分，并知道该信任哪一份副本。
 
-## Results are artifacts
+## 结果就是 artifact {#s-artifact-and-chunks-results-are-artifacts}
 
-**Artifact:** an output that the agent produces as the result of a task, made of parts. It can be a document, an image, or structured data {{spec §2.2}}. Two fields are REQUIRED: `artifactId`, which must be unique within the task, and `parts`, which must contain at least one part {{proto Artifact}}. The optional fields are `name`, `description`, `metadata`, and `extensions`.
+**Artifact：** agent 作为任务结果产生的输出，由 part 组成。它可以是文档、图像或结构化数据 {{spec §2.2}}。有两个字段是 REQUIRED：`artifactId`，它在任务内必须唯一；以及 `parts`，它必须至少包含一个 part {{proto Artifact}}。可选字段是 `name`、`description`、`metadata` 和 `extensions`。
 
-Results go in artifacts and talk goes in messages, one of [the core rules](#s-what-a2a-standardizes): a message should not carry the output of a task {{spec §3.7}}.
+结果放在 artifact 中，交谈放在消息中，这是[核心规则](#s-what-a2a-standardizes)之一：消息不应承载任务的输出 {{spec §3.7}}。
 
-## Chunks on the stream
+## 流上的分块 {#s-artifact-and-chunks-chunks-on-the-stream}
 
-On a stream, artifacts travel inside `artifactUpdate` events. Each `TaskArtifactUpdateEvent` carries `taskId`, `contextId`, and `artifact`, all REQUIRED, and two optional flags {{proto TaskArtifactUpdateEvent}}. When `append` is true, the content belongs at the end of the artifact with the same id that came before. When `lastChunk` is true, the event carries the last chunk of the artifact {{proto TaskArtifactUpdateEvent}}.
+在流上，artifact 放在 `artifactUpdate` 事件中传输。每个 `TaskArtifactUpdateEvent` 都带有 `taskId`、`contextId` 和 `artifact`，全部是 REQUIRED，另有两个可选标志 {{proto TaskArtifactUpdateEvent}}。`append` 为 true 时，内容属于之前到达的同一 id 的 artifact 的末尾。`lastChunk` 为 true 时，事件带有该 artifact 的最后一个分块 {{proto TaskArtifactUpdateEvent}}。
 
 ```listing
 title: four of the six artifact frames
@@ -33,7 +33,7 @@ data: {…"artifactUpdate": {…"artifact": {"artifactId": "test-log", "parts": 
 data: {…"artifactUpdate": {…"artifact": {"artifactId": "summary", "name": "summary.json", "parts": [{"data": {"passed": 11, "failed": 1, …}, "mediaType": "application/json"}]}, "lastChunk": true}}}
 ```
 
-[Figure](#fig-artifact-chunks) lines up all nine frames of the run with what each artifact frame did to the stored task.
+[图](#fig-artifact-chunks)把这次运行的全部九帧与每个 artifact 帧对存储的任务所做的事对应起来。
 
 ```figure
 id: fig-artifact-chunks
@@ -43,41 +43,41 @@ claim: The five chunks of `test-log.txt` become five parts of one stored artifac
 caption: Top, the nine frames of the streaming capture on the kit clock. Frames 1, 2, and 9 sit at their timestamps, and frames 3 to 8 are spaced evenly between. Middle, what frames 3 to 8 carry and what each does to the stored task. Bottom, the stored test-log.txt as GetTask returns it in the polling capture. Parts 1 and 2 are the progress lines of the two test files, given in full in the capture.
 ```
 
-A `lastChunk` closes one artifact and nothing more: two frames follow it on this stream. An artifact event has no timestamp field, so the only order among chunks is the stream's order, which every binding must keep {{spec §3.5.2}}.
+`lastChunk` 只结束一个 artifact，不结束别的：在这个流上，它之后还有两帧。artifact 事件没有时间戳字段，所以分块之间唯一的顺序就是流的顺序，每种绑定都必须保持这个顺序 {{spec §3.5.2}}。
 
-## Joining the chunks
+## 拼接分块 {#s-artifact-and-chunks-joining-the-chunks}
 
-The kit and the reference SDK rebuild an artifact the same way. They find the stored artifact with the same `artifactId` and, if `append` is true, add the new parts to its `parts`. If `append` is absent, they replace the whole artifact, or add it when the id is new ([the kit's server code](manuals/a2a-101/capture/a2a_ref.py) {{sdk src/a2a/server/tasks/task_manager.py}}). The five log lines stay five `text` parts, so join their text in order to get the file.
+kit 和参考 SDK 用同样的方式重建 artifact。它们找到具有相同 `artifactId` 的已存储 artifact，如果 `append` 为 true，就把新的 part 加到它的 `parts` 中。如果没有 `append`，它们会替换整个 artifact，或者在 id 是新的时添加它（[kit 的服务器代码](manuals/a2a-101/capture/a2a_ref.py) {{sdk src/a2a/server/tasks/task_manager.py}}）。五行日志仍是五个 `text` part，所以按顺序拼接它们的文本就得到文件。
 
-The specification does not say what `append` means for an id the server has never seen, and the implementations disagree:
+规范没有说明 `append` 对一个服务器从未见过的 id 意味着什么，各实现的做法也不一致：
 
-| Implementation | `append: true` for an unknown `artifactId` | Reads `lastChunk` |
+| 实现 | 对未知 `artifactId` 的 `append: true` | 是否读取 `lastChunk` |
 |---|---|---|
-| a2a-python | raises `InvalidAgentResponseError` {{sdk src/a2a/server/tasks/task_manager.py}} | no |
-| a2a-go | an error, and the task ends in `TASK_STATE_FAILED` with no cause {{sdk-go a2aevent/event.go at v2.6.0}} | no |
-| a2a-java | drops the chunk, logs a warning, and keeps the task unchanged {{sdk-java sdk/spec/util/Utils.java at v1.4.0.Final}} | no |
-| a2a-js | stores the chunk as a new artifact {{sdk-js src/server/result_manager.ts at v1.3.0}} | no |
-| a2a-dotnet | stores the chunk as a new artifact {{sdk-dotnet src/A2A/Server/TaskProjection.cs at v1.0.0-preview2}} | no |
-| a2a-rs | returns `InvalidAgentResponseError`, and the task keeps its last state {{sdk-rust a2a-server/src/handler.rs at a2a-server-lf-v0.5.1}} | no |
-| the kit | starts a new artifact ([kit notes](manuals/a2a-101/capture/README.md)) | no |
+| a2a-python | 抛出 `InvalidAgentResponseError` {{sdk src/a2a/server/tasks/task_manager.py}} | 否 |
+| a2a-go | 报错，任务以 `TASK_STATE_FAILED` 结束且没有原因 {{sdk-go a2aevent/event.go at v2.6.0}} | 否 |
+| a2a-java | 丢弃该分块，记录一条警告，任务保持不变 {{sdk-java sdk/spec/util/Utils.java at v1.4.0.Final}} | 否 |
+| a2a-js | 把该分块存为一个新的 artifact {{sdk-js src/server/result_manager.ts at v1.3.0}} | 否 |
+| a2a-dotnet | 把该分块存为一个新的 artifact {{sdk-dotnet src/A2A/Server/TaskProjection.cs at v1.0.0-preview2}} | 否 |
+| a2a-rs | 返回 `InvalidAgentResponseError`，任务保持它的上一个状态 {{sdk-rust a2a-server/src/handler.rs at a2a-server-lf-v0.5.1}} | 否 |
+| kit | 开始一个新的 artifact（[kit 说明](manuals/a2a-101/capture/README.md)） | 否 |
 
-So the same chunk can fail the task, vanish, or become a new artifact. Send the first chunk of every artifact without `append`. The specification is also silent on whether later metadata merges or replaces.
+所以同一个分块可能让任务失败、消失，或者变成一个新的 artifact。每个 artifact 的第一个分块都不带 `append` 发送。规范也没有说明之后的 metadata 是合并还是替换。
 
-Do not take field names from the migration guide ([conflicts D9 and D10](#s-ref-sources)). It wraps the event as `taskArtifactUpdate` and gives it an `index` field {{docs whats-new-v1}}. The proto names the wrapper `artifactUpdate` {{proto StreamResponse}}, and its event has no `index` field {{proto TaskArtifactUpdateEvent}}. [PR #2056](https://github.com/a2aproject/A2A/pull/2056) fixed the wrapper names on main and kept the `index` claim, and no release carries that fix yet.
+不要从迁移指南中取字段名（[冲突 D9 和 D10](#s-ref-sources)）。它把事件包装为 `taskArtifactUpdate`，并给它一个 `index` 字段 {{docs whats-new-v1}}。proto 把这个包装命名为 `artifactUpdate` {{proto StreamResponse}}，它的事件也没有 `index` 字段 {{proto TaskArtifactUpdateEvent}}。[PR #2056](https://github.com/a2aproject/A2A/pull/2056) 在 main 上修正了包装名，但保留了关于 `index` 的说法，目前还没有 release 包含这个修复。
 
-## Trust the stored copy
+## 信任存储的副本 {#s-artifact-and-chunks-trust-the-stored-copy}
 
-`GetTask` returns `test-log.txt` with all five parts, as the bottom of [figure](#fig-artifact-chunks) shows, and a blocking `SendMessage` returns the same merged artifacts {{spec §3.2.2}}.
+`GetTask` 返回带有全部五个 part 的 `test-log.txt`，如[图](#fig-artifact-chunks)底部所示，阻塞的 `SendMessage` 也返回同样合并后的 artifact {{spec §3.2.2}}。
 
-After a dropped connection, the missed chunks are never replayed. `SubscribeToTask` starts instead with a `Task` snapshot that already holds them {{spec §3.1.6}}. Replace your copy of each artifact with the snapshot's before you apply new chunks, as [SendStreamingMessage and SubscribeToTask](#s-streaming-and-subscribe-to-task) shows.
+连接断开后，错过的分块永远不会重放。`SubscribeToTask` 转而以一个已经包含它们的 `Task` 快照开始 {{spec §3.1.6}}。在应用新的分块之前，先用快照中的 artifact 替换你的副本，[SendStreamingMessage 与 SubscribeToTask](#s-streaming-and-subscribe-to-task) 一节展示了这一点。
 
-An artifact can also end without a last chunk: the canceled run in `10-cancel.http` stores two parts of a log, and `lastChunk` never arrives. A stored `Artifact` has no field that says it is complete, so judge it by the task's state.
+artifact 也可能没有最后一个分块就结束：`10-cancel.http` 中被取消的运行存储了日志的两个 part，而 `lastChunk` 始终没有到达。存储的 `Artifact` 没有表示它已完整的字段，所以要根据任务的状态来判断。
 
 ```takeaways
-- Return results as artifacts with stable `artifactId` values, and keep status messages for people.
-- Rebuild by `artifactId`: replace on a chunk without `append`, and add parts on a chunk with it.
-- Send the first chunk of an artifact without `append`, because servers disagree about an unknown id.
-- After a reconnect, take each artifact from the `Task` snapshot before you apply new chunks.
+- 以带有稳定 `artifactId` 值的 artifact 返回结果，把状态消息留给人看。
+- 按 `artifactId` 重建：遇到不带 `append` 的分块就替换，遇到带 `append` 的分块就添加 part。
+- 一个 artifact 的第一个分块不带 `append` 发送，因为各服务器对未知 id 的处理不一致。
+- 重新连接后，在应用新的分块之前，先从 `Task` 快照取得每个 artifact。
 ```
 
 Sources: spec §2.2, §3.1.6, §3.2.2, §3.5.2, §3.7 (research/sources/specification.md); proto Artifact, TaskArtifactUpdateEvent, StreamResponse (research/sources/a2a.proto); docs docs/whats-new-v1.md at v1.0.1; sdk src/a2a/server/tasks/task_manager.py at a2a-python 1.2.2; sdk-go a2aevent/event.go and internal/taskupdate/manager.go at v2.6.0; sdk-java spec/src/main/java/org/a2aproject/sdk/spec/util/Utils.java at v1.4.0.Final; sdk-js src/server/result_manager.ts at v1.3.0; sdk-dotnet src/A2A/Server/TaskProjection.cs at v1.0.0-preview2; sdk-rust a2a-server/src/handler.rs at a2a-server-lf-v0.5.1; capture/out/04-polling.http, 05-streaming.http, 05-streaming.events.json, 10-cancel.http, 14-resubscribe.http, 14-resubscribe.events.json; capture/a2a_ref.py, capture/planner.py, capture/README.md

@@ -1,21 +1,21 @@
 # Part
 
-> Every piece of content in A2A is a `Part` that holds exactly one of `text`, `raw`, `url`, or `data`, and its `mediaType` says how to read it.
+> A2A 中的每一块内容都是一个 `Part`，它恰好包含 `text`、`raw`、`url` 或 `data` 之一，它的 `mediaType` 说明如何读取它。
 
-Your planner asks `code-reviewer` to review a diff. The request carries an instruction and the diff as a file, and the answer carries findings that the planner's own code will parse. A2A carries all three in one container shape, the part, and labels each one with a media type.
+你的 planner 请 `code-reviewer` 审查一个 diff。请求带有一条指令和作为文件的 diff，回答带有 planner 自己的代码要解析的发现。A2A 用同一种容器形状，即 part，承载这三者，并给每一个标上媒体类型。
 
-When you finish this section, you can build all four kinds of part and predict whether an agent will accept them.
+读完本节后，你能构建全部四种 part，并预测 agent 是否会接受它们。
 
-## One container, four contents
+## 一种容器，四种内容 {#s-part-one-container-four-contents}
 
-**Part:** the smallest unit of content in a message or an artifact {{spec §2.2}}. In the proto, `Part` declares its content as a `oneof` with four members {{proto Part}}:
+**Part：** 消息或 artifact 中最小的内容单元 {{spec §2.2}}。在 proto 中，`Part` 把它的内容声明为一个有四个成员的 `oneof` {{proto Part}}：
 
-- `text` holds a string.
-- `raw` holds the bytes of a file. In JSON, the bytes are a base64 string {{proto Part}}.
-- `url` holds a URL that points to the content of the file {{proto Part}}.
-- `data` holds any structured value as JSON: an object, an array, a string, a number, a boolean, or null {{proto Part}}.
+- `text` 存放一个字符串。
+- `raw` 存放一个文件的字节。在 JSON 中，这些字节是一个 base64 字符串 {{proto Part}}。
+- `url` 存放一个指向文件内容的 URL {{proto Part}}。
+- `data` 以 JSON 形式存放任意结构化的值：对象、数组、字符串、数字、布尔值或 null {{proto Part}}。
 
-Beside the content sit three optional fields, `mediaType`, `filename`, and `metadata`, and `mediaType` works for every kind of part {{proto Part}}. The kit's review request sends two kinds in one message:
+内容旁边有三个可选字段：`mediaType`、`filename` 和 `metadata`，`mediaType` 适用于每种 part {{proto Part}}。kit 的审查请求在一条消息中发送了两种 part：
 
 ```listing
 title: one message, two kinds of part
@@ -35,15 +35,15 @@ note: The parts array of the planner's first message to code-reviewer. The base6
       ]
 ```
 
-Base64 costs size: the 175-byte diff of `payments/refunds.py` becomes 236 characters in the JSON body. A `url` part keeps the message small and leaves the download, with its risk, to the receiver.
+base64 会增加体积：`payments/refunds.py` 的 175 字节 diff 在 JSON body 中变成 236 个字符。`url` part 让消息保持小巧，并把下载及其风险留给接收方。
 
-## No kind, no nesting
+## 没有 kind，没有嵌套 {#s-part-no-kind-no-nesting}
 
-In version 0.3, a part named its type in a `kind` field and wrapped a file in a nested `file` object. Version 1.0 removed both. The `kind` field is no longer part of the protocol, and a sender should not write it {{spec §A.2.1}}.
+在 0.3 版中，part 用一个 `kind` 字段说明它的类型，并把文件包在一个嵌套的 `file` 对象里。1.0 版把两者都移除了。`kind` 字段不再属于协议，发送方不应写入它 {{spec §A.2.1}}。
 
-A file part is flat: `raw` or `url` sits next to `filename` and `mediaType`. The specification's own file-part sample has that shape but is not valid JSON {{spec §6.7}} ([conflict D24](#s-ref-sources)). Copy part shapes from the proto, never from the samples.
+文件 part 是扁平的：`raw` 或 `url` 与 `filename` 和 `mediaType` 并列。规范自己的文件 part 示例是这种形状，但不是有效的 JSON {{spec §6.7}}（[冲突 D24](#s-ref-sources)）。从 proto 复制 part 的形状，绝不从示例复制。
 
-Read a part by testing which content member is present, and never send two of them. The reference SDK refuses a part with two members as invalid parameters, `-32602`, before any agent code runs {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}. It ignores a stray `kind`, as the specification asks: an implementation should ignore fields that it does not recognize {{spec §5.7}}.
+通过检查存在哪个内容成员来读取 part，绝不发送其中两个。参考 SDK 在任何 agent 代码运行之前，就以无效参数 `-32602` 拒绝带两个成员的 part {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}。它会忽略多余的 `kind`，正如规范所要求的：实现应忽略它不认识的字段 {{spec §5.7}}。
 
 ```figure
 id: fig-four-parts
@@ -53,25 +53,25 @@ claim: The kit's captures use all four kinds of part, and only the `image/png` p
 caption: The top row is the shape of every part. Each row below is one captured part, in the order the captures sent them. Its content member is on the left, its media type in green, and its sender underneath. The review.json artifact holds a text part for a person and a data part for code. From capture/out/06-input-required.http and capture/out/11-errors.http.
 ```
 
-## Who declares media types
+## 谁声明媒体类型 {#s-part-who-declares-media-types}
 
-Media types are declared in four places, and a skill's modes override the card's defaults {{proto AgentSkill}}:
+媒体类型在四个地方声明，skill 的 mode 会覆盖 card 的默认值 {{proto AgentSkill}}：
 
-| Field | Lives in | Set by | `code-reviewer` in the kit |
+| 字段 | 位于 | 设置方 | kit 中的 `code-reviewer` |
 |---|---|---|---|
-| `defaultInputModes` | the agent card | the agent | `text/plain`, `text/x-diff` |
-| `defaultOutputModes` | the agent card | the agent | `text/plain`, `application/json` |
-| `inputModes`, `outputModes` | each skill on the card | the agent | `review-diff` takes `text/x-diff` and `text/plain` |
-| `acceptedOutputModes` | `configuration` of a send | the client | not sent anywhere in the kit |
-| `mediaType` | each part | whoever sends the part | `text/x-diff` on `refunds.diff` |
+| `defaultInputModes` | agent card | agent | `text/plain`、`text/x-diff` |
+| `defaultOutputModes` | agent card | agent | `text/plain`、`application/json` |
+| `inputModes`、`outputModes` | card 上的每个 skill | agent | `review-diff` 接受 `text/x-diff` 和 `text/plain` |
+| `acceptedOutputModes` | 一次发送的 `configuration` | 客户端 | kit 中任何地方都没有发送 |
+| `mediaType` | 每个 part | 发送该 part 的一方 | `refunds.diff` 上的 `text/x-diff` |
 
-The client's one field is `acceptedOutputModes`, and the rule on the agent is a SHOULD. The agent should use the field to shape its output {{proto SendMessageConfiguration}}. The SDK's request handler never reads the field {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}, so check the `mediaType` of every part you receive.
+客户端唯一的字段是 `acceptedOutputModes`，对 agent 的规则是 SHOULD。agent 应使用这个字段来调整它的输出 {{proto SendMessageConfiguration}}。SDK 的请求处理器从不读取这个字段 {{sdk src/a2a/server/request_handlers/default_request_handler_v2.py}}，所以要检查你收到的每个 part 的 `mediaType`。
 
-## When the media type does not fit
+## 媒体类型不匹配时 {#s-part-when-the-media-type-does-not-fit}
 
-**ContentTypeNotSupportedError:** the agent or the called skill does not support a media type that the message parts give or that an artifact implies {{spec §3.3.2}}. Its JSON-RPC code is `-32005` {{spec §5.4}}, and [errors](#s-errors) gives its other forms.
+**ContentTypeNotSupportedError：** agent 或被调用的 skill 不支持消息 part 给出的或 artifact 隐含的某个媒体类型 {{spec §3.3.2}}。它的 JSON-RPC 代码是 `-32005` {{spec §5.4}}，[错误](#s-errors)一节给出它的其他形式。
 
-In the kit, the planner sends `code-reviewer` a screenshot as a `url` part labelled `image/png`, and the agent refuses before it creates a task:
+在 kit 中，planner 把一张截图作为标为 `image/png` 的 `url` part 发给 `code-reviewer`，agent 在创建任务之前就拒绝了：
 
 ```listing
 title: a media type the agent does not accept
@@ -99,15 +99,15 @@ note: Exchange 5, cut to the part that was sent and the error that came back ins
         }
 ```
 
-Servers check differently, because the specification gives an unlabelled part no default type. The SDK checks only when the server turns the check on, and then it skips every part with no `mediaType` {{sdk src/a2a/utils/input_mode_validator.py}}. The kit gives such a part a default type and checks it against the card's `defaultInputModes`, as [the kit README](manuals/a2a-101/capture/README.md) lists. The same unlabelled part can pass one server and fail the other.
+各服务器的检查方式不同，因为规范没有给未标注的 part 指定默认类型。SDK 只在服务器开启检查时才检查，而且会跳过每个没有 `mediaType` 的 part {{sdk src/a2a/utils/input_mode_validator.py}}。kit 给这样的 part 一个默认类型，并对照 card 的 `defaultInputModes` 检查它，[kit 的 README](manuals/a2a-101/capture/README.md) 列出了这一点。同一个未标注的 part 可能在一个服务器上通过，在另一个上失败。
 
-The security rules ask agents to reject media types that they do not expect {{spec §13.4}}. A `url` part must be checked against server-side request forgery {{spec §14.1.1}}, as [security requirements](#s-security-requirements) explains.
+安全规则要求 agent 拒绝它们没有预料到的媒体类型 {{spec §13.4}}。`url` part 必须经过服务端请求伪造的检查 {{spec §14.1.1}}，[安全要求](#s-security-requirements)一节解释了这一点。
 
 ```takeaways
-- Read a part by the content member it holds, and never send two members or a `kind` field.
-- Set `mediaType` on every part, using only media types that the card or the skill lists.
-- Put content that code will parse in a `data` part.
-- Treat `-32005` as a statement about content: change the part or pick another agent.
+- 根据 part 包含的内容成员读取它，绝不发送两个成员或 `kind` 字段。
+- 在每个 part 上设置 `mediaType`，只使用 card 或 skill 列出的媒体类型。
+- 把代码要解析的内容放进 `data` part。
+- 把 `-32005` 视为关于内容的结论：修改 part，或者换一个 agent。
 ```
 
 Sources: spec §2.2, §3.3.2, §5.4, §5.7, §6.7, §13.4, §14.1.1, §A.2.1 (research/sources/specification.md); proto Part, AgentCard, AgentSkill, SendMessageConfiguration (research/sources/a2a.proto); sdk src/a2a/server/routes/jsonrpc_dispatcher.py, src/a2a/server/request_handlers/default_request_handler_v2.py, src/a2a/utils/input_mode_validator.py at a2a-python 1.2.2; capture/out/01-agent-cards.http, 06-input-required.http, 11-errors.http; capture/a2a_ref.py, capture/README.md
