@@ -28,14 +28,14 @@
 ### 现代请求分发循环(الدورة التسليمية)
 
 ```text
-读取一行 JSON-RPC 文本
-解析外层 Envelope
-若为通知（Notification），则不予响应
-针对当前请求校验 params._meta
-根据 method 执行路由分发
-使用 resultType 与 serverInfo 封装成功结果
-写回一行 JSON-RPC 响应文本
-立即遗忘当前请求作用域的元数据
+read one JSON-RPC line
+parse the envelope
+if it is a notification, do not respond
+validate params._meta for this request
+route by method
+wrap success with resultType and serverInfo
+write one JSON-RPC response line
+forget request-scoped metadata
 ```
 
 في النظام الاستوديوي، هناك ثلاثة قواعد رئيسية:
@@ -116,7 +116,7 @@
 
 للوصول إلى بيانات المستخدم الخاصة، يجب استخدامها `cacheScope: "private"` مشاركة الحفاظ على الوصول إلى الموقع لا يمكن أن تتجاوز الوصول إلى الموقع
 
-现代数据变更推送 لم يعد يستخدم `resources/subscribe`العميل من خلال التسجيل`subscriptions/listen`بيانات`resourceSubscriptions`أو قائمة تغيرات الحدث لتلقي长连接推送
+现代数据变更推送 لم يعد يستخدم `resources/subscribe`العميل من خلال التسجيل`subscriptions/listen`بيانات`resourceSubscriptions`أو تدويرات التغييرات لتلقي التوصيلات.
 
 ### الإشارات ((提示模板)
 
@@ -141,7 +141,13 @@ def complete(payload):
 
 يمكن إرسال الخادم الحديث مع العميل طلب إشعار مباشر مرتبط، أو في العميل فتح `subscriptions/listen`流中推送通知──但 الخادم **绝不能**主动发起独立的 JSON-RPC طلب
 
-عندما يُريد المُعامل أخذ العينات أو الحصول على الجذور أو النقل، فإنه يعود إلى واحد`input_required`نتيجة: بعد إدخال طلب العميل في تلبية طلبه، باستخدام معرف الطلب الجديد
+عندما يُريد المُعامل أخذ العينات أو الحصول على الجذور أو النقل، فإنه يعود إلى واحد`input_required`نتيجة.‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
+
+### 显式的 Legacy 兼容
+
+双时代(دوئي العصر) الخادم يمكن أن يتم أيضا في إرث منفصلة بشكل واضح 分支上实现 `2025-11-25`اليد اليدوي: هناك متطلبات معايير حديثة`_meta`字段时, it chose现代行为; 当收到 `initialize`时,则走 إرث 行为。
+
+لا تفعل`2026-07-28`رجاءً مرّي بمرّة التراث، لا تُضايقيني`resultType`字段塞进 Legacy 的初始化结果中──本课代码刻意只实现现代规范,以便让这些不变量保持清晰可见──
 
 ```figure
 t3-dispatch-loop
@@ -172,8 +178,8 @@ npx tsx main.ts --demo
 ## التدريب والتفكير
 
 1. من أحد الطلبات نقل القدرات 字段, اثبات الخادم 绝不会重复使用前请求中声明的旧能力──
-2. 颠倒 `TOOLS`.`PROMPTS`وسلسلة دخول بيانات المذكرات، تأكد من أن نتائج استفسار جميع القائمة لا تزال قائمة ثابتة.
-3. -إضافة جديدة`notes_delete`الوسائل، و داخل المفوضة`destructiveHint`فقط أن أقدمها على التواصل
+2. 颠倒 `TOOLS`.`PROMPTS`وسلسلة دخول البيانات، تأكد أن نتائج استفسارات القائمة ما زالت مستقرة.
+3. -إضافة جديدة`notes_delete`الوسائل، و داخل المفوضة المشتركة`destructiveHint`فقط كـ تذكير
 4. 补充 `resources/templates/list`接口,要求附带 `ttlMs`.`cacheScope`و التقييمات
 5. لأجل`2025-11-25`编写一个完全隔离的 Legacy 适配器,并通过测试证明现代请求绝不会错进 Legacy 处理路径──
 
@@ -184,9 +190,9 @@ npx tsx main.ts --demo
 | 无状态 Server (Stateless server) | 仅从每个请求自身的元数据处理调用，无任何协议 Session 内存记忆 |
 | `server/discover` | 强制实现的现代方法，用于向调用方公布支持的版本与功能集 |
 | 完整结果 (Complete result) | 携带 `resultType: "complete"` 的成功现代结果 |
-| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或只读结果 |
+| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或资源读取结果 |
 | 确定性列表 (Deterministic list) | 逻辑相同的注册表必须输出完全一致、可复现的条目顺序 |
-| Server 身份 (Server identity) | 在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
+| Server 身份 (Server identity) | 推荐在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
 | Tool 业务错误 (Tool error) | Tool 调用正常被解析执行，但业务逻辑失败，返回包含 `isError: true` 的 content |
 | 协议错误 (Protocol error) | 非法的 JSON-RPC 格式或无效的 MCP 请求参数，直接通过顶层 `error` 报错返回 |
 

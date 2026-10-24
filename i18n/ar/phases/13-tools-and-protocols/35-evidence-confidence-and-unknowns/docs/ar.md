@@ -426,6 +426,29 @@ ledger.verify_unknown_chain(unknown_id)
 
 معيار النجاح: كل جملة من تقرير كل ما يذكر هو علامة في حزمة الأدلة، وذلك`unknown`لقد تم إزالة القول
 
+## 评分 تجربة
+
+5 طرق حول هذه المواد المثبتة. استخدم كودك لتكتشف كل إجابة ثم اكتبها`code/lab_answers.json` الرقم يكتب ليصبح رقمياً، أو يكتب ليصبح`"0x40"`هذا هو الخطوط المعدلة
+
+1. `t1`:compute_evidence_id 为re-evidence-grade.json 给出的证据 id。
+2. `t2`:grade 记录中限制 的数量──
+3. `t3`:grade 记录的关系_coverage 状态──
+4. `t4`:درجة ثقة وسلطة السجلات، كتب من اثنين من الخطوط المكونة من قائمة
+5. `t5`:grade 记录中 الموضوع  SHA-256。
+
+检查答案:
+
+```bash
+cd phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns
+python3 code/lab.py
+```
+
+المفتش في المعدات المقدمة 上使用 `code/main.py`计算每期望值──它为每道题输出 `PASS`.`FAIL`أو`TODO`وبالإضافة إلى ذلك، هناك فقط خمسة قضايا تمر بها`python3 code/lab.py my-answers.json`يمكن التحقق من ملف آخر`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### انظر انها تعمل
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off)机器维护一本证据账本,分为四托盘: مشاهدة、 مشتقة、أدخل 和 مجهول.
+
 ## 本课产物
 
 本课产出 `outputs/skill-evidence-ledger.md` يوجّه الكيان الذكي أن يكتب كل اكتشاف على أنه قائمة بالثقة، ومصادر السلطة، والقيود والربط، ويوضح كيفية استخدام الإصدار المعدل للحفاظ على المجهولات، ومتى سيتم تحديد القرارات`pass`.`fail`.`unknown`أو`unsupported`.

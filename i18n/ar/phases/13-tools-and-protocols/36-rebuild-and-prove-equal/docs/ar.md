@@ -389,6 +389,29 @@ python3 code/main.py --live
 
 معيار النجاح: دليل سجل قائمة أربعة وظائف، كل اقتراح يحمل دليل معرف، وإذا كان واحد علامة مختلفة.`grade_label`سأفشل
 
+## 评分 تجربة
+
+5 طرق حول هذه المواد المثبتة. استخدم كودك لتكتشف كل إجابة ثم اكتبها`code/lab_answers.json` الرقم يكتب ليصبح رقمياً، أو يكتب ليصبح`"0x40"`هذا هو الخطوط المعدلة
+
+1. `t1`:x86_64 上的百分比_change_model(3, 105) 』
+2. `t2`:x86_64 上的 %_change_model(0, 5)。
+3. `t3`:grade_model ((100) 』
+4. `t4`:input_grid() 中的单元格数量──
+5. `t5`:x86_64 模型发生陷 的网格单元数量──
+
+检查答案:
+
+```bash
+cd phases/13-tools-and-protocols/36-rebuild-and-prove-equal
+python3 code/lab.py
+```
+
+المفتش في المعدات المقدمة 上使用 `code/main.py`计算每期望值──它为每道题输出 `PASS`.`FAIL`أو`TODO`وبالإضافة إلى ذلك، هناك فقط خمسة قضايا تمر بها`python3 code/lab.py my-answers.json`يمكن التحقق من ملف آخر`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### انظر انها تعمل
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)أخرج الجهاز في نهاية المطاف الكود المزيف، ووضعها في المرجحات للاستنتاج: الصفحة لا تثبت ذلك.
+
 ## 输出技能
 
 本课产出 `outputs/skill-rebuild-and-prove-equal.md` استخدامها سوف تتمثل في إثبات وظيفة ومرشح إعادة بناء إلى اثنين من الطرق إثبات وتثبات السجلات.

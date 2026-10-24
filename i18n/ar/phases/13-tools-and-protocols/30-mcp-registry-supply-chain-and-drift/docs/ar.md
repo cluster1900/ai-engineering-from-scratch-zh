@@ -201,9 +201,9 @@ python3 code/main.py
 
 ```text
 Registry sync -> artifact verifier -> live discovery -> admission controller -> route table
-                                                |                 |
-                                                v                 v
-                                           evidence store    admission ledger
+                                               |                 |
+                                               v                 v
+                                          evidence store    admission ledger
 ```
 
 لتمييز المهام المذكورة أعلاه على حد سواء على حدة الحد الأدنى من الحدود: السجل ومهمة الموافقة تحتاج إلى الحدود القراءة فقط للبيانات؛ ومهمة التحقيقات المكونة تحتاج إلى حرية الوصول إلى حزمة البرمجيات؛ ولوجهات التحكم والتحكم تحتاج إلى تنشيط حرية الحصول على الصفحة الأصلية.
