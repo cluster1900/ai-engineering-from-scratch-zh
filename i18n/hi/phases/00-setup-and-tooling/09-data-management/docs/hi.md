@@ -46,7 +46,7 @@ pip install datasets huggingface_hub
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("imdb")
+dataset = load_dataset("stanfordnlp/imdb")
 print(dataset)
 print(dataset["train"][0])
 ```
@@ -58,7 +58,7 @@ print(dataset["train"][0])
 कुछ डेटासेट  बहुत बड़े हैं, डिस्क में पूरी तरह से नहीं डाल सकते हैं── स्ट्रीमिंग  से  तक लोड हो रही है, पूर्ण सामग्री  नहीं डाउनलोड कर रही है।
 
 ```python
-dataset = load_dataset("wikimedia/wikipedia", "20220301.en", split="train", streaming=True)
+dataset = load_dataset("wikimedia/wikipedia", "20231101.en", split="train", streaming=True)
 
 for i, example in enumerate(dataset):
     print(example["title"])
@@ -73,7 +73,7 @@ for i, example in enumerate(dataset):
 `datasets`पुस्तकालय 底层 Apache Arrow का उपयोग करें. आप पाइपलाइन की आवश्यकता के अनुसार अन्य प्रारूपों में परिवर्तित कर सकते हैं.
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 dataset.to_csv("imdb_train.csv")
 dataset.to_json("imdb_train.json")
@@ -102,7 +102,7 @@ AI कार्य के लिए,Parquet सबसे अच्छा भं�
 कुछ डेटासेट 已预先分割──没有时,自己分割:
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 split = dataset.train_test_split(test_size=0.2, seed=42)
 train_val = split["train"].train_test_split(test_size=0.125, seed=42)

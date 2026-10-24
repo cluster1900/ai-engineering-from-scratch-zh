@@ -14,7 +14,7 @@
 - चार स्तरीय स्टैक को समझनाः सिस्टम, पैकेज, रनटाइम, एआई लाइब्रेरी
 
 ## 问题
-आप पायथन, टाइपस्क्रिप्ट, रुस्ट और जूलिया का उपयोग करके 200+ से अधिक भागों की एआई इंजीनियरिंग की कक्षाएँ सीखेंगे। यदि आपका वातावरण खराब हो गया है, तो प्रत्येक भाग सीखने के बजाय संघर्ष करने के लिए उपकरण बन जाएगा।
+आप पायथन, टाइपस्क्रिप्ट, रुस्ट और जूलिया का उपयोग करके 500+ से अधिक भागों की एआई इंजीनियरिंग की कक्षाएँ सीखेंगे। यदि आपका वातावरण खराब हो गया है, तो प्रत्येक भाग सीखने के बजाय संघर्ष करने के लिए उपकरण बन जाएगा।
 
 अधिकांश लोग पर्यावरण सेटअप से बाहर निकल जाते हैं। फिर वे कुछ घंटे लगाते हैं आयात त्रुटियों को डिबग करने के लिए, संस्करण संघर्षों और अनुपस्थित CUDA ड्राइवरों को।
 
@@ -46,7 +46,7 @@ xcode-select --install
 brew install git curl wget
 
 # Ubuntu/Debian
-sudo apt update && sudo apt install -y build-essential git curl wget
+sudo apt update && sudo apt install -y build-essential git curl wget unzip
 
 # Windows (use WSL2)
 wsl --install -d Ubuntu-24.04
@@ -93,6 +93,16 @@ npm install -g pnpm
 node -e "console.log('Node', process.version)"
 ```
 
+fnm स्थापना प्रक्रिया पहले जांच `unzip`, अभाव समय`Not installing fnm due to missing dependencies.`退出: Linux 上它需要解压一个 ज़िप 归档, macOS 上则通过 Homebrew 安装──macOS 自带 `unzip`;Ubuntu、Debian 和 WSL2 会通过步骤 1 的 apt 命令安装它(यदि आप उस कदम से कूद गए हैं,运行 `sudo apt install -y unzip`)。
+
+**macOS / Apple Silicon（M1/M2/M3/M4）：**यदि इंस्टॉल प्रक्रिया के कारण `Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)`停止, अपने अंत में काम करने के लिए स्पष्ट रूप से Rosetta 2 नीचे`arch`输出 `i386`), जबकि होमब्रेव मूल रूप से arm64 构建 ∙∙                                                                                                                                                                                                                                                       `fnm install 22`开始重新运行 ऊपर दिए गए आदेशः
+
+```bash
+arch -arm64 brew install fnm
+echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### 步骤 4: जंग
 
 उपयोग पर प्रदर्शन-महत्वपूर्ण 课程(उल्लेखन、 प्रणालियों)
@@ -116,33 +126,67 @@ julia -e 'println("Julia ", VERSION)'
 
 ### 步骤 6:GPU  सेटिंग( अगर आप है)
 
+**NVIDIA（Linux / Windows）：**
+
 ```bash
-# NVIDIA
 nvidia-smi
 
 # Install PyTorch with CUDA
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 ```
 
+**macOS / Apple Silicon（M1/M2/M3/M4）：**मैक ऊपर कोई CUDA नहीं है यह अपेक्षित स्थिति है, कोई दोष नहीं है**不要**传入 `--index-url .../cuXXX`(ये पहिया केवल लिनक्स/विंडोज के लिए उपयुक्त हैं, स्थापना विफल)
+
+```bash
+uv pip install torch torchvision torchaudio
+```
+
+验证( किसी भी प्लेटफॉर्म के लिए लागू):
+
 ```python
 import torch
-print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA available: {torch.cuda.is_available()}")           # False on macOS — expected
+print(f"MPS available:  {torch.backends.mps.is_available()}")   # True on Apple Silicon
 if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
 没有GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云GPU──
 
-### 步骤 7: सब कुछ सत्यापित करें
+### 步骤7: सत्यापित करें कि आप किस मार्ग से शुरू करना चाहते हैं
 
-运行验证脚本:
+इस वर्ग में प्रत्येक आदेश भंडारण के मूल सूची से संचालित होता है, यानि समाहित होता है।`README.md`和 `phases/`इसके बाद से ही इस्तेमाल किए जाने वाले उपकरण को डिफ़ॉल्ट रूप से छोड़ दिया गया है, ताकि नए छात्र एक स्पष्ट निष्कर्ष देखें, न कि एक चेतावनी।
+
+开始完整的入门序列:
 
 ```bash
-python phases/00-setup-and-tooling/01-dev-environment/code/verify.py
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner
+```
+
+या बस जाँच आप चाहते हैं कि मार्ग से गुजरनाः
+
+```bash
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route ml-foundations
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route llm-engineering
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agents
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route mcp
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agent-skills
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route certification
+```
+
+यदि आप एक ही पूर्व परीक्षा और परीक्षा के बाद के पाठ्यक्रम का उपयोग करने के लिए चाहते हैं, तो विकल्प उपकरण और निर्भरता, और `--show-later` अभाव बाद के साधन कभी भी चुने हुए मार्ग को अवरुद्ध नहीं करेंगे
+
+प्रत्येक असफल आवश्यक जांच में जांच किए गए पथ या आयात त्रुटि के साथ-साथ एक निश्चित सुधार आदेश दिया जाएगा। एजेंट कौशल और प्रमाणन मार्ग भी दिखाएगा कि मेजबान परीक्षण को मैन्युअल रूप से पूरा करने की आवश्यकता है, क्योंकि पायथन स्क्रिप्ट एआई मेजबान को किसी कौशल की खोज करने का सबूत नहीं दे सकती है, न ही आपके चयनित कौशल का प्रमाण दे सकती है।
+
+प्रवेश परीक्षा में प्रवेश करते समय, प्रथम कार्यवाही योग्य पाठ्यक्रम का एक निश्चित आदेश छापा जाएगाः
+
+```text
+Ready to start Beginner course.
+Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
 ## इसका उपयोग करें
-आपके पर्यावरण को इस पाठ्यक्रम के प्रत्येक अनुभाग के लिए तैयार किया गया है। निम्नलिखित सामग्री का उपयोग किया जाएगाः
+आपके पर्यावरण आपके द्वारा जांच की गई मार्ग  के लिए शुरू कर सकते हैं। बाद के उपकरण जैसे पाठ्यक्रमों को पुनः स्थापित करने की आवश्यकता होती है, आपको अपनी पहली कक्षा में पूरी तकनीक  को अवरुद्ध करने की आवश्यकता नहीं हैः
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|

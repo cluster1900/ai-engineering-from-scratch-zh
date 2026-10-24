@@ -72,9 +72,11 @@ git merge experiment/new-optimizer
 
 ### 步骤 4: इस पाठ्यक्रम का उपयोग करें
 
+आप सीधे पाठ को रिपो में नहीं धकेल सकते, केवल रखरखावकर्ता के पास लेखन अधिकार है।`origin`अपने आप को अपने आप को करने के लिए
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code
@@ -95,7 +97,7 @@ git push origin my-progress
 इन सबको लेकर इस कोर्स को रीबेस, चेरी-पिक या सबमॉड्यूल की जरूरत नहीं है।
 
 ## अभ्यास
-1. इस रेपो को क्लोन करें, एक नाम का निर्माण करें `my-progress`शाखा, एक फ़ाइल बनाएं, इसे संलग्न करें, इसे धक्का दें
+1. इस रिपो, अपने कांटे का क्लोन, एक नाम बनाया`my-progress`शाखा, एक फ़ाइल बनाएं, इसे संलग्न करें, इसे धक्का दें
 2.  एक बनाओ `.gitignore`, चेकपॉइंट फ़ाइलों के मॉडल को बाहर करना`.pt``.pth``.safetensors`)
 3. उपयोग `git log --oneline`查看这个 repo 的提交历史,并阅读教训是如何被添加的
 

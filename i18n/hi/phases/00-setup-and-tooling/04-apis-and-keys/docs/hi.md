@@ -56,18 +56,24 @@ OPENAI_API_KEY=sk-...
 ### 步骤 2: प्रथम एपीआई 调用 (पायथन)
 
 ```python
+import os
+
 import anthropic
 
 client = anthropic.Anthropic()
 
+MODEL = os.environ.get("LLM_MODEL", "claude-sonnet-5")
+
 response = client.messages.create(
-    model="claude-sonnet-4-20250514",
+    model=MODEL,
     max_tokens=256,
     messages=[{"role": "user", "content": "What is a neural network in one sentence?"}]
 )
 
 print(response.content[0].text)
 ```
+
+`LLM_MODEL`एंथ्रोपिक के मॉडल आईडी का चयन करने के लिए, डिफ़ॉल्ट मान Sonnet 别名――其他供应商 (OpenAI、Google等) भी एक कुंजी और एक मॉडल आईडी के मॉडल का अनुसरण करते हैं, लेकिन प्रत्येक के पास अपना स्वयं का SDK、अंत बिंदु तथा अनुरोध/उत्तर योजना है――
 
 ### 步骤 3: प्रथम बार एपीआई 调用 (TypeScript)
 
@@ -76,8 +82,10 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
+const MODEL = process.env.LLM_MODEL ?? "claude-sonnet-5";
+
 const response = await client.messages.create({
-  model: "claude-sonnet-4-20250514",
+  model: MODEL,
   max_tokens: 256,
   messages: [{ role: "user", content: "What is a neural network in one sentence?" }],
 });
@@ -99,7 +107,7 @@ headers = {
     "anthropic-version": "2023-06-01",
 }
 body = json.dumps({
-    "model": "claude-sonnet-4-20250514",
+    "model": os.environ.get("LLM_MODEL", "claude-sonnet-5"),
     "max_tokens": 256,
     "messages": [{"role": "user", "content": "What is a neural network in one sentence?"}],
 }).encode()
