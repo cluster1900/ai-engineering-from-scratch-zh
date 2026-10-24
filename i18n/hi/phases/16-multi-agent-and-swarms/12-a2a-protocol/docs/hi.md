@@ -27,7 +27,7 @@ Host: agent.example.com
 ```json
 {
   "name": "code-review-agent",
-  "description": "审查 Python 与 TypeScript 代码。",
+  "description": "Reviews Python and TypeScript code.",
   "version": "1.0.0",
   "supportedInterfaces": [
     {
@@ -46,14 +46,14 @@ Host: agent.example.com
   "skills": [
     {
       "id": "review-python",
-      "name": "审查 Python 代码",
-      "description": "审查传入的 Python 源码并给出改进建议。",
+      "name": "Review Python",
+      "description": "Reviews Python code.",
       "tags": ["code-review", "python"]
     },
     {
       "id": "review-typescript",
-      "name": "审查 TypeScript 代码",
-      "description": "审查传入的 TypeScript 源码并给出类型与逻辑改进建议。",
+      "name": "Review TypeScript",
+      "description": "Reviews TypeScript code.",
       "tags": ["code-review", "typescript"]
     }
   ]
@@ -78,7 +78,7 @@ Host: agent.example.com
 ```mermaid
 sequenceDiagram
     participant C as Client
-    participant S as Agent Server
+    participant S as Agent server
     C->>S: GET /.well-known/agent-card.json
     S-->>C: Agent Card JSON
     C->>S: POST /message:send (returnImmediately)
@@ -101,7 +101,34 @@ A2A मूल जीवन समर्थन तीन मुख्य सु�
 - **mTLS**: द्विಮುಖ TLS 认证, संगठन间强证明身份(`mtlsSecurityScheme`)。
 - **API Key**: स्थित अनुरोध शीर्षक、URL 查询参数 या कुकी में कुंजी`apiKeySecurityScheme`)。
 
-认证规则在代理卡 中公布:`securitySchemes`命名方案,`securityRequirements`规定调用方必须满足的要求――
+认证规则在代理卡 中公布:`securitySchemes`命名方案,`securityRequirements`规定调用方必须满足的要求――客户端根据此发现并遵循――
+
+### 截至2026年 4 月,150+ 家组织
+
+企业采用 ने A2A के आकार को बढ़ावा दिया। सबसे महत्वपूर्ण बात यह है कि A2A  उद्यम के स्मार्ट सिस्टम के रूप में पार पार विश्वास की सीमाओं में प्रवेश करने का तरीका है। Google Cloud ने वर्टेक्स एआई एजेंट बिल्डर में A2A  समर्थन प्रदान किया है। Microsoft एजेंट फ्रेमवर्क  समर्थन इसे; अधिकांश मुख्यधारा के फ्रेमवर्क ]] LangGraph、 CrewAI、 AutoGen) सभी A2A 适配器 प्रदान करते हैं।
+
+### A2A का लाभ
+
+- **跨组织调用。**ए  कंपनी के स्मार्ट फ़ोनों को इस्तेमाल करने के लिए बी  कंपनी के स्मार्ट फ़ोनों को इस्तेमाल करने के लिए  कोई ए 2 ए नहीं है, प्रत्येक व्यक्ति को अलग से समझौता करना चाहिए 
+- **异构框架。**LangGraph 智能体调用 CrewAI 智能体, पुनः调用 स्वनिर्धारित पायथन 智能体──A2A इन्हें एक साथ लाएँ──
+- **带类型的产物。**视频结果、结构化 JSON、音频,都是一等公民──
+- **长时间运行的任务。**अनिश्चित जीवन चक्र के साथ, लगातार कई घंटों के कार्य को भी अच्छी तरह से संभाल लिया जाए।
+
+### A2A की कमी
+
+- **对延迟敏感的微调用。**A2A का जीवन चक्र भिन्न है।
+- **紧耦合的进程内智能体。**यदि दो स्मार्ट बॉडी एक ही पायथन प्रक्रिया में चल रहे हैं, तो ए 2 ए का HTTP 往返就是大材小用──
+- **小团队。**规范的开销是真实存在的; केवल आंतरिक रूप से उपयोग किए जाने वाले बुद्धिमान शरीरों को इस औपचारिकता की आवश्यकता नहीं हो सकती है।
+
+### A2A ACP ANP NLIP
+
+20242026 वर्ष में कई संबंधित नियम सामने आए हैंः
+
+- **ACP**(IBM/Linux Foundation):A2A का पूर्ववर्ती, दायरा अधिक संकुचित
+- **ANP**(एजेंट नेटवर्क प्रोटोकॉल): फोकस पर अन्य खोज, विकेंद्रीकरण प्राथमिकता
+- **NLIP**(इक्मा प्राकृतिक भाषा बातचीत प्रोटोकॉल,2025 साल 12 月標準化): प्राकृतिक भाषा सामग्री类型。
+
+截至2026年4月,A2A सबसे व्यापक रूप से लागू किए जाने वाले अन्य समझौतों में से एक है।
 
 ```figure
 sw-agent-card-discovery
@@ -125,7 +152,7 @@ sw-agent-card-discovery
 
 运行命令:
 
-```bash
+```
 python3 code/main.py
 ```
 
@@ -134,6 +161,24 @@ python3 code/main.py
 ## 交付物
 
 本课交付 `outputs/skill-a2a-integrator.md`️ए2ए एग्जीट प्रोग्राम:एजेंट कार्ड सामग्री कार्य परीक्षा अनुबंध  पहचान अधिकार चयन प्रकार तथा प्रक्रम एवं राउंडक्वेरी रणनीति
+
+##  इसे जारी करें
+
+清单:
+
+- **固定规范版本。**A2A अभी भी विकसित हो रहा है; प्रत्येक `supportedInterfaces`条目都声明自己的 `protocolVersion`, ग्राहक भेज `A2A-Version: 1.0`
+- **幂等的任务创建。**पुनः प्रस्तुत करना (,) नेटवर्क पुनः परीक्षण करना (), केवल एक कार्य उत्पन्न करना चाहिए।`messageId`जा कर फिर से
+- **产物 schema。**声明智能体返回哪些结构;调用方应进行校验──
+- **限流与鉴权。**A2A 面向公网; अप्लाई स्टैंडर्ड्स वेब सुरक्षा उपायों
+- **失败任务的死信队列。**定期检查其中的模式, फेला पार्न बारम्बार उत्पन्न होने वाली विफलता प्रकारों को
+
+## अभ्यास
+
+1. 运行 `code/main.py`                                                                                                                                                                                                                                                              
+2. सेवा में दूसरा कौशल जोड़ने के लिए (उदाहरण के लिए "संक्षेप") ।
+3. 实现 `POST /message:stream`:用 सर्वर-Send Events 应答(先发一个 `task`, पुनः发 `statusUpdate`事件), पर समाप्ति स्थिति में बंद प्रवाह. ग्राहक को क्या अलग-अलग प्रसंस्करण करने की आवश्यकता है?
+4. 阅读 A2A 规范(https://a2a-protocol.org/latest/specification/）。找出规范要求、而这个演示没有实现的三件事。
+5. तुलना करें A2A(एजेंट कार्ड 发现) से MCP(सेवा端通过 `listTools`列出能力) ◊ आत्म-वर्णन के बुद्धिमान शरीर और क्षमता खोज के बीच क्या अंतर है?
 
 ## 核心专业术语
 
@@ -146,9 +191,12 @@ python3 code/main.py
 | 不透明生命周期 (Opaque lifecycle) | 内部解决过程对调用方隐藏，仅对外暴露状态流转与产物 |
 | 服务发现 (Discovery) | 通过发起 `GET /.well-known/agent-card.json` 获取名片并了解支持能力 |
 | MCP 对比 A2A | MCP 属于垂直的 Agent 与工具交互，A2A 属于水平的 Agent 间对等协作 |
+| ACP / ANP / NLIP | 相邻的协议规范；2026 年采用最广的是 A2A |
 
 ## 延伸阅读
 
 - [A2A 规范主站](https://a2a-protocol.org/latest/specification/) 官方权威规范
 - [A2A v1.0.1 源码发布](https://github.com/a2aproject/A2A/tree/v1.0.1) इस वर्ग के अनुपालन के लिए कोड संधि एवं विनियम परिभाषा
-- [Google Developers Blog — A2A 发布说明](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) 官方设计背景
+- [Google Developers Blog — A2A 发布说明](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) 2025 साल के अप्रैल माह का प्रकाशन
+- [A2A GitHub 仓库](https://github.com/a2aproject/A2A)  参考实现与SDK
+- [Liu 等 — A Survey of Agent Interoperability Protocols](https://arxiv.org/html/2505.02279v1) MCP、ACP、A2A、ANP का तुलना

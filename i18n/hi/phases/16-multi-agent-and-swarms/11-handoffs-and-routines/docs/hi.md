@@ -21,6 +21,8 @@ Swarm 走向相反方向: उपयोग模型已经具备的工具调用能力
 
 **Handoff。**एजेंट एक उपकरण को समायोजित कर सकते हैं, यह एक नए एजेंट ऑब्जेक्ट को लौटा देता है।
 
+यह सारांश है।
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent
