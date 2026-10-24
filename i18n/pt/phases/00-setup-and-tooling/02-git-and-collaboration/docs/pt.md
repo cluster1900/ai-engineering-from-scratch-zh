@@ -72,9 +72,11 @@ git merge experiment/new-optimizer
 
 ### 步骤 4: Use this class repo
 
+Você não pode empurrar diretamente para o repo do curso pessoalmente, apenas os administradores têm direitos de escrita.`origin`Indicando-te a tua própria dupla:
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code
@@ -95,7 +97,7 @@ Para esta aula, só precisas destes comandos:
 Assim, o curso não precisa de base ou submodules.
 
 ## 练习
-1. Clone este repo, criar um nome.`my-progress`A filial, criar um arquivo, comprometê-lo, empurrá-lo.
+1. Forque este repo, clone o seu fork, crie um nome.`my-progress`A filial, criar um arquivo, comprometê-lo, empurrá-lo.
 2.  criar um `.gitignore`, excluir os ficheiros dos pontos de controlo`.pt`- Não.`.pth`- Não.`.safetensors`)
 3. - Não .`git log --oneline`Veja o histórico de compromissos deste repo, e leia as lições sobre como foi adicionado.
 

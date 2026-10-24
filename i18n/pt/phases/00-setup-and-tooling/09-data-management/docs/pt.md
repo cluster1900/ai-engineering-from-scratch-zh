@@ -46,7 +46,7 @@ pip install datasets huggingface_hub
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("imdb")
+dataset = load_dataset("stanfordnlp/imdb")
 print(dataset)
 print(dataset["train"][0])
 ```
@@ -58,7 +58,7 @@ Esta será a primeira vez que o filme será baixado no IMDB.`~/.cache/huggingfac
 Alguns conjuntos de dados são muito grandes, não podem ser inseridos no disco.
 
 ```python
-dataset = load_dataset("wikimedia/wikipedia", "20220301.en", split="train", streaming=True)
+dataset = load_dataset("wikimedia/wikipedia", "20231101.en", split="train", streaming=True)
 
 for i, example in enumerate(dataset):
     print(example["title"])
@@ -73,7 +73,7 @@ O streaming vai dar-te um .`IterableDataset` Você vai ficar em filas até ch
 `datasets`Biblioteca 底层 usando Apache Arrow。 você pode, de acordo com as necessidades do pipeline, converter para outros formatos。
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 dataset.to_csv("imdb_train.csv")
 dataset.to_json("imdb_train.json")
@@ -102,7 +102,7 @@ Cada projeto de MLM precisa de três divisões:
 Alguns conjuntos de dados já foram divididos.
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 split = dataset.train_test_split(test_size=0.2, seed=42)
 train_val = split["train"].train_test_split(test_size=0.125, seed=42)
