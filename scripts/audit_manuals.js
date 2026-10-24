@@ -290,6 +290,15 @@ function auditManual(manual, add) {
     for (const match of String(span.text).replace(/`[^`]*`/g, '').matchAll(/[“"]([^”"]{24,}?)[”"]\s*\{\{[^}]+\}\}/g)) add(span.where, 'quote', `write the source in our own words, and put literal output in code font: "${match[1].slice(0, 80)}"`);
   }
   for (const doc of manual.documents) {
+    for (const block of doc.blocks) {
+      if (doc.kind === 'front' || block.type !== 'heading' || !block.id) continue;
+      const where = `${doc.label}:${block.line}`;
+      const prefix = `${doc.anchor}-`;
+      const slug = block.id.startsWith(prefix) ? block.id.slice(prefix.length) : null;
+      // build-manuals.js slugify() trims dashes and then cuts to 64 characters, so a cut slug may end in "-".
+      const valid = slug !== null && /^[a-z0-9][a-z0-9-]*$/.test(slug) && !slug.includes('--') && slug.length <= 64 && (slug.length === 64 || !slug.endsWith('-'));
+      if (!valid) add(where, 'heading-id', `heading id {#${block.id}} must be "${prefix}" plus the upstream heading slug cut to 64 characters`);
+    }
     if (!doc.thesis) add(doc.label, 'thesis', 'a one-sentence thesis blockquote is required under the title');
     const paragraphs = doc.blocks.filter(block => block.type === 'paragraph');
     if (doc.kind === 'section' && !paragraphs.slice(0, 2).some(block => manuals.OUTCOME_PHRASES.some(phrase => block.text.includes(phrase)))) add(doc.label, 'outcome', `the first two paragraphs must contain "${manuals.OUTCOME_PHRASE} ..."`);
