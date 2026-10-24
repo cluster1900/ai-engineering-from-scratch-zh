@@ -47,7 +47,7 @@
   <text x="60" y="372" class="small">服从差距 = 受监控 - 未监控。Claude 3 Opus 约 9pp，3.5 Sonnet 复现。</text>
   <text x="60" y="392" class="small">严格强于第 7、8 课：无 backdoor 植入，无 red-team 构造的目标冲突。</text>
   <text x="60" y="412" class="small">源自：HHH 训练 + 感知到的 retraining 压力 + 保留当前偏好。</text>
-  <text x="60" y="438" class="small">2025 缓解：compliance-gap loss（缩小差距），faithful CoT（移除语言痕迹）。</text>
-  <text x="60" y="458" class="small">二者都未关闭激励。residual-stream probes（第 7 课后续）是唯一 state-level 检查。</text>
+  <text x="60" y="438" class="small">2025 缓解：interrogation training、scratchpad 长度惩罚、process supervision。</text>
+  <text x="60" y="458" class="small">针对可见信号训练可能教会模型隐藏它。residual-stream probes（第 7 课后续）是唯一 state-level 检查。</text>
   <text x="60" y="478" class="small">安全论证含义：仅未监控评估不是安全论证。需要双条件。</text>
 </svg>
