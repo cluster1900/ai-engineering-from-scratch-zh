@@ -112,7 +112,7 @@ rollout batch size 按 prompt 计数，global batch size 按样本计数。32 �
 -e MILES_EXTRA_ARGS="--rollout-top-p 0.95 --rollout-top-k 64"
 ```
 
-当一个参数既在启动脚本里、又在 `MILES_EXTRA_ARGS` 里时，以 `MILES_EXTRA_ARGS` 中的值为准，因为 Miles 保留最后一个值。我们引擎显存比例为 0.25 的训练就是这样设置的。有一个例外。设置 `MILES_TRUE_ON_POLICY=1` 时，启动脚本会把它的 true on-policy 参数追加在 `MILES_EXTRA_ARGS` 之后，所以以这些参数为准。这种模式的 attention backend 要改用 `MILES_SGLANG_ATTENTION` 和 `MILES_FSDP_ATTENTION` 设置。
+当一个参数既在启动脚本里、又在 `MILES_EXTRA_ARGS` 里时，以 `MILES_EXTRA_ARGS` 中的值为准，因为 Miles 保留最后一个值。我们引擎显存比例为 0.25 的训练就是这样设置的。有一个例外。设置 `MILES_TRUE_ON_POLICY=1` 时，启动脚本会把它的真正同策略参数追加在 `MILES_EXTRA_ARGS` 之后，所以以这些参数为准。这种模式的 attention backend 要改用 `MILES_SGLANG_ATTENTION` 和 `MILES_FSDP_ATTENTION` 设置。
 
 ## 启动训练 {#s-run-grpo-on-one-gpu-start-the-run}
 

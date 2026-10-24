@@ -16,7 +16,7 @@
 -e MILES_EXTRA_ARGS="--sglang-enable-deterministic-inference --sglang-attention-backend triton"
 ```
 
-启动脚本也会读取 `MILES_SGLANG_ATTENTION`，但只在 `MILES_TRUE_ON_POLICY=1` 的 true on-policy 模式下。在普通运行中，这个变量不起任何作用。
+启动脚本也会读取 `MILES_SGLANG_ATTENTION`，但只在 `MILES_TRUE_ON_POLICY=1` 的真正同策略模式下。在普通运行中，这个变量不起任何作用。
 
 在我们的 GB10 上，`triton` 和 `flashinfer` 加上这个参数都能启动。引擎还会切换它的采样器，日志里也会写明：
 
