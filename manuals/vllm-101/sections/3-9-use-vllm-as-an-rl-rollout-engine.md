@@ -1,38 +1,38 @@
-# Use vLLM as an RL rollout engine
+# 把 vLLM 用作 RL rollout 引擎
 
-> An RL trainer borrows the server between steps, and vLLM gives it routes to sleep, wake, and load new weights.
+> RL trainer 在各步之间借用服务器，而 vLLM 为它提供了休眠、唤醒和加载新权重的路由。
 
-Your RL trainer must generate rollouts and then update the weights. When you finish this section, you can name the control routes an RL framework calls.
+你的 RL trainer 必须先生成 rollout，再更新权重。读完本节后，你能说出 RL 框架会调用的那些控制路由。
 
-## The loop
+## 循环 {#s-use-vllm-as-an-rl-rollout-engine-the-loop}
 
-An RL step has two halves. The rollout half generates answers with the current weights. The training half computes a loss and updates the weights. Then the generator needs the new weights before the next rollout.
+一个 RL 步分两半。rollout 这一半用当前权重生成回答。训练这一半计算 loss 并更新权重。然后生成器在下一次 rollout 之前需要拿到新权重。
 
-On one set of GPUs, the two halves take turns on the same memory. The generator must give its memory back during training and take it again after. The vLLM server provides the pieces for this, and many RL frameworks call them. The vLLM documentation lists verl, OpenRLHF, TRL, NeMo-RL, SkyRL, Prime-RL, and others among its users.
+在同一组 GPU 上，这两半轮流使用同一块显存。生成器必须在训练期间交还它的显存，之后再拿回来。vLLM 服务器为此提供了相应的组件，很多 RL 框架都会调用它们。vLLM 文档列出的使用者包括 verl、OpenRLHF、TRL、NeMo-RL、SkyRL、Prime-RL 等。
 
-## The pieces
+## 组件 {#s-use-vllm-as-an-rl-rollout-engine-the-pieces}
 
-The routes below exist only when you start the server with `VLLM_SERVER_DEV_MODE=1`. They free memory, replace weights, and run methods on every worker. Never expose a server in this mode outside the network of the trainer.
+下面的路由只有在用 `VLLM_SERVER_DEV_MODE=1` 启动服务器时才存在。它们会释放显存、替换权重，并在每个 worker 上执行方法。绝不要把这种模式下的服务器暴露到 trainer 所在网络之外。
 
-**Sleep mode.** Start the server with `--enable-sleep-mode`. A call to `/sleep` frees GPU memory, and `/wake_up` takes it back. At the deeper of its two levels, sleep drops the weights too, which suits a step where the trainer sends new weights anyway. `--sleep-preserve-parameter-names` keeps frozen weights on the GPU, so they do not move each step.
+**休眠模式。** 用 `--enable-sleep-mode` 启动服务器。调用 `/sleep` 会释放 GPU 显存，`/wake_up` 会把它拿回来。在两个级别中较深的那个级别，休眠还会丢弃权重，这适合 trainer 反正要发送新权重的那一步。`--sleep-preserve-parameter-names` 让冻结的权重留在 GPU 上，这样它们不必每一步都搬动。
 
-**Pause and resume.** `/pause` stops new generation, and `/resume` starts it again. A pause can abort the running requests, wait for them, or keep them.
+**暂停与恢复。** `/pause` 停止新的生成，`/resume` 重新开始。暂停可以中止正在运行的请求、等待它们完成，或者保留它们。
 
-**Weight updates.** The trainer starts a transfer with `/init_weight_transfer_engine`, then calls `/start_weight_update`, sends the weights, and calls `/finish_weight_update`. The transfer can run over NCCL between GPUs or through CUDA memory handles on one machine. `/update_weight_version` records which version the next rollouts use.
+**权重更新。** trainer 用 `/init_weight_transfer_engine` 开始一次传输，然后调用 `/start_weight_update`，发送权重，再调用 `/finish_weight_update`。传输可以通过 GPU 之间的 NCCL 进行，也可以在一台机器上通过 CUDA 内存句柄进行。`/update_weight_version` 记录接下来的 rollout 使用哪个版本。
 
-**Collective calls.** `/collective_rpc` runs a method on every worker. Frameworks use it for setup that vLLM does not cover.
+**集合调用。** `/collective_rpc` 在每个 worker 上执行一个方法。框架用它来做 vLLM 没有覆盖的初始化工作。
 
-**External launch.** With `--distributed-executor-backend external_launcher`, a launcher such as `torchrun` starts the vLLM workers inside the trainer's processes. Some colocated frameworks use this path.
+**外部启动。** 使用 `--distributed-executor-backend external_launcher` 时，像 `torchrun` 这样的启动器会在 trainer 的进程内启动 vLLM worker。一些共置部署的框架走的就是这条路。
 
-## Try sleep and wake by hand
+## 手动试一试休眠和唤醒 {#s-use-vllm-as-an-rl-rollout-engine-try-sleep-and-wake-by-hand}
 
-Start a server in development mode with sleep mode on. `--host 127.0.0.1` keeps the control routes on your own machine:
+以开发模式启动服务器，并开启休眠模式。`--host 127.0.0.1` 让控制路由只在你自己的机器上可用：
 
 ```bash
 VLLM_SERVER_DEV_MODE=1 vllm serve Qwen/Qwen3-8B --enable-sleep-mode --host 127.0.0.1 2>&1 | tee server.log
 ```
 
-In a second terminal, put the server to sleep, check it, and wake it:
+在第二个终端里，让服务器休眠、检查它，再唤醒它：
 
 ```bash
 curl -X POST 'http://localhost:8000/sleep?level=1'
@@ -41,29 +41,29 @@ curl -X POST 'http://localhost:8000/wake_up'
 curl http://localhost:8000/is_sleeping
 ```
 
-The two POST routes return HTTP 200 with an empty body. The first `/is_sleeping` call returns `{"is_sleeping":true}`, and the second returns `{"is_sleeping":false}`. Run `nvidia-smi` between the calls to see the GPU memory fall during the sleep and rise after the wake.
+两个 POST 路由返回 HTTP 200 和空的响应体。第一次 `/is_sleeping` 调用返回 `{"is_sleeping":true}`，第二次返回 `{"is_sleeping":false}`。在调用之间运行 `nvidia-smi`，可以看到 GPU 显存在休眠期间下降，在唤醒后回升。
 
-We ran these calls at level 1 with the small Qwen3-0.6B on an L4. Each POST returned 200 with an empty body, and the sleep took 1.9 s. The GPU memory fell from 14,861 MiB to 4,245 MiB and came back after the wake. The log line `Sleep mode freed 10.37 GiB memory` confirms the sleep.
+我们在一块 L4 上用小模型 Qwen3-0.6B 以级别 1 执行了这些调用。每个 POST 都返回 200 和空响应体，休眠用时 1.9 s。GPU 显存从 14,861 MiB 降到 4,245 MiB，唤醒后恢复。日志行 `Sleep mode freed 10.37 GiB memory` 确认了这次休眠。
 
-## Know the sleep mode problems at 0.31.0
+## 了解 0.31.0 中休眠模式的问题 {#s-use-vllm-as-an-rl-rollout-engine-know-the-sleep-mode-problems-at-0-31-0}
 
-Three problems with sleep mode are known at 0.31.0. We did not reproduce them ourselves:
+在 0.31.0 中，休眠模式有三个已知问题。我们自己没有复现它们：
 
-- **A level 2 wake does not reload a speculative draft.** Issue 52479 reports that the weight reload covers only the target model. The target model then rejects every draft token, so decode falls to about the speed with no speculation. The output stays correct, and no error appears. The issue is open.
-- **A level 2 sleep clears calibrated KV scales.** On compressed-tensors checkpoints with an FP8 KV cache, the first request after a reload of the weights returned NaN logprobs and a wrong first token. Release 0.32.0 fixes this.
-- **A weight update during sleep stops the engine.** Issue 57853 reports a segfault when the trainer sends weights after `/sleep` and before `/wake_up`. The API server stays up, and every later request fails. The issue is open.
+- **级别 2 唤醒不会重新加载 speculative draft。** Issue 52479 报告说，权重重新加载只覆盖目标模型。目标模型随后拒绝每一个 draft token，于是 decode 降到大约没有 speculation 时的速度。输出仍然正确，也不会出现错误。这个 issue 仍未关闭。
+- **级别 2 休眠会清除校准过的 KV scale。** 在使用 FP8 KV cache 的 compressed-tensors checkpoint 上，重新加载权重后的第一个请求返回了 NaN 的 logprob 和错误的第一个 token。0.32.0 版本修复了这个问题。
+- **休眠期间更新权重会让引擎停止。** Issue 57853 报告说，当 trainer 在 `/sleep` 之后、`/wake_up` 之前发送权重时会出现 segfault。API 服务器仍在运行，但之后的每个请求都会失败。这个 issue 仍未关闭。
 
-So after each level 2 wake, reload the weights, reset the prefix cache, and read the speculative acceptance counters. Always wake the server before the trainer sends weights.
+所以每次级别 2 唤醒之后，都要重新加载权重、重置 prefix cache，并读取 speculative 接受计数器。总是在 trainer 发送权重之前唤醒服务器。
 
-## Check the rollout logprobs
+## 检查 rollout 的 logprob {#s-use-vllm-as-an-rl-rollout-engine-check-the-rollout-logprobs}
 
-The trainer often compares the logprobs that vLLM returned with the logprobs it computes itself. The two never match exactly, because the kernels differ. A small, steady gap is normal. A gap that grows means the weights did not reach the generator. Track the gap every step. [The reproducibility page](#s-get-reproducible-outputs) explains why the same weights still give different numbers.
+trainer 经常把 vLLM 返回的 logprob 与它自己计算的 logprob 做比较。两者永远不会完全一致，因为 kernel 不同。一个小而稳定的差距是正常的。差距不断扩大，说明权重没有到达生成器。每一步都要跟踪这个差距。[可复现性页](#s-get-reproducible-outputs)解释了为什么相同的权重仍会给出不同的数字。
 
-Before you read the gap, check which logprob vLLM returns. With top-p or top-k, the two values differ for most tokens.
+在读这个差距之前，先确认 vLLM 返回的是哪种 logprob。使用 top-p 或 top-k 时，对大多数 token 来说这两个值是不同的。
 
-**Logprobs mode:** the server option `--logprobs-mode`, which picks the value that vLLM returns for each token. The default is `raw_logprobs`, the logprob over the full vocabulary. `processed_logprobs` gives the logprob after the sampling settings change the distribution. Two more modes, `raw_logits` and `processed_logits`, return logits.
+**Logprobs 模式：** 服务器选项 `--logprobs-mode`，它决定 vLLM 为每个 token 返回什么值。默认值是 `raw_logprobs`，即在整个词表上的 logprob。`processed_logprobs` 给出采样设置改变分布之后的 logprob。另外两种模式 `raw_logits` 和 `processed_logits` 返回 logit。
 
-We checked both logprob modes on the second GPU of our L4 node on 2026-10-23. We used `Qwen/Qwen3-0.6B` in BF16, 16 prompts of 48 tokens, temperature 1, and top-p 0.9. A float32 Transformers pass over the same tokens gave the reference. That GPU is shared and has no clock lock, but the clock does not change these values.
+2026-10-23 我们在 L4 节点的第二块 GPU 上检查了两种 logprob 模式。我们使用 BF16 的 `Qwen/Qwen3-0.6B`、16 个 48 token 的 prompt、temperature 1 和 top-p 0.9。在相同 token 上做一次 float32 的 Transformers 前向计算作为参考。那块 GPU 是共用的，没有锁定时钟，但时钟不会改变这些值。
 
 ```listing
 title: returned logprob minus the full-vocabulary reference
@@ -76,20 +76,20 @@ vLLM --logprobs-mode raw_logprobs                0.0000                         
 vLLM --logprobs-mode processed_logprobs          +0.0527
 ```
 
-- `raw_logprobs` matched the full-vocabulary logprob, with a median absolute gap of 0.005 from the kernels.
-- `processed_logprobs` was higher by minus the log of the probability mass that top-p kept. The residual against that formula had a median of 8e-9.
-- At top-p 0.9, the kept mass was below 0.99 for most sampled tokens, and the median shift was about 0.053.
+- `raw_logprobs` 与整个词表上的 logprob 一致，来自 kernel 的绝对差距中位数为 0.005。
+- `processed_logprobs` 高出的量等于 top-p 保留的概率质量取对数后的相反数。相对于这个公式的残差中位数为 8e-9。
+- 在 top-p 0.9 下，大多数被采样的 token 保留的质量低于 0.99，偏移的中位数约为 0.053。
 
-So compare `raw_logprobs` with a trainer that scores over the full vocabulary. Compare `processed_logprobs` only with a trainer that scores over the same kept set.
+所以，如果 trainer 在整个词表上打分，就与 `raw_logprobs` 比较。只有当 trainer 在同样保留下来的集合上打分时，才与 `processed_logprobs` 比较。
 
-Not measured on our hardware. We ran only that one level 1 check and the logprob check, both with small models. We have not timed a level 2 sleep or a weight update. Our Miles 101 manual measures the same loop with SGLang as the generator.
+未在我们的硬件上测量。我们只运行了那一次级别 1 的检查和 logprob 检查，两者都用的是小模型。我们没有测量级别 2 休眠或权重更新的时间。我们的 Miles 101 手册用 SGLang 作为生成器测量了同样的循环。
 
 ```takeaways
-- Sleep frees GPU memory for training, and wake takes it back.
-- A weight update is a transfer that the trainer starts and finishes through the server routes.
-- Track the gap between the generator and the trainer logprobs on every step.
-- Match --logprobs-mode to the way your trainer scores tokens.
-- At 0.31.0, read the draft acceptance after a level 2 wake, and wake before a weight update.
+- 休眠为训练释放 GPU 显存，唤醒再把它拿回来。
+- 权重更新是一次由 trainer 通过服务器路由开始和完成的传输。
+- 每一步都跟踪生成器与 trainer 的 logprob 之间的差距。
+- 让 --logprobs-mode 与你的 trainer 给 token 打分的方式相匹配。
+- 在 0.31.0 中，级别 2 唤醒后要读 draft 接受率，并在权重更新之前唤醒服务器。
 ```
 
 Sources: the vLLM source at v0.31.0 (vllm/config/model.py, vllm/config/parallel.py, vllm/entrypoints/serve/dev/sleep/api_router.py, vllm/entrypoints/serve/dev/rlhf/api_router.py, vllm/entrypoints/serve/dev/rpc/api_router.py, vllm/distributed/weight_transfer/base.py, vllm/distributed/weight_transfer/factory.py, vllm/distributed/weight_transfer/nccl_engine.py, vllm/distributed/weight_transfer/ipc_engine.py), vLLM documentation at v0.31.0 (docs/training/rlhf.md, docs/training/async_rl.md, docs/features/sleep_mode.md, docs/training/weight_transfer/), the release notes for v0.31.0 and v0.32.0, vLLM issues 52479 and 57853, the release notes for v0.32.0 (level 2 sleep and calibrated KV scales), capture/gpu/out-l4/livecheck-2026-10-22.txt, capture/gpu/out-l4/logprobs-top-p.txt.
