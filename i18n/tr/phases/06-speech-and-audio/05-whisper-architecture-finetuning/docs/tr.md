@@ -36,9 +36,9 @@ Büyük-v3 1.55B parametreleri vardır. Turbo 4 katlı dekodör kullanmakla 32 k
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` dil etiketi; zorunlu çeviri-transkripsiyon 行为──
-- `<|transcribe|>`Ya da`<|translate|>`  翻译为英语输出,或逐字转写。
-- `<|notimestamps|>` 跳过 word level timestamps(更快)。
+- `<|en|>`:language tag;指明音频中所言的语言──省略时 Whisper 会先检测语言──
+- `<|transcribe|>`Ya da`<|translate|>`:task tag;以源语言转写语音,或将其翻译为 文本.
+- `<|notimestamps|>`Şöyle diyor:
 
 Bir modelin çok sayıda görevi başarmasına izin ver.`<|en|>`改成 `<|fr|>`Fransızca yazılacak.
 
