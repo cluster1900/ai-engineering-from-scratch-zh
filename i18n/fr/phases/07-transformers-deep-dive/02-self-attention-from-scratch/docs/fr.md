@@ -169,6 +169,10 @@ softmax-attention-scaling
 
 ## - Je le construis.
 
+```figure
+iso-machine {"machine":"self-attention"}
+```
+
 ### 步骤 1: réaliser Softmax à partir de zéro
 
 Softmax 会将原始logits 转换为概率──为了数值稳定性,首先减去最大值──

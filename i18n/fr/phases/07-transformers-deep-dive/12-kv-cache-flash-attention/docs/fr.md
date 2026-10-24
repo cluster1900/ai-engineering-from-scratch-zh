@@ -53,6 +53,12 @@ Ce 10 GiB en 32K, jusqu'à 128K augmentera à 40 GiB, seulement la taille de lot
 
 **GQA 是 KV-cache 的关键收益。**Utilisation de 64 têtes KV de MHA 8x plus, en 32K environ 80 GiB.
 
+拖动维度参数, observez la taille du cache 如何变化──把序列长度或批量大小 推高, vous le verrez rapidement dépasser la capacité d'un seul GPU──
+
+```figure
+kv-cache-sizer
+```
+
 ### Attention à la lumière
 
 Attention à la norme:
@@ -113,17 +119,16 @@ Les requêtes sont effectuées en série, les demandes sont modifiées en série
 Le cache de KV est utilisé à 16 blocs de jetons pour la distribution; table de page va déployer la position logique dans les blocs physiques. Il peut être partagé entre les deux.
 
 
-拖动维度参数, observez la taille du cache 如何变化──把序列长度或批量大小 推高, vous le verrez rapidement dépasser la capacité d'un seul GPU──
-
-```figure
-kv-cache-sizer
-```
 
 ```figure
 flash-attention-memory
 ```
 
 ## - Je le construis.
+
+```figure
+iso-machine {"machine":"kv-cache"}
+```
 
 Je vous en prie .`code/main.py`❖ Nous réalisons:
 

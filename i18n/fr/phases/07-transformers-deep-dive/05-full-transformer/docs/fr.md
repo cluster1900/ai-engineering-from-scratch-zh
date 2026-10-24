@@ -26,6 +26,12 @@ Ce cours est consacré à cette structure.
 5. **Layer normalization.** `LayerNorm`Ou `RMSNorm`(现代) ・ un flux résiduel stable
 6. **Cross-attention (decoder only).**Les requêtes du décodeur, les clés et les valeurs du codeur de sortie.
 
+observer un vecteur  comment il traverse un seul bloc: Attention entre position mélangé information, résiduel  把信号 continue vers l'avant, FFN faire changer, alors que la norme 让残流 保持稳定──
+
+```figure
+transformer-block
+```
+
 ### Bloc de codeur ((BERT、T5 codeur 使用)
 
 ```
@@ -74,12 +80,6 @@ Pour une`d_model = d`且 FFN expansion 为 `r`Le bloc:
 
 - Je suis là .`d = 4096, r = 2.6, layers = 32`(大致对应 Llama 3 8B)`32 · (4·4096² + 3·2.6·4096²) ≈ 32 · (67M + 131M) ≈ 32 · 198M ≈ 6.3B`个块 内参数,再加上约1B的嵌入和输出头(128K vocab × 4096,未绑定) ・・・这接近已发布的8B──真实模型使用GQA(更小的K和V投影) 和更宽的FFN(`r = 3.5`), les paramètres sont déplacés de l'attention à la FFN, mais le total est toujours proche de 8B.
 
-
-observer un vecteur  comment il traverse un seul bloc: Attention entre position mélangé information, résiduel  把信号 continue vers l'avant, FFN faire changer, alors que la norme 让残流 保持稳定──
-
-```figure
-transformer-block
-```
 
 ## - Je le construis.
 ### 步骤 1: blocs de construction
