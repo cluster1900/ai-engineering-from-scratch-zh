@@ -153,6 +153,10 @@ R^2 &= 1 - \frac{\text{残差平方和}}{\text{相对均值的离差平方和}} 
 
 تعويضات ضغط أكبر$\lambda$控制权衡:$\lambda$越高,重量 越小, تنظيم 越强. 后课程会深入讲解这一点.
 
+```figure
+linear-regression-fit
+```
+
 ## الإنشاء
 
 ### الخطوة 1: إنتاج بيانات مثالية
@@ -466,10 +470,6 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
-
-```figure
-linear-regression-fit
-```
 
 ## استخدمها
 
