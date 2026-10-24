@@ -1,133 +1,133 @@
-# Objects and fields
+# 对象与字段
 
-> The proto defines every object in a request, a response, or a stream frame, and each field has one lowerCamelCase JSON name, one type, and a presence rule.
+> proto 定义了请求、响应或流帧中的每个对象，每个字段都有一个 lowerCamelCase 的 JSON 名称、一个类型和一条存在规则。
 
-Bold rows name proto messages, the normative source for data objects, and the rows under each are its fields {{spec §1.4}}. Fields carry their lowerCamelCase JSON names {{spec §5.5}}, although the §5.5 example converts `push_notification_config`, a field the proto names `task_push_notification_config` ([conflict D22](#s-ref-sources-the-conflict-register)).
+粗体行是 proto 消息的名称，proto 是数据对象的规范性来源，每个粗体行下面的行是它的字段 {{spec §1.4}}。字段使用它们的 lowerCamelCase JSON 名称 {{spec §5.5}}，尽管 §5.5 的示例转换的是 `push_notification_config`，而 proto 把这个字段命名为 `task_push_notification_config`（[冲突 D22](#s-ref-sources-the-conflict-register)）。
 
-*Yes* in the Req. column marks a `REQUIRED` field, which must be present and set in every valid message {{spec §5.7}}. A required array holds one element or more, yet an empty `tasks` list is legitimate ([conflict D19](#s-ref-sources-the-conflict-register)). A type that starts with `optional` uses the proto keyword that records whether the field was set.
+必需一列中的 *是* 标记一个 `REQUIRED` 字段，它在每条有效消息中都必须存在且被设置 {{spec §5.7}}。必需的数组包含一个或多个元素，但空的 `tasks` 列表是合法的（[冲突 D19](#s-ref-sources-the-conflict-register)）。以 `optional` 开头的类型使用 proto 关键字，记录该字段是否被设置。
 
-The tables leave out some optional fields. `Task`, `Message`, `Part`, `Artifact`, and both stream events carry a `metadata` object, and `Message` and `Artifact` carry `extensions`, a list of URIs. A part can name a `filename`, an artifact a `description`, a skill its `examples`, and a card a `documentationUrl` and an `iconUrl`. Every request message, from `SendMessageRequest` to `GetExtendedAgentCardRequest`, carries an optional `tenant` string that must match the chosen interface's `tenant` when that is set {{proto SendMessageRequest}}. [Operations by binding](#s-ref-operations-by-binding) lists the request and response messages.
+表格省略了一些可选字段。`Task`、`Message`、`Part`、`Artifact` 和两种流事件都带有一个 `metadata` 对象，`Message` 和 `Artifact` 带有 `extensions`，即一个 URI 列表。part 可以给出 `filename`，artifact 可以给出 `description`，skill 可以给出 `examples`，card 可以给出 `documentationUrl` 和 `iconUrl`。每个请求消息，从 `SendMessageRequest` 到 `GetExtendedAgentCardRequest`，都带有一个可选的 `tenant` 字符串，当所选接口设置了 `tenant` 时，它必须与之匹配 {{proto SendMessageRequest}}。[按绑定列出的操作](#s-ref-operations-by-binding)列出了请求和响应消息。
 
-## Task and message objects
+## 任务与消息对象 {#s-ref-objects-and-fields-task-and-message-objects}
 
-[Message](#s-message), [Part](#s-part), [Artifact and chunks](#s-artifact-and-chunks), [Task, TaskStatus, and TaskState](#s-task-and-task-state), [SendMessage](#s-send-message), and [push notification configs](#s-push-notification-configs) define these objects.
+[Message](#s-message)、[Part](#s-part)、[Artifact 与分块](#s-artifact-and-chunks)、[Task、TaskStatus 和 TaskState](#s-task-and-task-state)、[SendMessage](#s-send-message) 和[推送通知配置](#s-push-notification-configs)几节定义了这些对象。
 
-| Field | Type | Req. | Meaning |
+| 字段 | 类型 | 必需 | 含义 |
 |---|---|---|---|
-| **Task** | | | The unit of work, created by the server |
-| id | string | yes | Minted by the server |
-| contextId | string | | The context. Both stream events require it. |
-| status | TaskStatus | yes | The state, status message, and time |
-| artifacts | repeated Artifact | | The outputs. `ListTasks` needs `includeArtifacts` for them. |
-| history | repeated Message | | The kept messages, capped by `historyLength` |
-| **TaskStatus** | | | The status of a task |
-| state | TaskState | yes | A value from [Task states](#s-ref-task-states) |
-| message | Message | | The agent's note, such as a question |
-| timestamp | google.protobuf.Timestamp | | When it was recorded, in ISO 8601 and UTC |
-| **Message** | | | One turn of conversation |
-| messageId | string | yes | Minted by the sender. Agents can use it to detect duplicates. |
-| contextId | string | | The context. Every server message has it. |
-| taskId | string | | The task. A client value names an existing task that matches `contextId`. |
-| role | Role | yes | `ROLE_USER` from the client, `ROLE_AGENT` from the server |
-| parts | repeated Part | yes | The content, one part or more |
-| referenceTaskIds | repeated string | | Other tasks the message refers to |
-| **Part** | | | Exactly one of `text`, `raw`, `url`, and `data` |
-| text | string | | Text content |
-| raw | bytes | | File content, base64 in JSON |
-| url | string | | A URL to the file content |
-| data | google.protobuf.Value | | Any JSON value |
-| mediaType | string | | The media type, for every kind of part |
-| **Artifact** | | | One output of a task |
-| artifactId | string | yes | Unique in the task. Chunks match on it. |
-| name | string | | A readable name, such as `test-log.txt` |
-| parts | repeated Part | yes | The content, one part or more |
-| **TaskStatusUpdateEvent** | | | A change of task status |
-| taskId, contextId | string | yes | The task and its context |
-| status | TaskStatus | yes | The new status |
-| **TaskArtifactUpdateEvent** | | | A new artifact, or one chunk of it |
-| taskId, contextId | string | yes | The task and its context |
-| artifact | Artifact | yes | The artifact or the chunk |
-| append | bool | | When true, add to the artifact with this `artifactId` |
-| lastChunk | bool | | When true, this is the last chunk |
-| **StreamResponse** | | | A frame or push body, one of four {{spec §3.2.3}} {{spec §4.3.3}} |
-| task | Task | | The task now. It opens task streams and subscriptions. |
-| message | Message | | A message-only stream holds one, then closes. |
-| statusUpdate | TaskStatusUpdateEvent | | A change of task status |
-| artifactUpdate | TaskArtifactUpdateEvent | | A new artifact or chunk |
-| **SendMessageConfiguration** | | | The `configuration` of a send |
-| acceptedOutputModes | repeated string | | Media types the client accepts |
-| taskPushNotificationConfig | TaskPushNotificationConfig | | A webhook to register, with no `taskId` |
-| historyLength | optional int32 | | Unset means no limit, and `0` means none. |
-| returnImmediately | bool | | True returns once the task exists. The default waits. |
-| **TaskPushNotificationConfig** | | | A webhook for one task |
-| tenant | string | | Must match the interface `tenant`, if set |
-| id | string | | The configuration id, assigned on create |
-| taskId | string | | The task it belongs to |
-| url | string | yes | The webhook URL |
-| token | string | | A token for the task or session. No transport is defined. |
-| authentication | AuthenticationInfo | | How the agent authenticates: a required `scheme`, such as `Bearer`, and optional `credentials` |
+| **Task** | | | 工作单元，由服务器创建 |
+| id | string | 是 | 由服务器生成 |
+| contextId | string | | context。两种流事件都需要它。 |
+| status | TaskStatus | 是 | 状态、状态消息和时间 |
+| artifacts | repeated Artifact | | 输出。`ListTasks` 需要 `includeArtifacts` 才会返回它们。 |
+| history | repeated Message | | 保留的消息，上限由 `historyLength` 决定 |
+| **TaskStatus** | | | 任务的状态 |
+| state | TaskState | 是 | [任务状态](#s-ref-task-states)中的一个值 |
+| message | Message | | agent 的附注，例如一个问题 |
+| timestamp | google.protobuf.Timestamp | | 记录的时间，采用 ISO 8601 和 UTC |
+| **Message** | | | 对话中的一轮 |
+| messageId | string | 是 | 由发送方生成。agent 可以用它检测重复。 |
+| contextId | string | | context。每条服务器消息都有它。 |
+| taskId | string | | 任务。客户端给出的值指向一个与 `contextId` 匹配的现有任务。 |
+| role | Role | 是 | 客户端为 `ROLE_USER`，服务器为 `ROLE_AGENT` |
+| parts | repeated Part | 是 | 内容，一个或多个 part |
+| referenceTaskIds | repeated string | | 消息引用的其他任务 |
+| **Part** | | | 恰好是 `text`、`raw`、`url` 和 `data` 之一 |
+| text | string | | 文本内容 |
+| raw | bytes | | 文件内容，在 JSON 中为 base64 |
+| url | string | | 指向文件内容的 URL |
+| data | google.protobuf.Value | | 任意 JSON 值 |
+| mediaType | string | | 媒体类型，适用于每种 part |
+| **Artifact** | | | 任务的一个输出 |
+| artifactId | string | 是 | 在任务内唯一。分块按它匹配。 |
+| name | string | | 可读的名称，例如 `test-log.txt` |
+| parts | repeated Part | 是 | 内容，一个或多个 part |
+| **TaskStatusUpdateEvent** | | | 任务状态的一次变化 |
+| taskId, contextId | string | 是 | 任务及其 context |
+| status | TaskStatus | 是 | 新的状态 |
+| **TaskArtifactUpdateEvent** | | | 一个新的 artifact，或它的一个分块 |
+| taskId, contextId | string | 是 | 任务及其 context |
+| artifact | Artifact | 是 | artifact 或分块 |
+| append | bool | | 为 true 时，添加到具有此 `artifactId` 的 artifact |
+| lastChunk | bool | | 为 true 时，这是最后一个分块 |
+| **StreamResponse** | | | 一个流帧或推送正文，四者之一 {{spec §3.2.3}} {{spec §4.3.3}} |
+| task | Task | | 任务的当前状态。它是任务流和订阅的开头。 |
+| message | Message | | 只有消息的流包含一个，然后关闭。 |
+| statusUpdate | TaskStatusUpdateEvent | | 任务状态的一次变化 |
+| artifactUpdate | TaskArtifactUpdateEvent | | 一个新的 artifact 或分块 |
+| **SendMessageConfiguration** | | | 一次发送的 `configuration` |
+| acceptedOutputModes | repeated string | | 客户端接受的媒体类型 |
+| taskPushNotificationConfig | TaskPushNotificationConfig | | 要注册的 webhook，不带 `taskId` |
+| historyLength | optional int32 | | 未设置表示没有限制，`0` 表示不返回。 |
+| returnImmediately | bool | | 为 true 时，任务一存在就返回。默认会等待。 |
+| **TaskPushNotificationConfig** | | | 一个任务的 webhook |
+| tenant | string | | 如果设置了，必须与接口的 `tenant` 匹配 |
+| id | string | | 配置 id，在创建时分配 |
+| taskId | string | | 它所属的任务 |
+| url | string | 是 | webhook URL |
+| token | string | | 任务或会话的令牌。没有定义传输方式。 |
+| authentication | AuthenticationInfo | | agent 如何认证：一个必需的 `scheme`（例如 `Bearer`）和可选的 `credentials` |
 
-## Agent card objects
+## Agent card 对象 {#s-ref-objects-and-fields-agent-card-objects}
 
-[AgentCard fields](#s-agentcard-fields), [Extended cards and signatures](#s-extended-cards-and-signatures), [Security schemes](#s-security-schemes-and-in-task-authorization), and [Extensions](#s-extensions) define these objects.
+[AgentCard 字段](#s-agentcard-fields)、[扩展 card 与签名](#s-extended-cards-and-signatures)、[安全方案](#s-security-schemes-and-in-task-authorization)和[扩展](#s-extensions)几节定义了这些对象。
 
-| Field | Type | Req. | Meaning |
+| 字段 | 类型 | 必需 | 含义 |
 |---|---|---|---|
-| **AgentCard** | | | What the agent offers, where, and what it demands |
-| name | string | yes | A readable name, such as `test-runner` |
-| description | string | yes | What the agent does |
-| supportedInterfaces | repeated AgentInterface | yes | Where to reach it. The first entry is preferred. |
-| provider | AgentProvider | | The provider: a required `url` and `organization` |
-| version | string | yes | The agent's own version, such as `2.3.0` |
-| capabilities | AgentCapabilities | yes | The optional features it supports |
-| securitySchemes | map<string, SecurityScheme> | | Accepted authentication schemes, by name |
-| securityRequirements | repeated SecurityRequirement | | Scheme names mapped to scopes, such as `{"schemes": {"bearer": {"list": []}}}` |
-| defaultInputModes | repeated string | yes | Media types accepted across all skills |
-| defaultOutputModes | repeated string | yes | Media types produced across all skills |
-| skills | repeated AgentSkill | yes | What the agent does well |
-| signatures | repeated AgentCardSignature | | JWS signatures over the canonical card |
-| **AgentInterface** | | | One way to reach the agent |
-| url | string | yes | An absolute HTTPS URL in production |
-| protocolBinding | string | yes | `JSONRPC`, `GRPC`, `HTTP+JSON`, or a custom binding URI |
-| tenant | string | | A routing value. When set, copy it into each request sent to this interface. |
-| protocolVersion | string | yes | The A2A version, such as `1.0` |
-| **AgentCapabilities** | | | Optional features. An absent flag means `false`. |
-| streaming | optional bool | | Allows `SendStreamingMessage` and `SubscribeToTask` |
-| pushNotifications | optional bool | | Allows the four push configuration operations |
-| extensions | repeated AgentExtension | | The protocol extensions it supports |
-| extendedAgentCard | optional bool | | Allows `GetExtendedAgentCard` |
-| **AgentExtension** | | | One extension the agent supports, in `capabilities.extensions` |
-| uri | string | | The URI that identifies the extension |
-| description | string | | How this agent uses the extension |
-| required | bool | | When true, the client must understand and comply with the extension |
-| params | google.protobuf.Struct | | Configuration for the extension, as a JSON object |
-| **AgentSkill** | | | One thing the agent does well |
-| id | string | yes | The skill id, such as `run-tests` |
-| name | string | yes | A readable name |
-| description | string | yes | What the skill does |
-| tags | repeated string | yes | Keywords, one or more |
-| inputModes | repeated string | | Input media types that override the card's |
-| outputModes | repeated string | | Output media types that override the card's |
-| securityRequirements | repeated SecurityRequirement | | Requirements for this skill |
+| **AgentCard** | | | agent 提供什么、在哪里提供、要求什么 |
+| name | string | 是 | 可读的名称，例如 `test-runner` |
+| description | string | 是 | agent 做什么 |
+| supportedInterfaces | repeated AgentInterface | 是 | 在哪里访问它。首选第一个条目。 |
+| provider | AgentProvider | | 提供方：必需的 `url` 和 `organization` |
+| version | string | 是 | agent 自己的版本，例如 `2.3.0` |
+| capabilities | AgentCapabilities | 是 | 它支持的可选功能 |
+| securitySchemes | map<string, SecurityScheme> | | 接受的认证方案，按名称列出 |
+| securityRequirements | repeated SecurityRequirement | | 方案名称到 scope 的映射，例如 `{"schemes": {"bearer": {"list": []}}}` |
+| defaultInputModes | repeated string | 是 | 所有 skill 都接受的媒体类型 |
+| defaultOutputModes | repeated string | 是 | 所有 skill 都产生的媒体类型 |
+| skills | repeated AgentSkill | 是 | agent 擅长做的事 |
+| signatures | repeated AgentCardSignature | | 对规范化 card 的 JWS 签名 |
+| **AgentInterface** | | | 访问 agent 的一种方式 |
+| url | string | 是 | 生产环境中为绝对 HTTPS URL |
+| protocolBinding | string | 是 | `JSONRPC`、`GRPC`、`HTTP+JSON` 或自定义绑定 URI |
+| tenant | string | | 一个路由值。设置时，把它复制到发往此接口的每个请求中。 |
+| protocolVersion | string | 是 | A2A 版本，例如 `1.0` |
+| **AgentCapabilities** | | | 可选功能。缺失的标志表示 `false`。 |
+| streaming | optional bool | | 允许 `SendStreamingMessage` 和 `SubscribeToTask` |
+| pushNotifications | optional bool | | 允许四个推送配置操作 |
+| extensions | repeated AgentExtension | | 它支持的协议扩展 |
+| extendedAgentCard | optional bool | | 允许 `GetExtendedAgentCard` |
+| **AgentExtension** | | | agent 支持的一个扩展，位于 `capabilities.extensions` 中 |
+| uri | string | | 标识该扩展的 URI |
+| description | string | | 这个 agent 如何使用该扩展 |
+| required | bool | | 为 true 时，客户端必须理解并遵守该扩展 |
+| params | google.protobuf.Struct | | 扩展的配置，是一个 JSON 对象 |
+| **AgentSkill** | | | agent 擅长的一件事 |
+| id | string | 是 | skill id，例如 `run-tests` |
+| name | string | 是 | 可读的名称 |
+| description | string | 是 | skill 做什么 |
+| tags | repeated string | 是 | 关键词，一个或多个 |
+| inputModes | repeated string | | 覆盖 card 设置的输入媒体类型 |
+| outputModes | repeated string | | 覆盖 card 设置的输出媒体类型 |
+| securityRequirements | repeated SecurityRequirement | | 这个 skill 的要求 |
 
-## Names the proto does not define
+## proto 未定义的名称 {#s-ref-objects-and-fields-names-the-proto-does-not-define}
 
-Older material and stale pages of the docs still use these names, and none exists in the v1.0.1 proto ([conflict D10](#s-ref-sources-the-conflict-register)).
+较旧的资料和文档中过时的页面仍在使用这些名称，而 v1.0.1 的 proto 中没有一个存在（[冲突 D10](#s-ref-sources-the-conflict-register)）。
 
-| Name | Use instead |
+| 名称 | 改用 |
 |---|---|
-| `kind` on a part or a stream event | The member name, such as `text` or `statusUpdate` |
-| `TextPart`, `FilePart`, `DataPart` | One `Part` with `text`, `raw` or `url`, or `data` |
-| `final` on `TaskStatusUpdateEvent` | The close of the stream |
+| part 或流事件上的 `kind` | 成员名，例如 `text` 或 `statusUpdate` |
+| `TextPart`, `FilePart`, `DataPart` | 一个带有 `text`、`raw` 或 `url`、或 `data` 的 `Part` |
+| `TaskStatusUpdateEvent` 上的 `final` | 流的关闭 |
 | `taskStatusUpdate`, `taskArtifactUpdate` | `statusUpdate`, `artifactUpdate` |
 | `Task.createdAt`, `Task.lastModified` | `status.timestamp` |
-| `TaskArtifactUpdateEvent.index` | `artifactId`, which chunks match on |
-| `PushNotificationConfig`, `CreateTaskPushNotificationConfigRequest` | `TaskPushNotificationConfig`, which the create operation takes as its request ([conflict D4](#s-ref-sources-the-conflict-register)) |
-| `configId` on a push configuration | `id` |
-| Card `url`, `protocolVersion`, `preferredTransport`, `additionalInterfaces` | `supportedInterfaces`, with `url` and `protocolVersion` on each entry |
-| Card `supportsAuthenticatedExtendedCard` | `capabilities.extendedAgentCard` |
-| Card `security` | `securityRequirements` ([conflict D6](#s-ref-sources-the-conflict-register)) |
-| Card `extensions` at the top level | `capabilities.extensions` ([discrepancy N2](#s-ref-sources-discrepancies-found-after-the-register)) |
+| `TaskArtifactUpdateEvent.index` | `artifactId`，分块按它匹配 |
+| `PushNotificationConfig`, `CreateTaskPushNotificationConfigRequest` | `TaskPushNotificationConfig`，创建操作把它作为请求（[冲突 D4](#s-ref-sources-the-conflict-register)） |
+| 推送配置上的 `configId` | `id` |
+| card 的 `url`、`protocolVersion`、`preferredTransport`、`additionalInterfaces` | `supportedInterfaces`，每个条目上有 `url` 和 `protocolVersion` |
+| card 的 `supportsAuthenticatedExtendedCard` | `capabilities.extendedAgentCard` |
+| card 的 `security` | `securityRequirements`（[冲突 D6](#s-ref-sources-the-conflict-register)） |
+| 顶层的 card `extensions` | `capabilities.extensions`（[差异 N2](#s-ref-sources-discrepancies-found-after-the-register)） |
 | `cursor`, `limit`, `nextCursor` | `pageToken`, `pageSize`, `nextPageToken` |
 
 Sources: proto messages from Task to AgentSkill, with AgentExtension, AuthenticationInfo, AgentProvider, SecurityRequirement, and the request messages from SendMessageRequest to GetExtendedAgentCardRequest (research/sources/a2a.proto); spec §1.4, §3.1.4, §3.1.7, §3.2.2, §3.2.3, §3.3.4, §3.4.2, §4.3.3, §5.5, §5.6.1, §5.7, §A.2.1 (research/sources/specification.md); docs whats-new-v1 (research/sources/docs.md); research/brief-spec.md sections 2.0 to 2.8, 8.3 and 12.2; research/brief-docs.md; research/migration.md section D.6 (N2); capture/out/01-agent-cards.http
