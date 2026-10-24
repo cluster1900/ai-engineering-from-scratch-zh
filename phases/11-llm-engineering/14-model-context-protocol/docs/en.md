@@ -103,6 +103,8 @@ Client 也可以直接调用业务方法并处理版本错误，但调用 discov
 
 Client 必须将缺少 `resultType` 的旧版响应当作 complete 处理。
 
+Server 应在每个结果的 `_meta` 中包含 `io.modelcontextprotocol/serverInfo`。该身份由 Server 自行声明，仅用于展示、日志与调试，不能作为安全决策依据。
+
 列表和读取操作的结果还附带 `ttlMs`（毫秒生存时间）和 `cacheScope`（缓存范围）。确定性的 `tools/list` 排序加上新鲜度提示，使 Client 能够安全缓存服务发现结果，大幅提升模型 Prompt Cache 的稳定性。`cacheScope: public` 允许跨上下文共享缓存，`private` 则严格限制在发起请求的私有上下文内。
 
 ### 线缆格式与传输层
@@ -113,19 +115,25 @@ MCP 在 stdio 或 Streamable HTTP 上运行 JSON-RPC 2.0：
 - 响应（Response）：包含相匹配的 `id` 以及 `result` 或 `error`。
 - 通知（Notification）：无 `id`，不需要任何响应。
 
-现代 Streamable HTTP 暴露单个仅接受 POST 的端点。每个 JSON-RPC 消息对应一次独立的 POST。请求 POST 接收单个 JSON 对象，或接收以最终响应结尾的请求作用域 SSE 流。被接受的通知 POST 返回无响应体的 HTTP 202。
+现代 Streamable HTTP 暴露单个仅接受 POST 的端点。每个 JSON-RPC 消息对应一次独立的 POST。请求 POST 接收单个 JSON 对象，或接收以最终响应结尾的请求作用域 SSE 流。被接受的通知 POST 返回无响应体的 HTTP 202。本核心修订版未定义任何通过 Streamable HTTP 从 Client 发往 Server 的通知。
 
 2026-07-28 规范中**不存在**独立的 MCP GET 订阅流、DELETE 注销端点、`Mcp-Session-Id` 或基于 `Last-Event-ID` 的断点重放。长周期的变更通知推送统一使用 `subscriptions/listen` POST 请求，其响应保持长连接 SSE 流开启。
+
+### 无需 Server 发起请求的 Client 输入
+
+旧修订版允许 Server 通过流发送 `sampling/createMessage`、`roots/list` 或 `elicitation/create` 之类的请求。当前协议改用多轮往返请求（MRTR）。符合条件的 tool 调用、资源读取或 prompt 获取会返回 `resultType: input_required`，并至少携带 `inputRequests` 或 `requestState` 之一。Client 收集所需输入，使用新的 JSON-RPC ID 和对应的 `inputResponses` 重试原始方法；若提供了 `requestState`，则原样回传。若没有 `inputRequests`，重试时省略 `inputResponses`。
+
+Roots、Sampling 与 Logging 仍可使用但已被弃用，新实现不应采用它们。现有的 Roots 或 Sampling 请求放在 MRTR 的 `inputRequests` 中传递，绝不作为独立的 Server 到 Client JSON-RPC 请求。优先使用显式的文件或目录参数、资源 URI、Server 配置以及与模型提供商的直接集成。stdio 下的诊断信息写入 stderr，生产遥测使用 OpenTelemetry。
 
 ```figure
 mcp-nxm-collapse
 ```
 
-## 动手实践
+## 动手构建
 
 ### 步骤 1：注册 Server 表面
 
-在 `code/main.py` 中，纯靠 Python 标准库实现服务注册与报文解析：
+尽管请求契约已经改变，注册方式依然简单：
 
 ```python
 server = MCPServer("demo-server")
@@ -134,17 +142,19 @@ server = MCPServer("demo-server")
     "add",
     "Add two integers.",
     {
-      "type": "object",
-      "properties": {
-        "a": {"type": "integer"},
-        "b": {"type": "integer"}
-      },
-      "required": ["a", "b"]
+        "type": "object",
+        "properties": {
+            "a": {"type": "integer"},
+            "b": {"type": "integer"}
+        },
+        "required": ["a", "b"]
     }
 )
 def add(a: int, b: int) -> dict:
     return {"sum": a + b}
 ```
+
+`code/main.py` 中的完整实现还注册了一个资源和一个 prompt。它刻意只使用标准库，让你能看清每个信封结构，而不是把协议细节交给 SDK。
 
 ### 步骤 2：为每个请求附加元数据
 
@@ -167,9 +177,17 @@ def request(method, params=None):
     }
 ```
 
-### 步骤 3：HTTP 镜像头映射
+不要只把这些元数据缓存在连接对象中。Server 会在每个请求上校验它。
 
-远程调用通过 HTTP POST 发起时，需镜像指定头部：
+### 步骤 3：（可选）先发现再列出
+
+调用 `server/discover`，选择一个受支持的版本，然后调用 `tools/list`。如果你已经知道版本并能处理 `-32022`，直接调用 `tools/list` 同样合法。
+
+演示按名称顺序返回工具列表，并附带 `ttlMs`、`cacheScope`、`resultType` 与 Server 身份。tool 调用返回完整但不可缓存的结果，因为其输出可能依赖当前状态。
+
+### 步骤 4：把同一请求映射到 HTTP
+
+远程 `tools/call` POST 携带镜像 JSON-RPC 请求体的请求头：
 
 ```http
 POST /mcp HTTP/1.1
@@ -180,29 +198,51 @@ Mcp-Method: tools/call
 Mcp-Name: add
 ```
 
-请求头与请求体不一致时，立即返回 HTTP 400 与错误码 `-32020`。
+`MCP-Protocol-Version` 请求头必须与 `_meta` 中的版本一致。`Mcp-Method` 在每个 JSON-RPC 请求上都是必填项，且必须与 `method` 一致。`Mcp-Name` 仅在 `tools/call`、`resources/read` 与 `prompts/get` 时必填，且必须与工具名、资源 URI 或 prompt 名一致。缺失必填请求头或不一致时，返回 HTTP 400 与 `HeaderMismatch` 错误码 `-32020`。
 
-运行测试命令：
+### 步骤 5：在协议状态之外落实安全
+
+- 在每个 HTTP 请求上校验授权与受众（audience）。
+- 本地 Server 绑定到 localhost，并在 Streamable HTTP 上校验 `Origin`。
+- 用 `destructiveHint: true` 标记会修改状态的工具，并要求 Host 审批。
+- 显式传递目录与文件范围，而不是依赖已弃用的 Roots。
+- 将资源与工具输出视为不可信数据。
+- stdio 下 stdout 专用于 JSON-RPC；诊断信息写入 stderr。
+
+## 动手实践
+
+在课程目录下运行：
 
 ```bash
-cd phases/11-llm-engineering/14-model-context-protocol
 python3 code/main.py
 cd code
 python3 -m unittest discover tests -v
 ```
 
+第一行输出应报告在协议 `2026-07-28` 下发现了 `demo-server`。然后查看 `MCPClient.request`：它为每次调用重新构建 `_meta`。从某个请求中移除元数据，观察 Server 拒绝它。
+
 ## 交付物
 
-本课交付 `outputs/skill-mcp-server-designer.md`。它能将特定业务领域转化为符合现代无状态 MCP 规范的架构方案，涵盖发现契约、逐请求元数据、确定性缓存列表、显式状态句柄、传输头校验及审批策略。
+本课交付 `outputs/skill-mcp-server-designer.md`。它能将特定业务领域转化为符合现代无状态 MCP 规范的架构方案，涵盖发现契约、逐请求元数据、确定性缓存列表、显式状态句柄、传输头校验、授权及审批策略。
 
 ## 继续深入 MCP 生产级体系
 
 本课为你建立了统一的协议心智。在 Phase 13 中，以下四节核心进阶课将覆盖更为严密的生产边界：
 
-1. [MCP Tool Contracts 与内容](../../../13-tools-and-protocols/28-mcp-tool-contracts-and-content/docs/en.md)：涵盖严格的输入 Schema、结构化内容、路由元数据、分页鉴权以及协议与业务错误的区分。
-2. [MCP 可靠性、取消与流控](../../../13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/docs/en.md)：涵盖请求取消、持久任务取消、截止期限、幂等性、背压及重连机制。
+1. [MCP Tool Contracts 与内容](../../../13-tools-and-protocols/28-mcp-tool-contracts-and-content/docs/en.md)：涵盖严格的输入 Schema、结构化内容、路由元数据、不透明分页、补全授权以及协议与业务错误的区分。
+2. [MCP 可靠性、取消与流控](../../../13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control/docs/en.md)：涵盖请求取消、持久任务取消、截止期限、幂等性、背压、代理缓冲及重连机制。
 3. [MCP Registry 供应链、准入、漂移与回滚](../../../13-tools-and-protocols/30-mcp-registry-supply-chain-and-drift/docs/en.md)：涵盖命名空间证明、产物可信来源、不可变锁定、实时漂移、准入凭证与回滚策略。
-4. [MCP 一致性工程](../../../13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md)：涵盖黄金标准与反向测试用例、严格版本时代、代理网络证据、脱敏以及发布安全门禁。
+4. [MCP 一致性工程](../../../13-tools-and-protocols/31-mcp-conformance-versioning-and-operations/docs/en.md)：涵盖黄金标准与反向测试用例、严格版本时代、SDK 差异对比、代理网络证据、脱敏、健康门禁以及发布回滚。
+
+当 Server 将跨越团队或信任边界时，请按顺序学习它们。它们共同把你从“方法能用”带到“契约在整个部署过程中保持安全且可诊断”。
+
+## 练习与思考
+
+1. 添加一个 `subtract` 工具，确认 `tools/list` 仍按字母序排列。
+2. 移除 protocol-version 键，验证返回 Invalid Params（`-32602`）。然后发送格式正确但不受支持的版本 `2025-11-25`，验证返回 `-32022`，确认 `requested` 回显了该修订版，并从 `supported` 中选择版本。
+3. 为创建操作添加由 Server 生成的 `draftId`，并要求更新操作把它作为参数传入。解释为什么这是应用状态而不是协议 Session。
+4. 让一个需要用户确认的工具返回 `input_required`。使用新的 ID、一条 `inputResponses` 条目和原样的 `requestState` 重试原始调用，而不是臆造一个 Server 到 Client 的 JSON-RPC 请求。
+5. 设计一个双时代 stdio Client 草图：把结果或已识别的现代错误视为现代对端，仅在遇到无法识别的错误或超时时才允许回退到 `initialize`。
 
 ## 核心专业术语
 
@@ -224,3 +264,4 @@ python3 -m unittest discover tests -v
 - [MCP 服务发现规范](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP Streamable HTTP 传输规范](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
 - [MCP 多轮请求模式 (MRTR)](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr)
+- [MCP 已弃用特性](https://modelcontextprotocol.io/specification/2026-07-28/deprecated)

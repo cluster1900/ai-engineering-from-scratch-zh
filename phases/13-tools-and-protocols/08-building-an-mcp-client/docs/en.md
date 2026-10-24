@@ -99,7 +99,7 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 
 必须将此选项绑定至明确配置的命令或端点。严禁使用通配符让任意未知 Server 自动降级为较弱语义。未配置 `allow_legacy=True` 的对端在遇到歧义发现结果后直接报错失败，绝不会收到 `initialize`。
 
-白名单仅授予了发起探测的权限。Client 在传输层强制的截止时间内发送单个 `initialize` 请求，然后严格要求满足以下全部条件：
+白名单仅授予了发起探测的权限。它并不决定对端的时代。Client 在传输层强制的截止时间内发送单个 `initialize` 请求，然后严格要求满足以下全部条件：
 
 - 收到与该请求 ID 匹配的 JSON-RPC `2.0` 响应；
 - 仅包含 `result` 字段，且无 `error`；
@@ -107,7 +107,29 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 - 包含对象类型的 `capabilities` 字段；
 - 包含非空字符串 `name` 与 `version` 的 `serverInfo` 对象。
 
-任何超时、断开、报错、畸形结果、ID 错乱或不受支持的版本均直接失败。只有结构完全合规的正向结果才能将对端标记为 Legacy 时代。
+任何超时、断开、报错、畸形结果、ID 错乱或不受支持的版本均直接失败。只有结构完全合规的正向结果才能将对端标记为 Legacy 时代。代码会把 `legacy_probe_timeout_ms` 传给传输适配器；真实的 stdio 或 HTTP 适配器必须实际执行这一截止时间，而不能只是记录它。
+
+为该传输对端缓存选定的时代，不要在每次调用前重新探测。
+
+### Legacy 是一个兼容分支
+
+一旦受限探测返回有效的正向 Legacy 证据，Client 就严格按照该修订版的定义使用选定的 Legacy 版本：
+
+1. 校验响应信封与关联 ID。
+2. 校验协商出的修订版属于已配置的 Legacy 集合。
+3. 记录经过校验的 capabilities 与 Server 身份。
+4. 仅在全部检查通过后发送 `notifications/initialized`。
+5. 在该传输生命周期内使用 Legacy 请求结构。
+
+这个分支只为与已知对端互通而存在，它不是新 Server 或新请求的默认设计。如果传输重启或端点发生变化，丢弃对端时代缓存并重新协商。
+
+### 工具发现与缓存
+
+对每个活跃对端调用 `tools/list`。现代结果包含 `resultType`、`ttlMs` 与 `cacheScope`。在正确的授权上下文中遵守这一新鲜度提示；过期后或收到已订阅的列表变更事件后重新拉取。
+
+对于 Legacy Server 缺失 `resultType` 的情况，Client 必须将其视为 `"complete"`。不要要求较早协商时代的响应携带现代缓存字段。
+
+Server 应返回确定性排序。Client 也应在合并前排序，使本地注册表顺序不依赖进程启动时序。
 
 ### 命名空间无冲突合并
 
@@ -116,6 +138,8 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 1. **冲突时加前缀（Prefix on collision）**：保留首个工具的规范名，后续重名工具暴露为 `<server>/<tool>`。
 2. **冲突时拒绝（Reject on collision）**：不加载重复工具，并抛出清晰的配置报错。
 3. **静默覆盖（Silent overwrite）**：**坚决杜绝**。它会隐蔽模型真正调用的目标 Server。
+
+同时保存规范名与本地名。模型看到的是规范名；发出的 `tools/call` 使用所属 Server 声明的本地名。
 
 ### 调用路由机制
 
@@ -129,13 +153,27 @@ client.add_server("archive", archive_transport, allow_legacy=True)
   -> 匹配响应 ID 并返回
 ```
 
+当所属传输不可用时不要发送调用。先重连或重启传输，再重新执行服务发现与 `tools/list`。在传输断开时丢失的现代在途请求，若该操作的安全策略允许，可以使用新的 JSON-RPC ID 重试。
+
+### 通知与订阅
+
+现代的列表与资源变更只通过 Client 打开的 `subscriptions/listen` 流到达。Client 发送通知过滤器，等待 `notifications/subscriptions/acknowledged`，并用通知元数据中的 listen 请求 ID 关联事件。
+
+断开后，发起新的 listen 请求并重新拉取相关列表或资源。现代流不使用 `Last-Event-ID` 恢复。
+
+### 不存在 Server 发起的请求
+
+现代 Server 不会为 Sampling、Elicitation 或 Roots 向 Client 发起独立的 JSON-RPC 请求。它们返回 `input_required`，Client 在满足其中嵌入的输入请求后重试原始请求。
+
+满足输入期间不要阻塞对端的响应读取器。保持关联关系，并为重试生成新的 JSON-RPC ID。
+
 ```figure
 tp-client-merge
 ```
 
 ## 动手实践
 
-`code/main.py` 通过内存对端函数清晰展示了整个协议决策树。它连接至两个现代对端和一个显式白名单标记的 Legacy 对端，合并并路由它们的工具：
+`code/main.py` 通过内存对端函数清晰展示了整个协议决策树。它连接至两个现代对端和一个显式白名单标记的 Legacy 对端，合并并路由它们的工具。传输可调用对象会收到一个超时预算，使兼容分支无法隐藏无界的探测。
 
 ```bash
 cd code
@@ -147,14 +185,23 @@ python3 -m unittest discover tests -v
 
 - 现代请求逐次重复元数据；
 - 遇到 `-32022` 时重试现代发现，绝不退化为握手；
-- 已识别的现代错误绝不发生降级；
-- 超时、断开与未知错误在无白名单时绝不触发 `initialize`；
+- 已识别的现代错误绝不发生降级（即使对端在白名单中）；
+- 超时、断开与未知错误、空响应在无白名单时绝不触发 `initialize`；
 - 白名单对端仅在收到合规正向的 `initialize` 响应后才确立为 Legacy；
+- 畸形或不受支持的 Legacy 结果使对端保持不可用；
 - 选定的时代被稳定缓存在对端传输生命周期中。
 
 ## 交付物
 
 本课交付 `outputs/skill-mcp-client-harness.md`。它能为现代请求盖戳、stdio 时代协商、确定性命名空间合并、安全路由以及安全关闭的 Legacy 兼容分支提供规范脚手架。
+
+## 练习与思考
+
+1. 让一个模拟 Server 返回 `-32022` 且没有双方都支持的版本，确认 Client 直接失败而不发送 `initialize`。
+2. 将一个模拟 Legacy Server 加入白名单，让其受限 `initialize` 探测超时，证明该对端保持 `unknown` 且不可用。
+3. 为两个授权上下文添加 `cacheScope: "private"` 的工具列表，确认 Client 绝不会把一个上下文的缓存结果共享给另一个。
+4. 把冲突策略改为拒绝，并让启动失败时的报错包含两个对端名称。
+5. 添加一个有限的 `subscriptions/listen` 模拟器；流丢失时用新的请求 ID 重新 listen 并重新拉取工具。
 
 ## 核心专业术语
 
@@ -168,6 +215,8 @@ python3 -m unittest discover tests -v
 | 正向 Legacy 证据 (Positive legacy evidence) | 针对受支持旧版协议返回的有效、ID 匹配的 `initialize` 结果 |
 | 合并命名空间 (Merged namespace) | 跨所有活跃对端规范化后的工具全局名称集合 |
 | 冲突策略 (Collision policy) | 处理重名工具的加前缀或报错拒绝规则 |
+| 时代缓存 (Era cache) | 为单个传输对端保存的已选现代或 Legacy 行为 |
+| 传输恢复 (Transport recovery) | 重启或重连、重新发现、重新列出，并以新 ID 安全重试 |
 
 ## 延伸阅读
 
@@ -175,3 +224,4 @@ python3 -m unittest discover tests -v
 - [MCP Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
 - [MCP Versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
+- [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)

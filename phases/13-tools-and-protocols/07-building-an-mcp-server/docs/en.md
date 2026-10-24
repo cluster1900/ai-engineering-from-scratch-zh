@@ -141,7 +141,13 @@ def complete(payload):
 
 现代 Server 可以发送与 Client 请求直接相关的通知，或者在 Client 打开的 `subscriptions/listen` 流中推送通知。但 Server **绝不能**主动发起独立的 JSON-RPC 请求。
 
-当 Handler 需要 Sampling、Elicitation 或 Roots 输入时，它返回一个 `input_required` 结果。Client 在满足所请求的输入后，使用全新的请求 ID 重新发起原始方法调用。
+当 Handler 需要 Sampling、Elicitation 或 Roots 输入时，它返回一个 `input_required` 结果。Client 在满足所请求的输入后，使用全新的请求 ID 重新发起原始方法调用。第 11 课将详细讲解这种多轮往返请求（Multi Round-Trip Request）模式。
+
+### 显式的 Legacy 兼容
+
+双时代（dual-era）Server 也可以在一个明确隔离的 Legacy 分支上实现 `2025-11-25` 握手。当请求中存在现代规范要求的 `_meta` 字段时，它选择现代行为；当收到 `initialize` 时，则走 Legacy 行为。
+
+不要让 `2026-07-28` 请求经过 Legacy 握手路径，也不要把现代的 `resultType` 字段塞进 Legacy 的初始化结果中。本课代码刻意只实现现代规范，以便让这些不变量保持清晰可见。
 
 ```figure
 t3-dispatch-loop
