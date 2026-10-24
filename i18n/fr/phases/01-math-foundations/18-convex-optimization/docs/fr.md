@@ -18,7 +18,7 @@
 
 Leçon 08 Vous avez appris la descente graduelle, le momentum et Adam. Ces optimisateurs peuvent se déplacer à n'importe quelle surface, mais ils ne sont pas garanties. La descente graduelle peut être une mauvaise valeur locale, car elle se trouve au point de saddle, ou toujours en mouvement.
 
-Mais de nombreux problèmes du ML sont de la ronde. La régression linéaire, la régression logistique, les SVM, les LASSO, la régression des ronds. Pour ces problèmes, il existe des outils plus forts: avec une optimisation mathématique assurée. La ronde n'est qu'à un seul fond.
+Mais de nombreux problèmes du ML sont de la convexe. Pour ces problèmes, il existe des outils plus forts: avec une optimisation mathématique assurée. Le problème de la convexe n'a pas de fausse base: chaque valeur minimale de chaque lieu est la valeur minimale de l'ensemble. Pour une fonction convexe lisse de la valeur minimale, la fonction de décalage progressive est adaptée.
 
 Comprendre la connotation a trois valeurs. Premièrement, elle vous dit quand le problème est simple, quand il est difficile, quand il est non connoté. Deuxièmement, elle fournit des outils plus rapides, comme la méthode de Newton. Troisièmement, elle explique le concept de régularisation dans le ML: la dualité entre les SVM, ainsi que pourquoi l'apprentissage en profondeur peut toujours fonctionner dans le cadre de la bonne nature de tout ce qui est offert par la connotation.
 
@@ -91,13 +91,13 @@ Le concept central de l'optimisation:
 
 **对于凸函数，每个局部最小值都是全局最小值。**
 
-Cela signifie que la descente graduelle ne sera pas piégée. Tout chemin vers le bas va vers la même réponse.
+Cela signifie que la baisse de la valeur ne sera pas piégée dans la mauvaise valeur minimale locale. Chaque valeur minimale qu'elle peut atteindre a la même perte.
 
 ```mermaid
 graph LR
     subgraph "Convex: ONE answer"
         direction TB
-        C1["Loss surface has a single valley"] --> C2["Gradient descent ALWAYS finds the global minimum"]
+        C1["Loss surface has no false valleys"] --> C2["Gradient descent with a suitable step converges to the global minimum"]
     end
     subgraph "Non-convex: MANY traps"
         direction TB

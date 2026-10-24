@@ -31,7 +31,7 @@ Ceci est important pour le ML, car la pensée du domaine de fréquence est parto
 X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-Chaque .$X[k]$C'est un nombre complexe.$\lvert X[k] \rvert$Indiquer la fréquence $k$De l'amplitude.$\angle X[k]$Indiquer le décalage de phase de cette fréquence.
+Chaque .$X[k]$C'est un nombre complexe.$\lvert X[k] \rvert$Avec la fréquence $k$La fréquence est la même que la fréquence de l'amplitude.$A$Il est juste en train de tomber.$k$La réelle série de l'émission$\lvert X[k] \rvert = AN/2$, il faut donc éliminer$N/2$才能读出 amplitude. Sa phase.$\angle X[k]$Indiquer le décalage de phase de cette fréquence.
 
 关键洞见:$e^{-2\pi i k n/N}$C' est une fréquence.$k$Le phasor de rotation du DFT est calculé par le signal et le$N$个等间隔频率 中每一个的相关性.$k$Il contient de l'énergie, la corrélation est très grande.
 
@@ -100,7 +100,7 @@ graph TD
     end
 ```
 
-FFT  exige la longueur du signal est de 2 ── en pratique, les signaux vont généralement à zéro jusqu'à la prochaine 2 ──
+Le radix 2 FFT réalisé dans cette position est le plus rapide de la longueur du signal.`dft`Pour la vitesse, les signaux sont normalement à zéro jusqu'à la seconde.`numpy.fft`FFT dans la base utilise un algorithme à radix mixte pouvant traiter n'importe quelle longueur, mais ne contient que des facteurs de petite taille.
 
 ### Analyse spectrale
 

@@ -102,7 +102,7 @@ L1 et L2 sont des spécificités de la norme Lp:
 \lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-- Ça ne va pas .$p$值会产生不同形状的单位球(距离原点为 1 的所有点的集合):
+- Ça ne va pas .$p$值会产生不同形状的单位球((距离原点至多为 1 的所有点的集合; ci-dessous est illustré leur bordure):
 
 ```
 p=1:    Diamond shape      (corners on axes)

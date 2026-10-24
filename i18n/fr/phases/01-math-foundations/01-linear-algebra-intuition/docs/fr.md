@@ -113,7 +113,7 @@ Matrix de rang = nombre de colonnes indépendantes linéairement = nombre de lig
 
 | 情况 | Rank | 对 ML 的含义 |
 |-----------|------|---------------------|
-| Full rank $(\text{rank} = \min(m, n))$ | 最大可能值 | 存在唯一 least-squares solution。Model well-conditioned。 |
+| Full rank $(\text{rank} = \min(m, n))$ | 最大可能值 | 行数不少于列数时（full column rank），least-squares solution 唯一。行数少于列数时，有无穷多个解能精确拟合。 |
 | Rank deficient $(\text{rank} < \min(m, n))$ | 低于最大值 | Features 冗余。有无穷多个 weight solutions。需要 regularization。 |
 | Rank 1 | 1 | 每一列都是某个 Vector 的缩放副本。所有数据都位于一条线上。 |
 | Near rank-deficient（较小的 singular values） | 数值上较低 | Matrix ill-conditioned。极小的 input noise 会造成很大的 output changes。使用 SVD truncation 或 ridge regression。 |

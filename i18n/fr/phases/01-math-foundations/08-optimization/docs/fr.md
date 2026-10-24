@@ -43,7 +43,7 @@ C'est le parfait algorithme.
 
 ```mermaid
 graph TD
-    A["* Starting point (high loss)"] --> B["Moving downhill along gradient"]
+    A["* Starting point (high loss)"] --> B["Moving downhill, against the gradient"]
     B --> C["Approaching minimum"]
     C --> D["o Minimum (low loss)"]
 ```
@@ -155,7 +155,7 @@ Le taux d'apprentissage fixe est un type de décalage. Au début de l'entraînem
 
 ### Convexe contre non convexe
 
-La fonction convexe 只有一个最小──渐进下降 总能找到它──像 $f(x) = x^2$C'est une convexe.
+La fonction convexe                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         $f(x) = x^2$Ce type de quadratique est convexe, et son minimum unique.
 
 Les fonctions de perte de réseau neural sont non convexes. Elles ont de nombreux minima locaux.
 

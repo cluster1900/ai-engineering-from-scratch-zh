@@ -202,7 +202,7 @@ Sexualité:
 2. 按 MI score 排序 caractéristiques。
 3. Il est en train de mourir.$k$个 caractéristiques
 
-Ceci s'applique à toute relation entre caractéristique et objectif: linéaire, non linéaire, monotonique ou autre relation.
+Ceci s'applique à toute relation entre la fonction et le but: linéaire, non linéaire, monotone ou autre relation. La corrélation personnelle ne peut que capturer les relations linéaires.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|

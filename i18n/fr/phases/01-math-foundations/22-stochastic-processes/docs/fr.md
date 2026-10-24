@@ -118,7 +118,7 @@ La plupart des chaînes rencontrées dans le ML satisfont à ces deux conditions
 
 **Absorbing states。**Si une fois dans un état, tu ne sortiras jamais.$P[i][i] = 1$), cet état est absorbant de la. ⋅ Absorption des chaînes de Markov peuvent être utilisées pour construire avec des états terminaux  un jeu fini ⋅ un client de churn ⋅ une séquence de jetons de jetons de fin de texte en cours de vie ⋅
 
-**Mixing time。**需要多少步,chain 才会接近stationary distribution?$P$La différence spectrale de la différence de type 1 est de 1 à 2 (voir la section "Value")
+**Mixing time。**需要多少步,chain 才会接近stationary distribution?$P$模) contrôler le temps de mélange. ギャップ 越大,mixing 越快──
 
 ### Contact avec Modèles de langage
 
