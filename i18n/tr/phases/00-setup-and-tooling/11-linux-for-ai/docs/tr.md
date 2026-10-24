@@ -39,7 +39,7 @@ Ev dizinin var.`~`Ya da`/home/your-username`Neredeyse her şey burada oluyor.
 
 ## İzle
 
-Aşağıdaki 15 komut, uzaktan GPU kutusunun %95'ini kapsar.
+Aşağıdaki 13 komut, uzaktan GPU kutusunun üstündeki işlemlerin büyük kısmını kapsar.
 
 ### 移动位置
 

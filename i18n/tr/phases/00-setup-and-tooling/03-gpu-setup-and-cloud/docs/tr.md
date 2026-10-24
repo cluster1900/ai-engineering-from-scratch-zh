@@ -52,7 +52,13 @@ s0-gpu-dispatch
 nvidia-smi
 ```
 
-Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çekilen Çek Çekilen Çekilen Çek Çekilen Çekilen Çek Çekilen Çek Çekilen Çek Çekilen Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Çek Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç
+Linux'da, öntanımlı tekerlek Özel CUDA taşıyor Windows'da, pytorch.org seçerinden CUDA'nın yükleme emrini kopyalamak için lütfen.
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+Sonra PyTorch'in GPU'yu görebileceğini kontrol et.
 
 ```python
 import torch
