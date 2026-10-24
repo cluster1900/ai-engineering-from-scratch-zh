@@ -8,7 +8,7 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 - LogisticRegression(class_weight="balanced"): 17/D:481, 493
 - RandomForestClassifier(n_estimators=100, random_state=42): 04/D:334
 - SVC(kernel="rbf", C=1.0, gamma="scale"): 05/D:330
-- LinearSVC(C=1.0, max_iter=10000) for large datasets: 05/D:340-346
+- LinearSVC(C=1.0, max_iter=10000) for large datasets: 05/D:339-346
 - KNeighborsClassifier(n_neighbors=5, metric="euclidean"): 06/D:326
 - KMeans(n_clusters=3, random_state=42).fit(data): 07/D:467
 - DBSCAN(eps=1.5, min_samples=5).fit(data), noise points: 07/D:468, 76
@@ -32,19 +32,19 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 - Bias, variance, noise split: 10/D:56-58
 
 ## 无泄漏的预处理 (annotated-code, 13 lines)
-- leaky X_scaled = scaler.fit_transform(X): 13/D:53, comment 13/D:60
+- leaky X_scaled = scaler.fit_transform(X): 13/D:53, comment 13/D:59
 - X_train_scaled, X_test_scaled: 13/D:66-67
 - Pipeline scaler + LogisticRegression: 13/D:81-84
-- pipe.fit, pipe.predict and what each step calls: 13/D:86-97
+- pipe.fit, pipe.predict and what each step calls: 13/D:86-96
 - cross_val_score(full_pipe, df, y, cv=5, scoring="accuracy"): 13/code/pipeline.py:550. Per fold fit: 13/D:41, 312
 
 ## ColumnTransformer 流水线 (architecture, 7 nodes)
 - raw DataFrame with numeric and categorical columns: 13/code/pipeline.py:520-527
 - numeric columns age, income, score: 13/code/pipeline.py:541
 - categorical columns city, plan: 13/code/pipeline.py:542
-- SimpleImputer median, then StandardScaler: 13/D:110-113
-- SimpleImputer most_frequent, then OneHotEncoder: 13/D:115-118
-- ColumnTransformer joins both: 13/D:102-103, 120-123, 339
+- SimpleImputer median, then StandardScaler: 13/D:109-112
+- SimpleImputer most_frequent, then OneHotEncoder: 13/D:114-117
+- ColumnTransformer joins both: 13/D:102, 119-122, 339
 - Model GradientBoostingClassifier, predict: 13/D:125-128, 13/code/pipeline.py:545-548
 
 ## 无泄漏地验证 (flow, 7)
@@ -59,7 +59,7 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 ## 超参数调优 (annotated-code, 12 lines)
 - param_dist with loguniform, randint: 12/D:492-499
 - RandomizedSearchCV args n_iter=100, cv=5, scoring, random_state=42, n_jobs=-1: 12/D:501-509
-- n_jobs=-1 all CPU cores, loguniform for rates, randint for integers: 12/D:514
+- n_jobs=-1 all CPU cores, loguniform for rates, randint for integers: 12/D:515
 - search.fit, best_params_, -best_score_: 12/D:510-512
 
 ## 起始值 (defaults, 8)
@@ -78,7 +78,7 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 - test error rising, early stopping: 10/D:158
 - fit on full data, Pipeline with cross_val_score: 13/D:251
 - new category crash, handle_unknown="ignore": 13/D:130, 253
-- 99% accuracy with zero positives: 17/D:33-38. Fixes class weights and threshold: 17/D:139-160
+- 99% accuracy with zero positives: 17/D:33-38. Fixes class weights and threshold: 17/D:139-159
 - unscaled features for SVM: 05/D:337. KNN needs scaling: 06/D:365
 - best value at search edge: 12/D:523
 
@@ -99,6 +99,6 @@ Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/
 
 ## 缩写 (glossary, 4)
 - AUC-ROC: 09/D:107
-- SMOTE k-NN interpolation of minority samples: 17/D:523
+- SMOTE k-NN interpolation of minority samples: 17/D:529
 - GMM, soft assignments, EM: 07/D:98-102, 494
 - RFE, train rank prune repeat: 18/D:519

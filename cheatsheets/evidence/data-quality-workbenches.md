@@ -29,7 +29,7 @@ Abbreviations: L09 = phases/00-setup-and-tooling/09-data-management (d = docs/en
 - report.html plus .json receipt with sourceSha256 and sql: CQ/s/cli.py:60-62, CQ/s/main.py:130-131
 
 ## 迁移预演 (flow, 7)
-1. read-only connection and backup into memory: MR/API.md:11, MR/s/main.py:45-58
+1. read-only connection and backup into memory: MR/API.md:11, MR/s/main.py:45-57
 2. schema, row counts, SHA-256 hashes, sequences: MR/API.md:11
 3. migration on in-memory backup only: MR/API.md:19
 4. ATTACH, DETACH, PRAGMA, virtual tables, file functions denied: MR/s/main.py:73-86, MR/API.md:19
