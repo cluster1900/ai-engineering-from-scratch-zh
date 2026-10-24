@@ -285,9 +285,9 @@
     },
     {
       "number": 7,
-      "title": "Operate and Debug",
-      "thesis": "Start from the symptom you see, read one log line or metric, and change one setting.",
-      "summary": "Troubleshooting by symptom, and running vLLM in production.",
+      "title": "运维与调试",
+      "thesis": "从你看到的症状出发，读一行日志或一个指标，然后改一个设置。",
+      "summary": "按症状排查故障，以及在生产环境中运行 vLLM。",
       "accent": "rose",
       "sections": [
         {
