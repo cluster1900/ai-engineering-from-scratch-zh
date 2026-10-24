@@ -418,7 +418,7 @@ Si votre modèle de ML supérieur donne une base saisonnière naïve, vous avez 
 
 1. **从绘图开始。**Avant toute construction, dessinez d'abord la séquence initiale. Cherchez les tendances, les saisons, les ruptures structurelles, les changements subits de comportement.
 
-2. **先差分，再建模。**Si la séquence a une tendance évidente, on fait des différences avant de créer des traits de retard. Les modèles basés sur des arbres peuvent traiter les tendances, mais les modèles linéaires ne peuvent pas, et les différences ne sont généralement pas malheureuses.
+2. **先差分，再建模。**Si la séquence a une tendance évidente, on fait des différences avant de créer des traits de retard. Les modèles basés sur des arbres peuvent traiter les tendances, mais sans modèle de tendances évidentes, on ne peut pas.
 
 3. **至少留出一个完整季节周期。**Si il y a une semaine de saison, le test doit être effectué au moins une semaine entière. Si c'est une semaine de saison, il faut au moins une semaine entière.
 

@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 important: entraînement SVM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     $\lVert w \rVert$Les caractéristiques de l'échelle non étalée seront déformées.
 
-对于大数据集,使用 `LinearSVC`(réformulation initiale, chaque époque 为 $O(n)$) au lieu de `SVC`(double formulation,$O(n^2)$À la$O(n^3){}$):
+对于大数据集,使用 `LinearSVC`(réformulation initiale, chaque époque 为 $O(n \cdot d)$, pour$n$线性) plutôt que `SVC`(double formulation,$O(n^2)$À la$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC

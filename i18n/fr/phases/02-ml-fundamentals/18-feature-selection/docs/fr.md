@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Objectif de l'apprentissage
-- De la réalisation de méthodes de filtre à zéro (méthodes de sortie de la variante, de l'information mutuelle, du carré) et de l'emballage (méthodes de sélection de l'avance)
+- De la réalisation de méthodes de filtre à zéro (souvent le seuil de variation, les informations mutuelles) à la méthode de l'emballage (souvent la méthode RFE) et les méthodes intégrées (souvent l'importance de l'arbre), puis dans l'exercice, rejoignez la sélection avancée.
 - explication de pourquoi les informations mutuelles  capture de corrélation  Répercussions de caractéristiques non liées  relation 
 - Comparer la régularisation de L1 (sélection intégrée) avec la sélection de l'emballage (RFE) (sélection d'emballage),并评估它们的计算权衡
 - Construire un pipeline de sélection de fonctionnalités combiné à plusieurs méthodes, et démontrer son efficacité dans les données conservées pour améliorer la généralisation

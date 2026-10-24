@@ -86,7 +86,7 @@ Pourquoi est-ce que ça marche ?
 - - Je suis là .$y=0$且 $p$接近 0 时:$\log(1) = 0$, donc la perte est proche de 0(正确, faible coûts)
 - - Je suis là .$y=0$且 $p$接近 1 时:$\log(0)$接近负无穷, donc la perte 很大(错误,高成本)
 
-Pour la régression logistique, cette fonction de perte est concave, ce qui garantit qu'il n'y a qu'un minimum mondial.
+Pour la régression logistique, cette fonction de perte est concave, donc chaque minimum local est un minimum global, la descente gradiente ne se trouve pas dans une mauvaise extrême petite valeur.
 
 ### Réduction progressive de la logistique
 

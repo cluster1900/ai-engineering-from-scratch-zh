@@ -104,7 +104,7 @@ Cette méthode avide n'est pas garantie d'obtenir la meilleure arbre de la plan�
 
 ### 停止条件
 
-Si aucune condition ne s'arrête, l'arbre continuera à croître jusqu'à ce que chaque feuille soit pure, chaque feuille un échantillon.
+Si aucune condition ne s'arrête, l'arbre continuera à croître jusqu'à ce que chaque feuille soit pure, ou encore jusqu'à ce qu'il n'y ait pas de fraction de l'échantillon, il ne se séparera que d'un seul échantillon.
 
 **Pre-pruning**J'ai arrêté de voir le fruit de l'arbre.
 - Profondeur maximale: lorsque l' arbre atteint une profondeur déterminée, il cesse de se diviser.

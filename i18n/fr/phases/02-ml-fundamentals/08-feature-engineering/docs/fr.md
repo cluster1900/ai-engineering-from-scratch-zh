@@ -82,7 +82,7 @@ Le modèle a besoin de chiffres.
 Les données réelles seront vides.
 
 - **Drop rows：** seulement lorsque les données manquent et que l'utilisation est rare
-- **Mean/median imputation：**简单,并保持分布形状(média à des écarts 更稳健)
+- **Mean/median imputation：**简单,能保持 feature 的中心(median vers les outliers 更稳健), mais réduira sa variance, et rassemblera toutes les valeurs de remplissage sur le même sommet, de sorte que la forme de distribution changera
 - **Mode imputation：**Utilisé pour les caractéristiques catégoriques
 - **Indicator column：**En imputant  précède ajouter une deuxième structure was_this_missing── cette facture de la carence de données elle-même peut avoir une quantité d'information
 - **Forward/backward fill：**Utilisé pour les données de séquences de temps
