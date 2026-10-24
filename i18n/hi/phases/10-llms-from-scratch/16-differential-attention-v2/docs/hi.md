@@ -142,7 +142,7 @@ out = [[sum(w * v[j] for w, v in zip(row, V)) for j in range(d_v)] for row in di
 给定一个配置 (( छिपे हुए=4096, सिर=32, d_head=128),打印:
 
 - मूल ट्रांसफार्मर: Q、K、V अलग-अलग आकार के लिए `hidden * hidden`,MLP के लिए 4 * छिपा हुआ
-- DIFF V1:Q、K अलग-अलग आकार के लिए`hidden * hidden`,V बड़ा आकार के लिए`hidden * hidden`(不变), सिर dim 在内部减半──增加 प्रति सिर `lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$
+- DIFF V1:Q、K अलग-अलग आकार के लिए`hidden * hidden`,V बड़ा आकार के लिए`hidden * hidden`(不变), सिर dim 在内部减半──增加 प्रति सिर `lambda`参数 $(O(\text{heads} \cdot d_{\text{head}}))$
 - DIFF V2: Q`2 * hidden * hidden`, K बड़ा बड़ा के लिए `hidden * hidden`,V बड़ा आकार के लिए`hidden * hidden` अतिरिक्त परिमाण $O_W$पूर्व投影回去──增加相同的 `lambda`参数。
 
 खेलकूद 会测量 V2 के अतिरिक्त तत्व लागत(大约每注意区 额外 `hidden * hidden`),并印出──

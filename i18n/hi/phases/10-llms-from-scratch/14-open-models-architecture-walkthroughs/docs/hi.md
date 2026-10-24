@@ -217,7 +217,7 @@ Llama 3 8B में 128k संदर्भ BF16 head_dim = छिपा / num_
 
 उपर्युक्त सूत्रों का मानना है कि प्रत्येक स्तर में पूर्ण अनुक्रम का संग्रह किया जाता है।
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```
