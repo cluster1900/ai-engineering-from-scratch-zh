@@ -14,7 +14,7 @@
 - Yeni cihazlar ile uzmanların arasındaki eşleşme ve güvenlik durumları üzerinde oluşturduğu etkiler hakkında bilgi almak
 
 ## 问题
-Ders 17 ölçüm yöntemleri teorisi. Ders 30 2026 yılının ölçüm durumudur. 2024 ile 2025 yılının sonları arasında gerçekçi bir değişim yaşanıyor. Her alan 2024 yılının çerçevesinden geçmiştir.
+Ders 17 ölçüm yöntemleri teorisi. Ders 30 2026 yılının ölçüm durumu. 2024 ile 2025 yılının sonları arasında gerçekçi bir değişim meydana geldi. Dört alanın üçü 2024 yılının çerçevesinden geçmiştir.
 
 ## 概念
 ### Biyo-kimyasal yükseltme anlatısı
@@ -44,6 +44,8 @@ Anthropic 2025  11 月 報告: Çin ile ilgili ulusal eylemler Claude'un ajanik 
 - Ajantik kodlama saldırı otomatikleşme için bir temeldir.
 - 4-6 个人类步骤是瓶;未来能力提升将减少这个数量──
 - 防御性双重用途:OpenAI'nin 信頼性アクセス 试点向经过审查的安全组织(成熟的事件响应公司、政府) savunma yeteneğini sağlar.
+
+Bu işin savunma bir tarafı, analiz edilmesine izin verilen tercüme kodunu okumaktan başlayarak. 13. aşamalı ters yönlü mühendislik yolu, kendi kendinize inşa ettiğiniz programda bu noktayı öğretir ve sadece statik analiz kullanır:[Lesson 13.32](../../../13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md)Orta ELF okuyucu,[Lesson 13.33](../../../13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md)Orta bir alt-üst,[Lesson 13.34](../../../13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md)- Yalan kodlara yükseltildi.[Lesson 13.35](../../../13-tools-and-protocols/35-evidence-confidence-and-unknowns/docs/en.md)Gözetleme gerçekleri ve sonuca varılan gerçekleri ayırt eden kanıtlar vardır.[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)Bir işlevi üzerinde bir makine tam bir akış çizgisini gösterdi. Bu işi yapan ajan aynı tabloya ihtiyaç duyar, çünkü bir kez çok net görünen bir anti-kompilasyon, hala tahmin üzerine kurulabilir.
 
 ### Nükleer
 

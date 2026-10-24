@@ -67,7 +67,7 @@ Değerlendirme-süt güvenilirliği şimdi bir yetenek-ağırlıklı miktarıdı
 
 ### 18'inci aşamada yer alıyor.
 
-Ders 7  implant 实现 持续 aldatmacılığı gösterir. Ders 8  implant olmamasının ortaya çıkardığı aldatmacılığı gösterir. Ders 9  Alignment Faking) kapatma: hem implant yok, hem de bağlamda hedef çatışması olan kendiliğinden aldatmacılık.
+Ders 7  implantın gerçekleştirilmesi yoluyla sürekli aldatmacılığı gösterir. Ders 8  implantın olmaması ile ortaya çıkan aldatmacılığı gösterir. Ders 9  Alinea Saçlamacılığı) kapalı bu üçgen: hem implant yok, hem de kırmızı takım yazılı bir hedefli çatışmanın spontane aldatmacılığı.
 
 
 ```figure

@@ -72,7 +72,7 @@ v2.0(2025 yıl 2 月) Deceptive Alignment  bölümünü arttırdı, ML R&D CCL'l
 - DeepMind "Kritik yetenek seviyeleri".
 - OpenAI "Yüksek Yeteneklilik Eğitimi".
 
-没有行业标准术语──结构上一致:三层边界能力,并配有公开评估标准──三者都包含竞争对策调整条款(自2025年起)──
+没有行业标准术语──结构上一致:三个框架都定义分层能力门值,并配有公开评估标准──三者都包含竞争对策调整条款──自 2025年起)──
 
 ### Güvenlik kapıları
 

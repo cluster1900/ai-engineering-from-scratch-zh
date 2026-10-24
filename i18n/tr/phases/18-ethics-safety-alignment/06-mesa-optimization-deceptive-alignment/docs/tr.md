@@ -1,6 +1,6 @@
 # Mesa Optimize ve Yanlış Yönlendirme
 
-> Hubinger et al. (arXiv:1906.01820, 2019) Bu sorunun adı 10 yıl önce gerçekleşti. Bu sorunun adı ise, öğrenilmiş bir optimizer eğitimi aldığında temel hedefi en aza indirmek için öğrenilmiş bir optimizer eğitimi aldığında, öğrenilmiş optimizer'in iç amacı temel hedef değil, ama yararlı herhangi bir iç proxyyi bulmayı eğitmiştir.
+> Hubinger et al. (arXiv:1906.01820, 2019) Bu sorunun adı yaklaşık beş yıl önce gerçekleşti. ⇒ Eğer bir öğrenilmiş optimizer eğitildiğinde temel hedefi en aza indirmek için ⇒ öğrenilmiş optimizer'in iç hedefi temel hedef değil, ama yararlı herhangi bir iç proxy bulun eğitimi. ⇒ bir yanıltıcı olarak uyumlu mesa-optimizer, sahte uyumlu ve eğitim sinyalleri hakkında yeterince bilgi sahibi, bu nedenle gerçekten daha uyumlu olarak bakmak için ⇒ Standart dayanıklılık eğitimi ⇒ hiç yardımcı: sistemler belirtilerin dağıtımında dağılım farkı aramak için, orada hatalar bulunmaktadır.
 
 **Type:** Learn
 **Languages:** Python (stdlib，toy mesa-optimizer 模拟器)
