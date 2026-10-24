@@ -27,7 +27,7 @@ Host: agent.example.com
 ```json
 {
   "name": "code-review-agent",
-  "description": "审查 Python 与 TypeScript 代码。",
+  "description": "Reviews Python and TypeScript code.",
   "version": "1.0.0",
   "supportedInterfaces": [
     {
@@ -46,14 +46,14 @@ Host: agent.example.com
   "skills": [
     {
       "id": "review-python",
-      "name": "审查 Python 代码",
-      "description": "审查传入的 Python 源码并给出改进建议。",
+      "name": "Review Python",
+      "description": "Reviews Python code.",
       "tags": ["code-review", "python"]
     },
     {
       "id": "review-typescript",
-      "name": "审查 TypeScript 代码",
-      "description": "审查传入的 TypeScript 源码并给出类型与逻辑改进建议。",
+      "name": "Review TypeScript",
+      "description": "Reviews TypeScript code.",
       "tags": ["code-review", "typescript"]
     }
   ]
@@ -78,7 +78,7 @@ En la producción de sistemas multiinteligentes, los dos se coordinan: A2A para 
 ```mermaid
 sequenceDiagram
     participant C as Client
-    participant S as Agent Server
+    participant S as Agent server
     C->>S: GET /.well-known/agent-card.json
     S-->>C: Agent Card JSON
     C->>S: POST /message:send (returnImmediately)
@@ -101,7 +101,34 @@ A2A origin生支持三种主流安全模式:
 - **mTLS**: doble hacia TLS 认证, organización间强证明身份(`mtlsSecurityScheme`)。
 - **API Key**: located request head、URL 查询参数 o clave en la cookie`apiKeySecurityScheme`)。
 
-认证规则在 Agent Card 中公布:`securitySchemes`命名方案,`securityRequirements`规定调用方必须满足的要求──
+认证规则在 Agent Card 中公布:`securitySchemes`命名方案,`securityRequirements`条例调用方必须满足的要求;; el cliente según lo encontró y siguió;;
+
+### 截至 2026 年 4 月,150+ 家组织
+
+La adopción de empresas impulsó la escala de A2A. Un punto más destacado: A2A se convirtió en un sistema inteligente empresarial de manera transversal. Google Cloud en Vertex AI Agent Builder proporcionó apoyo A2A. Microsoft Agent Framework lo apoyó. La mayoría de los frameworks principales (LangGraph, CrewAI, AutoGen) proporcionan A2A adaptadores.
+
+### El mejor de los escenarios
+
+- **跨组织调用。**A  empresa de inteligencia  B  empresa de inteligencia ∞ no hay A2A, cada uno tiene un contrato individual ∞
+- **异构框架。**LangGraph 智能体调用 CrewAI 智能体,再调用自定义 Python 智能体──A2A Colocarlos juntos──
+- **带类型的产物。**视频结果、结构化 JSON、音频,都是一等公民──
+- **长时间运行的任务。**La vida de la persona se vuelve poco transparente, y las tareas de las horas de duración también se manejan bien.
+
+### Las deficiencias de A2A
+
+- **对延迟敏感的微调用。**El ciclo de vida de A2A es diferente.
+- **紧耦合的进程内智能体。**Si dos cuerpos inteligentes funcionan en el mismo proceso Python, A2A HTTP 往返就是大材小用──
+- **小团队。**La regulación de la venta es real; sólo el cuerpo inteligente utilizado internamente no puede necesitar este grado formal.
+
+### A2A y ACP,ANP,NLIP
+
+En el período 2024-2026 se han establecido varias normas relacionadas:
+
+- **ACP**(IBM/Linux Foundation):A2A's anterior, alcance más estrecho.
+- **ANP**(Protocolo de red de agentes): enfoque en la detección, descentralización y prioridad.
+- **NLIP**(Ecma Protocolo de Interacción de Lenguaje Natural,2025 年 12 月标准化): naturaleza语言内容类型──
+
+截至 2026 年 4 月,A2A es el más amplio de los protocolos de interoperabilidad adoptados.
 
 ```figure
 sw-agent-card-discovery
@@ -125,7 +152,7 @@ Funciones del cliente incluyen:
 
 ¿Qué es eso ?
 
-```bash
+```
 python3 code/main.py
 ```
 
@@ -134,6 +161,24 @@ El guión se inicia en el servidor en la línea posterior, y luego el cliente re
 ## 交付物  entrega
 
 本课交付                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `outputs/skill-a2a-integrator.md` Para la planificación del diseño completo de A2A  Integrado: Contenido de la tarjeta de agente Tasco  Actuación  Identificación de los derechos de selección y de la estrategia de gestión y de consulta 
+
+##  Publicarlo
+
+清单:
+
+- **固定规范版本。**A2A  sigue en desarrollo; cada uno `supportedInterfaces`条目都 declarar su propio `protocolVersion`, cliente envía`A2A-Version: 1.0`¿Qué es eso?
+- **幂等的任务创建。**重复提交 (重试) debe producirse sólo una tarea.`messageId`¿Qué pasa?
+- **产物 schema。**声明智能体返回哪些结构;调用方应进行校验──
+- **限流与鉴权。**A2A 面向公网; aplicar normas de seguridad web.
+- **失败任务的死信队列。**定期检查其中的模式, encontrar los tipos de fracaso que aparecen de forma repetitiva.
+
+##  ejercicios
+
+1. 运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py` Confirmar que el cliente ha encontrado que el servicio ha recibido el producto correcto.
+2. Por ejemplo, "resumir") ― actualizar la Tarjeta de Agente― redactar una solicitud de un cliente de habilidades de selección de tipo de tarea―1.0 ‒ no tiene un código de habilidades, por lo que el servicio de base de las partes de la información ‒
+3.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `POST /message:stream`:用 Servidor-Enviado Eventos 应答(先发一个 `task`, re-enviado`statusUpdate`事件), en el estado de terminación, ¿qué diferentes procesos necesita hacer el cliente?
+4. 阅读 A2A 规范(https://a2a-protocol.org/latest/specification/）。找出规范要求、而这个演示没有实现的三件事。
+5. Comparación entre A2A y MCP`listTools`¿Qué diferencia hay entre el cuerpo inteligente que se describe a sí mismo y la capacidad de investigación?
 
 ## 核心专业术语
 
@@ -146,9 +191,12 @@ El guión se inicia en el servidor en la línea posterior, y luego el cliente re
 | 不透明生命周期 (Opaque lifecycle) | 内部解决过程对调用方隐藏，仅对外暴露状态流转与产物 |
 | 服务发现 (Discovery) | 通过发起 `GET /.well-known/agent-card.json` 获取名片并了解支持能力 |
 | MCP 对比 A2A | MCP 属于垂直的 Agent 与工具交互，A2A 属于水平的 Agent 间对等协作 |
+| ACP / ANP / NLIP | 相邻的协议规范；2026 年采用最广的是 A2A |
 
 ## 延伸阅读
 
 - [A2A 规范主站](https://a2a-protocol.org/latest/specification/) 官方权威规范
 - [A2A v1.0.1 源码发布](https://github.com/a2aproject/A2A/tree/v1.0.1) Definición de los códigos y normas que sigue este curso
-- [Google Developers Blog — A2A 发布说明](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) 官方设计背景
+- [Google Developers Blog — A2A 发布说明](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) Publicación de la publicación de abril de 2025
+- [A2A GitHub 仓库](https://github.com/a2aproject/A2A)  参考实现与SDK
+- [Liu 等 — A Survey of Agent Interoperability Protocols](https://arxiv.org/html/2505.02279v1) MCP、ACP、A2A、ANP

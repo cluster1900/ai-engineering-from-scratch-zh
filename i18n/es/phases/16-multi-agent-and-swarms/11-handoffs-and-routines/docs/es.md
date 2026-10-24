@@ -21,6 +21,8 @@ Swarm 走向相反方向: usar modelos ya poseen de herramienta-llamando 能力�
 
 **Handoff。**Agente puede ajustar una herramienta, que devuelve un nuevo objeto de Agente.
 
+Es todo un abstracto.
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent

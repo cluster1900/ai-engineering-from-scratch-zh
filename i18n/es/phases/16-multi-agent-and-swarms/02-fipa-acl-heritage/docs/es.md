@@ -1,6 +1,6 @@
 # FIPA-ACL y Acta de Discurso
 
-> Antes de MCP, antes de A2A, había FIPA-ACL. En 2000, la Fundación IEEE para Agentes Físicos Inteligentes aprobó un lenguaje de comunicación de agentes, que contiene veinte lenguajes de contenido de rendimiento, así como un conjunto de protocolos de interacción: contrato net, suscripción/notificación, solicitud-cuando. Por eso salió de la industria, porque la ontología se ha vuelto pesada, pero los sistemas multi-agentes impulsados por el LLM están repitiendo, están re-realizando la idea, simplemente sin semántica formal: contratos JSON  tomar rendimientos, lenguaje natural  reemplazar ontologías.
+> Antes de MCP, antes de A2A, había FIPA-ACL, en 2000, Fundación para Agentes Físicos Inteligentes (FIPA, en 2005 se convirtió en el Comité Estándar de la Sociedad de Computación IEEE) aprobó un lenguaje de comunicación de agentes, que contiene veinte lenguajes de contenido de rendimiento, así como un conjunto de protocolos de interacción: contrato de red, suscripción/notificación, cuando se solicite. Por lo tanto, la industria se desvanece, porque la ontología se ha vuelto a vender en la web, pero los sistemas multiagentes impulsados por LLM están creciendo, y la idea de que el proyecto de ley está siendo re-implementado, simplemente sin semántica formal: contratos de rendimiento, lenguaje natural, reemplaza ontologías.
 
 **Type:** 学习
 **Languages:** Python (stdlib)
@@ -193,7 +193,7 @@ Antes de entregar cualquier nuevo protocolo a la producción, primero registra e
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | Speech act | “一种会做事的 utterance” | Austin/Searle：把 utterances 视为 actions。ACL 的理论源头。 |
-| FIPA | “那个老 XML 东西” | IEEE Foundation for Intelligent Physical Agents。2000 年标准化了 ACL。 |
+| FIPA | “那个老 XML 东西” | Foundation for Intelligent Physical Agents。2000 年标准化了 ACL；2005 年成为 IEEE Computer Society 的标准委员会。 |
 | ACL | “Agent Communication Language” | FIPA 的 envelope format：performative + content + metadata。 |
 | Performative | “那个动词” | 一条 message 的 intent class：`inform`、`request`、`propose`、`cfp` 等。 |
 | KQML | “FIPA 的前身” | Knowledge Query and Manipulation Language（1993）。更简单，范围更窄。 |

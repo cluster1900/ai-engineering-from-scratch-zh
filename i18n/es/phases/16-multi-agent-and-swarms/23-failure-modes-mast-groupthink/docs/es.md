@@ -112,7 +112,7 @@ Es una respuesta a incidentes de estilo SRE de los sistemas de agentes.
 
 ### La auditoría en modo de falla
 
-Las mejores prácticas para el año 2026 son realizar una auditoría de modo fallido cada año (o cada vez mayor)
+Las mejores prácticas para 2026 son realizar una auditoría de modo fallido cada trimestre y cada vez más importante:
 
 1. **Trace sample。**收集约1000 条 verdadera huella de ejecución。
 2. **Categorize。**Para cada rastro de fracasos, se proyecta en las categorías MAST + Groupthink.
