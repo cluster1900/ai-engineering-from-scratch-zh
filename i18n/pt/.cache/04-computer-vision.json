@@ -1,5 +1,5 @@
 {
-  "phases/04-computer-vision/01-image-fundamentals/docs/en.md": "57711f2c2cedfe03438593667fe3331475167a44c2831e8d9305db5785fcba61",
+  "phases/04-computer-vision/01-image-fundamentals/docs/en.md": "45a2b1a57ddb3b14c3d976a9905a36caeb625d0f7a242c52226c47ce81e791e6",
   "phases/04-computer-vision/02-convolutions-from-scratch/docs/en.md": "b21c5b403573977cf9c9968194430defb541d3998b85ea33573891787647acc5",
   "phases/04-computer-vision/03-cnns-lenet-to-resnet/docs/en.md": "3c0d73ee22e035904a68424ef7c19c9e4530f4a37a16ecf97f8733e404f00e16",
   "phases/04-computer-vision/04-image-classification/docs/en.md": "87c531553f5844ab3bd5539e4022c69e5f3b9e6187acf07dc5e6091d6bee98d1",
@@ -9,7 +9,7 @@
   "phases/04-computer-vision/08-instance-segmentation-mask-rcnn/docs/en.md": "fcfcd7b1af4d5bbc55c77205818fb746aab94477b148c1da857323f47887d5d5",
   "phases/04-computer-vision/09-image-generation-gans/docs/en.md": "93c3c7f13f8de7c1fe2e3fff1b8a54ad16f44feea22aecbc0a7f17d6fd6b21d4",
   "phases/04-computer-vision/10-image-generation-diffusion/docs/en.md": "d381677261595bb32ad5e2e0cae40d5cc71d87384b1938509c47a009507edd09",
-  "phases/04-computer-vision/11-stable-diffusion/docs/en.md": "3a0714aeee42f48afdc417111965de1f0a3de18f4991208be3db2f849defc78d",
+  "phases/04-computer-vision/11-stable-diffusion/docs/en.md": "cf219016c281997180e5e97ff1d376019a09f82661bf37f0179ba45029fb9f24",
   "phases/04-computer-vision/12-video-understanding/docs/en.md": "e8d5ecb41a110dd7bdd9c916854f714d8b5103365f255f715b532ae65164812f",
   "phases/04-computer-vision/13-3d-vision-nerf/docs/en.md": "4e55d37c89e73d86979ee2fae6d0ea7f07aa380c27a6c5f888610b775150ea1f",
   "phases/04-computer-vision/14-vision-transformers/docs/en.md": "bbbdaf612a43399d91eb7d57e65a5dc3013c90bdacc427b128a478fb1a88a6c7",
@@ -24,7 +24,7 @@
   "phases/04-computer-vision/23-diffusion-transformers-rectified-flow/docs/en.md": "0431ebeed6914548a7883ad84f2df060c4967701d59e8e8fdbedcf324110fac4",
   "phases/04-computer-vision/24-sam3-open-vocab-segmentation/docs/en.md": "a3810e2ec34cb2937e064ef20b1aaae1b040709c9947f20568cab476bf9f6772",
   "phases/04-computer-vision/25-vision-language-models/docs/en.md": "c87866c9f6f2d66bc8caea37d2a1d0c335af4b39f9cf34ce9cf08f6717ed36ae",
-  "phases/04-computer-vision/26-monocular-depth/docs/en.md": "20552ceb98dad4515b0d2b8c67a942696c6275d41a2d001f490bd41e43339f98",
-  "phases/04-computer-vision/27-multi-object-tracking/docs/en.md": "825cc5ad0a3f4ca94c5644ba480edb24c1ef373a8fee4a8cda3ce3b5d7f52b2a",
+  "phases/04-computer-vision/26-monocular-depth/docs/en.md": "eae19041d7a6977208ca14f0f55cc204a0397f2fb95f656d22b8c6ee8f334a74",
+  "phases/04-computer-vision/27-multi-object-tracking/docs/en.md": "15822db68ee715e81a1f4a9c39cd3018faf6c3947dbecd34316b42e18e068598",
   "phases/04-computer-vision/28-world-models-video-diffusion/docs/en.md": "cd34a1217dffa62c81bf1788b327726598373aae338b6a4078c4e05cedd49607"
 }
