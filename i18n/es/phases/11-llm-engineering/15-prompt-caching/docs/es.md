@@ -46,7 +46,7 @@ Esta práctica es el caché rápido. En agosto de 2024 se lanzó Anthropic, y en
 
 ### el equilibrio
 
-El 25% de la antropic 写入溢价 significa que un bloque almacenado en caché debe ser leído al menos dos veces, para lograr la pureza de dinero.
+El 25% de la Antropic 写入溢价(5 分钟 TTL) en primera lectura es capaz de volver al libro, ya que la lectura en caché es de 0.1x──1 veces + 1 veces 读取, el costo promedio de cada solicitud es de 0.675x──32%); 1 veces + 10 veces 读取, el promedio es de 0.205x──80%)──1 小时 TTL 写入收费为 2x, por lo que el bloque 占占据两次读取才能优──经验法:缓存任何你预计在 TTL 内复至少3次内容; esto ocurre en una TTL 下都能越过断-even──
 
 
 ```figure
