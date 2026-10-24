@@ -50,7 +50,7 @@ Qwen2-VL मूल जीवन्त态分辨率 ViT एन्कोडर  ब
 
 Qwen2.5VL का प्रमुख परिवर्तन वीडियो है।
 
-- 绝对时间 टोकन──不使用位置索引( फ्रेम 0, 1, 2...),而使用实际时间──"0:04, बिल्ली कूदती है।" 模型会看到与框架 टोकन 交错的`<time>0.04</time>`टोकन
+- 位置 IDs में का绝对时间──不使用索引( फ्रेम 0, 1, 2...),M-RoPE का टाइम轴 वास्तविक समय के साथ चलता है, इसलिए दो IDs के बीच अंतर से संबंधित सेकंडों की संख्या में है"0:04 पर, बिल्ली कूदती है" 没有额外的文字代币 承载时间,因此这种编码不会增加序列长度──
 - गतिशील एफपीएस──慢速素材以1 एफपीएस 采样,动作场景以4+ एफपीएस 采样──由用户或训练器选择;M-RoPE 会适应──
 - ViT 中的窗口注意──空间注意── खिड़की में प्रवेश करने के लिए खिड़की में प्रवेश करने का उपयोग करना; प्रत्येक隔几层加入全球注意──
 - 显式 JSON 输出格式──使用工具-call 数据训练:"{\"工具\": \"क्लिक\", \"कोर्ड्स\": [380, 220]}"──开箱即代理-ready──
@@ -89,7 +89,7 @@ M-RoPE छिपा हुआ होगा dim 切分为三条带――假设 `d
 1. 计算你能承担的最大FPS:`fps_max = B / (T * tokens_per_frame)`
 2. से `{1, 2, 4, 8}`中选择满足 `fps <= fps_max`लक्ष्य एफपीएस:
 3. यदि गति बल, तो चयन करें FPS से कम FPS
-4. 按选定FPS 均采样;中之间插入 `<time>t</time>`टोकन
+4.  चयनित FPS 均采样; प्रति以秒为单位时间设置其M-RoPE 时间 ID──
 
 Qwen2.5VL 会隐式训练这种逻辑;推理时用户通过 `fps`参数控制── एक 60 सेकंड गति क्रम, 4 FPS  81 टोकन 计算, बराबर 19440 टोकन, 32k संदर्भ में 中可管理──
 
@@ -141,7 +141,7 @@ mm-mrope-axes
 |------|-----------------|------------------------|
 | M-RoPE | "Multimodal RoPE" | hidden dim 中带 temporal、height 和 width bands 的 3D rotary position embedding |
 | Dynamic FPS | "Smart sampling" | 根据运动、时长和 Token 预算为每个视频选择的帧采样率 |
-| Absolute time token | "Timestamp token" | 在序列中交错插入的 `<time>t</time>`，让模型看到实际秒数而不是帧索引 |
+| Absolute time encoding | "Time-aligned M-RoPE" | 根据每帧时间戳设置时间 position IDs，让模型看到实际秒数而不是帧索引，且无需额外 tokens |
 | Window attention | "Local attention" | 为提速而限制在小窗口内的 spatial self-attention；周期性加入 global attention |
 | Structured agent output | "JSON mode" | 通过训练数据监督教 VLM 输出可解析 JSON，其中包含 coords 和 tool names |
 | min_pixels / max_pixels | "Resolution bounds" | Qwen2.5-VL 的每请求控制项，用来约束总像素数，从而约束 Token 数 |
