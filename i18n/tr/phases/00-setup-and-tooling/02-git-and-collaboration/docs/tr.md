@@ -72,9 +72,11 @@ git merge experiment/new-optimizer
 
 ### 4 adım: Bu dersini kullan
 
+GitHub'da bir tane daha yazma hakkı var. GitHub'da bir tane daha yazma hakkı var.`origin`Kendi başınıza:
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code
@@ -95,7 +97,7 @@ Bu ders için, sadece şu emirlere ihtiyacın var:
 Bu derslere temel oluşturma, çerez seçme veya alt modüller gerekmez.
 
 ## 练习
-1. Bu repoyu klon edin, bir isim oluşturun.`my-progress`Şubesi, bir dosya oluştur, yükle, it it.
+1. Bu repo, senin çatalın klonunu oluştur, bir isim oluştur.`my-progress`Şubesi, bir dosya oluştur, yükle, it it.
 2. Bir tane oluştur .`.gitignore`, kontrol nokta dosyalarını kaldırmak`.pt`- Evet.`.pth`- Evet.`.safetensors`)
 3. Kullan .`git log --oneline`Bu repo'nun commit tarihi ile ilgili dersleri okuyun.
 

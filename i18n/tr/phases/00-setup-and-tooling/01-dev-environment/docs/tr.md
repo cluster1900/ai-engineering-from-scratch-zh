@@ -14,7 +14,7 @@
 - Sistem, paket, çalıştırma zamanları, yapay zeka kütüphaneleri
 
 ## 问题
-Python,TypeScript,Rust,Julia ile 200+ bölüm AI mühendisliği derslerini öğreneceksiniz. Eğer çevreniz kötüse, her bölüm öğrenmek yerine mücadele ve araç haline gelir.
+Python,TypeScript,Rust,Julia ile 500+ bölüm AI mühendisliği derslerini öğreneceksiniz. Eğer çevreniz kötüse, her bölüm öğrenmek yerine mücadele ve araç haline gelir.
 
 Çoğu insan çevre ayarını atlar. Sonra birkaç saat harcarlar. İçe aktarım hatalarını düzeltirler. Versiyon çatışmaları ve eksik CUDA sürücüleri.
 
@@ -46,7 +46,7 @@ xcode-select --install
 brew install git curl wget
 
 # Ubuntu/Debian
-sudo apt update && sudo apt install -y build-essential git curl wget
+sudo apt update && sudo apt install -y build-essential git curl wget unzip
 
 # Windows (use WSL2)
 wsl --install -d Ubuntu-24.04
@@ -93,6 +93,16 @@ npm install -g pnpm
 node -e "console.log('Node', process.version)"
 ```
 
+İlk kontrol için bir program yapın.`unzip`,缺少时以`Not installing fnm due to missing dependencies.`退出: Linux 上 需要解压一个 zip 归档, MacOS 上则通过 Homebrew 安装──macOS 自带 `unzip`Ubuntu、Debian 和 WSL2 会通过步骤 1 的 apt 命令安装它(( eğer o adımı atladınsa, çalış `sudo apt install -y unzip`)。
+
+**macOS / Apple Silicon（M1/M2/M3/M4）：**Eğer bir işlemi yaparsanız`Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)`Dur, sonun Rosetta 2'de olduğunu göster.`arch`输出 `i386`), Homebrew ise orijinal bir arm64 yapılandırmasıdır.`fnm install 22`開始重新运行 上面的命令:
+
+```bash
+arch -arm64 brew install fnm
+echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### 4 adım: Kırıklık
 
 Performans-kritik 课程(inkressi システム)
@@ -116,33 +126,67 @@ julia -e 'println("Julia ", VERSION)'
 
 ### 步骤 6:GPU 设置( Eğer varsa)
 
+**NVIDIA（Linux / Windows）：**
+
 ```bash
-# NVIDIA
 nvidia-smi
 
 # Install PyTorch with CUDA
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 ```
 
+**macOS / Apple Silicon（M1/M2/M3/M4）：**Bu beklenmedik bir durum, bir sorun değil.**不要**传入 `--index-url .../cuXXX`(Bu tekerlekler sadece Linux/Windows için uygundur, montaj başarısız)
+
+```bash
+uv pip install torch torchvision torchaudio
+```
+
+验证( herhangi bir platform için uygundur):
+
 ```python
 import torch
-print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA available: {torch.cuda.is_available()}")           # False on macOS — expected
+print(f"MPS available:  {torch.backends.mps.is_available()}")   # True on Apple Silicon
 if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
 没有 GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云 GPUs──
 
-### Adım 7: Her şeyi kontrol et
+### Adım 7: Yoluna başlamanızı kanıtlayın
 
-运行验证脚本:
+Bu dersten her emir, depodan kaynaklı bir defterden çalışmaktadır.`README.md`和 `phases/`Bu nedenle yeni öğrenciler, bir uyarı yerine açık bir sonuç görürler.
+
+开始完整的入门序列:
 
 ```bash
-python phases/00-setup-and-tooling/01-dev-environment/code/verify.py
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner
+```
+
+Ya da sadece yolumuzu kontrol et.
+
+```bash
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route ml-foundations
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route llm-engineering
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agents
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route mcp
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agent-skills
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route certification
+```
+
+Eğer aynı ön inceleme ve kontrol sonrası dersleri kullanmak istiyorsanız seçilebilir araçlar ve bağımlılık, ek olarak `--show-later`缺少后续工具绝对不会阻阻选路
+
+Başarısız olan her gerekli kontrol, denetlenen yol veya giriş hatası, ayrıca kesin bir düzeltme emri verilir. Ajan becerileri ve sertifika yolu da manuel olarak tamamlanmalı olan ev sahibi kontrolünü gösterir, çünkü Python'un yazısı, AI ev sahibi bir beceri bulduğunu kanıtlayamaz, ayrıca seçtiğiniz beceriyi de kanıtlayamaz.
+
+Giriş kontrolü geçince, ilk yürütülebilir derslerin kesin emirlerini basarım:
+
+```text
+Ready to start Beginner course.
+Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
 ## Kullan
-Bu programın her bölümünde kullanılabilecek bir ortam hazır. Aşağıda her yerde kullanılabilecek bir içeriği bulunmaktadır:
+Çevreiniz, kontrol ettiğiniz yolları başlatabilir. Sonraki araçlar ve diğer dersler yeniden yüklenmeye ihtiyaç duyar. Tüm teknikler ilk dersinizi engelleyecek değildir. Aşağıda tüm derslerdeki içerikler yer alır:
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|

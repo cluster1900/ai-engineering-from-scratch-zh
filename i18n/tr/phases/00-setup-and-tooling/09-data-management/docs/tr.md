@@ -46,7 +46,7 @@ pip install datasets huggingface_hub
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("imdb")
+dataset = load_dataset("stanfordnlp/imdb")
 print(dataset)
 print(dataset["train"][0])
 ```
@@ -58,7 +58,7 @@ Bu, IMDB'nin ilk indirimi sonrasında,`~/.cache/huggingface/datasets/`- Ne? - Ev
 Bazı veri kümeleri çok büyüktür, disk içine tam olarak yerleştiremez.
 
 ```python
-dataset = load_dataset("wikimedia/wikipedia", "20220301.en", split="train", streaming=True)
+dataset = load_dataset("wikimedia/wikipedia", "20231101.en", split="train", streaming=True)
 
 for i, example in enumerate(dataset):
     print(example["title"])
@@ -73,7 +73,7 @@ Akış sana bir tane verecek .`IterableDataset` You will be in rows until you ar
 `datasets`Kütüphanenin alt katı Apache Arrow kullanıyor.
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 dataset.to_csv("imdb_train.csv")
 dataset.to_json("imdb_train.json")
@@ -102,7 +102,7 @@ Her bir ML projesi üç bölüme ihtiyaç duyar:
 Bazı veri kümeleri 已预先分割──没有时,自己分割:
 
 ```python
-dataset = load_dataset("imdb", split="train")
+dataset = load_dataset("stanfordnlp/imdb", split="train")
 
 split = dataset.train_test_split(test_size=0.2, seed=42)
 train_val = split["train"].train_test_split(test_size=0.125, seed=42)
