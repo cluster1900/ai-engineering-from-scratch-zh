@@ -21,6 +21,8 @@
 
 **Handoff。**代理可以调用一个工具,它返回一个新的代理对象──Swarm运行时间检测到代理返回值,然后下一轮切换活跃代理──
 
+这就是全部抽象.
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent
