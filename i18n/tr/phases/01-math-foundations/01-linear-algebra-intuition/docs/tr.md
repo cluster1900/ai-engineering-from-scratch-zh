@@ -161,7 +161,7 @@ Bu, herhangi bir grup bağımsız vektörler için ortonomal temel olarak dönü
 4. Geri kalan vektörlere 重复该过程
 
 ```
-Input:  v1, v2, v3, ...（linearly independent）
+Input:  v1, v2, v3, ... (linearly independent)
 
 u1 = v1 / |v1|
 
@@ -171,7 +171,7 @@ u2 = w2 / |w2|
 w3 = v3 - (v3 dot u1) * u1 - (v3 dot u2) * u2
 u3 = w3 / |w3|
 
-Output: u1, u2, u3, ...（orthonormal basis）
+Output: u1, u2, u3, ... (orthonormal basis)
 ```
 
 İşte QR parçalanması 内部的工作方式──Q is orthonormal basis,R 捕获投射系数──QR parçalanması:
