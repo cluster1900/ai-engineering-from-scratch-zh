@@ -471,6 +471,29 @@ analysis.cfg.back_edges()
 
 成功标准是：`python3 code/main.py cfg` 能列出每个可能的被调用者及证明它的重定位，而且所有目标文件仍通过参考对照。
 
+## 评分实验
+
+五道关于本课 fixtures 的题目。用你构建的代码找出每个答案，然后写入 `code/lab_answers.json`。数字写成数字，或写成 `"0x40"` 这样的十六进制字符串；列表写成 JSON 列表。
+
+1. `t1`：递归下降在 -O1 的 grade 中解码出的指令数。
+2. `t2`：-O1 的 total 中基本块的数量。
+3. `t3`：-O1 的 total 中循环头的地址，写成十六进制。
+4. `t4`：在 sweep-trap.o 中，覆盖 0x14 的线性扫描指令的起始地址，写成十六进制。
+5. `t5`：-O0 的 grade 中跳转表的条目数。
+
+检查你的答案：
+
+```bash
+cd phases/13-tools-and-protocols/33-disassembly-and-control-flow
+python3 code/lab.py
+```
+
+检查器在已提交的 fixtures 上用 `code/main.py` 计算每个期望值。它为每道题输出 `PASS`、`FAIL` 或 `TODO` 以及总分，只有五道题全部通过时才以 0 退出。`python3 code/lab.py my-answers.json` 可检查另一个文件。`code/tests/test_lab.py` 证明检查器接受正确答案并拒绝错误答案。
+
+### 看它运行
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?program=trap&sweep=linear) 机器把本课作为它的解码台和基本块板来运行。这个链接以线性扫描打开 `sweep-trap.o`：解码台显示被当作代码解码的四个数据字节，并有一枚标记钉指出位于 `0x13` 处 `addq` 内部、地址 `0x14` 的跳转目标。把解码器切换到递归下降，可以看到跳转越过了这些数据。
+
 ## 本课产物
 
 本课包含 `outputs/skill-disassembly-and-control-flow.md`。用它将目标文件和函数名转换为经过检查的清单、基本块、带类型边、支配节点，以及所有未解析的控制转移。它要求提供参考对照、两种反汇编方法、字节核算、每张恢复表的重定位证据，以及仍然未知的内容说明。
