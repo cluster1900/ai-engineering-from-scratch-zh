@@ -31,7 +31,7 @@ Isto é importante para o ML, porque o pensamento de domínio de frequência 隨
 X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-2\pi i k n/N} \qquad \text{其中 } k = 0, 1, \ldots, N-1
 ```
 
-Cada um .$X[k]$É um número complexo.$\lvert X[k] \rvert$Indicar frequência $k$A amplitude... a fase.$\angle X[k]$Indicar a deslocação de fase da frequência.
+Cada um .$X[k]$É um número complexo.$\lvert X[k] \rvert$Com frequência$k$De amplitude 成正比──未归化时, amplitude 为 $A$E é bom que esteja no bin.$k$A onda de verdade é a que me dá.$\lvert X[k] \rvert = AN/2$, portanto , deve ser excluído$N/2$才能读出 amplitude──a sua fase $\angle X[k]$Indicar a deslocação de fase da frequência.
 
 关键洞见:$e^{-2\pi i k n/N}$É uma frequência.$k$旋转的phasor──DFT 计算是信号与 $N$个等间隔频率 中每一个的相关性──如果信号在频率中$k$É um sistema de energia, correlação é muito grande.
 
@@ -100,7 +100,7 @@ graph TD
     end
 ```
 
-FFT  requer comprimento de sinal é 2 ── Na prática, os sinais normalmente vão para pad zero até o próximo 2 ──
+O radix-2 FFT realizado neste sinal é o mais rápido de 2 vezes. Se um problema tiver uma duração rara, retornará ao normal.`dft`Por isso, para a velocidade, os sinais normalmente vão ser de pad zero até o próximo 2 de ──`numpy.fft`FFT em armazém utiliza algoritmos de radicais mistos, que podem ser processados de qualquer extensão, mas contêm apenas pequenos fatores de extensão.
 
 ### Análise espectral
 

@@ -102,7 +102,7 @@ L1 e L2 são as circunstâncias especiais da norma Lp:
 \lVert x \rVert_p = (|x_1|^p + |x_2|^p + \cdots + |x_n|^p)^{1/p}
 ```
 
-Diferente .$p$Valor de forma diferente de forma a formar bolas de unidade:
+Diferente .$p$Valor gerará diferentes formas de bolas de unidade de forma a partir de um conjunto de todos os pontos de 1 a partir de um ponto de origem; abaixo são mostradas as suas fronteiras:
 
 ```
 p=1:    Diamond shape      (corners on axes)

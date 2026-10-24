@@ -118,7 +118,7 @@ A maioria das cadeias que encontram no ML satisfazem estas duas condições.
 
 **Absorbing states。**Se entrar num estado, nunca sairá.$P[i][i] = 1$), este estado é absorvendo de;. Absorção de cadeias de Markov pode ser usado para construir com estados terminais process                                                                                                                                                                                                                                                 
 
-**Mixing time。**需要多少步,chain 才会接近stationary distribution? formalized地说,就是 total variação distância com a distância de estacionalidade reduzir a um 值以下的步数──Fast mixing = 需要的步数少──$P$de diferença espectral ((1 减去第二大 eigenvalue) control mixing time──gap 越大, mixing 越快──
+**Mixing time。**需要多少步,chain 才会接近stationary distribution? formalized地说,就是 total variação distância com a distância de estacionalidade reduzir a um 值以下的步数.$P$de diferença espectral ((1 减去自值 1 之外最大的自值 模) controlar o tempo de mistura。 diferença 越大, mistura 越快──
 
 ### Compartilhar com Modelos de Língua
 

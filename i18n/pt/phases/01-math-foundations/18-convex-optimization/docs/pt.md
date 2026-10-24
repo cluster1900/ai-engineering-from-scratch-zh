@@ -18,7 +18,7 @@
 
 Lição 08 - Otimizador pode se mover em qualquer superfície, mas não tem garantia. O Descenso Gradiente pode entrar em um local de baixo valor, em um ponto de sela, ou em um ponto de vibração permanente. Você ainda usa isso, porque a rede neural não é de baixo valor, e não há alternativa.
 
-Mas muitos problemas do ML são de contagem. Régresso linear, regressão logística, SVMs, LASSO, regressão de bordo. Para estes problemas, há ferramentas mais fortes: com garantia matemática de otimização.
+Mas muitos problemas do ML são de convexo. Para estes problemas, há ferramentas mais fortes: com garantia matemática de otimização. Para estes problemas, há ferramentas mais fortes: com garantia matemática de otimização.
 
 Compreender a conexão tem três valores. Primeiro, ele diz-lhe o problema quando é simples, quando é difícil, quando não conexão. Segundo, ele fornece ferramentas mais rápidas para o problema com conexão, como o método de Newton.
 
@@ -91,13 +91,13 @@ Três testes práticos, do mais fácil ao mais rigoroso.
 
 **对于凸函数，每个局部最小值都是全局最小值。**
 
-Isto significa que a Descenso Gradiente não será atrapada. Qualquer caminho para baixo vai para a mesma resposta.
+Isso significa que o Descenso Gradiente não ficará preso entre os mínimos locais de um mau valor. Cada mínimo que pode alcançar tem a mesma perda. Para a função convexa lisa do mínimo que existe, o Descenso Gradiente garante o máximo valor.
 
 ```mermaid
 graph LR
     subgraph "Convex: ONE answer"
         direction TB
-        C1["Loss surface has a single valley"] --> C2["Gradient descent ALWAYS finds the global minimum"]
+        C1["Loss surface has no false valleys"] --> C2["Gradient descent with a suitable step converges to the global minimum"]
     end
     subgraph "Non-convex: MANY traps"
         direction TB

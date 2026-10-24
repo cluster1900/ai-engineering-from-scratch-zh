@@ -202,7 +202,7 @@ Sexualidade:
 2. 按MI pontuação 排序 características。
 3.  保留前                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $k$- As características.
 
-Esta aplica-se a qualquer relação entre característica e alvo: linear, não linear, monótono ou outra relação.
+Esta aplica-se a qualquer relação entre característica e alvo: linear, não linear, monótono ou outra relação. A correlação de pessoa só pode capturar relações lineares.
 
 | Method | Detects | Computational cost | Handles categorical? |
 |--------|---------|-------------------|---------------------|

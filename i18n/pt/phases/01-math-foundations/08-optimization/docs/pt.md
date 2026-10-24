@@ -43,7 +43,7 @@ w = w - \text{lr} \cdot \text{gradient}
 
 ```mermaid
 graph TD
-    A["* Starting point (high loss)"] --> B["Moving downhill along gradient"]
+    A["* Starting point (high loss)"] --> B["Moving downhill, against the gradient"]
     B --> C["Approaching minimum"]
     C --> D["o Minimum (low loss)"]
 ```
@@ -155,7 +155,7 @@ A taxa de aprendizagem fixa é uma forma de desvio. No início do treino, você 
 
 ### Convexo vs não convexo
 
-Função convexa 只有一个最小――渐进下降 总能找到它――像 $f(x) = x^2$Esse tipo de quadrático é convexo.
+Função convexa  não há mínimos locais ruins: cada mínimo local são mínimos globais ⋅ para a existência de um mínimo de função convexa suave, taxa de aprendizagem ⋅ suficiente pequena descida gradual 会收到它──像$f(x) = x^2$Este tipo de quadrático é convexo, e o seu mínimo é único.
 
 Funções de perda de rede neural são não convexas.
 
