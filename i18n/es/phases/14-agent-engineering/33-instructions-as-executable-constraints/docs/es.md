@@ -62,7 +62,7 @@ Cada regla tiene una frase, una clase, una línea de descripción y una`check`�
 
 修复方式不是 escribir un archivo más corto, sino escribir un archivo de una capa separada. Router de raíz debe ser pequeño hasta que cada sesión pueda leerse, y sólo guardar la puntuación.
 
-```text
+```
 AGENTS.md                  # router，少于 50 行：这个 repo 是什么、去哪里看、5 条硬规则
 docs/
   agent-rules.md           # 完整规则集（本课）

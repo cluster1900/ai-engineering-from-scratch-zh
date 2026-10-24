@@ -14,7 +14,7 @@
 - Usando el tiempo para lograr una memoria de juego, entre ellas.`add()`写入全部三个存储,`search()`融合結果──
 
 ##  problemas
- Para una de las tres clases de consultas, un solo almacén se ha equivocado:
+Cada tipo de almacenamiento sólo se adapta a una de las tres clases de consultas:
 
 - **语义相似性**¿Qué hemos discutido sobre la deriva de agentes?
 - **事实查找**   用户的电话号码是什么? KV 胜出; Vektor 浪费资源,Graph 过于复杂──

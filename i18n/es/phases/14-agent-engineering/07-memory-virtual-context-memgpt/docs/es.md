@@ -102,6 +102,25 @@ Hoy en día cada sistema de memoria de producción es un variante de MemGPT:
 
 选择, en lugar de en función del patrón principal 选择; core pattern 就是 MemGPT。
 
+### 智能体记忆的形态 智能体记忆的形态 智能体记忆的形态
+
+Se resuelve el problema de la capacidad, no decide qué sobrevivir. En el sistema de producción aparecen cuatro tipos de memoria, cada uno respondiendo a una pregunta diferente:
+
+- **Working memory** 现在什么最重要?in context 层:当前任务、最近几轮对话、固定的核心部分──也就是即时本身──
+- **Episodic memory** 发生了什么? pasado de conversaciones y trayectorias, conectado con la sesión y el turno 引用一起存储,可按需回放──
+- **Semantic memory** 什么是真的?  什么是真的?  什么是真的?  什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的? 什么是真的?
+- **Procedural memory**¿Cómo hacer esto? Aprender las rutinas, preferencias y reglas, que guían el comportamiento futuro, no los recuerdos.
+
+                                                                                                                                                                                                                                                              
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ##  entregarlo
 `outputs/skill-virtual-memory.md`Es una habilidad replicable, puede ser utilizada en cualquier tiempo de ejecución de un objetivo.
 
@@ -129,3 +148,7 @@ Hoy en día cada sistema de memoria de producción es un variante de MemGPT:
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks) Evolución de tres niveles
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) El contexto  en función del presupuesto
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413) construir memoria de producción híbrida en este modelo
+- [Zep (getzep/zep)](https://github.com/getzep/zep) Memoria del conocimiento temporal-grafo de la clase
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) Lección 09 Almacenamiento híbrido 背后的提取管道
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem) En el fondo de la historia, los hechos y las reglas de conducta
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory) Capturar y integrar la sesión en un tipo de registro que pueda ser buscado

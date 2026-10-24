@@ -34,6 +34,8 @@ Dos actores no pueden compartir memoria. Sólo pueden enviar mensajes.
 
 ### AutoGen v0.4 En el medio de las tres capas de API
 
+AutoGen v0.4 Ponga su interfaz en tres niveles:
+
 1. **Core.**Es un marco de actores de nivel inferior.`AgentRuntime`¿Qué es esto?`Agent`¿Qué es esto?`Message`¿Qué es esto?`Topic`◊Cambio de mensajes sincronizados, impulsados por eventos―
 2. **AgentChat.**面向任务的高层API( sustituye v0.2 de ConversableAgent)`AssistantAgent`¿Qué es esto?`UserProxyAgent`¿Qué es esto?`RoundRobinGroupChat`¿Qué es esto?`SelectorGroupChat`¿Qué es eso?
 3. **Extensions.**集成:OpenAI、Antropic、Azure、tools、memoria―

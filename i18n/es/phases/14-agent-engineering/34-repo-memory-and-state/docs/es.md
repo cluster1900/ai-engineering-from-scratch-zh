@@ -92,7 +92,7 @@ Cuatro modalidades pueden convertir el mínimo de la clase en un monorepo multi-
 
 **将大型 artifacts 与 state 分离。**No guardes CSVs, transcripciones o archivos generados.`agent_state.json`△将 artefacto 保存为单独文件(或上传到物体存储), estado en el que el medio sólo conserva el camino― controles 保持小而快; artefactos 独立增长―
 
-**Event sourcing 用于 audit，snapshots 用于 resume。**Cada mutación se añade al registro de eventos`state.events.jsonl`); de forma periódica hasta `state.json`✿ Resumen 读取快照,然后播放快照时刻 之后的所有事件──这会消耗更多磁盘,但允许你逐字播放代理决策,这对调试长视线运行至关重要──Postgres 内部用于WAL的也是一样的形状──
+**Event sourcing 用于 audit，snapshots 用于 resume。**Cada mutación se añade al registro de eventos`state.events.jsonl`); de forma periódica hasta `state.json`✿ Resumen 读取快照,然后播放快照时刻 之后的所有事件──这会消耗更多磁盘,但允许你逐字播放代理决策,这对调试长远走 至关重要──Postgres en la capa de almacenamiento utiliza su WAL 实践了同样日志加检查点思路,只是层级比应用事件低得多──
 
 **Schema migrations，否则拒绝加载。** `schema_version`Cuando el administrador carga una versión desconocida de un archivo, se niega a leerlo.`tools/migrate_state.py`En cada inicio, el tiempo de funcionamiento.
 
