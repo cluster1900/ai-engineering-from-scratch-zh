@@ -169,6 +169,10 @@ softmax-attention-scaling
 
 ## بناءها
 
+```figure
+iso-machine {"machine":"self-attention"}
+```
+
 ### الخطوة الأولى: من الصفر تحقيق Softmax
 
 سوف سوف سوف سوف سوف سوف تحويل اللوجات الأصلية إلى احتمالية.
