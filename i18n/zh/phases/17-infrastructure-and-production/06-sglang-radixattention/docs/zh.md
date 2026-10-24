@@ -91,6 +91,8 @@ roofline
 ## 使用它
 `code/main.py`实现一个玩具基因树KV缓存,以及一个有两种策略的规划器:FCFS和缓存意识. 它将让同一个工作负载分开通过两种运行,报告前缓存击率和吞吐量三角形. 然后运行一个缩的订单,展示6.4x 如何崩.
 
+其他[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096)机器显示了一个真实L4运行中的Radix缓存表现. 四组每个组有一个4,096代币的系统提示. 一组的第一个请求将计算它的提示. 只要该提示仍然存在缓存中,这个组后续的请求只需要计算128代币的问题.
+
 ## 交付它
 本课会生成`outputs/skill-radix-scheduler-advisor.md`△给定一个工作负载描述,它会产生一个提示订单处方,以及是否采用SGLang的去/不去判断.
 

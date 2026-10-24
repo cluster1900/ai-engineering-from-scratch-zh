@@ -105,6 +105,8 @@ throughput-latency
 ## 使用它
 `code/main.py`是一个玩具版的好输出计算器. 产生合成延迟分布,应用SLO,并计算好输出.
 
+其他[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1)机器显示了NVIDIA L4上每个输出代币的时间从何而来. 一步解码步骤需要读取16.41GB的权重,在300GB/s下至少需要54.7ms,而实测这个步骤需要60.16ms.
+
 ## 交付它
 本课会生成`outputs/skill-slo-goodput-gate.md`△给定一个工作负载和SLO,它会产生可用的CI/CD基准配方,使用好输出而不是吞吐量来实现门部署──
 

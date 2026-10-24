@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## 使用它
 `code/main.py`针对一系列模型大小,计算六种格式的内存足迹 (重量+KV+激活) 和相对吞吐量――展示KV缓存何时占主导性、重量压缩何时划算,以及FP8何时是安全选择――
 
+其他[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64)机器展示了NVIDIA L4上FP8的效果.权重从15.28GB降至8.81GB,KV池从24.094个代币增长到142.369个代币,64个用户实测输出从每秒250.85个代币升至735.91个代币.
+
 ## 交付它
 本课会产出 `outputs/skill-quantization-picker.md`△给定硬件,模型大小,工作负载类型和质量宽容,它会选择一种格式,并产生校准/验证计划.
 
