@@ -198,11 +198,11 @@ print(f"after align   absRel = {abs_rel_error(aligned, gt):.3f}")
 ### 步骤 5: Depth Anything V3 使用方式(référence)
 
 ```python
-import torch
+import numpy as np
 from transformers import pipeline
 from PIL import Image
 
-pipe = pipeline(task="depth-estimation", model="LiheYoung/depth-anything-v2-large")
+pipe = pipeline(task="depth-estimation", model="depth-anything/Depth-Anything-V2-Large-hf")
 
 image = Image.open("street.jpg").convert("RGB")
 out = pipe(image)
