@@ -25,7 +25,7 @@ Bu derste bu üç kişiyi birbiriyle ele alacağız ve hangisini seçmemiz gerek
 
 **FastText。**Bir kelime onun harfleri n-gramlar eklemiş bir kelime kendi toplamı vardır.`where`变成 `<wh, whe, her, ere, re>, <where>`▽词 Vector 是这些组成 矢量 的总和──按 Word2Vec 的方式训练──好处:未见过的词(`whereupon`) bilinen n-gramlar tarafından 组合出来──
 
-**BPE (Byte-Pair Encoding)。**开始──统计 corpus 中每个相邻对──把最高频的对──合并成新代币──重复`k`Sonraki sonuç: bir tane var.`k + 256`个 Token 的词汇,其中高频序列(`ing`- Evet.`tion`- Evet.`the`) tek bir işaret, nadir sözcükler olgunlaşmış parça parçaları sökülür.
+**BPE (Byte-Pair Encoding)。**开始──统计 corpus 中每个相邻对──把最高频的对──合并成新代币──重复`k`Sonraki: Sonuç: temel simgelerden alın`k`次合并组成的词汇(从字节 开始时为 `k + 256`个 Token), içinden高频序列(`ing`- Evet.`tion`- Evet.`the`) tek bir işaret, nadir sözcükler olgunlaşmış parça parçaları sökülür.
 
 
 ```figure

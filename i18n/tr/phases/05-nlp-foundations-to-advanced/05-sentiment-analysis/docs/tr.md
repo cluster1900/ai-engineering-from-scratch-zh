@@ -201,7 +201,7 @@ pipe.fit(X_train, y_train)
 print(pipe.score(X_test, y_test))
 ```
 
-Dikkat et üç şeye.`stop_words=None`会保留否定词――`ngram_range=(1, 2)`Büyük bir gruba katılacağım.`not_good`Bir özellik haline gelmek.`sublinear_tf=True`Bu üç belirti, genellikle SST-2'nin %75 doğruluk başlangıç çizgisinde ve %85 doğruluk başlangıç çizgisinde farklar gösterir.
+Dikkat et üç şeye.`stop_words=None`会保留否定词――`ngram_range=(1, 2)`Büyük bir gruba katılacağım.`not good`成为一个特征(skikit-learn 用空格连接两个词)。`sublinear_tf=True`Bu üç belirti, genellikle SST-2'nin %75 doğruluk başlangıç çizgisinde ve %85 doğruluk başlangıç çizgisinde farklar gösterir.
 
 ### Transformer kullanmak için ne zaman?
 

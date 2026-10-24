@@ -124,7 +124,7 @@ def tfidf(bow_matrix):
 >>> tfidf(bow)
 ```
 
-Üç tane kayıt, beş tane ifade`the`- Evet.`cat`- Evet.`sat`- Evet.`dog`- Evet.`ran`)。`the`Şu anda üç arşivde, bu yüzden İsrail Ordusu'nun altındaki.`dog`Bu vektörler çok nadirdir.
+Üç tane kayıt, beş tane ifade`the`- Evet.`cat`- Evet.`sat`- Evet.`dog`- Evet.`ran`)。`the`Şu anda üç arşivde, bu yüzden İsrail Ordusu'nun altındaki.`dog`Bu nedenle, onun IDF Yüksek. Binlerce kelime sahip gerçek sözlükler içinde, bu vektörler nadirdir.
 
 ### 步骤 5: L2-sırları normalleştir
 
