@@ -1,11 +1,11 @@
 {
   "id": "miles-101",
   "title": "Miles 101",
-  "subtitle": "Reinforcement learning on language models with Miles, from one GPU to a run you can trust",
-  "summary": "How to run GRPO with Miles on one GPU, choose a model that fits, and check that the run is correct. Every measured line comes from recorded runs on a DGX Spark.",
+  "subtitle": "用 Miles 对语言模型做强化学习，从一块 GPU 讲到一次你能信任的运行",
+  "summary": "如何用 Miles 在一块 GPU 上运行 GRPO，选择装得下的模型，并检查运行是否正确。每一行实测结果都来自在一台 DGX Spark 上录制的运行。",
   "plate": {
     "figure": "plate-miles-loop",
-    "title": "One GRPO step on one GB10",
+    "title": "一块 GB10 上的一个 GRPO 步",
     "caption": "The SGLang engine and the FSDP trainer take turns on the Blackwell GPU. The one that waits stays parked in the same 128 GB pool. Medians of 48 steps on one GB10, from a run made before we added the heat guard."
   },
   "audience": "You can serve a model and you know what a reward is. You want to train a model with reinforcement learning, and you want to know which settings matter before you rent a cluster.",
