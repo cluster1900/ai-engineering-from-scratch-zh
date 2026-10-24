@@ -12,18 +12,18 @@ Abbreviations: L17 = phases/11-llm-engineering/17-agent-framework-tradeoffs, A14
 - Worst fit: L17/d:26-29 (fourth column)
 
 ## Agent SDK 与运行时对比 (comparison)
-- Primitives: A16/d:25-29, A17/d:26, A14/d:39-41, A18/d:36
-- Delegation: `transfer_to_<agent_name>` A16/d:26, subagents own context A17/d:37, inbox A14/d:45, workflows A18/d:36
-- State: Session SQLite, Redis, custom A16/d:62, append/load/delete cascade A17/d:45-48, private state A14/d:29, composite storage A18/d:38
-- Tracing: on by default A16/d:58, W3C trace context A17/d:68, span per message A14/d:59, Mastra Studio A18/d:41
-- Use for: OpenAI-first A16/d:93, Claude-first A17/d:104, fault isolation and concurrency A14/d:47-48, TypeScript Next.js Vercel A18/d:55
+- Primitives: A16/d:22-26, A17/d:23, A14/d:37-39, A18/d:33
+- Delegation: `transfer_to_<agent_name>` A16/d:23, subagents own context A17/d:34, inbox A14/d:43, workflows A18/d:33
+- State: Session SQLite, Redis, custom A16/d:59, append/load/delete cascade A17/d:42-45, private state A14/d:29, composite storage A18/d:35
+- Tracing: on by default A16/d:55, W3C trace context A17/d:65, span per message A14/d:57, Mastra Studio A18/d:38
+- Use for: OpenAI-first A16/d:89, Claude-first A17/d:100, fault isolation and concurrency A14/d:45-46, TypeScript Next.js Vercel A18/d:52
 
 ## 何时用哪个 (concepts)
 - LangGraph typed state, approvals, resume, `Send` fanout: L17/d:96, 100
-- CrewAI Flow that calls `Crew.kickoff()`: A15/d:58, 168
+- CrewAI Flow that calls `Crew.kickoff()`: A15/d:58, 169
 - AutoGen proposer-critic dialogue: L17/d:98
-- Agno many short-lived agents, FastAPI: A18/d:54
-- Mastra TypeScript, Next.js or Vercel, Zod-typed tools: A18/d:55
+- Agno many short-lived agents, FastAPI: A18/d:51
+- Mastra TypeScript, Next.js or Vercel, Zod-typed tools: A18/d:52
 - Plain Python for two LLM calls and a tool: L17/d:88
 
 ## 决策树：recommend(p) (flow)
@@ -44,12 +44,12 @@ Abbreviations: L17 = phases/11-llm-engineering/17-agent-framework-tradeoffs, A14
 
 ## 代码中的 SDK 任务 (task-table)
 - `python main.py --ask`: L17/c:9
-- `transfer_to_<agent_name>`: A16/d:26
-- `OPENAI_AGENTS_DISABLE_TRACING=1`: A16/d:58
-- `add_trace_processor(processor)`: A16/d:58
-- `Runner.run(agent, input, session=session)`: A16/d:62
+- `transfer_to_<agent_name>`: A16/d:23
+- `OPENAI_AGENTS_DISABLE_TRACING=1`: A16/d:55
+- `add_trace_processor(processor)`: A16/d:55
+- `Runner.run(agent, input, session=session)`: A16/d:59
 - `output_pydantic=MyModel`: A15/d:96
-- `list_subkeys(session_id)`: A17/d:49
+- `list_subkeys(session_id)`: A17/d:46
 
 ## 在 Mastra 中挂起与恢复 (annotated-code)
 - createWorkflow ticket-triage with then classifyStep, planStep, executeStep, commit: PM/solution/optional-mastra/adapter.ts:116-124
@@ -82,21 +82,21 @@ Abbreviations: L17 = phases/11-llm-engineering/17-agent-framework-tradeoffs, A14
 - Runner max_hops 3: A16/c:69, 84
 - Runtime max_messages 100, run_until_idle: A14/c:39, 53-55
 - HierarchicalCrew max_steps 5: A15/c:96, 103
-- Guardrail mode Parallel default, lower latency, token waste on trip: A16/d:51
+- Guardrail mode Parallel default, lower latency, token waste on trip: A16/d:48
 - executePlan maxCalls 3, range 1 to 100: PM/solution/main.ts:96, 98-106
 - executePlan maxAttempts 2, range 1 to 10: PM/solution/main.ts:97, 98-106
 
 ## 故障排查 (troubleshooting)
-- Handoff drift, add a hop counter: A16/d:66
-- Guardrail bypass, tool guardrails only on function tools: A16/d:67
+- Handoff drift, add a hop counter: A16/d:63
+- Guardrail bypass, tool guardrails only on function tools: A16/d:64
 - Brittle handoffs, `output_pydantic` on Task N: A15/d:133
 - Manager-LLM token tax, switch to Sequential: A15/d:132
 - Prompt-bloat from backstories, under 200 words: A15/d:131
-- Subagent over-spawn, batch instead: A17/d:76
-- Session bloat, `list_sessions` + expiry policy: A17/d:78
+- Subagent over-spawn, batch instead: A17/d:73
+- Session bloat, `list_sessions` + expiry policy: A17/d:75
 - Wrong ticket or digest fails before the tool, preserve ticketId and planHash: PM/README.md:40, 46
 
 ## 问答 (qa)
-- Handoff is a tool, model sees `transfer_to_billing_agent`: A16/d:33-37
-- `send(agent_b, msg)` queues and returns, runtime catches failure: A14/d:45, 47
+- Handoff is a tool, model sees `transfer_to_billing_agent`: A16/d:30-34
+- `send(agent_b, msg)` queues and returns, runtime catches failure: A14/d:43, 45
 - Model route cannot override, raises ValueError: PA/solution/adk_adapter.py:53-54

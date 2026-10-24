@@ -179,6 +179,7 @@ mx-tool-call-loop
 构建一个 registry，用于存储 tool definitions 及其 implementations。每个 tool 都有一个 JSON Schema definition（模型看到的内容）和一个 Python function（你的代码执行的内容）。
 
 ```python
+import ast
 import json
 import math
 import time
@@ -287,10 +288,18 @@ def read_file(path):
 def run_code(code, language="python"):
     if language != "python":
         return {"error": True, "message": f"Language '{language}' not supported. Only 'python' is available."}
-    forbidden = ["import os", "import sys", "import subprocess", "exec(", "eval(", "__import__", "open("]
-    for pattern in forbidden:
-        if pattern in code:
-            return {"error": True, "message": f"Forbidden operation: {pattern}", "code": "SECURITY_VIOLATION"}
+    try:
+        tree = ast.parse(code)
+    except SyntaxError as e:
+        return {"error": True, "message": f"SyntaxError: {e}", "code": "SYNTAX_ERROR"}
+    unsafe_names = {"exec", "eval", "compile", "__import__", "open", "globals", "locals", "vars", "getattr", "setattr", "delattr"}
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            return {"error": True, "message": "Forbidden operation: import is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Attribute) and node.attr.startswith("__") and node.attr.endswith("__"):
+            return {"error": True, "message": "Forbidden operation: dunder attribute access is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Name) and node.id in unsafe_names:
+            return {"error": True, "message": f"Forbidden operation: {node.id} is not allowed", "code": "SECURITY_VIOLATION"}
     try:
         local_vars = {}
         exec(code, {"__builtins__": {"print": print, "range": range, "len": len, "str": str, "int": int, "float": float, "list": list, "dict": dict, "sum": sum, "min": min, "max": max, "abs": abs, "round": round, "sorted": sorted, "enumerate": enumerate, "zip": zip, "map": map, "filter": filter, "math": math}}, local_vars)
@@ -299,6 +308,8 @@ def run_code(code, language="python"):
     except Exception as e:
         return {"error": True, "message": f"{type(e).__name__}: {e}"}
 ```
+
+子串黑名单把代码当作文本来读，所以凡是字符串匹配没有逐字拼出来的东西都会漏掉。把代码解析成语法树再遍历它，guard 就能按结构而不是按拼写来拒绝 `import` 语句、dunder 属性访问（即通往真实解释器的 `__class__` 和 `__globals__` 链）以及不安全的 builtin 名称。即便如此，也要把它当作教学用的过滤器，而不是真正的安全边界。任何进程内的 guard 都与它所运行的代码共享同一个解释器，执意的调用者仍然能找到可达的对象。生产系统会在独立的进程或容器中运行不受信任的代码（降权的 subprocess、gVisor、Firecracker 或托管的代码运行服务），这样一旦逃逸，攻击者落进的是一个用完即弃的沙箱，而不是你的服务。
 
 ### 步骤 3： Register All Tools
 
@@ -325,7 +336,7 @@ def register_all_tools():
         read_file,
     )
     register_tool(
-        "run_code", "Execute Python code in a sandboxed environment. Set a 'result' variable to return output.",
+        "run_code", "Run a small Python snippet behind a static-analysis guard and a restricted interpreter. This is a teaching filter, not real isolation. Set a 'result' variable to return output.",
         {"type": "object", "properties": {"code": {"type": "string", "description": "Python code to execute"}, "language": {"type": "string", "enum": ["python"], "description": "Programming language"}}, "required": ["code"]},
         run_code,
     )
@@ -612,7 +623,7 @@ OpenAI 将 tool calls 返回为 `response.choices[0].message.tool_calls`。每�
 # client = anthropic.Anthropic()
 #
 # response = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[{
 #         "name": "get_weather",
@@ -633,7 +644,7 @@ OpenAI 将 tool calls 返回为 `response.choices[0].message.tool_calls`。每�
 # result = get_weather(**tool_block.input)
 #
 # final = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[...],
 #     messages=[

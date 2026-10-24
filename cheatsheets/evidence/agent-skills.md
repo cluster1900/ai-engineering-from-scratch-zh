@@ -73,7 +73,7 @@ Abbreviations: P = phases/13-tools-and-protocols. L22 = P/22-skills-and-agent-sd
 - no-match when nothing scored: SR/sm:70, 113
 - ambiguous when gap below margin: SR/sm:114-115, SR/project.json:103
 - blocked with permission denied: SR/sm:93-94, 122-123
-- unsupported YAML syntax for tags, aliases, multiline and flow values; plain or double-quoted scalars accepted: SV/solution/stage1.rs:22-27, SV/README.md:5, 37
+- unsupported YAML syntax for tags, aliases, multiline and flow values; plain or double-quoted scalars accepted: SV/solution/stage1.rs:22-27, SV/README.md:5, 38
 - integrity mismatch, inspect gives source_digest: SI/sm:83-84, SI/sc:12-18
 - modified installation, move edit into source bundle: SI/sm:113-118, SI/stages/04-upgrades/docs/en.md:5
 - skill unavailable, rescan or new session: L22/d:96, 129
