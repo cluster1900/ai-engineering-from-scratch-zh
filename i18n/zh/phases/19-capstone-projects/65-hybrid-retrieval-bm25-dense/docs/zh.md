@@ -58,8 +58,9 @@ flowchart LR
 
 ### 为什么融合优于分数加权插值
 
- BM25 分数不受限制,依赖语料库.余弦相似度在 -1 到 1 之间.`alpha * bm25 + (1 - alpha) * cosine`需要每一个语料库的阿尔法调整,并且每一次重新索引都会中断. 基于等级的融合则不一样. 两个等级在不同模式下具有可比性. 自2010年以来,已发布的RRF基线在每个公共TREC赛道上都击败了分数插值. 这与你在Vespa和Weaviate文档中听到的RankFusion和RRF论点相同. 他们得出相同的结论:除非你有非常强大的证据插入,否则保持基于排名.
+ BM25 分数不受限制,依赖语料库.余弦相似度在 -1 到 1 之间.`alpha * bm25 + (1 - alpha) * cosine`需要每一个语料库进行 alpha 调整,并且每一次重新索引都会中断.
 
+这与你在Vespa 和 Weaviate 文档中听到的有关RankFusion和RRF的论点相同.
 
 ```figure
 rrf-fusion

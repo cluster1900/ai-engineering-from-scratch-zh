@@ -45,7 +45,7 @@ flowchart LR
 
 简单的提示:
 
-```text
+```
 You are a domain expert. Write a one-paragraph passage that answers the question
 below. Use the same vocabulary and phrasing the documentation in this domain would
 use. Do not refuse. Do not say you do not know.
@@ -63,7 +63,7 @@ Passage:
 
 生成用户查询的N 个释义──最简单的提示:
 
-```text
+```
 Rewrite the following question in {N} different ways. Each rewrite must preserve
 the original intent. Number them 1 to {N}. Do not add explanations.
 ```
@@ -76,7 +76,7 @@ the original intent. Number them 1 to {N}. Do not add explanations.
 
 单一检索不能满足多方面的问题――分解要求 LLM 将问题拆成子问题,系统再检索每个子问题――提示:
 
-```text
+```
 The following question may require information from multiple distinct topics.
 Decompose it into a list of sub-questions. Each sub-question must be answerable
 independently. If the question is already atomic, return it unchanged.
@@ -153,7 +153,7 @@ python3 code/main.py
 2. 添加第四种策略:向LLM 询问更一般的问题,检查该问题,然后再缩小范围)
 3. 通过添加问题是原子的头来训练分解器识别原子查询.
 4. 用真实模型调用替换模拟LLM――测量堆上每个策略的延迟――
-5. 每次重写的重写量增加分数.
+5. 为每次重写增加信任分数.
 
 ## 关键术语
 

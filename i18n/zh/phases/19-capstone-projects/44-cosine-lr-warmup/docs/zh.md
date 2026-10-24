@@ -109,7 +109,7 @@ python3 code/main.py
 
 1. 添加时间表的反方根变体,并在200步玩具训练运行上对比――哪条曲线产生更低的最终损失?
 2. 添加`--restart`旗,在`total_steps / 2`增加第二次加热. 为了加热重新启动. 在玩具运行上升或伤害.
-3. 添加一个单位测试验证时间表是连续的:对于`[0, total_steps]`中间的每个步骤,差值`|lr(step+1) - lr(step)|`受`lr_max / warmup_steps`约束.
+3. 添加一个单位测试验证时间表是连续的:在`warmup_steps > 0`时,对于`[0, total_steps]`中间的每个步骤,差值`|lr(step+1) - lr(step)|`受升温率`lr_max / warmup_steps`与最的斜率`pi * (lr_max - lr_min) / (2 * (total_steps - warmup_steps))`两者中较大的约束――较短的阴影段可能比升温更,所以仅使用升温斜率并不是安全的上界――
 4. 将时间表 接入 `torch.optim.lr_scheduler.LambdaLR`如何使用简单的步骤函数;包装 改变了什么?
 5. 添加`--plot-png`通过旗`matplotlib`写出真实剧情――为本课的文本剧情 和 PNG 哪个更适合合作为CI运行的默认做出辩护――
 
