@@ -130,17 +130,18 @@ class AudioProjector(nn.Module):
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-分别报告每个类别(الحديث / الصوت / الموسيقى / متعددة الصوت) ――聚合数字会掩盖模型在哪里失败──
+`audio_path`إندرس إلى مخزن المعلومات`data.zip`(حوالي 47 GB) ، تعادل المقابلة الدورية هي مجرد التحقق من الصحة العقلية، وليس مقياس المقياس الرسمي، لذلك لا يمكن أن تكون رقمها مقارنة مع النتائج المنشورة من MMAU-Pro.`model_output`列, ثم运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro)وسط`evaluate_mmau_pro_comprehensive.py`分别 تقرير كل `category`(الحديث، الصوت، الموسيقى، والمتعدد من الفئات المتبقية)
 
 ## استخدمها
 
