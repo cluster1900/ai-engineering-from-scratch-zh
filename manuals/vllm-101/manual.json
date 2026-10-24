@@ -347,8 +347,8 @@
     }
   ],
   "reference": {
-    "title": "Reference",
-    "thesis": "Look up a flag, a metric, an incident, a version pin, or a figure here.",
+    "title": "参考",
+    "thesis": "在这里查找参数、指标、故障、版本锁定或图表。",
     "accent": "grey",
     "sections": [
       {
