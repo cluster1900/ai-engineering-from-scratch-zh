@@ -28,19 +28,19 @@ caption: Each row is one entry below, in the same order. Read the symptom, the f
 - **检查：** 错误信息列出失败的架构，例如 `Model architectures [...] are not supported for now` 或 `failed to be inspected`。
 - **修复：** 查看你所用版本的支持模型列表。如果模型在列表里，就在错误上方的日志里找导入失败的信息。
 
-### 启动时报错提到驱动或 PTX 工具链 {#s-troubleshoot-by-symptom-the-start-stops-with-a-message-about-the-driver-or-the-ptx-toolchain}
+### 启动时报错提到驱动或 PTX 工具链 {#s-troubleshoot-by-symptom-the-start-stops-with-a-message-about-the-driver-or-the-ptx-toolc}
 
 - **原因：** vLLM 的 CUDA 构建比你的 NVIDIA 驱动所支持的更新。来自 vLLM 文档。
 - **检查：** 错误信息是 `The NVIDIA driver on your system is too old`，或者说 PTX 是用不受支持的工具链编译的。
 - **修复：** 更新驱动。在官方镜像中，对某些数据中心 GPU，`-e VLLM_ENABLE_CUDA_COMPATIBILITY=1` 会启用 CUDA 兼容库。
 
-### 启动时报错提到 KV cache 和最大长度 {#s-troubleshoot-by-symptom-the-start-stops-with-a-message-about-the-kv-cache-and-the-maximum-length}
+### 启动时报错提到 KV cache 和最大长度 {#s-troubleshoot-by-symptom-the-start-stops-with-a-message-about-the-kv-cache-and-the-maximu}
 
 - **原因：** 一个长度为 `--max-model-len` 的请求所需的 KV cache，超过了权重之后剩下的空间。
 - **检查：** 错误信息给出能放下的最大长度。
 - **修复：** 把 `--max-model-len` 设为你最长的请求。[启动页](#s-fix-out-of-memory-at-startup)有详细说明。
 
-### 启动时报错提到空闲内存和内存比例 {#s-troubleshoot-by-symptom-the-start-stops-with-a-message-about-free-memory-and-the-memory-fraction}
+### 启动时报错提到空闲内存和内存比例 {#s-troubleshoot-by-symptom-the-start-stops-with-a-message-about-free-memory-and-the-memory-}
 
 - **原因：** 另一个进程占用了 GPU 内存，所以你要求的那部分并不空闲。
 - **检查：** 运行 `nvidia-smi`，查看 GPU 上的进程。
