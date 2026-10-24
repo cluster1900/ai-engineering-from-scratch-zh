@@ -2,7 +2,7 @@
 
 > 每个 A2A 错误都有一个 JSON-RPC 代码、一个 HTTP 状态、一个 gRPC 状态和一个 `ErrorInfo` reason，在 HTTP 上，正是 reason 区分其中的七个。
 
-九个 A2A 错误的代码取自 §5.4 中的规范表 {{spec §5.4}}。每个错误还有一个 `ErrorInfo` reason：它的名称去掉 `Error` 后的大写蛇形写法，例如 `TASK_NOT_FOUND`。spec 只明确写出了这一个和 `TASK_NOT_CANCELABLE`，参考 SDK 使用相同的九个字符串 {{spec §11.6}} {{sdk src/a2a/utils/errors.py}}。
+九个 A2A 错误的代码取自 §5.4 中的规范表 {{spec §5.4}}。每个错误还有一个 `ErrorInfo` reason：它的名称去掉 `Error` 后的大写蛇形写法，例如 `TASK_NOT_FOUND`。规范只明确写出了这一个和 `TASK_NOT_CANCELABLE`，参考 SDK 使用相同的九个字符串 {{spec §11.6}} {{sdk src/a2a/utils/errors.py}}。
 
 | 错误 | JSON-RPC | HTTP | gRPC |
 |---|---|---|---|
@@ -29,6 +29,6 @@
 
 [按绑定列出的操作](#s-ref-operations-by-binding)列出了抛出每个 A2A 错误的操作，其中没有一个列出 `InvalidAgentResponseError` {{spec §3.3.2}}。`UnsupportedOperationError` 涵盖终止的任务、关闭的流式传输和关闭的扩展 card，所以要读它的消息和元数据 {{spec §3.1.1}} {{spec §3.3.4}}。当客户端无权访问某个资源时，服务器不得透露该资源存在 {{spec §3.3.2}}。所以对调用方无法访问的任务，以 `TaskNotFoundError` 回答。
 
-每个错误都带有一个代码、一条消息和可选的详情，每条详情都有一个 `@type` 键 {{spec §3.3.2}}。JSON-RPC 把它们放在 `error.code`、`error.message` 和 `error.data` 中，HTTP 状态 spec 没有规定 {{spec §9.5}}。kit 和 SDK 发送 `200 OK` {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}。gRPC 绑定发送 `google.rpc.Status`，HTTP+JSON 在一个 `error` 对象中发送它的 JSON 形式。对于 A2A 错误，两者都包含一个带有 `reason` 和 `domain` `a2a-protocol.org` 的 `ErrorInfo` {{spec §10.6}} {{spec §11.6}}。[错误](#s-errors)一节逐一解读了每种形式。
+每个错误都带有一个代码、一条消息和可选的详情，每条详情都有一个 `@type` 键 {{spec §3.3.2}}。JSON-RPC 把它们放在 `error.code`、`error.message` 和 `error.data` 中，HTTP 状态规范没有规定 {{spec §9.5}}。kit 和 SDK 发送 `200 OK` {{sdk src/a2a/server/routes/jsonrpc_dispatcher.py}}。gRPC 绑定发送 `google.rpc.Status`，HTTP+JSON 在一个 `error` 对象中发送它的 JSON 形式。对于 A2A 错误，两者都包含一个带有 `reason` 和 `domain` `a2a-protocol.org` 的 `ErrorInfo` {{spec §10.6}} {{spec §11.6}}。[错误](#s-errors)一节逐一解读了每种形式。
 
 Sources: spec §3.1.1 to §3.1.11, §3.3.2, §3.3.4, §5.4, §9.5, §10.6, §11.6 (research/sources/specification.md); research/brief-spec.md sections 7.1 to 7.5 and 12.1; sdk src/a2a/utils/errors.py and src/a2a/server/routes/jsonrpc_dispatcher.py at v1.2.2; a2a-tck tck/requirements/base.py and tests/compatibility/http_json/test_http_status.py at tag 1.0.0.alpha2 (research/conformance-tools.md); capture/out/10-cancel.http, 11-errors.http, 16-rest-binding.http

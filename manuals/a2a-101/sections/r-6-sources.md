@@ -1,6 +1,6 @@
 # 来源
 
-> 本手册基于一个固定的发布版本、一个参考 SDK、另外五个 SDK、一个测试 kit 和一个抓包 kit，并指出这些来源相互矛盾的每一处。
+> 本手册基于一个固定的发布版本、一个参考 SDK、另外五个 SDK、一个测试 kit 和一个捕获 kit，并指出这些来源相互矛盾的每一处。
 
 [如何阅读本手册](#s-front)对来源做了排序，并介绍了 kit。本页固定它们的版本，列出它们之间的冲突，并记录项目在打标签之后做了哪些改动。
 
@@ -12,9 +12,9 @@
 | 协议版本 | 每个请求和 card 中都是 `1.0`。事实核实于 2026-10-06。 |
 | 主分支 | 2026-10-05 的提交 `679ab3a`，读取它是为了了解标签之后的改动，只在标签缺少某条规则时才引用 |
 | 参考 SDK | `a2a-sdk` 1.2.2，[github.com/a2aproject/a2a-python](https://github.com/a2aproject/a2a-python) 的标签 `v1.2.2`，提交 `2f9e44af243df5c7c7a3da361c8d095324bcd5e3`，Apache License 2.0 |
-| 抓包 kit | [kit 文件夹](manuals/a2a-101/capture)，只用标准库，在 [kit README](manuals/a2a-101/capture/README.md) 中介绍 |
+| 捕获 kit | [kit 文件夹](manuals/a2a-101/capture)，只用标准库，在 [kit README](manuals/a2a-101/capture/README.md) 中介绍 |
 
-更新日志把发布日期写为 2026-05-26，而 spec 横幅仍把 1.0.0 称为最新发布版本（[冲突 D16](#s-ref-sources-the-conflict-register)）。本手册以 `sdk` 加 `src/a2a/` 下的路径引用参考 SDK，从不直接引述它。
+更新日志把发布日期写为 2026-05-26，而规范横幅仍把 1.0.0 称为最新发布版本（[冲突 D16](#s-ref-sources-the-conflict-register)）。本手册以 `sdk` 加 `src/a2a/` 下的路径引用参考 SDK，从不直接引述它。
 
 ## 随附文件 {#s-ref-sources-vendored-files}
 
@@ -27,7 +27,7 @@
 | specification-main.md | main 上 `679ab3a` 处的 `docs/specification.md`，3618 行，未发布 | `spec-main` 加节号，只用于标签之后新增的规则 |
 | docs.md | 十四个项目页面，共 3019 行，非规范性。本版新增了 `multi-tenancy`、`custom-protocol-bindings` 和 `extension-and-binding-governance`。 | `docs` 加页面名 |
 
-spec 第 1.4 节把 proto 路径写成 `spec/a2a.proto`，这是错的（[冲突 D15](#s-ref-sources-the-conflict-register)）。两份简报按行索引这些文件：[spec 简报](manuals/a2a-101/research/brief-spec.md)，包含 40 条发现和下面的冲突登记表；[docs 简报](manuals/a2a-101/research/brief-docs.md)，标出了过时的页面。
+规范 第 1.4 节把 proto 路径写成 `spec/a2a.proto`，这是错的（[冲突 D15](#s-ref-sources-the-conflict-register)）。两份简报按行索引这些文件：[规范简报](manuals/a2a-101/research/brief-spec.md)，包含 40 条发现和下面的冲突登记表；[docs 简报](manuals/a2a-101/research/brief-docs.md)，标出了过时的页面。
 
 ## SDK 与测试 kit {#s-ref-sources-the-sdks-and-the-test-kit}
 
@@ -50,7 +50,7 @@ spec 第 1.4 节把 proto 路径写成 `spec/a2a.proto`，这是错的（[冲突
 | ID | 来源的说法 | 手册遵循 | 讨论于 | 上游 |
 |---|---|---|---|---|
 | D1 | **订阅动词。** proto 为 `GET`。§5.3 和 §11.3.2 为 `POST`。 | proto。两者都接受。 | [前言](#s-front)、[4.5](#s-streaming-and-subscribe-to-task)、[5.2](#s-http-json)、[R.1](#s-ref-operations-by-binding) | 未合并的 [PR #2068](https://github.com/a2aproject/A2A/pull/2068) |
-| D2 | **阻塞。** §3.1.1 立即返回。§3.2.2 和 proto 等待。 | §3.2.2 和 proto | [前言](#s-front)、[4.1](#s-send-message)、[7.1](#s-a-client) | 未合并的 [issue #2135](https://github.com/a2aproject/A2A/issues/2135) |
+| D2 | **阻塞。** §3.1.1 立即返回。§3.2.2 和 proto 等待。 | §3.2.2 和 proto | [前言](#s-front)、[4.1](#s-send-message)、[7.1](#s-a-client) | 未关闭的 [issue #2135](https://github.com/a2aproject/A2A/issues/2135) |
 | D3 | **中断状态下的流。** §3.1.2 和 §3.1.6 在终止状态关闭。§11.7 和流式指南在中断状态也关闭。§7.6.1 让认证流保持打开。 | 在终止状态关闭，在中断状态两种情况都要预料到 | [前言](#s-front)、[1.2](#s-one-task-request-by-request)、[4.2](#s-input-required-and-auth-required)、[4.5](#s-streaming-and-subscribe-to-task)、[R.3](#s-ref-task-states) | 未合并的 [PR #2270](https://github.com/a2aproject/A2A/pull/2270) |
 | D4 | **推送配置名称。** 正文为 `PushNotificationConfig`。proto 为 `TaskPushNotificationConfig`。 | proto 的名称 | [4.6](#s-push-notification-configs)、[R.2](#s-ref-objects-and-fields) | 已在 main 部分修复（[PR #1981](https://github.com/a2aproject/A2A/pull/1981)） |
 | D5 | **创建请求。** 正文和附录 A 为 `CreateTaskPushNotificationConfigRequest`。proto 为 `TaskPushNotificationConfig`。 | proto | [4.6](#s-push-notification-configs)、[R.1](#s-ref-operations-by-binding) | 已在 main 部分修复（[PR #1981](https://github.com/a2aproject/A2A/pull/1981)） |
@@ -65,28 +65,28 @@ spec 第 1.4 节把 proto 路径写成 `spec/a2a.proto`，这是错的（[冲突
 | D14 | **JSON-RPC 方法模板。** §9.3 为 `category/action`。§9.1 和 §9.4 为 PascalCase。 | PascalCase | [5.1](#s-json-rpc) | 无动静 |
 | D15 | **proto 路径。** §1.4 为 `spec/a2a.proto`。§5.7、§10.1 和仓库为 `specification/a2a.proto`。 | 仓库 | [1.1](#s-what-a2a-standardizes)、[随附文件](#s-ref-sources-vendored-files) | 无动静 |
 | D16 | **发布版本与日期。** 横幅：1.0.0 是最新版本。更新日志 2026-05-26。标签消息 2026-04-23。标签提交 2026-05-28。 | 1.0.1，于 2026-05-28 打标签 | [固定版本](#s-ref-sources-the-pin) | 未合并的 [PR #2072](https://github.com/a2aproject/A2A/pull/2072) |
-| D17 | **头部注册。** §14.2.1 和 §14.2.2 引用 Section 3.2.5。服务参数是 §3.2.6。 | §3.2.6 | [5.4](#s-version-and-extension-headers) | 未合并的 [issue #2305](https://github.com/a2aproject/A2A/issues/2305) |
-| D18 | **TLS 版本。** spec 为 1.3 或更高。企业指南为 1.2 或更高。 | spec | [6.1](#s-security-schemes-and-in-task-authorization) | 无动静 |
-| D19 | **空的必需数组。** §5.7 要求至少一个元素。§8.4.1 的示例 `skills` 为空，而空的 `tasks` 是合法的。 | 无结果时 `tasks` 为空，每个真实 card 上至少一个 skill | [2.1](#s-agentcard-fields)、[R.2](#s-ref-objects-and-fields) | 未合并的 [issue #2122](https://github.com/a2aproject/A2A/issues/2122) |
+| D17 | **头部注册。** §14.2.1 和 §14.2.2 引用 Section 3.2.5。服务参数是 §3.2.6。 | §3.2.6 | [5.4](#s-version-and-extension-headers) | 未关闭的 [issue #2305](https://github.com/a2aproject/A2A/issues/2305) |
+| D18 | **TLS 版本。** 规范为 1.3 或更高。企业指南为 1.2 或更高。 | 规范 | [6.1](#s-security-schemes-and-in-task-authorization) | 无动静 |
+| D19 | **空的必需数组。** §5.7 要求至少一个元素。§8.4.1 的示例 `skills` 为空，而空的 `tasks` 是合法的。 | 无结果时 `tasks` 为空，每个真实 card 上至少一个 skill | [2.1](#s-agentcard-fields)、[R.2](#s-ref-objects-and-fields) | 未关闭的 [issue #2122](https://github.com/a2aproject/A2A/issues/2122) |
 | D20 | **typ 头。** §8.4.2 把 `typ` 列在 MUST 字段中，措辞却是 SHOULD。 | 发送 `alg`、`kid`，以及设为 `JOSE` 的 `typ` | [2.3](#s-extended-cards-and-signatures) | 无动静 |
-| D21 | **签名步骤。** §8.4.2 和 §8.4.3 移除默认值。§8.4.1 保留 REQUIRED 字段和已设置的可选字段。 | §8.4.1 | [2.3](#s-extended-cards-and-signatures) | 未合并的 [issue #2249](https://github.com/a2aproject/A2A/issues/2249) |
+| D21 | **签名步骤。** §8.4.2 和 §8.4.3 移除默认值。§8.4.1 保留 REQUIRED 字段和已设置的可选字段。 | §8.4.1 | [2.3](#s-extended-cards-and-signatures) | 未关闭的 [issue #2249](https://github.com/a2aproject/A2A/issues/2249) |
 | D22 | **JSON 命名示例。** §5.5 为 `push_notification_config`。proto 为 `task_push_notification_config`。 | proto | [R.2](#s-ref-objects-and-fields) | 无动静 |
 | D23 | **违反 REQUIRED 的示例。** 有些示例省略了 `messageId`、`artifactId` 或事件的 `contextId`。 | 永远不要原样照抄示例 | [3.1](#s-message)、[6.2](#s-extensions) | 已在 main 部分修复（[PR #2083](https://github.com/a2aproject/A2A/pull/2083)） |
 | D24 | **无效的 JSON。** §4.6.1、§6.7 和 §9.4.1 中的示例。 | 永远不要原样照抄示例 | [3.2](#s-part)、[6.2](#s-extensions) | 未合并的 [PR #1657](https://github.com/a2aproject/A2A/pull/1657) |
 | D25 | **第 2 层图示。** §1.3 显示 Get Agent Card。§3.1 只定义了 Get Extended Agent Card。 | 该图是非正式的 | [1.1](#s-what-a2a-standardizes) | 无动静 |
 | D26 | **必须实现的操作。** §3.1 要求全部实现。§3.3.4 允许用标志拒绝流式传输、推送和扩展 card。 | 能力标志 | [2.2](#s-discovery-and-supported-interfaces) | 无动静 |
-| D27 | **指南中的传输。** Core Concepts：一切都用 JSON-RPC 2.0。spec：三种绑定。 | spec | [5.1](#s-json-rpc) | 无动静 |
-| D28 | **谁创建 context id。** Core Concepts：服务器。spec：客户端可以提议一个。 | spec | [3.5](#s-context-id) | 未合并的 [issue #1317](https://github.com/a2aproject/A2A/issues/1317) |
+| D27 | **指南中的传输。** Core Concepts：一切都用 JSON-RPC 2.0。规范：三种绑定。 | 规范 | [5.1](#s-json-rpc) | 无动静 |
+| D28 | **谁创建 context id。** Core Concepts：服务器。规范：客户端可以提议一个。 | 规范 | [3.5](#s-context-id) | 未关闭的 [issue #1317](https://github.com/a2aproject/A2A/issues/1317) |
 | D29 | **来自扩展的状态。** 扩展指南列出了添加状态的扩展，同时又禁止新的枚举值。 | 两者都不是规范性的。不要添加状态。 | [3.4](#s-task-and-task-state)、[6.2](#s-extensions) | 无动静 |
 | D30 | **扩展激活。** §4.6.1 为 JSON-RPC 参数。§9.2 为 HTTP 头。 | 头部 | [5.4](#s-version-and-extension-headers) | 无动静 |
-| D31 | **作为参数的版本。** §3.6.1 允许请求参数。§9.2 和 §11.2 要求使用头部。 | 头部 | [5.4](#s-version-and-extension-headers) | 未合并的 [issue #2184](https://github.com/a2aproject/A2A/issues/2184) |
+| D31 | **作为参数的版本。** §3.6.1 允许请求参数。§9.2 和 §11.2 要求使用头部。 | 头部 | [5.4](#s-version-and-extension-headers) | 未关闭的 [issue #2184](https://github.com/a2aproject/A2A/issues/2184) |
 | D32 | **旧的端点名称。** what-is-a2a 图示：`POST /sendMessage`、`/.well-known/agent-card`。 | `message:send`、`agent-card.json` | [2.2](#s-discovery-and-supported-interfaces) | 已在 main 修复，未发布（[PR #2261](https://github.com/a2aproject/A2A/pull/2261)） |
-| D33 | **指南中的流类型。** 流式指南为 `SendStreamingMessageResponse`。spec 为 `StreamResponse`。 | spec | [4.5](#s-streaming-and-subscribe-to-task) | 无动静 |
+| D33 | **指南中的流类型。** 流式指南为 `SendStreamingMessageResponse`。规范为 `StreamResponse`。 | 规范 | [4.5](#s-streaming-and-subscribe-to-task) | 无动静 |
 | D34 | **gRPC 接口 URL。** proto：绝对 HTTPS URL。gRPC 拨号的是主机和端口。 | 标签处没有规则 | [2.1](#s-agentcard-fields)、[5.3](#s-grpc) | 已在 main 修复，未发布（[PR #1997](https://github.com/a2aproject/A2A/pull/1997)） |
 | D35 | **role 的拼写。** §2.2 为 user 和 agent。proto 和 §5.5 为 `ROLE_USER`、`ROLE_AGENT`。 | 枚举名称 | [3.1](#s-message) | 无动静 |
 | D36 | **另一个客户端的任务。** §3.3.2 称之为授权错误，并禁止透露它存在。 | `TaskNotFoundError` | [6.1](#s-security-schemes-and-in-task-authorization) | 无动静 |
 | D37 | **0.3 的状态名称。** §3.4.3 为 `input-required`。proto 为 `TASK_STATE_INPUT_REQUIRED`。 | proto 的名称 | [3.4](#s-task-and-task-state) | 未合并的 [PR #2155](https://github.com/a2aproject/A2A/pull/2155) |
-| D38 | **取消的状态转换。** 迁移指南：在 1.0 中已澄清。spec：没有转换表。 | 状态转换属于实现行为 | [3.4](#s-task-and-task-state) | 未合并的 [issue #1992](https://github.com/a2aproject/A2A/issues/1992) |
+| D38 | **取消的状态转换。** 迁移指南：在 1.0 中已澄清。spec：没有转换表。 | 状态转换属于实现行为 | [3.4](#s-task-and-task-state) | 未关闭的 [issue #1992](https://github.com/a2aproject/A2A/issues/1992) |
 | D39 | **示例中的版本。** §9.2、§11.2 和 §14.2.1 发送 `A2A-Version: 0.3`。 | 发送 `1.0` | [5.4](#s-version-and-extension-headers) | 无动静 |
 | D40 | **旧的扩展 card 标志。** 附录 A.2.2 为 `supportsExtendedAgentCard`。迁移指南和 SDK 为 `supportsAuthenticatedExtendedCard`。 | `capabilities` 中的 `extendedAgentCard` | [2.3](#s-extended-cards-and-signatures)、[7.4](#s-from-0-3-to-1-0) | 无动静 |
 
