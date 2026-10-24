@@ -36,9 +36,9 @@ Gran v3 tiene parámetros 1.55B──Turbo utiliza un decodificador de 4 capas(d
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` etiqueta de lenguaje; 行为强制翻译对转录
-- `<|transcribe|>`O `<|translate|>` From arbitrary language input 翻译为英语输出,或逐字转写。
-- `<|notimestamps|>` 跳过 word-level timestamps(更快)。
+- `<|en|>`:la lengua tag;指明音频中所言的语言──省略时 Whisper 会先检测语言──
+- `<|transcribe|>`O `<|translate|>`:task tag;以源语言转写语音,或将其翻译为 英文──
+- `<|notimestamps|>`: saltando a tiempo de nivel de palabras (((更快) 』
 
 Pronto, haga que un modelo pueda realizar muchas tareas.`<|en|>`改成    cambió`<|fr|>`, se traducirá en francés.
 

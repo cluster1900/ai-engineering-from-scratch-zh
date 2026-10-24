@@ -45,7 +45,7 @@ Cada tarea de audio tiene varios indicadores, cada indicador mide diferentes dim
 
 **SECS (Speaker Encoder Cosine Similarity)。**Utilizado para la clonación de voz. Referencia audio频与克隆输出之间的 ECAPA Embedding cosine.
 
-**WER-on-ASR-round-trip。**En TTS 输出上运行 Whisper,并相对输入文本计算 WER──用于捕捉可理解度回归──2026 SOTA:&lt;2% CER──
+**WER-on-ASR-round-trip。**En TTS 输出上运行 Whisper,并相对于输入文本计算 WER──用于捕捉可理解度回退──2026 SOTA: ensayos de prueba de inglés 上 &lt; 2% WER(ensayos de prueba de mandarín 改为报告 CER) ⋅
 
 **TTFA (time-to-first-audio)。**端到端延迟──Kokoro-82M: ~100 ms; F5-TTS: ~1 s──
 
@@ -79,7 +79,7 @@ Multi-etiqueta: todos los tipos de etiquetas**mAP (mean Average Precision)**◊A
 
 **CLAP Score。**Utiliza CLAP Embedding 的文本-音频对齐分数──&gt; 0.3 = 合理对齐──
 
-**Listening panel MOS。**El ELO de Suno v5 en TTS Arena es 1293 (desde la elección de la música artificial)
+**Listening panel MOS。**Para el consumo de música, todavía es un juicio final. Suno v5 en Suno  su propio resultado en el índice de preferencia de Suno                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 
 ### Indicador de referencia de lenguaje de audio
 
