@@ -21,7 +21,7 @@ Le changement de DP à MC est important dans la philosophie: nous allons de * mo
 
 **核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, parmi lesquels $G^{(i)}(s)$Il est en politique.$\pi$Suivre $s$后观察到的回报──
 
-**First-visit vs every-visit MC。** donner une plus fréquentation état $s$Les premières visites de MC sont uniquement les suivantes: chaque visite de MC est une visite totale.
+**First-visit vs every-visit MC。** donner une plus fréquentation état $s$Le premier MC est partial, car il est possible que le retour moyen de chaque épisode soit aléatoire, et que le nombre de retours soit lié à celui-ci, mais que le nombre de visites soit plus élevé, les deux seront plus nombreux.$V^\pi(s)$❖ La première visite, plus facile à analyser, plus facile à analyser, plus facile à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus facilement à analyser, plus rapidement à analyser, plus facilement à analyser, plus facilement à analyser, plus rapidement à analyser.
 
 **Incremental mean。**Il n'y a pas de réserve de rendements, mais une moyenne de fonctionnement actualisée:
 
@@ -196,7 +196,7 @@ tags: [rl, monte-carlo, evaluation]
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
 | Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
-| Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
+| Every-visit MC | “Use all visits” | 每次访问都会贡献；有限样本下略有 biased，极限下 consistent，且 sample-efficient 更高。 |
 | ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
 | Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |

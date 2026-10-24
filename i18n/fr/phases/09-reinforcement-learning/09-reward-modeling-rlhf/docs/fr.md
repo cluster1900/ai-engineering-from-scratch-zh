@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Étape 4: Moniteur KL
 
-Chaque mise à jour de la moyenne de suivi$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Si elle est montée`~5-10`, la politique  déjà déja $\pi_{\text{SFT}}$- Je suis plus bas .$\beta$La récompense ou le piratage commence à augmenter.
+Chaque mise à jour de la moyenne de suivi$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Si elle est montée`~5-10`(à la base de la réponse par KL, selon les tokens 求和, c'est-à-dire les unités de TRL), la politique 已漂离 $\pi_{\text{SFT}}$Je veux bien .$\beta$La récompense du piratage est en train de commencer. C'est le diagnostic le plus important de la vraie RLHF.
 
 ### Étape 5: utiliser la recette de production de TRL
 

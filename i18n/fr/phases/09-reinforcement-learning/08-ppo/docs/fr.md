@@ -38,7 +38,7 @@ L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \matho
 ∆ Deux éléments:
 
 - Si l' avantage $A_t > 0$, et le ratio 试图增长到超过 $1 + \epsilon$, clip de la mise en place de la pression de la mise en place de la mise en place de la bonne action de la mise en place de la probabilité de la mise en place de la bonne action de la mise en place de la bonne action de la mise en place de la mise en place de la bonne action de la mise en place de la mise en place de la bonne action de la mise en place de la bonne action de la mise en place de la bonne action de la mise en place de la bonne action de la mise en place de la bonne action de la mise en place de la bonne$+\epsilon$Je suis là.
-- Si l' avantage $A_t < 0$, et le ratio 试图增长到超过 $1 - \epsilon$(en termes de réduction par rapport à coup, nous allons faire une mauvaise action plus possible de se produire), clip sera limiter Gradient  Ne pas mettre une mauvaise action  pousser à bas de $-\epsilon$Il y a une autre.
+- Si l' avantage $A_t < 0$, et le ratio 试图降到 $1 - \epsilon$Voici: nous allons faire une mauvaise action plus faible que l'ancienne politique, le clip sera classé Gradient: ne pas faire une mauvaise action plus faible que l'ancienne probabilité$-\epsilon$Je suis là.
 
 `min`处理另一个方向: si le ratio 已朝*有益*方向移动, vous obtenez toujours Gradient (will not be on your adverse side clipping) 
 

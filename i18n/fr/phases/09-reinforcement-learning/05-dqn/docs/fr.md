@@ -73,7 +73,7 @@ class ReplayBuffer:
         return rng.sample(self.buf, batch)
 ```
 
-Atari utilise environ 50 000 de capacité; notre environnement de jouets utilise 5 000 de capacité suffisante.
+Atari utilise environ 106 pouces de capacité, comparable à la DQN originale. Il commence à apprendre et recueille 50 000 pouces de transition.
 
 ### 步骤 2: un très petit réseau Q (MLP)
 

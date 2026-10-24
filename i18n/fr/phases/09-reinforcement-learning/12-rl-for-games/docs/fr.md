@@ -1,6 +1,6 @@
 # 面向游戏的RL  AlphaZero、MuZero et LLM Réflexion 时代
 
-> 1992:TD-Gammon utilise purement TD dans le backgammon dans le jeu de hasard pour vaincre le champion de l'humanité.2016:AlphaGo vaincre Lee Sedol.2017:AlphaZero de zéro à zéro pour dominer les échecs, les shogi et les go.2024:DeepSeek-R1 prouve la même méthode de raisonnement.
+> 1992:TD-Gammon utilise purement TD dans le backgammon dans le jeu de hasard pour vaincre le champion de l'humanité.2016:AlphaGo vaincre Lee Sedol.2017:AlphaZero de zéro à zéro pour dominer les échecs, les shogi et les go.2025:DeepSeek-R1 prouve la même méthode de raisonnement.
 
 **类型：**Construire
 **语言：**Python
@@ -60,7 +60,7 @@ while True:
 
   $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
- aucun modèle de récompense, aucun critique, aucun MCTS──le baseline de référence par rapport au groupe  a remplacé les trois  dans le benchmark de raisonnement , avec moins de calcul  atteindre ou dépasser la qualité PPO-RLHF──
+没有学习得到的奖励模型,没有批评,没有MCTS──由规则依据验证器 提供奖励,组相关基线 替代批评,搜索 步骤则被删除──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF质量──
 
 **完整的 R1 配方。**DeepSeek-R1 ((DeepSeek 2025) est un ouvrage de deux modèles:
 
@@ -87,7 +87,7 @@ f3-selfplay-ladder
 
 ## Construction
 
-`code/main.py`Le code intermédiaire est réalisé**微型 GRPO** Un groupe de bandits avec un groupe de bandits  L'algorithme est le même que celui du LLM; seulement la politique et l'environnement, plus simple.
+`code/main.py`Le code intermédiaire est réalisé**微型 GRPO**L'algorithme de l'échantillon de bandits est le même que celui du LLM; il n'y a que la politique et l'environnement, plus simple.
 
 ### 步骤 1: un environnement de vérificateur de type micro
 
@@ -145,7 +145,7 @@ Avec RLHF similaires diagnostics: jusqu'à la moyenne de référence KL、entrop
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-- **Group size 太小。**Différence de base du groupe$1/\sqrt{G}$Il est en train de se déchaîner.$G = 4$时, signal d'avantage 会很噪音; 标准选择是 $G = 8$À 64...
+- **Group size 太小。**Différence de référence moyenne par groupe$1/G$缩放(其 erreur standard 按 $1/\sqrt{G}$Il est très important de savoir si vous êtes un homme ou une femme.$G = 4$时, signal d'avantage 会很噪音; 标准选择是 $G = 8$À 64...
 - **Length bias。**Il est possible de réaliser un programme de formation en logement de plusieurs niveaux, en utilisant des logs de niveau séquentiel ou en utilisant des logs de longueur maximale.
 - **纯 self-play 循环。**AlphaZero 风格训练可能在一般数量游戏中卡进统治循环──可通过多样化对手池联赛比赛,课十缓解──
 - **Search-policy mismatch。**AlphaZero trainage politique 去模仿搜索结果──如果政策网太小,不能表示搜索的分布,训练会停滞──
