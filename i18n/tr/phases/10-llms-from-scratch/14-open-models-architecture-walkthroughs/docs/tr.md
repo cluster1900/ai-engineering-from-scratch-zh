@@ -217,7 +217,7 @@ Llama 3 8B 128k bağlamında BF16 √ baş_dim = gizli / num_head = 128 时:
 
 Yukarıdaki formüller, her katman için tam bir diziyi depolamak için kullanılır.
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```

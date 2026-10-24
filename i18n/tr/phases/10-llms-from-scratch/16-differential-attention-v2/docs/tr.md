@@ -142,7 +142,7 @@ Not: Output weight can be for negative. Bu hiç bir sorun değil. value cache
 给定一个配置 ((hidden=4096, heads=32, d_head=128),打印:
 
 - Baseline Transformer: Q、K、V V`hidden * hidden`,MLP 4 * gizli
-- DIFF V1: Q、K Çeşitli büyüklükte`hidden * hidden`,V büyük küçük `hidden * hidden`(不变), başı dim 在内部减半──增加 per head `lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$- Evet.
+- DIFF V1: Q、K Çeşitli büyüklükte`hidden * hidden`,V büyük küçük `hidden * hidden`(不变), başı dim 在内部减半──增加 per head `lambda`参数 $(O(\text{heads} \cdot d_{\text{head}}))$- Evet.
 - DIFF V2: Q`2 * hidden * hidden`,K büyüklük için`hidden * hidden`,V büyük küçük `hidden * hidden`                                                                                                                                                                                                                                                              $O_W$Ön proje geri gitmek.`lambda`参数。
 
 Oyuncak 会测量 V2 额外参数成本(大约每个注意区 额外 `hidden * hidden`- ... (Müzik)

@@ -218,11 +218,11 @@ Bir eğitim adım:
 Çıkış projesi(logits başı) Token Embedding Matrix ile 共享权重── Thiscal weight tying It reduced 38M 参数,并提升性能,因为 it forces the model to input 和 output Using the same representation space──
 
 
-```figure
-sampling-decoder
-```
-
 ## Yapın onu.
+
+```figure
+iso-machine {"machine":"mini-gpt"}
+```
 ### 步骤 1: Ekleme katmanı
 
 Token yerleşimleri 50,257 个可能 Token içindeki her birini bir 768 维 vektora yerleştirecektir.
@@ -464,6 +464,10 @@ def generate(model, prompt_tokens, max_new_tokens=100, temperature=0.8):
 Temperatür  kontrol随机性──Temperatür 1.0 使用原始分布──Temperatür 0.5 会让分布更尖(更确定模型更经常选择顶级选择)──Temperatür 1.5 会让分布更平坦(更随机低概率 Token 获得更大的机会)──Temperatür 0.0 açgözlülükle çözme(总是选择最高概率 Token)──
 
 `tokens[-seq_len:]`Bu pencerenin en büyük bağlam uzunluğu olduğu için gerekli.
+
+```figure
+sampling-decoder
+```
 
 ## Kullan
 ### 完整训练与生成 Demo

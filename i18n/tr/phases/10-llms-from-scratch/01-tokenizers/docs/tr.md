@@ -53,6 +53,10 @@ BPE, daha sonra tekrar tokenizasyon için kullanılmış bir algoritma.
 
 Tek karakterden başlamak için, her komşu çiftin bir tek token haline birleşmesi için, hedef kelime birikimi boyutuna ulaşıncaya kadar, bu süreci tekrar tekrar yapın.
 
+```figure
+tokenizer-bpe
+```
+
 Aşağıda, "en düşük" ̳En düşük" ve "en yeni" içeren çok küçük bir korpusda çalışan BPE'ler bulunmaktadır:
 
 ```
@@ -195,10 +199,6 @@ Başlıca İngilizce dayalı Tokenizers diğer dillere karşı çok kötüdür. 
 
 İşte Llama 3'ün sözlük birikmesini 32K'den 128K'ye genişletmesinin nedeni budur.
 
-
-```figure
-tokenizer-bpe
-```
 
 ```figure
 tokenizer-tradeoff
