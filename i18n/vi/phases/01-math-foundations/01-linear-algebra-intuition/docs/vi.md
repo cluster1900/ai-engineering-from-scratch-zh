@@ -161,7 +161,7 @@ Dự án này đã bỏ y phân tích. Đây là hình thức đơn giản nhấ
 4. Đối với các vector còn lại 重复该过程
 
 ```
-Input:  v1, v2, v3, ...（linearly independent）
+Input:  v1, v2, v3, ... (linearly independent)
 
 u1 = v1 / |v1|
 
@@ -171,7 +171,7 @@ u2 = w2 / |w2|
 w3 = v3 - (v3 dot u1) * u1 - (v3 dot u2) * u2
 u3 = w3 / |w3|
 
-Output: u1, u2, u3, ...（orthonormal basis）
+Output: u1, u2, u3, ... (orthonormal basis)
 ```
 
 Đây là cách làm việc trong phân hủy QR. Q là cơ sở thông thường, R  nắm bắt các hệ số chiếu.
