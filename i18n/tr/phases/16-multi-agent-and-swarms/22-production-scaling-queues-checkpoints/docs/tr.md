@@ -47,9 +47,9 @@ worker crashes mid-step
 
 LangGraph 在每个超级步骤后写检查点;Temporal 在每个活动后写;Restate 使用事件来源的期刊──三者实现的是同一个模式──
 
-### LangGraph'in çalıştırma süresi
+### Her adım bir kontrol noktasının çalıştırma zamanı
 
-Her ajanın bir tane var .`thread_id`;stat is typed dict; her super-step 都向检查点表 写入一行──恢复时,runtime 从最后一个检查点 继续,而不是从头开始──Agent 可以`interrupt()`İsteğe girme zamanı gelince, herhangi bir işçi geri dönebilir.
+LangGraph ' in çalıştırma süresi işte bu örnek: Her ajanın bir tane var .`thread_id`;stat is typed dict; her super-step 都向检查点表 写入一行──恢复时,runtime 从最后一个检查点 继续,而不是从头开始──Agent 可以`interrupt()`İsteğe girme zamanı gelince, herhangi bir işçi geri dönebilir.
 
 Bu 2026 Nisan'ın bir referans üretim tasarımı.
 

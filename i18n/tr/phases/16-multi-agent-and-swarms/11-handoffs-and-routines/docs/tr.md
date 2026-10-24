@@ -21,6 +21,8 @@ Swarm 走向相反方向:使用模型已经具备的工具调用能力──Hand
 
 **Handoff。**Ajan bir aracı ayarlayabilir, yeni bir Ajan nesnesini geri gönderir. Swarm çalıştırma zamanı Ajan'ı kontrol eder.
 
+Bu tüm çekim.
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent

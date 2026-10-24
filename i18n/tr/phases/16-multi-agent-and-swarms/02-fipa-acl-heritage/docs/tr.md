@@ -1,6 +1,6 @@
 # FIPA-ACL ve Konuşma Aktı'nın bir aktarımı
 
-> MCP'den önce, A2A'dan önce, FIPA-ACL vardı. 2000 yılında, İIEEE Akıllı Fiziksel Ajanlar Vakfı, 20 performanslı ızdıracak iki içerikli dil ve bir dizi etkileşim protokolü içeren bir ajan iletişim dili onayladı. Sözleşme net ızdıracak, abone olacak, bildirmek isteyecek zaman. Endüstri dünyasından bu yüzden çıktı, çünkü ontoloji ızdıracak ve web'e satış yapmak çok ağır, ancak LLM tarafından desteklenen çoklu ajan sistemleri ızdıracak, ızdıracak, ızdıracak, ızdıracak, sadece resmi anlamsızlık: JSON sözleşmeleri ızdıracak, ızdıracak, ızdıracak ızdıracak ızdıracak.
+> MCP'den önce, A2A'dan önce, FIPA-ACL vardı. 2000 yılında, Akıllı Fiziksel Ajanlar Vakfı (FIPA, 2005 yılında IEEE Bilgisayar Topluluğu Standart Komisyonu oldu) 20 performanslı  iki içerikli dil ve bir dizi etkileşim protokolü içeren bir ajan iletişim dilini onayladı. Sözleşme ağı  abonelik/ bildirim  istek-ne zaman.
 
 **Type:** 学习
 **Languages:** Python (stdlib)
@@ -193,7 +193,7 @@ Yeni protokoller üretime teslim edilmeden önce önce bu beş sorunu kaydet.
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | Speech act | “一种会做事的 utterance” | Austin/Searle：把 utterances 视为 actions。ACL 的理论源头。 |
-| FIPA | “那个老 XML 东西” | IEEE Foundation for Intelligent Physical Agents。2000 年标准化了 ACL。 |
+| FIPA | “那个老 XML 东西” | Foundation for Intelligent Physical Agents。2000 年标准化了 ACL；2005 年成为 IEEE Computer Society 的标准委员会。 |
 | ACL | “Agent Communication Language” | FIPA 的 envelope format：performative + content + metadata。 |
 | Performative | “那个动词” | 一条 message 的 intent class：`inform`、`request`、`propose`、`cfp` 等。 |
 | KQML | “FIPA 的前身” | Knowledge Query and Manipulation Language（1993）。更简单，范围更窄。 |

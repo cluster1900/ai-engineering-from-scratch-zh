@@ -112,7 +112,7 @@ Bu, ajan sistemlerinin SRE tarzında olay tepkisi için uygulanmaktadır.
 
 ### Başarısızlık modunun denetimi
 
-2026 yılının en iyi uygulaması ise, her yıl (ya da her büyük yayın) bir hata modunda denetim yapmaktır:
+2026 yılının en iyi uygulaması, her dönem (ve her büyük yayın) bir hata modunun denetlenmesi:
 
 1. **Trace sample。**Toplamak yaklaşık 1000 条 gerçek idam izleri。
 2. **Categorize。**Her iz başarısızlık için, MAST + Grup düşünce kategorilerine yerleştirilmiştir.
