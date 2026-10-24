@@ -100,7 +100,7 @@ def sample(dec, z_dim, rng):
 - **Posterior collapse.**过于激进地驱动$q(z \mid x) \to \mathcal{N}(0, I)$导致$z$没有关于$x$关于""的信息$\beta=0$开始,逐步升到1) 个自由位,或者在不活跃的维度上跳 KL.
 - **Blurry samples.**对于L2来说是贝尔最佳的意思 (Bays-optimal) 意思 (一组合理数字的意思是模糊的数字)
 - **β too large, too early.**见后部崩.$\beta \approx 0.01$开始并逐步走进.
-- **Latent dim too small.**16D 适用于MNIST,256-D 适用于ImageNet 2562,2048-D 适用于ImageNet 10242──稳定传播的VAE将512×512×3 压缩为64×64×4──空间面积上32x下样数,道上32x)──
+- **Latent dim too small.**16-D 适用于MNIST,256-D 适用于ImageNet 2562,2048-D 适用于ImageNet 10242──稳定传播的VAE将512×512×3 压缩为64×64×4──每边8x下样,空间面积上64x;频道从3变为4,因此总值数减少了48x)──
 
 ## 用它
 

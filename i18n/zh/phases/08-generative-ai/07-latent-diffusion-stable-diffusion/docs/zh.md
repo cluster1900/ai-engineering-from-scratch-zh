@@ -50,7 +50,7 @@ noise-schedule
 
 ## 构建它
 
-`code/main.py`把一个玩具放在1-D VAE(身份编码器 + 解码器,仅用于演示;真正的VAE 会是 conv网) 叠在06课的DDPM之上,并通过无分类指导 加入类条件化――它显示了同一个扩散损失 无论运行在原始1D值上,还是运行在编码的值上都有效,这就是关键洞见――
+`code/main.py`把一个玩具放在1-D VAE(固定的乘以0.5编码器,以及作为编码器的精确逆变换,仅用于演示;真正的VAE 会是 conv网) 叠加在DDPM的第06课程上,并通过无类型指导加入类条件. 它显示了相同的扩散损失.无论运行在原始1-D 值上,还是运行在编码的值上都有效.
 
 ### 步骤1:编码/解码器
 
@@ -133,7 +133,7 @@ h = h + CrossAttention(Q=h, K=text_embed, V=text_embed)
 
 参考流量集成是经典的我有一个消费级GPU,能交付吗?配方――技巧就是把生产推理文献列出的同一个三旋配方应用到扩散的T:
 
-1. **Staggered loading。**流有三个不需要同时存在 VRAM 中的网络:T5-XXL文本编码器(fp32 下约10GB)、CLIP-L(小)、12B MMDiT,以及VAE──先编码提示,*删除*编码器,加载DiT,登录,*删除*DiT,加载VAE,解码──消费级8GB的GPU 一次只能容纳一个阶段──
+1. **Staggered loading。**流有四个不需要同时存在 VRAM 中的网络:T5-XXL文本编码器(fp32 下约10GB)、CLIP-L(小)、12B MMDiT,以及VAE──先编码提示,*删除*编码器,加载DiT,denoise,*删除*DiT,加载VAE,解码──消费级 8GB的GPU 一次只能容纳一个阶段──
 2. **通过 bitsandbytes 做 4-bit quantization。**在T5编码器和DiT 上都使用`BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)`◎内存减少8倍,根据Aritra的基准,文本到图像的质量下降几乎是不可见的.
 3. **CPU offload。** `pipe.enable_model_cpu_offload()`通过前进时,将自动交换 CPU 和 GPU 模块.
 
