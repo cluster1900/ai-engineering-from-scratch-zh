@@ -52,7 +52,13 @@ s0-gpu-dispatch
 nvidia-smi
 ```
 
-Ưu tiên của CUDA:
+Ứng dụng cài đặt: Python.com, Linux, Wheel默认 已自带 CUDA.
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+Sau đó kiểm tra PyTorch có thể xem GPU không:
 
 ```python
 import torch

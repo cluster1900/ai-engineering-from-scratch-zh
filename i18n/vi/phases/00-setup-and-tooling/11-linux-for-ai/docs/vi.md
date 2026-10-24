@@ -39,7 +39,7 @@ Thư mục nhà của bạn là `~`Hoặc`/home/your-username`Hầu như mọi h
 
 ## - Đơn lệnh
 
-Dưới đây là 15 lệnh  bao gồm 95% hoạt động của bạn trên hộp GPU từ xa:
+Dưới đây là 13 lệnh bao gồm phần lớn các hoạt động trên hộp GPU từ xa:
 
 ### 移动位置
 

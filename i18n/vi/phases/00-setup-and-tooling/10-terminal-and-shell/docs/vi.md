@@ -98,7 +98,7 @@ python train.py > output.log 2> errors.log
 python train.py > train_full.log 2>&1
 ```
 
-Bạn cần phải nắm được ba chuyển hướng:
+Bạn cần phải nắm được bốn chuyển hướng và ống:
 
 | 符号 | 作用 |
 |--------|-------------|
