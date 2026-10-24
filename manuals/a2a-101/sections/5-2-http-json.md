@@ -1,16 +1,16 @@
 # HTTP+JSON
 
-> HTTP+JSON names each operation with a verb and a path from the proto's `google.api.http` annotations, and sends the request and response messages as plain JSON bodies.
+> HTTP+JSON 用来自 proto 的 `google.api.http` 注解中的动词和路径来命名每个操作，并以普通 JSON 正文发送请求和响应消息。
 
-The planner repeats its first test run over the second interface of `test-runner`, `http://localhost:41241/a2a/rest` with the binding `HTTP+JSON`. The same agent and task store answer, in `16-rest-binding.http`, and only the envelope differs from `03-blocking-task.http`.
+planner 通过 `test-runner` 的第二个接口，即绑定为 `HTTP+JSON` 的 `http://localhost:41241/a2a/rest`，重复它的第一次测试运行。在 `16-rest-binding.http` 中，回答的是同一个 agent 和同一个任务存储，与 `03-blocking-task.http` 相比只有信封不同。
 
-When you finish this section, you can map any operation to its route, set its content type, and send a `tenant` when the card asks.
+读完本节后，你能把任何操作映射到它的路由，设置它的内容类型，并在 card 要求时发送 `tenant`。
 
-## Routes from the proto
+## 来自 proto 的路由 {#s-http-json-routes-from-the-proto}
 
-Every rpc of `A2AService` carries an `option (google.api.http)` with a verb and a path template {{proto A2AService}}, and §11.3 lists the same routes {{spec §11.3}}. An operation with a request body is a `POST` with `body: "*"`: `/message:send`, `/message:stream`, `/tasks/{id}:cancel`, and `/tasks/{task_id}/pushNotificationConfigs`. Reads are `GET`, and the configuration delete is `DELETE`. [Operations by binding](#s-ref-operations-by-binding) gives all eleven routes with their messages.
+`A2AService` 的每个 rpc 都带有一个包含动词和路径模板的 `option (google.api.http)` {{proto A2AService}}，§11.3 列出了同样的路由 {{spec §11.3}}。带请求正文的操作是带有 `body: "*"` 的 `POST`：`/message:send`、`/message:stream`、`/tasks/{id}:cancel` 和 `/tasks/{task_id}/pushNotificationConfigs`。读取操作是 `GET`，删除配置是 `DELETE`。[按绑定列出的操作](#s-ref-operations-by-binding)给出了全部十一个路由及其消息。
 
-For subscribe the proto says `get: "/tasks/{id=*}:subscribe"` {{proto A2AService}}, and §5.3 and §11.3.2 say `POST /tasks/{id}:subscribe` {{spec §5.3}} {{spec §11.3.2}} ([conflict D1](#s-ref-sources)). The reference SDK's server accepts both verbs, and its client sends `POST` {{sdk src/a2a/server/routes/rest_routes.py}} {{sdk src/a2a/client/transports/rest.py}}. The Java and .NET servers accept only `POST` {{sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java at v1.4.0.Final}} {{sdk-dotnet src/A2A.AspNetCore/A2AEndpointRouteBuilderExtensions.cs at v1.0.0-preview2}}. So accept both on a server, and send `POST` from a client.
+对于 subscribe，proto 写的是 `get: "/tasks/{id=*}:subscribe"` {{proto A2AService}}，而 §5.3 和 §11.3.2 写的是 `POST /tasks/{id}:subscribe` {{spec §5.3}} {{spec §11.3.2}}（[冲突 D1](#s-ref-sources)）。参考 SDK 的服务器两个动词都接受，它的客户端发送 `POST` {{sdk src/a2a/server/routes/rest_routes.py}} {{sdk src/a2a/client/transports/rest.py}}。Java 和 .NET 服务器只接受 `POST` {{sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java at v1.4.0.Final}} {{sdk-dotnet src/A2A.AspNetCore/A2AEndpointRouteBuilderExtensions.cs at v1.0.0-preview2}}。所以服务器要两者都接受，客户端要发送 `POST`。
 
 ```listing
 title: SendMessage over HTTP+JSON, with no envelope
@@ -37,9 +37,9 @@ Content-Type: application/a2a+json
 …
 ```
 
-## Query parameters and content types
+## 查询参数与内容类型 {#s-http-json-query-parameters-and-content-types}
 
-`GET` and `DELETE` carry no body, so their request fields travel as path parameters or query parameters {{spec §11.5}}, in camelCase. `GetTask` puts the task `id` in the path and `historyLength` in the query. `ListTasks` takes `contextId`, `status`, `pageSize`, `pageToken`, `historyLength`, `statusTimestampAfter`, and `includeArtifacts` {{proto ListTasksRequest}} {{spec §11.5}}. A nested object cannot go in a query string, so that request must be a `POST` {{spec §11.5}}. [Figure](#fig-two-json-bindings) sets both operations beside their JSON-RPC form.
+`GET` 和 `DELETE` 不带正文，所以它们的请求字段以路径参数或查询参数传输 {{spec §11.5}}，采用 camelCase。`GetTask` 把任务 `id` 放在路径中，把 `historyLength` 放在查询中。`ListTasks` 接受 `contextId`、`status`、`pageSize`、`pageToken`、`historyLength`、`statusTimestampAfter` 和 `includeArtifacts` {{proto ListTasksRequest}} {{spec §11.5}}。嵌套对象不能放进查询字符串，所以那种请求必须是 `POST` {{spec §11.5}}。[图](#fig-two-json-bindings)把这两个操作与它们的 JSON-RPC 形式并排放置。
 
 ```figure
 id: fig-two-json-bindings
@@ -49,29 +49,29 @@ claim: JSON-RPC posts every operation to one URL and names it in the body, HTTP+
 caption: Each row is one operation, headed by its rpc line from a2a.proto. Bold marks where each binding names the operation, and italic type names stand for the message that fills that place. Left, the blocking-task and polling captures. Right, the HTTP+JSON capture. Ids shortened to 8 characters.
 ```
 
-Requests and responses should use `application/a2a+json` {{spec §11.1}}, and the kit sends it on every body. The reference SDK sends its errors as `application/json` {{sdk src/a2a/utils/error_handlers.py}}, and the Java and Go servers send every body that way {{sdk-java transport/rest/src/main/java/org/a2aproject/sdk/transport/rest/handler/RestHandler.java at v1.4.0.Final}} {{sdk-go a2asrv/rest.go at v2.6.0}}. So send `application/a2a+json`, and accept both types when you read.
+请求和响应应使用 `application/a2a+json` {{spec §11.1}}，kit 在每个正文上都发送它。参考 SDK 以 `application/json` 发送错误 {{sdk src/a2a/utils/error_handlers.py}}，Java 和 Go 服务器以这种方式发送每个正文 {{sdk-java transport/rest/src/main/java/org/a2aproject/sdk/transport/rest/handler/RestHandler.java at v1.4.0.Final}} {{sdk-go a2asrv/rest.go at v2.6.0}}。所以要发送 `application/a2a+json`，读取时两种类型都接受。
 
-## Streams and errors
+## 流与错误 {#s-http-json-streams-and-errors}
 
-A stream is the same `text/event-stream` response as in JSON-RPC {{spec §11.7}}. Each `data:` line holds the `StreamResponse` alone, with no envelope. No capture records a stream in this binding, so [streaming and subscribing](#s-streaming-and-subscribe-to-task) shows the JSON-RPC frames.
+流与 JSON-RPC 中一样是 `text/event-stream` 响应 {{spec §11.7}}。每个 `data:` 行只存放 `StreamResponse`，没有信封。没有捕获记录这种绑定中的流，所以[流式传输与订阅](#s-streaming-and-subscribe-to-task)一节展示的是 JSON-RPC 的帧。
 
-An error uses the HTTP status code and the JSON form of `google.rpc.Status` in an `error` object {{spec §11.6}}. Exchanges 3 and 4 of the record show two, and [Errors](#s-errors) reads that body.
+错误使用 HTTP 状态码，以及 `error` 对象中 `google.rpc.Status` 的 JSON 形式 {{spec §11.6}}。记录中的第 3 和第 4 次交换展示了两个错误，[错误](#s-errors)一节读取了这种正文。
 
-## The tenant field
+## tenant 字段 {#s-http-json-the-tenant-field}
 
-**Tenant:** an optional opaque string on an interface that routes requests to one agent {{proto AgentInterface}}, or to one tenant when several agents share one endpoint. The same `tenant` field sits on all ten request messages, from `SendMessageRequest` to `GetExtendedAgentCardRequest` {{proto SendMessageRequest}} {{proto GetExtendedAgentCardRequest}}. A client copies the card's value into every request, and must leave the field out when the entry sets no `tenant` {{spec §8.3.2}}. The protocol gives the value no format, and no kit card sets one.
+**Tenant：** 接口上一个可选的不透明字符串，把请求路由到某个 agent {{proto AgentInterface}}，或者在多个 agent 共享一个端点时路由到某个租户。同一个 `tenant` 字段位于全部十个请求消息上，从 `SendMessageRequest` 到 `GetExtendedAgentCardRequest` {{proto SendMessageRequest}} {{proto GetExtendedAgentCardRequest}}。客户端把 card 中的值复制到每个请求中，当条目没有设置 `tenant` 时必须省略该字段 {{spec §8.3.2}}。协议没有规定这个值的格式，kit 的 card 也都没有设置它。
 
-Here the value can also travel in the path. Every rpc has a second `google.api.http` form with a `/{tenant}` prefix, such as `post: "/{tenant}/message:send"` {{proto A2AService}}. Only the proto lists these routes, and §5.3, §11.3, and §11.5 show the plain ones {{spec §11.3}}. In JSON-RPC the value is `params.tenant`, and in gRPC it is the message field. The migration guide describes this as tenant scoping built into gRPC requests {{docs whats-new-v1}}, which understates it.
+在这里，这个值也可以放在路径中传输。每个 rpc 都有第二种带 `/{tenant}` 前缀的 `google.api.http` 形式，例如 `post: "/{tenant}/message:send"` {{proto A2AService}}。只有 proto 列出了这些路由，§5.3、§11.3 和 §11.5 显示的是不带前缀的路由 {{spec §11.3}}。在 JSON-RPC 中这个值是 `params.tenant`，在 gRPC 中它是消息字段。迁移指南把这描述为内置于 gRPC 请求中的租户范围 {{docs whats-new-v1}}，这说得不够全面。
 
-The project's guide names three routing keys for several agents on one host: a URL prefix, the credential, and the `tenant` field {{docs multi-tenancy}}. A deployment can use more than one of them {{docs multi-tenancy}}.
+对于一台主机上的多个 agent，项目的指南给出了三种路由键：URL 前缀、凭据和 `tenant` 字段 {{docs multi-tenancy}}。一个部署可以使用其中不止一种 {{docs multi-tenancy}}。
 
-The reference SDK's client wraps the transport in a `TenantTransportDecorator` when the chosen interface sets a tenant {{sdk src/a2a/client/client_factory.py}} {{sdk src/a2a/client/transports/tenant_decorator.py}}. Its HTTP+JSON transport puts the value in the path prefix {{sdk src/a2a/client/transports/rest.py}}. Its server mounts every route again under `/{tenant}`, copies the value into the call context, and never compares it with the card {{sdk src/a2a/server/routes/rest_routes.py}} {{sdk src/a2a/server/routes/rest_dispatcher.py}}. The agent reads `RequestContext.tenant` and decides what it means {{sdk src/a2a/server/agent_execution/context.py}}.
+当所选接口设置了 tenant 时，参考 SDK 的客户端会用一个 `TenantTransportDecorator` 包装传输 {{sdk src/a2a/client/client_factory.py}} {{sdk src/a2a/client/transports/tenant_decorator.py}}。它的 HTTP+JSON 传输把这个值放在路径前缀中 {{sdk src/a2a/client/transports/rest.py}}。它的服务器在 `/{tenant}` 下再挂载一遍每个路由，把这个值复制到调用上下文中，并且从不把它与 card 比较 {{sdk src/a2a/server/routes/rest_routes.py}} {{sdk src/a2a/server/routes/rest_dispatcher.py}}。agent 读取 `RequestContext.tenant` 并决定它的含义 {{sdk src/a2a/server/agent_execution/context.py}}。
 
 ```takeaways
-- Build each route from the proto's `google.api.http` annotation, and accept `GET` and `POST` on `:subscribe`.
-- Send `application/a2a+json`, and accept `application/json` as well when you read.
-- Put the fields of a `GET` or `DELETE` in the path or the query string, in camelCase.
-- Copy the interface's `tenant` into every request, and omit it when the card sets none.
+- 根据 proto 的 `google.api.http` 注解构建每个路由，并在 `:subscribe` 上接受 `GET` 和 `POST`。
+- 发送 `application/a2a+json`，读取时也接受 `application/json`。
+- 把 `GET` 或 `DELETE` 的字段放在路径或查询字符串中，采用 camelCase。
+- 把接口的 `tenant` 复制到每个请求中，card 没有设置时就省略它。
 ```
 
 Sources: spec §5.3, §8.3.2, §11.1, §11.3, §11.3.2, §11.5, §11.6, §11.7 (research/sources/specification.md); proto A2AService, AgentInterface, SendMessageRequest, GetTaskRequest, ListTasksRequest, GetExtendedAgentCardRequest (research/sources/a2a.proto); docs multi-tenancy, whats-new-v1 (research/sources/docs.md); sdk src/a2a/server/routes/rest_routes.py, src/a2a/server/routes/rest_dispatcher.py, src/a2a/server/agent_execution/context.py, src/a2a/client/client_factory.py, src/a2a/client/transports/tenant_decorator.py, src/a2a/client/transports/rest.py, src/a2a/utils/error_handlers.py (a2a-python 1.2.2); sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java, transport/rest/src/main/java/org/a2aproject/sdk/transport/rest/handler/RestHandler.java at v1.4.0.Final; sdk-dotnet src/A2A.AspNetCore/A2AEndpointRouteBuilderExtensions.cs at v1.0.0-preview2; sdk-go a2asrv/rest.go at v2.6.0; capture/out/16-rest-binding.http, 03-blocking-task.http, 04-polling.http; capture/a2a_ref.py
