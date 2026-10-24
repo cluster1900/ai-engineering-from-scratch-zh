@@ -40,6 +40,10 @@ V(s) \leftarrow \max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]
 
 **为什么 $\gamma < 1$ 很重要。**Operador Bellman em sup-norma$\gamma$- contracção:$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$Contratação significa único ponto fixo 和几何收──$\gamma < 1$, tu já perdeste a garantia, precisa de um horizonte finito ou de um estado terminal absorvente.
 
+```figure
+value-iteration-gamma
+```
+
 ## 动手构建
 
 ### Passo 1: 构建 GridWorld MDP model
@@ -140,10 +144,6 @@ O mesmo ponto fixo, menor número de código-fonte.
 - **Policy ties。**Se duas ações tiverem o mesmo valor Q,`argmax`Possivelmente, cada iteração, usando diferentes formas de romper a situação, conduzirá à estabilidade da política, à revisao de balanços, à utilização de uma relação estável, à primeira ação da ordem fixa.
 - **State-space explosion。**DP cada vez que varrer é$O(\lvert S \rvert \cdot \lvert A \rvert)$◊ o mais utilizado em cerca de 107 estados.
 
-
-```figure
-value-iteration-gamma
-```
 
 ## Use-o
 

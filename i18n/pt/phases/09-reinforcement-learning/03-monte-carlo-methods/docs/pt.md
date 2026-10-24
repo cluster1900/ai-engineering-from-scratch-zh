@@ -46,6 +46,10 @@ V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
 
 Em condições de temperatura, cada par é visitado sem limites.$\alpha$满足 Robbins-Monro), vai receber até $Q^{\ast}$和 $\pi^{\ast}$- Não.
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### Passo 1: lançamento → (s, a, r) 列表
@@ -138,10 +142,6 @@ Quando episódios → ∞ 时, você é contra $V^\pi$A estimativa do MC  deveri
 - **Non-stationary policies。**Se $\pi$发生变化(如 MC control 中那样), old returns from different policy──Constant-α MC pode tratar este ponto; sample-average MC 不行──
 - **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$A variação irá aumentar a velocidade de rotação de uma rotação de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de um fluxo de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de velocidade de
 
-
-```figure
-epsilon-greedy
-```
 
 ## Use-o
 
