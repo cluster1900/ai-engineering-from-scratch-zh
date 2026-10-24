@@ -100,7 +100,7 @@ def sample(dec, z_dim, rng):
 - **Posterior collapse.**KL terimi 过于激进地驱动 $q(z \mid x) \to \mathcal{N}(0, I)$, neden oluyor$z$- Hayır.$x$Bu yüzden de bu konuda bir şey yapmamalıyız.$\beta=0$開始, adım adım 1) ̳free bits'e yükselmek veya aktif olmayan boyutlarda KL'den atlamak.
 - **Blurry samples.**Gaussian dekoder olasılığı, MSE yeniden yapılandırması anlamına gelir, L2 ile karşılaştırıldığında Bayes-optimaldır (mean)                                                                                                                                                                                                                                              
 - **β too large, too early.**见后倒塌──从 $\beta \approx 0.01$開始并逐步 ramp──
-- **Latent dim too small.**16-D  MNIST için uygundur,256-D  ImageNet için uygundur 2562,2048-D  ImageNet için uygundur 10242。Stable Diffusion'ın VAE'si 512×512×3   64×64×4 
+- **Latent dim too small.**16-D  MNIST için uygundur,256-D  ImageNet için uygundur 2562,2048-D  ImageNet 10242 için uygundur.
 
 ## Kullan
 

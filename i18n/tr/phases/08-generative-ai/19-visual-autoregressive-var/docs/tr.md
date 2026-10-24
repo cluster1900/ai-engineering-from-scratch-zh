@@ -50,7 +50,7 @@ Giriş sırası yapısı:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Pozisyon Ekleme Aynı zamanda kodlama ölçüm indeksi ve ölçüm içindeki uzay konumları.$k$Yer$(i, j)$Gösteriler dikkatle ölçülüyor.$1 \ldots k$Tüm işaretler, dikkat ölçümüne.$k$Bu, bir ölçekte tüm konumların birleştirilmesi ve tahmin edilmesi anlamına gelir.
+Pozisyon yerleşimi 同时编码尺度索引和尺度内的空间位置──注意 在尺度顺序上是因果的, 在尺度内部按区块 进行:尺度 $k$Yer$(i, j)$Gösteriler dikkatle ölçülüyor.$1 \ldots k$Tüm Token'ler, ölçüyü de dahil$k$Bu nedenle, bir ölçekte tüm konumlar birbiriyle birlikte tahmin edilmektedir.
 
 訓練                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $k$, tüm ön ölçümlü işaretleri, tahmin işaretleri $z_k$△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                                                               
 

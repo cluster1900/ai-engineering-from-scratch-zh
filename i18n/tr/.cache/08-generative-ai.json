@@ -1,11 +1,11 @@
 {
   "phases/08-generative-ai/01-generative-models-taxonomy-history/docs/en.md": "b46e916d93885cc62dbbe1190014f90d8990612e226be70d915c58a86f15905f",
-  "phases/08-generative-ai/02-autoencoders-vae/docs/en.md": "0dcce9c08deae371282ddd0f3f5b062f8edf249fa1694b1a1cd250ed2f2402c5",
+  "phases/08-generative-ai/02-autoencoders-vae/docs/en.md": "d815c287133f4750468ba2d0e8433e6138245d6b35e440de5627dd5b2452774d",
   "phases/08-generative-ai/03-gans-generator-discriminator/docs/en.md": "e52440c94f52e3ef9114abf390e883d8473ff146d1a1c7dccd943a311d1ccb43",
   "phases/08-generative-ai/04-conditional-gans-pix2pix/docs/en.md": "ae6f7a5ea0dd3791efd9245b9a80a54856470de557b9d2d6b572ee76e3c86fd1",
   "phases/08-generative-ai/05-stylegan/docs/en.md": "7e59945b7f87af8d46c149e78d82ae4fdfb4359f255d22a3c6ab3aeecc5173f7",
   "phases/08-generative-ai/06-diffusion-ddpm-from-scratch/docs/en.md": "ec72e9f12a199fbcd69f3e227fee7aeb29b437c255e765dbc7a23457c8c1fee0",
-  "phases/08-generative-ai/07-latent-diffusion-stable-diffusion/docs/en.md": "9f55ad0eb471ea4221fb741057e8b6819c816cae00a5bee43fb384047d343bbe",
+  "phases/08-generative-ai/07-latent-diffusion-stable-diffusion/docs/en.md": "bb42653fcfe8d9b3e1e2820c335a0f602574e42d00e12de38c6e3146914dee52",
   "phases/08-generative-ai/08-controlnet-lora-conditioning/docs/en.md": "eeb19ac848f27357cc0341628316630b0b75f04238ee1fe9bbceed9d52a98c39",
   "phases/08-generative-ai/09-inpainting-outpainting-editing/docs/en.md": "89afa580abfb880c2bcd1a654e2291f12788737a211eadb8dc15f414fd9f3dd0",
   "phases/08-generative-ai/10-video-generation/docs/en.md": "70e5c68cad3fd86eac86ae083cd6c6cbdcfd36512cc7f1b11c0efb0f46b5ab0f",
@@ -13,5 +13,5 @@
   "phases/08-generative-ai/12-3d-generation/docs/en.md": "b5af2cc0ef91d190535652446ffa58aa6b5a31c9560086e8337e9302c520ea0c",
   "phases/08-generative-ai/13-flow-matching-rectified-flows/docs/en.md": "1479b4501b2d826c02056dd1ef1951c86ee1f38d58bdb3570d35aa8365740247",
   "phases/08-generative-ai/14-evaluation-fid-clip-score/docs/en.md": "109d591e524e68de9e91e8c1b80226d1758372ccd57ee5dd686d1ecf11957c54",
-  "phases/08-generative-ai/19-visual-autoregressive-var/docs/en.md": "1de38bd236df75656099824c4714ef479c48d73914b52be41ae6433c8409f733"
+  "phases/08-generative-ai/19-visual-autoregressive-var/docs/en.md": "e9011e55ccd27410b184e5f0992afc421d2800b4acefcb454f322d435b6bbe96"
 }

@@ -50,7 +50,7 @@ noise-schedule
 
 ## Yapın onu.
 
-`code/main.py`Bir oyuncak 1-D VAE(tıpkı gösterim için kullanılan kimlik kodlayıcı + dekodör; gerçek VAE 会是 conv net) üzerinde Kursu 06'nın DDPM 之上,并通过类型-free guidance 加入类条件化──它显示了同一个扩散损失 无论运行在原始 1-D 值上,还是运行在编码的值上都有效,这就是关键洞见──
+`code/main.py`Bir oyuncak 1-D VAE( sabit çarpı 0.5 kodlayıcı, ayrıca dekoder olarak kesin ters değişim, sadece gösterim için; gerçek VAE 会是 conv net) üzerinde Kursu 06'nun DDPM üzerinde, ve sınıflandırıcı-özgür rehberliği ile 加入类条件化──
 
 ### 步骤 1: kodlayıcı/dekoder
 
@@ -133,7 +133,7 @@ Bu sınıf koşullı difüzyon modeli ile sabit difüzyon arasındaki tek gerçe
 
 参考流集成是经典的我有一张消费级GPU,能交付吗?配方──技巧就是把生产推理文献列出的同一个三旋配方应用到扩散 DiT:
 
-1. **Staggered loading。**Fluks var üç ihtiyaç yok aynı zamanda var VRAM içindeki ağ:T5-XXL metin kodlayıcı(fp32 下約 10 GB)、CLIP-L(小)、12B MMDiT, yanı sıra VAE。先编码 prompt*,delete* encoders,加载 DiT,denoise,*delete* DiT,加载 VAE,decode──消费级 8GB GPUs 一次只能容纳一个阶段──
+1. **Staggered loading。**Fluks 有四个不需要同时存在在VRAM 中的网络:T5-XXL text encoder(fp32 下约 10 GB)、CLIP-L(小)、12B MMDiT,以及 VAE。先编码 prompt,*delete* encoders,加载 DiT,denoise,*delete* DiT,加载 VAE,decode──消费级 8GB GPUs 一次只能容纳一个阶段──
 2. **通过 bitsandbytes 做 4-bit quantization。**T5 kodlayıcı ve DiT 上都使用 `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)`❖内存 azalmış 8×, Aritra'nın referanslarına göre, not defterinde bağlantılar var), metin-resim kalitesi neredeyse fark edilemez olarak azalmıştır.
 3. **CPU offload。** `pipe.enable_model_cpu_offload()`Önceki gelişme sırasında otomatik olarak CPU ve GPU arasında değişim modülleri olacaktır.
 
