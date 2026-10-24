@@ -1,23 +1,23 @@
-# Pick a model size for one GPU
+# 为一块 GPU 选择模型大小
 
-> The largest model you can train on one GPU is the one whose trainer copy and engine copy fit together.
+> 一块 GPU 上能训练的最大模型，是训练器副本和引擎副本能同时放下的那个模型。
 
-When you finish this section, you can estimate the memory of a run before you start it. You can also choose the largest model that fits.
+读完本节后，你能在开始训练之前估算它的内存，并选出能放下的最大模型。
 
-**Our result:** on one GB10 with 128 GB of shared memory, Qwen3-1.7B fit for 4 short steps with answers cut at 256 tokens. Qwen3-4B did not fit, even with those short answers. We did not train 1.7B with the 1,024-token recipe.
+**我们的结果：** 在一块有 128 GB 共享内存的 GB10 上，回答截断在 256 token 时，Qwen3-1.7B 能放下并跑完 4 个短步。即使回答这么短，Qwen3-4B 也放不下。我们没有用 1,024 token 的配方训练 1.7B。
 
-## Count the trainer memory first
+## 先算训练器的内存 {#s-pick-a-model-size-count-the-trainer-memory-first}
 
-The trainer is the large part of a colocated run. Full fine-tuning with Adam keeps the model weights, the gradients, and two optimizer values for each weight. With mixed precision that is about 16 bytes for each parameter, before activations. The engine adds its own copy of the weights and its KV cache on top.
+在共置训练中，训练器是占用最大的部分。用 Adam 做全量微调时，要保存模型权重、梯度，以及每个权重的两个优化器值。在混合精度下，这大约是每个参数 16 字节，还不算激活。引擎还要在此之上加上它自己的一份权重和它的 KV cache。
 
-| Model | Trainer state, estimate | Result on our GB10 |
+| 模型 | 训练器状态，估算 | 在我们 GB10 上的结果 |
 |---|---|---|
-| Qwen3-0.6B | about 10 GB | trains |
-| Qwen3-1.7B | about 27 GB | fits for 4 steps at 256 tokens |
-| Qwen3-4B | about 64 GB | stopped by Ray in the first step at 256 tokens, twice |
-| Qwen3-8B | about 128 GB | not tried, larger than the machine |
+| Qwen3-0.6B | 约 10 GB | 能训练 |
+| Qwen3-1.7B | 约 27 GB | 在 256 token 下能跑 4 步 |
+| Qwen3-4B | 约 64 GB | 在 256 token 下第一步就被 Ray 停掉，两次都是 |
+| Qwen3-8B | 约 128 GB | 未尝试，比整台机器还大 |
 
-The estimate is a lower bound. Activations, the engine, and the process overhead come on top, and the measured node memory below shows how large that overhead is.
+这个估算是下限。激活、引擎和进程开销还要另算，下面实测的节点内存显示了这部分开销有多大。
 
 ```figure
 id: fig-2-1
@@ -27,36 +27,36 @@ claim: The estimated trainer state of a 4B model is about half the machine, and 
 caption: Blue bars are estimates at 16 bytes for each parameter. Rose bars are the node memory that Ray read when it stopped each 4B run.
 ```
 
-## What happened with 4B
+## 4B 发生了什么 {#s-pick-a-model-size-what-happened-with-4b}
 
-Ray stopped both of our 4B runs in the training phase of the first step, at 115.86 and then 119.18 GB of 121.69 GB. The second run lowered the engine memory fraction from 0.4 to 0.2, and the kill came anyway. [Section 2.3](#s-stop-ray-killing-the-job) shows the kill message, why it happens on a GB10, and what to change.
+Ray 在第一步的训练阶段停掉了我们的两次 4B 训练，当时内存分别为 121.69 GB 中的 115.86 GB 和 119.18 GB。第二次训练把引擎内存比例从 0.4 降到了 0.2，但仍被停掉。[第 2.3 节](#s-stop-ray-killing-the-job)给出了停止信息、它在 GB10 上发生的原因以及该改什么。
 
-## Choose the size
+## 选择大小 {#s-pick-a-model-size-choose-the-size}
 
-1. Start with the smallest model that can answer your task.
-2. Multiply the parameter count by 16 bytes. On our 128 GB GB10, the limit fell between 27 GB and 64 GB of this estimate. Use half of your GPU memory as a first guess.
-3. Run 4 steps at your real answer length. Read the node memory with `free -g` on the host, or in the Ray kill line. On a GB10, `nvidia-smi` reports no memory size.
-4. Move up one size only when the short run leaves room.
+1. 从能完成你的任务的最小模型开始。
+2. 把参数量乘以 16 字节。在我们 128 GB 的 GB10 上，上限落在这个估算的 27 GB 到 64 GB 之间。先用你 GPU 内存的一半作为初步估计。
+3. 用你真实的回答长度跑 4 步。在主机上用 `free -g` 读节点内存，或者从 Ray 的停止信息那一行读。在 GB10 上，`nvidia-smi` 不报告内存大小。
+4. 只有当短训练还有余量时，才升一档大小。
 
-To train a model of 4B or more, you need more GPUs ([Part 6](#s-split-rollout-and-training)) or a recipe that keeps less optimizer state.
+要训练 4B 或更大的模型，你需要更多 GPU（[第 6 部分](#s-split-rollout-and-training)），或者一个保存更少优化器状态的配方。
 
-## Train a larger model with LoRA
+## 用 LoRA 训练更大的模型 {#s-pick-a-model-size-train-a-larger-model-with-lora}
 
-**LoRA:** low-rank adaptation. The trainer keeps the model weights frozen and trains two small matrices next to some of the layers. Only those small matrices get gradients and optimizer state.
+**LoRA：** 低秩适配（low-rank adaptation）。训练器冻结模型权重，在部分层旁边训练两个小矩阵。只有这些小矩阵有梯度和优化器状态。
 
-LoRA is the usual way to train a model whose full trainer state does not fit. In the Miles version we ran, only the Megatron trainer supports it. The FSDP trainer of this manual refuses LoRA at start. To try it:
+当完整的训练器状态放不下时，LoRA 是常用的训练方式。在我们运行的 Miles 版本中，只有 Megatron 训练器支持它。本手册使用的 FSDP 训练器在启动时会拒绝 LoRA。要尝试它：
 
-1. Switch to the Megatron trainer, as [section 6.1](#s-split-rollout-and-training-choose-the-trainer) shows.
-2. Add `--lora-rank 16`, or another rank above 0. The default rank of 0 turns LoRA off.
-3. Keep one adapter. Under `--colocate`, Miles trains one adapter, and several adapters need a split layout.
+1. 切换到 Megatron 训练器，如[第 6.1 节](#s-split-rollout-and-training-choose-the-trainer)所示。
+2. 加上 `--lora-rank 16`，或其他大于 0 的 rank。默认 rank 为 0，表示关闭 LoRA。
+3. 只用一个 adapter。在 `--colocate` 下，Miles 只训练一个 adapter，多个 adapter 需要分离布局。
 
-The engine serves the same adapter that the trainer updates. We have not run LoRA or the Megatron trainer on our GB10. So we do not know if a 4B model fits this way on 128 GB.
+引擎服务的是训练器正在更新的同一个 adapter。我们没有在 GB10 上运行过 LoRA 或 Megatron 训练器，所以不知道 4B 模型能否以这种方式在 128 GB 上放下。
 
 ```takeaways
-- Estimate the trainer state at 16 bytes for each parameter before you start.
-- On one 128 GB GB10, plan for 1.7B at most, and test it at your answer length.
-- After a Ray memory kill, make the run smaller, as section 2.3 shows.
-- Try LoRA on the Megatron trainer before you rent more GPUs for a larger model.
+- 开始之前，按每个参数 16 字节估算训练器状态。
+- 在一块 128 GB 的 GB10 上，最多规划 1.7B，并用你的回答长度测试。
+- Ray 因内存停掉训练后，按第 2.3 节的方法把训练缩小。
+- 为更大的模型租更多 GPU 之前，先在 Megatron 训练器上试试 LoRA。
 ```
 
 Sources: capture/gpu/out-gb10/ray-oom-4b.log; capture/gpu/out-gb10/ray-oom-4b-lowmem.log; capture/gpu/out-gb10/gpu-check.txt; Miles LoRA arguments and LoRA documentation at main 08752a12; capture/gpu/summary/miles-gb10-lab.json (runs.e4-0.6b, runs.e4-1.7b, excluded.e4-4b, excluded.e4-4b-lowmem).
