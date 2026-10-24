@@ -36,9 +36,9 @@
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` भाषा टैग;强制 अनुवाद- बनाम-अनुवाद 行为──
-- `<|transcribe|>`या `<|translate|>`  翻译为英语输出,或逐字转写──
-- `<|notimestamps|>` 跳过 शब्द स्तर के समय टिकटों(更快)。
+- `<|en|>`:भाषा टैग;指明音频中所言的语言──省略时 Whisper 会先检测语言──
+- `<|transcribe|>`या `<|translate|>`:task tag;以源语言转写语音,或将其翻译为英文文本──
+- `<|notimestamps|>`:跳过 word-level टाइमस्टैम्प ((更快) 
 
 जल्दी 让一个模型能够完成很多任务――把 `<|en|>`改成 `<|fr|>`, यह फ्रेंच में अनुवाद किया जाएगा.
 

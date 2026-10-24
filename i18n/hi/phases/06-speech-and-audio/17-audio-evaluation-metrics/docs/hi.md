@@ -45,7 +45,7 @@
 
 **SECS (Speaker Encoder Cosine Similarity)。**आवाज क्लोनिंग हेतु उपयोग किया गया है।
 
-**WER-on-ASR-round-trip。**输出上运行 Whisper,并对输入文本计算 WER──用于捕捉可理解度回归──2026 SOTA:&lt;2% CER──
+**WER-on-ASR-round-trip。**में TTS 输出上运行 Whisper,并相对于输入文本计算 WER──用于捕捉可理解度回退──2026 SOTA:अंग्रेजी परीक्षण सेट 上 &lt;2% WER(मेंडारिन परीक्षण सेट 改为报告 CER) 
 
 **TTFA (time-to-first-audio)。**端到端延迟──कोकोरो-82M: ~100 ms;F5-TTS: ~1 s──
 
@@ -79,7 +79,7 @@
 
 **CLAP Score。**CLAP Embedding का प्रयोग करें
 
-**Listening panel MOS。**TTS Arena में 1293 के लिए ELO (उत्पादन) के लिए एक अंतिम निर्णय है।
+**Listening panel MOS。**इसके लिए अभी भी अंतिम निर्णय है। Suno v5 में Suno  अपने स्वयं के परिणाम के लिए प्राथमिकता बेंचमार्क ऊपर प्राप्त ELO 1293  यह निर्माता संख्या है; TTS Arena  रैंकिंग है语音, संगीत नहीं 
 
 ### ऑडियो भाषा बेंचमार्क
 
