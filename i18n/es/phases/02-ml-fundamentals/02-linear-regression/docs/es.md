@@ -153,6 +153,10 @@ Cuando tienes muchas características, el modelo puede pasar por la distribució
 
 惩罚项会抑制 mayores pesas―hiperparámetro $\lambda$ control权衡:$\lambda$越高,重量 越小,regularización 越强── los siguientes cursos se enfocarán en esto. Ahora sólo necesitamos saber que existe y por qué es útil.
 
+```figure
+linear-regression-fit
+```
+
 ## Construcción
 
 ### Paso 1: generación de datos de ejemplos
@@ -466,10 +470,6 @@ print(f"Plain weights: {[round(w, 4) for w in multi_model.weights]}")
 print("Ridge weights are smaller (shrunk toward zero) due to the L2 penalty.")
 ```
 
-
-```figure
-linear-regression-fit
-```
 
 ## Usalo
 
