@@ -39,9 +39,23 @@ function expand(token, keys, seen = new Set()) {
   }).join('/');
 }
 
-function lineCount(file, cache) {
-  if (!cache.has(file)) cache.set(file, fs.readFileSync(file, 'utf8').replace(/\n$/, '').split('\n').length);
+function fileLines(file, cache) {
+  if (!cache.has(file)) cache.set(file, fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n').replace(/\n$/, '').split('\n'));
   return cache.get(file);
+}
+
+function lineCount(file, cache) {
+  return fileLines(file, cache).length;
+}
+
+function blankEnd(ref, root, cache) {
+  const lines = fileLines(path.join(root, ref.file), cache);
+  for (const [start, end = start] of ref.spans) {
+    for (const [which, at] of [['starts', start], ['ends', end]]) {
+      if (!lines[at - 1].trim()) return `${ref.token}:${start}${end === start ? '' : `-${end}`} ${which} on a blank line (${ref.file}:${at})`;
+    }
+  }
+  return '';
 }
 
 function parseEvidence(text) {
@@ -106,9 +120,14 @@ function evidenceProblems(text, entry, blocks, root, cache = new Map()) {
       const problem = refProblem(ref, entry, root, cache);
       ref.ok = !problem;
       if (problem) problems.push(`evidence line ${ref.line}: ${problem}`);
-      else previous.set(ref.line, ref.file);
+      else {
+        previous.set(ref.line, ref.file);
+        const blank = blankEnd(ref, root, cache);
+        if (blank) problems.push(`evidence line ${ref.line}: ${blank}. Point both ends of the range at the cited text`);
+      }
     }
   }
+
   for (const block of blocks) {
     const section = parsed.sections.find(item => item.title.includes(block.title)) || parsed.sections.find(item => titleKey(item.title).includes(titleKey(block.title)));
     if (!section) problems.push(`the evidence file has no section for the block "${block.title}"`);
