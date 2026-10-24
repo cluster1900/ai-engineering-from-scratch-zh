@@ -14,7 +14,7 @@
 - فهم أربع مستويات: النظام ، الحزم ، أوقات التشغيل ، مكتبات الذكاء الاصطناعي
 
 ## 问题
-ستستخدم Python TypeScript Rust 和 Julia لتعلم 200+ درجة هندسة الذكاء الاصطناعي  درجة 
+ستستخدم Python TypeScript Rust 和 Julia لتعلم 500+ درجة هندسة الذكاء الاصطناعي  درجة 
 
 الكثير من الناس يخطون إعداد البيئة.. ثم يضعون ساعات قليلة في إصلاح أخطاء الاستيراد.. تضارب الإصدارات وغياب برامج تشغيل الكود..
 
@@ -46,7 +46,7 @@ xcode-select --install
 brew install git curl wget
 
 # Ubuntu/Debian
-sudo apt update && sudo apt install -y build-essential git curl wget
+sudo apt update && sudo apt install -y build-essential git curl wget unzip
 
 # Windows (use WSL2)
 wsl --install -d Ubuntu-24.04
@@ -93,6 +93,16 @@ npm install -g pnpm
 node -e "console.log('Node', process.version)"
 ```
 
+فأن تنصيب الإجراءات`unzip`, غياب الوقت`Not installing fnm due to missing dependencies.`退出: في لينكس فوقها يجب أن يفتح زيب 归档, في macOS فوقها من خلال Homebrew تنصيبها.`unzip`أوبنتو، ديبيان و WSL2 سوف تمر بالخطوة الأولى من التنفيذ`sudo apt install -y unzip`(‬)
+
+**macOS / Apple Silicon（M1/M2/M3/M4）：**إذا كان الإجراءات`Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)`توقف، أوضح أن محطتك تعمل في روزيتا 2`arch`输出 `i386`و (هومبريو) هو أصل أسلحة 64 تكوينها.`fnm install 22`开始重新运行 上述命令:
+
+```bash
+arch -arm64 brew install fnm
+echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### الخطوة 4: الخرسانة
 
 تستخدم في أداء النقدي 课程(الاضافة 系统)
@@ -116,33 +126,67 @@ julia -e 'println("Julia ", VERSION)'
 
 ### 步骤 6:GPU 设置( إذا كان لديك)
 
+**NVIDIA（Linux / Windows）：**
+
 ```bash
-# NVIDIA
 nvidia-smi
 
 # Install PyTorch with CUDA
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 ```
 
+**macOS / Apple Silicon（M1/M2/M3/M4）：**ماك 上 بدون كودا هذا هو الوضع المحدد، ليس فاعل**不要**传入 `--index-url .../cuXXX`(هذه العجلات تطبق فقط على لينكس ويندوز، تنصيبها يفشل)
+
+```bash
+uv pip install torch torchvision torchaudio
+```
+
+验证( ينطبق على أي منصة):
+
 ```python
 import torch
-print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA available: {torch.cuda.is_available()}")           # False on macOS — expected
+print(f"MPS available:  {torch.backends.mps.is_available()}")   # True on Apple Silicon
 if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
 没有GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云 GPUs──
 
-### الخطوة 7: تحقق من كل شيء
+### الخطوة 7: تحقق طريقك
 
-运行验证脚本:
+كل أمر في هذه الدورة يعمل من المكتب المحلي، ويعني يحتوي على`README.md`和 `phases/`يبدأ الفحص المُحدد فقط بالتحقق من المحتويات التي يتطلبها الطريق المُختار. يُعتبر أداة تستخدم بعد فترة طويلة، بحيث يرى المتعلمون الجدد نتيجة واضحة، وليس تحذيرًا كبيرًا.
+
+开始完整的入门序列:
 
 ```bash
-python phases/00-setup-and-tooling/01-dev-environment/code/verify.py
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner
+```
+
+أو فقط تحقق من طريق كنت تريد أن تذهب:
+
+```bash
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route ml-foundations
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route llm-engineering
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agents
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route mcp
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route agent-skills
+python3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route certification
+```
+
+إذا أردت أن تستخدم نفس الاختبار الاولى و الاختبار اللاحق`--show-later` عدم وجود أدوات متابعة لا يمكن أن تعيق الطريق المختار‬
+
+كل فاشل من المراجعات الضرورية سوف تعطى المسار الذي تمت فحصه أو خطأ الإدخال، فضلا عن أمر تحديث محدد.
+
+عندما يُجري المُراجعة، سيتم طباعة أول أمر مؤكد للدورة:
+
+```text
+Ready to start Beginner course.
+Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
 ## استخدمها
-بيئتك الآن جاهزة للاستخدام في كل فصل من هذه الدروس.
+البيئة التي تتواجد فيها يمكن أن تبدأ في فحص الطريق. تحتاج إلى إعادة تثبيت دروس أخرى، لا داعي للقيام بتعليق كل مجموعة من التقنيات.
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|

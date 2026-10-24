@@ -56,18 +56,24 @@ OPENAI_API_KEY=sk-...
 ### 步骤 2: الأولى API 调用 (بايتون)
 
 ```python
+import os
+
 import anthropic
 
 client = anthropic.Anthropic()
 
+MODEL = os.environ.get("LLM_MODEL", "claude-sonnet-5")
+
 response = client.messages.create(
-    model="claude-sonnet-4-20250514",
+    model=MODEL,
     max_tokens=256,
     messages=[{"role": "user", "content": "What is a neural network in one sentence?"}]
 )
 
 print(response.content[0].text)
 ```
+
+`LLM_MODEL`استخدم لتحديد نموذج أيد أنثروپي، والقيمة المخصصة هي غير متضمنة لل日期 Sonnet 别名──其他 مزودين(OpenAI、Google وغيرها) أيضا تتبع ا واحد مفتاح و ‬اثر نموذج أيد ‬ نموذج، ولكن كل منها لديه SDK٬ نقطة نهائية و طلب/رد مخططها‬
 
 ### الخطوة الثالثة: أول مرة API 调用 (TypeScript)
 
@@ -76,8 +82,10 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
+const MODEL = process.env.LLM_MODEL ?? "claude-sonnet-5";
+
 const response = await client.messages.create({
-  model: "claude-sonnet-4-20250514",
+  model: MODEL,
   max_tokens: 256,
   messages: [{ role: "user", content: "What is a neural network in one sentence?" }],
 });
@@ -99,7 +107,7 @@ headers = {
     "anthropic-version": "2023-06-01",
 }
 body = json.dumps({
-    "model": "claude-sonnet-4-20250514",
+    "model": os.environ.get("LLM_MODEL", "claude-sonnet-5"),
     "max_tokens": 256,
     "messages": [{"role": "user", "content": "What is a neural network in one sentence?"}],
 }).encode()
