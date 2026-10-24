@@ -142,7 +142,7 @@ Construir una longitud de 1024 de secuencias de sintesis.  Colocar la señal 
 给定一个配置 ((hidden=4096, heads=32, d_head=128),打印:
 
 - Transformador de base: Q、K、V de tamaño en tamaño`hidden * hidden`, MLP para 4 * oculto
-- DIFF V1: Q、K de tamaño en tamaño`hidden * hidden`, V , por lo grande`hidden * hidden`(不变), cabeza dim 在内部减半──增加 per cabeza `lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$¿Qué es eso?
+- DIFF V1: Q、K de tamaño en tamaño`hidden * hidden`, V , por lo grande`hidden * hidden`(不变), cabeza dim 在内部减半──增加 per cabeza `lambda`参数                      $(O(\text{heads} \cdot d_{\text{head}}))$¿Qué es eso?
 - DIFF V2: Q`2 * hidden * hidden`, K , por lo que`hidden * hidden`, V , por lo grande`hidden * hidden`◊ Extraviviedad en $O_W$Antes de la proyección, vuelvo a ver.`lambda`参数。
 
 Juguete 会测量 V2 de extraparámetros costos(aproximadamente cada bloque de atención  extra `hidden * hidden`),并打印出来──

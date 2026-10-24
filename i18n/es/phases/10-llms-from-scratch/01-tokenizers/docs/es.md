@@ -53,6 +53,10 @@ BPE es un algoritmo de compresión de la memoria, que más tarde fue reutilizado
 
 Desde un solo carácter comienza. Cada pareja de palabras de la siguiente forma se fusiona en un nuevo Token.
 
+```figure
+tokenizer-bpe
+```
+
 Bajo está un corpus muy pequeño de BPE que funciona en la parte superior, que contiene "bajo""",bajo" y "más nuevo":
 
 ```
@@ -195,10 +199,6 @@ Los Tokenizers basados en inglés son muy crueles para otros idiomas. En el Toke
 
 Es por eso que Llama 3 ampliará el vocabulario de 32K a 128K. La distribución de Tokens en sistemas de letras no ingleses es cada vez más grande, y la compresión entre los idiomas es cada vez más equitativa.
 
-
-```figure
-tokenizer-bpe
-```
 
 ```figure
 tokenizer-tradeoff

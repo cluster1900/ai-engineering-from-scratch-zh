@@ -217,7 +217,7 @@ Los pesos de 8B en BF16 son de 16 GB. El caché KV de una sola secuencia de 128 
 
 Estas fórmulas supusieron que cada una de las capas de la ventana de deslizamiento solo necesita los tokens W 个 más recientes, por lo que para los modelos híbridos, se requiere una secuencia completa.
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```

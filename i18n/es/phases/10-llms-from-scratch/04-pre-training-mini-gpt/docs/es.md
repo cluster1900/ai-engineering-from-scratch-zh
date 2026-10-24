@@ -218,11 +218,11 @@ El ritmo de aprendizaje es más importante que lo que piensas. En los primeros 2
 Proyección de salida (logits head) con Token Embedding Matrix 共享权重──这叫重量绑定它减少38M参数,并提升性能,因为它迫使模型对输入和输出使用同一个表示空间──
 
 
-```figure
-sampling-decoder
-```
-
 ## Construirlo
+
+```figure
+iso-machine {"machine":"mini-gpt"}
+```
 ### Paso 1: Incluir capa
 
 Embedings de tokens se proyectarán en un vector de 768 dimensiones. Cada uno de los 50257 posibles tokens se proyectará en un vector de 768 dimensiones.
@@ -464,6 +464,10 @@ def generate(model, prompt_tokens, max_new_tokens=100, temperature=0.8):
 Temperatura  control随机性──Temperatura 1.0 使用原始分布──Temperatura 0.5 会让分布更尖(更确定模型更经常选择顶级选择)──Temperatura 1.5 会让分布更平坦(更随机低概率代币 获得更大的机会)──Temperatura 0.0 es codificación codificada(总是选择最高概率代币)──
 
 `tokens[-seq_len:]`Esta ventana es necesaria, ya que el modelo tiene la mayor longitud de contexto (GPT-2 para 1024). Una vez superada, hay que perder el token más antiguo.
+
+```figure
+sampling-decoder
+```
 
 ## Usalo
 ### 完整训练与生成 Demo
