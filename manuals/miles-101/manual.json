@@ -252,9 +252,9 @@
     },
     {
       "number": 7,
-      "title": "Debug",
-      "thesis": "Start from the symptom you see, and each entry gives the cause, the check, and the fix.",
-      "summary": "Troubleshooting by symptom, and records that make runs comparable.",
+      "title": "调试",
+      "thesis": "从你看到的症状开始，每个条目都给出原因、检查方法和修复方法。",
+      "summary": "按症状排查问题，以及让运行可比的记录。",
       "accent": "rose",
       "sections": [
         {
