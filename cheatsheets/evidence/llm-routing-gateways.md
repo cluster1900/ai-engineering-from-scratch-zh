@@ -3,21 +3,21 @@
 Abbreviations: R = phases/13-tools-and-protocols/21-llm-routing-layer, M = phases/17-infrastructure-and-production/16-model-routing, G = phases/17-infrastructure-and-production/19-ai-gateways, H = projects/hedged-request-lab. d = docs/en.md, py = code/main.py, ts = code/main.ts.
 
 ## AI 网关并列对比 (comparison)
-- Code: LiteLLM MIT OSS Python G/d:35, Portkey Apache 2.0 OSS March 2026 G/d:44, Kong built on Kong Gateway G/d:51, Cloudflare/Vercel managed zero-ops G/d:64
-- Overhead: 5-15 ms, 20-40 ms, 3-8 ms, 1-3 ms (edge advantage): G/d:74-77
-- Scale: LiteLLM breaks ~2000 RPS, 8 GB G/d:38, 91; Portkey control plane G/d:42; Kong 228% faster than Portkey G/d:52; edge advantage G/d:77
-- Rate limit: token-bucket, tiered, sliding-window G/d:83; Cloudflare limited on rate limits G/d:66
-- Guardrails: LiteLLM optional, Portkey and Kong opinionated guardrails R/d:66; Portkey PII redaction G/d:44; Cloudflare limited G/d:66
-- Price: $0 for OSS G/d:40, $49/mo production tier G/d:46, $100/model/month max 5 on Plus G/d:53, managed-only G/outputs/skill-gateway-picker.md:24
-- Best fit: Python <500 RPS dev G/d:39, regulated industries G/d:47, already on Kong >1000 RPS G/d:54, edge JavaScript apps G/d:65
+- Code: LiteLLM MIT OSS Python G/d:32, Portkey Apache 2.0 OSS March 2026 G/d:41, Kong built on Kong Gateway G/d:48, Cloudflare/Vercel managed zero-ops G/d:61
+- Overhead: 5-15 ms, 20-40 ms, 3-8 ms, 1-3 ms (edge advantage): G/d:71-74
+- Scale: LiteLLM breaks ~2000 RPS, 8 GB G/d:35, 88; Portkey control plane G/d:39; Kong 228% faster than Portkey G/d:49; edge advantage G/d:74
+- Rate limit: token-bucket, tiered, sliding-window G/d:80; Cloudflare limited on rate limits G/d:63
+- Guardrails: LiteLLM optional, Portkey and Kong opinionated guardrails R/d:63; Portkey PII redaction G/d:41; Cloudflare limited G/d:63
+- Price: $0 for OSS G/d:37, $49/mo production tier G/d:43, $100/model/month max 5 on Plus G/d:50, managed-only G/outputs/skill-gateway-picker.md:24
+- Best fit: Python <500 RPS dev G/d:36, regulated industries G/d:44, already on Kong >1000 RPS G/d:51, edge JavaScript apps G/d:62
 
 ## 何时选用 (concepts)
-- LiteLLM: SRE team, data sovereignty R/d:83; <500 RPS G/d:39
-- OpenRouter: managed SaaS, 300+ providers, credits R/d:76-79; no infra R/d:83
-- Portkey: guardrails and compliance out of the box R/d:83
-- Kong: already on Kong, >1000 RPS G/d:54
-- Cloudflare/Vercel: edge-serving JavaScript, zero-ops G/d:64-65
-- Self-host: data residency, healthcare and finance default self-host G/d:70
+- LiteLLM: SRE team, data sovereignty R/d:80; <500 RPS G/d:36
+- OpenRouter: managed SaaS, 300+ providers, credits R/d:73-76; no infra R/d:80
+- Portkey: guardrails and compliance out of the box R/d:80
+- Kong: already on Kong, >1000 RPS G/d:51
+- Cloudflare/Vercel: edge-serving JavaScript, zero-ops G/d:61-62
+- Self-host: data residency, healthcare and finance default self-host G/d:67
 - No gateway: single-model prototype, direct API calls simpler R/outputs/skill-routing-config-designer.md:26
 
 ## 路由模式 (comparison)
@@ -82,12 +82,12 @@ Abbreviations: R = phases/13-tools-and-protocols/21-llm-routing-layer, M = phase
 - two GET attempts, 64KiB, two-second ceiling, 100ms: H/README.md:34
 
 ## 故障排查 (troubleshooting)
-- LiteLLM >2000 RPS cascade failures, migrate first: G/outputs/skill-gateway-picker.md:22; G/d:38
-- Portkey at TTFT P99 < 100 ms, Kong or Cloudflare: G/outputs/skill-gateway-picker.md:23; G/d:75, 79
+- LiteLLM >2000 RPS cascade failures, migrate first: G/outputs/skill-gateway-picker.md:22; G/d:35
+- Portkey at TTFT P99 < 100 ms, Kong or Cloudflare: G/outputs/skill-gateway-picker.md:23; G/d:72, 76
 - Escalation rate >30%, cheap model over-routed: M/d:66
 - Silent quality drop, drift, online quality metrics: M/d:58-62
 - One-provider chain, one failure domain: R/outputs/skill-routing-config-designer.md:22
-- Retries count against a budget: R/d:52
+- Retries count against a budget: R/d:49
 - Fast error cannot win: H/project.json:64; HTTP 200 and nonempty value H/solution/main.go:72, 81
 - Cancel does not prove saved work, fixtureWork: H/README.md:30; H/solution/main.go:190
 
@@ -95,6 +95,6 @@ Abbreviations: R = phases/13-tools-and-protocols/21-llm-routing-layer, M = phase
 - 97%, 99.94%, 99.997%: G/py:89-91
 - 20-60% at iso-quality: M/d:71
 - 70/30 split, bill drops ~65%: M/d:19-21
-- semantic caching 30 to 60 percent: R/d:56
+- semantic caching 30 to 60 percent: R/d:53
 - online gates: thumbs, LLM-judge 5%, escalation, refusal rate: M/d:64-67
 - first alert fallback-use rate R/outputs/skill-routing-config-designer.md:30; gateway latency P99 G/outputs/skill-gateway-picker.md:31
