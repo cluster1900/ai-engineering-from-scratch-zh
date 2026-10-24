@@ -50,7 +50,7 @@ Qwen2-VL Utilisé avec un encodeur ViT résolution originale  a remplacé résol
 
 Le changement majeur de Qwen2.5VL est le vidéo.
 
-- 绝对时间 Token──不使用位置索引(frame 0, 1, 2...),而使用实际时间──"À 0:04, le chat saute. " 模型会看到与框架代币 交错的 交错的`<time>0.04</time>`Les jetons
+- 位置 IDs 中的绝对时间──不使用索引(frame 0, 1, 2...),M-RoPE's time axes follow actual time, thus the difference value between the two IDs 对应它们之间的相隔秒数──"À 0:04, le chat saute. " 没有额外的文字代币 承载时间,因此这种编码不会增加序列长度──
 - FPS dynamique, matériel à faible vitesse à 1 FPS, scène d'action à 4+ FPS, sélectionné par l'utilisateur ou le trainageur; M-RoPE 会适配,
 - Attention spatiale  adoption de fenêtres (bloc intérieur) pour augmenter la capacité de débit; chaque étage rejoint l'attention globale。
 - 显式 JSON 输出格式──使用工具-call 数据训练:"{\"outil\": \"click\", \"coords\": [380, 220]}"──开箱即代理-ready──
@@ -89,7 +89,7 @@ Je suis en train de faire une fête.`T`秒的视频和目标 Token  budget `B`- 
 1. 计算你能承担的最大FPS:`fps_max = B / (T * tokens_per_frame)`Il y a une autre.
 2. De `{1, 2, 4, 8}`中选择满足 `fps <= fps_max`Le but de la FPS:
 3. Si le mouvement est faible, choisissez un FPS plus faible.
-4. 按选定 FPS 均采样; entre 插入 `<time>t</time>`Les jetons
+4.  selon le FPS 均采样; selon le temps de chaque seconde  définir son M-RoPE 时间 ID。
 
 Qwen2.5VL 会隐式训练这种逻辑;推理时用户通过 `fps`Un séquence de 60 secondes, avec 4 FPS, pour 81 jetons calculés, égal à 19440 jetons, dans un contexte de 32k 中可管理──
 
@@ -141,7 +141,7 @@ mm-mrope-axes
 |------|-----------------|------------------------|
 | M-RoPE | "Multimodal RoPE" | hidden dim 中带 temporal、height 和 width bands 的 3D rotary position embedding |
 | Dynamic FPS | "Smart sampling" | 根据运动、时长和 Token 预算为每个视频选择的帧采样率 |
-| Absolute time token | "Timestamp token" | 在序列中交错插入的 `<time>t</time>`，让模型看到实际秒数而不是帧索引 |
+| Absolute time encoding | "Time-aligned M-RoPE" | 根据每帧时间戳设置时间 position IDs，让模型看到实际秒数而不是帧索引，且无需额外 tokens |
 | Window attention | "Local attention" | 为提速而限制在小窗口内的 spatial self-attention；周期性加入 global attention |
 | Structured agent output | "JSON mode" | 通过训练数据监督教 VLM 输出可解析 JSON，其中包含 coords 和 tool names |
 | min_pixels / max_pixels | "Resolution bounds" | Qwen2.5-VL 的每请求控制项，用来约束总像素数，从而约束 Token 数 |

@@ -88,7 +88,7 @@ Temporal de la mise à terre de la mise en terre de la mise en terre de la mise 
 
 - Textes libres:"Le chat saute autour de la marque de 4 secondes. " 于解析但不精确。
 - JSON structuré:`{"event": "jump", "start": 4.1, "end": 4.3}`◊ Quwen2.5VL 会训练这种形式──
-- Basé sur des jetons: speciale `<time>4.1</time>`Les jetons avec les réponses sont en mode Qwen2.5-VL.
+- Basé sur des jetons: speciale `<time>4.1</time>`Les jetons avec l'option sont utilisés de cette façon; Qwen2.5-VL 则把时间编码在M-RoPE position ID,并以文字或JSON 回答──
 
 Le format de sortie JSON de Qwen2.5VL peut être directement résolu.
 
