@@ -46,7 +46,7 @@ Abbreviations: P1 = phases/01-math-foundations. L09 = P1/09-information-theory, 
 - exp(-104) = 0.0: L13/d:124
 - float16 max 65,504, underflow below ~6e-8: L13/d:46, 282
 - bfloat16 3.4e38, 8 exponent, 7 mantissa: L13/d:47, 300
-- machine epsilon 1.19e-7, 1.0 + e != 1.0: L13/d:600
+- machine epsilon 1.19e-7, 1.0 + e != 1.0: L13/d:601
 
 ## 带损失缩放的混合精度 (flow)
 1. float32 master copy: L13/d:274
@@ -74,8 +74,8 @@ Abbreviations: P1 = phases/01-math-foundations. L09 = P1/09-information-theory, 
 - max_norm 1.0 transformers, 0.5 RL, 5.0 simpler: L13/d:336
 - LayerNorm epsilon 1e-5, prevents division by zero: L13/d:359
 - epsilon 1e-8, log(x + 1e-8): L13/d:235-236
-- t-SNE perplexity 5-50, lesson uses 30: L10/d:102, 297
-- UMAP n_neighbors 15, min_dist 0.1: L10/d:308
+- t-SNE perplexity 5-50, lesson uses 30: L10/d:102, 298
+- UMAP n_neighbors 15, min_dist 0.1: L10/d:309
 - cumulative variance 0.95, 90-95% threshold: L10/d:83, 89
 
 ## 选择距离 (command-table)

@@ -18,7 +18,7 @@ Abbreviations: L09 = phases/00-setup-and-tooling/09-data-management (d = docs/en
 - cli.py samples/input.jsonl --contract samples/contract.json: CG/README.md:29
 - cli.py samples/input.json --output split-audit.json --html split-audit.html: SA/README.md:33
 - --train train.jsonl --test test.jsonl --check: SA/README.md:62
-- python code/data_utils.py: L09/d:230-233
+- python code/data_utils.py: L09/d:226-229
 
 ## 只读 CSV 问答 (architecture, 6 nodes)
 - sample.csv, UTF-8 under 2 MB: CQ/s/main.py:13-14
@@ -38,12 +38,12 @@ Abbreviations: L09 = phases/00-setup-and-tooling/09-data-management (d = docs/en
 7. invariants and release_ready: MR/API.md:35, MR/s/main.py:216
 
 ## 带种子切分 (annotated-code, 8 lines)
-- load_dataset imdb train: L09/d:108
-- train_test_split(test_size=0.2, seed=42): L09/d:110
-- train_test_split(test_size=0.125, seed=42): L09/d:111
-- train_ds, val_ds, test_ds: L09/d:113-115
-- to_parquet, Parquet best storage format: L09/d:83, 95
-- streaming=True: L09/d:64
+- load_dataset imdb train: L09/d:105
+- train_test_split(test_size=0.2, seed=42): L09/d:107
+- train_test_split(test_size=0.125, seed=42): L09/d:108
+- train_ds, val_ds, test_ds: L09/d:110-112
+- to_parquet, Parquet best storage format: L09/d:80, 92
+- streaming=True: L09/d:61
 
 ## 项目函数 (task-table, 8)
 - profile(text): CR/API.md:8
@@ -56,11 +56,11 @@ Abbreviations: L09 = phases/00-setup-and-tooling/09-data-management (d = docs/en
 - run_query(data, sql, max_rows=100, max_steps=100000): CQ/s/main.py:80
 
 ## 大文件版本管理 (command-table, 5)
-- git lfs track "*.safetensors": L09/d:162, 166
-- dvc add data/training_set.parquet, .dvc files: L09/d:173, 178
-- dvc remote add -d myremote s3://my-bucket/dvc-store: L09/d:206
-- dvc push: L09/d:207
-- snapshot_download("sentence-transformers/all-MiniLM-L6-v2"): L09/d:135
+- git lfs track "*.safetensors": L09/d:159, 163
+- dvc add data/training_set.parquet, .dvc files: L09/d:170, 175
+- dvc remote add -d myremote s3://my-bucket/dvc-store: L09/d:203
+- dvc push: L09/d:204
+- snapshot_download("sentence-transformers/all-MiniLM-L6-v2"): L09/d:132
 
 ## 默认值与上限 (defaults, 8)
 - --limit 100, max_rows 1..1000: CQ/s/cli.py:51, CQ/s/main.py:83
@@ -70,7 +70,7 @@ Abbreviations: L09 = phases/00-setup-and-tooling/09-data-management (d = docs/en
 - 100000 rows: CG/s/main.py:125-126
 - two-second deadline: MR/README.md:37
 - make_splits seed 42, 0.8 and 0.1: L09/u:80
-- local storage under ~10 GB: L09/d:190
+- local storage under ~10 GB: L09/d:187
 
 ## 错误与修复 (troubleshooting, 8)
 - ragged row: CR/s/main.py:18-19
@@ -90,18 +90,18 @@ Abbreviations: L09 = phases/00-setup-and-tooling/09-data-management (d = docs/en
 - pass only with no quarantine and no dataset issues: CG/API.md:41
 - NFKC, casefold, split join, sha256: SA/s/main.py:9-10
 - seed + group hash over 2**256, below fraction is test: SA/s/main.py:49-56
-- Parquet, Arrow, CSV and JSON: L09/d:95
+- Parquet, Arrow, CSV and JSON: L09/d:92
 
 ## 问答 (qa, 5)
 - exact normalized copies, not paraphrases: SA/README.md:46
 - source never opened writable: MR/API.md:11
 - SQLite authorization still controls execution: CQ/README.md:45
 - partitions are evidence, not permission to discard: CG/API.md:43
-- same seed same split: L09/d:120
+- same seed same split: L09/d:117
 
 ## 提示 (tips, 5)
 - --recipe recipe.json: CR/README.md:31
 - csv.DictReader: CR/README.md:31
 - wait for the command to finish: CG/API.md:43
 - keep input beside output: SA/README.md:40
-- .gitignore enough, DVC for exact experiments: L09/d:186
+- .gitignore enough, DVC for exact experiments: L09/d:183

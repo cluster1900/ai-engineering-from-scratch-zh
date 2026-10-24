@@ -3,21 +3,21 @@
 Abbreviations: P17 = phases/17-infrastructure-and-production, L08 = P17/08-inference-metrics-goodput, L22 = P17/22-load-testing-llm-apis, d = docs/en.md, c = code/main.py, RS = projects/retry-storm-lab, HR = projects/hedged-request-lab, RS1 = projects/retry-storm-lab/stages/01-deterministic-service/docs/en.md, RS2 = projects/retry-storm-lab/stages/02-bounded-jitter/docs/en.md, RS3 = projects/retry-storm-lab/stages/03-shared-budget/docs/en.md, RS4 = projects/retry-storm-lab/stages/04-local-http-replay/docs/en.md, HR1 = projects/hedged-request-lab/stages/01-measure-safe-reads/docs/en.md, HR2 = projects/hedged-request-lab/stages/02-schedule-duplicate/docs/en.md, HR3 = projects/hedged-request-lab/stages/03-validate-and-account/docs/en.md, HR4 = projects/hedged-request-lab/stages/04-export-tradeoffs/docs/en.md.
 
 ## 症状、原因与修复 (troubleshooting)
-- 500 users held, 200 fell, identical prompts and prefix caching: L22/d:19-21. Fix flags: L22/d:3, 37
-- GIL trap, tokenization backlog, LLM-Locust or compiled harness: L22/d:29-31
-- GenAI-Perf TPOT 6 ms vs LLMPerf 11 ms: L22/d:103. Exclude vs include TTFT: L08/d:78-79, 83
-- high throughput at low goodput: L08/d:3, 55. Gate on goodput: L08/d:113
-- mean TPOT 9 ms, P99 65 ms, report triple: L08/d:61-63
-- TPOT spike to 50 ms without chunked prefill: L08/d:37
+- 500 users held, 200 fell, identical prompts and prefix caching: L22/d:17-19. Fix flags: L22/d:3, 34
+- GIL trap, tokenization backlog, LLM-Locust or compiled harness: L22/d:26-28
+- GenAI-Perf TPOT 6 ms vs LLMPerf 11 ms: L22/d:98. Exclude vs include TTFT: L08/d:75-76, 80
+- high throughput at low goodput: L08/d:3, 52. Gate on goodput: L08/d:108
+- mean TPOT 9 ms, P99 65 ms, report triple: L08/d:58-60
+- TPOT spike to 50 ms without chunked prefill: L08/d:34
 - synchronized exponential waits, --jitter=true seeded spreading: RS/README.md:35. Shared budget: RS3:13
 - cancel does not prove saved computation: HR/README.md:30, HR4:17
 
 ## 指标公式 (annotated-code)
-- TTFT: L08/d:27, comment L08/d:29
-- TPOT: L08/d:35, same as ITL L08/d:33
-- E2E: L08/d:41, TPOT-dominated above 500 tokens L08/d:43
-- throughput: L08/d:47, fleet efficiency L08/d:49
-- goodput: L08/d:53
+- TTFT: L08/d:24, comment L08/d:26
+- TPOT: L08/d:32, same as ITL L08/d:30
+- E2E: L08/d:38, TPOT-dominated above 500 tokens L08/d:40
+- throughput: L08/d:44, fleet efficiency L08/d:46
+- goodput: L08/d:50
 
 ## main.py 中的 SLO 档位 (comparison)
 - TTFT ms loose 800, target 500, tight 300: L08/c:105-107
@@ -26,20 +26,20 @@ Abbreviations: P17 = phases/17-infrastructure-and-production, L08 = P17/08-infer
 - Verdict SHIPPABLE >= 0.99, DEGRADED >= 0.95, else FAILING: L08/c:113
 
 ## 四种负载模式 (comparison)
-- Steady-state constant RPS 30-60 min, baseline regressions: L22/d:41
-- Ramp 0 to target over 15 min, breakpoint and warm-up: L22/d:42
-- Spike 3-10x for 2 min, autoscaling, queue, cold start: L22/d:43
-- Soak 4-8 hours, leaks, connection-pool drift: L22/d:44
+- Steady-state constant RPS 30-60 min, baseline regressions: L22/d:38
+- Ramp 0 to target over 15 min, breakpoint and warm-up: L22/d:39
+- Spike 3-10x for 2 min, autoscaling, queue, cold start: L22/d:40
+- Soak 4-8 hours, leaks, connection-pool drift: L22/d:41
 
 ## 各工具的适用场景 (concepts)
-- LLMPerf: L22/d:13, 48
-- GenAI-Perf: L22/d:50
-- LLM-Locust: L22/d:52
-- guidellm: L22/d:54
-- k6 v2026.1.0: L22/d:56-59
-- k6 Operator TestRun / PrivateLoadZone CRDs: L22/d:58
-- Vegeta: L22/d:61
-- Locust 2.43.3 stock: L22/d:63
+- LLMPerf: L22/d:12, 45
+- GenAI-Perf: L22/d:47
+- LLM-Locust: L22/d:49
+- guidellm: L22/d:51
+- k6 v2026.1.0: L22/d:53-56
+- k6 Operator TestRun / PrivateLoadZone CRDs: L22/d:55
+- Vegeta: L22/d:58
+- Locust 2.43.3 stock: L22/d:60
 
 ## 运行实验 (annotated-code)
 - project_test.py --init, --all --solution --strict: RS/README.md:15, 17
@@ -78,7 +78,7 @@ Abbreviations: P17 = phases/17-infrastructure-and-production, L08 = P17/08-infer
 7. fixture work after cancel: HR4:13
 
 ## 算例 (qa)
-- ITL = 700/99 = 7.07 ms and 1200/100 = 12.00 ms: L08/d:81
+- ITL = 700/99 = 7.07 ms and 1200/100 = 12.00 ms: L08/d:78
 - 20 clients, 4 attempts, budget 12, 32 calls: RS3:17
 - 10,20,25,25: RS2:17
 - 3 vs 6 calls, fixture records nine: HR4:17
@@ -86,9 +86,9 @@ Abbreviations: P17 = phases/17-infrastructure-and-production, L08 = P17/08-infer
 - HTTP 500 at 1ms loses to valid 15ms: HR3:17
 
 ## 参考数字与关卡 (tips)
-- 162 ms TTFT, 7.33 ms TPOT: L08/d:65-68
-- consumer SLO 800 ms, 25 ms, 99%: L08/d:89-92
-- 2x peak concurrency, 30-50 iterations: L08/d:99-100
-- LLMPerf flags 800/300/150: L08/d:98
-- CI gate P50/P95 TTFT, 5xx < 5%, break the build: L22/d:69-71
-- publish tool name and setup: L08/d:101
+- 162 ms TTFT, 7.33 ms TPOT: L08/d:62-65
+- consumer SLO 800 ms, 25 ms, 99%: L08/d:86-89
+- 2x peak concurrency, 30-50 iterations: L08/d:96-97
+- LLMPerf flags 800/300/150: L08/d:95
+- CI gate P50/P95 TTFT, 5xx < 5%, break the build: L22/d:66-68
+- publish tool name and setup: L08/d:98

@@ -13,20 +13,20 @@ Abbreviations: G = phases/11-llm-engineering/12-guardrails, LG = phases/15-auton
 - pipeline.process(attack): G/code/guardrails.py:523
 
 ## 过滤栈 (flow, 8)
-1. Length check < 5000 chars, length checks are free: G/d:104, 116
-2. Rate limit 10 req/min per user: G/d:105, 82
-3. Topic classifier rejects off-topic before the model: G/d:106, 76
-4. PII detector, redact or reject: G/d:107, 80
-5. Injection detector, classifiers cost 5-20ms: G/d:108, 116
-6. LLM call costs 200-2000ms: G/d:109, 116
-7. Toxicity filter, run every output: G/d:110, 90
-8. PII scrubber, relevance check: G/d:111-112
+1. Length check < 5000 chars, length checks are free: G/d:101, 113
+2. Rate limit 10 req/min per user: G/d:102, 79
+3. Topic classifier rejects off-topic before the model: G/d:103, 73
+4. PII detector, redact or reject: G/d:104, 77
+5. Injection detector, classifiers cost 5-20ms: G/d:105, 113
+6. LLM call costs 200-2000ms: G/d:106, 113
+7. Toxicity filter, run every output: G/d:107, 87
+8. PII scrubber, relevance check: G/d:108-109
 
 ## Moderation API 调用 (annotated-code, 8 lines)
-- OpenAI(), client.moderations.create, model omni-moderation-latest, input: G/d:758-763
-- response.results[0], result.flagged: G/d:765-766
-- text and images in one call: MS/d:25, G/d:773
-- True when a category fires: MS/d:27 (category booleans)
+- OpenAI(), client.moderations.create, model omni-moderation-latest, input: G/d:754-759
+- response.results[0], result.flagged: G/d:761-762
+- text and images in one call: MS/d:22, G/d:769
+- True when a category fires: MS/d:24 (category booleans)
 
 ## 代码中的阈值 (defaults, 8)
 - check_length max_chars 5000, max_words 1000: G/code/guardrails.py:157
@@ -39,12 +39,12 @@ Abbreviations: G = phases/11-llm-engineering/12-guardrails, LG = phases/15-auton
 - _NEGATION_WINDOW 20, not|never|no: CC/code/classifiers.py:45, 58
 
 ## 各审核系统并列对比 (comparison, 6 rows)
-- omni-moderation-latest, GPT-4o: MS/d:25. Llama-3.1-8B base: LG/d:22. Perspective pre-LLM: MS/d:49
-- 13 booleans: MS/d:27. S1 to S14 in v4: LG/d:34. TOXICITY plus 5 variants: MS/d:49
-- text and images: MS/d:25. v4 image and text: LG/d:33. Perspective text scoring: MS/d:49
-- 42% better multilingual: MS/d:39. 8 languages v3: LG/d:26
-- free for most developers: MS/d:25. open weights: LG/d:14. research baseline: MS/d:51
-- hosted API: G/d:132. self-hosted: G/d:133. S14 code abuse: LG/d:34-37. research use: MS/d:51
+- omni-moderation-latest, GPT-4o: MS/d:22. Llama-3.1-8B base: LG/d:22. Perspective pre-LLM: MS/d:46
+- 13 booleans: MS/d:24. S1 to S14 in v4: LG/d:34. TOXICITY plus 5 variants: MS/d:46
+- text and images: MS/d:22. v4 image and text: LG/d:33. Perspective text scoring: MS/d:46
+- 42% better multilingual: MS/d:36. 8 languages v3: LG/d:26
+- free for most developers: MS/d:22. open weights: LG/d:14. research baseline: MS/d:48
+- hosted API: G/d:129. self-hosted: G/d:130. S14 code abuse: LG/d:34-37. research use: MS/d:48
 
 ## 输出路由器 (architecture, 6 nodes, 7 edges)
 - model output feeds toxicity, pii, instruction-leakage, then router: CC/d:31-36
@@ -65,10 +65,10 @@ Abbreviations: G = phases/11-llm-engineering/12-guardrails, LG = phases/15-auton
 - toxicity 3 hits high, 2 medium, 1 low: CC/code/classifiers.py:71-76
 
 ## 故障排查 (troubleshooting, 6)
-- emoji smuggling, tokenizer coalesces differently, add normalization step: LG/d:51, 100
+- emoji smuggling, tokenizer coalesces differently, add normalization step: LG/d:51, 101
 - homoglyph Cyrillic, classifier trained on English: LG/d:53. normalize(text) NFKC then homoglyph map: LG/code/main.py:58-65
-- input only misses encoding attacks: MS/d:63
-- output only lets any input reach the model: MS/d:64
+- input only misses encoding attacks: MS/d:60
+- output only lets any input reach the model: MS/d:61
 - negation window: CC/d:47
 - nested match exposes remainder, intersecting spans become one union: RG/API.md:21
 
@@ -94,7 +94,7 @@ Abbreviations: G = phases/11-llm-engineering/12-guardrails, LG = phases/15-auton
 - firewall <root> reader r1 read notes.md: TF/README.md:31
 
 ## 问答 (qa, 4)
-- check both input and output, attackers find ways around each layer: G/d:52
+- check both input and output, attackers find ways around each layer: G/d:49
 - Emoji Smuggling 100% ASR on six guard systems: LG/d:51
 - caller application supplies identity, model supplies only the operation: TF/README.md:5
 - run output classifiers in parallel with token streaming, buffer final chunk: CC/d:14
