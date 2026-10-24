@@ -190,13 +190,16 @@ Hình ảnh màu trắng trong mặt nạ là khu vực được tái tạo.
 ### 步骤 5: LoRA tải
 
 ```python
-pipe.load_lora_weights("sayakpaul/sd-lora-ghibli")
+pipe.load_lora_weights(
+    "artificialguybr/studioghibli-redmond-1-5v-studio-ghibli-lora-for-liberteredmond-sd-1-5",
+    weight_name="StudioGhibliRedmond-15V-LiberteRedmond-StdGBRedmAF-StudioGhibli.safetensors",
+)
 pipe.fuse_lora(lora_scale=0.8)
 
-image = pipe(prompt="a village square in ghibli style").images[0]
+image = pipe(prompt="a village square, StdGBRedmAF, Studio Ghibli").images[0]
 ```
 
-`lora_scale`控制强度;0.0 = 无效,1.0 = 完整效果──`fuse_lora`Sẽ chuyển đổi chuyển đổi, nhưng sẽ ngăn chặn chuyển đổi.`pipe.unfuse_lora()`
+thẻ mô hình 中的触发短语(`StdGBRedmAF, Studio Ghibli`(Vì hình ảnh này sẽ bắt đầu)`lora_scale`控制强度;0.0 = 无效,1.0 = 完整效果──`fuse_lora`Sẽ chuyển đổi chuyển đổi, nhưng sẽ ngăn chặn chuyển đổi.`pipe.unfuse_lora()`
 
 ### 步骤 6: đào tạo LoRA (phác thảo)
 
