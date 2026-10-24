@@ -38,7 +38,7 @@ L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \matho
 İki konu:
 
 - Eğer avantajlı $A_t > 0$, ve oran 试图增长到超过 $1 + \epsilon$, clip will make it Gradient 压平                                                                                                                                                                                                                                                          $+\epsilon$Daha fazla.
-- Eğer avantajlı $A_t < 0$, ve oran 试图增长到超过 $1 - \epsilon$(Klip oranında azalanma anlamına gelir, biz kötü bir eylem daha da gerçekleşebilir), klip bir kötü eylem sınırlama $-\epsilon$- Evet.
+- Eğer avantajlı $A_t < 0$, ve oranı 试图降到 $1 - \epsilon$Aşağıda, kötü bir eylem yapalım, eski politikadan daha düşük bir olasılık olacak.$-\epsilon$Daha fazla.
 
 `min`处理另一个方向: If ratio 已朝*有益*方向移动, you still get Gradient (Böylece, oranın 已朝*有益*方向移动se, yine de gradyen elde ediyorsun)
 

@@ -21,7 +21,7 @@ DP'den MC'ye dönüşümün bir fikri çok önemlidir: * bilinmiş modelden + ta
 
 **核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$, içinden $G^{(i)}(s)$Politikada.$\pi$Aşağı ziyaret$s$之后观察到的回报──
 
-**First-visit vs every-visit MC。**给定一个多次访问状态 $s$İlk ziyaret MC sadece ilk ziyaret sonrası geri dönüş; her ziyaret MC 统计所有访问──二者在极限下都是公正──初訪問更容易分析(iid örnekleri)──Her ziyaret Her bölüm daha fazla veriden yararlanır, pratikte genellikle daha hızlı olarak gelir──
+**First-visit vs every-visit MC。**给定一个多次访问状态 $s$İlk ziyaret MC sadece ilk ziyaret sonrası geri dönüş; her ziyaret MC 统计所有访问。 İlk ziyaret MC tarafsızdır。 Her ziyaret MC sınırlı bölümlerde 后可能略有偏见, çünkü her bölüm için 个数 个数 个数 个数 随机的,而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而而$V^\pi(s)$❖ İlk ziyaret daha kolay analiz edilmesi ❖ örnekler) ・ Her ziyaret Her bölüm daha fazla veri kullanır, pratikte genellikle daha hızlı gelir.
 
 **Incremental mean。**Tüm kaydetme, ancak yenileme çalışkan ortalama:
 
@@ -196,7 +196,7 @@ tags: [rl, monte-carlo, evaluation]
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
 | Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
-| Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
+| Every-visit MC | “Use all visits” | 每次访问都会贡献；有限样本下略有 biased，极限下 consistent，且 sample-efficient 更高。 |
 | ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
 | Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |

@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Adım 4: KL izleyici
 
-Her güncellemenin bir anlamı var .$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Eğer tırmanırsa.`~5-10`, politika 已漂离 $\pi_{\text{SFT}}$很远 低$\beta$Bu gerçek RLHF'de en önemli teşhis yöntemidir.
+Her güncellemenin bir anlamı var .$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$Eğer tırmanırsa.`~5-10`(KL, tokenlere göre 求和, yani TRL 记录的单位) politika 已漂离 $\pi_{\text{SFT}}$Çok uzakta .$\beta$Çok düşük, ödül hakkı başlıyor. Bu gerçek RLHF'de en önemli teşhis.
 
 ### Adım 5: TRL'yi kullanın
 

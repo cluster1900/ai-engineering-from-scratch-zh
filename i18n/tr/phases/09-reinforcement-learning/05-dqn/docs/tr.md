@@ -73,7 +73,7 @@ class ReplayBuffer:
         return rng.sample(self.buf, batch)
 ```
 
-Atari yaklaşık 50.000'in kapasiteyi kullanıyor. Oyuncaklarımız ise 5.000'e yeter.
+Atari yaklaşık 106 adet kapasite kullanıyor, orijinal DQN ile aynıdır.
 
 ### 步骤 2: çok küçük bir Q-ağı(手写 MLP)
 

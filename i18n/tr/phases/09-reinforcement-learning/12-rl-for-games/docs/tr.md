@@ -1,6 +1,6 @@
 # 面向游戏的RL  AlphaZero、MuZero ve LLM Dönüşümserlik 时代
 
-> 1992: TD-Gammon Pure TD ile İnsan Şampiyonasını Yüceltmek için Backgammon'da. 2016: AlphaGo Lee Sedol'u Yüceltmek için: AlphaZero Zero'dan Çeki, Shogi ve Go'yu yönetmeye başladı.
+> 1992: TD-Gammon Pure TD ile İnsan Şampiyonasını Yüceltmek için Backgammon'da. 2016: AlphaGo Lee Sedol'u Yüceltmek için: 2017: AlphaZero Zero'dan Çeki, Shogi ve Go'yu yönetmeye başladı. 2025: DeepSeek-R1  Düşünme üzerinde aynı yöntemin kanıtlanmıştı.
 
 **类型：**Yapım
 **语言：**Python
@@ -60,7 +60,7 @@ while True:
 
   $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
-没有奖励模型,没有批评者,没有MCTS──grup-relative baseline 替换了三者──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF 质量──
+没有学习得到的奖励模型,没有评论,没有 MCTS──由规则基验证器提供奖励,组相关基线 替代评论,搜索 步骤则被删除──在推理基准上,用少得多的计算 达到或超过PPO-RLHF 质量──
 
 **完整的 R1 配方。**DeepSeek-R1 ((DeepSeek 2025) bir makalede iki model oluşturur:
 
@@ -87,7 +87,7 @@ f3-selfplay-ladder
 
 ## Yapım
 
-`code/main.py`İç kod gerçekleşti.**微型 GRPO**  一带多组样本的强盗――算法与LLM上相同;只有政策和环境更简单――它讲清楚 *loss* 和 *group-relative advantage*,也就是2025年创新点――
+`code/main.py`İç kod gerçekleşti.**微型 GRPO**Bir grup örneği olan bir çetelik. LLM'nin algoritması aynıdır. Sadece politika ve çevre daha basit.
 
 ### 步骤 1: bir mikrotip doğrulayıcı ortamı
 
@@ -145,7 +145,7 @@ RLHF ile benzer teşhisler: referans ortalaması KL、 politika entropi、 ödü
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**GRPO RLHF'nin riskini üstlenmiştir: Eğer doğrulayıcı  yanlış veya kullanılabilirse, LLM'de bir sömürü bulacaktır.
-- **Group size 太小。**Grup başlangıç çizgisine göre $1/\sqrt{G}$缩放――低于 缩放─$G = 4$时, avantaj sinyalleri  会很噪音; 标准选择是$G = 8$64'e kadar.
+- **Group size 太小。**Grup ortalama başlangıç değerinin farklılıkları$1/G$缩放(其 standart hata 按 $1/\sqrt{G}$)― 低于$G = 4$时, avantaj sinyalleri  会很噪音; 标准选择是$G = 8$64'e kadar.
 - **Length bias。**Önemli bir süre boyunca, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir süre sonra, bir sürececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececececece
 - **纯 self-play 循环。**AlphaZero 风格训练可能在一般总数游戏中卡进统治循环──可通过多样化对手池联赛比赛,Lesson 10)缓解──
 - **Search-policy mismatch。**AlphaZero trening policy 去模仿搜索结果──如果政策网太小,无法表示搜索的分布,训练会停滞──
