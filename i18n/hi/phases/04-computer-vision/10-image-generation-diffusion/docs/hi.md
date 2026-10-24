@@ -261,7 +261,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     x = torch.randn(shape, device=device)
     alphas_cumprod = schedule["alphas_cumprod"].to(device)
 
-    ts = torch.linspace(T - 1, 0, steps + 1).long()
+    ts = torch.linspace(T - 1, -1, steps + 1).round().long()
     for i in range(steps):
         t = ts[i]
         t_prev = ts[i + 1]
@@ -277,7 +277,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     return x
 ```
 
-`eta=0`                                                                                                                                                                                                                                                              `eta=1`डीडीपीएम को बहाल करेगा।
+अनुसूची  समाप्त में `t_prev = -1`, इसलिए अंतिम चरण उपयोग`a_prev = 1.0`, वापसी में अवशिष्ट शोर का शुद्धता `x0_pred``eta=0`                                                                                                                                                                                                                                                              `steps=T`) समय,`eta=1`डीडीपीएम को बहाल करेगा।
 
 ## इसका उपयोग करें
 

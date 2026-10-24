@@ -71,7 +71,7 @@ after merge repeats and remove blanks: "hello"
 
 ### लेआउट पार्सिंग
 
-对于结构文档,运行布局检测器(LayoutLMv3, DocLayNet),为每个地区 标注标签标签:शीर्षक, पैराग्राफ, आकृति, तालिका, पाद लेख。पठन क्रम 于是变成按布局顺序 遍历地区并拼接──
+ संरचनात्मक दस्तावेजों के लिए, ️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️️
 
 对于表格,使用 **Key-Value extraction**मॉडल(आदर्श रूप से समृद्ध दस्तावेजों का डोनट,आदर्श रूप से सादे स्कैन का लेआउटLMv3)──它们接收图像+检测文本+स्थिति,并预测 संरचित कुंजी-मूल्य जोड़े──
 
@@ -161,18 +161,23 @@ class TinyCRNN(nn.Module):
 
 ### 步骤 3: सिंथेटिक ओसीआर
 
-生成白底黑字的数字字符串, अंत से अंत तक धुएं परीक्षण के लिए प्रयोग किया जाता है
+生成白底黑字符串, End-to-End धुएं परीक्षण के लिए उपयोग किया जाता है। प्रत्येक अक्षर एक पंक्ति में छह根 बार में बदल जाता है, इसे शब्दकोश में सूचकांक से बाहर निकालने के लिए।`a`和 `x`, हानि एक ठहराव होगा.
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ print(f"images: {imgs.shape}   targets: {targets.shape}   lengths: {lengths.toli
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-इस सरल सिंथेटिक डेटा में, हानि 200 कदम में होना चाहिए अंदर ~ 3 ~ 0.2 से नीचे
+इस सरल सिंथेटिक डेटा में, हानि 400 चरणों में होना चाहिए अंदर से दो अंकों से घटकर लगभग 0.3 हो जाना चाहिए`code/main.py`अपने स्वयं के स्ट्रिंग सेट में ऊपर चलना एक ही चक्र, फिर तीन परीक्षण स्ट्रिंग को डिकोड करना
 
 ## इसका उपयोग करें
 

@@ -204,8 +204,10 @@ def encode(box_xyxy, cell_x, cell_y, stride, anchor_wh):
     cy = 0.5 * (y1 + y2)
     w = x2 - x1
     h = y2 - y1
-    tx = cx / stride - cell_x
-    ty = cy / stride - cell_y
+    off_x = np.clip(cx / stride - cell_x, 1e-6, 1 - 1e-6)
+    off_y = np.clip(cy / stride - cell_y, 1e-6, 1 - 1e-6)
+    tx = np.log(off_x / (1 - off_x))
+    ty = np.log(off_y / (1 - off_y))
     tw = np.log(w / anchor_wh[0] + 1e-8)
     th = np.log(h / anchor_wh[1] + 1e-8)
     return np.array([tx, ty, tw, th])
@@ -224,7 +226,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 ```
 
-测试:encode एक बॉक्स पुनः decodeआप मूल मूल्य के परिणाम के बहुत करीब प्राप्त करने में सक्षम होना चाहिए`tx`न कि सिग्मोइड के बाद के दायरे में, सिग्मोइड रिवर्स पूरी तरह से उलट नहीं होता है, इसलिए मामूली अंतर होता है)
+测试:encode एक केंद्र कठोर स्थित सेल के अंदर बॉक्स, पुनः डिकोड, आप में होना चाहिए त्रुटि बिंदु सीमा में प्राप्त करने के लिए मूल बॉक्स`encode`存为logit,即 `decode``sigmoid`का उल्टा. क्लिप सुरक्षा लॉजिट सीमित; केंद्र ठीक सेल के किनारे पर सबसे अधिक गतिशील है.`1e-6`个 सेल――下面的 `assign_targets`भंडार समान लॉग, इसलिए सिर में `decode`सोआपेक्षित के अंतरिक्ष में प्रशिक्षण
 
 ### 步骤 4: एक न्यूनतम YOLO सिर
 
@@ -274,8 +276,10 @@ def assign_targets(boxes_xyxy, classes, anchors, stride, grid_size, num_classes)
         best = int(np.argmax(ious))
         aw, ah = anchors[best]
 
-        target[gy, gx, best, 0] = cx / stride - gx
-        target[gy, gx, best, 1] = cy / stride - gy
+        off_x = np.clip(cx / stride - gx, 1e-6, 1 - 1e-6)
+        off_y = np.clip(cy / stride - gy, 1e-6, 1 - 1e-6)
+        target[gy, gx, best, 0] = np.log(off_x / (1 - off_x))
+        target[gy, gx, best, 1] = np.log(off_y / (1 - off_y))
         target[gy, gx, best, 2] = np.log(bw / aw + 1e-8)
         target[gy, gx, best, 3] = np.log(bh / ah + 1e-8)
         target[gy, gx, best, 4] = 1.0
@@ -320,7 +324,7 @@ def yolo_loss(pred, target, has_obj, lambda_coord=5.0, lambda_obj=1.0, lambda_no
                    "obj_neg": loss_obj_neg.item(), "cls": loss_cls.item()}
 ```
 
-五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数, प्रत्येक YOLO ट्यूटोरियल 五个超参数`lambda_coord=5, lambda_noobj=0.5`मूल YOLOv1 पेपर के लिए, और आज भी उचित मान है।
+चार नुकसान वजन, प्रत्येक YOLO ट्यूटोरियल हार्ड कोड, वाईप करना होगा`lambda_coord=5, lambda_noobj=0.5`मूल YOLOv1 पेपर के लिए, और आज भी उचित मान है।
 
 ### 步骤 7: इन्फेरेंस पाइपलाइन
 
