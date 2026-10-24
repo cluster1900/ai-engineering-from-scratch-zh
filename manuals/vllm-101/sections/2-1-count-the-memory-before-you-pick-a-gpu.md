@@ -1,27 +1,27 @@
-# Count the memory before you pick a GPU
+# 选 GPU 之前先算显存
 
-> The KV cache, not the weights, decides how many users fit, and you can count it from four numbers in the model config.
+> 决定能容纳多少用户的是 KV cache，而不是权重；你可以用模型配置里的四个数字把它算出来。
 
-You chose a GPU and the server holds fewer users than you planned. When you finish this section, you can predict the KV pool and the number of users for a model and a context length.
+你选了一块 GPU，服务器能容纳的用户却比计划的少。读完本节后，你能针对一个模型和一个上下文长度，预测 KV 池的大小和能容纳的用户数。
 
-**Our result:** on our L4 with Qwen3-8B, the 24,096-token pool fit 37 users with 640 tokens each, although the startup line printed 2.94.
+**我们的结果：** 在我们的 L4 上运行 Qwen3-8B，24,096 token 的池容纳了 37 个各占 640 token 的用户，尽管启动日志那一行打印的是 2.94。
 
-## Count the bytes for one token
+## 计算一个 token 的字节数 {#s-count-the-memory-before-you-pick-a-gpu-count-the-bytes-for-one-token}
 
-Every token in a running request keeps its keys and values in GPU memory until the request ends. Four numbers in the model config give the size:
+运行中请求的每个 token 都会把它的 key 和 value 保存在 GPU 显存里，直到请求结束。模型配置里的四个数字决定了它的大小：
 
 ```text
 KV bytes per token = layers x KV heads x head size x 2 x bytes per value
 ```
 
-The factor 2 counts the key and the value. Read the first three numbers from `config.json` as `num_hidden_layers`, `num_key_value_heads`, and `head_dim`. In BF16, a value takes 2 bytes. With an FP8 KV cache, it takes 1 byte.
+因子 2 对应 key 和 value。前三个数字从 `config.json` 里读取，分别是 `num_hidden_layers`、`num_key_value_heads` 和 `head_dim`。在 BF16 下，一个值占 2 字节；使用 FP8 KV cache 时，占 1 字节。
 
-| Model | Layers | KV heads | Head size | KV per token in BF16 |
+| 模型 | 层数 | KV 头数 | 头大小 | BF16 下每 token 的 KV |
 |---|---|---|---|---|
 | `Qwen/Qwen3-8B` | 36 | 8 | 128 | 144 KiB |
 | `Qwen/Qwen3-30B-A3B-Instruct-2507` | 48 | 4 | 128 | 96 KiB |
 
-The mixture-of-experts model has almost four times the weights of the dense model, but it keeps fewer bytes for each token. The KV heads decide this number, not the parameter count.
+这个混合专家模型的权重几乎是稠密模型的四倍，但它为每个 token 保存的字节更少。决定这个数字的是 KV 头数，而不是参数量。
 
 ```figure
 id: fig-2-1
@@ -31,19 +31,19 @@ claim: Qwen3-8B holds 144 KiB of KV cache for every token, and Qwen3-30B-A3B hol
 caption: Multiply the five numbers in each row. The last factor is two bytes for BF16. From the model configs on the Hugging Face Hub.
 ```
 
-## Turn bytes into users
+## 把字节换算成用户数 {#s-count-the-memory-before-you-pick-a-gpu-turn-bytes-into-users}
 
-vLLM gives the KV cache what is left after the weights and the startup profile. Divide that memory by the bytes per token to get the pool in tokens. Then divide the pool by the context that one user holds:
+vLLM 把权重和启动 profile 之后剩下的显存分给 KV cache。用这部分显存除以每 token 的字节数，得到以 token 计的池大小。再用池大小除以一个用户占用的上下文：
 
 ```text
 users that fit = KV pool in tokens / (prompt tokens + output tokens per user)
 ```
 
-A request that needs more blocks than are free waits in the queue. If a running request needs a new block and none is free, vLLM stops it and computes it again later.
+需要的 block 多于空闲 block 的请求会在队列里等待。如果一个运行中的请求需要新 block 而没有空闲的，vLLM 会停下它，稍后重新计算。
 
-## Check the count against the startup log
+## 用启动日志核对计算结果 {#s-count-the-memory-before-you-pick-a-gpu-check-the-count-against-the-startup-log}
 
-Read two lines after every start. On our DGX Spark, with `Qwen/Qwen3-30B-A3B-Instruct-2507` and `--gpu-memory-utilization 0.75`, the log said:
+每次启动后读两行日志。在我们的 DGX Spark 上，使用 `Qwen/Qwen3-30B-A3B-Instruct-2507` 和 `--gpu-memory-utilization 0.75`，日志显示：
 
 ```listing
 title: the memory lines from a GB10 start
@@ -55,11 +55,11 @@ note: The weights took 56.93 GiB, and 31.32 GiB was left for the KV cache.
 (EngineCore pid=143) INFO 10-21 10:59:46 [gpu_worker.py:692] Available KV cache memory: 31.32 GiB
 ```
 
-At 96 KiB per token, 31.32 GiB holds about 342,000 tokens.
+按每 token 96 KiB 计算，31.32 GiB 约能容纳 342,000 个 token。
 
-**Fixed pool:** in our sweeps, we set the pool size by hand with `--num-gpu-blocks-override`, which sets the number of 16-token blocks. We gave vLLM the same pool as the SGLang server on the same machine, so that the two engines had the same room. On the DGX Spark the pool was 234,960 tokens, and on the L4 it was 24,096 tokens. Your server sizes the pool from free memory, so it uses the full number.
+**固定池：** 在我们的扫测中，我们用 `--num-gpu-blocks-override` 手动设置池大小，它设置的是 16-token block 的数量。我们给 vLLM 的池与同一台机器上的 SGLang 服务器相同，让两个引擎有同样的空间。在 DGX Spark 上，池是 234,960 token；在 L4 上，是 24,096 token。你的服务器会根据空闲显存确定池大小，所以会用满全部数量。
 
-The next line gives the pool in tokens and the users that fit at the full context length:
+下一行给出以 token 计的池大小，以及在满上下文长度下能容纳的用户数：
 
 ```listing
 title: the pool line from the L4 comparison run
@@ -70,7 +70,7 @@ note: 24,096 tokens at 144 KiB each is 3.31 GiB of KV cache.
 INFO 10-17 20:13:17 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, Maximum concurrency for 8,192 tokens per request: 2.94x
 ```
 
-The `Maximum concurrency` number assumes that every user fills the full `--max-model-len`. Real users hold less, so more of them fit. With 512 prompt tokens and 128 output tokens, the 24,096-token pool holds 37 users at their full length. During our load sweep, the log showed 40 running requests with the cache 99.5 percent full, because users early in their answer hold fewer tokens.
+`Maximum concurrency` 这个数字假设每个用户都占满整个 `--max-model-len`。真实用户占用得更少，所以能容纳更多人。按 512 个 prompt token 和 128 个输出 token 计算，24,096 token 的池在用户占满各自长度时能容纳 37 个用户。在我们的负载扫测中，日志显示有 40 个运行中的请求，cache 已满 99.5%，因为刚开始作答的用户占用的 token 更少。
 
 ```figure
 id: fig-2-1b
@@ -80,19 +80,19 @@ claim: The same 24,096-token pool fits 2.94 users at the full context length, bu
 caption: Each blue block is one user. The dashed part is pool that no full-length user fills. From capture/gpu/out-l4/server-h2h-vllm.log.
 ```
 
-## Decide what to change
+## 决定要改什么 {#s-count-the-memory-before-you-pick-a-gpu-decide-what-to-change}
 
-If the count is too small for your traffic, you have four choices. They are in order of cost:
+如果算出来的数字对你的流量来说太小，你有四个选择，按代价从低到高排列：
 
-1. Lower `--max-model-len` to the longest context that your users send. The pool stays the same size, and one long request can no longer take all of it.
-2. Use an FP8 KV cache. It halves the bytes per token. [The FP8 KV page](#s-fit-more-users-with-an-fp8-kv-cache) shows the cost.
-3. Use FP8 weights. They free memory for the cache. [The FP8 weights page](#s-fit-a-bigger-model-with-fp8-weights) shows when this pays.
-4. Use a GPU with more memory, or split the model across GPUs. [The parallelism page](#s-choose-tensor-pipeline-or-data-parallelism) covers this.
+1. 把 `--max-model-len` 降到你的用户实际发送的最长上下文。池的大小不变，但一个长请求再也不能把它全部占满。
+2. 使用 FP8 KV cache。它把每 token 的字节数减半。[FP8 KV 页](#s-fit-more-users-with-an-fp8-kv-cache)展示了它的代价。
+3. 使用 FP8 权重。它们为 cache 腾出显存。[FP8 权重页](#s-fit-a-bigger-model-with-fp8-weights)说明了什么时候值得这么做。
+4. 使用显存更大的 GPU，或者把模型拆到多块 GPU 上。[并行页](#s-choose-tensor-pipeline-or-data-parallelism)讲的就是这个。
 
 ```takeaways
-- Count KV bytes per token from four config numbers before you buy or rent a GPU.
-- Divide the KV pool by the context per user, not by the maximum model length.
-- Compare your count with the memory and pool lines after every start.
+- 在购买或租用 GPU 之前，先用四个配置数字算出每 token 的 KV 字节数。
+- 用 KV 池除以每个用户的上下文，而不是除以最大模型长度。
+- 每次启动后，把你的计算结果与显存行和池大小行进行对照。
 ```
 
 Sources: vLLM documentation at v0.31.0 (docs/configuration/optimization.md, docs/design/prefix_caching.md), the model configs of Qwen/Qwen3-8B and Qwen/Qwen3-30B-A3B-Instruct-2507, capture/gpu/out-gb10/server-load-vllm.log, capture/gpu/out-l4/server-h2h-vllm.log, capture/gpu/summary/l4.json, capture/gpu/summary/gb10.json.

@@ -1,59 +1,59 @@
-# Serve long contexts and hybrid models
+# 服务长上下文和混合模型
 
-> A long context and a hybrid model each change how vLLM counts memory, and both can fail at startup for a reason the error hides.
+> 长上下文和混合模型都会改变 vLLM 计算显存的方式，而且两者都可能因为一个被错误信息掩盖的原因在启动时失败。
 
-You want a context longer than the default, or you serve a model that mixes attention layers with sliding-window or state-space layers. When you finish this section, you can set the maximum length on purpose and read what the cache does for each kind of layer.
+你想要比默认更长的上下文，或者你服务的模型混合了 attention 层与滑动窗口层或状态空间层。读完本节后，你能有意识地设置最大长度，并读懂 cache 对每种层做了什么。
 
-We did not run a long-context or a hybrid model for this manual. This page comes from the vLLM documentation, the source at 0.31.0, and the release notes.
+本手册没有运行长上下文模型或混合模型。本页内容来自 vLLM 文档、0.31.0 的源码和版本说明。
 
-## Set the maximum length on purpose
+## 有意识地设置最大长度 {#s-serve-long-contexts-and-hybrid-models-set-the-maximum-length-on-purpose}
 
-If you do not set `--max-model-len`, vLLM takes the length from the model config. For `Qwen/Qwen3-8B` that is 40,960 tokens. At 144 KiB per token, one request at that length needs 5.6 GiB of KV cache. On a 24 GB GPU, the 16.4 GB of weights can leave room for less than one such request, and then the start fails.
+如果你不设置 `--max-model-len`，vLLM 会从模型配置中读取长度。`Qwen/Qwen3-8B` 的长度是 40,960 token。按每 token 144 KiB 计算，以这个长度服务一个请求需要 5.6 GiB 的 KV cache。在 24 GB 的 GPU 上，16.4 GB 的权重留下的空间可能连一个这样的请求都放不下，于是启动失败。
 
-Set `--max-model-len` to the longest prompt plus answer that your users send. The pool size stays the same. A shorter limit only stops one request from claiming the whole pool, and it lets the start check pass.
+把 `--max-model-len` 设为你的用户发送的最长 prompt 加回答的长度。池的大小不变。更短的上限只是防止单个请求占满整个池，并让启动检查得以通过。
 
-## Check the length after an upgrade
+## 升级后检查长度 {#s-serve-long-contexts-and-hybrid-models-check-the-length-after-an-upgrade}
 
-Some models extend their context with a scaling method such as YaRN. In release 0.30.0, vLLM changed its YaRN handling to match the Hugging Face Transformers library. For some models, the length that vLLM derives from the config became shorter. The release notes give one model that went from 131,072 to 32,768 tokens.
+有些模型用 YaRN 之类的缩放方法扩展上下文。在 0.30.0 版本中，vLLM 修改了对 YaRN 的处理，以与 Hugging Face Transformers 库保持一致。对某些模型来说，vLLM 从配置推导出的长度变短了。版本说明给出的一个模型从 131,072 token 变成了 32,768 token。
 
-After an upgrade, read the derived length in the startup log. If it changed, set `--max-model-len` yourself, or check that the model still supports the longer length.
+升级后，读启动日志中推导出的长度。如果它变了，就自己设置 `--max-model-len`，或者确认模型仍然支持更长的长度。
 
-## Know how a hybrid model uses the cache
+## 了解混合模型如何使用 cache {#s-serve-long-contexts-and-hybrid-models-know-how-a-hybrid-model-uses-the-cache}
 
-A hybrid model has more than one kind of layer. vLLM puts each kind in its own KV cache group. The table gives the rules for each group.
+混合模型有不止一种层。vLLM 把每种层放进各自的 KV cache 组。下表给出了每个组的规则。
 
-| Layer kind | What it keeps | When a cached prefix is a hit |
+| 层的类型 | 保存什么 | 缓存的前缀何时命中 |
 |---|---|---|
-| Full attention | keys and values for every token | every block of the prefix is still in the cache |
-| Sliding window | keys and values for the last window of tokens | the blocks inside the last window are still in the cache |
-| State space, such as Mamba | one state for each request, not one entry for each token | a saved state must exist for that point in the prompt, and the rules for saving it changed between releases |
+| 全 attention | 每个 token 的 key 和 value | 前缀的每个 block 都还在 cache 中 |
+| 滑动窗口 | 最后一个窗口内 token 的 key 和 value | 最后一个窗口内的 block 都还在 cache 中 |
+| 状态空间，例如 Mamba | 每个请求一个状态，而不是每个 token 一项 | prompt 中该位置必须有已保存的状态，而保存状态的规则在不同版本之间有变化 |
 
-The group design lets one pool serve all the kinds. It also means that the prefix-cache hit rate of a hybrid model differs from the hit rate of a full-attention model with the same prompts.
+分组设计让一个池可以服务所有类型的层。这也意味着，在相同的 prompt 下，混合模型的前缀缓存命中率与全 attention 模型不同。
 
-## Avoid the removed and renamed flags
+## 避开已移除和已改名的参数 {#s-serve-long-contexts-and-hybrid-models-avoid-the-removed-and-renamed-flags}
 
-Hybrid support changes fast. Three changes between 0.29 and 0.32 matter:
+混合模型的支持变化很快。0.29 到 0.32 之间有三项变化值得注意：
 
-- The `all` mode for the Mamba cache was deprecated in 0.30, and it made vLLM use the older model runner. Release 0.32 removed it.
-- Release 0.31 renamed `--enable-mamba-fine-grained-prefix-cache` to `--enable-mamba-shared-prefix-checkpoint`.
-- After the removal of the `all` mode, an open issue reports that `--mamba-block-size` has no effect.
+- Mamba cache 的 `all` 模式在 0.30 中被弃用，它会让 vLLM 使用旧版 model runner。0.32 版本移除了它。
+- 0.31 版本把 `--enable-mamba-fine-grained-prefix-cache` 改名为 `--enable-mamba-shared-prefix-checkpoint`。
+- 移除 `all` 模式后，一个尚未关闭的 issue 报告 `--mamba-block-size` 不再起作用。
 
-If a hybrid model starts slower or uses more memory after an upgrade, check these flags first. `--disable-hybrid-kv-cache-manager` turns the groups off, as a test of whether the groups cause the problem.
+如果升级后混合模型启动变慢或占用更多显存，先检查这些参数。`--disable-hybrid-kv-cache-manager` 会关闭分组，可用来测试问题是否由分组引起。
 
-## Check the setup
+## 检查设置 {#s-serve-long-contexts-and-hybrid-models-check-the-setup}
 
-Start the server and read the pool line. It gives the maximum concurrency at your maximum length:
+启动服务器并读池大小那一行。它给出在你的最大长度下的最大并发数：
 
 ```bash
 grep "GPU KV cache size" server.log
 ```
 
-The pool line prints only when the start succeeds. If the start stops with the error about the KV cache and the maximum length, lower `--max-model-len` until the pool line prints. Then read its concurrency, and compare it with the users you plan to serve at full length.
+池大小那一行只在启动成功时才会打印。如果启动因关于 KV cache 和最大长度的错误而停止，就降低 `--max-model-len`，直到这一行打印出来。然后读它的并发数，并与你计划以满长度服务的用户数比较。
 
 ```takeaways
-- Set the maximum model length to your longest request, not to the model limit.
-- Read the derived length after every upgrade.
-- Expect a different prefix-cache hit rate on a hybrid model, and test it on your prompts.
+- 把最大模型长度设为你最长的请求，而不是模型的上限。
+- 每次升级后读一下推导出的长度。
+- 预期混合模型的前缀缓存命中率会不同，并用你的 prompt 测试。
 ```
 
 Sources: vLLM documentation at v0.31.0 (docs/design/hybrid_kv_cache_manager.md, docs/configuration/optimization.md), the vLLM source at v0.31.0 (vllm/config/scheduler.py, vllm/config/cache.py), the release notes for v0.30.0, v0.31.0, and v0.32.0, vLLM issue 60838, the model config of Qwen/Qwen3-8B.
