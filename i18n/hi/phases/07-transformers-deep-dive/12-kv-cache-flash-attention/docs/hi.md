@@ -26,32 +26,32 @@
 
 ### KV कैश गणित
 
-प्रत्येक डिकोडर परत, प्रत्येक टोकन, प्रत्येक सिरः
+प्रत्येक डिकोडर परत, प्रत्येक टोकन, सभी KV सिरों 合计:
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
- एक 7B 模型 के लिए, 32 層、32  heads、d_head=128、fp16:
+ एक 7B 模型 के लिए, 32 層、32  heads  सभी के लिए उपयोग किया जाता है K 和 V) 、d_head=128、fp16:
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 对于Llama 3 70B(80 层、d_head=128、使用 8 个KV heads 的 GQA):
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-यह 10 जीबी है कि क्यों Llama 3 70B 128K संदर्भ में नीचे, केवल बैच आकार 1 के केवी कैश एक 40 जीबी A100 का अधिकांश हिस्सा पर कब्जा कर लेगा।
+यह 10 गिब 32K में, 128K तक बढ़ जाएगा 40 गिब, केवल बैच आकार 1 के केवी कैश 40 GB A100 के लिए पूरा पूरा पूरा होगा।
 
-**GQA 是 KV-cache 的关键收益。**64 सिरों का उपयोग करने के लिए 32 जीबी की आवश्यकता होगी।
+**GQA 是 KV-cache 的关键收益。**64 केवी हेडों का उपयोग करके एमएचए 8 गुना बड़ा हो जाता है, जो 32K में 80 गिब के करीब होता है।
 
 ### फ्लैश ध्यान  टाइलिंग 技巧
 
