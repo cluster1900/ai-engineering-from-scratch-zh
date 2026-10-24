@@ -124,7 +124,7 @@ def tfidf(bow_matrix):
 >>> tfidf(bow)
 ```
 
-Três documentos, cinco palavras para expressão`the`- Não.`cat`- Não.`sat`- Não.`dog`- Não.`ran`)。`the`Aparece em todos os três arquivos, então sua IDF é baixa.`dog`Só aparece uma vez, então seu IDF 高── estes vetores são raros.
+Três documentos, cinco palavras para expressão`the`- Não.`cat`- Não.`sat`- Não.`dog`- Não.`ran`)。`the`Aparece em todos os três arquivos, então sua IDF é baixa.`dog`Só aparece uma vez, então seu IDF 高── em um vocabulário real de milhares de palavras, estes vetores são raros.
 
 ### 步骤 5: L2-normalizar as linhas
 

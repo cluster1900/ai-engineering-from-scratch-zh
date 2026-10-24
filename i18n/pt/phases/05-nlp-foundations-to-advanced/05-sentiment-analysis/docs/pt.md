@@ -201,7 +201,7 @@ pipe.fit(X_train, y_train)
 print(pipe.score(X_test, y_test))
 ```
 
-Atenção a três coisas.`stop_words=None`会保留否定词──`ngram_range=(1, 2)`Vou juntar-me a Bigrams, deixe-me.`not_good`Tornar-se uma característica.`sublinear_tf=True`O impacto das palavras de baixo teor de gravidade. Estes três sinais, de origem, são os de 75% de precisão no ponto de partida da SST-2 e 85% de precisão no ponto de partida.
+Atenção a três coisas.`stop_words=None`会保留否定词──`ngram_range=(1, 2)`Vou juntar-me a Bigrams, deixe-me.`not good`成为一个特征(skikit-learn 用空格连接两个词)。`sublinear_tf=True`O impacto das palavras de baixo teor de gravidade. Estes três sinais, de origem, são os de 75% de precisão no ponto de partida da SST-2 e 85% de precisão no ponto de partida.
 
 ### 什么时候该使用变压器
 

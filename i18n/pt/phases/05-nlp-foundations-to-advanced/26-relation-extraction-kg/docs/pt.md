@@ -68,21 +68,21 @@ PATTERNS = [
 
 - Não .`code/main.py`O sistema de extração de brinquedos é um sistema de extração de brinquedos.
 
-### 步骤 2: 有监督关系 Classificação
+### 步骤 2: 有监督 seq2seq 关系抽取
 
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tok = AutoTokenizer.from_pretrained("Babelscape/rebel-large")
-model = AutoModelForSequenceClassification.from_pretrained("Babelscape/rebel-large")
+model = AutoModelForSeq2SeqLM.from_pretrained("Babelscape/rebel-large")
 
 text = "Tim Cook was born in Alabama. He later became CEO of Apple."
 encoded = tok(text, return_tensors="pt", truncation=True)
 output = model.generate(**encoded, max_length=200)
-triples = tok.batch_decode(output, skip_special_tokens=False)
+decoded = tok.batch_decode(output, skip_special_tokens=False)
 ```
 
-REBEL é um extrator de relações de sequência:输入文本,输出三倍,并且已经使用维基数据属性 ids──它在远程监督数据上精细调──标准开权基线──
+REBEL é um extrator de relações sequenciais baseado em BART: gera triples, em vez de para pares de entidades fazer分类──输入文本,输出 triples,relation 名称取自维基数据属性──解码出的字符串仍然带有REBEL的`<triplet>`- Não.`<subj>`和 `<obj>`标记, portanto, precisa de seguir estes marcadores 切分(如模型卡的解析器 所做) `(subject, relation, object)`记录── é em dados de supervisão remota  上精细调──标准开权基线──
 
 ### 步骤 3: Extração de LLM-promptada de ancoragem
 
