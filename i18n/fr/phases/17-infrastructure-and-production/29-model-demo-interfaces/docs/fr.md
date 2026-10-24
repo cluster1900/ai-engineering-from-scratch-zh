@@ -76,6 +76,8 @@ Pour les services de vérification par coût de bas à haut rang:
 
 | 未通过的检查 | HTTP 状态 | 错误代码 |
 |--------------|-------------|------------|
+| 没有 `Content-Length` 请求头 | 411 Length Required（需要长度） | `length_required` |
+| `Content-Length` 不是数字 | 400 Bad Request（错误请求） | `bad_length` |
 | 请求体超过 4,096 字节 | 413 Content Too Large（内容过大） | `body_too_large` |
 | 尚未收到 `Content-Length` 指定的字节数，请求体就停止传输 | 408 Request Timeout（请求超时） | `request_timeout` |
 | 内容类型不是 JSON | 415 Unsupported Media Type（不支持的媒体类型） | `unsupported_media_type` |

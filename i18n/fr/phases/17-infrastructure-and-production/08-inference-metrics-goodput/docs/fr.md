@@ -105,6 +105,8 @@ throughput-latency
 ## Utilisez-le
 `code/main.py`Il est également utilisé pour la production de la même quantité de données.
 
+Le [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1)L'appareil affiche le temps de chaque jeton de sortie sur NVIDIA L4 depuis où et depuis. Une étape de décode pour lire le poids de 16,41 Go, à 300 Go/s, nécessite au moins 54,7 ms, tandis que la mise à jour prend 60,16 ms.
+
 ## Je le livre.
 本课会生成 `outputs/skill-slo-goodput-gate.md` Donner une charge de travail et SLO, il générera une recette de référence utilisable pour CI/CD, avec un goodput et non pas un throughput pour les déploiements de passerelle.
 

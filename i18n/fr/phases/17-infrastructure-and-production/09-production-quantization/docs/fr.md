@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## Utilisez-le
 `code/main.py`Il s'agit d'une série de modèles de taille, calculant six types de forme de l'empreinte mémoire (poids + KV + activations) et de débit relatif.
 
+Le [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64)Le poids du jeton est passé de 15,28 Go à 8,81 Go, le poids de KV est passé de 24,094 Tokens à 142,369 Tokens, 64 utilisateurs ont testé la sortie de 250,85 Tokens par seconde, la taille est passée à 735,91 Tokens.
+
 ## Je le livre.
 本课会产出 `outputs/skill-quantization-picker.md` Donnée la taille du matériel, du modèle, du type de charge de travail et de la tolérance qualité, elle choisit un format et génère un plan d'étalonnage/validation.
 

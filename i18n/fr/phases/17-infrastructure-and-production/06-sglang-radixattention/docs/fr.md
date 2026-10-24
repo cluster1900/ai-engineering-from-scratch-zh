@@ -91,6 +91,8 @@ roofline
 ## Utilisez-le
 `code/main.py`实现 un cache KV de jouet radix-tree, ainsi qu'un planificateur avec deux stratégies:FCFS et cache-conscient.  Il permettra à la même charge de travail de se séparer par deux opérations, rapportant le taux de succès du préfixe-cache et le delta de débit.
 
+Le [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096)Les machines ont montré le cache radix dans une vraie L4 运行上的表现――四组每个组有一个4,096代币系统提示――一组的第一请求将计算它的提示――只要该提示仍然存在缓存中,这个组后续的请求就只需要计算128-代币的问题――关闭radix缓存,可以看到首代币 时间的中位数从479 ms 变成14706 ms――
+
 ## Je le livre.
 本课会生成 `outputs/skill-radix-scheduler-advisor.md` donner une description de la charge de travail (formate-template, retrieval pattern, tenants concurrents, nombre de locataires), elle génère une prescription de commande rapide, ainsi que le choix de la décision de la mise en service de SGLang.
 
