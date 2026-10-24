@@ -86,7 +86,7 @@ Neden işe yarıyor:
 - - Evet .$y=0$Ve$p$接近 0 时:$\log(1) = 0$, bu yüzden kaybı 接近 0(正确,低成本)
 - - Evet .$y=0$Ve$p$接近 1 时:$\log(0)$接近负无穷, bu yüzden kaybı 很大(错误,高成本)
 
-Lojistik gerileme için, bu Kayıp Fonksiyonu çarpıcıdır, bu nedenle yalnızca bir küresel minimum garanti edilir.
+Logistik gerileme için, bu Kayıp Fonksiyonu belirgindir, bu nedenle her yerel minimum küresel minimumdur, Gradient düşüş kötü bir极小 değer arasında kalmaz.
 
 ### Logistik Geri Dönüşümün Gelişmesi
 

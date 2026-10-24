@@ -82,7 +82,7 @@ Model Numerolojiye İhtiyaç Duyar.
 Gerçek veriler boşluklara sahip olacaktır.
 
 - **Drop rows：**Sadece eksik olan veri az ve kullanımı
-- **Mean/median imputation：**简单,并保持分布形形(median vs. outliers 更稳健)
+- **Mean/median imputation：**简单,能保持特征的中心(中向异值更稳健), ancak değişikliğini küçültür, tüm doldurma değerlerini aynı zirveye kadar toplar, bu nedenle dağılım şekli değişir
 - **Mode imputation：**Kategorik özelliklere göre
 - **Indicator column：**
 - **Forward/backward fill：**Zaman dizisi verilerine göre

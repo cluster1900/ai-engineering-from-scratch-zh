@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 重要: training SVM 之前始终要规模你的特征──SVMs 特性大小对敏感,因为边缘 取决于 $\lVert w \rVert$, ve ölçeksiz özellikler 会扭曲几何结构──
 
-对于大数据集,使用 `LinearSVC`(Birinci formülasyon, her dönem 为 $O(n)$) yerine `SVC`(ikili formülasyon,$O(n^2)$- Ne ?$O(n^3){}$):
+对于大数据集,使用 `LinearSVC`(Birinci formülasyon, her dönem 为 $O(n \cdot d)$,对 $n$线性) yerine `SVC`(ikili formülasyon,$O(n^2)$- Ne ?$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC

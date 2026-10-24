@@ -418,7 +418,7 @@ Eğer üst düzey ML modeliniz mevsimsel saf bir temel çizgiyi verirse, size bi
 
 1. **从绘图开始。**Herhangi bir modelden önce, önce orijinal sırayı çizin. Gelişmeler, mevsimler, dış görünüşler, yapısal kırıklıklar, davranışlarda ani değişiklikler arayın.
 
-2. **先差分，再建模。**Eğer bir dizi belirgin bir eğilim varsa, oluşturma geride kalma özelliklerinden önce farkı yapın. Ağaç tabanlı modeller eğilimleri ele alabilir, ancak doğrusal modeller yapamaz ve fark genellikle kötü olmaz.
+2. **先差分，再建模。**Eğer bir dizi belirgin bir eğilim varsa, oluşturma geride kalma özelliklerinden önce farkı yapın. Ağaç tabanlı modeller eğilimleri ele alabilir, ancak belirgin bir eğilim modeli yoktur.
 
 3. **至少留出一个完整季节周期。**Eğer haftalık bir test, test setinde en az bir hafta sürer. Eğer aylık bir test varsa, en az bir ay sürer.
 

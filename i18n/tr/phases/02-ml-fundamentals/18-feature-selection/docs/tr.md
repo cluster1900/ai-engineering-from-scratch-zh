@@ -8,7 +8,7 @@
 **Time:** ~75 分钟
 
 ## Öğrenme hedefi
-- 0 gerçekleştirmek filtresi yöntemleri (varians eşiği, karşılıklı bilgi, çikre) ve sarma yöntemleri (RFE, ileri seçimi)
+- 0 gerçekleştirmek filtresi yöntemleri (varians eşiği, karşılıklı bilgi) RFE yöntemleri ve yerleşik yöntemler (L1  Tree Importance) sonra pratikte ileri seçimi ekle
 -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 - L1 düzenlenmesi (sırılı seçim) ile RFE (sırılı seçim) karşılaştırın,并评估它们的计算权衡
 - Bir çok yöntemi birleştiren bir özellik seçimi borusu oluşturmak, ve bunu tutulan veriler üzerinde genelleşmenin etkisini geliştirmek

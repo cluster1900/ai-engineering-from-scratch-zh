@@ -104,7 +104,7 @@ Bu açgözlülük ısı tüm dünyadaki en iyi ağaç elde etmek için güvence 
 
 ### Durumları
 
-Eğer durma koşulları yoksa, ağaç her yaprak temiz olana kadar büyümeye devam eder.
+Eğer durma koşulları yoksa, ağaç her yaprak saf olana kadar büyümeye devam eder, veya yine de bölünmez.
 
 **Pre-pruning**Ağaçta bir süre kalmak için durmadan:
 - Maksimum derinlik:当 tree  设定深度 时停止 splitting
