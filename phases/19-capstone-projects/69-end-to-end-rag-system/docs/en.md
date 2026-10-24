@@ -61,7 +61,7 @@ flowchart LR
 
 在生产中，您可以使用提示模板将模拟替换为真正的 LLM 调用：
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

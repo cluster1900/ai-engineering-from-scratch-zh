@@ -45,7 +45,7 @@ flowchart LR
 
 HyDE 用 LLM 编写的假设文档向量替换用户的查询向量。提示很短：
 
-```text
+```
 You are a domain expert. Write a one-paragraph passage that answers the question
 below. Use the same vocabulary and phrasing the documentation in this domain would
 use. Do not refuse. Do not say you do not know.
@@ -63,7 +63,7 @@ LLM 的答案作为事实答案是错误的，因为 LLM 不知道你的语料�
 
 生成用户查询的 N 个释义。最简单的提示：
 
-```text
+```
 Rewrite the following question in {N} different ways. Each rewrite must preserve
 the original intent. Number them 1 to {N}. Do not add explanations.
 ```
@@ -76,7 +76,7 @@ the original intent. Number them 1 to {N}. Do not add explanations.
 
 单一检索无法满足多方面的问题。分解要求 LLM 将问题拆成子问题，系统再检索每个子问题。提示：
 
-```text
+```
 The following question may require information from multiple distinct topics.
 Decompose it into a list of sub-questions. Each sub-question must be answerable
 independently. If the question is already atomic, return it unchanged.
