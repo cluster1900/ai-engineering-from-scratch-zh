@@ -46,7 +46,7 @@ Três分支的输出通过学习 per-position gate 组合:
 
 Seleção 步骤(top-k blocos) é descalço de──descalço operações irá destruir o fluxo gradiente──Precedente de atenção escassa 工作要么跳过选择的 Backpropagation(限制训练),要么使用连续放松,而这些方法在推断时无法给出真正稀疏性──
 
-A NSA contornou este ponto:Attenção com branca comprimida Essência é o papel que desempenha em toda a sequência de pequenas e grossas partículasAttenção.`top_k`操作在前向计算图上是无运,它只控制哪些块会从内存中加载──
+A NSA contornou este ponto:Attenção com ramo comprimido Essência é o papel que desempenha em toda a sequência de pequenas e grosseiras concentraçõesAttenção Attenção Attenção Attenção Attenção Attenção Attenção Attenção é apenas a operação de repetir as notas de atenção mais altas entre os pontos de concentração com ramo comprimido, para escolher quais são os blocos de pequenas e pequenas concentrações.`top_k`O índice 选择本身不接收 Gradient: só controla quais blocos serão carregados da memória.
 
 É por isso que a NSA pode ser usada de ponta a ponta para o pré-treinamento.
 

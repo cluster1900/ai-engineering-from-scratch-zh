@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## Objectivo de aprendizagem
-- 将前十一课(tokenizer、data、pre-training、scaling、SFT、RLHF、DPO、CAI、eval、quantização、inferência) 组合成一个可复现的管道规范
+- O que é um "tokiza-do-conjunto" (tokiza-do-conjunto) é um "tokiza-do-conjunto" (tokiza-do-conjunto) que é um "tokiza-do-conjunto" (tokiza-do-conjunto) que é um "tokiza-do-conjunto" (tokiza-do-conjunto).
 - Definir contrato de artefactos entre cada fase: cada fase consome o que, produz o que, bem como a próxima fase como verificar a entrada
 - Construir um orquestrador, para acompanhar experiências, para artefatos, fazer hash, e basear-se em prazos de avaliação decidir se é aprovado o gate
 - Design rollback plan: quais artefatos re-lançar custos baixos, quais custos altos, bem como um ponto de controle de deterioração

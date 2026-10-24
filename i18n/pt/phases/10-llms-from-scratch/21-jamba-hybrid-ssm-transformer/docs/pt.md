@@ -74,10 +74,10 @@ Mamba camadas 本身具有位置感知能力(通過递推) ・原始 Mamba-based
 
 对于 Jamba-1 形状(32 层:28 Mamba + 4 Atenção, oculta 4096,32 cabeças de atenção):
 
-- Cabeça KV( apenas camadas de atenção): em 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 8.4 GB`                                                                                                                                                                                                                                                              
+- Cabeça KV( apenas camadas de atenção): em 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 16 GB` Apenas 4 camadas de atenção contribuem com o cache KV── já publicado Jamba utilizou 8 cabeças de KV entre essas camadas, reduzindo-as para 4 GB, ou seja, o número no papel Jamba──
 - Estado do SSM: cada prefixo de token 为 `28 * hidden * state_size`, mas é um grande número de camadas fixas, não se segue a sequência de extensão de tamanho.`28 * 4096 * 16 * 2 = 3.7 MB`- Não.
 
-Com o mesmo escondido 32 layers 32 heads full MHA de Transformer puro`2 * 32 * 32 * 128 * 256k * 2 = 128 GB` Cache de KV  Reduzido 8x── mesmo em relação à maioria dos modelos utilizados em 2024 模型使用的 GQA(8)`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`),Jamba's 1:7 híbrido em 16 GB
+Com o mesmo escondido 32 layers 32 heads full MHA de Transformer puro`2 * 32 * 32 * 128 * 256k * 2 = 128 GB` Cache de KV  Reduzido 8x── mesmo em relação à maioria dos modelos utilizados em 2024 模型使用的 GQA(8)`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`),32 个 KV heads 的 1:7 hybrid 在 16 GB 下仍然小2x──已发布的Jamba 为 4 GB,小8x──
 
 É o que a AI21 diz sobre o 单张 80GB GPU 上的 256k context──full-MHA pure Transformer's KV cache 放不下; mesmo que a linha de base GQA também quase não dê pesos 和 activações 留空间; enquanto o Jamba 可以──
 

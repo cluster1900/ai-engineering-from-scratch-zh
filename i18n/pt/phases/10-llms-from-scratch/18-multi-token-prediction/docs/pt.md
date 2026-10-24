@@ -28,7 +28,7 @@ Este curso vai desde zero construir um único módulo MTP e D-profundidade de pe
 
 ### MTP sequencial 配方
 
-DeepSeek-V3 está no modelo principal.`D`个 MTP módulos── cada módulo `k`(entre eles `k = 1..D`) pré测 profundidade `k`O sinal é que está em posição determinada.`i`时预测                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `t_{i+k}`- Não.
+DeepSeek-V3 está no modelo principal.`D`个 MTP módulos──主模型预测 `t_{i+1}` Cada módulo `k`(entre eles `k = 1..D`) pré测再往后 `k`步的标志 `t_{i+k+1}`- A condição é que o local seja determinado.`i`O prefixo é:
 
 Modulo `k`包含:
 
@@ -49,13 +49,13 @@ h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMS
 Previsão por profundidade 为:
 
 ```math
-\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
+\text{logits}_{i+k+1} = \mathop{\mathrm{Out}}(h_i^{(k)}) \quad \text{for } k = 1, \ldots, D
 ```
 
-Perda de profundidade é em relação à verdade fundamental.`t_{i+k}`- A entropia cruzada:
+Perda de profundidade é em relação à verdade fundamental.`t_{i+k+1}`- A entropia cruzada:
 
 ```math
-L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k+1}, t_{i+k+1})
 ```
 
 Perda articular de profundidade:
@@ -70,9 +70,9 @@ L_{\text{MTP}} = \frac{\lambda}{D} \sum_{k=1}^{D} L_k
 
 Gloeckle inicial paralelo MTP tem D  cabeças de saída, cada um aplicado diretamente até `h_i^(0)`Cada cabeça está no mesmo estado oculto da espinha vertebral.`t_{i+k}`- Sim, sim. - Sim, sim. - Sim.`head_1`O que é que se passa?`head_2`Estas cabeças são as que fazem o que eu faço.
 
-DeepSeek-V3 sequencial design de`h_i^(k-1)`Adiós real de next-token embutida `E(t_{i+k})`Construção`h_i^(k)`Isto manteve a cadeia causal: para a previsão.`t_{i+k+1}`, profundidade `k+1`O módulo vai ver`t_{i+k}`处的内容──这在结构上与自归解码器 消费自输出方式相同,因此, os módulos MTP podem ser diretamente utilizados como desenhadores de descodificação especulativa──
+DeepSeek-V3 sequencial design de`h_i^(k-1)`Adiós real de next-token embutida `E(t_{i+k})`Construção`h_i^(k)`Isto manteve a cadeia causal: para a previsão.`t_{i+k+1}`, profundidade `k`O módulo vai ver`t_{i+k}`处的内容──这在结构上与自归解码器 消费自输出方式相同,因此, os módulos MTP podem ser diretamente utilizados como desenhadores de descodificação especulativa──
 
-推理时:将 `h_i^(k-1)`E o que se está a fazer?`t_{i+k}`输入 módulo `k+1`- Não , não .`t_{i+k+1}`É um projeto de estilo EAGLE, apenas usando um bom módulo MTP treinado como um projeto de rede.
+推理时:将 `h_i^(k-1)`E o que se está a fazer?`t_{i+k}`输入 módulo `k`- Não , não .`t_{i+k+1}`É um projeto de estilo EAGLE, apenas usando um bom módulo MTP treinado como um projeto de rede.
 
 ### 参数核算
 
@@ -142,7 +142,7 @@ Auto-atenção加 MLP──在玩具中,一个单层线性注意区 和一个Swi
 
 ### 步骤 5: perda por profundidade
 
-Softmax (logits)`k`处 fundamental-verdade Token 的交叉化──使用 `lambda / D`缩放因子跨深度 聚合──
+Softmax (logits)`k+1`处 fundamental-verdade Token 的交叉化──使用 `lambda / D`缩放因子跨深度 聚合──
 
 ### 步骤 6: Parâmetros de cálculo
 
@@ -177,18 +177,18 @@ Não adequado para uso:
 
 2. 計算一個密集70B 模型 ((hidden 8192,80 層) 內 D=1 MTP módulo 下的参数开销──與 DeepSeek-V3 報告的 14B 开销进行比较──解释为什么 DeepSeek 的数字更高:MTP transformador block 继承了相同的MoE 结构,从而增加了每模块 参数──
 
-3. Em jogo implementar D=2: Adicionar um segundo módulo MTP, recebendo $h^{(1)}$Não previu`t_{i+2}` Verificação de perda conjunta 和参数核算与DeepSeek paper's equations 19-21 匹配──
+3. Em jogo implementar D=2: Adicionar um segundo módulo MTP, recebendo $h^{(1)}$Não previu`t_{i+3}` Verificação de perda conjunta 和参数核算与DeepSeek paper's equations 19-21 匹配──
 
 4. 将玩具 切换为平行MTP(Gloeckle-style): em estado oculto principal 之上添加D 个输出头,每个预测不同抵消――测量在同一个合成信号上,每个深度的损失与序列版本相比如何――对于 k > 1,sequential 版本应产生更低的深度-k损失,因为它在中间预测为条件――
 
-5. O módulo de MTP deve ser treinado e utilizado como um projeto de estilo EAGLE.`t_{i+k}` Em sequência de manuseio, medir estes projetos de Token em relação ao modelo principal.
+5. O módulo de MTP deve ser treinado e utilizado como um projeto de estilo EAGLE.`t_{i+k+1}` Em sequência de manuseio, medir estes projetos de Token em relação ao modelo principal.
 
 ## 关键术语
 
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | MTP module | “额外 loss block” | 一个小型 transformer block 加 projection，用来预测主模型前方 `k` 个位置的 Token |
-| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k}` |
+| Prediction depth | “哪个 offset” | 整数 `k`，使得 module `k` 基于截至位置 `i` 的 prefix 预测 `t_{i+k+1}`（主模型为 depth 0，预测 `t_{i+1}`） |
 | Parallel MTP | “Gloeckle-style” | 位于同一个 backbone hidden state 之上的 D 个独立 heads，没有条件链 |
 | Sequential MTP | “DeepSeek-V3 style” | 每个 module 都以先前 depth 的 hidden state 加下一个 Token 的 embedding 为条件；保留 causal chain |
 | Shared output head | “复用主 head” | MTP modules 调用主模型的 LM head，而不是单独的 output projection |

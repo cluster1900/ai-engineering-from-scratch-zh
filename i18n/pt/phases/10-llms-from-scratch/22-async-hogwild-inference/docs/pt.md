@@ -55,7 +55,7 @@ Este artigo leva o nome de Hogwild! SGD(Recht et al., 2011), um tipo de optimiza
 
 ### RoPE  Deixe isso ser viável
 
-Embutidos de posição rotativa ((RoPE, Su et al. 2021) através de rotação de Q 和 K vetores 中 的编码位置信息──因为 posições são rotações, em vez de compensações de fixação, então a posição do token pode ser movida, sem necessidade de recalcular a entrada do cache KV── quando trabalha`i`写入 cache compartilhado posição `p`时,读取该职位的其他员工可以直接使用缓存输入不需要重转
+Embutidos de posição rotativa ((RoPE, Su et al. 2021) através de rotação entre vetores Q e K  codificar informações de posição.`i_q`A questão, bem como o trabalho, começaram a ser`i_k`Bloco, consulta em relação à distância`i_q - i_k`旋转── é assim que cada trabalhador vê blocos de cache compartilhados em sua própria ordem── é assim que se aplica a toda a rotatividade do bloco de contínuo.
 
 Em um modelo de posição aprendida ou absoluta, Hogwild!
 

@@ -16,7 +16,7 @@
 
 ## 问题
 
-标准 softmax Atenção tem uma natureza matemática, em escala de mudança grande, se transforma em problemas de engenharia.`q`,Attenção 权重是 `softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值每个不匹配的代币都会得到一些正质量──这个残余质量就是噪音,并且会随着背景长度扩大── 在128k 个代币下,即使每个不匹配的代币只获得0.001%的概率,127,999 代币合并也会贡献约12%的总量──模型必须学会绕开一个随着背景 增长的噪音下限──
+标准 softmax Atenção tem uma natureza matemática, em escala de mudança grande, se transforma em problemas de engenharia.`q`,Attenção 权重是 `softmax(qK^T / sqrt(d))` Softmax 永远无法产生精确的零值:每个不匹配的代币都会得到一些正质量──这个残余质量就是噪音,并且会随着背景长度扩大── 在128k 个代币下,即使每个不匹配的代币只获得0.0001%的概率,127,999 代币合并也会贡献约13%的总量──模型必须学会绕开一个随着背景 增长的噪音下限──
 
 Em prática, este desempenho foi feito para a atenção cabeça 干扰:long-context RAG 中的幻觉引用、100k-Token 检索任务中的失败中失败,以及针头-in-haystack benchmark 在超过32k 后出现细微精度下降.
 
