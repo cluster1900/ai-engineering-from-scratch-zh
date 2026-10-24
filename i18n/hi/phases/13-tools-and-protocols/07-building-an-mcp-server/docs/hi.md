@@ -28,14 +28,14 @@
 ### 现代请求分发循环(डिस्पैच लूप)
 
 ```text
-读取一行 JSON-RPC 文本
-解析外层 Envelope
-若为通知（Notification），则不予响应
-针对当前请求校验 params._meta
-根据 method 执行路由分发
-使用 resultType 与 serverInfo 封装成功结果
-写回一行 JSON-RPC 响应文本
-立即遗忘当前请求作用域的元数据
+read one JSON-RPC line
+parse the envelope
+if it is a notification, do not respond
+validate params._meta for this request
+route by method
+wrap success with resultType and serverInfo
+write one JSON-RPC response line
+forget request-scoped metadata
 ```
 
 स्टूडियो के तहत, तीन महत्वपूर्ण नियम हैंः
@@ -116,7 +116,7 @@
 
  उपयोगकर्ता विशेष निजी नोट डेटा के लिए, उपयोग किया जाना चाहिए `cacheScope: "private"` साझा कायाकल्प का अधिकार प्राप्त नहीं किया जा सकता
 
-现代数据变更推送 अब उपयोग नहीं किया जा रहा है `resources/subscribe`◊ ग्राहक 通过发起 `subscriptions/listen`घोषणा`resourceSubscriptions`या सूची परिवर्तन घटनाओं को प्राप्त करने के लिए
+现代数据变更推送 अब उपयोग नहीं किया जा रहा है `resources/subscribe`◊ ग्राहक 通过发起 `subscriptions/listen`घोषणा`resourceSubscriptions`या सूची परिवर्तन घटनाओं को प्राप्त करने के लिए दीर्घ संपर्क प्रक्षेपण.
 
 ### संकेत (अनुदेश)
 
@@ -141,7 +141,13 @@ def complete(payload):
 
 现代 सर्वर ग्राहक से सीधे संबंधित सूचना भेज सकता है या ग्राहक द्वारा ओपन किया जा सकता है `subscriptions/listen`流中推送通知──但 सर्वर **绝不能**主动发起独立的 JSON-RPC अनुरोध
 
-जब हैंडलर  नमूनाकरण  प्राप्ति या जड़ 输入时, यह वापस एक `input_required`结果── ग्राहक में satisfaction के अनुरोध के प्रवेश के बाद, उपयोग करें पूर्ण नई अनुरोध आईडी 重新发起原始方法调用──
+जब हैंडलर  नमूनाकरण  प्राप्ति या जड़ 输入时, यह वापस एक `input_required`结果──客户在满足所请求的输入后,全新请求 ID का उपयोग 重新发起原始方法调用──第 11 课将详细讲解这种多轮往返请求(多轮往返请求)模式──
+
+### 显式的 विरासत 兼容
+
+双时代(दो युग) सर्वर भी एक स्पष्ट पृथक विरासत में किया जा सकता है 分支上实现 `2025-11-25`握手──当请求中存在现代规范要求的 `_meta`字段时,它选择现代行为;当收到 `initialize`时,则走 विरासत 行为──
+
+मत करो `2026-07-28`कृपया विरासत के माध्यम से 握手路径, न भी आधुनिक को मत तोड़ो `resultType`字段塞进 Legacy के प्रारंभिक परिणामों में. . .
 
 ```figure
 t3-dispatch-loop
@@ -172,8 +178,8 @@ npx tsx main.ts --demo
 ## 练习与思考
 
 1. किसी अनुरोध में से क्षमताओं को हटाने का 字段, प्रमाण सर्वर  कभी भी पूर्व अनुरोध में घोषित की गई पुरानी क्षमता का पुनः उपयोग नहीं करेगा 
-2. 颠倒 `TOOLS``PROMPTS`及笔记数据的录入顺序, सभी सूची पूछताछ परिणामों की पुष्टि करना अभी भी स्थिर है
-3. एक विनाशकारी नई वृद्धि `notes_delete`工具, और निष्पादक के अंदर शामिल पहचान अधिकार जांच, सत्यापन `destructiveHint`                                                                                                                                                                                                                                                              
+2. 颠倒 `TOOLS``PROMPTS`及笔记数据的录入顺序, सभी सूची पूछताछ परिणामों की पुष्टि करना अभी भी स्थिर है।
+3. एक विनाशकारी नई वृद्धि `notes_delete`工具, और निष्पादक के अंदर शामिल पहचान अधिकार जांच,并让 `destructiveHint` केवल UX 提示 के रूप में
 4. 补充 `resources/templates/list`接口,要求附带 `ttlMs``cacheScope`तथा निश्चितता क्रमशः
 5. `2025-11-25`编写一个完全隔离的遗产 适配器,并通过测试证明现代请求绝不会错进遗产 处理路径──
 
@@ -184,9 +190,9 @@ npx tsx main.ts --demo
 | 无状态 Server (Stateless server) | 仅从每个请求自身的元数据处理调用，无任何协议 Session 内存记忆 |
 | `server/discover` | 强制实现的现代方法，用于向调用方公布支持的版本与功能集 |
 | 完整结果 (Complete result) | 携带 `resultType: "complete"` 的成功现代结果 |
-| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或只读结果 |
+| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或资源读取结果 |
 | 确定性列表 (Deterministic list) | 逻辑相同的注册表必须输出完全一致、可复现的条目顺序 |
-| Server 身份 (Server identity) | 在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
+| Server 身份 (Server identity) | 推荐在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
 | Tool 业务错误 (Tool error) | Tool 调用正常被解析执行，但业务逻辑失败，返回包含 `isError: true` 的 content |
 | 协议错误 (Protocol error) | 非法的 JSON-RPC 格式或无效的 MCP 请求参数，直接通过顶层 `error` 报错返回 |
 

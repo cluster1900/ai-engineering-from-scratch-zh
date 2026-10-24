@@ -35,7 +35,7 @@ A2A के नियमों के अनुरूप प्रत्येक
 ```json
 {
   "name": "research-agent",
-  "description": "总结学术论文并草拟引用。",
+  "description": "Summarizes academic papers and drafts citations.",
   "version": "1.2.0",
   "supportedInterfaces": [
     {
@@ -54,8 +54,8 @@ A2A के नियमों के अनुरूप प्रत्येक
   "skills": [
     {
       "id": "summarize_paper",
-      "name": "总结论文",
-      "description": "读取论文 PDF，并生成 3 段摘要。",
+      "name": "Summarize a paper",
+      "description": "Read a paper PDF and produce a 3-paragraph summary.",
       "tags": ["research", "summarization"],
       "inputModes": ["text/plain", "application/pdf"],
       "outputModes": ["text/markdown"]
@@ -100,7 +100,7 @@ TASK_STATE_WORKING
   "messageId": "msg-001",
   "role": "ROLE_USER",
   "parts": [
-    {"text": "总结这篇论文。"},
+    {"text": "Summarize this paper."},
     {"raw": "...", "filename": "paper.pdf", "mediaType": "application/pdf"},
     {"data": {"targetLength": "3 paragraphs"}, "mediaType": "application/json"}
   ]
@@ -143,7 +143,7 @@ A2A-Version: 1.0
     "message": {
       "messageId": "msg-001",
       "role": "ROLE_USER",
-      "parts": [{"text": "总结这篇论文。"}]
+      "parts": [{"text": "Summarize this paper."}]
     }
   }
 }
@@ -152,6 +152,16 @@ A2A-Version: 1.0
 ###                                                                                                                                                                                                                                                               
 
 核心设计哲学: 调用 एजेंट की आंतरिक स्थिति अत्यधिक अस्पष्ट है। 调用方 केवल कार्य 状态 और आउटपुट आर्टिफैक्ट देख सकता है। 调用者思维链 (Chain-of-Thought) 内部 उपकरण 调用、子 एजेंट 发发过程对外界一律不可见―― यह MCP के उपकरण 调用 से पूरी तरह से पारदर्शी होना चाहिए।
+
+设计理由:A2A 让相互竞争的公司也能合作,而无需暴露各自的内部实现.A2A  इस ग्राहक एजेंट को调用 कर सकता है, जबकि调用方 इस प्रकार यह नहीं जान पाएगा कि एजेंट इस सेवा को कैसे प्राप्त करता है।
+
+### समय रेखा
+
+- **2025-04-09.**गूगल ने A2A जारी किया है।
+- **2025-06-23.**Linux Foundation को दान करें
+- **2025-08.** IBM के ACP को अवशोषित करना
+- **2025-09.**AP2 扩展(एजेंट भुगतान) जारी किया गया
+- **2026-04.**v1.0  जारी किया गया, 150 से अधिक संगठनों का समर्थन प्राप्त किया गया।
 
 ### एमसीपी के साथ संबंध
 
@@ -186,21 +196,38 @@ a2a-task-lifecycle
 
 本课交付 `outputs/skill-a2a-agent-spec.md`◊ बाहरी रूप से नियोजित नए एजेंट की उम्मीद के लिए, यह मानक एजेंट कार्ड JSON, Skills, Declarations, and Endpoint Connection Design का उत्पादन कर सकता है
 
+## अभ्यास
+
+1. 运行 `code/main.py`◊ पूर्ण कार्य जीवन चक्र का पालन करना, जिसमें नियोजित एजेंट शामिल हैं स्पष्टीकरण के लिए अनुरोध करें`TASK_STATE_INPUT_REQUIRED`暂停──
+
+2.  एक हस्ताक्षरित एजेंट कार्ड जोड़ा `signatures`中放入一条 `alg`设为 `HS256`के JWS 条目, के लिए छोड़ दें `signatures`字段后的卡 规范化 JSON 签名──编写一个验证器,并确认它在被改编的卡上验证失败──
+
+3. उपयोग `SendStreamingMessage`实现任务流式传输: लेखक एजेंट 依次发发 `task`、三 `artifactUpdate`एक टुकड़ा, और एक बट `TASK_STATE_COMPLETED``statusUpdate`, फिर बंद प्रवाह. . .
+
+4. 设计一个封装 MCP Server 的A2A एजेंट――把每个 MCP Tool 映射成一个A2A Skill――记下其中的取舍:失去了哪些不透明性?
+
+5. 阅读A2A v1.0 की घोषणा, पता लगाएं कि 2026 तक कोई भी ढांचा नहीं है।
+
 ## 核心专业术语
 
-| 术语 | 规范定义 |
-|------|---------|
-| A2A | Agent-to-Agent 协议，用于异构不透明智能体间跨系统对等协作 |
-| Agent Card | 暴露于 `/.well-known/agent-card.json` 的名片，公布能力、接口与鉴权 |
-| Skill | Agent 所支持的命名功能单元（类似于 MCP 中的 Tool） |
-| Task | 具备独立生命周期和产物输出的异步任务委托单元 |
-| Message | 承载交互内容的实体，内含纯内容字段标识的 Parts 数组 |
-| Part | 仅包含 `text`、`raw`、`url` 或 `data` 之一的独立内容切片 |
-| Artifact | 任务完成时产出的具名、带类型输出成果 |
-| `TASK_STATE_INPUT_REQUIRED` | 当任务执行遇阻需要调用方提供补充输入时的挂起状态 |
+| 术语 | 人们怎么说 | 实际含义 |
+|------|----------------|------------------------|
+| A2A | “Agent-to-Agent 协议” | 用于不透明 Agent 协作的开放协议 |
+| Agent Card | “`/.well-known/agent-card.json`” | 公开发布的元数据，描述 Agent 的 Skills 和 `supportedInterfaces` |
+| Skill | “一个可调用单元” | Agent 支持的具名操作（类似于 MCP 中的 Tool） |
+| Task | “委托单元” | 具有生命周期和最终 Artifact 的工作项 |
+| Message | “Task 输入” | 承载 Parts（`text`、`raw`、`url`、`data`） |
+| Part | “带类型的分块” | `text` / `raw` / `url` / `data` 中恰好一个，外加可选的 `mediaType`；没有 `kind` 字段 |
+| Artifact | “Task 输出” | 完成时返回的具名、带类型输出 |
+| AP2 | “Agent Payments Protocol” | 构建在 A2A 之上的支付扩展；Card 签名属于 A2A 核心（`signatures`） |
+| Opacity | “黑盒协作” | 被调用 Agent 的内部实现对调用方隐藏 |
+| `TASK_STATE_INPUT_REQUIRED` | “Task 暂停” | Agent 需要更多信息时的中断状态 |
 
 ## 延伸阅读
 
 - [a2a-protocol.org](https://a2a-protocol.org/latest/) A2A 规范主站
 - [a2aproject/A2A GitHub](https://github.com/a2aproject/A2A)  参考实现与SDK
 - [A2A v1.0.1 release](https://github.com/a2aproject/A2A/tree/v1.0.1) इस वर्ग के अनुपालन के नियम तथा प्रोटोबूफ संधि
+- [Linux Foundation — A2A launch press release](https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents) 2025 के जून माह के शासन अधिकार हस्तांतरण
+- [Google Cloud — A2A protocol upgrade](https://cloud.google.com/blog/products/ai-machine-learning/agent2agent-protocol-is-getting-an-upgrade) 路线图 सहकारी सहयोग की प्रगति
+- [Google Dev — A2A 1.0 milestone](https://discuss.google.dev/t/the-a2a-1-0-milestone-ensuring-and-testing-backward-compatibility/352258) v1.0  जारी विवरण तथा पश्चात्兼容 निर्देश

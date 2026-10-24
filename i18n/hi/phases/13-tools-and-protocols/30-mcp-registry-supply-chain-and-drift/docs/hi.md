@@ -201,9 +201,9 @@ python3 code/main.py
 
 ```text
 Registry sync -> artifact verifier -> live discovery -> admission controller -> route table
-                                                |                 |
-                                                v                 v
-                                           evidence store    admission ledger
+                                               |                 |
+                                               v                 v
+                                          evidence store    admission ledger
 ```
 
 उपरोक्त कार्यों को एक दूसरे से अलग करने के लिए न्यूनतम अधिकारों का वितरण करनाः रजिस्ट्री तथा समवर्ती कार्यों को केवल डेटा के केवल-पढ़ने के अधिकारों की आवश्यकता होती है; कार्य परीक्षण कार्यों को सॉफ़्टवेयर पैकेज तक पहुंच के लिए निकासी अधिकारों की आवश्यकता होती है; मार्ग द्वारा समायोजन और नियंत्रक को अनुमोदन के अधिकारों को सक्रिय करने की आवश्यकता होती है।

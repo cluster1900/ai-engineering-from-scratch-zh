@@ -87,7 +87,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract
 `SKILL_ROOT`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `SKILL.md`का सूची, न कि पाठ्यक्रम स्रोत सूची, न ही वर्तमान कार्यक्षेत्रः
 
 ```bash
-# 将占位符替换为安装器打印出的绝对路径
+# Replace the placeholder with the destination printed by the installer.
 SKILL_ROOT="$(cd "/absolute/path/to/skill-contract-reviewer" && pwd -P)"
 test -f "$SKILL_ROOT/SKILL.md"
 printf 'SKILL_ROOT=%s\n' "$SKILL_ROOT"

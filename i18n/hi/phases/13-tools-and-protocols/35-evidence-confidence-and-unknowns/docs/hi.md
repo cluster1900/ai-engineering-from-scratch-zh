@@ -426,6 +426,29 @@ ledger.verify_unknown_chain(unknown_id)
 
 सफलता मानकः रिपोर्ट के प्रत्येक वाक्य में साक्ष्य पैकेज में पहचानकर्ता का उल्लेख किया गया है, और वह `unknown`断言已消除──
 
+## 评分实验
+
+五道关于本课件的题目――आपके द्वारा निर्मित कोड के साथ प्रत्येक उत्तर का पता लगाएं, फिर लिखें `code/lab_answers.json`数字写成数字, या लिख成 `"0x40"`इस प्रकार के षट् षट् षट् षट् षट् षट्; सूची को JSON 列表 में लिखा गया है।
+
+1. `t1`:compute_evidence_id 为 वास्तविक-evidence-grade.json 给出的证据 id──
+2. `t2`:grade 记录中限制的数量──
+3. `t3`:grade 记录的关系_coverage 状态──
+4. `t4`:grade 记录的信心和权威,写成由两个字符串组成的列表──
+5. `t5`:grade 记录中 विषय का SHA-256。
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`计算每期望值── यह प्रति题输出 `PASS``FAIL`या `TODO`और कुल मिलाकर, केवल पांच प्रश्न पूरे समय से ही 0 से बाहर निकलते हैं।`python3 code/lab.py my-answers.json`एक और फाइल को चेक करें।`code/tests/test_lab.py`证明检查器 सही उत्तर स्वीकार करें并拒绝错误答案──
+
+### देखो यह काम करता है
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off)机器维护一本证据账本,分为四托盘:observed、derived、inferred 和 unknown── यह कड़ी बंद प्रतीक पत्र के मामले में चालू संचालन में है, इसलिए फ़ंक्शन नाम और फ़ंक्शन का अंत अज्ञात में, प्रारंभ स्थान में प्रवेश करने के लिए निष्कर्ष निकाला गया है──
+
 ## 本课产物
 
 本课产 出 `outputs/skill-evidence-ledger.md`यह निर्देश देता है कि बुद्धिमान व्यक्ति प्रत्येक खोज को विश्वास श्रेणी, अधिकार स्रोत, सीमा और लिंक के रिकॉर्ड के रूप में लिखेंगे, यह बताता है कि संशोधित संस्करण के साथ अज्ञात वस्तुओं को कैसे बनाए रखा जाए, और कब निष्कर्षों का न्याय किया जाएगा।`pass``fail``unknown`या `unsupported`
