@@ -1,47 +1,47 @@
-# Where vLLM came from
+# vLLM 从哪里来
 
-> This page explains the Berkeley project, the V0 to V1 change, and the governance of the project.
+> 本页解释伯克利的项目、从 V0 到 V1 的转变，以及项目的治理。
 
-The vLLM you install today is the second engine under the same name. When you finish this section, you can say where the project started, why it rewrote its engine, and who decides its direction now.
+你今天安装的 vLLM，是同名之下的第二个引擎。读完本节后，你能说出项目从哪里起步、为什么重写了引擎，以及现在由谁决定它的方向。
 
-## A Berkeley project with one idea
+## 一个只有一个想法的伯克利项目 {#s-where-vllm-came-from-a-berkeley-project-with-one-idea}
 
-The repository started on 2023-02-09 at the University of California, Berkeley, with commits by Woosuk Kwon. The first public release, v0.1.0, came on 2023-06-20, together with a blog post that introduced PagedAttention. The paper on the same idea appeared at SOSP 2023.
+这个仓库于 2023-02-09 在加州大学伯克利分校创建，由 Woosuk Kwon 提交了最初的 commit。第一个公开版本 v0.1.0 于 2023-06-20 发布，同时发布了一篇介绍 PagedAttention 的博客文章。关于同一想法的论文发表在 SOSP 2023 上。
 
-The idea was to store the KV cache in fixed blocks, the way an operating system stores memory in pages. A server could then fit more requests on one GPU, and requests could share blocks. Early users ran it behind the Chatbot Arena and the Vicuna demos of the LMSYS team.
+这个想法是像操作系统用页存放内存那样，用固定的 block 存放 KV cache。这样一个服务器就能在一块 GPU 上容纳更多请求，请求之间也能共享 block。早期用户在 LMSYS 团队的 Chatbot Arena 和 Vicuna 演示背后运行它。
 
-## Features in the first engine
+## 第一个引擎中的功能 {#s-where-vllm-came-from-features-in-the-first-engine}
 
-Between 2023 and 2025, the first engine gained most of the features this manual covers:
+在 2023 年到 2025 年之间，第一个引擎获得了本手册介绍的大部分功能：
 
-| Release | Date | What it added |
+| 版本 | 日期 | 新增了什么 |
 |---|---|---|
-| v0.3.0 | 2024-01-31 | experimental multi-LoRA, experimental prefix caching, and an FP8 KV cache |
-| v0.4.0 | 2024-03-30 | automatic prefix caching, and early chunked prefill and speculative decoding |
-| v0.6.0 | 2024-09-04 | about twice the throughput of v0.5.3 with the default settings, an async output processor, and an optional multi-step scheduler |
+| v0.3.0 | 2024-01-31 | 实验性的 multi-LoRA、实验性的 prefix caching，以及 FP8 KV cache |
+| v0.4.0 | 2024-03-30 | 自动 prefix caching，以及早期的 chunked prefill 和投机解码 |
+| v0.6.0 | 2024-09-04 | 默认设置下吞吐约为 v0.5.3 的两倍、异步输出处理器，以及可选的 multi-step scheduler |
 
-Our reading: each feature went into a design that did not plan for it, and the code grew harder to change.
+我们的解读：每个功能都被加进了一个没有为它做过规划的设计里，代码变得越来越难改。
 
-## The rewrite
+## 重写 {#s-where-vllm-came-from-the-rewrite}
 
-The team built a second engine, called V1. Its goals were a simple and modular code base, almost no CPU overhead, and the main optimizations on by default. V1 appeared for testing in v0.7.0 on 2025-01-27, with torch.compile on by default. It became the default engine in v0.8.0 on 2025-03-18. Release v0.11.0 on 2025-10-02 removed the old engine.
+团队构建了第二个引擎，称为 V1。它的目标是简单、模块化的代码库，几乎没有 CPU 开销，并默认开启主要的优化。V1 在 2025-01-27 的 v0.7.0 中作为测试版出现，默认开启 torch.compile。它在 2025-03-18 的 v0.8.0 中成为默认引擎。2025-10-02 的 v0.11.0 移除了旧引擎。
 
-The ideas on the other pages of Part 8 come from this rewrite. One token budget replaced the prefill and decode paths. Chunked prefill and prefix caching became the default. The process split put the scheduler in its own process. Model Runner V2 later rebuilt the model runner, which the team said had design mistakes.
+第 8 部分其他页面上的思想都来自这次重写。一个 token 预算取代了 prefill 和 decode 两条路径。chunked prefill 和 prefix caching 成为默认。进程拆分让 scheduler 有了自己的进程。Model Runner V2 后来重建了 model runner，团队说原来的 runner 有设计错误。
 
-## Releases now
+## 现在的发布节奏 {#s-where-vllm-came-from-releases-now}
 
-Until v0.11, a new minor release came every one to five months. Since v0.12.0 in December 2025, a new minor release comes about every two weeks. By 2026-10-18 the project had published 108 releases on GitHub. Each release changes defaults and removes deprecated flags, so a recipe from a few months ago can be wrong today. This manual pins 0.31.0 for that reason.
+在 v0.11 之前，每一到五个月发布一个新的 minor 版本。从 2025 年 12 月的 v0.12.0 起，大约每两周发布一个新的 minor 版本。到 2026-10-18，项目已在 GitHub 上发布了 108 个版本。每个版本都会改变默认值并移除已弃用的参数，所以几个月前的配置方案今天可能就是错的。本手册正是因此锁定 0.31.0。
 
-## Who runs it
+## 谁在运营它 {#s-where-vllm-came-from-who-runs-it}
 
-The project started the incubation process at the LF AI and Data Foundation in July 2024. On 2025-05-07, it became a hosted project of the PyTorch Foundation. Five lead maintainers and 55 active committers review changes. Companies contribute engineers to the project. Red Hat brought in the Neural Magic team when it bought that company in January 2025.
+项目于 2024 年 7 月在 LF AI and Data Foundation 开始孵化流程。2025-05-07，它成为 PyTorch Foundation 托管的项目。五位首席维护者和 55 位活跃 committer 负责审查改动。多家公司向项目贡献工程师。Red Hat 在 2025 年 1 月收购 Neural Magic 时，把那个团队带了进来。
 
-The pace has a cost that the project discusses in public. In September and October 2026, two RFCs on the project said that review cannot keep up with the number of pull requests. One proposed a reviewer role. The other proposed evals and benchmarks that contributors run on their own GPUs, so that a pull request comes with its evidence.
+这样的节奏有代价，项目也在公开讨论。2026 年 9 月和 10 月，项目里的两份 RFC 指出，审查跟不上 pull request 的数量。一份提议设立 reviewer 角色。另一份提议由贡献者在自己的 GPU 上运行 eval 和基准测试，让 pull request 附带证据。
 
 ```takeaways
-- vLLM started at Berkeley in 2023 with PagedAttention, the idea of a paged KV cache.
-- The V1 engine replaced the first engine between v0.7.0 and v0.11.0.
-- A new minor release comes about every two weeks, so pin the version you test.
+- vLLM 于 2023 年在伯克利以 PagedAttention 起步，也就是分页 KV cache 的想法。
+- 在 v0.7.0 到 v0.11.0 之间，V1 引擎取代了第一个引擎。
+- 大约每两周发布一个新的 minor 版本，所以要锁定你测试过的版本。
 ```
 
 Sources: the GitHub release list of vllm-project/vllm (fetched 2026-10-22), the commit history of vllm-project/vllm (2023-02-09), the vLLM launch blog post vLLM: Easy, Fast, and Cheap LLM Serving with PagedAttention (2023-06-20), the PagedAttention paper Efficient Memory Management for Large Language Model Serving with PagedAttention (arXiv 2309.06180, SOSP 2023), the release notes for v0.1.0, v0.3.0, v0.4.0, v0.6.0, v0.7.0, v0.8.0, v0.11.0, and v0.12.0, the vLLM blog post vLLM V1: A Major Upgrade to vLLM's Core Architecture (2025-01-27), the vLLM blog post vLLM's Open Governance and Performance Roadmap (2024-07-25), the PyTorch Foundation post PyTorch Foundation Welcomes vLLM as a Hosted Project (2025-05-07), the Red Hat press release Red Hat Completes Acquisition of Neural Magic to Fuel Optimized Generative AI Innovation Across the Hybrid Cloud (2025-01-13), vLLM documentation at v0.31.0 (docs/governance/process.md, docs/governance/committers.md, docs/design/model_runner_v2.md), vLLM issues 58253 and 61698.
