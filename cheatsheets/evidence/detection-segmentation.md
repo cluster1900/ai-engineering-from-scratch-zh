@@ -52,9 +52,9 @@ Abbreviations: P04 = phases/04-computer-vision. L06 = P04/06-object-detection-yo
 - nms body, argsort descending, box_iou, keep ious <= iou_threshold: L06/d:180-191, L06/c:30-41
 
 ## U-Net 损失 (annotated-code, 12 lines)
-- dice_loss body, dims (0, 2, 3), eps, 1 - dice.mean(): L07/d:241-248, L07/c:66-72
+- dice_loss body, dims (0, 2, 3), eps, 1 - dice.mean(): L07/d:241-248, L07/c:75-81
 - eps prevents division by zero on absent classes, macro Dice: L07/d:257
-- combined_loss with lam=1.0, F.cross_entropy, return dict: L07/d:251-254, L07/c:76-79
+- combined_loss with lam=1.0, F.cross_entropy, return dict: L07/d:251-254, L07/c:85-88
 - (N, C, H, W) output, (N, H, W) target: L07/d:87
 
 ## 微调 Mask R-CNN (annotated-code, 10 lines)
@@ -68,7 +68,7 @@ Abbreviations: P04 = phases/04-computer-vision. L06 = P04/06-object-detection-yo
 ## 代码中的任务 (task-table, 8)
 - box_iou(boxes_a, boxes_b): L06/c:11
 - postprocess(pred_tensor, anchors, stride, ...): L06/c:155
-- iou_per_class(logits, targets, num_classes): L07/c:92
+- iou_per_class(logits, targets, num_classes): L07/c:101
 - roi_align_single(feature, box, ...): L08/c:6
 - heatmap_to_coords(heatmaps): L21/c:29
 - subpixel_refine(heatmaps): L21/c:38
@@ -83,7 +83,7 @@ Abbreviations: P04 = phases/04-computer-vision. L06 = P04/06-object-detection-yo
 - RPN NMS IoU 0.7 after top ~1,000: L08/d:74
 - Mask threshold 0.5: L08/d:106
 - sigma 2.0: L21/c:7
-- lam 1.0, ce + lam * dc: L07/c:76, 79
+- lam 1.0, ce + lam * dc: L07/c:85, 88
 
 ## 故障排查 (troubleshooting, 8)
 - weak mAP@0.5:0.95, rough localisation, better box loss: L06/d:140; CIoU / DIoU: L06/d:129

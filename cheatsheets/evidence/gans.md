@@ -14,8 +14,8 @@ Abbreviations: T = phases/08-generative-ai/01-generative-models-taxonomy-history
 
 ## 一个训练步 (flow, 7 steps)
 1. Real batch and z ~ N(0, I): CV9/d:28, G3/d:28
-2. D scores real against 1 and G(z).detach() against 0: CV9/c:58-61, CV9/d:183-185
-3. Fresh fakes, D(G(z)) against 1: CV9/c:66-67, G3/d:89
+2. D scores real against 1 and G(z).detach() against 0: CV9/c:67-70, CV9/d:183-185
+3. Fresh fakes, D(G(z)) against 1: CV9/c:75-76, G3/d:89
 4. One D step, one G step: G3/d:37, CV9/d:171
 5. Probe every 100 steps, warn below 50 per mode: G3/c:174-180
 6. Look at 64 samples every epoch: CV9/d:99
@@ -32,19 +32,19 @@ Abbreviations: T = phases/08-generative-ai/01-generative-models-taxonomy-history
 - Truncation w' = ŵ + ψ(w − ŵ), ψ < 1 trades diversity for quality: SG/d:36
 
 ## DCGAN train_step (annotated-code, 12 lines)
-- opt_d.zero_grad, d_real, d_fake with detach: CV9/c:57-59
-- loss_d as two BCE-with-logits terms: CV9/c:60-61
-- backward and step for D: CV9/c:62-63
-- G step with D(G(z)) and ones_like: CV9/c:65-69
+- opt_d.zero_grad, d_real, d_fake with detach: CV9/c:66-68
+- loss_d as two BCE-with-logits terms: CV9/c:69-70
+- backward and step for D: CV9/c:71-72
+- G step with D(G(z)) and ones_like: CV9/c:74-78
 - Sigmoid only in the loss: CV9/d:167
 - detach stops gradients into G: CV9/d:199
 
 ## 代码中的任务 (task-table, 8)
-- Generator(z_dim=64, img_channels=3, feat=32): CV9/c:105
-- spectral_norm(c): CV9/c:37
+- Generator(z_dim=64, img_channels=3, feat=32): CV9/c:114
+- spectral_norm(c): CV9/c:46
 - Adam(lr=2e-4, betas=(0.5, 0.999)): CV9/d:236
-- sample(G, n=8, z_dim=z_dim, device=device): CV9/c:123
-- sum(p.numel() for p in G.parameters()): CV9/c:110
+- sample(G, n=8, z_dim=z_dim, device=device): CV9/c:132
+- sum(p.numel() for p in G.parameters()): CV9/c:119
 - inp = z + one_hot(c, num_classes): P2P/c:49
 - w = mapping(z, mapping_net): SG/c:90
 - w_bar[i] + psi * (w_test[i] - w_bar[i]): SG/c:110
@@ -61,9 +61,9 @@ Abbreviations: T = phases/08-generative-ai/01-generative-models-taxonomy-history
 - Latency at 512² on a single L4: ~30 ms, ~1.2 s, ~0.15-0.35 s, ~3-5 s: P2P/d:130-135
 
 ## 默认值 (defaults, 8)
-- lr 2e-4: CV9/c:107-108, CV9/d:236
+- lr 2e-4: CV9/c:116-117, CV9/d:236
 - betas (0.5, 0.999), low beta1: CV9/d:236
-- z_dim 64: CV9/c:100, CV9/d:114
+- z_dim 64: CV9/c:109, CV9/d:114
 - LeakyReLU 0.2 on all D layers: CV9/d:74
 - lambda 100, anneal down: P2P/d:35, 86-87
 - ~70×70 receptive field per cell: P2P/d:24

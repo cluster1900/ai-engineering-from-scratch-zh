@@ -12,7 +12,7 @@ Abbreviations: G = phases/04-computer-vision/09-image-generation-gans, D = phase
 - VAR K = 10 scales, 10 passes vs DiT 28-50 at 256x256: V/d:69
 
 ## 训练目标并列对比 (defaults, 6 rows)
-- D outputs P(real), BCE on real and fake: G/d:32, 39, G/c:60-61
+- D outputs P(real), BCE on real and fake: G/d:32, 39, G/c:69-70
 - G wants D(G(z)) high, non-saturating: G/d:49, 60, 64
 - DDPM epsilon_theta(x_t, t), MSE: D/d:82-83, 316
 - Rectified flow target epsilon - x0, MSE: R/d:235, 238
@@ -67,9 +67,9 @@ Abbreviations: G = phases/04-computer-vision/09-image-generation-gans, D = phase
 - Euler loop dt = 1.0 / steps, x = x - dt * v, t = t - dt, steps=20: R/c:105-113
 
 ## 一次 GAN 训练步 (annotated-code, 13 lines)
-- D step with G(z).detach(): G/c:57-63, no gradient into G: G/d:199
-- G step with ones_like targets: G/c:65-69, non-saturating: G/d:60
-- Adam lr=2e-4, betas=(0.5, 0.999), DCGAN default: G/c:107, G/d:236
+- D step with G(z).detach(): G/c:66-72, no gradient into G: G/d:199
+- G step with ones_like targets: G/c:74-78, non-saturating: G/d:60
+- Adam lr=2e-4, betas=(0.5, 0.999), DCGAN default: G/c:116, G/d:236
 
 ## 关键公式 (concepts, 6 bullets)
 - GAN minimax: G/d:46

@@ -10,13 +10,13 @@ Abbreviations: P0 = phases/00-setup-and-tooling. D3 = P0/03-gpu-setup-and-cloud/
 - fp16 rule of thumb 2 bytes per parameter, keep a margin: D3:133, 141
 
 ## 检查 GPU (annotated-code, 8 lines)
-- torch.cuda.is_available(): D3:66, C:13
-- torch.version.cuda: D3:67, C:20
-- torch.cuda.get_device_name(0): D3:69, C:21
-- get_device_properties(0), total_memory / 1e9: C:23-24, 49
-- params_fp16 = vram_gb * 1e9 / 2: C:50
+- torch.cuda.is_available(): D3:66, C:23
+- torch.version.cuda: D3:67, C:37
+- torch.cuda.get_device_name(0): D3:69, C:38
+- get_device_properties(0), total_memory / 1e9: C:39-40, 68
+- params_fp16 = vram_gb * 1e9 / 2: C:69
 - device line: D3:97
-- torch.cuda.synchronize() around the GPU timing: D3:121-124, C:40-44
+- torch.cuda.synchronize() around the GPU timing: D3:121-124, C:8, 58, 62
 
 ## 存储并使用 API 密钥 (flow, 5 steps)
 1. export ANTHROPIC_API_KEY, never put keys in code: D4:42-45

@@ -75,8 +75,8 @@ git merge experiment/new-optimizer
 你不能直接 push 到课程 repo 本身，只有维护者有写权限。先在 GitHub 上 fork 它（右上角的 Fork 按钮），让 `origin` 指向你自己的副本：
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch-zh.git
-cd ai-engineering-from-scratch-zh
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch.git
+cd ai-engineering-from-scratch
 
 git checkout -b my-progress
 # work through lessons, commit your code

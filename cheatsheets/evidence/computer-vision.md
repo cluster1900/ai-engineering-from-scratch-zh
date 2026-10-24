@@ -14,13 +14,13 @@ Abbreviations: P04 = phases/04-computer-vision. L01 = P04/01-image-fundamentals,
 - edges: L08/docs/en.md:28-37 (edge "top K" L08/docs/en.md:32, "features" L08/docs/en.md:31)
 
 ## Flow: 为预训练模型做预处理 (7 steps)
-1. decode uint8 HWC [0, 255]: L01/docs/en.md:33, 235
+1. decode uint8 HWC [0, 255]: L01/docs/en.md:33, 232
 2. RGB, BGR costs ten points: L01/docs/en.md:19, 34
-3. divide by 255, HWC to NCHW: L01/docs/en.md:37, 39-40, 361, 389
-4. resize shorter side 256, bilinear: L01/docs/en.md:364, 370, 389
-5. center crop 224x224: L01/docs/en.md:375-377, 389
-6. standardize ImageNet mean and std: L01/docs/en.md:147, 379-381, 389
-7. input matches training input: L01/docs/en.md:29, 389
+3. divide by 255, HWC to NCHW: L01/docs/en.md:37, 39-40, 386, 414
+4. resize shorter side 256, bilinear: L01/docs/en.md:389, 395, 414
+5. center crop 224x224: L01/docs/en.md:400-402, 414
+6. standardize ImageNet mean and std: L01/docs/en.md:147, 404-406, 414
+7. input matches training input: L01/docs/en.md:29, 414
 
 ## 关键公式 (concepts, 8)
 - output size: L02/docs/en.md:74-76
@@ -52,8 +52,8 @@ Abbreviations: P04 = phases/04-computer-vision. L01 = P04/01-image-fundamentals,
 - Note: lines from PatchEmbedding, Block and ViT are joined into one forward listing.
 
 ## 形状 (command-table, 7)
-- decoded (H, W, 3) uint8: L01/docs/en.md:235
-- model input (N, 3, 224, 224) float32: L01/docs/en.md:377, 383-384, 389
+- decoded (H, W, 3) uint8: L01/docs/en.md:232
+- model input (N, 3, 224, 224) float32: L01/docs/en.md:402, 408-409, 414
 - conv weight (C_out, C_in, K, K): L02/docs/en.md:140
 - YOLO head (N, H, W, num_anchors, 5 + C): L06/docs/en.md:252
 - segmentation logits (N, C, H, W), target (N, H, W): L07/docs/en.md:87

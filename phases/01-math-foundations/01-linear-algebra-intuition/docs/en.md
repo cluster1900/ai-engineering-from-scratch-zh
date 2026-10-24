@@ -161,7 +161,7 @@ $\mathop{\mathrm{proj}}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0)
 4. 对剩余 Vectors 重复该过程
 
 ```
-Input:  v1, v2, v3, ...（linearly independent）
+Input:  v1, v2, v3, ... (linearly independent)
 
 u1 = v1 / |v1|
 
@@ -171,7 +171,7 @@ u2 = w2 / |w2|
 w3 = v3 - (v3 dot u1) * u1 - (v3 dot u2) * u2
 u3 = w3 / |w3|
 
-Output: u1, u2, u3, ...（orthonormal basis）
+Output: u1, u2, u3, ... (orthonormal basis)
 ```
 
 这就是 QR decomposition 内部的工作方式。Q 是 orthonormal basis，R 捕获 projection coefficients。QR decomposition 用于：
