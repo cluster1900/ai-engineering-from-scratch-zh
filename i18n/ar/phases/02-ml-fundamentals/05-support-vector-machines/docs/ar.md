@@ -336,7 +336,7 @@ print(f"Support vectors: {clf['svm'].n_support_}")
 
 مهم: تدريب SVM  قبل دائما ما يجب أن نطاق خصائصك.$\lVert w \rVert$، و الميزات غير المتوسطة ستعكس الهيكل الهجري
 
-对于大数据集,使用 `LinearSVC`(الصيغة الأولية، كل عصر 为 $O(n)$) بدلاً من ذلك`SVC`(صيغة مزدوجة)$O(n^2)$إلى$O(n^3){}$):
+对于大数据集,使用 `LinearSVC`(الصيغة الأولية، كل عصر 为 $O(n \cdot d)$, على$n$线性) بدلا من `SVC`(صيغة مزدوجة)$O(n^2)$إلى$O(n^3){}$):
 
 ```python
 from sklearn.svm import LinearSVC
