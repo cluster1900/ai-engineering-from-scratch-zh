@@ -1,75 +1,75 @@
-# Read the run from its signals
+# 从信号读懂一次运行
 
-> Eight signals in the log tell you in a few minutes if a run is healthy.
+> 日志中的八个信号能在几分钟内告诉你一次运行是否健康。
 
-The reward is the signal everyone reads first, and it is the slowest to tell you that something is wrong. Seven other signals show a broken run earlier.
+奖励是每个人最先读的信号，也是最慢告诉你出了问题的信号。另外七个信号会更早暴露一次坏掉的运行。
 
-When you finish this section, you can decide if a run is healthy from its logged signals. You can also tell which changes need action.
+读完本节后，你能根据日志中的信号判断一次运行是否健康，也能分辨哪些变化需要处理。
 
-## The eight signals
+## 八个信号 {#s-read-the-run-the-eight-signals}
 
-These are the ranges over all 48 steps of our three baseline seeds. The runs trained Qwen3-0.6B on GSM8K, with 32 prompts of 8 answers each and a limit of 1,024 tokens.
+下面是我们三个基线种子全部 48 步上的范围。这些运行在 GSM8K 上训练 Qwen3-0.6B，每步 32 个提示、每个 8 个回答，上限为 1,024 个 token。
 
-| Signal | Log name | Range in our runs | A healthy run |
+| 信号 | 日志名 | 我们运行中的范围 | 健康的运行 |
 |---|---|---|---|
-| reward | `rollout/raw_reward` | 0.53 to 0.87 per step | rises over the run, with swings from step to step |
-| answer length | `rollout/response_lengths` | 396 to 787 tokens | falls as the model learns shorter answers |
-| cut share | `rollout/truncated` | 0.02 to 0.43 | falls with the length |
-| gap | `train/train_rollout_logprob_abs_diff` | 0.0136 to 0.0164 | stays flat |
-| KL to the engine | `train/train_rollout_kl` | 0.00063 to 0.00076 | stays flat |
-| gradient norm | `train/grad_norm` | 0.35 to 4.95 | stays in one range, with rare spikes |
-| clip fraction | `train/pg_clipfrac` | 0 | stays at 0 with one update per rollout |
-| rollout time | `perf/rollout_time` | varies with length and heat | falls with the length |
+| 奖励 | `rollout/raw_reward` | 每步 0.53 至 0.87 | 在运行中上升，步与步之间有波动 |
+| 回答长度 | `rollout/response_lengths` | 396 至 787 个 token | 随着模型学会更短的回答而下降 |
+| 截断占比 | `rollout/truncated` | 0.02 至 0.43 | 随长度一起下降 |
+| 差距 | `train/train_rollout_logprob_abs_diff` | 0.0136 至 0.0164 | 保持平稳 |
+| 与引擎的 KL | `train/train_rollout_kl` | 0.00063 至 0.00076 | 保持平稳 |
+| 梯度范数 | `train/grad_norm` | 0.35 至 4.95 | 保持在一个范围内，偶有尖峰 |
+| 裁剪比例 | `train/pg_clipfrac` | 0 | 每次 rollout 更新一次时保持为 0 |
+| rollout 时间 | `perf/rollout_time` | 随长度和发热变化 | 随长度一起下降 |
 
-**Clip fraction:** the share of tokens where the update hit the clip limit. Our runs did one optimizer update per rollout. So the policy of the trainer stayed the one that scored the samples, and nothing was clipped.
+**裁剪比例：** 更新触及裁剪上限的 token 所占的比例。我们的运行每次 rollout 只做一次优化器更新。所以训练器的策略仍是给样本打分的那个策略，没有任何 token 被裁剪。
 
-Our runs logged `train/entropy_loss` as 0 at every step, so this setup does not show the entropy of the model.
+我们的运行在每一步都把 `train/entropy_loss` 记为 0，所以这个设置不会显示模型的熵。
 
-## Read trends, not steps
+## 读趋势，而不是单步 {#s-read-the-run-read-trends-not-steps}
 
-From one step to the next, the reward moved by up to 0.21 in our runs. A single step tells you little. Read the mean over five or more steps.
+在我们的运行中，奖励从一步到下一步最多变化 0.21。单独一步说明不了多少。请读五步或更多步的均值。
 
-All three seeds showed the same trend: the reward rose and the answers got shorter. [Section 5.3](#s-repeat-a-run) gives the numbers for each seed.
+三个种子都呈现同样的趋势：奖励上升，回答变短。[第 5.3 节](#s-repeat-a-run)给出了每个种子的数字。
 
-## Send the signals to a dashboard
+## 把信号发送到仪表盘 {#s-read-the-run-send-the-signals-to-a-dashboard}
 
-The log is enough for ten steps. For a long run, a dashboard is easier to read. Miles can write the same `train/`, `rollout/`, and `perf/` metrics to Weights & Biases or to TensorBoard. We read every number in this manual from the log. We tested both trackers with a 2-step run on our GB10.
+十步以内，日志就够用。对于长时间的运行，仪表盘更容易读。Miles 可以把同样的 `train/`、`rollout/` 和 `perf/` 指标写到 Weights & Biases 或 TensorBoard。本手册中的每个数字都是我们从日志中读出的。我们在 GB10 上用一次 2 步的运行测试了这两种跟踪器。
 
-For Weights & Biases without an account or a network, write the run to a local folder:
+如果使用 Weights & Biases 但没有账号或网络，就把运行写到本地文件夹：
 
 ```bash
 -e MILES_EXTRA_ARGS="--use-wandb --wandb-mode offline --wandb-project miles-lab --wandb-group plain --wandb-dir /root/lab/runs/plain/wandb"
 ```
 
-Keep `--wandb-group`. Without it, the run stops at start with `TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'`. The log should show `W&B offline mode enabled. Data will be saved locally.`, and an `offline-run-` folder appears under `~/miles-lab/runs/plain/wandb/wandb/`.
+保留 `--wandb-group`。没有它，运行会在启动时停止并报错 `TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'`。日志应显示 `W&B offline mode enabled. Data will be saved locally.`，并且 `~/miles-lab/runs/plain/wandb/wandb/` 下会出现一个 `offline-run-` 文件夹。
 
-For an online run, leave out `--wandb-mode offline`. Keep the key out of the command line, because commands go to the shell history and the process list. Put `WANDB_API_KEY=<your key>` in a file that only you can read, such as `~/miles-lab/wandb.env` with mode 600, and add `--env-file ~/miles-lab/wandb.env` to the `docker run` line. Do not put the key in `MILES_EXTRA_ARGS`, because the launcher prints the full command in the log.
+如果要在线运行，就去掉 `--wandb-mode offline`。不要把密钥放在命令行里，因为命令会进入 shell 历史和进程列表。把 `WANDB_API_KEY=<your key>` 放进一个只有你能读的文件，比如权限为 600 的 `~/miles-lab/wandb.env`，并在 `docker run` 行中加上 `--env-file ~/miles-lab/wandb.env`。不要把密钥放进 `MILES_EXTRA_ARGS`，因为启动器会在日志中打印完整命令。
 
-For TensorBoard, give Miles a folder and turn the writer on:
+对于 TensorBoard，给 Miles 一个文件夹并打开写入器：
 
 ```bash
 -e TENSORBOARD_DIR=/root/lab/runs/plain/tb -e MILES_EXTRA_ARGS="--use-tensorboard"
 ```
 
-The log should show `Saving tensorboard log to /root/lab/runs/plain/tb.` Then open the folder on the host with `tensorboard --logdir ~/miles-lab/runs/plain/tb`.
+日志应显示 `Saving tensorboard log to /root/lab/runs/plain/tb.` 然后在主机上用 `tensorboard --logdir ~/miles-lab/runs/plain/tb` 打开这个文件夹。
 
-## Act on these changes
+## 针对这些变化采取行动 {#s-read-the-run-act-on-these-changes}
 
-| Change | Likely cause | First check |
+| 变化 | 可能的原因 | 首先检查 |
 |---|---|---|
-| The gap jumps and stays high | the engine and the trainer no longer use the same weights | the weight update logs, and [section 5.2](#s-check-the-first-step) |
-| The gradient norm grows step after step | the learning rate is too high for this batch | lower the learning rate and repeat |
-| The reward falls and the length rises | the model has learned to talk longer instead of better | the reward function, and the cut share |
-| The clip fraction is above 0 with one update per rollout | the samples did not come from the current weights | the update interval and the async settings |
-| The rollout time grows with flat length | the engine or the GPU is slower | the heat log and the engine log |
+| 差距跳升并一直偏高 | 引擎和训练器不再使用相同的权重 | 权重更新日志，以及[第 5.2 节](#s-check-the-first-step) |
+| 梯度范数一步步增大 | 学习率对这个批次来说太高 | 降低学习率并重来 |
+| 奖励下降而长度上升 | 模型学会了说得更长，而不是答得更好 | 奖励函数，以及截断占比 |
+| 每次 rollout 更新一次时裁剪比例高于 0 | 样本不是来自当前的权重 | 更新间隔和异步设置 |
+| 长度平稳时 rollout 时间增长 | 引擎或 GPU 变慢了 | 温度日志和引擎日志 |
 
-Keep your own ranges. These numbers hold for our model, data, and machine. Run two or three seeds of your own setup, and use their ranges instead.
+保留你自己的范围。这些数字只适用于我们的模型、数据和机器。用你自己的设置跑两到三个种子，改用它们的范围。
 
 ```takeaways
-- Read the gap, the KL, and the gradient norm before you read the reward.
-- Read the mean over five or more steps, not a single step.
-- Build the healthy ranges from your own seeds.
-- Send a long run to Weights & Biases or TensorBoard, and keep the log too.
+- 先读差距、KL 和梯度范数，再读奖励。
+- 读五步或更多步的均值，而不是单独一步。
+- 用你自己的种子建立健康范围。
+- 把长时间的运行发送到 Weights & Biases 或 TensorBoard，同时也保留日志。
 ```
 
 Sources: capture/gpu/summary/miles-gb10-lab.json (runs.plain-48, runs.plain-48-s2, runs.plain-48-s3); Miles main 08752a12 files miles/backends/training_utils/loss/hub/losses.py, miles/backends/training_utils/metrics/log_utils.py, miles/ray/rollout/metrics.py, miles/utils/arguments.py, miles/utils/tracking_utils/tracking.py, miles/utils/tracking_utils/wandb_utils.py, miles/utils/tracking_utils/tensorboard_utils.py, docs/user-guide/monitoring.md; capture/gpu/out-gb10/tracker-eval-checks.txt (live check, 2026-10-23).

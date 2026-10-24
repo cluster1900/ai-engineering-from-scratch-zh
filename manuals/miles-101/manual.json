@@ -206,9 +206,9 @@
     },
     {
       "number": 5,
-      "title": "Check your run",
-      "thesis": "A run can finish every step and still train the wrong thing, so check the signals before you trust the reward.",
-      "summary": "The signals, the step-0 checks, and seed spread.",
+      "title": "检查你的运行",
+      "thesis": "一次运行可能跑完每一步，却仍在训练错误的东西，所以在信任奖励之前先检查这些信号。",
+      "summary": "信号、第 0 步检查和种子分布。",
       "accent": "amber",
       "sections": [
         {

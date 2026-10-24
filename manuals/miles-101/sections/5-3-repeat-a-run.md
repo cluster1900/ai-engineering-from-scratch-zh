@@ -1,48 +1,48 @@
-# Repeat a run and compare
+# 重复一次运行并比较
 
-> One run cannot tell an effect from noise, so a change needs a second seed before you trust it.
+> 一次运行无法区分效果和噪声，所以一项改动在你信任它之前需要第二个种子。
 
-We ran the same GRPO setup three times. The first run used the default seed, which the engine logged as 1234, and the others used seeds 2 and 3. Nothing else changed. The three runs still ended in different places.
+我们把同一个 GRPO 设置运行了三次。第一次使用默认种子，引擎记录为 1234，其余两次使用种子 2 和 3。其他一切都没有改变。三次运行仍然停在了不同的位置。
 
-When you finish this section, you can tell a real effect from seed noise, and time a run on a hot GPU.
+读完本节后，你能区分真实效果和种子噪声，并在发热的 GPU 上为一次运行计时。
 
-**Our result:** in our 12-step run with seed 1, the median rollout was 83.9 s over all steps. Over its 6 clean steps, it was 59.1 s.
+**我们的结果：** 在我们使用种子 1 的 12 步运行中，所有步的 rollout 中位数是 83.9 s。在其中 6 个干净步上，它是 59.1 s。
 
-## Know the noise of your setup
+## 了解你的设置的噪声 {#s-repeat-a-run-know-the-noise-of-your-setup}
 
-Each run trained Qwen3-0.6B on GSM8K for 48 steps, with 32 prompts and 8 answers each. We compare the mean of the first 8 steps with the mean of the last 8:
+每次运行在 GSM8K 上训练 Qwen3-0.6B 48 步，每步 32 个提示、每个 8 个回答。我们比较前 8 步的均值和最后 8 步的均值：
 
-| Seed | Reward, first 8 steps | Reward, last 8 steps | Length, first 8 | Length, last 8 | Cut share, first 8 | Cut share, last 8 |
+| 种子 | 奖励，前 8 步 | 奖励，最后 8 步 | 长度，前 8 步 | 长度，最后 8 步 | 截断占比，前 8 步 | 截断占比，最后 8 步 |
 |---|---|---|---|---|---|---|
-| default (1234) | 0.636 | 0.758 | 724 | 447 | 0.33 | 0.08 |
+| 默认（1234） | 0.636 | 0.758 | 724 | 447 | 0.33 | 0.08 |
 | 2 | 0.653 | 0.736 | 712 | 480 | 0.30 | 0.12 |
 | 3 | 0.614 | 0.766 | 734 | 456 | 0.34 | 0.09 |
 
-**Length:** the mean answer length in tokens. **Cut share:** the share of answers that reached the 1,024-token limit.
+**长度：** 以 token 计的平均回答长度。**截断占比：** 达到 1,024 token 上限的回答所占的比例。
 
-All three seeds learned: the reward rose and the answers got shorter. The final reward still spread from 0.736 to 0.766, so a difference under 0.03 in that number is inside the noise of this setup.
+三个种子都学到了东西：奖励上升，回答变短。最终奖励仍分布在 0.736 至 0.766 之间，所以这个数字上小于 0.03 的差异落在这个设置的噪声之内。
 
-The gap between the trainer and the engine stayed between 0.0136 and 0.0164 in every step of the three runs.
+在三次运行的每一步中，训练器和引擎之间的差距都保持在 0.0136 至 0.0164 之间。
 
-## Compare a change against the spread
+## 把改动与分布范围比较 {#s-repeat-a-run-compare-a-change-against-the-spread}
 
-Before you report that a change helped:
+在你报告某项改动有帮助之前：
 
-1. Run the change with at least two seeds.
-2. Compare it with the spread of your baseline seeds, not with one baseline run.
-3. Report the change only when it falls outside that spread.
+1. 用至少两个种子运行这项改动。
+2. 把它与基线种子的分布范围比较，而不是与一次基线运行比较。
+3. 只有当它落在那个范围之外时，才报告这项改动。
 
-A change of 0.01 in reward on one seed tells you nothing on this setup. A change of 0.05 on two seeds is worth a third run.
+在这个设置上，一个种子上奖励变化 0.01 说明不了任何问题。两个种子上变化 0.05 则值得跑第三次。
 
-## Time only clean steps
+## 只为干净的步计时 {#s-repeat-a-run-time-only-clean-steps}
 
-Our GB10 got hot under long runs. The heat guard of [section 1.2](#s-add-a-watchdog-guard-the-gpu-heat) pauses the container at 84 C. It resumes the container after the GPU cools, or after two minutes. A pause adds to the phase time of the step it falls in. We expect a pause to leave the samples and the losses unchanged. We have not tested that yet.
+我们的 GB10 在长时间运行中会发热。[第 1.2 节](#s-add-a-watchdog-guard-the-gpu-heat)的温度保护在 84 C 时暂停容器。GPU 冷却后，或者两分钟后，它会恢复容器。暂停会加到它所在那一步的阶段时间上。我们预期暂停不会改变样本和损失。我们还没有测试这一点。
 
-So we report times from steps whose rollout overlapped no pause. Our summary script finds those steps from the pause log and the step timestamps. [The lab notes](#s-ref-lab-notes) give the rule.
+所以我们只报告 rollout 没有与任何暂停重叠的步的时间。我们的汇总脚本根据暂停日志和步的时间戳找出这些步。[实验笔记](#s-ref-lab-notes)给出了这条规则。
 
-Clean steps are not enough on their own. The same setting gave a median rollout of 47.5 s in our first 48-step run. That run came before we added the heat guard, so no pause could touch it. Our 12-step run with seed 1, four days later, gave 59.1 s over its 6 clean steps. On the same 6 step numbers, the 48-step run took 60.9 s.
+只有干净的步本身还不够。在我们第一次 48 步的运行中，同样的设置给出的 rollout 中位数是 47.5 s。那次运行早于我们加上温度保护，所以不可能有暂停影响它。四天后，我们使用种子 1 的 12 步运行在其 6 个干净步上给出了 59.1 s。在相同的 6 个步号上，48 步的运行用了 60.9 s。
 
-The rollout time follows the answer length, and the 48-step median includes the late steps with short answers. So compare times on the same step numbers, and repeat them with a second seed.
+rollout 时间随回答长度变化，而 48 步的中位数包含了后期回答较短的步。所以请在相同的步号上比较时间，并用第二个种子重复。
 ```figure
 id: fig-5-3
 kind: chart
@@ -53,9 +53,9 @@ caption: Rollout seconds per step for one 12-step run.
 
 
 ```takeaways
-- Run at least two seeds for every change you want to report.
-- Report a change only when it falls outside the spread of your baseline seeds.
-- Time only steps without a pause, and compare the same step numbers.
+- 对你想报告的每项改动，至少运行两个种子。
+- 只有当改动落在基线种子的分布范围之外时，才报告它。
+- 只为没有暂停的步计时，并比较相同的步号。
 ```
 
 Sources: capture/gpu/summary/miles-gb10-lab.json (runs.plain-48, runs.plain-48-s2, runs.plain-48-s3, runs.e6a-base, median_unpaused); capture/gpu/summarize_miles.py; capture/gpu/out-gb10/thermostat.log; capture/gpu/out-gb10/unpaused-timing.txt.
