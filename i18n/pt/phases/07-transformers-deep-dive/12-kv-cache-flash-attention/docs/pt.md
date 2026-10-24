@@ -53,6 +53,12 @@ Este 10 GiB em 32K, até 128K irá crescer para 40 GiB, apenas o cache KV do tam
 
 **GQA 是 KV-cache 的关键收益。**Utilizando 64 cabeças de KV, a MHA aumentou 8x, em 32K, para cerca de 80 GiB.
 
+拖动维度参数, observar o tamanho do cache 如何变化──把序列长度或批量大小 推高, você verá que ele é muito rápido em excesso do tamanho de uma única GPU──
+
+```figure
+kv-cache-sizer
+```
+
 ### Atenção flash  azulejos 技巧
 
 标准 atenção:
@@ -113,17 +119,16 @@ Batchings contínuos ([[{{url:{{url:{{url:{{url:{{url:{{url:{{url:{{url:{{url:{{
 O cache de KV é distribuído em blocos de 16 tokens; tabela de página irá mapear a posição lógica para blocos físicos. Pode ser compartilhada entre os blocos de KV e outros.
 
 
-拖动维度参数, observar o tamanho do cache 如何变化──把序列长度或批量大小 推高, você verá que ele é muito rápido em excesso do tamanho de uma única GPU──
-
-```figure
-kv-cache-sizer
-```
 
 ```figure
 flash-attention-memory
 ```
 
 ## Construí-lo
+
+```figure
+iso-machine {"machine":"kv-cache"}
+```
 
 - Não .`code/main.py`❖ Nós realizamos:
 
