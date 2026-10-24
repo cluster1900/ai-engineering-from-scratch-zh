@@ -1,22 +1,22 @@
-# Memory and weight updates on unified memory
+# 统一内存上的内存与权重更新
 
-> On a GB10 the CPU and the GPU share one memory, so offload moves bytes inside one pool and the weight update never leaves the chip.
+> 在 GB10 上，CPU 和 GPU 共享同一块内存，所以卸载只是在同一个池子里搬运字节，而权重更新从不离开芯片。
 
-On one GPU, the trainer and the rollout engine cannot both hold all their memory at once. Miles makes them take turns. This page explains what each turn gives back, what the weight update does, and why a GB10 changes both stories.
+在一块 GPU 上，训练器和 rollout 引擎无法同时持有它们全部的内存。Miles 让它们轮流运行。本页解释每一轮交还了什么、权重更新做了什么，以及为什么 GB10 改变了这两件事。
 
-When you finish this section, you can explain what offload and the weight update do on a machine with shared memory.
+读完本节后，你能解释卸载和权重更新在共享内存的机器上做了什么。
 
-## Two sides take turns
+## 两边轮流运行 {#s-memory-on-unified-memory-two-sides-take-turns}
 
-With `--colocate`, the trainer and the engine share the same GPU. Each step has the same order:
+使用 `--colocate` 时，训练器和引擎共享同一块 GPU。每一步的顺序都相同：
 
-1. The engine generates the answers for the step.
-2. The engine releases its memory.
-3. The trainer loads its state, computes the log probabilities, and trains.
-4. The trainer releases its state.
-5. The engine loads again and receives the new weights.
+1. 引擎为这一步生成回答。
+2. 引擎释放它的内存。
+3. 训练器加载它的状态，计算对数概率，然后训练。
+4. 训练器释放它的状态。
+5. 引擎再次加载，并接收新的权重。
 
-The `--colocate` flag also turns on offload for both sides. `--offload-rollout-level` decides what the engine gives back. The default is both of its memory tags: `kv_cache`, the cache of attention keys and values, and `weight`, the model weights.
+`--colocate` 参数还会为两边都打开卸载。`--offload-rollout-level` 决定引擎交还什么。默认是它的两个内存标签：`kv_cache`，即注意力键和值的缓存；以及 `weight`，即模型权重。
 
 ```figure
 id: fig-8-4
@@ -26,34 +26,34 @@ claim: Only one side holds the GPU memory at a time, and the timed hand-offs tak
 caption: Phase medians of 48 steps of a run made before we added the heat guard, drawn to scale.
 ```
 
-## Offload on a normal machine and on a GB10
+## 普通机器和 GB10 上的卸载 {#s-memory-on-unified-memory-offload-on-a-normal-machine-and-on-a-gb10}
 
-On a machine with a separate GPU, offload copies bytes from GPU memory to CPU memory over the bus. The copy is the cost.
+在 GPU 独立的机器上，卸载会通过总线把字节从 GPU 内存复制到 CPU 内存。复制就是代价。
 
-On a GB10 there is no second memory. GPU memory and CPU memory are the same 128 GB. So offload frees the GPU allocation, and the bytes stay in the same pool. For Qwen3-0.6B, the trainer moved its state to host memory in a median of 0.76 s and back in 0.87 s, over 48 steps. That is small next to a step of more than two minutes.
+GB10 上没有第二块内存。GPU 内存和 CPU 内存是同一块 128 GB。所以卸载释放的是 GPU 分配，字节仍留在同一个池中。对于 Qwen3-0.6B，在 48 步中，训练器把状态移到主机内存的中位时间是 0.76 s，移回来是 0.87 s。与超过两分钟的一步相比，这很小。
 
-The engine release before training has no timer. The engine resume after the weight update is in `perf/finalize_and_resume_engines_time`.
+训练之前的引擎释放没有计时器。权重更新之后的引擎恢复记录在 `perf/finalize_and_resume_engines_time` 中。
 
-Our view: on a GB10, part of the trainer offload and onload time is probably setup work, not copying. We have not measured that split.
+我们的看法：在 GB10 上，训练器卸载和加载时间中有一部分很可能是准备工作，而不是复制。我们没有测量过这种划分。
 
-## The weight update stays inside the GPU
+## 权重更新留在 GPU 内部 {#s-memory-on-unified-memory-the-weight-update-stays-inside-the-gpu}
 
-After training, the engine needs the new weights. Under `--colocate`, the trainer shares handles to its GPU tensors with the engine, and the engine copies from them. The bytes never travel over a network.
+训练之后，引擎需要新的权重。在 `--colocate` 下，训练器把它的 GPU 张量句柄共享给引擎，引擎从中复制。字节从不经过网络传输。
 
-The trainer sends the weights in buckets. `--update-weight-buffer-size` sets the bucket size, and our runs used 512 MiB. The update took 0.64 s for Qwen3-0.6B and 0.91 s for Qwen3-1.7B, under one percent of a step. [Section 2.4](#s-size-the-weight-update) has the table.
+训练器按桶发送权重。`--update-weight-buffer-size` 设置桶的大小，我们的运行使用 512 MiB。Qwen3-0.6B 的更新用了 0.64 s，Qwen3-1.7B 用了 0.91 s，都不到一步的百分之一。[第 2.4 节](#s-size-the-weight-update)有这张表。
 
-## One pool changes what Ray sees
+## 同一个池改变了 Ray 看到的东西 {#s-memory-on-unified-memory-one-pool-changes-what-ray-sees}
 
-Shared memory also changes what other tools see. Ray reads the memory of the whole node. On a GB10 that number includes the model weights, the optimizer state, and the KV cache. So Ray can stop the trainer before any single GPU allocation fails. On a GB10 that stop is a real warning, because the node is close to full for every process. [Section 2.3](#s-stop-ray-killing-the-job) shows the kill and how to lower the memory the run needs.
+共享内存还会改变其他工具看到的东西。Ray 读取整个节点的内存。在 GB10 上，这个数字包括模型权重、优化器状态和 KV cache。所以 Ray 可能在任何单个 GPU 分配失败之前就停止训练器。在 GB10 上，这种停止是一个真实的警告，因为对每个进程来说节点都已接近满载。[第 2.3 节](#s-stop-ray-killing-the-job)展示了这次终止，以及如何降低运行所需的内存。
 
-## What we do not know yet
+## 我们还不知道的事 {#s-memory-on-unified-memory-what-we-do-not-know-yet}
 
-Keeping the engine loaded between phases saved little rollout time on our GB10. We ran a same-day pair on one seed. On the steps that were clean in both runs, it saved 0.6 to 1.8 s of a rollout of about a minute. [Section 2.2](#s-choose-what-to-offload) has the runs.
+在阶段之间保持引擎加载，在我们的 GB10 上只节省了很少的 rollout 时间。我们在同一个种子上跑了一对同一天的运行。在两次运行中都干净的步上，它在约一分钟的 rollout 中节省了 0.6 至 1.8 s。[第 2.2 节](#s-choose-what-to-offload)有这些运行。
 
 ```takeaways
-- With --colocate, the engine and the trainer take turns, and offload decides what each side gives back.
-- On a GB10, offload frees memory inside one pool, and the weight update copies inside the GPU.
-- Count the GPU allocations as node memory, and treat a Ray memory kill as a real shortage.
+- 使用 --colocate 时，引擎和训练器轮流运行，卸载决定每一边交还什么。
+- 在 GB10 上，卸载在同一个池内释放内存，而权重更新在 GPU 内部复制。
+- 把 GPU 分配计入节点内存，并把 Ray 的内存终止当作真实的短缺。
 ```
 
 Sources: Miles placement, offload, and weight update code at main 08752a12; capture/gpu/miles_grpo.py; capture/gpu/summary/miles-gb10-lab.json (runs.e4-0.6b, runs.e4-1.7b, runs.plain-48); capture/gpu/out-gb10/ray-oom-4b.log.
