@@ -19,6 +19,24 @@ Chatbot 架构经历了四种 paradigm 的循环，每一种都是因为上一�
 
 ![Chatbot evolution: rule-based → retrieval → neural → agent](../assets/chatbot.svg)
 
+### 脚本化的半个世纪，1950-2001
+
+第一种 paradigm 持续的不是五年，而是五十年。了解它的脉络很重要，因为其中的每个系统都是同一台机器：匹配输入，输出一条预先写好的回复，更新一点 state。五十年来不断给这台机器加规则，却始终没有得到通用的情况。正是这个天花板，才有了第二到第四种 paradigm。
+
+**1950.** Turing 绕开了“机器能思考吗？”这个问题，提出了一个可操作的替代：如果审问者通过电传打字机无法区分机器和人，这个哲学问题就失去了意义。在这个领域还没有名字之前，对话就已经成了它的 benchmark。
+
+**1956.** 名字来了：Dartmouth 的一次夏季研讨会提出了“artificial intelligence”这个词，其依据的猜想是，智能的每一个特征“原则上都可以被精确描述，以至于可以造一台机器来模拟它”。提案为取得实质性进展预留了两个月。
+
+**1966.** ELIZA 上线了你在步骤 1 中构建的 reflection 技巧：decomposition rules 从输入中提取片段，reassembly rules 把它们以问题的形式回显出来。总共约 200 个 patterns，零 state，零理解，可用户还是向它倾诉心事。Weizenbaum 此后的整个职业生涯都在为它所需的机制之少而感到不安。
+
+**1972.** PARRY 由 Stanford 构建，用来模拟偏执，它补上了 ELIZA 缺少的那一块：内部 state。表示恐惧、愤怒和不信任的数值变量在每一轮都会更新，并决定接下来触发哪段脚本，所以相同的输入会根据此前的对话产生不同的回复。在一次盲测的对话记录测试中，精神科医生区分 PARRY 与真实病人的准确率与随机猜测无异。它是 persona conditioning 的直接祖先：一个用三个浮点数实现的 system prompt。同一年，这两个 bot 通过 ARPANET 被接到了一起：一个治疗师脚本在访谈一个偏执 state machine，这是网络上第一次 bot 与 bot 的对话。
+
+**1995.** ALICE 用 AIML（一种描述 pattern-template 对的 XML 方言）扩展了 ELIZA 的方法。大约 40,000 个手写类别，三次赢得 Loebner Prize。它证明了 rule-based 系统的 scaling law：更多规则换来的是覆盖面，而永远不是通用性。每一条规则都是需要有人维护的负担。
+
+**2001.** SmarterChild 把这套方法带到了 3,000 万即时通讯用户面前，并加入了后端查询：天气、股票、电影场次，拼接进模板里。眯起眼睛看，它就是穿着 2001 年外衣的 tool calling：解析 intent，调用服务，把结果渲染进回复。
+
+五十年，一种机制，规则数量不断上升。这个 paradigm 的终结并不是因为有人证伪了它，而是因为手写 state machine 的维护成本随覆盖面线性增长，而用户的期望却随着他们上周看到的东西不断增长。
+
 **Rule-based（ELIZA、AIML、DialogFlow）。** 手工编写的 patterns 匹配用户输入并生成回复。Intent classifiers 将请求路由到预定义流程。Slot-filling state machines 收集必需信息。在它被设计好的狭窄范围内表现非常出色。一旦超出范围就立刻失败。仍然会在安全关键领域（银行身份验证、航空预订）上线，因为这些场景不能容忍 hallucination。
 
 **Retrieval-based。** FAQ 风格的系统。Encode 每一组（utterance, response）。运行时，encode 用户消息并 retrieve 最接近的已存回复。可以把它理解成 Zendesk 经典的“similar articles”功能。比规则更能处理 paraphrases。没有 generation，因此没有 hallucination。
@@ -236,7 +254,9 @@ tags: [nlp, agents, chatbot]
 
 ## 延伸阅读
 
+- [Turing (1950). Computing Machinery and Intelligence](https://academic.oup.com/mind/article/LIX/236/433/986238) — 让对话成为这个领域 benchmark 的论文。
 - [Weizenbaum (1966). ELIZA — A Computer Program For the Study of Natural Language Communication](https://web.stanford.edu/class/cs124/p36-weizenabaum.pdf) — 原始的 rule-based chatbot 论文。
+- [Colby, Weber, Hilf (1971). Artificial Paranoia](https://doi.org/10.1016/0004-3702(71)90002-6) — PARRY 的情感变量架构，第一个有 state 的 chatbot。
 - [Thoppilan et al. (2022). LaMDA: Language Models for Dialog Applications](https://arxiv.org/abs/2201.08239) — Google 较晚期的 neural-chatbot 论文，正好在 LLM agents 接管之前。
 - [Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) — 命名 agent loop pattern 的论文。
 - [Anthropic's guide on building effective agents](https://www.anthropic.com/research/building-effective-agents) — 2024 年的生产指导，到 2026 年仍然成立。
