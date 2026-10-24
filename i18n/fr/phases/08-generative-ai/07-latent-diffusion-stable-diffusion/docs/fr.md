@@ -50,7 +50,7 @@ noise-schedule
 
 ## - Je le construis.
 
-`code/main.py`Mettre un jouet 1-D VAE(encodeur d'identité + décodeur, uniquement pour démontrer; réel VAE 会是 conv net) superposé sur le DDPM de la leçon 06 ,并通过类型免费指导 加入类条件化──它显示同一个扩散损失 无论运行在原始1-D值上,还是运行在加码值上都有效,这就是关键洞见──
+`code/main.py`Mettre un jouet 1-D VAE(fixé multiplication 0.5 encodeur, ainsi que comme décodeur de l'inversion exacte, uniquement pour démontrer; réel VAE 会是 conv net) superposé sur le DDPM de la leçon 06 , et par le biais de la guidage sans classifiateur 加入类条件化── il montre la même perte de diffusion 无论运行在原始 1-D 值上,还是运行在编码的值上都有效──这是关键洞见──
 
 ### 步骤 1: codeur/décodeur
 
@@ -133,7 +133,7 @@ Production de 2026:
 
 参考流集是经典的我有一张消费级GPU,能交付吗?配方──技巧就是把生产推理文献列出的同一个三旋配方应用到扩散 DiT:
 
-1. **Staggered loading。**Le flux a trois non-obligations de coexister dans le réseau VRAM: T5-XXL encodeur de texte ((fp32 下约 10 GB) 、CLIP-L(小)、12B MMDiT, ainsi que VAE。
+1. **Staggered loading。**Flux 有四个不需要同时存在在VRAM 中的网络:T5-XXL text encoder(fp32 下约 10 GB)、CLIP-L(小)、12B MMDiT, ainsi que VAE。先编码快速,*删除*encoders,加载DiT,denoise,*删除*DiT,加载VAE,decode──消费级 8GB GPUs 一次只能容纳一个阶段──
 2. **通过 bitsandbytes 做 4-bit quantization。**Dans le T5 encodeur 和 DiT 上都使用 `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)` la qualité du texte à l'image est en baisse presque invisible, selon les critères d'Aritra.
 3. **CPU offload。** `pipe.enable_model_cpu_offload()`L'interface de l'interface est automatique entre les modules de transfert entre le processeur et le processeur.
 

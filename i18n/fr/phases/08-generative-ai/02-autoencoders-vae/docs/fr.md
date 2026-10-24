@@ -100,7 +100,7 @@ C'est le modèle génératif.
 - **Posterior collapse.**Le terme KL est trop stimulant .$q(z \mid x) \to \mathcal{N}(0, I)$, à cause de$z$Je ne sais pas$x$Il est également possible de faire une analyse de la situation.$\beta=0$開始, progressivement monter à 1) 、free bits, ou dans les dimensions inactives sur KL ∼
 - **Blurry samples.**La probabilité du décodeur gaussien signifie la reconstruction de l'ESM, elle est à l'égard de L2 l'optimal Bayes (mean)  un groupe de chiffres raisonnables  signifie un chiffre maladroit  modification: décodeur discrète (VQ-VAE、NVAE), ou simplement utiliser le VAE comme encodeur, et les latents sont en compilation de diffusion (Stable Diffusion c'est ce que nous faisons) 
 - **β too large, too early.**- Il s'est effondré.$\beta \approx 0.01$Il y a une nouvelle étape.
-- **Latent dim too small.**16-D  adapté au MNIST,256-D  adapté à ImageNet 2562,2048-D  adapté à ImageNet 10242。 VAE de diffusion stable va être 512×512×3  comprimé à 64×64×4;; surface spatiale supérieure à 32x facteur de échantillonnage en bas, canaux supérieure à 32x)。
+- **Latent dim too small.**16-D  adapté au MNIST,256-D  adapté à ImageNet 2562,2048-D  adapté à ImageNet 10242。 VAE de diffusion stable va être 512×512×3  comprimé à 64×64×4(par côté 8x échantillon en bas, surface spatiale à 64x; canaux de 3 à 4, donc le nombre total de valeurs est réduit d'environ 48x)。
 
 ## Utilisez-le
 
