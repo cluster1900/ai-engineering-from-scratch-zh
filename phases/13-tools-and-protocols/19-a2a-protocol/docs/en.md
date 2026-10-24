@@ -35,7 +35,7 @@ A2A 是“让跨框架 Agent 相互对话”的标准协议。它不是要取代
 ```json
 {
   "name": "research-agent",
-  "description": "总结学术论文并草拟引用。",
+  "description": "Summarizes academic papers and drafts citations.",
   "version": "1.2.0",
   "supportedInterfaces": [
     {
@@ -54,8 +54,8 @@ A2A 是“让跨框架 Agent 相互对话”的标准协议。它不是要取代
   "skills": [
     {
       "id": "summarize_paper",
-      "name": "总结论文",
-      "description": "读取论文 PDF，并生成 3 段摘要。",
+      "name": "Summarize a paper",
+      "description": "Read a paper PDF and produce a 3-paragraph summary.",
       "tags": ["research", "summarization"],
       "inputModes": ["text/plain", "application/pdf"],
       "outputModes": ["text/markdown"]
@@ -100,7 +100,7 @@ Client 发起 `SendMessage`，Server 创建 Task。被调用的 Agent 在各状�
   "messageId": "msg-001",
   "role": "ROLE_USER",
   "parts": [
-    {"text": "总结这篇论文。"},
+    {"text": "Summarize this paper."},
     {"raw": "...", "filename": "paper.pdf", "mediaType": "application/pdf"},
     {"data": {"targetLength": "3 paragraphs"}, "mediaType": "application/json"}
   ]
@@ -143,7 +143,7 @@ A2A-Version: 1.0
     "message": {
       "messageId": "msg-001",
       "role": "ROLE_USER",
-      "parts": [{"text": "总结这篇论文。"}]
+      "parts": [{"text": "Summarize this paper."}]
     }
   }
 }
