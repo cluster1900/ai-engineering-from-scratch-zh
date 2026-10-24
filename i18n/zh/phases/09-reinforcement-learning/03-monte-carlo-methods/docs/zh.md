@@ -46,6 +46,10 @@ V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
 
 在温和条件下,每个对被无限次访问,$\alpha$满足罗宾斯-蒙罗),会以概率1 收到$Q^{\ast}$和 $\pi^{\ast}$,我知道.
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### 步骤1:推出 → (s, a, r) 列表
@@ -138,10 +142,6 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 - **Non-stationary policies。**如果$\pi$发生变化 (如MC控制中那样),旧返回来自不同的政策.
 - **Off-policy importance sampling。**权重$\pi(a \mid s)/\mu(a \mid s)$随着视界的变化 爆炸――用每决策权重的IS 截断,或切换到 TD――
 
-
-```figure
-epsilon-greedy
-```
 
 ## 使用它
 

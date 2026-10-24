@@ -40,6 +40,10 @@ V(s) \leftarrow \max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]
 
 **为什么 $\gamma < 1$ 很重要。**贝尔曼操作员在超级标准下是一个$\gamma$- 收缩:$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$缩意味着唯一的固定点 和几何收.$\gamma < 1$你已经失去了保证,需要有限的视界或吸收终端状态.
 
+```figure
+value-iteration-gamma
+```
+
 ## 动手构建
 
 ### 构建GridWorldMDP模型
@@ -140,10 +144,6 @@ def value_iteration(gamma=0.99, tol=1e-6):
 - **Policy ties。**如果两个操作具有相同的Q值,`argmax`可能每次代用不同方式打破平局,导致政策稳定 检查振荡──使用稳定的结合断裂 固定序列中的第一个行动)。
 - **State-space explosion。**每次扫描都是$O(\lvert S \rvert \cdot \lvert A \rvert)$△最多可用于约107个州. △超过这个规模,你需要函数近似.
 
-
-```figure
-value-iteration-gamma
-```
 
 ## 使用它
 
