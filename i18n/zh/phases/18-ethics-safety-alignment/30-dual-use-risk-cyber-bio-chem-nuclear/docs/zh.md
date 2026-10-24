@@ -14,7 +14,7 @@
 - 解释新手与专家绝对之间的不对称性以及对安全案例的构建影响
 
 ## 问题
-第17课是测量方法论. 第30课是2026年测量状态. 图景在2024年到2025年底之间发生实质性变化:每个领域都跨越了2024年框架未曾预期的值.
+第17课是测量方法论. 第30课是2026年测量状态. 图景在2024年到2025年底之间发生实质性变化:四个领域中有三个跨越了2024年框架未曾预期的值.
 
 ## 概念
 ### 生物/化学升级叙事
@@ -44,6 +44,8 @@
 - 机器人编码是攻击自动化的原语.此前,AI网络援助被限制在代码片段层面;机器人工作流程整合了侦察,exploitation,post-exploitation和exfiltration.
 - 4-6 个人类步骤是瓶;未来能力提升将减少这一数量.
 - 防御性双重用途:OpenAI的可靠访问性试点向经过审查的安全组织 (成熟的事件响应公司,政府) 提供用于防御的能力访问性.
+
+通过静态分析,你将学习这个点,然后在自己构建的程序上教授13阶段的逆向工程路线:[Lesson 13.32](../../../13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md)它们是的.[Lesson 13.33](../../../13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md)中的反汇编,[Lesson 13.34](../../../13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md)中提升到伪代码,以及[Lesson 13.35](../../../13-tools-and-protocols/35-evidence-confidence-and-unknowns/docs/en.md)观察事实与推断事实的分开证据.[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)机器在一个函数上展示了完整的流水线. 执行这项工作的代理也需要同样的台账,因为一次看起来很有把握的反编译,仍然可能建立在猜测上.
 
 ### 核电
 
