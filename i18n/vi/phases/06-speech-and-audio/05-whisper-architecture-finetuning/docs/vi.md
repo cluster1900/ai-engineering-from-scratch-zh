@@ -36,9 +36,9 @@ Large-v3 có param 1.55B──Turbo sử dụng 4 lớp decoder( từ 32 tầng 
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` ngôn ngữ thẻ;强制 dịch-vs-transcription 行为。
-- `<|transcribe|>`Hoặc`<|translate|>` Từ bất kỳ ngôn ngữ nhập 翻译为英语输出,或逐字转写。
-- `<|notimestamps|>` 跳过 từ độ thời gian dấu 更快)
+- `<|en|>`:language tag;指明音频中所言的语言──省略时 Whisper 会先检测语言──
+- `<|transcribe|>`Hoặc`<|translate|>`:task tag;以源语言转写语音,或将其翻译为英文文本。
+- `<|notimestamps|>`Đường thời gian ở mức độ từ:
 
 Hãy nhanh chóng để một mô hình có thể hoàn thành rất nhiều nhiệm vụ.`<|en|>`改成 `<|fr|>`Nó sẽ được viết bằng tiếng Pháp.
 

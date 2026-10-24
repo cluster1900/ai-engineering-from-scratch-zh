@@ -45,7 +45,7 @@ Mỗi nhiệm vụ âm thanh có nhiều chỉ số, mỗi chỉ số đo kích 
 
 **SECS (Speaker Encoder Cosine Similarity)。**Sử dụng cho việc nhân bản giọng nói. Reference audio频与克隆输出之间的 ECAPA Embedding cosine.
 
-**WER-on-ASR-round-trip。**Trong TTS 输出上运行 Whisper,并相对于输入文本计算 WER──用于捕捉可理解度回归──2026 SOTA:&lt;2% CER──
+**WER-on-ASR-round-trip。**Trong TTS 输出上运行 Whisper,并相对于输入文本计算 WER──用于捕捉可理解度回退──2026 SOTA:English test sets 上 &lt;2% WER(Mandarin test sets 改为报告 CER)。
 
 **TTFA (time-to-first-audio)。**端到端延迟──Kokoro-82M: ~100 ms; F5-TTS: ~1 s──
 
@@ -79,7 +79,7 @@ Multi-label: tất cả các loại trên **mAP (mean Average Precision)**❖Aud
 
 **CLAP Score。**Sử dụng CLAP Embedding 的文本-音频对齐分数──&gt; 0.3 = 合理对齐──
 
-**Listening panel MOS。**Đối với tiêu dùng âm nhạc vẫn là quyết định cuối cùng.
+**Listening panel MOS。**Đối với tiêu dùng cấp nhạc vẫn là phán quyết cuối cùng. Suno v5 trong Suno  đạt được điểm chuẩn ưa thích của mình trên ELO 1293  Đây là số nhà sản xuất; TTS Arena  xếp hạng là语音, chứ không phải nhạc 👇
 
 ### Chỉ số chuẩn ngôn ngữ âm thanh
 
