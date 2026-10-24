@@ -179,6 +179,7 @@ mx-tool-call-loop
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
 ```python
+import ast
 import json
 import math
 import time
@@ -287,10 +288,18 @@ def read_file(path):
 def run_code(code, language="python"):
     if language != "python":
         return {"error": True, "message": f"Language '{language}' not supported. Only 'python' is available."}
-    forbidden = ["import os", "import sys", "import subprocess", "exec(", "eval(", "__import__", "open("]
-    for pattern in forbidden:
-        if pattern in code:
-            return {"error": True, "message": f"Forbidden operation: {pattern}", "code": "SECURITY_VIOLATION"}
+    try:
+        tree = ast.parse(code)
+    except SyntaxError as e:
+        return {"error": True, "message": f"SyntaxError: {e}", "code": "SYNTAX_ERROR"}
+    unsafe_names = {"exec", "eval", "compile", "__import__", "open", "globals", "locals", "vars", "getattr", "setattr", "delattr"}
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            return {"error": True, "message": "Forbidden operation: import is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Attribute) and node.attr.startswith("__") and node.attr.endswith("__"):
+            return {"error": True, "message": "Forbidden operation: dunder attribute access is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Name) and node.id in unsafe_names:
+            return {"error": True, "message": f"Forbidden operation: {node.id} is not allowed", "code": "SECURITY_VIOLATION"}
     try:
         local_vars = {}
         exec(code, {"__builtins__": {"print": print, "range": range, "len": len, "str": str, "int": int, "float": float, "list": list, "dict": dict, "sum": sum, "min": min, "max": max, "abs": abs, "round": round, "sorted": sorted, "enumerate": enumerate, "zip": zip, "map": map, "filter": filter, "math": math}}, local_vars)
@@ -299,6 +308,8 @@ def run_code(code, language="python"):
     except Exception as e:
         return {"error": True, "message": f"{type(e).__name__}: {e}"}
 ```
+
+                                                                                                                                                                                                                                                              `import`语句、डंडर 属性访问(即通往真实解释器的 `__class__`和 `__globals__`链) तथा असुरक्षित बिल्डिन 名称── वैसे भी, इसे वास्तविक सुरक्षा सीमा के बजाय शिक्षण के लिए एक फ़िल्टर उपकरण के रूप में भी समझें। किसी भी प्रक्रिया के भीतर गार्ड एक ही व्याख्याता के साथ संहिता साझा करते हैं, जो इसे संचालित करता है, निष्क्रिय कॉल करने वाले अभी भी उपलब्ध वस्तुओं को पा सकते हैं। उत्पादन प्रणाली स्वतंत्र प्रक्रिया या कंटेनर में अविश्वसनीय कोड चलाती है।
 
 ### 步骤 3: सभी उपकरण पंजीकृत करें
 
@@ -325,7 +336,7 @@ def register_all_tools():
         read_file,
     )
     register_tool(
-        "run_code", "Execute Python code in a sandboxed environment. Set a 'result' variable to return output.",
+        "run_code", "Run a small Python snippet behind a static-analysis guard and a restricted interpreter. This is a teaching filter, not real isolation. Set a 'result' variable to return output.",
         {"type": "object", "properties": {"code": {"type": "string", "description": "Python code to execute"}, "language": {"type": "string", "enum": ["python"], "description": "Programming language"}}, "required": ["code"]},
         run_code,
     )
@@ -612,7 +623,7 @@ OpenAI उपकरण कॉल  वापसी `response.choices[0].message.t
 # client = anthropic.Anthropic()
 #
 # response = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[{
 #         "name": "get_weather",
@@ -633,7 +644,7 @@ OpenAI उपकरण कॉल  वापसी `response.choices[0].message.t
 # result = get_weather(**tool_block.input)
 #
 # final = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[...],
 #     messages=[
