@@ -217,7 +217,7 @@ Os pesos de 8B em BF16 são 16 GB. Em uma sequência de 128k, o cache KV é maio
 
 Para os modelos híbridos, é necessário obter uma sequência completa.
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```

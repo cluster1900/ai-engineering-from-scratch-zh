@@ -142,7 +142,7 @@ Construir uma sequência de composição de 1024 de longitude.
 给定一个配置 ((hidden=4096, heads=32, d_head=128),打印:
 
 - Transformador de linha de base: Q、K、V V`hidden * hidden`, MLP é 4 * escondido
-- DIFF V1: Q、K Vólos de tamanho`hidden * hidden`, V grande por`hidden * hidden`(不变), cabeça dim 在内部减半──增加 per-head `lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$- Não.
+- DIFF V1: Q、K Vólos de tamanho`hidden * hidden`, V grande por`hidden * hidden`(不变), cabeça dim 在内部减半──增加 per-head `lambda`参数 $(O(\text{heads} \cdot d_{\text{head}}))$- Não.
 - DIFF V2: Q`2 * hidden * hidden`, K , grande por`hidden * hidden`, V grande por`hidden * hidden`◊ Extra-dimensional $O_W$Antes de lançar, depois de lançar, aumenta o mesmo.`lambda`- É o que é?
 
 O custo extra do tamanho do brinquedo V2 `hidden * hidden`),并打印出来──

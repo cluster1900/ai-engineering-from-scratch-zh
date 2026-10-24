@@ -218,11 +218,11 @@ A taxa de aprendizagem de GPT-2 em 2000 passos, de 0 a 0 para o pico de aprendiz
 projeção de saída (logits head) com Token Embedding Matrix 共享权重──这叫重量绑定它减少了38M参数,并提升性能,因为它迫使模型对输入和输出使用同一个表示空间──
 
 
-```figure
-sampling-decoder
-```
-
 ## Construí-lo
+
+```figure
+iso-machine {"machine":"mini-gpt"}
+```
 ### 步骤 1: Embutida camada
 
 Embedings de tokens serão 50,257 个可能 Token em cada um de nós é mapeado em um vector de 768 维──Position Embedings 添加关于每个 Token 在序列中位置的信息──两者相加──
@@ -464,6 +464,10 @@ def generate(model, prompt_tokens, max_new_tokens=100, temperature=0.8):
 Temperatura  controlar随机性──Temperatura 1.0 使用原始分布──Temperatura 0.5 会让分布更尖(更确定模型更经常选择顶级选择)──Temperatura 1.5 会让分布更平坦(更随机低概率 Token 获得更大的机会)──Temperatura 0.0 é codificação gananciosa(总是选择最高概率 Token)──
 
 `tokens[-seq_len:]`Esta janela é necessária, porque o modelo tem a maior extensão de contexto ((GPT-2 é 1024) ⋅ Uma vez superada, temos que perder o token mais antigo ⋅ é que todos estão em discussão ⋅ janela de contexto ⋅ ⋅
+
+```figure
+sampling-decoder
+```
 
 ## Use-o
 ### 完整训练与生成 Demo

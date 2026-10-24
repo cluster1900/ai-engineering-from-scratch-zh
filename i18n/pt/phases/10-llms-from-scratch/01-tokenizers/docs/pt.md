@@ -53,6 +53,10 @@ O BPE é um algoritmo de compressão de cor, mais tarde reutilizado para tokeniz
 
 Desde um único caracter começam. Todos os pares de palavras em cada lado do idioma.
 
+```figure
+tokenizer-bpe
+```
+
 Abaixo está um corpus muito pequeno de BPE em operação, que contém "menor""",menor" e "mais novo":
 
 ```
@@ -195,10 +199,6 @@ Tokenizers baseados principalmente em inglês são muito cruéis para outras lí
 
 É por isso que a Llama 3 irá ampliar o vocabulário de 32K para 128K. A distribuição de Tokens para sistemas de letras não-inglês será mais eficiente.
 
-
-```figure
-tokenizer-bpe
-```
 
 ```figure
 tokenizer-tradeoff
