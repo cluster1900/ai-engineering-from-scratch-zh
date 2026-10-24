@@ -49,11 +49,11 @@
     },
     {
       "hue": "rose",
-      "meaning": "failure: a dead engine, an out-of-memory kill, a crash"
+      "meaning": "故障：引擎退出、out-of-memory kill、崩溃"
     },
     {
       "hue": "grey",
-      "meaning": "outside Miles: the host, Docker, and Ray"
+      "meaning": "Miles 之外：主机、Docker 和 Ray"
     }
   ],
   "sources": [

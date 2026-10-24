@@ -36,7 +36,7 @@
     },
     {
       "hue": "amber",
-      "meaning": "tasks, task states, and transitions"
+      "meaning": "任务、任务状态和状态转换"
     },
     {
       "hue": "teal",
@@ -56,7 +56,7 @@
     },
     {
       "hue": "rose",
-      "meaning": "errors, failure, rejection, and cancellation"
+      "meaning": "错误、故障、拒绝和取消"
     },
     {
       "hue": "grey",
@@ -163,7 +163,7 @@
     },
     {
       "number": 3,
-      "title": "Data Model",
+      "title": "数据模型",
       "thesis": "每次 A2A 交互都由五个对象构成：Message、Part、Artifact、Task，以及把任务分组的 contextId。",
       "accent": "green",
       "sections": [
@@ -191,7 +191,7 @@
     },
     {
       "number": 4,
-      "title": "Operations",
+      "title": "操作",
       "thesis": "十一个操作用于创建、读取、取消和跟进任务，每个操作都有客户端在调用前必须了解的规则。",
       "accent": "amber",
       "sections": [
@@ -223,7 +223,7 @@
     },
     {
       "number": 5,
-      "title": "Bindings",
+      "title": "绑定",
       "thesis": "同样的操作通过 JSON-RPC、HTTP+JSON 和 gRPC 传输，三者共用两个 header 和一个错误模型。",
       "accent": "indigo",
       "sections": [
@@ -271,7 +271,7 @@
     },
     {
       "number": 7,
-      "title": "Implementing A2A",
+      "title": "实现 A2A",
       "thesis": "客户端和服务器遵循前面各部分的规则，官方测试套件据此检查服务器。",
       "accent": "teal",
       "sections": [
@@ -295,7 +295,7 @@
     }
   ],
   "reference": {
-    "title": "Reference",
+    "title": "参考",
     "accent": "grey",
     "thesis": "手册中每个名称的查阅表。",
     "summary": "按绑定列出的操作、对象与字段、任务状态、错误、术语表、来源，以及图索引。",
