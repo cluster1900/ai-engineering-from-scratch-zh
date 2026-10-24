@@ -45,7 +45,7 @@ Cada tarefa de som tem vários indicadores, cada indicador mede diferentes dimen
 
 **SECS (Speaker Encoder Cosine Similarity)。**Utilizado para clonagem de voz. Referência audio频与克隆输出之间的 ECAPA Embedding cosine.
 
-**WER-on-ASR-round-trip。**Em TTS 输出上运行 Whisper,并相对输入文本计算 WER──用于捕捉可理解度回归──2026 SOTA:&lt;2% CER──
+**WER-on-ASR-round-trip。**Em TTS 输出上运行 Whisper,并相对输入文本计算 WER──用于捕捉可理解度回退──2026 SOTA:Test sets de inglês 上 &lt;2% WER(Mandarin test sets 改为报告 CER) ⋅
 
 **TTFA (time-to-first-audio)。**端到端延迟──Kokoro-82M: ~100 ms; F5-TTS: ~1 s──
 
@@ -79,7 +79,7 @@ Multi-etiqueta: todos os tipos de categorias**mAP (mean Average Precision)**◊A
 
 **CLAP Score。**Utilize CLAP Embedding 的文本-音频对齐分数──&gt; 0.3 = 合理对齐──
 
-**Listening panel MOS。**Para o consumo de música, ainda é um julgamento final.
+**Listening panel MOS。**Para os consumidores, a classificação é ainda a de voz, não de música.
 
 ### Indicador de referência de áudio
 

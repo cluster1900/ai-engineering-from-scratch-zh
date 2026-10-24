@@ -36,9 +36,9 @@ Grande-v3 tem parâmetros de 1,55B──Turbo utiliza um decodificador de 4 cama
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 
-- `<|en|>` tag de língua; 行为强制翻译对转录
-- `<|transcribe|>`Ou `<|translate|>` From arbitrary language input 翻译为英语输出,或逐字转写。
-- `<|notimestamps|>` 跳过 word-level timestamps (((更快) 🙈
+- `<|en|>`Tag: linguagem;指明音频中所言的语言──省略时 Whisper 会先检测语言──
+- `<|transcribe|>`Ou `<|translate|>`:task tag;以源语言转写语音,或将其翻译为 英文──
+- `<|notimestamps|>`O que é que se passa?
 
 Faça um modelo capaz de realizar muitas tarefas.`<|en|>`改成 `<|fr|>`- Vai ser traduzido em francês.
 
