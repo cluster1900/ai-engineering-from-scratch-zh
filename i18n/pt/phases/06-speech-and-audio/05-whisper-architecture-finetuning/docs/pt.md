@@ -32,7 +32,7 @@ Grande-v3 tem parâmetros de 1,55B──Turbo utiliza um decodificador de 4 cama
 
 **Prompt format。**Whisper é um por decodificador de prompt.
 
-```text
+```
 <|startoftranscript|><|en|><|transcribe|><|notimestamps|> Hello world.<|endoftext|>
 ```
 

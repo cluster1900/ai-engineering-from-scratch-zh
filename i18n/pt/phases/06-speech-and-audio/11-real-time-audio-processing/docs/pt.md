@@ -48,6 +48,10 @@ Moshi (Kyutai, 2024)  alcançar 200 ms de duplex completo──GPT-4o em tempo r
 - **TTS priming。**Mesmo assim como Kokoro, TTS rápido, primeira solicitação tem também 100200 ms aquecimento-up──缓存 modelo, e na primeira vez real virar 前用 dummy run 预热──
 - **Echo cancellation。**没有AEC,TTS output 会重新进入micro,并触发 ASR 识别bot 自己的声音──WebRTC AEC3 é o código aberto por defeito──
 
+```figure
+nyquist-aliasing
+```
+
 ## 动手构建
 
 ### 步骤 1: tampão de anel
@@ -117,10 +121,6 @@ class Dialog:
 
 Esta dependência de I/O sincronizado e eliminação do streaming TTS.
 
-
-```figure
-nyquist-aliasing
-```
 
 ## Use-o
 
