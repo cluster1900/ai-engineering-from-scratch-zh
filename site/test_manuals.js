@@ -281,6 +281,11 @@ test('audit enforces section shape', () => {
   for (const rule of ['outcome', 'takeaways', 'sources']) assert.ok(found.has(rule), `expected ${rule}`);
 });
 
+test('audit accepts the zh outcome phrase', () => {
+  const zh = SECTION.replace('When you finish this section, you can render one and check it.', '读完本节后，你能渲染一份手册并检查它。');
+  assert.ok(!rules(fixture({ 'sections/1-1-intro.md': zh }).dir).has('outcome'));
+});
+
 test('figure lint catches small, overlapping, spilling, crossed, and off-palette text', () => {
   const bad = SVG
     .replace('font-size="12" text-anchor="middle">client', 'font-size="9" text-anchor="middle">client')
