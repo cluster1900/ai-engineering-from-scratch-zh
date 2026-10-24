@@ -21,7 +21,7 @@ Bạn đã xây dựng một chatbot RAG. Nó hoạt động rất đẹp. Ngư�
 
 Sau đó, cái sổ đã đến.
 
-GPT-5 Mỗi triệu mã thông báo nhập$5，每百万 output $15―Claude Opus 4.7 input $15 / output $75―Gemini 3 Pro input $1.25 / output $5―GPT-5-mini $0.25/$2。 下面价格仅作例;始终检查提供商 当前的价格页面。
+GPT-5 Mỗi triệu mã thông báo nhập$1.25，每百万 output $10―Claude Opus 4.7 input $5 / output $25―Gemini 3.1 Pro input $2 / output $12(quan báo không quá 200K token)。GPT-5-mini là $0.25/$2― 下面数学中使用的 GPT-4o 是 $2.50/$10── giá chỉ như ví dụ;始终检查提供 当前的价格页面──
 
 Dưới đây là toán học của các công ty khởi nghiệp:
 

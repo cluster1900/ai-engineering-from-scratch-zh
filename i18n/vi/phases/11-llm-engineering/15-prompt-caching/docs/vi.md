@@ -46,7 +46,7 @@ Cách này là lưu trữ nhanh chóng. Anthropic đã ra mắt nó vào tháng 
 
 ### break-even 计算
 
-25% 写入溢价 của Anthropic có nghĩa là, một khối được lưu trữ tối thiểu phải được đọc hai lần, để thực hiện净省钱──1 lần写入 + 1 lần读取, trung bình mỗi lần yêu cầu chi phí là 0.675x( tiết kiệm 32%);1 lần写入 + 10 lần读取, trung bình là 0.205x( tiết kiệm 80%)──
+25% 写入溢价 (Anthropic)  5 分钟 TTL)  在第一次读取时就能回本,因为缓存读成本成成成 0.1x──1次写入 + 1次读取,平均每次请求成本为 0.675x──节省 32%);1次写入 + 10次读取,平均为 0.205x──节省 80%)──1 小时 TTL 写入收费为 2x,因此该块占据两次读取才能优──经验法:缓存任何你预计在 TTL 内复至少3次内容;这在任任一 TTL 下都能过度断-even──
 
 
 ```figure
