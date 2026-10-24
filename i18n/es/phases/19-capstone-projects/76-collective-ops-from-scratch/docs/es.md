@@ -98,7 +98,7 @@ Modelo de producción:
 
 ## 发货
 
-Usando la línea de las clases 77-81                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+Se trata de un programa de investigación que se desarrolla en el ámbito de la salud y de la salud en el mundo.
 
 ##  ejercicios
 

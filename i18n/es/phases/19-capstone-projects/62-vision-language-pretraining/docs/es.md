@@ -54,7 +54,7 @@ Para el cálculo, el cálculo de la composición de las imágenes se realiza en 
 
 ### 合并损失 合并损失 合并损失 合并损失 合并损失
 
-`total = contrastive + lm_weight * lm`, entre ellos `lm_weight`Es la escala de los dos perdidos de los editores y proyectores; sólo los editores de los mismos reciben LM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+`total = contrastive + lm_weight * lm`, entre ellos `lm_weight`Es la forma de combinación de múltiples tareas utilizada en CoCa y BLIP, con diferentes pesos. SigLIP sólo conserva los contrastes, y no utiliza la pérdida de pares sigmoides en lugar de la suavidad.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|
