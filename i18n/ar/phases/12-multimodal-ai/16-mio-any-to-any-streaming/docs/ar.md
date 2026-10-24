@@ -19,7 +19,7 @@
 التحديات المهنية:
 
 - كل طريقة يجب أن يكون لديها Tokenizer، الضغط يجب أن يكون قريبة بما فيه الكفاية من دون ضرر من أجل إعادة البناء، وتوليد Token مع معدل التحول 能消耗.
-- 单一词库 必须为文本(32k+) 图像(16k+) 语音(4k+) 音乐(8k+)分配空间──最低也需要四万多条目──
+- 单一词库 必须为文本(32k+) 图像(8k+) 语音(4k+) 音乐(8k+) 分享空间──最低也需要五万多条目──
 - يجب أن تغطي كل زوج من المدخلات والخروجات (صورة) أو نموذج يجب أن يكون قادرا على التجميع.
 - الإستدلال 必须足足足快地 输出 Token,以满足对话延迟 ((<500ms وقت إلى أول بايت صوتي) ]]
 
@@ -29,21 +29,21 @@
 كومة Tokenizer MIO:
 
 - النص: معيار BPE, صوت ~32000。
-- صورة:SEED-Tokenizer (2023)  带离散代码簿 的量化 VAE,4096 条目,每张图像 32x32 个代码.
-- الخطاب: الخطاب توكينيزر بقية-VQ (2023)  将 16kHz waveform 编码为 8 层次代码书;第一层是粗粒度内容,后续层加入 prosody 和扬声器身份──
-- الموسيقى: مشابهة بقايا-VQ(Meta of MusicGen / عائلة Encodec) ،4-8 个代码书──
+- صورة:SEED-Tokenizer (2023), نوع من التوكنات الصورة المتفرقة, كتاب التعليمات لديه 8192 条目, في كل صورة输出 32  Token。
+- الخطاب:SpeechTokenizer residual-VQ (2023),将 16kHz waveform 编码为 8 层级代码书;第一层是粗粒度内容,后续层加入 prosody 和扬声器身份──MIO 保留内容层和前三个timbre 层,每层 1024 个代码,因此共 4096 个语音 ID──
+- الموسيقى: مشابهة لـ بقايا-VQ(Meta of MusicGen / Encodec family),4-8 个代码书──MIO 本身没有音乐 Tokenizer(إنها هي الوسيلة الرابعة في الفيديو،以形式通过图像 Tokenizer);本课的玩具 加入音乐,为了展示新模式 如何占用一段 ID 范围──
 
 كل نوع من الطرق تخلق عددًا كاملًا من الوهم.
 
 ```
 text:   0..31999
-image:  32000..36095  (4096 image tokens)
-speech: 36096..40191  (4096 speech base tokens, plus residual layers)
-music:  40192..48383  (8192 music tokens)
-sep:    48384..48390  (<image>, <speech>, <music>, </...>, etc.)
+image:  32000..40191  (8192 image tokens)
+speech: 40192..44287  (4 codebooks x 1024 speech tokens)
+music:  44288..52479  (8192 music tokens, the toy's extension)
+sep:    52480..52485  (<image>, <speech>, <music>, </...>)
 ```
 
-总计: حوالي 48k مخزون لغوي.
+总计: حوالي 52k مخزون لغوي.
 
 ### إفصاح التدفق
 
@@ -54,7 +54,7 @@ sep:    48384..48390  (<image>, <speech>, <music>, </...>, etc.)
 1. المستخدم على متن الكلمة الكلمة؛ Tokenizer الصوتي في الوقت الحقيقي كل 50ms  إصدار خطاب Token。
 2. MIO 在 Token 到达时消费它们(فوري الاحتمال + متزايد إلى الأمام)
 3. علامة الناتج 随生成流式输出;معدل تصريح متوازي 以约 50-150ms 延迟将其转换为音频样本──
-4. وقت إلى أول بايت صوتي: ورقة MIO 中约300-500ms، تقترب من GPT-4o من حوالي 250ms──
+4. وقت إلى أول بايت صوتي: ورقة MIO 没有报告延迟数字──按下文的预算, هذا التصميم أفضل حوالي 300ms, مقارنة مع GPT-4o حوالي 250ms──
 
 ميني-Omni(arXiv:2408.16725)、GLM-4-Voice(arXiv:2412.02612) و Moshi(arXiv:2410.00037) هي تصاميم تلفظية تدفقية متكاملة LLM.
 
@@ -97,7 +97,7 @@ MIO 引入 سلسلة التفكير البصري:模型发出中间图像 Token
 - أول إشارة خروج: ~50ms
 - مكشف الكلام المتوازي بقايا VQ +: ~ 100-150ms。
 
-总 time-to-first-audio-byte:最低约 ~300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──根据公开基准,MIO/AnyGPT 位于400-600ms 范围──
+总时间-to-first-audio-byte:最低约 ~300ms──GPT-4o 声称 ~250ms──Moshi 声称 160ms──MIO 和 AnyGPT 都没有公布实测数字,所以请把这个预算作为估算,而不是基准──
 
 ### لماذا أي-إلى أي  لا يزال صعبا
 
@@ -129,7 +129,7 @@ any-to-any-stream
 
 2. استخدام 8 كتب رمزية  شرح لماذا مستويات البقايا المتوازية لفك التشفير هي ضرورية
 
-3. لديك المفردات 32K نص + 4K صورة + 4K خطاب.
+3. لديك المفردات 32K نص + 8K صورة + 4K خطاب.
 
 4. سلسلة الفكر البصري سوف تنشر في الصورة الوسطى. أي أنواع من المشاكل سوف تستفيد؟ أي أنواع سوف تتأذى؟
 
@@ -140,7 +140,7 @@ any-to-any-stream
 |------|-----------------|------------------------|
 | Any-to-any | "Multimodal in/out" | 一个单一模型，能够在任意方向接受并发出 text、image、speech 和 music |
 | Residual-VQ | "Speech tokenizer stack" | Multi-codebook Tokenization，每一层都添加信息；base layer 是内容，后续层是 prosody |
-| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 4096-entry codebook |
+| SEED-Tokenizer | "Image codes" | MIO 使用的离散 image Tokenizer，带 8192-entry codebook，每张图像 32 个 Token |
 | Chain-of-visual-thought | "Visual scratchpad" | 模型在最终答案前生成一张中间图像作为 reasoning step |
 | Time-to-first-audio-byte | "TTFAB" | 从用户语音到第一个 audio output 的延迟；<500ms 才有对话感 |
 | Four-stage curriculum | "Training recipe" | Alignment -> interleaved -> speech-enhanced -> SFT，按此顺序 |

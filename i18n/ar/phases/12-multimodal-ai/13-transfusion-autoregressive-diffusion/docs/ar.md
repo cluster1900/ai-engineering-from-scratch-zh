@@ -48,7 +48,7 @@
 M[i, j] = 1 if:
   (i is text and j is text and j <= i)   # causal for text
   OR (i is image and j is image and same_image_block(i, j))   # bidirectional within image
-  OR (i is text and j is image and j < i_image_end)   # text attends to previous images
+  OR (i is text and j is image and j < i)   # text attends to images that closed before it
   OR (i is image and j is text and j < i_image_start)   # image attends to preceding text
 ```
 
@@ -94,7 +94,7 @@ M[i, j] = 1 if:
 
 يناوس-برو (دراسة 12.15) من خلال حل للاستفادة من تشفير وتوليد مرموز الرؤية لتحسين فكرة الغذاء: واحد باستخدام SigLIP، الآخر باستخدام VQ، في نفس الوقت المشاركة في جسم المحول.
 
-في عام 2026 ، يمكن أن تنتج طرق إنتاج الصور من طراز VLM ، مثل Gemini 3 Pro ، GPT-5 ، Claude Opus 4.7 ، تقريبا بالتأكيد تستخدم نوعًا ما من الأجيال الأخيرة من هذه العائلة.
+قد يكون نموذج إنتاج مصدر مغلق للصور الأصلية قد استخدم نوعًا ما من الأجيال اللاحقة من هذه العائلة ، ولكن بنيتها غير مفتوحة ، لذلك يمكن اعتبار أي من هذه القولات مجرد تخمينات.
 
 
 ```figure
@@ -108,7 +108,7 @@ cfg-guidance-scale
 - الصورة هي 4x4 字节网格──
 - واحد على التشارك حق الوزن التنبؤات الخطية 充当变压器 替代;文本上使用NTP损失,噪音补丁上使用MSE损失──
 - تدرين دورة تبادل استخدام الخسارة اثنين، قناع الاهتمام هو واضحة.
-- 生成在一次前进传 中产生文本标题 和 4x4 图像──
+- نموذج الاهتمام القطبية الثلاثية الكلي من سلسلة النصات.
 
 هذا المحول هو نوع من الألعاب.
 

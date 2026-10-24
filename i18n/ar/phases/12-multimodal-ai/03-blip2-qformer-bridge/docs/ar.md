@@ -1,6 +1,6 @@
 # من CLIP إلى BLIP-2  Q-Former  كجسر التنقل
 
-> CLIP على الصور والنص، ولكن لا يمكن إنتاج عنوان ‬‬الجواب على السؤال أو إجراء المحادثة‬BLIP-2 (Salesforce، 2023) باستخدام بريد صغير قابل للتدريب حل هذه المشكلة‬:32 ‬المتسائل القابلة للتعلم ‬‬المتنقل ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ 
+> CLIP على الصور والنص، ولكن لا يمكن إنتاج عنوانها ‬‬الجواب على السؤال أو إجراء المحادثة‬BLIP-2 (Salesforce، 2023) باستخدام بريد صغير يمكن تدريبه حل هذه المشكلة‬:32 ‬المتسائل يمكن تعلمه ‬المتنقل ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ ‬ 
 
 **Type:** Build
 **Languages:** Python (stdlib, cross-attention + learnable-query demo)
@@ -112,7 +112,7 @@ modality-projection
 
 4. 阅读BLIP-2 ورقة(arXiv:2301.12597) القسم 3.2 ، معرفة Q-Former 如何初始化── شرح لماذا من BERT-بيس 初始化(بدلا من أي وقت مضى初始化) سوف تسريع收──
 
-5. على 10 分钟视频,以 1 FPS 采样到 60 ,计算每 Token 成本:(Q-Former → 32 رمزا/إطار) vs (مقاطع MLP → 576 رمزا/إطار) ―― أي واحد يمكن وضعها في نافذة سياق LLM 128k-Token؟
+5. على مقطع فيديو 10 دقيقة، باستخدام 1 FPS 采样到60 ، حساب لكل  Token 成本:(Q-Former → 32 رمزا/إطار) vs (مقاطع MLP → 576 رمزا/إطار) ⋅ في وقت قصير 文本還没占用任何空间之前, 每种桥接能把多少放进 128k-Token LLM السياق النافذة؟
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -126,7 +126,7 @@ modality-projection
 | Two-stage pretraining | "Representation then generative" | Stage 1 单独训练 Q-Former（ITC/ITM/ITG）；Stage 2 接入 frozen LLM，并且只训练 projection + Q-Former |
 | Frozen backbone | "Do not finetune" | vision encoder 和 LLM weights 固定；只训练 bridge |
 | Projection head | "Linear to LLM dim" | 将 Q-Former 输出映射到 LLM Embedding dimension 的最终 linear layer |
-| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention，由 Flamingo 在每一层使用，而不是作为单个 bridge |
+| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention；Flamingo 对每张图像运行一次，生成固定数量的 latents，再在每个 LLM 层通过 gated cross-attention 读取它们 |
 
 ## 延伸阅读
 - [Li et al. — BLIP-2 (arXiv:2301.12597)](https://arxiv.org/abs/2301.12597)ورقة أساسية
