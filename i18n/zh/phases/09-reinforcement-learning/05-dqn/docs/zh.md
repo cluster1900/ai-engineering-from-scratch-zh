@@ -73,7 +73,7 @@ class ReplayBuffer:
         return rng.sample(self.buf, batch)
 ```
 
-我们的玩具环境使用5000就足够了.
+亚太里使用了大约106个容量,与原始DQN相等.
 
 ### 步骤2:一个很小的Q网络 (手写MLP)
 

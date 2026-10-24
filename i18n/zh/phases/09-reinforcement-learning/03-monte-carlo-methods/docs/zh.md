@@ -21,7 +21,7 @@
 
 **核心思想，一行表达：** $V^\pi(s) = \mathbb E_\pi[G_t \mid s_t = s] \approx (1/N) \sum_i G^{(i)}(s)$在其中$G^{(i)}(s)$是在政策中$\pi$下访问 $s$之后观察到的回报――
 
-**First-visit vs every-visit MC。**给定一个多次访问状态$s$首先访问的MC只统计第一次访问后的回归;每次访问的MC统计所有访问――第二次在极限下都是无偏见的――第一次访问更容易分析的样本――每次访问 每次访问使用更多数据,在实践中通常收获更快――
+**First-visit vs every-visit MC。**给定一个多次访问状态$s$后期MC的每次访问都可能有偏见,因为对每一集的平均回报都是随机的,并且这个数字可能与回报有关,但随着访问次数趋于无穷,二者都会收到.$V^\pi(s)$◎第一次访问更容易分析 (图片样本) ・每次访问 每个集使用更多数据,在实践中通常收更快――
 
 **Incremental mean。**不存储所有回报,而是更新运行平均值:
 
@@ -196,7 +196,7 @@ tags: [rl, monte-carlo, evaluation]
 | Monte Carlo | “Random sampling” | 通过对来自分布的 iid samples 求平均来估计 expectations。 |
 | Return $G_t$ | “Future reward” | 从 step $t$ 到 episode 结束的 discounted rewards 总和：$\sum_{k\ge 0} \gamma^k r_{t+k+1}$。 |
 | First-visit MC | “Count each state once” | 一个 episode 中只有第一次访问会贡献到 value estimate。 |
-| Every-visit MC | “Use all visits” | 每次访问都会贡献；略有 biased，但 sample-efficient 更高。 |
+| Every-visit MC | “Use all visits” | 每次访问都会贡献；有限样本下略有 biased，极限下 consistent，且 sample-efficient 更高。 |
 | ε-greedy | “Exploration noise” | 以概率 $1-\epsilon$ 选择 greedy action；以概率 $\epsilon$ 选择 random action。 |
 | Importance sampling | “Correcting for sampling from the wrong distribution” | 通过 $\pi(a \mid s)/\mu(a \mid s)$ 乘积对 returns 重新加权，从 $\mu$ 数据估计 $V^\pi$。 |
 | On-policy | “Learn from my own data” | Target policy = behavior policy。Vanilla MC、PPO、SARSA。 |

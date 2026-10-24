@@ -1,6 +1,6 @@
 # 面向游戏的RL  AlphaZero、MuZero 与LLM推理时代
 
-> 1992:TD-Gammon 用纯TD 在后游中击败人类冠军──2016:AlphaGo 击败Lee Sedol──2017:AlphaZero 从零开始统治棋牌、shogi 和 Go──2024:DeepSeek-R1 证明了相同的配套在推理上上也有效,只是使用GRPO 替代PPO──游戏是推动本阶段每次突破的基准──
+> 1992:TD-Gammon 用纯TD 在后游中击败人类冠军──2016:AlphaGo 击败Lee Sedol──2017:AlphaZero 从零开始统治棋牌、shogi 和 Go──2025:DeepSeek-R1 证明了相同的配套在推理上上也有效,只是使用GRPO 替代PPO──游戏是推动本阶段每次突破的基准──
 
 **类型：**建立
 **语言：**字符串
@@ -60,7 +60,7 @@ while True:
 
   $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
-没有奖励模型,没有批评者,没有MCTS──组相关基线 替换了三者──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF质量──
+没有学习得到的奖励模型,没有批评者,没有MCTS──由基于规则的验证者提供奖励,组相关的基线 替代批评者,搜索 步骤则被删除──在推理基准上,使用少得多的计算 达到或超过PPO-RLHF质量──
 
 **完整的 R1 配方。**探探 (DeepSeek 2025) 是一个论文中的两个模型:
 
@@ -87,7 +87,7 @@ f3-selfplay-ladder
 
 ## 构建
 
-`code/main.py`中的代码实现了**微型 GRPO** 一个带多组样本的强盗――算法与LLM上相同;只有政策和环境更简单――它讲清楚 *损失* 和 *群体相对优势*,也就是2025年的创新点――
+`code/main.py`中的代码实现了**微型 GRPO**只有政策和环境更简单――它讲清楚*损失* 和*群体相对优势*,也就是2024年DeepSeekMath提出的创新点――
 
 ### 步骤1:一个微型验证器环境
 
@@ -145,7 +145,7 @@ def grpo_step(theta, p_idx, G=8, beta=0.01, lr=0.1, rng=None):
 ## 常见陷
 
 - **通过操纵 verifier 进行 reward hacking。**由于这些问题,如果验证器错误或可被利用,LLM会找到利用者.
-- **Group size 太小。**根据组基线的差异$1/\sqrt{G}$缩放.$G = 4$时,优势信号会很;标准选择是$G = 8$到64岁.
+- **Group size 太小。**根据组平均基线的差异$1/G$缩放(其标准错误按$1/\sqrt{G}$低于$G = 4$时,优势信号会很;标准选择是$G = 8$到64岁.
 - **Length bias。**不同长度的LLM完成 具有不同的日志概率.
 - **纯 self-play 循环。**球运动的风格在一般数量游戏中卡进主导循环.
 - **Search-policy mismatch。**训练政策 去模仿搜索结果. 如果政策网太小,无法显示搜索的分布,训练会停滞.

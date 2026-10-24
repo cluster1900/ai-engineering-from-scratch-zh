@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### 步骤4:监控器 KL
 
-每次更新都跟踪的意思$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$如果它爬了`~5-10`政策已漂离$\pi_{\text{SFT}}$很远 低$\beta$现在,我们在线观看,
+每次更新都跟踪的意思$\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$如果它爬了`~5-10`(以纳粹计数的每回应KL,按代币求和,即TRL记录的单位),政策已漂离$\pi_{\text{SFT}}$很远:要么$\beta$太低了,要么奖励黑客正在开始.
 
 ### 步骤5:使用TRL的生产配方
 
