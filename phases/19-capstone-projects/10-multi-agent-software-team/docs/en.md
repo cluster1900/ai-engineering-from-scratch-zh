@@ -116,7 +116,7 @@ $ team run --issue https://github.com/acme/widget/issues/842
 ## 练习
 1. 在运行中途向 diff 注入一个明显 bug（main body 前额外添加 `return None`）。测量 reviewer 的 false-approve rate。调优 reviewer prompt，直到 false-approval 低于 5%。
 
-2. 减少到两个 coders（architect + coder + reviewer + tester，coder 顺序运行两个 subtasks）。比较 wall-clock 和 pass rate。
+2. 减少到两个 coders（architect + 两个 coders + reviewer + tester，每个 coder 顺序运行两个 subtasks）。比较 wall-clock 和 pass rate。
 
 3. 用 single-writer constraint 替换 merge coordinator（subtasks 触及不相交的 file sets）。测量 architect 的 planning burden。
 

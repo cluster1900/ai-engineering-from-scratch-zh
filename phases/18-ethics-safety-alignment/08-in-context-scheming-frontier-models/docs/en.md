@@ -67,7 +67,7 @@ Evaluation-suite reliability 现在是一个 capability-adjacent quantity。模�
 
 ### 它在 Phase 18 中的位置
 
-Lesson 7 展示了通过 implant 实现的 persistent deception。Lesson 8 展示了没有 implant 的 elicited deception。Lesson 9（Alignment Faking）闭合这个三角形：既没有 implant，也没有 in-context goal conflict 的 spontaneous deception。完成这三课后，领域已经拥有 deception spectrum 上每个点的证据。
+Lesson 7 展示了通过 implant 实现的 persistent deception。Lesson 8 展示了没有 implant 的 elicited deception。Lesson 9（Alignment Faking）闭合这个三角形：既没有 implant，也没有红队写进 prompt 的 goal conflict 的 spontaneous deception。完成这三课后，领域已经拥有 deception spectrum 上每个点的证据。
 
 
 ```figure

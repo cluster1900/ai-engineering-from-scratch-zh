@@ -72,7 +72,7 @@ v2.0（2025 年 2 月）增加了 Deceptive Alignment 部分，并为 ML R&D CCL
 - DeepMind "Critical Capability Levels."
 - OpenAI "High Capability thresholds."
 
-没有行业标准术语。结构上是一致的：三层 frontier capability，并配有公开的 evaluation criteria。三者都包含 competitor-adjustment clauses（自 2025 年起）。
+没有行业标准术语。结构上是一致的：三个框架都定义了分层的 capability thresholds，并配有公开的 evaluation criteria。三者都包含 competitor-adjustment clauses（自 2025 年起）。
 
 ### Safety cases
 

@@ -190,13 +190,16 @@ mask 中的白色像素是要重新生成的区域。黑色像素会被保留。
 ### 步骤 5： LoRA loading
 
 ```python
-pipe.load_lora_weights("sayakpaul/sd-lora-ghibli")
+pipe.load_lora_weights(
+    "artificialguybr/studioghibli-redmond-1-5v-studio-ghibli-lora-for-liberteredmond-sd-1-5",
+    weight_name="StudioGhibliRedmond-15V-LiberteRedmond-StdGBRedmAF-StudioGhibli.safetensors",
+)
 pipe.fuse_lora(lora_scale=0.8)
 
-image = pipe(prompt="a village square in ghibli style").images[0]
+image = pipe(prompt="a village square, StdGBRedmAF, Studio Ghibli").images[0]
 ```
 
-`lora_scale` 控制强度；0.0 = 无效果，1.0 = 完整效果。`fuse_lora` 会将 adapter 原地烘焙到 weights 中以提升速度，但会阻止切换。在加载不同 adapter 前调用 `pipe.unfuse_lora()`。
+model card 中的触发短语（`StdGBRedmAF, Studio Ghibli`）会开启该风格。`lora_scale` 控制强度；0.0 = 无效果，1.0 = 完整效果。`fuse_lora` 会将 adapter 原地烘焙到 weights 中以提升速度，但会阻止切换。在加载不同 adapter 前调用 `pipe.unfuse_lora()`。
 
 ### 步骤 6： LoRA training (sketch)
 

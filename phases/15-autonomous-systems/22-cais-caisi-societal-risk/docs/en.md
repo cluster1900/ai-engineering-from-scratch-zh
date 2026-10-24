@@ -19,7 +19,7 @@
 
 ### CAIS — Center for AI Safety
 
-- 创立时间：2022 年，位于 San Francisco，由 Dan Hendrycks 及同事创立（“Zhang”这个名字指的是早期合作者，而不是当前共同创始人；当前领导层请参见 CAIS 网站）。
+- 创立时间：2022 年，位于 San Francisco，由 Dan Hendrycks 和 Oliver Zhang 创立。Hendrycks 担任 Executive and Research Director；Zhang 担任 Managing Director。
 - 状态：501(c)(3) 非营利组织。
 - 2023 年的重要成果：关于灭绝风险的声明，由数百名研究人员和 CEO 共同签署。声明写道：“降低 AI 导致灭绝的风险，应当与 pandemics 和 nuclear war 等其他社会规模风险一起成为全球优先事项。”
 - 2026 年成果：用于 frontier-model 评估的 AI Dashboard、Remote Labor Index（与 Scale AI 联合发布）、Superintelligence Strategy Paper、AI Frontiers newsletter。

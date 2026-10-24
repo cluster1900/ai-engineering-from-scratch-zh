@@ -81,7 +81,7 @@ ce-otel-drift
 
 8. **Alerting chain.** Prometheus exporter 读取 eval score aggregates 和 latency percentiles；Alertmanager 将 warnings 路由到 Slack，将 critical breaches 路由到 PagerDuty。
 
-9. **Regression probe.** 注入一个 bug：被评估的 chatbot 有 1% 的概率开始泄露假的 SSNs。测量 MTTR：从 bug deployed 到 Slack alert。
+9. **Regression probe.** 注入一个 bug：被评估的 chatbot 有 1% 的概率开始泄露假的 SSNs。测量检测时间（MTTD）：从 bug deployed 到 Slack alert。检测是 MTTR 中由 dashboard 负责的部分；修复和重新部署发生在之后。
 
 ## 使用它
 ```
@@ -100,7 +100,7 @@ $ curl -X POST https://my-otel-collector/v1/traces -d @trace.json
 |:-:|---|---|
 | 25 | Trace-schema coverage | 生成 canonical GenAI spans 的 SDK families 数量（目标：6+） |
 | 20 | Eval correctness | DeepEval / RAGAS scores 对比 hand-labeled set |
-| 20 | Dashboard UX | 注入 regression 的 MTTR（目标低于 5 分钟） |
+| 20 | Dashboard UX | 注入 regression 的 MTTD（目标低于 5 分钟） |
 | 20 | Cost / scale | 持续以 1k spans/sec ingest 且无 backlog |
 | 15 | Alerting + drift detection | Prometheus/Alertmanager chain 端到端演练 |
 | **100** | | |

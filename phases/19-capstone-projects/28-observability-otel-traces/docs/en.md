@@ -73,15 +73,15 @@ metrics registry 是两个 dicts。Counters 是 `{(name, frozen_labels): int}`�
 6. 发出 span 并更新 metrics 的 `wrap_tool_call(name)` decorator。
 7. Demo：合成一次完整 agent invocation（tool spans 外层包 gen_ai.chat span），写入 traces.jsonl，打印 Prometheus exposition，并以 zero 退出。
 
-span id 和 trace id 是 16-byte hex strings，由 `os.urandom` 生成。这符合 OTel 的 W3C trace context。exporter 永不抛出；IO errors 会被浮现，但 harness 会继续运行。
+trace id 是 16-byte 值（32 个 hex 字符），span id 是 8-byte 值（16 个 hex 字符），都截取自随机的 `uuid4` hex。这符合 OTel 使用的 W3C Trace Context 尺寸。exporter 永不抛出；IO errors 会被浮现，但 harness 会继续运行。
 
-histogram 有一组固定 buckets（OTel 对毫秒 latency 的默认值：5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf）。Samples 以 list 保存；exposition 会按需计算每个 bucket 的 counts。
+histogram 有一组固定的毫秒 latency buckets：5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf。它是 OTel SDK 默认边界的精简版，默认边界还包括 0、75、750 和 7500。Samples 以 list 保存；exposition 会按需计算每个 bucket 的 counts。
 
 ## 为什么手写，而不是使用 opentelemetry-sdk
 
-OTel Python SDK 是一个真实 dependency。它也有数千行代码、OTLP exporter 的多个进程，以及会淹没一节课预算的 runtime cost。手写版本教授 wire format。在生产中，你把相同 attributes 接入真实 SDK，就能免费得到 OTLP exporter、batching 和 resource detection。
+OTel Python SDK 是一个真实 dependency。它也有数千行代码、OTLP exporter 的一个后台导出线程，以及会淹没一节课预算的 runtime cost。手写版本教授 wire format。在生产中，你把相同 attributes 接入真实 SDK，就能免费得到 OTLP exporter、batching 和 resource detection。
 
-conventions 是稳定的。本课发出的 wire format 到 2030 年仍会继续可解析，因为 OTel 从不破坏 GenAI attribute names；它们只会添加新的 names。
+GenAI conventions 在 spec 中仍标记为 Development，而且之前改过 attribute 名称：`gen_ai.usage.prompt_tokens` 变成了 `gen_ai.usage.input_tokens`。固定你发出的 semantic-conventions 版本，并在升级 SDK 时检查它。
 
 ## 它如何与 Track A 的其余部分组合
 

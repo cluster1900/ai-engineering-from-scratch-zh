@@ -92,7 +92,7 @@ script 会写入 `workdir/agent_state.json` 和 `workdir/task_board.json`，跨�
 
 **将大型 artifacts 与 state 分离。** 不要把 CSVs、长 transcripts 或 generated files 存进 `agent_state.json`。将 artifact 保存为单独文件（或上传到 object storage），state 中只保留路径。Checkpoints 保持小而快；artifacts 独立增长。
 
-**Event sourcing 用于 audit，snapshots 用于 resume。** 每次 mutation 都 append 到 event log（`state.events.jsonl`）；定期 snapshot 到 `state.json`。Resume 读取 snapshot，然后 replay snapshot timestamp 之后的所有 events。这会消耗更多磁盘，但允许你逐字 replay agent decisions，这对调试 long-horizon runs 至关重要。Postgres 内部用于 WAL 的也是同一种形状。
+**Event sourcing 用于 audit，snapshots 用于 resume。** 每次 mutation 都 append 到 event log（`state.events.jsonl`）；定期 snapshot 到 `state.json`。Resume 读取 snapshot，然后 replay snapshot timestamp 之后的所有 events。这会消耗更多磁盘，但允许你逐字 replay agent decisions，这对调试 long-horizon runs 至关重要。Postgres 在存储层用它的 WAL 实践了同样的“日志加检查点”思路，只是层级比应用事件低得多。
 
 **Schema migrations，否则拒绝加载。** `schema_version` integer 是契约。当 manager 加载未知版本文件时，它会拒绝读取。在 schema bump 旁边交付 migration script；`tools/migrate_state.py` 在每次 startup 时幂等运行。
 

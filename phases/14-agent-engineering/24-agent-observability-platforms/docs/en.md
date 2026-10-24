@@ -1,6 +1,6 @@
 # Agent 可观测性：Langfuse, Phoenix, Opik
 
-> 三个 open-source Agent 可观测性平台主导了 2026 年。Langfuse (MIT) — 每月 6M+ installs，tracing + prompt management + evals + session replay。Arize Phoenix (Elastic 2.0) — 深入的 Agent 专用 evals、RAG 相关性、OpenInference auto-instrumentation。Comet Opik (Apache 2.0) — 自动化 prompt 优化、guardrails、LLM-judge 幻觉检测。
+> 三个可自托管的 Agent 可观测性平台主导了 2026 年。Langfuse (MIT) — 每月 6M+ installs，tracing + prompt management + evals + session replay。Arize Phoenix (Elastic 2.0) — 深入的 Agent 专用 evals、RAG 相关性、OpenInference auto-instrumentation。Comet Opik (Apache 2.0) — 自动化 prompt 优化、guardrails、LLM-judge 幻觉检测。
 
 **类型：** 学习
 **语言：** Python (stdlib)
@@ -9,7 +9,7 @@
 
 ## 学习目标
 
-- 说出三个顶级 open-source Agent 可观测性平台及其 license。
+- 说出三个顶级可自托管 Agent 可观测性平台及其 license，并指出哪个 license 不是 OSI open source。
 - 区分每个平台最擅长的方面：Langfuse (prompt mgmt + sessions)、Phoenix (RAG + auto-instrumentation)、Opik (optimization + guardrails)。
 - 解释为什么到 2026 年，89% 的组织报告已经部署 Agent 可观测性。
 - 实现一个带有 LLM-judge 评估的 stdlib trace-to-dashboard pipeline。

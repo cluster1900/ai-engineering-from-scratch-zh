@@ -109,7 +109,7 @@ Production patterns:
 
 1. 添加 schedule 的 inverse-square-root variant，并在 200-step toy training run 上对比。哪条 curve 产生更低的 final loss？
 2. 添加 `--restart` flag，在 `total_steps / 2` 增加第二次 warmup。为 warm restarts 在 toy run 上是提升还是伤害做出辩护。
-3. 添加一个 unit test 验证 schedule 是 continuous：对于 `[0, total_steps]` 中的每个 step，差值 `|lr(step+1) - lr(step)|` 受 `lr_max / warmup_steps` 约束。
+3. 添加一个 unit test 验证 schedule 是 continuous：在 `warmup_steps > 0` 时，对于 `[0, total_steps]` 中的每个 step，差值 `|lr(step+1) - lr(step)|` 受 warmup 斜率 `lr_max / warmup_steps` 与最陡 cosine 斜率 `pi * (lr_max - lr_min) / (2 * (total_steps - warmup_steps))` 两者中较大者的约束。较短的 cosine 段可能比 warmup 斜坡更陡，所以只用 warmup 斜率并不是安全的上界。
 4. 将 schedule 接入 `torch.optim.lr_scheduler.LambdaLR`，使其能与 framework code 组合。本课使用 plain step function；wrapper 改变了什么？
 5. 添加 `--plot-png` flag，通过 `matplotlib` 写出真实 plot。为本课的 text plot 和 PNG 哪个更适合作为 CI runs 的 default 做出辩护。
 

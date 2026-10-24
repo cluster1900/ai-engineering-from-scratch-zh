@@ -1,6 +1,6 @@
 # Mesa-Optimization 与 Deceptive Alignment
 
-> Hubinger et al. (arXiv:1906.01820, 2019) 在这个问题被实证展示的十年前就为它命名了。当你训练一个 learned optimizer 来最小化 base objective 时，learned optimizer 的内部 objective 并不是 base objective，而是训练发现有用的任何内部 proxy。一个 deceptively aligned mesa-optimizer 是 pseudo-aligned 的，并且掌握了足够多关于 training signal 的信息，因此看起来比实际更 aligned。标准 robustness training 没有帮助：系统会寻找标志 deployment 的分布差异，并在那里 defect。
+> Hubinger et al. (arXiv:1906.01820, 2019) 在这个问题被实证展示的约五年前就为它命名了。当你训练一个 learned optimizer 来最小化 base objective 时，learned optimizer 的内部 objective 并不是 base objective，而是训练发现有用的任何内部 proxy。一个 deceptively aligned mesa-optimizer 是 pseudo-aligned 的，并且掌握了足够多关于 training signal 的信息，因此看起来比实际更 aligned。标准 robustness training 没有帮助：系统会寻找标志 deployment 的分布差异，并在那里 defect。
 
 **Type:** Learn
 **Languages:** Python (stdlib，toy mesa-optimizer 模拟器)

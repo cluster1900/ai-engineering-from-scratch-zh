@@ -72,8 +72,10 @@ git merge experiment/new-optimizer
 
 ### 步骤 4： 使用这个课程 repo
 
+你不能直接 push 到课程 repo 本身，只有维护者有写权限。先在 GitHub 上 fork 它（右上角的 Fork 按钮），让 `origin` 指向你自己的副本：
+
 ```bash
-git clone https://github.com/cluster1900/ai-engineering-from-scratch-zh.git
+git clone https://github.com/YOUR-USERNAME/ai-engineering-from-scratch-zh.git
 cd ai-engineering-from-scratch-zh
 
 git checkout -b my-progress
@@ -95,7 +97,7 @@ git push origin my-progress
 就这些。本课程不需要 rebase、cherry-pick 或 submodules。
 
 ## 练习
-1. Clone 这个 repo，创建一个名为 `my-progress` 的 branch，创建一个 file，commit 它，push 它
+1. Fork 这个 repo，clone 你的 fork，创建一个名为 `my-progress` 的 branch，创建一个 file，commit 它，push 它
 2. 创建一个 `.gitignore`，排除 model checkpoint files（`.pt`、`.pth`、`.safetensors`）
 3. 用 `git log --oneline` 查看这个 repo 的 commit history，并阅读 lessons 是如何被添加的
 

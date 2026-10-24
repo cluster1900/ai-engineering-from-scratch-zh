@@ -56,18 +56,24 @@ OPENAI_API_KEY=sk-...
 ### 步骤 2：第一次 API 调用 (Python)
 
 ```python
+import os
+
 import anthropic
 
 client = anthropic.Anthropic()
 
+MODEL = os.environ.get("LLM_MODEL", "claude-sonnet-5")
+
 response = client.messages.create(
-    model="claude-sonnet-4-20250514",
+    model=MODEL,
     max_tokens=256,
     messages=[{"role": "user", "content": "What is a neural network in one sentence?"}]
 )
 
 print(response.content[0].text)
 ```
+
+`LLM_MODEL` 用来选择 Anthropic 的 model id，默认值是不带日期的 Sonnet 别名。其他 provider（OpenAI、Google 等）也遵循“一个 key 加一个 model id”的模式，但各自有自己的 SDK、endpoint 和 request/response schema。
 
 ### 步骤 3： 第一次 API 调用 (TypeScript)
 
@@ -76,8 +82,10 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
+const MODEL = process.env.LLM_MODEL ?? "claude-sonnet-5";
+
 const response = await client.messages.create({
-  model: "claude-sonnet-4-20250514",
+  model: MODEL,
   max_tokens: 256,
   messages: [{ role: "user", content: "What is a neural network in one sentence?" }],
 });
@@ -99,7 +107,7 @@ headers = {
     "anthropic-version": "2023-06-01",
 }
 body = json.dumps({
-    "model": "claude-sonnet-4-20250514",
+    "model": os.environ.get("LLM_MODEL", "claude-sonnet-5"),
     "max_tokens": 256,
     "messages": [{"role": "user", "content": "What is a neural network in one sentence?"}],
 }).encode()
