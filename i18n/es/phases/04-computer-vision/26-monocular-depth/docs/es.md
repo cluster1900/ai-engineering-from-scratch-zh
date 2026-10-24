@@ -92,7 +92,7 @@ Z &= d
 \end{aligned}
 ```
 
-Intrínsecas de metadatos EXIF, patrón de calibración, o estimador de intrínsecas monoculares (PERSPECTIVE FELDS, UNIDEPHET) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Intrínsecas de metadatos EXIF, patrón de calibración, o estimador intrínseco monocular (PERSPECTIVE FELDS, UNIDEPHET) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 ### Evaluación
 

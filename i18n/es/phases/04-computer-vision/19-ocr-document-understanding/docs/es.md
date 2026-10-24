@@ -71,7 +71,7 @@ Los modelos de extremo a extremo necesitan más datos y computación, pero super
 
 ### Parse de diseño
 
-对于结构文档,运行布局检测器(LayoutLMv3, DocLayNet),为每个地区 标注标签:Título, párrafo, figura, tabla, pie de página。
+对于结构文档,运行布局模型(LayoutLMv3,或在DocLayNet数据集上训练的探测器),为每个地区 标签标签:Título, párrafo, figura, tabla, pie de página。Leyendo orden 于是变成按布局顺序 遍历地区 并拼接──
 
 对于表格,使用 **Key-Value extraction**modelos(面向视觉丰富文档的甜点,面向平面扫描的布局LMv3)──它们接收图像+检测文本+位置,并预测结构的键值对──
 
@@ -161,18 +161,23 @@ Inputo de altura fija CNN max-pools 会把高度压到 1)──宽度是CTC的�
 
 ### Paso 3: OCR sintético
 
-生成白底黑字的数字字符串, para la prueba de humo de extremo a extremo
+Las cuerdas de letras negras blancas, utilizadas para la prueba de humo de extremo a extremo. Cada letra se convierte en una fila de seis raíces, con un índice de composición de la misma en el vocabulario.`a`Y `x`, la pérdida se detendrá.
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ El verdadero conjunto de datos OCR 会添加字体、噪音、旋转、模糊 �
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-En este simple dato sintético arriba, la pérdida debería ser en 200 pasos dentro de ~3  descendiendo a ~0.2 ⋅
+En este simple dato sintético, la pérdida debería ser en 400 pasos, desde dos dígitos a alrededor de 0,3.`code/main.py`En su propio conjunto de cuerdas 上运行同样循环, luego decodificar tres cuerdas de prueba.
 
 ## Usalo
 

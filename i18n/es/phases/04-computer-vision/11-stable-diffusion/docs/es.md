@@ -228,7 +228,7 @@ En la producción, las decisiones que realmente necesitas tomar son:
 
 - **Model family**SD 1.5 Utilizado para código abierto  comunidad de música fina, SDXL Utilizado para mayor fidelidad, SD3 / FLUX Utilizado para estado de la técnica 和严格许可要求──
 - **Scheduler**:20-30 pasos Utiliza DPM-Solver++ 2M Karras; cuando la latencia 低于1s 时使用 LCM-LoRA──
-- **Precision**0480/4090 上使用 `float16`,A100 及 actualización de los equipos `bfloat16`,VRAM 紧张时使用 `int8`(a través de `bitsandbytes`O `compel`)。
+- **Precision**0480/4090 上使用 `float16`,A100 及 actualización de los equipos `bfloat16`,VRAM 紧张时使用 `int8`(a través de `bitsandbytes`)。
 - **Conditioning**Si necesitas un control más fuerte, en el tubo base 之上加入ControlNet(canny、depth、pose)
 
  para la producción en granel,`AUTO1111`- ¿ Qué ?`ComfyUI`Es un instrumento comunitario; para la producción de API, uso `diffusers`¿ Qué es eso ?`accelerate`, o utilizar con TensorRT compilación de `optimum-nvidia`¿Qué es eso?

@@ -1,6 +1,6 @@
 # Visión en tiempo real  边缘部署
 
-> La inferencia de borde es hacer que un modelo de 90 puntos de precisión funcione con 30 fps en un dispositivo con sólo 2 GB de RAM. La precisión de cada punto de percentual debe ser cambiada con la latencia de milisegundos.
+> La inferencia de borde es una precisión del 90% de un modelo que funciona en 30 fps en dispositivos con sólo 2 GB de RAM. La precisión de cada punto de percentual debe ser intercambiada con la latencia de milisegundos.
 
 **Type:** Learn + Build
 **Languages:** Python
@@ -38,7 +38,7 @@ flowchart LR
     style PWR fill:#dbeafe,stroke:#2563eb
 ```
 
-- **Latency**:p50、p95、p99── sólo ver p50  media de valor se oculta en los sistemas en tiempo real  muy importante尾部行为──
+- **Latency**El sistema de datos en tiempo real es un comportamiento muy importante.
 - **Peak memory**El valor máximo que ha visto el equipo, en lugar de la media de estado estacionario, es un factor importante: los objetivos embedded en el OOM son mortales.
 - **Power / energy**Por ejemplo, el tiempo de la CPU/GPU se compara a la de los equipos de suministro de energía.
 

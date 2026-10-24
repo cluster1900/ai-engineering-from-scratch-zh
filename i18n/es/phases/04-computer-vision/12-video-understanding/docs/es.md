@@ -67,7 +67,7 @@ I3D 技巧: Tome un modelo preentrenado de 2D ImageNet, va a cada núcleo 2D 沿
 - Inflación I3D  proporcionar aprendizaje de transferencia gratis
 
 缺点:
-- Por ejemplo, el modelo de 2D de T/8 de FLOPs (en el núcleo temporal) se encuentra en una situación de 3 veces.
+- Los FLOPs son aproximadamente 3 veces más grandes que las redes 2D que se ejecutan cada vez, porque cada núcleo 3x3 se ha convertido en 3x3x3
 - Los núcleos temporales 很小; el movimiento de largo plazo 需要 piramide o doble corriente 方法──
 
 适用场景:moción es el reconocimiento de la acción de los señales (Qualquier cosa-algo V2 、 contiene una gran cantidad de clases de movimiento pesado de la cinética) 

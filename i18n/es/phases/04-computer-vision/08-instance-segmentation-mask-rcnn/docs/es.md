@@ -81,7 +81,7 @@ Colocar una muestra de máscara de 28x28 en la propuesta del tamaño original de
 
 ### Las pérdidas
 
-Máscara R-CNN tiene cuatro clases de pérdidas en adición:
+Máscara R-CNN tiene cinco clases de pérdidas
 
 ```math
 L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
@@ -257,7 +257,7 @@ def train_step(model, images, targets, optimizer):
     return {k: v.item() for k, v in loss_dict.items()}
 ```
 
-`targets`La lista debe contener cada imagen que se responda a un dictado, entre ellos:`boxes`¿Qué es esto?`labels`Y `masks`(como `(num_instances, H, W)`Tensores binarios) ⋅ modelo en el entrenamiento ⋅ regresar cuatro pérdidas ⋅ dictado, en el evaluar ⋅ regresar predicciones ⋅ lista, esto por ⋅`model.training`Decidiron
+`targets`La lista debe contener cada imagen que se responda a un dictado, entre ellos:`boxes`¿Qué es esto?`labels`Y `masks`(como `(num_instances, H, W)`Tensores binarios) ⋅ modelo en el entrenamiento ⋅ regresar a las 5 pérdidas ⋅ dictado, en el evaluar ⋅ regresar a las predicciones ⋅ lista, esto por ⋅`model.training`Decidiron
 
 `pycocotools`El evaluador 会同时为盒 和面具 生成 mAP@IoU=0.5:0.95; necesitas dos números, para juzgar la botella está en la cabeza de la caja o en la cabeza de la máscara。
 

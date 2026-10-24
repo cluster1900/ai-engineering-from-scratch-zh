@@ -261,7 +261,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     x = torch.randn(shape, device=device)
     alphas_cumprod = schedule["alphas_cumprod"].to(device)
 
-    ts = torch.linspace(T - 1, 0, steps + 1).long()
+    ts = torch.linspace(T - 1, -1, steps + 1).round().long()
     for i in range(steps):
         t = ts[i]
         t_prev = ts[i + 1]
@@ -277,7 +277,7 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     return x
 ```
 
-`eta=0`Es totalmente definido: el mismo ruido:`eta=1`¡La DDPM se recuperará!
+horario  terminar en `t_prev = -1`, por lo tanto el último paso de uso`a_prev = 1.0`, retornar no conteniendo residuos de ruido de干净 `x0_pred`¿Qué es eso?`eta=0`Es totalmente definido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido: el mismo ruido:`steps=T`) tiempo,`eta=1`¡La DDPM se recuperará!
 
 ## Usalo
 

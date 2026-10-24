@@ -57,7 +57,7 @@ En la inferencia, el argmax de cada mapa de calor es la ubicación del punto cla
 
 ### Localización de subpixel
 
-Argmax                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `(dx, dy) = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1], ...)`Dirección:
+Argmax  dar un número completo 坐标. Para obtener la precisión de subpixel, se puede usar parabolas para argmax  y sus vecinos, o como código,`dx = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1])`Mover la argmax hacia el vecino más alto,`dy`Y así mismo.
 
 ### Los campos de afinidad de parte (PAF)
 

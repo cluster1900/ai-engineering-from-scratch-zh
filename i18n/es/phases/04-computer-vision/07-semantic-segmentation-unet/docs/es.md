@@ -126,7 +126,7 @@ La entropía cruzada en el entrenamiento  temprano proporciona un gradiente esta
 
 ### Resolución de entrada 权衡
 
-El codificador de U-Net se reducirá en resolución a la mitad de cuatro veces, por lo que la entrada debe ser utilizada en 16 imágenes médicas.`H * W * C_max`缩放, en 1024x1024 且瓶頸频为 1024 时,前传 已会使用数GB VRAM──
+El codificador de U-Net se reducirá en la resolución de 4 veces, por lo que sólo la entrada puede ser eliminada en 16 minutos, para que las conexiones se puedan identificar. Otras dimensiones necesitan relleno, o depender del tamaño del bloque.`H * W * C_max`缩放, en 1024x1024 且瓶頸频为 1024 时,前传 已会使用数GB VRAM──
 
  Dos soluciones de trabajo estándar:
 1. Tela la entrada  处理带 sobreposición de 256x256 azulejos, y luego coser。
