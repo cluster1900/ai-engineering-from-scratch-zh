@@ -92,7 +92,7 @@ Z &= d
 \end{aligned}
 ```
 
-İçsel bilgiler EXIF metadata、kalibrasyon kalıplarından veya monocular içsel değerlendiricilerinden elde edilir. Perspektif Alanlar、UniDeepth) ⋅ hiçbir içsel bilgi yoktur.
+İçsel bilgiler EXIF metadata、kalibrasyon kalıplarından veya monocular içsel değerlendiricilerinden elde edilir. Perspektif Alanlar、Birik Derinlik) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  . . . .                  
 
 ### Değerlendirme
 

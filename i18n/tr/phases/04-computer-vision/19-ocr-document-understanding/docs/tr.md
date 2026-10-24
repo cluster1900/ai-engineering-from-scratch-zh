@@ -71,7 +71,7 @@ Sonundan sonuna kadarki modeller daha fazla veri ve hesaplama gerektiriyor, anca
 
 ### Yapılandırma analizleri
 
-运行布局探测器 (LayoutLMv3, DocLayNet),为每个地区 标注标签:Üznük, Paragraf, Şekil, Tablo, Ayağa Ayırma Notı。Okuş sırası 于是变成按布局顺序 遍历地区并拼接──
+For structured documents,运行 layout model(LayoutLMv3,或在 DocLayNet dataset上训练的探测器),为每个地区 标注标签:Title, Paragraph, Figure, Table, Footnote。Okur sırası 于是变成按布局顺序 遍历地区并拼接──
 
 对于表格,使用 **Key-Value extraction**modeller(面向视觉丰富文档的唐nut,面向平面扫描的布局LMv3)──它们接收图像+检测的文本+位置,并预测结构化键值对──
 
@@ -161,18 +161,23 @@ class TinyCRNN(nn.Module):
 
 ### 步骤 3: Sintez OCR
 
-生成白底黑字的数字字符串, uçtan sonuna duman testi için kullanılır.
+生成白底黑字字符串, uçtan sonuna duman testi için kullanılır. Her karakter bir sıraya dönüşür, sözlük içindeki indeksinde ikinci bir şekilde yazılır.`a`和 `x`Kayıplar bir anda durur.
 
 ```python
 import numpy as np
+
+GLYPHS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 def synthetic_line(text, height=32, char_width=16):
     W = char_width * len(text)
     img = np.ones((height, W), dtype=np.float32)
     for i, c in enumerate(text):
         x = i * char_width
-        shade = 0.0 if c.isalnum() else 0.5
-        img[6:height - 6, x + 2:x + char_width - 2] = shade
+        code = GLYPHS.find(c) + 1
+        for bit in range(6):
+            if code >> bit & 1:
+                y = 4 + 4 * bit
+                img[y:y + 3, x + 2:x + char_width - 2] = 0.0
     return img
 
 
@@ -203,7 +208,7 @@ Gerçek OCR verileri, fonları, gürültü, dönüm, sarı ve renk ekleyecek.
 model = TinyCRNN(vocab_size=len(vocab))
 opt = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-for step in range(200):
+for step in range(400):
     strings = ["abc" + str(step % 10)] * 4 + ["xyz" + str((step + 1) % 10)] * 4
     imgs, targets, target_lens = build_batch(strings, vocab)
     log_probs = model(imgs)  # (W', 8, vocab)
@@ -212,7 +217,7 @@ for step in range(200):
     opt.zero_grad(); loss.backward(); opt.step()
 ```
 
-Bu basit sentetik verilerde, kayıplar 200 adım içinde olmalı.
+Bu basit sentetik verilerde, kayıp 400 adımda gerçekleşmeli.`code/main.py`Kendi string setinde 上运行同样循环, sonra üç test stringı dekode etmek
 
 ## Kullan
 

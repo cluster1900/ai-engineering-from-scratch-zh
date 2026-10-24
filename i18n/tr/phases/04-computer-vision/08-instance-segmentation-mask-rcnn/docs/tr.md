@@ -81,7 +81,7 @@ Her öneride, maske başı çok küçük bir FCN'dir.`28x28`çözünürlük 下�
 
 ### Kayıplar
 
-R-CNN maskası 4 çeşit kayıplara sahip.
+R-CNN maskası 5 çeşit kayıplara sahip.
 
 ```math
 L = L_{\text{rpn\_cls}} + L_{\text{rpn\_box}} + L_{\text{box\_cls}} + L_{\text{box\_reg}} + L_{\text{mask}}
@@ -257,7 +257,7 @@ def train_step(model, images, targets, optimizer):
     return {k: v.item() for k, v in loss_dict.items()}
 ```
 
-`targets`Liste, her resim için bir diğeri içermelidir.`boxes`- Evet.`labels`和 `masks`(As  olarak)`(num_instances, H, W)`Biner tenzorlar) ――模型在训练中返回四个损失的句,在 eval 时返回预测列表,由 `model.training`Karar ver.
+`targets`Liste, her resim için bir diğeri içermelidir.`boxes`- Evet.`labels`和 `masks`(As  olarak)`(num_instances, H, W)`Biner tenzorlar) ――模型在训练中返回五个损失的句,在 eval 时返回预测列表,由 `model.training`Karar ver.
 
 `pycocotools`Bu yüzden, bu iki rakamın birinde bir kutu başı ya da bir maske başı olduğunu belirlemek için iki rakamın olması gerekir.
 

@@ -67,7 +67,7 @@ I3D 技巧: Bir önceden eğitilmiş 2D ImageNet modeli alın, her 2D çekirdeğ
 - I3D enflasyonı  ücretsiz transfer öğrenimi sağlamak
 
 缺点:
-- T / 8'den fazla 2D modelin FLOP'ları için zaman çekirdeği için 3 ̊ toplama 3 kez durum)
+- FLOP'ler, her 3x3 çekirdeği 3x3x3 haline geldiği için, 2D 网络'ın yaklaşık 3 katı.
 - Zaman çekirdekleri 很小;长程 hareket 需要金字塔或双流方法──
 
 适用场景:motion is signal's action recognition (Hızlı hareketli sınıflar içeren bir kinetik)

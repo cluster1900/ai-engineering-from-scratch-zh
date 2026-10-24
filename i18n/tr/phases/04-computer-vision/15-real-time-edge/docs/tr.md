@@ -1,6 +1,6 @@
 # Gerçek Zaman Görüşü  边缘部署
 
-> Kenarlık sonucu, 90'un tamlığı ile 90'un tamlığı ile 2 GB RAM'li cihazlarda 30 fps'de çalışacak bir model oluşturur.
+> Kenar sonucu, sadece 2 GB RAM'li cihazlarda 30 fps ile çalışan bir model için %90 doğruluk sağlar.
 
 **Type:** Learn + Build
 **Languages:** Python
@@ -38,7 +38,7 @@ flowchart LR
     style PWR fill:#dbeafe,stroke:#2563eb
 ```
 
-- **Latency**:p50、p95、p99¬¬ sadece p50 平均值会掩盖对实时系统 非常重要的尾部行为──
+- **Latency**:p50、p95、p99──p50( veya ortalama değer)
 - **Peak memory**Bu, bir sistemin en büyük değerini ve sabit durum ortalamasını değil.
 - **Power / energy**Batı/GPU kullanımı * zaman yakınlık
 

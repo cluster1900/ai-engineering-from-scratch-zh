@@ -228,7 +228,7 @@ for step, batch in enumerate(dataloader):
 
 - **Model family**SD 1.5 Açık Kaynaklı  Komünitet ince tonları, SDXL Daha Yüksek Sadakat, SD3 / FLUX Yüksek Sanatlı 和 Sıkı İzin Gereksinimleri için.
 - **Scheduler**:20-30 adım DPM-Solver++ 2M Karras kullanın; zaman gecikme 低于1s 时使用 LCM-LoRA──
-- **Precision**0480/4090 上使用 `float16`,A100 及更新设备上使用 `bfloat16`,VRAM 紧张时使用 `int8`(den geçiyor)`bitsandbytes`Ya da`compel`)。
+- **Precision**0480/4090 上使用 `float16`,A100 及更新设备上使用 `bfloat16`,VRAM 紧张时使用 `int8`(den geçiyor)`bitsandbytes`)。
 - **Conditioning**:普通文本可用; Eğer daha güçlü kontrol gerekiyorsa, temel boru hattında 之上加入ControlNet(canny、depth、pose)
 
 Bütçe üretimi için,`AUTO1111`- Ne ?`ComfyUI`Yapım için API kullanımı`diffusers`+ `accelerate`, veya Using带 TensorRT compilation of `optimum-nvidia`- Evet.

@@ -57,7 +57,7 @@ Neden sıcak haritalar doğrudan gerileme daha iyi: ağın uzay yapısı(conv ö
 
 ### Alt piksel yerleşimi
 
-Argmax  give integer坐标── alt piksel hassasiyetini elde etmek için argmax  ve komşu alanlarına uygun parabola ile veya normal ofset kullanılabilir `(dx, dy) = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1], ...)`Yönlendirme.
+Argmax  give integer坐标── sub-pixel hassasiyet elde etmek için argmax  ve komşu alanına uygun parabola, ya da kod gibi, kullanılabilir `dx = 0.25 * (heatmap[y, x+1] - heatmap[y, x-1])`Arjın en yüksek komşu yönüne taşınması,`dy`Aynı şekilde.
 
 ### Bölüm Affinity Alanları (PAF)
 

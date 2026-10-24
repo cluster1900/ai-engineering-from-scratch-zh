@@ -69,7 +69,7 @@ Her klasik izleyici hareket tahminleri aşamasında Kalman filtre kullanıyor.
 
 ### SAM 2 hafıza tabanlı izleme
 
-SAM 2 通过维护 per-instance uzay-zaman özellikleri 的 **memory bank**Videoları işlemek için. Bir kısımdaki promptı belirlemek için. Bir kısımdaki klavyeyi tıklayın.
+SAM 2 通过维护 per-instance uzay-zaman özellikleri 的 **memory bank**Videoları işlemek için. Bir kısımdaki promptı belirlemek için. Bir kısımdaki promptı belirlemek için.
 
 没有 Kalman filter,也没有匈牙利任务──Association 隐含在记忆-注意中──
 

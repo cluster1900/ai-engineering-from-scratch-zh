@@ -126,7 +126,7 @@ Klass başına bir IOU rapor et, sadece bir IOU değil.  Ortalama IOU bir sını
 
 ### Giriş çözünürlüğü 权衡
 
-U-Net'in kodlayıcı çözünürlüğü  yarım dört kez azaltılacak, bu yüzden giriş 必須能被 16 整除──Tıp görüntüleri genellikle 512x512 veya 1024x1024──Autonom sürücü ürünler  2048x1024──U-Net'in bellek maliyeti 随`H * W * C_max`缩放,在1024x1024 且瓶
+U-Net'in kodlayıcı çözünürlüğü  yarım dört kez azaltılacak, bu yüzden sadece giriş ısı 16 整除时,skip bağlantılar 才能精确对齐──其他尺寸需要填充,或依赖于块中的尺寸的补充(Step 2)。Tapis görüntüleri genellikle 512x512 veya 1024x1024。Autonom-driving crops are 2048x1024──U-Net'in bellek maliyeti 随`H * W * C_max`缩放,在1024x1024 且瓶
 
 两个标准解决方案:
 1. Kaynaklı 256x256 kapaklı kaynaklılık, sonra dikişle.
