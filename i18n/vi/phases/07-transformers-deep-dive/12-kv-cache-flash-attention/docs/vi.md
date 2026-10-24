@@ -53,6 +53,12 @@ Trong 32K, 128K sẽ tăng lên 40 GiB, chỉ có kích thước lô 1 KV cache 
 
 **GQA 是 KV-cache 的关键收益。**Sử dụng 64 đầu KV của MHA sẽ lớn hơn 8x, trong 32K khoảng 80 GiB.
 
+拖动维度参数,观察缓存 kích thước 如何变化──把序列长度或批量大小推高, bạn sẽ thấy nó nhanh chóng vượt quá dung lượng của đơn张 GPU──
+
+```figure
+kv-cache-sizer
+```
+
 ### Flash Attention  tay tay 技巧
 
 标准 chú ý:
@@ -113,17 +119,16 @@ Lưu ý liên tục (vgl: vLLM, TensorRT-LLM, SGLang): Old request one completed
 VLLM's core selling point──KV cache 以16 token blocks 分配;page table 将逻辑 vị trí được映射到物理块──它 có thể được chia sẻ giữa các con đường采样 KV(beam search、parallel sampling) 、为快速缓存 热切换前,并对内存做碎片整理──相比简单的连续分配,吞吐量提升4×──
 
 
-拖动维度参数,观察缓存 kích thước 如何变化──把序列长度或批量大小推高, bạn sẽ thấy nó nhanh chóng vượt quá dung lượng của đơn张 GPU──
-
-```figure
-kv-cache-sizer
-```
 
 ```figure
 flash-attention-memory
 ```
 
 ##  xây dựng nó
+
+```figure
+iso-machine {"machine":"kv-cache"}
+```
 
 见 `code/main.py`❖ Chúng tôi thực hiện:
 
