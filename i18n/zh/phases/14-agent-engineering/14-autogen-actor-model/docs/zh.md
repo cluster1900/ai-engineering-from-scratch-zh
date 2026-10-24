@@ -34,6 +34,8 @@
 
 ### 汽车代码v0.4 中的三个API层
 
+机器人4.4将其接口分成三层:
+
 1. **Core.**低层演员框架.`AgentRuntime`,我知道.`Agent`,我知道.`Message`,我知道.`Topic`△非同步的消息交换,以事件为主.
 2. **AgentChat.**面向任务的高层API (替代v0.2的可对话的代理)`AssistantAgent`,我知道.`UserProxyAgent`,我知道.`RoundRobinGroupChat`,我知道.`SelectorGroupChat`,我知道.
 3. **Extensions.**集成:开放AI、人类、蓝色、工具、记忆──

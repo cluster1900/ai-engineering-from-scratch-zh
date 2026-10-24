@@ -92,7 +92,7 @@ python3 code/main.py
 
 **将大型 artifacts 与 state 分离。**不要把CSV,长文本或生成的文件存储进来`agent_state.json`△将文物保存为单独文件,或上传到物体存储,状态 中只保留路径,检查点 保持小而快;文物 独立增长,
 
-**Event sourcing 用于 audit，snapshots 用于 resume。**每次突变都会添加到事件日志`state.events.jsonl`);定期截图到`state.json`简历 读取快照,然后播放快照时间印 之后的所有事件. 这会消耗更多磁盘,但允许你逐字播放代理决定,这对调试长视线运行至关重要.
+**Event sourcing 用于 audit，snapshots 用于 resume。**每次突变都会添加到事件日志`state.events.jsonl`);定期截图到`state.json`简历 读取快照,然后播放快照时间印 之后的所有事件. 这会消耗更多磁盘,但允许你逐字播放代理决定,这对调试长远运行至关重要.
 
 **Schema migrations，否则拒绝加载。** `schema_version`当管理员加载未知版本文件时,它会拒绝读取.`tools/migrate_state.py`在每次启动中,
 

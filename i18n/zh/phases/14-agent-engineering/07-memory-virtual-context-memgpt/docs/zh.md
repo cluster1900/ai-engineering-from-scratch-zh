@@ -102,6 +102,25 @@ python3 code/main.py
 
 根据操作形状 (自主托管,管理,框架集成) 选择,而不是根据核心模式选择;核心模式就是MemGPT。
 
+### 智能体记忆的形态
+
+分页解决的是容量问题,它不决定要存活什么.
+
+- **Working memory** 现在什么是最重要的?在背景层:当前任务,最近几轮对话,固定的核心部分.
+- **Episodic memory** 发生了什么?过去的对话轮次和轨迹,连同会议和转 引用一起存储,可按需回放.
+- **Semantic memory**什么是真的? 关于用户领域和世界的事实,随着变化更新和重复.
+- **Procedural memory** 如何做这个事? 习惯,偏好和规则,它们指导未来的行为,而不是回忆.
+
+开源实现各自选择了不同的切入点:
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ## 交付它
 `outputs/skill-virtual-memory.md`是一个可复制的技能,可以为任意目标运行时间 生成正确的两个层次的内存架 ((主 + 档案 + 工具表面),并接好驱逐政策 和引用字段。
 
@@ -129,3 +148,7 @@ python3 code/main.py
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks)三层次的进化
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) 将环境视为预算
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413) 构建在该模式上混合生产内存
+- [Zep (getzep/zep)](https://github.com/getzep/zep) 分类表中的时间知识图记忆
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) 第09课 混合物店 背后的提取管道
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem) 在后台提取事实和行为规则
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory)将会话捕获并整合成有类型的可搜索记录

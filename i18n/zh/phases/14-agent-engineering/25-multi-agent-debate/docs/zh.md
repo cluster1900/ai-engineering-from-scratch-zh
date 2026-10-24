@@ -109,7 +109,7 @@ python3 code/main.py
 | Society of Minds | “Du et al. debate paper” | ICML 2024 multi-agent debate method |
 
 ## 延伸阅读
-- [Du et al., Society of Minds (arXiv:2305.14325)](https://arxiv.org/abs/2305.14325) 经典多代理辩论
+- [Du et al., Improving Factuality and Reasoning in Language Models through Multiagent Debate (arXiv:2305.14325)](https://arxiv.org/abs/2305.14325) 经典多代理辩论
 - [Sparse Communication Topology (arXiv:2406.11776)](https://arxiv.org/abs/2406.11776)稀疏的拓 结果
 - [Anthropic, Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)管家工人 作为一个辩论变体
 - [Madaan et al., Self-Refine (arXiv:2303.17651)](https://arxiv.org/abs/2303.17651)单一模式对应方法的自我批评
