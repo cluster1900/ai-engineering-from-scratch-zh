@@ -124,9 +124,9 @@
     },
     {
       "number": 2,
-      "title": "Size It",
-      "thesis": "The KV cache decides how many users fit, so count it before you pick a GPU or a flag.",
-      "summary": "Memory per token, out-of-memory fixes, unified memory on a DGX Spark, FP8 for the KV cache and the weights, and long contexts.",
+      "title": "规划容量",
+      "thesis": "KV cache 决定能容纳多少用户，所以在选 GPU 或参数之前先把它算清楚。",
+      "summary": "每 token 的显存、显存不足的修复、DGX Spark 上的统一内存、KV cache 与权重的 FP8，以及长上下文。",
       "accent": "green",
       "sections": [
         {
