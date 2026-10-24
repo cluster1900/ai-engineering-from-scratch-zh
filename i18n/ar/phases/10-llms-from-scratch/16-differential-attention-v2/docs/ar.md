@@ -142,7 +142,7 @@ out = [[sum(w * v[j] for w, v in zip(row, V)) for j in range(d_v)] for row in di
 给定一个配置 ((隐藏=4096,头=32,头=128),打印:
 
 - محول خط أساسي: Q、K、V مختلفة عن الحجم`hidden * hidden`,MLP 为 4 * مخفي
-- DIFF V1: Q、K مختلفة عن الحجم`hidden * hidden`, V كبير`hidden * hidden`(不变), رأس ضيق في الداخل تخفيض نصفها`lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$.
+- DIFF V1: Q、K مختلفة عن الحجم`hidden * hidden`, V كبير`hidden * hidden`(不变), رأس ضيق في الداخل تخفيض نصفها`lambda`参数 $(O(\text{heads} \cdot d_{\text{head}}))$.
 - DIFF V2: Q`2 * hidden * hidden`كـ " كـ "`hidden * hidden`, V كبير`hidden * hidden`                                                                                                                                                                                                                                                              $O_W$قبل الإستعراض إلى الوراء.`lambda`参数‬
 
 لعبة 会测量 V2 的额外参数成本(大约每注意区 额外 `hidden * hidden`),并打印出来──
