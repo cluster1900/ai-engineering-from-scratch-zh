@@ -456,8 +456,14 @@ w_cw, b_cw = logistic_regression_weighted(
 probs_cw = sigmoid(X_test @ w_cw + b_cw)
 preds_cw = (probs_cw >= 0.5).astype(int)
 
-# Threshold tuning (tune on held-out validation set, not test set)
-probs_val = sigmoid(X_val @ w_cw + b_cw)
+# Threshold tuning (tune on a validation slice of the training set, not the test set)
+val_split = int(0.75 * len(y_train))
+X_tr, X_val = X_train[:val_split], X_train[val_split:]
+y_tr, y_val = y_train[:val_split], y_train[val_split:]
+w_val, b_val = logistic_regression_weighted(
+    X_tr, y_tr, compute_class_weights(y_tr), lr=0.1, epochs=300
+)
+probs_val = sigmoid(X_val @ w_val + b_val)
 best_thresh, best_f1 = find_optimal_threshold(y_val, probs_val, metric="f1")
 preds_thresh = (probs_cw >= best_thresh).astype(int)
 ```

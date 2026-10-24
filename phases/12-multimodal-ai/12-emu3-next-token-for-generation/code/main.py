@@ -129,7 +129,7 @@ def main() -> None:
     print("\n" + "=" * 60)
     print("EMU3 vs SDXL — high-level compute picture")
     print("-" * 60)
-    print("  training    : comparable (~300B tokens / ~300M image-steps)")
+    print("  training    : Emu3 does not publish a token count; exercise 4 assumes 300B")
     print("  inference   : Emu3 slow (~2min per 512x512 at 30 tps)")
     print("                SDXL fast (~2-5s per 512x512)")
     print("  quality     : Emu3 matches or beats on FID/GenEval")

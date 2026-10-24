@@ -74,10 +74,10 @@ Mamba layers 本身具有位置感知能力（通过递推）。原始 Mamba-bas
 
 对于 Jamba-1 形状（32 层：28 Mamba + 4 Attention，hidden 4096，32 attention heads）：
 
-- KV cache（仅 Attention layers）：在 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 8.4 GB`。只有 4 个 Attention layers 贡献 KV cache。
+- KV cache（仅 Attention layers）：在 256k BF16 下为 `2 * 4 * 32 * 128 * 256k * 2 = 16 GB`。只有 4 个 Attention layers 贡献 KV cache。已发布的 Jamba 在这些 layers 中使用 8 个 KV heads 的 GQA，使其降到 4 GB，即 Jamba paper 中的数字。
 - SSM state：每个 token prefix 为 `28 * hidden * state_size`，但这是逐层固定大小，不随序列长度扩展。典型 Mamba state 是每个 feature 16，hidden 4096：总计 `28 * 4096 * 16 * 2 = 3.7 MB`。
 
-与相同 hidden、32 层、32 heads full MHA 的 pure Transformer 相比：在 256k BF16 下为 `2 * 32 * 32 * 128 * 256k * 2 = 128 GB`。KV cache 减少 8x。即使对比大多数 2024 模型使用的 GQA(8) baseline（`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`），Jamba 的 1:7 hybrid 在 16 GB 下仍然小 2x。
+与相同 hidden、32 层、32 heads full MHA 的 pure Transformer 相比：在 256k BF16 下为 `2 * 32 * 32 * 128 * 256k * 2 = 128 GB`。KV cache 减少 8x。即使对比大多数 2024 模型使用的 GQA(8) baseline（`2 * 32 * 8 * 128 * 256k * 2 = 32 GB`），32 个 KV heads 的 1:7 hybrid 在 16 GB 下仍然小 2x。已发布的 Jamba 为 4 GB，小 8x。
 
 这就是 AI21 所说的“单张 80GB GPU 上的 256k context”。full-MHA pure Transformer 的 KV cache 放不下；即使 GQA baseline 也几乎不给 weights 和 activations 留空间；而 Jamba 可以。
 

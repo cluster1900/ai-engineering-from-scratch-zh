@@ -67,7 +67,7 @@ I3D 技巧：取一个 pretrained 2D ImageNet model，将每个 2D kernel 沿新
 - I3D inflation 提供免费的 transfer learning。
 
 缺点：
-- 比对应的 2D 模型多 T/8 的 FLOPs（针对 temporal kernel 为 3、堆叠 3 次的情况）。
+- FLOPs 约为逐帧运行的 2D 网络的 3 倍，因为每个 3x3 kernel 都变成了 3x3x3。
 - Temporal kernels 很小；长程 motion 需要 pyramid 或 dual-stream 方法。
 
 适用场景：motion 是信号的 action recognition（Something-Something V2、包含大量 motion-heavy classes 的 Kinetics）。

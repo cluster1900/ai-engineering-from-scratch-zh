@@ -105,14 +105,14 @@ def sample_ddim(model, schedule, shape, steps=50, T=1000, device="cpu", eta=0.0)
     x = torch.randn(shape, device=device)
     alphas_cumprod = schedule["alphas_cumprod"].to(device)
 
-    ts = torch.linspace(T - 1, 0, steps + 1).long()
+    ts = torch.linspace(T - 1, -1, steps + 1).round().long()
     for i in range(steps):
         t = int(ts[i])
         t_prev = int(ts[i + 1])
         t_batch = torch.full((shape[0],), t, dtype=torch.long, device=device)
         eps = model(x, t_batch)
         a_t = alphas_cumprod[t]
-        a_prev = alphas_cumprod[t_prev]
+        a_prev = alphas_cumprod[t_prev] if t_prev >= 0 else torch.tensor(1.0, device=device)
         x0_pred = (x - torch.sqrt(1 - a_t) * eps) / torch.sqrt(a_t)
         sigma = eta * torch.sqrt((1 - a_prev) / (1 - a_t) * (1 - a_t / a_prev).clamp_min(0))
         dir_xt = torch.sqrt((1 - a_prev - sigma ** 2).clamp_min(0)) * eps

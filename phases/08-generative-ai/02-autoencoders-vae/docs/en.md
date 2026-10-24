@@ -100,7 +100,7 @@ def sample(dec, z_dim, rng):
 - **Posterior collapse.** KL term 过于激进地驱动 $q(z \mid x) \to \mathcal{N}(0, I)$，导致 $z$ 不携带关于 $x$ 的信息。修复：β-annealing（从 $\beta=0$ 开始，逐步升到 1）、free bits，或者在 inactive dimensions 上跳过 KL。
 - **Blurry samples.** Gaussian decoder likelihood 意味着 MSE reconstruction，它对 L2 是 Bayes-optimal（mean）— 一组合理 digits 的 mean 是一个模糊 digit。修复：discrete decoder（VQ-VAE、NVAE），或者只把 VAE 用作 encoder，并在 latents 上堆叠 diffusion（Stable Diffusion 就是这么做的）。
 - **β too large, too early.** 见 posterior collapse。从 $\beta \approx 0.01$ 开始并逐步 ramp。
-- **Latent dim too small.** 16-D 适用于 MNIST，256-D 适用于 ImageNet 256²，2048-D 适用于 ImageNet 1024²。Stable Diffusion 的 VAE 将 512×512×3 压缩为 64×64×4（spatial area 上 32x downsample factor，channels 上 32x）。
+- **Latent dim too small.** 16-D 适用于 MNIST，256-D 适用于 ImageNet 256²，2048-D 适用于 ImageNet 1024²。Stable Diffusion 的 VAE 将 512×512×3 压缩为 64×64×4（每边 8x downsample，spatial area 上 64x；channels 从 3 变为 4，因此总值数约减少 48x）。
 
 ## Use It
 

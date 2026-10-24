@@ -190,14 +190,14 @@ P(X = x) = \sum_{y} P(X = x, Y = y)
 
 ### 为什么 Normal Distribution 到处出现
 
-Central Limit Theorem：许多 independent random variables 的和（或平均值）会收敛到 normal distribution，无论原始 distribution 是什么。
+Central Limit Theorem：来自同一 distribution 的许多 independent random variables 的平均值，在中心化并按 $\sqrt{n}$ 缩放后，会趋近 normal distribution，无论原始 distribution 是什么形状，只要其 variance 有限。中心化并缩放后的和同样成立。
 
 ```
 Roll 1 die:  uniform distribution (flat)
 Average of 2 dice:  triangular (peaked)
 Average of 30 dice: nearly perfect bell curve
 
-This works for ANY starting distribution.
+这适用于任何 variance 有限的起始 distribution。
 ```
 
 这就是为什么：
@@ -471,7 +471,7 @@ print(f"Log-softmax: {log_probs}")
 | Expected value | “平均值” | 所有 outcomes 的概率加权和。Loss function 就是一个 expected value |
 | Variance | “分散程度” | 相对 mean 的 squared deviation 的期望。High variance = 噪声大、不稳定的估计 |
 | Normal distribution | “钟形曲线” | $f(x) = (1/\sqrt{2\pi\sigma^2}) \cdot \exp(-(x-\mu)^2/(2\sigma^2))$。由于 CLT 而无处不在 |
-| Central Limit Theorem | “平均值会变成 normal” | 无论来源如何，许多 independent samples 的 mean 都会收敛到 normal distribution |
+| Central Limit Theorem | “平均值会变成 normal” | 对任何 variance 有限的来源，许多 independent samples 的 mean 经中心化和缩放后都会收敛到 normal distribution |
 | Joint distribution | “两个变量放在一起” | $P(X, Y)$ 描述 $X$ 和 $Y$ outcomes 每一种组合的概率 |
 | Marginal distribution | “把另一个变量求和消去” | $P(X) = \sum_y P(X, Y)$。从 joint 中恢复单个变量的 distribution |
 | Log probability | “概率的 log” | $\log P(x)$。把乘积变成求和，避免长序列中的数值下溢 |

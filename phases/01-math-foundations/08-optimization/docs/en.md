@@ -43,7 +43,7 @@ w = w - \text{lr} \cdot \text{gradient}
 
 ```mermaid
 graph TD
-    A["* Starting point (high loss)"] --> B["Moving downhill along gradient"]
+    A["* Starting point (high loss)"] --> B["Moving downhill, against the gradient"]
     B --> C["Approaching minimum"]
     C --> D["o Minimum (low loss)"]
 ```
@@ -155,7 +155,7 @@ w &= w - \text{lr} \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon)
 
 ### Convex vs non-convex
 
-Convex function 只有一个 minimum。Gradient descent 总能找到它。像 $f(x) = x^2$ 这样的 quadratic 是 convex。
+Convex function 没有糟糕的 local minima：每个 local minimum 都是 global minimum。对于存在 minimum 的 smooth convex function，learning rate 足够小的 Gradient descent 会收敛到它。像 $f(x) = x^2$ 这样的 quadratic 是 convex，且其 minimum 唯一。
 
 Neural Network Loss functions 是 non-convex。它们有许多 local minima、saddle points 和平坦区域。
 

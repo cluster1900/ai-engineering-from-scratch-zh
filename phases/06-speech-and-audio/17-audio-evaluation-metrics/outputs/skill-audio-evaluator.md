@@ -22,8 +22,8 @@ tags: [evaluation, wer, mos, utmos, eer, der, fad, mmau, leaderboard]
 
 Example output:
 - Primary: UTMOS（每种语言 50 个 prompt 的成对音频样本）+ human-panel MOS（每种语言 20 个听众，blind A/B vs baseline）。
-- Secondary: TTFA median & P95（必须匹配 baseline）；相对固定 voice reference 的 SECS &gt; 0.80（无 speaker regression）；round-trip ASR（Whisper-large-v3-turbo）上的 CER &lt; 2%。
-- Normalization: 用于 round-trip WER 的 Whisper-normalizer English + Hugging Face multilingual-normalizer Spanish。
+- Secondary: TTFA median & P95（必须匹配 baseline）；相对固定 voice reference 的 SECS &gt; 0.80（无 speaker regression）；round-trip ASR（Whisper-large-v3-turbo）上每种语言（English 和 Spanish）的 WER &lt; 2%（两者都以空格分词，因此适合 WER；没有词边界的语言使用 CER）。
+- Normalization: English 使用 `openai-whisper` package 中的 `EnglishTextNormalizer`，Spanish 和 code-switched prompts 使用其 `BasicTextNormalizer`，在计算 round-trip WER 前同时作用于 reference 和 hypothesis。本课的 `wer()` helper 只支持 ASCII，因此 Spanish 请使用这些 normalizers（或外部 evaluator）。
 - Public benchmark: TTS Arena（English）和 Artificial Analysis Speech，用于相对 ELO 定位。目标：距离最接近竞争者不超过 50 ELO。
 - In-house: 200 个 held-out prompt（每种语言 100 个），覆盖金额、日期、产品名、2 句叙述、情绪化朗读、code-switched。10 个 demographic voice。
-- Reporting: release note，包含 headline（UTMOS + MOS）、P50/P95 TTFA histogram、SECS CDF、CER per-category breakdown、failure-mode callouts（code-switched prompt 在 X% 处失败）。
+- Reporting: release note，包含 headline（UTMOS + MOS）、P50/P95 TTFA histogram、SECS CDF、WER/CER per-category breakdown、failure-mode callouts（code-switched prompt 在 X% 处失败）。

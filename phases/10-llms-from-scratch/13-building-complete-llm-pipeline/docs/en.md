@@ -8,7 +8,7 @@
 **Time:** ~120 minutes
 
 ## 学习目标
-- 将前十一课（tokenizer、data、pre-training、scaling、SFT、RLHF、DPO、CAI、eval、quantization、inference）组合成一个可复现的 pipeline spec
+- 将前十二课（两课 tokenizer、data、pre-training、scaling、SFT、RLHF、DPO、CAI、eval、quantization、inference）组合成一个可复现的 pipeline spec
 - 定义各阶段之间的 artifact contract：每个阶段消费什么、产出什么，以及下一个阶段如何验证输入
 - 构建一个 orchestrator，用于跟踪实验、对 artifacts 进行 hash，并基于 eval thresholds 决定是否通过发布 gate
 - 设计 rollback plan：哪些 artifacts 重新运行成本低，哪些成本高，以及一个损坏的 checkpoint 会带来什么代价

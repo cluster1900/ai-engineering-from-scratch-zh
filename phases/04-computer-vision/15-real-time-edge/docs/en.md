@@ -1,6 +1,6 @@
 # Real-Time Vision — 边缘部署
 
-> Edge inference 是让一个 90-accuracy model 在仅有 2 GB RAM 的设备上以 30 fps 运行的工程学科。每一个百分点的 accuracy 都要与毫秒级 latency 做交换。
+> Edge inference 是让一个 accuracy 90% 的 model 在仅有 2 GB RAM 的设备上以 30 fps 运行的工程学科。每一个百分点的 accuracy 都要与毫秒级 latency 做交换。
 
 **Type:** Learn + Build
 **Languages:** Python
@@ -38,7 +38,7 @@ flowchart LR
     style PWR fill:#dbeafe,stroke:#2563eb
 ```
 
-- **Latency**：p50、p95、p99。只看 p50 平均值会掩盖对 real-time systems 很重要的尾部行为。
+- **Latency**：p50、p95、p99。只报告 p50（或均值）会掩盖对 real-time systems 很重要的尾部行为。
 - **Peak memory**：设备曾经看到的最大值，而不是 steady-state average。重要原因是 embedded targets 上的 OOM 是致命的。
 - **Power / energy**：电池供电设备上每次 inference 的 millijoules。通常用 CPU/GPU utilisation * time 近似。
 

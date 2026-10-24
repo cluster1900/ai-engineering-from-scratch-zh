@@ -25,7 +25,7 @@ Word2Vec 留下了两个开放问题。
 
 **FastText。** 一个词是其字符 n-grams 加上词本身的总和。`where` 变成 `<wh, whe, her, ere, re>, <where>`。词 Vector 是这些组成 Vector 的总和。按 Word2Vec 的方式训练。好处：未见过的词（`whereupon`）可以由已知 n-grams 组合出来。
 
-**BPE (Byte-Pair Encoding)。** 从单个 bytes（或字符）的 vocabulary 开始。统计 corpus 中每个相邻 pair。把最高频的 pair 合并成新的 Token。重复 `k` 次。结果：得到一个包含 `k + 256` 个 Token 的 vocabulary，其中高频序列（`ing`、`tion`、`the`）是单个 Token，罕见词会被拆成熟悉的片段。每个句子都能被 tokenizes 成某种形式。
+**BPE (Byte-Pair Encoding)。** 从单个 bytes（或字符）的 vocabulary 开始。统计 corpus 中每个相邻 pair。把最高频的 pair 合并成新的 Token。重复 `k` 次。结果：得到由基础符号加上 `k` 次合并组成的 vocabulary（从 bytes 开始时为 `k + 256` 个 Token），其中高频序列（`ing`、`tion`、`the`）是单个 Token，罕见词会被拆成熟悉的片段。每个句子都能被 tokenizes 成某种形式。
 
 
 ```figure

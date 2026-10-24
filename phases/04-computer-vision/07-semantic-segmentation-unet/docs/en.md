@@ -126,7 +126,7 @@ Cross-entropy 在 training 早期提供稳定的 Gradient；Dice 将 training �
 
 ### Input resolution 权衡
 
-U-Net 的 encoder 会将 resolution 减半四次，所以 input 必须能被 16 整除。Medical images 通常是 512x512 或 1024x1024。Autonomous-driving crops 是 2048x1024。U-Net 的 memory cost 随 `H * W * C_max` 缩放，在 1024x1024 且 bottleneck channels 为 1024 时，forward pass 已经会使用数 GB VRAM。
+U-Net 的 encoder 会将 resolution 减半四次，所以只有 input 能被 16 整除时，skip connections 才能精确对齐。其他尺寸需要 padding，或依靠 up block 中的 resize（Step 2）。Medical images 通常是 512x512 或 1024x1024。Autonomous-driving crops 是 2048x1024。U-Net 的 memory cost 随 `H * W * C_max` 缩放，在 1024x1024 且 bottleneck channels 为 1024 时，forward pass 已经会使用数 GB VRAM。
 
 两个标准 workaround：
 1. Tile the input — 处理带 overlap 的 256x256 tiles，然后 stitch。

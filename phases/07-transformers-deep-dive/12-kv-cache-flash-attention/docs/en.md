@@ -26,32 +26,32 @@ Dao et al. 提出的两个优化，把前沿推理从“慢”推到了“快”
 
 ### KV cache math
 
-每个 decoder layer、每个 token、每个 head：
+每个 decoder layer、每个 token、所有 KV heads 合计：
 
 ```
-bytes_per_token_per_layer = 2 * d_head * dtype_size
+bytes_per_token_per_layer = 2 * n_kv_heads * d_head * dtype_size
                           ^
                           K and V
 ```
 
-对于一个 7B 模型，32 层、32 个 heads、d_head=128、fp16：
+对于一个 7B 模型，32 层、32 个 heads（全部用于 K 和 V）、d_head=128、fp16：
 
 ```
-per token per layer = 2 * 128 * 2 = 512 bytes
-per token (32 layers) = 16 KB
-per 32K context = 512 MB
+per token per layer = 2 * 32 * 128 * 2 = 16384 bytes (16 KiB)
+per token (32 layers) = 512 KiB
+per 32K context = 16 GiB
 ```
 
 对于 Llama 3 70B（80 层、d_head=128、使用 8 个 KV heads 的 GQA）：
 
 ```
-per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KB)
-per 32K context = 10.4 GB
+per token per layer = 2 * 8 * 128 * 2 = 4096 bytes (4 KiB)
+per 32K context = 10 GiB
 ```
 
-这 10 GB 就是为什么 Llama 3 70B 在 128K context 下，仅 batch size 1 的 KV cache 就会占掉一张 40 GB A100 的大部分显存。
+这 10 GiB 在 32K 时，到 128K 会增长到 40 GiB，仅 batch size 1 的 KV cache 就会占满整张 40 GB A100。
 
-**GQA 是 KV-cache 的关键收益。** 使用 64 heads 的 MHA 会需要 32 GB。MLA 还能进一步压缩。
+**GQA 是 KV-cache 的关键收益。** 使用 64 个 KV heads 的 MHA 会大 8x，在 32K 时约为 80 GiB。MLA 还能进一步压缩。
 
 ### Flash Attention — tiling 技巧
 

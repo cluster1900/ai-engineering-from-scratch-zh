@@ -21,7 +21,7 @@
 
 然后账单来了。
 
-GPT-5 每百万 input tokens $5，每百万 output $15。Claude Opus 4.7 input $15 / output $75。Gemini 3 Pro input $1.25 / output $5。GPT-5-mini 是 $0.25/$2。下面价格仅作示例；始终检查 provider 当前的 pricing page。
+GPT-5 每百万 input tokens $1.25，每百万 output $10。Claude Opus 4.7 input $5 / output $25。Gemini 3.1 Pro input $2 / output $12（prompts 不超过 200K tokens）。GPT-5-mini 是 $0.25/$2。下面数学中使用的 GPT-4o 是 $2.50/$10。价格仅作示例；始终检查 provider 当前的 pricing page。
 
 以下是会杀死初创公司的数学：
 

@@ -228,7 +228,7 @@ for step, batch in enumerate(dataloader):
 
 - **Model family**：SD 1.5 用于 open-source 社区 fine-tunes，SDXL 用于更高 fidelity，SD3 / FLUX 用于 state of the art 和严格许可要求。
 - **Scheduler**：20-30 steps 使用 DPM-Solver++ 2M Karras；当 latency 低于 1s 时使用 LCM-LoRA。
-- **Precision**：4080/4090 上使用 `float16`，A100 及更新设备上使用 `bfloat16`，VRAM 紧张时使用 `int8`（通过 `bitsandbytes` 或 `compel`）。
+- **Precision**：4080/4090 上使用 `float16`，A100 及更新设备上使用 `bfloat16`，VRAM 紧张时使用 `int8`（通过 `bitsandbytes`）。
 - **Conditioning**：普通文本可用；若需要更强控制，在 base pipeline 之上加入 ControlNet（canny、depth、pose）。
 
 对于批量生成，`AUTO1111` / `ComfyUI` 是社区工具；对于生产 API，使用 `diffusers` + `accelerate`，或使用带 TensorRT compilation 的 `optimum-nvidia`。

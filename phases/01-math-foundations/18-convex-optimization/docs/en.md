@@ -18,7 +18,7 @@
 
 Lesson 08 教过你 Gradient Descent、momentum 和 Adam。这些 Optimizer 可以在任何表面上向下移动。但它们没有保证。Gradient Descent 在非凸 landscape 上可能落入糟糕的局部最小值，卡在 saddle point，或者永远振荡。你仍然使用它，是因为 Neural Network 是非凸的，而且没有替代方案。
 
-但 ML 中的许多问题是凸的。Linear regression、logistic regression、SVMs、LASSO、ridge regression。对于这些问题，有更强的工具：带有数学保证的优化。凸问题只有一个谷底。任何向下走的算法都会到达全局最小值。不需要重新启动。不需要学习率调度。不需要祈祷。
+但 ML 中的许多问题是凸的。Linear regression、logistic regression、SVMs、LASSO、ridge regression。对于这些问题，有更强的工具：带有数学保证的优化。凸问题没有虚假的谷底：每个局部最小值都是全局最小值。对于存在最小值的 smooth convex function，步长合适的 Gradient Descent 会收敛到它。不需要重新启动。不需要学习率调度。不需要祈祷。
 
 理解凸性有三点价值。第一，它告诉你问题什么时候是简单的（凸），什么时候是困难的（非凸）。第二，它为凸问题提供更快的工具，比如 Newton's method。第三，它解释了 ML 中反复出现的概念：regularization 作为约束、SVMs 中的 duality，以及为什么 Deep Learning 在违反凸性所提供的一切良好性质时仍能工作。
 
@@ -91,13 +91,13 @@ f(tx + (1-t)y) \le t f(x) + (1-t) f(y)
 
 **对于凸函数，每个局部最小值都是全局最小值。**
 
-这意味着 Gradient Descent 不会被困住。任何向下的路径都会通向同一个答案。该算法被保证会收敛到最优解。
+这意味着 Gradient Descent 不会被困在糟糕的局部最小值中。它能到达的每个最小值都有相同的 Loss。对于存在最小值的 smooth convex function，步长合适的 Gradient Descent 保证收敛到最优值。
 
 ```mermaid
 graph LR
     subgraph "Convex: ONE answer"
         direction TB
-        C1["Loss surface has a single valley"] --> C2["Gradient descent ALWAYS finds the global minimum"]
+        C1["Loss surface has no false valleys"] --> C2["Gradient descent with a suitable step converges to the global minimum"]
     end
     subgraph "Non-convex: MANY traps"
         direction TB

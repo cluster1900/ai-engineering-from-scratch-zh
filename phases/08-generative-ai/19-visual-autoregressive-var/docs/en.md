@@ -50,7 +50,7 @@ Input sequence structure:
 [START, z_1 tokens, z_2 tokens, z_3 tokens, ..., z_K tokens]
 ```
 
-Position Embedding 同时编码尺度索引和尺度内的空间位置。Attention 在尺度顺序上是 causal 的：尺度 $k$、位置 $(i, j)$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的所有 Token，也可以 Attention 到尺度 $k$ 本身在所用 intra-scale 顺序中更早出现的 Token（VAR 使用固定 positional attention，没有 intra-scale causality，即一个尺度内所有位置并行预测）。
+Position Embedding 同时编码尺度索引和尺度内的空间位置。Attention 在尺度顺序上是 causal 的，在尺度内部按 block 进行：尺度 $k$、位置 $(i, j)$ 的 Token 可以 Attention 到尺度 $1 \ldots k$ 的所有 Token，包括尺度 $k$ 本身的每个位置。尺度内没有顺序，也没有 intra-scale causality，因此一个尺度内所有位置并行预测。
 
 训练 Loss：在每个尺度 $k$，给定所有之前尺度的 Token，预测 Token $z_k$。对离散 VQ codes 使用 cross-entropy Loss。结构与 GPT 相同，只是这里的“sequence”变成了尺度结构化的 sequence。
 

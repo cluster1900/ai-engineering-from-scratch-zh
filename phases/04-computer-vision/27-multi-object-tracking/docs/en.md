@@ -69,7 +69,7 @@ Kalman filter 为每条 track 维护一个带 covariance 的状态 `(x, y, w, h,
 
 ### SAM 2 memory-based tracking
 
-SAM 2 通过维护 per-instance spatio-temporal features 的 **memory bank** 来处理视频。给定某一帧上的 prompt（click、box、text）后，它会将该 instance 编码进 memory。在后续帧中，memory 会与新帧 features 做 cross-attention，decoder 则为新帧中的同一 instance 生成 mask。
+SAM 2 通过维护 per-instance spatio-temporal features 的 **memory bank** 来处理视频。给定某一帧上的 prompt（click、box 或 mask）后，它会将该 instance 编码进 memory。在后续帧中，memory 会与新帧 features 做 cross-attention，decoder 则为新帧中的同一 instance 生成 mask。
 
 没有 Kalman filter，也没有 Hungarian assignment。Association 隐含在 memory-attention 操作中。
 

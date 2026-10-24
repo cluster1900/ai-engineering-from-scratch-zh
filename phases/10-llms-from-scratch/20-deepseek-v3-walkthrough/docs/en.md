@@ -106,18 +106,18 @@ mtp_module: 1               (1 MTP module at depth 1)
 完整计算在 `code/main.py` 中。核心结论：
 
 - Embedding：`vocab * hidden = 129280 * 7168 = ~0.93B`。
-- 前 3 个 dense blocks：带 MLA 的 Attention（每 block 约 144M）+ dense MLP（每 block 约 260M）+ norms。总计约 1.2B。
-- 58 个 MoE blocks：带 MLA 的 Attention（约 144M）+ 256 个 experts（每个约 30M）+ 1 个 shared expert（30M）+ norm。按包含所有 experts 计算，每 block 总计约 7.95B。58 个 MoE blocks 总计 461B。
-- MTP module：14B。
+- 前 3 个 dense blocks：带 MLA 的 Attention（按计算器的简化计数每 block 约 84M）+ dense SwiGLU MLP（每 block `3 * 7168 * 18432 = ~396M`）+ norms。总计约 1.4B。
+- 58 个 MoE blocks：带 MLA 的 Attention（约 84M）+ 256 个 routed experts（每个 `3 * 7168 * 2048 = ~44M`）+ 1 个 shared expert（约 44M）+ router + norms。按包含所有 experts 计算，每 block 约 11.4B。58 个 MoE blocks 总计约 661B。
+- MTP module：已发布的 module 为 14B。计算器使用约 0.8B 的 dense 替身。
 
-总计：core architecture 约 476B + 14B MTP；而已发布的 671B 数字还会单独计入额外结构参数（bias tensors、expert-specific components、shared expert scaling 等）。我们在计算器中复现的数字与已发布值相差 3-5% 以内，差异来自 DeepSeek 报告 Section 2 appendix 中记录的细粒度核算。
+总计：计算器得到约 664B，而主模型的已发布数字为 671B。Hugging Face checkpoint 为 685B，因为它在 671B 之上加入了 14B 的 MTP module。剩余约 1% 的差距来自简化：计算器跳过了 MLA 中解耦的 RoPE 维度、未 tied 的 output head 以及一些小 tensors。
 
 每次 forward 的活跃参数：
 
-- Attention：每 layer 144M * 61 = 8.8B（所有 layers 都会触发）。
-- MLP active：前 3 层 dense（3 * 260M = 780M），58 个 MoE layers 中每层激活 8 个 routed + 1 个 shared + routing overhead。每 layer active MLP 约 260M。总计：3 * 260M + 58 * 260M = ~15.9B。
-- Embedding + norms：1.2B。
-- 总活跃：约 26B core + 14B MTP（训练时使用，但推理时不总是运行）≈ 37B。
+- Attention：每 layer 84M * 61 = ~5.1B（所有 layers 都会触发）。
+- MLP active：前 3 层 dense（`3 * 396M = ~1.2B`），58 个 MoE layers 中每层激活 8 个 routed + 1 个 shared expert（每层 `9 * 44M = ~396M`，总计约 23B）。合计约 24B。
+- Embedding + norms：约 0.9B。
+- 总活跃：计算器得到约 30B，而已发布数字为 37B。差距主要在 attention：完整的 MLA 带有 RoPE 维度以及更宽的 query 和 key heads，比简化计数更大。MTP module 不计入 37B。
 
 ### 671B / 37B 比例
 

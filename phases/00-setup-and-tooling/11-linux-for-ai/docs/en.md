@@ -39,7 +39,7 @@ graph TD
 
 ## 必备 Commands
 
-以下 15 个 commands 覆盖了你在远程 GPU box 上 95% 的操作。
+以下 13 个 commands 覆盖了你在远程 GPU box 上的大部分操作。
 
 ### 移动位置
 

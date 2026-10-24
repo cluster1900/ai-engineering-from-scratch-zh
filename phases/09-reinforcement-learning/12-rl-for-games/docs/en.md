@@ -1,6 +1,6 @@
 # 面向游戏的 RL — AlphaZero、MuZero 与 LLM Reasoning 时代
 
-> 1992：TD-Gammon 用纯 TD 在 backgammon 中击败人类冠军。2016：AlphaGo 击败 Lee Sedol。2017：AlphaZero 从零开始统治 chess、shogi 和 Go。2024：DeepSeek-R1 证明了同一套配方在 reasoning 上也有效，只是用 GRPO 替代 PPO。游戏是推动本阶段每一次突破的 benchmark。
+> 1992：TD-Gammon 用纯 TD 在 backgammon 中击败人类冠军。2016：AlphaGo 击败 Lee Sedol。2017：AlphaZero 从零开始统治 chess、shogi 和 Go。2025：DeepSeek-R1 证明了同一套配方在 reasoning 上也有效，只是用 GRPO 替代 PPO。游戏是推动本阶段每一次突破的 benchmark。
 
 **类型：** Build
 **语言：** Python
@@ -60,7 +60,7 @@ while True:
 
   $L_{\text{GRPO}}(\theta) = -\mathbb E_{q, \lbrace o_i \rbrace} \left[ \frac{1}{G} \sum_i A_i \cdot \log \pi_\theta(o_i \mid q) \right] + \beta \cdot \mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$
 
-没有 reward model，没有 critic，没有 MCTS。Group-relative baseline 替代了三者。在 reasoning benchmark 上，用少得多的 compute 达到或超过 PPO-RLHF 质量。
+没有学习得到的 reward model，没有 critic，没有 MCTS。由 rule-based verifier 提供 reward，group-relative baseline 替代 critic，search 步骤则被去掉。在 reasoning benchmark 上，用少得多的 compute 达到或超过 PPO-RLHF 质量。
 
 **完整的 R1 配方。** DeepSeek-R1（DeepSeek 2025）是一篇论文里的两个 model：
 
@@ -87,7 +87,7 @@ f3-selfplay-ladder
 
 ## 构建
 
-`code/main.py` 中的代码实现了 **微型 GRPO** —— 一个带多组 sample 的 bandit。algorithm 与 LLM 上相同；只有 policy 和 environment 更简单。它讲清楚 *loss* 和 *group-relative advantage*，也就是 2025 年的创新点。
+`code/main.py` 中的代码实现了 **微型 GRPO**：一个带多组 sample 的 bandit。algorithm 与 LLM 上相同；只有 policy 和 environment 更简单。它讲清楚 *loss* 和 *group-relative advantage*，也就是 2024 年 DeepSeekMath 提出的创新点。
 
 ### 步骤 1：一个微型 verifier environment
 
@@ -145,7 +145,7 @@ Group-relative advantage 是 2024 年 DeepSeek 的技巧。不需要 critic。�
 ## 常见陷阱
 
 - **通过操纵 verifier 进行 reward hacking。** GRPO 继承了 RLHF 的风险：如果 verifier 错误或可被利用，LLM 会找到 exploit。鲁棒 verifier（多个 test cases、formal proofs）很重要。
-- **Group size 太小。** Group baseline 的方差按 $1/\sqrt{G}$ 缩放。低于 $G = 4$ 时，advantage signal 会很 noisy；标准选择是 $G = 8$ 到 64。
+- **Group size 太小。** Group-mean baseline 的方差按 $1/G$ 缩放（其 standard error 按 $1/\sqrt{G}$）。低于 $G = 4$ 时，advantage signal 会很 noisy；标准选择是 $G = 8$ 到 64。
 - **Length bias。** 不同长度的 LLM completion 具有不同的 log-probabilities。按 Token 数归一化，或使用 sequence-level log-prob，或截断到 max length。
 - **纯 self-play 循环。** AlphaZero 风格训练可能在 general-sum games 中卡进 dominance loop。可通过多样化 opponent pool（league play，Lesson 10）缓解。
 - **Search-policy mismatch。** AlphaZero 训练 policy 去模仿 search output。如果 policy net 太小，无法表示 search 的 distribution，训练会停滞。

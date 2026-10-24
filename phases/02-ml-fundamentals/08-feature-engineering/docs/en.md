@@ -82,7 +82,7 @@ flowchart LR
 真实数据会有空洞。策略包括：
 
 - **Drop rows：** 仅当缺失数据少且随机时使用
-- **Mean/median imputation：** 简单，并保持分布形状（median 对 outliers 更稳健）
+- **Mean/median imputation：** 简单，能保持 feature 的中心（median 对 outliers 更稳健），但会缩小其 variance，并把所有填充值堆到同一个尖峰上，因此分布形状会改变
 - **Mode imputation：** 用于 categorical features
 - **Indicator column：** 在 imputing 之前添加一个二进制列 “was_this_missing”。数据缺失这一事实本身可能具有信息量
 - **Forward/backward fill：** 用于时间序列数据

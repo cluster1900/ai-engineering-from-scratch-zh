@@ -16,7 +16,7 @@
 
 ## 问题
 
-标准 softmax Attention 有一个数学性质，在规模变大时会变成工程上的麻烦。对于 query `q`，Attention 权重是 `softmax(qK^T / sqrt(d))`。Softmax 永远无法产生精确的零值——每个不匹配的 Token 都会得到一些正的质量。这个残余质量就是噪声，并且会随 context length 扩大。在 128k 个 Token 下，即使每个不匹配 Token 只获得 0.001% 的概率，127,999 个 Token 合在一起也会贡献约 12% 的总量。模型必须学会绕开一个随 context 增长的噪声下限。
+标准 softmax Attention 有一个数学性质，在规模变大时会变成工程上的麻烦。对于 query `q`，Attention 权重是 `softmax(qK^T / sqrt(d))`。Softmax 永远无法产生精确的零值：每个不匹配的 Token 都会得到一些正的质量。这个残余质量就是噪声，并且会随 context length 扩大。在 128k 个 Token 下，即使每个不匹配 Token 只获得 0.0001% 的概率，127,999 个 Token 合在一起也会贡献约 13% 的总量。模型必须学会绕开一个随 context 增长的噪声下限。
 
 在实证上，这表现为 Attention head 干扰：long-context RAG 中的幻觉引用、100k-Token 检索任务中的 lost-in-the-middle 失败，以及 needle-in-haystack benchmark 在超过 32k 后出现的细微 accuracy 下降。Differential Transformer 论文（arXiv:2410.05258, ICLR 2025）测量了这种差距：DIFF Transformers 相比同尺寸 baselines 取得了更低 perplexity、更高 long-context accuracy，以及更少 hallucinations。
 

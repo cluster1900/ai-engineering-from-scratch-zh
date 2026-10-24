@@ -45,7 +45,7 @@
 
 **SECS (Speaker Encoder Cosine Similarity)。** 用于 voice cloning。参考音频与克隆输出之间的 ECAPA Embedding cosine。&gt; 0.75 = 可识别的克隆声音。
 
-**WER-on-ASR-round-trip。** 在 TTS 输出上运行 Whisper，并相对于输入文本计算 WER。用于捕捉可懂度回退。2026 SOTA：&lt; 2% CER。
+**WER-on-ASR-round-trip。** 在 TTS 输出上运行 Whisper，并相对于输入文本计算 WER。用于捕捉可懂度回退。2026 SOTA：English test sets 上 &lt; 2% WER（Mandarin test sets 改为报告 CER）。
 
 **TTFA (time-to-first-audio)。** 端到端延迟。Kokoro-82M：~100 ms；F5-TTS：~1 s。
 
@@ -79,7 +79,7 @@ Multi-label：所有类别上的 **mAP (mean Average Precision)**。AudioSet：B
 
 **CLAP Score。** 使用 CLAP Embedding 的文本-音频对齐分数。&gt; 0.3 = 合理对齐。
 
-**Listening panel MOS。** 对消费级音乐来说仍是最终判据。Suno v5 在 TTS Arena 上的 ELO 为 1293（来自成对人工偏好）。
+**Listening panel MOS。** 对消费级音乐来说仍是最终判据。Suno v5 在 Suno 自己的成对偏好 benchmark 上得到 ELO 1293。这是厂商数字；TTS Arena 排名的是语音，而不是音乐。
 
 ### Audio-language benchmark
 

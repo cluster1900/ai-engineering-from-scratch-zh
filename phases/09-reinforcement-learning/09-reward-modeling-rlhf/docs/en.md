@@ -114,7 +114,7 @@ def rlhf_step(theta, ref, w, prompt, rng, eps=0.2, beta=0.1, lr=0.05):
 
 ### Step 4：monitor KL
 
-每次更新跟踪 mean $\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$。如果它爬过 `~5-10`，policy 已经漂离 $\pi_{\text{SFT}}$ 很远 —— lower $\beta$ is rising or reward hacking is starting。这是真实 RLHF 中最重要的 diagnostic。
+每次更新跟踪 mean $\mathrm{KL}(\pi_\theta \Vert \pi_{\text{ref}})$。如果它爬过 `~5-10`（以 nats 计的 per-response KL，按 tokens 求和，即 TRL 记录的单位），policy 已经漂离 $\pi_{\text{SFT}}$ 很远：要么 $\beta$ 太低（调高它把 policy 拉回来），要么 reward hacking 正在开始。这是真实 RLHF 中最重要的 diagnostic。
 
 ### Step 5：使用 TRL 的 production recipe
 

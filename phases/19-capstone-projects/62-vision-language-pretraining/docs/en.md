@@ -54,7 +54,7 @@ flowchart TB
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`，其中 `lm_weight` 是标量（通常为 1.0）。这两个损失共享编码器和投影的梯度；只有解码器接收 LM 损失梯度。这是 CoCa、BLIP 和 SigLIP 类型模型都使用的多任务配方，具有不同的权重。
+`total = contrastive + lm_weight * lm`，其中 `lm_weight` 是标量（通常为 1.0）。这两个损失共享编码器和投影的梯度；只有解码器接收 LM 损失梯度。这是 CoCa 和 BLIP 使用的多任务配方，具有不同的权重。SigLIP 只保留 contrastive 项，并用 sigmoid pair loss 替代 softmax。
 
 |组件|损失面|影响|
 |-----------|--------------|---------|

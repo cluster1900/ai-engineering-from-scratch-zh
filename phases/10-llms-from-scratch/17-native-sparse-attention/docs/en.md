@@ -46,7 +46,7 @@ Native Sparse Attention（Yuan et al., DeepSeek + PKU + UW, ACL 2025 best paper,
 
 selection 步骤（top-k blocks）是离散的。离散操作会破坏 Gradient flow。此前的 sparse-attention 工作要么跳过 selection 的 Backpropagation（限制训练），要么使用 continuous relaxations，而这些方法在 inference 时无法给出真正的稀疏性。
 
-NSA 绕开了这一点：compressed-branch Attention 本身就是作用于整个序列的可微粗粒度 Attention。top-k 操作只是复用 compressed branch 中最高的 Attention scores，来选择需要加载哪些细粒度 block。Gradient 会流经 compressed-branch scores（它既影响 compressed output，也影响 selection logic），而 selected blocks 对最终输出的贡献同样可微。不可微的 `top_k` 操作在前向 computational graph 上是 no-op，它只控制哪些 block 会从内存中加载。
+NSA 绕开了这一点：compressed-branch Attention 本身就是作用于整个序列的可微粗粒度 Attention。top-k 操作只是复用 compressed branch 中最高的 Attention scores，来选择需要加载哪些细粒度 block。Gradient 通过 compressed branch 自身的输出到达 compressed-branch scores，而不是通过 block 的选择。在被选中的 blocks 内部，对所选 keys 和 values 的 attention 就是普通 attention，因此它们对最终输出的贡献同样可微。`top_k` 的 index 选择本身不接收 Gradient：它只控制哪些 block 会从内存中加载。
 
 这就是 NSA 能够端到端用于 pre-training 的原因。模型会联合学习如何通过三个分支路由信息，生成一种 sparse pattern，并在 inference 时真正交付承诺的 speedup。
 

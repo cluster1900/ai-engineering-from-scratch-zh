@@ -38,7 +38,7 @@ L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t, \matho
 两个项：
 
 - 如果 advantage $A_t > 0$，并且 ratio 试图增长到超过 $1 + \epsilon$，clip 会把 Gradient 压平 —— 不要把一个好 action 推到比旧概率高出 $+\epsilon$ 以上。
-- 如果 advantage $A_t < 0$，并且 ratio 试图增长到超过 $1 - \epsilon$（意味着相比 clipped reduction，我们会让一个坏 action 更可能发生），clip 会限制 Gradient —— 不要把一个坏 action 推到低于 $-\epsilon$。
+- 如果 advantage $A_t < 0$，并且 ratio 试图降到 $1 - \epsilon$ 以下（意味着我们会让一个坏 action 比旧 policy 下的概率低得多），clip 会把 Gradient 截平：不要把坏 action 推到比旧概率低 $-\epsilon$ 以上。
 
 `min` 处理另一个方向：如果 ratio 已经朝*有益*方向移动，你仍然得到 Gradient（不会在对你不利的一侧 clipping）。
 

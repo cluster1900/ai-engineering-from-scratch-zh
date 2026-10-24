@@ -201,7 +201,7 @@ pipe.fit(X_train, y_train)
 print(pipe.score(X_test, y_test))
 ```
 
-注意三件事。`stop_words=None` 会保留否定词。`ngram_range=(1, 2)` 会加入 bigrams，让 `not_good` 成为一个 feature。`sublinear_tf=True` 会削弱重复词的影响。这三个标志，往往就是 SST-2 上 75% accuracy baseline 和 85% accuracy baseline 的差别。
+注意三件事。`stop_words=None` 会保留否定词。`ngram_range=(1, 2)` 会加入 bigrams，让 `not good` 成为一个 feature（scikit-learn 用空格连接两个词）。`sublinear_tf=True` 会削弱重复词的影响。这三个标志，往往就是 SST-2 上 75% accuracy baseline 和 85% accuracy baseline 的差别。
 
 ### 什么时候该使用 transformer
 
