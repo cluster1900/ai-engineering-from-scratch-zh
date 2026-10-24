@@ -102,6 +102,25 @@ python3 code/main.py
 
 选择, बजाय कोर पैटर्न 选择; कोर पैटर्न 就是 MemGPT。
 
+### 智能体记忆的形态
+
+विभाजन का समाधान क्षमता की समस्या है, यह यह तय नहीं करता कि क्या रहना है। उत्पादन प्रणाली में दोहरा-फिरकर चार प्रकार की स्मृतिएं उत्पन्न होती हैं, प्रत्येक एक अलग प्रश्न का उत्तर देती हैः
+
+- **Working memory** 现在什么最重要?संदर्भ में 层:当前任务、最近几轮对话、固定的核心部分──也就是即时本身──
+- **Episodic memory** 发生了什么?过去的对话轮次和轨迹,连同会议和转引用一起存储,可按需回放──
+- **Semantic memory** 什么是真的? उपयोगकर्ता 领域和世界的事实, परिवर्तन के साथ अद्यतन और पुनर्विचार किया जाता है
+- **Procedural memory** यह क्या करना चाहिए? सीखें दिनचर्या, प्राथमिकताएं और नियम, वे भविष्य के व्यवहार को निर्देशित करते हैं, न कि यादों को।
+
+开源实现各自选择了不同的切入点:
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ## 交付 यह
 `outputs/skill-virtual-memory.md`यह एक दोहराया जा सकता कौशल है, आप किसी भी लक्ष्य रनटाइम के लिए कर सकते हैं 生成正确的二层记忆架(मुख्य + अभिलेखागार + उपकरण सतह),并接好排放政策和引用字段──
 
@@ -129,3 +148,7 @@ python3 code/main.py
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks) तीन स्तरीय विकास
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) परिवेश को  बजट के रूप में
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413) 构建在该模式之上混合生产内存
+- [Zep (getzep/zep)](https://github.com/getzep/zep) 分类表中的 समय ज्ञान-ग्राफ स्मृति
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) पाठ 09 हाइब्रिड स्टोर 背后的提取管道
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem)                                                                                                                                                                                                                                                              
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory) सत्र को कैप्चर करें और खोज योग्य प्रकार के रिकॉर्ड के लिए एकीकृत करें

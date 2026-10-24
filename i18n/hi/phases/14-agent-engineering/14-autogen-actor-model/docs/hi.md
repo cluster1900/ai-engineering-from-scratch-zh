@@ -34,6 +34,8 @@
 
 ### ऑटोजेन v0.4 中的三个API 层
 
+ऑटोजेन v0.4 इसे तीन परतों में विभाजित करेंः
+
 1. **Core.** निम्न स्तर के अभिनेता ढांचे`AgentRuntime``Agent``Message``Topic`सिनक्रॉन संदेश विनिमय, घटना-चालित
 2. **AgentChat.**面向任务的高层API(替代 v0.2 का ConversableAgent)`AssistantAgent``UserProxyAgent``RoundRobinGroupChat``SelectorGroupChat`
 3. **Extensions.**集成:OpenAI、Anthropic、Azure、tools、memory──

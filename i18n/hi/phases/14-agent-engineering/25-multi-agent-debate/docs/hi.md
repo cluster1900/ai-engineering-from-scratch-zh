@@ -109,7 +109,7 @@ python3 code/main.py
 | Society of Minds | “Du et al. debate paper” | ICML 2024 multi-agent debate method |
 
 ## 延伸阅读
-- [Du et al., Society of Minds (arXiv:2305.14325)](https://arxiv.org/abs/2305.14325) 经典 बहु-एजेंट बहस
+- [Du et al., Improving Factuality and Reasoning in Language Models through Multiagent Debate (arXiv:2305.14325)](https://arxiv.org/abs/2305.14325) 经典 बहु-एजेंट बहस
 - [Sparse Communication Topology (arXiv:2406.11776)](https://arxiv.org/abs/2406.11776) दुर्लभ टॉपॉलजी 结果
 - [Anthropic, Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) संगीतकार-कर्मियों 作为一种辩论 变体
 - [Madaan et al., Self-Refine (arXiv:2303.17651)](https://arxiv.org/abs/2303.17651) एकल मॉडल आत्म-आलोचना प्रतिरोध पद्धति
