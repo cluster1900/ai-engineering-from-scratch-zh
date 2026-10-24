@@ -1,5 +1,5 @@
 {
-  "phases/05-nlp-foundations-to-advanced/01-text-processing/docs/en.md": "e13c7bb6328b3e1e1de06a1644565fd0bbfcfb3d9ccef845322c2de9bae0dcb2",
+  "phases/05-nlp-foundations-to-advanced/01-text-processing/docs/en.md": "2a1b7f1d7715ce593818de409b3766de1ae92f2fa0def22abb8e0a6f117cb914",
   "phases/05-nlp-foundations-to-advanced/02-bag-of-words-tfidf/docs/en.md": "a1a335be0bb717589a3cdbb40bb11213ae8a36245ba224950a674ed6d6d62fe5",
   "phases/05-nlp-foundations-to-advanced/03-word-embeddings-word2vec/docs/en.md": "0abb61b43b9d6417791de781e427d0ed89bdf7d2f52c3baf99b308f3f093d1eb",
   "phases/05-nlp-foundations-to-advanced/04-glove-fasttext-subword/docs/en.md": "0cc1f0ed5c479a7f269789a5aab522a6eb424ae27df8abdcda8e743ff51c048e",
@@ -14,8 +14,8 @@
   "phases/05-nlp-foundations-to-advanced/13-question-answering/docs/en.md": "b1908f8662551667661825fd449b52cfa0974e8ab68cc2ff7b251bcc6b78b00a",
   "phases/05-nlp-foundations-to-advanced/14-information-retrieval-search/docs/en.md": "a2f86573dcdadbd57e230e2e3f32777bd262c696f8b161d4549690812f7cd68e",
   "phases/05-nlp-foundations-to-advanced/15-topic-modeling/docs/en.md": "59ac727c0503dd6351f485d559ac88d0c94b330fa4242ae480df496dde0055a9",
-  "phases/05-nlp-foundations-to-advanced/16-text-generation-pre-transformer/docs/en.md": "f677072ac0d5166624fad3fd37d4afc60d2ca537ba63d90eb032a2f2b4ce2deb",
-  "phases/05-nlp-foundations-to-advanced/17-chatbots-rule-to-neural/docs/en.md": "4252b490e565990ce97218ea39aba21d4877c8aa530317b1ff92223d40a3c3a6",
+  "phases/05-nlp-foundations-to-advanced/16-text-generation-pre-transformer/docs/en.md": "37b3cc8bfce3c96da1c4871d29eeb154ca3e5cdc6e6a3521cca66eb330cc1359",
+  "phases/05-nlp-foundations-to-advanced/17-chatbots-rule-to-neural/docs/en.md": "91425c8ebfafb7857f7a2b0dc70b17ca83b6d323bf3f842324c57c277fb02ff1",
   "phases/05-nlp-foundations-to-advanced/18-multilingual-nlp/docs/en.md": "58d07aee5ab074827ae8b0ba2f76ceff3377d01f6d3780fd6fc200c34da4cc5a",
   "phases/05-nlp-foundations-to-advanced/19-subword-tokenization/docs/en.md": "74d27ffbd830a85d36d93cdac1438e7ec055aedc9607dc9ff364cf764a56d450",
   "phases/05-nlp-foundations-to-advanced/20-structured-outputs-constrained-decoding/docs/en.md": "d8175d35d9cb3c9df9a5a4f3218bcd32856e28968287cacd028506786e67a94f",
@@ -25,7 +25,7 @@
   "phases/05-nlp-foundations-to-advanced/24-coreference-resolution/docs/en.md": "bcc268b700a36eccd48048a7de0fcc47fe596e296e288ac19ba2f29f9f77c58e",
   "phases/05-nlp-foundations-to-advanced/25-entity-linking/docs/en.md": "1c7a5ddbfabbae5fb1109deed1c56997d5d31095800815171ff0a81d7c49145a",
   "phases/05-nlp-foundations-to-advanced/26-relation-extraction-kg/docs/en.md": "40bf37c2fd429dc314d5c32439d3f9137ac5e0b0fe7b998684d55c8dd813d276",
-  "phases/05-nlp-foundations-to-advanced/27-llm-evaluation-frameworks/docs/en.md": "4042a50ffd24f3daa44fb5d9943d45eceee202df5e93cf6413cdcb4ba3088063",
+  "phases/05-nlp-foundations-to-advanced/27-llm-evaluation-frameworks/docs/en.md": "7d220f0f24663c93fbda0bcb9c89ef9afbf57b11cf21077bd1e7a4fe4311e22a",
   "phases/05-nlp-foundations-to-advanced/28-long-context-evaluation/docs/en.md": "a218c9ebe214724308de67d9098099e4c2293682d2b81cc06f4b233ea633011c",
   "phases/05-nlp-foundations-to-advanced/29-dialogue-state-tracking/docs/en.md": "14b5f99129849a58acb4f3d88416d63ffdcf88920396dee11174d99a2dfa5aa4"
 }

@@ -19,6 +19,28 @@
 
 ![Chatbot evolution: rule-based → retrieval → neural → agent](../assets/chatbot.svg)
 
+### 脚本化的半世纪,1950-2001
+
+第一个范式是持续不过五年,而是五十年.了解它的联系很重要,因为其中的每个系统都是相同的机器:匹配输入,输出一个预先写的回复,更新一个点状态.
+
+**1950.**图灵提出了一个可操作的替代问题:如果问者通过电传打字机无法区分机器和人,这个哲学问题就失去了意义.
+
+**1956.**达特斯的一次夏季研讨会提出了人工智能这个词,根据它的猜测,智能的每个特征可以根据原则进行精确描述,以至于可以构建一个机器来模拟它. 建议为实现实质性进展预留了两个月.
+
+**1966.**简单的解散规则从输入中提取片段,重新组装规则把它们作为问题重新表现出来. 总共有200个模式,零状态,零理解,可用还是倾诉心事.
+
+**1972.**帕里是由斯坦福大学创建的,用来模拟偏执,它补充了Eliza缺少的那块:内部状态――表示恐惧,愤怒和不信任的数值变量在每轮更新,并决定接下来触发哪段脚本,因此相同的输入会根据前面的对话产生不同的回复――在一次盲测对话记录测试中,精神科医生区分了帕里与真实患者的准确率与随机猜测――它是个人的定位的直接祖先:一个三个浮点实现系统提示――同一年,这两个机器通过ARPANET被接收在一起:一个治疗师脚本在面试中与一个偏执机器,这是网络上第一次使用机器人对话.
+
+**1995.**艾利斯使用AIML (一种描述模式模板对 XML 方言) 扩大了ELIZA的方法──大约40,000个写作类别,三次获得了洛布纳奖──它证明了基于规则的系统的规模定律:更多规则是覆盖面的,而不是永远通用性──每条规则都是需要有人维护的负担──
+
+**2001.**智能孩子把这个方法带到3000万即时通讯用户面前,并加入后端查询:天气,股票,电影场次,拼接进模板里.
+
+五十年来,一种机制,规则数量不断上升.这个模式的终结不是因为有人证实了它,而是因为手写状态机的维护成本随着覆盖面的线性增长而不断增长,而用户的期望随着他们周围看到的东西不断增长.
+
+```figure
+chatbot-lineage
+```
+
 **Rule-based（ELIZA、AIML、DialogFlow）。**手工编写模式 匹配用户输入并生成回复──意图分类器将请求路由到预定义流程──插槽填充状态机收集必要信息──在设计的狭窄范围内表现出色──一旦超出范围就立刻失败──仍然会在安全关键领域──银行身份验证、航空预订) 上线,因为这些场景不能容忍幻觉──
 
 **Retrieval-based。**编码 每一组的表达,响应) 运行时,编码 用户消息并检索最接近的已存回复. 可以将其理解为Zendesk经典的类似文章功能.比则更能处理句子.
@@ -28,11 +50,6 @@
 **LLM agents。**一个语言模型被包装在一个循环中,用于规划,调用工具,并验证结果――它不是带着长快的聊天机. 它是一个代理循环:计划 →调用工具 →观察结果 →决定下一步.
 
 这四种范式不是顺序替代关系. 一个2026年生产级聊天机器人将经历所有四种路径:基于规则的使用身份验证和破坏性行动,恢复的使用FAQ,神经生成的使用自然表达,LLM代理的使用模糊的开放式查询.
-
-
-```figure
-chatbot-lineage
-```
 
 ## 构建它
 
@@ -225,6 +242,7 @@ tags: [nlp, agents, chatbot]
 3. **Hard。**使用三个工具 (搜索,阅读,用户数据,发送电子邮件) 实现上述代理循环.
 
 ## 关键术语
+
 | Term | What people say | What it actually means |
 |------|-----------------|-----------------------|
 | Intent | 用户想要什么 | Categorical label（book_flight, reset_password）。路由到 handler。 |
@@ -236,7 +254,9 @@ tags: [nlp, agents, chatbot]
 
 ## 延伸阅读
 
+- [Turing (1950). Computing Machinery and Intelligence](https://academic.oup.com/mind/article/LIX/236/433/986238) 让对话成为这个领域的基准论文.
 - [Weizenbaum (1966). ELIZA — A Computer Program For the Study of Natural Language Communication](https://web.stanford.edu/class/cs124/p36-weizenabaum.pdf) 原始的基于规则的聊天机器人论文
+- [Colby, Weber, Hilf (1971). Artificial Paranoia](https://doi.org/10.1016/0004-3702(71)巴黎的情感变量架构,第一个有状态的聊天机器人.
 - [Thoppilan et al. (2022). LaMDA: Language Models for Dialog Applications](https://arxiv.org/abs/2201.08239)谷歌 较晚期的神经聊天机器人论文,正好在LLM代理 接管之前.
 - [Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629) 命名代理循环模式 的论文.
 - [Anthropic's guide on building effective agents](https://www.anthropic.com/research/building-effective-agents) 2024 年的生产指导,到2026 年仍在成立.

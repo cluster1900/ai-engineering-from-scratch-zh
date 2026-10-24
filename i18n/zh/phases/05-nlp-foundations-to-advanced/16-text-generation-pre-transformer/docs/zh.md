@@ -19,6 +19,26 @@
 
 ![N-gram model: count, smooth, generate](../assets/ngram.svg)
 
+### 预测游戏
+
+在这些机制出现之前,有一次实验定义了什么是语言模型――遮住一句英语的下一个字母,请人猜,一次猜一个,直到猜对为止――记下猜的次数――对几百个字母重复这个过程――
+
+这些猜测次数不是无关紧要的细节.它们对文本的无损编码:把数序列交给另一个完全相同的猜测者,他就能恢复每一个字母,因为在每个位置上他都确切知道哪些猜测排在前面.
+
+尚农在1951年做了这个实验,得到的数字至今仍然占据这个领域.`log2(27) ≈ 4.75`字母中有100个字母,人类猜测者在每字母0.6到1.3位之间. 英语大约四分之三是被迫走法.
+
+后面的每一个语言模型都是游戏的机器玩家,
+
+- **Cross-entropy loss**训练一个LM,字面上就是在最小化它在猜测游戏中的分数.
+- **Perplexity**是 `2^bits`(或 `e^nats`模型猜测后仍然面对的分支因子――在27个符号上平均猜测的困惑是27个;每字母1位的玩家的困惑是2个――
+- **Context length 就是玩家的记忆。**图像带有两个代币的记忆玩游戏――变压器带有100K代币玩同一个游戏――规则从来没有改变;变好是玩家――
+
+需要注意一个单元切换: 这个游戏按每个字母以位`log2`)计分,而下面的 n-gram 公式按每个词符号以 nats(自然对数)计分――由于 nats 计的困难`e^H`像是个小部分`2^H`两种视角都是用不同的单位进行的测量.
+
+```figure
+prediction-game
+```
+
 **N-gram probability:** `P(w_i | w_{i-n+1}, ..., w_{i-1})`〔固定〕`n`根据计数计算:
 
 ```math
@@ -49,10 +69,6 @@ P(w \mid \text{context}) = \frac{\mathop{\mathrm{count}}(\text{context}, w)}{\ma
 ngram-backoff
 ```
 
-
-```figure
-prediction-game
-```
 
 ## 构建它
 
@@ -229,8 +245,10 @@ lesson: 16
 | Backoff | 回退到更短 context | 如果 trigram 计数为零，就使用 bigram。Katz backoff 将其形式化。 |
 | Kneser-Ney | n-gram 的最佳 smoothing | Absolute discounting + 低阶模型的 continuation probability。 |
 | Continuation probability | KN 专用 | `P(w)` 按 `w` 出现的 context 数量加权，而不是按原始计数加权。 |
+| Entropy of text | 每个符号的信息量 | 在给定 context 的条件下，编码下一个符号平均需要的 bits。Shannon 在 1951 年对印刷英语（最多 100 个字母的 context）的估计：0.6-1.3 bits/letter，这是在任何模型出现之前测得的。 |
 
 ## 延伸阅读
+- [Shannon (1951). Prediction and Entropy of Printed English](https://www.princeton.edu/~wbialek/rome/refs/shannon_51.pdf) 定义了每一种语言模型,
 - [Jurafsky and Martin — Speech and Language Processing, Chapter 3 (2026 draft)](https://web.stanford.edu/~jurafsky/slp3/3.pdf)n克LM 和滑滑的经典处理
 - [Chen and Goodman (1998). An Empirical Study of Smoothing Techniques for Language Modeling](https://dash.harvard.edu/handle/1/25104739) 确立Kneser-Ney作为最佳n-gram滑的论文
 - [Kneser and Ney (1995). Improved Backing-off for M-gram Language Modeling](https://ieeexplore.ieee.org/document/479394) 原始 KN 论文──
