@@ -142,7 +142,7 @@ out = [[sum(w * v[j] for w, v in zip(row, V)) for j in range(d_v)] for row in di
 给定一个 config（hidden=4096, heads=32, d_head=128），打印：
 
 - Baseline Transformer：Q、K、V 各自大小为 `hidden * hidden`，MLP 为 4 * hidden。
-- DIFF V1：Q、K 各自大小为 `hidden * hidden`，V 大小为 `hidden * hidden`（不变），head dim 在内部减半。增加 per-head `lambda` 参数$(O(\text{heads} \cdot d_{\text{head}}))$。
+- DIFF V1：Q、K 各自大小为 `hidden * hidden`，V 大小为 `hidden * hidden`（不变），head dim 在内部减半。增加 per-head `lambda` 参数 $(O(\text{heads} \cdot d_{\text{head}}))$。
 - DIFF V2：Q 大小为 `2 * hidden * hidden`，K 大小为 `hidden * hidden`，V 大小为 `hidden * hidden`。额外维度会在 $O_W$ 前投影回去。增加相同的 `lambda` 参数。
 
 toy 会测量 V2 的额外参数成本（大约每个 Attention block 额外 `hidden * hidden`），并打印出来。
