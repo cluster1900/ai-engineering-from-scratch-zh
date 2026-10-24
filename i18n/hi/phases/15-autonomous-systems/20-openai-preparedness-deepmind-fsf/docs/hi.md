@@ -30,7 +30,7 @@ v2 में मुख्य विवरणःअनुसंधान श्�
 
  संरचना:
 
-- **Critical Capability Levels (CCLs)**:跨五个领域的能力值: साइबर、 बायो、ML अनुसंधान एवं विकास、CBRN、 स्वायत्तता
+- **Critical Capability Levels (CCLs)**मूल्य:दुरुपयोग (CBRN, साइबर, हानिकारक हेरफेर) ML अनुसंधान एवं विकास, तथा एक खोजपूर्ण असंगति 轨道── स्वायत्तता स्वतंत्र क्षेत्र नहीं है; इसे एमएल अनुसंधान एवं विकास एवं साइबर में शामिल किया गया है──
 - **Tracked Capability Levels**:2026 साल 4 月加入的额外粒度──具体例:ML R&D स्वायत्तता स्तर 1 = 以 मानव + एआई उपकरणों के मुकाबले प्रतिस्पर्धी लागत, पूरी तरह से स्वचालित एआई आर एंड डी पाइपलाइन──
 - **Deceptive alignment monitoring**:明确承诺 औजार-कारण-उपयोग पर स्वचालित निगरानी करने हेतु।
 
@@ -95,7 +95,7 @@ a5-tracked-vs-research
 | Tracked Category | “Mandatory mitigation” | 触发 Capabilities + Safeguards Reports；SAG review |
 | Research Category | “Monitored only” | 被追踪但没有自动缓解措施；包括 Long-range Autonomy |
 | Frontier Safety Framework | “DeepMind 的 scaling policy” | FSF v3（2025 年 9 月）+ Tracked Capability Levels（2026 年 4 月） |
-| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（Cyber、Bio、ML R&D、CBRN） |
+| CCL | “Critical Capability Level” | DeepMind 每个领域的阈值（CBRN、Cyber、Harmful Manipulation、ML R&D） |
 | ML R&D autonomy level 1 | “R&D automation” | 以有竞争力的成本完全自动化 AI R&D pipeline |
 | Sandbagging | “Strategic underperformance” | 模型在 evals 中表现不佳；位于 OpenAI Research Categories |
 | Instrumental reasoning | “Means-ends reasoning” | 关于如何实现目标的推理；DeepMind monitoring 的目标 |
