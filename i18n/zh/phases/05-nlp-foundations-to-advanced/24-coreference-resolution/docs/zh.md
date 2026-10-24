@@ -59,14 +59,14 @@ coref-links
 ```python
 import spacy
 nlp = spacy.load("en_coreference_web_trf")   # experimental model
-doc = nlp("Apple announced new products. The company said they would ship soon.")
+doc = nlp("Apple announced new products. The company said it would ship them soon.")
 for cluster in doc._.coref_clusters:
     print(cluster, "->", [m.text for m in cluster])
 ```
 
 在更长的文件上,你会得到类似的结果:
-- 集团1: [果,公司,他们]
-- 集团2: [新产品]
+- 集团1: [果,公司,它]
+- 集团2:[新产品,它们]
 
 ### 步骤 2:基于规则的代名词解决器 (教学)
 

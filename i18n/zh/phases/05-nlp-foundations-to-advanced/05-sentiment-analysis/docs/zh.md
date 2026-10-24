@@ -201,7 +201,7 @@ pipe.fit(X_train, y_train)
 print(pipe.score(X_test, y_test))
 ```
 
-注意三件事.`stop_words=None`会保留否定词.`ngram_range=(1, 2)`加入大片,让`not_good`成为一个特征.`sublinear_tf=True`由于这些三种标志,往往就是SST-2上75%的精度基线和85%的精度基线的差异.
+注意三件事.`stop_words=None`会保留否定词.`ngram_range=(1, 2)`加入大片,让`not good`成为一个特征 (skikit-learn 用空格连接两个词)`sublinear_tf=True`由于这些三种标志,往往就是SST-2上75%的精度基线和85%的精度基线的差异.
 
 ### 什么时候该使用变压器
 

@@ -68,21 +68,21 @@ PATTERNS = [
 
 查看`code/main.py`中完整的玩具提取器──听力模式仍然会出现在域特定的管道中,因为它们可以调试──
 
-### 步骤2: 有监督关系 分类
+### 步骤2: 有监督 关系抽取
 
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tok = AutoTokenizer.from_pretrained("Babelscape/rebel-large")
-model = AutoModelForSequenceClassification.from_pretrained("Babelscape/rebel-large")
+model = AutoModelForSeq2SeqLM.from_pretrained("Babelscape/rebel-large")
 
 text = "Tim Cook was born in Alabama. He later became CEO of Apple."
 encoded = tok(text, return_tensors="pt", truncation=True)
 output = model.generate(**encoded, max_length=200)
-triples = tok.batch_decode(output, skip_special_tokens=False)
+decoded = tok.batch_decode(output, skip_special_tokens=False)
 ```
 
-REBEL 是一个连续关系提取器:输入文本,输出三倍,并且已经使用维基数据属性ID. 它在远程监督数据上进行了细节调整.
+REBEL 是基于BART的 secu2seq关系提取器:它生成三倍,而不是对实体对进行分类.`<triplet>`,我知道.`<subj>`和 `<obj>`标记,因此需要按这些标记切分(如模型卡的解析器所做) 得到`(subject, relation, object)`记录――它在远程监督数据上调度――标准开放权重基线――
 
 ### 步骤3: 带的LLM促成提取
 
