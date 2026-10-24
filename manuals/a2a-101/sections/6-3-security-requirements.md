@@ -1,10 +1,10 @@
-# Security requirements
+# 安全要求
 
-> Sections 13 and 14 list what a server and a client MUST and SHOULD check, and most of those checks fall on data that another agent sent.
+> 第 13 和第 14 节列出了服务器和客户端 MUST 和 SHOULD 检查的内容，其中大部分检查针对的是另一个 agent 发来的数据。
 
-The planner reads `review.json` from `code-reviewer` and the `test-log.txt` chunks from `test-runner`, registers a webhook at `localhost:41250`, and sends a bearer token to `deployer`. Each step crosses a boundary between two parties, and no field in A2A marks what crosses it as safe. Sections 13 and 14 of the specification say what each side must check at those boundaries.
+planner 读取来自 `code-reviewer` 的 `review.json` 和来自 `test-runner` 的 `test-log.txt` 分块，在 `localhost:41250` 注册一个 webhook，并向 `deployer` 发送一个 bearer 令牌。每一步都跨越两方之间的一条边界，而 A2A 中没有任何字段把跨越边界的内容标为安全。规范的第 13 和第 14 节说明了每一方在这些边界上必须检查什么。
 
-When you finish this section, you can name the rule that applies at each boundary, and say whether the kit and the SDKs meet it. [Figure](#fig-trust-boundaries) maps six boundaries in the kit, with the check at each.
+读完本节后，你能说出每条边界上适用的规则，并说出 kit 和各 SDK 是否满足它。[图](#fig-trust-boundaries)标出了 kit 中的六条边界以及每条边界上的检查。
 
 ```figure
 id: fig-trust-boundaries
@@ -14,31 +14,31 @@ claim: Data crosses six boundaries in the kit's system, and each needs a check o
 caption: Read each row left to right: where data crosses, what can go wrong, and the check the specification asks for. Rows appear in the order the planner meets them. Violet checks belong to the planner and blue checks to the remote agent. From capture/out/15-push.http, 06-input-required.http, 11-errors.http, and 17-signed-card.txt.
 ```
 
-## The requirements, and who meets them
+## 要求，以及谁满足了它们 {#s-security-requirements-the-requirements-and-who-meets-them}
 
-The table lists each rule in §13 and §14 that binds a server or a client with a MUST or a SHOULD. The kit column says where the kit meets the rule or does not. The SDK column gives the comparison of the six official SDKs where one was made, with a link to the section that owns the detail.
+表中列出了 §13 和 §14 中以 MUST 或 SHOULD 约束服务器或客户端的每条规则。kit 一列说明 kit 在哪里满足或不满足该规则。SDK 一列给出了对六个官方 SDK 的比较（如果做过的话），并链接到负责细节的那一节。
 
-| Rule | The kit | The SDKs |
+| 规则 | kit | 各 SDK |
 |---|---|---|
-| A server must check authorization on every A2A operation request {{spec §13.1}} | none per caller: the deployer needs one shared token, and the other two agents accept anyone | none includes authentication, and owner scoping differs, as [security schemes](#s-security-schemes-and-in-task-authorization) tables |
-| `GetExtendedAgentCard` must require authentication {{spec §13.3}} | the deployer checks its bearer token before every method | none in the core handlers, as [extended cards](#s-extended-cards-and-signatures) tables |
-| An agent must put authentication credentials in its webhook requests {{spec §13.2}} | `Authorization: Bearer hook_secret_91d2` on every POST | every SDK that pushes. a2a-go and a2a-rs send only the `Bearer` and `Basic` schemes {{sdk-go a2asrv/push/sender.go at v2.6.0}} {{sdk-rust a2a-server/src/push/sender.rs at a2a-server-lf-v0.5.1}}, and a2a-dotnet has no sender {{sdk-dotnet src/A2A/Server/A2AServer.cs at v1.0.0-preview2}} |
-| An agent should validate webhook URLs against SSRF {{spec §13.2}} | accepts `http://localhost:41250/a2a-events`, because every process runs on one machine | a2a-go, a2a-rs, and a2a-java reject private hosts by default {{sdk-java server-common/src/main/resources/META-INF/a2a-defaults.properties at v1.4.0.Final}}. a2a-python has an opt-in validator {{sdk src/a2a/utils/push_url_validator.py}}, and the notes record no check in a2a-js |
-| An agent should set reasonable timeouts on webhook requests and should retry {{spec §13.2}} | 10 s, and no retry | 5 s in a2a-js, 30 s in a2a-go and a2a-rs, the HTTP client default in a2a-python and a2a-java, and none retries |
-| A client must check each webhook with the credentials it gave {{spec §13.2}} | the planner's receiver records the headers and checks nothing | not compared, and [push notifications](#s-push-notification-configs) lists the receiver's duties |
-| A client should use a unique token with one purpose for each push notification config {{spec §13.2}} | one token per run, and a read returns it in clear | the reference SDK returns stored credentials in clear too, as [push notifications](#s-push-notification-configs) shows |
-| An agent must validate every input parameter before it processes a request. It should check file content types and reject media types that it does not expect {{spec §13.4}} | a missing field answers `-32602` with a `BadRequest` detail, and `code-reviewer` refuses a `url` part with `image/png` | the reference SDK's media type check is off by default, as the kit README lists |
-| An implementation must sanitize content from users against injection attacks {{spec §14.1.1}} | the planner decides on typed data fields only | not compared |
-| File references in A2A messages must be validated against server-side request forgery (SSRF) {{spec §14.1.1}} | `code-reviewer` fetches no URL | not compared |
-| Logs must not hold credentials or personal data, unless they are needed and protected {{spec §13.4}} | the capture files hold `dpl_test_7c1e4b` and `hook_secret_91d2`, which are test values | not compared |
-| An implementation should serve the Agent Card over HTTPS, and a client should verify signatures when the card has them {{spec §14.3}} | the planner fetches cards over plain HTTP and verifies nothing, and `17-signed-card.txt` shows the check | not compared, and [extended cards and signatures](#s-extended-cards-and-signatures) covers verification |
-| An agent should rate-limit every operation and should log security events {{spec §13.4}} | none | not compared |
+| 服务器必须在每个 A2A 操作请求上检查授权 {{spec §13.1}} | 不按调用者检查：deployer 需要一个共享令牌，另外两个 agent 接受任何人 | 都不包含认证，所有者范围各不相同，见[安全方案](#s-security-schemes-and-in-task-authorization)一节的表格 |
+| `GetExtendedAgentCard` 必须要求认证 {{spec §13.3}} | deployer 在每个方法之前检查它的 bearer 令牌 | 核心处理器中都没有，见[扩展 card](#s-extended-cards-and-signatures)一节的表格 |
+| agent 必须在其 webhook 请求中放入认证凭据 {{spec §13.2}} | 每个 POST 上都有 `Authorization: Bearer hook_secret_91d2` | 每个发送推送的 SDK 都满足。a2a-go 和 a2a-rs 只发送 `Bearer` 和 `Basic` 方案 {{sdk-go a2asrv/push/sender.go at v2.6.0}} {{sdk-rust a2a-server/src/push/sender.rs at a2a-server-lf-v0.5.1}}，a2a-dotnet 没有发送方 {{sdk-dotnet src/A2A/Server/A2AServer.cs at v1.0.0-preview2}} |
+| agent 应针对 SSRF 验证 webhook URL {{spec §13.2}} | 接受 `http://localhost:41250/a2a-events`，因为所有进程都在一台机器上运行 | a2a-go、a2a-rs 和 a2a-java 默认拒绝私有主机 {{sdk-java server-common/src/main/resources/META-INF/a2a-defaults.properties at v1.4.0.Final}}。a2a-python 有一个需选择启用的验证器 {{sdk src/a2a/utils/push_url_validator.py}}，笔记中没有记录 a2a-js 有任何检查 |
+| agent 应为 webhook 请求设置合理的超时，并应重试 {{spec §13.2}} | 10 s，不重试 | a2a-js 为 5 s，a2a-go 和 a2a-rs 为 30 s，a2a-python 和 a2a-java 使用 HTTP 客户端的默认值，都不重试 |
+| 客户端必须用它提供的凭据检查每个 webhook {{spec §13.2}} | planner 的接收方记录请求头，但什么都不检查 | 未比较，[推送通知](#s-push-notification-configs)一节列出了接收方的职责 |
+| 客户端应为每个推送通知配置使用唯一且单一用途的令牌 {{spec §13.2}} | 每次运行一个令牌，读取时以明文返回 | 参考 SDK 也以明文返回存储的凭据，如[推送通知](#s-push-notification-configs)一节所示 |
+| agent 必须在处理请求之前验证每个输入参数。它应检查文件内容类型，并拒绝它没有预料到的媒体类型 {{spec §13.4}} | 缺失的字段以带 `BadRequest` 详情的 `-32602` 回答，`code-reviewer` 拒绝带 `image/png` 的 `url` part | 参考 SDK 的媒体类型检查默认关闭，kit 的 README 列出了这一点 |
+| 实现必须针对注入攻击清理来自用户的内容 {{spec §14.1.1}} | planner 只根据有类型的数据字段做决定 | 未比较 |
+| A2A 消息中的文件引用必须针对服务端请求伪造（SSRF）进行验证 {{spec §14.1.1}} | `code-reviewer` 不获取任何 URL | 未比较 |
+| 日志不得包含凭据或个人数据，除非确有需要并受到保护 {{spec §13.4}} | 捕获文件中有 `dpl_test_7c1e4b` 和 `hook_secret_91d2`，它们是测试值 | 未比较 |
+| 实现应通过 HTTPS 提供 Agent Card，card 带有签名时客户端应验证签名 {{spec §14.3}} | planner 通过普通 HTTP 获取 card，不验证任何东西，`17-signed-card.txt` 展示了这项检查 | 未比较，[扩展 card 与签名](#s-extended-cards-and-signatures)一节讲解了验证 |
+| agent 应对每个操作限流，并应记录安全事件 {{spec §13.4}} | 无 | 未比较 |
 
-Three of those rules deserve more than a row, because the data they guard arrives in every task.
+其中三条规则值得多讲几句，因为它们所保护的数据在每个任务中都会到达。
 
-## Text is data, even when it reads like an order
+## 文本是数据，即使读起来像命令 {#s-security-requirements-text-is-data-even-when-it-reads-like-an-order}
 
-**Prompt injection:** text that arrives as data and that a model on the receiving side follows as an instruction. No field of a part says how far to trust its content {{proto Part}}, and `review.json` was built from a diff that other people wrote.
+**提示注入：** 作为数据到达、却被接收方的模型当作指令遵循的文本。part 中没有任何字段说明它的内容可信到什么程度 {{proto Part}}，而 `review.json` 是根据别人写的 diff 构建的。
 
 ```rule
 label: input is checked before it is read
@@ -47,19 +47,19 @@ source: spec §14.1.1
 The server must validate content against the A2A protocol schema before it processes the content.
 ```
 
-The kit's planner decides from data parts. It reads `failed` from `summary.json` and `severity` from each finding in `review.json`, and ignores the free text beside them. Its one use of remote text is a substring test on the reviewer's question. A planner built on a model reads much more. So act only on typed fields you have checked. Keep side effects behind an approval that a person or a policy controls, as the deployer does.
+kit 的 planner 根据数据 part 做决定。它从 `summary.json` 读取 `failed`，从 `review.json` 的每个发现中读取 `severity`，并忽略它们旁边的自由文本。它唯一一次使用远程文本，是对审查者的问题做子串测试。基于模型构建的 planner 会读取多得多的内容。所以只根据你检查过的有类型字段行动。把副作用放在由人或策略控制的批准之后，就像 deployer 那样。
 
-## URLs aim the receiver's own requests
+## URL 决定接收方自己的请求指向哪里 {#s-security-requirements-urls-aim-the-receiver-s-own-requests}
 
-**Server-side request forgery (SSRF):** a server sends a request to an address that an outside caller chose, such as an internal service. A `url` part invites it, and so does a webhook URL, which the agent calls for every later event of the task.
+**服务端请求伪造（SSRF）：** 服务器向外部调用者选定的地址（例如某个内部服务）发送请求。`url` part 会招致这种情况，webhook URL 也会，agent 会为任务之后的每个事件调用它。
 
-The kit's `code-reviewer` refuses a `url` part with media type `image/png`, because its input modes do not list it, and fetches nothing. For webhooks, the specification asks agents to reject the private ranges `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16` {{spec §13.2}}.
+kit 的 `code-reviewer` 拒绝媒体类型为 `image/png` 的 `url` part，因为它的输入 mode 中没有列出这种类型，它也不获取任何内容。对于 webhook，规范要求 agent 拒绝私有地址范围 `127.0.0.0/8`、`10.0.0.0/8`、`172.16.0.0/12` 和 `192.168.0.0/16` {{spec §13.2}}。
 
-They also reject localhost and link-local addresses {{spec §13.2}}. The kit accepts `http://localhost:41250/a2a-events` only because every process runs on one machine. The reference SDK's validator rejects hosts that resolve to loopback, private, link-local, reserved, multicast, or unspecified addresses {{sdk src/a2a/utils/push_url_validator.py}}. It runs only when the host turns it on. [Push notifications](#s-push-notification-configs) covers the receiver's checks.
+它们还要拒绝 localhost 和链路本地地址 {{spec §13.2}}。kit 接受 `http://localhost:41250/a2a-events`，只是因为所有进程都在一台机器上运行。参考 SDK 的验证器会拒绝解析到回环、私有、链路本地、保留、组播或未指定地址的主机 {{sdk src/a2a/utils/push_url_validator.py}}。它只有在宿主开启它时才运行。[推送通知](#s-push-notification-configs)一节讲解了接收方的检查。
 
-## Records that outlive the task
+## 比任务存在得更久的记录 {#s-security-requirements-records-that-outlive-the-task}
 
-A read of a stored configuration returns its secret in clear:
+读取存储的配置会以明文返回它的密钥：
 
 ```listing
 title: the configuration read back with its secret in clear
@@ -78,13 +78,13 @@ note: The ListTaskPushNotificationConfigs reply, cut to one configuration.
           "credentials": "hook_secret_91d2"
 ```
 
-These reads need the task's own access check {{spec §13.1}}, and [security schemes](#s-security-schemes-and-in-task-authorization) covers that scope. The capture files hold `dpl_test_7c1e4b` and `hook_secret_91d2` in clear, which is safe only because they are test values. The `refunds.diff` part stays in the review task's `history`. Sensitive information in task history and artifacts must be protected as the data protection rules require {{spec §14.1.1}}. Set a retention period for all of it, as §13.4 recommends {{spec §13.4}}.
+这些读取需要任务自身的访问检查 {{spec §13.1}}，[安全方案](#s-security-schemes-and-in-task-authorization)一节讲解了这个范围。捕获文件以明文保存 `dpl_test_7c1e4b` 和 `hook_secret_91d2`，这之所以安全，只是因为它们是测试值。`refunds.diff` part 留在审查任务的 `history` 中。任务历史和 artifact 中的敏感信息必须按数据保护规则的要求加以保护 {{spec §14.1.1}}。按照 §13.4 的建议，为所有这些设定保留期限 {{spec §13.4}}。
 
 ```takeaways
-- Decide only on typed fields from data parts you have validated.
-- Reject webhook and file URLs that resolve to loopback, private, or link-local addresses.
-- Check the `Authorization` value and the task id on every notification.
-- Keep credentials out of logs and out of records that other callers can read.
+- 只根据你验证过的数据 part 中的有类型字段做决定。
+- 拒绝解析到回环、私有或链路本地地址的 webhook URL 和文件 URL。
+- 在每条通知上检查 `Authorization` 值和任务 id。
+- 让凭据远离日志，远离其他调用者能读取的记录。
 ```
 
 Sources: spec §13.1, §13.2, §13.3, §13.4, §14.1.1, §14.3 (research/sources/specification.md); proto Part (research/sources/a2a.proto); sdk src/a2a/utils/push_url_validator.py at a2a-python 1.2.2; sdk-go a2asrv/push/sender.go at v2.6.0; sdk-rust a2a-server/src/push/sender.rs at a2a-server-lf-v0.5.1; sdk-java server-common/src/main/resources/META-INF/a2a-defaults.properties at v1.4.0.Final; sdk-dotnet src/A2A/Server/A2AServer.cs at v1.0.0-preview2; capture/out/06-input-required.http, 11-errors.http, 15-push.http, 17-signed-card.txt; capture/planner.py, capture/a2a_ref.py, capture/README.md
