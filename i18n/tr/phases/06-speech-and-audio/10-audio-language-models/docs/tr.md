@@ -130,17 +130,18 @@ class AudioProjector(nn.Module):
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm: Bölüm:
+`audio_path` 指向数据集仓库中的`data.zip`Bu tam eşleşme döngüsü sadece akıl kontrolü, referans değerlendirmesinin resmi değerlendirmesi değildir, bu nedenle sayıları yayınlanan MMAU-Pro sonuçları ile karşılaştırılamaz.`model_output`列, sonra运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro)Orta `evaluate_mmau_pro_comprehensive.py`❖ 分别 rapor her `category`(speech, sound, music, multi, and its remaining categories)
 
 ## Kullan
 
